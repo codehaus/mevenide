@@ -26,13 +26,7 @@ public interface IPomEditorPage {
 	/**
 	 * Access to the parent Mevenide POM editor instance.
 	 */
-	public MevenidePomEditor getEditor();
-	
-	/**
-	 * Set the string to display as the heading text in this
-	 * page's client control.
-	 */
-	public void setHeading(String heading);
+	public MevenidePomEditor getPomEditor();
 	
 	/**
 	 * Callback message sent with this page is activated (i.e.

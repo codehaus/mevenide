@@ -20,6 +20,7 @@ import org.apache.maven.project.Project;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.editors.entries.OverridableTextEntry;
 
@@ -31,13 +32,17 @@ public class FullDescriptionSection extends PageSection {
 
 	private OverridableTextEntry descriptionText;
 
-    public FullDescriptionSection(AbstractPomEditorPage page) {
-        super(page);
+    public FullDescriptionSection(
+    	OverviewPage page, 
+    	Composite parent, 
+    	FormToolkit toolkit) 
+    {
+        super(page, parent, toolkit);
 		setTitle(Mevenide.getResourceString("FullDescriptionSection.header"));
 		setDescription(Mevenide.getResourceString("FullDescriptionSection.description"));
     }
 
-    public Composite createClient(Composite parent, PageWidgetFactory factory) {
+    public Composite createSectionContent(Composite parent, FormToolkit factory) {
 		Composite container = factory.createComposite(parent);
 		GridLayout layout = new GridLayout();
 		layout.numColumns = isInherited() ? 2 : 1;
@@ -46,7 +51,7 @@ public class FullDescriptionSection extends PageSection {
 		layout.horizontalSpacing = 5;
 		container.setLayout(layout);
 
-		final Project pom = getPage().getEditor().getPom();
+		final Project pom = getPage().getPomEditor().getPom();
 		
 		// POM short description textbox
 		Button toggle = createOverrideToggle(container, factory, 1, true);
