@@ -19,16 +19,19 @@ package org.mevenide.ui.eclipse.nature;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IProjectNature;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.ui.PlatformUI;
 import org.mevenide.ui.eclipse.Mevenide;
+import org.mevenide.ui.eclipse.sync.view.SynchronizationView;
+import org.mevenide.ui.eclipse.util.FileUtils;
 
 /**
  * 
@@ -43,9 +46,14 @@ public class MevenideNature implements IProjectNature {
 	
 	private IProject project;
 
+	//@todo add a preference to control the behaviour 
+	private boolean createPomOnActivation = true;
+	
 	public void configure() throws CoreException {
 		try {
-			configureProject(project);
+			//configureProject(project);
+			addMavenBuilder(project);
+			synchronizeProject(project);		
 		} 
 		catch (Exception e) {
 			log.debug("Unable to add MevenideNature to project '" + project.getName(), e); //$NON-NLS-1$
@@ -54,16 +62,15 @@ public class MevenideNature implements IProjectNature {
 	}
 
 	public void deconfigure() throws CoreException {
-		deconfigureProject(project);
-		
+		//deconfigureProject(project);
+		removeMavenBuilder(project);
 	}
 	
 	public static void configureProject(IProject project) throws Exception {
-		addPomNature(project);
-		synchronizeProject(project);		
+		addMavenNature(project);
 	}
 	
-	private static void addPomNature(IProject project) {
+	private static void addMavenNature(IProject project) {
 		try {
 			IProjectDescription projectDescription = project.getDescription();
 			String[] natures = projectDescription.getNatureIds();
@@ -78,8 +85,76 @@ public class MevenideNature implements IProjectNature {
 		}
 	}
 	
-	public static void deconfigureProject(IProject project) throws CoreException {
-		if ( project != null ) {
+	private void addMavenBuilder(IProject project) throws Exception {
+	    IProjectDescription projectDescription = project.getDescription();
+		ICommand[] commands = project.getDescription().getBuildSpec();
+
+		boolean addBuilder = true;
+		
+	    for (int i = 0; i < commands.length; i++) {
+			if ( commands[i].getBuilderName().equals(MavenBuilder.BUILDER_ID) ) {
+				addBuilder = false;
+			}
+		} 
+		if ( addBuilder ) {
+			ICommand[] newCommands = null;
+			
+			ICommand command = projectDescription.newCommand();
+			command.setBuilderName(MavenBuilder.BUILDER_ID);
+			
+			newCommands = new ICommand[commands.length+1];
+			System.arraycopy(commands, 0, newCommands, 0, commands.length);
+			newCommands[commands.length] = command;	
+			
+			projectDescription.setBuildSpec(newCommands);
+			project.setDescription(projectDescription, null);
+			
+		}
+    }
+
+	private void synchronizeProject(IProject project) throws Exception {
+	    if ( createPomOnActivation && FileUtils.getPom(project) != null && !FileUtils.getPom(project).exists() ) {
+	        FileUtils.createPom(project);
+	    }
+	    SynchronizationView view = (SynchronizationView) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(Mevenide.SYNCHRONIZE_VIEW_ID);
+		view.setInput(project);
+	}
+	
+    public static void deconfigureProject(IProject project) throws CoreException {
+		removeMavenNature(project);
+	}
+
+	
+	private void removeMavenBuilder(IProject project) throws CoreException {
+	    if (project != null ) {
+			IProjectDescription projectDescription = project.getDescription();
+			ICommand[] commands = projectDescription.getBuildSpec();
+			
+			ICommand[] newCommands = null;
+			
+			int builderIndex = -1;
+			for (int i = 0; i < commands.length; i++) {
+				if ( commands[i].getBuilderName().equals(MavenBuilder.BUILDER_ID) ) { 
+					builderIndex = i;
+				}
+			}
+	
+			if ( builderIndex != -1 ){
+				newCommands = new ICommand[commands.length-1];
+				for (int i = 0; i < builderIndex; i++) {
+					newCommands[i] = commands[i];
+				}	
+				for (int i = builderIndex+1; i < commands.length; i++) {
+					newCommands[i-1] = commands[i];
+				}
+				projectDescription.setBuildSpec(newCommands);
+				project.setDescription(projectDescription, null);
+			}
+		}
+    }
+
+    private static void removeMavenNature(IProject project) throws CoreException {
+        if ( project != null ) {
 			IProjectDescription description = project.getDescription();
 			String[] prevNatures= description.getNatureIds();
 			List newNatures = new ArrayList(Arrays.asList(prevNatures));
@@ -93,17 +168,9 @@ public class MevenideNature implements IProjectNature {
 				project.setDescription(description, null);
 			}
 		}
-	}
+    }
 
-	
-	private static void synchronizeProject(IProject project) {
-		//@todo
-	    //synchronize only if pref is set to true
-	}
-
-	
-	
-	public IProject getProject() {
+    public IProject getProject() {
 		return project;
 	}
 
