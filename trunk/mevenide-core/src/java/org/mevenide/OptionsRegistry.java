@@ -29,7 +29,7 @@ import java.util.TreeMap;
  * some options have been intentionally left out since they dont seem 
  * to make in the current context.
  * 
- * @todo use configuration (http://gdfact.fr.st/) instead of Properties  
+ * @low use configuration (http://gdfact.fr.st/) instead of Properties  
  * 
  * @author Gilles Dodinet (gdodinet@wanadoo.fr)
  * @version $Id$

@@ -28,11 +28,11 @@ import junit.framework.TestCase;
  * 
  */
 public class PomWriterTest extends TestCase {
-	private PomWriter pomWriter;
+	private ProjectWriter pomWriter;
 	private File projectFile;
 
 	protected void setUp() throws Exception {
-		pomWriter = PomWriter.getWriter();
+		pomWriter = ProjectWriter.getWriter();
 		File src = new File(PomWriterTest.class.getResource("/fixtures/project-fixture.xml").getFile());
 		projectFile = new File(src.getParentFile().getParent(), "project-fixture.xml") ; 
 		copy(src.getAbsolutePath(), projectFile.getAbsolutePath());
@@ -51,7 +51,7 @@ public class PomWriterTest extends TestCase {
 			"src/pyo/aspect",
 			projectFile,
 			BuildConstants.MAVEN_ASPECT);
-		Hashtable h = PomReader.getAllSourceDirectories(projectFile);
+		Hashtable h = ProjectReader.getAllSourceDirectories(projectFile);
 		assertEquals(2, h.size());
 		assertTrue(h.containsKey("src/pyo/java"));
 		assertTrue(h.containsKey("src/pyo/aspect"));

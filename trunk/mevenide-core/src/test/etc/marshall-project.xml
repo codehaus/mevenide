@@ -2,7 +2,7 @@
 
 <project>
   <pomVersion>3</pomVersion>
-  <!-- id>mevenide:master</id -->
+  <!--id>mevenide:master</id -->
   <name>Mevenide Master</name>
   <groupId>mevenide</groupId>
   <artifactId>master</artifactId>

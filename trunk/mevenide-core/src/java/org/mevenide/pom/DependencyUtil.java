@@ -13,79 +13,19 @@
  */
 package org.mevenide.pom;
 
-import java.util.List;
-import java.util.StringTokenizer;
 
-import org.jdom.Element;
+import org.apache.maven.project.Dependency;
 
 /**
- * @todo JDOM use Maven classes instead of JDom
  * 
  * @author Gilles Dodinet (gdodinet@wanadoo.fr)
  * @version $Id$
  * 
  */
 class DependencyUtil {
-	static boolean isDependencyPresent(
-		String dependencyName,
-		List dependencies) {
-		boolean foundLib = false;
-		for (int i = 0; i < dependencies.size(); i++) {
-			Element dependency = (Element) dependencies.get(i);
-			String dependencyId = dependency.getChildText("id");
-			String dependencyVersion = dependency.getChildText("version");
-			if (dependencyName.startsWith(dependencyId)
-				&& (dependencyVersion != null
-					&& dependencyName.endsWith(dependencyVersion))) {
-				//&& libraryName.endsWith(depVersion) ) {
-				foundLib = true;
-				break;
-			}
-		}
-		return foundLib;
+	
+	static Dependency getDependency(String absoluteFileName) {
+		return null;
 	}
 	
-	static Element getDependency(String dependencyName) {
-		String dependencyId = getDependencyId(dependencyName);
-		Element dependencyElement = new Element("dependency");
-		Element dependencyIdElement = new Element("id");
-		dependencyIdElement.addContent(dependencyId);
-		Element dependencyVersion = new Element("version");
-		try {
-			dependencyVersion.addContent(
-				getDependencyVersion(dependencyName, dependencyId));
-		}
-		catch (IndexOutOfBoundsException ex) {
-            ex.printStackTrace();
-		}
-		Element url = new Element("url");
-		dependencyElement.addContent(dependencyIdElement);
-		dependencyElement.addContent(dependencyVersion);
-		dependencyElement.addContent(url);
-		return dependencyElement;
-	}
-	
-	private static String getDependencyId(String libraryFullName) {
-		StringTokenizer tokenizer = new StringTokenizer(libraryFullName, "-");
-		StringBuffer name = new StringBuffer("");
-		while (tokenizer.hasMoreTokens()) {
-			String token = tokenizer.nextToken();
-			if (!token.equals("SNAPSHOT")
-				&& new Character(token.charAt(0)).compareTo(new Character('9'))
-					> 0) {
-				if (!name.toString().equals("")) {
-					name.append('-');
-				}
-				name.append(token);
-			}
-		}
-		return name.toString();
-	}
-	
-	private static String getDependencyVersion(String libraryFullName, String libId) {
-		return libraryFullName.substring(
-			libId.length() + 1,
-			libraryFullName.lastIndexOf('.')
-		);
-	}
 }
