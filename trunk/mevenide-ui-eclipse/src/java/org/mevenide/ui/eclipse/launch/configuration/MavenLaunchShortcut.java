@@ -127,9 +127,10 @@ public class MavenLaunchShortcut implements ILaunchShortcut {
 			try {
 				configuration = configuration.copy(newName);
 				if (showDialog) {
-					configuration= ((ILaunchConfigurationWorkingCopy) configuration).doSave();
+					configuration = ((ILaunchConfigurationWorkingCopy) configuration).doSave();
 				}
-				DebugUITools.launch(configuration, ILaunchManager.RUN_MODE);
+				//caused config to be launched twice (see MavenLaunchDelegate)
+				//DebugUITools.launch(configuration, ILaunchManager.RUN_MODE);
 			}
 			catch (Exception e) {
 				log.error("Unable to copy configuration due to : ", e);

@@ -19,15 +19,16 @@ package org.mevenide.ui.eclipse.launch.configuration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchManager;
+import org.eclipse.debug.core.ILaunchesListener2;
 import org.eclipse.debug.core.model.ILaunchConfigurationDelegate;
 import org.eclipse.debug.internal.ui.DebugUIPlugin;
 import org.eclipse.jdt.launching.IVMInstall;
@@ -38,6 +39,7 @@ import org.eclipse.ui.externaltools.internal.launchConfigurations.ExternalToolsU
 import org.mevenide.runner.AbstractRunner;
 import org.mevenide.runner.ArgumentsManager;
 import org.mevenide.ui.eclipse.Mevenide;
+
 
 
 /**
@@ -51,8 +53,10 @@ import org.mevenide.ui.eclipse.Mevenide;
 public class MavenLaunchDelegate extends AbstractRunner implements ILaunchConfigurationDelegate {
 	private static Log log = LogFactory.getLog(MavenLaunchDelegate.class); 
 	
+	public static final String MAVEN_LAUNCH = "org.mevenide.maven.launched";
+
 	private ILaunchConfiguration config;
-	
+
 	public void launch(ILaunchConfiguration configuration, String mode, ILaunch launch, IProgressMonitor monitor) throws CoreException {
 		config = configuration;
 		try {
@@ -61,8 +65,10 @@ public class MavenLaunchDelegate extends AbstractRunner implements ILaunchConfig
 		catch (Exception e) {
 			log.debug("Unable to launch configuration due to : ", e);
 		}
-	
-		VMRunnerConfiguration vmConfig = new VMRunnerConfiguration("com.werken.forehead.Forehead", ArgumentsManager.getMavenClasspath());
+		
+		String[] mavenClasspath = ArgumentsManager.getMavenClasspath();
+
+		VMRunnerConfiguration vmConfig = new VMRunnerConfiguration("com.werken.forehead.Forehead", mavenClasspath);
 		String[] vmArgs = ArgumentsManager.getVMArgs(this);
 		
 		Map customVmArgsMap = configuration.getAttribute(MavenArgumentsTab.SYS_PROPERTIES, new HashMap());
@@ -97,12 +103,21 @@ public class MavenLaunchDelegate extends AbstractRunner implements ILaunchConfig
  		if (vmRunner != null) {
  			//System.err.println(getBasedir() + " => " + getGoals(configuration));
             vmRunner.run(vmConfig, launch, monitor);
+            launch.setAttribute(MAVEN_LAUNCH, "true");
+            
+            ILaunchesListener2 launchListener = new MavenLaunchesListener();
+            DebugPlugin.getDefault().getLaunchManager().addLaunches(new ILaunch[] {launch});
+            DebugPlugin.getDefault().getLaunchManager().addLaunchListener(launchListener);
+            
             DebugUIPlugin.getDefault().getConsoleDocumentManager().launchAdded(launch);
 		}
 
 	}
 	
-
+	public static boolean isMavenLaunch(ILaunch launch) {
+	    return "true".equals(launch.getAttribute(MavenLaunchDelegate.MAVEN_LAUNCH));
+	}
+	
 	public IVMInstall getVMInstall() {
 		return JavaRuntime.getDefaultVMInstall();
 	}
@@ -180,4 +195,5 @@ public class MavenLaunchDelegate extends AbstractRunner implements ILaunchConfig
 	protected void launchVM(String[] options, String[] goals) throws Exception {
 		throw new RuntimeException("Altho this class uses facilities offered by AbstractRunner. It is not meant to be run like that. TODO : refactor me.");
 	}
+
 }
