@@ -33,6 +33,11 @@
   			<include name="*.*"/>
 		  </fileset>
 		</copy>
+		<copy toDir="target/classes/">
+		  <fileset dir="etc">
+  			<include name="*.*"/>
+		  </fileset>
+		</copy>
 	</preGoal>
 	
 	<postGoal name="jar:install">

@@ -24,7 +24,6 @@ import org.mevenide.ui.eclipse.launch.LaunchWizard;
 
 /**
  * 
- * still that maven classpath problem
  * 
  * @author Gilles Dodinet (gdodinet@wanadoo.fr)
  * @version $Id$
