@@ -1,47 +1,111 @@
+a:hover {
+  color: #990000;
+  text-decoration: none;
+}
+
+a:link, a:visited {
+  color: #000000;
+}
+
+.section {
+  padding-top: 0px;
+}
+
 #leftColumn {
   width: 190px;
   border-bottom: none;
-  border-right: none;
+  border-right: solid 1px #999999;
+  background-color: #ffffff; 
 }
 
 #navBox {
+  background-color: #ffffff; 
 }
 
 .sectionTitle {
-  padding: 10px;
-  border:none;
-  border-bottom: 1px solid #999999;
   color: #990000;
-  background-color: #ffffff;
+  background-color: #eeeeee;
+  border: 1px solid #999999;
+  font-weight: bold;
+  margin-bottom: 3px;
+  padding: 3px;
+  letter-spacing: 1px;
 }
 
 .subsectionTitle {
-  padding: 6px;
   border:none;
-  border-bottom: 1px solid #999999;
   color: #990000;
   background-color: #ffffff;
-  font-size: 10pt;
+  border-bottom: 1px dashed #999999;
+  font-size: 11pt;
+  margin-top: 10px;
+  letter-spacing: 1px;
+  /*text-decoration: underline;*/
 }
 
 .navSectionHead {
-  /* background-color: #ccddff; */
-  font-size: 8pt;
-  font-variant : small-caps;
-  color: #999999;	
+  font-size: 9pt;
+  font-weight: normal;
+  /*font-variant: small-caps;*/
+  letter-spacing: 1px;
+  color: #990000;
+  background-color: #eeeeee;
+  border: 1px solid #999999;
+  border-top: none;
+  padding: 5px;
+  margin-bottom: 5px;
+  margin-left: -9px;
+  margin-right: -9px;
+  letter-space: 1px;
+  
+}
+
+.navSection {
+  background-color: #ffffff;
+  border: solid 1px #999999;
+  margin-bottom: 10px; 
+  padding-top: 0px;
 }
 
 #breadcrumbs {
   font-size: 8pt;
-  margin: 0pt;
   background-color: #ffffff;
   color: #999999;
   border-top: none;
 }
 
 #footer {
-  text-align: center; 
+  text-align: left; 
   border-top: 1px solid #999999;
   font-size: 8pt;
   color: #999999;
+}
+
+table.bodyTable td,  table.bodyTable th{
+  padding: 5px;
+  border: 1px solid #999999;
+}
+
+table.bodyTable tr.a {
+  background-color: #ffffff;
+}
+
+table.bodyTable tr.b {
+  background-color: #eeeeee;
+}
+
+table.bodyTable th {
+  background-color: #ffffff;
+  font-weight: bold;
+  border: 1px solid #330000;
+  color: #666666;
+}
+
+.contentBox table {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+code {
+  font-size: small;
 }
