@@ -143,15 +143,16 @@ public class ProjectOpenedHookImpl extends ProjectOpenedHook {
     private boolean dependencyExists(Dependency dep) {
         if (dep.getType() == null || "jar".equals(dep.getType())) {
             // check override first
+            File file;
             String path = JarOverrideReader2.getInstance().processOverride(dep,
 	            project.getPropertyResolver(),
 	            project.getLocFinder());
-            if (path == null) {
-                DefaultDependencyPathFinder finder = new DefaultDependencyPathFinder(dep);
-                path = finder.resolve();
+           if (path != null) {
+                file = new File(path);
+            } else {
+                file = new File(FileUtilities.getDependencyURI(dep, project));
             }
             logger.debug("dep path=" + path);
-            File file = new File(path);
             return file.getName().endsWith(".jar") && file.exists();
         }
         return false;

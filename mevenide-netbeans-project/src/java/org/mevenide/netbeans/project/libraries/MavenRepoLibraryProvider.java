@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.mevenide.context.DefaultQueryContext;
 import org.mevenide.environment.ILocationFinder;
 import org.mevenide.environment.LocationFinderAggregator;
 import org.mevenide.environment.SysEnvLocationFinder;
@@ -76,7 +77,7 @@ public class MavenRepoLibraryProvider implements LibraryProvider {
     
     private File findRepo() {
         if (finder == null) {
-            finder = new LocationFinderAggregator();
+            finder = new LocationFinderAggregator(DefaultQueryContext.getNonProjectContextInstance());
         }
         File toReturn = new File(finder.getMavenLocalRepository());
         return toReturn;

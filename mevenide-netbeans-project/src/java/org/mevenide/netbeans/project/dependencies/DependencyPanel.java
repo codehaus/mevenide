@@ -17,13 +17,10 @@
 package org.mevenide.netbeans.project.dependencies;
 
 import java.beans.Customizer;
-import java.io.File;
-import java.net.URI;
 import javax.swing.JPanel;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Dependency;
-import org.mevenide.netbeans.project.FileUtilities;
 import org.mevenide.netbeans.project.MavenProject;
 
 
@@ -34,7 +31,7 @@ import org.mevenide.netbeans.project.MavenProject;
 public class DependencyPanel extends JPanel implements Customizer {
     private static final Log logger = LogFactory.getLog(DependencyPanel.class);
     
-    
+
     /** Creates new form CustomGoalsPanel */
     public DependencyPanel() {
         initComponents();
@@ -164,8 +161,8 @@ public class DependencyPanel extends JPanel implements Customizer {
         add(txtOverride, gridBagConstraints);
 
     }//GEN-END:initComponents
-
-    public void setEditable(boolean editable) {
+    
+    public void setFieldsEditable(boolean editable) {
         txtArtifactID.setEnabled(editable);
         txtGroupId.setEnabled(editable);
         txtVersion.setEnabled(editable);
@@ -186,11 +183,13 @@ public class DependencyPanel extends JPanel implements Customizer {
         } else {
             txtOverride.setText("");
         }
+  
     }
-
+    
     public void setObject(Object bean) {
         //whatever??
-    }    
+    }
+ 
     
     
     
