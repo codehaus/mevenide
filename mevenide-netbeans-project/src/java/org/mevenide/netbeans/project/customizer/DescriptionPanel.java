@@ -56,6 +56,7 @@ public class DescriptionPanel extends JPanel implements ProjectPanel {
     private OriginChange ocDescription;
     
     private HashMap changes;
+    private boolean initialized;
     
     /** Creates new form BasicsPanel */
     public DescriptionPanel(MavenProject proj) {
@@ -80,7 +81,7 @@ public class DescriptionPanel extends JPanel implements ProjectPanel {
                 }
             }
         });
-        populateChangeInstances();
+        initialized = false;
     }
     
     /** This method is called from within the constructor to
@@ -286,6 +287,15 @@ public class DescriptionPanel extends JPanel implements ProjectPanel {
     private javax.swing.JTextField txtUrl;
     // End of variables declaration//GEN-END:variables
 
+    
+    public void addNotify() {
+        super.addNotify();
+        if (!initialized) {
+            initialized = true;
+            populateChangeInstances();
+        }
+    }    
+    
    private void populateChangeInstances() {
         createPOMChangeInstance("inceptionYear", txtInceptionYear, ocInceptionYear);
         createPOMChangeInstance("logo", txtLogo, ocLogo);

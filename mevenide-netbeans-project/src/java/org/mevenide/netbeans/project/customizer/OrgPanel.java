@@ -57,6 +57,7 @@ public class OrgPanel extends JPanel implements ProjectPanel {
     private OriginChange ocIssueTracking;
     
     private HashMap changes;
+    private boolean initialized;
     
     /** Creates new form BasicsPanel */
     public OrgPanel(MavenProject proj) {
@@ -81,7 +82,7 @@ public class OrgPanel extends JPanel implements ProjectPanel {
                 }
             }
         });
-        populateChangeInstances();
+        initialized = false;
     }
     
     /** This method is called from within the constructor to
@@ -377,6 +378,14 @@ public class OrgPanel extends JPanel implements ProjectPanel {
     private javax.swing.JTextField txtURL;
     // End of variables declaration//GEN-END:variables
 
+    public void addNotify() {
+        super.addNotify();
+        if (!initialized) {
+            initialized = true;
+            populateChangeInstances();
+        }
+    }    
+    
     private void populateChangeInstances() {
         createChangeInstance("siteAddress", txtSiteAddress, ocSiteAddress);
         createChangeInstance("siteDirectory", txtSiteDir, ocSiteDir);

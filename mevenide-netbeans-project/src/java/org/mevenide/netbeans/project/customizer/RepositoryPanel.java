@@ -52,6 +52,7 @@ public class RepositoryPanel extends JPanel implements ProjectPanel {
     private OriginChange ocRepository;
     
     private HashMap changes;
+    private boolean initialized;
     
     /** Creates new form BasicsPanel */
     public RepositoryPanel(MavenProject proj) {
@@ -76,7 +77,7 @@ public class RepositoryPanel extends JPanel implements ProjectPanel {
                 }
             }
         });
-        populateChangeInstances();
+        initialized = false;
     }
     
     /** This method is called from within the constructor to
@@ -249,7 +250,15 @@ public class RepositoryPanel extends JPanel implements ProjectPanel {
     private javax.swing.JTextField txtGumpRepoID;
     private javax.swing.JTextField txtURL;
     // End of variables declaration//GEN-END:variables
-    
+   
+   public void addNotify() {
+        super.addNotify();
+        if (!initialized) {
+            initialized = true;
+            populateChangeInstances();
+        }
+   }
+   
   private void populateChangeInstances() {
         createChangeInstance("gumpRepositoryId", txtGumpRepoID, ocGumpID); //NOI18N
         Repository repo = project.getOriginalMavenProject().getRepository();

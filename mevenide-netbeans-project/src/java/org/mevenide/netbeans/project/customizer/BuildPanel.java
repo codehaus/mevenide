@@ -53,6 +53,7 @@ public class BuildPanel extends JPanel implements ProjectPanel {
     private OriginChange ocIntTestSrc;
     
     private HashMap changes;
+    private boolean initialized;
 
     /** Creates new form BuildPanel */
     public BuildPanel(MavenProject proj) {
@@ -62,7 +63,7 @@ public class BuildPanel extends JPanel implements ProjectPanel {
         valObserver = null;
         //TODO add listeners for immediatePropagation stuff.
         setName(NbBundle.getMessage(BuildPanel.class, "BuildPanel.name"));
-        populateChangeInstances();
+        initialized = false;
     }
     
     /** This method is called from within the constructor to
@@ -256,6 +257,14 @@ public class BuildPanel extends JPanel implements ProjectPanel {
         add(jPanel1, gridBagConstraints);
 
     }//GEN-END:initComponents
+  
+    public void addNotify() {
+        super.addNotify();
+        if (!initialized) {
+            initialized = true;
+            populateChangeInstances();
+        }
+    }    
     
   private void populateChangeInstances() {
         createChangeInstance("maven.mode.online", cbOffline, ocOffline, true, false);

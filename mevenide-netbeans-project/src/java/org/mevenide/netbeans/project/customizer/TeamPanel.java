@@ -70,7 +70,7 @@ public class TeamPanel extends JPanel implements ProjectPanel {
     private ListModelPOMChange changeContrib;
     private ListModelPOMChange currentChange;
     private boolean isResolvingValues = false;
-
+    private boolean initialized;
     
     /** Creates new form BasicsPanel */
     public TeamPanel(MavenProject proj) {
@@ -96,7 +96,7 @@ public class TeamPanel extends JPanel implements ProjectPanel {
             }
         });
         lstTeam.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        populateChangeInstances();        
+        initialized = false;      
     }
     
     /** This method is called from within the constructor to
@@ -305,9 +305,12 @@ public class TeamPanel extends JPanel implements ProjectPanel {
         add(btnView, gridBagConstraints);
 
     }//GEN-END:initComponents
-    
     public void addNotify() {
         super.addNotify();
+        if (!initialized) {
+            initialized = true;
+            populateChangeInstances();
+        }
         listener = new Listener();
         btnAdd.addActionListener(listener);
         btnRemove.addActionListener(listener);

@@ -64,6 +64,7 @@ public class JavaPanel extends JPanel implements ProjectPanel {
     private OriginChange ocExecutable;
     
     private HashMap changes;
+    private boolean initialized;
 
     /** Creates new form BuildPanel */
     public JavaPanel(MavenProject proj) {
@@ -72,14 +73,10 @@ public class JavaPanel extends JPanel implements ProjectPanel {
         initComponents();
         valObserver = null;
         setName("Java and Jar");
-        populateChangeInstances();
-        populatePlatformCombo(project.getPropertyResolver().getResolvedValue("maven.compile.executable"));
+        initialized = false;
         comPlatform.setToolTipText("In order to have code completion and other IDE features" +
                 " for the project, the user should define a Java Platform corresponding to the " +
                 " compilate executable.");
-        ExecutableListener lst = new ExecutableListener();
-        comPlatform.addActionListener(lst);
-        txtExecutable.getDocument().addDocumentListener(lst);
     }
     
     /** This method is called from within the constructor to
@@ -313,6 +310,18 @@ public class JavaPanel extends JPanel implements ProjectPanel {
         // TODO add your handling code here:
         PlatformsCustomizer.showCustomizer(null);
     }//GEN-LAST:event_btnEditActionPerformed
+    
+    public void addNotify() {
+        super.addNotify();
+        if (!initialized) {
+            initialized = true;
+            populateChangeInstances();
+            populatePlatformCombo(project.getPropertyResolver().getResolvedValue("maven.compile.executable"));
+            ExecutableListener lst = new ExecutableListener();
+            comPlatform.addActionListener(lst);
+            txtExecutable.getDocument().addDocumentListener(lst);
+        }
+    }        
     
   private void populateChangeInstances() {
         createToggleChangeInstance("maven.compile.debug", cbDebug, ocDebug, true);
