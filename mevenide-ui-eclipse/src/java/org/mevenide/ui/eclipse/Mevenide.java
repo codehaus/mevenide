@@ -51,6 +51,7 @@ import org.mevenide.runner.RunnerHelper;
 import org.mevenide.ui.eclipse.preferences.DynamicPreferencePageFactory;
 import org.mevenide.ui.eclipse.preferences.MevenidePreferenceKeys;
 import org.mevenide.ui.eclipse.util.FileUtils;
+import org.mevenide.util.StringUtils;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -71,15 +72,15 @@ public class Mevenide extends AbstractUIPlugin {
 	
 	private Object lock = new Object();
 	
-	public static final String NATURE_ID = "org.mevenide.ui.mavennature";
-	public static final String SYNCHRONIZE_VIEW_ID = "org.mevenide.ui.synchronize.view.SynchronizationView";
-	public static final String PLUGIN_ID = "org.mevenide.ui";
-	public static final String PLUGIN_NAME = "Mevenide";
+	public static final String NATURE_ID = "org.mevenide.ui.mavennature"; //$NON-NLS-1$
+	public static final String SYNCHRONIZE_VIEW_ID = "org.mevenide.ui.synchronize.view.SynchronizationView"; //$NON-NLS-1$
+	public static final String PLUGIN_ID = "org.mevenide.ui"; //$NON-NLS-1$
+	public static final String PLUGIN_NAME = "Mevenide"; //$NON-NLS-1$
 
-	private static final String ICONS_PATH = "icons/";
-	private static final String LIB_FOLDER = "lib/";
-	private static final String FOREHEAD_LIBRARY = "forehead-1.0-beta-5.jar";
-	private static final String PROJECT_PROPERTIES_FILE_NAME = "project.properties";
+	private static final String ICONS_PATH = "icons/"; //$NON-NLS-1$
+	private static final String LIB_FOLDER = "lib/"; //$NON-NLS-1$
+	private static final String FOREHEAD_LIBRARY = "forehead-1.0-beta-5.jar"; //$NON-NLS-1$
+	private static final String PROJECT_PROPERTIES_FILE_NAME = "project.properties"; //$NON-NLS-1$
 	
 	private ResourceBundle resourceBundle;
 	
@@ -98,11 +99,11 @@ public class Mevenide extends AbstractUIPlugin {
     private CustomLocationFinder customLocationFinder;
 
 
-    private static final String DEPENDENCY_TYPE_JAR = "jar";
-    private static final String DEPENDENCY_TYPE_EJB = "ejb";
-    private static final String DEPENDENCY_TYPE_PLUGIN = "plugin";
-    private static final String DEPENDENCY_TYPE_ASPECT = "aspect";
-    private static final String DEPENDENCY_TYPE_WAR = "war";
+    private static final String DEPENDENCY_TYPE_JAR = "jar"; //$NON-NLS-1$
+    private static final String DEPENDENCY_TYPE_EJB = "ejb"; //$NON-NLS-1$
+    private static final String DEPENDENCY_TYPE_PLUGIN = "plugin"; //$NON-NLS-1$
+    private static final String DEPENDENCY_TYPE_ASPECT = "aspect"; //$NON-NLS-1$
+    private static final String DEPENDENCY_TYPE_WAR = "war"; //$NON-NLS-1$
 
     public static final String[] KNOWN_DEPENDENCY_TYPES = new String[] {
     	DEPENDENCY_TYPE_JAR, 
@@ -118,7 +119,7 @@ public class Mevenide extends AbstractUIPlugin {
 			plugin = this;
 		} 
 		catch (Exception x) {
-			log.debug("Mevenide couldnot initialize due to : ", x);
+			log.debug("Mevenide couldnot initialize due to : ", x); //$NON-NLS-1$
 			throw x;
 		}
 	}
@@ -184,8 +185,8 @@ public class Mevenide extends AbstractUIPlugin {
     private void loadMavenRepo(PreferenceStore preferenceStore) {
         String mavenRepo = preferenceStore.getString(MevenidePreferenceKeys.MAVEN_REPO_PREFERENCE_KEY);
         //maven.repo has not been initialized - defaults to ${maven.local.home}/repository
-        if ( mavenRepo == null || mavenRepo.trim().equals("") ) { 	
-        	mavenRepo = new File(mavenLocalHome, "repository").getAbsolutePath();
+        if ( StringUtils.isNull(mavenRepo) ) { 	
+        	mavenRepo = new File(mavenLocalHome, "repository").getAbsolutePath(); //$NON-NLS-1$
         }
         setMavenRepository(mavenRepo);
     }
@@ -201,8 +202,8 @@ public class Mevenide extends AbstractUIPlugin {
         //preferences that are defaulted
         String localHome = preferenceStore.getString(MevenidePreferenceKeys.MAVEN_LOCAL_HOME_PREFERENCE_KEY);
         //maven.local.home has not been initialized - defaults to ${user.home}/.maven
-        if ( localHome == null || localHome.trim().equals("") ) {
-			localHome = new File(System.getProperty("user.home"), ".maven").getAbsolutePath();
+        if ( StringUtils.isNull(localHome) ) {
+			localHome = new File(System.getProperty("user.home"), ".maven").getAbsolutePath();  //$NON-NLS-1$//$NON-NLS-2$
         }
         setMavenLocalHome(localHome);
         
@@ -224,7 +225,7 @@ public class Mevenide extends AbstractUIPlugin {
 			return bundle.getString(key);
 		} 
 		catch (MissingResourceException e) {
-			log.error("Cannot find Bundle Key '" + key + "' due to : " + e);
+			log.error("Cannot find Bundle Key '" + key + "'", e);  //$NON-NLS-1$//$NON-NLS-2$
 			return key;
 		}
 	}
@@ -244,7 +245,7 @@ public class Mevenide extends AbstractUIPlugin {
 		else {
 			synchronized (lock) {
 				if ( resourceBundle == null ) {
-					resourceBundle = ResourceBundle.getBundle("MavenPluginResources");
+					resourceBundle = ResourceBundle.getBundle("MavenPluginResources"); //$NON-NLS-1$
 				}
 				return resourceBundle;
 			}
@@ -254,13 +255,13 @@ public class Mevenide extends AbstractUIPlugin {
     private ImageDescriptor getImageDescriptor(String relativePath) {
         String iconPath = ICONS_PATH;
         try {
-            URL installURL = plugin.getBundle().getEntry("/");
-            URL url = new URL(installURL, iconPath + "/" + relativePath);
+            URL installURL = plugin.getBundle().getEntry("/"); //$NON-NLS-1$
+            URL url = new URL(installURL, iconPath + "/" + relativePath); //$NON-NLS-1$
             return ImageDescriptor.createFromURL(url);
         } 
         catch (MalformedURLException e) {
             // should not happen
-            log.debug("Cannot find ImageDescriptor for '" + relativePath + "' due to : " + relativePath);
+            log.debug("Cannot find ImageDescriptor for '" + relativePath + "' due to : " + relativePath); //$NON-NLS-1$ //$NON-NLS-2$
             return ImageDescriptor.getMissingImageDescriptor();
         }
     }
@@ -268,11 +269,11 @@ public class Mevenide extends AbstractUIPlugin {
     
     /// utililty methods ---
     public String getPreferencesFilename() {
-		return getFile("prefs.ini");   
+		return getFile("prefs.ini");    //$NON-NLS-1$
     }
     
     public String getDynamicPreferencesFilename() {
-		return getFile("dyn_prefs.ini");   
+		return getFile("dyn_prefs.ini");    //$NON-NLS-1$
     }
     
 	public String getFile(String fname) {
@@ -305,24 +306,24 @@ public class Mevenide extends AbstractUIPlugin {
 	}
     public String getEffectiveDirectory() {
         try {
-        	URL installBase = getBundle().getEntry("/");
+        	URL installBase = getBundle().getEntry("/"); //$NON-NLS-1$
         	return new File(new File(Platform.resolve(installBase).getFile()).getAbsolutePath()).toString();
         }
         catch (IOException e) {
-            log.debug("Unable to locate local repository due to " + e);
-            return "";
+            log.debug("Unable to locate local repository due to " + e); //$NON-NLS-1$
+            return ""; //$NON-NLS-1$
         }
     }
     
     public String getForeheadConf() {
         try {
-            URL installBase = getBundle().getEntry("/");
-            File f = new File(new File(Platform.resolve(installBase).getFile()).getAbsolutePath(), "conf.file");
+            URL installBase = getBundle().getEntry("/"); //$NON-NLS-1$
+            File f = new File(new File(Platform.resolve(installBase).getFile()).getAbsolutePath(), "conf.file"); //$NON-NLS-1$
             return f.getAbsolutePath();
         }
         catch (IOException e) {
-            log.debug("Unable to locate forehead.conf due to : " + e);
-            return "";
+            log.debug("Unable to locate forehead.conf due to", e); //$NON-NLS-1$
+            return ""; //$NON-NLS-1$
         }
     }
 
@@ -345,12 +346,12 @@ public class Mevenide extends AbstractUIPlugin {
 				public String getForeheadLibrary() {
 					if ( foreHead == null ) {
 						try {
-							URL foreHeadURL = new URL(Platform.resolve(getBundle().getEntry("/")), LIB_FOLDER + FOREHEAD_LIBRARY);
+							URL foreHeadURL = new URL(Platform.resolve(getBundle().getEntry("/")), LIB_FOLDER + FOREHEAD_LIBRARY); //$NON-NLS-1$
                           	foreHead = foreHeadURL.getFile();
-                            log.debug("ForeHead library : " + foreHeadURL);
+                            log.debug("ForeHead library : " + foreHeadURL); //$NON-NLS-1$
                         }
                         catch (IOException e) {
-                            log.debug("Unable to get forehead lib : ", e);
+                            log.debug("Unable to get forehead lib : ", e); //$NON-NLS-1$
                         }
                         
 					}
@@ -376,7 +377,7 @@ public class Mevenide extends AbstractUIPlugin {
 		IPathResolver resolver = new DefaultPathResolver();
 	
 		String buildPath = resolver.getRelativePath(project, javaProject.getOutputLocation()); 
-		properties.setProperty("maven.build.dest", buildPath);
+		properties.setProperty("maven.build.dest", buildPath); //$NON-NLS-1$
 		properties.store(new FileOutputStream(f), null);
 		
 		initEnvironment();
@@ -430,13 +431,13 @@ public class Mevenide extends AbstractUIPlugin {
 		pomTemplate = string;
 	}
 	public String getDefaultGoals() {
-		return defaultGoals != null  && !defaultGoals.trim().equals("") ? defaultGoals : "test";
+		return defaultGoals != null  && !defaultGoals.trim().equals("") ? defaultGoals : "test";  //$NON-NLS-1$//$NON-NLS-2$
 	}
 	public void setDefaultGoals(String defaultGoals) {
 		this.defaultGoals = defaultGoals;
 	}
     public String getPluginsInstallDir() {
-        return new File(mavenLocalHome, "cache").getAbsolutePath();
+        return new File(mavenLocalHome, "cache").getAbsolutePath(); //$NON-NLS-1$
     }
     public String getMavenLocalHome() {
         return mavenLocalHome;

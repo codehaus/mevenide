@@ -48,7 +48,7 @@ public class SynchronizePomAction extends AbstractMevenideAction {
             view.setInput(mavenProject);
         }
         catch ( Exception e ) {
-            log.debug("Unable to synchronize project", e);
+            log.debug("Unable to synchronize project", e); //$NON-NLS-1$
         }
 	}
     
@@ -66,7 +66,7 @@ public class SynchronizePomAction extends AbstractMevenideAction {
             }
         } 
         catch (Exception e) {
-            log.error("Unable to read project file", e);
+            log.error("Unable to read project file", e); //$NON-NLS-1$
             //shouldnot warn b/c malformed xml will then prevent user to do any action on that resource
             //MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Invalid POM", "Unable to read project descriptor.");
         }

@@ -37,9 +37,10 @@ import org.mevenide.util.StringUtils;
  */
 public class CreatePomAction extends AbstractMevenideAction {
 	
-private static final String DEFAULT_TEMPLATE = "DEFAULT_TEMPLATE";
     private static Log log = LogFactory.getLog(CreatePomAction.class);
 	
+    private static final String DEFAULT_TEMPLATE = "DEFAULT_TEMPLATE"; //$NON-NLS-1$
+    
 	private IContainer currentContainer;
 	
 	public void run(IAction action) {
@@ -59,7 +60,7 @@ private static final String DEFAULT_TEMPLATE = "DEFAULT_TEMPLATE";
 		} 
 		catch (Exception e) {
 			e.printStackTrace();
-			log.debug("Unable to create POM due to", e);
+			log.debug("Unable to create POM due to", e); //$NON-NLS-1$
 		}
 	}
 	

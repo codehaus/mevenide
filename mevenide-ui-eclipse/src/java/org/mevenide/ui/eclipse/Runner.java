@@ -23,6 +23,7 @@ import org.mevenide.MevenideException;
 import org.mevenide.runner.AbstractRunner;
 import org.mevenide.runner.ArgumentsManager;
 import org.mevenide.ui.eclipse.launch.jdt.VMLauncherUtility;
+import org.mevenide.util.StringUtils;
 
 //import com.werken.forehead.Forehead;
 
@@ -31,9 +32,9 @@ import org.mevenide.ui.eclipse.launch.jdt.VMLauncherUtility;
  * @version $Id$
  */
 public class Runner extends AbstractRunner {
-	private static final String FOREHEAD_MAIN = "com.werken.forehead.Forehead";
-    private static final String MAVEN_HOME_NOT_SET_MESSAGE = "Runner.mavenHome.NotSet.message";
-    private static final String MAVEN_HOME_NOT_SET_TITLE = "Runner.mavenHome.NotSet.title";
+	private static final String FOREHEAD_MAIN = "com.werken.forehead.Forehead"; //$NON-NLS-1$
+    private static final String MAVEN_HOME_NOT_SET_MESSAGE = "Runner.mavenHome.NotSet.message"; //$NON-NLS-1$
+    private static final String MAVEN_HOME_NOT_SET_TITLE = "Runner.mavenHome.NotSet.title"; //$NON-NLS-1$
     
     Mevenide plugin = Mevenide.getInstance();
 
@@ -52,12 +53,12 @@ public class Runner extends AbstractRunner {
 	 * @see org.mevenide.core.AbstractRunner#initEnvironment()
 	 */
 	protected void initEnvironment() throws Exception  {
-		if ( plugin.getMavenHome() == null || plugin.getMavenHome().trim().equals("") ) { 
+		if ( StringUtils.isNull(plugin.getMavenHome()) ) { 
 			MessageBox dialog = new MessageBox (PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), SWT.ICON_WARNING | SWT.OK);
 			dialog.setText (Mevenide.getResourceString(MAVEN_HOME_NOT_SET_TITLE));
 			dialog.setMessage (Mevenide.getResourceString(MAVEN_HOME_NOT_SET_MESSAGE));
 			dialog.open ();
-			throw new Exception("Maven Home has not been set");
+			throw new Exception("Maven Home has not been set"); //$NON-NLS-1$
 	    }
 	    else {
 		    plugin.initEnvironment();

@@ -39,7 +39,7 @@ public class RemoveMavenNatureAction extends AbstractMevenideAction {
 			}
 		} 
 		catch(Exception e) {
-			log.debug("Unable to  add Maven Nature", e);
+			log.debug("Unable to  add Maven Nature", e); //$NON-NLS-1$
 		}
 	}
 
