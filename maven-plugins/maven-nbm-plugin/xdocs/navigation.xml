@@ -11,6 +11,7 @@
     <menu name="General">
       <item href="/index.html" name="Overview"/>
       <item href="/license.html" name="License"/>
+      <item href="/changes-report.html" name="Changes"/>
     </menu>
     <menu name="Behaviour">
       <item href="/goals.html" name="Goals"/>
