@@ -34,6 +34,15 @@
          <export name="*"/>
          <packages prefixes="org.jdom"/>
       </library>
+      <!-- those ones are necessary at runtime, especially for MavenUtils -->
+      <library name="lib/commons-betwixt-1.0-beta-1.jar">
+         <export name="*"/>
+         <packages prefixes="org.apache.commons.betwixt"/>
+      </library>
+      <library name="lib/commons-digester-1.4.1.jar">
+         <export name="*"/>
+         <packages prefixes="org.apache.commons.digester"/>
+      </library>
 	  <!-- 
       	  following dependencies are necessary 
       	  because of DefaultProjectUnmarshaller that comes out
