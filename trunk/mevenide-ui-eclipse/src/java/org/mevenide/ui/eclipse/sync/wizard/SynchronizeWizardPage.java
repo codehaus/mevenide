@@ -730,7 +730,6 @@ public class SynchronizeWizardPage extends WizardPage {
 						TableTreeItem item = items[0];
 						
 						Object obj = item.getData();
-						System.err.println(obj.getClass());
 						if ( obj instanceof DependencyInfo ) {
 							obj = ((DependencyInfo) obj).getDependencyWrapper();
 						}

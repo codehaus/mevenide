@@ -53,7 +53,7 @@ import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.wizard.Wizard;
 import org.mevenide.sync.ISynchronizer;
-import org.mevenide.sync.SynchronizerFactory;
+import org.mevenide.ui.eclipse.sync.PomSynchronizer;
 
 /**
  * 
@@ -80,7 +80,10 @@ public class SynchronizeWizard extends Wizard {
 			
 			page.saveState();
 			
-			SynchronizerFactory.getSynchronizer(ISynchronizer.IDE_TO_POM).synchronize();
+			//SynchronizerFactory.getSynchronizer(ISynchronizer.IDE_TO_POM).synchronize();
+			ISynchronizer synchronizer = new PomSynchronizer();
+			synchronizer.initialize();
+			synchronizer.synchronize();
 		}
 		catch ( Exception ex ) {
 			log.debug("Unable to synchronize POM due to : " + ex);

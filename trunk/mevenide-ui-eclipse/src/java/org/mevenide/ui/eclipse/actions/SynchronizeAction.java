@@ -58,8 +58,8 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.ui.PlatformUI;
 import org.mevenide.sync.ISynchronizer;
-import org.mevenide.sync.SynchronizerFactory;
 import org.mevenide.ui.eclipse.Mevenide;
+import org.mevenide.ui.eclipse.sync.ClasspathSynchronizer;
 import org.mevenide.ui.eclipse.sync.wizard.SynchronizeWizard;
 
 /**
@@ -78,6 +78,7 @@ public class SynchronizeAction extends AbstractMevenideAction {
 	
     public void run(IAction action) {
     	boolean pom = true;
+		log.debug(action.getId());
 		try {
             if ( action.getId().equals(SYNCHRONIZE_PROJECT_ACTION_ID) ) {
             	pom = false;
@@ -90,7 +91,10 @@ public class SynchronizeAction extends AbstractMevenideAction {
 					if ( JavaCore.getClasspathVariable(MAVEN_REPO_CLASSPATH_VARIABLE) == null ) {
 						JavaCore.setClasspathVariable(MAVEN_REPO_CLASSPATH_VARIABLE, new Path(Mevenide.getPlugin().getMavenRepository()), null);
 					}
-					SynchronizerFactory.getSynchronizer(ISynchronizer.POM_TO_IDE).synchronize();
+					//SynchronizerFactory.getSynchronizer(ISynchronizer.POM_TO_IDE).synchronize();
+					ISynchronizer synchronizer = new ClasspathSynchronizer();
+					synchronizer.initialize();
+					synchronizer.synchronize();
 				}
 			}
 			if ( action.getId().equals(SYNCHRONIZE_POM_ACTION_ID) ) {
