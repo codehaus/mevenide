@@ -34,6 +34,10 @@ import com.borland.primetime.node.FileNode;
 import com.borland.primetime.node.Node;
 import com.borland.primetime.node.Project;
 import com.borland.primetime.vfs.Url;
+import org.mevenide.context.IQueryContext;
+import org.mevenide.properties.resolver.PropertyResolverFactory;
+import org.mevenide.context.DefaultQueryContext;
+import org.mevenide.properties.IPropertyResolver;
 
 /**
  * <p>Title: project.xml Project view file node</p>
@@ -76,9 +80,10 @@ public class MavenFileNode extends XMLFileNode {
                 org.apache.maven.project.Project projectPOM = projReader.read(
                     projectFile);
                 Iterator dependencyIter = projectPOM.getDependencies().iterator();
-                String userHome = System.getProperty("user.home");
-                String repositoryPath = userHome + File.separator + ".maven" +
-                    File.separator + "repository";
+                IQueryContext defaultQueryContext = DefaultQueryContext.getNonProjectContextInstance();
+                PropertyResolverFactory propertyResolverFactory = PropertyResolverFactory.getFactory();
+                IPropertyResolver iPropertyResolver = propertyResolverFactory.createContextBasedResolver(defaultQueryContext);
+                String repositoryPath = iPropertyResolver.getResolvedValue("maven.repo.local");
 
                 while (dependencyIter.hasNext()) {
                     Dependency curDependency = (Dependency) dependencyIter.next();
