@@ -49,6 +49,7 @@
 package org.mevenide.ui.eclipse.sync.wip;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -82,7 +83,7 @@ class DirectoryMappingNodeContainer extends AbstractArtifactMappingNodeContainer
     private void attachResources(Project project) {
         if ( project.getBuild() != null ) {
             List resources = project.getBuild().getResources() == null ? new ArrayList() : project.getBuild().getResources();
-            List resourcesCopy = new ArrayList(resources);
+            List orphanResources = new ArrayList(resources);
             
 		    for (int i = 0; i < nodes.length; i++) {
 		        DirectoryMappingNode currentNode = (DirectoryMappingNode) nodes[i];
@@ -93,12 +94,12 @@ class DirectoryMappingNodeContainer extends AbstractArtifactMappingNodeContainer
 			            if ( resolvedDirectory == null || lowMatch(pomResource, resolvedDirectory) ) {
 			                currentNode.setArtifact(pomResource);
 			                currentNode.setDeclaringPom(project.getFile());
-			                resourcesCopy.remove(pomResource);
+			                orphanResources.remove(pomResource);
 			            }
 			        }
 		        }
 		    }
-	        attachOrphanResources(resourcesCopy);
+	        attachOrphanArtifacts(orphanResources);
         }
     }
     
@@ -108,7 +109,7 @@ class DirectoryMappingNodeContainer extends AbstractArtifactMappingNodeContainer
         return resource.getDirectory().replaceAll("\\\\", "/").equals(directory.getPath().replaceAll("\\\\", "/"));
     }
     
-    private void attachOrphanResources(List resourcesCopy) {
+    private void attachOrphanArtifacts(List resourcesCopy) {
     	IArtifactMappingNode[] newNodes = new IArtifactMappingNode[nodes.length + resourcesCopy.size()];
         System.arraycopy(nodes, 0, newNodes, 0, nodes.length);
         for (int i = nodes.length; i < newNodes.length; i++) {
@@ -123,31 +124,50 @@ class DirectoryMappingNodeContainer extends AbstractArtifactMappingNodeContainer
     private void attachDirectories(Project project) {
         if ( project.getBuild() != null ) {
             Map directories = getPomSourceDirectories(project);
-            Map directoriesCopy = new HashMap(directories);
+            Map orphanDirectories = new HashMap(directories);
             
             for (int i = 0; i < nodes.length; i++) {
                 DirectoryMappingNode currentNode = (DirectoryMappingNode) nodes[i];
-                Directory resolvedDirectory = (Directory) currentNode.getResolvedArtifact();
-                if ( resolvedDirectory != null ) {
-	                for (Iterator itr = directories.keySet().iterator(); itr.hasNext(); ) {
-	                    String directoryType = (String) itr.next();
-	                    String directory = (String) directories.get(directoryType);
-	                    if ( directory.replaceAll("\\\\", "/").equals(resolvedDirectory.getPath().replaceAll("\\\\", "/")) ) {
-		                    Directory pomDirectory = new Directory();
-		                    pomDirectory.setPath(directory);
-		                    pomDirectory.setType(directoryType);
-	                        currentNode.setArtifact(pomDirectory);
-	                        currentNode.setDeclaringPom(project.getFile());
-	                        directoriesCopy.remove(directoryType);
-	                    }
+                if ( currentNode.getArtifact() == null ) {
+	                Directory resolvedDirectory = (Directory) currentNode.getResolvedArtifact();
+	                if ( resolvedDirectory != null ) {
+		                for (Iterator itr = directories.keySet().iterator(); itr.hasNext(); ) {
+		                    String directoryType = (String) itr.next();
+		                    String directory = (String) directories.get(directoryType);
+		                    if ( directory.replaceAll("\\\\", "/").equals(resolvedDirectory.getPath().replaceAll("\\\\", "/")) ) {
+			                    Directory pomDirectory = new Directory();
+			                    pomDirectory.setPath(directory);
+			                    pomDirectory.setType(directoryType);
+		                        currentNode.setArtifact(pomDirectory);
+		                        currentNode.setDeclaringPom(project.getFile());
+		                        orphanDirectories.remove(directoryType);
+		                    }
+		                }
 	                }
                 }
             }
-            //attachOrphanDirectories(directoriesCopy);
+            attachOrphanDirectories(orphanDirectories);
         }
     }
 
-    private Map getPomSourceDirectories(Project project) {
+    private void attachOrphanDirectories(Map directoriesCopy) {
+		
+		List orphanDirectories = new ArrayList();
+		
+		for (Iterator it = directoriesCopy.keySet().iterator(); it.hasNext(); ) {
+			String directoryType = (String) it.next();
+			String directoryPath = (String) directoriesCopy.get(directoryType);
+			
+			Directory directory = new Directory();
+			directory.setPath(directoryPath);
+			directory.setType(directoryType);
+			
+			orphanDirectories.add(directory);
+		}
+		attachOrphanArtifacts(orphanDirectories);
+	}
+
+	private Map getPomSourceDirectories(Project project) {
         //use HashTable to disallow null values..
         Map directories = new Hashtable();
         if ( project.getBuild().getSourceDirectory() != null ) {

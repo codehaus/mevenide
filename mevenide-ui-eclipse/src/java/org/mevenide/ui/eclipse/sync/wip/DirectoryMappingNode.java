@@ -69,7 +69,6 @@ public class DirectoryMappingNode extends AbstractArtifactMappingNode {
     public Object getAdapter(Class adapter) {
         // TODO Auto-generated method stub
 		if ( adapter == IPropertySource.class ) {
-			System.err.println(artifact == null);
 			if ( artifact instanceof Resource ) {
 				return new ResourcePropertySource((Resource) artifact);
 			}
@@ -79,6 +78,7 @@ public class DirectoryMappingNode extends AbstractArtifactMappingNode {
     
    
     public String getLabel() {
+    	log.debug("DirectoryMappingNode.artifact.class = " + artifact.getClass());
         if ( resolvedArtifact != null ) {
             return ((Directory) resolvedArtifact).getDisplayPath();
         }
