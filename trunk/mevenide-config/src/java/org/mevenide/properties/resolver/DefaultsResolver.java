@@ -43,7 +43,7 @@ public final class DefaultsResolver implements IPropertyFinder {
     //TODO lazy initialization
     static {
         try {
-            InputStream stream = DefaultsResolver.class.getClassLoader().getResourceAsStream("/org/mevenide/properties/maven_defaults.properties");
+            InputStream stream = DefaultsResolver.class.getClassLoader().getResourceAsStream("org/mevenide/properties/maven_defaults.properties");
             defaults = new Properties();
             defaults.load(stream);
         } catch (Exception exc) {
