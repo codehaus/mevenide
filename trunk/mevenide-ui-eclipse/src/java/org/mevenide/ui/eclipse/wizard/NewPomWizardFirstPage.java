@@ -21,6 +21,8 @@ import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.text.MessageFormat;
 import java.util.Iterator;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceStatus;
@@ -46,11 +48,9 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.eclipse.ui.dialogs.ContainerGenerator;
 import org.eclipse.ui.dialogs.ContainerSelectionDialog;
-import org.eclipse.ui.help.WorkbenchHelp;
-import org.eclipse.ui.internal.ide.IDEWorkbenchMessages;
 import org.eclipse.ui.internal.ide.IDEWorkbenchPlugin;
-import org.eclipse.ui.internal.ide.IHelpContextIds;
 import org.eclipse.ui.internal.ide.misc.ResourceAndContainerGroup;
+import org.mevenide.ui.eclipse.Mevenide;
 
 /**
  *   
@@ -58,6 +58,8 @@ import org.eclipse.ui.internal.ide.misc.ResourceAndContainerGroup;
  * @version $Id$
  */ 
 public class NewPomWizardFirstPage extends WizardPage  implements Listener {
+    private static final Log log = LogFactory.getLog(NewPomWizardFirstPage.class);
+    
     private static final int SIZING_CONTAINER_GROUP_HEIGHT = 250;
     
     private Text containerText;
@@ -72,10 +74,10 @@ public class NewPomWizardFirstPage extends WizardPage  implements Listener {
 	private IPath initialContainerFullPath;
 	private IFile newFile;
 	
-	public NewPomWizardFirstPage(String pageName, IStructuredSelection selection) {
-		super(pageName);
-		setTitle("Multi-page Editor File");
-		setDescription("This wizard creates a new file with *.xml extension that can be opened by a multi-page editor.");
+	public NewPomWizardFirstPage(IStructuredSelection selection) {
+		super(Mevenide.getResourceString("NewPomWizardFirstPage.Name"));
+		setTitle(Mevenide.getResourceString("NewPomWizardFirstPage.Title"));
+		setDescription(Mevenide.getResourceString("NewPomWizardFirstPage.Description"));
 		setPageComplete(false);
 		this.currentSelection = selection;
 	}
@@ -92,15 +94,15 @@ public class NewPomWizardFirstPage extends WizardPage  implements Listener {
 		topLevel.setLayoutData(new GridData(
 			GridData.VERTICAL_ALIGN_FILL | GridData.HORIZONTAL_ALIGN_FILL));
 		topLevel.setFont(parent.getFont());
-		WorkbenchHelp.setHelp(topLevel, IHelpContextIds.NEW_FILE_WIZARD_PAGE);
 
 		// resource and container group
-		resourceGroup = new ResourceAndContainerGroup(topLevel, this, getNewFileLabel(), "MESSAGE", false, SIZING_CONTAINER_GROUP_HEIGHT); //$NON-NLS-1$
+		resourceGroup = new ResourceAndContainerGroup(topLevel, this, getNewFileLabel(), Mevenide.getResourceString("NewPomWizardFirstPage.File.Name"), false, SIZING_CONTAINER_GROUP_HEIGHT); //$NON-NLS-1$
 		resourceGroup.setAllowExistingResources(false);
 		initialPopulateContainerNameField();
 		
-		if (initialFileName != null)
+		if (initialFileName != null) {
 			resourceGroup.setResource(initialFileName);
+		}
 		validatePage();
 		// Show description on opening
 		setErrorMessage(null);
@@ -109,7 +111,7 @@ public class NewPomWizardFirstPage extends WizardPage  implements Listener {
 	}
 	
 	protected String getNewFileLabel() {
-		return IDEWorkbenchMessages.getString("WizardNewFileCreationPage.fileLabel"); //$NON-NLS-1$
+		return Mevenide.getResourceString("NewPomWizardFirstPage.File.Label"); 
 	}
 	
 	protected void initialPopulateContainerNameField() {
@@ -171,7 +173,7 @@ public class NewPomWizardFirstPage extends WizardPage  implements Listener {
 				getShell(),
 				ResourcesPlugin.getWorkspace().getRoot(),
 				false,
-				"Select new file container");
+				Mevenide.getResourceString("NewPomWizardFirstPage.ContainerSelection.Message"));
 		if (dialog.open() == ContainerSelectionDialog.OK) {
 			Object[] result = dialog.getResult();
 			if (result.length == 1) {
@@ -205,7 +207,7 @@ public class NewPomWizardFirstPage extends WizardPage  implements Listener {
 				InterruptedException
 			{
 				try {
-					monitor.beginTask(IDEWorkbenchMessages.getString("WizardNewFileCreationPage.progress"), 2000); //$NON-NLS-1$
+					monitor.beginTask(Mevenide.getResourceString("NewPomWizardFirstPage.Progress"), 2000); //$NON-NLS-1$
 					ContainerGenerator generator = new ContainerGenerator(containerPath);
 					generator.generateContainer(new SubProgressMonitor(monitor, 1000));
 					createFile(newFileHandle,initialContents, new SubProgressMonitor(monitor, 1000));
@@ -223,14 +225,14 @@ public class NewPomWizardFirstPage extends WizardPage  implements Listener {
 			if (e.getTargetException() instanceof CoreException) {
 				ErrorDialog.openError(
 					getContainer().getShell(), // Was Utilities.getFocusShell()
-					IDEWorkbenchMessages.getString("WizardNewFileCreationPage.errorTitle"),  //$NON-NLS-1$
+					Mevenide.getResourceString("NewPomWizardFirstPage.Error.Title"),  //$NON-NLS-1$
 					null,	// no special message
 					((CoreException) e.getTargetException()).getStatus());
 			}
 			else {
 				// CoreExceptions are handled above, but unexpected runtime exceptions and errors may still occur.
-				IDEWorkbenchPlugin.log(MessageFormat.format("Exception in {0}.getNewFile(): {1}", new Object[] {getClass().getName(), e.getTargetException()}));//$NON-NLS-1$
-				MessageDialog.openError(getContainer().getShell(), IDEWorkbenchMessages.getString("WizardNewFileCreationPage.internalErrorTitle"), IDEWorkbenchMessages.format("WizardNewFileCreationPage.internalErrorMessage", new Object[] {e.getTargetException().getMessage()})); //$NON-NLS-2$ //$NON-NLS-1$
+				log.error(MessageFormat.format("Exception in {0}.getNewFile(): {1}", new Object[] {getClass().getName(), e.getTargetException()}));//$NON-NLS-1$
+				MessageDialog.openError(getContainer().getShell(), Mevenide.getResourceString("NewPomWizardFirstPage.InternalError.Title"), Mevenide.getResourceString("NewPomWIzardFirstPage.InternalError.Message", new String[] {e.getTargetException().getMessage()})); 
 			}
 			return null;
 		}

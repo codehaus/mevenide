@@ -41,7 +41,8 @@ import org.mevenide.ui.eclipse.template.view.TemplateViewerFactory;
 public class NewPomWizardSecondPage extends WizardPage {
     
     public NewPomWizardSecondPage() {
-        super("Pom Definition");
+        super(Mevenide.getResourceString("NewPomWizardSecondPage.Name"), Mevenide.getResourceString("NewPomWizardSecondPage.Name"), null);
+        setDescription(Mevenide.getResourceString("NewPomWizardSecondPage.Description"));
     }
     
     public void createControl(Composite parent) {
