@@ -139,7 +139,7 @@ public class MavenXmlOutlinePage extends Page implements IContentOutlinePage {
     	viewer.getTree().setLayoutData(gridData);
     	
     	originFilter.setGoalsGrabber(goalsProvider.getGoalsGrabber());
-    	originFilter.setFilterOriginPlugin(false);
+    	originFilter.setFilterOriginPlugin(true);
     	viewer.addFilter(originFilter);
     	
     	viewer.addFilter(patternFilter);
@@ -198,7 +198,8 @@ public class MavenXmlOutlinePage extends Page implements IContentOutlinePage {
 	private void createActions() {
 		toggleOfflineAction = new Action(null, Action.AS_CHECK_BOX) {
 			public void run() {
-				runOffline = this.isChecked();
+				runOffline = isChecked();
+				setToolTipText(isChecked() ? "online mode" : "offline mode");
 			}
 		};
 		toggleOfflineAction.setToolTipText(toggleOfflineAction.isChecked() ? "online mode" : "offline mode");
@@ -207,10 +208,13 @@ public class MavenXmlOutlinePage extends Page implements IContentOutlinePage {
 		
 		filterOriginShortcutAction = new Action(null, Action.AS_CHECK_BOX) {
 			public void run() {
-				originFilter.setFilterOriginPlugin(this.isChecked());
+				originFilter.setFilterOriginPlugin(isChecked());
+				setToolTipText(isChecked() ? "Hide global goals" : "Show global goals");
+				goalsViewer.refresh(false);
 			}
 		}; 
-		filterOriginShortcutAction.setToolTipText(toggleOfflineAction.isChecked() ? "Hide global goals" : "Show global goals");
+		filterOriginShortcutAction.setChecked(true);
+		filterOriginShortcutAction.setToolTipText(filterOriginShortcutAction.isChecked() ? "Hide global goals" : "Show global goals");
 		filterOriginShortcutAction.setId(TOGGLE_FILTER_ORIGIN_ID);
 		filterOriginShortcutAction.setImageDescriptor(Mevenide.getImageDescriptor("filter_global_goals.gif"));
 		
@@ -244,11 +248,14 @@ public class MavenXmlOutlinePage extends Page implements IContentOutlinePage {
 	}
 	
 	private void runMaven() {
-		Goal goal = (Goal) ((StructuredSelection) goalsViewer.getSelection()).getFirstElement();
-		MavenLaunchShortcut shortcut = new MavenLaunchShortcut();
-		shortcut.setShowDialog(false);
-		shortcut.setGoalsToRun(goal.getFullyQualifiedName());
-		shortcut.launch(basedirPath);
+		if ( goalsViewer.getSelection() != null ) {
+			Goal goal = (Goal) ((StructuredSelection) goalsViewer.getSelection()).getFirstElement();
+			MavenLaunchShortcut shortcut = new MavenLaunchShortcut();
+			shortcut.setShowDialog(false);
+			shortcut.setGoalsToRun(goal.getFullyQualifiedName());
+			shortcut.setOffline(runOffline);
+			shortcut.launch(basedirPath);
+		}
 	}
 	
 	public void dispose() {
