@@ -5,7 +5,7 @@
   <id>mevenide-netbeans-project</id>
   <name>Mevenide Netbeans project support</name>
   <artifactId>mevenide-netbeans-project</artifactId>
-  <currentVersion>0.1</currentVersion>
+  <currentVersion>0.1-SNAPSHOT</currentVersion>
   <package>org.mevenide.netbeans.project</package>
   <description>Netbeans Maven integration</description>
   <shortDescription>NetbeansIDE maven module</shortDescription>
@@ -15,6 +15,7 @@
         <groupId>mevenide</groupId>
         <artifactId>goals-grabber</artifactId>
         <version>0.2-SNAPSHOT</version>
+        <type>jar</type>
             <properties>
                 <netbeans.module.dep>spec</netbeans.module.dep>
             </properties>
@@ -23,6 +24,7 @@
         <groupId>mevenide</groupId>
         <artifactId>mevenide-core</artifactId>
         <version>0.1.1-SNAPSHOT</version>
+        <type>jar</type>
             <properties>
                 <netbeans.module.dep>spec</netbeans.module.dep>
             </properties>
@@ -31,6 +33,7 @@
         <groupId>mevenide</groupId>
         <artifactId>mevenide-config</artifactId>
         <version>0.2-SNAPSHOT</version>
+        <type>jar</type>
             <properties>
                 <netbeans.module.dep>spec</netbeans.module.dep>
             </properties>
@@ -60,6 +63,7 @@
         <artifactId>openide-io</artifactId>
         <!-- include nb specification version.. that's important for compiling -->
         <version>1.0.1</version>
+        <type>jar</type>
         <url>http://www.netbeans.org</url>
         <properties>
              <netbeans.module.dep>spec</netbeans.module.dep>
@@ -70,6 +74,7 @@
         <artifactId>javahelp-api</artifactId>
         <!-- include nb specification version.. that's important for compiling -->
         <version>1.2.1</version>
+        <type>jar</type>
         <url>http://www.netbeans.org</url>
         <properties>
              <netbeans.module.dep>spec</netbeans.module.dep>
@@ -80,6 +85,7 @@
         <artifactId>openide</artifactId>
         <!-- include nb specification version.. that's important for compiling -->
         <version>4.28</version>
+        <type>jar</type>
         <url>http://www.netbeans.org</url>
     </dependency>
     <dependency>     
@@ -88,6 +94,7 @@
         <!-- include nb specification version.. that's important for compiling -->
         <version>4.12</version>
         <url>http://www.netbeans.org</url>
+        <type>jar</type>
         <properties>
             <netbeans.module.dep>spec</netbeans.module.dep>
         </properties>
@@ -99,6 +106,7 @@
         <artifactId>org-netbeans-modules-projectapi</artifactId>
         <!-- include nb specification version.. that's important for compiling -->
         <version>1.0</version>
+        <type>jar</type>
         <url>http://www.netbeans.org</url>
         <properties>
             <netbeans.module.dep>spec</netbeans.module.dep>
@@ -109,6 +117,7 @@
         <artifactId>org-netbeans-api-java</artifactId>
         <!-- include nb specification version.. that's important for compiling -->
         <version>1.4</version>
+        <type>jar</type>
         <url>http://www.netbeans.org</url>
         <properties>
             <netbeans.module.dep>spec</netbeans.module.dep>
@@ -118,6 +127,7 @@
         <groupId>netbeans</groupId>
         <artifactId>org-netbeans-modules-projectuiapi</artifactId>
         <version>1.0</version>
+        <type>jar</type>
         <url>http://www.netbeans.org</url>
         <properties>
             <netbeans.module.dep>spec</netbeans.module.dep>
@@ -127,6 +137,7 @@
         <groupId>netbeans</groupId>
         <artifactId>org-netbeans-modules-project-libraries</artifactId>
         <version>1.7</version>
+        <type>jar</type>
         <url>http://www.netbeans.org</url>
         <properties>
             <netbeans.module.dep>spec</netbeans.module.dep>
@@ -136,6 +147,17 @@
         <groupId>netbeans</groupId>
         <artifactId>org-netbeans-modules-java-project</artifactId>
         <version>1.0</version>
+        <type>jar</type>
+        <url>http://www.netbeans.org</url>
+        <properties>
+            <netbeans.module.dep>spec</netbeans.module.dep>
+        </properties>
+    </dependency>
+    <dependency>     
+        <groupId>netbeans</groupId>
+        <artifactId>org-netbeans-modules-java-platform</artifactId>
+        <version>1.0</version>
+        <type>jar</type>
         <url>http://www.netbeans.org</url>
         <properties>
             <netbeans.module.dep>spec</netbeans.module.dep>
@@ -145,8 +167,12 @@
         <groupId>netbeans</groupId>
         <artifactId>org-netbeans-modules-queries</artifactId>
         <!-- include nb specification version.. that's important for compiling -->
+        <type>jar</type>
         <version>1.0</version>
         <url>http://www.netbeans.org</url>
+        <properties>
+            <netbeans.module.dep>spec</netbeans.module.dep>
+        </properties>
     </dependency>
          
   </dependencies>
