@@ -7,19 +7,14 @@
 	</topic>
 	<topic label="Reference" href="target/docs/reference.html">
 		<topic label="Features" href="target/docs/features.html"/>
-		<topic id="userGuide" label="User Guide" href="target/docs/user-guide/index.html">
-			<topic label="Configuration" href="target/docs/user-guide/conf.html"/>
-			<topic label="Running" href="target/docs/user-guide/run.html"/>
-			<topic label="Synchronization" href="target/docs/user-guide/sync.html"/>
-			<topic label="Pom Editor" href="target/docs/user-guide/edit.html"/>
-			<topic label="Jelly Editor" href="target/docs/user-guide/contentassist.html"/>
-			<topic label="Maven Wizards" href="target/docs/user-guide/wizard.html"/>
-			<topic label="Providers infrastucture" href="target/docs/user-guide/provider-infrastructure.html">
-			    <topic label="Extension point" href="target/docs/user-guide/extension-point.html"/>
-		    </topic>
-		    <topic label="Templates" href="target/docs/user-guide/pom-templates.html"/>
-		    <topic label="Pom validation" href="target/docs/user-guide/validate.html"/>
+		<topic id="userGuide" label="User Guide" href="target/docs/help.html">
+			<topic label="Configuration" href="target/docs/conf.html"/>
+			<topic label="Running" href="target/docs/run.html"/>
+			<topic label="Synchronization" href="target/docs/sync.html"/>
+			<topic label="Pom Editor" href="target/docs/edit.html"/>
+			<topic label="Jelly Editor" href="target/docs/contentassist.html"/>
+			<topic label="Maven Wizards" href="target/docs/wizard.html"/>
 		</topic>
-    </topic>
+	</topic>
 </toc>
 

@@ -26,9 +26,6 @@ import java.util.Properties;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Project;
-import org.jdom.Element;
-import org.jdom.input.DefaultJDOMFactory;
-import org.jdom.input.JDOMFactory;
 
 /**
  * interface to externalize the project files content/models to one place, and reuse
@@ -187,12 +184,9 @@ public class DefaultQueryContext implements IQueryContext {
         return projectContext;
     }
     
-    // is this necesaary, maybe just return null from getRootProjectElement()
-    private static JDOMFactory factory = new DefaultJDOMFactory();   
     
     private class EmptyProjectContext implements IProjectContext {
         private Project empty = new Project();
-        private Element rootEl = factory.element("project");
         public Project getFinalProject() {
             return empty;
         }
@@ -203,14 +197,6 @@ public class DefaultQueryContext implements IQueryContext {
         
         public Project[] getProjectLayers() {
             return new Project[0];
-        }
-        
-        public org.jdom.Element[] getRootElementLayers() {
-            return new Element[0];
-        }
-        
-        public org.jdom.Element getRootProjectElement() {
-            return rootEl;
         }
         
     }

@@ -104,19 +104,10 @@ public class ProjectWalker {
 						String[] splittedVar = StringUtils.split(tempVariable, ".");
 						evaluation = project;
 						for (int j = 1; j < splittedVar.length; j++) {
-						    try {
-								Field f = evaluation.getClass().getDeclaredField(splittedVar[j]);
-								f.setAccessible(true);
-		                	    evaluation = f.get(evaluation);
-		                    	f.setAccessible(false);
-						    }
-						    catch ( NoSuchFieldException ex ) {
-							    //try to get the field from the superclass
-				                Field f = evaluation.getClass().getSuperclass().getDeclaredField(splittedVar[j]);
-				                f.setAccessible(true);
-				                evaluation = f.get(evaluation);
-				                f.setAccessible(false);
-						    }
+							Field f = evaluation.getClass().getDeclaredField(splittedVar[j]);
+							f.setAccessible(true);
+	                	    evaluation = f.get(evaluation);
+	                    	f.setAccessible(false);
 	                	}
 					}
 	                resolvedString += evaluation;

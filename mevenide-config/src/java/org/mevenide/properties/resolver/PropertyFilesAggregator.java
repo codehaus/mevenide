@@ -42,12 +42,7 @@ public final class PropertyFilesAggregator implements IPropertyResolver, IProper
     
     private IQueryContext context;
 
-    /** 
-     * Creates a new instance of PropFilesAggregator 
-     * @param project parent directory of project.xml
-     * @param user the user home directory
-     * @param defs property finder which override properies definition that may be found in <code>user</code> and <code>project</code> properties files 
-     */
+    /** Creates a new instance of PropFilesAggregator */
     public PropertyFilesAggregator(File project, File user, IPropertyFinder defs) {
         projectDir = project;
         userDir = user;
@@ -65,7 +60,7 @@ public final class PropertyFilesAggregator implements IPropertyResolver, IProper
         initializeContext();
     }
     
-    private void initialize() { 
+    private void initialize() {
         if (context != null) {
             throw new IllegalStateException("wrong initializer");
         }
@@ -170,9 +165,6 @@ public final class PropertyFilesAggregator implements IPropertyResolver, IProper
         return toReturn;
     }
     
-    /**
-     *@deprecated makes no sense for IQueryContext based instances.
-     */
     public void reload() {
         // mkleint - makes no sense for IQueryContext based instances.
         //TODO have more targetting reload strategy.
@@ -193,20 +185,5 @@ public final class PropertyFilesAggregator implements IPropertyResolver, IProper
         return resolve(buf).toString();
     }        
     
-    public boolean isDefinedInLocation(String key, int location) {
-        if (location == IPropertyLocator.LOCATION_USER_BUILD) {
-            return (userBuild != null && userBuild.getValue(key) != null);
-        }
-        else if (location == IPropertyLocator.LOCATION_PROJECT_BUILD) {
-            return (projectBuild != null && projectBuild.getValue(key) != null);
-        }
-        else if (location == IPropertyLocator.LOCATION_PROJECT) {
-           return (project != null && project.getValue(key) != null);
-        }
-        else if (location == IPropertyLocator.LOCATION_DEFAULTS) {
-            return (defaults != null && defaults.getValue(key) != null);
-        }
-        return false;        
-    }    
     
 }

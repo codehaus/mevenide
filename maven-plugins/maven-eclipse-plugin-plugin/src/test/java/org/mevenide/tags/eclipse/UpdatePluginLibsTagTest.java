@@ -78,7 +78,7 @@ public class UpdatePluginLibsTagTest extends TestCase {
 		    assertEquals(expectedAddRuntimeLibraryCalls, addRuntimeLibraryCalls);
 			assertEquals(expectedAddRequiresPluginCalls, addRequiresPluginCalls);
 		} 
-    }
+    };
     
     private UpdatePluginLibsTag tag = null;
     private Artifact artifact;

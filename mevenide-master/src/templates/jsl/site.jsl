@@ -93,13 +93,8 @@
               
               <td align="center">
                   <div id="mainTitle">
-                   <p valign="bottom">
-                   	 ${mevenide.title} 
-                   	 <br/>
-                   	 <font size="4" color="#993333">- ${mevenide.subtitle} -</font>
-                   </p>
+                   <p valign="bottom"><img src="images/none.png"/> ${mevenide.title} </p>
                	  </div>
-               	  
               </td>
               <!-- organization logo -->
               <td align="right" width="150">
@@ -262,7 +257,6 @@
     <x:set var="_name" select="string(@name)"/>
     <x:set var="_link" select="string(@href)"/>
     <x:set var="_img" select="string(@img)"/>
-	<x:set var="_target" select="string(@target)"/>
 	<x:set var="_childCount" select="count(./item)"/>
 	<j:set var="_isCollapsed" value="${navbean.isCollapsed(item.get(0))}"/>
 	<j:set var="_state" value="none"/>
@@ -288,10 +282,10 @@
         <!-- /j:while -->
         </j:if>
       	<j:if test="${navbean.isSelected(item.get(0))}">
-      		<b><doc:itemLink target="${_target}" name="${_name}" link="${_link}" img="${_img}" state="${_state}"/></b>
+      		<b><doc:itemLink name="${_name}" link="${_link}" img="${_img}" state="${_state}"/></b>
       	</j:if>
       	<j:if test="${!navbean.isSelected(item.get(0))}">
-      		<doc:itemLink target="${_target}" name="${_name}" link="${_link}" img="${_img}" state="${_state}"/>
+      		<doc:itemLink name="${_name}" link="${_link}" img="${_img}" state="${_state}"/>
       	</j:if>
       </small>
 	  <j:if test="${!navbean.isCollapsed(item.get(0))}">

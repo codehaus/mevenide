@@ -5,11 +5,8 @@
   xmlns:doc="doc"
   xmlns:vdoclet="vdoclet">
 
-  <goal name="maven-tasklist-plugin:register" >
-    <attainGoal name="reg"/>
-  </goal>
-  <goal name="reg">
-	<j:if test="${sourcesPresent}">
+  <goal name="maven-tasklist-plugin:register">
+    <j:if test="${sourcesPresent}">
       <doc:registerReport 
         name="Task List"
         pluginName="maven-tasklist-plugin" 

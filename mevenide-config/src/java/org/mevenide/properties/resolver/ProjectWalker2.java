@@ -16,11 +16,13 @@
  */
 package org.mevenide.properties.resolver;
 
-import java.util.List;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.StringTokenizer;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.jdom.Element;
+import org.apache.maven.project.Project;
 import org.mevenide.context.IQueryContext;
 import org.mevenide.properties.IPropertyFinder;
 
@@ -45,28 +47,41 @@ public class ProjectWalker2 implements IPropertyFinder {
         if (!key.startsWith("pom.")) {
             return null;
         }
-        Element proj = context.getPOMContext().getRootProjectElement();
+        Project proj = context.getPOMContext().getFinalProject();
         if (proj == null) {
             return null;
         }
         StringTokenizer tok = new StringTokenizer(key, ".", false);
         // skip "pom."
         tok.nextToken();
-        Element currentElement = proj;
+        Object currentReflectionObject = proj;
         while (tok.hasMoreTokens()) {
             String next = tok.nextToken();
-            List nextEl = currentElement.getChildren(next);
-            if (nextEl != null && nextEl.size() == 1) {
-                currentElement = (Element)nextEl.iterator().next();
-            } else {
-                currentElement = null;
+            next = "get" + Character.toUpperCase(next.charAt(0)) + next.substring(1);
+            try {
+                Method method = currentReflectionObject.getClass().getMethod(next, null); 
+                currentReflectionObject = method.invoke(currentReflectionObject, null);
+            } catch (NoSuchMethodException exc) {
+                currentReflectionObject = null;
+                logger.error("wrong pom definition=" + key, exc);
+            } catch (InvocationTargetException exc2) {
+                currentReflectionObject = null;
+                logger.error("wrong pom definition=" + key, exc2);
+            } catch (Exception exc3) {
+                // illegataccess + illegalargument
+                currentReflectionObject = null;
+                logger.error("wrong pom definition=" + key, exc3);
+            }
+            if (currentReflectionObject == null) {
                 break;
             }
         }
-        if (currentElement != null) {
-            return currentElement.getText();
+        if (currentReflectionObject != null && currentReflectionObject instanceof String) {
+            return currentReflectionObject.toString();
         }
-        logger.debug("could not find=" + key + ". Maybe it's not defined in the current POM or it's badly formed");
+        if (currentReflectionObject != null && (! (currentReflectionObject instanceof String))) {
+            logger.warn("not a string pom value=" + key + " class=" + currentReflectionObject.getClass());
+        }
         return null;
     }
     

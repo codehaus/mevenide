@@ -19,12 +19,9 @@ package org.mevenide.context;
 
 import java.io.File;
 import org.apache.maven.project.Project;
-import org.jdom.Element;
 
 /**
  * extending the IQueryContext with the POM.
- * All the returned objects are intented for short-term use and shall not be 
- * modified from outside.
  * @author  <a href="mailto:ca206216@tiscali.cz">Milos Kleint</a>
  */
 
@@ -48,14 +45,4 @@ public interface IProjectContext
      */
     File[] getProjectFiles();
     
-    /**
-     * merged content of the JDOM tree describing the POM.
-     */
-    Element getRootProjectElement();
-    
-    /**
-     * content of the JDOM trees describing the POM, split into the layers (extends)
-     *
-     */
-    Element[] getRootElementLayers();
 }

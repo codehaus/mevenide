@@ -105,7 +105,7 @@ public class LocationFinderAggregator implements ILocationFinder {
     }
 
     public String getJavaHome() {
-		String javaHome = System.getProperty("java.home");
+		String javaHome = System.getProperty("java.home");;
 		if ( customLocationFinder !=  null 
 				&& customLocationFinder.getJavaHome() != null ) {
 			javaHome = customLocationFinder.getJavaHome();
@@ -156,7 +156,7 @@ public class LocationFinderAggregator implements ILocationFinder {
     
     public String getMavenLocalHome() {
         String userHome = System.getProperty("user.home");
-		String mavenLocalHome = new File(userHome, ".maven").getAbsolutePath();
+		String mavenLocalHome = new File(userHome, ".maven").getAbsolutePath();;
 		if ( customLocationFinder !=  null 
 				&& customLocationFinder.getMavenLocalHome() != null ) {
 			mavenLocalHome = customLocationFinder.getMavenLocalHome();
@@ -181,7 +181,7 @@ public class LocationFinderAggregator implements ILocationFinder {
     }
     
     public String getMavenLocalRepository() {
-		String mavenLocalRepository =  new File(getMavenLocalHome(), "repository").getAbsolutePath();
+		String mavenLocalRepository =  new File(getMavenLocalHome(), "repository").getAbsolutePath();;
 		if ( customLocationFinder !=  null 
 				&& customLocationFinder.getMavenLocalRepository() != null ) {
 			mavenLocalRepository = customLocationFinder.getMavenLocalRepository();
@@ -206,7 +206,7 @@ public class LocationFinderAggregator implements ILocationFinder {
     }
     
     public String getMavenPluginsDir() {
-		String mavenPluginsDir = new File(getMavenLocalHome(), "cache").getAbsolutePath();
+		String mavenPluginsDir = new File(getMavenLocalHome(), "plugins").getAbsolutePath();
 		if ( customLocationFinder !=  null 
 				&& customLocationFinder.getMavenPluginsDir() != null ) {
 			mavenPluginsDir = customLocationFinder.getMavenPluginsDir();

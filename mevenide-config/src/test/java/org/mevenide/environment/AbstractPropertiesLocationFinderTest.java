@@ -36,7 +36,8 @@ public abstract class AbstractPropertiesLocationFinderTest extends AbstractMeven
         		"maven.home=maven_home\n" +
         		"maven.home.local=maven_local_home\n" +
         		"maven.repo.local=maven_repo_local\n" +
-        		"maven.plugin.unpacked.dir=maven_plugins_dir" ;
+        		"maven.plugins.dir=maven_plugins_dir" ;
+        
     }
     
     protected void setUp() throws Exception {

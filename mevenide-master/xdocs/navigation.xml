@@ -48,7 +48,6 @@
             <item name="Netbeans module todos" href="/mevenide-netbeans-project/todos.html"/>
             <item name="Netbeans grammar module todos" href="/mevenide-netbeans-grammar/todos.html"/>
         </item>
-        <item name="Coding Rules" href="guidelines.html"/>
         <item name="Mevenide Wiki" href="http://docs.codehaus.org/display/MEVENIDE/Home"/>
     </menu>
     

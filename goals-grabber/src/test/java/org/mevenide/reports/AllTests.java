@@ -30,7 +30,7 @@ public class AllTests {
 		
 		TestSuite suite = new TestSuite();
 	
-		suite.addTestSuite(JDomReportsFinderTest.class);
+		suite.addTestSuite(DefaultReportsFinderTest.class);
 		
 		return suite; 
 	} 
