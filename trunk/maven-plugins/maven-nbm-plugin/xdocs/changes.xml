@@ -7,12 +7,15 @@
 
   <body>
 
-    <release version="0.2" date="in CVS">
+    <release version="0.3" date="in CVS">
+    </release>
+
+    <release version="0.2" date="20040414">
       <action dev="mkleint" type="add">
         Refactored goals, allowing more customizations by projects.
       </action>
       <action dev="mkleint" type="add">
-        Added autoupdate server generation goal.
+        Added autoupdate server generation goal. (Not tested well)
       </action>
       <action dev="mkleint" type="add">
         Added properties for signing NBMs.
