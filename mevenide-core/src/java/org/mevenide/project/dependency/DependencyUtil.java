@@ -16,6 +16,8 @@ package org.mevenide.project.dependency;
 import java.io.File;
 import java.io.FileFilter;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Dependency;
 import org.mevenide.Environment;
 
@@ -26,6 +28,10 @@ import org.mevenide.Environment;
  * 
  */
 public class DependencyUtil {
+	private static Log log = LogFactory.getLog(DependencyUtil.class);
+	
+	private DependencyUtil() {}
+	
 	public static boolean areEquals(Dependency d1, Dependency d2) {
 		return  (d1 == null && d2 == null) ||
 				(   
@@ -54,7 +60,11 @@ public class DependencyUtil {
 	}
 	
 	public static boolean isValid(Dependency d) {
-		return  d != null && d.getGroupId() != null && !d.getGroupId().trim().equals("")
+		if ( d == null ) { 
+			return false;
+		} 
+		log.debug("Dependency <groupId=" + d.getGroupId() + ">, <artifactId=" + d.getArtifactId() + ">, <version=" + d.getVersion() + ">" );
+		return  d.getGroupId() != null && !d.getGroupId().trim().equals("")
 				&& d.getArtifactId() != null && !d.getArtifactId().trim().equals("")
 				&& d.getVersion() != null && !d.getVersion().trim().equals("");
 	}
