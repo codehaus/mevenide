@@ -78,7 +78,22 @@ The maven.nbm.manifest.bundle.basedir and  maven.nbm.manifest.bundle.include hav
        <!-- these attributes get defined this way only if not present in the manifest file -->
           <ant:attribute name="OpenIDE-Module-Implementation-Version" value="${maven.nbm.timestamp}"/>
           <ant:attribute name="OpenIDE-Module" value="${pom.package}/1"/>
-          <ant:attribute name="OpenIDE-Module-Specification-Version" value="${pom.currentVersion}"/>
+
+          <!-- now do specification version magic -->
+          <j:set var="specnum" value="${pom.currentVersion}" />
+          <j:choose>
+                <j:when test="${specnum.endsWith('-SNAPSHOT')}">
+                   <j:set var="shortstamp" value="${maven.nbm.timestamp}" />
+                   <j:set var="specnum2" value="${specnum.substring(0, specnum.indexOf('-SNAPSHOT'))}" />
+                   <j:set var="specnum" value="${specnum2}.0.${shortstamp.substring(2, 12)}" />
+                </j:when>
+                <j:when test="${maven.nbm.snapshot}">
+                   <j:set var="shortstamp" value="${maven.nbm.timestamp}" />
+                   <j:set var="specnum2" value="${specnum}" />
+                   <j:set var="specnum" value="${specnum2}.0.${shortstamp.substring(2, 12)}" />
+                </j:when>
+          </j:choose>
+          <ant:attribute name="OpenIDE-Module-Specification-Version" value="${specnum}"/>
           <j:choose>
               <j:when test="${maven.nbm.nonlocalized}">
                 <ant:attribute name="OpenIDE-Module-Display-Category" value="${pom.groupId}" />
@@ -146,5 +161,17 @@ The maven.nbm.manifest.bundle.basedir and  maven.nbm.manifest.bundle.include hav
         file="${lib.path}"/>
     </j:forEach>
 -->    
+  </goal>
+  
+  <!-- will do the same as nbm:nbm but if OpenIDE-SpecificationVersion is not defined in manifest,
+   will attempt to generate a snapshot-enhanced version refined from pom.currentVersion
+  -->
+  <goal name="nbm:nbm-snapshot"
+      prereqs="nbm:init" 
+      description="Build the Netbeans nbm snapshot.">
+    <util:file var="thisPom" name="${basedir}/project.xml"/>  
+<!--    <ant:echo message="manifest=${maven.jar.manifest}" /> -->
+    <j:set var="maven.nbm.snapshot" value="true" />
+    <attainGoal name="nbm:nbm"/> 
   </goal>
 </project>
