@@ -171,50 +171,116 @@ public final class LocationComboFactory {
      */
     public static OriginChange createPOMChange(MavenProject project, boolean showText) {
         LocationComboBox box = new LocationComboBox(showText);
-        boolean hasParent = project.getOriginalMavenProject().getExtend() != null;
-        int size = hasParent ? 3 : 2;
+        int poms = project.getContext().getPOMContext().getProjectFiles().length;
+        int size = poms + 1;
         LocationComboBox.LocationWrapper[] wraps = new LocationComboBox.LocationWrapper[size];
         String[] actions;
-        if (hasParent) {
-            actions = new String[] {
-                OriginChange.ACTION_POM_MOVE_TO_PARENT,
-                OriginChange.ACTION_REMOVE_ENTRY
-            };
-        } else {
-            actions = new String[] {
-                OriginChange.ACTION_REMOVE_ENTRY
-            };
-        }
+        switch (poms) {
+            case 1 : 
+                actions = new String[] {
+                  OriginChange.ACTION_REMOVE_ENTRY
+                };
+                break;
+            case 2 : 
+                actions = new String[] {
+                  OriginChange.ACTION_POM_MOVE_TO_PARENT,
+                  OriginChange.ACTION_REMOVE_ENTRY
+                };
+                break;
+            case 3 : 
+                actions = new String[] {
+                  OriginChange.ACTION_POM_MOVE_TO_PP,
+                  OriginChange.ACTION_POM_MOVE_TO_PARENT,
+                  OriginChange.ACTION_REMOVE_ENTRY
+                };
+                break;
+            default : 
+                actions = new String[] {
+                  OriginChange.ACTION_POM_MOVE_TO_PP,
+                  OriginChange.ACTION_POM_MOVE_TO_PARENT,
+                  OriginChange.ACTION_REMOVE_ENTRY
+                };
+                break;
+        } 
+                
         Icon icon = new ImageIcon(Utilities.loadImage("org/mevenide/netbeans/project/resources/LocPomFile.png"));
         wraps[0] = new LocationComboBox.LocationWrapper("Defined in project's POM file", icon,
                              FileUtilities.locationToFile(OriginChange.LOCATION_POM, project), 
                              OriginChange.LOCATION_POM,
                              actions);
-        if (hasParent) {
-            actions = new String[] {
-                OriginChange.ACTION_POM_MOVE_TO_CHILD,
-                OriginChange.ACTION_POM_MOVE_TO_PARENT
-            };
-        } else {
-            actions = new String[] {
-                OriginChange.ACTION_POM_MOVE_TO_CHILD
-            };
+        
+        switch (poms) {
+            case 1 : 
+                actions = new String[] {
+                    OriginChange.ACTION_POM_MOVE_TO_CHILD
+                };
+                break;
+            case 2 : 
+                actions = new String[] {
+                    OriginChange.ACTION_POM_MOVE_TO_CHILD,
+                    OriginChange.ACTION_POM_MOVE_TO_PARENT
+                };
+                break;
+            case 3 : 
+                actions = new String[] {
+                  OriginChange.ACTION_POM_MOVE_TO_CHILD,
+                  OriginChange.ACTION_POM_MOVE_TO_PARENT,
+                  OriginChange.ACTION_POM_MOVE_TO_PP
+                };
+                break;
+            default : 
+                actions = new String[] {
+                  OriginChange.ACTION_POM_MOVE_TO_CHILD,
+                  OriginChange.ACTION_POM_MOVE_TO_PARENT,
+                  OriginChange.ACTION_POM_MOVE_TO_PP
+                };
+                break;
         }
         icon = new ImageIcon(Utilities.loadImage("org/mevenide/netbeans/project/resources/LocDefault.png"));
         wraps[1] = new LocationComboBox.LocationWrapper("No defined value", icon,
                              null, 
                              IPropertyLocator.LOCATION_NOT_DEFINED,
                              actions);
-        if (hasParent) {
-            actions = new String[] {
-                OriginChange.ACTION_POM_MOVE_TO_CHILD,
-                OriginChange.ACTION_REMOVE_ENTRY
-            };
+        if (poms > 1) {
+            switch (poms) {
+                case 2 : 
+                    actions = new String[] {
+                        OriginChange.ACTION_POM_MOVE_TO_CHILD,
+                        OriginChange.ACTION_REMOVE_ENTRY
+                    };
+                    break;
+                case 3 : 
+                    actions = new String[] {
+                        OriginChange.ACTION_POM_MOVE_TO_CHILD,
+                        OriginChange.ACTION_POM_MOVE_TO_PP,
+                        OriginChange.ACTION_REMOVE_ENTRY
+                    };
+                    break;
+                default : 
+                    actions = new String[] {
+                        OriginChange.ACTION_POM_MOVE_TO_CHILD,
+                        OriginChange.ACTION_POM_MOVE_TO_PP,
+                        OriginChange.ACTION_REMOVE_ENTRY
+                    };
+                    break;
+            }
             icon = new ImageIcon(Utilities.loadImage("org/mevenide/netbeans/project/resources/LocParentPOM.png"));
             wraps[2] = new LocationComboBox.LocationWrapper("Defined in POM's parent definition", icon,
                                  FileUtilities.locationToFile(OriginChange.LOCATION_POM_PARENT, project), 
                                  OriginChange.LOCATION_POM_PARENT,
                                  actions);
+            if (poms > 2) {
+                actions = new String[] {
+                    OriginChange.ACTION_POM_MOVE_TO_CHILD,
+                    OriginChange.ACTION_POM_MOVE_TO_PARENT,
+                    OriginChange.ACTION_REMOVE_ENTRY
+                };
+                icon = new ImageIcon(Utilities.loadImage("org/mevenide/netbeans/project/resources/LocParParPOM.png"));
+                wraps[3] = new LocationComboBox.LocationWrapper("Defined in POM's grand parent definition", icon,
+                                 FileUtilities.locationToFile(OriginChange.LOCATION_POM_PARENT_PARENT, project), 
+                                 OriginChange.LOCATION_POM_PARENT_PARENT,
+                                 actions);
+            }
         }
         box.setItems(wraps);
         return new OriginChange(box);

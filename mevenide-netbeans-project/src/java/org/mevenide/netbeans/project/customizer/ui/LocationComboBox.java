@@ -69,13 +69,15 @@ class LocationComboBox extends JButton {
         actionToLoc.put(OriginChange.ACTION_DEFINE_IN_USER, new Integer(IPropertyLocator.LOCATION_USER_BUILD));
         actionToLoc.put(OriginChange.ACTION_MOVE_TO_USER, new Integer(IPropertyLocator.LOCATION_USER_BUILD));
         actionToLoc.put(OriginChange.ACTION_RESET_TO_DEFAULT, new Integer(IPropertyLocator.LOCATION_DEFAULTS));
-        actionToLoc.put(OriginChange.ACTION_POM_MOVE_TO_CHILD, new Integer(OriginChange.LOCATION_POM));
-        actionToLoc.put(OriginChange.ACTION_POM_MOVE_TO_PARENT, new Integer(OriginChange.LOCATION_POM_PARENT));
-        actionToLoc.put(OriginChange.ACTION_REMOVE_ENTRY, new Integer(IPropertyLocator.LOCATION_NOT_DEFINED));
         actionToLoc.put(OriginChange.ACTION_MOVE_TO_PARENT_PROJECT, new Integer(IPropertyLocator.LOCATION_PARENT_PROJECT));
         actionToLoc.put(OriginChange.ACTION_DEFINE_IN_PARENT_PROJECT, new Integer(IPropertyLocator.LOCATION_PARENT_PROJECT));
         actionToLoc.put(OriginChange.ACTION_MOVE_TO_PARENTBUILD, new Integer(IPropertyLocator.LOCATION_PARENT_PROJECT_BUILD));
         actionToLoc.put(OriginChange.ACTION_DEFINE_IN_PARENT_BUILD, new Integer(IPropertyLocator.LOCATION_PARENT_PROJECT_BUILD));
+
+        actionToLoc.put(OriginChange.ACTION_POM_MOVE_TO_CHILD, new Integer(OriginChange.LOCATION_POM));
+        actionToLoc.put(OriginChange.ACTION_POM_MOVE_TO_PARENT, new Integer(OriginChange.LOCATION_POM_PARENT));
+        actionToLoc.put(OriginChange.ACTION_POM_MOVE_TO_PP, new Integer(OriginChange.LOCATION_POM_PARENT_PARENT));
+        actionToLoc.put(OriginChange.ACTION_REMOVE_ENTRY, new Integer(IPropertyLocator.LOCATION_NOT_DEFINED));
         
 //        add(currentLoc);
         setIcon(new ImageIcon(Utilities.loadImage("org/openide/resources/actions/empty.gif")));
@@ -174,6 +176,9 @@ class LocationComboBox extends JButton {
                 icon = new ImageIcon(Utilities.loadImage("org/mevenide/netbeans/project/resources/ToDefault.png"));
             } else if (OriginChange.ACTION_POM_MOVE_TO_PARENT.equals(actions[i])) {
                 name = "Move to Parent";
+                icon = new ImageIcon(Utilities.loadImage("org/mevenide/netbeans/project/resources/ToDefault.png"));
+            } else if (OriginChange.ACTION_POM_MOVE_TO_PP.equals(actions[i])) {
+                name = "Move to Grand Parent";
                 icon = new ImageIcon(Utilities.loadImage("org/mevenide/netbeans/project/resources/ToDefault.png"));
             } else if (OriginChange.ACTION_REMOVE_ENTRY.equals(actions[i])) {
                 name = "Remove Definition";

@@ -87,6 +87,10 @@ public class OriginChange {
     /*
      * pom file action
      */
+    public static final String ACTION_POM_MOVE_TO_PP = "MoveToPP";
+    /*
+     * pom file action
+     */
     public static final String ACTION_POM_MOVE_TO_CHILD = "MoveToChild";
     
     /**
@@ -101,6 +105,7 @@ public class OriginChange {
     public static final int LOCATION_POM_PARENT = 1;
     
     public static final int LOCATION_POM_PARENT_PARENT = 2;
+    
     
     OriginChange(LocationComboBox combo) {
         comboBox = combo;
