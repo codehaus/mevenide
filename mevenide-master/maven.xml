@@ -41,7 +41,7 @@
   
   
   <!-- ==================================== -->
-  <!--             init section             -->
+  <!--  ide modules initialization section  -->
   <!-- ==================================== -->
   <goal name="mevenide-eclipse:clean" prereqs="clean:clean">
     <ant:delete dir="${maven.repo.local}/eclipse" quiet="true"/>
@@ -64,9 +64,7 @@
     <j:include file="${installScript}"/>
   </goal>  
   
-  <goal name="mevenide-site:init" description="Try to install eclipse and netbeans dependencies. Used to initialize repository before building site.">
-      <j:set var="maven.jar.override" value="on"/>
-      <j:set var="maven.clover.jar" value="${mevenide.master.project.location}/lib/clover/jars/clover-1.2.4.jar"/>
+  <goal name="mevenide-ide:init-all" description="Try to install eclipse and netbeans dependencies. Used to initialize repository before building site.">
       <ant:property environment="env"/>
       <ant:property name="eclipse_home" location="env.ECLIPSE_HOME"/>
       <ant:property name="netbeans_home" location="env.NETBEANS_HOME"/>
@@ -76,7 +74,15 @@
       <j:if test="${!empty(netbeans_home)}">
         <attainGoal name="mevenide-netbeans:init"/>  
       </j:if>
-      <attainGoal name="mevenide-site:install-css"/>
+  </goal>
+  
+  
+  <!-- ==================================== -->
+  <!--      site initialization section     -->
+  <!-- ==================================== -->
+  <goal name="mevenide-site:set-clover-jar" description="Set clover overriden jar">
+      <j:set var="maven.jar.override" value="on"/>
+      <j:set var="maven.clover.jar" value="${mevenide.master.project.location}/lib/clover/jars/clover-1.2.4.jar"/>
   </goal>
   
   <goal name="mevenide-site:install-css" description="Iterate each subprojects and copy master project.css to ${subproject.location}/xdocs/style">
@@ -88,7 +94,9 @@
       </j:forEach>
   </goal>
   
-  
+  <goal name="mevenide-site:init" 
+        description="Main initialization goal" 
+        prereqs="mevenide-ide:init-all,mevenide-site:set-clover-jar,mevenide-site:install-css" />
   
   
   <!-- ==================================== -->
@@ -121,7 +129,6 @@
 	 <maven:maven descriptor="${mavenNbmPluginPom}" goals=" plugin:install,plugin:deploy"/>
   </goal>  
   
-    
   <goal name="mevenide:build-core" description="Build Mevenide-core module">
   	 <util:file var="mevenideCoreProjectdescriptor" name="${mevenide.core.project.location}/project.xml"/>
 	 <maven:maven descriptor="${mevenideCoreProjectdescriptor}" goals="clean,jar:install"/> 	 
