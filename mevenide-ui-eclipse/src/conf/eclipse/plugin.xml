@@ -7,15 +7,9 @@
    class="org.mevenide.ui.eclipse.Mevenide">
 
    <runtime>
-      <library name="lib/forehead-1.0-beta-5.jar">
-         <packages prefixes="com.werken.forehead"/>
-      </library>
       <library name="@maven.eclipse.plugin.artifact.internal.id@-@maven.eclipse.plugin.artifact.internal.version@.jar">
          <export name="*"/>
          <packages prefixes="org.mevenide.ui.eclipse"/>
-      </library>
-      <library name="lib/commons-httpclient-2.0-rc1.jar">
-         <packages prefixes="org.apache.commons.httpclient"/>
       </library>
    </runtime>
    <requires>
