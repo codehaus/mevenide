@@ -36,17 +36,21 @@
 					editing the project file with IDE Wizards.</p>
 					</div>
 			</subsection>
-			
-			<subsection name="Installing the Maven OpenTool">
+						
+			<subsection name="Credits">
 				<div id="documentContent">
-				<p>Installation is pretty straight forward:</p>
-				<ul>
-				  <li>Copy the maven-ui-jbuilder.jar file into the JBuilder/lib/ext directory</li>
-				  <li>Copy the maven-ui-jbuilder-doc.jar into the JBuilder/doc directory.</li>
-				</ul>
+				<p>
+				  Written by Serge Huber (<a href="mailto:shuber2@jahia.com">shuber2@jahia.com</a>)
+				</p>
 				</div>
 			</subsection>
 			
+			<subsection name="History">
+				<div id="documentContent">
+				<p>Version 0.1<br />Initial release</p>
+				</div>
+			</subsection>
+
 		</section>
     </body>
 </document>
