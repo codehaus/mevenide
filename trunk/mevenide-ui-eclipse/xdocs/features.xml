@@ -75,7 +75,6 @@
 		  	<u>Known issues</u><br/>
 		  	<ul>
 		  		<li>Due to the lazy intitialization that comes for free with the Forms API, changes in source page donot propagate in the pages that havent been opened before</li>
-		  		<li>Editor is marked as dirty on open</li>
 		  	</ul>
 		  </p>
 		  <p>
