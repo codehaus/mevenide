@@ -29,6 +29,7 @@ import org.apache.maven.model.Dependency;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.classworlds.ClassWorld;
 import org.codehaus.mevenide.pde.resources.Messages;
+import org.codehaus.mevenide.pde.version.VersionAdapter;
 import org.codehaus.plexus.embed.Embedder;
 import org.jdom.Document;
 import org.jdom.Element;
@@ -204,7 +205,7 @@ public class CommonPluginValuesReplacer {
         //@todo : how to most accurately compute id ?
         pluginElement.setAttribute("id", (project.getPackage() != null ? project.getPackage() : project.getGroupId() + "." + project.getArtifactId()).replaceAll("-", ".")); //id="org.mevenide.ui" 
         pluginElement.setAttribute("name", project.getName()); //name="Mevenide UI"
-        pluginElement.setAttribute("version", project.getVersion()); //version="0.3.0" 
+        pluginElement.setAttribute("version", new VersionAdapter().adapt(project.getVersion())); //version="0.3.0" 
         pluginElement.setAttribute("provider-name", project.getOrganization().getName()); //provider-name="The Codehaus"
         //no replacement for class attribute
     }

@@ -81,7 +81,7 @@ public class CommonPluginValuesReplacerTest extends TestCase {
         assertEquals("mevenide.maven.pde.plugin", plugin.getAttributeValue("id"));
         assertEquals("maven pde plugin", plugin.getAttributeValue("name"));
         assertEquals("the codehaus", plugin.getAttributeValue("provider-name"));
-        assertEquals("0.1", plugin.getAttributeValue("version"));
+        assertEquals("0.1.0", plugin.getAttributeValue("version"));
         
         List requires = plugin.getChild("requires").getChildren("import"); 
         assertEquals(3, requires.size());
