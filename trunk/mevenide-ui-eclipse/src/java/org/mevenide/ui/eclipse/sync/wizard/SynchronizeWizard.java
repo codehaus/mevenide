@@ -81,6 +81,9 @@ public class SynchronizeWizard extends Wizard {
 				pomWriter.addDependency(dependency, pomFile);
 			}
 			
+			sourcePage.saveState();
+			dependencyPage.saveState();
+			
 		}
 		catch ( Exception ex ) {
 			ex.printStackTrace();
