@@ -355,8 +355,8 @@ public class GoalsPickerDialog  extends TitleAreaDialog {
     private void updateStyledTextWidgetHyperlink(SelectionEvent e) {
 		TreeItem item = (TreeItem) e.item;
 		
-		String urlPrefix = Mevenide.getResourceString("maven.plugins.url.prefix");
-		log.debug("Looked up urlPrefix = " + urlPrefix);
+		String urlPrefix = "http://maven.apache.org/reference/plugins/";
+		
 		String pluginName = "";
 		if ( item.getParentItem() == null ) {
 			pluginName = item.getText();
@@ -508,7 +508,9 @@ public class GoalsPickerDialog  extends TitleAreaDialog {
 }
 
 class HyperLinkMouseListener extends MouseAdapter {
-	private static Log log = LogFactory.getLog(HyperLinkMouseListener.class); 
+	
+private static final String SYSTEM_BROWSER_ID = "org.eclipse.help.ui.systembrowser";
+    private static Log log = LogFactory.getLog(HyperLinkMouseListener.class); 
 	private StyledText text;
 	private GoalsPickerDialog goalsPickerDialog;
 	HyperLinkMouseListener(GoalsPickerDialog goalsPickerDialog) {
@@ -541,7 +543,7 @@ class HyperLinkMouseListener extends MouseAdapter {
         BrowserDescriptor[] browserDecriptors = BrowserManager.getInstance().getBrowserDescriptors();
         for (int i = 0; i < browserDecriptors.length; i++) {
         	
-            if ( browserDecriptors[i].getID().equals(Mevenide.getResourceString("GoalsPickerDialog.browser.id")) ) {
+            if ( browserDecriptors[i].getID().equals(SYSTEM_BROWSER_ID) ) {
         		IBrowser browser = browserDecriptors[i].getFactory().createBrowser();
         		browser.displayURL(url);
             }

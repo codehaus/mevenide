@@ -19,7 +19,6 @@ package org.mevenide.ui.eclipse.util;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Dependency;
@@ -43,7 +42,6 @@ import org.mevenide.project.dependency.DependencyFactory;
 import org.mevenide.project.io.ProjectReader;
 import org.mevenide.ui.eclipse.DefaultPathResolver;
 import org.mevenide.ui.eclipse.IPathResolver;
-import org.mevenide.ui.eclipse.Mevenide;
 
 /**
  * 
@@ -52,7 +50,10 @@ import org.mevenide.ui.eclipse.Mevenide;
  * 
  */
 public class JavaProjectUtils {
-	private static Log log = LogFactory.getLog(JavaProjectUtils.class);
+	
+    private static Log log = LogFactory.getLog(JavaProjectUtils.class);
+
+    private static final String JRE_CONTAINER_ID = "org.eclipse.jdt.launching.JRE_CONTAINER";
 	
 	private JavaProjectUtils() {
 	}
@@ -67,7 +68,7 @@ public class JavaProjectUtils {
 		if ( resolvedJreEntry != null ) {
 			String jrePath = pathResolver.getAbsolutePath(resolvedJreEntry.getPath());
 			
-			IClasspathContainer container = JavaCore.getClasspathContainer(new Path(Mevenide.getResourceString("ProjectUtil.eclipse.jre.container")), JavaCore.create(project));
+			IClasspathContainer container = JavaCore.getClasspathContainer(new Path(JRE_CONTAINER_ID), JavaCore.create(project));
 			IClasspathEntry[] jreEntries = container.getClasspathEntries();
 			
 			
