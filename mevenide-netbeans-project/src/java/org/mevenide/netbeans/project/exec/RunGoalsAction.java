@@ -53,6 +53,7 @@ import org.openide.util.actions.Presenter;
 
 /** Action to run favourite in a maven project. combines the favourite items from
  * mavensettings and adds the local maven.xml goals.
+ * @author Milos Kleint (mkleint@codehaus.org)
  */
 public class RunGoalsAction extends AbstractAction implements Presenter.Popup {
     
