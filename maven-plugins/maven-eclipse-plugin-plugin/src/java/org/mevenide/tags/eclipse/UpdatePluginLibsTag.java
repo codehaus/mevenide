@@ -17,6 +17,7 @@
 package org.mevenide.tags.eclipse;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 
@@ -30,6 +31,7 @@ import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
+import org.jdom.output.XMLOutputter;
 import org.mevenide.tags.AbstractMevenideTag;
 import org.mevenide.tags.InvalidDirectoryException;
 
@@ -48,6 +50,7 @@ public class UpdatePluginLibsTag extends AbstractMevenideTag {
 	
     private static final Log log = LogFactory.getLog(UpdatePluginLibsTag.class);
 
+    //xml elements
     private static final String RUNTIME_ELEM = "runtime";
     private static final String REQUIRES_ELEM = "requires";
     private static final String LIBRARY_ELEM = "library";
@@ -58,16 +61,24 @@ public class UpdatePluginLibsTag extends AbstractMevenideTag {
     private static final String PREFIXES_ATTR = "prefixes";
     private static final String PLUGIN_ATTR = "plugin";
     
+    //context variable
+	private static final String TEMP_DIR_PROPERTY = "maven.eclipse.plugin.temp.dir";
+    private static final String BUNDLE_LIB_DIR = "maven.eclipse.plugin.bundle.lib.dir";
     private static final String DESCRIPTOR_DIR_PROPERTY = "maven.eclipse.plugin.src.dir";
     private static final String BUNDLE_DEPENDENCY_PROPERTY = "eclipse.plugin.bundle";
-    private static final String PLUGIN_FILENAME = "plugin.xml";
-    
-    private static final String BUNDLE_LIB_DIR = "maven.eclipse.plugin.bundle.lib.dir";
+	private static final String BUILD_MODE_PROPERTY = "maven.eclipse.plugin.build.mode";
+    private static final String DEFAULT_EXPORT_PROPERTY = "maven.eclipse.plugin.export.default";
+	private static final String DEPENDENCY_PREFIXES_PROPERTY = "eclipse.plugin.prackages";
+	private static final String DEPENDENCY_EXPORT_PROPERTY = "eclipse.plugin.export";
 
+	private static final String PLUGIN_FILENAME = "plugin.xml";
     private static final String TRUE = "true";
     private static final String FS_SEPARATOR = "/";
     private static final String STAR_PATTERN = "*";
-
+	private static final String XML_INDENT = "    ";
+	private static final String SHOULD_BUNDLE = "bundle";
+	
+	
     /** the project descriptor of the Eclipse plugin under construction **/
     private Project pom;
     
@@ -90,6 +101,8 @@ public class UpdatePluginLibsTag extends AbstractMevenideTag {
             updateDescriptor(artifact);
         }
         
+        outputDescriptor();
+        
     }
     
     /**
@@ -101,7 +114,7 @@ public class UpdatePluginLibsTag extends AbstractMevenideTag {
         log.debug(artifact.getDependency() + " > ${eclipse.plugin.bundle} = " + shouldBundleDependency);
        
 		if ( shouldBundleDependency ) {
-	        if ( getBundleMode().equals("dist") ) {
+	        if ( !getBundleMode().equals(SHOULD_BUNDLE) ) {
 				updateRequires(artifact);
 	        }
 	        else {
@@ -149,6 +162,8 @@ public class UpdatePluginLibsTag extends AbstractMevenideTag {
 	void addRequiresPlugin(Artifact artifact) {
 	    Element importPluginElem = new Element(IMPORT_ELEM);
 	    importPluginElem.setAttribute(PLUGIN_ATTR, getPluginName(artifact));
+	    Element pluginElem = descriptor.getRootElement();
+	    pluginElem.getChild(REQUIRES_ELEM).addContent(importPluginElem);
 	}
 	
 	/**
@@ -166,14 +181,18 @@ public class UpdatePluginLibsTag extends AbstractMevenideTag {
 	 void addRuntimeLibrary(Artifact artifact) {
         Element artifactLibraryElem = new Element(LIBRARY_ELEM);
         artifactLibraryElem.setAttribute(NAME_ATTR, bundledLibraryDir + FS_SEPARATOR + new File(artifact.getPath()).getName());
-        if ( shouldExport(artifact) ) {
+        if ( getExport(artifact) != null && !getExport(artifact).trim().equals("")) {
         	Element exportElem = new Element(EXPORT_ELEM);  
-        	artifactLibraryElem.setAttribute(NAME_ATTR, STAR_PATTERN);
+        	exportElem.setAttribute(NAME_ATTR, STAR_PATTERN);
+        	artifactLibraryElem.addContent(exportElem);
         }
         if ( getPackagesPrefixes(artifact) != null && !getPackagesPrefixes(artifact).trim().equals("") ) {
         	Element packagesElem = new Element(PACKAGES_ELEM);
         	packagesElem.setAttribute(PREFIXES_ATTR, getPackagesPrefixes(artifact).trim());
+        	artifactLibraryElem.addContent(packagesElem);
         }
+        Element pluginElem = descriptor.getRootElement();
+	    pluginElem.getChild(RUNTIME_ELEM).addContent(artifactLibraryElem);
     }
 
     /**
@@ -239,24 +258,27 @@ public class UpdatePluginLibsTag extends AbstractMevenideTag {
     }
 
      String getBundleMode() {
-		String bundleMode = (String) context.getVariable("maven.eclipse.plugin.build.mode");
+		String bundleMode = (String) context.getVariable(BUILD_MODE_PROPERTY);
 		return bundleMode == null ? "" : bundleMode.trim();
 	}
 
     /**
-	 * @todo not sure about the format : dependency property ? csv project property ?
+	 * @return the user defined runtime/library/export child value
 	 */
-	 boolean shouldExport(Artifact artifact) {
-	    //@TODO
-		return true;
+	 String getExport(Artifact artifact) {
+	    String exportPattern = artifact.getDependency().getProperty(DEPENDENCY_EXPORT_PROPERTY);
+	    if ( exportPattern == null ) {
+	    	exportPattern = (String) context.getVariable(DEFAULT_EXPORT_PROPERTY);
+	    }
+		return exportPattern;
 	}
 
 	/**
-	 * @todo not sure about the format : dependency property ? project property ?
+	 * @return the user defined runtime/library/export value
 	 */
 	 String getPackagesPrefixes(Artifact artifact) {
-	    //@TODO
-		return null;
+	    String prefixes = artifact.getDependency().getProperty(DEPENDENCY_PREFIXES_PROPERTY);
+		return prefixes;
 	}
 
 	/**
@@ -265,8 +287,23 @@ public class UpdatePluginLibsTag extends AbstractMevenideTag {
      * @post outputted descriptor has not been filtered yet
      * @see {@link setUpDescriptor()}
      */
-     void outputDescriptor() {
-        //@TODO
+     void outputDescriptor() throws Exception {
+     	XMLOutputter outputter = new XMLOutputter();
+		outputter.setIndent(XML_INDENT);
+		outputter.setExpandEmptyElements(false);
+		outputter.setNewlines(true);
+		
+		String tempDir = (String) context.getVariable(TEMP_DIR_PROPERTY);
+		
+		FileOutputStream fos = new FileOutputStream(new File(tempDir, PLUGIN_FILENAME));
+		outputter.output(descriptor, fos);
+		
+		try {
+			fos.close();
+		} 
+		catch (IOException e) {
+			log.error("Unable to close handle : " + PLUGIN_FILENAME);
+		}
     }
     
 	/**
