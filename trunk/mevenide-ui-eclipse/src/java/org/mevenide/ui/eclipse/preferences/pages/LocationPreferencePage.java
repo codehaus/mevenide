@@ -30,6 +30,7 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.mevenide.environment.ConfigUtils;
 import org.mevenide.environment.ILocationFinder;
+import org.mevenide.runner.RunnerUtils;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.preferences.MevenidePreferenceKeys;
 import org.mevenide.ui.eclipse.preferences.PreferencesManager;
@@ -58,6 +59,9 @@ public class LocationPreferencePage extends PreferencePage implements IWorkbench
 	private String mavenHome ;
 	private String mavenLocalHome ;
 	private String mavenRepository;
+
+    private DirectoryFieldEditor toolsJarEditor;
+    private String toolsJarLocation;
 	
     public LocationPreferencePage() {
         super(Mevenide.getResourceString("LocationPreferencePage.title")); //$NON-NLS-1$
@@ -77,10 +81,11 @@ public class LocationPreferencePage extends PreferencePage implements IWorkbench
 	    
 	    createEditors(composite);
 		
-		return topLevelContainer;
+	    return topLevelContainer;
 	}
 
-	private void createEditors(Composite parent) {
+
+    private void createEditors(Composite parent) {
         topLevelContainer = new Group(parent, SWT.NULL);
         
         GridLayout layout = new GridLayout();
@@ -98,6 +103,7 @@ public class LocationPreferencePage extends PreferencePage implements IWorkbench
 		createMavenHomeEditor();
 		createMavenLocalHomeEditor();
 		createMavenRepositoryEditor();
+		createToolJarEditor();
     }
 
 	protected void performDefaults() {
@@ -111,6 +117,7 @@ public class LocationPreferencePage extends PreferencePage implements IWorkbench
         reloadMavenLocalHome();
         reloadMavenHome();
         reloadJavaHome();
+        reloadToolsJarLocation();
     }
 	
 	private void createMavenRepositoryEditor() {
@@ -126,6 +133,24 @@ public class LocationPreferencePage extends PreferencePage implements IWorkbench
 
     private void reloadMavenRepository() {
         mavenRepositoryEditor.setStringValue(getDefaultLocationFinder().getMavenLocalRepository());
+    }
+
+	private void createToolJarEditor() {
+	    toolsJarEditor = createEditor(
+				MevenidePreferenceKeys.TOOLS_JAR_PREFERENCE_KEY, 
+				Mevenide.getResourceString("LocationPreferencePage.tools.jar.label"),  //$NON-NLS-1$
+				toolsJarLocation
+			);
+	    if ( StringUtils.isNull(toolsJarEditor.getStringValue()) ) {
+		    reloadToolsJarLocation();
+		}
+    }
+	
+    private void reloadToolsJarLocation() {
+        String toolsJar = RunnerUtils.getToolsJar();
+        if ( StringUtils.isNull(toolsJar) ) {
+            toolsJarEditor.setStringValue(toolsJar);
+        }
     }
 
     private void createMavenLocalHomeEditor() {
@@ -207,6 +232,7 @@ public class LocationPreferencePage extends PreferencePage implements IWorkbench
 		preferencesManager.setValue(MevenidePreferenceKeys.MAVEN_LOCAL_HOME_PREFERENCE_KEY, mavenLocalHome);
 		preferencesManager.setValue(MevenidePreferenceKeys.JAVA_HOME_PREFERENCE_KEY, javaHome);
 		preferencesManager.setValue(MevenidePreferenceKeys.MAVEN_REPO_PREFERENCE_KEY, mavenRepository);
+		preferencesManager.setValue(MevenidePreferenceKeys.TOOLS_JAR_PREFERENCE_KEY, toolsJarLocation);
 		
 		Mevenide.getInstance().initEnvironment();
 		
@@ -233,6 +259,8 @@ public class LocationPreferencePage extends PreferencePage implements IWorkbench
 		if ( !StringUtils.isNull(mavenRepository) ) {
 			Mevenide.getInstance().setMavenRepository(mavenRepository);
 		}
+		
+		toolsJarLocation = toolsJarEditor.getTextControl(topLevelContainer).getText();
 	}
 	
 	public void init(IWorkbench workbench) {

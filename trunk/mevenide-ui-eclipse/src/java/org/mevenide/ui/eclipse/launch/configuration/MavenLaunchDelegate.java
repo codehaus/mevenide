@@ -28,6 +28,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
@@ -50,7 +52,9 @@ import org.mevenide.properties.resolver.PropertyLocatorFactory;
 import org.mevenide.properties.resolver.PropertyResolverFactory;
 import org.mevenide.runner.AbstractRunner;
 import org.mevenide.runner.ArgumentsManager;
+import org.mevenide.runner.RunnerUtils;
 import org.mevenide.ui.eclipse.Mevenide;
+import org.mevenide.ui.eclipse.preferences.PreferencesManager;
 import org.mevenide.ui.eclipse.preferences.dynamic.DynamicPreferencesManager;
 
 /**
@@ -94,9 +98,19 @@ public class MavenLaunchDelegate extends AbstractRunner implements ILaunchConfig
 			u++; 
 		}
 		
-		String[] allVmArgs = new String[vmArgs.length + customVmArgs.length];
+		String[] allVmArgs = new String[vmArgs.length + customVmArgs.length + 1];
 		System.arraycopy(vmArgs, 0, allVmArgs, 0, vmArgs.length);
 		System.arraycopy(customVmArgs, 0, allVmArgs, vmArgs.length, customVmArgs.length);
+		
+		String toolsJarArg = !org.mevenide.util.StringUtils.isNull(RunnerUtils.getToolsJar()) ? 
+		        				RunnerUtils.getToolsJar() : PreferencesManager.getManager().getValue("tools.jar"); //$NON-NLS-1$
+		if ( !org.mevenide.util.StringUtils.isNull(toolsJarArg) ) {;
+			allVmArgs[allVmArgs.length - 1] = "-Dtools.jar=" + toolsJarArg; //$NON-NLS-1$
+		}
+		else {
+		    IStatus status = new Status(IStatus.ERROR, "mevenide", 1, "File tools.jar (classes.jar) cannot be found. Please set it in the preference pages.", null);
+		    throw new CoreException(status);
+		}
 		
 		if ( log.isDebugEnabled() ) {
 			for (int i = 0; i < allVmArgs.length; i++) {
