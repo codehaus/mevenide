@@ -46,7 +46,7 @@
  * SUCH DAMAGE.
  * ====================================================================
  */
-package org.mevenide.core;
+package org.mevenide.runner;
 
 import java.io.File;
 import java.util.HashMap;
@@ -77,7 +77,7 @@ public class ArgumentsManager {
 	 */
 	public static String[] getMavenClasspath() {
 		File mavenLib = new File(Environment.getMavenHome(), "lib");
-	    return new String[] { new File(mavenLib, "forehead-1.0-beta-4.jar").getAbsolutePath() };
+		return new String[] { new File(mavenLib, "forehead-1.0-beta-5.jar").getAbsolutePath() };
 	}
 
 	/**

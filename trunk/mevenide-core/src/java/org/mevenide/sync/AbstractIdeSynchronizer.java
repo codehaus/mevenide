@@ -51,7 +51,7 @@ package org.mevenide.sync;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.mevenide.core.AbstractRunner;
+import org.mevenide.runner.AbstractRunner;
 
 /**
  * 

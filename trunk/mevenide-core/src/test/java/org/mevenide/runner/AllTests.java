@@ -46,7 +46,7 @@
  * SUCH DAMAGE.
  * ====================================================================
  */
-package org.mevenide.core;
+package org.mevenide.runner;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
@@ -66,6 +66,7 @@ public class AllTests {
         
       
 		suite.addTestSuite(AbstractRunnerTest.class);
+		suite.addTestSuite(OptionsRegistryTest.class);
 		
         return suite;
     }

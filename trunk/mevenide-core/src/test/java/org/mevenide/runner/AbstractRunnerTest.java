@@ -46,7 +46,7 @@
  * SUCH DAMAGE.
  * ====================================================================
  */
-package org.mevenide.core;
+package org.mevenide.runner;
 
 import java.io.File;
 

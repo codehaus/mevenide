@@ -64,9 +64,8 @@ public class AllTests {
     public static Test suite() {
         TestSuite suite = new TestSuite();
     
-		suite.addTest(org.mevenide.AllTests.suite());
 		suite.addTest(org.mevenide.util.AllTests.suite());
-		suite.addTest(org.mevenide.core.AllTests.suite());
+		suite.addTest(org.mevenide.runner.AllTests.suite());
 		suite.addTest(org.mevenide.project.AllTests.suite());
 		suite.addTest(org.mevenide.project.dependency.AllTests.suite());
 		suite.addTest(org.mevenide.project.io.AllTests.suite());
