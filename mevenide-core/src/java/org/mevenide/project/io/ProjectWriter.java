@@ -22,7 +22,6 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -32,6 +31,7 @@ import org.apache.maven.project.Project;
 import org.apache.maven.project.Resource;
 import org.apache.maven.project.UnitTest;
 import org.apache.maven.repository.Artifact;
+import org.mevenide.project.ProjectConstants;
 import org.mevenide.project.dependency.DependencyUtil;
 import org.mevenide.project.resource.DefaultResourceResolver;
 import org.mevenide.project.resource.IResourceResolver;
@@ -193,29 +193,6 @@ public class ProjectWriter {
 		write(project, pom);
 	}
 
-	public void resetSourceDirectories(File pomFile) throws Exception {
-					
-		ProjectReader reader = ProjectReader.getReader();
-		Project project = reader.read(pomFile);
-		if ( project.getBuild() != null ) {
-			project.getBuild().setAspectSourceDirectory(null);
-			project.getBuild().setIntegrationUnitTestSourceDirectory(null);
-			
-			project.getBuild().setUnitTestSourceDirectory(null);
-			project.getBuild().setUnitTest(null);
-			
-			project.getBuild().setSourceDirectory(null);
-			
-			project.getBuild().setResources(new ArrayList());
-//			if ( project.getBuild().getUnitTest() != null ) {
-//				project.getBuild().getUnitTest().setResources(new ArrayList());
-//			}
-			
-			marshaller.marshall(new FileWriter(pomFile), project);
-	
-		}
-	}
-	
 	public void updateExtend(File pomFile, boolean isInherited, String parentPom) throws Exception {
 		log.debug("isInherited = " + (isInherited) + " ; parentPom = " + parentPom);
 		ProjectReader reader = ProjectReader.getReader();
@@ -238,53 +215,77 @@ public class ProjectWriter {
 	}
 	
 	/**
-	 * removes a directory : maybe one of src, test, aspect directory or resource or test resource directory
+	 * removes a directory : 
+	 * may be one of sourceDirectory, unitTestSourceDirectory, aspectSourceDirectory, or resource or test resource directory
+	 * it just dispatches to removeResource(Project, path) and removeSource(Project, path) 
 	 * 
-	 * @note altho type is not managed yet, it is passed as parameter since this info may be pertinent  
-	 * 
+	 * @throws Exception if type different from either 
+	 *    o MAVEN_SRC_DIRECTORY
+	 *    o MAVEN_TEST_DIRECTORY
+	 *    o MAVEN_ASPECT_DIRECTORY
+	 *    o MAVEN_RESOURCE_DIRECTORY 
+	 *    o MAVEN_TEST_RESOURCE_DIRECTORY
+	 * @see #removeResource(Project, path)
+	 * @see #removeSource(Project, path)
 	 */
 	public void removeDirectory(Project project, String path, String type) throws Exception {
-	    removeSource(project, path);
-	    removeResource(project, path);
+	    if ( ProjectConstants.MAVEN_SRC_DIRECTORY.equals(type) || ProjectConstants.MAVEN_TEST_DIRECTORY.equals(type) 
+	            											   || ProjectConstants.MAVEN_ASPECT_DIRECTORY.equals(type) ) {
+	        removeSource(project, path);
+	    }
+	    else if ( ProjectConstants.MAVEN_RESOURCE.equals(type) || ProjectConstants.MAVEN_TEST_RESOURCE.equals(type)) {
+	        removeResource(project, path);
+	    }
+	    else {
+	        throw new Exception("unhandled type : " + type);
+	    }
+	    write(project);
 	}
 
-    private void removeResource(Project project, String path) {
-        // TODO Auto-generated method stub
-        
+    public void removeResource(Project project, String path) throws Exception {
+        if ( project != null && project.getBuild() != null ) {
+	        List resources = project.getBuild().getResources();
+	        if ( resources != null && resources.size() > 0 ) {
+	            removeResource(resources, path);
+	            project.getBuild().setResources(resources);
+	    	}
+	        
+	        if ( project.getBuild().getUnitTest() != null ) {
+		        List unitTestResources = project.getBuild().getUnitTest().getResources();
+		        if ( resources != null ) {
+		            removeResource(unitTestResources, path);
+		            project.getBuild().getUnitTest().setResources(unitTestResources);
+		    	}
+	        }
+        }
     }
 
-    private void removeSource(Project project, String path) throws Exception {
-        if ( project == null ) {
-            throw new Exception("project shouldnot be null");
+    private void removeResource(List resources, String path) {
+        if ( resources != null ) {
+	        Iterator sourceIterator = resources.iterator();
+	        boolean changed = false;
+	        while ( sourceIterator.hasNext() ) {
+	            String iteratedResource = ((Resource) sourceIterator.next()).getDirectory();
+	            if ( path.equals(iteratedResource) ) {
+	                sourceIterator.remove();
+	                changed = true;
+	            }
+	        }
         }
-        if ( path == null ) {
-            throw new Exception("path shouldnot be null");
-        }
-        
-        resetSourceDirectories(project.getFile());
-        
-        boolean warn = true;
-        
-        Map sourceMap = this.projectReader.readSourceDirectories(project.getFile());
-        Iterator sourceIterator = sourceMap.keySet().iterator();
-        
-        while ( sourceIterator.hasNext() ) {
-            String iteratedKey = (String) sourceIterator.next();
-            String iteratedSource = (String) sourceMap.get(iteratedKey);
-            if ( !path.equals(iteratedSource) ) {
-                SourceDirectoryUtil.addSource(project, iteratedSource, iteratedKey);
-            }
-            else {
-                warn = false;
-            }
-        }
-        
-        if ( warn ) {
-		    log.warn("specified directory (" + path + ") not found");
-		}
-		else {
-		    ProjectWriter.getWriter().write(project);
-		}
+    }
+
+    public void removeSource(Project project, String path) throws Exception {
+       if ( project != null && project.getBuild() != null && path != null ) {
+           if ( path.equals(project.getBuild().getSourceDirectory()) ) {
+               project.getBuild().setSourceDirectory(null);
+           }
+           if ( path.equals(project.getBuild().getAspectSourceDirectory()) ) {
+               project.getBuild().setAspectSourceDirectory(null);
+           }
+           if ( path.equals(project.getBuild().getUnitTestSourceDirectory()) ) {
+               project.getBuild().setUnitTestSourceDirectory(null);
+           }
+       }
     }
 
     public void removeArtifact(Project project, Artifact artifact) throws Exception {

@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -170,27 +171,28 @@ public class ProjectReader {
 		Map allResources = new Hashtable();
 		Project project = read(pom);
 		if ( project.getBuild() != null ) {
-			List res = project.getBuild().getResources();
-			for (int i = 0; i < res.size(); i++) {
-                String directory = ((Resource) res.get(i)).getDirectory();
-                if ( !allResources.containsValue(directory) ) {
-                	allResources.put(directory, ProjectConstants.MAVEN_RESOURCE);
-                }
-            }
+		    List resources = project.getBuild().getResources();
+			allResources.putAll(readResources(project, resources, ProjectConstants.MAVEN_RESOURCE));
 			if ( project.getBuild().getUnitTest() != null ) {
-				List utRes = project.getBuild().getUnitTest().getResources();
-				for (int i = 0; i < utRes.size(); i++) {
-					String directory = ((Resource) utRes.get(i)).getDirectory();
-					if ( !allResources.containsValue(directory) ) {
-						allResources.put(directory, ProjectConstants.MAVEN_TEST_RESOURCE);
-					}
-				}
+			    List unitTestResources = project.getBuild().getResources();
+				allResources.putAll(readResources(project, unitTestResources, ProjectConstants.MAVEN_TEST_RESOURCE));
 			}
 		}
 		return allResources;
 	}
 	
-	private Build getBuild(File pom) throws Exception {
+	Map readResources(Project project, List resources, String resourceType) {
+	    Map resourceMap = new TreeMap();
+        for (int i = 0; i < resources.size(); i++) {
+            String directory = ((Resource) resources.get(i)).getDirectory();
+            if ( !resourceMap.containsValue(directory) ) {
+            	resourceMap.put(directory, resourceType);
+            }
+        }
+        return resourceMap;
+    }
+
+    private Build getBuild(File pom) throws Exception {
 		Project project; 
 		if ( pom != null ) {
 			project = new DefaultProjectUnmarshaller().parse(new FileReader(pom));
@@ -202,9 +204,9 @@ public class ProjectReader {
 		Build build = project.getBuild();
 		
 		if ( build == null ) {
-		    project.setBuild(new Build());
+		    build = new Build();
 		}
 		
-		return project.getBuild();
+		return build;
 	}
 }
