@@ -4,7 +4,7 @@
     <pomVersion>3</pomVersion>
     <name>Mevenide Netbeans project support</name>
     <artifactId>mevenide-netbeans-project</artifactId>
-    <currentVersion>0.6</currentVersion>
+    <currentVersion>0.7-SNAPSHOT</currentVersion>
     <package>org.mevenide.netbeans.project</package>
     <shortDescription>Netbeans Maven project type support module</shortDescription>
     <description>The project's aim to to provide Maven project type support for the Netbeans IDE 4.0. 
@@ -230,27 +230,7 @@
             </properties>
         </dependency>
         <!-- depending on ant, the module dep for netbeans runtime, ant dep for compile time -->
-        <dependency>
-            <id>ant-nb-module</id>
-            <groupId>mevenide</groupId>
-            <version>1.5.3-1</version>
-            <properties>
-                <netbeans.module.dep>spec</netbeans.module.dep>
-            </properties>
-        </dependency>
-        <dependency>
-            <id>ant</id>
-            <version>1.5.3-1</version>
-            <type>jar</type>
-            <url>http://ant.apache.org/</url>
-        </dependency>
         <!-- commons-lang is part of the maven bundle at netbeans runtime -->
-        <dependency>
-            <id>commons-lang</id>
-            <version>2.0</version>
-            <type>jar</type>
-            <url>http://jakarta.apache.org/commons/</url>
-        </dependency>
         <!--    <dependency>
       <id>commons-io</id>
       <type>jar</type>
@@ -268,23 +248,50 @@
         </dependency>
         <!-- for tests only.. -->
         <dependency>
-            <id>commons-jelly</id>
+            <groupId>mevenide</groupId>
+            <artifactId>ant-nb-module</artifactId>
+            <version>1.5.3-1</version>
+            <properties>
+                <netbeans.module.dep>spec</netbeans.module.dep>
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>ant</groupId>
+            <artifactId>ant</artifactId>
+            <version>1.5.3-1</version>
+            <type>jar</type>
+            <url>http://ant.apache.org/</url>
+        </dependency>
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+            <version>2.0</version>
+            <type>jar</type>
+            <url>http://jakarta.apache.org/commons/</url>
+        </dependency>
+        <dependency>
+            <groupId>commons-jelly</groupId>
+            <artifactId>commons-jelly</artifactId>
             <version>20030902.160215</version>
         </dependency>
         <dependency>
-            <id>commons-betwixt</id>
+            <groupId>commons-betwixt</groupId>
+            <artifactId>commons-betwixt</artifactId>
             <version>1.0-beta-1.20030111.103454</version>
         </dependency>
         <dependency>
-            <id>commons-digester</id>
+            <groupId>commons-digester</groupId>
+            <artifactId>commons-digester</artifactId>
             <version>1.4.1</version>
         </dependency>
         <dependency>
-            <id>commons-jexl</id>
+            <groupId>commons-jexl</groupId>
+            <artifactId>commons-jexl</artifactId>
             <version>1.0-beta-1</version>
         </dependency>
         <dependency>
-            <id>commons-collections</id>
+            <groupId>commons-collections</groupId>
+            <artifactId>commons-collections</artifactId>
             <version>2.1</version>
         </dependency>
     </dependencies>
