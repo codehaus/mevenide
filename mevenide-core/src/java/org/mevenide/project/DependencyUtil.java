@@ -11,7 +11,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  */
-package org.mevenide.pom;
+package org.mevenide.project;
 
 
 import org.apache.maven.project.Dependency;
@@ -24,6 +24,22 @@ import org.apache.maven.project.Dependency;
  */
 class DependencyUtil {
 	
+	/**
+	 * should return the Dependency instance associated with a given path.
+	 * however this seems hard if not impossible to achieve. indeed i cannot 
+	 * imagine yet a way to extract the required information to build a coherent
+	 * Dependency. 
+	 * 
+	 * so for now i'll stick with the jar overriding mechanism provided by maven  
+	 * 
+	 * in order to minimize the trouble, we will check if dependencies declared 
+	 * in the project descriptor match some ide libraries, and use maven.jar.override
+	 * if no match is found for the current path.
+	 *  
+	 * 
+	 * @param absoluteFileName
+	 * @return
+	 */
 	static Dependency getDependency(String absoluteFileName) {
 		return null;
 	}

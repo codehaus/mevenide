@@ -12,7 +12,7 @@
  * Lesser General Public License for more details.
  * 
  */
-package org.mevenide.pom;
+package org.mevenide.project.io;
 
 import java.io.IOException;
 import java.io.Writer;

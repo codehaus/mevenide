@@ -21,22 +21,22 @@
            <url>http://forehead.werken.com/</url>
         </dependency>
         <dependency>
-           <groupId>maven</groupId>
-           <artifactId>maven</artifactId>
-           <version>SNAPSHOT</version>
+           <groupId>maven-new</groupId>
+           <artifactId>maven-core</artifactId>
+           <version>1.0-beta-11-SNAPSHOT</version>
            <url>http://maven.org/</url>
         </dependency>
         <dependency>
            <groupId>mevenide</groupId>
            <artifactId>mevenide-goals-grabber</artifactId>
            <version>1.0</version>
-           <url>http://sf.net/projects/maven-get-goals</url>
+           <url/>
         </dependency>
         <dependency>
            <groupId>mevenide</groupId>
            <artifactId>mevenide-core</artifactId>
            <version>1.0</version>
-           <url>http://sf.net/projects/maven-get-goals</url>
+           <url/>
         </dependency>
         <dependency>
            <groupId>jdom</groupId>

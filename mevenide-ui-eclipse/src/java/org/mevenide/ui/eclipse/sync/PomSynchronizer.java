@@ -21,9 +21,8 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.JavaCore;
-
-import org.mevenide.pom.PomReader;
-import org.mevenide.pom.PomWriter;
+import org.mevenide.project.io.ProjectReader;
+import org.mevenide.project.io.ProjectWriter;
 import org.mevenide.sync.AbstractPomSynchronizer;
 import org.mevenide.sync.ISynchronizer;
 import org.mevenide.ui.eclipse.MavenPlugin;
@@ -80,7 +79,7 @@ public class PomSynchronizer extends AbstractPomSynchronizer implements ISynchro
 	public void preSynchronization() {
 		try {
             //Environment.prepareEnv(project.getLocation().toFile().getAbsolutePath());
-			if ( !PomReader.isWellFormed(pom.getFullPath().toFile()) ) {
+			if ( !ProjectReader.isWellFormed(pom.getFullPath().toFile()) ) {
 				createPom();
 			}
 		}
@@ -105,7 +104,7 @@ public class PomSynchronizer extends AbstractPomSynchronizer implements ISynchro
 	private void createPom() throws Exception {
 		pom = project.getFile("project.xml");
 		if ( !pom.getLocation().toFile().exists() ) {
-			String skel = PomWriter.getWriter().getSkeleton(project.getName());
+			String skel = ProjectWriter.getWriter().getSkeleton(project.getName());
 			pom.create(new ByteArrayInputStream(skel.getBytes()), false, null);
 		}
 	}
@@ -144,7 +143,7 @@ public class PomSynchronizer extends AbstractPomSynchronizer implements ISynchro
      * @throws Exception
      */
 	private void addDependency(IClasspathEntry classpathEntry) throws Exception {
-		PomWriter.getWriter().addDependency(
+		ProjectWriter.getWriter().addDependency(
             pathResolver.getAbsolutePath(classpathEntry.getPath()), 
             getPom()
         );
@@ -171,7 +170,7 @@ public class PomSynchronizer extends AbstractPomSynchronizer implements ISynchro
 		
         String pathToAdd = pathResolver.computePathToAdd(classpathEntry, project);
 		
-        PomWriter.getWriter().addSource(
+        ProjectWriter.getWriter().addSource(
             pathToAdd, 
             getPom(), 
             pathResolver.getMavenSourceType(classpathEntry, project)
