@@ -49,8 +49,7 @@
 package org.mevenide.ui.eclipse.launch.configuration;
 
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.ByteArrayInputStream;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -59,7 +58,6 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
@@ -71,15 +69,11 @@ import org.eclipse.debug.core.variables.LaunchVariableUtil;
 import org.eclipse.debug.ui.CommonTab;
 import org.eclipse.debug.ui.DebugUITools;
 import org.eclipse.debug.ui.ILaunchShortcut;
-import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.window.Window;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.dialogs.ElementListSelectionDialog;
-import org.eclipse.ui.externaltools.internal.launchConfigurations.ExternalToolsUtil;
 import org.eclipse.ui.externaltools.internal.model.IExternalToolConstants;
 import org.mevenide.ui.eclipse.Mevenide;
 
@@ -134,90 +128,54 @@ public class MavenLaunchShortcut implements ILaunchShortcut {
 	public void launch(IProject project) {
 		ILaunchConfiguration configuration= null;
 		configuration = getDefaultLaunchConfiguration(project);
-//		List configurations = findExistingLaunchConfigurations(project);
-//		if (configurations.isEmpty()) {
-//			configuration = createDefaultLaunchConfiguration(project);
-//			//return;
-//		} 
-//		else {
-//			if (configurations.size() == 1) {
-//				configuration= (ILaunchConfiguration)configurations.get(0);
-//			} 
-//			else {
-//				configuration= chooseConfig(configurations);
-//				if (configuration == null) {
-//					// User cancelled selection
-//					return;
-//				}
-//			}
-//		}
-		
-		
-		
+
 		if (configuration != null) {
 			if ( showDialog ) {
 				//IStatus status = new Status(IStatus.INFO, Mevenide.PLUGIN_ID, 0, "", null); //$NON-NLS-1$
 				int val = DebugUITools.openLaunchConfigurationDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), configuration, IExternalToolConstants.ID_EXTERNAL_TOOLS_LAUNCH_GROUP, null);
 				if ( val == Window.CANCEL ) {
 					return;
-				}	
+				}
+				
+				
 			}
+			
+			try {
+				//crappy trick to avoid that popup
+				
+				if ( configuration.getFile() != null) {
+					configuration.getFile().setContents(new ByteArrayInputStream(configuration.getMemento().getBytes()), true, false, null);
+				}
+				else {
+					log.debug("LC location = " + configuration.getLocation());
+					project.getFile(configuration.getLocation()).create(new ByteArrayInputStream(configuration.getMemento().getBytes()), false, null);
+				}
+			}
+			catch (Exception e) {
+				// @todo Auto-generated catch block
+				e.printStackTrace();
+			}
+			
 			DebugUITools.launch(configuration, ILaunchManager.RUN_MODE);
 		}
 	} 
 	
-	private List findExistingLaunchConfigurations(IProject project) {
-		ILaunchManager manager = DebugPlugin.getDefault().getLaunchManager();
-		ILaunchConfigurationType type = manager.getLaunchConfigurationType("org.mevenide.launching.MavenLaunchConfigType");
-		List validConfigs= new ArrayList();
-		if (type != null) {
-			ILaunchConfiguration[] configs = null;
-			try {
-				configs = manager.getLaunchConfigurations(type);
-			} 
-			catch (CoreException e) {
-				log.debug("Unable to retrieve previous launch configs due to : " + e);
-			}
-			if (configs != null && configs.length > 0) {
-				IPath filePath = project.getLocation();
-				if (filePath == null) {
-					log.debug("Project location shouldnot be null");
-				} 
-				else {
-					for (int i = 0; i < configs.length; i++) {
-						ILaunchConfiguration configuration = configs[i];
-						IPath location;
-						try {
-							location = ExternalToolsUtil.getWorkingDirectory(configuration);
-							if (filePath.equals(location)) {
-								validConfigs.add(configuration);
-							}
-						} catch (CoreException e) {
-							// error occurred in variable expand - ignore
-						}
-					}
-				}
-			}
-		}
-		return validConfigs;
-	}
-	
-
-	public static ILaunchConfiguration getDefaultLaunchConfiguration(IProject project) {
+	private ILaunchConfiguration getDefaultLaunchConfiguration(IProject project) {
 		ILaunchManager manager = DebugPlugin.getDefault().getLaunchManager();
 		ILaunchConfigurationType type = manager.getLaunchConfigurationType("org.mevenide.launching.MavenLaunchConfigType");
 		
 		String name = "[" + project.getName() + "] ";
 		String goals = StringUtils.replace(Mevenide.getPlugin().getDefaultGoals(), ":", "_");
+		name += goals;
 		
 		ILaunch[] launches = manager.getLaunches();
 		for (int i = 0; i < launches.length; i++) {
-			if ( (name + goals).equals(launches[i].getLaunchConfiguration().getName()) ) {
+			if ( (name).equals(launches[i].getLaunchConfiguration().getName()) ) {
 				return launches[i].getLaunchConfiguration();
 			}	
 		}
 		
-		name = manager.generateUniqueLaunchConfigurationNameFrom(name + goals);
+		name = manager.generateUniqueLaunchConfigurationNameFrom(name);
 		
 		try {
 			ILaunchConfigurationWorkingCopy workingCopy = type.newInstance(null, name);
@@ -242,23 +200,6 @@ public class MavenLaunchShortcut implements ILaunchShortcut {
 			return null;
 		}
 	}
-	
-	public static ILaunchConfiguration chooseConfig(List configs) {
-		if (configs.isEmpty()) {
-			return null;
-		}
-		ILabelProvider labelProvider = DebugUITools.newDebugModelPresentation();
-		ElementListSelectionDialog dialog= new ElementListSelectionDialog(Display.getDefault().getActiveShell(), labelProvider);
-		dialog.setElements((ILaunchConfiguration[]) configs.toArray(new ILaunchConfiguration[configs.size()]));
-		dialog.setTitle("Configuration Choice"); //$NON-NLS-1$
-		dialog.setMessage("Select the configuration to run"); //$NON-NLS-1$
-		dialog.setMultipleSelection(false);
-		int result = dialog.open();
-		labelProvider.dispose();
-		if (result == Window.OK) {
-			return (ILaunchConfiguration) dialog.getFirstResult();
-		}
-		return null;
-	}
+
 	
 }
