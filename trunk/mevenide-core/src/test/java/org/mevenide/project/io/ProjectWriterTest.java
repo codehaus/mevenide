@@ -18,12 +18,14 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.List;
+import java.util.Map;
+
+import junit.framework.TestCase;
 
 import org.apache.maven.project.Dependency;
 import org.apache.maven.project.Project;
+import org.mevenide.ProjectConstants;
 import org.mevenide.project.DependencyUtil;
-
-import junit.framework.TestCase;
 
 /**
  * 
@@ -47,29 +49,37 @@ public class ProjectWriterTest extends TestCase {
 	}
 
 	public void testAddSource() throws Exception {
-//		pomWriter.addSource(
-//			"src/pyo/java",
-//			projectFile,
-//			BuildConstants.MAVEN_SRC);
-//		pomWriter.addSource(
-//			"src/pyo/aspect",
-//			projectFile,
-//			BuildConstants.MAVEN_ASPECT);
-//		Hashtable h = ProjectReader.getAllSourceDirectories(projectFile);
-//		assertEquals(2, h.size());
-//		assertTrue(h.containsKey("src/pyo/java"));
-//		assertTrue(h.containsKey("src/pyo/aspect"));
+		pomWriter.addSource(
+			"src/pyo/java",
+			projectFile,
+		ProjectConstants.MAVEN_SRC_DIRECTORY);
+		pomWriter.addSource(
+			"src/pyo/aspect",
+			projectFile,
+			ProjectConstants.MAVEN_ASPECT_DIRECTORY);
+		
+		Map h = ProjectReader.getReader().getSourceDirectories(projectFile);
+		
+		assertEquals(3, h.size());
+		
+		assertTrue(h.containsValue("src/pyo/java"));
+		assertTrue(h.containsValue("src/pyo/aspect"));
+		assertTrue(h.containsValue("src/test/java"));
+		
+		assertEquals("src/pyo/java", h.get(ProjectConstants.MAVEN_SRC_DIRECTORY));
+		assertEquals("src/test/java", h.get(ProjectConstants.MAVEN_TEST_DIRECTORY));
+		assertEquals("src/pyo/aspect", h.get(ProjectConstants.MAVEN_ASPECT_DIRECTORY));
 	}
 
 	public void testIsDependencyPresent()throws Exception {
-		 Project project = ProjectReader.getReader().read(projectFile);
-		 List dependencies = project.getDependencies();
+		Project project = ProjectReader.getReader().read(projectFile);
+		List dependencies = project.getDependencies();
 		
-		 Dependency dep = DependencyUtil.getDependency("E:/maven/repository/junit/jars/junit-3.8.1.jar");
-		 assertTrue(pomWriter.isDependencyPresent(project, dep));
+		Dependency dep = DependencyUtil.getDependency("E:/maven/repository/junit/jars/junit-3.8.1.jar");
+		assertTrue(pomWriter.isDependencyPresent(project, dep));
 		 
-		 dep = DependencyUtil.getDependency("E:/bleeeaaaah/junit/jars/junit-3.8.1.jar");
-		 assertTrue(pomWriter.isDependencyPresent(project, dep));
+		dep = DependencyUtil.getDependency("E:/bleeeaaaah/junit/jars/junit-3.8.1.jar");
+		assertTrue(pomWriter.isDependencyPresent(project, dep));
 		 
 		dep = DependencyUtil.getDependency("E:/bleeeaaaah/plouf/jars/junit-3.8.1.jar");
 		assertTrue(pomWriter.isDependencyPresent(project, dep));
@@ -78,7 +88,15 @@ public class ProjectWriterTest extends TestCase {
 		assertTrue(pomWriter.isDependencyPresent(project, dep));
 	}
 	
-	public void testAddDependency() {
+	public void testAddDependency() throws Exception {
+		pomWriter.addDependency("E:/bleeeaaaah/testo/ploufs/testo-0.0.1.plouf", projectFile);
+		Project project = ProjectReader.getReader().read(projectFile);
+		Dependency dep = DependencyUtil.getDependency("E:/bleeeaaaah/testo/ploufs/testo-0.0.1.plouf");
+		assertTrue(pomWriter.isDependencyPresent(project, dep));
+	}
+	
+	public void testAddResource() {
+		
 	}
 
 	private void copy(String sourceFile, String destFile) throws Exception {
