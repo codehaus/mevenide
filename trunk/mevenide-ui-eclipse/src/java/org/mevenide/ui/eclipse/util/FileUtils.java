@@ -190,7 +190,7 @@ public class FileUtils {
 	
 		RandomAccessFile raf = new RandomAccessFile(ignoredResourceFile.getLocation().toOSString(), "r");
 		String line = null;
-		while ( (line = raf.readLine()) != null ) {
+		while ( (line = raf.readLine()) != null && !line.trim().equals("")) {
 			ignoredLines.add(line);
 		}
 		
