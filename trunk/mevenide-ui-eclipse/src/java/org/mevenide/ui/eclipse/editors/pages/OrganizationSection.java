@@ -150,7 +150,7 @@ public class OrganizationSection extends PageSection {
 						if (imageFile != null) {
 							logoText.setFocus();
 							String basedir = ((FileEditorInput) getPage().getPomEditor().getEditorInput()).getFile().getLocation().toOSString();
-							imageFile = MevenideUtils.makeRelativePath(new File(basedir).getParentFile(), imageFile);
+							imageFile = MevenideUtils.makeRelativePath(new File(basedir).getParentFile(), imageFile).replaceAll("\\\\", "/");
 							logoText.setText(imageFile);
 						}
 					}
