@@ -15,12 +15,22 @@ package org.mevenide.ui.eclipse.sync.pom;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileWriter;
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 
+import org.apache.maven.project.Dependency;
+import org.apache.maven.project.Project;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.JavaCore;
+import org.mevenide.project.DependencyFactory;
+import org.mevenide.project.DependencyUtil;
+import org.mevenide.project.InvalidDependencyException;
+import org.mevenide.project.io.DefaultProjectMarshaller;
+import org.mevenide.project.io.ProjectReader;
 import org.mevenide.project.io.ProjectSkeleton;
 import org.mevenide.sync.AbstractPomSynchronizer;
 import org.mevenide.sync.ISynchronizer;
@@ -68,10 +78,43 @@ public class PomSynchronizer extends AbstractPomSynchronizer implements ISynchro
             for (int i = 0; i < cpEntries.length; i++) {
 				updatePom(cpEntries[i]);
 			}
+			removeUnusedDependencies(cpEntries);
 		}
 		catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public void removeUnusedDependencies(IClasspathEntry[] cpEntries) throws Exception {
+		Project mavenProject = ProjectReader.getReader().read(getPom());
+		List dependencies = mavenProject.getDependencies();
+		List declaredDependencies = getDeclaredDependencies(cpEntries);
+		List newDependencies = new ArrayList();
+		for (int i = 0; i < dependencies.size(); i++) {
+			for (int j = 0; j < declaredDependencies.size(); j++) {
+				if( DependencyUtil.areEquals(
+						(Dependency)declaredDependencies.get(j), 
+						(Dependency)dependencies.get(i)) ) {
+					newDependencies.add(declaredDependencies.get(j));
+				}
+			}
+		}
+		mavenProject.setDependencies(newDependencies);
+		FileWriter writer = new FileWriter(getPom());
+		new DefaultProjectMarshaller().marshall(writer, mavenProject);
+	}
+
+	private List getDeclaredDependencies(IClasspathEntry[] cpEntries)
+		throws Exception, InvalidDependencyException {
+		DependencyFactory dependencyFactory = DependencyFactory.getFactory(); 
+		List declaredDependencies = new ArrayList();
+		for (int i = 0; i < cpEntries.length; i++) {
+			if ( cpEntries[i].getEntryKind() == IClasspathEntry.CPE_LIBRARY ) {
+				String path = pathResolver.getAbsolutePath(cpEntries[i].getPath());
+				declaredDependencies.add(dependencyFactory.getDependency(path));
+			}
+		}
+		return declaredDependencies;
 	}
 	
     /**

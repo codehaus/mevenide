@@ -227,7 +227,10 @@ public class SourceDirectoryTypePart extends ViewPart {
 	}
 	
 	/**
-	 * doesnt use the memento for now. have to configure how it works.
+	 * not sure how to use memento efficiciently so doesnt use it for now. 
+	 * have to figure out how it works. 
+	 * 
+	 * @see SourceDirectoryMarshaller 
 	 */
 	public void saveState(IMemento memento) {
 	}
