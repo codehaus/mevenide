@@ -46,52 +46,70 @@
  * SUCH DAMAGE.
  * ====================================================================
  */
-package org.mevenide.project.dependency;
+package org.mevenide;
 
-import java.io.File;
+import java.util.Enumeration;
+import java.util.Properties;
+import java.util.Vector;
 
-import org.mevenide.AbstractMevenideTestCase;
-import org.mevenide.Environment;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.tools.ant.taskdefs.Execute;
 
-/**
+/**  
  * 
  * @author Gilles Dodinet (gdodinet@wanadoo.fr)
- * @version $Id$
+ * @version $Id: EnvironmentUtil.java,v 1.1 11 nov. 2003 Exp gdodinet 
  * 
  */
-public class DependencyResolverTest extends AbstractMevenideTestCase {
+public class EnvironmentUtil {
+    private static Log log = LogFactory.getLog(EnvironmentUtil.class);
+
+    private EnvironmentUtil() {
+    }
+    
+    private static Properties envProperties;
+    
+    
+    /**
+     * this is a slighty modified version of org.apache.tools.ant.taskdefs.Property#loadEnvironment()
+     * (c) ASF
+     */
+	protected static void loadEnvironment() {
+	   Properties props = new Properties();
+	   Vector osEnv = Execute.getProcEnvironment();
+	   log.debug("loading environment");
+	   for (Enumeration e = osEnv.elements(); e.hasMoreElements();) {
+		   String entry = (String) e.nextElement();
+		   int pos = entry.indexOf('=');
+		   if (pos == -1) {
+			log.debug("Ignoring: " + entry);
+		   } else {
+			   props.put(entry.substring(0, pos),
+			   entry.substring(pos + 1));
+		   }
+	   }
+	   envProperties = props;
+       log.debug("environment loaded");
+	   log.debug("Maven home = " + getMavenHome());	
+	   log.debug("Java home = " + getJavaHome());
+	   Environment.setJavaHome(getJavaHome());
+	   Environment.setMavenHome(getMavenHome());
+	}
 	
-	
-	protected void setUp() throws Exception {
-		super.setUp();
+	static String getMavenHome() {
+	    return (String) envProperties.get("MAVEN_HOME");
 	}
 
-	public void testGuessExtension() throws Exception {
-		IDependencyResolver resolver = DependencyResolverFactory.getFactory().newInstance("/home/bleah/bouh/foo+joe-test2.-bar-1.0.7-beta-1.txt");
-		String ext = resolver.guessExtension();
-		assertEquals("txt", ext);
-		
-		resolver = DependencyResolverFactory.getFactory().newInstance("/home/bleah/bouh/rt.jar");
-		ext = resolver.guessExtension();
-		assertEquals("jar", ext);
-		
-		//BUG-DefaultDependencyResolver_DEP_guessVersion $DEP-3 depends on $DEP-1
-		//assertEquals("tar.gz", ext);
-		
+	static String getJavaHome() {
+		return (String) envProperties.get("JAVA_HOME");
 	}
 
-	public void testGuess() throws Exception {
-		File jarDir = new File(Environment.getMavenLocalRepository(), "commons-httpclient/jars");
-		jarDir.mkdirs();
-		File jar = new File(jarDir, "commons-httpclient-2.0alpha1-20020829.jar");
-		jar.createNewFile();
-		IDependencyResolver resolver = DependencyResolverFactory.getFactory().newInstance(jar.getAbsolutePath());
-		assertEquals("2.0alpha1-20020829", resolver.guessVersion());
-		assertEquals("commons-httpclient", resolver.guessArtifactId());
-		assertEquals("commons-httpclient", resolver.guessGroupId());
-		
+	static String getMavenRepoLocal() {
+		return (String) envProperties.get("MAVEN_REPO_LOCAL");
 	}
-	
-	
-	
+
+	static String getMavenRepo() {
+		return (String) envProperties.get("MAVEN_REPO");
+	}
 }

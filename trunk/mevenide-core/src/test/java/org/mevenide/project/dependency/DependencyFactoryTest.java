@@ -70,7 +70,7 @@ public class DependencyFactoryTest extends AbstractMevenideTestCase{
 
     protected void setUp() throws Exception {
     	super.setUp();
-        String mavenRepo = Environment.getMavenRepository();
+        String mavenRepo = Environment.getMavenLocalRepository();
 		File testArtifactDirectory = new File(mavenRepo, "mevenide"); 
 		testTypeDirectory = new File(testArtifactDirectory, "txts");
 		testTypeDirectory.mkdirs();
@@ -144,7 +144,7 @@ public class DependencyFactoryTest extends AbstractMevenideTestCase{
 		assertEquals("testo", dep.getArtifactId());
 		
 		
-		File httpClientRepo = new File(Environment.getMavenRepository(), "commons-httpclient");
+		File httpClientRepo = new File(Environment.getMavenLocalRepository(), "commons-httpclient");
 		File jarDir = new File(httpClientRepo, "jars");
 		jarDir.mkdirs();
 		dep = dependencyFactory.getDependency(new File(jarDir, "commons-httpclient-2.0alpha1-20020829.jar").getAbsolutePath());

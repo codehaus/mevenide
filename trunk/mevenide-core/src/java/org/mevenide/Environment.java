@@ -63,6 +63,10 @@ public final class Environment {
 	private Environment()  {
 	}
 	
+	static {
+	    EnvironmentUtil.loadEnvironment();
+	}
+	
     /** maven home directory */
     private static String mavenHome;
     
@@ -70,7 +74,7 @@ public final class Environment {
 	private static String mavenLocalHome;
 		
 	/** maven repository */
-	private static String mavenRepository;
+	private static String mavenLocalRepository;
     
     /** java home directory */
     private static String javaHome;
@@ -119,14 +123,14 @@ public final class Environment {
      * @return java home directory (e.g. C:/jdk1.4.1/)
      */
 	public static String getJavaHome() {
-		return javaHome;
+		return javaHome == null || javaHome.trim().equals("") ? EnvironmentUtil.getJavaHome() : javaHome;
 	}
 
     /** 
      * @return maven installation directory
      */
 	public static String getMavenHome() {
-		return mavenHome;
+	    return mavenHome == null || mavenHome.trim().equals("") ? EnvironmentUtil.getMavenHome() : mavenHome;
 	}
 
     /**
@@ -143,15 +147,15 @@ public final class Environment {
 	/**
 	 * @return maven local repository location
 	 */
-	public static String getMavenRepository() {
-		return mavenRepository;
+	public static String getMavenLocalRepository() {
+		return mavenLocalRepository != null ? mavenLocalRepository : EnvironmentUtil.getMavenRepoLocal();
 	}
 	
 	/**
 	 * set maven local repository location
 	 */
-	public static void setMavenRepository(String repo) {
-		mavenRepository = repo;
+	public static void setMavenLocalRepository(String repo) {
+		mavenLocalRepository = repo;
 	}
 
 	/** 
