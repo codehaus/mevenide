@@ -18,13 +18,16 @@ package org.mevenide.ui.eclipse.sync.model;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.ui.views.properties.ComboBoxPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.TextPropertyDescriptor;
+import org.mevenide.project.ProjectConstants;
 import org.mevenide.ui.eclipse.editors.properties.AbstractPomPropertySource;
 import org.mevenide.util.MevenideUtils;
 
 /**
- * @todo make type a Combo
+ *
  * @author <a href="mailto:rhill2@free.fr">Gilles Dodinet</a>
  * @version $Id$
  */
@@ -37,24 +40,44 @@ public class DirectoryPropertySource extends AbstractPomPropertySource {
 	
 	private Directory directory;
 	
+	private static final String[] DIRECTORY_TYPE_VALUES = new String[] {
+		ProjectConstants.MAVEN_SRC_DIRECTORY,
+		ProjectConstants.MAVEN_TEST_DIRECTORY,
+		ProjectConstants.MAVEN_ASPECT_DIRECTORY,
+		ProjectConstants.MAVEN_RESOURCE,
+		ProjectConstants.MAVEN_TEST_RESOURCE,
+	};
+	
 	private IPropertyDescriptor[] descriptors = new IPropertyDescriptor[2];
 	{
 		descriptors[0] = new TextPropertyDescriptor(
 			DIRECTORY_PATH,
-			DIRECTORY_PATH
-		);
-		descriptors[1] = new TextPropertyDescriptor(
-			DIRECTORY_TYPE,
 			DIRECTORY_TYPE
 		);
+		descriptors[1] = new ComboBoxPropertyDescriptor(
+			DIRECTORY_TYPE,
+			DIRECTORY_TYPE,
+			DIRECTORY_TYPE_VALUES
+		);
+		((ComboBoxPropertyDescriptor) descriptors[1]).setLabelProvider(
+			new LabelProvider() {
+				public String getText(Object element) {
+					if (element instanceof Integer) {
+						return DIRECTORY_TYPE_VALUES[((Integer) element).intValue()];
+					}
+					return super.getText(element);
+				}
+			}
+		);
 	}
+	
 
 	public DirectoryPropertySource(Directory directory) {
 		this.directory = directory;
 	}
 
 	public Object getEditableValue() {
-		return directory.getType();
+		return directory.getType() != null ? directory.getType() : EMPTY_STR;
 	}
 
 	public IPropertyDescriptor[] getPropertyDescriptors() {
@@ -69,9 +92,18 @@ public class DirectoryPropertySource extends AbstractPomPropertySource {
 			return valueOrEmptyString(directory.getPath());
 		}
 		if (DIRECTORY_TYPE.equals(id)) {
-			return valueOrEmptyString(directory.getType());
+			return getTypeIndex();
 		}
 		return EMPTY_STR;
+	}
+	
+	private Integer getTypeIndex() {
+	    for ( int u = 0; u < 5; u++ ) {
+	        if ( DIRECTORY_TYPE_VALUES[u].equals(directory.getType()) ) {
+	            return new Integer(u);
+	        }
+	    }
+	    return new Integer(0);
 	}
 	
 	public boolean isPropertySet(Object id) {
@@ -85,7 +117,7 @@ public class DirectoryPropertySource extends AbstractPomPropertySource {
 	}
 	
 	public void resetPropertyValue(Object id) {
-		setPropertyValue(id, EMPTY_STR);
+		setPropertyValue(id, ProjectConstants.MAVEN_RESOURCE);
 	}
 
 	public void setPropertyValue(Object id, Object value) {
@@ -105,6 +137,7 @@ public class DirectoryPropertySource extends AbstractPomPropertySource {
 			}
 		}
 		else if (DIRECTORY_TYPE.equals(id)) {
+			newValue = DIRECTORY_TYPE_VALUES[((Integer) value).intValue()];
 			oldValue = directory.getType();
 			if (MevenideUtils.notEquivalent(newValue, oldValue)) {
 				directory.setType(newValue);
@@ -116,7 +149,6 @@ public class DirectoryPropertySource extends AbstractPomPropertySource {
 			firePropertyChangeEvent(id.toString(), oldValue, newValue);
 		}
 	}
-
 
 	public String getLabel(Object o) {
 		if (log.isDebugEnabled()) {
