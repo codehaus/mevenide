@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Stack;
+import org.jdom.DocType;
 import org.jdom.Document;
 import org.jdom.output.XMLOutputter;
 import org.mevenide.properties.Comment;
@@ -35,7 +36,21 @@ import org.mevenide.properties.KeyValuePair;
  */
 public class DefaultElementHandler implements IElementHandler {
 
-	private static final String INDENT = "    "; //$NON-NLS-1$
+	//jdom way of dealing with dtd
+    private static final String DOCTYPE = "\t<!ELEMENT plugin (property*)>\n" +
+						         		  "\t<!ATTLIST plugin name CDATA #IMPLIED> \n" +
+						                  "\t<!ATTLIST property \n" + 
+						                  "\t          name CDATA #REQUIRED \n" +
+						                  "\t          label CDATA #IMPLIED \n" +
+						                  "\t          default CDATA #IMPLIED \n" + 
+						                  "\t          required (true|false) \"false\" \n" +
+						                  "\t          description CDATA #IMPLIED \n" + 
+						                  "\t          validator CDATA #IMPLIED \n" +
+						                  "\t          validate (true|false) \"true\" \n" + 
+						                  "\t          scope (project|global) \"project\" \n" +
+						    			  "\t          category CDATA #IMPLIED>\n";
+    
+    private static final String INDENT = "    "; //$NON-NLS-1$
 	private static final String DEFAULT_ATTR = "default"; //$NON-NLS-1$
 	private static final String DESCRIPTION_ATTR = "description"; //$NON-NLS-1$
 	private static final String NAME_ATTR = "name"; //$NON-NLS-1$
@@ -91,20 +106,11 @@ public class DefaultElementHandler implements IElementHandler {
         }
     }
 
-//    <!ELEMENT plugin (property*)>
-//    <!ATTLIST plugin name>
-//    <!ATTLIST property 
-//              name CDATA #REQUIRED
-//              label CDATA #IMPLIED
-//              default CDATA #IMPLIED 
-//              required (true|false) "false"
-//              description CDATA #IMPLIED 
-//              validator CDATA #IMPLIED
-//              validate (true|false) "true" 
-//              scope (project|global) "project"
-//    			category CDATA #IMPLIED> 
     public String getXmlDescription() {
         Document document = new Document();
+        
+        setDocType(document);
+        
         org.jdom.Element root = new org.jdom.Element(PLUGIN_ELEMENT);
         document.setRootElement(root);
         
@@ -123,7 +129,13 @@ public class DefaultElementHandler implements IElementHandler {
         
     }
 
-	private String getString(Document document) {
+	private void setDocType(Document document) {
+        DocType doctype = new DocType(PLUGIN_ELEMENT);
+        doctype.setInternalSubset(DOCTYPE);
+        document.setDocType(doctype);
+    }
+
+    private String getString(Document document) {
 	    XMLOutputter outputter = new XMLOutputter();
 		outputter.setIndent(INDENT);
 		outputter.setExpandEmptyElements(false);
