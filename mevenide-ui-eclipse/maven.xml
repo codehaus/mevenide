@@ -1,11 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project>
+<project xmlns:j="jelly:core">
+	
 	<postGoal name="jar:install">
-		<attainGoal name="eclipse:deploy-plugin"/>
+		<attainGoal name="mevenide:deploy-plugin"/>
 	</postGoal>
 	
-	<goal name="eclipse:deploy-plugin">
-		
+	<goal name="mevenide:deploy-plugin">
+		<!-- copy dependencies to mevenide lib directory -->
+		<j:forEach var="dependency" items="${pom.dependencies}">
+			<j:if test="${!dependency.groupId.equals('eclipse')}">
+            	<copy file="${maven.repo.local}/${dependency.groupId}/${dependency.type}s/${dependency.artifactId}-${dependency.version}.${dependency.type}" 
+            		  todir="${eclipse.home}/plugins/org.mevenide_1.0/lib"/>
+            </j:if>
+        </j:forEach>
+        
+        <!-- copy plugin files to mevenide root directory -->
+        <copy todir="${eclipse.home}/plugins/org.mevenide_1.0">
+        	<fileset dir="${basedir}" includes="${eclipse.plugin.files}"/>
+        </copy>
+        
+        <!-- copy mevenide-ui-eclipse archive to mevenide root directory -->
+        <copy todir="${eclipse.home}/plugins/org.mevenide_1.0">
+        	<fileset dir="${maven.repo.local}/mevenide/jars" includes="mevenide-ui-eclipse-${pom.currentVersion}.jar"/>
+        </copy>
+        
+        <!-- copy icons dir to mevenide root -->
+        <copy todir="${eclipse.home}/plugins/org.mevenide_1.0/icons">
+        	<fileset dir="${basedir}/icons"/>
+        </copy>
 	</goal>
+	
 </project>
 

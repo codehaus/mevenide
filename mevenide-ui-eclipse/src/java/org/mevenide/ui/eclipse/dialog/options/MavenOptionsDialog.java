@@ -83,7 +83,7 @@ public class MavenOptionsDialog {
     
 		Button optionButton = new Button(parent, SWT.CHECK);
 		optionButton.setLayoutData(buttonDataLayout);
-		optionButton.setText(OptionsRegistry.getOptionDescription(option));
+		optionButton.setText(OptionsRegistry.getDescription(option));
 		optionButton.setToolTipText(new StringBuffer(" -").append(option).toString());
     
 		initializeCheckboxState(optionButton);
