@@ -17,6 +17,9 @@
 package org.mevenide.ui.eclipse.launch.configuration;
 
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -56,7 +59,8 @@ public class MavenLaunchShortcut implements ILaunchShortcut {
 	private boolean showDialog = false;
 
 	private String goalsToRun = null;
-		
+	private boolean offline = false;
+	
 	public void setShowDialog(boolean showDialog) {
 		this.showDialog = showDialog;
 
@@ -158,7 +162,13 @@ public class MavenLaunchShortcut implements ILaunchShortcut {
 			        VariablesPlugin.getDefault().getStringVariableManager().generateVariableExpression("workspace_loc", basedir.toString())); 
 			workingCopy.setAttribute(MavenArgumentsTab.GOALS_TO_RUN, goals);
 			
-			// set default for common settings
+			if ( offline ) {
+				Map optionsMap = new HashMap();
+				optionsMap.put("-o", Boolean.toString(offline));
+				workingCopy.setAttribute(MavenArgumentsTab.OPTIONS_MAP, optionsMap);
+			}
+			
+		    // set default for common settings
 			CommonTab tab = new CommonTab();
 			tab.setDefaults(workingCopy);
 			tab.dispose();
@@ -178,5 +188,9 @@ public class MavenLaunchShortcut implements ILaunchShortcut {
 	
 	public void setGoalsToRun(String goalsToRun) {
 		this.goalsToRun = goalsToRun;
+	}
+	
+	public void setOffline(boolean offline) {
+		this.offline = offline;
 	}
 }
