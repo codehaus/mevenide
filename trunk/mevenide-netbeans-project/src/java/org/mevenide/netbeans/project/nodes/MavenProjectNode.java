@@ -17,10 +17,14 @@
 package org.mevenide.netbeans.project.nodes;
 
 import java.awt.Image;
+import javax.swing.Action;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.mevenide.netbeans.project.ActionProviderImpl;
 import org.mevenide.netbeans.project.MavenProject;
+import org.netbeans.spi.project.ui.support.LogicalViews;
+
 import org.openide.nodes.FilterNode;
 import org.openide.nodes.Node;
 import org.openide.util.Utilities;
@@ -62,6 +66,31 @@ public class MavenProjectNode extends FilterNode {
             icon = Utilities.loadImage("org/mevenide/netbeans/project/resources/MavenIcon.gif");
         }
         return icon;
+    }
+    
+    public javax.swing.Action[] getActions(boolean param) {
+//       javax.swing.Action[] spr = super.getActions(param);
+        Action[] toReturn = new Action[14];
+        ActionProviderImpl provider = (ActionProviderImpl)getLookup().lookup(ActionProviderImpl.class);
+        
+        toReturn[0] = LogicalViews.newFileAction();
+        toReturn[1] = null;
+        toReturn[2] = provider.createBasicMavenAction("Build", "jar:install");
+        toReturn[3] = provider.createBasicMavenAction("Clean", "clean");
+        toReturn[4] = provider.createBasicMavenAction("Rebuild", "clean jar:install");
+        toReturn[5] = provider.createBasicMavenAction("Generate Javadoc", "javadoc");
+        toReturn[6] = provider.createBasicMavenAction("Temporary: Create NBM", "nbm:install");
+        // separator
+        toReturn[7] = null;
+        toReturn[8] = LogicalViews.setAsMainProjectAction();
+        toReturn[9] = LogicalViews.openSubprojectsAction();
+        toReturn[10] = LogicalViews.closeProjectAction();
+        toReturn[11] = null;
+        toReturn[12] = LogicalViews.customizeProjectAction();
+//        for (int i = 0; i < spr.length; i++) {
+//            toReturn[i + 6] = spr[i];
+//        }
+        return toReturn;
     }
     
 //    protected Sheet createSheet() {

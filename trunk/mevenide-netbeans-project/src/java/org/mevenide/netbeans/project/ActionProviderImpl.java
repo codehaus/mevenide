@@ -19,6 +19,8 @@ package org.mevenide.netbeans.project;
 
 import java.io.File;
 import java.net.MalformedURLException;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.mevenide.netbeans.project.exec.MavenExecutor;
@@ -82,7 +84,7 @@ public class ActionProviderImpl implements ActionProvider
                     if (javadoc == null) {
                         return;
                     }
-                    File fil = new File(javadoc);
+                    File fil = new File(javadoc, "index.html");
                     if (fil.exists()) {
                         try {
                             HtmlBrowser.URLDisplayer.getDefault().showURL(fil.toURI().toURL());
@@ -100,4 +102,22 @@ public class ActionProviderImpl implements ActionProvider
         return true;
     }
     
+    public Action createBasicMavenAction(String name, String goals) {
+        return new BasicAction(name, goals);
+    }
+    
+    private class BasicAction extends AbstractAction {
+        private String nm;
+        private String gls;
+        
+        
+        private BasicAction(String name, String goals) {
+            gls = goals;
+            putValue(Action.NAME, name);
+        }
+        
+        public void actionPerformed(java.awt.event.ActionEvent e) {
+            ActionProviderImpl.this.invokeAction(gls, ActionProviderImpl.this.project.getLookup());
+        }
+    }
 }
