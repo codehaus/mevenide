@@ -17,6 +17,7 @@
 package org.mevenide.properties.resolver;
 
 import java.io.File;
+import org.mevenide.properties.IPropertyFinder;
 
 import org.mevenide.properties.IPropertyResolver;
 
@@ -33,7 +34,9 @@ public class PropertyFilesAggregatorTest extends AbstractResolverTestCase {
     
     protected void setUp() throws Exception {
         super.setUp();
-        def = new PropertyFilesAggregator(projectDir, userHomeDir, new DefaultsResolver(projectDir, userHomeDir, finder));
+        def = new PropertyFilesAggregator(projectDir, userHomeDir, 
+                new DefaultsResolver(projectDir, userHomeDir, finder, 
+                    new DummyPropFilesFinder()));
     }
     
     public void testGetValue() throws Exception {
@@ -89,4 +92,14 @@ public class PropertyFilesAggregatorTest extends AbstractResolverTestCase {
         def = null;
     }
     
+    private class DummyPropFilesFinder implements IPropertyFinder {
+        
+        public String getValue(String key) {
+            return null;
+        }
+        
+        public void reload() {
+        }
+        
+    }
 }

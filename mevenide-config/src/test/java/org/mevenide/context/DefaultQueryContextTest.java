@@ -61,7 +61,7 @@ public class DefaultQueryContextTest extends TestCase {
     }
 
     protected void tearDown() throws Exception {
-//        delete(userHomeDir);
+        delete(userHomeDir);
         System.setProperty("user.home", originalUserHome);
     }
     
