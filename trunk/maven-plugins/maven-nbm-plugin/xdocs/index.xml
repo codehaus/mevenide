@@ -11,6 +11,13 @@
       	<p>
    	  This Maven plugin generates the Netbeans Module (NBM) files. </p>
       <p>
+      Currently the plugin will ensure your jars are netbeans enabled, will create nbm files for easy updating, not only for your code but possibly also for it's dependencies.
+   	  </p>
+   	  </div>
+    </section>
+    <section name="Building">
+      <div id="documentContent">
+      <p>
       In order to run the plugin, you will need to 
       get the nbantext.jar file from netbeans.org. Currently it's not downloadable, you will need to build it from the sources,
       and checkout the nbbuild module from Netbeans' cvs. Then go to nbbuild directory and run ant. 

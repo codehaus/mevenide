@@ -33,6 +33,7 @@
         <artifactId>commons-logging</artifactId>
         <version>1.0.1</version>
         <type>jar</type>
+        <url>http://jakarta.apache.org/commons</url>
 	    <properties>
             <netbeans.module.dep>spec</netbeans.module.dep>
             <netbeans.lib.generate>true</netbeans.lib.generate>
@@ -49,6 +50,7 @@
             <artifactId>jdom</artifactId>
             <version>1.0b8</version>
             <type>jar</type>
+            <url>http://www.jdom.org</url>
         	<properties>
                  <netbeans.module.dep>impl</netbeans.module.dep>
                  <netbeans.lib.generate>true</netbeans.lib.generate>
