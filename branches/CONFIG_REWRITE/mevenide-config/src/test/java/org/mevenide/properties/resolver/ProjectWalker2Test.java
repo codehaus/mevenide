@@ -22,6 +22,7 @@ import org.apache.maven.project.Project;
 import org.jdom.Element;
 import org.jdom.input.DefaultJDOMFactory;
 import org.jdom.input.JDOMFactory;
+import org.mevenide.context.AbstractQueryContext;
 import org.mevenide.context.IProjectContext;
 import org.mevenide.context.IQueryContext;
 
@@ -68,7 +69,7 @@ public class ProjectWalker2Test extends TestCase {
     }
 
     
-    private class TestContext implements IQueryContext, IProjectContext {
+    private class TestContext extends AbstractQueryContext implements IProjectContext {
         private Element  projectElement;
         TestContext(Element proj) {
             projectElement = proj;
@@ -86,10 +87,6 @@ public class ProjectWalker2Test extends TestCase {
         }
         
         public String getProjectPropertyValue(String key) {
-            return null;
-        }
-        
-        public String getPropertyValue(String key) {
             return null;
         }
         
@@ -130,6 +127,22 @@ public class ProjectWalker2Test extends TestCase {
         }
 
         public java.util.Set getUserPropertyKeys() {
+            return Collections.EMPTY_SET;
+        }
+
+        public String getParentProjectPropertyValue(String key) {
+            return null;
+        }
+
+        public java.util.Set getParentProjectPropertyKeys() {
+            return Collections.EMPTY_SET;
+        }
+
+        public String getParentBuildPropertyValue(String key) {
+            return null;
+        }
+
+        public java.util.Set getParentBuildPropertyKeys() {
             return Collections.EMPTY_SET;
         }
         

@@ -36,7 +36,7 @@ import org.jdom.Element;
 import org.jdom.input.DefaultJDOMFactory;
 import org.jdom.input.JDOMFactory;
 import org.jdom.output.XMLOutputter;
-import org.mevenide.project.io.JDomProjectUnmarshaller;
+import org.mevenide.context.JDomProjectUnmarshaller;
 import org.netbeans.spi.project.ui.templates.support.Templates;
 import org.openide.WizardDescriptor;
 import org.openide.filesystems.FileObject;

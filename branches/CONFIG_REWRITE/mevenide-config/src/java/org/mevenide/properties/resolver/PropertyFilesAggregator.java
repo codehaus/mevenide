@@ -23,6 +23,7 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.mevenide.context.IQueryContext;
+import org.mevenide.environment.SysEnvLocationFinder;
 import org.mevenide.properties.IPropertyFinder;
 import org.mevenide.properties.IPropertyLocator;
 import org.mevenide.properties.IPropertyResolver;
@@ -31,7 +32,7 @@ import org.mevenide.properties.IPropertyResolver;
  *
  * @author  <a href="mailto:ca206216@tiscali.cz">Milos Kleint</a>
  */
-public final class PropertyFilesAggregator implements IPropertyResolver, IPropertyLocator {
+public class PropertyFilesAggregator implements IPropertyResolver, IPropertyLocator {
     private static final Log logger = LogFactory.getLog(PropertyFilesAggregator.class);
     
     private File projectDir;
@@ -51,21 +52,31 @@ public final class PropertyFilesAggregator implements IPropertyResolver, IProper
      * @param defs property finder which override properies definition that may be found in <code>user</code> and <code>project</code> properties files 
      * @deprecated use IQueryContext based constructor
      */
-    public PropertyFilesAggregator(File project, File user, IPropertyFinder defs) {
+    PropertyFilesAggregator(File project, File user, DefaultsResolver defs) {
         projectDir = project;
         userDir = user;
         defaults = defs;
         initialize();
-        //TODO - add change listeners to figure out added/remove prop files.
+        // cannot use the ILocationFinder here, since Loc finders use resolvers -> cyclic dependency
+        String val = getResolvedValue("maven.plugin.unpacked.dir"); //NOI18N
+        System.out.println("plugin=" + val);
+        if (val != null) {
+            defs.initPluginPropsFinder(PropertyResolverFactory.getFactory().getPluginDefaultsPropertyFinder(new File(val)));
+        }
     }
     
     /**
      * IQueryContext based constructor. not public, use PropertyResolverfactory
      */
-    PropertyFilesAggregator(IQueryContext querycontext, IPropertyFinder defs) {
+    PropertyFilesAggregator(IQueryContext querycontext, DefaultsResolver defs) {
         context = querycontext;
         defaults = defs;
         initializeContext();
+        // cannot use the ILocationFinder here, since Loc finders use resolvers -> cyclic dependency
+        String val = getResolvedValue("maven.plugin.unpacked.dir"); //NOI18N
+        if (val != null) {
+            defs.initPluginPropsFinder(PropertyResolverFactory.getFactory().getPluginDefaultsPropertyFinder(new File(val)));
+        }
     }
     
     private void initialize() { 
@@ -108,19 +119,24 @@ public final class PropertyFilesAggregator implements IPropertyResolver, IProper
         return getValue(key, false);
     }
     
-    private String getValue(String key, boolean resolve) {
+    protected String getValue(String key, boolean resolve) {
         String toReturn = null;
         if (key.startsWith("pom.") && projectWalker != null) {
             toReturn = projectWalker.getValue(key);
         } else {
-            if (userBuild != null) {
-                toReturn = userBuild.getValue(key);
-            }
-            if (toReturn == null && projectBuild != null ) {
-                toReturn = projectBuild.getValue(key);
-            }
-            if (toReturn == null && project != null ) {
-                toReturn = project.getValue(key);
+            toReturn = checkSysEnv(key);
+            if (toReturn == null && context != null) {
+                toReturn = context.getPropertyValue(key);
+            } else {
+                if (toReturn == null && userBuild != null) {
+                    toReturn = userBuild.getValue(key);
+                }
+                if (toReturn == null && projectBuild != null ) {
+                    toReturn = projectBuild.getValue(key);
+                }
+                if (toReturn == null && project != null ) {
+                    toReturn = project.getValue(key);
+                }
             }
             if (toReturn == null && defaults != null ) {
                 toReturn = defaults.getValue(key);
@@ -131,13 +147,28 @@ public final class PropertyFilesAggregator implements IPropertyResolver, IProper
         }
         return toReturn;
     }
+    
+    private String checkSysEnv(String key) {
+        if ("maven.home.local".equals(key)) {
+            return SysEnvLocationFinder.getInstance().getMavenLocalHome();
+        }
+        if ("maven.home".equals(key)) {
+            return SysEnvLocationFinder.getInstance().getMavenHome();
+        }
+        if ("maven.repo.local".equals(key)) {
+            return SysEnvLocationFinder.getInstance().getMavenLocalRepository();
+        }
+        return null;
+    }
 
     /**
      * IPropertyLocator method, identifying where the property comes from.
      */
     public int getPropertyLocation(String key) {
         int toReturn = IPropertyLocator.LOCATION_NOT_DEFINED;
-        
+        if (checkSysEnv(key) != null) {
+            return IPropertyLocator.LOCATION_SYSENV;
+        }
         if (userBuild != null && userBuild.getValue(key) != null) {
             toReturn = IPropertyLocator.LOCATION_USER_BUILD;
         }
@@ -146,6 +177,12 @@ public final class PropertyFilesAggregator implements IPropertyResolver, IProper
         }
         else if (project != null && project.getValue(key) != null) {
             toReturn = IPropertyLocator.LOCATION_PROJECT;
+        } 
+        else if (context != null && context.getParentBuildPropertyValue(key) != null) {
+            toReturn = IPropertyLocator.LOCATION_PARENT_PROJECT_BUILD;
+        }
+        else if (context != null && context.getParentProjectPropertyValue(key) != null) {
+            toReturn = IPropertyLocator.LOCATION_PARENT_PROJECT;
         }
         else if (defaults != null && defaults.getValue(key) != null) {
             toReturn = IPropertyLocator.LOCATION_DEFAULTS;
@@ -154,7 +191,7 @@ public final class PropertyFilesAggregator implements IPropertyResolver, IProper
     }
     
     
-    private StringBuffer resolve(StringBuffer value) {
+    protected final StringBuffer resolve(StringBuffer value) {
         StringBuffer toReturn = value;
         int index = value.indexOf("${");
         if (index > -1) {
@@ -210,9 +247,37 @@ public final class PropertyFilesAggregator implements IPropertyResolver, IProper
         }
         else if (location == IPropertyLocator.LOCATION_DEFAULTS) {
             return (defaults != null && defaults.getValue(key) != null);
+        } 
+        else if (location == IPropertyLocator.LOCATION_PARENT_PROJECT) {
+            return (context != null && context.getParentProjectPropertyValue(key) != null);
+        }
+        else if (location == IPropertyLocator.LOCATION_PARENT_PROJECT_BUILD) {
+            return (context != null && context.getParentBuildPropertyValue(key) != null);
         }
         return false;        
-    }   
+    } 
+    
+    public String getValueAtLocation(String key, int location) {
+        if (location == IPropertyLocator.LOCATION_USER_BUILD && userBuild != null) {
+            return userBuild.getValue(key);
+        }
+        else if (location == IPropertyLocator.LOCATION_PROJECT_BUILD && projectBuild != null) {
+            return projectBuild.getValue(key);
+        }
+        else if (location == IPropertyLocator.LOCATION_PROJECT && project != null) {
+           return project.getValue(key);
+        }
+        else if (location == IPropertyLocator.LOCATION_DEFAULTS && defaults != null) {
+            return defaults.getValue(key);
+        } 
+        else if (location == IPropertyLocator.LOCATION_PARENT_PROJECT && context != null) {
+            return context.getParentProjectPropertyValue(key);
+        }
+        else if (location == IPropertyLocator.LOCATION_PARENT_PROJECT_BUILD && context != null) {
+            return context.getParentBuildPropertyValue(key);
+        }
+        return null;
+    }
     
     /**
      * returns all the keys at the given location.
@@ -230,6 +295,10 @@ public final class PropertyFilesAggregator implements IPropertyResolver, IProper
         }
         else if (location == IPropertyLocator.LOCATION_PROJECT) {
            return context.getProjectPropertyKeys();
+        } else if (location == IPropertyLocator.LOCATION_PARENT_PROJECT) {
+            return context.getParentProjectPropertyKeys();
+        } else if (location == IPropertyLocator.LOCATION_PARENT_PROJECT_BUILD) {
+            return context.getParentBuildPropertyKeys();
         }
         else if (location == IPropertyLocator.LOCATION_DEFAULTS) {
             if (defaults != null && defaults instanceof DefaultsResolver) {

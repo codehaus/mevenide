@@ -22,7 +22,6 @@ import org.mevenide.goals.test.util.TestUtils;
 
 import junit.framework.TestCase;
 import org.mevenide.environment.ConfigUtils;
-import org.mevenide.environment.CustomLocationFinder;
 import org.mevenide.environment.LocationFinderAggregator;
 
 /**  
@@ -32,25 +31,29 @@ import org.mevenide.environment.LocationFinderAggregator;
  * 
  */
 public class AbstractTestCase extends TestCase {
-	protected File mavenHomeLocal;
-	protected File pluginsLocal;
-	
-	protected void setUp() throws Exception {
-		mavenHomeLocal = new File(System.getProperty("user.home"), ".mevenide");
-		if (!mavenHomeLocal.exists()) {
-			mavenHomeLocal.mkdirs();
-		}
-        CustomLocationFinder custFinder = new CustomLocationFinder();
-        custFinder.setMavenLocalHome(mavenHomeLocal.getAbsolutePath());
-		pluginsLocal = new File(mavenHomeLocal, "plugins");
-		custFinder.setMavenPluginsDir(pluginsLocal.getAbsolutePath());
-		((LocationFinderAggregator)ConfigUtils.getDefaultLocationFinder()).setCustomLocationFinder(custFinder);
-		if (!pluginsLocal.exists()) {
-			pluginsLocal.mkdir();
-		}
+    protected File pluginsLocal;
+    protected File userHomeDir;
+    
+    protected TestQueryContext context;
+    
+    protected void setUp() throws Exception {
+        String userHome = System.getProperty("user.home"); //NOI18N
+        userHomeDir  = new File(userHome, ".mevenide_test");
+        if (!userHomeDir.exists()) {
+            userHomeDir.mkdir();
+        }
+        context = new TestQueryContext();
+        context.setUserDirectory(userHomeDir);
+        context.addUserPropertyValue("maven.repo.remote", "http://mevenide.codehaus.org");
+        context.addUserPropertyValue("maven.plugin.unpacked.dir", "${user.home}/plugins");
+        pluginsLocal = new File(userHomeDir, "plugins");
+        if (!pluginsLocal.exists()) {
+            pluginsLocal.mkdir();
+        }
     }
     
     protected void tearDown() throws Exception {
-		TestUtils.delete(mavenHomeLocal);
+        TestUtils.delete(userHomeDir);
     }
+    
 }

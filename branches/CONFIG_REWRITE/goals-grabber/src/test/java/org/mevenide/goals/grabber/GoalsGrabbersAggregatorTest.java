@@ -16,6 +16,8 @@
  */
 package org.mevenide.goals.grabber;
 
+import org.mevenide.environment.LocationFinderAggregator;
+
 
 
 /**  
@@ -54,7 +56,7 @@ public class GoalsGrabbersAggregatorTest extends AbstractGoalsGrabberTestCase {
 	private AbstractGoalsGrabberTestCase projectGoalsGrabberTest = new ProjectGoalsGrabberTest();
 
 	protected IGoalsGrabber getGoalsGrabber() throws Exception {
-        defaultGoalsGrabber = defaultGoalsGrabberTest.getGoalsGrabber();
+        defaultGoalsGrabber = new DefaultGoalsGrabber(new LocationFinderAggregator(context));
 		projectGoalsGrabber = projectGoalsGrabberTest.getGoalsGrabber();
 		
 		goalsGrabber = new GoalsGrabbersAggregator();

@@ -38,7 +38,8 @@ public class SysEnvLocationFinder extends AbstractLocationFinder {
     private SysEnvLocationFinder() {
     }
     
-    static SysEnvLocationFinder getInstance() {
+    // needs to be public because of the property resolver..
+    public static SysEnvLocationFinder getInstance() {
         if (locationFinder == null) {
             synchronized (LOCK) {
                 if (locationFinder == null) {
@@ -94,5 +95,9 @@ public class SysEnvLocationFinder extends AbstractLocationFinder {
     
     public String getMavenPluginsDir() {
         return null;
+    }
+    
+    public String getUserHome() {
+        return System.getProperty("user.home");
     }
 }

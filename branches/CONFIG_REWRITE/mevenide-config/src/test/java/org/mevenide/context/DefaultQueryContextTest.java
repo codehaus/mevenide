@@ -33,6 +33,7 @@ public class DefaultQueryContextTest extends TestCase {
     
     protected File userHomeDir;
     protected File projectDir;
+    protected File parentProjectDir;
     protected String originalUserHome;
     private ProjectContext context;
     /** Creates a new instance of DefaultsResolverTest */
@@ -60,8 +61,21 @@ public class DefaultQueryContextTest extends TestCase {
         File projectprop = new File(DefaultQueryContextTest.class.getResource("/org/mevenide/properties/project.properties").getFile());
         copyTo = new File(projectDir, "project.properties");
         copy(projectprop.getAbsolutePath(), copyTo.getAbsolutePath());
+        
+        parentProjectDir = new File (userHomeDir, "test_project_parent");
+        if (!parentProjectDir.exists()) {
+            parentProjectDir.mkdir();
+        }        
+        buildprop = new File(DefaultQueryContextTest.class.getResource("/org/mevenide/properties/parent/build.properties").getFile());
+        copyTo = new File(parentProjectDir, "build.properties");
+        copy(buildprop.getAbsolutePath(), copyTo.getAbsolutePath());
+
+        projectprop = new File(DefaultQueryContextTest.class.getResource("/org/mevenide/properties/parent/project.properties").getFile());
+        copyTo = new File(parentProjectDir, "project.properties");
+        copy(projectprop.getAbsolutePath(), copyTo.getAbsolutePath());
+        
         Project project = new Project();
-        context = new ProjectContext(project, new File("test"));
+        context = new ProjectContext(project, new File("test"), parentProjectDir);
     }
 
     protected void tearDown() throws Exception {
@@ -79,8 +93,7 @@ public class DefaultQueryContextTest extends TestCase {
     }
     
     public void testProjectBased() {
-        DefaultQueryContext query = new DefaultQueryContext(projectDir);
-        query.initializeProjectContext(context);
+        DefaultQueryContext query = new DefaultQueryContext(projectDir, context);
         assertNotNull(query.getProjectDirectory());
         assertNotNull(query.getUserDirectory());
         assertNull(query.getUserPropertyValue("maven.build.dir"));
@@ -97,8 +110,8 @@ public class DefaultQueryContextTest extends TestCase {
         
         assertNotNull(query.getPOMContext().getFinalProject());
         assertNotNull(query.getPOMContext().getProjectLayers());
-        assertEquals(1, query.getPOMContext().getProjectLayers().length);
-        assertEquals(1, query.getPOMContext().getProjectFiles().length);
+        assertEquals(2, query.getPOMContext().getProjectLayers().length);
+        assertEquals(2, query.getPOMContext().getProjectFiles().length);
     }
     
     public void testRefresh() throws Exception {
@@ -164,9 +177,11 @@ public class DefaultQueryContextTest extends TestCase {
         private class ProjectContext implements IProjectContext {
             private Project project;
             private File prFile;
-            public ProjectContext(Project proj, File file) {
+            private File parent;
+            public ProjectContext(Project proj, File file, File par) {
                 project = proj;
                 prFile = file;
+                parent = par;
             }
             
             public Project getFinalProject() {
@@ -174,11 +189,11 @@ public class DefaultQueryContextTest extends TestCase {
             }
             
             public File[] getProjectFiles() {
-                return new File[] {prFile};
+                return new File[] {prFile, parent};
             }
             
             public Project[] getProjectLayers() {
-                return new Project[] { project };
+                return new Project[] { project, project};
             }
             
             public org.jdom.Element[] getRootElementLayers() {

@@ -38,7 +38,7 @@ import org.jdom.input.JDOMFactory;
  * in all the queries (ILocationFinder, I PropertyResolver, etc)
  * @author  <a href="mailto:ca206216@tiscali.cz">Milos Kleint</a>
  */
-public class DefaultQueryContext implements IQueryContext {
+public class DefaultQueryContext extends AbstractQueryContext {
     private static final Log logger = LogFactory.getLog(DefaultQueryContext.class);
     private static final Project EMPTY_PROJECT = new Project();
     
@@ -47,14 +47,20 @@ public class DefaultQueryContext implements IQueryContext {
     private File userPropertyFile;
     private File buildPropertyFile;
     private File projectPropertyFile;
+    private File parentBuildPropertyFile;
+    private File parentProjectPropertyFile;
     
     private long userPropertyFileTimestamp = 0;
     private long buildPropertyFileTimestamp = 0;
     private long projectPropertyFileTimestamp = 0;
+    private long parentBuildPropertyFileTimestamp = 0;
+    private long parentProjectPropertyFileTimestamp = 0;
     
     private Properties userPropertyModel;
     private Properties buildPropertyModel;
     private Properties projectPropertyModel;
+    private Properties parentBuildPropertyModel;
+    private Properties parentProjectPropertyModel;
     
     // an empty default, fallback value.. in case it was not set.
     // mkleint does it make sense or is it better to throw NPE? calling it is a bug anyway without initialization.
@@ -79,23 +85,40 @@ public class DefaultQueryContext implements IQueryContext {
         userPropertyModel = new Properties();
     }
     
-    public DefaultQueryContext(File project) {
-        projectDir = project;
+    public DefaultQueryContext(File projectDirectory) {
+        projectDir = projectDirectory;
         projectPropertyFile = new File(projectDir, "project.properties"); //NOI18N
         buildPropertyFile = new File(projectDir, "build.properties"); //NOI18N
         projectPropertyModel = new Properties();
         buildPropertyModel = new Properties();
+        parentProjectPropertyModel = new Properties();
+        parentBuildPropertyModel = new Properties();
+        projectContext = new DefaultProjectContext(this, this.getResolver());
     }
+    
     /**
-     * project context needs to be set after initialization from outside.
-     * implementation comes from mevenide-core which depends on this one..
+     * test constructor only
      */
-    public void initializeProjectContext(IProjectContext projContext) {
-        if (this == defaultInstance) {
-            throw new IllegalStateException("Cannot set project context to the default querycontext instance.");
-        }
-        projectContext = projContext;
+    DefaultQueryContext(File projectDirectory, IProjectContext proj) {
+        projectDir = projectDirectory;
+        projectPropertyFile = new File(projectDir, "project.properties"); //NOI18N
+        buildPropertyFile = new File(projectDir, "build.properties"); //NOI18N
+        projectPropertyModel = new Properties();
+        buildPropertyModel = new Properties();
+        parentProjectPropertyModel = new Properties();
+        parentBuildPropertyModel = new Properties();
+        projectContext = proj;
     }
+//    /**
+//     * project context needs to be set after initialization from outside.
+//     * implementation comes from mevenide-core which depends on this one..
+//     */
+//    public void initializeProjectContext(IProjectContext projContext) {
+//        if (this == defaultInstance) {
+//            throw new IllegalStateException("Cannot set project context to the default querycontext instance.");
+//        }
+//        projectContext = projContext;
+//    }
     
     /**
      * the default instance that only refers to the user.dir properties file
@@ -136,16 +159,31 @@ public class DefaultQueryContext implements IQueryContext {
         return projectPropertyModel.getProperty(key);
     }
     
-    public String getPropertyValue(String key) {
-        String toReturn = getProjectPropertyValue(key);
-        if (toReturn == null) {
-            toReturn = getBuildPropertyValue(key);
+   public String getParentBuildPropertyValue(String key) {
+        parentBuildPropertyFileTimestamp = checkParentReloadModel(parentBuildPropertyFile, 
+                                                      parentBuildPropertyFileTimestamp,
+                                                      parentBuildPropertyModel,
+                                                      "build.properties");
+        if (parentBuildPropertyFileTimestamp == 0) {
+            // file does not exist.
+            return null;
         }
-        if (toReturn == null) {
-            toReturn = getUserPropertyValue(key);
+        return parentBuildPropertyModel.getProperty(key);
+    }    
+   
+    public String getParentProjectPropertyValue(String key) {
+        parentProjectPropertyFileTimestamp = checkParentReloadModel(parentProjectPropertyFile, 
+                                                        parentProjectPropertyFileTimestamp,
+                                                        parentProjectPropertyModel,
+                                                        "project.properties");
+        if (parentProjectPropertyFileTimestamp == 0) {
+            // file does not exist.
+            return null;
         }
-        return toReturn;
+        return parentProjectPropertyModel.getProperty(key);
     }
+    
+ 
     
     public String getUserPropertyValue(String key) {
         //HACK - not nice here..
@@ -163,6 +201,36 @@ public class DefaultQueryContext implements IQueryContext {
     }
     
     private long checkReloadModel(File propFile, long timestamp, Properties propModel) {
+        if (propFile == null || !propFile.exists()) {
+            return 0;
+        }
+        long lastModified = propFile.lastModified();
+        if (lastModified > timestamp) {
+            propModel.clear();
+            try {
+                propModel.load(new BufferedInputStream(new FileInputStream(propFile)));
+            } catch (IOException exc) {
+                logger.error("Error Reading a file that's supposed to exist. How come?", exc);
+            }
+                
+        }
+        return lastModified;
+    }
+    
+    private long checkParentReloadModel(File propFile, long timestamp, Properties propModel, String name) {
+        IProjectContext pom = getPOMContext();
+        if (pom == null) {
+            return 0;
+        }
+        File[] files = pom.getProjectFiles();
+        if (files == null || files.length < 2) {
+            return 0;
+        }
+        File newpropfile = new File(files[1].getParentFile(), name);
+        if (!newpropfile.equals(propFile)) {
+            propFile = newpropfile;
+            timestamp = 0;
+        }
         if (propFile == null || !propFile.exists()) {
             return 0;
         }
@@ -228,6 +296,28 @@ public class DefaultQueryContext implements IQueryContext {
         }
         return new HashSet(userPropertyModel.keySet());        
     }
+    
+   public Set getParentBuildPropertyKeys() {
+        parentBuildPropertyFileTimestamp = checkReloadModel(parentBuildPropertyFile, 
+                                                            parentBuildPropertyFileTimestamp,
+                                                            parentBuildPropertyModel);
+        if (parentBuildPropertyFileTimestamp == 0) {
+            // file does not exist.
+            return Collections.EMPTY_SET;
+        }
+        return new HashSet(parentBuildPropertyModel.keySet());
+    }
+
+    public Set getParentProjectPropertyKeys() {
+        parentProjectPropertyFileTimestamp = checkReloadModel(parentProjectPropertyFile, 
+                                                        parentProjectPropertyFileTimestamp,
+                                                        parentProjectPropertyModel);
+        if (parentProjectPropertyFileTimestamp == 0) {
+            // file does not exist.
+            return Collections.EMPTY_SET;
+        }
+        return new HashSet(parentProjectPropertyModel.keySet());
+    }    
     
     // is this necesaary, maybe just return null from getRootProjectElement()
     private static JDOMFactory factory = new DefaultJDOMFactory();   

@@ -14,9 +14,10 @@
  *  limitations under the License.
  * =========================================================================
  */
-package org.mevenide.project;
+package org.mevenide.context;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -28,11 +29,7 @@ import org.jdom.Element;
 import org.jdom.Text;
 import org.jdom.input.DefaultJDOMFactory;
 import org.jdom.input.JDOMFactory;
-import org.mevenide.context.IProjectContext;
-import org.mevenide.context.IQueryContext;
-import org.mevenide.project.io.JDomProjectUnmarshaller;
 import org.mevenide.properties.IPropertyResolver;
-import org.mevenide.util.MevenideUtils;
 
 
 /**
@@ -164,12 +161,12 @@ public class DefaultProjectContext implements IProjectContext {
                 if (extend != null) {
                     extend = propResolver.resolveString(extend);
                     File absolute = new File(extend);
-                    absolute = MevenideUtils.normalizeFile(absolute);
+                    absolute = JDomProjectUnmarshaller.normalizeFile(absolute);
                     if (absolute.exists() && (!absolute.equals(file))) {
                         readProject(absolute);
                     } else {
                         File relative = new File(queryContext.getProjectDirectory(), extend);
-                        relative = MevenideUtils.normalizeFile(relative);
+                        relative = JDomProjectUnmarshaller.normalizeFile(relative);
                         if (relative.exists() && (!relative.equals(file))) {
                             readProject(relative);
                         } else {
@@ -365,5 +362,32 @@ public class DefaultProjectContext implements IProjectContext {
         }
     }
     
+	/**
+	 * copied from mevenide-core.. cannot reference, but I didn't want to move MevenideUtil to mevenide-config
+	 * 
+     * Convert an absolute path to a relative path if it is under a given base directory.
+     * @param basedir the base directory for relative paths
+     * @param path the directory to resolve
+     * @return the relative path
+     * @throws IOException if canonical path fails
+     */
+    static String makeRelativePath( File basedir, String path ) throws IOException {
+        String canonicalBasedir = basedir.getCanonicalPath();
+        String canonicalPath = new File( path ).getCanonicalPath();
+
+        if ( canonicalPath.equals(canonicalBasedir) ) {
+            return ".";
+        }
+
+        if ( canonicalPath.startsWith( canonicalBasedir ) ) {
+            if ( canonicalPath.charAt( canonicalBasedir.length() ) == File.separatorChar ) {
+                canonicalPath = canonicalPath.substring( canonicalBasedir.length() + 1 );
+            }
+            else {
+                canonicalPath = canonicalPath.substring( canonicalBasedir.length() );
+            }
+        }
+        return canonicalPath;
+    }    
  
 }

@@ -34,7 +34,6 @@ public class AllTests  {
         
 		suite.addTestSuite(DefaultProjectMarshallerTest.class);
 		suite.addTestSuite(CarefulProjectMarshallerTest.class);
-		suite.addTestSuite(JarOverrideReaderTest.class);
 		suite.addTestSuite(JarOverrideReader2Test.class);
 		suite.addTestSuite(ProjectReaderTest.class);
 		suite.addTestSuite(JarOverrideWriterTest.class);

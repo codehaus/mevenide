@@ -14,7 +14,7 @@
  *  limitations under the License.
  * =========================================================================
  */
-package org.mevenide.project.io;
+package org.mevenide.context;
 
 import java.io.File;
 import java.io.FileReader;
@@ -24,6 +24,7 @@ import org.apache.maven.project.Dependency;
 import org.apache.maven.project.Project;
 
 import junit.framework.TestCase;
+import org.mevenide.context.IProjectUnmarshaller;
 
 
 /**  

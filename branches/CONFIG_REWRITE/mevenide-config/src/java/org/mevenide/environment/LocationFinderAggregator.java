@@ -19,7 +19,10 @@ package org.mevenide.environment;
 import java.io.File;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.mevenide.context.DefaultQueryContext;
 import org.mevenide.context.IQueryContext;
+import org.mevenide.properties.IPropertyResolver;
+import org.mevenide.properties.resolver.PropertyResolverFactory;
 
 /**  
  * 
@@ -31,207 +34,122 @@ public class LocationFinderAggregator implements ILocationFinder {
     
     private static Log log = LogFactory.getLog(LocationFinderAggregator.class);
     
-    private UserRefinedPropertiesLocationFinder userRefinedPropertiesLocationFinder;
-    private ProjectPropertiesLocationFinder projectPropertiesLocationFinder;
-    private BuildPropertiesLocationFinder buildPropertiesLocationFinder;
     private SysEnvLocationFinder sysEnvLocationFinder;
-    private CustomLocationFinder customLocationFinder;
+//    private CustomLocationFinder customLocationFinder;
     
     private IQueryContext context;
-    
+    private IPropertyResolver resolver;
+    /**
+     * Use the default context.
+     */
     public LocationFinderAggregator() {
-        sysEnvLocationFinder = SysEnvLocationFinder.getInstance();
-        
-        try {
-            buildPropertiesLocationFinder = BuildPropertiesLocationFinder.getInstance();
-        }
-        catch ( Exception e ) { 
-            log.debug("BuildPropertiesLocationFinder not created", e);
-        }
-       
+        this(DefaultQueryContext.getNonProjectContextInstance());
     }
     
     public LocationFinderAggregator(IQueryContext queryContext) {
-        this();
+        sysEnvLocationFinder = SysEnvLocationFinder.getInstance();
         context = queryContext;
+        resolver = PropertyResolverFactory.getFactory().createContextBasedResolver(context);
         //TODO - have a singleton instance of user home's properties..
-        buildPropertiesLocationFinder = new BuildPropertiesLocationFinder(context);
-        userRefinedPropertiesLocationFinder = new UserRefinedPropertiesLocationFinder(context);
-        projectPropertiesLocationFinder = new ProjectPropertiesLocationFinder(context);
+//        buildPropertiesLocationFinder = new BuildPropertiesLocationFinder(context);
+//        userRefinedPropertiesLocationFinder = new UserRefinedPropertiesLocationFinder(context);
+//        projectPropertiesLocationFinder = new ProjectPropertiesLocationFinder(context);
     }
     
-    /**
-     * @deprecated create the LocatioFinderAggregator with the IQueryContext constructor instead.
-     * This workflow parses the properties files too often.
-     */
-    public void setEffectiveWorkingDirectory(String effectiveWorkingDirectory) {
-        if (context != null) {
-            throw new IllegalStateException("Possibly out-of-sych situation. Using IQueryContext and" + 
-                                            "calling setEffectiveWorkingDirectory");
-        }
-        try {
-	        userRefinedPropertiesLocationFinder = new UserRefinedPropertiesLocationFinder(effectiveWorkingDirectory);
-        }
-		catch ( Exception e ) { 
-			log.debug("UserRefinedPropertiesLocationFinder not created", e);
-		}
-        try {
-            projectPropertiesLocationFinder = new ProjectPropertiesLocationFinder(effectiveWorkingDirectory);
-        }
-		catch ( Exception e ) { 
-			log.debug("ProjectPropertiesLocationFinder not created", e);
-		}
-    }
+//    /**
+//     * @deprecated create the LocatioFinderAggregator with the IQueryContext constructor instead.
+//     * This workflow parses the properties files too often.
+//     */
+//    public void setEffectiveWorkingDirectory(String effectiveWorkingDirectory) {
+//        if (context != null) {
+//            throw new IllegalStateException("Possibly out-of-sych situation. Using IQueryContext and" + 
+//                                            "calling setEffectiveWorkingDirectory");
+//        }
+//        try {
+//	        userRefinedPropertiesLocationFinder = new UserRefinedPropertiesLocationFinder(effectiveWorkingDirectory);
+//        }
+//		catch ( Exception e ) { 
+//			log.debug("UserRefinedPropertiesLocationFinder not created", e);
+//		}
+//        try {
+//            projectPropertiesLocationFinder = new ProjectPropertiesLocationFinder(effectiveWorkingDirectory);
+//        }
+//		catch ( Exception e ) { 
+//			log.debug("ProjectPropertiesLocationFinder not created", e);
+//		}
+//    }
 
     public String getConfigurationFileLocation() {
-        String configurationFile = null;
-        if ( projectPropertiesLocationFinder !=  null 
-                && projectPropertiesLocationFinder.getConfigurationFileLocation() != null ) {
-			configurationFile = projectPropertiesLocationFinder.getConfigurationFileLocation();
-		}
-		if ( userRefinedPropertiesLocationFinder !=  null 
-		        && userRefinedPropertiesLocationFinder.getConfigurationFileLocation() != null ) {
-			configurationFile = userRefinedPropertiesLocationFinder.getConfigurationFileLocation();
-		}        
-		if ( buildPropertiesLocationFinder !=  null 
-		        && buildPropertiesLocationFinder.getConfigurationFileLocation() != null ) {
-			configurationFile = buildPropertiesLocationFinder.getConfigurationFileLocation();
-		}
-		if ( sysEnvLocationFinder !=  null 
-		        && sysEnvLocationFinder.getConfigurationFileLocation() != null ) {
-		    configurationFile = sysEnvLocationFinder.getConfigurationFileLocation();
-	    }
-        return configurationFile;
+        if ( getMavenHome() != null ) {
+            File conf = new File(new File(getMavenHome(), "bin"), "forehead.conf");
+            if ( conf.exists() ) {
+                return conf.getAbsolutePath();
+            }
+        }
+        return null;
     }
 
     public String getJavaHome() {
-		String javaHome = System.getProperty("java.home");
-		if ( customLocationFinder !=  null 
-				&& customLocationFinder.getJavaHome() != null ) {
-			javaHome = customLocationFinder.getJavaHome();
-		}
-		if ( projectPropertiesLocationFinder !=  null 
-				&& projectPropertiesLocationFinder.getJavaHome() != null ) {
-			javaHome = projectPropertiesLocationFinder.getJavaHome();
-		}
-		if ( userRefinedPropertiesLocationFinder !=  null 
-				&& userRefinedPropertiesLocationFinder.getJavaHome() != null ) {
-			javaHome = userRefinedPropertiesLocationFinder.getJavaHome();
-		}        
-		if ( buildPropertiesLocationFinder !=  null 
-				&& buildPropertiesLocationFinder.getJavaHome() != null ) {
-			javaHome = buildPropertiesLocationFinder.getJavaHome();
-		}
-		if ( sysEnvLocationFinder !=  null 
-				&& sysEnvLocationFinder.getJavaHome() != null ) {
-			javaHome = sysEnvLocationFinder.getJavaHome();
-		}
-		return javaHome;
+        String javaHome = System.getProperty("java.home");
+        String resValue = resolver.getResolvedValue("java.home");
+        if (resValue != null) {
+            javaHome = resValue;
+        }
+        if ( sysEnvLocationFinder !=  null
+          && sysEnvLocationFinder.getJavaHome() != null ) {
+            javaHome = sysEnvLocationFinder.getJavaHome();
+        }
+        return javaHome;
     }
     
     public String getMavenHome() {
-		String mavenHome = null;
-		if ( customLocationFinder !=  null 
-				&& customLocationFinder.getMavenHome() != null ) {
-			mavenHome = customLocationFinder.getMavenHome();
-		}
-		if ( projectPropertiesLocationFinder !=  null 
-				&& projectPropertiesLocationFinder.getMavenHome() != null ) {
-			mavenHome = projectPropertiesLocationFinder.getMavenHome();
-		}
-		if ( userRefinedPropertiesLocationFinder !=  null 
-				&& userRefinedPropertiesLocationFinder.getMavenHome() != null ) {
-			mavenHome = userRefinedPropertiesLocationFinder.getMavenHome();
-		}        
-		if ( buildPropertiesLocationFinder !=  null 
-				&& buildPropertiesLocationFinder.getMavenHome() != null ) {
-			mavenHome = buildPropertiesLocationFinder.getMavenHome();
-		}
-		if ( sysEnvLocationFinder !=  null 
-				&& sysEnvLocationFinder.getMavenHome() != null ) {
-			mavenHome = sysEnvLocationFinder.getMavenHome();
-		}
-		return mavenHome;
+        // does it make sense to consult the resolver.. MAVEN_HOME *has* to be set..
+        String mavenHome = resolver.getResolvedValue("maven.home");
+        if (   sysEnvLocationFinder !=  null
+            && sysEnvLocationFinder.getMavenHome() != null ) {
+            mavenHome = sysEnvLocationFinder.getMavenHome();
+        }
+        return mavenHome;
     }
     
     public String getMavenLocalHome() {
         String userHome = System.getProperty("user.home");
-		String mavenLocalHome = new File(userHome, ".maven").getAbsolutePath();
-		if ( customLocationFinder !=  null 
-				&& customLocationFinder.getMavenLocalHome() != null ) {
-			mavenLocalHome = customLocationFinder.getMavenLocalHome();
-		}
-		if ( projectPropertiesLocationFinder !=  null 
-				&& projectPropertiesLocationFinder.getMavenLocalHome() != null ) {
-			mavenLocalHome = projectPropertiesLocationFinder.getMavenLocalHome();
-		}
-		if ( userRefinedPropertiesLocationFinder !=  null 
-				&& userRefinedPropertiesLocationFinder.getMavenLocalHome() != null ) {
-			mavenLocalHome = userRefinedPropertiesLocationFinder.getMavenLocalHome();
-		}        
-		if ( buildPropertiesLocationFinder !=  null 
-				&& buildPropertiesLocationFinder.getMavenLocalHome() != null ) {
-			mavenLocalHome = buildPropertiesLocationFinder.getMavenLocalHome();
-		}
-		if ( sysEnvLocationFinder !=  null 
-				&& sysEnvLocationFinder.getMavenLocalHome() != null ) {
-			mavenLocalHome = sysEnvLocationFinder.getMavenLocalHome();
-		}
-		return mavenLocalHome;
+	String mavenLocalHome = new File(userHome, ".maven").getAbsolutePath();
+        String resValue = resolver.getResolvedValue("maven.home.local");
+        if (resValue != null) {
+            mavenLocalHome = resValue;
+        }
+        return mavenLocalHome;
     }
     
     public String getMavenLocalRepository() {
-		String mavenLocalRepository =  new File(getMavenLocalHome(), "repository").getAbsolutePath();
-		if ( customLocationFinder !=  null 
-				&& customLocationFinder.getMavenLocalRepository() != null ) {
-			mavenLocalRepository = customLocationFinder.getMavenLocalRepository();
-		}
-		if ( projectPropertiesLocationFinder !=  null 
-				&& projectPropertiesLocationFinder.getMavenLocalRepository() != null ) {
-			mavenLocalRepository = projectPropertiesLocationFinder.getMavenLocalRepository();
-		}
-		if ( userRefinedPropertiesLocationFinder !=  null 
-				&& userRefinedPropertiesLocationFinder.getMavenLocalRepository() != null ) {
-			mavenLocalRepository = userRefinedPropertiesLocationFinder.getMavenLocalRepository();
-		}        
-		if ( buildPropertiesLocationFinder !=  null 
-				&& buildPropertiesLocationFinder.getMavenLocalRepository() != null ) {
-			mavenLocalRepository = buildPropertiesLocationFinder.getMavenLocalRepository();
-		}
-		if ( sysEnvLocationFinder !=  null 
-				&& sysEnvLocationFinder.getMavenLocalRepository() != null ) {
-			mavenLocalRepository = sysEnvLocationFinder.getMavenLocalRepository();
-		}
-		return mavenLocalRepository;
+        String mavenLocalRepository =  new File(getMavenLocalHome(), "repository").getAbsolutePath();
+        String resValue = resolver.getResolvedValue("maven.repo.local");
+        if (resValue != null) {
+            mavenLocalRepository = resValue;
+        }
+        return mavenLocalRepository;
     }
     
     public String getMavenPluginsDir() {
-		String mavenPluginsDir = new File(getMavenLocalHome(), "cache").getAbsolutePath();
-		if ( customLocationFinder !=  null 
-				&& customLocationFinder.getMavenPluginsDir() != null ) {
-			mavenPluginsDir = customLocationFinder.getMavenPluginsDir();
-		}
-		if ( projectPropertiesLocationFinder !=  null 
-				&& projectPropertiesLocationFinder.getMavenPluginsDir() != null ) {
-			mavenPluginsDir = projectPropertiesLocationFinder.getMavenPluginsDir();
-		}
-		if ( userRefinedPropertiesLocationFinder !=  null 
-				&& userRefinedPropertiesLocationFinder.getMavenPluginsDir() != null ) {
-			mavenPluginsDir = userRefinedPropertiesLocationFinder.getMavenPluginsDir();
-		}        
-		if ( buildPropertiesLocationFinder !=  null 
-				&& buildPropertiesLocationFinder.getMavenPluginsDir() != null ) {
-			mavenPluginsDir = buildPropertiesLocationFinder.getMavenPluginsDir();
-		}
-		if ( sysEnvLocationFinder !=  null 
-				&& sysEnvLocationFinder.getMavenPluginsDir() != null ) {
-			mavenPluginsDir = sysEnvLocationFinder.getMavenPluginsDir();
-		}
-		return mavenPluginsDir;
+        String mavenPluginsDir = new File(getMavenLocalHome(), "cache").getAbsolutePath();
+        String resValue = resolver.getResolvedValue("maven.plugin.unpacked.dir");
+        if (resValue != null) {
+            mavenPluginsDir = resValue;
+        }
+        return mavenPluginsDir;
     }
     
+    public String getUserHome() {
+        String userHome = System.getProperty("user.home");
+        if ( sysEnvLocationFinder !=  null
+          && sysEnvLocationFinder.getUserHome() != null ) {
+            userHome = sysEnvLocationFinder.getUserHome();
+        }
+        return userHome;
+    }    
   
-    public void setCustomLocationFinder(CustomLocationFinder customLocationFinder) {
-        this.customLocationFinder = customLocationFinder;
-    }
+//    public void setCustomLocationFinder(CustomLocationFinder customLocationFinder) {
+//        this.customLocationFinder = customLocationFinder;
+//    }
 }

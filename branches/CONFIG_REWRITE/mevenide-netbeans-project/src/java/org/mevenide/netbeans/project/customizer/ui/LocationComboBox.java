@@ -73,6 +73,11 @@ class LocationComboBox extends JButton {
         actionToLoc.put(OriginChange.ACTION_POM_MOVE_TO_CHILD, new Integer(OriginChange.LOCATION_POM));
         actionToLoc.put(OriginChange.ACTION_POM_MOVE_TO_PARENT, new Integer(OriginChange.LOCATION_POM_PARENT));
         actionToLoc.put(OriginChange.ACTION_REMOVE_ENTRY, new Integer(IPropertyLocator.LOCATION_NOT_DEFINED));
+        actionToLoc.put(OriginChange.ACTION_MOVE_TO_PARENT_PROJECT, new Integer(IPropertyLocator.LOCATION_PARENT_PROJECT));
+        actionToLoc.put(OriginChange.ACTION_DEFINE_IN_PARENT_PROJECT, new Integer(IPropertyLocator.LOCATION_PARENT_PROJECT));
+        actionToLoc.put(OriginChange.ACTION_MOVE_TO_PARENTBUILD, new Integer(IPropertyLocator.LOCATION_PARENT_PROJECT_BUILD));
+        actionToLoc.put(OriginChange.ACTION_DEFINE_IN_PARENT_BUILD, new Integer(IPropertyLocator.LOCATION_PARENT_PROJECT_BUILD));
+        
 //        add(currentLoc);
         setIcon(new ImageIcon(Utilities.loadImage("org/openide/resources/actions/empty.gif")));
         setText("");
@@ -170,6 +175,18 @@ class LocationComboBox extends JButton {
             } else if (OriginChange.ACTION_REMOVE_ENTRY.equals(actions[i])) {
                 name = "Remove Definition";
                 icon = new ImageIcon(Utilities.loadImage("org/mevenide/netbeans/project/resources/ToDefault.png"));
+            } else if (OriginChange.ACTION_DEFINE_IN_PARENT_PROJECT.equals(actions[i])) {
+                name = "Define in Parent Project";
+                icon = new ImageIcon(Utilities.loadImage("org/mevenide/netbeans/project/resources/ToParentProject.png"));
+            } else if (OriginChange.ACTION_DEFINE_IN_PARENT_BUILD.equals(actions[i])) {
+                name = "Define in Parent Build";
+                icon = new ImageIcon(Utilities.loadImage("org/mevenide/netbeans/project/resources/ToParentBuild.png"));
+            } else if (OriginChange.ACTION_MOVE_TO_PARENTBUILD.equals(actions[i])) {
+                name = "Move to Parent Build";
+                icon = new ImageIcon(Utilities.loadImage("org/mevenide/netbeans/project/resources/ToParentBuild.png"));
+            } else if (OriginChange.ACTION_MOVE_TO_PARENT_PROJECT.equals(actions[i])) {
+                name = "Move to Parent Project";
+                icon = new ImageIcon(Utilities.loadImage("org/mevenide/netbeans/project/resources/ToParentProject.png"));
             }
             JMenuItem item = currentLoc.add(name);
             item.setAction(new MyAction(actions[i], name, icon));

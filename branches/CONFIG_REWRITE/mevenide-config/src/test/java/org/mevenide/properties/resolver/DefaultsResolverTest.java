@@ -31,8 +31,7 @@ public class DefaultsResolverTest extends AbstractResolverTestCase {
     
     protected void setUp() throws Exception {
         super.setUp();
-        def = new DefaultsResolver(projectDir, userHomeDir, finder, 
-            new DummyPropFilesFinder());
+        def = new DefaultsResolver(context);
     }
     
     public void testDefaults1() throws Exception {

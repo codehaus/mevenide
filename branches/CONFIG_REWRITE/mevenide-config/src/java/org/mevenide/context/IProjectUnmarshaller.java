@@ -14,24 +14,20 @@
  *  limitations under the License.
  * =========================================================================
  */
-package org.mevenide.environment;
+package org.mevenide.context;
 
+import java.io.Reader;
 
+import org.apache.maven.project.Project;
 
 
 /**  
  * 
- * @author Gilles Dodinet (gdodinet@wanadoo.fr)
- * @version $Id: UserRefinedPropertiesLocationFinderTest.java,v 1.1 16 nov. 2003 Exp gdodinet 
+ * @author <a href="mailto:rhill2@free.fr">Gilles Dodinet</a>
+ * @version $Id$
  * 
  */
-public class ProjectPropertiesLocationFinderTest extends AbstractCustomizablePropertiesLocationFinderTest {
+public interface IProjectUnmarshaller {
+    Project parse(Reader reader) throws Exception ;
     
-    protected String getFileName() {
-		return "build.properties";
-    }
-    
-	protected PropertiesLocationFinder getPropertiesLocationFinder() throws Exception {
-	    return new UserRefinedPropertiesLocationFinder(getPropertyFile().getParent());
-    }
 }

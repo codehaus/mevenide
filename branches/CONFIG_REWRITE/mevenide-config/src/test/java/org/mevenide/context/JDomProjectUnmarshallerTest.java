@@ -14,10 +14,11 @@
  *  limitations under the License.
  * =========================================================================
  */
-package org.mevenide.project.io;
+package org.mevenide.context;
 
-import org.mevenide.project.io.AbstractUnmarshallerTestCase;
-import org.mevenide.project.io.IProjectUnmarshaller;
+import org.mevenide.context.AbstractUnmarshallerTestCase;
+import org.mevenide.context.IProjectUnmarshaller;
+import org.mevenide.context.JDomProjectUnmarshaller;
 
 /**
  * 

@@ -16,8 +16,7 @@
  */
 package org.mevenide.util;
 
-import org.mevenide.project.io.AbstractUnmarshallerTestCase;
-import org.mevenide.project.io.IProjectUnmarshaller;
+import org.mevenide.context.IProjectUnmarshaller;
 
 /**
  * 

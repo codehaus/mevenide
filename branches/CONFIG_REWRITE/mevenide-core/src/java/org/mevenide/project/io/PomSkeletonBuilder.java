@@ -26,6 +26,7 @@ import java.util.GregorianCalendar;
 import org.apache.maven.project.Project;
 import org.mevenide.util.MevenideUtils;
 import org.mevenide.util.StringUtils;
+import org.mevenide.context.JDomProjectUnmarshaller;
 //import org.mevenide.util.DefaultProjectUnmarshaller;
 
 /**

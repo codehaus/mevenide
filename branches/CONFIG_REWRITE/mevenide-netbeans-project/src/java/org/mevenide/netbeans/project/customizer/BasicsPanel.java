@@ -67,6 +67,9 @@ public class BasicsPanel extends JPanel implements ProjectPanel {
 	project = proj;
         changes = new HashMap();
         initComponents();
+        String idWarning = "The id element in the POM is deprecated. Please use artifactId and groupId elements instead.";
+        txtId.setToolTipText(idWarning);
+        lblId.setToolTipText(idWarning);
         valObserver = null;
         //TODO add listeners for immediatePropagation stuff.
         setName(NbBundle.getMessage(BasicsPanel.class, "BasicsPanel.name"));
@@ -297,7 +300,12 @@ public class BasicsPanel extends JPanel implements ProjectPanel {
     // End of variables declaration//GEN-END:variables
 
    private void populateChangeInstances() {
-        createPOMChangeInstance("id", txtId, ocID);
+        String value = project.getOriginalMavenProject().getId();
+        int location = project.getProjectWalker().getLocation("pom.id");
+        if (value == null) {
+            value = "";
+        } 
+        changes.put("pom.id", new TextComponentPOMChange("pom.id", value, location, txtId, ocID));
         createPOMChangeInstance("artifactId", txtArtifactID, ocArtifactID);
         createPOMChangeInstance("groupId", txtGroupID, ocGroupID);
         createPOMChangeInstance("currentVersion", txtCurrentVersion, ocCurrentVersion);
@@ -316,7 +324,7 @@ public class BasicsPanel extends JPanel implements ProjectPanel {
    }        
    
      public void setResolveValues(boolean resolve) {
-        assignValue("id", resolve);
+        assignValue("id", true);
         assignValue("artifactId", resolve);
         assignValue("groupId", resolve);
         assignValue("currentVersion", resolve);
