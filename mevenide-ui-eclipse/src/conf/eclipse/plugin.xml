@@ -170,7 +170,7 @@
     </extension>
 
    <!-- Maven nature -->
-   <extension
+   <!-- extension
          id="mavennature"
          name="maven nature"
          point="org.eclipse.core.resources.natures">
@@ -193,7 +193,7 @@
               menubarPath="project/additions" 
               id="org.mevenide.maven.build">
       </action>
-    </extension>
+    </extension -->
     
    <!-- Maven actions -->
    <extension
