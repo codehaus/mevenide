@@ -164,7 +164,7 @@ public class ProjectReader {
 	 *   o ProjectConstants.MAVEN_TEST_RESOURCE
 	 * 
 	 * @param referencedPom
-	 * @return
+	 * @return build.resources and unitTest.build.resources 
 	 * @throws Exception
 	 */
 	public Map readAllResources(File pom) throws Exception {
@@ -174,7 +174,7 @@ public class ProjectReader {
 		    List resources = project.getBuild().getResources();
 			allResources.putAll(readResources(project, resources, ProjectConstants.MAVEN_RESOURCE));
 			if ( project.getBuild().getUnitTest() != null ) {
-			    List unitTestResources = project.getBuild().getResources();
+			    List unitTestResources = project.getBuild().getUnitTest().getResources();
 				allResources.putAll(readResources(project, unitTestResources, ProjectConstants.MAVEN_TEST_RESOURCE));
 			}
 		}
