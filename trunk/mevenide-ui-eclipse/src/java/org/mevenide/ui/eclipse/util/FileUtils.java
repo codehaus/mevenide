@@ -18,9 +18,12 @@ package org.mevenide.ui.eclipse.util;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
+import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -76,6 +79,15 @@ public class FileUtils {
 		 referencedProjectFile.create(new ByteArrayInputStream(referencedPomSkeleton.getBytes()), false, null);
 	}
 
+	public static void copyFile(File in, File out) throws Exception
+	{
+		FileChannel sourceChannel = new FileInputStream(in).getChannel();
+		FileChannel destinationChannel = new FileOutputStream(out).getChannel();
+		sourceChannel.transferTo(0, sourceChannel.size(), destinationChannel);
+		sourceChannel.close();
+		destinationChannel.close();
+	}
+	
 	public static File getPom(IProject project) {
 		//weird trick to fix a NPE. dont know yet why we got that NPE
 		if ( project.exists() ) {
