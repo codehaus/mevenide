@@ -57,10 +57,12 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Dependency;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.jdt.core.JavaCore;
 import org.mevenide.project.dependency.DependencyFactory;
 import org.mevenide.project.io.ProjectReader;
 import org.mevenide.ui.eclipse.DefaultPathResolver;
@@ -92,9 +94,9 @@ public class DependencyMappingNodeContainerFactory {
 			IPathResolver pathResolver = new DefaultPathResolver();
 			
 			for (int i = 0; i < classpathEntries.length; i++) {
-				if ( (classpathEntries[i].getEntryKind() == IClasspathEntry.CPE_LIBRARY
-  						|| classpathEntries[i].getEntryKind() == IClasspathEntry.CPE_PROJECT)
-						&& !FileUtils.isClassFolder(classpathEntries[i].getPath().toOSString(), javaProject.getProject()) 
+			   if ( ((classpathEntries[i].getEntryKind() == IClasspathEntry.CPE_LIBRARY
+						&& !FileUtils.isClassFolder(classpathEntries[i].getPath().toOSString(), javaProject.getProject()) )
+						|| classpathEntries[i].getEntryKind() == IClasspathEntry.CPE_PROJECT) 
 						&& !EclipseProjectUtils.getJreEntryList(javaProject.getProject()).contains(pathResolver.getAbsolutePath(classpathEntries[i].getPath())) ) {
 
 					IClasspathEntry classpathEntry = classpathEntries[i];
@@ -118,22 +120,25 @@ public class DependencyMappingNodeContainerFactory {
 
     private DependencyMappingNode createDependencyMappingNode(IJavaProject javaProject, IClasspathEntry classpathEntry) throws Exception, CoreException {
         
-        String path = classpathEntry.getPath().toOSString();
-
-        if ( !new File(path).exists() ) {
-        	path = javaProject.getProject().getLocation().append(classpathEntry.getPath().removeFirstSegments(1)).toOSString();
-        }
 
         DependencyMappingNode node = new DependencyMappingNode();
         Dependency resolvedDependency = null;
 
         if ( classpathEntry.getEntryKind() == IClasspathEntry.CPE_LIBRARY ) { 	
-        	//not the best way to get the absoluteFile ... 
+	        String path = classpathEntry.getPath().toOSString();
+	        if ( !new File(path).exists() ) {
+	        	//not the best way to get the absoluteFile ... 
+	        	path = javaProject.getProject().getLocation().append(classpathEntry.getPath().removeFirstSegments(1)).toOSString();
+	        }
             resolvedDependency = DependencyFactory.getFactory().getDependency(path);
         }
         else {
-        	IProject referencedProject = (IProject) JavaCore.create(path);
-     		if ( !referencedProject.getName().equals(javaProject.getProject().getName()) ) {
+	        String path = classpathEntry.getPath().toString();
+			final IWorkspace workspace = ResourcesPlugin.getWorkspace();
+			IWorkspaceRoot root = workspace.getRoot();
+			//crap..
+        	IProject referencedProject = root.getProject(path.substring(1, path.length()));
+			if ( !referencedProject.getName().equals(javaProject.getProject().getName()) ) {
      		    resolvedDependency = createDependencyFromProject(referencedProject);
 			}
         }

@@ -51,6 +51,8 @@ package org.mevenide.ui.eclipse.sync.wip;
 import java.io.File;
 
 import org.apache.maven.project.Dependency;
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.mevenide.ui.eclipse.editors.properties.DependencyPropertySource;
 
@@ -60,7 +62,8 @@ import org.mevenide.ui.eclipse.editors.properties.DependencyPropertySource;
  * @version $Id$
  * 
  */
-public class DependencyMappingNode implements IArtifactMappingNode {
+public class DependencyMappingNode implements IArtifactMappingNode, IPropertyChangeListener {
+    
     /** may be instance of IProject or IClasspathEntry */
     private Object ideEntry;
     private Dependency resolvedDependency;
@@ -93,7 +96,9 @@ public class DependencyMappingNode implements IArtifactMappingNode {
             if ( dependency == null ) {
                 dependency = new Dependency();
             }
-            return new DependencyPropertySource(dependency);
+            DependencyPropertySource propertySource = new DependencyPropertySource(dependency);
+            propertySource.addPropertyChangeListener(this);
+            return propertySource;
         }
         return null;
     }
@@ -108,5 +113,9 @@ public class DependencyMappingNode implements IArtifactMappingNode {
     
     public void setIdeEntry(Object ideEntry) {
         this.ideEntry = ideEntry;
+    }
+    
+    public void propertyChange(PropertyChangeEvent event) {
+        setDependency((Dependency)((DependencyPropertySource)event.getSource()).getSource());
     }
 }
