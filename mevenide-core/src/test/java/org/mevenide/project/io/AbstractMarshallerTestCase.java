@@ -54,7 +54,7 @@ public abstract class AbstractMarshallerTestCase extends TestCase {
     	marshaller.marshall(writer, testProject);
     	Reader reader = new StringReader(writer.toString());
     	//assertEquals(testProject, new DefaultProjectUnmarshaller().unmarshall(reader));
-    	//System.out.print(writer.toString());
+    	System.out.print(writer.toString());
     }
    
 }

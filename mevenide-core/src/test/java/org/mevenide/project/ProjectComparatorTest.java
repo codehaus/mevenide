@@ -163,7 +163,7 @@ public class ProjectComparatorTest extends TestCase {
 			ProjectReader reader = ProjectReader.getReader();
 			MavenProject p1 = reader.read(pom);
 			MavenProject p2 = reader.read(pom);
-			p2.getBuild().setNagEmailAddress("bob@nospam.com");
+			p2.getBuild().setSourceDirectory("/fakeSrcDirectory");
 			ProjectComparator comparator = new ProjectComparator(p1);
 			comparator.addProjectChangeListener(LISTENER);
 			comparator.compare(p2);

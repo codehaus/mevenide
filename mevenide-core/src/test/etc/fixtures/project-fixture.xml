@@ -1,11 +1,12 @@
 
-<project>
+<model>
 
-  <pomVersion>3</pomVersion>
+  <modelVersion>3</modelVersion>
   <name>Mevenide Core</name>
-  <id>mevenide:mevenide-core</id>
+  
+  <groupId>mevenide</groupId>
   <artifactId>mevenide-core</artifactId>
-  <currentVersion>1.0</currentVersion>
+  <version>1.0</version>
   
   <package>org.mevenide</package>
   
@@ -142,4 +143,4 @@
     </resources>
     
   </build>
-</project>
+</model>

@@ -17,20 +17,22 @@
 package org.mevenide.project.io;
 
 import java.io.File;
-import java.io.FileReader;
-import java.io.Reader;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.maven.Maven;
+import org.apache.maven.MavenCore;
 import org.apache.maven.model.Build;
 import org.apache.maven.model.Dependency;
-import org.apache.maven.model.Model;
 import org.apache.maven.model.Resource;
-import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.apache.maven.project.MavenProject;
+import org.codehaus.classworlds.ClassWorld;
+import org.mevenide.environment.LocationFinderAggregator;
 import org.mevenide.project.ProjectConstants;
 import org.mevenide.util.StringUtils;
 
@@ -45,14 +47,10 @@ import org.mevenide.util.StringUtils;
 public class ProjectReader {
 	private static final Log log = LogFactory.getLog(ProjectReader.class);
 	
-	private MavenXpp3Reader unmarshaller ;
+	private MavenCore unmarshaller ;
 	
 	private static ProjectReader projectReader = null;
 
-	
-	private JarOverrideReader jarOverrideReader;
-	
-	
 	public static synchronized ProjectReader getReader() throws Exception {
 		if (projectReader == null) {
 			projectReader = new ProjectReader();
@@ -61,8 +59,9 @@ public class ProjectReader {
 	}
 	
 	private ProjectReader() throws Exception {
-		unmarshaller = new MavenXpp3Reader();
-		jarOverrideReader = new JarOverrideReader();
+		ClassWorld classWorld = new ClassWorld();
+		classWorld.newRealm("root");
+		unmarshaller = new Maven(new LocationFinderAggregator().getMavenHome(), classWorld);
 	}
 	
 	/**
@@ -71,22 +70,12 @@ public class ProjectReader {
 	 */
 	public MavenProject read(File pom) throws Exception {
 		
-		Reader reader = null;
 		try {
-			reader = new FileReader(pom);
-			MavenProject project = new MavenProject();
-			Model model = unmarshaller.read(reader);
-			project.setModel(model);
-			project.setFile(pom);
-			
-			jarOverrideReader.processOverride(pom, project);
-			
+			MavenProject project = unmarshaller.getProject(pom);
 			return project;
 		}
 		finally {
-			if ( reader != null ) {
-				reader.close();
-			}
+			
 		}
 	}
 	
@@ -144,7 +133,7 @@ public class ProjectReader {
 		Dependency dependency = new Dependency();
 		dependency.setGroupId(referencedProject.getModel().getGroupId());
 		dependency.setArtifactId(referencedProject.getModel().getArtifactId());
-		dependency.setVersion(referencedProject.getModel().getCurrentVersion());
+		dependency.setVersion(referencedProject.getModel().getVersion());
 		//dependency.setArtifact(referencedPom.getParent());
 		//dependency.setJar(referencedPom.getParent());
 		return dependency;
@@ -185,15 +174,14 @@ public class ProjectReader {
 	}
 	
 	private Build getBuild(File pom) throws Exception {
-		Model model; 
+		MavenProject project = null; 
 		if ( pom != null ) {
-			model = unmarshaller.read(new FileReader(pom));
-		}		
-		else {
-			model = new Model();
+			project = unmarshaller.getProject(pom);
 		}
-		
-		Build build = model.getBuild();
+		Build build = null;
+		if ( project != null ) {
+			build = project.getModel().getBuild();
+		}
 		return build;
 	}
 }
