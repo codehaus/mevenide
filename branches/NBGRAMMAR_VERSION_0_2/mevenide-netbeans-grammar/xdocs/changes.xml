@@ -7,7 +7,7 @@
 
   <body>
 
-    <release version="0.2" date="in CVS">
+    <release version="0.2" date="15042004">
       <action dev="mkleint" type="add">
         Dynamic tag libraries from maven plugins also supported.
       </action>
