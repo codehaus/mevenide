@@ -10,7 +10,7 @@
             	<j:set var="cssFile">${importLine.substring(importLine.lastIndexOf('/'), importLine.lastIndexOf('"'))}</j:set>
             	<j:set var="cssFile">${cssFile.substring(1, cssFile.length())}</j:set>
             	<j:set var="absoluteLocation" value="${maven.spinner.wiki.absolute.css.directory.location}"/>
-            	<j:set var="newImport">@import("${absoluteLocation}/${cssFile}");</j:set>
+            	<j:set var="newImport">@import url("${absoluteLocation}/${cssFile}");</j:set>
             	<x:element name="style">
             	     <x:attribute name="type">text/css</x:attribute>
             	     ${newImport.replaceAll(" ", "")}
