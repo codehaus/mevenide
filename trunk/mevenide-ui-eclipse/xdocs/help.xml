@@ -121,7 +121,7 @@
 					<font size="-1"><b>Screenshot 7</b>Dependency Properties Dialog</font>	
 				</center>
 				<br/><br/>		
-				We use colors to help the user to manage inheritance. The legend should be self-explanatory.
+				We use colors to help the user to manage inheritance and solve dependencies issues. 
 					<ul>
 						<li>
 							Grey : artifact already declared in parent (ReadOnly) 
@@ -135,7 +135,7 @@
 						</li>
 						<li>
 							Orange : artifact declared in both parent and current POM (or Eclipse Project). 
-							Such an artifact should be either be specifried as inherited or be removed from the list.
+							Such an artifact should be either be specified as inherited or be removed from the list.
 						</li>
 						<li>
 							Green  : artifact already present in POM. No action required.
