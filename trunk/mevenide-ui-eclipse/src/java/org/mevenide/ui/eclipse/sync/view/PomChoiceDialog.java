@@ -50,9 +50,9 @@ import org.mevenide.ui.eclipse.Mevenide;
  */
 public class PomChoiceDialog extends TitleAreaDialog {
     
-    //@todo externalize
-    private static final String POM_CHOICE_MESSAGE = Mevenide.getResourceString("PomChoiceDialog.Message");
     
+    private static final String POM_CHOICE_MESSAGE = Mevenide.getResourceString("PomChoiceDialog.Message");
+    private static final String DIALOG_NAME = Mevenide.getResourceString("PomChoiceDialog.Name");
     private static final String POM_CHOICE_TITLE = Mevenide.getResourceString("PomChoiceDialog.Title");
     
 	private PomChooser pomChooser;
@@ -76,6 +76,7 @@ public class PomChoiceDialog extends TitleAreaDialog {
 	    
 	    Control contents = super.createContents(parent);
 	    
+	    getShell().setText(DIALOG_NAME);
 	    setTitle(POM_CHOICE_TITLE); 
 	    setTitleImage(Mevenide.getImageDescriptor("wizban/mfile_choose.gif").createImage());
 	    setMessage(POM_CHOICE_MESSAGE); 

@@ -439,12 +439,24 @@ public abstract class JellyContentAssistProcessor implements IContentAssistProce
                     replacementLength = attribute.getContent().length();
                 }
                 
-                cp[i] = new CompletionProposal(text + (hasComma ? "" : "" + quote), offset - start.length(), replacementLength - 6, text.length() + 1, null,
-                        text, null, null);
+                cp[i] = new CompletionProposal(text + (hasComma ? "" : "" + quote), 
+                                               offset - start.length(), 
+                                               replacementLength - 6, 
+                                               text.length() + 1, 
+                                               Mevenide.getImageDescriptor("obj16/mgoal_obj.gif").createImage(),
+                                               text, 
+                                               null, 
+                                               null);
             }
             else {
-                cp[i] = new CompletionProposal('"' + text + '"', offset - start.length(), 0, text.length() + 2,
-                        null, text, null, null);
+                cp[i] = new CompletionProposal('"' + text + '"', 
+                                               offset - start.length(), 
+                                               0, 
+                                               text.length() + 2,
+                                               Mevenide.getImageDescriptor("obj16/mgoal_obj.gif").createImage(), 
+                                               text, 
+                                               null, 
+                                               null);
             }
         }
         return cp;
