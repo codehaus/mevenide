@@ -14,7 +14,6 @@
  */
 package org.mevenide.ui.eclipse.sync.model;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.maven.project.Dependency;
@@ -33,26 +32,21 @@ import org.mevenide.ui.eclipse.util.ProjectUtil;
  * 
  */
 public class DependencyGroup extends ArtifactGroup {
-	private List dependencies;
-
+	
 	public DependencyGroup(IProject project) {
 		super(project);
 	}
 
 	protected void initialize() throws Exception {
 		
-		if ( dependencies == null ) {
-			dependencies = new ArrayList();
-		}
-		
-		IClasspathEntry[] classpathEntries = project.getResolvedClasspath(true);
+		IClasspathEntry[] classpathEntries = javaProject.getResolvedClasspath(true);
 		
 		IPathResolver pathResolver = new DefaultPathResolver();
 		
 		for (int i = 0; i < classpathEntries.length; i++) {
 			if ( classpathEntries[i].getEntryKind() == IClasspathEntry.CPE_LIBRARY
-					&& !FileUtil.isClassFolder(classpathEntries[i].getPath().toOSString(), project.getProject()) 
-					&& !ProjectUtil.getJreEntryList(project.getProject()).contains(pathResolver.getAbsolutePath(classpathEntries[i].getPath())) ) {
+					&& !FileUtil.isClassFolder(classpathEntries[i].getPath().toOSString(), javaProject.getProject()) 
+					&& !ProjectUtil.getJreEntryList(javaProject.getProject()).contains(pathResolver.getAbsolutePath(classpathEntries[i].getPath())) ) {
 				
 				String path = classpathEntries[i].getPath().toOSString(); 
 				Dependency dependency = DependencyFactory.getFactory().getDependency(path);
@@ -61,17 +55,17 @@ public class DependencyGroup extends ArtifactGroup {
 				
 			}
 		}
-		dependencies.addAll(ProjectUtil.getCrossProjectDependencies());
+		artifacts.addAll(ProjectUtil.getCrossProjectDependencies());
 		
 	}
 	
 	
 	public List getDependencies() {
-		return dependencies;
+		return artifacts;
 	}
 
 	public void setDependencies(List list) {
-		dependencies = list;
+		artifacts = list;
 	}
 	
 	public void addDependency(Dependency dependency) {
@@ -90,7 +84,7 @@ public class DependencyGroup extends ArtifactGroup {
 		if ( dependency.getArtifact() == null ) {
 			dependency.setArtifact("");
 		}
-		dependencies.add(dependency);
+		artifacts.add(dependency);
 	}
 }
 

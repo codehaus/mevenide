@@ -14,6 +14,9 @@
  */
 package org.mevenide.ui.eclipse.sync.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.resources.IProject;
@@ -29,29 +32,50 @@ import org.eclipse.jdt.core.JavaCore;
 public abstract class ArtifactGroup {
 	private static Log log = LogFactory.getLog(ArtifactGroup.class);
 	
-	protected IJavaProject project;
+	protected IJavaProject javaProject;
 	
+	private IProject project;
+	private String projectName;
+	
+	protected List artifacts = new ArrayList(); 
 	
 	public ArtifactGroup(IProject project)  {
 		try {
 			if ( project != null && project.hasNature(JavaCore.NATURE_ID) ) {
-				this.project = JavaCore.create(project);
+				this.javaProject = JavaCore.create(project);
 				initialize();
 			}
+			setProject(project);
 		}
 		catch ( Exception ex ) {
 			log.debug("Error in ArtifactGroup initializer. reason : " + ex);
+			ex.printStackTrace();
 		}
 	}
 	
 	protected abstract void initialize() throws Exception; 
 	
-	public IJavaProject getProject() {
+	public IJavaProject getJavaProject() {
+		return javaProject;
+	}
+
+	public void setJavaProject(IJavaProject project) throws Exception {
+		this.javaProject = project;
+		initialize();
+	}
+	
+	public String getProjectName() {
+		return projectName;
+	}
+
+	public void setProject(IProject project) {
+		this.project = project;
+		this.projectName = project.getName();
+	}
+
+
+	public IProject getProject() {
 		return project;
 	}
 
-	public void setProject(IJavaProject project) throws Exception {
-		this.project = project;
-		initialize();
-	}
 }

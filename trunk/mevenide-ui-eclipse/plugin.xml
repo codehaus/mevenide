@@ -28,7 +28,7 @@
          <packages prefixes="org.apache.maven"/>
       </library>
       <library name="lib/xerces-2.2.1.jar">
-      	<packages prefixes="org.apache.xerces"/>
+         <packages prefixes="org.apache.xerces"/>
       </library>
       <library name="lib/mevenide-goals-grabber-0.1.jar">
          <export name="*"/>
@@ -58,7 +58,7 @@
    </requires>
 
 
-   <!-- Maven nature -->
+<!-- Maven nature -->
    <extension
          id="mavennature"
          name="maven nature"
@@ -69,12 +69,12 @@
          </run>
       </runtime>
    </extension>
-   <!-- Maven actions -->
+<!-- Maven actions -->
    <extension
          point="org.eclipse.ui.popupMenus">
-   <!-- project contributions (adaptable) -->
+<!-- project contributions (adaptable) -->
       <objectContribution
-            objectClass="org.eclipse.jdt.core.IJavaProject"
+            objectClass="org.eclipse.core.resources.IProject"
             adaptable="true"
             id="maven.plugin.project.xml.contribution">
          <menu
@@ -87,14 +87,27 @@
             <separator
                   name="Synchronize">
             </separator>
-            <!-- separator
-                  name="Map">
-            </separator -->
             <separator
                   name="MavenNature">
             </separator>
          </menu>
-         <!-- action
+         <action
+               label="Run Maven..."
+               icon="icons/maven-run.gif"
+               class="org.mevenide.ui.eclipse.actions.LaunchAction"
+               menubarPath="maven.plugin.menu/RunMaven"
+               enablesFor="1"
+               id="maven.plugin.popup.action">
+         </action>
+         <action
+               label="Create Pom"
+               icon="icons/maven-create-pom.gif"
+               class="org.mevenide.ui.eclipse.actions.CreatePomAction"
+               menubarPath="maven.plugin.menu/MavenNature"
+               enablesFor="1"
+               id="mevenide.pom.create">
+         </action>
+<!-- action
                label="Disable Maven Nature"
                icon="icons/maven-disable.gif"
                class="org.mevenide.ui.eclipse.actions.ManageNatureAction"
@@ -129,44 +142,27 @@
             </enablement>
          </action -->
          <action
-               label="Synchronize Project"
-               icon="icons/maven-synch-project.gif"
-               class="org.mevenide.ui.eclipse.actions.SynchronizeAction"
                menubarPath="maven.plugin.menu/Synchronize"
+               class="org.mevenide.ui.eclipse.actions.SynchronizeAction"
+               icon="icons/maven-synch-project.gif"
+               label="Synchronize Project"
                enablesFor="1"
                id="maven-plugin.Synchronize">
          </action>
          <action
-               label="Synchronize POM"
-               icon="icons/maven-synch-pom.gif"
-               class="org.mevenide.ui.eclipse.actions.SynchronizeAction"
                menubarPath="maven.plugin.menu/Synchronize"
+               class="org.mevenide.ui.eclipse.actions.SynchronizeAction"
+               icon="icons/maven-synch-pom.gif"
+               label="Synchronize POM"
                enablesFor="1"
                id="maven-plugin.SynchronizePom">
          </action>
-         <!-- action
-               label="Map Source Directories"
-               icon="icons/maven-synch-pom-prompt.gif"
-               tooltip="Map Source Directory Types"
-               class="org.mevenide.ui.eclipse.actions.MapAction"
-               menubarPath="maven.plugin.menu/Map"
-               enablesFor="1"
-               id="maven-plugin.mapSourceDirectories">
-         </action>
-         <action
-               label="Map Dependencies"
-               icon="icons/dependency-16.gif"
-               tooltip="Map Artifacts"
-               class="org.mevenide.ui.eclipse.actions.MapAction"
-               menubarPath="maven.plugin.menu/Map"
-               enablesFor="1"
-               id="maven-plugin.mapDependencies">
-         </action -->
       </objectContribution>
+<!-- project.xml contributions -->
       <objectContribution
-            objectClass="org.eclipse.core.resources.IProject"
-            adaptable="true"
-            id="maven.plugin.project.xml.contribution">
+            objectClass="org.eclipse.core.resources.IFile"
+            nameFilter="project.xml"
+            id="maven.plugin.project.xml.contribution.ifile">
          <menu
                label="Maven"
                path="additions"
@@ -174,40 +170,7 @@
             <separator
                   name="RunMaven">
             </separator>
-            <separator
-                  name="MavenNature">
-            </separator>
-         </menu>
-         <action
-               label="Run Maven..."
-               icon="icons/maven-run.gif"
-               class="org.mevenide.ui.eclipse.actions.LaunchAction"
-               menubarPath="maven.plugin.menu/RunMaven"
-               enablesFor="1"
-               id="maven.plugin.popup.action">
-         </action>
-         <action
-               label="Create Pom"
-               icon="icons/maven-create-pom.gif"
-               class="org.mevenide.ui.eclipse.actions.CreatePomAction"
-               menubarPath="maven.plugin.menu/MavenNature"
-               enablesFor="1"
-               id="mevenide.pom.create">
-         </action>
-      </objectContribution>
-      <!-- project.xml contributions -->
-      <objectContribution
-               objectClass="org.eclipse.core.resources.IFile"
-               nameFilter="project.xml"
-               id="maven.plugin.project.xml.contribution.ifile">
-         <menu
-               label="Maven"
-               path="additions"
-               id="maven.plugin.menu">
-            <separator
-                  name="RunMaven">
-            </separator>
-            <!-- separator
+<!-- separator
                   name="Map">
             </separator -->
             <separator
@@ -239,28 +202,9 @@
                enablesFor="1"
                id="maven-plugin.SynchronizePom">
          </action>
-         <!-- action
-               label="Map Source Directories"
-               icon="icons/maven-synch-pom-prompt.gif"
-               tooltip="Map Source Directory Types"
-               class="org.mevenide.ui.eclipse.actions.MapAction"
-               menubarPath="maven.plugin.menu/Map"
-               enablesFor="1"
-               id="maven-plugin.mapSourceDirectories">
-         </action>
-         <action
-               label="Map Dependencies"
-               icon="icons/dependency-16.gif"
-               tooltip="Map Dependency Artifacts"
-               class="org.mevenide.ui.eclipse.actions.MapAction"
-               menubarPath="maven.plugin.menu/Map"
-               enablesFor="1"
-               id="maven-plugin.mapDependencies">
-         </action -->
       </objectContribution>
    </extension>
-   
-   <!-- Maven preferences -->
+<!-- Maven preferences -->
    <extension
          point="org.eclipse.ui.preferencePages">
       <page
@@ -269,24 +213,5 @@
             id="maven.plugin.preferences.MavenPreferencePage">
       </page>
    </extension>
-   
-   <!-- Synchronization View -->
-   <!-- extension
-         point="org.eclipse.ui.views">
-      <view
-            name="Mevenide Source Folders"
-            icon="icons/maven.gif"
-            category="Mevenide"
-            class="org.mevenide.ui.eclipse.sync.view.SourceDirectoryMappingViewPart"
-            id="org.mevenide.sync.view">
-      </view>
-      <view
-            name="Mevenide Dependencies"
-            icon="icons/maven.gif"
-            category="Mevenide"
-            class="org.mevenide.ui.eclipse.sync.view.DependencyMappingViewPart"
-            id="org.mevenide.sync.view.dep">
-      </view>
-   </extension -->
 
 </plugin>

@@ -151,6 +151,7 @@ public class DependencyMappingWizardPage extends WizardPage {
 						}
 						catch ( Exception ex ) {
 							log.debug("Problem occured while trying to add a Dependency due to : " + e);
+							ex.printStackTrace();
 						}
 					}
 				}

@@ -93,8 +93,11 @@ public class SourceDirectoryGroupMarshaller {
 
 	public static void saveSourceDirectoryGroup(SourceDirectoryGroup group, String file) throws Exception {
 	
-		Document document = null;
+		if ( group == null ) {
+			return;
+		}
 		
+		Document document = null;
 		
 		if ( new File(file).exists() ) {
 		
@@ -110,13 +113,14 @@ public class SourceDirectoryGroupMarshaller {
 		List candidates = document.getRootElement().getChildren("sourceDirectoryGroup");
 		for (int i = 0; i < candidates.size(); i++) {
 			Element elem = (Element) candidates.get(i);
-			if ( elem.getAttributeValue("projectName").equals(group.getProject().getProject().getName()) )  {
+			String projectName = elem.getAttributeValue("projectName");
+			if ( projectName != null && projectName.equals(group.getProjectName()) )  {
 				document.getRootElement().removeContent(elem);
 			}
 		}
 		
 		Element sourceDirGroup = new Element("sourceDirectoryGroup");
-		sourceDirGroup.setAttribute("projectName", group.getProject().getProject().getName());
+		sourceDirGroup.setAttribute("projectName", group.getProjectName());
 		for (int i = 0; i < group.getSourceDirectories().size(); i++) {
 			SourceDirectory dir = (SourceDirectory) group.getSourceDirectories().get(i);
 			Element sourceDir = new Element("sourceDirectory");
