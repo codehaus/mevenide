@@ -20,6 +20,7 @@ import java.util.List;
 
 import org.jdom.Document;
 import org.jdom.Element;
+import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.util.JDomOutputter;
@@ -31,6 +32,8 @@ import org.mevenide.util.JDomOutputter;
  * 
  */
 public abstract class LaunchMarshaller {
+	
+	private static final String ACTIONS_FILE = Mevenide.getPlugin().getFile("launchedActions.xml");
 	
 	private static String ROOT_ELEM = "launchedActions";
 	
@@ -50,22 +53,8 @@ public abstract class LaunchMarshaller {
 	}
 	
 	public static void saveConfig(LaunchedAction action) throws Exception {
-		String file = Mevenide.getPlugin().getFile("launchedActions.xml");
 		
-		Document document = null;
-		
-		
-		if ( new File(file).exists() ) {
-	
-			SAXBuilder builder = new SAXBuilder(false);
-			document = builder.build(file);
-			
-		}
-		else {
-			document = new Document();
-			Element root = new Element(ROOT_ELEM);
-			document.setRootElement(root);
-		}
+		Document document = getDocument();
 		
 		List previouslyLaunched = document.getRootElement().getChildren();
 		for (int i = 0; i < previouslyLaunched.size(); i++) {
@@ -96,17 +85,50 @@ public abstract class LaunchMarshaller {
 		
 		document.getRootElement().addContent(actionElem);
 		
-		File saveFile = new File(file); 
+		JDomOutputter.output(document, new File(ACTIONS_FILE), false);
+	}
+
+	private static Document getDocument() throws JDOMException {
 	
-		JDomOutputter.output(document, saveFile, false);
+		Document document = null;
+		
+		
+		if ( new File(ACTIONS_FILE).exists() ) {
+		
+			SAXBuilder builder = new SAXBuilder(false);
+			document = builder.build(ACTIONS_FILE);
+			
+		}
+		else {
+			document = new Document();
+			Element root = new Element(ROOT_ELEM);
+			document.setRootElement(root);
+		}
+		return document;
 	}
 	
-	public static void removeConfig(LaunchedAction action) {
+	public static void removeConfig(LaunchedAction action) throws Exception {
+
+		Document document = getDocument();
 		
+		List previouslyLaunched = document.getRootElement().getChildren();
+		for (int i = 0; i < previouslyLaunched.size(); i++) {
+			Element elem = (Element) previouslyLaunched.get(i);
+			if ( elem.getAttributeValue(PROJECT_ATTR).equals(action.getProject().getName()) ) {
+				System.err.println("GOTCHA");
+				document.getRootElement().removeContent(elem);	
+			} 
+		}
+		
+		JDomOutputter.output(document, new File(ACTIONS_FILE), false);
 	}
 	
-	public static void clearConfigs() {
+	public static void clearConfigs() throws Exception {
+		Document document = getDocument();
 		
+		document.getRootElement().removeChildren();
+		
+		JDomOutputter.output(document, new File(ACTIONS_FILE), false);
 	}
 	
 	public static List getSavedConfigs() {

@@ -68,26 +68,22 @@ public class LaunchHistory {
 	 */
 	public void save(IProject project, String[] options, String[] goals) {
 		LaunchedAction action = new LaunchedAction(this, project, options, goals);
-		if ( launchedActions.contains(action) ) {
-			//action present in list means it has already saved. 
-			//just remove it from to place it at first position
+		try {
 			
-			//@todo manage the case where just options differ
-			//@todo should also update the "isLastLaunchedAction" attrbiute
-			//so best option seems to be to remove also the marshalled form
-			
-			LaunchMarshaller.removeConfig(action);
-			launchedActions.remove(action);
-		}
-		else {
-			try {
-				LaunchMarshaller.saveConfig(action);
-			} 
-			catch (Exception e) {
-				//e.printStackTrace();
-				log.error("Unable to save action due to : " + e);
+			if ( launchedActions.contains(action) ) {
+				
+				LaunchMarshaller.removeConfig(action);
+				launchedActions.remove(action);
+				
 			}
+	
+			LaunchMarshaller.saveConfig(action);
+		} 
+		catch (Exception e) {
+			//e.printStackTrace();
+			log.error("Unable to save action " + action + " due to : " + e);
 		}
+	
 		launchedActions.add(0, action);
 		lastlaunched = action;
 	}
@@ -97,9 +93,15 @@ public class LaunchHistory {
 	 *
 	 */
 	public void clear() {
-		LaunchMarshaller.clearConfigs();
-		launchedActions = new ArrayList();
-		lastlaunched = null;
+		try {
+			LaunchMarshaller.clearConfigs();
+			launchedActions = new ArrayList();
+			lastlaunched = null;
+		} 
+		catch (Exception e) {
+			//e.printStackTrace();
+			log.error("Unable to drop configurations due to : " + e);
+		}
 	}
 	
 	/**
