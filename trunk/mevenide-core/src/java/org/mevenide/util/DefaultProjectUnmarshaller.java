@@ -87,7 +87,7 @@ public class DefaultProjectUnmarshaller
     {
         Project project = new Project();
 
-        XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
+        XmlPullParserFactory factory = XmlPullParserFactory.newInstance("org.xmlpull.mxp1.MXParserFactory", Thread.currentThread().getContextClassLoader().getClass());
         XmlPullParser parser = factory.newPullParser();
         parser.setInput( reader );
 
