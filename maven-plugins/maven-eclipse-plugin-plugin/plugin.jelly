@@ -17,6 +17,33 @@
 	  
   	</define:tag>
   	
+  	<!-- 
+  	   @param artifact the artifact for which we lookup a license
+  	   @param dest the destination where the license file should be copied to
+  	-->
+  	<define:tag name="handle-licensing">
+  	    
+  	  <mevenide:find-license var="liblicense" jarFile="${artifact.path}" />
+    
+      <j:if test="${ empty(liblicense) }" >
+        <j:set var="licenseFile" value="${maven.eclipse.plugin.licenses.dir}/${artifact.dependency.groupId}/${artifact.dependency.artifactId}.lic"/>
+        <ant:available property="isLicensePresent" file="${licenseFile}"/>
+        <j:if test="${ isLicensePresent }">
+          <util:loadText file="${ licenseFile }" var="liblicense"/>
+        </j:if>
+      </j:if>
+      
+      <j:if test="${ empty(liblicense) }">
+        <!-- should we fail ? -->
+        <ant:echo message="Dependency ${dependency} doesn't have a license file defined in the jar. Please copy the license to file: licenses/${dependency.groupId}/${dependency.artifactId}.lic" />
+      </j:if>
+      
+      <j:if test="${ !empty(liblicense) }">
+        <j:file name="${dest}/license.txt" omitXmlDeclaration="true">${liblicense}</j:file>
+      </j:if>
+  	    
+  	</define:tag>
+  	
   </define:taglib>
   
   
@@ -203,7 +230,7 @@
    	 <!-- clean up resources -->
    	 <ant:delete dir="${maven.eclipse.plugin.temp.dir}"/>
    	 
-   </goal>
+  </goal>
    
    	
   
@@ -233,11 +260,9 @@
     <ant:delete dir="${maven.eclipse.plugin.temp.dir}" quiet="true"/>
     <ant:mkdir dir="${maven.eclipse.plugin.temp.dir}" />
     
-    <j:set var="buildMode" value="${maven.eclipse.plugin.build.mode}"/>
-    <j:if test="${ buildMode == 'bundle' }">
-      <ant:delete dir="${maven.eclipse.plugin.ext.dir}" quiet="true" />
-      <ant:mkdir dir="${maven.eclipse.plugin.ext.dir}" />
-    </j:if>
+    <ant:delete dir="${maven.eclipse.plugin.ext.dir}" quiet="true" />
+    <ant:mkdir dir="${maven.eclipse.plugin.ext.dir}" />
+    
   </goal>
 
 
@@ -339,14 +364,13 @@
         </j:file>
         
         <!-- copy plugin files to output folder -->
+        <eclipse-plugin:handle-licensing artifact="${artifact}" dest="${dependencyPluginDir}"/>
+        
+         <!-- copy library jars to output folder -->
         <ant:copy file="${artifact.path}" todir="${dependencyPluginDir}"/>
-        <j:set var="licenseFile" value="${maven.eclipse.plugin.licenses.dir}/${dependency.groupId}/licenses/${dependency.artifactId}.lic"/>
-        <ant:available property="isLicensePresent" file="${licenseFile}"/>
-        <j:if test="${isLicensePresent}">
-          <ant:copy file="${licenseFile}" todir="${dependencyPluginDir}"/>
-        </j:if>
         
       </j:if>
     </j:forEach>
   </goal>
+  
 </project>
