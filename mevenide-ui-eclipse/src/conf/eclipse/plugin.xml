@@ -332,10 +332,5 @@
       <persistent value="true"/>
       <super type="org.eclipse.core.resources.problemmarker"/>
    </extension>
-   <!-- POM Validation Warning Marker -->
-   <extension id="pom_validation_warning" point="org.eclipse.core.resources.markers" name="Maven Pom Validation Warning">
-      <persistent value="true"/>
-      <super type="org.eclipse.core.resources.problemmarker"/>
-   </extension>
-	
+ 	
 </plugin>
