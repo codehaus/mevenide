@@ -75,6 +75,10 @@ public class RepositoryObjectCollectorJob extends Job {
         }
     }
 
+    public void addListener(RepositoryEventListener listener) {
+        this.repositoryEventListeners.add(listener);
+    }
+    
     public void setListeners(List list) {
         if ( list != null ) {
             this.repositoryEventListeners = list;

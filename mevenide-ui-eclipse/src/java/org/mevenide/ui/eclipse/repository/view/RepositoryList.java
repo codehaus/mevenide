@@ -38,12 +38,14 @@ public class RepositoryList {
     private static final String MAVEN_REPOSITORIES = "MAVEN_REPOSITORIES";
     private static final String MAVEN_MIRRORS = "MAVEN_MIRRORS";
     
+    public static final String MAIN_MAVEN_REPO = "http://www.ibiblio.org/maven/";
+    
     public static final List DEFAULT_REPOSITORIES = new ArrayList();
     public static final List MIRRORS = new ArrayList();
     
     static {
         //@todo use repos defined in mavenRepositories.properties
-        DEFAULT_REPOSITORIES.add("http://www.ibiblio.org/maven/");
+        DEFAULT_REPOSITORIES.add(MAIN_MAVEN_REPO);
         DEFAULT_REPOSITORIES.add("http://cvs.apache.org/repository/");
         DEFAULT_REPOSITORIES.add("http://maven-plugins.sourceforge.net/maven/");
         DEFAULT_REPOSITORIES.add("http://seasar.sourceforge.jp/maven/");

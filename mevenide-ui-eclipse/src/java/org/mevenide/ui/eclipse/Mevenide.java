@@ -104,11 +104,11 @@ public class Mevenide extends AbstractUIPlugin {
     private CustomLocationFinder customLocationFinder;
 
 
-    private static final String DEPENDENCY_TYPE_JAR = "jar"; //$NON-NLS-1$
-    private static final String DEPENDENCY_TYPE_EJB = "ejb"; //$NON-NLS-1$
-    private static final String DEPENDENCY_TYPE_PLUGIN = "plugin"; //$NON-NLS-1$
-    private static final String DEPENDENCY_TYPE_ASPECT = "aspect"; //$NON-NLS-1$
-    private static final String DEPENDENCY_TYPE_WAR = "war"; //$NON-NLS-1$
+    public static final String DEPENDENCY_TYPE_JAR = "jar"; //$NON-NLS-1$
+    public static final String DEPENDENCY_TYPE_EJB = "ejb"; //$NON-NLS-1$
+    public static final String DEPENDENCY_TYPE_PLUGIN = "plugin"; //$NON-NLS-1$
+    public static final String DEPENDENCY_TYPE_ASPECT = "aspect"; //$NON-NLS-1$
+    public static final String DEPENDENCY_TYPE_WAR = "war"; //$NON-NLS-1$
 
     
     private ActionDefinitionsManager actionDefinitionsManager;
