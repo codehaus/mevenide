@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 
 <document>
   <properties>
@@ -31,6 +31,17 @@
           <jbuilder.opentool.bundle>true</jbuilder.opentool.bundle>
         </properties>
       ]]></source>
+    </section>
+    <section name="Installing">
+      <div id="documentContent">
+      <p>
+		To install the plugin automatically, please add the <code>http://mevenide.codehaus.org/repository</code> to your <code>maven.repo.remote</code> parameter.
+		And use the plugin:download maven goal to install the plugin.
+		<source>
+	maven -DartifactId=maven-jbuilder-opentool-plugin -DgroupId=mevenide -Dversion=0.1 plugin:download
+		</source>
+	  </p>
+   	  </div>
     </section>
   </body>
 </document>

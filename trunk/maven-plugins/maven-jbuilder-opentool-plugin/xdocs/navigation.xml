@@ -5,7 +5,7 @@
   <body>
     <links>
       <item href="http://maven.apache.org/" name="Maven"/>
-      <item href="http://eclipse.org/" name="Eclipse"/>
+      <item name="JBuilder" href="http://www.borland.com/jbuilder"/>
       <item href="http://mevenide.codehaus.org/" name="Mevenide"/>
     </links>
     <menu name="General">
