@@ -14,11 +14,15 @@
 package org.mevenide.ui.eclipse.util;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.mevenide.project.io.ProjectSkeleton;
+import org.mevenide.ui.eclipse.sync.source.DefaultPathResolverDelegate;
+import org.mevenide.ui.eclipse.sync.source.IPathResolverDelegate;
 
 /**
  * 
@@ -33,5 +37,11 @@ public class ProjectUtil {
 		 String referencedPomSkeleton = ProjectSkeleton.getSkeleton( project.getName() );
 		 IFile referencedProjectFile = project.getFile("project.xml"); 
 		 referencedProjectFile.create(new ByteArrayInputStream(referencedPomSkeleton.getBytes()), false, null);
+	}
+	
+	public static File getPom(IProject project) {
+		IPathResolverDelegate pathResolver = new DefaultPathResolverDelegate();
+		IPath referencedProjectLocation = project.getLocation();
+		return new File(pathResolver.getAbsolutePath(referencedProjectLocation.append("project.xml")) );
 	}
 }
