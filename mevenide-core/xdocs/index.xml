@@ -6,7 +6,7 @@
     </properties>
     <body>
         <section name="Project Overview">
-        	<div id="documentContent">
+        	
         	<p>
 			    This module should be the foundation for IDE integration. it provides POM manipulation methods, like
 			    reading, writing POM, adding [re]source directories, dependencies, resolving dependencies, etc.. 
@@ -16,7 +16,6 @@
 			<p>
 			    <a href="packages.html">This document</a> describes the package structure of the module. 
 			</p>
-			</div>
 		</section>
     </body>
 </document>

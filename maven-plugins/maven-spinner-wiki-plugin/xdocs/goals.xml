@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<document>
+  <properties>
+    <title>maven-eclipse-plugin-plugin Goals</title>
+    <author>Gilles Dodinet (rhill@wanadoo.fr)</author>
+  </properties>
+  
+  <body>
+  	<section name="Goals">
+  		<div id="documentContent">
+  		<table>
+  		  <tr>
+  		  	<th>Goal</th>
+  		  	<th>Description</th>
+  		  </tr>	
+  		  <tr>
+            <td>spinner-wiki:generate-templates</td>
+            <td>Create Spinner Wiki templates</td>
+          </tr>
+          <tr>
+            <td>spinner-wiki:clean</td>
+            <td>Delete generated Spinner Wiki templates</td>
+          </tr>
+  		</table>
+  		</div>
+  	</section>
+  </body>
+</document>

@@ -6,7 +6,7 @@
     </properties>
     <body>
         <section name="Packages Overview">
-        	<div id="documentContent">
+        	
         	<p>
         		The diagram below describes the relationships between the various packages
         		of the Mevenide Core module. It could be splitted mainly into three parts :
@@ -19,7 +19,7 @@
 			    	<img src="images/diags/package-diagram.gif"/>
 			    </center>
 			</p>
-			</div>
+			
 		</section>
     </body>
 </document>

@@ -6,7 +6,7 @@
     </properties>
     <body>
         <section name="Pom Manipulation Overview">
-        	<div id="documentContent">
+        
         	  <p>
         	  	To be done.
         	  </p>
@@ -17,7 +17,7 @@
         	      <font size="-1"><b>Figure 1</b><i>Project IO related classes</i></font>
         	    </center>	
         	  </p>
-			</div>
+		
 		</section>
     </body>
 </document>

@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<document>
+
+  <properties>
+    <author email="rhill@wanadoo.fr">Gilles Dodinet</author>
+    <title>Mevenide - Integrating Maven into IDEs</title>
+  </properties>
+<body>
+
+
+  <section name="Overview">
+  	
+  	<p>
+  		Special credits go to the following people/groups :	
+  	</p>
+    
+    <ul>
+      	<li>Bob McWhirter and <a href="http://drools.codehaus.org">Drools</a> team for sharing their site stylesheet</li>
+      	<li><a href="http://cyclops-group.sourceforge.net/">Cyclops-group</a> project whose jsl template has inspired me</li>
+      	<li><a href="http://ant.apache.org">Ant</a> from which some code has been taken (OS environment variable lookup) </li>
+      	<li>Ute Schneider for initial grepping-like mechanism implementation</li>
+    </ul>
+    
+    </section>
+    </body>
+</document>

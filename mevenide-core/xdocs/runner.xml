@@ -6,7 +6,7 @@
     </properties>
     <body>
         <section name="Runner Overview">
-        	<div id="documentContent">
+       
         	<p>
         	  To be done.
         	</p>
@@ -16,7 +16,7 @@
 			    	<img src="images/diags/runner-diagram.gif"/>
 			    </center>
 			</p>
-			</div>
+		
 		</section>
     </body>
 </document>
