@@ -27,7 +27,6 @@ import java.text.MessageFormat;
 import java.util.MissingResourceException;
 import java.util.Properties;
 import java.util.ResourceBundle;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.resources.IFile;
@@ -48,6 +47,7 @@ import org.mevenide.environment.ConfigUtils;
 import org.mevenide.environment.CustomLocationFinder;
 import org.mevenide.environment.LocationFinderAggregator;
 import org.mevenide.runner.RunnerHelper;
+import org.mevenide.ui.eclipse.preferences.DynamicPreferencePageLoader;
 import org.mevenide.ui.eclipse.util.FileUtils;
 import org.osgi.framework.BundleContext;
 
@@ -61,9 +61,8 @@ import org.osgi.framework.BundleContext;
  * @todo get rid of the static method and make use of new bundle capabilities
  *  
  */
-public class Mevenide extends AbstractUIPlugin  {
-	
-	private static Log log = LogFactory.getLog(Mevenide.class);
+public class Mevenide extends AbstractUIPlugin {
+    private static Log log = LogFactory.getLog(Mevenide.class);
 	 
 	private static Mevenide plugin;
 	
@@ -110,9 +109,10 @@ public class Mevenide extends AbstractUIPlugin  {
 		customLocationFinder = new CustomLocationFinder();
 		loadPreferences();
         initEnvironment();
+        Platform.getExtensionRegistry().addRegistryChangeListener(new DynamicPreferencePageLoader());
 	}
 
-	/**
+    /**
 	 * osgi shutdown : dispose resources
 	 */
 	public void stop(BundleContext context) throws Exception {
