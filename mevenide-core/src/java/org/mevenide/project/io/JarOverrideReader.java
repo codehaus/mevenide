@@ -32,7 +32,7 @@ import org.mevenide.util.StringUtils;
  * 
  * @author <a href="mailto:rhill2@free.fr">Gilles Dodinet</a>
  * @version $Id: JarOverrideReader.java,v 1.1 13 mars 2004 Exp gdodinet 
- * 
+ * @deprecated use JarOverrideReader2 instead
  */
 public class JarOverrideReader {
 	private static Log log = LogFactory.getLog(JarOverrideReader.class);
