@@ -54,27 +54,32 @@ public class ActionActivator implements IResourceDeltaVisitor {
     public boolean visit(IResourceDelta delta) throws CoreException {
         for (int i = 0; i < definitionCandidates.size(); i++) {
             if ( !shouldSkipDefinitions[i] ) {
-	            ActionDefinitions definition = (ActionDefinitions) definitionCandidates.get(i);
-	            if ( !project.hasNature(Mevenide.NATURE_ID) ) {
-	                definition.setEnabled(project, false);
-	                shouldSkipDefinitions[i] = true;
-	            }
-	            else {
-			        IPath path = delta.getFullPath();
-			        List patterns = definition.getPatterns();
-			        DirectoryScanner scanner;
-		            String[] files = scan(patterns);
-		            definition.setEnabled(project, match(path, files));
-			        if ( match(path, files) ) {
-			            shouldSkipDefinitions[i] = true;
-			            if ( definition.isAutoBuild() ) {
-			                IAction action = new PatternBasedMavenLaunchAction(project, definition);
-			                action.run();
-			                definition.setEnabled(project, false);
-			            }
-			            return false;
-			        }
-	            }
+                ActionDefinitions definition = (ActionDefinitions) definitionCandidates.get(i);
+                if ( definition.isEnabled(project) ) {
+                    shouldSkipDefinitions[i] = true;
+                }
+                else {
+		            if ( !project.hasNature(Mevenide.NATURE_ID) ) {
+		                definition.setEnabled(project, false);
+		                shouldSkipDefinitions[i] = true;
+		            }
+		            else {
+				        IPath path = delta.getFullPath();
+				        List patterns = definition.getPatterns();
+				        DirectoryScanner scanner;
+			            String[] files = scan(patterns);
+			            definition.setEnabled(project, match(path, files));
+				        if ( match(path, files) ) {
+				            shouldSkipDefinitions[i] = true;
+				            if ( definition.isAutoBuild() ) {
+				                IAction action = new PatternBasedMavenLaunchAction(project, definition);
+				                action.run();
+				                definition.setEnabled(project, false);
+				            }
+				            return false;
+				        }
+		            }
+                }
             }
         }
         return true;
