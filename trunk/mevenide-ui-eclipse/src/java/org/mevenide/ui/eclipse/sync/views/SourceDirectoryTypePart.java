@@ -163,9 +163,11 @@ public class SourceDirectoryTypePart extends ViewPart {
 	public void init(IViewSite site, IMemento memento) throws PartInitException {
 		super.init(site, memento);
 	}
+	
 	public void init(IViewSite site) throws PartInitException {
 		setSite(site);
 	}
+	
 	public void saveState(IMemento memento) {
 		super.saveState(memento);
 	}
