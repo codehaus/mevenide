@@ -92,6 +92,7 @@ public class SubprojectProviderImpl implements SubprojectProvider {
         if (projectFile.exists()) {
             FileObject projectDir = FileUtil.toFileObject(projectFile);
             if (projectDir != null) {
+                projectDir = projectDir.getParent();
                 if (project.getProjectDirectory().equals(projectDir)) {
                     // don't include itself into the list of subprojects..
                     return null;
