@@ -56,7 +56,8 @@ public class JavaOutputListenerProvider extends AbstractOutputProcessor {
                 String clazz = match.group(1);
                 String lineNum = match.group(2);
                 String text = match.group(3);
-                visitor.setOutputListener(new CompileAnnotation(project, clazz, lineNum, text));
+                visitor.setOutputListener(new CompileAnnotation(project, clazz, lineNum, 
+                        text), !text.startsWith("warning"));
             }
         }
     }

@@ -18,6 +18,7 @@ package org.mevenide.netbeans.project.exec;
 
 import java.awt.event.ActionEvent;
 import java.io.*;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -41,8 +42,9 @@ import org.openide.util.Task;
 import org.openide.util.Utilities;
 import org.openide.windows.IOProvider;
 import org.openide.windows.InputOutput;
+import org.openide.windows.OutputListener;
 import org.openide.windows.OutputWriter;
-import org.openide.execution.NbProcessDescriptor;
+
 
 
 /**
@@ -251,6 +253,14 @@ public class MavenExecutor implements Runnable {
             BufferedReader read = new BufferedReader(new InputStreamReader(str), 50);
             String line; 
             OutputVisitor visitor = new OutputVisitor();
+            // check if we use 4.1 version
+            Method method = null;
+            try {
+                Class[] params = new Class[] {String.class, OutputListener.class, Boolean.TYPE};
+                method = OutputWriter.class.getMethod("println", params);
+            } catch (Exception exc) {
+                // just ignore, we are in Netbeans 4.0   
+            }
             try {
                 while ((line = read.readLine()) != null) {
                     if (line.equals("BUILD SUCCESSFUL")) {
@@ -271,7 +281,18 @@ public class MavenExecutor implements Runnable {
                     if (visitor.getOutputListener() == null) {
                         writer.println(line);
                     } else {
-                        writer.println(line, visitor.getOutputListener());
+                        if (method != null) {
+                            try {
+                                Object[] objs = new Object[] 
+                                    {line, visitor.getOutputListener(), 
+                                     Boolean.valueOf(visitor.isImportant())};
+                                method.invoke(writer, objs);
+                            } catch (Exception exc) {
+                                logger.error("Error while doing reflection", exc);
+                            }
+                        } else {
+                            writer.println(line, visitor.getOutputListener());
+                        }
                     }
                     if (visitor.getSuccessAction() != null) {
                         successActions.add(visitor.getSuccessAction());
