@@ -17,6 +17,7 @@
 package org.mevenide.ui.eclipse.sync.model;
 
 import org.mevenide.project.ProjectConstants;
+import org.mevenide.project.source.SourceDirectoryUtil;
 
 /**
  * 
@@ -40,6 +41,10 @@ public class Directory {
     
     public String getPath() {
         return path;
+    }
+    
+    String getCleanPath() {
+        return SourceDirectoryUtil.stripBasedir(path);
     }
     
     public void setPath(String path) {

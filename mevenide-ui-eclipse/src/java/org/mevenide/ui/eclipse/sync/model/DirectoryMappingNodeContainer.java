@@ -28,8 +28,8 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Project;
 import org.apache.maven.project.Resource;
 import org.mevenide.project.ProjectConstants;
+import org.mevenide.project.source.SourceDirectoryUtil;
 import org.mevenide.ui.eclipse.util.FileUtils;
-import org.mevenide.ui.eclipse.util.SourceDirectoryTypeUtil;
 
 /**
  * 
@@ -92,8 +92,8 @@ public class DirectoryMappingNodeContainer extends AbstractArtifactMappingNodeCo
         	return false;
         }
         
-        String resourcePath = SourceDirectoryTypeUtil.stripBasedir(resource.getDirectory());
-        String directoryPath = SourceDirectoryTypeUtil.stripBasedir(directory.getPath());
+        String resourcePath = SourceDirectoryUtil.stripBasedir(resource.getDirectory());
+        String directoryPath = SourceDirectoryUtil.stripBasedir(directory.getPath());
         
         log.debug("resource dir : " + resourcePath + ", directory path : " + directoryPath + " match ? " + (resource.getDirectory() != null && resource.getDirectory().replaceAll("\\\\", "/").equals(directory.getPath().replaceAll("\\\\", "/"))));
         return resourcePath.replaceAll("\\\\", "/").equals(directoryPath.replaceAll("\\\\", "/"));
