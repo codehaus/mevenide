@@ -32,7 +32,7 @@ public class MavenRunActionDelegate extends AbstractMevenideAction {
 	public void run(IAction action) {
 		MavenLaunchShortcut shortcut = new MavenLaunchShortcut();
 		shortcut.setShowDialog(true);
-		shortcut.launch(this.currentProject);
+		shortcut.launch(selection, null);
 		
 	}
 
