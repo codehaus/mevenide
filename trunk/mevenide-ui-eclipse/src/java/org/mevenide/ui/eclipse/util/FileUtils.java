@@ -26,7 +26,6 @@ import java.io.RandomAccessFile;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Project;
@@ -71,16 +70,17 @@ public class FileUtils {
 		return new File(project.getLocation().append(new Path(entryPath).removeFirstSegments(1)).toOSString()).isDirectory();
 	}
 
-	public static void createPom(IProject project, String file) throws Exception, CoreException {
+	public static void createPom(IContainer folder, String file) throws Exception, CoreException {
 		 log.debug("Creating pom skeleton using template : " + file);
 		 PomSkeletonBuilder pomSkeletonBuilder = PomSkeletonBuilder.getSkeletonBuilder( file ); 
-		 String referencedPomSkeleton = pomSkeletonBuilder.getPomSkeleton(project.getName());
-		 IFile referencedProjectFile = project.getFile("project.xml"); 
+		 String referencedPomSkeleton = pomSkeletonBuilder.getPomSkeleton(folder.getName());
+		 IFile referencedProjectFile = folder.getFile(new Path("project.xml")); 
 		 referencedProjectFile.create(new ByteArrayInputStream(referencedPomSkeleton.getBytes()), false, null);
 	}
-
-	public static void createPom(IProject project) throws Exception, CoreException {
-		 createPom(project, null);
+	
+	
+	public static void createPom(IContainer folder) throws Exception, CoreException {
+		 createPom(folder, null);
 	}
 	
 	public static void copyFile(File in, File out) throws Exception

@@ -18,9 +18,13 @@ package org.mevenide.ui.eclipse.actions;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.window.Window;
 import org.eclipse.ui.PlatformUI;
 import org.mevenide.ui.eclipse.Mevenide;
@@ -37,6 +41,8 @@ import org.mevenide.util.StringUtils;
 public class CreatePomAction extends AbstractMevenideAction {
 	private static Log log = LogFactory.getLog(CreatePomAction.class);
 	
+	private IContainer currentContainer;
+	
 	public void run(IAction action) {
 		try {
 			if ( FileUtils.getPom(currentProject) != null && !FileUtils.getPom(currentProject).exists() ) {
@@ -49,7 +55,7 @@ public class CreatePomAction extends AbstractMevenideAction {
                             Mevenide.getResourceString("CreatePomAction.template.null.message"));
 			    }
 			    if ( createPom ) {
-			        FileUtils.createPom(currentProject, pomTemplate);
+		            FileUtils.createPom(currentContainer, pomTemplate);
 			    }
 			}
 		} catch (Exception e) {
@@ -70,7 +76,16 @@ public class CreatePomAction extends AbstractMevenideAction {
 
 	public void selectionChanged(IAction action, ISelection selection) {
 		super.selectionChanged(action, selection);
-		
+		Object o =  ((StructuredSelection) selection).getFirstElement();
+		if ( o instanceof IContainer ) {
+		    this.currentContainer = (IContainer) o;
+		}
+		if ( o instanceof IJavaElement ) {
+		    IResource resource = ((IJavaElement) o).getResource();
+		    if ( resource instanceof IContainer ) {
+		        this.currentContainer = (IContainer) resource;
+		    }
+		}
 //      i still have to figure out how to disable the ui associated to the action
 //		if ( Mevenide.getPlugin().getPom().exists() ) {
 //		    action.setEnabled(false); 
