@@ -58,21 +58,24 @@ public class JavaProjectUtils {
 	}
 
 	public static List getJreEntryList(IProject project) throws Exception {
-		IPathResolver pathResolver = new DefaultPathResolver();
-		
-		IClasspathEntry jreEntry = JavaRuntime.getJREVariableEntry();
-		IClasspathEntry resolvedJreEntry = JavaCore.getResolvedClasspathEntry(jreEntry);
-		String jrePath = pathResolver.getAbsolutePath(resolvedJreEntry.getPath());
-		
-		IClasspathContainer container = JavaCore.getClasspathContainer(new Path(Mevenide.getResourceString("ProjectUtil.eclipse.jre.container")), JavaCore.create(project));
-		IClasspathEntry[] jreEntries = container.getClasspathEntries();
-		
 		List jreEntryList = new ArrayList();
 		
-		for (int i = 0; i < jreEntries.length; i++) {
-			jreEntryList.add(pathResolver.getAbsolutePath(jreEntries[i].getPath()));
-		}    
-		jreEntryList.add(jrePath);
+		IPathResolver pathResolver = new DefaultPathResolver();
+		IClasspathEntry jreEntry = JavaRuntime.getJREVariableEntry();
+		
+		IClasspathEntry resolvedJreEntry = JavaCore.getResolvedClasspathEntry(jreEntry);
+		if ( resolvedJreEntry != null ) {
+			String jrePath = pathResolver.getAbsolutePath(resolvedJreEntry.getPath());
+			
+			IClasspathContainer container = JavaCore.getClasspathContainer(new Path(Mevenide.getResourceString("ProjectUtil.eclipse.jre.container")), JavaCore.create(project));
+			IClasspathEntry[] jreEntries = container.getClasspathEntries();
+			
+			
+			for (int i = 0; i < jreEntries.length; i++) {
+				jreEntryList.add(pathResolver.getAbsolutePath(jreEntries[i].getPath()));
+			}    
+			jreEntryList.add(jrePath);
+		}
 		return jreEntryList;
 	}
 
