@@ -224,7 +224,7 @@ public class DynamicPreferencePage extends PreferencePage implements IWorkbenchP
         for (Iterator it = editors.keySet().iterator(); it.hasNext(); ) {
             PluginProperty pluginProperty = (PluginProperty) it.next();
             StringFieldEditor editor = (StringFieldEditor) editors.get(pluginProperty);
-            if ( StringUtils.isNull(editor.getStringValue()) && pluginProperty.isRequired() ) {
+            if ( StringUtils.isNull(editor.getStringValue()) && pluginProperty.isRequired() && !StringUtils.isNull(pluginProperty.getDefault())) {
                 setErrorMessage(editor.getErrorMessage());
                 valid = false;
                 break;
