@@ -16,9 +16,14 @@
  */
 package org.mevenide.ui.eclipse.nature;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.ui.externaltools.internal.model.IExternalToolConstants;
 
 
 /**  
@@ -28,6 +33,8 @@ import org.eclipse.jface.action.IAction;
  * 
  */
 public class PatternBasedMavenLaunchAction extends Action {
+    
+    private static final Log log = LogFactory.getLog(PatternBasedMavenLaunchAction.class);
     
     private ActionDefinitions definition;
     
@@ -42,7 +49,31 @@ public class PatternBasedMavenLaunchAction extends Action {
     }
     
 	public void run(IAction action) {
-	    //definition.getConfiguration().launch();
+	    System.err.println("RUN");
+	    try  {
+	        ILaunchConfigurationWorkingCopy copy = definition.getConfiguration().getWorkingCopy();
+            copy.setAttribute(IExternalToolConstants.ATTR_WORKING_DIRECTORY, project.getLocation().toOSString());
+            copy.doSave(); 
+            definition.getConfiguration().launch("run", null);
+            definition.setEnabled(project, false);
+	    }
+        catch (CoreException e) {
+            String message = "Unable to obtain LaunchConfigurationWorkingCopy"; 
+            log.error(message, e);
+        }
+	    finally {
+            try {
+                ILaunchConfigurationWorkingCopy copy = definition.getConfiguration().getWorkingCopy();
+                copy.setAttribute(IExternalToolConstants.ATTR_WORKING_DIRECTORY, (String) null);
+                copy.doSave();
+            }
+            catch (CoreException e1) {
+                String message = "Unable to restore LaunchConfiguration state"; 
+                log.error(message, e1);
+            }
+	        
+	    }
 	}
-
+	
+	
 }

@@ -84,7 +84,7 @@ public class ActionDefinitions {
     public List getPatterns() {
         List list = new ArrayList();
         try {
-            list = configuration.getAttribute("PATTERNS", new ArrayList());
+            list = new ArrayList(configuration.getAttribute("PATTERNS_LIST", new HashMap()).keySet());
         }
         catch (CoreException e) {
             e.printStackTrace();
