@@ -8,7 +8,7 @@
 	<section name="Features List">
 	  <div id="documentContent">
 		<p>
-		  Implemented features fall into three categories :
+		  Implemented features fall into five categories :
 		  <ul>
 			<li><a href="#Bidirectional Synchronization">Bidirectional Synchronization</a></li>
 			<li><a href="#Maven Launcher">Maven Launcher</a></li>
