@@ -16,7 +16,7 @@
         </tr>
          <tr>
           <td>maven.nbm.manifest</td>
-          <td>REQUIRED. Default value is <code>${maven.jar.manifest}</code>.</td>
+          <td>Optional.</td>
           <td>
             <p> File containing Netbeans-specific manifest entries. The plugin will automatically generate some of the entries:
             <source><![CDATA[
@@ -24,7 +24,7 @@ OpenIDE-Module-Implementation-Version: <timestamp value in the format yyyyMMddhh
 OpenIDE-Module: ${pom.package}/1
 OpenIDE-Module-Specification-Version: ${pom.currentVersion}
             
-            ]]></source> </p>
+            ]]></source> etc.etc.</p>
             <p>If you define the entries in your manifest file, it will override these defaults. </p>
           </td>
         </tr>
@@ -58,17 +58,6 @@ OpenIDE-Module-Specification-Version: ${pom.currentVersion}
             <p>Location of the licence file to be included with the nbm.</p>
           </td>
         </tr>
-        <tr>
-          <td>maven.nbm.nonlocalized</td>
-          <td>Optional. Default value is <code>false</code>.</td>
-          <td>
-            <p>If set to true, the plugin will generate default values for manifest attributes <code>
-            OpenIDE-Module-Display-Category, OpenIDE-Module-Name,
-            OpenIDE-Module-Long-Description, OpenIDE-Module-Short-Description </code> according to the values from POM.</p>
-            <p> Please note that using non-localized values is discouraged.</p>
-          </td>
-        </tr>
-        
      </table>
      </div>
    </section>
@@ -100,7 +89,7 @@ OpenIDE-Module-Specification-Version: ${pom.currentVersion}
         </dependency>
                         ]]></source>
                 </p>
-            <p> For now, you have to add the Class-Path manifest entry for that file manually.</p>
+            <p> In case you didn't define the Class-Path manifest attribute, it will be added for you automatically.</p>
           </td>
         </tr>
      </table>
