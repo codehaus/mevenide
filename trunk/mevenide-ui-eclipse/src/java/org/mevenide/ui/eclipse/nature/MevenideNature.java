@@ -48,8 +48,8 @@ public class MevenideNature implements IProjectNature {
 			configureProject(project);
 		} 
 		catch (Exception e) {
-			log.debug("Unable to add MevenideNature to project '" + project.getName() + "' due to : " + e);
-			throw new CoreException(new Status(IStatus.ERROR, "mevenide", 1, e.getMessage(), e));
+			log.debug("Unable to add MevenideNature to project '" + project.getName(), e); //$NON-NLS-1$
+			throw new CoreException(new Status(IStatus.ERROR, "mevenide", 1, e.getMessage(), e)); //$NON-NLS-1$
 		}
 	}
 
@@ -74,7 +74,7 @@ public class MevenideNature implements IProjectNature {
 			project.setDescription(projectDescription, null);
 		} 
 		catch (Throwable e) {
-			log.debug("Unable to set project description due to : " + e);
+			log.debug("Unable to set project description", e); //$NON-NLS-1$
 		}
 	}
 	

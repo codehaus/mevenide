@@ -99,7 +99,7 @@ public class NewPomWizard extends BasicNewResourceWizard implements INewWizard {
             }
         }
         catch (PartInitException e) {
-            Mevenide.popUp(Mevenide.getResourceString("NewPomWizard.Error.Title"), e.getMessage());
+            Mevenide.popUp(Mevenide.getResourceString("NewPomWizard.Error.Title"), e.getMessage()); //$NON-NLS-1$
         }
         return true;
     }

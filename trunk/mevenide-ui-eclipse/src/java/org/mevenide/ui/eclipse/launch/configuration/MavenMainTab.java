@@ -99,12 +99,12 @@ public class MavenMainTab extends ExternalToolsMainTab {
 	}
 	
 	protected String getWorkingDirectoryLabel() {
-		return Mevenide.getResourceString("MavenMainTab.working.directory.label");
+		return Mevenide.getResourceString("MavenMainTab.working.directory.label"); //$NON-NLS-1$
 	}
 	
 	public boolean isValid(ILaunchConfiguration launchConfig) {
 	    if ( StringUtils.isNull(workDirectoryField.getText()) ) {
-	        setErrorMessage(Mevenide.getResourceString("MavenMainTab.working.directory.null"));
+	        setErrorMessage(Mevenide.getResourceString("MavenMainTab.working.directory.null")); //$NON-NLS-1$
 	    }
 	    else {
 	       setErrorMessage(null);

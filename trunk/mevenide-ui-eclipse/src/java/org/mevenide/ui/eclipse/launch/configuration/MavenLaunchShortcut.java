@@ -46,6 +46,7 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.externaltools.internal.model.IExternalToolConstants;
 import org.mevenide.ui.eclipse.Mevenide;
+import org.mevenide.ui.eclipse.goals.model.Goal;
 
 /**
  * 
@@ -54,9 +55,12 @@ import org.mevenide.ui.eclipse.Mevenide;
  * 
  */
 public class MavenLaunchShortcut implements ILaunchShortcut {
-	private static Log log = LogFactory.getLog(MavenLaunchShortcut.class);
+	
+    private static Log log = LogFactory.getLog(MavenLaunchShortcut.class);
 
-	private boolean showDialog = false;
+    private static final String MAVEN_LAUNCH_CONFIG_TYPE = "org.mevenide.ui.launching.MavenLaunchConfigType"; //$NON-NLS-1$
+	
+    private boolean showDialog = false;
 
 	private String goalsToRun = null;
 	private boolean offline = false;
@@ -93,11 +97,11 @@ public class MavenLaunchShortcut implements ILaunchShortcut {
 			
 			
 			if ( basedir != null ) {
-				log.debug("launching from basedir : " + basedir);
+				log.debug("launching from basedir : " + basedir); //$NON-NLS-1$
 				launch(basedir);
 			}
 			else {
-				log.debug("Unable to get basedir");
+				log.debug("Unable to get basedir"); //$NON-NLS-1$
 			}
 		}
 
@@ -116,7 +120,7 @@ public class MavenLaunchShortcut implements ILaunchShortcut {
 						configuration.delete();
 					}
 					catch ( Exception e ) {
-						log.debug("Exception while cancelling launch : ", e );
+						log.debug("Exception while cancelling launch : ", e ); //$NON-NLS-1$
 					}
 					return;
 				}
@@ -137,7 +141,7 @@ public class MavenLaunchShortcut implements ILaunchShortcut {
 				}
 			}
 			catch (Exception e) {
-				log.error("Unable to copy configuration due to : ", e);
+				log.error("Unable to copy configuration due to : ", e); //$NON-NLS-1$
 			}
 		}
 	} 
@@ -146,11 +150,11 @@ public class MavenLaunchShortcut implements ILaunchShortcut {
 	
 	private ILaunchConfiguration getDefaultLaunchConfiguration(IPath basedir) {
 		ILaunchManager manager = DebugPlugin.getDefault().getLaunchManager();
-		ILaunchConfigurationType type = manager.getLaunchConfigurationType("org.mevenide.ui.launching.MavenLaunchConfigType");
+		ILaunchConfigurationType type = manager.getLaunchConfigurationType(MAVEN_LAUNCH_CONFIG_TYPE);
 		
-		String name = "[" + basedir.lastSegment() + "] ";
+		String name = "[" + basedir.lastSegment() + "] "; //$NON-NLS-1$ //$NON-NLS-2$
 		String goals = goalsToRun == null ? Mevenide.getInstance().getDefaultGoals() : goalsToRun;
-		name += StringUtils.replace(goals, ":", "_");
+		name += StringUtils.replace(goals, Goal.SEPARATOR, "_"); //$NON-NLS-1$
 		
 		ILaunch[] launches = manager.getLaunches();
 		if ( launches != null ) {
@@ -169,12 +173,12 @@ public class MavenLaunchShortcut implements ILaunchShortcut {
 		try {
 			ILaunchConfigurationWorkingCopy workingCopy = type.newInstance(null, name);
 			workingCopy.setAttribute(IExternalToolConstants.ATTR_WORKING_DIRECTORY,
-			        VariablesPlugin.getDefault().getStringVariableManager().generateVariableExpression("workspace_loc", basedir.toString())); 
+			        VariablesPlugin.getDefault().getStringVariableManager().generateVariableExpression("workspace_loc", basedir.toString()));  //$NON-NLS-1$
 			workingCopy.setAttribute(MavenArgumentsTab.GOALS_TO_RUN, goals);
 			
 			if ( offline ) {
 				Map optionsMap = new HashMap();
-				optionsMap.put("o", Boolean.toString(offline));
+				optionsMap.put("o", Boolean.toString(offline)); //$NON-NLS-1$
 				workingCopy.setAttribute(MavenArgumentsTab.OPTIONS_MAP, optionsMap);
 			}
 			
@@ -185,13 +189,13 @@ public class MavenLaunchShortcut implements ILaunchShortcut {
 			
 			ILaunchConfiguration cfg = workingCopy.doSave();
 
-			log.debug("returning default config : " + cfg) ;
+			log.debug("returning default config : " + cfg) ; //$NON-NLS-1$
 
 			return cfg;
 
 		} 
 		catch (CoreException e) {
-			log.debug("Unable to createDefaultLaunchConfig due to : " + e);
+			log.debug("Unable to createDefaultLaunchConfig due to : " + e); //$NON-NLS-1$
 			return null;
 		}
 	}

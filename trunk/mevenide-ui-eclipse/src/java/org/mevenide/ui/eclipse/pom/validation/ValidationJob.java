@@ -47,7 +47,7 @@ public class ValidationJob extends Job {
     private IFile pomFile;
     
     public ValidationJob(IFile pomFile) {
-        super(Mevenide.getResourceString("ValidationJob.Name"));
+        super(Mevenide.getResourceString("ValidationJob.Name")); //$NON-NLS-1$
         this.pomFile = pomFile;
         setPriority(Job.SHORT);
     }
@@ -62,7 +62,7 @@ public class ValidationJob extends Job {
             if ( file != null ) {
                 projectValidator.validate(file);
             }
-            return new Status(Status.OK, "org.mevenide.ui", 0, "POM is valid", null);
+            return new Status(Status.OK, "org.mevenide.ui", 0, Mevenide.getResourceString("ValidationJob.IsValid"), null); //$NON-NLS-1$ //$NON-NLS-2$
         }
         catch ( ValidationException e ) {
             List errors = e.getErrors();
@@ -75,18 +75,18 @@ public class ValidationJob extends Job {
                     createMarker((String) warnings.get(i), IMarker.SEVERITY_WARNING);
                 }
 	            //PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView("org.eclipse.ui.views.TaskList");
-	            return new Status(Status.OK, "org.mevenide.ui", 0, "POM has validation errors", null);
+	            return new Status(Status.OK, "org.mevenide.ui", 0, Mevenide.getResourceString("ValidationJob.HasErrors"), null); //$NON-NLS-1$ //$NON-NLS-2$
             }
             catch ( Exception ex ) {
-                String message = "Unable to create markers. resource : " + pomFile.getFullPath(); 
+                String message = Mevenide.getResourceString("Validation.CreateMarker.Error", pomFile.getFullPath().toString());  //$NON-NLS-1$
                 log.error(message, e);
-                return new Status(Status.WARNING, "org.mevenide.ui", 0, message, e);
+                return new Status(Status.WARNING, "org.mevenide.ui", 0, message, e); //$NON-NLS-1$
             }
         }
         catch (Exception e) {
-            String message = Mevenide.getResourceString("MevenidePomEditorContributor.Validation.Error"); 
+            String message = Mevenide.getResourceString("MevenidePomEditorContributor.Validation.Error");  //$NON-NLS-1$
             log.error(message, e);
-            return new Status(Status.INFO, "org.mevenide.ui", 0, message, e);
+            return new Status(Status.INFO, "org.mevenide.ui", 0, message, e); //$NON-NLS-1$
         }
     }
 

@@ -53,7 +53,7 @@ public class JavaProjectUtils {
 	
     private static Log log = LogFactory.getLog(JavaProjectUtils.class);
 
-    private static final String JRE_CONTAINER_ID = "org.eclipse.jdt.launching.JRE_CONTAINER";
+    private static final String JRE_CONTAINER_ID = "org.eclipse.jdt.launching.JRE_CONTAINER"; //$NON-NLS-1$
 	
 	private JavaProjectUtils() {
 	}
@@ -96,7 +96,7 @@ public class JavaProjectUtils {
 	            }
 	            ProjectReader reader = ProjectReader.getReader();
 	            Dependency projectDependency = reader.extractDependency(referencedPom);
-	            log.debug("dependency artifact : " + projectDependency.getArtifact());
+	            log.debug("dependency artifact : " + projectDependency.getArtifact()); //$NON-NLS-1$
 	            deps.add(projectDependency);
 	        }
 	    }
@@ -117,7 +117,7 @@ public class JavaProjectUtils {
 		IJavaProject project = JavaCore.create(iproject);
 		
 		if ( project.exists() ) { 
-			log.debug("retrieving output folders for project " + iproject.getName());
+			log.debug("retrieving output folders for project " + iproject.getName()); //$NON-NLS-1$
             try {
 				//add default ouput location
 				IPath defaultOuputFolder = project.getOutputLocation();
@@ -133,7 +133,7 @@ public class JavaProjectUtils {
 				}
 
 				outputFolders.add(resource.getLocation().toFile());
-				log.debug("Added " + resource.getLocation() + " to output folder list");
+				log.debug("Added " + resource.getLocation() + " to output folder list"); //$NON-NLS-1$ //$NON-NLS-2$
 
 				//iterate each classpath entry and add output location
 			    IClasspathEntry[] classpathEntries = project.getRawClasspath();
@@ -142,12 +142,12 @@ public class JavaProjectUtils {
 		            if ( cpEntry.getOutputLocation() != null ) {
 						IResource outputFolder = ResourcesPlugin.getWorkspace().getRoot().getFolder(cpEntry.getOutputLocation());
 		                outputFolders.add(outputFolder.getLocation().toFile());
-						log.debug("Added " + outputFolder + " to output folder list");
+						log.debug("Added " + outputFolder + " to output folder list");  //$NON-NLS-1$//$NON-NLS-2$
 		            }
 		        }
             } 
 			catch (JavaModelException e) {
-                 log.error("Unable to obtain output Folders for project " + iproject.getName() );
+                 log.error("Unable to obtain output Folders for project " + iproject.getName() ); //$NON-NLS-1$
             }
 		}
 	    
@@ -216,7 +216,7 @@ public class JavaProjectUtils {
     		IClasspathEntry[] entries = javaProject.getRawClasspath();
     		for (int i = 0; i < entries.length; i++) {
     			IClasspathEntry entry = entries[i];
-    			if ( entry.getEntryKind() == IClasspathEntry.CPE_SOURCE && entry.getPath().removeFirstSegments(1).makeRelative().toString().equals(eclipseSourceFolder.replaceAll("\\\\", "/")) ) {
+    			if ( entry.getEntryKind() == IClasspathEntry.CPE_SOURCE && entry.getPath().removeFirstSegments(1).makeRelative().toString().equals(eclipseSourceFolder.replaceAll("\\\\", "/")) ) { //$NON-NLS-1$ //$NON-NLS-2$
     				IPath[] eclipseExclusions = entry.getExclusionPatterns();
     				exclusionPatterns = new String[eclipseExclusions.length];
     				for (int j = 0; j < eclipseExclusions.length; j++) {
@@ -227,7 +227,7 @@ public class JavaProjectUtils {
     		return exclusionPatterns;
     	} 
     	catch (JavaModelException e) {
-    		String message = "Unable to get exclusion patterns for " + eclipseSourceFolder; 
+    		String message = "Unable to get exclusion patterns for " + eclipseSourceFolder;  //$NON-NLS-1$
     		log.error(message, e);
     		return null;
     	}
@@ -291,8 +291,8 @@ public class JavaProjectUtils {
             }
             ProjectReader reader = ProjectReader.getReader();
             Dependency dependency = reader.extractDependency(referencedPom);
-            dependency.addProperty("eclipse.dependency:true");
-            dependency.resolvedProperties().put("eclipse.dependency", "true");
+            dependency.addProperty("eclipse.dependency:true"); //$NON-NLS-1$
+            dependency.resolvedProperties().put("eclipse.dependency", "true");  //$NON-NLS-1$//$NON-NLS-2$
             return dependency;
         }
     	return null;
