@@ -124,6 +124,9 @@ public abstract class AbstractRunner {
     /**
      * return the specified goals with the specified Maven options in a new VM
      * 
+     * @note i tohught a new VM should have solved classloading encountered with eclipse plugin.
+     * @note however that wasnt the case. so is a new VM really required ? should we let the user choose ? 
+     * 
      * @param options
      * @param goals
      * @throws Exception

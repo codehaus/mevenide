@@ -17,6 +17,11 @@ package org.mevenide.project.io;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.util.List;
+
+import org.apache.maven.project.Dependency;
+import org.apache.maven.project.Project;
+import org.mevenide.project.DependencyUtil;
 
 import junit.framework.TestCase;
 
@@ -29,7 +34,7 @@ import junit.framework.TestCase;
 public class ProjectWriterTest extends TestCase {
 	private ProjectWriter pomWriter;
 	private File projectFile;
-
+	
 	protected void setUp() throws Exception {
 		pomWriter = ProjectWriter.getWriter();
 		File src = new File(ProjectWriterTest.class.getResource("/fixtures/project-fixture.xml").getFile());
@@ -56,6 +61,23 @@ public class ProjectWriterTest extends TestCase {
 //		assertTrue(h.containsKey("src/pyo/aspect"));
 	}
 
+	public void testIsDependencyPresent()throws Exception {
+		 Project project = ProjectReader.getReader().read(projectFile);
+		 List dependencies = project.getDependencies();
+		
+		 Dependency dep = DependencyUtil.getDependency("E:/maven/repository/junit/jars/junit-3.8.1.jar");
+		 assertTrue(pomWriter.isDependencyPresent(project, dep));
+		 
+		 dep = DependencyUtil.getDependency("E:/bleeeaaaah/junit/jars/junit-3.8.1.jar");
+		 assertTrue(pomWriter.isDependencyPresent(project, dep));
+		 
+		dep = DependencyUtil.getDependency("E:/bleeeaaaah/plouf/jars/junit-3.8.1.jar");
+		assertTrue(pomWriter.isDependencyPresent(project, dep));
+		
+		dep = DependencyUtil.getDependency("E:/bleeeaaaah/plouf/junit-3.8.1.jar");
+		assertTrue(pomWriter.isDependencyPresent(project, dep));
+	}
+	
 	public void testAddDependency() {
 	}
 
