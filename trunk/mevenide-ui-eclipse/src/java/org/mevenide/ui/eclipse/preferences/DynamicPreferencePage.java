@@ -22,12 +22,21 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.jface.preference.PreferencePage;
+import org.eclipse.jface.preference.StringButtonFieldEditor;
 import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.dnd.Clipboard;
+import org.eclipse.swt.dnd.TextTransfer;
+import org.eclipse.swt.dnd.Transfer;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
@@ -36,6 +45,8 @@ import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
+import org.eclipse.ui.PlatformUI;
+import org.mevenide.ui.eclipse.IImageRegistry;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.util.StringUtils;
 
@@ -48,6 +59,57 @@ import org.mevenide.util.StringUtils;
  */
 public class DynamicPreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
     
+    private class ClipboardFieldEditor extends StringButtonFieldEditor {
+
+        private Button changeButton;
+
+        ClipboardFieldEditor(String name, String labelText, Composite parent) {
+            super(name, labelText, parent);
+        }
+
+        protected Button getChangeControl(Composite parent) {
+            if (changeButton == null) {
+                changeButton = new Button(parent, SWT.FLAT);
+                changeButton.setImage(Mevenide.getInstance().getImageRegistry().get(IImageRegistry.COPY_TOOL));
+        		changeButton.addSelectionListener(new SelectionAdapter() {
+        			public void widgetSelected(SelectionEvent evt) {
+        				Clipboard clipboard = new Clipboard(PlatformUI.getWorkbench().getDisplay());
+
+        				String[] keyParts = org.apache.commons.lang.StringUtils.split(getPreferenceName(), "|");
+        				String key = keyParts.length == 1 ? keyParts[0] : keyParts[1];
+        				
+        				clipboard.setContents(
+        				        		new String[]{key + "=" + getTextControl().getText()}, //$NON-NLS-1$
+        								new Transfer[]{TextTransfer.getInstance()});        
+        				
+        			}
+        		});
+        		changeButton.addDisposeListener(new DisposeListener() {
+        			public void widgetDisposed(DisposeEvent event) {
+        				changeButton = null;
+        			}
+        		});
+        	} 
+            else {
+        		checkParent(changeButton, parent);
+        	}
+        	changeButton.setToolTipText(Mevenide.getResourceString("DynamicPreferencePage.ClipboardFieldEditor.Tooltip")); //$NON-NLS-1$
+            return changeButton;
+        }
+
+        protected void doFillIntoGrid(Composite parent, int numColumns) {
+            super.doFillIntoGrid(parent, numColumns);
+            GridData data = new GridData();
+            data.grabExcessHorizontalSpace = false;
+            data.horizontalAlignment = GridData.CENTER;
+        	changeButton.setLayoutData(data);
+        }
+
+        protected String changePressed() {
+            return null;
+        }
+    }
+
     private List categories;
     private String pluginDescription;
     private String pluginName;
@@ -91,7 +153,7 @@ public class DynamicPreferencePage extends PreferencePage implements IWorkbenchP
         area.setLayout(layout);
         
         Group descriptionGroup = new Group(area, SWT.NULL);
-        descriptionGroup.setText(pluginName + " " + Mevenide.getResourceString("DynamicPreferencePage.Description"));
+        descriptionGroup.setText(pluginName + " " + Mevenide.getResourceString("DynamicPreferencePage.Description")); //$NON-NLS-1$ //$NON-NLS-2$
         descriptionGroup.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         descriptionGroup.setLayout(new GridLayout());
 
@@ -110,13 +172,23 @@ public class DynamicPreferencePage extends PreferencePage implements IWorkbenchP
 
         Composite area = new Composite(tabFolder, SWT.NULL);
         GridLayout layout = new GridLayout();
+        layout.numColumns = 1;
+        layout.makeColumnsEqualWidth = false;
         layout.marginHeight = 10;
         layout.marginWidth = 10;
         area.setLayout(layout);
         
         Group propertiesGroup = createPropertyGroup(area, category.getName());
+        GridLayout groupLayout = new GridLayout();
+        groupLayout.numColumns = 1;
+        groupLayout.makeColumnsEqualWidth = false;
+        propertiesGroup.setLayout(groupLayout);
+        
         Composite groupIndirectionComposite = new Composite(propertiesGroup, SWT.NULL);
         GridLayout groupIndirectionLayout = new GridLayout();
+        groupIndirectionLayout.numColumns = 3;
+        groupIndirectionLayout.makeColumnsEqualWidth = false;
+        groupIndirectionComposite.setLayout(groupIndirectionLayout);
         GridData groupIndirectionData = new GridData(GridData.FILL_BOTH);
         groupIndirectionComposite.setLayoutData(groupIndirectionData);
         
@@ -125,7 +197,7 @@ public class DynamicPreferencePage extends PreferencePage implements IWorkbenchP
         if( properties != null && properties.size() > 0 ) {
             for ( Iterator it = properties.iterator(); it.hasNext(); ) {
 		        PluginProperty pluginProperty = (PluginProperty) it.next();
-                StringFieldEditor editor = createPluginPropertyEditor(groupIndirectionComposite, pluginProperty);
+                StringButtonFieldEditor editor = createPluginPropertyEditor(groupIndirectionComposite, pluginProperty);
                 editors.put(pluginProperty, editor);
             }
         }
@@ -152,7 +224,7 @@ public class DynamicPreferencePage extends PreferencePage implements IWorkbenchP
         return propertiesGroup;
     }
 
-    private StringFieldEditor createPluginPropertyEditor(Composite composite, final PluginProperty pluginProperty) {
+    private StringButtonFieldEditor createPluginPropertyEditor(Composite composite, final PluginProperty pluginProperty) {
         
         String propertyName = pluginProperty.getName(); 
         String propertyDefault = pluginProperty.getDefault();
@@ -161,8 +233,7 @@ public class DynamicPreferencePage extends PreferencePage implements IWorkbenchP
         String propertyType = pluginProperty.getType();
         String pageId = pluginProperty.getPageId();
         
-        StringFieldEditor editor = new StringFieldEditor(pageId + DynamicPreferencesManager.SEPARATOR + propertyName, propertyLabel, composite);
-        editor.fillIntoGrid(composite, 2);
+        StringButtonFieldEditor editor = new ClipboardFieldEditor(pageId + DynamicPreferencesManager.SEPARATOR + propertyName, propertyLabel, composite);
         
         editor.setPreferenceStore(preferencesManager.getPreferenceStore());
         editor.load();
@@ -177,6 +248,7 @@ public class DynamicPreferencePage extends PreferencePage implements IWorkbenchP
                 getContainer().updateButtons();
             }
         };
+        
 
         String toolTip = propertyName + " : " +  //$NON-NLS-1$
         				(!StringUtils.isNull(propertyDescription) ? 
