@@ -61,8 +61,8 @@
   
     <copy file="${eclipse.home}/plugins/org.eclipse.help_3.0.0/help.jar" 
   	  	  tofile="${maven.repo.local}/eclipse/jars/eclipse-help-3.0.0.jar"/>
-  	<copy file="${eclipse.home}/plugins/org.eclipse.jface_2.1.0/jface.jar" 
-  		  tofile="${maven.repo.local}/eclipse/jars/eclipse-jface-2.1.0.jar"/>  	
+  	<copy file="${eclipse.home}/plugins/org.eclipse.jface_3.0.0/jface.jar" 
+  		  tofile="${maven.repo.local}/eclipse/jars/eclipse-jface-3.0.0.jar"/>  	
   	
   	<copy file="${eclipse.home}/plugins/org.eclipse.jface.text_3.0.0/jfacetext.jar" 
   		  tofile="${maven.repo.local}/eclipse/jars/eclipse-jfacetext-3.0.0.jar"/>  	
@@ -73,14 +73,14 @@
   	<copy file="${eclipse.home}/plugins/org.eclipse.core.runtime_3.0.0/runtime.jar" 
   		  tofile="${maven.repo.local}/eclipse/jars/eclipse-runtime-3.0.0.jar"/> 
   		  
-  	<copy file="${eclipse.home}/plugins/org.eclipse.ui.workbench_2.1.0/workbench.jar" 
-  		  tofile="${maven.repo.local}/eclipse/jars/eclipse-workbench-2.1.0.jar"/> 
+  	<copy file="${eclipse.home}/plugins/org.eclipse.ui.workbench_3.0.0/workbench.jar" 
+  		  tofile="${maven.repo.local}/eclipse/jars/eclipse-workbench-3.0.0.jar"/> 
     
   	<copy file="${eclipse.home}/plugins/org.eclipse.ui.workbench.texteditor_3.0.0/texteditor.jar" 
   		  tofile="${maven.repo.local}/eclipse/jars/eclipse-texteditor-3.0.0.jar"/>  	
   	
-    <copy file="${eclipse.home}/plugins/org.eclipse.ui.views_2.1.0/views.jar" 
-  		  tofile="${maven.repo.local}/eclipse/jars/eclipse-views-2.1.0.jar"/> 
+    <copy file="${eclipse.home}/plugins/org.eclipse.ui.views_3.0.0/views.jar" 
+  		  tofile="${maven.repo.local}/eclipse/jars/eclipse-views-3.0.0.jar"/> 
   		  
     <copy file="${eclipse.home}/plugins/org.eclipse.ui.editors_3.0.0/editors.jar" 
   		  tofile="${maven.repo.local}/eclipse/jars/eclipse-editors-3.0.0.jar"/> 
