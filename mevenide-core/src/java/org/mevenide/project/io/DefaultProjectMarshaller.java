@@ -107,6 +107,7 @@ public class DefaultProjectMarshaller implements IProjectMarshaller {
 		marshallString(project.getIssueTrackingUrl(), "issueTrackingUrl");
 		marshallString(project.getSiteAddress(), "siteAddress");
 		marshallString(project.getSiteDirectory(), "siteDirectory");
+		marshallString(project.getDistributionSite(), "distributionSite");
 		marshallString(project.getDistributionDirectory(), "distributionDirectory");
 		
 		marshallRepository(project);
