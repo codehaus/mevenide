@@ -19,6 +19,7 @@ package org.mevenide.ui.eclipse.preferences.pages;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.jface.preference.DirectoryFieldEditor;
+import org.eclipse.jface.preference.FileFieldEditor;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -60,7 +61,7 @@ public class LocationPreferencePage extends PreferencePage implements IWorkbench
 	private String mavenLocalHome ;
 	private String mavenRepository;
 
-    private DirectoryFieldEditor toolsJarEditor;
+    private FileFieldEditor toolsJarEditor;
     private String toolsJarLocation;
 	
     public LocationPreferencePage() {
@@ -136,11 +137,14 @@ public class LocationPreferencePage extends PreferencePage implements IWorkbench
     }
 
 	private void createToolJarEditor() {
-	    toolsJarEditor = createEditor(
-				MevenidePreferenceKeys.TOOLS_JAR_PREFERENCE_KEY, 
-				Mevenide.getResourceString("LocationPreferencePage.tools.jar.label"),  //$NON-NLS-1$
-				toolsJarLocation
-			);
+	    toolsJarEditor = new FileFieldEditor(MevenidePreferenceKeys.TOOLS_JAR_PREFERENCE_KEY, 
+										             Mevenide.getResourceString("LocationPreferencePage.tools.jar.label"),  //$NON-NLS-1$, 
+										             topLevelContainer);
+	    
+	    toolsJarEditor.fillIntoGrid(topLevelContainer, 3);
+	    toolsJarEditor.setPreferenceStore(preferencesManager.getPreferenceStore());
+	    toolsJarEditor.load();
+		
 	    if ( StringUtils.isNull(toolsJarEditor.getStringValue()) ) {
 		    reloadToolsJarLocation();
 		}
@@ -148,7 +152,7 @@ public class LocationPreferencePage extends PreferencePage implements IWorkbench
 	
     private void reloadToolsJarLocation() {
         String toolsJar = RunnerUtils.getToolsJar();
-        if ( StringUtils.isNull(toolsJar) ) {
+        if ( !StringUtils.isNull(toolsJar) ) {
             toolsJarEditor.setStringValue(toolsJar);
         }
     }

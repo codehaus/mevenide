@@ -104,7 +104,7 @@ public class MavenLaunchDelegate extends AbstractRunner implements ILaunchConfig
 		
 		String toolsJarArg = !org.mevenide.util.StringUtils.isNull(RunnerUtils.getToolsJar()) ? 
 		        				RunnerUtils.getToolsJar() : PreferencesManager.getManager().getValue("tools.jar"); //$NON-NLS-1$
-		if ( !org.mevenide.util.StringUtils.isNull(toolsJarArg) ) {;
+		if ( !org.mevenide.util.StringUtils.isNull(toolsJarArg) ) {
 			allVmArgs[allVmArgs.length - 1] = "-Dtools.jar=" + toolsJarArg; //$NON-NLS-1$
 		}
 		else {
