@@ -42,18 +42,6 @@
   <goal name="nbm:jar"
       prereqs="jar:jar, nbm:init" 
       description="Build the Netbeans jar.">
-<!--    <j:set var="maven.jar.manifest" value="${maven.nbm.manifest}"/> -->
-<!--    <j:set var="bundle" value="${maven.nbm.manifest.bundle.basedir}"/>
-    <j:if test="${empty(bundle)}">
-      <fail message="">
- 
-The maven.nbm.manifest.bundle.basedir and  maven.nbm.manifest.bundle.include have to be set.
-      </fail>
-    </j:if>
--->
-<!--    <util:file var="thisPom" name="${basedir}/project.xml"/>  -->
-<!--    <ant:echo message="manifest=${maven.jar.manifest}" /> -->
-<!--    <maven:maven descriptor="${thisPom}" goals="jar:install"/> -->
     <!-- copy the original jar made by jar:jar goal to target/nbm -->
     <ant:copy toDir="${maven.nbm.build.dir}" file="${maven.build.dir}/${maven.final.name}.jar"/>
     <!--
@@ -89,15 +77,15 @@ The maven.nbm.manifest.bundle.basedir and  maven.nbm.manifest.bundle.include hav
       </j:otherwise>
      </j:choose>
       
-    <ant:echo message="NBM updates jar. localized=${maven.nbm.isLocalized}" />
+    <ant:echo message="NBM plugin updates jar." />
     <ant:jar destfile="${maven.nbm.build.dir}/${maven.final.name}.jar"
              update="true">
       <j:if test="${maven.nbm.manifest.available}">
-          <ant:echo message="NBM merging manifest.." />
+<!--          <ant:echo message="NBM merging manifest.." /> -->
         <ant:setProperty name="manifest" value="${maven.nbm.manifest}" />
       </j:if>
       <j:if test="${maven.nbm.bundle.available}">
-          <ant:echo message="NBM adding manifest resources.." />
+<!--          <ant:echo message="NBM adding manifest resources.." /> -->
           <ant:fileset dir="${maven.nbm.manifest.bundle.basedir}"
                        includes="${maven.nbm.manifest.bundle.include}"
           />       
@@ -126,7 +114,7 @@ The maven.nbm.manifest.bundle.basedir and  maven.nbm.manifest.bundle.include hav
             -->
             <j:set var="moduleDep" value="${dependency.getProperty('netbeans.module.dep')}" />
             <j:if test="${!empty moduleDep}">
-                <ant:echo message="${dependency.artifactId} is a module dependency - jar is ${artifact.path}" />
+<!--                <ant:echo message="${dependency.artifactId} is a module dependency - jar is ${artifact.path}" /> -->
                 <mevenide:examine-manifest jarFile="${artifact.path}" 
                                            isLocalizedVar="nbdepIsLocalized"
                                            isNetbeansModuleVar="nbdepIsNetbeansModule"
@@ -166,7 +154,7 @@ The maven.nbm.manifest.bundle.basedir and  maven.nbm.manifest.bundle.include hav
           </j:if>
           <!-- generate OpenIDE-Module-Module-Dependencies manifest entry -->
           <j:if test="${!empty moduleDependencies}">
-                <ant:echo message="module deps= ${moduleDependencies}" />
+<!--                <ant:echo message="module deps= ${moduleDependencies}" /> -->
                 <ant:attribute name="OpenIDE-Module-Module-Dependencies" value="${moduleDependencies}" />
           </j:if>
           <j:choose>
@@ -220,9 +208,11 @@ The maven.nbm.manifest.bundle.basedir and  maven.nbm.manifest.bundle.include hav
     <ant:makenbm file="${maven.nbm.build.dir}/${maven.final.name}.nbm"
              topdir="${maven.nbm.build.dir}"
              module="${maven.nbm.build.dir}/${maven.nbm.jar.location}/${maven.final.name}.jar"
-             homepage="${pom.url}"
-             distribution="${pom.url}/${maven.final.name}.nbm"
              needsrestart="${maven.nbm.requiresrestart}">
+      <j:if test="${! empty(pom.url)}">
+        <ant:setProperty name="homepage" value="${pom.url}" />
+        <ant:setProperty name="distribution" value="${pom.url}/${maven.final.name}.nbm" />
+      </j:if>
      <license file="${maven.nbm.license}"/>
      <signature keystore="?" storepass="?" alias="?"/> -->
     </ant:makenbm>
@@ -267,10 +257,10 @@ The maven.nbm.manifest.bundle.basedir and  maven.nbm.manifest.bundle.include hav
      		<mevenide:adapt-version var="depSpecVersion" version="${dependency.version}" type="spec"/>
      		<mevenide:adapt-version var="depImplVersion" version="${dependency.version}" type="impl"/>
             <!-- handle licensing.. first look in the jar itself, if not found, look in a local license repository -->
-            <ant:echo message="artifact path=${artifact.path}" />
+<!--            <ant:echo message="artifact path=${artifact.path}" />-->
             <mevenide:find-license var="liblicense" jarFile="${artifact.path}" />
             <j:if test="${empty(liblicense)}" >
-                <ant:echo message="lib licence not found in jar." />
+<!--                <ant:echo message="lib licence not found in jar." /> -->
                 <j:set var="licenseFile" value="${maven.nbm.licenses.dir}/${dependency.groupId}/${dependency.artifactId}.lic"/>
                 <ant:available property="isLicensePresent" file="${licenseFile}"/>
                 <j:if test="${isLicensePresent}">
@@ -321,5 +311,14 @@ maven.nbm.license=${dependencyModuleDir}/license.txt
     </j:forEach>
   </goal>  
   
+  <goal name="nbm:collect-nbms" prereqs="nbm:nbm, nbm:create-library-artifacts"
+        description="Will collect the module nbm and all library nbms (if any) to a single release directory target/nbm_release">
+        <j:set var="maven.nbm.build.release.dir" value="${maven.build.dir}/nbm_release" />
+        <ant:copy toDir="${maven.nbm.build.release.dir}" flatten="true">
+            <ant:fileset dir="${maven.nbm.build.dir}"
+                       includes="**/*.nbm"
+            />       
+        </ant:copy>
+  </goal>
   
 </project>
