@@ -21,8 +21,8 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.mevenide.project.io.ProjectSkeleton;
-import org.mevenide.ui.eclipse.sync.source.DefaultPathResolverDelegate;
-import org.mevenide.ui.eclipse.sync.source.IPathResolverDelegate;
+import org.mevenide.ui.eclipse.sync.DefaultPathResolverDelegate;
+import org.mevenide.ui.eclipse.sync.IPathResolverDelegate;
 
 /**
  * 

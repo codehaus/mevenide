@@ -12,7 +12,7 @@
  * Lesser General Public License for more details.
  * 
  */
-package org.mevenide.ui.eclipse.sync.source;
+package org.mevenide.ui.eclipse.sync;
 
 import junit.framework.TestCase;
 
