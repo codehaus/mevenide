@@ -111,6 +111,7 @@ public class ProjectWriter {
 	
 	/** 
 	 * add a Dependency identified by its absoluteFileName (artifact) to the POM. 
+	 * Try to resolve the dependency using the dependency factory 
 	 * checks first that the Dependency isnot already present is the dependencies list. 
 	 * 
 	 * @param absoluteFileName
@@ -133,6 +134,19 @@ public class ProjectWriter {
 		
 	}
 	
+	
+	public void addDependency(Dependency dependency, File pom) throws Exception {
+		Project project = projectReader.read(pom);
+
+		if ( !dependencyResolver.isDependencyPresent(project, dependency) ) {
+			
+			project.addDependency(dependency);
+			write(project, pom);
+	
+		}
+		
+		//@todo jaroverriding 
+	}
 	
 	
 	/** 
