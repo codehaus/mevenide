@@ -74,7 +74,7 @@ public abstract class AbstractRunner {
 			//backup user.dir. still needed ?
             userDir = System.getProperty("user.dir");
 
-			initEnvironment();
+			setUpEnvironment();
 			
 			launchVM(options, goals);
 
@@ -89,6 +89,10 @@ public abstract class AbstractRunner {
 			}
 		}
 	}
+    
+    private final void setUpEnvironment() throws Exception {
+    	initEnvironment();
+    }
     
     /**
      * construct Maven from of unmodifiable otpions, user-defined options and goals

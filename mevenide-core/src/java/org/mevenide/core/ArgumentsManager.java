@@ -15,13 +15,12 @@
 package org.mevenide.core;
 
 import java.io.File;
-import java.io.FilenameFilter;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import org.mevenide.*;
+import org.mevenide.Environment;
 
 /**
  * 
@@ -35,47 +34,16 @@ public class ArgumentsManager {
 	}
 
 	/**
+	 * This was causing our classloading problems :
+	 * i included all jars under %MAVEN_HOME%/lib, tho we just needed forhead ! 
+	 * 
+	 * @todo externalize Forehead library filename
+	 * 
 	 * @return String[] the classpath needed for Maven execution $maven_home/lib/*.jar
 	 */
 	public static String[] getMavenClasspath() {
 		File mavenLib = new File(Environment.getMavenHome(), "lib");
-	    String[] bootstrapClasspath = getJars(mavenLib);
-	    
-	    
-//		dont know if it really makes sense.. 
-//		are not the classloading problems we encounter due to eclipse classloading isolation holes ?
-//		weird since we launch a *new* VM 
-
-//	    File mavenRepo = new File(Environment.getMavenRepository() 
-//	    					   	  + File.separator 
-//	    					   	  + "commons-jelly" 
-//	    					   	  + File.separator 
-//	    					   	  + "jars");
-//	    String[] jellyClasspath = getJars(mavenRepo);
-//	    
-//	    String[] classpath = new String[bootstrapClasspath.length + jellyClasspath.length];
-//	    System.arraycopy(bootstrapClasspath, 0, classpath, 0, bootstrapClasspath.length);
-//	    System.arraycopy(jellyClasspath, 0, classpath, bootstrapClasspath.length, jellyClasspath.length);
-		
-		return bootstrapClasspath;
-	}
-
-	private static String[] getJars(File jarContainer) {
-		FilenameFilter filter = 
-		    new FilenameFilter() {
-		        public boolean accept(File parent, String fileName) {
-		            return fileName.endsWith(".jar") || fileName.endsWith(".zip");
-		        }
-		    };
-		
-		File[] files = jarContainer.listFiles(filter);
-		
-		String[] cp = new String[files.length];
-		
-		for (int i = 0; i < files.length; i++) {
-			cp[i] = files[i].getAbsolutePath();
-		}
-		return cp;
+	    return new String[] { new File(mavenLib, "forehead-1.0-beta-4.jar").getAbsolutePath() };
 	}
 
 	/**
@@ -87,6 +55,7 @@ public class ArgumentsManager {
 	    String[] properties = ArgumentsManager.getRawProperties(runner);
 	    String[] vmArgs = new String[properties.length + 1];
 	    vmArgs[0] = "-Xmx160m";
+	    
 	    for (int i = 1; i < properties.length + 1; i++) {
 			vmArgs[i] = properties[i - 1];
 		}
@@ -108,7 +77,7 @@ public class ArgumentsManager {
 	        rawProps[u] = "-D" + key + "=" + (String) sysProps.get(key);
 	        u++;                 
 	    }
-	
+	    
 	    return rawProps;
 	}
 
