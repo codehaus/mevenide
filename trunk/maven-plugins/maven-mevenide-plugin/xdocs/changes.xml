@@ -6,6 +6,19 @@
   </properties>
 
   <body>
+    <release version="0.3">
+      <action dev="mkleint" type="add">   
+      Introduction of goals mevenide:src-distribution, mevenide:src-distribution-install and mevenide:src-distribution-deploy
+      which are capable of creating a source distribution of the project. It contains sources
+      in the classpath oriented format, suitable for use in IDEs for read-only access to sourcecode -debugging, browsing, better code completion etc.
+      
+      </action>
+    </release>
+    <release version="0.2">
+      <action dev="mkleint" type="add">   
+      Introduction of mevenide:noop goal.
+      </action>
+    </release>
     <release version="0.1.2" date="20/08/2004" description="fix release">
       <action dev="mkleint" type="fix">   
       MEVENIDE-76 - fixed also the debugging of artifact.

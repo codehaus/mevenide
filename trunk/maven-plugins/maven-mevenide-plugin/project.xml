@@ -1,55 +1,49 @@
-<?xml version="1.0" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <project>
     <extend>${basedir}/../mevenide-plugin-parent/project.xml</extend>
-  
-  <pomVersion>3</pomVersion>
-
-  <artifactId>maven-mevenide-plugin</artifactId>
-  <name>Maven Mevenide Plugin</name>
-  
-  <currentVersion>0.2</currentVersion>
-  <shortDescription>Plugin to run and debug Maven projects.</shortDescription>
-  
-  <inceptionYear>2004</inceptionYear>
-  
-  <licenses>
-    <license>
-        <name>Apache Public License 2.0</name>
-        <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-    </license>
-  </licenses>
-  <developers>
-    <developer>
-      <name>Milos Kleint</name>
-      <id>mkleint</id>
-      <email>mkleint@codehaus.org</email>
-      <roles>
-        <role>Creator</role>
-        <role>Developer</role>
-      </roles>
-    </developer>
-  </developers>
-  
-  <build> 
-     <sourceDirectory>src/java</sourceDirectory>
-    <resources> 
-       <resource> 
-         <directory>${basedir}</directory> 
-         <includes> 
-           <include>plugin.jelly</include> 
-           <include>plugin.properties</include> 
-           <include>project.properties</include> 
-           <include>project.xml</include> 
-         </includes> 
-       </resource> 
-     </resources> 
-   </build>   
-  
-   <reports>
-        <report>maven-changes-plugin</report> 
-       	<report>maven-jellydoc-plugin</report>
+    <pomVersion>3</pomVersion>
+    <artifactId>maven-mevenide-plugin</artifactId>
+    <name>Maven Mevenide Plugin</name>
+    <currentVersion>0.3</currentVersion>
+    <shortDescription>Plugin to run and debug Maven projects.</shortDescription>
+    <inceptionYear>2004</inceptionYear>
+    <licenses>
+        <license>
+            <name>Apache Public License 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+    <developers>
+        <developer>
+            <name>Milos Kleint</name>
+            <id>mkleint</id>
+            <email>mkleint@codehaus.org</email>
+            <roles>
+                <role>Creator</role>
+                <role>Developer</role>
+            </roles>
+        </developer>
+    </developers>
+    <build>
+        <sourceDirectory>src/java</sourceDirectory>
+        <resources>
+            <resource>
+                <directory>${basedir}</directory>
+                <includes>
+                    <include>plugin.jelly</include>
+                    <include>plugin.properties</include>
+                    <include>project.properties</include>
+                    <include>project.xml</include>
+                </includes>
+            </resource>
+        </resources>
+    </build>
+    <reports>
+        <report>maven-changes-plugin</report>
+        <report>maven-jellydoc-plugin</report>
         <report>maven-changelog-plugin</report>
-	<report>maven-file-activity-plugin</report>
-	<report>maven-developer-activity-plugin</report>        
-   </reports>
+        <report>maven-file-activity-plugin</report>
+        <report>maven-developer-activity-plugin</report>
+    </reports>
 </project>
+
