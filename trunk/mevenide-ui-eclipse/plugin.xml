@@ -232,6 +232,22 @@
             id="maven.plugin.preferences.MavenPreferencePage">
       </page>
    </extension>
-  
+  <extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            label="Run Maven"
+            visible="true"
+            id="org.mevenide.quickrun">
+         <action
+               label="Run Maven"
+               pulldown="true"
+               icon="icons/maven-run.gif"
+               tooltip="Run Last Launched Maven Process"
+               class="org.mevenide.ui.eclipse.actions.MevenideQuickLaunchAction"
+               toolbarPath="run.maven"
+               id="org.mevenide.ui.eclipse.actions.MevenideQuickLaunchAction">
+         </action>
+      </actionSet>
+   </extension>
 	
 </plugin>
