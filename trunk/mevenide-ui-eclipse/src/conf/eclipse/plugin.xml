@@ -192,7 +192,7 @@
               class="org.mevenide.ui.eclipse.nature.CustomMavenLaunchManager" 
               menubarPath="project/additions" 
               id="org.mevenide.maven.build">
-      </actionSet>
+      </action>
     </extension>
     
    <!-- Maven actions -->
