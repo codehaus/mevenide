@@ -18,7 +18,6 @@ package org.mevenide.ui.eclipse.launch.configuration;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.swt.SWT;
@@ -87,20 +86,7 @@ public class MavenMainTab extends ExternalToolsMainTab {
 	}
 
 	public void initializeFrom(ILaunchConfiguration configuration) {
-	    try {
-            if ( StringUtils.isNull(configuration.getAttribute(IExternalToolConstants.ATTR_WORKING_DIRECTORY, "")) ) {
-                configuration.getWorkingCopy().setAttribute(
-                        IExternalToolConstants.ATTR_WORKING_DIRECTORY,
-                        Mevenide.getInstance().getCurrentDir());
-            }
-        }
-        catch (CoreException e) {
-            String message = "Unable to set working directory"; 
-            log.error(message, e);
-        }
-	    
-		updateWorkingDirectory(configuration);
-
+	    updateWorkingDirectory(configuration);
 	}
 
 	public void performApply(ILaunchConfigurationWorkingCopy configuration) {
