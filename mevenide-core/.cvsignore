@@ -2,3 +2,7 @@ classes
 target
 export.jardesc
 dist
+target
+*.log
+lib
+dist

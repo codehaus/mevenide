@@ -6,11 +6,12 @@
 		 xmlns:define="jelly:define"
 		 xmlns:util="jelly:util"
 		 xmlns:mevenide="mevenide">
-   
-  <preGoal name="clean:clean">
-     <ant:delete quiet="true" dir="${basedir}/dist"/>
-  </preGoal>
- 
+  
+  <goal name="mevenide:install-maven-eclipse-plugin-plugin" 
+  	    description="Checkout maven-eclipse-plugin-plugin from cvs and install it">
+  	    
+  </goal>
+  
   <goal name="init" description="Copy eclipse dependencies to maven.repo.local if necessary">
     <util:file var="installScript" name="${basedir}/install-dependencies.xml"/>
     <j:include file="${installScript}"/>
@@ -20,157 +21,25 @@
     <attainGoal name="multiproject:goal"/>
   </goal>
   
+  <goal name="build-update-site" description="Build Eclipse plugin update site">
+  	<maven:pom var="updateSiteProjectDescriptor" projectDescriptor="${basedir}/../mevenide-update/project.xml"/>
+    <maven:maven descriptor="${updateSiteProjectDescriptor}" goals="create-site-dist"/>
+  </goal>
+  
   <goal name="build-core" description="Build Mevenide-core module">
   	 <util:file var="mevenideCoreProjectdescriptor" name="${basedir}/../mevenide-core/project.xml"/>
 	 <maven:maven descriptor="${mevenideCoreProjectdescriptor}" goals="clean,jar:install"/> 	 
   </goal>
     
   <goal name="build-site" description="Build Mevenide Site">
+  	<j:set var="maven.multiproject.excludes" value="${maven.multiproject.excludes},mevenide-feature/project.xml"/>
   	<attainGoal name="multiproject:site"/>
   </goal>
 	
-  <!-- build the aggregated distribution files -->
-  <postGoal name="build-all">
-  	<attainGoal name="mevenide:create-update-dist"/>
-  </postGoal>
-  
-  <!-- inherited postGoal -->
-  <postGoal name="jar:install">
-	<attainGoal name="mevenide:create-dist"/>
-  </postGoal>
+  <!-- inherited postGoal..  -->
+  <!-- postGoal name="jar:install">
+	<attainGoal name="eclipse-plugin:create-artifact-dist"/>
+  </postGoal -->
   
   
-  <!-- 
-  	**************************************************************************
-  	*                                                                        *
-  	* all goals below should be abstracted and extracted into a maven plugin *
-  	*                                                                        *
-  	**************************************************************************
-  -->   
-  
-  <!-- 
-  	iterate subproject dependencies and copy dependencies required by eclipse plugin into the ${basedir}/lib/ directory.
-  -->
-  <goal name="mevenide:prepare-dist">
-    <!-- clean lib and dist directories -->
-    <ant:delete dir="${basedir}/lib" quiet="true"/>
-    <ant:delete dir="${basedir}/dist" quiet="true"/>
-
-    <j:forEach var="dependency" items="${pom.dependencies}">
-      <j:if test="${!(dependency.groupId.equals('eclipse'))}">
-        <j:set var="isTransient" value="${dependency.getProperty('mevenide.transient')}"/>
-        <j:if test="${isTransient != 'true'}">
-          <ant:copy todir="lib" file="${maven.repo.local}/${dependency.groupId}/${dependency.type}s/${dependency.artifactId}-${dependency.version}.${dependency.type}"/>
-        </j:if>
-      </j:if>
-    </j:forEach>
-    
-  </goal>
-  
-  <!-- 
-  	forEach module create a plugin dist file containing only the plugin required files and put it in ${basedir}/dist.
-  -->
-  <goal name="mevenide:create-dist" prereqs="mevenide:prepare-dist">
-	  <!-- prepare environment -->	
-      <ant:mkdir dir="dist"/>
-      <ant:mkdir dir="${basedir}/temp/${directoryName}_${distVersion}"/>
-      <j:set var="distVersion" value="${pom.currentVersion}"/>
-  	  <j:set var="directoryName">org.${pom.artifactId.replaceAll('-', '.')}</j:set> 
-       
-      <!-- copy plugin information files, required dependencies and generated artifact to ${basedir}/temp -->
-      <ant:copy todir="${basedir}/temp/${directoryName}_${distVersion}">
-       	<ant:fileset dir="${basedir}" includes="${eclipse.plugin.includes}"/>
-       	<ant:fileset dir="${maven.build.dir}" includes="${pom.artifactId}-${distVersion}.jar"/>
-      </ant:copy>
-       
-      <!-- build separate plugin distribution file. we use jar task b/c eclipse update expects a jar file -->
-      <ant:jar destfile="${basedir}/dist/${directoryName}-${distVersion}.jar">
-        <fileset dir="${basedir}/temp"/>
-      </ant:jar>
-        
-      <!-- clean environment -->
-      <ant:delete dir="${basedir}/temp"/>
-      	
-      <!-- copy all plugins to mevenide-update/plugins -->
-      <ant:copy todir="${eclipse.plugin.update.project}/plugins"
-      			file="${basedir}/dist/${directoryName}-${distVersion}.jar" />
-      			
-   </goal>
-   
-   <!-- create the feature archive -->
-   <goal name="mevenide:create-feature-dist">
-   
-   	  <j:set var="featureName" value="org.mevenide.eclipse.feature"/>
-   	  <j:set var="distVersion" value="${pom.currentVersion}"/>
-   	  
-   	  <ant:mkdir dir="${basedir}/../mevenide-feature/dist"/>
-   	  
-   	  <!-- create feature dist file. should we create a POM for mevenide-feature ? -->
-   	  <j:set var="tempDirectory" value="${basedir}/temp"/>
-   	  <ant:mkdir dir="${tempDirectory}/${featureName}_${distVersion}"/>
-   	  
-	  <ant:copy todir="${tempDirectory}/${featureName}_${distVersion}">
-	  	  <j:set var="eclipse.feature.includes" value="feature.properties,feature.xml,mevenide.jpg,license.txt"/>
-	   	  <ant:fileset dir="${basedir}/../mevenide-feature" includes="${eclipse.feature.includes}"/>
-      </ant:copy>
-      
-   	  <ant:jar destfile="${basedir}/../mevenide-feature/dist/${featureName}_${distVersion}.jar">
-         <ant:fileset dir="${basedir}/temp" includes="${featureName}_${distVersion}/*.*"/>	
-      </ant:jar>
-      
-      <ant:delete dir="${tempDirectory}" quiet="true"/>
-      
-      <!-- copy feature archive to mevenide-update/features -->
-      <ant:copy todir="${basedir}/../mevenide-update/features"
-      			file="${basedir}/../mevenide-feature/dist/${featureName}_${distVersion}.jar" />
-      
-   </goal>
-
-   <!-- 
-   	  build a single artifact containing all plugins and feature, ready to be 
-   	  unzipped into ${eclipse.home} or either to be used in update manager. 
-   	  warning : if unzipped in ${eclipse.home}, site.properties and site.xml 
-   	  will mess up the ${eclipse.home} directory.
-   -->
-   <goal name="mevenide:create-update-dist" prereqs="mevenide:create-feature-dist">
-   	 
-   	 <j:set var="distName" value="org.mevenide"/>
-   	 <j:set var="distVersion" value="${pom.currentVersion}"/>
-   	 
-   	 <ant:mkdir dir="${basedir}/../mevenide-update/dist/"/>
-   	 
-   	 <!-- expand previously generated jars -->
-   	 <j:set var="tempDirectory" value="${basedir}/temp"/>
-   	 <ant:mkdir dir="${tempDirectory}"/>
-   	 
-   	 <!-- plugin jars -->
-     <ant:fileScanner var="pluginJars">
-        <ant:fileset dir="${basedir}/../mevenide-update/plugins" includes="*.jar"/>
-     </ant:fileScanner>
-     
-   	<j:forEach var="pluginJar" items="${pluginJars.iterator()}">
-   		<ant:unjar src="${pluginJar}" dest="${tempDirectory}/plugins"/>
-   	    <!-- we dont want to include the manifest file -->   		
-   		<ant:delete dir="${tempDirectory}/plugins/META-INF" quiet="true"/>
-	</j:forEach>
-	
-	<!-- feature jars -->
-	<j:set var="featureJar" 
-		   value="${basedir}/../mevenide-update/features/org.mevenide.eclipse.feature_${distVersion}.jar"/>
-	<ant:unjar src="${featureJar}" dest="${tempDirectory}/features"/>
-	<!-- we dont want to include the manifest file -->
-	<ant:delete dir="${tempDirectory}/features/META-INF" quiet="true"/>
-	
-	<!-- build an aggregated distribution -->
-	<ant:mkdir dir="${basedir}/../mevenide-update/dist/aggregated"/>
-	
-	<ant:zip destfile="${basedir}/../mevenide-update/dist/aggregated/${distName}_${distVersion}.zip">
-		<fileset dir="${tempDirectory}/" includes="**/*.*"/>
-		<fileset dir="${basedir}/../mevenide-update" includes="site.xml,site.properties"/>
-	</ant:zip>
-	
-   	<ant:delete dir="${tempDirectory}" quiet="true"/>
-   	 
-   </goal>
- 
 </project>

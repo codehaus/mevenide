@@ -17,30 +17,45 @@
             <artifactId>junit</artifactId>
             <version>3.8.1</version>
             <type>jar</type>
+            <properties>
+            	<eclipse.plugin.bundle>true</eclipse.plugin.bundle>
+            </properties>
         </dependency>
         <dependency>
             <groupId>jdom</groupId>
             <artifactId>jdom</artifactId>
             <version>1.0b8</version>
             <type>jar</type>
+            <properties>
+            	<eclipse.plugin.bundle>true</eclipse.plugin.bundle>
+            </properties>
         </dependency>
         <dependency>
             <groupId>xerces</groupId>
             <artifactId>xerces</artifactId>
             <version>2.2.1</version>
             <type>jar</type>
+            <properties>
+            	<eclipse.plugin.bundle>true</eclipse.plugin.bundle>
+            </properties>
         </dependency>
         <dependency>
             <groupId>commons-discovery</groupId>
             <artifactId>commons-discovery</artifactId>
             <version>0.1</version>
             <type>jar</type>
+            <properties>
+            	<eclipse.plugin.bundle>true</eclipse.plugin.bundle>
+            </properties>
         </dependency>
         <dependency>
             <groupId>commons-logging</groupId>
             <artifactId>commons-logging</artifactId>
             <version>1.0.1</version>
             <type>jar</type>
+            <properties>
+            	<eclipse.plugin.bundle>true</eclipse.plugin.bundle>
+            </properties>
         </dependency>
        
         <dependency>
@@ -48,24 +63,36 @@
             <artifactId>xpp3</artifactId>
             <version>1.1.2a</version>
             <type>jar</type>
+            <properties>
+            	<eclipse.plugin.bundle>true</eclipse.plugin.bundle>
+            </properties>
         </dependency>
         <dependency>
             <groupId>xmlpull</groupId>
             <artifactId>xmlpull</artifactId>
             <version>1.1.2.1</version>
             <type>jar</type>
+            <properties>
+            	<eclipse.plugin.bundle>true</eclipse.plugin.bundle>
+            </properties>
         </dependency>
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
             <version>1.2.7</version>
             <type>jar</type>
+            <properties>
+            	<eclipse.plugin.bundle>true</eclipse.plugin.bundle>
+            </properties>
         </dependency>
         <dependency>
             <groupId>maven</groupId>
             <artifactId>maven</artifactId>
             <version>1.0-beta-10</version>
             <type>jar</type>
+            <properties>
+            	<eclipse.plugin.bundle>true</eclipse.plugin.bundle>
+            </properties>
         </dependency>
         
         <!-- 
@@ -78,24 +105,36 @@
             <artifactId>ant</artifactId>
             <version>1.5.3-1</version>
             <type>jar</type>
+            <properties>
+            	<eclipse.plugin.bundle>true</eclipse.plugin.bundle>
+            </properties>
         </dependency>
         <dependency>
             <groupId>commons-grant</groupId>
             <artifactId>commons-grant</artifactId>
             <version>1.0-beta-4</version>
             <type>jar</type>
+            <properties>
+            	<eclipse.plugin.bundle>true</eclipse.plugin.bundle>
+            </properties>
         </dependency>
         <dependency>
             <groupId>commons-jelly</groupId>
             <artifactId>commons-jelly</artifactId>
             <version>1.0-beta-4</version>
             <type>jar</type>
+            <properties>
+            	<eclipse.plugin.bundle>true</eclipse.plugin.bundle>
+            </properties>
         </dependency>
         <dependency>
             <groupId>commons-lang</groupId>
             <artifactId>commons-lang</artifactId>
             <version>1.0.1</version>
             <type>jar</type>
+            <properties>
+            	<eclipse.plugin.bundle>true</eclipse.plugin.bundle>
+            </properties>
         </dependency>
 
     </dependencies>

@@ -5,18 +5,18 @@
       version="0.1.1"
       provider-name="Sourceforge"
       plugin="Mevenide"
-      image="mevenide.jpg">
+      image="logo.jpg">
 
-   <description url="http://mevenide.sourceforge.net/docs/mevenide-ui-eclipse/update.html">
+   <description url="http://mevenide.sourceforge.net/docs/mevenide-ui-eclipse/license.html">
       %description
    </description>
 
-   <license url="http://mevenide.sourceforge.net/docs/mevenide-ui-eclipse/license.html">
+   <license>
       %license
    </license>
 
    <url>
-      <update label="Spindle updates" url="http://spindle.sourceforge.net/updates/"/>
+      <update label="Mevenide updates" url="http://mevenide.sourceforge.net/updates/"/>
    </url>
 	
    <requires>

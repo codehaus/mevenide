@@ -2,8 +2,6 @@
 <classpath>
     <classpathentry kind="src" path="src/java"/>
     <classpathentry kind="src" path="etc"/>
-    <classpathentry kind="src" path="/mevenide-core"/>
-    <classpathentry kind="src" path="/mevenide-goals-grabber"/>
     <classpathentry kind="lib" path="lib/forehead-1.0-beta-4.jar"/>
     <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
     <classpathentry kind="var" path="MAVEN_REPO/junit/jars/junit-3.8.1.jar"/>
@@ -37,5 +35,7 @@
     <classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.ui_3.0.0/ui.jar"/>
     <classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.ui.views_3.0.0/views.jar"/>
     <classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.ui.workbench_3.0.0/workbench.jar"/>
+    <classpathentry kind="src" path="/mevenide-core"/>
+    <classpathentry kind="src" path="/mevenide-goals-grabber"/>
     <classpathentry kind="output" path="target/classes"/>
 </classpath>
