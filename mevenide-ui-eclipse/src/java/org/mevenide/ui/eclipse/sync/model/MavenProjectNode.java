@@ -25,7 +25,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.ArtifactListBuilder;
@@ -154,6 +153,7 @@ public class MavenProjectNode extends AbstractSynchronizationNode implements ISe
 	    System.setProperty("maven.home", Mevenide.getInstance().getMavenHome());
 	    
 	    project.setContext(MavenUtils.createContext(project.getFile().getParentFile()));
+	    
 		List artifacts = ArtifactListBuilder.build(project);
 		
 		//restore user.dir

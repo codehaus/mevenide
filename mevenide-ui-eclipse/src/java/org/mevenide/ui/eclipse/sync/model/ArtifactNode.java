@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Project;
@@ -35,8 +34,8 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.util.IPropertyChangeListener;
-import org.mevenide.properties.resolver.util.ResolverUtils;
 import org.mevenide.ui.eclipse.util.FileUtils;
+import org.mevenide.util.ResolverUtils;
 
 /**  
  * 
@@ -134,10 +133,10 @@ public abstract class ArtifactNode extends AbstractSynchronizationNode implement
 	protected void propagateNodeChangeEvent() {
 		((EclipseProjectNode) getParent().getParent()).fireNodeChanged(this);
 	}
-
-    protected String resolve(String strg) {
-        return ResolverUtils.resolve((Project) getParent().getData(), strg);
-    }
 	
+	protected String resolve(String strg) {
+        MavenProjectNode mavenProjectNode = (MavenProjectNode) getParent();
+        return ResolverUtils.getInstance().resolve((Project) mavenProjectNode.getData(), strg); 
+    }
 }
 

@@ -53,8 +53,8 @@ public class AbstractMevenideTestCase extends TestCase {
 		if (!repoFile.exists()) {
 			repoFile.mkdir();
 		}
-		File src = new File(AbstractMevenideTestCase.class.getResource("/fixtures/project-fixture.xml").getFile());
-		projectFile = new File(src.getParentFile().getParent(), "project-fixture.xml") ; 
+		File src = new File(AbstractMevenideTestCase.class.getResource("/fixtures/project.xml").getFile());
+		projectFile = new File(src.getParentFile().getParent(), "project.xml") ; 
 		copy(src.getAbsolutePath(), projectFile.getAbsolutePath());
 		
 		

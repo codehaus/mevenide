@@ -42,7 +42,12 @@ public final class PropertyFilesAggregator implements IPropertyResolver, IProper
     
     private IQueryContext context;
 
-    /** Creates a new instance of PropFilesAggregator */
+    /** 
+     * Creates a new instance of PropFilesAggregator 
+     * @param project parent directory of project.xml
+     * @param user the user home directory
+     * @param defs property finder which override properies definition that may be found in <code>user</code> and <code>project</code> properties files 
+     */
     public PropertyFilesAggregator(File project, File user, IPropertyFinder defs) {
         projectDir = project;
         userDir = user;
