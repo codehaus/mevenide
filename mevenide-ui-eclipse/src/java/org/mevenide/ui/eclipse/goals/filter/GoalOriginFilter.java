@@ -34,6 +34,8 @@ public class GoalOriginFilter extends ViewerFilter {
 	private IGoalsGrabber defaultGoalsGrabber;
 	private IGoalsGrabber goalsGrabber;
 
+	public static final String ORIGIN_FILTER_KEY = "mevenide.goals.outline.filter.origin";
+
 	public GoalOriginFilter() {
 		try {
 			defaultGoalsGrabber = new DefaultGoalsGrabber();

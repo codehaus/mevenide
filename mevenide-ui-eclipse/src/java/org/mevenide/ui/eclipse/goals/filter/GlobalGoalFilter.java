@@ -34,7 +34,6 @@ public class GlobalGoalFilter extends ViewerFilter {
 	private static final Log log = LogFactory.getLog(GlobalGoalFilter.class);
 	
 	public static final String ORIGIN_FILTER_GOALS = "mevenide.goals.outline.filter.origin.goals";
-	public static final String ORIGIN_FILTER_KEY = "mevenide.goals.outline.filter.origin";
 	
 	private List filteredGoals = new ArrayList(); 
 	
@@ -48,7 +47,7 @@ public class GlobalGoalFilter extends ViewerFilter {
 			PreferencesManager preferencesManager = PreferencesManager.getManager();
 			preferencesManager.loadPreferences();
 			
-			setFilteredGoals(preferencesManager.getValue(ORIGIN_FILTER_KEY));
+			setFilteredGoals(preferencesManager.getValue(ORIGIN_FILTER_GOALS));
 		} 
 		catch (Exception e) {
 			log.error("Unable to create DefaultGoalsGrabber : ", e);
@@ -65,7 +64,9 @@ public class GlobalGoalFilter extends ViewerFilter {
 		}
 		StringTokenizer tokenizer = new StringTokenizer(goalListAsString, ",");
 		while ( tokenizer.hasMoreTokens() ) {
-			filteredGoals.add(tokenizer.nextToken());
+			String token = tokenizer.nextToken();
+			log.debug("Adding \"" + token + "\" to Global Goals filters");
+			filteredGoals.add(token);
 		}
 	}
 	
