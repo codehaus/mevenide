@@ -22,16 +22,19 @@
 							<a href="open.html" class="documentLink">Open existing Maven projects</a>
 						</li>
 						<li>
-							<a href="navigate.html" class="documentLink">Navigate project</a>
+							<a href="navigate.html" class="documentLink">Navigate project</a> See what is where and to access your sources.
 						</li>
 						<li>
-							<a href="run.html" class="documentLink">Maven Launching</a>
+							<a href="run.html" class="documentLink">Maven Launching</a> Running the maven goals.
 						</li>
 						<li>
-							<a href="customizer.html" class="documentLink">Project Configuration</a>
+							<a href="reports.html" class="documentLink">Output Parsing</a>
 						</li>
 						<li>
-							<a href="completion.html" class="documentLink">Jelly Editor</a>
+							<a href="customizer.html" class="documentLink">Project Configuration</a> Setup the POM and plugin properties.
+						</li>
+						<li>
+							<a href="completion.html" class="documentLink">Jelly Editor</a> Code Completion in project.xml and maven.xml files.
 						</li>
 					</ul>
 				</div>

@@ -70,24 +70,12 @@
 						<br/> 
                                                 
                                                 
-          <p>
-            The output is parsed and links are provided for additional functionality. Eg. when the pmd or announcement plugin's output is
-            recognized one can click on the link to open the announcement in editor or open files that 
-            have pmd violations. If clicking on the violation link, the editor is opened for that particular file and all it's violations are marked in editor.
-          </p>                                                
-                    <br/>
-						<center> 
-							<img border="1px" src="../images/screenshots/output-pmd.png"/> 
-							<br/> 
-							<font size="-1"><b>Screenshot 4</b>Result of pmd report shown in the output window with links.</font> 
-						</center> 
-						<br/> 
 				</div>
 			</subsection>
 		</section>
 		<section>
 			<p>
-				<navbar prev="navigate.html" toc="index.html" next="customizer.html"/>
+				<navbar prev="navigate.html" toc="index.html" next="reports.html"/>
 			</p>
 		</section>
 	</body>

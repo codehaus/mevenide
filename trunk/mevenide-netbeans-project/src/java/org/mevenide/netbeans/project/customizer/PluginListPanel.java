@@ -233,7 +233,7 @@ public class PluginListPanel extends JPanel implements ProjectPanel {
         }
         
         public String getName() {
-            return "default";
+            return "default"; //NOI18N
         }
         public String getLongName() {
             return "Default properties";
@@ -261,7 +261,7 @@ public class PluginListPanel extends JPanel implements ProjectPanel {
         }
         
         public String getName() {
-            return "used";
+            return "used"; //NOI18N
         }
         public String getLongName() {
             return "Used Properties";
@@ -346,6 +346,18 @@ public class PluginListPanel extends JPanel implements ProjectPanel {
         }
 
         public String getColumnName(int column) {
+            if (column == 0) {
+                return "See";
+            }
+            if (column == 1) {
+                return "Name";
+            }
+            if (column == 2) {
+                return "Version";
+            }
+            if (column == 3) {
+                return "Description";
+            }
             return "XXX";
         }
 
