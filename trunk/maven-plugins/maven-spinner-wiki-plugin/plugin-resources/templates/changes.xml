@@ -1,0 +1,36 @@
+<!DOCTYPE project [
+  <!ENTITY header SYSTEM "fragments/header.xml">	
+  <!ENTITY footer SYSTEM "fragments/footer.xml">
+]>
+<document>
+  <body>
+    &header;
+    <section name="Recent Changes">
+        
+        
+        <subsection name="Pages modified on $DATE$">
+			<table>
+				<tr>
+					<td style="background-color: #ffffff;border: none;color: #777777" colspan="2">$REPEATDATE$</td>
+				</tr>
+				<tr>
+					<td style="background-color: #ffffff;border: none;color: #777777" colspan="2">$REPEATITEM$</td>
+				</tr>
+				<tr>
+					<td><a href="$SCRIPTURL$/view.pl/$ITEM$">$ITEM$</a></td>
+					<td>$TIME$</td>
+					<!-- author disabled by default since most accesses are anonymous -->
+					<!-- td>$AUTHOR$</td -->
+				</tr>
+				<tr>
+					<td style="background-color: #ffffff;border: none;color: #777777" colspan="2">$REPEATITEM$</td>
+				</tr>
+				<tr>
+					<td style="background-color: #ffffff;border: none;color: #777777" colspan="2">$REPEATDATE$</td>
+				</tr>
+		    </table>
+		 </subsection>
+     </section>
+     &footer;
+  </body>
+</document>

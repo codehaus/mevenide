@@ -27,7 +27,7 @@
     <report>maven-changes-plugin</report>
     <report>maven-faq-plugin</report>
     <report>maven-multiproject-plugin</report>
-    <!-- report>maven-linkcheck-plugin</report -->
+    <report>maven-linkcheck-plugin</report>
     <!-- report>maven-dashboard-plugin</report -->
   </reports>
  

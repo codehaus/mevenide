@@ -6,7 +6,7 @@
   </properties>
   <body>
     <section name="Synchronizer Overview">
-      <div id="documentContent">
+    
         <p>
           The ISynchronizer defines the interface both IDE and POM Synchronizers implement. 
           Both of them follow the Template Pattern : 
@@ -45,7 +45,7 @@
 		    <font size="-1"><b>Figure 1</b><i>Synchronization Package</i></font>
 		  </center>
         </p>
-	  </div>
+	
     </section>
   </body>
 </document>

@@ -22,18 +22,25 @@
         	<item name="Mevenide" href="../index.html"/>
             <item name="Goals Grabber" href="../goals-grabber/index.html"/>
         	<item name="Mevenide Eclipse" href="../mevenide-ui-eclipse/index.html"/>
-        	<item name="MEP Plugin" href="../maven-eclipse-plugin-plugin/index.html"/>
+        	<item name="Maven Plugins" href="/maven-plugins.html" collapse="true">
+	        	<item name="Eclipse Plugin Plugin" href="../maven-eclipse-plugin-plugin/index.html"/>
+    	    	<item name="Spinner Wiki Plugin" href="../maven-spinner-wiki-plugin/index.html"/>
+    	    </item>
         </menu>
         
         
         <menu name="Developers">
+          <item name="Uml Diagrams" href="/diagrams.html" collapse="true">
 			<item name="Packages View" href="/packages.html"/>	
 			<item name="Pom Manipulation" href="/pom-io.html"/>	
 			<item name="Runner" href="/runner.html"/>	
 			<item name="Synchronizer" href="/synchronizer.html"/>	
+		  </item>
+		  <item name="Javadoc" href="apidocs/index.html"/>
+		  <item name="Tasks" href="task-list.html"/>
         </menu>
         
-        <!-- search/ -->
+        <search/>
     </body>
 
 </project>

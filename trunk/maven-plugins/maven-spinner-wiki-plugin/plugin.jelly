@@ -1,0 +1,52 @@
+<project xmlns:j="jelly:core"
+		 xmlns:util="jelly:util"
+		 xmlns:ant="jelly:ant">
+		 
+		   
+  <goal name="spinner-wiki:generate-templates" prereqs="spinner-wiki:clean">
+  	
+  	<j:set var="wikiDestTempDir" value="${maven.build.dir}/spinner-wiki-tmp"/>
+  	<j:set var="wikiDestDir" value="${maven.build.dir}/spinner-wiki"/>
+  	
+  	<j:set var="maven.docs.src" value="${maven.build.src}/templates/spinner-wiki"/>
+  	<j:set var="maven.docs.dest" value="${wikiDestTempDir}"/>
+  	<j:set var="maven.gen.docs" value="${wikiDestTempDir}/generated-xdocs"/>
+  	
+  	<attainGoal name="xdoc"/>
+  	
+  	<ant:fileScanner var="generatedTemplates">
+  		<ant:fileset dir="${wikiDestTempDir}/">
+  			<!-- 
+  				scary list of files since maven reports 
+  				are generated in the same dir as well. 
+  				there should be a better way..
+  			-->
+  			<ant:include name="abort.html"/>
+  			<ant:include name="changes.html"/>
+  			<ant:include name="edit.html"/>
+  			<ant:include name="editlast.html"/>
+  			<ant:include name="index.html"/>
+  			<ant:include name="message.html"/>
+  			<ant:include name="search.html"/>
+  			<ant:include name="upload.html"/>
+  			<ant:include name="view.html"/>
+  		</ant:fileset>
+  	</ant:fileScanner>
+  	
+  	<j:forEach items="${generatedTemplates.iterator()}" var="template">
+  		<util:file var="templateFile" name="${template}"/>
+  		<j:set var="fileName">${templateFile.getName()}</j:set>
+  		<j:set var="newFileName" value="${fileName.substring(0, fileName.indexOf('.'))}.htm"/>
+  		<ant:copy file="${wikiDestTempDir}/${fileName}" tofile="${wikiDestDir}/${newFileName}"/>
+  	</j:forEach>
+  	
+  	<ant:delete dir="${wikiDestTempDir}"/>
+  	
+  </goal>
+  
+  <goal name="spinner-wiki:clean">
+  	<j:set var="wikiDestDir" value="${maven.build.dir}/spinner-wiki"/>
+    <ant:delete dir="${wikiDestDir}"/>
+  </goal>
+
+</project>
