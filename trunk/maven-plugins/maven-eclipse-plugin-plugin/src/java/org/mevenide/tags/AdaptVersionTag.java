@@ -22,15 +22,25 @@ import java.util.Date;
 import org.apache.commons.jelly.XMLOutput;
 
 /**
+ * Adapt an artifact version to make it match Eclipse plugin expected version : 
+ * only valid chars will be kept. <br/>Valid values are ones of ([0..9]|\.)  
+ * 
+ * <br/>
+ * examples : 
+ * <ul>
+ * <li>a version such as 1.0-beta-1 will be transformed to 1.0.1</li>
+ * <li>a SNAPSHOT version will be cut to remove the SNAPSHOT</li>
+ * </ul> 
  * 
  * @author <a href="mailto:rhill2@free.fr">Gilles Dodinet</a>
  * @version $Id$
  * 
  */
 public class AdaptVersionTag extends AbstractMevenideTag {
-
+	/** the version to adapt **/
     private String version;
     
+    /** the name under which the adapted version will be put in the jelly context **/ 
     private String var;
     
     public void doTag(XMLOutput arg0) throws Exception {
@@ -42,7 +52,6 @@ public class AdaptVersionTag extends AbstractMevenideTag {
         context.setVariable(var, newVersion);
     }
     
-
     public String adapt() {
         String validValues = "0123456789.";
         String newVersion = "";
@@ -87,6 +96,7 @@ public class AdaptVersionTag extends AbstractMevenideTag {
         return version;
     }
     
+    /** the version to adapt **/
     public void setVersion(String version) {
         this.version = version;
     }
@@ -95,6 +105,7 @@ public class AdaptVersionTag extends AbstractMevenideTag {
         return var;
     }
     
+    /** the name under which the adapted version will be put in the jelly context **/
     public void setVar(String var) {
         this.var = var;
     }

@@ -20,6 +20,7 @@ import org.apache.commons.jelly.TagLibrary;
 import org.mevenide.tags.*;
 
 /**
+ * This taglib provides a few utility tag to help building Eclipse plugins distribution 
  * 
  * @author <a href="mailto:rhill2@free.fr">Gilles Dodinet</a>
  * @version $Id$
