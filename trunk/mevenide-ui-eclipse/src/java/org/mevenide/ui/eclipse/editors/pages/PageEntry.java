@@ -75,7 +75,7 @@ public abstract class PageEntry {
     	this.dirty = dirty;
     }
     
-    public abstract String getValue();
+    public abstract Object getValue();
     
     public abstract Object getAdaptor(Class clazz);
     
