@@ -21,8 +21,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import org.mevenide.project.dependency.DefaultDependencyResolver;
-import org.mevenide.project.dependency.IDependencyResolver;
+import java.util.Iterator;
+import org.mevenide.project.dependency.URIDependencyResolver;
 
 /**
  *
@@ -51,7 +51,7 @@ class LocalRepositoryReader extends AbstractRepositoryReader {
     
     private RepoPathElement[] getChildren(File[] files, RepoPathElement element) {
         Collection col = new ArrayList();
-        DefaultDependencyResolver resolver = new DefaultDependencyResolver();
+        URIDependencyResolver resolver = new URIDependencyResolver();
         Collection knownArtifacts = new HashSet();
         for (int i = 0; i < files.length; i++) {
             RepoPathElement elem = null;
@@ -72,7 +72,7 @@ class LocalRepositoryReader extends AbstractRepositoryReader {
             }
             else if (element.getLevel() == RepoPathElement.LEVEL_TYPE) {
                 if (files[i].isFile()) {
-                    resolver.setFileName(files[i].getAbsolutePath());
+                    resolver.setURI(files[i].toURI());
                     elem = levelTypeCheck(element, resolver, knownArtifacts);
                 }
             }
@@ -80,12 +80,22 @@ class LocalRepositoryReader extends AbstractRepositoryReader {
                 if (files[i].isFile() 
                           && files[i].getName().startsWith(element.getArtifactId())) {
                     
-                    resolver.setFileName(files[i].getAbsolutePath());
+                    resolver.setURI(files[i].toURI());
                     elem = levelArtifactCheck(element, resolver);
                 }
             }
             if (elem != null) {
                 col.add(elem);
+            }
+        }
+        if (element.getLevel() == RepoPathElement.LEVEL_TYPE) {
+            // now we are in one dir, organize versions as well, without contacting server
+            // again
+            Iterator it = col.iterator();
+            while (it.hasNext()) {
+                RepoPathElement chil = (RepoPathElement)it.next();
+                RepoPathElement[] ch = getChildren(files, chil);
+                chil.setChildren(ch);
             }
         }
         RepoPathElement[] elems = new RepoPathElement[col.size()];

@@ -21,6 +21,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -135,6 +136,16 @@ class HttpRepositoryReader extends AbstractRepositoryReader {
             }
             if (elem != null) {
                 col.add(elem);
+            }
+        }
+        if (element.getLevel() == RepoPathElement.LEVEL_TYPE) {
+            // now we are in one dir, organize versions as well, without contacting server
+            // again
+            Iterator it = col.iterator();
+            while (it.hasNext()) {
+                RepoPathElement chil = (RepoPathElement)it.next();
+                RepoPathElement[] ch = createChildren(chil, files, uri);
+                chil.setChildren(ch);
             }
         }
         RepoPathElement[] elems = new RepoPathElement[col.size()];

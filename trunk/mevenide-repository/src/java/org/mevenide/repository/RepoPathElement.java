@@ -155,6 +155,9 @@ public class RepoPathElement {
         return children;
     }
     
+    void setChildren(RepoPathElement[] childs) {
+        children = childs;
+    } 
 
     
 }
