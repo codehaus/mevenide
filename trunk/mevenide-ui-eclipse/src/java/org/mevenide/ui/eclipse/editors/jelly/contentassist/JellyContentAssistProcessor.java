@@ -173,11 +173,11 @@ public abstract class JellyContentAssistProcessor implements IContentAssistProce
             for (Iterator it = words.iterator(); it.hasNext();) {
                 String text = (String) it.next();
                 if (preferencesManager.getBooleanValue("InsertEndTag")) {
-                    cp[i] = new CompletionProposal("<" + text + "></" + text + ">", offset, 0, text.length() + 2, Mevenide.getImageDescriptor("xml-tag.gif").createImage(), text,
+                    cp[i] = new CompletionProposal("<" + text + "></" + text + ">", offset, 0, text.length() + 2, Mevenide.getImageDescriptor("obj16/xmltag_obj.gif").createImage(), text,
                             null, null);
                 }
                 else {
-                    cp[i] = new CompletionProposal("<" + text + ">", offset, 0, text.length() + 2, Mevenide.getImageDescriptor("xml-tag.gif").createImage(), text, null, null);
+                    cp[i] = new CompletionProposal("<" + text + ">", offset, 0, text.length() + 2, Mevenide.getImageDescriptor("obj16/xmltag_obj.gif").createImage(), text, null, null);
                 }
                 i++;
             }
@@ -202,16 +202,16 @@ public abstract class JellyContentAssistProcessor implements IContentAssistProce
                     
                     if (preferencesManager.getBooleanValue("InsertEndTag")) {
                         if (isAfterLesserThan) {
-                            cp[i] = new CompletionProposal(text, offset, 0, text.length() + 1, Mevenide.getImageDescriptor("xml-tag.gif").createImage(), text,
+                            cp[i] = new CompletionProposal(text, offset, 0, text.length() + 1, Mevenide.getImageDescriptor("obj16/xmltag_obj.gif").createImage(), text,
                                     null, null);
                         }
                         else {
-                            cp[i] = new CompletionProposal("<" + text + "></" + text + ">", offset, 0, text.length() + 2, Mevenide.getImageDescriptor("xml-tag.gif").createImage(),
+                            cp[i] = new CompletionProposal("<" + text + "></" + text + ">", offset, 0, text.length() + 2, Mevenide.getImageDescriptor("obj16/xmltag_obj.gif").createImage(),
                                     text, null, null);
                         }
                     }
                     else {
-                        cp[i] = new CompletionProposal(text, offset, 0, text.length(), Mevenide.getImageDescriptor("xml-tag.gif").createImage(), text, null, null);
+                        cp[i] = new CompletionProposal(text, offset, 0, text.length(), Mevenide.getImageDescriptor("obj16/xmltag_obj.gif").createImage(), text, null, null);
                     }
                     
                     i++;
@@ -237,7 +237,7 @@ public abstract class JellyContentAssistProcessor implements IContentAssistProce
                                                        node.getOffset() + 2, 
                                                        lastOpenTag.getName().startsWith(currentNode.getName()) ? currentNode.getName().length() : currentNode.getOffset() - offset + 2, 
                                                        lastOpenTag.getName().length() + 1, 
-                                                       null, 
+                                                       Mevenide.getImageDescriptor("obj16/xmlendtag_obj.gif").createImage(), 
                                                        "</" + lastOpenTag.getName() + ">", 
                                                        null, 
                                                        null);
@@ -253,7 +253,7 @@ public abstract class JellyContentAssistProcessor implements IContentAssistProce
                         if (text.regionMatches(true, 0, start, 0, start.length())) {
                             //if (preferencesManager.getBooleanValue("InsertEndTag")) {
                             
-                                cpL.add(new CompletionProposal(text, node.getOffset() + 1, node.getName().length(), text.length(), null, text, null, null));
+                                cpL.add(new CompletionProposal(text, node.getOffset() + 1, node.getName().length(), text.length(), Mevenide.getImageDescriptor("obj16/xmltag_obj.gif").createImage(), text, null, null));
                             //}
                             //else {
                             //    cpL.add(new CompletionProposal(text, node.getOffset() + 1, offset - node.getOffset() - 1, text .length()));
@@ -377,7 +377,7 @@ public abstract class JellyContentAssistProcessor implements IContentAssistProce
             String displayText = (String) words.get(i) ;
             String text = displayText ;//+ "=\"\"";
             //IContextInformation contextInformation = createAttributeContextInformation(node.getName(), displayText);
-            cp[i] = new CompletionProposal(text, offset - start.length(), start.length(), text.length(), Mevenide.getImageDescriptor("xml-attr.gif").createImage(), displayText, null, null);
+            cp[i] = new CompletionProposal(text, offset - start.length(), start.length(), text.length(), Mevenide.getImageDescriptor("obj16/xmlattr_obj.gif").createImage(), displayText, null, null);
         }
         return cp;
     }

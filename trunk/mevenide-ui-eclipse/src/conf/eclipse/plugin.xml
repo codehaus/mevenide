@@ -217,7 +217,7 @@
       <!-- maven.xml and plugin.jelly editor - supports Werkz tags -->
       <editor
             name="Maven Jelly Editor"
-            icon="icons/pom_file.gif"
+            icon="icons/obj16/mscript_obj.gif"
             filenames="maven.xml,plugin.jelly"
             default="true"
             class="org.mevenide.ui.eclipse.editors.jelly.MavenXmlEditor"
@@ -228,7 +228,7 @@
       <editor
             contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
             class="org.mevenide.ui.eclipse.editors.jelly.BasicJellyEditor"
-            icon="icons/pom_file.gif"
+            icon="icons/obj16/jellyfile_obj.gif"
             extensions="xml,jelly"
             id="org.mevenide.ui.eclipse.editors.jelly.BasicJellyEditor"
             name="Generic Jelly Editor">
