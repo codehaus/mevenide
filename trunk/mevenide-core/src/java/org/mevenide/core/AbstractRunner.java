@@ -1,0 +1,141 @@
+/*
+ * Copyright (C) 2003  Gilles Dodinet (gdodinet@wanadoo.fr)
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ */
+package org.mevenide.core;
+
+import java.io.File;
+
+import org.apache.commons.discovery.tools.DiscoverClass;
+
+
+/**
+ * 
+ * @author Gilles Dodinet (gdodinet@wanadoo.fr)
+ * @version $Id$
+ * 
+ */
+public abstract class AbstractRunner {
+    /** unmodifiable Maven options */
+    private String[] finalOptions = null;
+    
+    /** synchronization object */
+    private Object lock = new Object();
+   
+    /**
+     * lazyloading (dcl)
+     * @return String[] unmodifiable Maven options
+     */  
+    public String[] getFinalOptions() {
+        if ( finalOptions != null ) {
+            return finalOptions;
+        }
+        synchronized (lock) {
+            if ( finalOptions == null ) {
+                String basedir = getBasedir();
+                finalOptions = new String[3];
+                finalOptions[0] = "-b";
+                finalOptions[1] = "-f";
+                finalOptions[2] = basedir + File.separator + "project.xml";
+            }
+            return finalOptions;
+        }
+    }
+    
+    /** 
+	 * get a concrete implementation of AbstractRunner using commons-discovery
+	 * 
+	 * @throws Exception
+	 */
+	public static AbstractRunner getRunner() throws Exception {
+		return (AbstractRunner) new DiscoverClass().newInstance(
+			AbstractRunner.class);
+	}
+
+	/**
+	 * configure the environment and run the specified goals in a new VM 
+     * with the given environment
+	 * 
+     * @todo FUNCTIONAL add Maven options management
+     * @refactor GETRID get rid of now unnecessary methods in Environment
+     *  
+	 * @param goals String[] the goals to run
+	 */
+	public void run(String[] options, String[] goals) {
+		String userDir = null;
+		try {
+			//backup user.dir. needed ?
+            userDir = System.getProperty("user.dir");
+
+			initEnvironment();
+
+			Environment.prepareEnv(getBasedir());
+
+			launchVM(options, goals);
+
+		} 
+        catch (Exception ex) {
+			ex.printStackTrace();
+		} 
+        finally {
+			//restore user.dir
+			if (userDir != null) {
+				System.setProperty("user.dir", userDir);
+			}
+		}
+	}
+    
+    /**
+     * construct Maven from of unmodifiable otpions, user-defined options and goals
+     * 
+     * @param options user-defined options
+     * @param goals goals to run
+     * @return String[] the complete Maven args
+     */
+    protected String[] getMavenArgs(String[] options, String[] goals) {
+        
+        String[] mavenArgs = 
+                new String[options.length 
+                            + goals.length 
+                            + getFinalOptions().length];
+        
+        System.arraycopy(getFinalOptions(), 0, mavenArgs, 0, getFinalOptions().length);
+        System.arraycopy(options, 0, mavenArgs, getFinalOptions().length, options.length);
+        System.arraycopy(goals, 0, mavenArgs, getFinalOptions().length + options.length , goals.length);
+       
+        return mavenArgs;
+    }
+
+    /**
+	 * set the environment variables needed by Maven
+	 * 
+	 * @see org.mevenide.core.Environment
+	 */
+	protected abstract void initEnvironment();
+
+	/**
+	 * @return String the working Directory
+	 */
+	protected abstract String getBasedir();
+    
+    /**
+     * return the specified goals with the specified Maven options in a new VM
+     * 
+     * @param options
+     * @param goals
+     * @throws Exception
+     */
+    protected abstract void launchVM(String[] options, String[] goals) throws Exception ;
+
+
+
+}
