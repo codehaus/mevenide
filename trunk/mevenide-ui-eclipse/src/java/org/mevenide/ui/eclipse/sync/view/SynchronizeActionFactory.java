@@ -39,6 +39,7 @@ import org.mevenide.ui.eclipse.sync.action.RemoveFromClasspathAction;
 import org.mevenide.ui.eclipse.sync.action.RemoveFromPomAction;
 import org.mevenide.ui.eclipse.sync.action.ToggleViewAction;
 import org.mevenide.ui.eclipse.sync.action.ToggleWritePropertiesAction;
+import org.mevenide.ui.eclipse.sync.event.SynchronizationConstraintEvent;
 import org.mevenide.ui.eclipse.sync.model.ArtifactNode;
 import org.mevenide.ui.eclipse.sync.model.EclipseProjectNode;
 import org.mevenide.ui.eclipse.sync.model.ISelectableNode;
@@ -250,6 +251,10 @@ public class SynchronizeActionFactory {
 
 	private void createPushToPomAction() {
 		final AddToPomAction action = new AddToPomAction();
+		action.constraintsChange(new SynchronizationConstraintEvent(
+		        						SynchronizationConstraintEvent.WRITE_PROPERTIES,
+		        						synchronizationView.getInitialShouldWriteProperties()
+		        				));
 		Action pushToPom = new Action() {
 			public void run() {
 				List selections = ((IStructuredSelection) synchronizationView.getArtifactMappingNodeViewer().getSelection()).toList();
