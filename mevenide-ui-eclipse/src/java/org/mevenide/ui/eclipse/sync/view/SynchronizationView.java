@@ -665,17 +665,18 @@ public class SynchronizationView extends ViewPart implements IActionListener, IR
 	}
 	
 	void asyncRefresh(final boolean shouldExpand) {
-		artifactMappingNodeViewer.getControl().getDisplay().asyncExec(
-				new Runnable() {
-					public void run () {
-						refreshAll();
-					}
-				}
-		);
+	    refreshAll();
+//		artifactMappingNodeViewer.getControl().getDisplay().asyncExec(
+//				new Runnable() {
+//					public void run () {
+//						refreshAll();
+//					}
+//				}
+//		);
 	}
 
 	public void refreshAll() {
-		artifactMappingNodeViewer.refresh();
+	    artifactMappingNodeViewer.refresh();
 	}
 
     public IContainer getInputContainer() {
