@@ -17,6 +17,8 @@
 package org.mevenide.ui.eclipse.sync.model;
 
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -29,6 +31,7 @@ import org.apache.maven.ArtifactListBuilder;
 import org.apache.maven.MavenUtils;
 import org.apache.maven.project.Project;
 import org.apache.maven.repository.Artifact;
+import org.eclipse.core.resources.IProject;
 import org.mevenide.project.io.ProjectReader;
 import org.mevenide.ui.eclipse.util.SourceDirectoryTypeUtil;
 
@@ -217,7 +220,16 @@ public class MavenProjectNode extends AbstractSynchronizationNode implements ISe
 	}
 	
 	public String toString() {
-		return mavenProject.getFile().getName();
+		IProject eclipseProject = (IProject) parentNode.getData();
+		String projectPath = eclipseProject.getLocation().toOSString();
+		try {
+			return MavenUtils.makeRelativePath(new File(projectPath), mavenProject.getFile().getAbsolutePath()).replaceAll("\\\\", "/");
+		} 
+		catch (IOException e) {
+			String message = "Unable to compute pom relative path. returning file.name"; 
+			log.error(message, e);
+			return mavenProject.getFile().getName();
+		}
 	}
 	
 	
