@@ -50,6 +50,9 @@
       <action dev="gdodinet" type="update">
         Use JDomProjectUnmarshaller instead of DefaultProjectUnmarshaller to support entities. No entities writing yet.
       </action>
+      <action dev="gdodinet" type="add">
+      	Add simple POM wizard that can use templates. 
+      </action>
     </release>
   </body>
 </document>
