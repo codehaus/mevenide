@@ -18,10 +18,13 @@ package org.mevenide.tags.netbeans;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.jar.Attributes;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
+import org.apache.commons.jelly.JellyTagException;
+import org.apache.commons.jelly.MissingAttributeException;
 
 import org.apache.commons.jelly.XMLOutput;
 import org.mevenide.tags.AbstractNbMevenideTag;
@@ -53,7 +56,7 @@ public class ExamineManifestTag extends AbstractNbMevenideTag {
     String locBundle;
     
     
-    public void doTag(XMLOutput arg0) throws Exception {
+    public void doTag(XMLOutput arg0) throws MissingAttributeException, JellyTagException {
         
 //        checkAttribute(jarFile, "jarFile");
         
@@ -65,9 +68,15 @@ public class ExamineManifestTag extends AbstractNbMevenideTag {
             try {
                 jar = new JarFile(jarFile);
                 mf = jar.getManifest();
+            } catch (Exception exc) {
+                throw new JellyTagException(exc);
             } finally {
                 if (jar != null) {
-                    jar.close();
+                    try {
+                        jar.close();
+                    } catch (IOException io) {
+                        throw new JellyTagException(io);
+                    }
                 }
             }
         } else if (manifestFile != null) {
@@ -75,16 +84,22 @@ public class ExamineManifestTag extends AbstractNbMevenideTag {
             try {
                 stream = new FileInputStream(manifestFile);
                 mf = new Manifest(stream);
+            } catch (Exception exc) {
+                throw new JellyTagException(exc);
             } finally {
                 if (stream != null) {
-                    stream.close();
+                    try {
+                        stream.close();
+                    } catch (IOException io) {
+                        throw new JellyTagException(io);
+                    }
                 }
             }
         }
         if (mf != null) {
             processManifest(mf);
         } else {
-            throw new Exception("Cannot read jar file or manifest file");
+            throw new JellyTagException("Cannot read jar file or manifest file");
         }
         setContextVars();
     }

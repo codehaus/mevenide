@@ -18,6 +18,8 @@ package org.mevenide.tags;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import org.apache.commons.jelly.JellyTagException;
+import org.apache.commons.jelly.MissingAttributeException;
 
 import org.apache.commons.jelly.XMLOutput;
 
@@ -43,7 +45,7 @@ public class AdaptVersionTag extends AbstractMevenideTag {
     /** the name under which the adapted version will be put in the jelly context **/ 
     private String var;
     
-    public void doTag(XMLOutput arg0) throws Exception {
+    public void doTag(XMLOutput arg0) throws MissingAttributeException, JellyTagException {
 		
 		checkAttribute(version, "version");
 		checkAttribute(var, "var");
