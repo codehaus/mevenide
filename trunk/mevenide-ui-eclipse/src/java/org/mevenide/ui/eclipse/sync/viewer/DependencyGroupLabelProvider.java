@@ -82,24 +82,16 @@ public class DependencyGroupLabelProvider implements ITableLabelProvider, IColor
 			return MevenideColors.GREY;
 		}
 		if ( element instanceof DependencyWrapper 
-				&& ((DependencyWrapper) element).isInPom() ) {
-			return MevenideColors.GREEN;
+				&& ((DependencyWrapper) element).isConflictDetected() ) {
+			return MevenideColors.RED;
 		}
 		if ( element instanceof DependencyWrapper
 				&& ((DependencyWrapper) element).getDependencyGroup().isDuplicated(element) ) {
 			return MevenideColors.ORANGE;
 		}
 		if ( element instanceof DependencyWrapper 
-				&& ((DependencyWrapper) element).isReadOnly() ) {
-			return MevenideColors.RED;
-		}
-		if ( element instanceof DependencyInfo
-				&& ((DependencyInfo) element).isInPom() ) {
+				&& ((DependencyWrapper) element).isInPom() ) {
 			return MevenideColors.GREEN;
-		}
-		if ( element instanceof DependencyInfo
-				&& ((DependencyInfo) element).getDependencyWrapper().getDependencyGroup().isDuplicated(((DependencyInfo) element).getDependencyWrapper()) ) {
-			return MevenideColors.ORANGE;
 		}
 		if ( element instanceof DependencyInfo
 				&& ((DependencyInfo) element).isReadOnly() ) {
@@ -108,6 +100,14 @@ public class DependencyGroupLabelProvider implements ITableLabelProvider, IColor
 		if ( element instanceof DependencyInfo
 				&& ((DependencyInfo) element).getDependencyWrapper().isConflictDetected() ) {
 			return MevenideColors.RED;
+		}
+		if ( element instanceof DependencyInfo
+				&& ((DependencyInfo) element).getDependencyWrapper().getDependencyGroup().isDuplicated(((DependencyInfo) element).getDependencyWrapper()) ) {
+			return MevenideColors.ORANGE;
+		}
+		if ( element instanceof DependencyInfo
+				&& ((DependencyInfo) element).isInPom() ) {
+			return MevenideColors.GREEN;
 		}
 		return MevenideColors.BLACK;
 	}
