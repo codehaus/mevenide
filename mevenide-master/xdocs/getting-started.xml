@@ -7,6 +7,9 @@
 
   <body>
     <section name="Preambule">
+		If you read this, i guess you're a developper that want to/do participate in the Mevenide project, 
+		or you want to build Mevenide from the sources, and/or want to understand some of the internals. 
+		<br/>
 		This document presents the Mevenide structure  and explains how to build and test it using the Eclipse runtime-workbench. 
 		It focuses on Eclipse integration. <br/>
 		To begin with you should chek out a fresh version of the various Mevenide modules. There are atm four modules you need :
@@ -57,12 +60,24 @@
 		In base-project.xml, which all our POMs should inherit, you can see that some unit tests have been explicitly exclude. Indeed they  
 		fail if ran from maven, althoguh they're successful from within eclipse. I guess there's here a problem with the way i declared the resources.
 		There are also other tests that have been excluded cuz they're expected to fail if not launched from within Eclipse through the 
-		<code>org.eclipse.pde.junit</code> plugin ; that plugin (expected to be provided with Eclipse 3) allows us to test plugins (altho i have not 
-		managed to use it successfully for now). I think its a better (smarter, easier, &lt;whatever you want ot insert here&gt;)  way to test plugins than mocking the Eclipse interfaces.
+		<code>org.eclipse.pde.junit</code> plugin ; that plugin (expected to be provided with Eclipse 3) extends the junit Eclipse plugin 
+		allows us to test plugins (altho i have not managed to use it successfully for now - it keeps on throwing NoClassDefFoundError). 
+		I think its a better (smarter, easier, &lt;whatever you want ot insert here&gt;)  way to test plugins than mocking the Eclipse API.
 	</section>
 	
 	<section name="Configuring the build process">
-
+		If there should be no problem to build the goals-grabber and the mevenide-core subprojects, the mevenide-ui-eclipse project is a little bit 
+		trickier to configure since most of the Eclipse libraries are not present at ibiblio (perhaps should we ask to upload them ? im not sure here).
+		
+		<code>
+		<![CDATA[
+			<copy file="${eclipse.home}/plugins/org.eclipse.core.resources_2.1.0/resources.jar" 
+			  tofile="${maven.home}/repository/eclipse/jars/eclipse-resources-2.1.0.jar"/>
+			  ...
+			<copy file="${eclipse.home}/plugins/${swt.plugin.dir}/swt.jar" 
+			  tofile="${maven.home}/repository/eclipse/jars/eclipse-swt-2.1.0.jar"/>  	
+		 ]]>
+		 </code>
 	</section>
 	
 	<section name="Before launching the Runtime-workbench">
