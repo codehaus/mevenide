@@ -11,7 +11,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  */
-package org.mevenide.ui.eclipse.sync;
+package org.mevenide.ui.eclipse.sync.pom;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -26,6 +26,8 @@ import org.mevenide.project.io.ProjectWriter;
 import org.mevenide.sync.AbstractPomSynchronizer;
 import org.mevenide.sync.ISynchronizer;
 import org.mevenide.ui.eclipse.MavenPlugin;
+import org.mevenide.ui.eclipse.sync.DefaultPathResolverDelegate;
+import org.mevenide.ui.eclipse.sync.IPathResolverDelegate;
 
 /**
  * 
@@ -95,7 +97,7 @@ public class PomSynchronizer extends AbstractPomSynchronizer implements ISynchro
 	}
 
 	/**
-     * create a new POM skeleton if no project.xml exists
+     * create a new POM skeleton if no project.xml currently exists
      * 
      * @todo GENERALIZE add a POM_FILE_NAME property somewhere
      * @todo EXTERNALIZE POM_FILE_NAME
@@ -111,44 +113,18 @@ public class PomSynchronizer extends AbstractPomSynchronizer implements ISynchro
 
     /**
      * add this classpathentry' information to the pom  
-     * @refactor PATTERN use Visitor instead
-     * 
+     *
      * @param classpathEntry
      * @throws Exception
      */
 	private void updatePom(IClasspathEntry classpathEntry) throws Exception {
-		
-		switch (classpathEntry.getEntryKind()) {
-			case IClasspathEntry.CPE_SOURCE :
-					addSource(classpathEntry);
-					return;
-			case IClasspathEntry.CPE_LIBRARY :
-					addDependency(classpathEntry);
-					return;
-//			case IClasspathEntry.CPE_VARIABLE :
-//					//IClasspathEntry resolved = JavaCore.getResolvedClasspathEntry(classpathEntry);
-//					//updatePomDependencies(resolved);
-//					return;
-//            default : throw new Exception("Unknown classpath entry kind (" + classpathEntry.getEntryKind() + ")");
-//			@todo FUNCTIONAL eclipse projects dependencies
-//			@todo FUNCTIONAL dependencies of type CPE_CONTAINER
+		Entry entry = Entry.getEntry(classpathEntry);
+		LibraryVisitor visitor = new LibraryVisitor();
+		if ( entry != null ) {
+			entry.accept(visitor);
 		}
-
 	}
 
-    /**
-     * add to the pom the dependency described by the given classpathentry
-     * 
-     * @param classpathEntry
-     * @throws Exception
-     */
-	private void addDependency(IClasspathEntry classpathEntry) throws Exception {
-		ProjectWriter.getWriter().addDependency(
-            pathResolver.getAbsolutePath(classpathEntry.getPath()), 
-            getPom()
-        );
-	}
-    
     /**
      * utility method 
      * return the File instance correponding to the IFile pom attribute
@@ -159,22 +135,6 @@ public class PomSynchronizer extends AbstractPomSynchronizer implements ISynchro
 		return new File(pathResolver.getAbsolutePath(pom.getLocation()));
 	}
 	
-    /**
-     * add to the pom the source directory described by the given classapthentry
-     * @pre classpathentry.getEntryKind() == CPE_SOURCE  
-     * 
-     * @param classpathEntry
-     * @throws Exception
-     */
-	private void addSource(IClasspathEntry classpathEntry) throws Exception {
-		
-        String pathToAdd = pathResolver.computePathToAdd(classpathEntry, project);
-		
-        ProjectWriter.getWriter().addSource(
-            pathToAdd, 
-            getPom(), 
-            pathResolver.getMavenSourceType(classpathEntry, project)
-        );
-	}
+    
 
 }

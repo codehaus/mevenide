@@ -11,7 +11,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  */
-package org.mevenide.ui.eclipse.sync;
+package org.mevenide.ui.eclipse.sync.ide;
 
 import org.eclipse.core.resources.IProject;
 import org.mevenide.sync.AbstractIdeSynchronizer;
