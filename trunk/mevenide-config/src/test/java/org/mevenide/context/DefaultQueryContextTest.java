@@ -22,6 +22,7 @@ import java.io.FileOutputStream;
 
 import junit.framework.TestCase;
 import org.apache.maven.project.Project;
+import org.jdom.Element;
 
 
 /**
@@ -178,6 +179,14 @@ public class DefaultQueryContextTest extends TestCase {
             
             public Project[] getProjectLayers() {
                 return new Project[] { project };
+            }
+            
+            public org.jdom.Element[] getRootElementLayers() {
+                return new Element[0];
+            }
+            
+            public org.jdom.Element getRootProjectElement() {
+                return null;
             }
             
         }

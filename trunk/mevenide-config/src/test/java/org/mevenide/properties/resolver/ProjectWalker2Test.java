@@ -23,6 +23,9 @@ import org.apache.maven.project.Repository;
 import junit.framework.TestCase;
 import org.apache.maven.project.Resource;
 import org.apache.maven.project.UnitTest;
+import org.jdom.Element;
+import org.jdom.input.DefaultJDOMFactory;
+import org.jdom.input.JDOMFactory;
 import org.mevenide.context.IProjectContext;
 import org.mevenide.context.IQueryContext;
 
@@ -32,27 +35,28 @@ import org.mevenide.context.IQueryContext;
  */
 
 public class ProjectWalker2Test extends TestCase {
-	private Project project ; 
+	private Element project ; 
 	private ProjectWalker2 walker ; 
 	
     protected void setUp() throws Exception {
-        project = new Project();
-        project.setGroupId("groupID");
-        Build build = new Build(); 
-        UnitTest test = new UnitTest();
-        Resource res = new Resource();
-        res.setDirectory("directory");
-        res.addInclude("include1");
-        res.addInclude("include2");
-        test.addResource(res);
-        build.setUnitTest(test);
-
-        build.setSourceDirectory("mySourceDir");
-        project.setBuild(build);
-        
-        Repository repository = new Repository();
-        repository.setConnection("myCvsConnection");
-        project.setRepository(repository);
+    // is this necesaary, maybe just return null from getRootProjectElement()
+        JDOMFactory factory = new DefaultJDOMFactory();           
+        project = factory.element("project");
+        Element gr = factory.element("groupId");
+        gr.setText("MYgroupID");
+        project.addContent(gr);
+        Element build = factory.element("build");
+        Element test = factory.element("unitTest");
+        build.addContent(test);
+        Element src = factory.element("sourceDirectory");
+        src.setText("mySourceDir");
+        build.addContent(src);
+        project.addContent(build);
+        Element repository = factory.element("repository");
+        Element connection = factory.element("connection");
+        connection.setText("myCvsConnection");
+        repository.addContent(connection);
+        project.addContent(repository);
         TestContext context = new TestContext(project);
         walker = new ProjectWalker2(context);
     }
@@ -62,16 +66,16 @@ public class ProjectWalker2Test extends TestCase {
     }
 
     public void testResolve() throws Exception {
-        assertEquals("groupID", walker.getValue("pom.groupId"));
+        assertEquals("MYgroupID", walker.getValue("pom.groupId"));
     	assertEquals("mySourceDir", walker.getValue("pom.build.sourceDirectory"));
         assertEquals("myCvsConnection", walker.getValue("pom.repository.connection"));
     }
 
     
     private class TestContext implements IQueryContext, IProjectContext {
-        private Project  project;
-        TestContext(Project proj) {
-            project = proj;
+        private Element  projectElement;
+        TestContext(Element proj) {
+            projectElement = proj;
         }
         public String getBuildPropertyValue(String key) {
             return null;
@@ -102,7 +106,7 @@ public class ProjectWalker2Test extends TestCase {
         }
         
         public Project getFinalProject() {
-            return project;
+            return null;
         }
         
         public java.io.File[] getProjectFiles() {
@@ -111,6 +115,14 @@ public class ProjectWalker2Test extends TestCase {
         
         public Project[] getProjectLayers() {
             return null;
+        }
+        
+        public org.jdom.Element[] getRootElementLayers() {
+            return new Element[0];
+        }
+        
+        public org.jdom.Element getRootProjectElement() {
+            return projectElement;
         }
         
     }
