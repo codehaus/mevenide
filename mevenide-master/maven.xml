@@ -28,8 +28,9 @@
   <goal name="build-site" description="Build Mevenide Site">
   	<attainGoal name="multiproject:site"/>
   </goal>
-
-  <postGoal name="build-all" description="Build the aggregated distribution files">
+	
+  <!-- build the aggregated distribution files -->
+  <postGoal name="build-all">
   	<attainGoal name="mevenide:create-update-dist"/>
   </postGoal>
   
