@@ -76,12 +76,12 @@ public final class GoalsGrabbersManager {
 	private GoalsGrabbersManager() { }
 	
 	public static synchronized IGoalsGrabber getGoalsGrabber(String projectDescriptorPath) throws Exception {
-		if ( defaultGoalsGrabber == null ) {
-			defaultGoalsGrabber = new DefaultGoalsGrabber();
-		}
+//		if ( defaultGoalsGrabber == null ) {
+//			defaultGoalsGrabber = new DefaultGoalsGrabber();
+//		}
 		if ( goalsGrabbers.get(projectDescriptorPath) == null ) {
 			GoalsGrabbersAggregator aggregator = new GoalsGrabbersAggregator();
-			aggregator.addGoalsGrabber(defaultGoalsGrabber);
+			aggregator.addGoalsGrabber(getDefaultGoalsGrabber());
 			
 			String mavenXmlPath = new File(new File(projectDescriptorPath).getParent(), "maven.xml").getAbsolutePath();
 			
@@ -101,7 +101,10 @@ public final class GoalsGrabbersManager {
 		return aggregator;
 	}
 	
-	public static synchronized IGoalsGrabber getDefaultGoalsGrabber() {
-		return defaultGoalsGrabber;
+	public static synchronized IGoalsGrabber getDefaultGoalsGrabber() throws Exception {
+		if ( defaultGoalsGrabber == null ) {
+			defaultGoalsGrabber = new DefaultGoalsGrabber();
+		}
+                return defaultGoalsGrabber;
 	}
 }
