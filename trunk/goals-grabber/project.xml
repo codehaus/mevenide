@@ -9,6 +9,18 @@
     <package>org.mevenide.goals.grabber</package>
     <shortDescription>Gets all the available goals</shortDescription>
     <description>This project provides generic Goals Grabbing mechanism. It is articulated around IGoalsGrabber interface.</description>
+    <versions>
+      <version>
+        <id>ea</id>
+        <name>0.1-ea</name>
+        <tag>V_0_1_ALPHA_1</tag>
+      </version>
+      <version>
+        <id>alpha-1</id>
+        <name>0.1-alpha-A</name>
+        <tag>V_0_1_ALPHA_1_1</tag>
+      </version>
+    </versions>
     <dependencies>
         <dependency>
            <groupId>mevenide</groupId>
