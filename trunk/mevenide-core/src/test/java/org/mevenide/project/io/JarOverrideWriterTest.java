@@ -28,14 +28,14 @@ import org.mevenide.AbstractMevenideTestCase;
  * @version $Id: JarOverriderTest.java,v 1.1 24 sept. 2003 Exp gdodinet 
  * 
  */
-public class JarOverriderTest  extends AbstractMevenideTestCase {
-	private JarOverrider overrider ;
+public class JarOverrideWriterTest  extends AbstractMevenideTestCase {
+	private JarOverrideWriter overrider ;
 	private ProjectWriter pomWriter;
 	
     protected void setUp() throws Exception {
         super.setUp();
 		pomWriter = ProjectWriter.getWriter();
-        overrider = new JarOverrider(pomWriter);
+        overrider = new JarOverrideWriter(pomWriter);
     }
 	
 	protected void tearDown() throws Exception {
