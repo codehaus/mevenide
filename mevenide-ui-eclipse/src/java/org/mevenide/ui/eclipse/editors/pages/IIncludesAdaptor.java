@@ -48,66 +48,17 @@
  */
 package org.mevenide.ui.eclipse.editors.pages;
 
+import java.util.List;
+
 import org.apache.maven.project.Project;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
-import org.mevenide.ui.eclipse.Mevenide;
-import org.mevenide.ui.eclipse.MevenideColors;
-import org.mevenide.ui.eclipse.editors.MevenidePomEditor;
 
 /**
- * Presents a client control for editing information relating to the
- * build process and environment for this project.
- * 
- * @author Jeff Bonevich (jeff@bonevich.com)
+ * @author Jeffrey Bonevich (jeff@bonevich.com)
  * @version $Id$
  */
-public class UnitTestsPage extends AbstractPomEditorPage {
-
-	public static final String HEADING = Mevenide.getResourceString("UnitTestsPage.heading");
-    
-	private IncludesSection includesSection;
-	private ExcludesSection excludesSection;
-	private ResourcesSection resourcesSection;
-
-    public UnitTestsPage(MevenidePomEditor editor) {
-        super(HEADING, editor);
-    }
-
-	protected void initializePage(Composite parent) {
-		GridLayout layout = new GridLayout();
-		layout.numColumns = 1;
-		layout.marginWidth = 10;
-		layout.horizontalSpacing = 15;
-		parent.setLayout(layout);
-
-		PageWidgetFactory factory = getFactory();
-		factory.setBackgroundColor(MevenideColors.WHITE);
-
-		includesSection = new IncludesSection(this);
-		Control control = includesSection.createControl(parent, factory);
-		GridData gd = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING);
-		control.setLayoutData(gd);
-		
-		excludesSection = new ExcludesSection(this);
-		control = excludesSection.createControl(parent, factory);
-		gd = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING);
-		control.setLayoutData(gd);
-		
-		resourcesSection = new ResourcesSection(this);
-		control = resourcesSection.createControl(parent, factory);
-		gd = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING);
-		control.setLayoutData(gd);
-	}
-
-	public void update(Project pom) {
-		includesSection.update(pom);
-		excludesSection.update(pom);
-		resourcesSection.update(pom);
-		
-		setUpdateNeeded(false);
-	}
-
+public interface IIncludesAdaptor {
+	abstract void setIncludes(Project pom, List newIncludes);
+	abstract void addInclude(Project pom, String include);
+	abstract List getIncludes(Project pom);
+	abstract List getInheritedIncludes();
 }

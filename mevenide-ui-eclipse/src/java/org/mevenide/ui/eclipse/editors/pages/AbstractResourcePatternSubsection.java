@@ -48,66 +48,52 @@
  */
 package org.mevenide.ui.eclipse.editors.pages;
 
-import org.apache.maven.project.Project;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
-import org.mevenide.ui.eclipse.Mevenide;
-import org.mevenide.ui.eclipse.MevenideColors;
-import org.mevenide.ui.eclipse.editors.MevenidePomEditor;
+import org.mevenide.ui.eclipse.editors.entries.TableEntry;
+import org.mevenide.ui.eclipse.editors.properties.ResourcePatternProxy;
 
 /**
- * Presents a client control for editing information relating to the
- * build process and environment for this project.
- * 
- * @author Jeff Bonevich (jeff@bonevich.com)
+ * @author Jeffrey Bonevich (jeff@bonevich.com)
  * @version $Id$
  */
-public class UnitTestsPage extends AbstractPomEditorPage {
+public abstract class AbstractResourcePatternSubsection {
 
-	public static final String HEADING = Mevenide.getResourceString("UnitTestsPage.heading");
-    
-	private IncludesSection includesSection;
-	private ExcludesSection excludesSection;
-	private ResourcesSection resourcesSection;
+	public abstract TableEntry createWidget(Composite container, PageWidgetFactory factory, boolean isOverrideable);
 
-    public UnitTestsPage(MevenidePomEditor editor) {
-        super(HEADING, editor);
-    }
-
-	protected void initializePage(Composite parent) {
-		GridLayout layout = new GridLayout();
-		layout.numColumns = 1;
-		layout.marginWidth = 10;
-		layout.horizontalSpacing = 15;
-		parent.setLayout(layout);
-
-		PageWidgetFactory factory = getFactory();
-		factory.setBackgroundColor(MevenideColors.WHITE);
-
-		includesSection = new IncludesSection(this);
-		Control control = includesSection.createControl(parent, factory);
-		GridData gd = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING);
-		control.setLayoutData(gd);
+	void updateTableEntries(
+		TableEntry table,
+		List pomCollection,
+		List inheritedCollection,
+		boolean isIncludePattern) {
 		
-		excludesSection = new ExcludesSection(this);
-		control = excludesSection.createControl(parent, factory);
-		gd = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING);
-		control.setLayoutData(gd);
-		
-		resourcesSection = new ResourcesSection(this);
-		control = resourcesSection.createControl(parent, factory);
-		gd = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING);
-		control.setLayoutData(gd);
+		table.removeAll();
+		if (pomCollection != null && !pomCollection.isEmpty()) {
+			table.addEntries(convertToResourcePatternProxies(pomCollection, isIncludePattern));
+			table.setInherited(false);
+		}
+		else if (inheritedCollection != null) {
+			table.addEntries(convertToResourcePatternProxies(inheritedCollection, isIncludePattern), true);
+			table.setInherited(true);
+		}
+		else {
+			table.setInherited(false);
+		}
 	}
-
-	public void update(Project pom) {
-		includesSection.update(pom);
-		excludesSection.update(pom);
-		resourcesSection.update(pom);
-		
-		setUpdateNeeded(false);
+	
+	List convertToResourcePatternProxies(List resourcePatterns, boolean isIncludePattern) {
+		List proxies = null;
+		if (resourcePatterns != null) {
+			proxies = new ArrayList(resourcePatterns.size());
+			Iterator itr = resourcePatterns.iterator();
+			while (itr.hasNext()) {
+				proxies.add(new ResourcePatternProxy((String) itr.next(), isIncludePattern));
+			}
+		}
+		return proxies;
 	}
 
 }

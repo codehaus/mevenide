@@ -48,66 +48,83 @@
  */
 package org.mevenide.ui.eclipse.editors.pages;
 
+import java.util.List;
+
 import org.apache.maven.project.Project;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
-import org.mevenide.ui.eclipse.Mevenide;
-import org.mevenide.ui.eclipse.MevenideColors;
-import org.mevenide.ui.eclipse.editors.MevenidePomEditor;
+import org.mevenide.ui.eclipse.editors.entries.IPomCollectionAdaptor;
+import org.mevenide.ui.eclipse.editors.entries.TableEntry;
+import org.mevenide.ui.eclipse.editors.properties.ResourcePatternProxy;
 
 /**
- * Presents a client control for editing information relating to the
- * build process and environment for this project.
- * 
- * @author Jeff Bonevich (jeff@bonevich.com)
+ * @author Jeffrey Bonevich (jeff@bonevich.com)
  * @version $Id$
  */
-public class UnitTestsPage extends AbstractPomEditorPage {
-
-	public static final String HEADING = Mevenide.getResourceString("UnitTestsPage.heading");
-    
-	private IncludesSection includesSection;
-	private ExcludesSection excludesSection;
-	private ResourcesSection resourcesSection;
-
-    public UnitTestsPage(MevenidePomEditor editor) {
-        super(HEADING, editor);
-    }
-
-	protected void initializePage(Composite parent) {
-		GridLayout layout = new GridLayout();
-		layout.numColumns = 1;
-		layout.marginWidth = 10;
-		layout.horizontalSpacing = 15;
-		parent.setLayout(layout);
-
-		PageWidgetFactory factory = getFactory();
-		factory.setBackgroundColor(MevenideColors.WHITE);
-
-		includesSection = new IncludesSection(this);
-		Control control = includesSection.createControl(parent, factory);
-		GridData gd = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING);
-		control.setLayoutData(gd);
-		
-		excludesSection = new ExcludesSection(this);
-		control = excludesSection.createControl(parent, factory);
-		gd = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING);
-		control.setLayoutData(gd);
-		
-		resourcesSection = new ResourcesSection(this);
-		control = resourcesSection.createControl(parent, factory);
-		gd = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING);
-		control.setLayoutData(gd);
+public class ExcludesSubsection extends AbstractResourcePatternSubsection {
+	
+	private PageSection section;
+	private IExcludesAdaptor excluder;
+	
+	public ExcludesSubsection(PageSection section, IExcludesAdaptor excluder) {
+		this.section = section;
+		this.excluder = excluder;
 	}
+	
+	public TableEntry createWidget(Composite container, PageWidgetFactory factory, boolean isOverrideable) {
+		final Project pom = section.getPage().getEditor().getPom();
 
-	public void update(Project pom) {
-		includesSection.update(pom);
-		excludesSection.update(pom);
-		resourcesSection.update(pom);
-		
-		setUpdateNeeded(false);
+		// Exclude table
+		Button toggle = null;
+		if (isOverrideable) {
+			toggle = section.createOverrideToggle(container, factory, 1, true);
+		} else {
+			if (section.isInherited()) {
+				section.createSpacer(container, factory);
+			}
+		}
+		TableViewer viewer = section.createTableViewer(container, factory, 1);
+		TableEntry excludesTable = new TableEntry(viewer, toggle, "Exclude", container, factory, section);
+		PageSection.OverrideAdaptor adaptor = section.new OverrideAdaptor() {
+			public void overrideParent(Object value) {
+				List excludes = (List) value;
+				excluder.setExcludes(pom, excludes);
+			}
+			public Object acceptParent() {
+				return excluder.getExcludes(section.getParentPom());
+			}
+		};
+
+		excludesTable.addEntryChangeListener(adaptor);
+		excludesTable.addOverrideAdaptor(adaptor);
+		excludesTable.addPomCollectionAdaptor(
+			new IPomCollectionAdaptor() {
+				public Object addNewObject(Object parentObject) {
+					String exclude = "unknown";
+					ResourcePatternProxy excludeProxy = new ResourcePatternProxy(exclude, false);
+					excluder.addExclude(pom, exclude);
+					return excludeProxy;
+				}
+				public void moveObjectTo(int index, Object object, Object parentObject) {
+					List excludes = excluder.getExcludes(pom);
+					String pattern = (String) object;
+					if (excludes != null) {
+						excludes.remove(pattern);
+						excludes.add(index, pattern);
+					}
+				}
+				public void removeObject(Object object, Object parentObject) {
+					List excludes = excluder.getExcludes(pom);
+					String pattern = (String) object;
+					if (excludes != null) {
+						excludes.remove(pattern);
+					}
+				}
+				public List getDependents(Object parentObject) { return null; }
+			}
+		);
+		return excludesTable;
 	}
 
 }

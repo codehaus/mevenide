@@ -51,27 +51,33 @@ package org.mevenide.ui.eclipse.editors.pages;
 import java.util.List;
 
 import org.apache.maven.project.Build;
-import org.apache.maven.project.Resource;
 import org.apache.maven.project.Project;
+import org.apache.maven.project.Resource;
+import org.apache.maven.project.UnitTest;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.mevenide.ui.eclipse.Mevenide;
-import org.mevenide.ui.eclipse.editors.entries.*;
+import org.mevenide.ui.eclipse.editors.entries.IPomCollectionAdaptor;
+import org.mevenide.ui.eclipse.editors.entries.TableEntry;
 
 /**
  * @author Jeffrey Bonevich (jeff@bonevich.com)
  * @version $Id$
  */
-public class ResourcesSection extends PageSection {
+public class ResourcesSection extends PageSection implements IIncludesAdaptor, IExcludesAdaptor {
 
 	private TableEntry resourcesTable;
+	private TableEntry includesTable;
+	private TableEntry excludesTable;
+	private IncludesSubsection includesSubsection;
+	private ExcludesSubsection excludesSubsection;
 	
-	public ResourcesSection(BuildPage page) {
+	public ResourcesSection(AbstractPomEditorPage page) {
 		super(page);
-		setHeaderText(Mevenide.getResourceString("ResourcesSection.header"));
-		setDescription(Mevenide.getResourceString("ResourcesSection.description"));
+		setHeaderText(Mevenide.getResourceString("BuildResourcesSection.header"));
+		setDescription(Mevenide.getResourceString("BuildResourcesSection.description"));
 	}
 
 	public Composite createClient(Composite parent, PageWidgetFactory factory) {
@@ -124,6 +130,28 @@ public class ResourcesSection extends PageSection {
 			}
 		);
 		
+		// Includes subsection
+		createSpacer(container, factory, (isInherited() ? 3 : 2));
+		if (isInherited()) {
+			createSpacer(container, factory);
+		}
+		createLabel(container, Mevenide.getResourceString("BuildResourceIncludesSection.header"), factory);
+		createSpacer(container, factory);
+		
+		includesSubsection = new IncludesSubsection(this, this);
+		includesTable = includesSubsection.createWidget(container, factory, false);
+		
+		// Excludes subsection
+		createSpacer(container, factory, (isInherited() ? 3 : 2));
+		if (isInherited()) {
+			createSpacer(container, factory);
+		}
+		createLabel(container, Mevenide.getResourceString("BuildResourceExcludesSection.header"), factory);
+		createSpacer(container, factory);
+		
+		excludesSubsection = new ExcludesSubsection(this, this);
+		excludesTable = excludesSubsection.createWidget(container, factory, false);
+		
 		factory.paintBordersFor(container);
 		return container;
 	}
@@ -143,16 +171,20 @@ public class ResourcesSection extends PageSection {
 		else {
 			resourcesTable.setInherited(false);
 		}
+		includesSubsection.updateTableEntries(includesTable, getIncludes(pom), getInheritedIncludes(), true);
+		excludesSubsection.updateTableEntries(excludesTable, getExcludes(pom), getInheritedExcludes(), false);
 		
 		super.update(pom);
 	}
 
 	private void setResources(Project pom, List resources) {
 		getOrCreateBuild(pom).setResources(resources);
+		getPage().getEditor().setModelDirty(true);
 	}
 	
 	private void addResource(Project pom, Resource resource) {
 		getOrCreateBuild(pom).addResource(resource);
+		getPage().getEditor().setModelDirty(true);
 	}
 	
 	private List getResources(Project pom) {
@@ -172,6 +204,72 @@ public class ResourcesSection extends PageSection {
 			pom.setBuild(build);
 		}
 		return build;
+	}
+
+	public void setIncludes(Project pom, List newIncludes) {
+		List includes = getOrCreateUnitTest(pom).getIncludes();
+		includes.removeAll(includes);
+		includes.addAll(newIncludes);
+		getPage().getEditor().setModelDirty(true);
+	}
+	
+	public void addInclude(Project pom, String include) {
+		getOrCreateUnitTest(pom).addInclude(include);
+		getPage().getEditor().setModelDirty(true);
+	}
+	
+	public List getIncludes(Project pom) {
+		return pom.getBuild() != null 
+			? pom.getBuild().getUnitTest() != null
+				? pom.getBuild().getUnitTest().getIncludes()
+				: null
+			: null;
+	}
+	
+	public List getInheritedIncludes() {
+		return isInherited() 
+			? getIncludes(getParentPom())
+			: null;
+	}
+
+	public void setExcludes(Project pom, List newExcludes) {
+		List excludes = getOrCreateUnitTest(pom).getExcludes();
+		excludes.removeAll(excludes);
+		excludes.addAll(newExcludes);
+		getPage().getEditor().setModelDirty(true);
+	}
+	
+	public void addExclude(Project pom, String exclude) {
+		getOrCreateUnitTest(pom).addExclude(exclude);
+		getPage().getEditor().setModelDirty(true);
+	}
+	
+	public List getExcludes(Project pom) {
+		return pom.getBuild() != null 
+			? pom.getBuild().getUnitTest() != null
+				? pom.getBuild().getUnitTest().getExcludes()
+				: null
+			: null;
+	}
+	
+	public List getInheritedExcludes() {
+		return isInherited() 
+			? getExcludes(getParentPom())
+			: null;
+	}
+
+	private UnitTest getOrCreateUnitTest(Project pom) {
+		Build build = pom.getBuild();
+		if (build == null) {
+			build = new Build();
+			pom.setBuild(build);
+		}
+		UnitTest unitTest = build.getUnitTest();
+		if (unitTest == null) {
+			unitTest = new UnitTest();
+			build.setUnitTest(unitTest);
+		}
+		return unitTest;
 	}
 
 }
