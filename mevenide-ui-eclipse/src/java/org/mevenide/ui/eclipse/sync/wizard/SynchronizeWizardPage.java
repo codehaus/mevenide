@@ -736,14 +736,19 @@ public class SynchronizeWizardPage extends WizardPage {
 		
 		List pomDependencies = mavenProject.getDependencies();
 		for (int i = 0; i < pomDependencies.size(); i++) {
-			boolean isInPom;
+			boolean inPom = false;
             for (int j = 0; j < group.getDependencyWrappers().size(); j++) {
-                DependencyWrapper wrapper = (DependencyWrapper) group.getDependencyWrappers().get(i);
+                DependencyWrapper wrapper = (DependencyWrapper) group.getDependencyWrappers().get(j);
 				if ( DependencyUtil.areEquals((Dependency)pomDependencies.get(i), wrapper.getDependency()) ) {
 					wrapper.setInPom(true);
-					isInPom = true;
+					inPom = true;
 				}
             }
+			if ( !inPom ) {
+				DependencyWrapper wrapper = new DependencyWrapper((Dependency)pomDependencies.get(i), false, group);
+				wrapper.setInPom(true);
+				group.addDependency(wrapper); 
+			}
         }
 
 		if ( extend != null && !extend.trim().equals("") ) {
