@@ -34,14 +34,18 @@ import org.mevenide.tags.AbstractMevenideTag;
 import org.mevenide.tags.InvalidDirectoryException;
 
 /**
- * @todo this tag should surely take an Artifact as attribute. 
- * Artifacts iteration would then be performed within plugin.jelly  
+ * update the Eclipse plugin descriptor with project dependency informations  
  * 
  * @author <a href="mailto:rhill2@free.fr">Gilles Dodinet</a>
  * @version $Id$
  * 
  */
 public class UpdatePluginLibsTag extends AbstractMevenideTag {
+	/**
+	 * @todo this tag should surely take an Artifact as attribute. 
+	 * Artifacts iteration would then be performed within plugin.jelly
+	 */
+	
     private static final Log log = LogFactory.getLog(UpdatePluginLibsTag.class);
 
     private static final String RUNTIME_ELEM = "runtime";
@@ -64,8 +68,9 @@ public class UpdatePluginLibsTag extends AbstractMevenideTag {
     private static final String FS_SEPARATOR = "/";
     private static final String STAR_PATTERN = "*";
 
-
+    /** the project descriptor of the Eclipse plugin under construction **/
     private Project pom;
+    
     private Document descriptor;
 
     private String bundledLibraryDir; 
@@ -124,8 +129,7 @@ public class UpdatePluginLibsTag extends AbstractMevenideTag {
      */    
 	void updateRuntime(Artifact artifact) throws InvalidDirectoryException {
 		Element pluginElem = descriptor.getRootElement();
-
-        if ( new File(bundledLibraryDir).exists() ) {
+		if ( new File(bundledLibraryDir).isAbsolute() ) {
         	throw new InvalidDirectoryException(bundledLibraryDir, true, BUNDLE_LIB_DIR); 
         }
 
@@ -289,6 +293,7 @@ public class UpdatePluginLibsTag extends AbstractMevenideTag {
         return pom;
     }
     
+    /** the project descriptor of the Eclipse plugin under construction **/
     public void setPom(Project pom) throws MissingAttributeException {
         checkAttribute(pom, "pom");
         this.pom = pom;
