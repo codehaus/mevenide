@@ -2,6 +2,10 @@
   font-size: 9pt;
 }
 
+#bodyColumn {
+  margin-left: 0%;
+}
+
 .section p {
   font-size: 9pt;
   color: #666666;
@@ -53,6 +57,7 @@ a:link, a:visited {
   width: 190px;
   border-bottom: none;
   border-right: solid 1px #999999;
+  border-top: none;
   background-color: #ffffff; 
 }
 
