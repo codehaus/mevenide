@@ -26,9 +26,7 @@ import org.openide.nodes.Node;
  *
  * @author  Milos Kleint (ca206216@tiscali.cz)
  */
-public class GoalsRootNode extends AbstractNode
-{
-    private IGoalsGrabber grabber;
+public class GoalsRootNode extends AbstractNode {
     /** Creates a new instance of PluginNode */
     public GoalsRootNode(IGoalsGrabber grabber)
     {
@@ -36,7 +34,6 @@ public class GoalsRootNode extends AbstractNode
         setName("availableGoals");
         setDisplayName("Available Goals");
         setShortDescription("Available Maven Plugins/Goals");
-        this.grabber = grabber;
     }
     
     
