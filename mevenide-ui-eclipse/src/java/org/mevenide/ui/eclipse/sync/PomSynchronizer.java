@@ -59,7 +59,7 @@ import org.mevenide.ui.eclipse.sync.model.dependency.DependencyGroup;
 import org.mevenide.ui.eclipse.sync.model.dependency.DependencyGroupMarshaller;
 import org.mevenide.ui.eclipse.sync.model.source.SourceDirectoryGroup;
 import org.mevenide.ui.eclipse.sync.model.source.SourceDirectoryGroupMarshaller;
-import org.mevenide.ui.eclipse.util.FileUtil;
+import org.mevenide.ui.eclipse.util.FileUtils;
 
 /**
  * 
@@ -110,7 +110,7 @@ public class PomSynchronizer extends AbstractPomSynchronizer implements ISynchro
 	public void preSynchronization() {
 		try {
 			Mevenide.getPlugin().createPom();
-			FileUtil.assertPomNotEmpty(pom);
+			FileUtils.assertPomNotEmpty(pom);
 		}
 		catch (Exception e) {
 			log.debug("Unable to create POM due to : " + e);
@@ -122,7 +122,7 @@ public class PomSynchronizer extends AbstractPomSynchronizer implements ISynchro
      */
 	public void postSynchronization() {
 		try {
-			FileUtil.refresh(project);
+			FileUtils.refresh(project);
 		} 
 		catch (Exception e) {
 			log.debug("Unable to create POM due to : " + e);

@@ -64,8 +64,8 @@ import org.mevenide.project.dependency.DependencyUtil;
 import org.mevenide.ui.eclipse.DefaultPathResolver;
 import org.mevenide.ui.eclipse.IPathResolver;
 import org.mevenide.ui.eclipse.sync.model.ArtifactGroup;
-import org.mevenide.ui.eclipse.util.FileUtil;
-import org.mevenide.ui.eclipse.util.ProjectUtil;
+import org.mevenide.ui.eclipse.util.FileUtils;
+import org.mevenide.ui.eclipse.util.EclipseProjectUtils;
 
 /**
  * 
@@ -99,8 +99,8 @@ public class DependencyGroup extends ArtifactGroup {
 		
 		for (int i = 0; i < classpathEntries.length; i++) {
 			if ( classpathEntries[i].getEntryKind() == IClasspathEntry.CPE_LIBRARY
-					&& !FileUtil.isClassFolder(classpathEntries[i].getPath().toOSString(), javaProject.getProject()) 
-					&& !ProjectUtil.getJreEntryList(javaProject.getProject()).contains(pathResolver.getAbsolutePath(classpathEntries[i].getPath())) ) {
+					&& !FileUtils.isClassFolder(classpathEntries[i].getPath().toOSString(), javaProject.getProject()) 
+					&& !EclipseProjectUtils.getJreEntryList(javaProject.getProject()).contains(pathResolver.getAbsolutePath(classpathEntries[i].getPath())) ) {
 				//not the best way to get the absoluteFile ... 
 				String path = classpathEntries[i].getPath().toOSString();
 				if ( !new File(path).exists() ) {
@@ -112,8 +112,8 @@ public class DependencyGroup extends ArtifactGroup {
 			}
 			
 		}
-		for (int i = 0; i < ProjectUtil.getCrossProjectDependencies().size(); i++) {
-        	addDependency(new DependencyWrapper((Dependency) ProjectUtil.getCrossProjectDependencies().get(i), false, this));   
+		for (int i = 0; i < EclipseProjectUtils.getCrossProjectDependencies().size(); i++) {
+        	addDependency(new DependencyWrapper((Dependency) EclipseProjectUtils.getCrossProjectDependencies().get(i), false, this));   
         }
 		
 		

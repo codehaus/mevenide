@@ -64,7 +64,7 @@ import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.input.SAXBuilder;
 import org.mevenide.project.dependency.DependencyUtil;
-import org.mevenide.util.JDomOutputter;
+import org.mevenide.util.JDomUtils;
 
 /**
  * 
@@ -281,7 +281,7 @@ public abstract class DependencyGroupMarshaller {
 	
 		File saveFile = new File(file); 
 	
-		JDomOutputter.output(document, saveFile, false);
+		JDomUtils.output(document, saveFile, false);
 	
 	}
 

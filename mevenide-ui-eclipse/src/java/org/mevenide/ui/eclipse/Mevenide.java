@@ -77,7 +77,7 @@ import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.mevenide.Environment;
-import org.mevenide.ui.eclipse.util.FileUtil;
+import org.mevenide.ui.eclipse.util.FileUtils;
 
 /**
  * Created on 01 feb. 03	
@@ -260,7 +260,7 @@ public class Mevenide extends AbstractUIPlugin {
 	* @throws Exception
 	 */
 	public void createPom() throws Exception {
-		FileUtil.createPom(project);
+		FileUtils.createPom(project);
 	}
 	
 	public void createProjectProperties() throws Exception {

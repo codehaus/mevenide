@@ -86,7 +86,7 @@ import org.mevenide.ui.eclipse.editors.pages.ReportsPage;
 import org.mevenide.ui.eclipse.editors.pages.RepositoryPage;
 import org.mevenide.ui.eclipse.editors.pages.TeamPage;
 import org.mevenide.util.DefaultProjectUnmarshaller;
-import org.mevenide.util.MevenideUtil;
+import org.mevenide.util.MevenideUtils;
 
 /**
  * The Mevenide multi-page POM editor.  This editor presents the user with
@@ -333,7 +333,7 @@ public class MevenidePomEditor extends MultiPageEditorPart {
     }
 
     private void updateTitleAndToolTip() {
-        if (!MevenideUtil.isNull(pom.getName())) {
+        if (!MevenideUtils.isNull(pom.getName())) {
 			setTitle(pom.getName());
 		}
 		IFile pomFile = ((IFileEditorInput) getEditorInput()).getFile();
@@ -419,7 +419,7 @@ public class MevenidePomEditor extends MultiPageEditorPart {
             pom = reader.read(file);
             
             if (pom.getExtend() != null && !"".equals(pom.getExtend().trim())) {
-            	String resolvedExtend = MevenideUtil.resolve(pom, pom.getExtend());
+            	String resolvedExtend = MevenideUtils.resolve(pom, pom.getExtend());
             	File extendFile = new File(resolvedExtend);
 				if (log.isDebugEnabled()) {
 					log.debug("parentPom path = " + resolvedExtend + "; exists = " + extendFile.exists());
@@ -490,7 +490,7 @@ public class MevenidePomEditor extends MultiPageEditorPart {
             comparator.setOriginalProject(updatedPom);
 
             String pomName = pom.getName();
-            if (!MevenideUtil.isNull(pomName)) {
+            if (!MevenideUtils.isNull(pomName)) {
                 setTitle(pomName);
                 firePropertyChange(PROP_TITLE);
             }
