@@ -72,7 +72,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
- * @author jbonevic
+ * 
+ * @author Jeffrey Bonevich 
+ * @version $Id$
+ * 
  */
 public class ProjectComparator {
 
