@@ -17,6 +17,9 @@
         <!-- include nb specification version.. that's important for compiling -->
         <version>0.8.1</version>
         <url>http://www.netbeans.org</url>
+        <properties>
+            <netbeans.module.dep>impl</netbeans.module.dep>
+        </properties>
     </dependency>
   <dependency>     
         <groupId>netbeans</groupId>
@@ -30,6 +33,10 @@
         <artifactId>commons-logging</artifactId>
         <version>1.0.1</version>
         <type>jar</type>
+	    <properties>
+            <netbeans.module.dep>spec</netbeans.module.dep>
+            <netbeans.lib.generate>true</netbeans.lib.generate>
+	    </properties>
     </dependency>
     <dependency>
         <groupId>xml-apis</groupId>
@@ -42,6 +49,10 @@
             <artifactId>jdom</artifactId>
             <version>1.0b8</version>
             <type>jar</type>
+        	<properties>
+                 <netbeans.module.dep>impl</netbeans.module.dep>
+                 <netbeans.lib.generate>true</netbeans.lib.generate>
+            </properties>
         </dependency>
   </dependencies>
   
