@@ -24,6 +24,7 @@ import org.openide.util.NbBundle;
 public class MavenSettings extends SystemOption {
     public static final String PROP_TOP_GOALS = "topGoals"; // NOI18N
     public static final String PROP_REPOSITORIES = "repositories"; // NOI18N
+    public static final String PROP_DEP_PROPS = "dependencyProperties";
     public static final String PROP_SHOW_FAVOURITE_HINT = "showAddFavouriteHint"; //NOI18N
     
     public static final String PROP_OFFLINE = "offline"; //NOI18N
@@ -58,6 +59,18 @@ public class MavenSettings extends SystemOption {
             "http://spring-ext.sourceforge.jp/maven/",
             "http://ibiblio.org/geotools",
             "http://www.codeczar.com/maven/"
+        });
+        setDependencyProperties(new String[] {
+            "war.bundle",
+            "war.target.path",
+            "netbeans.module.ext",
+            "netbeans.module.dep",
+            "ear.bundle",
+            "ear.bundle.dir",
+            "ear.bundle.name",
+            "ear.module",
+            "ejb.bundle",
+            "ejb.manifest.classpath"
         });
     }
     
@@ -170,6 +183,14 @@ public class MavenSettings extends SystemOption {
     
     public void setRepositories(String[] repos) {
         putProperty(PROP_REPOSITORIES, repos, true);
+    }    
+    
+    public String[] getDependencyProperties() {
+        return (String[])getProperty(PROP_DEP_PROPS);
+    }
+    
+    public void setDependencyProperties(String[] repos) {
+        putProperty(PROP_DEP_PROPS, repos, true);
     }    
     
 }

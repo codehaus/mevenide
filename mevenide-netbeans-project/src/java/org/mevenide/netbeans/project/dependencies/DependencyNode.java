@@ -25,47 +25,108 @@ import javax.swing.Action;
 import org.apache.maven.project.Dependency;
 import org.mevenide.netbeans.project.FileUtilities;
 import org.mevenide.netbeans.project.MavenProject;
+import org.mevenide.netbeans.project.queries.MavenFileOwnerQueryImpl;
+import org.mevenide.project.io.IContentProvider;
 import org.mevenide.project.io.JarOverrideReader2;
+import org.mevenide.properties.IPropertyResolver;
+import org.netbeans.api.project.Project;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
+import org.openide.util.Lookup;
 import org.openide.util.Utilities;
+import org.openide.util.lookup.Lookups;
 
 /**
  * node representing a dependency
- * @author  Milos Kleint (ca206216@tiscali.cz)
+ * @author  Milos Kleint (mkleint@codehaus.org)
  */
 public class DependencyNode extends AbstractNode {
     
     private Action actions[];
-    private Dependency dependency;
+    private IContentProvider dependency;
     private MavenProject project;
     private boolean isOverriden;
     private String override;
-    public DependencyNode(Dependency dep, MavenProject proj) {
-        super(Children.LEAF);
+    
+    public DependencyNode(IContentProvider dep, MavenProject proj) {
+        this(dep, proj, Lookups.singleton(dep));
+    }
+    
+    public DependencyNode(IContentProvider dep, MavenProject proj, Lookup lookup) {
+        super(Children.LEAF, lookup);
         dependency = dep;
         project = proj;
-        if (dep.isPlugin()) {
+
+        setDisplayName(createName());
+        setIconBase();
+        checkOverride();
+    }
+    
+    private void setIconBase() {
+        URI uri = FileUtilities.getDependencyURI(createDependencySnapshot(), project);
+        Project depPrj = MavenFileOwnerQueryImpl.getInstance().getOwner(uri);
+        if (depPrj != null) {
+            setIconBase("org/mevenide/netbeans/project/resources/MavenIcon"); //NOI18N
+        } else if ("plugin".equalsIgnoreCase(dependency.getValue("type"))) {
             setIconBase("org/mevenide/netbeans/project/resources/DependencyPlugin"); //NOI18N
-        } else if (dep.getType() != null && "pom".equalsIgnoreCase(dep.getType())) { //NOI18N
+        } else if (dependency.getValue("type") != null && "pom".equalsIgnoreCase(dependency.getValue("type"))) { //NOI18N
             setIconBase("org/mevenide/netbeans/project/resources/DependencyPom"); //NOI18N
-        } else if (dep.getType() != null && "jar".equalsIgnoreCase(dep.getType())) { //NOI18N
+        } else if (dependency.getValue("type") != null && "jar".equalsIgnoreCase(dependency.getValue("type"))) { //NOI18N
             setIconBase("org/mevenide/netbeans/project/resources/DependencyJar"); //NOI18N
         } else {
             setIconBase("org/mevenide/netbeans/project/resources/DependencyIcon"); //NOI18N
+        }        
+    }
+    
+    public DependencyNode(Dependency dep, MavenProject proj) {
+        this(createContentProvider(dep), proj);
+    }
+    
+    private static IContentProvider createContentProvider(Dependency dep) {
+        return new DepContentProvider(dep);
+    }
+    
+    private Dependency createDependencySnapshot() {
+        Dependency snap = new Dependency();
+        if (dependency.getValue("artifactId") != null) {
+            snap.setArtifactId(dependency.getValue("artifactId"));
         }
+        if (dependency.getValue("groupId") != null) { 
+            snap.setGroupId(dependency.getValue("groupId"));
+        }
+        if (dependency.getValue("version") != null) {
+            snap.setVersion(dependency.getValue("version"));
+        }
+        if (dependency.getValue("type") != null) {
+            snap.setType(dependency.getValue("type"));
+        }
+        if (dependency.getValue("jar") != null) {
+            snap.setJar(dependency.getValue("jar"));
+        }
+        if (dependency.getValue("url") != null) {
+            snap.setUrl(dependency.getValue("url"));
+        }
+        
+        return snap;
+    }
+    
+    public void refreshNode() {
         setDisplayName(createName());
+        setIconBase();
         checkOverride();
+        fireIconChange();
+        fireDisplayNameChange(null, getDisplayName());
     }
     
     private String createName() {
         String title = "";
-        if (dependency.getJar() != null) {
-            title = dependency.getJar();
+        IPropertyResolver res = project.getPropertyResolver();
+        if (dependency.getValue("jar") != null) {
+            title = res.resolveString(dependency.getValue("jar"));
         } else {
-            title = dependency.getArtifactId();
-            if (dependency.getVersion() != null) {
-                title = title + "-" + dependency.getVersion();
+            title = res.resolveString(dependency.getValue("artifactId"));
+            if (dependency.getValue("version") != null) {
+                title = title + "-" + res.resolveString(dependency.getValue("version"));
             }
         }
         return title;
@@ -79,7 +140,7 @@ public class DependencyNode extends AbstractNode {
             ov = ov.trim();
         }
         if ("true".equalsIgnoreCase(ov) || "on".equalsIgnoreCase(ov)) {
-            override = project.getPropertyResolver().getValue("maven.jar." + dependency.getArtifactId());
+            override = project.getPropertyResolver().getValue("maven.jar." + dependency.getValue("artifactId"));
             isOverriden = override != null;
         }
     }
@@ -110,13 +171,13 @@ public class DependencyNode extends AbstractNode {
     
     private boolean checkLocal() {
         if (!isOverriden) {
-            URI uri = FileUtilities.getDependencyURI(dependency, project);
+            URI uri = FileUtilities.getDependencyURI(createDependencySnapshot(), project);
             if (uri != null) {
                 File file = new File(uri);
                 return file.exists();
             }
         } else {
-            String path = JarOverrideReader2.getInstance().processOverride(dependency, project.getContext());
+            String path = JarOverrideReader2.getInstance().processOverride(createDependencySnapshot(), project.getContext());
             if (path != null) {
                 File file = new File(path);
                 return file.exists();
@@ -151,20 +212,13 @@ public class DependencyNode extends AbstractNode {
     }    
     
     public Component getCustomizer() {
-        DependencyPanel panel = new DependencyPanel();
-        panel.setDependency(dependency, project);
-        panel.setFieldsEditable(false);
-        return panel;
+        return null;
     }
     
     public boolean canCopy() {
         return false;
     }
     
-    public Dependency getDependency() {
-        return dependency;
-    }
-
     public java.lang.String getHtmlDisplayName() {
         java.lang.String retValue;
         if (isOverriden) {
@@ -173,6 +227,51 @@ public class DependencyNode extends AbstractNode {
             retValue = super.getHtmlDisplayName();
         }
         return retValue;
+    }
+    
+    private static class DepContentProvider implements IContentProvider {
+        private Dependency dependency;
+        public DepContentProvider(Dependency dep) {
+            dependency = dep;
+        }
+        public java.util.List getProperties() {
+            return dependency.getProperties();
+        }
+
+        public IContentProvider getSubContentProvider(String key) {
+            return null;
+        }
+
+        public java.util.List getSubContentProviderList(String parentKey, String childKey) {
+            return null;
+        }
+
+        public String getValue(String key) {
+            if ("artifactId".equals(key)) {
+                return dependency.getArtifactId();
+            }
+            if ("groupId".equals(key)) {
+                return dependency.getGroupId();
+            }
+            if ("version".equals(key)) {
+                return dependency.getVersion();
+            }
+            if ("type".equals(key)) {
+                return dependency.getType();
+            }
+            if ("jar".equals(key)) {
+                return dependency.getJar();
+            }
+            if ("url".equals(key)) {
+                return dependency.getUrl();
+            }
+            return null;
+        }
+
+        public java.util.List getValueList(String parentKey, String childKey) {
+            return null;
+        }
+        
     }
 }
 

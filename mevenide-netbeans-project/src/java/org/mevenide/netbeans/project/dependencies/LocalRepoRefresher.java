@@ -17,7 +17,6 @@
 
 package org.mevenide.netbeans.project.dependencies;
 
-import org.mevenide.repository.RepoPathElement;
 
 /**
  * this probably needs some refactoring. Should be means of refreshing 
