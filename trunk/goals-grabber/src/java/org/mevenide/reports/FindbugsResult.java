@@ -19,9 +19,11 @@ package org.mevenide.reports;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jdom.Document;
@@ -40,7 +42,7 @@ public final class FindbugsResult {
     private IQueryContext context;
     private boolean loaded;
     private Object LOCK = new Object();
-    private HashMap violations;
+    private Map violations;
     /** Creates a new instance of FindbugsResult */
     public FindbugsResult(IQueryContext con) {
         context = con;
@@ -69,7 +71,7 @@ public final class FindbugsResult {
     
     private void loadReport() {
         File reportFile = new File(context.getResolver().getResolvedValue("maven.build.dir"), "findbugs-raw-report.xml"); //NOI18N
-        violations = new HashMap();
+        violations = new TreeMap(new StringComparator());
         if (reportFile.exists()) {
             try {
                 SAXBuilder builder = new SAXBuilder();
@@ -160,6 +162,14 @@ public final class FindbugsResult {
         public void setType(String type) {
             this.type = type;
         }
-        
     }
+    
+   private static class StringComparator implements Comparator {
+        public int compare(Object o1, Object o2) {
+            String file1 = (String)o1;
+            String file2 = (String)o2;
+            return file1.compareTo(file2);
+        }
+        
+    }    
 }

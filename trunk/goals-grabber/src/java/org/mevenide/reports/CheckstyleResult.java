@@ -19,9 +19,11 @@ package org.mevenide.reports;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jdom.Document;
@@ -40,7 +42,7 @@ public final class CheckstyleResult {
     private IQueryContext context;
     private boolean loaded;
     private Object LOCK = new Object();
-    private HashMap violations;
+    private Map violations;
     /** Creates a new instance of CheckstyleResult */
     public CheckstyleResult(IQueryContext con) {
         context = con;
@@ -69,7 +71,7 @@ public final class CheckstyleResult {
     
     private void loadReport() {
         File reportFile = new File(context.getResolver().getResolvedValue("maven.build.dir"), "checkstyle-raw-report.xml");
-        violations = new HashMap();
+        violations = new TreeMap(new FileComparator());
         if (reportFile.exists()) {
             try {
                 SAXBuilder builder = new SAXBuilder();
@@ -170,8 +172,14 @@ public final class CheckstyleResult {
         void setSource(String source) {
             this.source = source;
         }
-
- 
+    }
+    
+    private static class FileComparator implements Comparator {
+        public int compare(Object o1, Object o2) {
+            File file1 = (File)o1;
+            File file2 = (File)o2;
+            return file1.getAbsolutePath().compareTo(file2.getAbsolutePath());
+        }
         
     }
 }
