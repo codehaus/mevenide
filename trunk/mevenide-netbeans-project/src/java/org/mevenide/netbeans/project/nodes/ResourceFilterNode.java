@@ -62,7 +62,7 @@ class ResourceFilterNode extends FilterNode
         isIncluded = true;
         if (dobj != null) {
             File file = FileUtil.toFile(dobj.getPrimaryFile());
-            if (file != null /**&& !file.isDirectory() **/) {
+            if (file != null && !file.isDirectory()) {
                 isIncluded = checkIncluded(file);
             }
         }
@@ -152,7 +152,7 @@ class ResourceFilterNode extends FilterNode
             try {
                 retValue = "<HTML><S>" + XMLUtil.toAttributeValue(retValue) + "</S></HTML>";
             } catch (CharConversionException exc) {
-                
+                logger.debug("conversion failed for =" + retValue, exc);
             }
         }
         return retValue;
