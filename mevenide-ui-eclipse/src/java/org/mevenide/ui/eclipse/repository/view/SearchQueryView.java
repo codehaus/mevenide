@@ -26,14 +26,17 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.PreferenceDialog;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.events.TraverseEvent;
+import org.eclipse.swt.events.TraverseListener;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PartInitException;
@@ -67,8 +70,8 @@ import org.mevenide.util.StringUtils;
 public class SearchQueryView extends ViewPart implements RepositoryEventListener {
 
     private Text groupText;
-    private Combo typeCombo;
-    private Combo repoCombo;
+    private CCombo typeCombo;
+    private CCombo repoCombo;
     
     private Button searchButton;
     
@@ -78,6 +81,7 @@ public class SearchQueryView extends ViewPart implements RepositoryEventListener
     
     public void createPartControl(Composite parent) {
         toolkit = new FormToolkit(parent.getDisplay());
+        toolkit.setBorderStyle(SWT.NULL);
         form = toolkit.createScrolledForm(parent);
         form.setText("Search Repository");
         form.getBody().setLayout(new GridLayout());
@@ -149,7 +153,15 @@ public class SearchQueryView extends ViewPart implements RepositoryEventListener
         label.setToolTipText("Add repository");
         label.setText("Repository");
         
-        repoCombo = new Combo(container, SWT.DROP_DOWN | SWT.SINGLE | SWT.READ_ONLY);
+        Composite composite = new Composite(container, SWT.NULL);
+        composite.setBackground(container.getBackground());
+        GridLayout layout = new GridLayout();
+        layout.marginWidth = 1;
+        composite.setLayout(layout);
+        composite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        
+        repoCombo = new CCombo(composite, SWT.FLAT | SWT.READ_ONLY) ;
+        repoCombo.setBackground(composite.getBackground());
         repoCombo.addSelectionListener(new SelectionListener() {
             public void widgetDefaultSelected(SelectionEvent arg0) {
             }
@@ -157,6 +169,8 @@ public class SearchQueryView extends ViewPart implements RepositoryEventListener
                 updateButton();
             }
         });
+        repoCombo.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TEXT_BORDER);
+        toolkit.paintBordersFor(composite);
         
         List definedRepositories = RepositoryList.getUserDefinedRepositories();
         List mirrors = RepositoryList.getUserDefinedMirrors();
@@ -194,7 +208,15 @@ public class SearchQueryView extends ViewPart implements RepositoryEventListener
         label.setToolTipText("Manage Type");
         label.setText("Type");
         
-        typeCombo = new Combo(container, SWT.DROP_DOWN | SWT.SINGLE | SWT.READ_ONLY);
+        Composite composite = new Composite(container, SWT.NULL);
+        composite.setBackground(container.getBackground());
+        GridLayout layout = new GridLayout();
+        layout.marginWidth = 1;
+        composite.setLayout(layout);
+        composite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        
+        typeCombo = new CCombo(composite, SWT.FLAT | SWT.READ_ONLY);
+        typeCombo.setBackground(composite.getBackground());
         typeCombo.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         typeCombo.addSelectionListener(new SelectionListener() {
             public void widgetDefaultSelected(SelectionEvent arg0) {
@@ -203,6 +225,7 @@ public class SearchQueryView extends ViewPart implements RepositoryEventListener
                 updateButton();
             }
         });
+        toolkit.paintBordersFor(composite);
         
         updateTypeCombo();
         typeCombo.setText(Mevenide.DEPENDENCY_TYPE_JAR);
@@ -226,14 +249,18 @@ public class SearchQueryView extends ViewPart implements RepositoryEventListener
         Composite searchComposite =  toolkit.createComposite(container, SWT.NULL);
         GridLayout layout = new GridLayout();
         layout.numColumns = 2;
-        layout.marginWidth = 0;
+        layout.marginWidth = 1;
         layout.makeColumnsEqualWidth = false;
         searchComposite.setLayout(layout);
         GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
         gridData.horizontalIndent = 0;
         searchComposite.setLayoutData(gridData);
         
-        groupText = new Text(searchComposite, SWT.BORDER | SWT.FLAT); 
+        
+        groupText = toolkit.createText(searchComposite, null, SWT.FLAT);
+        groupText.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TEXT_BORDER);
+        toolkit.paintBordersFor(searchComposite);
+        
         GridData data = new GridData(GridData.FILL_HORIZONTAL);
         groupText.setLayoutData(data);
         groupText.addModifyListener(new ModifyListener() {
@@ -241,28 +268,25 @@ public class SearchQueryView extends ViewPart implements RepositoryEventListener
                 updateButton();
             }
         });
+        groupText.addTraverseListener(new TraverseListener(){
+            public void keyTraversed(TraverseEvent e) {
+                if ( e.detail == SWT.TRAVERSE_RETURN && searchButton.isEnabled() ) {
+                    launchSearch();
+                }
+            }
+        });
         
-        
-        searchButton = new Button(searchComposite, SWT.FLAT); 
-        searchButton.setSize(10, 10);
+        searchButton = new Button(searchComposite, SWT.FLAT);
+        Image image = Mevenide.getInstance().getImageRegistry().get(IImageRegistry.SEARCH_BUTTON_ICON);
         searchButton.setToolTipText("Search");
-        searchButton.setImage(Mevenide.getInstance().getImageRegistry().get(IImageRegistry.PATTERN_SEARCH_ICON));
+        searchButton.setImage(image);
         
-        //crap
-        final SearchQueryView view = this; 
         
         searchButton.addSelectionListener(new SelectionListener() {
             public void widgetDefaultSelected(SelectionEvent arg0) {
             }
             public void widgetSelected(SelectionEvent arg0) {
-                String baseUrl = repoCombo.getText();
-                Repository repository = new Repository(baseUrl);
-                Group group = new Group(groupText.getText(), repository);
-                Type type = new Type(typeCombo.getText(), group);
-                
-                RepositoryObjectCollectorJob job = new RepositoryObjectCollectorJob(type, baseUrl);
-                job.addListener(view);
-                job.schedule(Job.LONG);
+                launchSearch();
                 
             }
         });
@@ -294,5 +318,17 @@ public class SearchQueryView extends ViewPart implements RepositoryEventListener
     }
     
     public void setFocus() {
+    }
+
+
+    private void launchSearch() {
+        String baseUrl = repoCombo.getText();
+        Repository repository = new Repository(baseUrl);
+        Group group = new Group(groupText.getText(), repository);
+        Type type = new Type(typeCombo.getText(), group);
+        
+        RepositoryObjectCollectorJob job = new RepositoryObjectCollectorJob(type, baseUrl);
+        job.addListener(this);
+        job.schedule(Job.LONG);
     }
 }
