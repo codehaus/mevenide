@@ -17,24 +17,18 @@
 
 package org.mevenide.grammar.impl;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.InputStreamReader;
 import java.util.Enumeration;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.TreeMap;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.mevenide.environment.CustomLocationFinder;
-import org.mevenide.environment.ILocationFinder;
-import org.mevenide.environment.LocationFinderAggregator;
 import org.mevenide.grammar.TagLib;
 import org.mevenide.grammar.TagLibProvider;
-import org.mevenide.grammar.impl.JellyDefineTagLibImpl;
-import org.mevenide.netbeans.grammar.MavenGrammarModule;
 
 /**
  * a TagLibProvider that will retrieve tagLibs from the MAVEN_LOCAL_REPO/plugins/dynatag.cache

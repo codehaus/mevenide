@@ -31,15 +31,14 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.Namespace;
 import org.jdom.input.SAXBuilder;
-import org.mevenide.environment.ILocationFinder;
 import org.mevenide.grammar.TagLib;
 import org.mevenide.netbeans.grammar.MavenGrammarModule;
 
