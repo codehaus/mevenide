@@ -234,6 +234,7 @@ public class XMLReconciler implements IReconcilingStrategy, IDocumentListener {
                         ns = (Namespace) namespaces.get(prefix);
                         if (ns == null || !ns.getUri().equals(value)) {
                             ns = new Namespace(prefix, value);
+                            ns.setGeneric(!MavenXmlEditor.class.equals(editor.getClass()));
                             namespaces.put(prefix, ns);
                         }
                     }
