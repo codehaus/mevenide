@@ -48,8 +48,13 @@
  */
 package org.mevenide.goals.grabber;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.util.Arrays;
 import java.util.Collection;
+
+import org.mevenide.Environment;
 
 import junit.framework.TestCase;
 
@@ -61,16 +66,72 @@ import junit.framework.TestCase;
  */
 public abstract class AbstractGoalsGrabberTestCase extends TestCase {
 	protected IGoalsGrabber goalsGrabber;
+	protected File mavenHomeLocal;
+	protected File pluginsLocal;
+	protected File goalsFile;
 	
 	protected void setUp() throws Exception {
+		mavenHomeLocal = new File(System.getProperty("user.home"), ".mevenide");
+		if (!mavenHomeLocal.exists()) {
+			mavenHomeLocal.mkdirs();
+		}
+		Environment.setMavenHome(mavenHomeLocal.getAbsolutePath());
+		
+		pluginsLocal = new File(mavenHomeLocal, "plugins");
+		if (!pluginsLocal.exists()) {
+			pluginsLocal.mkdir();
+		}
+		
+		File src = new File(AbstractGoalsGrabberTestCase.class.getResource("/goals.cache").getFile());
+		goalsFile = new File(pluginsLocal, "goals.cache") ; 
+		copy(src.getAbsolutePath(), goalsFile.getAbsolutePath());
+
 		goalsGrabber = getGoalsGrabber();
 		goalsGrabber.refresh();
 	}
 
 	protected void tearDown() throws Exception {
         goalsGrabber = null;
+        delete(mavenHomeLocal);
     }
     
+	protected void delete(File file) {
+		if ( file.isFile() ) {
+			file.delete();
+		}
+		else {
+			File[] files = file.listFiles();
+			if ( files != null ) {
+				for (int i = 0; i < files.length; i++) {
+					delete(files[i]);
+				}
+			}
+			file.delete();
+		}
+	}
+	
+	private void copy(String sourceFile, String destFile) throws Exception {
+
+		FileInputStream from = new FileInputStream(sourceFile);
+		FileOutputStream to = new FileOutputStream(destFile);
+		try {
+			byte[] buffer = new byte[4096]; 
+			int bytes_read; 
+			while ((bytes_read = from.read(buffer)) != -1) {
+				to.write(buffer, 0, bytes_read);
+			}
+		} 
+		finally {
+			if (from != null) {
+				from.close();
+			}
+			if (to != null) {
+				to.close();
+			}
+		}
+
+	}
+
 	public void testGetPlugins() {
 		Collection plugins = Arrays.asList(goalsGrabber.getPlugins());
 		for (int i = 0; i < getGetPluginsResults().length; i++) {
