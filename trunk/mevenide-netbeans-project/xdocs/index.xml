@@ -25,7 +25,36 @@
         </p>
 	</div>
         </section>
+        
+       <section name="Netbeans Module page">
+        <div id="documentContent">
+            <p>This project allows to open and work with maven projects in the Netbeans IDE. Mevenide currently supports NetBeans _3.6_ and _4.0dev_.</p>
+	</div>
+        </section>
+       <section name="Netbeans 3.6">
+        <div id="documentContent">
+            <p>Mevenide for 3.6 contains these <a href="../mevenide-ui-netbeans/features.html" class="documentLink"> features </a>.</p>
+            <p>You can download the <a href="../download/mevenide-ui-netbeans-0-1-SNAPSHOT.zip" class="documentLink"> snapshot release</a> of Mevenide for Netbeans 3.x. </p>
+            <p>NOTE: Development of Mevenide for NetBeans 3.6 has been stoppped and the downloaded codebase is not production ready. Further development is going on for NB 4.0.</p>
+	</div>
+        </section>
 
+       <section name="Netbeans 4.0 Dev">
+        <div id="documentContent">
+            <p>Mevenide for the upcoming 4.0 version contains these <a href="features.html" class="documentLink"> features </a>.</p>
+            <p> There is not any downloadable version ready. You can build it yourself according to the instructions on the wiki pages. Reasonable effort is made to have it always working with the latest development builds of Netbeans 4.0.
+            At the time of the writing it was 20040529xxxx and later. To get the Netbeans builds, go to the <a href="http://www.netbeans.org/downloads/ide/archive/builds_archive_dev.html"> download page </a> </p>
+            <p>NOTE: The initial version will be released right at the beginning of the stabilization phase of Netbeans 4.0. Please check the <a href="http://docs.codehaus.org/display/MEVENIDE/Home"> wiki pages </a> for updates or
+            subscribe to the announce mailing list and get notified once it's released.</p>
+	</div>
+        </section>
+       <section name="All versions">
+        <div id="documentContent">
+        <p>A separate module implementing code completion for maven pom files (project.xml),
+        build customization files (maven.xml) and for writing plugins in jelly (plugin.jelly) is available that works both in 3.6 and
+        the 4.0 codebase. For details see it's <a href="../mevenide-netbeans-grammar/index.html" class="documentLink"> homepage </a>.</p>
+	</div>
+        </section>
     </body>
 
 </document>

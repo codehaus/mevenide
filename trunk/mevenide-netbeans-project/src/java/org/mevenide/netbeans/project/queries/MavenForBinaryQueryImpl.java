@@ -21,18 +21,20 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
+import javax.swing.event.ChangeListener;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Project;
 import org.mevenide.netbeans.project.MavenProject;
 import org.mevenide.project.dependency.DependencyResolverFactory;
 import org.mevenide.project.dependency.IDependencyResolver;
-import org.netbeans.api.java.queries.JavadocForBinaryQuery;
+import org.netbeans.api.java.queries.SourceForBinaryQuery.Result;
 import org.netbeans.spi.java.queries.JavadocForBinaryQueryImplementation;
 import org.netbeans.spi.java.queries.SourceForBinaryQueryImplementation;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.filesystems.URLMapper;
+
 
 /**
  * @author  Milos Kleint (ca206216@tiscali.cz)
@@ -56,13 +58,9 @@ public class MavenForBinaryQueryImpl implements SourceForBinaryQueryImplementati
      * @param binaryRoot the class path root of Java class files
      * @return a list of source roots; may be empty but not null
      */   
-    public FileObject[] findSourceRoot(URL url) {
+    public Result findSourceRoots(URL url) {
         logger.warn("MavenSourceForBinaryQueryImpl project=" + project.getDisplayName() + "url=" + url);
-        URL binRoot = FileUtil.getArchiveFile(url);
-        if (checkURL(binRoot)) {
-            return getSrcRoot();
-        }
-        return new FileObject[0];
+        return new BinResult(url);
     }
     
     /**
@@ -77,7 +75,7 @@ public class MavenForBinaryQueryImpl implements SourceForBinaryQueryImplementati
      * @return a result object encapsulating the roots and permitting changes to
      *         be listened to, or null if the binary root is not recognized
      */    
-    public JavadocForBinaryQuery.Result findJavadoc(URL url) {
+    public org.netbeans.api.java.queries.JavadocForBinaryQuery.Result findJavadoc(URL url) {
         logger.warn("JavadocForBinaryQueryImplementation project=" + project.getDisplayName() + "url=" + url);
         URL binRoot = FileUtil.getArchiveFile(url);
         if (checkURL(binRoot)) {
@@ -138,5 +136,28 @@ public class MavenForBinaryQueryImpl implements SourceForBinaryQueryImplementati
         return one.equals(two);
     }
     
+    
+    private class BinResult implements Result  {
+       private URL url;
+        public BinResult(URL urlParam) {
+            url = urlParam;
+        }
+       public void addChangeListener(ChangeListener changeListener) {
+           //TODO
+       }
+       
+       public FileObject[] getRoots() {
+            URL binRoot = FileUtil.getArchiveFile(url);
+            if (checkURL(binRoot)) {
+                return getSrcRoot();
+            }
+            return new FileObject[0];
+       }
+       
+       public void removeChangeListener(ChangeListener changeListener) {
+           //TODO
+       }
+       
+   }
     
 }
