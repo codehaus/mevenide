@@ -6,7 +6,7 @@
   </properties>
 
   <body>
-    <release version="0.4" date="in CVS" description="">
+    <release version="0.4" date="20040613" description="Uncompatible nbantext snapshot in the repository, 0.3 won't work correctly with it.">
       <action dev="mkleint" type="update">
         Upgraded to latest nbantext dependency snapshot (as of 2004/06/11).
       </action>
