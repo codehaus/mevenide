@@ -6,12 +6,18 @@
   </properties>
 
   <body>
-	<release version="0.3.0" date="in CVS">
+	<release version="0.2.2" date="in CVS">
+	  <action dev="jens" type="fix">
+        Fix project wizard
+      </action>
    	  <action dev="gdodinet" type="fix" issue="MEVENIDE-42">
         Comments including quotes donot pollute the rendering anymore.
       </action>
       <action dev="gdodinet" type="fix" issue="MEVENIDE-44">
         Full Description adapts to the page size.
+      </action>
+      <action dev="jens" type="update">
+        Update maven oriented file icons
       </action>
       <action dev="gdodinet" type="add">
         Allow to import/export maven plugin properties.
