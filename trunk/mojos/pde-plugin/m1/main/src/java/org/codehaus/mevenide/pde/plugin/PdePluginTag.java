@@ -41,26 +41,16 @@ public class PdePluginTag extends JellyTag {
             PdePluginBuilder builder = new PdePluginBuilder();
             
             builder.setArtifactName((String) getContext().getVariable("maven.final.name"));
+            
             File basedir = new File((String) getContext().getVariable("basedir"));
             builder.setBasedir(basedir);
+           
             builder.setClassesLocation((String) getContext().getVariable("maven.build.dir"));
             builder.setExcludes((String) getContext().getVariable("maven.pde.excludes"));
             builder.setLibFolder((String) getContext().getVariable("maven.pde.libTargetPath"));
             builder.setProject(new MavenProjectConverter((Project) getContext().getVariable("pom")).convert());
             
-            Include descriptor = new Include();
-            descriptor.setAbsolutePath(new File(basedir, "plugin.xml").getAbsolutePath());
-            
-            Include properties = new Include();
-            properties.setAbsolutePath(new File(basedir, "plugin.properties").getAbsolutePath());
-            
-            Include license = new Include();
-            license.setAbsolutePath(new File(basedir, "license.txt").getAbsolutePath());
-            
-            List includes = new ArrayList();
-            includes.add(descriptor);
-            includes.add(properties);
-            includes.add(license);
+            List includes = getCommonIncludes(basedir);
                 
             //@todo custom includes
             builder.setIncludes(includes);
@@ -70,6 +60,21 @@ public class PdePluginTag extends JellyTag {
         catch (PdePluginException e) {
             throw new JellyTagException("Unable to build plugin", e);
         }
+    }
+
+    private List getCommonIncludes(File basedir) {
+        Include descriptor = new Include();
+        descriptor.setAbsolutePath(new File(basedir, "plugin.xml").getAbsolutePath());
+        Include properties = new Include();
+        properties.setAbsolutePath(new File(basedir, "plugin.properties").getAbsolutePath());
+        Include license = new Include();
+        license.setAbsolutePath(new File(basedir, "license.txt").getAbsolutePath());
+        
+        List includes = new ArrayList();
+        includes.add(descriptor);
+        includes.add(properties);
+        includes.add(license);
+        return includes;
     }
  
 }
