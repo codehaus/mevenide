@@ -29,12 +29,10 @@ import org.openide.filesystems.FileObject;
 public class WebModuleImpl implements WebModuleImplementation {
     private MavenProject project;
     public WebModuleImpl(MavenProject proj) {
-        System.out.println("WebModuleImpl - constructor");
         project = proj;
     }
 
     public FileObject getWebInf() {
-        System.out.println("getwebinf");
         FileObject fo = FileUtilities.getFileObjectForProperty("maven.war.src", project.getPropertyResolver()); //NOI18N
         if (fo != null) {
             return fo.getFileObject("WEB-INF"); //NOI18N
@@ -43,22 +41,19 @@ public class WebModuleImpl implements WebModuleImplementation {
     }
 
     public String getJ2eePlatformVersion() {
-        System.out.println("getJ2eePlatformVersion");
+        //TODO - how to figure?
         return WebModule.J2EE_13_LEVEL;
     }
 
     public FileObject getDocumentBase() {
-        System.out.println("getDocumentBase" + FileUtilities.getFileObjectForProperty("maven.war.src", project.getPropertyResolver()));
         return FileUtilities.getFileObjectForProperty("maven.war.src", project.getPropertyResolver()); //NOI18N
     }
 
     public FileObject getDeploymentDescriptor() {
-        System.out.println("getDeploymentDescriptor");
         return FileUtilities.getFileObjectForProperty("maven.war.webxml", project.getPropertyResolver()); //NOI18N
     }
 
     public String getContextPath() {
-        System.out.println("getContextPath");
         return "";
     }
     
