@@ -33,6 +33,8 @@ public class AllTests  {
         TestSuite suite = new TestSuite();
         
 		suite.addTestSuite(DefaultProjectUnmarshallerTest.class);
+		suite.addTestSuite(StringUtilsTest.class);
+		suite.addTestSuite(ResolverUtilsTest.class);
 		
         return suite;
     }
