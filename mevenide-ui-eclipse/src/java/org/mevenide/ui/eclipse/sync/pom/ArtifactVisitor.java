@@ -67,6 +67,8 @@ public class ArtifactVisitor {
 	 * this method is quite complex because we take care to not add anything from the jdk 
 	 * so we check both JRE_LIB and JRE_CONTAINER
 	 * 
+	 * @refactor since we treat each dependency separately we cannot update them all at once
+	 * 
 	 * 
 	 * @param entry
 	 * @throws Exception

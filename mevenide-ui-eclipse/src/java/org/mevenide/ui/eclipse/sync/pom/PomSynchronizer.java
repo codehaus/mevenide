@@ -113,6 +113,13 @@ public class PomSynchronizer extends AbstractPomSynchronizer implements ISynchro
 		}
 	}
 	
+	/**
+	 * 
+	 * @wonder should we deprecate it ?
+	 * 
+	 * @param cpEntries
+	 * @throws Exception
+	 */
 	public void removeUnusedDependencies(IClasspathEntry[] cpEntries) throws Exception {
 		Project mavenProject = ProjectReader.getReader().read(getPom());
 		List dependencies = mavenProject.getDependencies();
