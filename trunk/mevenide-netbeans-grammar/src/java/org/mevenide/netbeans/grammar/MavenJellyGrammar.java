@@ -209,7 +209,11 @@ public class MavenJellyGrammar implements GrammarQuery
         return null;
     }
     
-    
+    /**
+     * iterates up the document hierarchy and returns the first parent node that has the same
+     * namespace. 
+     * @param ns namespace to look for, if null, default namespace is searched.
+     */
     private Node findParentInSameNamespace(String ns, Node el)
     {
         Node parent = el.getParentNode();
@@ -292,16 +296,7 @@ public class MavenJellyGrammar implements GrammarQuery
             String tag = (separ == start.length() ? "" : start.substring(separ + 1));
             logger.debug("namespace is " + ns);
             TagLib lib = findTagLib(ns, virtualElementCtx);
-            Node parent = findParentInSameNamespace(ns, virtualElementCtx);
-            if (parent != null)
-            {
-                String parentTag = parent.getNodeName().substring(separ + 1);
-                Collection col = lib.getSubTags(parentTag);
-                if (col != null)
-                {
-                    createTagElements(col, toReturn, ns, tag);
-                }
-            }
+            createSubTagsElements(ns, virtualElementCtx, toReturn, lib, tag);
             createTagElements(lib.getRootTags(), toReturn, ns, tag);
         } else
         {
@@ -322,12 +317,12 @@ public class MavenJellyGrammar implements GrammarQuery
                     logger.debug("adding lib=" + lb);
                     // add all elements for given namespace.. that's why the last parameter is null.
                     createTagElements(lb.getRootTags(), singleTags, ns, null);
-                    //TODO add non root tags..
-                }
+		            createSubTagsElements(ns, virtualElementCtx, singleTags, lb, null);
+		        }
             }
             // add default tags now..
             createTagElements(getDefaultTagLib().getRootTags(), toReturn, null, start);
-            //TODO add non root tag feom default
+            createSubTagsElements(null, virtualElementCtx, toReturn, getDefaultTagLib(), start);
             
             // add single tags from namespaces last, to have the default tags first (after namespaces)
             toReturn.addAll(singleTags);
@@ -335,7 +330,11 @@ public class MavenJellyGrammar implements GrammarQuery
         return Collections.enumeration(toReturn);
     }
     
-    
+    /**
+     * creates a list of tag elements for the given collection of strings, will filter out
+     * only those starting with value in parameter start. If that one is null, will add all.
+     *
+     */
     private void createTagElements(Collection col, Collection elemList, String namespace, String start)
     {
         Iterator it = col.iterator();
@@ -347,7 +346,25 @@ public class MavenJellyGrammar implements GrammarQuery
                 elemList.add(new MyElement(namespace, name));
             }
         }
-        
+    }
+    
+    private void createSubTagsElements(String ns, Node virtualElementCtx, Collection ccList, TagLib lib, String start)
+    {
+        Node parent = findParentInSameNamespace(ns, virtualElementCtx);
+        if (parent != null)
+        {
+            String parentTag = parent.getNodeName();
+            int separ = parentTag.indexOf(':');
+            if (separ > -1) {
+                parentTag = parentTag.substring(separ + 1);
+            } 
+            logger.debug("parenttag=" + parentTag);
+            Collection col = lib.getSubTags(parentTag);
+            if (col != null)
+            {
+                createTagElements(col, ccList, ns, start);
+            }
+        }
     }
     /**
      * Allow to get names of <b>parsed general entities</b>.
