@@ -13,15 +13,9 @@
  */
 package org.mevenide.project.source;
 
-import java.io.File;
-import java.io.FileWriter;
-
 import org.apache.maven.project.Build;
 import org.apache.maven.project.Project;
 import org.mevenide.ProjectConstants;
-import org.mevenide.project.io.DefaultProjectMarshaller;
-import org.mevenide.project.io.IProjectMarshaller;
-import org.mevenide.project.io.ProjectReader;
 
 /**
  * 
@@ -70,20 +64,4 @@ public class SourceDirectoryUtil {
 		
 	}
 	
-	public static void resetSourceDirectories(File pomFile) throws Exception {
-					
-		ProjectReader reader = ProjectReader.getReader();
-		Project project = reader.read(pomFile);
-		if ( project.getBuild() != null ) {
-			project.getBuild().setAspectSourceDirectory(null);
-			project.getBuild().setIntegrationUnitTestSourceDirectory(null);
-			project.getBuild().setUnitTestSourceDirectory(null);
-			project.getBuild().setSourceDirectory(null);
-			
-			IProjectMarshaller marshaller = new DefaultProjectMarshaller();
-			marshaller.marshall(new FileWriter(pomFile), project);
-	
-		}
-	}
-
 }

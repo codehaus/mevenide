@@ -14,8 +14,6 @@
 package org.mevenide.project.dependency;
 
 
-import java.io.File;
-
 import org.apache.maven.project.Dependency;
 
 /**
@@ -57,7 +55,6 @@ public class DependencyFactory {
 	 * @return
 	 */
 	public Dependency getDependency(String absoluteFileName) throws Exception {
-		String fileName = new File(absoluteFileName).getName();
 		IDependencyResolver dependencyResolver = AbstractDependencyResolver.newInstance(absoluteFileName);
 		
 		String groupId = dependencyResolver.guessGroupId();

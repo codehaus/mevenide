@@ -23,7 +23,6 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.mevenide.ProjectConstants;
 import org.mevenide.project.io.ProjectWriter;
-import org.mevenide.project.source.SourceDirectoryUtil;
 import org.mevenide.sync.AbstractPomSynchronizer;
 import org.mevenide.sync.ISynchronizer;
 import org.mevenide.ui.eclipse.DefaultPathResolver;
@@ -116,20 +115,17 @@ public class PomSynchronizer extends AbstractPomSynchronizer implements ISynchro
 	}
 
 	public void synchronize(IProject project) throws Exception {
-		SourceDirectoryUtil.resetSourceDirectories(Mevenide.getPlugin().getPom());
-	
 		DependencyGroup dependencyGroup = DependencyGroupMarshaller.getDependencyGroup(project, Mevenide.getPlugin().getFile("statedDependencies.xml"));
 		SourceDirectoryGroup sourceGroup = SourceDirectoryGroupMarshaller.getSourceDirectoryGroup(project, Mevenide.getPlugin().getFile("sourceTypes.xml"));
-	
 		updatePom(sourceGroup, dependencyGroup, Mevenide.getPlugin().getPom());
 	}
 
 	public void updatePom(SourceDirectoryGroup sourceGroup, DependencyGroup dependencyGoup, File pomFile) throws Exception {
 		Mevenide.getPlugin().createProjectProperties();
 		
-		SourceDirectoryUtil.resetSourceDirectories(pomFile);
-		
 		ProjectWriter pomWriter = ProjectWriter.getWriter();
+		
+		pomWriter.resetSourceDirectories(pomFile);
 		
 		//WICKED if/else
 		for (int i = 0; i < sourceGroup.getSourceDirectories().size(); i++) {

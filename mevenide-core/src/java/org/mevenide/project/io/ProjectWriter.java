@@ -280,4 +280,20 @@ public class ProjectWriter {
 	    }
 	    properties.store(new FileOutputStream(propertiesFile), null);
 	}
+
+	public void resetSourceDirectories(File pomFile) throws Exception {
+					
+		ProjectReader reader = ProjectReader.getReader();
+		Project project = reader.read(pomFile);
+		if ( project.getBuild() != null ) {
+			project.getBuild().setAspectSourceDirectory(null);
+			project.getBuild().setIntegrationUnitTestSourceDirectory(null);
+			project.getBuild().setUnitTestSourceDirectory(null);
+			project.getBuild().setSourceDirectory(null);
+			
+			IProjectMarshaller marshaller = new DefaultProjectMarshaller();
+			marshaller.marshall(new FileWriter(pomFile), project);
+	
+		}
+	}
 }
