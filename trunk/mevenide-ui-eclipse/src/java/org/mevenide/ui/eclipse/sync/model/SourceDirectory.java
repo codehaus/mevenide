@@ -64,10 +64,13 @@ public class SourceDirectory {
 	private String directoryType = "sourceDirectory";
 	
 	private boolean isInherited;
+	private SourceDirectoryGroup group;
 	
-	public SourceDirectory(String path) {
+	
+	public SourceDirectory(String path, SourceDirectoryGroup group) {
 		//directoryPath = "${basedir}" + File.separator + path;
 		directoryPath = path;
+		this.group = group;
 	}
 	
 	public String getDisplayPath() {
@@ -109,6 +112,10 @@ public class SourceDirectory {
 
     public void setInherited(boolean isInherited) {
         this.isInherited = isInherited;
+    }
+
+    public SourceDirectoryGroup getGroup() {
+        return group;
     }
 
 }

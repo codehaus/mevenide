@@ -73,7 +73,7 @@ public class SourceDirectoryGroup extends ArtifactGroup {
 		for (int i = 0; i < classpathEntries.length; i++) {
 			if ( classpathEntries[i].getEntryKind() == IClasspathEntry.CPE_SOURCE) {
 				String path = new DefaultPathResolver().getRelativeSourceDirectoryPath(classpathEntries[i], javaProject.getProject());
-				SourceDirectory sourceDirectory = new SourceDirectory(path);
+				SourceDirectory sourceDirectory = new SourceDirectory(path, this);
 				sourceDirectory.setDirectoryType(ProjectConstants.MAVEN_SRC_DIRECTORY); 
 				addSourceDirectory(sourceDirectory);
 				
@@ -97,6 +97,9 @@ public class SourceDirectoryGroup extends ArtifactGroup {
 	}
 	
 	public List getNonInheritedSourceDirectories() {
+		if ( !isInherited ) {
+			return artifacts;
+		}
 		List nonInheritedSourceDirectories = new ArrayList();
 		for (int i = 0; i < artifacts.size(); i++) {
             SourceDirectory sourceDirectory = (SourceDirectory) artifacts.get(i);

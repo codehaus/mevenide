@@ -77,6 +77,8 @@ public class DependencyGroup extends ArtifactGroup {
 	
 	private Map dependencies = new HashMap();
 	
+	
+	
 	public DependencyGroup(IProject project) {
 		super(project);
 		//initializeDependenciesInheritanceMap();
@@ -124,6 +126,10 @@ public class DependencyGroup extends ArtifactGroup {
 	}
 	
 	public List getNonInheritedDependencies() {
+		if ( !isInherited ) {
+			return artifacts;
+		}
+		
 		List nonInheritedDependencies = new ArrayList();
 		
 		for (int i = 0; i < artifacts.size(); i++) {
@@ -206,5 +212,9 @@ public class DependencyGroup extends ArtifactGroup {
 		}
 		return contains;
 	}
+    
+
+   
+
 }
 

@@ -74,6 +74,8 @@ public abstract class ArtifactGroup {
 	protected List artifacts = new ArrayList(); 
 	protected List excludedArtifacts = new ArrayList();
 	
+	protected boolean isInherited;
+	
 	public ArtifactGroup(IProject project)  {
 		try {
 			if ( project != null && project.hasNature(JavaCore.NATURE_ID) ) {
@@ -110,6 +112,13 @@ public abstract class ArtifactGroup {
 		this.projectName = project.getName();
 	}
 
+	public void setInherited(boolean isInherited) {
+	   this.isInherited = isInherited;
+    }
+
+	public boolean isInherited() {
+		return isInherited;
+	}
 
 	public IProject getProject() {
 		return project;

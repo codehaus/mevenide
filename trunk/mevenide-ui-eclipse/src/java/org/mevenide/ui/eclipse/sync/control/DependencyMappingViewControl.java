@@ -154,7 +154,9 @@ public class DependencyMappingViewControl {
 					if (element instanceof Item) {
 						element = ((Item) element).getData();
 					}	
-					((DependencyWrapper) element).setInherited(((Boolean)value).booleanValue());
+					if ( !((DependencyWrapper) element).getDependencyGroup().isInherited() ) { 
+						((DependencyWrapper) element).setInherited(((Boolean)value).booleanValue());
+					}
 				}
 				tableTreeViewer.update(element, null);
 			}

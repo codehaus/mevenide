@@ -87,5 +87,19 @@ public class DependencyWrapper {
         this.isInherited = isInherited;
         this.dependencyGroup.setDependencyInheritance(this.dependency, isInherited);
     }
+    
+    public boolean equals(Object obj) {
+    	if ( obj == null || !(obj instanceof DependencyWrapper) ) {
+    		return false;
+    	}
+    	DependencyWrapper wrapper = (DependencyWrapper) obj;
+    	return this.dependency.equals(wrapper)
+    			&& this.isInherited == wrapper.isInherited
+    			&& this.dependencyGroup.equals(wrapper.dependencyGroup);
+    }
+
+    public DependencyGroup getDependencyGroup() {
+        return dependencyGroup;
+    }
 
 }

@@ -151,8 +151,9 @@ public class SourceDirectoryMappingViewControl {
 					if (element instanceof Item) {
 						element = ((Item) element).getData();
 					}
-					log.debug("setting SourceDirectory isInherited property to : " + (((Boolean) value).booleanValue()));
-					((SourceDirectory) element).setInherited(((Boolean) value).booleanValue());
+					if ( !((SourceDirectory) element).getGroup().isInherited() ) {
+						((SourceDirectory) element).setInherited(((Boolean) value).booleanValue());
+					}
 				}
 				tableViewer.update(element, null);
 			}
