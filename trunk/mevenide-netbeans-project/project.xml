@@ -14,7 +14,7 @@
     <dependency>     
         <groupId>mevenide</groupId>
         <artifactId>goals-grabber</artifactId>
-        <version>0.3-SNAPSHOT</version>
+        <version>0.3</version>
         <type>jar</type>
             <properties>
                 <netbeans.module.dep>spec</netbeans.module.dep>
@@ -23,7 +23,7 @@
     <dependency>     
         <groupId>mevenide</groupId>
         <artifactId>mevenide-core</artifactId>
-        <version>0.2-SNAPSHOT</version>
+        <version>0.2</version>
         <type>jar</type>
             <properties>
                 <netbeans.module.dep>spec</netbeans.module.dep>
@@ -32,7 +32,7 @@
     <dependency>
         <groupId>mevenide</groupId>
         <artifactId>mevenide-config</artifactId>
-        <version>0.3-SNAPSHOT</version>
+        <version>0.3</version>
         <type>jar</type>
             <properties>
                 <netbeans.module.dep>spec</netbeans.module.dep>
@@ -41,7 +41,7 @@
     <dependency>     
         <groupId>maven</groupId>
         <artifactId>maven</artifactId>
-        <version>1.0-rc3</version>
+        <version>1.0</version>
         <type>jar</type>
         <properties>
             <netbeans.module.dep>spec</netbeans.module.dep>
@@ -216,15 +216,6 @@
       <id>commons-lang</id>
       <version>2.0</version>
       <url>http://jakarta.apache.org/commons/</url>
-    </dependency>
-    <dependency>     
-        <groupId>maven</groupId>
-        <artifactId>maven</artifactId>
-        <version>1.0-rc2</version>
-        <type>jar</type>
-        <properties>
-            <netbeans.module.dep>spec</netbeans.module.dep>
-        </properties>
     </dependency>
     
              
