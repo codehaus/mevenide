@@ -607,7 +607,8 @@ public class SynchronizeWizardPage extends WizardPage {
 		dependenciesViewer.getTableTree().addSelectionListener(
 			new SelectionAdapter() {
 				public void widgetSelected(SelectionEvent event) {
-					if ( dependenciesViewer.getTableTree().getSelection().length == 0 ) {
+					if ( dependenciesViewer.getTableTree().getSelection().length == 0 
+							|| ((DependencyWrapper) dependenciesViewer.getTableTree().getSelection()[0].getData()).isReadOnly()) {
 						removeDependencyButton.setEnabled(false);
 						dependencyPropertiesButton.setEnabled(false);
 					}
