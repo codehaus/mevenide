@@ -1,2 +1,3 @@
- + get rid of those cycles
- + need SERIOUS refactoring !!
+ + get rid of those package cycles P:H
+ + need SERIOUS refactoring !! P:M
+ + use a logger (org.mevenide.ui.eclipse package done) P:H
