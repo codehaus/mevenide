@@ -46,23 +46,21 @@
  * SUCH DAMAGE.
  * ====================================================================
  */
-package org.mevenide.ui.eclipse.editors.pages;
+package org.mevenide.ui.eclipse.editors;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.License;
-import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.ui.model.IWorkbenchAdapter;
+import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.ui.views.properties.ComboBoxPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
-import org.eclipse.ui.views.properties.IPropertySource;
 import org.eclipse.ui.views.properties.TextPropertyDescriptor;
 
 /**
  * @author Jeffrey Bonevich (jeff@bonevich.com)
  * @version $Id$
  */
-public class LicensePropertySource implements IPropertySource, IAdaptable, IWorkbenchAdapter {
+public class LicensePropertySource extends AbstractPomPropertySource {
 
 	private static final Log log = LogFactory.getLog(LicensePropertySource.class);
 
@@ -71,8 +69,13 @@ public class LicensePropertySource implements IPropertySource, IAdaptable, IWork
 	private static final String LICENSE_DIST = "distribution";
 	private static final String LICENSE_COMMENTS = "comments";
 
-	private static final String EMPTY_STR = "";
-	
+	private static final String LICENSE_DIST_MANUAL = "manual";
+	private static final String LICENSE_DIST_REPO = "repo";
+
+	private static final Integer LICENSE_DIST_EMPTY_INDEX = new Integer(0);
+	private static final Integer LICENSE_DIST_MANUAL_INDEX = new Integer(1);
+	private static final Integer LICENSE_DIST_REPO_INDEX = new Integer(2);
+
 	private License license;
 	
 	private IPropertyDescriptor[] descriptors = new IPropertyDescriptor[4];
@@ -85,9 +88,20 @@ public class LicensePropertySource implements IPropertySource, IAdaptable, IWork
 			LICENSE_URL,
 			LICENSE_URL
 		);
-		descriptors[2] = new TextPropertyDescriptor(
+		descriptors[2] = new ComboBoxPropertyDescriptor(
 			LICENSE_DIST,
-			LICENSE_DIST
+			LICENSE_DIST,
+			new String[] {EMPTY_STR, LICENSE_DIST_MANUAL, LICENSE_DIST_REPO}
+		);
+		((ComboBoxPropertyDescriptor) descriptors[2]).setLabelProvider(
+			new LabelProvider() {
+				public String getText(Object element) {
+					if (element instanceof Integer) {
+						return getDistributionForIndex((Integer) element);
+					}
+					return super.getText(element);
+				}
+			}
 		);
 		descriptors[3] = new TextPropertyDescriptor(
 			LICENSE_COMMENTS,
@@ -97,22 +111,13 @@ public class LicensePropertySource implements IPropertySource, IAdaptable, IWork
 
 	public LicensePropertySource(License license) {
 		this.license = license;
-		if (log.isDebugEnabled()) {
-			log.debug("created a LicensePropertySource");
-		}
 	}
 
 	public Object getEditableValue() {
-		if (log.isDebugEnabled()) {
-			log.debug("getEditableValue called");
-		}
 		return license.getName();
 	}
 
 	public IPropertyDescriptor[] getPropertyDescriptors() {
-		if (log.isDebugEnabled()) {
-			log.debug("getPropertyDescriptors called");
-		}
 		return descriptors;
 	}
 
@@ -127,7 +132,7 @@ public class LicensePropertySource implements IPropertySource, IAdaptable, IWork
 			return valueOrEmptyString(license.getUrl());
 		}
 		else if (LICENSE_DIST.equals(id)) {
-			return valueOrEmptyString(license.getDistribution());
+			return getIndexOfDistribution();
 		}
 		else if (LICENSE_COMMENTS.equals(id)) {
 			return valueOrEmptyString(license.getComments());
@@ -135,14 +140,21 @@ public class LicensePropertySource implements IPropertySource, IAdaptable, IWork
 		return null;
 	}
 	
-	private String valueOrEmptyString(String value) {
-		return value != null ? value : EMPTY_STR;
-	}
-
-	public boolean isPropertySet(Object id) {
+	private Integer getIndexOfDistribution() {
+		String dist = license.getDistribution();
 		if (log.isDebugEnabled()) {
-			log.debug("isPropertySet called: " + id);
+			log.debug("getIndexOfDistribution called: " + dist);
 		}
+		if (LICENSE_DIST_MANUAL.equals(dist)) {
+			return LICENSE_DIST_MANUAL_INDEX;
+		}
+		if (LICENSE_DIST_REPO.equals(dist)) {
+			return LICENSE_DIST_REPO_INDEX;
+		}
+		return LICENSE_DIST_EMPTY_INDEX;
+	}
+	
+	public boolean isPropertySet(Object id) {
 		if (LICENSE_NAME.equals(id)) {
 			return !isEmpty(license.getName());
 		}
@@ -158,26 +170,8 @@ public class LicensePropertySource implements IPropertySource, IAdaptable, IWork
 		return false;
 	}
 	
-	private boolean isEmpty(String value) {
-		return value == null || EMPTY_STR.equals(value);
-	}
-
 	public void resetPropertyValue(Object id) {
-		if (log.isDebugEnabled()) {
-			log.debug("resetPropertyValue called: " + id);
-		}
-		if (LICENSE_NAME.equals(id)) {
-			license.setName(EMPTY_STR);
-		}
-		else if (LICENSE_URL.equals(id)) {
-			license.setUrl(EMPTY_STR);
-		}
-		else if (LICENSE_DIST.equals(id)) {
-			license.setDistribution(EMPTY_STR);
-		}
-		else if (LICENSE_COMMENTS.equals(id)) {
-			license.setComments(EMPTY_STR);
-		}
+		setPropertyValue(id, EMPTY_STR);
 	}
 
 	public void setPropertyValue(Object id, Object value) {
@@ -186,61 +180,56 @@ public class LicensePropertySource implements IPropertySource, IAdaptable, IWork
 		}
 		if (value == null) return;
 		
-		String v = value.toString();
-		
+		String newValue = value.toString();
+		String idChanged = null, oldValue = null;
 		if (LICENSE_NAME.equals(id)) {
-			license.setName(v);
+			idChanged = id.toString();
+			oldValue = license.getName();
+			license.setName(newValue);
 		}
 		else if (LICENSE_URL.equals(id)) {
-			license.setUrl(v);
+			idChanged = id.toString();
+			oldValue = license.getUrl();
+			license.setUrl(newValue);
 		}
 		else if (LICENSE_DIST.equals(id)) {
-			license.setDistribution(v);
+			idChanged = id.toString();
+			oldValue = license.getDistribution();
+			newValue = getDistributionForIndex((Integer) value);
+			license.setDistribution(newValue);
 		}
 		else if (LICENSE_COMMENTS.equals(id)) {
-			license.setComments(v);
+			idChanged = id.toString();
+			oldValue = license.getComments();
+			license.setComments(newValue);
+		}
+		if (idChanged != null)
+		{
+			firePropertyChangeEvent(idChanged, oldValue, newValue);
 		}
 	}
 
-	public Object getAdapter(Class adapter) {
-		if (log.isDebugEnabled()) {
-			log.debug("getAdapter called");
+	private String getDistributionForIndex(Integer index) {
+		if (LICENSE_DIST_MANUAL_INDEX.equals(index)) {
+			return LICENSE_DIST_MANUAL;
 		}
-		if (IPropertySource.class.equals(adapter)) {
-			return this;
+		if (LICENSE_DIST_REPO_INDEX.equals(index)) {
+			return LICENSE_DIST_REPO;
 		}
-		if (IWorkbenchAdapter.class.equals(adapter)) {
-			return this;
-		}
-		return null;
-	}
-
-	public Object[] getChildren(Object o) {
-		if (log.isDebugEnabled()) {
-			log.debug("getChildren called");
-		}
-		return null;
-	}
-
-	public ImageDescriptor getImageDescriptor(Object object) {
-		if (log.isDebugEnabled()) {
-			log.debug("getImageDescriptor called");
-		}
-		return null;
+		return EMPTY_STR;
 	}
 
 	public String getLabel(Object o) {
 		if (log.isDebugEnabled()) {
-			log.debug("getLabel called");
+			log.debug("getLabel called for " + o);
 		}
 		return license.getName() != null ? license.getName() : "[unnamed]";
 	}
 
-	public Object getParent(Object o) {
-		if (log.isDebugEnabled()) {
-			log.debug("getParent called");
-		}
-		return null;
+	/**
+	 * @see org.mevenide.ui.eclipse.editors.pages.AbstractPomPropertySource#getSource()
+	 */
+	public Object getSource() {
+		return license;
 	}
-
 }
