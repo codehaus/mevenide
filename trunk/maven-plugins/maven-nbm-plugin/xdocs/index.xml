@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<document>
+  <properties>
+    <title>maven-nbm-plugin</title>
+    <author>Milos Kleint (ca206216@tiscali.cz)</author>
+  </properties>
+  <body>
+    <section name="Overview">
+      <div id="documentContent">
+      	<p>
+   	  This Maven plugin generates the Netbeans Module (NBM) files. </p>
+      <p>
+      In order to run the plugin, you will need to 
+      get the nbantext.jar file from netbeans.org. Currently it's not downloadable, you will need to build it from the sources,
+      checkout the nbbuild module from Netbeans' cvs.
+      
+   	  </p>
+   	  </div>
+    </section>
+  </body>
+</document>
