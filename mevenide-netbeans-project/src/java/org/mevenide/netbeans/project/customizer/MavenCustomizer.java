@@ -70,7 +70,7 @@ public class MavenCustomizer extends JPanel implements ProjectValidateObserver {
         fillConstraints.weightx = 1.0;
         fillConstraints.weighty = 1.0;
         
-        catView = new CategoryView(createRootNode(project));
+        catView = new CategoryView();
         categoryPanel.add(catView, fillConstraints);
         
         cbResolve.addActionListener(new ActionListener() {
@@ -185,10 +185,10 @@ public class MavenCustomizer extends JPanel implements ProjectValidateObserver {
         private ExplorerManager manager;
         private BeanTreeView btv;
         
-        CategoryView( Node rootNode ) {
+        CategoryView() {
             manager = new ExplorerManager();
             
-            setLayout( new BorderLayout() );
+            setLayout(new BorderLayout());
             
             Dimension size = new Dimension( 190, 4 );
             btv = new BeanTreeView();    // Add the BeanTreeView
@@ -200,7 +200,7 @@ public class MavenCustomizer extends JPanel implements ProjectValidateObserver {
             btv.setPreferredSize( size );
             btv.setMaximumSize( size );
             this.add( btv, BorderLayout.CENTER );                        
-            manager.setRootContext( rootNode );
+            manager.setRootContext(createRootNode(project, manager));
             manager.addPropertyChangeListener( new ManagerChangeListener() );
             doExpand();
             selectFirstNode();
@@ -271,7 +271,7 @@ public class MavenCustomizer extends JPanel implements ProjectValidateObserver {
         }
     }
              
-    private Node createRootNode( MavenProject project) {
+    private Node createRootNode(MavenProject project, ExplorerManager manager) {
         ConfigurationDescription[] generalChilds = new ConfigurationDescription[] {
             new ConfigurationDescription(
                 "DescCategory", // NOI18N
@@ -375,7 +375,7 @@ public class MavenCustomizer extends JPanel implements ProjectValidateObserver {
                 "pluginsCategory", // NOI18N
                 "Plugins", 
                 "org/mevenide/netbeans/project/resources/Bullet", // NOI18N
-                new PluginListPanel(project, allPanels))
+                new PluginListPanel(project, allPanels, manager))
         };
         
         allPanels = new ArrayList();
