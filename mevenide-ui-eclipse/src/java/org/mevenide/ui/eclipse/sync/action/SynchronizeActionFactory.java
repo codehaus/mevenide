@@ -143,17 +143,15 @@ public class SynchronizeActionFactory {
 				IArtifactMappingNode selectedNode = (IArtifactMappingNode) ((IStructuredSelection) synchronizeView.getArtifactMappingNodeViewer().getSelection()).getFirstElement();
 				
 				try  {
-					
-					ProjectContainer container = (ProjectContainer) synchronizeView.getArtifactMappingNodeViewer().getTree().getItems()[0].getData();
-					IProject project = container.getProject();
-					Project mavenProject = ProjectReader.getReader().read(selectedNode.getDeclaringPom());
-					
 					int direction = synchronizeView.getDirection();
 					
 					if ( direction == ProjectContainer.OUTGOING ) {
+						ProjectContainer container = (ProjectContainer) synchronizeView.getArtifactMappingNodeViewer().getTree().getItems()[0].getData();
+						IProject project = container.getProject();
 						action.addEntry(selectedNode,  project);
 					}
 					else {
+						Project mavenProject = ProjectReader.getReader().read(selectedNode.getDeclaringPom());
 						action.addEntry(selectedNode,  mavenProject);
 					}
 					
