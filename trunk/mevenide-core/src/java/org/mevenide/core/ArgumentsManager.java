@@ -39,22 +39,42 @@ public class ArgumentsManager {
 	 */
 	public static String[] getMavenClasspath() {
 		File mavenLib = new File(Environment.getMavenHome(), "lib");
+	    String[] bootstrapClasspath = getJars(mavenLib);
 	    
-	    FilenameFilter filter = 
-	        new FilenameFilter() {
-	            public boolean accept(File parent, String fileName) {
-	                return fileName.endsWith(".jar") || fileName.endsWith(".zip");
-	            }
-	        };
 	    
-	    File[] files = mavenLib.listFiles(filter);
-	    
-	    String[] cp = new String[files.length];
-	    
-	    for (int i = 0; i < files.length; i++) {
+//		dont know if it really makes sense.. 
+//		are not the classloading problems we encounter due to eclipse classloading isolation holes ?
+//		weird since we launch a *new* VM 
+
+//	    File mavenRepo = new File(Environment.getMavenRepository() 
+//	    					   	  + File.separator 
+//	    					   	  + "commons-jelly" 
+//	    					   	  + File.separator 
+//	    					   	  + "jars");
+//	    String[] jellyClasspath = getJars(mavenRepo);
+//	    
+//	    String[] classpath = new String[bootstrapClasspath.length + jellyClasspath.length];
+//	    System.arraycopy(bootstrapClasspath, 0, classpath, 0, bootstrapClasspath.length);
+//	    System.arraycopy(jellyClasspath, 0, classpath, bootstrapClasspath.length, jellyClasspath.length);
+		
+		return bootstrapClasspath;
+	}
+
+	private static String[] getJars(File jarContainer) {
+		FilenameFilter filter = 
+		    new FilenameFilter() {
+		        public boolean accept(File parent, String fileName) {
+		            return fileName.endsWith(".jar") || fileName.endsWith(".zip");
+		        }
+		    };
+		
+		File[] files = jarContainer.listFiles(filter);
+		
+		String[] cp = new String[files.length];
+		
+		for (int i = 0; i < files.length; i++) {
 			cp[i] = files[i].getAbsolutePath();
 		}
-	    
 		return cp;
 	}
 
