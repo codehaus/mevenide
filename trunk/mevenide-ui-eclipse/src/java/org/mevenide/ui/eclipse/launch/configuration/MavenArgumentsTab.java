@@ -53,7 +53,7 @@ import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 import org.mevenide.runner.OptionsRegistry;
 import org.mevenide.ui.eclipse.Mevenide;
-import org.mevenide.ui.eclipse.goals.viewer.GoalsPickerDialog;
+import org.mevenide.ui.eclipse.goals.view.GoalsPickerDialog;
 
 /**
  * 

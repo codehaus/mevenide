@@ -20,6 +20,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.window.Window;
+import org.mevenide.ui.eclipse.template.view.ChooseTemplateDialog;
 import org.mevenide.ui.eclipse.util.FileUtils;
 
 /**
@@ -34,12 +36,24 @@ public class CreatePomAction extends AbstractMevenideAction {
 	public void run(IAction action) {
 		try {
 			if ( FileUtils.getPom(currentProject) != null && !FileUtils.getPom(currentProject).exists() ) {
-				FileUtils.createPom(currentProject);
+			    String pomTemplate = chooseTemplate();
+			    //should test nullity and ask user if he wants to use default template
+				FileUtils.createPom(currentProject, pomTemplate);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			log.debug("Unable to create POM due to : " + e);
 		}
+	}
+	
+	private String chooseTemplate() {
+	    ChooseTemplateDialog dialog = new ChooseTemplateDialog();
+	    int userChoice = dialog.open();
+	    String result = null;
+	    if ( userChoice == Window.OK ) {
+	        result = dialog.getTemplate().getProject().getFile().getAbsolutePath();
+	    }
+	    return result;
 	}
 
 	public void selectionChanged(IAction action, ISelection selection) {

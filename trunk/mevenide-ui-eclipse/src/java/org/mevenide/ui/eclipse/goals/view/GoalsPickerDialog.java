@@ -14,7 +14,7 @@
  *  limitations under the License.
  * =========================================================================
  */
-package org.mevenide.ui.eclipse.goals.viewer;
+package org.mevenide.ui.eclipse.goals.view;
 
 import java.util.ArrayList;
 import java.util.Arrays;

@@ -71,14 +71,18 @@ public class FileUtils {
 		return new File(project.getLocation().append(new Path(entryPath).removeFirstSegments(1)).toOSString()).isDirectory();
 	}
 
-	public static void createPom(IProject project) throws Exception, CoreException {
-		 log.debug("Creating pom skeleton using template : " + Mevenide.getInstance().getPomTemplate());
-		 PomSkeletonBuilder pomSkeletonBuilder = PomSkeletonBuilder.getSkeletonBuilder( Mevenide.getInstance().getPomTemplate() ); 
+	public static void createPom(IProject project, String file) throws Exception, CoreException {
+		 log.debug("Creating pom skeleton using template : " + file);
+		 PomSkeletonBuilder pomSkeletonBuilder = PomSkeletonBuilder.getSkeletonBuilder( file ); 
 		 String referencedPomSkeleton = pomSkeletonBuilder.getPomSkeleton(project.getName());
 		 IFile referencedProjectFile = project.getFile("project.xml"); 
 		 referencedProjectFile.create(new ByteArrayInputStream(referencedPomSkeleton.getBytes()), false, null);
 	}
 
+	public static void createPom(IProject project) throws Exception, CoreException {
+		 createPom(project, null);
+	}
+	
 	public static void copyFile(File in, File out) throws Exception
 	{
 		FileChannel sourceChannel = new FileInputStream(in).getChannel();
