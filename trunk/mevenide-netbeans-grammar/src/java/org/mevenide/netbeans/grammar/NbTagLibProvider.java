@@ -17,12 +17,17 @@
 
 package org.mevenide.netbeans.grammar;
 
+import java.io.File;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.mevenide.grammar.StaticTagLibImpl;
+import org.mevenide.environment.CustomLocationFinder;
+import org.mevenide.environment.ILocationFinder;
+import org.mevenide.environment.LocationFinderAggregator;
+import org.mevenide.grammar.impl.MavenTagLibProvider;
+import org.mevenide.grammar.impl.StaticTagLibImpl;
 import org.mevenide.grammar.TagLib;
 import org.mevenide.grammar.TagLibProvider;
 import org.openide.filesystems.FileObject;
@@ -37,9 +42,12 @@ public class NbTagLibProvider implements TagLibProvider {
     
     private static Log logger = LogFactory.getLog(NbTagLibProvider.class);
     
-    private Map taglibs;
+    private File dynaTagFile;
+    private MavenTagLibProvider mavenProvider;
     /** Creates a new instance of NbTagLibProvider */
     public NbTagLibProvider() {
+        dynaTagFile = new File(getLocFinder().getMavenPluginsDir(), "dynatag.cache");
+        mavenProvider = new MavenTagLibProvider(dynaTagFile);
     }
     
     public String[] getAvailableTags() {
@@ -60,18 +68,28 @@ public class NbTagLibProvider implements TagLibProvider {
                 }
             }
         }
+        String[] mavenTags = mavenProvider.getAvailableTags();
+        for (int i = 0; i < mavenTags.length; i++) 
+        {
+            toReturn.add(mavenTags[i]);
+        }
         String[] str = new String[toReturn.size()];
         str = (String[])toReturn.toArray(str);
         return str;
     }
     
     public TagLib retrieveTagLib(String name) {
+        TagLib toReturn = null;
+        toReturn = mavenProvider.retrieveTagLib(name);
+        if (toReturn != null) {
+            return toReturn;
+        }
         name = name.replace(':', '-');
         FileObject tagLib = Repository.getDefault().getDefaultFileSystem().findResource("Plugins/Mevenide-Grammar/" + name + ".xml");
         if (tagLib == null) {
-            logger.error("cannot find taglib with name=" + name + "  (no fileobject found)");
+                logger.error("cannot find taglib with name=" + name + "  (no fileobject found)");
+                return null;
         }
-        TagLib toReturn = null;
         try {
             toReturn = new StaticTagLibImpl(tagLib.getInputStream());
         } catch (Exception exc) {
@@ -80,5 +98,28 @@ public class NbTagLibProvider implements TagLibProvider {
         return toReturn;
         
     }
+    
+    private static ILocationFinder aggregator = null;
+    
+    /**
+     * kind of temporary, not sure if it should be made effective dir aware or not.
+     * Maybe there also should be some kind of singleton instance - better instantiated maybe.
+     */
+    private ILocationFinder getLocFinder() {
+        if (aggregator == null) {
+            CustomLocationFinder finder = new CustomLocationFinder();
+            String userHome = System.getProperty("user.home");
+            File userHomeFile = new File(userHome);
+            finder.setMavenLocalHome(new File(userHomeFile, ".maven").getAbsolutePath());
+            finder.setMavenPluginsDir(new File(finder.getMavenLocalHome(), "plugins").getAbsolutePath());
+            aggregator = new LocationFinderAggregator();
+            ((LocationFinderAggregator)aggregator).setCustomLocationFinder(finder);
+        }
+        return aggregator;
+    }
+    
+    private String getPluginDir() {
+        return getLocFinder().getMavenPluginsDir();
+    }    
     
 }
