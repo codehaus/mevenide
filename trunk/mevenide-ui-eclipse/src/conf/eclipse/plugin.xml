@@ -34,7 +34,6 @@
       <import plugin="org.eclipse.ui.views"/>
       <import plugin="org.eclipse.jdt.ui"/>
       <import plugin="org.eclipse.ui"/>
-      <import plugin="org.eclipse.team.ui"/>
       <import plugin="org.eclipse.ui.externaltools"/>
       <import plugin="org.eclipse.jface.text"/>
       <import plugin="org.eclipse.ui.forms"/>
