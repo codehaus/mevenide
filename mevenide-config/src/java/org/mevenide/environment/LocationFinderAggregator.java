@@ -35,7 +35,7 @@ public class LocationFinderAggregator implements ILocationFinder {
     private static Log log = LogFactory.getLog(LocationFinderAggregator.class);
     
     private SysEnvLocationFinder sysEnvLocationFinder;
-//    private CustomLocationFinder customLocationFinder;
+    private CustomLocationFinder customLocationFinder;
     
     private IQueryContext context;
     private IPropertyResolver resolver;
@@ -71,6 +71,10 @@ public class LocationFinderAggregator implements ILocationFinder {
 
     public String getJavaHome() {
         String javaHome = System.getProperty("java.home");
+        if ( customLocationFinder !=  null
+            && customLocationFinder.getJavaHome() != null ) {
+            javaHome = customLocationFinder.getJavaHome();
+        }
         String resValue = resolver.getResolvedValue("java.home");
         if (resValue != null) {
             javaHome = resValue;
@@ -84,7 +88,12 @@ public class LocationFinderAggregator implements ILocationFinder {
     
     public String getMavenHome() {
         // does it make sense to consult the resolver.. MAVEN_HOME *has* to be set..
-        String mavenHome = resolver.getResolvedValue("maven.home");
+        String mavenHome = null;
+        if ( customLocationFinder !=  null
+            && customLocationFinder.getMavenHome() != null ) {
+            mavenHome = customLocationFinder.getMavenHome();
+        }
+        mavenHome = resolver.getResolvedValue("maven.home");
         if (   sysEnvLocationFinder !=  null
             && sysEnvLocationFinder.getMavenHome() != null ) {
             mavenHome = sysEnvLocationFinder.getMavenHome();
@@ -93,8 +102,11 @@ public class LocationFinderAggregator implements ILocationFinder {
     }
     
     public String getMavenLocalHome() {
-        String userHome = System.getProperty("user.home");
-	String mavenLocalHome = new File(userHome, ".maven").getAbsolutePath();
+	String mavenLocalHome = new File(getUserHome(), ".maven").getAbsolutePath();
+        if ( customLocationFinder !=  null
+          && customLocationFinder.getMavenLocalHome() != null ) {
+            mavenLocalHome = customLocationFinder.getMavenLocalHome();
+        }    
         String resValue = resolver.getResolvedValue("maven.home.local");
         if (resValue != null) {
             mavenLocalHome = resValue;
@@ -104,6 +116,10 @@ public class LocationFinderAggregator implements ILocationFinder {
     
     public String getMavenLocalRepository() {
         String mavenLocalRepository =  new File(getMavenLocalHome(), "repository").getAbsolutePath();
+        if ( customLocationFinder !=  null
+          && customLocationFinder.getMavenLocalRepository() != null ) {
+            mavenLocalRepository = customLocationFinder.getMavenLocalRepository();
+        }
         String resValue = resolver.getResolvedValue("maven.repo.local");
         if (resValue != null) {
             mavenLocalRepository = resValue;
@@ -113,6 +129,10 @@ public class LocationFinderAggregator implements ILocationFinder {
     
     public String getMavenPluginsDir() {
         String mavenPluginsDir = new File(getMavenLocalHome(), "cache").getAbsolutePath();
+        if ( customLocationFinder !=  null
+          && customLocationFinder.getMavenPluginsDir() != null ) {
+            mavenPluginsDir = customLocationFinder.getMavenPluginsDir();
+        }
         String resValue = resolver.getResolvedValue("maven.plugin.unpacked.dir");
         if (resValue != null) {
             mavenPluginsDir = resValue;
@@ -128,6 +148,10 @@ public class LocationFinderAggregator implements ILocationFinder {
         }
         return userHome;
     }    
-  
+
+    public void setCustomLocationFinder(CustomLocationFinder customLocationFinder) {
+        this.customLocationFinder = customLocationFinder;
+    }    
+    
 
 }
