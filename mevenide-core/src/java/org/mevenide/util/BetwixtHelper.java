@@ -48,5 +48,6 @@ public class BetwixtHelper {
 		writer.writeXmlDeclaration("<?xml version=\"1.0\"?>");
 		writer.write("project", project);
 		writer.close();
+		
 	}
 }

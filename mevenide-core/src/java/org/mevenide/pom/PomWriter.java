@@ -65,7 +65,7 @@ public class PomWriter {
 		}
 		
 		BetwixtHelper.writeProject(pom, project);
-
+		
 	}
 	
 	public void addDependency(String depName, File pom)

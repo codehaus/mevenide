@@ -53,6 +53,8 @@ public class PomWriterTest extends TestCase {
 			BuildConstants.MAVEN_ASPECT);
 		Hashtable h = PomReader.getAllSourceDirectories(projectFile);
 		assertEquals(2, h.size());
+		assertTrue(h.containsKey("src/pyo/java"));
+		assertTrue(h.containsKey("src/pyo/aspect"));
 	}
 
 	public void testAddDependency() {

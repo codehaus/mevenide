@@ -13,8 +13,13 @@
      <hide property='artifacts'/> 
      <hide property='artifactDirectory'/> 
      <hide property='pomCurrent'/>
+     <!-- declare id and pomVersion, then hide them !!! -->
+     <!-- crappy trick to make those properties appear as project' children -->
+     <!-- need to be fixed -->
      <element name='id'/>
      <element name='pomVersion'/>
+     <hide property='id'/> 
+     <hide property='pomVersion'/>
      <addDefaults/>
    </element>
 </info>
