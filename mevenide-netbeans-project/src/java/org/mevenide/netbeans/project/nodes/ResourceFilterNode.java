@@ -18,6 +18,8 @@
 package org.mevenide.netbeans.project.nodes;
 
 import java.awt.Image;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.CharConversionException;
 import java.io.File;
 import javax.swing.Action;
@@ -30,12 +32,13 @@ import org.openide.loaders.DataObject;
 import org.openide.nodes.FilterNode;
 import org.openide.nodes.Node;
 import org.openide.util.Utilities;
+import org.openide.util.WeakListeners;
 import org.openide.xml.XMLUtil;
 
 
 /**
  *
- * @author  Milos Kleint (ca206216@tiscali.cz)
+ * @author  Milos Kleint (mkleint@codehaus.org)
  */
 class ResourceFilterNode extends FilterNode {
     private static Log logger = LogFactory.getLog(ResourceFilterNode.class);
@@ -43,19 +46,13 @@ class ResourceFilterNode extends FilterNode {
     private File root;
     private boolean isIncluded;
     
-    ResourceFilterNode(Node original, File resPath, Resource res) {
+    ResourceFilterNode(Node original, File resPath, Resource res, boolean included) {
         super(original, new ResFilterChildren(original, resPath, res));
         resource = res;
         root = resPath;
         DataObject dobj = (DataObject)getLookup().lookup(DataObject.class);
         
-        isIncluded = true;
-        if (dobj != null) {
-            FileObject rootFO = FileUtil.toFileObject(root);
-//            if (file != null && !file.isDirectory()) {
-                isIncluded = DirScannerSubClass.checkIncluded(dobj.getPrimaryFile(), rootFO, resource);
-//            }
-        }
+        isIncluded = included;
     }
     
     public Action[] getActions( boolean context ) {
@@ -113,15 +110,40 @@ class ResourceFilterNode extends FilterNode {
     static class ResFilterChildren extends FilterNode.Children {
         private Resource resource;
         private File root;
+        private FileObject rootFO;
+        private PropertyChangeListener list;
+        private Node orig;
         ResFilterChildren(Node original, File rootpath, Resource res) {
             super(original);
             root = rootpath;
+            orig = original;
+            rootFO = FileUtil.toFileObject(root);
             resource = res;
+            list = new PropertyChangeListener() {
+                public void propertyChange(PropertyChangeEvent evt) {
+                    doRefreshKeys();
+                }
+            };
+        }
+        
+        private void doRefreshKeys() {
+            Node[] nds = orig.getChildren().getNodes();
+            for (int i = 0; i < nds.length; i++) {
+                DataObject dobj = (DataObject)nds[i].getLookup().lookup(DataObject.class);
+                if (dobj != null) {
+                    File file = FileUtil.toFile(dobj.getPrimaryFile());
+                    if (file != null) {
+                        boolean isIncluded = DirScannerSubClass.checkIncluded(dobj.getPrimaryFile(), rootFO, resource);
+                        if (!isIncluded) {
+                            refreshKey(nds[i]);
+                        }
+                    }
+                }
+            }
         }
         
         protected Node[] createNodes(Object obj) {
             DataObject dobj = (DataObject)((Node)obj).getLookup().lookup(DataObject.class);
-        
             if (dobj != null) {
                 File file = FileUtil.toFile(dobj.getPrimaryFile());
                 if (file != null) {
@@ -129,13 +151,30 @@ class ResourceFilterNode extends FilterNode {
                         !DirScannerSubClass.checkVisible(file, root)) {
                         return new Node[0];
                     }
-                    Node n = new ResourceFilterNode((Node)obj, root, resource);
-                    return new Node[] {n};
+                    boolean isIncluded = DirScannerSubClass.checkIncluded(dobj.getPrimaryFile(), rootFO, resource);
+                    if (ShowAllResourcesAction.getInstance().isShowingAll()) {
+                        Node n = new ResourceFilterNode((Node)obj, root, resource, isIncluded);
+                        return new Node[] {n};
+                    } else if (isIncluded) {
+                        Node n = new ResourceFilterNode((Node)obj, root, resource, isIncluded);
+                        return new Node[] {n};
+                    }
+                    return new Node[0];
                 }
             }
             Node origos = (Node)obj;
             return new Node[] { origos.cloneNode() };
         }        
+
+        protected void removeNotify() {
+            super.removeNotify();
+            ShowAllResourcesAction.getInstance().removePropertyChangeListener(list);
+        }
+
+        protected void addNotify() {
+            super.addNotify();
+            ShowAllResourcesAction.getInstance().addPropertyChangeListener(list);
+        }
     }
     
 }
