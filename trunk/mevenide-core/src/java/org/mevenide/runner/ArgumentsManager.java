@@ -133,7 +133,7 @@ public final class ArgumentsManager {
 	    props.put("forehead.conf.file", Environment.getConfigurationFile());
 	    props.put("java.endorsed.dirs", Environment.getEndorsedDirs());
 	    props.put("basedir", runner.getBasedir());
-	    props.put("user.dir", runner.getBasedir());
+	    //props.put("user.dir", runner.getBasedir());
 	    
 	    return props;
 	}

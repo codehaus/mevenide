@@ -78,7 +78,7 @@ public abstract class AbstractRunner {
             finalOptions[0] = "-b";
             finalOptions[1] = "-f";
             String tmpFile = basedir != null ? basedir + File.separator + "project.xml" : "project.xml" ;
-			finalOptions[2] = "file:///" + new File(tmpFile).getAbsolutePath();
+			finalOptions[2] = new File(tmpFile).getAbsolutePath();
         }
         return finalOptions;
     }
