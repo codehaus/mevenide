@@ -48,15 +48,36 @@
  */
 package org.mevenide.ui.eclipse.sync.wip;
 
+import java.io.File;
+import java.util.List;
+
+import org.apache.maven.project.Project;
+import org.eclipse.core.resources.IProject;
+
 /**
- * 
  * 
  * @author <a href="mailto:rhill2@free.fr">Gilles Dodinet</a>
  * @version $Id$
- *
+ * 
  */
-public interface IModelChangeListener {
+public class PomChooser {
+	private IProject project;
 	
-	//should be enough for now
-    void artifactAdded(ArtifactEvent event);
+	public PomChooser(IProject project) {
+		this.project = project;
+	}
+	
+	/**
+	 * display a Dialog to allow the user to choose a pom  
+	 * 
+	 */
+	public Project openPomChoiceDialog() {
+		List allPoms = getPoms();
+		return null;
+	}
+	
+	private List getPoms() {
+		File projectRoot = new File(project.getLocation().toString());
+		return null;
+	}
 }
