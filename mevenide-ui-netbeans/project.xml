@@ -7,6 +7,7 @@
   <pomVersion>3</pomVersion>
   <id>mevenide-ui-netbeans</id>
   <name>Mevenide Netbeans</name>
+  <artifactId>mevenide-ui-netbeans</artifactId>
   <currentVersion>0.1</currentVersion>
   <package>org.mevenide.ui.netbeans</package>
   <description>Netbeans Maven integration</description>
