@@ -388,9 +388,9 @@ public class JDomProjectUnmarshaller implements IProjectUnmarshaller {
         Element elem = projectElement.getChild("repository");
         if ( elem != null ) {
             repository = new Repository();
-            elem.getChildText("connection");
-            elem.getChildText("developerConnection");
-            elem.getChildText("url");
+            repository.setConnection(elem.getChildText("connection"));
+            repository.setDeveloperConnection(elem.getChildText("developerConnection"));
+            repository.setUrl(elem.getChildText("url"));
         }
         return repository;
     }
