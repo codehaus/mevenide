@@ -48,11 +48,9 @@
  */
 package org.mevenide.ui.netbeans;
 
-import java.io.File;
 import java.util.Iterator;
 import java.util.Set;
 import org.mevenide.ui.netbeans.propeditor.ProjectPropEditor;
-import org.openide.filesystems.FileUtil;
 import org.openide.loaders.DataObject;
 import org.openide.nodes.Node;
 import org.openide.util.HelpCtx;

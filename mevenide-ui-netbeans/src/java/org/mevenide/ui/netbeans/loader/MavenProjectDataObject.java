@@ -49,7 +49,6 @@
 package org.mevenide.ui.netbeans.loader;
 
 import java.io.File;
-import org.mevenide.ui.netbeans.MavenProjectCookie;
 import org.mevenide.ui.netbeans.MavenSettings;
 import org.mevenide.ui.netbeans.exec.MavenExecSupport;
 import org.openide.cookies.SaveCookie;

@@ -58,6 +58,7 @@ import java.util.Iterator;
 import java.util.List;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.tree.TreeSelectionModel;
 import org.apache.commons.logging.Log;
@@ -71,7 +72,6 @@ import org.openide.explorer.ExplorerManager;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
-import org.openide.nodes.Children.Array;
 import org.openide.util.NbBundle;
 import org.openide.util.RequestProcessor;
 
@@ -246,7 +246,7 @@ public class CustomGoalsPanel extends JPanel
     
     private Node createLoadingNode()
     {
-        Children childs = new Array();
+        Children childs = new Children.Array();
         Node loading = new AbstractNode(Children.LEAF);
         loading.setName("Loading"); //NOI18N
         loading.setDisplayName(NbBundle.getBundle(CustomGoalsPanel.class).getString("Loading"));
@@ -256,7 +256,7 @@ public class CustomGoalsPanel extends JPanel
 
     private Node createNoGoalsNode()
     {
-        Children childs = new Array();
+        Children childs = new Children.Array();
         Node node = new AbstractNode(Children.LEAF);
         node.setName("NoGoals"); //NOI18N
         node.setDisplayName(NbBundle.getBundle(CustomGoalsPanel.class).getString("NoGoals"));
@@ -322,17 +322,17 @@ public class CustomGoalsPanel extends JPanel
     private class DocListener implements DocumentListener
     {
         
-        public void changedUpdate(javax.swing.event.DocumentEvent e)
+        public void changedUpdate(DocumentEvent e)
         {
             generateActionEvent();
         }
         
-        public void insertUpdate(javax.swing.event.DocumentEvent e)
+        public void insertUpdate(DocumentEvent e)
         {
             generateActionEvent();
         }
         
-        public void removeUpdate(javax.swing.event.DocumentEvent e)
+        public void removeUpdate(DocumentEvent e)
         {
             generateActionEvent();
         }

@@ -50,37 +50,32 @@ package org.mevenide.ui.netbeans.loader;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.ArtifactListBuilder;
 import org.apache.maven.MavenUtils;
-import org.mevenide.ui.netbeans.ArtifactCookie;
-import org.mevenide.ui.netbeans.MavenProjectCookie;
 import org.apache.maven.project.Project;
 import org.mevenide.environment.LocationFinderAggregator;
+import org.mevenide.ui.netbeans.ArtifactCookie;
+import org.mevenide.ui.netbeans.MavenProjectCookie;
 import org.openide.ErrorManager;
 import org.openide.filesystems.FileChangeAdapter;
 import org.openide.filesystems.FileEvent;
 import org.openide.filesystems.FileUtil;
 import org.openide.loaders.DataObject;
-import org.openide.nodes.Node;
-import org.openide.nodes.PropertySupport;
+import org.openide.nodes.Node.Property;
+import org.openide.nodes.PropertySupport.Reflection;
 import org.openide.util.RequestProcessor;
 import org.openide.xml.XMLUtil;
-import org.xml.sax.ContentHandler;
-import org.xml.sax.InputSource;
+import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
+
 
 /**
  *
@@ -233,7 +228,7 @@ public class MavenProjectCookieImpl implements MavenProjectCookie, ArtifactCooki
 //        return ""; 
 //    }
     
-    public Node.Property[] getProperties()
+    public Property[] getProperties()
     {
         log.debug("Loading properties of " + projectFile);
         if (!loaded) { 
@@ -245,46 +240,46 @@ public class MavenProjectCookieImpl implements MavenProjectCookie, ArtifactCooki
                 }
             });
             // before loading, we will not display any props, wait for them to load.
-            return new Node.Property[0];
+            return new Property[0];
         }
-        Node.Property[] toReturn;
+        Property[] toReturn;
         if (project == null)
         {
-            toReturn = new Node.Property[0];
+            toReturn = new Property[0];
         } else
         {
-            toReturn = new Node.Property[8];
+            toReturn = new Property[8];
             try
             {
-                toReturn[0] = new PropertySupport.Reflection(project, String.class, "getDescription", null);
+                toReturn[0] = new Reflection(project, String.class, "getDescription", null);
                 toReturn[0].setName("description");
                 toReturn[0].setDisplayName("Description");
-                toReturn[1] = new PropertySupport.Reflection(project, String.class, "getShortDescription", null);
+                toReturn[1] = new Reflection(project, String.class, "getShortDescription", null);
                 toReturn[1].setName("shortDescription");
                 toReturn[1].setDisplayName("Short Description");
-                toReturn[2] = new PropertySupport.Reflection(project, String.class, "getId", null);
+                toReturn[2] = new Reflection(project, String.class, "getId", null);
                 toReturn[2].setName("ID");
                 toReturn[2].setDisplayName("ID of the project");
-                toReturn[3] = new PropertySupport.Reflection(project, String.class, "getInceptionYear", null);
+                toReturn[3] = new Reflection(project, String.class, "getInceptionYear", null);
                 toReturn[3].setName("Inception year");
                 toReturn[3].setDisplayName("Year when project started");
-                toReturn[4] = new PropertySupport.Reflection(project, String.class, "getIssueTrackingUrl", null);
+                toReturn[4] = new Reflection(project, String.class, "getIssueTrackingUrl", null);
                 toReturn[4].setName("Issue tracking URL");
                 toReturn[4].setDisplayName("Issue tracking URL");
-                toReturn[5] = new PropertySupport.Reflection(project, String.class, "getCurrentVersion", null);
+                toReturn[5] = new Reflection(project, String.class, "getCurrentVersion", null);
                 toReturn[5].setName("Version");
                 toReturn[5].setDisplayName("Project version");
-                toReturn[6] = new PropertySupport.Reflection(project, String.class, "getUrl", null);
+                toReturn[6] = new Reflection(project, String.class, "getUrl", null);
                 toReturn[6].setName("Org. homepage URL ");
                 toReturn[6].setDisplayName("Org. homepage URL ");
-                toReturn[7] = new PropertySupport.Reflection(project, String.class, "getName", null);
+                toReturn[7] = new Reflection(project, String.class, "getName", null);
                 toReturn[7].setName("Project name ");
                 toReturn[7].setDisplayName("Project Name");
                 
                 //TODO add other properties and better organization of props..
             } catch (NoSuchMethodException exc)
             {
-                toReturn = new Node.Property[0];
+                toReturn = new Property[0];
                 ErrorManager.getDefault().notify(exc);
                 log.error("Error loading properties", exc);
             }
@@ -353,7 +348,7 @@ public class MavenProjectCookieImpl implements MavenProjectCookie, ArtifactCooki
      * simple content handler to get the artifactID and version of the project only.
      */
     
-    private class SimpleContentHandler extends DefaultHandler
+    private static class SimpleContentHandler extends DefaultHandler
     {
         private static final String ELEMENT_VERSION = "currentVersion"; //NOI18N
         private static final String ELEMENT_ID = "id"; //NOI18N
@@ -398,7 +393,7 @@ public class MavenProjectCookieImpl implements MavenProjectCookie, ArtifactCooki
         }
         
         
-        public void startElement(String namespaceURI, String localName, String qName, org.xml.sax.Attributes atts) throws SAXException
+        public void startElement(String namespaceURI, String localName, String qName, Attributes atts) throws SAXException
         {
             if (ELEMENT_ID.equals(qName) && level == 1)
             {

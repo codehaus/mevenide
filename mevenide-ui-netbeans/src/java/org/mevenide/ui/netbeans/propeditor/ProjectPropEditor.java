@@ -49,16 +49,10 @@
 
 package org.mevenide.ui.netbeans.propeditor;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.lang.ClassNotFoundException;
 import java.lang.reflect.InvocationTargetException;
 import javax.swing.SwingUtilities;
 import org.apache.commons.logging.Log;
@@ -66,27 +60,29 @@ import org.apache.commons.logging.LogFactory;
 import org.mevenide.ui.netbeans.MavenPropertyFiles;
 import org.openide.ErrorManager;
 import org.openide.explorer.ExplorerManager;
-import org.openide.explorer.ExplorerPanel;
+import org.openide.explorer.ExplorerManager.Provider;
 import org.openide.loaders.DataObject;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
 import org.openide.nodes.PropertySupport;
+import org.openide.nodes.Children.Array;
+import org.openide.nodes.Node.Property;
 import org.openide.util.HelpCtx;
 import org.openide.util.NbBundle;
 import org.openide.util.RequestProcessor;
 import org.openide.util.Utilities;
-import org.openide.windows.CloneableTopComponent;
 import org.openide.windows.Mode;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
 import org.openide.windows.Workspace;
 
+
 /**
  *
  * @author  Milos Kleint (ca206216@tiscali.cz)
  */
-public class ProjectPropEditor extends TopComponent implements ExplorerManager.Provider
+public class ProjectPropEditor extends TopComponent implements Provider
 {
     private static Log log = LogFactory.getLog(ProjectPropEditor.class);
     
@@ -280,7 +276,7 @@ public class ProjectPropEditor extends TopComponent implements ExplorerManager.P
     
     private void setupTreeTable()
     {
-        Node.Property[] props = new Node.Property[]
+        Property[] props = new Property[]
         {
             new DummyHeaderNodeProp("name", String.class, "Property Name", "Desc", true, false),
             new DummyHeaderNodeProp("value", String.class, "Property Value", "Desc", true, false),
@@ -338,7 +334,7 @@ public class ProjectPropEditor extends TopComponent implements ExplorerManager.P
             PropReader reader = new PropReaderImpl(MavenPropertyFiles.PROP_USER_BUILD, str1, 
                                     new PropReaderImpl(MavenPropertyFiles.PROP_PROJECT_BUILD, str2,
                                         new PropReaderImpl(MavenPropertyFiles.PROP_PROJECT, str3, null)));
-            Children childs = new Children.Array();
+            Children childs = new Array();
             childs.add(reader.createNodeStructure());
             AbstractNode root = new AbstractNode(childs);
             root.setName("Property name");

@@ -55,11 +55,14 @@ import org.apache.commons.logging.LogFactory;
 import org.mevenide.ui.netbeans.ArtifactCookie;
 import org.mevenide.ui.netbeans.MavenProjectCookie;
 import org.openide.actions.PropertiesAction;
-import org.openide.loaders.*;
+import org.openide.loaders.DataNode;
 import org.openide.loaders.DataObject;
-import org.openide.nodes.*;
+import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
+import org.openide.nodes.Children.Array;
+import org.openide.nodes.Node.Cookie;
+import org.openide.nodes.Sheet;
 import org.openide.util.actions.SystemAction;
 
 /** A node to represent this object.
@@ -72,7 +75,7 @@ public class MavenProjectNode extends DataNode {
     private boolean sheetCreated = false;
     
     public MavenProjectNode(MavenProjectDataObject obj) {
-        this(obj, new Children.Array());
+        this(obj, new Array());
         ArtifactCookie cook = (ArtifactCookie)getCookie(ArtifactCookie.class);
         if (cook != null)
         {
@@ -137,7 +140,7 @@ public class MavenProjectNode extends DataNode {
             this.obj = obj;
         }
         
-        public Node.Cookie getCookie(Class clazz)
+        public Cookie getCookie(Class clazz)
         {
             if (ArtifactCookie.class.isAssignableFrom(clazz))
             {

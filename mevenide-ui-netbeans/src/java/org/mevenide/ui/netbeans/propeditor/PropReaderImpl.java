@@ -51,14 +51,9 @@ package org.mevenide.ui.netbeans.propeditor;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Collection;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.PropertyResourceBundle;
-import org.mevenide.ui.netbeans.MavenPropertyFiles;
+import java.util.*;
 import org.openide.nodes.Node;
+
 
 /**
  *
