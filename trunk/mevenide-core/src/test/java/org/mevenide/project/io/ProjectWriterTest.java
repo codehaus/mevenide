@@ -119,6 +119,16 @@ public class ProjectWriterTest extends TestCase {
 		
 	}
 
+	public void testAddProject() throws Exception {
+		File referencedPom = new File(ProjectWriterTest.class.getResource("/project.xml").getFile());
+		
+		pomWriter.addProject(referencedPom, projectFile);
+		
+		Project project = ProjectReader.getReader().read(projectFile);
+		Dependency dep = dependencyFactory.getDependency("X:/bleah/mevenide/mevenide-core-1.0.jar");
+		assertTrue(pomWriter.isDependencyPresent(project, dep));
+	}
+
 	private boolean isResourcePresent(String testDirectory, String[] includes) throws FileNotFoundException, Exception, IOException {
 		Project project = ProjectReader.getReader().read(projectFile);
 		List resources = project.getBuild().getResources();
@@ -157,4 +167,5 @@ public class ProjectWriterTest extends TestCase {
 		}
 
 	}
+	
 }

@@ -23,7 +23,7 @@
         <dependency>
            <groupId>maven-new</groupId>
            <artifactId>maven-core</artifactId>
-           <version>1.0-beta-11-SNAPSHOT</version>
+           <version>1.0-beta-11-SNAPSHOT-20032905</version>
            <url>http://maven.org/</url>
         </dependency>
         <dependency>
@@ -84,7 +84,7 @@
         </dependency>
         <dependency>
            <groupId>mockcreator</groupId>
-           <artifactId>mockcreator</artifactId>
+           <artifactId>de.abstrakt.mock</artifactId>
            <version>0.2.4</version>
            <url>http://www.abstrakt.de/mockcreator.html</url>
         </dependency>
