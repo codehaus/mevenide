@@ -23,6 +23,7 @@ import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunchConfiguration;
+import org.eclipse.debug.core.ILaunchConfigurationListener;
 import org.eclipse.debug.core.ILaunchConfigurationType;
 
 
@@ -32,21 +33,20 @@ import org.eclipse.debug.core.ILaunchConfigurationType;
  * @version $Id$
  * 
  */
-public class ActionDefinitionsManager implements IActionDefinitionManager {
+public class ActionDefinitionsManager implements IActionDefinitionManager, ILaunchConfigurationListener {
 
+    List definitions = new ArrayList();
+    
     private static final Log log = LogFactory.getLog(ActionDefinitions.class);
     
     public ActionDefinitionsManager() {
-    }
-    
-    public List getDefinitions() {
-	    List definitions = new ArrayList();
+        DebugPlugin.getDefault().getLaunchManager().addLaunchConfigurationListener(this);
         try {
             ILaunchConfigurationType type = DebugPlugin.getDefault().getLaunchManager().getLaunchConfigurationType("org.mevenide.ui.launching.ActionDefinitionConfigType");
             ILaunchConfiguration[] configurations = DebugPlugin.getDefault().getLaunchManager().getLaunchConfigurations(type);
             for (int i = 0; i < configurations.length; i++) {
                 if ( configurations[i].getName() != null && configurations[i].getName().indexOf("org.mevenide.ui.launching.ActionDefinitionConfigType.SHARED_INFO") == -1 ) {
-	                ActionDefinitions definition = new ActionDefinitions();
+                    ActionDefinitions definition = new ActionDefinitions();
 	                definition.setConfiguration(configurations[i]);
 	                definitions.add(definition);
                 }
@@ -55,7 +55,24 @@ public class ActionDefinitionsManager implements IActionDefinitionManager {
         catch (CoreException e) {
             log.error("Unable to retrieve launch configurations", e);
         }
+    }
+    
+    public List getDefinitions() {
         return definitions;
     }
-
+    
+    public void launchConfigurationAdded(ILaunchConfiguration configuration) {
+        ActionDefinitions definition = new ActionDefinitions();
+        definition.setConfiguration(configuration);
+        definitions.add(definition);
+    }
+    
+    public void launchConfigurationRemoved(ILaunchConfiguration configuration) {
+        ActionDefinitions definition = new ActionDefinitions();
+        definition.setConfiguration(configuration);
+        definitions.remove(definition);
+    }
+    
+    public void launchConfigurationChanged(ILaunchConfiguration configuration) {
+    }
 }
