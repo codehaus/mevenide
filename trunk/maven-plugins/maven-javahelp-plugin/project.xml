@@ -30,7 +30,7 @@
     </unitTest>
     <resources>
       <resource>
-        <directory>${basedir}/src/conf</directory>
+        <directory>src/conf</directory>
           <includes>
              <include>**/*.*</include>
           </includes>
