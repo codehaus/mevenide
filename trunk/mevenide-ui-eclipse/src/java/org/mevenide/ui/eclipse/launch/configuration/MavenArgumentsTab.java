@@ -173,7 +173,12 @@ public class MavenArgumentsTab extends AbstractLaunchConfigurationTab  {
 			
 			optionButton.setText(OptionsRegistry.getRegistry().getDescription(option));
 			optionButton.setToolTipText(new StringBuffer(" -").append(option).toString()); //$NON-NLS-1$
-			//optionButton.setSelection(((Boolean)optionsMap.get(new Character(option))).booleanValue());
+			if ( optionsMap.get(new Character(option)) != null && ((Boolean)optionsMap.get(new Character(option))).booleanValue() ) {
+			    optionButton.setSelection(true);
+			}
+			else {
+			    optionButton.setSelection(false);
+			}
 			optionsButtons.put(new Character(option), optionButton);			
 
 
@@ -247,7 +252,6 @@ public class MavenArgumentsTab extends AbstractLaunchConfigurationTab  {
 				updateLaunchConfigurationDialog();
 			}
 		});
-		
 	}
 	
 	private void initTableItems(Table table) {
@@ -385,9 +389,9 @@ public class MavenArgumentsTab extends AbstractLaunchConfigurationTab  {
 
 
 	public void initializeFrom(ILaunchConfiguration configuration) {
-        initOptionsMap(configuration);
-        initGoals(configuration);
-        initSysProperties(configuration);
+		initOptionsMap(configuration);
+		initGoals(configuration);
+		initSysProperties(configuration);
 	}
 
 	public void performApply(ILaunchConfigurationWorkingCopy configuration) {

@@ -53,8 +53,6 @@ import org.mevenide.runner.ArgumentsManager;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.preferences.dynamic.DynamicPreferencesManager;
 
-
-
 /**
  * 
  * @todo refactor-me so that MavenLaunchDelegate doesnot extend AbstractRunner but rather AbstractLaunchConfigurationDelegate rather 
