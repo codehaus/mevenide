@@ -10,6 +10,7 @@
         	<p>
 				Mevenide provides simple wizard (Screenshot 1) based on java project wizards for creating maven-based projects. Convenient source and output folders are already filled in, and upon commit, a POM skeleton will be created.
 				in the future the wizard will be more flexible allowing to specify the POM more precisely.
+				<br/><br/>
 				<center>
 					<img border="1px" src="images/maven-wizard.png"/>
 					<br/><br/>
