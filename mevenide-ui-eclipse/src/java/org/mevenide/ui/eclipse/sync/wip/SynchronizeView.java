@@ -50,7 +50,6 @@ package org.mevenide.ui.eclipse.sync.wip;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.maven.project.Project;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
@@ -59,6 +58,7 @@ import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -79,7 +79,7 @@ import org.eclipse.ui.part.ViewPart;
  * @version $Id$
  *
  */
-public class SynchronizeView extends ViewPart implements SynchronizeActionListener {
+public class SynchronizeView extends ViewPart implements IActionListener {
     private static final Log log = LogFactory.getLog(SynchronizeView.class);
 
     private Composite composite;
@@ -291,22 +291,29 @@ public class SynchronizeView extends ViewPart implements SynchronizeActionListen
 		});
 	}
 
+	
 	public void artifactAddedToClasspath(ArtifactAddedToClasspathEvent event) {
-    	log.debug("artifact modified : " + event.getArtifact());
-    	refreshAndExpand();
+		IArtifactMappingNode artifact = (IArtifactMappingNode) event.getArtifact();
+		log.debug("artifact modified : " + artifact);
+    	refreshNode(artifact);
+	}
+
+	private void refreshNode(IArtifactMappingNode artifact) {
+		IArtifactMappingNodeContainer container = (IArtifactMappingNodeContainer) getContentProvider().getParent(artifact);
+    	container.removeNode(artifact);
+    	artifactMappingNodeViewer.refresh(container);
+	}
+	
+	private ITreeContentProvider getContentProvider() {
+		return ((ITreeContentProvider) artifactMappingNodeViewer.getContentProvider());
 	}
 
 	public void artifactAddedToPom(ArtifactAddedToPomEvent event) {
-		Project project = event.getProject();
-		//@todo refresh project file
-		refreshAndExpand(); 
+		IArtifactMappingNode artifact = (IArtifactMappingNode) event.getArtifact();
+		log.debug("artifact modified : " + artifact);
+		refreshNode(artifact);
 	}
 	
-	private void refreshAndExpand() {
-		artifactMappingNodeViewer.refresh();
-    	artifactMappingNodeViewer.expandAll();
-	}
-
 	public TreeViewer getArtifactMappingNodeViewer() {
 		return artifactMappingNodeViewer;
 	}

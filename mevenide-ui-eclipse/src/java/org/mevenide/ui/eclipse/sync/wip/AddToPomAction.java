@@ -61,8 +61,8 @@ import org.apache.maven.project.Project;
 public class AddToPomAction extends ArtifactAction {
 	private static Log log = LogFactory.getLog(AddToPomAction.class);
 	
-	public void addEntry(Object item, Project project) throws Exception {
-		ArtifactWrapper artifactWrapper = getArtifactWrapper(item);
+	public void addEntry(IArtifactMappingNode item, Project project) throws Exception {
+		ArtifactWrapper artifactWrapper = getArtifactWrapper(item.getResolvedArtifact());
 		
 		if ( artifactWrapper != null ) {
 			artifactWrapper.addTo(project);

@@ -73,4 +73,6 @@ interface IArtifactMappingNodeContainer {
     void setDirection(int direction);
     
     Project getPrimaryPom();
+    
+    void removeNode(Object node);
 }

@@ -166,4 +166,28 @@ public abstract class AbstractArtifactMappingNodeContainer implements IArtifactM
     
         return newContainer;
     }
+    
+    public void removeNode(Object node) {
+    	int idx = -1;
+    	
+    	for (int i = 0; i < nodes.length; i++) {
+			if ( nodes[i].equals(node) ) {
+				idx = i;
+				break;
+			}
+		}
+    	
+    	if ( idx > -1 ) {
+    		IArtifactMappingNode[] newNodes = new IArtifactMappingNode[nodes.length - 1];
+    		for (int i = 0; i < nodes.length; i++) {
+				if ( i < idx ) {
+					newNodes[i] = nodes[i];
+				}
+				if ( i > idx ){
+					newNodes[i - 1] = nodes[i];
+				}
+			}
+    		nodes = newNodes;
+    	}
+    }
 }
