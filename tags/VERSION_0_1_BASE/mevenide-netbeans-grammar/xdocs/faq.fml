@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<faqs title="Frequently Asked Questions">
+   
+   <part id="install">
+    <title>Installing</title>
+        <faq id="download">
+        <question> 
+            Where can I download the Netbeans module?
+        </question> 
+        <answer>
+           <p> It's not yet available for free download. In order to try out the module, please checkout the mevenide project from cvs and build it. </p>
+        </answer>
+        </faq>
+   </part>
+   
+</faqs>
