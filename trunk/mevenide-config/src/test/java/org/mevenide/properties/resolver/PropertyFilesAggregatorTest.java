@@ -20,8 +20,6 @@ import java.io.File;
 import org.mevenide.properties.IPropertyFinder;
 import org.mevenide.properties.IPropertyLocator;
 
-import org.mevenide.properties.IPropertyResolver;
-
 /**
  *
  * @author  Milos Kleint (ca206216@tiscali.cz)
