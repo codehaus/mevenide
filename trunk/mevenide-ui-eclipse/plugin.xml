@@ -17,7 +17,18 @@
       <library name="lib/jdom-1.0b8.jar">
          <packages prefixes="org.jdom"/>
       </library>
-      <library name="lib/maven-SNAPSHOT.jar"/>
+      <library name="lib/xmlpull-1.1.2.1.jar">
+         <export name="*"/>
+         <packages prefixes="org.xmlpull.v1"/>
+      </library>
+      <library name="lib/xpp3-1.1.2a.jar">
+         <export name="*"/>
+         <packages prefixes="org.xmlpull"/>
+      </library>
+      <library name="lib/maven-SNAPSHOT.jar">
+         <export name="*"/>
+         <packages prefixes="org.apache.maven"/>
+      </library>
       <library name="lib/xerces-2.2.1.jar"/>
       <library name="lib/mevenide-goals-grabber-1.0.jar">
          <export name="*"/>
