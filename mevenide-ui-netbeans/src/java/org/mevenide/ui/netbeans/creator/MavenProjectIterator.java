@@ -193,13 +193,11 @@ public class MavenProjectIterator implements TemplateWizard.Iterator
                 if (build.getSourceDirectory() != null) 
                 {
                     DataFolder srcFolder = DataFolder.create(parentFolder, build.getSourceDirectory());
-                    if (proj.getPackage() != null && proj.getPackage().length() > 0)
-                    {
-                        DataFolder.create(srcFolder, proj.getPackage().replace('.','/'));
-                    }
+                    createPackageStructure(srcFolder, proj.getPackage());
                 }
                 if (build.getUnitTestSourceDirectory() != null) {
-                    DataFolder.create(parentFolder, build.getUnitTestSourceDirectory());
+                    DataFolder srcFolder = DataFolder.create(parentFolder, build.getUnitTestSourceDirectory());
+                    createPackageStructure(srcFolder, proj.getPackage());
                 }
                 if (build.getAspectSourceDirectory() != null)
                 {
@@ -211,7 +209,14 @@ public class MavenProjectIterator implements TemplateWizard.Iterator
                 }
             }        
     }
-    
+
+    private void createPackageStructure(DataFolder parentFolder, String pack) throws Exception
+    {
+        if (pack != null && pack.length() > 0)
+        {
+            DataFolder.create(parentFolder, pack.replace('.','/'));
+        }
+    }
     // --- The rest probably does not need to be touched. ---
     
 
