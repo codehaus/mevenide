@@ -507,7 +507,6 @@ public class DependencyEditor extends javax.swing.JPanel {
         }
 
         public int getRowCount() {
-            System.out.println("get size=" + (rows.size() + 1));
             return rows.size() + 1;
         }
 
