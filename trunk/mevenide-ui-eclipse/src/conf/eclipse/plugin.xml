@@ -243,7 +243,7 @@
             objectClass="org.eclipse.core.resources.IProject"
             adaptable="true"
             id="maven.plugin.project.xml.contribution.iproject">
-         <action
+         <!-- action
                enablesFor="1"
                label="%AddMavenNature.label"
                tooltip="%AddMavenNature.tooltip"
@@ -268,7 +268,7 @@
                  <objectState name="projectNature" 
                              value="org.mevenide.ui.mavennature"/>
                </enablement>
-         </action>
+         </action -->
       </objectContribution>
       <!-- project.xml contributions -->
       <objectContribution 
