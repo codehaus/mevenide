@@ -73,7 +73,7 @@ public class ProjectComparatorTest extends TestCase {
 
 	static class MockListener implements IProjectChangeListener {
 		public void projectChanged(ProjectChangeEvent e) {
-			System.out.println("Project changed: " + e.getPom() + " changed in " + e.getAttribute());
+			//System.out.println("Project changed: " + e.getPom() + " changed in " + e.getAttribute());
 			changed = true;
 		}
 	}
