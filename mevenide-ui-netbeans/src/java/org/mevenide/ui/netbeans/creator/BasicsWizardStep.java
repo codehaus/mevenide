@@ -55,7 +55,7 @@ import org.openide.WizardDescriptor.FinishPanel;
  *
  * @author  Milos Kleint (ca206216@tiscali.cz)
  */
-public class BasicsWizardStep extends AbstractWizardStep implements FinishPanel
+public class BasicsWizardStep extends AbstractWizardStep // implements FinishPanel
 {
     /** Creates a new instance of BasicsWizardStep */
     public BasicsWizardStep()
