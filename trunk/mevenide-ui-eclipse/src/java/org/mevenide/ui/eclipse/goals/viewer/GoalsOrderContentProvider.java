@@ -15,14 +15,22 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 
 /**
- * Content provider which provides a list of ant targets chosen by the user 
+ * Content provider which provides a list of ant targets chosen by the user
+ * 
+ * derived work from org.eclipse.ant.ui.internal.launchConfiguration.AntTargetContentProvider   
+ * 
+ * @author IBM Corporation and others
+ * @version $Id: GoalsOrderContentProvider.java,v 1.2 14 sept. 2003 Exp gdodinet 
+ * 
  */
 public class GoalsOrderContentProvider implements IStructuredContentProvider {
-
+	private static Log log = LogFactory.getLog(GoalsOrderContentProvider.class);
 	/**
 	 * The collection of currently active targets
 	 */
@@ -93,6 +101,10 @@ public class GoalsOrderContentProvider implements IStructuredContentProvider {
 		}
 		targets.set(index, targets.get(index - 1));
 		targets.set(index - 1, target);
+		log.debug("New ordering");
+		for (int i = 0; i < targets.size(); i++) {
+            log.debug("\t" + i + targets.get(i));
+        }
 	}
 	
 	/**

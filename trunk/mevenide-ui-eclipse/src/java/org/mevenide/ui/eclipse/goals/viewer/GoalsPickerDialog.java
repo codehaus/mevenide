@@ -65,6 +65,7 @@ import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
 import org.eclipse.jface.viewers.ICheckStateListener;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.ModifyEvent;
@@ -269,14 +270,17 @@ public class GoalsPickerDialog  extends Dialog {
 	                GoalsOrderDialog dialog = new GoalsOrderDialog(getShell(), StringUtils.split(goalsOrder));
 					
 					int ok = dialog.open();
-					if (ok == SWT.OK) {
-						String newOrder = "";
+					
+					if (ok == Window.OK) {
 						Object[] targets = dialog.getTargets();
+						String newOrder = "";
 						for (int i = 0; i < targets.length -1; i++) {
 							newOrder += targets[i] + " ";
 						}
 						newOrder += targets[targets.length-1];
 						goalsOrderText.setText(newOrder);
+						goalsOrder = goalsOrderText.getText();
+						log.debug("New order : " + goalsOrder); 
 					}
     			}
 		    }
@@ -285,6 +289,7 @@ public class GoalsPickerDialog  extends Dialog {
 		if ( goalsOrder != null ) {
 			goalsOrderText.setText(goalsOrder);
 			//@todo check goals and expand parent also...
+			
 		}
     }
 

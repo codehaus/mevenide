@@ -62,6 +62,7 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.TableEditor;
 import org.eclipse.swt.events.ModifyEvent;
@@ -323,8 +324,11 @@ public class MavenArgumentsTab extends AbstractLaunchConfigurationTab  {
                 public void widgetSelected(SelectionEvent arg0) {
 					GoalsPickerDialog goalsPickerDialog = new GoalsPickerDialog();
 					goalsPickerDialog.setGoalsOrder(goalsText.getText());
-					goalsPickerDialog.open();
-					goalsText.setText(goalsPickerDialog.getOrderedGoals());
+					int ok = goalsPickerDialog.open();
+					if ( ok == Window.OK ) {
+						selectedGoals = goalsPickerDialog.getOrderedGoals();
+						goalsText.setText(goalsPickerDialog.getOrderedGoals());
+					}
                 }                	 
 			}
 		);
