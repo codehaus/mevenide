@@ -5,7 +5,7 @@
   <id>mevenide-netbeans-project</id>
   <name>Mevenide Netbeans project support</name>
   <artifactId>mevenide-netbeans-project</artifactId>
-  <currentVersion>0.2.1</currentVersion>
+  <currentVersion>0.2.2</currentVersion>
   <package>org.mevenide.netbeans.project</package>
   <shortDescription>Netbeans Maven project type support module</shortDescription>
   <description>
@@ -18,7 +18,7 @@
     <dependency>     
         <groupId>mevenide</groupId>
         <artifactId>maven-mevenide-plugin</artifactId>
-        <version>0.1.1</version>
+        <version>0.1.2</version>
         <type>plugin</type> 
     </dependency>
     <dependency>     

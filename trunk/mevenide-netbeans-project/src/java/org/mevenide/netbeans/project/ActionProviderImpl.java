@@ -33,6 +33,7 @@ import org.mevenide.netbeans.project.exec.RunOutputFilter;
 import org.mevenide.properties.IPropertyLocator;
 import org.mevenide.properties.IPropertyResolver;
 import org.netbeans.spi.project.ActionProvider;
+import org.openide.LifecycleManager;
 import org.openide.awt.HtmlBrowser;
 import org.openide.awt.StatusDisplayer;
 import org.openide.execution.ExecutionEngine;
@@ -202,6 +203,8 @@ public class ActionProviderImpl implements ActionProvider {
     private void runGoal(String goal, Lookup lookup, 
                          OutputFilter out, OutputFilter err, 
                          InputOutput io) throws java.lang.IllegalArgumentException {
+        // save all edited files.. maybe finetune for project's files only, however that would fail for multiprojects..
+        LifecycleManager.getDefault().saveAll();                             
         // setup executor first..                     
         MavenExecutor exec = new MavenExecutor(project, goal);
         exec.setNoBanner(MavenSettings.getDefault().isNoBanner());
