@@ -16,6 +16,12 @@
  */
 package org.mevenide.ui.eclipse.nature;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
@@ -45,7 +51,15 @@ import org.eclipse.swt.widgets.Text;
  */
 public class PatternsTab extends AbstractLaunchConfigurationTab {
 
+    private static final Log log = LogFactory.getLog(PatternsTab.class);
+    
+    
     private Table table;
+    
+    private boolean autoBuild;
+
+
+    private Button autoBuildButton;
     
     public PatternsTab() {
         setDirty(false);
@@ -56,10 +70,7 @@ public class PatternsTab extends AbstractLaunchConfigurationTab {
         composite.setLayout(new GridLayout());
         composite.setLayoutData(new GridData(GridData.FILL_BOTH));
         
-        Text descriptionText = new Text(composite, SWT.READ_ONLY);
-        descriptionText.setText("Specify the patterns that will trigger the launch activation");
-        GridData descriptionData = new GridData(GridData.FILL_HORIZONTAL);
-        descriptionText.setLayoutData(descriptionData);
+        createDescriptionText(composite);
         
         Composite patternsComposite = new Composite(composite, SWT.NULL);
         GridLayout layout = new GridLayout();
@@ -70,11 +81,25 @@ public class PatternsTab extends AbstractLaunchConfigurationTab {
 
         createTable(patternsComposite);
         
-        Button autoBuild = new Button(composite, SWT.CHECK);
-        autoBuild.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-        autoBuild.setText("Auto Build");
+        autoBuildButton = new Button(composite, SWT.CHECK);
+        autoBuildButton.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        autoBuildButton.setText("Auto Build");
+        autoBuildButton.addSelectionListener(new SelectionAdapter() {
+            public void widgetSelected(SelectionEvent arg0) {
+                autoBuild = !autoBuild;
+                setDirty(true);
+				updateLaunchConfigurationDialog();
+            }
+        });
         
         setControl(composite);
+    }
+
+    private void createDescriptionText(Composite composite) {
+        Text descriptionText = new Text(composite, SWT.READ_ONLY);
+        descriptionText.setText("Specify the patterns that will trigger the launch activation");
+        GridData descriptionData = new GridData(GridData.FILL_HORIZONTAL);
+        descriptionText.setLayoutData(descriptionData);
     }
 
     private void createTable(Composite parent) {
@@ -202,15 +227,64 @@ public class PatternsTab extends AbstractLaunchConfigurationTab {
 	}
 
     public void setDefaults(ILaunchConfigurationWorkingCopy configuration) {
-        // TODO Auto-generated method stub
     }
 
     public void initializeFrom(ILaunchConfiguration configuration) {
-        // TODO Auto-generated method stub
+        initPatterns(configuration);
+        initAutoBuild(configuration);
+    }
+
+    private void initAutoBuild(ILaunchConfiguration configuration) {
+        try {
+            autoBuild = configuration.getAttribute("AUTO_BUILD", false);
+        }
+        catch (CoreException e) {
+            String message = "Unable to retrieve autobuild value from configuration"; 
+            log.error(message, e);
+        }
+        autoBuildButton.setSelection(autoBuild);
+    }
+
+    private void initPatterns(ILaunchConfiguration configuration) {
+        table.removeAll();	
+        Map patternList = new HashMap();
+        try {
+            patternList = configuration.getAttribute("PATTERNS_LIST", new HashMap());
+        }
+        catch (CoreException e) {
+            String message = "Unable to retrieve pattern list from configuration"; 
+            log.error(message, e);
+        }
+        for (Iterator i = patternList.keySet().iterator(); i.hasNext(); ) {
+            String pattern = (String) i.next();
+            String description = (String) patternList.get(pattern);
+            TableItem item = new TableItem(table, SWT.NULL);
+            item.setText(new String[] {
+                  pattern,
+                  description,
+            });
+        }
     }
 
     public void performApply(ILaunchConfigurationWorkingCopy configuration) {
-        // TODO Auto-generated method stub
+        storePatterns(configuration);
+        storeAutoBuild(configuration);
+    }
+
+    private void storeAutoBuild(ILaunchConfigurationWorkingCopy configuration) {
+        configuration.setAttribute("AUTO_BUILD", autoBuild);
+        
+    }
+
+    private void storePatterns(ILaunchConfigurationWorkingCopy configuration) {
+       Map patterns = new HashMap();
+       TableItem[] items = table.getItems();
+ 	   for (int i = 0; i < items.length; i++) {
+ 		   String key = items[i].getText(0);
+ 		   String value = items[i].getText(1);
+ 		   patterns.put(key, value);
+ 	   }
+ 	   configuration.setAttribute("PATTERNS_LIST", patterns);
     }
 
     public String getName() {
