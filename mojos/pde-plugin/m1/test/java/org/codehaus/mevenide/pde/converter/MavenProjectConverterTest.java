@@ -17,6 +17,7 @@
 package org.codehaus.mevenide.pde.converter;
 
 import java.io.File;
+import org.apache.maven.jelly.MavenJellyContext;
 import org.apache.maven.project.Build;
 import org.apache.maven.project.Organization;
 import org.apache.maven.project.Project;
@@ -47,7 +48,7 @@ public class MavenProjectConverterTest extends TestCase {
         unitTest.addResource(r);
         project.getBuild().setUnitTest(unitTest);
         project.setFile(new File(getClass().getResource("/it.v3/project.xml").getFile()));
-        converter = new MavenProjectConverter(project);
+        converter = new MavenProjectConverter(project, new MavenJellyContext());
     }
 
     protected void tearDown() throws Exception {

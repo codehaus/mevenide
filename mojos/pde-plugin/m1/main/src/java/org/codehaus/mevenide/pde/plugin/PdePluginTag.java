@@ -22,6 +22,7 @@ import java.util.List;
 import org.apache.commons.jelly.JellyTagException;
 import org.apache.commons.jelly.XMLOutput;
 import org.apache.commons.jelly.tags.core.JellyTag;
+import org.apache.maven.jelly.MavenJellyContext;
 import org.apache.maven.project.Project;
 import org.codehaus.mevenide.pde.PdePluginException;
 import org.codehaus.mevenide.pde.archive.Include;
@@ -41,29 +42,29 @@ public class PdePluginTag extends JellyTag {
     public void doTag(XMLOutput arg0) throws JellyTagException {
         try {
             
-            Project m1Project = (Project) getContext().getVariable("pom");
+            Project m1Project = (Project) context.getVariable("pom");
             
             PdePluginBuilder builder = new PdePluginBuilder();
             
-            String artifactName = (String) getContext().getVariable("maven.pde.name");
+            String artifactName = (String) context.getVariable("maven.pde.name");
             if ( StringUtils.isEmpty(artifactName) ) {
                 artifactName = m1Project.getArtifactId() + "-" + 
                                new VersionAdapter().adapt(m1Project.getCurrentVersion());
             }
             
-            String destinationFolder = (String) getContext().getVariable("maven.build.dir");
+            String destinationFolder = (String) context.getVariable("maven.build.dir");
             builder.setArtifact(destinationFolder + "/" + artifactName + ".zip");
             
-            File basedir = new File((String) getContext().getVariable("basedir"));
+            File basedir = new File((String) context.getVariable("basedir"));
             builder.setBasedir(basedir);
            
-            String excludes = StringUtils.stripEnd((String) getContext().getVariable("maven.pde.excludes"), ",");
+            String excludes = StringUtils.stripEnd((String) context.getVariable("maven.pde.excludes"), ",");
             builder.setExcludes(excludes);
             
-            builder.setLibFolder((String) getContext().getVariable("maven.pde.libTargetPath"));
-            builder.setClassesLocation((String) getContext().getVariable("maven.build.dest"));
+            builder.setLibFolder((String) context.getVariable("maven.pde.libTargetPath"));
+            builder.setClassesLocation((String) context.getVariable("maven.build.dest"));
 
-            builder.setProject(new MavenProjectConverter(m1Project).convert());
+            builder.setProject(new MavenProjectConverter(m1Project, (MavenJellyContext) context).convert());
             
             List includes = getCommonIncludes(basedir);
                 

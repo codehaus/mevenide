@@ -18,6 +18,7 @@ package org.codehaus.mevenide.pde.plugin;
 
 import java.io.File;
 import java.util.List;
+import org.apache.maven.jelly.MavenJellyContext;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.mevenide.pde.PdePluginException;
 import org.codehaus.mevenide.pde.archive.SimpleZipCreator;
@@ -52,6 +53,7 @@ public class PdePluginBuilder {
     
     /** comma separated list of files to include in the generated zip */
     private List /** org.codehaus.mevenide.pde.archive.Include */ includes;
+    
     
     public void build() throws PdePluginException {
 	    CommonPluginValuesReplacer replacer = new CommonPluginValuesReplacer(basedir.getAbsolutePath(), project, libFolder); 
