@@ -16,6 +16,7 @@
  */
 package org.mevenide.properties.resolver;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.StringTokenizer;
@@ -57,16 +58,15 @@ public class ProjectWalker2 implements IPropertyFinder {
         Object currentReflectionObject = proj;
         while (tok.hasMoreTokens()) {
             String next = tok.nextToken();
-            next = "get" + Character.toUpperCase(next.charAt(0)) + next.substring(1);
+//            next = "get" + Character.toUpperCase(next.charAt(0)) + next.substring(1);
             try {
-                Method method = currentReflectionObject.getClass().getMethod(next, null); 
-                currentReflectionObject = method.invoke(currentReflectionObject, null);
-            } catch (NoSuchMethodException exc) {
+                Field f = currentReflectionObject.getClass().getDeclaredField(next);
+                f.setAccessible(true);
+                currentReflectionObject = f.get(currentReflectionObject);
+                f.setAccessible(false);
+            } catch (NoSuchFieldException exc) {
                 currentReflectionObject = null;
                 logger.error("wrong pom definition=" + key, exc);
-            } catch (InvocationTargetException exc2) {
-                currentReflectionObject = null;
-                logger.error("wrong pom definition=" + key, exc2);
             } catch (Exception exc3) {
                 // illegataccess + illegalargument
                 currentReflectionObject = null;
