@@ -91,8 +91,7 @@ public class DependencyFactoryTest extends AbstractMevenideTestCase{
 		//BUG-DependencyResolver_getDependency-NOT_RECOGNIZED_PATTERN $DEP-2
 		assertNull(dep.getVersion());	
 		assertEquals("rt", dep.getArtifactId());
-        // mkleint - when setting id to dep, the group will be the same in maven-rc2
-		assertEquals("rt", dep.getGroupId());
+		assertEquals("", dep.getGroupId());
 		assertEquals("rt.jar", dep.getJar());
 		
 		artefact = new File(testTypeDirectory, "ojb-1.0.rc3.pyo");
@@ -128,7 +127,7 @@ public class DependencyFactoryTest extends AbstractMevenideTestCase{
 		dep = dependencyFactory.getDependency("/home/my-fake-0.1.zip");
 		assertEquals("0.1", dep.getVersion());
 		assertEquals("my-fake", dep.getArtifactId());
-		assertEquals("my-fake", dep.getGroupId());
+		assertEquals("", dep.getGroupId());
 		assertEquals("my-fake-0.1.zip", dep.getJar());
 	}
 
