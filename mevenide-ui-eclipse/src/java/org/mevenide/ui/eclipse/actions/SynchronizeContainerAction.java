@@ -52,6 +52,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.StructuredSelection;
@@ -88,8 +89,11 @@ public class SynchronizeContainerAction extends AbstractMevenideAction {
 		
 		Object firstElement = ((StructuredSelection) selection).getFirstElement();
        
-        if ( firstElement instanceof IContainer ) {
-	   		container = (IContainer) firstElement;        
+		if ( firstElement instanceof IContainer ) {
+            container = (IContainer) firstElement;        
+        }
+        if ( firstElement instanceof IJavaProject ) {
+            container = ((IJavaProject) firstElement).getProject(); 
         }
     }
 
