@@ -194,7 +194,6 @@ public class SearchQueryView extends ViewPart implements RepositoryEventListener
         label.setText("Type");
         
         typeCombo = new Combo(container, SWT.DROP_DOWN | SWT.SINGLE | SWT.READ_ONLY);
-        typeCombo.setText(Mevenide.DEPENDENCY_TYPE_JAR);
         typeCombo.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         typeCombo.addSelectionListener(new SelectionListener() {
             public void widgetDefaultSelected(SelectionEvent arg0) {
@@ -205,7 +204,7 @@ public class SearchQueryView extends ViewPart implements RepositoryEventListener
         });
         
         updateTypeCombo();
-        
+        typeCombo.setText(Mevenide.DEPENDENCY_TYPE_JAR);
     }
 
     private void updateTypeCombo() {
