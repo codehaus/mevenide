@@ -27,11 +27,27 @@ import org.mevenide.Environment;
  * @version $Id$
  * 
  */
-public class DependencyUtil {
+public class DependencyFactory {
 	
-	private DependencyUtil() {
+	private DependencyFactory() {
 	}
 	
+	/** singleton related */
+	private static DependencyFactory factory = null;
+	private static Object lock = new Object();
+
+	public static DependencyFactory getFactory() {
+		if (factory != null) {
+			return factory;
+		}
+		synchronized (lock) {
+			if (factory == null) {
+				factory = new DependencyFactory();
+			}
+			return factory;
+		}
+	}
+		
 	/**
 	 * should return the Dependency instance associated with a given path.
 	 * however this seems hard if not impossible to achieve. indeed i cannot 
@@ -51,7 +67,7 @@ public class DependencyUtil {
 	 * @param absoluteFileName
 	 * @return
 	 */
-	public static Dependency getDependency(String absoluteFileName) {
+	public Dependency getDependency(String absoluteFileName) {
 		String fileName = new File(absoluteFileName).getName();
 		String groupId = getGroupId(fileName);
 		
@@ -78,7 +94,7 @@ public class DependencyUtil {
 	 * @param fileName
 	 * @return
 	 */
-	private static String getGroupId(String fileName) {
+	private String getGroupId(String fileName) {
 		File mavenLocalRepo = new File(Environment.getMavenHome(), "repository");
 		return getGroupId(fileName, mavenLocalRepo);
 	}
@@ -91,7 +107,7 @@ public class DependencyUtil {
 	 * @param rootDirectory
 	 * @return
 	 */
-	private static String getGroupId(String fileName, File rootDirectory) {
+	private String getGroupId(String fileName, File rootDirectory) {
 		File[] files = rootDirectory.listFiles();
 		File[] children = files == null ? new File[0] : files;
 		for (int i = 0; i < children.length; i++) {
@@ -110,11 +126,11 @@ public class DependencyUtil {
 		return null;
 	}
 	
-	private static String guessArtifactId(String fileName) {
+	private String guessArtifactId(String fileName) {
 		return fileName.substring(0,1) + split(fileName)[1];
 	}
 	
-	private static String guessVersion(String fileName) {
+	private String guessVersion(String fileName) {
 		if ( fileName.indexOf("SNAPSHOT") > 0 ) {
 			return "SNAPSHOT";
 		}
@@ -136,7 +152,7 @@ public class DependencyUtil {
 	 * @param fileName
 	 * @return
 	 */
-	private static String[] split(String fileName) {
+	private String[] split(String fileName) {
 		String[] groups ;
 		
 		Pattern p = Pattern.compile("(.*)-(\\d+(.*))*\\.(\\w*)");
@@ -165,7 +181,7 @@ public class DependencyUtil {
 	 * @param absoluteFileName
 	 * @return
 	 */
-	private static String guessGroupId(String absoluteFileName) {
+	private String guessGroupId(String absoluteFileName) {
 		return new File(absoluteFileName).getParentFile().getParentFile().getName();
 	}
 }

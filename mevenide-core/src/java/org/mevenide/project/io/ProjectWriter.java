@@ -23,7 +23,7 @@ import org.apache.maven.project.Dependency;
 import org.apache.maven.project.Project;
 import org.apache.maven.project.Resource;
 import org.mevenide.ProjectConstants;
-import org.mevenide.project.DependencyUtil;
+import org.mevenide.project.DependencyFactory;
 
 /**
  * 
@@ -160,7 +160,7 @@ public class ProjectWriter {
 	public void addDependency(String path, File pom) throws Exception {
 		Project project = projectReader.read(pom);
 		
-		Dependency dependency = DependencyUtil.getDependency(path);
+		Dependency dependency = DependencyFactory.getFactory().getDependency(path);
 		
 		if ( !isDependencyPresent(project, dependency) ) {
 			
