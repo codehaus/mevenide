@@ -62,7 +62,8 @@ class DependencyUtil {
 		String version = guessVersion(fileName);
 		
 		Dependency dependency = new Dependency();
-		dependency.setGroupId(groupId);
+		
+		dependency.setGroupId(groupId); //?
 		dependency.setArtifactId(artifactId);
 		dependency.setVersion(version);
 		

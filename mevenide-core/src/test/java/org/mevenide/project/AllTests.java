@@ -12,7 +12,7 @@
  * Lesser General Public License for more details.
  * 
  */
-package org.mevenide.project.io;
+package org.mevenide.project;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
@@ -30,10 +30,8 @@ public class AllTests  {
     public static Test suite() {
         TestSuite suite = new TestSuite();
         
-		suite.addTestSuite(ProjectReaderTest.class);
-		suite.addTestSuite(ProjectWriterTest.class);
-		suite.addTestSuite(DefaultProjectMarshallerTest.class);
-		
+		suite.addTestSuite(DependencyUtilTest.class);
+        
         return suite;
     }
 }
