@@ -45,7 +45,7 @@ import org.mevenide.util.StringUtils;
 public class ProjectReader {
 	private static final Log log = LogFactory.getLog(ProjectReader.class);
 	
-	private MavenXpp3Reader unmarshaller ; 
+	private MavenXpp3Reader unmarshaller ;
 	
 	private static ProjectReader projectReader = null;
 

@@ -18,7 +18,7 @@ package org.mevenide.util;
 
 import org.apache.maven.model.Build;
 import org.apache.maven.project.MavenProject;
-import org.apache.maven.model.Repository;
+import org.apache.maven.model.Scm;
 
 import junit.framework.TestCase;
 
@@ -38,9 +38,9 @@ public class MevenideUtilsTest extends TestCase {
         build.setSourceDirectory("mySourceDir");
         project.setBuild(build);
         
-        Repository repository = new Repository();
+        Scm repository = new Scm();
         repository.setConnection("myCvsConnection");
-        project.setRepository(repository);
+        project.setScm(repository);
         
     }
 

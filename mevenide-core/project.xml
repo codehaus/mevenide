@@ -121,8 +121,7 @@
             	<eclipse.plugin.bundle>true</eclipse.plugin.bundle>
             </properties>
         </dependency>
-        <!-- mklent - is grant used from the mevenide-core code or is it here only 
-            to handle runtime dependnecies? -->
+        <!-- commons-grant : Runtime dependency used by [un]marshaller - should be unneeded now -->
         <dependency>
             <groupId>commons-grant</groupId>
             <artifactId>commons-grant</artifactId>

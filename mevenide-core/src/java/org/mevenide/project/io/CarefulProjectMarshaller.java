@@ -34,7 +34,7 @@ import org.apache.maven.model.Developer;
 import org.apache.maven.model.License;
 import org.apache.maven.model.MailingList;
 import org.apache.maven.model.Organization;
-import org.apache.maven.model.Repository;
+import org.apache.maven.model.Scm;
 import org.apache.maven.model.Resource;
 import org.apache.maven.model.UnitTest;
 import org.apache.maven.model.Version;
@@ -135,7 +135,7 @@ public class CarefulProjectMarshaller implements IProjectMarshaller {
         findAndReplaceSimpleElement(counter, root, "siteDirectory", project.getModel().getSiteDirectory());
         findAndReplaceSimpleElement(counter, root, "distributionSite", project.getModel().getDistributionSite());
         findAndReplaceSimpleElement(counter, root, "distributionDirectory", project.getModel().getDistributionDirectory());
-        doUpdateRepository(counter, root, project.getModel().getRepository());
+        doUpdateRepository(counter, root, project.getModel().getScm());
         doUpdateVersions(counter, root, project.getModel().getVersions());
         doUpdateBranches(counter, root, project.getModel().getBranches());
         doUpdateMailingLists(counter, root, project.getModel().getMailingLists());
@@ -160,7 +160,7 @@ public class CarefulProjectMarshaller implements IProjectMarshaller {
         }
     }
     
-	private void doUpdateRepository(Counter counter, Element root, Repository repos) 
+	private void doUpdateRepository(Counter counter, Element root, Scm repos) 
             throws Exception 
     {
         boolean shouldExist = repos != null;
