@@ -65,10 +65,12 @@ import org.mevenide.project.io.ProjectReader;
 import org.mevenide.ui.eclipse.sync.action.ToggleViewAction;
 import org.mevenide.ui.eclipse.sync.action.ToggleWritePropertiesAction;
 import org.mevenide.ui.eclipse.sync.event.IActionListener;
+import org.mevenide.ui.eclipse.sync.event.ISynchronizationConstraintListener;
 import org.mevenide.ui.eclipse.sync.event.ISynchronizationDirectionListener;
 import org.mevenide.ui.eclipse.sync.event.IdeArtifactEvent;
 import org.mevenide.ui.eclipse.sync.event.NodeEvent;
 import org.mevenide.ui.eclipse.sync.event.PomArtifactEvent;
+import org.mevenide.ui.eclipse.sync.event.SynchronizationConstraintEvent;
 import org.mevenide.ui.eclipse.sync.model.ArtifactMappingContentProvider;
 import org.mevenide.ui.eclipse.sync.model.DependencyMappingNode;
 import org.mevenide.ui.eclipse.sync.model.DependencyPropertyWrapper;
@@ -111,6 +113,8 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
     
     private int direction;
     private List directionListeners = new ArrayList(); 
+    
+    private List synchronizationConstraintListeners = new ArrayList();
     
 	private List poms;
 	private IProject project;
@@ -395,13 +399,28 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
 			setDirection(((ToggleViewAction) event.getSource()).getDirection());
 		}
 		if ( event.getSource() instanceof ToggleWritePropertiesAction ) {
-			//....
+			fireSynchronizationConstraintEvent(new SynchronizationConstraintEvent(SynchronizationConstraintEvent.WRITE_PROPERTIES, ((Boolean) event.getNewValue()).booleanValue()));
 		}
 		if ( toolBarManager != null ) {
 			log.debug("property changed. updating");
 	    	toolBarManager.update(true);
 		}
     }
+	
+	private void fireSynchronizationConstraintEvent(SynchronizationConstraintEvent event) {
+		for (int i = 0; i < synchronizationConstraintListeners.size(); i++) {
+			ISynchronizationConstraintListener listener = (ISynchronizationConstraintListener) synchronizationConstraintListeners.get(i);
+			listener.constraintsChange(event);
+		}
+	}
+	
+	public void addSynchronizationConstraintListener(ISynchronizationConstraintListener listener) {
+		synchronizationConstraintListeners.add(listener);	
+	}
+	
+	public void removeSynchronizationConstraintListener(ISynchronizationConstraintListener listener) {
+		synchronizationConstraintListeners.remove(listener);	
+	}
 	
 	private void createContextualMenu() {
 		MenuManager contextManager = new MenuManager();

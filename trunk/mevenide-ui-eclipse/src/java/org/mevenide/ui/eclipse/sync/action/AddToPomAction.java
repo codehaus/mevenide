@@ -19,6 +19,8 @@ package org.mevenide.ui.eclipse.sync.action;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Project;
+import org.mevenide.ui.eclipse.sync.event.ISynchronizationConstraintListener;
+import org.mevenide.ui.eclipse.sync.event.SynchronizationConstraintEvent;
 import org.mevenide.ui.eclipse.sync.model.ArtifactWrapper;
 import org.mevenide.ui.eclipse.sync.model.IArtifactMappingNode;
 
@@ -28,20 +30,26 @@ import org.mevenide.ui.eclipse.sync.model.IArtifactMappingNode;
  * @version $Id$
  * 
  */
-public class AddToPomAction extends ArtifactAction {
+public class AddToPomAction extends ArtifactAction implements ISynchronizationConstraintListener {
 	private static Log log = LogFactory.getLog(AddToPomAction.class);
+	
+	private boolean shouldWriteProperties;
 	
 	public void addEntry(IArtifactMappingNode item, Project project) throws Exception {
 		ArtifactWrapper artifactWrapper = getArtifactWrapper(item.getDeclaringPom(), item.getResolvedArtifact());
 		
 		if ( artifactWrapper != null ) {
-			artifactWrapper.addTo(project);
+			artifactWrapper.addTo(project, shouldWriteProperties);
 		}
 		
 		fireArtifactAddedToPom(item, project);
 	}
 	
-	
+	public void constraintsChange(SynchronizationConstraintEvent event) {
+		if ( SynchronizationConstraintEvent.WRITE_PROPERTIES.equals(event.getConstraintId()) ) {
+			this.shouldWriteProperties = event.getNewValue();
+		}
+	}
 
 	
 	
