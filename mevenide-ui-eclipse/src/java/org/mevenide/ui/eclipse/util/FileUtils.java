@@ -162,8 +162,10 @@ public class FileUtils {
 		try {
 			raf = new RandomAccessFile(ignoredResourceFile.getLocation().toOSString(), "r");
 			String line = null;
-			while ( (line = raf.readLine()) != null && !line.trim().equals("")) {
-				ignoredLines.add(line);
+			while ( (line = raf.readLine()) != null ) {
+				if ( line.trim().length() > 0 ) {
+				    ignoredLines.add(line.trim());
+				}
 			}
 		}
 		finally {

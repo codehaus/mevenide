@@ -37,6 +37,7 @@ import org.mevenide.project.ProjectConstants;
 import org.mevenide.project.io.ProjectReader;
 import org.mevenide.properties.resolver.DefaultsResolver;
 import org.mevenide.properties.resolver.PropertyFilesAggregator;
+import org.mevenide.ui.eclipse.util.FileUtils;
 import org.mevenide.ui.eclipse.util.JavaProjectUtils;
 import org.mevenide.ui.eclipse.util.SourceDirectoryTypeUtil;
 import org.mevenide.util.MevenideUtils;
@@ -138,16 +139,16 @@ public class MavenProjectNode extends AbstractSynchronizationNode implements ISe
 		List artifacts = ArtifactListBuilder.build(project);
 		originalArtifactNodes = new MavenArtifactNode[artifacts.size()];
 		List comparisonList = artifactNodes != null ? Arrays.asList(artifactNodes) : new ArrayList();
-	    for (int i = 0; i < artifacts.size(); i++) {
+		for (int i = 0; i < artifacts.size(); i++) {
 	    	Artifact artifact = (Artifact) artifacts.get(i);
 	    	MavenArtifactNode artifactNode = new MavenArtifactNode(artifact, this);
-	    	if ( !comparisonList.contains(artifactNode) ) {
+	    	if ( !comparisonList.contains(artifactNode) && !FileUtils.isArtifactIgnored(artifactNode.toString(), eclipseProject) ) {
 	    		originalArtifactNodes[i] = artifactNode; 
 	    		originalArtifactNodes[i].setDirection(ISelectableNode.INCOMING_DIRECTION);
 	    		comparisonList.add(artifactNode);
 	    	}
 		}
-		artifactNodes = originalArtifactNodes;
+		artifactNodes = (MavenArtifactNode[]) comparisonList.toArray(new MavenArtifactNode[0]);
 		joinEclipseProjectArtifacts();
 	}
 
@@ -156,7 +157,7 @@ public class MavenProjectNode extends AbstractSynchronizationNode implements ISe
 	    List eclipseArtifacts = createArtifactNodes(parentNode.getEclipseClasspathArtifacts());
 	    for (int i = 0; i < eclipseArtifacts.size(); i++) {
 	    	MavenArtifactNode eclipseArtifactNode = (MavenArtifactNode) eclipseArtifacts.get(i);
-	    	if ( !tempNodes.contains(eclipseArtifactNode)  ) {
+	    	if ( !tempNodes.contains(eclipseArtifactNode) && !FileUtils.isArtifactIgnored(eclipseArtifactNode.toString(), eclipseProject) ) {
 				eclipseArtifactNode.setDirection(ISelectableNode.OUTGOING_DIRECTION);
 				tempNodes.add(eclipseArtifactNode);
 			}
@@ -246,6 +247,7 @@ public class MavenProjectNode extends AbstractSynchronizationNode implements ISe
 	}
 	
 	private void createDirectoryNodes(Map sourceDirectoryMap) {
+	    List tempNodes = new ArrayList();
 		originalDirectoryNodes = new DirectoryNode[sourceDirectoryMap.size()];
 		Iterator iterator = sourceDirectoryMap.keySet().iterator();
 		int u = 0;
@@ -254,10 +256,13 @@ public class MavenProjectNode extends AbstractSynchronizationNode implements ISe
 			String nextPath = (String) sourceDirectoryMap.get(nextType);
 			DirectoryNode node = createDirectoryNode(nextType, nextPath);
 			node.setDirection(ISelectableNode.INCOMING_DIRECTION);
+			if ( !FileUtils.isArtifactIgnored(node.toString(), eclipseProject) ) {
+			    tempNodes.add(node);
+			}
 			originalDirectoryNodes[u] = node;
 			u++;
 		}
-		directoryNodes = originalDirectoryNodes;
+		directoryNodes = (DirectoryNode[]) tempNodes.toArray(new DirectoryNode[0]);
 	}
 
 	private DirectoryNode createDirectoryNode(String type, String path) {
@@ -305,7 +310,7 @@ public class MavenProjectNode extends AbstractSynchronizationNode implements ISe
 	//quicky.. might be done more properly at initialization stage ?
 	public boolean select(int direction) {
 		for (int i = 0; i < this.artifactNodes.length; i++) {
-			if ( artifactNodes[i].getDirection() == direction ) {
+		 	if ( artifactNodes[i].getDirection() == direction ) {
 				return true;
 			}
 		}

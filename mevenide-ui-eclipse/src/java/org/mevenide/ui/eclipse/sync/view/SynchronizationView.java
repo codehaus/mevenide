@@ -396,11 +396,14 @@ public class SynchronizationView extends ViewPart implements IActionListener, IR
 
 						ArtifactNode selectedNode = (ArtifactNode) selection;
 						
+						//all directions
+						enableAddToIgnoreList = true;
+						
 						//outgoing 
 						enablePushToPom = (selectedNode.getDirection() & ISelectableNode.OUTGOING_DIRECTION) != 0;
 						enableRemoveFromProject = (selectedNode.getDirection() & ISelectableNode.OUTGOING_DIRECTION) != 0;
 						enableAddDependencyProperty = (selectedNode.getDirection() & ISelectableNode.OUTGOING_DIRECTION) != 0;
-						enableAddToIgnoreList = (selectedNode.getDirection() & ISelectableNode.OUTGOING_DIRECTION) != 0;
+						//enableAddToIgnoreList = (selectedNode.getDirection() & ISelectableNode.OUTGOING_DIRECTION) != 0;
 							
 						//incoming
 						enableAddToClasspath = (selectedNode.getDirection() & ISelectableNode.INCOMING_DIRECTION) != 0;
@@ -501,12 +504,12 @@ public class SynchronizationView extends ViewPart implements IActionListener, IR
 			    Object selection = ((StructuredSelection) artifactMappingNodeViewer.getSelection()).getFirstElement();
 			    if ( selection instanceof ArtifactNode ) {
 			    	ArtifactNode selectedNode = (ArtifactNode) selection;
+					manager.add(addToIgnoreList);
 					if ( (selectedNode.getDirection() & ISelectableNode.OUTGOING_DIRECTION) != 0 ) {
 						manager.add(pushToPom);
 						manager.add(removeFromProject);
 						if ( selection instanceof MavenArtifactNode ) {
 							manager.add(addDependencyProperty);
-							manager.add(addToIgnoreList);
 						}
 					}
 					if ( (selectedNode.getDirection() & ISelectableNode.INCOMING_DIRECTION) != 0 ) {
@@ -514,7 +517,7 @@ public class SynchronizationView extends ViewPart implements IActionListener, IR
 						manager.add(removeFromPom);
 					}
 					if ( (selectedNode.getDirection() & ISelectableNode.CONFLICTING_DIRECTION) != 0 ) {
-						//manager.add(markAsMerged);
+						manager.add(markAsMerged);
 					}
 					manager.add(separator);
 					manager.add(viewProperties);		

@@ -84,10 +84,27 @@ public abstract class ArtifactNode extends AbstractSynchronizationNode implement
 	}
 
 	protected void addIgnoreLine(String ignoreLine, IFile mvnIgnoreFile) throws CoreException, IOException {
-		InputStream is = mvnIgnoreFile.getContents();
-		Reader reader = new InputStreamReader(is);
-		
-		mvnIgnoreFile.appendContents(new StringInputStream(Character.LINE_SEPARATOR + ignoreLine), true, true, null);
+		InputStream is = null; 
+		Reader reader = null; 
+		InputStream lineStream = null;
+		try {
+		    is = mvnIgnoreFile.getContents();
+		    reader = new InputStreamReader(is);
+		    ignoreLine = ignoreLine + new String(new byte[]{Character.LINE_SEPARATOR});
+		    lineStream = new StringInputStream(ignoreLine);
+		    mvnIgnoreFile.appendContents(lineStream, true, true, null);
+		}
+		finally {
+		    if ( is != null ) {
+		        is.close();
+		    }
+		    if ( lineStream != null ) {
+		        lineStream.close();
+		    }
+		    if ( reader != null ) {
+		        reader.close();
+		    }
+		}
 	}
 	
 	public void addToMvnIgnore(IContainer container) throws Exception {

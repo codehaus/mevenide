@@ -36,6 +36,7 @@ import org.mevenide.project.ProjectConstants;
 import org.mevenide.project.io.ProjectReader;
 import org.mevenide.project.io.ProjectWriter;
 import org.mevenide.project.source.SourceDirectoryUtil;
+import org.mevenide.properties.resolver.util.ResolverUtils;
 import org.mevenide.ui.eclipse.util.JavaProjectUtils;
 
 
@@ -169,7 +170,7 @@ public class DirectoryNode extends ArtifactNode {
 	}
 	
 	protected String getIgnoreLine() {
-		return directory.getCleanPath();
+		return ResolverUtils.resolve((Project) parentNode.getData(), directory.getCleanPath());
 	}
 	
 	public void removeFrom(Project project) throws Exception {
