@@ -27,10 +27,14 @@
    <goal name="mevenide:run-artifact"
          description="Runs the project's jar artifact">
       <ant:path id="cp">
-<!--        <ant:pathelement location="${maven.mevenide.run.jar}"/> -->
+        <ant:pathelement location="${maven.mevenide.run.jar}"/> 
         <ant:path refid="maven.dependency.classpath"/>
        </ant:path>
-       <ant:java jar="${maven.mevenide.run.jar}" classpathref="cp" fork="true">
+       <j:set var="mainClass" value="${maven.jar.mainclass}"/>
+       <j:if test="empty mainClass">
+          <fail message="Your project doesn't define maven.jar.mainclass property. Cannot run the jar properly."/>
+       </j:if>
+       <ant:java classname="${mainClass}" classpathref="cp" fork="true">
          <ant:arg line="${maven.mevenide.run.args}"/>
          <ant:jvmarg line="${maven.mevenide.run.jvmargs}"/>
        </ant:java>
