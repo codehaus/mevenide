@@ -41,6 +41,12 @@ class DependencyUtil {
 	 * @return
 	 */
 	static Dependency getDependency(String absoluteFileName) {
+		//File f = findInRepo(fileName)
+		//if f != null 
+		//extract groupId from dirName
+		//guess artifactId and version
+		//else
+		//guess groupId, artifactId, version
 		return null;
 	}
 	

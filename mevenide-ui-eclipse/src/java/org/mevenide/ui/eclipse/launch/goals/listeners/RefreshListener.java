@@ -12,13 +12,13 @@
  * Lesser General Public License for more details.
  * 
  */
-package org.mevenide.ui.eclipse.dialog.goals.listeners;
+package org.mevenide.ui.eclipse.launch.goals.listeners;
 
 import org.eclipse.jface.viewers.CheckboxTableViewer;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.mevenide.IGoalsGrabber;
-import org.mevenide.ui.eclipse.dialog.goals.model.MevenideProvider;
+import org.mevenide.ui.eclipse.launch.goals.model.MevenideProvider;
 
 
 public class RefreshListener extends SelectionAdapter {

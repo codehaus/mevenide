@@ -52,7 +52,7 @@ public class ProjectWriter {
 	
 	public void addSource(String path, File pom, String sourceType) throws Exception {
 		
-		Project project = projectReader.readProject(pom);
+		Project project = projectReader.read(pom);
 		
 		if ( ProjectConstants.MAVEN_ASPECT_DIRECTORY.equals(sourceType) ) {
 			project.getBuild().setAspectSourceDirectory(path);
@@ -75,9 +75,6 @@ public class ProjectWriter {
 		
 	}
 	
-	public String getSkeleton(String projectName) throws Exception {
-		return ProjectSkeleton.getSkeleton(projectName);
-	}
 	
 	
 

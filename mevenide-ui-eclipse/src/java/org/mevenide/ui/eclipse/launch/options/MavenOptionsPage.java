@@ -13,7 +13,7 @@
  * 
  */
 
-package org.mevenide.ui.eclipse.dialog.options;
+package org.mevenide.ui.eclipse.launch.options;
 
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.widgets.Composite;

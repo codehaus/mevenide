@@ -12,16 +12,26 @@
  * Lesser General Public License for more details.
  * 
  */
-package org.mevenide.ui.eclipse.dialog.options.listeners;
+package org.mevenide.ui.eclipse.launch.goals.listeners;
 
+import org.eclipse.jface.viewers.CheckboxTableViewer;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.mevenide.core.AbstractGoalsManager;
 
 
-public class OptionSelectionListener extends SelectionAdapter {
-	
-       
-	public void widgetSelected(SelectionEvent arg0) {
-	
+public class DeselectAllListener extends SelectionAdapter {
+    private CheckboxTableViewer goalsTable;
+    private AbstractGoalsManager goalsManager;
+    
+    public DeselectAllListener(CheckboxTableViewer goalsTable, AbstractGoalsManager goalsManager) {
+        this.goalsTable = goalsTable;
+        this.goalsManager = goalsManager;
+	}
+    
+	public void widgetSelected(SelectionEvent e) {
+        String plugin = (String) goalsTable.getInput();
+        goalsTable.setAllChecked(false);
+		goalsManager.removeGoal(plugin, null);
 	}
 }

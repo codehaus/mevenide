@@ -12,7 +12,7 @@
  * Lesser General Public License for more details.
  * 
  */
-package org.mevenide.ui.eclipse.dialog.goals;
+package org.mevenide.ui.eclipse.launch.goals;
 
 
 

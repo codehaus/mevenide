@@ -12,7 +12,7 @@
  * Lesser General Public License for more details.
  * 
  */
-package org.mevenide.ui.eclipse.dialog.goals.listeners;
+package org.mevenide.ui.eclipse.launch.goals.listeners;
 
 import org.eclipse.jface.viewers.CheckboxTableViewer;
 import org.eclipse.jface.viewers.ISelectionChangedListener;

@@ -12,7 +12,7 @@
  * Lesser General Public License for more details.
  * 
  */
-package org.mevenide.ui.eclipse.dialog.goals;
+package org.mevenide.ui.eclipse.launch.goals;
 
 import java.io.File;
 
@@ -27,15 +27,15 @@ import org.mevenide.IGoalsGrabber;
 import org.mevenide.core.AbstractGoalsGrabber;
 import org.mevenide.core.AbstractGoalsManager;
 import org.mevenide.ui.eclipse.MavenPlugin;
-import org.mevenide.ui.eclipse.dialog.goals.listeners.GoalCheckListener;
-import org.mevenide.ui.eclipse.dialog.goals.listeners.PluginCheckListener;
-import org.mevenide.ui.eclipse.dialog.goals.listeners.DeselectAllListener;
-import org.mevenide.ui.eclipse.dialog.goals.listeners.RefreshListener;
-import org.mevenide.ui.eclipse.dialog.goals.listeners.SelectAllListener;
-import org.mevenide.ui.eclipse.dialog.goals.listeners.PluginSelectionListener;
-import org.mevenide.ui.eclipse.dialog.goals.model.GoalsProvider;
-import org.mevenide.ui.eclipse.dialog.goals.model.MevenideProvider;
-import org.mevenide.ui.eclipse.dialog.goals.model.PluginsProvider;
+import org.mevenide.ui.eclipse.launch.goals.listeners.GoalCheckListener;
+import org.mevenide.ui.eclipse.launch.goals.listeners.PluginCheckListener;
+import org.mevenide.ui.eclipse.launch.goals.listeners.DeselectAllListener;
+import org.mevenide.ui.eclipse.launch.goals.listeners.RefreshListener;
+import org.mevenide.ui.eclipse.launch.goals.listeners.SelectAllListener;
+import org.mevenide.ui.eclipse.launch.goals.listeners.PluginSelectionListener;
+import org.mevenide.ui.eclipse.launch.goals.model.GoalsProvider;
+import org.mevenide.ui.eclipse.launch.goals.model.MevenideProvider;
+import org.mevenide.ui.eclipse.launch.goals.model.PluginsProvider;
 
 /**
  * 

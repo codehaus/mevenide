@@ -22,8 +22,8 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.JavaCore;
 import org.mevenide.project.io.ProjectReader;
-import org.mevenide.project.io.ProjectWriter;
 import org.mevenide.sync.AbstractPomSynchronizer;
+import org.mevenide.util.ProjectSkeleton;
 import org.mevenide.sync.ISynchronizer;
 import org.mevenide.ui.eclipse.MavenPlugin;
 import org.mevenide.ui.eclipse.sync.DefaultPathResolverDelegate;
@@ -106,7 +106,7 @@ public class PomSynchronizer extends AbstractPomSynchronizer implements ISynchro
 	private void createPom() throws Exception {
 		pom = project.getFile("project.xml");
 		if ( !pom.getLocation().toFile().exists() ) {
-			String skel = ProjectWriter.getWriter().getSkeleton(project.getName());
+			String skel = ProjectSkeleton.getSkeleton(project.getName());
 			pom.create(new ByteArrayInputStream(skel.getBytes()), false, null);
 		}
 	}

@@ -19,7 +19,7 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.ui.PlatformUI;
-import org.mevenide.ui.eclipse.dialog.RunMavenWizard;
+import org.mevenide.ui.eclipse.launch.dialog.RunMavenWizard;
 
 /**
  * 
