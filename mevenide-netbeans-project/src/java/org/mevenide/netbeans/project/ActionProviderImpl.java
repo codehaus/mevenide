@@ -225,6 +225,12 @@ public class ActionProviderImpl implements ActionProvider {
         ExecutorTask task = ExecutionEngine.getDefault().execute("Maven", exec, exec.getInputOutput());
         //        RequestProcessor.getDefault().post();
         
+        // fire project change on when finishing maven execution, to update the classpath etc. -MEVENIDE-83
+        task.addTaskListener(new TaskListener() {
+                public void taskFinished(Task task2) {
+                    project.firePropertyChange(MavenProject.PROP_PROJECT);
+                }
+        });
         //-------------------------------------------------------------------------
         // these are temporary..
         // need a more general way of checking for opening browser.
