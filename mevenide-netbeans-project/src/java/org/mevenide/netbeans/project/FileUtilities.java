@@ -244,7 +244,6 @@ public final class FileUtilities {
         }
         File testRootFile = new File(project.getTestSrcDirectory());
         FileObject testroot = FileUtil.toFileObject(testRootFile);
-        boolean matches = FileUtil.toFile(f) != null;
         if (testroot != null && FileUtil.isParentOf(testroot, f)) {
             return f;
         }

@@ -31,7 +31,6 @@ import javax.swing.ImageIcon;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.mevenide.context.DefaultQueryContext;
-import org.mevenide.context.IProjectContext;
 import org.mevenide.context.IQueryContext;
 import org.mevenide.environment.ILocationFinder;
 import org.mevenide.environment.LocationFinderAggregator;
@@ -44,7 +43,6 @@ import org.mevenide.properties.IPropertyLocator;
 import org.mevenide.properties.IPropertyResolver;
 import org.mevenide.properties.resolver.ProjectWalker2;
 import org.mevenide.properties.resolver.PropertyLocatorFactory;
-import org.mevenide.properties.resolver.PropertyResolverFactory;
 import org.netbeans.api.project.Project;
 import org.netbeans.api.project.ProjectInformation;
 import org.netbeans.spi.project.ui.PrivilegedTemplates;
@@ -418,7 +416,6 @@ public class MavenProject implements Project {
             if (isFolder) {
                 String nameExt = fileEvent.getFile().getNameExt();
                 if (Arrays.binarySearch(filesToWatch, nameExt) != -1) {
-                    File parent = FileUtil.toFile(fileEvent.getFile().getParent());
                     fileEvent.getFile().addFileChangeListener(getFileUpdater());
                     firePropertyChange(PROP_PROJECT);
                 }

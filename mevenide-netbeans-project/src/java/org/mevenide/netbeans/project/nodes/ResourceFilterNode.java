@@ -37,13 +37,11 @@ import org.openide.xml.XMLUtil;
  *
  * @author  Milos Kleint (ca206216@tiscali.cz)
  */
-class ResourceFilterNode extends FilterNode
-{
+class ResourceFilterNode extends FilterNode {
     private static Log logger = LogFactory.getLog(ResourceFilterNode.class);
     private Resource resource;
     private File root;
     private boolean isIncluded;
-    private boolean isFile;
     
     ResourceFilterNode(Node original, File resPath, Resource res) {
         super(original, new ResFilterChildren(original, resPath, res));
@@ -60,8 +58,7 @@ class ResourceFilterNode extends FilterNode
         }
     }
     
-    public Action[] getActions( boolean context )
-    {
+    public Action[] getActions( boolean context ) {
         return super.getActions(context);
     }
     

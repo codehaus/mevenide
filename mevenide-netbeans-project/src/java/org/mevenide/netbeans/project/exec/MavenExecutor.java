@@ -71,7 +71,6 @@ public class MavenExecutor implements Runnable {
     private String meter = "silent"; //NOI18N
     
     private static final long serialVersionUID = 7564737833872873L;
-    private NbProcessDescriptor descriptor;
     private MavenProject project;
     private Process proces;
     private String format;

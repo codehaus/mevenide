@@ -143,8 +143,8 @@ public class MavenRepoLibraryProvider implements LibraryProvider {
                 logger.debug("Artifact=" + artifacts[i].getNameExt() + " isdata=" + artifacts[i].isData());
                 if (artifacts[i].isData() && artifacts[i].getExt().equals(typStr)) {
                     try {
-                        IDependencyResolver res = DependencyResolverFactory.getFactory().newInstance(
-                                                          FileUtil.toFile(artifacts[i]).getAbsolutePath());
+//                        IDependencyResolver res = DependencyResolverFactory.getFactory().newInstance(
+//                                                          FileUtil.toFile(artifacts[i]).getAbsolutePath());
                         LibraryImplementation library = org.netbeans.spi.project.libraries.support.LibrariesSupport.createLibraryImplementation("j2se", new String[] {"classpath", "javadoc", "src"});
 //                        MavenLibraryImpl library = new MavenLibraryImpl(res.guessArtifactId(),
 //                                                                        res.guessGroupId(),
