@@ -22,7 +22,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Dependency;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.TableTreeViewer;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
@@ -38,10 +37,8 @@ import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.PlatformUI;
 import org.mevenide.Environment;
 import org.mevenide.project.dependency.DependencyFactory;
-import org.mevenide.project.dependency.DependencyUtil;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.sync.model.DependencyGroup;
-import org.mevenide.ui.eclipse.sync.model.DependencyGroupContentProvider;
 import org.mevenide.ui.eclipse.sync.model.DependencyGroupMarshaller;
 import org.mevenide.ui.eclipse.sync.view.DependencyMappingViewControl;
 
@@ -204,17 +201,7 @@ public class DependencyMappingWizardPage extends WizardPage {
 								String key = (String) keys.get(i);
 								String value = (String) props.get(key);
 								log.debug(key + " = " + value);
-								ISelection selection = viewer.getSelection();
-								Dependency affectedDependency = null;
-								log.debug("selected : " + selection.getClass() + " item");
-								if ( selection instanceof Dependency ) {
-									affectedDependency = (Dependency) selection;
-								}
-								else {
-									affectedDependency = ((DependencyGroupContentProvider.DependencyInfo) selection).getDependency();
-								}
-								affectedDependency.addProperty(key, value);
-								log.debug("Added property (" + key + ", " + value + ") to [" + DependencyUtil.toString(affectedDependency));
+								
 							}
 							
 						}
