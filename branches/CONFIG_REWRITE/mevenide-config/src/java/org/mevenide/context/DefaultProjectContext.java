@@ -17,6 +17,7 @@
 package org.mevenide.context;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -39,6 +40,7 @@ import org.mevenide.properties.IPropertyResolver;
 class DefaultProjectContext implements IProjectContext {
     private static final Log logger = LogFactory.getLog(DefaultProjectContext.class);
     
+    private IQueryErrorCallback callback;
     private Project mergedProject;
     private List projects;
     private List projectFiles;
@@ -51,7 +53,8 @@ class DefaultProjectContext implements IProjectContext {
     private IPropertyResolver propResolver;
     private IQueryContext queryContext;
     
-    public DefaultProjectContext(IQueryContext context, IPropertyResolver resolver) {
+    public DefaultProjectContext(IQueryContext context, IPropertyResolver resolver, IQueryErrorCallback errorCallback) {
+        callback = errorCallback;
         unmarshaller = new JDomProjectUnmarshaller();
         propResolver = resolver;
         queryContext = context;
@@ -146,16 +149,16 @@ class DefaultProjectContext implements IProjectContext {
     private void readProject(File file) {
         logger.debug("readproject=" + file);
         if (file.exists()) {
+            callback.discardError(IQueryErrorCallback.ERROR_CANNOT_FIND_POM);
             Element proj;
             try {
                 proj = unmarshaller.parseRootElement(file);
             } catch (Exception exc) {
                 JDOMFactory fact = new DefaultJDOMFactory();
-                fact.element("project");
-                jdomRootElements.add(fact);
+                jdomRootElements.add(fact.element("project"));
                 projectFiles.add(file);
                 projectTimestamps.add(new Long(file.lastModified()));
-                logger.error("cannot parse file=" + file, exc);
+                callback.handleError(IQueryErrorCallback.ERROR_UNPARSABLE_POM, exc);
                 return;
             }
             if (proj != null) {
@@ -163,26 +166,31 @@ class DefaultProjectContext implements IProjectContext {
                 projectFiles.add(file);
                 projectTimestamps.add(new Long(file.lastModified()));
                 String extend = proj.getChildText("extend");
+                callback.discardError(IQueryErrorCallback.ERROR_UNPARSABLE_POM);
                 if (extend != null) {
                     extend = propResolver.resolveString(extend);
                     File absolute = new File(extend);
                     absolute = JDomProjectUnmarshaller.normalizeFile(absolute);
                     if (absolute.exists() && (!absolute.equals(file))) {
+                        callback.discardError(IQueryErrorCallback.ERROR_CANNOT_FIND_PARENT_POM);
                         readProject(absolute);
                     } else {
                         File relative = new File(queryContext.getProjectDirectory(), extend);
                         relative = JDomProjectUnmarshaller.normalizeFile(relative);
                         if (relative.exists() && (!relative.equals(file))) {
+                            callback.discardError(IQueryErrorCallback.ERROR_CANNOT_FIND_PARENT_POM);
                             readProject(relative);
                         } else {
-                            // TODO - for debugging purposes
-                            // later just semisilently ignore??
-                            //throw new IllegalStateException("Cannot read parent.(" + extend + ")" );
-                            logger.error("Cannot read parent.(" + extend + ")");
+                                //throw new IllegalStateException("Cannot read parent.(" + extend + ")" );
+                            callback.handleError(IQueryErrorCallback.ERROR_CANNOT_FIND_PARENT_POM, 
+                                   new FileNotFoundException("Cannot find <extend> file:" + extend));
                         }
                     }
                 }
             }
+        } else {
+            callback.handleError(IQueryErrorCallback.ERROR_CANNOT_FIND_POM, 
+                       new FileNotFoundException("Cannot find project.xml file:" + file.getAbsolutePath()));
         }
     }
     
