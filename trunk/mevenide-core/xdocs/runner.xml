@@ -10,7 +10,7 @@
         	<p>
         	  To be done.
         	</p>
-        	<p><hr/></p>
+        	<div style="border-bottom: solid 1px #cccccc; margin-top: 10px; margin-bottom: 10px;"></div>
         	<p>
         		<center>
 			    	<img src="images/diags/runner-diagram.gif"/>
