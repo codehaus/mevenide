@@ -17,6 +17,7 @@
 package org.mevenide.project.io;
 
 import java.io.File;
+import java.io.FileOutputStream;
 
 import org.apache.maven.project.Dependency;
 import org.mevenide.environment.ILocationFinder;
@@ -48,11 +49,12 @@ public class JarOverrideReaderTest extends TestCase {
 	
 	protected void setUp() throws Exception {
 		pom = new File(ProjectReaderTest.class.getResource("/project.xml").getFile());
+		setUpProperties(pom);
 		jarOverrideReader = new JarOverrideReader();
 		
 		PropertyModelFactory projectModelFactory = PropertyModelFactory.getFactory(); 
 		projectProperties = projectModelFactory.newPropertyModel(new File(pom.getParent(), "project.properties"), true);
-		buildProperties = projectModelFactory.newPropertyModel(new File(pom.getParent(), "project.properties"), true);
+		buildProperties = projectModelFactory.newPropertyModel(new File(pom.getParent(), "build.properties"), true);
 
 		locationFinder = new LocationFinderAggregator();
 		
@@ -70,6 +72,25 @@ public class JarOverrideReaderTest extends TestCase {
 		File discoveryRepoPath = new File(locationFinder.getMavenLocalRepository(), "commons-discovery");
 		File discoveryTypePath = new File(discoveryRepoPath, "jars");
 		expectedDiscoveryPath = new File(discoveryTypePath, "commons-discovery-0.2.jar");
+	}
+	
+	private void setUpProperties(File pom) throws Exception {
+		FileOutputStream fos = null;
+		try  {
+			String testContent = "#test project.properties " + "\r\n" 
+								+ "maven.jar.override = on "  + "\r\n"
+								+ "maven.jar.commons-discovery = 0.2 " + "\r\n"
+								+ "maven.jar.maven = lib/maven-1.0-rc1.jar";
+
+			File projectProperties = new File(pom.getParent(), "project.properties");
+			fos = new FileOutputStream(projectProperties, false);
+			fos.write(testContent.getBytes());
+		}
+		finally {
+			if ( fos != null ) {
+				fos.close();
+			}
+		}
 	}
 	
 	protected void tearDown() throws Exception {
