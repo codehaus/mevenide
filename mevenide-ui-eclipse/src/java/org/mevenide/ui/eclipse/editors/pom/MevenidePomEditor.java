@@ -159,7 +159,7 @@ public class MevenidePomEditor extends FormEditor {
             createBuildPage();
             createUnitTestsPage();
             createReportsPage();
-            createSourcePage();
+            //createSourcePage();
         } catch (PartInitException e) {
             log.error("Unable to create source page", e); //$NON-NLS-1$
         }
@@ -265,15 +265,15 @@ public class MevenidePomEditor extends FormEditor {
         if (log.isDebugEnabled()) {
             log.debug("changing page: " + getActivePage() + " => " + newPageIndex); //$NON-NLS-1$ //$NON-NLS-2$
         }
-//        IPomEditorPage oldPage = getCurrentPomEditorPage();
-//        IPomEditorPage newPage = getPomEditorPage(newPageIndex);
-//        if (oldPage != null && newPage != null) {
-//            oldPage.pageDeactivated(newPage);
-//            newPage.pageActivated(oldPage);
-//            if (newPage.isPropertySourceSupplier()) {
-//                openPropertiesSheet();
-//            }
-//        }
+        IPomEditorPage oldPage = getCurrentPomEditorPage();
+        IPomEditorPage newPage = getPomEditorPage(newPageIndex);
+        if (oldPage != null && newPage != null) {
+            oldPage.pageDeactivated(newPage);
+            newPage.pageActivated(oldPage);
+            if (newPage.isPropertySourceSupplier()) {
+                openPropertiesSheet();
+            }
+        }
 
         super.pageChange(newPageIndex);
         log.debug("changed page"); //$NON-NLS-1$
@@ -470,13 +470,11 @@ public class MevenidePomEditor extends FormEditor {
             if (log.isDebugEnabled()) {
                 log.debug("old pom name = " + pom.getName() + " and new = " + updatedPom.getName()); //$NON-NLS-1$ //$NON-NLS-2$
             }
+            
             comparator.compare(updatedPom);
-
-            String pomName = pom.getName();
-            if (!StringUtils.isNull(pomName)) {
-                setPartName(pomName);
-                firePropertyChange(PROP_TITLE);
-            }
+           
+            updateTitleAndToolTip();
+            
             setModelDirty(false);
             
             clean = true;
