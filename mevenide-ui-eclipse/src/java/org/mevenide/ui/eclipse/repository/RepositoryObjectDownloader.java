@@ -14,8 +14,10 @@
  *  limitations under the License.
  * =========================================================================
  */
-package org.mevenide.ui.eclipse.repository.model;
+package org.mevenide.ui.eclipse.repository;
 
+import org.apache.maven.project.Dependency;
+import org.mevenide.ui.eclipse.repository.model.Artifact;
 
 
 /**  
@@ -24,28 +26,9 @@ package org.mevenide.ui.eclipse.repository.model;
  * @version $Id$
  * 
  */
-public class Type extends BaseRepositoryObject {
-
-    private Group parent;
+public interface RepositoryObjectDownloader {
     
-    private String name;
+    String HTTP = "http";
     
-    public Type(String name, Group parent) {
-        this.name = name;
-        this.parent = parent;
-    }
-    
-   
-    public String getName() {
-        return name + "s";
-    }
-    
-    public BaseRepositoryObject getParent() {
-        return parent;
-    }
-    
-    
-    public String getRepositoryUrl() {
-        return parent.getRepositoryUrl();
-    }
+    Dependency download(Artifact object) throws DownloadException ;
 }
