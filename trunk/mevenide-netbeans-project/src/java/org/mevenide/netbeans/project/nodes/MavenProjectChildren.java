@@ -24,23 +24,31 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.EventListenerList;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Build;
 import org.apache.maven.project.Project;
 import org.mevenide.netbeans.project.FileUtilities;
 import org.mevenide.netbeans.project.MavenProject;
+import org.mevenide.netbeans.project.MavenSourcesImpl;
 import org.netbeans.api.java.project.JavaProjectConstants;
 
 import org.netbeans.api.project.SourceGroup;
 
 import org.netbeans.api.project.Sources;
+import org.netbeans.api.queries.VisibilityQuery;
 import org.netbeans.spi.java.project.support.ui.PackageView;
 
 
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.URLMapper;
 import org.openide.loaders.DataFolder;
+import org.openide.loaders.DataObject;
+import org.openide.loaders.ChangeableDataFilter;
+import org.openide.loaders.DataObjectNotFoundException;
 import org.openide.nodes.Node;
 import org.openide.nodes.Children;
 
@@ -105,16 +113,23 @@ class MavenProjectChildren extends Children.Keys {
         if (fo != null) {
             list.add(KEY_JELLY_SCRIPT);
         }
+        SourceGroup[] xdocsgroup = srcs.getSourceGroups(MavenSourcesImpl.TYPE_XDOCS);
+        for (int i = 0; i < xdocsgroup.length; i++) {
+            list.add(xdocsgroup[i]);
+        }
         setKeys(list);
     }
     
     
     protected Node[] createNodes(Object key) {
-        //TODO replace all project stuff with the resolved paths..
         Node n = null;
-        Project proj = project.getOriginalMavenProject();
         if (key instanceof SourceGroup) {
-            n = PackageView.createPackageView((SourceGroup)key);
+            SourceGroup grp = (SourceGroup)key;
+            if (MavenSourcesImpl.NAME_XDOCS.equals(grp.getName())) {
+                n = new DocsRootNode(grp, project);
+            } else {
+                n = PackageView.createPackageView(grp);
+            }
         }
         else if (key == KEY_JELLY_SCRIPT) {
             n = new PluginScriptNode(project.getProjectDirectory());
@@ -146,6 +161,9 @@ class MavenProjectChildren extends Children.Keys {
         //TODO - create the folder if it doesn't exist? and do it here? I'd rather do it when opening project..
         return null;
     }
+    
+    
+ 
     
     
 }

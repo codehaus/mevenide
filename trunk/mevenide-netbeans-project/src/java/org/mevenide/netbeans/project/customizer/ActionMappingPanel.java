@@ -387,11 +387,12 @@ public class ActionMappingPanel extends JPanel implements ProjectPanel {
        String key = "maven.netbeans.exec." + actionName; //NOI18N
        String value = project.getPropertyResolver().getValue(key);
        int location = project.getPropertyLocator().getPropertyLocation(key);
+       String defaultValue = ActionProviderImpl.getDefaultGoalForAction(key);
        if (value == null) {
-           value = ActionProviderImpl.getDefaultGoalForAction(key);
+           value = defaultValue;
            location = IPropertyLocator.LOCATION_DEFAULTS;
        } 
-       changes.put(key, new TextFieldPropertyChange(key, value, location, field, oc));
+       changes.put(key, new TextFieldPropertyChange(key, value, location, field, oc, defaultValue));
    }
 
     public void setResolveValues(boolean resolve) {

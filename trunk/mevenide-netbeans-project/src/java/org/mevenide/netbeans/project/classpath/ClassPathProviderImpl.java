@@ -44,11 +44,11 @@ import org.openide.filesystems.FileUtil;
 public final class ClassPathProviderImpl implements ClassPathProvider {
     private static final Log logger = LogFactory.getLog(ClassPathProviderImpl.class);
   
-    private static final String SRC = "src.dir";
-    private static final String TEST_SRC = "test.src.dir";    
-    private static final String BUILD = "build.classes.dir";    
-    private static final String TEST_BUILD = "build.test.classes.dir";    
-    private static final String ARTIFACT = "actifact";    
+//    private static final String SRC = "src.dir";
+//    private static final String TEST_SRC = "test.src.dir";    
+//    private static final String BUILD = "build.classes.dir";    
+//    private static final String TEST_BUILD = "build.test.classes.dir";    
+//    private static final String ARTIFACT = "actifact";    
     
     private static final int TYPE_SRC = 0;
     private static final int TYPE_TESTSRC = 1;

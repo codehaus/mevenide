@@ -206,6 +206,12 @@ public class ActionProviderImpl implements ActionProvider
     public Action createBasicMavenAction(String name, String action) {
         return new BasicAction(name, action);
     }
+    
+    public Action createCustomMavenAction(String name, String goal) {
+        return new CustomAction(name, goal);
+    }    
+    
+    
 //    public Action createMultiProjectAction(String name, String goals) {
 //        return new MultiProjectAction(name, goals);
 //    }
@@ -222,6 +228,21 @@ public class ActionProviderImpl implements ActionProvider
         
         public void actionPerformed(java.awt.event.ActionEvent e) {
             ActionProviderImpl.this.invokeAction(gls, ActionProviderImpl.this.project.getLookup());
+        }
+    }
+    
+    private class CustomAction extends AbstractAction {
+        private String nm;
+        private String gls;
+        
+        
+        private CustomAction(String name, String goals) {
+            gls = goals;
+            putValue(Action.NAME, name);
+        }
+        
+        public void actionPerformed(java.awt.event.ActionEvent e) {
+            ActionProviderImpl.this.runGoal(gls, ActionProviderImpl.this.project.getLookup());
         }
     }
     

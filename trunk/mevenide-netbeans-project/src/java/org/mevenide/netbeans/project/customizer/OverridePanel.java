@@ -26,6 +26,7 @@ import java.beans.PropertyVetoException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -64,6 +65,10 @@ public class OverridePanel extends JPanel implements ExplorerManager.Provider, P
     private BeanTreeView btv;
     private OriginChange originChange;
     private OriginChange originChange2;
+    private CheckBoxPropertyChange overrideChange;
+    private HashMap dependencyChanges;
+    private TextFieldPropertyChange current;
+    private boolean isResolveValues = false;
     
     /** Creates new form CustomGoalsPanel */
     public OverridePanel(MavenProject proj, boolean editable) {
@@ -84,33 +89,24 @@ public class OverridePanel extends JPanel implements ExplorerManager.Provider, P
         btv.setDefaultActionAllowed( false );
         pnlDeps.add(btv, fillConstraints);
         manager.addPropertyChangeListener( new ManagerChangeListener() );
-        
-        originChange.setChangeObserver(new OriginChange.ChangeObserver() {
-            public void actionSelected(String action) {
-                if (OriginChange.ACTION_RESET_TO_DEFAULT.equals(action)) {
-                    // assuming the correct default value is not-override..
-                    System.out.println("overriding to default");
-                    cbOverride.setSelected(false);
-                }
-            }
-        });
-        cbOverride.addActionListener(new ActionListener()  {
-            public void actionPerformed(ActionEvent event) {
-                if (originChange.getSelectedLocationID() == IPropertyLocator.LOCATION_NOT_DEFINED ||
-                    originChange.getSelectedLocationID() == IPropertyLocator.LOCATION_DEFAULTS) {
-                        // assume the default placement is build..
-                        // maybe have configurable or smartish later..
-                        originChange.setAction(OriginChange.ACTION_DEFINE_IN_BUILD);
-                }
-            }
-        });
         setFieldsEditable(editable);
     }
     
     public void setFieldsEditable(boolean editable) {
         txtOverrideValue.setEditable(editable);
-        originChange2.getComponent().setEnabled(editable);
+//        originChange2.getComponent().setEnabled(editable);
     }  
+    
+   private void populateChangeInstances() {
+       String key = "maven.jar.override"; //NOI18N
+       String value = project.getPropertyResolver().getResolvedValue(key);
+       int location = project.getPropertyLocator().getPropertyLocation(key);
+       overrideChange = new CheckBoxPropertyChange(key, value, location, cbOverride, originChange, "false");
+        manager.setRootContext(createRootNode(project.getOriginalMavenProject()));
+        btv.expandAll();
+        selectFirstNode();
+   }
+    
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -251,6 +247,19 @@ public class OverridePanel extends JPanel implements ExplorerManager.Provider, P
     }
     
     public void setDependency(Dependency dependency) {
+        if (current != null) {
+            current.startIgnoringChanges();
+        }
+        String key = "maven.jar." + dependency.getArtifactId();
+        TextFieldPropertyChange change = (TextFieldPropertyChange)dependencyChanges.get(key);
+        if (change == null) {
+            String value = project.getPropertyResolver().getValue(key);
+            int location = project.getPropertyLocator().getPropertyLocation(key);
+            change = new TextFieldPropertyChange(key, value, location, txtOverrideValue, originChange2, "");
+            dependencyChanges.put(key, change);
+        }
+        current = change;
+        current.stopIgnoringChanges();
     }    
     
     public List getChanges() {
@@ -266,16 +275,8 @@ public class OverridePanel extends JPanel implements ExplorerManager.Provider, P
     }
     
     public void setResolveValues(boolean resolveValues) {
-        setFieldsEditable(!resolveValues);
-        manager.setRootContext(createRootNode(project.getOriginalMavenProject()));
-        btv.expandAll();
-        selectFirstNode();
-        int loc = project.getPropertyLocator().getPropertyLocation("maven.jar.override");
-        String value = project.getPropertyResolver().getResolvedValue("maven.jar.override");
-        if ("true".equalsIgnoreCase(value)) {
-            cbOverride.setSelected(true);
-        }
-        originChange.setSelectedLocationID(loc);
+        isResolveValues = resolveValues;
+        
     }
     
     public void setValidateObserver(ProjectValidateObserver observer) {

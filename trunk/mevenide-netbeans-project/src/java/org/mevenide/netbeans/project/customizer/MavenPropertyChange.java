@@ -18,6 +18,8 @@ package org.mevenide.netbeans.project.customizer;
 
 
 /**
+ *
+ * Holder and resolver of changes of a property field.
  * @author  Milos Kleint (ca206216@tiscali.cz)
  */
 public interface MavenPropertyChange {

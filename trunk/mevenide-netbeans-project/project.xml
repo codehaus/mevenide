@@ -102,7 +102,7 @@
         <groupId>netbeans</groupId>
         <artifactId>openide-loaders</artifactId>
         <!-- include nb specification version.. that's important for compiling -->
-        <version>4.12</version>
+        <version>4.16</version>
         <url>http://www.netbeans.org</url>
         <type>jar</type>
         <properties>
