@@ -49,13 +49,17 @@
 package org.mevenide.ui.eclipse.sync.wip;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Project;
 import org.apache.maven.project.Resource;
+import org.mevenide.project.ProjectConstants;
 
 /**
  * 
@@ -71,7 +75,7 @@ class DirectoryMappingNodeContainer extends AbstractArtifactMappingNodeContainer
     }
     
     public void attachPom(Project project) {
-        //attachDirectories(project);
+        attachDirectories(project);
         attachResources(project);
     }
     
@@ -86,7 +90,6 @@ class DirectoryMappingNodeContainer extends AbstractArtifactMappingNodeContainer
 		        for (Iterator itr = resources.iterator(); itr.hasNext(); ) {
 		            Resource pomResource = (Resource) itr.next();
 		            if ( resolvedDirectory == null || lowMatch(pomResource, resolvedDirectory) ) {
-		                System.err.println();
 		                currentNode.setArtifact(pomResource);
 		                currentNode.setDeclaringPom(project.getFile());
 		                resourcesCopy.remove(pomResource);
@@ -114,5 +117,45 @@ class DirectoryMappingNodeContainer extends AbstractArtifactMappingNodeContainer
             newNodes[i] = node;
         }
         this.nodes = newNodes;
+    }
+    
+    private void attachDirectories(Project project) {
+        if ( project.getBuild() != null ) {
+            Map directories = getPomSourceDirectories(project);
+            Map directoriesCopy = new HashMap(directories);
+            
+            for (int i = 0; i < nodes.length; i++) {
+                DirectoryMappingNode currentNode = (DirectoryMappingNode) nodes[i];
+                Directory resolvedDirectory = (Directory) currentNode.getResolvedArtifact();
+                for (Iterator itr = directories.keySet().iterator(); itr.hasNext(); ) {
+                    String directoryType = (String) itr.next();
+                    String directory = (String) directories.get(directoryType);
+                    if ( directory.replaceAll("\\\\", "/").equals(resolvedDirectory.getPath().replaceAll("\\\\", "/")) ) {
+	                    Directory pomDirectory = new Directory();
+	                    pomDirectory.setPath(directory);
+	                    pomDirectory.setType(directoryType);
+                        currentNode.setArtifact(pomDirectory);
+                        currentNode.setDeclaringPom(project.getFile());
+                        directoriesCopy.remove(directoryType);
+                    }
+                }
+            }
+            //attachOrphanDirectories(directoriesCopy);
+        }
+    }
+
+    private Map getPomSourceDirectories(Project project) {
+        //use HashTable to disallow null values..
+        Map directories = new Hashtable();
+        if ( project.getBuild().getSourceDirectory() != null ) {
+            directories.put(ProjectConstants.MAVEN_SRC_DIRECTORY, project.getBuild().getSourceDirectory());
+        }
+        if ( project.getBuild().getUnitTestSourceDirectory() != null ) {
+            directories.put(ProjectConstants.MAVEN_TEST_DIRECTORY, project.getBuild().getUnitTestSourceDirectory());
+        }
+        if ( project.getBuild().getAspectSourceDirectory() != null ) {
+            directories.put(ProjectConstants.MAVEN_ASPECT_DIRECTORY, project.getBuild().getAspectSourceDirectory());
+        }
+        return directories;
     }
 }
