@@ -443,7 +443,7 @@ public abstract class PageSection {
 				: GridData.VERTICAL_ALIGN_CENTER;
 			GridData data = new GridData(vAlign | GridData.HORIZONTAL_ALIGN_BEGINNING);
 			data.horizontalSpan = span;
-			data.widthHint = 8;
+			data.widthHint = 12;
 			data.heightHint = 12;
 			inheritanceToggle.setLayoutData(data);
 			inheritanceToggle.setSize(SWT.DEFAULT, SWT.DEFAULT);
