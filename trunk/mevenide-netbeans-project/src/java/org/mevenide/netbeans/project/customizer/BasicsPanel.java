@@ -53,6 +53,7 @@ public class BasicsPanel extends JPanel implements ProjectPanel {
     private DocumentListener listener;
     private MavenProject project;
    
+    private OriginChange ocID;
     private OriginChange ocArtifactID;
     private OriginChange ocGroupID;
     private OriginChange ocPackage;
@@ -80,6 +81,10 @@ public class BasicsPanel extends JPanel implements ProjectPanel {
     private void initComponents() {//GEN-BEGIN:initComponents
         java.awt.GridBagConstraints gridBagConstraints;
 
+        lblId = new javax.swing.JLabel();
+        txtId = new javax.swing.JTextField();
+        ocID = LocationComboFactory.createPOMChange(project, false);
+        btnId = (JButton)ocID.getComponent();
         lblArtifactID = new javax.swing.JLabel();
         txtArtifactID = new javax.swing.JTextField();
         ocArtifactID = LocationComboFactory.createPOMChange(project, false);
@@ -104,26 +109,46 @@ public class BasicsPanel extends JPanel implements ProjectPanel {
 
         setLayout(new java.awt.GridBagLayout());
 
+        lblId.setLabelFor(txtId);
+        lblId.setText("ID :");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        add(lblId, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(0, 3, 0, 0);
+        add(txtId, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(0, 3, 0, 0);
+        add(btnId, gridBagConstraints);
+
         lblArtifactID.setLabelFor(txtArtifactID);
         lblArtifactID.setText(org.openide.util.NbBundle.getMessage(BasicsPanel.class, "BasicsPanel.lblArtifactID.text"));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridy = 1;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(6, 0, 0, 0);
         add(lblArtifactID, gridBagConstraints);
 
         txtArtifactID.setMinimumSize(new java.awt.Dimension(30, 26));
         txtArtifactID.setPreferredSize(new java.awt.Dimension(30, 26));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridy = 1;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.weightx = 0.1;
-        gridBagConstraints.insets = new java.awt.Insets(0, 3, 0, 0);
+        gridBagConstraints.insets = new java.awt.Insets(6, 3, 0, 0);
         add(txtArtifactID, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 1;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(3, 3, 0, 0);
         add(btnArtifactID, gridBagConstraints);
@@ -132,7 +157,7 @@ public class BasicsPanel extends JPanel implements ProjectPanel {
         lblGroupID.setText(org.openide.util.NbBundle.getMessage(BasicsPanel.class, "BasicsPanel.lblGroupID.text"));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridy = 2;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(6, 0, 0, 0);
         add(lblGroupID, gridBagConstraints);
@@ -141,7 +166,7 @@ public class BasicsPanel extends JPanel implements ProjectPanel {
         txtGroupID.setPreferredSize(new java.awt.Dimension(30, 26));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridy = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.weightx = 0.1;
@@ -150,7 +175,7 @@ public class BasicsPanel extends JPanel implements ProjectPanel {
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridy = 2;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(3, 3, 0, 0);
         add(btnGroupID, gridBagConstraints);
@@ -159,7 +184,7 @@ public class BasicsPanel extends JPanel implements ProjectPanel {
         lblCurrentVersion.setText(org.openide.util.NbBundle.getMessage(BasicsPanel.class, "BasicsPanel.lblCurrentVersion.text"));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridy = 3;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(6, 0, 0, 0);
         add(lblCurrentVersion, gridBagConstraints);
@@ -168,7 +193,7 @@ public class BasicsPanel extends JPanel implements ProjectPanel {
         txtCurrentVersion.setPreferredSize(new java.awt.Dimension(30, 26));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridy = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.weightx = 0.1;
@@ -177,7 +202,7 @@ public class BasicsPanel extends JPanel implements ProjectPanel {
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridy = 3;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(3, 3, 0, 0);
         add(btnCurrentVersion, gridBagConstraints);
@@ -186,7 +211,7 @@ public class BasicsPanel extends JPanel implements ProjectPanel {
         lblName.setText(org.openide.util.NbBundle.getMessage(BasicsPanel.class, "BasicsPanel.lblName.text"));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 3;
+        gridBagConstraints.gridy = 4;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(6, 0, 0, 0);
         add(lblName, gridBagConstraints);
@@ -195,7 +220,7 @@ public class BasicsPanel extends JPanel implements ProjectPanel {
         txtName.setPreferredSize(new java.awt.Dimension(30, 26));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 3;
+        gridBagConstraints.gridy = 4;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.weightx = 0.1;
@@ -204,7 +229,7 @@ public class BasicsPanel extends JPanel implements ProjectPanel {
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 3;
+        gridBagConstraints.gridy = 4;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(3, 3, 0, 0);
         add(btnName, gridBagConstraints);
@@ -253,22 +278,26 @@ public class BasicsPanel extends JPanel implements ProjectPanel {
     private javax.swing.JButton btnArtifactID;
     private javax.swing.JButton btnCurrentVersion;
     private javax.swing.JButton btnGroupID;
+    private javax.swing.JButton btnId;
     private javax.swing.JButton btnName;
     private javax.swing.JButton btnPackage;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JLabel lblArtifactID;
     private javax.swing.JLabel lblCurrentVersion;
     private javax.swing.JLabel lblGroupID;
+    private javax.swing.JLabel lblId;
     private javax.swing.JLabel lblName;
     private javax.swing.JLabel lblPackage;
     private javax.swing.JTextField txtArtifactID;
     private javax.swing.JTextField txtCurrentVersion;
     private javax.swing.JTextField txtGroupID;
+    private javax.swing.JTextField txtId;
     private javax.swing.JTextField txtName;
     private javax.swing.JTextField txtPackage;
     // End of variables declaration//GEN-END:variables
 
    private void populateChangeInstances() {
+        createPOMChangeInstance("id", txtId, ocID);
         createPOMChangeInstance("artifactId", txtArtifactID, ocArtifactID);
         createPOMChangeInstance("groupId", txtGroupID, ocGroupID);
         createPOMChangeInstance("currentVersion", txtCurrentVersion, ocCurrentVersion);
@@ -287,6 +316,7 @@ public class BasicsPanel extends JPanel implements ProjectPanel {
    }        
    
      public void setResolveValues(boolean resolve) {
+        assignValue("id", resolve);
         assignValue("artifactId", resolve);
         assignValue("groupId", resolve);
         assignValue("currentVersion", resolve);
@@ -321,6 +351,7 @@ public class BasicsPanel extends JPanel implements ProjectPanel {
         valObserver = observer;
         if (listener == null) {
             listener = new ValidateListener();
+            txtId.getDocument().addDocumentListener(listener);
             txtArtifactID.getDocument().addDocumentListener(listener);
             txtGroupID.getDocument().addDocumentListener(listener);
             txtPackage.getDocument().addDocumentListener(listener);
@@ -340,7 +371,8 @@ public class BasicsPanel extends JPanel implements ProjectPanel {
      */
     private int doValidateCheck() {
         if (Math.min(txtArtifactID.getText().trim().length(),
-        txtGroupID.getText().trim().length()) == 0) {
+                     txtGroupID.getText().trim().length()) == 0
+             && txtId.getText().trim().length() == 0) {
             return 1;
         }
         if (txtPackage.getText().trim().length() > 0) {
