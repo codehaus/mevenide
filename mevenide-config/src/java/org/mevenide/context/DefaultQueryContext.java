@@ -21,6 +21,7 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Properties;
@@ -215,10 +216,20 @@ public class DefaultQueryContext extends AbstractQueryContext {
         long lastModified = propFile.lastModified();
         if (lastModified > timestamp) {
             propModel.clear();
+            InputStream str = null;
             try {
-                propModel.load(new BufferedInputStream(new FileInputStream(propFile)));
+                str = new BufferedInputStream(new FileInputStream(propFile));
+                propModel.load(str);
             } catch (IOException exc) {
                 callback.handleError(IQueryErrorCallback.ERROR_UNREADABLE_PROP_FILE, exc);
+            } finally {
+                if (str != null) {
+                    try {
+                        str.close();
+                    } catch (IOException exc) {
+                        logger.error("Cannot close " + propFile, exc);
+                    }
+                }
             }
                 
         }
