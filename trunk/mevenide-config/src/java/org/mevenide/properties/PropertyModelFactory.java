@@ -62,78 +62,85 @@ public class PropertyModelFactory {
     }
 
     /**
-     * create a new PropertyModel from the InputStream parameter
+     * create a new PropertyModel from the InputStream parameter, will close the stream after usage.
      */
     public PropertyModel newPropertyModel(InputStream stream) throws IOException {
-		BufferedReader reader = new BufferedReader(new InputStreamReader(stream, "8859_1"));
-        
-        // according to Properties.java comment, it has to be 8859_1
-        String line;
-        
+        BufferedReader reader = null;
         PropertyModel model = new PropertyModel();
-        
-        Comment currComment = null;
-        KeyValuePair currKeyPair = null;
-        
-        boolean appendingMode = false;
-        
-        while ( (line = reader.readLine()) != null ) {
-			
-            line = Utils.removeTrailingWhitespaces(line);
+        try {
+            reader = new BufferedReader(new InputStreamReader(stream, "8859_1"));
             
-            // Find start of key first..
-            // apparently doens't have to be the first in line..
-            int len = line.length();
-            int keyStart;
-            for (keyStart = 0; keyStart < len; keyStart++) {
-                if ( whiteSpaceChars.indexOf(line.charAt(keyStart)) == -1 )
+            // according to Properties.java comment, it has to be 8859_1
+            String line;
+            
+            
+            Comment currComment = null;
+            KeyValuePair currKeyPair = null;
+            
+            boolean appendingMode = false;
+            
+            while ( (line = reader.readLine()) != null ) {
+                
+                line = Utils.removeTrailingWhitespaces(line);
+                
+                // Find start of key first..
+                // apparently doens't have to be the first in line..
+                int len = line.length();
+                int keyStart;
+                for (keyStart = 0; keyStart < len; keyStart++) {
+                    if ( whiteSpaceChars.indexOf(line.charAt(keyStart)) == -1 )
                         break;
-            }
-            if ( appendingMode ) {
-                currComment = null;
-				currKeyPair.setValue(Utils.removeTrailingSlash(currKeyPair.getValue()).trim());
-                currKeyPair.addToValue(Utils.removeTrailingWhitespaces(line));
-                appendingMode = continueLine(line);
-                continue;
-            }
-
-            // Blank lines are added to comment (unless it's being added to the
-            // previous value??
-            if ( keyStart == len ) {
-			    currKeyPair = null;
-                model.addToComment(currComment, line);
-                continue;
-            }
-
-            // Continue lines that end in slashes if they are not comments
-            char firstChar = line.charAt(keyStart);
-            if ( (firstChar == '#') || (firstChar == '!') ) {
-				currKeyPair = null;
-                model.addToComment(currComment, line);
-                continue;
-            }
-            else {
-				int sepIndex = Math.min(line.indexOf('='), line.indexOf(':'));
-				//if only one of ':' or '=' sepIndex will be -1 so valid index might be the max
-				if ( sepIndex < 0 ) {
-					sepIndex = Math.max(line.indexOf('='), line.indexOf(':'));
-				}
-				if ( sepIndex > 0 ) {
-  					//if we substring till sepIndex - 1 lines that dont put a space before key and separator are not well parsed
-					String key = line.substring(0, sepIndex);
-                    String value = line.substring(sepIndex + 1);
+                }
+                if ( appendingMode ) {
                     currComment = null;
-                    if ( key.trim().length() == 0 ) {
-                        log.warn("strange line - key is whitespace");
-                        continue;
-                    }
-                    currKeyPair = model.newKeyPair(key, line.charAt(sepIndex), value);
-	                appendingMode = continueLine(line);
+                    currKeyPair.setValue(Utils.removeTrailingSlash(currKeyPair.getValue()).trim());
+                    currKeyPair.addToValue(Utils.removeTrailingWhitespaces(line));
+                    appendingMode = continueLine(line);
+                    continue;
+                }
+                
+                // Blank lines are added to comment (unless it's being added to the
+                // previous value??
+                if ( keyStart == len ) {
+                    currKeyPair = null;
+                    model.addToComment(currComment, line);
+                    continue;
+                }
+                
+                // Continue lines that end in slashes if they are not comments
+                char firstChar = line.charAt(keyStart);
+                if ( (firstChar == '#') || (firstChar == '!') ) {
+                    currKeyPair = null;
+                    model.addToComment(currComment, line);
+                    continue;
                 }
                 else {
-                    log.warn("A non-comment non key-pair line encountered:'" + line + "'");
+                    int sepIndex = Math.min(line.indexOf('='), line.indexOf(':'));
+                    //if only one of ':' or '=' sepIndex will be -1 so valid index might be the max
+                    if ( sepIndex < 0 ) {
+                        sepIndex = Math.max(line.indexOf('='), line.indexOf(':'));
+                    }
+                    if ( sepIndex > 0 ) {
+                        //if we substring till sepIndex - 1 lines that dont put a space before key and separator are not well parsed
+                        String key = line.substring(0, sepIndex);
+                        String value = line.substring(sepIndex + 1);
+                        currComment = null;
+                        if ( key.trim().length() == 0 ) {
+                            log.warn("strange line - key is whitespace");
+                            continue;
+                        }
+                        currKeyPair = model.newKeyPair(key, line.charAt(sepIndex), value);
+                        appendingMode = continueLine(line);
+                    }
+                    else {
+                        log.warn("A non-comment non key-pair line encountered:'" + line + "'");
+                    }
                 }
-			}
+            }
+        } finally {
+            if (reader != null) {
+                reader.close();
+            } 
         }
         return model;
     }
