@@ -261,6 +261,23 @@
          </view>
       </perspectiveExtension>
    </extension>
-   
+   <!-- Maven Project Wizards -->
+   	<extension point="org.eclipse.ui.newWizards">
+		<category id="org.mevenide.ui.eclipse.category.mevenide" name="%ProjectWizard.category.name"/>
+		<wizard id="org.mevenide.ui.eclipse.wizard" 
+				name="%ProjectWizard.name" 
+				category="org.mevenide.ui.eclipse.category.mevenide" 
+				icon="icons/wizard-project.gif"
+				project="true"
+				finalPerspective="org.eclipse.jdt.ui.JavaPerspective"
+				class="org.mevenide.ui.eclipse.wizard.MavenProjectWizard">
+ 			<description>
+				%ProjecyWizard.description
+			</description>
+ 			<!--
+ 			<selection class="org.eclipse.core.resources.IResource"/>
+ 			-->
+		</wizard>
+	</extension>
 
 </plugin>
