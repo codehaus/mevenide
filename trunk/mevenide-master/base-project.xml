@@ -15,7 +15,7 @@
   <package>org.mevenide</package>
   <!-- url>http://mevenide.sf.net/${pom.artifactId}/</url -->
   <url>http://mevenide.sf.net</url>
-  <issueTrackingUrl/>
+  <issueTrackingUrl>http://sourceforge.net/tracker/?group_id=54263&amp;atid=473195</issueTrackingUrl>
   <siteAddress>shell.sourceforge.net</siteAddress>
   <!-- siteDirectory>/home/groups/m/me/mevenide/htdocs</siteDirectory -->
   <siteDirectory>${user.home}/.mevenide/${pom.artifactId}</siteDirectory>
