@@ -73,7 +73,7 @@ public class ProxyUtilities {
             reflectIDESettings();
         }
         String toRet = reflValue(mGetProxyPort);
-        return System.getProperty(PROXY_PORT);
+        return toRet != null ? toRet : System.getProperty(PROXY_PORT);
     }
     
     private static String reflValue(Method method) {
