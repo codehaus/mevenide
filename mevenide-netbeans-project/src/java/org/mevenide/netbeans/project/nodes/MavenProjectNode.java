@@ -28,7 +28,7 @@ import org.mevenide.netbeans.project.ActionProviderImpl;
 import org.mevenide.netbeans.project.MavenProject;
 import org.mevenide.netbeans.project.exec.RunGoalsAction;
 import org.netbeans.spi.project.ActionProvider;
-import org.netbeans.spi.project.ui.support.LogicalViews;
+import org.netbeans.spi.project.ui.support.CommonProjectActions;
 import org.openide.nodes.AbstractNode;
 import org.openide.util.Lookup;
 import org.openide.util.Utilities;
@@ -84,7 +84,7 @@ public class MavenProjectNode extends AbstractNode {
         int slip = (isMultiproject ? 2 : 0);
         Action[] toReturn = new Action[14 + slip];
         ActionProviderImpl provider = (ActionProviderImpl)project.getLookup().lookup(ActionProviderImpl.class);
-        toReturn[0] = LogicalViews.newFileAction();
+        toReturn[0] = CommonProjectActions.newFileAction();
         toReturn[1] = null;
         toReturn[2] = provider.createBasicMavenAction("Build", ActionProvider.COMMAND_BUILD);
         toReturn[3] = provider.createBasicMavenAction("Clean", ActionProvider.COMMAND_CLEAN);
@@ -98,11 +98,11 @@ public class MavenProjectNode extends AbstractNode {
         // separator
         toReturn[7 + slip] = null;
         toReturn[8 + slip] = project.createRefreshAction();
-        toReturn[9 + slip] = LogicalViews.setAsMainProjectAction();
-        toReturn[10 + slip] = LogicalViews.openSubprojectsAction();
-        toReturn[11 + slip] = LogicalViews.closeProjectAction();
+        toReturn[9 + slip] = CommonProjectActions.setAsMainProjectAction();
+        toReturn[10 + slip] = CommonProjectActions.openSubprojectsAction();
+        toReturn[11 + slip] = CommonProjectActions.closeProjectAction();
         toReturn[12 + slip] = null;
-        toReturn[13 + slip] = LogicalViews.customizeProjectAction();
+        toReturn[13 + slip] = CommonProjectActions.customizeProjectAction();
 //        for (int i = 0; i < spr.length; i++) {
 //            toReturn[i + 6] = spr[i];
 //        }
