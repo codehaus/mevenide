@@ -104,7 +104,11 @@ public class MavenExecutor implements Runnable {
     private org.openide.windows.InputOutput createInputOutput() {
         InputOutput io = IOProvider.getDefault().getIO("Maven", false);
         io.setErrSeparated(false);
-        io.getOut().reset();
+        try {
+            io.getOut().reset();
+        } catch (IOException exc) {
+            logger.error("Cannot reset InputOutput", exc);
+        }
         return io;
     }    
     
