@@ -19,7 +19,6 @@ package org.mevenide.ui.eclipse.launch.configuration;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -37,11 +36,10 @@ import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.ui.CommonTab;
-import org.eclipse.debug.ui.DebugUITools;
 import org.eclipse.debug.ui.ILaunchShortcut;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.window.Window;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.externaltools.internal.model.IExternalToolConstants;
@@ -110,40 +108,9 @@ public class MavenLaunchShortcut implements ILaunchShortcut {
 	public void launch(IPath basedir) {
 		ILaunchConfiguration configuration= null;
 		configuration = getDefaultLaunchConfiguration(basedir);
-
-		if (configuration != null) {
-			if ( showDialog ) {
-				//IStatus status = new Status(IStatus.INFO, Mevenide.PLUGIN_ID, 0, "", null); //$NON-NLS-1$
-				int val = DebugUITools.openLaunchConfigurationDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), configuration, IExternalToolConstants.ID_EXTERNAL_TOOLS_LAUNCH_GROUP, null);
-				if ( val == Window.CANCEL ) {
-					try {
-						configuration.delete();
-					}
-					catch ( Exception e ) {
-						log.debug("Exception while cancelling launch : ", e ); //$NON-NLS-1$
-					}
-					return;
-				}
-				
-			}
-			
-			String newName= DebugPlugin.getDefault().getLaunchManager().generateUniqueLaunchConfigurationNameFrom(configuration.getName());
-			try {
-			    if ( configuration.exists() ) {
-			        configuration = configuration.copy(newName);
-			    }
-				if (showDialog) {
-					configuration = configuration.getWorkingCopy().doSave();
-				}
-				else {
-				    //caused config to be launched twice (see MavenLaunchDelegate)
-				    DebugUITools.launch(configuration, ILaunchManager.RUN_MODE);
-				}
-			}
-			catch (Exception e) {
-				log.error("Unable to copy configuration due to : ", e); //$NON-NLS-1$
-			}
-		}
+		Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+		new MavenJob(shell, configuration, basedir, showDialog).schedule();
+		
 	} 
 	
 	
