@@ -266,7 +266,7 @@ public class OrgPanel extends JPanel implements ProjectPanel
         {
             txtURL.setText(org.getUrl() == null ? "" : org.getUrl());
             txtName.setText(org.getName() == null ? "" : org.getName());
-            txtLogo.setText(org.getLogo() == null ? "" : org.getUrl());
+            txtLogo.setText(org.getLogo() == null ? "" : org.getLogo());
         }
         txtSiteAddress.setText(project.getSiteAddress() == null ? "" : project.getSiteAddress());
         txtSiteDir.setText(project.getSiteDirectory() == null ? "" : project.getSiteDirectory());
