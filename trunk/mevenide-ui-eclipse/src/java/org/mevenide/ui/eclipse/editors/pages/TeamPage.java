@@ -16,7 +16,6 @@
  */
 package org.mevenide.ui.eclipse.editors.pages;
 
-import org.apache.maven.project.Project;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -59,26 +58,21 @@ public class TeamPage extends AbstractPomEditorPage {
 		GridData gd = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING);
 		gd.horizontalSpan = 2;
 		control.setLayoutData(gd);
+		addSection(devSection);
 
 		contribSection = new ContributorsSection(this);
 		control = contribSection.createControl(parent, factory);
 		gd = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING);
 		gd.horizontalSpan = 2;
 		control.setLayoutData(gd);
+		addSection(contribSection);
 
 		mailListSection = new MailingListsSection(this);
 		control = mailListSection.createControl(parent, factory);
 		gd = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING);
 		gd.horizontalSpan = 2;
 		control.setLayoutData(gd);
-	}
-
-	public void update(Project pom) {
-		contribSection.update(pom);
-		devSection.update(pom);
-		mailListSection.update(pom);
-		
-		setUpdateNeeded(false);
+		addSection(mailListSection);
 	}
 
 }

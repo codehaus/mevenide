@@ -66,31 +66,30 @@ public class OverviewPage extends AbstractPomEditorPage {
 		GridData gd = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING);
 		gd.horizontalSpan = 1;
 		control.setLayoutData(gd);
+		addSection(idSection);
 
 		descriptionSection = new DescriptionSection(this);
 		control = descriptionSection.createControl(parent, factory);
 		gd = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING);
 		gd.horizontalSpan = 1;
 		control.setLayoutData(gd);
-
+		addSection(descriptionSection);
+		
 		fullDesctiptionSection = new FullDescriptionSection(this);
 		control = fullDesctiptionSection.createControl(parent, factory);
 		gd = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING);
 		gd.horizontalSpan = 2;
 		control.setLayoutData(gd);
+		addSection(fullDesctiptionSection);
 	}
 
-	public void update(Project pom) {
+	protected void update(Project pom) {
 	    if (log.isDebugEnabled()) {
 	        log.debug("updating overview");
 	    }
 		setHeading(pom);
 		
-		idSection.update(pom);
-		descriptionSection.update(pom);
-		fullDesctiptionSection.update(pom);
-		
-		setUpdateNeeded(false);
+		super.update(pom);
 	}
 	
 	protected void setHeading(Project pom) {

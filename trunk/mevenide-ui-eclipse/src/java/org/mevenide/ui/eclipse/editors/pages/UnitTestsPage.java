@@ -88,6 +88,7 @@ public class UnitTestsPage extends AbstractPomEditorPage {
 		Control control = includesSection.createControl(parent, factory);
 		GridData gd = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING);
 		control.setLayoutData(gd);
+		addSection(includesSection);
 		
 		excludesSection = new ExcludesSection(this);
 		IExcludesAdaptor excludesAdaptor = new IExcludesAdaptor() {
@@ -118,6 +119,7 @@ public class UnitTestsPage extends AbstractPomEditorPage {
 		control = excludesSection.createControl(parent, factory);
 		gd = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING);
 		control.setLayoutData(gd);
+		addSection(excludesSection);
 		
 		resourcesSection = new ResourcesSection(this, "UnitTestResourcesSection");
 		IResourceAdaptor adaptor = new IResourceAdaptor() {
@@ -150,16 +152,9 @@ public class UnitTestsPage extends AbstractPomEditorPage {
 		control = resourcesSection.createControl(parent, factory);
 		gd = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING);
 		control.setLayoutData(gd);
+		addSection(resourcesSection);
 	}
 
-	public void update(Project pom) {
-		includesSection.update(pom);
-		excludesSection.update(pom);
-		resourcesSection.update(pom);
-		
-		setUpdateNeeded(false);
-	}
-		
 	private UnitTest getOrCreateUnitTest(Project pom) {
 		Build build = pom.getBuild();
 		if (build == null) {

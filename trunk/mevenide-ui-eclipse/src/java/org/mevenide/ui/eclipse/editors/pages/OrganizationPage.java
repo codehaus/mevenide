@@ -16,7 +16,6 @@
  */
 package org.mevenide.ui.eclipse.editors.pages;
 
-import org.apache.maven.project.Project;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -59,26 +58,21 @@ public class OrganizationPage extends AbstractPomEditorPage {
 		GridData gd = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING);
 		gd.horizontalSpan = 1;
 		control.setLayoutData(gd);
+		addSection(orgSection);
 
 		licenseSection = new LicenseSection(this);
 		control = licenseSection.createControl(parent, factory);
 		gd = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING);
 		gd.horizontalSpan = 1;
 		control.setLayoutData(gd);
+		addSection(licenseSection);
 
 		siteGenSection = new SiteGenerationSection(this);
 		control = siteGenSection.createControl(parent, factory);
 		gd = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING);
 		gd.horizontalSpan = 2;
 		control.setLayoutData(gd);
+		addSection(siteGenSection);
 	}
 
-	public void update(Project pom) {
-		orgSection.update(pom);
-		licenseSection.update(pom);
-		siteGenSection.update(pom);
-		
-		setUpdateNeeded(false);
-	}
-	
 }
