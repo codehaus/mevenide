@@ -32,9 +32,9 @@ import org.mevenide.ui.eclipse.sync.model.MavenArtifactNode;
 public class SynchronizatioNodeSorter extends ViewerSorter {
 	
 	private static final int DEPENDENCY_CATEGORY = 1;
-	private static final int UNIT_TEST_DIRECTORY_CATEGORY = 4;
-	private static final int SOURCE_DIRECTORY_CATEGORY = 8;
-	private static final int ASPECT_DIRECTORY_CATEGORY = 16;
+	private static final int SOURCE_DIRECTORY_CATEGORY = 4;
+	private static final int ASPECT_DIRECTORY_CATEGORY = 8;
+	private static final int UNIT_TEST_DIRECTORY_CATEGORY = 16;
 	private static final int RESOURCE_DIRECTORY_CATEGORY = 64;
 	private static final int NON_CATEGORIZED_DIRECTORY_CATEGORY = 127;
 	
