@@ -103,20 +103,21 @@ abstract class AbstractProjectClassPathImpl implements ClassPathImplementation {
     
     public void addPropertyChangeListener(java.beans.PropertyChangeListener propertyChangeListener) {
         synchronized (support) {
-            logger.warn("project=" + project.getDisplayName() + " adding propchange=" + propertyChangeListener.getClass());
+            logger.debug("project=" + project.getDisplayName() + " adding propchange=" + propertyChangeListener.getClass());
             support.addPropertyChangeListener(propertyChangeListener);
         }
     }
     
     public void removePropertyChangeListener(java.beans.PropertyChangeListener propertyChangeListener) {
         synchronized (support) {
-            logger.warn("removing propchange=" + propertyChangeListener.getClass());
+            logger.debug("removing propchange=" + propertyChangeListener.getClass());
             support.removePropertyChangeListener(propertyChangeListener);
         }
     }
     
     
     protected URI checkOneDependency(Dependency dep) {
+        logger.debug("dependency " + dep.getArtifactId() + " is added to classpath? " + dep.isAddedToClasspath());
         if (dep.isAddedToClasspath()) {
             // check override first
             URI uri;

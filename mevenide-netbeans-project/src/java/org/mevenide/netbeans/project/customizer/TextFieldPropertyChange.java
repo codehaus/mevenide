@@ -36,6 +36,7 @@ public class TextFieldPropertyChange implements MavenPropertyChange {
     private int location;
     private String newValue;
     private int newLocation;
+    private String defaultValue;
     private JTextField field;
     private OriginChange origin;
     private DocListener listener;
@@ -43,7 +44,7 @@ public class TextFieldPropertyChange implements MavenPropertyChange {
     private boolean ignore = false;
     
     public TextFieldPropertyChange(String keyParam, String oldValue, int oldLocation, 
-                                   JTextField textfield, OriginChange oc) {
+                                   JTextField textfield, OriginChange oc, String defVal) {
         key = keyParam;
         value = oldValue != null ? oldValue : "";
         location = oldLocation;
@@ -51,11 +52,29 @@ public class TextFieldPropertyChange implements MavenPropertyChange {
         newLocation = oldLocation;
         field = textfield;
         origin = oc;
+        defaultValue = defVal;
         origin.setSelectedLocationID(oldLocation);
         field.setText(value);
         listener = new DocListener();
         origin.setChangeObserver(listener);
         field.getDocument().addDocumentListener(listener);
+    }
+    
+    /**
+     * changes in the field or location combo are not prpagated into the value
+     */
+    public void startIgnoringChanges() {
+        ignore = true;
+    }
+    
+    /**
+     * changes in the field or location combo are not prpagated into the value
+     * assigns the textfield and loc combo with current values.
+     */
+    public void stopIgnoringChanges() {
+        field.setText(newValue);
+        origin.setSelectedLocationID(newLocation);
+        ignore = false;
     }
     
     public String getKey() {
@@ -129,13 +148,15 @@ public class TextFieldPropertyChange implements MavenPropertyChange {
         }
 
         public void actionSelected(String changeAction) {
+            if (ignore) {
+                return;
+            }
             newLocation = origin.getSelectedLocationID();
             if (OriginChange.ACTION_RESET_TO_DEFAULT.equals(changeAction)) {
                 // assuming the correct default value is not-override..
-                String resvalue = ActionProviderImpl.getDefaultGoalForAction(key);
                 ignore = true;
-                newValue = resvalue;
-                field.setText(resvalue == null ? "" : resvalue);
+                newValue = (defaultValue == null ? "" : defaultValue);
+                field.setText(newValue);
                 ignore = false;
             }
         }

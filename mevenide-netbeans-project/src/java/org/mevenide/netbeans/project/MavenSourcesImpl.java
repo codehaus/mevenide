@@ -52,7 +52,9 @@ import org.openide.util.RequestProcessor;
 public class MavenSourcesImpl implements Sources {
     private static final Log logger = LogFactory.getLog(MavenSourcesImpl.class);
     public static final String TYPE_RESOURCES = "Resources"; //NOI18N
+    public static final String TYPE_XDOCS = "XDocs"; //NOI18N
     public static final String NAME_PROJECTROOT = "ProjectRoot"; //NOI18N
+    public static final String NAME_XDOCS = "XDocs"; //NOI18N
     public static final String NAME_SOURCE = "1SourceRoot"; //NOI18N
     public static final String NAME_TESTSOURCE = "2TestSourceRoot"; //NOI18N
     public static final String NAME_INTEGRATIONSOURCE = "4IntegrationSourceRoot"; //NOI18N
@@ -61,9 +63,10 @@ public class MavenSourcesImpl implements Sources {
     private MavenProject project;
     private List listeners;
     
-    private SourceGroup root;
+    private SourceGroup rootGroup;
     private Map javaGroup;
     private HashMap resGroup;
+    private SourceGroup xdocsGroup;
     
     private Object LOCK = new Object();
     
@@ -153,6 +156,9 @@ public class MavenSourcesImpl implements Sources {
             grp = (SourceGroup[])toReturn.toArray(grp);
             return grp;
         }
+        if (TYPE_XDOCS.equals(str)) {
+            return createXDocs();
+        }
         if (TYPE_RESOURCES.equals(str)) {
             List toReturn = new ArrayList();
             Build build = project.getOriginalMavenProject().getBuild();
@@ -211,6 +217,24 @@ public class MavenSourcesImpl implements Sources {
             } 
         }
         return changed;
+    }
+    
+    private SourceGroup[] createXDocs() {
+        String path = project.getPropertyResolver().getResolvedValue("maven.docs.src");
+        if (path != null) {
+            File docs = FileUtil.normalizeFile(new File(path));
+            if (!docs.exists()) {
+                File rootDir = FileUtil.toFile(project.getProjectDirectory());
+                // attempt relative path now.. shall we?
+                docs = FileUtil.normalizeFile(new File(rootDir, path));
+                if (!docs.exists()) {
+                    return new SourceGroup[0];
+                }
+            }
+            FileObject dir = FileUtil.toFileObject(docs);
+            return new SourceGroup[] { GenericSources.group(project, dir, NAME_XDOCS, "Documentation", null, null) };        
+        }
+        return new SourceGroup[0];
     }
     
 }
