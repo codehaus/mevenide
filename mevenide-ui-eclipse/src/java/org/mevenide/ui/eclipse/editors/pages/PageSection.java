@@ -111,6 +111,12 @@ public abstract class PageSection {
             }
 		}
 	}
+	
+	abstract class OverrideAdaptor implements IOverrideAdaptor {
+        public void refreshUI() {
+        	redrawSection();
+        }
+	}
 
 	class SectionLayout extends Layout { //implements ILayoutExtension {
 		int vspacing = 3;
