@@ -16,6 +16,7 @@
  */
 package org.mevenide.ui.eclipse.mocks;
 
+import java.io.InputStream;
 import java.util.Map;
 
 import org.eclipse.core.resources.IFile;
@@ -51,6 +52,11 @@ import com.mockobjects.MockObject;
 public class MockWorkspace 
 	extends MockObject
 	implements IWorkspace {
+
+	public IProjectDescription loadProjectDescription(InputStream projectDescriptionFile) throws CoreException {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 	public MockWorkspace() {
 		super();

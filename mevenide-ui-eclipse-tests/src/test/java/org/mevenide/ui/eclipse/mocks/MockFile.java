@@ -18,6 +18,7 @@ package org.mevenide.ui.eclipse.mocks;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Reader;
 import java.net.URL;
 
 import org.eclipse.core.resources.IContainer;
@@ -29,6 +30,7 @@ import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResourceProxyVisitor;
 import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.ResourceAttributes;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -47,7 +49,27 @@ public class MockFile
 	extends MockObject
 	implements IFile {
 
-    public void setCharset(String newCharset, IProgressMonitor monitor) throws CoreException {
+    public String getCharsetFor(Reader reader) throws CoreException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public ResourceAttributes getResourceAttributes() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public void revertModificationStamp(long value) throws CoreException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void setResourceAttributes(ResourceAttributes attributes) throws CoreException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void setCharset(String newCharset, IProgressMonitor monitor) throws CoreException {
        
     }
 	private IPath path;
