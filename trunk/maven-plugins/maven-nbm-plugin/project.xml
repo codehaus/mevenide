@@ -20,14 +20,15 @@
   <shortDescription>This plugin helps creating ready to use Netbeans module distribution</shortDescription>
   
   <inceptionYear>2004</inceptionYear>
+  <versions>  
+     <version>
+        <name>VERSION_0_1</name> 
+     </version>
+  </versions>
   <licenses>
     <license>
         <name>Apache Public License 2.0 - for the plugin itself</name>
         <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-    </license>
-    <license>
-        <name>Sun Public License, 1.0 - for the nbantext jar containing the netbeans related ant tasks</name>
-        <url>http://testwww.netbeans.org/about/legal/spl.html</url>
     </license>
   </licenses>
   <developers>
