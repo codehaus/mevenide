@@ -65,11 +65,17 @@ public class JDomProjectUnmarshaller implements IProjectUnmarshaller {
         Document document = builder.build(reader);
         return generateProject(document.getRootElement());
     }
-
+/**
+ * get the Maven's project instance from the file. Please not that it will not include the 
+ * values from any parent files defined in <extend>
+ */
     public Project parse(File file) throws Exception {
         return generateProject(parseRootElement(file));
     }
-    
+
+    /**
+     * parse the doc of the file passed in. External enitities are expanded.
+     */
     public Element parseRootElement(File file) throws Exception {
         SAXBuilder builder = new SAXBuilder();
         builder.setExpandEntities(true);
@@ -79,6 +85,17 @@ public class JDomProjectUnmarshaller implements IProjectUnmarshaller {
         
         builder.setEntityResolver(new EntResolver(file.getParentFile()));
         Document document = builder.build(file);
+        return document.getRootElement();
+    }
+
+    /**
+     * parse the doc from the reader. Please note that expanding entities is not possible this way.
+     * Use only if you don't have a physical file. (eg. for project.xmls in jars..)
+     */
+    public Element parseRootElement(Reader reader) throws Exception {
+        SAXBuilder builder = new SAXBuilder();
+        builder.setExpandEntities(false);
+        Document document = builder.build(reader);
         return document.getRootElement();
     }
     
