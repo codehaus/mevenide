@@ -47,6 +47,7 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -265,8 +266,9 @@ public class SynchronizationView extends ViewPart implements IActionListener, IR
         artifactMappingNodeViewer.setLabelProvider(new SynchronizationNodeLabelProvider());
         nodeFilter = new SynchronizationNodeFilter();
         assertValidDirection();
-        //nodeFilter.setDirection(ISelectableNode.INCOMING_DIRECTION);
         artifactMappingNodeViewer.addFilter(nodeFilter);
+        ViewerSorter sorter = new SynchronizatioNodeSorter(); 
+        artifactMappingNodeViewer.setSorter(sorter);
         isDisposed = false;
     }
     

@@ -21,7 +21,7 @@ import org.apache.commons.logging.LogFactory;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.ui.views.properties.ComboBoxPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
-import org.eclipse.ui.views.properties.TextPropertyDescriptor;
+import org.eclipse.ui.views.properties.PropertyDescriptor;
 import org.mevenide.project.ProjectConstants;
 import org.mevenide.ui.eclipse.editors.properties.AbstractPomPropertySource;
 import org.mevenide.util.MevenideUtils;
@@ -50,7 +50,7 @@ public class DirectoryPropertySource extends AbstractPomPropertySource {
 	
 	private IPropertyDescriptor[] descriptors = new IPropertyDescriptor[2];
 	{
-		descriptors[0] = new TextPropertyDescriptor(
+		descriptors[0] = new PropertyDescriptor(
 			DIRECTORY_PATH,
 			DIRECTORY_TYPE
 		);

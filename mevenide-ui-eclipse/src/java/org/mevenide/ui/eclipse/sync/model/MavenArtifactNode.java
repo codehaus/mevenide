@@ -33,6 +33,7 @@ import org.mevenide.project.dependency.DependencyUtil;
 import org.mevenide.project.io.ProjectWriter;
 import org.mevenide.ui.eclipse.editors.properties.DependencyPropertySource;
 import org.mevenide.ui.eclipse.util.JavaProjectUtils;
+import org.mevenide.util.MevenideUtils;
 
 /**  
  * 
@@ -54,7 +55,12 @@ public class MavenArtifactNode extends ArtifactNode {
 	}
 	
 	private void initialize() {
-		
+		List list = artifact.getDependency().getProperties();
+		properties = new PropertyNode[list.size()];
+		for (int i = 0; i < list.size(); i++) {
+			String[] resolvedProperty = MevenideUtils.resolveProperty((String) list.get(i));
+			properties[i] = new PropertyNode(this, resolvedProperty[0], resolvedProperty[1]);
+		}
 	}
 	
 	public boolean equals(Object obj) {
@@ -162,11 +168,9 @@ public class MavenArtifactNode extends ArtifactNode {
 	public void propertyChange(PropertyChangeEvent event) {
 		if ( DependencyPropertySource.DEPENDENCY_ARTIFACTID.equals(event.getProperty()) ) {
 			artifact.getDependency().setArtifactId((String) event.getNewValue());
-			System.err.println("1I");
 		}
 		if ( DependencyPropertySource.DEPENDENCY_GROUPID.equals(event.getProperty()) ) {
 			artifact.getDependency().setGroupId((String) event.getNewValue());
-			System.err.println("GI");
 		}
 		if ( DependencyPropertySource.DEPENDENCY_JAR.equals(event.getProperty()) ) {
 			artifact.getDependency().setJar((String) event.getNewValue());

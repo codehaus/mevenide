@@ -16,53 +16,44 @@
  */
 package org.mevenide.ui.eclipse.sync.model;
 
-import org.mevenide.util.MevenideUtils;
-
 /**  
  * 
  * @author <a href="mailto:rhill2@free.fr">Gilles Dodinet</a>
- * @version $Id: PropertyNode.java,v 1.1 12 avr. 2004 Exp gdodinet 
+ * @version $Id$
  * 
  */
-public class PropertyNode extends AbstractSynchronizationNode implements ISelectableNode {
+public class ExcludeNode extends AbstractSynchronizationNode implements ISelectableNode {
 	
-	private MavenArtifactNode parentNode;
+	private DirectoryNode parentNode;
 	
-	private String key;
-	private String value;
+	private String excludePattern;
 	
-	public PropertyNode(MavenArtifactNode parentNode, String key, String value) {
+	public ExcludeNode(DirectoryNode parentNode, String excludePattern) {
 		this.parentNode = parentNode;
-		this.key = key;
-		this.value = value;
+		this.excludePattern = excludePattern;
 	}
 	
-	public boolean select(int direction) {
-		return ((MavenArtifactNode) getParent()).select(direction);
-	}
-	
-	public boolean equals(Object obj) {
-		if ( !(obj instanceof PropertyNode) ) {
-			return false;
-		}
-		PropertyNode node = (PropertyNode) obj;
-		return key.equals(node.key) 
-		       && value.equals(node.value)
-			   && parentNode.equals(node.parentNode);
-	}
-	public ISynchronizationNode[] getChildren() {
-		return null;
-	}
-	public Object getData() {
-		return toString();
-	}
 	public ISynchronizationNode getParent() {
 		return parentNode;
 	}
+
+	public Object getData() {
+		return excludePattern;
+	}
+
+	public ISynchronizationNode[] getChildren() {
+		return null;
+	}
+	
 	public boolean hasChildren() {
 		return false;
 	}
+	
+	public boolean select(int direction) {
+		return parentNode.select(direction);
+	}
+	
 	public String toString() {
-		return key + MevenideUtils.PROPERTY_SEPARATOR + value;
+		return excludePattern;
 	}
 }
