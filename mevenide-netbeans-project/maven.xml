@@ -3,47 +3,16 @@
          xmlns:ant="jelly:ant"
          xmlns:util="jelly:util">
 	
-  <preGoal name="java:jar-resources">
-  	<!-- do something after jar goal -->
-    <j:set var="targetDir" value="${maven.build.dir}/project_templates"/>
-    <ant:mkdir dir="${targetDir}"/>
-    <util:available file="${targetDir}/nbmodule.zip">
-       <j:set var="moduleExists" value="true"/>
-    </util:available>
-    <j:if test="${empty moduleExists}"> 
-        <ant:zip basedir="${basedir}/templates/nbmodule"
-                 destfile="${targetDir}/nbmodule.zip"
-                 excludes="CVS"
-                 >
-        </ant:zip>
-    </j:if>
-    <util:available file="${targetDir}/empty.zip">
-       <j:set var="emptyExists" value="true"/>
-    </util:available>
-    <j:if test="${empty emptyExists}"> 
-        <ant:zip basedir="${basedir}/templates/empty"
-                 destfile="${targetDir}/empty.zip"
-                 excludes="CVS"
-                 >
-        </ant:zip>
-     </j:if>
-    <util:available file="${targetDir}/mavenplugin.zip">
-       <j:set var="emptyExists" value="true"/>
-    </util:available>
-    <j:if test="${empty emptyExists}"> 
-        <ant:zip basedir="${basedir}/templates/mavenplugin"
-                 destfile="${targetDir}/mavenplugin.zip"
-                 excludes="CVS"
-                 >
-        </ant:zip>
-     </j:if>
-  </preGoal>
-	
   <preGoal name="nbm:prepare-nbm-resources">
      <!-- copy the maven-mevenide-plugin jar to the right location -->
       <ant:mkdir dir="${maven.nbm.build.dir}/netbeans/mevenide/maven-plugins"/>
       <ant:copy toDir="${maven.nbm.build.dir}/netbeans/mevenide/maven-plugins" 
                  file="${pom.getDependencyPath('mevenide:maven-mevenide-plugin')}"/>
+      <!--copy the project templates to correct location -->
+      <ant:mkdir dir="${maven.nbm.build.dir}/netbeans/mevenide/maven-project-templates"/>
+      <ant:copy toDir="${maven.nbm.build.dir}/netbeans/mevenide/maven-project-templates">
+          <fileset dir="${basedir}/templates"/>
+      </ant:copy>
   </preGoal>  
 
 </project>

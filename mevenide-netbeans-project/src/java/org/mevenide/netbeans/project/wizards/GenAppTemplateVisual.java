@@ -101,11 +101,11 @@ public class GenAppTemplateVisual extends JPanel implements DocumentListener {
     
     void store(WizardDescriptor d) {
         d.putProperty("artifactID", txtProjectName.getText());
-        d.putProperty("property.id", txtProjectName.getText());
+        d.putProperty(GenAppWizardIterator.PROPERTY_PREFIX + "id", txtProjectName.getText());
         d.putProperty("projectDir", txtProjectDir.getText());
         d.putProperty("finder", finder);
         ListWrapper wr = (ListWrapper)lstTemplateList.getSelectedValue();
-        d.putProperty("gatemplate", wr.getInfo());
+        d.putProperty(GenAppWizardIterator.TEMPLATE, wr.getInfo());
         d.putProperty("xxxtemplate", lstTemplateList.getSelectedValue());
     }
     

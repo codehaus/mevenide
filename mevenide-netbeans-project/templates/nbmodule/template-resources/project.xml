@@ -2,11 +2,11 @@
 
 <project>
   <pomVersion>3</pomVersion>
-  <artifactId/>
-  <groupId/>
-  <currentVersion>1.0</currentVersion>
-  <name/>
-  <package/>
+  <artifactId>@ARTIFACTID@</artifactId>
+  <groupId>@GROUPID@</groupId>
+  <currentVersion>@VERSION@</currentVersion>
+  <name>@NAME@</name>
+  <package>@PACKAGE@</package>
   <logo>/images/logo.gif</logo>
   <inceptionYear>2004</inceptionYear>
 
@@ -64,8 +64,8 @@
         -->
   </dependencies>
   <build>
-    <sourceDirectory>src</sourceDirectory>
-    <unitTestSourceDirectory>test</unitTestSourceDirectory>
+    <sourceDirectory>src/java</sourceDirectory>
+    <unitTestSourceDirectory>src/test</unitTestSourceDirectory>
     <!-- Unit test classes -->
     <unitTest>
       <includes>
@@ -74,7 +74,7 @@
     </unitTest>
     <resources> 
        <resource> 
-          <directory>conf</directory>
+          <directory>src/conf</directory>
           <includes>
              <include>**</include>
           </includes>
