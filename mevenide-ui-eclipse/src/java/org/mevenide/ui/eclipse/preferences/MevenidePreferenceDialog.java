@@ -21,7 +21,6 @@ import java.io.Reader;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.maven.DefaultProjectUnmarshaller;
 import org.apache.maven.project.Project;
 import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.DirectoryFieldEditor;
@@ -43,6 +42,7 @@ import org.mevenide.environment.ILocationFinder;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.MevenidePreferenceKeys;
 import org.mevenide.ui.eclipse.goals.viewer.GoalsPickerDialog;
+import org.mevenide.util.DefaultProjectUnmarshaller;
 
 /**
  * 

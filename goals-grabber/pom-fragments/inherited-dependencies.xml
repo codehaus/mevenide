@@ -12,6 +12,11 @@
             <artifactId>xpp3</artifactId>
             <version>1.1.2a</version>
             <type>jar</type>
+            <properties>
+            <!-- this one is temporary workaround to get the netbeans stuff run under maven-rc2 which doesn't 
+                 bundle the xpp3 along with it -->
+                <netbeans.module.ext>true</netbeans.module.ext>
+            </properties>
         </dependency>
         <dependency>
            <groupId>log4j</groupId>
