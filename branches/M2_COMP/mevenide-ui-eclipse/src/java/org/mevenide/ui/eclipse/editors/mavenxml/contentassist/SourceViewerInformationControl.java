@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.mevenide.ui.eclipse.editors.mavenxml;
+package org.mevenide.ui.eclipse.editors.mavenxml.contentassist;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;

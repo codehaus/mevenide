@@ -17,6 +17,7 @@ import org.eclipse.jface.text.rules.Token;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.SourceViewerConfiguration;
 import org.eclipse.swt.widgets.Shell;
+import org.mevenide.ui.eclipse.editors.mavenxml.contentassist.*;
 
 public class XMLConfiguration extends SourceViewerConfiguration {
 	private static final Log log = LogFactory.getLog(XMLConfiguration.class);

@@ -14,7 +14,6 @@
  *  limitations under the License.
  * =========================================================================
  */
-
 package org.mevenide.grammar;
 
 import java.util.HashMap;
@@ -29,7 +28,6 @@ import org.mevenide.grammar.impl.EmptyTagLibImpl;
  * the TagLibProvider.
  * @author  Milos Kleint (ca206216@tiscali.cz)
  */
-
 public final class TagLibManager {
     
     private static Log logger = LogFactory.getLog(TagLibManager.class);

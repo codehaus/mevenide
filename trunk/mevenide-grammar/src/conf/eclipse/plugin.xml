@@ -6,10 +6,6 @@
    version="@maven.eclipse.plugin.artifact.version@"
    provider-name="The Codehaus">
 
-   <requires>
-      <import plugin="@org.mevenide.grammar.id@"/>
-   </requires>
-	
    <runtime>
       <library name="@maven.eclipse.plugin.artifact.internal.id@-@maven.eclipse.plugin.artifact.internal.version@.jar">
          <export name="*"/>
@@ -17,4 +13,8 @@
       </library>
    </runtime>
    
+   <requires>
+      <import plugin="@org.mevenide.grabber.id@"/>
+      <import plugin="@org.mevenide.config.id@"/>
+   </requires>
 </plugin>

@@ -1,13 +1,13 @@
 <project>
     <extend>${basedir}/../mevenide-master/base-project.xml</extend>
     <pomVersion>3</pomVersion>
-    <id>mevenide-config</id>
-    <artifactId>mevenide-config</artifactId>
-    <name>Mevenide Config</name>
+    <id>mevenide-grammar</id>
+    <artifactId>mevenide-grammar</artifactId>
+    <name>Mevenide Grammar</name>
     <currentVersion>0.1-SNAPSHOT</currentVersion>
-    <package>org.mevenide.config</package>
+    <package>org.mevenide.grammar</package>
     <description>
-    	Mevenide Config allows to manipulate Maven config, e.g. system environment variables, project config (project.properties), user-defined config (build.propertie, ...).
+    	Maven files XML grammar and code-completion hints provider
     </description>
     <dependencies>
         <dependency>
@@ -26,6 +26,16 @@
             <type>jar</type>
             <properties>
                 <netbeans.module.dep>spec</netbeans.module.dep>
+            	<eclipse.plugin.bundle>true</eclipse.plugin.bundle>
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>jdom</groupId>
+            <artifactId>jdom</artifactId>
+            <version>b9</version>
+            <type>jar</type>
+            <properties>
+                <netbeans.module.dep>spec</netbeans.module.dep>
             	<eclipse.plugin.bundle>false</eclipse.plugin.bundle>
             </properties>
         </dependency>
@@ -35,8 +45,25 @@
             <version>1.2.8</version>
             <type>jar</type>
             <properties>
-            	<eclipse.plugin.bundle>false</eclipse.plugin.bundle>
+            	<eclipse.plugin.bundle>true</eclipse.plugin.bundle>
             </properties>
+        </dependency>
+        <dependency>
+            <groupId>mevenide</groupId>
+            <artifactId>mevenide-config</artifactId>
+            <version>0.2-SNAPSHOT</version>
+            <type>jar</type>
+            <properties>
+                <eclipse.plugin.bundle>false</eclipse.plugin.bundle>
+            </properties>
+        </dependency>
+        <dependency>     
+            <groupId>mevenide</groupId>
+            <artifactId>goals-grabber</artifactId>
+            <version>0.2-SNAPSHOT</version>
+                <properties>
+                    <eclipse.plugin.bundle>false</eclipse.plugin.bundle>
+                </properties>
         </dependency>
     </dependencies>
 </project>
