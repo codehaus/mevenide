@@ -1,7 +1,7 @@
         <dependency>
             <groupId>commons-logging</groupId>
             <artifactId>commons-logging</artifactId>
-            <version>1.0.1</version>
+            <version>1.0.3</version>
             <type>jar</type>
             <properties>
                 <netbeans.module.dep>spec</netbeans.module.dep>
@@ -21,6 +21,6 @@
         <dependency>
            <groupId>log4j</groupId>
            <artifactId>log4j</artifactId>
-           <version>1.2.7</version>
+           <version>1.2.8</version>
            <url>http://jakarta.apache.org/log4j/</url>
         </dependency>
