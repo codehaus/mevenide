@@ -172,10 +172,13 @@ public class ProjectComparator {
 
     private boolean notEquivalent(Object newValue, Object oldValue) {
         // if both null, no difference
-        if (newValue == null && oldValue == null)
+        if (newValue == null && oldValue == null) {
             return false;
-
-        return (newValue != null && !newValue.equals(oldValue));
+        }
+        else if (newValue == null){
+        	return true;
+        }
+        return (!newValue.equals(oldValue));
     }
 
     private void detectObjectChange(Object newObject, Object oldObject) throws ShortCircuitException {
@@ -260,6 +263,9 @@ public class ProjectComparator {
             detectAttributeChange(newProject.getSiteDirectory(), originalProject.getSiteDirectory());
         }
         catch (ShortCircuitException e) {
+	        if (log.isDebugEnabled()) {
+	            log.debug("Change in project detected");
+	        }
             fireProjectChangeEvent(newProject, PROJECT);
         }
     }
