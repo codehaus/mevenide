@@ -26,7 +26,7 @@ import java.util.Set;
 import org.netbeans.spi.project.libraries.LibraryImplementation;
 
 /**
- *
+ * Implementation of LibraryImplementation that maps one artifact from maven repository.
  * @author  Milos Kleint (ca206216@tiscali.cz)
  */
 public class MavenLibraryImpl implements LibraryImplementation {
@@ -36,9 +36,18 @@ public class MavenLibraryImpl implements LibraryImplementation {
     private String locBundle;
     private PropertyChangeSupport support;
     private List content = Collections.EMPTY_LIST;
+    private String artifactID;
+    private String groupID;
+    private String type;
+    private String version;
+    
     /** Creates a new instance of MavenLibraryImpl */
-    public MavenLibraryImpl() {
+    MavenLibraryImpl(String art, String gr, String ver, String tp) {
         support = new PropertyChangeSupport(this);
+        type = tp;
+        version = ver;
+        artifactID = art;
+        groupID = gr;
     }
     public void addPropertyChangeListener(PropertyChangeListener propertyChangeListener) {
         support.addPropertyChangeListener(propertyChangeListener);
@@ -91,4 +100,21 @@ public class MavenLibraryImpl implements LibraryImplementation {
         name = str;
     }
     
+    
+    public String getArtifactID() {
+        return artifactID;
+    }
+    
+    public String getGroupID() {
+        return groupID;
+    }
+    
+    public String getVersion() {
+        return version;
+    }
+    
+    public String getMavenArtifactType() {
+        return type;
+    }
 }
+
