@@ -23,6 +23,12 @@
       <attainGoal name="multiproject:goal"/>
   </goal>
   
+  <goal name="mevenide-jbuilder:build" description="Build all Mevenide modules" prereqs="mevenide-jbuilder:clean,mevenide-jbuilder:init">
+      <j:set var="maven.multiproject.includes" value="${maven.multiproject.jbuilder.includes}"/>
+      <j:set var="maven.multiproject.excludes" value="mevenide-master/project.xml"/>
+      <attainGoal name="multiproject:goal"/>
+      <attainGoal name="mevenide-jbuilder:create-doc-bundle"/>
+  </goal>
 
   <goal name="mevenide-netbeans:autoupdate">
       <j:set var="maven.nbm.build.release.dir" value="${basedir}/../mevenide-master/target/nbm_release"/>
@@ -57,6 +63,7 @@
   	<j:set var="maven.multiproject.includes" value="${maven.multiproject.plugins.includes}"/>
   	<attainGoal name="multiproject:site"/>
   </goal>
+  
   <!-- do NOT call site:deploy because we dont want to attain 'site' goal -->
   <goal name="mevenide-site:ssh-deploy" description="Deploy Site" prereqs="mevenide-site:build">
     <attainGoal name="site:sshdeploy"/>
@@ -90,6 +97,16 @@
   
   <goal name="mevenide-eclipse:init" description="Copy eclipse dependencies to maven.repo.local if necessary">
     <util:file var="installScript" name="${basedir}/../${mevenide.master.project.name}/scripts/init/install-eclipse-dependencies.xml"/>
+    <j:include file="${installScript}"/>
+  </goal>  
+  
+  <goal name="mevenide-jbuilder:clean" prereqs="mevenide:clean-lib,clean:clean">
+    <ant:delete dir="${maven.repo.local}/jbuilder" quiet="true"/>
+  	<ant:delete dir="${maven.repo.local}/mevenide" quiet="true"/>
+  </goal>
+  
+  <goal name="mevenide-jbuilder:init" description="Copy JBuilder dependencies to maven.repo.local if necessary">
+    <util:file var="installScript" name="${basedir}/../${mevenide.master.project.name}/scripts/init/install-jbuilder-dependencies.xml"/>
     <j:include file="${installScript}"/>
   </goal>  
   
@@ -176,6 +193,19 @@
 	<!-- /j:scope -->
   </goal>  
     
+  <!-- ==================================== -->
+  <!--           jbuilder section           -->
+  <!-- ==================================== -->    
+  <goal name="mevenide-jbuilder:create-doc-bundle">
+  	<j:set var="maven.multiproject.includes" value="${mevenide.ui.jbuilder.project.name}/project.xml"/>
+  	<j:set var="goal" value="xdoc"/>
+  	<attainGoal name="multiproject:goal"/>
+  	<ant:jar destfile="${mevenide.ui.jbuilder.project.location}/mevenide-ui-jbuilder-doc.jar">
+  		<fileset dir="${mevenide.ui.jbuilder.project.location}/target/docs">
+  	  	  <include name="JBMavenOpenTool.html"/>
+		</fileset>
+  	</ant:jar> 
+  </goal>
 
   <!-- ==================================== -->
   <!--           optional section           -->
