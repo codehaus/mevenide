@@ -28,7 +28,7 @@
         <dependency>
            <groupId>mevenide</groupId>
            <artifactId>mevenide-core</artifactId>
-           <version>0.5</version>
+           <version>0.6-SNAPSHOT</version>
             <properties>
               <jbuilder.opentool.bundle>true</jbuilder.opentool.bundle>
             </properties>
@@ -36,7 +36,7 @@
         <dependency>
            <groupId>mevenide</groupId>
            <artifactId>goals-grabber</artifactId>
-           <version>0.6</version>
+           <version>0.7-SNAPSHOT</version>
             <properties>
               <jbuilder.opentool.bundle>true</jbuilder.opentool.bundle>
             </properties>
@@ -44,7 +44,7 @@
         <dependency>
            <groupId>mevenide</groupId>
            <artifactId>mevenide-config</artifactId>
-           <version>0.6</version>
+           <version>0.7-SNAPSHOT</version>
             <properties>
               <jbuilder.opentool.bundle>true</jbuilder.opentool.bundle>
               <jbuilder.plugin.autoupdate>false</jbuilder.plugin.autoupdate>
