@@ -134,7 +134,7 @@ public class FileUtilities
         if (location == IPropertyLocator.LOCATION_USER_BUILD) {
             return new File(context.getUserDirectory(), "build.properties");
         }
-        throw new IllegalArgumentException("Wrong argument.");
+        throw new IllegalArgumentException("Wrong argument. is=" + location);
     }
     
     /**

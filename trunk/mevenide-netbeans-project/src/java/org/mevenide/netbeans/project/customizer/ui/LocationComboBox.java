@@ -17,7 +17,11 @@
 package org.mevenide.netbeans.project.customizer.ui;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
+
 import java.awt.Component;
+import java.awt.Graphics;
+
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -39,6 +43,10 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
+import javax.swing.UIManager;
+
+import javax.swing.border.Border;
+
 import org.mevenide.properties.IPropertyLocator;
 import org.openide.util.Utilities;
 
@@ -57,7 +65,8 @@ class LocationComboBox extends JButton {
     
     public LocationComboBox() {
         setMargin(new Insets(0,0,0,0));
-        setBorderPainted(false);
+        setBorderPainted(true);
+        setBorder(new MyBorder());
         setRolloverEnabled(true);
         currentLoc = new JPopupMenu();
         addActionListener(new ActionListener() {
@@ -213,6 +222,53 @@ class LocationComboBox extends JButton {
         
         public void actionPerformed(ActionEvent e) {
             invokePopupAction(id);
+        }
+        
+    }
+    
+    private class MyBorder implements Border {
+        /**
+         * Paints the border for the specified component with the specified
+         * position and size.
+         * @param c the component for which this border is being painted
+         * @param g the paint graphics
+         * @param x the x position of the painted border
+         * @param y the y position of the painted border
+         * @param width the width of the painted border
+         * @param height the height of the painted border
+         */
+        public void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {
+            g.translate(x, y);
+            Color col = null;
+            LocationComboBox box = (LocationComboBox)c;
+            if (box.getModel().isRollover()) {
+                col = UIManager.getColor("InternalFrame.borderHighlight"); //NOI18N
+            }
+            if (box.isFocusOwner()) {
+                col = UIManager.getColor("InternalFrame.borderLight"); //NOI18N
+            }
+            if (col != null) {
+                g.setColor(col); //NOI18N
+                g.drawRect(0, 0, width - 1, height - 1);
+            }
+            
+//            g.setColor(UIManager.getColor("InternalFrame.borderDarkShadow")); //NOI18N
+//            g.drawLine(1, 0, 1, height - 2);
+//            g.setColor(UIManager.getColor("InternalFrame.borderHighlight")); //NOI18N
+//            g.drawLine(1, height - 1, width - 1, height - 1);
+//            g.drawLine(width - 1, height - 2, width - 1, 0);
+//            g.setColor(UIManager.getColor("InternalFrame.borderLight")); //NOI18N
+//            g.drawLine(2, height - 2, width - 2, height - 2);
+//            g.drawLine(width - 2, height - 3, width - 2, 0);
+            g.translate(-x, -y);
+        }
+        
+        public Insets getBorderInsets(Component c) {
+            return new Insets(1,1,1,1);
+        }
+        
+        public boolean isBorderOpaque() {
+            return true;
         }
         
     }
