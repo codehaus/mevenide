@@ -46,6 +46,7 @@ import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.IElementStateListener;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.mevenide.project.ProjectComparator;
+import org.mevenide.project.ProjectComparatorFactory;
 import org.mevenide.project.io.DefaultProjectMarshaller;
 import org.mevenide.project.io.ProjectReader;
 import org.mevenide.ui.eclipse.Mevenide;
@@ -368,9 +369,9 @@ public class MevenidePomEditor extends MultiPageEditorPart {
         return modelDirty;
     }
 
-    public void setModelDirty(boolean modelDirty) {
-    	if (this.modelDirty != modelDirty) {
-			this.modelDirty = modelDirty;
+    public void setModelDirty(boolean dirty) {
+    	if (this.modelDirty != dirty) {
+			this.modelDirty = dirty;
     		fireDirtyStateChanged();
     	}
     }
@@ -401,7 +402,7 @@ public class MevenidePomEditor extends MultiPageEditorPart {
     private void initializeModel(IFile pomFile) throws CoreException {
         documentProvider = new PomXmlDocumentProvider();
         createModel(pomFile);
-        comparator = new ProjectComparator(pom);
+        comparator = ProjectComparatorFactory.getComparator(pom);
 
         IEditorInput editorInput = getEditorInput();
         documentProvider.connect(editorInput);
@@ -500,7 +501,6 @@ public class MevenidePomEditor extends MultiPageEditorPart {
                 log.debug("old pom name = " + pom.getName() + " and new = " + updatedPom.getName());
             }
             comparator.compare(updatedPom);
-            comparator.setOriginalProject(updatedPom);
 
             String pomName = pom.getName();
             if (!MevenideUtils.isNull(pomName)) {
@@ -613,7 +613,7 @@ public class MevenidePomEditor extends MultiPageEditorPart {
 	 */
 	public void dispose() {
 		for (int i = 0; i < getPageCount(); i++) {
-			((IPomEditorPage) getPage(i)).dispose();
+			getPage(i).dispose();
 		}
 		super.dispose();
 	}
