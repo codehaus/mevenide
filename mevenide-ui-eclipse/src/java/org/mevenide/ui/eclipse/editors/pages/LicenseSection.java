@@ -48,14 +48,29 @@
  */
 package org.mevenide.ui.eclipse.editors.pages;
 
+import java.util.Iterator;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Project;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ControlListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Table;
+import org.eclipse.ui.views.properties.IPropertySheetPage;
+import org.eclipse.ui.views.properties.PropertySheetPage;
 import org.mevenide.ui.eclipse.Mevenide;
 
 /**
@@ -64,8 +79,14 @@ import org.mevenide.ui.eclipse.Mevenide;
  */
 public class LicenseSection extends PageSection {
 	
+	private static final Log log = LogFactory.getLog(DescriptionSection.class);
+
 	private Table table;
 	private TableViewer licenseViewer;
+	private Button addButton, removeButton, upButton, downButton;
+	
+	//FIXME: Remove me!!!!
+	static int count;
 
     public LicenseSection(OrganizationPage page) {
         super(page);
@@ -101,25 +122,96 @@ public class LicenseSection extends PageSection {
 		layout.marginHeight = 0;
 		buttonContainer.setLayout(layout);
 		
-		Button addButton = factory.createButton(buttonContainer, "Add", SWT.PUSH);
+		addButton = factory.createButton(buttonContainer, "Add", SWT.PUSH);
 		data = new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_BEGINNING);
 		data.horizontalSpan = 1;
 		addButton.setLayoutData(data);
+		addButton.addSelectionListener(
+			new SelectionAdapter() {
+				public void widgetSelected(SelectionEvent e) {
+					log.debug("adding");
+					licenseViewer.add("license" + ++count);
+					IPropertySheetPage page = new PropertySheetPage();
+					Control c = page.getControl();
+					log.debug(c);
+				}
+			}
+		);
 
-		Button removeButton = factory.createButton(buttonContainer, "Remove", SWT.PUSH);
+		removeButton = factory.createButton(buttonContainer, "Remove", SWT.PUSH);
 		data = new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_BEGINNING);
 		data.horizontalSpan = 1;
 		removeButton.setLayoutData(data);
+		removeButton.addSelectionListener(
+			new SelectionAdapter() {
+				public void widgetSelected(SelectionEvent e) {
+					log.debug("removing");
+					IStructuredSelection selected = (IStructuredSelection) licenseViewer.getSelection();
+					licenseViewer.remove(selected.toArray());
+				}
+			}
+		);
 
-		Button upButton = factory.createButton(buttonContainer, "Up", SWT.PUSH);
+		upButton = factory.createButton(buttonContainer, "Up", SWT.PUSH);
 		data = new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_BEGINNING);
 		data.horizontalSpan = 1;
 		upButton.setLayoutData(data);
+		upButton.addSelectionListener(
+			new SelectionAdapter() {
+				public void widgetSelected(SelectionEvent e) {
+					log.debug("moving up");
+					IStructuredSelection selected = (IStructuredSelection) licenseViewer.getSelection();
+					int index = licenseViewer.getTable().getSelectionIndex();
+					if (index > 0) {
+						Object item = licenseViewer.getElementAt(index);
+						licenseViewer.remove(item);
+						licenseViewer.insert(item,--index);
+						licenseViewer.getTable().select(index);
+					}
+				}
+			}
+		);
 
-		Button downButton = factory.createButton(buttonContainer, "Down", SWT.PUSH);
+		downButton = factory.createButton(buttonContainer, "Down", SWT.PUSH);
 		data = new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_BEGINNING);
 		data.horizontalSpan = 1;
 		downButton.setLayoutData(data);
+		downButton.addSelectionListener(
+			new SelectionAdapter() {
+				public void widgetSelected(SelectionEvent e) {
+					log.debug("moving down");
+					IStructuredSelection selected = (IStructuredSelection) licenseViewer.getSelection();
+					int index = licenseViewer.getTable().getSelectionIndex();
+					if (index >= 0 && index < licenseViewer.getTable().getItemCount() - 1) {
+						Object item = licenseViewer.getElementAt(index);
+						licenseViewer.remove(item);
+						licenseViewer.insert(item, ++index);
+						licenseViewer.getTable().select(index);
+					}
+				}
+			}
+		);
+
+		removeButton.setEnabled(false);
+		upButton.setEnabled(false);
+		downButton.setEnabled(false);
+
+		licenseViewer.addPostSelectionChangedListener(
+			new ISelectionChangedListener() {
+				public void selectionChanged(SelectionChangedEvent e) {
+					if (e.getSelection().isEmpty()) {
+						removeButton.setEnabled(false);
+						upButton.setEnabled(false);
+						downButton.setEnabled(false);
+					} else {
+						removeButton.setEnabled(true);
+						upButton.setEnabled(true);
+						downButton.setEnabled(true);
+					}
+					
+				}
+			}
+		);
 		
 		factory.paintBordersFor(container);
 		return container;
