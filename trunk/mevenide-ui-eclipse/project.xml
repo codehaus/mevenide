@@ -72,9 +72,16 @@
            <version>1.0.1</version>
            <url>http://jakarta.apache.org/commons/logging</url>
         </dependency>
+        
         <dependency>
+           <groupId>commons-lang</groupId>
+           <artifactId>commons-lang</artifactId>
+           <version>1.0.1</version>
+           <url>http://jakarta.apache.org/commons/logging</url>
+        </dependency>
         
         <!-- logging -->
+        <dependency>
         <groupId>log4j</groupId>
            <artifactId>log4j</artifactId>
            <version>1.2.7</version>
@@ -111,43 +118,43 @@
 		<dependency>
            <groupId>eclipse</groupId>
            <artifactId>eclipse-jdtui</artifactId>
-           <version>2.1.0</version>
+           <version>3.0.0</version>
            <url>http://eclipse.org/</url>
         </dependency>
 	    <dependency>
            <groupId>eclipse</groupId>
            <artifactId>eclipse-resources</artifactId>
-           <version>2.1.0</version>
+           <version>3.0.0</version>
            <url>http://eclipse.org/</url>
         </dependency>
 	    <dependency>
   	       <groupId>eclipse</groupId>
            <artifactId>eclipse-runtime</artifactId>
-           <version>2.1.0</version>
+           <version>3.0.0</version>
            <url>http://eclipse.org/</url>
         </dependency>
 		<dependency>
            <groupId>eclipse</groupId>
            <artifactId>eclipse-jdtcore</artifactId>
-           <version>2.1.0</version>
+           <version>3.0.0</version>
            <url>http://eclipse.org/</url>
         </dependency>
         <dependency>
            <groupId>eclipse</groupId>
            <artifactId>eclipse-dtcore</artifactId>
-           <version>2.1.0</version>
+           <version>3.0.0</version>
            <url>http://eclipse.org/</url>
         </dependency>
         <dependency>
            <groupId>eclipse</groupId>
            <artifactId>eclipse-dtui</artifactId>
-           <version>2.1.0</version>
+           <version>3.0.0</version>
            <url>http://eclipse.org/</url>
         </dependency>
         <dependency>
            <groupId>eclipse</groupId>
            <artifactId>eclipse-launching</artifactId>
-           <version>2.1.0</version>
+           <version>3.0.0</version>
            <url>http://eclipse.org/</url>
         </dependency>
 	    <dependency>
@@ -159,7 +166,7 @@
 	    <dependency>
 	       <groupId>eclipse</groupId>
            <artifactId>eclipse-swt</artifactId>
-           <version>2.1.0</version>
+           <version>3.0.0</version>
            <url>http://eclipse.org/</url>
         </dependency>
 	    <dependency>
@@ -173,6 +180,12 @@
            <artifactId>eclipse-views</artifactId>
            <version>2.1.0</version>
            <url>http://eclipse.org/</url>
+        </dependency>
+        <dependency>
+        	<groupId>eclipse</groupId>	
+        	<artifactId>eclipse-externaltools</artifactId>
+        	<version>3.0.0</version>
+        	<url>http://eclipse.org/</url>
         </dependency>
     
   </dependencies>
