@@ -23,10 +23,16 @@
       <attainGoal name="multiproject:goal"/>
   </goal>
   
-  <goal name="mevenide-jbuilder:build" description="Build all Mevenide modules" prereqs="mevenide-jbuilder:clean,mevenide-jbuilder:init">
+  <goal name="mevenide-jbuilder:build" description="Build all Mevenide JBuilder modules" prereqs="mevenide-jbuilder:clean,mevenide-jbuilder:init">
       <j:set var="maven.multiproject.includes" value="${maven.multiproject.jbuilder.includes}"/>
       <j:set var="maven.multiproject.excludes" value="mevenide-master/project.xml"/>
       <attainGoal name="multiproject:goal"/>
+      <maven:reactor
+               basedir="${basedir}/.."
+               includes="${mevenide.ui.jbuilder.project.name}/project.xml"
+               goals="clean,opentool:opentool"
+               postProcessing="false"
+               ignoreFailures="false"/>
   </goal>
 
   <goal name="mevenide-netbeans:autoupdate">
