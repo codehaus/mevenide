@@ -18,9 +18,8 @@ import java.util.List;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jdt.core.IClasspathEntry;
-import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.jdt.core.JavaCore;
 import org.mevenide.ProjectConstants;
+import org.mevenide.ui.eclipse.sync.pom.ArtifactGroup;
 
 /**
  * 
@@ -28,22 +27,12 @@ import org.mevenide.ProjectConstants;
  * @version $Id$
  * 
  */
-public class SourceDirectoryGroup {
+public class SourceDirectoryGroup extends ArtifactGroup {
 	
 	private List sourceDirectories;
-	private IJavaProject project;
 	
-	
-	public SourceDirectoryGroup(IProject project) {
-		try {
-			if ( project != null && project.hasNature(JavaCore.NATURE_ID) ) {
-				this.project = JavaCore.create(project);
-				initialize();
-			}
-		}
-		catch ( Exception ex ) {
-			ex.printStackTrace();
-		}
+	public SourceDirectoryGroup(IProject project)  {
+		super(project);	
 	}
 	
 	protected void initialize() throws Exception {
@@ -67,14 +56,7 @@ public class SourceDirectoryGroup {
 		return sourceDirectories;
 	}
 	
-	public IJavaProject getProject() {
-		return project;
-	}
-
-	public void setProject(IJavaProject project) throws Exception {
-		this.project = project;
-		initialize();
-	}
+	
 
 	public void setSourceDirectories(List list) {
 		sourceDirectories = list;
