@@ -11,7 +11,7 @@
     <attainGoal name="mevenide:create-update-dist"/>
   </goal>
   
-  <goal name="mevenide:build-site" description="Build Mevenide Site" prereqs="mevenide:prepare-site-resources">
+  <goal name="mevenide:build-site" description="Build Mevenide Site">
   	<j:set var="maven.multiproject.includes" value="${maven.multiproject.includes},${mevenide.eclipse.plugin.project.name}/project.xml,${mevenide.spinner.wiki.project.name}/project.xml"/>
   	<attainGoal name="multiproject:site"/>
   </goal>
@@ -44,14 +44,6 @@
     <j:include file="${installScript}"/>
   </goal>  
   
-  <goal name="mevenide:prepare-site-resources" description="Copy the site resources into xdocs directories">
-  	<j:forEach var="project" items="${maven.multiproject.includes}">
-  	  <ant:copy todir="${project}/xdocs/images">
-  	  	<fileset dir="${mevenide.master.project.location}/xdocs/images" includes="*.*"/>
-  	  </ant:copy>
-  	</j:forEach>
-  </goal>
-  
   
   <!-- ==================================== -->
   <!--        plugin creation section       -->
@@ -79,11 +71,6 @@
   <goal name="mevenide:build-core" description="Build Mevenide-core module">
   	 <util:file var="mevenideCoreProjectdescriptor" name="${mevenide.core.project.location}/project.xml"/>
 	 <maven:maven descriptor="${mevenideCoreProjectdescriptor}" goals="clean,jar:install"/> 	 
-  </goal>
-  
-  <goal name="mevenide:build-master-site" description="Build Master Site">
-  	<j:set var="maven.multiproject.includes" value="${mevenide.master.project.name}/project.xml"/>
-  	<attainGoal name="multiproject:site"/>
   </goal>
   
   <goal name="mevenide:build-xdoc" description="Build each module doco, without aggregating them. Provided for convenience, since building the whole can take a long time.">
