@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2003  Gilles Dodinet (gdodinet@wanadoo.fr)
  * 
  * This library is free software; you can redistribute it and/or modify it under
@@ -10,29 +10,34 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
  */
 package org.mevenide.project;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.apache.commons.discovery.tools.DiscoverClass;
 
 /**
  * 
  * @author Gilles Dodinet (gdodinet@wanadoo.fr)
- * @version $Id: AllTests.java 8 mai 2003 15:32:4913:34:35 Exp gdodinet 
+ * @version $Id$
  * 
  */
-public class AllTests  {
-	private AllTests() {
+public abstract class AbstractDependencyResolver implements IDependencyResolver {
+	private static IDependencyResolver dependencyUtil;
+	private static Object lock = new Object();
+	
+	protected AbstractDependencyResolver() {
 	}
-
-    public static Test suite() {
-        TestSuite suite = new TestSuite();
-        
-		suite.addTestSuite(DependencyFactoryTest.class);
-		suite.addTestSuite(DependencyResolverTest.class);
 		
-        return suite;
-    }
+	public static IDependencyResolver getInstance() throws  Exception {
+		if (dependencyUtil != null) {
+			return dependencyUtil;
+		}
+		synchronized (lock) {
+			if (dependencyUtil == null) {
+				dependencyUtil = (IDependencyResolver) new  DiscoverClass().newInstance(IDependencyResolver.class);
+			}
+			return dependencyUtil;
+		}
+	}
+	
 }

@@ -34,7 +34,7 @@ public class AllTests {
         suite.addTest(org.mevenide.core.AllTests.suite());
 		suite.addTest(org.mevenide.project.AllTests.suite());
         suite.addTest(org.mevenide.project.io.AllTests.suite());
-        
+ 
         return suite;
     }
 }
