@@ -14,11 +14,13 @@
 					<description> 
 						%MavenPlugin.Description
 					</description>
-					<property name="%MavenPluginProperty.1.Name" 
-							  label="%MavenPluginProperty.1.Label" 
-							  default="%MavenPluginProperty.1.Default" 
-							  required="%MavenPluginProperty.1.Required" 
-							  description="%MavenPluginProperty.1.Description" />
+					<category name="%MavenPlugin.Category.1">
+						<property name="%MavenPluginProperty.1.Name" 
+								  label="%MavenPluginProperty.1.Label" 
+								  default="%MavenPluginProperty.1.Default" 
+								  required="%MavenPluginProperty.1.Required" 
+								  description="%MavenPluginProperty.1.Description" />
+				    </category>
 				</plugin-provider>
         </extension>
 </plugin>
