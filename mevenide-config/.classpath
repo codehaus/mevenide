@@ -8,7 +8,6 @@
 	<classpathentry kind="var" path="MAVEN_REPO/ant/jars/ant-1.5.3-1.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/commons-logging/jars/commons-logging-1.0.1.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/junit/jars/junit-3.8.1.jar"/>
-	<classpathentry kind="src" path="/mevenide-core"/>
 	<classpathentry kind="src" path="src/test/conf"/>
 	<classpathentry kind="src" path="etc"/>
 	<classpathentry kind="var" path="MAVEN_REPO/log4j/jars/log4j-1.2.8.jar"/>

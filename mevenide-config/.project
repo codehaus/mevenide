@@ -3,7 +3,6 @@
 	<name>mevenide-config</name>
 	<comment></comment>
 	<projects>
-		<project>mevenide-core</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
