@@ -46,7 +46,7 @@
  * SUCH DAMAGE.
  * ====================================================================
  */
-package org.mevenide.ui.eclipse.sync.view;
+package org.mevenide.ui.eclipse.sync.control;
 
 import java.util.List;
 

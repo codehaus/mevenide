@@ -64,28 +64,21 @@ import org.mevenide.sync.SynchronizerFactory;
 public class SynchronizeWizard extends Wizard {
 	private static Log log = LogFactory.getLog(SynchronizeWizard.class);
 	
-	private SourceDirectoryMappingWizardPage sourcePage;
-	private DependencyMappingWizardPage dependencyPage;
-	
 	private IProject project;
+	
+	private SynchronizeWizardPage page;
 	
 	public SynchronizeWizard(IProject project) {
 		this.project = project;
-		sourcePage = new SourceDirectoryMappingWizardPage();
-		dependencyPage = new DependencyMappingWizardPage();
-		addPage(sourcePage);
-		addPage(dependencyPage);
+
+		page = new SynchronizeWizardPage();
+		addPage(page);
 	}
 
 	public boolean performFinish() {
 		try {
 			
-			
-			sourcePage.saveState();
-			log.debug("SourceDirectories saved");
-			
-			dependencyPage.saveState();
-			log.debug("Dependencies saved");
+			page.saveState();
 			
 			SynchronizerFactory.getSynchronizer(ISynchronizer.IDE_TO_POM).synchronize();
 		}
