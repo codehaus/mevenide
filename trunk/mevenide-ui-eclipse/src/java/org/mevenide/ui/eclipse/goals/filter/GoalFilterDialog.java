@@ -19,12 +19,15 @@ package org.mevenide.ui.eclipse.goals.filter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringTokenizer;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
 import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.ITreeViewerListener;
+import org.eclipse.jface.viewers.TreeExpansionEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
@@ -37,6 +40,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.PlatformUI;
 import org.mevenide.ui.eclipse.goals.model.Element;
 import org.mevenide.ui.eclipse.goals.model.Goal;
@@ -44,6 +48,7 @@ import org.mevenide.ui.eclipse.goals.model.GoalsProvider;
 import org.mevenide.ui.eclipse.goals.model.Plugin;
 import org.mevenide.ui.eclipse.goals.viewer.GoalsLabelProvider;
 import org.mevenide.ui.eclipse.preferences.PreferencesManager;
+import org.mevenide.util.StringUtils;
 
 /**  
  * @todo factorize updateCheckedItems so that it can be shared between GoalsPickerDIalog and GoalsFilterDialog
@@ -127,9 +132,7 @@ public class GoalFilterDialog extends Dialog {
 		selectAllButton.addMouseListener(
 			new MouseAdapter() {
 				public void mouseDown(MouseEvent e) {
-					IStructuredContentProvider provider = (IStructuredContentProvider) goalsViewer.getContentProvider();
-					goalsViewer.setChecked(provider.getElements(Element.NULL_ROOT), true);
-					goalsViewer.setGrayedElements(new Object[0]);
+					setAllChecked(true);
 				}
 			}
 		);
@@ -141,11 +144,19 @@ public class GoalFilterDialog extends Dialog {
 		deSelectAllButton.addMouseListener(
 			new MouseAdapter() {
 				public void mouseDown(MouseEvent e) {
-					goalsViewer.setCheckedElements(new Object[0]);
-					goalsViewer.setGrayedElements(new Object[0]);
+					setAllChecked(false);
 				}
 			}
 		);
+	}
+	
+	private void setAllChecked(boolean state) {
+	    TreeItem[] children = goalsViewer.getTree().getItems();
+		for (int i = 0; i < children.length; i++) {
+			TreeItem item = children[i];
+			item.setChecked(state);
+		}
+		goalsViewer.setGrayedElements(new Object[0]);
 	}
 	
 	private void createRegexFilterEditor(Composite parent) {
@@ -156,18 +167,18 @@ public class GoalFilterDialog extends Dialog {
 		composite.setLayoutData(gridData);
 		
 		applyCustomFiltersButton = new Button(composite, SWT.CHECK);
+		applyCustomFiltersButton.setSelection(preferencesManager.getBooleanValue(CustomPatternFilter.APPLY_CUSTOM_FILTERS_KEY));
+		applyCustomFiltersButton.setText("Custom filter regular expressions (matching names will be hidden) :");
 		GridData checkboxData = new GridData();
 		checkboxData.grabExcessHorizontalSpace = false;
 		applyCustomFiltersButton.setLayoutData(checkboxData);
-		applyCustomFiltersButton.setSelection(preferencesManager.getBooleanValue(CustomPatternFilter.APPLY_CUSTOM_FILTERS_KEY));
-		applyCustomFiltersButton.setText("Custom filter regular expressions (matching names will be hidden) :");
 		
 		patternText = new Text(composite, SWT.BORDER );
+		patternText.setText(preferencesManager.getValue(CustomPatternFilter.CUSTOM_FILTERS_KEY));
+		patternText.setEnabled(applyCustomFiltersButton.getSelection());
 		GridData textData = new GridData(GridData.FILL_HORIZONTAL);
 		textData.grabExcessHorizontalSpace = true;
 		patternText.setLayoutData(textData);
-		patternText.setText(preferencesManager.getValue(CustomPatternFilter.CUSTOM_FILTERS_KEY));
-		patternText.setEnabled(applyCustomFiltersButton.getSelection());
 		
 		final Label label = new Label(composite, SWT.NULL);
 		label.setText("Patterns are separated by comma");
@@ -213,13 +224,53 @@ public class GoalFilterDialog extends Dialog {
     
     	goalsViewer.getTree().setLayoutData(gridData);
     	
-    	goalsViewer.addCheckStateListener(
+    	createTreeListeners();
+    	initializeTree();
+	}
+	
+	private void createTreeListeners() {
+		goalsViewer.addCheckStateListener(
         	new ICheckStateListener() {
 				public void checkStateChanged(CheckStateChangedEvent event) {
                 	updateCheckedItems(event);
         		}
         	}
         );
+    	
+    	goalsViewer.addTreeListener(
+    		new ITreeViewerListener() {
+    			public void treeCollapsed(TreeExpansionEvent e) {}
+    			public void treeExpanded(TreeExpansionEvent e) {
+    				Object o = e.getElement();
+    				if ( o instanceof Plugin ) {
+    					updateCheckedItems(new CheckStateChangedEvent(goalsViewer, o, goalsViewer.getChecked(o)));
+    				}
+				}
+    		}
+    	);
+	}
+
+	private void initializeTree() {
+		String goalsAsString = preferencesManager.getValue(GlobalGoalFilter.ORIGIN_FILTER_GOALS);
+		List goals = deserializeFilteredGoals(goalsAsString);  
+		TreeItem[] children = goalsViewer.getTree().getItems();
+		for (int i = 0; i < children.length; i++) {
+			TreeItem item = children[i];
+			if ( goals.contains(((Element) item.getData()).getFullyQualifiedName()) ) {
+				item.setChecked(true);
+			}
+		}
+	}
+	
+	private List deserializeFilteredGoals(String goalsAsString) {
+		List goals = new ArrayList();
+		if ( !StringUtils.isNull(goalsAsString) ) {
+		    StringTokenizer tokenizer = new StringTokenizer(goalsAsString, ",");
+		    while ( tokenizer.hasMoreTokens() ) {
+		    	goals.add(tokenizer.nextToken());
+		    }
+		}
+		return goals;
 	}
 	
 	private void updateCheckedItems(CheckStateChangedEvent e) {
