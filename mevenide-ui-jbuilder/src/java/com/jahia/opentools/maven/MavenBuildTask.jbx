@@ -1,0 +1,14 @@
+[PropertyInfo]
+commandLine,String,false,false,commandLine,commandLine,true,<default>
+displayName,String,false,false,displayName,displayName,true,<default>
+displayOutput,boolean,false,false,displayOutput,displayOutput,true,<default>
+goals,ArrayList,false,false, , ,false,<default>
+mavenFileNode,MavenFileNode,false,false, , ,true,<default>
+runningDirectory,java.io.File,false,false,runningDirectory,runningDirectory,true,<default>
+smallDisplayIcon,javax.swing.Icon,false,false,smallDisplayIcon,smallDisplayIcon,true,<default>
+refreshDelay,long,false,false,refreshDelay,refreshDelay,true,<default>
+[IconNames]
+
+
+
+

@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<document>
+
+  	<properties>
+    	<author email="rhill@wanadoo.fr">Gilles Dodinet</author>
+    	<title>Mevenide Goals Grabber Overview</title>
+  	</properties>
+  	
+  	
+  	
+	<body>
+		<section name="Overview">
+			<div id="documentContent">
+				<p>
+					This project aims at integrating Maven into JBuilder. 
+					You can find a description of the current features <a href="JBMavenOpenTool.html">here</a>.
+				</p>
+    		</div>
+		</section>
+    </body>
+</document>
