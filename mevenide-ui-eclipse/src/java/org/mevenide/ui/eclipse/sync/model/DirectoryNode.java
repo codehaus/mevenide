@@ -68,12 +68,10 @@ public class DirectoryNode extends ArtifactNode {
 			if ( sources.keySet().contains(directory.getCleanPath()) ) {
 				return;
 			}
-			Resource resource = findLessExclusiveEquivalentResource();
-			if ( resource != null && resource.getExcludes() != null) {
-				excludeNodes = new ExcludeNode[resource.getExcludes().size()];
-				for (int i = 0; i < excludeNodes.length; i++) {
-					excludeNodes[i] = new ExcludeNode(this, (String) resource.getExcludes().get(i));
-				}
+			List exclusionPatterns = findExclusionPatterns();
+			excludeNodes = new ExcludeNode[exclusionPatterns.size()];
+			for (int i = 0; i < excludeNodes.length; i++) {
+				excludeNodes[i] = new ExcludeNode(this, (String) exclusionPatterns.get(i));
 			}
 		} 
 		catch (Exception e) {
@@ -82,22 +80,19 @@ public class DirectoryNode extends ArtifactNode {
 		}
 	}
 
-	private Resource findLessExclusiveEquivalentResource() {
-		Resource resource = null;
+	private List findExclusionPatterns() {
+		List excludes = new ArrayList();
 		Project mavenProject = ((Project) parentNode.getData());
 		List allResources = getMavenProjectResources(mavenProject);
 		for (int i = 0; i < allResources.size(); i++) {
 			Resource nextResource = (Resource) allResources.get(i);
 			if ( directory.getCleanPath().equals(SourceDirectoryUtil.stripBasedir(nextResource.getDirectory()).replaceAll("\\\\", "/")) ) {
-				if ( resource == null ) {
-					resource = nextResource;
-				}
-				else {
-					resource = resource.getExcludes().size() > nextResource.getExcludes().size() ? nextResource : resource;
+				if ( nextResource.getExcludes() != null && nextResource.getExcludes().size() > 0 ) {
+				    excludes.addAll(nextResource.getExcludes());
 				}
 			}
 		}
-		return resource;
+		return excludes;
 	}
 
 	private List getMavenProjectResources(Project mavenProject) {
@@ -157,11 +152,15 @@ public class DirectoryNode extends ArtifactNode {
     }
 
     public void addTo(Project project) throws Exception {
+        String[] exclusionPatterns = new String[excludeNodes.length];
+        for (int i = 0; i < exclusionPatterns.length; i++) {
+           	exclusionPatterns[i] = (String) excludeNodes[i].getData();
+        }
 		if ( ProjectConstants.MAVEN_RESOURCE.equals(directory.getType()) ) {
-			ProjectWriter.getWriter().addResource(directory.getCleanPath(), project.getFile());
+			ProjectWriter.getWriter().addResource(directory.getCleanPath(), project.getFile(), exclusionPatterns);
 		}
 		else if ( ProjectConstants.MAVEN_TEST_RESOURCE.equals(directory.getType()) ) {
-			ProjectWriter.getWriter().addUnitTestResource(directory.getCleanPath(), project.getFile());
+			ProjectWriter.getWriter().addUnitTestResource(directory.getCleanPath(), project.getFile(), exclusionPatterns);
 		}
 		else {
 		    log.debug("adding " + directory.getCleanPath() + " as " + directory.getType());
