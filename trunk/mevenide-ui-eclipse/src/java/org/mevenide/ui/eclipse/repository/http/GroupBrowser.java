@@ -85,14 +85,17 @@ public class GroupBrowser implements RepositoryObjectCollector {
            
             List types = new ArrayList(); 
             
-            for ( Iterator it = typeNames.iterator(); it.hasNext(); ) {
-                String typeName = (String) it.next();
-                if ( !org.mevenide.util.StringUtils.isNull(typeName) ) { 
-                    Type type = new Type(typeName, group);
-                    types.add(type);
-                }
+            if ( typeNames != null ) {
+	            for ( Iterator it = typeNames.iterator(); it.hasNext(); ) {
+	                String typeName = (String) it.next();
+	                if ( !org.mevenide.util.StringUtils.isNull(typeName) ) { 
+	                    Type type = new Type(typeName, group);
+	                    types.add(type);
+	                }
+	            }
+	            return (Type[]) types.toArray(new Type[types.size()]);
             }
-            return (Type[]) types.toArray(new Type[types.size()]);
+            return null;
         }
         catch ( IOException e ) {
             throw new RepositoryBrowsingException("Unable to browse group " + group.getName(), e);

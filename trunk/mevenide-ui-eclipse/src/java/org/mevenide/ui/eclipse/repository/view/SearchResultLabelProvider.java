@@ -17,6 +17,7 @@
 package org.mevenide.ui.eclipse.repository.view;
 
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.swt.graphics.Image;
@@ -39,11 +40,12 @@ public class SearchResultLabelProvider implements ITableLabelProvider {
         if ( element instanceof Artifact ) {
             Artifact artifact = (Artifact) element;
             Type type = (Type) artifact.getParent();
+            String typeName = ((Type) artifact.getParent()).getName();
 	        switch ( columnIndex ) {
 	            case 0: return type.getParent().getName();
 	            case 1: return artifact.getName();
 	            case 2: return artifact.getVersion();
-	            case 3: return ((Type) artifact.getParent()).getName();
+	            case 3: return typeName.endsWith("s") ? StringUtils.stripEnd(typeName, "s") : typeName;
 	            default: return null;           
 	        }
         }

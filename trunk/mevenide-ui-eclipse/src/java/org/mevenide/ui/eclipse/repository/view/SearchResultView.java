@@ -64,6 +64,7 @@ public class SearchResultView extends ViewPart {
     
     public void setInput(Type type) {
         searchResults.setInput(type);
+        searchResults.refresh();
     }
 
     private void createSearchResultTable(Composite resultContainer) {

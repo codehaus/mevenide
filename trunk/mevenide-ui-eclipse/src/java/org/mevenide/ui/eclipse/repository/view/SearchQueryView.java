@@ -23,6 +23,7 @@ import java.util.TreeSet;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.PreferenceDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -272,15 +273,20 @@ public class SearchQueryView extends ViewPart implements RepositoryEventListener
             new Runnable() {
                 public void run() {
 			        Type type = (Type) event.getElement();
-			        SearchResultView view;
-			        try {
-	                    view = (SearchResultView) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView("org.mevenide.repository.search.result");
-	                    view.setInput(type);
-				    }
-			        catch (PartInitException e) {
-			            String message = "Unable to open search result page";
-			            IStatus status = new Status(Status.ERROR, "org.mevenide.ui", 1, message, e);
-			            Mevenide.getInstance().getLog().log(status);
+			        if ( type.getChildren() != null ) {
+				        SearchResultView view;
+				        try {
+		                    view = (SearchResultView) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView("org.mevenide.repository.search.result");
+		                    view.setInput(type);
+					    }
+				        catch (PartInitException e) {
+				            String message = "Unable to open search result page";
+				            IStatus status = new Status(Status.ERROR, "org.mevenide.ui", 1, message, e);
+				            Mevenide.getInstance().getLog().log(status);
+				        }
+			        }
+			        else {
+			            MessageDialog.openInformation(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Artifact Result", "No Artifact Found");
 			        }
                 }
             }
