@@ -96,7 +96,15 @@
   	 <util:file var="mavenEclipsePluginPluginPom" name="${maven.scm.checkout.dir}/maven-plugins/maven-eclipse-plugin-plugin/project.xml"/>
 	 <maven:maven descriptor="${mavenEclipsePluginPluginPom}" goals=" plugin:install,plugin:deploy"/>
   </goal>  
+
+  <goal name="mevenide:install-maven-nbm-plugin" description="Checkout maven-nbm-plugin from cvs and install it">
+    <j:set var="maven.scm.cvs.module" value="maven-plugins/maven-nbm-plugin"/>
+  	 <attainGoal name="scm:checkout-project"/>
+  	 <util:file var="mavenNbmPluginPom" name="${maven.scm.checkout.dir}/maven-plugins/maven-nbm-plugin/project.xml"/>
+	 <maven:maven descriptor="${mavenNbmPluginPom}" goals=" plugin:install,plugin:deploy"/>
+  </goal>  
   
+    
   <goal name="mevenide:build-core" description="Build Mevenide-core module">
   	 <util:file var="mevenideCoreProjectdescriptor" name="${mevenide.core.project.location}/project.xml"/>
 	 <maven:maven descriptor="${mevenideCoreProjectdescriptor}" goals="clean,jar:install"/> 	 
