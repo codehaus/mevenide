@@ -19,19 +19,22 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.ui.PlatformUI;
-import org.mevenide.ui.eclipse.launch.dialog.RunMavenWizard;
+import org.mevenide.ui.eclipse.launch.LaunchWizard;
+
 
 /**
+ * 
+ * still that maven classpath problem
  * 
  * @author Gilles Dodinet (gdodinet@wanadoo.fr)
  * @version $Id$
  * 
  */
-public class RunMavenAction extends AbstractMavenAction {
+public class LaunchAction extends AbstractMavenAction {
 	
     public void run(IAction action) {
 		
-		Wizard wizard = new RunMavenWizard();
+		Wizard wizard = new LaunchWizard();
         WizardDialog dialog 
         	= new WizardDialog(
 				PlatformUI.getWorkbench()
