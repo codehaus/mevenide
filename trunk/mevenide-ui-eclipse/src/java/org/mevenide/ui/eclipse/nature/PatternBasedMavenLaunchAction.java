@@ -27,6 +27,16 @@ import org.eclipse.jface.action.IAction;
  * 
  */
 public class PatternBasedMavenLaunchAction extends Action {
+    
+    private ActionDefinitions definition;
+    
+    public PatternBasedMavenLaunchAction(ActionDefinitions definition) {
+        this.definition = definition;
+        setText(definition.toString());
+        setToolTipText(definition.getGoalList());
+        setEnabled(definition.isEnabled());
+    }
+    
 	public void run(IAction action) {
 	    //TODO
 	}

@@ -29,7 +29,8 @@ import java.util.List;
 public class ActionDefinitionsManager {
 
     public List getDefinitions() {
-        return new ArrayList();
+        List definitions = new ArrayList();
+        return definitions;
     }
     
 }

@@ -17,6 +17,7 @@
 package org.mevenide.ui.eclipse.nature;
 
 import java.util.List;
+import org.mevenide.util.StringUtils;
 
 
 /**  
@@ -32,6 +33,8 @@ public class ActionDefinitions {
     private List patterns;
     
     private boolean enabled;
+    
+    private String name;
     
     public List getGoals() {
         return goals;
@@ -55,5 +58,30 @@ public class ActionDefinitions {
     
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+    }
+    
+    public String toString() {
+        String displayValue = name;
+        if ( StringUtils.isNull(displayValue) ) {
+            displayValue = getGoalList();
+        }
+        return displayValue;
+    }
+    
+    public String getGoalList() {
+        String goalList = ""; //$NON-NLS-1$
+        for (int i = 0; i < goals.size() - 1; i++) {
+            goalList += goals.get(i) + " "; //$NON-NLS-1$
+        }
+        goalList += goals.get(goals.size() - 1);
+        return goalList;
+    }
+
+    public String getName() {
+        return name;
+    }
+    
+    public void setName(String name) {
+        this.name = name;
     }
 }
