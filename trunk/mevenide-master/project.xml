@@ -9,6 +9,14 @@
   <currentVersion>0.2-SNAPSHOT</currentVersion>
   <url>http://mevenide.sf.net/</url>
   
+  <dependencies>
+  	<dependency>
+  	  <groupId>commons-jelly</groupId>
+      <artifactId>commons-jelly-tags-xml</artifactId>
+  	  <version>SNAPSHOT</version>
+  	</dependency>
+  </dependencies>
+  
   <reports>
     <report>maven-changes-plugin</report>
     <report>maven-faq-plugin</report>
