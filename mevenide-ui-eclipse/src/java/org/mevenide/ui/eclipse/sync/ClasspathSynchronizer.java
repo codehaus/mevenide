@@ -76,7 +76,7 @@ public class ClasspathSynchronizer extends AbstractIdeSynchronizer implements IS
      */
 	public void initialize() {
 		setProject(Mevenide.getPlugin().getProject());
-		synchronizationGoal = Mevenide.getResourceString("eclipse.synch.project.goal");
+		synchronizationGoal = Mevenide.getResourceString("ClasspathSynchronizer.eclipse.synch.project.goal");
 	}
 	
 	protected void process() {
