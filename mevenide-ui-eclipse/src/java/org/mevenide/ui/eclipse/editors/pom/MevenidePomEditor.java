@@ -19,10 +19,8 @@ package org.mevenide.ui.eclipse.editors.pom;
 import java.io.File;
 import java.io.InputStream;
 import java.io.PrintWriter;
-import java.io.StringReader;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Project;
@@ -60,8 +58,6 @@ import org.mevenide.ui.eclipse.editors.pom.pages.ReportsPage;
 import org.mevenide.ui.eclipse.editors.pom.pages.RepositoryPage;
 import org.mevenide.ui.eclipse.editors.pom.pages.TeamPage;
 import org.mevenide.ui.eclipse.editors.pom.pages.UnitTestsPage;
-import org.mevenide.util.DefaultProjectUnmarshaller;
-import org.mevenide.util.MevenideUtils;
 import org.mevenide.util.StringUtils;
 
 /**

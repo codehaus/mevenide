@@ -17,7 +17,6 @@
 package org.mevenide.ui.eclipse.editors.pom;
 
 import java.io.InputStream;
-import java.io.StringReader;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Project;
@@ -37,7 +36,6 @@ import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.editor.IFormPage;
 import org.mevenide.project.io.JDomProjectUnmarshaller;
 import org.mevenide.ui.eclipse.Mevenide;
-import org.mevenide.util.MevenideUtils;
 
 /**
  * Presents the raw POM source in a basic XML editor.
