@@ -410,7 +410,7 @@ public abstract class MavenXmlContentAssistProcessor implements IContentAssistPr
 		
 		XMLNode parentNode = getNodeAt(doc, offset);
 		
-        if ( Namespace.getWerkzList().contains(parentNode.getName()) && !"goal".equals(parentNode.getName()) || "attainGoal".equals(parentNode.getName()) ) {
+        if ( Namespace.getWerkzList().contains(parentNode.getName()) && !("goal".equals(parentNode.getName()) && !"prereqs".equals(attribute.getName())) || "attainGoal".equals(parentNode.getName()) ) {
 	        words = new ArrayList(attributeCompletor.getValueHints(start));
         }
         
@@ -425,11 +425,24 @@ public abstract class MavenXmlContentAssistProcessor implements IContentAssistPr
         for (int i = 0; i < cp.length; i++) {
             String text = (String) words.get(i);
             if (quote == '\'' || quote == '"') {
-                cp[i] = new CompletionProposal(text + quote, offset - start.length(), start.length(), text.length() + 1, null,
+                boolean hasComma = false;
+                int replacementLength = 0;
+                if ( attribute.getContent().indexOf(',') > -1 ) {
+                    replacementLength = attribute.getContent().indexOf(',');
+                    hasComma = true;
+                }
+                else if ( attribute.getContent().indexOf(' ') > -1 ) {
+                    replacementLength = attribute.getContent().indexOf(' ');
+                }
+                else {
+                    replacementLength = attribute.getContent().length();
+                }
+                
+                cp[i] = new CompletionProposal(text + (hasComma ? "" : "" + quote), offset - start.length(), replacementLength - 6, text.length() + 1, null,
                         text, null, null);
             }
             else {
-                cp[i] = new CompletionProposal('"' + text + '"', offset - start.length(), start.length(), text.length() + 2,
+                cp[i] = new CompletionProposal('"' + text + '"', offset - start.length(), 0, text.length() + 2,
                         null, text, null, null);
             }
         }
