@@ -52,8 +52,7 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 /**  
- * @todo create AbstractGoalsGrabberTestCase 
- * 
+ *
  * @author Gilles Dodinet (gdodinet@wanadoo.fr)
  * @version $Id: AllTests.java 5 sept. 2003 Exp gdodinet 
  * 

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="org.mevenide.feature"
+      id="@maven.eclipse.plugin.artifact.id@"
       label="Mevenide, Maven plugin for Eclipse"
-      version="0.1.1"
+      version="@maven.eclipse.plugin.artifact.version@"
       provider-name="Sourceforge"
       plugin="Mevenide"
       image="logo.jpg">
@@ -37,20 +37,20 @@
       <import plugin="org.eclipse.jface.text"/>
    </requires>
 
-   <plugin id="org.mevenide.core"
+   <plugin id="@org.mevenide.core.id@"
            download-size="0"
            install-size="0"
-           version="0.1.1"/>
+           version="@org.mevenide.core.version@"/>
 
-   <plugin id="org.mevenide.grabber"
+   <plugin id="@org.mevenide.grabber.id@"
            download-size="0"
            install-size="0"
-           version="0.1.1"/>
+           version="@org.mevenide.grabber.version@"/>
 
-   <plugin id="org.mevenide.ui"
+   <plugin id="@org.mevenide.ui.eclipse.id@"
            download-size="0"
            install-size="0"
-           version="0.1.1"/>
+           version="@org.mevenide.ui.eclipse.version@"/>
 
 </feature>
 
