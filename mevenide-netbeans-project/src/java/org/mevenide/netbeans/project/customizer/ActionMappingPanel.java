@@ -825,9 +825,7 @@ public class ActionMappingPanel extends JPanel implements ProjectPanel {
             fld = field;
         }
         public void actionPerformed(java.awt.event.ActionEvent actionEvent) {
-            FileObject projxml = project.getProjectDirectory().getFileObject("project.xml"); //NOI18N
-            File projxmlFile  = FileUtil.toFile(projxml);
-            GoalsGrabberProvider goalProvider = GoalUtils.createProjectGoalsProvider(projxmlFile.getAbsolutePath());
+            GoalsGrabberProvider goalProvider = GoalUtils.createProjectGoalsProvider(project.getContext(), project.getLocFinder());
             CustomGoalsPanel panel = new CustomGoalsPanel(goalProvider);
             panel.setGoalsToExecute(fld.getText());
             DialogDescriptor desc = new DialogDescriptor(panel, "Select goal(s)");

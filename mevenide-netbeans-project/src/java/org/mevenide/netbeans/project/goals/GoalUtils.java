@@ -1,6 +1,6 @@
 /* ==========================================================================
  * Copyright 2003-2004 Apache Software Foundation
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -16,6 +16,8 @@
  */
 package org.mevenide.netbeans.project.goals;
 
+import org.mevenide.context.IQueryContext;
+import org.mevenide.environment.ILocationFinder;
 import org.mevenide.goals.grabber.IGoalsGrabber;
 import org.mevenide.goals.manager.GoalsGrabbersManager;
 
@@ -23,34 +25,26 @@ import org.mevenide.goals.manager.GoalsGrabbersManager;
  *
  * @author  Milos Kleint (ca206216@tiscali.cz)
  */
-public class GoalUtils
-{
+public class GoalUtils {
     
     /** Creates a new instance of Utils */
-    private GoalUtils()
-    {
+    private GoalUtils() {
     }
     
-    public static GoalsGrabberProvider createDefaultGoalsProvider()
-    {
-        return new GoalsGrabberProvider()
-                {
-                    public IGoalsGrabber getGoalsGrabber() throws Exception 
-                    {
-                        return GoalsGrabbersManager.getDefaultGoalsGrabber();
-                    }
-                };        
+    public static GoalsGrabberProvider createDefaultGoalsProvider() {
+        return new GoalsGrabberProvider() {
+            public IGoalsGrabber getGoalsGrabber() throws Exception {
+                return GoalsGrabbersManager.getDefaultGoalsGrabber();
+            }
+        };
     }
-
-    public static GoalsGrabberProvider createProjectGoalsProvider(final String projectXmlPath)
-    {
-        return new GoalsGrabberProvider()
-                {
-                    public IGoalsGrabber getGoalsGrabber() throws Exception 
-                    {
-                        return GoalsGrabbersManager.getGoalsGrabber(projectXmlPath);
-                    }
-                };        
+    
+    public static GoalsGrabberProvider createProjectGoalsProvider(final IQueryContext context, final ILocationFinder finder) {
+        return new GoalsGrabberProvider() {
+            public IGoalsGrabber getGoalsGrabber() throws Exception {
+                return GoalsGrabbersManager.getGoalsGrabber(context, finder);
+            }
+        };
     }
     
 }
