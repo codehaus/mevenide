@@ -100,6 +100,12 @@
 		</ul>
 	  </p>
 	  <p>
+		<u>Known issues</u><br/>
+		<ul>
+			<li>Big blocks of TEXT or COMMENT seem to make the editor lag really badly</li>
+		</ul>
+	  </p>
+	  <p>
 		<u>Known limitations</u><br/>
 		<ul>
 			<li>No code completions for prereqs attribute</li>
