@@ -32,6 +32,13 @@
                     <attr name="SystemFileSystem.icon" urlvalue="nbresloc:/org/mevenide/netbeans/project/resources/MavenIcon.gif"/>
                     <attr name="instantiatingWizardURL" urlvalue="nbresloc:/org/mevenide/netbeans/project/resources/nbmoduleProject.html"/>
                 </file>
+                <file name="genapp" url="genapp.txt">
+                    <attr name="template" boolvalue="true"/>
+                    <attr name="instantiatingIterator" newvalue="org.mevenide.netbeans.project.wizards.GenAppWizardIterator"/>
+                    <attr name="SystemFileSystem.localizingBundle" stringvalue="org.mevenide.netbeans.project.resources.Bundle"/>
+                    <attr name="SystemFileSystem.icon" urlvalue="nbresloc:/org/mevenide/netbeans/project/resources/GenAppTemplate.gif"/>
+                    <attr name="instantiatingWizardURL" urlvalue="nbresloc:/org/mevenide/netbeans/project/resources/emptyProject.html"/>
+                </file>
             </folder>
         </folder>
         

@@ -20,6 +20,7 @@ import java.awt.event.ActionEvent;
 import java.io.*;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -73,7 +74,7 @@ public class MavenExecutor implements Runnable {
     private String meter = "silent"; //NOI18N
     
     private static final long serialVersionUID = 7564737833872873L;
-    private MavenProject project;
+    private RunContext context;
     private Process proces;
     private String format;
     private InputOutput io;
@@ -82,8 +83,8 @@ public class MavenExecutor implements Runnable {
     
     private static RequestProcessor PROCESSOR = new RequestProcessor("maven execution", 3);
     
-    public MavenExecutor(MavenProject proj, String gl, Set procs, RunConfig conf) {
-        project = proj;
+    public MavenExecutor(RunContext proj, String gl, Set procs, RunConfig conf) {
+        context = proj;
         goal = gl;
         processors = procs;
         config = conf;
@@ -129,27 +130,64 @@ public class MavenExecutor implements Runnable {
     }
     
     public Process createProcess() throws IOException {
-        File execDir = FileUtil.toFile(project.getProjectDirectory());
+        File execDir = context.getExecutionDirectory();
+        String[] additionals = context.getAdditionalParams();
         HashMap formats = new HashMap(5);
-        formats.put(FORMAT_GOAL, goal);
-        formats.put(FORMAT_MAVEN_HOME, project.getLocFinder().getMavenHome());
-        formats.put(FORMAT_OFFLINE, config.isOffline() ? "--offline" : ""); //NOI18N
-        formats.put(FORMAT_NOBANNER, config.isNoBanner() ? "--nobanner" : ""); //NOI18N
-        formats.put(FORMAT_DEBUG, config.isDebug() ? "-X" : ""); //NOI18N
-        formats.put(FORMAT_EXCEPTIONS, config.isExceptions() ? "--exception" : ""); //NOI18N
-        formats.put(FORMAT_NONVERBOSE, config.isNonverbose() ? "--quiet" : ""); //NOI18N
-        if (!config.isOffline()) {
-            formats.put(FORMAT_DOWNLOADMETER, "default".equals(meter) ? "" : "-Dmaven.download.meter=" + meter); //NOI18N
-        } else {
+        Process proc;
+        formats.put(FORMAT_MAVEN_HOME, context.getMavenHome());
+        if (additionals.length > 0) {
+            formats.put(FORMAT_GOAL, "");
+            formats.put(FORMAT_OFFLINE, ""); //NOI18N
+            formats.put(FORMAT_NOBANNER, ""); //NOI18N
+            formats.put(FORMAT_DEBUG, ""); //NOI18N
+            formats.put(FORMAT_EXCEPTIONS, ""); //NOI18N
+            formats.put(FORMAT_NONVERBOSE, ""); //NOI18N
             formats.put(FORMAT_DOWNLOADMETER, ""); //NOI18N
+            List lst = new ArrayList();
+            lst.add(MapFormat.format(format, formats).trim());
+            if (config.isOffline()) {
+                lst.add("--offline");
+            }
+            if (config.isNoBanner()) {
+                lst.add("--nobanner");
+            }
+            if (config.isDebug()) {
+                lst.add("-X");
+            }
+            if (config.isExceptions()) {
+                lst.add("--exception");
+            }
+            if (config.isNonverbose()) {
+                lst.add("--quiet");
+            }
+            if (!config.isOffline() && !"default".equals(meter)) {
+                lst.add("-Dmaven.download.meter=" + meter);
+            }
+            lst.addAll(Arrays.asList(additionals));
+            String[] prcs = new String[lst.size()];
+            prcs = (String[])lst.toArray(prcs);
+            proc = Runtime.getRuntime().exec(prcs, null, execDir);
+            
+        } else {
+            formats.put(FORMAT_GOAL, goal);
+            formats.put(FORMAT_OFFLINE, config.isOffline() ? "--offline" : ""); //NOI18N
+            formats.put(FORMAT_NOBANNER, config.isNoBanner() ? "--nobanner" : ""); //NOI18N
+            formats.put(FORMAT_DEBUG, config.isDebug() ? "-X" : ""); //NOI18N
+            formats.put(FORMAT_EXCEPTIONS, config.isExceptions() ? "--exception" : ""); //NOI18N
+            formats.put(FORMAT_NONVERBOSE, config.isNonverbose() ? "--quiet" : ""); //NOI18N
+            if (!config.isOffline()) {
+                formats.put(FORMAT_DOWNLOADMETER, "default".equals(meter) ? "" : "-Dmaven.download.meter=" + meter); //NOI18N
+            } else {
+                formats.put(FORMAT_DOWNLOADMETER, ""); //NOI18N
+            }
+            String prc = MapFormat.format(format, formats).trim();
+            proc = Runtime.getRuntime().exec(prc, null, execDir);
         }
-        String procString = MapFormat.format(format, formats);
-        Process proc = Runtime.getRuntime().exec(procString, null, execDir);
         return proc;
     }
     
     private InputOutput createInputOutput() {
-        InputOutput newio = IOProvider.getDefault().getIO("Maven (" + project.getName() + ")", false);
+        InputOutput newio = IOProvider.getDefault().getIO("Maven (" + context.getExecutionName() + ")", false);
         newio.setErrSeparated(false);
         try {
             newio.getOut().reset();

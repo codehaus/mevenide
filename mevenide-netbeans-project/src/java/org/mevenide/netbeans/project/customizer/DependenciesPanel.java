@@ -25,7 +25,11 @@ import java.beans.PropertyVetoException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import javax.swing.ButtonGroup;
+import javax.swing.DefaultListModel;
 import javax.swing.JPanel;
 import javax.swing.tree.TreeSelectionModel;
 import org.apache.commons.logging.Log;
@@ -62,6 +66,9 @@ public class DependenciesPanel extends JPanel implements ExplorerManager.Provide
     public DependenciesPanel(MavenProject proj, boolean editable) {
         project = proj;
         initComponents();
+        ButtonGroup grp = new ButtonGroup();
+        grp.add(rbVersion);
+        grp.add(rbPath);
         GridBagConstraints fillConstraints = new GridBagConstraints();
         fillConstraints.gridwidth = GridBagConstraints.REMAINDER;
         fillConstraints.gridheight = GridBagConstraints.REMAINDER;
@@ -103,6 +110,8 @@ public class DependenciesPanel extends JPanel implements ExplorerManager.Provide
         txtVersion.setEditable(editable);
         txtType.setEditable(editable);
         txtURL.setEditable(editable);
+        txtJar.setEditable(editable);
+        lstProperties.setEnabled(editable);
     }  
     /** This method is called from within the constructor to
      * initialize the form.
@@ -113,6 +122,7 @@ public class DependenciesPanel extends JPanel implements ExplorerManager.Provide
         java.awt.GridBagConstraints gridBagConstraints;
 
         pnlDeps = new javax.swing.JPanel();
+        tbDep = new javax.swing.JTabbedPane();
         pnlSingleDep = new javax.swing.JPanel();
         lblArtifactId = new javax.swing.JLabel();
         txtArtifactID = new javax.swing.JTextField();
@@ -125,6 +135,19 @@ public class DependenciesPanel extends JPanel implements ExplorerManager.Provide
         lblURL = new javax.swing.JLabel();
         txtURL = new javax.swing.JTextField();
         btnView = new javax.swing.JButton();
+        lblJar = new javax.swing.JLabel();
+        txtJar = new javax.swing.JTextField();
+        lstProperties = new javax.swing.JList();
+        pnlOverrides = new javax.swing.JPanel();
+        rbVersion = new javax.swing.JRadioButton();
+        rbPath = new javax.swing.JRadioButton();
+        jTextField1 = new javax.swing.JTextField();
+        jTextField2 = new javax.swing.JTextField();
+        jButton1 = new javax.swing.JButton();
+        btnOverride = new javax.swing.JButton();
+        btnAdd = new javax.swing.JButton();
+        btnRemove = new javax.swing.JButton();
+        btnEdit = new javax.swing.JButton();
 
         setLayout(new java.awt.GridBagLayout());
 
@@ -132,111 +155,226 @@ public class DependenciesPanel extends JPanel implements ExplorerManager.Provide
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridwidth = 4;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 6);
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         gridBagConstraints.weighty = 0.5;
+        gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 6);
         add(pnlDeps, gridBagConstraints);
 
+        tbDep.setTabLayoutPolicy(javax.swing.JTabbedPane.SCROLL_TAB_LAYOUT);
+        tbDep.setTabPlacement(javax.swing.JTabbedPane.BOTTOM);
         pnlSingleDep.setLayout(new java.awt.GridBagLayout());
 
         lblArtifactId.setText("Artifact");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(3, 3, 0, 0);
         pnlSingleDep.add(lblArtifactId, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.insets = new java.awt.Insets(0, 3, 0, 0);
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         gridBagConstraints.weightx = 0.1;
+        gridBagConstraints.insets = new java.awt.Insets(3, 3, 0, 0);
         pnlSingleDep.add(txtArtifactID, gridBagConstraints);
 
         lblVersion.setText("Version");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
-        gridBagConstraints.insets = new java.awt.Insets(3, 0, 0, 0);
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(3, 3, 0, 0);
         pnlSingleDep.add(lblVersion, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.insets = new java.awt.Insets(3, 3, 0, 0);
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.weightx = 0.1;
+        gridBagConstraints.insets = new java.awt.Insets(3, 3, 0, 0);
         pnlSingleDep.add(txtVersion, gridBagConstraints);
 
         lblType.setText("Type");
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.insets = new java.awt.Insets(3, 0, 0, 0);
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 1;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(3, 3, 0, 0);
         pnlSingleDep.add(lblType, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridx = 3;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridwidth = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.insets = new java.awt.Insets(3, 3, 0, 0);
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.weightx = 0.1;
+        gridBagConstraints.insets = new java.awt.Insets(3, 3, 0, 3);
         pnlSingleDep.add(txtType, gridBagConstraints);
 
         lblGroupId.setText("Group");
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 3;
-        gridBagConstraints.insets = new java.awt.Insets(3, 0, 0, 0);
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 0;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(3, 3, 0, 0);
         pnlSingleDep.add(lblGroupId, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 3;
+        gridBagConstraints.gridx = 3;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridwidth = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.insets = new java.awt.Insets(3, 3, 0, 0);
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         gridBagConstraints.weightx = 0.1;
+        gridBagConstraints.insets = new java.awt.Insets(3, 3, 0, 3);
         pnlSingleDep.add(txtGroupId, gridBagConstraints);
 
         lblURL.setText("URL");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 4;
-        gridBagConstraints.insets = new java.awt.Insets(3, 0, 0, 0);
+        gridBagConstraints.gridy = 3;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(3, 3, 0, 0);
         pnlSingleDep.add(lblURL, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 4;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.gridwidth = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.insets = new java.awt.Insets(3, 3, 0, 0);
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.weightx = 0.1;
+        gridBagConstraints.insets = new java.awt.Insets(3, 3, 0, 0);
         pnlSingleDep.add(txtURL, gridBagConstraints);
 
         btnView.setText("View...");
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 4;
-        gridBagConstraints.insets = new java.awt.Insets(1, 3, 0, 0);
+        gridBagConstraints.gridx = 4;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.gridwidth = 2;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(1, 3, 0, 3);
         pnlSingleDep.add(btnView, gridBagConstraints);
 
+        lblJar.setLabelFor(txtJar);
+        lblJar.setText("Jar");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(3, 3, 0, 0);
+        pnlSingleDep.add(lblJar, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(3, 3, 0, 0);
+        pnlSingleDep.add(txtJar, gridBagConstraints);
+
+        lstProperties.setMinimumSize(new java.awt.Dimension(10, 50));
+        lstProperties.setPreferredSize(new java.awt.Dimension(10, 50));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 4;
+        gridBagConstraints.gridwidth = 6;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(3, 3, 6, 3);
+        pnlSingleDep.add(lstProperties, gridBagConstraints);
+
+        tbDep.addTab("Basic", pnlSingleDep);
+
+        pnlOverrides.setLayout(new java.awt.GridBagLayout());
+
+        rbVersion.setText("Version");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.insets = new java.awt.Insets(6, 6, 6, 6);
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.weightx = 0.5;
-        add(pnlSingleDep, gridBagConstraints);
+        gridBagConstraints.insets = new java.awt.Insets(3, 3, 0, 0);
+        pnlOverrides.add(rbVersion, gridBagConstraints);
+
+        rbPath.setText("Artifact Path");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(3, 3, 0, 0);
+        pnlOverrides.add(rbPath, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.weightx = 0.1;
+        gridBagConstraints.insets = new java.awt.Insets(3, 3, 0, 0);
+        pnlOverrides.add(jTextField1, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.weightx = 0.1;
+        gridBagConstraints.insets = new java.awt.Insets(3, 3, 0, 0);
+        pnlOverrides.add(jTextField2, gridBagConstraints);
+
+        jButton1.setText("Select");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(2, 3, 0, 0);
+        pnlOverrides.add(jButton1, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        pnlOverrides.add(btnOverride, gridBagConstraints);
+
+        tbDep.addTab("Overrides", pnlOverrides);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.gridwidth = 4;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.weightx = 0.1;
+        gridBagConstraints.weighty = 0.2;
+        gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 6);
+        add(tbDep, gridBagConstraints);
+
+        btnAdd.setText("Add...");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
+        add(btnAdd, gridBagConstraints);
+
+        btnRemove.setText("Remove");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
+        add(btnRemove, gridBagConstraints);
+
+        btnEdit.setText("Edit...");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
+        add(btnEdit, gridBagConstraints);
 
     }//GEN-END:initComponents
     
@@ -306,6 +444,19 @@ public class DependenciesPanel extends JPanel implements ExplorerManager.Provide
         txtType.setText(dependency.getType() != null ? getValue(dependency.getType(), doResolve) : "");
         txtVersion.setText(dependency.getVersion() != null ? getValue(dependency.getVersion(), doResolve) : "");
         txtURL.setText(dependency.getUrl() != null ? getValue(dependency.getUrl(), doResolve) : "");
+        txtJar.setText(dependency.getJar() != null ? getValue(dependency.getJar(), doResolve) : "");
+        DefaultListModel model = new DefaultListModel();
+        Map map = dependency.resolvedProperties();
+        if (map != null) {
+            Iterator it = map.entrySet().iterator();
+            while (it.hasNext()) {
+                Map.Entry ent = (Map.Entry)it.next();
+                if (ent.getValue() != null && ent.getValue().toString().trim().length() > 0) {
+                    model.addElement("" + ent.getKey() + "=" + ent.getValue());
+                }
+            }
+        }
+        lstProperties.setModel(model);
     }    
     
     public List getChanges() {
@@ -359,16 +510,30 @@ public class DependenciesPanel extends JPanel implements ExplorerManager.Provide
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAdd;
+    private javax.swing.JButton btnEdit;
+    private javax.swing.JButton btnOverride;
+    private javax.swing.JButton btnRemove;
     private javax.swing.JButton btnView;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JTextField jTextField1;
+    private javax.swing.JTextField jTextField2;
     private javax.swing.JLabel lblArtifactId;
     private javax.swing.JLabel lblGroupId;
+    private javax.swing.JLabel lblJar;
     private javax.swing.JLabel lblType;
     private javax.swing.JLabel lblURL;
     private javax.swing.JLabel lblVersion;
+    private javax.swing.JList lstProperties;
     private javax.swing.JPanel pnlDeps;
+    private javax.swing.JPanel pnlOverrides;
     private javax.swing.JPanel pnlSingleDep;
+    private javax.swing.JRadioButton rbPath;
+    private javax.swing.JRadioButton rbVersion;
+    private javax.swing.JTabbedPane tbDep;
     private javax.swing.JTextField txtArtifactID;
     private javax.swing.JTextField txtGroupId;
+    private javax.swing.JTextField txtJar;
     private javax.swing.JTextField txtType;
     private javax.swing.JTextField txtURL;
     private javax.swing.JTextField txtVersion;
