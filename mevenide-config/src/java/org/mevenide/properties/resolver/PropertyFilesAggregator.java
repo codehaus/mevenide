@@ -50,9 +50,9 @@ public final class PropertyFilesAggregator implements IPropertyResolver {
     }
     
     /**
-     * IQueryContext based constructor.
+     * IQueryContext based constructor. not public, use PropertyResolverfactory
      */
-    public PropertyFilesAggregator(IQueryContext querycontext, IPropertyFinder defs) {
+    PropertyFilesAggregator(IQueryContext querycontext, IPropertyFinder defs) {
         context = querycontext;
         defaults = defs;
         initializeContext();

@@ -37,6 +37,7 @@ public final class DefaultsResolver implements IPropertyFinder {
     private static final Log logger = LogFactory.getLog(DefaultsResolver.class);
     
     private ILocationFinder locFinder;
+    private IPropertyFinder pluginDefaults;
     private static Properties defaults;
     private File projectDir;
     private File userDir;
@@ -55,6 +56,14 @@ public final class DefaultsResolver implements IPropertyFinder {
         userDir = userFile;
         projectDir = projectFile;
         locFinder = find;
+    }
+    
+    
+    /** Creates a new instance of DefaultsResolver */
+    public DefaultsResolver(File projectFile, File userFile, ILocationFinder find, 
+                            IPropertyFinder pluginDefaultsProps) {
+        this(projectFile, userFile, find);
+        pluginDefaults = pluginDefaultsProps;
     }
     
     public String getValue(String key) {
@@ -78,7 +87,11 @@ public final class DefaultsResolver implements IPropertyFinder {
         if ("maven.home.local".equals(key)) { //NOI18N
             return locFinder.getMavenLocalHome();
         }
-        return defaults.getProperty(key);
+        String toReturn = defaults.getProperty(key);
+        if (toReturn == null && pluginDefaults != null) {
+            toReturn = pluginDefaults.getValue(key);
+        }
+        return toReturn;
     }   
     
  
