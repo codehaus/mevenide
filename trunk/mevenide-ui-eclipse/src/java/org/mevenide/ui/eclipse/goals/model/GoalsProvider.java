@@ -74,8 +74,8 @@ public class GoalsProvider implements ITreeContentProvider {
 
     public void setBasedir(String basedir) throws Exception {
         this.basedir = basedir;
-        //make sure maven.locla.home has been initialized so we can compute a default value for pluginInstallDirs
-        Environment.setMavenLocalHome(Mevenide.getPlugin().getMavenLocalHome());
+		String mavenLocalHome = Mevenide.getPlugin().getMavenLocalHome();
+		Environment.setMavenLocalHome(mavenLocalHome);
         goalsGrabber = GoalsGrabbersManager.getGoalsGrabber(new File(basedir, "project.xml").getAbsolutePath());
     }
 
