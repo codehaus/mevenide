@@ -109,10 +109,13 @@ public class Mevenide extends AbstractUIPlugin {
     private String pomTemplate;
     private boolean checkTimestamp;
     
+    private String defaultGoals;
+    
     private String currentDir;
     private IProject project;
     
-    public Mevenide(IPluginDescriptor descriptor) throws Exception {
+	
+	public Mevenide(IPluginDescriptor descriptor) throws Exception {
 		super(descriptor);
 		try {
 			plugin = this;
@@ -131,7 +134,7 @@ public class Mevenide extends AbstractUIPlugin {
             setMavenRepository(preferenceStore.getString("maven.repo"));
             setPomTemplate(preferenceStore.getString("pom.template.location"));
             setCheckTimestamp(preferenceStore.getBoolean("mevenide.checktimestamp"));
-            
+            setDefaultGoals(preferenceStore.getString("maven.launch.defaultgoals"));
             
             
 		} 
@@ -361,22 +364,19 @@ public class Mevenide extends AbstractUIPlugin {
 		checkTimestamp = b;
 	}
 
-	/**
-	 * @return
-	 */
 	public String getPomTemplate() {
 		return pomTemplate;
 	}
 
-	/**
-	 * @param string
-	 */
 	public void setPomTemplate(String string) {
 		pomTemplate = string;
 	}
 	
 	public String getDefaultGoals() {
-		return "java:compile";
+		return defaultGoals != null ? defaultGoals : "java:compile";
 	}
-
+	
+	public void setDefaultGoals(String defaultGoals) {
+		this.defaultGoals = defaultGoals;
+	}
 }
