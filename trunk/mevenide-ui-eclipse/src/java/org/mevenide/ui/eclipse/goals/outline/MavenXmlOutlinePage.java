@@ -319,7 +319,11 @@ public class MavenXmlOutlinePage extends Page implements IContentOutlinePage {
 			Goal goal = (Goal) ((StructuredSelection) goalsViewer.getSelection()).getFirstElement();
 			MavenLaunchShortcut shortcut = new MavenLaunchShortcut();
 			shortcut.setShowDialog(false);
-			shortcut.setGoalsToRun(goal.getFullyQualifiedName());
+			String goalToRun = goal.getFullyQualifiedName();
+			if ( goalToRun != null && goalToRun.indexOf("(default)") != -1 ) {
+			    goalToRun = goalToRun.substring(0, goalToRun.length() - ":(default)".length());
+			}
+			shortcut.setGoalsToRun(goalToRun);
 			shortcut.setOffline(runOffline);
 			shortcut.launch(basedirPath);
 		}
