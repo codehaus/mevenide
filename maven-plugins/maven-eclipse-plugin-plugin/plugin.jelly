@@ -61,7 +61,7 @@
       <!-- copy required dependencies and generated artifact to $${maven.eclipse.plugin.temp.dir} -->
       <ant:copy todir="${maven.eclipse.plugin.temp.dir}/${pluginFolder}_${distVersion}">
        	<ant:fileset dir="${basedir}" includes="${maven.eclipse.plugin.includes}"/>
-       	<ant:fileset dir="${maven.build.dir}" includes="${pom.artifactId}-${distVersion}.jar"/>
+       	<ant:fileset dir="${maven.build.dir}" includes="${pom.artifactId}-${pom.currentVersion}.jar"/>
       </ant:copy>
        
       <!-- build plugin distribution file. -->

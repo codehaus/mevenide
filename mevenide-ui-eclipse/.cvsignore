@@ -3,3 +3,4 @@ dist
 maven.log
 build.properties
 lib
+plugin.xml
