@@ -18,6 +18,7 @@
         <answer>
            <p> Once you've checked out the sources, go to mevenide-master and run <code> maven mevenide:install-maven-nbm-plugin mevenide-netbeans:build </code>
            The first goal will create and deploy the nbm plugin for you which is able to create netbeans jars and nbm files. The second goal will do the building.</p>
+           <p> The created nbm files will be located in your local maven repository under mevenide/nbms. 
         </answer>
         </faq>
         <faq id="how-install">
@@ -30,10 +31,9 @@
                   Later versions should be also ok. It will most probably not work with Netbeans 3.4, but 3.5 should be fine.  </p>
                <p> Let's call your netbeans install directory <code>NETBEANS_HOME</code>, 
                  and your maven install directory <code>MAVEN_HOME</code>. 
-                 Then your mevenide-ui-netbeans artifact (found at <code>target/nbm/netbeans/modules</code> subdirectory of the project) goes into <code>$NETBEANS_HOME/modules </code>
-                 and both goal-grabber and mevenide-core artifacts (to be found at similar places in respective projects) go into <code>$NETBEANS_HOME/modules/autoload</code>.
                  Then you will also need to copy the content of <code>$MAVEN_HOME/lib</code> (excluding the "endorsed: subdirectory) into <code>$NETBEANS_HOME/lib/ext</code>
-                 And now you should be able to run the netbeans module that supports maven in the IDE. </p>
+                 Then run the IDE and using the "Tools/Update Center" menu action install the built nbm artifacts. (please note that when you already have an older version installed, you will have to delete the module jars in order to have a new one installed.)
+                 And now you should be able to run Maven support in the IDE. </p>
             </answer>
         </faq>
    </part>
