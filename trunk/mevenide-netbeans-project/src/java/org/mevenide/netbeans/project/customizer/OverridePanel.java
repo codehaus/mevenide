@@ -27,6 +27,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collections;
 import java.util.List;
+import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.tree.TreeSelectionModel;
 import org.apache.commons.logging.Log;
@@ -39,6 +40,7 @@ import org.mevenide.netbeans.project.customizer.ui.OriginChange;
 import org.mevenide.netbeans.project.dependencies.DependencyNode;
 import org.mevenide.netbeans.project.dependencies.DependencyPanel;
 import org.mevenide.properties.IPropertyLocator;
+import org.mevenide.properties.resolver.DefaultsResolver;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.awt.HtmlBrowser;
@@ -82,29 +84,39 @@ public class OverridePanel extends JPanel implements ExplorerManager.Provider, P
         btv.setDefaultActionAllowed( false );
         pnlDeps.add(btv, fillConstraints);
         manager.addPropertyChangeListener( new ManagerChangeListener() );
+        
+//        GridBagConstraints constraints = new GridBagConstraints();
+//        constraints.gridx = 1;
+//        constraints.gridy = 0;
+//        constraints.anchor = GridBagConstraints.NORTHWEST;
+//        constraints.weightx = 0.1;
+//        constraints.insets = new java.awt.Insets(6, 6, 0, 0);
+//        originChange = LocationComboFactory.createPropertiesChange(project);
+        originChange.setChangeObserver(new OriginChange.ChangeObserver() {
+            public void actionSelected(String action) {
+                if (OriginChange.ACTION_RESET_TO_DEFAULT.equals(action)) {
+                    // assuming the correct default value is not-override..
+                    System.out.println("overriding to default");
+                    cbOverride.setSelected(false);
+                }
+            }
+        });
+        cbOverride.addActionListener(new ActionListener()  {
+            public void actionPerformed(ActionEvent event) {
+                if (originChange.getSelectedLocationID() == IPropertyLocator.LOCATION_NOT_DEFINED ||
+                    originChange.getSelectedLocationID() == IPropertyLocator.LOCATION_DEFAULTS) {
+                        // assume the default placement is build..
+                        // maybe have configurable or smartish later..
+                        originChange.setAction(OriginChange.ACTION_DEFINE_IN_BUILD);
+                }
+            }
+        });
         setFieldsEditable(editable);
-        
-        GridBagConstraints constraints = new GridBagConstraints();
-        constraints.gridx = 1;
-        constraints.gridy = 0;
-        constraints.anchor = GridBagConstraints.NORTHWEST;
-        constraints.weightx = 0.1;
-        constraints.insets = new java.awt.Insets(6, 6, 0, 0);
-        originChange = LocationComboFactory.createPropertiesChange(project, IPropertyLocator.LOCATION_NOT_DEFINED);
-        add(originChange.getComponent(), constraints);
-        
-        constraints.gridx = 3;
-        constraints.gridy = 2;
-        constraints.anchor = GridBagConstraints.NORTHWEST;
-        constraints.weightx = 0.1;
-        constraints.insets = new java.awt.Insets(0, 3, 0, 0);
-        originChange2 = LocationComboFactory.createPropertiesChange(project, IPropertyLocator.LOCATION_NOT_DEFINED);
-        add(originChange2.getComponent(), constraints);
-        
     }
     
     public void setFieldsEditable(boolean editable) {
         txtOverrideValue.setEditable(editable);
+        originChange2.getComponent().setEnabled(editable);
     }  
     /** This method is called from within the constructor to
      * initialize the form.
@@ -119,13 +131,20 @@ public class OverridePanel extends JPanel implements ExplorerManager.Provider, P
         pnlSingleDep = new javax.swing.JPanel();
         lblOverrideValue = new javax.swing.JLabel();
         txtOverrideValue = new javax.swing.JTextField();
+        originChange2 = LocationComboFactory.createPropertiesChange(project);
+        btnJarOverrideLoc = btnJarOverrideLoc = (JButton)originChange2.getComponent();
+        originChange = LocationComboFactory.createPropertiesChange(project);
+        btnOverrideLoc = (JButton)originChange.getComponent();
 
         setLayout(new java.awt.GridBagLayout());
 
         cbOverride.setText("Override");
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.weightx = 0.9;
+        gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
         add(cbOverride, gridBagConstraints);
 
         pnlDeps.setLayout(new java.awt.GridBagLayout());
@@ -133,21 +152,26 @@ public class OverridePanel extends JPanel implements ExplorerManager.Provider, P
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
-        gridBagConstraints.gridwidth = 5;
+        gridBagConstraints.gridwidth = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 6);
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         gridBagConstraints.weighty = 0.5;
+        gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 6);
         add(pnlDeps, gridBagConstraints);
 
         pnlSingleDep.setLayout(new java.awt.GridBagLayout());
 
         lblOverrideValue.setText("Artifact");
         gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(0, 3, 0, 0);
         pnlSingleDep.add(lblOverrideValue, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 0;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         gridBagConstraints.weightx = 0.1;
@@ -156,13 +180,26 @@ public class OverridePanel extends JPanel implements ExplorerManager.Provider, P
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        pnlSingleDep.add(btnJarOverrideLoc, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
         gridBagConstraints.gridwidth = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.insets = new java.awt.Insets(6, 6, 6, 6);
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         gridBagConstraints.weightx = 0.5;
+        gridBagConstraints.insets = new java.awt.Insets(6, 6, 6, 6);
         add(pnlSingleDep, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        add(btnOverrideLoc, gridBagConstraints);
 
     }//GEN-END:initComponents
     
@@ -245,7 +282,7 @@ public class OverridePanel extends JPanel implements ExplorerManager.Provider, P
         if ("true".equalsIgnoreCase(value)) {
             cbOverride.setSelected(true);
         }
-        originChange.setSelectedLocationValue(loc);
+        originChange.setSelectedLocationID(loc);
     }
     
     public void setValidateObserver(ProjectValidateObserver observer) {
@@ -279,6 +316,8 @@ public class OverridePanel extends JPanel implements ExplorerManager.Provider, P
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnJarOverrideLoc;
+    private javax.swing.JButton btnOverrideLoc;
     private javax.swing.JCheckBox cbOverride;
     private javax.swing.JLabel lblOverrideValue;
     private javax.swing.JPanel pnlDeps;

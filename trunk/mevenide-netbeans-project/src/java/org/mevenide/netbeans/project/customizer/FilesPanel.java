@@ -56,9 +56,9 @@ public class FilesPanel extends JPanel implements ProjectPanel {
         propagate = propagateImmediately;
         valObserver = null;
         setEnableFields(enable);
-        lblProject.setIcon(new ImageIcon(Utilities.loadImage("org/mevenide/netbeans/project/resources/LocProject.gif")));
-        lblBuild.setIcon(new ImageIcon(Utilities.loadImage("org/mevenide/netbeans/project/resources/LocBuild.gif")));
-        lblUser.setIcon(new ImageIcon(Utilities.loadImage("org/mevenide/netbeans/project/resources/LocUser.gif")));
+        lblProject.setIcon(new ImageIcon(Utilities.loadImage("org/mevenide/netbeans/project/resources/LocProject.png")));
+        lblBuild.setIcon(new ImageIcon(Utilities.loadImage("org/mevenide/netbeans/project/resources/LocBuild.png")));
+        lblUser.setIcon(new ImageIcon(Utilities.loadImage("org/mevenide/netbeans/project/resources/LocUser.png")));
     }
     
     public void setEnableFields(boolean enable) {

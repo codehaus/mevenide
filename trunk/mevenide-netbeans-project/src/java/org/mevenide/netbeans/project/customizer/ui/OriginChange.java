@@ -19,6 +19,7 @@ package org.mevenide.netbeans.project.customizer.ui;
 import java.io.File;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComponent;
+import javax.swing.JLabel;
 
 /**
  *
@@ -26,6 +27,16 @@ import javax.swing.JComponent;
  */
 public class OriginChange {
     private LocationComboBox comboBox;
+    private ChangeObserver observer;
+    
+    public static final String ACTION_MOVE_TO_PROJECT = "MvProject";
+    public static final String ACTION_MOVE_TO_USER = "MvUser";
+    public static final String ACTION_MOVE_TO_BUILD = "MvBuild";
+    public static final String ACTION_DEFINE_IN_PROJECT = "DefProject";
+    public static final String ACTION_DEFINE_IN_USER = "DefUser";
+    public static final String ACTION_DEFINE_IN_BUILD = "DefBuild";
+    public static final String ACTION_RESET_TO_DEFAULT = "DefaultReset";
+    
     OriginChange(LocationComboBox combo) {
         comboBox = combo;
     }
@@ -38,16 +49,8 @@ public class OriginChange {
         return comboBox.hasChangedSelection();
     }
     
-    public void setSelectedLocationValue(int  id) {
-        DefaultComboBoxModel model = (DefaultComboBoxModel)comboBox.getModel();
-        int size = model.getSize();
-        for (int i = 0; i < size; i++) {
-            LocationComboBox.LocationWrapper wrapper = (LocationComboBox.LocationWrapper)model.getElementAt(i);
-            if (wrapper.getID() == id) {
-                comboBox.setSelectedItem(wrapper);
-            }
-        }
-        comboBox.startLoggingChanges();
+    public void setAction(String  action) {
+        comboBox.invokePopupAction(action);
     }
     
     public int getSelectedLocationID() {
@@ -55,8 +58,22 @@ public class OriginChange {
         return wrapper.getID();
     }
     
+    public void setSelectedLocationID(int location) {
+        comboBox.setInitialItem(location);
+    }
+    
     public File getSelectedFile() {
         LocationComboBox.LocationWrapper wrapper = (LocationComboBox.LocationWrapper)comboBox.getSelectedItem();
         return wrapper.getFile();
+    }
+    
+    public void setChangeObserver(ChangeObserver obs) {
+        observer = obs;
+        comboBox.setChangeObserver(observer);
+    }
+    /** callback to get notified when user selects an action from the popup.
+     */
+    public interface ChangeObserver {
+        void actionSelected(String action);
     }
 }

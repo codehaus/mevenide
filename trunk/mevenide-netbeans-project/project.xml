@@ -47,6 +47,16 @@
             <netbeans.module.dep>spec</netbeans.module.dep>
         </properties>
     </dependency>
+        <dependency>
+            <groupId>jdom</groupId>
+            <artifactId>jdom</artifactId>
+            <version>1.0b8</version>
+            <type>jar</type>
+            <properties>
+            	<eclipse.plugin.bundle>true</eclipse.plugin.bundle>
+                <netbeans.module.dep>impl</netbeans.module.dep>
+            </properties>
+        </dependency>
 
     <dependency>
         <groupId>commons-logging</groupId>

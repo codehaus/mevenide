@@ -285,7 +285,7 @@ public class MavenCustomizer extends JPanel implements ProjectValidateObserver {
                 "DependencyOverrideCategory", // NOI18N
                 "Overrides", 
                 "org/mevenide/netbeans/project/resources/Bullet", // NOI18N
-             //   new OverridePanel(project, true),  
+//                new OverridePanel(project, true),  
                 // disable for the release, not ready yet.
                 createEmptyLabel("WORK IN PROGRESS..."),
                 null)
