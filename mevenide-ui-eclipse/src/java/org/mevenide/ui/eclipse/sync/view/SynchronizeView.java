@@ -70,7 +70,7 @@ import org.mevenide.ui.eclipse.sync.event.IdeArtifactEvent;
 import org.mevenide.ui.eclipse.sync.event.NodeEvent;
 import org.mevenide.ui.eclipse.sync.event.PomArtifactEvent;
 import org.mevenide.ui.eclipse.sync.event.SynchronizationConstraintEvent;
-import org.mevenide.ui.eclipse.sync.model.ArtifactMappingContentProvider;
+import org.mevenide.ui.eclipse.sync.model.SynchronizationNodeContentProvider;
 import org.mevenide.ui.eclipse.sync.model.ArtifactNode;
 import org.mevenide.ui.eclipse.sync.model.ISelectableNode;
 import org.mevenide.ui.eclipse.sync.model.MavenArtifactNode;
@@ -177,7 +177,7 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
     }
     
     private void synchronizeProjectWithPoms(IProject project, List poms) {
-    	ArtifactMappingContentProvider provider = (ArtifactMappingContentProvider) artifactMappingNodeViewer.getContentProvider();
+    	SynchronizationNodeContentProvider provider = (SynchronizationNodeContentProvider) artifactMappingNodeViewer.getContentProvider();
     	artifactMappingNodeViewer.setInput(provider.new RootNode(project, poms));
         
         for (int i = 0; i < poms.size(); i++) {
@@ -262,8 +262,8 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
     }
 
     private void configureViewer() {
-        artifactMappingNodeViewer.setContentProvider(new ArtifactMappingContentProvider());
-        artifactMappingNodeViewer.setLabelProvider(new ArtifactMappingLabelProvider());
+        artifactMappingNodeViewer.setContentProvider(new SynchronizationNodeContentProvider());
+        artifactMappingNodeViewer.setLabelProvider(new SynchronizationNodeLabelProvider());
         nodeFilter = new SynchronizationNodeFilter();
         assertValidDirection();
         //nodeFilter.setDirection(ISelectableNode.INCOMING_DIRECTION);
@@ -549,7 +549,7 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
 	 */
 	public void resourceChanged(IResourceChangeEvent event) {
 		try {
-			final IProject project = artifactMappingNodeViewer != null && artifactMappingNodeViewer.getInput() != null ? ((ArtifactMappingContentProvider.RootNode) artifactMappingNodeViewer.getInput()).getProject() : null;
+			final IProject project = artifactMappingNodeViewer != null && artifactMappingNodeViewer.getInput() != null ? ((SynchronizationNodeContentProvider.RootNode) artifactMappingNodeViewer.getInput()).getProject() : null;
 			final IFile dotClasspath = project != null ? project.getFile(".classpath") : null;
 			
 			IResourceDelta d= event.getDelta();
