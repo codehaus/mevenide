@@ -22,14 +22,17 @@
   <!-- ==================================== -->
   <!--            site generation           -->   
   <!-- ==================================== -->
-  <goal name="mevenide-site:build" description="Build Mevenide Site" prereqs="mevenide:init-site">
+  <goal name="mevenide-site:build" description="Build Mevenide Site" prereqs="mevenide-site:init">
   	<j:set var="maven.multiproject.includes" value="${maven.multiproject.site.includes}"/>
+  	<j:set var="maven.multiproject.excludes" value="mevenide-master/project.xml"/>
   	<attainGoal name="multiproject:site"/>
+  	<attainGoal name="mevenide-site:generate-wiki-templates"/>
   </goal>
   
   <!-- do NOT call site:deploy because we dont want to attain 'site' goal -->
   <goal name="mevenide-site:ssh-deploy" description="Deploy Site" prereqs="mevenide-site:build">
     <attainGoal name="site:sshdeploy"/>
+    <!-- attainGoal name="spinner-wiki:sshdeploy"/ -->
   </goal>
   
   <goal name="mevenide-site:generate-wiki-templates" description="Build Mevenide Site">
@@ -61,7 +64,7 @@
     <j:include file="${installScript}"/>
   </goal>  
   
-  <goal name="mevenide:init-site" description="Try to install eclipse and netbeans dependencies. Used to initialize repository before building site.">
+  <goal name="mevenide-site:init" description="Try to install eclipse and netbeans dependencies. Used to initialize repository before building site.">
       <ant:property environment="env"/>
       <ant:property name="eclipse_home" location="env.ECLIPSE_HOME"/>
       <ant:property name="netbeans_home" location="env.NETBEANS_HOME"/>
@@ -71,7 +74,18 @@
       <j:if test="${!empty(netbeans_home)}">
         <attainGoal name="mevenide-netbeans:init"/>  
       </j:if>
+      <attainGoal name="mevenide-site:install-css"/>
   </goal>
+  
+  <goal name="mevenide-site:install-css" description="Iterate each subprojects and copy master project.css to ${subproject.location}/xdocs/style">
+      <util:tokenize var="projects" delim=",">${maven.multiproject.site.includes}</util:tokenize>
+      <j:forEach var="project" items="${projects}">
+          <ant:copy file="${mevenide.master.project.location}/xdocs/style/project.css" 
+                    todir="${basedir}/../${project}/xdocs/style" overwrite="true"/>
+      </j:forEach>
+  </goal>
+  
+  
   
   
   <!-- ==================================== -->
