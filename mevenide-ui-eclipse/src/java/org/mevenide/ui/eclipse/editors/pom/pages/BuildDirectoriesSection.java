@@ -42,7 +42,6 @@ public class BuildDirectoriesSection extends PageSection {
 	private OverridableTextEntry sourceText;
 	private OverridableTextEntry aspectsText;
 	private OverridableTextEntry unitTestsText;
-	private OverridableTextEntry integrationTestsText;
 	private OverridableTextEntry nagEmailText;
 
     public BuildDirectoriesSection(
@@ -212,56 +211,7 @@ public class BuildDirectoriesSection extends PageSection {
 				}
 			}
 		);
-		
-		// Build integration unit tests source directory textbox and browse button
-		toggle = createOverrideToggle(container, factory);
-		createLabel(
-			container, 
-			Mevenide.getResourceString("BuildDirectoriesSection.integrationTestsText.label"),
-			Mevenide.getResourceString("BuildDirectoriesSection.integrationTestsText.tooltip"), 
-			factory
-		);
-		labelName = Mevenide.getResourceString("BuildDirectoriesSection.integrationTestsButton.label");
-		toolTip = Mevenide.getResourceString("BuildDirectoriesSection.integrationTestsButton.tooltip");
-		final String intgrationTestsTitle = Mevenide.getResourceString("BuildDirectoriesSection.integrationTestsButton.dialog.title");
-		integrationTestsText = new OverridableTextEntry(
-			createText(container, factory), 
-			toggle,
-			createBrowseButton(container, factory, labelName, toolTip, 1)
-		);
-		adaptor = new OverrideAdaptor() {
-			public void overrideParent(Object value) {
-				setIntegrationUnitTestSourceDirectory(pom, (String) value);
-			}
-			public Object acceptParent() {
-				return getIntegrationUnitTestSourceDirectory(getParentPom());
-			}
-		};
-		integrationTestsText.addEntryChangeListener(adaptor);
-		integrationTestsText.addOverrideAdaptor(adaptor);
-		integrationTestsText.addBrowseButtonListener(
-			new SelectionAdapter() {
-				public void widgetSelected(SelectionEvent e) {
-					try {
-						DirectoryDialog dialog = new DirectoryDialog(
-							getPage().getPomEditor().getSite().getShell(),
-							SWT.NULL
-						);
-						dialog.setText(intgrationTestsTitle);
-						
-						String directory = dialog.open();
-						if (directory != null) {
-							sourceText.setFocus();
-							sourceText.setText(directory);
-						}
-					}
-					catch ( Exception ex ) {
-						log.error("Unable to browse for intgration tests directory", ex);
-					}
-				}
-			}
-		);
-		
+				
 		// Build integration nag email address textbox
 		toggle = createOverrideToggle(container, factory);
 		createLabel(
@@ -290,7 +240,6 @@ public class BuildDirectoriesSection extends PageSection {
 		setIfDefined(sourceText, getSourceDirectory(pom), getInheritedSourceDirectory());
 		setIfDefined(aspectsText, getAspectSourceDirectory(pom), getInheritedAspectSourceDirectory());
 		setIfDefined(unitTestsText, getUnitTestSourceDirectory(pom), getInheritedUnitTestSourceDirectory());
-		setIfDefined(integrationTestsText, getIntegrationUnitTestSourceDirectory(pom), getInheritedIntegrationUnitTestSourceDirectory());
 		setIfDefined(nagEmailText, getNagEmailAddress(pom), getInheritedNagEmailAddress());
 	}
 	
@@ -333,20 +282,6 @@ public class BuildDirectoriesSection extends PageSection {
 	private String getInheritedUnitTestSourceDirectory() {
 		return isInherited() 
 			? getUnitTestSourceDirectory(getParentPom())
-			: null;
-	}
-
-	private void setIntegrationUnitTestSourceDirectory(Project pom, String sourceDir) {
-		getOrCreateBuild(pom).setIntegrationUnitTestSourceDirectory(sourceDir);
-	}
-	
-	private String getIntegrationUnitTestSourceDirectory(Project pom) {
-		return pom.getBuild() != null ? pom.getBuild().getIntegrationUnitTestSourceDirectory() : null;
-	}
-	
-	private String getInheritedIntegrationUnitTestSourceDirectory() {
-		return isInherited() 
-			? getIntegrationUnitTestSourceDirectory(getParentPom())
 			: null;
 	}
 
