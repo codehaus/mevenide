@@ -49,5 +49,10 @@
     <classpathentry kind="var"
         path="ECLIPSE_HOME/plugins/org.eclipse.core.boot_3.0.0/boot.jar" sourcepath="ORG_ECLIPSE_PLATFORM_SOURCE_SRC/org.eclipse.core.boot_3.0.0/bootsrc.zip"/>
     <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+    <classpathentry kind="var"
+        path="ECLIPSE_HOME/plugins/org.eclipse.pde.ui_3.0.0/pdeui.jar" sourcepath="ECLIPSE_HOME/plugins/org.eclipse.pde.source_3.0.0/src/org.eclipse.pde.ui_3.0.0/pdeuisrc.zip"/>
+    <classpathentry kind="var"
+        path="ECLIPSE_HOME/plugins/org.eclipse.update.ui.forms_3.0.0/forms.jar" sourcepath="ECLIPSE_HOME/plugins/org.eclipse.platform.source_3.0.0/src/org.eclipse.update.ui.forms_3.0.0/formssrc.zip"/>
+    <classpathentry exported="true" kind="var" path="LOGGING_COMMONS_LIB"/>
     <classpathentry kind="output" path="target/classes"/>
 </classpath>
