@@ -10,6 +10,7 @@
   	
 	<body>
 		<section name="Overview">
+			<div id="documentContent">
 	    	<p>
 			   	This project provides generic Goals Grabbing mechanism. It is articulated around IGoalsGrabber interface that exposes the following methods : 
 	    		<br/>
@@ -21,13 +22,14 @@
 	    				<li>public String getDescription(String fullyQualifiedGoalName);</li>	
 	    			</ul>
 	    		</code>	
+	    	</p>
+	    	<p>
 	    		There are three implementations available : 
 	    		<ul>
 	    			<li>DefaultGoalsGrabber that grabs the goals cached in $${user.home}/.maven/plugins/goals.cache</li>
 	    			<li>ProjectGoalsGrabber that grabs the user defined goals declared in a maven.xml file</li>
 	    			<li>GoalsGrabberAggregator that only aggregates various IGoalsGrabber</li>
 	    		</ul>
-    		    <br/>
     		</p>
     		<p>
      			This project also provides a simple Maven Reports Grabbing mechanism through the IReportsFinder interface which defines the following method :
@@ -36,8 +38,12 @@
 	    				<li>public String[] findReports();</li>	
 	    			</ul>
 	    		</code>	
+	    	</p>
+	    	<p>
 	    		A basic implementation is provided which simply greps for <code><![CDATA[ <doc:registerReport ]]></code> in the Maven plugins directory. Original code for grepping by Ute Schneider.
     		</p>
+    		<p>Please refer to <a href="classes.html">this document</a> to have a quick understanding of the module architecture.</p>
+    		</div>
 		</section>
     </body>
 </document>
