@@ -43,6 +43,7 @@ public class SrcBuildClassPathImpl extends AbstractProjectClassPathImpl {
     
     URI[] createPath() {
         List lst = new ArrayList();
+        lst.add(getMavenProject().getBuildClassesDir());
         Project mavproj = getMavenProject().getOriginalMavenProject();
         List deps = mavproj.getDependencies();
         if (deps == null) {

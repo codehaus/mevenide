@@ -48,6 +48,8 @@ public class SrcRuntimeClassPathImpl extends AbstractProjectClassPathImpl {
     URI[] createPath() {
         List lst = new ArrayList();
         Project mavproj = getMavenProject().getOriginalMavenProject();
+        lst.add(getMavenProject().getBuildClassesDir());
+        
         // add resources to runtime path..
         Build build = mavproj.getBuild();
         if (build != null) {
