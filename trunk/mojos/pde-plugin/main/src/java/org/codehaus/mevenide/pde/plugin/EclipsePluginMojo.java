@@ -22,53 +22,7 @@ import org.codehaus.mevenide.pde.EclipseArtifactMojo;
 
 
 /**  
- * @open can tags be inherited ?
- * 
- * @goal plugin
- * @description builds an Eclipse plugin
- * @parameter name="eclipseHome" 
- *            type="String" 
- *            required="true" 
- *            validator="" 
- *            expression="#maven.pde.eclipse.home" 
- *            description="Location of Eclipse home directory"
- * @parameter name="eclipseConfigurationFolder" 
- *            type="String" 
- *            required="false" 
- *            validator="" 
- *            expression="#maven.pde.eclipse.configuration" 
- *            description="Eclipse configuration folder"
- * @parameter name="maxBuildId" 
- *            type="Long" 
- *            required="false" 
- *            validator="" 
- *            expression="#maven.pde.maxBuildId" 
- *            description="Max compatible platform buildId"
- * @parameter name="minBuildId" 
- *            type="Long" 
- *            required="false" 
- *            validator="" 
- *            expression="#maven.pde.minBuildId" 
- *            description="Min compatible platform buildId"           
- * @parameter name="outputDirectory" 
- *            type="String" 
- *            required="true" 
- *            validator="" 
- *            expression="#maven.build.dir/eclipse" 
- *            description="Directory where the generated artifact will be outputted"
- * @parameter name="basedir" 
- *            type="String" 
- *            required="true" 
- *            validator="" 
- *            expression="#basedir" 
- *            description="Base directory"
- * @parameter name="workspace" 
- *            type="String" 
- *            required="false" 
- *            validator="" 
- *            expression="#maven.pde.workspace" 
- *            description="Eclispe workspace Location"
- *                       
+ *                      
  * @author <a href="mailto:rhill2@free.fr">Gilles Dodinet</a>
  * @version $Id$
  * 
