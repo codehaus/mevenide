@@ -6,7 +6,7 @@
   </properties>
 
   <body>
-    <release version="0.1" date="in CVS">
+    <release version="0.1" date="17/07/2004">
       <action dev="mkleint" type="add">
         Initial release, allows to open maven projects within Netbeans IDE 4.0.
         Sources, test sources and resources are displayed within the project tree.

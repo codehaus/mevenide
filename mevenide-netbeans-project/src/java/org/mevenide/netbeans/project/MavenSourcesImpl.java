@@ -239,7 +239,10 @@ public class MavenSourcesImpl implements Sources {
                 }
             }
             FileObject dir = FileUtil.toFileObject(docs);
-            return new SourceGroup[] { GenericSources.group(project, dir, NAME_XDOCS, "Documentation", null, null) };
+            if (xdocsGroup == null || !xdocsGroup.getRootFolder().equals(dir)) {
+                xdocsGroup = GenericSources.group(project, dir, NAME_XDOCS, "Documentation", null, null);
+            }
+            return new SourceGroup[] {xdocsGroup};
         }
         return new SourceGroup[0];
     }
