@@ -182,11 +182,6 @@ public class SourceDirectoryMappingWizardPage extends WizardPage {
 		viewer.setInput(new SourceDirectoryGroup(project));
 	}
 	
-	/**
-	 * method extracted from org.eclipse.jdt.internal.ui.wizards.buildpaths.OtuputLocationDialog
-	 * 
-	 * @return
-	 */
 	private IContainer openSourceDirectoryDialog() {
 		IWorkspaceRoot root= project.getWorkspace().getRoot();
 		Class[] acceptedClasses= new Class[] { IProject.class, IFolder.class };
