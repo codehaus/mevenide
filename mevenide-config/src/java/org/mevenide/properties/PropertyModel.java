@@ -103,9 +103,9 @@ public class PropertyModel
         }
         String lineSeparator = new String(new byte[]{ Character.LINE_SEPARATOR});
         if ( result != null ) {
-            result.setValue(result.getValue().replaceAll("\\\\r\\\\n", lineSeparator));
-            result.setValue(result.getValue().replaceAll("\\\\r", lineSeparator));
-            result.setValue(result.getValue().replaceAll("\\\\n", lineSeparator));
+            result.setValue(result.getValue().trim().replaceAll("\\\\r\\\\n", lineSeparator));
+            result.setValue(result.getValue().trim().replaceAll("\\\\r", lineSeparator));
+            result.setValue(result.getValue().trim().replaceAll("\\\\n", lineSeparator));
         }
         return result;
     }
@@ -121,7 +121,7 @@ public class PropertyModel
 	        addElement(pair);
 		}
 		else {
-			pair.setValue(value.trim());
+			pair.setValue(value.trim() + "\r\n");
 		}
 		return pair;
     }
@@ -133,6 +133,7 @@ public class PropertyModel
 		    Iterator it = getList().iterator();
 		    while (it.hasNext()) {
 		        writer.write(it.next().toString());
+		        writer.write(Character.LINE_SEPARATOR);
 		    }
 		}
 		finally {
