@@ -24,6 +24,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Dependency;
 import org.apache.maven.project.Project;
 import org.apache.maven.repository.Artifact;
+import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.Path;
@@ -35,6 +36,7 @@ import org.mevenide.project.dependency.DependencyUtil;
 import org.mevenide.project.io.ProjectWriter;
 import org.mevenide.ui.eclipse.editors.properties.DependencyPropertySource;
 import org.mevenide.ui.eclipse.sync.model.properties.ReadOnlyDependencyPropertySource;
+import org.mevenide.ui.eclipse.util.FileUtils;
 import org.mevenide.ui.eclipse.util.JavaProjectUtils;
 import org.mevenide.util.MevenideUtils;
 
@@ -155,9 +157,16 @@ public class MavenArtifactNode extends ArtifactNode {
 	    List artifacts = new ArrayList(project.getArtifacts());
 	    
 	    ProjectWriter.getWriter().setArtifacts(artifacts, project, shouldWriteProperties);
+	    
+	    if ( shouldWriteProperties ) {
+	        IContainer eclipseContainer = ((IContainer) parent.getParent().getData());
+	        FileUtils.refreshProperties(eclipseContainer);
+	    }
 	}
 	
-	public void addTo(Project project) throws Exception {
+	
+
+    public void addTo(Project project) throws Exception {
 	    addTo(project, false);
 	}
 	

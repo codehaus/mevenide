@@ -241,4 +241,15 @@ public class FileUtils {
 	public static File getSystemFile(IPath location) {
 	    return ResourcesPlugin.getWorkspace().getRoot().getLocation().toFile();
 	}
+	
+	public static void refreshProperties(IContainer eclipseContainer) {
+        IFile file = eclipseContainer.getFile(new Path("project.properties"));
+        try {
+            file.refreshLocal(IResource.DEPTH_ZERO, null);
+        }
+        catch (CoreException e) {
+            String message = "Unable to refresh project.properties"; 
+            log.error(message, e);
+        }
+    }
 }
