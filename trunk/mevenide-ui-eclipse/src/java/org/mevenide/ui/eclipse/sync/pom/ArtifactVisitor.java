@@ -28,6 +28,7 @@ import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.launching.JavaRuntime;
 import org.mevenide.ProjectConstants;
 import org.mevenide.project.io.ProjectWriter;
+import org.mevenide.ui.eclipse.sync.source.DefaultPathResolverDelegate;
 import org.mevenide.ui.eclipse.sync.source.IPathResolverDelegate;
 
 
@@ -53,7 +54,7 @@ public class ArtifactVisitor {
 		ProjectWriter writer = ProjectWriter.getWriter();
 		IPathResolverDelegate pathResolver = pomSynchronizer.getPathResolver();
 		IProject project = pomSynchronizer.getProject();
-		String pathToAdd = pathResolver.computePath(classpathEntry, project);
+		String pathToAdd = pathResolver.getRelativeSourceDirectoryPath(classpathEntry, project);
 	
 	
 		if ( pathResolver.getMavenSourceType(pathToAdd, project).equals(ProjectConstants.MAVEN_RESOURCE) ) {
@@ -103,7 +104,6 @@ public class ArtifactVisitor {
 			);
  		}
 		
-		
 	}
 	
 	private boolean isClassFolder(String entryPath) {
@@ -112,16 +112,25 @@ public class ArtifactVisitor {
 	
 	public void add(ProjectEntry entry) throws Exception {
 		IClasspathEntry classpathEntry = entry.getClasspathEntry();
-		
 		IPath projectPath = classpathEntry.getPath();
 		
-		File referencedPom = new File(projectPath.append("project.xml").toOSString());
-		if ( !referencedPom.exists() ) {
-			//@todo project isnot mavenized, mavenize it as well
+		IPathResolverDelegate pathResolver = new DefaultPathResolverDelegate(); 
+		
+		IProject[] referencedProjects = pomSynchronizer.getProject().getReferencedProjects();
+		for (int i = 0; i < referencedProjects.length; i++) {
+			
+			if ( referencedProjects[i].getFullPath().equals(projectPath) ) {
+				IPath referencedProjectLocation = referencedProjects[i].getLocation();
+				File referencedPom = new File(pathResolver.getAbsolutePath(referencedProjectLocation.append("project.xml")) );
+				if ( !referencedPom.exists() ) {
+					//@todo project isnot mavenized, mavenize it as well
+				}
+				ProjectWriter writer = ProjectWriter.getWriter();
+				writer.addProject(referencedPom, pomSynchronizer.getPom());	
+			}
+			
 		}
 		
-		ProjectWriter writer = ProjectWriter.getWriter();
-		writer.addProject(referencedPom, pomSynchronizer.getPom());
 	}
 
 }

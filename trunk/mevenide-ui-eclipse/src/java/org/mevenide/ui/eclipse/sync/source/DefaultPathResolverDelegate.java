@@ -24,10 +24,7 @@ import org.jdom.Element;
 import org.jdom.input.SAXBuilder;
 import org.mevenide.ui.eclipse.MavenPlugin;
 
-/**
- * will be soon deprecated
- * 
- * @refactor crappy !!!  
+/**  
  * 
  * @author Gilles Dodinet (gdodinet@wanadoo.fr)
  * @version $Id: ResourcesUtil.java 4 mai 2003 10:17:0413:34:35 Exp gdodinet 
@@ -37,25 +34,16 @@ public class DefaultPathResolverDelegate implements IPathResolverDelegate {
 
 	/**
 	 * extract the source path to add to the pom from the given classpathentry
-	 * @todo BUGGYRISK what about projects whose root is not in workspace ? 
 	 * 
 	 * @param classpathEntry
 	 * @return
 	 */
-	public String computePath(IClasspathEntry classpathEntry, IProject project) {
-		IPath rootLocation = 
-		        MavenPlugin.getWorkspace().getRoot().getLocation();
+	public String getRelativeSourceDirectoryPath(IClasspathEntry classpathEntry, IProject project) {
+		String pathToAdd = classpathEntry.getPath().toOSString();
 		
-	    String workspaceRoot = 
-	            getAbsolutePath(rootLocation.append(classpathEntry.getPath()));
+		pathToAdd = pathToAdd.substring(project.getFullPath().toOSString().length(), pathToAdd.length());
 		
-	    String pathToAdd = 
-	            workspaceRoot.substring(
-	                getAbsolutePath(project.getLocation()).length(), 
-	                workspaceRoot.length()
-	            ); 
-		
-	    pathToAdd = (pathToAdd.equals("/") || pathToAdd.equals("")) 
+		pathToAdd = (pathToAdd.equals("/") || pathToAdd.equals("")) 
 		            ? "${basedir}" : pathToAdd.substring(1); 
 	                
 		return pathToAdd;

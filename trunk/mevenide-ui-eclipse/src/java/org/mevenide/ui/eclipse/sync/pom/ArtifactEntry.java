@@ -52,7 +52,8 @@ public abstract class ArtifactEntry {
 				return new DependencyEntry(entry);
 				
 			case IClasspathEntry.CPE_PROJECT:
-				throw new RuntimeException("CPE_PROJECT : not yet implemented");
+				return new ProjectEntry(entry);
+				//throw new RuntimeException("CPE_PROJECT : not yet implemented");
 				
 			default: 
 				//shouldnot happen

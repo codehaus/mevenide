@@ -20,7 +20,10 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.JavaCore;
 import org.mevenide.sync.ISynchronizer;
 import org.mevenide.sync.SynchronizerFactory;
+
+
 /**
+ * only listens to POM modification. classpath modification are tracked thanks IElementChangedListener. 
  * 
  * @author Gilles Dodinet (gdodinet@wanadoo.fr)
  * @version $Id$
@@ -29,15 +32,14 @@ import org.mevenide.sync.SynchronizerFactory;
 public class AutoSynchronizer implements IResourceChangeListener {
 	private static AutoSynchronizer listener = new AutoSynchronizer();
 	private static Object lock = new Object();
-	private IResourceVisitor synchronizationVisitor =
-		new SynchronizationVisitor();
+	private IResourceVisitor synchronizationVisitor = new SynchronizationVisitor();
+	
 	private AutoSynchronizer() {
 	}
+	
 	public void resourceChanged(IResourceChangeEvent event) {
 		IResource resource = event.getResource();
-		System.out.println(event.getSource().getClass());
 		try {
-			System.out.println(resource == null);
 			if (resource != null) {
 				resource.accept(
 					synchronizationVisitor,
@@ -49,28 +51,26 @@ public class AutoSynchronizer implements IResourceChangeListener {
 			e.printStackTrace();
 		}
 	}
+	
 	public static IResourceChangeListener getSynchronizer() {
 		if (listener != null) {
 			return listener;
 		}
 		else {
 			synchronized (lock) {
-				System.out.println("create new one");
 				listener = new AutoSynchronizer();
 				return listener;
 			}
 		}
 	}
+	
+	
 	private class SynchronizationVisitor implements IResourceVisitor {
 		public boolean visit(IResource resource) {
 			try {
-				System.out.println("visit");
 				if (resource.getProject().hasNature(JavaCore.NATURE_ID)) {
-					System.out.println("project ok");
-					System.out.println(resource.getName());
-					System.out.println("parent ok");
 					SynchronizerFactory
-						.getSynchronizer(getDirection(resource))
+						.getSynchronizer(ISynchronizer.POM_TO_IDE)
 						.synchronize();
 				}
 			}
@@ -79,15 +79,6 @@ public class AutoSynchronizer implements IResourceChangeListener {
 				return false;
 			}
 			return true;
-		}
-		private int getDirection(IResource resource) throws Exception {
-			if (resource.getName().equals(".classpath")) {
-				return ISynchronizer.IDE_TO_POM;
-			}
-			if (resource.getName().equals("project.xml")) {
-				return ISynchronizer.POM_TO_IDE;
-			}
-			throw new Exception("Cannot handle that resource");
 		}
 	}
 }

@@ -24,6 +24,7 @@ import org.apache.maven.project.Dependency;
 import org.apache.maven.project.Project;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.JavaCore;
 import org.mevenide.project.DependencyFactory;
@@ -106,6 +107,7 @@ public class PomSynchronizer extends AbstractPomSynchronizer implements ISynchro
 		List dependencies = mavenProject.getDependencies();
 		List declaredDependencies = getDeclaredDependencies(cpEntries);
 		List newDependencies = new ArrayList();
+		
 		if ( dependencies != null ) {
 			for (int i = 0; i < dependencies.size(); i++) {
 				for (int j = 0; j < declaredDependencies.size(); j++) {
@@ -115,6 +117,12 @@ public class PomSynchronizer extends AbstractPomSynchronizer implements ISynchro
 						newDependencies.add(declaredDependencies.get(j));
 					}
 				}
+				//O(n*n)
+				if ( matchReferencedProjects(
+					getProject().getReferencedProjects(), 
+					(Dependency)dependencies.get(i)) ) {
+					newDependencies.add((Dependency)dependencies.get(i));
+				}
 			}
 		}
 		mavenProject.setDependencies(newDependencies);
@@ -122,6 +130,24 @@ public class PomSynchronizer extends AbstractPomSynchronizer implements ISynchro
 		new DefaultProjectMarshaller().marshall(writer, mavenProject);
 	}
 
+	private boolean matchReferencedProjects(IProject[] referencedProjects, Dependency declaredDependency) throws Exception {
+		for (int i = 0; i < referencedProjects.length; i++) {
+			IProject referencedProject = referencedProjects[i];
+			IPath referencedProjectLocation = referencedProject.getLocation(); 
+			File referencedPom = new File(pathResolver.getAbsolutePath(referencedProjectLocation.append("project.xml")) );
+			//check if referencedPom exists, tho it should since we just have created it
+			if ( !referencedPom.exists() ) {
+				//@todo project isnot mavenized, mavenize it as well
+			}
+			ProjectReader reader = ProjectReader.getReader();
+			Dependency projectDependency = reader.getDependency(referencedPom);
+			if ( DependencyUtil.areEquals(projectDependency, declaredDependency) ) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	private List getDeclaredDependencies(IClasspathEntry[] cpEntries)
 		throws Exception, InvalidDependencyException {
 		DependencyFactory dependencyFactory = DependencyFactory.getFactory(); 

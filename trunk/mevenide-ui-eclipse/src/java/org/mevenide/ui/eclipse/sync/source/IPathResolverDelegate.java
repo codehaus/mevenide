@@ -31,9 +31,7 @@ public interface IPathResolverDelegate {
 	 * @param classpathEntry
 	 * @return
 	 */
-	public abstract String computePath(
-		IClasspathEntry classpathEntry,
-		IProject project);
+	public abstract String getRelativeSourceDirectoryPath(IClasspathEntry classpathEntry, IProject project);
         
 	/**
 	 * utility method

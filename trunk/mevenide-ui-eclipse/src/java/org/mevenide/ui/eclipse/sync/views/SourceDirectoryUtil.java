@@ -19,7 +19,6 @@ import java.util.Map;
 import org.mevenide.ProjectConstants;
 
 /**
- * @todo keep it in synch with org.mevenide.ProjectConstants
  * 
  * @author Gilles Dodinet (gdodinet@wanadoo.fr)
  * @version $Id$

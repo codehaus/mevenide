@@ -51,7 +51,7 @@ public class SourceDirectoryGroup {
 		IClasspathEntry[] classpathEntries = project.getResolvedClasspath(true);
 		for (int i = 0; i < classpathEntries.length; i++) {
 			if ( classpathEntries[i].getEntryKind() == IClasspathEntry.CPE_SOURCE) {
-				String path = new DefaultPathResolverDelegate().computePath(classpathEntries[i], project.getProject());
+				String path = new DefaultPathResolverDelegate().getRelativeSourceDirectoryPath(classpathEntries[i], project.getProject());
 				SourceDirectory sourceDirectory = new SourceDirectory(path);
 				sourceDirectory.setDirectoryType(ProjectConstants.MAVEN_SRC_DIRECTORY); 
 				sourceDirectories.add(sourceDirectory);
