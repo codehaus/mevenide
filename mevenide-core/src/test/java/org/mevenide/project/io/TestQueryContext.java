@@ -18,8 +18,7 @@ package org.mevenide.project.io;
 
 import java.io.File;
 import java.util.HashMap;
-import junit.framework.Test;
-import junit.framework.TestSuite;
+
 import org.mevenide.context.IQueryContext;
 
 /**
