@@ -131,7 +131,7 @@ public class DirectoryNode extends ArtifactNode {
 		return excludeNodes != null && excludeNodes.length > 0;
 	}
 	public String toString() {
-		return directory.getCleanPath();
+		return resolve(directory.getCleanPath());
 	}
 	
 	
@@ -169,8 +169,7 @@ public class DirectoryNode extends ArtifactNode {
 	}
 	
 	protected String getIgnoreLine() {
-		// TODO Auto-generated method stub
-		return null;
+		return directory.getCleanPath();
 	}
 	
 	public void removeFrom(Project project) throws Exception {
@@ -196,5 +195,6 @@ public class DirectoryNode extends ArtifactNode {
 	public void setExcludeNodes(ExcludeNode[] excludeNodes) {
 		this.excludeNodes = excludeNodes;
 	}
+	
 }
  

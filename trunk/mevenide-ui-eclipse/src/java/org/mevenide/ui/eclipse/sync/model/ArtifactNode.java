@@ -21,7 +21,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Project;
+import org.apache.maven.util.StringInputStream;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -32,8 +35,8 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.util.IPropertyChangeListener;
+import org.mevenide.properties.resolver.util.ResolverUtils;
 import org.mevenide.ui.eclipse.util.FileUtils;
-import org.apache.maven.util.StringInputStream;
 
 /**  
  * 
@@ -42,7 +45,8 @@ import org.apache.maven.util.StringInputStream;
  * 
  */
 public abstract class ArtifactNode extends AbstractSynchronizationNode implements ISelectableNode, IAdaptable, IPropertyChangeListener {
-
+    private static final Log log = LogFactory.getLog(ArtifactNode.class); 
+    	
 	private int direction;
 	
 	public int getDirection() {
@@ -111,6 +115,10 @@ public abstract class ArtifactNode extends AbstractSynchronizationNode implement
 	protected void propagateNodeChangeEvent() {
 		((EclipseProjectNode) getParent().getParent()).fireNodeChanged(this);
 	}
+
+    protected String resolve(String strg) {
+        return ResolverUtils.resolve((Project) getParent().getData(), strg);
+    }
 	
 }
 

@@ -36,8 +36,8 @@ import org.mevenide.environment.LocationFinderAggregator;
 import org.mevenide.project.ProjectConstants;
 import org.mevenide.project.io.ProjectReader;
 import org.mevenide.properties.resolver.DefaultsResolver;
-import org.mevenide.properties.resolver.PropFilesAggregator;
-import org.mevenide.ui.eclipse.util.EclipseProjectUtils;
+import org.mevenide.properties.resolver.PropertyFilesAggregator;
+import org.mevenide.ui.eclipse.util.JavaProjectUtils;
 import org.mevenide.ui.eclipse.util.SourceDirectoryTypeUtil;
 import org.mevenide.util.MevenideUtils;
 
@@ -62,7 +62,7 @@ public class MavenProjectNode extends AbstractSynchronizationNode implements ISe
 	private EclipseProjectNode parentNode;
 	private IProject eclipseProject;
 	
-	private PropFilesAggregator environmentLocator;
+	private PropertyFilesAggregator environmentLocator;
 	
 	public MavenProjectNode(Project project, EclipseProjectNode parentNode) {
 		mavenProject = project;
@@ -77,7 +77,7 @@ public class MavenProjectNode extends AbstractSynchronizationNode implements ISe
     	File userHomeDir = new File(System.getProperty("user.home"));
     	LocationFinderAggregator finder = new LocationFinderAggregator();
         finder.setEffectiveWorkingDirectory(projectDir.getAbsolutePath());
-    	environmentLocator = new PropFilesAggregator(
+    	environmentLocator = new PropertyFilesAggregator(
     			                     projectDir, 
     			                     userHomeDir, 
 									 new DefaultsResolver(projectDir, userHomeDir, finder));
@@ -91,7 +91,7 @@ public class MavenProjectNode extends AbstractSynchronizationNode implements ISe
 	
     private void initializeOutputFolders() {
     	try {
-			String defaultEclipseOutputFolder = EclipseProjectUtils.getRelativeDefaultOuputFolder(eclipseProject).replaceAll("\\\\", "/");
+			String defaultEclipseOutputFolder = JavaProjectUtils.getRelativeDefaultOuputFolder(eclipseProject).replaceAll("\\\\", "/");
 			String defaultMavenOutputFolder = environmentLocator.getResolvedValue("maven.build.dest").replaceAll("\\\\", "/");
 			
 			if ( !defaultEclipseOutputFolder.equals(defaultMavenOutputFolder) ) {
@@ -116,7 +116,7 @@ public class MavenProjectNode extends AbstractSynchronizationNode implements ISe
 	}
 
 	private DirectoryNode createOutputFolderDirectoryNode(String defaultEclipseOutputFolder) throws IOException {
-		Directory eclipseOutputDirectory = new Directory();
+		Directory eclipseOutputDirectory = new Directory(mavenProject);
 		eclipseOutputDirectory.setPath(MevenideUtils.makeRelativePath(eclipseProject.getLocation().toFile(), defaultEclipseOutputFolder));
 		eclipseOutputDirectory.setType(ProjectConstants.MAVEN_OUTPUT_DIRECTORY);
 		DirectoryNode eclipseOutputFolderNode = new DirectoryNode(eclipseOutputDirectory, this);
@@ -224,7 +224,7 @@ public class MavenProjectNode extends AbstractSynchronizationNode implements ISe
 		List nodeList = new ArrayList();
 		for (int i = 0; i < eclipseSourceDirectories.size(); i++) {
 		    String directoryPath = (String) eclipseSourceDirectories.get(i);
-	    	Directory eclipseDirectory = new Directory();
+	    	Directory eclipseDirectory = new Directory(mavenProject);
 	    	eclipseDirectory.setPath(directoryPath);
 	    	DirectoryNode node = new DirectoryNode(eclipseDirectory, this);
 	    	node.setExcludeNodes(getEclipseExclusionFilterNodes(directoryPath, node));
@@ -234,7 +234,7 @@ public class MavenProjectNode extends AbstractSynchronizationNode implements ISe
 	}
 
 	private ExcludeNode[] getEclipseExclusionFilterNodes(String eclipseSourceFolder, DirectoryNode directoryNode) {
-		String[] exclusionPatterns = EclipseProjectUtils.findExclusionPatterns(eclipseSourceFolder, eclipseProject);
+		String[] exclusionPatterns = JavaProjectUtils.findExclusionPatterns(eclipseSourceFolder, eclipseProject);
 		if ( exclusionPatterns != null ) {
 			ExcludeNode[] nodes = new ExcludeNode[exclusionPatterns.length];
 			for (int i = 0; i < exclusionPatterns.length; i++) {
@@ -261,7 +261,7 @@ public class MavenProjectNode extends AbstractSynchronizationNode implements ISe
 	}
 
 	private DirectoryNode createDirectoryNode(String type, String path) {
-		Directory directory = new Directory();
+		Directory directory = new Directory(mavenProject);
 		directory.setPath(path);
 		directory.setType(type);
 		DirectoryNode node = new DirectoryNode(directory, this);
