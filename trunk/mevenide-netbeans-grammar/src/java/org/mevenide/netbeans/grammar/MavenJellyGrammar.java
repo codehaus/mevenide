@@ -18,9 +18,20 @@
 package org.mevenide.netbeans.grammar;
 
 import java.awt.Component;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
+
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.mevenide.grammar.AttributeCompletion;
@@ -34,7 +45,11 @@ import org.netbeans.modules.xml.spi.dom.AbstractNode;
 import org.openide.nodes.Node.Property;
 import org.openide.util.Utilities;
 import org.openide.util.enum.EmptyEnumeration;
-import org.w3c.dom.*;
+import org.w3c.dom.Attr;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.Text;
 
 /**
  */
