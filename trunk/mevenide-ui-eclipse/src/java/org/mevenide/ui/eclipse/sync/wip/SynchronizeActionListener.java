@@ -57,5 +57,7 @@ package org.mevenide.ui.eclipse.sync.wip;
  */
 public interface SynchronizeActionListener {
 	
-    void artifactAddedToClasspath(ArtifactEvent event);
+    void artifactAddedToClasspath(ArtifactAddedToClasspathEvent event);
+    
+    void artifactAddedToPom(ArtifactAddedToPomEvent event);
 }

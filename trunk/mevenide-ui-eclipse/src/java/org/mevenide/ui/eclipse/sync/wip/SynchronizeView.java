@@ -50,6 +50,7 @@ package org.mevenide.ui.eclipse.sync.wip;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.maven.project.Project;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
@@ -290,13 +291,21 @@ public class SynchronizeView extends ViewPart implements SynchronizeActionListen
 		});
 	}
 
-	public void artifactAddedToClasspath(ArtifactEvent event) {
+	public void artifactAddedToClasspath(ArtifactAddedToClasspathEvent event) {
     	log.debug("artifact modified : " + event.getArtifact());
-    	artifactMappingNodeViewer.getExpandedElements();
-    	artifactMappingNodeViewer.refresh();
-    	artifactMappingNodeViewer.expandAll();
+    	refreshAndExpand();
 	}
 
+	public void artifactAddedToPom(ArtifactAddedToPomEvent event) {
+		Project project = event.getProject();
+		//@todo refresh project file
+		refreshAndExpand(); 
+	}
+	
+	private void refreshAndExpand() {
+		artifactMappingNodeViewer.refresh();
+    	artifactMappingNodeViewer.expandAll();
+	}
 
 	public TreeViewer getArtifactMappingNodeViewer() {
 		return artifactMappingNodeViewer;
