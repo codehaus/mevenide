@@ -37,14 +37,14 @@ public class XMLReconciler implements IReconcilingStrategy, IDocumentListener {
     private ArrayList storedPos;
     private ArrayList deleted;
     private ArrayList added;
-    private MavenXmlEditor editor;
+    private AbstractJellyEditor editor;
     private XMLNode root;
     private MavenXmlOutlinePage op;
     private Map namespaces;
     private boolean sendOnlyAdditions = false;
     private boolean firstTime = true;
 
-    public XMLReconciler(MavenXmlEditor editor, MavenXmlOutlinePage op) {
+    public XMLReconciler(AbstractJellyEditor editor, MavenXmlOutlinePage op) {
         this.editor = editor;
         this.op = op;
         this.namespaces = new TreeMap();

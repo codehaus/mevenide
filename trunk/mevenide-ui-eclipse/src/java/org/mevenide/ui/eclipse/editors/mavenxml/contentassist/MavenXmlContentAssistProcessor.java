@@ -38,7 +38,7 @@ import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.jface.text.contentassist.IContextInformationValidator;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.editors.mavenxml.ITypeConstants;
-import org.mevenide.ui.eclipse.editors.mavenxml.MavenXmlEditor;
+import org.mevenide.ui.eclipse.editors.mavenxml.AbstractJellyEditor;
 import org.mevenide.ui.eclipse.editors.mavenxml.Namespace;
 import org.mevenide.ui.eclipse.editors.mavenxml.XMLNode;
 import org.mevenide.ui.eclipse.preferences.PreferencesManager;
@@ -52,11 +52,11 @@ public abstract class MavenXmlContentAssistProcessor implements IContentAssistPr
 
     private static final  Log log = LogFactory.getLog(MavenXmlContentAssistProcessor.class);
     
-    private MavenXmlEditor editor;
+    private AbstractJellyEditor editor;
 
     private PreferencesManager preferencesManager;
 
-    public MavenXmlContentAssistProcessor(MavenXmlEditor editor) {
+    public MavenXmlContentAssistProcessor(AbstractJellyEditor editor) {
         this.editor = editor;
         preferencesManager = PreferencesManager.getManager();
         preferencesManager.loadPreferences();
@@ -372,7 +372,7 @@ public abstract class MavenXmlContentAssistProcessor implements IContentAssistPr
         return null;
     }
 
-    protected MavenXmlEditor getEditor() {
+    protected AbstractJellyEditor getEditor() {
         return editor;
     }
 }

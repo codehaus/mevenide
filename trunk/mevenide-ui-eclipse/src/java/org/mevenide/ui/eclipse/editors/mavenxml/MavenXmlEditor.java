@@ -1,42 +1,42 @@
+/* ==========================================================================
+ * Copyright 2003-2004 Apache Software Foundation
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ * =========================================================================
+ */
 package org.mevenide.ui.eclipse.editors.mavenxml;
-
-import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.ui.IFileEditorInput;
-import org.eclipse.ui.editors.text.TextEditor;
-import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
-import org.eclipse.ui.texteditor.TextOperationAction;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
-import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.goals.outline.MavenXmlOutlinePage;
 
-public class MavenXmlEditor extends TextEditor {
-    private static final Log log = LogFactory.getLog(MavenXmlEditor.class);
-    
-	private ColorManager colorManager;
-	private MavenXmlOutlinePage outlinePage;
-	
-	private Map namespaces;
-	private XMLReconciler reconciler;
-	
-	public MavenXmlEditor() {
-		super();
-		colorManager = new ColorManager();
-		setSourceViewerConfiguration(new XMLConfiguration(colorManager, this));
-		setDocumentProvider(new XMLDocumentProvider(this));
-	}
-	
-	public void dispose() {
-		colorManager.dispose();
-		super.dispose();
-	}
 
-	public Object getAdapter(Class required) {
+/**  
+ * 
+ * @author <a href="mailto:rhill2@free.fr">Gilles Dodinet</a>
+ * @version $Id$
+ * 
+ */
+public class MavenXmlEditor extends AbstractJellyEditor {
+    
+    private static Log log = LogFactory.getLog(MavenXmlEditor.class);
+    
+    private MavenXmlOutlinePage outlinePage;
+    
+    public Object getAdapter(Class required) {
 		if (IContentOutlinePage.class.equals(required)) {
 			if (outlinePage == null) {
 				outlinePage= new MavenXmlOutlinePage((IFileEditorInput) getEditorInput());
@@ -45,8 +45,8 @@ public class MavenXmlEditor extends TextEditor {
 		}
 		return super.getAdapter(required);
 	}
-	
-	protected void performSave(boolean overwrite, IProgressMonitor progressMonitor) {
+    
+    protected void performSave(boolean overwrite, IProgressMonitor progressMonitor) {
 		super.performSave(overwrite, progressMonitor);
 		try {
             outlinePage.forceRefresh();
@@ -56,34 +56,4 @@ public class MavenXmlEditor extends TextEditor {
             log.error(message, e);
         }
 	}
-	
-	public static final String CONTENTASSIST_PROPOSAL_ID = "org.mevenide.ui.eclipse.editors.mavenxml.ContentAssistProposal";
-	
-	protected void createActions() {
-		super.createActions();
-		
-		IAction action = new TextOperationAction(
-				Mevenide.getPlugin().getResourceBundle(), 
-				"MavenXml.ContentAssistProposal", 
-				this, 
-				ISourceViewer.CONTENTASSIST_PROPOSALS);
-		action.setActionDefinitionId(ITextEditorActionDefinitionIds.CONTENT_ASSIST_PROPOSALS);
-		
-		setAction(CONTENTASSIST_PROPOSAL_ID, action);
-		
-	}
-
-    public Map getNamespaces() {
-        return namespaces;
-    }
-    
-    public void setNamespaces(Map namespaces) {
-        this.namespaces = namespaces;
-    }
-    public XMLReconciler getModel() {
-        return reconciler;
-    }
-    public void setModel(XMLReconciler reconciler) {
-        this.reconciler = reconciler;
-    }
 }

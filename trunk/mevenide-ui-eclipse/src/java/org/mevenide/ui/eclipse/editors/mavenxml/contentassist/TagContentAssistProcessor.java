@@ -11,7 +11,7 @@ import org.eclipse.jface.text.contentassist.CompletionProposal;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.jface.text.contentassist.IContextInformationValidator;
-import org.mevenide.ui.eclipse.editors.mavenxml.MavenXmlEditor;
+import org.mevenide.ui.eclipse.editors.mavenxml.AbstractJellyEditor;
 import org.mevenide.ui.eclipse.editors.mavenxml.XMLNode;
 
 /**
@@ -22,7 +22,7 @@ import org.mevenide.ui.eclipse.editors.mavenxml.XMLNode;
  */
 public class TagContentAssistProcessor extends MavenXmlContentAssistProcessor {
 
-    public TagContentAssistProcessor(MavenXmlEditor editor) {
+    public TagContentAssistProcessor(AbstractJellyEditor editor) {
         super(editor);
     }
 
