@@ -6,6 +6,27 @@
   </properties>
 
   <body>
+    <release version="0.4" date="in CVS" description="">
+      <action dev="mkleint" type="fix">
+      MEVENIDE-115 - improved support for webapps.
+      </action>
+      <action dev="mkleint" type="fix">
+      MEVENIDE-63 and MEVENIDE-14 - inherited properties files taken into account in the UI.
+      </action>
+      <action dev="mkleint" type="fix">
+      MEVENIDE-128 - better handling when pom file unparsable.
+      </action>
+      <action dev="mkleint" type="add">
+      MEVENIDE-72 - when changing version/artifactId/groupId suggest to update projects that depend on it.
+      </action>
+      <action dev="mkleint" type="add">
+      Link pmd report output with the IDE's editor.
+      </action>
+      <action dev="mkleint" type="add">
+       additional properties panels, updated some other panels.
+      </action>
+    
+    </release>
   
     <release version="0.3" date="28/09/2004" description="">
       <action dev="mkleint" type="add">
