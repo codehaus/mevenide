@@ -1,7 +1,8 @@
 
 		<report>maven-jellydoc-plugin</report>
 		<report>maven-junit-report-plugin</report>
-		<report>maven-clover-plugin</report>
+        <!-- mkleint - clover doens't work for me, dunno why -->
+<!--		<report>maven-clover-plugin</report> -->
 		
 		<report>maven-pmd-plugin</report>
 	   	<report>maven-checkstyle-plugin</report>
