@@ -37,7 +37,6 @@
 			<item name="Packages View" href="/packages.html"/>	
 			<item name="Pom Manipulation" href="/pom-io.html"/>	
 			<item name="Runner" href="/runner.html"/>	
-			<item name="Synchronizer" href="/synchronizer.html"/>	
 		  </item>
 		  <item name="Javadoc" href="apidocs/index.html"/>
 		  <item name="Tasks" href="task-list.html"/>
