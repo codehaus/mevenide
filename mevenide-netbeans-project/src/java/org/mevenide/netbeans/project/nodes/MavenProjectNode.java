@@ -17,7 +17,6 @@
 package org.mevenide.netbeans.project.nodes;
 
 import java.awt.Image;
-import javax.swing.AbstractAction;
 import javax.swing.Action;
 
 import org.apache.commons.logging.Log;
@@ -29,9 +28,6 @@ import org.mevenide.netbeans.project.exec.RunGoalsAction;
 import org.netbeans.spi.project.ActionProvider;
 import org.netbeans.spi.project.ui.support.LogicalViews;
 import org.openide.nodes.AbstractNode;
-
-import org.openide.nodes.FilterNode;
-import org.openide.nodes.Node;
 import org.openide.util.Lookup;
 import org.openide.util.Utilities;
 

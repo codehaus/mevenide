@@ -20,9 +20,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 
@@ -36,7 +34,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Contributor;
 import org.apache.maven.project.Developer;
-import org.apache.maven.project.MailingList;
 import org.apache.maven.project.Project;
 import org.mevenide.netbeans.project.MavenProject;
 import org.openide.DialogDisplayer;

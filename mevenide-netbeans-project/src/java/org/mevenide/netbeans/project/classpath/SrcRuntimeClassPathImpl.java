@@ -17,7 +17,6 @@
 
 package org.mevenide.netbeans.project.classpath;
 
-import java.io.File;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -30,7 +29,7 @@ import org.apache.maven.project.Dependency;
 import org.apache.maven.project.Project;
 import org.apache.maven.project.Resource;
 import org.mevenide.netbeans.project.MavenProject;
-import org.openide.filesystems.FileUtil;
+
 
 /**
  * class path def for runtime..

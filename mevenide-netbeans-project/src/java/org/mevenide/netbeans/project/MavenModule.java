@@ -19,9 +19,8 @@ package org.mevenide.netbeans.project;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.mevenide.environment.SysEnvLocationFinder;
-import org.openide.modules.ModuleInfo;
 import org.openide.modules.ModuleInstall;
-import org.openide.util.Lookup;
+
 
 /** Manages a module's lifecycle.
  * Remember that an installer is optional and often not needed at all.

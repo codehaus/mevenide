@@ -32,7 +32,7 @@ import org.apache.maven.project.Project;
 import org.apache.maven.project.Resource;
 import org.apache.maven.project.UnitTest;
 import org.mevenide.netbeans.project.MavenProject;
-import org.openide.filesystems.FileUtil;
+
 
 /**
  *

@@ -19,30 +19,17 @@ package org.mevenide.netbeans.project.nodes;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.maven.project.Build;
-import org.apache.maven.project.Project;
-import org.apache.maven.project.Resource;
-import org.apache.tools.ant.DirectoryScanner;
-import org.mevenide.netbeans.project.FileUtilities;
 import org.mevenide.netbeans.project.MavenProject;
 import org.mevenide.netbeans.project.MavenSourcesImpl;
 
 import org.netbeans.api.project.SourceGroup;
 
 import org.netbeans.api.project.Sources;
-import org.netbeans.spi.java.project.support.ui.PackageView;
-
-
-import org.openide.filesystems.FileObject;
-import org.openide.filesystems.FileUtil;
-import org.openide.loaders.DataFolder;
 import org.openide.loaders.DataObject;
 import org.openide.loaders.DataObjectNotFoundException;
 import org.openide.nodes.FilterNode;

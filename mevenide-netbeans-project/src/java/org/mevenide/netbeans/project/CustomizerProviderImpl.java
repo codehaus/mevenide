@@ -17,7 +17,6 @@
 
 package org.mevenide.netbeans.project;
 
-import java.awt.Dialog;
 import java.util.List;
 
 import javax.swing.JButton;

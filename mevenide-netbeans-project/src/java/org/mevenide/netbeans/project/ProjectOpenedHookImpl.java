@@ -25,16 +25,11 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Dependency;
 import org.apache.maven.project.Project;
 import org.mevenide.netbeans.project.classpath.ClassPathProviderImpl;
-import org.mevenide.netbeans.project.dependencies.DependenciesExplorerPanel;
 import org.mevenide.netbeans.project.queries.MavenFileOwnerQueryImpl;
-import org.mevenide.project.dependency.DefaultDependencyPathFinder;
 import org.mevenide.project.io.JarOverrideReader2;
 import org.netbeans.api.java.classpath.ClassPath;
 import org.netbeans.api.java.classpath.GlobalPathRegistry;
-import org.netbeans.api.project.ProjectManager;
 import org.netbeans.spi.project.ui.ProjectOpenedHook;
-import org.openide.DialogDescriptor;
-import org.openide.DialogDisplayer;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 
@@ -92,6 +87,9 @@ public class ProjectOpenedHookImpl extends ProjectOpenedHook {
         FileObject prop = fo.getFileObject("project.properties");
         FileObject prop2 = fo.getFileObject("build.properties");
         FileObject prop3 = userFo.getFileObject("build.properties");
+        if (xml != null) {
+            xml.addFileChangeListener(project.getUpdater());
+        }
         if (prop != null) {
             prop.addFileChangeListener(project.getUpdater());
         }
@@ -112,6 +110,9 @@ public class ProjectOpenedHookImpl extends ProjectOpenedHook {
         FileObject prop = fo.getFileObject("project.properties");
         FileObject prop2 = fo.getFileObject("build.properties");
         FileObject prop3 = userFo.getFileObject("build.properties");
+        if (xml != null) {
+            xml.removeFileChangeListener(project.getUpdater());
+        }
         if (prop != null) {
             prop.removeFileChangeListener(project.getUpdater());
         }
@@ -138,14 +139,14 @@ public class ProjectOpenedHookImpl extends ProjectOpenedHook {
             }
         }
         
-        if (lst.size() > 0) {
+//        if (lst.size() > 0) {
 // makes no sense to show dialog.. is run also when restarting..
 // maybe have some kind of project annotation..            
 //            DependenciesExplorerPanel panel = new DependenciesExplorerPanel(lst, project);
 //            DialogDescriptor dd = new DialogDescriptor(panel, "There are some dependencies missing.");
 //            Object retValue = DialogDisplayer.getDefault().notify(dd);
             
-        }
+//        }
     }
     
     private boolean dependencyExists(Dependency dep) {

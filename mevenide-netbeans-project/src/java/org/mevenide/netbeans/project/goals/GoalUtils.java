@@ -18,7 +18,6 @@ package org.mevenide.netbeans.project.goals;
 
 import org.mevenide.goals.grabber.IGoalsGrabber;
 import org.mevenide.goals.manager.GoalsGrabbersManager;
-import org.mevenide.netbeans.project.goals.GoalsGrabberProvider;
 
 /**
  *

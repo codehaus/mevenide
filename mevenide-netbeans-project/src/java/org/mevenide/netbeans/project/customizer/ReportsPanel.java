@@ -209,7 +209,7 @@ public class ReportsPanel extends JPanel implements ProjectPanel {
     }
     
     public String getValidityMessage() {
-        int retCode = doValidateCheck();
+//        int retCode = doValidateCheck();
         String message = "";
         return message;
     }
@@ -220,10 +220,10 @@ public class ReportsPanel extends JPanel implements ProjectPanel {
     private class Listener implements ActionListener, ListSelectionListener {
         
         public void actionPerformed(ActionEvent e) {
-            if ("btnRemove".equals(e.getActionCommand())) {
-            }
-            if ("btnAdd".equals(e.getActionCommand())) {
-            }
+//            if ("btnRemove".equals(e.getActionCommand())) {
+//            }
+//            if ("btnAdd".equals(e.getActionCommand())) {
+//            }
         }
 
         public void valueChanged(ListSelectionEvent e) {

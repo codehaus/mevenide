@@ -15,14 +15,10 @@
  * =========================================================================
  */
 package org.mevenide.netbeans.project.customizer;
+
 import javax.swing.JTextField;
 import javax.swing.event.DocumentListener;
-import org.mevenide.netbeans.project.ActionProviderImpl;
-
-
-
 import org.mevenide.netbeans.project.customizer.ui.OriginChange;
-
 import org.mevenide.properties.IPropertyLocator;
 
 

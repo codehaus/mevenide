@@ -25,14 +25,14 @@ import java.util.Collections;
 import java.util.List;
 
 import javax.swing.JPanel;
-import org.apache.maven.project.Organization;
 import org.apache.maven.project.Project;
 import org.apache.maven.project.Repository;
 import org.mevenide.netbeans.project.MavenProject;
+import org.mevenide.netbeans.project.customizer.ProjectValidateObserver;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.awt.HtmlBrowser;
-import org.openide.util.NbBundle;
+
 
 /**
  *

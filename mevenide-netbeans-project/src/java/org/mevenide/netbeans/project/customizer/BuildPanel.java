@@ -16,7 +16,6 @@
  */
 package org.mevenide.netbeans.project.customizer;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -35,8 +34,6 @@ import org.apache.maven.project.Project;
 import org.mevenide.netbeans.project.MavenProject;
 import org.mevenide.netbeans.project.customizer.ui.LocationComboFactory;
 import org.mevenide.netbeans.project.customizer.ui.OriginChange;
-import org.mevenide.project.ProjectConstants;
-import org.mevenide.project.source.SourceDirectoryUtil;
 import org.mevenide.properties.IPropertyLocator;
 import org.openide.util.NbBundle;
 

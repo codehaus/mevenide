@@ -20,9 +20,7 @@ package org.mevenide.netbeans.project.libraries;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import org.netbeans.spi.project.libraries.LibraryImplementation;
 
 /**
