@@ -90,7 +90,7 @@ import org.mevenide.ui.eclipse.launch.LaunchWizardPage;
  * @version $Id$
  * 
  */
-public class MavenOptionsTab extends AbstractLaunchConfigurationTab  {
+public class MavenArgumentsTab extends AbstractLaunchConfigurationTab  {
 	private static Log log = LogFactory.getLog(LaunchWizardPage.class);
 
 	public static final String OPTIONS_MAP = "OPTIONS_MAP";
@@ -108,7 +108,7 @@ public class MavenOptionsTab extends AbstractLaunchConfigurationTab  {
 	private Text goalsText;
 	private Table table;
 
-	public MavenOptionsTab() {
+	public MavenArgumentsTab() {
 		setDirty(false); 
 	}
 	
