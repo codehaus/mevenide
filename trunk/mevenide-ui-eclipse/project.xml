@@ -107,6 +107,12 @@
         </dependency>
 		
 		<!-- eclipse libraries -->
+		<dependency>
+           <groupId>eclipse</groupId>
+           <artifactId>eclipse-jdtui</artifactId>
+           <version>2.1.0</version>
+           <url>http://eclipse.org/</url>
+        </dependency>
 	    <dependency>
            <groupId>eclipse</groupId>
            <artifactId>eclipse-resources</artifactId>
