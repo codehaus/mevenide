@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project>
+  <extend>${basedir}/base-project.xml</extend>
+  <pomVersion>3</pomVersion>
+  <name>Mevenide Master</name>
+  <id>mevenide:master</id>
+  <artifactId>master</artifactId>
+  
+  <dependencies/>
+  
+</project>
+

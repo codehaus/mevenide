@@ -33,7 +33,15 @@ import org.mevenide.*;
  */
 public abstract class AbstractGoalsManager implements IGoalsManager {
 	
-	/** list of goals to be run */
+	/** 
+     * list of goals to be run. 
+     * 
+     * I used to use a Map instead of a Set, but it appears that using 
+     * a Set makes finally things simpler. 
+     * 
+     * So a goal is now indentified thanks its fully qualified form plugin:goal 
+     *
+     */
     protected Set runnableGoals = new TreeSet();
 
     /** bean that holds the list of all available goals */
@@ -60,8 +68,8 @@ public abstract class AbstractGoalsManager implements IGoalsManager {
 	}
 
 	/**
-     * add the plugin:goal to the list of runnable goals
-     * if goal is null just add plugin
+     * add the plugin:goal to the list of runnable goals. 
+     * If goal is null just add plugin
      * 
 	 * @param plugin
 	 * @param goal 
@@ -75,6 +83,7 @@ public abstract class AbstractGoalsManager implements IGoalsManager {
     /**
 	 * remove plugin:goal from the list of runnable goals
      * if goal is null, remove all goals declared by the plugin 
+     * 
      * 
 	 * @param plugin
 	 * @param goal  
