@@ -34,6 +34,9 @@ import org.mevenide.project.io.DefaultProjectMarshaller;
 public class ProjectSkeleton {
 	private static String template = "/templates/standard/project.xml";
 	
+	private ProjectSkeleton() {
+	}
+
 	/**
 	 * 
 	 * @param projectName

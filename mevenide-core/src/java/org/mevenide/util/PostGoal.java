@@ -34,6 +34,9 @@ import org.jdom.input.SAXBuilder;
  */
 public class PostGoal {
 	
+	private PostGoal() {
+	}
+
     public static void create(File mavenXml) {
 				Document doc = new Document();
 		Namespace gdfact =

@@ -25,6 +25,9 @@ import org.apache.commons.discovery.tools.Service;
  */
 public abstract class SynchronizerFactory  {
 	
+	private SynchronizerFactory() {
+	}
+
 	/**
      * create a ISynchronizer instance that update either the IDE projects 
      * properties or the POM.

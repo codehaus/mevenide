@@ -28,6 +28,9 @@ import org.jdom.output.XMLOutputter;
  */
 public class JDomOutputter {
 	
+	private JDomOutputter() {
+	}
+
 	public static String convertToString(Document doc) {
 		XMLOutputter outputter = newXmlOutputter(false);
 		return outputter.outputString(doc);

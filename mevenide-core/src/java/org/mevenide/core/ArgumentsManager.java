@@ -31,6 +31,9 @@ import org.mevenide.*;
  */
 public class ArgumentsManager {
 
+	private ArgumentsManager() {
+	}
+
 	/**
 	 * @return String[] the classpath needed for Maven execution $maven_home/lib/*.jar
 	 */
