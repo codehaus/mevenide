@@ -48,6 +48,7 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.ViewerSorter;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -315,7 +316,20 @@ public class SynchronizationView extends ViewPart implements IActionListener, IR
 		openFilterDialogAction = new Action() {
 			public void run() {
 				NodeFilterDialog dialog = new NodeFilterDialog();
-				dialog.open();
+				int result = dialog.open();
+				if ( result == Window.OK ) {
+					artifactNodeFilter.setFilterMavenArtifacts(dialog.shouldEnableArtifactFiltering());
+					artifactNodeFilter.setGroupIdFilter(dialog.getGroupIdFilter());
+					
+					directoryNodeFilter.setFilterDirectoryNodes(dialog.shouldEnableDirectoryFiltering());
+					directoryNodeFilter.setFilterSourceDirectories(dialog.shouldFilterSource());
+					directoryNodeFilter.setFilterTestDirectories(dialog.shouldFilterTest());
+					directoryNodeFilter.setFilterAspectDirectories(dialog.shouldFilterAspect());
+					directoryNodeFilter.setFilterResourceDirectories(dialog.shouldFilterResource());
+					
+					//problem : we lose informations entered in property sheet..
+					refreshAll();
+				}
 			}
 		};
 		openFilterDialogAction.setText("Filter...");

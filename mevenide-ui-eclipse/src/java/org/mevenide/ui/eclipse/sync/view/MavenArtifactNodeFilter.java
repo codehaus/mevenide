@@ -19,6 +19,7 @@ package org.mevenide.ui.eclipse.sync.view;
 import org.apache.maven.repository.Artifact;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
+import org.mevenide.ui.eclipse.preferences.PreferencesManager;
 import org.mevenide.ui.eclipse.sync.model.MavenArtifactNode;
 import org.mevenide.util.StringUtils;
 
@@ -36,6 +37,14 @@ public class MavenArtifactNodeFilter extends ViewerFilter {
 	private boolean filterMavenArtifacts;
 	
 	private String groupIdFilter;
+	
+	MavenArtifactNodeFilter() {
+		PreferencesManager preferencesManager = PreferencesManager.getManager();
+		preferencesManager.loadPreferences();
+		
+		filterMavenArtifacts = preferencesManager.getBooleanValue(APPLY_FILTERS_KEY);
+		groupIdFilter = preferencesManager.getValue(APPLY_FILTERS_KEY);
+	}
 	
 	public boolean select(Viewer viewer, Object parentElement, Object element) {
 		if ( filterMavenArtifacts && element instanceof MavenArtifactNode ) {
@@ -57,5 +66,8 @@ public class MavenArtifactNodeFilter extends ViewerFilter {
 	
 	public void setFilterMavenArtifacts(boolean filterMavenArtifacts) {
 		this.filterMavenArtifacts = filterMavenArtifacts;
+	}
+	public void setGroupIdFilter(String groupIdFilter) {
+		this.groupIdFilter = groupIdFilter;
 	}
 }
