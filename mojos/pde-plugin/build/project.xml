@@ -1,7 +1,0 @@
-<project>
-	<pomVersion>3</pomVersion>
-	<name>Maven PDE Plugin Build</name>
-	<groupId>mevenide</groupId>
-	<artifactId>maven-pde-plugin-master</artifactId>
-	<currentVersion>0.1</currentVersion>
-</project>
