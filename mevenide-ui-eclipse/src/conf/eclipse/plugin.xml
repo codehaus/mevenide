@@ -406,25 +406,18 @@
             name="Generic Jelly Editor">
       </editor>
    </extension>
-   <!-- Custom action definition -->
-   <extension point="org.eclipse.debug.ui.launchConfigurationTabGroups">
-      <launchConfigurationTabGroup type="org.mevenide.ui.launching.ActionDefinitionConfigType" 
-                                   class="org.mevenide.ui.eclipse.nature.CustomActionTabGroup" 
-                                   id="org.mevenide.ui.launching.ActionDefinitionTabGroup">
-      </launchConfigurationTabGroup>
-   </extension>
-   
    <extension point="org.eclipse.debug.ui.launchGroups">
- 		<launchGroup
+      <!-- Custom Action LaunchGroup -->
+	  <launchGroup
          label="Maven"
          bannerImage="icons/wizban/ext_tools_wiz.gif"
          category="maven"
          mode="run"
          id="org.mevenide.ui.launching.custom.LaunchGroup">
- 		</launchGroup>
+ 	  </launchGroup>
    </extension>
-   <!-- Maven launcher configuration type -->
    <extension point="org.eclipse.debug.core.launchConfigurationTypes">
+	   <!-- Maven launcher configuration type -->
       <launchConfigurationType
             name="%RunMaven.label"
             delegate="org.mevenide.ui.eclipse.launch.configuration.MavenLaunchDelegate"
@@ -432,11 +425,10 @@
             modes="run"
             id="org.mevenide.ui.launching.MavenLaunchConfigType">
       </launchConfigurationType>
-   </extension>
-   <!-- Custom Actions Definitions -->
-   <extension point="org.eclipse.debug.core.launchConfigurationTypes">  
+	   <!-- Custom Actions Definitions -->
       <launchConfigurationType 
             name="%RunMaven.label" 
+            category="maven"
             delegate="org.mevenide.ui.eclipse.launch.configuration.MavenLaunchDelegate" 
             modes="run" 
             id="org.mevenide.ui.launching.ActionDefinitionConfigType">
@@ -448,13 +440,22 @@
              icon="icons/etool16/maven_exc.gif"
              configTypeID="org.mevenide.ui.launching.MavenLaunchConfigType"
              id="org.mevenide.ui.launching.MavenLaunchConfigTypeImage"/>
+       <launchConfigurationTypeImage
+             icon="icons/etool16/maven_exc.gif"
+             configTypeID="org.mevenide.ui.launching.ActionDefinitionConfigType"
+             id="org.mevenide.ui.launching.ActionDefinitionConfigTypeImage"/>
     </extension>
-   <!-- Maven Launcher TabGroup -->
    <extension point="org.eclipse.debug.ui.launchConfigurationTabGroups">
+	  <!-- Maven Launcher TabGroup -->
       <launchConfigurationTabGroup
             type="org.mevenide.ui.launching.MavenLaunchConfigType"
             class="org.mevenide.ui.eclipse.launch.configuration.MavenRunnerTabGroup"
             id="org.mevenide.ui.launching.TabGroup">
+      </launchConfigurationTabGroup>
+      <!-- Custom action definition TabGroup -->
+      <launchConfigurationTabGroup type="org.mevenide.ui.launching.ActionDefinitionConfigType" 
+                                   class="org.mevenide.ui.eclipse.nature.CustomActionTabGroup" 
+                                   id="org.mevenide.ui.launching.ActionDefinitionTabGroup">
       </launchConfigurationTabGroup>
    </extension>
    <!-- Maven LaunchShortcut -->
