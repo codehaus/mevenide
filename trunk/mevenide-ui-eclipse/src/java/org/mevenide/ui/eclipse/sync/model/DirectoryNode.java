@@ -168,5 +168,9 @@ public class DirectoryNode extends ArtifactNode {
 			propagateNodeChangeEvent();
 		}
 	}
+	
+	public void setExcludeNodes(ExcludeNode[] excludeNodes) {
+		this.excludeNodes = excludeNodes;
+	}
 }
  
