@@ -32,13 +32,15 @@ public abstract class EclipseArtifactMojoTest extends TestCase {
     
     protected EclipseArtifactMojo mojo;
     
-    private File eclipseHome;
+    protected File eclipseHome;
     
+    protected File commonBasedir;
     
     protected void setUp() throws Exception {
         super.setUp();
         mojo = getMojo() == null ? newMojoStub() : getMojo();
         eclipseHome = new File(getClass().getResource("/eclipse.home").getFile());
+        commonBasedir = new File(getClass().getResource("/basedir.common").getFile());
         mojo.eclipseHome = eclipseHome;
     }
 

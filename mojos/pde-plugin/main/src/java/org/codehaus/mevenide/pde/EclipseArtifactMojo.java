@@ -56,25 +56,43 @@ public abstract class EclipseArtifactMojo implements Plugin {
      * @param request 
      */
     protected void initialize(PluginExecutionRequest request) throws ConfigurationException {
+        checkBuildId(request);
+
+        project = (MavenProject) request.getParameter( "project" );
+
         String eclipseHomeLocation = (String) request.getParameter("eclipseHome");
         eclipseHome = new File(eclipseHomeLocation);
-        
-        String eclipseConfigurationFolder = (String) request.getParameter("eclipseConfigurationFolder");
-        configurationFolder = new File(eclipseConfigurationFolder);
-        
-        long maxBuildId = ((Long) request.getParameter("maxBuildId")).longValue();
-        long minBuildId = ((Long) request.getParameter("minBuildId")).longValue();
-        new CompatibilityChecker(eclipseHome, configurationFolder).checkBuildId(minBuildId, maxBuildId);
         
         String outputDirectoryLocation = (String) request.getParameter("outputDirectory");
         outputDirectory = new File(outputDirectoryLocation);
         
-        String basedirLocation = (String) request.getParameter("basedir");
-        basedir = new File(basedirLocation);
-        
-        String workspaceLocation = (String) request.getParameter("outputDirectory");
+        String workspaceLocation = (String) request.getParameter("workspace");
         workspace = new File(workspaceLocation);
+
+        String basedirLocation = (String) request.getParameter("basedir");
+        basedir = basedirLocation == null ? project.getBasedir() : new File(basedirLocation);
         
-        project = (MavenProject) request.getParameter( "project" );
+        
+    }
+
+    private void checkBuildId(PluginExecutionRequest request) throws ConfigurationException {
+        String eclipseConfigurationFolder = (String) request.getParameter("eclipseConfigurationFolder");
+        if ( eclipseConfigurationFolder != null ) {
+	        configurationFolder = new File(eclipseConfigurationFolder);
+	        
+	        long maxBuildId = 0;
+	        long minBuildId = 0;
+	        
+	        if ( request.getParameter("maxBuildId") != null ) {
+	            maxBuildId = ((Long) request.getParameter("maxBuildId")).longValue();
+	        }
+	        if ( request.getParameter("minBuildId") != null ) {
+	            minBuildId = ((Long) request.getParameter("minBuildId")).longValue();
+	        }
+	        
+	        if ( maxBuildId != 0 || minBuildId != 0 ) {
+	            new CompatibilityChecker(eclipseHome, configurationFolder).checkBuildId(minBuildId, maxBuildId);
+	        }
+        }
     }
 }

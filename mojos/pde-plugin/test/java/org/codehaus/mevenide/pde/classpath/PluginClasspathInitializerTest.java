@@ -16,6 +16,11 @@
  */
 package org.codehaus.mevenide.pde.classpath;
 
+import java.util.HashMap;
+import java.util.Map;
+import org.apache.maven.plugin.PluginExecutionRequest;
+import org.apache.maven.plugin.PluginExecutionResponse;
+import org.apache.maven.project.MavenProject;
 import org.codehaus.mevenide.pde.EclipseArtifactMojo;
 import org.codehaus.mevenide.pde.EclipseArtifactMojoTest;
 
@@ -29,12 +34,38 @@ import org.codehaus.mevenide.pde.EclipseArtifactMojoTest;
  */
 public class PluginClasspathInitializerTest extends EclipseArtifactMojoTest {
     
+    private PluginExecutionRequest request;
+    private PluginExecutionResponse response;
+    
+    private MavenProject project;
+
+    protected void setUp() throws Exception {
+        super.setUp();
+        
+        project = new MavenProject();
+        
+        Map params = new HashMap();
+        params.put("project", project);
+       
+        //should be initialized elsewhere ?
+        params.put("eclipseHome", eclipseHome.getAbsolutePath());
+        params.put("basedir", commonBasedir.getAbsolutePath());
+        params.put("outputDirectory", commonBasedir.getAbsolutePath());
+        params.put("workspace", commonBasedir.getAbsolutePath());
+        
+        request = new PluginExecutionRequest( params );
+        response = new PluginExecutionResponse();
+    }
+    
     protected EclipseArtifactMojo getMojo() {
         return new PluginClasspathInitializer();
     }
     
-    private void testExecute() {
-        //mojo.execute();
+    public void testExecute() throws Exception {
+        
+        mojo.execute(request, response);
+        assertEquals(3, project.getArtifacts().size());
+        
     }
     
 }
