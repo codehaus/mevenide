@@ -49,7 +49,8 @@ public class Directory {
     		return false;
     	}
     	Directory dir = (Directory) obj;
-    	return path.equals(dir.path); 
+    	//@todo debug-me
+    	return getCleanPath().equals(dir.getCleanPath()); 
 	}
     
     public boolean equalsStrict(Object obj) {
@@ -65,7 +66,7 @@ public class Directory {
     }
     
     String getCleanPath() {
-        return SourceDirectoryUtil.stripBasedir(path);
+        return SourceDirectoryUtil.stripBasedir(path).replaceAll("\\\\", "/");
     }
     
     public void setPath(String path) {
