@@ -17,6 +17,8 @@
 package org.mevenide.ui.eclipse.nature;
 
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.dialogs.Dialog;
+import org.mevenide.ui.eclipse.Mevenide;
 
 
 /**  
@@ -30,5 +32,16 @@ public class ManageActionDefinitionsAction extends Action {
     public ManageActionDefinitionsAction() {
         setText("Manage Configuration...");
         setToolTipText("Manage Configuration");
+    }
+    
+    
+    public void run() {
+        openDialog();
+    }
+    
+    
+    private void openDialog() {
+        Dialog d = new CustomLaunchConfigurationDialog(Mevenide.getInstance().getWorkbenchWindow().getShell());
+        d.open();    
     }
 }
