@@ -74,10 +74,6 @@ public class ArtifactMappingImageDecorator extends CompositeImageDescriptor
      */ 
     private Point sizeOfImage;
     
-    public static final int INHERITED = 0x1;
-    public static final int INCOMPLETE = 0x2;
-    public static final int CONFLICTING = 0x4;
-    
     private int flags; 
     
     public ArtifactMappingImageDecorator(Image baseImage, int flags) {
@@ -91,17 +87,17 @@ public class ArtifactMappingImageDecorator extends CompositeImageDescriptor
      */
     protected void drawCompositeImage(int arg0, int arg1) {
         drawImage(baseImage.getImageData(), 0, 0);
-		if ( (flags & INHERITED) != 0 ) {
+		if ( (flags & IArtifactMappingNode.INHERITED) != 0 ) {
 			ImageData inheritedImageData = Mevenide.getImageDescriptor("override.gif").getImageData();
 		    //top right
 			drawImage(inheritedImageData, sizeOfImage.x - inheritedImageData.width, 0);
         }
-		if ( (flags & CONFLICTING) != 0 ) {
+		if ( (flags & IArtifactMappingNode.CONFLICTING) != 0 ) {
 			ImageData conflictImageData = Mevenide.getImageDescriptor("conflicting.gif").getImageData(); 
 			//bottom right
 			drawImage(conflictImageData, sizeOfImage.x - conflictImageData.width, sizeOfImage.y - conflictImageData.height);
 		}
-		if ( (flags & INCOMPLETE) != 0 ) {
+		if ( (flags & IArtifactMappingNode.INCOMPLETE) != 0 ) {
 			ImageData warnImageData = PlatformUI.getWorkbench().getSharedImages().getImage(org.eclipse.ui.ISharedImages.IMG_OBJS_ERROR_TSK).getImageData().scaledTo(8, 8);
 			//top left 
 			drawImage(warnImageData, 0, 0);

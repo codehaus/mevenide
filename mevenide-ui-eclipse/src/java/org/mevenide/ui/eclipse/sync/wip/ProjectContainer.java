@@ -58,14 +58,18 @@ import org.eclipse.core.resources.IProject;
  */
 public class ProjectContainer {
     private IProject project;
+   
     
     public ProjectContainer(IProject project) {
         this.project = project;
     }
+    
     public IProject getProject() {
         return project;
     }
+    
     public void setProject(IProject project) {
         this.project = project;
     }
+    
 }
