@@ -8,6 +8,7 @@
   <artifactId>mevenide-master</artifactId>
   <currentVersion>0.2-SNAPSHOT</currentVersion>
   <url>http://mevenide.sf.net/</url>
+  <siteDirectory>/home/groups/m/me/mevenide/htdocs</siteDirectory>
   
   <dependencies>
   	<dependency>
