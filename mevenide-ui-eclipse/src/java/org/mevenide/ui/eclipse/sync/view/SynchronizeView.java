@@ -410,7 +410,7 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
 	private void refreshNode(IArtifactMappingNode artifact) {
 		IArtifactMappingNodeContainer container = (IArtifactMappingNodeContainer) getContentProvider().getParent(artifact);
     	container.removeNode(artifact);
-    	artifactMappingNodeViewer.refresh(container);
+    	artifactMappingNodeViewer.update(container, null);
 	}
 	
 	private ITreeContentProvider getContentProvider() {
@@ -502,10 +502,9 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
 											catch (Exception e) {
                                                 log.error("Unable to update pom list", e);
                                             }
-				
-											refreshAll();
 										}
 									}
+									refreshAll();
 								}
 								if ( r instanceof IProject ) {
 									IProject prj = (IProject) r;
@@ -527,6 +526,7 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
 	}
 
 	public void refreshAll() {
+		System.err.println("REFRESH ALL");
 		artifactMappingNodeViewer.refresh(true);
 		artifactMappingNodeViewer.expandAll();
 	}

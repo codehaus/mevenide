@@ -70,5 +70,21 @@ public class SourceDirectoryTypeUtil {
         return ProjectConstants.MAVEN_SRC_DIRECTORY;
     }
 
+	public static String stripBasedir(String strg) {
+		String result = stripHeadingString(strg, "${basedir}/");
+		result = stripHeadingString(result, "${basedir}\\");
+		result = stripHeadingString(result, "${basedir}");
+		return result;
+	}
+
+	private static String stripHeadingString(String strg, String headingString) {
+		if ( strg.startsWith(headingString) ) {
+			System.err.print(strg + " / " + headingString);
+			System.err.println(" > removing");
+			strg = strg.substring(headingString.length());
+	    }
+		return strg;
+	}
+
 	
 }
