@@ -37,6 +37,8 @@
       <roles>
       	<role>Developer Java</role>
       </roles>
+      <url>http://www.iostream.net/</url>
+      <timezone>+1</timezone>      
     </developer>
     <developer>
        <name>Serge Huber</name>
