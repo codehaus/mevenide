@@ -37,9 +37,12 @@ import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
 import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.jface.text.contentassist.IContextInformationValidator;
+import org.mevenide.grammar.AttributeCompletion;
+import org.mevenide.grammar.impl.EmptyAttributeCompletionImpl;
+import org.mevenide.grammar.impl.GoalsAttributeCompletionImpl;
 import org.mevenide.ui.eclipse.Mevenide;
-import org.mevenide.ui.eclipse.editors.mavenxml.ITypeConstants;
 import org.mevenide.ui.eclipse.editors.mavenxml.AbstractJellyEditor;
+import org.mevenide.ui.eclipse.editors.mavenxml.ITypeConstants;
 import org.mevenide.ui.eclipse.editors.mavenxml.Namespace;
 import org.mevenide.ui.eclipse.editors.mavenxml.XMLNode;
 import org.mevenide.ui.eclipse.preferences.PreferencesManager;
@@ -56,11 +59,20 @@ public abstract class MavenXmlContentAssistProcessor implements IContentAssistPr
     private AbstractJellyEditor editor;
 
     private PreferencesManager preferencesManager;
-
+    
+    private AttributeCompletion attributeCompletor ; 
+    
     public MavenXmlContentAssistProcessor(AbstractJellyEditor editor) {
         this.editor = editor;
         preferencesManager = PreferencesManager.getManager();
         preferencesManager.loadPreferences();
+        try {
+            attributeCompletor = new GoalsAttributeCompletionImpl();
+        }
+        catch (Exception e) {
+            log.error("unable to create GoelasAttributeCompletionImpl", e);
+            attributeCompletor = new EmptyAttributeCompletionImpl("NullCompletor");
+        }
     }
 
     protected XMLNode getNodeAt(IDocument doc, int offset) {
@@ -88,45 +100,11 @@ public abstract class MavenXmlContentAssistProcessor implements IContentAssistPr
 
     protected ICompletionProposal[] computeTags(IDocument doc, XMLNode node, int offset) {
         ICompletionProposal[] cp = null;
-        XMLNode lastOpenTag = null;
         Map namespaces = editor.getNamespaces();
         Collection words = new ArrayList();
         String start = node == null ? "" : node.getContentTo(offset);
         String outerTag = null;
-        if (node == null || node.getParent() == null) {
-            try {
-                Position[] pos = doc.getPositions("__content_types_category");
-                if (pos.length > 0) {
-                    if (ITypeConstants.TAG.equals(((XMLNode) pos[pos.length - 1]).getType())) {
-                        lastOpenTag = (XMLNode) pos[pos.length - 1];
-                    }
-                    else {
-                        lastOpenTag = ((XMLNode) pos[pos.length - 1]).getParent();
-                    }
-                }
-            }
-            catch (BadPositionCategoryException e) {
-            }
-        }
-        else if (ITypeConstants.ENDTAG.equals(node.getType())) {
-            try {
-                Position[] pos = doc.getPositions("__content_types_category");
-                int index = getIndexOf(pos, node);
-                if (index > 0) {
-                    if (ITypeConstants.TAG.equals(((XMLNode) pos[index - 1]).getType())) {
-                        lastOpenTag = (XMLNode) pos[index - 1];
-                    }
-                    else {
-                        lastOpenTag = ((XMLNode) pos[index - 1]).getParent();
-                    }
-                }
-            }
-            catch (BadPositionCategoryException e) {
-            }
-        }
-        else {
-            lastOpenTag = node.getParent();
-        }
+        XMLNode lastOpenTag = findLastOpenTag(doc, node);
         if (lastOpenTag == null || lastOpenTag == editor.getModel().getRoot()) {
             outerTag = Namespace.TOPLEVEL;
         }
@@ -169,13 +147,15 @@ public abstract class MavenXmlContentAssistProcessor implements IContentAssistPr
         words.addAll(subTags);
      
         //add rootTags after subtags
+        rootTags.removeAll(subTags);
         words.addAll(rootTags);
 
         if ( isProjectTagSet() ) {
             words.remove("project");
         }
-        
+       
         if (node != null && node.getType() != null && "TEXT".equalsIgnoreCase(node.getType())) {
+            
             cp = new ICompletionProposal[words.size()];
             //for (int i = 0; i < cp.length; i++) {
             int i = 0;
@@ -192,6 +172,7 @@ public abstract class MavenXmlContentAssistProcessor implements IContentAssistPr
             }
         }
         else {
+            
             if (start.length() == 0) {
                 boolean isAfterLesserThan = false;
                 cp = new ICompletionProposal[words.size()];
@@ -202,6 +183,7 @@ public abstract class MavenXmlContentAssistProcessor implements IContentAssistPr
                     catch (BadLocationException e) {
                     }
                 }
+                
                 //for (int i = 0; i < cp.length; i++) {
                 int i = 0;
                 for ( Iterator it = words.iterator(); it.hasNext();) {
@@ -209,7 +191,7 @@ public abstract class MavenXmlContentAssistProcessor implements IContentAssistPr
                     
                     if (preferencesManager.getBooleanValue("InsertEndTag")) {
                         if (isAfterLesserThan) {
-                            cp[i] = new CompletionProposal(text + "></" + text + ">", offset, 0, text.length() + 1, Mevenide.getImageDescriptor("xml-tag.gif").createImage(), text,
+                            cp[i] = new CompletionProposal(text, offset, 0, text.length() + 1, Mevenide.getImageDescriptor("xml-tag.gif").createImage(), text,
                                     null, null);
                         }
                         else {
@@ -225,7 +207,10 @@ public abstract class MavenXmlContentAssistProcessor implements IContentAssistPr
                 }
             }
             else {
+                
                 if (start.startsWith("/")) {
+                    
+                    //@todo ERR HERE : if tag already closed
                     if (lastOpenTag != editor.getModel().getRoot() && lastOpenTag.getName().startsWith(start.substring(1))) {
                         cp = new CompletionProposal[1];
                         cp[0] = new CompletionProposal(lastOpenTag.getName() + ">", node.getOffset() + 2, offset
@@ -242,7 +227,7 @@ public abstract class MavenXmlContentAssistProcessor implements IContentAssistPr
                         //if (text.startsWith(start)) {
                         if (text.regionMatches(true, 0, start, 0, start.length())) {
                             //if (preferencesManager.getBooleanValue("InsertEndTag")) {
-                                cpL.add(new CompletionProposal(text + "></" + text + ">", node.getOffset() + 1, offset - node.getOffset() - 1, text.length() + 1, null, text, null, null));
+                                cpL.add(new CompletionProposal(text, node.getOffset() + 1, offset - node.getOffset() - 1, text.length() + 1, null, text, null, null));
                             //}
                             //else {
                             //    cpL.add(new CompletionProposal(text, node.getOffset() + 1, offset - node.getOffset() - 1, text .length()));
@@ -251,15 +236,57 @@ public abstract class MavenXmlContentAssistProcessor implements IContentAssistPr
                         i++;
                     }
                     cp = new ICompletionProposal[cpL.size()];
-                    for (int u = 0; i < cp.length; u++) {
+                    for (int u = 0; u < cp.length; u++) {
                         cp[u] = (ICompletionProposal) cpL.get(u);
                     }
                 }
             }
         }
+       
         return cp;
     }
     
+    
+
+    private XMLNode findLastOpenTag(IDocument doc, XMLNode node) {
+        XMLNode lastOpenTag = null;
+        if (node == null || node.getParent() == null) {
+            try {
+                Position[] pos = doc.getPositions("__content_types_category");
+                if (pos.length > 0) {
+                    if (ITypeConstants.TAG.equals(((XMLNode) pos[pos.length - 1]).getType())) {
+                        lastOpenTag = (XMLNode) pos[pos.length - 1];
+                    }
+                    else {
+                        lastOpenTag = ((XMLNode) pos[pos.length - 1]).getParent();
+                    }
+                }
+            }
+            catch (BadPositionCategoryException e) {
+            }
+        }
+        else if (ITypeConstants.ENDTAG.equals(node.getType())) {
+            try {
+                Position[] pos = doc.getPositions("__content_types_category");
+                int index = getIndexOf(pos, node);
+                if (index > 0) {
+                    if (ITypeConstants.TAG.equals(((XMLNode) pos[index - 1]).getType())) {
+                        lastOpenTag = (XMLNode) pos[index - 1];
+                    }
+                    else {
+                        lastOpenTag = ((XMLNode) pos[index - 1]).getParent();
+                    }
+                }
+            }
+            catch (BadPositionCategoryException e) {
+            }
+        }
+        else {
+            lastOpenTag = node.getParent();
+        }
+        return lastOpenTag;
+    }
+
     private boolean isProjectTagSet() {
         List children = editor.getModel().getRoot().getChildren();
         for ( int y = 0; y < children.size(); y++) {
@@ -348,6 +375,13 @@ public abstract class MavenXmlContentAssistProcessor implements IContentAssistPr
         List words = new ArrayList();
         String start = getAttributeValueStart(node, offset, quote);
         XMLNode attribute = node.getAttributeAt(offset);
+		
+		XMLNode parentNode = findLastOpenTag(doc, node);
+        
+        if ( Namespace.getWerkzList().contains(parentNode.getName()) ) {
+	        words = new ArrayList(attributeCompletor.getValueHints(start));
+        }
+        
         Collections.sort(words);
         for (Iterator it = words.iterator(); it.hasNext();) {
             String s = (String) it.next();
