@@ -65,14 +65,14 @@ import org.mevenide.ui.eclipse.editors.MevenidePomEditor;
  * @author Jeff Bonevich (jeff@bonevich.com)
  * @version $Id$
  */
-public class BuildPage extends AbstractPomEditorPage {
+public class UnitTestsPage extends AbstractPomEditorPage {
 
-	public static final String HEADING = Mevenide.getResourceString("BuildPage.heading");
+	public static final String HEADING = Mevenide.getResourceString("UnitTestsPage.heading");
     
-	private BuildDirectoriesSection directoriesSection;
-	private ResourcesSection resourcesSection;
+//	private UnitTestsSection unitTestsSection;
+//	private IntegrationTestsSection integrationTestsSection;
 
-	public BuildPage(MevenidePomEditor editor) {
+    public UnitTestsPage(MevenidePomEditor editor) {
         super(HEADING, editor);
     }
 
@@ -86,28 +86,28 @@ public class BuildPage extends AbstractPomEditorPage {
 		PageWidgetFactory factory = getFactory();
 		factory.setBackgroundColor(MevenideColors.WHITE);
 
-		directoriesSection = new BuildDirectoriesSection(this);
-		Control control = directoriesSection.createControl(parent, factory);
-		GridData gd = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING);
-		gd.horizontalSpan = 2;
-		control.setLayoutData(gd);
-
-		resourcesSection = new ResourcesSection(this);
-		control = resourcesSection.createControl(parent, factory);
-		gd = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING);
-		gd.horizontalSpan = 2;
-		control.setLayoutData(gd);
+//		unitTestsSection = new UnitTestsSection(this);
+//		Control control = unitTestsSection.createControl(parent, factory);
+//		GridData gd = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING);
+//		gd.horizontalSpan = 2;
+//		control.setLayoutData(gd);
+//
+//		integrationTestsSection = new IntegrationTestsSection(this);
+//		control = integrationTestsSection.createControl(parent, factory);
+//		gd = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING);
+//		gd.horizontalSpan = 1;
+//		control.setLayoutData(gd);
 	}
-
-	public void projectChanged(ProjectChangeEvent e) {
-		update(e.getPom());
-	}
-	
-	public void update(Project pom) {
-		directoriesSection.update(pom);
-		resourcesSection.update(pom);
-		
-		setUpdateNeeded(false);
-	}
+//
+//	public void projectChanged(ProjectChangeEvent e) {
+//		update(e.getPom());
+//	}
+//	
+//	public void update(Project pom) {
+//		unitTestsSection.update(pom);
+//		integrationTestsSection.update(pom);
+//		
+//		setUpdateNeeded(false);
+//	}
 
 }
