@@ -74,6 +74,9 @@
   		  
     <copy file="${eclipse.home}/plugins/${swt.plugin.dir}/swt.jar" 
   		  tofile="${maven.repo.local}/eclipse/jars/eclipse-swt-3.0.0.jar"/>  
+  		  
+    <copy file="${eclipse.home}/plugins/org.eclipse.ui.externaltools_3.0.0/externaltools.jar" 
+  		  tofile="${maven.repo.local}/eclipse/jars/eclipse-externaltools-3.0.0.jar"/> 
   </preGoal>
  
  
