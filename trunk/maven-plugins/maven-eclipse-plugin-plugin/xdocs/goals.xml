@@ -8,6 +8,7 @@
   
   <body>
   	<section name="Primary Goals">
+  		<div id="documentContent">
   		<table>
   		  <tr>
   		  	<th>Goal</th>
@@ -26,9 +27,11 @@
             <td>Install eclipse swt library into ${maven.repo.local}, taking care of the platform. groupId and artifactId can be customized through properties.</td>
           </tr>
   		</table>
+  		</div>
   	</section>
   	
   	<section name="Secondary Goals">
+  		<div id="documentContent">
   		<p>The following goals are attained by the <code>eclipse-plugin:create-artifact-dist</code> goal. Although they can still be used as is.</p>
   		<table>
   		  <tr>
@@ -48,6 +51,7 @@
             <td>build a single distribution file containing all required plugins and features</td>
           </tr>  		  
   		</table>
+  		</div>
   	</section>
 
   </body>

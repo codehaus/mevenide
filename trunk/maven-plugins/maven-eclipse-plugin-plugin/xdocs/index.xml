@@ -6,7 +6,9 @@
   </properties>
   <body>
     <section name="Overview">
+      <div id="documentContent">
    	  will provide a short overview of the plugin.
+   	  </div>
     </section>
   </body>
 </document>

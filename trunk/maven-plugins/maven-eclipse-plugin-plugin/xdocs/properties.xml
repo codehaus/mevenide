@@ -6,6 +6,7 @@
   </properties>
   <body>
     <section name="Common Properties">
+    	<div id="documentContent">
       <table>
         <tr>
           <th>Property</th>
@@ -62,9 +63,11 @@
           </td>
         </tr>
      </table>
+     </div>
    </section>
    
    <section name="Plugin Specific Properties">
+   	<div id="documentContent">
      <table>
      	<tr>
           <th>Property</th>
@@ -86,9 +89,11 @@
           </td>
         </tr>
      </table>
+     </div>
    </section>
    
    <section name="Feature Specific Properties">
+   	<div id="documentContent">
    	  <table>
      	<tr>
           <th>Property</th>
@@ -116,9 +121,11 @@
           </td>
         </tr>
       </table>
+      </div>
     </section>
     
     <section name="Site Specific Properties">
+    	<div id="documentContent">
    	  <table>
      	<tr>
           <th>Property</th>
@@ -147,9 +154,11 @@
           </td>
         </tr>
       </table>
+      </div>
     </section>
     
     <section name="SWT Installation Specific Properties">
+    	<div id="documentContent">
    	  <table>
      	<tr>
           <th>Property</th>
@@ -178,10 +187,13 @@
           </td>
         </tr>
       </table>
+      </div>
     </section>
     
     <section name="Common Filter Properties">
+    	<div id="documentContent">
     	<p>No properties are used to filter files besides the previously defined ones.</p>
+    	</div>
     </section>
     
   </body>
