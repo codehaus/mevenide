@@ -34,6 +34,7 @@ import org.eclipse.ui.forms.parts.FormToolkit;
 import org.eclipse.ui.forms.parts.SectionPart;
 import org.eclipse.ui.model.WorkbenchContentProvider;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
+import org.mevenide.ui.eclipse.editors.IPomEditorPage;
 import org.mevenide.ui.eclipse.editors.entries.IEntryChangeListener;
 import org.mevenide.ui.eclipse.editors.entries.IOverrideAdaptor;
 import org.mevenide.ui.eclipse.editors.entries.OverridableTextEntry;
@@ -43,7 +44,6 @@ import org.mevenide.ui.eclipse.editors.entries.TextEntry;
 /**
  * Abstract base class for a section of a page in the POM Editor ui.
  * 
- * @refactor NEEDS MASSIVE OVERHAUL - basically a cut-n-paste from eclipse update.ui.forms
  * @author Jeff Bonevich (jeff@bonevich.com)
  * @version $Id$
  */
@@ -52,7 +52,7 @@ public abstract class PageSection extends SectionPart {
 	private static final Log log = LogFactory.getLog(PageSection.class);
     
 	private Control client;
-	private AbstractPomEditorPage page;
+	private IPomEditorPage page;
 	private boolean inherited;
 	private Project parentPom;
 
@@ -85,7 +85,7 @@ public abstract class PageSection extends SectionPart {
 		}
 	}
 
-    public PageSection(AbstractPomEditorPage containingPage) {
+	public PageSection(IPomEditorPage containingPage) {
     	super(TITLE | DESCRIPTION | SEPARATOR | COLLAPSABLE);
         this.page = containingPage;
 		
@@ -288,7 +288,7 @@ public abstract class PageSection extends SectionPart {
 		);
 	}
 
-    public AbstractPomEditorPage getPage() {
+    public IPomEditorPage getPage() {
         return page;
     }
     

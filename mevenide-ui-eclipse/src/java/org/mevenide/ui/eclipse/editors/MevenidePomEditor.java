@@ -37,6 +37,7 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.PartInitException;
@@ -150,10 +151,6 @@ public class MevenidePomEditor extends MultiPageEditorPart {
         }
     }
 
-    public Composite getParentContainer() {
-        return getContainer();
-    }
-
     public Project getPom() {
         return pom;
     }
@@ -191,8 +188,7 @@ public class MevenidePomEditor extends MultiPageEditorPart {
     private void createOverviewPage() {
         OverviewPage overview = new OverviewPage(this);
 		comparator.addProjectChangeListener(ProjectComparator.PROJECT, overview);
-        overviewPageIndex = addPage(overview);
-        setPageText(overviewPageIndex, OVERVIEW_PAGE);
+        overviewPageIndex = addPage(overview, OVERVIEW_PAGE);
     }
 
 	/**
@@ -202,8 +198,7 @@ public class MevenidePomEditor extends MultiPageEditorPart {
 	private void createOrganizationPage() {
 		OrganizationPage org = new OrganizationPage(this);
 		comparator.addProjectChangeListener(ProjectComparator.PROJECT, org);
-		organizationPageIndex = addPage(org);
-		setPageText(organizationPageIndex, ORGANIZATION_PAGE);
+		organizationPageIndex = addPage(org, ORGANIZATION_PAGE);
 	}
 
     /**
@@ -213,8 +208,7 @@ public class MevenidePomEditor extends MultiPageEditorPart {
     private void createRepositoryPage() {
         RepositoryPage repository = new RepositoryPage(this);
 		comparator.addProjectChangeListener(ProjectComparator.REPOSITORY, repository);
-        repositoryPageIndex = addPage(repository);
-        setPageText(repositoryPageIndex, REPOSITORY_PAGE);
+        repositoryPageIndex = addPage(repository, REPOSITORY_PAGE);
     }
 
     /**
@@ -225,8 +219,7 @@ public class MevenidePomEditor extends MultiPageEditorPart {
         TeamPage team = new TeamPage(this);
 		comparator.addProjectChangeListener(ProjectComparator.CONTRIBUTORS, team);
 		comparator.addProjectChangeListener(ProjectComparator.DEVELOPERS, team);
-        teamPageIndex = addPage(team);
-        setPageText(teamPageIndex, TEAM_PAGE);
+        teamPageIndex = addPage(team, TEAM_PAGE);
     }
 
     /**
@@ -236,8 +229,7 @@ public class MevenidePomEditor extends MultiPageEditorPart {
     private void createDependenciesPage() {
         DependenciesPage dependencies = new DependenciesPage(this);
 		comparator.addProjectChangeListener(ProjectComparator.DEPENDENCIES, dependencies);
-        dependenciesPageIndex = addPage(dependencies);
-        setPageText(dependenciesPageIndex, DEPENDENCIES_PAGE);
+        dependenciesPageIndex = addPage(dependencies, DEPENDENCIES_PAGE);
     }
 
     /**
@@ -247,8 +239,7 @@ public class MevenidePomEditor extends MultiPageEditorPart {
     private void createBuildPage() {
         BuildPage build = new BuildPage(this);
 		comparator.addProjectChangeListener(ProjectComparator.BUILD, build);
-        buildPageIndex = addPage(build);
-        setPageText(buildPageIndex, BUILD_PAGE);
+        buildPageIndex = addPage(build, BUILD_PAGE);
     }
 
 	/**
@@ -258,8 +249,7 @@ public class MevenidePomEditor extends MultiPageEditorPart {
 	private void createUnitTestsPage() {
 		UnitTestsPage unitTests = new UnitTestsPage(this);
 		comparator.addProjectChangeListener(ProjectComparator.UNIT_TESTS, unitTests);
-		unitTestsPageIndex = addPage(unitTests);
-		setPageText(unitTestsPageIndex, UNITTESTS_PAGE);
+		unitTestsPageIndex = addPage(unitTests, UNITTESTS_PAGE);
 	}
 
     /**
@@ -269,23 +259,31 @@ public class MevenidePomEditor extends MultiPageEditorPart {
     private void createReportsPage() {
         ReportsPage reports = new ReportsPage(this);
 		comparator.addProjectChangeListener(ProjectComparator.REPORTS, reports);
-        reportsPageIndex = addPage(reports);
-        setPageText(reportsPageIndex, REPORTS_PAGE);
+        reportsPageIndex = addPage(reports, REPORTS_PAGE);
     }
-
+    
     /**
      * Creates the source view page of the Project Object Model
      * editor, where the raw XML is displayed and edited.
      */
     private void createSourcePage() {
-        try {
-            sourcePage = new PomXmlSourcePage(this);
-            sourcePageIndex = addPage(sourcePage, getEditorInput());
-            setPageText(sourcePageIndex, SOURCE_PAGE);
-        }
-        catch (PartInitException e) {
-            ErrorDialog.openError(getSite().getShell(), "Error creating nested text editor", null, e.getStatus());
-        }
+    	sourcePage = new PomXmlSourcePage(this);
+    	sourcePageIndex = addPage(sourcePage, SOURCE_PAGE);
+    }
+
+    private int addPage(IEditorPart page, String pageText) {
+    	try {
+    		int pageIndex = addPage(page, getEditorInput());
+    		setPageText(pageIndex, pageText);
+    		if (log.isDebugEnabled()) {
+    			log.debug("added page '" + pageText + "' as page index " + pageIndex);
+    		}
+    		return pageIndex;
+    	}
+    	catch (PartInitException e) {
+    		ErrorDialog.openError(getSite().getShell(), "Error creating page", null, e.getStatus());
+    		return -1;
+    	}
     }
 
     /**
@@ -483,7 +481,7 @@ public class MevenidePomEditor extends MultiPageEditorPart {
         if (pageIndex == sourcePageIndex) {
             return sourcePage;
         }
-        return (IPomEditorPage) getControl(pageIndex);
+        return (IPomEditorPage) getEditor(pageIndex);
     }
 
     public boolean updateModel() {

@@ -58,4 +58,9 @@ public interface IPomEditorPage {
 	 */
 	public boolean isPropertySourceSupplier();
 	
+	/**
+	 * Message indicating whether this page is the current active page
+	 * in the multi-page editor.
+	 */
+	public boolean isActive();
 }
