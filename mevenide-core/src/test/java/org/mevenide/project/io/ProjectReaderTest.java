@@ -14,6 +14,14 @@
  */
 package org.mevenide.project.io;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import org.mevenide.ProjectConstants;
+
 import junit.framework.TestCase;
 
 /**
@@ -23,17 +31,58 @@ import junit.framework.TestCase;
  * 
  */
 public class ProjectReaderTest extends TestCase {
-
+	
+	private File pom ;
+	private ProjectReader projectReader;
 	
 	protected void setUp() throws Exception {
-		super.setUp();
+		pom = new File(ProjectReaderTest.class.getResource("/project.xml").getFile());
+		projectReader = ProjectReader.getReader();
 	}
 
 	protected void tearDown() throws Exception {
-		super.tearDown();
+		pom = null;
+		projectReader = null;
 	}
 
-	public void testGetAllSourceDirectories() throws Exception {
+	public void testGetSourceDirectories() throws Exception {
+		Map sourceDirectories = projectReader.getSourceDirectories(pom);
+		
+		Iterator it = sourceDirectories.keySet().iterator();
+		while (it.hasNext()) {
+			String sourceType = (String) it.next();
+			System.err.println(sourceType + " : " + sourceDirectories.get(sourceType));
+		}
+		
+		assertEquals(3, sourceDirectories.size());
+		
+		List expectedSources = new ArrayList();
+		expectedSources.add("src/aspect");
+		expectedSources.add("src/java");
+		expectedSources.add("src/test/java");
+		
+		List expectedTypes = new ArrayList();
+		expectedTypes.add(ProjectConstants.MAVEN_ASPECT_DIRECTORY);
+		expectedTypes.add(ProjectConstants.MAVEN_SRC_DIRECTORY);
+		expectedTypes.add(ProjectConstants.MAVEN_TEST_DIRECTORY);
+		
+		List resultSources = new ArrayList();
+		List resultTypes = new ArrayList();
+		
+		Iterator iterator = sourceDirectories.keySet().iterator();
+		while (iterator.hasNext()) {
+			String sourceType = (String) iterator.next();
+			resultTypes.add(sourceType);
+			resultSources.add(sourceDirectories.get(sourceType));
+		}
+		
+//		assertEquals(expectedSources, resultSources);
+//		assertEquals(expectedTypes, resultTypes);
+		
+		assertEquals("src/aspect", sourceDirectories.get(ProjectConstants.MAVEN_ASPECT_DIRECTORY));
+		assertEquals("src/java", sourceDirectories.get(ProjectConstants.MAVEN_SRC_DIRECTORY));
+		assertEquals("src/test/java", sourceDirectories.get(ProjectConstants.MAVEN_TEST_DIRECTORY));
+		
 	}	
 
 }

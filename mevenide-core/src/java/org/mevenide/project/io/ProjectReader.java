@@ -18,10 +18,14 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
+import java.util.HashMap;
+import java.util.Map;
 
+import org.apache.maven.project.Build;
 import org.apache.maven.project.Project;
 import org.apache.maven.project.builder.DefaultProjectUnmarshaller;
 import org.jdom.input.SAXBuilder;
+import org.mevenide.ProjectConstants;
 
 
 /**
@@ -61,32 +65,64 @@ public class ProjectReader {
 		return project;
 	}
 	
-//	public static Hashtable getAllSourceDirectories(File pom) throws Exception {
-//		Hashtable srcDirs = new Hashtable();
-//		Project project; 
-//		
-//		if ( pom != null ) {
-//			project = BetwixtHelper.readProject(pom);
-//		}		
-//		else {
-//			project = new Project();
-//		}
-//		
-//		if ( project.getBuild().getAspectSourceDirectory() != null 
-//		 	&& !project.getBuild().getAspectSourceDirectory().trim().equals("")) {
-//			srcDirs.put(project.getBuild().getAspectSourceDirectory(), BuildConstants.MAVEN_ASPECT);
-//		}
-//		if ( project.getBuild().getSourceDirectory() != null 
-//			&& !project.getBuild().getSourceDirectory().trim().equals("")) {
-//			srcDirs.put(project.getBuild().getSourceDirectory(), BuildConstants.MAVEN_SRC);	
-//		}
-//		if ( project.getBuild().getUnitTestSourceDirectory() != null 
-//			&& !project.getBuild().getUnitTestSourceDirectory().trim().equals("")) {
-//			srcDirs.put(project.getBuild().getUnitTestSourceDirectory(), BuildConstants.MAVEN_TEST);
-//		}
-//		//srcDirs.put(project.getBuild().getUnitTestSourceDirectory()
-//		return srcDirs;
-//	}
+	public Map getSourceDirectories(File pom) throws Exception {
+		Map sourceDirectories = new HashMap();
+		
+		Build build = getBuild(pom);
+		
+		String aspectSourceDirectory = build.getAspectSourceDirectory();
+		if ( !isNull(aspectSourceDirectory)) {
+			sourceDirectories.put(
+				ProjectConstants.MAVEN_ASPECT_DIRECTORY,
+				aspectSourceDirectory
+			);
+		}
+		
+		String sourceDirectory = build.getSourceDirectory();
+		if ( !isNull(sourceDirectory) ) {
+			sourceDirectories.put(
+				ProjectConstants.MAVEN_SRC_DIRECTORY,
+				sourceDirectory
+			);	
+		}
+		
+		String unitTestSourceDirectory = build.getUnitTestSourceDirectory();
+		if ( !isNull(unitTestSourceDirectory) ) {
+			sourceDirectories.put(
+				ProjectConstants.MAVEN_TEST_DIRECTORY,
+				unitTestSourceDirectory
+			);
+		}
+		
+		String integrationUnitTestSourceDirectory = build.getIntegrationUnitTestSourceDirectory();
+		if ( !isNull(integrationUnitTestSourceDirectory) ) {
+			sourceDirectories.put(
+				ProjectConstants.MAVEN_INTEGRATION_TEST_DIRECTORY,
+				integrationUnitTestSourceDirectory
+			);	
+		}
+		
+		return sourceDirectories;
+	}
+
+	private boolean isNull(String sourceDirectory) {
+		return sourceDirectory == null 
+		 		|| sourceDirectory.trim().equals("");
+	}
+
+	private static Build getBuild(File pom)
+		throws Exception, FileNotFoundException {
+		Project project; 
+		if ( pom != null ) {
+			project = new DefaultProjectUnmarshaller().parse(new FileReader(pom));
+		}		
+		else {
+			project = new Project();
+		}
+		
+		Build build = project.getBuild();
+		return build;
+	}
 	
 	public static boolean isWellFormed(File pom) {
 		try {

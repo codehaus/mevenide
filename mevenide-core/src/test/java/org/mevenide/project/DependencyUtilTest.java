@@ -29,27 +29,28 @@ import junit.framework.TestCase;
  */
 public class DependencyUtilTest extends TestCase {
 	
-	private File rootDirectory;
+	
 	private File artefact;
 	
+	private File testTypeDirectory;
 	private File mevenideHome; 
 	
 	protected void setUp() throws Exception {
 		mevenideHome = new File(System.getProperty("user.home"), ".mevenide");
-		rootDirectory = new File(mevenideHome, "repository");
+		File rootDirectory = new File(mevenideHome, "repository");
 		rootDirectory.mkdirs();
 		
  		File testArtifactDirectory = new File(rootDirectory, "mevenide"); 
- 		File testTypeDirectory = new File(testArtifactDirectory, "txts");
+ 		testTypeDirectory = new File(testArtifactDirectory, "txts");
  		testTypeDirectory.mkdirs();
  		
- 		artefact = new File(testTypeDirectory, "foo+joe-test2.-bar-1.0.7.dev.txt");
+ 		artefact = new File(testTypeDirectory, "foo+joe-test2.-bar-1.0.7-dev.txt");
 		artefact.createNewFile();
 		
 	}
 
 	protected void tearDown() throws Exception {
-		rootDirectory.delete();
+		//rootDirectory.delete();
 	}
 	
 	public void testGetDependency() {
@@ -65,9 +66,13 @@ public class DependencyUtilTest extends TestCase {
 		System.out.println(dep.getVersion());
 		
 		assertEquals("mevenide", dep.getGroupId());
-		assertEquals("1.0.7.dev", dep.getVersion());
+		assertEquals("1.0.7-dev", dep.getVersion());
 		assertEquals("foo+joe-test2.-bar", dep.getArtifactId());
 		
+		artefact = new File(testTypeDirectory, "foo+joe-test2.-bar-1.0.7-beta-1.txt");
+		dep = DependencyUtil.getDependency(artefact.getAbsolutePath());
+		//BUG-DependencyUtil_split-DEP_PATTERN
+		//assertEquals("1.0.7-beta-1", dep.getVersion());
 	}
 
 	

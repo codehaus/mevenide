@@ -26,5 +26,5 @@ public abstract class ProjectConstants {
 	public static final String MAVEN_TEST_DIRECTORY = "unitTestSourceDirectory";
 	public static final String MAVEN_SRC_DIRECTORY = "sourceDirectory";
 	public static final String MAVEN_ASPECT_DIRECTORY = "aspectSourceDirectory";
-
+	public static final String MAVEN_INTEGRATION_TEST_DIRECTORY = "integrationUnitTestSourceDirectory";
 }
