@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<document>
+  <properties>
+    <author email="shuber2@jahia.com">Serge Huber</author>
+    <title>Compiling the JBuilder Maven OpenTool</title>
+  </properties>
+  <body>
+    <section name="Compiling the OpenTool">
+	  <p>Here are quick steps to compile the OpenTool :</p>
+      <ol>
+        <li>Prerequisite : this assumes you have JBuilder installed if you want to test installation of the tool</li>
+        <li>Checkout the new maven-jbuilder-opentool-plugin</li>
+        <li>In your build.properties set the following property :<br/>
+            <code>maven.opentool.jbuilder.home</code><br/>
+		    to point to your JBuilder home dir (under Mac OS X it will be something like /Developer/Applications/JBuilderX/JBuilderX.framework)</li>
+		<li>Compile &amp; install the maven plugin :<br/>
+            <code>maven plugin:install</code>
+		</li>
+		<li>Checkout the maven-ui-jbuilder</li>
+		<li>Package this way :<br/>
+            <code>maven opentool</code>
+		</li>
+		<li>If you want to deploy to JBuilder to test :<br/>
+			<code>maven opentool:install</code>
+		</li>
+		<li>To undeploy from JBuilder, simply type :<br/>
+		    <code>maven opentool:uninstall</code>
+		</li>
+	  </ol>
+    </section>
+  </body>
+</document>
