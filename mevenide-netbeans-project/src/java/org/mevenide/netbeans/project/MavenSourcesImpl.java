@@ -20,6 +20,7 @@ package org.mevenide.netbeans.project;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,16 +29,22 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import javax.swing.Icon;
 import javax.swing.event.ChangeEvent;
 
 import javax.swing.event.ChangeListener;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.maven.MavenUtils;
 import org.apache.maven.project.Build;
 import org.apache.maven.project.Resource;
+import org.apache.tools.ant.DirectoryScanner;
+import org.mevenide.netbeans.project.nodes.DirScannerSubClass;
 import org.netbeans.api.java.project.JavaProjectConstants;
+import org.netbeans.api.project.FileOwnerQuery;
 import org.netbeans.api.project.SourceGroup;
 import org.netbeans.api.project.Sources;
+import org.netbeans.api.queries.SharabilityQuery;
 import org.netbeans.spi.project.support.GenericSources;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
@@ -172,14 +179,14 @@ public class MavenSourcesImpl implements Sources {
                         Resource res = (Resource)it.next();
                         String path = project.getPropertyResolver().resolveString(res.getDirectory());
                         FileObject folder = FileUtilities.findFolder(project.getProjectDirectory(),
-                                                                     path);
+                        path);
                         if (folder == null) {
                             // maybe we got a absolutepath in the basedir definition.
                             File fl = FileUtil.normalizeFile(new File(path));
                             folder = FileUtil.toFileObject(fl);
                         }
                         if (folder != null) {
-                            toReturn.add(GenericSources.group(project, folder, "Resource" + count + res.getDirectory(), res.getDirectory(), null, null));
+                            toReturn.add(new ResourceGroup(project, folder, res, "Resource" + count + res.getDirectory(), res.getDirectory(), null, null));
                         }
                     }
                 }
@@ -214,7 +221,7 @@ public class MavenSourcesImpl implements Sources {
                 group = GenericSources.group(project, root, name, displayName, null, null);
                 javaGroup.put(name, group);
                 changed = true;
-            } 
+            }
         }
         return changed;
     }
@@ -232,9 +239,84 @@ public class MavenSourcesImpl implements Sources {
                 }
             }
             FileObject dir = FileUtil.toFileObject(docs);
-            return new SourceGroup[] { GenericSources.group(project, dir, NAME_XDOCS, "Documentation", null, null) };        
+            return new SourceGroup[] { GenericSources.group(project, dir, NAME_XDOCS, "Documentation", null, null) };
         }
         return new SourceGroup[0];
     }
     
+    public static final class ResourceGroup implements SourceGroup {
+        
+        private final FileObject rootFolder;
+        private File rootFile;
+        private final String name;
+        private final String displayName;
+        private final Icon icon;
+        private final Icon openedIcon;
+        private MavenProject project;
+        private Resource resource;
+        
+        ResourceGroup(MavenProject p, FileObject rootFolder, Resource res, String name, String displayName,
+        Icon icon, Icon openedIcon) {
+            project = p;
+            resource = res;
+            this.rootFolder = rootFolder;
+            rootFile = FileUtil.toFile(rootFolder);
+            this.name = name;
+            this.displayName = displayName;
+            this.icon = icon;
+            this.openedIcon = openedIcon;
+        }
+        
+        public FileObject getRootFolder() {
+            return rootFolder;
+        }
+        
+        public File getRootFolderFile() {
+            return rootFile;
+        }
+        
+        public Resource getResource() {
+            return resource;
+        }
+        
+        public String getName() {
+            return name;
+        }
+        
+        public String getDisplayName() {
+            return displayName;
+        }
+        
+        public Icon getIcon(boolean opened) {
+            return opened ? icon : openedIcon;
+        }
+        
+        public boolean contains(FileObject file) throws IllegalArgumentException {
+            logger.debug("Resourcegroup.contains()=" + file);
+            if (file != rootFolder && !FileUtil.isParentOf(rootFolder, file)) {
+                throw new IllegalArgumentException();
+            }
+            if (FileOwnerQuery.getOwner(file) != project) {
+                return false;
+            }
+            File f = FileUtil.toFile(file);
+            if (f != null) {
+                // MIXED, UNKNOWN, and SHARABLE -> include it
+                return (SharabilityQuery.getSharability(f) != SharabilityQuery.NOT_SHARABLE && 
+                        DirScannerSubClass.checkIncluded(f, rootFile, resource));
+            } else {
+                // Not on disk, include it.
+                return true;
+            }
+        }
+        
+        public void addPropertyChangeListener(PropertyChangeListener l) {
+            // XXX should react to ProjectInformation changes
+        }
+        
+        public void removePropertyChangeListener(PropertyChangeListener l) {
+            // XXX
+        }
+        
+    }
 }

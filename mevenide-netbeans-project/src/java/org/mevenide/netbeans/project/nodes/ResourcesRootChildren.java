@@ -43,6 +43,9 @@ import org.netbeans.spi.java.project.support.ui.PackageView;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.loaders.DataFolder;
+import org.openide.loaders.DataObject;
+import org.openide.loaders.DataObjectNotFoundException;
+import org.openide.nodes.FilterNode;
 import org.openide.nodes.Node;
 import org.openide.nodes.Children;
 
@@ -95,9 +98,40 @@ class ResourcesRootChildren extends Children.Keys {
     
     
     protected Node[] createNodes(Object key) {
-        SourceGroup grp = (SourceGroup)key;
+        MavenSourcesImpl.ResourceGroup grp = (MavenSourcesImpl.ResourceGroup)key;
         Node[] toReturn = new Node[1];
-        toReturn[0] = PackageView.createPackageView(grp);
+        try  {
+            DataObject dobj = DataObject.find(grp.getRootFolder());
+            Node original = dobj.getNodeDelegate().cloneNode();
+            toReturn[0] = new MyFilterNode(original, 
+                                new ResourceFilterNode.ResFilterChildren(original, 
+                                           grp.getRootFolderFile(), grp.getResource()),
+                                grp);
+            
+        } catch (DataObjectNotFoundException exc) {
+            toReturn = new Node[0];
+        }
         return toReturn;
+    }
+    
+    private class MyFilterNode extends FilterNode {
+        private MavenSourcesImpl.ResourceGroup group;
+        MyFilterNode(Node original, Children children, MavenSourcesImpl.ResourceGroup grp) {
+            super(original, children);
+            group = grp;
+        }
+        
+        public String getDisplayName() {
+            String toReturn = group.getResource().getDirectory();
+            return toReturn;
+        }
+        
+        public String getHtmlDisplayName() {
+            String toReturn = getDisplayName();
+            if (group.getResource().getTargetPath() != null) {
+                toReturn = toReturn + " -> <I>" + group.getResource().getTargetPath() + "</I>";
+            }
+            return toReturn;
+        }
     }
 }
