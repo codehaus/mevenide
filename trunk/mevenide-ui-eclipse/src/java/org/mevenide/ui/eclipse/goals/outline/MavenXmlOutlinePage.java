@@ -54,6 +54,7 @@ import org.mevenide.ui.eclipse.goals.model.Goal;
 import org.mevenide.ui.eclipse.goals.model.GoalsProvider;
 import org.mevenide.ui.eclipse.goals.viewer.GoalsLabelProvider;
 import org.mevenide.ui.eclipse.launch.configuration.MavenLaunchShortcut;
+import org.mevenide.ui.eclipse.preferences.PreferencesManager;
 
 /**  
  * 
@@ -65,9 +66,11 @@ public class MavenXmlOutlinePage extends Page implements IContentOutlinePage {
 	private static final Log log = LogFactory.getLog(MavenXmlOutlinePage.class);
 	
 	private static final String TOGGLE_OFFLINE_ID = "TOGGLE_OFFLINE_ID";
-	private static final String TOGGLE_FILTER_ORIGIN_ID = "TOGGLE_FILTER_ORIGIN_ID"; 
+	private static final String TOGGLE_FILTER_ORIGIN_ID = "TOGGLE_FILTER_ORIGIN_ID";
+	private static final String TOGGLE_CUSTOM_FILTER_ID = "TOGGLE_CUSTOM_FILTER_ID";
 	private static final String RUN_GOAL_ID = "RUN_GOAL_ID";
 	private static final String OPEN_FILTER_DIALOG_ID = "OPEN_FILTER_DIALOG_ID";
+	
 	
 	private Composite control;
 	
@@ -80,7 +83,10 @@ public class MavenXmlOutlinePage extends Page implements IContentOutlinePage {
 	private GoalOriginFilter goalOriginFilter; 
 	
 	private Menu menu;
-	private IAction toggleOfflineAction, openFilterDialogAction, filterOriginShortcutAction;
+	private IAction toggleOfflineAction, 
+	                openFilterDialogAction, 
+					filterOriginShortcutAction, 
+					toggleCustomFilteringAction;
 	private IAction runGoalAction;
 	
 	private boolean runOffline;
@@ -162,10 +168,7 @@ public class MavenXmlOutlinePage extends Page implements IContentOutlinePage {
         
 		setupProviders();
     	setupFilters();
-    	
-        createActions();
-        createToolBarManager();
-        createContextMenuManager();
+    	setupActions();
     }
 	
 	private void createContextMenuManager() {
@@ -183,12 +186,26 @@ public class MavenXmlOutlinePage extends Page implements IContentOutlinePage {
 	private void createToolBarManager() {
 		IToolBarManager toolBarManager = this.getSite().getActionBars().getToolBarManager();
         toolBarManager.add(this.toggleOfflineAction);
+        toolBarManager.add(this.toggleCustomFilteringAction);
         toolBarManager.add(this.filterOriginShortcutAction);
-        toolBarManager.add(this.openFilterDialogAction);
-        toolBarManager.add(this.runGoalAction);
 	}
 	
-	private void createActions() {
+	private void createMenuManager() {
+		IMenuManager topLevelMenuManager = getSite().getActionBars().getMenuManager();
+		topLevelMenuManager.add(openFilterDialogAction);
+		topLevelMenuManager.add(runGoalAction);
+	}
+	
+	private void setupActions() {
+		createFilterActions();
+		createRunActions();
+		
+		createToolBarManager();
+        createMenuManager();
+        createContextMenuManager();
+	}
+	
+	private void createRunActions() {
 		toggleOfflineAction = new Action(null, Action.AS_CHECK_BOX) {
 			public void run() {
 				runOffline = isChecked();
@@ -199,6 +216,18 @@ public class MavenXmlOutlinePage extends Page implements IContentOutlinePage {
 		toggleOfflineAction.setId(TOGGLE_OFFLINE_ID);
 		toggleOfflineAction.setImageDescriptor(Mevenide.getImageDescriptor("offline.gif"));
 		
+		runGoalAction = new Action(null) {
+			public void run() {
+				runMaven();
+			}
+		};
+		runGoalAction.setText("Run Goal");
+		runGoalAction.setToolTipText("Run Goal");
+		runGoalAction.setId(RUN_GOAL_ID);
+		runGoalAction.setImageDescriptor(Mevenide.getImageDescriptor("run_goal.gif"));
+	}
+
+	private void createFilterActions() {
 		filterOriginShortcutAction = new Action(null, Action.AS_CHECK_BOX) {
 			public void run() {
 				goalOriginFilter.setEnable(isChecked());
@@ -211,6 +240,20 @@ public class MavenXmlOutlinePage extends Page implements IContentOutlinePage {
 		filterOriginShortcutAction.setId(TOGGLE_FILTER_ORIGIN_ID);
 		filterOriginShortcutAction.setImageDescriptor(Mevenide.getImageDescriptor("filter_global_goals.gif"));
 		
+		toggleCustomFilteringAction = new Action(null, Action.AS_CHECK_BOX) {
+			public void run() {
+				patternFilter.apply(isChecked());
+				setToolTipText((isChecked() ? "Disable " : "Enable ") + "custom regex filters");
+				PreferencesManager.getManager().setBooleanValue(CustomPatternFilter.APPLY_CUSTOM_FILTERS_KEY, isChecked());
+				PreferencesManager.getManager().store();
+				goalsViewer.refresh(false); 
+			}
+		};
+		toggleCustomFilteringAction.setChecked(goalOriginFilter.isEnabled());
+		toggleCustomFilteringAction.setToolTipText((toggleCustomFilteringAction.isChecked() ? "Disable " : "Enable ") + "custom regex filters");
+		toggleCustomFilteringAction.setId(TOGGLE_CUSTOM_FILTER_ID);
+		toggleCustomFilteringAction.setImageDescriptor(Mevenide.getImageDescriptor("toggle_regex_filter.gif"));
+
 		openFilterDialogAction = new Action(null) {
 			public void run() {
 			    openFilterDialog();
@@ -220,18 +263,8 @@ public class MavenXmlOutlinePage extends Page implements IContentOutlinePage {
 		openFilterDialogAction.setToolTipText("Open goal filter dialog");
 		openFilterDialogAction.setId(OPEN_FILTER_DIALOG_ID);
 		openFilterDialogAction.setImageDescriptor(Mevenide.getImageDescriptor("open_filter_dialog.gif"));
-		
-		runGoalAction = new Action(null) {
-			public void run() {
-				runMaven();
-			}
-		};
-		runGoalAction.setText("Run Goal");
-		runGoalAction.setToolTipText("Run Goal");
-		runGoalAction.setId(RUN_GOAL_ID);
-		runGoalAction.setImageDescriptor(Mevenide.getImageDescriptor("run_goal.gif"));
 	}
-	
+
 	private void contextualMenuAboutToShow(IMenuManager menuManager) {
 		Object selection = ((StructuredSelection) goalsViewer.getSelection()).getFirstElement();
 	    if ( selection instanceof Goal ) {
@@ -245,8 +278,12 @@ public class MavenXmlOutlinePage extends Page implements IContentOutlinePage {
 		int dialogResult = dialog.open();
 		
 		if ( dialogResult == Window.OK ) {
+			
+			boolean applyCustomFiltering = dialog.shouldApplyCustomFilters();
 			patternFilter.setPatternFilters(dialog.getRegex());
-			patternFilter.apply(dialog.shouldApplyCustomFilters());
+			patternFilter.apply(applyCustomFiltering);
+			
+			toggleCustomFilteringAction.setChecked(applyCustomFiltering);
 			
 			globalGoalFilter.setFilteredGoals(dialog.getFilteredGoals());
 			
@@ -290,6 +327,15 @@ public class MavenXmlOutlinePage extends Page implements IContentOutlinePage {
 	}
 	
 	public void removeSelectionChangedListener(ISelectionChangedListener listener) {
+	}
 	
+	public void forceRefresh() {
+		try {
+			goalsProvider.setBasedir(basedir);
+		} 
+		catch (Exception e) {
+			log.error("unable to refresh goalsProvider", e);
+		}
+		goalsViewer.refresh(true);
 	}
 }
