@@ -11,9 +11,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  */
-package org.mevenide.project;
+package org.mevenide.project.resource;
 
-import org.apache.commons.discovery.tools.DiscoverClass;
+import org.mevenide.MevenideException;
 
 /**
  * 
@@ -21,23 +21,13 @@ import org.apache.commons.discovery.tools.DiscoverClass;
  * @version $Id$
  * 
  */
-public abstract class AbstractDependencyResolver implements IDependencyResolver {
-	private static IDependencyResolver dependencyUtil;
-	private static Object lock = new Object();
-	
-	protected AbstractDependencyResolver() {
+public class InvalidSourceTypeException extends MevenideException {
+
+	public InvalidSourceTypeException(String arg0) {
+		super(arg0);
 	}
-		
-	public static IDependencyResolver getInstance() throws  Exception {
-		if (dependencyUtil != null) {
-			return dependencyUtil;
-		}
-		synchronized (lock) {
-			if (dependencyUtil == null) {
-				dependencyUtil = (IDependencyResolver) new  DiscoverClass().newInstance(IDependencyResolver.class);
-			}
-			return dependencyUtil;
-		}
+
+	public InvalidSourceTypeException(int arg0) {
+		super(String.valueOf(arg0));
 	}
-	
 }

@@ -12,7 +12,7 @@
  * Lesser General Public License for more details.
  * 
  */
-package org.mevenide.project;
+package org.mevenide.project.dependency;
 
 import java.io.File;
 

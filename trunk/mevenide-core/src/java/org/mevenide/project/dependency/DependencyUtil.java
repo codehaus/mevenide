@@ -11,9 +11,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  */
-package org.mevenide.project;
+package org.mevenide.project.dependency;
 
-import org.mevenide.MevenideException;
+import org.apache.maven.project.Dependency;
 
 /**
  * 
@@ -21,13 +21,21 @@ import org.mevenide.MevenideException;
  * @version $Id$
  * 
  */
-public class InvalidSourceTypeException extends MevenideException {
-
-	public InvalidSourceTypeException(String arg0) {
-		super(arg0);
+public class DependencyUtil {
+	public static boolean areEquals(Dependency d1, Dependency d2) {
+		return  (d1 == null && d2 == null) ||
+				(   
+				    d1 != null && d2 != null
+				    && areEquals(d1.getArtifactId(), d2.getArtifactId())
+					&& areEquals(d1.getGroupId(), d2.getGroupId())
+					&& areEquals(d1.getVersion(), d2.getVersion())
+				);
 	}
-
-	public InvalidSourceTypeException(int arg0) {
-		super(String.valueOf(arg0));
+	
+	private static boolean areEquals(String s1, String s2) {
+		return  (s1 == null && s2 == null) ||
+				(
+				    s1 != null && s1.equals(s2)
+				);
 	}
 }
