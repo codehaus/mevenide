@@ -16,6 +16,7 @@
  */
 package org.codehaus.mevenide.pde.classpath;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import org.apache.maven.plugin.PluginExecutionRequest;
 import org.apache.maven.plugin.PluginExecutionResponse;
@@ -33,7 +34,12 @@ public class PluginClasspathInitializer extends EclipseArtifactMojo {
     public void execute(PluginExecutionRequest request, PluginExecutionResponse response) throws Exception {
         initialize(request);
         Collection eclipseDependencies = new PluginClasspathResolver(basedir, eclipseHome.getAbsolutePath()).extractEclipseDependencies();
-        project.getArtifacts().addAll(eclipseDependencies);
+        if ( project.getArtifacts() == null ) {
+            project.setArtifacts(new ArrayList(eclipseDependencies));
+        }
+        else {
+            project.getArtifacts().addAll(eclipseDependencies);
+        }
     }
 
 }
