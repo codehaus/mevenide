@@ -170,6 +170,10 @@ public abstract class MavenXmlContentAssistProcessor implements IContentAssistPr
      
         //add rootTags after subtags
         words.addAll(rootTags);
+
+        if ( isProjectTagSet() ) {
+            words.remove("project");
+        }
         
         if (node != null && node.getType() != null && "TEXT".equalsIgnoreCase(node.getType())) {
             cp = new ICompletionProposal[words.size()];
@@ -255,7 +259,17 @@ public abstract class MavenXmlContentAssistProcessor implements IContentAssistPr
         }
         return cp;
     }
-
+    
+    private boolean isProjectTagSet() {
+        List children = editor.getModel().getRoot().getChildren();
+        for ( int y = 0; y < children.size(); y++) {
+            if ( "project".equals(((XMLNode) children.get(y)).getName()) ) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
     private String getAttributeStart(XMLNode node, int offset) {
         String start = "";
         String content = node.getContentTo(offset);
