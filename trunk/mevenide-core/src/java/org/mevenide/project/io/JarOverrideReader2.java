@@ -99,11 +99,14 @@ public final class JarOverrideReader2 {
     
     private boolean isJarOverrideOn(IPropertyResolver resolver) {
         String prop = resolver.getResolvedValue("maven.jar.override"); //NOI18N
-        if ( prop != null
-            && ( "on".equalsIgnoreCase(prop)
-              || "1".equals(prop)
-              || "true".equalsIgnoreCase(prop))) {
-            return true;
+        if (prop != null) {
+            prop = prop.trim();
+            if ( "on".equalsIgnoreCase(prop)
+               || "1".equals(prop)
+               || "true".equalsIgnoreCase(prop)) 
+            {
+                return true;
+            }
         }
         return false;
     }
