@@ -39,7 +39,7 @@ public class AttachDebuggerOutputHook implements OutputProcessor {
     
     public void processLine(String line, OutputVisitor visitor) {
         if (line.indexOf("[mevenide-debug-start]") != -1) { //NOI18N
-            RequestProcessor.postRequest(new Runnable() {
+            RequestProcessor.getDefault().post(new Runnable() {
                 public void run() {
                     try {
                         JPDADebugger debug = JPDADebugger.attach(host, port, new Object[0]);
