@@ -125,6 +125,10 @@ public class MavenProjectIterator implements TemplateWizard.Iterator
         DataObject projObj = template.createFromTemplate(targetFolder, "project");
         MavenProjectCookie cook = (MavenProjectCookie)projObj.getCookie(MavenProjectCookie.class);
         Project proj = (Project)wiz.getProperty(PROP_PROJECT);
+        
+//        //TEMPORARY not even sure it belongs here, but it irritates me..
+//        proj.setId(proj.getArtifactId());
+        
         if (cook != null)
         {
             FileLock lock = null;
@@ -188,7 +192,11 @@ public class MavenProjectIterator implements TemplateWizard.Iterator
             {
                 if (build.getSourceDirectory() != null) 
                 {
-                    DataFolder.create(parentFolder, build.getSourceDirectory());
+                    DataFolder srcFolder = DataFolder.create(parentFolder, build.getSourceDirectory());
+                    if (proj.getPackage() != null && proj.getPackage().length() > 0)
+                    {
+                        DataFolder.create(srcFolder, proj.getPackage().replace('.','/'));
+                    }
                 }
                 if (build.getUnitTestSourceDirectory() != null) {
                     DataFolder.create(parentFolder, build.getUnitTestSourceDirectory());
