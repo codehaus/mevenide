@@ -1,2 +1,2 @@
- + unify synchronization wizard and synchronization views behaviours
+ + get rid of those cycles
  + need SERIOUS refactoring !!

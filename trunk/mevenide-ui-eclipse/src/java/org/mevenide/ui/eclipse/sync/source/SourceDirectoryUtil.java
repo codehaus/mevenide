@@ -50,4 +50,12 @@ public class SourceDirectoryUtil {
 		}
 		return (Integer) sourceIndexMap.get(sourceType); 
 	}
+
+	public static boolean isSource(SourceDirectory directory) {
+		boolean b = directory.getDirectoryType().equals(ProjectConstants.MAVEN_ASPECT_DIRECTORY)
+					|| directory.getDirectoryType().equals(ProjectConstants.MAVEN_SRC_DIRECTORY)
+					|| directory.getDirectoryType().equals(ProjectConstants.MAVEN_TEST_DIRECTORY)
+					|| directory.getDirectoryType().equals(ProjectConstants.MAVEN_INTEGRATION_TEST_DIRECTORY);
+		return b;					
+	}
 }

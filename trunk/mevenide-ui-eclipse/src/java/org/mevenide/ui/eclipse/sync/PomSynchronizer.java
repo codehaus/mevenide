@@ -17,14 +17,11 @@ import java.io.InputStream;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
-import org.mevenide.project.source.SourceDirectoryUtil;
 import org.mevenide.sync.AbstractPomSynchronizer;
 import org.mevenide.sync.ISynchronizer;
+import org.mevenide.ui.eclipse.DefaultPathResolver;
+import org.mevenide.ui.eclipse.IPathResolver;
 import org.mevenide.ui.eclipse.Mevenide;
-import org.mevenide.ui.eclipse.sync.dependency.DependencyGroup;
-import org.mevenide.ui.eclipse.sync.dependency.DependencyMarshaller;
-import org.mevenide.ui.eclipse.sync.source.SourceDirectoryGroup;
-import org.mevenide.ui.eclipse.sync.source.SourceDirectoryMarshaller;
 import org.mevenide.ui.eclipse.util.ProjectUtil;
 
 /**
@@ -41,7 +38,7 @@ public class PomSynchronizer extends AbstractPomSynchronizer implements ISynchro
 	private IFile pom;
 
     /** helper instance */
-    private IPathResolverDelegate pathResolver;
+    private IPathResolver pathResolver;
     
 
     
@@ -49,7 +46,7 @@ public class PomSynchronizer extends AbstractPomSynchronizer implements ISynchro
 		this.project = Mevenide.getPlugin().getProject();
 		this.pom = project.getFile("project.xml");
 		assertPomNotEmpty();
-		pathResolver = new DefaultPathResolverDelegate(); 
+		pathResolver = new DefaultPathResolver(); 
 	}
 
 	private void assertPomNotEmpty() {
@@ -76,12 +73,7 @@ public class PomSynchronizer extends AbstractPomSynchronizer implements ISynchro
 		try {
 			assertPomNotEmpty();
 			
-			SourceDirectoryUtil.resetSourceDirectories(Mevenide.getPlugin().getPom());
-			
-			DependencyGroup dependencyGroup = DependencyMarshaller.getDependencyGroup(project, Mevenide.getPlugin().getFile("statedDependencies.xml"));
-			SourceDirectoryGroup sourceGroup = SourceDirectoryMarshaller.getSourceDirectoryGroup(project, Mevenide.getPlugin().getFile("sourceTypes.xml"));
-			
-			ProjectUtil.updatePom(sourceGroup, dependencyGroup, Mevenide.getPlugin().getPom());
+			ProjectUtil.synchronize(project);
 			
 		}
 		catch (Exception e) {
@@ -89,8 +81,7 @@ public class PomSynchronizer extends AbstractPomSynchronizer implements ISynchro
 		}
 	}
 
-	
-    /**
+	/**
      * @see org.mevenide.core.sync.AbstractPomSynchronizer#preSynchronization()
      */
 	public void preSynchronization() {

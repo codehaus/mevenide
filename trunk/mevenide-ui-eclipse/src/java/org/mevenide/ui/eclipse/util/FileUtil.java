@@ -14,14 +14,19 @@
  */
 package org.mevenide.ui.eclipse.util;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.mevenide.ProjectConstants;
-import org.mevenide.util.MevenideUtil;
+import org.mevenide.project.io.ProjectSkeleton;
+import org.mevenide.ui.eclipse.DefaultPathResolver;
+import org.mevenide.ui.eclipse.IPathResolver;
 import org.mevenide.ui.eclipse.Mevenide;
-import org.mevenide.ui.eclipse.sync.source.SourceDirectory;
+import org.mevenide.util.MevenideUtil;
 
 /**
  * 
@@ -44,12 +49,17 @@ public class FileUtil {
 		return new File(project.getLocation().append(new Path(entryPath).removeFirstSegments(1)).toOSString()).isDirectory();
 	}
 
-	public static boolean isSource(SourceDirectory directory) {
-		boolean b = directory.getDirectoryType().equals(ProjectConstants.MAVEN_ASPECT_DIRECTORY)
-					|| directory.getDirectoryType().equals(ProjectConstants.MAVEN_SRC_DIRECTORY)
-					|| directory.getDirectoryType().equals(ProjectConstants.MAVEN_TEST_DIRECTORY)
-					|| directory.getDirectoryType().equals(ProjectConstants.MAVEN_INTEGRATION_TEST_DIRECTORY);
-		return b;					
+	public static void createPom(IProject project) throws Exception, CoreException {
+		
+		 String referencedPomSkeleton = ProjectSkeleton.getSkeleton( project.getName() );
+		 IFile referencedProjectFile = project.getFile("project.xml"); 
+		 referencedProjectFile.create(new ByteArrayInputStream(referencedPomSkeleton.getBytes()), false, null);
+	}
+
+	public static File getPom(IProject project) {
+		IPathResolver pathResolver = new DefaultPathResolver();
+		IPath referencedProjectLocation = project.getLocation();
+		return new File(pathResolver.getAbsolutePath(referencedProjectLocation.append("project.xml")) );
 	}
 	
 	

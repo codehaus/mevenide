@@ -19,6 +19,7 @@ import java.util.List;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.mevenide.ProjectConstants;
+import org.mevenide.ui.eclipse.*;
 import org.mevenide.ui.eclipse.sync.*;
 
 /**
@@ -40,7 +41,7 @@ public class SourceDirectoryGroup extends ArtifactGroup {
 		IClasspathEntry[] classpathEntries = project.getResolvedClasspath(true);
 		for (int i = 0; i < classpathEntries.length; i++) {
 			if ( classpathEntries[i].getEntryKind() == IClasspathEntry.CPE_SOURCE) {
-				String path = new DefaultPathResolverDelegate().getRelativeSourceDirectoryPath(classpathEntries[i], project.getProject());
+				String path = new DefaultPathResolver().getRelativeSourceDirectoryPath(classpathEntries[i], project.getProject());
 				SourceDirectory sourceDirectory = new SourceDirectory(path);
 				sourceDirectory.setDirectoryType(ProjectConstants.MAVEN_SRC_DIRECTORY); 
 				sourceDirectories.add(sourceDirectory);

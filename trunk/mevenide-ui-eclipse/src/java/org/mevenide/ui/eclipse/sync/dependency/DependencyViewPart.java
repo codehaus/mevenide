@@ -29,8 +29,8 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 import org.mevenide.sync.ISynchronizer;
 import org.mevenide.sync.SynchronizerFactory;
+import org.mevenide.ui.eclipse.DefaultPathResolver;
 import org.mevenide.ui.eclipse.Mevenide;
-import org.mevenide.ui.eclipse.sync.DefaultPathResolverDelegate;
 import org.mevenide.ui.eclipse.sync.source.SourceDirectoryMarshaller;
 
 /**
@@ -184,7 +184,7 @@ public class DependencyViewPart extends ViewPart {
 		
 		IClasspathEntry[] entries = JavaCore.create(currentProject).getResolvedClasspath(true);
 
-		DefaultPathResolverDelegate pathResolver = new DefaultPathResolverDelegate();
+		DefaultPathResolver pathResolver = new DefaultPathResolver();
 
 		for (int i = 0; i < entries.length; i++) {
 			if ( entries[i].getEntryKind() == IClasspathEntry.CPE_SOURCE ) {
