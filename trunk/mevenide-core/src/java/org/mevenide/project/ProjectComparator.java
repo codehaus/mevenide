@@ -27,6 +27,7 @@ import org.apache.maven.project.Branch;
 import org.apache.maven.project.Build;
 import org.apache.maven.project.Contributor;
 import org.apache.maven.project.Dependency;
+import org.apache.maven.project.Developer;
 import org.apache.maven.project.License;
 import org.apache.maven.project.MailingList;
 import org.apache.maven.project.Organization;
@@ -70,20 +71,13 @@ public class ProjectComparator {
     private Project originalProject;
     private Hashtable subModelListenerTable = new Hashtable();
     private Vector generalListeners = new Vector(5);
+    private volatile boolean projectChanged = false;
 
     class ShortCircuitException extends Exception {
     }
 
-    public ProjectComparator(Project project) {
+    protected ProjectComparator(Project project) {
         this.originalProject = project;
-    }
-
-    public Project getOriginalProject() {
-        return originalProject;
-    }
-
-    public void setOriginalProject(Project originalProject) {
-        this.originalProject = originalProject;
     }
 
     public void addProjectChangeListener(IProjectChangeListener listener) {
@@ -110,12 +104,16 @@ public class ProjectComparator {
     }
 
     private void fireProjectChangeEvent(Project newProject, String subModel) {
-        ProjectChangeEvent e = null;
+    	if (log.isDebugEnabled()) {
+    		log.debug("Firing ProjectChangeEvent with change in " + subModel);
+    	}
+    	ProjectChangeEvent e = null;
         if (newProject != null) {
         	e = new ProjectChangeEvent(newProject, subModel);
         } else {
 			e = new ProjectChangeEvent(NULL_PROJECT, subModel);
         }
+        projectChanged = true;
 
         // send event to generic listeners
         Iterator itr = generalListeners.iterator();
@@ -169,37 +167,48 @@ public class ProjectComparator {
             log.debug("Computing project difference...");
         }
 
-        if (newProject == originalProject) {
-            // same reference or both null? treat as identical projects
-            return;
-        }
+        // same reference or both null? treat as identical projects
+        if (newProject != originalProject) {
 
-        if (newProject == null || originalProject == null) {
-            fireProjectChangeEvent(newProject, PROJECT);
-            return;
-        }
-
-        compareProject(newProject);
-        compareOrganization(newProject);
-        compareRepository(newProject);
-        compareBranches(newProject);
-        compareVersions(newProject);
-        compareMailingLists(newProject);
-        compareContributors(newProject);
-        compareDevelopers(newProject);
-        compareLicenses(newProject);
-        compareDependencies(newProject);
-        compareBuild(newProject);
-        compareReports(newProject);
-        try {
-            compareProperties(newProject.getProperties(), originalProject.getProperties());
-        }
-        catch (ShortCircuitException e) {
-            fireProjectChangeEvent(newProject, PROJECT);
+	        if (newProject == null || originalProject == null) {
+	            fireProjectChangeEvent(newProject, PROJECT);
+	        } else {
+		        compareProject(newProject);
+		        compareOrganization(newProject);
+		        compareRepository(newProject);
+		        compareBranches(newProject);
+		        compareVersions(newProject);
+		        compareMailingLists(newProject);
+		        compareContributors(newProject);
+		        compareDevelopers(newProject);
+		        compareLicenses(newProject);
+		        compareDependencies(newProject);
+		        compareBuild(newProject);
+		        compareReports(newProject);
+		        try {
+		            compareProperties(newProject.getProperties(), originalProject.getProperties());
+		        }
+		        catch (ShortCircuitException e) {
+		            fireProjectChangeEvent(newProject, PROJECT);
+		        }
+	        }
+	        updateProject(newProject);
         }
     }
 
-    private void compareProject(Project newProject) {
+    private void updateProject(Project newProject)
+	{
+    	if (projectChanged) {
+    		if (log.isDebugEnabled()) {
+    			log.debug("Projects differ.  Updating comparator with new project.");
+    		}
+    		ProjectComparatorFactory.updateComparator(originalProject, newProject);
+			originalProject = newProject;
+			projectChanged = false;
+    	}
+	}
+
+	private void compareProject(Project newProject) {
         try {
             detectAttributeChange(newProject.getName(), originalProject.getName());
             detectAttributeChange(newProject.getArtifactId(), originalProject.getArtifactId());
@@ -221,9 +230,6 @@ public class ProjectComparator {
             detectAttributeChange(newProject.getSiteDirectory(), originalProject.getSiteDirectory());
         }
         catch (ShortCircuitException e) {
-	        if (log.isDebugEnabled()) {
-	            log.debug("Change in project detected");
-	        }
             fireProjectChangeEvent(newProject, PROJECT);
         }
     }
@@ -234,7 +240,6 @@ public class ProjectComparator {
         if (comparable(newOrg, originalOrg)) {
             try {
                 detectObjectChange(newOrg, originalOrg);
-                detectAttributeChange(newOrg.getId(), originalOrg.getId());
                 detectAttributeChange(newOrg.getName(), originalOrg.getName());
                 detectAttributeChange(newOrg.getLogo(), originalOrg.getLogo());
                 detectAttributeChange(newOrg.getUrl(), originalOrg.getUrl());
@@ -251,7 +256,6 @@ public class ProjectComparator {
         if (comparable(newRepo, originalRepo)) {
             try {
 				detectObjectChange(newRepo, originalRepo);
-                detectAttributeChange(newRepo.getId(), originalRepo.getId());
                 detectAttributeChange(newRepo.getName(), originalRepo.getName());
                 detectAttributeChange(newRepo.getConnection(), originalRepo.getConnection());
                 detectAttributeChange(newRepo.getConnection(), originalRepo.getConnection());
@@ -272,7 +276,6 @@ public class ProjectComparator {
             for (int i = 0; i < origBranches.size(); i++) {
                 Branch newBranch = (Branch) newBranches.get(i);
                 Branch origBranch = (Branch) origBranches.get(i);
-                detectAttributeChange(newBranch.getId(), origBranch.getId());
                 detectAttributeChange(newBranch.getName(), origBranch.getName());
                 detectAttributeChange(newBranch.getTag(), origBranch.getTag());
             }
@@ -310,7 +313,6 @@ public class ProjectComparator {
             for (int i = 0; i < origMailingLists.size(); i++) {
                 MailingList newMailingList = (MailingList) newMailingLists.get(i);
                 MailingList origMailingList = (MailingList) origMailingLists.get(i);
-                detectAttributeChange(newMailingList.getId(), origMailingList.getId());
                 detectAttributeChange(newMailingList.getName(), origMailingList.getName());
                 detectAttributeChange(newMailingList.getArchive(), origMailingList.getArchive());
                 detectAttributeChange(newMailingList.getSubscribe(), origMailingList.getSubscribe());
@@ -326,21 +328,20 @@ public class ProjectComparator {
         List newContributors = newProject.getContributors();
         List origContributors = originalProject.getContributors();
         try {
-            compareContributors(newContributors, origContributors);
+        	detectCollectionChange(newContributors, origContributors);
+        	// just assume order is significant
+        	for (int i = 0; i < origContributors.size(); i++) {
+        		compareContributor((Contributor) newContributors.get(i), (Contributor) origContributors.get(i));
+        	}
         }
         catch (ShortCircuitException e) {
             fireProjectChangeEvent(newProject, CONTRIBUTORS);
         }
     }
 
-    private void compareContributors(List newContributors, List origContributors) throws ShortCircuitException {
+    private void compareContributor(Contributor newContributor, Contributor origContributor)
+		throws ShortCircuitException {
 
-        detectCollectionChange(newContributors, origContributors);
-        // just assume order is significant
-        for (int i = 0; i < origContributors.size(); i++) {
-            Contributor newContributor = (Contributor) newContributors.get(i);
-            Contributor origContributor = (Contributor) origContributors.get(i);
-            detectAttributeChange(newContributor.getId(), origContributor.getId());
             detectAttributeChange(newContributor.getName(), origContributor.getName());
             detectAttributeChange(newContributor.getEmail(), origContributor.getEmail());
             detectAttributeChange(newContributor.getOrganization(), origContributor.getOrganization());
@@ -355,14 +356,20 @@ public class ProjectComparator {
             while (itrOrig.hasNext()) {
                 detectAttributeChange(itrNew.next().toString(), itrOrig.next().toString());
             }
-        }
     }
 
     private void compareDevelopers(Project newProject) {
         List newDevelopers = newProject.getDevelopers();
         List origDevelopers = originalProject.getDevelopers();
         try {
-            compareContributors(newDevelopers, origDevelopers);
+            detectCollectionChange(newDevelopers, origDevelopers);
+            // just assume order is significant
+            for (int i = 0; i < origDevelopers.size(); i++) {
+            	Developer newDeveloper = (Developer) newDevelopers.get(i);
+            	Developer origDeveloper = (Developer) origDevelopers.get(i);
+            	detectAttributeChange(newDeveloper.getId(), origDeveloper.getId());
+            	compareContributor(newDeveloper, origDeveloper);
+            }
         }
         catch (ShortCircuitException e) {
             fireProjectChangeEvent(newProject, DEVELOPERS);
