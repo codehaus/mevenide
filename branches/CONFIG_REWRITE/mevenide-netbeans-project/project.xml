@@ -168,17 +168,6 @@
     </dependency>
     <dependency>     
         <groupId>netbeans</groupId>
-        <artifactId>org-netbeans-modules-web-jspparser</artifactId>
-        <!-- include nb specification version.. that's important for compiling -->
-        <version>2.1</version>
-        <type>jar</type>
-        <url>http://www.netbeans.org</url>
-        <properties>
-            <netbeans.module.dep>spec</netbeans.module.dep>
-        </properties>
-    </dependency>
-    <dependency>     
-        <groupId>netbeans</groupId>
         <artifactId>org-netbeans-modules-projectuiapi</artifactId>
         <version>1.0-SNAPSHOT</version>
         <type>jar</type>
