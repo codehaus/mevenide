@@ -41,5 +41,6 @@
 	<classpathentry kind="var" path="MAVEN_REPO/commons-httpclient/jars/commons-httpclient-2.0-rc1.jar"/>
 	<classpathentry sourcepath="ECLIPSE_HOME/plugins/org.eclipse.platform.source_3.0.0/src/org.eclipse.ui.forms_3.0.0/formssrc.zip" kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.ui.forms_3.0.0/forms.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/junit/jars/junit-3.8.1.jar"/>
+	<classpathentry kind="src" path="/mevenide-grammar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

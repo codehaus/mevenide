@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src/java"/>
-	<classpathentry kind="src" path="src/test/java"/>
+	<classpathentry output="target/test-classes" kind="src" path="src/test/java"/>
 	<classpathentry kind="src" path="src/test/etc"/>
 	<classpathentry kind="src" path="etc"/>
 	<classpathentry sourcepath="JRE_SRC" kind="var" path="JRE_LIB"/>

@@ -17,6 +17,7 @@
       <import plugin="@org.mevenide.core.id@"/>
       <import plugin="@org.mevenide.grabber.id@"/>
       <import plugin="@org.mevenide.config.id@"/>
+      <import plugin="@org.mevenide.grammar.id@"/>
       <import plugin="org.eclipse.help.base"/>
       <import plugin="org.eclipse.ui.ide"/>
       <import plugin="org.eclipse.core.variables"/>

@@ -31,12 +31,18 @@
         <dependency>
            <groupId>mevenide</groupId>
            <artifactId>mevenide-config</artifactId>
-           <version>0.1-SNAPSHOT</version>
+           <version>0.2-SNAPSHOT</version>
         </dependency>
         <dependency>
            <groupId>mevenide</groupId>
            <artifactId>goals-grabber</artifactId>
-           <version>0.1.1-SNAPSHOT</version>
+           <version>0.2-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>mevenide</groupId>
+            <artifactId>mevenide-grammar</artifactId>
+            <version>0.1-SNAPSHOT</version>
+            <type>jar</type>
         </dependency>
         
 		&inherited-dependencies;

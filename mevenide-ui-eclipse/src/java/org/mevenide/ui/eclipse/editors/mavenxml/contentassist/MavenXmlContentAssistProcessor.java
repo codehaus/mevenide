@@ -14,9 +14,11 @@
  *  limitations under the License.
  * =========================================================================
  */
-package org.mevenide.ui.eclipse.editors.mavenxml;
+package org.mevenide.ui.eclipse.editors.mavenxml.contentassist;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -36,6 +38,7 @@ import org.eclipse.ui.part.FileEditorInput;
 import org.mevenide.goals.grabber.DefaultGoalsGrabber;
 import org.mevenide.goals.grabber.IGoalsGrabber;
 import org.mevenide.goals.manager.GoalsGrabbersManager;
+import org.mevenide.grammar.impl.GoalsAttributeCompletionImpl;
 import org.mevenide.ui.eclipse.goals.model.Goal;
 import org.mevenide.ui.eclipse.goals.model.Plugin;
 import org.mevenide.util.StringUtils;
@@ -50,12 +53,15 @@ public class MavenXmlContentAssistProcessor implements IContentAssistProcessor {
 	
 	private static final Log log = LogFactory.getLog(MavenXmlContentAssistProcessor.class);
 	
+	private GoalsAttributeCompletionImpl attributeCompletor;
 	private IGoalsGrabber goalsGrabber;
+	
 	
 	public MavenXmlContentAssistProcessor(TextEditor editor) throws Exception {
 		
 		IFile editedFile =((FileEditorInput) editor.getEditorInput()).getFile();
-		log.debug("Creating GoalsGrabberManager from " + editedFile.getLocation().toOSString());
+		attributeCompletor = new GoalsAttributeCompletionImpl(); 
+		
 		try {
 			goalsGrabber = GoalsGrabbersManager.getGoalsGrabber(editedFile.getLocation().toOSString());
 		} 
@@ -65,7 +71,6 @@ public class MavenXmlContentAssistProcessor implements IContentAssistProcessor {
 			log.error(message, e);
 			goalsGrabber = new DefaultGoalsGrabber();
 		}
-		
 	}
 	
 	public ICompletionProposal[] computeCompletionProposals(ITextViewer viewer, int documentOffset) {
@@ -108,34 +113,18 @@ public class MavenXmlContentAssistProcessor implements IContentAssistProcessor {
 	
 	private List computeCompletionTagProposals(String qualifier, int documentOffset) {
 		List proposals = new ArrayList();
-		Goal goal = createGoalFromQualifier(qualifier);
-		if ( goal.getPlugin() == null ) {
-			//goal name might actually be a plugin name
-			String[] plugins = goalsGrabber.getPlugins();
-			proposals.addAll(findMatchingNames(goal, plugins, documentOffset));
-			
-			//or it may be a custom goal ?
+		
+		Collection hints = attributeCompletor.getValueHints(qualifier);
+		Iterator hintsIterator = hints.iterator();
+		while ( hintsIterator.hasNext() ) {
+			String nextHint = (String) hintsIterator.next();
+			String proposalInformation = goalsGrabber.getDescription(nextHint);
+		    CompletionProposal proposal = new CompletionProposal(nextHint, documentOffset, 0, nextHint.length(), 
+		                                                         null, nextHint, null, proposalInformation);
+		    proposals.add(proposal);
 		}
-		else {
-			String[] goals = goalsGrabber.getGoals(goal.getPlugin().getName());
-			proposals.addAll(findMatchingNames(goal, goals, documentOffset));
-		}
+		
 		return proposals;
-	}
-
-	private List findMatchingNames(Goal goal, String[] names, int documentOffset) {
-		List matches = new ArrayList();
-		if ( names != null ) {
-			for (int i = 0; i < names.length; i++) {
-				if ( names[i].startsWith(goal.getFullyQualifiedName()) ) {
-					String proposalInformation = goalsGrabber.getDescription(names[i]);
-				    CompletionProposal proposal = new CompletionProposal(names[i], documentOffset, 0, names[i].length(), 
-				                                                         null, names[i], null, proposalInformation);
-				    matches.add(proposal);
-				}
-			}
-		}
-		return matches;
 	}
 
 	private Goal createGoalFromQualifier(String qualifier) {
