@@ -18,24 +18,31 @@
 package org.mevenide.context;
 
 import java.io.File;
+import org.apache.maven.project.Project;
 
 /**
- * interface to externalize the project files content/models to one place, and reuse
- * in all the queries (ILocationFinder, IPropertyResolver, etc)
+ * extending the IQueryContext with the POM.
  * @author  <a href="mailto:ca206216@tiscali.cz">Milos Kleint</a>
  */
-public interface IQueryContext extends IProjectContext
+
+//mkleint - the actual impl that's parsing the project.xml file needs to be defined in mevenide-core
+
+public interface IProjectContext
 {
-    String getPropertyValue(String key);
+    /**
+     * the merged result of the project.xml POM and all it's precedessors. ("extends" tag)
+     */
+    Project getFinalProject();
+    /**
+     * Separated project instances for each of files in the row. The current POM file is first,
+     *it's parent is next and the parent of all is last.
+     */
+    Project[] getProjectLayers();
     
-    String getUserPropertyValue(String key);
-    
-    String getBuildPropertyValue(String key);
-    
-    String getProjectPropertyValue(String key);
-    
-    File getProjectDirectory();
-    
-    File getUserDirectory();
+    /**
+     * Separated File locations of all the POM files in the succession row. The current POM file is first,
+     *it's parent is next and the parent of all is last.
+     */
+    File[] getProjectFiles();
     
 }

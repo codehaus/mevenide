@@ -25,6 +25,7 @@ import java.util.Properties;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.maven.project.Project;
 
 /**
  * interface to externalize the project files content/models to one place, and reuse
@@ -33,6 +34,7 @@ import org.apache.commons.logging.LogFactory;
  */
 public class DefaultQueryContext implements IQueryContext {
     private static final Log logger = LogFactory.getLog(DefaultQueryContext.class);
+    private static final Project EMPTY_PROJECT = new Project();
     
     private File projectDir;
     private File userDir;
@@ -48,6 +50,8 @@ public class DefaultQueryContext implements IQueryContext {
     private Properties buildPropertyModel;
     private Properties projectPropertyModel;
     
+    private IProjectContext projectContext;
+    
     public DefaultQueryContext() {
         String home = System.getProperty("user.home"); //NOI18N
         userDir = new File(home);
@@ -62,6 +66,11 @@ public class DefaultQueryContext implements IQueryContext {
         buildPropertyFile = new File(projectDir, "build.properties"); //NOI18N
         projectPropertyModel = new Properties();
         buildPropertyModel = new Properties();
+    }
+    
+    public DefaultQueryContext(File project, IProjectContext projContext) {
+        this(project);
+        projectContext = projContext;
     }
     
     public String getBuildPropertyValue(String key) {
@@ -131,6 +140,30 @@ public class DefaultQueryContext implements IQueryContext {
     
     public File getUserDirectory() {
         return userDir;
+    }
+    
+    public Project getFinalProject() {
+        if (projectContext != null) {
+            return projectContext.getFinalProject();
+        }
+        logger.warn("No IProjectContext instance supplied. Can result in non complete query resolution.");
+        return EMPTY_PROJECT;
+    }
+    
+    public File[] getProjectFiles() {
+        if (projectContext != null) {
+            return projectContext.getProjectFiles();
+        }
+        logger.warn("No IProjectContext instance supplied. Can result in non complete query resolution.");
+        return new File[0];
+    }
+    
+    public Project[] getProjectLayers() {
+        if (projectContext != null) {
+            return projectContext.getProjectLayers();
+        }
+        logger.warn("No IProjectContext instance supplied. Can result in non complete query resolution.");
+        return new Project[0];
     }
     
 }
