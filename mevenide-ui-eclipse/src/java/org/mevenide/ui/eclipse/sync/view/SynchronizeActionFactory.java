@@ -301,7 +301,7 @@ public class SynchronizeActionFactory {
 	    ToggleViewAction viewPomToIde = new ToggleViewAction(ISelectableNode.INCOMING_DIRECTION);
 		viewPomToIde.setId(VIEW_INCOMING);
 		viewPomToIde.setToolTipText("Incoming Changes");
-		viewPomToIde.setImageDescriptor(Mevenide.getImageDescriptor("pom_to_ide_sync.gif"));
+		viewPomToIde.setImageDescriptor(Mevenide.getImageDescriptor("elcl16/synch_incoming.gif"));
 		actionIds.put(VIEW_INCOMING, viewPomToIde);
 		synchronizationView.addDirectionListener(viewPomToIde);
 		viewPomToIde.addPropertyChangeListener(synchronizationView);
@@ -311,7 +311,7 @@ public class SynchronizeActionFactory {
 	    ToggleViewAction viewIdeToPom = new ToggleViewAction(ISelectableNode.OUTGOING_DIRECTION);
 		viewIdeToPom.setId(VIEW_OUTGOING);
 		viewIdeToPom.setToolTipText("Outgoing changes");
-		viewIdeToPom.setImageDescriptor(Mevenide.getImageDescriptor("ide_to_pom_sync.gif"));
+		viewIdeToPom.setImageDescriptor(Mevenide.getImageDescriptor("elcl16/synch_outgoing.gif"));
 		actionIds.put(VIEW_OUTGOING, viewIdeToPom);
 		synchronizationView.addDirectionListener(viewIdeToPom);
 		viewIdeToPom.addPropertyChangeListener(synchronizationView);
@@ -321,7 +321,7 @@ public class SynchronizeActionFactory {
 	    ToggleViewAction viewConflicts = new ToggleViewAction(ISelectableNode.CONFLICTING_DIRECTION);
 		viewConflicts.setId(VIEW_CONFLICTS);
 		viewConflicts.setToolTipText("Conflicts");
-		viewConflicts.setImageDescriptor(Mevenide.getImageDescriptor("conflict_synch.gif"));
+		viewConflicts.setImageDescriptor(Mevenide.getImageDescriptor("elcl16/synch_conflicting.gif"));
 		actionIds.put(VIEW_CONFLICTS, viewConflicts);
 		synchronizationView.addDirectionListener(viewConflicts);
 		viewConflicts.addPropertyChangeListener(synchronizationView);
@@ -331,7 +331,7 @@ public class SynchronizeActionFactory {
 		Action writeProperties = new ToggleWritePropertiesAction();
 		writeProperties.setId(WRITE_PROPERTIES);
 		writeProperties.setToolTipText("Override project.properties");
-		writeProperties.setImageDescriptor(Mevenide.getImageDescriptor("write_properties.gif"));
+		writeProperties.setImageDescriptor(Mevenide.getImageDescriptor("elcl16/synch_wprop.gif"));
 		actionIds.put(WRITE_PROPERTIES, writeProperties);
 		writeProperties.addPropertyChangeListener(synchronizationView);
 	}
@@ -344,7 +344,7 @@ public class SynchronizeActionFactory {
 		};
 		refreshAll.setId(REFRESH_ALL);
 		refreshAll.setToolTipText("Refresh All");
-		refreshAll.setImageDescriptor(Mevenide.getImageDescriptor("refresh.gif"));
+		refreshAll.setImageDescriptor(Mevenide.getImageDescriptor("etool16/refresh.gif"));
 		actionIds.put(REFRESH_ALL, refreshAll);
 	}
 	
