@@ -17,9 +17,11 @@
 package org.codehaus.mevenide.pde.descriptor;
 
 import java.io.File;
+import java.util.List;
 import junit.framework.TestCase;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.MavenProjectBuilder;
+import org.apache.maven.project.ProjectBuildingException;
 import org.codehaus.classworlds.ClassWorld;
 import org.codehaus.plexus.embed.Embedder;
 import org.jdom.Document;
@@ -38,26 +40,73 @@ public class CommonPluginValuesReplacerTest extends TestCase {
     private CommonPluginValuesReplacer replacer;
     private File basedirFile;
     private MavenProject project;
+    private MavenProjectBuilder builder;
     
     protected void setUp() throws Exception {
-        basedirFile = new File(getClass().getResource("/basedir.replacer").getFile());
+        
+        Embedder embedder = getEmbedder();
+        builder = (MavenProjectBuilder) embedder.lookup(MavenProjectBuilder.ROLE);
+        
+        replacer = getReplacer("/basedir.replacer");
+    }
+
+    private CommonPluginValuesReplacer getReplacer(String basedirName) throws ProjectBuildingException, ReplaceException {
+        basedirFile = new File(getClass().getResource(basedirName).getFile());
         String basedir = basedirFile.getAbsolutePath();
+        project = builder.build(new File(basedirFile, "project.xml"));
+        return new CommonPluginValuesReplacer(basedir, project, "lib");
+    }
+
+    private Embedder getEmbedder() throws Exception {
         Embedder embedder = new Embedder();
         ClassWorld classWorld = new ClassWorld("core", this.getClass().getClassLoader());
         embedder.start(classWorld);
-        MavenProjectBuilder builder = (MavenProjectBuilder) embedder.lookup(MavenProjectBuilder.ROLE);
-        project = builder.build(new File(basedirFile, "project.xml"));
-        replacer = new CommonPluginValuesReplacer(basedir, project, "lib");
+        return embedder;
     }
 
     protected void tearDown() throws Exception {
         replacer = null;
+        basedirFile = null;
+        project = null;
+        builder = null;
     }
     
     public void testReplace() throws Exception {
         replacer.replace();
         Document doc = new SAXBuilder().build(new File(basedirFile, "plugin.xml"));
         Element plugin = doc.getRootElement();
-        //@todo : assertions...
+        
+        //this one fails because package is not correctly retrieved
+        //assertEquals("org.codehaus.mevenide.pde", plugin.getAttributeValue("id"));
+        assertEquals("mevenide.maven.pde.plugin", plugin.getAttributeValue("id"));
+        assertEquals("maven pde plugin", plugin.getAttributeValue("name"));
+        assertEquals("the codehaus", plugin.getAttributeValue("provider-name"));
+        assertEquals("0.1", plugin.getAttributeValue("version"));
+        
+        List requires = plugin.getChild("requires").getChildren("import"); 
+        assertEquals(3, requires.size());
+        assertEquals("mevenide.requires-test", ((Element) requires.get(0)).getAttributeValue("plugin"));
+        
+        List libraries = plugin.getChild("runtime").getChildren("library");
+        assertEquals(2, libraries.size());
+        
+        Element lib_0 = (Element) libraries.get(0);
+        assertEquals("lib/jdom-1.0.jar", lib_0.getAttributeValue("name"));
+        assertNotNull(lib_0.getChild("export"));
+        assertEquals("*", lib_0.getChild("export").getAttributeValue("name"));
+        assertNotNull(lib_0.getChild("package"));
+        assertEquals("org.jdom", lib_0.getChild("package").getAttributeValue("prefixes"));
+ 
+        Element lib_1 = (Element) libraries.get(1);
+        assertEquals("lib/commons-lang-2.0.jar", lib_1.getAttributeValue("name"));
+        assertNull(lib_1.getChild("export"));
+        assertNull(lib_1.getChild("package"));
+        
+        replacer = getReplacer("/basedir.minreplacer"); 
+        replacer.replace();
+        doc = new SAXBuilder().build(new File(basedirFile, "plugin.xml"));
+        plugin = doc.getRootElement();
+        assertNull(plugin.getChild("runtime"));
+        assertNull(plugin.getChild("requires"));
     }
 }

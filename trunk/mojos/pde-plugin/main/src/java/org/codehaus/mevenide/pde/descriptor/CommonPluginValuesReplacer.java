@@ -18,6 +18,7 @@ package org.codehaus.mevenide.pde.descriptor;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
@@ -55,6 +56,8 @@ public class CommonPluginValuesReplacer {
     private String libraryFolder;
     
     private ArtifactResolver resolver;
+    
+    private List addedLibraries = new ArrayList();
     
     /**
      * @param basedir plugin.xml parent directory
@@ -111,7 +114,10 @@ public class CommonPluginValuesReplacer {
 
     private void updateDependencies(Element pluginElement) throws ReplaceException {
         Element runtime = pluginElement.getChild("runtime");
-        runtime.detach();
+        
+        if ( runtime != null ) {
+            runtime.detach();
+        }
         runtime = new Element("runtime");
 
         Element requires = pluginElement.getChild("requires");
@@ -151,21 +157,26 @@ public class CommonPluginValuesReplacer {
         Properties properties = dependency.getProperties();
         Element library = new Element("library");
         
-        MavenArtifact artifact = resolver.getArtifact(dependency, project);
+        //artifact can also retrieved using project.getDependency(artifactId) but this seems suspicious to me 
+        //since it doesnot handle dependency type. however doesnot ArtifactResolver behaves the same way ?
+        MavenArtifact artifact = resolver.getArtifact(dependency, project); 
         String libraryName = libraryFolder + "/" + new File(artifact.generatePath()).getName();
-
-        library.setAttribute("name", libraryName);
-        if ( !"false".equals(properties.getProperty("maven.pde.export")) ) {
-            Element export = new Element("export");
-            export.setAttribute("name", "*");
-            library.addContent(export);
+        
+        if ( !addedLibraries.contains(libraryName) ) {
+	        library.setAttribute("name", libraryName);
+	        if ( !"false".equals(properties.getProperty("maven.pde.export")) ) {
+	            Element export = new Element("export");
+	            export.setAttribute("name", "*");
+	            library.addContent(export);
+	        }
+	        if ( properties.getProperty("maven.pde.package") != null ) {
+	            Element packageElement = new Element("package");
+	            packageElement.setAttribute("prefixes", properties.getProperty("maven.pde.package"));
+	            library.addContent(packageElement);
+	        }
+	        runtime.addContent(library);
+	        addedLibraries.add(libraryName);
         }
-        if ( properties.getProperty("maven.pde.package") != null ) {
-            Element packageElement = new Element("package");
-            packageElement.setAttribute("package", properties.getProperty("maven.pde.package"));
-            library.addContent(packageElement);
-        }
-        runtime.addContent(library);
     }
 
     private boolean updateRequires(Element requires, final Dependency dependency) {
@@ -190,7 +201,7 @@ public class CommonPluginValuesReplacer {
     
 
     private void replacePluginAttributes(Element pluginElement) {
-        //@todo : how to most accurately compute id ? 
+        //@todo : how to most accurately compute id ?
         pluginElement.setAttribute("id", (project.getPackage() != null ? project.getPackage() : project.getGroupId() + "." + project.getArtifactId()).replaceAll("-", ".")); //id="org.mevenide.ui" 
         pluginElement.setAttribute("name", project.getName()); //name="Mevenide UI"
         pluginElement.setAttribute("version", project.getVersion()); //version="0.3.0" 

@@ -31,6 +31,16 @@
         <maven.pde.export>false</maven.pde.export>
       </properties>
     </dependency>
+    <!-- duplicated dependency -->
+    <dependency>
+      <groupId>commons-lang</groupId>
+      <artifactId>commons-lang</artifactId>
+      <version>2.0</version>
+      <type>jar</type>
+      <properties>
+        <maven.pde.export>false</maven.pde.export>
+      </properties>
+    </dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
@@ -40,6 +50,16 @@
         <maven.pde.exclude>true</maven.pde.exclude>
       </properties>
     </dependency>
+    <dependency>
+      <groupId>mevenide</groupId>
+      <artifactId>requires-test</artifactId>
+      <version>SNAPSHOT</version>
+      <type>jar</type>
+      <properties>
+        <maven.pde.requires>true</maven.pde.requires>
+      </properties>
+    </dependency>
+    <!-- duplicated dependency -->
     <dependency>
       <groupId>mevenide</groupId>
       <artifactId>requires-test</artifactId>
