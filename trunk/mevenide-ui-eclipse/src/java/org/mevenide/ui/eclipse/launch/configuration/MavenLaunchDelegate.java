@@ -120,6 +120,7 @@ public class MavenLaunchDelegate extends AbstractRunner implements ILaunchConfig
 		vmConfig.setVMArguments(allVmArgs);
 		
         vmConfig.setProgramArguments( getMavenArgs(getOptions(configuration), getGoals(configuration) ) );
+        vmConfig.setWorkingDirectory(getBasedir());
         
 		String launchMode = ILaunchManager.RUN_MODE;
         

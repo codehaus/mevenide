@@ -29,8 +29,14 @@
   <!--             init section             -->
   <!-- ==================================== -->
   <goal name="mevenide:clean" prereqs="clean:clean">
-  	<ant:delete dir="${maven.repo.local}/eclipse" quiet="true"/>
+    <ant:delete dir="${maven.repo.local}/eclipse" quiet="true"/>
   	<ant:delete dir="${maven.repo.local}/mevenide" quiet="true"/>
+  </goal>
+  
+  <goal name="mevenide:clean-lib">
+     <ant:delete>
+        <ant:fileset dir="${basedir}/lib" includes="*.jar"/>
+     </ant:delete> 
   </goal>
   
   <goal name="mevenide:init" description="Copy eclipse dependencies to maven.repo.local if necessary">
