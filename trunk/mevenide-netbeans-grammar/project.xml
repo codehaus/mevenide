@@ -13,9 +13,10 @@
   <dependencies>
     <dependency>     
         <groupId>netbeans</groupId>
-        <artifactId>xml-core</artifactId>
+        <artifactId>org-netbeans-modules-xml-core</artifactId>
         <!-- include nb specification version.. that's important for compiling -->
-        <version>3.999.1</version>
+        <version>3.999.3</version>
+        <!-- TODO: I wonder if the beta2 has 3.999.3 or 3.999.2 -->
         <type>jar</type>
         <url>http://www.netbeans.org</url>
         <properties>
