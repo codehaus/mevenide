@@ -360,6 +360,8 @@ public class Mevenide extends AbstractUIPlugin {
 		String buildPath = resolver.getRelativePath(project, javaProject.getOutputLocation()); 
 		properties.setProperty("maven.build.dest", buildPath);
 		properties.store(new FileOutputStream(f), null);
+		
+		initEnvironment();
 	}
 
 
