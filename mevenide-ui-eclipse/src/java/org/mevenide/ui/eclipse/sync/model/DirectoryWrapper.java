@@ -16,6 +16,8 @@
  */
 package org.mevenide.ui.eclipse.sync.model;
 
+import java.io.File;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Project;
@@ -36,7 +38,8 @@ public class DirectoryWrapper extends SourceFolder {
 	
 	private Directory directory ;
 	
-	public DirectoryWrapper(Directory directory) {
+	public DirectoryWrapper(File declaringPom, Directory directory) {
+		super(declaringPom);
 		this.directory = directory;
 	}
 	

@@ -16,6 +16,7 @@
  */
 package org.mevenide.ui.eclipse.sync.action;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -98,15 +99,15 @@ public class ArtifactAction {
 	}
 	
 	//crap..
-	protected ArtifactWrapper getArtifactWrapper(Object item) {
+	protected ArtifactWrapper getArtifactWrapper(File declaringPom, Object item) {
 		if ( item instanceof Dependency ) {
-			return new DependencyWrapper((Dependency) item);
+			return new DependencyWrapper(declaringPom, (Dependency) item);
 		}
 		if ( item instanceof Directory ) {
-			return new DirectoryWrapper((Directory) item);
+			return new DirectoryWrapper(declaringPom, (Directory) item);
 		}
 		if ( item instanceof Resource ) {
-			return new ResourceWrapper((Resource) item);
+			return new ResourceWrapper(declaringPom, (Resource) item);
 		}
 		return null;
 	}

@@ -51,7 +51,7 @@ public class ArtifactMappingContentProvider implements ITreeContentProvider {
 		}
 
         if ( parentElement instanceof EclipseContainerContainer ) {
-            //@TODO move to ProjectContainer
+            //@TODO move to PomContainer
             IProject project = ((EclipseContainerContainer) parentElement).getProject().getProject();
             List dependencyContainers = null;
             List directoryContainers = null;

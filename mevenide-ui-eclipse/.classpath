@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="src/java"/>
+	<classpathentry excluding="org/mevenide/ui/eclipse/editors/entries/|org/mevenide/ui/eclipse/editors/pages/|org/mevenide/ui/eclipse/editors/IPomEditorPage.java|org/mevenide/ui/eclipse/editors/MevenidePomEditor.java|org/mevenide/ui/eclipse/editors/MevenidePomEditorContributor.java|org/mevenide/ui/eclipse/editors/NonRuleBasedDamagerRepairer.java|org/mevenide/ui/eclipse/editors/PomContentOutlinePage.java|org/mevenide/ui/eclipse/editors/PomEditorSelectionProvider.java|org/mevenide/ui/eclipse/editors/PomXmlConfiguration.java|org/mevenide/ui/eclipse/editors/PomXmlDocumentProvider.java|org/mevenide/ui/eclipse/editors/PomXmlDoubleClickStrategy.java|org/mevenide/ui/eclipse/editors/PomXmlElementRule.java|org/mevenide/ui/eclipse/editors/PomXmlElementScanner.java|org/mevenide/ui/eclipse/editors/PomXmlPartitionScanner.java|org/mevenide/ui/eclipse/editors/PomXmlScanner.java|org/mevenide/ui/eclipse/editors/PomXmlSourcePage.java|org/mevenide/ui/eclipse/editors/PomXmlWhitespaceDetector.java" kind="src" path="src/java"/>
 	<classpathentry kind="src" path="etc"/>
 	<classpathentry kind="src" path="src/conf/eclipse"/>
 	<classpathentry kind="src" path="src/test/etc"/>
@@ -38,9 +38,9 @@
 	<classpathentry sourcepath="ORG_ECLIPSE_PLATFORM_SOURCE_SRC/org.eclipse.osgi_3.0.0/resolversrc.zip" kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.osgi_3.0.0/resolver.jar"/>
 	<classpathentry sourcepath="ORG_ECLIPSE_PLATFORM_SOURCE_SRC/org.eclipse.osgi_3.0.0/defaultAdaptorsrc.zip" kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.osgi_3.0.0/defaultAdaptor.jar"/>
 	<classpathentry sourcepath="ORG_ECLIPSE_PLATFORM_SOURCE_SRC/org.eclipse.osgi_3.0.0/eclipseAdaptorsrc.zip" kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.osgi_3.0.0/eclipseAdaptor.jar"/>
-	<classpathentry sourcepath="ORG_ECLIPSE_PLATFORM_SOURCE_SRC/org.eclipse.update.configurator_3.0.0/configuratorsrc.zip" kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.update.configurator_3.0.0/configurator.jar"/>
 	<classpathentry sourcepath="ORG_ECLIPSE_PDE_SOURCE_SRC/org.eclipse.pde.ui_3.0.0/pdeuisrc.zip" kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.pde.ui_3.0.0/pdeui.jar"/>
 	<classpathentry kind="var" path="SWT_LIB"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="var" path="MAVEN_REPO/commons-collections/jars/commons-collections-2.1.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

@@ -32,7 +32,7 @@ public class AddToPomAction extends ArtifactAction {
 	private static Log log = LogFactory.getLog(AddToPomAction.class);
 	
 	public void addEntry(IArtifactMappingNode item, Project project) throws Exception {
-		ArtifactWrapper artifactWrapper = getArtifactWrapper(item.getResolvedArtifact());
+		ArtifactWrapper artifactWrapper = getArtifactWrapper(item.getDeclaringPom(), item.getResolvedArtifact());
 		
 		if ( artifactWrapper != null ) {
 			artifactWrapper.addTo(project);
