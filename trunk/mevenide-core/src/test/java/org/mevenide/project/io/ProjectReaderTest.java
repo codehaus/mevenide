@@ -80,7 +80,7 @@ public class ProjectReaderTest extends TestCase {
 	}
 
 	public void testGetSourceDirectories() throws Exception {
-		Map sourceDirectories = projectReader.getSourceDirectories(pom);
+		Map sourceDirectories = projectReader.readSourceDirectories(pom);
 		
 //		Iterator it = sourceDirectories.keySet().iterator();
 //		while (it.hasNext()) {
