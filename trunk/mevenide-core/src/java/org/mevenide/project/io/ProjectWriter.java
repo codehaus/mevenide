@@ -19,6 +19,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 
@@ -186,12 +187,16 @@ public class ProjectWriter {
 		
 		project.setDependencies(dependencies);
 		write(project, pom);
-	
+		
+		File propertiesFile = new File(pom.getParent(), "project.properties");
+		
+		unsetOverriding(propertiesFile);
+		
 		//jaroverriding
 		for (int i = 0; i < nonResolvedDependencies.size(); i++) {
 			Dependency dependency = (Dependency)nonResolvedDependencies.get(i); 
 			//if ( !DependencyUtil.isValid(dependency) ) {
-			jarOverride(dependency.getArtifact(), new File(pom.getParent(), "project.properties"), pom);
+			jarOverride(dependency.getArtifact(), propertiesFile, pom);
 			//}
 		} 
 	}
@@ -248,6 +253,7 @@ public class ProjectWriter {
 			Properties properties = new Properties();
 			properties.load(new FileInputStream(propertiesFile));
 			
+			
 			properties.setProperty("maven.jar.override", "on");
 			
 			properties.setProperty("maven.jar." + dep.getArtifactId(), path);
@@ -266,4 +272,18 @@ public class ProjectWriter {
 		}
 		
 	} 
+	
+	private void unsetOverriding(File propertiesFile) throws Exception {
+		Properties properties = new Properties();
+		properties.load(new FileInputStream(propertiesFile));
+					
+		List keys = Collections.list(properties.keys());
+	    for (int i = 0; i < keys.size(); i++) {
+		    Object key = keys.get(i);
+		    if ( key instanceof String && ((String) key).startsWith("maven.jar.") ) {
+		  	    properties.remove(key);
+		    }
+	    }
+	    properties.store(new FileOutputStream(propertiesFile), null);
+	}
 }
