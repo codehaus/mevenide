@@ -14,8 +14,10 @@
  */
 package org.mevenide.ui.eclipse.sync.pom;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.mevenide.project.io.ProjectWriter;
+import org.mevenide.ui.eclipse.sync.IPathResolverDelegate;
 
 
 /**
@@ -32,24 +34,30 @@ public class ArtifactVisitor {
 		this.pomSynchronizer = synchronizer;
 	}
 	
-	public void add(SourceEntry entry) {
+	public void add(SourceEntry entry) throws Exception {
 		
-//		IClasspathEntry classpathEntry = entry.getClasspathEntry();
+		IClasspathEntry classpathEntry = entry.getClasspathEntry();
 		
-//		String pathToAdd = pathResolver.computePathToAdd(classpathEntry, project);
-//
-//		ProjectWriter.getWriter().addSource(
-//			pathToAdd, 
-//			getPom(), 
-//			pathResolver.getMavenSourceType(classpathEntry, project)
-//		);
+		ProjectWriter writer = ProjectWriter.getWriter();
+		IPathResolverDelegate pathResolver = pomSynchronizer.getPathResolver();
+		IProject project = pomSynchronizer.getProject();
+		String pathToAdd = pathResolver.computePath(classpathEntry, project);
+
+		writer.addSource(
+			pathToAdd, 
+			pomSynchronizer.getPom(), 
+			pathResolver.getMavenSourceType(classpathEntry, project)
+		);
 	}
 	
 	public void add(DependencyEntry entry) throws Exception {
 		IClasspathEntry classpathEntry = entry.getClasspathEntry();
+		
 		ProjectWriter writer = ProjectWriter.getWriter();
+		IPathResolverDelegate pathResolver = pomSynchronizer.getPathResolver();
+		
 		writer.addDependency(
-			pomSynchronizer.getPathResolver().getAbsolutePath(classpathEntry.getPath()), 
+			pathResolver.getAbsolutePath(classpathEntry.getPath()), 
 			pomSynchronizer.getPom()
 		);
 	}

@@ -31,7 +31,7 @@ public interface IPathResolverDelegate {
 	 * @param classpathEntry
 	 * @return
 	 */
-	public abstract String computePathToAdd(
+	public abstract String computePath(
 		IClasspathEntry classpathEntry,
 		IProject project);
         
