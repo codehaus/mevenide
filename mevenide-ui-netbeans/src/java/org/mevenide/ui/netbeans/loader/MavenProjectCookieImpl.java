@@ -48,6 +48,8 @@
  */
 package org.mevenide.ui.netbeans.loader;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -66,10 +68,13 @@ import org.mevenide.ui.netbeans.MavenProjectCookie;
 import org.apache.maven.project.Project;
 import org.mevenide.environment.LocationFinderAggregator;
 import org.openide.ErrorManager;
+import org.openide.filesystems.FileChangeAdapter;
+import org.openide.filesystems.FileEvent;
 import org.openide.filesystems.FileUtil;
 import org.openide.loaders.DataObject;
 import org.openide.nodes.Node;
 import org.openide.nodes.PropertySupport;
+import org.openide.util.RequestProcessor;
 import org.openide.xml.XMLUtil;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
@@ -85,8 +90,8 @@ public class MavenProjectCookieImpl implements MavenProjectCookie, ArtifactCooki
 {
     private static Log log = LogFactory.getLog(MavenProjectCookieImpl.class);
     
-    private boolean loaded;
-    private boolean loadFailed;
+    private volatile boolean loaded;
+    private volatile boolean loadFailed;
     private File projectFile;
     private Project project;
     private LocationFinderAggregator locationResolver;
@@ -96,62 +101,68 @@ public class MavenProjectCookieImpl implements MavenProjectCookie, ArtifactCooki
     private File mavenCust;
     private List artefactLst;
     private String name;
-    //    private static final String[] simpleElements = {
-    //        "pomVersion",
-    //        "id",
-    //        "name",
-    //        "groupId",
-    //        "currentVersion",
-    //        "inceptionYear",
-    //        "package",
-    //        "logo",
-    //        "gumpRepositoryId",
-    //        "description",
-    //        "shortDescription",
-    //        "url",
-    //        "issueTrackingUrl",
-    //        "siteAddress",
-    //        "siteDirectory",
-    //        "distributionSite",
-    //        "distributionDirectory",
-    //        "extends"
-    //    };
+    private Object lock = new Object();
+    private PropertyChangeSupport support;
     
     /** Creates a new instance of MavenProjectCookieImpl */
     public MavenProjectCookieImpl(DataObject dobj)
     {
+        support = new PropertyChangeSupport(this);
         projectFile = FileUtil.toFile(dobj.getPrimaryFile());
         loaded = false;
         loadFailed = false;
-            locationResolver = new LocationFinderAggregator();
-            File parentDir = projectFile.getParentFile();
-            locationResolver.setEffectiveWorkingDirectory(parentDir.getAbsolutePath());
-            projectPropFile = new File(parentDir, FILENAME_PROJECT);
-            projectBuildPropFile = new File(parentDir, FILENAME_BUILD);
-            userBuildPropFile = new File(System.getProperty("user.home"), FILENAME_BUILD);
-            mavenCust = new File(parentDir, FILENAME_MAVEN);
+        locationResolver = new LocationFinderAggregator();
+        File parentDir = projectFile.getParentFile();
+        locationResolver.setEffectiveWorkingDirectory(parentDir.getAbsolutePath());
+        projectPropFile = new File(parentDir, FILENAME_PROJECT);
+        projectBuildPropFile = new File(parentDir, FILENAME_BUILD);
+        userBuildPropFile = new File(System.getProperty("user.home"), FILENAME_BUILD);
+        mavenCust = new File(parentDir, FILENAME_MAVEN);
+        dobj.getPrimaryFile().addFileChangeListener(new FileChangeAdapter()
+        {
+                public void fileChanged (FileEvent fe) {
+                    try {
+                        log.debug("Project File changed" + fe.getFile());
+                        reloadProject();
+                    } catch (Exception exc)
+                    {
+                        log.warn("Exception thrown while reloading project", exc);
+                        //TODO ignore for now.. shall it throw something anyway?
+                        // load() consumes the exceptions..
+                    }
+                }
+        });
     }
     
     private void load()
     {
         log.debug("Loading ProjectCookie: " + projectFile);
-        if (projectFile != null)
+        if (projectFile != null && !loaded)
         {
-            try
+            Project oldProject = project;
+            synchronized (lock)
             {
-                project = MavenUtils.getProject(projectFile);
-            } catch (Exception io)
-            {
-                ErrorManager.getDefault().notify(ErrorManager.INFORMATIONAL, io);
-                log.warn("Failed loading project", io);
-                loaded = true;
-                loadFailed = true;
-                return;
+                if (loaded) return;
+                try
+                {
+                    log.debug("timestamp - reading project");
+                    project = MavenUtils.getProject(projectFile);
+                    log.debug("timestamp - reading project finished.");
+                    log.debug("timestamp - reading artifacts");
+                    artefactLst = ArtifactListBuilder.build(project);
+                    log.debug("timestamp - reading artifacts finished.");
+                    loaded = true;
+                    loadFailed = false;
+                } catch (Exception io)
+                {
+                    ErrorManager.getDefault().notify(ErrorManager.INFORMATIONAL, io);
+                    log.warn("Failed loading project", io);
+                    loaded = true;
+                    loadFailed = true;
+                }
             }
-            artefactLst = ArtifactListBuilder.build(project);
+            firePropertyChange(PROP_PROJECT, oldProject, project);
         }
-        loaded = true;
-        loadFailed = false;
     }
     
     public File getMavenCustomFile()
@@ -181,7 +192,7 @@ public class MavenProjectCookieImpl implements MavenProjectCookie, ArtifactCooki
 
     public String getProjectName()
     {
-        if (loaded && !loadFailed)
+        if (loaded && !loadFailed && project != null)
         {
             return project.getArtifactId() + ":" + project.getCurrentVersion();
         }
@@ -226,7 +237,15 @@ public class MavenProjectCookieImpl implements MavenProjectCookie, ArtifactCooki
     {
         log.debug("Loading properties of " + projectFile);
         if (!loaded) { 
-            load();
+            RequestProcessor.getDefault().post(new Runnable()
+            {
+                public void run()
+                {
+                     load();
+                }
+            });
+            // before loading, we will not display any props, wait for them to load.
+            return new Node.Property[0];
         }
         Node.Property[] toReturn;
         if (project == null)
@@ -290,6 +309,45 @@ public class MavenProjectCookieImpl implements MavenProjectCookie, ArtifactCooki
         }
         return artefactLst;
     }    
+    
+    public void addPropertyChangeListener(PropertyChangeListener listener)
+    {
+        log.debug("addpropertychangelistener" + listener.getClass());
+        support.addPropertyChangeListener(listener);
+    }
+    
+    public void removePropertyChangeListener(PropertyChangeListener listener)
+    {
+        support.removePropertyChangeListener(listener);
+    }
+    
+    protected final void firePropertyChange(String propName, Object oldVal, Object newVal)
+    {
+        log.debug("firePropertyChange");
+//        String oldValStr = (oldVal == null ? "null" : "" + oldVal.hashCode());
+//        String newValStr = (newVal == null ? "null" : "" + newVal.hashCode());
+//        log.debug(" old=" + oldValStr);
+//        log.debug(" new=" + newValStr);
+        if (oldVal != null && newVal != null && oldVal.hashCode() == newVal.hashCode())
+        {
+            //HACK kind of hack, if the oldval and NewVal are the same instance, won't trigger property chnage.
+            // however the Project changed for example..
+           oldVal = null; 
+        }
+        support.firePropertyChange(propName, oldVal, newVal);
+    }
+
+    /**
+     * reloads the maven project..
+     */
+    public void reloadProject() throws Exception
+    {
+        synchronized (lock) {
+            loaded = false;
+            loadFailed = false;
+        } 
+        load();
+    }
     
     /**
      * simple content handler to get the artifactID and version of the project only.

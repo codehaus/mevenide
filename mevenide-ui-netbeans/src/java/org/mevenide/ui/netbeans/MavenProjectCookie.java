@@ -49,6 +49,7 @@
 
 package org.mevenide.ui.netbeans;
 
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import org.apache.maven.project.Project;
 import org.openide.nodes.Node;
@@ -62,7 +63,8 @@ public interface MavenProjectCookie extends  Node.Cookie
     public String FILENAME_BUILD = "build.properties"; //NOI18N
     public String FILENAME_PROJECT = "project.properties"; //NOI18N
     public String FILENAME_MAVEN = "maven.xml"; //NOI18N
-    
+  
+    public static final String PROP_PROJECT = "Project"; //NOI18N    
     /**
      * ${project.home}/project.xml
      */
@@ -105,5 +107,14 @@ public interface MavenProjectCookie extends  Node.Cookie
      returns org.apache.maven.Project
      */
     Project getMavenProject();
+    
+    void addPropertyChangeListener(PropertyChangeListener listener);
+    void removePropertyChangeListener(PropertyChangeListener listener);
+    
+    /**
+     * TODO: throws a specialized exception when the project file was changed and data would be lost.
+     */
+    void reloadProject() throws Exception;
+
 }
  
