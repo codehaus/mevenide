@@ -45,7 +45,8 @@ import org.eclipse.ui.texteditor.IElementStateListener;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.mevenide.project.ProjectComparator;
 import org.mevenide.project.ProjectComparatorFactory;
-import org.mevenide.project.io.DefaultProjectMarshaller;
+import org.mevenide.project.io.CarefulProjectMarshaller;
+import org.mevenide.project.io.IProjectMarshaller;
 import org.mevenide.project.io.ProjectReader;
 import org.mevenide.ui.eclipse.editors.pages.BuildPage;
 import org.mevenide.ui.eclipse.editors.pages.DependenciesPage;
@@ -73,7 +74,7 @@ public class MevenidePomEditor extends FormEditor {
 
     private Project pom;
     private Project parentPom;
-    private DefaultProjectMarshaller marshaller;
+    private IProjectMarshaller marshaller;
     private DefaultProjectUnmarshaller unmarshaller;
     private ProjectComparator comparator;
     private PomEditorSelectionProvider selectionProvider = new PomEditorSelectionProvider(this);
@@ -123,7 +124,7 @@ public class MevenidePomEditor extends FormEditor {
     public MevenidePomEditor() {
         super();
         try {
-            marshaller = new DefaultProjectMarshaller();
+            marshaller = new CarefulProjectMarshaller();
             unmarshaller = new DefaultProjectUnmarshaller();
         } catch (Exception e) {
             log.error("Could not create a POM marshaller", e);

@@ -28,7 +28,7 @@
             <version>3.8.1</version>
             <type>jar</type>
             <properties>
-            	<eclipse.plugin.bundle>true</eclipse.plugin.bundle>
+            	<eclipse.plugin.bundle>false</eclipse.plugin.bundle>
             </properties>
         </dependency>
         <dependency>
@@ -37,6 +37,7 @@
             <version>1.0b8</version>
             <type>jar</type>
             <properties>
+            	<eclipse.plugin.bundle>true</eclipse.plugin.bundle>
                 <netbeans.module.dep>impl</netbeans.module.dep>
             </properties>
         </dependency>

@@ -57,11 +57,11 @@ public class ProjectWriter {
 	
 	private IResourceResolver resourceResolver = new DefaultResourceResolver();
 	private ProjectReader projectReader ;
-	private DefaultProjectMarshaller marshaller ; 
+	private IProjectMarshaller marshaller ; 
 	private JarOverrideWriter jarOverrideWriter = new JarOverrideWriter(this);
 	
 	private ProjectWriter() throws Exception  {
-		marshaller = new DefaultProjectMarshaller();
+		marshaller = new CarefulProjectMarshaller();
 		projectReader = ProjectReader.getReader();
 	}
 	
@@ -208,7 +208,7 @@ public class ProjectWriter {
 //				project.getBuild().getUnitTest().setResources(new ArrayList());
 //			}
 			
-			IProjectMarshaller iProjectMarshaller = new DefaultProjectMarshaller();
+			IProjectMarshaller iProjectMarshaller = new CarefulProjectMarshaller();
 			iProjectMarshaller.marshall(new FileWriter(pomFile), project);
 	
 		}
@@ -224,7 +224,7 @@ public class ProjectWriter {
 		else {
 			project.setExtend(parentPom);
 		}
-		IProjectMarshaller iProjectMarshaller = new DefaultProjectMarshaller();
+		IProjectMarshaller iProjectMarshaller = new CarefulProjectMarshaller();
 		iProjectMarshaller.marshall(new FileWriter(pomFile), project);
 	}
 	
