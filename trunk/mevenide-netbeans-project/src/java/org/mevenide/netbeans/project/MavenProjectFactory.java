@@ -22,6 +22,7 @@ import java.io.IOException;
 import org.netbeans.api.project.Project;
 import org.netbeans.spi.project.ProjectFactory;
 import org.netbeans.spi.project.ProjectState;
+import org.openide.ErrorManager;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 
@@ -62,6 +63,7 @@ public class MavenProjectFactory implements ProjectFactory
             Project proj =  new MavenProject(projectFile, projectDiskFile);
             return proj;
         } catch (Exception exc) {
+            ErrorManager.getDefault().getInstance(MavenProjectFactory.class.getName()).notify(ErrorManager.INFORMATIONAL, exc);
             return null;
         }
 //        Document projectXml;
