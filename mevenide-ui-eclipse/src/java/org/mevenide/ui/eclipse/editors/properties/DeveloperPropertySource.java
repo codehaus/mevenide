@@ -18,7 +18,7 @@
  *
  * 3. The end-user documentation included with the redistribution,
  *    if any, must include the following acknowledgment:
- *       "This product includes software licensed under 
+ *       "This product includes software contributord under 
  *        Apache Software License (http://www.apache.org/)."
  *    Alternately, this acknowledgment may appear in the software itself,
  *    if and wherever such third-party acknowledgments normally appear.
@@ -48,59 +48,80 @@
  */
 package org.mevenide.ui.eclipse.editors.properties;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.maven.project.Branch;
-import org.apache.maven.project.Contributor;
 import org.apache.maven.project.Developer;
-import org.apache.maven.project.License;
-import org.apache.maven.project.MailingList;
-import org.apache.maven.project.Version;
-import org.eclipse.ui.views.properties.IPropertySource;
-import org.eclipse.ui.views.properties.IPropertySourceProvider;
+import org.eclipse.ui.views.properties.IPropertyDescriptor;
+import org.eclipse.ui.views.properties.TextPropertyDescriptor;
+import org.mevenide.util.MevenideUtils;
 
 /**
- * @author Jeff Bonevich (jeff@bonevich.com)
+ * @author Jeffrey Bonevich (jeff@bonevich.com)
  * @version $Id$
  */
-public class PomPropertySourceProvider implements IPropertySourceProvider {
+public class DeveloperPropertySource extends ContributorPropertySource {
 
-	private static final Log log = LogFactory.getLog(PomPropertySourceProvider.class);
+	private static final String DEVELOPER_ID = "id";
 
-	public PomPropertySourceProvider() {
+	public DeveloperPropertySource(Developer developer) {
+		super(developer);
 	}
 
-	public IPropertySource getPropertySource(Object object) {
-		if (log.isDebugEnabled()) {
-			log.debug("getPropertySource: looking for source for " + object);
+	protected void initializeDescriptors() {
+		descriptors = new IPropertyDescriptor[7];
+		descriptors[0] = new TextPropertyDescriptor(
+			CONTRIBUTOR_NAME,
+			CONTRIBUTOR_NAME
+		);
+		descriptors[1] = new TextPropertyDescriptor(
+			DEVELOPER_ID,
+			DEVELOPER_ID
+		);
+		descriptors[2] = new TextPropertyDescriptor(
+			CONTRIBUTOR_EMAIL,
+			CONTRIBUTOR_EMAIL
+		);
+		descriptors[3] = new TextPropertyDescriptor(
+			CONTRIBUTOR_ORGANIZATION,
+			CONTRIBUTOR_ORGANIZATION
+		);
+		descriptors[4] = new TextPropertyDescriptor(
+			CONTRIBUTOR_ROLES,
+			CONTRIBUTOR_ROLES
+		);
+		descriptors[5] = new TextPropertyDescriptor(
+			CONTRIBUTOR_URL,
+			CONTRIBUTOR_URL
+		);
+		descriptors[6] = new TextPropertyDescriptor(
+			CONTRIBUTOR_TIMEZONE,
+			CONTRIBUTOR_TIMEZONE
+		);
+	}
+
+	public Object getPropertyValue(Object id) {
+		if (DEVELOPER_ID.equals(id)) {
+			return valueOrEmptyString(contributor.getId());
 		}
-		if (object instanceof IPropertySource) {
-			return (IPropertySource) object;
-		}
-		return getPomPropertySource(object);
+		return super.getPropertyValue(id);
 	}
 	
-	public IPomPropertySource getPomPropertySource(Object object) {
-		if (object instanceof License) {
-			return new LicensePropertySource((License) object);
+	public boolean isPropertySet(Object id) {
+		if (DEVELOPER_ID.equals(id)) {
+			return !isEmpty(contributor.getId());
 		}
-		if (object instanceof Contributor && !(object instanceof Developer) ) {
-			return new ContributorPropertySource((Contributor) object);
-		}
-		if (object instanceof Developer) {
-			return new DeveloperPropertySource((Developer) object);
-		}
-		if (object instanceof MailingList) {
-			return new MailingListPropertySource((MailingList) object);
-		}
-		if (object instanceof Version) {
-			return new VersionPropertySource((Version) object);
-		}
-		if (object instanceof Branch) {
-			return new BranchPropertySource((Branch) object);
-		}
-		log.error("Unable to create a PropertySource for " + object);
-		return null;
+		return super.isPropertySet(id);
 	}
-
+	
+	/**
+	 * @see org.mevenide.ui.eclipse.editors.properties.ContributorPropertySource#setOtherProperties(java.lang.Object, java.lang.Object)
+	 */
+	protected String setOtherProperties(Object id, Object value) {
+		if (DEVELOPER_ID.equals(id)) {
+			String oldValue = contributor.getId();
+			if (MevenideUtils.notEquivalent(value, oldValue)) {
+				contributor.setId(value.toString());
+			}
+			return oldValue != null ? oldValue : EMPTY_STR;
+		}
+		return super.setOtherProperties(id, value);
+	}
 }

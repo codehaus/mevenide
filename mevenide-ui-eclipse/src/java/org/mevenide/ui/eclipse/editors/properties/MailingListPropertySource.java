@@ -48,13 +48,9 @@
  */
 package org.mevenide.ui.eclipse.editors.properties;
 
-import java.util.Iterator;
-import java.util.Set;
-
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.maven.project.Contributor;
+import org.apache.maven.project.MailingList;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.TextPropertyDescriptor;
 import org.mevenide.util.MevenideUtils;
@@ -63,56 +59,43 @@ import org.mevenide.util.MevenideUtils;
  * @author Jeffrey Bonevich (jeff@bonevich.com)
  * @version $Id$
  */
-public class ContributorPropertySource extends AbstractPomPropertySource {
+public class MailingListPropertySource extends AbstractPomPropertySource {
 
-	private static final Log log = LogFactory.getLog(ContributorPropertySource.class);
+	private static final Log log = LogFactory.getLog(MailingListPropertySource.class);
 
-	protected static final String CONTRIBUTOR_NAME = "name";
-	protected static final String CONTRIBUTOR_EMAIL = "email";
-	protected static final String CONTRIBUTOR_ORGANIZATION = "organization";
-	protected static final String CONTRIBUTOR_ROLES = "roles";
-	protected static final String CONTRIBUTOR_URL = "url";
-	protected static final String CONTRIBUTOR_TIMEZONE = "timezone";
+	private static final String MAILINGLIST_NAME = "name";
+	private static final String MAILINGLIST_SUBSCRIBE = "subscribe";
+	private static final String MAILINGLIST_UNSUBSCRIBE = "unsubscribe";
+	private static final String MAILINGLIST_ARCHIVE = "archive";
 
-	protected Contributor contributor;
+	private MailingList mailingList;
 	
-	protected IPropertyDescriptor[] descriptors;
-	
-	public ContributorPropertySource(Contributor contributor) {
-		this.contributor = contributor;
-		initializeDescriptors();
-	}
-
-	protected void initializeDescriptors() {
-		descriptors = new IPropertyDescriptor[6];
+	private IPropertyDescriptor[] descriptors = new IPropertyDescriptor[4];
+	{
 		descriptors[0] = new TextPropertyDescriptor(
-			CONTRIBUTOR_NAME,
-			CONTRIBUTOR_NAME
+			MAILINGLIST_NAME,
+			MAILINGLIST_NAME
 		);
 		descriptors[1] = new TextPropertyDescriptor(
-			CONTRIBUTOR_EMAIL,
-			CONTRIBUTOR_EMAIL
+			MAILINGLIST_SUBSCRIBE,
+			MAILINGLIST_SUBSCRIBE
 		);
 		descriptors[2] = new TextPropertyDescriptor(
-			CONTRIBUTOR_ORGANIZATION,
-			CONTRIBUTOR_ORGANIZATION
+			MAILINGLIST_UNSUBSCRIBE,
+			MAILINGLIST_UNSUBSCRIBE
 		);
 		descriptors[3] = new TextPropertyDescriptor(
-			CONTRIBUTOR_ROLES,
-			CONTRIBUTOR_ROLES
+			MAILINGLIST_ARCHIVE,
+			MAILINGLIST_ARCHIVE
 		);
-		descriptors[4] = new TextPropertyDescriptor(
-			CONTRIBUTOR_URL,
-			CONTRIBUTOR_URL
-		);
-		descriptors[5] = new TextPropertyDescriptor(
-			CONTRIBUTOR_TIMEZONE,
-			CONTRIBUTOR_TIMEZONE
-		);
+	}
+
+	public MailingListPropertySource(MailingList mailingList) {
+		this.mailingList = mailingList;
 	}
 
 	public Object getEditableValue() {
-		return contributor.getName();
+		return mailingList.getName();
 	}
 
 	public IPropertyDescriptor[] getPropertyDescriptors() {
@@ -123,54 +106,33 @@ public class ContributorPropertySource extends AbstractPomPropertySource {
 		if (log.isDebugEnabled()) {
 			log.debug("getPropertyValue called: " + id);
 		}
-		if (CONTRIBUTOR_NAME.equals(id)) {
-			return valueOrEmptyString(contributor.getName());
+		if (MAILINGLIST_NAME.equals(id)) {
+			return valueOrEmptyString(mailingList.getName());
 		}
-		else if (CONTRIBUTOR_EMAIL.equals(id)) {
-			return valueOrEmptyString(contributor.getEmail());
+		else if (MAILINGLIST_SUBSCRIBE.equals(id)) {
+			return valueOrEmptyString(mailingList.getSubscribe());
 		}
-		else if (CONTRIBUTOR_ORGANIZATION.equals(id)) {
-			return valueOrEmptyString(contributor.getOrganization());
+		else if (MAILINGLIST_UNSUBSCRIBE.equals(id)) {
+			return valueOrEmptyString(mailingList.getUnsubscribe());
 		}
-		else if (CONTRIBUTOR_ROLES.equals(id)) {
-			return getRolesString();
-		}
-		else if (CONTRIBUTOR_URL.equals(id)) {
-			return valueOrEmptyString(contributor.getUrl());
-		}
-		else if (CONTRIBUTOR_TIMEZONE.equals(id)) {
-			return valueOrEmptyString(contributor.getTimezone());
+		else if (MAILINGLIST_ARCHIVE.equals(id)) {
+			return valueOrEmptyString(mailingList.getArchive());
 		}
 		return null;
 	}
 	
-	private String getRolesString() {
-		Set roles = contributor.getRoles();
-		if (roles != null) {
-			Iterator itr = roles.iterator();
-			return StringUtils.join(itr, ",");
-		}
-		return EMPTY_STR;
-	}
-
 	public boolean isPropertySet(Object id) {
-		if (CONTRIBUTOR_NAME.equals(id)) {
-			return !isEmpty(contributor.getName());
+		if (MAILINGLIST_NAME.equals(id)) {
+			return !isEmpty(mailingList.getName());
 		}
-		else if (CONTRIBUTOR_EMAIL.equals(id)) {
-			return !isEmpty(contributor.getEmail());
+		else if (MAILINGLIST_SUBSCRIBE.equals(id)) {
+			return !isEmpty(mailingList.getSubscribe());
 		}
-		else if (CONTRIBUTOR_ORGANIZATION.equals(id)) {
-			return !isEmpty(contributor.getOrganization());
+		else if (MAILINGLIST_UNSUBSCRIBE.equals(id)) {
+			return !isEmpty(mailingList.getUnsubscribe());
 		}
-		else if (CONTRIBUTOR_ROLES.equals(id)) {
-			return contributor.getRoles() != null && !contributor.getRoles().isEmpty();
-		}
-		else if (CONTRIBUTOR_URL.equals(id)) {
-			return !isEmpty(contributor.getUrl());
-		}
-		else if (CONTRIBUTOR_TIMEZONE.equals(id)) {
-			return !isEmpty(contributor.getTimezone());
+		else if (MAILINGLIST_ARCHIVE.equals(id)) {
+			return !isEmpty(mailingList.getArchive());
 		}
 		return false;
 	}
@@ -188,65 +150,37 @@ public class ContributorPropertySource extends AbstractPomPropertySource {
 		String newValue = value.toString();
 		String oldValue = null;
 		boolean changed = false;
-		if (CONTRIBUTOR_NAME.equals(id)) {
-			oldValue = contributor.getName();
+		if (MAILINGLIST_NAME.equals(id)) {
+			oldValue = mailingList.getName();
 			if (MevenideUtils.notEquivalent(newValue, oldValue)) {
-				contributor.setName(newValue);
+				mailingList.setName(newValue);
 				changed = true;
 			}
 		}
-		else if (CONTRIBUTOR_EMAIL.equals(id)) {
-			oldValue = contributor.getEmail();
+		else if (MAILINGLIST_SUBSCRIBE.equals(id)) {
+			oldValue = mailingList.getSubscribe();
 			if (MevenideUtils.notEquivalent(newValue, oldValue)) {
-				contributor.setEmail(newValue);
+				mailingList.setSubscribe(newValue);
 				changed = true;
 			}
 		}
-		else if (CONTRIBUTOR_ORGANIZATION.equals(id)) {
-			oldValue = contributor.getOrganization();
+		else if (MAILINGLIST_UNSUBSCRIBE.equals(id)) {
+			oldValue = mailingList.getUnsubscribe();
 			if (MevenideUtils.notEquivalent(newValue, oldValue)) {
-				contributor.setOrganization(newValue);
+				mailingList.setUnsubscribe(newValue);
 				changed = true;
 			}
 		}
-		else if (CONTRIBUTOR_ROLES.equals(id)) {
-			oldValue = getRolesString();
+		else if (MAILINGLIST_ARCHIVE.equals(id)) {
+			oldValue = mailingList.getArchive();
 			if (MevenideUtils.notEquivalent(newValue, oldValue)) {
-				updateRoles(newValue);
+				mailingList.setArchive(newValue);
 				changed = true;
 			}
 		}
-		else if (CONTRIBUTOR_URL.equals(id)) {
-			oldValue = contributor.getUrl();
-			if (MevenideUtils.notEquivalent(newValue, oldValue)) {
-				contributor.setUrl(newValue);
-				changed = true;
-			}
-		}
-		else if (CONTRIBUTOR_TIMEZONE.equals(id)) {
-			oldValue = contributor.getTimezone();
-			if (MevenideUtils.notEquivalent(newValue, oldValue)) {
-				contributor.setTimezone(newValue);
-				changed = true;
-			}
-		}
-		oldValue = setOtherProperties(id, value);
-		if (changed || oldValue != null)
+		if (changed)
 		{
 			firePropertyChangeEvent(id.toString(), oldValue, newValue);
-		}
-	}
-
-	protected String setOtherProperties(Object id, Object value) {
-		return null;
-	}
-
-	private void updateRoles(String newValue) {
-		Set originalRoles = contributor.getRoles();
-		contributor.getRoles().removeAll(originalRoles);
-		String[] roles = newValue.split("\\s*,\\s*");
-		for (int i = 0; i < roles.length; i++) {
-			contributor.addRole(roles[i]);
 		}
 	}
 
@@ -254,13 +188,13 @@ public class ContributorPropertySource extends AbstractPomPropertySource {
 		if (log.isDebugEnabled()) {
 			log.debug("getLabel called for " + o);
 		}
-		return contributor.getName() != null ? contributor.getName() : "[unknown]";
+		return mailingList.getName() != null ? mailingList.getName() : "[unknown]";
 	}
 
 	/**
 	 * @see org.mevenide.ui.eclipse.editors.pages.AbstractPomPropertySource#getSource()
 	 */
 	public Object getSource() {
-		return contributor;
+		return mailingList;
 	}
 }

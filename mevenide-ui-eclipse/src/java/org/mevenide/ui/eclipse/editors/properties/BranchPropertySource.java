@@ -18,7 +18,7 @@
  *
  * 3. The end-user documentation included with the redistribution,
  *    if any, must include the following acknowledgment:
- *       "This product includes software licensed under 
+ *       "This product includes software contributord under 
  *        Apache Software License (http://www.apache.org/)."
  *    Alternately, this acknowledgment may appear in the software itself,
  *    if and wherever such third-party acknowledgments normally appear.
@@ -50,9 +50,7 @@ package org.mevenide.ui.eclipse.editors.properties;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.maven.project.License;
-import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.ui.views.properties.ComboBoxPropertyDescriptor;
+import org.apache.maven.project.Branch;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.TextPropertyDescriptor;
 import org.mevenide.util.MevenideUtils;
@@ -61,61 +59,28 @@ import org.mevenide.util.MevenideUtils;
  * @author Jeffrey Bonevich (jeff@bonevich.com)
  * @version $Id$
  */
-public class LicensePropertySource extends AbstractPomPropertySource {
+public class BranchPropertySource extends AbstractPomPropertySource {
 
-	private static final Log log = LogFactory.getLog(LicensePropertySource.class);
+	private static final Log log = LogFactory.getLog(BranchPropertySource.class);
 
-	private static final String LICENSE_NAME = "name";
-	private static final String LICENSE_URL = "url";
-	private static final String LICENSE_DIST = "distribution";
-	private static final String LICENSE_COMMENTS = "comments";
+	private static final String BRANCH_TAG = "tag";
 
-	private static final String LICENSE_DIST_MANUAL = "manual";
-	private static final String LICENSE_DIST_REPO = "repo";
-
-	private static final Integer LICENSE_DIST_EMPTY_INDEX = new Integer(0);
-	private static final Integer LICENSE_DIST_MANUAL_INDEX = new Integer(1);
-	private static final Integer LICENSE_DIST_REPO_INDEX = new Integer(2);
-
-	private License license;
+	private Branch branch;
 	
-	private IPropertyDescriptor[] descriptors = new IPropertyDescriptor[4];
+	private IPropertyDescriptor[] descriptors = new IPropertyDescriptor[1];
 	{
 		descriptors[0] = new TextPropertyDescriptor(
-			LICENSE_NAME,
-			LICENSE_NAME
-		);
-		descriptors[1] = new TextPropertyDescriptor(
-			LICENSE_URL,
-			LICENSE_URL
-		);
-		descriptors[2] = new ComboBoxPropertyDescriptor(
-			LICENSE_DIST,
-			LICENSE_DIST,
-			new String[] {EMPTY_STR, LICENSE_DIST_MANUAL, LICENSE_DIST_REPO}
-		);
-		((ComboBoxPropertyDescriptor) descriptors[2]).setLabelProvider(
-			new LabelProvider() {
-				public String getText(Object element) {
-					if (element instanceof Integer) {
-						return getDistributionForIndex((Integer) element);
-					}
-					return super.getText(element);
-				}
-			}
-		);
-		descriptors[3] = new TextPropertyDescriptor(
-			LICENSE_COMMENTS,
-			LICENSE_COMMENTS
+			BRANCH_TAG,
+			BRANCH_TAG
 		);
 	}
 
-	public LicensePropertySource(License license) {
-		this.license = license;
+	public BranchPropertySource(Branch branch) {
+		this.branch = branch;
 	}
 
 	public Object getEditableValue() {
-		return license.getName();
+		return branch.getTag();
 	}
 
 	public IPropertyDescriptor[] getPropertyDescriptors() {
@@ -126,47 +91,15 @@ public class LicensePropertySource extends AbstractPomPropertySource {
 		if (log.isDebugEnabled()) {
 			log.debug("getPropertyValue called: " + id);
 		}
-		if (LICENSE_NAME.equals(id)) {
-			return valueOrEmptyString(license.getName());
-		}
-		else if (LICENSE_URL.equals(id)) {
-			return valueOrEmptyString(license.getUrl());
-		}
-		else if (LICENSE_DIST.equals(id)) {
-			return getIndexOfDistribution();
-		}
-		else if (LICENSE_COMMENTS.equals(id)) {
-			return valueOrEmptyString(license.getComments());
+		if (BRANCH_TAG.equals(id)) {
+			return valueOrEmptyString(branch.getTag());
 		}
 		return null;
 	}
 	
-	private Integer getIndexOfDistribution() {
-		String dist = license.getDistribution();
-		if (log.isDebugEnabled()) {
-			log.debug("getIndexOfDistribution called: " + dist);
-		}
-		if (LICENSE_DIST_MANUAL.equals(dist)) {
-			return LICENSE_DIST_MANUAL_INDEX;
-		}
-		if (LICENSE_DIST_REPO.equals(dist)) {
-			return LICENSE_DIST_REPO_INDEX;
-		}
-		return LICENSE_DIST_EMPTY_INDEX;
-	}
-	
 	public boolean isPropertySet(Object id) {
-		if (LICENSE_NAME.equals(id)) {
-			return !isEmpty(license.getName());
-		}
-		else if (LICENSE_URL.equals(id)) {
-			return !isEmpty(license.getUrl());
-		}
-		else if (LICENSE_DIST.equals(id)) {
-			return !isEmpty(license.getDistribution());
-		}
-		else if (LICENSE_COMMENTS.equals(id)) {
-			return !isEmpty(license.getComments());
+		if (BRANCH_TAG.equals(id)) {
+			return !isEmpty(branch.getTag());
 		}
 		return false;
 	}
@@ -184,32 +117,10 @@ public class LicensePropertySource extends AbstractPomPropertySource {
 		String newValue = value.toString();
 		String oldValue = null;
 		boolean changed = false;
-		if (LICENSE_NAME.equals(id)) {
-			oldValue = license.getName();
+		if (BRANCH_TAG.equals(id)) {
+			oldValue = branch.getTag();
 			if (MevenideUtils.notEquivalent(newValue, oldValue)) {
-				license.setName(newValue);
-				changed = true;
-			}
-		}
-		else if (LICENSE_URL.equals(id)) {
-			oldValue = license.getUrl();
-			if (MevenideUtils.notEquivalent(newValue, oldValue)) {
-				license.setUrl(newValue);
-				changed = true;
-			}
-		}
-		else if (LICENSE_DIST.equals(id)) {
-			oldValue = license.getDistribution();
-			newValue = getDistributionForIndex((Integer) value);
-			if (MevenideUtils.notEquivalent(newValue, oldValue)) {
-				license.setDistribution(newValue);
-				changed = true;
-			}
-		}
-		else if (LICENSE_COMMENTS.equals(id)) {
-			oldValue = license.getComments();
-			if (MevenideUtils.notEquivalent(newValue, oldValue)) {
-				license.setComments(newValue);
+				branch.setTag(newValue);
 				changed = true;
 			}
 		}
@@ -219,27 +130,17 @@ public class LicensePropertySource extends AbstractPomPropertySource {
 		}
 	}
 
-	private String getDistributionForIndex(Integer index) {
-		if (LICENSE_DIST_MANUAL_INDEX.equals(index)) {
-			return LICENSE_DIST_MANUAL;
-		}
-		if (LICENSE_DIST_REPO_INDEX.equals(index)) {
-			return LICENSE_DIST_REPO;
-		}
-		return EMPTY_STR;
-	}
-
 	public String getLabel(Object o) {
 		if (log.isDebugEnabled()) {
 			log.debug("getLabel called for " + o);
 		}
-		return license.getName() != null ? license.getName() : "[unnamed]";
+		return branch.getTag() != null ? branch.getTag() : "[unknown]";
 	}
 
 	/**
 	 * @see org.mevenide.ui.eclipse.editors.pages.AbstractPomPropertySource#getSource()
 	 */
 	public Object getSource() {
-		return license;
+		return branch;
 	}
 }

@@ -48,13 +48,9 @@
  */
 package org.mevenide.ui.eclipse.editors.properties;
 
-import java.util.Iterator;
-import java.util.Set;
-
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.maven.project.Contributor;
+import org.apache.maven.project.Version;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.TextPropertyDescriptor;
 import org.mevenide.util.MevenideUtils;
@@ -63,56 +59,38 @@ import org.mevenide.util.MevenideUtils;
  * @author Jeffrey Bonevich (jeff@bonevich.com)
  * @version $Id$
  */
-public class ContributorPropertySource extends AbstractPomPropertySource {
+public class VersionPropertySource extends AbstractPomPropertySource {
 
-	private static final Log log = LogFactory.getLog(ContributorPropertySource.class);
+	private static final Log log = LogFactory.getLog(VersionPropertySource.class);
 
-	protected static final String CONTRIBUTOR_NAME = "name";
-	protected static final String CONTRIBUTOR_EMAIL = "email";
-	protected static final String CONTRIBUTOR_ORGANIZATION = "organization";
-	protected static final String CONTRIBUTOR_ROLES = "roles";
-	protected static final String CONTRIBUTOR_URL = "url";
-	protected static final String CONTRIBUTOR_TIMEZONE = "timezone";
+	private static final String VERSION_NAME = "name";
+	private static final String VERSION_ID = "id";
+	private static final String VERSION_TAG = "tag";
 
-	protected Contributor contributor;
+	private Version version;
 	
-	protected IPropertyDescriptor[] descriptors;
-	
-	public ContributorPropertySource(Contributor contributor) {
-		this.contributor = contributor;
-		initializeDescriptors();
-	}
-
-	protected void initializeDescriptors() {
-		descriptors = new IPropertyDescriptor[6];
+	private IPropertyDescriptor[] descriptors = new IPropertyDescriptor[3];
+	{
 		descriptors[0] = new TextPropertyDescriptor(
-			CONTRIBUTOR_NAME,
-			CONTRIBUTOR_NAME
+			VERSION_NAME,
+			VERSION_NAME
 		);
 		descriptors[1] = new TextPropertyDescriptor(
-			CONTRIBUTOR_EMAIL,
-			CONTRIBUTOR_EMAIL
+			VERSION_ID,
+			VERSION_ID
 		);
 		descriptors[2] = new TextPropertyDescriptor(
-			CONTRIBUTOR_ORGANIZATION,
-			CONTRIBUTOR_ORGANIZATION
+			VERSION_TAG,
+			VERSION_TAG
 		);
-		descriptors[3] = new TextPropertyDescriptor(
-			CONTRIBUTOR_ROLES,
-			CONTRIBUTOR_ROLES
-		);
-		descriptors[4] = new TextPropertyDescriptor(
-			CONTRIBUTOR_URL,
-			CONTRIBUTOR_URL
-		);
-		descriptors[5] = new TextPropertyDescriptor(
-			CONTRIBUTOR_TIMEZONE,
-			CONTRIBUTOR_TIMEZONE
-		);
+	}
+
+	public VersionPropertySource(Version version) {
+		this.version = version;
 	}
 
 	public Object getEditableValue() {
-		return contributor.getName();
+		return version.getName();
 	}
 
 	public IPropertyDescriptor[] getPropertyDescriptors() {
@@ -123,54 +101,27 @@ public class ContributorPropertySource extends AbstractPomPropertySource {
 		if (log.isDebugEnabled()) {
 			log.debug("getPropertyValue called: " + id);
 		}
-		if (CONTRIBUTOR_NAME.equals(id)) {
-			return valueOrEmptyString(contributor.getName());
+		if (VERSION_NAME.equals(id)) {
+			return valueOrEmptyString(version.getName());
 		}
-		else if (CONTRIBUTOR_EMAIL.equals(id)) {
-			return valueOrEmptyString(contributor.getEmail());
+		else if (VERSION_ID.equals(id)) {
+			return valueOrEmptyString(version.getId());
 		}
-		else if (CONTRIBUTOR_ORGANIZATION.equals(id)) {
-			return valueOrEmptyString(contributor.getOrganization());
-		}
-		else if (CONTRIBUTOR_ROLES.equals(id)) {
-			return getRolesString();
-		}
-		else if (CONTRIBUTOR_URL.equals(id)) {
-			return valueOrEmptyString(contributor.getUrl());
-		}
-		else if (CONTRIBUTOR_TIMEZONE.equals(id)) {
-			return valueOrEmptyString(contributor.getTimezone());
+		else if (VERSION_TAG.equals(id)) {
+			return valueOrEmptyString(version.getTag());
 		}
 		return null;
 	}
 	
-	private String getRolesString() {
-		Set roles = contributor.getRoles();
-		if (roles != null) {
-			Iterator itr = roles.iterator();
-			return StringUtils.join(itr, ",");
-		}
-		return EMPTY_STR;
-	}
-
 	public boolean isPropertySet(Object id) {
-		if (CONTRIBUTOR_NAME.equals(id)) {
-			return !isEmpty(contributor.getName());
+		if (VERSION_NAME.equals(id)) {
+			return !isEmpty(version.getName());
 		}
-		else if (CONTRIBUTOR_EMAIL.equals(id)) {
-			return !isEmpty(contributor.getEmail());
+		else if (VERSION_ID.equals(id)) {
+			return !isEmpty(version.getId());
 		}
-		else if (CONTRIBUTOR_ORGANIZATION.equals(id)) {
-			return !isEmpty(contributor.getOrganization());
-		}
-		else if (CONTRIBUTOR_ROLES.equals(id)) {
-			return contributor.getRoles() != null && !contributor.getRoles().isEmpty();
-		}
-		else if (CONTRIBUTOR_URL.equals(id)) {
-			return !isEmpty(contributor.getUrl());
-		}
-		else if (CONTRIBUTOR_TIMEZONE.equals(id)) {
-			return !isEmpty(contributor.getTimezone());
+		else if (VERSION_TAG.equals(id)) {
+			return !isEmpty(version.getTag());
 		}
 		return false;
 	}
@@ -188,65 +139,30 @@ public class ContributorPropertySource extends AbstractPomPropertySource {
 		String newValue = value.toString();
 		String oldValue = null;
 		boolean changed = false;
-		if (CONTRIBUTOR_NAME.equals(id)) {
-			oldValue = contributor.getName();
+		if (VERSION_NAME.equals(id)) {
+			oldValue = version.getName();
 			if (MevenideUtils.notEquivalent(newValue, oldValue)) {
-				contributor.setName(newValue);
+				version.setName(newValue);
 				changed = true;
 			}
 		}
-		else if (CONTRIBUTOR_EMAIL.equals(id)) {
-			oldValue = contributor.getEmail();
+		else if (VERSION_ID.equals(id)) {
+			oldValue = version.getId();
 			if (MevenideUtils.notEquivalent(newValue, oldValue)) {
-				contributor.setEmail(newValue);
+				version.setId(newValue);
 				changed = true;
 			}
 		}
-		else if (CONTRIBUTOR_ORGANIZATION.equals(id)) {
-			oldValue = contributor.getOrganization();
+		else if (VERSION_TAG.equals(id)) {
+			oldValue = version.getTag();
 			if (MevenideUtils.notEquivalent(newValue, oldValue)) {
-				contributor.setOrganization(newValue);
+				version.setTag(newValue);
 				changed = true;
 			}
 		}
-		else if (CONTRIBUTOR_ROLES.equals(id)) {
-			oldValue = getRolesString();
-			if (MevenideUtils.notEquivalent(newValue, oldValue)) {
-				updateRoles(newValue);
-				changed = true;
-			}
-		}
-		else if (CONTRIBUTOR_URL.equals(id)) {
-			oldValue = contributor.getUrl();
-			if (MevenideUtils.notEquivalent(newValue, oldValue)) {
-				contributor.setUrl(newValue);
-				changed = true;
-			}
-		}
-		else if (CONTRIBUTOR_TIMEZONE.equals(id)) {
-			oldValue = contributor.getTimezone();
-			if (MevenideUtils.notEquivalent(newValue, oldValue)) {
-				contributor.setTimezone(newValue);
-				changed = true;
-			}
-		}
-		oldValue = setOtherProperties(id, value);
-		if (changed || oldValue != null)
+		if (changed)
 		{
 			firePropertyChangeEvent(id.toString(), oldValue, newValue);
-		}
-	}
-
-	protected String setOtherProperties(Object id, Object value) {
-		return null;
-	}
-
-	private void updateRoles(String newValue) {
-		Set originalRoles = contributor.getRoles();
-		contributor.getRoles().removeAll(originalRoles);
-		String[] roles = newValue.split("\\s*,\\s*");
-		for (int i = 0; i < roles.length; i++) {
-			contributor.addRole(roles[i]);
 		}
 	}
 
@@ -254,13 +170,13 @@ public class ContributorPropertySource extends AbstractPomPropertySource {
 		if (log.isDebugEnabled()) {
 			log.debug("getLabel called for " + o);
 		}
-		return contributor.getName() != null ? contributor.getName() : "[unknown]";
+		return version.getName() != null ? version.getName() : "[unknown]";
 	}
 
 	/**
 	 * @see org.mevenide.ui.eclipse.editors.pages.AbstractPomPropertySource#getSource()
 	 */
 	public Object getSource() {
-		return contributor;
+		return version;
 	}
 }
