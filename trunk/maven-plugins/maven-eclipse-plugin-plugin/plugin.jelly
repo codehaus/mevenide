@@ -15,10 +15,6 @@
 	  
   	</define:tag>
   	
-  	<define:tag name="export-property">
-		<j:set var="${property}" value="${pom.getPluginContext(context).getVariable(property)}" scope="parent"/>
-  	</define:tag>
-  	
   </define:taglib>
   
   
