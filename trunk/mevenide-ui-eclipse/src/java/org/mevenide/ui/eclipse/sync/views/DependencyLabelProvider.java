@@ -53,7 +53,10 @@ public class DependencyLabelProvider implements ITableLabelProvider {
 		if ( element instanceof DependencyContentProvider.DependencyInfo ) {
 			DependencyContentProvider.DependencyInfo info = 
 					(DependencyContentProvider.DependencyInfo) element;
-			return columnIndex == 0 ? info.getTitle() : info.getInfo();
+			String inf = 
+				info.getInfo() == null || info.getInfo().trim().equals("") ? 
+					"<unresolved>" : info.getInfo();
+			return columnIndex == 0 ? info.getTitle() : inf;
 		}
 		return "";
 	}
