@@ -534,8 +534,8 @@ public class SynchronizeWizardPage extends WizardPage {
 			if ( new File(resolvedExtend).exists() ) {
 				SourceDirectoryGroup parentGroup = new SourceDirectoryGroup();
 				//Project parentProject = ProjectReader.getReader().read(new File(resolvedExtend));
-				Map parentSourceDirectories = ProjectReader.getReader().getSourceDirectories(new File(resolvedExtend));
-				Map pomResources = ProjectReader.getReader().getAllResources(new File(resolvedExtend));
+				Map parentSourceDirectories = ProjectReader.getReader().readSourceDirectories(new File(resolvedExtend));
+				Map pomResources = ProjectReader.getReader().readAllResources(new File(resolvedExtend));
 
 				parentSourceDirectories.putAll(pomResources);
 				
@@ -571,10 +571,10 @@ public class SynchronizeWizardPage extends WizardPage {
 	 */
     private void addInPomSourceDirectories(SourceDirectoryGroup group) throws Exception {
         Map pomSourceDirectories = 
-			ProjectReader.getReader().getSourceDirectories(new File(project.getFile("project.xml").getLocation().toOSString()));
+			ProjectReader.getReader().readSourceDirectories(new File(project.getFile("project.xml").getLocation().toOSString()));
 		
 		Map pomResources = 		
-			ProjectReader.getReader().getAllResources(new File(project.getFile("project.xml").getLocation().toOSString()));
+			ProjectReader.getReader().readAllResources(new File(project.getFile("project.xml").getLocation().toOSString()));
 
 		pomSourceDirectories.putAll(pomResources);
 

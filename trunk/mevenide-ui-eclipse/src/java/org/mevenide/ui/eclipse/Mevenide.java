@@ -77,7 +77,7 @@ import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.mevenide.Environment;
-import org.mevenide.project.io.ProjectSkeleton;
+import org.mevenide.ui.eclipse.util.FileUtil;
 
 /**
  * Created on 01 feb. 03	
@@ -119,10 +119,10 @@ public class Mevenide extends AbstractUIPlugin {
 
     /// initialization methods ---
 	public Mevenide(IPluginDescriptor descriptor) throws Exception {
+		
 		super(descriptor);
 		try {
 			plugin = this;
-			
 			NATURE_ID = Mevenide.getResourceString("maven.nature.id");
             
 			loadPreferences();
@@ -260,11 +260,7 @@ public class Mevenide extends AbstractUIPlugin {
 	* @throws Exception
 	 */
 	public void createPom() throws Exception {
-		IFile pom = project.getFile("project.xml");
-		if ( !new File(pom.getLocation().toOSString()).exists() ) {
-			String skel = ProjectSkeleton.getSkeleton(project.getName());
-			pom.create(new ByteArrayInputStream(skel.getBytes()), false, null);
-		}
+		FileUtil.createPom(project);
 	}
 	
 	public void createProjectProperties() throws Exception {

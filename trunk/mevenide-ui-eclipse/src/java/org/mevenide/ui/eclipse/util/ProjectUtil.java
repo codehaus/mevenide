@@ -112,7 +112,7 @@ public class ProjectUtil {
 					FileUtil.createPom(referencedProject);
 				}
 				ProjectReader reader = ProjectReader.getReader();
-				Dependency projectDependency = reader.getDependency(referencedPom);
+				Dependency projectDependency = reader.extractDependency(referencedPom);
 				log.debug("dependency artifact : " + projectDependency.getArtifact());
 				deps.add(projectDependency);
 			}
