@@ -31,8 +31,12 @@ public class MavenSettings extends SystemOption
     public static final String PROP_MAVEN_HOME = "MAVEN_HOME"; // NOI18N
     public static final String PROP_TOP_GOALS = "topGoals"; // NOI18N
     public static final String PROP_SHOW_FAVOURITE_HINT = "showAddFavouriteHint"; //NOI18N    
+    public static final String PROP_CURRENT_PROJECT = "currentProject"; //NOI18N
     
     private static final long serialVersionUID = -4857548488373547L;
+    
+    /** Holds value of property currentProject. */
+    private File currentProject;
     
     protected void initialize()
     {
@@ -150,6 +154,24 @@ public class MavenSettings extends SystemOption
     public void setShowAddFavouriteHint(boolean showHint)
     {
         putProperty(PROP_SHOW_FAVOURITE_HINT, Boolean.valueOf(showHint), true);
+    }
+    
+    /** Getter for property currentProject.
+     * @return Value of property currentProject.
+     *
+     */
+    public File getCurrentProject()
+    {
+        return (File)getProperty(PROP_CURRENT_PROJECT);
+    }
+    
+    /** Setter for property currentProject.
+     * @param currentProject New value of property currentProject.
+     *
+     */
+    public void setCurrentProject(File currentProject)
+    {
+        putProperty(PROP_CURRENT_PROJECT, currentProject, true);
     }
     
 }

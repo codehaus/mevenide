@@ -43,7 +43,9 @@ public class MavenSettingsBeanInfo extends SimpleBeanInfo {
             topGoals.setPropertyEditorClass(GoalsListPropEditor.class);
             PropertyDescriptor hint = new PropertyDescriptor ("showAddFavouriteHint", MavenSettings.class); //NOI18N
             hint.setHidden(true);
-            return new PropertyDescriptor[] { mavenHome, executor, topGoals, hint };
+            PropertyDescriptor current = new PropertyDescriptor ("currentProject", MavenSettings.class); //NOI18N
+            current.setHidden(true);
+            return new PropertyDescriptor[] { mavenHome, executor, topGoals, hint, current };
         } catch (IntrospectionException ie) {
             ErrorManager.getDefault().notify(ie);
             return new PropertyDescriptor[0];
@@ -57,27 +59,5 @@ public class MavenSettingsBeanInfo extends SimpleBeanInfo {
             return null;
         }
     }
-    
-//    public static final class AntHomeEd extends PropertyEditorSupport {
-//        
-//        private static boolean ok(File f) {
-//            return f.isDirectory() && new File(new File(f, "bin"), "maven").isFile();
-//        }
-//        
-//        public String getAsText() {
-//            return ((File)getValue()).getAbsolutePath();
-//        }
-//        
-//        public void setAsText(String s) throws IllegalArgumentException {
-//            File f = new File(s);
-//            if (!ok(f)) {
-//                IllegalArgumentException iae = new IllegalArgumentException("no lib/ant.jar in " + f); // NOI18N
-//                AntModule.err.annotate(iae, NbBundle.getMessage(MavenSettingsBeanInfo.class, "ERR_not_ant_home", f));
-//                throw iae;
-//            }
-//            setValue(f);
-//        }
-// 
-//    }
 
 }
