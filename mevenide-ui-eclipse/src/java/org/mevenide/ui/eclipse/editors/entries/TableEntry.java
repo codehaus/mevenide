@@ -46,7 +46,7 @@
  * SUCH DAMAGE.
  * ====================================================================
  */
-package org.mevenide.ui.eclipse.editors.pages;
+package org.mevenide.ui.eclipse.editors.entries;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -71,6 +71,8 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.mevenide.ui.eclipse.Mevenide;
+import org.mevenide.ui.eclipse.editors.pages.PageSection;
+import org.mevenide.ui.eclipse.editors.pages.PageWidgetFactory;
 import org.mevenide.ui.eclipse.editors.properties.IPomPropertySource;
 import org.mevenide.ui.eclipse.editors.properties.PomPropertySourceProvider;
 

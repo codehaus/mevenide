@@ -69,6 +69,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.model.WorkbenchContentProvider;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
+import org.mevenide.ui.eclipse.editors.entries.*;
 
 /**
  * Abstract base class for a section of a page in the POM Editor ui.

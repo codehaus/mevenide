@@ -46,17 +46,16 @@
  * SUCH DAMAGE.
  * ====================================================================
  */
-package org.mevenide.ui.eclipse.editors.pages;
+package org.mevenide.ui.eclipse.editors.entries;
 
-import java.util.List;
 
 /**
+ * Implemented to listen for changes to a page entry.
+ * 
  * @author Jeff Bonevich (jeff@bonevich.com)
  * @version $Id$
  */
-public interface IPomCollectionAdaptor {
-	public Object addNewObject(Object parentObject);
-	public void moveObjectTo(int index, Object object, Object parentObject);
-	public void removeObject(Object object, Object parentObject);
-	public List getDependents(Object parentObject);
+public interface IEntryChangeListener {
+	public void entryDirty(PageEntry entry);
+	public void entryChanged(PageEntry entry);
 }
