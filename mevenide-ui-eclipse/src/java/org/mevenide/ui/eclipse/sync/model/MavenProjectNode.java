@@ -347,14 +347,18 @@ public class MavenProjectNode extends AbstractSynchronizationNode implements ISe
 	
 	//quicky.. might be done more properly at initialization stage ?
 	public boolean select(int direction) {
-		for (int i = 0; i < this.artifactNodes.length; i++) {
-		 	if ( artifactNodes[i].getDirection() == direction ) {
-				return true;
+	    if ( artifactNodes != null ) {
+			for (int i = 0; i < this.artifactNodes.length; i++) {
+			 	if ( artifactNodes[i].getDirection() == direction ) {
+					return true;
+				}
 			}
-		}
-		for (int i = 0; i < this.directoryNodes.length; i++) {
-			if ( directoryNodes[i].getDirection() == direction ) {
-				return true;
+	    }
+		if ( directoryNodes != null ) {
+			for (int i = 0; i < this.directoryNodes.length; i++) {
+				if ( directoryNodes[i].getDirection() == direction ) {
+					return true;
+				}
 			}
 		}
 		return false;
