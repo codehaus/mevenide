@@ -77,10 +77,9 @@
   
   <dependencies>
        <!-- 
-  	       building standalone module site 
-  	   	   without relying on mevenide-master
+  	       those two dependencies should not be necessary now
   	   -->
-  	   <dependency>
+  	   <!-- dependency>
           <groupId>velocity</groupId>
           <artifactId>velocity</artifactId>
           <version>1.3</version>
@@ -89,7 +88,7 @@
           <groupId>commons-jelly</groupId>
           <artifactId>commons-jelly-tags-velocity</artifactId>
           <version>SNAPSHOT</version>
-       </dependency>	
+       </dependency -->	
        
   </dependencies>
   
