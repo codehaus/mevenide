@@ -32,6 +32,15 @@
             </properties>
         </dependency>
         <dependency>
+            <groupId>thaiopensource</groupId>
+            <artifactId>jing</artifactId>
+            <version>20030619</version>
+            <type>jar</type>
+            <properties>
+            	<eclipse.plugin.bundle>true</eclipse.plugin.bundle>
+            </properties>
+        </dependency>
+        <dependency>
             <groupId>jdom</groupId>
             <artifactId>jdom</artifactId>
             <version>1.0b8</version>
