@@ -5,6 +5,7 @@
 
 	<target name="build-all">
 		<exec executable="${maven.command}" failonerror="true">
+			<arg value="-o"/>
 			<arg value="build-all"/>
 		</exec>
 	</target>
