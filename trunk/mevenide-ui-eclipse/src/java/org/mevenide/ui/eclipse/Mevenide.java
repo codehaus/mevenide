@@ -92,6 +92,24 @@ public class Mevenide extends AbstractUIPlugin {
 
     public static final String SYNCHRONIZE_VIEW_ID = "org.mevenide.ui.synchronize.view.SynchronizationView";
 
+    private static final String DEPENDENCY_TYPE_JAR = "jar";
+
+    private static final String DEPENDENCY_TYPE_EJB = "ejb";
+
+    private static final String DEPENDENCY_TYPE_PLUGIN = "plugin";
+
+    private static final String DEPENDENCY_TYPE_ASPECT = "aspect";
+
+    private static final String DEPENDENCY_TYPE_WAR = "war";
+
+    public static final String[] KNOWN_DEPENDENCY_TYPES = new String[] {
+    	DEPENDENCY_TYPE_JAR, 
+    	DEPENDENCY_TYPE_EJB, 
+    	DEPENDENCY_TYPE_PLUGIN,
+    	DEPENDENCY_TYPE_ASPECT,
+    	DEPENDENCY_TYPE_WAR
+    };
+
     /// initialization methods ---
 	public Mevenide() throws Exception {
 		try {
