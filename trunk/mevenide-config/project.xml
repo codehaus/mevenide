@@ -65,7 +65,6 @@
             <version>1.0.1</version>
             <type>jar</type>
             <properties>
-                <netbeans.module.dep>spec</netbeans.module.dep>
             	<eclipse.plugin.bundle>true</eclipse.plugin.bundle>
             </properties>
         </dependency>
