@@ -84,7 +84,6 @@ public final class CheckstyleResult {
                         if (name != null) {
                             List viols = new ArrayList();
                             File file = new File(name);
-                            violations.put(file, viols);
                             List vs = el.getChildren("error");
                             if (vs != null) {
                                 Iterator vsIter = vs.iterator();
@@ -98,6 +97,9 @@ public final class CheckstyleResult {
                                     v.setSource(vsElem.getAttributeValue("source"));
                                     v.setMessage(vsElem.getAttributeValue("message"));
                                     viols.add(v);
+                                }
+                                if (viols.size() > 0) {
+                                    violations.put(file, viols);
                                 }
                             }
                         }
