@@ -56,10 +56,10 @@
                     required="false"
                     description="Experimental. Specifies the plugin behaviour : if not set to 'bundle' then an EClipse plugin will be created for each POM dependencies."/>
           <property name="maven.eclipse.plugin.dist.dir" 
-          			label="Build Mode"
-                    default="bundle"
+          			label="Distribution Directory"
+                    default="${maven.build.dir}/eclipse/dist"
                     required="true"
-                    description="Specifies distribution directory where files will be generated."/>          
+                    description="Specifies distribution directory where files will be generated."/>
        </plugin-provider>
     </extension>
 

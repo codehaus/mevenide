@@ -16,8 +16,10 @@
  */
 package org.mevenide.ui.eclipse.preferences;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.swt.SWT;
@@ -39,6 +41,8 @@ public class DynamicPreferencePage extends PreferencePage implements IWorkbenchP
     
     private List properties;
     
+    private Map editors = new HashMap();
+    
     private PreferencesManager preferencesManager;
     
     public DynamicPreferencePage() {
@@ -54,27 +58,39 @@ public class DynamicPreferencePage extends PreferencePage implements IWorkbenchP
             layout.numColumns = 2;
             for ( Iterator it = properties.iterator(); it.hasNext(); ) {
                 PluginProperty pluginProperty = (PluginProperty) it.next();
-                createPluginPropertyEditor(composite, pluginProperty);
+                StringFieldEditor editor = createPluginPropertyEditor(composite, pluginProperty);
+                editors.put(pluginProperty, editor);
             }
         }
         return composite; 
 	}
   
-	private void createPluginPropertyEditor(Composite parent, PluginProperty pluginProperty) {
+	private StringFieldEditor createPluginPropertyEditor(Composite parent, PluginProperty pluginProperty) {
         String propertyName = pluginProperty.getName(); 
         String propertyDefault = pluginProperty.getDefault();
-        String propertyType = pluginProperty.getType();
         String propertyLabel = pluginProperty.getLabel();
         String propertyDescription = pluginProperty.getDescription();
+        String propertyType = pluginProperty.getType();
         String pageId = pluginProperty.getPageId();
+        
         StringFieldEditor editor = new StringFieldEditor(pageId + "." + propertyName, propertyLabel, parent);
         editor.fillIntoGrid(parent, 2);
+        
         editor.setPreferenceStore(preferencesManager.getPreferenceStore());
-        editor.setEmptyStringAllowed(!pluginProperty.isRequired());
         editor.load();
+
+        editor.setEmptyStringAllowed(!pluginProperty.isRequired());
+        
         String toolTip = propertyName + " : " + 
         				(!StringUtils.isNull(propertyDescription) ? propertyDescription : "No available description");
         editor.getLabelControl(parent).setToolTipText(toolTip);
+        
+        if ( StringUtils.isNull(editor.getStringValue()) && 
+                !StringUtils.isNull(propertyDefault) ) {
+            editor.setStringValue(propertyDefault);
+        }
+        
+        return editor;
     }
 
     public void init(IWorkbench workbench) {
@@ -86,5 +102,26 @@ public class DynamicPreferencePage extends PreferencePage implements IWorkbenchP
     
     public void setProperties(List properties) {
         this.properties = properties;
+    }
+    
+    protected void performApply() {
+        performOk();
+    }
+    
+    protected void performDefaults() {
+        // TODO Auto-generated method stub
+        super.performDefaults();
+    }
+    
+    
+    public boolean performOk() {
+        for (Iterator it = editors.keySet().iterator(); it.hasNext(); ) {
+            PluginProperty pluginProperty = (PluginProperty) it.next();
+            StringFieldEditor editor = (StringFieldEditor) editors.get(pluginProperty);
+            String pageId = pluginProperty.getPageId();
+            String propertyName = pluginProperty.getName();
+            preferencesManager.setValue(pageId + "." + propertyName, editor.getStringValue());
+        }
+        return preferencesManager.store();
     }
 }

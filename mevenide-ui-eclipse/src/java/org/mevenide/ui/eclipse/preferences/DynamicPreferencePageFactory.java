@@ -22,7 +22,6 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.preference.IPreferenceNode;
-import org.eclipse.jface.preference.PreferenceNode;
 import org.mevenide.ui.eclipse.Mevenide;
 
 
@@ -97,10 +96,7 @@ public class DynamicPreferencePageFactory {
                     						  "true".equals(propertyRequired),
                     						  propertyDescription));
         }
-        DynamicPreferencePage page = new DynamicPreferencePage();
-        page.setTitle(pageName);
-        page.setProperties(properties);
-        IPreferenceNode node = new PreferenceNode(pageId, page);
+        IPreferenceNode node = new DynamicPreferenceNode(pageId, pageName, properties);
         return node;
     }
     
