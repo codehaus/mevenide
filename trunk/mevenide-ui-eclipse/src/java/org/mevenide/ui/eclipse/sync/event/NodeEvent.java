@@ -16,26 +16,23 @@
  */
 package org.mevenide.ui.eclipse.sync.event;
 
+import org.mevenide.ui.eclipse.sync.model.IArtifactMappingNode;
+
 /**
- * 
  * 
  * @author <a href="mailto:rhill2@free.fr">Gilles Dodinet</a>
  * @version $Id$
- *
+ * 
  */
-public interface IActionListener {
+public class NodeEvent {
+	private IArtifactMappingNode node;
 	
-    void artifactAddedToClasspath(IdeArtifactEvent event);
-    
-    void artifactAddedToPom(PomArtifactEvent event);
-    
-    void artifactRemovedFromPom(PomArtifactEvent event);
-    
-    void artifactRemovedFromClasspath(IdeArtifactEvent event);
-    
-    void artifactIgnored(IdeArtifactEvent event);
-    
-    void artifactIgnored(PomArtifactEvent event);
-    
-    void propertyAdded(NodeEvent event);
+	public NodeEvent(IArtifactMappingNode node) {
+		this.node = node;
+	}
+	
+	public IArtifactMappingNode getNode() {
+		return node;
+	}
+	
 }

@@ -25,6 +25,7 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.maven.project.Dependency;
 import org.apache.maven.project.Project;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
@@ -50,12 +51,12 @@ public class ArtifactMappingContentProvider implements ITreeContentProvider {
     private List poms;
     
     public Object[] getChildren(Object parentElement) {
-		if ( parentElement instanceof PomContainer ) {
+    	if ( parentElement instanceof PomContainer ) {
 			return ((PomContainer) parentElement).getNodes();
 		}
 
         if ( parentElement instanceof EclipseContainerContainer ) {
-            //@TODO move to PomContainer
+            //@TODO move to EclipseContainerContainer
             IProject project = ((EclipseContainerContainer) parentElement).getProject().getProject();
             List dependencyContainers = null;
             List directoryContainers = null;
@@ -110,7 +111,15 @@ public class ArtifactMappingContentProvider implements ITreeContentProvider {
             return containers;
         }
         if ( parentElement instanceof IArtifactMappingNodeContainer ) {
-            return ((IArtifactMappingNodeContainer) parentElement).getNodes();
+        	return ((IArtifactMappingNodeContainer) parentElement).getNodes();
+        }
+        if ( parentElement instanceof DependencyMappingNode ) {
+        	Dependency dependency = (Dependency) ((DependencyMappingNode) parentElement).getWrappedObject();
+        	Object[] properties = new Object[dependency.getProperties().size()];
+        	for (int i = 0; i < properties.length; i++) {
+        		properties[i] = new DependencyPropertyWrapper(dependency, (String) dependency.getProperties().get(i));
+			}
+        	return properties;
         }
         return null;
     }
@@ -166,8 +175,11 @@ public class ArtifactMappingContentProvider implements ITreeContentProvider {
         if ( element instanceof AbstractArtifactMappingNodeContainer ) {
             return ((AbstractArtifactMappingNodeContainer) element).getNodes() != null && ((AbstractArtifactMappingNodeContainer) element).getNodes().length > 0;
         }
-        if ( element instanceof IArtifactMappingNode ) {
+        if ( element instanceof DirectoryMappingNode ) {
             return false;
+        }
+        if ( element instanceof DependencyPropertyWrapper ) {
+        	return false;
         }
         return getChildren(element) != null && getChildren(element).length > 0;
     }

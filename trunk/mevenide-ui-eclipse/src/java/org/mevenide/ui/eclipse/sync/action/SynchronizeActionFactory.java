@@ -27,12 +27,14 @@ import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.mevenide.project.io.ProjectReader;
 import org.mevenide.ui.eclipse.Mevenide;
-import org.mevenide.ui.eclipse.sync.model.IArtifactMappingNode;
+import org.mevenide.ui.eclipse.sync.model.DependencyMappingNode;
 import org.mevenide.ui.eclipse.sync.model.EclipseContainerContainer;
+import org.mevenide.ui.eclipse.sync.model.IArtifactMappingNode;
 import org.mevenide.ui.eclipse.sync.view.PomChooser;
 import org.mevenide.ui.eclipse.sync.view.SynchronizeView;
 
@@ -50,7 +52,7 @@ public class SynchronizeActionFactory {
 	public static final String ADD_TO_POM = "ADD_TO_POM";
 	public static final String REMOVE_FROM_PROJECT = "REMOVE_FROM_PROJECT";
 	public static final String REMOVE_FROM_POM = "REMOVE_FROM_POM";
-
+	public static final String ADD_DEPENDENCY_PROPERTIES = "ADD_DEP_PROPERTY";
 	public static final String REFRESH_ALL = "REFRESH_ALL";
 
 	public static final String VIEW_CONFLICTS = "VIEW_CONFLICTS";
@@ -99,7 +101,8 @@ public class SynchronizeActionFactory {
 		createRemoveFromPomAction();
 		createRemoveFromProjectAction();
 		createAddToIgnoreListAction();
-
+		createAddDependencyPropertyAction();
+		
 		createViewConflictsAction();
 		createViewIdeToPomAction();
 		createViewPomToIdeAction();
@@ -157,6 +160,19 @@ public class SynchronizeActionFactory {
 		actionIds.put(PROPERTIES, viewProperties);
 	}
 
+	private void createAddDependencyPropertyAction() {
+		final AddPropertyAction action = new AddPropertyAction();
+		Action editProperties = new Action() {
+			public void run() {
+				DependencyMappingNode node = (DependencyMappingNode) ((StructuredSelection) synchronizeView.getArtifactMappingNodeViewer().getSelection()).getFirstElement();
+				action.addProperty(node);
+			}
+		};
+		editProperties.setId(ADD_DEPENDENCY_PROPERTIES);
+		editProperties.setText("Add Property");
+		actionIds.put(ADD_DEPENDENCY_PROPERTIES, editProperties);
+	}
+	
 	private void createMarkAsMergedAction() {
 		Action markAsMerged = new Action() {
 			public void run() {
