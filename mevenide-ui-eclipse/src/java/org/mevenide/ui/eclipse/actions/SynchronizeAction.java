@@ -24,8 +24,6 @@ import org.eclipse.ui.PlatformUI;
 import org.mevenide.sync.ISynchronizer;
 import org.mevenide.sync.SynchronizerFactory;
 import org.mevenide.ui.eclipse.Mevenide;
-import org.mevenide.ui.eclipse.sync.dependency.DependencyViewPart;
-import org.mevenide.ui.eclipse.sync.source.SourceDirectoryViewPart;
 import org.mevenide.ui.eclipse.sync.wizard.SynchronizeWizard;
 
 /**
@@ -62,13 +60,6 @@ public class SynchronizeAction extends AbstractMevenideAction {
 								  .getShell(), wizard);
 				dialog.create();
 				dialog.open();
-			}
-			//@todo extract those two actions in their own AbstractMavenAction
-			if ( action.getId().equals("maven-plugin.mapSourceDirectories") ) {
-				SourceDirectoryViewPart.prompt(currentProject);
-			}
-			if ( action.getId().equals("maven-plugin.mapDependencies") ) {
-				DependencyViewPart.prompt(currentProject);
 			}
 		}
 		catch (Exception e) {
