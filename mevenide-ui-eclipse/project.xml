@@ -110,12 +110,6 @@
         </dependency>
         <dependency>
            <groupId>eclipse</groupId>
-           <artifactId>eclipse-jdt</artifactId>
-           <version>2.1.0</version>
-           <url>http://eclipse.org/</url>
-        </dependency>
-        <dependency>
-           <groupId>eclipse</groupId>
            <artifactId>eclipse-dtcore</artifactId>
            <version>2.1.0</version>
            <url>http://eclipse.org/</url>

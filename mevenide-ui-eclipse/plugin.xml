@@ -49,7 +49,6 @@
       <import plugin="org.eclipse.debug.core"/>
       <import plugin="org.eclipse.debug.ui"/>
       <import plugin="org.aspectj.ajde"/>
-      <import plugin="org.eclipse.jdt.ui"/>
    </requires>
 
 
