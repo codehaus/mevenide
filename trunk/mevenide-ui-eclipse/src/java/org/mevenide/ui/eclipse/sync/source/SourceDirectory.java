@@ -46,4 +46,11 @@ public class SourceDirectory {
 	public void setDirectoryType(String newDirectoryType) {
 		directoryType = newDirectoryType;
 	}
+	
+	public boolean equals(Object o) {
+		return (o instanceof SourceDirectory)
+				&& ((SourceDirectory) o).getDirectoryPath() != null
+				&& ((SourceDirectory) o).getDirectoryPath().equals(directoryPath);
+				
+	}
 }
