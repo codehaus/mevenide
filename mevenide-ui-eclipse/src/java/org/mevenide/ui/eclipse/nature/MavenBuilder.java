@@ -84,9 +84,9 @@ public class MavenBuilder extends IncrementalProjectBuilder {
         menu.add(new GroupMarker("Maven")); //TODO
         menu.add(action);
         
-        //retrieval of the window instance is delegated to Mevenide which is registered
+        //retrieval of the window instance is delegated to Mevenide instance which is registered
         //as a window listener because the builder runs in a non-ui thread and thus has 
-        //now way to retrieve this reference itself thought IWorkbench
+        //no way to retrieve this reference itself through the default IWorkbench instance
         WorkbenchWindow window = Mevenide.getInstance().getWorkbenchWindow(); 
 
         window.getMenuBarManager().add(menu);
