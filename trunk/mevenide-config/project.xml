@@ -29,6 +29,15 @@
             </properties>
         </dependency>
         <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.8</version>
+            <type>jar</type>
+            <properties>
+            	<eclipse.plugin.bundle>false</eclipse.plugin.bundle>
+            </properties>
+        </dependency>
+        <dependency>
             <groupId>ant</groupId>
             <artifactId>ant</artifactId>
             <version>1.5.3-1</version>
