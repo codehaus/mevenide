@@ -21,6 +21,9 @@
    <requires>
       <import plugin="@org.mevenide.core.id@"/>
       <import plugin="@org.mevenide.grabber.id@"/>
+      <import plugin="org.eclipse.help.base"/>
+      <import plugin="org.eclipse.ui.ide"/>
+      <import plugin="org.eclipse.core.variables"/>
       <import plugin="org.eclipse.core.resources"/>
       <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.eclipse.jdt.core"/>
