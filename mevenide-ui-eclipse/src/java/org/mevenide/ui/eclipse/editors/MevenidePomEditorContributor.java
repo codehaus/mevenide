@@ -25,10 +25,10 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.ISharedImages;
-import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.ide.IDE;
+import org.eclipse.ui.ide.IDEActionFactory;
 import org.eclipse.ui.part.MultiPageEditorActionBarContributor;
 import org.eclipse.ui.texteditor.ITextEditor;
 
@@ -93,8 +93,8 @@ public class MevenidePomEditorContributor extends MultiPageEditorActionBarContri
                 ITextEditorActionConstants.FIND,
                 getAction(editor, ITextEditorActionConstants.FIND));
             actionBars.setGlobalActionHandler(
-                IWorkbenchActionConstants.BOOKMARK,
-                getAction(editor, IWorkbenchActionConstants.BOOKMARK));
+                    IDEActionFactory.BOOKMARK.getId(),
+                getAction(editor, IDEActionFactory.BOOKMARK.getId()));
             actionBars.updateActionBars();
         }
     }
@@ -109,7 +109,7 @@ public class MevenidePomEditorContributor extends MultiPageEditorActionBarContri
         sampleAction.setToolTipText("Sample Action tool tip");
         sampleAction.setImageDescriptor(
             PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(
-            	ISharedImages.IMG_OBJS_TASK_TSK
+                    IDE.SharedImages.IMG_OBJS_TASK_TSK
             )
         );
     }

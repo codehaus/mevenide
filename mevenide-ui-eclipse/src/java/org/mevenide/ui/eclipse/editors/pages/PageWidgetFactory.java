@@ -46,7 +46,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.Widget;
-import org.eclipse.ui.IWorkbenchActionConstants;
+import org.eclipse.ui.actions.ActionFactory;
 
 /**
  * Factory for creating SWT widgets for the POM editor ui.
@@ -359,7 +359,7 @@ public class PageWidgetFactory {
 			parent = parent.getParent()) {
 			if (parent.getData() instanceof PageSection) {
 				PageSection section = (PageSection) parent.getData();
-				section.doGlobalAction(IWorkbenchActionConstants.DELETE);
+				section.doGlobalAction(ActionFactory.DELETE.getId());
 				break;
 			}
 		}
