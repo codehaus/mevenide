@@ -165,20 +165,20 @@ public class DependencyGroupLabelProvider implements ITableLabelProvider, IColor
 				//return new File((((DependencyWrapper) element).getDependency()).getJar()).getName();
 			}
 			if ( element instanceof DependencyGroup ) {
-				return "Dependencies";
+				return Mevenide.getResourceString("DependencyGroupLabelProvider.table.text.dependency");
 			}
 		}
 		if ( element instanceof DependencyInfo ) {
 			DependencyInfo info = (DependencyInfo) element;
 			String inf = 
 				info.getInfo() == null || info.getInfo().trim().equals("") ? 
-					"<unresolved>" : info.getInfo();
+					Mevenide.getResourceString("DependencyGroupLabelProvider.table.text.unresolved") : info.getInfo();
 			return columnIndex == DESCRIPTION_IDX ? info.getTitle() : inf;
 		}
 		return "";
 	}
 	public boolean isLabelProperty(Object element, String property) {
-		return "attribute".equals(property);
+		return DependencyMappingViewer.ATTRIBUTE.equals(property);
 	}
 	public void removeListener(ILabelProviderListener listener) {
 	}

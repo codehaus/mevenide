@@ -49,6 +49,7 @@
 package org.mevenide.ui.eclipse.sync.model.dependency;
 
 import org.apache.maven.project.Dependency;
+import org.mevenide.ui.eclipse.Mevenide;
 
 /**  
  * 
@@ -111,7 +112,7 @@ public abstract class DependencyInfo {
 class GroupId extends DependencyInfo {
 	public GroupId(DependencyWrapper d) {
 		super(d);
-		title = "groupId";
+		title = Mevenide.getResourceString("DependencyInfo.GroupId.title");
 		info = dependency.getGroupId();
 	}
 	protected void updateDependency() {
@@ -122,7 +123,7 @@ class GroupId extends DependencyInfo {
 class ArtifactId extends DependencyInfo {
 	public ArtifactId(DependencyWrapper d) {
 		super(d);
-		title = "artifactId";
+		title = Mevenide.getResourceString("DependencyInfo.ArtifactId.title");
 		info = dependency.getArtifactId();
 	}
 	protected void updateDependency() {
@@ -133,7 +134,7 @@ class ArtifactId extends DependencyInfo {
 class Version extends DependencyInfo {
 	public Version(DependencyWrapper d) {
 		super(d);
-		title = "version";
+		title = Mevenide.getResourceString("DependencyInfo.Version.title");
 		info = dependency.getVersion();
 	}	
 	protected void updateDependency() {
@@ -144,7 +145,7 @@ class Version extends DependencyInfo {
 class Type extends DependencyInfo {
 	public Type(DependencyWrapper d) {
 		super(d);
-		title = "type";
+		title = Mevenide.getResourceString("DependencyInfo.Type.title");
 		info = dependency.getType();
 	}	
 	protected void updateDependency() {

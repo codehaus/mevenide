@@ -56,6 +56,7 @@ import org.eclipse.jdt.core.IClasspathEntry;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.input.SAXBuilder;
+import org.mevenide.project.ProjectConstants;
 
 /**  
  * 
@@ -84,7 +85,7 @@ public class DefaultPathResolver implements IPathResolver {
 		pathToAdd = pathToAdd.substring(project.getFullPath().toOSString().length(), pathToAdd.length());
 		
 		pathToAdd = (pathToAdd.equals("/") || pathToAdd.equals("")) 
-		            ? "${basedir}" : pathToAdd.substring(1); 
+		            ? ProjectConstants.BASEDIR : pathToAdd.substring(1); 
 		            
 		return pathToAdd;
 	}

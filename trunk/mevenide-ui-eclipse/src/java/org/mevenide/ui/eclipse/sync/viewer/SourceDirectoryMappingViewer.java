@@ -62,6 +62,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.TableColumn;
 import org.mevenide.ui.eclipse.sync.model.source.SourceDirectory;
+import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.sync.model.source.SourceDirectoryContentProvider;
 import org.mevenide.ui.eclipse.util.SourceDirectoryTypeUtil;
 
@@ -104,15 +105,15 @@ public class SourceDirectoryMappingViewer {
 	}
 	private static void createTableColumns(TableViewer tableViewer) {
 		TableColumn column = new TableColumn(tableViewer.getTable(), SWT.LEFT);
-		column.setText("Source Directory");
+		column.setText(Mevenide.getResourceString("SourceDirectoryMappingViewer.table.columns.path"));
 		column.setWidth(200);
 		
 		column = new TableColumn(tableViewer.getTable(), SWT.LEFT);
-		column.setText("Source Type");
+		column.setText(Mevenide.getResourceString("SourceDirectoryMappingViewer.table.columns.type"));
 		column.setWidth(300);
 		
 		column = new TableColumn(tableViewer.getTable(), SWT.LEFT);
-		column.setText("I");
+		column.setText(Mevenide.getResourceString("SourceDirectoryMappingViewer.table.columns.inherited"));
 		column.setWidth(16);
 
 		tableViewer.getTable().setHeaderVisible(true);

@@ -59,6 +59,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
+import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.sync.model.dependency.DependencyGroupContentProvider;
 import org.mevenide.ui.eclipse.sync.model.dependency.DependencyInfo;
 import org.mevenide.ui.eclipse.sync.model.dependency.DependencyWrapper;
@@ -71,9 +72,9 @@ import org.mevenide.ui.eclipse.sync.model.dependency.DependencyWrapper;
  */
 public class DependencyMappingViewer {
 	
-	private static final String INHERITED = "inherited";
-    private static final String VALUE = "value";
-    private static final String ATTRIBUTE = "attribute";
+	static final String INHERITED = "inherited";
+    static final String VALUE = "value";
+    static final String ATTRIBUTE = "attribute";
     
     
     private DependencyMappingViewer(){
@@ -108,15 +109,15 @@ public class DependencyMappingViewer {
 	}
 	private static void createTableColumns(Table table) {
 		TableColumn column = new TableColumn(table, SWT.LEFT);
-		column.setText("Attribute");
+		column.setText(Mevenide.getResourceString("DependencyMappingViewer.table.columns.attribute"));
 		column.setWidth(200);
 		
 		column = new TableColumn(table, SWT.LEFT);
-		column.setText("Value");
+		column.setText(Mevenide.getResourceString("DependencyMappingViewer.table.columns.value"));
 		column.setWidth(300);
 		
 		column = new TableColumn(table, SWT.LEFT);
-		column.setText("I");
+		column.setText(Mevenide.getResourceString("DependencyMappingViewer.table.columns.inherited"));
 		column.setWidth(16);
 		
 	}

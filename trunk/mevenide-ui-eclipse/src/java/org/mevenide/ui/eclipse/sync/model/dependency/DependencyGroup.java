@@ -86,18 +86,8 @@ public class DependencyGroup extends ArtifactGroup {
 	
 	public DependencyGroup(IProject project) {
 		super(project);
-		//initializeDependenciesInheritanceMap();
 	}
 
-
-//	private void initializeDependenciesInheritanceMap() {
-//		for (int i = 0; i < artifacts.size(); i++) {
-//			DependencyWrapper dependency = (DependencyWrapper) artifacts.get(i);
-//			setDependencyInheritance(dependency.getDependency(), dependency.isInherited());
-//			log.debug("Updated Inheritance for Dependency : " + dependency + " (" + (dependency.isInherited()) + ")");   
-//        }	
-//	}
-	
 
 	protected void initialize() throws Exception {
 		if ( dependencies == null ) {

@@ -51,7 +51,7 @@ package org.mevenide.ui.eclipse.util;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.mevenide.ProjectConstants;
+import org.mevenide.project.ProjectConstants;
 
 /**
  * 

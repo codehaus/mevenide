@@ -54,9 +54,9 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
+import org.mevenide.ui.eclipse.sync.model.source.SourceDirectory;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.MevenideColors;
-import org.mevenide.ui.eclipse.sync.model.source.SourceDirectory;
 
 
 public class SourceDirectoryGroupLabelProvider implements ITableLabelProvider, IColorProvider {
