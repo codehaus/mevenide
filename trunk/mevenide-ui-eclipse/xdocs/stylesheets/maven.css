@@ -103,6 +103,12 @@ a:link, #breadcrumbs a:visited, #navcolumn a:visited, .app a:visited, .tasknav a
  color: #000000;
  }
 
+#documentContent a {
+ color: #3366AA;
+ text-decoration:none;
+ 
+ }
+
 a:active, a:hover, #leftcol a:active, #leftcol a:hover {
  color: #f30 !important;
  }

@@ -315,7 +315,7 @@ public class Mevenide extends AbstractUIPlugin {
 		RunnerHelper.setHelper(
 			new RunnerHelper() {
 				private String foreHead = null;
-				public String[] getMainClass() {
+				public String getForeheadLibrary() {
 					if ( foreHead == null ) {
 						try {
 							URL foreHeadURL = new URL(Platform.resolve(Mevenide.getPlugin().getDescriptor().getInstallURL()), "lib/" + Mevenide.getResourceString("forehead.library"));
@@ -328,7 +328,7 @@ public class Mevenide extends AbstractUIPlugin {
                         }
                         
 					}
-				    return new String[] { foreHead };
+				    return foreHead;
                 }	
 			}
 		);

@@ -5,16 +5,20 @@
         <title>Help Page</title>
     </properties>
     <body>
-    	<section name="Entries">
-    		<blockquote>
-    			<a href="#Configure Mevenide">Configure Mevenide</a><br/>
-    			<a href="#Mevenide Menu">Mevenide Menu</a><br/>
-    			<a href="#Run Maven">Run Maven</a><br/>
-    			<a href="#Synchronize">Synchronize</a><br/>
-	    		<a href="#Maven Console">Maven Console</a>
-    		</blockquote>
+    	<section name="Table of Content">
+    		<div id="documentContent">
+    		<ol>
+    		  <li><a href="#Mevenide Configuration" class="documentLink">Mevenide Configuration</a></li>
+    		  <li><a href="#Mevenide Menu" class="documentLink">Mevenide Menu</a></li>
+    		  <li><a href="#Running Maven" class="documentLink">Running Maven</a></li>
+    		  <li><a href="#POM Synchronization" class="documentLink">POM Synchronization</a></li>
+	    	  <li><a href="#Eclipse Project Synchronization" class="documentLink">Eclipse Project Synchronization</a></li>
+	    	  <li><a href="#POM Edition" class="documentLink">POM Edition</a></li>
+    		</ol>
+    		</div>
     	</section>
-        <section name="Configure Mevenide">
+        <section name="Mevenide Configuration">
+        	<div id="documentContent">
         	<p>
 			    Before using Mevenide, you will have to configure it. That is done through Maven Preferences page :
 				<i><code>Window &gt; Preferences &gt; Maven</code></i>. Java Home, Maven Home and 
@@ -35,9 +39,11 @@
 				</center>
 			    <br/><br/>
 			</p>
+			</div>
         </section>
             
         <section name="Mevenide Menu">
+        	<div id="documentContent">
 			<p>	
 			    Mevenide actions can be accessed through the 'Maven' menu in either 
 			    <code>project.xml</code> or Eclipse Project contextual menu.
@@ -49,10 +55,13 @@
 					<br/><br/>
 				</center>
             </p>
+            </div>
         </section>
-        <section name="Run Maven">
-			<p>
-				<br/><b><font size="+1">Launch Wizard</font></b><br/><br/>
+        <section name="Running Maven">
+        	<subsection name="Launch Wizard">
+        		<div id="documentContent">
+			  <p>
+				
 				Mevenide is now integrated into Eclipse External Tools.
 				<br/><br/>
 				When selecting '<code>Run Maven...</code>' from 'Maven' menu, a wizard appears that allows you
@@ -68,7 +77,12 @@
 					<font size="-1"><b>Screenshot 3</b>Run Maven Dialog</font>
 					<br/><br/>
 				</center>
-				<b><br/><font size="+1">Launch Shortcut</font></b><br/><br/>
+			  </p>
+			  </div>
+			</subsection>
+			<subsection name="Launch Shortcut">
+				<div id="documentContent">
+			  <p>
 				The "Run As> Maven Project" command silently invokes the default Maven goals specified in the preference page.
 				<br/><br/>
 				<center>
@@ -76,18 +90,53 @@
 					<br/><br/>
 					<font size="-1"><b>Screenshot 4</b>QuickLaunch Button</font>
 				</center>
-            </p>
+              </p>
+              </div>
+            </subsection>
+            <subsection name="Maven Console">
+              <div id="documentContent">
+        	    <p>
+        		  Mevenide doesnot provide yet an integrated Maven Console, tho Maven Console can still be used thanks the Eclipse Debug Console.
+        		  <br/><br/>
+        		  <center>
+	        		<img border="1px" src="images/maven-console.png"/>
+    	    		<br/><br/>
+        			<font size="-1"><b>Screenshot 5</b>Running Maven Console</font>				
+        		  </center>
+        		  <br/><br/>
+        	    </p>
+        	  </div>
+           </subsection>
+           <subsection name="Goals Picker">
+             <div id="documentContent">
+               <p>
+               	 Mevenide provides an interface to graphically choose the goals to be run. Once chosen, they can be ordered by clicking 
+               	 the <i>Goals Order</i> button.
+               	 <br/><br/>
+        		 <center>
+	        	   <img border="1px" src="images/mevenide-goals-picker.png"/>
+    	    	   <br/><br/>
+        		   <font size="-1"><b>Screenshot 6</b>Choosing Goals</font>				
+        		 </center>
+        		 <br/><br/>
+               </p>
+             </div>
+           </subsection>
         </section>
-        <section name="Synchronize">
+       
+         <section name="POM Synchronization">
+         	<div id="documentContent">
 			<p>
-				Mevenide Pom Synchronization now provides only one Page, consisting of two main elements : 
+				Mevenide POM Synchronization now provides only one Page, consisting of two main elements : 
 				<ul>
 					<li>a TabFolder from which user should specify which artifact is to put back in to the POM</li>
 					<li>a simple composite allowing the user to specify the inheritance status of the POM</li>
 				</ul>
 			</p>
+			</div>
+			<subsection name="SourceDirectory Synchronization">
+				<div id="documentContent">
 			<p>	
-				<br/><b><font size="+1">SourceDirectory Synchronization</font></b><br/><br/>
 				Since POM contains much more information than Eclipse .classpath, when synchronizing POM,
 				user have to provide additional informations. For every Eclipse SourceFolder, the type of Maven Source Directory has to be specified
 				through the SourceDirectory Mapping wizard page. Also user should declare if it is inherited or not. If the POM itself isnot 
@@ -96,12 +145,15 @@
 				<center>
 					<img border="1px" src="images/sourcedirectory-mapping.png"/>
 					<br/><br/>
-					<font size="-1"><b>Screenshot 5</b>Source Directory Mapping Wizard Page</font>
+					<font size="-1"><b>Screenshot 7</b>Source Directory Mapping Wizard Page</font>
 					<br/><br/>
 				</center>
 			</p>
+			</div>
+			</subsection>
+			<subsection name="Dependency Synchronization">
+				<div id="documentContent">
 			<p>
-				<br/><b><font size="+1">Dependency Synchronization</font></b><br/><br/>
 				Mevenide provides an automatic Dependency resolving mechanism that can determine in a rather accurate way the groupId, artifactId and version of a given Dependency.
 				Tho it can fail, then the user can help it using the Dependency Mapping wizard page.
 				Also please note that if the library is not installed in the local repo, groupId will NOT be resolved, but will be assigned to <code>nonResolvedGroupId</code> and a key 
@@ -110,7 +162,7 @@
 				<center>
 					<img border="1px" src="images/dependency-mapping.png"/>
 					<br/><br/>
-					<font size="-1"><b>Screenshot 6</b>Dependency Mapping Wizard Page</font>
+					<font size="-1"><b>Screenshot 8</b>Dependency Mapping Wizard Page</font>
 				</center>
 				<br/><br/>
 				Mevenide provides support for Dependency properties through the Dependency Property dialog that can be attained by pressing the 'Properties' button.
@@ -118,7 +170,7 @@
 				<center>
 					<img border="1px" src="images/dependency-properties.png"/>
 					<br/><br/>
-					<font size="-1"><b>Screenshot 7</b>Dependency Properties Dialog</font>	
+					<font size="-1"><b>Screenshot 9</b>Dependency Properties Dialog</font>	
 				</center>
 				<br/><br/>		
 				We use colors to help the user to manage inheritance and solve dependencies issues. 
@@ -145,24 +197,21 @@
 						</li>
 					</ul>
             </p>
-        	<p>
-        		<br/><b><font size="+1">Eclipse Project Synchronization</font></b><br/><br/>
-        		Eclipse Project Synchronization relies on maven-eclipse-plugin for now, so there are some known limitations (see MAVEN-525).
-        		<br/><br/>
-        		However it is planned to provide really integrated support, that will use the JDT API.
-        	</p>
+            </div>
+          </subsection>
+        </section>  
+        <section name="Eclipse Project Synchronization">
+        	<div id="documentContent">
+          <p>
+        	Eclipse Project Synchronization relies on maven-eclipse-plugin for now, so there are some known limitations. However it is planned to provide really integrated support, that will use the JDT API.
+          </p>
+          </div>
         </section>
-        <section name="Maven Console">
-        	<p>
-        		Mevenide doesnot provide yet an integrated Maven Console, tho Maven Console can still be used thanks the Eclipse Debug Console.
-        		<br/><br/>
-        		<center>
-	        		<img border="1px" src="images/maven-console.png"/>
-    	    		<br/><br/>
-        			<font size="-1"><b>Screenshot 8</b>Running Maven Console</font>				
-        		</center>
-        		<br/><br/>
-        	</p>
+        
+        <section name="POM Edition">
+        	<div id="documentContent">
+        	<p>To be done.</p>
+        	</div>
         </section>
    </body>
 </document>
