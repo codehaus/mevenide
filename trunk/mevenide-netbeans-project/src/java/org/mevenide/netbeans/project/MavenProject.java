@@ -22,43 +22,38 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
 import java.net.URI;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.maven.project.Project;
 import org.mevenide.context.DefaultQueryContext;
 import org.mevenide.context.IProjectContext;
 import org.mevenide.context.IQueryContext;
-import org.mevenide.project.DefaultProjectContext;
 import org.mevenide.environment.ILocationFinder;
 import org.mevenide.environment.LocationFinderAggregator;
 import org.mevenide.netbeans.project.classpath.ClassPathProviderImpl;
-import org.mevenide.netbeans.project.queries.MavenFileBuiltQueryImpl;
-import org.mevenide.netbeans.project.queries.MavenSharabilityQueryImpl;
 import org.mevenide.netbeans.project.queries.MavenForBinaryQueryImpl;
+
+import org.mevenide.netbeans.project.queries.MavenSharabilityQueryImpl;
+import org.mevenide.project.DefaultProjectContext;
+import org.mevenide.properties.IPropertyLocator;
 import org.mevenide.properties.IPropertyResolver;
+import org.mevenide.properties.resolver.PropertyLocatorFactory;
 import org.mevenide.properties.resolver.PropertyResolverFactory;
-import org.mevenide.util.JDOMProjectUnmarshaller;
+import org.netbeans.api.project.Project;
 import org.netbeans.spi.project.ProjectInformation;
-import org.openide.filesystems.FileAttributeEvent;
-import org.openide.filesystems.FileChangeListener;
-import org.openide.filesystems.FileEvent;
-import org.openide.filesystems.FileObject;
-import org.openide.filesystems.FileRenameEvent;
-import org.openide.filesystems.FileUtil;
+import org.openide.filesystems.*;
 import org.openide.util.Lookup;
 import org.openide.util.Utilities;
 import org.openide.util.lookup.Lookups;
+
 
 /**
  *
  * @author  Milos Kleint (ca206216@tiscali.cz)
  */
-public class MavenProject implements org.netbeans.api.project.Project {
+public class MavenProject implements Project {
     private static final Log logger = LogFactory.getLog(MavenProject.class);
     
     public static final String PROP_PROJECT = "MavenProject"; //NOI18N
@@ -68,6 +63,7 @@ public class MavenProject implements org.netbeans.api.project.Project {
     private IPropertyResolver properties;
     private IQueryContext queryContext;
     private ILocationFinder locFinder;
+    private IPropertyLocator propertyLocator;
     private Image icon;
     private Lookup lookup;
     private PropertyChangeSupport support;
@@ -81,9 +77,10 @@ public class MavenProject implements org.netbeans.api.project.Project {
         File projectDir = FileUtil.toFile(fileObject.getParent());
         queryContext = new DefaultQueryContext(projectDir);
         properties = PropertyResolverFactory.getFactory().createContextBasedResolver(queryContext);
-        locFinder = new LocationFinderAggregator(queryContext);
+        propertyLocator = PropertyLocatorFactory.getFactory().createContextBasedLocator(queryContext);
         IProjectContext prContext = new DefaultProjectContext(queryContext, properties);
         ((DefaultQueryContext)queryContext).initializeProjectContext(prContext);
+        locFinder = new LocationFinderAggregator(queryContext);
     }
     
     
@@ -114,7 +111,7 @@ public class MavenProject implements org.netbeans.api.project.Project {
         return displayName;
     }
     
-    public Project getOriginalMavenProject() {
+    public org.apache.maven.project.Project getOriginalMavenProject() {
         return queryContext.getPOMContext().getFinalProject();
     }
     
@@ -124,6 +121,10 @@ public class MavenProject implements org.netbeans.api.project.Project {
     
     public ILocationFinder getLocFinder() {
         return locFinder;
+    }
+    
+    public IPropertyLocator getPropertyLocator() {
+        return propertyLocator;
     }
     
     IQueryContext getContext() {
@@ -224,7 +225,7 @@ public class MavenProject implements org.netbeans.api.project.Project {
             new ProjectOpenedHookImpl(this),
             new ClassPathProviderImpl(this),
             new MavenSharabilityQueryImpl(this),
-            new MavenFileBuiltQueryImpl(this),
+//            new MavenFileBuiltQueryImpl(this),
             new SubprojectProviderImpl(this)
         });
     }
@@ -253,7 +254,7 @@ public class MavenProject implements org.netbeans.api.project.Project {
             return new ImageIcon(MavenProject.this.getIcon());
         }
         
-        public org.netbeans.api.project.Project getProject() {
+        public Project getProject() {
             return MavenProject.this;
         }
         
@@ -266,40 +267,7 @@ public class MavenProject implements org.netbeans.api.project.Project {
         }
         
     }    
-    //    private Lookup createLookup(ExtensibleMetadataProvider emp) {
-    //        SubprojectProvider spp = refHelper.createSubprojectProvider();
-    //        FileBuiltQueryImplementation fileBuilt = new GlobFileBuiltQuery(helper, new String[] {
-    //            "${src.dir}/*.java", // NOI18N
-    //            "${test.src.dir}/*.java", // NOI18N
-    //        }, new String[] {
-    //            "${build.classes.dir}/*.class", // NOI18N
-    //            "${build.test.classes.dir}/*.class", // NOI18N
-    //        });
-    //        return Lookups.fixed(new Object[] {
-    //            emp,
-    //            spp,
-    //            new J2SEActionProvider( this, helper ),
-    //            new J2SEPhysicalViewProvider(this, helper, spp),
-    //            new J2SECustomizerProvider( this, helper, refHelper ),
-    //            new ClassPathProviderImpl(helper),
-    //            new CompiledSourceForBinaryQuery(helper),
-    //            new JavadocForBinaryQueryImpl(helper),
-    //            new AntArtifactProviderImpl(),
-    //            new ProjectXmlSavedHookImpl(),
-    //            new ProjectOpenedHookImpl(),
-    //            new UnitTestForSourceQueryImpl(helper),
-    //            fileBuilt,
-    //        });
-    //    }
-    //
-    //    public void addPropertyChangeListener(PropertyChangeListener listener) {
-    //        pcs.addPropertyChangeListener(listener);
-    //    }
-    //
-    //    public void removePropertyChangeListener(PropertyChangeListener listener) {
-    //        pcs.removePropertyChangeListener(listener);
-    //    }
-    //
+ 
     
     private class Updater implements FileChangeListener {
         
@@ -308,14 +276,14 @@ public class MavenProject implements org.netbeans.api.project.Project {
         Updater() {
         }
         
-        public void fileAttributeChanged(org.openide.filesystems.FileAttributeEvent fileAttributeEvent) {
+        public void fileAttributeChanged(FileAttributeEvent fileAttributeEvent) {
         }
         
-        public void fileChanged(org.openide.filesystems.FileEvent fileEvent) {
+        public void fileChanged(FileEvent fileEvent) {
             firePropertyChange(PROP_PROJECT);
         }
         
-        public void fileDataCreated(org.openide.filesystems.FileEvent fileEvent) {
+        public void fileDataCreated(FileEvent fileEvent) {
             //TODO shall also include the parent of the pom if available..
             String nameExt = fileEvent.getFile().getNameExt();
             if (nameExt.equals("project.xml") ||
@@ -332,16 +300,16 @@ public class MavenProject implements org.netbeans.api.project.Project {
             }
         }
         
-        public void fileDeleted(org.openide.filesystems.FileEvent fileEvent) {
+        public void fileDeleted(FileEvent fileEvent) {
             fileEvent.getFile().removeFileChangeListener(this);
             firePropertyChange(PROP_PROJECT);
         }
         
-        public void fileFolderCreated(org.openide.filesystems.FileEvent fileEvent) {
+        public void fileFolderCreated(FileEvent fileEvent) {
             firePropertyChange(PROP_PROJECT);
         }
         
-        public void fileRenamed(org.openide.filesystems.FileRenameEvent fileRenameEvent) {
+        public void fileRenamed(FileRenameEvent fileRenameEvent) {
         }
         
     }

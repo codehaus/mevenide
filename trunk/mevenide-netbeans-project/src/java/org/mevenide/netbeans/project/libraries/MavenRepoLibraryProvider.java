@@ -29,6 +29,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.mevenide.environment.ILocationFinder;
 import org.mevenide.environment.LocationFinderAggregator;
+import org.mevenide.environment.SysEnvLocationFinder;
+import org.mevenide.netbeans.project.NbSysEnvProvider;
 import org.mevenide.project.dependency.DependencyResolverFactory;
 import org.mevenide.project.dependency.IDependencyResolver;
 import org.netbeans.spi.project.libraries.LibraryImplementation;
@@ -51,6 +53,8 @@ public class MavenRepoLibraryProvider implements LibraryProvider {
     private File locRepoFile;
     /** Creates a new instance of MavenRepoLibraryProvider */
     public MavenRepoLibraryProvider() {
+        //need to set here because it's instantiated before mavenModule :(
+        SysEnvLocationFinder.setDefaultSysEnvProvider(new NbSysEnvProvider());
         support = new PropertyChangeSupport(this);
         locRepoFile = findRepo();
         logger.debug("created instance");

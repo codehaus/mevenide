@@ -21,19 +21,16 @@ import java.io.File;
 import java.net.URI;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.mevenide.netbeans.project.MavenProject;
 import org.mevenide.project.dependency.DependencyResolverFactory;
-import org.mevenide.project.dependency.DependencySplitter;
 import org.mevenide.project.dependency.IDependencyResolver;
 import org.netbeans.api.project.Project;
 import org.netbeans.spi.project.FileOwnerQueryImplementation;
 import org.openide.filesystems.FileObject;
 import org.openide.util.Lookup;
-import org.openide.util.WeakSet;
 
 
 /**

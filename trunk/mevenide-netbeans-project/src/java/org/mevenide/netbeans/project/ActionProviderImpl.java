@@ -28,6 +28,7 @@ import org.netbeans.spi.project.ActionProvider;
 import org.openide.awt.HtmlBrowser;
 import org.openide.execution.ExecutionEngine;
 import org.openide.execution.ExecutorTask;
+import org.openide.filesystems.FileUtil;
 import org.openide.util.Lookup;
 import org.openide.util.RequestProcessor;
 import org.openide.util.Task;
@@ -77,6 +78,10 @@ public class ActionProviderImpl implements ActionProvider
         exec.setOffline(MavenSettings.getDefault().isOffline());
         ExecutorTask task = ExecutionEngine.getDefault().execute("Maven", exec, exec.getInputOutput());
 //        RequestProcessor.getDefault().post();
+        
+        //-------------------------------------------------------------------------
+        // these are temporary.. 
+        // need a more general way of checking for opening browser.
         if ("javadoc".equals(goal)) {
             task.addTaskListener(new TaskListener() {
                 public void taskFinished(Task task2) {
@@ -85,6 +90,26 @@ public class ActionProviderImpl implements ActionProvider
                         return;
                     }
                     File fil = new File(javadoc, "index.html"); //NOI18N
+                    fil = FileUtil.normalizeFile(fil);
+                    if (fil.exists()) {
+                        try {
+                            HtmlBrowser.URLDisplayer.getDefault().showURL(fil.toURI().toURL());
+                        } catch (MalformedURLException exc) {
+                            logger.error(exc);
+                        }   
+                    }
+                }
+            });
+        }
+        if ("site:generate".equals(goal)) {
+            task.addTaskListener(new TaskListener() {
+                public void taskFinished(Task task2) {
+                    String docs = project.getPropertyResolver().getResolvedValue("maven.docs.dest"); //NOI18N
+                    if (docs == null) {
+                        return;
+                    }
+                    File fil = new File(docs, "index.html"); //NOI18N
+                    fil = FileUtil.normalizeFile(fil);
                     if (fil.exists()) {
                         try {
                             HtmlBrowser.URLDisplayer.getDefault().showURL(fil.toURI().toURL());

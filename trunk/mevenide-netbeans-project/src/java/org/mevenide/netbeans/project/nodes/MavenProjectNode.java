@@ -22,6 +22,7 @@ import javax.swing.Action;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.mevenide.properties.IPropertyLocator;
 import org.mevenide.netbeans.project.ActionProviderImpl;
 import org.mevenide.netbeans.project.MavenProject;
 import org.mevenide.netbeans.project.exec.RunGoalsAction;
@@ -72,7 +73,8 @@ public class MavenProjectNode extends FilterNode {
     
     public javax.swing.Action[] getActions(boolean param) {
 //       javax.swing.Action[] spr = super.getActions(param);
-        boolean isMultiproject = (project.getPropertyResolver().getValue("maven.multiproject.includes") != null); //NOI18N
+        boolean isMultiproject = (project.getPropertyLocator().getPropertyLocation("maven.multiproject.includes") 
+                                    > IPropertyLocator.LOCATION_DEFAULTS); //NOI18N
         int slip = (isMultiproject ? 2 : 0);
         Action[] toReturn = new Action[13 + slip];
         ActionProviderImpl provider = (ActionProviderImpl)getLookup().lookup(ActionProviderImpl.class);

@@ -21,6 +21,8 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.util.StringTokenizer;
+import org.apache.maven.project.Dependency;
+import org.mevenide.environment.ILocationFinder;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.filesystems.Repository;
@@ -86,5 +88,30 @@ public class FileUtilities
             return fos[0];
         }
         return null;
+    }
+    
+    /**
+     * attempts to constuct the path to the given dependency in the current project constraints.
+     * Does not resolve jar overriding.
+     */
+    public static URI getDependencyURI(Dependency dependency, MavenProject project) {
+        ILocationFinder finder = project.getLocFinder();
+        StringBuffer buff = new StringBuffer();
+        File repo = new File(finder.getMavenLocalRepository());
+        buff.append(dependency.getArtifactDirectory());
+        buff.append("/");
+        String type = dependency.getType();
+        buff.append(type != null ? type : "jar");
+        buff.append("s/");
+        String id = dependency.getArtifactId();
+        buff.append(id != null ? id : dependency.getId());
+        buff.append("-");
+        buff.append(dependency.getVersion());
+        buff.append(".");
+        String extension = dependency.getExtension();
+        buff.append(extension != null ? extension : "jar");
+        File file = new File(repo, buff.toString());
+        file = FileUtil.normalizeFile(file);
+        return file.toURI();
     }
 }

@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.StringTokenizer;
+import org.mevenide.properties.IPropertyLocator;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -57,7 +58,8 @@ public class SubprojectProviderImpl implements SubprojectProvider {
         String includes = project.getPropertyResolver().getResolvedValue(MULTIPROJECT_INCLUDES);
         String excludes = project.getPropertyResolver().getResolvedValue(MULTIPROJECT_EXCLUDES);
         String basedir = project.getPropertyResolver().getResolvedValue(MULTIPROJECT_BASEDIR);
-        if (includes != null) {
+        int includesLocation = project.getPropertyLocator().getPropertyLocation(MULTIPROJECT_INCLUDES);
+        if (includes != null && includesLocation > IPropertyLocator.LOCATION_DEFAULTS) {
             Set toReturn = new HashSet();
             File basefile = FileUtil.normalizeFile(new File(basedir));
             if (basefile.exists()) {
