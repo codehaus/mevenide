@@ -186,6 +186,18 @@
             class="org.mevenide.ui.eclipse.editors.MevenidePomEditor"
             id="org.mevenide.ui.eclipse.editors.MevenidePomEditor">
       </editor>
+      <!-- 
+      	constructed by eclipse extension point template 
+      	will provide completion thingie and outline to launch goals from
+      -->
+      <editor
+            name="Maven XML Editor"
+            filenames="maven.xml"
+            icon="icons/pom_file.gif"
+            contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
+            class="org.mevenide.ui.eclipse.editors.mavenxml.MavenXmlEditor"
+            id="org.mevenide.ui.eclipse.editors.mavenxml.MavenXmlEditor">
+      </editor>
    </extension>
 
    <extension
