@@ -136,7 +136,6 @@ public final class CompileAnnotation extends Annotation implements PropertyChang
                 if (ann.getLine() != -1) {
                     Line l = cook.getLineSet().getOriginal(ann.getLine() - 1);
                     if (! l.isDeleted()) {
-                        System.out.println("attaching compile error.");
                         ann.attachAsNeeded(l);
                     }
                 }
