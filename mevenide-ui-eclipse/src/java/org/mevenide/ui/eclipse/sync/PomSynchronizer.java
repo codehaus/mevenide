@@ -13,18 +13,27 @@
  */
 package org.mevenide.ui.eclipse.sync;
 
+import java.io.File;
 import java.io.InputStream;
+import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
+import org.mevenide.ProjectConstants;
+import org.mevenide.project.io.ProjectWriter;
+import org.mevenide.project.source.SourceDirectoryUtil;
 import org.mevenide.sync.AbstractPomSynchronizer;
 import org.mevenide.sync.ISynchronizer;
 import org.mevenide.ui.eclipse.DefaultPathResolver;
 import org.mevenide.ui.eclipse.IPathResolver;
 import org.mevenide.ui.eclipse.Mevenide;
-import org.mevenide.ui.eclipse.util.ProjectUtil;
+import org.mevenide.ui.eclipse.sync.model.DependencyGroup;
+import org.mevenide.ui.eclipse.sync.model.DependencyGroupMarshaller;
+import org.mevenide.ui.eclipse.sync.model.SourceDirectory;
+import org.mevenide.ui.eclipse.sync.model.SourceDirectoryGroup;
+import org.mevenide.ui.eclipse.sync.model.SourceDirectoryGroupMarshaller;
 
 /**
  * 
@@ -77,7 +86,7 @@ public class PomSynchronizer extends AbstractPomSynchronizer implements ISynchro
 		try {
 			assertPomNotEmpty();
 			
-			ProjectUtil.synchronize(project);
+			PomSynchronizer.synchronize(project);
 			
 		}
 		catch (Exception e) {
@@ -102,6 +111,44 @@ public class PomSynchronizer extends AbstractPomSynchronizer implements ISynchro
      */
 	public void postSynchronization() {
 		
+	}
+
+	public static void synchronize(IProject project) throws Exception {
+		SourceDirectoryUtil.resetSourceDirectories(Mevenide.getPlugin().getPom());
+	
+		DependencyGroup dependencyGroup = DependencyGroupMarshaller.getDependencyGroup(project, Mevenide.getPlugin().getFile("statedDependencies.xml"));
+		SourceDirectoryGroup sourceGroup = SourceDirectoryGroupMarshaller.getSourceDirectoryGroup(project, Mevenide.getPlugin().getFile("sourceTypes.xml"));
+	
+		PomSynchronizer.updatePom(sourceGroup, dependencyGroup, Mevenide.getPlugin().getPom());
+	}
+
+	///// @todo refactor method below since they introduce a cycle ////
+	
+	public static void updatePom(SourceDirectoryGroup sourceGroup, DependencyGroup dependencyGoup, File pomFile) throws Exception {
+		Mevenide.getPlugin().createProjectProperties();
+		
+		SourceDirectoryUtil.resetSourceDirectories(pomFile);
+		
+		ProjectWriter pomWriter = ProjectWriter.getWriter();
+		
+		//WICKED if/else
+		for (int i = 0; i < sourceGroup.getSourceDirectories().size(); i++) {
+			SourceDirectory directory = (SourceDirectory) sourceGroup.getSourceDirectories().get(i);
+			if ( directory.isSource() ) {
+				pomWriter.addSource(directory.getDirectoryPath(), pomFile, directory.getDirectoryType());
+			}
+			if ( directory.getDirectoryType().equals(ProjectConstants.MAVEN_RESOURCE ) ) {
+				pomWriter.addResource(directory.getDirectoryPath(), pomFile);
+			}
+			if ( directory.getDirectoryType().equals(ProjectConstants.MAVEN_TEST_RESOURCE ) ) {
+			}				
+		}
+		
+		List dependencies = dependencyGoup.getDependencies();
+		
+		pomWriter.setDependencies(dependencies, pomFile);
+		
+		Mevenide.getPlugin().setBuildPath();
 	}
  
 

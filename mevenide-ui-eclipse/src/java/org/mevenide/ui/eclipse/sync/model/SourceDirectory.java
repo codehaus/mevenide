@@ -15,6 +15,8 @@ package org.mevenide.ui.eclipse.sync.model;
 
 import java.io.File;
 
+import org.mevenide.ProjectConstants;
+
 
 /**
  * 
@@ -55,5 +57,13 @@ public class SourceDirectory {
 				&& ((SourceDirectory) o).getDirectoryPath() != null
 				&& ((SourceDirectory) o).getDirectoryPath().equals(directoryPath);
 				
+	}
+	
+	public boolean isSource() {
+		boolean b = getDirectoryType().equals(ProjectConstants.MAVEN_ASPECT_DIRECTORY)
+					|| getDirectoryType().equals(ProjectConstants.MAVEN_SRC_DIRECTORY)
+					|| getDirectoryType().equals(ProjectConstants.MAVEN_TEST_DIRECTORY)
+					|| getDirectoryType().equals(ProjectConstants.MAVEN_INTEGRATION_TEST_DIRECTORY);
+		return b;					
 	}
 }

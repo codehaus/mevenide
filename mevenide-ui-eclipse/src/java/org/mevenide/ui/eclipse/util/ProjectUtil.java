@@ -14,38 +14,25 @@
 package org.mevenide.ui.eclipse.util;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
 import org.apache.maven.project.Dependency;
 import org.apache.maven.project.Project;
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IClasspathContainer;
 import org.eclipse.jdt.core.IClasspathEntry;
-import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.launching.JavaRuntime;
-import org.mevenide.ProjectConstants;
 import org.mevenide.project.dependency.DependencyFactory;
 import org.mevenide.project.dependency.DependencyUtil;
 import org.mevenide.project.io.DefaultProjectMarshaller;
 import org.mevenide.project.io.ProjectReader;
-import org.mevenide.project.io.ProjectWriter;
-import org.mevenide.project.source.SourceDirectoryUtil;
 import org.mevenide.ui.eclipse.DefaultPathResolver;
 import org.mevenide.ui.eclipse.IPathResolver;
 import org.mevenide.ui.eclipse.Mevenide;
-import org.mevenide.ui.eclipse.sync.model.DependencyGroup;
-import org.mevenide.ui.eclipse.sync.model.DependencyGroupMarshaller;
-import org.mevenide.ui.eclipse.sync.model.SourceDirectory;
-import org.mevenide.ui.eclipse.sync.model.SourceDirectoryGroup;
-import org.mevenide.ui.eclipse.sync.model.SourceDirectoryGroupMarshaller;
 
 /**
  * 
@@ -74,53 +61,6 @@ public class ProjectUtil {
 		}    
 		jreEntryList.add(jrePath);
 		return jreEntryList;
-	}
-	
-	private static void setBuildPath(IProject project) throws Exception {
-		Mevenide.getPlugin().createProjectProperties();
-		
-		IJavaProject javaProject = JavaCore.create(project);
-	 
-		IFile props = project.getFile("project.properties");
-		File f = new Path(project.getLocation().append("project.properties").toOSString()).toFile();
-		Properties properties = new Properties();
-		properties.load(new FileInputStream(f));
-	
-		IPathResolver resolver = new DefaultPathResolver();
-	
-		String buildPath = resolver.getRelativePath(project, javaProject.getOutputLocation()); 
-		properties.setProperty("maven.build.dest", buildPath);
-		properties.store(new FileOutputStream(f), null);
-	}
-	
-	
-	///// @todo refactor method below since they introduce a cycle ////
-	
-	public static void updatePom(SourceDirectoryGroup sourceGroup, DependencyGroup dependencyGoup, File pomFile) throws Exception {
-		Mevenide.getPlugin().createProjectProperties();
-		
-		SourceDirectoryUtil.resetSourceDirectories(pomFile);
-		
-		ProjectWriter pomWriter = ProjectWriter.getWriter();
-		
-		//WICKED if/else
-		for (int i = 0; i < sourceGroup.getSourceDirectories().size(); i++) {
-			SourceDirectory directory = (SourceDirectory) sourceGroup.getSourceDirectories().get(i);
-			if ( org.mevenide.ui.eclipse.util.SourceDirectoryTypeUtil.isSource(directory) ) {
-				pomWriter.addSource(directory.getDirectoryPath(), pomFile, directory.getDirectoryType());
-			}
-			if ( directory.getDirectoryType().equals(ProjectConstants.MAVEN_RESOURCE ) ) {
-				pomWriter.addResource(directory.getDirectoryPath(), pomFile);
-			}
-			if ( directory.getDirectoryType().equals(ProjectConstants.MAVEN_TEST_RESOURCE ) ) {
-			}				
-		}
-		
-		List dependencies = dependencyGoup.getDependencies();
-		
-		pomWriter.setDependencies(dependencies, pomFile);
-		
-		setBuildPath(Mevenide.getPlugin().getProject());
 	}
 	
 	/**
@@ -188,14 +128,4 @@ public class ProjectUtil {
 		return declaredDependencies;
 	}
 
-	public static void synchronize(IProject project) throws Exception {
-		SourceDirectoryUtil.resetSourceDirectories(Mevenide.getPlugin().getPom());
-	
-		DependencyGroup dependencyGroup = DependencyGroupMarshaller.getDependencyGroup(project, Mevenide.getPlugin().getFile("statedDependencies.xml"));
-		SourceDirectoryGroup sourceGroup = SourceDirectoryGroupMarshaller.getSourceDirectoryGroup(project, Mevenide.getPlugin().getFile("sourceTypes.xml"));
-	
-		updatePom(sourceGroup, dependencyGroup, Mevenide.getPlugin().getPom());
-	}
-	
-	
 }

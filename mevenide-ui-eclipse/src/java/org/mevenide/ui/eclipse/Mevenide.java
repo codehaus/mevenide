@@ -17,10 +17,13 @@ package org.mevenide.ui.eclipse;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.MissingResourceException;
+import java.util.Properties;
 import java.util.ResourceBundle;
 
 import org.apache.commons.logging.Log;
@@ -30,7 +33,10 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPluginDescriptor;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.preference.PreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
@@ -285,6 +291,23 @@ public class Mevenide extends AbstractUIPlugin {
 		Environment.setMavenHome(getMavenHome()); 
 		Environment.setJavaHome(getJavaHome());
 		Environment.setMavenRepository(getMavenRepository());
+	}
+
+	public void setBuildPath() throws Exception {
+		Mevenide.getPlugin().createProjectProperties();
+		
+		IJavaProject javaProject = JavaCore.create(project);
+	
+		IFile props = project.getFile("project.properties");
+		File f = new Path(project.getLocation().append("project.properties").toOSString()).toFile();
+		Properties properties = new Properties();
+		properties.load(new FileInputStream(f));
+	
+		IPathResolver resolver = new DefaultPathResolver();
+	
+		String buildPath = resolver.getRelativePath(project, javaProject.getOutputLocation()); 
+		properties.setProperty("maven.build.dest", buildPath);
+		properties.store(new FileOutputStream(f), null);
 	}
 
 }

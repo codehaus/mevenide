@@ -77,4 +77,6 @@ public class SourceDirectoryGroup extends ArtifactGroup {
 				o1 != null && o1.equals(o2);
 		return allNull || firstNotNull;
 	}
+	
+	
 }

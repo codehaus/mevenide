@@ -30,7 +30,6 @@ import org.eclipse.jdt.core.IElementChangedListener;
 import org.eclipse.jdt.core.IJavaElementDelta;
 import org.eclipse.jdt.core.JavaCore;
 import org.mevenide.ui.eclipse.Mevenide;
-import org.mevenide.ui.eclipse.sync.view.SourceDirectoryMappingViewPart;
 
 /**
  * 
@@ -63,7 +62,6 @@ public class MevenideNature implements IProjectNature {
 
 		addPomNature(project);
 		Mevenide.getPlugin().createPom();
-		SourceDirectoryMappingViewPart.showView();
 		
 		//listen to .classpath changes
 		JavaCore.addElementChangedListener(
