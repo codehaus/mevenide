@@ -37,11 +37,14 @@ public class GoalsProvider implements ITreeContentProvider {
 	private static final Log log = LogFactory.getLog(GoalsProvider.class);
 	
 	private String basedir;
+	
 	private IGoalsGrabber goalsGrabber;
+	private IGoalsGrabber defaultGrabber;
 	
 	public GoalsProvider() {
 		try {
 			goalsGrabber = new DefaultGoalsGrabber();
+			defaultGrabber = new DefaultGoalsGrabber();
 		} 
 		catch (Exception e) {
 			log.debug(e);
@@ -55,7 +58,13 @@ public class GoalsProvider implements ITreeContentProvider {
     public void setBasedir(String basedir) throws Exception {
         this.basedir = basedir;
 		String mavenLocalHome = Mevenide.getPlugin().getMavenLocalHome();
-        goalsGrabber = GoalsGrabbersManager.getGoalsGrabber(new File(basedir, "project.xml").getAbsolutePath());
+        try {
+            goalsGrabber = GoalsGrabbersManager.getGoalsGrabber(new File(basedir, "project.xml").getAbsolutePath());
+        }
+        catch (Exception e) {
+            goalsGrabber = defaultGrabber;
+            log.error("Unable to set basedir. It is highly probable that maven.xml is badly formed.");
+        }
     }
 
     public Object[] getChildren(Object parent) {
