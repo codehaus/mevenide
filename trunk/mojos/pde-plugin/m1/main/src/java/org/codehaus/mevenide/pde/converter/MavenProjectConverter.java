@@ -30,8 +30,12 @@ import org.apache.maven.model.UnitTest;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.Project;
 import org.mevenide.context.DefaultQueryContext;
+import org.mevenide.context.IProjectContext;
 import org.mevenide.context.IQueryContext;
+import org.mevenide.project.DefaultProjectContext;
+import org.mevenide.properties.IPropertyLocator;
 import org.mevenide.properties.IPropertyResolver;
+import org.mevenide.properties.resolver.PropertyLocatorFactory;
 import org.mevenide.properties.resolver.PropertyResolverFactory;
 
 
@@ -137,8 +141,11 @@ public class MavenProjectConverter {
         if ( m1Build != null ) {
 	        build = new Build();
 	        
-	        IQueryContext context = new DefaultQueryContext(m1Project.getFile());
-	        IPropertyResolver resolver = PropertyResolverFactory.getFactory().createContextBasedResolver(context);
+	        IQueryContext queryContext = new DefaultQueryContext(m1Project.getFile());
+		    IPropertyResolver resolver = PropertyResolverFactory.getFactory().createContextBasedResolver(queryContext);
+		    IPropertyLocator locator = PropertyLocatorFactory.getFactory().createContextBasedLocator(queryContext);
+		    IProjectContext projectContext = new DefaultProjectContext(queryContext, resolver);
+		    ((DefaultQueryContext)queryContext).initializeProjectContext(projectContext);
 	        
 	        build.setAspectSourceDirectory(m1Build.getAspectSourceDirectory());
 	        build.setDirectory(resolver.getResolvedValue("maven.build.dir"));

@@ -23,16 +23,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 import org.apache.commons.lang.StringUtils;
-
 import org.apache.maven.model.Dependency;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.mevenide.pde.resources.Messages;
 import org.codehaus.mevenide.pde.version.VersionAdapter;
 import org.jdom.Document;
 import org.jdom.Element;
-import org.jdom.filter.Filter;
 import org.jdom.input.SAXBuilder;
-import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
 
 
@@ -66,8 +63,10 @@ public class CommonPluginValuesReplacer {
             throw new ReplaceException(Messages.get("ValuesReplacer.CannotFindDescriptor", basedir));
         }
         this.project = project;
+        if ( libraryFolder == null ) {
+            libraryFolder = "lib"; 
+        }
         this.libraryFolder = StringUtils.stripEnd(libraryFolder.replaceAll("\\\\", "/"), "/");
-        
     }
     
     /**
@@ -90,8 +89,9 @@ public class CommonPluginValuesReplacer {
         
         try {
             XMLOutputter outputter = new XMLOutputter();
-            Format format = Format.getPrettyFormat();
-            outputter.setFormat(format);
+            outputter.setIndent("   ");
+            outputter.setExpandEmptyElements(false);
+            outputter.setNewlines(true);
             outputter.output(doc, new FileWriter(pluginDescriptor));
         }
         catch (Exception e) {
@@ -131,10 +131,10 @@ public class CommonPluginValuesReplacer {
         }
         
         if ( runtimeUpdated ) {
-            pluginElement.addContent(0, runtime);
+            pluginElement.addContent(runtime);
         }
         
-        if ( requiresUpdated && requires.getParentElement() != pluginElement ) {
+        if ( requiresUpdated && requires.getParent() != pluginElement ) {
             pluginElement.addContent(requires);
     	}
         
@@ -165,19 +165,19 @@ public class CommonPluginValuesReplacer {
 
     private boolean updateRequires(Element requires, final Dependency dependency) {
         boolean updated = false;
-        Iterator imports = requires.getDescendants(new Filter() {
-            public boolean matches(Object o) {
-		        String dependencyId = dependency.getId().replaceAll(":", ".");
-                if ( !(o instanceof Element) ) return false;
-                Element element = (Element) o;
-                if ( dependencyId.equals(element.getAttributeValue("plugin")) ) return true;
-                return false;
+        List children = requires.getChildren();
+        List imports = new ArrayList();
+        for (Iterator iter = children.iterator(); iter.hasNext();) {
+            Element element = (Element) iter.next();
+            String dependencyId = dependency.getId().replaceAll(":", ".");
+            if ( dependencyId.equals(element.getAttributeValue("plugin")) ) {
+                imports.add(element);
             }
-        });
-        if ( imports == null || !imports.hasNext() ) {
+        }
+        if ( imports.size() == 0 ) {
             Element importElement = new Element("import");
             importElement.setAttribute("plugin", dependency.getId().replaceAll(":", "."));
-            requires.addContent(0, importElement);
+            requires.addContent(importElement);
             updated = true;
         }
         return updated;
