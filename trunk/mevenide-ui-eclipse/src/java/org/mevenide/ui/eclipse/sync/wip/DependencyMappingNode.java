@@ -48,8 +48,6 @@
  */
 package org.mevenide.ui.eclipse.sync.wip;
 
-import java.io.File;
-
 import org.apache.maven.project.Dependency;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
@@ -62,41 +60,27 @@ import org.mevenide.ui.eclipse.editors.properties.DependencyPropertySource;
  * @version $Id$
  * 
  */
-public class DependencyMappingNode implements IArtifactMappingNode, IPropertyChangeListener {
+public class DependencyMappingNode extends AbstractArtifactMappingNode implements IPropertyChangeListener {
     
-    /** may be instance of IProject or IClasspathEntry */
-    private Object ideEntry;
-    private Dependency resolvedDependency;
-    private Dependency dependency;
-    private File declaringPom; 
-    
-    private DependencyMappingNodeContainer parent; 
-    
-    public int getChangeDirection() {
-        if ( resolvedDependency == null ) {
-			return ProjectContainer.INCOMING;
-		}
-		if ( dependency == null ) {
-			return ProjectContainer.OUTGOING;
-		}
-		if ( !dependency.getVersion().equals(resolvedDependency.getVersion()) ) {
-		    //donot compare groupId b/c in most case it may not be resolved
-		    //|| !dependency.getGroupId().equals(resolvedDependency.getGroupId())
-			return ProjectContainer.CONFLICTING;
-		}
-        return ProjectContainer.NO_CHANGE;
-    }
+    private Dependency dirtyDependency;
     
     public String getLabel() {
         if ( (parent.getDirection() & ProjectContainer.OUTGOING) != 0 ) {
-            return resolvedDependency.getArtifactId() + "-" + resolvedDependency.getVersion();
+            Dependency displayDependency = null;
+            if ( dirtyDependency != null ) {
+                displayDependency = dirtyDependency ;
+            }
+            else {
+                displayDependency = ((Dependency) resolvedArtifact); 
+            }
+            return displayDependency.getArtifactId() + "-" + displayDependency.getVersion();
 		}
         if ( (parent.getDirection() & ProjectContainer.INCOMING) != 0 ) {
-            return dependency.getGroupId() + ":" + dependency.getArtifactId(); 
+            return ((Dependency) artifact).getGroupId() + ":" + ((Dependency) artifact).getArtifactId(); 
         }
 		//NO_CHANGE or CONFLICTING
-		if ( dependency != null ) {
-			return dependency.getGroupId() + ":" + dependency.getArtifactId();
+		if ( artifact != null ) {
+			return ((Dependency) artifact).getGroupId() + ":" + ((Dependency) artifact).getArtifactId();
 		}
 		return "Unresolved";
     }
@@ -104,12 +88,16 @@ public class DependencyMappingNode implements IArtifactMappingNode, IPropertyCha
     public Object getAdapter(Class adapter) {
         if ( adapter == IPropertySource.class ) {
             DependencyPropertySource propertySource = null;
-            if ( dependency == null ) {
-                dependency = new Dependency();
-				propertySource = new DependencyPropertySource(resolvedDependency);
+            if ( artifact == null ) {
+				if ( dirtyDependency != null ) {
+					propertySource = new DependencyPropertySource((Dependency) resolvedArtifact);
+				}
+				else {
+	                propertySource = new DependencyPropertySource((Dependency) resolvedArtifact);
+				}
             }
 			else {
-            	propertySource = new DependencyPropertySource(dependency);
+            	propertySource = new DependencyPropertySource((Dependency) artifact);
 			}
             propertySource.addPropertyChangeListener(this);
             return propertySource;
@@ -117,42 +105,37 @@ public class DependencyMappingNode implements IArtifactMappingNode, IPropertyCha
         return null;
     }
 
-    
+    public int getChangeDirection() {
+        if ( resolvedArtifact == null ) {
+            return ProjectContainer.INCOMING;
+        }
+        if ( artifact == null ) {
+            return ProjectContainer.OUTGOING;
+        }
+        if ( !((Dependency) artifact).getVersion().equals(((Dependency) resolvedArtifact).getVersion()))  {
+            //donot compare groupId b/c in most case it may not be resolved
+            //|| !dependency.getGroupId().equals(resolvedDependency.getGroupId())
+            return ProjectContainer.CONFLICTING;
+        }
+        return ProjectContainer.NO_CHANGE;
+    }
     
     public void setDependency(Dependency d) {
-        dependency = d;
+        artifact = d;
     }
     public void setResolvedDependency(Dependency resolvedDependency) {
-        this.resolvedDependency = resolvedDependency;
+        this.resolvedArtifact = resolvedDependency;
     }
     public void setIdeEntry(Object ideEntry) {
         this.ideEntry = ideEntry;
     }
     public void propertyChange(PropertyChangeEvent event) {
-        setDependency((Dependency)((DependencyPropertySource)event.getSource()).getSource());
+        setDirtyDependency((Dependency)((DependencyPropertySource)event.getSource()).getSource());
     }
     public void setParent(DependencyMappingNodeContainer parent) {
         this.parent = parent;
     }
-    
-
-    //@TODO move those ones
-    public Object getIdeEntry() {
-        return ideEntry;
-    }
-    public Object getArtifact() {
-        return dependency;
-    }
-    public Object getResolvedArtifact() {
-        return resolvedDependency;
-    }
-    public IArtifactMappingNodeContainer getParent() {
-        return parent;
-    }
-    public File getDeclaringPom() {
-        return declaringPom;
-    }
-    public void setDeclaringPom(File declaringPom) {
-        this.declaringPom = declaringPom;
+    public void setDirtyDependency(Dependency dirtyDependency) {
+        this.dirtyDependency = dirtyDependency;
     }
 }

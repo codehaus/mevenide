@@ -48,7 +48,9 @@
  */
 package org.mevenide.ui.eclipse.sync.wip;
 
-import org.apache.maven.project.Project;
+import java.io.File;
+
+
 
 /**
  * 
@@ -56,17 +58,32 @@ import org.apache.maven.project.Project;
  * @version $Id$
  * 
  */
-interface IArtifactMappingNodeContainer {
+public abstract class AbstractArtifactMappingNode implements IArtifactMappingNode {
+    /** may be instance of IProject or IClasspathEntry */
+    protected Object ideEntry;
+    protected Object resolvedArtifact;
+    protected Object artifact;
+    protected File declaringPom; 
     
-    IArtifactMappingNode[] getNodes() ;
+    protected IArtifactMappingNodeContainer parent;
     
-    void setNodes(IArtifactMappingNode[] nodes) ;
+    public Object getIdeEntry() {
+        return ideEntry;
+    }
+    public Object getArtifact() {
+        return artifact;
+    }
+    public Object getResolvedArtifact() {
+        return resolvedArtifact;
+    }
+    public IArtifactMappingNodeContainer getParent() {
+        return parent;
+    }
+    public File getDeclaringPom() {
+        return declaringPom;
+    }
+    public void setDeclaringPom(File declaringPom) {
+        this.declaringPom = declaringPom;
+    }
     
-    String getLabel();
-    
-    IArtifactMappingNodeContainer filter(int direction) ;
-    
-    void attachPom(Project pom) ;
-    
-    int getDirection();
 }

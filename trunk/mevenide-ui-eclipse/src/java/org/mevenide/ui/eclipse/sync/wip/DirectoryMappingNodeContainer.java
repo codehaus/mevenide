@@ -48,22 +48,23 @@
  */
 package org.mevenide.ui.eclipse.sync.wip;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.maven.project.Project;
+import org.apache.maven.project.Resource;
+
 /**
  * 
  * @author <a href="mailto:rhill2@free.fr">Gilles Dodinet</a>
  * @version $Id$
  * 
  */
-class DirectoryMappingNodeContainer implements IArtifactMappingNodeContainer {
-    private IArtifactMappingNode[] nodes;
-    
-    public IArtifactMappingNode[] getNodes() {
-        return nodes;
-    }
-    
-    public void setNodes(IArtifactMappingNode[] nodes) {
-        this.nodes = nodes;
-    }
+class DirectoryMappingNodeContainer extends AbstractArtifactMappingNodeContainer {
+    private static final Log log = LogFactory.getLog(DirectoryMappingNodeContainer.class);
     
     public String getLabel() {
         return "Source Folders";
@@ -71,5 +72,39 @@ class DirectoryMappingNodeContainer implements IArtifactMappingNodeContainer {
     
     public IArtifactMappingNodeContainer filter(int direction) {
         return this;
+    }
+    
+    public void attachPom(Project project) {
+        //attachDirectories(project);
+        attachResources(project);
+    }
+    
+    private void attachResources(Project project) {
+        if ( project.getBuild() != null ) {
+            List resources = project.getBuild().getResources() == null ? new ArrayList() : project.getBuild().getResources();
+            List resourcesCopy = new ArrayList(resources);
+            
+		    for (int i = 0; i < nodes.length; i++) {
+		        DirectoryMappingNode currentNode = (DirectoryMappingNode) nodes[i];
+		        Directory resolvedDirectory = (Directory) currentNode.getResolvedArtifact();
+		        for (Iterator itr = resources.iterator(); itr.hasNext(); ) {
+		            Resource pomResource = (Resource) itr.next();
+		            if ( resolvedDirectory == null || lowMatch(pomResource, resolvedDirectory) ) {
+		                System.err.println();
+		                currentNode.setArtifact(pomResource);
+		                currentNode.setDeclaringPom(project.getFile());
+		                resourcesCopy.remove(pomResource);
+		            }
+		        }
+		    }
+	        //attachOrphanResources(resourcesCopy);
+        }
+    }
+    
+    private boolean lowMatch(Resource resource, Directory directory) {
+        log.debug("resource dir : " + resource.getDirectory());
+        log.debug("directory path : " + directory.getPath());
+        if ( resource.getDirectory() == null ) return false;
+        return resource.getDirectory().replaceAll("\\\\", "/").equals(directory.getPath().replaceAll("\\\\", "/"));
     }
 }

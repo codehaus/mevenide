@@ -48,7 +48,15 @@
  */
 package org.mevenide.ui.eclipse.sync.wip;
 
-import org.apache.maven.project.Project;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.eclipse.jdt.core.IClasspathEntry;
+import org.eclipse.jdt.core.IJavaProject;
+import org.mevenide.ui.eclipse.DefaultPathResolver;
+import org.mevenide.ui.eclipse.util.SourceDirectoryTypeUtil;
 
 /**
  * 
@@ -56,17 +64,56 @@ import org.apache.maven.project.Project;
  * @version $Id$
  * 
  */
-interface IArtifactMappingNodeContainer {
+public class DirectoryMappingNodeContainerFactory {
+    private static Log log = LogFactory.getLog(DirectoryMappingNodeContainerFactory.class);
     
-    IArtifactMappingNode[] getNodes() ;
+    private static final DirectoryMappingNodeContainerFactory factory = new DirectoryMappingNodeContainerFactory();
+
+    public static DirectoryMappingNodeContainerFactory getFactory() {
+        return factory;
+    }
     
-    void setNodes(IArtifactMappingNode[] nodes) ;
-    
-    String getLabel();
-    
-    IArtifactMappingNodeContainer filter(int direction) ;
-    
-    void attachPom(Project pom) ;
-    
-    int getDirection();
+    public IArtifactMappingNodeContainer getContainer(IJavaProject javaProject)  {
+		List nodes = new ArrayList();
+        DirectoryMappingNodeContainer con = new DirectoryMappingNodeContainer();
+        try {
+	        IClasspathEntry[] classpathEntries = javaProject.getResolvedClasspath(true);
+	        for (int i = 0; i < classpathEntries.length; i++) {
+	            if ( classpathEntries[i].getEntryKind() == IClasspathEntry.CPE_SOURCE) {
+	                
+	                IClasspathEntry classpathEntry = classpathEntries[i];
+	                DirectoryMappingNode node = createDirectoryMappingNode(javaProject, classpathEntry);
+	                node.setParent(con);
+	                nodes.add(node);
+	            }
+	        }
+			IArtifactMappingNode[] artifactNodes = new IArtifactMappingNode[nodes.size()]; 
+			for (int i = 0; i < nodes.size(); i++) {
+			    artifactNodes[i] = (IArtifactMappingNode) nodes.get(i);
+            }
+			con.setNodes(artifactNodes);
+			con.attachJavaProject(javaProject);
+        }
+        catch (  Exception e ) {
+            e.printStackTrace();
+            log.error(e);
+        }
+        return con;
+    }
+
+   
+    private DirectoryMappingNode createDirectoryMappingNode(IJavaProject javaProject, IClasspathEntry classpathEntry) {
+        String path = new DefaultPathResolver().getRelativeSourceDirectoryPath(classpathEntry, javaProject.getProject());
+        Directory directory = new Directory();
+        String sourceType = SourceDirectoryTypeUtil.guessSourceType(path);
+        
+        log.debug("creating directory node (" + path + ", " + sourceType + ")");
+        directory.setPath(path);
+        directory.setType(sourceType);
+           
+        DirectoryMappingNode node = new DirectoryMappingNode();
+        node.setResolvedDirectory(directory);
+        node.setIdeEntry(classpathEntry);
+        return node;
+    }
 }

@@ -48,7 +48,6 @@
  */
 package org.mevenide.ui.eclipse.sync.wip;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -57,9 +56,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Dependency;
 import org.apache.maven.project.Project;
-import org.eclipse.jdt.core.IJavaProject;
-import org.mevenide.project.io.ProjectReader;
-import org.mevenide.ui.eclipse.util.FileUtils;
 
 
 /**
@@ -68,20 +64,14 @@ import org.mevenide.ui.eclipse.util.FileUtils;
  * @version $Id$
  * 
  */
-class DependencyMappingNodeContainer implements IArtifactMappingNodeContainer {
+class DependencyMappingNodeContainer extends AbstractArtifactMappingNodeContainer {
     private static final Log log = LogFactory.getLog(DependencyMappingNodeContainer.class);
-    
-    private IArtifactMappingNode[] nodes;
-    
-    private int direction;
-    
     
     public String getLabel() {
         return "Libraries";
     }
     
-    //@ TODO generalize
-    private void attachPom(Project pom) {
+    public void attachPom(Project pom) {
         List dependencies = pom.getDependencies();
         List dependenciesCopy = new ArrayList(dependencies);
         
@@ -141,58 +131,4 @@ class DependencyMappingNodeContainer implements IArtifactMappingNodeContainer {
     
     
     
-    // @TODO pull-up those ones
-    
-    public void attachJavaProject(IJavaProject javaProject) throws Exception {
-        Project pom = ProjectReader.getReader().read(FileUtils.getPom(javaProject.getProject()));
-        
-        attachPom(pom);
-        
-		//dirty trick to avoid infinite loops if user has introduced one by mistake
-        List visitedPoms = new ArrayList();
-        
-		String extend = pom.getExtend();
-		
-		//recurse poms
-		while ( extend != null && !extend.trim().equals("") ) {
-			
-		    //resolve extend
-		    extend = extend.replaceAll("\\$\\{basedir\\}", pom.getFile().getParent().replaceAll("\\\\", "/"));
-			File extendFile = new File(extend);
-			if ( !extendFile.exists() ) {
-			    log.debug("extend doesnot exist");
-			    extendFile = new File(pom.getFile().getParent(), extend);
-			    if ( !extendFile.exists() ) {
-			        log.debug(extendFile.getAbsolutePath() + " doesnot exist either. break.");
-			        //@ TODO throw new ExtendDoesnotExistException(..)
-			        break;
-			    }
-			}
-			
-			//assert pom has not been visited yet
-			if ( visitedPoms.contains(extendFile.getAbsolutePath()) ) {
-			    //@TODO throw new InfinitePomRecursionException(..)
-			    break;
-			}
-			visitedPoms.add(extendFile.getAbsolutePath());
-			
-			//attach pom
-			pom = ProjectReader.getReader().read(extendFile);
-		    attachPom(pom);
-			extend = pom.getExtend();
-		}
-    }
-    
-    public int getDirection() {
-        return direction;
-    }
-    public void setDirection(int direction) {
-        this.direction = direction;
-    }
-    public IArtifactMappingNode[] getNodes() {
-        return nodes;
-    }
-    public void setNodes(IArtifactMappingNode[] nodes) {
-        this.nodes = nodes;
-    }
 }
