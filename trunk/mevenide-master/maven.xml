@@ -29,6 +29,10 @@
   	<attainGoal name="mevenide-site:generate-wiki-templates"/>
   </goal>
   
+  <goal name="mevenide-plugins:site">
+  	<j:set var="maven.multiproject.includes" value="${maven.multiproject.plugins.includes}"/>
+  	<attainGoal name="multiproject:site"/>
+  </goal>
   <!-- do NOT call site:deploy because we dont want to attain 'site' goal -->
   <goal name="mevenide-site:ssh-deploy" description="Deploy Site" prereqs="mevenide-site:build">
     <attainGoal name="site:sshdeploy"/>
