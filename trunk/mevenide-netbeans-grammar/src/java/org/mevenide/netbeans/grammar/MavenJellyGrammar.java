@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -34,6 +35,8 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.mevenide.grammar.TagLib;
+import org.mevenide.grammar.TagLibManager;
 import org.netbeans.modules.xml.api.model.GrammarQuery;
 import org.netbeans.modules.xml.api.model.GrammarResult;
 import org.netbeans.modules.xml.api.model.HintContext;
@@ -55,37 +58,30 @@ public class MavenJellyGrammar implements GrammarQuery {
  
    private static Log logger = LogFactory.getLog(MavenJellyGrammar.class); 
 
-   private Map tagLibs;
+   private static TagLibManager manager; 
    
    public MavenJellyGrammar()
    {
-       configure();
    }
   
-    /**
-     * This method is called only once before parsing occurs
-     * which allows tag libraries to be registered and so forth
-     * TODO - for performance reasons later read just the files that are used in the context.
-     */
-    protected void configure() 
-    {
-        tagLibs = new TreeMap();
-        FileObject tagLibFolder = Repository.getDefault().getDefaultFileSystem().findResource("Plugins/Mevenide-Grammar");
-        FileObject[] libFOs = tagLibFolder.getChildren();
-        if (libFOs != null)
-        {
-            for (int i = 0; i < libFOs.length; i++)
-            {
-                try {
-                    TagLib lib = new TagLib(libFOs[i].getInputStream());
-                    tagLibs.put(lib.getName(), lib);
-                } catch (Exception exc)
-                {
-                    logger.error("cannot read config file:" + libFOs[i].getPath(), exc);
-                }
-            }
-        }
-    }
+   
+   private static TagLibManager getManager() {
+       if (manager == null) {
+           synchronized (MavenJellyGrammar.class) {
+               if (manager == null) {
+                   manager = new TagLibManager();
+                   manager.setProvider(new NbTagLibProvider());
+               }
+           }
+       }
+       return manager;
+   }
+   
+   
+   private TagLib getDefaultTagLib() {
+       //TODO define default taglib
+       return getManager().getTagLibrary("maven-default");
+   }
 
     private Node findRootNode(HintContext virtualElementCtx) 
     {
@@ -171,25 +167,27 @@ public class MavenJellyGrammar implements GrammarQuery {
         Vector toReturn = new Vector();
         String elName = ownerElementCtx.getNodeName();
         int separ = elName.indexOf(':');
+        TagLib lib = null;
+        String tag = elName;
         if (separ > 0) 
         {
             //it's a namespace element..
             String ns = elName.substring(0, separ);
-            String tag = (separ == elName.length() ? "" : elName.substring(separ + 1));
-            TagLib lib = findTagLib(ns, ownerElementCtx);
-            if (lib != null) {
-                Iterator it = lib.getTagAttrs(tag).iterator();
-                while (it.hasNext())
-                {
-                    String attr = (String)it.next();
-                    if (attr.startsWith(start)) {
-                        toReturn.add(new Attribute(attr));
-                    }
-                }
-            }
+            tag = (separ == elName.length() ? "" : elName.substring(separ + 1));
+            lib = findTagLib(ns, ownerElementCtx);
         } else {
             //TODO what now? default namespace
-
+            lib = getDefaultTagLib();
+            
+        }
+        if (lib != null) {
+            Iterator it = lib.getTagAttrs(tag).iterator();
+            while (it.hasNext()) {
+                String attr = (String)it.next();
+                if (attr.startsWith(start)) {
+                    toReturn.add(new Attribute(attr));
+                }
+            }
         }
         return toReturn.elements();
     }
@@ -214,8 +212,33 @@ public class MavenJellyGrammar implements GrammarQuery {
             String jellyTag = (String)mapping.get(ns);
             if (jellyTag != null)
             {
-                return  (TagLib)tagLibs.get(jellyTag);
+                return  (TagLib)getManager().getTagLibrary(jellyTag);
             }
+        }
+        return null;
+    }
+    
+    
+    private Node findParentInSameNamespace(String ns, Node el) {
+        Node parent = el.getParentNode();
+        
+        while (parent != null) {
+            String name = parent.getNodeName();
+            int separ = name.indexOf(':');
+            if (separ > 0) 
+            {
+                String nameSpace = name.substring(0, separ);
+                logger.debug("findParentInSameNamespace-" + nameSpace );
+                if (nameSpace.equals(ns)) {
+                    return parent;
+                }
+            } else {
+                // no namespace here, 
+                if (ns == null) {
+                    return parent;
+                }
+            }
+            parent = parent.getParentNode();
         }
         return null;
     }
@@ -239,7 +262,7 @@ public class MavenJellyGrammar implements GrammarQuery {
                     String jellyTag = (String)mapping.get(ns);
                     if (jellyTag != null)
                     {
-                        toReturn.put(ns, tagLibs.get(jellyTag));
+                        toReturn.put(ns, getManager().getTagLibrary(jellyTag));
                     }
                 }
             }
@@ -271,21 +294,20 @@ public class MavenJellyGrammar implements GrammarQuery {
             TagLib lib = findTagLib(ns, virtualElementCtx);
             if (lib != null)
             {
-                //we found the tag lib definition, can offer completion.
-                Iterator it = lib.getTags().iterator();
-                while (it.hasNext())
-                {
-                    String name = (String)it.next();
-                    if (name.startsWith(tag))
-                    {
-                        toReturn.add(new MyElement(ns,name));
+                Node parent = findParentInSameNamespace(ns, virtualElementCtx);
+                if (parent != null) {
+                    String parentTag = parent.getNodeName().substring(separ + 1);
+                    Collection col = lib.getSubTags(parentTag);
+                    if (col != null) {
+                        createTagElements(col, toReturn, ns, tag);
                     }
                 }
+                createTagElements(lib.getRootTags(), toReturn, ns, tag);
             }
         } else {
             logger.debug("no namespace yet");
             Map libs = findTagLibs(start, virtualElementCtx);
-            List singleTags = new ArrayList(30);
+            Vector singleTags = new Vector();
             if (libs.size() > 0) {
                 Iterator it = libs.keySet().iterator();
                 while (it.hasNext())
@@ -297,20 +319,31 @@ public class MavenJellyGrammar implements GrammarQuery {
                     // add the tags as well, tothe end however.
                     logger.debug("adding lib=" + lb);
                     if (lb != null) {
-                        // it can happen that we don't have the definition handy,
-                        // that's why the null check..
-                        Iterator it2 = lb.getTags().iterator();
-                        while (it2.hasNext()) {
-                            String tag = (String)it2.next();
-                            singleTags.add(new MyElement(ns, tag));
-                        }
+                        createTagElements(lb.getRootTags(), singleTags, ns, start);
+                        //TODO add non root tags..
                     }
                 }
-                toReturn.addAll(singleTags);
-            }           
-            //TODO add default elements..
+            }
+            // add default tags now..
+            createTagElements(getDefaultTagLib().getRootTags(), toReturn, null, start);
+            //TODO add non root tag feom default
+            
+            // add single tags from namespaces last, to have the default tags first (after namespaces)
+            toReturn.addAll(singleTags);
         }
         return toReturn.elements();
+    }
+    
+    
+    private void createTagElements(Collection col, Vector elemList, String namespace, String start) {
+        Iterator it = col.iterator();
+        while (it.hasNext()) {
+            String name = (String)it.next();
+            if (start == null || name.startsWith(start)) {
+                elemList.add(new MyElement(namespace, name));
+            }
+        }
+        
     }
     /**
      * Allow to get names of <b>parsed general entities</b>.
@@ -358,14 +391,13 @@ public class MavenJellyGrammar implements GrammarQuery {
             if (parent.getNodeName().startsWith("xmlns:")) {
                 logger.debug(".. is the one");
                 // now we offer jelly taglibs
-                Iterator it = tagLibs.keySet().iterator();
-                while (it.hasNext())
+                String[] libs = getManager().getAvailableTagLibs();
+                for (int i = 0; i < libs.length; i++)
                 {
-                    String lib = (String)it.next();
-                    logger.debug("lib=" + lib);
-                    if (lib.startsWith(start)) {
+                    logger.debug("lib=" + libs[i]);
+                    if (libs[i].startsWith(start)) {
                         logger.debug("adding lib");
-                        toReturn.add(new TextNode(lib));
+                        toReturn.add(new TextNode(libs[i]));
                     }
                 }
             }
@@ -420,7 +452,7 @@ public class MavenJellyGrammar implements GrammarQuery {
         }
         
         public String getNodeName() {
-            return namespace + ":" + name;
+            return (namespace == null ? name : namespace + ":" + name);
         }
         
         public String getTagName() {

@@ -15,15 +15,18 @@
  * =========================================================================
  */
 
-package org.mevenide.netbeans.grammar;
+package org.mevenide.grammar;
 
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.StringTokenizer;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jdom.Document;
@@ -34,7 +37,7 @@ import org.jdom.input.SAXBuilder;
  * Container for tag library code completion data.
  * @author  Milos Kleint (ca206216@tiscali.cz)
  */
-public class TagLib
+public class StaticTagLibImpl implements TagLib
 {
     private static Log logger = LogFactory.getLog(TagLib.class);
     
@@ -43,10 +46,15 @@ public class TagLib
      * map - key String-tag name, value Collection of Strings (tag attrs)
      */
     private Map tags;
+    private Map nestedtags;
+    private Set roottags;
+    
     /** Creates a new instance of TagLib */
-    public TagLib(InputStream libDef) throws Exception
+    public StaticTagLibImpl(InputStream libDef) throws Exception
     {
         tags = new HashMap();
+        nestedtags = new HashMap();
+        roottags = new HashSet();
         configure(libDef);
     }
     
@@ -78,6 +86,22 @@ public class TagLib
                 }
             }
             addTag(tagName, col);
+            String within = tagEl.getAttributeValue("within");
+            if (within != null) {
+                StringTokenizer tok = new StringTokenizer(within, ",", false);
+                while (tok.hasMoreTokens()) {
+                    String parent = tok.nextToken(); 
+                    Collection nest = (Collection)nestedtags.get(parent);
+                    if (nest == null) {
+                        nest = new ArrayList();
+                        nestedtags.put(parent, nest);
+                    }
+                    nest.add(tagName);
+                }
+            } else {
+                roottags.add(tagName);
+            }
+            
         }
     }
 
@@ -95,12 +119,18 @@ public class TagLib
         return name;
     }
     
-    public Collection getTags() {
-        return tags.keySet();
-    }
     
     public Collection getTagAttrs(String tag)
     {
         return (Collection)tags.get(tag);
     }
+    
+    public Collection getRootTags() {
+        return roottags;
+    }
+    
+    public Collection getSubTags(String tagName) {
+        return (Collection)nestedtags.get(tagName);
+    }
+    
 }
