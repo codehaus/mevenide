@@ -8,6 +8,7 @@
   <!-- ==================================== -->
   <goal name="mevenide-eclipse:build" description="Build all Mevenide modules" prereqs="mevenide-eclipse:clean,mevenide-eclipse:init">
     <j:set var="maven.multiproject.includes" value="${maven.multiproject.eclipse.includes}"/>
+    <j:set var="maven.multiproject.excludes" value="mevenide-master/project.xml"/>
     <attainGoal name="multiproject:goal"/>
     <attainGoal name="mevenide-eclipse:create-update-dist"/>
   </goal>
@@ -24,7 +25,9 @@
   <!-- ==================================== -->
   <goal name="mevenide-site:build" description="Build Mevenide Site" prereqs="mevenide-site:init">
   	<j:set var="maven.multiproject.includes" value="${maven.multiproject.site.includes}"/>
-  	<j:set var="maven.multiproject.excludes" value="mevenide-master/project.xml"/>
+  	<echo>"${maven.multiproject.basedir}</echo>
+    <echo>${maven.multiproject.includes}</echo>
+    <echo>excludes="${maven.multiproject.excludes}</echo>
   	<attainGoal name="multiproject:site"/>
   	<attainGoal name="mevenide-site:generate-wiki-templates"/>
   </goal>
