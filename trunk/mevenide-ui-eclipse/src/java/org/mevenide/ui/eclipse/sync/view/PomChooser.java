@@ -71,16 +71,34 @@ public class PomChooser {
     
 	private IContainer container;
 	
+	private List poms;
+
 	public PomChooser(IContainer container) {
 		this.container = container;
 	}
 	
 	/**
-	 * display a Dialog to allow the user to choose a pom  
+	 * display a Dialog to allow the user to choose a pom. 
+	 * if theres only zero or one available pom, it directly returned  
 	 */
 	public List openPomChoiceDialog() throws Exception {
 		
 		List projects = new ArrayList();
+		
+		//handle case when theres no available pom
+		if ( getPoms().size() == 0 ) {
+			return projects;
+		}
+
+		//special handling when theres only one pom into the current container
+		if ( getPoms().size() == 1 ) {
+		    File pom = (File) getPoms().get(0);
+			Project project = ProjectReader.getReader().read(pom);
+			project.setFile(pom);
+			projects.add(project);
+			return projects;
+		}
+		
 		PomChoiceDialog dialog = new PomChoiceDialog(this);
 		
 		int result = dialog.open();
@@ -100,11 +118,15 @@ public class PomChooser {
 	}
 	
 	
-	public List getPoms() {
-	    File projectRoot = new File(container.getLocation().toOSString());
-		List allPoms = findPoms(projectRoot);
-		log.debug("Found " + allPoms.size() + " POM file");
-		return allPoms;
+	public synchronized List getPoms() {
+		//donot search multiple times
+		if ( poms == null ) {
+			File projectRoot = new File(container.getLocation().toOSString());
+			List allPoms = findPoms(projectRoot);
+			log.debug("Found " + allPoms.size() + " POM file");
+			poms = allPoms;
+		}
+		return poms;
 	}
 	
 	private List findPoms(File rootDirectory) {
