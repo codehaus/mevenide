@@ -147,12 +147,8 @@ public class LaunchWizardPage extends WizardPage {
 			buttonDataLayout.grabExcessHorizontalSpace = true;
 			final Button optionButton = new Button(comp, SWT.CHECK);
 			optionButton.setLayoutData(buttonDataLayout);
-			try {
-				optionButton.setText(OptionsRegistry.getDescription(option));
-			}
-			catch ( Throwable t ) {
-				optionButton.setText("Unavailable description : Classpath problem to be fixed.. ");
-			}
+			
+			optionButton.setText(OptionsRegistry.getDescription(option));
 			optionButton.setToolTipText(new StringBuffer(" -").append(option).toString());
 			optionButton.setSelection(((Boolean)optionsMap.get(new Character(option))).booleanValue());
 			
