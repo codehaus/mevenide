@@ -39,6 +39,7 @@ public class PreferencesManager {
 	private PreferenceStore preferenceStore;
 	
 	protected PreferencesManager() {
+	    loadPreferences();
 	}
 	
 	public static PreferencesManager getManager()  {
