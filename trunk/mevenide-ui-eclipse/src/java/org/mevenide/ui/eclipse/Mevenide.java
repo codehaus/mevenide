@@ -190,6 +190,7 @@ public class Mevenide extends AbstractUIPlugin {
         	mavenLocalHome = new File(System.getProperty("user.home"), ".maven").getAbsolutePath();
         }
         setMavenLocalHome(mavenLocalHome);
+        
         return mavenLocalHome;
     }
 
@@ -299,6 +300,10 @@ public class Mevenide extends AbstractUIPlugin {
         }
     }
 
+	/* {non-javadoc}
+	 * 
+	 * should not be necessary since the setters already take care of configuring the environment.
+	 */
 	public void initEnvironment() {
 		Environment.setMavenHome(getMavenHome()); 
 		Environment.setJavaHome(getJavaHome());
@@ -393,12 +398,14 @@ public class Mevenide extends AbstractUIPlugin {
     }
     public void setMavenLocalHome(String mavenLocalHome) {
         this.mavenLocalHome = mavenLocalHome;
+        Environment.setMavenLocalHome(mavenLocalHome);
     }
     public int getHeapSize() {
         return heapSize;
     }
     public void setHeapSize(int heapSize) {
         this.heapSize = heapSize;
+        Environment.setHeapSize(heapSize);
     }
 
 }
