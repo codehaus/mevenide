@@ -127,7 +127,9 @@ public class UpdatePluginLibsTag extends AbstractMevenideTag {
     }
 
 	/**
-	 * affectively add library derived from artifact to runtime element
+	 * effectively add library derived from artifact to runtime element
+	 *
+   	 * @pre runtime element is present in plugin descriptor
      */
 	private void addRuntimeLibrary(Artifact artifact) {
         Element artifactLibraryElem = new Element(LIBRARY_ELEM);
@@ -192,10 +194,19 @@ public class UpdatePluginLibsTag extends AbstractMevenideTag {
 		return null;
 	}
 
+	/**
+     * output plugin descriptor to temp directory.
+ 	 *  
+     * @post outputted descriptor has not been filtered yet
+     * @see {@link setUpDescriptor()}
+     */
     private void outputDescriptor() {
         //@TODO
     }
     
+	/**
+     * setup descriptor from the plugin descriptor template, so dependencies will be refreshed at each build 
+     */
     private void setUpDescriptor() throws JDOMException, IOException {
         String descriptorDirectory = (String) context.getVariable(DESCRIPTOR_DIR_PROPERTY);
         File descriptorPath = new File(descriptorDirectory, PLUGIN_FILENAME).getCanonicalFile(); 
