@@ -40,6 +40,7 @@ public class MultiTextComponentPOMChange implements MavenPOMTreeChange {
     private Map fields;
     private OriginChange origin;
     private Map listeners;
+    private OrigListener orListener;
     
     private boolean ignore = false;
     
@@ -49,6 +50,17 @@ public class MultiTextComponentPOMChange implements MavenPOMTreeChange {
      */
     public MultiTextComponentPOMChange(String keyParam, Map oldValues, int oldLocation, 
                                        Map textfields, OriginChange oc) {
+        this(keyParam, oldValues, oldLocation, textfields, oc, true);
+    }
+    
+    /**
+     * @param oldValues - key:id, value:String
+     * @param textfields - key:id, value:JTextComponent
+     * @param attachListeners attach listeners from the begining.
+     */
+    public MultiTextComponentPOMChange(String keyParam, Map oldValues, int oldLocation, 
+                                       Map textfields, OriginChange oc, boolean attachListeners) 
+    {
         key = keyParam;
         values = oldValues;
         location = oldLocation;
@@ -57,14 +69,43 @@ public class MultiTextComponentPOMChange implements MavenPOMTreeChange {
         fields = textfields;
         origin = oc;
         origin.setSelectedLocationID(oldLocation);
-        origin.setChangeObserver(new OrigListener());
+        orListener = new OrigListener();
+        listeners = new HashMap();
         Iterator it = fields.entrySet().iterator();
         while (it.hasNext()) {
             Map.Entry entry = (Map.Entry)it.next();
             JTextComponent field = (JTextComponent)entry.getValue();
             String val = (String)values.get(entry.getKey());
-            field.setText(val == null ? "" : val);
-            field.getDocument().addDocumentListener(new DocListener((String)entry.getKey(), field));
+            if (attachListeners) {
+                field.setText(val == null ? "" : val);
+            }
+            listeners.put(entry.getKey(), new DocListener((String)entry.getKey(), field));
+        }
+        if (attachListeners) {
+            attachListeners();
+        }
+    }    
+    
+    
+    public void attachListeners() {
+        origin.setChangeObserver(orListener);
+        Iterator it = fields.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry entry = (Map.Entry)it.next();
+            JTextComponent field = (JTextComponent)entry.getValue();
+            DocListener list = (DocListener)listeners.get(entry.getKey());
+            field.getDocument().addDocumentListener(list);
+        }
+    }
+    
+    public void detachListeners() {
+        origin.setChangeObserver(null);
+        Iterator it = fields.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry entry = (Map.Entry)it.next();
+            JTextComponent field = (JTextComponent)entry.getValue();
+            DocListener list = (DocListener)listeners.get(entry.getKey());
+            field.getDocument().removeDocumentListener(list);
         }
     }
     
@@ -80,12 +121,14 @@ public class MultiTextComponentPOMChange implements MavenPOMTreeChange {
      * assigns the textfield and loc combo with current values.
      */
     public void stopIgnoringChanges() {
+        origin.getComponent().setEnabled(true);
         Iterator it = fields.entrySet().iterator();
         while (it.hasNext()) {
             Map.Entry entry = (Map.Entry)it.next();
             JTextComponent field = (JTextComponent)entry.getValue();
             String val = (String)newValues.get(entry.getKey());
             field.setText(val == null ? "" : val);
+            field.setEditable(true);
         }
         origin.setSelectedLocationID(newLocation);
         ignore = false;
@@ -142,17 +185,8 @@ public class MultiTextComponentPOMChange implements MavenPOMTreeChange {
     }
     
     public void resetToNonResolvedValue() {
-        ignore = true;
-        origin.getComponent().setEnabled(true);
-        Iterator it = fields.entrySet().iterator();
-        while (it.hasNext()) {
-            Map.Entry ent = (Map.Entry)it.next();
-            JTextComponent field = (JTextComponent)ent.getValue();
-            field.setEditable(true);
-            String val = (String)newValues.get(ent.getKey());
-            field.setText(val != null ? val : "");
-        }
-        ignore = false;
+        startIgnoringChanges();
+        stopIgnoringChanges();
     }
 
     public String getPath() {
@@ -161,6 +195,13 @@ public class MultiTextComponentPOMChange implements MavenPOMTreeChange {
 
     public IContentProvider getChangedContent() {
         return new SimpleContentProvider(new HashMap(newValues));
+    }
+    
+    /**
+     * helper methods for cell renderers inlists. (eg MailingLists' list)
+     */
+    public String getValueFor(String key) {
+        return (String)newValues.get(key);
     }
     
     
@@ -178,7 +219,6 @@ public class MultiTextComponentPOMChange implements MavenPOMTreeChange {
             newValues.put(id, textField.getText());
             if (origin.getSelectedLocationID() == IPropertyLocator.LOCATION_NOT_DEFINED ||
                 origin.getSelectedLocationID() == IPropertyLocator.LOCATION_DEFAULTS) {
-                // assume the default placement is build..
                 // maybe have configurable or smartish later..
                 origin.setAction(OriginChange.ACTION_POM_MOVE_TO_CHILD);
             }

@@ -75,6 +75,15 @@ public class MavenFileOwnerQueryImpl implements FileOwnerQueryImplementation {
         }
     }
     
+    /**
+     * get the list of currently opened maven projects.. kind of hack, but well..
+     */
+    public Set getOpenedProjects() {
+        synchronized (LOCK) {
+            return new HashSet(set);
+        }
+    }
+    
     public Project getOwner(URI uri) {
         logger.debug("getOwner of uri=" + uri);
         Set currentProjects;

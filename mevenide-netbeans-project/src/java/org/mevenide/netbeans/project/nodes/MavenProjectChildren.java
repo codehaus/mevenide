@@ -57,10 +57,12 @@ class MavenProjectChildren extends Children.Keys {
     private static final String KEY_JELLY_SCRIPT = "jellyScript"; //NOI18N
     private static final String KEY_RESOURCES = "resources"; //NOI18N
     private static final String KEY_WEBAPP = "webapp"; //NOI18N
+    private static final String KEY_EAR = "ear"; //NOI18N
     
     private MavenProject project;
     private PropertyChangeListener changeListener;
     private String currentWebAppKey;
+    private String currentEarKey;
     
     public MavenProjectChildren(MavenProject project) {
         this.project = project;
@@ -107,6 +109,11 @@ class MavenProjectChildren extends Children.Keys {
             currentWebAppKey = KEY_WEBAPP + webapp;
             list.add(currentWebAppKey);
         }
+        URI ear = project.getEarDirectory();
+        if (ear != null) {
+            currentEarKey = KEY_EAR + ear;
+            list.add(currentEarKey);
+        }
         Project proj = project.getOriginalMavenProject();
         Build build = proj.getBuild();
         if (build != null) {
@@ -145,6 +152,8 @@ class MavenProjectChildren extends Children.Keys {
             n = new ResourcesRootNode(project);
         } else if (key == currentWebAppKey) {
             n = createWebAppNode();
+        } else if (key == currentEarKey) {
+            n = createEarNode();
         }
         return n == null ? new Node[0] : new Node[] {n};
     }
@@ -189,6 +198,23 @@ class MavenProjectChildren extends Children.Keys {
         return n;
     }
     
+    private Node createEarNode() {
+        Node n =  null;
+        try {
+            FileObject fo = URLMapper.findFileObject(project.getEarDirectory().toURL());
+            if (fo != null) {
+                DataFolder fold = DataFolder.findFolder(fo);
+                File fil = FileUtil.toFile(fo);
+                if (fold != null) {
+                    n = new EarFilterNode(project, fold.getNodeDelegate().cloneNode(), fil);
+                }
+            }
+        } catch (MalformedURLException exc) {
+            logger.debug("malformed webapp rootfile url", exc);
+            n = null;
+        }
+        return n;
+    }
  
     
     

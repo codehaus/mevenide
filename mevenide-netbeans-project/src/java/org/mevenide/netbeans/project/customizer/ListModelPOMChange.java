@@ -25,6 +25,7 @@ import javax.swing.DefaultListModel;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 import org.mevenide.netbeans.project.customizer.ui.OriginChange;
+import org.mevenide.netbeans.project.writer.AbstractContentProvider;
 import org.mevenide.project.io.IContentProvider;
 import org.mevenide.properties.IPropertyLocator;
 
@@ -45,9 +46,24 @@ public class ListModelPOMChange implements MavenPOMTreeChange {
     private DocListener listener;
     
     private boolean ignore = false;
+    private boolean hasPomChanges;
     
+    /**
+     * assumes the items in the list are single strings..
+     */
     public ListModelPOMChange(String keyParam, List oldValues, int oldLocation, 
-                              DefaultListModel lst, OriginChange oc) {
+                              DefaultListModel lst, OriginChange oc) 
+    {
+        this(keyParam, oldValues, oldLocation, lst, oc, false);
+    }
+    
+    /**
+     * @param itemsPomChanges - if true, items in model are MultiTextComponentPOMChanges representing subcontent, otherwise it's
+     *                  just plain strings..
+     */
+    public ListModelPOMChange(String keyParam, List oldValues, int oldLocation, 
+                              DefaultListModel lst, OriginChange oc, boolean itemsPomChanges) 
+    {
         key = keyParam;
         values = oldValues;
         location = oldLocation;
@@ -63,6 +79,7 @@ public class ListModelPOMChange implements MavenPOMTreeChange {
         listener = new DocListener();
         origin.setChangeObserver(listener);
         model.addListDataListener(listener);
+        hasPomChanges = itemsPomChanges;
     }
     
     /**
@@ -125,7 +142,11 @@ public class ListModelPOMChange implements MavenPOMTreeChange {
     }
 
     public IContentProvider getChangedContent() {
-        return new ValueListContentProvider(newValues);
+        if (!hasPomChanges) {
+            return new ValueListContentProvider(newValues);
+        } else {
+            return new SubProviderContainerProvider(newValues);
+        }
     }
     
     
@@ -177,31 +198,32 @@ public class ListModelPOMChange implements MavenPOMTreeChange {
         
     }    
     
-    protected static class ValueListContentProvider implements IContentProvider {
+    //TODO needs refactoring maybe
+    protected static class ValueListContentProvider extends AbstractContentProvider {
         private List vals;
         public ValueListContentProvider(List values) {
             vals = values;
         }
-        
-        public List getProperties() {
-            return Collections.EMPTY_LIST;
-        }
-
-        public IContentProvider getSubContentProvider(String key) {
-            return null;
-        }
-
-        public List getSubContentProviderList(String parentKey, String childKey) {
-            return null;
-        }
-
-        public String getValue(String key) {
-            return null;
-        }
-
         public List getValueList(String parentKey, String childKey) {
             return vals;
         }
-        
     }  
+    //TODO needs refactoring maybe
+    protected static class SubProviderContainerProvider extends AbstractContentProvider {
+        private List vals;
+        public SubProviderContainerProvider(List values) {
+            vals = values;
+        }
+        public List getSubContentProviderList(String parentKey, String childKey) {
+            List toReturn = new ArrayList();
+            Iterator it = vals.iterator();
+            while (it.hasNext()) {
+                MultiTextComponentPOMChange chng = (MultiTextComponentPOMChange)it.next();
+                toReturn.add(chng.getChangedContent());
+            }
+            return toReturn;
+        }
+    }  
+    
+    
 }

@@ -80,6 +80,15 @@ public class ChangesContentProvider implements IContentProvider {
     }
 
     public List getSubContentProviderList(String parentKey, String childKey) {
+        MavenPOMTreeChange change = findSubTreeChange(path + "." + parentKey);
+        if (change != null) {
+            if (change.getOldLocation() == location && change.getNewLocation() != location) {
+                return null;
+            }
+            if (change.getNewLocation() == location) {
+                return change.getChangedContent().getSubContentProviderList(parentKey, childKey);
+            }
+        }
         List orig = provider.getSubContentProviderList(parentKey, childKey);
         if (orig != null) {
             Iterator it = orig.iterator();

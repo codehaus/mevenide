@@ -16,15 +16,24 @@
  */
 package org.mevenide.netbeans.project.customizer;
 
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.DefaultListCellRenderer;
 
 import javax.swing.DefaultListModel;
+import javax.swing.JButton;
+import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
@@ -36,13 +45,16 @@ import org.apache.maven.project.Contributor;
 import org.apache.maven.project.Developer;
 import org.apache.maven.project.Project;
 import org.mevenide.netbeans.project.MavenProject;
+import org.mevenide.netbeans.project.customizer.ui.LocationComboFactory;
+import org.mevenide.netbeans.project.customizer.ui.OriginChange;
+import org.mevenide.project.io.IContentProvider;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.awt.HtmlBrowser;
 import org.openide.util.NbBundle;
 
 /**
- *
+ * panel to display and edit the contributor and developer pom elements.
  * @author  Milos Kleint (ca206216@tiscali.cz)
  */
 public class TeamPanel extends JPanel implements ProjectPanel {
@@ -50,24 +62,26 @@ public class TeamPanel extends JPanel implements ProjectPanel {
     
     private boolean propagate;
     private ProjectValidateObserver valObserver;
-    private Contributor current;
+    private MultiTextComponentPOMChange currentContDev;
     private Listener listener;
     private MavenProject project;
-    private DefaultListModel contribModel;
-    private DefaultListModel develModel;
-    private boolean doResolve = false;
+    private OriginChange ocContDevel;
+    private OriginChange ocDummyOC;
+    private DefaultListModel developerModel;
+    private DefaultListModel contributorModel;
+    private ListModelPOMChange changeDevel;
+    private ListModelPOMChange changeContrib;
+    private ListModelPOMChange currentChange;
+    private boolean isResolvingValues = false;
+
     
     /** Creates new form BasicsPanel */
-    public TeamPanel(boolean propagateImmediately, boolean enable, MavenProject proj) {
-        initComponents();
-        propagate = propagateImmediately;
+    public TeamPanel(MavenProject proj) {
         project = proj;
+        initComponents();
         valObserver = null;
-        contribModel = new DefaultListModel();
-        develModel = new DefaultListModel();
         //TODO add listeners for immediatePropagation stuff.
         setName(NbBundle.getMessage(TeamPanel.class, "TeamPanel.name"));
-        setEnableFields(enable);
         btnView.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 String url = txtURL.getText().trim();
@@ -85,18 +99,7 @@ public class TeamPanel extends JPanel implements ProjectPanel {
             }
         });
         lstTeam.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-    }
-    
-    public void setEnableFields(boolean enable) {
-        txtEmail.setEditable(enable);
-        txtName.setEditable(enable);
-        txtID.setEditable(enable);
-        txtOrganization.setEditable(enable);
-        txtTimezone.setEditable(enable);
-        txtURL.setEditable(enable);
-        btnAdd.setEnabled(enable);
-        btnEdit.setEnabled(enable);
-        btnRemove.setEnabled(enable);
+        populateChangeInstances();        
     }
     
     /** This method is called from within the constructor to
@@ -109,10 +112,11 @@ public class TeamPanel extends JPanel implements ProjectPanel {
 
         lblTeam = new javax.swing.JLabel();
         comTeam = new javax.swing.JComboBox();
+        ocContDevel = LocationComboFactory.createPOMChange(project, true);
+        btnLocation = (JButton)ocContDevel.getComponent();
         spTeam = new javax.swing.JScrollPane();
         lstTeam = new javax.swing.JList();
         btnAdd = new javax.swing.JButton();
-        btnEdit = new javax.swing.JButton();
         btnRemove = new javax.swing.JButton();
         lblName = new javax.swing.JLabel();
         txtName = new javax.swing.JTextField();
@@ -133,16 +137,21 @@ public class TeamPanel extends JPanel implements ProjectPanel {
         lblTeam.setLabelFor(lblName);
         lblTeam.setText(org.openide.util.NbBundle.getMessage(TeamPanel.class, "TeamPanel.lblTeam.text"));
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         add(lblTeam, gridBagConstraints);
 
         comTeam.setActionCommand("comTeam");
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridwidth = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(0, 3, 0, 0);
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         add(comTeam, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridwidth = 4;
+        gridBagConstraints.insets = new java.awt.Insets(0, 6, 0, 0);
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        add(btnLocation, gridBagConstraints);
 
         spTeam.setPreferredSize(new java.awt.Dimension(300, 131));
         spTeam.setViewportView(lstTeam);
@@ -150,7 +159,7 @@ public class TeamPanel extends JPanel implements ProjectPanel {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
-        gridBagConstraints.gridwidth = 4;
+        gridBagConstraints.gridwidth = 5;
         gridBagConstraints.gridheight = 4;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.insets = new java.awt.Insets(6, 0, 0, 0);
@@ -162,27 +171,17 @@ public class TeamPanel extends JPanel implements ProjectPanel {
         btnAdd.setText(org.openide.util.NbBundle.getMessage(TeamPanel.class, "ListsPanel.btnAdd.text"));
         btnAdd.setActionCommand("btnAdd");
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 4;
+        gridBagConstraints.gridx = 5;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         add(btnAdd, gridBagConstraints);
 
-        btnEdit.setText(org.openide.util.NbBundle.getMessage(TeamPanel.class, "ListsPanel.btnEdit.text"));
-        btnEdit.setActionCommand("btnEdit");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 4;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        add(btnEdit, gridBagConstraints);
-
         btnRemove.setText(org.openide.util.NbBundle.getMessage(TeamPanel.class, "ListsPanel.btnRemove.text"));
         btnRemove.setActionCommand("btnRemove");
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 4;
+        gridBagConstraints.gridx = 5;
         gridBagConstraints.gridy = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
@@ -195,13 +194,14 @@ public class TeamPanel extends JPanel implements ProjectPanel {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 5;
-        gridBagConstraints.insets = new java.awt.Insets(6, 0, 0, 0);
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(6, 0, 0, 0);
         add(lblName, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 5;
+        gridBagConstraints.gridwidth = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.insets = new java.awt.Insets(6, 3, 0, 0);
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
@@ -211,14 +211,14 @@ public class TeamPanel extends JPanel implements ProjectPanel {
         lblID.setLabelFor(txtID);
         lblID.setText("ID :");
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridx = 3;
         gridBagConstraints.gridy = 5;
         gridBagConstraints.insets = new java.awt.Insets(6, 3, 0, 0);
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         add(lblID, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 3;
+        gridBagConstraints.gridx = 4;
         gridBagConstraints.gridy = 5;
         gridBagConstraints.gridwidth = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
@@ -232,13 +232,14 @@ public class TeamPanel extends JPanel implements ProjectPanel {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 6;
-        gridBagConstraints.insets = new java.awt.Insets(6, 0, 0, 0);
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(6, 0, 0, 0);
         add(lblEmail, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 6;
+        gridBagConstraints.gridwidth = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.insets = new java.awt.Insets(6, 3, 0, 0);
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
@@ -256,7 +257,7 @@ public class TeamPanel extends JPanel implements ProjectPanel {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 7;
-        gridBagConstraints.gridwidth = 4;
+        gridBagConstraints.gridwidth = 5;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.insets = new java.awt.Insets(6, 3, 0, 0);
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
@@ -267,14 +268,14 @@ public class TeamPanel extends JPanel implements ProjectPanel {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 8;
-        gridBagConstraints.insets = new java.awt.Insets(6, 0, 0, 0);
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(6, 0, 0, 0);
         add(lblURL, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 8;
-        gridBagConstraints.gridwidth = 3;
+        gridBagConstraints.gridwidth = 4;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.insets = new java.awt.Insets(6, 3, 0, 0);
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
@@ -283,14 +284,14 @@ public class TeamPanel extends JPanel implements ProjectPanel {
         lblTimezone.setLabelFor(txtTimezone);
         lblTimezone.setText("TZ :");
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridx = 3;
         gridBagConstraints.gridy = 6;
         gridBagConstraints.insets = new java.awt.Insets(6, 3, 0, 0);
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         add(lblTimezone, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 3;
+        gridBagConstraints.gridx = 4;
         gridBagConstraints.gridy = 6;
         gridBagConstraints.gridwidth = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
@@ -300,7 +301,7 @@ public class TeamPanel extends JPanel implements ProjectPanel {
 
         btnView.setText("View...");
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 4;
+        gridBagConstraints.gridx = 5;
         gridBagConstraints.gridy = 8;
         gridBagConstraints.insets = new java.awt.Insets(4, 3, 0, 0);
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
@@ -312,24 +313,25 @@ public class TeamPanel extends JPanel implements ProjectPanel {
         super.addNotify();
         listener = new Listener();
         btnAdd.addActionListener(listener);
-        btnEdit.addActionListener(listener);
         btnRemove.addActionListener(listener);
         lstTeam.addListSelectionListener(listener);
         comTeam.addActionListener(listener);
+        comTeam.setSelectedIndex(0);
+        txtName.addFocusListener(listener);
     }
     
     public void removeNotify() {
         super.removeNotify();
         btnAdd.removeActionListener(listener);
-        btnEdit.removeActionListener(listener);
         btnRemove.removeActionListener(listener);
         lstTeam.removeListSelectionListener(listener);
         comTeam.removeActionListener(listener);
+        txtName.removeFocusListener(listener);
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdd;
-    private javax.swing.JButton btnEdit;
+    private javax.swing.JButton btnLocation;
     private javax.swing.JButton btnRemove;
     private javax.swing.JButton btnView;
     private javax.swing.JComboBox comTeam;
@@ -349,95 +351,123 @@ public class TeamPanel extends JPanel implements ProjectPanel {
     private javax.swing.JTextField txtTimezone;
     private javax.swing.JTextField txtURL;
     // End of variables declaration//GEN-END:variables
-    
-     public void setResolveValues(boolean resolve) {
-//TODO        setEnableFields(!resolve);                
-        doResolve = resolve;
-        Project proj = project.getOriginalMavenProject();
-        List contrib = proj.getContributors();
-        List devel = proj.getDevelopers();
-        comTeam.removeAllItems();
-        develModel.removeAllElements();
-        if (devel != null) {
-            Iterator it = devel.iterator();
+
+    private void populateChangeInstances() {    
+        String key = "pom.developers"; //NOI18N
+        int location = project.getProjectWalker().getLocation(key);
+        ocDummyOC = LocationComboFactory.createPOMChange(project, true);
+        List oldValues = new ArrayList();
+        List orig = project.getOriginalMavenProject().getDevelopers();
+        if (orig != null) {
+            Iterator it = orig.iterator();
             while (it.hasNext()) {
-                Developer dev = (Developer)it.next();
-                // need to copy and use fresh instances, for easier rollback
-                Developer modelDevel = new Developer();
-                modelDevel.setName(dev.getName());
-                modelDevel.setId(dev.getId());
-                modelDevel.setEmail(dev.getEmail());
-                modelDevel.setOrganization(dev.getOrganization());
-                modelDevel.setTimezone(dev.getTimezone());
-                modelDevel.setUrl(dev.getUrl());
-                develModel.addElement(modelDevel);
+                Developer mlist  = (Developer)it.next();
+                HashMap vals = new HashMap();
+                vals.put("id", mlist.getId());
+                vals.put("name", mlist.getName());
+                vals.put("email", mlist.getEmail());
+                vals.put("organization", mlist.getOrganization());
+                vals.put("timezone", mlist.getTimezone());
+                vals.put("url", mlist.getUrl());
+                MultiTextComponentPOMChange change = new MultiTextComponentPOMChange(
+                                                           "pom.developers.developer", 
+                                                           vals, location, createFieldMap(true), 
+                                                           ocDummyOC, false);
+                
+                oldValues.add(change);
             }
         }
-        comTeam.addItem(new ComboWrapper("Developers", develModel));
-        contribModel.removeAllElements();
-        if (contrib != null) {
-            Iterator it = contrib.iterator();
+        developerModel = new DefaultListModel();
+        changeDevel = new ListModelPOMChange(key, oldValues, location, developerModel, ocContDevel, true);
+        
+        key = "pom.contributors"; //NOI18N
+        location = project.getProjectWalker().getLocation(key);
+        oldValues = new ArrayList();
+        orig = project.getOriginalMavenProject().getContributors();
+        if (orig != null) {
+            Iterator it = orig.iterator();
             while (it.hasNext()) {
-                Contributor dev = (Contributor)it.next();
-                // need to copy and use fresh instances, for easier rollback
-                Contributor modelDevel = new Developer();
-                modelDevel.setName(dev.getName());
-                modelDevel.setId(dev.getId());
-                modelDevel.setEmail(dev.getEmail());
-                modelDevel.setOrganization(dev.getOrganization());
-                modelDevel.setTimezone(dev.getTimezone());
-                modelDevel.setUrl(dev.getUrl());
-                contribModel.addElement(modelDevel);
+                Contributor mlist  = (Contributor)it.next();
+                HashMap vals = new HashMap();
+                vals.put("name", mlist.getName());
+                vals.put("email", mlist.getEmail());
+                vals.put("organization", mlist.getOrganization());
+                vals.put("timezone", mlist.getTimezone());
+                vals.put("url", mlist.getUrl());
+                MultiTextComponentPOMChange change = new MultiTextComponentPOMChange(
+                                                           "pom.developers.developer", 
+                                                           vals, location, createFieldMap(false), 
+                                                           ocDummyOC, false);
+                
+                oldValues.add(change);
             }
         }
-        comTeam.addItem(new ComboWrapper("Contributors", contribModel));
-//        comTeam.setSelectedIndex(0);
-        lstTeam.setModel(develModel);
-        fillValues(null);
-        // nothing selected -> disable
-        btnRemove.setEnabled(false);
-        btnEdit.setEnabled(false);
-    }
+        contributorModel = new DefaultListModel();
+//        lstLists.setModel(model);
+        changeContrib = new ListModelPOMChange(key, oldValues, location, contributorModel, ocContDevel, true);
+        
+        lstTeam.setCellRenderer(new ListRenderer());
+        changeContrib.startIgnoringChanges();
+        changeDevel.startIgnoringChanges();
+        DefaultComboBoxModel comModel = new DefaultComboBoxModel();
+        comModel.addElement(new ComboWrapper("Developers", developerModel));
+        comModel.addElement(new ComboWrapper("Contributors", contributorModel));
+        comTeam.setModel(comModel);
+    }   
     
-    private String getValue(String value, boolean resolve) {
-        if (resolve) {
-            return project.getPropertyResolver().resolveString(value);
+   private HashMap createFieldMap(boolean isDeveloper) {
+        HashMap fields = new HashMap();
+        if (isDeveloper) {
+            fields.put("id", txtID); //NOI18N
         }
-        return value;
+        fields.put("name", txtName); //NOI18N
+        fields.put("email", txtEmail); //NOI18N
+        fields.put("organization", txtOrganization); //NOI18N
+        fields.put("timezone", txtTimezone); //NOI18N
+        fields.put("url", txtURL); //NOI18N
+        return fields;
     }    
     
-    private void fillValues(Contributor contrib) {
-        if (contrib == null) {
-            txtName.setText("");
-            txtID.setText("");
-            txtEmail.setText("");
-            txtOrganization.setText("");
-            txtTimezone.setText("");
-            txtURL.setText("");
-        } else {
-            txtName.setText(contrib.getName() == null ? "" : getValue(contrib.getName(), doResolve));
-            txtID.setText(contrib.getId() == null ? "" : getValue(contrib.getId(), doResolve));
-            txtEmail.setText(contrib.getEmail() == null ? "" : getValue(contrib.getEmail(), doResolve));
-            txtOrganization.setText(contrib.getOrganization() == null ? "" : getValue(contrib.getOrganization(), doResolve));
-            txtTimezone.setText(contrib.getTimezone() == null ? "" : getValue(contrib.getTimezone(), doResolve));
-            txtURL.setText(contrib.getUrl() == null ? "" : getValue(contrib.getUrl(), doResolve));
-        }
-        
+     public void setResolveValues(boolean resolve) {
+        isResolvingValues = resolve;
+        resolveOneCont(resolve, currentContDev);        
+        // nothing selected -> disable
+        btnRemove.setEnabled(false);
     }
     
+ 
+
     public List getChanges() {
-        return Collections.EMPTY_LIST;
-        //        // when copying over, we will discard the current instances in the project with our local fresh ones.
-        //        // I hope that is ok, and the mailing lists don't have custom properties.
-        //        DefaultListModel model = (DefaultListModel)lstLists.getModel();
-        //        ArrayList list = new ArrayList(model.size() + 5);
-        //        Enumeration en = model.elements();
-        //        while (en.hasMoreElements()) {
-        //            Object obj = en.nextElement();
-        //            list.add(obj);
-        //        }
-        //        project.setMailingLists(list);
-//        return project;
+        List toReturn = new ArrayList();
+        // developers first..
+        boolean hasChanged = changeDevel.hasChanged();
+        if (!hasChanged) {
+            for (int i = 0; i < developerModel.size(); i++) {
+                MultiTextComponentPOMChange chng = (MultiTextComponentPOMChange)developerModel.get(i);
+                hasChanged = chng.hasChanged();
+                if (hasChanged) {
+                    break;
+                }
+            }
+        }
+        if (hasChanged) {
+            toReturn.add(changeDevel);
+        }
+        //now check contributors
+        hasChanged = changeContrib.hasChanged();
+        if (!hasChanged) {
+            for (int i = 0; i < contributorModel.size(); i++) {
+                MultiTextComponentPOMChange chng = (MultiTextComponentPOMChange)contributorModel.get(i);
+                hasChanged = chng.hasChanged();
+                if (hasChanged) {
+                    break;
+                }
+            }
+        }
+        if (hasChanged) {
+            toReturn.add(changeContrib);
+        }
+        return toReturn;
     }
     
     public void setValidateObserver(ProjectValidateObserver observer) {
@@ -470,63 +500,51 @@ public class TeamPanel extends JPanel implements ProjectPanel {
         //        }
         return message;
     }
-    
-    private Contributor assign(Contributor cont) {
-        //        logger.debug("Listener called");
-        //        ProjectValidateObserver obs = valObserver;
-        //        if (obs != null) {
-        //            obs.resetValidState(isInValidState(), getValidityMessage());
-        //        }
-        //        if (doValidateCheck() == 0) {
-        //            list.setName(txtName.getText());
-        //            list.setArchive(txtArchive.getText());
-        //            list.setSubscribe(txtSubscribe.getText());
-        //            list.setUnsubscribe(txtUnsubscribe.getText());
-        //            return list;
-        //        }
-        return null;
-    }
-    
+ 
     /**
      * action listener for buttons and list selection..
      */
-    private class Listener implements ActionListener, ListSelectionListener {
+    private class Listener implements ActionListener, ListSelectionListener, FocusListener {
         
         public void actionPerformed(ActionEvent e) {
-            if ("btnRemove".equals(e.getActionCommand())) //NOI18N
-            {
-                //                DefaultListModel model = (DefaultListModel)lstLists.getModel();
-                //                int index = lstLists.getSelectedIndex();
-                //                model.removeElementAt(index);
-                //                while (index >= model.size()) {
-                //                    index = index - 1;
-                //                }
-                //                if (index > -1) {
-                //                    lstLists.setSelectedIndex(index);
-                //                }
+            if ("btnRemove".equals(e.getActionCommand())) { //NOI18N
+                int index = lstTeam.getSelectedIndex();
+                DefaultListModel model = (DefaultListModel)lstTeam.getModel();
+                model.removeElementAt(index);
+                while (index >= model.size()) {
+                    index = index - 1;
+                }
+                if (index > -1) {
+                    lstTeam.setSelectedIndex(index);
+                }
             }
-            if ("btnEdit".equals(e.getActionCommand())) //NOI18N
-            {
-                //                if (currentList != null) {
-                //                    assignList(currentList);
-                //                } else {
-                //                    logger.debug("Something wrong, no currentList selected when editing"); //NOI18N
-                //                }
+            if ("btnAdd".equals(e.getActionCommand())) { //NOI18N
+                MultiTextComponentPOMChange newOne = new MultiTextComponentPOMChange(
+                                                           (isDeveloper() ? "pom.developers.developer" : "pom.contributors.contributor"), 
+                                                           new HashMap(), currentChange.getOldLocation(), createFieldMap(isDeveloper()), 
+                                                           ocDummyOC, false);
+                if (currentContDev != null) {
+                    currentContDev.detachListeners();
+                }
+                DefaultListModel model = (DefaultListModel)lstTeam.getModel();
+                model.addElement(newOne);
+                lstTeam.setSelectedValue(newOne, true);
+                txtName.requestFocusInWindow();
             }
-            if ("btnAdd".equals(e.getActionCommand())) //NOI18N
-            {
-                //                currentList = new MailingList();
-                //                currentList = assignList(currentList);
-                //                if (currentList != null) {
-                //                    DefaultListModel model = (DefaultListModel)lstTeam.getModel();
-                //                    model.addElement(currentList);
-                //                    lstLists.setSelectedValue(currentList, true);
-                //                }
-            }
-            if ("comTeam".equals(e.getActionCommand())) //NOI18N
-            {
+            if ("comTeam".equals(e.getActionCommand())) { //NOI18N 
+                if (currentChange != null) {
+                    currentChange.startIgnoringChanges();
+                }
                 DefaultListModel model = ((ComboWrapper)comTeam.getSelectedItem()).getModel();
-                lstTeam.setModel(model);
+                if (model == developerModel) {
+                    currentChange = changeDevel;
+                    lstTeam.setModel(model);
+                    changeDevel.stopIgnoringChanges();
+                } else if (model == contributorModel) {
+                    currentChange = changeContrib;
+                    lstTeam.setModel(model);
+                    changeContrib.stopIgnoringChanges();
+                } 
                 if (model.size() > 0) {
                     lstTeam.setSelectedIndex(0);
                 }
@@ -534,18 +552,82 @@ public class TeamPanel extends JPanel implements ProjectPanel {
         }
         
         public void valueChanged(ListSelectionEvent e) {
-            if (lstTeam.getSelectedIndex() == -1) {
-                current = null;
-                btnRemove.setEnabled(false);
-                btnEdit.setEnabled(false);
-            } else {
-                current = (Contributor)lstTeam.getSelectedValue();
-                //TEMP                btnRemove.setEnabled(true);
-                //TEMP                btnEdit.setEnabled(true);
+            if (currentContDev != null) {
+                currentContDev.detachListeners();
+                txtName.setText("");
+                txtURL.setText("");
+                txtEmail.setText("");
+                txtID.setText("");
+                txtOrganization.setText("");
+                txtTimezone.setText("");
+                
             }
-            fillValues(current);
+            // repaint to show new values in list?
+            lstTeam.repaint();
+            if (lstTeam.getSelectedIndex() == -1) {
+                currentContDev = null;
+                btnRemove.setEnabled(false);
+            } else {
+                currentContDev = (MultiTextComponentPOMChange)lstTeam.getSelectedValue();
+                if (!isDeveloper()) {
+                    txtID.setText("");
+                    txtID.setEditable(false);
+                }
+                resolveOneCont(isResolvingValues, currentContDev);
+                currentContDev.attachListeners();
+                btnRemove.setEnabled(true);
+            }
+        }
+
+        public void focusGained(FocusEvent focusEvent) {
+            // ignore
+        }
+
+        public void focusLost(FocusEvent focusEvent) {
+            // when focus is lost on txtName, refresh the list..
+            lstTeam.repaint();
         }
     }
+    
+    private boolean isDeveloper() {
+        return ((ComboWrapper)comTeam.getSelectedItem()).getModel() == developerModel;
+    }
+    
+     private void resolveOneCont(boolean resolve, MultiTextComponentPOMChange  chng) {
+         if (chng != null) {
+             if (resolve) {
+                 IContentProvider prov = currentContDev.getChangedContent();
+                 HashMap resolved = new HashMap();
+                 String value = prov.getValue("name"); //NOI18N
+                 if (value != null) {
+                     resolved.put("name", project.getPropertyResolver().resolveString(value)); //NOI18N
+                 }
+                 value = prov.getValue("id"); //NOI18N
+                 if (value != null) {
+                    resolved.put("id", project.getPropertyResolver().resolveString(value)); //NOI18N
+                 }
+                 value = prov.getValue("timezone"); //NOI18N
+                 if (value != null) {
+                    resolved.put("timezone", project.getPropertyResolver().resolveString(value)); //NOI18N
+                 }
+                 value = prov.getValue("url"); //NOI18N
+                 if (value != null) {
+                    resolved.put("url", project.getPropertyResolver().resolveString(value)); //NOI18N
+                 }
+                 value = prov.getValue("email"); //NOI18N
+                 if (value != null) {
+                    resolved.put("email", project.getPropertyResolver().resolveString(value)); //NOI18N
+                 }
+                 value = prov.getValue("organization"); //NOI18N
+                 if (value != null) {
+                     resolved.put("organization", project.getPropertyResolver().resolveString(value)); //NOI18N
+                 }
+                 chng.setResolvedValues(resolved);
+             } else {
+                 chng.resetToNonResolvedValue();
+             }
+         }
+     }    
     
     private class ComboWrapper {
         String title;
@@ -563,5 +645,26 @@ public class TeamPanel extends JPanel implements ProjectPanel {
             return title;
         }
     }
-    
+   
+    /**
+     * rendered which displays the name of the mailing list in the list..
+     */
+    private class ListRenderer extends DefaultListCellRenderer {
+        public Component getListCellRendererComponent(
+                    JList list,
+                    Object value,
+                    int index,
+                    boolean isSelected,
+                    boolean cellHasFocus) 
+        {
+            MultiTextComponentPOMChange change = (MultiTextComponentPOMChange)value;
+            String name = change.getValueFor("name"); //NOI18N
+            if (name == null || name.trim().length() == 0) {
+                name = isDeveloper() ? "<Developer with no name>" : "<Contributor with no name>";
+            } else {
+                name = project.getPropertyResolver().resolveString(name);
+            }
+            return  super.getListCellRendererComponent(list, name, index, isSelected, cellHasFocus);
+        }
+    }    
 }

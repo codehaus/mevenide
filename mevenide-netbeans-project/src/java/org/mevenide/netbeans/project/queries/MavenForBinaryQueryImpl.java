@@ -22,6 +22,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import javax.swing.event.ChangeListener;
 import org.apache.commons.logging.Log;
@@ -142,20 +143,33 @@ public class MavenForBinaryQueryImpl implements SourceForBinaryQueryImplementati
     
     private FileObject[] getSrcRoot() {
         logger.debug("getsrcRoot");
+        Collection toReturn = new ArrayList();
+        URI genuri = project.getGeneratedSourcesDir();
+        FileObject foGenRoot = null;
+        if (genuri != null) {
+            try {
+                foGenRoot = URLMapper.findFileObject(genuri.toURL());
+                if (foGenRoot != null) {
+                    toReturn.add(foGenRoot);
+                }
+            } catch (MalformedURLException exc) {
+                logger.warn("malforrmed uri=" + genuri);
+            }
+        }
         URI uri = project.getSrcDirectory();
         if (uri != null) {
             try {
-                logger.debug("getsrcRoot uri=" + uri);
                 FileObject foRoot = URLMapper.findFileObject(uri.toURL());
                 if (foRoot != null) {
-                    logger.debug("returning fo=" + foRoot);
-                    return new FileObject[] {foRoot};
+                    toReturn.add(foRoot);
                 }
             } catch (MalformedURLException exc) {
                 logger.warn("malforrmed uri=" + uri);
             }
         }
-        return new FileObject[0];
+        FileObject[] fos = new FileObject[toReturn.size()];
+        fos = (FileObject[])toReturn.toArray(fos);
+        return fos;
     }
     
     private FileObject[] getTestSrcRoot() {

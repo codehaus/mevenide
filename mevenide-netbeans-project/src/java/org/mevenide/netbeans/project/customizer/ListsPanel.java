@@ -16,15 +16,24 @@
  */
 package org.mevenide.netbeans.project.customizer;
 
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import javax.swing.DefaultListCellRenderer;
 
 import javax.swing.DefaultListModel;
+import javax.swing.JButton;
+import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
@@ -35,6 +44,9 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.MailingList;
 import org.apache.maven.project.Project;
 import org.mevenide.netbeans.project.MavenProject;
+import org.mevenide.netbeans.project.customizer.ui.LocationComboFactory;
+import org.mevenide.netbeans.project.customizer.ui.OriginChange;
+import org.mevenide.project.io.IContentProvider;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.awt.HtmlBrowser;
@@ -47,21 +59,26 @@ import org.openide.util.NbBundle;
 public class ListsPanel extends JPanel implements ProjectPanel {
     private static Log logger = LogFactory.getLog(ListsPanel.class);
     
-    private boolean propagate;
     private ProjectValidateObserver valObserver;
-    private MailingList currentList;
-    private Listener listener;
     private MavenProject project;
-    boolean doResolve = false;
+    private Listener listener;    
+    private OriginChange ocMailingLists;
+    private OriginChange ocDummyMailingList;
+    private DefaultListModel model;
+    private ListModelPOMChange change;
+    private MultiTextComponentPOMChange currentList;
+    private boolean isResolvingValues = false;
+
     /** Creates new form BasicsPanel */
-    public ListsPanel(boolean propagateImmediately, boolean enable, MavenProject proj) {
-        initComponents();
-        propagate = propagateImmediately;
+    public ListsPanel(MavenProject proj) {
         project = proj;
+        // just a dummy to pass to individual mailing list MavenChange instances..
+        // a location is for all mailing lists the same.
+        ocDummyMailingList = LocationComboFactory.createPOMChange(project, false);
+        initComponents();
         valObserver = null;
         //TODO add listeners for immediatePropagation stuff.
         setName(NbBundle.getMessage(ListsPanel.class, "ListsPanel.name"));
-        setEnableFields(enable);
         btnView.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 String url = txtArchive.getText().trim();
@@ -79,16 +96,7 @@ public class ListsPanel extends JPanel implements ProjectPanel {
             }
         });
         lstLists.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-    }
-    
-    public void setEnableFields(boolean enable) {
-        txtArchive.setEditable(enable);
-        txtName.setEditable(enable);
-        txtSubscribe.setEditable(enable);
-        txtUnsubscribe.setEditable(enable);
-        btnAdd.setEnabled(enable);
-        btnEdit.setEnabled(enable);
-        btnRemove.setEnabled(enable);
+        populateChangeInstances();        
     }
     
     /** This method is called from within the constructor to
@@ -100,130 +108,34 @@ public class ListsPanel extends JPanel implements ProjectPanel {
         java.awt.GridBagConstraints gridBagConstraints;
 
         lblLists = new javax.swing.JLabel();
+        ocMailingLists = LocationComboFactory.createPOMChange(project, true);
+        btnMailingLists = (JButton)ocMailingLists.getComponent();
+        spLists = new javax.swing.JScrollPane();
+        lstLists = new javax.swing.JList();
         btnAdd = new javax.swing.JButton();
-        btnEdit = new javax.swing.JButton();
         btnRemove = new javax.swing.JButton();
         lblName = new javax.swing.JLabel();
         txtName = new javax.swing.JTextField();
         lblArchive = new javax.swing.JLabel();
         txtArchive = new javax.swing.JTextField();
+        btnView = new javax.swing.JButton();
         lblSubscribe = new javax.swing.JLabel();
         txtSubscribe = new javax.swing.JTextField();
         lblUnsubscribe = new javax.swing.JLabel();
         txtUnsubscribe = new javax.swing.JTextField();
-        spLists = new javax.swing.JScrollPane();
-        lstLists = new javax.swing.JList();
-        btnView = new javax.swing.JButton();
 
         setLayout(new java.awt.GridBagLayout());
 
         lblLists.setLabelFor(lstLists);
         lblLists.setText(org.openide.util.NbBundle.getMessage(ListsPanel.class, "ListsPanel.lblLists.text"));
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         add(lblLists, gridBagConstraints);
 
-        btnAdd.setText(org.openide.util.NbBundle.getMessage(ListsPanel.class, "ListsPanel.btnAdd.text"));
-        btnAdd.setActionCommand("btnAdd");
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
-        add(btnAdd, gridBagConstraints);
-
-        btnEdit.setText(org.openide.util.NbBundle.getMessage(ListsPanel.class, "ListsPanel.btnEdit.text"));
-        btnEdit.setActionCommand("btnEdit");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
-        add(btnEdit, gridBagConstraints);
-
-        btnRemove.setText(org.openide.util.NbBundle.getMessage(ListsPanel.class, "ListsPanel.btnRemove.text"));
-        btnRemove.setActionCommand("btnRemove");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 3;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.weighty = 0.5;
-        gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
-        add(btnRemove, gridBagConstraints);
-
-        lblName.setLabelFor(txtName);
-        lblName.setText(org.openide.util.NbBundle.getMessage(ListsPanel.class, "ListsPanel.lblName.text"));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 5;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(6, 0, 0, 0);
-        add(lblName, gridBagConstraints);
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 5;
-        gridBagConstraints.gridwidth = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(6, 3, 0, 0);
-        add(txtName, gridBagConstraints);
-
-        lblArchive.setLabelFor(txtArchive);
-        lblArchive.setText(org.openide.util.NbBundle.getMessage(ListsPanel.class, "ListsPanel.lblArchive.text"));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 6;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(6, 0, 0, 0);
-        add(lblArchive, gridBagConstraints);
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 6;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.insets = new java.awt.Insets(6, 3, 0, 0);
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        add(txtArchive, gridBagConstraints);
-
-        lblSubscribe.setLabelFor(txtSubscribe);
-        lblSubscribe.setText(org.openide.util.NbBundle.getMessage(ListsPanel.class, "ListsPanel.lblLSubscribe.text"));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 7;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(6, 0, 0, 0);
-        add(lblSubscribe, gridBagConstraints);
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 7;
-        gridBagConstraints.gridwidth = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(6, 3, 0, 0);
-        add(txtSubscribe, gridBagConstraints);
-
-        lblUnsubscribe.setLabelFor(txtUnsubscribe);
-        lblUnsubscribe.setText(org.openide.util.NbBundle.getMessage(ListsPanel.class, "ListsPanel.lblUnsubscribe.text"));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 8;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(6, 0, 0, 0);
-        add(lblUnsubscribe, gridBagConstraints);
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 8;
-        gridBagConstraints.gridwidth = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(6, 3, 0, 0);
-        add(txtUnsubscribe, gridBagConstraints);
+        gridBagConstraints.insets = new java.awt.Insets(0, 6, 0, 0);
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        add(btnMailingLists, gridBagConstraints);
 
         spLists.setPreferredSize(new java.awt.Dimension(300, 131));
         spLists.setViewportView(lstLists);
@@ -234,11 +146,67 @@ public class ListsPanel extends JPanel implements ProjectPanel {
         gridBagConstraints.gridwidth = 2;
         gridBagConstraints.gridheight = 4;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.insets = new java.awt.Insets(6, 0, 0, 0);
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         gridBagConstraints.weightx = 0.5;
         gridBagConstraints.weighty = 0.2;
-        gridBagConstraints.insets = new java.awt.Insets(6, 0, 0, 0);
         add(spLists, gridBagConstraints);
+
+        btnAdd.setText(org.openide.util.NbBundle.getMessage(ListsPanel.class, "ListsPanel.btnAdd.text"));
+        btnAdd.setActionCommand("btnAdd");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        add(btnAdd, gridBagConstraints);
+
+        btnRemove.setText(org.openide.util.NbBundle.getMessage(ListsPanel.class, "ListsPanel.btnRemove.text"));
+        btnRemove.setActionCommand("btnRemove");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.weighty = 0.5;
+        add(btnRemove, gridBagConstraints);
+
+        lblName.setLabelFor(txtName);
+        lblName.setText(org.openide.util.NbBundle.getMessage(ListsPanel.class, "ListsPanel.lblName.text"));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 5;
+        gridBagConstraints.insets = new java.awt.Insets(6, 0, 0, 0);
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        add(lblName, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 5;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.insets = new java.awt.Insets(6, 3, 0, 0);
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        add(txtName, gridBagConstraints);
+
+        lblArchive.setLabelFor(txtArchive);
+        lblArchive.setText(org.openide.util.NbBundle.getMessage(ListsPanel.class, "ListsPanel.lblArchive.text"));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 6;
+        gridBagConstraints.insets = new java.awt.Insets(6, 0, 0, 0);
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        add(lblArchive, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 6;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.insets = new java.awt.Insets(6, 3, 0, 0);
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        add(txtArchive, gridBagConstraints);
 
         btnView.setText("View...");
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -249,28 +217,64 @@ public class ListsPanel extends JPanel implements ProjectPanel {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         add(btnView, gridBagConstraints);
 
+        lblSubscribe.setLabelFor(txtSubscribe);
+        lblSubscribe.setText(org.openide.util.NbBundle.getMessage(ListsPanel.class, "ListsPanel.lblLSubscribe.text"));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 7;
+        gridBagConstraints.insets = new java.awt.Insets(6, 0, 0, 0);
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        add(lblSubscribe, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 7;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.insets = new java.awt.Insets(6, 3, 0, 0);
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        add(txtSubscribe, gridBagConstraints);
+
+        lblUnsubscribe.setLabelFor(txtUnsubscribe);
+        lblUnsubscribe.setText(org.openide.util.NbBundle.getMessage(ListsPanel.class, "ListsPanel.lblUnsubscribe.text"));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 8;
+        gridBagConstraints.insets = new java.awt.Insets(6, 0, 0, 0);
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        add(lblUnsubscribe, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 8;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.insets = new java.awt.Insets(6, 3, 0, 0);
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        add(txtUnsubscribe, gridBagConstraints);
+
     }//GEN-END:initComponents
     
     public void addNotify() {
         super.addNotify();
         listener = new Listener();
         btnAdd.addActionListener(listener);
-        btnEdit.addActionListener(listener);
         btnRemove.addActionListener(listener);
         lstLists.addListSelectionListener(listener);
+        txtName.addFocusListener(listener);
     }
     
     public void removeNotify() {
         super.removeNotify();
         btnAdd.removeActionListener(listener);
-        btnEdit.removeActionListener(listener);
         btnRemove.removeActionListener(listener);
         lstLists.removeListSelectionListener(listener);
+        txtName.removeFocusListener(listener);
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdd;
-    private javax.swing.JButton btnEdit;
+    private javax.swing.JButton btnMailingLists;
     private javax.swing.JButton btnRemove;
     private javax.swing.JButton btnView;
     private javax.swing.JLabel lblArchive;
@@ -285,68 +289,88 @@ public class ListsPanel extends JPanel implements ProjectPanel {
     private javax.swing.JTextField txtSubscribe;
     private javax.swing.JTextField txtUnsubscribe;
     // End of variables declaration//GEN-END:variables
+
+    private void populateChangeInstances() {    
+        String key = "pom.mailingLists"; //NOI18N
+        int location = project.getProjectWalker().getLocation(key);
+        List oldValues = new ArrayList();
+        List orig = project.getOriginalMavenProject().getMailingLists();
+        if (orig != null) {
+            Iterator it = orig.iterator();
+            while (it.hasNext()) {
+                MailingList mlist  = (MailingList)it.next();
+                HashMap vals = new HashMap();
+                vals.put("name", mlist.getName());
+                vals.put("archive", mlist.getArchive());
+                vals.put("subscribe", mlist.getSubscribe());
+                vals.put("unsubscribe", mlist.getUnsubscribe());
+                MultiTextComponentPOMChange change = new MultiTextComponentPOMChange(
+                                                           "pom.mailingLists.mailingList", 
+                                                           vals, location, createFieldMap(), 
+                                                           ocDummyMailingList, false);
+                
+                oldValues.add(change);
+            }
+        }
+        model = new DefaultListModel();
+        lstLists.setModel(model);
+        lstLists.setCellRenderer(new ListRenderer());
+        change = new ListModelPOMChange(key, oldValues, location, model, ocMailingLists, true);
+    } 
     
      public void setResolveValues(boolean resolve) {
-//TODO        setEnableFields(!resolve);                
-        doResolve = resolve;
-        Project proj = project.getOriginalMavenProject();
-        List list = proj.getMailingLists();
-        DefaultListModel model = new DefaultListModel();
-        if (list != null) {
-            Iterator it = list.iterator();
-            while (it.hasNext()) {
-                MailingList mail = (MailingList)it.next();
-                // need to copy and use fresh instances, for easier rollback
-                MailingList modelMail = new MailingList();
-                modelMail.setName(mail.getName());
-                modelMail.setArchive(mail.getArchive());
-                modelMail.setSubscribe(mail.getSubscribe());
-                modelMail.setUnsubscribe(mail.getUnsubscribe());
-                model.addElement(modelMail);
-            }
-            lstLists.setModel(model);
-        }
-        fillValues(null);
-        // nothing selected -> disable
-        btnRemove.setEnabled(false);
-        btnEdit.setEnabled(false);
+         isResolvingValues = resolve;
+         resolveOneList(resolve, currentList);
+//        // nothing selected -> disable
+        btnRemove.setEnabled(!resolve);
+        btnAdd.setEnabled(!resolve);
     }
    
-    private String getValue(String value, boolean resolve) {
-        if (resolve) {
-            return project.getPropertyResolver().resolveString(value);
-        }
-        return value;
-    }
-  
-    private void fillValues(MailingList list) {
-        if (list == null) {
-            txtName.setText("");
-            txtArchive.setText("");
-            txtSubscribe.setText("");
-            txtUnsubscribe.setText("");
-        } else {
-            txtName.setText(list.getName() == null ? "" : getValue(list.getName(), doResolve));
-            txtArchive.setText(list.getArchive() == null ? "" : getValue(list.getArchive(), doResolve));
-            txtSubscribe.setText(list.getSubscribe() == null ? "" : getValue(list.getSubscribe(), doResolve));
-            txtUnsubscribe.setText(list.getUnsubscribe() == null ? "" : getValue(list.getUnsubscribe(), doResolve));
-        }
-        
-    }
+     private void resolveOneList(boolean resolve, MultiTextComponentPOMChange  chng) {
+         if (chng != null) {
+             if (resolve) {
+                 IContentProvider prov = currentList.getChangedContent();
+                 HashMap resolved = new HashMap();
+                 String value = prov.getValue("name"); //NOI18N
+                 if (value != null) {
+                     resolved.put("name", project.getPropertyResolver().resolveString(value)); //NOI18N
+                 }
+                 value = prov.getValue("archive"); //NOI18N
+                 if (value != null) {
+                    resolved.put("archive", project.getPropertyResolver().resolveString(value)); //NOI18N
+                 }
+                 value = prov.getValue("subscribe"); //NOI18N
+                 if (value != null) {
+                    resolved.put("subscribe", project.getPropertyResolver().resolveString(value)); //NOI18N
+                 }
+                 value = prov.getValue("unsubscribe"); //NOI18N
+                 if (value != null) {
+                     resolved.put("unsubscribe", project.getPropertyResolver().resolveString(value)); //NOI18N
+                 }
+                 chng.setResolvedValues(resolved);
+             } else {
+                 chng.resetToNonResolvedValue();
+             }
+         }
+     }
     
     public List getChanges() {
+        boolean hasChanged = change.hasChanged();
+        if (!hasChanged) {
+            for (int i = 0; i < model.size(); i++) {
+                MultiTextComponentPOMChange chng = (MultiTextComponentPOMChange)model.get(i);
+                hasChanged = chng.hasChanged();
+                if (hasChanged) {
+                    break;
+                }
+            }
+        }
+        if (hasChanged) {
+            List toReturn = new ArrayList();
+            toReturn.add(change);
+            return toReturn;
+        }
         return Collections.EMPTY_LIST;
-//        // when copying over, we will discard the current instances in the project with our local fresh ones.
-//        // I hope that is ok, and the mailing lists don't have custom properties.
-//        DefaultListModel model = (DefaultListModel)lstLists.getModel();
-//        ArrayList list = new ArrayList(model.size() + 5);
-//        Enumeration en = model.elements();
-//        while (en.hasMoreElements()) {
-//            Object obj = en.nextElement();
-//            list.add(obj);
-//        }
-//        project.setMailingLists(list);
-//        return project;
     }
     
     public void setValidateObserver(ProjectValidateObserver observer) {
@@ -372,39 +396,30 @@ public class ListsPanel extends JPanel implements ProjectPanel {
     public String getValidityMessage() {
         int retCode = doValidateCheck();
         String message = "";
-        // initially and when nothing is selected don't show message.
-        // when adding the currentList should be non-null
-        if (retCode == 1 && currentList != null) {
-            message = NbBundle.getMessage(ListsPanel.class, "ListsPanel.error1.text");
-        }
+//        // initially and when nothing is selected don't show message.
+//        // when adding the currentList should be non-null
+//        if (retCode == 1 && currentList != null) {
+//            message = NbBundle.getMessage(ListsPanel.class, "ListsPanel.error1.text");
+//        }
         return message;
     }
     
-    private MailingList assignList(MailingList list) {
-        logger.debug("Listener called");
-        ProjectValidateObserver obs = valObserver;
-        if (obs != null) {
-            obs.resetValidState(isInValidState(), getValidityMessage());
-        }
-        if (doValidateCheck() == 0) {
-            list.setName(txtName.getText());
-            list.setArchive(txtArchive.getText());
-            list.setSubscribe(txtSubscribe.getText());
-            list.setUnsubscribe(txtUnsubscribe.getText());
-            return list;
-        }
-        return null;
+    private HashMap createFieldMap() {
+        HashMap fields = new HashMap();
+        fields.put("name", txtName); //NOI18N
+        fields.put("subscribe", txtSubscribe); //NOI18N
+        fields.put("unsubscribe", txtUnsubscribe); //NOI18N
+        fields.put("archive", txtArchive); //NOI18N
+        return fields;
     }
     
     /**
      * action listener for buttons and list selection..
      */
-    private class Listener implements ActionListener, ListSelectionListener {
+    private class Listener implements ActionListener, ListSelectionListener, FocusListener {
         
         public void actionPerformed(ActionEvent e) {
-            if ("btnRemove".equals(e.getActionCommand())) //NOI18N
-            {
-                DefaultListModel model = (DefaultListModel)lstLists.getModel();
+            if ("btnRemove".equals(e.getActionCommand())) { //NOI18N
                 int index = lstLists.getSelectedIndex();
                 model.removeElementAt(index);
                 while (index >= model.size()) {
@@ -414,37 +429,75 @@ public class ListsPanel extends JPanel implements ProjectPanel {
                     lstLists.setSelectedIndex(index);
                 }
             }
-            if ("btnEdit".equals(e.getActionCommand())) //NOI18N
-            {
+            if ("btnAdd".equals(e.getActionCommand())) { //NOI18N
+                MultiTextComponentPOMChange newList = new MultiTextComponentPOMChange(
+                                                           "pom.mailingLists.mailingList", 
+                                                           new HashMap(), change.getOldLocation(), createFieldMap(), 
+                                                           ocDummyMailingList, false);
                 if (currentList != null) {
-                    assignList(currentList);
-                } else {
-                    logger.debug("Something wrong, no currentList selected when editing"); //NOI18N
+                    currentList.detachListeners();                
                 }
-            }
-            if ("btnAdd".equals(e.getActionCommand())) //NOI18N
-            {
-                currentList = new MailingList();
-                currentList = assignList(currentList);
-                if (currentList != null) {
-                    DefaultListModel model = (DefaultListModel)lstLists.getModel();
-                    model.addElement(currentList);
-                    lstLists.setSelectedValue(currentList, true);
-                }
+                model.addElement(newList);
+                lstLists.setSelectedValue(newList, true);
+                txtName.requestFocusInWindow();
             }
         }
         
         public void valueChanged(ListSelectionEvent e) {
+            if (currentList != null) {
+                currentList.detachListeners();
+                txtName.setText("");
+                txtUnsubscribe.setText("");
+                txtSubscribe.setText("");
+                txtArchive.setText("");
+            }
+            // repaint to show new values in list?
+            lstLists.repaint();
             if (lstLists.getSelectedIndex() == -1) {
                 currentList = null;
                 btnRemove.setEnabled(false);
-                btnEdit.setEnabled(false);
+//                txtArchive.setEnabled(false);
+//                txtName.setEnabled(false);
+//                txtSubscribe.setEnabled(false);
+//                txtUnsubscribe.setEnabled(false);
             } else {
-                currentList = (MailingList)lstLists.getSelectedValue();
-                //TEMP                btnRemove.setEnabled(true);
-                //TEMP                btnEdit.setEnabled(true);
+                currentList = (MultiTextComponentPOMChange)lstLists.getSelectedValue();
+                resolveOneList(isResolvingValues, currentList);
+                currentList.attachListeners();
+                btnRemove.setEnabled(true);
             }
-            fillValues(currentList);
+
+        }
+        public void focusGained(FocusEvent focusEvent) {
+            // ignore
+        }
+
+        public void focusLost(FocusEvent focusEvent) {
+            // when focus is lost on txtName, refresh the list..
+            lstLists.repaint();
+        }
+        
+    }
+
+    /**
+     * rendered which displays the name of the mailing list in the list..
+     */
+    private class ListRenderer extends DefaultListCellRenderer {
+        public Component getListCellRendererComponent(
+                    JList list,
+                    Object value,
+                    int index,
+                    boolean isSelected,
+                    boolean cellHasFocus) 
+        {
+            MultiTextComponentPOMChange change = (MultiTextComponentPOMChange)value;
+            String name = change.getValueFor("name");
+            if (name == null || name.trim().length() == 0) {
+                name = "<Mailing list with no name>";
+            } else {
+                name = project.getPropertyResolver().resolveString(name);
+            }
+            return  super.getListCellRendererComponent(list, name, index, isSelected, cellHasFocus);
         }
     }
     
