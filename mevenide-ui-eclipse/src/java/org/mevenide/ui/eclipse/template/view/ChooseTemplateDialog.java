@@ -48,7 +48,8 @@ public class ChooseTemplateDialog extends TitleAreaDialog {
 	
 	protected Control createDialogArea(Composite parent) {
 	    getShell().setText("Pom Templates");
-		setMessage("Choose POM template from the list below.");
+	    setTitle("Choose a POM Template");
+		setMessage("You can add templates through the Preference page.");
 	    setShellStyle(SWT.RESIZE | SWT.APPLICATION_MODAL);
 	    Composite composite = new Composite(parent, SWT.RESIZE);
         GridLayout layout = new GridLayout();

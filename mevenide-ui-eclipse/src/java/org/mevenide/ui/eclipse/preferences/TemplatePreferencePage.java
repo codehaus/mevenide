@@ -173,8 +173,9 @@ public class TemplatePreferencePage extends PreferencePage implements IWorkbench
             IPath dest = Mevenide.getInstance().getStateLocation().append("templates");//$NON-NLS-1$
             //If it's the first template we are going to add then create the
             //template folder
-            if (!dest.toFile().exists())
+            if (!dest.toFile().exists()) {
                 dest.toFile().mkdir();
+            }
             dest = dest.append(pom.toString() + pom.hashCode() + ".tmpl");//$NON-NLS-1$
             FileUtils.copyFile(source.toFile(), dest.toFile());
             pom = reader.read(dest.toFile());

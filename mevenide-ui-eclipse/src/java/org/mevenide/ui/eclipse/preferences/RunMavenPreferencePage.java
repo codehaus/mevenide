@@ -103,6 +103,8 @@ public class RunMavenPreferencePage extends PreferencePage implements IWorkbench
 				protected String changePressed() {
 					String backup = defaultGoalsEditor.getTextControl(topLevelContainer).getText();
 					GoalsPickerDialog goalsPickerDialog = new GoalsPickerDialog();
+					goalsPickerDialog.setOverrideMessage("Choose the default goals from the list below");
+					goalsPickerDialog.setOverrideTitle("Default goals");
 					goalsPickerDialog.setGoalsOrder(defaultGoalsEditor.getTextControl(topLevelContainer).getText());
 					int ok = goalsPickerDialog.open();
 					if ( ok == Window.OK ) {
