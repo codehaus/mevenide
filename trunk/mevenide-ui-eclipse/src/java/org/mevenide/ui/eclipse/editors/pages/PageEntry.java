@@ -51,6 +51,8 @@ package org.mevenide.ui.eclipse.editors.pages;
 import java.util.Iterator;
 import java.util.Vector;
 
+import org.mevenide.ui.eclipse.Mevenide;
+
 /**
  * Abstract base class for SWT widget wrappers.  Sets up change event notification
  * and tracking dirty state.
@@ -59,6 +61,11 @@ import java.util.Vector;
  * @version $Id$
  */
 public abstract class PageEntry {
+
+	protected static final String INHERITED_TOOLTIP =
+		Mevenide.getResourceString("OverridablePageEntry.toggle.tooltip.inherited");
+	protected static final String OVERRIDEN_TOOLTIP =
+		Mevenide.getResourceString("OverridablePageEntry.toggle.tooltip.overriden");
 
 	protected boolean dirty = false;
 	protected boolean disableNotification = false;

@@ -55,7 +55,6 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Text;
-import org.mevenide.ui.eclipse.Mevenide;
 
 /**
  * Wrapper for the SWT Text widgets that are overridable in the POM editor.
@@ -68,11 +67,6 @@ import org.mevenide.ui.eclipse.Mevenide;
 public class OverridableTextEntry extends TextEntry {
 
     private static final Log log = LogFactory.getLog(OverridableTextEntry.class);
-
-    private static final String INHERITED_TOOLTIP =
-        Mevenide.getResourceString("OverridableTextEntry.toggle.tooltip.inherited");
-    private static final String OVERRIDEN_TOOLTIP =
-        Mevenide.getResourceString("OverridableTextEntry.toggle.tooltip.overriden");
 
     private Button overrideToggle;
 	private Button browseButton;
