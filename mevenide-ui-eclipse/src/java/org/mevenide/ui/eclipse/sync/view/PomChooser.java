@@ -44,6 +44,17 @@ public class PomChooser {
 	
 	private List poms;
 
+	/**
+	 * explicitely set poms [size = 1], so we wont recurse into container. 
+	 * 
+	 * @warn if using this constructor, container isnot initialized
+	 * @open do we want to recurse into pom hierarchy ??  
+	 */
+	public PomChooser(Project project) {
+		poms = new ArrayList();
+		poms.add(project.getFile());
+	}
+	
 	public PomChooser(IContainer container) {
 		this.container = container;
 	}

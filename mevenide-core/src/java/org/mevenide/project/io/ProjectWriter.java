@@ -147,6 +147,7 @@ public class ProjectWriter {
 			//@todo this is pretty cheap.. just a temp soltuion 
 			dependencies.addAll(nonResolvedDependencies);
 			project.setDependencies(dependencies);
+			write(project, pom);
 		}
 	}
 
@@ -155,7 +156,7 @@ public class ProjectWriter {
 		if ( !propertiesFile.exists() ) {
 			propertiesFile.createNewFile();
 		}
-		jarOverrideWriter.unsetOverriding(propertiesFile);
+		//jarOverrideWriter.unsetOverriding(propertiesFile);
 		
 		//jaroverriding
 		for (int i = 0; i < nonResolvedDependencies.size(); i++) {

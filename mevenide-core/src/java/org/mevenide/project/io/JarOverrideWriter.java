@@ -60,9 +60,12 @@ class JarOverrideWriter {
 		String artifactId = dep.getArtifactId();
 	
 		if ( groupId == null || groupId.length() == 0 ) {
-			dep.setGroupId(null);
+			//dep.setGroupId(null);
 			//set id explicitly so that dependencies w/o groupId still are comparable are added to dep list if needed
-			dep.setId(artifactId);
+			//dep.setId(artifactId);
+			//set groupId = artifactId
+			dep.setGroupId(artifactId);
+			dep.setArtifactId(artifactId);
 		}
 
 		addPropertiesOverride(path, propertiesFile, dep);
@@ -76,7 +79,7 @@ class JarOverrideWriter {
 	}
 
 	private void addPropertiesOverride(String path, File propertiesFile, Dependency dep) throws Exception {
-		PropertyModel model = PropertyModelFactory.getFactory().newPropertyModel(propertiesFile, true);
+		PropertyModel model = PropertyModelFactory.getFactory().newPropertyModel(propertiesFile, false);
 		
 		model.newKeyPair("maven.jar.override", '=', "on");
 		
