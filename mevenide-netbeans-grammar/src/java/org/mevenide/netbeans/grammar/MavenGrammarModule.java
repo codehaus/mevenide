@@ -94,28 +94,6 @@ public class MavenGrammarModule extends ModuleInstall
     }
      */
     
-    // Generally the methods below should be avoided in favor of restored():
-    
-    // By default, do nothing but call restored().
-    public void installed() {
-        //
-        XMLDataLoader load = (XMLDataLoader)SharedClassObject.findObject(XMLDataLoader.class, true);
-        boolean isRegistered = load.getExtensions().isRegistered("jelly"); //NOI18N
-        if (!isRegistered) {
-            String message = ".jelly extension is not registered as xml file. Jelly files are important when editing maven plugins. Add it to supported xml file extensions?";
-            String title = "Jelly file not recognized as xml.";
-            Confirmation confirm = new Confirmation(message, title, NotifyDescriptor.YES_NO_OPTION);
-            Object ret = DialogDisplayer.getDefault().notify(confirm);
-            if (ret == NotifyDescriptor.YES_OPTION) {
-                
-                ExtensionList list = (ExtensionList)load.getExtensions().clone();
-                list.addExtension("jelly"); //NOI18N
-                load.setExtensions(list);
-            }
-        }
-        restored();
-        
-    }
 /*     
     // By default, do nothing.
     public void uninstalled() {
