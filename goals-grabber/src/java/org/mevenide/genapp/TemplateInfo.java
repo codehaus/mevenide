@@ -53,6 +53,9 @@ public class TemplateInfo {
         return getName();
     }
     
+    /**
+     * relative roots for the repackaging.
+     */
     public File[] getRepackageRooots() {
         loadProperties();
         String key = "maven.genapp.repackage"; //NOI18N
@@ -73,11 +76,9 @@ public class TemplateInfo {
         }
     }
     
-    public boolean compliesWithFilter(File file) {
-        //TODO
-        return false;
-    }
-    
+    /**
+     * list of template's parameters
+     */
     public String[] getParameters() {
         if (params == null) {
             loadProperties();
@@ -100,6 +101,9 @@ public class TemplateInfo {
         return params;
     }
     
+    /**
+     * default value for given parameter.
+     */
     public String getDefaultValue(String parameter) {
         loadProperties();
         String key = "maven.genapp.default." + parameter; //NOI18N
@@ -110,6 +114,10 @@ public class TemplateInfo {
         return val;
     }
     
+    
+    /**
+     * prompt text for given parameter.
+     */
     public String getPromptText(String parameter) {
         loadProperties();
         String key = "maven.genapp.prompt." + parameter; //NOI18N
@@ -118,10 +126,6 @@ public class TemplateInfo {
             val = context.getResolver().getResolvedValue(key);
         }
         return val;
-    }
-    
-    public boolean hasCustomScript() {
-        return new File(directory, "template.jelly").exists(); //NOI18N
     }
     
     private void loadProperties() {

@@ -123,12 +123,5 @@ public class TemplateInfoTest extends TestCase {
         assertEquals("Test prompt", def);
     }
 
-    /**
-     * Test of hasCustomScript method, of class org.mevenide.genapp.TemplateInfo.
-     */
-    public void testHasCustomScript() {
-        assertEquals(false, info.hasCustomScript());
-    }
-    
     
 }
