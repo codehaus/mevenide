@@ -59,8 +59,6 @@ import java.util.Map;
  */
 public abstract class DependencyResolverFactory implements IDependencyResolver {
 
-	private static Object lock = new Object();
-	
 	private static Map resolvers = new HashMap();
 	
 	protected DependencyResolverFactory() {

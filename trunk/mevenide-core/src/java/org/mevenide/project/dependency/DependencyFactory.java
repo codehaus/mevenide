@@ -65,12 +65,8 @@ public class DependencyFactory {
 	private DependencyFactory() {
 	}
 	
-	/** singleton related */
 	private static DependencyFactory factory = new DependencyFactory();
-	private static Object lock = new Object();
-
 	
-
 	public static DependencyFactory getFactory() {
 		return factory;
 	}
