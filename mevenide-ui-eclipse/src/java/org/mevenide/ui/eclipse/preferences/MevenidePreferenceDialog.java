@@ -51,16 +51,20 @@ package org.mevenide.ui.eclipse.preferences;
 import java.io.FileReader;
 import java.io.Reader;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.maven.DefaultProjectUnmarshaller;
 import org.apache.maven.project.Project;
 import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.DirectoryFieldEditor;
 import org.eclipse.jface.preference.FileFieldEditor;
+import org.eclipse.jface.preference.StringButtonFieldEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.mevenide.ui.eclipse.Mevenide;
@@ -72,6 +76,9 @@ import org.mevenide.ui.eclipse.Mevenide;
  * 
  */
 public class MevenidePreferenceDialog {
+	private static Log log = LogFactory.getLog(MevenidePreferenceDialog.class);
+
+
 	private Composite topLevelContainer;
 	private DirectoryFieldEditor mavenHomeEditor;
 	private DirectoryFieldEditor javaHomeEditor;
@@ -79,17 +86,30 @@ public class MevenidePreferenceDialog {
 	private FileFieldEditor pomTemplateLocationEditor; 
 	private BooleanFieldEditor checkTimestampEditor;
 	
+	private StringButtonFieldEditor defaultGoalsEditor;
+	
 	private String javaHome ;
 	private String mavenHome ;
 	private String mavenRepository;
 	private String pomTemplateLocation;
 	private boolean checkTimestamp;
 	
+	private String defaultGoals;
+	
 	private boolean invalidPomTemplate = false;
 	
 	private PreferencesManager preferencesManager;
 	private MevenidePreferencePage page;
 	
+	public String getDefaultGoals() {
+		return defaultGoals;
+	}
+
+	public void setDefaultGoals(String defaultGoals) {
+		log.debug("Setting defaultGaosl to : " + defaultGoals);
+		this.defaultGoals = defaultGoals;
+	}
+
 	public MevenidePreferenceDialog(PreferencesManager manager, MevenidePreferencePage page) {
 		this.preferencesManager = manager;
 		this.page = page;
@@ -132,11 +152,23 @@ public class MevenidePreferenceDialog {
 			}
 		);
 		
+		
+		createDefaultGoalsComposite(parent);
+		
+		defaultGoalsEditor.getTextControl(topLevelContainer).addModifyListener(
+			new ModifyListener() {
+				public void modifyText(ModifyEvent e) {
+					defaultGoals = ((Text)e.getSource()).getText();
+				}
+			}
+		);
+
 		Composite compositeB = new Composite(parent, SWT.NULL);
 		GridLayout layoutB = new GridLayout();
 		layoutB.numColumns = 3;
 		compositeB.setLayout(layoutB);
 		compositeB.setLayoutData(new GridData(GridData.FILL_BOTH));
+		
 		
 		checkTimestampEditor = new BooleanFieldEditor("mevenide.checktimestamp", "Check timestamp before synchronizing", compositeB);
 		checkTimestampEditor.fillIntoGrid(compositeB, 3);		
@@ -146,6 +178,31 @@ public class MevenidePreferenceDialog {
 	}
 
 	
+	private void createDefaultGoalsComposite(Composite parent) {
+		defaultGoalsEditor = new StringButtonFieldEditor() {
+			protected Button getChangeControl(Composite parent) {
+				Button b = super.getChangeControl(parent);
+				b.setEnabled(false);
+				return b;
+			}
+			protected String changePressed() {
+				return "java:compile";
+			}
+		};
+		
+		defaultGoalsEditor.setPreferenceName("maven.launch.defaultgoals");
+		defaultGoalsEditor.setLabelText("Default Goals");
+		defaultGoalsEditor.setPreferencePage(page);
+		defaultGoalsEditor.fillIntoGrid(topLevelContainer, 3);
+		defaultGoalsEditor.setPreferenceStore(preferencesManager.getPreferenceStore());
+		defaultGoalsEditor.load();
+		if ( defaultGoalsEditor.getStringValue() == null ) {
+			defaultGoalsEditor.setStringValue("java:compile");
+		} 
+		defaultGoalsEditor.setChangeButtonText("Choose...");
+		
+	}
+
 	private DirectoryFieldEditor createEditor(String property, String name, String value) {
 		DirectoryFieldEditor editor = new DirectoryFieldEditor(property, name, topLevelContainer);
 		editor.fillIntoGrid(topLevelContainer, 3);

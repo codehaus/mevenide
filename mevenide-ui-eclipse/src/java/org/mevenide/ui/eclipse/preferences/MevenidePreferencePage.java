@@ -89,10 +89,12 @@ public class MevenidePreferencePage extends PreferencePage implements IWorkbench
 		composite.setLayout(layout);
 		composite.setLayoutData(new GridData(GridData.FILL_BOTH));
 		
+		//shouldnot be necessary
 		dialog.setJavaHome(manager.getValue("java.home"));
 		dialog.setMavenHome(manager.getValue("maven.home"));
 		dialog.setMavenRepo(manager.getValue("maven.repo"));
 		dialog.setPomTemplateLocation(manager.getValue("pom.template.location"));
+		dialog.setDefaultGoals(manager.getValue("maven.launch.defaultgoals"));
 		
 		dialog.setCheckTimestamp(manager.getBooleanValue("mevenide.checktimestamp"));
 		
@@ -116,6 +118,7 @@ public class MevenidePreferencePage extends PreferencePage implements IWorkbench
 		manager.setValue("java.home", dialog.getJavaHome());
 		manager.setValue("maven.repo", dialog.getMavenRepo());
 		manager.setValue("pom.template.location", dialog.getPomTemplateLocation());
+		manager.setValue("maven.launch.defaultgoals", dialog.getDefaultGoals());
 		manager.setBooleanValue("mevenide.checktimestamp", dialog.getCheckTimestamp());
 		
 		return manager.store();
