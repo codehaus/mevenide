@@ -22,13 +22,14 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.mevenide.context.IQueryContext;
 import org.mevenide.properties.IPropertyFinder;
+import org.mevenide.properties.IPropertyLocator;
 import org.mevenide.properties.IPropertyResolver;
 
 /**
  *
  * @author  <a href="mailto:ca206216@tiscali.cz">Milos Kleint</a>
  */
-public final class PropertyFilesAggregator implements IPropertyResolver {
+public final class PropertyFilesAggregator implements IPropertyResolver, IPropertyLocator {
     private static final Log logger = LogFactory.getLog(PropertyFilesAggregator.class);
     
     private File projectDir;
@@ -120,6 +121,28 @@ public final class PropertyFilesAggregator implements IPropertyResolver {
         }
         return toReturn;
     }
+
+    /**
+     * IPropertyLocator method, identifying where the property comes from.
+     */
+    public int getPropertyLocation(String key) {
+        int toReturn = IPropertyLocator.LOCATION_NOT_DEFINED;
+        
+        if (userBuild != null && userBuild.getValue(key) != null) {
+            toReturn = IPropertyLocator.LOCATION_USER_BUILD;
+        }
+        else if (projectBuild != null && projectBuild.getValue(key) != null) {
+            toReturn = IPropertyLocator.LOCATION_PROJECT_BUILD;
+        }
+        else if (project != null && project.getValue(key) != null) {
+            toReturn = IPropertyLocator.LOCATION_PROJECT;
+        }
+        else if (defaults != null && defaults.getValue(key) != null) {
+            toReturn = IPropertyLocator.LOCATION_DEFAULTS;
+        }
+        return toReturn;
+    }
+    
     
     private StringBuffer resolve(StringBuffer value) {
         StringBuffer toReturn = value;
@@ -161,5 +184,6 @@ public final class PropertyFilesAggregator implements IPropertyResolver {
         StringBuffer buf = new StringBuffer(original);
         return resolve(buf).toString();
     }        
+    
     
 }

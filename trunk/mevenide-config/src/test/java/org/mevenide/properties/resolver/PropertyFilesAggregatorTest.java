@@ -18,6 +18,7 @@ package org.mevenide.properties.resolver;
 
 import java.io.File;
 import org.mevenide.properties.IPropertyFinder;
+import org.mevenide.properties.IPropertyLocator;
 
 import org.mevenide.properties.IPropertyResolver;
 
@@ -27,7 +28,7 @@ import org.mevenide.properties.IPropertyResolver;
  */
 public class PropertyFilesAggregatorTest extends AbstractResolverTestCase {
     
-    protected IPropertyResolver def;
+    protected PropertyFilesAggregator def;
     /** Creates a new instance of DefaultsResolverTest */
     public PropertyFilesAggregatorTest() {
     }
@@ -43,11 +44,13 @@ public class PropertyFilesAggregatorTest extends AbstractResolverTestCase {
         String repo = def.getValue("maven.repo.remote");
         assertNotNull(repo);
         assertEquals("http://mevenide.codehaus.org", repo);
+        assertEquals(IPropertyLocator.LOCATION_USER_BUILD, def.getPropertyLocation("maven.repo.remote"));
         
         // doesn't resolve values.
         String build = def.getValue("maven.build.src");
         assertNotNull(build);
         assertEquals("${maven.build.dir}/src2", build);
+        assertEquals(IPropertyLocator.LOCATION_PROJECT, def.getPropertyLocation("maven.build.src"));
         
     }
 
@@ -56,6 +59,7 @@ public class PropertyFilesAggregatorTest extends AbstractResolverTestCase {
         File right = new File(projectDir, ".maven");
         assertNotNull(home);
         assertEquals(right.getAbsolutePath().replaceAll("\\\\", "/"), home.replaceAll("\\\\", "/"));
+        assertEquals(IPropertyLocator.LOCATION_USER_BUILD, def.getPropertyLocation("maven.home.local"));
 
         // value comes from locationfinder
         String home2 = def.getResolvedValue("maven.home");
@@ -67,6 +71,7 @@ public class PropertyFilesAggregatorTest extends AbstractResolverTestCase {
         assertNotNull(build);
         File correct = new File(projectDir.getAbsolutePath() + "/target_yyy/src2");
         assertEquals(correct.getAbsolutePath().replaceAll("\\\\", "/"), build.replaceAll("\\\\", "/"));
+        assertEquals(IPropertyLocator.LOCATION_PROJECT, def.getPropertyLocation("maven.build.src"));
     }
     
     public void testResolveString() throws Exception {
