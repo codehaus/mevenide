@@ -74,6 +74,7 @@ class ResourceFilterNode extends FilterNode
     }
     
     private boolean checkIncluded(File file) {
+        logger.debug("chceckIncluded");
         String relPath = "";
         try {
             relPath = MavenUtils.makeRelativePath(root, file.getAbsolutePath());
@@ -81,12 +82,14 @@ class ResourceFilterNode extends FilterNode
             logger.info(exc);
             return false;
         }
+        logger.debug("chceckIncluded relpath=" + relPath);
         List includes = resource.getIncludes();
         if (includes != null) {
             boolean doInclude = false;
             Iterator it = includes.iterator();
             while (it.hasNext()) {
                 String pattern = (String)it.next();
+                logger.debug("include=" + pattern);
                 // exact match or pattern match
                 if (pattern.equals(relPath) || DirectoryScanner.match(pattern, relPath)) {
                     doInclude = true;
@@ -94,6 +97,7 @@ class ResourceFilterNode extends FilterNode
                 }
             }
             if (!doInclude) {
+                logger.debug("do not include");
                 return false;
             }
         }
@@ -103,6 +107,7 @@ class ResourceFilterNode extends FilterNode
             Iterator it = excludes.iterator();
             while (it.hasNext()) {
                 String pattern = (String)it.next();
+                logger.debug("exclude=" + pattern);
                 if (pattern.equals(relPath) || DirectoryScanner.match(pattern, relPath)) {
                     return false;
                 }

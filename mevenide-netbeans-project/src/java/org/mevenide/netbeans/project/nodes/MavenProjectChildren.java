@@ -57,8 +57,11 @@ class MavenProjectChildren extends Children.Keys {
         this.project = project;
         changeListener  = new PropertyChangeListener() {
             public void propertyChange(PropertyChangeEvent evt) {
-                regenerateKeys();
-                refresh();
+                if (MavenProject.PROP_PROJECT.equals(evt.getPropertyName())) {
+                    logger.debug("regenerating project children keys");
+                    regenerateKeys();
+                    refresh();
+                }
             }
         };
     }
@@ -80,14 +83,13 @@ class MavenProjectChildren extends Children.Keys {
     
     private void regenerateKeys() {
         List list = new ArrayList();
-        Project proj = project.getOriginalMavenProject();
         if (project.getSrcDirectory() != null) {
             list.add(KEY_SOURCE_DIR);
         }
         if (project.getTestSrcDirectory() != null) {
             list.add(KEY_TEST_SOURCE_DIR);
         }
-
+        Project proj = project.getOriginalMavenProject();
         Build build = proj.getBuild();
         if (build != null) {
             if (build.getAspectSourceDirectory() != null) {

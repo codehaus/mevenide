@@ -53,8 +53,10 @@ class ResourcesRootChildren extends Children.Keys
         this.project = project;
         changeListener  = new PropertyChangeListener() {
             public void propertyChange(PropertyChangeEvent evt) {
-                regenerateKeys();
-                refresh();
+                if (MavenProject.PROP_PROJECT.equals(evt.getPropertyName())) {
+                    regenerateKeys();
+                    refresh();
+                }
             }
         };
     }
