@@ -380,6 +380,7 @@ public class MavenProject implements Project {
             "web-types",         // NOI18N
             "junit",                // NOI18N
             "MIDP",              // NOI18N
+            "maven-docs",
             "simple-files"          // NOI18N
         };
         

@@ -41,12 +41,21 @@ public class MavenSettingsBeanInfo extends SimpleBeanInfo {
             PropertyDescriptor noBanner = new PropertyDescriptor ("noBanner", MavenSettings.class); //NOI18N
             noBanner.setDisplayName (NbBundle.getMessage (MavenSettingsBeanInfo.class, "PROP_noBanner")); //NOI18N
             noBanner.setShortDescription (NbBundle.getMessage (MavenSettingsBeanInfo.class, "HINT_noBanner")); //NOI18N
+            PropertyDescriptor debug = new PropertyDescriptor ("debug", MavenSettings.class); //NOI18N
+            debug.setDisplayName (NbBundle.getMessage (MavenSettingsBeanInfo.class, "PROP_debug")); //NOI18N
+            debug.setShortDescription (NbBundle.getMessage (MavenSettingsBeanInfo.class, "HINT_debug")); //NOI18N
+            PropertyDescriptor exceptions = new PropertyDescriptor ("exceptions", MavenSettings.class); //NOI18N
+            exceptions.setDisplayName (NbBundle.getMessage (MavenSettingsBeanInfo.class, "PROP_exceptions")); //NOI18N
+            exceptions.setShortDescription (NbBundle.getMessage (MavenSettingsBeanInfo.class, "HINT_exceptions")); //NOI18N
+            PropertyDescriptor nonverbose = new PropertyDescriptor ("nonverbose", MavenSettings.class); //NOI18N
+            nonverbose.setDisplayName (NbBundle.getMessage (MavenSettingsBeanInfo.class, "PROP_nonverbose")); //NOI18N
+            nonverbose.setShortDescription (NbBundle.getMessage (MavenSettingsBeanInfo.class, "HINT_nonverbose")); //NOI18N
             
             
             PropertyDescriptor hint = new PropertyDescriptor ("showAddFavouriteHint", MavenSettings.class); //NOI18N
             hint.setHidden(true);
             
-            return new PropertyDescriptor[] { topGoals, hint, noBanner, offline};
+            return new PropertyDescriptor[] { topGoals, hint, noBanner, offline, debug, exceptions, nonverbose};
         } catch (IntrospectionException ie) {
             ErrorManager.getDefault().notify(ie);
             return new PropertyDescriptor[0];

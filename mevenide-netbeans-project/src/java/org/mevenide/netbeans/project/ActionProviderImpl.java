@@ -135,6 +135,9 @@ public class ActionProviderImpl implements ActionProvider
         MavenExecutor exec = new MavenExecutor(project, goal);
         exec.setNoBanner(MavenSettings.getDefault().isNoBanner());
         exec.setOffline(MavenSettings.getDefault().isOffline());
+        exec.setDebug(MavenSettings.getDefault().isDebug());
+        exec.setExceptions(MavenSettings.getDefault().isExceptions());
+        exec.setNonverbose(MavenSettings.getDefault().isNonverbose());
         ExecutorTask task = ExecutionEngine.getDefault().execute("Maven", exec, exec.getInputOutput());
 //        RequestProcessor.getDefault().post();
         

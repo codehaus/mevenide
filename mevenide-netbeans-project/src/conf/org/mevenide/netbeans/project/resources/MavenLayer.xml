@@ -21,6 +21,33 @@
                 </file>
             </folder>
         </folder>
+        
+        <attr name="API_Support/MavenDocumentation" boolvalue="true"/>        
+        <attr name="MavenDocumentation/Other" boolvalue="true"/>        
+        <folder name="MavenDocumentation">
+           <attr name="SystemFileSystem.localizingBundle" stringvalue="org.mevenide.netbeans.project.resources.Bundle"/>
+           <file name="xdoc.xml" url="templates/xdoc.xml">
+             <attr name="template" boolvalue="true" />
+             <attr name="templateWizardURL" urlvalue="nbresloc:/org/mevenide/netbeans/project/resources/templates/XDoc.html" />
+             <attr name="SystemFileSystem.localizingBundle" stringvalue="org.mevenide.netbeans.project.resources.Bundle"/>
+             <attr name="templateCategory" stringvalue="maven-docs"/>
+          </file>
+           <attr name="xdoc.xml/faq.fml" boolvalue="true"/>        
+           <file name="faq.fml" url="templates/faq.fml">
+             <attr name="template" boolvalue="true" />
+             <attr name="templateWizardURL" urlvalue="nbresloc:/org/mevenide/netbeans/project/resources/templates/FAQ.html" />
+             <attr name="SystemFileSystem.localizingBundle" stringvalue="org.mevenide.netbeans.project.resources.Bundle"/>
+             <attr name="templateCategory" stringvalue="maven-docs"/>
+          </file>
+           <attr name="faq.fml/changes.xml" boolvalue="true"/>        
+           <file name="changes.xml" url="templates/changes.xml">
+             <attr name="template" boolvalue="true" />
+             <attr name="templateWizardURL" urlvalue="nbresloc:/org/mevenide/netbeans/project/resources/templates/Changes.html" />
+             <attr name="SystemFileSystem.localizingBundle" stringvalue="org.mevenide.netbeans.project.resources.Bundle"/>
+             <attr name="templateCategory" stringvalue="maven-docs"/>
+          </file>
+       </folder>
+        
     </folder>
 
 

@@ -40,11 +40,17 @@ public class MavenExecutor implements Runnable {
     public static final String FORMAT_GOAL = "goal"; //NOI18N
     public static final String FORMAT_OFFLINE = "offline"; //NOI18N
     public static final String FORMAT_NOBANNER = "nobanner"; //NOI18N
+    public static final String FORMAT_DEBUG = "debug"; //NOI18N
+    public static final String FORMAT_EXCEPTIONS = "exceptions"; //NOI18N
+    public static final String FORMAT_NONVERBOSE = "nonverbose"; //NOI18N
     
     // -- default value
     private String goal = "dist"; //NOI18N 
     private boolean offline = false;
     private boolean nobanner = false;
+    private boolean debug = false;
+    private boolean exceptions = false;
+    private boolean nonverbose = false;
     
     private static final long serialVersionUID = 7564737833872873L;
     private NbProcessDescriptor descriptor;
@@ -55,35 +61,73 @@ public class MavenExecutor implements Runnable {
     
     private static RequestProcessor PROCESSOR = new RequestProcessor("maven execution", 3);
     
-    public MavenExecutor(MavenProject proj, String gl)
-    {
+    public MavenExecutor(MavenProject proj, String gl) {
         project = proj;
         goal = gl;
-        String mavenExeFmt = "{" + FORMAT_MAVEN_HOME + "}/" + "bin/maven"; //NOI18N
+        StringBuffer mavenExeFmt = new StringBuffer();
         if (Utilities.isWindows()) {
-            mavenExeFmt = "\"{" + FORMAT_MAVEN_HOME + "}/" + "bin/maven.bat\""; //NOI18N
+            mavenExeFmt.append("\"{");
+        } else {
+            mavenExeFmt.append("{");
         }
-        format = mavenExeFmt + " {" + FORMAT_NOBANNER + "} {" + FORMAT_OFFLINE + "} {" + FORMAT_GOAL + "}"; //NOI18N
+        mavenExeFmt.append(FORMAT_MAVEN_HOME);
+        mavenExeFmt.append("}/bin/");
+        if (Utilities.isWindows()) {
+            mavenExeFmt.append("maven.bat\"");
+        } else {
+            mavenExeFmt.append("maven");
+        }
+        mavenExeFmt.append(" {");
+        mavenExeFmt.append(FORMAT_NOBANNER);
+        mavenExeFmt.append("} {");
+        mavenExeFmt.append(FORMAT_OFFLINE);
+        mavenExeFmt.append("} {");
+        mavenExeFmt.append(FORMAT_DEBUG);
+        mavenExeFmt.append("} {");
+        mavenExeFmt.append(FORMAT_EXCEPTIONS);
+        mavenExeFmt.append("} {");
+        mavenExeFmt.append(FORMAT_NONVERBOSE);
+        mavenExeFmt.append("} {");
+        mavenExeFmt.append(FORMAT_GOAL);
+        mavenExeFmt.append("}");
+//        String mavenExeFmt = "{" + FORMAT_MAVEN_HOME + "}/" + "bin/maven"; //NOI18N
+//        if (Utilities.isWindows()) {
+//            mavenExeFmt = "\"{" + FORMAT_MAVEN_HOME + "}/" + "bin/maven.bat\""; //NOI18N
+//        }
+//        format = mavenExeFmt + " {" + FORMAT_NOBANNER + "} {" + FORMAT_OFFLINE + "} {" + FORMAT_GOAL + "}"; //NOI18N
+        format = mavenExeFmt.toString();
     }
     
-    public void setOffline(boolean offline)
-    {
+    public void setOffline(boolean offline) {
         this.offline = offline;
     }
     
-    public void setNoBanner(boolean nb)
-    {
+    public void setNoBanner(boolean nb) {
         nobanner = nb;
-    }    
+    }
     
-    public Process createProcess() throws IOException
-    {
+    public void setDebug(boolean deb) {
+        debug = deb;
+    }
+    
+    public void setExceptions(boolean exc) {
+        exceptions = exc;
+    }
+    
+    public void setNonverbose(boolean nv) {
+        nonverbose = nv;
+    }
+    
+    public Process createProcess() throws IOException {
         File execDir = FileUtil.toFile(project.getProjectDirectory());
         HashMap formats = new HashMap(5);
         formats.put(FORMAT_GOAL, goal);
         formats.put(FORMAT_MAVEN_HOME, project.getLocFinder().getMavenHome());
         formats.put(FORMAT_OFFLINE, offline ? "--offline" : ""); //NOI18N
         formats.put(FORMAT_NOBANNER, nobanner ? "--nobanner" : ""); //NOI18N
+        formats.put(FORMAT_DEBUG, debug ? "-X" : ""); //NOI18N
+        formats.put(FORMAT_EXCEPTIONS, exceptions ? "--exception" : ""); //NOI18N
+        formats.put(FORMAT_NONVERBOSE, nonverbose ? "--quiet" : ""); //NOI18N
         String procString = MapFormat.format(format, formats);
         Process proc = Runtime.getRuntime().exec(procString, null, execDir);
         InputOutput ioput = getInputOutput();
