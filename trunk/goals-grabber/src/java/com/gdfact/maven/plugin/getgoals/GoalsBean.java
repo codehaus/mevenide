@@ -262,7 +262,7 @@ public class GoalsBean {
 	public void unMarshall(String xmlInputFilename) throws Exception {
 	    System.setProperty("org.xml.sax.driver", "org.apache.xerces.parsers.SAXParser");
 	    InputSource inputSource = new InputSource(new FileReader(xmlInputFilename));	
-        SAXBuilder saxBuilder = new SAXBuilder(true);
+        SAXBuilder saxBuilder = new SAXBuilder(false);
         
         Document document = saxBuilder.build(new File(xmlInputFilename));
         Element goalsElement = document.getRootElement();
