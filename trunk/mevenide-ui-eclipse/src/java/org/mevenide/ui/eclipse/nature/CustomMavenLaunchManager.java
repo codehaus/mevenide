@@ -91,13 +91,19 @@ public class CustomMavenLaunchManager implements IWorkbenchWindowPulldownDelegat
     
     protected void fillMenu(Menu menu) {	
 		ActionDefinitionsManager actionDefinitionsManager = Mevenide.getInstance().getActionDefinitionsManager();
-		List definitions = actionDefinitionsManager.getDefinitions(lastSelectedProject);
+		List definitions = actionDefinitionsManager.getDefinitions();
+		boolean definitionsAdded = false;
 		if ( definitions.size() > 0 ) {
 		    for (int i = 0; i < definitions.size(); i++) {
 		        ActionDefinitions definition = (ActionDefinitions) definitions.get(i);
-		        PatternBasedMavenLaunchAction action = new PatternBasedMavenLaunchAction(lastSelectedProject, definition);
-		        addToMenu(menu, action);    
+		        if ( !definition.isAutoBuild() ) {
+			        PatternBasedMavenLaunchAction action = new PatternBasedMavenLaunchAction(lastSelectedProject, definition);
+			        addToMenu(menu, action);
+			        definitionsAdded = true;
+		        }
             }
+		}
+		if ( definitionsAdded ) {
 		    addSeparator(menu);
 		}
 		addToMenu(menu, manageActionDefinitionsAction);
