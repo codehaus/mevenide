@@ -316,7 +316,6 @@ public class SynchronizeView extends ViewPart implements IActionListener {
 	
 	public void artifactRemovedFromPom(PomArtifactEvent event) {
 		IArtifactMappingNode artifact = (IArtifactMappingNode) event.getArtifact();
-		log.debug("artifact modified : " + artifact);
 		refreshNode(artifact);
 	}
 	
@@ -324,6 +323,9 @@ public class SynchronizeView extends ViewPart implements IActionListener {
 		return artifactMappingNodeViewer;
 	}
 	
-	
+	public void artifactRemovedFromClasspath(ClasspathArtifactEvent event) {
+		IArtifactMappingNode artifact = (IArtifactMappingNode) event.getArtifact();
+		refreshNode(artifact);	
+	}
 	
 }

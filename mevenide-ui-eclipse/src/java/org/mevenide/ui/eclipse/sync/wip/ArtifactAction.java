@@ -91,6 +91,13 @@ public class ArtifactAction {
 		}
 	}
 	
+	protected void fireArtifactRemovedFromClasspath(Object item, IProject project) {
+		for (int i = 0; i < listeners.size(); i++) {
+			ClasspathArtifactEvent event = new ClasspathArtifactEvent(item, project);
+			((IActionListener)listeners.get(i)).artifactRemovedFromClasspath(event);
+		}
+	}
+	
 	protected void fireArtifactAddedToPom(Object item, Project project) {
 		log.debug("Artifact (" + item + ") added to POM : " + project.getFile());
 		for (int i = 0; i < listeners.size(); i++) {
