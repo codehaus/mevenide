@@ -16,6 +16,8 @@
  */
 package org.mevenide.properties.resolver;
 
+import java.io.File;
+import java.util.HashMap;
 import org.mevenide.context.IQueryContext;
 import org.mevenide.properties.IPropertyFinder;
 
@@ -26,22 +28,20 @@ import org.mevenide.properties.IPropertyFinder;
  * @author  <a href="mailto:ca206216@tiscali.cz">Milos Kleint</a>
  * 
  */
-public final class QueryBasedFinderFactory {
-
+final class QueryBasedFinderFactory {
     
-    public static IPropertyFinder createUserPropertyFinder(IQueryContext context) {
+    static IPropertyFinder createUserPropertyFinder(IQueryContext context) {
         return new UserPropertyFinder(context);
     }
 
-    public static IPropertyFinder createBuildPropertyFinder(IQueryContext context) {
+    static IPropertyFinder createBuildPropertyFinder(IQueryContext context) {
         return new BuildPropertyFinder(context);
     }
 
-    public static IPropertyFinder createProjectPropertyFinder(IQueryContext context) {
+    static IPropertyFinder createProjectPropertyFinder(IQueryContext context) {
         return new ProjectPropertyFinder(context);
     }
-    
-    
+
     private static abstract class PropertyFinder implements IPropertyFinder {
         protected IQueryContext context;
         

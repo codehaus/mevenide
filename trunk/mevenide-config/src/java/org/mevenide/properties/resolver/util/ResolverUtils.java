@@ -43,8 +43,8 @@ public class ResolverUtils {
         IPropertyResolver resolver = PropertyResolverFactory.getFactory().getResolver(project.getFile().getParentFile());
         String workingValue = value;
         
-        if  ( value.startsWith("${") ) {
-            workingValue = resolver.getResolvedValue(value.substring(2, value.length() - 1));
+        if  ( value.indexOf("${") > -1 ) {
+            workingValue = resolver.resolveString(value);
         }
         if ( workingValue == null ) {
             //value not resolved. reinitialize workingValue

@@ -17,11 +17,14 @@
 package org.mevenide.properties.resolver;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 import org.mevenide.context.IQueryContext;
+import org.mevenide.environment.ILocationFinder;
 
 import org.mevenide.environment.LocationFinderAggregator;
+import org.mevenide.properties.IPropertyFinder;
 import org.mevenide.properties.IPropertyResolver;
 
 
@@ -34,7 +37,11 @@ import org.mevenide.properties.IPropertyResolver;
 public class PropertyResolverFactory {
     
     private static PropertyResolverFactory factory = new PropertyResolverFactory();
-    
+     /**
+     * map (key=absolutepath of the plugindir, value PluginPropertiesFinder instance 
+     */
+    private HashMap pluginDirProps = new HashMap();
+   
     private Map resolvers = new TreeMap();
     
     private PropertyResolverFactory() {
@@ -52,7 +59,9 @@ public class PropertyResolverFactory {
             File userFile = new File(userHome);
             LocationFinderAggregator finder = new LocationFinderAggregator();
             finder.setEffectiveWorkingDirectory(projectDir.getAbsolutePath());
-            aggregator = new PropertyFilesAggregator(projectDir, userFile, new DefaultsResolver(projectDir, userFile, finder));
+            aggregator = new PropertyFilesAggregator(projectDir, userFile, 
+                             new DefaultsResolver(projectDir, userFile, finder, 
+                                                  getPluginDefaultsPropertyFinder(finder)));
             resolvers.put(projectDir.getAbsolutePath(), aggregator);
         }
         
@@ -63,16 +72,33 @@ public class PropertyResolverFactory {
         return aggregator;
     }
     
+    
+    public IPropertyResolver getResolver(File projectDir) {
+        return getResolver(projectDir, false);
+    }
+
+//
+// querycontext based stuff..
+//
     public IPropertyResolver createContextBasedResolver(IQueryContext context) {
         LocationFinderAggregator finder = new LocationFinderAggregator(context);
         return new PropertyFilesAggregator(context, 
             				new DefaultsResolver(context.getProjectDirectory(), 
                                                              context.getUserDirectory(), 
-                                                             finder));
+                                                             finder, 
+                                                             getPluginDefaultsPropertyFinder(finder)));
     }
     
-    public IPropertyResolver getResolver(File projectDir) {
-        return getResolver(projectDir, false);
-    }
     
+   IPropertyFinder getPluginDefaultsPropertyFinder(ILocationFinder finder) {
+        synchronized (pluginDirProps) {
+            String pluginDir = finder.getMavenPluginsDir();
+            IPropertyFinder propfinder = (IPropertyFinder)pluginDirProps.get(pluginDir);
+            if (propfinder == null) {
+                propfinder = new PluginPropertiesFinder(new File(pluginDir));
+                pluginDirProps.put(pluginDir, propfinder);
+            }
+            return propfinder;
+        }
+    }    
 }
