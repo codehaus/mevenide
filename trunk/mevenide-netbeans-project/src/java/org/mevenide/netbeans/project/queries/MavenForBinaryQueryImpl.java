@@ -21,6 +21,8 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.event.ChangeListener;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -28,7 +30,8 @@ import org.apache.maven.project.Project;
 import org.mevenide.netbeans.project.MavenProject;
 import org.mevenide.project.dependency.DependencyResolverFactory;
 import org.mevenide.project.dependency.IDependencyResolver;
-import org.netbeans.api.java.queries.SourceForBinaryQuery.Result;
+import org.netbeans.api.java.queries.JavadocForBinaryQuery;
+import org.netbeans.api.java.queries.SourceForBinaryQuery;
 import org.netbeans.spi.java.queries.JavadocForBinaryQueryImplementation;
 import org.netbeans.spi.java.queries.SourceForBinaryQueryImplementation;
 import org.openide.filesystems.FileObject;
@@ -58,7 +61,7 @@ public class MavenForBinaryQueryImpl implements SourceForBinaryQueryImplementati
      * @param binaryRoot the class path root of Java class files
      * @return a list of source roots; may be empty but not null
      */   
-    public Result findSourceRoots(URL url) {
+    public SourceForBinaryQuery.Result findSourceRoots(URL url) {
         logger.warn("MavenSourceForBinaryQueryImpl project=" + project.getDisplayName() + "url=" + url);
         return new BinResult(url);
     }
@@ -75,37 +78,36 @@ public class MavenForBinaryQueryImpl implements SourceForBinaryQueryImplementati
      * @return a result object encapsulating the roots and permitting changes to
      *         be listened to, or null if the binary root is not recognized
      */    
-    public org.netbeans.api.java.queries.JavadocForBinaryQuery.Result findJavadoc(URL url) {
+    public JavadocForBinaryQuery.Result findJavadoc(URL url) {
         logger.warn("JavadocForBinaryQueryImplementation project=" + project.getDisplayName() + "url=" + url);
-        URL binRoot = FileUtil.getArchiveFile(url);
-        if (checkURL(binRoot)) {
-        }
-        return null;
+        return new DocResult(url);
     }
     
     
     private boolean checkURL(URL url) {
         logger.debug("checkurl=" + url);
-        FileObject fo = URLMapper.findFileObject(url);
+        URL binRoot = url;
+        if ("jar".equals(url.getProtocol())) {
+            binRoot = FileUtil.getArchiveFile(url);
+        } else {
+            // true for directories.
+            return true;
+        }
+        FileObject fo = URLMapper.findFileObject(binRoot);
         if (fo != null) {
             logger.debug("checkurl fo=" + fo);
             Project mavproj = project.getOriginalMavenProject();
-            if ("file".equals(url.getProtocol())) {
-                File file = FileUtil.toFile(fo);
-                logger.debug("jar protocol file=" + file);
-                try {
-                    IDependencyResolver depRes = DependencyResolverFactory.getFactory().
-                                                            newInstance(file.getAbsolutePath());
-                    return  (doCompare(depRes.guessArtifactId(), mavproj.getArtifactId()) && 
-                             doCompare(depRes.guessGroupId(), mavproj.getGroupId()) &&
-                             doCompare(depRes.guessVersion(), mavproj.getCurrentVersion()));
-                } catch (Exception exc) {
-                    logger.error("exception", exc);
-                    return false;
-                }
-            }
-            if ("jar".equals(url.getProtocol())) {
-                
+            File file = FileUtil.toFile(fo);
+            logger.debug("jar protocol file=" + file);
+            try {
+                IDependencyResolver depRes = DependencyResolverFactory.getFactory().
+                newInstance(file.getAbsolutePath());
+                return  (doCompare(depRes.guessArtifactId(), mavproj.getArtifactId()) &&
+                doCompare(depRes.guessGroupId(), mavproj.getGroupId()) &&
+                doCompare(depRes.guessVersion(), mavproj.getCurrentVersion()));
+            } catch (Exception exc) {
+                logger.error("exception", exc);
+                return false;
             }
         } 
         return false;
@@ -128,6 +130,23 @@ public class MavenForBinaryQueryImpl implements SourceForBinaryQueryImplementati
         }
         return new FileObject[0];
     }
+    
+    private URL[] getJavadocRoot() {
+        logger.debug("getjavadocRoot");
+        String destDir = project.getPropertyResolver().getResolvedValue("maven.javadoc.destdir");
+        if (destDir != null) {
+            File fil = new File(destDir);
+            fil = FileUtil.normalizeFile(fil);
+            try {
+                return new URL[] {fil.toURI().toURL()};
+            } catch (MalformedURLException exc) {
+                logger.warn("malforrmed file uri=" + fil.toURI());
+            }
+        } else {
+            logger.error("Cannot resolve maven.javadoc.destdir. How come?");
+        }
+        return new URL[0];
+    }    
 
     private boolean doCompare(String one, String two) {
         if (one == null || two == null) {
@@ -137,27 +156,70 @@ public class MavenForBinaryQueryImpl implements SourceForBinaryQueryImplementati
     }
     
     
-    private class BinResult implements Result  {
+    private class BinResult implements SourceForBinaryQuery.Result  {
        private URL url;
+       private List listeners;
+       private FileObject[] results;
         public BinResult(URL urlParam) {
             url = urlParam;
+            listeners = new ArrayList();
         }
-       public void addChangeListener(ChangeListener changeListener) {
-           //TODO
-       }
+        
        
        public FileObject[] getRoots() {
-            URL binRoot = FileUtil.getArchiveFile(url);
-            if (checkURL(binRoot)) {
-                return getSrcRoot();
+            if (checkURL(url)) {
+                results = getSrcRoot();
+            } else {
+                results = new FileObject[0];
             }
-            return new FileObject[0];
+            return results;
+       }
+       
+       public void addChangeListener(ChangeListener changeListener) {
+           synchronized (listeners) {
+               listeners.add(changeListener);
+           }
        }
        
        public void removeChangeListener(ChangeListener changeListener) {
-           //TODO
+           synchronized (listeners) {
+               listeners.remove(changeListener);
+           }
        }
        
+   }
+
+    private class DocResult implements JavadocForBinaryQuery.Result  {
+       private URL url;
+       private URL[] results;
+       private List listeners;
+       
+        public DocResult(URL urlParam) {
+            url = urlParam;
+            listeners = new ArrayList();
+        }
+       public void addChangeListener(ChangeListener changeListener) {
+           synchronized (listeners) {
+               listeners.add(changeListener);
+           }
+       }
+       
+       public void removeChangeListener(ChangeListener changeListener) {
+           synchronized (listeners) {
+               listeners.remove(changeListener);
+           }
+       }
+        
+        public java.net.URL[] getRoots() {
+            URL binRoot = FileUtil.getArchiveFile(url);
+            if (checkURL(url)) {
+                results = getJavadocRoot();
+            } else {
+                results = new URL[0];
+            }
+            return results;
+        }
+        
    }
     
 }

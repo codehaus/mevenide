@@ -162,7 +162,7 @@ public class MavenProject implements Project {
             String path = getOriginalMavenProject().getBuild().getSourceDirectory();
             if (path != null) {
                 File parent = FileUtil.toFile(getProjectDirectory());
-                File src = new File(parent.getAbsolutePath() + "/" + path);
+                File src = new File(parent.getAbsolutePath(), path);
                 return FileUtil.normalizeFile(src).toURI();
             }
         }
@@ -173,7 +173,7 @@ public class MavenProject implements Project {
             return null;
         }
         File fl = new File(path, "java");
-        return fl.toURI();
+        return  FileUtil.normalizeFile(fl).toURI();
     }
     
     public URI getTestSrcDirectory() {
@@ -181,7 +181,7 @@ public class MavenProject implements Project {
             String path = getOriginalMavenProject().getBuild().getUnitTestSourceDirectory();
             if (path != null) {
                 File parent = FileUtil.toFile(getProjectDirectory());
-                File src = new File(parent.getAbsolutePath() + "/" + path);
+                File src = new File(parent.getAbsolutePath(), path);
                 return FileUtil.normalizeFile(src).toURI();
             }
         }
@@ -192,14 +192,14 @@ public class MavenProject implements Project {
             return null;
         }
         File fl = new File(path, "test/java");
-        return fl.toURI();
+        return FileUtil.normalizeFile(fl).toURI();
     }
     
     public URI getBuildClassesDir() {
         String path = properties.getResolvedValue("maven.build.dest");
         if (path != null) {
             File fl = new File(path);
-            return fl.toURI();
+            return FileUtil.normalizeFile(fl).toURI();
         }
         logger.warn("maven.build.dest not defined.");
         return null;
@@ -209,7 +209,7 @@ public class MavenProject implements Project {
         String path = properties.getResolvedValue("maven.test.dest");
         if (path != null) {
             File fl = new File(path);
-            return fl.toURI();
+            return FileUtil.normalizeFile(fl).toURI();
         }
         logger.warn("maven.test.dest not defined.");
         return null;
