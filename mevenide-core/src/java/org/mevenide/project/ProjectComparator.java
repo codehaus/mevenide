@@ -458,7 +458,7 @@ public class ProjectComparator {
 	                newBuild.getIntegrationUnitTestSourceDirectory(),
 	                originalBuild.getIntegrationUnitTestSourceDirectory());
 	            detectAttributeChange(newBuild.getNagEmailAddress(), originalBuild.getNagEmailAddress());
-	            compareUnitTest(newBuild, originalBuild);
+	            compareUnitTest(newBuild, originalBuild, newProject);
 	            compareResources(newBuild.getResources(), originalBuild.getResources());
 	        }
 	        catch (ShortCircuitException e) {
@@ -467,12 +467,16 @@ public class ProjectComparator {
         }
     }
 
-    private void compareUnitTest(Build newBuild, Build origBuild) throws ShortCircuitException {
-
-        UnitTest origUnitTest = origBuild.getUnitTest();
-        UnitTest newUnitTest = newBuild.getUnitTest();
-        compareResource(newUnitTest, origUnitTest);
-        compareResources(newUnitTest.getResources(), origUnitTest.getResources());
+    private void compareUnitTest(Build newBuild, Build origBuild, Project newProject) {
+		try {
+	        UnitTest origUnitTest = origBuild.getUnitTest();
+	        UnitTest newUnitTest = newBuild.getUnitTest();
+	        compareResource(newUnitTest, origUnitTest);
+	        compareResources(newUnitTest.getResources(), origUnitTest.getResources());
+		}
+		catch (ShortCircuitException e) {
+			fireProjectChangeEvent(newProject, UNIT_TESTS);
+		}
     }
 
     private void compareResources(List newResources, List origResources) throws ShortCircuitException {
