@@ -79,7 +79,7 @@
          </menu>
          <action
                label="%RunMaven.label"
-               icon="icons/maven-run.gif"
+               icon="icons/maven-button.gif"
                class="org.mevenide.ui.eclipse.launch.configuration.MavenRunActionDelegate"
                menubarPath="maven.plugin.menu/RunMaven"
                enablesFor="1"
@@ -120,7 +120,7 @@
          </menu>
          <action
                label="%RunMaven.label"
-               icon="icons/maven-run.gif"
+               icon="icons/maven-button.gif"
                class="org.mevenide.ui.eclipse.launch.configuration.MavenRunActionDelegate"
                menubarPath="maven.plugin.menu/RunMaven"
                enablesFor="1"
@@ -183,7 +183,7 @@
          point="org.eclipse.debug.ui.launchShortcuts">
       <shortcut
             label="%LaunchShortcut.type.label"
-            icon="icons/maven-run.gif"
+            icon="icons/maven-button.gif"
             category="org.eclipse.ui.externaltools"
             modes="run"
             class="org.mevenide.ui.eclipse.launch.configuration.MavenLaunchShortcut"
