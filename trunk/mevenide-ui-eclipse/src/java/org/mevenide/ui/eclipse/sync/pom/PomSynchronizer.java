@@ -34,8 +34,8 @@ import org.mevenide.project.io.ProjectReader;
 import org.mevenide.sync.AbstractPomSynchronizer;
 import org.mevenide.sync.ISynchronizer;
 import org.mevenide.ui.eclipse.MavenPlugin;
-import org.mevenide.ui.eclipse.sync.source.DefaultPathResolverDelegate;
-import org.mevenide.ui.eclipse.sync.source.IPathResolverDelegate;
+import org.mevenide.ui.eclipse.sync.DefaultPathResolverDelegate;
+import org.mevenide.ui.eclipse.sync.IPathResolverDelegate;
 import org.mevenide.ui.eclipse.util.ProjectUtil;
 
 /**

@@ -42,7 +42,7 @@ import org.eclipse.ui.part.ViewPart;
 import org.mevenide.sync.ISynchronizer;
 import org.mevenide.sync.SynchronizerFactory;
 import org.mevenide.ui.eclipse.MavenPlugin;
-import org.mevenide.ui.eclipse.sync.source.DefaultPathResolverDelegate;
+import org.mevenide.ui.eclipse.sync.DefaultPathResolverDelegate;
 import org.mevenide.ui.eclipse.sync.source.SourceDirectory;
 import org.mevenide.ui.eclipse.sync.source.SourceDirectoryGroup;
 
