@@ -55,7 +55,7 @@
          <attribute name="name" type="string" use="required">
             <annotation>
                <documentation>
-                  name of the maven plugin, for instance if installing maven-xdoc-plugin, name should be &apos;XDoc&apos;.
+                  name of the maven plugin, for instance if installing maven-xdoc-plugin, name should be &apos;XDoc&apos;. It must match the name of the associated preference page.
                </documentation>
             </annotation>
          </attribute>
@@ -125,7 +125,7 @@
    <element name="category">
       <annotation>
          <documentation>
-            allow to categorize plugin properties. It is especially useful for plugins that expose quite a number of properties (as does the Maven  PDE plugin).
+            allows to categorize plugin properties. It is especially useful for plugins that expose quite a number of properties (as does the Maven  PDE plugin).
          </documentation>
       </annotation>
       <complexType>
@@ -157,6 +157,18 @@
       </appInfo>
       <documentation>
          &lt;pre&gt;
+&lt;!-- 
+  declare the preference page of type org.mevenide.ui.eclipse.preferences.dynamic.DynamicPreferencePage 
+--&gt;
+&lt;extension point=&quot;org.eclipse.ui.preferencePages&quot;&gt;
+  &lt;page category=&quot;org.mevenide.ui.eclipse.preferences.PluginsRoot&quot; 
+        name=&quot;PDE Plugin&quot;  
+        class=&quot;org.mevenide.ui.eclipse.preferences.dynamic.DynamicPreferencePage&quot; 
+        id=&quot;PDE Plugin &quot; /&gt;
+&lt;/extension&gt;       
+&lt;!-- 
+  declare maven plugin properties. name attribute must match the name attribute of the associated preference page
+--&gt;
 &lt;extension point=&quot;org.mevenide.ui.preference&quot;&gt;
   &lt;plugin-provider id=&quot;maven-eclipse-plugin-plugin&quot; 
                    name=&quot;PDE Plugin&quot;&gt;
