@@ -56,6 +56,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.jface.preference.PreferenceStore;
 import org.mevenide.ProjectConstants;
 import org.mevenide.project.io.ProjectWriter;
 import org.mevenide.sync.AbstractPomSynchronizer;
@@ -178,6 +179,12 @@ public class PomSynchronizer extends AbstractPomSynchronizer implements ISynchro
 			nonInheritedDependencies.add(((DependencyWrapper) dependencies.get(i)).getDependency());
 		}
 		pomWriter.setDependencies(nonInheritedDependencies, pomFile);
+		
+		PreferenceStore store = new PreferenceStore(Mevenide.getPlugin().getPreferencesFilename());
+		store.load();
+		
+		log.debug("isInherited = " + (dependencyGoup.isInherited()) + " ; parentPom = " + store.getString("pom." + sourceGroup.getProjectName() + ".parent"));
+		pomWriter.updateExtend(pomFile, dependencyGoup.isInherited(), store.getString("pom." + sourceGroup.getProjectName() + ".parent"));
 		
 		Mevenide.getPlugin().setBuildPath();
 	}

@@ -48,6 +48,7 @@
  */
 package org.mevenide.ui.eclipse.sync.wizard;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -57,6 +58,7 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Dependency;
+import org.apache.maven.project.Project;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -98,7 +100,10 @@ import org.eclipse.ui.model.WorkbenchContentProvider;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.mevenide.Environment;
 import org.mevenide.project.dependency.DependencyFactory;
+import org.mevenide.project.io.ProjectReader;
 import org.mevenide.ui.eclipse.Mevenide;
+import org.mevenide.ui.eclipse.sync.control.DependencyMappingViewControl;
+import org.mevenide.ui.eclipse.sync.control.SourceDirectoryMappingViewControl;
 import org.mevenide.ui.eclipse.sync.model.DependencyGroup;
 import org.mevenide.ui.eclipse.sync.model.DependencyGroupContentProvider;
 import org.mevenide.ui.eclipse.sync.model.DependencyGroupMarshaller;
@@ -106,8 +111,6 @@ import org.mevenide.ui.eclipse.sync.model.DependencyWrapper;
 import org.mevenide.ui.eclipse.sync.model.SourceDirectory;
 import org.mevenide.ui.eclipse.sync.model.SourceDirectoryGroup;
 import org.mevenide.ui.eclipse.sync.model.SourceDirectoryGroupMarshaller;
-import org.mevenide.ui.eclipse.sync.control.DependencyMappingViewControl;
-import org.mevenide.ui.eclipse.sync.control.SourceDirectoryMappingViewControl;
 import org.mevenide.ui.eclipse.util.ResourceSorter;
 
 /**  
@@ -225,12 +228,29 @@ public class SynchronizeWizardPage extends WizardPage {
 		((DependencyGroup)dependenciesViewer.getInput()).setInherited(isInheritedEditor.getBooleanValue());
 		dependenciesViewer.refresh();
 		
-		
 		parentPomEditor = new FileFieldEditor("pom." + project.getName() + ".parent", "Parent POM", bottomControls);
         parentPomEditor.setFileExtensions(new String[] { "*.xml" });
 		parentPomEditor.fillIntoGrid(bottomControls, 3);		
 		parentPomEditor.setPreferenceStore(inheritancePropertiesStore);
 		parentPomEditor.load();
+		
+		try {
+			if ( parentPomEditor.getTextControl(bottomControls).getText() == null 
+				|| parentPomEditor.getTextControl(bottomControls).getText().trim().equals("") ) {
+				Project mavenProject = ProjectReader.getReader().read(new File(project.getFile("project.xml").getLocation().toOSString()));
+				//check mavenProject nullity, just in case.. should not be necessary
+				if ( mavenProject != null && mavenProject.getExtend() != null && mavenProject.getExtend().trim() != "" ) {
+					//isInheritedEditor.setEnabled(false, bottomControls);
+					parentPomEditor.getTextControl(bottomControls).setText(mavenProject.getExtend());
+				}
+			}
+		}
+		catch (Exception e) {
+			//e.printStackTrace();
+			log.debug("Unable to retrieve pom inheritance elem due to : " + e);
+		}
+		
+		parentPomEditor.setEnabled(isInheritedEditor.getBooleanValue(), bottomControls);
 	}
 	
 	private void initSourceSynchronizationTabControl() {
