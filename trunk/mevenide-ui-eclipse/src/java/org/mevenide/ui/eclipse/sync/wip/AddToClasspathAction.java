@@ -147,7 +147,7 @@ public class AddToClasspathAction extends Action {
 
 	private IClasspathEntry newLibraryEntry(Dependency dependency) {
 		IClasspathEntry newEntry = null;
-		//crap ! we should use project.artifacts. for that we have to instantiate a jelly context and create an instance with MavenUtils
+		//crap ! we should use project.artifacts. for that we have to instantiate a jelly context and create a project instance with MavenUtils
 		//if possible refactor *all* code that way (MavenUtils) 
 		if ( dependency.getType() == null || dependency.isAddedToClasspath() ) { //should check maven.jar.override property also..
 			String path = null;
@@ -182,6 +182,8 @@ public class AddToClasspathAction extends Action {
 			description.setNatureIds(newNatures);
 			project.setDescription(description, null);
 			project.getNature(JavaCore.NATURE_ID).configure();
+			IJavaProject javaProject = JavaCore.create(project);
+			javaProject.setRawClasspath(new IClasspathEntry[0], null);
 		}
 
 		return newEntry;
