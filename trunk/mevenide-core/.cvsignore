@@ -10,3 +10,4 @@ plugin.xml
 *.ser
 *.properties
 *.jar
+META-INF

@@ -7,3 +7,4 @@ plugin.xml
 velocity.log
 *.jar
 .mvnignore
+META-INF
