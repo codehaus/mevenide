@@ -46,15 +46,28 @@
 				<div id="documentContent">
 					<p> 
           While Maven is running, the output is printed to the console. Regular output is printed in black, errors in red.
+          For compilation errors and for test failures, the important lines are marked as hyperlinks (in blue). 
+          </p>
+          <ul>
+          <li>
+          <p>Clicking on compilation error link, shows the affected line in editor. </p></li>
+          <li><p>Clicking on test failure opens the Test source and prints the test results to the output console tab.</p></li>
+          </ul>
           
                     <br/>
 						<center> 
-							<img border="1px" src="../images/screenshots/output-apple.png"/> 
+							<img border="1px" src="../images/screenshots/output-fail.png"/> 
 							<br/> 
-							<font size="-1"><b>Screenshot 3</b>Output goes to the console</font> 
+							<font size="-1"><b>Screenshot 3</b>Output goes to the console -compile fails</font> 
 						</center> 
 						<br/> 
-					</p>
+                    <br/>
+						<center> 
+							<img border="1px" src="../images/screenshots/output-fail-test.png"/> 
+							<br/> 
+							<font size="-1"><b>Screenshot 4</b>Output goes to the console - test fails</font> 
+						</center> 
+						<br/> 
 				</div>
 			</subsection>
 		</section>
