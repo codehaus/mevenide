@@ -260,6 +260,7 @@ public class MavenProjectNode extends AbstractSynchronizationNode implements ISe
 		List nodeList = new ArrayList();
 		for (int i = 0; i < eclipseSourceDirectories.size(); i++) {
 		    String directoryPath = (String) eclipseSourceDirectories.get(i);
+		    directoryPath = "${basedir}".equals(directoryPath) ? "${basedir}" : directoryPath;
 		    Directory eclipseDirectory = new Directory(mavenProject);
 	    	eclipseDirectory.setPath(directoryPath);
 	    	DirectoryNode node = new DirectoryNode(eclipseDirectory, this);
