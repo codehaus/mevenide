@@ -29,6 +29,7 @@ import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.window.Window;
@@ -127,13 +128,28 @@ public class MavenXmlOutlinePage extends Page implements IContentOutlinePage {
 	
 	private TreeViewer createViewer(Composite parent) throws Exception {
 		
-    	TreeViewer viewer = new TreeViewer(parent, SWT.V_SCROLL | SWT.H_SCROLL);
+    	final TreeViewer viewer = new TreeViewer(parent, SWT.V_SCROLL | SWT.H_SCROLL);
     	
     	GridData gridData = new GridData(GridData.FILL_BOTH | SWT.V_SCROLL | SWT.H_SCROLL);
     	gridData.grabExcessVerticalSpace = true;
     	gridData.grabExcessHorizontalSpace = true;
     	gridData.heightHint = 300;
     	viewer.getTree().setLayoutData(gridData);
+    	
+    	viewer.getTree().addListener (SWT.MouseDoubleClick, 
+            	new Listener () {
+            		public void handleEvent (Event event) {
+            		    Object selection = ((IStructuredSelection) viewer.getSelection()).getFirstElement();
+        	            boolean isExpanded = viewer.getExpandedState(selection);
+        	            if ( !isExpanded ) {
+        	                viewer.expandToLevel(selection, 1);
+        	            }
+        	            else {
+        	                viewer.collapseToLevel(selection, 1);
+        	            }
+            		}
+            	}
+            );
     	
         return viewer;
     }
