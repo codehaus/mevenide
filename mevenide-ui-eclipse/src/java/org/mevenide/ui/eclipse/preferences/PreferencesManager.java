@@ -107,7 +107,10 @@ public class PreferencesManager {
 
 	public Map getPreferences() {
 	    Map preferences = new HashMap();
-	    
+	    //initialize preferenceStore if not already done
+	    if ( getPreferenceStore() == null ) {
+	        loadPreferences();
+	    }
 	    try {
             String[] names = preferenceStore.preferenceNames();
             if ( names != null ) {
@@ -117,7 +120,7 @@ public class PreferencesManager {
             }
         }
         catch (NullPointerException e) {
-            //catch NPE thrown if theres no preferences defined
+            //catch NPE thrown if preferenceStore cannot be properly initialized
             String message = "No preferences found"; 
             log.info(message, e);
         }
