@@ -40,6 +40,7 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -57,8 +58,11 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MessageBox;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.IPageSite;
 import org.eclipse.ui.part.ViewPart;
+import org.mevenide.MevenideRuntimeException;
 import org.mevenide.project.IProjectChangeListener;
 import org.mevenide.project.ProjectChangeEvent;
 import org.mevenide.project.ProjectComparator;
@@ -207,7 +211,17 @@ public class SynchronizationView extends ViewPart implements IActionListener, IR
     	SynchronizationNodeProvider provider = (SynchronizationNodeProvider) artifactMappingNodeViewer.getContentProvider();
     	SynchronizationNodeProvider.RootNode root = provider.new RootNode(project, poms);
     	root.addNodeListener(this);
-    	artifactMappingNodeViewer.setInput(root);
+    	
+    	try {
+    	    artifactMappingNodeViewer.setInput(root);
+    	}
+    	catch ( MevenideRuntimeException e ) {
+    	    MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), 
+    	            				Mevenide.getResourceString("SynchronizeView.InvalidPom.Title"), 
+    	            				Mevenide.getResourceString(e.getMessage()));
+    	    hideView();
+    	    return;
+    	}
         
         for (int i = 0; i < poms.size(); i++) {
         	Project mavenProject = (Project) poms.get(i);
@@ -224,6 +238,11 @@ public class SynchronizationView extends ViewPart implements IActionListener, IR
         assertValidDirection();
         
         refreshAll();
+    }
+
+    private void hideView() {
+        SynchronizationView view = (SynchronizationView) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(Mevenide.SYNCHRONIZE_VIEW_ID);
+        PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().hideView(view);
     }
 
     private void assertValidDirection() {

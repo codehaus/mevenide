@@ -34,6 +34,7 @@ import org.apache.maven.repository.Artifact;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.ui.views.properties.IPropertySource;
+import org.mevenide.MevenideRuntimeException;
 import org.mevenide.environment.LocationFinderAggregator;
 import org.mevenide.project.ProjectConstants;
 import org.mevenide.project.io.ProjectReader;
@@ -381,6 +382,9 @@ public class MavenProjectNode extends AbstractSynchronizationNode implements ISe
 			return false;
 		}
 		MavenProjectNode node = ((MavenProjectNode) obj);
+		if ( mavenProject.getName() == null ) {
+		    throw new MevenideRuntimeException("MavenProjectNode.PomName.Null");
+		}
 		return mavenProject.getName().equals(node.mavenProject.getName())
 		       && parentNode.equals(node.parentNode);
 	}

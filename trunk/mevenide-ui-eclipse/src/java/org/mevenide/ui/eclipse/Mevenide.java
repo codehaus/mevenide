@@ -90,6 +90,8 @@ public class Mevenide extends AbstractUIPlugin {
 	private String defaultGoals;
     private CustomLocationFinder customLocationFinder;
 
+    public static final String SYNCHRONIZE_VIEW_ID = "org.mevenide.ui.synchronize.view.SynchronizationView";
+
     /// initialization methods ---
 	public Mevenide() throws Exception {
 		try {
