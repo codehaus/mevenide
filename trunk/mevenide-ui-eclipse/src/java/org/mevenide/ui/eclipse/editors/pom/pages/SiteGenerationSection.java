@@ -235,6 +235,7 @@ public class SiteGenerationSection extends PageSection {
 		setIfDefined(siteAddressText, pom.getSiteAddress(), isInherited() ? getParentPom().getSiteAddress() : null);
 		setIfDefined(issueTrackingText, pom.getIssueTrackingUrl(), isInherited() ? getParentPom().getIssueTrackingUrl() : null);
 		setIfDefined(siteDirectoryText, pom.getSiteDirectory(), isInherited() ? getParentPom().getSiteDirectory() : null);
+		setIfDefined(distSiteText, pom.getDistributionSite(), isInherited() ? getParentPom().getDistributionSite() : null);
 		setIfDefined(distDirectoryText, pom.getDistributionDirectory(), isInherited() ? getParentPom().getDistributionDirectory() : null);
 	}
 

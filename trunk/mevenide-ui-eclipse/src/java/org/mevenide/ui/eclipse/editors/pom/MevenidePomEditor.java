@@ -469,6 +469,7 @@ public class MevenidePomEditor extends FormEditor {
 
             clean = true;
         } catch (Exception e) {
+            log.error("Unable to update model", e);
             clean = false;
         }
         if (log.isDebugEnabled()) {
