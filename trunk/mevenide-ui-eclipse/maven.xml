@@ -7,9 +7,7 @@
   	
 	<postGoal name="jar:install">
 		<attainGoal name="mevenide:prepare-lib"/>
-		<j:if test="${deploiement}">
-		    <attainGoal name="mevenide:deploy"/>
-		</j:if>
+		<attainGoal name="mevenide:deploy"/>
 	</postGoal>
 	
 	
@@ -35,24 +33,28 @@
         <property environment="env"/>
   		<property name="eclipse.home" location="${env.ECLIPSE_HOME}"/>
         
-        <mkdir dir="org.mevenide_0.1"/>
+        <mkdir dir="temp/org.mevenide_0.1"/>
         
-        <copy todir="org.mevenide_0.1">
+        <copy todir="temp/org.mevenide_0.1">
         	<fileset dir="${basedir}" includes="icons/*.*"/>
-        	<fileset dir="${basedir}" includes="MavenPluginResources.properties"/>
         	<fileset dir="${basedir}" includes="plugin.xml,plugin.properties,license.txt"/>
         	<fileset dir="${basedir}" includes="lib/*.*"/>
         	<fileset dir="${basedir}/target" includes="mevenide-ui-eclipse-0.1.jar"/>
         </copy>
         
+        <jar update="true" destfile="temp/org.mevenide_0.1/mevenide-ui-eclipse-0.1.jar">
+        	<fileset dir="${basedir}" includes="MavenPluginResources.properties"/>
+        </jar>
+        
         <zip destfile="dist/org.mevenide-0.1-ea.zip">
-        	<fileset dir="org.mevenide_0.1"/>
+        	<fileset dir="temp"/>
         </zip>
         
-        <copy file="dist/org.mevenide-0.1-ea.zip"
-        	  todir="${eclipse.home}/plugins/org.mevenide_0.1"/>
-        	  
-        <delete dir="org.mevenide_0.1"/>
+        <j:if test="${deploiement}">
+        	<copy file="dist/org.mevenide-0.1-ea.zip"
+        		  todir="${eclipse.home}/plugins/org.mevenide_0.1"/>
+        </j:if>
+        <delete dir="temp"/>
    </goal>
    
    
