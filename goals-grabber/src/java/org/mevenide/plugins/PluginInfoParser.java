@@ -38,10 +38,10 @@ class PluginInfoParser {
     
     private File cachedDir;
     private File artToPluginFile;
-    private File validCacheFile;
+//    private File validCacheFile;
     
     private long artToPluginFileTimestamp = 0;
-    private long validCacheFileTimestamp = 0;
+//    private long validCacheFileTimestamp = 0;
     
     private Properties artToPluginModel;
     private Set infoList;
@@ -50,7 +50,7 @@ class PluginInfoParser {
     public PluginInfoParser(File cacheDir) {
         cachedDir = cacheDir;
         artToPluginFile = new File(cachedDir, "artifactIdToPlugin.cache");
-        validCacheFile = new File(cachedDir, "valid.cache");
+//        validCacheFile = new File(cachedDir, "valid.cache");
         artToPluginModel = new Properties();
         infoList = new TreeSet(new Comp());
     }
