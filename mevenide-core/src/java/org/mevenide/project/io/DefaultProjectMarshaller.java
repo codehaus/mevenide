@@ -138,7 +138,7 @@ public class DefaultProjectMarshaller implements IProjectMarshaller {
 			serializer.startTag(NAMESPACE, "repository");
 			
 			marshallRequiredString(project.getRepository().getConnection(), "connection");
-			marshallString(project.getRepository().getDeveloperConnection(), "developerConnection");
+			//marshallString(project.getRepository().getDeveloperConnection(), "developerConnection");
 			marshallString(project.getRepository().getUrl(), "url");
 			
 			serializer.endTag(NAMESPACE, "repository");
@@ -304,7 +304,8 @@ public class DefaultProjectMarshaller implements IProjectMarshaller {
 					marshallString(dependency.getType(), "type");
 					marshallString(dependency.getUrl(), "url");
 					
-					marshallProperties(dependency.getProperties());
+					//marshallProperties(dependency.getProperties());
+					marshallProperties(dependency);
 					
 					serializer.endTag(NAMESPACE, "dependency");
 					//dependency.properties ?
@@ -314,7 +315,13 @@ public class DefaultProjectMarshaller implements IProjectMarshaller {
 		}
 	}
 	
+	
+	private void marshallProperties(Dependency dependency) throws Exception {
+		marshallProperties(dependency.resolvedProperties());
+	}
+	
 	private void marshallProperties(Map properties) throws Exception {
+		//commented lines will work under maven-new
 		if ( properties != null ) {
 			Iterator it = properties.keySet().iterator();
 			serializer.startTag(NAMESPACE, "properties");
@@ -324,12 +331,12 @@ public class DefaultProjectMarshaller implements IProjectMarshaller {
 				String key = (String) it.next();
 				String value = (String) properties.get(key);  
 				
-				//marshallString(value, key);
+				marshallString(value, key);
 				
-				serializer.text("\r\n                " + key + "=" + value);
+				//serializer.text("\r\n                " + key + "=" + value);
 				
 			}
-			serializer.text("\r\n            ");
+			//serializer.text("\r\n            ");
 			serializer.endTag(NAMESPACE, "properties");	
 		}
 	}

@@ -30,9 +30,9 @@ public class AllTests  {
     public static Test suite() {
         TestSuite suite = new TestSuite();
         
+		suite.addTestSuite(DefaultProjectMarshallerTest.class);
 		suite.addTestSuite(ProjectReaderTest.class);
 		suite.addTestSuite(ProjectWriterTest.class);
-		suite.addTestSuite(DefaultProjectMarshallerTest.class);
 		
         return suite;
     }

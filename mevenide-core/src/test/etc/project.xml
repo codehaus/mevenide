@@ -24,6 +24,10 @@
       <groupId>maven</groupId>
       <artifactId>maven</artifactId>
       <version>SNAPSHOT</version>
+      <properties>
+	      <test.prop>true</test.prop>
+	      <anotherProp>it worked</anotherProp>
+      </properties>
       <url>http://maven.org/</url>
     </dependency>
         

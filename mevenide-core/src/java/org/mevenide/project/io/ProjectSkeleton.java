@@ -13,6 +13,8 @@
  */
 package org.mevenide.project.io;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -22,7 +24,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 
 import org.apache.maven.project.Project;
-import org.apache.maven.project.builder.DefaultProjectUnmarshaller;
+import org.mevenide.util.DefaultProjectUnmarshaller;
 
 /**
  * 
@@ -46,13 +48,21 @@ public class ProjectSkeleton {
 	 * @return
 	 * @throws Exception
 	 */
-	public static String getSkeleton(String projectName) throws Exception {
-		
-		InputStream is = ProjectSkeleton.class.getResourceAsStream(DEFAULT_TEMPLATE);
+	public static String getSkeleton(String projectName, String template) throws Exception {
+		InputStream is = null;
+		if ( template == null || !new File(template).exists() ) {
+			is = ProjectSkeleton.class.getResourceAsStream(DEFAULT_TEMPLATE);
+		}
+		else {
+			is = new FileInputStream(template);
+		}
 		
 		return getSkeleton(projectName, is);
 	}
-
+	
+	public static String getSkeleton(String projectName) throws Exception {
+		return getSkeleton(projectName, (String) null);
+	}
 	
 	/**
 	 * allows user to customize the template

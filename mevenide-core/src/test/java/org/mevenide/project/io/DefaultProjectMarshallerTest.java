@@ -23,7 +23,7 @@ import java.io.Writer;
 import junit.framework.TestCase;
 
 import org.apache.maven.project.Project;
-import org.apache.maven.project.builder.DefaultProjectUnmarshaller;
+import org.mevenide.util.DefaultProjectUnmarshaller;
 
 /**
  * 
