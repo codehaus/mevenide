@@ -34,6 +34,8 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -192,6 +194,17 @@ public class MavenXmlOutlinePage extends Page implements IContentOutlinePage {
 		setupProviders();
     	setupFilters();
     	setupActions();
+    	
+        goalsViewer.getTree().addSelectionListener( new SelectionListener() {
+	        public void widgetDefaultSelected(SelectionEvent arg0) { }
+	        public void widgetSelected(SelectionEvent arg0) {
+	            boolean goalSelected = false;
+	            if ( goalsViewer.getSelection() != null && ((StructuredSelection) goalsViewer.getSelection()).getFirstElement() instanceof Goal) {
+	                goalSelected = true;
+	            }
+	            runGoalAction.setEnabled(goalSelected);	            
+	        }
+        });
     }
 	
 	private void createContextMenuManager() {
@@ -208,7 +221,8 @@ public class MavenXmlOutlinePage extends Page implements IContentOutlinePage {
 
 	private void createToolBarManager() {
 		IToolBarManager toolBarManager = this.getSite().getActionBars().getToolBarManager();
-        toolBarManager.add(this.toggleOfflineAction);
+		toolBarManager.add(this.runGoalAction);
+		toolBarManager.add(this.toggleOfflineAction);
         toolBarManager.add(this.toggleCustomFilteringAction);
         toolBarManager.add(this.filterOriginShortcutAction);
 	}
@@ -237,17 +251,19 @@ public class MavenXmlOutlinePage extends Page implements IContentOutlinePage {
 		};
 		toggleOfflineAction.setToolTipText(toggleOfflineAction.isChecked() ? Mevenide.getResourceString("MavenXmlOutlinePage.OnlineMode") : Mevenide.getResourceString("MavenXmlOutlinePage.OfflineMode"));
 		toggleOfflineAction.setId(TOGGLE_OFFLINE_ID);
-		toggleOfflineAction.setImageDescriptor(Mevenide.getImageDescriptor("etool16/r_offline.gif"));
+		toggleOfflineAction.setImageDescriptor(Mevenide.getImageDescriptor("elcl16/run_offline.gif"));
 		
 		runGoalAction = new Action(null) {
 			public void run() {
 				runMaven();
 			}
 		};
+		runGoalAction.setEnabled(false);
 		runGoalAction.setText(Mevenide.getResourceString("MavenXmlOutlinePage.RunGoal"));
 		runGoalAction.setToolTipText(Mevenide.getResourceString("MavenXmlOutlinePage.RunGoal"));
 		runGoalAction.setId(RUN_GOAL_ID);
-		runGoalAction.setImageDescriptor(Mevenide.getImageDescriptor("run_goal.gif"));
+		runGoalAction.setImageDescriptor(Mevenide.getImageDescriptor("elcl16/run_goal.gif"));
+		runGoalAction.setDisabledImageDescriptor(Mevenide.getImageDescriptor("dlcl16/run_goal.gif"));
 	}
 
 	private void createFilterActions() {
@@ -285,7 +301,7 @@ public class MavenXmlOutlinePage extends Page implements IContentOutlinePage {
 		openFilterDialogAction.setText(Mevenide.getResourceString("MavenXmlOutlinePage.FilterDialog.Text"));
 		openFilterDialogAction.setToolTipText(Mevenide.getResourceString("MavenXmlOutlinePage.FilterDialog.TooltipText"));
 		openFilterDialogAction.setId(OPEN_FILTER_DIALOG_ID);
-		openFilterDialogAction.setImageDescriptor(Mevenide.getImageDescriptor("open_filter_dialog.gif"));
+		openFilterDialogAction.setImageDescriptor(Mevenide.getImageDescriptor("elcl16/filter_def.gif"));
 	}
 
 	private void contextualMenuAboutToShow(IMenuManager menuManager) {
@@ -315,7 +331,7 @@ public class MavenXmlOutlinePage extends Page implements IContentOutlinePage {
 	}
 	
 	private void runMaven() {
-		if ( goalsViewer.getSelection() != null && ((StructuredSelection) goalsViewer.getSelection()).getFirstElement() instanceof Goal) {
+	    if ( goalsViewer.getSelection() != null && ((StructuredSelection) goalsViewer.getSelection()).getFirstElement() instanceof Goal) {
 			Goal goal = (Goal) ((StructuredSelection) goalsViewer.getSelection()).getFirstElement();
 			MavenLaunchShortcut shortcut = new MavenLaunchShortcut();
 			shortcut.setShowDialog(false);

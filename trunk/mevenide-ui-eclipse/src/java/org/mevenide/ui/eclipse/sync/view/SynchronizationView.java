@@ -380,8 +380,8 @@ public class SynchronizationView extends ViewPart implements IActionListener, IR
 				}
 			}
 		};
-		openFilterDialogAction.setText("Filter...");
-		openFilterDialogAction.setImageDescriptor(Mevenide.getImageDescriptor("open_filter_dialog.gif"));
+		openFilterDialogAction.setText(Mevenide.getResourceString("SynchronizationView.FilterDialog.Text"));
+		openFilterDialogAction.setImageDescriptor(Mevenide.getImageDescriptor("elcl16/filter_def.gif"));
 		
 		separator  = new Separator();
 		
