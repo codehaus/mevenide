@@ -104,7 +104,7 @@ public class MevenidePreferenceDialog {
 		javaHomeEditor = createEditor("java.home", "Java home", javaHome);
 		mavenRepoEditor = createEditor("maven.repo", "Maven Repository", mavenRepository);
 		
-		pomTemplateLocationEditor = new FileFieldEditor("pom.template.location", "Template Location", true, topLevelContainer);
+		pomTemplateLocationEditor = new FileFieldEditor("pom.template.location", "POM Template", true, topLevelContainer);
 		pomTemplateLocationEditor.fillIntoGrid(topLevelContainer, 3);
 		pomTemplateLocationEditor.setPreferenceStore(preferencesManager.getPreferenceStore());
 		pomTemplateLocationEditor.load();
