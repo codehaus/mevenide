@@ -48,41 +48,33 @@
  */
 package org.mevenide.goals.grabber;
 
-
-/**
- * 
+/**  
+ * read custom goals declared in maven.xml
  * 
  * @author Gilles Dodinet (gdodinet@wanadoo.fr)
- * @version $Id: IGoalsGrabber.java 3 mai 2003 22:20:0113:34:35 Exp gdodinet 
+ * @version $Id: ProjectGoalsGrabber.java 4 sept. 2003 Exp gdodinet 
  * 
  */
-public interface IGoalsGrabber {
-	/**
-	 * return all available plugins 
-	 *  
-	 * @return Collection
-	 */
-	public abstract String[] getPlugins();
+public class ProjectGoalsGrabber implements IGoalsGrabber {
 
-	/**
-	 * return the goals declared by the plugin whose name is passed as parameter
-	 * 
-	 * @param plugin   
-	 * @return Collection
-	 */
-	public abstract String[] getGoals(String plugin);
-	
-	/**
-	 * return the description of plugin:goal
-	 *  
-	 * @param plugin
-	 * @param goal
-	 * 
-	 */
-	public abstract String getDescription(String fullyQualifiedGoalName);
-	
-	public abstract String[] getPrereqs(String fullyQualifiedGoalName);
-	
-	public abstract void refresh() throws Exception;
-	
+    public String getDescription(String fullyQualifiedGoalName) {
+        return null;
+    }
+
+    public String[] getGoals(String plugin) {
+        return null;
+    }
+
+    public String[] getPlugins() {
+        return null;
+    }
+
+    public String[] getPrereqs(String fullyQualifiedGoalName) {
+        return null;
+    }
+
+    public void refresh() throws Exception {
+    
+    }
+
 }
