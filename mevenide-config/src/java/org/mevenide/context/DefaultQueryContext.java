@@ -126,16 +126,7 @@ public class DefaultQueryContext extends AbstractQueryContext {
         parentBuildPropertyModel = new Properties();
         projectContext = proj;
     }
-//    /**
-//     * project context needs to be set after initialization from outside.
-//     * implementation comes from mevenide-core which depends on this one..
-//     */
-//    public void initializeProjectContext(IProjectContext projContext) {
-//        if (this == defaultInstance) {
-//            throw new IllegalStateException("Cannot set project context to the default querycontext instance.");
-//        }
-//        projectContext = projContext;
-//    }
+
     
     /**
      * the default instance that only refers to the user.dir properties file
