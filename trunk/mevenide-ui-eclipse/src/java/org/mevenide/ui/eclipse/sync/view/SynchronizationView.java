@@ -61,6 +61,7 @@ import org.mevenide.project.ProjectChangeEvent;
 import org.mevenide.project.ProjectComparator;
 import org.mevenide.project.ProjectComparatorFactory;
 import org.mevenide.ui.eclipse.Mevenide;
+import org.mevenide.ui.eclipse.preferences.PreferencesManager;
 import org.mevenide.ui.eclipse.sync.action.ToggleViewAction;
 import org.mevenide.ui.eclipse.sync.action.ToggleWritePropertiesAction;
 import org.mevenide.ui.eclipse.sync.event.IActionListener;
@@ -88,7 +89,8 @@ import org.mevenide.util.MevenideUtils;
  *
  */
 public class SynchronizationView extends ViewPart implements IActionListener, IResourceChangeListener, IPropertyChangeListener, IProjectChangeListener, ISynchronizationNodeListener {
-    private static final Log log = LogFactory.getLog(SynchronizationView.class);
+    private static final String SYNC_DIRECTION_VIEW = "SynchronizationView.SYNC_DIRECTION_VIEW";
+	private static final Log log = LogFactory.getLog(SynchronizationView.class);
 
     private Composite composite;
     private TreeViewer artifactMappingNodeViewer;
@@ -133,6 +135,18 @@ public class SynchronizationView extends ViewPart implements IActionListener, IR
     private ProjectComparator comparator;
     
 	private boolean isDisposed;
+	
+	private PreferencesManager preferencesManager ;
+	
+	public SynchronizationView() {
+		super();
+		IWorkspace workspace = ResourcesPlugin.getWorkspace();
+		workspace.addResourceChangeListener(this, IResourceChangeEvent.POST_CHANGE);
+		preferencesManager = PreferencesManager.getManager();
+		preferencesManager.loadPreferences();
+		direction = preferencesManager.getIntValue(SYNC_DIRECTION_VIEW);
+		initializeDirection();
+	}
 	
     public void createPartControl(Composite parent) {
         createArtifactViewer(parent);
@@ -205,21 +219,27 @@ public class SynchronizationView extends ViewPart implements IActionListener, IR
     }
 
     private void assertValidDirection() {
-        if ( (direction & ISelectableNode.INCOMING_DIRECTION) == 0 
-                && (direction & ISelectableNode.OUTGOING_DIRECTION) == 0 
-                && (direction & ISelectableNode.CONFLICTING_DIRECTION) == 0 ) {
-            setDirection(ISelectableNode.INCOMING_DIRECTION);
-        }
+        initializeDirection();
+        setDirection(direction);
     }
     
-    
-    public void setDirection(int direction) {
+    private void initializeDirection() {
+		if ( (direction & ISelectableNode.INCOMING_DIRECTION) == 0 
+                && (direction & ISelectableNode.OUTGOING_DIRECTION) == 0 
+                && (direction & ISelectableNode.CONFLICTING_DIRECTION) == 0 ) {
+        	direction = ISelectableNode.INCOMING_DIRECTION;
+        }
+	}
+
+	public void setDirection(int direction) {
 		if ( direction != this.direction ) {
 	        this.direction = direction;
 	        synchronizationNodeFilter.setDirection(direction);
 	        artifactMappingNodeViewer.refresh();
 	        activateWritePropertiesAction(direction);
 			fireDirectionChanged();
+			preferencesManager.setIntValue(SYNC_DIRECTION_VIEW, direction);
+			preferencesManager.store();
 		}
     }
 
@@ -274,6 +294,7 @@ public class SynchronizationView extends ViewPart implements IActionListener, IR
         
         synchronizationNodeFilter = new SynchronizationNodeFilter();
         artifactMappingNodeViewer.addFilter(synchronizationNodeFilter);
+        synchronizationNodeFilter.setDirection(direction);
         
         artifactNodeFilter = new MavenArtifactNodeFilter();
         artifactMappingNodeViewer.addFilter(artifactNodeFilter);
@@ -295,6 +316,7 @@ public class SynchronizationView extends ViewPart implements IActionListener, IR
 		viewConflicts = actionFactory.getAction(SynchronizeActionFactory.VIEW_CONFLICTS);
 		viewIdeToPom = actionFactory.getAction(SynchronizeActionFactory.VIEW_OUTGOING);
 		viewPomToIde = actionFactory.getAction(SynchronizeActionFactory.VIEW_INCOMING);
+		viewConflicts.setChecked(direction == ISelectableNode.CONFLICTING_DIRECTION);
 		viewIdeToPom.setChecked(direction == ISelectableNode.OUTGOING_DIRECTION);
 		viewPomToIde.setChecked(direction == ISelectableNode.INCOMING_DIRECTION);
 		
@@ -343,8 +365,6 @@ public class SynchronizationView extends ViewPart implements IActionListener, IR
 		
     }
    
-    
-
 	private void disableContextualActions() {
 		addToClasspath.setEnabled(false);
 		pushToPom.setEnabled(false);
@@ -578,11 +598,6 @@ public class SynchronizationView extends ViewPart implements IActionListener, IR
 		return direction;
 	}
 
-	public SynchronizationView() {
-		super();
-		IWorkspace workspace = ResourcesPlugin.getWorkspace();
-		workspace.addResourceChangeListener(this, IResourceChangeEvent.POST_CHANGE);				
-	}
 
 	public void resourceChanged(IResourceChangeEvent event) {
 		try {
