@@ -3,7 +3,7 @@
 <document>
   <properties>
     <title>maven-mevenide-plugin</title>
-    <author>Milos Kleint (ca206216@tiscali.cz)</author>
+    <author>Milos Kleint (mkleint@codehaus.org)</author>
   </properties>
   <body>
     <section name="Overview">
@@ -18,7 +18,7 @@ It provides goals for running the whole project or single classes, debug the pro
     <section name="Versions">
       <div id="documentContent">
       	<p>
-   	  Latest version available for download is 0.1. It's currently installed for you automatically by the Mevenide Netbeans support.
+   	  Latest version available for download is 0.1.2. It's currently installed for you automatically by the Mevenide Netbeans support.
       </p>
    	  </div>
     </section>
