@@ -36,7 +36,7 @@
             <type>jar</type>
             <properties>
                 <netbeans.module.dep>spec</netbeans.module.dep>
-            	<eclipse.plugin.bundle>false</eclipse.plugin.bundle>
+            	<eclipse.plugin.bundle>true</eclipse.plugin.bundle>
             </properties>
         </dependency>
         <dependency>
@@ -66,4 +66,14 @@
                 </properties>
         </dependency>
     </dependencies>
+    <build>
+    	<resources>
+    		<resource>
+    			<directory>src/conf/taglibs</directory>
+    			<includes>
+    				<include>org/mevenide/grammar/resources/taglibs/*.*</include>
+    			</includes>
+    		</resource>
+    	</resources>
+    </build>
 </project>

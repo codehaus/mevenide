@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src/java"/>
+	<classpathentry kind="src" path="src/conf/taglibs"/>
 	<classpathentry kind="src" path="src/conf/eclipse"/>
 	<classpathentry kind="src" path="src/test/conf"/>
 	<classpathentry kind="src" path="src/test/java"/>
