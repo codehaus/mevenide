@@ -7,6 +7,7 @@
   xmlns:ant="jelly:ant"
   xmlns:maven="jelly:maven"
   xmlns:mevenide="jelly:org.mevenide.tags.netbeans.MevenideNbTagLibrary"
+  xmlns:x="jelly:xml"
   xmlns:artifact="artifact">
 
   <!--==================================================================-->
@@ -109,7 +110,7 @@ The maven.nbm.manifest.bundle.basedir and  maven.nbm.manifest.bundle.include hav
           <mevenide:adapt-version var="maven.nbm.version.impl" version="${pom.currentVersion}" type="impl"/>
           <ant:attribute name="OpenIDE-Module-Implementation-Version" value="${maven.nbm.version.impl}"/>
           <ant:attribute name="OpenIDE-Module-Build-Version" value="${maven.nbm.timestamp}"/>
-          <ant:attribute name="OpenIDE-Module" value="${pom.package}/1"/>
+          <ant:attribute name="OpenIDE-Module" value="${pom.package}"/>
           
           <!-- generate Class-Path manifest entry -->
 <!--          <j:set var="extDependencies" value=""/> -->
@@ -133,22 +134,23 @@ The maven.nbm.manifest.bundle.basedir and  maven.nbm.manifest.bundle.include hav
                                            implVersionVar="nbdepImplVersion"
                                            specVersionVar="nbdepSpecVersion"
                 /> 
-                <ant:echo message="nbdep.module=${nbdep.module}=${empty nbdep.module}=${empty(nbdep.moduleVar)}" />
                 <j:if test="${empty(nbdepModule)}">
-                    <ant:echo message="nbdep.moduleVar=${nbdepModule}= is empty." />
                     <j:set var="nbdepModule" value="${dependency.artifactId}" />
                 </j:if>
-                <ant:echo message="nbdep.module2=${nbdepModule}=" />
                 <j:choose>
                     <j:when test="${moduleDep == 'loose'}">
                         <j:set var="moduleDependencies" value="${moduleDependencies}${nbdep.separator} ${nbdep.module}"/>
                     </j:when>
                     <j:when test="${moduleDep == 'impl'}">
-                        <mevenide:adapt-version var="nbdepImplVersion" version="${dependency.version}" type="impl"/>
+                        <j:if test="${nbdepIsNetbeansModule != true}">
+                            <mevenide:adapt-version var="nbdepImplVersion" version="${dependency.version}" type="impl"/>
+                        </j:if>
                         <j:set var="moduleDependencies" value="${moduleDependencies}${nbdep.separator} ${nbdepModule} = ${nbdepImplVersion}"/>
                     </j:when>
                     <j:when test="${moduleDep == 'spec'}">
-                        <mevenide:adapt-version var="nbdepSpecVersion" version="${dependency.version}" type="spec"/>
+                        <j:if test="${nbdepIsNetbeansModule != true}">
+                            <mevenide:adapt-version var="nbdepSpecVersion" version="${dependency.version}" type="spec"/>
+                        </j:if>
                         <j:set var="moduleDependencies" value="${moduleDependencies}${nbdep.separator} ${nbdepModule} > ${nbdepSpecVersion}"/>
                     </j:when>
                     <j:otherwise>
@@ -238,5 +240,86 @@ The maven.nbm.manifest.bundle.basedir and  maven.nbm.manifest.bundle.include hav
     </j:forEach>
 -->    
   </goal>
+  
+  <goal name="nbm:create-library-artifacts" 
+  		prereqs="nbm:init" 
+  		description="">
+    <j:forEach var="artifact" items="${pom.artifacts}">
+        <j:set var="dependency" value="${artifact.dependency}"/>
+        <j:if test="${dependency.getProperty('netbeans.lib.generate') == 'true'}">
+        
+            <mevenide:examine-manifest jarFile="${artifact.path}" 
+                                       isLocalizedVar="nbdepIsLocalized"
+                                       isNetbeansModuleVar="nbdepIsNetbeansModule"
+                                       moduleVar="nbdepModule"
+                                       implVersionVar="nbdepImplVersion"
+                                       specVersionVar="nbdepSpecVersion"
+            /> 
+            <j:if test="nbdepIsNetbeansModule == true">
+                <ant:fail message="Dependency ${dependency} is already a netbeans module. Do not regenerate!"/>
+            </j:if>
+ 		<!-- init variables -->
+            <j:set var="dependencyModuleDir" value="${maven.nbm.build.dir}/${dependency.groupId}_${dependency.version}"/>
+            <ant:mkdir dir="${dependencyModuleDir}"/>
+            <j:if test="${empty(nbdepModule)}">
+                <j:set var="nbdepModule" value="${dependency.artifactId}"/>
+            </j:if>
+     		<mevenide:adapt-version var="depSpecVersion" version="${dependency.version}" type="spec"/>
+     		<mevenide:adapt-version var="depImplVersion" version="${dependency.version}" type="impl"/>
+            <!-- handle licensing.. first look in the jar itself, if not found, look in a local license repository -->
+            <ant:echo message="artifact path=${artifact.path}" />
+            <mevenide:find-license var="liblicense" jarFile="${artifact.path}" />
+            <j:if test="${empty(liblicense)}" >
+                <ant:echo message="lib licence not found in jar." />
+                <j:set var="licenseFile" value="${maven.nbm.licenses.dir}/${dependency.groupId}/${dependency.artifactId}.lic"/>
+                <ant:available property="isLicensePresent" file="${licenseFile}"/>
+                <j:if test="${isLicensePresent}">
+                    <util:loadText file="${licenseFile}" var="liblicense"/>
+                </j:if>
+            </j:if>
+            <j:if test="${empty(liblicense)}">
+                <ant:fail message="Dependency ${dependency} doesn't have a license file defined in the jar. Please copy the license to file: licenses/${dependency.groupId}/${dependency.artifactId}.lic" />
+            </j:if>
+            <j:file name="${dependencyModuleDir}/license.txt" omitXmlDeclaration="true">
+${liblicense}
+            </j:file>
+            <!-- create the project's properties-->
+            <j:file name="${dependencyModuleDir}/project.properties" omitXmlDeclaration="true">
+maven.nbm.autoload=true
+maven.nbm.license=${dependencyModuleDir}/license.txt
+            </j:file>
+            <!-- create the maven project xml-->
+            <j:file name="${dependencyModuleDir}/project.xml" prettyPrint="true">
+                <x:element name="project">
+                    <x:element name="pomVersion">3</x:element>
+                    <x:element name="id">${dependency.artifactId}</x:element>
+                    <x:element name="artifactId">lib-${dependency.artifactId}</x:element>
+                    <x:element name="groupId">${dependency.groupId}</x:element>
+                    <x:element name="currentVersion">${dependency.version}</x:element>
+                    <x:element name="package">${nbdepModule}</x:element>
+                    <x:element name="name">${dependency.artifactId} library for ${pom.name}</x:element>
+                    <x:element name="shortDescription">Library for project ${pom.id} (${pom.name}) </x:element>
+                    <x:element name="description">Library for project ${pom.id} (${pom.name}) </x:element>
+                    <x:element name="url">${pom.url}</x:element>
+                    <x:element name="dependencies">
+                        <x:element name="dependency"> 
+                            <x:element name="groupId">${dependency.groupId}</x:element>
+                            <x:element name="artifactId">${dependency.artifactId}</x:element>
+                            <x:element name="version">${dependency.version}</x:element>
+                            <x:element name="type">${dependency.type}</x:element>
+                            <x:element name="properties">
+                                <x:element name="netbeans.module.ext">true</x:element>
+                            </x:element>
+                        </x:element>
+                    </x:element>
+                </x:element>
+            </j:file>
+            <maven:maven descriptor="${dependencyModuleDir}/project.xml"
+                         ignoreFailures="false"
+                         goals="nbm" />
+       </j:if>
+    </j:forEach>
+  </goal>  
+  
   
 </project>
