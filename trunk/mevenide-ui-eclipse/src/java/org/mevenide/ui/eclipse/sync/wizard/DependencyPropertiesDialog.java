@@ -14,8 +14,11 @@
  */
 package org.mevenide.ui.eclipse.sync.wizard;
 
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Properties;
 
+import org.apache.maven.project.Dependency;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.viewers.ICellEditorValidator;
 import org.eclipse.jface.viewers.TextCellEditor;
@@ -48,9 +51,9 @@ public class DependencyPropertiesDialog extends Dialog {
 	//private static Log log = LogFactory.getLog(DependencyPropertiesDialog.class);
 	
 	private Table table;
-	private Properties properties;
+	private Map properties;
 	
-	 
+	private Dependency dependency;
 	
 
 	public DependencyPropertiesDialog() {
@@ -108,14 +111,34 @@ public class DependencyPropertiesDialog extends Dialog {
 		removeButton.setLayoutData(data2);
 		removeButton.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
-				table.remove(table.getSelectionIndices()[0]);
+				int selectedItemIndex = table.getSelectionIndices()[0];
+				table.remove(selectedItemIndex);
+				
+				properties.remove(table.getItem(selectedItemIndex).getText(0));
 			}
 		});
+		
+		initInput();
 		
 		return composite;
 	}
 	
-	
+	public void setInput(Dependency dep) {
+		dependency = dep;
+	}
+
+	private void initInput() {
+		Map dependencyProperties = dependency.getProperties();
+		if ( dependencyProperties != null ) {
+			Iterator it = dependencyProperties.keySet().iterator();
+			while ( it.hasNext() ) {
+				String key = (String) it.next();
+				String value = (String) dependencyProperties.get(key);
+				TableItem item = new TableItem(table,SWT.NULL);
+				item.setText(new String[] {key, value});
+			}
+		}
+	}
 	
 	private void updateProperties() {
 		properties = new Properties();
@@ -218,7 +241,7 @@ public class DependencyPropertiesDialog extends Dialog {
 		});
 	}
 	
-	public Properties getProperties() {
+	public Map getProperties() {
 		return properties;
 	}
 
