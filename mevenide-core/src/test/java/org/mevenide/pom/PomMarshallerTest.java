@@ -34,14 +34,14 @@ public class PomMarshallerTest extends TestCase {
 
 	private Writer writer;
 	private Project project;
-	private PomMarshaller marshaller;
+	private DefaultProjectMarshaller marshaller;
 	
 	protected void setUp() throws Exception {
 		writer = new StringWriter();
 		String pomFile = PomMarshallerTest.class.getResource("/marshall-project.xml").getFile();
 		Reader reader = new FileReader(pomFile);
 		project = new DefaultProjectUnmarshaller().parse(reader);
-		marshaller = new PomMarshaller();
+		marshaller = new DefaultProjectMarshaller();
 	}
 
 	protected void tearDown() throws Exception {
