@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<document>
+
+  <properties>
+    <author email="rhill@wanadoo.fr">Gilles Dodinet</author>
+    <title>Source Repositories</title>
+  </properties>
+<body>
+
+
+  <section name="Overview">
+    <p>
+    	Mevenide (Maven IDE Integration) aims at integrating Maven into standard IDEs.
+    	Currently only Eclipse is targeted. 
+    </p>
+    <p>
+    	Please browse <a href="http://mevenide.sf.net/cgi-bin/view.pl/FrontPage">Mevenide Wiki</a> to share ideas and 
+		also <a href="http://mevenide.sf.net/cgi-bin/view.pl/HowToBuildMevenide">this document</a> to learn how to build Mevenide from the source.
+	</p>
+    </section>
+    </body>
+</document>

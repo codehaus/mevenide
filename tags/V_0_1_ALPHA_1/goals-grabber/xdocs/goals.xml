@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<document>
+  <properties>
+    <title>Goals Grabber</title>
+    <author email="rhill@wanadoo.fr">Gilles Dodinet</author>
+  </properties>
+  <body>
+    <goals>
+      <goal>
+        <name>goals:grab</name>
+        <description>
+        	<b>deprecated</b> This plugin grabs all the goals cached in ${maven.home}/plugins/goals.cache 
+        	and provides a hook to store them in an xml file during postGoal execution. 
+        	The GoalsBean can be unmarshalled from an xml file listing all the goals
+        </description>
+      </goal>
+    </goals>
+  </body>
+</document>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+	
+	
+	<postGoal name="jar:install">
+		<echo>installing mevenide:goals-grabber plugin</echo>
+		<attainGoal name="plugin:deploy"/>
+		<attainGoal name="plugin:install"/>
+	</postGoal>
+  
+</project>
+

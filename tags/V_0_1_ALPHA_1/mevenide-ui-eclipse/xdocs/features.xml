@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<document>
+    <properties>
+    	<author email="rhill@wanadoo.fr">Gilles Dodinet</author>
+        <title>Features</title>
+    </properties>
+    <body>
+        <section name="Features List">
+        	<p>
+
+Implemented features can be splitted into two categories : 
+<ul>
+<li>Eclipse project and Maven project synchronization</li>
+<li>Maven Launcher</li>
+</ul>
+</p>
+<p>
+<b>Bidirectional Synchronization</b>
+<ul>
+<li>Dependencies resolving - class folders are ignored since i dont know yet what to do with them</li>
+<li>Dependencies mapping view and SourceDirectory mapping view</li>
+<li>Project Properties and Jar overriding support</li>
+<li>Projects dependencies managed</li>
+<li>Pom skeleton creation</li>
+<li>Eclipse Project synchronization - using maven-eclipse-plugin</li>
+<li>Pom synchronization - SourceModification and Filtering not managed for now</li>
+</ul>
+
+<i>For more information, please see <a href="http://mevenide.sourceforge.net/cgi-bin/view.pl/MevenideSynchronization">Mevenide Wiki</a></i>
+</p>
+<p>
+<b>Maven Launcher</b>
+<ul>
+<li>Maven Runner - goals should be entered manually, doesnt rely anymore on goals-grabber</li>
+<li>Quick Launch - doesnot use LaunchConfig for now</li>
+</ul>
+
+<i>For more information, please see <a href="http://mevenide.sourceforge.net/cgi-bin/view.pl/MavenRunner">Mevenide Wiki</a></i>
+</p>
+<p>
+Please note that a <a href="http://mevenide.sourceforge.net/cgi-bin/view.pl/MevenidePomEditor">POM Editor</a> is also on the todo list.
+</p>
+		
+		</section>
+
+    </body>
+
+</document>

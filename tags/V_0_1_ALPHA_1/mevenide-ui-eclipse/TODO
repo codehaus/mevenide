@@ -1,0 +1,4 @@
+ + fix build-all  goals so that providers files are bundled with mevenide-ui-eclipse artifact  rather than mevenide-core one P: H
+ + factorize SourceDirectoryMappingWizardPage and DependencyWizardPage
+ + in short : need SERIOUS refactoring (some global sequence diagrams would be helpful here)
+ + externalize (eventually i18n) strings

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:j="jelly:core">
+	
+	<property name="deploiement" value="false"/>
+	  
+	<preGoal name="jar:jar">
+		<copy toDir="target/classes">
+		  <fileset dir="etc">
+  			<include name="*.properties"/>
+		  </fileset>
+		</copy>
+		<copy toDir="target/classes">
+		  <fileset dir="etc">
+  			<include name="META-INF/services/*"/>
+		  </fileset>
+		</copy>
+	</preGoal>
+  	
+	<postGoal name="jar:install">
+		<attainGoal name="mevenide:prepare-lib"/>
+		<attainGoal name="mevenide:deploy"/>
+	</postGoal>
+	
+	
+	<goal name="mevenide:prepare-lib">
+		<!-- copy dependencies to mevenide lib directory -->
+		<j:forEach var="dependency" items="${pom.dependencies}">
+			<j:if test="${!(dependency.groupId.equals('eclipse') || dependency.groupId.startsWith('mock') || dependency.groupId.startsWith('junit'))}">
+            	<copy file="${maven.repo.local}/${dependency.groupId}/${dependency.type}s/${dependency.artifactId}-${dependency.version}.${dependency.type}" 
+            		  todir="lib"/>
+            </j:if>
+        </j:forEach>
+	</goal>
+	
+	<goal name="mevenide:deploy">
+		
+        <mkdir dir="dist"/>
+        
+        <property environment="env"/>
+  		<property name="eclipse.home" location="${env.ECLIPSE_HOME}"/>
+        
+        <mkdir dir="temp/org.mevenide_${dist.version}"/>
+        
+        <copy todir="temp/org.mevenide_0.1">
+        	<fileset dir="${basedir}" includes="icons/*.*"/>
+        	<fileset dir="${basedir}" includes="plugin.xml,plugin.properties,license.txt"/>
+        	<fileset dir="${basedir}" includes="lib/*.*"/>
+        	<fileset dir="${basedir}/target" includes="mevenide-ui-eclipse-0.1.jar"/>
+        </copy>
+        
+        <jar update="true" destfile="temp/org.mevenide_${dist.version}/mevenide-ui-eclipse-0.1.jar">
+        	<fileset dir="${basedir}" includes="MavenPluginResources.properties"/>
+        </jar>
+        
+        <zip destfile="dist/org.mevenide-${dist.version}.zip">
+        	<fileset dir="temp"/>
+        </zip>
+        
+        <j:if test="${deploiement}">
+        	<copy file="dist/org.mevenide-${dist.version}.zip"
+        		  todir="${eclipse.home}/plugins/org.mevenide_${dist.version}"/>
+        </j:if>
+        <delete dir="temp"/>
+   </goal>
+   
+   
+</project>
+
