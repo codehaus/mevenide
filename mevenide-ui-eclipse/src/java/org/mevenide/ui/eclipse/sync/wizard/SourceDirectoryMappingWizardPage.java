@@ -20,7 +20,13 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.TableItem;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.sync.view.SourceDirectoryMappingViewControl;
 import org.mevenide.ui.eclipse.sync.model.SourceDirectoryGroup;
@@ -52,9 +58,89 @@ public class SourceDirectoryMappingWizardPage extends WizardPage {
 
 	public void createControl(Composite arg0) {
 		Composite composite = new Composite(arg0, SWT.NONE);
-		viewer = SourceDirectoryMappingViewControl.getViewer(composite);
-		setInput(((SynchronizeWizard)getWizard()).getProject());
+		
+		GridLayout layout = new GridLayout();
+		layout.makeColumnsEqualWidth = false;
+		layout.numColumns = 2;
+		composite.setLayout(layout);
+		
+		createViewer(composite);
+		createButtons(composite);
+		
 		setControl(composite);
+	}
+
+
+
+	private void createViewer(Composite parent) {
+		Composite composite = new Composite(parent, SWT.NULL);
+		
+		GridLayout layout = new GridLayout();
+		layout.marginHeight=5;
+		layout.marginWidth=5;
+		composite.setLayout(layout);
+
+		GridData data = new GridData(GridData.FILL_BOTH);
+		data.grabExcessHorizontalSpace = true;
+		composite.setLayoutData(data);
+		
+		viewer = SourceDirectoryMappingViewControl.getViewer(composite, SWT.BORDER);
+		setInput(((SynchronizeWizard)getWizard()).getProject());
+	}
+	
+	private void createButtons(Composite parent) {
+		Composite composite = new Composite(parent, SWT.NULL);
+		GridLayout layout = new GridLayout();
+		layout.marginHeight=5;
+		layout.marginWidth=5;
+		composite.setLayout(layout);
+		GridData data = new GridData(GridData.FILL_BOTH);
+		data.grabExcessHorizontalSpace = true;
+		composite.setLayoutData(data);
+		
+		Button addButton = new Button(composite, SWT.PUSH);
+		addButton.setText("Add...");
+		addButton.setToolTipText("Add a dependency");
+		GridData addButtonData = new GridData(GridData.FILL_HORIZONTAL);
+		addButtonData.grabExcessHorizontalSpace = true;
+		addButton.setLayoutData(addButtonData);
+		addButton.setEnabled(false);
+		
+		Button removeButton = new Button(composite, SWT.PUSH);
+		removeButton.setText("Remove");
+		removeButton.setToolTipText("Remove dependency");
+		GridData removeButtonData = new GridData(GridData.FILL_HORIZONTAL);
+		removeButtonData.grabExcessHorizontalSpace = true;
+		removeButton.setLayoutData(removeButtonData);
+		removeButton.setEnabled(false);
+		
+		Button refreshButton = new Button(composite, SWT.PUSH);
+		refreshButton.setText("Refresh");
+		refreshButton.setToolTipText("Refresh project dependencies");
+		GridData refreshButtonData = new GridData(GridData.FILL_HORIZONTAL);
+		refreshButtonData.grabExcessHorizontalSpace = true;
+		refreshButton.setLayoutData(refreshButtonData);
+		
+		removeButton.addSelectionListener(
+				new SelectionAdapter() {
+					public void widgetSelected(SelectionEvent e) {
+						TableItem[] items = viewer.getTable().getSelection();
+						for (int i = 0; i < items.length; i++) {
+							TableItem item = items[i];
+							((SourceDirectoryGroup) viewer.getInput()).getSourceDirectories().remove(item.getData());
+							viewer.refresh();
+						}
+					}
+				}
+		);
+		
+		refreshButton.addSelectionListener(
+				new SelectionAdapter() {
+					public void widgetSelected(SelectionEvent e) {
+						setInput(project);
+					}
+				}
+		);
 	}
 	
 	

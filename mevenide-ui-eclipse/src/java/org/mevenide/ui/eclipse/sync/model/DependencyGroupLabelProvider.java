@@ -14,6 +14,8 @@
  */
 package org.mevenide.ui.eclipse.sync.model;
 
+import java.io.File;
+
 import org.apache.maven.project.Dependency;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
@@ -43,7 +45,7 @@ public class DependencyGroupLabelProvider implements ITableLabelProvider {
 	public String getColumnText(Object element, int columnIndex) {
 		if ( columnIndex == 0 ) {
 			if ( element instanceof Dependency ) {
-				return ((Dependency) element).getArtifact();
+				return new File(((Dependency) element).getArtifact()).getName();
 			}
 			if ( element instanceof DependencyGroup && columnIndex == 0 ) {
 				return "Dependencies";

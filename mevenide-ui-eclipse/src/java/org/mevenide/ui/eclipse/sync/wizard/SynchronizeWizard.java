@@ -56,6 +56,7 @@ public class SynchronizeWizard extends Wizard {
 			IFile pom = project.getFile(new Path("project.xml"));
 			File pomFile = new File(pathResolver.getAbsolutePath(pom.getLocation())); 
 			
+			//those cause bug on remove => we should persist artifact groups with a timestamp
 			sourcePage.saveState();
 			dependencyPage.saveState();
 			

@@ -20,13 +20,14 @@ import org.eclipse.jface.viewers.TableTreeViewer;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.mevenide.ui.eclipse.Mevenide;
-import org.mevenide.ui.eclipse.sync.model.*;
+import org.mevenide.ui.eclipse.sync.model.DependencyGroup;
+import org.mevenide.ui.eclipse.sync.model.DependencyGroupContentProvider;
+import org.mevenide.ui.eclipse.sync.model.DependencyGroupLabelProvider;
 
 /**
  * 
@@ -39,19 +40,14 @@ public class DependencyMappingViewControl {
 	private DependencyMappingViewControl(){
 	}
 	
-	
 	public static TableTreeViewer getViewer(Composite parent) {
-		GridLayout layout = new GridLayout();
-		layout.marginHeight=0;
-		layout.marginWidth=0;
-		parent.setLayout(layout);
-		
-
-		
-		
-		
+		return getViewer(parent, SWT.NONE);	
+	}
+	
+	public static TableTreeViewer getViewer(Composite parent, int styles) {
+			
 		//configure viewer layout
-		TableTreeViewer tableTreeViewer = new TableTreeViewer(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION);
+		TableTreeViewer tableTreeViewer = new TableTreeViewer(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION | styles);
 		
 		Table table = tableTreeViewer.getTableTree().getTable();
 		table.setLinesVisible(true);

@@ -23,6 +23,9 @@ import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IViewSite;
@@ -62,7 +65,18 @@ public class SourceDirectoryMappingViewPart extends ViewPart {
 	
 	public void createPartControl(Composite parent) {
 		
-		viewer = SourceDirectoryMappingViewControl.getViewer(parent);
+		Composite composite = new Composite(parent, SWT.NULL);
+		
+		GridLayout layout = new GridLayout();
+		layout.marginHeight=5;
+		layout.marginWidth=5;
+		composite.setLayout(layout);
+
+		GridData data = new GridData(GridData.FILL_BOTH);
+		data.grabExcessHorizontalSpace = true;
+		composite.setLayoutData(data);
+		
+		viewer = SourceDirectoryMappingViewControl.getViewer(composite);
 
 		getSite().setSelectionProvider(viewer);
 		
