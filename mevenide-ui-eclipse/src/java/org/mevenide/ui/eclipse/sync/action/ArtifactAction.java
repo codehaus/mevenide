@@ -29,11 +29,13 @@ import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IProject;
 import org.mevenide.ui.eclipse.sync.event.IActionListener;
 import org.mevenide.ui.eclipse.sync.event.IdeArtifactEvent;
+import org.mevenide.ui.eclipse.sync.event.NodeEvent;
 import org.mevenide.ui.eclipse.sync.event.PomArtifactEvent;
 import org.mevenide.ui.eclipse.sync.model.ArtifactWrapper;
 import org.mevenide.ui.eclipse.sync.model.DependencyWrapper;
 import org.mevenide.ui.eclipse.sync.model.Directory;
 import org.mevenide.ui.eclipse.sync.model.DirectoryWrapper;
+import org.mevenide.ui.eclipse.sync.model.IArtifactMappingNode;
 import org.mevenide.ui.eclipse.sync.model.ResourceWrapper;
 
 /**
@@ -95,6 +97,13 @@ public class ArtifactAction {
 		for (int i = 0; i < listeners.size(); i++) {
 			PomArtifactEvent event = new PomArtifactEvent(item, project);
 			((IActionListener)listeners.get(i)).artifactIgnored(event);
+		}
+	}
+	
+	protected void firePropertyAdded(IArtifactMappingNode node) {
+		for (int i = 0; i < listeners.size(); i++) {
+			NodeEvent event = new NodeEvent(node);
+			((IActionListener)listeners.get(i)).propertyAdded(event);
 		}
 	}
 	

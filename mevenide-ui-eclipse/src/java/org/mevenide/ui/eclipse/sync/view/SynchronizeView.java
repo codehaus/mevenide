@@ -63,8 +63,11 @@ import org.mevenide.project.io.ProjectReader;
 import org.mevenide.ui.eclipse.sync.action.SynchronizeActionFactory;
 import org.mevenide.ui.eclipse.sync.event.IActionListener;
 import org.mevenide.ui.eclipse.sync.event.IdeArtifactEvent;
+import org.mevenide.ui.eclipse.sync.event.NodeEvent;
 import org.mevenide.ui.eclipse.sync.event.PomArtifactEvent;
 import org.mevenide.ui.eclipse.sync.model.ArtifactMappingContentProvider;
+import org.mevenide.ui.eclipse.sync.model.DependencyMappingNode;
+import org.mevenide.ui.eclipse.sync.model.DependencyPropertyWrapper;
 import org.mevenide.ui.eclipse.sync.model.EclipseContainerContainer;
 import org.mevenide.ui.eclipse.sync.model.IArtifactMappingNode;
 import org.mevenide.ui.eclipse.sync.model.IArtifactMappingNodeContainer;
@@ -99,6 +102,7 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
     private Action removeFromPom;
     private Action removeFromProject;
     private Action addToIgnoreList;
+    private Action addDependencyProperty;
     private Separator separator;
     
     private int direction;
@@ -263,6 +267,8 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
 
 		addToIgnoreList = actionFactory.getAction(SynchronizeActionFactory.MVN_IGNORE);
 		
+		addDependencyProperty = actionFactory.getAction(SynchronizeActionFactory.ADD_DEPENDENCY_PROPERTIES);
+		
 		separator  = new Separator();
 		
 		disableContextualActions();
@@ -290,9 +296,10 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
 				boolean enablePushToPom = false, 
 						enableRemoveFromProject = false, 
 						enableAddToClasspath = false, 
-						enableFromFromPom = false, 
+						enableRemoveFromPom = false, 
 						enableMarkAsMerged = false, 
-						enableAddToIgnoreList = false;
+						enableAddToIgnoreList = false,
+						enableAddDependencyProperty = false;
 				
 				for (int i = 0; i < selections.size(); i++) {
 					Object selection = selections.get(i);
@@ -304,10 +311,11 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
 						//outgoing 
 						enablePushToPom = (selectedNode.getChangeDirection() & EclipseContainerContainer.OUTGOING) != 0;
 						enableRemoveFromProject = (selectedNode.getChangeDirection() & EclipseContainerContainer.OUTGOING) != 0;
+						enableAddDependencyProperty = (selectedNode.getChangeDirection() & EclipseContainerContainer.OUTGOING) != 0;
 							
 						//incoming
 						enableAddToClasspath = (selectedNode.getChangeDirection() & EclipseContainerContainer.INCOMING) != 0;
-						enableFromFromPom = (selectedNode.getChangeDirection() & EclipseContainerContainer.INCOMING) != 0;
+						enableRemoveFromPom = (selectedNode.getChangeDirection() & EclipseContainerContainer.INCOMING) != 0;
 						
 						//conflicting
 						enableMarkAsMerged = (selectedNode.getChangeDirection() & EclipseContainerContainer.CONFLICTING) != 0;
@@ -318,15 +326,17 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
 				pushToPom.setEnabled(enablePushToPom);
 				removeFromProject.setEnabled(enableRemoveFromProject);
 				addToClasspath.setEnabled(enableAddToClasspath);
-				removeFromPom.setEnabled(enableFromFromPom);
+				removeFromPom.setEnabled(enableRemoveFromPom);
 				markAsMerged.setEnabled(enableMarkAsMerged);
 				addToIgnoreList.setEnabled(enableAddToIgnoreList);
 				
 				if ( selections.size() == 1 ) {
 					viewProperties.setEnabled(true);
+					addDependencyProperty.setEnabled(enableAddDependencyProperty);
 				}
 				else {
 					viewProperties.setEnabled(false);
+					addDependencyProperty.setEnabled(false);
 				}
             }
 		});
@@ -383,6 +393,9 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
 					if ( (selectedNode.getChangeDirection() & EclipseContainerContainer.OUTGOING) != 0 ) {
 						manager.add(pushToPom);
 						manager.add(removeFromProject);
+						if ( selection instanceof DependencyMappingNode ) {
+							manager.add(addDependencyProperty);
+						}
 					}
 					if ( (selectedNode.getChangeDirection() & EclipseContainerContainer.INCOMING) != 0 ) {
 						manager.add(addToClasspath);
@@ -397,6 +410,9 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
 					manager.add(separator);
 					manager.add(viewProperties);		
 				}
+				if ( selection instanceof DependencyPropertyWrapper ) {
+					manager.add(viewProperties);
+				}
 			}
 		});
 	}
@@ -408,6 +424,11 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
     	refreshNode(artifact);
 	}
 
+	public void propertyAdded(NodeEvent event) {
+		log.debug("propertyAdded : ");
+		artifactMappingNodeViewer.refresh(event.getNode().getParent());
+	}
+	
 	private void refreshNode(IArtifactMappingNode artifact) {
 		IArtifactMappingNodeContainer container = (IArtifactMappingNodeContainer) getContentProvider().getParent(artifact);
     	container.removeNode(artifact);

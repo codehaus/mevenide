@@ -29,6 +29,7 @@ import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.MevenideColors;
 import org.mevenide.ui.eclipse.sync.model.DependencyMappingNode;
 import org.mevenide.ui.eclipse.sync.model.DependencyMappingNodeContainer;
+import org.mevenide.ui.eclipse.sync.model.DependencyPropertyWrapper;
 import org.mevenide.ui.eclipse.sync.model.DirectoryMappingNode;
 import org.mevenide.ui.eclipse.sync.model.DirectoryMappingNodeContainer;
 import org.mevenide.ui.eclipse.sync.model.EclipseContainerContainer;
@@ -84,6 +85,9 @@ public class ArtifactMappingLabelProvider implements ILabelProvider, IColorProvi
         if ( element instanceof DirectoryMappingNode ) {
            baseImage = Mevenide.getImageDescriptor("sourcefolder_obj.gif").createImage();
         }
+        if ( element instanceof DependencyPropertyWrapper ) {
+        	baseImage = Mevenide.getImageDescriptor("property.gif").createImage();
+        }
         //return baseImage;
         return decorateImage(baseImage, element);
     }
@@ -119,6 +123,13 @@ public class ArtifactMappingLabelProvider implements ILabelProvider, IColorProvi
         }
         if ( element instanceof IArtifactMappingNode ) {
             return decorateText(((IArtifactMappingNode) element).getLabel(), element);
+        }
+        if ( element instanceof DependencyPropertyWrapper ) {
+        	String formattedProperty = ((DependencyPropertyWrapper) element).getFormattedProperty();
+        	if ( formattedProperty != null ) {
+        		return formattedProperty.replace(':', '=');
+        	}
+        	return null;
         }
         return null;
     }
