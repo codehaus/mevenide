@@ -74,6 +74,7 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
+import org.mevenide.ui.eclipse.Mevenide;
 
 /**
  * 
@@ -109,11 +110,11 @@ public class DependencyPropertiesDialog extends Dialog {
 		table.setHeaderVisible(true);
 	
 		TableColumn column1 = new TableColumn(table, SWT.NULL);
-		column1.setText("key");
+		column1.setText(Mevenide.getResourceString("DependencyPropertiesDialog.properties.key.column.name"));
 		column1.setWidth(200);
 	
 		TableColumn column2 = new TableColumn(table, SWT.NULL);
-		column2.setText("value");
+		column2.setText(Mevenide.getResourceString("DependencyPropertiesDialog.properties.value.column.name"));
 		column2.setWidth(200);
 	
 		createTableEditor(table);
@@ -128,19 +129,24 @@ public class DependencyPropertiesDialog extends Dialog {
 		buttonsArea.setLayoutData(topData);
 	
 		Button addButton = new Button(buttonsArea, SWT.PUSH);
-		addButton.setText("Add");
+		addButton.setText(Mevenide.getResourceString("DependencyPropertiesDialog.properties.add"));
 		GridData data1 = new GridData(GridData.FILL_HORIZONTAL);
 		addButton.setLayoutData(data1);
 		addButton.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				TableItem item = new TableItem(table,SWT.NULL);
-				item.setText(new String[] {"<custom key>", "<custom value>"});
+				item.setText(
+					new String[] {
+						Mevenide.getResourceString("DependencyPropertiesDialog.properties.key.new"), 
+						Mevenide.getResourceString("DependencyPropertiesDialog.properties.value.new")
+					}
+				);
 			} 
 		});
 	
 	
 		Button removeButton = new Button(buttonsArea, SWT.PUSH);
-		removeButton.setText("Remove");
+		removeButton.setText(Mevenide.getResourceString("DependencyPropertiesDialog.properties.remove"));
 		GridData data2 = new GridData(GridData.FILL_HORIZONTAL);
 		removeButton.setLayoutData(data2);
 		removeButton.addSelectionListener(new SelectionAdapter() {
@@ -263,13 +269,13 @@ public class DependencyPropertiesDialog extends Dialog {
 		cellEditor.setValidator(new ICellEditorValidator() {
 			public String isValid(Object value) {
 				if ( value == null ) {
-					return "null value not allowed";	
+					return Mevenide.getResourceString("DependencyPropertiesDialog.validator.null.error");	
 				}
 				if ( !(value instanceof String) ) {
-					return "non String values not allowed";
+					return Mevenide.getResourceString("DependencyPropertiesDialog.validator.non.string.error");
 				}
 				if ( ((String) value).trim().equals("") ) {
-					return "empty values not allowed";
+					return Mevenide.getResourceString("DependencyPropertiesDialog.validator.empty.value.error");
 				}
 				return null;
 			}
