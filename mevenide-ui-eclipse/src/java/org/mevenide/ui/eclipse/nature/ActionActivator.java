@@ -70,7 +70,6 @@ public class ActionActivator implements IResourceDeltaVisitor {
 			        if ( match(path, files) ) {
 			            shouldSkipDefinitions[i] = true;
 			        }
-			        System.err.println(path.toString() + (shouldSkipDefinitions[i]));
 	            }
             }
         }
