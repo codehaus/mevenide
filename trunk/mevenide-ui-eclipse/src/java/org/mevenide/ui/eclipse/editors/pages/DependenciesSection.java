@@ -115,6 +115,10 @@ public class DependenciesSection extends PageSection {
 			new IPomCollectionAdaptor() {
 				public Object addNewObject(Object parentObject) {
 					Dependency dependency = new Dependency();
+					dependency.setArtifactId("<artifactId>");
+					dependency.setGroupId("<groupId>");
+					dependency.setVersion("<version>");
+					dependency.setType("jar");
 					pom.addDependency(dependency);
 					return dependency;
 				}
@@ -219,6 +223,13 @@ public class DependenciesSection extends PageSection {
 		List dependencies = pom.getDependencies();
 		List parentDependencies = isInherited() ? getParentPom().getDependencies() : null;
 		if (dependencies != null && !dependencies.isEmpty()) {
+		    for (Iterator iter = dependencies.iterator(); iter.hasNext(); ) {
+		        Dependency element = (Dependency) iter.next();
+		        log.debug(element);
+		        if (element.getType() == null) {
+		            element.setType("jar");
+		        }
+		    }
 			dependenciesTable.addEntries(dependencies);
 			dependenciesTable.setInherited(false);
 		}

@@ -5,7 +5,7 @@
       version="@maven.eclipse.plugin.artifact.version@"
       provider-name="Sourceforge"
       plugin="Mevenide"
-      image="logo.jpg">
+      image="mevenide-simple-125x37.png">
 
    <description>
       %description
@@ -20,6 +20,7 @@
    </url>
 	
    <requires>
+      <import plugin="org.eclipse.osgi"/>
       <import plugin="org.eclipse.core.resources"/>
       <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.eclipse.jdt.core"/>
