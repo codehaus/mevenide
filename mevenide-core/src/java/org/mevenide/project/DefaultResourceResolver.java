@@ -13,7 +13,6 @@
  */
 package org.mevenide.project;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,8 +41,16 @@ public class DefaultResourceResolver {
 		
 		for (int i = 0; i < similar.size(); i++) {
 			Resource similarResource = (Resource) similar.get(i);
-			resource.getIncludes().addAll(similarResource.getIncludes());
-			resource.getExcludes().addAll(similarResource.getExcludes());
+			for (int j = 0; j < similarResource.getIncludes().size(); j++) {
+				if ( !resource.getIncludes().contains(similarResource.getIncludes().get(j)) ) {
+					resource.getIncludes().add(similarResource.getIncludes().get(j));
+				}
+			}
+			for (int j = 0; j < similarResource.getExcludes().size(); j++) {
+				if ( !resource.getExcludes().contains(similarResource.getExcludes().get(j)) ) {
+					resource.getExcludes().add(similarResource.getExcludes().get(j));
+				}
+			}
 			project.getBuild().getResources().remove(similarResource);
 		}
 		
@@ -65,19 +72,15 @@ public class DefaultResourceResolver {
 	}
 	
 	/**
-	 * construct a Resource from a given path, including all children
+	 * construct a Resource from a given path, including ALL children
 	 * 
 	 * @param path
 	 * @return
 	 */
 	public static Resource newResource(String path) {
-		boolean isDirectory = new File(path).isDirectory();
-		String directory =  isDirectory ? path : new File(path).getParent();
-		String singleInclude = isDirectory ? "**/*.*" : new File(path).getName();
-		
 		Resource resource = new Resource();
-		resource.setDirectory(directory);
-		resource.addInclude(singleInclude);
+		resource.setDirectory(path);
+		resource.addInclude("**/*.*");
 		
 		return resource;
 	}
