@@ -58,8 +58,9 @@ import java.io.Writer;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+import org.apache.maven.DefaultProjectUnmarshaller;
 import org.apache.maven.project.Project;
-import org.mevenide.util.DefaultProjectUnmarshaller;
+//import org.mevenide.util.DefaultProjectUnmarshaller;
 
 /**
  * 
@@ -90,7 +91,7 @@ public final class PomSkeletonBuilder {
 	public static PomSkeletonBuilder getSkeletonBuilder(String template) throws Exception {
 		PomSkeletonBuilder pomBuilder = new PomSkeletonBuilder();
 		if ( template == null || !new File(template).exists() ) {
-			pomBuilder.template = new File(PomSkeletonBuilder.class.getResource(DEFAULT_TEMPLATE).getFile());
+			//pomBuilder.template = new File(PomSkeletonBuilder.class.getResource(DEFAULT_TEMPLATE).getFile());
 		}
 		else {
 			pomBuilder.template = new File(template);
@@ -111,7 +112,13 @@ public final class PomSkeletonBuilder {
 	 * @throws Exception
 	 */
 	public String getPomSkeleton(String projectName) throws Exception {
-		InputStream is = new FileInputStream(template);
+	    InputStream is = null;
+	    if ( template != null ) {
+	        is = new FileInputStream(template);
+	    }
+	    else {
+	        is = PomSkeletonBuilder.class.getResourceAsStream(DEFAULT_TEMPLATE);
+	    }
 		Reader reader = new InputStreamReader(is);
 		Project project = new DefaultProjectUnmarshaller().parse(reader);
 		reader.close();
