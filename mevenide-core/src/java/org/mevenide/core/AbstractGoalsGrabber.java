@@ -68,7 +68,7 @@ public abstract class AbstractGoalsGrabber implements IGoalsGrabber{
      */
 	public Collection getPlugins()  {
 		if ( goalsBean != null ) { 
-			return goalsBean.getGoalCategories();
+			return goalsBean.getPlugins();
 		}
 		return null;
 	}
