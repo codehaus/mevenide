@@ -206,7 +206,7 @@ public class LocationFinderAggregator implements ILocationFinder {
     }
     
     public String getMavenPluginsDir() {
-		String mavenPluginsDir = new File(getMavenLocalHome(), "plugins").getAbsolutePath();
+		String mavenPluginsDir = new File(getMavenLocalHome(), "cache").getAbsolutePath();
 		if ( customLocationFinder !=  null 
 				&& customLocationFinder.getMavenPluginsDir() != null ) {
 			mavenPluginsDir = customLocationFinder.getMavenPluginsDir();
