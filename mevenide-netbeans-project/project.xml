@@ -79,8 +79,18 @@
         <groupId>netbeans</groupId>
         <artifactId>openide</artifactId>
         <!-- include nb specification version.. that's important for compiling -->
-        <version>3.42.2</version>
+        <version>4.28</version>
         <url>http://www.netbeans.org</url>
+    </dependency>
+    <dependency>     
+        <groupId>netbeans</groupId>
+        <artifactId>openide-loaders</artifactId>
+        <!-- include nb specification version.. that's important for compiling -->
+        <version>4.12</version>
+        <url>http://www.netbeans.org</url>
+        <properties>
+            <netbeans.module.dep>spec</netbeans.module.dep>
+        </properties>
     </dependency>
 
     <!-- PROJECT DEPS -->
@@ -89,6 +99,16 @@
         <artifactId>org-netbeans-modules-projectapi</artifactId>
         <!-- include nb specification version.. that's important for compiling -->
         <version>1.0</version>
+        <url>http://www.netbeans.org</url>
+        <properties>
+            <netbeans.module.dep>spec</netbeans.module.dep>
+        </properties>
+    </dependency>
+    <dependency>     
+        <groupId>netbeans</groupId>
+        <artifactId>org-netbeans-api-java</artifactId>
+        <!-- include nb specification version.. that's important for compiling -->
+        <version>1.4</version>
         <url>http://www.netbeans.org</url>
         <properties>
             <netbeans.module.dep>spec</netbeans.module.dep>
@@ -123,6 +143,7 @@
   </dependencies>
   
   <build>
+    <sourceDirectory>src/java</sourceDirectory>
     <resources>
       <resource>
         <directory>src/conf</directory>

@@ -17,9 +17,13 @@
 
 package org.mevenide.netbeans.project;
 
+import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.util.StringTokenizer;
 import org.openide.filesystems.FileObject;
+import org.openide.filesystems.FileUtil;
+import org.openide.filesystems.Repository;
 
 /**
  *
@@ -60,5 +64,27 @@ public class FileUtilities
             parentFolder = folder;
         }
         return folder;
+    }
+    
+    public static FileObject getUserHome() {
+        String home = System.getProperty("user.home");
+        File file = new File(home);
+        FileObject[] fo = FileUtil.fromFile(file);
+        if (fo.length > 0) {
+            return fo[0];
+        }
+        throw new IllegalStateException("Cannot find user.home fileobject (" + home + ")");
+    }
+    
+    public static FileObject convertURItoFileObject(URI uri) {
+        if (uri == null) {
+            return null;
+        }
+        File fil = new File(uri);
+        FileObject[] fos = FileUtil.fromFile(fil);
+        if (fos.length > 0) {
+            return fos[0];
+        }
+        return null;
     }
 }

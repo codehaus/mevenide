@@ -38,7 +38,7 @@ public class ActionProviderImpl implements ActionProvider
         return new String[] {
             ActionProvider.COMMAND_BUILD,
             ActionProvider.COMMAND_CLEAN,
-            ActionProvider.COMMAND_REBUILD
+            ActionProvider.COMMAND_REBUILD, 
         };
     }
     

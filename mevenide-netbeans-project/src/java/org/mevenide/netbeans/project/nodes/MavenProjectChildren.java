@@ -20,21 +20,20 @@ package org.mevenide.netbeans.project.nodes;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.StringTokenizer;
 import org.apache.maven.project.Build;
 import org.apache.maven.project.Project;
 import org.mevenide.netbeans.project.FileUtilities;
 import org.mevenide.netbeans.project.MavenProject;
 import org.openide.filesystems.FileObject;
 import org.openide.loaders.DataFolder;
-import org.openide.nodes.Children;
 import org.openide.nodes.Node;
+import org.openide.nodes.Children.Keys;
 
 /**
  *
  * @author  Milos Kleint (ca206216@tiscali.cz)
  */
-class MavenProjectChildren extends Children.Keys
+class MavenProjectChildren extends Keys
 {
     
     private static final Object KEY_SOURCE_DIR = "srcDir"; // NOI18N
