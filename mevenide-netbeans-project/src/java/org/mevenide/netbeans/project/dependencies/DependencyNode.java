@@ -44,7 +44,11 @@ public class DependencyNode extends AbstractNode {
         super(Children.LEAF);
         dependency = dep;
         project = proj;
-        setIconBase("org/mevenide/netbeans/project/resources/DependencyIcon"); //NOI18N
+        if (dep.isPlugin()) {
+            setIconBase("org/mevenide/netbeans/project/resources/DependencyPlugin"); //NOI18N
+        } else {
+            setIconBase("org/mevenide/netbeans/project/resources/DependencyIcon"); //NOI18N
+        }
         setDisplayName(dep.getArtifactId() + "-" + dep.getVersion());
         checkOverride();
     }
