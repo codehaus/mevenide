@@ -12,13 +12,13 @@
       <library name="lib/maven.jar"/>
       <library name="lib/goals-grabber-1.0.jar"/>
       <library name="lib/mevenide-core-0.1.jar"/>
-      <!-- library name="mevenide-ui-eclipse-0.1.jar">
-         <export name="*"/>
-      </library -->
       <library name="lib/forehead-1.0-beta-4.jar"/>
       <library name="lib/commons-discovery.jar"/>
       <library name="lib/commons-logging-1.0.1.jar"/>
       <library name="lib/xerces-2.2.1.jar"/>
+      <library name="mevenide-ui-eclipse-0.1.jar">
+         <export name="*"/>
+      </library>
    </runtime>
    <requires>
       <import plugin="org.eclipse.core.resources"/>
