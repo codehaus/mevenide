@@ -5,6 +5,7 @@
     <ant:filter token="org.mevenide.core.id" value="${org.mevenide.core.id}"/>	
     <ant:filter token="org.mevenide.config.id" value="${org.mevenide.config.id}"/>	
     <ant:filter token="org.mevenide.grabber.id" value="${org.mevenide.grabber.id}"/>	
+    <ant:filter token="org.mevenide.grammar.id" value="${org.mevenide.grammar.id}"/>	    
     <ant:filter token="org.mevenide.ui.eclipse.id" value="${org.mevenide.ui.eclipse.id}"/>	
     <ant:filter token="org.mevenide.eclipse.feature.id" value="${org.mevenide.eclipse.feature.id}"/>		
   </ant:filterset>
@@ -12,6 +13,7 @@
     <ant:filter token="org.mevenide.core.version" value="${org.mevenide.core.version}"/>	
     <ant:filter token="org.mevenide.config.version" value="${org.mevenide.config.version}"/>	
     <ant:filter token="org.mevenide.grabber.version" value="${org.mevenide.grabber.version}"/>	
+    <ant:filter token="org.mevenide.grammar.version" value="${org.mevenide.grammar.version}"/>	
     <ant:filter token="org.mevenide.ui.eclipse.version" value="${org.mevenide.ui.eclipse.version}"/>	
     <ant:filter token="org.mevenide.eclipse.feature.version" value="${org.mevenide.eclipse.feature.version}"/>		
   </ant:filterset>	

@@ -33,23 +33,23 @@ public interface TagLib
     String getName(); 
     
     /**
-     * Collection of <String>, names of tags that are not context sensitive and can be used
+     * Collection of {@see String}, names of tags that are not context sensitive and can be used
      * everywhere.
      */
     Collection getRootTags();
     
     /**
-     * Collection of <String> names of attributes withing the given tag name.
+     * Collection of {@see String} names of attributes withing the given tag name.
      */
     Collection getTagAttrs(String tag);
     
     /**
-     * Collection of <String>, names of tags that can be only applied within the tag passes as paramater.
+     * Collection of {@see String}, names of tags that can be only applied within the tag passes as paramater.
      */
     Collection getSubTags(String tagName);
     
     /**
-     * Collection of <String>, AttributeCompletion identifiers that denote what 
+     * Collection of {@see String}, AttributeCompletion identifiers that denote what 
      * types of completion apply to the given attribute.
      */
     Collection getAttrCompletionTypes(String tag, String attribute);

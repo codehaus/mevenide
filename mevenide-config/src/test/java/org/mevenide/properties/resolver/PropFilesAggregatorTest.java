@@ -1,17 +1,23 @@
-/*
- * DefaultsResolverTest.java
+/* ==========================================================================
+ * Copyright 2003-2004 Apache Software Foundation
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * Created on April 18, 2004, 3:14 PM
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ * =========================================================================
  */
-
 package org.mevenide.properties.resolver;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import junit.framework.TestCase;
-import org.mevenide.environment.LocationFinderAggregator;
-import org.mevenide.properties.IPropertyFinder;
+
 import org.mevenide.properties.IPropertyResolver;
 
 /**
@@ -46,18 +52,18 @@ public class PropFilesAggregatorTest extends AbstractResolverTestCase {
         String home = def.getResolvedValue("maven.home.local");
         File right = new File(projectDir, ".maven");
         assertNotNull(home);
-        assertEquals(right.getAbsolutePath(), home);
+        assertEquals(right.getAbsolutePath().replaceAll("\\\\", "/"), home.replaceAll("\\\\", "/"));
 
         // value comes from locationfinder
         String home2 = def.getResolvedValue("maven.home");
         assertNotNull(home2);
-        assertEquals(finder.getMavenHome(), home2);
+        assertEquals(finder.getMavenHome().replaceAll("\\\\", "/"), home2.replaceAll("\\\\", "/"));
         
         // complex replacements from multiple properties files.
         String build = def.getResolvedValue("maven.build.src");
         assertNotNull(build);
         File correct = new File(projectDir.getAbsolutePath() + "/target_yyy/src2");
-        assertEquals(correct.getAbsolutePath(), build);
+        assertEquals(correct.getAbsolutePath().replaceAll("\\\\", "/"), build.replaceAll("\\\\", "/"));
     }
     
     
