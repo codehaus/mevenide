@@ -200,7 +200,7 @@ public class ProjectWriter {
 	 * @param dependencies
 	 * @return list of non resolved dependencies  
 	 */
-	private List getNonResolvedDependencies(List dependencies) {
+	List getNonResolvedDependencies(List dependencies) {
 		List nonResolvedDependencies = new ArrayList();
 		for (int i = 0; i < dependencies.size(); i++) {
 			Dependency dependency = (Dependency)dependencies.get(i); 
