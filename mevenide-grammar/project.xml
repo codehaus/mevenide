@@ -54,6 +54,7 @@
             <version>0.2-SNAPSHOT</version>
             <type>jar</type>
             <properties>
+                <netbeans.module.dep>spec</netbeans.module.dep>
                 <eclipse.plugin.bundle>false</eclipse.plugin.bundle>
             </properties>
         </dependency>
@@ -62,6 +63,7 @@
             <artifactId>goals-grabber</artifactId>
             <version>0.2-SNAPSHOT</version>
                 <properties>
+                    <netbeans.module.dep>spec</netbeans.module.dep>
                     <eclipse.plugin.bundle>false</eclipse.plugin.bundle>
                 </properties>
         </dependency>
