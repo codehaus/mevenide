@@ -334,6 +334,17 @@ public class MavenProjectGrammar implements GrammarQuery {
         public String getDisplayName() {
             return getNodeName() + " disp";
         }
+        
+    /**
+     * For elements provide hint whether element has empty content model.
+     * @return true element has empty content model (no childs) and can
+     * be completed in empty element form i.e. <code>&lt;ement/></code>.
+     * @since 6th Aug 2004
+     */
+        public boolean isEmptyElement() {
+            return false;
+       }
+        
     }
     
     private static class MyElement extends AbstractResultNode implements Element {

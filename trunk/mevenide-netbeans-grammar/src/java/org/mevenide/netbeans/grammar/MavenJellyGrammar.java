@@ -513,6 +513,17 @@ public class MavenJellyGrammar implements GrammarQuery
         {
             return getNodeName() + " disp";
         }
+
+        /**
+         * For elements provide hint whether element has empty content model.
+         * @return true element has empty content model (no childs) and can
+         * be completed in empty element form i.e. <code>&lt;ement/></code>.
+         * @since 6th Aug 2004
+         */
+        public boolean isEmptyElement() {
+            return false;
+       }
+        
         
         public boolean equals(Object obj)
         {
@@ -557,6 +568,7 @@ public class MavenJellyGrammar implements GrammarQuery
         {
             return name;
         }
+        
     }
     
     private static class TagLibElement extends AbstractResultNode implements Element
@@ -588,6 +600,16 @@ public class MavenJellyGrammar implements GrammarQuery
         {
             return new ImageIcon(Utilities.loadImage("org/mevenide/netbeans/grammar/resources/NamespaceIcon.gif", true));
         }
+        /**
+         * For elements provide hint whether element has empty content model.
+         * @return true element has empty content model (no childs) and can
+         * be completed in empty element form i.e. <code>&lt;ement/></code>.
+         * @since 6th Aug 2004
+         */
+        public boolean isEmptyElement() {
+            return false;
+       }
+        
     }
     
     private static class Attribute extends AbstractResultNode implements Attr
