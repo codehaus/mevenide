@@ -35,7 +35,7 @@ public class AddToClasspathAction extends ArtifactAction {
 	
 	
 	public void addEntry(IArtifactMappingNode item, IProject project) throws Exception {
-		ArtifactWrapper artifactWrapper = getArtifactWrapper(item.getArtifact());
+		ArtifactWrapper artifactWrapper = getArtifactWrapper(item.getDeclaringPom(), item.getArtifact());
 		if ( artifactWrapper != null ) {
 			artifactWrapper.addTo(project);
 			

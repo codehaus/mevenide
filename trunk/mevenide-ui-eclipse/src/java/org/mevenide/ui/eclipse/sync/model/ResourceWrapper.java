@@ -16,6 +16,7 @@
  */
 package org.mevenide.ui.eclipse.sync.model;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,7 +42,8 @@ public class ResourceWrapper extends SourceFolder {
 	
 	private Resource resource;
 	
-	public ResourceWrapper(Resource resource) {
+	public ResourceWrapper(File declaringPom, Resource resource) {
+		super(declaringPom);
 		this.resource = resource;
 	}
 

@@ -37,6 +37,9 @@ import org.eclipse.jdt.core.JavaCore;
 public abstract class SourceFolder extends ArtifactWrapper {
    private static Log log = LogFactory.getLog(SourceFolder.class);
 
+   protected SourceFolder(File declaringPom) {
+   		super(declaringPom);
+   }
 
    protected IClasspathEntry newSourceEntry(String path, IProject project) throws Exception {
          String basedir = project.getLocation().toOSString();

@@ -29,7 +29,7 @@ import org.mevenide.ui.eclipse.sync.model.IArtifactMappingNode;
  */
 public class AddToMvnIgnoreAction extends ArtifactAction {
 	public void addEntry(IArtifactMappingNode item, IContainer container) throws Exception {
-		ArtifactWrapper artifactWrapper = getArtifactWrapper(item.getResolvedArtifact());
+		ArtifactWrapper artifactWrapper = getArtifactWrapper(item.getDeclaringPom(), item.getResolvedArtifact());
 		
 		if ( artifactWrapper != null ) {
 			artifactWrapper.addToMvnIgnore(container);
@@ -39,7 +39,7 @@ public class AddToMvnIgnoreAction extends ArtifactAction {
 	}
 	
 	public void addEntry(IArtifactMappingNode item, Project project) throws Exception {
-		ArtifactWrapper artifactWrapper = getArtifactWrapper(item.getArtifact());
+		ArtifactWrapper artifactWrapper = getArtifactWrapper(item.getDeclaringPom(), item.getArtifact());
 		
 		if ( artifactWrapper != null ) {
 			artifactWrapper.addToMvnIgnore(project);

@@ -17,6 +17,7 @@
 package org.mevenide.ui.eclipse.sync.model;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -33,6 +34,9 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.mevenide.Environment;
 import org.mevenide.project.io.ProjectWriter;
+import org.mevenide.properties.KeyValuePair;
+import org.mevenide.properties.PropertyModel;
+import org.mevenide.properties.PropertyModelFactory;
 
 /**
  * 
@@ -47,7 +51,8 @@ public class DependencyWrapper extends ArtifactWrapper {
 	
 	private Dependency dependency;
 	
-	public DependencyWrapper(Dependency dependency) {
+	public DependencyWrapper(File declaringPom, Dependency dependency) {
+		super(declaringPom);
 		this.dependency = dependency;
 	}
 	
@@ -77,19 +82,28 @@ public class DependencyWrapper extends ArtifactWrapper {
 		IClasspathEntry newEntry = null;
 		//crap ! we should use project.artifacts. for that we have to instantiate a jelly context and create a project instance with MavenUtils
 		//if possible refactor *all* code that way (MavenUtils) 
-		if ( dependency.getType() == null || dependency.isAddedToClasspath() ) { //should check maven.jar.override property also..
+		if ( dependency.getType() == null || dependency.isAddedToClasspath() ) { 
+			
 			String path = null;
 			
-			String type = dependency.getType() == null ? "jar" : dependency.getType();
-			File group = new File(Environment.getMavenLocalRepository(), dependency.getGroupId());
-			path = new File(group, type + "s/" + dependency.getArtifactId() + "-" + dependency.getVersion() + "." + type).getAbsolutePath();
-		
-			//	path = new File(dependency.getJar()).getAbsolutePath();
+			if ( isMavenOverrideOn() ) {
+				path = getPathOverride().replaceAll("\\\\", "/");
+			}
+			
+			if ( path == null ) {
+				path = buildArtifactPath(dependency.getVersion());
+			}
 			
 			newEntry = JavaCore.newLibraryEntry(new Path(path), null, null);
 		}
 
 		return newEntry;
+	}
+
+	private String buildArtifactPath(String version) {
+		String type = dependency.getType() == null ? "jar" : dependency.getType();
+		File group = new File(Environment.getMavenLocalRepository(), dependency.getGroupId());
+		return new File(group, type + "s/" + dependency.getArtifactId() + "-" + version + "." + type).getAbsolutePath();
 	}
 
 	private IClasspathEntry newProjectEntry(Dependency dependency) throws CoreException {
@@ -131,5 +145,72 @@ public class DependencyWrapper extends ArtifactWrapper {
 	
 	protected String getIgnoreLine() {
 		return dependency.getGroupId() + ":" + dependency.getArtifactId();
+	}
+	
+	private boolean isMavenOverrideOn() {
+		PropertyModel model = getPropertyModel();
+		if ( model == null ) {
+			return false;
+		}
+		KeyValuePair pair = model.findByKey("maven.jar.override");
+		return pair != null 
+				&& pair.getValue() != null 
+				&& (pair.getValue().equals("on") || pair.getValue().equals("1") || pair.getValue().equals("true")); 
+	}
+	
+	private PropertyModel getPropertyModel() {
+		PropertyModel model = null;
+		
+		File projectProperties = new File(getDeclaringPom().getParentFile(), "project.properties");
+		PropertyModelFactory factory = PropertyModelFactory.getFactory();
+		
+		try {
+			model = factory.newPropertyModel(projectProperties);
+		} 
+		catch (IOException e) {
+			log.error("Unable to mount project PropertyModel", e);
+		}
+		return model;
+	}
+
+	private String getPathOverride() {
+		String result = null;
+		
+		PropertyModel model = getPropertyModel();
+		KeyValuePair kvp = model.findByKey("maven.jar." + dependency.getArtifactId());
+		
+		if ( kvp != null ) {
+			String value = kvp.getValue();
+			if ( new File(value).exists() ) {
+			    result = value;
+			}
+			else {
+			    //assume value is a version
+			    String path = buildArtifactPath(value);
+			    System.err.println(path);
+			    if ( new File(path).exists() ) {
+			    	result = path;
+			    }
+			    else {
+			    	//if no valid artifact file can be constructed then it is problematic.. 
+			        //@TODO warn user about that problem..
+			        result = value;
+			    }
+			}
+		}
+		
+		return resolvePathOverride(result);
+	}
+	
+	private String resolvePathOverride(String result) {
+		if ( result != null && !new File(result).isAbsolute() ) {
+			if ( result.startsWith("{basedir}") ) {
+			    result = result.replaceAll("{basedir}", this.getDeclaringPom().getParent());
+			}
+			else {
+			    result = new File(this.getDeclaringPom().getParent(), result).getAbsolutePath();
+			}
+		}
+		return result;
 	}
 }
