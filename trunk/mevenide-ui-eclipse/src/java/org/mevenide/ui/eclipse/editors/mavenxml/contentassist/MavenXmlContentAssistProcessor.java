@@ -36,6 +36,7 @@ import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
 import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.jface.text.contentassist.IContextInformationValidator;
+import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.editors.mavenxml.ITypeConstants;
 import org.mevenide.ui.eclipse.editors.mavenxml.MavenXmlEditor;
 import org.mevenide.ui.eclipse.editors.mavenxml.Namespace;
@@ -131,32 +132,48 @@ public abstract class MavenXmlContentAssistProcessor implements IContentAssistPr
         else {
             outerTag = lastOpenTag.getName();
         }
+        
+        Collection rootTags = new ArrayList();
         if (namespaces != null) {
             for (Iterator it = namespaces.keySet().iterator(); it.hasNext();) {
                 String key = (String) it.next();
                 
                 Namespace ns = (Namespace) namespaces.get(key);
                 
-                Collection tags = ns.getSubTags(outerTag);
-                
-                if (tags != null) {
-                    words.addAll(tags);
+                //collect sub tags that can only appear under outerTag  
+                Collection nsSubTags = ns.getSubTags(outerTag);
+                if (nsSubTags != null) {
+                    words.addAll(nsSubTags);
                 }
+                
+                //collect root tags that can be used everywhere
+                Collection nsRootTags = ns.getRootTags();
+                if ( nsRootTags != null ) {
+                	rootTags.addAll(nsRootTags);
+                } 
             }
         }
         
+        //sort the subtags
         Collections.sort(words);
+        
+        //remove duplicate
+        rootTags.removeAll(words);
+        
+        //add rootTags after subtags
+        words.addAll(rootTags);
+        
         
         if (node != null && node.getType() != null && "TEXT".equals(node.getType())) {
             cp = new ICompletionProposal[words.size()];
             for (int i = 0; i < cp.length; i++) {
                 String text = (String) words.get(i);
                 if (preferencesManager.getBooleanValue("InsertEndTag")) {
-                    cp[i] = new CompletionProposal("<" + text + "></" + text + ">", offset, 0, text.length() + 2, null, text,
+                    cp[i] = new CompletionProposal("<" + text + "></" + text + ">", offset, 0, text.length() + 2, Mevenide.getImageDescriptor("xml-tag.gif").createImage(), text,
                             null, null);
                 }
                 else {
-                    cp[i] = new CompletionProposal("<" + text + ">", offset, 0, text.length() + 2, null, text, null, null);
+                    cp[i] = new CompletionProposal("<" + text + ">", offset, 0, text.length() + 2, Mevenide.getImageDescriptor("xml-tag.gif").createImage(), text, null, null);
                 }
             }
         }
@@ -173,18 +190,19 @@ public abstract class MavenXmlContentAssistProcessor implements IContentAssistPr
                 }
                 for (int i = 0; i < cp.length; i++) {
                     String text = (String) words.get(i);
+                    
                     if (preferencesManager.getBooleanValue("InsertEndTag")) {
                         if (isAfterLesserThan) {
-                            cp[i] = new CompletionProposal(text + "></" + text + ">", offset, 0, text.length() + 1, null, text,
+                            cp[i] = new CompletionProposal(text + "></" + text + ">", offset, 0, text.length() + 1, Mevenide.getImageDescriptor("xml-tag.gif").createImage(), text,
                                     null, null);
                         }
                         else {
-                            cp[i] = new CompletionProposal("<" + text + "></" + text + ">", offset, 0, text.length() + 2, null,
+                            cp[i] = new CompletionProposal("<" + text + "></" + text + ">", offset, 0, text.length() + 2, Mevenide.getImageDescriptor("xml-tag.gif").createImage(),
                                     text, null, null);
                         }
                     }
                     else {
-                        cp[i] = new CompletionProposal(text, offset, 0, text.length());
+                        cp[i] = new CompletionProposal(text, offset, 0, text.length(), Mevenide.getImageDescriptor("xml-tag.gif").createImage(), text, null, null);
                     }
                 }
             }
@@ -267,7 +285,7 @@ public abstract class MavenXmlContentAssistProcessor implements IContentAssistPr
             String displayText = (String) words.get(i) ;
             String text = displayText + "=\"\"";
             //IContextInformation contextInformation = createAttributeContextInformation(node.getName(), displayText);
-            cp[i] = new CompletionProposal(text, offset - start.length(), start.length(), text.length() - 1, null, displayText, null, null);
+            cp[i] = new CompletionProposal(text, offset - start.length(), start.length(), text.length() - 1, Mevenide.getImageDescriptor("xml-attr.gif").createImage(), displayText, null, null);
         }
         return cp;
     }
