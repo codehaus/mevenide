@@ -93,22 +93,6 @@
                menubarPath="maven.plugin.menu/RunMaven"
                enablesFor="1"
                id="maven.plugin.popup.action">
-            <!-- enablement>
-               <and>
-                  <objectState
-                        name="nature"
-                        value="mavenplugin.mavennature">
-                  </objectState>
-               </and>
-            </enablement -->
-         </action>
-         <action
-               label="Synchronize Project"
-               icon="icons/maven-synch-project.gif"
-               class="org.mevenide.ui.eclipse.actions.SynchronizeAction"
-               menubarPath="maven.plugin.menu/Synchronize"
-               enablesFor="1"
-               id="maven-plugin.Synchronize">
          </action>
          <action
                label="Disable Maven Nature"
@@ -153,12 +137,29 @@
                id="mevenide.pom.create">
          </action>
          <action
+               label="Synchronize Project"
+               icon="icons/maven-synch-project.gif"
+               class="org.mevenide.ui.eclipse.actions.SynchronizeAction"
+               menubarPath="maven.plugin.menu/Synchronize"
+               enablesFor="1"
+               id="maven-plugin.Synchronize">
+         </action>
+         <action
                label="Synchronize POM"
                icon="icons/maven-synch-pom.gif"
                class="org.mevenide.ui.eclipse.actions.SynchronizeAction"
                menubarPath="maven.plugin.menu/Synchronize"
                enablesFor="1"
                id="maven-plugin.SynchronizePom">
+         </action>
+         <action
+               menubarPath="maven.plugin.menu/Synchronize"
+               class="org.mevenide.ui.eclipse.actions.SynchronizeAction"
+               icon="icons/maven-synch-pom-prompt.gif"
+               label="Map Source Directories"
+               enablesFor="1"
+               id="maven-plugin.mapSourceDirectories"
+               tooltip="prompt for Source Directory types before synchronizing">
          </action>
       </objectContribution>
 <!-- project.xml contributions -->
@@ -196,10 +197,20 @@
          <action
                label="Synchronize POM"
                icon="icons/maven-synch-pom.gif"
+               tooltip="synchronize without prompting for Source Directory types"
                class="org.mevenide.ui.eclipse.actions.SynchronizeAction"
                menubarPath="maven.plugin.menu/Synchronize"
                enablesFor="1"
                id="maven-plugin.SynchronizePom">
+         </action>
+         <action
+               label="Map Source Directories"
+               icon="icons/maven-synch-pom-prompt.gif"
+               tooltip="prompt for Source Directory types before synchronizing"
+               class="org.mevenide.ui.eclipse.actions.SynchronizeAction"
+               menubarPath="maven.plugin.menu/Synchronize"
+               enablesFor="1"
+               id="maven-plugin.mapSourceDirectories">
          </action>
       </objectContribution>
    </extension>

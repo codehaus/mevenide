@@ -21,7 +21,8 @@ import org.eclipse.core.resources.IProject;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.input.SAXBuilder;
-import org.mevenide.ui.eclipse.sync.source.*;
+import org.mevenide.ui.eclipse.sync.source.SourceDirectory;
+import org.mevenide.ui.eclipse.sync.source.SourceDirectoryGroup;
 import org.mevenide.util.JDomOutputter;
 
 /**
@@ -86,6 +87,36 @@ public class SourceDirectoryMarshaller {
 		}
 		
 		return group;
+	}
+
+
+	public static List getLastStoredSourceDirectories(IProject project, String file) throws Exception{
+		List sourceList = new ArrayList();
+		
+		if ( new File(file).exists() ) {
+			
+			SAXBuilder builder = new SAXBuilder(false);
+				
+			Document document = builder.build(file);
+				
+			Element projects = document.getRootElement();
+			List sourceDirectories = projects.getChildren("sourceDirectoryGroup");
+			for (int i = 0; i < sourceDirectories.size(); i++) {
+				Element sourceDirectoryGroupElement = 
+					(Element) sourceDirectories.get(i);
+					
+				if ( sourceDirectoryGroupElement.getAttributeValue("projectName").equals(project.getName()) ) {
+					List sources = sourceDirectoryGroupElement.getChildren("sourceDirectory");
+					for (int j = 0; j < sources.size(); j++) {
+						Element sourceDirectoryElement =  (Element) sources.get(j);
+						sourceList.add(sourceDirectoryElement.getAttributeValue("path"));
+					}
+				}
+			}
+			
+		}	
+		
+		return sourceList;
 	}
 
 	public static void saveSourceDirectoryGroup(SourceDirectoryGroup group, String file) throws Exception {
