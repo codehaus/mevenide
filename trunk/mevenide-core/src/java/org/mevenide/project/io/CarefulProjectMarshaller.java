@@ -657,7 +657,7 @@ public class CarefulProjectMarshaller implements IProjectMarshaller {
         Element reportsElem = updateElement(counter, parent, "reports", shouldExist);
         if (shouldExist) {
             List newList = new ArrayList(reports);
-            List liveList = parent.getChildren("report");
+            List liveList = reportsElem.getChildren("report");
             Iterator it = liveList.iterator();
             // first remove the old ones that are not in the new list..
             while (it.hasNext())
@@ -681,7 +681,7 @@ public class CarefulProjectMarshaller implements IProjectMarshaller {
                     String rep = (String)it2.next();
                     Element newReport = factory.element("report");
                     newReport.setText(rep);
-                    parent.addContent(newReport);
+                    reportsElem.addContent(newReport);
                 }
             }
         }
