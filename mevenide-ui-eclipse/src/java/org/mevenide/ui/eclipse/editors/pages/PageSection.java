@@ -69,7 +69,11 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.model.WorkbenchContentProvider;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
-import org.mevenide.ui.eclipse.editors.entries.*;
+import org.mevenide.ui.eclipse.editors.entries.IEntryChangeListener;
+import org.mevenide.ui.eclipse.editors.entries.IOverrideAdaptor;
+import org.mevenide.ui.eclipse.editors.entries.OverridableTextEntry;
+import org.mevenide.ui.eclipse.editors.entries.PageEntry;
+import org.mevenide.ui.eclipse.editors.entries.TextEntry;
 
 /**
  * Abstract base class for a section of a page in the POM Editor ui.
