@@ -11,9 +11,4 @@
 #	[<whitespace>]<filename><whitespace><error message><end-of-line>
 #
 # comment lines begin with '#'
-commit_prep.pl
-log_accum.pl
-commitcheck
-avail
-cvs_acls.pl
-
+passwd
