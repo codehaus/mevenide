@@ -15,6 +15,7 @@
     
     <menu name="Modules">
         <item name="Mevenide" href="../index.html"/>
+        <item name="Mevenide Config" href="../mevenide-config/index.html"/>
         <item name="Mevenide Core" href="../mevenide-core/index.html"/>
         <item name="Eclipse Plugin" href="../mevenide-ui-eclipse/index.html"/>
         <item name="Netbeans Plugin" href="../mevenide-ui-netbeans/index.html"/>
