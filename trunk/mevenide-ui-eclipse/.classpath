@@ -32,5 +32,8 @@
 	<classpathentry kind="var" path="MAVEN_REPO/commons-httpclient/jars/commons-httpclient-2.0-rc1.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/forehead/jars/forehead-1.0-beta-5.jar"/>
 	<classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.osgi_3.0.0/osgi.jar"/>
+	<classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.ui.ide_3.0.0/ide.jar"/>
+	<classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.help.base_3.0.0/helpbase.jar"/>
+	<classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.core.variables_3.0.0/variables.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

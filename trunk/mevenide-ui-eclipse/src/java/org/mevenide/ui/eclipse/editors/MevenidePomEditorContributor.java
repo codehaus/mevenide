@@ -59,6 +59,7 @@ import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IWorkbenchActionConstants;
+import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.MultiPageEditorActionBarContributor;
 import org.eclipse.ui.texteditor.ITextEditor;
@@ -100,29 +101,29 @@ public class MevenidePomEditorContributor extends MultiPageEditorActionBarContri
             ITextEditor editor = (part instanceof ITextEditor) ? (ITextEditor) part : null;
 
             actionBars.setGlobalActionHandler(
-                IWorkbenchActionConstants.DELETE,
-                getAction(editor, IWorkbenchActionConstants.DELETE));
+                ITextEditorActionConstants.DELETE,
+                getAction(editor, ITextEditorActionConstants.DELETE));
             actionBars.setGlobalActionHandler(
-                IWorkbenchActionConstants.UNDO,
-                getAction(editor, IWorkbenchActionConstants.UNDO));
+                ITextEditorActionConstants.UNDO,
+                getAction(editor, ITextEditorActionConstants.UNDO));
             actionBars.setGlobalActionHandler(
-                IWorkbenchActionConstants.REDO,
-                getAction(editor, IWorkbenchActionConstants.REDO));
+                ITextEditorActionConstants.REDO,
+                getAction(editor, ITextEditorActionConstants.REDO));
             actionBars.setGlobalActionHandler(
-                IWorkbenchActionConstants.CUT,
-                getAction(editor, IWorkbenchActionConstants.CUT));
+                ITextEditorActionConstants.CUT,
+                getAction(editor, ITextEditorActionConstants.CUT));
             actionBars.setGlobalActionHandler(
-                IWorkbenchActionConstants.COPY,
-                getAction(editor, IWorkbenchActionConstants.COPY));
+                ITextEditorActionConstants.COPY,
+                getAction(editor, ITextEditorActionConstants.COPY));
             actionBars.setGlobalActionHandler(
-                IWorkbenchActionConstants.PASTE,
-                getAction(editor, IWorkbenchActionConstants.PASTE));
+                ITextEditorActionConstants.PASTE,
+                getAction(editor, ITextEditorActionConstants.PASTE));
             actionBars.setGlobalActionHandler(
-                IWorkbenchActionConstants.SELECT_ALL,
-                getAction(editor, IWorkbenchActionConstants.SELECT_ALL));
+                ITextEditorActionConstants.SELECT_ALL,
+                getAction(editor, ITextEditorActionConstants.SELECT_ALL));
             actionBars.setGlobalActionHandler(
-                IWorkbenchActionConstants.FIND,
-                getAction(editor, IWorkbenchActionConstants.FIND));
+                ITextEditorActionConstants.FIND,
+                getAction(editor, ITextEditorActionConstants.FIND));
             actionBars.setGlobalActionHandler(
                 IWorkbenchActionConstants.BOOKMARK,
                 getAction(editor, IWorkbenchActionConstants.BOOKMARK));
@@ -147,7 +148,7 @@ public class MevenidePomEditorContributor extends MultiPageEditorActionBarContri
     
     public void contributeToMenu(IMenuManager manager) {
         IMenuManager menu = new MenuManager("Editor &Menu");
-        manager.prependToGroup(IWorkbenchActionConstants.MB_ADDITIONS, menu);
+        manager.prependToGroup(ITextEditorActionConstants.MB_ADDITIONS, menu);
         menu.add(sampleAction);
     }
     
