@@ -78,14 +78,23 @@ import org.mevenide.ui.eclipse.goals.viewer.GoalsPickerDialog;
  * 
  */
 public class MevenidePreferenceDialog {
-	private static Log log = LogFactory.getLog(MevenidePreferenceDialog.class);
+	public static final String MAVEN_LAUNCH_DEFAULTGOALS_PREFERENCE = "maven.launch.defaultgoals";
+    public static final String MEVENIDE_CHECKTIMESTAMP_PREFERENCE = "mevenide.checktimestamp";
+    private static final String POM_TEMPLATE_LOCATION_PREFERENCE = "pom.template.location";
+    public static final String MAVEN_REPO_PREFERENCE = "maven.repo";
+    public static final String MAVEN_LOCAL_HOME_PREFERENCE = "maven.local.home";
+    public static final String MAVEN_HOME_PREFERENCE = "maven.home";
+    public static final String JAVA_HOME_PREFERENCE = "java.home";
+
+    private static Log log = LogFactory.getLog(MevenidePreferenceDialog.class);
 
 
 	private Composite topLevelContainer;
 	private DirectoryFieldEditor mavenHomeEditor;
+	private DirectoryFieldEditor mavenLocalHomeEditor;
 	private DirectoryFieldEditor javaHomeEditor;
 	private DirectoryFieldEditor mavenRepoEditor;
-	private DirectoryFieldEditor pluginsInstallDirEditor;
+	//private DirectoryFieldEditor pluginsInstallDirEditor;
 	private FileFieldEditor pomTemplateLocationEditor; 
 	private BooleanFieldEditor checkTimestampEditor;
 	
@@ -93,9 +102,10 @@ public class MevenidePreferenceDialog {
 	
 	private String javaHome ;
 	private String mavenHome ;
+	private String mavenLocalHome ;
 	private String mavenRepository;
 	private String pomTemplateLocation;
-	private String pluginsInstallDir;
+	//private String pluginsInstallDir;
 	private boolean checkTimestamp;
 	
 	private String defaultGoals;
@@ -124,12 +134,13 @@ public class MevenidePreferenceDialog {
 		GridLayout layout = new GridLayout();
 		layout.numColumns = 3;
 		
-		mavenHomeEditor = createEditor("maven.home", "Maven home", mavenHome);
-		javaHomeEditor = createEditor("java.home", "Java home", javaHome);
-		mavenRepoEditor = createEditor("maven.repo", "Maven Repository", mavenRepository);
-		pluginsInstallDirEditor = createEditor("maven.plugins.dir", "Plugins Directory", mavenRepository);
+		javaHomeEditor = createEditor(MevenidePreferenceDialog.JAVA_HOME_PREFERENCE, "Java home", javaHome);
+		mavenHomeEditor = createEditor(MevenidePreferenceDialog.MAVEN_HOME_PREFERENCE, "Maven Local home", mavenHome);
+		mavenLocalHomeEditor = createEditor(MAVEN_LOCAL_HOME_PREFERENCE, "Maven home", mavenLocalHome);
+		mavenRepoEditor = createEditor(MevenidePreferenceDialog.MAVEN_REPO_PREFERENCE, "Maven Repository", mavenRepository);
+		//pluginsInstallDirEditor = createEditor("maven.plugins.dir", "Plugins Directory", mavenRepository);
 		
-		pomTemplateLocationEditor = new FileFieldEditor("pom.template.location", "POM Template", true, topLevelContainer);
+		pomTemplateLocationEditor = new FileFieldEditor(POM_TEMPLATE_LOCATION_PREFERENCE, "POM Template", true, topLevelContainer);
 		pomTemplateLocationEditor.fillIntoGrid(topLevelContainer, 3);
 		pomTemplateLocationEditor.setPreferenceStore(preferencesManager.getPreferenceStore());
 		pomTemplateLocationEditor.load();
@@ -176,7 +187,7 @@ public class MevenidePreferenceDialog {
 		compositeB.setLayoutData(new GridData(GridData.FILL_BOTH));
 		
 		
-		checkTimestampEditor = new BooleanFieldEditor("mevenide.checktimestamp", "Check timestamp before synchronizing", compositeB);
+		checkTimestampEditor = new BooleanFieldEditor(MevenidePreferenceDialog.MEVENIDE_CHECKTIMESTAMP_PREFERENCE, "Check timestamp before synchronizing", compositeB);
 		checkTimestampEditor.fillIntoGrid(compositeB, 3);		
 		checkTimestampEditor.setPreferenceStore(preferencesManager.getPreferenceStore());
 		checkTimestampEditor.load();
@@ -205,7 +216,7 @@ public class MevenidePreferenceDialog {
 			}
 		};
 		
-		defaultGoalsEditor.setPreferenceName("maven.launch.defaultgoals");
+		defaultGoalsEditor.setPreferenceName(MevenidePreferenceDialog.MAVEN_LAUNCH_DEFAULTGOALS_PREFERENCE);
 		defaultGoalsEditor.setLabelText("Default Goals");
 		defaultGoalsEditor.setPreferencePage(page);
 		defaultGoalsEditor.fillIntoGrid(topLevelContainer, 3);
@@ -229,7 +240,10 @@ public class MevenidePreferenceDialog {
 	public void update() {
 		mavenHome = mavenHomeEditor.getTextControl(topLevelContainer).getText();
 		Mevenide.getPlugin().setMavenHome(mavenHome);
-		
+
+		mavenLocalHome = mavenLocalHomeEditor.getTextControl(topLevelContainer).getText();
+		Mevenide.getPlugin().setMavenLocalHome(mavenLocalHome);
+
 		javaHome = javaHomeEditor.getTextControl(topLevelContainer).getText();
 		Mevenide.getPlugin().setJavaHome(javaHome);
 		
@@ -245,8 +259,8 @@ public class MevenidePreferenceDialog {
 		defaultGoals = defaultGoalsEditor.getTextControl(topLevelContainer).getText();
 		Mevenide.getPlugin().setDefaultGoals(defaultGoals);
 		
-		pluginsInstallDir = pluginsInstallDirEditor.getTextControl(topLevelContainer).getText();
-		Mevenide.getPlugin().setPluginsInstallDir(pluginsInstallDir);
+		//pluginsInstallDir = pluginsInstallDirEditor.getTextControl(topLevelContainer).getText();
+		//Mevenide.getPlugin().setPluginsInstallDir(pluginsInstallDir);
 	}
 	
 	
@@ -270,12 +284,20 @@ public class MevenidePreferenceDialog {
 		mavenHome = home;
 	}
 
+	public void setMavenLocalHome(String home) {
+		mavenLocalHome = home;
+	}
+
 	public String getJavaHome() {
 		return javaHome;
 	}
 
 	public String getMavenHome() {
 		return mavenHome;
+	}
+
+	public String getMavenLocalHome() {
+		return mavenLocalHome;
 	}
 
 	public String getMavenRepo() {
@@ -315,12 +337,12 @@ public class MevenidePreferenceDialog {
 		return invalidPomTemplate;
 	}
 
-    public String getPluginsInstallDir() {
-        return pluginsInstallDir;
-    }
-
-    public void setPluginsInstallDir(String pluginsInstallDir) {
-        this.pluginsInstallDir = pluginsInstallDir;
-    }
+//    public String getPluginsInstallDir() {
+//        return pluginsInstallDir;
+//    }
+//
+//    public void setPluginsInstallDir(String pluginsInstallDir) {
+//        this.pluginsInstallDir = pluginsInstallDir;
+//    }
 
 }
