@@ -49,6 +49,7 @@
       <import plugin="org.eclipse.debug.core"/>
       <import plugin="org.eclipse.debug.ui"/>
       <import plugin="org.aspectj.ajde"/>
+      <import plugin="org.eclipse.ui.views"/>
    </requires>
 
 
@@ -218,6 +219,16 @@
             class="org.mevenide.ui.eclipse.preferences.MavenPreferencePage"
             id="maven.plugin.preferences.MavenPreferencePage">
       </page>
+   </extension>
+<!-- Synchronization View -->
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            name="Maven Synchronization View"
+            icon="icons/aspectjConsole.gif"
+            class="org.mevenide.ui.eclipse.sync.pom.views.SourceDirectoryPropertyView"
+            id="org.mevenide.sync.view">
+      </view>
    </extension>
 
 </plugin>

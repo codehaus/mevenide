@@ -50,6 +50,8 @@ public class MavenPlugin extends AbstractUIPlugin {
 	
 	public static String NATURE_ID ;
 	
+	public static String SYNCH_VIEW_ID = "org.mevenide.sync.view"; 
+	
 	private ResourceBundle resourceBundle;
 	
 	private String mavenHome;
