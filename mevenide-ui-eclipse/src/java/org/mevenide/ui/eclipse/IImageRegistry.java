@@ -44,6 +44,7 @@ public interface IImageRegistry {
     public static final String MAVEN_PROJECT_WIZ = "wizban/newmprj_wiz.gif"; //$NON-NLS-1$
     public static final String MAVEN_POM_WIZ = "wizban/newmfile_wiz.gif"; //$NON-NLS-1$
     public static final String POM_CHOICE_WIZ = "wizban/mfile_choose.gif"; //$NON-NLS-1$
+    public static final String EXT_TOOLS_WIZ = "wizban/ext_tools_wiz.gif"; //$NON-NLS-1$
     
     public static final String XML_ATTR_OBJ = "obj16/xmlattr_obj.gif"; //$NON-NLS-1$
     public static final String XML_TAG_OBJ = "obj16/xmltag_obj.gif"; //$NON-NLS-1$
@@ -97,5 +98,6 @@ public interface IImageRegistry {
             FOLDER_RESOURCE_OBJ,
             EXCLUSION_OBJ,
             COPY_TOOL,
+            EXT_TOOLS_WIZ,
     };
 }

@@ -16,7 +16,9 @@
  */
 package org.mevenide.ui.eclipse.nature;
 
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.internal.core.LaunchConfiguration;
 import org.eclipse.debug.ui.ILaunchConfigurationTab;
 import org.eclipse.debug.ui.RefreshTab;
@@ -31,6 +33,8 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
+import org.eclipse.swt.widgets.Text;
+import org.mevenide.ui.eclipse.IImageRegistry;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.launch.configuration.MavenArgumentsTab;
 
@@ -42,6 +46,11 @@ class CustomLaunchConfigurationDialog extends TitleAreaDialog {
     }
 
     protected Control createDialogArea(Composite parent) {
+        setTitle("Manage Maven Configurations");
+        setTitleImage(Mevenide.getInstance().getImageRegistry().get(IImageRegistry.EXT_TOOLS_WIZ));
+        setMessage("This dialog is used to control goal activation rules");
+        getShell().setText("Maven Configurations");
+        
         Composite mainArea = new Composite(parent, SWT.RESIZE);
         
         GridLayout layout = new GridLayout();
@@ -88,25 +97,60 @@ class CustomLaunchConfigurationDialog extends TitleAreaDialog {
     private void createConfigurationHandlerButton(Composite newDeleteButtonsArea, String buttonText) {
         Button newButton = new Button(newDeleteButtonsArea, SWT.NULL);
         newButton.setText(buttonText);
+        GridData data = new GridData();
+		newButton.setLayoutData(data);
         newButton.setAlignment(SWT.CENTER);
         newButton.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
     }
 
     private void createConfigurationTabs(Composite mainArea) {
-        TabFolder launchConfigurationTabFolder = new TabFolder(mainArea, SWT.NULL);
+        
+        Composite configurationTabsArea = new Composite(mainArea, SWT.NULL);
+        configurationTabsArea.setLayout(new GridLayout());
+        
+        createConfigurationNameArea(configurationTabsArea);
+        
+        TabFolder launchConfigurationTabFolder = new TabFolder(configurationTabsArea, SWT.NULL);
         launchConfigurationTabFolder.setLayoutData(new GridData(GridData.FILL_BOTH));
         
+        //@todo parametrize path
+        IPath launchConfigurationFile = Mevenide.getInstance().getStateLocation().append(new Path("configurations/one.cfg"));
+        LaunchConfiguration launchConfiguration = new LaunchConfiguration(launchConfigurationFile){};
+
         MavenArgumentsTab argumentsTab = new MavenArgumentsTab();
-        createTabItem(launchConfigurationTabFolder, argumentsTab, "Arguments");
+        createTabItem(launchConfigurationTabFolder, argumentsTab, "Arguments", launchConfiguration);
         
-        RefreshTab refreshTab = new RefreshTab();
-        createTabItem(launchConfigurationTabFolder, refreshTab, "Refresh");
+        RefreshTab refreshTab = new RefreshTab() {
+            public void initializeFrom(ILaunchConfiguration configuration) {
+                if ( configuration != null &&
+           	         configuration.getFile() != null && 
+        	         configuration.getFile().exists() ) {
+                    super.initializeFrom(configuration);
+                }
+	        }  
+        };
+        createTabItem(launchConfigurationTabFolder, refreshTab, "Refresh", launchConfiguration);
     }
 
-    private void createTabItem(TabFolder launchConfigurationTabFolder, ILaunchConfigurationTab argumentsTab, String tabText) {
+    private void createConfigurationNameArea(Composite mainArea) {
+        Composite nameArea = new Composite(mainArea, SWT.NULL);
+        GridLayout nameAreaLayout = new GridLayout();
+        nameAreaLayout.numColumns = 2;
+        nameAreaLayout.makeColumnsEqualWidth = false;
+        nameArea.setLayout(nameAreaLayout);
+        nameArea.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        
+        Text configurationNameLabel = new Text(nameArea, SWT.READ_ONLY);
+        configurationNameLabel.setText("Name:");
+        
+        Text configurationNameText = new Text(nameArea, SWT.BORDER);
+        configurationNameText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+    }
+
+    private void createTabItem(TabFolder launchConfigurationTabFolder, ILaunchConfigurationTab argumentsTab, String tabText, LaunchConfiguration launchConfiguration) {
         TabItem mavenArgumentsItem = new TabItem(launchConfigurationTabFolder, SWT.NULL);
         argumentsTab.createControl(launchConfigurationTabFolder);
-        argumentsTab.initializeFrom(new LaunchConfiguration(Mevenide.getInstance().getStateLocation().append(new Path("configurations/one.cfg"))){});
+        argumentsTab.initializeFrom(launchConfiguration);
         mavenArgumentsItem.setControl(argumentsTab.getControl());
         mavenArgumentsItem.setImage(argumentsTab.getImage());
         mavenArgumentsItem.setText(tabText);
