@@ -60,6 +60,10 @@ public class LocationFinderAggregator implements ILocationFinder {
         projectPropertiesLocationFinder = new ProjectPropertiesLocationFinder(context);
     }
     
+    /**
+     * @deprecated create the LocatioFinderAggregator with the IQueryContext constructor instead.
+     * This workflow parses the properties files too often.
+     */
     public void setEffectiveWorkingDirectory(String effectiveWorkingDirectory) {
         if (context != null) {
             throw new IllegalStateException("Possibly out-of-sych situation. Using IQueryContext and" + 

@@ -39,7 +39,9 @@ public abstract class CustomizablePropertiesLocationFinder extends PropertiesLoc
             effectiveWorkingDirectory = projDir.getAbsolutePath();
         }
     }
-    
+    /**
+     * @deprecated - user IContextQuery based constructor.
+     */
     public CustomizablePropertiesLocationFinder(String effectiveWorkingDirectory) throws FileNotFoundException, IOException {
         this.effectiveWorkingDirectory = effectiveWorkingDirectory;
         super.loadProperties();
