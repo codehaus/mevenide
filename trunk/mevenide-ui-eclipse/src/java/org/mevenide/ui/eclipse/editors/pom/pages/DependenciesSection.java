@@ -24,6 +24,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Dependency;
 import org.apache.maven.project.Project;
+import org.apache.maven.repository.Artifact;
+import org.apache.maven.repository.DefaultArtifactFactory;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
@@ -77,6 +79,15 @@ public class DependenciesSection extends PageSection {
 			public void overrideParent(Object value) {
 				List dependencies = (List) value;
 				pom.setDependencies(dependencies);
+				if ( dependencies != null ) {
+				    for (int i = 0; i < dependencies.size(); i++) {
+				        Artifact artifact = DefaultArtifactFactory.createArtifact((Dependency) dependencies.get(i));
+				        if ( pom.getArtifacts() == null ) {
+				            pom.setArtifacts(new ArrayList());
+				        }
+						pom.getArtifacts().add(artifact);
+				    }
+				}
 			}
 			public Object acceptParent() {
 				return getParentPom().getDependencies();
@@ -93,6 +104,9 @@ public class DependenciesSection extends PageSection {
 					dependency.setVersion("[version]");
 					dependency.setType("jar");
 					pom.addDependency(dependency);
+					Artifact artifact = DefaultArtifactFactory.createArtifact(dependency);
+					pom.setArtifacts(new ArrayList());
+					pom.getArtifacts().add(artifact);
 					return dependency;
 				}
 				public void moveObjectTo(int index, Object object, Object parentObject) {
