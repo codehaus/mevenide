@@ -1,0 +1,26 @@
+<project default="build-all"
+  xmlns:maven="jelly:maven">
+
+  <goal
+    name="build-all"
+    description="Build all Mevenide modules">
+    
+    <attainGoal name="build"/>
+    
+  </goal>
+  
+  <goal 
+    name="build"
+    description="Build each Mevenide module">
+
+    <maven:reactor
+      basedir="${basedir}"
+      includes="goals-grabber/project.xml, mevenide-core/project.xml, mevenide-ui-eclipse/project.xml"
+      goals="clean,java:compile,java:jar"
+      banner="Building"
+      ignoreFailures="false"
+    />
+    
+  </goal>
+
+</project>
