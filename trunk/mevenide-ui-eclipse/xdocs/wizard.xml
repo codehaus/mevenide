@@ -5,27 +5,49 @@
         <title>Help Page</title>
     </properties>
     <body>
-		<section name="POM Edition">
-        	<div id="documentContent">
-        	<p>
-				Mevenide provides simple wizard (Screenshot 1) based on java project wizards for creating maven-based projects. Convenient source and output folders are already filled in, and upon commit, a POM skeleton will be created.
-				in the future the wizard will be more flexible allowing to specify the POM more precisely.
-				<br/><br/>
-				<center>
-					<img border="1px" src="images/maven-wizard.png"/>
+		<section name="Maven Oriented Wizards">
+			<subsection name="Maven Project Wizard">
+				<div id="documentContent">
+				<p>
+					Mevenide provides simple wizard (Screenshot 1) based on java project wizards for creating maven-based projects. Convenient source and output folders are already filled in, and upon commit, a POM skeleton will be created.
+					in the future the wizard will be more flexible allowing to specify the POM more precisely.
 					<br/><br/>
-					<font size="-1"><b>Screenshot 1</b> Maven project wizard</font>
+					<center>
+						<img border="1px" src="images/maven-wizard.png"/>
+						<br/><br/>
+						<font size="-1"><b>Screenshot 1</b> Maven project wizard</font>
+						<br/><br/>
+					</center>
+				</p>
+				<p>
+					Also in the future a POM wizard will replace the 'Create POM' contextual action.
+				</p>
+				</div>
+			</subsection>
+			<subsection name="Simple POM Wizard">
+				<div id="documentContent">
+				<p>
+					Complementarily with the <a href="">POM</a> action, Mevenide provides a more flexible 
+					simple POM wizard (Screenshot 2). This allows user to have more control on the created 
+					POM. For now only identification attributes can be customized. 
 					<br/><br/>
-				</center>
-			</p>
-			<p>
-				Also in the future a POM wizard will replace the 'Create POM' contextual action.
-			</p>
-        	</div>
+					Also a template can be used at creation time. If no template is used, then all 
+					identification informations are to be filled.
+					<br/><br/>
+					<center>
+						<img border="1px" src="images/pom-wizard.png"/>
+						<br/><br/>
+						<font size="-1"><b>Screenshot 2</b> Maven project wizard</font>
+						<br/><br/>
+					</center>
+					
+				</p>
+				</div>
+			</subsection>
         </section>
         <section>
 			<p>
-				<navbar prev="contentassist.html" toc="help.html"/>
+				<navbar prev="contentassist.html" toc="help.html" next="provider-infrastructure.html"/>
 			</p>
 		</section>
 	</body>
