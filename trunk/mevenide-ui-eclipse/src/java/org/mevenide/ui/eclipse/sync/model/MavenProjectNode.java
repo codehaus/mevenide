@@ -32,9 +32,14 @@ import org.apache.maven.MavenUtils;
 import org.apache.maven.project.Project;
 import org.apache.maven.repository.Artifact;
 import org.eclipse.core.resources.IProject;
+import org.mevenide.environment.LocationFinderAggregator;
+import org.mevenide.project.ProjectConstants;
 import org.mevenide.project.io.ProjectReader;
+import org.mevenide.properties.resolver.DefaultsResolver;
+import org.mevenide.properties.resolver.PropFilesAggregator;
 import org.mevenide.ui.eclipse.util.EclipseProjectUtils;
 import org.mevenide.ui.eclipse.util.SourceDirectoryTypeUtil;
+import org.mevenide.util.MevenideUtils;
 
 /**  
  * 
@@ -55,19 +60,70 @@ public class MavenProjectNode extends AbstractSynchronizationNode implements ISe
 	private MavenArtifactNode[] originalArtifactNodes;
 	
 	private EclipseProjectNode parentNode;
+	private IProject eclipseProject;
+	
+	private PropFilesAggregator environmentLocator;
 	
 	public MavenProjectNode(Project project, EclipseProjectNode parentNode) {
 		mavenProject = project;
 		this.parentNode = parentNode;
+		eclipseProject = (IProject) parentNode.getData();
+		intializeEnvironmentLocator();
 		initialize();
 	}
 	
+	private void intializeEnvironmentLocator() {
+    	File projectDir = new File(eclipseProject.getLocation().toOSString()); 
+    	File userHomeDir = new File(System.getProperty("user.home"));
+    	LocationFinderAggregator finder = new LocationFinderAggregator();
+        finder.setEffectiveWorkingDirectory(projectDir.getAbsolutePath());
+    	environmentLocator = new PropFilesAggregator(
+    			                     projectDir, 
+    			                     userHomeDir, 
+									 new DefaultsResolver(projectDir, userHomeDir, finder));
+	}
+
 	private void initialize() {
 	    initializeArtifacts();
 	    initializeDirectories();
+	    initializeOutputFolders();
 	}
 	
-    /**
+    private void initializeOutputFolders() {
+    	try {
+			String defaultEclipseOutputFolder = EclipseProjectUtils.getRelativeDefaultOuputFolder(eclipseProject).replaceAll("\\\\", "/");
+			String defaultMavenOutputFolder = environmentLocator.getResolvedValue("maven.build.dest").replaceAll("\\\\", "/");
+			
+			if ( !defaultEclipseOutputFolder.equals(defaultMavenOutputFolder) ) {
+				DirectoryNode[] newNodes = new DirectoryNode[directoryNodes.length + 2];
+				System.arraycopy(directoryNodes, 0, newNodes, 0, directoryNodes.length);
+
+				DirectoryNode eclipseOutputFolderNode = createOutputFolderDirectoryNode(defaultEclipseOutputFolder);
+				eclipseOutputFolderNode.setDirection(ISelectableNode.OUTGOING_DIRECTION);
+				DirectoryNode mavenOutputFolderNode = createOutputFolderDirectoryNode(defaultMavenOutputFolder);
+				mavenOutputFolderNode.setDirection(ISelectableNode.INCOMING_DIRECTION);
+				
+				newNodes[directoryNodes.length] = eclipseOutputFolderNode;
+				newNodes[directoryNodes.length + 1] = mavenOutputFolderNode;
+				
+				directoryNodes = newNodes;
+			}
+		} 
+    	catch (Exception e) {
+			String message = "Unable to lookup eclipse default output folder"; 
+			log.error(message, e);
+		}
+	}
+
+	private DirectoryNode createOutputFolderDirectoryNode(String defaultEclipseOutputFolder) throws IOException {
+		Directory eclipseOutputDirectory = new Directory();
+		eclipseOutputDirectory.setPath(MevenideUtils.makeRelativePath(eclipseProject.getLocation().toFile(), defaultEclipseOutputFolder));
+		eclipseOutputDirectory.setType(ProjectConstants.MAVEN_DEFAULT_OUTPUT_LOCATION);
+		DirectoryNode eclipseOutputFolderNode = new DirectoryNode(eclipseOutputDirectory, this);
+		return eclipseOutputFolderNode;
+	}
+
+	/**
      * @todo iterate through parents to build the complete list of inherited artifacts
      * actually i thought again about it and im not too sure about that. if user wants to synchronize
      * projects with parent pom too shouldnot he as well pick up the parent in the dialog ? 
@@ -178,7 +234,6 @@ public class MavenProjectNode extends AbstractSynchronizationNode implements ISe
 	}
 
 	private ExcludeNode[] getEclipseExclusionFilterNodes(String eclipseSourceFolder, DirectoryNode directoryNode) {
-		IProject eclipseProject = (IProject) parentNode.getData();
 		String[] exclusionPatterns = EclipseProjectUtils.findExclusionPatterns(eclipseSourceFolder, eclipseProject);
 		if ( exclusionPatterns != null ) {
 			ExcludeNode[] nodes = new ExcludeNode[exclusionPatterns.length];
@@ -235,7 +290,6 @@ public class MavenProjectNode extends AbstractSynchronizationNode implements ISe
 	}
 	
 	public String toString() {
-		IProject eclipseProject = (IProject) parentNode.getData();
 		String projectPath = eclipseProject.getLocation().toOSString();
 		try {
 			return MavenUtils.makeRelativePath(new File(projectPath), mavenProject.getFile().getAbsolutePath()).replaceAll("\\\\", "/");

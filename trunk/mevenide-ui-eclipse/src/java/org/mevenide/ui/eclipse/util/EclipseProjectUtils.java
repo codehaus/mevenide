@@ -112,17 +112,7 @@ public class EclipseProjectUtils {
 			log.debug("retrieving output folders for project " + iproject.getName());
             try {
 				//add default ouput location
-				IPath defaultOuputFolder = project.getOutputLocation();
-				IResource resource;
-
-				//handle case where Project has not been configured yet and output folders is set to /
-				if ( defaultOuputFolder.segmentCount() == 1 ) {
-					//System.err.println(defaultOuputFolder.removeTrailingSeparator().toString());
-					resource = ResourcesPlugin.getWorkspace().getRoot().getProject(defaultOuputFolder.removeTrailingSeparator().toString());
-				}
-				else {
-					resource = ResourcesPlugin.getWorkspace().getRoot().getFolder(defaultOuputFolder);
-				}
+				IResource resource = getDefaultOuputFolder(iproject);
 
 				outputFolders.add(resource.getLocation().toFile());
 				log.debug("Added " + resource.getLocation() + " to output folder list");
@@ -146,6 +136,46 @@ public class EclipseProjectUtils {
 	    return outputFolders;
 	}
 	
+	public static String getRelativeDefaultOuputFolder(IProject project) throws JavaModelException {
+		return getDefaultOuputFolder(project).getLocation().toOSString();
+	}
+	
+	public static String getOutputFolder(String eclipseSourceFolder, IProject eclipseProject) {
+		IJavaProject javaProject = JavaCore.create(eclipseProject);
+		try {
+			IClasspathEntry[] entries = javaProject.getRawClasspath();
+			for (int i = 0; i < entries.length; i++) {
+				IClasspathEntry entry = entries[i];
+				if ( entry.getEntryKind() == IClasspathEntry.CPE_SOURCE && entry.getPath().removeFirstSegments(1).makeRelative().toString().equals(eclipseSourceFolder.replaceAll("\\\\", "/")) ) {
+					IPath outputFolder = entry.getOutputLocation();
+					return outputFolder.makeRelative().toString();	
+				}
+			}
+		} 
+		catch (JavaModelException e) {
+			String message = "unable to get outputfolder for : " + eclipseSourceFolder + ", " + eclipseProject.getLocation(); 
+			log.error(message, e);
+		}
+		return null;
+	}
+	
+	private static IResource getDefaultOuputFolder(IProject iproject) throws JavaModelException {
+		IJavaProject project = JavaCore.create(iproject);
+		
+		IPath defaultOuputFolder = project.getOutputLocation();
+		IResource resource;
+
+		//handle case where Project has not been configured yet and output folders is set to /
+		if ( defaultOuputFolder.segmentCount() == 1 ) {
+			//System.err.println(defaultOuputFolder.removeTrailingSeparator().toString());
+			resource = ResourcesPlugin.getWorkspace().getRoot().getProject(defaultOuputFolder.removeTrailingSeparator().toString());
+		}
+		else {
+			resource = ResourcesPlugin.getWorkspace().getRoot().getFolder(defaultOuputFolder);
+		}
+		return resource;
+	}
+
 	public static void attachJavaNature(IProject project) throws CoreException {
 		if ( !project.hasNature(JavaCore.NATURE_ID) ) {
 			IProjectDescription description = project.getDescription();

@@ -36,6 +36,7 @@ public class SynchronizatioNodeSorter extends ViewerSorter {
 	private static final int ASPECT_DIRECTORY_CATEGORY = 8;
 	private static final int UNIT_TEST_DIRECTORY_CATEGORY = 16;
 	private static final int RESOURCE_DIRECTORY_CATEGORY = 64;
+	private static final int OUTPUT_DIRECTORY_CATEGORY = 92;
 	private static final int NON_CATEGORIZED_DIRECTORY_CATEGORY = 127;
 	
 	public int category(Object element) {
@@ -52,6 +53,9 @@ public class SynchronizatioNodeSorter extends ViewerSorter {
 			}
 			if ( ProjectConstants.MAVEN_TEST_DIRECTORY.equals(directory.getType()) ) {
 				return UNIT_TEST_DIRECTORY_CATEGORY;
+			}
+			if ( ProjectConstants.MAVEN_DEFAULT_OUTPUT_LOCATION.equals(directory.getType()) ) {
+				return OUTPUT_DIRECTORY_CATEGORY;
 			}
 			if ( ProjectConstants.MAVEN_RESOURCE.equals(directory.getType()) 
 					|| ProjectConstants.MAVEN_TEST_RESOURCE.equals(directory.getType())) {
