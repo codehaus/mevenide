@@ -437,14 +437,14 @@ public abstract class PageSection {
 
 		Button inheritanceToggle = null;
 		if (isInherited()) {
-			inheritanceToggle = factory.createButton(parent, "", SWT.CHECK);
+			inheritanceToggle = factory.createButton(parent, " ", SWT.CHECK);
 			int vAlign = alignTop 
 				? GridData.VERTICAL_ALIGN_BEGINNING 
 				: GridData.VERTICAL_ALIGN_CENTER;
 			GridData data = new GridData(vAlign | GridData.HORIZONTAL_ALIGN_BEGINNING);
 			data.horizontalSpan = span;
-			data.widthHint = 5;
-			data.heightHint = 5;
+			data.widthHint = 8;
+			data.heightHint = 12;
 			inheritanceToggle.setLayoutData(data);
 			inheritanceToggle.setSize(SWT.DEFAULT, SWT.DEFAULT);
 		}
