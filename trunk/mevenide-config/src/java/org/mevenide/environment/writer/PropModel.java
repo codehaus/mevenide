@@ -29,21 +29,21 @@ public class PropModel
 {
     private List list;
     /** Creates a new instance of PropModel */
-    public PropModel()
+    PropModel()
     {
         list = new LinkedList();
     }
     /**
      * Adds an element to the endo of the file/model.
      */
-    public void addElement(Element el)
+    void addElement(Element el)
     {
         list.add(el);
     }
     /**
      * removes the element from model.
      */
-    public void removeElement(Element el)
+    void removeElement(Element el)
     {
         list.remove(el);
     }
@@ -51,12 +51,12 @@ public class PropModel
     /**
      * returns a copy of the model, is not live.
      */
-    public List getList()
+    List getList()
     {
         return new ArrayList(list);
     }
     
-    public int getSize()
+    int getSize()
     {
         return list.size();
     }
@@ -64,7 +64,7 @@ public class PropModel
     /**
      * inserts element at designated position.
      */
-    public boolean insertAt(int index, Element el)
+    boolean insertAt(int index, Element el)
     {
         if (index >= 0 && index < list.size())
         {
@@ -77,7 +77,7 @@ public class PropModel
     /**
      * based on the key from Properties, will look up an item in the model.
      */
-    public KeyValuePair findByKey(String key)
+    KeyValuePair findByKey(String key)
     {
         Iterator it = list.iterator();
         while (it.hasNext())
@@ -96,12 +96,12 @@ public class PropModel
     }
     
 
-    public static Comment createComment()
+    static Comment createComment()
     {
         return new Comment();
     }
     
-    public static KeyValuePair createKeyValuePair(String key, char keyseparator)
+    static KeyValuePair createKeyValuePair(String key, char keyseparator)
     {
         return new KeyValuePair(key, keyseparator);
     }
@@ -117,7 +117,7 @@ public class PropModel
         }
     }
     
-    public static class Comment extends Element
+    static class Comment extends Element
     {
         StringBuffer buf;
         private Comment()
@@ -141,7 +141,7 @@ public class PropModel
         }
     }
 
-    public static class KeyValuePair extends Element
+    static class KeyValuePair extends Element
     {
         private String key;
         private StringBuffer buf;
