@@ -32,6 +32,7 @@
 			<li>Remove unused Imports</li>
 			<li>Use FQ Imports</li>
 			<li>Brackets on the same line</li>
+			<li>Always use brackets</li>
 			<li>Use explicit naming</li>
 			<li>Methods should kept very short</li>
 			<li>Remove unneeded javadoc</li>
