@@ -193,8 +193,8 @@ public abstract class MavenXmlContentAssistProcessor implements IContentAssistPr
                     if (lastOpenTag != editor.getModel().getRoot() && lastOpenTag.getName().startsWith(start.substring(1))) {
                         cp = new CompletionProposal[1];
                         cp[0] = new CompletionProposal(lastOpenTag.getName() + ">", node.getOffset() + 2, offset
-                                - node.getOffset() - 2, lastOpenTag.getName().length() + 1, null, "Endtag for "
-                                + lastOpenTag.getName(), null, null);
+                                - node.getOffset() - 2, lastOpenTag.getName().length() + 1, null, "</"
+                                + lastOpenTag.getName() + ">", null, null);
                     }
                 }
                 else {
@@ -258,6 +258,7 @@ public abstract class MavenXmlContentAssistProcessor implements IContentAssistPr
         for (int i = 0; i < cp.length; i++) {
             String displayText = (String) words.get(i) ;
             String text = displayText + "=\"\"";
+            //IContextInformation contextInformation = createAttributeContextInformation(node.getName(), displayText);
             cp[i] = new CompletionProposal(text, offset - start.length(), start.length(), text.length() - 1, null, displayText, null, null);
         }
         return cp;
