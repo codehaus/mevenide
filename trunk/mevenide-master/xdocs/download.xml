@@ -65,30 +65,7 @@
 <p>                It's also possible to use with Netbeans 4.0 beta2, but the grammar module (code completion in project.xml and maven.xml files) will not work.
         </p>
       </div>
-  	  <div id="grammar">
-        <p>
-        The <b>mevenide-netbeans-grammar</b> module helps users when writing POM files, when customizing goals in maven.xml
-        or writing their own plugins (plugin.jelly files). For details on functionality, see <a href="mevenide-netbeans-grammar/index.html">the module's pages</a>.
-        </p>
-        <p> <b> <i>Netbeans 4.0 users have the module included in the download. </i></b></p>
-    	<p>
-         Latest <a href="release/mevenide-netbeans-grammar-0-2.zip">version 0.2 </a> works with Netbeans 3.6.
-        </p>
-        <p>
-        Previous <a href="release/mevenide-netbeans-grammar-0.1.zip">version 0.1 </a> works with Netbeans 3.5.1, however it's missing some <a href="mevenide-netbeans-grammar/changes-report.html">features</a> and users are encouraged to upgrade to 3.6
-        </p>
-      </div>
-  	  <div id="maven">
-        <p>
-    	  The <b>Mevenide Netbeans support for 3.6</b> allows to run arbitrary goals on a project, easily mount dependencies and
-          examine project's properties files. It works with 3.5.1 and 3.6. Is not actively developed anymore, focus goes to support
-          the upcoming Netbeans 4.0 which has advanced project support.
-        </p>
-        <p> 
-        The snapshot version can be downloaded <a href="release/mevenide-ui-netbeans-0-1-SNAPSHOT.zip"> here </a>.
-        </p>
-      </div>
-  	  <div id="plugin">
+      <div id="plugin">
         <p>
     	The <b>Maven NBM plugin</b> allows maven users to generate Netbeans modules from their projects. To install the plugin, follow instructions on the plugin's <a href="maven-nbm-plugin/index.html">page </a>.
         </p>
