@@ -1,18 +1,15 @@
 <project default="bootstrap">
-  <target name="init" description="o set the properties needed bby the build process">
-    
+  
+  <target name="init" description="o set the properties needed bby the build process">   
     <input message="Enter the root directory where to put the modules"
-    	   addproperty="co.dir"/>	
-   	
+    	   addproperty="co.dir"/>	   	
    	<condition property="quiet">
    	  <not>
         <available file="${co.dir}" type="dir" property="co.dir.present"/>
       </not>
     </condition>
     <delete quiet="${quiet}" dir="${co.dir}"/>
-    <mkdir dir="${co.dir}" />
-    
-    
+    <mkdir dir="${co.dir}" />  
   </target>
   
   <target name="bootstrap" depends="init, checkout" description="o run the build process">
@@ -21,7 +18,7 @@
   		 target="build-all"/>
   </target>
   
-  <target name="checkout" depends="init">
+  <target name="checkout" depends="init" description="o checkout all required modules from cvs repository">
     <cvs cvsRoot=":pserver:anonymous@cvs.sourceforge.net:/cvsroot/mevenide"
   		 dest="${co.dir}"
   		 package="goals-grabber"/>
