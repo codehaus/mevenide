@@ -393,9 +393,7 @@ public class Mevenide extends AbstractUIPlugin {
     public void setCurrentDir(String currentDir) {
 		this.currentDir = currentDir;
 	}
-	public IProject getProject() {
-		return project;
-	}
+
 	public void setProject(IProject project) {
 		this.project = project;
 		this.currentDir = project.getLocation().toOSString();
