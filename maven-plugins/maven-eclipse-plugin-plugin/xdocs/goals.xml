@@ -52,7 +52,10 @@
           </tr>
           <tr>
             <td>eclipse-plugin:create-site-dist</td>
-            <td>build a single distribution file containing all required plugins and features</td>
+            <td>
+            	build a single distribution zip file containing all required plugins and features, and create a local Update Site in 
+            	${maven.build.dir}/eclipse/dist/
+            </td>
           </tr>  		  
   		</table>
   		</div>
