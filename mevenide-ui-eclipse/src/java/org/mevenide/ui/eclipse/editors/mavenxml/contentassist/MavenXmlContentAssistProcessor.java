@@ -232,6 +232,13 @@ public abstract class MavenXmlContentAssistProcessor implements IContentAssistPr
     }
 
     protected ICompletionProposal[] computeAttributes(IDocument doc, XMLNode node, int offset) {
+        List attrs = node.getAttributes();
+        List nodeAttributes = new ArrayList(attrs.size());
+        for (Iterator iter = attrs.iterator(); iter.hasNext();) {
+            XMLNode element = (XMLNode) iter.next();
+            nodeAttributes.add(element.getName());
+        }
+        
         ICompletionProposal[] cp = null;
         Map namespaces = editor.getNamespaces();
         List words = new ArrayList();
@@ -247,6 +254,7 @@ public abstract class MavenXmlContentAssistProcessor implements IContentAssistPr
                 }
             }
         }
+        words.removeAll(nodeAttributes);
         Collections.sort(words);
         for (Iterator it = words.iterator(); it.hasNext();) {
             String s = (String) it.next();
