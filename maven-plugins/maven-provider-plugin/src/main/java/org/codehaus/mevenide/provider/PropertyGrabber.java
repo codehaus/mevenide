@@ -44,10 +44,16 @@ public class PropertyGrabber {
     
     private String propertyDescription;
     
+    private String pluginName;
+    
+    private String pluginVersion;
+    
     public void grab() throws GrabberException {
         createElementHandler();
         
         try {
+            elementHandler.setPluginName(pluginName);
+            elementHandler.setPluginVersion(pluginVersion);
             PropertyModel model = PropertyModelFactory.getFactory().newPropertyModel(propertyFile);
             List modelElements = model.getList();
             for (int i = 0; i < modelElements.size(); i++) {
@@ -91,5 +97,21 @@ public class PropertyGrabber {
     
     public void setPropertyFile(File propertyFile) {
         this.propertyFile = propertyFile;
+    }
+    
+    public String getPluginName() {
+        return pluginName;
+    }
+    
+    public void setPluginName(String pluginName) {
+        this.pluginName = pluginName;
+    }
+    
+    public String getPluginVersion() {
+        return pluginVersion;
+    }
+    
+    public void setPluginVersion(String pluginVersion) {
+        this.pluginVersion = pluginVersion;
     }
 }

@@ -27,7 +27,33 @@ import org.mevenide.properties.Element;
  */
 public interface IElementHandler {
 
+    static final String DOCTYPE = "\t<!ELEMENT plugin (property*)>\n" +  //$NON-NLS-1$
+                                  "\t<!ATTLIST plugin name CDATA #IMPLIED> \n" +  //$NON-NLS-1$
+                                  "\t<!ATTLIST property \n" +  //$NON-NLS-1$
+                                  "\t          name CDATA #REQUIRED \n" +  //$NON-NLS-1$
+                                  "\t          label CDATA #IMPLIED \n" +  //$NON-NLS-1$
+                                  "\t          default CDATA #IMPLIED \n" +  //$NON-NLS-1$
+                                  "\t          required (true|false) \"false\" \n" +  //$NON-NLS-1$
+                                  "\t          description CDATA #IMPLIED \n" +  //$NON-NLS-1$
+                                  "\t          validator CDATA #IMPLIED \n" +  //$NON-NLS-1$
+                                  "\t          validate (true|false) \"true\" \n" +  //$NON-NLS-1$
+                                  "\t          scope (project|global) \"project\" \n" +  //$NON-NLS-1$
+                                  "\t          category CDATA #IMPLIED>\n"; //$NON-NLS-1$
+
+    static final String DEFAULT_ATTR = "default"; //$NON-NLS-1$
+    static final String DESCRIPTION_ATTR = "description"; //$NON-NLS-1$
+    static final String INDENT = "    "; //$NON-NLS-1$
+    static final String NAME_ATTR = "name"; //$NON-NLS-1$
+    static final String PLUGIN_ELEMENT = "plugin"; //$NON-NLS-1$
+    static final String PLUGIN_NAME = "name"; //$NON-NLS-1$
+    static final String PLUGIN_VERSION = "version"; //$NON-NLS-1$
+    static final String PROPERTY_ELEMENT = "property"; //$NON-NLS-1$
+    
     void handle(Element element);
 
     String getXmlDescription();
+    
+    void setPluginName(String pluginName);
+    
+    void setPluginVersion(String pluginVersion);
 }

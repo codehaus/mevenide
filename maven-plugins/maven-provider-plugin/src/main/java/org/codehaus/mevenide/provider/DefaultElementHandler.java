@@ -20,7 +20,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Stack;
-import org.jdom.DocType;
 import org.jdom.Document;
 import org.jdom.output.XMLOutputter;
 import org.mevenide.properties.Comment;
@@ -34,42 +33,25 @@ import org.mevenide.properties.KeyValuePair;
  * @version $Id$
  * 
  */
-public class DefaultElementHandler implements IElementHandler {
+public class DefaultElementHandler extends  AbstractElementHandler {
 
-	//jdom way of dealing with dtd
-    private static final String DOCTYPE = "\t<!ELEMENT plugin (property*)>\n" +
-						         		  "\t<!ATTLIST plugin name CDATA #IMPLIED> \n" +
-						                  "\t<!ATTLIST property \n" + 
-						                  "\t          name CDATA #REQUIRED \n" +
-						                  "\t          label CDATA #IMPLIED \n" +
-						                  "\t          default CDATA #IMPLIED \n" + 
-						                  "\t          required (true|false) \"false\" \n" +
-						                  "\t          description CDATA #IMPLIED \n" + 
-						                  "\t          validator CDATA #IMPLIED \n" +
-						                  "\t          validate (true|false) \"true\" \n" + 
-						                  "\t          scope (project|global) \"project\" \n" +
-						    			  "\t          category CDATA #IMPLIED>\n";
-    
-    private static final String INDENT = "    "; //$NON-NLS-1$
-	private static final String DEFAULT_ATTR = "default"; //$NON-NLS-1$
-	private static final String DESCRIPTION_ATTR = "description"; //$NON-NLS-1$
-	private static final String NAME_ATTR = "name"; //$NON-NLS-1$
-	private static final String PROPERTY_ELEMENT = "property"; //$NON-NLS-1$
-	private static final String PLUGIN_ELEMENT = "plugin"; //$NON-NLS-1$
-
-	//stack of the comments found so far
+	/** stack of the comments found so far */
     private Stack contextStack = new Stack(); 
 
-    //commentStack is copied to backupStack before being cleared
-    //thus giving us a chance to categorize properties
+    /** 
+     * commentStack is copied to backupStack before being cleared
+     * thus giving us a chance to categorize properties
+     */ 
     private Stack backupStack;
     
-    //map hashed by the KeyValuePair
+    /** map hashed by the KeyValuePair */
     private Map propertyMap = new HashMap();
     
-    //map hashed by the KeyValuePair - should surely be possible to compute categories from # ---- comments
+    ///**
+    // * map hashed by the KeyValuePair - should surely be 
+    // * possible to compute categories from # ---- comments
+    // */ 
     //private Map categoryMap = new HashMap();
-    
     
     public void handle(Element element) {
         if ( element instanceof Comment ) {
@@ -79,7 +61,7 @@ public class DefaultElementHandler implements IElementHandler {
             handleKeyValuePair((KeyValuePair) element);
         }
     }
-
+    
     private void handleKeyValuePair(KeyValuePair pair) {
         String associatedComment = ""; //$NON-NLS-1$
         while ( !contextStack.isEmpty() ) {
@@ -112,6 +94,9 @@ public class DefaultElementHandler implements IElementHandler {
         setDocType(document);
         
         org.jdom.Element root = new org.jdom.Element(PLUGIN_ELEMENT);
+        root.setAttribute(PLUGIN_NAME, getPluginName());
+        root.setAttribute(PLUGIN_VERSION, getPluginVersion());
+        
         document.setRootElement(root);
         
         for (Iterator it = propertyMap.keySet().iterator(); it.hasNext();) {
@@ -127,12 +112,6 @@ public class DefaultElementHandler implements IElementHandler {
         
         return getString(document);
         
-    }
-
-	private void setDocType(Document document) {
-        DocType doctype = new DocType(PLUGIN_ELEMENT);
-        doctype.setInternalSubset(DOCTYPE);
-        document.setDocType(doctype);
     }
 
     private String getString(Document document) {
