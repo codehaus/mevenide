@@ -18,14 +18,11 @@ package org.mevenide.ui.eclipse.preferences;
 
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.mevenide.ui.eclipse.Mevenide;
-import org.mevenide.ui.eclipse.MevenidePreferenceKeys;
 
 /**
  * 
@@ -35,90 +32,15 @@ import org.mevenide.ui.eclipse.MevenidePreferenceKeys;
  *
  */
 public class MevenidePreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
-
-	private PreferencesManager manager;
-	
-    private MevenidePreferenceDialog dialog;
     
     public MevenidePreferencePage() {
         super(Mevenide.getResourceString("MavenPreferencePage.title"));
-        //setImageDescriptor(MavenPlugin.getImageDescriptor("sample.gif"));
-		manager = PreferencesManager.getManager();
-		manager.loadPreferences();
-        dialog = new MevenidePreferenceDialog(manager, this);
-       	
     }
-
-	
 
 	protected Control createContents(Composite parent) {
-		Composite composite = new Composite(parent, SWT.NULL);
-		GridLayout layout = new GridLayout();
-		layout.numColumns = 1;
-		
-		composite.setLayout(layout);
-		composite.setLayoutData(new GridData(GridData.FILL_BOTH));
-		
-		//*should*not be necessary
-		dialog.setJavaHome(manager.getValue(MevenidePreferenceKeys.JAVA_HOME_PREFERENCE_KEY));
-		dialog.setMavenHome(manager.getValue(MevenidePreferenceKeys.MAVEN_HOME_PREFERENCE_KEY));
-		dialog.setMavenRepo(manager.getValue(MevenidePreferenceKeys.MAVEN_REPO_PREFERENCE_KEY));
-		dialog.setPomTemplateLocation(manager.getValue(MevenidePreferenceKeys.POM_TEMPLATE_LOCATION_PREFERENCE_KEY));
-		dialog.setHeapSize(manager.getIntValue(MevenidePreferenceKeys.JAVA_HEAP_SIZE_PREFERENCE_KEY));
-		dialog.setDefaultGoals(manager.getValue(MevenidePreferenceKeys.DEFAULT_GOALS_PREFERENCE_KEY));
-		
-		return dialog.createContent(composite);
+	    return new Composite(parent, SWT.NULL);
 	}
   
-  
-    public boolean performOk() {
-       if ( dialog.canFinish() ) {
-        	return false;
-        }
-        else {
-            return finish();
-        }
-    }
-    
-	private boolean finish() {
-		dialog.update();
-		
-		manager.setValue(
-			MevenidePreferenceKeys.MAVEN_HOME_PREFERENCE_KEY, 
-			dialog.getMavenHome()
-		);
-		manager.setValue(
-			MevenidePreferenceKeys.MAVEN_LOCAL_HOME_PREFERENCE_KEY, 
-			dialog.getMavenLocalHome()
-		);
-		manager.setValue(
-			MevenidePreferenceKeys.JAVA_HOME_PREFERENCE_KEY, 
-			dialog.getJavaHome()
-		);
-		manager.setValue(
-			MevenidePreferenceKeys.MAVEN_REPO_PREFERENCE_KEY, 
-			dialog.getMavenRepo()
-		);
-		manager.setValue(
-			MevenidePreferenceKeys.POM_TEMPLATE_LOCATION_PREFERENCE_KEY, 
-			dialog.getPomTemplateLocation()
-		);
-		manager.setValue(
-			MevenidePreferenceKeys.DEFAULT_GOALS_PREFERENCE_KEY, 
-			dialog.getDefaultGoals()
-		);
-		
-		if ( dialog.getHeapSize() != 0 ) {
-			manager.setIntValue(MevenidePreferenceKeys.JAVA_HEAP_SIZE_PREFERENCE_KEY, dialog.getHeapSize());
-		}
-		
-		Mevenide.getInstance().initEnvironment();
-		
-		return manager.store();
-	}
-	
-	
-	
 	public void init(IWorkbench workbench) {
     }
 }
