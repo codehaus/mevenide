@@ -60,7 +60,7 @@ public class DefaultPathResolverDelegate implements IPathResolverDelegate {
 	            ); 
 		
 	    pathToAdd = (pathToAdd.equals("/") || pathToAdd.equals("")) 
-		            ? "${basedir}" : "${basedir}" + pathToAdd; 
+		            ? "${basedir}" : pathToAdd.substring(1); 
 	                
 		return pathToAdd;
 	}
@@ -79,19 +79,14 @@ public class DefaultPathResolverDelegate implements IPathResolverDelegate {
 	/**
 	 * @refactor JDOM (again !!!)
 	 */
-    public String getMavenSourceType(IClasspathEntry entry, IProject project) throws Exception {
-		String path = "";
-		if (entry.getPath().segmentCount() != 0) {
-			path = entry.getPath().removeFirstSegments(1).toString();
-			//path = path.substring(1, path.length());
-		}
-	
+    public String getMavenSourceType(String sourceDirectoryPath, IProject project) throws Exception {
+		
 //		String entryKind = "src";
 		Document doc = new SAXBuilder().build(project.getFile(".classpath").getLocation().toFile().getAbsoluteFile());
 		Element classpath = doc.getRootElement();
 		List classpathEntries = classpath.getChildren("classpathentry");
 	
-		return searchSourceType(path, classpathEntries);
+		return searchSourceType(sourceDirectoryPath, classpathEntries);
 	}
 
 	/**

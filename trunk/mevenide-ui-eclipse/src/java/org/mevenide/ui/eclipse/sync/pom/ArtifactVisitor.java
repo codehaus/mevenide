@@ -51,7 +51,7 @@ public class ArtifactVisitor {
 		writer.addSource(
 			pathToAdd, 
 			pomSynchronizer.getPom(), 
-			pathResolver.getMavenSourceType(classpathEntry, project)
+			pathResolver.getMavenSourceType(pathToAdd, project)
 		);
 	}
 	
@@ -83,7 +83,7 @@ public class ArtifactVisitor {
 		
 		File referencedPom = projectPath.append("project.xml").toFile();
 		if ( !referencedPom.exists() ) {
-			//project isnot mavenized, mavenize it as well
+			//@todo project isnot mavenized, mavenize it as well
 		}
 		
 		ProjectWriter writer = ProjectWriter.getWriter();

@@ -44,11 +44,6 @@ public interface IPathResolverDelegate {
 	 */
 	public abstract String getAbsolutePath(IPath path);
     
-	/**
-	 * 
-	 */
-	public abstract String getMavenSourceType(
-		IClasspathEntry entry,
-		IProject project)
+	public abstract String getMavenSourceType(String sourceDirectoryPath, IProject project)
 		throws Exception;
 }
