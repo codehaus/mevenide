@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin
+   id="@maven.eclipse.plugin.artifact.id@"
+   name="Mevenide Config"
+   version="@maven.eclipse.plugin.artifact.version@"
+   provider-name="Sourceforge">
+
+   <requires>
+      <import plugin="@org.mevenide.core.id@"/>
+   </requires>
+	
+   <runtime>
+      <library name="mevenide-core-0.1-SNAPSHOT.jar">
+         <export name="*"/>
+         <packages prefixes="org.mevenide.environment"/>
+      </library>
+   </runtime>
+   
+</plugin>
