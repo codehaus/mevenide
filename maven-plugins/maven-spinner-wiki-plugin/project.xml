@@ -1,25 +1,18 @@
 <project>
-    <pomVersion>3</pomVersion>
-    <groupId>mevenide</groupId>
+	<extend>${basedir}/../mevenide-master/plugin-base-project.xml</extend>
+	
+	<pomVersion>3</pomVersion>
+	
     <id>maven-spinner-wiki-plugin</id>
     <artifactId>maven-spinner-wiki-plugin</artifactId>
     <name>Spinner Wiki Plugin</name>
+ 
     <currentVersion>0.1-SNAPSHOT</currentVersion>
-    <logo>/images/mevenide-simple-125x37.png</logo>
-    <organization>
-      <name>Mevenide @ Sourceforge</name>
-      <url>http://sf.net/</url>
-      <logo>http://sourceforge.net/sflogo.php?group_id=54263&amp;type=2</logo>
-    </organization>
+
     <shortDescription>This plugin Spinner Wiki templates that has the same look-n-feel than the generated site.</shortDescription>
+ 
     <inceptionYear>2003</inceptionYear>
-    <siteAddress>shell.sourceforge.net</siteAddress>
-	<siteDirectory>/home/groups/m/me/mevenide/htdocs/${artifactId}</siteDirectory>
-  	<repository>
-      <connection>scm:cvs:pserver:anonymous@cvs.sourceforge.net:/cvsroot/mevenide:maven-plugins/${pom.artifactId}</connection>
-      <developerConnection>scm:cvs:ext:${maven.username}@cvs.sourceforge.net:/cvsroot/mevenide:maven-plugins/${pom.artifactId}</developerConnection>
-      <url>http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/mevenide/maven-plugins/${pom.artifactId}/</url>
-    </repository>
+
     <developers>
     	<developer>
     		<name>Gilles Dodinet</name>
@@ -33,6 +26,7 @@
     		<timezone>+1</timezone>
     	</developer>
     </developers>
+    
     <dependencies>
         <dependency>
             <groupId>commons-jelly</groupId>
@@ -99,7 +93,5 @@
 	    </resource>	
       </resources>
 	</build>
-	<reports>
-		<!-- to be done -->
-	</reports>
+
 </project>
