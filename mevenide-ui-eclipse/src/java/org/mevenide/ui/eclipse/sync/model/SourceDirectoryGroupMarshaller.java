@@ -115,7 +115,7 @@ public class SourceDirectoryGroupMarshaller {
 						Element sourceDirectoryElement =  (Element) sources.get(j);
 						
 						SourceDirectory sourceDirectory 
-							= new SourceDirectory(sourceDirectoryElement.getAttributeValue(PATH_ATTR));
+							= new SourceDirectory(sourceDirectoryElement.getAttributeValue(PATH_ATTR), group);
 						
 						boolean isInherited = Boolean.valueOf(sourceDirectoryElement.getAttributeValue(INHERIT_ATTR)).booleanValue();
 						sourceDirectory.setInherited(isInherited);

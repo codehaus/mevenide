@@ -87,6 +87,12 @@ public class DependencyGroupContentProvider implements ITreeContentProvider {
 		public String getTitle() {
 			return title;
 		}
+        public DependencyWrapper getDependencyWrapper() {
+            return wrapper;
+        }
+        public void setDependencyWrapper(DependencyWrapper wrapper) {
+            this.wrapper = wrapper;
+        }
 		protected abstract void updateDependency();
 	}
 	
@@ -163,7 +169,10 @@ public class DependencyGroupContentProvider implements ITreeContentProvider {
 
 	public Object getParent(Object element) {
 		if ( element instanceof DependencyInfo ) {
-			return ((DependencyInfo) element).getDependency();
+			return ((DependencyInfo) element).getDependencyWrapper();
+		}
+		if ( element instanceof DependencyWrapper ) {
+			return ((DependencyWrapper) element).getDependencyGroup();
 		}
 		return null;
 	}

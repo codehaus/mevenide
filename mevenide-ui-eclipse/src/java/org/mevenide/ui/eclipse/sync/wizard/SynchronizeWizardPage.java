@@ -126,7 +126,7 @@ public class SynchronizeWizardPage extends WizardPage {
 	
 	private IProject project;
 	
-	private TableViewer sourceDirectoriesviewer;
+	private TableViewer sourceDirectoriesViewer;
 	
 	private TableTreeViewer dependenciesViewer;
 	private Button addDependencyButton;
@@ -209,17 +209,13 @@ public class SynchronizeWizardPage extends WizardPage {
 		isInheritedEditor.setPropertyChangeListener(
 			new IPropertyChangeListener() {
 				public void propertyChange(PropertyChangeEvent event) {
-					if ( ((Boolean) event.getNewValue()).booleanValue() ) {
-						//doesnot work yet
-						dependenciesViewer.getCellEditors()[2].deactivate();
-						sourceDirectoriesviewer.getCellEditors()[2].deactivate();
-					}
-					else {
-						//doesnot work yet
-						dependenciesViewer.getCellEditors()[2].activate();
-						sourceDirectoriesviewer.getCellEditors()[2].activate();
-					}
+					((DependencyGroup)dependenciesViewer.getInput()).setInherited(((Boolean) event.getNewValue()).booleanValue());
+					((SourceDirectoryGroup)sourceDirectoriesViewer.getInput()).setInherited(((Boolean) event.getNewValue()).booleanValue());
+					
 					parentPomEditor.setEnabled(((Boolean) event.getNewValue()).booleanValue(), bottomControls);
+					
+					dependenciesViewer.refresh(true);
+					sourceDirectoriesViewer.refresh(true);
                 }
 			}
 		);		
@@ -258,7 +254,7 @@ public class SynchronizeWizardPage extends WizardPage {
 		data.grabExcessHorizontalSpace = true;
 		composite.setLayoutData(data);
 	
-		sourceDirectoriesviewer = SourceDirectoryMappingViewControl.getViewer(composite, SWT.BORDER);
+		sourceDirectoriesViewer = SourceDirectoryMappingViewControl.getViewer(composite, SWT.BORDER);
 		setSourceDirectoriesInput(((SynchronizeWizard)getWizard()).getProject());
 	}
 
@@ -300,9 +296,9 @@ public class SynchronizeWizardPage extends WizardPage {
 					public void widgetSelected(SelectionEvent e) {
 						IContainer container = openSourceDirectoryDialog();
 						if ( container != null ) {
-							SourceDirectory directory = new SourceDirectory(container.getFullPath().removeFirstSegments(1).toOSString());
-							((SourceDirectoryGroup) sourceDirectoriesviewer.getInput()).addSourceDirectory(directory);
-							sourceDirectoriesviewer.refresh();
+							SourceDirectory directory = new SourceDirectory(container.getFullPath().removeFirstSegments(1).toOSString(), ((SourceDirectoryGroup)sourceDirectoriesViewer.getInput()));
+							((SourceDirectoryGroup) sourceDirectoriesViewer.getInput()).addSourceDirectory(directory);
+							sourceDirectoriesViewer.refresh();
 						}
 					
 					}
@@ -312,12 +308,12 @@ public class SynchronizeWizardPage extends WizardPage {
 		removeButton.addSelectionListener(
 				new SelectionAdapter() {
 					public void widgetSelected(SelectionEvent e) {
-						TableItem[] items = sourceDirectoriesviewer.getTable().getSelection();
+						TableItem[] items = sourceDirectoriesViewer.getTable().getSelection();
 						for (int i = 0; i < items.length; i++) {
 							TableItem item = items[i];
-							((SourceDirectoryGroup) sourceDirectoriesviewer.getInput()).getSourceDirectories().remove(item.getData());
-							((SourceDirectoryGroup) sourceDirectoriesviewer.getInput()).excludeSourceDirectory((SourceDirectory) item.getData());
-							sourceDirectoriesviewer.refresh();
+							((SourceDirectoryGroup) sourceDirectoriesViewer.getInput()).getSourceDirectories().remove(item.getData());
+							((SourceDirectoryGroup) sourceDirectoriesViewer.getInput()).excludeSourceDirectory((SourceDirectory) item.getData());
+							sourceDirectoriesViewer.refresh();
 						}
 					}
 				}
@@ -333,7 +329,7 @@ public class SynchronizeWizardPage extends WizardPage {
 	}
 
 	private void initSourceDirectoriesInput(IProject project) {
-		sourceDirectoriesviewer.setInput(new SourceDirectoryGroup(project));
+		sourceDirectoriesViewer.setInput(new SourceDirectoryGroup(project));
 	}
 
 	private IContainer openSourceDirectoryDialog() {
@@ -351,7 +347,7 @@ public class SynchronizeWizardPage extends WizardPage {
 		}
 	
 		//added
-		List list = ((SourceDirectoryGroup)sourceDirectoriesviewer.getInput()).getSourceDirectories();
+		List list = ((SourceDirectoryGroup)sourceDirectoriesViewer.getInput()).getSourceDirectories();
 		for (int i = 0; i < list.size(); i++) {
 			SourceDirectory directory = (SourceDirectory) list.get(i);
 			rejectedElements.add(project.getFolder(directory.getDirectoryPath()));
@@ -381,7 +377,7 @@ public class SynchronizeWizardPage extends WizardPage {
 
 	private void setSourceDirectoriesInput(IProject project) {
 		this.project = project;
-		if ( sourceDirectoriesviewer.getContentProvider() != null ) {
+		if ( sourceDirectoriesViewer.getContentProvider() != null ) {
 			SourceDirectoryGroup newInput = null ;
 			try {
 		
@@ -397,7 +393,7 @@ public class SynchronizeWizardPage extends WizardPage {
 				newInput = new SourceDirectoryGroup(project);
 			}
 	
-			sourceDirectoriesviewer.setInput(newInput);
+			sourceDirectoriesViewer.setInput(newInput);
 		}
 	}
 		
@@ -632,7 +628,7 @@ public class SynchronizeWizardPage extends WizardPage {
 	
 	
 	public void saveState() throws Exception {
-		SourceDirectoryGroupMarshaller.saveSourceDirectoryGroup((SourceDirectoryGroup)sourceDirectoriesviewer.getInput(), Mevenide.getPlugin().getFile("sourceTypes.xml"));
+		SourceDirectoryGroupMarshaller.saveSourceDirectoryGroup((SourceDirectoryGroup)sourceDirectoriesViewer.getInput(), Mevenide.getPlugin().getFile("sourceTypes.xml"));
 		DependencyGroupMarshaller.saveDependencyGroup((DependencyGroup)dependenciesViewer.getInput(), Mevenide.getPlugin().getFile("statedDependencies.xml"));
 		inheritancePropertiesStore.setValue("pom." + project.getName() + ".isInherited", isInheritedEditor.getBooleanValue());
 		inheritancePropertiesStore.setValue("pom." + project.getName() + ".parent", parentPomEditor.getTextControl(bottomControls).getText());
