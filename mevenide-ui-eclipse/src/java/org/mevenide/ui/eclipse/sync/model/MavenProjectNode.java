@@ -154,6 +154,9 @@ public class MavenProjectNode extends AbstractSynchronizationNode implements ISe
 	    
 	    project.setContext(MavenUtils.createContext(project.getFile().getParentFile()));
 	    
+	    if ( project.getDependencies() == null ) {
+	        project.setDependencies(new ArrayList());
+	    }
 		List artifacts = ArtifactListBuilder.build(project);
 		
 		//restore user.dir
