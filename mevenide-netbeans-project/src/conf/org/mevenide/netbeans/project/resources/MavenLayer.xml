@@ -87,5 +87,11 @@
         </file>
       </folder> <!-- Building -->
     </folder> <!-- Services -->
-  </folder>     
+  </folder>   
+  <!-- Lines marked as erroneous: -->
+  <folder name="Editors">
+    <folder name="AnnotationTypes">
+      <file name="org-mevenide-netbeans-project-error.xml" url="error-annotation.xml"/>
+    </folder>
+  </folder>    
 </filesystem>

@@ -21,6 +21,7 @@ import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.beans.SimpleBeanInfo;
+import org.mevenide.netbeans.project.editors.DownloadMeterEditor;
 import org.mevenide.netbeans.project.exec.GoalsListPropEditor;
 import org.openide.ErrorManager;
 import org.openide.util.NbBundle;
@@ -50,12 +51,15 @@ public class MavenSettingsBeanInfo extends SimpleBeanInfo {
             PropertyDescriptor nonverbose = new PropertyDescriptor ("nonverbose", MavenSettings.class); //NOI18N
             nonverbose.setDisplayName (NbBundle.getMessage (MavenSettingsBeanInfo.class, "PROP_nonverbose")); //NOI18N
             nonverbose.setShortDescription (NbBundle.getMessage (MavenSettingsBeanInfo.class, "HINT_nonverbose")); //NOI18N
-            
+            PropertyDescriptor downloader = new PropertyDescriptor ("downloader", MavenSettings.class); //NOI18N
+            downloader.setDisplayName (NbBundle.getMessage (MavenSettingsBeanInfo.class, "PROP_downloader")); //NOI18N
+            downloader.setShortDescription (NbBundle.getMessage (MavenSettingsBeanInfo.class, "HINT_downloader")); //NOI18N
+            downloader.setPropertyEditorClass(DownloadMeterEditor.class);
             
             PropertyDescriptor hint = new PropertyDescriptor ("showAddFavouriteHint", MavenSettings.class); //NOI18N
             hint.setHidden(true);
             
-            return new PropertyDescriptor[] { topGoals, hint, noBanner, offline, debug, exceptions, nonverbose};
+            return new PropertyDescriptor[] { topGoals, hint, noBanner, offline, debug, exceptions, nonverbose, downloader};
         } catch (IntrospectionException ie) {
             ErrorManager.getDefault().notify(ie);
             return new PropertyDescriptor[0];

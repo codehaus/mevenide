@@ -30,7 +30,7 @@ public class MavenSettings extends SystemOption {
     public static final String PROP_DEBUG = "debug"; //NOI18N
     public static final String PROP_EXCEPTIONS = "exceptions"; //NOI18N
     public static final String PROP_NONVERBOSE = "nonverbose"; //NOI18N
-    
+    public static final String PROP_DOWNLOADER = "downloader"; //NOI18N
     
     private static final long serialVersionUID = -4857548488373547L;
     
@@ -48,6 +48,7 @@ public class MavenSettings extends SystemOption {
         setNonverbose(false);
         setExceptions(false);
         setDebug(false);
+        setDownloader("silent");
     }
     
     public String displayName() {
@@ -62,10 +63,10 @@ public class MavenSettings extends SystemOption {
         return (MavenSettings) findObject(MavenSettings.class, true);
     }
     
-    public static File getUserHome() {
-        String home = System.getProperty("user.home");
-        return new File(home);
-    }
+//    public static File getUserHome() {
+//        String home = System.getProperty("user.home");
+//        return new File(home);
+//    }
     
     /** will get the favourite maven goals, used in executor action
      * @return Value of property topGoals.
@@ -145,5 +146,12 @@ public class MavenSettings extends SystemOption {
         putProperty(PROP_NONVERBOSE, Boolean.valueOf(nonverbose), true);
     }
     
+   public String getDownloader() {
+        return (String)getProperty(PROP_DOWNLOADER);
+    }
+    
+    public void setDownloader(String downloader) {
+        putProperty(PROP_DOWNLOADER, downloader, true);
+    }    
     
 }

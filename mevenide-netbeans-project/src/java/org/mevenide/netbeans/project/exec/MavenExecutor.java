@@ -47,6 +47,7 @@ public class MavenExecutor implements Runnable {
     public static final String FORMAT_DEBUG = "debug"; //NOI18N
     public static final String FORMAT_EXCEPTIONS = "exceptions"; //NOI18N
     public static final String FORMAT_NONVERBOSE = "nonverbose"; //NOI18N
+    public static final String FORMAT_DOWNLOADMETER = "downloadmeter"; //NOI18N
     
     // -- default value
     private String goal = "dist"; //NOI18N 
@@ -55,6 +56,7 @@ public class MavenExecutor implements Runnable {
     private boolean debug = false;
     private boolean exceptions = false;
     private boolean nonverbose = false;
+    private String meter = "silent"; //NOI18N
     
     private static final long serialVersionUID = 7564737833872873L;
     private NbProcessDescriptor descriptor;
@@ -94,6 +96,8 @@ public class MavenExecutor implements Runnable {
         mavenExeFmt.append("} {");
         mavenExeFmt.append(FORMAT_NONVERBOSE);
         mavenExeFmt.append("} {");
+        mavenExeFmt.append(FORMAT_DOWNLOADMETER);
+        mavenExeFmt.append("} {");
         mavenExeFmt.append(FORMAT_GOAL);
         mavenExeFmt.append("}");
 //        String mavenExeFmt = "{" + FORMAT_MAVEN_HOME + "}/" + "bin/maven"; //NOI18N
@@ -124,6 +128,10 @@ public class MavenExecutor implements Runnable {
         nonverbose = nv;
     }
     
+    public void setDownloadMeter(String met) {
+        meter = met;
+    }
+    
     public Process createProcess() throws IOException {
         File execDir = FileUtil.toFile(project.getProjectDirectory());
         HashMap formats = new HashMap(5);
@@ -134,6 +142,11 @@ public class MavenExecutor implements Runnable {
         formats.put(FORMAT_DEBUG, debug ? "-X" : ""); //NOI18N
         formats.put(FORMAT_EXCEPTIONS, exceptions ? "--exception" : ""); //NOI18N
         formats.put(FORMAT_NONVERBOSE, nonverbose ? "--quiet" : ""); //NOI18N
+        if (!offline) {
+            formats.put(FORMAT_DOWNLOADMETER, "default".equals(meter) ? "" : "-Dmaven.download.meter=" + meter); //NOI18N
+        } else {
+            formats.put(FORMAT_DOWNLOADMETER, ""); //NOI18N
+        }
         String procString = MapFormat.format(format, formats);
         Process proc = Runtime.getRuntime().exec(procString, null, execDir);
         InputOutput ioput = getInputOutput();
