@@ -17,6 +17,8 @@
 
 package org.mevenide.netbeans.project.nodes;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -41,17 +43,37 @@ class MavenProjectChildren extends Keys
     private static final Object KEY_ASPECT_SOURCE_DIR = "aspectSrcDir"; // NOI18N
     private static final Object KEY_INTEG_TEST_SOURCE_DIR = "integrationTestSrcDir"; // NOI18N
     private static final Object KEY_JELLY_SCRIPT = "jellyScript"; //NOI18N
+    private static final Object KEY_RESOURCES = "resources"; //NOI18N
     
     private MavenProject project;
-    
+    private PropertyChangeListener changeListener;
     public MavenProjectChildren(MavenProject project)
     {
         this.project = project;
+        changeListener  = new PropertyChangeListener() {
+            public void propertyChange(PropertyChangeEvent evt) {
+                regenerateKeys();
+                refresh();
+            }
+        };
     }
     
     protected void addNotify()
     {
         super.addNotify();
+        project.addPropertyChangeListener(changeListener);
+        regenerateKeys();
+    }
+    
+    protected void removeNotify()
+    {
+        setKeys(Collections.EMPTY_SET);
+        project.removePropertyChangeListener(changeListener);
+        super.removeNotify();
+
+    }
+    
+    private void regenerateKeys() {
         List list = new ArrayList();
         Project proj = project.getOriginalMavenProject();
         Build build = proj.getBuild();
@@ -68,6 +90,10 @@ class MavenProjectChildren extends Keys
             if (build.getIntegrationUnitTestSourceDirectory() != null) {
                 list.add(KEY_INTEG_TEST_SOURCE_DIR);
             }
+            List reso = build.getResources();
+            if (reso != null && reso.size() > 0) {
+                list.add(KEY_RESOURCES);
+            }
         }
         FileObject fo = project.getProjectDirectory().getFileObject("plugin", "jelly");
         if (fo != null) {
@@ -75,15 +101,11 @@ class MavenProjectChildren extends Keys
         }
         setKeys(list);
     }
-    
-    protected void removeNotify()
-    {
-        setKeys(Collections.EMPTY_SET);
-        super.removeNotify();
-    }
+
     
     protected Node[] createNodes(Object key)
     {
+        //TODO replace all project stuff with the resolved paths..
         Node n = null;
         Project proj = project.getOriginalMavenProject();
         if (key == KEY_SOURCE_DIR)
@@ -125,6 +147,9 @@ class MavenProjectChildren extends Keys
         }
         else if (key == KEY_JELLY_SCRIPT) {
             n = new PluginScriptNode(project.getProjectDirectory());
+        }
+        else if (key == KEY_RESOURCES) {
+            n = new ResourcesRootNode(project);
         }
         return n == null ? new Node[0] : new Node[] {n};
     }
