@@ -258,7 +258,7 @@ public class ProjectComparator {
 				detectObjectChange(newRepo, originalRepo);
                 detectAttributeChange(newRepo.getName(), originalRepo.getName());
                 detectAttributeChange(newRepo.getConnection(), originalRepo.getConnection());
-                detectAttributeChange(newRepo.getConnection(), originalRepo.getConnection());
+                detectAttributeChange(newRepo.getDeveloperConnection(), originalRepo.getDeveloperConnection());
                 detectAttributeChange(newRepo.getUrl(), originalRepo.getUrl());
             }
             catch (ShortCircuitException e) {
