@@ -17,8 +17,10 @@
 package org.mevenide.ui.eclipse.repository.view;
 
 import org.eclipse.jface.viewers.CellEditor;
+import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TextCellEditor;
+import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -27,6 +29,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.part.ViewPart;
 import org.mevenide.ui.eclipse.preferences.PreferencesManager;
+import org.mevenide.ui.eclipse.repository.model.Type;
 
 
 /**  
@@ -58,8 +61,10 @@ public class SearchResultView extends ViewPart {
         
         createSearchResultTable(parent);
     }
-
     
+    public void setInput(Type type) {
+        searchResults.setInput(type);
+    }
 
     private void createSearchResultTable(Composite resultContainer) {
         Table table = createTable(resultContainer);
@@ -75,7 +80,19 @@ public class SearchResultView extends ViewPart {
         }
         
         searchResults.setCellEditors(editors);
-        
+        searchResults.setContentProvider(new IStructuredContentProvider(){
+            public void dispose() {
+            }
+            public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+            }
+            public Object[] getElements(Object inputElement) {
+                if ( inputElement instanceof Type ) {
+                    return ((Type) inputElement).getChildren(); 
+                }
+                return null;
+            }
+        });
+        searchResults.setLabelProvider(new SearchResultLabelProvider());
     }
 
     private Table createTable(Composite resultContainer) {

@@ -20,14 +20,22 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.TreeSet;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.preference.PreferenceDialog;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.events.ExpansionAdapter;
 import org.eclipse.ui.forms.events.ExpansionEvent;
@@ -41,7 +49,12 @@ import org.eclipse.ui.internal.dialogs.WorkbenchPreferenceDialog;
 import org.eclipse.ui.part.ViewPart;
 import org.mevenide.ui.eclipse.IImageRegistry;
 import org.mevenide.ui.eclipse.Mevenide;
+import org.mevenide.ui.eclipse.MevenideColors;
 import org.mevenide.ui.eclipse.preferences.DependencyTypeRegistry;
+import org.mevenide.ui.eclipse.repository.model.Group;
+import org.mevenide.ui.eclipse.repository.model.Repository;
+import org.mevenide.ui.eclipse.repository.model.Type;
+import org.mevenide.util.StringUtils;
 
 
 /**  
@@ -50,7 +63,7 @@ import org.mevenide.ui.eclipse.preferences.DependencyTypeRegistry;
  * @version $Id$
  * 
  */
-public class SearchQueryView extends ViewPart {
+public class SearchQueryView extends ViewPart implements RepositoryEventListener {
 
     private Text groupText;
     private Combo typeCombo;
@@ -60,6 +73,7 @@ public class SearchQueryView extends ViewPart {
     
     private FormToolkit toolkit;
     private ScrolledForm form;
+    private Text errorText;
     
     public void createPartControl(Composite parent) {
         toolkit = new FormToolkit(parent.getDisplay());
@@ -85,18 +99,42 @@ public class SearchQueryView extends ViewPart {
     	sectionClient.setLayout(clientLayout);
     	sectionClient.setLayoutData(new GridData(GridData.FILL_BOTH));
     	
+    	createErrorMessageArea(sectionClient);
     	createRepoCombo(sectionClient);
         createTypeCombo(sectionClient);
         createGroupText(sectionClient);
         
         section.setClient(sectionClient);
+
+        updateButton();
         
     }
 
     
+    private void createErrorMessageArea(Composite sectionClient) {
+        errorText = toolkit.createText(sectionClient, null, SWT.READ_ONLY | SWT.FLAT);
+        GridData data = new GridData(GridData.FILL_HORIZONTAL);
+        data.horizontalSpan = 2;
+        errorText.setLayoutData(data);
+        
+        errorText.setBackground(errorText.getParent().getBackground());
+        errorText.setForeground(MevenideColors.RED);
+        errorText.setText("All fields are required");
+    }
+
+
+    private void updateButton() {
+        boolean hasError = StringUtils.isNull(repoCombo.getText()) ||
+        				   StringUtils.isNull(typeCombo.getText()) ||
+        				   StringUtils.isNull(groupText.getText()) ;
+        errorText.setVisible(hasError);
+        searchButton.setEnabled(!hasError);
+    }
+
+
     private void createRepoCombo(Composite container) {
         Hyperlink label = toolkit.createHyperlink(container, null, SWT.NULL);
-        label.setUnderlined(true);
+        label.setUnderlined(false); 
         label.setBackground(label.getParent().getBackground());
         label.addHyperlinkListener(new IHyperlinkListener(){
             public void linkActivated(HyperlinkEvent e) {
@@ -111,6 +149,13 @@ public class SearchQueryView extends ViewPart {
         label.setText("Repository");
         
         repoCombo = new Combo(container, SWT.DROP_DOWN | SWT.SINGLE | SWT.READ_ONLY);
+        repoCombo.addSelectionListener(new SelectionListener() {
+            public void widgetDefaultSelected(SelectionEvent arg0) {
+            }
+            public void widgetSelected(SelectionEvent arg0) {
+                updateButton();
+            }
+        });
         
         List definedRepositories = RepositoryList.getUserDefinedRepositories();
         List mirrors = RepositoryList.getUserDefinedMirrors();
@@ -120,6 +165,7 @@ public class SearchQueryView extends ViewPart {
         repositories.addAll(mirrors);
         
         repoCombo.setItems((String[]) repositories.toArray(new String[repositories.size()]));
+        repoCombo.setText(RepositoryList.MAIN_MAVEN_REPO);
         repoCombo.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         
     }
@@ -148,7 +194,15 @@ public class SearchQueryView extends ViewPart {
         label.setText("Type");
         
         typeCombo = new Combo(container, SWT.DROP_DOWN | SWT.SINGLE | SWT.READ_ONLY);
+        typeCombo.setText(Mevenide.DEPENDENCY_TYPE_JAR);
         typeCombo.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        typeCombo.addSelectionListener(new SelectionListener() {
+            public void widgetDefaultSelected(SelectionEvent arg0) {
+            }
+            public void widgetSelected(SelectionEvent arg0) {
+                updateButton();
+            }
+        });
         
         updateTypeCombo();
         
@@ -182,11 +236,56 @@ public class SearchQueryView extends ViewPart {
         groupText = new Text(searchComposite, SWT.BORDER | SWT.FLAT); 
         GridData data = new GridData(GridData.FILL_HORIZONTAL);
         groupText.setLayoutData(data);
+        groupText.addModifyListener(new ModifyListener() {
+            public void modifyText(ModifyEvent event) {
+                updateButton();
+            }
+        });
         
-        Button searchButton = new Button(searchComposite, SWT.FLAT); 
+        
+        searchButton = new Button(searchComposite, SWT.FLAT); 
         searchButton.setSize(10, 10);
         searchButton.setToolTipText("Search");
         searchButton.setImage(Mevenide.getInstance().getImageRegistry().get(IImageRegistry.PATTERN_SEARCH_ICON));
+        
+        //crap
+        final SearchQueryView view = this; 
+        
+        searchButton.addSelectionListener(new SelectionListener() {
+            public void widgetDefaultSelected(SelectionEvent arg0) {
+            }
+            public void widgetSelected(SelectionEvent arg0) {
+                String baseUrl = repoCombo.getText();
+                Repository repository = new Repository(baseUrl);
+                Group group = new Group(groupText.getText(), repository);
+                Type type = new Type(typeCombo.getText(), group);
+                
+                RepositoryObjectCollectorJob job = new RepositoryObjectCollectorJob(type, baseUrl);
+                job.addListener(view);
+                job.schedule(Job.LONG);
+                
+            }
+        });
+    }
+    
+    public void dataLoaded(final RepositoryEvent event) {
+        repoCombo.getDisplay().asyncExec(
+            new Runnable() {
+                public void run() {
+			        Type type = (Type) event.getElement();
+			        SearchResultView view;
+			        try {
+	                    view = (SearchResultView) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView("org.mevenide.repository.search.result");
+	                    view.setInput(type);
+				    }
+			        catch (PartInitException e) {
+			            String message = "Unable to open search result page";
+			            IStatus status = new Status(Status.ERROR, "org.mevenide.ui", 1, message, e);
+			            Mevenide.getInstance().getLog().log(status);
+			        }
+                }
+            }
+    	);
     }
     
     public void setFocus() {
