@@ -13,9 +13,10 @@
       <item href="/license.html" name="License"/>
       <item href="/changes-report.html" name="Changes"/>
     </menu>
-    <menu name="Behaviour">
+    <menu name="Documentation">
       <item href="/goals.html" name="Goals"/>
       <item href="/properties.html" name="Properties"/>
+      <item href="/tags.html" name="Jelly Tags"/>
     </menu>
     <menu name="Modules">
     	<item name="Master Project" href="../index.html"/>

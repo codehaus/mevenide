@@ -25,7 +25,7 @@ import org.apache.commons.jelly.MissingAttributeException;
 import org.apache.commons.jelly.XMLOutput;
 
 /**
- * A tag that will try to conver the maven version number to a Netbeans friendly version number.
+ * A tag that will try to convert the maven version number to a Netbeans friendly version number.
  * @author <a href="mailto:ca206216@tiscali.cz">Milos Kleint</a>
  *
  */
