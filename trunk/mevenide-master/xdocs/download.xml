@@ -42,13 +42,13 @@
       <div id="projects">
       <p>
         The <b>Mevenide support for the upcoming Netbeans 4.0 release</b> recognizes the Maven project type in the IDE, 
-        tightly integrating maven into the IDE, allows to run arbitrary goals, edit project properties etc. 
+        tightly integrating Maven into the IDE, allows to run arbitrary goals, edit project properties etc. 
         The complete list of features can be found <a href="mevenide-netbeans-project/features.html">here</a> and 
         You might also want to check the <a href="mevenide-netbeans-project/user-guide/index.html">User guide</a>
         which describes the features in more details and is accompanied with screenshots.
         </p>
         <p>
-        The latest release 0.4 can be downloaded in <a href="download/mevenide-netbeans-0.4.zip">zip format</a>. 
+        The latest release 0.5 can be downloaded in <a href="download/mevenide-netbeans-0.5.zip">zip format</a>. 
         </p>
         <p>Or it can be downloaded using the Netbeans
         Autoupdate feature. Download and install this small <a href="download/org-mevenide-netbeans-autoupdate-0.1.nbm">autoupdate module</a> or create a new Autoupdate server in the Tools/Options dialog with the following URL: 
@@ -58,12 +58,10 @@
         <p>
         	Requirements : </p>
         	<ul>
-        		<li>Netbeans 4.0 final (Release candidate)</li>
+        		<li>Netbeans 4.0 final and 4.1 dev builds.</li>
         		<li>JDK 1.4+</li>
-        		<li>Maven 1.0.1</li>
+        		<li>Maven 1.0.2</li>
         	</ul>
-<p>                It's also possible to use with Netbeans 4.0 beta2, but the grammar module (code completion in project.xml and maven.xml files) will not work.
-        </p>
       </div>
       <div id="plugin">
         <p>

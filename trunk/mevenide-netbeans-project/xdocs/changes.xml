@@ -6,6 +6,23 @@
   </properties>
 
   <body>
+    <release version="0.5" date="23/01/2005" description="">
+      <action dev="mkleint" type="add">
+      In project customizer show list of available maven plugins and their
+      properties.
+      </action>
+      <action dev="mkleint" type="add">
+      Test Resources and Castus Test Sources added to project view.
+      </action>
+      <action dev="mkleint" type="fix">
+      MEVENIDE-117 - set compilation using different JDK than maven+IDE uses,
+      provide correct completion.
+      </action>
+      <action dev="mkleint" type="fix">
+      MEVENIDE-138 - resolve properties when processing dependencies.
+      </action>
+    </release>
+  
     <release version="0.4" date="25/11/2004" description="Works with netbeans 4.0 final">
       <action dev="mkleint" type="fix">
       MEVENIDE-115 - improved support for webapps. (JSTL)
