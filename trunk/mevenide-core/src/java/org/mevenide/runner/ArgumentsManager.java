@@ -71,13 +71,13 @@ public class ArgumentsManager {
 	 * This was causing our classloading problems :
 	 * i included all jars under %MAVEN_HOME%/lib, tho we just needed forhead ! 
 	 * 
-	 * @todo externalize Forehead library filename
 	 * 
 	 * @return String[] the classpath needed for Maven execution $maven_home/lib/*.jar
 	 */
 	public static String[] getMavenClasspath() {
-		File mavenLib = new File(Environment.getMavenHome(), "lib");
-		return new String[] { new File(mavenLib, "forehead-1.0-beta-5.jar").getAbsolutePath() };
+//		File mavenLib = new File(Environment.getMavenHome(), "lib");
+//		return new String[] { new File(mavenLib, "forehead-1.0-beta-5.jar").getAbsolutePath() };
+		return RunnerHelper.getHelper().getMainClass();
 	}
 
 	/**
