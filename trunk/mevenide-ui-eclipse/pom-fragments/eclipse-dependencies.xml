@@ -130,3 +130,9 @@
         	<version>3.0.0</version>
         	<url>http://eclipse.org/</url>
         </dependency>
+    	<dependency>
+        	<groupId>eclipse</groupId>	
+        	<artifactId>eclipse-forms</artifactId>
+        	<version>3.0.0</version>
+        	<url>http://eclipse.org/</url>
+        </dependency>

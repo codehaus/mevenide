@@ -50,7 +50,7 @@ public class ResourcesSection extends PageSection {
 	public ResourcesSection(AbstractPomEditorPage page, String sectionName) {
 		super(page);
 		this.sectionName = sectionName;
-		setHeaderText(Mevenide.getResourceString(sectionName + ".header"));
+		setTitle(Mevenide.getResourceString(sectionName + ".header"));
 		setDescription(Mevenide.getResourceString(sectionName + ".description"));
 	}
 	

@@ -38,7 +38,7 @@ public class ContributorsSection extends PageSection {
 	
 	public ContributorsSection(TeamPage page) {
 		super(page);
-		setHeaderText(Mevenide.getResourceString("ContributorsSection.header"));
+		setTitle(Mevenide.getResourceString("ContributorsSection.header"));
 		setDescription(Mevenide.getResourceString("ContributorsSection.description"));
 	}
 

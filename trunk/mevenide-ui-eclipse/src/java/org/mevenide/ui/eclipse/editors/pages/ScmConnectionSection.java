@@ -36,7 +36,7 @@ public class ScmConnectionSection extends PageSection {
 
     public ScmConnectionSection(RepositoryPage page) {
         super(page);
-		setHeaderText(Mevenide.getResourceString("ScmConnectionSection.header"));
+		setTitle(Mevenide.getResourceString("ScmConnectionSection.header"));
 		setDescription(Mevenide.getResourceString("ScmConnectionSection.description"));
     }
 

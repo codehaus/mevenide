@@ -38,7 +38,7 @@ public class DevelopersSection extends PageSection {
 	
 	public DevelopersSection(TeamPage page) {
 		super(page);
-		setHeaderText(Mevenide.getResourceString("DevelopersSection.header"));
+		setTitle(Mevenide.getResourceString("DevelopersSection.header"));
 		setDescription(Mevenide.getResourceString("DevelopersSection.description"));
 	}
 

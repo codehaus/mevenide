@@ -49,7 +49,7 @@ public class DependenciesSection extends PageSection {
 	
 	public DependenciesSection(DependenciesPage page) {
 		super(page);
-		setHeaderText(Mevenide.getResourceString("DependenciesSection.header"));
+		setTitle(Mevenide.getResourceString("DependenciesSection.header"));
 		setDescription(Mevenide.getResourceString("DependenciesSection.description"));
 	}
 

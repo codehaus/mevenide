@@ -33,7 +33,7 @@ public class FullDescriptionSection extends PageSection {
 
     public FullDescriptionSection(AbstractPomEditorPage page) {
         super(page);
-		setHeaderText(Mevenide.getResourceString("FullDescriptionSection.header"));
+		setTitle(Mevenide.getResourceString("FullDescriptionSection.header"));
 		setDescription(Mevenide.getResourceString("FullDescriptionSection.description"));
     }
 

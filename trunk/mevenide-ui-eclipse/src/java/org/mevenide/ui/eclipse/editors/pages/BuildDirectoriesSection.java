@@ -46,7 +46,7 @@ public class BuildDirectoriesSection extends PageSection {
 
     public BuildDirectoriesSection(BuildPage page) {
         super(page);
-		setHeaderText(Mevenide.getResourceString("BuildDirectoriesSection.header"));
+		setTitle(Mevenide.getResourceString("BuildDirectoriesSection.header"));
 		setDescription(Mevenide.getResourceString("BuildDirectoriesSection.description"));
     }
 

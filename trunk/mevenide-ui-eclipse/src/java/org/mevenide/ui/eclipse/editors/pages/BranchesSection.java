@@ -38,7 +38,7 @@ public class BranchesSection extends PageSection {
 	
 	public BranchesSection(RepositoryPage page) {
 		super(page);
-		setHeaderText(Mevenide.getResourceString("BranchesSection.header"));
+		setTitle(Mevenide.getResourceString("BranchesSection.header"));
 		setDescription(Mevenide.getResourceString("BranchesSection.description"));
 	}
 

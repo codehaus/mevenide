@@ -38,7 +38,7 @@ public class VersionsSection extends PageSection {
 	
 	public VersionsSection(RepositoryPage page) {
 		super(page);
-		setHeaderText(Mevenide.getResourceString("VersionsSection.header"));
+		setTitle(Mevenide.getResourceString("VersionsSection.header"));
 		setDescription(Mevenide.getResourceString("VersionsSection.description"));
 	}
 
