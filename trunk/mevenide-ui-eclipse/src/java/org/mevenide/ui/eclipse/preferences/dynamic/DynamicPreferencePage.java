@@ -127,7 +127,30 @@ public class DynamicPreferencePage extends PreferencePage implements IWorkbenchP
 		preferencesManager.loadPreferences();
     }
     
+    public void setVisible(boolean visible) {
+        for (Iterator it = editors.keySet().iterator(); it.hasNext();) {
+            PluginProperty pluginProperty = (PluginProperty) it.next();
+            StringFieldEditor editor = (StringFieldEditor) editors.get(pluginProperty);
+            String[] keyParts = org.apache.commons.lang.StringUtils.split(editor.getPreferenceName(), "|");
+			String key = keyParts.length == 1 ? keyParts[0] : keyParts[1];
+			String importedKeyValue = DynamicPreferencesManager.getDynamicManager().getValue(key);
+			if ( !StringUtils.isNull(importedKeyValue) ) {
+				String fullyQualifiedKeyValue = preferencesManager.getValue(editor.getPreferenceName());
+				editor.setStringValue(importedKeyValue);
+				
+				//store fully qualified property  
+				preferencesManager.remove(key);
+				editor.store();
+			}
+        }
+        super.setVisible(visible);
+    }
+    
     protected Control createContents(Composite parent) {
+        return getContentsControl(parent); 
+	}
+  
+	private Control getContentsControl(Composite parent) {
         Composite composite = new Composite(parent, SWT.NULL);
         composite.setLayout(new GridLayout());
         
@@ -140,10 +163,10 @@ public class DynamicPreferencePage extends PreferencePage implements IWorkbenchP
 	        createCategoryComposite(tabFolder, (PluginCategory) categories.get(i));
         }
         
-        return composite; 
-	}
-  
-	private void createDescriptionComposite(TabFolder tabFolder) {
+        return composite;
+    }
+
+    private void createDescriptionComposite(TabFolder tabFolder) {
 	    TabItem tabItem = new TabItem(tabFolder, SWT.NULL); 
 	    tabItem.setText(Mevenide.getResourceString("DynamicPreferencePage.Description")); //$NON-NLS-1$
 	    
