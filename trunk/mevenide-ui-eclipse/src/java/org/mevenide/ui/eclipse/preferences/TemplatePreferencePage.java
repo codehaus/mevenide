@@ -45,6 +45,7 @@ import org.mevenide.ui.eclipse.template.model.TemplateContentProvider;
 import org.mevenide.ui.eclipse.template.model.Templates;
 import org.mevenide.ui.eclipse.template.view.TemplateViewerFactory;
 import org.mevenide.ui.eclipse.util.FileUtils;
+import org.mevenide.util.StringUtils;
 
 /**
  * This preference page contains information about the POM templates which
@@ -63,29 +64,15 @@ public class TemplatePreferencePage extends PreferencePage implements IWorkbench
     private Template fCurrentSelection;
     private ISelectionChangedListener fSelectionProvider;
 
-    /**
-     * @param arg0
-     * @param arg1
-     */
     public TemplatePreferencePage() {
         super(Mevenide.getResourceString("TemplatePreferencePage.label"));//$NON-NLS-1$
         setPreferenceStore(PreferencesManager.getManager().getPreferenceStore());
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
-     */
     public void init(IWorkbench arg0) {
         fTemplates = Templates.newTemplates();
     }
     
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.jface.preference.PreferencePage#createContents(org.eclipse.swt.widgets.Composite)
-     */
     protected Control createContents(Composite parent) {
         Composite composite = new Composite(parent, SWT.NULL);
         GridLayout layout = new GridLayout();
@@ -94,7 +81,15 @@ public class TemplatePreferencePage extends PreferencePage implements IWorkbench
         layout.numColumns = 2;
         composite.setLayout(layout);
         
-        templateViewer = TemplateViewerFactory.createTemplateViewer(composite);
+        createTemplateViewer(composite);
+        
+        createButtonAreaComposite(composite);
+        
+        return composite;
+    }
+
+    private void createTemplateViewer(Composite parent) {
+        templateViewer = TemplateViewerFactory.createTemplateViewer(parent);
         fTemplates.addObserver((TemplateContentProvider) templateViewer.getContentProvider());
         templateViewer.setInput(fTemplates);
         
@@ -105,52 +100,37 @@ public class TemplatePreferencePage extends PreferencePage implements IWorkbench
             }
         };
         templateViewer.addSelectionChangedListener(fSelectionProvider);
-        
-        Composite buttonComp = new Composite(composite, SWT.NONE);
+    }
+
+    private void createButtonAreaComposite(Composite parent) {
+        Composite buttonAreaComposite = new Composite(parent, SWT.NONE);
         GridLayout envButtonLayout = new GridLayout();
         envButtonLayout.marginHeight = 0;
         envButtonLayout.marginWidth = 0;
-        buttonComp.setLayout(envButtonLayout);
+        buttonAreaComposite.setLayout(envButtonLayout);
         
         GridData gd = new GridData(GridData.VERTICAL_ALIGN_BEGINNING | GridData.HORIZONTAL_ALIGN_FILL);
-        buttonComp.setLayoutData(gd);
-        Button addtemplateButton = new Button(buttonComp, SWT.PUSH);
-        addtemplateButton.setText(Mevenide.getResourceString("TemplatePreferencePage.template.add"));//$NON-NLS-1$
-        addtemplateButton.addSelectionListener(new SelectionListener() {
-            public void widgetDefaultSelected(SelectionEvent e) {
-                //do nothing
-            }
+        buttonAreaComposite.setLayoutData(gd);
+        
+        createAddTemplateButton(buttonAreaComposite);
+        createRemoveTemplateButton(buttonAreaComposite);
+    }
 
-            public void widgetSelected(SelectionEvent e) {
-                FileDialog dialog = new FileDialog(getShell(), SWT.SINGLE);
-                dialog.open();
-                IPath p = new Path(dialog.getFilterPath() + File.separator + dialog.getFileName());
-                if (!copyTemplateToPreferences(p))
-                    MessageDialog
-                            .openError(
-                                    getShell(),
-                                    Mevenide.getResourceString("TemplatePreferencePage.op_error_title"), Mevenide.getResourceString("TemplatePreferencePage.op_error_create.message"));//$NON-NLS-1$
-            }
-        });
-        Button removeTemplateButton = new Button(buttonComp, SWT.PUSH);
+    private void createRemoveTemplateButton(Composite parent) {
+        Button removeTemplateButton = new Button(parent, SWT.PUSH);
+        removeTemplateButton.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        removeTemplateButton.setAlignment(SWT.LEFT);
         removeTemplateButton.setText(Mevenide.getResourceString("TemplatePreferencePage.template.remove"));//$NON-NLS-1$
         removeTemplateButton.addSelectionListener(new SelectionListener() {
-
-            /**
-             * @see org.eclipse.swt.events.SelectionListener#widgetDefaultSelected(SelectionEvent)
-             */
             public void widgetDefaultSelected(SelectionEvent e) {
             }
 
-            /**
-             * @see org.eclipse.swt.events.SelectionListener#widgetSelected(SelectionEvent)
-             */
             public void widgetSelected(SelectionEvent e) {
                 if (fCurrentSelection != null) {
-                    if (MessageDialog
-                            .openConfirm(
+                    if (MessageDialog.openConfirm(
                                     getShell(),
-                                    Mevenide.getResourceString("TemplatePreferencePage.del.confirm.title"), Mevenide.getResourceString("TemplatePreferencePage.del.confirm.message") + " " + fCurrentSelection.getTemplateName())) //$NON-NLS-1$
+                                    Mevenide.getResourceString("TemplatePreferencePage.del.confirm.title"), 
+                                    Mevenide.getResourceString("TemplatePreferencePage.del.confirm.message") + " " + fCurrentSelection.getTemplateName())) //$NON-NLS-1$
                     {
                         fCurrentSelection.getProject().getFile().delete();
                         fTemplates.removeTemplate(fCurrentSelection);
@@ -159,12 +139,33 @@ public class TemplatePreferencePage extends PreferencePage implements IWorkbench
                 }
             }
         });
-        return composite;
     }
 
-    /**
-     *  
-     */
+    private void createAddTemplateButton(Composite parent) {
+        Button addTemplateButton = new Button(parent, SWT.PUSH);
+        addTemplateButton.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        addTemplateButton.setAlignment(SWT.LEFT);
+        addTemplateButton.setText(Mevenide.getResourceString("TemplatePreferencePage.template.add"));//$NON-NLS-1$
+        addTemplateButton.addSelectionListener(new SelectionListener() {
+            public void widgetDefaultSelected(SelectionEvent e) {
+                //do nothing
+            }
+
+            public void widgetSelected(SelectionEvent e) {
+                FileDialog dialog = new FileDialog(getShell(), SWT.SINGLE);
+                String userChoice = dialog.open();
+                if ( !StringUtils.isNull(userChoice) ) {
+	                IPath p = new Path(dialog.getFilterPath() + File.separator + dialog.getFileName());
+		                if (!copyTemplateToPreferences(p))
+		                    MessageDialog.openError(
+		                                    getShell(),
+		                                    Mevenide.getResourceString("TemplatePreferencePage.op_error_title"), 
+		                                    Mevenide.getResourceString("TemplatePreferencePage.op_error_create.message"));//$NON-NLS-1$
+                }
+            }
+        });
+    }
+
     private boolean copyTemplateToPreferences(IPath source) {
         try {
             ProjectReader reader = ProjectReader.getReader();
