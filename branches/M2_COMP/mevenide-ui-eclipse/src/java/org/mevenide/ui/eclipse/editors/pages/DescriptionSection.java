@@ -49,7 +49,7 @@ public class DescriptionSection extends PageSection {
 	private OverridableTextEntry shortDescText;
 	private OverridableTextEntry inceptionYearText;
 	private OverridableTextEntry urlText;
-	private OverridableTextEntry currentVersionText;
+	private OverridableTextEntry versionText;
 	private OverridableTextEntry logoText;
 	private OverridableTextEntry packageText;
 
@@ -142,17 +142,17 @@ public class DescriptionSection extends PageSection {
 			Mevenide.getResourceString("DescriptionSection.currentVersionText.tooltip"), 
 			factory
 		);
-		currentVersionText = new OverridableTextEntry(createText(container, factory, 2), toggle);
+		versionText = new OverridableTextEntry(createText(container, factory, 2), toggle);
 		adaptor = new OverrideAdaptor() {
 			public void overrideParent(Object value) {
-				pom.getModel().setCurrentVersion((String) value);
+				pom.getModel().setVersion((String) value);
 			}
 			public Object acceptParent() {
-				return getParentPom().getModel().getCurrentVersion();
+				return getParentPom().getModel().getVersion();
 			}
 		};
-		currentVersionText.addEntryChangeListener(adaptor);
-		currentVersionText.addOverrideAdaptor(adaptor);
+		versionText.addEntryChangeListener(adaptor);
+		versionText.addOverrideAdaptor(adaptor);
 		
 		// POM logo textbox and file browse button
 		toggle = createOverrideToggle(container, factory);
@@ -271,7 +271,7 @@ public class DescriptionSection extends PageSection {
 		setIfDefined(urlText, pom.getModel().getUrl(), isInherited() ? getParentPom().getModel().getUrl() : null);
 		setIfDefined(logoText, pom.getModel().getLogo(), isInherited() ? getParentPom().getModel().getLogo() : null);
 		setIfDefined(packageText, pom.getModel().getPackage(), isInherited() ? getParentPom().getModel().getPackage() : null);
-		setIfDefined(currentVersionText, pom.getModel().getCurrentVersion(), isInherited() ? getParentPom().getModel().getVersion() : null);
+		setIfDefined(versionText, pom.getModel().getVersion(), isInherited() ? getParentPom().getModel().getVersion() : null);
 	}
 	
 }

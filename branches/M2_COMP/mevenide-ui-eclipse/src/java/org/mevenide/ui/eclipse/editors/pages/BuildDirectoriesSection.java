@@ -213,26 +213,6 @@ public class BuildDirectoriesSection extends PageSection {
 			}
 		);
 		
-		// Build integration nag email address textbox
-		toggle = createOverrideToggle(container, factory);
-		createLabel(
-			container, 
-			Mevenide.getResourceString("BuildDirectoriesSection.nagEmailText.label"),
-			Mevenide.getResourceString("BuildDirectoriesSection.nagEmailText.tooltip"), 
-			factory
-		);
-		nagEmailText = new OverridableTextEntry(createText(container, factory), toggle);
-		adaptor = new OverrideAdaptor() {
-			public void overrideParent(Object value) {
-				setNagEmailAddress(pom, (String) value);
-			}
-			public Object acceptParent() {
-				return getNagEmailAddress(getParentPom());
-			}
-		};
-		nagEmailText.addEntryChangeListener(adaptor);
-		nagEmailText.addOverrideAdaptor(adaptor);
-		
 		factory.paintBordersFor(container);
 		return container;
 	}
@@ -241,7 +221,6 @@ public class BuildDirectoriesSection extends PageSection {
 		setIfDefined(sourceText, getSourceDirectory(pom), getInheritedSourceDirectory());
 		setIfDefined(aspectsText, getAspectSourceDirectory(pom), getInheritedAspectSourceDirectory());
 		setIfDefined(unitTestsText, getUnitTestSourceDirectory(pom), getInheritedUnitTestSourceDirectory());
-		setIfDefined(nagEmailText, getNagEmailAddress(pom), getInheritedNagEmailAddress());
 	}
 	
 	private void setSourceDirectory(MavenProject pom, String sourceDir) {
@@ -283,20 +262,6 @@ public class BuildDirectoriesSection extends PageSection {
 	private String getInheritedUnitTestSourceDirectory() {
 		return isInherited() 
 			? getUnitTestSourceDirectory(getParentPom())
-			: null;
-	}
-
-	private void setNagEmailAddress(MavenProject pom, String sourceDir) {
-		getOrCreateBuild(pom).setNagEmailAddress(sourceDir);
-	}
-	
-	private String getNagEmailAddress(MavenProject pom) {
-		return pom.getModel().getBuild() != null ? pom.getModel().getBuild().getNagEmailAddress() : null;
-	}
-	
-	private String getInheritedNagEmailAddress() {
-		return isInherited() 
-			? getNagEmailAddress(getParentPom())
 			: null;
 	}
 

@@ -108,26 +108,6 @@ public class SiteGenerationSection extends PageSection {
 		distSiteText.addEntryChangeListener(adaptor);
 		distSiteText.addOverrideAdaptor(adaptor);
 		
-		// Issue tracking address textbox
-		toggle = createOverrideToggle(container, factory);
-		createLabel(
-			container, 
-			Mevenide.getResourceString("SiteGenerationSection.issueTrackingText.label"),
-			Mevenide.getResourceString("SiteGenerationSection.issueTrackingText.tooltip"), 
-			factory
-		);
-		issueTrackingText = new OverridableTextEntry(createText(container, factory, 2), toggle);
-		adaptor = new OverrideAdaptor() {
-			public void overrideParent(Object value) {
-				pom.getModel().setIssueTrackingUrl((String) value);
-			}
-			public Object acceptParent() {
-				return getParentPom().getModel().getIssueTrackingUrl();
-			}
-		};
-		issueTrackingText.addEntryChangeListener(adaptor);
-		issueTrackingText.addOverrideAdaptor(adaptor);
-		
 		// Site directory textbox and directory browse button
 		toggle = createOverrideToggle(container, factory);
 		createLabel(
@@ -233,7 +213,6 @@ public class SiteGenerationSection extends PageSection {
 
 	public void update(MavenProject pom) {
 		setIfDefined(siteAddressText, pom.getModel().getSiteAddress(), isInherited() ? getParentPom().getModel().getSiteAddress() : null);
-		setIfDefined(issueTrackingText, pom.getModel().getIssueTrackingUrl(), isInherited() ? getParentPom().getModel().getIssueTrackingUrl() : null);
 		setIfDefined(siteDirectoryText, pom.getModel().getSiteDirectory(), isInherited() ? getParentPom().getModel().getSiteDirectory() : null);
 		setIfDefined(distDirectoryText, pom.getModel().getDistributionDirectory(), isInherited() ? getParentPom().getModel().getDistributionDirectory() : null);
 	}

@@ -18,13 +18,14 @@ package org.mevenide.ui.eclipse.editors;
 
 import java.io.File;
 import java.io.PrintWriter;
-import java.io.StringReader;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.maven.MavenCore;
 import org.apache.maven.project.MavenProject;
+import org.codehaus.plexus.embed.Embedder;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -40,13 +41,13 @@ import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.eclipse.ui.forms.editor.FormEditor;
+import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.IElementStateListener;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.mevenide.project.ProjectComparator;
 import org.mevenide.project.ProjectComparatorFactory;
 import org.mevenide.project.io.DefaultProjectMarshaller;
-import org.mevenide.project.io.DefaultProjectUnmarshaller;
 import org.mevenide.project.io.ProjectReader;
 import org.mevenide.ui.eclipse.editors.pages.BuildPage;
 import org.mevenide.ui.eclipse.editors.pages.DependenciesPage;
@@ -74,7 +75,7 @@ public class MevenidePomEditor extends FormEditor {
     private MavenProject pom;
     private MavenProject parentPom;
     private DefaultProjectMarshaller marshaller;
-    private DefaultProjectUnmarshaller unmarshaller;
+    private MavenCore unmarshaller;
     private ProjectComparator comparator;
     private PomEditorSelectionProvider selectionProvider = new PomEditorSelectionProvider(this);
     private IDocumentProvider documentProvider;
@@ -124,7 +125,9 @@ public class MevenidePomEditor extends FormEditor {
         super();
         try {
             marshaller = new DefaultProjectMarshaller();
-            unmarshaller = new DefaultProjectUnmarshaller();
+            Embedder embedder = new Embedder();
+            embedder.start();
+    		unmarshaller = (MavenCore) embedder.lookup( MavenCore.ROLE );
         } catch (Exception e) {
             log.error("Could not create a POM marshaller", e);
         }
@@ -448,12 +451,12 @@ public class MevenidePomEditor extends FormEditor {
             log.debug("updateModel entered");
         }
         boolean clean = false;
-        IDocument document = documentProvider.getDocument(getEditorInput());
-        StringReader reader = new StringReader(document.get());
+        
         MavenProject updatedPom = null;
         try {
-            updatedPom = unmarshaller.unmarshall(reader);
-
+        	IFile ifile = ((FileEditorInput) getEditorInput()).getFile();
+        	File pomFile = new File(ifile.getLocation().toOSString());
+        	updatedPom = unmarshaller.getProject(pomFile);
             if (log.isDebugEnabled()) {
                 log.debug("old pom name = " + pom.getName() + " and new = " + updatedPom.getName());
             }

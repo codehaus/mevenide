@@ -18,14 +18,12 @@ package org.mevenide.ui.eclipse.editors.properties;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.maven.model.Branch;
 import org.apache.maven.model.Contributor;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Developer;
 import org.apache.maven.model.License;
 import org.apache.maven.model.MailingList;
 import org.apache.maven.model.Resource;
-import org.apache.maven.model.Version;
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.eclipse.ui.views.properties.IPropertySourceProvider;
 
@@ -65,12 +63,6 @@ public class PomPropertySourceProvider implements IPropertySourceProvider {
 		}
 		if (object instanceof MailingList) {
 			return new MailingListPropertySource((MailingList) object);
-		}
-		if (object instanceof Version) {
-			return new VersionPropertySource((Version) object);
-		}
-		if (object instanceof Branch) {
-			return new BranchPropertySource((Branch) object);
 		}
 		if (object instanceof Dependency) {
 			return new DependencyPropertySource((Dependency) object);

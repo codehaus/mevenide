@@ -38,8 +38,6 @@ public class RepositoryPage extends AbstractPomEditorPage {
     private static final String HEADING = Mevenide.getResourceString("RepositoryPage.heading");
     
 	private ScmConnectionSection scmSection;
-	private VersionsSection versionsSection;
-	private BranchesSection branchesSection;
 
 	public RepositoryPage(MevenidePomEditor editor) {
         super(editor, ID, TAB, HEADING);
@@ -64,19 +62,6 @@ public class RepositoryPage extends AbstractPomEditorPage {
 		control.setLayoutData(gd);
 		addSection(scmSection);
 
-		versionsSection = new VersionsSection(this, parent, factory);
-		control = versionsSection.getSection();
-		gd = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING);
-		gd.horizontalSpan = 1;
-		control.setLayoutData(gd);
-		addSection(versionsSection);
-
-		branchesSection = new BranchesSection(this, parent, factory);
-		control = branchesSection.getSection();
-		gd = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING);
-		gd.horizontalSpan = 1;
-		control.setLayoutData(gd);
-		addSection(branchesSection);
 	}
 
 }
