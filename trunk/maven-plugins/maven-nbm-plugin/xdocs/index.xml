@@ -15,14 +15,20 @@
    	  </p>
    	  </div>
     </section>
-    <section name="Building">
+    <section name="Versions">
+      <div id="documentContent">
+      	<p>
+   	  Currently the 0.1 version is available for download. 
+      </p>
+      <p>
+      To get latest snapshot of 0.2, please checkout the project from cvs.
+   	  </p>
+   	  </div>
+    </section>
+    <section name="Installing">
       <div id="documentContent">
       <p>
-      In order to run the plugin, you need to 
-      get the nbantext.jar file from netbeans.org. Currently it's not downloadable, you will need to build it from the sources,
-      and checkout the nbbuild module from Netbeans' cvs. Then go to nbbuild directory and run ant. 
-      Once the nbantext.jar file is created you can about the build.
-      
+            To install the plugin, go to the <a href="http://sourceforge.net/project/showfiles.php?group_id=54263&amp;package_id=110954&amp;release_id=220320" class="documentLink">Sourceforge download page</a>  and get the zipped/tarred plugin. Then extract it to your MAVEN_HOME/plugins directory.
    	  </p>
    	  </div>
     </section>
