@@ -33,9 +33,9 @@ public class ProjectGoalsGrabber extends AbstractGoalsGrabber {
 	
 	public ProjectGoalsGrabber() { }
 	
-        public String getName() {
-            return IGoalsGrabber.ORIGIN_PROJECT;
-        }
+    public String getName() {
+        return IGoalsGrabber.ORIGIN_PROJECT;
+    }
 
     public void refresh() throws Exception {
 		super.refresh();
@@ -48,22 +48,31 @@ public class ProjectGoalsGrabber extends AbstractGoalsGrabber {
 	private void parseMavenXml() throws Exception {
 		XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
 		XmlPullParser parser = factory.newPullParser();
-		parser.setInput( new FileReader(mavenXmlFile) );
-
-		int eventType = parser.getEventType();
-
-		while ( eventType != XmlPullParser.END_DOCUMENT )
-		{
-			if ( eventType == XmlPullParser.START_TAG )
+		FileReader reader = null;
+		try {
+			reader = new FileReader(mavenXmlFile);
+			parser.setInput( reader );
+	
+			int eventType = parser.getEventType();
+	
+			while ( eventType != XmlPullParser.END_DOCUMENT )
 			{
-				if ( parser.getName().equals("goal")) {
-					String fullyQualifiedName = parser.getAttributeValue(null, "name");
-					String prereqs = parser.getAttributeValue(null, "prereqs");
-					String description = parser.getAttributeValue(null, "description");
-					registerGoal(fullyQualifiedName, description+">"+prereqs);
+				if ( eventType == XmlPullParser.START_TAG )
+				{
+					if ( parser.getName().equals("goal")) {
+						String fullyQualifiedName = parser.getAttributeValue(null, "name");
+						String prereqs = parser.getAttributeValue(null, "prereqs");
+						String description = parser.getAttributeValue(null, "description");
+						registerGoal(fullyQualifiedName, description+">"+prereqs);
+					}
 				}
+				eventType = parser.next();
 			}
-			eventType = parser.next();
+		}
+		finally {
+		    if ( reader != null ) {
+		        reader.close();
+		    }
 		}
 	}
 
