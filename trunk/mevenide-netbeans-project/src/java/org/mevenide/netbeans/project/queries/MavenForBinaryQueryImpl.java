@@ -57,7 +57,7 @@ public class MavenForBinaryQueryImpl implements SourceForBinaryQueryImplementati
      * @return a list of source roots; may be empty but not null
      */   
     public FileObject[] findSourceRoot(URL url) {
-        logger.warn("######################MavenSourceForBinaryQueryImpl project=" + project.getDisplayName() + "url=" + url);
+        logger.warn("MavenSourceForBinaryQueryImpl project=" + project.getDisplayName() + "url=" + url);
         URL binRoot = FileUtil.getArchiveFile(url);
         if (checkURL(binRoot)) {
             return getSrcRoot();
@@ -87,11 +87,14 @@ public class MavenForBinaryQueryImpl implements SourceForBinaryQueryImplementati
     
     
     private boolean checkURL(URL url) {
+        logger.debug("checkurl=" + url);
         FileObject fo = URLMapper.findFileObject(url);
         if (fo != null) {
+            logger.debug("checkurl fo=" + fo);
             Project mavproj = project.getOriginalMavenProject();
-            if ("jar".equals(url.getProtocol())) {
+            if ("file".equals(url.getProtocol())) {
                 File file = FileUtil.toFile(fo);
+                logger.debug("jar protocol file=" + file);
                 try {
                     IDependencyResolver depRes = DependencyResolverFactory.getFactory().
                                                             newInstance(file.getAbsolutePath());
@@ -103,7 +106,7 @@ public class MavenForBinaryQueryImpl implements SourceForBinaryQueryImplementati
                     return false;
                 }
             }
-            if ("file".equals(url.getProtocol())) {
+            if ("jar".equals(url.getProtocol())) {
                 
             }
         } 
@@ -111,12 +114,14 @@ public class MavenForBinaryQueryImpl implements SourceForBinaryQueryImplementati
     }
     
     private FileObject[] getSrcRoot() {
+        logger.debug("getsrcRoot");
         URI uri = project.getSrcDirectory();
         if (uri != null) {
             try {
+                logger.debug("getsrcRoot uri=" + uri);
                 FileObject foRoot = URLMapper.findFileObject(uri.toURL());
                 if (foRoot != null) {
-                    logger.warn("returning fo=" + foRoot);
+                    logger.debug("returning fo=" + foRoot);
                     return new FileObject[] {foRoot};
                 }
             } catch (MalformedURLException exc) {

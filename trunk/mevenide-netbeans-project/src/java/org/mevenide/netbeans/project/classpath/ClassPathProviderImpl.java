@@ -17,6 +17,8 @@
 
 package org.mevenide.netbeans.project.classpath;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.lang.ref.Reference;
 import java.lang.ref.SoftReference;
 import java.util.ArrayList;
@@ -58,12 +60,15 @@ public final class ClassPathProviderImpl implements ClassPathProvider {
     
     
     private MavenProject project;
-    private final Reference[] cache = new SoftReference[7];
+    private Reference[] cache = new SoftReference[7];
      
-    private final Map dirCache = new HashMap ();
-
     public ClassPathProviderImpl(MavenProject proj) {
         project = proj;
+        project.addPropertyChangeListener(new PropertyChangeListener() {
+            public void propertyChange(PropertyChangeEvent evt) {
+                cache = new SoftReference[7];
+            }
+        });
     }
     
     /**
