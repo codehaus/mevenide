@@ -248,7 +248,9 @@ public abstract class PageSection extends SectionPart {
         Display display = getPage().getPomEditor().getSite().getShell().getDisplay();
         display.asyncExec(new Runnable() {
 	            public void run() {
-	                getSection().redraw();
+	                if ( !getSection().isDisposed() ) {
+	                    getSection().redraw();
+	                }
 	            }
 	        }
         );
