@@ -116,7 +116,9 @@ public class ProjectUtil {
 			}				
 		}
 		
-		pomWriter.setDependencies(dependencyGoup.getDependencies(), pomFile);
+		List dependencies = dependencyGoup.getDependencies();
+		
+		pomWriter.setDependencies(dependencies, pomFile);
 		
 		setBuildPath(Mevenide.getPlugin().getProject());
 	}
