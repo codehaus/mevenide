@@ -402,11 +402,11 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
 											refreshAll();
 										}
 									}
-									
 								}
 								if ( r instanceof IProject ) {
 									IProject prj = (IProject) r;
 									if ( prj.getName().equals(project.getName()) ) {
+										//doesnot seem to work ??
 										refreshAll();
 									}
 								}
