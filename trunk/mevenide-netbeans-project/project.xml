@@ -21,7 +21,7 @@
     <dependency>     
         <groupId>mevenide</groupId>
         <artifactId>goals-grabber</artifactId>
-        <version>0.3</version>
+        <version>0.4-SNAPSHOT</version>
         <type>jar</type>
             <properties>
                 <netbeans.module.dep>spec</netbeans.module.dep>
@@ -30,7 +30,7 @@
     <dependency>     
         <groupId>mevenide</groupId>
         <artifactId>mevenide-core</artifactId>
-        <version>0.2</version>
+        <version>0.3-SNAPSHOT</version>
         <type>jar</type>
             <properties>
                 <netbeans.module.dep>spec</netbeans.module.dep>
@@ -39,7 +39,7 @@
     <dependency>
         <groupId>mevenide</groupId>
         <artifactId>mevenide-config</artifactId>
-        <version>0.3</version>
+        <version>0.4-SNAPSHOT</version>
         <type>jar</type>
             <properties>
                 <netbeans.module.dep>spec</netbeans.module.dep>
@@ -77,9 +77,9 @@
    
     <dependency>     
         <groupId>netbeans</groupId>
-        <artifactId>openide-io</artifactId>
+        <artifactId>org-openide-io</artifactId>
         <!-- include nb specification version.. that's important for compiling -->
-        <version>1.0.1</version>
+        <version>1.2</version>
         <type>jar</type>
         <url>http://www.netbeans.org</url>
         <properties>
@@ -101,7 +101,7 @@
         <groupId>netbeans</groupId>
         <artifactId>openide</artifactId>
         <!-- include nb specification version.. that's important for compiling -->
-        <version>4.33</version>
+        <version>4.41</version>
         <type>jar</type>
         <url>http://www.netbeans.org</url>
     </dependency>
@@ -202,6 +202,16 @@
             <netbeans.module.dep>spec</netbeans.module.dep>
         </properties>
     </dependency>
+    <dependency>     
+        <groupId>netbeans</groupId>
+        <artifactId>org-netbeans-api-debugger-jpda</artifactId>
+        <version>1.0-SNAPSHOT</version>
+        <type>jar</type>
+        <url>http://www.netbeans.org</url>
+        <properties>
+            <netbeans.module.dep>spec</netbeans.module.dep>
+        </properties>
+    </dependency>
 
     <!-- depending on ant, the module dep for netbeans runtime, ant dep for compile time -->
    <dependency>
@@ -233,6 +243,14 @@
       <url>http://jakarta.apache.org/commons/</url>
     </dependency>
     -->
+    <!-- for tests only.. -->
+    <dependency>     
+        <groupId>netbeans</groupId>
+        <artifactId>org-netbeans-modules-masterfs</artifactId>
+        <version>1.2-SNAPSHOT</version>
+        <type>jar</type>
+        <url>http://www.netbeans.org</url>
+    </dependency>
              
   </dependencies>
   

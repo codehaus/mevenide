@@ -22,7 +22,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.mevenide.netbeans.project.MavenProject;
 import org.openide.ErrorManager;
-import org.openide.execution.NbProcessDescriptor;
 import org.openide.filesystems.FileUtil;
 
 import org.openide.util.MapFormat;
@@ -30,7 +29,9 @@ import org.openide.util.RequestProcessor;
 import org.openide.util.Utilities;
 import org.openide.windows.IOProvider;
 import org.openide.windows.InputOutput;
+import org.openide.windows.OutputListener;
 import org.openide.windows.OutputWriter;
+import org.openide.execution.NbProcessDescriptor;
 
 /**
  *
@@ -136,8 +137,13 @@ public class MavenExecutor implements Runnable {
         String procString = MapFormat.format(format, formats);
         Process proc = Runtime.getRuntime().exec(procString, null, execDir);
         InputOutput ioput = getInputOutput();
-        PROCESSOR.post(new Output(proc.getInputStream(), ioput.getOut(), outFilter));
-        PROCESSOR.post(new Output(proc.getErrorStream(), ioput.getErr(), errFilter));
+        OutputListenerProvider[] providers = new OutputListenerProvider[] {
+            new TestOutputListenerProvider(project),
+            new JavaOutputListenerProvider(project)
+            
+        };
+        PROCESSOR.post(new Output(proc.getInputStream(), ioput.getOut(), outFilter, providers));
+        PROCESSOR.post(new Output(proc.getErrorStream(), ioput.getErr(), errFilter, providers));
         return proc;
     }
     
@@ -189,14 +195,16 @@ public class MavenExecutor implements Runnable {
         private InputStream str;
         private OutputWriter writer;
         private OutputFilter filter;
-        public Output(InputStream instream, OutputWriter out, OutputFilter filt) {
+        private OutputListenerProvider[] providers;
+        public Output(InputStream instream, OutputWriter out, OutputFilter filt, OutputListenerProvider[] provs) {
             str = instream;
             writer = out;
             filter = filt;
+            providers = provs;
         }
         
         public void run() {
-            BufferedReader read = new BufferedReader(new InputStreamReader(str));
+            BufferedReader read = new BufferedReader(new InputStreamReader(str), 50);
             String line; 
             try {
                 while ((line = read.readLine()) != null) {
@@ -204,7 +212,21 @@ public class MavenExecutor implements Runnable {
                         line = filter.filterLine(line);
                     }
                     if (line != null) {
-                        writer.println(line);
+                        OutputListener listener = null;
+                        if (providers != null) {
+                            for (int i = 0; i < providers.length; i++) {
+                                listener = providers[i].recognizeLine(line);
+                                if (listener != null) {
+                                    break;
+                                }
+                            }
+                        }
+                        if (listener == null) {
+                            writer.println(line);
+                        } else {
+                            writer.println(line, listener);
+                        }
+                        writer.flush();
                     }
                 }
                 read.close();

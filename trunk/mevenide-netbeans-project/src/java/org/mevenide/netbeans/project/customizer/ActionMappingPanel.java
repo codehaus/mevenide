@@ -52,6 +52,8 @@ public class ActionMappingPanel extends JPanel implements ProjectPanel {
     private OriginChange ocMultiClean;
     private OriginChange ocRun;
     private OriginChange ocRunSingle;
+    private OriginChange ocDebug;
+    private OriginChange ocDebugSingle;
     
     private HashMap changes;
     
@@ -76,6 +78,8 @@ public class ActionMappingPanel extends JPanel implements ProjectPanel {
         txtTestSingle.setEditable(true);
         txtRun.setEditable(true);
         txtRunSingle.setEditable(true);
+        txtDebug.setEditable(true);
+        txtDebugSingle.setEditable(true);
         txtMultiBuild.setEditable(true);
         txtMultiClean.setEditable(true);
         
@@ -130,6 +134,14 @@ public class ActionMappingPanel extends JPanel implements ProjectPanel {
         txtRunSingle = new javax.swing.JTextField();
         ocRunSingle = LocationComboFactory.createPropertiesChange(project);
         btnRunSingle = (JButton)ocRunSingle.getComponent();
+        lblDebug = new javax.swing.JLabel();
+        txtDebug = new javax.swing.JTextField();
+        ocDebug = LocationComboFactory.createPropertiesChange(project);
+        btnDebug = (JButton)ocDebug.getComponent();
+        lblDebugSingle = new javax.swing.JLabel();
+        txtDebugSingle = new javax.swing.JTextField();
+        ocDebugSingle = LocationComboFactory.createPropertiesChange(project);
+        btnDebugSingle = (JButton)ocDebugSingle.getComponent();
 
         setLayout(new java.awt.GridBagLayout());
 
@@ -231,14 +243,14 @@ public class ActionMappingPanel extends JPanel implements ProjectPanel {
         lblTest.setText("Test :");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 6;
+        gridBagConstraints.gridy = 8;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(6, 0, 0, 0);
         add(lblTest, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 6;
+        gridBagConstraints.gridy = 8;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
@@ -247,7 +259,7 @@ public class ActionMappingPanel extends JPanel implements ProjectPanel {
         btnTest.setPreferredSize(new java.awt.Dimension(16, 16));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 6;
+        gridBagConstraints.gridy = 8;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
         add(btnTest, gridBagConstraints);
@@ -256,14 +268,14 @@ public class ActionMappingPanel extends JPanel implements ProjectPanel {
         lblTestSingle.setText("Test Single :");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 7;
+        gridBagConstraints.gridy = 9;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(6, 0, 0, 0);
         add(lblTestSingle, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 7;
+        gridBagConstraints.gridy = 9;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.weightx = 0.1;
@@ -273,7 +285,7 @@ public class ActionMappingPanel extends JPanel implements ProjectPanel {
         btnTestSingle.setPreferredSize(new java.awt.Dimension(16, 16));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 7;
+        gridBagConstraints.gridy = 9;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
         add(btnTestSingle, gridBagConstraints);
@@ -282,14 +294,14 @@ public class ActionMappingPanel extends JPanel implements ProjectPanel {
         lblMultiBuild.setText("Multi Project Build :");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 8;
+        gridBagConstraints.gridy = 10;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(6, 0, 0, 0);
         add(lblMultiBuild, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 8;
+        gridBagConstraints.gridy = 10;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(6, 5, 0, 0);
@@ -298,7 +310,7 @@ public class ActionMappingPanel extends JPanel implements ProjectPanel {
         btnMultiBuild.setPreferredSize(new java.awt.Dimension(16, 16));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 8;
+        gridBagConstraints.gridy = 10;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(6, 5, 0, 0);
         add(btnMultiBuild, gridBagConstraints);
@@ -307,14 +319,14 @@ public class ActionMappingPanel extends JPanel implements ProjectPanel {
         lblMultiClean.setText("Multi Project Clean :");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 9;
+        gridBagConstraints.gridy = 11;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(6, 0, 0, 0);
         add(lblMultiClean, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 9;
+        gridBagConstraints.gridy = 11;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(6, 5, 0, 0);
@@ -323,14 +335,14 @@ public class ActionMappingPanel extends JPanel implements ProjectPanel {
         btnMultiClean.setPreferredSize(new java.awt.Dimension(16, 16));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 9;
+        gridBagConstraints.gridy = 11;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(6, 5, 0, 0);
         add(btnMultiClean, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 10;
+        gridBagConstraints.gridy = 12;
         gridBagConstraints.gridwidth = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
@@ -388,12 +400,65 @@ public class ActionMappingPanel extends JPanel implements ProjectPanel {
         gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
         add(btnRunSingle, gridBagConstraints);
 
+        lblDebug.setLabelFor(txtDebug);
+        lblDebug.setText("Debug :");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 6;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(6, 0, 0, 0);
+        add(lblDebug, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 6;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
+        add(txtDebug, gridBagConstraints);
+
+        btnDebug.setPreferredSize(new java.awt.Dimension(16, 16));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 6;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
+        add(btnDebug, gridBagConstraints);
+
+        lblDebugSingle.setLabelFor(txtDebugSingle);
+        lblDebugSingle.setText("Debug Single :");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 7;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(6, 0, 0, 0);
+        add(lblDebugSingle, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 7;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.weightx = 0.1;
+        gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
+        add(txtDebugSingle, gridBagConstraints);
+
+        btnDebugSingle.setPreferredSize(new java.awt.Dimension(16, 16));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 7;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
+        add(btnDebugSingle, gridBagConstraints);
+
     }//GEN-END:initComponents
     
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBuild;
     private javax.swing.JButton btnClean;
+    private javax.swing.JButton btnDebug;
+    private javax.swing.JButton btnDebugSingle;
     private javax.swing.JButton btnJavadoc;
     private javax.swing.JButton btnMultiBuild;
     private javax.swing.JButton btnMultiClean;
@@ -405,6 +470,8 @@ public class ActionMappingPanel extends JPanel implements ProjectPanel {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JLabel lblBuild;
     private javax.swing.JLabel lblClean;
+    private javax.swing.JLabel lblDebug;
+    private javax.swing.JLabel lblDebugSingle;
     private javax.swing.JLabel lblJavadoc;
     private javax.swing.JLabel lblMultiBuild;
     private javax.swing.JLabel lblMultiClean;
@@ -415,6 +482,8 @@ public class ActionMappingPanel extends JPanel implements ProjectPanel {
     private javax.swing.JLabel lblTestSingle;
     private javax.swing.JTextField txtBuild;
     private javax.swing.JTextField txtClean;
+    private javax.swing.JTextField txtDebug;
+    private javax.swing.JTextField txtDebugSingle;
     private javax.swing.JTextField txtJavadoc;
     private javax.swing.JTextField txtMultiBuild;
     private javax.swing.JTextField txtMultiClean;
@@ -432,6 +501,8 @@ public class ActionMappingPanel extends JPanel implements ProjectPanel {
         createChangeInstance("javadoc", txtJavadoc, ocJavadoc); //NOI18N
         createChangeInstance(ActionProvider.COMMAND_RUN, txtRun, ocRun);
         createChangeInstance(ActionProvider.COMMAND_RUN_SINGLE, txtRunSingle, ocRunSingle);
+        createChangeInstance(ActionProvider.COMMAND_DEBUG, txtDebug, ocDebug);
+        createChangeInstance(ActionProvider.COMMAND_DEBUG_SINGLE, txtDebugSingle, ocDebugSingle);
         createChangeInstance(ActionProvider.COMMAND_TEST, txtTest, ocTest);
         createChangeInstance(ActionProvider.COMMAND_TEST_SINGLE, txtTestSingle, ocTestSingle);
         createChangeInstance(ActionProviderImpl.COMMAND_MULTIPROJECTBUILD, txtMultiBuild, ocMultiBuild);
@@ -460,6 +531,8 @@ public class ActionMappingPanel extends JPanel implements ProjectPanel {
         assignValue(ActionProvider.COMMAND_TEST_SINGLE, resolve);
         assignValue(ActionProvider.COMMAND_RUN, resolve);
         assignValue(ActionProvider.COMMAND_RUN_SINGLE, resolve);
+        assignValue(ActionProvider.COMMAND_DEBUG, resolve);
+        assignValue(ActionProvider.COMMAND_DEBUG_SINGLE, resolve);
         assignValue(ActionProviderImpl.COMMAND_MULTIPROJECTBUILD, resolve);
         assignValue(ActionProviderImpl.COMMAND_MULTIPROJECTCLEAN, resolve);
    }

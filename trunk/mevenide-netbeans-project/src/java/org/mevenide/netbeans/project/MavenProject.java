@@ -36,6 +36,7 @@ import org.mevenide.netbeans.project.classpath.ClassPathProviderImpl;
 import org.mevenide.netbeans.project.queries.MavenForBinaryQueryImpl;
 
 import org.mevenide.netbeans.project.queries.MavenSharabilityQueryImpl;
+import org.mevenide.netbeans.project.queries.MavenTestForSourceImpl;
 import org.mevenide.project.DefaultProjectContext;
 import org.mevenide.properties.IPropertyLocator;
 import org.mevenide.properties.IPropertyResolver;
@@ -277,6 +278,7 @@ public class MavenProject implements Project {
             new ProjectOpenedHookImpl(this),
             new ClassPathProviderImpl(this),
             new MavenSharabilityQueryImpl(this),
+            new MavenTestForSourceImpl(this),
 //            new MavenFileBuiltQueryImpl(this),
             new SubprojectProviderImpl(this),
             new MavenSourcesImpl(this), 
@@ -334,7 +336,13 @@ public class MavenProject implements Project {
         }
         
         public void fileChanged(FileEvent fileEvent) {
-            firePropertyChange(PROP_PROJECT);
+            String nameExt = fileEvent.getFile().getNameExt();
+            if (nameExt.equals("project.xml") ||
+                nameExt.equals("project.properties") ||
+                nameExt.equals("build.properties")) 
+            {
+                    firePropertyChange(PROP_PROJECT);
+            }
         }
         
         public void fileDataCreated(FileEvent fileEvent) {
