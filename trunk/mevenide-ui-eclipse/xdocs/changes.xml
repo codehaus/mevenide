@@ -6,7 +6,7 @@
   </properties>
 
   <body>
-  	<release version="0.2.3" date="in CVS">
+  	<release version="0.3.0" date="in CVS">
       <action dev="gdodinet" type="fix" issue="MEVENIDE-73">
 		Update site generation now uses zip task instead of jar
       </action>
