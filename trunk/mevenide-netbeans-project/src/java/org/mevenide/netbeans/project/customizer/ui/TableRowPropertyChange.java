@@ -33,19 +33,15 @@ public class TableRowPropertyChange implements MavenPropertyChange {
     private String newValue;
     private int newLocation;
     private String defaultValue;
-    private JTable table;
     private OriginChange origin;
     
-    private boolean ignore = false;
-    
     public TableRowPropertyChange(String keyParam, String oldValue, int oldLocation, 
-                                  JTable table, OriginChange oc, String defVal) {
+                                  OriginChange oc, String defVal) {
         key = keyParam;
         value = oldValue != null ? oldValue : "";
         location = oldLocation;
         newValue= value;
         newLocation = oldLocation;
-        this.table = table;
         origin = oc;
         defaultValue = defVal;
         origin.setInitialLocationID(oldLocation);
@@ -62,7 +58,6 @@ public class TableRowPropertyChange implements MavenPropertyChange {
      * changes in the field or location combo are not prpagated into the value
      */
     public void startIgnoringChanges() {
-        ignore = true;
     }
     
     /**
@@ -72,7 +67,6 @@ public class TableRowPropertyChange implements MavenPropertyChange {
     public void stopIgnoringChanges() {
 //        field.setText(newValue);
         origin.setInitialLocationID(newLocation);
-        ignore = false;
     }
     
     public String getKey() {
@@ -101,19 +95,15 @@ public class TableRowPropertyChange implements MavenPropertyChange {
     
     
     public void setResolvedValue(String resvalue) {
-        ignore = true;
 //        field.setEditable(false);
         origin.getComponent().setEnabled(false);
 //        field.setText(resvalue);
-        ignore = false;
     }
     
     public void resetToNonResolvedValue() {
-        ignore = true;
 //        field.setEditable(true);
         origin.getComponent().setEnabled(true);
 //        field.setText(newValue);
-        ignore = false;
     }
     
     public void setNewValue(String value) {

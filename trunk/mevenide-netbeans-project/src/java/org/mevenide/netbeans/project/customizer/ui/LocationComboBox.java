@@ -42,7 +42,6 @@ import org.openide.util.Utilities;
  */
 class LocationComboBox extends JButton {
     private LocationWrapper current;
-    private LocationWrapper initial;
     private LocationWrapper[] all;
     private JPopupMenu currentLoc;
     private HashMap actionToLoc;
@@ -90,7 +89,6 @@ class LocationComboBox extends JButton {
     
     public void setInitialItem(int location) {
         LocationWrapper selected = findWrapper(location);
-        initial = selected;
         setSelectedItem(selected);
     }
     
@@ -102,7 +100,7 @@ class LocationComboBox extends JButton {
             setText(selected.getName());
         }
         currentLoc.removeAll();
-        initStatePopup(currentLoc, selected.getActions());
+        initStatePopup(selected.getActions());
         current = selected;
     }
     
@@ -143,7 +141,7 @@ class LocationComboBox extends JButton {
         observer = obs;
     }
     
-    private void initStatePopup(JPopupMenu menu, String[] actions) {
+    private void initStatePopup(String[] actions) {
         String name = "";
         Icon icon = null;
         if (actions == null) {
