@@ -7,5 +7,6 @@
     <classpathentry kind="var" path="MAVEN_REPO/commons-collections/jars/commons-collections-2.1.jar"/>
     <classpathentry kind="var" path="MAVEN_REPO/jdom/jars/jdom-1.0b8.jar"/>
     <classpathentry kind="var" path="MAVEN_REPO/xerces/jars/xerces-2.2.1.jar"/>
+    <classpathentry kind="var" path="MAVEN_REPO/commons-logging/jars/commons-logging-1.0.1.jar"/>
     <classpathentry kind="output" path="target/classes"/>
 </classpath>
