@@ -23,7 +23,7 @@ import org.eclipse.ui.views.properties.ComboBoxPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.TextPropertyDescriptor;
 import org.mevenide.ui.eclipse.Mevenide;
-import org.mevenide.ui.eclipse.preferences.PomEditorPreferencePage;
+import org.mevenide.ui.eclipse.preferences.DependencyTypesPreferencePage;
 import org.mevenide.util.MevenideUtils;
 
 /**
@@ -46,7 +46,7 @@ public class DependencyPropertySource extends AbstractPomPropertySource {
 	private IPropertyDescriptor[] descriptors = new IPropertyDescriptor[6];
 
 	private String[] getAvailableTypes() {
-	    String[] userRegisteredTypes = PomEditorPreferencePage.getUserRegisteredTypes();
+	    String[] userRegisteredTypes = DependencyTypesPreferencePage.getUserRegisteredTypes();
 	    String[] coreTypes = Mevenide.KNOWN_DEPENDENCY_TYPES;
 	    String[] availableTypes = new String[userRegisteredTypes.length + coreTypes.length];
 	    

@@ -203,10 +203,10 @@
             id="org.mevenide.ui.eclipse.preferences.PluginsRoot">
       </page>
       <!-- Pom Editor Preference Page -->
-      <page class="org.mevenide.ui.eclipse.preferences.PomEditorPreferencePage"
+      <page class="org.mevenide.ui.eclipse.preferences.DependencyTypesPreferencePage"
             category="org.mevenide.ui.plugin.preferences.MavenPreferencePage"
-            name="%PomEditorPreferencePage.Label"
-            id="org.mevenide.ui.eclipse.preferences.PomEditorPreferencePage">
+            name="%DependencyTypesPreferencePage.Label"
+            id="org.mevenide.ui.eclipse.preferences.DependencyTypesPreferencePage">
        </page>
    </extension>
    <extension point="org.eclipse.ui.editors">
