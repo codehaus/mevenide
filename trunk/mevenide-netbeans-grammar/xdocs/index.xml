@@ -31,6 +31,9 @@
             To install the plugin, go to the <a href="http://sourceforge.net/project/showfiles.php?group_id=54263&amp;package_id=110955" class="documentLink">Sourceforge download page</a>  and get the zipped/tarred release. 
             Then extract it, and install the nbm files using your IDE's "Tools/Update Center" wizard.
    	  </p>
+      <p> <b>Known Issue: </b>Before you will be able to use the module, you will have to put log4j jar into your netbeans installation directory
+      into te subfolder lib/ext. It's best done before running the IDE.
+      </p>
    	  </div>
     </section>
     
