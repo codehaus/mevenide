@@ -16,8 +16,12 @@
 package org.mevenide.ui.eclipse.actions;
 
 import org.eclipse.jface.action.IAction;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.MessageBox;
+import org.eclipse.ui.PlatformUI;
 import org.mevenide.sync.ISynchronizer;
 import org.mevenide.sync.SynchronizerFactory;
+import org.mevenide.ui.eclipse.MavenPlugin;
 import org.mevenide.ui.eclipse.sync.views.SourceDirectoryTypePart;
 //import org.mevenide.ui.eclipse.sync.pom.views.SourceDirectoryPropertyView;
 //import org.mevenide.ui.eclipse.MavenPlugin;
@@ -34,12 +38,19 @@ public class SynchronizeAction extends AbstractMavenAction {
     public void run(IAction action) {
 		try {
             if ( action.getId().equals("maven-plugin.Synchronize") ) {
-				SynchronizerFactory.getSynchronizer(ISynchronizer.POM_TO_IDE).synchronize();
+            	String mavenHome = MavenPlugin.getPlugin().getMavenHome();
+				if ( mavenHome == null || mavenHome.trim().equals("") ) {
+					MessageBox dialog = new MessageBox (PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), SWT.ICON_WARNING | SWT.OK);
+					dialog.setText ("Mevenide");
+					dialog.setMessage ("Cannot synchronize : Maven Home has not been set.");
+					dialog.open ();
+				}
+				else {
+					SynchronizerFactory.getSynchronizer(ISynchronizer.POM_TO_IDE).synchronize();
+				}
 			}
 			if ( action.getId().equals("maven-plugin.SynchronizePom") ) {
-				//SynchronizerFactory.getSynchronizer(ISynchronizer.IDE_TO_POM).synchronize();
 				SourceDirectoryTypePart.showView();
-				System.out.println(currentProject);
 				SourceDirectoryTypePart.getInstance().setInput(currentProject);
 			}
 		}

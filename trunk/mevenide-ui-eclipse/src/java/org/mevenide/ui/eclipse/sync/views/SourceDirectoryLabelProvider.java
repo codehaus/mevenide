@@ -17,6 +17,7 @@ import org.eclipse.jface.util.Assert;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.swt.graphics.Image;
+import org.mevenide.ui.eclipse.sync.source.*;
 
 
 public class SourceDirectoryLabelProvider implements ITableLabelProvider {
@@ -34,7 +35,7 @@ public class SourceDirectoryLabelProvider implements ITableLabelProvider {
 	public String getColumnText(Object element, int columnIndex) {
 		Assert.isTrue(element instanceof SourceDirectory);
 		if ( columnIndex == 0  ) { 
-			return ((SourceDirectory) element).getDirectoryPath();
+			return ((SourceDirectory) element).getDisplayPath();
 		}
 		else {
 			String directoryType = ((SourceDirectory) element).getDirectoryType();

@@ -16,6 +16,8 @@ package org.mevenide.ui.eclipse.sync.views;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.mevenide.ProjectConstants;
+
 /**
  * @todo keep it in synch with org.mevenide.ProjectConstants
  * 
@@ -31,13 +33,13 @@ public class SourceDirectoryUtil {
 	private static Map sourceIndexMap;
 
 	final static String[] sourceTypes = {
-		"aspect",
-		"integration test",		
-		"integration test resources",		
+		ProjectConstants.MAVEN_SRC_DIRECTORY,
+		ProjectConstants.MAVEN_ASPECT_DIRECTORY,
+		ProjectConstants.MAVEN_TEST_DIRECTORY,
+		ProjectConstants.MAVEN_INTEGRATION_TEST_DIRECTORY,	
 		"resources",
-		"source",
-		"test",
-		"test resources"
+		"test resources",
+		"integration test resources",		
 	};
 	
 	static Integer getSourceTypeIndex(String sourceType) {
