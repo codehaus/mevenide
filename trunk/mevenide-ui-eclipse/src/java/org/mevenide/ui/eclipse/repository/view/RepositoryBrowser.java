@@ -17,7 +17,6 @@
 package org.mevenide.ui.eclipse.repository.view;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import org.eclipse.core.runtime.jobs.Job;
@@ -53,32 +52,6 @@ import org.mevenide.util.StringUtils;
  * 
  */
 public class RepositoryBrowser extends ViewPart implements RepositoryEventListener {
-    
-    
-    
-    private static final String MAVEN_REPOSITORIES = "MAVEN_REPOSITORIES";
-    private static final List DEFAULT_REPOSITORIES = new ArrayList();
-    private static final List MIRRORS = new ArrayList();
-    
-    static {
-        DEFAULT_REPOSITORIES.add("http://www.ibiblio.org/maven/");
-        DEFAULT_REPOSITORIES.add("http://cvs.apache.org/repository/");
-        DEFAULT_REPOSITORIES.add("http://maven-plugins.sourceforge.net/maven/");
-        DEFAULT_REPOSITORIES.add("http://seasar.sourceforge.jp/maven/");
-        DEFAULT_REPOSITORIES.add("http://spring-ext.sourceforge.jp/maven/");
-        DEFAULT_REPOSITORIES.add("http://ibiblio.org/geotools");
-        DEFAULT_REPOSITORIES.add("http://www.codeczar.com/maven/");
-        
-        MIRRORS.add("http://mirrors.sunsite.dk/maven/");
-        MIRRORS.add("http://ftp.up.ac.za/pub/linux/maven/");
-        MIRRORS.add("http://download.au.kde.org/pub/maven/");
-        MIRRORS.add("http://public.planetmirror.com/pub/maven/");
-        MIRRORS.add("http://public.www.planetmirror.com/pub/maven/");
-        MIRRORS.add("http://smokeping.planetmirror.com/pub/maven/");
-        MIRRORS.add("http://horde.planetmirror.com/pub/maven/");
-        MIRRORS.add("http://curl.planetmirror.com/pub/maven/");
-        MIRRORS.add("http://python.planetmirror.com/pub/maven/");
-    }
     
     private TreeViewer repositoryViewer;
     
@@ -217,24 +190,11 @@ public class RepositoryBrowser extends ViewPart implements RepositoryEventListen
     }
     
     private void saveRepositories() {
-        preferenceManager = PreferencesManager.getManager();
-        String serializedRepos = "";
-        for (Iterator it = repositories.iterator(); it.hasNext();) {
-            serializedRepos += it.next() + ",";
-        }
-        preferenceManager.setValue(MAVEN_REPOSITORIES, serializedRepos);
-        preferenceManager.store();
+        RepositoryList.saveUserDefinedRepositories(repositories);
     }
     
     private void loadRepositories() {
-        preferenceManager = PreferencesManager.getManager();
-        String repos = preferenceManager.getValue(MAVEN_REPOSITORIES);
-        if ( !StringUtils.isNull(repos) ) {
-            repositories = new ArrayList(Arrays.asList(org.apache.commons.lang.StringUtils.split(repos, ",")));
-        }
-        else {
-            repositories = DEFAULT_REPOSITORIES;
-        }
+        repositories = RepositoryList.getUserDefinedRepositories();
     }
     
     private void createToolBarManager() {

@@ -64,8 +64,11 @@ public class TypeBrowser implements RepositoryObjectCollector {
             List artifacts = new ArrayList();
             for ( Iterator it = searchResults.iterator(); it.hasNext(); ) {
                 SearchResult searchResult = (SearchResult) it.next();
-                Artifact artifact = new Artifact(searchResult.getName(), searchResult.getVersion(), type);
-                artifacts.add(artifact);
+                String artifactName = searchResult.getName();
+                if ( !org.mevenide.util.StringUtils.isNull(artifactName) ) {
+                    Artifact artifact = new Artifact(artifactName, searchResult.getVersion(), type);
+                    artifacts.add(artifact);
+                }
             }
             return (Artifact[]) artifacts.toArray(new Artifact[artifacts.size()]);
         }

@@ -16,11 +16,17 @@
  */
 package org.mevenide.ui.eclipse.repository.view;
 
-import org.eclipse.jface.dialogs.Dialog;
+import java.util.ArrayList;
+import java.util.List;
+import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.PlatformUI;
@@ -32,12 +38,16 @@ import org.eclipse.ui.PlatformUI;
  * @version $Id$
  * 
  */
-public class AddRepositoryDialog extends Dialog {
+public class AddRepositoryDialog extends TitleAreaDialog {
     
     private String repository;
     
     private StringFieldEditor fieldEditor;
 
+    private boolean addMirror;
+
+    private Combo mirrorCombo;
+    
     public AddRepositoryDialog() {
         super(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell());
         super.setBlockOnOpen(true);
@@ -48,28 +58,61 @@ public class AddRepositoryDialog extends Dialog {
     }
     
     protected void okPressed() {
-        repository = fieldEditor.getStringValue();
+        if ( !addMirror ) {
+            repository = fieldEditor.getStringValue();
+        }
+        else {
+            repository = mirrorCombo.getText();
+        }
         super.okPressed();
     }
     
     protected Control createDialogArea(Composite composite) {
         getShell().setText("Add Repository");
 		setShellStyle(SWT.RESIZE | SWT.APPLICATION_MODAL);
+		setTitle("Add a new repository");
 		
-		Composite container = new Composite(composite, SWT.NULL);
-        GridLayout layout = new GridLayout();
-        container.setLayout(layout);
-        container.setLayout(layout);
+		GridLayout topLayout = new GridLayout();
+        topLayout.marginHeight = 5;
+        topLayout.marginWidth = 5;
+        composite.setLayout(topLayout);
         
-        GridLayout textLayout = new GridLayout();
-        textLayout.marginHeight = 10;
-        textLayout.marginWidth = 10;
-        GridData topData = new GridData(GridData.FILL_HORIZONTAL);
+        final Composite container = new Composite(composite, SWT.NULL);
+        GridLayout layout = new GridLayout();
+        layout.marginHeight = 7;
+        layout.marginWidth = 7;
+        layout.numColumns = 2;
+        layout.makeColumnsEqualWidth = false;
+        container.setLayout(layout);
+
+        GridData topData = new GridData(GridData.FILL_BOTH);
         topData.grabExcessHorizontalSpace = true;
+        topData.grabExcessVerticalSpace = true;
         container.setLayoutData(topData);
+        topData.horizontalIndent = 15;
         
         fieldEditor = new StringFieldEditor("fake", "Repository", container); 
         
+        Button button = new Button(container, SWT.CHECK);
+        button.setText("Add Mirror");
+        button.addSelectionListener(new SelectionListener() {
+	        public void widgetDefaultSelected(SelectionEvent arg0) { }
+	        public void widgetSelected(SelectionEvent event) {
+	            addMirror = ((Button) event.getSource()).getSelection();
+	            mirrorCombo.setEnabled(addMirror);
+	            fieldEditor.setEnabled(!addMirror, container);
+	        }
+        });
+        
+        mirrorCombo = new Combo(container, SWT.DROP_DOWN | SWT.READ_ONLY | SWT.SINGLE);
+        mirrorCombo.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        List repos = new ArrayList();
+        repos.addAll(RepositoryList.MIRRORS);
+        repos.removeAll(RepositoryList.getUserDefinedRepositories());
+        mirrorCombo.setItems((String[]) repos.toArray(new String[repos.size()]));
+        mirrorCombo.setEnabled(false);
+        
         return container;
     }
+    
 }

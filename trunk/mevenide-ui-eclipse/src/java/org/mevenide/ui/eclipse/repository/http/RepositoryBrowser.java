@@ -83,8 +83,10 @@ public class RepositoryBrowser implements RepositoryObjectCollector {
             
             for ( Iterator it = groupNames.iterator(); it.hasNext(); ) {
                 String groupName = (String) it.next();
-                Group group = new Group(groupName, repository);
-                groups.add(group);
+                if ( !org.mevenide.util.StringUtils.isNull(groupName) ) {
+                    Group group = new Group(groupName, repository);
+                	groups.add(group);
+                }
             }
             
             return (Group[]) groups.toArray(new Group[groups.size()]);
