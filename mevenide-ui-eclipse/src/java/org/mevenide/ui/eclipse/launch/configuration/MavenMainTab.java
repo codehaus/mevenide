@@ -18,6 +18,7 @@ package org.mevenide.ui.eclipse.launch.configuration;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.swt.SWT;
@@ -31,6 +32,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.externaltools.internal.launchConfigurations.ExternalToolsMainTab;
 import org.eclipse.ui.externaltools.internal.model.IExternalToolConstants;
 import org.mevenide.ui.eclipse.Mevenide;
+import org.mevenide.util.StringUtils;
 
 /**
  * 
@@ -85,6 +87,18 @@ public class MavenMainTab extends ExternalToolsMainTab {
 	}
 
 	public void initializeFrom(ILaunchConfiguration configuration) {
+	    try {
+            if ( StringUtils.isNull(configuration.getAttribute(IExternalToolConstants.ATTR_WORKING_DIRECTORY, "")) ) {
+                configuration.getWorkingCopy().setAttribute(
+                        IExternalToolConstants.ATTR_WORKING_DIRECTORY,
+                        Mevenide.getInstance().getCurrentDir());
+            }
+        }
+        catch (CoreException e) {
+            String message = "Unable to set working directory"; 
+            log.error(message, e);
+        }
+	    
 		updateWorkingDirectory(configuration);
 
 	}
@@ -98,16 +112,17 @@ public class MavenMainTab extends ExternalToolsMainTab {
 		}
 	}
 	
-	public boolean isValid(ILaunchConfiguration launchConfig) {
-		return true;
-	}
-	
-//	protected String getLocationLabel() {
-//		return Mevenide.getResourceString("MavenMainTab.working.directory.label");
-//	}
-	
 	protected String getWorkingDirectoryLabel() {
 		return Mevenide.getResourceString("MavenMainTab.working.directory.label");
 	}
 	
+	public boolean isValid(ILaunchConfiguration launchConfig) {
+	    if ( StringUtils.isNull(workDirectoryField.getText()) ) {
+	        setErrorMessage("MavenMainTab.working.directory.null");
+	    }
+	    else {
+	       setErrorMessage(null);
+	    }
+        return !StringUtils.isNull(workDirectoryField.getText());
+    }
 }
