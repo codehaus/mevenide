@@ -19,10 +19,10 @@
     <siteAddress>beaver.codehaus.org</siteAddress>
 	<siteDirectory>/home/projects/mevenide/public_html/${artifactId}</siteDirectory>
 	
-  	<repository>
-      <connection>scm:cvs:pserver:anonymous@cvs.sourceforge.net:/home/projects/mevenide/scm:maven-plugins/${pom.artifactId}</connection>
-      <developerConnection>scm:cvs:ext:${maven.username}@cvs.sourceforge.net:/home/projects/mevenide/scm:maven-plugins/${pom.artifactId}</developerConnection>
-      <url>http://cvs.mevenide.codehaus.org/cvsweb.cgi/maven-plugins/${pom.artifactId}/</url>
+    <repository>
+      <connection>scm:cvs:pserver:anonymous@cvs.sourceforge.net:/home/projects/mevenide/scm:${pom.artifactId}</connection>
+      <developerConnection>scm:cvs:ext:${maven.username}@cvs.mevenide.codehaus.org:/cvsroot/mevenide:${pom.artifactId}</developerConnection>
+      <url>http://cvs.mevenide.codehaus.org/cvsweb.cgi/${pom.artifactId}/</url>
     </repository>
     
 	<reports>
