@@ -31,13 +31,13 @@ public class SourceDirectoryUtil {
 	private static Map sourceIndexMap;
 
 	final static String[] sourceTypes = {
-		"source",
 		"aspect",
-		"test",
-		"integration test",
+		"integration test",		
+		"integration test resources",		
 		"resources",
-		"test resources",
-		"integration test resources"
+		"source",
+		"test",
+		"test resources"
 	};
 	
 	static Integer getSourceTypeIndex(String sourceType) {

@@ -13,6 +13,8 @@
  */
 package org.mevenide.ui.eclipse.sync.views;
 
+import java.util.List;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
@@ -48,7 +50,18 @@ import org.mevenide.ui.eclipse.MavenPlugin;
 public class SourceDirectoryTypePart extends ViewPart {
 
 	private TableViewer viewer;
+	private IMemento memento;
 	
+	private static SourceDirectoryTypePart partInstance; 
+	
+	//public constructor : it should be instantiated by Eclipse 
+	public SourceDirectoryTypePart() {
+		partInstance = this;
+	}
+	
+	public static SourceDirectoryTypePart getInstance() {
+		return partInstance;
+	}
 	
 	public void createPartControl(Composite parent) {
 		Composite composite = parent;
@@ -73,11 +86,11 @@ public class SourceDirectoryTypePart extends ViewPart {
 		//add action buttons
 		addContributions();
 		
-		setInput(null);
 		
 	}
 
 	public void setInput(IProject project) {
+		//@todo manage project swapping via the memento
 		 viewer.setInput(new SourceDirectoryGroup(project));
 	}
 
@@ -131,12 +144,16 @@ public class SourceDirectoryTypePart extends ViewPart {
 		viewer.setContentProvider(new ListContentProvider(){
 			public Object[] getElements(Object input) {
 				Assert.isTrue(input instanceof SourceDirectoryGroup);
-				return ((SourceDirectoryGroup) input).getSourceDirectories();
+				List directoriesList = ((SourceDirectoryGroup) input).getSourceDirectories();
+				return directoriesList.toArray();
 			}
 		});
 		
 		viewer.setLabelProvider(new SourceDirectoryLabelProvider(SourceDirectoryUtil.sourceTypes));
 		
+//		viewer.setSorter(new ViewerSorter() {
+//			
+//		});
 	}
 
 	private ComboBoxCellEditor createComboBoxCellEditor() {
@@ -154,6 +171,7 @@ public class SourceDirectoryTypePart extends ViewPart {
 		IToolBarManager tbm = getViewSite().getActionBars().getToolBarManager();
 		tbm.add(new Action() {
 			public void run() {
+				saveState(memento);
 				SynchronizerFactory.getSynchronizer(ISynchronizer.IDE_TO_POM).synchronize();
 			}	
 		});

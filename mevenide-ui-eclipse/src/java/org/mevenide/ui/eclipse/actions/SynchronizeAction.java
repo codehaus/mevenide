@@ -39,6 +39,8 @@ public class SynchronizeAction extends AbstractMavenAction {
 			if ( action.getId().equals("maven-plugin.SynchronizePom") ) {
 				//SynchronizerFactory.getSynchronizer(ISynchronizer.IDE_TO_POM).synchronize();
 				SourceDirectoryTypePart.showView();
+				System.out.println(currentProject);
+				SourceDirectoryTypePart.getInstance().setInput(currentProject);
 			}
 		}
 		catch (Exception e) {
