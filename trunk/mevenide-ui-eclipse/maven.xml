@@ -2,10 +2,10 @@
 <project xmlns:j="jelly:core">
 	
 	<postGoal name="jar:install">
-		<attainGoal name="mevenide:deploy-plugin"/>
+		<attainGoal name="mevenide:deploy"/>
 	</postGoal>
 	
-	<goal name="mevenide:deploy-plugin">
+	<goal name="mevenide:deploy">
 		<!-- copy dependencies to mevenide lib directory -->
 		<j:forEach var="dependency" items="${pom.dependencies}">
 			<j:if test="${!dependency.groupId.equals('eclipse')}">
