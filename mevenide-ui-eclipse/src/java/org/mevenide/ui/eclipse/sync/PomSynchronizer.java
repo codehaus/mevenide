@@ -88,6 +88,8 @@ public class PomSynchronizer extends AbstractPomSynchronizer implements ISynchro
 			
 			synchronize(project);
 			
+			refresh(project);
+			
 		}
 		catch (Exception e) {
 			log.debug("Unable to synchronize project '" + project.getName() + "' due to : " + e);
@@ -151,5 +153,13 @@ public class PomSynchronizer extends AbstractPomSynchronizer implements ISynchro
 		
 		Mevenide.getPlugin().setBuildPath();
 	}
-
+	
+	private void refresh(IProject project) throws Exception {
+		IFile projectFile = project.getFile("project.xml");
+		projectFile.refreshLocal(IProject.DEPTH_ZERO, null);
+		IFile propertiesFile = project.getFile("project.properties");
+		if ( propertiesFile.exists() ) {
+			propertiesFile.refreshLocal(IProject.DEPTH_ZERO, null);
+		}
+	}
 }

@@ -94,14 +94,24 @@ public class DefaultDependencyResolver extends AbstractDependencyResolver {
 	}
 
 	public String guessArtifactId(String fileName) {
-		return new DependencySplitter(fileName).split()[0];
+		
+		String ai = new DependencySplitter(fileName).split()[0];
+		if ( ai == null && fileName.indexOf("SNAPSHOT") > 0 ) {
+			return fileName.substring(0, fileName.indexOf("SNAPSHOT") - 1);
+		}
+		return ai;
+		
 	}
 
 	public String guessVersion(String fileName) {
-		if ( fileName.indexOf("SNAPSHOT") > 0 ) {
+		/*if ( fileName.indexOf("SNAPSHOT") > 0 ) {
+			return "SNAPSHOT";
+		}*/
+		String version = new DependencySplitter(fileName).split()[1];
+		if ( version == null && fileName.indexOf("SNAPSHOT") > 0 ) {
 			return "SNAPSHOT";
 		}
-		return new DependencySplitter(fileName).split()[1];
+		return version;
 	}
 
 	/**
