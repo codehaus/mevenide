@@ -27,6 +27,12 @@
 						<li>
 							<a href="edit.html" class="documentLink">POM Edition</a>
 						</li>
+						<li>
+							<a href="contentassist.html" class="documentLink">POM Edition</a>
+						</li>
+						<li>
+							<a href="wizard.html" class="documentLink">POM Edition</a>
+						</li>
 					</ul>
 				</div>
 			</subsection>
