@@ -83,9 +83,12 @@ public class DependencyViewUtil {
 	private static void configureViewer(final TableTreeViewer tableTreeViewer) {
 		tableTreeViewer.setColumnProperties(new String[] {"attribute", "value"});
 		
+		TextCellEditor editor = new TextCellEditor(tableTreeViewer.getTableTree().getTable());
+		editor.activate();
+		
 		tableTreeViewer.setCellEditors(new CellEditor[] {
 			new TextCellEditor(),
-			new TextCellEditor()
+			editor
 			
 		});
 		
@@ -100,10 +103,10 @@ public class DependencyViewUtil {
 						element = ((Item) element).getData();
 					}
 					((DependencyContentProvider.DependencyInfo) element).setInfo((String)value);
-					//tableTreeViewer.update(element, new String[] {"value"});
+					tableTreeViewer.update(element, new String[] {"value"});
 				}
 			}
-			//doSetValue broken. CVS commit to not lose modifications
+			
 			public Object getValue(Object element, String property) {
 				if ( element instanceof DependencyContentProvider.DependencyInfo && "attribute".equals("property") ) {
 					return ((DependencyContentProvider.DependencyInfo) element).getDependency().getArtifact();
@@ -116,7 +119,7 @@ public class DependencyViewUtil {
 				} 
 			}
 		});
-		
+
 		tableTreeViewer.setContentProvider(new DependencyContentProvider());
 		
 		//tableTreeViewer.setLabelProvider(new );
