@@ -67,10 +67,10 @@ public class MavenJob extends Job {
             }
         }; 
         PlatformUI.getWorkbench().getDisplay().asyncExec(mavenRunner);
-        return new Status(Status.OK, "org.mevenide.ui", 0, Mevenide.getResourceString("MavenRunner.Null.Configuration"), null); //$NON-NLS-1$ //$NON-NLS-2$
+        return new Status(Status.OK, "org.mevenide.ui", 0, Mevenide.getResourceString("MavenRunner.Done"), null); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
-    private IStatus runMaven() {
+    private void runMaven() {
         if (configuration != null) {
 			if ( showDialog ) {
 				//IStatus status = new Status(IStatus.INFO, Mevenide.PLUGIN_ID, 0, "", null); //$NON-NLS-1$
@@ -83,7 +83,6 @@ public class MavenJob extends Job {
 						log.debug("Exception while cancelling launch : ", e ); //$NON-NLS-1$
 					}
 				}
-				return new Status(Status.OK, "org.mevenide.ui", 0, Mevenide.getResourceString("MavenRunner.Aborted"), null); //$NON-NLS-1$ //$NON-NLS-2$
 			}
 			
 			String newName= DebugPlugin.getDefault().getLaunchManager().generateUniqueLaunchConfigurationNameFrom(configuration.getName());
@@ -98,13 +97,10 @@ public class MavenJob extends Job {
 				    //caused config to be launched twice (see MavenLaunchDelegate)
 				    DebugUITools.launch(configuration, ILaunchManager.RUN_MODE);
 				}
-				return new Status(Status.OK, "org.mevenide.ui", 0, Mevenide.getResourceString("MavenRunner.Finished"), null); //$NON-NLS-1$ //$NON-NLS-2$
 			}
 			catch (Exception e) {
 				log.error("Unable to copy configuration due to : ", e); //$NON-NLS-1$
-				return new Status(Status.ERROR, "org.mevenide.ui", 0, Mevenide.getResourceString("MavenRunner.Error.CopyingConfiguration"), null); //$NON-NLS-1$ //$NON-NLS-2$
 			}
 		}
-        return new Status(Status.OK, "org.mevenide.ui", 0, Mevenide.getResourceString("MavenRunner.Null.Configuration"), null); //$NON-NLS-1$ //$NON-NLS-2$
     }
 }
