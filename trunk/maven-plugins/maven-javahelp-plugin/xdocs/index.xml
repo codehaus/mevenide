@@ -13,7 +13,7 @@
       </subsection>
       <subsection name="Download and Installation">
         <p>
-          To get the plugin, issue the following command:
+          To get the plugin, issue the following command (NOTE: Not yet available, use cvs):
         </p>
         <source>"%MAVEN_HOME%\bin\maven" plugin:download
                          -DgroupId=mevenide
@@ -51,10 +51,21 @@
               Same as ${pom.package}, but with forward slashes (= the relative path of the package). Should be replaced by an algorithm using ${pom.package} and ${pom.build.sourceDirectory} and possibly the package definitions in java files.
             </td>
           </tr>
+          <tr>
+            <td>maven.javahelp.gen</td>
+            <td>Yes</td>
+            <td>
+              The target directory for generated help files. Default: ${maven.build.dir}/generated-help
+            </td>
+          </tr>
+          <tr>
+            <td>maven.javahelp.jar</td>
+            <td>Yes</td>
+            <td>
+              The name of the jar-file to be created in xxx.xxx.xxx. Default: ${maven.build.dir}/help/${pom.artifactId}-${pom.currentVersion}.jar
+            </td>
+          </tr>
         </table>
-        <p>
-          There are more properties, which have still to be documented (and reviewed).
-        </p>
       </subsection>
     </section>
   </body>
