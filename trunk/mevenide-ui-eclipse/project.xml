@@ -165,25 +165,25 @@
     <dependency>
       <groupId>mevenide</groupId>
       <artifactId>mevenide-core</artifactId>
-      <version>0.5-SNAPSHOT</version>
+      <version>0.6-SNAPSHOT</version>
       <type>jar</type>
     </dependency>
     <dependency>
       <groupId>mevenide</groupId>
       <artifactId>mevenide-grammar</artifactId>
-      <version>0.5-SNAPSHOT</version>
+      <version>0.6-SNAPSHOT</version>
       <type>jar</type>
     </dependency>
     <dependency>
       <groupId>mevenide</groupId>
       <artifactId>mevenide-config</artifactId>
-      <version>0.6-SNAPSHOT</version>
+      <version>0.7-SNAPSHOT</version>
       <type>jar</type>
     </dependency>
     <dependency>
       <groupId>mevenide</groupId>
       <artifactId>goals-grabber</artifactId>
-      <version>0.6-SNAPSHOT</version>
+      <version>0.7-SNAPSHOT</version>
       <type>jar</type>
     </dependency>
     <dependency>
