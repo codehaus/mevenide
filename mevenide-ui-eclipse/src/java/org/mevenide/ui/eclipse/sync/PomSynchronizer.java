@@ -122,8 +122,6 @@ public class PomSynchronizer extends AbstractPomSynchronizer implements ISynchro
 		PomSynchronizer.updatePom(sourceGroup, dependencyGroup, Mevenide.getPlugin().getPom());
 	}
 
-	///// @todo refactor method below since they introduce a cycle ////
-	
 	public static void updatePom(SourceDirectoryGroup sourceGroup, DependencyGroup dependencyGoup, File pomFile) throws Exception {
 		Mevenide.getPlugin().createProjectProperties();
 		

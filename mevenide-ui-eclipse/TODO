@@ -1,3 +1,2 @@
  + get rid of those package cycles P:H
  + need SERIOUS refactoring !! P:M
- + use a logger in package : sync P:H

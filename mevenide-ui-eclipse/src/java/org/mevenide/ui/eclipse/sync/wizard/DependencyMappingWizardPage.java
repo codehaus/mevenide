@@ -17,6 +17,7 @@ package org.mevenide.ui.eclipse.sync.wizard;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.viewers.TableTreeViewer;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
@@ -27,6 +28,9 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.FileDialog;
+import org.eclipse.ui.PlatformUI;
+import org.mevenide.project.dependency.DependencyFactory;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.sync.model.DependencyGroup;
 import org.mevenide.ui.eclipse.sync.model.DependencyGroupMarshaller;
@@ -42,6 +46,10 @@ public class DependencyMappingWizardPage extends WizardPage {
 	private static Log log = LogFactory.getLog(DependencyMappingWizardPage.class);
 	
 	private TableTreeViewer viewer;
+	private Button addButton;
+	private Button removeButton;
+	private Button propertiesButton;
+	private Button refreshButton;
 	
 	private IProject project;
 	
@@ -84,6 +92,8 @@ public class DependencyMappingWizardPage extends WizardPage {
 		
 		viewer = DependencyMappingViewControl.getViewer(composite, SWT.BORDER);
 		setInput(((SynchronizeWizard)getWizard()).getProject());
+		
+		 
 	}
 
 	private void createButtons(Composite parent) {
@@ -96,7 +106,7 @@ public class DependencyMappingWizardPage extends WizardPage {
 		data.grabExcessHorizontalSpace = true;
 		composite.setLayoutData(data);
 	
-		Button addButton = new Button(composite, SWT.PUSH);
+		addButton = new Button(composite, SWT.PUSH);
 		addButton.setText("Add...");
 		addButton.setToolTipText("Add a dependency");
 		GridData addButtonData = new GridData(GridData.FILL_HORIZONTAL);
@@ -104,7 +114,7 @@ public class DependencyMappingWizardPage extends WizardPage {
 		addButton.setLayoutData(addButtonData);
 		addButton.setEnabled(false);	
 	
-		Button removeButton = new Button(composite, SWT.PUSH);
+		removeButton = new Button(composite, SWT.PUSH);
 		removeButton.setText("Remove");
 		removeButton.setToolTipText("Remove dependency");
 		GridData removeButtonData = new GridData(GridData.FILL_HORIZONTAL);
@@ -112,12 +122,37 @@ public class DependencyMappingWizardPage extends WizardPage {
 		removeButton.setLayoutData(removeButtonData);
 		removeButton.setEnabled(false);
 		
-		Button refreshButton = new Button(composite, SWT.PUSH);
+		propertiesButton = new Button(composite, SWT.PUSH);
+		propertiesButton.setText("Properties");
+		propertiesButton.setToolTipText("Set depedencency properties");
+		GridData propertiesButtonData = new GridData(GridData.FILL_HORIZONTAL);
+		propertiesButtonData.grabExcessHorizontalSpace = true;
+		propertiesButton.setLayoutData(propertiesButtonData);
+		
+		refreshButton = new Button(composite, SWT.PUSH);
 		refreshButton.setText("Refresh");
 		refreshButton.setToolTipText("Refresh project dependencies");
 		GridData refreshButtonData = new GridData(GridData.FILL_HORIZONTAL);
 		refreshButtonData.grabExcessHorizontalSpace = true;
 		refreshButton.setLayoutData(refreshButtonData);
+		
+		addButton.addSelectionListener(
+				new SelectionAdapter() {
+					public void widgetSelected(SelectionEvent e) {
+						try {
+							FileDialog dialog = new FileDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell());
+							String path = dialog.open();
+							if ( path != null ) {
+								((DependencyGroup)viewer.getInput()).addDependency(DependencyFactory.getFactory().getDependency(path));
+							}
+							viewer.refresh();
+						}
+						catch ( Exception ex ) {
+							log.info("Problem occured while trying to add a Dependency due to : " + e);
+						}
+					}
+				}
+		);
 		
 		removeButton.addSelectionListener(
 				new SelectionAdapter() {
@@ -131,6 +166,15 @@ public class DependencyMappingWizardPage extends WizardPage {
 							((DependencyGroup) viewer.getInput()).getDependencies().remove(item.getData());
 							viewer.refresh();
 						}
+					}
+				}
+		);
+		
+		propertiesButton.addSelectionListener(
+				new SelectionAdapter() {
+					public void widgetSelected(SelectionEvent e) {
+						Dialog dialog = new DependencyPropertiesDialog();
+						dialog.open();
 					}
 				}
 		);
