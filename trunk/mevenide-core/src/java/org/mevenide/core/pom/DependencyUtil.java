@@ -56,6 +56,7 @@ class DependencyUtil {
 				getDependencyVersion(dependencyName, dependencyId));
 		}
 		catch (IndexOutOfBoundsException ex) {
+            ex.printStackTrace();
 		}
 		Element url = new Element("url");
 		dependencyElement.addContent(dependencyIdElement);
