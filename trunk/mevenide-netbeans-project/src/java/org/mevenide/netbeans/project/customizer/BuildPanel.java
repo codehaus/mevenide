@@ -23,6 +23,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Build;
 import org.apache.maven.project.Project;
+import org.mevenide.netbeans.project.MavenProject;
 import org.mevenide.project.ProjectConstants;
 import org.mevenide.project.source.SourceDirectoryUtil;
 import org.openide.util.NbBundle;
@@ -37,22 +38,23 @@ public class BuildPanel extends JPanel implements ProjectPanel {
     private boolean propagate;
     private ProjectValidateObserver valObserver;
     private DocumentListener listener;
-    
+    private MavenProject project;
     /** Creates new form BuildPanel */
-    public BuildPanel(boolean propagateImmediately, boolean enable) {
+    public BuildPanel( boolean propagateImmediately, boolean enable, MavenProject proj) {
         initComponents();
         propagate = propagateImmediately;
         valObserver = null;
+        project = proj;
         //TODO add listeners for immediatePropagation stuff.
         setName(NbBundle.getMessage(BuildPanel.class, "BuildPanel.name"));
         setEnableFields(enable);
     }
     
     public void setEnableFields(boolean enable) {
-        txtAspectSrc.setEnabled(enable);
-        txtIntTestSrc.setEnabled(enable);
-        txtSrc.setEnabled(enable);
-        txtTestSrc.setEnabled(enable);
+        txtAspectSrc.setEditable(enable);
+        txtIntTestSrc.setEditable(enable);
+        txtSrc.setEditable(enable);
+        txtTestSrc.setEditable(enable);
     }
     
     /** This method is called from within the constructor to
@@ -157,25 +159,35 @@ public class BuildPanel extends JPanel implements ProjectPanel {
         return project;
     }
     
-    public void setProject(Project project) {
+    public void setProject(Project project, boolean resolve) {
+//TODO        setEnableFields(!resolve);        
         Build build = project.getBuild();
         if (build == null) {
-            txtSrc.setText("src/java"); //NOI18N
-            txtTestSrc.setText("src/test/java"); //NOI18N
+            txtSrc.setText(resolve ? getValue("${maven.src.dir}/java", true) : ""); //NOI18N
+            txtTestSrc.setText(resolve ? getValue("${maven.src.dir}/test/java", true) : ""); //NOI18N
             txtAspectSrc.setText(""); //NOI18N
             txtIntTestSrc.setText(""); //NOI18N
         } else {
-            txtSrc.setText(build.getSourceDirectory() == null ? "src/java" : build.getSourceDirectory());
-            txtTestSrc.setText(build.getUnitTestSourceDirectory() == null ? "src/test/java"
-            : build.getUnitTestSourceDirectory());
+            txtSrc.setText(build.getSourceDirectory() == null ? 
+                                (resolve ? getValue("${maven.src.dir}/java", true) : "") :
+                                getValue(build.getSourceDirectory(), resolve));
+            txtTestSrc.setText(build.getUnitTestSourceDirectory() == null ? 
+                                (resolve ? getValue("${maven.src.dir}/test/java", true) : "") :
+                                getValue(build.getUnitTestSourceDirectory(), resolve));
             txtAspectSrc.setText(build.getAspectSourceDirectory() == null ? ""
-            : build.getAspectSourceDirectory());
+                                    : getValue(build.getAspectSourceDirectory(), resolve));
             txtIntTestSrc.setText(build.getIntegrationUnitTestSourceDirectory() == null ? ""
-            : build.getIntegrationUnitTestSourceDirectory());
+                                    : getValue(build.getIntegrationUnitTestSourceDirectory(), resolve));
         }
         
     }
     
+   private String getValue(String value, boolean resolve) {
+        if (resolve) {
+            return project.getPropertyResolver().resolveString(value);
+        }
+        return value;
+    }    
     
     public void setValidateObserver(ProjectValidateObserver observer) {
         valObserver = observer;

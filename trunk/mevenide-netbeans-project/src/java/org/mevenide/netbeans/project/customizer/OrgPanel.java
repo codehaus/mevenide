@@ -66,13 +66,13 @@ public class OrgPanel extends JPanel implements ProjectPanel {
     }
     
     public void setEnableFields(boolean enable) {
-        txtDistAddress.setEnabled(enable);
-        txtDistDir.setEnabled(enable);
-        txtLogo.setEnabled(enable);
-        txtName.setEnabled(enable);
-        txtSiteAddress.setEnabled(enable);
-        txtSiteDir.setEnabled(enable);
-        txtURL.setEnabled(enable);
+        txtDistAddress.setEditable(enable);
+        txtDistDir.setEditable(enable);
+        txtLogo.setEditable(enable);
+        txtName.setEditable(enable);
+        txtSiteAddress.setEditable(enable);
+        txtSiteDir.setEditable(enable);
+        txtURL.setEditable(enable);
     }
     
     /** This method is called from within the constructor to
@@ -263,24 +263,31 @@ public class OrgPanel extends JPanel implements ProjectPanel {
     private javax.swing.JTextField txtURL;
     // End of variables declaration//GEN-END:variables
     
-    public void setProject(Project project) {
+   public void setProject(Project project, boolean resolve) {
+//TODO        setEnableFields(!resolve); 
         Organization org = project.getOrganization();
-        System.out.println("org is " + org);
         if (org == null) {
             txtURL.setText("");
             txtName.setText("");
             txtLogo.setText("");
         } else {
-            txtURL.setText(org.getUrl() == null ? "" : org.getUrl());
-            txtName.setText(org.getName() == null ? "" : org.getName());
-            txtLogo.setText(org.getLogo() == null ? "" : org.getLogo());
+            txtURL.setText(org.getUrl() == null ? "" : getValue(org.getUrl(), resolve));
+            txtName.setText(org.getName() == null ? "" : getValue(org.getName(), resolve));
+            txtLogo.setText(org.getLogo() == null ? "" : getValue(org.getLogo(), resolve));
         }
-        txtSiteAddress.setText(project.getSiteAddress() == null ? "" : project.getSiteAddress());
-        txtSiteDir.setText(project.getSiteDirectory() == null ? "" : project.getSiteDirectory());
-        txtDistDir.setText(project.getDistributionDirectory() == null ? "" : project.getDistributionDirectory());
-        txtDistAddress.setText(project.getDistributionSite() == null ? "" : project.getDistributionSite());
+        txtSiteAddress.setText(project.getSiteAddress() == null ? "" : getValue(project.getSiteAddress(), resolve));
+        txtSiteDir.setText(project.getSiteDirectory() == null ? "" : getValue(project.getSiteDirectory(), resolve));
+        txtDistDir.setText(project.getDistributionDirectory() == null ? "" : getValue(project.getDistributionDirectory(), resolve));
+        txtDistAddress.setText(project.getDistributionSite() == null ? "" : getValue(project.getDistributionSite(), resolve));
     }
     
+   private String getValue(String value, boolean resolve) {
+       if (resolve) {
+           return project.getPropertyResolver().resolveString(value);
+       }
+       return value;
+   }
+   
     public Project copyProject(Project project) {
         project.setSiteAddress(txtSiteAddress.getText());
         project.setSiteDirectory(txtSiteDir.getText());

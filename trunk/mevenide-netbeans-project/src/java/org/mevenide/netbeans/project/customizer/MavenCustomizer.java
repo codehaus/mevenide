@@ -20,6 +20,8 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyVetoException;
@@ -48,6 +50,7 @@ public class MavenCustomizer extends JPanel implements ProjectValidateObserver {
     private GridBagConstraints fillConstraints;
     
     private MavenProject project;
+    private CategoryView catView;
     
     public MavenCustomizer(MavenProject proj) {
         initComponents();
@@ -60,7 +63,17 @@ public class MavenCustomizer extends JPanel implements ProjectValidateObserver {
         fillConstraints.weightx = 1.0;
         fillConstraints.weighty = 1.0;
         
-        categoryPanel.add( new CategoryView( createRootNode( project) ), fillConstraints );
+        catView = new CategoryView(createRootNode(project));
+        categoryPanel.add(catView, fillConstraints);
+        
+        cbResolve.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent event) {
+                Node[] nodes = ((ExplorerManager.Provider)catView).getExplorerManager().getSelectedNodes();
+                if (nodes.length > 0) {
+                    changeCustomizer(nodes[0]);
+                }
+            }
+        });
     }
     
     /** This method is called from within the constructor to
@@ -74,6 +87,7 @@ public class MavenCustomizer extends JPanel implements ProjectValidateObserver {
         categoryPanel = new javax.swing.JPanel();
         customizerPanel = new javax.swing.JPanel();
         lblValidateMessage = new javax.swing.JLabel();
+        cbResolve = new javax.swing.JCheckBox();
 
         setLayout(new java.awt.GridBagLayout());
 
@@ -86,7 +100,7 @@ public class MavenCustomizer extends JPanel implements ProjectValidateObserver {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
-        gridBagConstraints.gridheight = 4;
+        gridBagConstraints.gridheight = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.insets = new java.awt.Insets(6, 6, 6, 6);
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
@@ -103,10 +117,10 @@ public class MavenCustomizer extends JPanel implements ProjectValidateObserver {
         gridBagConstraints.gridy = 0;
         gridBagConstraints.gridheight = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.insets = new java.awt.Insets(6, 0, 6, 6);
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         gridBagConstraints.weightx = 0.7;
         gridBagConstraints.weighty = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(6, 0, 6, 6);
         add(customizerPanel, gridBagConstraints);
 
         lblValidateMessage.setText("jLabel1");
@@ -118,11 +132,42 @@ public class MavenCustomizer extends JPanel implements ProjectValidateObserver {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         add(lblValidateMessage, gridBagConstraints);
 
+        cbResolve.setText("Resolve Values");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.insets = new java.awt.Insets(0, 6, 6, 0);
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        add(cbResolve, gridBagConstraints);
+
     }//GEN-END:initComponents
+
+    private void changeCustomizer(Node node) {
+        if ( currentCustomizer != null ) {
+            customizerPanel.remove( currentCustomizer );
+        }
+        if ( node.hasCustomizer() ) {
+            currentCustomizer = node.getCustomizer();
+            if (currentCustomizer instanceof ProjectPanel) {
+                ProjectPanel prpanel = (ProjectPanel)currentCustomizer;
+                //reset messages.
+                lblValidateMessage.setText("");
+                prpanel.setValidateObserver(MavenCustomizer.this);
+                prpanel.setProject(project.getOriginalMavenProject(), cbResolve.isSelected());
+            }
+            customizerPanel.add( currentCustomizer, fillConstraints );
+            customizerPanel.validate();
+            customizerPanel.repaint();
+        }
+        else {
+            currentCustomizer = null;
+        }
+    }
     
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel categoryPanel;
+    private javax.swing.JCheckBox cbResolve;
     private javax.swing.JPanel customizerPanel;
     private javax.swing.JLabel lblValidateMessage;
     // End of variables declaration//GEN-END:variables
@@ -201,26 +246,7 @@ public class MavenCustomizer extends JPanel implements ProjectValidateObserver {
                         return;
                     }
                     Node node = nodes[0];
-                    if ( currentCustomizer != null ) {
-                        customizerPanel.remove( currentCustomizer );
-                    }
-                    if ( node.hasCustomizer() ) {
-                        currentCustomizer = node.getCustomizer();
-                        if (currentCustomizer instanceof ProjectPanel) {
-                            ProjectPanel prpanel = (ProjectPanel)currentCustomizer;
-                            //reset messages.
-                            lblValidateMessage.setText("");
-                            prpanel.setValidateObserver(MavenCustomizer.this);
-                            prpanel.setProject(project.getOriginalMavenProject());
-                        }
-                        customizerPanel.add( currentCustomizer, fillConstraints );
-                        customizerPanel.validate();
-                        customizerPanel.repaint();
-                    }
-                    else {
-                        currentCustomizer = null;
-                    }
-
+                    changeCustomizer(node);
                     return;
                 }
             }
@@ -281,7 +307,7 @@ public class MavenCustomizer extends JPanel implements ProjectValidateObserver {
                 "BuildCategory", // NOI18N
                 "Build", 
                 "org/mevenide/netbeans/project/resources/Bullet", // NOI18N
-                new BuildPanel(false, false), 
+                new BuildPanel(false, false, project), 
                 null),
             new ConfigurationDescription(
                 "UnitTestsCategory", // NOI18N

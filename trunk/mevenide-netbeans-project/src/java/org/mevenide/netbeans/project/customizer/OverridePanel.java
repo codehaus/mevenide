@@ -104,7 +104,7 @@ public class OverridePanel extends JPanel implements ExplorerManager.Provider, P
     }
     
     public void setFieldsEditable(boolean editable) {
-        txtOverrideValue.setEnabled(editable);
+        txtOverrideValue.setEditable(editable);
     }  
     /** This method is called from within the constructor to
      * initialize the form.
@@ -236,7 +236,7 @@ public class OverridePanel extends JPanel implements ExplorerManager.Provider, P
         return true;
     }
     
-    public void setProject(Project proj) {
+    public void setProject(Project proj, boolean resolve) {
         manager.setRootContext(createRootNode(proj));
         btv.expandAll();
         selectFirstNode();

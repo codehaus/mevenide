@@ -32,7 +32,7 @@ public interface ProjectPanel
     /**
      * the panel will update according to the values of project parameter.
      */
-    void setProject(Project project);
+    void setProject(Project project, boolean resolveValues);
     
     /**
      * sets the observer interested in the validity changes of the panel.
