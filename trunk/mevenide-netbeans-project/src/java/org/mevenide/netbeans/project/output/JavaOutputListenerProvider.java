@@ -46,7 +46,7 @@ public class JavaOutputListenerProvider extends AbstractOutputProcessor {
     
     private static final String[] JAVAGOALS = new String[] {
         "java:compile:",
-        "test:compile"
+        "test:compile:"
     };
     private Pattern failPattern;
     private MavenProject project;
