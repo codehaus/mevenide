@@ -9,7 +9,7 @@
         <div id="documentContent">
         <p> This project is a simple XML grammar code completion Netbeans module which gives the user access to 
         basic maven/jelly-taglib elements and attributes.
-        It currently works with Netbeans 3.5.
+        It currently works with Netbeans 3.5 and 3.6.
         </p>
 	</div>
    </section>

@@ -19,18 +19,13 @@ package org.mevenide.grammar.impl;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-import java.util.TreeMap;
+import java.util.*;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.mevenide.grammar.AttributeCompletion;
 import org.mevenide.grammar.TagLib;
 import org.mevenide.grammar.TagLibProvider;
+
 
 /**
  * a TagLibProvider that will retrieve tagLibs from the MAVEN_LOCAL_REPO/plugins/dynatag.cache

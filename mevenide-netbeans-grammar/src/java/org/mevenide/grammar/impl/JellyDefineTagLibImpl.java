@@ -188,14 +188,14 @@ public class JellyDefineTagLibImpl implements TagLib
                 Iterator it = elements.iterator();
                 while (it.hasNext()) {
                     Element el = (Element)it.next();
-                    if (el.getNamespace().equals(rootElement.getNamespace()) && 
+                    if (el.getNamespace().equals(rootElement.getNamespace()) 
                         // TODO - we shall check for tag/jellybean tags and also others..
-                            (el.getName().equals("tag") || 
-                             el.getName().equals("jellybean") ||
-                             el.getName().equals("bean") //||
+                        &&  (el.getName().equals("tag") 
+                             || el.getName().equals("jellybean")
+                             || el.getName().equals("bean") //||
                              //el.getName().equals("dynabean")
-                            ) &&
-                        tag.equals(el.getAttributeValue("name")))  //NOI18N
+                            ) 
+                        && tag.equals(el.getAttributeValue("name")))  //NOI18N
                     {
                         tagElement = el;
                         List attrElements = tagElement.getChildren("attribute", rootElement.getNamespace()); //NOI18N
@@ -242,9 +242,9 @@ public class JellyDefineTagLibImpl implements TagLib
             Class clazz = loader.loadClass(element.getAttributeValue("className"));  //NOI18N
             Method[] methods = clazz.getMethods();
             for (int i = 0 ; i < methods.length; i++) {
-                if (methods[i].getName().startsWith("set") &&  //NOI18N
-                    methods[i].getParameterTypes().length == 1 &&
-                    methods[i].getModifiers() == Modifier.PUBLIC) {
+                if (methods[i].getName().startsWith("set") //NOI18N
+                    && methods[i].getParameterTypes().length == 1 
+                    && methods[i].getModifiers() == Modifier.PUBLIC) {
                     try {
                         String attrName = methods[i].getName().substring(3);
                         // include only the ones with getters?..
@@ -254,6 +254,7 @@ public class JellyDefineTagLibImpl implements TagLib
                         }
                     } catch (Exception e) {
                         // no getter?? just ignore.. process the next one..
+                        logger.warn("No getter, probably ignore", e);
                     }
                 }
             }

@@ -56,8 +56,8 @@ public final class TagLibManager {
     /**
      * sets the AttrCompletionProvider instance that will populate the cache.
      */
-    public void setAttrCompletionProvider(AttrCompletionProvider provider) {
-        attrComplProvider = provider;
+    public void setAttrCompletionProvider(AttrCompletionProvider prov) {
+        attrComplProvider = prov;
     }
     
     /**

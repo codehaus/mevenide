@@ -24,9 +24,14 @@ import java.net.URLClassLoader;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.mevenide.environment.SysEnvLocationFinder;
-import org.openide.modules.ModuleInfo;
+import org.netbeans.modules.xml.core.XMLDataLoader;
+import org.openide.DialogDisplayer;
+import org.openide.NotifyDescriptor;
+import org.openide.NotifyDescriptor.Confirmation;
+import org.openide.loaders.ExtensionList;
 import org.openide.modules.ModuleInstall;
-import org.openide.util.Lookup;
+import org.openide.util.SharedClassObject;
+
 
 /** Manages a module's lifecycle.
  * Remember that an installer is optional and often not needed at all.
@@ -42,24 +47,24 @@ public class MavenGrammarModule extends ModuleInstall
     private static transient ClassLoader mavenClassLoader;
     public void restored()
     {
-        System.out.println("#########################################restored");
         // By default, do nothing.
         // Put your startup code here.
+        
         SysEnvLocationFinder.setDefaultSysEnvProvider(new NbSysEnvProvider());
     }
     
     public void validate() throws java.lang.IllegalStateException
     {
-        System.out.println("#########################################validating");
+//        System.out.println("#########################################validating");
         String maven_home = System.getProperty("Env-MAVEN_HOME");//NOI18N
         if (maven_home == null)
         {
             throw new IllegalStateException("Maven not installed or the MAVEN_HOME property not set. Cannot Install.");
         }
-        File pluginDir = new File(maven_home, "lib");
+        File pluginDir = new File(maven_home, "lib"); //NOI18N
         File[] jars = pluginDir.listFiles(new FilenameFilter() {
             public boolean accept(File dir, String name) {
-                return name.startsWith("commons-jelly") || name.equals("maven.jar");
+                return name.startsWith("commons-jelly") || name.equals("maven.jar"); //NOI18N
             }
         });
         try {
@@ -90,12 +95,28 @@ public class MavenGrammarModule extends ModuleInstall
      */
     
     // Generally the methods below should be avoided in favor of restored():
-    /*
+    
     // By default, do nothing but call restored().
     public void installed() {
+        //
+        XMLDataLoader load = (XMLDataLoader)SharedClassObject.findObject(XMLDataLoader.class, true);
+        boolean isRegistered = load.getExtensions().isRegistered("jelly"); //NOI18N
+        if (!isRegistered) {
+            String message = ".jelly extension is not registered as xml file. Jelly files are important when editing maven plugins. Add it to supported xml file extensions?";
+            String title = "Jelly file not recognized as xml.";
+            Confirmation confirm = new Confirmation(message, title, NotifyDescriptor.YES_NO_OPTION);
+            Object ret = DialogDisplayer.getDefault().notify(confirm);
+            if (ret == NotifyDescriptor.YES_OPTION) {
+                
+                ExtensionList list = (ExtensionList)load.getExtensions().clone();
+                list.addExtension("jelly"); //NOI18N
+                load.setExtensions(list);
+            }
+        }
         restored();
+        
     }
-     
+/*     
     // By default, do nothing.
     public void uninstalled() {
     }
