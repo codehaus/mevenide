@@ -68,14 +68,22 @@ public class ActionDefinitionsManager implements IActionDefinitionManager, ILaun
     }
     
     public void launchConfigurationAdded(ILaunchConfiguration configuration) {
-        ActionDefinitions definition = new ActionDefinitions();
-        definition.setConfiguration(configuration);
-        definitions.add(definition);
+        try {
+	        if ( configuration.getType() != null && configuration.getType().getIdentifier().indexOf(BUILD_CONFIG_TYPE) != -1 ) {
+		        ActionDefinitions definition = new ActionDefinitions();
+		        definition.setConfiguration(configuration);
+		        definitions.add(definition);
+	        }
+        }
+        catch (CoreException e) {
+            log.error("Unable to retrieve launch configurations", e); //$NON-NLS-1$
+        }   
     }
     
     public void launchConfigurationRemoved(ILaunchConfiguration configuration) {
         ActionDefinitions definition = new ActionDefinitions();
         definition.setConfiguration(configuration);
+        //inconditionnally remove config definition. 
         definitions.remove(definition);
     }
     
