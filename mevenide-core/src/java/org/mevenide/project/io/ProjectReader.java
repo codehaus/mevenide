@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.Reader;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
@@ -156,7 +157,7 @@ public class ProjectReader {
 	}
 
 	/**
-	 * return all resources directories declared in pom. map keys can be one of :
+	 * return all resources directories declared in pom. keys are resource directories while map values can be one of :
 	 * 
 	 *   o ProjectConstants.MAVEN_RESOURCE
 	 *   o ProjectConstants.MAVEN_TEST_RESOURCE
@@ -166,14 +167,14 @@ public class ProjectReader {
 	 * @throws Exception
 	 */
 	public Map readAllResources(File pom) throws Exception {
-		Map allResources = new HashMap();
+		Map allResources = new Hashtable();
 		Project project = read(pom);
 		if ( project.getBuild() != null ) {
 			List res = project.getBuild().getResources();
 			for (int i = 0; i < res.size(); i++) {
                 String directory = ((Resource) res.get(i)).getDirectory();
                 if ( !allResources.containsValue(directory) ) {
-                	allResources.put(ProjectConstants.MAVEN_RESOURCE, directory);
+                	allResources.put(directory, ProjectConstants.MAVEN_RESOURCE);
                 }
             }
 			if ( project.getBuild().getUnitTest() != null ) {
@@ -181,7 +182,7 @@ public class ProjectReader {
 				for (int i = 0; i < utRes.size(); i++) {
 					String directory = ((Resource) utRes.get(i)).getDirectory();
 					if ( !allResources.containsValue(directory) ) {
-						allResources.put(ProjectConstants.MAVEN_TEST_RESOURCE, directory);
+						allResources.put(directory, ProjectConstants.MAVEN_TEST_RESOURCE);
 					}
 				}
 			}
