@@ -19,6 +19,7 @@ package org.mevenide.ui.eclipse.sync.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.maven.project.Dependency;
 import org.apache.maven.project.Project;
 import org.apache.maven.repository.Artifact;
 import org.eclipse.core.resources.IProject;
@@ -68,7 +69,8 @@ public class MavenArtifactNode extends ArtifactNode {
 			return false;
 		}
 		MavenArtifactNode node = (MavenArtifactNode) obj;
-		return DependencyUtil.areEquals(this.artifact.getDependency(), node.artifact.getDependency());
+		Project context = (Project) parent.getData();
+		return DependencyUtil.areEquals(context, this.artifact.getDependency(), node.artifact.getDependency());
 	}
 	
 	public ISynchronizationNode[] getChildren() {
@@ -85,11 +87,19 @@ public class MavenArtifactNode extends ArtifactNode {
 		return properties != null && properties.length > 0;
 	}
 	public String toString() {
-		String groupId = artifact.getDependency().getGroupId() + " : ";
-		String artifactId = artifact.getDependency().getArtifactId();
-		String version = artifact.getDependency().getVersion();
+
+	    String groupId = artifact.getDependency().getGroupId(); 
+	    groupId = resolve(groupId) + " : ";
+	    
+	    String artifactId = artifact.getDependency().getArtifactId();
+		artifactId = resolve(artifactId);
+	    
+	    String version = artifact.getDependency().getVersion();
+	    version = version != null ? resolve(version) : null;
+	    
 		return groupId + artifactId + (version != null ? " : " + version : "") ;
 	}
+	
 	
 	/**
 	 * @todo manage potential causes of failure : 
@@ -145,8 +155,10 @@ public class MavenArtifactNode extends ArtifactNode {
 	}
 	
 	protected String getIgnoreLine() {
-		// TODO Auto-generated method stub
-		return null;
+		Dependency dependency = artifact.getDependency();
+		return dependency.getGroupId() + ":" + 
+		       dependency.getArtifactId() + ":" +
+		       dependency.getVersion() != null ? dependency.getVersion() : "*";
 	}
 	
 	public void removeFrom(Project project) throws Exception {
@@ -195,4 +207,5 @@ public class MavenArtifactNode extends ArtifactNode {
 		}
 		propagateNodeChangeEvent();
 	}
+	
 }

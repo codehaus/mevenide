@@ -16,8 +16,9 @@
  */
 package org.mevenide.ui.eclipse.sync.model;
 
-import org.mevenide.project.ProjectConstants;
+import org.apache.maven.project.Project;
 import org.mevenide.project.source.SourceDirectoryUtil;
+import org.mevenide.properties.resolver.util.ResolverUtils;
 
 /**
  * 
@@ -29,14 +30,11 @@ public class Directory {
     private String path;
     private String type;
     
-    public Directory() {
-    }
+    private Project project;
     
-    public String getDisplayPath() {
-    	if ( path.equals(ProjectConstants.BASEDIR) || path.equals("") ) {
-            return ProjectConstants.BASEDIR;
-        }
-        return path;
+    
+    public Directory(Project project) {
+        this.project = project;
     }
     
     /** 
@@ -49,8 +47,7 @@ public class Directory {
     		return false;
     	}
     	Directory dir = (Directory) obj;
-    	//@todo debug-me
-    	return getCleanPath().equals(dir.getCleanPath()); 
+    	return ResolverUtils.resolve(project, getCleanPath()).equals(ResolverUtils.resolve(project, dir.getCleanPath())); 
 	}
     
     public boolean equalsStrict(Object obj) {
@@ -81,4 +78,7 @@ public class Directory {
         this.type = type;
     }
     
+    
+    
 }
+
