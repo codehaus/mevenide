@@ -175,10 +175,15 @@
          name="maven nature"
          point="org.eclipse.core.resources.natures">
       <runtime>
-         <run class="org.mevenide.ui.eclipse.nature.MevenideNature">
-         </run>
+         <run class="org.mevenide.ui.eclipse.nature.MevenideNature"/>
       </runtime>
+      <builder id="org.mevenide.ui.mavenbuilder"/>
    </extension>
+   <extension id="mavenbuilder" name="Maven Builder" point="org.eclipse.core.resources.builders"> 
+      <builder hasNature="true"> 
+         <run class="org.mevenide.ui.eclipse.nature.MavenBuilder"/>
+      </builder> 
+   </extension> 
    <!-- Maven actions -->
    <extension
          point="org.eclipse.ui.popupMenus">
@@ -220,6 +225,38 @@
                icon="icons/eview16/synch_synch.gif"
                menubarPath="maven.plugin.menu/Synchronize"
                id="maven-plugin.Synchronize">
+         </action>
+      </objectContribution>
+      <!-- iproject contributions - todo : provide icons for nature management -->
+      <objectContribution 
+            objectClass="org.eclipse.core.resources.IProject"
+            adaptable="true"
+            id="maven.plugin.project.xml.contribution.iproject">
+         <action
+               enablesFor="1"
+               label="%AddMavenNature.label"
+               tooltip="%AddMavenNature.tooltip"
+               class="org.mevenide.ui.eclipse.actions.AddMavenNatureAction"
+               menubarPath="maven.plugin.menu/MavenNature"
+               id="maven.plugin.popup.action.addnature">
+               <enablement>
+                 <not>
+                   <objectState name="projectNature" 
+                                value="org.mevenide.ui.mavennature"/>
+                 </not>
+               </enablement>
+         </action>
+         <action
+               enablesFor="1"
+               label="%RemoveMavenNature.label"
+               tooltip="%RemoveMavenNature.tooltip"
+               class="org.mevenide.ui.eclipse.actions.RemoveMavenNatureAction"
+               menubarPath="maven.plugin.menu/MavenNature"
+               id="maven.plugin.popup.action.removenature">
+               <enablement>
+                 <objectState name="projectNature" 
+                             value="org.mevenide.ui.mavennature"/>
+               </enablement>
          </action>
       </objectContribution>
       <!-- project.xml contributions -->
