@@ -30,6 +30,7 @@ import org.apache.maven.MavenUtils;
 import org.apache.maven.project.Project;
 import org.apache.maven.repository.Artifact;
 import org.mevenide.project.io.ProjectReader;
+import org.mevenide.ui.eclipse.util.SourceDirectoryTypeUtil;
 
 /**  
  * 
@@ -48,7 +49,6 @@ public class MavenProjectNode extends AbstractSynchronizationNode implements ISe
 	
 	private DirectoryNode[] originalDirectoryNodes;
 	private MavenArtifactNode[] originalArtifactNodes;
-	//private ResourceNode[] originalResourceNodes;
 	
 	private EclipseProjectNode parentNode;
 	
@@ -61,7 +61,6 @@ public class MavenProjectNode extends AbstractSynchronizationNode implements ISe
 	private void initialize() {
 	    initializeArtifacts();
 	    initializeDirectories();
-	    //initializeResources();
 	}
 	
     /**
@@ -147,10 +146,11 @@ public class MavenProjectNode extends AbstractSynchronizationNode implements ISe
 		List tempNodes = new ArrayList(Arrays.asList(directoryNodes));
 	    List eclipseSourceFolders = createSourceFolderNodes(parentNode.getEclipseSourceFolders());
 	    for (int i = 0; i < eclipseSourceFolders.size(); i++) {
-	    	System.err.println(((DirectoryNode) eclipseSourceFolders.get(i)));
 	    	DirectoryNode eclipseSourceFolderNode = (DirectoryNode) eclipseSourceFolders.get(i);
 	    	if ( !tempNodes.contains(eclipseSourceFolderNode)  ) {
 				eclipseSourceFolderNode.setDirection(ISelectableNode.OUTGOING_DIRECTION);
+				Directory directory = (Directory) eclipseSourceFolderNode.getData();
+				directory.setType(SourceDirectoryTypeUtil.guessSourceType(directory.getPath()));
 				tempNodes.add(eclipseSourceFolderNode);
 			}
 	    	else {

@@ -16,10 +16,20 @@
  */
 package org.mevenide.ui.eclipse.sync.model;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.maven.project.Build;
 import org.apache.maven.project.Project;
+import org.apache.maven.project.Resource;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.ui.views.properties.IPropertySource;
+import org.mevenide.project.io.ProjectReader;
+import org.mevenide.project.source.SourceDirectoryUtil;
 
 
 /**  
@@ -29,16 +39,71 @@ import org.eclipse.ui.views.properties.IPropertySource;
  * 
  */
 public class DirectoryNode extends ArtifactNode {
+	private static final Log log = LogFactory.getLog(DirectoryNode.class);
 	
 	private Directory directory;
 	
 	private MavenProjectNode parentNode;
 	
+	private ExcludeNode[] excludeNodes;
+	//private IncludeNode[] includeNodes;
+	
 	public DirectoryNode(Directory dir, MavenProjectNode project) {
 		directory = dir;
 		parentNode = project;
+		initialize();
 	}
 	
+	private void initialize() {
+		try {
+			Map sources = ProjectReader.getReader().readSourceDirectories(((Project) parentNode.getData()).getFile());
+			if ( sources.keySet().contains(directory.getCleanPath()) ) {
+				return;
+			}
+			Resource resource = findLessExclusiveEquivalentResource();
+			if ( resource != null && resource.getExcludes() != null) {
+				excludeNodes = new ExcludeNode[resource.getExcludes().size()];
+				for (int i = 0; i < excludeNodes.length; i++) {
+					excludeNodes[i] = new ExcludeNode(this, (String) resource.getExcludes().get(i));
+				}
+			}
+		} 
+		catch (Exception e) {
+			String message = "Unable to read resources"; 
+			log.error(message, e);
+		}
+	}
+
+	private Resource findLessExclusiveEquivalentResource() {
+		Resource resource = null;
+		Project mavenProject = ((Project) parentNode.getData());
+		List allResources = getMavenProjectResources(mavenProject);
+		for (int i = 0; i < allResources.size(); i++) {
+			Resource nextResource = (Resource) allResources.get(i);
+			if ( directory.getCleanPath().equals(SourceDirectoryUtil.stripBasedir(nextResource.getDirectory()).replaceAll("\\\\", "/")) ) {
+				if ( resource == null ) {
+					resource = nextResource;
+				}
+				else {
+					resource = resource.getExcludes().size() > nextResource.getExcludes().size() ? nextResource : resource;
+				}
+			}
+		}
+		return resource;
+	}
+
+	private List getMavenProjectResources(Project mavenProject) {
+		List resources = new ArrayList();
+		Build build = mavenProject.getBuild();
+		if ( build != null ) {
+			resources = build.getResources();
+			if ( build.getUnitTest() != null ) {
+				resources.addAll(build.getUnitTest().getResources());
+			}
+		}
+		return resources;
+	}
+
 	public boolean equals(Object obj) {
 		if ( !(obj instanceof DirectoryNode) ) {
 			return false;
@@ -47,7 +112,7 @@ public class DirectoryNode extends ArtifactNode {
 		return directory.equals(node.directory);
 	}
 	public ISynchronizationNode[] getChildren() {
-		return null;
+		return excludeNodes;
 	}
 	public Object getData() {
 		return directory;
@@ -56,35 +121,34 @@ public class DirectoryNode extends ArtifactNode {
 		return parentNode;
 	}
 	public boolean hasChildren() {
-		return false;
+		return excludeNodes != null && excludeNodes.length > 0;
 	}
 	public String toString() {
 		return directory.getCleanPath();
 	}
 	
 	
-	/* (non-Javadoc)
-	 * @see org.mevenide.ui.eclipse.sync.model.ArtifactNode#addTo(org.eclipse.core.resources.IProject)
-	 */
 	public void addTo(IProject project) throws Exception {
 		// TODO Auto-generated method stub
 	}
-	/* (non-Javadoc)
-	 * @see org.mevenide.ui.eclipse.sync.model.ArtifactNode#addTo(org.apache.maven.project.MavenProject)
-	 */
+	
 	public void addTo(Project project) throws Exception {
-		// TODO Auto-generated method stub
+//		if ( ProjectConstants.MAVEN_TEST_RESOURCE.equals(directory.getType()) ) {
+//			ProjectWriter.getWriter().addResource(directory.getCleanPath(), project.getFile());
+//		}
+//		else if ( ProjectConstants.MAVEN_TEST_RESOURCE.equals(directory.getType()) ) {
+//			ProjectWriter.getWriter().addUnitTestResource(directory.getCleanPath(), project.getFile());
+//		}
+//		else {
+//			ProjectWriter.getWriter().addSource(directory.getCleanPath(), project.getFile(), directory.getType());
+//		}
 	}
-	/* (non-Javadoc)
-	 * @see org.mevenide.ui.eclipse.sync.model.ArtifactNode#getIgnoreLine()
-	 */
+	
 	protected String getIgnoreLine() {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	/* (non-Javadoc)
-	 * @see org.mevenide.ui.eclipse.sync.model.ArtifactNode#removeFrom(org.apache.maven.project.MavenProject)
-	 */
+	
 	public void removeFrom(Project project) throws Exception {
 		// TODO Auto-generated method stub
 	}

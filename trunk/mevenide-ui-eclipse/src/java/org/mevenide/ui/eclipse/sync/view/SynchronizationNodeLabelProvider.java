@@ -22,10 +22,13 @@ import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
+import org.mevenide.project.ProjectConstants;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.MevenideColors;
+import org.mevenide.ui.eclipse.sync.model.Directory;
 import org.mevenide.ui.eclipse.sync.model.DirectoryNode;
 import org.mevenide.ui.eclipse.sync.model.EclipseProjectNode;
+import org.mevenide.ui.eclipse.sync.model.ExcludeNode;
 import org.mevenide.ui.eclipse.sync.model.ISynchronizationNode;
 import org.mevenide.ui.eclipse.sync.model.MavenArtifactNode;
 import org.mevenide.ui.eclipse.sync.model.MavenProjectNode;
@@ -45,7 +48,9 @@ public class SynchronizationNodeLabelProvider implements ILabelProvider, IColorP
     		return Mevenide.getImageDescriptor("maven_dep_tree.gif").createImage();
     	}
     	if ( element instanceof DirectoryNode ) {
-    		return Mevenide.getImageDescriptor("sourcefolder_obj.gif").createImage();
+    		Directory directory = (Directory) ((DirectoryNode) element).getData();
+    		String imageName = getDirectoryImageName(directory);
+    		return Mevenide.getImageDescriptor(imageName).createImage();
     	}
     	if ( element instanceof EclipseProjectNode ) {
     		return Mevenide.getImageDescriptor("maven_project.gif").createImage();
@@ -56,10 +61,34 @@ public class SynchronizationNodeLabelProvider implements ILabelProvider, IColorP
     	if ( element instanceof PropertyNode ) {
     		return Mevenide.getImageDescriptor("property.gif").createImage();
     	}
+    	if ( element instanceof ExcludeNode ) {
+    		return Mevenide.getImageDescriptor("exclude_obj.gif").createImage();
+    	}
     	return null;
     }
     
-    public String getText(Object element) {
+    private String getDirectoryImageName(Directory directory) {
+		String imageName;
+		if ( directory.getType() == null ) {
+			imageName = "sourcefolder_undefined_obj.gif";
+		}
+		else if ( directory.getType().equals(ProjectConstants.MAVEN_SRC_DIRECTORY) ) {
+			imageName = "packagefolder_obj.gif";
+		}
+		else if ( directory.getType().equals(ProjectConstants.MAVEN_TEST_DIRECTORY) ) {
+			imageName = "sourcefolder_unittest_obj.gif";
+		}
+		else if ( directory.getType().equals(ProjectConstants.MAVEN_RESOURCE) 
+				  || directory.getType().equals(ProjectConstants.MAVEN_TEST_RESOURCE)) {
+			imageName = "sourcefolder_resource_obj.gif";
+		}
+		else {
+			imageName = "sourcefolder_obj.gif";
+		}
+		return imageName;
+	}
+
+	public String getText(Object element) {
         if ( element instanceof ISynchronizationNode ) {
         	return ((ISynchronizationNode) element).toString();
         }
