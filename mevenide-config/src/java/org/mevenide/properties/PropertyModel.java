@@ -98,6 +98,10 @@ public class PropertyModel
                 }
             }
         }
+        String lineSeparator = new String(new byte[]{ Character.LINE_SEPARATOR});
+        result.setValue(result.getValue().replaceAll("\\\\r\\\\n", lineSeparator));
+        result.setValue(result.getValue().replaceAll("\\\\r", lineSeparator));
+        result.setValue(result.getValue().replaceAll("\\\\n", lineSeparator));
         return result;
     }
     
