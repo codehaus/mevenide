@@ -24,14 +24,15 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.internal.dialogs.ListContentProvider;
 import org.mevenide.ui.eclipse.Mevenide;
-import org.mevenide.ui.eclipse.sync.model.*;
-import org.mevenide.ui.eclipse.util.*;
+import org.mevenide.ui.eclipse.sync.model.SourceDirectory;
+import org.mevenide.ui.eclipse.sync.model.SourceDirectoryGroup;
+import org.mevenide.ui.eclipse.sync.model.SourceDirectoryGroupLabelProvider;
+import org.mevenide.ui.eclipse.util.SourceDirectoryTypeUtil;
 
 /**
  * 
@@ -43,14 +44,15 @@ public class SourceDirectoryMappingViewControl {
 	
 	private SourceDirectoryMappingViewControl(){
 	}
+	
 	public static TableViewer getViewer(Composite parent) {
-		GridLayout layout = new GridLayout();
-		layout.marginHeight=0;
-		layout.marginWidth=0;
-		parent.setLayout(layout);
+		return getViewer(parent, SWT.NONE);	
+	}
+	
+	public static TableViewer getViewer(Composite parent, int styles) {
 		
 		//configure viewer layout
-		TableViewer tableViewer = new TableViewer(parent, SWT.FULL_SELECTION);
+		TableViewer tableViewer = new TableViewer(parent, SWT.FULL_SELECTION | styles);
 		GridData gridData = new GridData(GridData.FILL_BOTH);
 		gridData.grabExcessVerticalSpace = true;
 		gridData.grabExcessHorizontalSpace = true;

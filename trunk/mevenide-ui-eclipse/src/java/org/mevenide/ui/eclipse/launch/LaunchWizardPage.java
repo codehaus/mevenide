@@ -36,6 +36,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
@@ -105,10 +106,22 @@ public class LaunchWizardPage extends WizardPage {
 		createCheckBoxes(composite);
 		createSysPropertiesTable(composite);
 		createGoalsText(composite);
-
+		//createMavenVersionLabel(composite);
+		
 		return composite;
 	}
 
+	private void createMavenVersionLabel(Composite composite) {
+		GridData data = new GridData(GridData.FILL_HORIZONTAL);
+		data.horizontalSpan = 2;
+		data.grabExcessHorizontalSpace = true;
+		data.grabExcessVerticalSpace = true;
+		
+		Label label = new Label(composite, SWT.READ_ONLY);
+		label.setText("Maven version: ");
+		
+		label.setLayoutData(data);
+	}
 
 	private void createCheckBoxes(Composite parent) throws Exception {
 		
