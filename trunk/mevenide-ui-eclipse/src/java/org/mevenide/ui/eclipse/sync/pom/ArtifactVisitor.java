@@ -27,8 +27,8 @@ import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.launching.JavaRuntime;
 import org.mevenide.ProjectConstants;
 import org.mevenide.project.io.ProjectWriter;
-import org.mevenide.ui.eclipse.MavenPlugin;
 import org.mevenide.ui.eclipse.sync.source.IPathResolverDelegate;
+import org.mevenide.ui.eclipse.util.FileUtil;
 import org.mevenide.ui.eclipse.util.ProjectUtil;
 
 
@@ -97,7 +97,7 @@ public class ArtifactVisitor {
         	jreEntryList.add(pathResolver.getAbsolutePath(jreEntries[i].getPath()));
 		}    
         
-        boolean isClassFolder = isClassFolder(pathResolver.getRelativeSourceDirectoryPath(classpathEntry, pomSynchronizer.getProject()));
+        boolean isClassFolder = FileUtil.isClassFolder(pathResolver.getRelativeSourceDirectoryPath(classpathEntry, pomSynchronizer.getProject()), pomSynchronizer.getProject());
         
         if ( !jrePath.equals(entryPath) && !jreEntryList.contains(entryPath) && !isClassFolder ) {
 			writer.addDependency(
@@ -109,38 +109,12 @@ public class ArtifactVisitor {
 			//add it to the pomSynchronizer list of unresolved dependencies so that we can 
 			//later display a MessageBox
 			String path = new File(pathResolver.getAbsolutePath(classpathEntry.getPath())).getName();
-			if ( !isClassFolder && !inLocalRepository(path) ) {
+			if ( !isClassFolder && !FileUtil.inLocalRepository(path) ) {
 				pomSynchronizer.addUnresolvedDependency(entryPath);
 			}
 			
  		}
 		
-	}
-	
-	private boolean inLocalRepository(String entryPath) {
-		File localRepo = new File(MavenPlugin.getPlugin().getMavenRepository());
-		return findFile(localRepo, entryPath);
-	}
-	
-	private boolean findFile(File rootDirectory, String fileName) {
-		File[] f = rootDirectory.listFiles();
-		for (int i = 0; i < f.length; i++) {
-			if ( f[i].isDirectory() ) {
-				if ( findFile(f[i], fileName) ) {
-					return true;
-				}
-			}
-			else {
-				if ( f[i].getName().equals(fileName) ) {
-					return true;
-				}
-			}
-		}
-		return false;
-	}
-	
-	private boolean isClassFolder(String entryPath) {
-		return new File(pomSynchronizer.getProject().getLocation().append(new Path(entryPath)).toOSString()).isDirectory();
 	}
 	
 	public void add(ProjectEntry entry) throws Exception {
