@@ -23,18 +23,18 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Dependency;
 import org.apache.maven.project.Project;
 import org.apache.maven.project.Resource;
-import org.mevenide.Environment;
-import org.mevenide.project.source.SourceDirectoryUtil;
 import org.mevenide.project.dependency.AbstractDependencyResolver;
 import org.mevenide.project.dependency.DependencyFactory;
 import org.mevenide.project.dependency.DependencyUtil;
 import org.mevenide.project.dependency.IDependencyResolver;
 import org.mevenide.project.resource.DefaultResourceResolver;
 import org.mevenide.project.resource.IResourceResolver;
-import org.mevenide.util.MevenideUtil;
+import org.mevenide.project.source.SourceDirectoryUtil;
 
 /**
  * 
@@ -51,6 +51,8 @@ import org.mevenide.util.MevenideUtil;
  * 
  */
 public class ProjectWriter {
+	private static Log log = LogFactory.getLog(ProjectWriter.class);
+	
 	private ProjectReader projectReader ;
 	private DefaultProjectMarshaller marshaller ; 
 	private IDependencyResolver dependencyResolver;
@@ -138,14 +140,14 @@ public class ProjectWriter {
 		
 		Dependency dependency = DependencyFactory.getFactory().getDependency(path);
 		
-		if ( !dependencyResolver.isDependencyPresent(project, dependency) ) {
+		if ( !dependencyResolver.isDependencyPresent(project, dependency) 
+				&& DependencyUtil.isValid(dependency)) {
 			
 			project.addDependency(dependency);
 			write(project, pom);
 			
 		}
 		
-		//@todo manage jar.overridding
 		jarOverride(dependency.getArtifact(), new File(pom.getParent(), "project.properties"), pom);
 
 	}
@@ -175,7 +177,30 @@ public class ProjectWriter {
 	
 	public void setDependencies(List dependencies, File pom) throws Exception {
 		Project project = projectReader.read(pom);
+		List nonResolvedDependencies = getNonResolvedDependencies(dependencies);
+		
+		log.debug("writing " + dependencies.size() + " resolved dependencies, " + nonResolvedDependencies.size() + " non resolved ones");
+		
+		project.setDependencies(dependencies);
+		write(project, pom);
+		
+		File propertiesFile = new File(pom.getParent(), "project.properties");
+		unsetOverriding(propertiesFile);
+		
+		//jaroverriding
+		for (int i = 0; i < nonResolvedDependencies.size(); i++) {
+			Dependency dependency = (Dependency) nonResolvedDependencies.get(i); 
+			jarOverride(dependency.getArtifact(), propertiesFile, pom);
+		} 
+	}
 
+	/**
+	 * modifies the list parameter passed, removing all non resolved dependencies
+	 * 
+	 * @param dependencies
+	 * @return list of non resolved dependencies  
+	 */
+	private List getNonResolvedDependencies(List dependencies) {
 		List nonResolvedDependencies = new ArrayList();
 		for (int i = 0; i < dependencies.size(); i++) {
 			Dependency dependency = (Dependency)dependencies.get(i); 
@@ -184,21 +209,7 @@ public class ProjectWriter {
 				nonResolvedDependencies.add(dependency);
 			}
 		} 
-		
-		project.setDependencies(dependencies);
-		write(project, pom);
-		
-		File propertiesFile = new File(pom.getParent(), "project.properties");
-		
-		unsetOverriding(propertiesFile);
-		
-		//jaroverriding
-		for (int i = 0; i < nonResolvedDependencies.size(); i++) {
-			Dependency dependency = (Dependency)nonResolvedDependencies.get(i); 
-			//if ( !DependencyUtil.isValid(dependency) ) {
-			jarOverride(dependency.getArtifact(), propertiesFile, pom);
-			//}
-		} 
+		return nonResolvedDependencies;
 	}
 	
 	/** 
@@ -237,40 +248,44 @@ public class ProjectWriter {
 	
     
     private void jarOverride(String path, File propertiesFile, File pom) throws Exception {
+		Project project = ProjectReader.getReader().read(pom);
+		if ( project.getDependencies() == null ) {
+			project.setDependencies(new ArrayList());
+		}
+				
 		Dependency dep = DependencyFactory.getFactory().getDependency(path);
+		
 		String groupId = dep.getGroupId();
 		String artifactId = dep.getArtifactId();
 		
-		if ( !MevenideUtil.findFile(new File(Environment.getMavenRepository()), new File(path).getName()) ) {
-			if ( groupId == null || groupId.trim().equals("") ) {
-				dep.setGroupId("nonResolvedGroupId");
-			}
-			if ( artifactId == null || artifactId.trim().equals("") ) {
-				String fname = new File(path).getName().substring(0, new File(path).getName().lastIndexOf('.'));
-				dep.setArtifactId(fname);
-			}
-			
-			Properties properties = new Properties();
-			properties.load(new FileInputStream(propertiesFile));
-			
-			
-			properties.setProperty("maven.jar.override", "on");
-			
-			properties.setProperty("maven.jar." + dep.getArtifactId(), path);
-			
-			properties.store(new FileOutputStream(propertiesFile), null);
-			
-			Project project = ProjectReader.getReader().read(pom);
-			
-			if ( project.getDependencies() == null ) {
-				project.setDependencies(new ArrayList());
-			}
-			project.getDependencies().remove(DependencyFactory.getFactory().getDependency(path));
-			project.addDependency(dep);
-			
-			write(project, pom);
+		if ( groupId == null || groupId.length() == 0 ) {
+			dep.setGroupId("nonResolvedGroupId");
+		}
+		if ( artifactId == null || artifactId.length() == 0 ) {
+			String fname = new File(path).getName().substring(0, new File(path).getName().lastIndexOf('.'));
+			dep.setArtifactId(fname);
 		}
 		
+		addPropertiesOverride(path, propertiesFile, dep);
+		
+		//project.getDependencies().remove(DependencyFactory.getFactory().getDependency(path));
+		project.addDependency(dep);
+		
+		write(project, pom);
+
+		
+	}
+
+	private void addPropertiesOverride(String path, File propertiesFile, Dependency dep) throws Exception {
+		Properties properties = new Properties();
+		properties.load(new FileInputStream(propertiesFile));
+		
+		
+		properties.setProperty("maven.jar.override", "on");
+		
+		properties.setProperty("maven.jar." + dep.getArtifactId(), path);
+		
+		properties.store(new FileOutputStream(propertiesFile), null);
 	} 
 	
 	private void unsetOverriding(File propertiesFile) throws Exception {
