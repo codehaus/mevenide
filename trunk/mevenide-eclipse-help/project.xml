@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <project>
-    <extend>${basedir}/../mevenide-master/base-project.xml</extend>
+  <extend>${basedir}/../mevenide-parent/project.xml</extend>
     <pomVersion>3</pomVersion>
     <id>mevenide-eclipse-help</id>
     <name>Mevenide Eclipse Help</name>

@@ -4,7 +4,7 @@
   <!ENTITY inherited-dependencies SYSTEM "file:../mevenide-ui-jbuilder/pom-fragments/inherited-dependencies.xml">
 ]>
 <project>
-	<extend>${basedir}/../mevenide-master/base-project.xml</extend>
+    <extend>${basedir}/../mevenide-parent/project.xml</extend>
     <pomVersion>3</pomVersion>
     <name>JBuilder Maven OpenTool</name>
     <id>mevenide-ui-jbuilder</id>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <project>
-  <extend>${basedir}/../mevenide-master/base-project.xml</extend>
+  <extend>${basedir}/../mevenide-parent/project.xml</extend>
   <pomVersion>3</pomVersion>
   <id>mevenide-netbeans-project</id>
   <name>Mevenide Netbeans project support</name>
@@ -259,7 +259,6 @@
   </dependencies>
   
   <build>
-    <sourceDirectory>src/java</sourceDirectory>
     <resources>
       <resource>
         <directory>src/conf</directory>

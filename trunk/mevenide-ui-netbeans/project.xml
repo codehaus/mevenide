@@ -3,7 +3,7 @@
   <!ENTITY netbeans-dependencies SYSTEM "file:../mevenide-ui-netbeans/pom-fragments/netbeans-dependencies.xml">	
 ]>
 <project>
-  <extend>${basedir}/../mevenide-master/base-project.xml</extend>
+  <extend>${basedir}/../mevenide-parent/project.xml</extend>
   <pomVersion>3</pomVersion>
   <id>mevenide-ui-netbeans</id>
   <name>Mevenide Netbeans</name>
