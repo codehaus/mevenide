@@ -19,7 +19,6 @@ package org.mevenide.ui.eclipse.wizard;
 import java.io.File;
 import java.util.Observable;
 import java.util.Observer;
-
 import org.apache.maven.project.Project;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -51,7 +50,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Text;
-import org.mevenide.project.io.PomSkeletonBuilder;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.template.model.Template;
 import org.mevenide.ui.eclipse.template.model.Templates;

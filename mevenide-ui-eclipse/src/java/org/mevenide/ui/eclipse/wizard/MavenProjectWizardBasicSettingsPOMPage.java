@@ -19,10 +19,8 @@ package org.mevenide.ui.eclipse.wizard;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
-
 import org.apache.maven.project.Organization;
 import org.apache.maven.project.Project;
-import org.apache.maven.project.Version;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jdt.core.JavaConventions;
 import org.eclipse.jdt.internal.ui.wizards.NewWizardMessages;
