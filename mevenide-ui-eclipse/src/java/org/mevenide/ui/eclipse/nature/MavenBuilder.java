@@ -58,26 +58,23 @@ public class MavenBuilder extends IncrementalProjectBuilder {
 	        ActionActivator activator = new ActionActivator(actionDefinitions, getProject());
 	        d.accept(activator);
         }
-        //return getMavenDependentProjects();
-        return null;
+        return getMavenRequiredProjects();
     }
     
-    private IProject[] getMavenDependentProjects() {
-        List dependentProjects = new ArrayList(); 
+    private IProject[] getMavenRequiredProjects() {
+        List projects = new ArrayList(); 
         try {
-	        IFile pomIFile = getProject().getFile("project.xml");
-	        if ( pomIFile.exists() ) {
-	            File pom = pomIFile.getLocation().toFile();
-	            Dependency dependency = ProjectReader.getReader().extractDependency(pom);
-	            IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
-		        for (int i = 0; i < projects.length; i++) {
-		            IProject wsProject = projects[i];
-		                if ( wsProject.isOpen() && wsProject.hasNature(Mevenide.NATURE_ID) ) {
-		                    if ( isDependentUponCurrentProject(wsProject, dependency) ) {
-		                        dependentProjects.add(wsProject);
-		                    }
-		                }
-		        }
+	        IFile file = getProject().getFile("project.xml");
+	        if ( file.exists() ) {
+	            File currentPomFile = file.getLocation().toFile();
+	            Project currentPom = ProjectReader.getReader().read(currentPomFile);
+	            IProject[] wsProjects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
+			    for (int i = 0; i < wsProjects.length; i++) {
+			        IProject wsProject = wsProjects[i];
+			        if ( isDependingUpon(currentPom, wsProject) ) {
+			            projects.add(wsProject);
+			        }
+	            } 
 	        }
         }
         catch (Exception e) {
@@ -85,28 +82,27 @@ public class MavenBuilder extends IncrementalProjectBuilder {
             String message = "Unable to check for compute dependent projects"; 
             log.error(message, e);
         }
-        return (IProject[]) dependentProjects.toArray(new IProject[dependentProjects.size()]);
+        return (IProject[]) projects.toArray(new IProject[projects.size()]);
     }
 
     
-    private boolean isDependentUponCurrentProject(IProject wsProject, Dependency dependency) {
-        boolean explicitDependency = isExplicitelyDependentUpon(wsProject, dependency);
-        boolean implicitDependency = isExplicitelyDependentUpon(wsProject, dependency);
+    private boolean isDependingUpon(Project currentPom, IProject wsProject) {
+        boolean explicitDependency = isExplicitelyDependingUpon(currentPom, wsProject);
+        boolean implicitDependency = isImplicitelyDependingUpon(currentPom, wsProject);
         return explicitDependency || implicitDependency;
     }
 
-    private boolean isImplicitelyDependentUpon(IProject wsProject, Dependency dependency) {
+    private boolean isImplicitelyDependingUpon(Project currentPom, IProject wsProject) {
         return false;
     }
     
-    private boolean isExplicitelyDependentUpon(IProject wsProject, Dependency dependency) {
+    private boolean isExplicitelyDependingUpon(Project currentPom, IProject wsProject) {
         try {
             IFile file = wsProject.getFile("project.xml");
             if ( file.exists() ) {
-                ProjectReader reader = ProjectReader.getReader();
-                Project mavenProject = reader.read(file.getLocation().toFile());
-                List dependencies = mavenProject.getDependencies();
-                if ( mavenProject.getDependencies() != null ) {
+                Dependency dependency = ProjectReader.getReader().extractDependency(file.getLocation().toFile());
+                List dependencies = currentPom.getDependencies();
+                if ( dependencies != null ) {
 	                for (int i = 0; i < dependencies.size(); i++) {
 	                    if ( DependencyUtil.areEquals((Dependency) dependencies.get(i), dependency) ) {
 	                        return true;
