@@ -69,6 +69,8 @@ import org.eclipse.jdt.internal.ui.wizards.buildpaths.FolderSelectionDialog;
 import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FileFieldEditor;
 import org.eclipse.jface.preference.PreferenceStore;
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
@@ -188,7 +190,8 @@ public class SynchronizeWizardPage extends WizardPage {
         GridLayout layout = new GridLayout();
 		layout.numColumns = 3;
 		bottomControls.setLayout(layout);
-		bottomControls.setLayoutData(new GridData(GridData.FILL_BOTH));
+		GridData bottomControlsData = new GridData(GridData.VERTICAL_ALIGN_END | GridData.FILL_HORIZONTAL);
+		bottomControls.setLayoutData(bottomControlsData);
 
 		inheritancePropertiesStore = new PreferenceStore(Mevenide.getPlugin().getPreferencesFilename());
 		try {
@@ -198,11 +201,29 @@ public class SynchronizeWizardPage extends WizardPage {
            log.error("Cannot load Preference Store due to : " + e);
         }
 
-        isInheritedEditor = new BooleanFieldEditor("pom." + project.getName() + ".isInherited",  "Is Inherited", bottomControls);
+        isInheritedEditor = new BooleanFieldEditor("pom." + project.getName() + ".isInherited",  "Is Inherited", bottomControls) ;
         isInheritedEditor.fillIntoGrid(bottomControls, 3);		
 		isInheritedEditor.setPreferenceStore(inheritancePropertiesStore);
 		isInheritedEditor.load();
-				
+
+		isInheritedEditor.setPropertyChangeListener(
+			new IPropertyChangeListener() {
+				public void propertyChange(PropertyChangeEvent event) {
+					if ( ((Boolean) event.getNewValue()).booleanValue() ) {
+						//doesnot work yet
+						dependenciesViewer.getCellEditors()[2].deactivate();
+						sourceDirectoriesviewer.getCellEditors()[2].deactivate();
+					}
+					else {
+						//doesnot work yet
+						dependenciesViewer.getCellEditors()[2].activate();
+						sourceDirectoriesviewer.getCellEditors()[2].activate();
+					}
+					parentPomEditor.setEnabled(((Boolean) event.getNewValue()).booleanValue(), bottomControls);
+                }
+			}
+		);		
+
 		parentPomEditor = new FileFieldEditor("pom." + project.getName() + ".parent", "Parent POM", bottomControls);
         parentPomEditor.setFileExtensions(new String[] { "*.xml" });
 		parentPomEditor.fillIntoGrid(bottomControls, 3);		
