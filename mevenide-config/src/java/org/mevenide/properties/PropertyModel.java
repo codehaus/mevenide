@@ -16,6 +16,7 @@
  */
 package org.mevenide.properties;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -24,6 +25,9 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 /**
  * Model of properties file.
  * @author  <a href="mailto:ca206216@tiscali.cz">Milos Kleint</a>
@@ -31,7 +35,7 @@ import java.util.List;
  */
 public class PropertyModel
 {
-    //private static final Log log = LogFactory.getLog(PropertyModel.class);
+    private static final Log log = LogFactory.getLog(PropertyModel.class);
     
     private List list;
 
@@ -121,7 +125,7 @@ public class PropertyModel
 	        addElement(pair);
 		}
 		else {
-			pair.setValue(value.trim() + "\r\n");
+			pair.setValue(value.trim());
 		}
 		return pair;
     }
@@ -143,12 +147,39 @@ public class PropertyModel
 		}
 	}
 	
+	
+    public String toString() {
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        String modelToString = null;
+        try {
+            store(bos);
+            modelToString = "PropertyModel = " + new String(bos.toByteArray());
+            
+        }
+        catch (IOException e) {
+            String message = "unable to write model to Stream"; 
+            log.error(message, e);
+        }
+        finally {
+            if ( bos != null ) {
+                try {
+                    bos.close();
+                }
+                catch (IOException e1) {
+                    String message = "Cannot close stream"; 
+                    log.error(message, e1);
+                }
+            }
+        }
+        return modelToString;
+    }
+	
 	public void addToComment(Comment comment, String line) {
         if (comment == null)
         {
             comment = ElementFactory.getFactory().createComment();
             addElement(comment);
         }
-        comment.addToComment(line + "\n");
+        comment.addToComment(line);
     }
 }

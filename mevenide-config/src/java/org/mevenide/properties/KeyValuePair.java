@@ -58,7 +58,7 @@ public class KeyValuePair extends Element {
     
     protected void addLine(String line)
     {
-        addToValue(line + "\n");
+        addToValue(line);
     }
     
     public String getValue() 
