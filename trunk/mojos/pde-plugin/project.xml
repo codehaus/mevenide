@@ -1,18 +1,55 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project>
-  <pomVersion>3</pomVersion>
-  <artifactId>maven-pde-plugin</artifactId>
-  <name>maven pde plugin</name>
+  <pomVersion>4.0.0</pomVersion>
+  <name>Maven PDE Plugin</name>
   <groupId>mevenide</groupId>
-  <currentVersion>0.1</currentVersion>
+  <artifactId>maven-pde-plugin</artifactId>
+  <version>0.1</version>
+  <description>This plugin helps creating pde enabled artifacts. it is intended to replaced old maven-eclipse-plugin-plugin</description>
+  <shortDescription>Creates PDE artifacts</shortDescription>
+  <url>http://mevenide.codehaus.org/maven-pde-plugin</url>
+  
   <organization>
-    <name>the codehaus</name>
-    <url>http://mevenide.codehaus.org/maven-pde-plugin</url>
+    <name>The Codehaus</name>
+    <url>http://www.codehaus.org</url>
   </organization>
   <inceptionYear>2004</inceptionYear>
-  <package>org.codehaus.mevenide.pde</package>
-  <description>this plugin helps creating pde enabled artifacts. it is intended to replaced old maven-eclipse-plugin-plugin</description>
-  <repository />
+  
+  <distributionManagement>
+    <repository>
+      <id>default</id>
+      <name>Mevenide Dist</name>
+      <url>scp://beaver.codehaus.org//home/projects/mevenide/public/html</url>
+    </repository>
+  </distributionManagement>
+
+  <ciManagement>
+    <nagEmailAddress>mevenide-dev@codehaus.org</nagEmailAddress>
+  </ciManagement>
+    
+  <scm>
+    <connection>scm:cvs:pserver:anonymous@cvs.mevenide.codehaus.org:/home/projects/mevenide/scm:mojos/maven-pde-plugin</connection>
+    <developerConnection>scm:cvs:ext:${maven.username}@cvs.mevenide.codehaus.org:/home/project/mevenide/scm:mojos/maven-pde-plugin</developerConnection>
+    <url>http://cvs.mevenide.codehaus.org/mojos/maven-pde-plugin</url>
+  </scm>
+
+  <issueManagement>
+    <system>jira</system>
+    <url>http://jira.codehaus.org/browse/MEVENIDE</url>
+  </issueManagement>
+
+  <developers>
+    <developer>
+      <name>Gilles Dodinet</name>
+      <id>gdodinet</id>
+      <email>gdodinet@codehaus.org</email>
+      <organization>Mevenide</organization>
+      <roles>
+        <role>Java Developer</role>
+      </roles>
+    </developer>
+  </developers>
+
   <dependencies>
     <dependency>
       <groupId>junit</groupId>
