@@ -29,6 +29,7 @@ public final class OutputVisitor {
     private String filteredLine;
     private OutputListener outputListener;
     private Action successAction;
+    private boolean important;
     
     /** Creates a new instance of OutputVisitor */
     public OutputVisitor() {
@@ -38,6 +39,7 @@ public final class OutputVisitor {
         filteredLine = null;
         outputListener = null;
         successAction = null;
+        important = false;
     }
     
     public String getFilteredLine() {
@@ -54,6 +56,15 @@ public final class OutputVisitor {
 
     public void setOutputListener(OutputListener outputListener) {
         this.outputListener = outputListener;
+    }
+    
+    public void setOutputListener(OutputListener outputListener, boolean impor) {
+        setOutputListener(outputListener);
+        important = impor;
+    }
+    
+    public boolean isImportant() {
+        return important;
     }
 
     public Action getSuccessAction() {
