@@ -24,12 +24,11 @@ import org.mevenide.environment.sysenv.SysEnvProvider;
  * delegates to the default System.getProperties() property list.
  * @author  Milos Kleint (ca206216@tiscali.cz)
  */
-class NbSysEnvProvider implements SysEnvProvider
+public class NbSysEnvProvider implements SysEnvProvider
 {
     
     /** Creates a new instance of NbSysEnvProvider */
-    NbSysEnvProvider()
-    {
+    public NbSysEnvProvider() {
     }
     
     public String getProperty(String name)

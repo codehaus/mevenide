@@ -18,6 +18,8 @@
 package org.mevenide.netbeans.project.queries;
 
 import javax.swing.event.ChangeListener;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.mevenide.netbeans.project.MavenProject;
 import org.netbeans.api.queries.FileBuiltQuery;
 import org.netbeans.spi.queries.FileBuiltQueryImplementation;
@@ -28,7 +30,8 @@ import org.openide.filesystems.FileObject;
  * @author  Milos Kleint (ca206216@tiscali.cz)
  */
 public class MavenFileBuiltQueryImpl implements FileBuiltQueryImplementation {
-    
+     private static final Log logger = LogFactory.getLog(MavenFileBuiltQueryImpl.class);
+   
     private MavenProject project;
     /** Creates a new instance of MavenFileBuiltQueryImpl */
     public MavenFileBuiltQueryImpl(MavenProject proj) {
@@ -49,6 +52,7 @@ public class MavenFileBuiltQueryImpl implements FileBuiltQueryImplementation {
      *         or null for no answer
      */   
     public FileBuiltQuery.Status getStatus(FileObject fileObject) {
+        logger.debug("status for=" + fileObject);
         return new Status();
     }
     
@@ -56,13 +60,15 @@ public class MavenFileBuiltQueryImpl implements FileBuiltQueryImplementation {
     private class Status implements FileBuiltQuery.Status {
         
         public void addChangeListener(ChangeListener changeListener) {
+            logger.warn("adding listeenr=" + changeListener.getClass());
         }
         
         public boolean isBuilt() {
-            return true;
+            return false;
         }
         
         public void removeChangeListener(ChangeListener changeListener) {
+            logger.warn("removing listeenr=" + changeListener.getClass());
         }
         
     }

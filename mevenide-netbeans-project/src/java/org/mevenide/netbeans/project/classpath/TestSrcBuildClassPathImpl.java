@@ -48,26 +48,16 @@ public class TestSrcBuildClassPathImpl extends AbstractProjectClassPathImpl {
         List lst = new ArrayList();
         Project mavproj = getMavenProject().getOriginalMavenProject();
         boolean junitIncluded = false;
-        Iterator it = mavproj.getDependencies().iterator();
-        while (it.hasNext()) {
-            Dependency dep = (Dependency)it.next();
-            if (dep.getType() == null || "jar".equals(dep.getType())) {
-                String path = JarOverrideReader2.getInstance().processOverride(dep, 
-                                                                      getMavenProject().getPropertyResolver(), 
-                                                                      getMavenProject().getLocFinder());
-                if (path == null) {
-                    DefaultDependencyPathFinder finder = new DefaultDependencyPathFinder(dep);
-                    path = finder.resolve();
-                }
-                logger.debug("dep path=" + path);
-                File file = new File(path);
-                if (file.getName().endsWith(".jar")) { //NOI18N
-                    URI uri = file.toURI();
-                    if (uri != null) {
-                        lst.add(uri);
-                        if ("junit".equals(dep.getId())) { //NOI18N
-                            junitIncluded = true;
-                        }
+        List deps = mavproj.getDependencies();
+        if (deps != null) {
+            Iterator it = deps.iterator();
+            while (it.hasNext()) {
+                Dependency dep = (Dependency)it.next();
+                URI uri = checkOneDependency(dep);
+                if (uri != null) {
+                    lst.add(uri);
+                    if ("junit".equals(dep.getId())) { //NOI18N
+                        junitIncluded = true;
                     }
                 }
             }

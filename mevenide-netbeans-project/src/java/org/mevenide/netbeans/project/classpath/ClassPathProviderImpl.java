@@ -54,7 +54,7 @@ public final class ClassPathProviderImpl implements ClassPathProvider {
     private static final int TYPE_TESTSRC = 1;
     private static final int TYPE_TESTCLASS = 3;
     private static final int TYPE_CLASS = 2;
-    private static final int TYPE_ARTIFACT = 2;
+    private static final int TYPE_ARTIFACT = 4;
     private static final int TYPE_UNKNOWN = -1;
     
     
@@ -87,12 +87,12 @@ public final class ClassPathProviderImpl implements ClassPathProvider {
             logger.debug("COMPILEgetProjectClassPaths src");
             FileObject d = FileUtilities.convertURItoFileObject(project.getSrcDirectory());
             if (d != null) {
-                logger.debug("COMPILEgetProjectClassPaths src adding1");
+                logger.debug("COMPILEgetProjectClassPaths src adding1=" + d);
                 l.add(getCompileTimeClasspath(d));
             }
             d = FileUtilities.convertURItoFileObject(project.getTestSrcDirectory());
             if (d != null) {
-                logger.debug("COMPILEgetProjectClassPaths src adding2");
+                logger.debug("COMPILEgetProjectClassPaths src adding2=" + d);
                 l.add(getCompileTimeClasspath(d));
             }
             return (ClassPath[])l.toArray(new ClassPath[l.size()]);
@@ -103,14 +103,15 @@ public final class ClassPathProviderImpl implements ClassPathProvider {
             logger.debug("getProjectClassPaths src");
             FileObject d = FileUtilities.convertURItoFileObject(project.getSrcDirectory());
             if (d != null) {
-                logger.debug("getProjectClassPaths src adding1");
+                logger.debug("getProjectClassPaths src adding1=" + d);
                 l.add(getSourcepath(d));
             }
             d = FileUtilities.convertURItoFileObject(project.getTestSrcDirectory());
             if (d != null) {
-                logger.debug("getProjectClassPaths src adding2");
+                logger.debug("getProjectClassPaths src adding2=" + d);
                 l.add(getSourcepath(d));
             }
+            logger.debug("getProjectClassPaths src lenght=" + l.size());
             return (ClassPath[])l.toArray(new ClassPath[l.size()]);
         }
         return new ClassPath[0];
@@ -129,7 +130,6 @@ public final class ClassPathProviderImpl implements ClassPathProvider {
             return getSourcepath(file);
         } 
         else if (type.equals(ClassPath.BOOT)) {
-            logger.debug("get boot path2");
             return getBootClassPath();
         } else {
             return null;
@@ -193,11 +193,11 @@ public final class ClassPathProviderImpl implements ClassPathProvider {
         ClassPath cp = null;
         if (cache[type] == null || (cp = (ClassPath)cache[type].get()) == null) {
             if (type == TYPE_SRC) {
-                logger.debug("getSourcepath src");
+                logger.debug("create Sourcepath src");
                 cp = ClassPathFactory.createClassPath(new SrcClassPathImpl(project));
             }
             else {
-                logger.debug("getSourcepath testsrc");
+                logger.debug("create Sourcepath testsrc");
                 cp = ClassPathFactory.createClassPath(new TestSrcClassPathImpl(project));
             }
             cache[type] = new SoftReference(cp);
@@ -214,11 +214,11 @@ public final class ClassPathProviderImpl implements ClassPathProvider {
         ClassPath cp = null;
         if (cache[2+type] == null || (cp = (ClassPath)cache[2+type].get()) == null) {
             if (type == TYPE_SRC) {
-                logger.debug("CompileTimeClasspath src");
+                logger.debug("create CompileTimeClasspath src");
                 cp = ClassPathFactory.createClassPath(new SrcBuildClassPathImpl(project));
             }
             else {
-                logger.debug("CompileTimeClasspath src");
+                logger.debug("create CompileTimeClasspath src");
                 cp = ClassPathFactory.createClassPath(new TestSrcBuildClassPathImpl(project));
             }
             cache[2+type] = new SoftReference(cp);

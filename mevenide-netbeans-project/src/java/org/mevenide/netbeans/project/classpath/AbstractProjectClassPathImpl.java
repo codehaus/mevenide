@@ -17,6 +17,7 @@
 
 package org.mevenide.netbeans.project.classpath;
 
+import java.beans.PropertyChangeEvent;
 import org.netbeans.spi.java.classpath.ClassPathImplementation;
 import org.netbeans.spi.java.classpath.support.ClassPathSupport;
 import org.openide.ErrorManager;
@@ -33,7 +34,10 @@ import java.net.URI;
 import java.net.URL;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.maven.project.Dependency;
+import org.mevenide.netbeans.project.FileUtilities;
 import org.mevenide.netbeans.project.MavenProject;
+import org.mevenide.project.io.JarOverrideReader2;
 
 
 abstract class AbstractProjectClassPathImpl implements ClassPathImplementation {
@@ -44,6 +48,14 @@ abstract class AbstractProjectClassPathImpl implements ClassPathImplementation {
     
     protected AbstractProjectClassPathImpl(MavenProject proj) {
         project = proj;
+        project.addPropertyChangeListener(new PropertyChangeListener() {
+            public void propertyChange(PropertyChangeEvent evt) {
+                logger.warn("fire PROP_RSOURCES");
+                resources = null;
+                support.firePropertyChange(ClassPathImplementation.PROP_RESOURCES, null, null);
+            }
+        });
+        
     }
     protected final MavenProject getMavenProject() {
         return project;
@@ -51,10 +63,10 @@ abstract class AbstractProjectClassPathImpl implements ClassPathImplementation {
     
     public synchronized List /*<PathResourceImplementation>*/ getResources() {
         logger.debug("getresources");
-        if (this.resources == null) {
-            this.resources = this.getPath();
+        if (resources == null) {
+            resources = this.getPath();
         }
-        return this.resources;
+        return resources;
     }
     
     
@@ -90,14 +102,37 @@ abstract class AbstractProjectClassPathImpl implements ClassPathImplementation {
     
     public void addPropertyChangeListener(java.beans.PropertyChangeListener propertyChangeListener) {
         synchronized (support) {
+            logger.warn("project=" + project.getDisplayName() + " adding propchange=" + propertyChangeListener.getClass());
             support.addPropertyChangeListener(propertyChangeListener);
         }
     }
     
     public void removePropertyChangeListener(java.beans.PropertyChangeListener propertyChangeListener) {
         synchronized (support) {
+            logger.warn("removing propchange=" + propertyChangeListener.getClass());
             support.removePropertyChangeListener(propertyChangeListener);
         }
     }
     
+    
+    protected URI checkOneDependency(Dependency dep) {
+        if (dep.isAddedToClasspath()) {
+            // check override first
+            URI uri;
+            String path = JarOverrideReader2.getInstance().processOverride(dep,
+                    getMavenProject().getPropertyResolver(),
+                    getMavenProject().getLocFinder());
+            if (path != null) {
+                File file = new File(path);
+                uri = file.toURI();
+            } else {
+                uri = FileUtilities.getDependencyURI(dep, getMavenProject());
+            }
+            logger.debug("dep uri=" + uri);
+            if (uri != null) {
+                return uri;
+            }
+        }
+        return null;
+    }    
 }

@@ -26,6 +26,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Dependency;
 import org.apache.maven.project.Project;
+import org.mevenide.environment.ILocationFinder;
+import org.mevenide.netbeans.project.FileUtilities;
 import org.mevenide.netbeans.project.MavenProject;
 import org.mevenide.project.dependency.DefaultDependencyPathFinder;
 import org.mevenide.project.dependency.DependencyResolverFactory;
@@ -41,7 +43,7 @@ import org.openide.filesystems.FileUtil;
 public class SrcBuildClassPathImpl extends AbstractProjectClassPathImpl {
     private static final Log logger = LogFactory.getLog(SrcBuildClassPathImpl.class);
     
-    IDependencyResolver resolver;
+//    IDependencyResolver resolver;
     /** Creates a new instance of SrcClassPathImpl */
     public SrcBuildClassPathImpl(MavenProject proj) {
         super(proj);
@@ -51,8 +53,11 @@ public class SrcBuildClassPathImpl extends AbstractProjectClassPathImpl {
     URI[] createPath() {
         List lst = new ArrayList();
         Project mavproj = getMavenProject().getOriginalMavenProject();
-        Iterator it = mavproj.getDependencies().iterator();
-        
+        List deps = mavproj.getDependencies();
+        if (deps == null) {
+            return new URI[0];
+        }
+        Iterator it = deps.iterator();
         while (it.hasNext()) {
             Dependency dep = (Dependency)it.next();
             URI ur = checkOneDependency(dep);
@@ -66,28 +71,6 @@ public class SrcBuildClassPathImpl extends AbstractProjectClassPathImpl {
         URI[] uris = new URI[lst.size()];
         uris = (URI[])lst.toArray(uris);
         return uris;
-    }
-    
-    private URI checkOneDependency(Dependency dep) {
-        if (dep.getType() == null || "jar".equals(dep.getType())) {
-            // check override first
-            String path = JarOverrideReader2.getInstance().processOverride(dep,
-            getMavenProject().getPropertyResolver(),
-            getMavenProject().getLocFinder());
-            if (path == null) {
-                DefaultDependencyPathFinder finder = new DefaultDependencyPathFinder(dep);
-                path = finder.resolve();
-            }
-            logger.debug("dep path=" + path);
-            File file = new File(path);
-            if (file.getName().endsWith(".jar")) {
-                URI uri = file.toURI();
-                if (uri != null) {
-                    return uri;
-                }
-            }
-        }
-        return null;
     }
     
 }
