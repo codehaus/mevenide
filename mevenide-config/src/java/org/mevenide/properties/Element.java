@@ -18,6 +18,7 @@ package org.mevenide.properties;
 
 
 /**
+ * @author  <a href="ca206216@tiscali.cz">Milos Kleint</a>
  * just a marker class so that all have common ground.
  */
 public abstract class Element {
