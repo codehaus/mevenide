@@ -25,7 +25,6 @@ import java.util.Enumeration;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import org.apache.commons.jelly.JellyTagException;
-import org.apache.commons.jelly.MissingAttributeException;
 
 import org.apache.commons.jelly.XMLOutput;
 
@@ -45,13 +44,13 @@ public class FindLicenseTag extends AbstractNbMevenideTag {
      * possible license file locations, experimentally found these.. 
      * if adding new, add in uppercase.
      */
-    private final static String[] possibleLocations = new String[] {
+    private static final String[] possibleLocations = new String[] {
         "META-INF/LICENSE",
         "LICENSE",
         "COPYING"
     };
 
-    public void doTag(XMLOutput arg0) throws MissingAttributeException, JellyTagException {
+    public void doTag(XMLOutput arg0) throws JellyTagException {
          
         checkAttribute(jarFile, "jarFile");
         checkAttribute(var, "var");

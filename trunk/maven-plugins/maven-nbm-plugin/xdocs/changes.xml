@@ -6,7 +6,12 @@
   </properties>
 
   <body>
-    <release version="1.0" date="in CVS" description="First stable release.">
+    <release version="1.0" date="20050122" description="First stable release.">
+      <action dev="mkleint" type="update">
+      General cleanup, removed non-straightforward goals and properties. 
+      (Goal <code>nbm:create-library-artifacts</code> and dependency property
+      <code>netbeans.lib.generate</code>)
+      </action>
     </release>
     <release version="0.6" date="20041030" description="">
       <action dev="mkleint" type="update">

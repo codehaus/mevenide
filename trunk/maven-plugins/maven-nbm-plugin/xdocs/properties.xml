@@ -19,13 +19,14 @@
           <td><p>Optional.</p></td>
           <td>
             <p> File containing Netbeans-specific manifest entries. The plugin automatically generates some of the entries:
+            </p>
             <source><![CDATA[
 OpenIDE-Module-Implementation-Version: ${pom.currentVersion}
 OpenIDE-Module: ${maven.nbm.modulename}
 OpenIDE-Module-Specification-Version: normalized version of ${pom.currentVersion}
             
             ]]></source> 
-            etc.etc.</p>
+            <p>etc.etc.</p>
             <p>If you define any of the entries in your manifest file, it overrides anything that gets automatically generated. </p>
           </td>
         </tr>
@@ -99,11 +100,13 @@ OpenIDE-Module-Specification-Version: normalized version of ${pom.currentVersion
             <p>The URL of the nbm once deployed on the server. Is used when creating the xml description of the autoupdate server.</p>
             <p></p>
           </td>
-        </tr>=        
+        </tr>
+        
      </table>
      </div>
    </section>
-
+   
+   
     <section name="Dependency Properties">
     	<div id="documentContent">
       <table>
@@ -185,7 +188,7 @@ OpenIDE-Module-Specification-Version: normalized version of ${pom.currentVersion
                 
           </td>
         </tr>
-         <tr>
+<!--         <tr>
           <td>netbeans.lib.generate</td>
           <td><p>OPTIONAL. Allowed value <code>true</code> Actually makes sense only together with <code>netbeans.module.dep</code> on non-netbeans dependencies.</p></td>
           <td>
@@ -199,6 +202,7 @@ OpenIDE-Module-Specification-Version: normalized version of ${pom.currentVersion
                </p>
           </td>
         </tr>
+          -->
      </table>
      </div>
    </section>
@@ -252,6 +256,41 @@ OpenIDE-Module-Specification-Version: normalized version of ${pom.currentVersion
      </table>
      </div>
    </section>
+   
+    <section name="Autoupdate Properties">
+    	<div id="documentContent">
+        <p> These properties are relevant only if you want to generate NBM autoupdate server content. (goals nbm:collect-nbms and <b>nbm:autoupdate</b>)
+        </p>
+      <table>
+        <tr>
+          <th>Property</th>
+          <th>Optional</th>
+          <th>Description</th>
+        </tr>
+        <tr>
+          <td>maven.nbm.autoupdate.name</td>
+          <td><p>Since 0.2</p>
+          <p>Optional, required for nbm:autoupdate goal. Default value is "NBM_AutoUpdate" </p>
+          </td>
+          <td><p>
+          Name for the xml file describing the autoupdate server content information.
+          </p>
+          </td>
+        </tr>
+        <tr>
+          <td>maven.nbm.build.release.dir</td>
+          <td><p>Since 0.2</p>
+          <p> Optional. Default value is ${maven.build.dir}/nbm_release </p>
+          </td>
+          <td>
+          <p>Output location of the autoupdate server content.</p>
+          </td>
+        </tr>
+
+     </table>
+     </div>
+   </section>
+   
          
    <section name="Temporary Properties">
    	<div id="documentContent">
@@ -260,22 +299,6 @@ OpenIDE-Module-Specification-Version: normalized version of ${pom.currentVersion
           <th>Property</th>
           <th>Optional</th>
           <th>Description</th>
-        </tr>
-        <tr>
-          <td>maven.nbm.build.release.dir</td>
-          <td><p>Since 0.2</p>
-          <p> Optional. Default value is ${maven.build.dir}/nbm_release </p></td>
-          <td>
-          </td>
-        </tr>
-        <tr>
-          <td>maven.nbm.autoupdate.name</td>
-          <td><p>Since 0.2</p>
-          <p>Required for nbm:autoupdate goal. </p></td>
-          <td><p>
-          Name for the xml file describing the autoupdate server information.
-          </p>
-          </td>
         </tr>
         <tr>
           <td>maven.nbm.autoupdate.distbase</td>

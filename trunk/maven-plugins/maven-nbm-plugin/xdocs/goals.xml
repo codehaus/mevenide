@@ -40,19 +40,18 @@
           </tr>
           <tr>
             <td>nbm:nbm</td>
-            <td><p>Creates the nbm file. It includes the module jar, and also it's dependencies if they are marked in this manner:
-            <source><![CDATA[
+            <td><p>Creates the nbm file. It includes the module jar, and also it's dependencies if they are marked in this manner: </p>
+            <source><p><![CDATA[
                 <properties>
                   	<netbeans.module.ext>true</netbeans.module.ext>
                 </properties>
-            ]]></source>
-            </p>
+            ]]></p></source>
             <p>
             The license file is included if defined.
             </p>
             </td>
           </tr>
-          <tr>
+<!--          <tr>
             <td>nbm:create-library-artifacts</td>
             <td><p>Creates the nbm file(s) for dependencies marked by this property
             <source><![CDATA[
@@ -67,6 +66,7 @@
             </p>
             </td>
           </tr>
+          -->
           <tr>
             <td>nbm:autoupdate</td>
             <td><p>Creates a Netbeans autoupdate structure.
@@ -110,8 +110,9 @@
   		  <tr>
             <td>nbm:collect-nbms</td>
             <td>
-<p> Collects all the project's NBM files (the primary artifact and also possible generated NBMs for the dependencies.
-Default target location is <code><![CDATA[${maven.build.dir}/nbm_release]]></code> directory. That location is later used by the <code>nbm:autoupdate</code> goal to 
+<p> Collects all the project's NBM files (the primary artifact. <!-- and also possible generated NBMs for the dependencies. -->
+Default target location is <code><![CDATA[${maven.build.dir}/nbm_release]]></code> directory. 
+That location is later used by the <code>nbm:autoupdate</code> goal to 
 create the autoupdate server file structure.
 </p>
             </td>
