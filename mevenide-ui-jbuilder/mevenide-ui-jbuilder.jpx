@@ -79,5 +79,6 @@
   </node>
   <file path="src/conf/classes.opentools"/>
   <file path="JBMavenOpenTool.html"/>
-  <file path="maven.xml" />
+  <file path="project.properties"/>
+  <file path="project.xml"/>
 </project>
