@@ -21,6 +21,9 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 
 import junit.framework.TestCase;
+import org.mevenide.environment.ConfigUtils;
+import org.mevenide.environment.CustomLocationFinder;
+import org.mevenide.environment.LocationFinderAggregator;
 
 /**
  * 
@@ -37,8 +40,18 @@ public class AbstractMevenideTestCase extends TestCase {
 	
 	protected void setUp() throws Exception {
 		mavenHome = new File(System.getProperty("user.home"), ".mevenide");
-        Environment.setMavenLocalRepository(new File(mavenHome, "repository").getAbsolutePath());
-		
+		if (!mavenHome.exists()) {
+			mavenHome.mkdirs();
+		}
+        CustomLocationFinder custFinder = new CustomLocationFinder();
+        custFinder.setMavenHome(mavenHome.getAbsolutePath());
+        File repoFile = new File(mavenHome, "repository");
+		custFinder.setMavenLocalRepository(repoFile.getAbsolutePath());
+		((LocationFinderAggregator)ConfigUtils.getDefaultLocationFinder()).setCustomLocationFinder(custFinder);
+		if (!repoFile.exists()) {
+			repoFile.mkdir();
+		}
+        
 		File src = new File(AbstractMevenideTestCase.class.getResource("/fixtures/project-fixture.xml").getFile());
 		projectFile = new File(src.getParentFile().getParent(), "project-fixture.xml") ; 
 		copy(src.getAbsolutePath(), projectFile.getAbsolutePath());

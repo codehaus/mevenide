@@ -89,5 +89,17 @@
       </folder> <!-- Building -->
     </folder> <!-- Services -->
   </folder> <!-- UI -->
-  
+ 
+<folder name="Plugins">
+    <folder name="XML">
+        <folder name="GrammarQueryManagers">
+            <!-- register Maven project grammar -->
+            <attr name="semantics-grammar-to-generic-grammar-separator/org-mevenide-ui-netbeans-grammar-MavenQueryProvider.instance" boolvalue="true"/>
+<!--            <attr name="org-netbeans-modules-ant-grammar-AntGrammarQueryProvider.instance/org-mevenide-ui-netbeans-grammar-MavenQueryProvider.instance" boolvalue="true"/> -->
+            <file name="org-mevenide-ui-netbeans-grammar-MavenQueryProvider.instance"/>
+            <attr name="org-mevenide-ui-netbeans-grammar-MavenQueryProvider.instance/generic-grammar-to-universal-grammar-separator" boolvalue="true"/>
+        </folder>
+    </folder>
+</folder>
+   
 </filesystem>

@@ -32,7 +32,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
-import org.mevenide.Environment;
+import org.mevenide.environment.ConfigUtils;
 import org.mevenide.project.io.ProjectWriter;
 import org.mevenide.properties.KeyValuePair;
 import org.mevenide.properties.PropertyModel;
@@ -102,7 +102,7 @@ public class DependencyWrapper extends ArtifactWrapper {
 
 	private String buildArtifactPath(String version) {
 		String type = dependency.getType() == null ? "jar" : dependency.getType();
-		File group = new File(Environment.getMavenLocalRepository(), dependency.getGroupId());
+		File group = new File(ConfigUtils.getDefaultLocationFinder().getMavenLocalRepository(), dependency.getGroupId());
 		return new File(group, type + "s/" + dependency.getArtifactId() + "-" + version + "." + type).getAbsolutePath();
 	}
 

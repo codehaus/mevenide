@@ -24,7 +24,7 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.mevenide.Environment;
+import org.mevenide.environment.ConfigUtils;
 
 
 /**
@@ -51,7 +51,7 @@ public class DefaultGoalsGrabber extends AbstractGoalsGrabber {
 		super.refresh();
 
         //File pluginsLocal = new File(Environment.getMavenHome(), "plugins");
-  		File goalsCache = new File(Environment.getMavenPluginsInstallDir(), "goals.cache");
+  		File goalsCache = new File(ConfigUtils.getDefaultLocationFinder().getMavenPluginsDir(), "goals.cache");
 		if ( goalsCache.exists() ) {
 			log.debug("Grabbing goals from : " + goalsCache.getAbsolutePath());
 	  		
@@ -68,7 +68,7 @@ public class DefaultGoalsGrabber extends AbstractGoalsGrabber {
 		
 		}	
 		else {
-			log.debug("No goals.cache file found in : " + Environment.getMavenPluginsInstallDir());
+			log.debug("No goals.cache file found in : " + ConfigUtils.getDefaultLocationFinder().getMavenPluginsDir());
 		}	
     }
 

@@ -29,7 +29,6 @@ import org.mevenide.goals.test.util.TestUtils;
  * 
  */
 public class DefaultReportsFinderTest extends AbstractTestCase {
-	private File mavenLocalHome;
 	
 	private String[] testPluginDirs = 
 		{

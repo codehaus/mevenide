@@ -18,10 +18,12 @@ package org.mevenide.goals;
 
 import java.io.File;
 
-import org.mevenide.Environment;
 import org.mevenide.goals.test.util.TestUtils;
 
 import junit.framework.TestCase;
+import org.mevenide.environment.ConfigUtils;
+import org.mevenide.environment.CustomLocationFinder;
+import org.mevenide.environment.LocationFinderAggregator;
 
 /**  
  * 
@@ -38,11 +40,11 @@ public class AbstractTestCase extends TestCase {
 		if (!mavenHomeLocal.exists()) {
 			mavenHomeLocal.mkdirs();
 		}
-		Environment.setMavenHome(mavenHomeLocal.getAbsolutePath());
-		
+        CustomLocationFinder custFinder = new CustomLocationFinder();
+        custFinder.setMavenHome(mavenHomeLocal.getAbsolutePath());
 		pluginsLocal = new File(mavenHomeLocal, "plugins");
-		Environment.setMavenPluginsInstallDir(pluginsLocal.getAbsolutePath());
-		
+		custFinder.setMavenPluginsDir(pluginsLocal.getAbsolutePath());
+		((LocationFinderAggregator)ConfigUtils.getDefaultLocationFinder()).setCustomLocationFinder(custFinder);
 		if (!pluginsLocal.exists()) {
 			pluginsLocal.mkdir();
 		}

@@ -17,8 +17,8 @@
 package org.mevenide.ui.netbeans;
 
 import java.io.File;
+import org.mevenide.environment.ConfigUtils;
 import org.mevenide.ui.netbeans.exec.MavenExecutor;
-import org.mevenide.Environment;
 import org.openide.ServiceType;
 import org.openide.execution.Executor;
 import org.openide.options.SystemOption;
@@ -86,31 +86,35 @@ public class MavenSettings extends SystemOption
         return (Executor)handle.getServiceType();
     }
     
+    /**
+     * @deprecated remove this settings thing and use the ConfigUtils directly..
+     */
     public File getMavenHome()
     {
-        File f = (File)getProperty(PROP_MAVEN_HOME);
-        if (f == null)
-        {
-            String home = Environment.getMavenHome();
-            if (home != null)
-            {
-                f = new File(home);
-            } else {
-                //DEBUG
-//                System.out.println("maven home env. variable not set.");
-            }
-//            f = InstalledFileLocator.getDefault().locate("maven", "org.mevenide.ui.netbeans", false); // NOI18N
-//            putProperty(PROP_MAVEN_HOME, f, false);
-        } else {
-                //DEBUG
-//            System.out.println("has a mavenhome value defined.");
-        }
-        return f;
+        return new File(ConfigUtils.getDefaultLocationFinder().getMavenHome());
+//        File f = (File)getProperty(PROP_MAVEN_HOME);
+//        if (f == null)
+//        {
+//            String home = Environment.getMavenHome();
+//            if (home != null)
+//            {
+//                f = new File(home);
+//            } else {
+//                //DEBUG
+////                System.out.println("maven home env. variable not set.");
+//            }
+////            f = InstalledFileLocator.getDefault().locate("maven", "org.mevenide.ui.netbeans", false); // NOI18N
+////            putProperty(PROP_MAVEN_HOME, f, false);
+//        } else {
+//                //DEBUG
+////            System.out.println("has a mavenhome value defined.");
+//        }
+//        return f;
     }
     
     public void setMavenHome(File f)
     {
-        putProperty(PROP_MAVEN_HOME, f, true);
+//        putProperty(PROP_MAVEN_HOME, f, true);
     }
     
     public static File getUserHome()

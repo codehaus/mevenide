@@ -48,11 +48,12 @@
             </properties>
         </dependency>
         -->
-        <dependency>
+<!--        <dependency>
         	<groupId>mevenide</groupId>
             <artifactId>mevenide-core-test</artifactId>
             <version>0.1.1-SNAPSHOT</version>
         </dependency>
+        -->
 
     </dependencies>
 </project>

@@ -21,8 +21,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import org.mevenide.environment.ConfigUtils;
+import org.mevenide.environment.ILocationFinder;
 
-import org.mevenide.Environment;
 
 /**
  * 
@@ -56,7 +57,7 @@ public final class ArgumentsManager {
 	public static String[] getVMArgs(AbstractRunner runner) {
 	    String[] properties = ArgumentsManager.getRawProperties(runner);
 	    String[] vmArgs = new String[properties.length + 1];
-	    vmArgs[0] = "-Xmx" + Environment.getHeapSize() +"m";
+	    vmArgs[0] = "-Xmx" + ConfigUtils.getHeapSize() +"m";
 	    
 	    for (int i = 1; i < properties.length + 1; i++) {
 			vmArgs[i] = properties[i - 1];
@@ -95,13 +96,13 @@ public final class ArgumentsManager {
 	
 	    props.put("javax.xml.parsers.DocumentBuilderFactory", "org.apache.xerces.jaxp.DocumentBuilderFactoryImpl");
 	    props.put("javax.xml.parsers.SAXParserFactory", "org.apache.xerces.jaxp.SAXParserFactoryImpl");
-	   
-	    String toolsJar = Environment.getJavaHome() + File.separator + "lib" + File.separator + "tools.jar";
+	    ILocationFinder config = ConfigUtils.getDefaultLocationFinder();
+	    String toolsJar = config.getJavaHome() + File.separator + "lib" + File.separator + "tools.jar";
 	    if ( !new File(toolsJar).exists() ) {
 	    	//mac os x..  
 	    	//TOOLS_JAR=/System/Library/Frameworks/JavaVM.framework/Versions/CurrentJDK/Classes/classes.jar
 	    	//JAVA_HOME=/System/Library/Frameworks/JavaVM.framework/Home
-	    	toolsJar = new File(Environment.getJavaHome()).getParent();
+	    	toolsJar = new File(config.getJavaHome()).getParent();
 	    	String classesJarPart = "Versions/CurrentJDK/Classes/classes.jar";
 	    	if ( toolsJar.endsWith("/") ) {
 	    		toolsJar += classesJarPart;
@@ -113,10 +114,10 @@ public final class ArgumentsManager {
 	    props.put("tools.jar", toolsJar);
 	    
 	    
-	    props.put("maven.home", Environment.getMavenHome());
-		props.put("maven.repo.local", Environment.getMavenLocalRepository());
-	    props.put("forehead.conf.file", Environment.getConfigurationFile());
-	    props.put("java.endorsed.dirs", Environment.getEndorsedDirs());
+	    props.put("maven.home", config.getMavenHome());
+		props.put("maven.repo.local", config.getMavenLocalRepository());
+	    props.put("forehead.conf.file", ConfigUtils.getConfigurationFile());
+	    props.put("java.endorsed.dirs", ConfigUtils.getEndorsedDirs());
 	    props.put("basedir", runner.getBasedir());
 	    //props.put("user.dir", runner.getBasedir());
 	    

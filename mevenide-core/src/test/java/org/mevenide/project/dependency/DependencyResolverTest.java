@@ -19,7 +19,7 @@ package org.mevenide.project.dependency;
 import java.io.File;
 
 import org.mevenide.AbstractMevenideTestCase;
-import org.mevenide.Environment;
+import org.mevenide.environment.ConfigUtils;
 
 /**
  * 
@@ -49,7 +49,7 @@ public class DependencyResolverTest extends AbstractMevenideTestCase {
 	}
 
 	public void testGuess() throws Exception {
-		File jarDir = new File(Environment.getMavenLocalRepository(), "commons-httpclient/jars");
+		File jarDir = new File(ConfigUtils.getDefaultLocationFinder().getMavenLocalRepository(), "commons-httpclient/jars");
 		jarDir.mkdirs();
 		File jar = new File(jarDir, "commons-httpclient-2.0alpha1-20020829.jar");
 		jar.createNewFile();

@@ -38,7 +38,8 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-import org.mevenide.Environment;
+import org.mevenide.environment.ConfigUtils;
+import org.mevenide.environment.ILocationFinder;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.MevenidePreferenceKeys;
 import org.mevenide.ui.eclipse.goals.viewer.GoalsPickerDialog;
@@ -99,6 +100,10 @@ public class MevenidePreferenceDialog {
 		this.page = page;
 	}
 
+    private ILocationFinder getDefaultLocationFinder() {
+        return ConfigUtils.getDefaultLocationFinder();
+    }
+    
 	public Composite createContent(Composite parent) {
 		topLevelContainer = new Composite(parent, SWT.NULL);
 		GridLayout layout = new GridLayout();
@@ -110,8 +115,8 @@ public class MevenidePreferenceDialog {
 			javaHome
 		);
 		if ( isNull(javaHomeEditor) ) {
-			log.debug("javaHomeEditor is null, loading from env : " + Environment.getJavaHome());
-		    javaHomeEditor.setStringValue(Environment.getJavaHome());
+			log.debug("javaHomeEditor is null, loading from env : " + getDefaultLocationFinder().getJavaHome());
+		    javaHomeEditor.setStringValue(getDefaultLocationFinder().getJavaHome());
 		}
 		mavenHomeEditor = createEditor(
 			MevenidePreferenceKeys.MAVEN_HOME_PREFERENCE_KEY, 
@@ -119,8 +124,8 @@ public class MevenidePreferenceDialog {
 			mavenHome
 		);
 		if ( isNull(mavenHomeEditor) ) {
-			log.debug("mavenHomeEditor is null, loading from env : " + Environment.getMavenHome());
-		    mavenHomeEditor.setStringValue(Environment.getMavenHome());
+			log.debug("mavenHomeEditor is null, loading from env : " + getDefaultLocationFinder().getMavenHome());
+		    mavenHomeEditor.setStringValue(getDefaultLocationFinder().getMavenHome());
 		}
 		mavenLocalHomeEditor = createEditor(
 			MevenidePreferenceKeys.MAVEN_LOCAL_HOME_PREFERENCE_KEY, 
@@ -128,7 +133,7 @@ public class MevenidePreferenceDialog {
 			mavenLocalHome
 		);
 		if ( mavenLocalHomeEditor.getStringValue() == null || mavenLocalHomeEditor.getStringValue().trim().equals("") ) {
-		    mavenLocalHomeEditor.setStringValue(Environment.getMavenLocalHome());
+		    mavenLocalHomeEditor.setStringValue(getDefaultLocationFinder().getMavenLocalHome());
 		}
 		mavenRepoEditor = createEditor(
 			MevenidePreferenceKeys.MAVEN_REPO_PREFERENCE_KEY, 
@@ -136,7 +141,7 @@ public class MevenidePreferenceDialog {
 			mavenRepository
 		);
 		if ( mavenRepoEditor.getStringValue() == null || mavenRepoEditor.getStringValue().trim().equals("") ) {
-		    mavenRepoEditor.setStringValue(Environment.getMavenLocalRepository());
+		    mavenRepoEditor.setStringValue(getDefaultLocationFinder().getMavenLocalRepository());
 		}
 		heapSizeEditor = new IntegerFieldEditor(
 			MevenidePreferenceKeys.JAVA_HEAP_SIZE_PREFERENCE_KEY, 
