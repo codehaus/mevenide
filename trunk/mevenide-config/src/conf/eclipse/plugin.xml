@@ -4,7 +4,7 @@
    id="@maven.eclipse.plugin.artifact.id@"
    name="Mevenide Config"
    version="@maven.eclipse.plugin.artifact.version@"
-   provider-name="Sourceforge">
+   provider-name="The Codehaus">
 
    
    <runtime>
