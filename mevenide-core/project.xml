@@ -1,0 +1,162 @@
+<?xml version="1.0"?>
+<project>
+  <!-- 
+  	TODO migrate to maven-new
+  -->
+  <pomVersion>1</pomVersion>
+  <name>Mevenide Core</name>
+  <id>mevenide:core</id>
+  <artifactId>core</artifactId>
+  
+  <currentVersion>0.1-alpha1</currentVersion>
+  
+  <organization>
+    <name>Sourceforge</name>
+    <url>http://sf.net/</url>
+  </organization>
+  
+  	<inceptionYear>2003</inceptionYear>
+  <package>org.mevenide.core</package>
+	
+  <shortDescription>provides ide integration for Maven</shortDescription>
+
+  <versions>
+    <version>
+      <id>a1</id>
+      <name>0.1-alpha1</name>
+    </version>
+  </versions>
+  
+  <developers>
+    <developer>
+      <name>Gilles Dodinet</name>
+      <id>gdodinet</id>
+      <email>rhill@wanadoo.fr</email>
+      <organization>Cross-Systems Integration</organization>
+      <roles>
+      	<role>Java Developer</role>
+      </roles>
+    </developer>
+  </developers>
+
+  <dependencies>
+  		<dependency>
+           <groupId>aspectj</groupId>
+           <articfactId>aspectjrt</articfactId>
+           <version>1.1-rc1</version>
+           <url>http://eclipse.org/aspectj/</url>
+        </dependency>
+        
+		<dependency>
+           <groupId>maven</groupId>
+           <artifactId>maven</artifactId>
+           <version>1.0b9</version>
+           <url>http://maven.org/</url>
+        </dependency>
+        
+        <dependency>
+           <groupId>maven-eclipse-get-goals</groupId>
+           <artifactId>maven-eclipse-get-goals</artifactId>
+           <version>1.0b2</version>
+           <url>http://sf.net/projects/mevenide</url>
+        </dependency>
+        
+        <dependency>
+           <groupId>jdom</groupId>
+           <artifactId>jdom</artifactId>
+           <version>1.0b8</version>
+           <url>http://jdom.org/</url>
+        </dependency>
+
+        <dependency>
+           <groupId>xerces</groupId>
+           <artifactId>xerces</artifactId>
+           <version>2.2.1</version>
+           <url>http://xml.apache.org/xerces2-j/</url>
+        </dependency>
+        
+        <dependency>
+           <groupId>commons-discovery</groupId>
+           <artifactId>commons-discovery</artifactId>
+           <version>0.1</version>
+           <url>http://jakarta.apache.org/commons/discovery</url>
+        </dependency>
+        
+        <dependency>
+           <groupId>commons-logging</groupId>
+           <artifactId>commons-logging</artifactId>
+           <version>1.0.1</version>
+           <url>http://jakarta.apache.org/commons/logging</url>
+        </dependency>
+        
+        <dependency>
+           <groupId>junit</groupId>
+           <artifactId>junit</artifactId>
+           <version>3.8.1</version>
+           <url>http://junit.org/</url>
+        </dependency>
+        
+        <dependency>
+           <groupId>mockobjects</groupId>
+           <artifactId>mockobjects-core</artifactId>
+           <version>0.07</version>
+           <url>http://www.mockobjects.com/</url>
+        </dependency>
+        
+        <dependency>
+           <groupId>mockobjects</groupId>
+           <artifactId>mockobjects-jdk1.4</artifactId>
+           <version>0.07</version>
+           <url>http://www.mockobjects.com/</url>
+        </dependency>
+        
+        <dependency>
+           <groupId>mockcreator</groupId>
+           <artifactId>mockcreator</artifactId>
+           <version>0.2.4</version>
+           <url>http://www.abstrakt.de/mockcreator.html</url>
+        </dependency>
+		
+  </dependencies>
+
+  <build>
+
+    <sourceDirectory>src/java</sourceDirectory>
+    <unitTestSourceDirectory>src/test/java</unitTestSourceDirectory>
+	<aspectDirectory>src/aspects</aspectDirectory>
+	
+	<!-- JUnit test cases -->
+    <unitTest>
+      <includes>
+        <include>**/*Test*.java</include>
+      </includes>
+      <resources>
+      <includes>
+        <include>src/test/etc/*.*</include>
+      </includes>
+    </resources>
+    </unitTest>
+             
+    <!-- Resources -->
+    <resources>
+      <includes>
+        <include>etc/**/*.*</include>
+      </includes>
+    </resources>
+
+  </build>
+  
+  <reports>
+	<report>maven-jdepend-plugin</report>
+    <report>maven-checkstyle-plugin</report>
+    <report>maven-changelog-plugin</report>
+    <report>maven-file-activity-plugin</report>
+    <report>maven-developer-activity-plugin</report>
+    <report>maven-javadoc-plugin</report>
+    <report>maven-jxr-plugin</report>
+    <report>maven-junit-report-plugin</report>
+    <report>maven-tasklist-plugin</report>
+    <report>maven-jellydoc-plugin</report>
+  </reports>
+  
+</project>
