@@ -29,6 +29,7 @@ import org.openide.ErrorManager;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 
+
 /**
  *
  * @author  Milos Kleint (ca206216@tiscali.cz)
@@ -66,7 +67,7 @@ public class MavenProjectFactory implements ProjectFactory
             return null;
         }
         try {
-            Project proj =  new MavenProject(projectFile, projectDiskFile);
+            MavenProject proj =  new MavenProject(projectFile, projectDiskFile);
             return proj;
         } catch (Exception exc) {
             logger.error("Cannot load project=" + projectDiskFile, exc);

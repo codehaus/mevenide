@@ -17,8 +17,10 @@
 
 package org.mevenide.netbeans.project.classpath;
 
+import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -30,6 +32,8 @@ import org.netbeans.spi.java.classpath.support.ClassPathSupport;
 import org.netbeans.api.java.platform.JavaPlatform;
 import org.netbeans.api.java.platform.JavaPlatformManager;
 import org.netbeans.api.java.classpath.ClassPath;
+import org.openide.filesystems.FileObject;
+import org.openide.filesystems.FileUtil;
 
 
 /**
@@ -38,16 +42,38 @@ import org.netbeans.api.java.classpath.ClassPath;
  */
 final class BootClassPathImpl implements ClassPathImplementation {
 
-    private static final String PLATFORM_ACTIVE = "platform.active";        //NOI18N
-    private static final String J2SE = "j2se";                              //NOI18N
-
-
     private MavenProject project;
     private List resourcesCache;
     private PropertyChangeSupport support = new PropertyChangeSupport(this);
+    
+    private String lastNonDefault = null;
+    private String lastNonDefaultPlatform = null;
 
     public BootClassPathImpl (MavenProject proj) {
         project = proj;
+        project.addPropertyChangeListener(new PropertyChangeListener() {
+            public void propertyChange(PropertyChangeEvent evt) {
+                String customCompile = project.getPropertyResolver().getResolvedValue("maven.compile.executable");
+                if (customCompile != null && !customCompile.equals(lastNonDefault) ||
+                    customCompile == null && lastNonDefault != null) {
+                    List oldValue = resourcesCache;
+                    resourcesCache = null;
+                    List newValue = getResources();
+                    support.firePropertyChange(ClassPathImplementation.PROP_RESOURCES, oldValue, newValue);
+                }
+                if (lastNonDefaultPlatform != null) {
+                    JavaPlatform[] pms = JavaPlatformManager.getDefault().getPlatforms(lastNonDefaultPlatform, null);
+                    // the platform in question was removed..
+                    if (pms.length == 0) {
+                        List oldValue = resourcesCache;
+                        resourcesCache = null;
+                        List newValue = getResources();
+                        support.firePropertyChange(ClassPathImplementation.PROP_RESOURCES, oldValue, newValue);
+                    }
+                }
+            }
+        });
+        
     }
 
     public synchronized java.util.List getResources() {
@@ -78,19 +104,27 @@ final class BootClassPathImpl implements ClassPathImplementation {
 
     private JavaPlatform findActivePlatform () {
         JavaPlatformManager pm = JavaPlatformManager.getDefault();
-//        String platformName = this.helper.evaluate (PLATFORM_ACTIVE);
-//        if (platformName!=null) {
-//            JavaPlatform[] installedPlatforms = pm.getInstalledPlatforms();
-//            for (int i = 0; i< installedPlatforms.length; i++) {
-//                Specification spec = installedPlatforms[i].getSpecification();
-//                String antName = (String) installedPlatforms[i].getProperties().get (ANT_NAME);
-//                if (J2SE.equalsIgnoreCase(spec.getName())
-//                    && platformName.equals(antName)) {
-//                    return installedPlatforms[i];
-//                }
-//            }
-//        }
+        String customCompile = project.getPropertyResolver().getResolvedValue("maven.compile.executable");
+        if (customCompile != null) {
+            FileObject toolFO = FileUtil.toFileObject(new File(customCompile));
+            if (toolFO != null) {
+                String toolname = toolFO.getNameExt();
+                JavaPlatform[] platforms = pm.getInstalledPlatforms();
+                for (int i = 0; i < platforms.length; i++) {
+                    FileObject fo = platforms[i].findTool(toolname);
+                    if (fo != null && fo.equals(toolFO)) {
+                        lastNonDefault = customCompile;
+                        lastNonDefaultPlatform = platforms[i].getDisplayName();
+                        return platforms[i];
+                    }
+                }
+                // not found, platform not defined.
+            }
+        }
+        lastNonDefault = null;
+        lastNonDefaultPlatform = null;
         //Invalid platform ID or default platform
         return pm.getDefaultPlatform();
     }
+    
 }
