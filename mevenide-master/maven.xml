@@ -8,59 +8,7 @@
 		 xmlns:mevenide="mevenide">
 
   
-  <define:taglib uri="mevenide">
-  	
-  	<!-- 
-  	  @var
-  	  @projectDescriptor
-  	-->
-  	<define:tag name="getDependencies">
-  		<util:file var="projectDescriptorFile" name="${projectDescriptor}"/>
-  		<maven:pom projectDescriptor="${projectDescriptorFile}" var="project"/>
-  		${context.getParent().setVariable(var, project.dependencies)}
-  	</define:tag>
-  	
-  	<!-- 
-  	  @var 
-  	-->
-  	<define:tag name="getTransitiveDependencies">
-  		<j:useList var="dependencies" class="java.util.ArrayList"/>
- 		${context.getParent().setVariable(var, dependencies)}
-
-  		<j:if test="${!(pom.artifactId.equals('mevenide-core'))}">
-  		  <mevenide:getDependencies var="mevenideCoreDependencies" projectDescriptor="${basedir}/../mevenide-core/project.xml"/>
-		  <j:set var="dummy">${dependencies.addAll(mevenideCoreDependencies)}</j:set>
-		
-  		  <j:if test="${pom.artifactId.equals('mevenide-goals-grabber')}">
-  			${context.getParent().setVariable(var, dependencies)}
-  		  </j:if>
-  		
-  		  <j:if test="${pom.artifactId.equals('mevenide-ui-eclipse')}">
-  		    <j:set var="dummy">${dependencies.addAll(mevenideCoreDependencies)}</j:set>
-  		    <mevenide:getDependencies var="mevenideGoalsGrabberDependencies" projectDescriptor="${basedir}/../mevenide-goals-grabber/project.xml"/>
-  		    <j:set var="dummy">${dependencies.addAll(mevenideGoalsGrabberDependencies)}</j:set>
-  		    ${context.getParent().setVariable(var, dependencies)}	  
-  		  </j:if>
-  		</j:if>
-  	</define:tag>
-  	
-  	<!--
-  	  @var
-	  @dependency
-	  @transitiveDependencies
-  	-->
-  	<define:tag name="isTransitiveDependency">
-  	  <j:forEach var="theDependency" items="${transitiveDependencies}">
-  	  	<j:if test="${theDependency.groupId.equals(dependency.groupId) &amp;&amp; theDependency.artifactId.equals(dependency.artifactId) &amp;&amp; theDependency.version.equals(dependency.version)}">
-  	    	<j:set var="isTransitive" value="true"/>
-  	    </j:if>
-  	  </j:forEach>
-  	  
-  	  ${context.getParent().setVariable(var, isTransitive)}	
-  	</define:tag>
-  	
-  </define:taglib>
- 
+   
   <preGoal name="clean:clean">
      <ant:delete quiet="true" dir="${basedir}/dist"/>
   </preGoal>
@@ -203,12 +151,10 @@
     <ant:delete dir="${basedir}/lib" quiet="true"/>
     <ant:delete dir="${basedir}/dist" quiet="true"/>
 
-    <mevenide:getTransitiveDependencies var="transitiveDependencies"/>
     <j:forEach var="dependency" items="${pom.dependencies}">
-      <j:set var="isTransitive" value="false"/>
-      <j:if test="${!(dependency.groupId.equals('eclipse') || dependency.groupId.equals('mevenide') || dependency.groupId.startsWith('mock') || dependency.groupId.startsWith('junit'))}">
-        <mevenide:isTransitiveDependency var="isTransitive" dependency="${dependency}" transitiveDependencies="${transitiveDependencies}"/>
-        <j:if test="${isTransitive != 'true'}">
+      <j:if test="${!(dependency.groupId.equals('eclipse'))}">
+        <j:set var="isTransient" value="${dependency.getProperty('mevenide.transient')}"/>
+        <j:if test="${isTransient != 'true'}">
           <ant:copy file="${maven.repo.local}/${dependency.groupId}/${dependency.type}s/${dependency.artifactId}-${dependency.version}.${dependency.type}" 
                     todir="lib"/>
         </j:if>
