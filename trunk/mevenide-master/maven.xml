@@ -4,15 +4,17 @@
 		 xmlns:velocity="jelly:org.apache.commons.jelly.tags.velocity.VelocityTagLibrary">
 
   <!-- 
-  	TODO debug site generation 
+  	TODO "debug" site generation !!!
   -->
+  
 
   <preGoal name="build">
   	<!-- simulate project.properties inheritance -->
-  	<copy file="${basedir}/project.properties" todir="${basedir}/../goals-grabber"/>	
-  	<copy file="${basedir}/project.properties" todir="${basedir}/../mevenide-core"/>	
-  	<copy file="${basedir}/project.properties" todir="${basedir}/../mevenide-ui-eclipse"/>	
-  	
+  	<j:if test="${properties.inheritance}">
+  	  <copy file="${basedir}/project.properties" todir="${basedir}/../goals-grabber"/>	
+  	  <copy file="${basedir}/project.properties" todir="${basedir}/../mevenide-core"/>	
+  	  <copy file="${basedir}/project.properties" todir="${basedir}/../mevenide-ui-eclipse"/>	
+  	</j:if>
   	<!-- 
   		ensure that all dependencies are present in the repository 
   		by copying all needed eclipse-plugins jars
@@ -48,7 +50,7 @@
 	
     <maven:reactor basedir=".."
       			   includes="goals-grabber/project.xml,mevenide-core/project.xml,mevenide-ui-eclipse/project.xml"
-      			   excludes=""
+      			   excludes="mevenide-master/project.xml"
       			   goals="clean,jar:install"
       			   banner="Building"
       			   ignoreFailures="false"/>
@@ -60,17 +62,13 @@
   	
   	<maven:reactor basedir=".."
       			   includes="goals-grabber/project.xml,mevenide-core/project.xml,mevenide-ui-eclipse/project.xml,mevenide-master/project.xml"
-      			   goals="site"
-      			   excludes="mevenide-master/**"
+      			   goals="clean,site,site:fsdeploy"
+      			   excludes=""
       			   banner="Building Site"
       			   ignoreFailures="false"
       			   postProcessing="true"/>
-    
-  </goal>
-  
-  <postGoal name="build-site">
-  	
-  	<fileScanner var="templates">
+      			   
+	<fileScanner var="templates">
       <fileset dir="${basedir}/templates">
         <include name="*.xml"/>
       </fileset>
@@ -86,6 +84,17 @@
         			  template="${templateName}"/>
 
     </j:forEach>
+     
+     
+    <copy file="${basedir}/xdocs/images/mevenide-logo.jpg" todir="${basedir}/../goals-grabber/target/docs/images/"/>		
+    <copy file="${basedir}/xdocs/images/mevenide-logo.jpg" todir="${basedir}/../mevenide-core/target/docs/images/"/>
+    <copy file="${basedir}/xdocs/images/mevenide-logo.jpg" todir="${basedir}/../mevenide-ui-eclipse/target/docs/images/"/>
+    <copy file="${basedir}/xdocs/images/mevenide-logo.jpg" todir="${basedir}/../mevenide-master/target/docs/images/"/>		   
+    
+  </goal>
+  
+  <postGoal name="build-site">
+     
   </postGoal>
   
 </project>

@@ -3,7 +3,7 @@
   
   <j:useBean var="goalsBean" class="com.gdfact.maven.plugin.getgoals.GoalsBean" />
 
- <d:taglib uri="http://oss.gdfact.com/2003/maven/get-goals" inherit="true">
+  <d:taglib uri="http://oss.gdfact.com/2003/maven/get-goals" inherit="true">
     <!--
       this tag is primarily intend to be used in the postgoal, to allow
       to store the goals in a user-defined place.

@@ -11,6 +11,7 @@
 	
 	<target name="build-site">
 		<exec executable="${maven.command}" failonerror="true">
+			<arg value="-o"/>
 			<arg value="build-site"/>
 		</exec>
 	</target>

@@ -6,7 +6,7 @@
   <name>Mevenide Master</name>
   <id>mevenide:master</id>
   <artifactId>mevenide-master</artifactId>
-  
+  <url>http://mevenide.sf.net/</url>
   <dependencies>
     <dependency>
       <id>commons-jelly+tags-velocity</id>
