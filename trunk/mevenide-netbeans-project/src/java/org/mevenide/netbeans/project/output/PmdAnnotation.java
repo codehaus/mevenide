@@ -154,6 +154,9 @@ public final class PmdAnnotation extends Annotation implements PropertyChangeLis
             ann.removePropertyChangeListener(this);
             detach();
         }
+        synchronized (hyperlinks) {
+            hyperlinks.remove(this);
+        }
     }
     
     public void propertyChange(PropertyChangeEvent ev) {

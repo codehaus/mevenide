@@ -18,9 +18,11 @@ package org.mevenide.netbeans.project.output;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.File;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import org.mevenide.reports.FindbugsResult;
 import org.openide.cookies.EditorCookie;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
@@ -32,13 +34,13 @@ import org.openide.text.Line;
 import org.openide.util.WeakSet;
 import org.openide.windows.OutputEvent;
 import org.openide.windows.OutputListener;
-import org.mevenide.reports.CheckstyleResult;
+
 
 
 /**
  *
  */
-public final class CheckstyleAnnotation extends Annotation implements PropertyChangeListener, OutputListener {
+public final class FindbugsAnnotation extends Annotation implements PropertyChangeListener, OutputListener {
     
     private static final Set hyperlinks = new WeakSet(); // Set<Hyperlink>
     private boolean dead = false;
@@ -47,15 +49,19 @@ public final class CheckstyleAnnotation extends Annotation implements PropertyCh
         synchronized (hyperlinks) {
             Iterator it = hyperlinks.iterator();
             while (it.hasNext()) {
-                ((PmdAnnotation)it.next()).destroy();
+                ((FindbugsAnnotation)it.next()).destroy();
             }
         }
     }
 
-    private final CheckstyleResult.Violation violation;
+    private final FindbugsResult.Violation violation;
+    private final FileObject srcRoot;
+    private final File srcFile;
     
-    public CheckstyleAnnotation(CheckstyleResult.Violation violation) {
-        this.violation = violation;
+    public FindbugsAnnotation(FindbugsResult.Violation viol, FileObject root) {
+        srcRoot = root;
+        srcFile = FileUtil.toFile(srcRoot);
+        this.violation= viol;
         synchronized (hyperlinks) {
             hyperlinks.add(this);
         }
@@ -66,11 +72,23 @@ public final class CheckstyleAnnotation extends Annotation implements PropertyCh
         //           cookie.getLineSet().getCurrent(line).show(Line.SHOW_SHOW);
     }
     
+    private FileObject getFO(String classname) {
+        String name = classname;
+        int index = classname.indexOf("$");
+        if (index > -1) {
+            name = name.substring(0, index);
+        }
+        name = name.replace('.', File.separatorChar);
+        name = name + ".java";
+        File fil = new File(srcFile, name);
+        return FileUtil.toFileObject(fil);
+    }
+            
     /** Called when some sort of action is performed on a line.
      * @param ev the event describing the line
      */
     public void outputLineAction(OutputEvent ev) {
-        FileObject fo = FileUtil.toFileObject(violation.getFile());
+        FileObject fo = getFO(violation.getClassName());
         try {
             DataObject dobj = DataObject.find(fo);
             EditorCookie cook = (EditorCookie)dobj.getCookie(EditorCookie.class);
@@ -79,7 +97,7 @@ public final class CheckstyleAnnotation extends Annotation implements PropertyCh
                 attachAllInFile(cook, this);
                 int lineInt = Integer.parseInt(violation.getLine());
                 if (lineInt != -1) {
-                    Line l = cook.getLineSet().getOriginal(lineInt - 1);
+                    Line l = cook.getLineSet().getOriginal(lineInt == 0 ? 0 : lineInt - 1);
                     if (! l.isDeleted()) {
                         l.show(Line.SHOW_GOTO);
                     }
@@ -90,23 +108,23 @@ public final class CheckstyleAnnotation extends Annotation implements PropertyCh
         }
     }
     
-    CheckstyleResult.Violation getViolation() {
+    FindbugsResult.Violation getViolation() {
         return violation;
     }
     
-    private static void attachAllInFile(EditorCookie cook, CheckstyleAnnotation annot) {
+    private static void attachAllInFile(EditorCookie cook, FindbugsAnnotation annot) {
         Set newSet = null;
         synchronized (hyperlinks) {
             newSet = new HashSet(hyperlinks);
         }
         Iterator it = newSet.iterator();
         while (it.hasNext()) {
-            CheckstyleAnnotation ann = (CheckstyleAnnotation)it.next();
-            CheckstyleResult.Violation violation = ann.getViolation();
-            if (violation.getFile().equals(annot.getViolation().getFile())) {
+            FindbugsAnnotation ann = (FindbugsAnnotation)it.next();
+            FindbugsResult.Violation violation = ann.getViolation();
+            if (ann.getFO(violation.getClassName()).equals(annot.getFO(annot.getViolation().getClassName()))) {
                 int lineInt = Integer.parseInt(violation.getLine());
                 if (lineInt != -1) {
-                    Line l = cook.getLineSet().getOriginal(lineInt - 1);
+                    Line l = cook.getLineSet().getOriginal(lineInt == 0 ? 0 : lineInt - 1);
                     if (! l.isDeleted()) {
                         ann.attachAsNeeded(l);
                     }
@@ -153,7 +171,6 @@ public final class CheckstyleAnnotation extends Annotation implements PropertyCh
         if (ann != null) {
             ann.removePropertyChangeListener(this);
             detach();
-            
         }
         synchronized (hyperlinks) {
             hyperlinks.remove(this);
@@ -171,7 +188,7 @@ public final class CheckstyleAnnotation extends Annotation implements PropertyCh
     }
     
     public String getAnnotationType() {
-        return "org-mevenide-netbeans-project-checkstyle"; // NOI18N
+        return "org-mevenide-netbeans-project-findbugs"; // NOI18N
     }
     
     public String getShortDescription() {
@@ -179,7 +196,7 @@ public final class CheckstyleAnnotation extends Annotation implements PropertyCh
     }
     
     public String toString() {
-        return "checkstyle[" + violation.getSeverity() + ":" + violation.getSource() + ":"  + violation.getLine() + "]"; // NOI18N
+        return "findbugs[" + violation.getType() + ":" + violation.getLine() + "]"; // NOI18N
     }
     
 }

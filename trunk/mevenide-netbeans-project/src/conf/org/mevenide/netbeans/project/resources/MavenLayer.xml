@@ -117,6 +117,7 @@
     <folder name="AnnotationTypes">
       <file name="org-mevenide-netbeans-project-error.xml" url="error-annotation.xml"/>
       <file name="org-mevenide-netbeans-project-pmd.xml" url="pmd-annotation.xml"/>
+      <file name="org-mevenide-netbeans-project-findbugs.xml" url="findbugs-annotation.xml"/>
       <file name="org-mevenide-netbeans-project-checkstyle.xml" url="checkstyle-annotation.xml"/>
       <folder name="StatusForAnnotationType">
           <file name="org-mevenide-netbeans-project-checkstyle">
@@ -128,6 +129,11 @@
               <attr name="status" stringvalue="warning" />
               <attr name="browseable" boolvalue="true" />
               <attr name="color" stringvalue="0xFFBF80" />
+          </file>
+          <file name="org-mevenide-netbeans-project-findbugs">
+              <attr name="status" stringvalue="warning" />
+              <attr name="browseable" boolvalue="true" />
+              <attr name="color" stringvalue="0xF4CCFF" />
           </file>
           <file name="org-mevenide-netbeans-project-error">
               <attr name="status" stringvalue="error" />
