@@ -287,7 +287,7 @@ public class SynchronizeActionFactory {
 	private void createRefreshAllAction() {
 		Action refreshAll = new Action() {
 			public void run() {
-				synchronizeView.refreshAll();
+				synchronizeView.refreshAll(true);
 			}
 		};
 		refreshAll.setId(REFRESH_ALL);
