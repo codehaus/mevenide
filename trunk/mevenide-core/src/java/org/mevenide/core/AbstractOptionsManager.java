@@ -14,6 +14,7 @@
  */
 package org.mevenide.core;
 
+
 import org.mevenide.IOptionsManager;
 
 /**
@@ -23,5 +24,5 @@ import org.mevenide.IOptionsManager;
  * 
  */
 public abstract class AbstractOptionsManager implements IOptionsManager {
-
+    
 }

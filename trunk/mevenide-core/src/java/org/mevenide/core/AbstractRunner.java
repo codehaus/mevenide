@@ -16,6 +16,8 @@ package org.mevenide.core;
 import java.io.File;
 
 import org.apache.commons.discovery.tools.DiscoverClass;
+import org.mevenide.IOptionsManager;
+import org.mevenide.MevenideException;
 
 
 /**
@@ -28,9 +30,27 @@ public abstract class AbstractRunner {
     /** unmodifiable Maven options */
     private String[] finalOptions = null;
     
-    /** synchronization object */
-    private Object lock = new Object();
+    /** finalOptions synchronization object */
+    private Object optionsLock = new Object();
    
+    /** holds the non final options to be passed to the runner */
+    private IOptionsManager optionsManager;
+   
+   
+   
+	/**
+	 * 
+	 */
+	public AbstractRunner() throws MevenideException {
+       try  {
+           new DiscoverClass().newInstance(IOptionsManager.class);
+       }
+       catch ( Exception ex ) {
+           throw new MevenideException(ex);
+       }
+		
+	}
+
     /**
      * lazyloading (dcl)
      * @return String[] unmodifiable Maven options
@@ -39,7 +59,7 @@ public abstract class AbstractRunner {
         if ( finalOptions != null ) {
             return finalOptions;
         }
-        synchronized (lock) {
+        synchronized (optionsLock) {
             if ( finalOptions == null ) {
                 String basedir = getBasedir();
                 finalOptions = new String[3];
@@ -63,12 +83,10 @@ public abstract class AbstractRunner {
 	/**
 	 * configure the environment and run the specified goals in a new VM 
      * with the given environment
-	 * 
-     * @todo FUNCTIONAL add Maven options management
-     *  
+	 *  
 	 * @param goals String[] the goals to run
 	 */
-	public void run(String[] options, String[] goals) {
+	public void run(String[] goals) {
 		String userDir = null;
 		try {
 			//backup user.dir. needed ?
@@ -76,7 +94,7 @@ public abstract class AbstractRunner {
 
 			initEnvironment();
 
-			launchVM(options, goals);
+			launchVM(optionsManager.getOptions(), goals);
 
 		} 
         catch (Exception ex) {

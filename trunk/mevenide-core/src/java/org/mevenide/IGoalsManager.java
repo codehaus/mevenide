@@ -64,8 +64,7 @@ public interface IGoalsManager {
     
     /**
      * remove all previously selected goals
-     *
      */
     public abstract void reset() ;
-    
+   
 }

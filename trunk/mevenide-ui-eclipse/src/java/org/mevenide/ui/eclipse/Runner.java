@@ -15,6 +15,7 @@
 package org.mevenide.ui.eclipse;
 
 import org.mevenide.Environment;
+import org.mevenide.MevenideException;
 import org.mevenide.core.AbstractRunner;
 import org.mevenide.core.ArgumentsManager;
 import org.mevenide.ui.eclipse.jdt.launching.VMLauncherUtility;
@@ -27,6 +28,10 @@ import org.mevenide.ui.eclipse.jdt.launching.VMLauncherUtility;
  */
 public class Runner extends AbstractRunner {
 	MavenPlugin plugin = MavenPlugin.getPlugin();
+
+	public Runner() throws MevenideException {
+		super();
+	}
 
     /**
 	 * @see org.mevenide.core.AbstractRunner#getEffectiveDirectory()
