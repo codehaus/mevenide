@@ -4,3 +4,4 @@ jcoverage.ser
 dist
 lib
 plugin.xml
+.clover
