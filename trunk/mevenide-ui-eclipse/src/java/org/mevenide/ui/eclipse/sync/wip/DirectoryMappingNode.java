@@ -66,6 +66,9 @@ import org.mevenide.util.MevenideUtils;
 public class DirectoryMappingNode extends AbstractArtifactMappingNode {
     private static Log log = LogFactory.getLog(DirectoryMappingNode.class);
     
+    private boolean conflicting;
+    private boolean overrideSameValue;
+    
     public Object getAdapter(Class adapter) {
         // TODO Auto-generated method stub
 		if ( adapter == IPropertySource.class ) {
@@ -78,8 +81,7 @@ public class DirectoryMappingNode extends AbstractArtifactMappingNode {
     
    
     public String getLabel() {
-    	log.debug("DirectoryMappingNode.artifact.class = " + artifact.getClass());
-        if ( resolvedArtifact != null ) {
+    	if ( resolvedArtifact != null ) {
             return ((Directory) resolvedArtifact).getDisplayPath();
         }
         if ( artifact instanceof Resource ) {
@@ -111,6 +113,10 @@ public class DirectoryMappingNode extends AbstractArtifactMappingNode {
     }
 
 	public int getChangeDirection() {
+		if ( conflicting || overrideSameValue ) {
+			return ProjectContainer.CONFLICTING;
+		}
+		
         if ( artifact == null ) {
         	return ProjectContainer.OUTGOING;
 		}
@@ -126,4 +132,21 @@ public class DirectoryMappingNode extends AbstractArtifactMappingNode {
         return ProjectContainer.NO_CHANGE;
 		
     }
+
+	public boolean isConflicting() {
+		return conflicting;
+	}
+
+	public void setConflicting(boolean conflicting) {
+		this.conflicting = conflicting;
+	}
+
+	public boolean isOverrideSameValue() {
+		return overrideSameValue;
+	}
+
+	public void setOverrideSameValue(boolean overrideSameValue) {
+		this.overrideSameValue = overrideSameValue;
+	}
+
 }
