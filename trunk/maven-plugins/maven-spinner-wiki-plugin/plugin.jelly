@@ -128,7 +128,7 @@
   <goal name="spinner-wiki:copy-resources">
    	<!-- grab images -->
   	<ant:copy todir="${oldMavenDocsDest}/images">
-	  	<ant:fileset dir="${plugin.resources}/images"
+	  	<ant:fileset dir="${maven.spinner.wiki.plugin.images.location}"
 	  	             includes="*.*"/>
   	</ant:copy> 
   </goal>
