@@ -322,7 +322,8 @@ public class MavenProject implements Project {
 //            new MavenFileBuiltQueryImpl(this),
             new SubprojectProviderImpl(this),
             new MavenSourcesImpl(this), 
-            new RecommendedTemplatesImpl()
+            new RecommendedTemplatesImpl(),
+            new WebModuleProviderImpl(this)
         });
         completeLookup = new ProjectLookup(staticLookup);
         checkDynamicLookup();
