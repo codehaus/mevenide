@@ -32,7 +32,7 @@ public class GoalsGrabbersManagerTest extends GoalsGrabbersAggregatorTest {
 	
     protected IGoalsGrabber getGoalsGrabber() throws Exception {
         String descriptorPath = GoalsGrabbersManagerTest.class.getResource("/").getFile();
-        System.out.println("grabber manager file=" + descriptorPath);
+//        System.out.println("grabber manager file=" + descriptorPath);
         context.setProjectDirectory(new File(descriptorPath));
         return GoalsGrabbersManager.getGoalsGrabber(context, new LocationFinderAggregator(context));
     }

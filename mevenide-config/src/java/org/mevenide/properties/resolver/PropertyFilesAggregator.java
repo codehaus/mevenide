@@ -59,7 +59,6 @@ public class PropertyFilesAggregator implements IPropertyResolver, IPropertyLoca
         initialize();
         // cannot use the ILocationFinder here, since Loc finders use resolvers -> cyclic dependency
         String val = getResolvedValue("maven.plugin.unpacked.dir"); //NOI18N
-        System.out.println("plugin=" + val);
         if (val != null) {
             defs.initPluginPropsFinder(PropertyResolverFactory.getFactory().getPluginDefaultsPropertyFinder(new File(val)));
         }
