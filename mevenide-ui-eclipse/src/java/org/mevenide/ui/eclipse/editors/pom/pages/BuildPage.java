@@ -40,9 +40,9 @@ import org.mevenide.ui.eclipse.editors.pom.MevenidePomEditor;
  */
 public class BuildPage extends AbstractPomEditorPage {
 
-    private static final String ID = Mevenide.getResourceString("BuildPage.id");
-    private static final String TAB = Mevenide.getResourceString("BuildPage.tab.label");
-    private static final String HEADING = Mevenide.getResourceString("BuildPage.heading");
+    private static final String ID = Mevenide.getResourceString("BuildPage.id"); //$NON-NLS-1$
+    private static final String TAB = Mevenide.getResourceString("BuildPage.tab.label"); //$NON-NLS-1$
+    private static final String HEADING = Mevenide.getResourceString("BuildPage.heading"); //$NON-NLS-1$
     
 	private BuildDirectoriesSection directoriesSection;
 	private ResourcesSection resourcesSection;
@@ -71,7 +71,7 @@ public class BuildPage extends AbstractPomEditorPage {
 		control.setLayoutData(gd);
 		addSection(directoriesSection);
 
-		resourcesSection = new ResourcesSection(this, parent, factory, "BuildResourcesSection");
+		resourcesSection = new ResourcesSection(this, parent, factory, "BuildResourcesSection"); //$NON-NLS-1$
 		IResourceAdaptor adaptor = new IResourceAdaptor() {
 			public void setResources(Object target, List resources) {
 				Project pom = (Project) target;
@@ -107,7 +107,7 @@ public class BuildPage extends AbstractPomEditorPage {
 		control.setLayoutData(gd);
 		addSection(resourcesSection);
 		
-		sourceModificationsSection = new SourceModificationsSection(this, parent, factory, "BuildSourceModificationsSection");
+		sourceModificationsSection = new SourceModificationsSection(this, parent, factory, "BuildSourceModificationsSection"); //$NON-NLS-1$
 		ISourceModificationAdaptor sourceModificationsSectionAdaptor = new ISourceModificationAdaptor() {
 			public void setSourceModifications(Object target, List sourceModifications) {
 			    Project pom = (Project) target;

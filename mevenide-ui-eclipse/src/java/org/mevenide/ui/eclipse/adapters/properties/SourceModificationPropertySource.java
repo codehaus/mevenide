@@ -21,6 +21,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.SourceModification;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.TextPropertyDescriptor;
+import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.util.MevenideUtils;
 
 
@@ -34,7 +35,7 @@ public class SourceModificationPropertySource extends AbstractPomPropertySource 
 
     	private static final Log log = LogFactory.getLog(SourceModificationPropertySource.class);
 
-    	private static final String CLASSNAME = "className";
+    	private static final String CLASSNAME = "className"; //$NON-NLS-1$
     	
        	private SourceModification sourceModification;
     	
@@ -60,7 +61,7 @@ public class SourceModificationPropertySource extends AbstractPomPropertySource 
 
     	public Object getPropertyValue(Object id) {
     		if (log.isDebugEnabled()) {
-    			log.debug("getPropertyValue called: " + id);
+    			log.debug("getPropertyValue called: " + id); //$NON-NLS-1$
     		}
     		if (CLASSNAME.equals(id)) {
     			return valueOrEmptyString(sourceModification.getClassName());
@@ -81,7 +82,7 @@ public class SourceModificationPropertySource extends AbstractPomPropertySource 
 
     	public void setPropertyValue(Object id, Object value) {
     		if (log.isDebugEnabled()) {
-    			log.debug("setPropertyValue called: " + id + " = " + value);
+    			log.debug("setPropertyValue called: " + id + " = " + value); //$NON-NLS-1$ //$NON-NLS-2$
     		}
     		if (value == null) return;
     		
@@ -103,9 +104,9 @@ public class SourceModificationPropertySource extends AbstractPomPropertySource 
 
     	public String getLabel(Object o) {
     		if (log.isDebugEnabled()) {
-    			log.debug("getLabel called for " + o);
+    			log.debug("getLabel called for " + o); //$NON-NLS-1$
     		}
-    		return sourceModification.getClassName() != null ? sourceModification.getClassName() : "[className not set]";
+    		return sourceModification.getClassName() != null ? sourceModification.getClassName() : Mevenide.getResourceString("AbstractPropertySource.Element.ClassNameNotSet"); //$NON-NLS-1$
     	}
 
     	/**

@@ -39,9 +39,9 @@ import org.mevenide.ui.eclipse.editors.pom.MevenidePomEditor;
  */
 public class UnitTestsPage extends AbstractPomEditorPage {
 
-    private static final String ID = Mevenide.getResourceString("UnitTestsPage.id");
-    private static final String TAB = Mevenide.getResourceString("UnitTestsPage.tab.label");
-    private static final String HEADING = Mevenide.getResourceString("UnitTestsPage.heading");
+    private static final String ID = Mevenide.getResourceString("UnitTestsPage.id"); //$NON-NLS-1$
+    private static final String TAB = Mevenide.getResourceString("UnitTestsPage.tab.label"); //$NON-NLS-1$
+    private static final String HEADING = Mevenide.getResourceString("UnitTestsPage.heading"); //$NON-NLS-1$
     
 	private IncludesSection includesSection;
 	private ExcludesSection excludesSection;
@@ -125,7 +125,7 @@ public class UnitTestsPage extends AbstractPomEditorPage {
 		control.setLayoutData(gd);
 		addSection(excludesSection);
 		
-		resourcesSection = new ResourcesSection(this, parent, factory, "UnitTestResourcesSection");
+		resourcesSection = new ResourcesSection(this, parent, factory, "UnitTestResourcesSection"); //$NON-NLS-1$
 		IResourceAdaptor adaptor = new IResourceAdaptor() {
 			public void setResources(Object target, List resources) {
 				Project pom = (Project) target;

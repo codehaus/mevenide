@@ -43,8 +43,8 @@ public class VersionsSection extends PageSection {
 	    FormToolkit toolkit)
 	{
 		super(page, parent, toolkit);
-		setTitle(Mevenide.getResourceString("VersionsSection.header"));
-		setDescription(Mevenide.getResourceString("VersionsSection.description"));
+		setTitle(Mevenide.getResourceString("VersionsSection.header")); //$NON-NLS-1$
+		setDescription(Mevenide.getResourceString("VersionsSection.description")); //$NON-NLS-1$
 	}
 
     public Composite createSectionContent(Composite parent, FormToolkit factory) {
@@ -61,7 +61,7 @@ public class VersionsSection extends PageSection {
 		// POM versions table
 		Button toggle = createOverrideToggle(container, factory, 1, true);
 		TableViewer viewer = createTableViewer(container, factory, 1);
-		versionTable = new TableEntry(viewer, toggle, "Version", container, factory, this);
+		versionTable = new TableEntry(viewer, toggle, Mevenide.getResourceString("VersionsSection.TableEntry.Tooltip"), container, factory, this); //$NON-NLS-1$
 		OverrideAdaptor adaptor = new OverrideAdaptor() {
 			public void overrideParent(Object value) {
 				List versions = (List) value;

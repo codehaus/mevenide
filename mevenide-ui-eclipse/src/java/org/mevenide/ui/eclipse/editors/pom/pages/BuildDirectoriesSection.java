@@ -50,8 +50,8 @@ public class BuildDirectoriesSection extends PageSection {
 		FormToolkit toolkit) 
    	{
         super(page, parent, toolkit);
-		setTitle(Mevenide.getResourceString("BuildDirectoriesSection.header"));
-		setDescription(Mevenide.getResourceString("BuildDirectoriesSection.description"));
+		setTitle(Mevenide.getResourceString("BuildDirectoriesSection.header")); //$NON-NLS-1$
+		setDescription(Mevenide.getResourceString("BuildDirectoriesSection.description")); //$NON-NLS-1$
     }
 
     public Composite createSectionContent(Composite parent, FormToolkit factory) {
@@ -69,13 +69,13 @@ public class BuildDirectoriesSection extends PageSection {
 		Button toggle = createOverrideToggle(container, factory);
 		createLabel(
 			container, 
-			Mevenide.getResourceString("BuildDirectoriesSection.sourceText.label"),
-			Mevenide.getResourceString("BuildDirectoriesSection.sourceText.tooltip"), 
+			Mevenide.getResourceString("BuildDirectoriesSection.sourceText.label"), //$NON-NLS-1$
+			Mevenide.getResourceString("BuildDirectoriesSection.sourceText.tooltip"),  //$NON-NLS-1$
 			factory
 		);
-		String labelName = Mevenide.getResourceString("BuildDirectoriesSection.sourceButton.label");
-		String toolTip = Mevenide.getResourceString("BuildDirectoriesSection.sourceButton.tooltip");
-		final String sourceTitle = Mevenide.getResourceString("BuildDirectoriesSection.sourceButton.dialog.title");
+		String labelName = Mevenide.getResourceString("BuildDirectoriesSection.sourceButton.label"); //$NON-NLS-1$
+		String toolTip = Mevenide.getResourceString("BuildDirectoriesSection.sourceButton.tooltip"); //$NON-NLS-1$
+		final String sourceTitle = Mevenide.getResourceString("BuildDirectoriesSection.sourceButton.dialog.title"); //$NON-NLS-1$
 		sourceText = new OverridableTextEntry(
 			createText(container, factory), 
 			toggle,
@@ -109,7 +109,7 @@ public class BuildDirectoriesSection extends PageSection {
 						}
 					}
 					catch ( Exception ex ) {
-						log.error("Unable to browse for source directory", ex);
+						log.error("Unable to browse for source directory", ex); //$NON-NLS-1$
 					}
 				}
 
@@ -121,13 +121,13 @@ public class BuildDirectoriesSection extends PageSection {
 		toggle = createOverrideToggle(container, factory);
 		createLabel(
 			container, 
-			Mevenide.getResourceString("BuildDirectoriesSection.aspectsText.label"),
-			Mevenide.getResourceString("BuildDirectoriesSection.aspectsText.tooltip"), 
+			Mevenide.getResourceString("BuildDirectoriesSection.aspectsText.label"), //$NON-NLS-1$
+			Mevenide.getResourceString("BuildDirectoriesSection.aspectsText.tooltip"),  //$NON-NLS-1$
 			factory
 		);
-		labelName = Mevenide.getResourceString("BuildDirectoriesSection.aspectsButton.label");
-		toolTip = Mevenide.getResourceString("BuildDirectoriesSection.aspectsButton.tooltip");
-		final String aspectsTitle = Mevenide.getResourceString("BuildDirectoriesSection.aspectsButton.dialog.title");
+		labelName = Mevenide.getResourceString("BuildDirectoriesSection.aspectsButton.label"); //$NON-NLS-1$
+		toolTip = Mevenide.getResourceString("BuildDirectoriesSection.aspectsButton.tooltip"); //$NON-NLS-1$
+		final String aspectsTitle = Mevenide.getResourceString("BuildDirectoriesSection.aspectsButton.dialog.title"); //$NON-NLS-1$
 		aspectsText = new OverridableTextEntry(
 			createText(container, factory), 
 			toggle,
@@ -161,7 +161,7 @@ public class BuildDirectoriesSection extends PageSection {
 						}
 					}
 					catch ( Exception ex ) {
-						log.error("Unable to browse for aspect source directory", ex);
+						log.error("Unable to browse for aspect source directory", ex); //$NON-NLS-1$
 					}
 				}
 			}
@@ -171,13 +171,13 @@ public class BuildDirectoriesSection extends PageSection {
 		toggle = createOverrideToggle(container, factory);
 		createLabel(
 			container, 
-			Mevenide.getResourceString("BuildDirectoriesSection.unitTestsText.label"),
-			Mevenide.getResourceString("BuildDirectoriesSection.unitTestsText.tooltip"), 
+			Mevenide.getResourceString("BuildDirectoriesSection.unitTestsText.label"), //$NON-NLS-1$
+			Mevenide.getResourceString("BuildDirectoriesSection.unitTestsText.tooltip"),  //$NON-NLS-1$
 			factory
 		);
-		labelName = Mevenide.getResourceString("BuildDirectoriesSection.unitTestsButton.label");
-		toolTip = Mevenide.getResourceString("BuildDirectoriesSection.unitTestsButton.tooltip");
-		final String unitTestsTitle = Mevenide.getResourceString("BuildDirectoriesSection.unitTestsButton.dialog.title");
+		labelName = Mevenide.getResourceString("BuildDirectoriesSection.unitTestsButton.label"); //$NON-NLS-1$
+		toolTip = Mevenide.getResourceString("BuildDirectoriesSection.unitTestsButton.tooltip"); //$NON-NLS-1$
+		final String unitTestsTitle = Mevenide.getResourceString("BuildDirectoriesSection.unitTestsButton.dialog.title"); //$NON-NLS-1$
 		unitTestsText = new OverridableTextEntry(
 			createText(container, factory), 
 			toggle,
@@ -211,7 +211,7 @@ public class BuildDirectoriesSection extends PageSection {
 						}
 					}
 					catch ( Exception ex ) {
-						log.error("Unable to browse for unit test source directory", ex);
+						log.error("Unable to browse for unit test source directory", ex); //$NON-NLS-1$
 					}
 				}
 			}
@@ -221,8 +221,8 @@ public class BuildDirectoriesSection extends PageSection {
 		toggle = createOverrideToggle(container, factory);
 		createLabel(
 			container, 
-			Mevenide.getResourceString("BuildDirectoriesSection.nagEmailText.label"),
-			Mevenide.getResourceString("BuildDirectoriesSection.nagEmailText.tooltip"), 
+			Mevenide.getResourceString("BuildDirectoriesSection.nagEmailText.label"), //$NON-NLS-1$
+			Mevenide.getResourceString("BuildDirectoriesSection.nagEmailText.tooltip"),  //$NON-NLS-1$
 			factory
 		);
 		nagEmailText = new OverridableTextEntry(createText(container, factory), toggle);

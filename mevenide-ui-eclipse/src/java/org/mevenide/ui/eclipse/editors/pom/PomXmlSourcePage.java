@@ -48,8 +48,8 @@ public class PomXmlSourcePage
 	implements IPomEditorPage, IFormPage {
 
 	private static final Log log = LogFactory.getLog(PomXmlSourcePage.class);
-    private static final String ID = Mevenide.getResourceString("PomXMLSourcePage.id");
-    private static final String TAB = Mevenide.getResourceString("PomXMLSourcePage.tab.label");
+    private static final String ID = Mevenide.getResourceString("PomXMLSourcePage.id"); //$NON-NLS-1$
+    private static final String TAB = Mevenide.getResourceString("PomXMLSourcePage.tab.label"); //$NON-NLS-1$
     
     private Composite control;
 	private MevenidePomEditor editor;
@@ -88,7 +88,7 @@ public class PomXmlSourcePage
 
             public void documentChanged(DocumentEvent event) {
                 if (log.isDebugEnabled()) {
-                    log.debug("document has been changed! active = " + isActive());
+                    log.debug("document has been changed! active = " + isActive()); //$NON-NLS-1$
                 }
                 if (isActive()) {
 					setModelNeedsUpdating(true);
@@ -99,7 +99,7 @@ public class PomXmlSourcePage
 	
     public void pageActivated(IPomEditorPage oldPage) {
         if (log.isDebugEnabled()) {
-            log.debug("PomXmlSourcePage made active!");
+            log.debug("PomXmlSourcePage made active!"); //$NON-NLS-1$
         }
 		setModelNeedsUpdating(false);
 		setActive(true);
@@ -107,7 +107,7 @@ public class PomXmlSourcePage
 
 	public void pageDeactivated(IPomEditorPage newPage) {
 		if (log.isDebugEnabled()) {
-			log.debug("PomXmlSourcePage made inactive!");
+			log.debug("PomXmlSourcePage made inactive!"); //$NON-NLS-1$
 		}
 		setActive(false);
     	if (isModelNeedsUpdating())
@@ -258,7 +258,7 @@ public class PomXmlSourcePage
 	    	return true;
 		}
 	    catch ( Exception e ) {
-	    	log.info("Cannot Leave Page due to parsing errors. reason : ", e);
+	    	log.info("Cannot Leave Page due to parsing errors. reason : ", e); //$NON-NLS-1$
 	    	return false;
 	    }
 	}

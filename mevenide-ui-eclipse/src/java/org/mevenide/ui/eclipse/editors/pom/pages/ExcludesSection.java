@@ -43,7 +43,7 @@ public class ExcludesSection extends PageSection {
 	    FormToolkit toolkit)
 	{
 		super(page, parent, toolkit);
-		setTitle(Mevenide.getResourceString("UnitTestExcludesSection.header"));
+		setTitle(Mevenide.getResourceString("UnitTestExcludesSection.header")); //$NON-NLS-1$
 	}
 	
 	void setExcludesAdaptor(IExcludesAdaptor newExcludesAdaptor) {

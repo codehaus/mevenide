@@ -47,6 +47,7 @@ import org.mevenide.ui.eclipse.editors.pom.entries.OverridableTextEntry;
 import org.mevenide.ui.eclipse.editors.pom.entries.PageEntry;
 import org.mevenide.ui.eclipse.editors.pom.entries.TextEntry;
 import org.mevenide.util.MevenideUtils;
+import org.mevenide.util.StringUtils;
 
 /**
  * Abstract base class for a section of a page in the POM Editor ui.
@@ -70,7 +71,7 @@ public abstract class PageSection extends SectionPart {
         public void entryDirty(PageEntry entry) {
             getPage().getPomEditor().setModelDirty(true);
             if (log.isDebugEnabled()) {
-                log.debug("entry was changed!");
+                log.debug("entry was changed!"); //$NON-NLS-1$
             }
         }
     }
@@ -82,7 +83,7 @@ public abstract class PageSection extends SectionPart {
 
         public void entryChanged(PageEntry entry) {
             if (log.isDebugEnabled()) {
-                log.debug("overridable entry change committed! " + entry.getValue());
+                log.debug("overridable entry change committed! " + entry.getValue()); //$NON-NLS-1$
             }
             overrideParent(entry.getValue());
         }
@@ -90,7 +91,7 @@ public abstract class PageSection extends SectionPart {
         public void entryDirty(PageEntry entry) {
             getPage().getPomEditor().setModelDirty(true);
             if (log.isDebugEnabled()) {
-                log.debug("overridable entry was changed!");
+                log.debug("overridable entry was changed!"); //$NON-NLS-1$
             }
         }
     }
@@ -121,7 +122,7 @@ public abstract class PageSection extends SectionPart {
     }
 
     protected Label createSpacer(Composite parent, FormToolkit factory, int span) {
-        Label spacer = factory.createLabel(parent, "");
+        Label spacer = factory.createLabel(parent, ""); //$NON-NLS-1$
         GridData data = new GridData(GridData.VERTICAL_ALIGN_CENTER | GridData.HORIZONTAL_ALIGN_BEGINNING);
         data.horizontalSpan = span;
         data.widthHint = 5;
@@ -153,7 +154,7 @@ public abstract class PageSection extends SectionPart {
     protected Button createOverrideToggle(Composite parent, FormToolkit factory, int span, boolean alignTop) {
         Button inheritanceToggle = null;
         if (isInherited()) {
-            inheritanceToggle = factory.createButton(parent, " ", SWT.CHECK);
+            inheritanceToggle = factory.createButton(parent, " ", SWT.CHECK); //$NON-NLS-1$
             int vAlign = alignTop ? GridData.VERTICAL_ALIGN_BEGINNING : GridData.VERTICAL_ALIGN_CENTER;
             GridData data = new GridData(vAlign | GridData.HORIZONTAL_ALIGN_BEGINNING);
             data.horizontalSpan = span;
@@ -185,7 +186,7 @@ public abstract class PageSection extends SectionPart {
 
     protected Text createMultilineText(Composite parent, FormToolkit factory) {
 
-        Text text = factory.createText(parent, "", SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
+        Text text = factory.createText(parent, "", SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL); //$NON-NLS-1$
         GridData data = new GridData(GridData.FILL_BOTH);
         text.setLayoutData(data);
         return text;
@@ -203,7 +204,7 @@ public abstract class PageSection extends SectionPart {
 
     protected Text createText(Composite parent, FormToolkit factory, int span, int style) {
 
-        Text text = factory.createText(parent, "", style);
+        Text text = factory.createText(parent, "", style); //$NON-NLS-1$
         int hfill = span == 1 ? GridData.FILL_HORIZONTAL : GridData.HORIZONTAL_ALIGN_FILL;
         GridData gd = new GridData(hfill | GridData.VERTICAL_ALIGN_CENTER);
         gd.horizontalSpan = span;
@@ -271,7 +272,7 @@ public abstract class PageSection extends SectionPart {
     }
 
     protected boolean isDefined(String value) {
-        return (value != null && !"".equals(value.trim()));
+        return (!StringUtils.isNull(value));
     }
 
     protected boolean isInherited() {
@@ -291,7 +292,7 @@ public abstract class PageSection extends SectionPart {
      */
     public void initialize(IManagedForm form) {
         if (log.isDebugEnabled()) {
-            log.debug("initializing the section and its client...");
+            log.debug("initializing the section and its client..."); //$NON-NLS-1$
         }
         super.initialize(form);
         FormToolkit toolkit = form.getToolkit();
@@ -307,6 +308,6 @@ public abstract class PageSection extends SectionPart {
 
     protected String getRelativePath(final String directory) throws IOException {
         String basedir = ((FileEditorInput) getPage().getPomEditor().getEditorInput()).getFile().getLocation().toOSString();
-        return MevenideUtils.makeRelativePath(new File(basedir).getParentFile(), directory).replaceAll("\\\\", "/");
+        return MevenideUtils.makeRelativePath(new File(basedir).getParentFile(), directory).replaceAll("\\\\", "/"); //$NON-NLS-1$ //$NON-NLS-2$
     }
 }

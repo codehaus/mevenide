@@ -76,7 +76,7 @@ public class TextEntry extends PageEntry {
 			textbox.setText(text);
 		}
 		else {
-			textbox.setText("");
+			textbox.setText(""); //$NON-NLS-1$
 		}
 	}
 

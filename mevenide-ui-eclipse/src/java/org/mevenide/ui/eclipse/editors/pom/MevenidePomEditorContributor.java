@@ -65,7 +65,7 @@ public class MevenidePomEditorContributor extends MultiPageEditorActionBarContri
             pomFile = ((IFileEditorInput) part.getEditorInput()).getFile();
         }
         catch (Exception e) {
-            String message = "Unable to initialize pom"; 
+            String message = "Unable to initialize pom";  //$NON-NLS-1$
             log.error(message, e);
         }
     }
@@ -132,13 +132,13 @@ public class MevenidePomEditorContributor extends MultiPageEditorActionBarContri
                     MarkerHelper.deleteMarkers(pomFile);
                 }
                 catch (Exception e) {
-                    String message = "unable to delete markers"; 
+                    String message = "unable to delete markers";  //$NON-NLS-1$
                     log.error(message, e);
                 }
             }
         };
-        clearMarkersAction.setText(Mevenide.getResourceString("MevenidePomEditorContributor.ClearMarkers.Action.Text"));
-        clearMarkersAction.setToolTipText("MevenidePomEditorContributor.ClearMarkers.Action.ToolTip");
+        clearMarkersAction.setText(Mevenide.getResourceString("MevenidePomEditorContributor.ClearMarkers.Action.Text")); //$NON-NLS-1$
+        clearMarkersAction.setToolTipText(Mevenide.getResourceString("MevenidePomEditorContributor.ClearMarkers.Action.ToolTip")); //$NON-NLS-1$
         clearMarkersAction.setImageDescriptor(Mevenide.getInstance().getImageRegistry().getDescriptor(IImageRegistry.CLEAR_VALIDATE_TOOL));
     }
 
@@ -149,14 +149,14 @@ public class MevenidePomEditorContributor extends MultiPageEditorActionBarContri
                 new ValidationJob(pomFile).schedule();
             }
         };
-        validatePomAction.setText(Mevenide.getResourceString("MevenidePomEditorContributor.Validate.Action.Text"));
-        validatePomAction.setToolTipText("MevenidePomEditorContributor.Validate.Action.ToolTip");
+        validatePomAction.setText(Mevenide.getResourceString("MevenidePomEditorContributor.Validate.Action.Text")); //$NON-NLS-1$
+        validatePomAction.setToolTipText(Mevenide.getResourceString("MevenidePomEditorContributor.Validate.Action.ToolTip")); //$NON-NLS-1$
         validatePomAction.setImageDescriptor(Mevenide.getInstance().getImageRegistry().getDescriptor(IImageRegistry.VALIDATE_TOOL));
     }
 
 
     public void contributeToMenu(IMenuManager manager) {
-        IMenuManager menu = new MenuManager(Mevenide.getResourceString("MevenidePomEditorContributor.Menu.Text"));
+        IMenuManager menu = new MenuManager(Mevenide.getResourceString("MevenidePomEditorContributor.Menu.Text")); //$NON-NLS-1$
         manager.prependToGroup(IWorkbenchActionConstants.MB_ADDITIONS, menu);
         menu.add(validatePomAction);
         menu.add(clearMarkersAction);

@@ -23,6 +23,7 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.ui.views.properties.ComboBoxPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.TextPropertyDescriptor;
+import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.util.MevenideUtils;
 
 /**
@@ -33,12 +34,12 @@ public class ResourcePropertySource extends AbstractPomPropertySource {
 
 	private static final Log log = LogFactory.getLog(ResourcePropertySource.class);
 
-	private static final String RESOURCE_DIRECTORY = "directory";
-	private static final String RESOURCE_TARGETPATH = "targetPath";
-	private static final String RESOURCE_FILTERING = "filtering";
+	private static final String RESOURCE_DIRECTORY = "directory"; //$NON-NLS-1$
+	private static final String RESOURCE_TARGETPATH = "targetPath"; //$NON-NLS-1$
+	private static final String RESOURCE_FILTERING = "filtering"; //$NON-NLS-1$
 
-	private static final String RESOURCE_FILTERING_TRUE = "true";
-	private static final String RESOURCE_FILTERING_FALSE = "false";
+	private static final String RESOURCE_FILTERING_TRUE = "true"; //$NON-NLS-1$
+	private static final String RESOURCE_FILTERING_FALSE = "false"; //$NON-NLS-1$
 	
 	private static final String[] RESOURCE_FILTERING_VALUES = new String[] {
 		RESOURCE_FILTERING_TRUE,
@@ -88,7 +89,7 @@ public class ResourcePropertySource extends AbstractPomPropertySource {
 
 	public Object getPropertyValue(Object id) {
 		if (log.isDebugEnabled()) {
-			log.debug("getPropertyValue called: " + id);
+			log.debug("getPropertyValue called: " + id); //$NON-NLS-1$
 		}
 		if (RESOURCE_DIRECTORY.equals(id)) {
 			return valueOrEmptyString(resource.getDirectory());
@@ -121,7 +122,7 @@ public class ResourcePropertySource extends AbstractPomPropertySource {
 
 	public void setPropertyValue(Object id, Object value) {
 		if (log.isDebugEnabled()) {
-			log.debug("setPropertyValue called: " + id + " = " + value);
+			log.debug("setPropertyValue called: " + id + " = " + value);  //$NON-NLS-1$//$NON-NLS-2$
 		}
 		if (value == null) return;
 		
@@ -167,9 +168,9 @@ public class ResourcePropertySource extends AbstractPomPropertySource {
 
 	public String getLabel(Object o) {
 		if (log.isDebugEnabled()) {
-			log.debug("getLabel called for " + o);
+			log.debug("getLabel called for " + o); //$NON-NLS-1$
 		}
-		return resource.getDirectory() != null ? resource.getDirectory() : "[unknown]";
+		return resource.getDirectory() != null ? resource.getDirectory() : Mevenide.getResourceString("AbstractPropertySource.Element.Unknown"); //$NON-NLS-1$
 	}
 
 	/**

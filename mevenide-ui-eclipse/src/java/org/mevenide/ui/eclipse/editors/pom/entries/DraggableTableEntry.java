@@ -86,7 +86,7 @@ public class DraggableTableEntry extends PageEntry {
 			if (! event.doit) return;
 			if (event.detail == DND.DROP_MOVE) {
 				if (log.isDebugEnabled()) {
-					log.debug("Moved an element");
+					log.debug("Moved an element"); //$NON-NLS-1$
 				}
 				IStructuredSelection selection = (IStructuredSelection) viewer.getSelection();
 				if (selection != null && ! selection.isEmpty()) {
@@ -192,7 +192,7 @@ public class DraggableTableEntry extends PageEntry {
 
 	public void setInherited(boolean inherited) {
 		if (log.isDebugEnabled()) {
-			log.debug("field changed to inherited = " + inherited);
+			log.debug("field changed to inherited = " + inherited); //$NON-NLS-1$
 		}
 		this.inherited = inherited;
 		setEnabled(!inherited);

@@ -55,7 +55,7 @@ public class OverridableTextEntry extends TextEntry {
             }
             else {
                 setText(null);
-				adaptor.overrideParent("");
+				adaptor.overrideParent(""); //$NON-NLS-1$
             }
 			adaptor.refreshUI();
         }
@@ -83,7 +83,7 @@ public class OverridableTextEntry extends TextEntry {
 
     public void setInherited(boolean inherited) {
         if (log.isDebugEnabled()) {
-            log.debug("field changed to inherited = " + inherited);
+            log.debug("field changed to inherited = " + inherited); //$NON-NLS-1$
         }
         this.inherited = inherited;
         setEnabled(!inherited);

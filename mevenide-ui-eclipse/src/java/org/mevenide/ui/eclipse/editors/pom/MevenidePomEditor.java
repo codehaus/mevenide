@@ -71,6 +71,8 @@ import org.mevenide.util.StringUtils;
 public class MevenidePomEditor extends FormEditor {
 
     private static final Log log = LogFactory.getLog(MevenidePomEditor.class);
+	
+    private static final String PROPERTY_SHEET_ID = "org.eclipse.ui.views.PropertySheet"; //$NON-NLS-1$
 
     private Project pom;
     private Project parentPom;
@@ -90,32 +92,32 @@ public class MevenidePomEditor extends FormEditor {
     class ElementListener implements IElementStateListener {
         public void elementContentAboutToBeReplaced(Object element) {
             if (log.isDebugEnabled()) {
-                log.debug("elementContentAboutToBeReplaced: " + element);
+                log.debug("elementContentAboutToBeReplaced: " + element); //$NON-NLS-1$
             }
         }
 
         public void elementContentReplaced(Object element) {
             if (log.isDebugEnabled()) {
-                log.debug("elementContentReplaced: " + element);
+                log.debug("elementContentReplaced: " + element); //$NON-NLS-1$
             }
             updateModel();
         }
 
         public void elementDeleted(Object element) {
             if (log.isDebugEnabled()) {
-                log.debug("elementDeleted: " + element);
+                log.debug("elementDeleted: " + element); //$NON-NLS-1$
             }
         }
 
         public void elementDirtyStateChanged(Object element, boolean isDirty) {
             if (log.isDebugEnabled()) {
-                log.debug("elementDirtyStateChanged to " + isDirty);
+                log.debug("elementDirtyStateChanged to " + isDirty); //$NON-NLS-1$
             }
         }
 
         public void elementMoved(Object originalElement, Object movedElement) {
             if (log.isDebugEnabled()) {
-                log.debug("elementMoved");
+                log.debug("elementMoved"); //$NON-NLS-1$
             }
             close(true);
         }
@@ -127,7 +129,7 @@ public class MevenidePomEditor extends FormEditor {
             marshaller = new DefaultProjectMarshaller();
             unmarshaller = new JDomProjectUnmarshaller();
         } catch (Exception e) {
-            log.error("Could not create a POM marshaller", e);
+            log.error("Could not create a POM marshaller", e); //$NON-NLS-1$
         }
     }
 
@@ -158,7 +160,7 @@ public class MevenidePomEditor extends FormEditor {
             createReportsPage();
             createSourcePage();
         } catch (PartInitException e) {
-            log.error("Unable to create source page", e);
+            log.error("Unable to create source page", e); //$NON-NLS-1$
         }
     }
 
@@ -260,7 +262,7 @@ public class MevenidePomEditor extends FormEditor {
 
     protected void pageChange(int newPageIndex) {
         if (log.isDebugEnabled()) {
-            log.debug("changing page: " + getActivePage() + " => " + newPageIndex);
+            log.debug("changing page: " + getActivePage() + " => " + newPageIndex); //$NON-NLS-1$ //$NON-NLS-2$
         }
 //        IPomEditorPage oldPage = getCurrentPomEditorPage();
 //        IPomEditorPage newPage = getPomEditorPage(newPageIndex);
@@ -273,12 +275,12 @@ public class MevenidePomEditor extends FormEditor {
 //        }
 
         super.pageChange(newPageIndex);
-        log.debug("changed page");
+        log.debug("changed page"); //$NON-NLS-1$
     }
 
     private void openPropertiesSheet() {
         try {
-            getSite().getPage().showView("org.eclipse.ui.views.PropertySheet");
+            getSite().getPage().showView(PROPERTY_SHEET_ID); 
         } catch (PartInitException e) {
             log.error(e);
         }
@@ -301,7 +303,7 @@ public class MevenidePomEditor extends FormEditor {
     public void doSave(IProgressMonitor monitor) {
 
         if (log.isDebugEnabled()) {
-            log.debug("attempting save...");
+            log.debug("attempting save..."); //$NON-NLS-1$
         }
         updateDocument();
 
@@ -311,7 +313,7 @@ public class MevenidePomEditor extends FormEditor {
             public void execute(final IProgressMonitor mon) throws CoreException {
 
                 if (log.isDebugEnabled()) {
-                    log.debug("saving documentProvider");
+                    log.debug("saving documentProvider"); //$NON-NLS-1$
                 }
                 documentProvider.saveDocument(mon, input, documentProvider.getDocument(input), true);
             }
@@ -328,9 +330,9 @@ public class MevenidePomEditor extends FormEditor {
         } catch (InvocationTargetException x) {
         }
         if (log.isDebugEnabled()) {
-            log.debug("saved!");
-            log.debug("dirty = " + isDirty());
-            log.debug("modeldirty = " + isModelDirty());
+            log.debug("saved!"); //$NON-NLS-1$
+            log.debug("dirty = " + isDirty()); //$NON-NLS-1$
+            log.debug("modeldirty = " + isModelDirty()); //$NON-NLS-1$
         }
     }
 
@@ -364,7 +366,7 @@ public class MevenidePomEditor extends FormEditor {
         boolean dirtiness = isModelDirty()
                 || (documentProvider != null && documentProvider.canSaveDocument(getEditorInput()));
         if (log.isDebugEnabled()) {
-            log.debug("modelDirty = " + isModelDirty() + " and editor dirty " + dirtiness);
+            log.debug("modelDirty = " + isModelDirty() + " and editor dirty " + dirtiness); //$NON-NLS-1$ //$NON-NLS-2$
         }
         return dirtiness;
     }
@@ -385,8 +387,9 @@ public class MevenidePomEditor extends FormEditor {
      * checks that the input is an instance of <code>IFileEditorInput</code>.
      */
     public void init(IEditorSite site, IEditorInput editorInput) throws PartInitException {
-        if (!(editorInput instanceof IFileEditorInput)) { throw new PartInitException(
-                "Invalid Input: Must be IFileEditorInput"); }
+        if (!(editorInput instanceof IFileEditorInput)) { 
+            throw new PartInitException("Invalid Input: Must be IFileEditorInput");  //$NON-NLS-1$
+        }
         IFile pomFile = ((IFileEditorInput) editorInput).getFile();
 
         setInput(editorInput);
@@ -396,7 +399,8 @@ public class MevenidePomEditor extends FormEditor {
 
         try {
             initializeModel(pomFile);
-        } catch (CoreException e) {
+        } 
+        catch (CoreException e) {
             throw new PartInitException(e.getStatus());
         }
     }
@@ -422,18 +426,18 @@ public class MevenidePomEditor extends FormEditor {
             ProjectReader reader = ProjectReader.getReader();
             pom = reader.read(file);
 
-            if (pom.getExtend() != null && !"".equals(pom.getExtend().trim())) {
+            if (pom.getExtend() != null && !"".equals(pom.getExtend().trim())) { //$NON-NLS-1$
                 String resolvedExtend = new ProjectWalker(pom).resolve(pom.getExtend());
                 File extendFile = new File(resolvedExtend);
                 if (log.isDebugEnabled()) {
-                    log.debug("parentPom path = " + resolvedExtend + "; exists = " + extendFile.exists());
+                    log.debug("parentPom path = " + resolvedExtend + "; exists = " + extendFile.exists()); //$NON-NLS-1$ //$NON-NLS-2$
                 }
 
                 if (!extendFile.exists()) {
                     // not an absolute path; must've been relative
                     extendFile = new File(new File(pomFile.getLocation().toOSString()).getParentFile(), resolvedExtend);
                     if (log.isDebugEnabled()) {
-                        log.debug("parentPom path = " + extendFile.getAbsolutePath() + "; exists = "
+                        log.debug("parentPom path = " + extendFile.getAbsolutePath() + "; exists = " //$NON-NLS-1$ //$NON-NLS-2$
                                 + extendFile.exists());
                     }
                 }
@@ -445,14 +449,14 @@ public class MevenidePomEditor extends FormEditor {
 
             updateTitleAndToolTip();
         } catch (Exception e) {
-            log.error("could not read POM: ", e);
-            throw new PartInitException("Could not obtain Project reader");
+            log.error("could not read POM: ", e); //$NON-NLS-1$
+            throw new PartInitException("Could not obtain Project reader"); //$NON-NLS-1$
         }
     }
 
     public boolean updateModel() {
         if (log.isDebugEnabled()) {
-            log.debug("updateModel entered");
+            log.debug("updateModel entered"); //$NON-NLS-1$
         }
         boolean clean = false;
         IDocument document = documentProvider.getDocument(getEditorInput());
@@ -462,7 +466,7 @@ public class MevenidePomEditor extends FormEditor {
             updatedPom = unmarshaller.parse(((IFileEditorInput) getEditorInput()).getFile().getRawLocation().toFile());
 
             if (log.isDebugEnabled()) {
-                log.debug("old pom name = " + pom.getName() + " and new = " + updatedPom.getName());
+                log.debug("old pom name = " + pom.getName() + " and new = " + updatedPom.getName()); //$NON-NLS-1$ //$NON-NLS-2$
             }
             comparator.compare(updatedPom);
 
@@ -475,18 +479,18 @@ public class MevenidePomEditor extends FormEditor {
             
             clean = true;
         } catch (Exception e) {
-            log.error("Unable to update model", e);
+            log.error("Unable to update model", e); //$NON-NLS-1$
             clean = false;
         }
         if (log.isDebugEnabled()) {
-            log.debug("updateModel exiting");
+            log.debug("updateModel exiting"); //$NON-NLS-1$
         }
         return clean;
     }
 
     public void updateDocument() {
         if (log.isDebugEnabled()) {
-            log.debug("updateDocument entered; modeldirty = " + isModelDirty());
+            log.debug("updateDocument entered; modeldirty = " + isModelDirty()); //$NON-NLS-1$
         }
         if (isModelDirty()) {
             IDocument document = documentProvider.getDocument(getEditorInput());
@@ -498,20 +502,20 @@ public class MevenidePomEditor extends FormEditor {
                 document.set(newDocument.toString());
                 setModelDirty(false);
                 if (log.isDebugEnabled()) {
-                    log.debug("current project name = " + pom.getName() + " and extends = " + pom.getExtend());
+                    log.debug("current project name = " + pom.getName() + " and extends = " + pom.getExtend()); //$NON-NLS-1$ //$NON-NLS-2$
                 }
             } catch (Exception e) {
-                log.error("Marshalling POM failed", e);
+                log.error("Marshalling POM failed", e); //$NON-NLS-1$
             }
         }
         if (log.isDebugEnabled()) {
-            log.debug("updateDocument exiting");
+            log.debug("updateDocument exiting"); //$NON-NLS-1$
         }
     }
 
     public Object getAdapter(Class adapter) {
         if (log.isDebugEnabled()) {
-            log.debug("getting adapter for class: " + adapter);
+            log.debug("getting adapter for class: " + adapter); //$NON-NLS-1$
         }
 
         if (IContentOutlinePage.class.equals(adapter)) { return getContentOutline(); }

@@ -56,8 +56,8 @@ public class DependenciesSection extends PageSection {
 	    FormToolkit toolkit)
 	{
 		super(page, parent, toolkit);
-		setTitle(Mevenide.getResourceString("DependenciesSection.header"));
-		setDescription(Mevenide.getResourceString("DependenciesSection.description"));
+		setTitle(Mevenide.getResourceString("DependenciesSection.header")); //$NON-NLS-1$
+		setDescription(Mevenide.getResourceString("DependenciesSection.description")); //$NON-NLS-1$
 	}
 
     public Composite createSectionContent(Composite parent, FormToolkit factory) {
@@ -74,7 +74,7 @@ public class DependenciesSection extends PageSection {
 		// POM dependencies table
 		Button toggle = createOverrideToggle(container, factory, 1, true);
 		TableViewer viewer = createTableViewer(container, factory, 1);
-		dependenciesTable = new TableEntry(viewer, toggle, "Dependency", container, factory, this);
+		dependenciesTable = new TableEntry(viewer, toggle, Mevenide.getResourceString("DependenciesSeection.TableEntry.Tooltip"), container, factory, this); //$NON-NLS-1$
 		OverrideAdaptor adaptor = new OverrideAdaptor() {
 			public void overrideParent(Object value) {
 				List dependencies = (List) value;
@@ -99,10 +99,10 @@ public class DependenciesSection extends PageSection {
 			new IPomCollectionAdaptor() {
 				public Object addNewObject(Object parentObject) {
 					Dependency dependency = new Dependency();
-					dependency.setArtifactId("[artifactId]");
-					dependency.setGroupId("[groupId]");
-					dependency.setVersion("[version]");
-					dependency.setType("jar");
+					dependency.setArtifactId("[artifactId]"); //$NON-NLS-1$
+					dependency.setGroupId("[groupId]"); //$NON-NLS-1$
+					dependency.setVersion("[version]"); //$NON-NLS-1$
+					dependency.setType("jar"); //$NON-NLS-1$
 					if ( pom.getDependencies() == null ) {
 					    pom.setDependencies(new ArrayList());
 					}
@@ -136,20 +136,20 @@ public class DependenciesSection extends PageSection {
 		
 		// Dependency Property header label
 		if (isInherited()) createSpacer(container, factory);
-		factory.createLabel(container, Mevenide.getResourceString("DependenciesSection.properties.label"), SWT.BOLD);
+		factory.createLabel(container, Mevenide.getResourceString("DependenciesSection.properties.label"), SWT.BOLD); //$NON-NLS-1$
 		createSpacer(container, factory);
 		
 		// POM dependency properties table
 		if (isInherited()) createSpacer(container, factory);
 		viewer = createTableViewer(container, factory, 1);
-		propertiesTable = new TableEntry(viewer, null, "Dependency Property", container, factory, this);
+		propertiesTable = new TableEntry(viewer, null, Mevenide.getResourceString("DependencySection.Dependency.Property"), container, factory, this); //$NON-NLS-1$
 		dependenciesTable.addDependentTableEntry(propertiesTable);
 		propertiesTable.addEntryChangeListener(
 			new EntryChangeListenerAdaptor() {
 				public void entryChanged(PageEntry entry) {
 					List properties = (List) propertiesTable.getValue();
 					if (log.isDebugEnabled()) {
-						log.debug("properties = " + properties);
+						log.debug("properties = " + properties); //$NON-NLS-1$
 					}
 					Dependency dependency = (Dependency) ((TableEntry) entry).getParentPomObject();
 					dependency.setProperties(properties);
@@ -160,7 +160,7 @@ public class DependenciesSection extends PageSection {
 						dependency.resolvedProperties().put(property[0], property[1]);
 					}
 					if (log.isDebugEnabled()) {
-						log.debug("resolved properties = " + dependency.resolvedProperties());
+						log.debug("resolved properties = " + dependency.resolvedProperties()); //$NON-NLS-1$
 					}
 				}
 			}
@@ -169,7 +169,7 @@ public class DependenciesSection extends PageSection {
 			new IPomCollectionAdaptor() {
 				public Object addNewObject(Object parentObject) {
 					Dependency dependency = (Dependency) parentObject;
-					String newPropertyStr = "unknown:unknown";
+					String newPropertyStr = Mevenide.getResourceString("AbstractPomEditorPage.Element.Unknown") + ":" + Mevenide.getResourceString("AbstractPomEditorPage.Element.Unknown"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 					PropertyProxy newProperty = new PropertyProxy(newPropertyStr);
 					dependency.addProperty(newPropertyStr);
 					return newProperty;
@@ -218,7 +218,7 @@ public class DependenciesSection extends PageSection {
 		    for (Iterator iter = dependencies.iterator(); iter.hasNext(); ) {
 		        Dependency element = (Dependency) iter.next();
 		        if (element.getType() == null) {
-		            element.setType("jar");
+		            element.setType("jar"); //$NON-NLS-1$
 		        }
 		    }
 			dependenciesTable.addEntries(dependencies);

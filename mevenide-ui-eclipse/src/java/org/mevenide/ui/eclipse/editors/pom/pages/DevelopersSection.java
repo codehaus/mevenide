@@ -43,8 +43,8 @@ public class DevelopersSection extends PageSection {
 	    FormToolkit toolkit)
 	{
 		super(page, parent, toolkit);
-		setTitle(Mevenide.getResourceString("DevelopersSection.header"));
-		setDescription(Mevenide.getResourceString("DevelopersSection.description"));
+		setTitle(Mevenide.getResourceString("DevelopersSection.header")); //$NON-NLS-1$
+		setDescription(Mevenide.getResourceString("DevelopersSection.description")); //$NON-NLS-1$
 	}
 
     public Composite createSectionContent(Composite parent, FormToolkit factory) {
@@ -61,7 +61,7 @@ public class DevelopersSection extends PageSection {
 		// POM developers table
 		Button toggle = createOverrideToggle(container, factory, 1, true);
 		TableViewer viewer = createTableViewer(container, factory, 1);
-		devTable = new TableEntry(viewer, toggle, "Developer", container, factory, this);
+		devTable = new TableEntry(viewer, toggle, Mevenide.getResourceString("DevelopersSection.TableEntry.Tooltip"), container, factory, this); //$NON-NLS-1$
 		OverrideAdaptor adaptor = new OverrideAdaptor() {
 			public void overrideParent(Object value) {
 				List developers = (List) value;
