@@ -31,9 +31,9 @@ public class GoalsGrabber extends AbstractGoalsGrabber {
 	public void load() throws Exception {
 		MavenPlugin plugin = MavenPlugin.getPlugin();
         
-        String foreHeadConfFile = plugin.getForeheadConf();
-        String mavenHome = plugin.getMavenHome();
-        String javaHome = plugin.getJavaHome();
+//        String foreHeadConfFile = plugin.getForeheadConf();
+//        String mavenHome = plugin.getMavenHome();
+//        String javaHome = plugin.getJavaHome();
         String effectiveDirectory = plugin.getEffectiveDirectory();
 
         String output = new File(effectiveDirectory, "maven-goals.xml").getAbsolutePath();

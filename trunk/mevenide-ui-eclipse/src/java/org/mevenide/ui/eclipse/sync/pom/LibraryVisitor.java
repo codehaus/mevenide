@@ -41,7 +41,7 @@ public class LibraryVisitor {
 //		);
 	}
 	
-	public void visit(Entry entry) {
+	public void visit(DependencyEntry entry) {
 		IClasspathEntry classpathEntry = entry.getClasspathEntry();
 //		ProjectWriter.getWriter().addDependency(
 //				pathResolver.getAbsolutePath(classpathEntry.getPath()), 

@@ -22,20 +22,18 @@ import org.eclipse.jdt.core.IClasspathEntry;
  * @version $Id$
  * 
  */
-public class Entry {
+public abstract class Entry {
 	private IClasspathEntry classpathEntry ;
 	
 	public Entry(IClasspathEntry entry) {
 		classpathEntry = entry;
 	}
 
-	public void accept(LibraryVisitor visitor) {
-		visitor.visit(this);
-	}
+	public abstract void accept(LibraryVisitor visitor);
 	
 	/** 
 	 * sucky but the way IClasspathEntry is designed is sucky as well.. 
-	 * perhaps that will have changed till eclipse 3 ??
+	 * perhaps that will have changed in eclipse 3 ??
 	 * 
 	 * @param entry
 	 * @return
@@ -60,11 +58,17 @@ class SourceEntry extends Entry {
 	public SourceEntry(IClasspathEntry entry) {
 		super(entry);
 	}
+	public void accept(LibraryVisitor visitor) {
+		visitor.visit(this);
+	}
 }
 
 class DependencyEntry extends Entry {
 	public DependencyEntry(IClasspathEntry entry) {
 		super(entry);
+	}
+	public void accept(LibraryVisitor visitor) {
+		visitor.visit(this);
 	}
 
 }
