@@ -81,8 +81,33 @@
         <div id="banner">
           <table border="0" cellspacing="0" cellpadding="8" width="100%">
             <tr>
+            	
+              <!-- project logo and link -->
+              <td align="left" >
+               
+                  <j:set var="logo" value="${pom.logo}"/>
+                  <j:if test="${logo != null and logo != ''}">
+                    <!-- set image to relative or complete -->
+                    <j:set var="image" value="${pom.logo}"/>
+                    <j:if test="${!image.startsWith('http://')}">
+                      <j:set var="image" value="${relativePath}${image}"/>
+                    </j:if>
+					
+                    <a href="${pom.url}">
+                      <img src="${image}" align="left" alt="${pom.name}" border="0"/>
+                    </a>
+                    
+                   
+                    
+                  </j:if>
+                  
+                  <div style="color: #777777; margin-left: 20px; font-size: 8pt;">
+                   <p valign="bottom"><img src="images/none.png"/> .. Integrating Maven into IDEs ..</p>
+               	  </div>
+              </td>
+              
               <!-- organization logo -->
-              <td>
+              <td align="right">
                 <j:set var="logo" value="${pom.organization.logo}"/>
                 <j:if test="${!empty(logo)}">
                   <!-- set url to org or project url -->
@@ -99,28 +124,12 @@
                     <j:set var="image" value="${relativePath}${image}"/>
                   </j:if>
                   <a href="${home}">
-                    <img src="${image}" align="left" alt="${pom.organization.name}" border="0"/>
+                    <img src="${image}" align="right" alt="${pom.organization.name}" border="0"/>
                   </a>
                 </j:if>
               </td>
 
-              <!-- project logo and link -->
-              <td>
-                <div align="right" id="login">
-                  <j:set var="logo" value="${pom.logo}"/>
-                  <j:if test="${logo != null and logo != ''}">
-                    <!-- set image to relative or complete -->
-                    <j:set var="image" value="${pom.logo}"/>
-                    <j:if test="${!image.startsWith('http://')}">
-                      <j:set var="image" value="${relativePath}${image}"/>
-                    </j:if>
-
-                    <a href="${pom.url}">
-                      <img src="${image}" align="right" alt="${pom.name}" border="0"/>
-                    </a>
-                  </j:if>
-                </div>
-              </td>
+              
             </tr>
           </table>
         </div>
@@ -348,6 +357,26 @@
     </div>
   </jsl:template>
 
+  <!-- process a guide-like navbar -->
+  <jsl:template match="navbar" trim="false">
+  	<x:set var="_prev" select="string(@prev)"/>
+  	<x:set var="_toc" select="string(@toc)"/>
+  	<x:set var="_next" select="string(@next)"/>
+  	<div align="center" class="navbar">
+  	[ 
+  		<j:if test="${ ! empty(_prev) }"><a href="${_prev}">previous</a></j:if>
+  		<j:if test="${ empty(_prev) }">previous</j:if>
+  	|
+  		<j:if test="${ ! empty(_toc)}"><a href="${_toc}">toc</a></j:if>
+  		<j:if test="${ empty(_toc) }">toc</j:if>
+  	|
+  		<j:if test="${ ! empty(_next)}"><a href="${_next}">next</a></j:if>	
+  		<j:if test="${ empty(_next)}">next</j:if> 
+  	]
+  	</div>
+  </jsl:template>
+  
+  
   <jsl:template match="subsection" trim="false">
     <div class="h4">
       <j:set var="_sectionName"><x:expr select="@name"/></j:set>

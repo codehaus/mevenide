@@ -7,7 +7,9 @@
   <body>
     <section name="Overview">
       <div id="documentContent">
+      	<p>
    	  will provide a short overview of the plugin.
+   	  </p>
    	  </div>
     </section>
   </body>
