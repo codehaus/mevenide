@@ -25,11 +25,21 @@
 		<property name="maven.command" value="${maven.home}/bin/${maven.script}"/>
 	
 	</target>
+	
 	<target name="build-all" depends="init" description="o build all mevenide artifacts using maven:reactor ">
 		<exec executable="${maven.command}" failonerror="true">
 			<!-- arg value="-o"/ -->
-			<arg value="-X"/>
+			<!-- arg value="-X"/ -->
 			<arg value="build-all"/>
+		</exec>
+		<!-- should copy all jars to mevenide-ui-eclipse/lib -->
+	</target>
+	
+	<target name="build-core" depends="init" description="o build mevenide-core artifacts using maven:reactor ">
+		<exec executable="${maven.command}" failonerror="true">
+			<!-- arg value="-o"/ -->
+			<!-- arg value="-X"/ -->
+			<arg value="build-core"/>
 		</exec>
 		<!-- should copy all jars to mevenide-ui-eclipse/lib -->
 	</target>
