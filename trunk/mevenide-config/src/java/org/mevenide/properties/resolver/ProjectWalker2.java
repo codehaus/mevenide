@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.StringTokenizer;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.maven.project.Project;
 import org.jdom.Element;
 import org.mevenide.context.IQueryContext;
 import org.mevenide.properties.IPropertyFinder;
