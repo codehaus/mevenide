@@ -50,6 +50,7 @@ package org.mevenide.project.source;
 
 import org.apache.maven.project.Build;
 import org.apache.maven.project.Project;
+import org.apache.maven.project.UnitTest;
 import org.mevenide.ProjectConstants;
 
 /**
@@ -76,6 +77,9 @@ public class SourceDirectoryUtil {
 		}
 		if ( ProjectConstants.MAVEN_TEST_DIRECTORY.equals(sourceType) ) {
 			project.getBuild().setUnitTestSourceDirectory(path);
+			UnitTest unitTest = new UnitTest();
+			unitTest.addInclude("**/*Test.java");
+			project.getBuild().setUnitTest(unitTest);
 		}
 		if ( ProjectConstants.MAVEN_INTEGRATION_TEST_DIRECTORY.equals(sourceType) ) {
 			project.getBuild().setIntegrationUnitTestSourceDirectory(path);
