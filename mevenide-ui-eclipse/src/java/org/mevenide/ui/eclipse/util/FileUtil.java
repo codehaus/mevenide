@@ -92,8 +92,8 @@ public class FileUtil {
 	}
 
 	public static void createPom(IProject project) throws Exception, CoreException {
-		
-		 String referencedPomSkeleton = ProjectSkeleton.getSkeleton( project.getName());
+		 log.debug("Creating pom skeleton using template : " + Mevenide.getPlugin().getPomTemplate());
+		 String referencedPomSkeleton = ProjectSkeleton.getSkeleton( project.getName(), Mevenide.getPlugin().getPomTemplate() );
 		 IFile referencedProjectFile = project.getFile("project.xml"); 
 		 referencedProjectFile.create(new ByteArrayInputStream(referencedPomSkeleton.getBytes()), false, null);
 	}

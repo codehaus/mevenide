@@ -48,13 +48,21 @@
  */
 package org.mevenide.ui.eclipse.preferences;
 
+import java.io.FileReader;
+import java.io.Reader;
+
+import org.apache.maven.DefaultProjectUnmarshaller;
+import org.apache.maven.project.Project;
 import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.DirectoryFieldEditor;
+import org.eclipse.jface.preference.FileFieldEditor;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-
+import org.eclipse.swt.widgets.Text;
 import org.mevenide.ui.eclipse.Mevenide;
 
 /**
@@ -68,17 +76,23 @@ public class MevenidePreferenceDialog {
 	private DirectoryFieldEditor mavenHomeEditor;
 	private DirectoryFieldEditor javaHomeEditor;
 	private DirectoryFieldEditor mavenRepoEditor;
+	private FileFieldEditor pomTemplateLocationEditor; 
 	private BooleanFieldEditor checkTimestampEditor;
 	
 	private String javaHome ;
 	private String mavenHome ;
 	private String mavenRepository;
+	private String pomTemplateLocation;
 	private boolean checkTimestamp;
 	
-	private PreferencesManager preferencesManager;
+	private boolean invalidPomTemplate = false;
 	
-	public MevenidePreferenceDialog(PreferencesManager manager) {
+	private PreferencesManager preferencesManager;
+	private MevenidePreferencePage page;
+	
+	public MevenidePreferenceDialog(PreferencesManager manager, MevenidePreferencePage page) {
 		this.preferencesManager = manager;
+		this.page = page;
 	}
 
 	public Composite createContent(Composite parent) {
@@ -89,6 +103,34 @@ public class MevenidePreferenceDialog {
 		mavenHomeEditor = createEditor("maven.home", "Maven home", mavenHome);
 		javaHomeEditor = createEditor("java.home", "Java home", javaHome);
 		mavenRepoEditor = createEditor("maven.repo", "Maven Repository", mavenRepository);
+		
+		pomTemplateLocationEditor = new FileFieldEditor("pom.template.location", "Template Location", true, topLevelContainer);
+		pomTemplateLocationEditor.fillIntoGrid(topLevelContainer, 3);
+		pomTemplateLocationEditor.setPreferenceStore(preferencesManager.getPreferenceStore());
+		pomTemplateLocationEditor.load();
+		pomTemplateLocationEditor.getTextControl(topLevelContainer).addModifyListener(
+			new ModifyListener() {
+				public void modifyText(ModifyEvent event) {
+					try {
+						if ( ((Text)event.getSource()).getText() != null && !((Text)event.getSource()).getText().trim().equals("") ) {
+							DefaultProjectUnmarshaller dpu = new DefaultProjectUnmarshaller();
+							Reader reader = new FileReader(((Text)event.getSource()).getText());
+							Project project = dpu.parse(reader);
+							invalidPomTemplate = false;
+							page.setErrorMessage(null);
+						}
+					} 
+					catch (Exception e) {
+						//e.printStackTrace();
+						invalidPomTemplate = true;
+						page.setErrorMessage("Pom Template is not a valid Maven project Descriptor.");
+					}
+					page.getContainer().updateButtons();
+					page.getContainer().updateMessage();
+				}
+
+			}
+		);
 		
 		Composite compositeB = new Composite(parent, SWT.NULL);
 		GridLayout layoutB = new GridLayout();
@@ -115,19 +157,25 @@ public class MevenidePreferenceDialog {
 	public void update() {
 		mavenHome = mavenHomeEditor.getTextControl(topLevelContainer).getText();
 		Mevenide.getPlugin().setMavenHome(mavenHome);
+		
 		javaHome = javaHomeEditor.getTextControl(topLevelContainer).getText();
 		Mevenide.getPlugin().setJavaHome(javaHome);
+		
 		mavenRepository = mavenRepoEditor.getTextControl(topLevelContainer).getText();
 		Mevenide.getPlugin().setMavenRepository(mavenRepository);
+		
+		pomTemplateLocation = pomTemplateLocationEditor.getTextControl(topLevelContainer).getText();
+		Mevenide.getPlugin().setPomTemplate(pomTemplateLocation);
+		
 		checkTimestamp = checkTimestampEditor.getBooleanValue();
 		Mevenide.getPlugin().setCheckTimestamp(checkTimestamp);
 	}
 	
 	
 	public boolean canFinish() {
-		return !isEditorOk(javaHomeEditor) 
+		return !invalidPomTemplate && (!isEditorOk(javaHomeEditor) 
 				|| !isEditorOk(mavenHomeEditor) 
-				|| !isEditorOk(mavenRepoEditor);
+				|| !isEditorOk(mavenRepoEditor));
 	}
 
 	private boolean isEditorOk(DirectoryFieldEditor editor) {
@@ -167,6 +215,26 @@ public class MevenidePreferenceDialog {
 
 	public void setCheckTimestamp(boolean b) {
 		checkTimestamp = b;
+	}
+
+	public String getPomTemplateLocation() {
+		return pomTemplateLocation;
+	}
+
+	public Composite getTopLevelContainer() {
+		return topLevelContainer;
+	}
+
+	public void setPomTemplateLocation(String string) {
+		pomTemplateLocation = string;
+	}
+
+	public void setTopLevelContainer(Composite composite) {
+		topLevelContainer = composite;
+	}
+
+	public boolean isInvalidPomTemplate() {
+		return invalidPomTemplate;
 	}
 
 }
