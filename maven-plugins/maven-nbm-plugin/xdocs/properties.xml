@@ -75,6 +75,22 @@ OpenIDE-Module-Specification-Version: normalized version of ${pom.currentVersion
             <p></p>
           </td>
         </tr>
+        <tr>
+          <td>maven.nbm.build.dir</td>
+          <td><p>Since 0.6</p><p>Optional. Default value is <code>${maven.build.dir}/nbm</code>.</p></td>
+          <td>
+            <p>The output directory of the nbm plugin. The modified project's artifact is placed here. Later also the nbm file for the project.</p>
+            <p>The plugin will create a <code>netbeans/${maven.nbm.cluster.name}</code> subdirectory in here where all the files are placed that are later put into the nbm. Regular Netbeans directory/file layout applies.</p>
+          </td>
+        </tr>
+        <tr>
+          <td>maven.nbm.distributionURL</td>
+          <td><p>Since 0.6</p><p>Optional. Default value is <code>${pom.url}/${maven.final.name}.nbm</code>.</p></td>
+          <td>
+            <p>The URL of the nbm once deployed on the server. Is used when creating the xml description of the autoupdate server.</p>
+            <p></p>
+          </td>
+        </tr>=        
      </table>
      </div>
    </section>
