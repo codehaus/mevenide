@@ -28,7 +28,7 @@
           </tr>
           <tr>
           	<td>eclipse-plugin:create-library-artifacts</td>
-          	<td>foreach pom dependency, create eclipse plugin that exports the given dependenvy. generated plugins are outputted to ${maven.eclipse.plugin.ext.dir}</td>
+          	<td>foreach pom dependency, create eclipse plugin that exports the given dependency. generated plugins are outputted to ${maven.eclipse.plugin.ext.dir}</td>
           </tr>
   		</table>
   		</div>
