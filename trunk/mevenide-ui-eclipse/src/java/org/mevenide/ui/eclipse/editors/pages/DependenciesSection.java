@@ -147,7 +147,7 @@ public class DependenciesSection extends PageSection {
 		if (isInherited()) createSpacer(container, factory);
 		viewer = createTableViewer(container, factory, 1);
 		propertiesTable = new TableEntry(viewer, null, "Dependency Property", container, factory, this);
-		dependenciesTable.setDependentTableEntry(propertiesTable);
+		dependenciesTable.addDependentTableEntry(propertiesTable);
 		propertiesTable.addEntryChangeListener(
 			new EntryChangeListenerAdaptor() {
 				public void entryChanged(PageEntry entry) {
@@ -209,9 +209,6 @@ public class DependenciesSection extends PageSection {
 				}
 			}
 		);
-//		if (isInherited()) {
-//			propertiesTable.setEnabled(false);
-//		}
 		
 		factory.paintBordersFor(container);
 		return container;
