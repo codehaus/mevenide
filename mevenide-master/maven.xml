@@ -53,7 +53,7 @@
   	      tofile="${maven.repo.local}/eclipse/jars/eclipse-jdtcore-3.0.0.jar"/>
   
     <copy file="${eclipse.home}/plugins/org.eclipse.jdt.ui_3.0.0/jdt.jar" 
-  	      tofile="${maven.repo.local}/eclipse/jars/eclipse-jdtui-3.0.0.jar"/>
+  	      tofile="${maven.repo.local}/eclipse/jars/eclipse-jdt-3.0.0.jar"/>
   	      
   	<copy file="${eclipse.home}/plugins/org.eclipse.jdt.launching_3.0.0/launching.jar" 
   	  	  tofile="${maven.repo.local}/eclipse/jars/eclipse-launching-3.0.0.jar"/>
@@ -61,23 +61,33 @@
   	<copy file="${eclipse.home}/plugins/org.eclipse.jface_2.1.0/jface.jar" 
   		  tofile="${maven.repo.local}/eclipse/jars/eclipse-jface-2.1.0.jar"/>  	
   	
+  	<copy file="${eclipse.home}/plugins/org.eclipse.jface.text_3.0.0/jfacetext.jar" 
+  		  tofile="${maven.repo.local}/eclipse/jars/eclipse-jfacetext-3.0.0.jar"/>  	
+  	
+  	<copy file="${eclipse.home}/plugins/org.eclipse.text_3.0.0/text.jar" 
+  		  tofile="${maven.repo.local}/eclipse/jars/eclipse-text-3.0.0.jar"/>  	
+  	
   	<copy file="${eclipse.home}/plugins/org.eclipse.core.runtime_3.0.0/runtime.jar" 
   		  tofile="${maven.repo.local}/eclipse/jars/eclipse-runtime-3.0.0.jar"/> 
   		  
   	<copy file="${eclipse.home}/plugins/org.eclipse.ui.workbench_2.1.0/workbench.jar" 
   		  tofile="${maven.repo.local}/eclipse/jars/eclipse-workbench-2.1.0.jar"/> 
     
-    <copy file="${eclipse.home}/plugins/org.eclipse.jdt.ui_3.0.0/jdt.jar" 
-  		  tofile="${maven.repo.local}/eclipse/jars/eclipse-jdt-3.0.0.jar"/> 
+  	<copy file="${eclipse.home}/plugins/org.eclipse.ui.workbench.texteditor_3.0.0/texteditor.jar" 
+  		  tofile="${maven.repo.local}/eclipse/jars/eclipse-texteditor-3.0.0.jar"/>  	
   	
     <copy file="${eclipse.home}/plugins/org.eclipse.ui.views_2.1.0/views.jar" 
   		  tofile="${maven.repo.local}/eclipse/jars/eclipse-views-2.1.0.jar"/> 
   		  
-    <copy file="${eclipse.home}/plugins/${swt.plugin.dir}/swt.jar" 
-  		  tofile="${maven.repo.local}/eclipse/jars/eclipse-swt-3.0.0.jar"/>  
+    <copy file="${eclipse.home}/plugins/org.eclipse.ui.editors_3.0.0/editors.jar" 
+  		  tofile="${maven.repo.local}/eclipse/jars/eclipse-editors-3.0.0.jar"/> 
   		  
     <copy file="${eclipse.home}/plugins/org.eclipse.ui.externaltools_3.0.0/externaltools.jar" 
   		  tofile="${maven.repo.local}/eclipse/jars/eclipse-externaltools-3.0.0.jar"/> 
+
+    <copy file="${eclipse.home}/plugins/${swt.plugin.dir}/swt.jar" 
+  		  tofile="${maven.repo.local}/eclipse/jars/eclipse-swt-3.0.0.jar"/>  
+  		  
   </preGoal>
  
  
@@ -86,7 +96,16 @@
     <attainGoal name="build"/>
   </goal>
   
-  
+  <goal name="build-core"
+    	description="Build Mevenide-core module">
+    <maven:reactor basedir="${basedir}/.."
+      			   includes="mevenide-core/project.xml"
+      			   excludes="goals-grabber/project.xml,mevenide-master/project.xml,mevenide-ui-eclipse/project.xml"
+      			   goals="clean,jar:install"
+      			   banner="Building"
+      			   ignoreFailures="false"/>
+  </goal>
+    
   <!-- i didnt alter it since it works as it is now -->
   <goal name="build" description="Build each Mevenide module">
 	
