@@ -15,37 +15,43 @@
  * =========================================================================
  */
 
-package org.mevenide.grammar;
+package org.mevenide.grammar.impl;
 
 import java.util.Collection;
+import java.util.Collections;
+import org.mevenide.grammar.TagLib;
 
 /**
- * Container for tag library code completion data.
- * Implementation can/should read the data lazily and cache it once read.
+ * Empty implementation of a taglib. A fallback impl.
  * @author  Milos Kleint (ca206216@tiscali.cz)
  */
-public interface TagLib
+public class EmptyTagLibImpl implements TagLib
 {
-
-    /**
-     * Name of the tag library, eg. 'jelly:util' or 'artifact'
-     */
-    String getName(); 
+    private String name;
+    /** Creates a new instance of EmptyTagLibImpl */
+    public EmptyTagLibImpl(String tagLibName)
+    {
+        name = tagLibName;
+    }
     
-    /**
-     * Collection of <String>, names of tags that are not context sensitive and can be used
-     * everywhere.
-     */
-    Collection getRootTags();
+    public String getName()
+    {
+        return name;
+    }
     
-    /**
-     * Collection of <String> names of attributes withing the given tag name.
-     */
-    Collection getTagAttrs(String tag);
+    public Collection getRootTags()
+    {
+        return Collections.EMPTY_LIST;
+    }
     
-    /**
-     * Collection of <String>, names of tags that can be only applied within the tag passes as paramater.
-     */
-    Collection getSubTags(String tagName);
+    public Collection getSubTags(String tagName)
+    {
+        return Collections.EMPTY_LIST;
+    }
+    
+    public Collection getTagAttrs(String tag)
+    {
+        return Collections.EMPTY_LIST;
+    }
     
 }
