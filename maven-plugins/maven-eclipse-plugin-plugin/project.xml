@@ -23,8 +23,10 @@
     </repository>
     <developers>
     	<developer>
-    		<name>Gilles Dodinet</name>
-    		<id>gdodinet</id>
+	        <name>Gilles Dodinet</name>
+            <id>gdodinet</id>
+            <email>rhill2@free.fr</email>
+            <organization/>
     		<roles>
     			<role>Creator</role>
     			<role>Developer</role>
