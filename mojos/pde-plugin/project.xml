@@ -71,13 +71,13 @@
   	<dependency>
       <groupId>mevenide</groupId>
       <artifactId>mevenide-config</artifactId>
-      <version>0.5</version>
+      <version>0.7</version>
       <type>jar</type>
     </dependency>
     <dependency>
       <groupId>mevenide</groupId>
       <artifactId>mevenide-core</artifactId>
-      <version>0.4</version>
+      <version>0.7</version>
       <type>jar</type>
     </dependency>
     <dependency>
@@ -89,7 +89,7 @@
     <dependency>
       <groupId>jdom</groupId>
       <artifactId>jdom</artifactId>
-      <version>1.0b8</version>
+      <version>1.0</version>
       <type>jar</type>
     </dependency>
     <dependency>
