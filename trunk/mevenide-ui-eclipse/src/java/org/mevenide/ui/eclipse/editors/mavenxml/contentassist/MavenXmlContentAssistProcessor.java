@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeSet;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -89,7 +90,7 @@ public abstract class MavenXmlContentAssistProcessor implements IContentAssistPr
         ICompletionProposal[] cp = null;
         XMLNode lastOpenTag = null;
         Map namespaces = editor.getNamespaces();
-        List words = new ArrayList();
+        Collection words = new ArrayList();
         String start = node == null ? "" : node.getContentTo(offset);
         String outerTag = null;
         if (node == null || node.getParent() == null) {
@@ -133,21 +134,29 @@ public abstract class MavenXmlContentAssistProcessor implements IContentAssistPr
             outerTag = lastOpenTag.getName();
         }
         
-        Collection rootTags = new ArrayList();
+        Collection rootTags = new TreeSet();
+        Collection subTags = new TreeSet();
         if (namespaces != null) {
             for (Iterator it = namespaces.keySet().iterator(); it.hasNext();) {
                 String key = (String) it.next();
                 
                 Namespace ns = (Namespace) namespaces.get(key);
                 
-                //collect sub tags that can only appear under outerTag  
-                Collection nsSubTags = ns.getSubTags(outerTag);
+                Collection nsSubTags = null;
+                
+	            //collect sub tags that can only appear under outerTag  
+	            nsSubTags = ns.getSubTags(outerTag);
+	          
                 if (nsSubTags != null) {
-                    words.addAll(nsSubTags);
+                    subTags.addAll(nsSubTags);
                 }
                 
-                //collect root tags that can be used everywhere
-                Collection nsRootTags = ns.getRootTags();
+                Collection nsRootTags = null;
+                
+                //if ( ns.isGeneric() && !Namespace.TOPLEVEL.equals(outerTag) ) {
+                    //collect root tags that can be used everywhere
+                    nsRootTags = ns.getRootTags();
+                //}
                 if ( nsRootTags != null ) {
                 	rootTags.addAll(nsRootTags);
                 } 
@@ -155,19 +164,19 @@ public abstract class MavenXmlContentAssistProcessor implements IContentAssistPr
         }
         
         //sort the subtags
-        Collections.sort(words);
+        //Collections.sort(new ArrayList(words));
         
-        //remove duplicate
-        rootTags.removeAll(words);
-        
+        words.addAll(subTags);
+     
         //add rootTags after subtags
         words.addAll(rootTags);
         
-        
         if (node != null && node.getType() != null && "TEXT".equalsIgnoreCase(node.getType())) {
             cp = new ICompletionProposal[words.size()];
-            for (int i = 0; i < cp.length; i++) {
-                String text = (String) words.get(i);
+            //for (int i = 0; i < cp.length; i++) {
+            int i = 0;
+            for (Iterator it = words.iterator(); it.hasNext();) {
+                String text = (String) it.next();
                 if (preferencesManager.getBooleanValue("InsertEndTag")) {
                     cp[i] = new CompletionProposal("<" + text + "></" + text + ">", offset, 0, text.length() + 2, Mevenide.getImageDescriptor("xml-tag.gif").createImage(), text,
                             null, null);
@@ -175,6 +184,7 @@ public abstract class MavenXmlContentAssistProcessor implements IContentAssistPr
                 else {
                     cp[i] = new CompletionProposal("<" + text + ">", offset, 0, text.length() + 2, Mevenide.getImageDescriptor("xml-tag.gif").createImage(), text, null, null);
                 }
+                i++;
             }
         }
         else {
@@ -188,8 +198,10 @@ public abstract class MavenXmlContentAssistProcessor implements IContentAssistPr
                     catch (BadLocationException e) {
                     }
                 }
-                for (int i = 0; i < cp.length; i++) {
-                    String text = (String) words.get(i);
+                //for (int i = 0; i < cp.length; i++) {
+                int i = 0;
+                for ( Iterator it = words.iterator(); it.hasNext();) {
+                    String text = (String) it.next();
                     
                     if (preferencesManager.getBooleanValue("InsertEndTag")) {
                         if (isAfterLesserThan) {
@@ -204,6 +216,8 @@ public abstract class MavenXmlContentAssistProcessor implements IContentAssistPr
                     else {
                         cp[i] = new CompletionProposal(text, offset, 0, text.length(), Mevenide.getImageDescriptor("xml-tag.gif").createImage(), text, null, null);
                     }
+                    
+                    i++;
                 }
             }
             else {
@@ -217,8 +231,10 @@ public abstract class MavenXmlContentAssistProcessor implements IContentAssistPr
                 }
                 else {
                     ArrayList cpL = new ArrayList();
-                    for (int i = 0; i < words.size(); i++) {
-                        String text = (String) words.get(i);
+                    int i = 0;
+                    for (Iterator it = words.iterator(); it.hasNext();) {
+                    //for (int i = 0; i < words.size(); i++) {
+                        String text = (String) it.next();
                         //if (text.startsWith(start)) {
                         if (text.regionMatches(true, 0, start, 0, start.length())) {
                             //if (preferencesManager.getBooleanValue("InsertEndTag")) {
@@ -228,10 +244,11 @@ public abstract class MavenXmlContentAssistProcessor implements IContentAssistPr
                             //    cpL.add(new CompletionProposal(text, node.getOffset() + 1, offset - node.getOffset() - 1, text .length()));
                             //}
                         }
+                        i++;
                     }
                     cp = new ICompletionProposal[cpL.size()];
-                    for (int i = 0; i < cp.length; i++) {
-                        cp[i] = (ICompletionProposal) cpL.get(i);
+                    for (int u = 0; i < cp.length; u++) {
+                        cp[u] = (ICompletionProposal) cpL.get(u);
                     }
                 }
             }
