@@ -83,10 +83,10 @@ public class FullDescriptionSection extends PageSection {
 		Button toggle = createOverrideToggle(container, factory, 1, true);
 		descriptionText = new OverridableTextEntry(createMultilineText(container, factory), toggle);
 		OverrideAdaptor adaptor = new OverrideAdaptor() {
-			public void overrideParent(String value) {
-				pom.setDescription(value);
+			public void overrideParent(Object value) {
+				pom.setDescription((String) value);
 			}
-			public String acceptParent() {
+			public Object acceptParent() {
 				return getParentPom().getDescription();
 			}
 		};

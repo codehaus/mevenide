@@ -116,11 +116,11 @@ public class IdentificationSection extends PageSection {
 		);
 		pomNameText = new OverridableTextEntry(createText(container, factory, 2), toggle, null);
 		OverrideAdaptor adaptor = new OverrideAdaptor() {
-			public void overrideParent(String value) {
-				pom.setName(value);
+			public void overrideParent(Object value) {
+				pom.setName((String) value);
 				((OverviewPage) getPage()).setHeading(pom);
 			}
-			public String acceptParent() {
+			public Object acceptParent() {
 				return getParentPom().getName();
 			}
 		};
@@ -137,10 +137,10 @@ public class IdentificationSection extends PageSection {
 		);
 		artifactIdText = new OverridableTextEntry(createText(container, factory, 2), toggle, null);
 		adaptor = new OverrideAdaptor() {
-			public void overrideParent(String value) {
-				pom.setArtifactId(value);
+			public void overrideParent(Object value) {
+				pom.setArtifactId((String) value);
 			}
-			public String acceptParent() {
+			public Object acceptParent() {
 				return getParentPom().getArtifactId();
 			}
 		};
@@ -157,10 +157,10 @@ public class IdentificationSection extends PageSection {
 		);
 		groupIdText = new OverridableTextEntry(createText(container, factory, 2), toggle, null);
 		adaptor = new OverrideAdaptor() {
-			public void overrideParent(String value) {
-				pom.setGroupId(value);
+			public void overrideParent(Object value) {
+				pom.setGroupId((String) value);
 			}
-			public String acceptParent() {
+			public Object acceptParent() {
 				return getParentPom().getGroupId();
 			}
 		};
@@ -177,10 +177,10 @@ public class IdentificationSection extends PageSection {
 		);
 		gumpRepoIdText = new OverridableTextEntry(createText(container, factory, 2), toggle, null);
 		adaptor = new OverrideAdaptor() {
-			public void overrideParent(String value) {
-				pom.setGumpRepositoryId(value);
+			public void overrideParent(Object value) {
+				pom.setGumpRepositoryId((String) value);
 			}
-			public String acceptParent() {
+			public Object acceptParent() {
 				return getParentPom().getGumpRepositoryId();
 			}
 		};
