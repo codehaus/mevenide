@@ -28,7 +28,7 @@ import org.eclipse.jdt.core.IElementChangedListener;
 import org.eclipse.jdt.core.IJavaElementDelta;
 import org.eclipse.jdt.core.JavaCore;
 import org.mevenide.ui.eclipse.Mevenide;
-import org.mevenide.ui.eclipse.sync.views.SourceDirectoryViewPart;
+import org.mevenide.ui.eclipse.sync.source.SourceDirectoryViewPart;
 
 /**
  * 

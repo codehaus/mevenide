@@ -16,20 +16,14 @@ package org.mevenide.ui.eclipse.sync.wizard;
 
 import java.io.File;
 
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.wizard.Wizard;
-import org.mevenide.ProjectConstants;
-import org.mevenide.project.io.ProjectWriter;
-import org.mevenide.project.source.SourceDirectoryUtil;
+import org.mevenide.sync.ISynchronizer;
+import org.mevenide.sync.SynchronizerFactory;
 import org.mevenide.ui.eclipse.sync.DefaultPathResolverDelegate;
 import org.mevenide.ui.eclipse.sync.IPathResolverDelegate;
-import org.mevenide.ui.eclipse.sync.dependency.DependencyGroup;
-import org.mevenide.ui.eclipse.sync.source.SourceDirectory;
-import org.mevenide.ui.eclipse.sync.source.SourceDirectoryGroup;
-import org.mevenide.ui.eclipse.util.ProjectUtil;
 
 /**
  * 
@@ -54,43 +48,15 @@ public class SynchronizeWizard extends Wizard {
 
 	public boolean performFinish() {
 		try {
-			
-			SourceDirectoryGroup sourceGroup = sourcePage.getInput();
-			DependencyGroup dependencyGoup = dependencyPage.getInput();
-			
-			ProjectWriter pomWriter = ProjectWriter.getWriter();
 			IPathResolverDelegate pathResolver = new DefaultPathResolverDelegate();
 			
 			IFile pom = project.getFile(new Path("project.xml"));
-			
 			File pomFile = new File(pathResolver.getAbsolutePath(pom.getLocation())); 
-			
-			SourceDirectoryUtil.resetSourceDirectories(pomFile);
-			
-			//WICKED if/else
-			for (int i = 0; i < sourceGroup.getSourceDirectories().size(); i++) {
-				SourceDirectory directory = (SourceDirectory) sourceGroup.getSourceDirectories().get(i);
-				if ( isSource(directory) ) {
-					pomWriter.addSource(directory.getDirectoryPath(), pomFile, directory.getDirectoryType());
-				}
-				if ( directory.getDirectoryType().equals(ProjectConstants.MAVEN_RESOURCE ) ) {
-					pomWriter.addResource(directory.getDirectoryPath(), pomFile);
-				}
-				if ( directory.getDirectoryType().equals(ProjectConstants.MAVEN_TEST_RESOURCE ) ) {
-				}				
-			}
-			
-//			for (int i = 0; i < dependencyGoup.getDependencies().size(); i++) {
-//				Dependency dependency = (Dependency) dependencyGoup.getDependencies().get(i);
-//				pomWriter.addDependency(dependency, pomFile);
-//			}
-
-			pomWriter.setDependencies(dependencyGoup.getDependencies(), pomFile);
 			
 			sourcePage.saveState();
 			dependencyPage.saveState();
 			
-			ProjectUtil.setBuildPath();
+			SynchronizerFactory.getSynchronizer(ISynchronizer.IDE_TO_POM).synchronize();
 		}
 		catch ( Exception ex ) {
 			ex.printStackTrace();
@@ -98,18 +64,11 @@ public class SynchronizeWizard extends Wizard {
 		
 		return true;
 	}
-	
+
 	public boolean performCancel() {
 		return super.performCancel();
 	}
 	
-	private boolean isSource(SourceDirectory directory) {
-		return directory.getDirectoryType().equals(ProjectConstants.MAVEN_ASPECT_DIRECTORY)
-				|| directory.getDirectoryType().equals(ProjectConstants.MAVEN_SRC_DIRECTORY)
-				|| directory.getDirectoryType().equals(ProjectConstants.MAVEN_TEST_DIRECTORY)
-				|| directory.getDirectoryType().equals(ProjectConstants.MAVEN_INTEGRATION_TEST_DIRECTORY);
-	}
-
 	public IProject getProject() {
 		return project;
 	}

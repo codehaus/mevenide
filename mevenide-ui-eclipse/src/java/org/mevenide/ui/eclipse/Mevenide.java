@@ -37,6 +37,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.mevenide.Environment;
 import org.mevenide.project.io.ProjectSkeleton;
+import org.mevenide.ui.eclipse.sync.DefaultPathResolverDelegate;
 
 /**
  * Created on 01 feb. 03	
@@ -270,4 +271,16 @@ public class Mevenide extends AbstractUIPlugin {
 		dialog.open ();
 	}
     
+	/**
+	 * @return the maven Project Object Model
+	 */
+	public File getPom() {
+		return new File(new DefaultPathResolverDelegate().getAbsolutePath(project.getFile("project.xml").getLocation()));
+	}
+	
+	public void initEnvironment() {
+		Environment.setMavenHome(getMavenHome()); 
+		Environment.setJavaHome(getJavaHome());
+		Environment.setMavenRepository(getMavenRepository());
+	}
 }

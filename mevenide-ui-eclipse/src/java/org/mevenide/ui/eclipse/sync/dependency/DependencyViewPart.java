@@ -11,7 +11,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  */
-package org.mevenide.ui.eclipse.sync.views;
+package org.mevenide.ui.eclipse.sync.dependency;
 
 import java.util.List;
 
@@ -23,7 +23,6 @@ import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.viewers.TableTreeViewer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IMemento;
-import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
@@ -32,8 +31,6 @@ import org.mevenide.sync.ISynchronizer;
 import org.mevenide.sync.SynchronizerFactory;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.sync.DefaultPathResolverDelegate;
-import org.mevenide.ui.eclipse.sync.dependency.DependencyGroup;
-import org.mevenide.ui.eclipse.sync.dependency.DependencyMarshaller;
 import org.mevenide.ui.eclipse.sync.source.SourceDirectoryMarshaller;
 
 /**
@@ -167,8 +164,7 @@ public class DependencyViewPart extends ViewPart {
 	}
 	
 	public static void showView() throws Exception {
-		IViewPart consoleView =
-			PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView("org.mevenide.sync.view.dep"); 
+		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView("org.mevenide.sync.view.dep"); 
 	}
 
 	/**

@@ -18,7 +18,10 @@ import java.io.File;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.Path;
+import org.mevenide.ProjectConstants;
+import org.mevenide.util.MevenideUtil;
 import org.mevenide.ui.eclipse.Mevenide;
+import org.mevenide.ui.eclipse.sync.source.SourceDirectory;
 
 /**
  * 
@@ -27,31 +30,26 @@ import org.mevenide.ui.eclipse.Mevenide;
  * 
  */
 public class FileUtil {
-
-	public static boolean findFile(File rootDirectory, String fileName) {
-		File[] f = rootDirectory.listFiles();
-		for (int i = 0; i < f.length; i++) {
-			if ( f[i].isDirectory() ) {
-				if ( findFile(f[i], fileName) ) {
-					return true;
-				}
-			}
-			else {
-				if ( f[i].getName().equals(fileName) ) {
-					return true;
-				}
-			}
-		}
-		return false;
+	private FileUtil() {
 	}
+	
+	
 
 	public static boolean inLocalRepository(String entryPath) {
 		File localRepo = new File(Mevenide.getPlugin().getMavenRepository());
-		return FileUtil.findFile(localRepo, entryPath);
+		return MevenideUtil.findFile(localRepo, entryPath);
 	}
 
 	public static boolean isClassFolder(String entryPath, IProject project) {
 		return new File(project.getLocation().append(new Path(entryPath).removeFirstSegments(1)).toOSString()).isDirectory();
+	}
+
+	public static boolean isSource(SourceDirectory directory) {
+		boolean b = directory.getDirectoryType().equals(ProjectConstants.MAVEN_ASPECT_DIRECTORY)
+					|| directory.getDirectoryType().equals(ProjectConstants.MAVEN_SRC_DIRECTORY)
+					|| directory.getDirectoryType().equals(ProjectConstants.MAVEN_TEST_DIRECTORY)
+					|| directory.getDirectoryType().equals(ProjectConstants.MAVEN_INTEGRATION_TEST_DIRECTORY);
+		return b;					
 	}
 	
 	

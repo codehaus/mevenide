@@ -17,7 +17,6 @@ package org.mevenide.ui.eclipse;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.PlatformUI;
-import org.mevenide.Environment;
 import org.mevenide.MevenideException;
 import org.mevenide.core.AbstractRunner;
 import org.mevenide.core.ArgumentsManager;
@@ -55,9 +54,7 @@ public class Runner extends AbstractRunner {
 			throw new Exception("Maven Home has not been set");
 	    }
 	    else {
-		    Environment.setMavenHome(plugin.getMavenHome()); 
-			Environment.setJavaHome(plugin.getJavaHome());
-			Environment.setMavenRepository(plugin.getMavenRepository());
+		    plugin.initEnvironment();
 	    }
 	}
 
@@ -67,20 +64,7 @@ public class Runner extends AbstractRunner {
 	 * @throws Exception
 	 */
 	protected void launchVM(String[] options, String[] goals) throws Exception {
-	    //System.out.println("launching vm");
-       
-        String[] mavenCp = ArgumentsManager.getMavenClasspath();
-        String[] vmArgs = ArgumentsManager.getVMArgs(this);
-        String[] mavenArgs = getMavenArgs(options, goals);
-        
-//        System.out.println("Classpath : ");
-//        System.out.println("\t");
-//        for (int i = 0; i < mavenCp.length; i++) {
-//			 System.out.println("\t" + mavenCp[i] + ";");
-//		}
-		
 	
-		
 	    VMLauncherUtility.runVM(
 			"com.werken.forehead.Forehead",
 			ArgumentsManager.getMavenClasspath(),

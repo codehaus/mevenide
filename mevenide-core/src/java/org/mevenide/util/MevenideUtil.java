@@ -12,11 +12,9 @@
  * Lesser General Public License for more details.
  * 
  */
-package org.mevenide.ui.eclipse.sync.pom;
+package org.mevenide.util;
 
-import org.eclipse.core.resources.IProject;
-import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.jdt.core.JavaCore;
+import java.io.File;
 
 /**
  * 
@@ -24,30 +22,22 @@ import org.eclipse.jdt.core.JavaCore;
  * @version $Id$
  * 
  */
-public abstract class ArtifactGroup {
-	protected IJavaProject project;
+public class MevenideUtil {
 	
-	
-	public ArtifactGroup(IProject project)  {
-		try {
-			if ( project != null && project.hasNature(JavaCore.NATURE_ID) ) {
-				this.project = JavaCore.create(project);
-				initialize();
+	public static boolean findFile(File rootDirectory, String fileName) {
+		File[] f = rootDirectory.listFiles();
+		for (int i = 0; i < f.length; i++) {
+			if ( f[i].isDirectory() ) {
+				if ( findFile(f[i], fileName) ) {
+					return true;
+				}
+			}
+			else {
+				if ( f[i].getName().equals(fileName) ) {
+					return true;
+				}
 			}
 		}
-		catch ( Exception ex ) {
-			ex.printStackTrace();
-		}
-	}
-	
-	protected abstract void initialize() throws Exception; 
-	
-	public IJavaProject getProject() {
-		return project;
-	}
-
-	public void setProject(IJavaProject project) throws Exception {
-		this.project = project;
-		initialize();
+		return false;
 	}
 }

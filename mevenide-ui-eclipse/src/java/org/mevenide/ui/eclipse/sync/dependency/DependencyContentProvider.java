@@ -12,14 +12,13 @@
  * Lesser General Public License for more details.
  * 
  */
-package org.mevenide.ui.eclipse.sync.views;
+package org.mevenide.ui.eclipse.sync.dependency;
 
 import java.util.List;
 
 import org.apache.maven.project.Dependency;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.mevenide.ui.eclipse.sync.dependency.DependencyGroup;
 
 /**
  * 

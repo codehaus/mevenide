@@ -24,8 +24,8 @@ import org.eclipse.ui.PlatformUI;
 import org.mevenide.sync.ISynchronizer;
 import org.mevenide.sync.SynchronizerFactory;
 import org.mevenide.ui.eclipse.Mevenide;
-import org.mevenide.ui.eclipse.sync.views.DependencyViewPart;
-import org.mevenide.ui.eclipse.sync.views.SourceDirectoryViewPart;
+import org.mevenide.ui.eclipse.sync.dependency.DependencyViewPart;
+import org.mevenide.ui.eclipse.sync.source.SourceDirectoryViewPart;
 import org.mevenide.ui.eclipse.sync.wizard.SynchronizeWizard;
 
 /**

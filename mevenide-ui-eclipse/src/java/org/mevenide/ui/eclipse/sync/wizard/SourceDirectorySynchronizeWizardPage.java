@@ -22,7 +22,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.sync.source.SourceDirectoryGroup;
 import org.mevenide.ui.eclipse.sync.source.SourceDirectoryMarshaller;
-import org.mevenide.ui.eclipse.sync.views.SourceDirectoryViewUtil;
+import org.mevenide.ui.eclipse.sync.source.SourceDirectoryViewUtil;
 
 /**
  * 

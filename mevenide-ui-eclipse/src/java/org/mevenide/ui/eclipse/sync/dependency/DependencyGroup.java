@@ -21,9 +21,9 @@ import org.apache.maven.project.Dependency;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.mevenide.project.dependency.DependencyFactory;
+import org.mevenide.ui.eclipse.sync.ArtifactGroup;
 import org.mevenide.ui.eclipse.sync.DefaultPathResolverDelegate;
 import org.mevenide.ui.eclipse.sync.IPathResolverDelegate;
-import org.mevenide.ui.eclipse.sync.pom.ArtifactGroup;
 import org.mevenide.ui.eclipse.util.FileUtil;
 import org.mevenide.ui.eclipse.util.ProjectUtil;
 

@@ -11,7 +11,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  */
-package org.mevenide.ui.eclipse.sync.views;
+package org.mevenide.ui.eclipse.sync.source;
 
 import java.util.List;
 
@@ -23,7 +23,6 @@ import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IMemento;
-import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
@@ -32,8 +31,6 @@ import org.mevenide.sync.ISynchronizer;
 import org.mevenide.sync.SynchronizerFactory;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.sync.DefaultPathResolverDelegate;
-import org.mevenide.ui.eclipse.sync.source.*;
-import org.mevenide.ui.eclipse.sync.source.SourceDirectoryGroup;
 
 /**
  * 
@@ -166,8 +163,7 @@ public class SourceDirectoryViewPart extends ViewPart {
 	}
 	
 	public static void showView() throws Exception {
-		IViewPart consoleView =
-			PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(Mevenide.SYNCH_VIEW_ID); 
+		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(Mevenide.SYNCH_VIEW_ID); 
 	}
 
 	/**

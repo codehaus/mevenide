@@ -32,6 +32,10 @@ import org.mevenide.util.JDomOutputter;
  * 
  */
 public class DependencyMarshaller {
+	
+	private DependencyMarshaller() {
+	}
+	
 	public static DependencyGroup getDependencyGroup(IProject project, String file) throws Exception {
 		DependencyGroup group = new DependencyGroup(project);
 		List dependenciesList = new ArrayList();
@@ -96,7 +100,6 @@ public class DependencyMarshaller {
 	}
 	
 	public static List getLastStoredDependencyies(IProject project, String file) throws Exception {
-		DependencyGroup group = new DependencyGroup(project);
 		List dependenciesList = new ArrayList();
 	
 		if ( new File(file).exists() ) {

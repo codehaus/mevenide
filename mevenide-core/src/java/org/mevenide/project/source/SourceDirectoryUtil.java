@@ -71,21 +71,19 @@ public class SourceDirectoryUtil {
 	}
 	
 	public static void resetSourceDirectories(File pomFile) throws Exception {
+					
 		ProjectReader reader = ProjectReader.getReader();
 		Project project = reader.read(pomFile);
-		
-		project.getBuild().setAspectSourceDirectory(null);
-		project.getBuild().setIntegrationUnitTestSourceDirectory(null);
-		project.getBuild().setUnitTestSourceDirectory(null);
-		project.getBuild().setSourceDirectory(null);
-		
-		IProjectMarshaller marshaller = new DefaultProjectMarshaller();
-		marshaller.marshall(new FileWriter(pomFile), project);
-		
-//		ProjectWriter pomWriter = ProjectWriter.getWriter();
-//		pomWriter.addSource(null, pomFile, ProjectConstants.MAVEN_SRC_DIRECTORY);
-//		pomWriter.addSource(null, pomFile, ProjectConstants.MAVEN_TEST_DIRECTORY);
-//		pomWriter.addSource(null, pomFile, ProjectConstants.MAVEN_ASPECT_DIRECTORY);
-//		pomWriter.addSource(null, pomFile, ProjectConstants.MAVEN_INTEGRATION_TEST_DIRECTORY);
+		if ( project.getBuild() != null ) {
+			project.getBuild().setAspectSourceDirectory(null);
+			project.getBuild().setIntegrationUnitTestSourceDirectory(null);
+			project.getBuild().setUnitTestSourceDirectory(null);
+			project.getBuild().setSourceDirectory(null);
+			
+			IProjectMarshaller marshaller = new DefaultProjectMarshaller();
+			marshaller.marshall(new FileWriter(pomFile), project);
+	
+		}
 	}
+
 }
