@@ -27,8 +27,8 @@ import org.mevenide.properties.IPropertyResolver;
  *
  * @author  <a href="mailto:ca206216@tiscali.cz">Milos Kleint</a>
  */
-public final class PropFilesAggregator implements IPropertyResolver {
-    private static final Log logger = LogFactory.getLog(PropFilesAggregator.class);
+public final class PropertyFilesAggregator implements IPropertyResolver {
+    private static final Log logger = LogFactory.getLog(PropertyFilesAggregator.class);
     
     private File projectDir;
     private File userDir;
@@ -38,7 +38,7 @@ public final class PropFilesAggregator implements IPropertyResolver {
     private IPropertyFinder defaults;
 
     /** Creates a new instance of PropFilesAggregator */
-    public PropFilesAggregator(File project, File user, IPropertyFinder defs) {
+    public PropertyFilesAggregator(File project, File user, IPropertyFinder defs) {
         projectDir = project;
         userDir = user;
         defaults = defs;
@@ -49,17 +49,17 @@ public final class PropFilesAggregator implements IPropertyResolver {
     private void initialize() {
     	File fo = new File(projectDir, "project.properties");
         if ( fo.exists() ) {
-        	project = new SinglePropFileFinder(fo);
+        	project = new SinglePropertyFileFinder(fo);
         }
         fo = new File(projectDir, "build.properties");
         if ( fo.exists() ) {
-        	projectBuild = new SinglePropFileFinder(fo);
+        	projectBuild = new SinglePropertyFileFinder(fo);
         }
         //TODO.. have some caching for user prop file or reuse one instance in all the 
         // agrregators.
         fo = new File(userDir, "build.properties");
         if ( fo.exists() ) {
-        	userBuild = new SinglePropFileFinder(fo);
+        	userBuild = new SinglePropertyFileFinder(fo);
         }
     }
     public String getResolvedValue(String key) {

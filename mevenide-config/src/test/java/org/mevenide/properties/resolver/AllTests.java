@@ -29,7 +29,8 @@ public class AllTests {
         TestSuite suite = new TestSuite();
         
         suite.addTestSuite(DefaultsResolverTest.class);
-        suite.addTestSuite(PropFilesAggregatorTest.class);
+        suite.addTestSuite(PropertyFilesAggregatorTest.class);
+        suite.addTestSuite(ProjectWalkerTest.class);
         return suite;
         
     }

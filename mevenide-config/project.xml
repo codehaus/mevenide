@@ -38,6 +38,37 @@
             	<eclipse.plugin.bundle>true</eclipse.plugin.bundle>
             </properties>
         </dependency>
+        
+        <!-- for ProjectWalker resolver -->
+        <dependency>
+            <groupId>maven</groupId>
+            <artifactId>maven</artifactId>
+            <version>1.0-rc2</version>
+            <type>jar</type>
+            <properties>
+            	<eclipse.plugin.bundle>true</eclipse.plugin.bundle>
+                <netbeans.module.dep>spec</netbeans.module.dep>
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>commons-jelly</groupId>
+            <artifactId>commons-jelly</artifactId>
+    		<version>20030902.160215</version>
+            <type>jar</type>
+            <properties>
+            	<eclipse.plugin.bundle>true</eclipse.plugin.bundle>
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+            <version>1.0.1</version>
+            <type>jar</type>
+            <properties>
+                <netbeans.module.dep>spec</netbeans.module.dep>
+            	<eclipse.plugin.bundle>true</eclipse.plugin.bundle>
+            </properties>
+        </dependency>
     </dependencies>
     <build>
 		<resources>
