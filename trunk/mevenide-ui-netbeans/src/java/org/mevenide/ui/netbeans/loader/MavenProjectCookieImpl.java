@@ -248,7 +248,7 @@ public class MavenProjectCookieImpl implements MavenProjectCookie, ArtifactCooki
             toReturn = new Property[0];
         } else
         {
-            toReturn = new Property[8];
+            toReturn = new Property[13];
             try
             {
                 toReturn[0] = new Reflection(project, String.class, "getDescription", null);
@@ -261,20 +261,38 @@ public class MavenProjectCookieImpl implements MavenProjectCookie, ArtifactCooki
                 toReturn[2].setName("ID");
                 toReturn[2].setDisplayName("ID of the project");
                 toReturn[3] = new Reflection(project, String.class, "getInceptionYear", null);
-                toReturn[3].setName("Inception year");
-                toReturn[3].setDisplayName("Year when project started");
+                toReturn[3].setName("InceptionYear");
+                toReturn[3].setDisplayName("Inception Year");
                 toReturn[4] = new Reflection(project, String.class, "getIssueTrackingUrl", null);
-                toReturn[4].setName("Issue tracking URL");
+                toReturn[4].setName("IssuetrackingURL");
                 toReturn[4].setDisplayName("Issue tracking URL");
                 toReturn[5] = new Reflection(project, String.class, "getCurrentVersion", null);
                 toReturn[5].setName("Version");
                 toReturn[5].setDisplayName("Project version");
                 toReturn[6] = new Reflection(project, String.class, "getUrl", null);
-                toReturn[6].setName("Org. homepage URL ");
-                toReturn[6].setDisplayName("Org. homepage URL ");
+                toReturn[6].setName("HomepageURL");
+                toReturn[6].setDisplayName("Homepage URL");
                 toReturn[7] = new Reflection(project, String.class, "getName", null);
                 toReturn[7].setName("Project name ");
                 toReturn[7].setDisplayName("Project Name");
+                toReturn[8] = new Reflection(project, String.class, "getDistributionSite", null);
+                toReturn[8].setName("DistributionSite");
+                toReturn[8].setDisplayName("Distribution Site");
+                toReturn[9] = new Reflection(project, String.class, "getDistributionDirectory", null);
+                toReturn[9].setName("DistributionDir");
+                toReturn[9].setDisplayName("Distribution Directory");
+                toReturn[10] = new Reflection(project, String.class, "getPackage", null);
+                toReturn[10].setName("Package");
+                toReturn[10].setDisplayName("Package");
+//                toReturn[11] = new Reflection(project, String.class, "getType", null);
+//                toReturn[11].setName("Type");
+//                toReturn[11].setDisplayName("Type");
+                toReturn[11] = new Reflection(project, String.class, "getLogo", null);
+                toReturn[11].setName("Logo");
+                toReturn[11].setDisplayName("Logo");
+                toReturn[12] = new Reflection(project, String.class, "getGroupId", null);
+                toReturn[12].setName("GroupId");
+                toReturn[12].setDisplayName("Group ID");
                 
                 //TODO add other properties and better organization of props..
             } catch (NoSuchMethodException exc)
