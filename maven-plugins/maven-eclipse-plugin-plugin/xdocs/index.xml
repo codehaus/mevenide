@@ -8,8 +8,13 @@
     <section name="Overview">
       <div id="documentContent">
       	<p>
-   	  will provide a short overview of the plugin.
-   	  </p>
+   	      This plugin aims to simplify management of Eclipse plugin artefacts interdependency. It allows to track required plugin version, 
+   	      and also to automatically generate feature and site update distribution. Flexibility is attained through the declaration of 
+   	      user-defined Ant filter that allows to use custom replacement strings in the templates. Please refer to <a href="goals.html">this document</a>
+   	      for a complete list of features.
+   	  
+   	      In the near future, maven-eclipse-plugin-plugin will also support fs/ssh/ftp deploiement of generated artefact archives.
+   	    </p>
    	  </div>
     </section>
   </body>
