@@ -31,9 +31,10 @@ import org.apache.maven.project.Project;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.filter.Filter;
-import org.jdom.input.DefaultJDOMFactory;
-import org.jdom.input.JDOMFactory;
+import org.jdom.DefaultJDOMFactory;
+import org.jdom.JDOMFactory;
 import org.jdom.input.SAXBuilder;
+import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
 
 /**
@@ -56,11 +57,11 @@ public class CarefulProjectMarshaller implements IProjectMarshaller {
         builder = new SAXBuilder();
         factory = new DefaultJDOMFactory();
         outputter = new XMLOutputter();
-        outputter.setIndentSize(4);
-        outputter.setIndent(true);
-        outputter.setNewlines(true);
-//in beta10 only.        outputter.setFormat(Format.getPrettyFormat());
-	}
+        Format format = Format.getPrettyFormat();
+        format.setIndent("    ");
+        format.setLineSeparator(System.getProperty("line.separator"));
+        outputter.setFormat(format);
+    }
 
     public void marshall(Writer pom, Project project) throws Exception {
         log.debug("do Marshall()");
@@ -408,7 +409,7 @@ public class CarefulProjectMarshaller implements IProjectMarshaller {
         if (shouldExist) {
             // don't do funky stuff here now now..
             // is sortedset, just drop everything in..
-            rolesElem.removeChildren();
+            rolesElem.removeContent();
             Iterator it = roles.iterator();
             while (it.hasNext()) {
                 String roleStr = (String)it.next();

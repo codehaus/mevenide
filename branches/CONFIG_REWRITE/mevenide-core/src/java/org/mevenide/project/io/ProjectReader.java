@@ -64,7 +64,8 @@ public class ProjectReader {
 	
 	/**
 	 * return the instance of org.apache.maven.project.Project derivated from pom
-	 * 
+	 * @deprecated the returned Project instance doesn't include parent file's definitions.
+         *   If you want a Project instance for reading, use IQueryContext.getPOMContext().getFinalProject() 
 	 */
 	public Project read(File pom) throws Exception {
             // mkleint - I assume one should pass IqueryContext to the method instead of the File

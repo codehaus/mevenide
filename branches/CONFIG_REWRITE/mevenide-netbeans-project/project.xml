@@ -5,7 +5,7 @@
   <id>mevenide-netbeans-project</id>
   <name>Mevenide Netbeans project support</name>
   <artifactId>mevenide-netbeans-project</artifactId>
-  <currentVersion>0.3.1</currentVersion>
+  <currentVersion>0.4-SNAPSHOT</currentVersion>
   <package>org.mevenide.netbeans.project</package>
   <shortDescription>Netbeans Maven project type support module</shortDescription>
   <description>
@@ -24,7 +24,7 @@
     <dependency>     
         <groupId>mevenide</groupId>
         <artifactId>goals-grabber</artifactId>
-        <version>0.5</version>
+        <version>0.6-SNAPSHOT</version>
         <type>jar</type>
             <properties>
                 <netbeans.module.dep>spec</netbeans.module.dep>
@@ -33,7 +33,7 @@
     <dependency>     
         <groupId>mevenide</groupId>
         <artifactId>mevenide-core</artifactId>
-        <version>0.4</version>
+        <version>0.5-SNAPSHOT</version>
         <type>jar</type>
             <properties>
                 <netbeans.module.dep>spec</netbeans.module.dep>
@@ -42,7 +42,7 @@
     <dependency>
         <groupId>mevenide</groupId>
         <artifactId>mevenide-config</artifactId>
-        <version>0.5</version>
+        <version>0.6-SNAPSHOT</version>
         <type>jar</type>
             <properties>
                 <netbeans.module.dep>spec</netbeans.module.dep>
@@ -60,11 +60,11 @@
         <dependency>
             <groupId>jdom</groupId>
             <artifactId>jdom</artifactId>
-            <version>1.0b8</version>
+            <version>1.0</version>
             <type>jar</type>
             <properties>
             	<eclipse.plugin.bundle>true</eclipse.plugin.bundle>
-                <netbeans.module.dep>impl</netbeans.module.dep>
+                <netbeans.module.dep>spec=jdom &gt; 1.0.1</netbeans.module.dep>
             </properties>
         </dependency>
 

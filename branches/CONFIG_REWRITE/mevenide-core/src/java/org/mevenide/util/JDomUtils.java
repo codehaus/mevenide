@@ -21,6 +21,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 import org.jdom.Document;
+import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
 
 /**
@@ -50,10 +51,11 @@ public final class JDomUtils {
 
 	public static XMLOutputter newXmlOutputter(boolean expandEmptyElements) {
 		XMLOutputter outputter = new XMLOutputter();
-		outputter.setIndentSize(4);
-		outputter.setIndent(true);
-		outputter.setExpandEmptyElements(expandEmptyElements);
-		outputter.setNewlines(true);
+                Format format = Format.getPrettyFormat();
+                format.setIndent("    ");
+                format.setLineSeparator(System.getProperty("line.separator"));
+                format.setExpandEmptyElements(expandEmptyElements);
+                outputter.setFormat(format);
 		return outputter;
 	}
 }

@@ -9,7 +9,7 @@
     <name>JBuilder Maven OpenTool</name>
     <id>mevenide-ui-jbuilder</id>
     <artifactId>mevenide-ui-jbuilder</artifactId>
-    <currentVersion>0.1</currentVersion>
+    <currentVersion>0.2-SNAPSHOT</currentVersion>
     <inceptionYear>2004</inceptionYear>
     <package>org.mevenide</package>
     <shortDescription>OpenTool JBuilder Maven IDE Plugin</shortDescription>
@@ -28,7 +28,7 @@
         <dependency>
            <groupId>mevenide</groupId>
            <artifactId>mevenide-core</artifactId>
-           <version>0.4</version>
+           <version>0.5-SNAPSHOT</version>
             <properties>
               <jbuilder.opentool.bundle>true</jbuilder.opentool.bundle>
             </properties>
@@ -36,7 +36,7 @@
         <dependency>
            <groupId>mevenide</groupId>
            <artifactId>goals-grabber</artifactId>
-           <version>0.5</version>
+           <version>0.6-SNAPSHOT</version>
             <properties>
               <jbuilder.opentool.bundle>true</jbuilder.opentool.bundle>
             </properties>
@@ -44,7 +44,7 @@
         <dependency>
            <groupId>mevenide</groupId>
            <artifactId>mevenide-config</artifactId>
-           <version>0.5</version>
+           <version>0.6-SNAPSHOT</version>
             <properties>
               <jbuilder.opentool.bundle>true</jbuilder.opentool.bundle>
             </properties>
