@@ -50,20 +50,20 @@
    
    <goal name="mevenide:test-single-debug"
          description="Run the single test with debug environment set.">
-      <j:set var="maven.junit.jvmargs" value="${maven.mevenide.debug.jvmargs}"/>
-      <j:set var="maven.junit.fork" value="yes"/>
+      <j:set var="maven.junit.jvmargs" value="${maven.mevenide.debug.jvmargs}" scope="parent"/>
+      <j:set var="maven.junit.fork" value="yes" scope="parent"/>
 <!--      <j:set var="maven.junit.jvm" value="/usr/java/jdk1.5.0/bin/java"/> -->
 [mevenide-debug-start] Starting the debugged test...
 
       <ant:echo message="jvmargs=${maven.mevenide.debug.jvmargs}"/>
 <!-- ant:echo seems to be necesary to flush the maven output before running the app -->       
-      <attainGoal name="test:single"/>
+      <attainGoal name="test:single" />
    </goal>
    
    <goal name="mevenide:test-debug" 
          description="Run the tests with debug environment set.">
-      <j:set var="maven.junit.jvmargs" value="${maven.mevenide.debug.jvmargs}"/>
-      <j:set var="maven.junit.fork" value="yes"/>
+      <j:set var="maven.junit.jvmargs" value="${maven.mevenide.debug.jvmargs}" scope="parent"/>
+      <j:set var="maven.junit.fork" value="yes" scope="parent"/>
 <!--      <j:set var="maven.junit.jvm" value="/usr/java/jdk1.5.0/bin/java"/> -->
 [mevenide-debug-start] Starting to debug tests...
 

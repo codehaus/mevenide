@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<document>
+  <properties>
+    <title>maven-mevenide-plugin Properties</title>
+    <author>Milos Kleint (ca206216@tiscali.cz)</author>
+  </properties>
+  <body>
+    <section name="Basic Properties">
+    	<div id="documentContent">
+      <table>
+        <tr>
+          <th>Property</th>
+          <th>Optional</th>
+          <th>Description</th>
+        </tr>
+         <tr>
+          <td></td>
+          <td><p>Optional.</p></td>
+          <td>
+            <p> </p>
+          </td>
+        </tr>
+     </table>
+     </div>
+   </section>
+
+  </body>
+</document>
