@@ -49,6 +49,7 @@
 package org.mevenide.ui.eclipse.sync.wizard;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -120,7 +121,6 @@ import org.mevenide.ui.eclipse.util.ResourceSorter;
 import org.mevenide.util.MevenideUtil;
 
 /**  
- * @todo refactor getSaved${Dependencies|SourceDirectories}Input methods
  * 
  * @author Gilles Dodinet (gdodinet@wanadoo.fr)
  * @version $Id: SynchronizeWizardPage.java 27 août 2003 Exp gdodinet 
@@ -493,10 +493,53 @@ public class SynchronizeWizardPage extends WizardPage {
 		String savedStates = Mevenide.getPlugin().getFile("sourceTypes.xml");
 		SourceDirectoryGroup group = SourceDirectoryGroupMarshaller.getSourceDirectoryGroup(project, savedStates, 0);
 
-		Project mavenProject = ProjectReader.getReader().read(new File(project.getFile("project.xml").getLocation().toOSString()));
+		addInPomSourceDirectories(group);
+
+		addParentSourceDirectories(group);
+
+		log.debug(" group.length = " + group.getSourceDirectories().size());
+		return group;
+	
+	
+	}
+		
+	private void addParentSourceDirectories(SourceDirectoryGroup group) throws FileNotFoundException, Exception, IOException {
+        Project mavenProject = ProjectReader.getReader().read(new File(project.getFile("project.xml").getLocation().toOSString()));
 		String extend = mavenProject.getExtend();
 
-		Map pomSourceDirectories = 
+		if ( extend != null && !extend.trim().equals("") ) {
+			String resolvedExtend = MevenideUtil.resolve(mavenProject, extend);
+	
+			if ( !new File(resolvedExtend).exists() ) {
+				resolvedExtend = new File(new File(project.getFile("project.xml").getLocation().toOSString()).getParentFile(), resolvedExtend).getAbsolutePath();
+			}			
+			
+			if ( new File(resolvedExtend).exists() ) {
+				SourceDirectoryGroup parentGroup = new SourceDirectoryGroup();
+				//Project parentProject = ProjectReader.getReader().read(new File(resolvedExtend));
+				Map parentSourceDirectories = ProjectReader.getReader().getSourceDirectories(new File(resolvedExtend));
+				Map pomResources = ProjectReader.getReader().getAllResources(new File(resolvedExtend));
+
+				parentSourceDirectories.putAll(pomResources);
+				
+				Iterator iterator = parentSourceDirectories.keySet().iterator();
+				while (iterator.hasNext()) {
+                    String element = (String) iterator.next();
+                    //DependencyWrapper wrapper = new DependencyWrapper((Dependency) parentDependencies.get(i), false, parentGroup);
+					
+					SourceDirectory sourceDir = new SourceDirectory((String)parentSourceDirectories.get(element), parentGroup);
+					sourceDir.setDirectoryType(element); 
+					sourceDir.setReadOnly(true);
+					((SourceDirectoryGroup)parentGroup).addSourceDirectory(sourceDir);
+                }
+				log.debug("setting parentGroup for sdGroup (parentGroup has " + parentGroup.getSourceDirectories().size()+ " sourcedirectories)");
+				group.setParentGroup(parentGroup);
+			}
+		}
+    }
+
+    private void addInPomSourceDirectories(SourceDirectoryGroup group) throws Exception {
+        Map pomSourceDirectories = 
 			ProjectReader.getReader().getSourceDirectories(new File(project.getFile("project.xml").getLocation().toOSString()));
 		
 		Map pomResources = 		
@@ -525,41 +568,9 @@ public class SynchronizeWizardPage extends WizardPage {
 				group.addSourceDirectory(newSourceDirectory);
 			}
         }
+    }
 
-		if ( extend != null && !extend.trim().equals("") ) {
-			String resolvedExtend = MevenideUtil.resolve(mavenProject, extend);
-	
-			if ( !new File(resolvedExtend).exists() ) {
-				resolvedExtend = new File(new File(project.getFile("project.xml").getLocation().toOSString()).getParentFile(), resolvedExtend).getAbsolutePath();
-			}			
-			
-			if ( new File(resolvedExtend).exists() ) {
-				SourceDirectoryGroup parentGroup = new SourceDirectoryGroup();
-				//Project parentProject = ProjectReader.getReader().read(new File(resolvedExtend));
-				Map parentSourceDirectories = ProjectReader.getReader().getSourceDirectories(new File(resolvedExtend));
-				
-				Iterator iterator = parentSourceDirectories.keySet().iterator();
-				while (iterator.hasNext()) {
-                    String element = (String) iterator.next();
-                    //DependencyWrapper wrapper = new DependencyWrapper((Dependency) parentDependencies.get(i), false, parentGroup);
-					
-					SourceDirectory sourceDir = new SourceDirectory((String)parentSourceDirectories.get(element), parentGroup);
-					sourceDir.setDirectoryType(element); 
-					sourceDir.setReadOnly(true);
-					((SourceDirectoryGroup)parentGroup).addSourceDirectory(sourceDir);
-                }
-				log.debug("setting parentGroup for sdGroup (parentGroup has " + parentGroup.getSourceDirectories().size()+ " sourcedirectories)");
-				group.setParentGroup(parentGroup);
-			}
-		}
-
-		log.debug(" group.length = " + group.getSourceDirectories().size());
-		return group;
-	
-	
-	}
-		
-	private void initDependenciesSynchronizationTab() {
+    private void initDependenciesSynchronizationTab() {
 		Composite composite = new Composite(tabFolder, SWT.NONE);
 		
 		GridLayout layout = new GridLayout();
@@ -784,26 +795,20 @@ public class SynchronizeWizardPage extends WizardPage {
 		
 		DependencyGroup group = DependencyGroupMarshaller.getDependencyGroup(project, savedStates);
 		
-		Project mavenProject = ProjectReader.getReader().read(new File(project.getFile("project.xml").getLocation().toOSString()));
-		String extend = mavenProject.getExtend();
+		addInPomDependencies(group);
 		
-		List pomDependencies = mavenProject.getDependencies();
-		for (int i = 0; i < pomDependencies.size(); i++) {
-			boolean inPom = false;
-            for (int j = 0; j < group.getDependencyWrappers().size(); j++) {
-                DependencyWrapper wrapper = (DependencyWrapper) group.getDependencyWrappers().get(j);
-				if ( DependencyUtil.areEquals((Dependency)pomDependencies.get(i), wrapper.getDependency()) ) {
-					wrapper.setInPom(true);
-					inPom = true;
-				}
-            }
-			if ( !inPom ) {
-				DependencyWrapper wrapper = new DependencyWrapper((Dependency)pomDependencies.get(i), false, group);
-				wrapper.setInPom(true);
-				group.addDependency(wrapper); 
-			}
-        }
-
+		addParentDependencies(group);
+		
+		return group;
+		
+	}
+	
+	
+	private void addParentDependencies(DependencyGroup group) throws Exception {
+		
+		Project mavenProject = ProjectReader.getReader().read(new File(project.getFile("project.xml").getLocation().toOSString()));
+        String extend = mavenProject.getExtend();
+		
 		if ( extend != null && !extend.trim().equals("") ) {
 			String resolvedExtend = MevenideUtil.resolve(mavenProject, extend);
 
@@ -823,13 +828,31 @@ public class SynchronizeWizardPage extends WizardPage {
 				group.setParentGroup(parentGroup);
 			}
 		}
-		
-		return group;
-		
-	}
-	
-	
-	public void saveState() throws Exception {
+    }
+
+    private void addInPomDependencies(DependencyGroup group) throws Exception  {
+    	
+		Project mavenProject = ProjectReader.getReader().read(new File(project.getFile("project.xml").getLocation().toOSString()));
+        List pomDependencies = mavenProject.getDependencies();
+        
+		for (int i = 0; i < pomDependencies.size(); i++) {
+			boolean inPom = false;
+            for (int j = 0; j < group.getDependencyWrappers().size(); j++) {
+                DependencyWrapper wrapper = (DependencyWrapper) group.getDependencyWrappers().get(j);
+				if ( DependencyUtil.areEquals((Dependency)pomDependencies.get(i), wrapper.getDependency()) ) {
+					wrapper.setInPom(true);
+					inPom = true;
+				}
+            }
+			if ( !inPom ) {
+				DependencyWrapper wrapper = new DependencyWrapper((Dependency)pomDependencies.get(i), false, group);
+				wrapper.setInPom(true);
+				group.addDependency(wrapper); 
+			}
+        }
+    }
+
+    public void saveState() throws Exception {
 		SourceDirectoryGroupMarshaller.saveSourceDirectoryGroup((SourceDirectoryGroup)sourceDirectoriesViewer.getInput(), Mevenide.getPlugin().getFile("sourceTypes.xml"));
 		DependencyGroupMarshaller.saveDependencyGroup((DependencyGroup)dependenciesViewer.getInput(), Mevenide.getPlugin().getFile("statedDependencies.xml"));
 		inheritancePropertiesStore.setValue("pom." + project.getName() + ".isInherited", isInheritedEditor.getBooleanValue());
