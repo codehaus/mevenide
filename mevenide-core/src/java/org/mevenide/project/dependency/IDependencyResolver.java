@@ -24,7 +24,8 @@ package org.mevenide.project.dependency;
  * 
  */
 public interface IDependencyResolver {
-	void setFileName(String fileName);
+    //mkleint - not all resolvers need to work over files..
+//	void setFileName(String fileName);
 	
 
 	/**

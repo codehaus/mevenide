@@ -25,7 +25,7 @@ import java.util.Map;
  * @version $Id$
  * 
  */
-public class DependencyResolverFactory  {
+public final class DependencyResolverFactory  {
 
 	private Map resolvers = new HashMap();
 	private static DependencyResolverFactory factory = new DependencyResolverFactory();
@@ -41,7 +41,7 @@ public class DependencyResolverFactory  {
 		if (resolvers.containsKey(absoluteFileName)) {
 			return (IDependencyResolver) resolvers.get(absoluteFileName);
 		}
-		IDependencyResolver resolver = new DefaultDependencyResolver(); 
+		DefaultDependencyResolver resolver = new DefaultDependencyResolver(); 
 		resolver.setFileName(absoluteFileName);
 		resolvers.put(absoluteFileName, resolver);
 		
