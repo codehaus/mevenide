@@ -500,8 +500,7 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
 	}
 
 	public void refreshAll() {
-	    Object[] expandedElements = artifactMappingNodeViewer.getExpandedElements();
-		artifactMappingNodeViewer.refresh(true);
+	  	artifactMappingNodeViewer.refresh(true);
 
 		artifactMappingNodeViewer.expandAll();
 	}
