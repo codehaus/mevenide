@@ -175,7 +175,7 @@
   </goal>
   
   <goal name="mevenide-site:netbeans" prereqs="mevenide-site:quick-init">
-  	<j:set var="maven.multiproject.includes" value="${mevenide.ui.netbeans.project.name}/project.xml,${mevenide.netbeans.grammar.project.name}/project.xml,${mevenide.netbeans.projects.project.name}/project.xml"/>
+  	<j:set var="maven.multiproject.includes" value="${mevenide.netbeans.grammar.project.name}/project.xml,${mevenide.netbeans.projects.project.name}/project.xml"/>
   	<attainGoal name="multiproject:site"/>
   </goal>
   
