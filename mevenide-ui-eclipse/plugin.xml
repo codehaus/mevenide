@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plugin
-   id="mavenplugin"
+   id="mevenide"
    name="Mevenide"
-   version="0.1.0"
+   version="1.0"
    provider-name="gdfact"
    class="org.mevenide.ui.eclipse.MavenPlugin">
 
    <runtime>
-      <library name="jdom-1.0b8.jar"/>
-      <library name="junit.jar"/>
-      <library name="maven.jar"/>
-      <library name="goals-grabber-1.0.jar"/>
-      <library name="mevenide-core-0.1.jar"/>
+      <library name="lib/jdom-1.0b8.jar"/>
+      <library name="lib/junit.jar"/>
+      <library name="lib/maven.jar"/>
+      <library name="lib/goals-grabber-1.0.jar"/>
+      <library name="lib/mevenide-core-0.1.jar"/>
       <!-- library name="mevenide-ui-eclipse-0.1.jar">
          <export name="*"/>
       </library -->
-      <library name="forehead-1.0-beta-4.jar"/>
-      <library name="commons-discovery.jar"/>
-      <library name="commons-logging-1.0.1.jar"/>
-      <library name="xerces-2.2.1.jar"/>
+      <library name="lib/forehead-1.0-beta-4.jar"/>
+      <library name="lib/commons-discovery.jar"/>
+      <library name="lib/commons-logging-1.0.1.jar"/>
+      <library name="lib/xerces-2.2.1.jar"/>
    </runtime>
    <requires>
       <import plugin="org.eclipse.core.resources"/>
