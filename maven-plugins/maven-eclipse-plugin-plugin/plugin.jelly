@@ -49,18 +49,25 @@
       </j:if>
     </j:forEach>
     
+    <!-- commented for now until it stabilizes -->
+    <!-- attainGoal name="eclipse-plugin:install-artifact"/ -->
+    
   </goal>
    
-  <goal name="eclipse-plugin:init-filterset">
+  <goal name="eclipse-plugin:init-filterset" 
+  		description="create an empty filterset if $${maven.eclipse.plugin.filterset.id} hasnot been specified">
+  		
   	<j:set var="filterRefid" value="${maven.eclipse.plugin.filterset.id}"/>
   	<j:if test="${empty filterRefid}">
   	  <j:set var="maven.eclipse.plugin.filterset.id" value="filterSetId"/>
   	  <ant:filterset id="${maven.eclipse.plugin.filterset.id}"/>
   	</j:if>
+  	
   </goal>
    
-  <goal name="eclipse-plugin:install" prereqs="eclipse-plugin:init-filterset" 
+  <goal name="eclipse-plugin:install-artifact" prereqs="eclipse-plugin:init-filterset" 
   		description="filter and copy the plugin.xml file to $${basedir}">
+  		
   	<ant:copy todir="${basedir}" overwrite="true">
   	  <ant:fileset dir="${maven.eclipse.plugin.src.dir}"/>
   	  <ant:filterset>
@@ -69,6 +76,7 @@
   	  	<ant:filter token="maven.eclipse.plugin.artifact.version" value="${maven.eclipse.plugin.artifact.version}"/>
   	  </ant:filterset>
   	</ant:copy>
+  	
   </goal>
    
    
