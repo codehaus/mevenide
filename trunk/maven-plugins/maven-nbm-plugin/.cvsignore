@@ -3,3 +3,4 @@ maven.log
 *.log
 .classpath
 .mvnignore
+build.properties
