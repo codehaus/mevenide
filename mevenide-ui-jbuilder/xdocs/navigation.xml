@@ -11,8 +11,9 @@
     
     <menu name="General">
       <item href="/index.html" name="Overview"/>
-      <item href="/license.html" name="License"/>
       <item href="/features.html" name="Features"/>
+      <item href="/license.html" name="License"/>
+	  <item href="/downloading.html" name="Download"/>
 	  <item href="/compiling.html" name="Compiling"/>
     </menu>
     

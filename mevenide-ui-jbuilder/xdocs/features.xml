@@ -9,31 +9,55 @@
 	<body>
 		<section name="Features">
 			
-			<subsection name="Using the Maven OpenTool">
+			<subsection name="Maven goal integration">
 				<div id="documentContent">
-				<p>This tool works a lot like the existing Ant integration that JBuilder
-				includes in version 7 and above.</p>
-				<ul>
-				<li>Add your <code>project.xml</code> project file to your JBuilder project</li>
-				<li>The tool will then recognize all the available plugins for your project
-					and will display them as children of the Maven project file.</li>
-				<li>You can right-click on any goal (you can't right click on plugins) and
-					execute the goal selected by clicking on "Make"
-				</li>
-				<li>You can also set a maven goal as a "Build Target" in the RunTime
-					configuration menu, and it will be launched just before the application
-					gets started when you run your project (useful for deployment for
-					example)
-				</li>
-				</ul>
+				  <p>The list of goals you can use in your project is completely integrated with
+				  JBuilder's target system, so you may easily use Maven goals when building or
+				  even running programs.<br/>
+				  <br/>
+				  <center>
+				    <img border="1px" src="images/screenshots/browser.png"/><br/>
+					Project browser integration<br/>
+					<br/>
+					<img border="1px" src="images/screenshots/messages.png"/><br/>
+					Maven output in message window<br/>
+					<br/>
+				  </center>
+				  </p>
+				  <p>For example you can call a deployment Maven goal just before running your
+				  program<br/>
+				  <center>
+				    <img border="1px" src="images/screenshots/run_config.png"/><br/>
+					Runtime configuration goal integration<br/>
+					<br/>
+				  </center>
+				  </p>
 				</div>
 			</subsection>
 			
+			<subsection name="Maven settings">
+				<div id="documentContent">
+				  <p>You can also set some setting on how Maven execution will happen :<br/>
+				  <center>
+				    <img border="1px" src="images/screenshots/project_properties.png"/><br/>
+					Maven settings for project<br/>
+					<br/>
+				  </center>
+				  </p>
+				</div>
+			</subsection>
+
 			<subsection name="Automatic Dependency Library Generation">
 				<div id="documentContent">
 				<p>This tool also automatically updates a JBuilder library called
 				   <b>MavenAutoUpdated.library</b> that is generated in the same directory as the
-				   JBuilder project (*.jpx) file. It is generated from the Maven project
+				   JBuilder project (*.jpx) file. <br/>
+				   <center>
+				     <img border="1px" src="images/screenshots/autoupdated_library.png"/><br/>
+ 					 Automatically updated JAR library<br/>
+					 <br/>
+				   </center>
+				   It is generated from the Maven project
 				   descriptor file (project.xml), which contains all the JAR dependencies. In
 				   order for this function to work, you must have inserted the <b>project.xml</b>
 				   in your project and the JARs *must* be already present in
@@ -49,21 +73,7 @@
 				</p>
 				</div>
 			</subsection>
-			
-			<subsection name="Credits">
-				<div id="documentContent">
-				<p>
-				  Written by Serge Huber (<a href="mailto:shuber2@jahia.com">shuber2@jahia.com</a>)
-				</p>
-				</div>
-			</subsection>
-			
-			<subsection name="History">
-				<div id="documentContent">
-				<p>Version 0.1<br />Initial release</p>
-				</div>
-			</subsection>
-			
+						
 		</section>
 	
 	</body>
