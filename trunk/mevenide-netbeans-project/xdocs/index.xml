@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <document>
     <properties>
-    	<author email="ca206216@tiscali.cz">Milos Kleint</author>
+    	<author email="mkleint@codehaus.org">Milos Kleint</author>
         <title>Overview</title>
     </properties>
     <body>
@@ -14,9 +14,9 @@
        <section name="Netbeans 4.0 Dev">
         <div id="documentContent">
             <p>Mevenide for the upcoming 4.0 version contains these <a href="features.html" class="documentLink"> features </a>.</p>
-            <p> You can download the <a href="../download/mevenide-netbeans-0.3.zip"> 0.3 release</a>. It was tested with Maven 1.0 and Netbeans Beta2.
-            Reasonable effort is made to have it always working with the latest development builds of Netbeans 4.0. Please note that the grammar module (completion for maven xml files) for 0.3 release will work
-            with beta2 but not with current dev builds. Please download <a href="../download/mevenide-netbeans-grammar-0.5.1.nbm">this version </a> that works with Netbeans post-beta2 dev builds.
+            <p> You can download the <a href="../download/mevenide-netbeans-0.4.zip"> 0.4 release</a>. It was tested with Maven 1.0 and Netbeans beta2 or Netbeans Q-Build from 2/Nov/2004
+            Reasonable effort is made to have it always working with the latest development builds of Netbeans 4.0. Please note that the grammar module (completion for maven xml files) for 0.4 release will work
+            with the Q-build but not with the beta2. You are encouraged to upgrade. 
             To get the latest Netbeans beta and dev builds, go to the <a href="http://www.netbeans.info/downloads/download.php?a=n&amp;p=1"> download page </a> </p>
 	</div>
         </section>
