@@ -191,9 +191,14 @@ public class DirectoryNode extends ArtifactNode {
 	
 	public Object getAdapter(Class adapteeClass) {
 		if ( adapteeClass == IPropertySource.class ) {
-			DirectoryPropertySource propertySource = new DirectoryPropertySource(directory);
-			propertySource.addPropertyChangeListener(this);
-			return propertySource;
+		    if ( getDirection() == ISelectableNode.OUTGOING_DIRECTION ) {
+		        DirectoryPropertySource propertySource = new DirectoryPropertySource(directory);
+		        propertySource.addPropertyChangeListener(this);
+		        return propertySource;
+		    }
+		    else {
+		        return new ReadOnlyDirectoryPropertySource(this.directory);
+		    }
 		}
 		return null;
 	}

@@ -370,7 +370,7 @@ public class MavenProjectNode extends AbstractSynchronizationNode implements ISe
 	
     public Object getAdapter(Class adapter) {
         if ( IPropertySource.class.equals(adapter) ) {
-            return new MavenProjectPropertySource(this);
+            return new MavenProjectPropertySource(this.mavenProject);
         }
         return null;
     }

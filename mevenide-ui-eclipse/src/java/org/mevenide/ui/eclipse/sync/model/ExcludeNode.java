@@ -63,7 +63,7 @@ public class ExcludeNode extends AbstractSynchronizationNode implements ISelecta
 	
 	public Object getAdapter(Class adapter) {
         if ( IPropertySource.class.equals(adapter) ) {
-            return new ExcludePropertySource(this);
+            return new ExcludePropertySource(((Directory) parentNode.getData()).getPath(), this.excludePattern);
         }
         return null;
     }

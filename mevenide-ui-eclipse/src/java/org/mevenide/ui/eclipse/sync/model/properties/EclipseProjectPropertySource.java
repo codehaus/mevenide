@@ -22,7 +22,6 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
 import org.mevenide.ui.eclipse.editors.properties.AbstractPomPropertySource;
-import org.mevenide.ui.eclipse.sync.model.EclipseProjectNode;
 
 /**
  *
@@ -35,16 +34,13 @@ public class EclipseProjectPropertySource extends AbstractPomPropertySource {
 
 	static final String PROJECT = "Project";
 	
-	private EclipseProjectNode eclipseProjectNode;
-	
 	private IPropertyDescriptor[] descriptors = new IPropertyDescriptor[1];
 
     private String projectPath;
 	
 
-	public EclipseProjectPropertySource(EclipseProjectNode eclipseProjectNode) {
-		this.eclipseProjectNode = eclipseProjectNode;
-        projectPath = ((IProject) eclipseProjectNode.getData()).getLocation().toString();
+	public EclipseProjectPropertySource(IProject eclipseProject) {
+		projectPath = eclipseProject.getLocation().toString();
         descriptors[0] = new PropertyDescriptor(PROJECT, PROJECT);
 	}
 
@@ -89,6 +85,6 @@ public class EclipseProjectPropertySource extends AbstractPomPropertySource {
 	 * @see org.mevenide.ui.eclipse.editors.pages.AbstractPomPropertySource#getSource()
 	 */
 	public Object getSource() {
-		return eclipseProjectNode;
+		return projectPath;
 	}
 }
