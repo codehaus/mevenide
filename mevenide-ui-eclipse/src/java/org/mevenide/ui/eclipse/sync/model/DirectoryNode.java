@@ -28,7 +28,9 @@ import org.apache.maven.project.Resource;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.ui.views.properties.IPropertySource;
+import org.mevenide.project.ProjectConstants;
 import org.mevenide.project.io.ProjectReader;
+import org.mevenide.project.io.ProjectWriter;
 import org.mevenide.project.source.SourceDirectoryUtil;
 
 
@@ -133,15 +135,16 @@ public class DirectoryNode extends ArtifactNode {
 	}
 	
 	public void addTo(Project project) throws Exception {
-//		if ( ProjectConstants.MAVEN_TEST_RESOURCE.equals(directory.getType()) ) {
-//			ProjectWriter.getWriter().addResource(directory.getCleanPath(), project.getFile());
-//		}
-//		else if ( ProjectConstants.MAVEN_TEST_RESOURCE.equals(directory.getType()) ) {
-//			ProjectWriter.getWriter().addUnitTestResource(directory.getCleanPath(), project.getFile());
-//		}
-//		else {
-//			ProjectWriter.getWriter().addSource(directory.getCleanPath(), project.getFile(), directory.getType());
-//		}
+		if ( ProjectConstants.MAVEN_RESOURCE.equals(directory.getType()) ) {
+			ProjectWriter.getWriter().addResource(directory.getCleanPath(), project.getFile());
+		}
+		else if ( ProjectConstants.MAVEN_TEST_RESOURCE.equals(directory.getType()) ) {
+			ProjectWriter.getWriter().addUnitTestResource(directory.getCleanPath(), project.getFile());
+		}
+		else {
+		    log.debug("adding " + directory.getCleanPath() + " as " + directory.getType());
+		    ProjectWriter.getWriter().addSource(directory.getCleanPath(), project.getFile(), directory.getType());
+		}
 	}
 	
 	protected String getIgnoreLine() {
@@ -150,7 +153,7 @@ public class DirectoryNode extends ArtifactNode {
 	}
 	
 	public void removeFrom(Project project) throws Exception {
-		// TODO Auto-generated method stub
+		String type = directory.getType();
 	}
 	
 	public Object getAdapter(Class adapteeClass) {
