@@ -673,7 +673,7 @@ public class CarefulProjectMarshaller implements IProjectMarshaller {
                 Resource res = (Resource)it2.next();
                 Element newEl = factory.element("resource");
                 doUpdateSingleResource(newEl, res);
-                root.addContent(newEl);
+                resourcesElem.addContent(newEl);
             }
         }
     }    
