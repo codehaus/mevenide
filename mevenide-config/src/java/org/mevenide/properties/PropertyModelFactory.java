@@ -61,13 +61,26 @@ public class PropertyModelFactory {
      */
     public PropertyModel newPropertyModel(File file, boolean searchMap)
             throws IOException {
-        if ( !searchMap ) { 
-			return newPropertyModel(new FileInputStream(file)); 
+    	if ( !searchMap ) {
+    		if (file.exists()) {
+    		    return newPropertyModel(new FileInputStream(file)); 
+    		}
+    		else {
+    			return new PropertyModel();
+    		} 
 		}
         if ( propertyFileMap.containsKey(file) ) { 
 			return (PropertyModel) propertyFileMap.get(file); 
 		}
-        PropertyModel model = newPropertyModel(new FileInputStream(file));
+        
+        
+        PropertyModel model = null;
+        if (file.exists()) {
+            model = newPropertyModel(new FileInputStream(file)); 
+        } 
+        else {
+            model = new PropertyModel();
+        }
         propertyFileMap.put(file, model);
         return model;
     }
