@@ -72,7 +72,7 @@ import org.mevenide.project.dependency.DependencySplitter;
  */
 public class DefaultReportsFinder implements IReportsFinder {
 	/**
-	 * implementation of GRepInputStream found @ http://www.heise.de/ix/artikel/E/1996/06/142/05.shtml
+	 * implementation of GrepInputStream found @ http://www.heise.de/ix/artikel/E/1996/06/142/05.shtml
 	 * 
 	 * @author Ute Schneider
 	 */
