@@ -1,7 +1,0 @@
-Manifest-Version: 1.0
-Package: org.mevenide.javahelp
-Extension-Name: maven-javahelp-plugin
-Specification-Title: Convert xdocs into JavaHelp
-Implementation-Title: org.mevenide.javahelp
-Implementation-Vendor: Mevenide
-Implementation-Version: 0.1
