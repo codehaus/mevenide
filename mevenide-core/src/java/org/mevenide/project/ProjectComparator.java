@@ -70,6 +70,7 @@ import org.apache.maven.project.Version;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.mevenide.util.MevenideUtils;
 
 /**
  * 
@@ -170,17 +171,6 @@ public class ProjectComparator {
         return (newValue != null || oldValue != null);
     }
 
-    private boolean notEquivalent(Object newValue, Object oldValue) {
-        // if both null, no difference
-        if (newValue == null && oldValue == null) {
-            return false;
-        }
-        else if (newValue == null){
-        	return true;
-        }
-        return (!newValue.equals(oldValue));
-    }
-
     private void detectObjectChange(Object newObject, Object oldObject) throws ShortCircuitException {
         if ((newObject == null || oldObject == null) &&
         	! (newObject == null && oldObject == null)) {
@@ -189,7 +179,7 @@ public class ProjectComparator {
     }
 
     private void detectAttributeChange(Object newValue, Object oldValue) throws ShortCircuitException {
-        if (notEquivalent(newValue, oldValue)) {
+        if (MevenideUtils.notEquivalent(newValue, oldValue)) {
             throw new ShortCircuitException();
         }
     }
