@@ -33,6 +33,7 @@ import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 import org.mevenide.environment.ConfigUtils;
+import org.mevenide.environment.ILocationFinder;
 
 
 /**  
@@ -45,7 +46,15 @@ public class JDomReportsFinder implements IReportsFinder {
     
     private static final Log log = LogFactory.getLog(JDomReportsFinder.class);
     
-    private File pluginsDir = new File(ConfigUtils.getDefaultLocationFinder().getMavenPluginsDir());
+    private File pluginsDir;
+    
+    public JDomReportsFinder() {
+        this(ConfigUtils.getDefaultLocationFinder());
+    }
+    
+    public JDomReportsFinder(ILocationFinder finder) {
+        pluginsDir = new File(finder.getMavenPluginsDir());
+    }
 
     public String[] findReports() throws Exception {
         File pluginsCache = new File(pluginsDir, "plugins.cache");
