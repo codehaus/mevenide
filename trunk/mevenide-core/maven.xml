@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:j="jelly:core">
+<project xmlns:j="jelly:core"
+	          xmlns:e="eclipse-plugin">
 	
 	<!-- crap -->
 	<preGoal name="test:test">
@@ -29,6 +30,7 @@
 	</goal>
 	
 	<goal name="mevenide:prepare-fs">
+	  <e:export-property property="maven.test.dest" context="maven-test-plugin"/>
 	  <copy toDir="${maven.test.dest}">
 		  <fileset dir="src/test/etc">
   			<include name="*.properties"/>
