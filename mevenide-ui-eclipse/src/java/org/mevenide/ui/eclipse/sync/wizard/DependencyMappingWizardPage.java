@@ -14,9 +14,7 @@
  */
 package org.mevenide.ui.eclipse.sync.wizard;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Properties;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -38,7 +36,6 @@ import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.PlatformUI;
 import org.mevenide.Environment;
 import org.mevenide.project.dependency.DependencyFactory;
-import org.mevenide.project.dependency.DependencyUtil;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.sync.model.DependencyGroup;
 import org.mevenide.ui.eclipse.sync.model.DependencyGroupContentProvider;
@@ -212,29 +209,26 @@ public class DependencyMappingWizardPage extends WizardPage {
 				new SelectionAdapter() {
 					public void widgetSelected(SelectionEvent e) {
 						DependencyPropertiesDialog dialog = new DependencyPropertiesDialog();
+						dialog.setInput(getSelectedDependency());
 						dialog.open();
-						Properties props = dialog.getProperties();
-						if ( props != null && props.keys() != null ) {
-							List keys = Collections.list(props.keys()); 
-							for (int i = 0; i < keys.size(); i++) {
-								String key = (String) keys.get(i);
-								String value = (String) props.get(key);
-								log.debug(key + " = " + value);
-								IStructuredSelection selection = (IStructuredSelection) viewer.getSelection();
-								Dependency affectedDependency = null;
-								Object sel = selection.getFirstElement();
-								log.debug("selected : " + sel.getClass() + " item");
-								if ( sel instanceof Dependency ) {
-									affectedDependency = (Dependency) sel;
-								}
-								else {
-									affectedDependency = ((DependencyGroupContentProvider.DependencyInfo) sel).getDependency();
-								}
-								affectedDependency.addProperty(key, value);
-								log.debug("Added property (" + key + ", " + value + ") to [" + DependencyUtil.toString(affectedDependency));
-							}
-							
+						Map props = dialog.getProperties();
+						if ( props != null ) {
+							Dependency affectedDependency = getSelectedDependency();
+							affectedDependency.setProperties(props);
 						}
+					}
+					private Dependency getSelectedDependency() {
+						IStructuredSelection selection = (IStructuredSelection) viewer.getSelection();
+						Dependency affectedDependency = null;
+						Object sel = selection.getFirstElement();
+						log.debug("selected : " + sel.getClass() + " item");
+						if ( sel instanceof Dependency ) {
+							affectedDependency = (Dependency) sel;
+						}
+						else {
+							affectedDependency = ((DependencyGroupContentProvider.DependencyInfo) sel).getDependency();
+						}
+						return affectedDependency;
 					}
 				}
 		);
