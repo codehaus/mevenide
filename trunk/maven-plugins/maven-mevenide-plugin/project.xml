@@ -1,0 +1,75 @@
+<?xml version="1.0" ?>
+<!-- referencing other files will fail when executing the plugin's goal from positions which cannot reach
+     the given path.. eg for me it failed in mevenide-netbeans-deps/commons-logging
+<!DOCTYPE project [
+    <!ENTITY code-reports SYSTEM "file:../mevenide-master/pom-fragments/plugin-pom-fragments/code-reports.xml">
+    <!ENTITY scm-reports SYSTEM "file:../mevenide-master/pom-fragments/plugin-pom-fragments/scm-reports.xml">
+]>  -->
+<project>
+  <extend>${basedir}/../mevenide-master/plugin-base-project.xml</extend>
+  
+  <pomVersion>3</pomVersion>
+
+  <artifactId>maven-mevenide-plugin</artifactId>
+  <name>Maven Mevenide Plugin</name>
+  
+  <currentVersion>0.1-SNAPSHOT</currentVersion>
+  
+  <!-- shortDescription>The NBM plugin will create a Netbeans module file (.nbm) </shortDescription -->
+  <shortDescription>ddd</shortDescription>
+  
+  <inceptionYear>2004</inceptionYear>
+  
+  <licenses>
+    <license>
+        <name>Apache Public License 2.0 - for the plugin itself</name>
+        <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <name>Milos Kleint</name>
+      <id>mkleint</id>
+      <email>ca206216@tiscali.cz</email>
+      <roles>
+        <role>Creator</role>
+        <role>Developer</role>
+      </roles>
+    </developer>
+  </developers>
+  
+  <dependencies>
+        <dependency>
+    		<groupId>commons-jelly</groupId>	
+    		<artifactId>commons-jelly-tags-xml</artifactId>
+    		<version>20030211.142705</version>
+    	</dependency>    
+  </dependencies>
+  
+  <build> 
+     <sourceDirectory>src/java</sourceDirectory>
+    <resources> 
+       <resource> 
+         <directory>${basedir}</directory> 
+         <includes> 
+           <include>plugin.jelly</include> 
+           <include>plugin.properties</include> 
+           <include>project.properties</include> 
+           <include>project.xml</include> 
+         </includes> 
+       </resource> 
+     </resources> 
+   </build>   
+  
+   <reports>
+        <report>maven-changes-plugin</report> 
+	<report>maven-pmd-plugin</report>
+   	<report>maven-checkstyle-plugin</report>
+   	<report>maven-simian-plugin</report>
+        <report>maven-jxr-plugin</report>
+        <report>maven-javadoc-plugin</report>
+        <report>maven-changelog-plugin</report>
+        <report>maven-file-activity-plugin</report>
+	<report>maven-developer-activity-plugin</report>        
+   </reports>
+</project>
