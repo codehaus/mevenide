@@ -199,6 +199,11 @@ public class ProjectReader {
 		}
 		
 		Build build = project.getBuild();
-		return build;
+		
+		if ( build == null ) {
+		    project.setBuild(new Build());
+		}
+		
+		return project.getBuild();
 	}
 }
