@@ -16,7 +16,7 @@
         </p>
         <p>
         	Tho often the root of the problem is that dependency requirements are not fullfilled, 
-        	f.i. you should have ajde installed. If it is not, you can download it at <a href="htpp://eclipse.org/ajdt">AJDT website</a>.
+        	f.i. you should have ajde installed. If it is not, you can download it at <a href="http://eclipse.org/ajdt">AJDT website</a>.
         </p>
         <p>
 	        We will in the near future provide a site.xml descriptor to make the install easier.
