@@ -262,6 +262,12 @@ public class MavenCustomizer extends JPanel implements ProjectValidateObserver {
     private Node createRootNode( MavenProject project) {
         ConfigurationDescription[] generalChilds = new ConfigurationDescription[] {
             new ConfigurationDescription(
+                "DescCategory", // NOI18N
+                "Description", 
+                "org/mevenide/netbeans/project/resources/Bullet", // NOI18N
+                new DescriptionPanel(project), 
+                null),
+            new ConfigurationDescription(
                 "OrgCategory", // NOI18N
                 "Organization and Site", 
                 "org/mevenide/netbeans/project/resources/Bullet", // NOI18N

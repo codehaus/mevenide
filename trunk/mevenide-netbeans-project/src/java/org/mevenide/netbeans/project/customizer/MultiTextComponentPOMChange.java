@@ -287,7 +287,7 @@ public class MultiTextComponentPOMChange implements MavenPOMTreeChange {
         }
 
         public java.util.List getValueList(String parentKey, String childKey) {
-            return Collections.EMPTY_LIST;
+            return (java.util.List)vals.get(parentKey);
         }
         
     }

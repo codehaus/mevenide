@@ -56,13 +56,8 @@ public class BasicsPanel extends JPanel implements ProjectPanel {
     private OriginChange ocArtifactID;
     private OriginChange ocGroupID;
     private OriginChange ocPackage;
-    private OriginChange ocLogo;
-    private OriginChange ocUrl;
     private OriginChange ocCurrentVersion;
-    private OriginChange ocInceptionYear;
     private OriginChange ocName;
-    private OriginChange ocShortDescription;
-    private OriginChange ocDescription;
     
     private HashMap changes;
     
@@ -74,21 +69,6 @@ public class BasicsPanel extends JPanel implements ProjectPanel {
         valObserver = null;
         //TODO add listeners for immediatePropagation stuff.
         setName(NbBundle.getMessage(BasicsPanel.class, "BasicsPanel.name"));
-        btnUrl.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent event) {
-                String url = txtUrl.getText().trim();
-                url = project.getPropertyResolver().resolveString(url);
-                if (url.startsWith("http://")) {
-                    try {
-                        URL link = new URL(url);
-                        HtmlBrowser.URLDisplayer.getDefault().showURL(link);
-                    } catch (MalformedURLException exc) {
-                        NotifyDescriptor error = new NotifyDescriptor.Message("Is not a valid URL.", NotifyDescriptor.WARNING_MESSAGE);
-                        DialogDisplayer.getDefault().notify(error);
-                    }
-                }
-            }
-        });
         populateChangeInstances();
     }
     
@@ -116,32 +96,11 @@ public class BasicsPanel extends JPanel implements ProjectPanel {
         txtName = new javax.swing.JTextField();
         ocName = LocationComboFactory.createPOMChange(project, false);
         btnName = (JButton)ocName.getComponent();
-        lblInceptionYear = new javax.swing.JLabel();
-        txtInceptionYear = new javax.swing.JTextField();
-        ocInceptionYear = LocationComboFactory.createPOMChange(project, false);
-        btnInceptionYear = (JButton)ocInceptionYear.getComponent();
         lblPackage = new javax.swing.JLabel();
         txtPackage = new javax.swing.JTextField();
         ocPackage = LocationComboFactory.createPOMChange(project, false);
         btnPackage = (JButton)ocPackage.getComponent();
-        lblUrl = new javax.swing.JLabel();
-        txtUrl = new javax.swing.JTextField();
-        ocUrl = LocationComboFactory.createPOMChange(project, false);
-        btnUrlLoc = (JButton)ocUrl.getComponent();
-        btnUrl = new javax.swing.JButton();
-        lblLogo = new javax.swing.JLabel();
-        txtLogo = new javax.swing.JTextField();
-        ocLogo = LocationComboFactory.createPOMChange(project, false);
-        btnLogo = (JButton)ocLogo.getComponent();
-        lblShortDescription = new javax.swing.JLabel();
-        txtShortDescription = new javax.swing.JTextField();
-        ocShortDescription = LocationComboFactory.createPOMChange(project, false);
-        btnShortDescription = (JButton)ocShortDescription.getComponent();
-        lblDescription = new javax.swing.JLabel();
-        spDescription = new javax.swing.JScrollPane();
-        taDescription = new javax.swing.JTextArea();
-        ocDescription = LocationComboFactory.createPOMChange(project, true);
-        btnDescription = (JButton)ocDescription.getComponent();
+        jPanel1 = new javax.swing.JPanel();
 
         setLayout(new java.awt.GridBagLayout());
 
@@ -250,33 +209,6 @@ public class BasicsPanel extends JPanel implements ProjectPanel {
         gridBagConstraints.insets = new java.awt.Insets(3, 3, 0, 0);
         add(btnName, gridBagConstraints);
 
-        lblInceptionYear.setLabelFor(txtInceptionYear);
-        lblInceptionYear.setText(org.openide.util.NbBundle.getMessage(BasicsPanel.class, "DescPanel.lblInceptionYear.text"));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 4;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.insets = new java.awt.Insets(6, 0, 0, 0);
-        add(lblInceptionYear, gridBagConstraints);
-
-        txtInceptionYear.setMinimumSize(new java.awt.Dimension(50, 28));
-        txtInceptionYear.setPreferredSize(new java.awt.Dimension(100, 28));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 4;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.weightx = 0.1;
-        gridBagConstraints.insets = new java.awt.Insets(6, 3, 0, 0);
-        add(txtInceptionYear, gridBagConstraints);
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 4;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.insets = new java.awt.Insets(3, 3, 0, 0);
-        add(btnInceptionYear, gridBagConstraints);
-
         lblPackage.setLabelFor(txtPackage);
         lblPackage.setText(org.openide.util.NbBundle.getMessage(BasicsPanel.class, "BasicsPanel.lblPackage.text"));
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -304,124 +236,14 @@ public class BasicsPanel extends JPanel implements ProjectPanel {
         gridBagConstraints.insets = new java.awt.Insets(3, 3, 0, 0);
         add(btnPackage, gridBagConstraints);
 
-        lblUrl.setLabelFor(txtUrl);
-        lblUrl.setText(org.openide.util.NbBundle.getMessage(BasicsPanel.class, "DescPanel.lblUrl.text"));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 7;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.insets = new java.awt.Insets(6, 0, 0, 0);
-        add(lblUrl, gridBagConstraints);
-
-        txtUrl.setMinimumSize(new java.awt.Dimension(50, 26));
-        txtUrl.setPreferredSize(new java.awt.Dimension(50, 26));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 7;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.weightx = 0.1;
-        gridBagConstraints.insets = new java.awt.Insets(6, 3, 0, 0);
-        add(txtUrl, gridBagConstraints);
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 7;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.insets = new java.awt.Insets(3, 3, 0, 0);
-        add(btnUrlLoc, gridBagConstraints);
-
-        btnUrl.setText(org.openide.util.NbBundle.getMessage(BasicsPanel.class, "BasicPanel.btnUrl.text"));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 3;
-        gridBagConstraints.gridy = 7;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(3, 3, 0, 0);
-        add(btnUrl, gridBagConstraints);
-
-        lblLogo.setLabelFor(txtLogo);
-        lblLogo.setText(org.openide.util.NbBundle.getMessage(BasicsPanel.class, "DescPanel.lblLogo.text"));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 6;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.insets = new java.awt.Insets(6, 0, 0, 0);
-        add(lblLogo, gridBagConstraints);
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 6;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.weightx = 0.1;
-        gridBagConstraints.insets = new java.awt.Insets(6, 3, 0, 0);
-        add(txtLogo, gridBagConstraints);
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 6;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.insets = new java.awt.Insets(3, 3, 0, 0);
-        add(btnLogo, gridBagConstraints);
-
-        lblShortDescription.setLabelFor(txtShortDescription);
-        lblShortDescription.setText(org.openide.util.NbBundle.getMessage(BasicsPanel.class, "DescPanel.lblShortDescription.text"));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 8;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.insets = new java.awt.Insets(6, 0, 0, 0);
-        add(lblShortDescription, gridBagConstraints);
-
-        txtShortDescription.setMinimumSize(new java.awt.Dimension(100, 26));
-        txtShortDescription.setPreferredSize(new java.awt.Dimension(100, 26));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 8;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.weightx = 0.1;
-        gridBagConstraints.insets = new java.awt.Insets(6, 3, 0, 0);
-        add(txtShortDescription, gridBagConstraints);
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 8;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.insets = new java.awt.Insets(3, 3, 0, 0);
-        add(btnShortDescription, gridBagConstraints);
-
-        lblDescription.setLabelFor(taDescription);
-        lblDescription.setText(org.openide.util.NbBundle.getMessage(BasicsPanel.class, "DescPanel.lblDescription.text"));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 9;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.insets = new java.awt.Insets(6, 0, 0, 0);
-        add(lblDescription, gridBagConstraints);
-
-        taDescription.setMinimumSize(new java.awt.Dimension(200, 100));
-        spDescription.setViewportView(taDescription);
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 10;
-        gridBagConstraints.gridwidth = 4;
+        gridBagConstraints.gridwidth = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.weightx = 0.1;
         gridBagConstraints.weighty = 0.1;
-        gridBagConstraints.insets = new java.awt.Insets(6, 0, 0, 0);
-        add(spDescription, gridBagConstraints);
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 9;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        add(btnDescription, gridBagConstraints);
+        add(jPanel1, gridBagConstraints);
 
     }//GEN-END:initComponents
     
@@ -430,49 +252,28 @@ public class BasicsPanel extends JPanel implements ProjectPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnArtifactID;
     private javax.swing.JButton btnCurrentVersion;
-    private javax.swing.JButton btnDescription;
     private javax.swing.JButton btnGroupID;
-    private javax.swing.JButton btnInceptionYear;
-    private javax.swing.JButton btnLogo;
     private javax.swing.JButton btnName;
     private javax.swing.JButton btnPackage;
-    private javax.swing.JButton btnShortDescription;
-    private javax.swing.JButton btnUrl;
-    private javax.swing.JButton btnUrlLoc;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JLabel lblArtifactID;
     private javax.swing.JLabel lblCurrentVersion;
-    private javax.swing.JLabel lblDescription;
     private javax.swing.JLabel lblGroupID;
-    private javax.swing.JLabel lblInceptionYear;
-    private javax.swing.JLabel lblLogo;
     private javax.swing.JLabel lblName;
     private javax.swing.JLabel lblPackage;
-    private javax.swing.JLabel lblShortDescription;
-    private javax.swing.JLabel lblUrl;
-    private javax.swing.JScrollPane spDescription;
-    private javax.swing.JTextArea taDescription;
     private javax.swing.JTextField txtArtifactID;
     private javax.swing.JTextField txtCurrentVersion;
     private javax.swing.JTextField txtGroupID;
-    private javax.swing.JTextField txtInceptionYear;
-    private javax.swing.JTextField txtLogo;
     private javax.swing.JTextField txtName;
     private javax.swing.JTextField txtPackage;
-    private javax.swing.JTextField txtShortDescription;
-    private javax.swing.JTextField txtUrl;
     // End of variables declaration//GEN-END:variables
 
    private void populateChangeInstances() {
         createPOMChangeInstance("artifactId", txtArtifactID, ocArtifactID);
         createPOMChangeInstance("groupId", txtGroupID, ocGroupID);
         createPOMChangeInstance("currentVersion", txtCurrentVersion, ocCurrentVersion);
-        createPOMChangeInstance("inceptionYear", txtInceptionYear, ocInceptionYear);
-        createPOMChangeInstance("logo", txtLogo, ocLogo);
         createPOMChangeInstance("name", txtName, ocName);
         createPOMChangeInstance("package", txtPackage, ocPackage);
-        createPOMChangeInstance("url", txtUrl, ocUrl);
-        createPOMChangeInstance("shortDescription", txtShortDescription, ocShortDescription);
-        createPOMChangeInstance("description", taDescription, ocDescription);
    }
 
    private void createPOMChangeInstance(String propName, JTextComponent field, OriginChange oc) {
@@ -489,13 +290,8 @@ public class BasicsPanel extends JPanel implements ProjectPanel {
         assignValue("artifactId", resolve);
         assignValue("groupId", resolve);
         assignValue("currentVersion", resolve);
-        assignValue("inceptionYear", resolve);
-        assignValue("logo", resolve);
         assignValue("name", resolve);
         assignValue("package", resolve);
-        assignValue("url", resolve);
-        assignValue("shortDescription", resolve);
-        assignValue("description", resolve);
     }
      
    private void assignValue(String actionName, boolean resolve) {

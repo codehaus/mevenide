@@ -369,6 +369,12 @@ public class TeamPanel extends JPanel implements ProjectPanel {
                 vals.put("organization", mlist.getOrganization());
                 vals.put("timezone", mlist.getTimezone());
                 vals.put("url", mlist.getUrl());
+                //TODO remove roles hack
+                List roles = new ArrayList();
+                if (mlist.getRoles() != null) {
+                    roles.addAll(mlist.getRoles());
+                }
+                vals.put("roles", roles);
                 MultiTextComponentPOMChange change = new MultiTextComponentPOMChange(
                                                            "pom.developers.developer", 
                                                            vals, location, createFieldMap(true), 
@@ -394,8 +400,14 @@ public class TeamPanel extends JPanel implements ProjectPanel {
                 vals.put("organization", mlist.getOrganization());
                 vals.put("timezone", mlist.getTimezone());
                 vals.put("url", mlist.getUrl());
+                //TODO remove roles hack
+                List roles = new ArrayList();
+                if (mlist.getRoles() != null) {
+                    roles.addAll(mlist.getRoles());
+                }
+                vals.put("roles", roles);
                 MultiTextComponentPOMChange change = new MultiTextComponentPOMChange(
-                                                           "pom.developers.developer", 
+                                                           "pom.contributors.contributor", 
                                                            vals, location, createFieldMap(false), 
                                                            ocDummyOC, false);
                 
