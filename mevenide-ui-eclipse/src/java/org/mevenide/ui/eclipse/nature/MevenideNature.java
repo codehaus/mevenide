@@ -51,7 +51,6 @@ public class MevenideNature implements IProjectNature {
 	
 	public void configure() throws CoreException {
 		try {
-			//configureProject(project);
 			addMavenBuilder(project);
 			synchronizeProject(project);		
 		} 
@@ -62,7 +61,6 @@ public class MevenideNature implements IProjectNature {
 	}
 
 	public void deconfigure() throws CoreException {
-		//deconfigureProject(project);
 		removeMavenBuilder(project);
 	}
 	
