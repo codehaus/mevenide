@@ -29,11 +29,13 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceProxyVisitor;
 import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.ResourceAttributes;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IPluginDescriptor;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.QualifiedName;
+import org.eclipse.core.runtime.content.IContentTypeMatcher;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 
 import com.mockobjects.MockObject;
@@ -46,7 +48,27 @@ public class MockProject
 	extends MockObject
 	implements IProject {
 
-    public void setDefaultCharset(String charset, IProgressMonitor monitor) throws CoreException {
+    public ResourceAttributes getResourceAttributes() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public void revertModificationStamp(long value) throws CoreException {
+		// TODO Auto-generated method stub
+		
+	}
+	public void setResourceAttributes(ResourceAttributes attributes) throws CoreException {
+		// TODO Auto-generated method stub
+		
+	}
+	public IContentTypeMatcher getContentTypeMatcher() throws CoreException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public void open(int updateFlags, IProgressMonitor monitor) throws CoreException {
+		// TODO Auto-generated method stub
+		
+	}
+	public void setDefaultCharset(String charset, IProgressMonitor monitor) throws CoreException {
         // TODO Auto-generated method stub
     }
 	public IPath getWorkingLocation(String arg0) {

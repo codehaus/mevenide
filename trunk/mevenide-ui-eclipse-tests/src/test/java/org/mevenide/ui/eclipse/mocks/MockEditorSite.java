@@ -24,6 +24,7 @@ import org.eclipse.ui.IEditorActionBarContributor;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IKeyBindingService;
 import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 
 import com.mockobjects.MockObject;
@@ -57,6 +58,14 @@ public class MockEditorSite
 	public String getId() {
 		return null;
 	}
+	
+	 /* (non-Javadoc)
+	    * @see org.eclipse.ui.IWorkbenchPartSite#getPart()
+	    */
+	public IWorkbenchPart getPart() {
+	    return null;
+    }
+
 
 	/**
 	 * @see org.eclipse.ui.IWorkbenchPartSite#getPluginId()
