@@ -21,7 +21,7 @@ import java.io.File;
 import javax.swing.Action;
 import org.mevenide.netbeans.project.ActionProviderImpl;
 import org.mevenide.netbeans.project.MavenProject;
-import org.netbeans.spi.project.ui.support.LogicalViews;
+import org.netbeans.spi.project.ui.support.CommonProjectActions;
 import org.openide.filesystems.FileUtil;
 import org.openide.loaders.DataObject;
 import org.openide.nodes.FilterNode;
@@ -59,7 +59,7 @@ class WebAppFilterNode extends FilterNode {
         if (isTopLevelNode) {
             Action[] toReturn = new Action[1];
             ActionProviderImpl provider = (ActionProviderImpl)project.getLookup().lookup(ActionProviderImpl.class);
-            toReturn[0] = LogicalViews.newFileAction();
+            toReturn[0] = CommonProjectActions.newFileAction();
             return toReturn;
         } else {
             return super.getActions(param);

@@ -21,7 +21,7 @@ import javax.swing.Action;
 import org.mevenide.netbeans.project.ActionProviderImpl;
 import org.mevenide.netbeans.project.MavenProject;
 import org.netbeans.api.project.SourceGroup;
-import org.netbeans.spi.project.ui.support.LogicalViews;
+import org.netbeans.spi.project.ui.support.CommonProjectActions;
 import org.openide.loaders.DataFolder;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
@@ -65,7 +65,7 @@ class DocsRootNode extends AbstractNode {
     public javax.swing.Action[] getActions(boolean param) {
         Action[] toReturn = new Action[4];
         ActionProviderImpl provider = (ActionProviderImpl)project.getLookup().lookup(ActionProviderImpl.class);
-        toReturn[0] = LogicalViews.newFileAction();
+        toReturn[0] = CommonProjectActions.newFileAction();
         toReturn[1] = null;
         toReturn[2] = provider.createCustomMavenAction("Generate Site", "site:generate");
         String method = project.getPropertyResolver().getResolvedValue("maven.site.deploy.method"); //NOI18N
