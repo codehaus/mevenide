@@ -54,7 +54,7 @@
   <!-- ==================================== -->
   <goal name="mevenide-eclipse:clean" prereqs="clean:clean">
     <ant:delete dir="${maven.repo.local}/eclipse" quiet="true"/>
-  	<ant:delete dir="${maven.repo.local}/mevenide" quiet="true"/>
+  	<ant:delete dir="${maven.repo.local}/mevenide/jars" quiet="true"/>
   </goal>
   
   <goal name="mevenide:clean-lib">
@@ -134,7 +134,8 @@
       <j:set var="maven.multiproject.includes" value="${maven.multiproject.netbeans.includes}"/>
       <j:set var="goal" value="clean"/> 
       <attainGoal name="multiproject:goal"/>
-      <ant:delete dir="${maven.repo.local}/mevenide" quiet="true"/>
+      <ant:delete dir="${maven.repo.local}/mevenide/jars" quiet="true"/>
+      <ant:delete dir="${maven.repo.local}/mevenide/nbms" quiet="true"/>
   </goal>
 
     
