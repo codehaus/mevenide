@@ -29,6 +29,7 @@ import org.apache.maven.project.Dependency;
 import org.apache.maven.project.Project;
 import org.mevenide.netbeans.project.MavenProject;
 import org.mevenide.project.dependency.DefaultDependencyPathFinder;
+import org.mevenide.project.io.JarOverrideReader2;
 
 /**
  *
@@ -51,8 +52,13 @@ public class TestSrcBuildClassPathImpl extends AbstractProjectClassPathImpl {
         while (it.hasNext()) {
             Dependency dep = (Dependency)it.next();
             if (dep.getType() == null || "jar".equals(dep.getType())) {
-                DefaultDependencyPathFinder finder = new DefaultDependencyPathFinder(dep);
-                String path = finder.resolve();
+                String path = JarOverrideReader2.getInstance().processOverride(dep, 
+                                                                      getMavenProject().getPropertyResolver(), 
+                                                                      getMavenProject().getLocFinder());
+                if (path == null) {
+                    DefaultDependencyPathFinder finder = new DefaultDependencyPathFinder(dep);
+                    path = finder.resolve();
+                }
                 logger.debug("dep path=" + path);
                 File file = new File(path);
                 if (file.getName().endsWith(".jar")) { //NOI18N
