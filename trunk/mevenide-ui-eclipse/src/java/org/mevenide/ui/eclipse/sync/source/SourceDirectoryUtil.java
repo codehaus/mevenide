@@ -11,7 +11,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  */
-package org.mevenide.ui.eclipse.sync.views;
+package org.mevenide.ui.eclipse.sync.source;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,7 +31,7 @@ public class SourceDirectoryUtil {
 	
 	private static Map sourceIndexMap;
 
-	final static String[] sourceTypes = {
+	public final static String[] sourceTypes = {
 		ProjectConstants.MAVEN_SRC_DIRECTORY,
 		ProjectConstants.MAVEN_ASPECT_DIRECTORY,
 		ProjectConstants.MAVEN_TEST_DIRECTORY,
@@ -41,7 +41,7 @@ public class SourceDirectoryUtil {
 		ProjectConstants.MAVEN_INTEGRATION_TEST_RESOURCE,		
 	};
 	
-	static Integer getSourceTypeIndex(String sourceType) {
+	public static Integer getSourceTypeIndex(String sourceType) {
 		if ( sourceIndexMap == null ) {
 			sourceIndexMap = new HashMap();
 			for (int i = 0; i < sourceTypes.length; i++) {
