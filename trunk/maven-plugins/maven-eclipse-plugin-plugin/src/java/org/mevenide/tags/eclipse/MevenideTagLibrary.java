@@ -30,5 +30,6 @@ public class MevenideTagLibrary extends TagLibrary {
     public MevenideTagLibrary() {
         registerTag("adapt-version", AdaptVersionTag.class);
         registerTag("update-plugin-libraries", UpdatePluginLibsTag.class);
+        registerTag("find-license", FindLicenseTag.class);
     }
 }
