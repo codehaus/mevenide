@@ -65,6 +65,14 @@ public class ProjectReader {
 		return project;
 	}
 	
+	/**
+	 * returns all source directories specified in the POM.
+	 * returns a Map whose keys are the src directories type (src, test, aspects, integration) 
+	 * and whose entries are the absolute path of the src dirs.
+	 * @param pom
+	 * @return
+	 * @throws Exception
+	 */
 	public Map getSourceDirectories(File pom) throws Exception {
 		Map sourceDirectories = new HashMap();
 		
@@ -105,11 +113,25 @@ public class ProjectReader {
 		return sourceDirectories;
 	}
 
+	/** 
+	 * checks if a given path is a valid directory 
+	 * 
+	 * @param sourceDirectory
+	 * @return
+	 */
 	private boolean isNull(String sourceDirectory) {
 		return sourceDirectory == null 
 		 		|| sourceDirectory.trim().equals("");
 	}
 
+	/**
+	 * utility method tha allows some factorization
+	 * 
+	 * @param pom
+	 * @return
+	 * @throws Exception
+	 * @throws FileNotFoundException
+	 */
 	private static Build getBuild(File pom)
 		throws Exception, FileNotFoundException {
 		Project project; 
@@ -124,6 +146,14 @@ public class ProjectReader {
 		return build;
 	}
 	
+	/**
+	 * @deprecated no replacement 
+	 * 
+	 * still used in org.mevenide.ui.eclipse.sync.pom.PomSynchronizer
+	 * 
+	 * @param pom
+	 * @return
+	 */
 	public static boolean isWellFormed(File pom) {
 		try {
 			new SAXBuilder().build(pom);
