@@ -153,7 +153,7 @@ public class SourceDirectoryMappingWizardPage extends WizardPage {
 				newInput = getSavedInput(project);
 			}
 			catch (Exception e) {
-				log.info("Error occured while restoring previously saved SourceDirectoryGroup for project '" + project.getName() + "'. Reason : " + e); 
+				log.debug("Error occured while restoring previously saved SourceDirectoryGroup for project '" + project.getName() + "'. Reason : " + e); 
 	
 			}
 			if ( newInput == null ) {

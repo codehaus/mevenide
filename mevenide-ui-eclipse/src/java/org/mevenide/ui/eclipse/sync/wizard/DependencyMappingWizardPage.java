@@ -112,7 +112,7 @@ public class DependencyMappingWizardPage extends WizardPage {
 		GridData addButtonData = new GridData(GridData.FILL_HORIZONTAL);
 		addButtonData.grabExcessHorizontalSpace = true;
 		addButton.setLayoutData(addButtonData);
-		addButton.setEnabled(false);	
+		addButton.setEnabled(true);	
 	
 		removeButton = new Button(composite, SWT.PUSH);
 		removeButton.setText("Remove");
@@ -120,7 +120,7 @@ public class DependencyMappingWizardPage extends WizardPage {
 		GridData removeButtonData = new GridData(GridData.FILL_HORIZONTAL);
 		removeButtonData.grabExcessHorizontalSpace = true;
 		removeButton.setLayoutData(removeButtonData);
-		removeButton.setEnabled(false);
+		removeButton.setEnabled(true);
 		
 		propertiesButton = new Button(composite, SWT.PUSH);
 		propertiesButton.setText("Properties");
@@ -128,10 +128,11 @@ public class DependencyMappingWizardPage extends WizardPage {
 		GridData propertiesButtonData = new GridData(GridData.FILL_HORIZONTAL);
 		propertiesButtonData.grabExcessHorizontalSpace = true;
 		propertiesButton.setLayoutData(propertiesButtonData);
+		propertiesButton.setEnabled(false);
 		
 		refreshButton = new Button(composite, SWT.PUSH);
 		refreshButton.setText("Refresh");
-		refreshButton.setToolTipText("Refresh project dependencies");
+		refreshButton.setToolTipText("Refresh from .classpath");
 		GridData refreshButtonData = new GridData(GridData.FILL_HORIZONTAL);
 		refreshButtonData.grabExcessHorizontalSpace = true;
 		refreshButton.setLayoutData(refreshButtonData);
@@ -141,6 +142,7 @@ public class DependencyMappingWizardPage extends WizardPage {
 					public void widgetSelected(SelectionEvent e) {
 						try {
 							FileDialog dialog = new FileDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell());
+							dialog.setFilterPath(Mevenide.getPlugin().getMavenRepository());
 							String path = dialog.open();
 							if ( path != null ) {
 								((DependencyGroup)viewer.getInput()).addDependency(DependencyFactory.getFactory().getDependency(path));
@@ -148,7 +150,7 @@ public class DependencyMappingWizardPage extends WizardPage {
 							viewer.refresh();
 						}
 						catch ( Exception ex ) {
-							log.info("Problem occured while trying to add a Dependency due to : " + e);
+							log.debug("Problem occured while trying to add a Dependency due to : " + e);
 						}
 					}
 				}
@@ -182,10 +184,14 @@ public class DependencyMappingWizardPage extends WizardPage {
 		refreshButton.addSelectionListener(
 				new SelectionAdapter() {
 					public void widgetSelected(SelectionEvent e) {
-						setInput(project);
+						initInput(project);
 					}
 				}
 		);
+	}
+	
+	private void initInput(IProject project) {
+		viewer.setInput(new DependencyGroup(project));
 	}
 	
 	public void setInput(IProject project) {
@@ -197,7 +203,7 @@ public class DependencyMappingWizardPage extends WizardPage {
 				newInput = getSavedInput(project);
 			}
 			catch (Exception e) {
-				log.info("Error occured while restoring previously saved DependencyGroup for project '" + project.getName() + "'. Reason : " + e);
+				log.debug("Error occured while restoring previously saved DependencyGroup for project '" + project.getName() + "'. Reason : " + e);
 	
 			}
 			if ( newInput == null ) {
