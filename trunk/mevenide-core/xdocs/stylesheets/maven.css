@@ -12,6 +12,7 @@ body {
 	border-left: none #003366;
 
  }
+
 img.handle {
  border: 0;
  padding-right: 2px;
@@ -101,6 +102,12 @@ a[name]:hover, #leftcol a[name]:hover {
 
 a:link, #breadcrumbs a:visited, #navcolumn a:visited, .app a:visited, .tasknav a:visited {
  color: #000000;
+ }
+
+#documentContent a {
+ color: #3366AA;
+ text-decoration:none;
+ 
  }
 
 a:active, a:hover, #leftcol a:active, #leftcol a:hover {

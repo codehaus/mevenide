@@ -77,7 +77,7 @@ public final class ArgumentsManager {
 	public static String[] getMavenClasspath() {
 //		File mavenLib = new File(Environment.getMavenHome(), "lib");
 //		return new String[] { new File(mavenLib, "forehead-1.0-beta-5.jar").getAbsolutePath() };
-		return RunnerHelper.getHelper().getMainClass();
+		return new String[] { RunnerHelper.getHelper().getForeheadLibrary() };
 	}
 
 	/**

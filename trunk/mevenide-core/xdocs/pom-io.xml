@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<document>
+    <properties>
+    	<author email="rhill@wanadoo.fr">Gilles Dodinet</author>
+        <title>Runner Overview</title>
+    </properties>
+    <body>
+        <section name="Pom Manipulation Overview">
+        	<div id="documentContent">
+        	  <p>
+        	  	To be done.
+        	  </p>
+        	  <p><hr/></p>
+        	  <p>
+        	    <center>
+        	      <img src="images/diags/project-io-diagram.gif"/><br/>
+        	      <font size="-1"><b>Figure 1</b><i>Project IO related classes</i></font>
+        	    </center>	
+        	  </p>
+			</div>
+		</section>
+    </body>
+</document>

@@ -68,5 +68,5 @@ public abstract class RunnerHelper {
     	RunnerHelper.helper = runnerHelper;
     }
     
-    public abstract String[] getMainClass();
+    public abstract String getForeheadLibrary();
 }
