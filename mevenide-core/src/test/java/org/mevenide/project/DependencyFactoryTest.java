@@ -38,6 +38,9 @@ public class DependencyFactoryTest extends TestCase {
 	private DependencyFactory dependencyFactory;
 	
 	protected void setUp() throws Exception {
+		File mavenLocal = new File(System.getProperty("user.home"), ".maven");
+		File localRepo = new File(mavenLocal, "repository");
+		Environment.setMavenRepository(localRepo.getAbsolutePath());
 		mevenideHome = new File(System.getProperty("user.home"), ".mevenide");
 		File rootDirectory = new File(mevenideHome, "repository");
 		rootDirectory.mkdirs();

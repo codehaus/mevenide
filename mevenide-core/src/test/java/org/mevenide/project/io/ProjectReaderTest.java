@@ -73,7 +73,7 @@ public class ProjectReaderTest extends TestCase {
 		while (iterator.hasNext()) {
 			String sourceType = (String) iterator.next();
 			resultTypes.add(sourceType);
-			resultSources.add(sourceDirectories.get(sourceType));
+			resultSources.add(sourceDirectories.get(sourceType));	
 		}
 		
 //		assertEquals(expectedSources, resultSources);

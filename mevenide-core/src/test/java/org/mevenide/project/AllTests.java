@@ -32,6 +32,8 @@ public class AllTests  {
         
 		suite.addTestSuite(DependencyFactoryTest.class);
 		suite.addTestSuite(DependencyResolverTest.class);
+		suite.addTestSuite(DependencyUtilTest.class);
+		suite.addTestSuite(SourceDirectoryUtilTest.class);
 		
         return suite;
     }
