@@ -22,5 +22,24 @@
    	    </p>
    	  </div>
     </section>
+    <section name="Versions">
+    	<div id="documentContent">
+      	  <p>
+      	  	 Latest version available for download is 0.2. It works with Eclipse 3.0, and should also with 2.x stream builds. 
+      	  	 Also please note that the PDE Plugin doesnot support OSGI Bundles yet.
+      	  </p>
+      	</div>
+    </section>
+    <section name="Installing">
+      <div id="documentContent">
+      <p>
+		To install the plugin automatically, please add the <code>http://mevenide.codehaus.org/repository</code> to your <code>maven.repo.remote</code> parameter.
+		And use the plugin:download maven goal to install the plugin.
+		<source>
+	maven -DartifactId=maven-eclipse-plugin-plugin -DgroupId=mevenide -Dversion=0.2 plugin:download
+		</source>
+	  </p>
+   	  </div>
+    </section>
   </body>
 </document>
