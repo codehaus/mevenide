@@ -76,6 +76,7 @@ public abstract class ArtifactGroup {
 	
 	protected boolean isInherited;
 	
+	
 	protected ArtifactGroup parentGroup; 
 	
 	public ArtifactGroup()  { }
@@ -138,4 +139,5 @@ public abstract class ArtifactGroup {
 	
 	public abstract boolean isDuplicated(Object element) ;
 
+    
 }

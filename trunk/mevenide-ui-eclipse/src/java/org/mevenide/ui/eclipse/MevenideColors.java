@@ -58,23 +58,19 @@ import org.eclipse.swt.graphics.Color;
  */
 public class MevenideColors {
 	
-	static {
-		Runtime.getRuntime().addShutdownHook(
-			new Thread() {
-                public void run() {
-                    WHITE.dispose();
-					GREY.dispose();
-					BLACK.dispose();
-					ORANGE.dispose();
-                }	
-			}
-		);
-	}
+	protected void finalize() throws Throwable {
+        WHITE.dispose();
+		GREY.dispose();
+		BLACK.dispose();
+		ORANGE.dispose();
+		GREEN.dispose();
+    }
 	
 	public static final Color WHITE = new Color(null, 255, 255, 255);
 	public static final Color GREY = new Color(null, 156, 156, 156);
 	public static final Color BLACK = new Color(null, 0, 0, 0);
 	public static final Color ORANGE = new Color(null, 255, 178, 0);
+	public static final Color GREEN = new Color(null, 0, 127, 0);
 
 }
 

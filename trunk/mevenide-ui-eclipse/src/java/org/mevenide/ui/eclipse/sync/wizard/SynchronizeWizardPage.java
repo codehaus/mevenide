@@ -100,6 +100,7 @@ import org.eclipse.ui.model.WorkbenchContentProvider;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.mevenide.Environment;
 import org.mevenide.project.dependency.DependencyFactory;
+import org.mevenide.project.dependency.DependencyUtil;
 import org.mevenide.project.io.ProjectReader;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.sync.model.dependency.DependencyGroup;
@@ -442,6 +443,36 @@ public class SynchronizeWizardPage extends WizardPage {
 		Project mavenProject = ProjectReader.getReader().read(new File(project.getFile("project.xml").getLocation().toOSString()));
 		String extend = mavenProject.getExtend();
 
+		Map pomSourceDirectories = 
+			ProjectReader.getReader().getSourceDirectories(new File(project.getFile("project.xml").getLocation().toOSString()));
+		
+		Map pomResources = 		
+			ProjectReader.getReader().getAllResources(new File(project.getFile("project.xml").getLocation().toOSString()));
+
+		pomSourceDirectories.putAll(pomResources);
+
+		Iterator pomSourceDirectoriesIterator = pomSourceDirectories.keySet().iterator();
+		while (pomSourceDirectoriesIterator.hasNext()) {
+            String directoryType = (String) pomSourceDirectoriesIterator.next();
+			String directory = (String) pomSourceDirectories.get(directoryType);
+			boolean isInPom = false;
+			for (int i = 0; i < group.getSourceDirectories().size(); i++) {
+                SourceDirectory savedSourceDir =  (SourceDirectory) group.getSourceDirectories().get(i);
+				if ( savedSourceDir.getDirectoryPath().replace('\\', '/').equals(directory.replace('\\', '/')) ) {
+					isInPom = true;
+					savedSourceDir.setDirectoryType(directoryType);
+					savedSourceDir.setInPom(true);
+				}
+				
+            }
+			if ( !isInPom ) {
+				SourceDirectory newSourceDirectory = new SourceDirectory(directory, group);
+				newSourceDirectory.setDirectoryType(directoryType);
+				newSourceDirectory.setInPom(true);
+				group.addSourceDirectory(newSourceDirectory);
+			}
+        }
+
 		if ( extend != null && !extend.trim().equals("") ) {
 			String resolvedExtend = MevenideUtil.resolve(mavenProject, extend);
 	
@@ -703,6 +734,18 @@ public class SynchronizeWizardPage extends WizardPage {
 		Project mavenProject = ProjectReader.getReader().read(new File(project.getFile("project.xml").getLocation().toOSString()));
 		String extend = mavenProject.getExtend();
 		
+		List pomDependencies = mavenProject.getDependencies();
+		for (int i = 0; i < pomDependencies.size(); i++) {
+			boolean isInPom;
+            for (int j = 0; j < group.getDependencyWrappers().size(); j++) {
+                DependencyWrapper wrapper = (DependencyWrapper) group.getDependencyWrappers().get(i);
+				if ( DependencyUtil.areEquals((Dependency)pomDependencies.get(i), wrapper.getDependency()) ) {
+					wrapper.setInPom(true);
+					isInPom = true;
+				}
+            }
+        }
+
 		if ( extend != null && !extend.trim().equals("") ) {
 			String resolvedExtend = MevenideUtil.resolve(mavenProject, extend);
 

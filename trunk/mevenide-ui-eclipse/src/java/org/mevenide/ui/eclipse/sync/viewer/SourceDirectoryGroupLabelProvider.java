@@ -76,6 +76,9 @@ public class SourceDirectoryGroupLabelProvider implements ITableLabelProvider, I
 		if ( ((SourceDirectory) element).isReadOnly() ) {
 			return MevenideColors.GREY;
 		}
+		if ( ((SourceDirectory) element).isInPom() ) {
+			return MevenideColors.GREEN;
+		}
 		if ( ((SourceDirectory) element).getGroup().isDuplicated(element) ) {
 			return MevenideColors.ORANGE;
 		}

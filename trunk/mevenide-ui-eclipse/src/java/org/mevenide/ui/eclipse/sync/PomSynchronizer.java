@@ -199,7 +199,7 @@ public class PomSynchronizer extends AbstractPomSynchronizer implements ISynchro
 			resolvedExtend = new File(new File(project.getFile("project.xml").getLocation().toOSString()).getParentFile(), resolvedExtend).getAbsolutePath();
 		}			
 
-		if ( new File(resolvedExtend).exists() ) {
+		if ( new File(resolvedExtend).exists() && new File(resolvedExtend).isFile() ) {
 			List inheritedDependencies = new ArrayList();
 			List inheritedDependencyWrappers = dependencyGoup.getInheritedDependencyWrappers();
 			for (int i = 0; i < inheritedDependencyWrappers.size(); i++) {

@@ -66,6 +66,7 @@ public class DependencyWrapper {
 	private DependencyGroup dependencyGroup;
 	
 	private boolean isReadOnly;
+	private boolean isInPom;
 	
 	public DependencyWrapper(Dependency dependency, boolean isInherited, DependencyGroup group) {
 		if ( dependency == null ) {
@@ -114,6 +115,14 @@ public class DependencyWrapper {
 
     public void setDependencyGroup(DependencyGroup dependencyGroup) {
         this.dependencyGroup = dependencyGroup;
+    }
+
+    public boolean isInPom() {
+        return isInPom;
+    }
+
+    public void setInPom(boolean isInPom) {
+        this.isInPom = isInPom;
     }
 
 }

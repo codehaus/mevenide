@@ -54,11 +54,13 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.maven.project.Build;
 import org.apache.maven.project.Dependency;
 import org.apache.maven.project.Project;
+import org.apache.maven.project.Resource;
 import org.mevenide.ProjectConstants;
 import org.mevenide.util.DefaultProjectUnmarshaller;
 import org.mevenide.util.MevenideUtil;
@@ -182,5 +184,27 @@ public class ProjectReader {
 		return dependency;
 	}
 
-	
+	public Map getAllResources(File referencedPom) throws Exception {
+		Map allResources = new HashMap();
+		Project referencedProject = read(referencedPom);
+		if ( referencedProject.getBuild() != null ) {
+			List res = referencedProject.getBuild().getResources();
+			for (int i = 0; i < res.size(); i++) {
+                String directory = ((Resource) res.get(i)).getDirectory();
+                if ( !allResources.containsValue(directory) ) {
+                	allResources.put(ProjectConstants.MAVEN_RESOURCE, directory);
+                }
+            }
+			if ( referencedProject.getBuild().getUnitTest() != null ) {
+				List utRes = referencedProject.getBuild().getUnitTest().getResources();
+				for (int i = 0; i < utRes.size(); i++) {
+					String directory = ((Resource) utRes.get(i)).getDirectory();
+					if ( !allResources.containsValue(directory) ) {
+						allResources.put(ProjectConstants.MAVEN_TEST_RESOURCE, directory);
+					}
+				}
+			}
+		}
+		return allResources;
+	}
 }
