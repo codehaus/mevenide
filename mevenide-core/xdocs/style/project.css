@@ -1,0 +1,37 @@
+#leftColumn {
+  width: 200;
+  border-bottom: none;
+}
+
+#navBox {
+  width: 200;
+}
+
+.sectionTitle {
+  padding: 10px;
+  border:none;
+  border-bottom: 1px solid #999999;
+  color: #990000;
+  background-color: #ffffff;
+}
+
+.subsectionTitle {
+  padding: 6px;
+  border:none;
+  border-bottom: 1px solid #999999;
+  color: #990000;
+  background-color: #ffffff;
+  text-size: normal;
+}
+
+#breadcrumbs {
+  font-size: small;
+  margin: 0pt;
+  background-color: #ffffff;
+  color: #999999;
+}
+
+#footer {
+  text-align: center; 
+  border-top: 1px solid #999999;
+}
