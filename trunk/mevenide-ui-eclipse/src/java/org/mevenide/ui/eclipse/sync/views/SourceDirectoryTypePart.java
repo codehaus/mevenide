@@ -108,12 +108,15 @@ public class SourceDirectoryTypePart extends ViewPart {
 			public void run() {
 				
 				try {
-					saveState();
+					if ( project != null ) {
+						saveState();
+						SynchronizerFactory.getSynchronizer(ISynchronizer.IDE_TO_POM).synchronize();
+					}
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 				
-				SynchronizerFactory.getSynchronizer(ISynchronizer.IDE_TO_POM).synchronize();
+				
 			}
 		};	
 		synchronizeAction.setImageDescriptor(MavenPlugin.getImageDescriptor("save-16.gif"));
@@ -123,7 +126,9 @@ public class SourceDirectoryTypePart extends ViewPart {
 			public void run() {
 				
 				try {
-					setInput(project);
+					if ( project != null ) {
+						setInput(project);
+					}
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

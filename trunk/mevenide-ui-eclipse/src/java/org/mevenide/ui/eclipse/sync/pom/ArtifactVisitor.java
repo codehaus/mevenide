@@ -93,10 +93,11 @@ public class ArtifactVisitor {
 			//check if entryPath is in repo, if not warn the user about the guessed groupId
 			//add it to the pomSynchronizer list of unresolved dependencies so that we can 
 			//later display a MessageBox
-			String path = new File(pathResolver.getAbsolutePath(classpathEntry.getPath())).getName();
-			if ( !isClassFolder && !FileUtil.inLocalRepository(path) ) {
-				pomSynchronizer.addUnresolvedDependency(entryPath);
-			}
+			//no longer used since we rely on DependencySynchronizeWizard and DependencyTypePart
+//			String path = new File(pathResolver.getAbsolutePath(classpathEntry.getPath())).getName();
+//			if ( !isClassFolder && !FileUtil.inLocalRepository(path) ) {
+//				pomSynchronizer.addUnresolvedDependency(entryPath);
+//			}
 			
  		}
 		
