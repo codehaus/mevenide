@@ -63,8 +63,7 @@ import org.eclipse.ui.views.properties.IPropertySource;
  * @version $Id$
  */
 public abstract class AbstractPomPropertySource 
-	implements IPomPropertySource, IAdaptable, 
-	IWorkbenchAdapter {
+	implements IPomPropertySource, IAdaptable, IWorkbenchAdapter {
 
 	protected static final String EMPTY_STR = "";
 	
