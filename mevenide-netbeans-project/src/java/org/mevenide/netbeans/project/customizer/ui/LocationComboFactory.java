@@ -84,6 +84,10 @@ public class LocationComboFactory {
         return new OriginChange(box);
     }
     
+    /**
+     * @param project - the project instance
+     * @param showText - will show both text and icon if true, otherwise just icon.
+     */
     public static OriginChange createPOMChange(MavenProject project, boolean showText) {
         LocationComboBox box = new LocationComboBox(showText);
         boolean hasParent = project.getOriginalMavenProject().getExtend() != null;

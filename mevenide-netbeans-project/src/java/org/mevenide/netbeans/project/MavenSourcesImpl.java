@@ -57,12 +57,14 @@ public class MavenSourcesImpl implements Sources {
     private static final Log logger = LogFactory.getLog(MavenSourcesImpl.class);
     public static final String TYPE_RESOURCES = "Resources"; //NOI18N
     public static final String TYPE_XDOCS = "XDocs"; //NOI18N
+    public static final String TYPE_GEN_SOURCES = "GeneratedSources"; //NOI18N
     public static final String NAME_PROJECTROOT = "ProjectRoot"; //NOI18N
     public static final String NAME_XDOCS = "XDocs"; //NOI18N
     public static final String NAME_SOURCE = "1SourceRoot"; //NOI18N
     public static final String NAME_TESTSOURCE = "2TestSourceRoot"; //NOI18N
     public static final String NAME_INTEGRATIONSOURCE = "4IntegrationSourceRoot"; //NOI18N
     public static final String NAME_ASPECTSOURCE = "3AspectSourceRoot"; //NOI18N
+    public static final String NAME_GENERATED_SOURCE = "5GeneratedSourceRoot"; //NOI18N
     
     private MavenProject project;
     private List listeners;
@@ -71,6 +73,7 @@ public class MavenSourcesImpl implements Sources {
     private Map javaGroup;
     private HashMap resGroup;
     private SourceGroup xdocsGroup;
+    private SourceGroup genSrcGroup;
     
     private Object LOCK = new Object();
     
@@ -100,6 +103,8 @@ public class MavenSourcesImpl implements Sources {
                 changed = changed | checkJavaGroupCache(folder, NAME_ASPECTSOURCE, "Aspect Sources");
                 folder = URLMapper.findFileObject(project.getIntegrationTestsDirectory().toURL());
                 changed = changed | checkJavaGroupCache(folder, NAME_INTEGRATIONSOURCE, "Integration Test Sources");
+                folder = URLMapper.findFileObject(project.getGeneratedSourcesDir().toURL());
+                changed = changed | checkGeneratedGroupCache(folder);
             } catch (MalformedURLException exc) {
                 logger.error("Malformed URL", exc);
                 changed = false;
@@ -151,7 +156,6 @@ public class MavenSourcesImpl implements Sources {
         if (JavaProjectConstants.SOURCES_TYPE_JAVA.equals(str)) {
             List toReturn = new ArrayList();
             synchronized (LOCK) {
-                boolean changed = false;
                 // don't fire event synchronously..
                 checkChanges(false);
                 toReturn.addAll(javaGroup.values());
@@ -162,6 +166,24 @@ public class MavenSourcesImpl implements Sources {
         }
         if (TYPE_XDOCS.equals(str)) {
             return createXDocs();
+        }
+        if (TYPE_GEN_SOURCES.equals(str)) {
+            try {
+                FileObject folder = URLMapper.findFileObject(project.getGeneratedSourcesDir().toURL());
+                SourceGroup grp = null;
+                synchronized (LOCK) {
+                    checkGeneratedGroupCache(folder);
+                    grp = genSrcGroup;
+                }
+                if (grp != null) {
+                    return new SourceGroup[] {grp};
+                } else {
+                    return new SourceGroup[0];
+                }
+            } catch (MalformedURLException exc) {
+                logger.error("Malformed URL", exc);
+                return new SourceGroup[0];
+            }
         }
         if (TYPE_RESOURCES.equals(str)) {
             List toReturn = new ArrayList();
@@ -222,6 +244,25 @@ public class MavenSourcesImpl implements Sources {
         }
         return changed;
     }
+    
+   /**
+     * consult the SourceGroup cache, return true if anything changed..
+     */
+    private boolean checkGeneratedGroupCache(FileObject root) {
+        if (root == null && genSrcGroup != null) {
+            genSrcGroup = null;
+            return true;
+        }
+        if (root == null) {
+            return false;
+        }
+        boolean changed = false;
+        if (genSrcGroup == null || !genSrcGroup.getRootFolder().equals(root)) {
+            genSrcGroup = GenericSources.group(project, root, NAME_GENERATED_SOURCE, "Generated Sources", null, null);
+            changed = true;
+        } 
+        return changed;
+    }    
     
     private SourceGroup[] createXDocs() {
         String path = project.getPropertyResolver().getResolvedValue("maven.docs.src");

@@ -34,7 +34,8 @@ public class TestSrcClassPathImpl extends AbstractProjectClassPathImpl {
     URI[] createPath() {
         //TODO add integration tests src dir as well?
         return new URI[] { getMavenProject().getTestSrcDirectory(),
-                           getMavenProject().getSrcDirectory() };
+                           getMavenProject().getSrcDirectory(),
+                           getMavenProject().getGeneratedSourcesDir() };
     }
     
 }

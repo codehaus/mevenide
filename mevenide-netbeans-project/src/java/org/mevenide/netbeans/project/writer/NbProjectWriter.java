@@ -16,10 +16,7 @@
  */
 
 package org.mevenide.netbeans.project.writer;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
@@ -34,6 +31,7 @@ import org.mevenide.context.IProjectContext;
 import org.mevenide.netbeans.project.FileUtilities;
 import org.mevenide.netbeans.project.MavenProject;
 import org.mevenide.netbeans.project.customizer.MavenPOMChange;
+import org.mevenide.netbeans.project.customizer.MavenPOMTreeChange;
 import org.mevenide.netbeans.project.customizer.MavenPropertyChange;
 import org.mevenide.project.io.CarefulProjectMarshaller;
 import org.mevenide.project.io.ElementContentProvider;
@@ -73,9 +71,8 @@ public class NbProjectWriter {
                     MavenPropertyChange change = (MavenPropertyChange)obj;
                     processPropertyChange(change, locFileToLockMap, locFileToModelMap);
                 }
-                if (obj instanceof MavenPOMChange) {
-                    MavenPOMChange change = (MavenPOMChange)obj;
-                    pomChanges.add(change);
+                if (obj instanceof MavenPOMChange || obj instanceof MavenPOMTreeChange) {
+                    pomChanges.add(obj);
                 }
             }
             // now write the POM files..
@@ -121,9 +118,9 @@ public class NbProjectWriter {
             throw new IOException("");
         }
         try {
+            PropertyModel model = PropertyModelFactory.getFactory().newPropertyModel(fo.getInputStream());
             FileLock lock = fo.lock();
             locks.put(location, lock);
-            PropertyModel model = PropertyModelFactory.getFactory().newPropertyModel(fo.getInputStream());
             models.put(location, model);
             return model;
         } catch (UserQuestionException exc) {

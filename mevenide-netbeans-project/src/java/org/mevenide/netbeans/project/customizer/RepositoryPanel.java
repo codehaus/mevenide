@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 import java.util.List;
+import java.util.Map;
 import javax.swing.JButton;
 
 import javax.swing.JPanel;
@@ -36,6 +37,7 @@ import org.mevenide.netbeans.project.MavenProject;
 import org.mevenide.netbeans.project.customizer.ProjectValidateObserver;
 import org.mevenide.netbeans.project.customizer.ui.LocationComboFactory;
 import org.mevenide.netbeans.project.customizer.ui.OriginChange;
+import org.mevenide.project.io.IContentProvider;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.awt.HtmlBrowser;
@@ -51,6 +53,7 @@ public class RepositoryPanel extends JPanel implements ProjectPanel {
     private MavenProject project;
     
     private OriginChange ocGumpID;
+    private OriginChange ocRepository;
     
     private HashMap changes;
     
@@ -88,134 +91,163 @@ public class RepositoryPanel extends JPanel implements ProjectPanel {
     private void initComponents() {//GEN-BEGIN:initComponents
         java.awt.GridBagConstraints gridBagConstraints;
 
+        ocRepository = LocationComboFactory.createPOMChange(project, true);
+        btnRepository = (JButton)ocRepository.getComponent();
+        pnlRepo = new javax.swing.JPanel();
         lblConnection = new javax.swing.JLabel();
         txtConnection = new javax.swing.JTextField();
         lblURL = new javax.swing.JLabel();
         txtURL = new javax.swing.JTextField();
         lblDevConnection = new javax.swing.JLabel();
         txtDevConnection = new javax.swing.JTextField();
-        jSeparator1 = new javax.swing.JSeparator();
+        btnURL = new javax.swing.JButton();
         lblGumpRepoID = new javax.swing.JLabel();
         txtGumpRepoID = new javax.swing.JTextField();
-        btnURL = new javax.swing.JButton();
         ocGumpID = LocationComboFactory.createPOMChange(project, false);
         btnGumpID = (JButton)ocGumpID.getComponent();
 
         jPanel1 = new javax.swing.JPanel();
+        lblRepository = new javax.swing.JLabel();
 
         setLayout(new java.awt.GridBagLayout());
 
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(0, 5, 6, 0);
+        add(btnRepository, gridBagConstraints);
+
+        pnlRepo.setLayout(new java.awt.GridBagLayout());
+
+        pnlRepo.setBorder(new javax.swing.border.EtchedBorder(javax.swing.border.EtchedBorder.RAISED));
         lblConnection.setLabelFor(txtConnection);
         lblConnection.setText("Connection:");
         gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        add(lblConnection, gridBagConstraints);
+        gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
+        pnlRepo.add(lblConnection, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         gridBagConstraints.weightx = 0.1;
-        gridBagConstraints.insets = new java.awt.Insets(0, 3, 0, 0);
-        add(txtConnection, gridBagConstraints);
+        gridBagConstraints.insets = new java.awt.Insets(6, 3, 0, 0);
+        pnlRepo.add(txtConnection, gridBagConstraints);
 
         lblURL.setLabelFor(txtURL);
         lblURL.setText("URL :");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridy = 3;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(6, 0, 0, 0);
-        add(lblURL, gridBagConstraints);
+        gridBagConstraints.insets = new java.awt.Insets(6, 6, 6, 0);
+        pnlRepo.add(lblURL, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridy = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         gridBagConstraints.weightx = 0.1;
-        gridBagConstraints.insets = new java.awt.Insets(6, 3, 0, 0);
-        add(txtURL, gridBagConstraints);
+        gridBagConstraints.insets = new java.awt.Insets(6, 3, 6, 0);
+        pnlRepo.add(txtURL, gridBagConstraints);
 
         lblDevConnection.setLabelFor(txtDevConnection);
         lblDevConnection.setText("Developer Conn:");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridy = 2;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(6, 0, 0, 0);
-        add(lblDevConnection, gridBagConstraints);
+        gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
+        pnlRepo.add(lblDevConnection, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridy = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         gridBagConstraints.weightx = 0.1;
         gridBagConstraints.insets = new java.awt.Insets(6, 3, 0, 0);
-        add(txtDevConnection, gridBagConstraints);
+        pnlRepo.add(txtDevConnection, gridBagConstraints);
+
+        btnURL.setText("View...");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(3, 3, 6, 6);
+        pnlRepo.add(btnURL, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 3;
+        gridBagConstraints.gridy = 1;
         gridBagConstraints.gridwidth = 3;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(6, 0, 0, 0);
-        add(jSeparator1, gridBagConstraints);
+        gridBagConstraints.gridheight = 3;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        add(pnlRepo, gridBagConstraints);
 
         lblGumpRepoID.setLabelFor(txtGumpRepoID);
         lblGumpRepoID.setText("Gump Repository ID:");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 4;
+        gridBagConstraints.gridy = 5;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(6, 0, 0, 0);
         add(lblGumpRepoID, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 4;
+        gridBagConstraints.gridy = 5;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.weightx = 0.1;
         gridBagConstraints.insets = new java.awt.Insets(6, 3, 0, 0);
         add(txtGumpRepoID, gridBagConstraints);
 
-        btnURL.setText("View...");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(3, 3, 0, 0);
-        add(btnURL, gridBagConstraints);
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 4;
+        gridBagConstraints.gridy = 5;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         add(btnGumpID, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 5;
+        gridBagConstraints.gridy = 6;
         gridBagConstraints.gridwidth = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         gridBagConstraints.weighty = 0.1;
         add(jPanel1, gridBagConstraints);
 
+        lblRepository.setText("Repository:");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(0, 0, 5, 0);
+        add(lblRepository, gridBagConstraints);
+
     }//GEN-END:initComponents
     
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnGumpID;
+    private javax.swing.JButton btnRepository;
     private javax.swing.JButton btnURL;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JSeparator jSeparator1;
     private javax.swing.JLabel lblConnection;
     private javax.swing.JLabel lblDevConnection;
     private javax.swing.JLabel lblGumpRepoID;
+    private javax.swing.JLabel lblRepository;
     private javax.swing.JLabel lblURL;
+    private javax.swing.JPanel pnlRepo;
     private javax.swing.JTextField txtConnection;
     private javax.swing.JTextField txtDevConnection;
     private javax.swing.JTextField txtGumpRepoID;
@@ -223,7 +255,27 @@ public class RepositoryPanel extends JPanel implements ProjectPanel {
     // End of variables declaration//GEN-END:variables
     
   private void populateChangeInstances() {
-        createChangeInstance("gumpRepositoryId", txtGumpRepoID, ocGumpID);
+        createChangeInstance("gumpRepositoryId", txtGumpRepoID, ocGumpID); //NOI18N
+        Repository repo = project.getOriginalMavenProject().getRepository();
+        String key = "pom.repository"; //NOI18N
+        int location = project.getProjectWalker().getLocation(key);
+        Map oldValues = new HashMap();
+        if (repo != null) {
+            if (repo.getUrl() != null) {
+                oldValues.put("url", repo.getUrl()); //NOI18N
+            }
+            if (repo.getConnection() != null) {
+                oldValues.put("connection", repo.getConnection()); //NOI18N
+            }
+            if (repo.getDeveloperConnection() != null) {
+                oldValues.put("developerConnection", repo.getDeveloperConnection()); //NOI18N
+            }
+        }
+        HashMap fields = new HashMap();
+        fields.put("url", txtURL); //NOI18N
+        fields.put("connection", txtConnection); //NOI18N
+        fields.put("developerConnection", txtDevConnection); //NOI18N
+        changes.put(key, new MultiTextComponentPOMChange(key, oldValues, location, fields, ocRepository));
    }
    
    private void createChangeInstance(String propName, JTextField field, OriginChange oc) {
@@ -235,24 +287,31 @@ public class RepositoryPanel extends JPanel implements ProjectPanel {
        } 
        changes.put(key, new TextComponentPOMChange(key, value, location, field, oc));
    }    
+   
+   public void setResolveValues(boolean resolve) {
+       assignValue("gumpRepositoryId", resolve); //NOI18N
+       MultiTextComponentPOMChange change = (MultiTextComponentPOMChange)changes.get("pom.repository"); //NOI18N
+       if (resolve) {
+           IContentProvider prov = change.getChangedContent();
+           HashMap resolvedvalues = new HashMap();
+           String val = prov.getValue("url"); //NOI18N
+           if (val != null) {
+               resolvedvalues.put("url", project.getPropertyResolver().resolveString(val)); //NOI18N
+           }
+           val = prov.getValue("connection"); //NOI18N
+           if (val != null) {
+               resolvedvalues.put("connection", project.getPropertyResolver().resolveString(val)); //NOI18N
+           }           
+           val = prov.getValue("developerConnection"); //NOI18N
+           if (val != null) {
+               resolvedvalues.put("developerConnection", project.getPropertyResolver().resolveString(val)); //NOI18N
+           }           
+           change.setResolvedValues(resolvedvalues);
+       } else {
+           change.resetToNonResolvedValue();
+       }
+   }
     
-     public void setResolveValues(boolean resolve) {
-         assignValue("gumpRepositoryId", resolve);
-//TODO        setEnableFields(!resolve);  
-        Project proj = project.getOriginalMavenProject();
-        Repository repo = proj.getRepository();
-        if (repo == null) {
-            txtURL.setText("");
-            txtConnection.setText("");
-            txtDevConnection.setText("");
-        } else {
-            txtURL.setText(repo.getUrl() == null ? "" : getValue(repo.getUrl(), resolve));
-            txtConnection.setText(repo.getConnection() == null ? "" : getValue(repo.getConnection(), resolve));
-            txtDevConnection.setText(repo.getDeveloperConnection() == null ? "" : getValue(repo.getDeveloperConnection(), resolve));
-        }
-//        txtGumpRepoID.setText(proj.getGumpRepositoryId() == null ? "" : getValue(proj.getGumpRepositoryId(), resolve));
-    }
-     
    private void assignValue(String actionName, boolean resolve) {
        String key = "pom." + actionName; //NOI18N
        TextComponentPOMChange change = (TextComponentPOMChange)changes.get(key);
@@ -265,18 +324,18 @@ public class RepositoryPanel extends JPanel implements ProjectPanel {
    }
      
     
-    private String getValue(String value, boolean resolve) {
-        if (resolve) {
-            return project.getPropertyResolver().resolveString(value);
-        }
-        return value;
-    }
+//    private String getValue(String value, boolean resolve) {
+//        if (resolve) {
+//            return project.getPropertyResolver().resolveString(value);
+//        }
+//        return value;
+//    }
     
     public List getChanges() {
         List toReturn = new ArrayList();
         Iterator it = changes.values().iterator();
         while (it.hasNext()) {
-            MavenPOMChange change = (MavenPOMChange)it.next();
+            MavenChange change = (MavenChange)it.next();
             if (change.hasChanged()) {
                 toReturn.add(change);
             }

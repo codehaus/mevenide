@@ -25,6 +25,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jdom.Element;
 import org.mevenide.netbeans.project.customizer.MavenPOMChange;
+import org.mevenide.netbeans.project.customizer.MavenPOMTreeChange;
 import org.mevenide.project.io.IContentProvider;
 
 /**
@@ -53,6 +54,16 @@ public class ChangesContentProvider implements IContentProvider {
     }
     
     public IContentProvider getSubContentProvider(String key) {
+        MavenPOMTreeChange change = findSubTreeChange(path + "." + key);
+        if (change != null) {
+            if (change.getOldLocation() == location && change.getNewLocation() != location) {
+                return null;
+            } else {
+                if (change.getNewLocation() == location) {
+                    return change.getChangedContent();
+                }
+            }
+        }
         IContentProvider child = provider.getSubContentProvider(key);
         return child != null ? createChildContentProvider(child, path + "." + key) : null;
     }
@@ -95,11 +106,29 @@ public class ChangesContentProvider implements IContentProvider {
     private MavenPOMChange findChange(String path) {
         Iterator it = changes.iterator();
         while (it.hasNext()) {
-            MavenPOMChange pom = (MavenPOMChange)it.next();
-            if (pom.getPath().equals(path)) {
-                return pom;
+            Object obj = it.next();
+            if (obj instanceof MavenPOMChange) {
+                MavenPOMChange pom = (MavenPOMChange)obj;
+                if (pom.getPath().equals(path)) {
+                    return pom;
+                }
             }
         }
         return null;
     }
+    
+    private MavenPOMTreeChange findSubTreeChange(String path) {
+        Iterator it = changes.iterator();
+        while (it.hasNext()) {
+            Object obj = it.next();
+            if (obj instanceof MavenPOMTreeChange) {
+                MavenPOMTreeChange pom = (MavenPOMTreeChange)obj;
+                if (pom.getPath().equals(path)) {
+                    return pom;
+                }
+            }
+        }
+        return null;
+    }
+    
 }

@@ -1,6 +1,6 @@
 /* ==========================================================================
- * Copyright 2004 Apache Software Foundation
- *
+ * Copyright 2003-2004 Apache Software Foundation
+ * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,30 +14,34 @@
  *  limitations under the License.
  * =========================================================================
  */
+package org.mevenide.netbeans.project.customizer;
 
-package org.mevenide.netbeans.project.classpath;
+import org.mevenide.project.io.IContentProvider;
 
-import java.net.URI;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.mevenide.netbeans.project.MavenProject;
 
 /**
  *
+ * Holder and resolver of changes of a POM trees, eg. <repository> or <organization> objects
  * @author  Milos Kleint (ca206216@tiscali.cz)
  */
-public class SrcClassPathImpl extends AbstractProjectClassPathImpl {
-    private static final Log logger = LogFactory.getLog(SrcClassPathImpl.class);
-    
-    /** Creates a new instance of SrcClassPathImpl */
-    public SrcClassPathImpl(MavenProject proj) {
-        super(proj);
-    }
-    
-    URI[] createPath() {
-//        logger.debug("path=" + getMavenProject().getSrcDirectory());
-        return new URI[] { getMavenProject().getSrcDirectory(),
-                           getMavenProject().getGeneratedSourcesDir() };
-    }
+public interface MavenPOMTreeChange extends MavenChange {
+    /**
+     * getPath in pom file, serves as ID.
+     * eg. pom.artifactId or pom.organization.name
+     */
+    String getPath();
+    /**
+     * original location of the the property definition.
+     */
+    int getOldLocation();
+    /**
+     * new location of the the property definition.
+     */
+    int getNewLocation();
+ 
+    /**
+     * the changed subtree content.
+     */
+    IContentProvider getChangedContent();
     
 }
