@@ -25,7 +25,7 @@
    <dependency>     
         <groupId>mevenide</groupId>
         <artifactId>maven-nbm-plugin</artifactId>
-        <version>0.6</version>
+        <version>1.0</version>
         <type>plugin</type>
         <url>http://mevenide.codehaus.org/maven-nbm-plugin</url>
     </dependency>
