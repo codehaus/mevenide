@@ -9,14 +9,17 @@
         <div id="documentContent">
         <p> This project is a simple XML grammar code completion Netbeans module which gives the user access to 
         basic maven/jelly-taglib elements and attributes.
-        It currently works with Netbeans 3.6. (If anyone wants a release for 3.5, send me an email)
+        It currently works with Netbeans 3.6 and 4.0. (If anyone wants a release for 3.5, send me an email)
         </p>
 	</div>
    </section>
    <section name="Versions">
       <div id="documentContent">
       	<p>
-   	  Currently the 0.2 version is available for download which works with Netbeans 3.6.
+   	  Currently the 0.2 version is available for download which works with Netbeans 3.6. 
+      </p>
+      <p>
+      The same version is bundled with the project support module for 4.0. 
       </p>
    	  </div>
     </section>
@@ -28,6 +31,9 @@
             the <a href="http://mevenide.codehaus.org/download/mevenide-netbeans-grammar-0-2.zip" class="documentLink">zip archive</a> which contain nbm files.
             Extract them to a temporary location and install the nbm files using your IDE's "Tools/Update Center" wizard.
    	  </p>
+      <p>
+      If you're using 4.0 builds, <a href="../download.html">download</a> the whole project support.
+      </p>
    	  </div>
     </section>
     
