@@ -122,8 +122,7 @@ public class TestOutputListenerProvider extends AbstractOutputProcessor {
         }
         
         private void openLog(FileObject fo, String title, FileObject testFile) {
-            InputOutput io = IOProvider.getDefault().getIO(title, false);
-//            io.getOut().flush();
+            InputOutput io = IOProvider.getDefault().getIO(title, true);
             io.select();
             BufferedReader reader = null;
             OutputWriter writer = io.getOut();
@@ -133,6 +132,7 @@ public class TestOutputListenerProvider extends AbstractOutputProcessor {
                 Pattern linePattern = Pattern.compile("\\sat (.*)\\((.*)\\.java\\:(.*)\\)");
                 ClassPath classPath = ClassPath.getClassPath(testFile, ClassPath.EXECUTE);
                 while ((line = reader.readLine()) != null) {
+                    System.out.println("line=" + line);
                     Matcher match = linePattern.matcher(line);
                     OutputListener list = null;
                     if (match.matches()) {
@@ -182,7 +182,6 @@ public class TestOutputListenerProvider extends AbstractOutputProcessor {
                 } catch (IOException ex) {
                     
                 }
-                io.closeInputOutput();
             }
         }
     }
