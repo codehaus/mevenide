@@ -96,7 +96,7 @@ public final class DependencyUtil {
 	}
 	
 	public static boolean isValidGroupId(final String groupId) {
-		File repo = new File(Environment.getMavenRepository());
+		File repo = new File(Environment.getMavenLocalRepository());
 		File[] children = repo.listFiles(new FileFilter() {
 			public boolean accept(File pathname) {
 				return pathname.isDirectory() && pathname.getName().equals(groupId);

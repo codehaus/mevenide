@@ -69,7 +69,7 @@ public class AbstractMevenideTestCase extends TestCase {
 	
 	protected void setUp() throws Exception {
 		mavenHome = new File(System.getProperty("user.home"), ".mevenide");
-        Environment.setMavenRepository(new File(mavenHome, "repository").getAbsolutePath());
+        Environment.setMavenLocalRepository(new File(mavenHome, "repository").getAbsolutePath());
 		
 		File src = new File(AbstractMevenideTestCase.class.getResource("/fixtures/project-fixture.xml").getFile());
 		projectFile = new File(src.getParentFile().getParent(), "project-fixture.xml") ; 
