@@ -60,6 +60,10 @@ public class DependencyUtilTest extends TestCase {
 		Environment.setMavenHome(System.getProperty("user.home"));
 		dep = DependencyUtil.getDependency(artefact.getAbsolutePath());
 		
+		System.out.println(dep.getGroupId());
+		System.out.println(dep.getArtifactId());
+		System.out.println(dep.getVersion());
+		
 		assertEquals("mevenide", dep.getGroupId());
 		assertEquals("1.0.7.dev", dep.getVersion());
 		assertEquals("foo+joe-test2.-bar", dep.getArtifactId());

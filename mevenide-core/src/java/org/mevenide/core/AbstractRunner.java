@@ -69,7 +69,7 @@ public abstract class AbstractRunner {
 	public void run(String[] options, String[] goals) {
 		String userDir = null;
 		try {
-			//backup user.dir. needed ?
+			//backup user.dir. still needed ?
             userDir = System.getProperty("user.dir");
 
 			initEnvironment();

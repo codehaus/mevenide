@@ -57,12 +57,11 @@
     <sourceDirectory>src/java</sourceDirectory>
     <unitTestSourceDirectory>src/test/java</unitTestSourceDirectory>
     <aspectSourceDirectory>src/aspects</aspectSourceDirectory>
-    	
     
     <unitTest>
      
       <includes>
-        <include>*/*Test.java</include>
+        <include>**/*Test.java</include>
       </includes>
 
       <resources>
