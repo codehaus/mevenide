@@ -52,12 +52,12 @@
   		description="create a plugin dist file containing only the plugin required files and put it in ${maven.eclipse.plugin.dist.dir}">
 
   	  <j:set var="mode" value="${maven.eclipse.plugin.build.mode}"/>
-  	  <j:if test="${mode == 'bundle'}">
-  	  	<attainGoal name="eclipse-plugin:prepare-plugin-dist"/>
-  	  </j:if>
-  	  <j:if test="${mode != 'dist'}">
+  	  <!-- j:if test="${mode == 'bundle'}" -->
+	  <attainGoal name="eclipse-plugin:prepare-plugin-dist"/>
+  	  <!-- /j:if -->
+  	  <!-- j:if test="${mode != 'dist'}">
   	  	<attainGoal name="eclipse-plugin:create-library-artifacts"/>
-  	  </j:if>
+  	  </j:if -->
   	  
 	  <j:set var="distVersion" value="${maven.eclipse.plugin.artifact.version}"/>
 	  <j:set var="pluginId" value="${maven.eclipse.plugin.artifact.id}"/>
@@ -74,7 +74,7 @@
       </ant:copy>
        
       <!-- @todo update plugin descriptor -->
-  	  <mevenide:update-plugin-libraries pom="${pom}"/>
+  	  <!-- mevenide:update-plugin-libraries pom="${pom}"/ -->
   	  
       <!-- build plugin distribution file. -->
       <ant:jar destfile="${pluginArchive}">
@@ -211,7 +211,6 @@
   	<j:if test="${type == 'plugin'}">
 	  <ant:delete dir="${maven.eclipse.plugin.lib.dir}" quiet="true"/>
 	  <ant:mkdir dir="${maven.eclipse.plugin.lib.dir}"/>
-	  <ant:delete dir="${maven.eclipse.plugin.lib.dir}" quiet="true"/>
 	</j:if>
     
     <ant:delete dir="${maven.eclipse.plugin.dist.dir}" quiet="true"/>	
@@ -220,8 +219,8 @@
     <ant:delete dir="${maven.eclipse.plugin.temp.dir}" quiet="true"/>
     <ant:mkdir dir="${maven.eclipse.plugin.temp.dir}" />
     
-    <j:set var="buildMpde" value="${maven.eclipse.plugin.build.mode}"/>
-    <j:if test="${ buildMode == 'dist' }">
+    <j:set var="buildMode" value="${maven.eclipse.plugin.build.mode}"/>
+    <j:if test="${ buildMode == 'bundle' }">
       <ant:delete dir="${maven.eclipse.plugin.ext.dir}" quiet="true" />
       <ant:mkdir dir="${maven.eclipse.plugin.ext.dir}" />
     </j:if>
