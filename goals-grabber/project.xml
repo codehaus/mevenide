@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<project>
+ 
+  <extend>${basedir}/../mevenide-master/base-project.xml</extend>
+  <pomVersion>3</pomVersion>
+  <name>Goals Grabber</name>
+  <id>mevenide:mevenide-goals-grabber</id>
+  <artifactId>mevenide-goals-grabber</artifactId>
+  <currentVersion>1.0</currentVersion>
+  
+  <package>com.gdfact.maven.plugin.getgoals</package>
+  
+    
+  <description>
+  	This project provides a Maven plugin that grabs all the goals 
+  	cached in $${maven.home}/plugins/goals.cache and provides a hook 
+  	to store them in an xml file during postGoal execution. Also the
+  	GoalsBean can be unmarshalled from an xml file containing the list
+  	of goals.
+  </description>
+  
+  <shortDescription>Gets all the available goals</shortDescription>
+
+  
+  <dependencies>
+
+  	<dependency>
+  	  <id>commons-collections</id>
+          <version>2.1</version>
+  	</dependency>
+
+	<dependency>
+  	  <id>jdom</id>
+      <version>1.0b8</version>
+  	</dependency>
+
+	<dependency>
+  	  <id>xerces</id>
+      <version>2.2.1</version>
+  	</dependency>
+  	
+  </dependencies>
+  
+  <resources>
+    <resource>
+      <directory>.</directory>
+      <includes>
+        <include>plugin.jelly</include>
+        <include>plugin.properties</include>
+      </includes>
+    </resource>
+  </resources>
+  
+  
+</project>

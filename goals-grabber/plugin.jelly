@@ -1,0 +1,71 @@
+<?xml version="1.0"?> 
+<project xmlns:j="jelly:core" xmlns:u="jelly:util" xmlns:d="jelly:define">
+  
+  <j:useBean var="goalsBean" class="com.gdfact.maven.plugin.getgoals.GoalsBean" />
+
+ <d:taglib uri="http://oss.gdfact.com/2003/maven/get-goals" inherit="true">
+    <!--
+      this tag is primarily intend to be used in the postgoal, to allow
+      to store the goals in a user-defined place.
+    -->
+    <d:tag name="store-goals"> 
+      <j:jelly>
+      <echo>Writing goals to ${output}</echo>
+	    ${goals.store(output)}
+	    </j:jelly>
+    </d:tag> 
+  </d:taglib>       
+
+  <goal name="goals:grab"
+        description="Get all the available goals">
+    <!--
+      i use here a not very smart solution in order to retrieve the GoalsBean in the postgoal.      
+    -->
+    <j:set var="goals" scope="parent" value="${goalsBean}"/>
+    
+    <!-- 
+      ${org.apache.commons.jelly.werkz.Project} is not used to retrieve the goals 
+      because of the lazy loading mechanism. all available goals are retrieve through 
+      the goal cache (${maven.home}/plugins/goals.cache).
+    -->
+  	<echo>Grabbing goals from ${maven.home}/plugins/goals.cache</echo>
+	<u:properties var="map" file="${maven.home}/plugins/goals.cache" />
+    <j:useList var="props" items="${map.keys()}"/>
+          
+    <j:forEach var="key" items="${props}">
+    
+    <!-- 
+      <[CDATA[
+        i use here the character '&amp;' as string delimiter because using &gt; 
+        doesnt work as expected since the character '>' is replaced by  the 
+        string '&amp;gt;'. By chance we only need the first token. That would be
+        problematic if other tokens were needed but that's another story.
+      ]]>
+    -->
+    <u:tokenize var="tokens" delim="&amp;">${map.getProperty(key)}</u:tokenize>
+      
+	<j:set var="desc" value="${tokens[0]}"/> 
+		
+	<u:tokenize var="prereqs" delim=",">${tokens[1]}</u:tokenize>
+	
+	<j:forEach var="prereq" items="${prereqs}">
+		${goals.addPrereq(key, prereq)}	
+	</j:forEach>
+	<!-- 
+	  double condition checking here because null values have already been 'stringified'.
+	  Though that doesnt seem to work. So i check the value of the description in the 
+	  GoalsBean as well :/
+	-->
+	<j:if test="${desc == null || desc.equals('null')}">
+	  <j:set var="desc" value="No available description"/> 
+	</j:if>
+	
+	<j:jelly>
+		${goals.addGoal(key, desc)}
+	</j:jelly>
+      
+  </j:forEach>
+  
+  </goal>
+  
+</project>

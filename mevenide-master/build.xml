@@ -1,15 +1,14 @@
 <project name="mevenide-ic" default="build-all">
 
-	<property name="maven.home" value="D:/programs/maven-1.0-beta-8"/>
-	<property name="maven.script" value="maven.bat"/>
+	
 	<property name="maven.command" value="${maven.home}/bin/${maven.script}"/>
 
 	<target name="build-all">
 		<exec executable="${maven.command}" failonerror="true">
 			<arg value="build-all"/>
-			<arg value="-o"/>
-			<!-- arg value="-e"/>
-			<arg value="-X"/ -->
+			<!-- arg value="-o"/ -->
+			<!-- arg value="-e"/ -->
+			<!-- arg value="-X"/ -->
 		</exec>
 	</target>
 </project>
