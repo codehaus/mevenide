@@ -29,7 +29,7 @@
 		</item>
 		<item name="IDE Specific Modules" collapse="true" href="/ide.html">
 			<item name="Eclipse Plugin" href="mevenide-ui-eclipse/index.html"/>
-			<item name="Netbeans Module" href="mevenide-ui-netbeans/index.html"/>
+			<item name="Netbeans Module" href="mevenide-netbeans-project/index.html"/>
 			<item name="Netbeans Grammar Module" href="mevenide-netbeans-grammar/index.html"/>
 			<item name="JBuilder Module" href="mevenide-ui-jbuilder/index.html"/>
 		</item>
@@ -45,7 +45,7 @@
         <item name="Directory Layout" href="layout.html"/>
         <item name="Task List" collapse="true">
             <item name="Eclipse plugin todos" href="/mevenide-ui-eclipse/todos.html"/>
-            <item name="Netbeans module todos" href="/mevenide-ui-netbeans/todos.html"/>
+            <item name="Netbeans module todos" href="/mevenide-netbeans-project/todos.html"/>
             <item name="Netbeans grammar module todos" href="/mevenide-netbeans-grammar/todos.html"/>
         </item>
         <item name="Mevenide Wiki" href="http://docs.codehaus.org/display/MEVENIDE/Home"/>
