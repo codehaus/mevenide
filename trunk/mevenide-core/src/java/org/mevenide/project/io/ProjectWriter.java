@@ -45,6 +45,8 @@ import org.mevenide.project.source.SourceDirectoryUtil;
  * the previously added artifacts. that is obviously not optimized, tho performance 
  * isnot a issue here. 
  * 
+ * @todo should provide a convenience method to write all artifacts in a single transaction
+ * 
  * @author Gilles Dodinet (gdodinet@wanadoo.fr)
  * @version $Id$
  * 
