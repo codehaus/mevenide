@@ -179,7 +179,7 @@ public class DependencyUtil {
 		try {
 			if ( dependency.getGroupId().equals("") ) {
 				dependency.setGroupId(
-						AbstractDependencyResolver.newInstance(dependency.getArtifact()).guessGroupId());
+						DependencyResolverFactory.newInstance(dependency.getArtifact()).guessGroupId());
 			}
 		}
 		catch ( Exception ex ) {

@@ -57,27 +57,24 @@ import java.util.Map;
  * @version $Id$
  * 
  */
-public abstract class AbstractDependencyResolver implements IDependencyResolver {
+public abstract class DependencyResolverFactory implements IDependencyResolver {
 
 	private static Object lock = new Object();
 	
 	private static Map resolvers = new HashMap();
 	
-	protected AbstractDependencyResolver() {
+	protected DependencyResolverFactory() {
 	}
 		
-	public static IDependencyResolver newInstance(String absoluteFileName) throws  Exception {
+	public synchronized static IDependencyResolver newInstance(String absoluteFileName) throws  Exception {
 		if (resolvers.containsKey(absoluteFileName)) {
 			return (IDependencyResolver) resolvers.get(absoluteFileName);
 		}
-		synchronized (lock) {
-			if (!resolvers.containsKey(absoluteFileName)) {
-				IDependencyResolver resolver = new DefaultDependencyResolver(); //(IDependencyResolver) new  DiscoverClass().newInstance(IDependencyResolver.class);
-				resolver.setFileName(absoluteFileName);
-				resolvers.put(absoluteFileName, resolver);
-			}
-			return (IDependencyResolver) resolvers.get(absoluteFileName);
-		}
+		IDependencyResolver resolver = new DefaultDependencyResolver(); 
+		resolver.setFileName(absoluteFileName);
+		resolvers.put(absoluteFileName, resolver);
+		
+		return (IDependencyResolver) resolvers.get(absoluteFileName);
 	}
 	
 }
