@@ -9,11 +9,10 @@
 <body>
 
 
-  <section name="Download">
-  	<subsection name="Eclipse Support">
+	<section name="Eclipse Support">
   	  <div id="documentContent">
         <p>
-    	  Mevenide for Eclipse distribution is composed of five different plugins : Core, Config, Grammar, Grabber and UI. 
+    	  <b>Mevenide for Eclipse</b> distribution is composed of five different plugins : Core, Config, Grammar, Grabber and UI. 
     	  They can be found <a href="http://dist.codehaus.org/mevenide/release">here</a>. Plugin Features are described in 
     	  <a href="mevenide-ui-eclipse/features.html">this document</a>
         </p>
@@ -29,9 +28,16 @@
         		<li>Maven 1.0 (tested with RC2, but should be ok with RC1)</li>
         	</ul>
         </p>
+        <p>
+        	Older releases can still be found on <a href="http://sourceforge.net/project/showfiles.php?group_id=54263">Sourceforge download page</a>.
+		</p>
+		<p>
+			The <b>Maven PDE Plugin</b> allows Maven users to generate Eclipse plugin artifacts easily and keep trace of artifact inter-dependency. 
+			To install the plugin, follow instructions on the plugin's <a href="maven-eclipse-plugin-plugin/index.html">page </a>.
+		</p>
       </div>
-    </subsection>
-  	<subsection name="NetBeans Support">
+    </section>
+  	<section name="NetBeans Support">
   	  <div id="grammar">
         <p>
         The <b>mevenide-netbeans-grammar</b> module helps users when writing POM files, when customizing goals in maven.xml
@@ -59,8 +65,11 @@
     	The <b>Maven NBM plugin</b> allows maven users to generate maven module from their projects. To install the plugin, follow instructions on the plugin's <a href="maven-nbm-plugin/index.html">page </a>.
         </p>
       </div>
-    </subsection>
-    
-  </section>
+    </section>
+    <section name="JBuilder Support">
+  	  <div id="documentContent">
+        <p></p>
+      </div>
+    </section>
 </body>
 </document>
