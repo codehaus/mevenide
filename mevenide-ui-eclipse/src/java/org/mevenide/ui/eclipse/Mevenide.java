@@ -140,7 +140,12 @@ public class Mevenide extends AbstractUIPlugin {
             setPomTemplate(preferenceStore.getString("pom.template.location"));
             setCheckTimestamp(preferenceStore.getBoolean("mevenide.checktimestamp"));
             setDefaultGoals(preferenceStore.getString("maven.launch.defaultgoals"));
-            
+            int hSize = preferenceStore.getInt("maven.heap.size");
+            //heap has been initialized yet. set it to default (160)
+            if ( hSize == 0 ) {
+	            hSize = 160;
+            }
+			setHeapSize(hSize);
             
 		} 
 		catch (Exception x) {
