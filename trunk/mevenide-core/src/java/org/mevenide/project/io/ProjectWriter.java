@@ -297,4 +297,18 @@ public class ProjectWriter {
 	
 		}
 	}
+	
+	public void updateExtend(File pomFile, boolean isInherited, String parentPom) throws Exception {
+		log.debug("isInherited = " + (isInherited) + " ; parentPom = " + parentPom);
+		ProjectReader reader = ProjectReader.getReader();
+		Project project = reader.read(pomFile);
+		if ( !isInherited ) {
+			project.setExtend(null);
+		}
+		else {
+			project.setExtend(parentPom);
+		}
+		IProjectMarshaller marshaller = new DefaultProjectMarshaller();
+		marshaller.marshall(new FileWriter(pomFile), project);
+	}
 }
