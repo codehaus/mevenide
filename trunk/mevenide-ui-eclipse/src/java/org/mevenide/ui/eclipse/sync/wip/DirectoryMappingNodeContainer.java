@@ -70,10 +70,6 @@ class DirectoryMappingNodeContainer extends AbstractArtifactMappingNodeContainer
         return "Source Folders";
     }
     
-    public IArtifactMappingNodeContainer filter(int direction) {
-        return this;
-    }
-    
     public void attachPom(Project project) {
         //attachDirectories(project);
         attachResources(project);
@@ -97,7 +93,7 @@ class DirectoryMappingNodeContainer extends AbstractArtifactMappingNodeContainer
 		            }
 		        }
 		    }
-	        //attachOrphanResources(resourcesCopy);
+	        attachOrphanResources(resourcesCopy);
         }
     }
     
@@ -106,5 +102,17 @@ class DirectoryMappingNodeContainer extends AbstractArtifactMappingNodeContainer
         log.debug("directory path : " + directory.getPath());
         if ( resource.getDirectory() == null ) return false;
         return resource.getDirectory().replaceAll("\\\\", "/").equals(directory.getPath().replaceAll("\\\\", "/"));
+    }
+    
+    private void attachOrphanResources(List resourcesCopy) {
+        IArtifactMappingNode[] newNodes = new IArtifactMappingNode[nodes.length + resourcesCopy.size()];
+        System.arraycopy(nodes, 0, newNodes, 0, nodes.length);
+        for (int i = nodes.length; i < newNodes.length; i++) {
+            DirectoryMappingNode node = new DirectoryMappingNode();
+            node.setArtifact(resourcesCopy.get(i - nodes.length));
+            node.setParent(this);
+            newNodes[i] = node;
+        }
+        this.nodes = newNodes;
     }
 }

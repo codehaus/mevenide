@@ -69,4 +69,6 @@ interface IArtifactMappingNodeContainer {
     void attachPom(Project pom) ;
     
     int getDirection();
+    
+    void setDirection(int direction);
 }

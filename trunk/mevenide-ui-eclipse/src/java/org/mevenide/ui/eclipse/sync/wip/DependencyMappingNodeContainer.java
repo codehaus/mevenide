@@ -107,28 +107,6 @@ class DependencyMappingNodeContainer extends AbstractArtifactMappingNodeContaine
         return d1.getArtifactId().equals(d2.getArtifactId());
     }
     
-    public IArtifactMappingNodeContainer filter(int direction) {
-        DependencyMappingNodeContainer newContainer = new DependencyMappingNodeContainer();
-		newContainer.setDirection(direction);
-
-		List newNodeList = new ArrayList(); 
-		for (int i = 0; i < nodes.length; i++) {
-		    if ( (nodes[i].getChangeDirection() & direction) != 0) {
-				newNodeList.add(nodes[i]);
-			}
-        }
-
-		DependencyMappingNode[] newNodeArray = new DependencyMappingNode[newNodeList.size()]; 
-		for (int i = 0; i < newNodeArray.length; i++) {
-			DependencyMappingNode newNode = (DependencyMappingNode) newNodeList.get(i);
-			newNode.setParent(newContainer);
-            newNodeArray[i] = newNode;
-        }
-		newContainer.setNodes(newNodeArray);
-
-        return newContainer;
-    }
-    
     
     
 }
