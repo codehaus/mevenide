@@ -40,6 +40,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.PlatformUI;
+import org.mevenide.ui.eclipse.Mevenide;
 
 /**
  * 
@@ -50,11 +51,9 @@ import org.eclipse.ui.PlatformUI;
 public class PomChoiceDialog extends TitleAreaDialog {
     
     //@todo externalize
-    private static final String POM_CHOICE_MESSAGE = 
-        "Choose the POMs you want to update from the list below.\n" +
-        "    "; //blank line. donot remove
+    private static final String POM_CHOICE_MESSAGE = Mevenide.getResourceString("PomChoiceDialog.Message");
     
-    private static final String POM_CHOICE_TITLE = "POM Choice Dialog";
+    private static final String POM_CHOICE_TITLE = Mevenide.getResourceString("PomChoiceDialog.Title");
     
 	private PomChooser pomChooser;
 	
@@ -78,7 +77,7 @@ public class PomChoiceDialog extends TitleAreaDialog {
 	    Control contents = super.createContents(parent);
 	    
 	    setTitle(POM_CHOICE_TITLE); 
-	    //setTitleImage(dlgTitleImage);
+	    setTitleImage(Mevenide.getImageDescriptor("wizban/mfile_choose.gif").createImage());
 	    setMessage(POM_CHOICE_MESSAGE); 
 	    
 	    okButton = getButton(IDialogConstants.OK_ID);
@@ -115,7 +114,7 @@ public class PomChoiceDialog extends TitleAreaDialog {
 		buttonsArea.setLayout(layout);
 		buttonsArea.setLayoutData(new GridData(GridData.FILL_BOTH));
 		
-		String buttonLabel = "Select all";
+		String buttonLabel = Mevenide.getResourceString("PomChoiceDialog.SelectAll");
 		Button selectAllButton = createSelectionButton(buttonsArea, buttonLabel);
 		selectAllButton.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent arg0) {
@@ -123,7 +122,7 @@ public class PomChoiceDialog extends TitleAreaDialog {
 			}
 		});
 		
-		buttonLabel = "Deselect all";
+		buttonLabel = Mevenide.getResourceString("PomChoiceDialog.DeselectAll");;
 		Button deselectAllButton = createSelectionButton(buttonsArea, buttonLabel);
 		deselectAllButton.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent arg0) {
