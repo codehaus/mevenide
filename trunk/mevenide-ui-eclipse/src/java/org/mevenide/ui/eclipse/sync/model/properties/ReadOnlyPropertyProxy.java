@@ -18,7 +18,7 @@ package org.mevenide.ui.eclipse.sync.model.properties;
 
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
-import org.mevenide.ui.eclipse.editors.properties.PropertyProxy;
+import org.mevenide.ui.eclipse.adapters.properties.PropertyProxy;
 
 
 /**  

@@ -19,7 +19,7 @@ package org.mevenide.ui.eclipse.sync.model.properties;
 import org.apache.maven.project.Dependency;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
-import org.mevenide.ui.eclipse.editors.properties.AbstractPomPropertySource;
+import org.mevenide.ui.eclipse.adapters.properties.AbstractPomPropertySource;
 
 /**
  * @author Jeffrey Bonevich (jeff@bonevich.com)

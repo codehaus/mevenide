@@ -20,7 +20,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
-import org.mevenide.ui.eclipse.editors.properties.AbstractPomPropertySource;
+import org.mevenide.ui.eclipse.adapters.properties.AbstractPomPropertySource;
 
 /**
  *

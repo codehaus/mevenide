@@ -183,9 +183,9 @@
             icon="icons/pom_file.gif"
             filenames="project.xml"
             extensions="xml"
-            class="org.mevenide.ui.eclipse.editors.MevenidePomEditor"
-            contributorClass="org.mevenide.ui.eclipse.editors.MevenidePomEditorContributor"
-            id="org.mevenide.ui.eclipse.editors.MevenidePomEditor">
+            class="org.mevenide.ui.eclipse.editors.pom.MevenidePomEditor"
+            contributorClass="org.mevenide.ui.eclipse.editors.pom.MevenidePomEditorContributor"
+            id="org.mevenide.ui.eclipse.editors.pom.MevenidePomEditor">
       </editor>
 <!-- 
       	constructed by eclipse extension point template 
@@ -197,9 +197,9 @@
             filenames="maven.xml,plugin.jelly"
             extensions="jelly"
             default="true"
-            class="org.mevenide.ui.eclipse.editors.mavenxml.MavenXmlEditor"
+            class="org.mevenide.ui.eclipse.editors.jelly.MavenXmlEditor"
             contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
-            id="org.mevenide.ui.eclipse.editors.mavenxml.MavenXmlEditor">
+            id="org.mevenide.ui.eclipse.editors.jelly.MavenXmlEditor">
       </editor>
 <!-- 
       	constructed by eclipse extension point template 
@@ -207,10 +207,10 @@
       -->
       <editor
             contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
-            class="org.mevenide.ui.eclipse.editors.mavenxml.BasicJellyEditor"
+            class="org.mevenide.ui.eclipse.editors.jelly.BasicJellyEditor"
             icon="icons/pom_file.gif"
             extensions="xml,jelly"
-            id="org.mevenide.ui.eclipse.editors.mavenxml.BasicJellyEditor"
+            id="org.mevenide.ui.eclipse.editors.jelly.BasicJellyEditor"
             name="Generic Jelly Editor">
       </editor>
    </extension>
