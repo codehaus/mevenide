@@ -5,7 +5,7 @@
   <id>mevenide-netbeans-grammar</id>
   <name>Mevenide XML grammar</name>
   <artifactId>mevenide-netbeans-grammar</artifactId>
-  <currentVersion>0.2-SNAPSHOT</currentVersion>
+  <currentVersion>0.2</currentVersion>
   <package>org.mevenide.netbeans.grammar</package>
   <description>Maven files XML grammar and code-completion for Netbeans</description>
   <shortDescription>Maven files XML grammar and code-completion for Netbeans</shortDescription>
@@ -55,7 +55,7 @@
     <dependency>
         <groupId>mevenide</groupId>
         <artifactId>mevenide-config</artifactId>
-        <version>0.1-SNAPSHOT</version>
+        <version>0.1.1</version>
         <type>jar</type>
 	    <properties>
             <netbeans.module.dep>spec</netbeans.module.dep>
@@ -64,7 +64,7 @@
     <dependency>     
         <groupId>mevenide</groupId>
         <artifactId>goals-grabber</artifactId>
-        <version>0.1.1-SNAPSHOT</version>
+        <version>0.1.2</version>
             <properties>
                 <netbeans.module.dep>spec</netbeans.module.dep>
             </properties>

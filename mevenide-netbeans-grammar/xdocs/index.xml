@@ -9,31 +9,25 @@
         <div id="documentContent">
         <p> This project is a simple XML grammar code completion Netbeans module which gives the user access to 
         basic maven/jelly-taglib elements and attributes.
-        It currently works with Netbeans 3.5 and 3.6.
+        It currently works with Netbeans 3.6. (If anyone wants a release for 3.5, send me an email)
         </p>
 	</div>
    </section>
    <section name="Versions">
       <div id="documentContent">
       	<p>
-   	  Currently the 0.1 version is available for download. It works with Netbeans 3.5.1.
+   	  Currently the 0.2 version is available for download which works with Netbeans 3.6.
       </p>
-      <p>
-      To get latest snapshot of 0.2, please checkout the project from cvs. (Snapshot also available on the Download page)
-      It works with Netbeans 3.6 beta.
-   	  </p>
    	  </div>
     </section>
 
-    <section name="Installing">
+    <section name="Download/Installing">
       <div id="documentContent">
       <p>
-            To install the plugin, go to the <a href="http://sourceforge.net/project/showfiles.php?group_id=54263&amp;package_id=110955" class="documentLink">Sourceforge download page</a>  and get the zipped/tarred release. 
-            Then extract it, and install the nbm files using your IDE's "Tools/Update Center" wizard.
+            To install the product, get the <a href="http://mevenide.codehaus.org/download/mevenide-netbeans-grammar-0-2.tar.gz" class="documentLink">tar.gz</a> or 
+            the <a href="http://mevenide.codehaus.org/download/mevenide-netbeans-grammar-0-2.zip" class="documentLink">zip archive</a> which contain nbm files.
+            Extract them to a temporary location and install the nbm files using your IDE's "Tools/Update Center" wizard.
    	  </p>
-      <p> <b>Known Issue: </b>Before you will be able to use the module, you will have to put log4j jar into your netbeans installation directory
-      into the subfolder lib/ext. It's best done before running the IDE.
-      </p>
    	  </div>
     </section>
     
