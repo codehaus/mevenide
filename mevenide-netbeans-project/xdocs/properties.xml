@@ -3,7 +3,7 @@
 <document>
   <properties>
     <title>maven-nbm-plugin Properties</title>
-    <author>Milos Kleint (ca206216@tiscali.cz)</author>
+    <author>Milos Kleint (mkleint@codehaus.org)</author>
   </properties>
   <body>
     <section name="Building Properties">
