@@ -26,6 +26,7 @@ import org.mevenide.properties.IPropertyLocator;
 import org.mevenide.netbeans.project.ActionProviderImpl;
 import org.mevenide.netbeans.project.MavenProject;
 import org.mevenide.netbeans.project.exec.RunGoalsAction;
+import org.netbeans.spi.project.ActionProvider;
 import org.netbeans.spi.project.ui.support.LogicalViews;
 import org.openide.nodes.AbstractNode;
 
@@ -82,13 +83,13 @@ public class MavenProjectNode extends AbstractNode {
         ActionProviderImpl provider = (ActionProviderImpl)project.getLookup().lookup(ActionProviderImpl.class);
         toReturn[0] = LogicalViews.newFileAction();
         toReturn[1] = null;
-        toReturn[2] = provider.createBasicMavenAction("Build", "jar:install");
-        toReturn[3] = provider.createBasicMavenAction("Clean", "clean");
-        toReturn[4] = provider.createBasicMavenAction("Rebuild", "clean jar:install");
+        toReturn[2] = provider.createBasicMavenAction("Build", ActionProvider.COMMAND_BUILD);
+        toReturn[3] = provider.createBasicMavenAction("Clean", ActionProvider.COMMAND_CLEAN);
+        toReturn[4] = provider.createBasicMavenAction("Rebuild", ActionProvider.COMMAND_REBUILD);
         toReturn[5] = provider.createBasicMavenAction("Generate Javadoc", "javadoc");
         if (isMultiproject) {
-            toReturn[6] = provider.createMultiProjectAction("Build (multiproject)", "jar:install");
-            toReturn[7] = provider.createMultiProjectAction("Clean (multiproject)", "clean");
+            toReturn[6] = provider.createBasicMavenAction("Build (multiproject)", ActionProviderImpl.COMMAND_MULTIPROJECTBUILD);
+            toReturn[7] = provider.createBasicMavenAction("Clean (multiproject)", ActionProviderImpl.COMMAND_MULTIPROJECTCLEAN);
         }
         toReturn[6 + slip] = new RunGoalsAction(project);
         // separator
