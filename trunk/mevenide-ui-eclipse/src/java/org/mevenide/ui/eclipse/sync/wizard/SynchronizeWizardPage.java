@@ -227,15 +227,15 @@ public class SynchronizeWizardPage extends WizardPage {
 					Mevenide.getImageDescriptor("color-orange-16.gif").createImage(),
 					Mevenide.getImageDescriptor("color-green-16.gif").createImage(),
 					Mevenide.getImageDescriptor("color-grey-16.gif").createImage(),
-					Mevenide.getImageDescriptor("color-black-16.gif").createImage(),			
+					Mevenide.getImageDescriptor("color-red-16.gif").createImage(),			
 			}
 		);
 		item1.setText(
 			new String[] {
 				"Duplicate value",
-				"Present in POM",
+				"Already in POM",
 				"Parent Value",
-				"Default",
+				"Version conflict",
 			}	
 		);
 		
@@ -551,7 +551,9 @@ public class SynchronizeWizardPage extends WizardPage {
 		while (pomSourceDirectoriesIterator.hasNext()) {
             String directoryType = (String) pomSourceDirectoriesIterator.next();
 			String directory = (String) pomSourceDirectories.get(directoryType);
+			
 			boolean isInPom = false;
+			
 			for (int i = 0; i < group.getSourceDirectories().size(); i++) {
                 SourceDirectory savedSourceDir =  (SourceDirectory) group.getSourceDirectories().get(i);
 				if ( savedSourceDir.getDirectoryPath().replace('\\', '/').equals(directory.replace('\\', '/')) ) {
@@ -561,6 +563,7 @@ public class SynchronizeWizardPage extends WizardPage {
 				}
 				
             }
+            
 			if ( !isInPom ) {
 				SourceDirectory newSourceDirectory = new SourceDirectory(directory, group);
 				newSourceDirectory.setDirectoryType(directoryType);
@@ -695,11 +698,14 @@ public class SynchronizeWizardPage extends WizardPage {
 					public void widgetSelected(SelectionEvent e) {
 						TableTreeItem[] items = dependenciesViewer.getTableTree().getSelection();
 						TableTreeItem item = items[0];
-						while ( item.getParentItem() != null ) {
-							item = item.getParentItem();
+						
+						Object obj = item.getData();
+						System.err.println(obj.getClass());
+						if ( obj instanceof DependencyInfo ) {
+							obj = ((DependencyInfo) obj).getDependencyWrapper();
 						}
 						if ( !((DependencyWrapper) item.getData()).isReadOnly() ) {
-							((DependencyGroup) dependenciesViewer.getInput()).excludeDependency((DependencyWrapper) item.getData());
+							((DependencyGroup) dependenciesViewer.getInput()).excludeDependency((DependencyWrapper) obj);
 							dependenciesViewer.refresh(true);
 							removeDependencyButton.setEnabled(false);
 							dependencyPropertiesButton.setEnabled(false);
@@ -836,18 +842,33 @@ public class SynchronizeWizardPage extends WizardPage {
         List pomDependencies = mavenProject.getDependencies();
         
 		for (int i = 0; i < pomDependencies.size(); i++) {
-			boolean inPom = false;
+			Dependency pomDependency = (Dependency)pomDependencies.get(i);
+			
+			boolean conflictDetected = false;
+			boolean foundInEclipseProject = false;
+			
             for (int j = 0; j < group.getDependencyWrappers().size(); j++) {
                 DependencyWrapper wrapper = (DependencyWrapper) group.getDependencyWrappers().get(j);
-				if ( DependencyUtil.areEquals((Dependency)pomDependencies.get(i), wrapper.getDependency()) ) {
+                
+				if ( DependencyUtil.areEquals(pomDependency, wrapper.getDependency()) ) {
 					wrapper.setInPom(true);
-					inPom = true;
+					foundInEclipseProject = true;
+				}
+				
+				if ( DependencyUtil.conflict(pomDependency, wrapper.getDependency()) ) {
+					wrapper.setConflictDetected(true);
+					conflictDetected = true;
 				}
             }
-			if ( !inPom ) {
+			if ( !foundInEclipseProject ) {
 				DependencyWrapper wrapper = new DependencyWrapper((Dependency)pomDependencies.get(i), false, group);
 				wrapper.setInPom(true);
 				group.addDependency(wrapper); 
+			}
+			if ( conflictDetected ) {
+				DependencyWrapper wrapper = new DependencyWrapper((Dependency)pomDependencies.get(i), false, group);
+				wrapper.setConflictDetected(true);
+				group.addDependency(wrapper);
 			}
         }
     }
