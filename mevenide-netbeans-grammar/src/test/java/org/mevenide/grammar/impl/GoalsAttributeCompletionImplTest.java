@@ -50,6 +50,8 @@ public class GoalsAttributeCompletionImplTest extends TestCase {
         siteGoals.add("site:run-reports");
         siteGoals.add("site:sshdeploy");
         siteGoals.add("site:war");
+        //Maven RC2 added..
+        siteGoals.add("site:ftpdeploy");
     }
 
     protected void tearDown() throws Exception {
