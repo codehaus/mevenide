@@ -16,6 +16,8 @@ package org.mevenide.ui.eclipse.sync.views;
 import java.util.List;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.jdt.core.IClasspathEntry;
+import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.util.Assert;
@@ -40,7 +42,9 @@ import org.eclipse.ui.part.ViewPart;
 import org.mevenide.sync.ISynchronizer;
 import org.mevenide.sync.SynchronizerFactory;
 import org.mevenide.ui.eclipse.MavenPlugin;
-import org.mevenide.ui.eclipse.sync.source.*;
+import org.mevenide.ui.eclipse.sync.source.DefaultPathResolverDelegate;
+import org.mevenide.ui.eclipse.sync.source.SourceDirectory;
+import org.mevenide.ui.eclipse.sync.source.SourceDirectoryGroup;
 
 /**
  * 
@@ -257,11 +261,49 @@ public class SourceDirectoryTypePart extends ViewPart {
 	public void saveState() throws Exception {
 		SourceDirectoryMarshaller.saveSourceDirectoryGroup((SourceDirectoryGroup)viewer.getInput(), MavenPlugin.getPlugin().getFile("sourceTypes.xml"));
 	}
-
- 	
+	
 	public static void showView() throws Exception {
 		IViewPart consoleView =
 			PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(MavenPlugin.SYNCH_VIEW_ID); 
 	}
 
+	/**
+	 * 
+	 * try to figure out the SourceDirectory types from the previous state. if there are 
+	 * new directories, the view is shown
+	 * 
+	 * @param currentProject
+	 * @throws Exception
+	 */
+	public static void synchronizeWithoutPrompting(IProject currentProject) throws Exception {
+		//@todo show view if and only if previous sourceDirs donot match
+		String savedState = MavenPlugin.getPlugin().getFile("sourceTypes.xml");
+		List lastSourceList = SourceDirectoryMarshaller.getLastStoredSourceDirectories(currentProject, savedState);
+		
+		boolean newSourceFolder = false;
+		IClasspathEntry[] entries = JavaCore.create(currentProject).getResolvedClasspath(true);
+
+		DefaultPathResolverDelegate pathResolver = new DefaultPathResolverDelegate();
+
+		for (int i = 0; i < entries.length; i++) {
+			if ( entries[i].getEntryKind() == IClasspathEntry.CPE_SOURCE ) {
+				String entryPath = pathResolver.getRelativeSourceDirectoryPath(entries[i], currentProject);
+				if ( !lastSourceList.contains(entryPath) ) {
+					newSourceFolder = true;
+					break;
+				}
+			}
+		}
+		if ( newSourceFolder ) {
+			sourceDirectoriesPrompt(currentProject);
+		}
+		else {
+			SynchronizerFactory.getSynchronizer(ISynchronizer.IDE_TO_POM).synchronize();
+		}
+	}
+	
+	public static void sourceDirectoriesPrompt(IProject currentProject) throws Exception {
+		showView();
+		getInstance().setInput(currentProject);
+	}
 }

@@ -50,8 +50,10 @@ public class SynchronizeAction extends AbstractMavenAction {
 				}
 			}
 			if ( action.getId().equals("maven-plugin.SynchronizePom") ) {
-				SourceDirectoryTypePart.showView();
-				SourceDirectoryTypePart.getInstance().setInput(currentProject);
+				SourceDirectoryTypePart.synchronizeWithoutPrompting(currentProject);
+			}
+			if ( action.getId().equals("maven-plugin.mapSourceDirectories") ) {
+				SourceDirectoryTypePart.sourceDirectoriesPrompt(currentProject);
 			}
 		}
 		catch (Exception e) {
