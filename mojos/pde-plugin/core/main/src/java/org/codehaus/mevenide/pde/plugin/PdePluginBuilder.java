@@ -65,4 +65,25 @@ public class PdePluginBuilder {
 	    zipCreator.setIncludes(includes);
 	    zipCreator.zip();
     }
+    
+    public String getArtifactName() { return artifactName; }
+    public void setArtifactName(String artifactName) { this.artifactName = artifactName; }
+    
+    public File getBasedir() { return basedir; }
+    public void setBasedir(File basedir) { this.basedir = basedir; }
+    
+    public String getClassesLocation() { return classesLocation; }
+    public void setClassesLocation(String classesLocation) { this.classesLocation = classesLocation; }
+    
+    public String getExcludes() { return excludes; }
+    public void setExcludes(String excludes) { this.excludes = excludes; }
+    
+    public List getIncludes() { return includes; }
+    public void setIncludes(List includes) { this.includes = includes; }
+    
+    public String getLibFolder() { return libFolder; }
+    public void setLibFolder(String libFolder) { this.libFolder = libFolder; }
+ 
+    public MavenProject getProject() { return project; }
+    public void setProject(MavenProject project) { this.project = project; }
 }

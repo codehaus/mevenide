@@ -1,16 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project>
   <extend>../project.xml</extend>
-  <pomVersion>3.0</pomVersion>
+  <pomVersion>3</pomVersion>
   <name>Maven PDE Plugin (M1)</name>
   <artifactId>maven-pde-m1-plugin</artifactId>
-  <version>0.1-SNAPSHOT</version>
+  <currentVersion>0.1-SNAPSHOT</currentVersion>
   <dependencies>
   	<dependency>
   		<groupId>mevenide</groupId>
-  		<artifactId>maven-pde-plugin</artifactId>
+  		<artifactId>maven-pde-core-plugin</artifactId>
   		<version>0.1-SNAPSHOT</version>
   	</dependency>
+  	<dependency>
+  		<groupId>maven</groupId>
+  		<artifactId>maven</artifactId>
+  		<version>1.0</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>commons-jelly</groupId>
+  		<artifactId>commons-jelly</artifactId>
+  		<version>20030902.160215</version>
+  	</dependency>
   </dependencies>
+  <build>
+  	<resources>
+  	  <resource>
+        <directory>${basedir}</directory>
+        <filtering>false</filtering>
+        <includes>
+        	<include>plugin.jelly</include>
+        </includes>
+      </resource>
+  	</resources>
+  </build>
 </project>
 

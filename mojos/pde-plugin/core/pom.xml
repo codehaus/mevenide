@@ -5,6 +5,6 @@
   <groupId>mevenide</groupId>
   <name>Maven PDE Plugin (Core)</name>
   <artifactId>maven-pde-core-plugin</artifactId>
-  <currentVersion>0.1-SNAPSHOT</currentVersion>
+  <version>0.1-SNAPSHOT</version>
 </project>
 
