@@ -127,10 +127,8 @@ public class ArgumentsManager {
 	static Map getSystemProperties(AbstractRunner runner) {
 	    Map props = new HashMap();
 	
-	    props.put("javax.xml.parsers.DocumentBuilderFactory",
-	                "org.apache.xerces.jaxp.DocumentBuilderFactoryImpl");
-	    props.put("javax.xml.parsers.SAXParserFactory",
-	                "org.apache.xerces.jaxp.SAXParserFactoryImpl");
+	    props.put("javax.xml.parsers.DocumentBuilderFactory", "org.apache.xerces.jaxp.DocumentBuilderFactoryImpl");
+	    props.put("javax.xml.parsers.SAXParserFactory", "org.apache.xerces.jaxp.SAXParserFactoryImpl");
 	    props.put("tools.jar" , Environment.getJavaHome() + File.separator + "lib" + File.separator + "tools.jar");
 	    props.put("maven.home", Environment.getMavenHome());
 		props.put("maven.repo.local", Environment.getMavenRepository());
@@ -138,6 +136,7 @@ public class ArgumentsManager {
 	    props.put("java.endorsed.dirs", Environment.getEndorsedDirs());
 	    props.put("basedir", runner.getBasedir());
 	    props.put("user.dir", runner.getBasedir());
+	    
 	    return props;
 	}
 }
