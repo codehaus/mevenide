@@ -17,6 +17,8 @@
         <menu name="General">
         	<item name="Overview" href="/index.html"/>
         	<item name="License" href="/license.html"/>
+        	<item name="Javadoc" href="/apidocs/index.html"/>
+        	<item name="Source XRef" href="/xref/index.html"/>
         </menu>
         
         <menu name="Modules">

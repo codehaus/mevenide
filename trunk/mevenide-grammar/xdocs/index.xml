@@ -9,7 +9,7 @@
         	
         	<p>
 			    This module provides an API for Maven-oriented code completion 
-			    for both Jelly files (including maven.xml) andd POM files.
+			    for both Jelly files (including maven.xml) and POM files.
 			</p>
 		</section>
     </body>
