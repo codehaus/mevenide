@@ -154,6 +154,9 @@ public class MavenGoalsDialog {
 		pluginsTableViewer.setContentProvider(pluginsProvider);
 		pluginsTableViewer.setLabelProvider(pluginsProvider);
 		pluginsTableViewer.setInput(MevenideProvider.ROOT);
+		
+		System.err.print(goalsManager.getPlugins().length);
+		pluginsTableViewer.setCheckedElements(goalsManager.getPlugins());
 	}
 
     public AbstractGoalsManager getGoalsManager() {
@@ -174,5 +177,4 @@ public class MavenGoalsDialog {
 	public void setGoalsManager(AbstractGoalsManager manager) {
 		goalsManager = manager;
 	}
-
 }

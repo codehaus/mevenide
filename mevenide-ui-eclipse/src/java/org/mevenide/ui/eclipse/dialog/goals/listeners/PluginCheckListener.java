@@ -32,6 +32,7 @@ public class PluginCheckListener implements ICheckStateListener {
     
 	public void checkStateChanged(CheckStateChangedEvent event) {
         String plugin = (String) event.getElement();
+		goalsTable.setInput(plugin);
 		goalsTable.setAllChecked(event.getChecked());
 		if (event.getChecked()) {
 			goalsManager.addGoal(plugin, null);

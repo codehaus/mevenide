@@ -34,6 +34,16 @@ public class PluginSelectionListener implements ISelectionChangedListener {
 		Object plugin = ((StructuredSelection) event.getSelection()).getFirstElement();
         goalsTable.setInput(plugin);
 		String[] checked = goalsManager.getGoals((String) plugin);
-		goalsTable.setCheckedElements(checked);
+		String[] newChecked = new String[checked.length];
+		for (int i = 0; i < newChecked.length; i++) {
+			int separator = checked[i].indexOf(":");
+			if ( separator != -1 ) {
+				newChecked[i] = checked[i].substring(separator + 1, checked[i].length());
+			} 
+			else {
+				newChecked[i] = checked[i];	
+			}
+		}
+		goalsTable.setCheckedElements(newChecked);
 	}
 }
