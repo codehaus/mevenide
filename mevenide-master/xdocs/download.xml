@@ -13,10 +13,21 @@
   	<subsection name="Eclipse Support">
   	  <div id="documentContent">
         <p>
-    	  Mevenide is only available for Eclipse for now. Mevenide for Eclipse distribution is composed of three different 
-    	  plugins : Core, Grabber and UI. They can be found <a href="http://sourceforge.net/project/showfiles.php?group_id=54263">here</a>.
-    	  Also Mevenide for Eclipse now supports Eclipse Update feature. To learn how to install Mevenide thanks the EclipseUpdate Manager,
+    	  Mevenide for Eclipse distribution is composed of five different plugins : Core, Config, Grammar, Grabber and UI. 
+    	  They can be found <a href="http://dist.codehaus.org/mevenide/release">here</a>. Plugin Features are described in 
+    	  <a href="mevenide-ui-eclipse/features.html">this document</a>
+        </p>
+        <p>
+          Mevenide for Eclipse now supports Eclipse Update feature. To learn how to install Mevenide thanks the EclipseUpdate Manager,
     	  please refer to <a href="mevenide-ui-eclipse/update/index.html">this document</a>.
+        </p>
+        <p>
+        	Requirements :
+        	<ul>
+        		<li>Eclipse 3.0M8+</li>
+        		<li>JDK 1.4+</li>
+        		<li>Maven 1.0 (tested with RC2, but should be ok with RC1)</li>
+        	</ul>
         </p>
       </div>
     </subsection>

@@ -8,7 +8,18 @@
         <section name="Project Overview">
         	
         	<p>
-			    To be done.
+			    This project provides various an api to help resolving environment 
+			    related properties/variables, by looking in various sources :
+			    <br/>
+				<ul>
+					<li><code>org.mevenide.context</code> allows to avoid unnecessary I/O operations by providing a single entry point, subjacent models are shared by the clients</li>
+					<li><code>org.mevenide.environment</code> package contains implementations of <code>ILocationFinder</code> that is used to find relevant properties (such as MAVEN_HOME, MAVEN_REPO_LOCAL, etc.) </li>	
+					<li><code>org.mevenide.properties</code> package contains model for property files that keeps trace of comments and elements order</li>	    	    	
+					<li><code>org.mevenide.resolver</code> contains helper classes used to resolve properties (e.g. ${some.property} or $ {pom.build.sourceDirectory}</li>	
+				</ul>
+			</p>
+			<p>
+				Please refer to the javadoc and source xref for more informations.
 			</p>
 			
 		</section>

@@ -10,31 +10,35 @@
 		<p>
 		  Implemented features fall into three categories :
 		  <ul>
-			<li><a href="#Bidirectional Synchronization">Eclipse project and Maven project synchronization</a></li>
+			<li><a href="#Bidirectional Synchronization">Bidirectional Synchronization</a></li>
 			<li><a href="#Maven Launcher">Maven Launcher</a></li>
 			<li><a href="#POM Editor">POM Editor</a></li>
+			<li><a href="#Jelly Editor">Jelly Editor</a></li>
+			<li><a href="#Wizards">Maven Oriented Wizards</a></li>
 		  </ul>
 		</p>
 	  </div>
 	  <subsection name="Bidirectional Synchronization">
   	    <div id="documentContent">
+  	      <p>Synchronize Eclipse Project and Maven Project through a view ala Team Synchronization view</p>
 	      <p>
-	        <ul>
-	  	      <li>Dependencies resolving - class folders are ignored since i dont know yet what to do with them</li>
-			  <li>Dependency and SourceDirectory mapping view</li>
-			  <li>Project Properties and Jar overriding support</li>
-			  <li>Project dependency properties management</li>
-			  <li>Pom skeleton template-based creation</li>
-			  <li>Eclipse Project synchronization - using maven-eclipse-plugin</li>
-			  <li>Pom synchronization - SourceModification and Filtering not managed for now</li>
-			  <li>Support for Pom Inheritance when synchronizing POMs</li>
+	      	<ul>
+			  <li>Resources and UnitTest resources rynchronization, supporting excludes</li>
+			  <li>Source directories synchronization</li>
+			  <li>Dependencies synchronization</li>
+			  <li>Suport for ignored artifacts (.mvnignore)</li>
+			  <li>Primary output folder support</li>
+			  <li>Supports eclipse.dependency (from maven-eclipse-plugin) property</li>
+			  <li>Possibility to filter the elements to be synchronized - eventually via regular expressions</li>
 		    </ul>
 		  </p>
 		  <p>
-		    <i>
-		      For more information, please see
-			  <a href="http://mevenide.sourceforge.net/cgi-bin/view.pl/MevenideSynchronization" class="documentLink">Mevenide Wiki</a>
-		    </i>
+		    <u>Known limitations</u><br/>
+		  	<ul>
+		  		<li>No conflict support (e.g. if dependencies version conflict)</li>
+		  		<li>Doesnot support "Output folder per Source folder" Eclipse option</li>
+		  		<li>Link to external resources/files not tested</li>
+		  	</ul>
 		  </p>
 		</div>
 	  </subsection>
@@ -49,20 +53,71 @@
 		    </ul>
 		  </p>
 		  <p>
-		    <i>
-		      For more information, please see
-		      <a href="http://mevenide.sourceforge.net/cgi-bin/view.pl/MavenRunner" class="documentLink">Mevenide Wiki</a>
-		    </i>
+		  	<u>Known limitations</u><br/>
+		  	<ul>
+		  		<li>No debug mode (Jelly debugging, attach to a remote VM, etc.)</li>
+		  		<li>Cannot set JVM options</li>
+		  	</ul>
 		  </p>
 		</div>
 	  </subsection>
 	  <subsection name="POM Editor">
 	  	<div id="documentContent">
 	      <p>
-	        <i>
-	  	      For more information, please see
-			  <a href="http://mevenide.sourceforge.net/cgi-bin/view.pl/PomEditor" class="documentLink">Mevenide Wiki</a>
-		    </i>
+	      	<ul>
+	  	      <li>Multipart Editor based on Eclipse Forms API</li>
+		    </ul>
+		  </p>
+		  <p>
+		  	<u>Known issues</u><br/><br/>
+		  	<ul>
+		  		<li>Due to the lazy intitialization that comes for free with the Forms API, changes in source page donot propagate in the pages that havent been opened before</li>
+		  		<li>Editor is marked as dirty on open</li>
+		  	</ul>
+		  </p>
+		  <p>
+		  	<u>Known limitations</u><br/>
+		  	<ul>
+		  		<li>No xml entities support yet - we need to think about some solutions to support full bidirectionnal I/O - altho it is definitively on the TODO list.</li>
+		  	</ul>
+		  </p>
+		</div>
+	  </subsection>
+	  <subsection name="Jelly Editor">
+	  	<div id="documentContent">
+	      <p>
+	      	<ul>
+	  	      <li>Provides contentassist for Jelly files.</li>
+	  	      <li>Refined contentassist for maven.xml : takes Werkz tags into account and propose custom goals as well.</li>
+	  	      <li>Outline page for maven.xml showing all available goals (global ones as well as custom ones)</li>
+	  	      <li>Possibility to run a goa lfrom the outline page by double-clicking it</li>
+	  	      <li>Possibility to filter the outline page - eventually via regular expressions</li>
+		    </ul>
+		  </p>
+		  <p>
+		  	<u>Known limitations</u><br/>
+		  	<ul>
+		  		<li>No code completions for prereqs attribute</li>
+		  		<li>Limited jelly:ant taglib support</li>
+		  		<li>Completion proposals (custom goals) not computed from the buffer but from the previously saved file</li>
+		  		<li>Offline option not functionnal yet when launching a goal from the outline page</li>
+		  	</ul>
+		  </p>
+		</div>
+	  </subsection>
+	  <subsection name="Maven oriented wizards">
+	  	<div id="documentContent">
+	      <p>
+	      	<ul>
+	  	      <li>Simple Maven Wizard based on java project wizard</li>
+	  	      <li>Creates a POM according to the informations entered in the wizard</li>
+		    </ul>
+		  </p>
+		  <p>
+		  	<u>Known limitations</u><br/>
+		  	<ul>
+		  		<li>Cannot fully customize the generated POM before the creation</li>
+		  	</ul>
 		  </p>
 		</div>
 	  </subsection>

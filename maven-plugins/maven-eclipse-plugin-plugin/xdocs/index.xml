@@ -13,7 +13,7 @@
    	      user-defined Ant filter that allows to use custom replacement strings in the templates. 
    	    </p>
    	    <p>
-   	      In the near future, maven-eclipse-plugin-plugin will also support fs/ssh/ftp deploiement of generated artefact archives. We're also 
+   	      In the future, maven-eclipse-plugin-plugin may also support fs/ssh/ftp deploiement of generated artefact archives. We're also 
    	      working on a different build mode that will allow to generate eclipse plugins from a stated dependency instead of bundling it as a 
    	      runtime library. 
    	    </p>
