@@ -12,6 +12,9 @@
       (Goal <code>nbm:create-library-artifacts</code> and dependency property
       <code>netbeans.lib.generate</code>)
       </action>
+      <action dev="mkleint" type="update">
+      Use the Ant tasks of Netbeans 4.0 final release.
+      </action>
     </release>
     <release version="0.6" date="20041030" description="">
       <action dev="mkleint" type="update">
