@@ -75,58 +75,12 @@ class DependencyMappingNodeContainer implements IArtifactMappingNodeContainer {
     
     private int direction;
     
-    public IArtifactMappingNode[] getNodes() {
-        return nodes;
-    }
-    
-    public void setNodes(IArtifactMappingNode[] nodes) {
-        this.nodes = nodes;
-    }
     
     public String getLabel() {
         return "Libraries";
     }
     
-    public void attachJavaProject(IJavaProject javaProject) throws Exception {
-        Project pom = ProjectReader.getReader().read(FileUtils.getPom(javaProject.getProject()));
-        
-        attachPom(pom);
-        
-		//dirty trick to avoid infinite loops if user has introduced one by mistake
-        List visitedPoms = new ArrayList();
-        
-		String extend = pom.getExtend();
-		
-		//recurse poms
-		while ( extend != null && !extend.trim().equals("") ) {
-			
-		    //resolve extend
-		    extend = extend.replaceAll("\\$\\{basedir\\}", pom.getFile().getParent().replaceAll("\\\\", "/"));
-			File extendFile = new File(extend);
-			if ( !extendFile.exists() ) {
-			    log.debug("extend doesnot exist");
-			    extendFile = new File(pom.getFile().getParent(), extend);
-			    if ( !extendFile.exists() ) {
-			        log.debug(extendFile.getAbsolutePath() + " doesnot exist either. break.");
-			        //@ TODO throw new ExtendDoesnotExistException(..)
-			        break;
-			    }
-			}
-			
-			//assert pom has not been visited yet
-			if ( visitedPoms.contains(extendFile.getAbsolutePath()) ) {
-			    //@TODO throw new InfinitePomRecursionException(..)
-			    break;
-			}
-			visitedPoms.add(extendFile.getAbsolutePath());
-			
-			//attach pom
-			pom = ProjectReader.getReader().read(extendFile);
-		    attachPom(pom);
-			extend = pom.getExtend();
-		}
-    }
-    
+    //@ TODO generalize
     private void attachPom(Project pom) {
         List dependencies = pom.getDependencies();
         List dependenciesCopy = new ArrayList(dependencies);
@@ -185,11 +139,60 @@ class DependencyMappingNodeContainer implements IArtifactMappingNodeContainer {
         return newContainer;
     }
     
+    
+    
+    // @TODO pull-up those ones
+    
+    public void attachJavaProject(IJavaProject javaProject) throws Exception {
+        Project pom = ProjectReader.getReader().read(FileUtils.getPom(javaProject.getProject()));
+        
+        attachPom(pom);
+        
+		//dirty trick to avoid infinite loops if user has introduced one by mistake
+        List visitedPoms = new ArrayList();
+        
+		String extend = pom.getExtend();
+		
+		//recurse poms
+		while ( extend != null && !extend.trim().equals("") ) {
+			
+		    //resolve extend
+		    extend = extend.replaceAll("\\$\\{basedir\\}", pom.getFile().getParent().replaceAll("\\\\", "/"));
+			File extendFile = new File(extend);
+			if ( !extendFile.exists() ) {
+			    log.debug("extend doesnot exist");
+			    extendFile = new File(pom.getFile().getParent(), extend);
+			    if ( !extendFile.exists() ) {
+			        log.debug(extendFile.getAbsolutePath() + " doesnot exist either. break.");
+			        //@ TODO throw new ExtendDoesnotExistException(..)
+			        break;
+			    }
+			}
+			
+			//assert pom has not been visited yet
+			if ( visitedPoms.contains(extendFile.getAbsolutePath()) ) {
+			    //@TODO throw new InfinitePomRecursionException(..)
+			    break;
+			}
+			visitedPoms.add(extendFile.getAbsolutePath());
+			
+			//attach pom
+			pom = ProjectReader.getReader().read(extendFile);
+		    attachPom(pom);
+			extend = pom.getExtend();
+		}
+    }
+    
     public int getDirection() {
         return direction;
     }
-    
     public void setDirection(int direction) {
         this.direction = direction;
+    }
+    public IArtifactMappingNode[] getNodes() {
+        return nodes;
+    }
+    public void setNodes(IArtifactMappingNode[] nodes) {
+        this.nodes = nodes;
     }
 }
