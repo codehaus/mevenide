@@ -65,6 +65,7 @@ public final class PropertyFilesAggregator implements IPropertyResolver {
     public String getResolvedValue(String key) {
         return getValue(key, true);
     }
+   
     
     public String getValue(String key) {
         return getValue(key, false);
@@ -116,11 +117,15 @@ public final class PropertyFilesAggregator implements IPropertyResolver {
     	reload(projectBuild);
     }
     
-	private void reload(IPropertyFinder finder) {
-		if ( finder != null ) {
+    private void reload(IPropertyFinder finder) {
+        if ( finder != null ) {
     		finder.reload();
     	}
     }
 
+    public String resolveString(String original) {
+        StringBuffer buf = new StringBuffer(original);
+        return resolve(buf).toString();
+    }        
     
 }
