@@ -10,7 +10,7 @@
   <name>jdom library for Mevenide.</name>
   <shortDescription>Library for project mevenide</shortDescription>
   <description>Library for project mevenide</description>
-  <url>http://mevenide.sf.net</url>
+  <url>http://mevenide.codehaus.org</url>
   <dependencies>
     <dependency>
       <groupId>jdom</groupId>
