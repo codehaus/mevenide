@@ -91,7 +91,7 @@
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
-            <version>1.2.7</version>
+            <version>1.2.8</version>
             <type>jar</type>
             <properties>
             	<eclipse.plugin.bundle>true</eclipse.plugin.bundle>
@@ -121,6 +121,8 @@
             	<eclipse.plugin.bundle>true</eclipse.plugin.bundle>
             </properties>
         </dependency>
+        <!-- mklent - is grant used from the mevenide-core code or is it here only 
+            to handle runtime dependnecies? -->
         <dependency>
             <groupId>commons-grant</groupId>
             <artifactId>commons-grant</artifactId>
