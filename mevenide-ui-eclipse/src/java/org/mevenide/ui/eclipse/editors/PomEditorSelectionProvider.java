@@ -55,17 +55,21 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.ui.part.MultiPageSelectionProvider;
 
 /**
  * @author Jeff Bonevich (jeff@bonevich.com)
  * @version $Id$
  */
-public class PomEditorSelectionProvider implements ISelectionProvider {
+public class PomEditorSelectionProvider
+	extends MultiPageSelectionProvider 
+	implements ISelectionProvider {
 
 	private Vector listeners = new Vector();
 	private ISelection selection;
 
-	public PomEditorSelectionProvider() {
+	public PomEditorSelectionProvider(MevenidePomEditor editor) {
+		super(editor);
 	}
 
 	public void addSelectionChangedListener(ISelectionChangedListener listener) {
