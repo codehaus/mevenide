@@ -39,20 +39,20 @@ public class FindLicenseTagTest extends TestCase {
     }
 
     public void testJar1() throws Exception {
-        File fl= new File("target/test-classes/org/mevenide/tags/haslicense1.jar");
+        File fl= new File("../maven-nbm-plugin/target/test-classes/org/mevenide/tags/haslicense1.jar");
         tag.setJarFile(fl);
         String lic = tag.readLicense();
         assertNotNull(lic);
     }
     
     public void testJar2() throws Exception {
-        File fl= new File("target/test-classes/org/mevenide/tags/haslicense2.jar");
+        File fl= new File("../maven-nbm-plugin/target/test-classes/org/mevenide/tags/haslicense2.jar");
         tag.setJarFile(fl);
         String lic = tag.readLicense();
         assertNotNull(lic);
     }
     public void testJar3() throws Exception {
-        File fl= new File("target/test-classes/org/mevenide/tags/nolicense1.jar");
+        File fl= new File("../maven-nbm-plugin/target/test-classes/org/mevenide/tags/nolicense1.jar");
         tag.setJarFile(fl);
         String lic = tag.readLicense();
         assertNull(lic);
