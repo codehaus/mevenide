@@ -26,6 +26,9 @@
 					<font size="-1"><b>Screenshot 1</b> synchronization Contextual Menu</font>
 					<br/><br/>
 				</center>
+				Under each POM node, only the artifact declared in this POM are dispalyed, if you want to synchronize a multiproject, you have to select 
+				all relevant POMs from the dialog. Any artefact can be added or removed to and from pom or .classpath. Availability of the various actions depends of the 
+				current vizualisation mode.  
             </p>
 			<p>
 				When triggered from an Eclipse container contextual menu, if multiple project.xml files are found in the selected container
@@ -58,9 +61,6 @@
 				</ul>
 			</p>
 			<p>
-				Uner each POM node, only the artifact declared in this POM are dispalyed, if you want to synchronize a multiproject, you have to select 
-				all relevants POM from the dialog. Any artefact can be added or removed to and from pom or .classpath. Availability of the various actions depends of the 
-				current vizualisation mode.  
 				<br/><br/>
 				<center>
 					<img border="1px" src="images/synch_view.png"/>
