@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2003  Gilles Dodinet (gdodinet@wanadoo.fr)
  * 
  * This library is free software; you can redistribute it and/or modify it under
@@ -10,74 +10,39 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
  */
 package org.mevenide.project;
 
-import java.io.File;
+import java.util.List;
 
 import org.apache.maven.project.Dependency;
-import org.mevenide.Environment;
-
-import junit.framework.TestCase;
+import org.apache.maven.project.Project;
+import org.mevenide.project.io.ProjectReader;
+import org.mevenide.test.AbstractMevenideTestCase;
 
 /**
  * 
- * @author <a href="mailto:gdodinet@wanadoo.fr">Gilles Dodinet</a>
+ * @author Gilles Dodinet (gdodinet@wanadoo.fr)
  * @version $Id$
  * 
  */
-public class DependencyUtilTest extends TestCase {
-	
-	
-	private File artefact;
-	
-	private File testTypeDirectory;
-	private File mevenideHome; 
-	
-	private DependencyFactory dependencyFactory;
-	
-	protected void setUp() throws Exception {
-		mevenideHome = new File(System.getProperty("user.home"), ".mevenide");
-		File rootDirectory = new File(mevenideHome, "repository");
-		rootDirectory.mkdirs();
+public class DependencyUtilTest extends AbstractMevenideTestCase {
+
+	public void testIsDependencyPresent()throws Exception {
+		Project project = ProjectReader.getReader().read(projectFile);
+		List dependencies = project.getDependencies();
 		
- 		File testArtifactDirectory = new File(rootDirectory, "mevenide"); 
- 		testTypeDirectory = new File(testArtifactDirectory, "txts");
- 		testTypeDirectory.mkdirs();
- 		
- 		artefact = new File(testTypeDirectory, "foo+joe-test2.-bar-1.0.7-dev.txt");
-		artefact.createNewFile();
+		Dependency dep = dependencyFactory.getDependency("E:/maven/repository/junit/jars/junit-3.8.1.jar");
+		assertTrue(DependencyUtil.isDependencyPresent(project, dep));
+		 
+		dep = dependencyFactory.getDependency("E:/bleeeaaaah/junit/jars/junit-3.8.1.jar");
+		assertTrue(DependencyUtil.isDependencyPresent(project, dep));
+		 
+		dep = dependencyFactory.getDependency("E:/bleeeaaaah/plouf/jars/junit-3.8.1.jar");
+		assertTrue(DependencyUtil.isDependencyPresent(project, dep));
 		
-		dependencyFactory = DependencyFactory.getFactory();
+		dep = dependencyFactory.getDependency("E:/bleeeaaaah/plouf/junit-3.8.1.jar");
+		assertTrue(DependencyUtil.isDependencyPresent(project, dep));
 	}
 
-	protected void tearDown() throws Exception {
-		//rootDirectory.delete();
-	}
-	
-	public void testGetDependency() {
-		Environment.setMavenHome(mevenideHome.getAbsolutePath());
-		Dependency dep = dependencyFactory.getDependency(artefact.getAbsolutePath());
-		assertEquals("mevenide", dep.getGroupId());
-		
-		Environment.setMavenHome(System.getProperty("user.home"));
-		dep = dependencyFactory.getDependency(artefact.getAbsolutePath());
-		
-//		System.out.println(dep.getGroupId());
-//		System.out.println(dep.getArtifactId());
-//		System.out.println(dep.getVersion());
-		
-		assertEquals("mevenide", dep.getGroupId());
-		assertEquals("1.0.7-dev", dep.getVersion());
-		assertEquals("foo+joe-test2.-bar", dep.getArtifactId());
-		
-		artefact = new File(testTypeDirectory, "foo+joe-test2.-bar-1.0.7-beta-1.txt");
-		dep = dependencyFactory.getDependency(artefact.getAbsolutePath());
-		//BUG-DependencyUtil_split-DEP_PATTERN
-		//assertEquals("1.0.7-beta-1", dep.getVersion());
-	}
-
-	
-	
 }

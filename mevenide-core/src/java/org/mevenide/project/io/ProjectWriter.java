@@ -16,14 +16,14 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.apache.maven.project.Dependency;
 import org.apache.maven.project.Project;
 import org.apache.maven.project.Resource;
 import org.mevenide.ProjectConstants;
 import org.mevenide.project.DependencyFactory;
+import org.mevenide.project.DependencyUtil;
+import org.mevenide.project.ResourceUtil;
 
 /**
  * 
@@ -40,12 +40,6 @@ public class ProjectWriter {
 	private static ProjectWriter projectWriter = null;
 	private static Object lock = new Object();
 	
-	
-	private ProjectWriter() throws Exception  {
-		marshaller = new DefaultProjectMarshaller();
-		projectReader = ProjectReader.getReader();
-	}
-	
 	public static ProjectWriter getWriter() throws Exception {
 		if (projectWriter != null) {
 			return projectWriter;
@@ -60,6 +54,11 @@ public class ProjectWriter {
 		}
 	}
 	
+	private ProjectWriter() throws Exception  {
+		marshaller = new DefaultProjectMarshaller();
+		projectReader = ProjectReader.getReader();
+	}
+	
 	/**
 	 * add a resource entry to the pom (more precisely to the build element). 
 	 * the resource is expected to be a directory, however we will 
@@ -70,62 +69,9 @@ public class ProjectWriter {
 	 */
 	public void addResource(String path, File pom) throws Exception {
 		Project project = projectReader.read(pom);
-		Resource resource = newResource(path);
-		mergeSimilarResources(project, resource);
+		Resource resource = ResourceUtil.newResource(path);
+		ResourceUtil.mergeSimilarResources(project, resource);
 		write(project, pom);	
-	}
-	
-	/**
-	 * iterate ${pom.build.resources} and merge those whose directory is equal to 
-	 * the directory of resource passed as parameter with the later.
-	 * 
-	 * @param project
-	 * @param resource
-	 * @return boolean
-	 */
-	private void mergeSimilarResources(Project project, Resource resource) {
-		List similar = getSimilarResources(project, resource);
-		
-		for (int i = 0; i < similar.size(); i++) {
-			Resource similarResource = (Resource) similar.get(i);
-			resource.getIncludes().addAll(similarResource.getIncludes());
-			resource.getExcludes().addAll(similarResource.getExcludes());
-			project.getBuild().getResources().remove(similarResource);
-		}
-		
-		project.getBuild().addResource(resource);
-	}
-
-	private List getSimilarResources(Project project, Resource resource) {
-		List similar = new ArrayList();
-		
-		List resources = project.getBuild().getResources();
-		
-		for (int i = 0; i < resources.size(); i++) {
-			Resource declaredResource = (Resource) resources.get(i);
-			if ( declaredResource.getDirectory().equals(resource.getDirectory()) ) {
-				similar.add(declaredResource);
-			}
-		}
-		return similar;
-	}
-	
-	/**
-	 * construct a Resource from a given path, including all children
-	 * 
-	 * @param path
-	 * @return
-	 */
-	private Resource newResource(String path) {
-		boolean isDirectory = new File(path).isDirectory();
-		String directory =  isDirectory ? path : new File(path).getParent();
-		String singleInclude = isDirectory ? "**/*.*" : new File(path).getName();
-		
-		Resource resource = new Resource();
-		resource.setDirectory(directory);
-		resource.addInclude(singleInclude);
-		
-		return resource;
 	}
 	
 	/**
@@ -169,48 +115,17 @@ public class ProjectWriter {
 		
 		Dependency dependency = DependencyFactory.getFactory().getDependency(path);
 		
-		if ( !isDependencyPresent(project, dependency) ) {
+		if ( !DependencyUtil.isDependencyPresent(project, dependency) ) {
 			
 			project.addDependency(dependency);
 			write(project, pom);
 			
 		}
+		
+		//manage jar.overridding
 	}
 	
-	/**
-	 * checks if a Dependency identified by its artifact path is present in the POM.
-	 * default visibility for testing purpose
-	 * 
-	 * testing artifact doesnt seem to be a good solution since it is often omitted
-	 * we rather have to test artifactId and version.
-	 * 
-	 * deeply depends upon a fully functionnal version of both methods :
-	 * 
-	 * org.mevenide.project.DependencyUtil#guessVersion() and
-	 * org.mevenide.project.DependencyUtil#guessArtifactId()
-	 * 
-	 * @param project
-	 * @param absoluteFileName
-	 * @return
-	 */
-	boolean isDependencyPresent(Project project, Dependency dependency) {
-		List dependencies = project.getDependencies();
-		if ( dependencies == null ) {
-			return false;
-		}
-		for (int i = 0; i < dependencies.size(); i++) {
-			Dependency declaredDependency = (Dependency) dependencies.get(i);
-			
-			String version = declaredDependency.getVersion(); 
-			String artifactId = declaredDependency.getArtifactId();
-			
-			if (  artifactId != null && artifactId.equals(dependency.getArtifactId()) 
-				  && version != null && version.equals(dependency.getVersion())) {
-				return true;
-			}
-		}
-		return false;
-	}
+	
 	
 	/** 
 	 * utility method that allows some factorization
