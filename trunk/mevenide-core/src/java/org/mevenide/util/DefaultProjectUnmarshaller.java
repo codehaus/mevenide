@@ -63,6 +63,7 @@ import org.apache.maven.project.Build;
 import org.apache.maven.project.Contributor;
 import org.apache.maven.project.Dependency;
 import org.apache.maven.project.Developer;
+import org.apache.maven.project.License;
 import org.apache.maven.project.MailingList;
 import org.apache.maven.project.Organization;
 import org.apache.maven.project.Project;
@@ -250,6 +251,45 @@ public class DefaultProjectUnmarshaller
                         }
                     }
                 }
+				else if ( parser.getName().equals( "licenses" ) )
+				{
+					while ( parser.nextTag() == XmlPullParser.START_TAG )
+					{
+						if ( parser.getName().equals( "license" ) )
+						{
+							License l = new License();
+							project.addLicense( l );
+
+							while ( parser.nextTag() == XmlPullParser.START_TAG )
+							{
+								if ( parser.getName().equals( "name" ) )
+								{
+									l.setName( parser.nextText() );
+								}
+								else if ( parser.getName().equals( "distribution" ) )
+								{
+									l.setDistribution( parser.nextText() );
+								}
+								else if ( parser.getName().equals( "url" ) )
+								{
+									l.setUrl( parser.nextText() );
+								}
+								else if ( parser.getName().equals( "comments" ) )
+								{
+									l.setComments( parser.nextText() );
+								}
+								else
+								{
+									parser.nextText();
+								}
+							}
+						}
+						else
+						{
+							parser.nextText();
+						}
+					}
+				}
                 else if ( parser.getName().equals( "mailingLists" ) )
                 {
                     while ( parser.nextTag() == XmlPullParser.START_TAG )
