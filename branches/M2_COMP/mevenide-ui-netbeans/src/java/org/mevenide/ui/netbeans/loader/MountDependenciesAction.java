@@ -20,7 +20,9 @@ import java.beans.PropertyVetoException;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
-import org.apache.maven.repository.Artifact;
+
+
+import org.apache.maven.artifact.MavenArtifact;
 import org.mevenide.ui.netbeans.ArtifactCookie;
 import org.mevenide.ui.netbeans.project.FileSystemUtil;
 import org.openide.DialogDisplayer;
@@ -81,7 +83,7 @@ public class MountDependenciesAction extends CookieAction
         boolean allMounted = true;
         while (it.hasNext())
         {
-            Artifact art = (Artifact)it.next();
+            MavenArtifact art = (MavenArtifact)it.next();
             if (art.exists())
             {
                 try

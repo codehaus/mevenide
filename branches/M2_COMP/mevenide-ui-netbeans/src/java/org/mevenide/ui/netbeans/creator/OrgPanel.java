@@ -17,8 +17,9 @@
 package org.mevenide.ui.netbeans.creator;
 
 import javax.swing.JPanel;
-import org.apache.maven.project.Organization;
-import org.apache.maven.project.Project;
+
+import org.apache.maven.model.Organization;
+import org.apache.maven.project.MavenProject;
 import org.openide.util.NbBundle;
 
 /**
@@ -220,7 +221,7 @@ public class OrgPanel extends JPanel implements ProjectPanel
     private javax.swing.JTextField txtURL;
     // End of variables declaration//GEN-END:variables
     
-    public void setProject(Project project)
+    public void setProject(MavenProject project)
     {
         Organization org = project.getOrganization();
         if (org == null)
@@ -234,18 +235,18 @@ public class OrgPanel extends JPanel implements ProjectPanel
             txtName.setText(org.getName() == null ? "" : org.getName());
             txtLogo.setText(org.getLogo() == null ? "" : org.getLogo());
         }
-        txtSiteAddress.setText(project.getSiteAddress() == null ? "" : project.getSiteAddress());
-        txtSiteDir.setText(project.getSiteDirectory() == null ? "" : project.getSiteDirectory());
-        txtDistDir.setText(project.getDistributionDirectory() == null ? "" : project.getDistributionDirectory());
-        txtDistAddress.setText(project.getDistributionSite() == null ? "" : project.getDistributionSite());
+        txtSiteAddress.setText(project.getModel().getSiteAddress() == null ? "" : project.getModel().getSiteAddress());
+        txtSiteDir.setText(project.getModel().getSiteDirectory() == null ? "" : project.getModel().getSiteDirectory());
+        txtDistDir.setText(project.getModel().getDistributionDirectory() == null ? "" : project.getModel().getDistributionDirectory());
+        txtDistAddress.setText(project.getModel().getDistributionSite() == null ? "" : project.getModel().getDistributionSite());
     }
     
-    public Project copyProject(Project project)
+    public MavenProject copyProject(MavenProject project)
     {
-        project.setSiteAddress(txtSiteAddress.getText());
-        project.setSiteDirectory(txtSiteDir.getText());
-        project.setDistributionSite(txtDistAddress.getText());
-        project.setDistributionDirectory(txtDistDir.getText());
+        project.getModel().setSiteAddress(txtSiteAddress.getText());
+        project.getModel().setSiteDirectory(txtSiteDir.getText());
+        project.getModel().setDistributionSite(txtDistAddress.getText());
+        project.getModel().setDistributionDirectory(txtDistDir.getText());
         // see if one of the org fields is defined ..
         int length = Math.max(
                     Math.max(txtLogo.getText().length(), txtURL.getText().length()),
@@ -253,13 +254,13 @@ public class OrgPanel extends JPanel implements ProjectPanel
         Organization org = null;
         if (length > 0)
         {
-            if (project.getOrganization() == null)
+            if (project.getModel().getOrganization() == null)
             {
                 org = new Organization();
-                project.setOrganization(org);
+                project.getModel().setOrganization(org);
             } else
             {
-                org = project.getOrganization();
+                org = project.getModel().getOrganization();
             }
             org.setLogo(txtLogo.getText());
             org.setName(txtName.getText());
@@ -267,7 +268,7 @@ public class OrgPanel extends JPanel implements ProjectPanel
         } else
         {
             // no field defined..
-            project.setOrganization(null);
+            project.getModel().setOrganization(null);
         }
         return project;
     }

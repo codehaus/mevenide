@@ -16,7 +16,9 @@
  */
 package org.mevenide.ui.netbeans.creator;
 
-import org.apache.maven.project.Project;
+import org.apache.maven.project.MavenProject;
+
+
 
 /**
  *
@@ -27,12 +29,12 @@ public interface ProjectPanel
     /**
      * will assign the properties of the project that it handles.
      */
-    Project copyProject(Project project);
+    MavenProject copyProject(MavenProject project);
     
     /**
      * the panel will update according to the values of project parameter.
      */
-    void setProject(Project project);
+    void setProject(MavenProject project);
     
     /**
      * sets the observer interested in the validity changes of the panel.

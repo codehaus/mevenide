@@ -17,8 +17,11 @@
 package org.mevenide.ui.netbeans.creator;
 
 import java.util.Calendar;
+
 import javax.swing.JPanel;
-import org.apache.maven.project.Project;
+
+
+import org.apache.maven.project.MavenProject;
 import org.openide.util.NbBundle;
 
 /**
@@ -173,22 +176,22 @@ public class DescPanel extends JPanel implements ProjectPanel
     private javax.swing.JTextField txtUrl;
     // End of variables declaration//GEN-END:variables
     
-    public void setProject(Project project)
+    public void setProject(MavenProject project)
     {
-        txtInceptionYear.setText(project.getInceptionYear() == null ? "" + Calendar.getInstance().get(Calendar.YEAR) : project.getInceptionYear());
-        txtShortDescription.setText(project.getShortDescription() == null ? "" : project.getShortDescription());
-        txtUrl.setText(project.getUrl() == null ? "http://" : project.getUrl());
-        txtLogo.setText(project.getLogo() == null ? "" : project.getLogo());
-        taDescription.setText(project.getDescription() == null ? "" : project.getDescription());
+        txtInceptionYear.setText(project.getModel().getInceptionYear() == null ? "" + Calendar.getInstance().get(Calendar.YEAR) : project.getModel().getInceptionYear());
+        txtShortDescription.setText(project.getModel().getShortDescription() == null ? "" : project.getModel().getShortDescription());
+        txtUrl.setText(project.getModel().getUrl() == null ? "http://" : project.getModel().getUrl());
+        txtLogo.setText(project.getModel().getLogo() == null ? "" : project.getModel().getLogo());
+        taDescription.setText(project.getModel().getDescription() == null ? "" : project.getModel().getDescription());
     }
     
-    public Project copyProject(Project project)
+    public MavenProject copyProject(MavenProject project)
     {
-        project.setDescription(taDescription.getText());
-        project.setShortDescription(txtShortDescription.getText());
-        project.setInceptionYear(txtInceptionYear.getText());
-        project.setUrl(txtUrl.getText());
-        project.setLogo(txtLogo.getText());
+        project.getModel().setDescription(taDescription.getText());
+        project.getModel().setShortDescription(txtShortDescription.getText());
+        project.getModel().setInceptionYear(txtInceptionYear.getText());
+        project.getModel().setUrl(txtUrl.getText());
+        project.getModel().setLogo(txtLogo.getText());
         return project;
     }
     

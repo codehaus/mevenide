@@ -18,7 +18,8 @@ package org.mevenide.ui.netbeans.loader;
 
 import java.util.List;
 
-import org.apache.maven.repository.Artifact;
+
+import org.apache.maven.artifact.MavenArtifact;
 import org.mevenide.ui.netbeans.ArtifactCookie;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
@@ -46,8 +47,8 @@ public class DependencyChildren extends Children.Keys
     
     protected Node[] createNodes(Object obj)
     {
-        if (obj instanceof Artifact) {
-            Artifact art = (Artifact)obj;
+        if (obj instanceof MavenArtifact) {
+            MavenArtifact art = (MavenArtifact)obj;
             AbstractNode node = new DependencyNode(art);
             return new Node[] {node};
         }

@@ -18,7 +18,7 @@ package org.mevenide.ui.netbeans;
 
 import java.beans.PropertyChangeListener;
 import java.io.File;
-import org.apache.maven.project.Project;
+import org.apache.maven.project.MavenProject;
 import org.openide.nodes.Node;
 
 /**
@@ -71,9 +71,9 @@ public interface MavenProjectCookie extends  Node.Cookie
     Node.Property[] getProperties();
     
     /**
-     returns org.apache.maven.Project
+     returns org.apache.maven.MavenProject
      */
-    Project getMavenProject();
+    MavenProject getMavenProject();
     
     void addPropertyChangeListener(PropertyChangeListener listener);
     void removePropertyChangeListener(PropertyChangeListener listener);

@@ -23,7 +23,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.EventListenerList;
 
-import org.apache.maven.project.Project;
+import org.apache.maven.project.MavenProject;
 import org.openide.WizardDescriptor;
 import org.openide.loaders.TemplateWizard;
 import org.openide.util.HelpCtx;
@@ -119,14 +119,14 @@ public abstract class AbstractWizardStep implements WizardDescriptor.Panel, Proj
     public void readSettings(Object settings)
     {
         wizard = (TemplateWizard)settings;
-        Project proj = (Project)wizard.getProperty(MavenProjectIterator.PROP_PROJECT);
+        MavenProject proj = (MavenProject)wizard.getProperty(MavenProjectIterator.PROP_PROJECT);
         panel.setProject(proj);
     }
     
     public void storeSettings(Object settings)
     {
         wizard = (TemplateWizard)settings;
-        Project proj = (Project)wizard.getProperty(MavenProjectIterator.PROP_PROJECT);
+        MavenProject proj = (MavenProject)wizard.getProperty(MavenProjectIterator.PROP_PROJECT);
         panel.copyProject(proj);
     }
   

@@ -22,8 +22,7 @@ import java.io.IOException;
 import java.util.Enumeration;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.maven.project.Project;
-import org.apache.maven.repository.Artifact;
+import org.apache.maven.artifact.MavenArtifact;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileSystem;
 import org.openide.filesystems.FileUtil;
@@ -56,7 +55,7 @@ public class FileSystemUtil
      * and other IDE related actions (automagically)
      */
     
-    public static void mountDependency(Artifact artifact) throws IOException, PropertyVetoException
+    public static void mountDependency(MavenArtifact artifact) throws IOException, PropertyVetoException
     {
         if (!alreadyMountedJar(artifact.getFile()))
         {

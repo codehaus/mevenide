@@ -30,8 +30,8 @@ import javax.swing.event.ListSelectionListener;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.maven.project.MailingList;
-import org.apache.maven.project.Project;
+import org.apache.maven.model.MailingList;
+import org.apache.maven.project.MavenProject;
 import org.openide.util.NbBundle;
 
 /**
@@ -244,9 +244,9 @@ public class ListsPanel extends JPanel implements ProjectPanel
     private javax.swing.JTextField txtUnsubscribe;
     // End of variables declaration//GEN-END:variables
     
-    public void setProject(Project project)
+    public void setProject(MavenProject project)
     {
-        List list = project.getMailingLists();
+        List list = project.getModel().getMailingLists();
         DefaultListModel model = new DefaultListModel();
         if (list != null) {
             Iterator it = list.iterator();
@@ -286,7 +286,7 @@ public class ListsPanel extends JPanel implements ProjectPanel
         
     }
     
-    public Project copyProject(Project project)
+    public MavenProject copyProject(MavenProject project)
     {
         // when copying over, we will discard the current instances in the project with our local fresh ones.
         // I hope that is ok, and the mailing lists don't have custom properties.
@@ -298,7 +298,7 @@ public class ListsPanel extends JPanel implements ProjectPanel
             Object obj = en.nextElement();
             list.add(obj);
         }
-        project.setMailingLists(list);
+        project.getModel().setMailingLists(list);
         return project;
     }
     
