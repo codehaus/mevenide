@@ -54,7 +54,7 @@ import org.mevenide.ui.eclipse.template.model.Templates;
 
 /**
  * The basic wizard page for a maven project. This include naming the project, selecting
- * project location and/or choosing a template to base the project creation on.
+ * project location and/or choosing a template to base the project creation on.  
  * @author <a href="mailto:jens@iostream.net">Jens Andersen </a>, Last updated by $Author$
  * @version $Id$
  */
