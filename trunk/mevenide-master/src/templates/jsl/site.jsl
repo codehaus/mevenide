@@ -92,7 +92,7 @@
               </td>
               
               <td align="center">
-                  <div style="color: #777777; font-size: 12pt;">
+                  <div id="mainTitle">
                    <p valign="bottom"><img src="images/none.png"/> ${mevenide.title} </p>
                	  </div>
               </td>

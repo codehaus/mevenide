@@ -30,6 +30,16 @@ a:link, a:visited {
   background-color: #ffffff; 
 }
 
+#mainTitle p {
+  border:none;
+  color: #990000;
+  background-color: #ffffff;
+  font-size: 16pt;
+  letter-spacing: 4px;
+  font-variant: small-caps;
+  font-style: italic;
+}
+
 .sectionTitle {
   color: #990000;
   background-color: #eeeeee;
