@@ -63,7 +63,7 @@
       <roles>
       	<role>Developer Java</role>
       </roles>
-      <timezone>+1</timezone>
+      <timezone>GMT+1</timezone>
     </developer>
     <developer>
       <name>Jeffrey Bonevich</name>
@@ -74,7 +74,7 @@
       	<role>Developer Java</role>
       </roles>
       <url>http://www.bonevich.com/index.php</url>
-      <timezone>-4</timezone>
+      <timezone>GMT-4</timezone>
     </developer>
   </developers>
 
