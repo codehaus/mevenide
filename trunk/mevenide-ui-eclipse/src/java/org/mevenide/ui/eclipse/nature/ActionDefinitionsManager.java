@@ -22,7 +22,6 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunchConfiguration;
-import org.eclipse.debug.core.ILaunchConfigurationListener;
 import org.eclipse.debug.core.ILaunchConfigurationType;
 
 
@@ -32,42 +31,30 @@ import org.eclipse.debug.core.ILaunchConfigurationType;
  * @version $Id$
  * 
  */
-public class ActionDefinitionsManager implements IActionDefinitionManager, ILaunchConfigurationListener {
-    private List definitions = new ArrayList();
+public class ActionDefinitionsManager implements IActionDefinitionManager {
 
     
     public ActionDefinitionsManager() {
+    }
+    
+    public List getDefinitions(IProject project) {
+	    List definitions = new ArrayList();
         try {
             ILaunchConfigurationType type = DebugPlugin.getDefault().getLaunchManager().getLaunchConfigurationType("org.mevenide.ui.launching.ActionDefinitionConfigType");
             ILaunchConfiguration[] configurations = DebugPlugin.getDefault().getLaunchManager().getLaunchConfigurations(type);
             for (int i = 0; i < configurations.length; i++) {
-                ActionDefinitions definition = new ActionDefinitions();
-                definition.setConfiguration(configurations[i]);
-                definitions.add(definition);
+                if ( configurations[i].getName() != null && configurations[i].getName().indexOf("org.mevenide.ui.launching.ActionDefinitionConfigType.SHARED_INFO") == -1 ) {
+	                ActionDefinitions definition = new ActionDefinitions();
+	                definition.setConfiguration(configurations[i]);
+	                definitions.add(definition);
+                }
             }
         }
         catch (CoreException e) {
             e.printStackTrace();
         }
-    }
-    
-    public List getDefinitions(IProject project) {
         return definitions;
     }
     
     
-    public void launchConfigurationAdded(ILaunchConfiguration configuration) {
-        ActionDefinitions definition = new ActionDefinitions();
-        definition.setConfiguration(configuration);
-        definitions.add(definition);
-    }
-    
-    public void launchConfigurationChanged(ILaunchConfiguration configuration) {
-    }
-    
-    public void launchConfigurationRemoved(ILaunchConfiguration configuration) {
-        ActionDefinitions definition = new ActionDefinitions();
-        definition.setConfiguration(configuration);
-        System.out.println(definitions.remove(definition));
-    }
 }
