@@ -40,4 +40,8 @@ public class Goal extends Element {
 				&& ((Goal) obj).getName().equals(getName())
 				&& ((Goal) obj).getPlugin().getName().equals(plugin.getName()); 
 	}
+	
+	public String getFullyQualifiedName() {
+		return (plugin != null ? plugin.getName() + ":" : "") + getName();
+	}
 }

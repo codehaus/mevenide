@@ -214,7 +214,7 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
 	            ((ArtifactMappingContentProvider) artifactMappingNodeViewer.getContentProvider()).setDirection(direction);
 	        }
 			artifactMappingNodeViewer.refresh(true);
-	        artifactMappingNodeViewer.expandToLevel(1);
+	        //artifactMappingNodeViewer.expandToLevel(1);
 			activateWritePropertiesAction(direction);
 			fireDirectionChanged();
 		}
@@ -246,6 +246,7 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
 
     private void createArtifactViewer(Composite parent) {
         artifactMappingNodeViewer = new TreeViewer(parent, SWT.MULTI | SWT.FULL_SELECTION);
+        artifactMappingNodeViewer.setAutoExpandLevel(4);
         
         GridLayout gridLayout= new GridLayout();
         gridLayout.makeColumnsEqualWidth= false;
@@ -617,7 +618,7 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
 	public void refreshAll(boolean shouldExpand) {
 		artifactMappingNodeViewer.refresh(true);
 		if ( shouldExpand ) {
-			artifactMappingNodeViewer.expandAll();
+			//artifactMappingNodeViewer.expandAll();
 		}
 	}
 
