@@ -197,8 +197,7 @@ public class NewPomWizardSecondPage extends WizardPage {
         else {
             builder = PomSkeletonBuilder.getSkeletonBuilder(selectedTemplate.getProject().getFile().getAbsolutePath());
         }
-        String skeleton = builder.getPomSkeleton(pomName, groupId, artifactId);
-        
+        String skeleton = builder.getPomSkeleton(pomName != null ? pomName : ((NewPomWizard) getWizard()).getContainerName(), groupId, artifactId);
         return new StringInputStream(skeleton);
     }
 

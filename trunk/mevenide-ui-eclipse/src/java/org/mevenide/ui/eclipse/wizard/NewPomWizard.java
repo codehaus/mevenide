@@ -46,6 +46,8 @@ public class NewPomWizard extends BasicNewResourceWizard implements INewWizard {
     private ISelection selection;
     private IWorkbench workbench;
     
+    private String containerName;
+    
     public NewPomWizard() {
         super();
         setNeedsProgressMonitor(true);
@@ -111,6 +113,13 @@ public class NewPomWizard extends BasicNewResourceWizard implements INewWizard {
     	initializeDefaultPageImageDescriptor();
     }
     
+    protected void setContainerName(String containerName) {
+        this.containerName = containerName;
+    }
+    
+    public String getContainerName() {
+        return containerName;
+    }
     
     public IWorkbench getWorkbench() {
         return workbench;
