@@ -200,7 +200,7 @@ public class UpdatePluginLibsTagTest extends TestCase {
         
         int previousChildrenLength = tag.getDescriptor().getRootElement().getChild("requires").getChildren().size();
         tag.addRequiresPlugin(artifact);
-        assertEquals(previousChildrenLength, tag.getDescriptor().getRootElement().getChild("requires").getChildren().size());
+        assertEquals(previousChildrenLength + 1, tag.getDescriptor().getRootElement().getChild("requires").getChildren().size());
         
     }
 
@@ -274,6 +274,7 @@ public class UpdatePluginLibsTagTest extends TestCase {
 		mockTag = new MockUpdatePluginLibsTag();
 		context = new MockJellyContext();
 		mockTag.setExpectedAddRuntimeLibraryCalls(1);
+		context.addExpectedVariable("maven.eclipse.plugin.build.mode", "bundle");
 		context.addExpectedVariable("maven.eclipse.plugin.bundle.lib.dir", "lib");
 		context.addExpectedVariable("maven.eclipse.plugin.src.dir", new File(UpdatePluginLibsTagTest.class.getResource("/").getFile(), "full-descriptor").getAbsolutePath());
 		mockTag.setContext(context);
