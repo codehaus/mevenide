@@ -32,6 +32,7 @@ public class AllTests  {
     public static Test suite() {
         TestSuite suite = new TestSuite();
         
+        suite.addTestSuite(ProjectComparatorFactoryTest.class);
         suite.addTestSuite(ProjectComparatorTest.class);
         
         return suite;
