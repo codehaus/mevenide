@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<plugin-provider id="PDE Plugin" name="PDE Plugin">
+<description>%PDEPlugin.Description</description>
+<category name="Common">
+      <property name="maven.eclipse.plugin.artifact.type" 
+                            label="Artifact type"
+                default="plugin"
+                required="false"
+                description="type of generated artifacts - can be 'plugin', 'feature' or 'site', 'help' or 'lib'."/>                     
+      <property name="maven.eclipse.plugin.artifact.id" 
+                            label="Eclipse artifact name"
+                default="${pom.artifactId}"
+                required="false"
+                description="Eclipse artifact id. All '-' characters will be replaced by '.' when generating artifact. this property is also used to filter resources."/>                    
+      <property name="maven.eclipse.plugin.artifact.version" 
+                            label="Eclipse artifact version"
+                default="${pom.currentVersion}"
+                required="false"
+                description="eclipse update artifact version. warning : maven accepts alphanumeric version whereas eclipse dont. this property is also used to filter resources."/>
+      <property name="maven.eclipse.plugin.dist.dir" 
+                            label="Distribution Directory"
+                default="${maven.build.dir}/eclipse/dist"
+                required="false"
+                description="Specifies distribution directory where files will be generated."/>
+      <property name="maven.eclipse.plugin.licenses.dir" 
+                            label="Licenses directory"
+                default="${basedir}/licenses"
+                required="false"
+                description="Directory where 3rd party dependency licenses can be found"/>                    
+      <property name="maven.eclipse.plugin.src.dir" 
+                            label="Templates Directory"
+                default="${maven.src.dir}/conf/eclipse"
+                required="false"
+                description="Templates folder where plugin descriptor template is expected to be found"/>
+      <property name="maven.eclipse.plugin.temp.dir" 
+                            label="Temp Directory"
+                default="${maven.build.dir}/eclipse/temp"
+                required="false"
+                description="Specifies the temporary to use. this property is exposed to avoid potential conflicts."/>
+      <property name="maven.eclipse.plugin.filterset.id" 
+                            label="Custom filterset"
+                default=""
+                required="false"
+                description="Filterset to use when installing plugin inplace. optionnal. if specified default filterset will refine it."/>
+  </category>
+<category name="Plugin Specific">
+      <property name="maven.eclipse.plugin.bundle.lib.dir" 
+                            label="Lib directory Directory"
+                default="lib"
+                required="false"
+                description="relative directory where runtime dependencies are outputted"/>
+      <property name="maven.eclipse.plugin.build.mode" 
+                            label="Build Mode"
+                default="bundle"
+                required="false"
+                description="Experimental. Specifies the plugin behaviour : if not set to 'bundle' then an Eclipse plugin will be created for each POM dependency."/>
+      <property name="maven.eclipse.plugin.ext.dir" 
+                            label="Ext Directory"
+                default="${maven.build.dir}/eclipse/ext"
+                required="false"
+                description="Experimental. ext directory where generated required plugins are put "/>
+</category>
+<category name="Feature Specific">
+      <property name="maven.eclipse.plugin.feature.includes" 
+                            label="Feature inclusion list"
+                default="feature.xml,feature.properties,license.txt,logo.jpg"
+                required="false"
+                description="Controls which files are to be included in the feature distribution file"/>                    
+      <property name="maven.eclipse.plugin.feature.plugins" 
+                            label="Feature plugins"
+                default=""
+                required="true"
+                description="specify which plugins should be in this feature. This property serves two purposes : 1. it permits to update the feature.xml file with the relevant plugin versions 2. it is used by update-site creation goal to retrieve the plugins to package"/>                    
+</category>
+<category name="Site Specific">
+      <property name="maven.eclipse.plugin.site.features" 
+                            label="Site features"
+                default="feature.xml,feature.properties,license.txt,logo.jpg"
+                required="true"
+                description="specifies which features should be integrated in this site release."/>                    
+      <property name="maven.eclipse.plugin.site.feature.dest.dir" 
+                            label="Site features destination"
+                default="${maven.eclipse.plugin.dist.dir}/features"
+                required="false"
+                description="Controls where this update's features should end up"/>                                        
+      <property name="maven.eclipse.plugin.site.plugin.dest.dir" 
+                            label="Site plugins destination"
+                default="${maven.eclipse.plugin.dist.dir}/plugins"
+                required="false"
+                description="Controls where this update's plugins should end up"/>                                        
+      <property name="maven.eclipse.plugin.site.includeRootFiles" 
+                            label="Create Local update site"
+                default=""
+                required="false"
+                description="Controls wether or not site.* files should be included into site archive. if included the content can then be used as local site, else content can be directly unzipped into eclipse installation folder"/>                                        
+  </category>
+  <category name="Help Specific">
+      <property name="maven.eclipse.plugin.help.dir" 
+                            label="Directory where help files are located"
+                default="target/xdocs"
+                required="false"
+                description="Specifies where documentation to be bundled is to be found"/>                    
+</category>
+<category name="SWT">
+      <property name="maven.eclipse.plugin.swt.version" 
+                            label="SWT version"
+                default="3.0.0"
+                required="false"
+                description="swt version to install in the local repo."/>                    
+      <property name="maven.eclipse.plugin.swt.groupId" 
+                            label="SWT groupId"
+                default="eclipse"
+                required="false"
+                description="groupId under which swt should be installed"/>                    
+      <property name="maven.eclipse.plugin.swt.artifactId" 
+                            label="SWT artifactId"
+                default="eclipse-swt"
+                required="false"
+                description="artifactId under which swt should be installed."/>
+  </category>
+</plugin-provider>

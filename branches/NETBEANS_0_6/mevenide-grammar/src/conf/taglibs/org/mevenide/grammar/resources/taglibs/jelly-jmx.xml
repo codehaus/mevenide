@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- code completion definition for the jelly-tag library -->
+
+<taglib name="jelly:jmx">
+    <tag name="operation">
+        <attr name="name"/>
+        <attr name="arguments"/>
+        <attr name="parameters"/>
+        <attr name="trim"/>
+    </tag>
+    <tag name="register">
+        <attr name="name"/>
+        <attr name="server"/>
+        <attr name="trim"/>
+    </tag>
+    <tag name="server">
+        <attr name="server"/>
+        <attr name="trim"/>
+    </tag>
+</taglib>

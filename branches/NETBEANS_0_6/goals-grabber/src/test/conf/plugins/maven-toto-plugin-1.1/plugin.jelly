@@ -1,0 +1,113 @@
+<?xml version="1.0"?>
+
+<project
+  xmlns:j="jelly:core"
+  xmlns:util="jelly:util"
+  xmlns:x="jelly:xml"
+  xmlns:ant="jelly:ant"
+  xmlns:doc="doc">
+
+  <goal name="maven-tutu-plugin:register" prereqs="toto">
+
+  </goal>
+
+  <goal name="toto">
+    <doc:registerReport
+      name="FAQs"
+      pluginName="faq"
+      description="Frequently Asked Questions."
+      link="faq"/>
+  </goal>
+
+  <goal name="maven-faq-plugin:deregister">
+    <doc:deregisterReport name="FAQs"/>
+  </goal>
+
+  <goal name="faq:report" 
+    description="Generate FAQs">
+      <attainGoal name="faq"/>
+  </goal>
+
+  <!--
+   | @TODO: Make this a tag and transform multiple *.fml files
+   -->
+  <goal name="faq"
+    description="Generates an FAQ xdoc file from an FAQ XML document">
+
+    <j:set var="destfile" value="${maven.faq.dest.file}"/>
+    <j:if test="${empty(destfile)}">
+      <j:set var="destfile" value="${maven.build.dir}/generated-xdocs/faq.xml"/>
+    </j:if>
+
+    <ant:mkdir dir="${maven.build.dir}/generated-xdocs"/>
+        
+    <j:set var="srcfile" value="${maven.faq.src.file}"/>
+    <j:if test="${empty(srcfile)}">
+      <j:set var="srcfile" value="${basedir}/xdocs/faq.fml"/>
+    </j:if>
+    
+    <util:file var="srcfileFile" name="${srcfile}"/>
+    <j:set var="srcfile" value="${srcfileFile.canonicalPath}"/>
+    <util:file var="destfileFile" name="${destfile}"/>
+    <j:set var="destfile" value="${destfileFile.canonicalPath}"/>
+        
+    <j:set var="outputencoding" value="${maven.docs.outputencoding}"/>
+
+    <util:available file="${srcfile}">
+      <j:set var="srcFileExists" value="true" />
+    </util:available>
+    <j:if test="${srcFileExists == 'true'}">
+      <x:parse var="doc" xml="${srcfileFile}"/>    
+      <x:set var="root" select="$doc/*"/>
+
+      <j:file name="${destfile}" encoding="${outputencoding}" outputMode="xml">
+<document>
+
+  <properties>
+    <title><x:expr select="$root/title"/></title>
+  </properties>
+  <body>
+    <section name="Frequently Asked Questions">
+      <x:forEach select="$root/part">
+        <p>
+          <strong><x:expr select="title"/></strong>
+        </p>
+        <ol>
+          <x:forEach select="faq">
+          <li>
+            <x:element name="a">
+              <x:attribute name="href">#<x:expr select="@id"/></x:attribute>
+              <x:copyOf select="question/node()"/>
+            </x:element>
+          </li>
+          </x:forEach>
+        </ol>
+      </x:forEach>
+    </section>
+
+    <x:forEach select="$root/part">
+      <x:element name="section">
+        <x:attribute name="name"><x:expr select="title"/></x:attribute>
+        
+        <x:forEach select="faq">
+          <dl>
+            <dt>
+              <x:element name="a">
+                <x:attribute name="name"><x:expr select="@id"/></x:attribute>
+                <x:copyOf select="question/node()"/>
+              </x:element>
+            </dt>
+            <dd>
+                <x:copyOf select="answer/node()"/>
+            </dd>
+          </dl>
+        </x:forEach>
+      </x:element>
+    </x:forEach>
+  </body>
+</document>
+      </j:file>
+    </j:if>
+  </goal>
+
+</project>

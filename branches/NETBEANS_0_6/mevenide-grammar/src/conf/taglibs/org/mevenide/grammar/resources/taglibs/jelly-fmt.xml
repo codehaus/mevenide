@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- code completion definition for the jelly-tag library -->
+
+<taglib name="jelly:fmt">
+    <tag name="bundle">
+        <attr name="basename"/>
+        <attr name="prefix"/>
+        <attr name="trim" />
+    </tag>
+    <tag name="formatDate">
+        <attr name="var"/>
+        <attr name="pattern"/>
+        <attr name="scope"/>
+        <attr name="timeZone"/>
+        <attr name="type"/>
+        <attr name="value"/>
+        <attr name="timeStyle"/>
+        <attr name="dateStyle"/>
+        <attr name="trim" />
+    </tag>
+    <tag name="message">
+        <attr name="bundle"/>
+        <attr name="key"/>
+        <attr name="scope"/>
+        <attr name="var"/>
+        <attr name="trim" />
+    </tag>
+    <tag name="param" within="message">
+        <attr name="value"/>
+        <attr name="trim" />
+    </tag>
+    <tag name="setBundle">
+        <attr name="basename"/>
+        <attr name="scope"/>
+        <attr name="var"/>
+        <attr name="trim" />
+    </tag>
+    <tag name="setLocale">
+        <attr name="scope"/>
+        <attr name="value"/>
+        <attr name="variant"/>
+        <attr name="trim" />
+    </tag>
+    <tag name="setTimeZone">
+        <attr name="scope"/>
+        <attr name="value"/>
+        <attr name="var"/>
+        <attr name="trim" />
+    </tag>
+    <tag name="timeZone">
+        <attr name="value"/>
+        <attr name="trim" />
+    </tag>
+</taglib>
