@@ -62,14 +62,14 @@ public class PomContentOutlinePage extends ContentOutlinePage {
     	
     }
     
-    public PomContentOutlinePage(IDocumentProvider documentProvider, MevenidePomEditor editor) {
+    public PomContentOutlinePage(IDocumentProvider provider, MevenidePomEditor pomEditor) {
         super();
-        this.documentProvider = documentProvider;
-        this.editor = editor;
+        this.documentProvider = provider;
+        this.editor = pomEditor;
     }
     
-    public void setInput(IEditorInput editorInput) {
-    	this.editorInput = editorInput;
+    public void setInput(IEditorInput input) {
+    	this.editorInput = input;
     }
 
     public void createControl(Composite parent) {

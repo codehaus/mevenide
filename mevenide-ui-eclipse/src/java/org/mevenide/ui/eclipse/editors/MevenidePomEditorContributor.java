@@ -25,6 +25,7 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
@@ -116,7 +117,7 @@ public class MevenidePomEditorContributor extends MultiPageEditorActionBarContri
     
     public void contributeToMenu(IMenuManager manager) {
         IMenuManager menu = new MenuManager("Editor &Menu");
-        manager.prependToGroup(ITextEditorActionConstants.MB_ADDITIONS, menu);
+        manager.prependToGroup(IWorkbenchActionConstants.MB_ADDITIONS, menu);
         menu.add(sampleAction);
     }
     

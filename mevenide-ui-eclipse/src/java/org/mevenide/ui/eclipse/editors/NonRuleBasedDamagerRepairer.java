@@ -42,13 +42,13 @@ public class NonRuleBasedDamagerRepairer implements IPresentationDamager, IPrese
     private IDocument document;
     private TextAttribute defaultTextAttribute;
 
-    public NonRuleBasedDamagerRepairer(TextAttribute defaultTextAttribute) {
-        Assert.isNotNull(defaultTextAttribute);
-        this.defaultTextAttribute = defaultTextAttribute;
+    public NonRuleBasedDamagerRepairer(TextAttribute attribute) {
+        Assert.isNotNull(attribute);
+        this.defaultTextAttribute = attribute;
     }
 
-    public void setDocument(IDocument document) {
-        this.document = document;
+    public void setDocument(IDocument newDocument) {
+        this.document = newDocument;
     }
 
     /**

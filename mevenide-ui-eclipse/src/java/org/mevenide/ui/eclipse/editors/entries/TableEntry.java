@@ -80,8 +80,8 @@ public class TableEntry extends PageEntry {
 	private final class OverridableSelectionAdapter extends SelectionAdapter {
 		private IOverrideAdaptor adaptor;
     	
-		private OverridableSelectionAdapter(IOverrideAdaptor adaptor) {
-			this.adaptor = adaptor;
+		private OverridableSelectionAdapter(IOverrideAdaptor overrideAdaptor) {
+			this.adaptor = overrideAdaptor;
 		}
     	
 		public void widgetSelected(SelectionEvent e) {
@@ -98,15 +98,15 @@ public class TableEntry extends PageEntry {
 	}
 
 	public TableEntry(
-		TableViewer viewer, 
-		Button overrideToggle, 
+		TableViewer tableViewer, 
+		Button toggle, 
 		String tooltipInfo, 
 		Composite parent, 
 		PageWidgetFactory factory,
 		PageSection section) {
 			
-		this.viewer = viewer;
-		this.overrideToggle = overrideToggle;
+		this.viewer = tableViewer;
+		this.overrideToggle = toggle;
 		init(parent, factory, section, tooltipInfo);
 	}
 	
@@ -214,7 +214,7 @@ public class TableEntry extends PageEntry {
 					if (log.isDebugEnabled()) {
 						log.debug("selection changed; empty = " + selection.isEmpty());
 					}
-					if (section.getPage().isVisible()) {
+					if (section.getPage().isActive()) {
 						section.getPage().getEditor().setPropertySourceSelection(selection);
 					}
 					IPomPropertySource source = (IPomPropertySource) selection.getFirstElement();
@@ -297,11 +297,11 @@ public class TableEntry extends PageEntry {
 		return inherited;
 	}
 
-	public void setInherited(boolean inherited) {
+	public void setInherited(boolean inherits) {
 		if (log.isDebugEnabled()) {
 			log.debug("field changed to inherited = " + inherited);
 		}
-		this.inherited = inherited;
+		this.inherited = inherits;
 		setEnabled(!inherited);
 		setFocus();
 		if (overrideToggle != null) {
