@@ -1,17 +1,8 @@
-<project name="mevenide-ic" default="build-all">
-
-	
+<project name="mevenide-bootstrap" default="build-all">
 
 	<target name="init" description="o set properties to proper execution">
-		
 		<property environment="env"/>
-		
-		<!-- set maven.home property -->
-		<!-- property name="env.MAVEN_HOME" location="${maven.home}"/ -->
 		<property name="maven.home" location="${env.MAVEN_HOME}"/>
-		
-		<!-- set maven.script property -->
-		
 		<condition property="maven.script" value="maven.bat">
 			<and>
 				<os family="windows" />
@@ -21,34 +12,20 @@
 		<condition property="maven.script" value="maven">
 			<equals arg1="${maven.script}" arg2="$${maven.script}" />
 		</condition>
-		
 		<property name="maven.command" value="${maven.home}/bin/${maven.script}"/>
-	
 	</target>
 	
-	<target name="build-all" depends="init" description="o build all mevenide artifacts using maven:reactor ">
+	
+	<target name="build-all" depends="init,install-mepp" description="o build all mevenide artifacts using maven:reactor ">
 		<exec executable="${maven.command}" failonerror="true">
-			<!-- arg value="-o"/ -->
-			<!-- arg value="-X"/ -->
 			<arg value="build-all"/>
 		</exec>
-		<!-- should copy all jars to mevenide-ui-eclipse/lib -->
 	</target>
 	
-	<target name="build-core" depends="init" description="o build mevenide-core artifacts using maven:reactor ">
-		<exec executable="${maven.command}" failonerror="true">
-			<!-- arg value="-o"/ -->
-			<!-- arg value="-X"/ -->
-			<arg value="build-core"/>
-		</exec>
-		<!-- should copy all jars to mevenide-ui-eclipse/lib -->
-	</target>
 	
-	<!-- BUGGY -->
-	<target name="build-site" depends="init" description="o build mevenide site using maven:reactor ">
+	<target name="install-mepp" depends="init" description="o build all mevenide artifacts using maven:reactor ">
 		<exec executable="${maven.command}" failonerror="true">
-			<!-- arg value="-o"/ -->
-			<arg value="build-site"/>
+			<arg value="mevenide:install-maven-eclipse-plugin-plugin"/>
 		</exec>
 	</target>
 	
