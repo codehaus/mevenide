@@ -125,6 +125,19 @@
             <include>**/*.*</include>
           </includes>
       </resource>
+      <resource>
+          <directory>pyo/conf</directory>
+          <includes>
+            <include>hoi.nyo</include>
+          </includes>
+      </resource>
+       <resource>
+          <directory>pyo/nyo</directory>
+          <includes>
+            <include>hoi.nyo</include>
+            <include>**/*.*</include>
+          </includes>
+      </resource>
     </resources>
     
   </build>

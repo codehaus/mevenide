@@ -16,6 +16,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.maven.project.Dependency;
@@ -67,65 +68,48 @@ public class ProjectWriter {
 	 */
 	public void addResource(String path, File pom) throws Exception {
 		Project project = projectReader.read(pom);
-		Resource resource = getResource(path);
-		if ( !isResourcePresent(project, resource) ) {
-			project.getBuild().addResource(resource);
-			write(project, pom);	
-		}
+		Resource resource = newResource(path);
+		mergeSimilarResources(project, resource);
+		write(project, pom);	
 	}
 	
 	/**
-	 * check that a resource is declared in the pom. if directory are equal 
-	 * but not the includes, we should remove the resource from the pom and return false.
-	 * 
-	 * @see org.mevenide.project.io.ProjectWriter#areEquals(Resource, Resource)
+	 * iterate ${pom.build.resources} and merge those whose directory is equal to 
+	 * the directory of resource passed as parameter with the later.
 	 * 
 	 * @param project
 	 * @param resource
 	 * @return boolean
 	 */
-	private boolean isResourcePresent(Project project, Resource resource) {
+	private void mergeSimilarResources(Project project, Resource resource) {
+		List similar = new ArrayList();
+		
 		List resources = project.getBuild().getResources();
 		
 		for (int i = 0; i < resources.size(); i++) {
 			Resource declaredResource = (Resource) resources.get(i);
-			
-			if ( areEquivalent(resource, declaredResource) ) {
-				return true;	
+			if ( declaredResource.getDirectory().equals(resource.getDirectory()) ) {
+				similar.add(declaredResource);
 			}
-			
-			if ( resource.getDirectory().equals(declaredResource.getDirectory()) ) {
-				project.getBuild().getResources().remove(declaredResource);
-			}
-			
 		}
-		return false;
+		
+		for (int i = 0; i < similar.size(); i++) {
+			Resource similarResource = (Resource) similar.get(i);
+			resource.getIncludes().addAll(similarResource.getIncludes());
+			resource.getExcludes().addAll(similarResource.getExcludes());
+			project.getBuild().getResources().remove(similarResource);
+		}
+		
+		project.getBuild().addResource(resource);
 	}
 	
 	/**
-	 * @pre resource1.directory != null
-	 *  
-	 * @param resource_1
-	 * @param resource_2
-	 */
-	private boolean areEquivalent(Resource resource1, Resource resource2) {		
-		
-		return resource1.getDirectory().equals(resource2.getDirectory())  
-			   && ( resource1.getIncludes().equals(resource2.getIncludes())  
-				  || ( resource1.getIncludes().contains("**/*.*") 
-				       && resource2.getIncludes().contains("**/*.*") 
-				     ) 
-			      );
-		
-	}
-	
-	/**
-	 * construct a Resource from a given path 
+	 * construct a Resource from a given path, including all children
 	 * 
 	 * @param path
 	 * @return
 	 */
-	private Resource getResource(String path) {
+	private Resource newResource(String path) {
 		boolean isDirectory = new File(path).isDirectory();
 		String directory =  isDirectory ? path : new File(path).getParent();
 		String singleInclude = isDirectory ? "**/*.*" : new File(path).getName();
