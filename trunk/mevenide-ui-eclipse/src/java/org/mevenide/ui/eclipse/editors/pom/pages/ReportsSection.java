@@ -19,7 +19,6 @@ package org.mevenide.ui.eclipse.editors.pom.pages;
 import java.util.Arrays;
 import java.util.List;
 import java.util.TreeSet;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Project;
@@ -34,8 +33,8 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.model.WorkbenchContentProvider;
-import org.mevenide.reports.DefaultReportsFinder;
 import org.mevenide.reports.IReportsFinder;
+import org.mevenide.reports.JDomReportsFinder;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.editors.pom.entries.DraggableTableEntry;
 
@@ -72,7 +71,7 @@ public class ReportsSection extends PageSection {
 		container.setLayout(layout);
 		
 		try {
-			IReportsFinder finder = new DefaultReportsFinder();
+			IReportsFinder finder = new JDomReportsFinder();
 			String[] reports = finder.findReports();
 			availableReports = new TreeSet(Arrays.asList(reports));
 		} catch (Exception e) {
