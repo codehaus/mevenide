@@ -17,36 +17,21 @@
 package org.mevenide.project;
 
 import java.io.File;
-import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.SortedSet;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.maven.project.Branch;
-import org.apache.maven.project.Build;
-import org.apache.maven.project.Contributor;
-import org.apache.maven.project.Dependency;
-import org.apache.maven.project.Developer;
-import org.apache.maven.project.License;
-import org.apache.maven.project.MailingList;
-import org.apache.maven.project.Organization;
 import org.apache.maven.project.Project;
-import org.apache.maven.project.Repository;
-import org.apache.maven.project.Resource;
-import org.apache.maven.project.SourceModification;
-import org.apache.maven.project.UnitTest;
-import org.apache.maven.project.Version;
-import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.Text;
 import org.jdom.input.DefaultJDOMFactory;
 import org.jdom.input.JDOMFactory;
 import org.mevenide.context.IProjectContext;
 import org.mevenide.context.IQueryContext;
-import org.mevenide.properties.IPropertyResolver;
 import org.mevenide.project.io.JDomProjectUnmarshaller;
+import org.mevenide.properties.IPropertyResolver;
 import org.mevenide.util.MevenideUtils;
 
 
