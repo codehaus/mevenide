@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<?eclipse version="3.0"?>
-<plugin id="org.codehaus.mevenide.pde" name="maven pde plugin" version="0.1.0" provider-name="the codehaus">
-   <requires>
-      <import plugin="org.eclipse.text" />
-      <import plugin="org.eclipse.core.runtime" />
-   </requires>
-</plugin>
-
