@@ -210,6 +210,11 @@ public class DynamicPreferencePage extends PreferencePage implements IWorkbenchP
     }
     
     protected void performDefaults() {
+        for (Iterator it = editors.keySet().iterator(); it.hasNext(); ) {
+            PluginProperty pluginProperty = (PluginProperty) it.next();
+            StringFieldEditor editor = (StringFieldEditor) editors.get(pluginProperty);
+            editor.setStringValue(pluginProperty.getDefault());
+        }
         super.performDefaults();
     }
     
