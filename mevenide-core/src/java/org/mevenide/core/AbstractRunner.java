@@ -45,7 +45,7 @@ public abstract class AbstractRunner {
                 finalOptions = new String[3];
                 finalOptions[0] = "-b";
                 finalOptions[1] = "-f";
-                finalOptions[2] = basedir + File.separator + "project.xml";
+                finalOptions[2] = basedir != null ? basedir + File.separator + "project.xml" : "project.xml" ;
             }
             return finalOptions;
         }
