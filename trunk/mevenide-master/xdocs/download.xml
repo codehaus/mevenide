@@ -4,6 +4,7 @@
   <properties>
     <author email="rhill@wanadoo.fr">Gilles Dodinet</author>
     <author email="ca206216@tiscali.cz">Milos Kleint</author>
+    <author email="shuber2@jahia.com">Serge Huber</author>
     <title>Mevenide - Integrating Maven into IDEs</title>
   </properties>
 <body>
@@ -94,7 +95,26 @@
     </section>
     <section name="JBuilder Support">
   	  <div id="documentContent">
-        <p></p>
+        <p>
+    	  <b>Mevenide for JBuilder</b> distribution can be found 
+    	  <a href="http://mevenide.codehaus.org/release">here</a>. Plugin 
+    	  Features are described in 
+    	  <a href="mevenide-ui-jbuilder/features.html">this document</a>
+        </p>
+        <p>
+        	Requirements :
+        	<ul>
+        		<li>JBuilderX</li>
+        		<li>JDK 1.4+</li>
+        		<li>Maven 1.0</li>
+        	</ul>
+        </p>
+        <p>
+			    The <b>Maven JBuilder OpenTool Plugin</b> allows Maven users to 
+			    generate JBuilder OpenTool artifacts easily. 
+			    To install the plugin, follow instructions on the plugin's 
+			    <a href="maven-jbuilder-opentool-plugin/index.html">page </a>.
+		    </p>
       </div>
     </section>
 </body>
