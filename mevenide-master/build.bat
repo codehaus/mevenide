@@ -28,6 +28,11 @@ set /P buildDir=enter checkout folder :
 rmdir /S /Q %buildDir%
 mkdir %buildDir%
 cd %buildDir%
+goto prepareMavenOptions
+
+:prepareMavenOptions
+set /P debug=build in debug mode (Y/N) ?
+if "%debug%" == "Y" set maven_opts = -e 
 goto checkout
 
 :checkout
@@ -51,14 +56,14 @@ goto build
 :buildMepPlugin
 cd maven-plugins\maven-eclipse-plugin-plugin
 echo installing maven-eclipse-plugin-plugin
-call maven plugin:install plugin:deploy
+call maven %maven_opts% plugin:install plugin:deploy
 cd ..\..
 goto buildMevenide
 
 :buildMevenide
 echo building mevenide with maven. it may take a few minutes. 
 cd mevenide-master
-call maven mevenide:build-all 
+call maven %maven_opts% mevenide:build-all 
 cd ..\..
 goto shouldInstall
 
@@ -92,6 +97,7 @@ call %JAVA_HOME%\bin\jar xvf ..\%mevenideTempInstallDir%\org.mevenide.ui_0.1.1.j
 cd ..\..
 rmdir /S /Q %expandedDirs%\META-INF
 xcopy /S /E %expandedDirs% %ECLIPSE_HOME%\plugins
+echo mevenide has been installed. 
 goto cleanInstallTemp
 
 :cleanInstallTemp
@@ -122,5 +128,6 @@ rem process finalization
 rem --------------------
 
 :finalize
-set /P shouldDropFiles=mevenide has been installed. drop installation files (Y/N) ?
+set /P shouldDropFiles=drop installation files before exiting (Y/N) ?
 if  "%shouldDropFiles%" == "Y" rmdir /S /Q %buildDir%
+pause
