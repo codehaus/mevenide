@@ -21,6 +21,8 @@ import org.netbeans.api.debugger.jpda.JPDADebugger;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.util.RequestProcessor;
+import org.mevenide.netbeans.api.output.OutputVisitor;
+import org.mevenide.netbeans.api.output.OutputProcessor;
 
 /**
  * Custom line based filter for maven executor output when running the application.

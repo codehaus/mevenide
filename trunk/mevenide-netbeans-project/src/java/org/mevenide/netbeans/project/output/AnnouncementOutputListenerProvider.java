@@ -32,6 +32,8 @@ import org.openide.loaders.DataObject;
 import org.openide.loaders.DataObjectNotFoundException;
 import org.openide.windows.OutputEvent;
 import org.openide.windows.OutputListener;
+import org.mevenide.netbeans.api.output.OutputVisitor;
+import org.mevenide.netbeans.api.output.AbstractOutputProcessor;
 
 
 
@@ -55,7 +57,7 @@ public class AnnouncementOutputListenerProvider extends AbstractOutputProcessor 
         project = proj;
     }
     
-    protected String[] getWatchedGoals() {
+   public String[] getWatchedGoals() {
         return ANNOUNCEGOALS;
     }
     

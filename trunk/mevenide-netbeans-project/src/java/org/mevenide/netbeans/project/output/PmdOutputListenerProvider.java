@@ -34,6 +34,8 @@ import org.openide.windows.OutputEvent;
 import org.openide.windows.OutputListener;
 import org.openide.windows.OutputWriter;
 import org.mevenide.reports.PmdResult;
+import org.mevenide.netbeans.api.output.OutputVisitor;
+import org.mevenide.netbeans.api.output.AbstractOutputProcessor;
 
 
 /**
@@ -55,7 +57,7 @@ public class PmdOutputListenerProvider extends AbstractOutputProcessor {
         project = proj;
     }
     
-    protected String[] getWatchedGoals() {
+    public String[] getWatchedGoals() {
         return PMDGOALS;
     }
     

@@ -56,13 +56,14 @@ import org.openide.util.Lookup;
 import org.openide.util.Utilities;
 import org.openide.util.lookup.Lookups;
 import org.openide.util.lookup.ProxyLookup;
+import org.mevenide.netbeans.api.project.AdditionalMavenLookupProvider;
 
 
 /**
  *
- * @author  Milos Kleint (ca206216@tiscali.cz)
+ * @author  Milos Kleint (mkleint@codehaus.org)
  */
-public class MavenProject implements Project {
+public final class MavenProject implements Project {
     private static final Log logger = LogFactory.getLog(MavenProject.class);
     
     public static final String PROP_PROJECT = "MavenProject"; //NOI18N
@@ -432,7 +433,6 @@ public class MavenProject implements Project {
          * IQueryErrorCallback based method.
          */
         public void handleError(int errorNumber, Exception exception) {
-            System.out.println("handling exception" + exception.getMessage());
             errorIcon = true;
             if (errorNumber == IQueryErrorCallback.ERROR_UNPARSABLE_POM) {
                 errorName = "<Non-parseable POM file>";

@@ -19,6 +19,7 @@ package org.mevenide.netbeans.project.output;
 
 import junit.framework.*;
 import org.mevenide.netbeans.project.output.TestOutputListenerProvider;
+import org.mevenide.netbeans.api.output.OutputVisitor;
 
 /**
  *

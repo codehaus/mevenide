@@ -15,18 +15,15 @@
  * =========================================================================
  */
 
-package org.mevenide.netbeans.project;
+package org.mevenide.netbeans.api.output;
 
-import org.openide.util.Lookup;
+
 
 /**
- * Interface that allows to put additional items into project's lookup.
- * Implementations should be registered in default lookup.
- * (Using META-INF/services/AdditionalMavenLookupProvider file in the module's jar.)
- * It's purpose is to get additional implementations of APIs that are related to 4.1 only.
+ * A specialized output parser that's able to annotate and process the maven output.
  * @author  Milos Kleint (mkleint@codehaus.org)
  */
-public interface AdditionalMavenLookupProvider {
+public interface OutputProcessor {
     
-    Lookup createMavenLookup(MavenProject context);
+    void processLine(String line, OutputVisitor visitor);
 }

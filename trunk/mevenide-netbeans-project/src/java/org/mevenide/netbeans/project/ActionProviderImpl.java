@@ -34,7 +34,7 @@ import org.mevenide.netbeans.project.exec.ProjectRunContext;
 import org.mevenide.netbeans.project.exec.RunConfig;
 import org.mevenide.netbeans.project.output.AttachDebuggerOutputHook;
 import org.mevenide.netbeans.project.exec.MavenExecutor;
-import org.mevenide.netbeans.project.output.OutputProcessor;
+import org.mevenide.netbeans.api.output.OutputProcessor;
 import org.mevenide.netbeans.project.output.OutputProcessorFactory;
 import org.mevenide.properties.IPropertyLocator;
 import org.mevenide.properties.IPropertyResolver;
