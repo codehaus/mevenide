@@ -22,12 +22,9 @@ import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.window.Window;
-import org.eclipse.ui.PlatformUI;
-import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.template.view.ChooseTemplateDialog;
 import org.mevenide.ui.eclipse.util.FileUtils;
 import org.mevenide.util.StringUtils;
@@ -39,7 +36,9 @@ import org.mevenide.util.StringUtils;
  * 
  */
 public class CreatePomAction extends AbstractMevenideAction {
-	private static Log log = LogFactory.getLog(CreatePomAction.class);
+	
+private static final String DEFAULT_TEMPLATE = "DEFAULT_TEMPLATE";
+    private static Log log = LogFactory.getLog(CreatePomAction.class);
 	
 	private IContainer currentContainer;
 	
@@ -47,31 +46,33 @@ public class CreatePomAction extends AbstractMevenideAction {
 		try {
 			if ( FileUtils.getPom(currentContainer) != null && !FileUtils.getPom(currentContainer).exists() ) {
 			    String pomTemplate = chooseTemplate();
-			    boolean createPom = true;
 			    if ( StringUtils.isNull(pomTemplate) ) {
-			        createPom = MessageDialog.openQuestion(
-                            PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-                            Mevenide.getResourceString("CreatePomAction.template.null.title"), 
-                            Mevenide.getResourceString("CreatePomAction.template.null.message"));
+			        return;
 			    }
-			    if ( createPom ) {
-		            FileUtils.createPom(currentContainer, pomTemplate);
-			    }
+			    pomTemplate = DEFAULT_TEMPLATE.equals(pomTemplate) ? null : pomTemplate;
+			    FileUtils.createPom(currentContainer, pomTemplate);
 			}
-		} catch (Exception e) {
+			else {
+			    //should we allow pom file name customization through this action ?
+			    //should we warn the user that project.xml already exists in this folder ?
+			}
+		} 
+		catch (Exception e) {
 			e.printStackTrace();
-			log.debug("Unable to create POM due to : " + e);
+			log.debug("Unable to create POM due to", e);
 		}
 	}
 	
 	private String chooseTemplate() {
 	    ChooseTemplateDialog dialog = new ChooseTemplateDialog();
 	    int userChoice = dialog.open();
-	    String result = null;
-	    if ( userChoice == Window.OK ) {
-	        result = dialog.getTemplate().getProject().getFile().getAbsolutePath();
+	    if ( userChoice == Window.CANCEL ) {
+	        return null;
 	    }
-	    return result;
+	    if ( dialog.getTemplate() != null ) {
+	        return dialog.getTemplate().getProject().getFile().getAbsolutePath();
+	    }
+	    return DEFAULT_TEMPLATE;
 	}
 
 	public void selectionChanged(IAction action, ISelection selection) {
