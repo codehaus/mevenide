@@ -16,6 +16,7 @@
  */
 package org.mevenide.ui.eclipse.nature;
 
+import java.util.List;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.runtime.CoreException;
@@ -29,21 +30,24 @@ import org.eclipse.core.runtime.CoreException;
  */
 public class ActionActivator implements IResourceDeltaVisitor {
 
-    private ActionDefinitions definitions;
+    private List definitionCandidates;
     
-    public ActionActivator(ActionDefinitions actionDefinitions) {
-        
+    private List definitions;
+    
+    public ActionActivator(List actionDefinitions) {
+        this.definitionCandidates = actionDefinitions;
     }
-
+    
     public boolean visit(IResourceDelta delta) throws CoreException {
-        return false;
+        //TODO
+        return true;
     }
 
-    public ActionDefinitions getDefinitions() {
+    public List getDefinitions() {
         return definitions;
     }
     
-    public void setDefinitions(ActionDefinitions definitions) {
-        this.definitions = definitions;
+    public void setDefinitions(List definitionCandidates) {
+        this.definitionCandidates = definitionCandidates;
     }
 }
