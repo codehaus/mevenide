@@ -320,7 +320,7 @@ public class DefaultProjectMarshaller implements IProjectMarshaller {
 		marshallString(build.getUnitTestSourceDirectory(), "unitTestSourceDirectory");
 		marshallString(build.getIntegrationUnitTestSourceDirectory(), "integrationUnitTestSourceDirectory");
 		marshallString(build.getAspectSourceDirectory(), "aspectSourceDirectory");
-
+		
 		if ( build.getUnitTest() != null ) {
 			serializer.startTag(NAMESPACE, "unitTest");
 			marshallIncludes(build.getUnitTest().getIncludes());
@@ -329,7 +329,8 @@ public class DefaultProjectMarshaller implements IProjectMarshaller {
 			serializer.endTag(NAMESPACE, "unitTest");
 		}
 		
-		//project.build.integrationUnitTest ? 
+ 
+		marshallString(build.getIntegrationUnitTestSourceDirectory(), "ntegrationUnitTestSourceDirectory"); 
 		marshallResources(build.getResources());
 		
 		serializer.endTag(NAMESPACE, "build");
@@ -400,7 +401,7 @@ public class DefaultProjectMarshaller implements IProjectMarshaller {
 	
 	private  void marshallRequiredString(String line, String tag) throws IOException {
 		if ( isNull(line) ) {
-			System.out.println("WARNING : " + tag + " should not be null");
+			//System.out.println("WARNING : " + tag + " should not be null");
 		}
 		marshallString(line, tag);
 	}
