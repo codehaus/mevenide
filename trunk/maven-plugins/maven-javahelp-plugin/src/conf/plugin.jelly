@@ -93,10 +93,10 @@
           <j:expr value="${_children.getClass()}"/ -->
           <j:choose>
             <j:when test="${empty(_children)}" trim="true">
-              <![CDATA[<indexItem text="${_line}" target="${_children.getPathId()}"/>]]>
+              <![CDATA[<indexitem text="${_line}" target="${_children.getPathId()}"/>]]>
             </j:when>
             <j:otherwise trim="true">
-              <![CDATA[<indexItem text="${_line}" target="${_children.getPathId()}">]]>
+              <![CDATA[<indexitem text="${_line}" target="${_children.getPathId()}">]]>
               <j:forEach var="__line" items="${_children.keySet()}" trim="false">
                 <!-- j:expr value="${__line}" trim="false"/ -->
                 <j:set var="__children" value="${_children.get(__line)}"/>
@@ -104,29 +104,34 @@
                 <j:expr value="${__children.getClass()}"/ -->
                 <j:choose>
                   <j:when test="${empty(__children)}" trim="true">
-                    <![CDATA[<indexItem text="${__line}" target="${_children.getPathId()}"/>]]>
+                    <![CDATA[<indexitem text="${__line}" target="${_children.getPathId()}"/>]]>
                   </j:when>
                   <j:otherwise trim="true">
-                    <![CDATA[<indexItem text="${__line}" target="${_children.getPathId()}">]]>
+                    <![CDATA[<indexitem text="${__line}" target="${_children.getPathId()}">]]>
                     <j:forEach var="___line" items="${__children}" trim="false">
                       <!-- j:expr value="${___line}" trim="false"/>
                       <j:expr value="${___children.getClass()}"/ -->
-                      <![CDATA[<indexItem text="${__line}" target="${_children.getPathId()}"/>]]>
+                      <![CDATA[<indexitem text="${__line}" target="${_children.getPathId()}"/>]]>
                     </j:forEach>
-                    <![CDATA[</indexItem>]]>
+                    <![CDATA[</indexitem>]]>
                   </j:otherwise>
                 </j:choose>
               </j:forEach>
-              <![CDATA[</indexItem>]]>
+              <![CDATA[</indexitem>]]>
             </j:otherwise>
           </j:choose>
         </j:forEach>
       </index>
     </j:file>
-    <java jar="${env.JAVAHELP_HOME}/javahelp/bin/jhindexer.jar" fork="true">
+
+    <j:set var="_folder" value="${maven.javahelp.root}"/>
+    <j:set var="_folder" value="org"/>	<!-- FIXME: should not be absolute value -->
+    <delete dir="${maven.javahelp.gen}/JavaHelpSearch2"/>
+    <java jar="${env.JAVAHELP_HOME}/javahelp/bin/jhindexer.jar" fork="true" dir="${maven.javahelp.gen}">
+      <!-- Do NOT use absolute paths here, this will result in serious problems with searching -->
       <arg value="-db"/>
-      <arg file="${maven.javahelp.gen}/JavaHelpSearch2"/>
-      <arg file="${maven.javahelp.gen}"/>
+      <arg value="JavaHelpSearch2"/>
+      <arg value="${_folder}"/>
     </java>
     <util:file var="jarFile" name="${maven.javahelp.jar}"/>
     <mkdir dir="${jarFile.getParent()}"/>
