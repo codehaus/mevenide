@@ -105,7 +105,12 @@ public class DescriptionSection extends PageSection {
 		
 		// POM short description textbox
 		Button toggle = createOverrideToggle(container, factory);
-		createLabel(container, Mevenide.getResourceString("DescriptionSection.shortDescText.label"), factory);
+		createLabel(
+			container, 
+			Mevenide.getResourceString("DescriptionSection.shortDescText.label"), 
+			Mevenide.getResourceString("DescriptionSection.shortDescText.tooltip"), 
+			factory
+		);
 		shortDescText = new OverridableTextEntry(createText(container, factory, 2), toggle);
 		OverrideAdaptor adaptor = new OverrideAdaptor() {
 			public void updateProject(String value) {
@@ -120,7 +125,12 @@ public class DescriptionSection extends PageSection {
 		
 		// POM project inception year textbox
 		toggle = createOverrideToggle(container, factory);
-		createLabel(container, Mevenide.getResourceString("DescriptionSection.inceptionYearText.label"), factory);
+		createLabel(
+			container, 
+			Mevenide.getResourceString("DescriptionSection.inceptionYearText.label"), 
+			Mevenide.getResourceString("DescriptionSection.inceptionYearText.tooltip"), 
+			factory
+		);
 		inceptionYearText = new OverridableTextEntry(createText(container, factory, 2), toggle);
 		adaptor = new OverrideAdaptor() {
 			public void updateProject(String value) {
@@ -135,7 +145,12 @@ public class DescriptionSection extends PageSection {
 		
 		// POM project url textbox
 		toggle = createOverrideToggle(container, factory);
-		createLabel(container, Mevenide.getResourceString("DescriptionSection.urlText.label"), factory);
+		createLabel(
+			container, 
+			Mevenide.getResourceString("DescriptionSection.urlText.label"),
+			Mevenide.getResourceString("DescriptionSection.urlText.tooltip"), 
+			factory
+		);
 		urlText = new OverridableTextEntry(createText(container, factory, 2), toggle);
 		adaptor = new OverrideAdaptor() {
 			public void updateProject(String value) {
@@ -150,7 +165,12 @@ public class DescriptionSection extends PageSection {
 		
 		// POM current version textbox
 		toggle = createOverrideToggle(container, factory);
-		createLabel(container, Mevenide.getResourceString("DescriptionSection.currentVersionText.label"), factory);
+		createLabel(
+			container, 
+			Mevenide.getResourceString("DescriptionSection.currentVersionText.label"), 
+			Mevenide.getResourceString("DescriptionSection.currentVersionText.tooltip"), 
+			factory
+		);
 		currentVersionText = new OverridableTextEntry(createText(container, factory, 2), toggle);
 		adaptor = new OverrideAdaptor() {
 			public void updateProject(String value) {
@@ -165,7 +185,12 @@ public class DescriptionSection extends PageSection {
 		
 		// POM logo textbox and file browse button
 		toggle = createOverrideToggle(container, factory);
-		createLabel(container, Mevenide.getResourceString("DescriptionSection.logoText.label"), factory);
+		createLabel(
+			container, 
+			Mevenide.getResourceString("DescriptionSection.logoText.label"), 
+			Mevenide.getResourceString("DescriptionSection.logoText.tooltip"), 
+			factory
+		);
 		logoText = new OverridableTextEntry(createText(container, factory), toggle);
 		adaptor = new OverrideAdaptor() {
 			public void updateProject(String value) {
@@ -220,7 +245,12 @@ public class DescriptionSection extends PageSection {
 		
 		// POM package textbox and package browse button
 		toggle = createOverrideToggle(container, factory);
-		createLabel(container, Mevenide.getResourceString("DescriptionSection.packageText.label"), factory);
+		createLabel(
+			container, 
+			Mevenide.getResourceString("DescriptionSection.packageText.label"), 
+			Mevenide.getResourceString("DescriptionSection.packageText.tooltip"), 
+			factory
+		);
 		packageText = new OverridableTextEntry(createText(container, factory), toggle);
 		adaptor = new OverrideAdaptor() {
 			public void updateProject(String value) {

@@ -108,7 +108,12 @@ public class IdentificationSection extends PageSection {
 		
 		// POM name textbox
 		Button toggle = createOverrideToggle(container, factory);
-		createLabel(container, Mevenide.getResourceString("IdentificationSection.pomNameText.label"), factory);
+		createLabel(
+			container, 
+			Mevenide.getResourceString("IdentificationSection.pomNameText.label"),
+			Mevenide.getResourceString("IdentificationSection.pomNameText.tooltip"),
+			factory
+		);
 		pomNameText = new OverridableTextEntry(createText(container, factory, 2), toggle);
 		OverrideAdaptor adaptor = new OverrideAdaptor() {
 			public void updateProject(String value) {
@@ -124,7 +129,12 @@ public class IdentificationSection extends PageSection {
 		
 		// POM artifactId textbox
 		toggle = createOverrideToggle(container, factory);
-		createLabel(container, Mevenide.getResourceString("IdentificationSection.artifactIdText.label"), factory);
+		createLabel(
+			container, 
+			Mevenide.getResourceString("IdentificationSection.artifactIdText.label"), 
+			Mevenide.getResourceString("IdentificationSection.artifactIdText.tooltip"),
+			factory
+		);
 		artifactIdText = new OverridableTextEntry(createText(container, factory, 2), toggle);
 		adaptor = new OverrideAdaptor() {
 			public void updateProject(String value) {
@@ -139,7 +149,12 @@ public class IdentificationSection extends PageSection {
 		
 		// POM groupId textbox
 		toggle = createOverrideToggle(container, factory);
-		createLabel(container, Mevenide.getResourceString("IdentificationSection.groupIdText.label"), factory);
+		createLabel(
+			container, 
+			Mevenide.getResourceString("IdentificationSection.groupIdText.label"), 
+			Mevenide.getResourceString("IdentificationSection.groupIdText.tooltip"), 
+			factory
+		);
 		groupIdText = new OverridableTextEntry(createText(container, factory, 2), toggle);
 		adaptor = new OverrideAdaptor() {
 			public void updateProject(String value) {
@@ -174,7 +189,12 @@ public class IdentificationSection extends PageSection {
 		
 		// POM version textbox 
 		if (isInherited()) createSpacer(container, factory);
-		createLabel(container, Mevenide.getResourceString("IdentificationSection.pomVersionText.label"), factory);
+		createLabel(
+			container, 
+			Mevenide.getResourceString("IdentificationSection.pomVersionText.label"), 
+			Mevenide.getResourceString("IdentificationSection.pomVersionText.tooltip"), 
+			factory
+		);
 		pomVersionText = new TextEntry(createText(container, factory, 2));
 		pomVersionText.addEntryChangeListener(
 			new EntryChangeListenerAdaptor() {
@@ -189,7 +209,12 @@ public class IdentificationSection extends PageSection {
 		
 		// POM extend textbox and file browse button
 		if (isInherited()) createSpacer(container, factory);
-		createLabel(container, Mevenide.getResourceString("IdentificationSection.extendsText.label"), factory);
+		createLabel(
+			container, 
+			Mevenide.getResourceString("IdentificationSection.extendsText.label"), 
+			Mevenide.getResourceString("IdentificationSection.extendsText.tooltip"), 
+			factory
+		);
 		extendsText = new TextEntry(createText(container, factory));
 		extendsText.addEntryChangeListener(
 			new EntryChangeListenerAdaptor() {
