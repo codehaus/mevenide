@@ -51,7 +51,7 @@ package org.mevenide.ui.eclipse.sync.view;
 import java.io.File;
 import java.util.List;
 
-import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.jface.util.Assert;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.CheckboxTableViewer;
@@ -73,7 +73,7 @@ import org.eclipse.ui.PlatformUI;
  * @version $Id$
  * 
  */
-public class PomChoiceDialog extends Dialog {
+public class PomChoiceDialog extends TitleAreaDialog {
 	private PomChooser pomChooser;
 	
 	private CheckboxTableViewer tableViewer;
@@ -96,7 +96,7 @@ public class PomChoiceDialog extends Dialog {
 		
 		composite.setLayoutData(gridData);
 		
-		Table table = new Table(composite, SWT.CHECK);
+		Table table = new Table(composite, SWT.CHECK | SWT.BORDER);
 		table.setLayout(new GridLayout());
 		GridData orderTextGridData = new GridData(GridData.FILL_BOTH);
 		orderTextGridData.grabExcessVerticalSpace = true;
