@@ -24,6 +24,7 @@ import java.net.URLClassLoader;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.mevenide.environment.SysEnvLocationFinder;
+import org.openide.modules.ModuleInstall;
 
 
 
