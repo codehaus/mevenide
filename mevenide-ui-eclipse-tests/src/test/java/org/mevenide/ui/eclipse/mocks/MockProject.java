@@ -36,11 +36,15 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 
+import com.mockobjects.MockObject;
+
 /**
  * @author Jeffrey Bonevich (jeff@bonevich.com) 
  * @version $Id$
  */
-public class MockProject implements IProject {
+public class MockProject
+	extends MockObject
+	implements IProject {
 
 	private String projectName;
 	

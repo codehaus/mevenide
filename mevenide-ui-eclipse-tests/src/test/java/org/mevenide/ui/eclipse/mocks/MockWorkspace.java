@@ -42,11 +42,15 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 
+import com.mockobjects.MockObject;
+
 /**
  * @author Jeffrey Bonevich (jeff@bonevich.com) 
  * @version $Id$
  */
-public class MockWorkspace implements IWorkspace {
+public class MockWorkspace 
+	extends MockObject
+	implements IWorkspace {
 
 	public MockWorkspace() {
 		super();
