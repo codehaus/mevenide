@@ -50,6 +50,8 @@ public class TestSrcRuntimeClassPathImpl extends AbstractProjectClassPathImpl {
    URI[] createPath() {
         List lst = new ArrayList();
         Project mavproj = getMavenProject().getOriginalMavenProject();
+        lst.add(getMavenProject().getBuildClassesDir());
+        lst.add(getMavenProject().getTestBuildClassesDir());
         
         boolean junitIncluded = false;
         List deps = mavproj.getDependencies();

@@ -63,8 +63,13 @@ public class MavenForBinaryQueryImpl implements SourceForBinaryQueryImplementati
      */   
     public SourceForBinaryQuery.Result findSourceRoots(URL url) {
         logger.debug("MavenSourceForBinaryQueryImpl project=" + project.getDisplayName() + "url=" + url);
-        if (url.getProtocol().equals("jar")) {
+        if (url.getProtocol().equals("jar")) { //NOI18N
             return new BinResult(url);
+        }
+        if (url.getProtocol().equals("file")) { //NOI18N
+            if (checkURL(url) != -1) {
+                return new BinResult(url);
+            }
         }
         return null;
     }
@@ -86,15 +91,33 @@ public class MavenForBinaryQueryImpl implements SourceForBinaryQueryImplementati
         return new DocResult(url);
     }
     
-    
-    private boolean checkURL(URL url) {
+    /**
+     * -1 - not found
+     * 0 - source
+     * 1 - test source
+     */
+    private int checkURL(URL url) {
         logger.debug("checkurl=" + url);
         URL binRoot = url;
         if ("jar".equals(url.getProtocol())) {
             binRoot = FileUtil.getArchiveFile(url);
         } else {
             // true for directories.
-            return true;
+            try {
+                URL srcUrl = project.getBuildClassesDir().toURL();
+//                System.out.println("  check1=" + srcUrl);
+//                System.out.println("  check1 uri=" + project.getBuildClassesDir());
+                if (url.equals(srcUrl)) {
+                    return 0;
+                }
+                URL testsrcUrl = project.getTestBuildClassesDir().toURL();
+                if (url.equals(testsrcUrl)) {
+                    return 1;
+                }
+            } catch (MalformedURLException exc) {
+                logger.warn("exception maplformed url.", exc);
+            }
+            return -1;
         }
         FileObject fo = URLMapper.findFileObject(binRoot);
         if (fo != null) {
@@ -105,15 +128,16 @@ public class MavenForBinaryQueryImpl implements SourceForBinaryQueryImplementati
             try {
                 IDependencyResolver depRes = DependencyResolverFactory.getFactory().
                 newInstance(file.getAbsolutePath());
-                return  (doCompare(depRes.guessArtifactId(), mavproj.getArtifactId()) &&
-                doCompare(depRes.guessGroupId(), mavproj.getGroupId()) &&
-                doCompare(depRes.guessVersion(), mavproj.getCurrentVersion()));
+                boolean found =  (doCompare(depRes.guessArtifactId(), mavproj.getArtifactId()) &&
+                                  doCompare(depRes.guessGroupId(), mavproj.getGroupId()) &&
+                                  doCompare(depRes.guessVersion(), mavproj.getCurrentVersion()));
+                return found ? 0 : -1;
             } catch (Exception exc) {
                 logger.error("exception", exc);
-                return false;
+                return -1;
             }
         } 
-        return false;
+        return -1;
     }
     
     private FileObject[] getSrcRoot() {
@@ -133,6 +157,25 @@ public class MavenForBinaryQueryImpl implements SourceForBinaryQueryImplementati
         }
         return new FileObject[0];
     }
+    
+    private FileObject[] getTestSrcRoot() {
+        logger.debug("gettestsrcRoot");
+        URI uri = project.getTestSrcDirectory();
+        if (uri != null) {
+            try {
+                logger.debug("gettestsrcRoot uri=" + uri);
+                FileObject foRoot = URLMapper.findFileObject(uri.toURL());
+                if (foRoot != null) {
+                    logger.debug("returning fo=" + foRoot);
+                    return new FileObject[] {foRoot};
+                }
+            } catch (MalformedURLException exc) {
+                logger.warn("malforrmed uri=" + uri);
+            }
+        }
+        return new FileObject[0];
+    }
+
     
     private URL[] getJavadocRoot() {
         logger.debug("getjavadocRoot");
@@ -170,8 +213,11 @@ public class MavenForBinaryQueryImpl implements SourceForBinaryQueryImplementati
         
        
        public FileObject[] getRoots() {
-            if (checkURL(url)) {
+           int xxx = checkURL(url);
+            if (xxx == 0) {
                 results = getSrcRoot();
+            } else if (xxx == 1) {
+                results = getTestSrcRoot();
             } else {
                 results = new FileObject[0];
             }
@@ -215,7 +261,7 @@ public class MavenForBinaryQueryImpl implements SourceForBinaryQueryImplementati
         
         public java.net.URL[] getRoots() {
             URL binRoot = FileUtil.getArchiveFile(url);
-            if (checkURL(url)) {
+            if (checkURL(url) != -1) {
                 results = getJavadocRoot();
             } else {
                 results = new URL[0];
