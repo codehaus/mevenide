@@ -2,3 +2,9 @@
  + factorize SourceDirectoryMappingWizardPage and DependencyWizardPage
  + in short : need SERIOUS refactoring (some global sequence diagrams would be helpful here)
  + externalize (eventually i18n) strings
+ + finalize external-tools integration 
+   - get rid of that popup
+   - create icons
+   - get rid of custom launcher
+ + SourceModification and Filtering support
+ + PomInheritance
