@@ -20,15 +20,22 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
 
 import java.util.List;
+import javax.swing.JButton;
 
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import org.apache.maven.project.Project;
 import org.apache.maven.project.Repository;
 import org.mevenide.netbeans.project.MavenProject;
 import org.mevenide.netbeans.project.customizer.ProjectValidateObserver;
+import org.mevenide.netbeans.project.customizer.ui.LocationComboFactory;
+import org.mevenide.netbeans.project.customizer.ui.OriginChange;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.awt.HtmlBrowser;
@@ -40,18 +47,21 @@ import org.openide.awt.HtmlBrowser;
  */
 public class RepositoryPanel extends JPanel implements ProjectPanel {
     
-    private boolean propagate;
     private ProjectValidateObserver valObserver;
     private MavenProject project;
+    
+    private OriginChange ocGumpID;
+    
+    private HashMap changes;
+    
     /** Creates new form BasicsPanel */
-    public RepositoryPanel(boolean propagateImmediately, boolean enable, MavenProject proj) {
-        initComponents();
+    public RepositoryPanel(MavenProject proj) {
         project = proj;
-        propagate = propagateImmediately;
+        changes = new HashMap();
+        initComponents();
         valObserver = null;
         //TODO add listeners for immediatePropagation stuff.
         setName("Repository");
-        setEnableFields(enable);
         btnURL.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 String url = txtURL.getText().trim();
@@ -67,14 +77,7 @@ public class RepositoryPanel extends JPanel implements ProjectPanel {
                 }
             }
         });
-        
-    }
-    
-    public void setEnableFields(boolean enable) {
-        txtConnection.setEditable(enable);
-        txtDevConnection.setEditable(enable);
-        txtGumpRepoID.setEditable(enable);
-        txtURL.setEditable(enable);
+        populateChangeInstances();
     }
     
     /** This method is called from within the constructor to
@@ -95,6 +98,10 @@ public class RepositoryPanel extends JPanel implements ProjectPanel {
         lblGumpRepoID = new javax.swing.JLabel();
         txtGumpRepoID = new javax.swing.JTextField();
         btnURL = new javax.swing.JButton();
+        ocGumpID = LocationComboFactory.createPOMChange(project, false);
+        btnGumpID = (JButton)ocGumpID.getComponent();
+
+        jPanel1 = new javax.swing.JPanel();
 
         setLayout(new java.awt.GridBagLayout());
 
@@ -161,7 +168,7 @@ public class RepositoryPanel extends JPanel implements ProjectPanel {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 4;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(6, 0, 0, 0);
         add(lblGumpRepoID, gridBagConstraints);
 
@@ -169,9 +176,8 @@ public class RepositoryPanel extends JPanel implements ProjectPanel {
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 4;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.weightx = 0.1;
-        gridBagConstraints.weighty = 0.1;
         gridBagConstraints.insets = new java.awt.Insets(6, 3, 0, 0);
         add(txtGumpRepoID, gridBagConstraints);
 
@@ -183,11 +189,28 @@ public class RepositoryPanel extends JPanel implements ProjectPanel {
         gridBagConstraints.insets = new java.awt.Insets(3, 3, 0, 0);
         add(btnURL, gridBagConstraints);
 
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 4;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        add(btnGumpID, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 5;
+        gridBagConstraints.gridwidth = 3;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.weighty = 0.1;
+        add(jPanel1, gridBagConstraints);
+
     }//GEN-END:initComponents
     
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnGumpID;
     private javax.swing.JButton btnURL;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JLabel lblConnection;
     private javax.swing.JLabel lblDevConnection;
@@ -199,7 +222,22 @@ public class RepositoryPanel extends JPanel implements ProjectPanel {
     private javax.swing.JTextField txtURL;
     // End of variables declaration//GEN-END:variables
     
+  private void populateChangeInstances() {
+        createChangeInstance("gumpRepositoryId", txtGumpRepoID, ocGumpID);
+   }
+   
+   private void createChangeInstance(String propName, JTextField field, OriginChange oc) {
+       String key = "pom." + propName; //NOI18N
+       String value = project.getProjectWalker().getValue(key);
+       int location = project.getProjectWalker().getLocation(key);
+       if (value == null) {
+           value = "";
+       } 
+       changes.put(key, new TextComponentPOMChange(key, value, location, field, oc));
+   }    
+    
      public void setResolveValues(boolean resolve) {
+         assignValue("gumpRepositoryId", resolve);
 //TODO        setEnableFields(!resolve);  
         Project proj = project.getOriginalMavenProject();
         Repository repo = proj.getRepository();
@@ -212,8 +250,20 @@ public class RepositoryPanel extends JPanel implements ProjectPanel {
             txtConnection.setText(repo.getConnection() == null ? "" : getValue(repo.getConnection(), resolve));
             txtDevConnection.setText(repo.getDeveloperConnection() == null ? "" : getValue(repo.getDeveloperConnection(), resolve));
         }
-        txtGumpRepoID.setText(proj.getGumpRepositoryId() == null ? "" : getValue(proj.getGumpRepositoryId(), resolve));
+//        txtGumpRepoID.setText(proj.getGumpRepositoryId() == null ? "" : getValue(proj.getGumpRepositoryId(), resolve));
     }
+     
+   private void assignValue(String actionName, boolean resolve) {
+       String key = "pom." + actionName; //NOI18N
+       TextComponentPOMChange change = (TextComponentPOMChange)changes.get(key);
+       if (resolve) {
+           String value = project.getPropertyResolver().resolveString(change.getNewValue());
+           change.setResolvedValue(value);
+       } else {
+           change.resetToNonResolvedValue();
+       }
+   }
+     
     
     private String getValue(String value, boolean resolve) {
         if (resolve) {
@@ -223,7 +273,15 @@ public class RepositoryPanel extends JPanel implements ProjectPanel {
     }
     
     public List getChanges() {
-        return Collections.EMPTY_LIST;
+        List toReturn = new ArrayList();
+        Iterator it = changes.values().iterator();
+        while (it.hasNext()) {
+            MavenPOMChange change = (MavenPOMChange)it.next();
+            if (change.hasChanged()) {
+                toReturn.add(change);
+            }
+        }
+        return toReturn;
     }
     
     public boolean isInValidState() {

@@ -27,6 +27,7 @@ import java.util.StringTokenizer;
 import org.apache.maven.project.Dependency;
 import org.mevenide.context.IQueryContext;
 import org.mevenide.environment.ILocationFinder;
+import org.mevenide.netbeans.project.customizer.ui.OriginChange;
 import org.mevenide.properties.IPropertyLocator;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
@@ -131,6 +132,17 @@ public class FileUtilities {
         }
         if (location == IPropertyLocator.LOCATION_USER_BUILD) {
             return new File(context.getUserDirectory(), "build.properties");
+        }
+        if (location == OriginChange.LOCATION_POM) {
+            File[] fls = context.getPOMContext().getProjectFiles();
+            return fls[0];
+        }
+        if (location == OriginChange.LOCATION_POM_PARENT) {
+            File[] fls = context.getPOMContext().getProjectFiles();
+            if (fls.length > 1) {
+                return fls[1];
+            }
+            return null;
         }
         throw new IllegalArgumentException("Wrong argument. is=" + location);
     }

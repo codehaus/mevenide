@@ -48,8 +48,10 @@ class LocationComboBox extends JButton {
     private JPopupMenu currentLoc;
     private HashMap actionToLoc;
     private OriginChange.ChangeObserver observer;
+    private boolean showText;
     
-    public LocationComboBox() {
+    public LocationComboBox(boolean show) {
+        showText = show;
         setMargin(new Insets(0,0,0,0));
         setBorderPainted(true);
         setBorder(new MyBorder());
@@ -68,6 +70,9 @@ class LocationComboBox extends JButton {
         actionToLoc.put(OriginChange.ACTION_DEFINE_IN_USER, new Integer(IPropertyLocator.LOCATION_USER_BUILD));
         actionToLoc.put(OriginChange.ACTION_MOVE_TO_USER, new Integer(IPropertyLocator.LOCATION_USER_BUILD));
         actionToLoc.put(OriginChange.ACTION_RESET_TO_DEFAULT, new Integer(IPropertyLocator.LOCATION_DEFAULTS));
+        actionToLoc.put(OriginChange.ACTION_POM_MOVE_TO_CHILD, new Integer(OriginChange.LOCATION_POM));
+        actionToLoc.put(OriginChange.ACTION_POM_MOVE_TO_PARENT, new Integer(OriginChange.LOCATION_POM_PARENT));
+        actionToLoc.put(OriginChange.ACTION_REMOVE_ENTRY, new Integer(IPropertyLocator.LOCATION_NOT_DEFINED));
 //        add(currentLoc);
         setIcon(new ImageIcon(Utilities.loadImage("org/openide/resources/actions/empty.gif")));
         setText("");
@@ -76,7 +81,6 @@ class LocationComboBox extends JButton {
     public LocationWrapper getSelectedItem() {
         return current;
     }
-    
     
     public void setInitialItem(int location) {
         LocationWrapper selected = findWrapper(location);
@@ -88,6 +92,9 @@ class LocationComboBox extends JButton {
         setToolTipText(selected.getName());
         setIcon(selected.getIcon());
         setDisabledIcon(selected.getIcon());
+        if (showText) {
+            setText(selected.getName());
+        }
         currentLoc.removeAll();
         initStatePopup(currentLoc, selected.getActions());
         current = selected;
@@ -153,6 +160,15 @@ class LocationComboBox extends JButton {
                 icon = new ImageIcon(Utilities.loadImage("org/mevenide/netbeans/project/resources/ToUser.png"));
             } else if (OriginChange.ACTION_RESET_TO_DEFAULT.equals(actions[i])) {
                 name = "Reset to Default";
+                icon = new ImageIcon(Utilities.loadImage("org/mevenide/netbeans/project/resources/ToDefault.png"));
+            } else if (OriginChange.ACTION_POM_MOVE_TO_CHILD.equals(actions[i])) {
+                name = "Move to POM";
+                icon = new ImageIcon(Utilities.loadImage("org/mevenide/netbeans/project/resources/ToDefault.png"));
+            } else if (OriginChange.ACTION_POM_MOVE_TO_PARENT.equals(actions[i])) {
+                name = "Move to Parent";
+                icon = new ImageIcon(Utilities.loadImage("org/mevenide/netbeans/project/resources/ToDefault.png"));
+            } else if (OriginChange.ACTION_REMOVE_ENTRY.equals(actions[i])) {
+                name = "Remove Definition";
                 icon = new ImageIcon(Utilities.loadImage("org/mevenide/netbeans/project/resources/ToDefault.png"));
             }
             JMenuItem item = currentLoc.add(name);

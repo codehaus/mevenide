@@ -27,14 +27,61 @@ import org.mevenide.properties.IPropertyLocator;
 public class OriginChange {
     private LocationComboBox comboBox;
     private ChangeObserver observer;
-    
+
+    //# properties files actions..
+    /*
+     * property file action
+     */
     public static final String ACTION_MOVE_TO_PROJECT = "MvProject";
+    /*
+     * property file action
+     */
     public static final String ACTION_MOVE_TO_USER = "MvUser";
+    /*
+     * property file action
+     */
     public static final String ACTION_MOVE_TO_BUILD = "MvBuild";
+    /*
+     * property file action
+     */
     public static final String ACTION_DEFINE_IN_PROJECT = "DefProject";
+    /*
+     * property file action
+     */
     public static final String ACTION_DEFINE_IN_USER = "DefUser";
+    /*
+     * property file action
+     */
     public static final String ACTION_DEFINE_IN_BUILD = "DefBuild";
+    /*
+     * property file action
+     */
     public static final String ACTION_RESET_TO_DEFAULT = "DefaultReset";
+    
+// pom files actions.
+    /*
+     * pom file action
+     */
+    public static final String ACTION_REMOVE_ENTRY = "RemoveEntry";
+    /*
+     * pom file action
+     */
+    public static final String ACTION_POM_MOVE_TO_PARENT = "MoveToParent";
+    /*
+     * pom file action
+     */
+    public static final String ACTION_POM_MOVE_TO_CHILD = "MoveToChild";
+    
+    /**
+     * The item is located in the project's POM file. 
+     * similar to constants in IPropertyLocator, but not belonging there.
+     */
+    public static final int LOCATION_POM = 0;
+    /**
+     * The item is located in the POM file parent. 
+     * similar to constants in IPropertyLocator, but not belonging there.
+     */
+    public static final int LOCATION_POM_PARENT = 1;
     
     OriginChange(LocationComboBox combo) {
         comboBox = combo;
