@@ -85,7 +85,10 @@
             </properties>
         </dependency>
         
-        <!-- maven rt dependencies -->
+        <!-- 
+            maven rt dependencies - should we also add ${m2.home}/plugins/plexus libs ? 
+            ultimately id like to decorrelate mevenide totally from maven installation 
+        -->
         <dependency>
             <groupId>plexus</groupId>
             <artifactId>plexus</artifactId>
