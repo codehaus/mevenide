@@ -29,8 +29,12 @@ import org.apache.maven.project.Project;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.window.Window;
+import org.eclipse.ui.PlatformUI;
+import org.mevenide.ui.eclipse.util.EclipseProjectUtils;
 
 /**
  * 
@@ -56,6 +60,23 @@ public class ArtifactMappingContentProvider implements ITreeContentProvider {
             List dependencyContainers = null;
             List directoryContainers = null;
             try {
+            	if ( !project.hasNature(JavaCore.NATURE_ID) ) {
+                    //ask user if we should attach java nature and process or stop here
+            		MessageDialog dialog = new MessageDialog(
+            									PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+												"Attach Java Nature...",
+												null,
+												"Current project doesnot have JavaNature. Should we attach it ? ",
+												MessageDialog.QUESTION,
+												new String[] {"Yes", "No"}, 0);
+            		int userChoice = dialog.open();
+            		if ( userChoice == Window.OK ) {
+            			EclipseProjectUtils.attachJavaNature(project);
+            		}
+            		else { 
+            			return null;
+            		}
+                }
                 if ( project.hasNature(JavaCore.NATURE_ID) ) {
                     dependencyContainers = DependencyMappingNodeContainerFactory.getFactory().getContainer(JavaCore.create(project), poms);
                     for (int i = 0; i < dependencyContainers.size(); i++) {
@@ -70,25 +91,13 @@ public class ArtifactMappingContentProvider implements ITreeContentProvider {
                         directoryContainer.filter(direction);
                     }
                 }
-                else {
-                    //@TODO user should know that the project has not been processed b/c it is not a java project 
-                }
             }
             catch (CoreException e) {
                 log.error(e);
             }
             
-            
             List allContainers = new ArrayList(directoryContainers);
             allContainers.addAll(dependencyContainers);
-//            int idx = 0;
-//            while ( idx < allContainers.size() ) {
-//				IArtifactMappingNodeContainer container = (IArtifactMappingNodeContainer) allContainers.get(idx);
-//                if ( container.getNodes().length == 0 ) {
-//                    allContainers.remove(container);
-//                }
-//				idx++;
-//            }
 
             Object[] containers = null; 
 			try {
