@@ -56,4 +56,10 @@ public class MavenSharabilityQueryImpl implements SharabilityQueryImplementation
         }
         return Boolean.TRUE;
     }
+    
+    public int getSharability(java.io.File file) {
+        //TODO
+        return 0;
+    }
+    
 }
