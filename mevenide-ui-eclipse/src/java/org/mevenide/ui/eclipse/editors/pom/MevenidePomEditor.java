@@ -178,6 +178,7 @@ public class MevenidePomEditor extends FormEditor {
      */
     private void createOrganizationPage() throws PartInitException {
         OrganizationPage orgPage = new OrganizationPage(this);
+        comparator.addProjectChangeListener(ProjectComparator.PROJECT, orgPage);
         comparator.addProjectChangeListener(ProjectComparator.ORGANIZATION, orgPage);
         comparator.addProjectChangeListener(ProjectComparator.LICENSES, orgPage);
         addPage(orgPage);
