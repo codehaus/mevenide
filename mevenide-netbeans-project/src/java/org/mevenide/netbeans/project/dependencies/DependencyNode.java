@@ -39,12 +39,25 @@ public class DependencyNode extends AbstractNode {
     private Action actions[];
     private Dependency dependency;
     private MavenProject project;
+    private boolean isOverriden;
+    private String override;
     public DependencyNode(Dependency dep, MavenProject proj) {
         super(Children.LEAF);
         dependency = dep;
         project = proj;
         setIconBase("org/mevenide/netbeans/project/resources/DependencyIcon"); //NOI18N
         setDisplayName(dep.getArtifactId() + "-" + dep.getVersion());
+        checkOverride();
+    }
+    
+    private void checkOverride() {
+            // check if dependency is overriden
+        isOverriden = false;
+        String ov = project.getPropertyResolver().getResolvedValue("maven.jar.override");
+        if ("true".equalsIgnoreCase(ov)) {
+            override = project.getPropertyResolver().getValue("maven.jar." + dependency.getArtifactId());
+            isOverriden = override != null;
+        }
     }
     
     public Action[] getActions( boolean context )
@@ -122,6 +135,16 @@ public class DependencyNode extends AbstractNode {
     
     public Dependency getDependency() {
         return dependency;
+    }
+
+    public java.lang.String getHtmlDisplayName() {
+        java.lang.String retValue;
+        if (isOverriden) {
+            retValue = "<S>" + getDisplayName() + "</S>  ( Overriden: " + override + ")";
+        } else {
+            retValue = super.getHtmlDisplayName();
+        }
+        return retValue;
     }
 }
 
