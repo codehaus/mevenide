@@ -27,7 +27,7 @@ import org.mevenide.Environment;
  * @version $Id$
  * 
  */
-class DependencyUtil {
+public class DependencyUtil {
 	
 	private DependencyUtil() {
 	}
@@ -51,7 +51,7 @@ class DependencyUtil {
 	 * @param absoluteFileName
 	 * @return
 	 */
-	static Dependency getDependency(String absoluteFileName) {
+	public static Dependency getDependency(String absoluteFileName) {
 		String fileName = new File(absoluteFileName).getName();
 		String groupId = getGroupId(fileName);
 		
@@ -66,6 +66,7 @@ class DependencyUtil {
 		dependency.setGroupId(groupId); //?
 		dependency.setArtifactId(artifactId);
 		dependency.setVersion(version);
+		dependency.setArtifact(absoluteFileName);
 		
 		return dependency;
 	}
