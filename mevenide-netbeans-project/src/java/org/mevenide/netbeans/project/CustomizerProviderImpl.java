@@ -27,7 +27,7 @@ import org.openide.DialogDisplayer;
 import org.openide.ErrorManager;
 
 /**
- *
+ * project customizer provider, shows the project customizer and writes down changes.
  * @author  Milos Kleint (ca206216@tiscali.cz)
  */
 public class CustomizerProviderImpl implements CustomizerProvider {
@@ -67,12 +67,6 @@ public class CustomizerProviderImpl implements CustomizerProvider {
         dialogDescriptor.setClosingOptions(new Object[] {options[1], options[2] });
         Object retValue = DialogDisplayer.getDefault().notify(dialogDescriptor);
         if (retValue == options[0] || retValue == options[1]) {
-//TODO - when Identification changes, propose to update other projects as well.
-            
-//            // remember old identification.
-//            String oldGroup = project.getOriginalMavenProject().getGroupId();
-//            String oldArtifact = project.getOriginalMavenProject().getArtifactId();
-//            String oldVersion = project.getOriginalMavenProject().getCurrentVersion();
             List changes = customizer.getChanges();
             boolean wasError = false;
             try {
@@ -82,32 +76,6 @@ public class CustomizerProviderImpl implements CustomizerProvider {
                 ErrorManager.getDefault().notify(ErrorManager.USER, exc);
                 wasError = true;
             }
-//            if (!wasError) {
-//                String newGroup = project.getOriginalMavenProject().getGroupId();
-//                String newArtifact = project.getOriginalMavenProject().getArtifactId();
-//                String newVersion = project.getOriginalMavenProject().getCurrentVersion();
-//                if (!stringsEqual(newArtifact, oldArtifact) ||
-//                    !stringsEqual(newVersion, oldVersion) ||
-//                    !stringsEqual(newGroup, oldGroup)) 
-//                {
-//                    Set opened = MavenFileOwnerQueryImpl.getInstance().getOpenedProjects();
-//                    List hasDeclared = new ArrayList();
-//                    Iterator it = opened.iterator();
-//                    while (it.hasNext()) {
-//                        MavenProject proj = (MavenProject)it.next();
-//                        List deps = proj.getOriginalMavenProject().getDependencies();
-//                        Iterator depIt = deps.iterator();
-//                        while (depIt.hasNext()) {
-//                            Dependency dep = (Dependency)depIt.next();
-//                            if (oldArtifact.equals(dep.getArtifact()) && 
-//                                oldGroup.equals(dep.getGroupId()) &&
-//                                oldVersion.equals(dep.getVersion())) {
-//                                    
-//                            }
-//                        }
-//                    }
-//                }
-//            }
         }
     }
     
