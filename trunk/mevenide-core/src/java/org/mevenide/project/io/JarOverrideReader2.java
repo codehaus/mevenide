@@ -21,14 +21,10 @@ import java.io.File;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Dependency;
-import org.apache.maven.project.Project;
 import org.mevenide.context.IQueryContext;
 import org.mevenide.environment.ILocationFinder;
 import org.mevenide.environment.LocationFinderAggregator;
 import org.mevenide.properties.IPropertyResolver;
-import org.mevenide.properties.KeyValuePair;
-import org.mevenide.properties.PropertyModel;
-import org.mevenide.properties.PropertyModelFactory;
 import org.mevenide.properties.resolver.PropertyResolverFactory;
 import org.mevenide.util.StringUtils;
 
