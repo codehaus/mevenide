@@ -14,7 +14,7 @@
     <organization>
       <name>The Codehaus</name>
       <url>http://www.codehaus.org/</url>
-      <logo>images/codehaus_209x40.gif</logo>
+      <logo>/images/codehaus_209x40.gif</logo>
     </organization>
     
     <siteAddress>beaver.codehaus.org</siteAddress>
