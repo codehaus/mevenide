@@ -75,14 +75,8 @@ public class Namespace {
   
     private void loadTagLib() {
         try {
-	        if ( uri.indexOf(":") != -1 ) {
+            if ( uri.indexOf(":") != -1 ) {
 	            taglib = new StaticTagLibImpl(uri);
-	        }
-	        else if ( WERKZ_LIST.contains(uri)) {
-	            taglib = new StaticTagLibImpl("default-maven");
-	        }
-	        else {
-	            return;
 	        }
             Collection tags = taglib.getRootTags();
             for (Iterator it = tags.iterator(); it.hasNext();) {
@@ -93,7 +87,13 @@ public class Namespace {
     	        }
             	attributes.put(tagKey, taglib.getTagAttrs(tag));
             }
-                
+            
+            //@todo donot harcode me
+            TagLib defaultTagLib = new StaticTagLibImpl("default-maven");
+            for (Iterator it = defaultTagLib.getRootTags().iterator(); it.hasNext();) {
+                String tag = (String) it.next();
+                attributes.put(tag, defaultTagLib.getTagAttrs(tag));
+            }  
         }
         catch (Exception e) {
             String message = "Cannot load taglib " + uri; 
