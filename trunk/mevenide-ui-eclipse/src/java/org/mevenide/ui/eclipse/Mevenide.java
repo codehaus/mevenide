@@ -85,7 +85,7 @@ import org.mevenide.project.io.ProjectSkeleton;
  * @author Gilles Dodinet (gdodinet@wanadoo.fr)
  * @version $Id$
  * 
- * @refactor EXTRACTME lots of non related utility methods
+ * @todo move preferences related fields outside of Mevenide class 
  *  
  */
 public class Mevenide extends AbstractUIPlugin {
