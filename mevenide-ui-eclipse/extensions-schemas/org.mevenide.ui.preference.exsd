@@ -14,7 +14,7 @@
    <element name="extension">
       <complexType>
          <sequence>
-            <element ref="property" minOccurs="1" maxOccurs="unbounded"/>
+            <element ref="plugin-provider" minOccurs="1" maxOccurs="unbounded"/>
          </sequence>
          <attribute name="point" type="string" use="required">
             <annotation>
@@ -43,21 +43,48 @@
    <element name="property">
       <annotation>
          <documentation>
-            defines a new property used by the plugin.
+            defines a new specific property used by the maven plugin.
          </documentation>
       </annotation>
       <complexType>
          <attribute name="name" type="string" use="required">
             <annotation>
                <documentation>
-                  the name of the property used by the plugin.
+                  the name of the specific property used by the plugin.
                </documentation>
             </annotation>
          </attribute>
          <attribute name="default" type="string">
             <annotation>
                <documentation>
-                  default value for the property.
+                  default value for the specific property.
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="plugin-provider">
+      <annotation>
+         <documentation>
+            aggregates specific properties used in the context of a maven plugin.
+         </documentation>
+      </annotation>
+      <complexType>
+         <sequence>
+            <element ref="property" minOccurs="1" maxOccurs="unbounded"/>
+         </sequence>
+         <attribute name="name" type="string" use="required">
+            <annotation>
+               <documentation>
+                  name of the maven plugin, for instance if installing maven-xdoc-plugin, name should be &apos;XDoc&apos;.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string" use="required">
+            <annotation>
+               <documentation>
+                  unique identifier of the maven plugin, for instance if installing maven-xdoc-plugin, name should be &apos;maven-xdoc-plugin&apos;.
                </documentation>
             </annotation>
          </attribute>
