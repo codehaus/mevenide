@@ -1,7 +1,7 @@
 /* ====================================================================
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 2003 Milos Kleint (ca206216@tiscali.cz).  All rights
+ * Copyright (c) 2003 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -58,7 +58,7 @@ import org.openide.windows.CloneableOpenSupport;
 
 /** Support for editing a data object as text.
  *
- * @author cenda
+ * @author Milos Kleint (ca206216@tiscali.cz)
  */
 // Replace OpenCookie with EditCookie or maybe ViewCookie as desired:
 public class MavenEditorSupport extends DataEditorSupport implements EditorCookie, OpenCookie, CloseCookie, PrintCookie
