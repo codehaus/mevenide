@@ -24,6 +24,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.part.ViewPart;
+import org.mevenide.ui.eclipse.MevenideColors;
 
 
 /**  
@@ -60,7 +61,7 @@ public class RepositoryBrowser extends ViewPart implements RepositoryEventListen
         GridLayout layout = new GridLayout();
         container.setLayout(layout);
         container.setLayoutData(new GridData(GridData.FILL_BOTH));
-        //container.setBackground(MevenideColors.WHITE);
+        container.setBackground(MevenideColors.WHITE);
         
         createRepositoryUrlComposite(container);
         
@@ -74,36 +75,62 @@ public class RepositoryBrowser extends ViewPart implements RepositoryEventListen
         GridData layoutData = new GridData(GridData.FILL_BOTH);
         layoutData.grabExcessHorizontalSpace = true;
         layoutData.grabExcessVerticalSpace = true;
+        layout.marginWidth = 2;
+        layout.marginHeight = 2;
         composite.setLayoutData(layoutData);
+        composite.setBackground(MevenideColors.BLUE_GRAY);
         
         repositoryViewer = new TreeViewer(composite, SWT.NULL);
         RepositoryContentProvider contentProvider = new RepositoryContentProvider();
         contentProvider.addRepositoryEventListener(this);
         repositoryViewer.setContentProvider(contentProvider);
         repositoryViewer.setLabelProvider(new RepositoryObjectLabelProvider());
-        repositoryViewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
+        
+        GridData treeViewerLayoutData = new GridData(GridData.FILL_BOTH);
+        treeViewerLayoutData.grabExcessHorizontalSpace = true;
+        treeViewerLayoutData.grabExcessVerticalSpace = true;
+        repositoryViewer.getTree().setLayoutData(treeViewerLayoutData);
+
         repositoryViewer.setInput(repositoryUrl);
     }
 
     private void createRepositoryUrlComposite(Composite container) {
         Composite composite = new Composite(container, SWT.NULL);
-        GridLayout layout = new GridLayout();
-        layout.numColumns = 2;
-        layout.makeColumnsEqualWidth = false;
-        composite.setLayout(layout);
-        GridData layoutData = new GridData(GridData.FILL_BOTH);
-        layoutData.grabExcessHorizontalSpace = true;
+        composite.setBackground(MevenideColors.BLUE_GRAY);
+        GridLayout topLayout = new GridLayout();
+        topLayout.marginWidth = 2;
+        topLayout.marginHeight = 2;
+        composite.setLayout(topLayout);
+        GridData layoutData = new GridData(GridData.FILL_HORIZONTAL);
         composite.setLayoutData(layoutData);
         
-        repositoryUrlText = new Text(composite, SWT.BORDER);
+        Composite textComposite = new Composite(composite, SWT.NULL);
+        GridLayout layout = new GridLayout();
+        layout.numColumns = 3;
+        layout.makeColumnsEqualWidth = false;
+        textComposite.setLayout(layout);
+        textComposite.setBackground(MevenideColors.WHITE);
+        textComposite.setLayout(layout);
+        GridLayout textLayout = new GridLayout();
+        GridData topData = new GridData(GridData.FILL_HORIZONTAL);
+        topData.grabExcessHorizontalSpace = true;
+        textComposite.setLayoutData(topData);
+        
+        Text repositoryLabel = new Text(textComposite, SWT.READ_ONLY | SWT.BOLD);
+        repositoryLabel.setText("Repository");
+        repositoryLabel.setBackground(MevenideColors.WHITE);
+        repositoryLabel.setForeground(MevenideColors.BLUE_GRAY);
+        
+        repositoryUrlText = new Text(textComposite, SWT.BORDER);
         GridData data = new GridData(GridData.FILL_HORIZONTAL);
         data.grabExcessHorizontalSpace = true;
-        repositoryUrlText.setData(data);
+        repositoryUrlText.setLayoutData(data);
         
-        Button browseRepoButton = new Button(composite, SWT.FLAT);
-        browseRepoButton.setLayoutData(new GridData());
+        Button browseRepoButton = new Button(textComposite, SWT.FLAT);
         browseRepoButton.setText("Browse");
-        browseRepoButton.setData(new GridData());
+        GridData browseButtonLayoutData = new GridData(GridData.HORIZONTAL_ALIGN_END);
+        browseButtonLayoutData.grabExcessHorizontalSpace = false;
+        browseRepoButton.setLayoutData(browseButtonLayoutData);
     }
 
     public void setFocus() {
