@@ -19,7 +19,7 @@ package org.mevenide.environment;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import org.mevenide.context.DefaultQueryContext;
+
 import org.mevenide.context.IQueryContext;
 
 /**  
