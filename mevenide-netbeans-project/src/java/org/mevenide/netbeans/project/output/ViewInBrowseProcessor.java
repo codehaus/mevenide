@@ -32,7 +32,6 @@ public class ViewInBrowseProcessor extends AbstractOutputProcessor implements Ou
     private static final Log logger = LogFactory.getLog(ViewInBrowseProcessor.class);
     
     private String[] goalsToWatch;
-    private boolean isApplicable;
     private File file;
     private String questionMessage;
     private int priority;
@@ -40,7 +39,6 @@ public class ViewInBrowseProcessor extends AbstractOutputProcessor implements Ou
     /** Creates a new instance of ViewInBrowseProcessor */
     public ViewInBrowseProcessor(String[] goals, File fileToOpen, String question, int prior) {
         goalsToWatch = goals;
-        isApplicable = false;
         file = fileToOpen;
         questionMessage = question;
         priority = prior;

@@ -182,6 +182,9 @@ public final class CompileAnnotation extends Annotation implements PropertyChang
             ann.removePropertyChangeListener(this);
             detach();
         }
+        synchronized (hyperlinks) {
+            hyperlinks.remove(this);
+        }
     }
     
     public void propertyChange(PropertyChangeEvent ev) {

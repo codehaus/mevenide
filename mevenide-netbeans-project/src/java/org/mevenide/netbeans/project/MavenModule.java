@@ -29,6 +29,7 @@ import org.mevenide.environment.LocationFinderAggregator;
 import org.mevenide.environment.SysEnvLocationFinder;
 import org.mevenide.netbeans.project.output.CheckstyleAnnotation;
 import org.mevenide.netbeans.project.output.CompileAnnotation;
+import org.mevenide.netbeans.project.output.FindbugsAnnotation;
 import org.mevenide.netbeans.project.output.PmdAnnotation;
 import org.mevenide.plugins.PluginInfoFactory;
 import org.openide.modules.InstalledFileLocator;
@@ -58,6 +59,7 @@ public class MavenModule extends ModuleInstall {
         PmdAnnotation.detachAllAnnotations();
         CompileAnnotation.detachAllAnnotations();
         CheckstyleAnnotation.detachAllAnnotations();
+        FindbugsAnnotation.detachAllAnnotations();
     }
    
     public void validate() throws java.lang.IllegalStateException {
