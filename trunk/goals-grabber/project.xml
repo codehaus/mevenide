@@ -24,21 +24,26 @@
   
   <dependencies>
 
-  	<dependency>
-  	  <id>commons-collections</id>
-          <version>2.1</version>
-  	</dependency>
+    <dependency>
+      <id>commons-collections</id>
+      <version>2.1</version>
+    </dependency>
 
-	<dependency>
-  	  <id>jdom</id>
+    <dependency>
+      <id>jdom</id>
       <version>1.0b8</version>
-  	</dependency>
+    </dependency>
 
-	<dependency>
-  	  <id>xerces</id>
+    <dependency>
+      <id>xerces</id>
       <version>2.2.1</version>
-  	</dependency>
-  	
+    </dependency>
+    
+    <dependency>
+      <id>xml-apis</id>
+      <version>2.0.2</version>
+    </dependency>
+    
   </dependencies>
   
   <resources>
