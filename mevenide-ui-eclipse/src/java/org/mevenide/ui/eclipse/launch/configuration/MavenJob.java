@@ -80,14 +80,15 @@ public class MavenJob extends Job {
                     }
                 }
             }
-            String newName = DebugPlugin.getDefault().getLaunchManager().generateUniqueLaunchConfigurationNameFrom(
-                    configuration.getName());
+            String newName = DebugPlugin.getDefault().getLaunchManager().generateUniqueLaunchConfigurationNameFrom(configuration.getName());
             try {
                 if ( configuration.exists() ) {
                     configuration = configuration.copy(newName);
                 }
                 if ( showDialog ) {
-                    configuration = configuration.getWorkingCopy().doSave();
+                    if ( configuration.exists() ) {
+                        configuration = configuration.getWorkingCopy().doSave();
+                    }
                 }
                 else {
                     DebugUITools.launch(configuration, ILaunchManager.RUN_MODE);
