@@ -1,0 +1,89 @@
+<?xml version="1.0"?>
+
+<project 
+  xmlns:j="jelly:core" 
+  xmlns:ant="jelly:ant" 
+  xmlns:define="jelly:define"
+  xmlns:doc="doc">
+  
+  <goal name="create-findbugs-home">
+  	<unzip src="${maven.repo.local}/findbugs/zips/findbugs-plugin-0.6.5.zip" 
+  	       dest="${maven.build.dir}/findbugshome"/>
+  	       
+  	<!-- This keeps the findbugs-plugin-ver.zip fairly light -->
+  	<!--copy file="${plugin.getDependencyPath('findbugs')}" tofile="${maven.build.dir}/findbugshome/lib/findbugs.jar"/>
+  	<copy file="${plugin.getDependencyPath('bcel')}" tofile="${maven.build.dir}/findbugshome/lib/bcel.jar"/>
+  	<copy file="${plugin.getDependencyPath('dom4j')}" tofile="${maven.build.dir}/findbugshome/lib/dom4j-full.jar"/-->
+  </goal>
+  
+  <goal name="maven-findbugs-plugin:report" prereqs="create-findbugs-home,java:compile">
+    <ant:taskdef name="findbugs" classname="edu.umd.cs.findbugs.anttask.FindBugsTask"/>
+    
+  	<findbugs home="${maven.build.dir}/findbugshome"
+              output="text"
+              debug="false"
+              outputFile="${maven.build.dir}/findbugs-raw-report.txt">
+      <sourcePath path="${pom.build.sourceDirectory}"/>
+      <class location="${maven.build.dest}"/>
+            
+      <j:forEach var="lib" items="${pom.artifacts}">
+        <auxClasspath path="${maven.repo.local}/${lib.urlPath}"/>
+      </j:forEach>
+              
+    </findbugs>
+    
+    <!--doc:jsl
+        input="${maven.build.dir}/findbugs-raw-report.xml"
+        output="findbugs.xml"
+        stylesheet="${plugin.resources}/findbugs.jsl"
+        encoding="${maven.docs.outputencoding}"
+        outputMode="xml"
+        prettyPrint="true"/-->
+        
+    <j:set var="genDocs" 
+        value="${pom.getPluginContext('maven-xdoc-plugin').getVariable('maven.gen.docs')}"/>
+        
+    <doc:text-xdoc
+      preamble="
+            The following document contains the results of
+            FindBugs - http://www.cs.umd.edu/~pugh/java/bugs/.
+
+            This isn't formatted like a pretty CheckStyle / JDepend sheet as the FindBugs XML
+            output is very terse and does not describe what each error type is.  We have no desire
+            to hardcode messages against FindBugs, so we'll wait until FindBugs XML output can be modified
+            to produce easy to use messages.
+			   "
+      title="FindBugs Report"
+      section="FindBugs Results"
+      output="${genDocs}/findbugs.xml"
+      inputFile="${maven.build.dir}/findbugs-raw-report.txt"/>
+  
+  </goal>
+  
+  <!--
+     ========================================================================
+       Register the FindBugs report to the "site" plugin.
+     ========================================================================
+  -->
+  <goal name="maven-findbugs-plugin:register">
+    <j:if test="${sourcesPresent == 'true'}">
+      <doc:registerReport 
+        name="FindBugs" 
+        pluginName="maven-findbugs-plugin"
+        link="findbugs"
+        description="Report on bug patterns found in compiled code."/>
+    </j:if>
+  </goal>
+  
+  <!--
+     ========================================================================
+       Deregister the FindBugs report from the "site" plugin.
+     ========================================================================
+  -->
+  <goal name="maven-findbugs-plugin:deregister">
+    <j:if test="${sourcesPresent == 'true'}">
+      <doc:deregisterReport name="FindBugs"/>
+    </j:if>
+  </goal>
+
+</project>

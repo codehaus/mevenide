@@ -1,0 +1,44 @@
+org.mevenide.project :
+  Project Listener : 
+    o Event Notification on Project changes based on observer/observee pattern
+  
+org.mevenide.project.dependency :
+  Dependency Resolver :
+    o Constructs a Dependency instance from a given fs path. Internally uses DependencySplitter to compute the various attribute of the Dependency
+  Dependency Path Finder :
+    o Retrieves the path of a dependency. just a workaround for the fact we dont build the list of artifacts.
+  
+org.mevenide.project.io (pretty rough)
+  Marshaller : 
+    o CarefulMarshaller remembers the previous structure of the xml file (with comments and all)
+    o DefaultMarshaller just overwrites previous pom
+  Jar Override Reader :
+    o Discovers override properties (off/on + path)
+  Jar Override Writer :
+  	o Enables/Disables jar override and writes overriding properties
+  Pom Skeleton Builder :
+    o Constructs a new xml POM from a given template
+  Project Reader/Writer :
+    o Plain delegate to [Un]Marshaller + Provides various util/shorcut methods to read/write specific pom sections
+  
+org.mevenide.project.resource :
+  Resource Resolver :
+    o Resources Merger (not sure if used anymore) 
+  Resource Util : 
+    o Resouce Comparison
+    o Check a given POM for the presence of a resource
+    
+org.mevenide.project.source :
+  Source Directory Util : 
+    o Check a given POM for the presence of a source of type T
+    o Add a source of type T to a POM
+    o A few String manipulation related to fs paths
+    
+org.mevenide.runner : 
+  DEPRECATED (but still used since it provides some utility stuff to pass options and arguments to VM -- need serious refactoring)
+  
+org.mevenide.util
+  says it all..
+
+
+   

@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- code completion definition for the jelly-tag library -->
+
+<taglib name="jelly:jms">
+    <tag name="connection">
+        <attr name="name"/>
+        <attr name="var"/>
+        <attr name="trim"/>
+    </tag>
+    <tag name="destination">
+        <attr name="name"/>
+        <attr name="var"/>
+        <attr name="trim"/>
+    </tag>
+    <tag name="mapEntry">
+        <attr name="name"/>
+        <attr name="var"/>
+        <attr name="trim"/>
+    </tag>
+    <tag name="mapMessage">
+        <attr name="connection"/>
+        <attr name="correlationID"/>
+        <attr name="map"/>
+        <attr name="replyTo"/>
+        <attr name="type"/>
+        <attr name="var"/>
+        <attr name="trim"/>
+    </tag>
+    <tag name="message">
+        <attr name="connection"/>
+        <attr name="correlationID"/>
+        <attr name="replyTo"/>
+        <attr name="type"/>
+        <attr name="var"/>
+        <attr name="trim"/>
+    </tag>
+    <tag name="obectMessage">
+        <attr name="connection"/>
+        <attr name="correlationID"/>
+        <attr name="object"/>
+        <attr name="replyTo"/>
+        <attr name="type"/>
+        <attr name="var"/>
+        <attr name="trim"/>
+   </tag>
+    <tag name="onMessage">
+         <attr name="var"/>
+         <attr name="trim"/>
+   </tag>
+    <tag name="property">
+        <attr name="name"/>
+        <attr name="value"/>
+        <attr name="trim"/>
+    </tag>
+    <tag name="receive">
+         <attr name="connection"/>
+         <attr name="destination"/>
+         <attr name="subject"/>
+         <attr name="timeout"/>
+         <attr name="var"/>
+         <attr name="trim"/>
+    </tag>
+    <tag name="send">
+         <attr name="connection"/>
+         <attr name="destination"/>
+         <attr name="subject"/>
+         <attr name="message"/>
+         <attr name="trim"/>
+    </tag>
+    <tag name="stopwatch">
+         <attr name="connection"/>
+         <attr name="destination"/>
+         <attr name="groupSize"/>
+         <attr name="log"/>
+         <attr name="messageListener"/>
+         <attr name="subject"/>
+         <attr name="trim"/>
+    </tag>
+    <tag name="subscribe">
+         <attr name="connection"/>
+         <attr name="destination"/>
+         <attr name="selector"/>
+         <attr name="messageListener"/>
+         <attr name="subject"/>
+         <attr name="trim"/>
+    </tag>
+    <tag name="textMessage">
+         <attr name="connection"/>
+         <attr name="correlationID"/>
+         <attr name="replyTo"/>
+         <attr name="text"/>
+         <attr name="type"/>
+         <attr name="var"/>
+         <attr name="trim"/>
+    </tag>
+</taglib>

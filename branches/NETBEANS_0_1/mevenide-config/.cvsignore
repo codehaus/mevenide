@@ -1,0 +1,6 @@
+plugin.xml
+target
+*.jar
+*.log
+META-INF
+lib

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- code completion definition for the jelly-tag library -->
+
+<taglib name="jelly:xml">
+    <tag name="attribute" within="element">
+        <attr name="name"/>
+        <attr name="trim"/>
+    </tag>
+    <tag name="comment">
+        <attr name="text"/>
+        <attr name="trim"/>
+    </tag>
+    <tag name="copy">
+        <attr name="select"/>
+        <attr name="trim"/>
+    </tag>
+    <tag name="copyOf">
+        <attr name="select"/>
+        <attr name="trim"/>
+    </tag>
+    <tag name="doctype">
+        <attr name="name"/>
+        <attr name="publicId"/>
+        <attr name="systemId"/>
+        <attr name="trim"/>
+    </tag>
+    <tag name="element">
+        <attr name="name"/>
+        <attr name="URI"/>
+        <attr name="trim"/>
+    </tag>
+    <tag name="expr">
+        <attr name="select"/>
+        <attr name="trim"/>
+    </tag>
+    <tag name="forEach">
+        <attr name="descending"/>
+        <attr name="sort"/>
+        <attr name="var"/>
+        <attr name="trim"/>
+    </tag>
+    <tag name="if">
+        <attr name="select"/>
+        <attr name="trim"/>
+    </tag>
+    <tag name="param" within="transform">
+        <attr name="name"/>
+        <attr name="value"/>
+        <attr name="trim"/>
+    </tag>
+    <tag name="parse">
+        <attr name="SAXReader"/>
+        <attr name="text"/>
+        <attr name="validate"/>
+        <attr name="var"/>
+        <attr name="xml"/>
+        <attr name="trim"/>
+    </tag>
+    <tag name="set">
+        <attr name="descending"/>
+        <attr name="select"/>
+        <attr name="sort"/>
+        <attr name="var"/>
+        <attr name="trim"/>
+    </tag>
+    <tag name="sort">
+        <attr name="descending"/>
+        <attr name="list"/>
+        <attr name="sort"/>
+        <attr name="trim"/>
+    </tag>
+    <tag name="transform">
+        <attr name="SAXReader"/>
+        <attr name="text"/>
+        <attr name="validate"/>
+        <attr name="var"/>
+        <attr name="xml"/>
+        <attr name="xslt"/>
+        <attr name="trim"/>
+    </tag>
+</taglib>
