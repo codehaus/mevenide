@@ -12,10 +12,11 @@
 		To Be Done :
 		<ol>
 			<li>Remove unused Imports</li>
+			<li>Use FQ Imports</li>
 			<li>Brackets on the same line</li>
 			<li>Use explicit naming</li>
 			<li>Remove unneeded javadoc</li>
-			<li>Always add class javadoc</li>
+			<li>Always provide class javadoc</li>
 		</ol>
       </p>
       <p>
