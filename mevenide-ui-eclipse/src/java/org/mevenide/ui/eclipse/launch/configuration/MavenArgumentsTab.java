@@ -61,6 +61,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
+import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.TableEditor;
 import org.eclipse.swt.events.ModifyEvent;
@@ -83,6 +84,7 @@ import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 import org.mevenide.OptionsRegistry;
 import org.mevenide.ui.eclipse.Mevenide;
+import org.mevenide.ui.eclipse.goals.viewer.GoalsPickerDialog;
 import org.mevenide.ui.eclipse.launch.LaunchWizardPage;
 
 /**
@@ -110,6 +112,8 @@ public class MavenArgumentsTab extends AbstractLaunchConfigurationTab  {
 	private Table table;
 	
 	
+	private TreeViewer goalsTreeViewer;
+		 
 	public MavenArgumentsTab() {
 		setDirty(false);
 	}
@@ -312,7 +316,16 @@ public class MavenArgumentsTab extends AbstractLaunchConfigurationTab  {
 		GridData data1 = new GridData(GridData.FILL_HORIZONTAL);
 		chooseButton.setLayoutData(data1);
 		chooseButton.setText("Choose...");
-		chooseButton.setEnabled(false);
+		chooseButton.setEnabled(true);
+		
+		chooseButton.addSelectionListener(
+			new SelectionAdapter() {
+                public void widgetSelected(SelectionEvent arg0) {
+					GoalsPickerDialog goalsPickerDialog = new GoalsPickerDialog();
+					goalsPickerDialog.open();
+                }                	 
+			}
+		);
 	}
 
 
@@ -362,6 +375,7 @@ public class MavenArgumentsTab extends AbstractLaunchConfigurationTab  {
 											}
 											break;
 										default: 
+									
 											//do nothing
 											break;
 									}
@@ -393,7 +407,6 @@ public class MavenArgumentsTab extends AbstractLaunchConfigurationTab  {
 		initOptionsMap(configuration);
 		initGoals(configuration);
 		initSysProperties(configuration);
-		
 	}
 
 	public void performApply(ILaunchConfigurationWorkingCopy configuration) {
