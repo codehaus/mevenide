@@ -246,5 +246,25 @@ public class ContentValidator implements IProjectValidator {
         validateSimpleElement(mailingList.getUnsubscribe(), "mailingList[" + index + "].unsubscribe");
     }
 
+    public List getValidationErrors() {
+        return validationErrors;
+    }
+    
+    public List getValidationWarnings() {
+        return validationWarnings;
+    }
+    
+    public void clearErrors() {
+        validationErrors.clear();
+    }
+    
+    public void clearWarnings() {
+        validationWarnings.clear();
+    }
+    
+    public void clear() {
+        clearErrors();
+        clearWarnings();
+    }
 }
 
