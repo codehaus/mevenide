@@ -229,7 +229,7 @@
   </goal>
   
   <goal name="mevenide-site:plugins" prereqs="mevenide-site:quick-init">
-  	<j:set var="maven.multiproject.includes" value="${mevenide.eclipse.plugin.project.name}/project.xml,${mevenide.nbm.plugin.project.name}/project.xml,${mevenide.spinner.wiki.plugin.project.name}/project.xml"/>
+  	<j:set var="maven.multiproject.includes" value="${maven.multiproject.plugins.includes}"/>
   	<attainGoal name="multiproject:site"/>
   </goal>
   
