@@ -29,7 +29,7 @@ import org.mevenide.properties.IPropertyResolver;
 
 
 /**  
- * 
+ * factory to create instances of IPropertyResolver
  * @author <a href="mailto:rhill2@free.fr">Gilles Dodinet</a>
  * @version $Id$
  * 
@@ -50,7 +50,9 @@ public class PropertyResolverFactory {
     public static PropertyResolverFactory getFactory() {
         return factory;
     }
-    
+    /**
+     * @deprecated.. for performance reasons, use IQueryContext based methods
+     */
     public IPropertyResolver getResolver(File projectDir, boolean forceRefresh) {
         PropertyFilesAggregator aggregator = (PropertyFilesAggregator) resolvers.get(projectDir.getAbsolutePath());
         
@@ -72,7 +74,9 @@ public class PropertyResolverFactory {
         return aggregator;
     }
     
-    
+    /**
+     * @deprecated.. for performance reasons, use IQueryContext based methods
+     */
     public IPropertyResolver getResolver(File projectDir) {
         return getResolver(projectDir, false);
     }
@@ -89,7 +93,10 @@ public class PropertyResolverFactory {
                                                              getPluginDefaultsPropertyFinder(finder)));
     }
     
-    
+    /**
+     * returns a cached or newly created instance of IPropertyFinder that maps the
+     * maven plugin defaults for a given maven.plugin.dir
+     */
    IPropertyFinder getPluginDefaultsPropertyFinder(ILocationFinder finder) {
         synchronized (pluginDirProps) {
             String pluginDir = finder.getMavenPluginsDir();
