@@ -12,9 +12,8 @@
     <mkdir dir="${co.dir}" />  
   </target>
   
-  <target name="bootstrap" depends="init, checkout" description="o run the build process">
-  	<ant antfile="${co.dir}/mevenide-master/build.xml"
-  		 dir="${co.dir}/mevenide-master"
+  <target name="bootstrap" depends="checkout" description="o run the build process">
+  	<ant dir="${co.dir}/mevenide-master"
   		 target="build-all"/>
   </target>
   
