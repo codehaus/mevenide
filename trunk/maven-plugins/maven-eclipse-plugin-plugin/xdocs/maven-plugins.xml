@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<document>
+    <properties>
+    	<author email="rhill@wanadoo.fr">Gilles Dodinet</author>
+        <title>Maven Plugins</title>
+    </properties>
+    <body>
+        <section name="Project Overview">
+        	<p>
+			    Various Maven have been created to help in the Mevenide Development Process. For now there are two plugins :
+			</p>
+			<ul>
+				<li>Maven Eclipse-Plugin Plugin creates Eclipse plugins, features and site artifacts.</li>
+				<li>Maven Spinner-Wiki Plugin generates Spinner Wiki templates that have the same look-n-feel than the maven generated site.</li>
+			</ul>
+			<p>
+				Those Maven plugins can be found under the <a href="http://cvs.sourceforge.net/viewcvs.py/mevenide/maven-plugins/">maven-plugins</a> module in the Mevenide CVS repository. 
+			</p>
+		</section>
+
+    </body>
+
+</document>

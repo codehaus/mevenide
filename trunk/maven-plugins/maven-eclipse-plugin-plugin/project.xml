@@ -7,11 +7,11 @@
     <currentVersion>0.1.1-SNAPSHOT</currentVersion>
     <logo>/images/mevenide-logo.jpg</logo>
     <organization>
-      <name>Sourceforge</name>
+      <name>Mevenide @ Sourceforge</name>
       <url>http://sf.net/</url>
       <logo>http://sourceforge.net/sflogo.php?group_id=54263&amp;type=5</logo>
     </organization>
-    <shortDescription>This plugin helps creating ready to eclipse plugins and features distribution</shortDescription>
+    <shortDescription>This plugin helps creating ready to use eclipse plugins and features distribution</shortDescription>
     <inceptionYear>2003</inceptionYear>
     <siteAddress>shell.sourceforge.net</siteAddress>
 	<!-- siteDirectory>/home/groups/m/me/mevenide/htdocs</siteDirectory -->
