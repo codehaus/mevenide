@@ -229,9 +229,11 @@ public class PageWidgetFactory {
 		button.addFocusListener(visibilityHandler);
 		return button;
 	}
+	
 	public Composite createComposite(Composite parent) {
 		return createComposite(parent, SWT.NULL);
 	}
+	
 	public Composite createComposite(Composite parent, int style) {
 		Composite composite = new Composite(parent, style);
 		composite.setBackground(backgroundColor);
@@ -243,6 +245,7 @@ public class PageWidgetFactory {
 		composite.setMenu(parent.getMenu());
 		return composite;
 	}
+	
 	public Composite createCompositeSeparator(Composite parent) {
 		Composite composite = new Composite(parent, SWT.NONE);
 		composite.setBackground(getColor(COLOR_COMPOSITE_SEPARATOR));
@@ -356,9 +359,11 @@ public class PageWidgetFactory {
 		hookDeleteListener(table);
 		return table;
 	}
+	
 	public Text createText(Composite parent, String value) {
 		return createText(parent, value, BORDER_STYLE | SWT.SINGLE);
 	}
+	
 	public Text createText(Composite parent, String value, int style) {
 		Text text = new Text(parent, style);
 		if (value != null)
@@ -368,6 +373,7 @@ public class PageWidgetFactory {
 		text.addFocusListener(visibilityHandler);
 		return text;
 	}
+	
 	public Tree createTree(Composite parent, int style) {
 		Tree tree = new Tree(parent, BORDER_STYLE | style);
 		tree.setBackground(backgroundColor);
