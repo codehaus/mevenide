@@ -93,33 +93,6 @@ public class ActionMappingPanel extends JPanel implements ProjectPanel {
         
     }
     
-//    private void attachOriginListeners() {
-//        DocListener list = new DocListener(ocBuild, ActionProvider.COMMAND_BUILD, txtBuild);
-//        txtBuild.getDocument().addDocumentListener(list);
-//        ocBuild.setChangeObserver(list);
-//        list = new DocListener(ocClean, ActionProvider.COMMAND_CLEAN, txtClean);
-//        txtClean.getDocument().addDocumentListener(list);
-//        ocClean.setChangeObserver(list);        
-//        list = new DocListener(ocRebuild, ActionProvider.COMMAND_REBUILD, txtRebuild);
-//        txtRebuild.getDocument().addDocumentListener(list);
-//        ocRebuild.setChangeObserver(list);        
-//        list = new DocListener(ocJavadoc, "javadoc", txtJavadoc); //NOI18N
-//        txtJavadoc.getDocument().addDocumentListener(list);
-//        ocJavadoc.setChangeObserver(list);        
-//        list = new DocListener(ocMultiBuild, ActionProviderImpl.COMMAND_MULTIPROJECTBUILD, txtMultiBuild);
-//        txtMultiBuild.getDocument().addDocumentListener(list);
-//        ocMultiBuild.setChangeObserver(list);        
-//        list = new DocListener(ocMultiClean, ActionProviderImpl.COMMAND_MULTIPROJECTCLEAN, txtMultiClean);
-//        txtMultiClean.getDocument().addDocumentListener(list);
-//        ocMultiClean.setChangeObserver(list);        
-//        list = new DocListener(ocTest, ActionProvider.COMMAND_TEST, txtTest);
-//        txtTest.getDocument().addDocumentListener(list);
-//        ocTest.setChangeObserver(list);        
-//        list = new DocListener(ocTestSingle, ActionProvider.COMMAND_TEST_SINGLE, txtTestSingle);
-//        txtTestSingle.getDocument().addDocumentListener(list);
-//        ocTestSingle.setChangeObserver(list);        
-//    }
-    
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -422,7 +395,7 @@ public class ActionMappingPanel extends JPanel implements ProjectPanel {
    }
 
     public void setResolveValues(boolean resolve) {
-        setEnableFields(!resolve);
+//        setEnableFields(!resolve);
         assignValue(ActionProvider.COMMAND_BUILD, resolve);
         assignValue(ActionProvider.COMMAND_CLEAN, resolve);
         assignValue(ActionProvider.COMMAND_REBUILD, resolve);

@@ -25,9 +25,15 @@ import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyVetoException;
+import java.util.ArrayList;
+
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Iterator;
+
+import java.util.List;
+
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.tree.TreeSelectionModel;
@@ -51,6 +57,7 @@ public class MavenCustomizer extends JPanel implements ProjectValidateObserver {
     
     private MavenProject project;
     private CategoryView catView;
+    private List allPanels;
     
     public MavenCustomizer(MavenProject proj) {
         initComponents();
@@ -253,7 +260,7 @@ public class MavenCustomizer extends JPanel implements ProjectValidateObserver {
         }
     }
              
-    private static Node createRootNode( MavenProject project) {
+    private Node createRootNode( MavenProject project) {
         ConfigurationDescription[] generalChilds = new ConfigurationDescription[] {
             new ConfigurationDescription(
                 "OrgCategory", // NOI18N
@@ -335,6 +342,11 @@ public class MavenCustomizer extends JPanel implements ProjectValidateObserver {
                 null)
         };
         
+        allPanels = new ArrayList();
+        addPanelsToList(allPanels, descriptions);
+        addPanelsToList(allPanels, dependencyChilds);
+        addPanelsToList(allPanels, generalChilds);
+        
         ConfigurationDescription rootDescription = new ConfigurationDescription(
             "InvisibleRoot", "InvisibleRoot", null, null, descriptions);  // NOI18N
         
@@ -342,6 +354,15 @@ public class MavenCustomizer extends JPanel implements ProjectValidateObserver {
         
         
     }
+    
+    private void addPanelsToList(List list, ConfigurationDescription[] descs) {
+        for (int i = 0; i < descs.length; i++) {
+            if (descs[i].customizer != null && descs[i].customizer instanceof ProjectPanel) {
+                list.add(descs[i].customizer);
+            }
+        }
+    }
+    
     
     // Private meyhods ---------------------------------------------------------
     
@@ -367,6 +388,16 @@ public class MavenCustomizer extends JPanel implements ProjectValidateObserver {
         } else {
             lblValidateMessage.setText(errorMessage);
         }
+    }
+    
+    public List getChanges() {
+        List toReturn = new ArrayList();
+        Iterator it = allPanels.iterator();
+        while (it.hasNext()) {
+            ProjectPanel panel = (ProjectPanel)it.next();
+            toReturn.addAll(panel.getChanges());
+        }
+        return toReturn;
     }
     
     // Private innerclasses ----------------------------------------------------

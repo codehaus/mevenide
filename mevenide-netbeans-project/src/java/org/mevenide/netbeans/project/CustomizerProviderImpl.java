@@ -18,11 +18,17 @@
 package org.mevenide.netbeans.project;
 
 import java.awt.Dialog;
+import java.util.List;
+
 import javax.swing.JButton;
 import org.mevenide.netbeans.project.customizer.MavenCustomizer;
+import org.mevenide.netbeans.project.writer.NbProjectWriter;
+
 import org.netbeans.spi.project.ui.CustomizerProvider;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
+
+import org.openide.ErrorManager;
 
 /**
  *
@@ -51,9 +57,9 @@ public class CustomizerProviderImpl implements CustomizerProvider {
         options[0].setActionCommand(COMMAND_APPLY);
         options[1].setActionCommand(COMMAND_OK);
         options[2].setActionCommand(COMMAND_CANCEL);
-        
+        MavenCustomizer customizer = new MavenCustomizer(project);
         DialogDescriptor dialogDescriptor = new DialogDescriptor(
-            new MavenCustomizer( project ),
+            customizer,
             project.getDisplayName(),
             true, // is modal for now
             options,
@@ -63,8 +69,18 @@ public class CustomizerProviderImpl implements CustomizerProvider {
             null);
         
         dialogDescriptor.setClosingOptions(new Object[] {options[1], options[2] });
-        Dialog dialog = DialogDisplayer.getDefault().createDialog( dialogDescriptor );
-        dialog.show();
+        Object retValue = DialogDisplayer.getDefault().notify(dialogDescriptor);
+        if (retValue == options[0] || retValue == options[1]) {
+            System.out.println("applying changes..");
+            List changes = customizer.getChanges();
+            System.out.println("number of changes=" + changes.size());
+            try {
+                NbProjectWriter writer = new NbProjectWriter(project);
+                writer.applyChanges(changes);
+            } catch (Exception exc) {
+                ErrorManager.getDefault().notify(ErrorManager.USER, exc);
+            }
+        }
     }
     
 }
