@@ -18,7 +18,7 @@
  *
  * 3. The end-user documentation included with the redistribution,
  *    if any, must include the following acknowledgment:
- *       "This product includes software licensed under 
+ *       "This product includes software contributord under 
  *        Apache Software License (http://www.apache.org/)."
  *    Alternately, this acknowledgment may appear in the software itself,
  *    if and wherever such third-party acknowledgments normally appear.
@@ -46,60 +46,85 @@
  * SUCH DAMAGE.
  * ====================================================================
  */
-package org.mevenide.ui.eclipse.editors.pages;
+package org.mevenide.ui.eclipse.editors.properties;
 
-import org.apache.maven.project.Project;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
-import org.mevenide.project.ProjectChangeEvent;
-import org.mevenide.ui.eclipse.Mevenide;
-import org.mevenide.ui.eclipse.MevenideColors;
-import org.mevenide.ui.eclipse.editors.MevenidePomEditor;
+import org.eclipse.ui.views.properties.IPropertyDescriptor;
+import org.eclipse.ui.views.properties.TextPropertyDescriptor;
+import org.mevenide.util.MevenideUtils;
 
 /**
- * Presents a client control for editing information relating to the
- * build process and environment for this project.
- * 
- * @author Jeff Bonevich (jeff@bonevich.com)
+ * @author Jeffrey Bonevich (jeff@bonevich.com)
  * @version $Id$
  */
-public class UnitTestsPage extends AbstractPomEditorPage {
+public class ResourcePatternProxy extends AbstractPomPropertySource {
 
-	public static final String HEADING = Mevenide.getResourceString("UnitTestsPage.heading");
-    
-	private UnitTestSection unitTestSection;
+	private static final String EXCLUDE_PATTERN = "exclude";
+	private static final String INCLUDE_PATTERN = "include";
 
-    public UnitTestsPage(MevenidePomEditor editor) {
-        super(HEADING, editor);
-    }
+	private boolean isIncludePattern;
+	private String pattern;
+	
+	private static final IPropertyDescriptor EXCLUDE_DESCRIPTOR = 
+		new TextPropertyDescriptor(
+			EXCLUDE_PATTERN,
+			EXCLUDE_PATTERN
+		);
+	private static final IPropertyDescriptor INCLUDE_DESCRIPTOR = 
+		new TextPropertyDescriptor(
+			INCLUDE_PATTERN,
+			INCLUDE_PATTERN
+		);
 
-	protected void initializePage(Composite parent) {
-		GridLayout layout = new GridLayout();
-		layout.numColumns = 2;
-		layout.marginWidth = 10;
-		layout.horizontalSpacing = 15;
-		parent.setLayout(layout);
-
-		PageWidgetFactory factory = getFactory();
-		factory.setBackgroundColor(MevenideColors.WHITE);
-
-		unitTestSection = new UnitTestSection(this);
-		Control control = unitTestSection.createControl(parent, factory);
-		GridData gd = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING);
-		gd.horizontalSpan = 2;
-		control.setLayoutData(gd);
+	public ResourcePatternProxy(String pattern, boolean isIncludePattern) {
+		this.pattern = pattern;
+		this.isIncludePattern = isIncludePattern;
 	}
 
-	public void projectChanged(ProjectChangeEvent e) {
-		update(e.getPom());
+	public Object getEditableValue() {
+		return pattern;
+	}
+
+	public IPropertyDescriptor[] getPropertyDescriptors() {
+		return new IPropertyDescriptor[] { isIncludePattern ? INCLUDE_DESCRIPTOR : EXCLUDE_DESCRIPTOR};
+	}
+
+	public Object getPropertyValue(Object id) {
+		return valueOrEmptyString(pattern);
 	}
 	
-	public void update(Project pom) {
-		unitTestSection.update(pom);
-		
-		setUpdateNeeded(false);
+	public boolean isPropertySet(Object id) {
+		return !isEmpty(pattern);
+	}
+	
+	public void resetPropertyValue(Object id) {
+		setPropertyValue(id, EMPTY_STR);
 	}
 
+	public void setPropertyValue(Object id, Object value) {
+		if (value == null) return;
+		
+		String newValue = value.toString();
+		String oldValue = null;
+		boolean changed = false;
+		oldValue = pattern;
+		if (MevenideUtils.notEquivalent(newValue, oldValue)) {
+			pattern = newValue;
+			changed = true;
+		}
+		if (changed)
+		{
+			firePropertyChangeEvent(id.toString(), oldValue, newValue);
+		}
+	}
+
+	public String getLabel(Object o) {
+		return pattern;
+	}
+
+	/**
+	 * @see org.mevenide.ui.eclipse.editors.pages.AbstractPomPropertySource#getSource()
+	 */
+	public Object getSource() {
+		return pattern;
+	}
 }
