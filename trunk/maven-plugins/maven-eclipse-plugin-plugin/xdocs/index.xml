@@ -36,7 +36,7 @@
 		To install the plugin automatically, please add the <code>http://mevenide.codehaus.org/repository</code> to your <code>maven.repo.remote</code> parameter.
 		And use the plugin:download maven goal to install the plugin.
 		<source>
-	maven -DartifactId=maven-eclipse-plugin-plugin -DgroupId=mevenide -Dversion=0.3 plugin:download
+	maven -DartifactId=maven-eclipse-plugin-plugin -DgroupId=mevenide -Dversion=0.3.1 plugin:download
 		</source>
 	  </p>
    	  </div>
