@@ -41,5 +41,6 @@
 	<classpathentry kind="var" path="MAVEN_REPO/commons-httpclient/jars/commons-httpclient-2.0-rc1.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/forehead/jars/forehead-1.0-beta-5.jar"/>
 	<classpathentry kind="src" path="src/test/java"/>
+	<classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.compare_3.0.0/compare.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
