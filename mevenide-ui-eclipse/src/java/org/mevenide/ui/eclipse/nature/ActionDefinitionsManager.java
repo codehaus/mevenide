@@ -53,9 +53,10 @@ public class ActionDefinitionsManager implements IActionDefinitionManager, ILaun
             ILaunchConfigurationType type = DebugPlugin.getDefault().getLaunchManager().getLaunchConfigurationType(BUILD_CONFIG_TYPE);
             ILaunchConfiguration[] configurations = DebugPlugin.getDefault().getLaunchManager().getLaunchConfigurations(type);
             for (int i = 0; i < configurations.length; i++) {
-                if ( configurations[i].getName() != null && configurations[i].getName().indexOf(BUILD_CONFIG_TYPE + ".SHARED_INFO") == -1 ) { //$NON-NLS-1$
+                ILaunchConfiguration configuration = configurations[i];
+                if ( !isSharedInfoConfiguration(configuration) ) { //$NON-NLS-1$
                     ActionDefinitions definition = new ActionDefinitions();
-	                definition.setConfiguration(configurations[i]);
+	                definition.setConfiguration(configuration);
 	                definitions.add(definition);
                 }
             }
@@ -65,13 +66,18 @@ public class ActionDefinitionsManager implements IActionDefinitionManager, ILaun
         }
     }
     
+    private boolean isSharedInfoConfiguration(ILaunchConfiguration configuration) {
+        return configuration.getName() != null && configuration.getName().indexOf(BUILD_CONFIG_TYPE + ".SHARED_INFO") != -1;
+    }
+
     public List getDefinitions() {
         return definitions;
     }
     
     public void launchConfigurationAdded(ILaunchConfiguration configuration) {
         try {
-	        if ( configuration.getType() != null && configuration.getType().getIdentifier().indexOf(BUILD_CONFIG_TYPE) != -1 ) {
+            
+            if ( isMevenideCustomConfiguration(configuration) && !isSharedInfoConfiguration(configuration) ) {
 		        ActionDefinitions definition = new ActionDefinitions();
 		        definition.setConfiguration(configuration);
 		        definitions.add(definition);
@@ -82,6 +88,10 @@ public class ActionDefinitionsManager implements IActionDefinitionManager, ILaun
         }   
     }
     
+    private boolean isMevenideCustomConfiguration(ILaunchConfiguration configuration) throws CoreException {
+        return configuration.getType() != null && configuration.getType().getIdentifier().indexOf(BUILD_CONFIG_TYPE) != -1;
+    }
+
     public void launchConfigurationRemoved(ILaunchConfiguration configuration) {
         ActionDefinitions definition = new ActionDefinitions();
         definition.setConfiguration(configuration);
