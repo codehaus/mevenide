@@ -94,9 +94,9 @@ public class CustomMavenLaunchManager implements IWorkbenchWindowPulldownDelegat
 						items[i].dispose();
 					}
 					fillMenu(m);
-					recreateMenu = false;
+					//recreateMenu = false;
 				}
-			}
+			}            
 		});
 	}
     
@@ -146,6 +146,8 @@ public class CustomMavenLaunchManager implements IWorkbenchWindowPulldownDelegat
 	            project = ((IJavaElement) firstElement).getJavaProject().getProject();
 	        }
         }
-        lastSelectedProject = project;
+        if ( project != null ) {
+            lastSelectedProject = project;
+        }
     }
 }

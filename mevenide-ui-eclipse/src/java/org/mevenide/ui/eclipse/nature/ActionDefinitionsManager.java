@@ -34,14 +34,14 @@ public class ActionDefinitionsManager implements IActionDefinitionManager {
     public ActionDefinitionsManager() {
 //	      Just to stub.. even if the interface was introduced for this purpose.. 
 //		  need to create a proper stub implementation        
-//        ActionDefinitions def = new ActionDefinitions();
-//        List patterns = new ArrayList();
-//        patterns.add("**/*.java");
-//        def.setPatterns(patterns);
-//        List goals = new ArrayList();
-//        goals.add("jar:install");
-//        def.setGoals(goals);
-//        definitions.add(def);
+        ActionDefinitions def = new ActionDefinitions();
+        List patterns = new ArrayList();
+        patterns.add("**/*.java");
+        def.setPatterns(patterns);
+        List goals = new ArrayList();
+        goals.add("jar:install");
+        def.setGoals(goals);
+        definitions.add(def);
     }
     
     public List getDefinitions(IProject project) {

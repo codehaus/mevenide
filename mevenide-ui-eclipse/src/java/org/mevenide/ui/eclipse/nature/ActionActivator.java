@@ -43,23 +43,23 @@ public class ActionActivator implements IResourceDeltaVisitor {
     
     private List definitionCandidates;
     
-    private String basedir;
-    
     private IProject project;
+
+    private boolean[] shouldSkipDefinitions;
     
     public ActionActivator(List actionDefinitions, IProject project) {
         this.definitionCandidates = actionDefinitions;
-        this.basedir = project.getLocation().toOSString();
+        this.shouldSkipDefinitions = new boolean[definitionCandidates.size()];
         this.project = project;
     }
     
     public boolean visit(IResourceDelta delta) throws CoreException {
-        boolean[] shouldSkipDefinition = new boolean[definitionCandidates.size()];
         for (int i = 0; i < definitionCandidates.size(); i++) {
-            if ( !shouldSkipDefinition[i] ) {
+            if ( !shouldSkipDefinitions[i] ) {
 	            ActionDefinitions definition = (ActionDefinitions) definitionCandidates.get(i);
 	            if ( !project.hasNature(Mevenide.NATURE_ID) ) {
 	                definition.setEnabled(project, false);
+	                shouldSkipDefinitions[i] = true;
 	            }
 	            else {
 			        IPath path = delta.getFullPath();
@@ -67,7 +67,10 @@ public class ActionActivator implements IResourceDeltaVisitor {
 			        DirectoryScanner scanner;
 		            String[] files = scan(patterns);
 			        definition.setEnabled(project, match(path, files));
-			        shouldSkipDefinition[i] = match(path, files);
+			        if ( match(path, files) ) {
+			            shouldSkipDefinitions[i] = true;
+			        }
+			        System.err.println(path.toString() + (shouldSkipDefinitions[i]));
 	            }
             }
         }
@@ -76,7 +79,7 @@ public class ActionActivator implements IResourceDeltaVisitor {
 
     private String[] scan(List patterns) {
         DirectoryScanner scanner = new DirectoryScanner();
-        scanner.setBasedir(basedir);
+        scanner.setBasedir(project.getLocation().toOSString());
         scanner.setIncludes((String[]) patterns.toArray(new String[patterns.size()]));
         scanner.scan();
         return scanner.getIncludedFiles();

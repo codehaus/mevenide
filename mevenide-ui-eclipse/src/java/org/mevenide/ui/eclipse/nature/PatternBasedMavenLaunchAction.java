@@ -31,8 +31,11 @@ public class PatternBasedMavenLaunchAction extends Action {
     
     private ActionDefinitions definition;
     
+    private IProject project;
+    
     public PatternBasedMavenLaunchAction(IProject project, ActionDefinitions definition) {
         this.definition = definition;
+        this.project = project;
         setText(definition.toString());
         setToolTipText(definition.getGoalList());
         setEnabled(definition.isEnabled(project));
