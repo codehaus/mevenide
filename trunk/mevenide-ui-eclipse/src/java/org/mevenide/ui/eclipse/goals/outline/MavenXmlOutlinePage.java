@@ -20,9 +20,11 @@ import java.io.File;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -38,7 +40,9 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.ui.part.Page;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
+import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.goals.filter.*;
 import org.mevenide.ui.eclipse.goals.model.Element;
 import org.mevenide.ui.eclipse.goals.model.Goal;
@@ -51,8 +55,13 @@ import org.mevenide.ui.eclipse.goals.viewer.GoalsLabelProvider;
  * @version $Id: MavenXmlOutlinePage.java,v 1.1 30 mars 2004 Exp gdodinet 
  * 
  */
-public class MavenXmlOutlinePage implements IContentOutlinePage {
+public class MavenXmlOutlinePage extends Page implements IContentOutlinePage {
 	private static final Log log = LogFactory.getLog(MavenXmlOutlinePage.class);
+	
+	private static final String TOGGLE_OFFLINE_ID = "TOGGLE_OFFLINE_ID";
+	private static final String TOGGLE_FILTER_ORIGIN_ID = "TOGGLE_FILTER_ORIGIN_ID"; 
+	private static final String RUN_GOAL_ID = "RUN_GOAL_ID";
+	private static final String OPEN_FILTER_DIALOG_ID = "OPEN_FILTER_DIALOG_ID";
 	
 	private Composite control;
 	
@@ -64,8 +73,10 @@ public class MavenXmlOutlinePage implements IContentOutlinePage {
 	private GoalOriginFilter originFilter;
 	
 	private Menu menu;
-	private IAction toggleOfflineAction, openFilterDialogAction;
+	private IAction toggleOfflineAction, openFilterDialogAction, filterOriginShortcutAction;
 	private IAction runGoalAction;
+	
+	private boolean runOffline;
 	
 	private String basedir;
 	
@@ -146,14 +157,22 @@ public class MavenXmlOutlinePage implements IContentOutlinePage {
         	new Listener () {
         		public void handleEvent (Event event) {
 					//shortcut to run selected goal
-        			//runMaven(event)
+        			//runMaven();
         		}
         	}
         );
         
         createActions();
         
-        MenuManager manager= new MenuManager();
+        createToolBarManager();
+        
+        createContextMenuManager();
+		
+		
+    }
+	
+	private void createContextMenuManager() {
+		MenuManager manager= new MenuManager();
 		manager.setRemoveAllWhenShown(true);
 		manager.addMenuListener(new IMenuListener() {
 			public void menuAboutToShow(IMenuManager menuManager) {
@@ -162,19 +181,59 @@ public class MavenXmlOutlinePage implements IContentOutlinePage {
 		});
         menu = manager.createContextMenu(goalsViewer.getTree());
 		goalsViewer.getTree().setMenu(menu);
-		
-		
-    }
+	}
+
+	private void createToolBarManager() {
+		IToolBarManager toolBarManager = this.getSite().getActionBars().getToolBarManager();
+        toolBarManager.add(this.toggleOfflineAction);
+        toolBarManager.add(this.filterOriginShortcutAction);
+        toolBarManager.add(this.openFilterDialogAction);
+        toolBarManager.add(this.runGoalAction);
+	}
 	
 	private void createActions() {
+		toggleOfflineAction = new Action(null, Action.AS_CHECK_BOX) {
+			public void run() {
+				runOffline = this.isChecked();
+			}
+		};
+		toggleOfflineAction.setToolTipText(toggleOfflineAction.isChecked() ? "online mode" : "offline mode");
+		toggleOfflineAction.setId(TOGGLE_OFFLINE_ID);
+		toggleOfflineAction.setImageDescriptor(Mevenide.getImageDescriptor("offline.gif"));
 		
+		filterOriginShortcutAction = new Action(null, Action.AS_CHECK_BOX) {
+			public void run() {
+				originFilter.setFilterOriginPlugin(this.isChecked());
+			}
+		}; 
+		filterOriginShortcutAction.setToolTipText(toggleOfflineAction.isChecked() ? "Hide global goals" : "Show global goals");
+		filterOriginShortcutAction.setId(TOGGLE_FILTER_ORIGIN_ID);
+		filterOriginShortcutAction.setImageDescriptor(Mevenide.getImageDescriptor("filter_global_goals.gif"));
+		
+		openFilterDialogAction = new Action(null) {
+			public void run() {
+			    //openFilterDialog();
+			}
+		};
+		openFilterDialogAction.setText("Filter...");
+		openFilterDialogAction.setToolTipText("Open goal filter dialog");
+		openFilterDialogAction.setId(OPEN_FILTER_DIALOG_ID);
+		openFilterDialogAction.setImageDescriptor(Mevenide.getImageDescriptor("open_filter_dialog.gif"));
+		
+		runGoalAction = new Action(null) {
+			//runMaven();
+		};
+		runGoalAction.setText("Run Goal");
+		runGoalAction.setToolTipText("Run Goal");
+		runGoalAction.setId(RUN_GOAL_ID);
+		runGoalAction.setImageDescriptor(Mevenide.getImageDescriptor("run_goal.gif"));
 	}
 	
 	private void contextualMenuAboutToShow(IMenuManager menuManager) {
 		Object selection = ((StructuredSelection) goalsViewer.getSelection()).getFirstElement();
 	    if ( selection instanceof Goal ) {
 		    Goal selectedNode = (Goal) selection;
-			//menuManager.add(runMavenAction);		
+			menuManager.add(this.runGoalAction);		
 		}
 	}
 	
