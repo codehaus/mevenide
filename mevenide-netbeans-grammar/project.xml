@@ -33,7 +33,7 @@
         <artifactId>commons-logging</artifactId>
         <version>1.0.1</version>
         <type>jar</type>
-        <url>http://jakarta.apache.org/commons</url>
+        <url>http://jakarta.apache.org/commons/logging.html</url>
 	    <properties>
             <netbeans.module.dep>spec</netbeans.module.dep>
             <netbeans.lib.generate>true</netbeans.lib.generate>
