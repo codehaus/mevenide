@@ -81,23 +81,18 @@ public class IdentificationSection extends PageSection {
 	
 	private static final Log log = LogFactory.getLog(IdentificationSection.class);
     
-	private boolean isInherited;
 	private OverridableTextEntry pomNameText;
 	private TextEntry pomVersionText;
 	private TextEntry extendsText;
 	private OverridableTextEntry artifactIdText;
 	private OverridableTextEntry groupIdText;
+	private OverridableTextEntry gumpRepoIdText;
 	private Button extendButton;
 	
-	private Project parentPom;
-
     public IdentificationSection(OverviewPage page) {
         super(page);
-		setHeaderText(Mevenide.getResourceString("PomIdentificationSection.header"));
-		setDescription(Mevenide.getResourceString("PomIdentificationSection.description"));
-		
-		this.parentPom = page.getEditor().getParentPom();
-		if (parentPom != null) isInherited = true;
+		setHeaderText(Mevenide.getResourceString("IdentificationSection.header"));
+		setDescription(Mevenide.getResourceString("IdentificationSection.description"));
     }
 
     public Composite createClient(Composite parent, PageWidgetFactory factory) {
@@ -112,10 +107,10 @@ public class IdentificationSection extends PageSection {
 		final Project pom = getPage().getEditor().getPom();
 		
 		// POM name textbox
-		String labelName = Mevenide.getResourceString("PomIdentificationSection.pomNameText.label");
+		String labelName = Mevenide.getResourceString("IdentificationSection.pomNameText.label");
 		pomNameText = new OverridableTextEntry(
 			createText(container, labelName, factory), 
-			createOverrideToggle(container, factory, isInherited)
+			createOverrideToggle(container, factory, isInherited())
 		);
 		pomNameText.addEntryChangeListener(
 			new EntryChangeListenerAdaptor() {
@@ -135,13 +130,13 @@ public class IdentificationSection extends PageSection {
 					pom.setName(value);
 				}
 				public String getParentProjectAttribute() {
-					return parentPom.getName();
+					return getParentPom().getName();
 				}
 			}
 		);
 		
 		// POM version textbox 
-		labelName = Mevenide.getResourceString("PomIdentificationSection.pomVersionText.label");
+		labelName = Mevenide.getResourceString("IdentificationSection.pomVersionText.label");
 		pomVersionText = new TextEntry(createText(container, labelName, factory));
 		factory.createSpacer(container);
 		pomVersionText.addEntryChangeListener(
@@ -151,12 +146,12 @@ public class IdentificationSection extends PageSection {
 				}
 			}
 		);
-		if (isInherited) {
+		if (isInherited()) {
 			pomVersionText.setEnabled(false);
 		}
 		
 		// POM extend textbox and file browse button
-		labelName = Mevenide.getResourceString("PomIdentificationSection.extendsText.label");
+		labelName = Mevenide.getResourceString("IdentificationSection.extendsText.label");
 		extendsText = new TextEntry(createText(container, labelName, factory));
 		extendsText.addEntryChangeListener(
 			new EntryChangeListenerAdaptor() {
@@ -178,15 +173,15 @@ public class IdentificationSection extends PageSection {
 		layout.marginHeight = 0;
 		buttonContainer.setLayout(layout);
 
-		labelName = Mevenide.getResourceString("PomIdentificationSection.extendButton.label");
-		String toolTip = Mevenide.getResourceString("PomIdentificationSection.extendButton.tooltip");
+		labelName = Mevenide.getResourceString("IdentificationSection.extendButton.label");
+		String toolTip = Mevenide.getResourceString("IdentificationSection.extendButton.tooltip");
 		extendButton = factory.createButton(buttonContainer, labelName, SWT.PUSH);
 		data = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING | GridData.VERTICAL_ALIGN_BEGINNING);
 		extendButton.setLayoutData(data);
 		extendButton.setToolTipText(toolTip);
 
-		final String title = Mevenide.getResourceString("PomIdentificationSection.extendButton.dialog.title");
-		final String message = Mevenide.getResourceString("PomIdentificationSection.extendButton.dialog.message");
+		final String title = Mevenide.getResourceString("IdentificationSection.extendButton.dialog.title");
+		final String message = Mevenide.getResourceString("IdentificationSection.extendButton.dialog.message");
 		extendButton.addSelectionListener(
 				new SelectionAdapter() {
 					public void widgetSelected(SelectionEvent e) {
@@ -241,10 +236,10 @@ public class IdentificationSection extends PageSection {
 		);
 		
 		// POM artifactId textbox
-		labelName = Mevenide.getResourceString("PomIdentificationSection.artifactIdText.label");
+		labelName = Mevenide.getResourceString("IdentificationSection.artifactIdText.label");
 		artifactIdText = new OverridableTextEntry(
 			createText(container, labelName, factory), 
-			createOverrideToggle(container, factory, isInherited)
+			createOverrideToggle(container, factory, isInherited())
 		);
 		artifactIdText.addEntryChangeListener(
 			new EntryChangeListenerAdaptor() {
@@ -259,16 +254,16 @@ public class IdentificationSection extends PageSection {
 					pom.setArtifactId(value);
 				}
 				public String getParentProjectAttribute() {
-					return parentPom.getArtifactId();
+					return getParentPom().getArtifactId();
 				}
 			}
 		);
 		
 		// POM groupId textbox
-		labelName = Mevenide.getResourceString("PomIdentificationSection.groupIdText.label");
+		labelName = Mevenide.getResourceString("IdentificationSection.groupIdText.label");
 		groupIdText = new OverridableTextEntry(
 			createText(container, labelName, factory), 
-			createOverrideToggle(container, factory, isInherited)
+			createOverrideToggle(container, factory, isInherited())
 		);
 		groupIdText.addEntryChangeListener(
 			new EntryChangeListenerAdaptor() {
@@ -283,7 +278,31 @@ public class IdentificationSection extends PageSection {
 					pom.setGroupId(value);
 				}
 				public String getParentProjectAttribute() {
-					return parentPom.getGroupId();
+					return getParentPom().getGroupId();
+				}
+			}
+		);
+		
+		// POM gumpRepositoryId textbox
+		labelName = Mevenide.getResourceString("IdentificationSection.gumpRepoIdText.label");
+		gumpRepoIdText = new OverridableTextEntry(
+			createText(container, labelName, factory), 
+			createOverrideToggle(container, factory, isInherited())
+		);
+		gumpRepoIdText.addEntryChangeListener(
+			new EntryChangeListenerAdaptor() {
+				public void entryChanged(PageEntry entry) {
+					pom.setGumpRepositoryId(gumpRepoIdText.getText());
+				}
+			}
+		);
+		gumpRepoIdText.addOverrideAdaptor(
+			new OverrideAdaptor() {
+				public void updateProject(String value) {
+					pom.setGumpRepositoryId(value);
+				}
+				public String getParentProjectAttribute() {
+					return getParentPom().getGumpRepositoryId();
 				}
 			}
 		);
@@ -296,8 +315,8 @@ public class IdentificationSection extends PageSection {
         if (log.isDebugEnabled()) {
             log.debug("updating id section content");
         }
-		setIfDefined(pomNameText, pom.getName(), isInherited ? parentPom.getName() : null);
-		if (isInherited) {
+		setIfDefined(pomNameText, pom.getName(), isInherited() ? getParentPom().getName() : null);
+		if (isInherited()) {
 			String parentVersion = getPage().getEditor().getParentPom().getPomVersion();
 			setIfDefined(pomVersionText, parentVersion);
 			// force local override with parent if inherited
@@ -308,9 +327,11 @@ public class IdentificationSection extends PageSection {
 			setIfDefined(pomVersionText, pom.getPomVersion());
 		}
 		setIfDefined(extendsText, pom.getExtend());
-		setIfDefined(artifactIdText, pom.getArtifactId(), isInherited ? parentPom.getArtifactId() : null);
-		setIfDefined(groupIdText, pom.getGroupId(), isInherited ? parentPom.getGroupId() : null);
-		redrawSection();
+		setIfDefined(artifactIdText, pom.getArtifactId(), isInherited() ? getParentPom().getArtifactId() : null);
+		setIfDefined(groupIdText, pom.getGroupId(), isInherited() ? getParentPom().getGroupId() : null);
+		setIfDefined(gumpRepoIdText, pom.getGumpRepositoryId(), isInherited() ? getParentPom().getGumpRepositoryId() : null);
+
+		super.update(pom);
     }
 
 }

@@ -93,14 +93,17 @@ public abstract class PageSection {
 	private boolean descriptionPainted = true;
 	private boolean headerPainted = true;
 	private boolean collapsable = false;
-	private boolean collapsed = false;
+//	private boolean collapsed = false;
 	private int widthHint = SWT.DEFAULT;
 	private int heightHint = SWT.DEFAULT;
 	private Composite control;
-	public boolean compactMode=false;
+//	public boolean compactMode=false;
 
 	private AbstractPomEditorPage page;
 	
+	private boolean inherited;
+	private Project parentPom;
+
 	class EntryChangeListenerAdaptor implements IEntryChangeListener {
 		public void entryChanged(PageEntry entry) {
 		}
@@ -274,6 +277,9 @@ public abstract class PageSection {
 
     public PageSection(AbstractPomEditorPage page) {
         this.page = page;
+		
+		this.parentPom = page.getEditor().getParentPom();
+		if (parentPom != null) inherited = true;
     }
 
 	public abstract Composite createClient(
@@ -585,6 +591,7 @@ public abstract class PageSection {
 	}
 
 	public void update(Project pom) {
+		redrawSection();
 	}
 	
 	protected void redrawSection() {
@@ -631,6 +638,18 @@ public abstract class PageSection {
     
     protected boolean isDefined(String value) {
     	return (value != null && !"".equals(value.trim()));
+    }
+
+	protected boolean isInherited() {
+        return inherited;
+    }
+
+    protected Project getParentPom() {
+        return parentPom;
+    }
+
+    protected void setParentPom(Project parentPom) {
+        this.parentPom = parentPom;
     }
 
 }
