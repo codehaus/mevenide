@@ -48,20 +48,20 @@
 	
 	<section name="Building the various artifacts">
 		The <code>build-all</code> custom goal defined in mevenide-master/maven.xml allows us to <i>reactor</i> the project.
-		There's a ant buildfile (build.xml) present in near maven.xml that wraps maven call by defining 
+		There's an ANT buildfile (build.xml) present near maven.xml that wraps maven call by defining 
 		a target <code>build-all</code> which uses an <code>exec</code> target. by default it works offline.
 		<br/>
 		Also the site generation, tho buggy, has been reactored too. The site generation process can be triggered by running 
-		<br/><code>maven build-site</code><br/>. This goal has been too wrapped by an ant target (<code>build-site</code>).
+		<br/><code>maven build-site</code><br/>. This goal too has been wrapped by an ANT target (<code>build-site</code>).
 		For the build to be successful, you need to NOT rename the various projects (or at least, make sure the modifications 
 		are done in the maven.xml as well). Why do i rely on project names ? Cuz i have only one workspace (not counting the runtime-worskpace :)
 		ok, thats perhaps bad practice), and so i cannot reactor projects without explicitly specifying subproject names. 
 		<br/>
 		In base-project.xml, which all our POMs should inherit, you can see that some unit tests have been explicitly exclude. Indeed they  
-		fail if ran from maven, althoguh they're successful from within eclipse. I guess there's here a problem with the way i declared the resources.
+		fail if ran from maven, although they're successful from within eclipse. I guess there's here a problem with the way i declared the resources.
 		There are also other tests that have been excluded cuz they're expected to fail if not launched from within Eclipse through the 
 		<code>org.eclipse.pde.junit</code> plugin ; that plugin (expected to be provided with Eclipse 3) extends the junit Eclipse plugin 
-		allows us to test plugins (altho i have not managed to use it successfully for now - it keeps on throwing NoClassDefFoundError). 
+		and allows us to test plugins (altho i have not managed to use it successfully for now - it keeps on throwing NoClassDefFoundError). 
 		I think its a better (smarter, easier, &lt;whatever you want to insert here&gt;)  way to test plugins than mocking the Eclipse API.
 	</section>
 	
