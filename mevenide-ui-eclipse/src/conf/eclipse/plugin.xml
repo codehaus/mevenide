@@ -480,7 +480,7 @@
             id="org.mevenide.ui.synchronize.view.SynchronizationView">
       </view>
       <view class="org.mevenide.ui.eclipse.repository.view.RepositoryBrowser"
-            icon="icons/eview16/maven_repo.gif"
+            icon="icons/eview16/repo_nav.gif"
             category="org.mevenide.ui.synchronize.view"
             name="Repository Browser"
             id="org.mevenide.repository.browser">
@@ -491,6 +491,7 @@
       </view>
       <view class="org.mevenide.ui.eclipse.repository.view.SearchQueryView" 
             category="org.mevenide.ui.synchronize.view" 
+            icon="icons/eview16/search_repo.gif"
             name="Search Query" id="org.mevenide.repository.search.query">
       </view -->
    </extension>
