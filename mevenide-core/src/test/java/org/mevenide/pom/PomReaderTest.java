@@ -37,7 +37,7 @@ public class PomReaderTest extends TestCase {
 	}
 
 	public void testGetAllSourceDirectories() throws Exception {
-		Hashtable map = PomReader.getAllSourceDirectories(new File(PomReaderTest.class.getResource("/project.xml").getFile()));
+		Hashtable map = ProjectReader.getAllSourceDirectories(new File(PomReaderTest.class.getResource("/project.xml").getFile()));
 		assertEquals(BuildConstants.MAVEN_SRC, (String)map.get("${basedir}/src/java"));	
 		assertEquals(BuildConstants.MAVEN_TEST, (String)map.get("${basedir}/src/test/java"));
 		assertEquals(BuildConstants.MAVEN_ASPECT, (String)map.get("${basedir}/src/aspects"));	

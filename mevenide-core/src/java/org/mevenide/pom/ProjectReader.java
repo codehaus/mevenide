@@ -14,9 +14,14 @@
 package org.mevenide.pom;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.Reader;
 import java.util.Hashtable;
 
 import org.apache.maven.project.Project;
+import org.apache.maven.project.builder.DefaultProjectUnmarshaller;
 import org.jdom.input.SAXBuilder;
 import org.mevenide.util.BetwixtHelper;
 
@@ -27,7 +32,36 @@ import org.mevenide.util.BetwixtHelper;
  * @version $Id$
  * 
  */
-public class PomReader {
+public class ProjectReader {
+	private DefaultProjectUnmarshaller unmarshaller ; 
+	
+	private static ProjectReader projectReader = null;
+	private static Object lock = new Object();
+	
+	public static ProjectReader getReader() throws Exception {
+		if (projectReader != null) {
+			return projectReader;
+		}
+		else {
+			synchronized (lock) {
+				if (projectReader == null) {
+					projectReader = new ProjectReader();
+				}
+			}
+			return projectReader;
+		}
+	}
+	
+	public ProjectReader() {
+		unmarshaller = new DefaultProjectUnmarshaller(); 
+	}
+	
+	public Project readProject(File pom) throws FileNotFoundException, Exception, IOException {
+		Reader reader = new FileReader(pom);
+		Project project = unmarshaller.parse(reader);
+		reader.close();
+		return project;
+	}
 	
 	public static Hashtable getAllSourceDirectories(File pom) throws Exception {
 		Hashtable srcDirs = new Hashtable();
