@@ -46,37 +46,81 @@
  * SUCH DAMAGE.
  * ====================================================================
  */
-package org.mevenide.ui.eclipse.actions;
+package org.mevenide.ui.eclipse.sync.model;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.eclipse.jface.action.IAction;
-import org.eclipse.ui.PlatformUI;
-import org.mevenide.ui.eclipse.sync.model.ProjectContainer;
-import org.mevenide.ui.eclipse.sync.view.SynchronizeView;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+
+import org.apache.maven.project.Project;
+import org.apache.maven.util.StringInputStream;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jdt.core.IClasspathEntry;
+import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jdt.core.JavaModelException;
+import org.mevenide.ui.eclipse.util.FileUtils;
 
 /**
- * either synchronize pom add .classpath 
  * 
- * @author Gilles Dodinet (gdodinet@wanadoo.fr)
+ * @author <a href="mailto:rhill2@free.fr">Gilles Dodinet</a>
  * @version $Id$
  * 
  */
-public class SynchronizeAction extends AbstractMevenideAction {
-    private static final String SYNCHRONIZE_VIEW_ID = "org.mevenide.ui.synchronize.view.SynchronizeView";
-    
-    private static Log log = LogFactory.getLog(SynchronizeAction.class);
+public abstract class ArtifactWrapper {
+	public abstract void addTo(IProject project) throws Exception;
 	
-    public void run(IAction action) {
-        try {
-            SynchronizeView view = (SynchronizeView) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(SYNCHRONIZE_VIEW_ID);
-            view.setInput(currentProject);
-            view.setDirection(ProjectContainer.OUTGOING);
-        }
-        catch ( Exception e ) {
-            log.debug("WIP execption ", e);
-        }
+	public abstract void addTo(Project project) throws Exception;
+	
+	public abstract void removeFrom(Project project) throws Exception;
+	
+	protected void addClasspathEntry(IClasspathEntry newEntry, IProject project) throws JavaModelException {
+		IJavaProject javaProject = (IJavaProject) JavaCore.create(project);
+		IClasspathEntry[] cpEntries = javaProject.getRawClasspath();
+		IClasspathEntry[] newCpEntries = new IClasspathEntry[cpEntries.length + 1];
+
+		System.arraycopy(cpEntries, 0, newCpEntries, 0, cpEntries.length);
+		newCpEntries[cpEntries.length] = newEntry;
+
+		javaProject.setRawClasspath(newCpEntries, null);
 	}
 
+	protected void addIgnoreLine(String ignoreLine, IFile mvnIgnoreFile) throws CoreException, IOException {
+		InputStream is = mvnIgnoreFile.getContents();
+		Reader reader = new InputStreamReader(is);
+		
+		String oldContent = "";
+		
+		char[] buffer = new char[4096]; 
+		int bytes_read; 
+		while ((bytes_read = reader.read(buffer)) != -1) {
+			oldContent += new String(buffer);
+		}
+		oldContent += ignoreLine;
+		
+		mvnIgnoreFile.setContents(new StringInputStream(oldContent), true, true, null);
+	}
+	
+	public void addToMvnIgnore(IProject project) throws Exception {
+		String ignoreLine = getIgnoreLine();
+		
+		IFile mvnIgnoreFile = FileUtils.assertIgnoreFileExists(project);
+		
+		addIgnoreLine(ignoreLine, mvnIgnoreFile);
+	}
+	
+	public void addToMvnIgnore(Project project) throws Exception {
+		String ignoreLine = getIgnoreLine();
+		
+		IFile mvnIgnoreFile = FileUtils.assertIgnoreFileExists(project);
+		
+		addIgnoreLine(ignoreLine, mvnIgnoreFile);
+	}
 
+	
+	protected abstract String getIgnoreLine();
+	
 }

@@ -46,37 +46,48 @@
  * SUCH DAMAGE.
  * ====================================================================
  */
-package org.mevenide.ui.eclipse.actions;
+package org.mevenide.ui.eclipse.sync.model;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.eclipse.jface.action.IAction;
-import org.eclipse.ui.PlatformUI;
-import org.mevenide.ui.eclipse.sync.model.ProjectContainer;
-import org.mevenide.ui.eclipse.sync.view.SynchronizeView;
+import java.io.File;
+
+
+
 
 /**
- * either synchronize pom add .classpath 
  * 
- * @author Gilles Dodinet (gdodinet@wanadoo.fr)
+ * @author <a href="mailto:rhill2@free.fr">Gilles Dodinet</a>
  * @version $Id$
  * 
  */
-public class SynchronizeAction extends AbstractMevenideAction {
-    private static final String SYNCHRONIZE_VIEW_ID = "org.mevenide.ui.synchronize.view.SynchronizeView";
+public abstract class AbstractArtifactMappingNode implements IArtifactMappingNode {
+    /** may be instance of IProject or IClasspathEntry */
+    protected Object ideEntry;
+    protected Object resolvedArtifact;
+    protected Object artifact;
+    protected File declaringPom; 
     
-    private static Log log = LogFactory.getLog(SynchronizeAction.class);
-	
-    public void run(IAction action) {
-        try {
-            SynchronizeView view = (SynchronizeView) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(SYNCHRONIZE_VIEW_ID);
-            view.setInput(currentProject);
-            view.setDirection(ProjectContainer.OUTGOING);
-        }
-        catch ( Exception e ) {
-            log.debug("WIP execption ", e);
-        }
-	}
-
-
+    protected IArtifactMappingNodeContainer parent;
+    
+    public Object getIdeEntry() {
+        return ideEntry;
+    }
+    public Object getArtifact() {
+        return artifact;
+    }
+    public Object getResolvedArtifact() {
+        return resolvedArtifact;
+    }
+    public IArtifactMappingNodeContainer getParent() {
+        return parent;
+    }
+    public void setParent(IArtifactMappingNodeContainer parent) {
+        this.parent = parent;
+    }
+    public File getDeclaringPom() {
+        return declaringPom;
+    }
+    public void setDeclaringPom(File declaringPom) {
+        this.declaringPom = declaringPom;
+    }
+    
 }

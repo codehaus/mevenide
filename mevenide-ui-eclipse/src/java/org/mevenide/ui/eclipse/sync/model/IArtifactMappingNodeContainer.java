@@ -46,37 +46,33 @@
  * SUCH DAMAGE.
  * ====================================================================
  */
-package org.mevenide.ui.eclipse.actions;
+package org.mevenide.ui.eclipse.sync.model;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.eclipse.jface.action.IAction;
-import org.eclipse.ui.PlatformUI;
-import org.mevenide.ui.eclipse.sync.model.ProjectContainer;
-import org.mevenide.ui.eclipse.sync.view.SynchronizeView;
+import org.apache.maven.project.Project;
 
 /**
- * either synchronize pom add .classpath 
  * 
- * @author Gilles Dodinet (gdodinet@wanadoo.fr)
+ * @author <a href="mailto:rhill2@free.fr">Gilles Dodinet</a>
  * @version $Id$
  * 
  */
-public class SynchronizeAction extends AbstractMevenideAction {
-    private static final String SYNCHRONIZE_VIEW_ID = "org.mevenide.ui.synchronize.view.SynchronizeView";
+public interface IArtifactMappingNodeContainer {
     
-    private static Log log = LogFactory.getLog(SynchronizeAction.class);
-	
-    public void run(IAction action) {
-        try {
-            SynchronizeView view = (SynchronizeView) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(SYNCHRONIZE_VIEW_ID);
-            view.setInput(currentProject);
-            view.setDirection(ProjectContainer.OUTGOING);
-        }
-        catch ( Exception e ) {
-            log.debug("WIP execption ", e);
-        }
-	}
-
-
+    IArtifactMappingNode[] getNodes() ;
+    
+    void setNodes(IArtifactMappingNode[] nodes) ;
+    
+    String getLabel();
+    
+    IArtifactMappingNodeContainer filter(int direction) ;
+    
+    void attachPom(Project pom) ;
+    
+    int getDirection();
+    
+    void setDirection(int direction);
+    
+    Project getPrimaryPom();
+    
+    void removeNode(Object node);
 }

@@ -46,37 +46,107 @@
  * SUCH DAMAGE.
  * ====================================================================
  */
-package org.mevenide.ui.eclipse.actions;
+package org.mevenide.ui.eclipse.sync.model;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.eclipse.jface.action.IAction;
-import org.eclipse.ui.PlatformUI;
-import org.mevenide.ui.eclipse.sync.model.ProjectContainer;
-import org.mevenide.ui.eclipse.sync.view.SynchronizeView;
+import org.apache.maven.project.Resource;
+import org.eclipse.jdt.core.IClasspathEntry;
+import org.eclipse.ui.views.properties.IPropertySource;
+import org.mevenide.ui.eclipse.editors.properties.ResourcePropertySource;
+import org.mevenide.util.MevenideUtils;
+
 
 /**
- * either synchronize pom add .classpath 
  * 
- * @author Gilles Dodinet (gdodinet@wanadoo.fr)
+ * @author <a href="mailto:rhill2@free.fr">Gilles Dodinet</a>
  * @version $Id$
  * 
  */
-public class SynchronizeAction extends AbstractMevenideAction {
-    private static final String SYNCHRONIZE_VIEW_ID = "org.mevenide.ui.synchronize.view.SynchronizeView";
+public class DirectoryMappingNode extends AbstractArtifactMappingNode {
+    private static Log log = LogFactory.getLog(DirectoryMappingNode.class);
     
-    private static Log log = LogFactory.getLog(SynchronizeAction.class);
-	
-    public void run(IAction action) {
-        try {
-            SynchronizeView view = (SynchronizeView) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(SYNCHRONIZE_VIEW_ID);
-            view.setInput(currentProject);
-            view.setDirection(ProjectContainer.OUTGOING);
+    private boolean conflicting;
+    private boolean overrideSameValue;
+    
+    public Object getAdapter(Class adapter) {
+        // TODO Auto-generated method stub
+		if ( adapter == IPropertySource.class ) {
+			if ( artifact instanceof Resource ) {
+				return new ResourcePropertySource((Resource) artifact);
+			}
+		}
+        return null;
+    }
+    
+   
+    public String getLabel() {
+    	if ( resolvedArtifact != null ) {
+            return ((Directory) resolvedArtifact).getDisplayPath();
         }
-        catch ( Exception e ) {
-            log.debug("WIP execption ", e);
+        if ( artifact instanceof Resource ) {
+            return ((Resource) artifact).getDirectory();
         }
+        if ( artifact instanceof Directory ) {
+            return ((Directory) artifact).getDisplayPath();   
+        }
+        return "Unresolved";
+    }
+    
+    public void setResolvedDirectory(Directory directory) {
+        this.resolvedArtifact = directory;
+    }
+    
+	/**
+	 * either a Resource or Directory 
+	 */
+	public void setArtifact(Object object) {
+		this.artifact = object;
 	}
 
+    public void setIdeEntry(IClasspathEntry entry) {
+        this.ideEntry = entry;
+    }
+   
+    public void setParent(DirectoryMappingNodeContainer container) {
+        this.parent = container;
+    }
+
+	public int getChangeDirection() {
+		if ( conflicting || overrideSameValue ) {
+			return ProjectContainer.CONFLICTING;
+		}
+		
+        if ( artifact == null ) {
+        	return ProjectContainer.OUTGOING;
+		}
+        
+        if ( resolvedArtifact == null ) {
+			return ProjectContainer.INCOMING;
+		}
+		
+		if ( artifact instanceof Directory 
+				&& MevenideUtils.notEquivalent(((Directory) artifact).getType(), ((Directory) resolvedArtifact).getType()) ) {
+			return ProjectContainer.CONFLICTING;
+		} 
+        return ProjectContainer.NO_CHANGE;
+		
+    }
+
+	public boolean isConflicting() {
+		return conflicting;
+	}
+
+	public void setConflicting(boolean conflicting) {
+		this.conflicting = conflicting;
+	}
+
+	public boolean isOverrideSameValue() {
+		return overrideSameValue;
+	}
+
+	public void setOverrideSameValue(boolean overrideSameValue) {
+		this.overrideSameValue = overrideSameValue;
+	}
 
 }

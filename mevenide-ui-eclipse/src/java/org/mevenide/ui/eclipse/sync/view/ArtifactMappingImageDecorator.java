@@ -46,37 +46,79 @@
  * SUCH DAMAGE.
  * ====================================================================
  */
-package org.mevenide.ui.eclipse.actions;
+package org.mevenide.ui.eclipse.sync.view;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.eclipse.jface.action.IAction;
+
+import org.eclipse.jface.resource.CompositeImageDescriptor;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.ImageData;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.ui.PlatformUI;
+import org.mevenide.ui.eclipse.Mevenide;
+import org.mevenide.ui.eclipse.sync.model.IArtifactMappingNode;
 import org.mevenide.ui.eclipse.sync.model.ProjectContainer;
-import org.mevenide.ui.eclipse.sync.view.SynchronizeView;
 
 /**
- * either synchronize pom add .classpath 
  * 
- * @author Gilles Dodinet (gdodinet@wanadoo.fr)
+ * @author <a href="rhill2@free.fr">gdodinet</a>
  * @version $Id$
  * 
  */
-public class SynchronizeAction extends AbstractMevenideAction {
-    private static final String SYNCHRONIZE_VIEW_ID = "org.mevenide.ui.synchronize.view.SynchronizeView";
+public class ArtifactMappingImageDecorator extends CompositeImageDescriptor
+{
+    /**
+     * Base image of the object
+     */ 
+    private Image baseImage;
     
-    private static Log log = LogFactory.getLog(SynchronizeAction.class);
-	
-    public void run(IAction action) {
-        try {
-            SynchronizeView view = (SynchronizeView) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(SYNCHRONIZE_VIEW_ID);
-            view.setInput(currentProject);
-            view.setDirection(ProjectContainer.OUTGOING);
-        }
-        catch ( Exception e ) {
-            log.debug("WIP execption ", e);
-        }
-	}
+    /**
+     * Size of the base image 
+     */ 
+    private Point sizeOfImage;
+    
+    private int flags; 
+    
+    public ArtifactMappingImageDecorator(Image baseImage, int flags) {
+        this.baseImage = baseImage;
+        this.sizeOfImage = new Point(baseImage.getBounds().width, baseImage.getBounds().height);
+        this.flags = flags; 
+    }
 
-
+    /**
+     * @see org.eclipse.jface.resource.CompositeImageDescriptor#drawCompositeImage(int, int)
+     */
+    protected void drawCompositeImage(int arg0, int arg1) {
+        drawImage(baseImage.getImageData(), 0, 0);
+		if ( (flags & IArtifactMappingNode.INHERITED) != 0 ) {
+			ImageData inheritedImageData = Mevenide.getImageDescriptor("override.gif").getImageData();
+		    //top left
+			drawImage(inheritedImageData, 0, 0);
+        }
+		if ( (flags & ProjectContainer.CONFLICTING) != 0 ) {
+			ImageData conflictImageData = Mevenide.getImageDescriptor("conflicting.gif").getImageData(); 
+			//bottom right
+			drawImage(conflictImageData, sizeOfImage.x - conflictImageData.width, sizeOfImage.y - conflictImageData.height);
+		}
+		if ( (flags & IArtifactMappingNode.INCOMPLETE) != 0 ) {
+			ImageData warnImageData = PlatformUI.getWorkbench().getSharedImages().getImage(org.eclipse.ui.ISharedImages.IMG_OBJS_ERROR_TSK).getImageData().scaledTo(8, 8);
+			//bottom left 
+			drawImage(warnImageData, sizeOfImage.x - warnImageData.width, 0);
+		}
+    }
+    
+    
+    protected Point getSize() {
+        return sizeOfImage;
+    }
+    
+    public Image getImage() {
+        return createImage();
+    }
 }
+
+
+
+
+
+
+

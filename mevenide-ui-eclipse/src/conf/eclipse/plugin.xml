@@ -94,31 +94,13 @@
                id="mevenide.pom.create">
          </action>
          <action
-               label="%UpdateProject.label"
-               icon="icons/maven-synch-project.gif"
+               label="%Synchronize"
+               icon="icons/synced.gif"
                class="org.mevenide.ui.eclipse.actions.SynchronizeAction"
                menubarPath="maven.plugin.menu/Synchronize"
                enablesFor="1"
                id="maven-plugin.Synchronize">
          </action>
-         <action
-               label="%UpdatePom.label"
-               icon="icons/maven-synch-pom.gif"
-               class="org.mevenide.ui.eclipse.actions.SynchronizeAction"
-               menubarPath="maven.plugin.menu/Synchronize"
-               enablesFor="1"
-               id="maven-plugin.SynchronizePom">
-         </action>
-         <!-- WIP/New Synchronize View -->
-         <action
-               label="wip-synchronize/new view"
-               icon="icons/maven-synch-pom.gif"
-               class="org.mevenide.ui.eclipse.sync.wip.SynchronizeAction"
-               menubarPath="maven.plugin.menu/Synchronize"
-               enablesFor="1"
-               id="maven-plugin.SynchronizePom.WIP">
-         </action>
-         <!-- END WIP -->
       </objectContribution>
       <!-- project.xml contributions -->
       <objectContribution
@@ -145,21 +127,12 @@
                id="maven.plugin.popup.action">
          </action>
          <action
-               label="%UpdateProject.label"
-               icon="icons/maven-synch-project.gif"
+               label="%Synchronize"
+               icon="icons/synced.gif"
                class="org.mevenide.ui.eclipse.actions.SynchronizeAction"
                menubarPath="maven.plugin.menu/Synchronize"
                enablesFor="1"
                id="maven-plugin.Synchronize">
-         </action>
-         <action
-               label="%UpdatePom.label"
-               icon="icons/maven-synch-pom.gif"
-               tooltip="synchronize without prompting for Source Directory types"
-               class="org.mevenide.ui.eclipse.actions.SynchronizeAction"
-               menubarPath="maven.plugin.menu/Synchronize"
-               enablesFor="1"
-               id="maven-plugin.SynchronizePom">
          </action>
       </objectContribution>
    </extension>
@@ -179,7 +152,7 @@
       <editor
             name="%PomEditor.name"
             extensions="xml"
-            icon="icons/maven.gif"
+            icon="icons/pom_file.gif"
             contributorClass="org.mevenide.ui.eclipse.editors.MevenidePomEditorContributor"
             class="org.mevenide.ui.eclipse.editors.MevenidePomEditor"
             id="org.mevenide.ui.eclipse.editors.MevenidePomEditor">
@@ -229,7 +202,7 @@
             name="Pom Synchronizer"
             icon="icons/maven.gif"
             category="org.mevenide.ui.synchronize.view"
-            class="org.mevenide.ui.eclipse.sync.wip.SynchronizeView"
+            class="org.mevenide.ui.eclipse.sync.view.SynchronizeView"
             id="org.mevenide.ui.synchronize.view.SynchronizeView">
       </view>
    </extension>

@@ -46,37 +46,62 @@
  * SUCH DAMAGE.
  * ====================================================================
  */
-package org.mevenide.ui.eclipse.actions;
+package org.mevenide.ui.eclipse.sync.model;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.eclipse.jface.action.IAction;
-import org.eclipse.ui.PlatformUI;
-import org.mevenide.ui.eclipse.sync.model.ProjectContainer;
-import org.mevenide.ui.eclipse.sync.view.SynchronizeView;
+import java.io.File;
+
+import org.eclipse.core.runtime.IAdaptable;
+
 
 /**
- * either synchronize pom add .classpath 
  * 
- * @author Gilles Dodinet (gdodinet@wanadoo.fr)
+ * @author <a href="mailto:rhill2@free.fr">Gilles Dodinet</a>
  * @version $Id$
  * 
  */
-public class SynchronizeAction extends AbstractMevenideAction {
-    private static final String SYNCHRONIZE_VIEW_ID = "org.mevenide.ui.synchronize.view.SynchronizeView";
+public interface IArtifactMappingNode extends IAdaptable {
     
-    private static Log log = LogFactory.getLog(SynchronizeAction.class);
-	
-    public void run(IAction action) {
-        try {
-            SynchronizeView view = (SynchronizeView) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(SYNCHRONIZE_VIEW_ID);
-            view.setInput(currentProject);
-            view.setDirection(ProjectContainer.OUTGOING);
-        }
-        catch ( Exception e ) {
-            log.debug("WIP execption ", e);
-        }
-	}
+    
+    public static final int INHERITED = 0x1;
+    public static final int INCOMPLETE = 0x2;
+    
+    /** 
+     * @return the encapsulated Ide Entry 
+     */
+    Object getIdeEntry();
+    
+    /**
+     * @return the artifact as resolved from the Ide Entry
+     */
+    Object getResolvedArtifact();
+    
+    /**
+     * @return the artifact which maps the encapsulated File
+     */
+    Object getArtifact();
 
-
+    /**
+     * @return the POM which declares the Artifact - if not null
+     */
+    File getDeclaringPom();
+    
+    /**
+     * 
+     * @return the change direction for this Artifact. one of : 
+     * ProjectContainer.OUTGOING, ProjectContainer.INCOMING, 
+     * ProjectContainer.CONFLICTING - or ProjectContainer.NO_CHANGE
+     */
+    int getChangeDirection();
+    
+    /**
+     * @return presentation Label
+     */
+    String getLabel();
+    
+    /**
+     * @return parent container
+     */
+    IArtifactMappingNodeContainer getParent();
+    
+    void setParent(IArtifactMappingNodeContainer parent);
 }

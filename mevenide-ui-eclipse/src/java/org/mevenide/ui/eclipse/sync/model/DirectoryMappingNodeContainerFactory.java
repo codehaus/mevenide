@@ -46,37 +46,74 @@
  * SUCH DAMAGE.
  * ====================================================================
  */
-package org.mevenide.ui.eclipse.actions;
+package org.mevenide.ui.eclipse.sync.model;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.eclipse.jface.action.IAction;
-import org.eclipse.ui.PlatformUI;
-import org.mevenide.ui.eclipse.sync.model.ProjectContainer;
-import org.mevenide.ui.eclipse.sync.view.SynchronizeView;
+import org.eclipse.jdt.core.IClasspathEntry;
+import org.eclipse.jdt.core.IJavaProject;
+import org.mevenide.ui.eclipse.DefaultPathResolver;
+import org.mevenide.ui.eclipse.util.SourceDirectoryTypeUtil;
 
 /**
- * either synchronize pom add .classpath 
  * 
- * @author Gilles Dodinet (gdodinet@wanadoo.fr)
+ * @author <a href="mailto:rhill2@free.fr">Gilles Dodinet</a>
  * @version $Id$
  * 
  */
-public class SynchronizeAction extends AbstractMevenideAction {
-    private static final String SYNCHRONIZE_VIEW_ID = "org.mevenide.ui.synchronize.view.SynchronizeView";
+public class DirectoryMappingNodeContainerFactory {
+    private static Log log = LogFactory.getLog(DirectoryMappingNodeContainerFactory.class);
     
-    private static Log log = LogFactory.getLog(SynchronizeAction.class);
-	
-    public void run(IAction action) {
+    private static final DirectoryMappingNodeContainerFactory factory = new DirectoryMappingNodeContainerFactory();
+
+    public static DirectoryMappingNodeContainerFactory getFactory() {
+        return factory;
+    }
+    
+    public IArtifactMappingNodeContainer getContainer(IJavaProject javaProject)  {
+		List nodes = new ArrayList();
+        DirectoryMappingNodeContainer con = new DirectoryMappingNodeContainer();
         try {
-            SynchronizeView view = (SynchronizeView) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(SYNCHRONIZE_VIEW_ID);
-            view.setInput(currentProject);
-            view.setDirection(ProjectContainer.OUTGOING);
+	        IClasspathEntry[] classpathEntries = javaProject.getResolvedClasspath(true);
+	        for (int i = 0; i < classpathEntries.length; i++) {
+	            if ( classpathEntries[i].getEntryKind() == IClasspathEntry.CPE_SOURCE) {
+	                
+	                IClasspathEntry classpathEntry = classpathEntries[i];
+	                DirectoryMappingNode node = createDirectoryMappingNode(javaProject, classpathEntry);
+	                node.setParent(con);
+	                nodes.add(node);
+	            }
+	        }
+			IArtifactMappingNode[] artifactNodes = new IArtifactMappingNode[nodes.size()]; 
+			for (int i = 0; i < nodes.size(); i++) {
+			    artifactNodes[i] = (IArtifactMappingNode) nodes.get(i);
+            }
+			con.setNodes(artifactNodes);
+			con.attachJavaProject(javaProject);
         }
-        catch ( Exception e ) {
-            log.debug("WIP execption ", e);
+        catch (  Exception e ) {
+            e.printStackTrace();
+            log.error(e);
         }
-	}
+        return con;
+    }
 
-
+   
+    private DirectoryMappingNode createDirectoryMappingNode(IJavaProject javaProject, IClasspathEntry classpathEntry) {
+        String path = new DefaultPathResolver().getRelativeSourceDirectoryPath(classpathEntry, javaProject.getProject());
+        Directory directory = new Directory();
+        String sourceType = SourceDirectoryTypeUtil.guessSourceType(path);
+        
+        log.debug("creating directory node (" + path + ", " + sourceType + ")");
+        directory.setPath(path);
+        directory.setType(sourceType);
+           
+        DirectoryMappingNode node = new DirectoryMappingNode();
+        node.setResolvedDirectory(directory);
+        node.setIdeEntry(classpathEntry);
+        return node;
+    }
 }
