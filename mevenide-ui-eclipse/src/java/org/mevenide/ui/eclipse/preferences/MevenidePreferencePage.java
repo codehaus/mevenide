@@ -66,7 +66,6 @@ public class MevenidePreferencePage extends PreferencePage implements IWorkbench
 		dialog.setPomTemplateLocation(manager.getValue(MevenidePreferenceKeys.POM_TEMPLATE_LOCATION_PREFERENCE_KEY));
 		dialog.setHeapSize(manager.getIntValue(MevenidePreferenceKeys.JAVA_HEAP_SIZE_PREFERENCE_KEY));
 		dialog.setDefaultGoals(manager.getValue(MevenidePreferenceKeys.DEFAULT_GOALS_PREFERENCE_KEY));
-		dialog.setCheckTimestamp(manager.getBooleanValue(MevenidePreferenceKeys.MEVENIDE_CHECKTIMESTAMP_PREFERENCE_KEY));
 		
 		return dialog.createContent(composite);
 	}
@@ -107,10 +106,6 @@ public class MevenidePreferencePage extends PreferencePage implements IWorkbench
 		manager.setValue(
 			MevenidePreferenceKeys.DEFAULT_GOALS_PREFERENCE_KEY, 
 			dialog.getDefaultGoals()
-		);
-		manager.setBooleanValue(
-			MevenidePreferenceKeys.MEVENIDE_CHECKTIMESTAMP_PREFERENCE_KEY, 
-			dialog.getCheckTimestamp()
 		);
 		
 		if ( dialog.getHeapSize() != 0 ) {

@@ -22,7 +22,6 @@ import java.io.Reader;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Project;
-import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.DirectoryFieldEditor;
 import org.eclipse.jface.preference.FileFieldEditor;
 import org.eclipse.jface.preference.IntegerFieldEditor;
@@ -43,6 +42,7 @@ import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.MevenidePreferenceKeys;
 import org.mevenide.ui.eclipse.goals.viewer.GoalsPickerDialog;
 import org.mevenide.util.DefaultProjectUnmarshaller;
+import org.mevenide.util.StringUtils;
 
 /**
  * 
@@ -64,7 +64,7 @@ public class MevenidePreferenceDialog {
 	//private DirectoryFieldEditor pluginsInstallDirEditor;
 	private FileFieldEditor pomTemplateLocationEditor; 
 	private IntegerFieldEditor heapSizeEditor;
-	private BooleanFieldEditor checkTimestampEditor;
+	//private BooleanFieldEditor checkTimestampEditor;
 	
 	private StringButtonFieldEditor defaultGoalsEditor;
 	
@@ -158,6 +158,16 @@ public class MevenidePreferenceDialog {
 		Label label = new Label(topLevelContainer, SWT.NONE);
 		label.setLayoutData(new GridData());
 		
+		createDefaultGoalsComposite(parent);
+		
+		defaultGoalsEditor.getTextControl(topLevelContainer).addModifyListener(
+			new ModifyListener() {
+				public void modifyText(ModifyEvent e) {
+					defaultGoals = ((Text)e.getSource()).getText();
+				}
+			}
+		);
+		
 		pomTemplateLocationEditor = new FileFieldEditor(
 			MevenidePreferenceKeys.POM_TEMPLATE_LOCATION_PREFERENCE_KEY, 
 			Mevenide.getResourceString("MevenidePreferenceDialog.pom.template.label"), 
@@ -191,17 +201,9 @@ public class MevenidePreferenceDialog {
 			}
 		);
 		
-		
-		createDefaultGoalsComposite(parent);
-		
-		defaultGoalsEditor.getTextControl(topLevelContainer).addModifyListener(
-			new ModifyListener() {
-				public void modifyText(ModifyEvent e) {
-					defaultGoals = ((Text)e.getSource()).getText();
-				}
-			}
-		);
-
+		if ( StringUtils.isNull(defaultGoalsEditor.getStringValue()) ) {
+		    defaultGoalsEditor.getTextControl(topLevelContainer).setText(Mevenide.getPlugin().getDefaultGoals());
+		}
 
 		Composite compositeB = new Composite(parent, SWT.NULL);
 		GridLayout layoutB = new GridLayout();
@@ -209,15 +211,6 @@ public class MevenidePreferenceDialog {
 		compositeB.setLayout(layoutB);
 		compositeB.setLayoutData(new GridData(GridData.FILL_BOTH));
 		
-		
-		checkTimestampEditor = new BooleanFieldEditor(
-			MevenidePreferenceKeys.MEVENIDE_CHECKTIMESTAMP_PREFERENCE_KEY, 
-			Mevenide.getResourceString("MevenidePreferenceDialog.check.timestamp.label"), 
-			compositeB
-		);
-		checkTimestampEditor.fillIntoGrid(compositeB, 3);		
-		checkTimestampEditor.setPreferenceStore(preferencesManager.getPreferenceStore());
-		checkTimestampEditor.load();
 		return topLevelContainer;
 	}
 
@@ -279,9 +272,6 @@ public class MevenidePreferenceDialog {
 		
 		pomTemplateLocation = pomTemplateLocationEditor.getTextControl(topLevelContainer).getText();
 		Mevenide.getPlugin().setPomTemplate(pomTemplateLocation);
-		
-		checkTimestamp = checkTimestampEditor.getBooleanValue();
-		Mevenide.getPlugin().setCheckTimestamp(checkTimestamp);
 		
 		defaultGoals = defaultGoalsEditor.getTextControl(topLevelContainer).getText();
 		Mevenide.getPlugin().setDefaultGoals(defaultGoals);
