@@ -86,11 +86,6 @@
       	<exclude>**/DependencyResolverTest.java</exclude>
       	<exclude>**/DependencyFactoryTest.java</exclude>
       	<exclude>**/SourceDirectoryUtilTest.java</exclude>
-      	<!-- 
-      		those ones will require org.eclipse.pde.junit plugin 
-      	-->
-      	<exclude>**/GoalsManagerTest.java</exclude>
-      	<exclude>**/DefaultPathResolverDelegateTest.java</exclude>
       </excludes>
 
       <resources>
