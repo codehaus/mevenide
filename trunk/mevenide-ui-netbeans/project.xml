@@ -6,11 +6,12 @@
   <extend>${basedir}/../mevenide-master/base-project.xml</extend>
   <pomVersion>3</pomVersion>
   <id>mevenide-ui-netbeans</id>
-  <name>Netbeans Maven integration</name>
+  <name>Mevenide Netbeans</name>
   <currentVersion>0.1</currentVersion>
   <package>org.mevenide.ui.netbeans</package>
   <description>Netbeans Maven integration</description>
   <shortDescription>NetbeansIDE maven module</shortDescription>
+  
   <dependencies>
     <dependency>     
         <groupId>mevenide</groupId>
