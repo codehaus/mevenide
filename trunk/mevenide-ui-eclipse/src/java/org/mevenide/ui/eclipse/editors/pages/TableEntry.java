@@ -71,8 +71,8 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.mevenide.ui.eclipse.Mevenide;
-import org.mevenide.ui.eclipse.editors.IPomPropertySource;
-import org.mevenide.ui.eclipse.editors.PomPropertySourceProvider;
+import org.mevenide.ui.eclipse.editors.properties.IPomPropertySource;
+import org.mevenide.ui.eclipse.editors.properties.PomPropertySourceProvider;
 
 /**
  * @author Jeff Bonevich (jeff@bonevich.com)
@@ -177,7 +177,6 @@ public class TableEntry extends PageEntry {
 		upButton.addSelectionListener(
 			new SelectionAdapter() {
 				public void widgetSelected(SelectionEvent e) {
-					IStructuredSelection selected = (IStructuredSelection) viewer.getSelection();
 					int index = viewer.getTable().getSelectionIndex();
 					if (index > 0) {
 						Object item = viewer.getElementAt(index);
@@ -199,7 +198,6 @@ public class TableEntry extends PageEntry {
 		downButton.addSelectionListener(
 			new SelectionAdapter() {
 				public void widgetSelected(SelectionEvent e) {
-					IStructuredSelection selected = (IStructuredSelection) viewer.getSelection();
 					int index = viewer.getTable().getSelectionIndex();
 					if (index >= 0 && index < viewer.getTable().getItemCount() - 1) {
 						Object item = viewer.getElementAt(index);
