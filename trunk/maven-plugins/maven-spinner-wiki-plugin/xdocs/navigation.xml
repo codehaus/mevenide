@@ -24,6 +24,7 @@
         <item name="Netbeans Plugin" href="../mevenide-ui-netbeans/index.html"/>
         <item name="Other Maven Plugins" href="/maven-plugins.html" collapse="true">
 	        <item name="Eclipse Plugin Plugin" href="../maven-eclipse-plugin-plugin/index.html"/>
+	        <item name="NBM Plugin" href="../maven-nbm-plugin/index.html"/>
 	    </item>
     </menu>
   </body>

@@ -27,6 +27,7 @@
         	<item name="Eclipse Plugin" href="../mevenide-ui-eclipse/index.html"/>
         	<item name="Maven Plugins" href="/maven-plugins.html" collapse="true">
 	        	<item name="Eclipse Plugin Plugin" href="../maven-eclipse-plugin-plugin/index.html"/>
+	        	<item name="NBM Plugin" href="../maven-nbm-plugin/index.html"/>
     	    	<item name="Spinner Wiki Plugin" href="../maven-spinner-wiki-plugin/index.html"/>
     	    </item>
         </menu>
