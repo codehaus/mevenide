@@ -30,12 +30,15 @@ import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.PlatformUI;
 
 /**
@@ -86,7 +89,8 @@ public class PomChoiceDialog extends TitleAreaDialog {
 	
 	protected Control createDialogArea(Composite parent) {
 		Composite composite = new Composite(parent, SWT.NULL);
-		composite.setLayout(new GridLayout());
+		GridLayout layout = new GridLayout();
+		composite.setLayout(layout);
 		
 		GridData gridData = new GridData(GridData.FILL_BOTH);
 		gridData.grabExcessVerticalSpace = true;
@@ -94,7 +98,60 @@ public class PomChoiceDialog extends TitleAreaDialog {
 		
 		composite.setLayoutData(gridData);
 		
-		Table table = new Table(composite, SWT.CHECK | SWT.BORDER);
+		createCheckboxTableViewer(composite);
+		
+		createSelectionButtonsArea(composite);
+		
+		List allPoms = pomChooser.getPoms();
+		setInput(allPoms);	
+
+		return composite;
+	}
+	
+	private void createSelectionButtonsArea(Composite parent) {
+		Composite buttonsArea = new Composite(parent, SWT.NULL);
+		GridLayout layout = new GridLayout();
+		layout.numColumns = 2;
+		buttonsArea.setLayout(layout);
+		buttonsArea.setLayoutData(new GridData(GridData.FILL_BOTH));
+		
+		String buttonLabel = "Select all";
+		Button selectAllButton = createSelectionButton(buttonsArea, buttonLabel);
+		selectAllButton.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent arg0) {
+				setAllChecked(true);
+			}
+		});
+		
+		buttonLabel = "Deselect all";
+		Button deselectAllButton = createSelectionButton(buttonsArea, buttonLabel);
+		deselectAllButton.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent arg0) {
+				setAllChecked(false);
+			}
+		});
+	}
+	
+	private void setAllChecked(boolean state) {
+		//setAllChecked(state);
+	    TableItem[] children = tableViewer.getTable().getItems();
+		for (int i = 0; i < children.length; i++) {
+			TableItem item = children[i];
+			item.setChecked(state);
+			//manually propagate the event.. crap !
+			itemStateChaged(new CheckStateChangedEvent(tableViewer, item.getData(), state));
+		}
+	}
+
+	private Button createSelectionButton(Composite buttonsArea, String buttonLabel) {
+		Button button = new Button(buttonsArea, SWT.NULL);
+		button.setText(buttonLabel);
+		button.setLayoutData(new GridData());
+		return button;
+	}
+
+	private void createCheckboxTableViewer(Composite parent) {
+		Table table = new Table(parent, SWT.CHECK | SWT.BORDER);
 		table.setLayout(new GridLayout());
 		GridData orderTextGridData = new GridData(GridData.FILL_BOTH);
 		orderTextGridData.grabExcessVerticalSpace = true;
@@ -102,7 +159,6 @@ public class PomChoiceDialog extends TitleAreaDialog {
 		table.setLayoutData(orderTextGridData);
 		
 		tableViewer = new CheckboxTableViewer(table);
-		//tableViewer = CheckboxTableViewer.newCheckList(composite, SWT.BORDER | SWT.SINGLE);
 
 		tableViewer.setContentProvider(new IStructuredContentProvider() {
 			public Object[] getElements(Object inputElement) {
@@ -127,33 +183,33 @@ public class PomChoiceDialog extends TitleAreaDialog {
 		tableViewer.addCheckStateListener(
 			new ICheckStateListener() {
 				public void checkStateChanged(CheckStateChangedEvent event) {
-					//dirty trick to enable single selection since SWT.SINGLE doesnot do what i want, nor does CheckboxTableViewer.newCheckList(SWT.SINGLE)
-				    if ( singleSelection ) {
-				        tableViewer.setCheckedElements(new Object[0]);
-				        chosenPoms.clear();
-				    }
-				    File checkedElement = (File) event.getElement();
-				    if ( event.getChecked() ) {
-					    chosenPoms.add(checkedElement);
-						//dirty trick bis repetita
-					    if ( singleSelection ) {
-					        tableViewer.setChecked(checkedElement, true);
-					    }
-					}
-					else {
-					    chosenPoms.remove(checkedElement);
-					}
-					okButton.setEnabled(chosenPoms.size() > 0);
+					itemStateChaged(event);
 				}
+
 			}
 		);
-		
-		List allPoms = pomChooser.getPoms();
-		setInput(allPoms);	
-
-		return composite;
 	}
 	
+	private void itemStateChaged(CheckStateChangedEvent event) {
+		//dirty trick to enable single selection since SWT.SINGLE doesnot do what i want, nor does CheckboxTableViewer.newCheckList(SWT.SINGLE)
+	    if ( singleSelection ) {
+	        tableViewer.setCheckedElements(new Object[0]);
+	        chosenPoms.clear();
+	    }
+	    File checkedElement = (File) event.getElement();
+	    if ( event.getChecked() ) {
+		    chosenPoms.add(checkedElement);
+			//dirty trick bis repetita
+		    if ( singleSelection ) {
+		        tableViewer.setChecked(checkedElement, true);
+		    }
+		}
+		else {
+		    chosenPoms.remove(checkedElement);
+		}
+		okButton.setEnabled(chosenPoms.size() > 0);
+	}
+
 	private void setInput(List pomFiles) {
 		tableViewer.setInput(pomFiles);
 	}
