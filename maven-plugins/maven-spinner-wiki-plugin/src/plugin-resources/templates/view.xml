@@ -6,10 +6,8 @@
   <body>
     &header;
     <section name="$TOPIC$">
-        <div>
         	<p>$TEXT$</p>
         	<p>This page last edited on $LASTMODIFIED$</p>
-        </div>
         
     </section>
     &footer;
