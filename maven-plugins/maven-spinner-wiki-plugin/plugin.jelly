@@ -23,7 +23,7 @@
     
     <!-- prepare files to transform -->
 	<ant:copy todir="${wikiSrcDir}">
-  		<ant:fileset dir="${plugin.resources}/templates"/>
+  		<ant:fileset dir="${maven.spinner.wiki.plugin.templates.location}"/>
   	</ant:copy>
   	
   	<!-- set correct properties for xdoc -->
