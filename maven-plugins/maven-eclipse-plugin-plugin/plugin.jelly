@@ -84,7 +84,8 @@
     
       <!-- build plugin distribution file. -->
       <ant:jar destfile="${pluginArchive}">
-        <ant:fileset dir="${maven.eclipse.plugin.help.dir}"/>
+        <ant:fileset dir="${basedir}" includes="${maven.eclipse.plugin.help.dir}/**/*"/>
+        <ant:fileset dir="${basedir}" includes="${maven.eclipse.plugin.includes}"/>
       </ant:jar>
   </goal>
   
@@ -265,7 +266,6 @@
    	 	 			 excludes="${siteFolder}-${distVersion}.zip"/>
    	 </ant:copy>
      
-     ${pom.set
      <!-- install the site bundle into local repo -->
      <artifact:install artifact="${siteArchive}"
         			   type="zip"
