@@ -95,7 +95,7 @@ public class DescriptionSection extends PageSection {
     public Composite createClient(Composite parent, PageWidgetFactory factory) {
 		Composite container = factory.createComposite(parent);
 		GridLayout layout = new GridLayout();
-		layout.numColumns = 3;
+		layout.numColumns = isInherited() ? 4 : 3;
 		layout.marginWidth = 2;
 		layout.verticalSpacing = 7;
 		layout.horizontalSpacing = 5;
@@ -104,11 +104,9 @@ public class DescriptionSection extends PageSection {
 		final Project pom = getPage().getEditor().getPom();
 		
 		// POM short description textbox
-		String labelName = Mevenide.getResourceString("DescriptionSection.shortDescText.label");
-		shortDescText = new OverridableTextEntry(
-			createText(container, labelName, factory), 
-			createOverrideToggle(container, factory, isInherited())
-		);
+		Button toggle = createOverrideToggle(container, factory);
+		createLabel(container, Mevenide.getResourceString("DescriptionSection.shortDescText.label"), factory);
+		shortDescText = new OverridableTextEntry(createText(container, factory, 2), toggle);
 		OverrideAdaptor adaptor = new OverrideAdaptor() {
 			public void updateProject(String value) {
 				pom.setShortDescription(value);
@@ -121,11 +119,9 @@ public class DescriptionSection extends PageSection {
 		shortDescText.addOverrideAdaptor(adaptor);
 		
 		// POM project inception year textbox
-		labelName = Mevenide.getResourceString("DescriptionSection.inceptionYearText.label");
-		inceptionYearText = new OverridableTextEntry(
-			createText(container, labelName, factory), 
-			createOverrideToggle(container, factory, isInherited())
-		);
+		toggle = createOverrideToggle(container, factory);
+		createLabel(container, Mevenide.getResourceString("DescriptionSection.inceptionYearText.label"), factory);
+		inceptionYearText = new OverridableTextEntry(createText(container, factory, 2), toggle);
 		adaptor = new OverrideAdaptor() {
 			public void updateProject(String value) {
 				pom.setInceptionYear(value);
@@ -138,11 +134,9 @@ public class DescriptionSection extends PageSection {
 		inceptionYearText.addOverrideAdaptor(adaptor);
 		
 		// POM project url textbox
-		labelName = Mevenide.getResourceString("DescriptionSection.urlText.label");
-		urlText = new OverridableTextEntry(
-			createText(container, labelName, factory), 
-			createOverrideToggle(container, factory, isInherited())
-		);
+		toggle = createOverrideToggle(container, factory);
+		createLabel(container, Mevenide.getResourceString("DescriptionSection.urlText.label"), factory);
+		urlText = new OverridableTextEntry(createText(container, factory, 2), toggle);
 		adaptor = new OverrideAdaptor() {
 			public void updateProject(String value) {
 				pom.setUrl(value);
@@ -155,11 +149,9 @@ public class DescriptionSection extends PageSection {
 		urlText.addOverrideAdaptor(adaptor);
 		
 		// POM current version textbox
-		labelName = Mevenide.getResourceString("DescriptionSection.currentVersionText.label");
-		currentVersionText = new OverridableTextEntry(
-			createText(container, labelName, factory), 
-			createOverrideToggle(container, factory, isInherited())
-		);
+		toggle = createOverrideToggle(container, factory);
+		createLabel(container, Mevenide.getResourceString("DescriptionSection.currentVersionText.label"), factory);
+		currentVersionText = new OverridableTextEntry(createText(container, factory, 2), toggle);
 		adaptor = new OverrideAdaptor() {
 			public void updateProject(String value) {
 				pom.setCurrentVersion(value);
@@ -172,11 +164,9 @@ public class DescriptionSection extends PageSection {
 		currentVersionText.addOverrideAdaptor(adaptor);
 		
 		// POM logo textbox and file browse button
-		labelName = Mevenide.getResourceString("DescriptionSection.logoText.label");
-		logoText = new OverridableTextEntry(
-			createText(container, labelName, factory), 
-			createOverrideToggle(container, factory, isInherited())
-		);
+		toggle = createOverrideToggle(container, factory);
+		createLabel(container, Mevenide.getResourceString("DescriptionSection.logoText.label"), factory);
+		logoText = new OverridableTextEntry(createText(container, factory), toggle);
 		adaptor = new OverrideAdaptor() {
 			public void updateProject(String value) {
 				pom.setLogo(value);
@@ -189,7 +179,7 @@ public class DescriptionSection extends PageSection {
 		logoText.addOverrideAdaptor(adaptor);
 		
 		Composite buttonContainer = factory.createComposite(container);
-		GridData data = new GridData(GridData.FILL_VERTICAL | GridData.HORIZONTAL_ALIGN_END);
+		GridData data = new GridData(GridData.HORIZONTAL_ALIGN_END | GridData.VERTICAL_ALIGN_CENTER);
 		data.horizontalSpan = 1;
 		buttonContainer.setLayoutData(data);
 		layout = new GridLayout();
@@ -197,10 +187,10 @@ public class DescriptionSection extends PageSection {
 		layout.marginHeight = 0;
 		buttonContainer.setLayout(layout);
 
-		labelName = Mevenide.getResourceString("DescriptionSection.logoButton.label");
+		String labelName = Mevenide.getResourceString("DescriptionSection.logoButton.label");
 		String toolTip = Mevenide.getResourceString("DescriptionSection.logoButton.tooltip");
 		logoButton = factory.createButton(buttonContainer, labelName, SWT.PUSH);
-		data = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING | GridData.VERTICAL_ALIGN_BEGINNING);
+		data = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING | GridData.VERTICAL_ALIGN_CENTER);
 		logoButton.setLayoutData(data);
 		logoButton.setToolTipText(toolTip);
 
@@ -229,11 +219,9 @@ public class DescriptionSection extends PageSection {
 		);
 		
 		// POM package textbox and package browse button
-		labelName = Mevenide.getResourceString("DescriptionSection.packageText.label");
-		packageText = new OverridableTextEntry(
-			createText(container, labelName, factory), 
-			createOverrideToggle(container, factory, isInherited())
-		);
+		toggle = createOverrideToggle(container, factory);
+		createLabel(container, Mevenide.getResourceString("DescriptionSection.packageText.label"), factory);
+		packageText = new OverridableTextEntry(createText(container, factory), toggle);
 		adaptor = new OverrideAdaptor() {
 			public void updateProject(String value) {
 				pom.setPackage(value);
@@ -246,7 +234,7 @@ public class DescriptionSection extends PageSection {
 		packageText.addOverrideAdaptor(adaptor);
 		
 		buttonContainer = factory.createComposite(container);
-		data = new GridData(GridData.FILL_VERTICAL | GridData.HORIZONTAL_ALIGN_END);
+		data = new GridData(GridData.HORIZONTAL_ALIGN_END | GridData.VERTICAL_ALIGN_CENTER);
 		data.horizontalSpan = 1;
 		buttonContainer.setLayoutData(data);
 		layout = new GridLayout();
@@ -257,7 +245,7 @@ public class DescriptionSection extends PageSection {
 		labelName = Mevenide.getResourceString("DescriptionSection.packageButton.label");
 		toolTip = Mevenide.getResourceString("DescriptionSection.packageButton.tooltip");
 		packageButton = factory.createButton(buttonContainer, labelName, SWT.PUSH);
-		data = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING | GridData.VERTICAL_ALIGN_BEGINNING);
+		data = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING | GridData.VERTICAL_ALIGN_CENTER);
 		packageButton.setLayoutData(data);
 		packageButton.setToolTipText(toolTip);
 
@@ -300,6 +288,7 @@ public class DescriptionSection extends PageSection {
 		setIfDefined(urlText, pom.getUrl(), isInherited() ? getParentPom().getUrl() : null);
 		setIfDefined(logoText, pom.getLogo(), isInherited() ? getParentPom().getLogo() : null);
 		setIfDefined(packageText, pom.getPackage(), isInherited() ? getParentPom().getPackage() : null);
+		setIfDefined(currentVersionText, pom.getCurrentVersion(), isInherited() ? getParentPom().getCurrentVersion() : null);
 
 		super.update(pom);
 	}
