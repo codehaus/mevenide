@@ -99,9 +99,8 @@ public class MavenRepoLibraryProvider implements LibraryProvider {
         File obj = locRepoFile;
         if (obj != null) {
             Set toReturn = new HashSet();
-            FileObject[] fos = FileUtil.fromFile(obj);
-            if (fos != null && fos.length > 0) {
-                FileObject root = fos[0];
+            FileObject root = FileUtil.toFileObject(obj);
+            if (root != null) {
                 FileObject[] groups = root.getChildren();
                 if (groups != null && groups.length > 0) {
                     for (int i = 0; i < groups.length; i++) {

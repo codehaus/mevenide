@@ -90,9 +90,8 @@ public class SubprojectProviderImpl implements SubprojectProvider {
     private Project processOneSubproject(File basefile, String relPath) {
         File projectFile = FileUtil.normalizeFile(new File(basefile.getAbsolutePath() + File.separator + relPath));
         if (projectFile.exists()) {
-            FileObject[] fos = FileUtil.fromFile(projectFile);
-            if (fos.length > 0) {
-                FileObject projectDir = fos[0].getParent();
+            FileObject projectDir = FileUtil.toFileObject(projectFile);
+            if (projectDir != null) {
                 if (project.getProjectDirectory().equals(projectDir)) {
                     // don't include itself into the list of subprojects..
                     return null;
