@@ -45,6 +45,15 @@
         <version>1.0.b2</version>
         <type>jar</type>
     </dependency>
+    <dependency>
+        <groupId>mevenide</groupId>
+        <artifactId>mevenide-config</artifactId>
+        <version>0.1-SNAPSHOT</version>
+        <type>jar</type>
+	    <properties>
+            <netbeans.module.dep>spec</netbeans.module.dep>
+	    </properties>
+    </dependency>
         <dependency>
             <groupId>jdom</groupId>
             <artifactId>jdom</artifactId>
@@ -59,6 +68,22 @@
   </dependencies>
   
   <build>
+     <sourceDirectory>src/java</sourceDirectory>
+     <unitTestSourceDirectory>src/test/java</unitTestSourceDirectory>
+     <unitTest>
+        <includes>
+          <include>**/*Test.java</include>
+        </includes>
+      <resources> 
+       <resource> 
+         <directory>${basedir}/src/test/conf</directory> 
+         <includes> 
+           <include>**/*.jelly</include> 
+         </includes> 
+       </resource>
+       </resources> 
+     </unitTest>
+  
     <resources>
       <resource>
         <directory>src/conf</directory>
