@@ -79,7 +79,7 @@ public class MavenBuilder extends IncrementalProjectBuilder {
         }
         catch (Exception e) {
             //try/catch in loop in order to be able to process other projects   
-            String message = "Unable to check for compute dependent projects"; 
+            String message = "Unable to check for compute dependent projects"; //$NON-NLS-1$
             log.error(message, e);
         }
         return (IProject[]) projects.toArray(new IProject[projects.size()]);
@@ -112,7 +112,7 @@ public class MavenBuilder extends IncrementalProjectBuilder {
             }
         }
         catch (Exception e) {
-            String message = "Unable to check project dependency"; 
+            String message = "Unable to check project dependencies"; //$NON-NLS-1$
             log.error(message, e);
         }
         return false;

@@ -35,17 +35,23 @@ import org.eclipse.debug.core.ILaunchConfigurationType;
  */
 public class ActionDefinitionsManager implements IActionDefinitionManager, ILaunchConfigurationListener {
 
-    List definitions = new ArrayList();
+    
+    public static final String BUILD_CONFIG_TYPE = "org.mevenide.ui.launching.ActionDefinitionConfigType"; //$NON-NLS-1$
+    public static final String AUTO_BUILD = "AUTO_BUILD"; //$NON-NLS-1$
+    public static final String PATTERNS_LIST = "PATTERNS_LIST"; //$NON-NLS-1$
+    
+    private List definitions = new ArrayList();
     
     private static final Log log = LogFactory.getLog(ActionDefinitions.class);
+
     
     public ActionDefinitionsManager() {
         DebugPlugin.getDefault().getLaunchManager().addLaunchConfigurationListener(this);
         try {
-            ILaunchConfigurationType type = DebugPlugin.getDefault().getLaunchManager().getLaunchConfigurationType("org.mevenide.ui.launching.ActionDefinitionConfigType");
+            ILaunchConfigurationType type = DebugPlugin.getDefault().getLaunchManager().getLaunchConfigurationType(BUILD_CONFIG_TYPE);
             ILaunchConfiguration[] configurations = DebugPlugin.getDefault().getLaunchManager().getLaunchConfigurations(type);
             for (int i = 0; i < configurations.length; i++) {
-                if ( configurations[i].getName() != null && configurations[i].getName().indexOf("org.mevenide.ui.launching.ActionDefinitionConfigType.SHARED_INFO") == -1 ) {
+                if ( configurations[i].getName() != null && configurations[i].getName().indexOf(BUILD_CONFIG_TYPE + ".SHARED_INFO") == -1 ) { //$NON-NLS-1$
                     ActionDefinitions definition = new ActionDefinitions();
 	                definition.setConfiguration(configurations[i]);
 	                definitions.add(definition);
@@ -53,7 +59,7 @@ public class ActionDefinitionsManager implements IActionDefinitionManager, ILaun
             }
         }
         catch (CoreException e) {
-            log.error("Unable to retrieve launch configurations", e);
+            log.error("Unable to retrieve launch configurations", e); //$NON-NLS-1$
         }
     }
     
