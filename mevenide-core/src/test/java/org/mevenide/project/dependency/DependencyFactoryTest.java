@@ -63,6 +63,7 @@ public class DependencyFactoryTest extends TestCase {
 	
 	public void testGetDependency() throws Exception {
 		Environment.setMavenHome(mevenideHome.getAbsolutePath());
+		
 		Dependency dep = dependencyFactory.getDependency(artefact.getAbsolutePath());
 		assertEquals("mevenide", dep.getGroupId());
 		
@@ -113,6 +114,11 @@ public class DependencyFactoryTest extends TestCase {
 		dep = dependencyFactory.getDependency(artefact.getAbsolutePath());
 		assertEquals("SNAPSHOT", dep.getVersion());
 		assertEquals("ojb", dep.getArtifactId());
+		
+		artefact = new File(testTypeDirectory, "testo-0.0.1.plouf");
+		dep = dependencyFactory.getDependency(artefact.getAbsolutePath());
+		assertEquals("0.0.1", dep.getVersion());
+		assertEquals("testo", dep.getArtifactId());
 	}
 
 	

@@ -14,29 +14,25 @@
  */
 package org.mevenide.project.dependency;
 
+import java.io.File;
 
-
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.mevenide.AbstractMevenideTestCase;
 
 /**
  * 
- * @author Gilles Dodinet (gdodinet@wanadoo.fr)
- * @version $Id: AllTests.java 8 mai 2003 15:32:4913:34:35 Exp gdodinet 
+ * @author <a href="mailto:gdodinet@wanadoo.fr">Gilles Dodinet</a>
+ * @version $Id$
  * 
  */
-public class AllTests  {
-	private AllTests() {
+public class AbstractDependencyResolverTest extends AbstractMevenideTestCase {
+
+	public void testNewInstance() throws Exception {
+		
+		File tmp = new File(System.getProperty("user.home"), ".mevenide/tests/bleah/bouh/");
+		tmp.mkdirs();
+		File f = new File(tmp, "pyo.jar");
+		f.createNewFile();
+		assertNotNull(AbstractDependencyResolver.newInstance(f.getAbsolutePath()));
 	}
 
-    public static Test suite() {
-        TestSuite suite = new TestSuite();
-        
-		suite.addTestSuite(AbstractDependencyResolverTest.class);
-		suite.addTestSuite(DependencyFactoryTest.class);
-		suite.addTestSuite(DependencyResolverTest.class);
-		suite.addTestSuite(DependencyUtilTest.class);
-		
-        return suite;
-    }
 }

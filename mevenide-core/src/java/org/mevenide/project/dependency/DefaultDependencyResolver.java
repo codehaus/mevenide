@@ -14,74 +14,60 @@
 package org.mevenide.project.dependency;
 
 import java.io.File;
-import java.util.List;
 
-import org.apache.maven.project.Dependency;
-import org.apache.maven.project.Project;
 import org.mevenide.Environment;
 
 /**
- * 
- * @todo DefaultDependencyResolver(String fileName) => extract all fileName method attributes, => will impact IDependencyResolver and AbstractDependencyResolver 
+ * @still some refactoring to be done (init-phase)
  * 
  * @author Gilles Dodinet (gdodinet@wanadoo.fr)
  * @version $Id$
  * 
  */
 public class DefaultDependencyResolver extends AbstractDependencyResolver {
+	private String absoluteFileName;
+	
+	private String fileName;
+	
 	/**
-	 * checks if a Dependency identified by its artifact path is present in the POM.
 	 * 
-	 * testing artifact doesnt seem to be a good solution since it is often omitted
-	 * we rather have to test artifactId and version.
+	 * decomposition[0] = artifactId
+	 * decomposition[1] = version
+	 * decomposition[2] = extension
 	 * 
-	 * @param project
-	 * @param absoluteFileName
-	 * @return
 	 */
-	public boolean isDependencyPresent(Project project, Dependency dependency) {
-		List dependencies = project.getDependencies();
-		if ( dependencies == null ) {
-			return false;
-		}
-		for (int i = 0; i < dependencies.size(); i++) {
-			Dependency declaredDependency = (Dependency) dependencies.get(i);
+	private String[] decomposition = new String[3];
 	
-			String version = declaredDependency.getVersion(); 
-			String artifactId = declaredDependency.getArtifactId();
-	
-			if (  artifactId != null && artifactId.equals(dependency.getArtifactId()) 
-				  && version != null && version.equals(dependency.getVersion())) {
-				return true;
-			}
-		}
-		return false;
+	public void setFileName(String fName) {
+		this.absoluteFileName = fName;
+		this.fileName = new File(fName).getName();
+		decomposition = new DependencySplitter(fileName).split();
 	}
-
+	
 	/**
 	 *
 	 * @param fileName
 	 * @return
 	 */
-	public String getGroupId(String fileName) {
+	public String getGroupId() {
 		File mavenLocalRepo = new File(Environment.getMavenRepository());
-		return getGroupId(fileName, mavenLocalRepo);
+		return getGroupId(mavenLocalRepo);
 	}
 
 	/**
 	 * assume a standard repository layout, ergo a file is under one level under group Directory
 	 * e.g. mevenide/jars/mevenide-core-0.1.jar 
 	 * 
-	 * @param fileName
+	 * @param fileName the short file Name (e.g. mevenide-core-0.1.jar) 
 	 * @param rootDirectory
 	 * @return
 	 */
-	private String getGroupId(String fileName, File rootDirectory) {
+	private String getGroupId(File rootDirectory) {
 		File[] files = rootDirectory.listFiles();
 		File[] children = files == null ? new File[0] : files;
 		for (int i = 0; i < children.length; i++) {
 			if ( children[i].isDirectory() ) {
-				String candidate = getGroupId(fileName, children[i]);
+				String candidate = getGroupId(children[i]);
 				if ( candidate != null ) {
 					return candidate;
 				}
@@ -95,21 +81,24 @@ public class DefaultDependencyResolver extends AbstractDependencyResolver {
 		return null;
 	}
 
-	public String guessArtifactId(String fileName) {
+	/**
+	 * @param fileName the short file name
+	 */
+	public String guessArtifactId() {
 		
-		String ai = new DependencySplitter(fileName).split()[0];
-		if ( ai == null && fileName.indexOf("SNAPSHOT") > 0 ) {
+		String artifactId = decomposition[0];
+		if ( artifactId == null && fileName.indexOf("SNAPSHOT") > 0 ) {
 			return fileName.substring(0, fileName.indexOf("SNAPSHOT") - 1);
 		}
-		return ai;
+		return artifactId;
 		
 	}
 
-	public String guessVersion(String fileName) {
+	public String guessVersion() {
 		/*if ( fileName.indexOf("SNAPSHOT") > 0 ) {
 			return "SNAPSHOT";
 		}*/
-		String version = new DependencySplitter(fileName).split()[1];
+		String version = decomposition[1];
 		if ( version == null && fileName.indexOf("SNAPSHOT") > 0 ) {
 			return "SNAPSHOT";
 		}
@@ -132,11 +121,9 @@ public class DefaultDependencyResolver extends AbstractDependencyResolver {
 	 * @param absoluteFileName
 	 * @return
 	 */
-	public String guessGroupId(String absoluteFileName) throws InvalidDependencyException {
+	public String guessGroupId()  {
 		File fileToCompute = new File(absoluteFileName);
-		if ( fileToCompute.isDirectory() ){
-			throw new InvalidDependencyException(absoluteFileName + " is a directory");
-		}
+		
 		File firstLevelParent = fileToCompute.getParentFile();
 		if ( firstLevelParent.getParentFile() != null ) {
 			return firstLevelParent.getParentFile().getName();
@@ -145,7 +132,7 @@ public class DefaultDependencyResolver extends AbstractDependencyResolver {
 //		return "Not Found";
 	}
 	
-	public String guessExtension(String fileName) {
+	public String guessExtension() {
 		return fileName.substring(fileName.lastIndexOf('.') + 1);
 	}
 	

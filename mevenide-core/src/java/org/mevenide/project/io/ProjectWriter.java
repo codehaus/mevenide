@@ -28,10 +28,8 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Dependency;
 import org.apache.maven.project.Project;
 import org.apache.maven.project.Resource;
-import org.mevenide.project.dependency.AbstractDependencyResolver;
 import org.mevenide.project.dependency.DependencyFactory;
 import org.mevenide.project.dependency.DependencyUtil;
-import org.mevenide.project.dependency.IDependencyResolver;
 import org.mevenide.project.resource.DefaultResourceResolver;
 import org.mevenide.project.resource.IResourceResolver;
 import org.mevenide.project.source.SourceDirectoryUtil;
@@ -55,7 +53,6 @@ public class ProjectWriter {
 	
 	private ProjectReader projectReader ;
 	private DefaultProjectMarshaller marshaller ; 
-	private IDependencyResolver dependencyResolver;
 	private IResourceResolver resourceResolver;
 	
 	private static ProjectWriter projectWriter = null;
@@ -78,7 +75,6 @@ public class ProjectWriter {
 	private ProjectWriter() throws Exception  {
 		marshaller = new DefaultProjectMarshaller();
 		projectReader = ProjectReader.getReader();
-		dependencyResolver = AbstractDependencyResolver.getInstance();
 		resourceResolver = new DefaultResourceResolver();
 	}
 	
@@ -140,7 +136,7 @@ public class ProjectWriter {
 		
 		Dependency dependency = DependencyFactory.getFactory().getDependency(path);
 		
-		if ( !dependencyResolver.isDependencyPresent(project, dependency) 
+		if ( !DependencyUtil.isDependencyPresent(project, dependency) 
 				&& DependencyUtil.isValid(dependency)) {
 			
 			project.addDependency(dependency);
@@ -162,7 +158,7 @@ public class ProjectWriter {
 	public void addDependency(Dependency dependency, File pom) throws Exception {
 		Project project = projectReader.read(pom);
 
-		if ( !dependencyResolver.isDependencyPresent(project, dependency) && DependencyUtil.isValid(dependency) ) {
+		if ( !DependencyUtil.isDependencyPresent(project, dependency) && DependencyUtil.isValid(dependency) ) {
 			
 			project.addDependency(dependency);
 			write(project, pom);

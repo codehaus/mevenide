@@ -13,8 +13,6 @@
  */
 package org.mevenide.project.dependency;
 
-import org.apache.maven.project.Dependency;
-import org.apache.maven.project.Project;
 
 /**
  * 
@@ -23,40 +21,25 @@ import org.apache.maven.project.Project;
  * 
  */
 public interface IDependencyResolver {
-	/**
-	 * checks if a Dependency identified by its artifact path is present in the POM.
-	 * 
-	 * @param project
-	 * @param absoluteFileName
-	 * @return wether the dependency is present in th pom
-	 */
-	public abstract boolean isDependencyPresent(Project project, Dependency dependency);
+	public void setFileName(String fileName);
 	
-	/**
-	 * return the groupId if the file is present in the local repository
-	 * 
-	 * @param fileName
-	 * @return the groupId
-	 */
-	public abstract String getGroupId(String fileName);
 
 	/**
 	 * try to find the artifactId
 	 * 
-	 * @param fileName
 	 * @return guessed artifactId
 	 */
-	public abstract String guessArtifactId(String fileName);
+	public abstract String guessArtifactId();
 	
 	/**
 	 * try to find the version  of the artifact, if possible
 	 * f.i. if fileName is rt.jar, version will be null
 	 * 
-	 * guessVersion("rt-1.4.1.jar") will return "1.4.1"
-	 * @param fileName
+	 * guessVersion("rt-1.4.1.jar") will return "1.4.1" 
+	 * 
 	 * @return guessed version
 	 */
-	public abstract String guessVersion(String fileName);
+	public abstract String guessVersion();
 	
 	/**
 	 * get the last extension of the file. specs are not clear yet..
@@ -67,20 +50,14 @@ public interface IDependencyResolver {
 	 * 
 	 * if someone has a clue, please share..
 	 * 
-	 * @see org.mevenide.project.DefaultDependencyResolver#split()
-	 * 
-	 * @param fileName
 	 * @return the last extension of the file
 	 */
-	public abstract String guessExtension(String fileName);
+	public abstract String guessExtension();
 	
 	/**
 	 * try to guess the groupId if the file isnot present in the repository
 	 * 
-	 * @param fileName
-	 * @param rootDirectory
 	 * @return guessed groupId
 	 */
-	public abstract String guessGroupId(String absoluteFileName)
-		throws InvalidDependencyException;
+	public abstract String guessGroupId() ;
 }
