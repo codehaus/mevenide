@@ -3,7 +3,7 @@
     <artifactId>maven-provider-plugin</artifactId>
     <name>Maven Provider plugin</name>
     <groupId>mevenide</groupId>
-    <currentVersion>0.1</currentVersion>
+    <currentVersion>0.1-SNAPSHOT</currentVersion>
     <organization>
         <name>The Codehaus</name>
         <url>http://www.codehaus.org/</url>
@@ -83,7 +83,7 @@
                 <directory>src/main/resources</directory>
                 <filtering>false</filtering>
             </resource>
-        	<resource>
+            <resource>
                 <directory>${basedir}</directory>
                 <includes>
                     <include>plugin.*</include>

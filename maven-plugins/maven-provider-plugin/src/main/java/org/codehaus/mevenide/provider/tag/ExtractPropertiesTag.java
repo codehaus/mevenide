@@ -68,15 +68,15 @@ public class ExtractPropertiesTag extends TagSupport {
         outputDescription();
     }
 
-    private void validate() throws MissingAttributeException {
+    private void validate() throws Exception {
         if ( isNull(inputFile) ) {
             checkAttribute(pluginVersion, "pluginVersion");
             checkAttribute(pluginName, "pluginName");
         }
         else {
             if ( !new File(inputFile).exists() ) {
-                //we should have another exception for this this error
-                throw new MissingAttributeException("Input file : " + inputFile + " doesnot exist");
+                //we should have another exception for this error
+                throw new Exception("Input file : " + inputFile + " doesnot exist");
             }
         }
     }

@@ -1,4 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plugin [
+	<!ELEMENT plugin (property*)>
+	<!ATTLIST plugin name CDATA #IMPLIED> 
+	<!ATTLIST property 
+	          name CDATA #REQUIRED 
+	          label CDATA #IMPLIED 
+	          default CDATA #IMPLIED 
+	          required (true|false) "false" 
+	          description CDATA #IMPLIED 
+	          validator CDATA #IMPLIED 
+	          validate (true|false) "true" 
+	          scope (project|global) "project" 
+	          category CDATA #IMPLIED>
+]>
 <plugin>
     <property name="maven.aspectj.verbose" description="If true, emit compiler status messages during the compile." default="false" />
     <property name="maven.aspectj.fork" description="Run process in another VM. This gets the forking classpath either explicitly from a forkclasspath entry or by searching the task or system/Ant classpath for the first readable file with a name of the form aspectj{-}tools{.*}.jar. When forking you can specify the amount of memory used with maxmem. Fork cannot be used in incremental mode, unless using a tag file." default="false" />

@@ -56,6 +56,7 @@ public class PropertyGrabber {
             }
             
             propertyDescription = elementHandler.getXmlDescription();
+            
         }
         catch (IOException e) {
             String message = "unable to create grab properties"; //$NON-NLS-1$ 
