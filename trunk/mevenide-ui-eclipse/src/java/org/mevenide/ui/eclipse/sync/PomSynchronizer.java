@@ -14,7 +14,6 @@
 package org.mevenide.ui.eclipse.sync;
 
 import java.io.File;
-import java.io.InputStream;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -33,6 +32,7 @@ import org.mevenide.ui.eclipse.sync.model.DependencyGroupMarshaller;
 import org.mevenide.ui.eclipse.sync.model.SourceDirectory;
 import org.mevenide.ui.eclipse.sync.model.SourceDirectoryGroup;
 import org.mevenide.ui.eclipse.sync.model.SourceDirectoryGroupMarshaller;
+import org.mevenide.ui.eclipse.util.FileUtil;
 
 /**
  * 
@@ -57,25 +57,7 @@ public class PomSynchronizer extends AbstractPomSynchronizer implements ISynchro
     public void initialize() {
 		this.project = Mevenide.getPlugin().getProject();
 		this.pom = project.getFile("project.xml");
-		assertPomNotEmpty();
 		pathResolver = new DefaultPathResolver(); 
-	}
-
-	private void assertPomNotEmpty() {
-		try {
-			if ( pom.exists() ) {
-				InputStream inputStream = pom.getContents(true);
-			
-				if ( inputStream.read() == -1 ) {
-					InputStream stream = PomSynchronizer.class.getResourceAsStream("/templates/standard/project.xml"); 
-					pom.setContents(stream, true, true, null);
-					stream.close();
-				}
-				inputStream.close();
-			}
-		} catch (Exception e) {
-			log.debug("Unable to check if POM already exists due to : " + e);
-		}
 	}
 
     /**
@@ -83,12 +65,9 @@ public class PomSynchronizer extends AbstractPomSynchronizer implements ISynchro
      */
 	protected void mavenize() {
 		try {
-			assertPomNotEmpty();
-			
-			synchronize(project);
-			
-			refresh(project);
-			
+			DependencyGroup dependencyGroup = DependencyGroupMarshaller.getDependencyGroup(project, Mevenide.getPlugin().getFile("statedDependencies.xml"));
+			SourceDirectoryGroup sourceGroup = SourceDirectoryGroupMarshaller.getSourceDirectoryGroup(project, Mevenide.getPlugin().getFile("sourceTypes.xml"));
+			updatePom(sourceGroup, dependencyGroup, Mevenide.getPlugin().getPom());
 		}
 		catch (Exception e) {
 			log.debug("Unable to synchronize project '" + project.getName() + "' due to : " + e);
@@ -101,6 +80,7 @@ public class PomSynchronizer extends AbstractPomSynchronizer implements ISynchro
 	public void preSynchronization() {
 		try {
 			Mevenide.getPlugin().createPom();
+			FileUtil.assertPomNotEmpty(pom);
 		}
 		catch (Exception e) {
 			log.debug("Unable to create POM due to : " + e);
@@ -111,14 +91,15 @@ public class PomSynchronizer extends AbstractPomSynchronizer implements ISynchro
      * @see org.mevenide.core.sync.AbstractPomSynchronizer#postSynchronization()
      */
 	public void postSynchronization() {
-		
+		try {
+			FileUtil.refresh(project);
+		} 
+		catch (Exception e) {
+			log.debug("Unable to create POM due to : " + e);
+		}
 	}
 
-	public void synchronize(IProject project) throws Exception {
-		DependencyGroup dependencyGroup = DependencyGroupMarshaller.getDependencyGroup(project, Mevenide.getPlugin().getFile("statedDependencies.xml"));
-		SourceDirectoryGroup sourceGroup = SourceDirectoryGroupMarshaller.getSourceDirectoryGroup(project, Mevenide.getPlugin().getFile("sourceTypes.xml"));
-		updatePom(sourceGroup, dependencyGroup, Mevenide.getPlugin().getPom());
-	}
+
 
 	public void updatePom(SourceDirectoryGroup sourceGroup, DependencyGroup dependencyGoup, File pomFile) throws Exception {
 		Mevenide.getPlugin().createProjectProperties();
@@ -150,12 +131,4 @@ public class PomSynchronizer extends AbstractPomSynchronizer implements ISynchro
 		Mevenide.getPlugin().setBuildPath();
 	}
 	
-	private void refresh(IProject project) throws Exception {
-		IFile projectFile = project.getFile("project.xml");
-		projectFile.refreshLocal(IProject.DEPTH_ZERO, null);
-		IFile propertiesFile = project.getFile("project.properties");
-		if ( propertiesFile.exists() ) {
-			propertiesFile.refreshLocal(IProject.DEPTH_ZERO, null);
-		}
-	}
 }
