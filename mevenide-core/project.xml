@@ -121,8 +121,21 @@
             	<eclipse.plugin.bundle>true</eclipse.plugin.bundle>
             </properties>
         </dependency>
-        <!-- mklent - is grant used from the mevenide-core code or is it here only 
-            to handle runtime dependnecies? -->
+        <dependency>
+            <groupId>mevenide</groupId>
+            <artifactId>mevenide-config</artifactId>
+            <version>0.2-SNAPSHOT</version>
+            <type>jar</type>
+            <properties>
+                <eclipse.plugin.bundle>true</eclipse.plugin.bundle>
+                <netbeans.module.dep>spec</netbeans.module.dep>
+            </properties>
+        </dependency>
+        
+        <!-- 
+        	Below are runtime dependencies only. if adding one, 
+        	please possibly explain which class needs it
+        -->
         <dependency>
             <groupId>commons-grant</groupId>
             <artifactId>commons-grant</artifactId>
@@ -135,10 +148,7 @@
         <dependency>
             <groupId>commons-jelly</groupId>
             <artifactId>commons-jelly</artifactId>
-            <!-- need this version because that one is included with maven rc2 
-                 see:http://maven.apache.org/faq.html#jelly-site-error -->
     		<version>20030902.160215</version>
-<!--    		<version>1.0-beta-4</version> -->
             <type>jar</type>
             <properties>
             	<eclipse.plugin.bundle>true</eclipse.plugin.bundle>
@@ -163,7 +173,6 @@
             	<eclipse.plugin.bundle>true</eclipse.plugin.bundle>
             </properties>
         </dependency>
-        <!-- needed at runtime for MavenUtils -->
         <dependency>
            <groupId>commons-digester</groupId>
            <artifactId>commons-digester</artifactId>
@@ -172,16 +181,80 @@
             	<eclipse.plugin.bundle>true</eclipse.plugin.bundle>
             </properties>
         </dependency>
+        
+        <!-- 
+        	note GD : i needed those to make ArtifactListBuilder work correctly. 
+        	i cannot include them in mevenide-ui-eclipse because maven library is 
+        	exported by mevenide-core so if those libs are declared in ui-eclipse
+        	they are not visible (different classloader hierarchy).
+        -->
         <dependency>
-            <groupId>mevenide</groupId>
-            <artifactId>mevenide-config</artifactId>
-            <version>0.2-SNAPSHOT</version>
-            <type>jar</type>
-            <properties>
-                <eclipse.plugin.bundle>true</eclipse.plugin.bundle>
-                <netbeans.module.dep>spec</netbeans.module.dep>
-            </properties>
+        	<groupId>forehead</groupId>
+        	<artifactId>forehead</artifactId>
+        	<version>1.0-beta-5</version>
+        	<properties>
+        		<eclipse.plugin.bundle>true</eclipse.plugin.bundle>
+        	</properties>
         </dependency>
+        <dependency>
+        	<groupId>commons-collections</groupId>
+        	<artifactId>commons-collections</artifactId>
+        	<version>2.1</version>
+        	<properties>
+        		<eclipse.plugin.bundle>true</eclipse.plugin.bundle>
+        	</properties>
+        </dependency>
+        <dependency>
+        	<groupId>commons-beanutils</groupId>
+        	<artifactId>commons-beanutils</artifactId>
+        	<version>1.6.1</version>
+        	<properties>
+        		<eclipse.plugin.bundle>true</eclipse.plugin.bundle>
+        	</properties>
+        </dependency>
+        <dependency>
+        	<groupId>werkz</groupId>
+        	<artifactId>werkz</artifactId>
+        	<version>1.0-beta-10</version>
+        	<properties>
+        		<eclipse.plugin.bundle>true</eclipse.plugin.bundle>
+        	</properties>
+        </dependency>
+        <dependency>
+        	<groupId>commons-jelly</groupId>
+        	<artifactId>commons-jelly-tags-ant</artifactId>
+        	<version>20030625.032346</version>
+        	<properties>
+        		<eclipse.plugin.bundle>true</eclipse.plugin.bundle>
+        	</properties>
+        </dependency>
+        <dependency>
+        	<groupId>ant</groupId>
+        	<artifactId>ant-optional</artifactId>
+        	<version>1.5.3-1</version>
+        	<properties>
+        		<eclipse.plugin.bundle>true</eclipse.plugin.bundle>
+        	</properties>
+        </dependency>
+        <dependency>
+        	<groupId>dom4j</groupId>
+        	<artifactId>dom4j</artifactId>
+        	<version>1.4-dev-8</version>
+        	<properties>
+        		<eclipse.plugin.bundle>true</eclipse.plugin.bundle>
+        	</properties>
+        </dependency>
+        <dependency>
+        	<groupId>commons-jexl</groupId>
+        	<artifactId>commons-jexl</artifactId>
+        	<version>1.0-beta-1</version>
+        	<properties>
+        		<eclipse.plugin.bundle>true</eclipse.plugin.bundle>
+        	</properties>
+        </dependency>
+        <!-- end note -->
+      
+        
         
     </dependencies>
 </project>
