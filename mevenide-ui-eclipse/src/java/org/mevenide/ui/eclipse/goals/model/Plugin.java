@@ -55,5 +55,7 @@ package org.mevenide.ui.eclipse.goals.model;
  * 
  */
 public class Plugin extends Element {
-	
+	public boolean equals(Object obj) {
+		return (obj instanceof Plugin) && ((Plugin) obj).getName().equals(getName()); 
+	}
 }
