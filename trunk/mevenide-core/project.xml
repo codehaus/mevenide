@@ -61,11 +61,11 @@
         <dependency>
             <groupId>commons-logging</groupId>
             <artifactId>commons-logging</artifactId>
-            <version>1.0.1</version>
+            <version>1.0.3</version>
             <type>jar</type>
             <properties>
             	<eclipse.plugin.bundle>true</eclipse.plugin.bundle>
-                <netbeans.module.dep>impl</netbeans.module.dep>
+                <netbeans.module.dep>spec</netbeans.module.dep>
             </properties>
         </dependency>
         <dependency>
@@ -75,6 +75,7 @@
             <type>jar</type>
             <properties>
             	<eclipse.plugin.bundle>true</eclipse.plugin.bundle>
+                <netbeans.module.ext>true</netbeans.module.ext>
             </properties>
         </dependency>
         <dependency>
@@ -84,6 +85,7 @@
             <type>jar</type>
             <properties>
             	<eclipse.plugin.bundle>true</eclipse.plugin.bundle>
+                <netbeans.module.ext>true</netbeans.module.ext>
             </properties>
         </dependency>
         <dependency>
@@ -98,7 +100,7 @@
         <dependency>
             <groupId>maven</groupId>
             <artifactId>maven</artifactId>
-            <version>1.0-rc1</version>
+            <version>1.0-rc2</version>
             <type>jar</type>
             <properties>
             	<eclipse.plugin.bundle>true</eclipse.plugin.bundle>

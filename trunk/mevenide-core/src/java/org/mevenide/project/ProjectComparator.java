@@ -460,7 +460,8 @@ public class ProjectComparator {
 	        UnitTest newUnitTest = newBuild.getUnitTest();
 	        if ( comparable(newUnitTest, origUnitTest) ) {
 		        detectObjectChange(newUnitTest, origUnitTest);
-		        compareResource(newUnitTest, origUnitTest);
+//mkleint - in rc2 Unittest doens't extend Resource anymore, but just baseObject, what to do?
+//                compareResource(newUnitTest, origUnitTest);
 		        compareResources(newUnitTest.getResources(), origUnitTest.getResources());
 	        }
 		}

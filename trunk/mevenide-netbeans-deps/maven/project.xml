@@ -5,12 +5,12 @@
   <id>maven-nb-module</id>
   <artifactId>maven-nb-module</artifactId>
   <groupId>mevenide</groupId>
-  <currentVersion>1.0-rc1</currentVersion>
+  <currentVersion>1.0-rc2</currentVersion>
   <package>org.apache.maven</package>
-  <name>Maven 1.0-rc1 library for Mevenide</name>
-  <shortDescription>Library for project mevenide</shortDescription>
-  <description>Library for project mevenide</description>
-  <url>http://mevenide.sf.net</url>
+  <name>Maven 1.0-rc2 library for Mevenide</name>
+  <shortDescription>Library for project mevenide,</shortDescription>
+  <description>Library for project mevenide, contains most of the jars needed for maven to run.</description>
+  <url>http://mevenide.codehaus.org</url>
   
   <!-- dependencies copied from maven project.. -->
   <dependencies>
@@ -129,7 +129,7 @@
     <dependency>
       <id>commons-logging-nb-module</id>
       <groupId>mevenide</groupId>
-      <version>1.0.1</version>
+      <version>1.0.3</version>
       <properties>
             <netbeans.module.dep>spec</netbeans.module.dep>
       </properties>
@@ -137,7 +137,7 @@
     
     <dependency>
       <id>werkz</id>
-      <version>1.0-beta-10</version>
+      <version>20040114.081319</version>
       <url>http://werkz.codehaus.org/</url>
       <properties>
             <netbeans.module.ext>true</netbeans.module.ext>
@@ -188,7 +188,7 @@
     </dependency>
     <dependency>
       <id>commons-lang</id>
-      <version>1.0-b1.1</version>
+      <version>2.0</version>
       <url>http://jakarta.apache.org/commons/</url>
       <properties>
             <netbeans.module.ext>true</netbeans.module.ext>
@@ -201,11 +201,13 @@
             <netbeans.module.ext>true</netbeans.module.ext>
       </properties>
     </dependency>
-    <dependency>
+<!--   part of commons-logging-nb-module
+ <dependency>
       <id>log4j</id>
       <version>1.2.8</version>
       <url>http://jakarta.apache.org/log4j/</url>
     </dependency>
+    -->
     <dependency>
       <id>which</id>
       <version>1.0</version>
@@ -234,9 +236,9 @@
       <properties>
             <!-- don't include with netbeans, ant ships with netbeans already.. -->
       </properties>
-    </dependency>
+        </dependency>
 
-    <dependency>
+<!--    <dependency>
       <groupId>xpp3</groupId>
       <artifactId>xpp3</artifactId>
       <version>1.1.2a</version>
@@ -244,7 +246,7 @@
             <netbeans.module.ext>true</netbeans.module.ext>
       </properties>
     </dependency>
-    
+ -->   
     <dependency>
       <groupId>plexus</groupId>
       <artifactId>plexus</artifactId>
@@ -258,7 +260,7 @@
     <dependency>
       <groupId>maven</groupId>
       <artifactId>maven</artifactId>
-      <version>1.0-rc1</version>
+      <version>1.0-rc2</version>
       <properties>
             <netbeans.module.ext>true</netbeans.module.ext>
       </properties>

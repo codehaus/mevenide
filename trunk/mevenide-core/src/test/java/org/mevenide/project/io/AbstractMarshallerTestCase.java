@@ -24,7 +24,7 @@ import java.io.Writer;
 
 import junit.framework.TestCase;
 
-import org.apache.maven.DefaultProjectUnmarshaller;
+import org.mevenide.util.DefaultProjectUnmarshaller;
 import org.apache.maven.project.Project;
 
 /**

@@ -78,8 +78,8 @@ public final class DependencyUtil {
 			log.debug("null dependency found");
 			return false;
 		} 
-		boolean valid = !StringUtils.isNull(d.getId())
-							|| (!StringUtils.isNull(d.getGroupId()) 
+		boolean valid = /*!StringUtils.isNull(d.getId())
+							||*/ (!StringUtils.isNull(d.getGroupId()) 
 								&& !StringUtils.isNull(d.getArtifactId())); 
 //							&& !StringUtils.isNull(d.getVersion());
 //		log.debug("Dependency " + d.getArtifact() + " valid=" + valid + toString(d));

@@ -1,7 +1,7 @@
         <dependency>
             <groupId>maven</groupId>
             <artifactId>maven</artifactId>
-            <version>1.0-rc1</version>
+            <version>1.0-rc2</version>
             <url>http://maven.apache.org/</url>
             <type>jar</type>
         </dependency>
@@ -26,7 +26,7 @@
         <dependency>
            <groupId>commons-logging</groupId>
            <artifactId>commons-logging</artifactId>
-           <version>1.0.1</version>
+           <version>1.0.3</version>
            <url>http://jakarta.apache.org/commons/logging</url>
         </dependency>
         <dependency>

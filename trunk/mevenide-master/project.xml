@@ -23,12 +23,13 @@
   	  <version>1.0</version>
   	  <type>plugin</type>
   	</dependency>
+   
   </dependencies>
   
   <reports>
-    <report>maven-changes-plugin</report>
-    <report>maven-faq-plugin</report>
-    <report>maven-multiproject-plugin</report>
+    <report>maven-changes-plugin</report> 
+    <report>maven-faq-plugin</report> 
+    <report>maven-multiproject-plugin</report> 
   </reports>
  
 </project>

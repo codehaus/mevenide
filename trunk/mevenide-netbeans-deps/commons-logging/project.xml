@@ -5,7 +5,7 @@
   <id>commons-logging-nb-module</id>
   <artifactId>commons-logging-nb-module</artifactId>
   <groupId>mevenide</groupId>
-  <currentVersion>1.0.1</currentVersion>
+  <currentVersion>1.0.3</currentVersion>
   <package>org.apache.commons.logging</package>
   <name>commons-logging library for Mevenide</name>
   <shortDescription>Library for project Mevenide</shortDescription>
@@ -15,7 +15,7 @@
     <dependency>
       <groupId>commons-logging</groupId>
       <artifactId>commons-logging</artifactId>
-      <version>1.0.1</version>
+      <version>1.0.3</version>
       <type>jar</type>
       <properties>
         <netbeans.module.ext>true</netbeans.module.ext>

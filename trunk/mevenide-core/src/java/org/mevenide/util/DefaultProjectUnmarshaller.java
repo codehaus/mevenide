@@ -410,7 +410,6 @@ public class DefaultProjectUnmarshaller
                         if ( parser.getName().equals( "dependency" ) )
                         {
                             Dependency d = new Dependency();
-                            project.addDependency( d );
 
                             while ( parser.nextTag() == XmlPullParser.START_TAG )
                             {
@@ -507,6 +506,7 @@ public class DefaultProjectUnmarshaller
                                     parser.nextText();
                                 }
                             }
+                            project.addDependency( d );
                         }
                         else
                         {
