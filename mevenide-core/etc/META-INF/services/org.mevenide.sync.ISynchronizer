@@ -1,0 +1,2 @@
+org.mevenide.ui.eclipse.sync.ClasspathSynchronizer
+org.mevenide.ui.eclipse.sync.PomSynchronizer
