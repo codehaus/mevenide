@@ -86,9 +86,9 @@
   <!-- i didnt alter it since it works as it is now -->
   <goal name="build" description="Build each Mevenide module">
 	
-    <maven:reactor basedir="."
-      			   includes="../goals-grabber/project.xml,../mevenide-core/project.xml,../mevenide-ui-eclipse/project.xml"
-      			   excludes="../mevenide-master/project.xml"
+    <maven:reactor basedir="${basedir}/.."
+      			   includes="goals-grabber/project.xml,mevenide-core/project.xml,mevenide-ui-eclipse/project.xml"
+      			   excludes="mevenide-master/project.xml"
       			   goals="clean,jar:install"
       			   banner="Building"
       			   ignoreFailures="false"/>
