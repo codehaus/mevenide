@@ -27,6 +27,7 @@ import org.mevenide.context.DefaultQueryContext;
 import org.mevenide.environment.ILocationFinder;
 import org.mevenide.environment.LocationFinderAggregator;
 import org.mevenide.environment.SysEnvLocationFinder;
+import org.mevenide.netbeans.project.output.CheckstyleAnnotation;
 import org.mevenide.netbeans.project.output.CompileAnnotation;
 import org.mevenide.netbeans.project.output.PmdAnnotation;
 import org.mevenide.plugins.PluginInfoFactory;
@@ -56,6 +57,7 @@ public class MavenModule extends ModuleInstall {
    public void uninstalled () {
         PmdAnnotation.detachAllAnnotations();
         CompileAnnotation.detachAllAnnotations();
+        CheckstyleAnnotation.detachAllAnnotations();
     }
    
     public void validate() throws java.lang.IllegalStateException {
