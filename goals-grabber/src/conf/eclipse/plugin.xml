@@ -13,7 +13,6 @@
       </library>
    </runtime>
    <requires>
-      <import plugin="@org.mevenide.core.id@"/>
       <import plugin="@org.mevenide.config.id@"/>
    </requires>
 
