@@ -202,8 +202,8 @@ public class MavenCustomizer extends JPanel implements ProjectValidateObserver {
             this.add( btv, BorderLayout.CENTER );                        
             manager.setRootContext( rootNode );
             manager.addPropertyChangeListener( new ManagerChangeListener() );
+            doExpand();
             selectFirstNode();
-            btv.expandAll();
                                                 
         }
         
@@ -213,7 +213,19 @@ public class MavenCustomizer extends JPanel implements ProjectValidateObserver {
         
         public void addNotify() {
             super.addNotify();
-            btv.expandAll();
+//            btv.expandAll();
+        }
+        
+        private void doExpand() {
+            btv.expandNode(manager.getRootContext());
+            Node root = manager.getRootContext();
+            Node[] children = root.getChildren().getNodes();
+            for (int i = 0; i < children.length; i++) {
+                if (children[i].getName().equals("pluginsCategory")) {
+                    continue;
+                }
+                btv.expandNode(children[i]);
+            }
         }
         
         private void selectFirstNode() {

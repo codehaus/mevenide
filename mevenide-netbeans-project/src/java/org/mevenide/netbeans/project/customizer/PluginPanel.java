@@ -62,6 +62,11 @@ public class PluginPanel extends JPanel implements ProjectPanel {
         populateChangeInstances();
     }
     
+    public PluginPanel(MavenProject proj, Set keys, IPluginInfo info) {
+        this(proj, keys);
+        lblDescription.setText("<html>These are known properties for plugin <b>" + info.getName() + "</b> in version <b>" + info.getVersion() + "</b></html>");
+    }
+    
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -87,8 +92,9 @@ public class PluginPanel extends JPanel implements ProjectPanel {
         gridBagConstraints.weighty = 0.1;
         add(spProperties, gridBagConstraints);
 
-        lblDescription.setText("These are the default, build-in Maven properties, not associated with a specific plugin.");
+        lblDescription.setText("This is a list of all properties overriden in the project's and user's property files.");
         gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 6, 0);
         add(lblDescription, gridBagConstraints);
@@ -202,7 +208,7 @@ public class PluginPanel extends JPanel implements ProjectPanel {
         IQueryContext context = proj.getContext();
         Set used = new HashSet();
         used.addAll(info.getPropertyKeys());
-        return new PluginPanel(proj, used);
+        return new PluginPanel(proj, used, info);
     }
     
     
