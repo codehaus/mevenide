@@ -3,7 +3,13 @@
 	
 	<property name="deploiement" value="false"/>
 	  
-
+	<preGoal name="jar:jar">
+		<copy toDir="target/classes">
+		  <fileset dir="etc">
+  			<include name="*.properties"/>
+		  </fileset>
+		</copy>
+	</preGoal>
   	
 	<postGoal name="jar:install">
 		<attainGoal name="mevenide:prepare-lib"/>

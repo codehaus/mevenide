@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project>
+<project xmlns:j="jelly:core">
 	
 	<!-- crap -->
 	<preGoal name="test:test">
@@ -37,6 +37,17 @@
 	
 	<postGoal name="jar:install">
 		<copy file="etc/mevenide.properties" todir="../mevenide-ui-eclipse/etc"/> 
+		<attainGoal name="mevenide:prepare-lib"/>
 	</postGoal>
 	
+	
+	<goal name="mevenide:prepare-lib">
+		<!-- copy dependencies to mevenide lib directory -->
+		<j:forEach var="dependency" items="${pom.dependencies}">
+			<j:if test="${!(dependency.groupId.equals('eclipse') || dependency.artifactId.startsWith('mock') || dependency.artifactId.endsWith('mock') || dependency.groupId.startsWith('junit'))}">
+            	<copy file="${maven.repo.local}/${dependency.groupId}/${dependency.type}s/${dependency.artifactId}-${dependency.version}.${dependency.type}" 
+            		  todir="../mevenide-ui-eclipse/lib"/>
+            </j:if>
+        </j:forEach>
+	</goal>
 </project>
