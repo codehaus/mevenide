@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<!DOCTYPE document [
+	<!ENTITY building SYSTEM "developer/building.xml">
+	<!ENTITY cvs-layout SYSTEM "developer/cvs-layout.xml">
+]>
+<document>
+
+  <properties>
+    <author email="rhill@wanadoo.fr">Gilles Dodinet</author>
+    <title>Mevenide - Integrating Maven into IDEs</title>
+  </properties>
+	<body>
+	<section name="Building Mevenide">
+		<subsection name="CVS Directory Layout">
+		  &cvs-layout;
+		</subsection>
+	
+	  <subsection name="Running the Build">
+	  	<div id="documentContent">
+	      &building;
+	    </div>
+	  </subsection>
+	</section>
+	
+	<section>
+		<p>
+			<navbar prev="relationships.html" toc="developer-guide.html" next="guidelines.html"/>
+		</p>
+	</section>
+	
+	</body>
+</document>

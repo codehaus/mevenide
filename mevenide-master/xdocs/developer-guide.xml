@@ -1,10 +1,6 @@
 <?xml version="1.0"?>
 <!DOCTYPE document [
 	<!ENTITY description SYSTEM "developer/description.xml">
-	<!ENTITY module-deps SYSTEM "developer/module-dependencies.xml">
-	<!ENTITY artifacts SYSTEM "developer/eclipse-artifacts.xml">
-	<!ENTITY building SYSTEM "developer/building.xml">
-	<!ENTITY cvs-layout SYSTEM "developer/cvs-layout.xml">
 ]>
 
 <document>
@@ -26,41 +22,25 @@
       <subsection name="Content">
       	<div id="documentContent">
       	  &description;
+      	  <p>This guide covers the following areas :</p>
+      	  <ul>
+      	  	<li><a href="relationships.html">Modules Relationships</a></li>
+      	  	<li><a href="building.html">Building Mevenide</a></li>
+      	  	<li><a href="guidelines.html">Coding Guidelines</a></li>
+      	  </ul>
         </div>
       </subsection>
     </section>
     
-	<section name="Module Relationships">
-	  	<subsection name="Module Dependencies">
-	  	  <div id="documentContent">
-	  	    &module-deps;
-	      </div>
-	    </subsection>
-	    <subsection name="Eclipse Artifacts">
-	      <div id="documentContent">
-	      	&artifacts;	    		
-	      </div>
-	    </subsection>
-	  
+	
+	<section>
+		<p>
+			<navbar next="relationships.html"/>
+		</p>
 	</section>
 	
-	<section name="Building Mevenide">
-		<subsection name="CVS Directory Layout">
-		  &cvs-layout;
-		</subsection>
 	
-	  <subsection name="Running the Build">
-	  	<div id="documentContent">
-	      &building;
-	    </div>
-	  </subsection>
-	</section>
 	
-	<section name="Guidelines">
-	  <div id="documentContent">
-	    <p>To be done.</p>
-	  </div>
-	</section>
 
   </body>
 

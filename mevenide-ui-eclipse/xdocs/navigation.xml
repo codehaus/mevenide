@@ -21,7 +21,12 @@
         
         <menu name="Documentation">
         	<item name="Features" href="/features.html"/>
-        	<item name="How-To" href="/help.html"/>
+        	<item name="User Guide" href="/help.html" collapse="true">
+        		<item name="Configuration" href="/conf.html"/>
+        		<item name="Running" href="/run.html"/>
+        		<item name="Synchronization" href="/sync.html"/>
+        		<item name="Pom Editor" href="/edit.html"/>
+        	</item>
         	<item name="Eclipse Update Site" href="/update/index.html"/>
         </menu>
         

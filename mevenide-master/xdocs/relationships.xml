@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<!DOCTYPE document [
+	<!ENTITY module-deps SYSTEM "developer/module-dependencies.xml">
+	<!ENTITY artifacts SYSTEM "developer/eclipse-artifacts.xml">
+]>
+<document>
+
+  <properties>
+    <author email="rhill@wanadoo.fr">Gilles Dodinet</author>
+    <title>Mevenide - Integrating Maven into IDEs</title>
+  </properties>
+<body>
+	<section name="Module Relationships">
+	  	<subsection name="Module Dependencies">
+	  	  <div id="documentContent">
+	  	    &module-deps;
+	      </div>
+	    </subsection>
+	    <subsection name="Eclipse Artifacts">
+	      <div id="documentContent">
+	      	&artifacts;	    		
+	      </div>
+	    </subsection>
+	  
+	</section>
+	
+	<section>
+		<p>
+			<navbar toc="developer-guide.html" next="building.html"/>
+		</p>
+	</section>
+</body>
+</document>

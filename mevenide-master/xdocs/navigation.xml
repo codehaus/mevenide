@@ -22,12 +22,17 @@
     	<item name="Eclipse Plugin" href="mevenide-ui-eclipse/index.html"/>
     	<item name="Maven Plugins" href="/maven-plugins.html" collapse="true">
 	    	<item name="Eclipse Plugin Plugin" href="maven-eclipse-plugin-plugin/index.html"/>
-    		<item name="Spinner Wiki Plugin" href="../maven-eclipse-plugin-plugin/index.html"/>
+    		<item name="Spinner Wiki Plugin" href="maven-spinner-wiki-plugin/index.html"/>
     	</item>
     </menu>
     <menu name="Developers">
-        <item name="Developer's Guide" href="developer-guide.html"/>
+        <item name="Developer Guide" href="/developer-guide.html" collapse="true">
+        	<item name="Modules Relationships" href="/relationships.html"/>
+        	<item name="Building Mevenide" href="/building.html"/>
+        	<item name="Coding Guidelines" href="/guidelines.html"/>
+        </item>
         <item name="Directory Layout" href="layout.html"/>
+        <item name="Task List" href="todos.html"/>
         <item name="Mevenide Wiki" href="http://mevenide.sourceforge.net/cgi-bin/view.pl/FrontPage"/>
     </menu>
     <search/>
