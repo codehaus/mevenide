@@ -126,14 +126,6 @@ public class ProjectReader {
 			);
 		}
 		
-		String integrationUnitTestSourceDirectory = build.getIntegrationUnitTestSourceDirectory();
-		if ( !StringUtils.isNull(integrationUnitTestSourceDirectory) ) {
-			sourceDirectories.put(
-				ProjectConstants.MAVEN_INTEGRATION_TEST_DIRECTORY,
-				integrationUnitTestSourceDirectory
-			);	
-		}
-		
 		return sourceDirectories;
 	}
 

@@ -99,6 +99,12 @@ public class MavenProjectNode extends AbstractSynchronizationNode implements ISe
 			String defaultEclipseOutputFolder = JavaProjectUtils.getRelativeDefaultOuputFolder(eclipseProject).replaceAll("\\\\", "/");
 			String defaultMavenOutputFolder = environmentLocator.getResolvedValue("maven.build.dest").replaceAll("\\\\", "/");
 			
+			File baseDir = mavenProject.getFile().getParentFile();
+			
+			if ( !new File(defaultMavenOutputFolder).exists() ) {
+			    defaultMavenOutputFolder = new File(baseDir, defaultMavenOutputFolder).getAbsolutePath().replaceAll("\\\\", "/");
+			}
+			
 			if ( !defaultEclipseOutputFolder.equals(defaultMavenOutputFolder) ) {
 				DirectoryNode[] newNodes = new DirectoryNode[directoryNodes.length + 2];
 				System.arraycopy(directoryNodes, 0, newNodes, 0, directoryNodes.length);

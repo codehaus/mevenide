@@ -16,9 +16,15 @@
  */
 package org.mevenide.ui.eclipse.sync.model;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -37,7 +43,10 @@ import org.mevenide.project.io.ProjectReader;
 import org.mevenide.project.io.ProjectWriter;
 import org.mevenide.project.source.SourceDirectoryUtil;
 import org.mevenide.properties.resolver.util.ResolverUtils;
-import org.mevenide.ui.eclipse.sync.model.properties.*;
+import org.mevenide.properties.writer.CarefulPropertiesWriter;
+import org.mevenide.ui.eclipse.sync.model.properties.DirectoryPropertySource;
+import org.mevenide.ui.eclipse.sync.model.properties.ReadOnlyDirectoryPropertySource;
+import org.mevenide.ui.eclipse.util.FileUtils;
 import org.mevenide.ui.eclipse.util.JavaProjectUtils;
 
 
@@ -133,6 +142,10 @@ public class DirectoryNode extends ArtifactNode {
 	
 	
 	public void addTo(IProject project) throws Exception {
+	    if ( ProjectConstants.MAVEN_OUTPUT_DIRECTORY.equals(directory.getType() )) {
+	        JavaProjectUtils.setDefaultOuputLocation(project, directory.getCleanPath());
+	        return;
+	    }
 	    IClasspathEntry entry = createSourceEntry(project);
 	    if ( !project.getFolder(directory.getCleanPath()).exists() ) {
 	        project.getFolder(directory.getCleanPath()).create(true, true, null);
@@ -163,8 +176,29 @@ public class DirectoryNode extends ArtifactNode {
 		else if ( ProjectConstants.MAVEN_TEST_RESOURCE.equals(directory.getType()) ) {
 			ProjectWriter.getWriter().addUnitTestResource(directory.getCleanPath(), project.getFile(), exclusionPatterns);
 		}
+		else if ( ProjectConstants.MAVEN_OUTPUT_DIRECTORY.equals(directory.getType()) ) {
+		    InputStream fis = null;
+		    OutputStream fos = null;
+		    try {
+			    File propFile = FileUtils.getProjectPropertiesFile(((Project) parentNode.getData()).getFile().getParentFile());
+			    Properties props = new Properties();
+			    fis = new FileInputStream(propFile);
+			    props.load(fis);
+			    props.setProperty("maven.build.dest", directory.getCleanPath());
+			    fos = new FileOutputStream(propFile);
+				new CarefulPropertiesWriter().marshall(fos, props, fis);
+		    }
+		    finally {
+		        if ( fis != null ) {
+		            fis.close();
+		        }
+		        if ( fos != null ) {
+		            fos.close();
+		        }
+		    }
+		}
 		else {
-		    log.debug("adding " + directory.getCleanPath() + " as " + directory.getType());
+		    log.debug("adding " + directory.getCleanPath() + " failed - reason : unrecognized source type = " + directory.getType() );
 		    ProjectWriter.getWriter().addSource(directory.getCleanPath(), project.getFile(), directory.getType());
 		}
 	}
