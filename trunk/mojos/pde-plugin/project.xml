@@ -39,6 +39,27 @@
       <type>jar</type>
     </dependency>
     <dependency>
+      <groupId>classworlds</groupId>
+      <artifactId>classworlds</artifactId>
+      <version>1.1-SNAPSHOT</version>
+      <jar>classworlds-1.1-SNAPSHOT.jar</jar>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>xpp3</groupId>
+      <artifactId>xpp3</artifactId>
+      <version>1.1.2a</version>
+      <jar>xpp3-1.1.2a.jar</jar>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>xstream</groupId>
+      <artifactId>xstream</artifactId>
+      <version>1.0-SNAPSHOT</version>
+      <jar>xstream-1.0-SNAPSHOT.jar</jar>
+      <type>jar</type>
+    </dependency>
+    <dependency>
       <groupId>maven</groupId>
       <artifactId>maven-plugin</artifactId>
       <version>2.0-SNAPSHOT</version>
@@ -57,31 +78,10 @@
       <type>jar</type>
     </dependency>
     <dependency>
-      <groupId>classworlds</groupId>
-      <artifactId>classworlds</artifactId>
-      <version>1.1-SNAPSHOT</version>
-      <jar>classworlds-1.1-SNAPSHOT.jar</jar>
-      <type>jar</type>
-    </dependency>
-    <dependency>
       <groupId>maven</groupId>
       <artifactId>wagon-api</artifactId>
       <version>0.9-SNAPSHOT</version>
       <jar>wagon-api-0.9-SNAPSHOT.jar</jar>
-      <type>jar</type>
-    </dependency>
-    <dependency>
-      <groupId>xpp3</groupId>
-      <artifactId>xpp3</artifactId>
-      <version>1.1.2a</version>
-      <jar>xpp3-1.1.2a.jar</jar>
-      <type>jar</type>
-    </dependency>
-    <dependency>
-      <groupId>xstream</groupId>
-      <artifactId>xstream</artifactId>
-      <version>1.0-SNAPSHOT</version>
-      <jar>xstream-1.0-SNAPSHOT.jar</jar>
       <type>jar</type>
     </dependency>
   </dependencies>
@@ -89,6 +89,9 @@
     <sourceDirectory>main/src/java</sourceDirectory>
     <unitTestSourceDirectory>test/java</unitTestSourceDirectory>
     <unitTest>
+      <excludes>
+        <exclude>**/AllTests.java</exclude>
+      </excludes>
       <resources>
         <resource>
           <directory>test/resources</directory>
