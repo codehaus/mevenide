@@ -145,20 +145,22 @@ public class MavenRepoLibraryProvider implements LibraryProvider {
                     try {
                         IDependencyResolver res = DependencyResolverFactory.getFactory().newInstance(
                                                           FileUtil.toFile(artifacts[i]).getAbsolutePath());
-                        MavenLibraryImpl library = new MavenLibraryImpl(res.guessArtifactId(),
-                                                                        res.guessGroupId(),
-                                                                        res.guessVersion(),
-                                                                        res.guessExtension());
-                        library.setName(artifacts[i].getNameExt() + " (Maven Repo)");
+                        LibraryImplementation library = org.netbeans.spi.project.libraries.support.LibrariesSupport.createLibraryImplementation("j2se", new String[] {"classpath", "javadoc", "src"});
+//                        MavenLibraryImpl library = new MavenLibraryImpl(res.guessArtifactId(),
+//                                                                        res.guessGroupId(),
+//                                                                        res.guessVersion(),
+//                                                                        res.guessExtension());
+                        library.setName(artifacts[i].getNameExt());
                         StringBuffer desc = new StringBuffer();
-                        desc.append("GroupID:").append(library.getGroupID());
-                        desc.append("\nArtifactID:").append(library.getArtifactID());
-                        desc.append("\nVersion:").append(library.getVersion());
+//                        desc.append("GroupID:").append(library.getGroupID());
+//                        desc.append("\nArtifactID:").append(library.getArtifactID());
+//                        desc.append("\nVersion:").append(library.getVersion());
                         desc.append("\nType:").append(library.getType());
                         library.setDescription( desc.toString());
                         library.setLocalizingBundle(null);
                         List urls = new ArrayList();
                         URL url = FileUtil.toFile(artifacts[i]).toURI().toURL();
+                        url = FileUtil.getArchiveRoot(url);
                         urls.add(url);
                         logger.debug("url=" + url);
                         library.setContent("classpath", urls);
@@ -172,7 +174,7 @@ public class MavenRepoLibraryProvider implements LibraryProvider {
         }
     }
     
-    private void checkJavadocAndSrc(MavenLibraryImpl library, FileObject artifact) throws Exception {
+    private void checkJavadocAndSrc(LibraryImplementation library, FileObject artifact) throws Exception {
         String artName = artifact.getName();
         FileObject groupDir = artifact.getParent().getParent();
         FileObject javadocsDir = groupDir.getFileObject("javadocs"); //NOI18N
@@ -182,6 +184,7 @@ public class MavenRepoLibraryProvider implements LibraryProvider {
             if (javadocFile != null) {
                 List urls = new ArrayList();
                 URL url = FileUtil.toFile(javadocFile).toURI().toURL();
+                url = FileUtil.getArchiveRoot(url);
                 urls.add(url);
                 logger.debug("javadoc url=" + url);
                 library.setContent("javadoc", urls);
@@ -192,6 +195,7 @@ public class MavenRepoLibraryProvider implements LibraryProvider {
             if (srcFile != null) {
                 List urls = new ArrayList();
                 URL url = FileUtil.toFile(srcFile).toURI().toURL();
+                url = FileUtil.getArchiveRoot(url);
                 urls.add(url);
                 logger.debug("src url=" + url);
                 library.setContent("src", urls);

@@ -83,7 +83,8 @@ public class MavenLibraryImpl implements LibraryImplementation {
     }
     
     public String getType() {
-        return MavenRepoLibraryProvider.TYPE;
+        return "j2se";
+//        return MavenRepoLibraryProvider.TYPE;
     }
     
     
