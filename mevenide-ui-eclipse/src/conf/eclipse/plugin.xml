@@ -479,6 +479,11 @@
             class="org.mevenide.ui.eclipse.sync.view.SynchronizationView"
             id="org.mevenide.ui.synchronize.view.SynchronizationView">
       </view>
+      <!-- view class="org.mevenide.ui.eclipse.repository.view.RepositoryBrowser"
+            category="org.mevenide.ui.synchronize.view"
+            name="Repository Browser"
+            id="org.mevenide.repository.browser">
+      </view -->
    </extension>
    <extension point="org.eclipse.ui.perspectiveExtensions">
       <perspectiveExtension targetID="org.eclipse.ui.resourcePerspective">
