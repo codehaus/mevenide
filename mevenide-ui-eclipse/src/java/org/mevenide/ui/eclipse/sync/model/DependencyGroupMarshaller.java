@@ -91,11 +91,20 @@ public abstract class DependencyGroupMarshaller {
 						
 						Dependency dependency = new Dependency();
 						
-						dependency.setArtifact(dependencyElement.getAttributeValue(ARTIFACT_ATTR));
-						dependency.setArtifactId(dependencyElement.getAttributeValue(ARTIFACT_ID_ATTR));
-						dependency.setGroupId(dependencyElement.getAttributeValue(GROUP_ID_ATTR));
-						dependency.setVersion(dependencyElement.getAttributeValue(VERSION_ATTR));
-						dependency.setType(dependencyElement.getAttributeValue(TYPE_ATTR));
+						String savedArtifact = dependencyElement.getAttributeValue(ARTIFACT_ATTR);
+						dependency.setArtifact(savedArtifact == null ? "" : savedArtifact);
+						
+						String savedArtifactId = dependencyElement.getAttributeValue(ARTIFACT_ID_ATTR);
+						dependency.setArtifactId(savedArtifactId == null ? "" : savedArtifactId);
+						
+						String savedGroupId = dependencyElement.getAttributeValue(GROUP_ID_ATTR);
+						dependency.setGroupId(savedGroupId == null ? "" : savedGroupId);
+						
+						String savedVersion = dependencyElement.getAttributeValue(VERSION_ATTR);
+						dependency.setVersion(savedVersion == null ? "" : savedVersion);
+						
+						String savedType = dependencyElement.getAttributeValue(TYPE_ATTR);
+						dependency.setType(savedType == null ? "" : savedType);
 						
 						dependency.setProperties(getProperties(dependencyElement, timeStamp));
 						
@@ -214,7 +223,10 @@ public abstract class DependencyGroupMarshaller {
 
 	private static void saveDependencies(List dependencies, long timeStamp, Element dependencyGroup) {
 		log.debug("saving " + dependencies.size() + " dependencies - timestamp=" + timeStamp);
-		List previousDependencies = dependencyGroup.getChildren(DEPENDENCY_ELEM);
+		List previousDependencies = null;
+		if ( dependencyGroup != null ) {
+			previousDependencies = dependencyGroup.getChildren(DEPENDENCY_ELEM);
+		}
 		if ( previousDependencies == null ) {
 			previousDependencies = new ArrayList();
 		}
@@ -223,12 +235,12 @@ public abstract class DependencyGroupMarshaller {
 		for (int i = 0; i < dependencies.size(); i++) {
 			Dependency dependency = (Dependency) dependencies.get(i);
 			Element dependencyElement = new Element(DEPENDENCY_ELEM);
-			dependencyElement.setAttribute(GROUP_ID_ATTR, dependency.getGroupId()) ;
-			dependencyElement.setAttribute(DependencyGroupMarshaller.ARTIFACT_ID_ATTR, dependency.getArtifactId()) ;
-			dependencyElement.setAttribute(ARTIFACT_ATTR, dependency.getArtifact()) ;
-			dependencyElement.setAttribute(VERSION_ATTR, dependency.getVersion()) ;
-			dependencyElement.setAttribute(TYPE_ATTR, dependency.getType()) ;
-			dependencyElement.setAttribute(DependencyGroupMarshaller.TIMESTAMP_ATTR, Long.toString(timeStamp));
+			dependencyElement.setAttribute(GROUP_ID_ATTR, dependency.getGroupId() == null ? "" : dependency.getGroupId()) ;
+			dependencyElement.setAttribute(ARTIFACT_ID_ATTR, dependency.getArtifactId() == null ? "" : dependency.getArtifactId()) ;
+			dependencyElement.setAttribute(ARTIFACT_ATTR, dependency.getArtifact() == null ? "" : dependency.getArtifact()) ;
+			dependencyElement.setAttribute(VERSION_ATTR, dependency.getVersion() == null ? "" : dependency.getVersion()) ;
+			dependencyElement.setAttribute(TYPE_ATTR, dependency.getType() == null ? "" : dependency.getType()) ;
+			dependencyElement.setAttribute(TIMESTAMP_ATTR, Long.toString(timeStamp));
 			
 			saveDependencyProperties(dependency, dependencyElement, timeStamp);
 			
