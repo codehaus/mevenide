@@ -1,0 +1,1074 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><title>Mevenide - Getting started</title>
+        
+        
+          
+        
+        
+        
+        <style type="text/css">
+          @import url("./style/tigris.css");
+          @import url("./style/maven.css");
+        </style>
+        
+        
+        
+        
+        
+        <link rel="stylesheet" href="getting-started_files/print.css" type="text/css" media="print">
+        <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+        
+          <meta name="author" content="Gilles Dodinet">
+          <meta name="email" content="rhill@wanadoo.fr"></head>
+  
+
+  
+  
+
+  
+  
+
+  
+
+  
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+  
+  
+      
+  
+
+      
+      
+      
+      
+      
+      
+        
+         
+      
+      
+
+      
+      
+      
+      
+
+      
+      
+      
+
+      
+
+
+  
+  
+
+   
+   
+
+
+    
+	
+	
+
+    
+    
+      
+	
+	
+	
+
+    
+      <body class="composite">
+
+        <div id="banner">
+          <table border="0" width="100%" cellpadding="8" cellspacing="0">
+            <tbody><tr>
+              
+              <td>
+                
+                
+                  
+                  
+                  
+                    
+                  
+                  
+                  
+                  
+                  
+                  <a href="http://sf.net/">
+                    <img border="0" alt="Sourceforge" src="getting-started_files/sflogo.png" align="left">
+                  </a>
+                
+              </td>
+
+              
+              <td>
+                <div id="login" align="right">
+                  
+                  
+                    
+                    
+                    
+                      
+                    
+
+                    <a href="http://mevenide.sf.net/">
+                      <img border="0" alt="Mevenide Master" src="getting-started_files/mevenide-logo.jpg" align="right">
+                    </a>
+                  
+                </div>
+              </td>
+            </tr>
+          </tbody></table>
+        </div>
+        <div id="breadcrumbs">
+          <table border="0" width="100%" cellpadding="4" cellspacing="0">
+            <tbody><tr>
+              
+                
+                <td>Last published: 02 June 2003
+                  | Doc for 0.1
+                </td>
+              
+              <td>
+                <div align="right">
+                  
+                  
+                  
+                    
+    
+    
+      
+      
+      
+      <a href="http://maven.apache.org/">Maven</a>
+      
+    
+      |
+      
+      
+      <a href="file:///E:/workspace/mevenide-site/mevenide-master/$%7Bpom.siteDirectory%7D/index.html">Mevenide</a>
+      
+    
+  
+                  
+                  
+                </div>
+              </td>
+            </tr>
+          </tbody></table>
+        </div>
+        
+        <table border="0" width="100%" cellpadding="8" cellspacing="0"> 
+          <tbody><tr valign="top">
+            <td width="20%" id="leftcol">
+              <div id="navcolumn">
+                
+
+                
+                  
+    <div>
+      <strong>Home</strong>
+      
+    
+    
+    
+    
+
+    <div>
+      <small>
+      	
+      	
+      		<a href="file:///E:/workspace/mevenide-site/mevenide-master/index.html">About</a>
+      	
+      </small>
+	  
+        
+      
+    </div>
+  
+    
+    
+    
+    
+
+    <div>
+      <small>
+      	
+      		<b><a href="file:///E:/workspace/mevenide-site/mevenide-master/getting-started.html">Developer infos</a></b>
+      	
+      	
+      </small>
+	  
+        
+      
+    </div>
+  
+    
+    
+    
+    
+
+    <div>
+      <small>
+      	
+      	
+      		<a href="file:///E:/workspace/mevenide-site/mevenide-master/status.html">Status</a>
+      	
+      </small>
+	  
+        
+      
+    </div>
+  
+    
+    
+    
+    
+
+    <div>
+      <small>
+      	
+      	
+      		<a href="file:///E:/workspace/mevenide-site/mevenide-master/license.html">License</a>
+      	
+      </small>
+	  
+        
+      
+    </div>
+  
+    
+    
+    
+    
+
+    <div>
+      <small>
+      	
+      	
+      		<a href="file:///E:/workspace/mevenide-site/mevenide-master/source-repos.html">Source Repositories</a>
+      	
+      </small>
+	  
+        
+      
+    </div>
+  
+    </div>
+  
+    <div>
+      <strong>Sub Projects</strong>
+      
+    
+    
+    
+    
+
+    <div>
+      <small>
+      	
+      	
+      		<a href="file:///E:/workspace/mevenide-site/goals-grabber/index.html">Goals Grabber</a>
+      	
+      </small>
+	  
+        
+      
+    </div>
+  
+    
+    
+    
+    
+
+    <div>
+      <small>
+      	
+      	
+      		<a href="file:///E:/workspace/mevenide-site/mevenide-core/index.html">Mevenide Core</a>
+      	
+      </small>
+	  
+        
+      
+    </div>
+  
+    
+    
+    
+    
+
+    <div>
+      <small>
+      	
+      	
+      		<a href="file:///E:/workspace/mevenide-site/mevenide-ui-eclipse/index.html">Mevenide Eclipse</a>
+      	
+      </small>
+	  
+        
+      
+    </div>
+  
+    </div>
+  
+                
+                
+                
+                
+
+                
+                
+              
+                
+                
+                
+                
+                	<div style="margin-top: 20px; width: 100%; text-align: center;">
+                		<a href="http://maven.apache.org/" title="Powered by Maven"><img style="border: 1px solid black;" alt="Powered by Maven" src="getting-started_files/maven-propaganda.png"></a>
+                	</div>
+                
+              
+                
+              </div>
+            </td>
+            <td rowspan="2">
+              <div id="bodycol">
+                
+                <div class="app">
+                  
+                  
+    <div class="h3">
+      
+      
+        <h3>
+          <a name="Table of content">Table of content</a>
+        </h3>
+      
+      
+    <blockquote>
+      
+	    
+    <a href="#Preambule">
+      Preambule
+    </a>
+   
+    <br>
+      
+    
+   
+		
+    <a href="#Building">
+      Building the various artifacts
+    </a>
+   
+    <br>
+      
+    
+   
+		
+    <a href="#Configuring">
+      Configuring the build process
+    </a>
+   
+    <br>
+      
+    
+   
+		
+    <a href="#Launching">
+      Before launching the Runtime-workbench
+    </a>
+   
+    <br>
+      
+    
+   
+		
+    <a href="#Runtime">
+      Unresolved issues
+    </a>
+   
+    <br>
+      
+    
+   
+		
+    <a href="#Conventions">
+      Coding conventions
+    </a>
+   
+		
+    </blockquote>
+   
+    </div>
+  
+    <div class="h3">
+      
+      
+        <h3>
+          <a name="Preambule">Preambule</a>
+        </h3>
+      
+      
+    <a name="Preambule">
+      
+    </a>
+   
+    <p>
+      
+		If you read this, i guess you're a developper that want to/do participate in the Mevenide project, 
+		or you want to build Mevenide from the sources, and/or want to understand some of the internals. 
+		
+    </p>
+   
+    <p>
+      
+		This document presents the Mevenide structure  and explains how to build and test it using the Eclipse runtime-workbench. 
+		It focuses on Eclipse integration. This is a draft subject to change.
+		To begin with you should chek out a fresh version of the various Mevenide modules. There are atm four modules you need :
+		
+    </p><ul>
+      
+			
+    <li>
+      goals-grabber
+    </li>
+   
+			
+    <li>
+      mevenide-core
+    </li>
+   
+			
+    <li>
+      mevenide-master
+    </li>
+   
+			
+    <li>
+      mevenide-ui-eclipse
+    </li>
+   
+		
+    </ul>
+   
+		
+    <p>
+      
+		Those are the various artifacts of Mevenide. 
+		
+    </p>
+   
+		
+    
+   
+    <p>
+      
+		The 
+    <b>
+      mevenide-master
+    </b>
+    project (name should be self-explanatory) is the build process controller. 
+		The build process is triggered by calling 
+    </p><div id="source">
+      <pre>maven build-all</pre>
+    </div>
+  
+    <br>
+      
+    
+    
+		
+    
+   
+    <p>
+      
+		The 
+    <b>
+      goals-grabber
+    </b>
+    project is a Maven plugin that defines the 
+    <code>
+      goals:grab
+    </code>
+    goal which grabs 
+		all the available goals defined in ${maven.home}/plugins/goals.cache and provides a hook 
+		(during postGoal) to store them in an xml file. Altho working, it is messy and should be rewritten. 
+    <br>
+      
+    
+   
+		
+    </p>
+   
+    <p>
+      
+		The 
+    <b>
+      mevenide-core
+    </b>
+    defines interfaces and abstract classes, and some utility classes, that concrete plugin 
+		implementations shall use and extend. It makes huge use of the Template pattern. commons-discovery is used 
+		to retrieve concrete implementations at runtime.
+    <br>
+      
+    
+   
+		
+    </p>
+   
+    <p>
+      
+		The 
+    <b>
+      mevenide-ui-eclipse
+    </b>
+    is the concrete Eclipse plugin. We will see later its layout.
+    <br>
+      
+    
+   
+		
+    </p>
+   
+    <p>
+      
+		The picture below (Figure 1) depicts the relationships between those modules.
+    <br>
+      
+    
+   
+    <br>
+      
+    
+   
+		
+    </p>
+   
+    <p>
+      
+		
+    <img alt="modules relationships" src="getting-started_files/module-relationships.gif">
+      
+    
+   
+		
+    <br>
+      
+    
+   
+    </p><center>
+      
+    <font size="-1">
+      Figure 1. module relationships
+    </font>
+   
+    </center>
+   
+		
+    
+   
+    </div>
+  
+    <div class="h3">
+      
+      
+        <h3>
+          <a name="Building the various artifacts">Building the various artifacts</a>
+        </h3>
+      
+      
+    <a name="Building">
+      
+    </a>
+   
+    <p>
+      
+		The 
+    <code>
+      build-all
+    </code>
+    custom goal defined in mevenide-master/maven.xml allows us to 
+    <i>
+      reactor
+    </i>
+    the project.
+		There's an ANT buildfile (build.xml) present near maven.xml that wraps maven call by defining 
+		a target 
+    <code>
+      build-all
+    </code>
+    which uses an 
+    <code>
+      exec
+    </code>
+    target. By default it works offline.
+		
+    </p>
+   
+    <p>
+      
+		Also the site generation, tho buggy, has been reactored too. The site generation process can be triggered by running 
+		
+    <code>
+      maven build-site
+    </code>
+   . This goal too has been wrapped by an ANT target (
+    <code>
+      build-site
+    </code>
+   ).
+		
+    </p>
+   
+    <p>
+		For the build to be successful, you need to NOT rename the various
+projects (or at least, make sure the modifications 		are done in the
+maven.xml as well). Why do i rely on project names ? Cuz i have only
+one workspace (not counting the runtime-worskpace :) 		ok, thats
+perhaps bad practice), and so i cannot reactor projects without
+explicitly specifying subproject names. 		 </p>
+   
+    <p> 		In base-project.xml, which all our POMs
+should inherit, you can see that some unit tests have been explicitly
+exclude. Indeed they 		fail if ran from maven, although they're
+successful from within Eclipse. I guess there's here a problem with the
+way i declared the resources. 		There are also other tests that have
+been excluded cuz they're expected to fail if not launched from within
+Eclipse through the 		 <code>
+      org.eclipse.pde.junit
+    </code> plugin ; that
+plugin (expected to be provided with Eclipse 3) extends the junit
+Eclipse plugin 		and allows us to test plugins (altho i have not
+managed to use it successfully for now - it keeps on throwing
+NoClassDefFoundError). 		I think its a better (smarter, easier,
+&lt;whatever you want to insert here&gt;)  way to test plugins than
+mocking the Eclipse API. 		 </p>
+   
+    </div>
+  
+    <div class="h3">
+      
+      
+        <h3>
+          <a name="Configuring the build process">Configuring the build process</a>
+        </h3>
+      
+      
+    <a name="Configuring">
+      
+    </a>
+   
+    <p>
+		If there should be no problem to build the goals-grabber and the
+mevenide-core subprojects, the mevenide-ui-eclipse project is a little
+bit 		trickier to configure since most of the Eclipse libraries are
+not present at ibiblio (perhaps should we ask to upload them ? im not
+sure here). 		So i can see two ways of solving that issue : 			 </p><ol>
+      
+				
+    <li>
+      copy all required missing dependencies to the repository
+    </li>
+   
+				
+    <li>
+      use the maven jar overriding feature
+    </li>
+   
+			
+    </ol>
+   
+		
+    
+   
+    <p>
+		I choose the first solution because (1) it uses then the common
+mechanism and (2) it doesnt pollute the project.properties file.
+		However in either case we need to set properties : 		  	 </p><ul>
+      
+				
+    <li>
+      eclipse.home because it is config dependent
+    </li>
+   
+				
+    <li>
+      swt.plugin.dir because it is system dependent
+    </li>
+   
+			
+    </ul>
+    
+		
+    
+   
+    <p>
+      
+		We take care of the jars copy by adding a preGoal for 
+    <code>
+      build
+    </code>
+    in which, among other things, we find those lines below :
+		
+	
+		
+    </p><div id="source">
+      <pre>			
+&lt;copy file="${eclipse.home}/plugins/org.eclipse.core.resources_2.1.0/resources.jar" 
+      tofile="${maven.home}/repository/eclipse/jars/eclipse-resources-2.1.0.jar"/&gt;
+...
+&lt;copy file="${eclipse.home}/plugins/${swt.plugin.dir}/swt.jar" 
+      tofile="${maven.home}/repository/eclipse/jars/eclipse-swt-2.1.0.jar"/&gt;	
+			
+		 </pre>
+    </div>
+  
+	
+		 
+    
+   
+    <p>
+      
+		 Concerning the site generation, i chose to use a property to identify the siteDirectory 
+    <code>
+      mevenide.local.siteDirectory
+    </code>
+    and, 
+		 in order for the links to be correct urls, ive added another property that identifies the protocol used : 
+    <code>
+      mevenide.site.prefix
+    </code>
+   
+		 
+    </p>
+   
+    <p>
+      
+		 So, in brief, you need to set those properties in project.properties :  
+		 
+    </p><ul>
+      
+		 	
+    <li>
+      eclipse.home
+    </li>
+   
+			
+    <li>
+      swt.plugin.dir
+    </li>
+   
+			
+    <li>
+      mevenide.local.siteDirectory (optional, for site generation only)
+    </li>
+   
+			
+    <li>
+      mevenide.site.prefix (optional, for site generation only)
+    </li>
+   
+		 
+    </ul>
+   
+		 
+    
+   
+    <p>
+      
+		 In addition, for the ANT script to work, you to set those two properties in build.properties : 
+		 
+    </p><ul>
+      
+		 	
+    <li>
+      maven.home
+    </li>
+   
+			
+    <li>
+      maven.script
+    </li>
+   
+		 
+    </ul>
+   
+		 
+    
+   
+    <p>
+      
+		 and then invoke 
+    <code>
+      maven build
+    </code>
+   . This process isnot as simple as it should. We need to think about making it easier and more 
+		 straightforward, so that configuration could be abstracted.
+		 
+    </p>
+   
+    </div>
+  
+    <div class="h3">
+      
+      
+        <h3>
+          <a name="Before launching the Runtime-workbench">Before launching the Runtime-workbench</a>
+        </h3>
+      
+      
+    <a name="Launching">
+      
+    </a>
+   
+    <p>
+	 	At this point you should have been able to build the project thanks
+Maven (and, as a corollary, to configure your Eclipse project thnaks
+Maven). 	 </p>
+   
+    <p>
+      
+	  Before launching the runtime-workbench, please make sure that mevenide-ui-eclipse directory layout is correct 
+	  regarding the meta-informations contained in the 
+    <code>
+      plugin.xml
+    </code>
+    plugin descriptor. However it should have been 
+	  prepared during the Maven build process thanks the 
+    <code>
+      mevenide:prepare-lib
+    </code>
+    goal. If not, you can either 
+	  manually execute the required steps or run that goal 
+    </p><div id="source">
+      <pre>maven mevenide:prepare-lib</pre>
+    </div>
+  	  
+	  
+    
+   
+    <p>
+      
+	  So, what's then the expected layout ? 
+	  
+    </p>
+   
+    <p>
+this plugin uses a quite high number of libraries, so we group them
+under the /lib directory. 	  We also declare the /etc directory to be a
+runtime-dependencies containing only resources. Icons are stored in the
+/icons directory 	  and, last, our ResourceBundles are for now in the
+top-level directory (TODO : put them in /etc/i18n directory). Your
+project layout 	  should be like described below : 	 </p><div id="source">
+      <pre>${eclipse.plugins.dir}/org.mevenide_0.1/
+    +- etc/
+	|   +- META-INF/
+	|   |   |
+	|   |   +- services
+	|   |       |
+	|   |       +- org.mevenide.core.AbstractGoalsGrabber
+	|   |       +- org.mevenide.core.AbstractGoalsManager
+	|   |       +- org.mevenide.core.AbstractRunner
+	|   |       +- org.mevenide.sync.ISynchronizer
+	|   |       +- org.xmlpull.v1.XmlPullParserFactory
+	|   |
+	|   +- commons-logging.properties
+	|   |
+	|   +- mevenide.properties
+	|
+	+- icons/
+	|   |
+	|   +- *.gif
+	|
+	+- lib
+	|   |
+	|   +- *.jar
+	|   
+	+- plugin.xml
+	|
+	+- MavenPluginResources.properties
+	  </pre>
+    </div>
+  
+	  
+    
+   
+    <p>
+      
+	  
+    <br>
+      
+    
+   
+	  The picture (Figure 2) below summarizes in a more graphical way what we said about the plugin required layout.
+    <br>
+      
+    
+   
+	  
+    </p>
+   
+    <p>
+      
+	  
+    <img alt="plugin deploiement" src="getting-started_files/plugin-deploiement.gif">
+      
+    
+   
+	  
+    <br>
+      
+    
+   
+    </p><center>
+      
+    <font size="-1">
+      Figure 2. mevenide-ui-eclipse - Deploiement Diagram
+    </font>
+   
+    </center>
+   
+	  
+    
+   
+    </div>
+  
+    <div class="h3">
+      
+      
+        <h3>
+          <a name="Runtime testing : unresolved issues">Runtime testing : unresolved issues</a>
+        </h3>
+      
+      
+    <a name="Runtime">
+      
+    </a>
+   
+    <p>
+      
+	      Those are identified, yet not solved, issues
+	      
+    </p><ul>
+      
+		     
+    <li>
+      
+			 XmlPullParserFactory cannot find resource 
+			 
+    <code>
+      /META-INF/services/org.xmlpull.v1.XmlPullParserFactory 
+    </code>
+    altho present. 
+			 Obviously there's a classloading problem.. however we dont encounter the same issues with 
+    <code>
+      commons-discovery
+    </code>
+   . 
+			 
+    </li>
+   
+			 
+    <li>
+      
+			 AbstractRunner has not been ported to use 
+    <code>
+      Classworlds
+    </code>
+    instead of 
+    <code>
+      Forehead
+    </code>
+    so even the 
+			 POM2IDE synchronization doesnt work yet.
+			 
+    </li>
+   
+	      
+    </ul>
+   
+	  
+    
+   
+    <p>
+      
+	  Those two issues above are top-priority..
+	  
+    </p>
+   
+    </div>
+  
+    <div class="h3">
+      
+      
+        <h3>
+          <a name="Coding Conventions">Coding Conventions</a>
+        </h3>
+      
+      
+    <a name="Conventions">
+      
+    </a>
+   
+    <p>
+      
+	   To be done ...
+	   
+    </p>
+   
+    </div>
+  
+                  
+                  
+                  
+                  
+                  
+                </div>
+              </div>
+            </td>
+          </tr>
+        </tbody></table>
+        <div id="footer">
+          <table border="0" style="width: 100%;" cellpadding="4" cellspacing="0">
+            
+            <tbody><tr>
+              <td>
+                
+                  
+                    
+                      © 2003, Sourceforge
+                    
+                    
+                  
+                  
+                
+
+                
+              </td>
+              
+            </tr>
+          </tbody></table>
+        </div>
+      </body></html>
