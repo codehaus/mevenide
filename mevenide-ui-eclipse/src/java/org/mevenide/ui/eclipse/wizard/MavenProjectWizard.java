@@ -34,7 +34,7 @@ import org.mevenide.ui.eclipse.Mevenide;
  * @version $Id$
  */
 public class MavenProjectWizard extends NewElementWizard implements IExecutableExtension{
-    private MavenProjectWizardFirstPage fFirstPage;
+    private MavenProjectWizardBasicSettingsPage fBasicSettingsPage;
     private MavenProjectWizardSecondPage fSecondPage;
     
     private IConfigurationElement fConfigElement;	
@@ -43,8 +43,7 @@ public class MavenProjectWizard extends NewElementWizard implements IExecutableE
 	 */
 	public MavenProjectWizard() {
 		super();
-		//TODO - create image for the wizard
-		//setDefaultPageImageDescriptor(JavaPluginImages.DESC_WIZBAN_NEWJPRJ);
+		setDefaultPageImageDescriptor(Mevenide.getImageDescriptor("wizban/newmprj_wiz.gif")); //$NON-NLS-1$
 		setWindowTitle(Mevenide.getResourceString("MavenProjectWizard.title")); //$NON-NLS-1$
 	}
 
@@ -52,9 +51,9 @@ public class MavenProjectWizard extends NewElementWizard implements IExecutableE
 	 * @see org.eclipse.jdt.internal.ui.wizards.JavaProjectWizard#addPages()
 	 */
     public void addPages() {
-        fFirstPage = new MavenProjectWizardFirstPage();
-        addPage(fFirstPage);
-        fSecondPage= new MavenProjectWizardSecondPage(fFirstPage);
+        fBasicSettingsPage = new MavenProjectWizardBasicSettingsPage();
+        addPage(fBasicSettingsPage);
+        fSecondPage= new MavenProjectWizardSecondPage(fBasicSettingsPage);
         addPage(fSecondPage);
     }
     
@@ -63,15 +62,25 @@ public class MavenProjectWizard extends NewElementWizard implements IExecutableE
      */
     protected void finishPage(IProgressMonitor monitor) throws InterruptedException, CoreException {
     	fSecondPage.performFinish(monitor);
-        BasicNewProjectResourceWizard.updatePerspective(fConfigElement);
-		selectAndReveal(fSecondPage.getJavaProject().getProject());
     }
     
+    /* (non-Javadoc)
+	 * @see org.eclipse.jdt.internal.ui.wizards.NewElementWizard#performFinish()
+	 */
+	public boolean performFinish() {
+		boolean canFinish = super.performFinish();
+		if(canFinish)
+		{
+	        BasicNewProjectResourceWizard.updatePerspective(fConfigElement);
+			selectAndReveal(fSecondPage.getJavaProject().getProject());
+		}
+		return canFinish;
+	}
     /*(non-Javadoc)
      * @see org.eclipse.jdt.internal.ui.wizards.NewElementWizard#getSchedulingRule()
      */
     protected ISchedulingRule getSchedulingRule() {
-    	return fFirstPage.getProjectHandle();
+    	return fBasicSettingsPage.getProjectHandle();
     }
     
     
