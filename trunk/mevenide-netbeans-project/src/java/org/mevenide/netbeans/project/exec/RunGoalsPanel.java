@@ -59,6 +59,7 @@ public class RunGoalsPanel extends JPanel {
     private GoalsGrabberProvider provider;
     private MavenProject project;
     private List actionListeners = new ArrayList();
+    private static String lastGoal = null;
     
     /** Creates new form CustomGoalsPanel */
     public RunGoalsPanel(MavenProject proj, GoalsGrabberProvider goalsProvider) {
@@ -67,7 +68,15 @@ public class RunGoalsPanel extends JPanel {
         project = proj;
         tvGoals.setSelectionMode(TreeSelectionModel.DISCONTIGUOUS_TREE_SELECTION);
         tvGoals.setRootVisible(false);
-        txtEnter.setText("");
+        if (lastGoal != null) {
+            // do a favour and show the last goal selected.
+            txtEnter.setText(lastGoal);
+            txtEnter.setCaretPosition(lastGoal.length());
+            txtEnter.setSelectionStart(0);
+            txtEnter.setSelectionEnd(lastGoal.length());
+        } else {
+            txtEnter.setText("");
+        }
         txtEnter.getDocument().addDocumentListener(new DocListener());
     }
     
@@ -99,6 +108,7 @@ public class RunGoalsPanel extends JPanel {
     }
     
     public String getGoalsToExecute() {
+        lastGoal = txtEnter.getText();
         return txtEnter.getText();
     }
     
