@@ -282,22 +282,12 @@ public class MavenProjectWizardSecondPage extends JavaCapabilityConfigurationPag
 			IFile propertiesFile = fCurrProject.getFile("project.properties"); //$NON-NLS-1$
 			propertiesFile.create(new ByteArrayInputStream((Mevenide.getResourceString("MavenProjectWizardSecondPage.PropertyHeader", fCurrProject.getName())).getBytes()), false, null); //$NON-NLS-1$
 
-			String referencedPomSkeleton;
-			
 			MavenProjectWizard wizard = (MavenProjectWizard)getWizard();
-			
-			if(wizard.useTemplate())
-			{
-				StringWriter w = new StringWriter();
-				new DefaultProjectMarshaller().marshall(w, wizard.getProjectObjectModel());
-				referencedPomSkeleton = w.toString();
-			}
-			else
-			{
-				referencedPomSkeleton =  PomSkeletonBuilder.getSkeletonBuilder().getPomSkeleton(fCurrProject.getName());
-			}
+			StringWriter strWriter = new StringWriter();
+			new DefaultProjectMarshaller().marshall(strWriter, wizard.getProjectObjectModel());
+
 			IFile referencedProjectFile = fCurrProject.getFile("project.xml"); //$NON-NLS-1$
-			referencedProjectFile.create(new ByteArrayInputStream(referencedPomSkeleton.getBytes()), false, null);
+			referencedProjectFile.create(new ByteArrayInputStream(strWriter.toString().getBytes()), false, null);
 
 			Project pom = ProjectReader.getReader().read(FileUtils.getPom(fCurrProject));
 
