@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.SortedSet;
 
 import org.apache.maven.project.Build;
@@ -303,11 +304,33 @@ public class DefaultProjectMarshaller implements IProjectMarshaller {
 					marshallString(dependency.getType(), "type");
 					marshallString(dependency.getUrl(), "url");
 					
+					marshallProperties(dependency.getProperties());
+					
 					serializer.endTag(NAMESPACE, "dependency");
 					//dependency.properties ?
 				}
 			}
 			serializer.endTag(NAMESPACE, "dependencies");
+		}
+	}
+	
+	private void marshallProperties(Map properties) throws Exception {
+		if ( properties != null ) {
+			Iterator it = properties.keySet().iterator();
+			serializer.startTag(NAMESPACE, "properties");
+				
+			while ( it.hasNext() ) {
+				
+				String key = (String) it.next();
+				String value = (String) properties.get(key);  
+				
+				//marshallString(value, key);
+				
+				serializer.text("\r\n                " + key + "=" + value);
+				
+			}
+			serializer.text("\r\n            ");
+			serializer.endTag(NAMESPACE, "properties");	
 		}
 	}
 	
