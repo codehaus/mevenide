@@ -14,7 +14,7 @@
  *  limitations under the License.
  * =========================================================================
  */
-package org.mevenide.environment.writer;
+package org.mevenide.properties;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -25,25 +25,28 @@ import java.util.List;
  * Model of properties file.
  * @author  Milos Kleint (ca206216@tiscali.cz)
  */
-public class PropModel
+public class PropertyModel
 {
+    //private static final Log log = LogFactory.getLog(PropertyModel.class);
+    
     private List list;
+
     /** Creates a new instance of PropModel */
-    PropModel()
+    PropertyModel()
     {
         list = new LinkedList();
     }
     /**
      * Adds an element to the endo of the file/model.
      */
-    void addElement(Element el)
+    public void addElement(Element el)
     {
         list.add(el);
     }
     /**
      * removes the element from model.
      */
-    void removeElement(Element el)
+    public void removeElement(Element el)
     {
         list.remove(el);
     }
@@ -51,12 +54,12 @@ public class PropModel
     /**
      * returns a copy of the model, is not live.
      */
-    List getList()
+    public List getList()
     {
         return new ArrayList(list);
     }
     
-    int getSize()
+    public int getSize()
     {
         return list.size();
     }
@@ -64,7 +67,7 @@ public class PropModel
     /**
      * inserts element at designated position.
      */
-    boolean insertAt(int index, Element el)
+    public boolean insertAt(int index, Element el)
     {
         if (index >= 0 && index < list.size())
         {
@@ -77,9 +80,11 @@ public class PropModel
     /**
      * based on the key from Properties, will look up an item in the model.
      */
-    KeyValuePair findByKey(String key)
+    public KeyValuePair findByKey(String key)
     {
         Iterator it = list.iterator();
+        //needed because we want to iterate all keys in case some are overriden
+        KeyValuePair result = null;
         while (it.hasNext())
         {
             Object el = it.next();
@@ -88,94 +93,29 @@ public class PropModel
                 KeyValuePair kp = (KeyValuePair)el;
                 if (kp.getKey().equals(key))
                 {
-                    return kp;
+                    result = kp;
                 }
             }
         }
-        return null;
+        return result;
     }
     
-
-    static Comment createComment()
-    {
-        return new Comment();
-    }
-    
-    static KeyValuePair createKeyValuePair(String key, char keyseparator)
-    {
-        return new KeyValuePair(key, keyseparator);
-    }
-    
-    
-    /**
-     * just a marker class so that all have common ground.
-     */
-    public static class Element
-    {
-        protected Element()
-        {
-        }
-    }
-    
-    static class Comment extends Element
-    {
-        StringBuffer buf;
-        private Comment()
-        {
-            buf = new StringBuffer(100);
-        }
-        
-        public void addToComment(String add)
-        {
-            buf.append(add);
-        }
-        
-        public void setComment(String comment)
-        {
-            buf = new StringBuffer(comment);
-        }
-        
-        public String toString()
-        {
-            return buf.toString();
-        }
+	public KeyValuePair newKeyPair(String key, char separator, String value){
+	    //trim key and values for usability issues - why was there a newLine ?
+	    //@warn removal of the newLine might impact CarefulProjectWriter 
+	    //@todo should we remove that newLine from comment too ? 
+        KeyValuePair pair = new KeyValuePair(key.trim(), separator);
+        pair.addToValue(value.trim());
+        addElement(pair);
+        return pair;
     }
 
-    static class KeyValuePair extends Element
-    {
-        private String key;
-        private StringBuffer buf;
-        private char sepChar;
-        
-        private KeyValuePair(String newKey, char separator)
+	public void addToComment(Comment comment, String line) {
+        if (comment == null)
         {
-            key = newKey;
-            buf = new StringBuffer(100);
-            sepChar = separator;
+            comment = ElementFactory.getFactory().createComment();
+            addElement(comment);
         }
-        
-        public void addToValue(String value) 
-        {
-            buf.append(value);
-        }
-        
-        public void setValue(String value)
-        {
-            buf = new StringBuffer(value);
-        }
-
-        /**
-         * for comparisons, trim the leaning and trailing whitespace
-         */
-        public String getKey()
-        {
-            return key.trim();
-        }
-        
-        public String toString()
-        {
-            return key + sepChar + buf.toString();
-        }
+        comment.addToComment(line + "\n");
     }
-    
 }
