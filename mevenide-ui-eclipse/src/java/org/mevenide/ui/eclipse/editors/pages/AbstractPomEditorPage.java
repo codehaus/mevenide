@@ -50,6 +50,7 @@ package org.mevenide.ui.eclipse.editors.pages;
 
 import org.apache.maven.project.Project;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -103,31 +104,40 @@ public abstract class AbstractPomEditorPage
     }
 
     private void init() {
-        GridLayout layout = new GridLayout();
-        layout.numColumns = 1;
-        layout.marginHeight = 5;
-        layout.marginWidth = 5;
-        setLayout(layout);
-        setBackground(MevenideColors.WHITE);
+		GridLayout layout = new GridLayout();
+		layout.numColumns = 1;
+		layout.marginHeight = 0;
+		layout.marginWidth = 0;
+		setLayout(layout);
+		setBackground(MevenideColors.WHITE);
 
         // heading
 		GridData data = new GridData(GridData.FILL_HORIZONTAL);
 		data.horizontalSpan = 1;
         headingLabel = new Label(this, SWT.NONE);
-        headingLabel.setText(getHeading());
-		headingLabel.setLayoutData(data);
         headingLabel.setFont(MevenideFonts.EDITOR_HEADER);
         headingLabel.setBackground(MevenideColors.WHITE);
+		headingLabel.setText(getHeading());
+		headingLabel.setLayoutData(data);
         
         // create parent for pages
-		data = new GridData(GridData.FILL_HORIZONTAL);
+		ScrolledComposite scroller = new ScrolledComposite(this, SWT.H_SCROLL | SWT.V_SCROLL);
+		scroller.setExpandHorizontal(true);
+		scroller.setExpandVertical(true);
+		scroller.setBackground(MevenideColors.WHITE);
+    	
+		data = new GridData(GridData.FILL_BOTH);
 		data.horizontalSpan = 1;
-        Composite parent = new Composite(this, SWT.NONE);
+		scroller.setLayoutData(data);
+
+        Composite parent = new Composite(scroller, SWT.NONE);
         parent.setBackground(MevenideColors.WHITE);
-        parent.setLayoutData(data);
 
         // now the rest of the page
         initializePage(parent);
+        
+		scroller.setContent(parent);
+        scroller.setMinSize(parent.computeSize(SWT.DEFAULT, SWT.DEFAULT));
         
         update(getEditor().getPom());
     }
