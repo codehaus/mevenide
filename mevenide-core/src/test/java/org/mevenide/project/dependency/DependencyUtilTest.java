@@ -54,10 +54,9 @@ import java.util.List;
 
 import org.apache.maven.project.Dependency;
 import org.apache.maven.project.Project;
-import org.mevenide.util.DefaultProjectUnmarshaller;
 import org.mevenide.AbstractMevenideTestCase;
-import org.mevenide.Environment;
 import org.mevenide.project.io.ProjectWriterTest;
+import org.mevenide.util.DefaultProjectUnmarshaller;
 
 /**
  * 
@@ -75,9 +74,10 @@ public class DependencyUtilTest extends AbstractMevenideTestCase {
     private Dependency dependency_one_grouptwo_1_0;
     private Dependency dependency_two_groupone_1_0;
 	
+	
 	protected void setUp() throws Exception {
 		super.setUp();
-		Environment.setMavenRepository("C:\\Documents and Settings\\gdodinet.MCCAIN-1\\.maven\\repository");
+		
 		dependencyFactory = DependencyFactory.getFactory();
 		initDependencies();
 		

@@ -64,11 +64,12 @@ public class AbstractMevenideTestCase extends TestCase {
 	
 	
 	protected File projectFile;
+    private File mavenHome;
 	
 	
 	protected void setUp() throws Exception {
-		File mavenHomeFile = new File(System.getProperty("user.home"), ".maven");
-		Environment.setMavenRepository(new File(mavenHomeFile, "repository").getAbsolutePath());
+		mavenHome = new File(System.getProperty("user.home"), ".mevenide");
+        Environment.setMavenRepository(new File(mavenHome, "repository").getAbsolutePath());
 		
 		File src = new File(AbstractMevenideTestCase.class.getResource("/fixtures/project-fixture.xml").getFile());
 		projectFile = new File(src.getParentFile().getParent(), "project-fixture.xml") ; 
@@ -80,6 +81,23 @@ public class AbstractMevenideTestCase extends TestCase {
 
 	protected void tearDown() throws Exception {
 		projectFile.delete();
+		delete(mavenHome);
+	}
+	
+	protected void delete(File file) {
+		if ( file.isFile() ) {
+			file.delete();
+		}
+		else {
+			File[] files = file.listFiles();
+			if ( files != null ) {
+				for (int i = 0; i < files.length; i++) {
+    	            delete(files[i]);
+        	    }
+			}
+            file.delete();
+		}
+		
 	}
 	
 	private void copy(String sourceFile, String destFile) throws Exception {
