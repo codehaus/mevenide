@@ -16,6 +16,10 @@
  */
 package org.mevenide.ui.eclipse.editors.pages;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import org.apache.maven.project.Project;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
@@ -45,13 +49,14 @@ public abstract class AbstractPomEditorPage
     private MevenidePomEditor editor;
     private String heading;
 	private Label headingLabel;
+	private List sections = new ArrayList(5);
 
 	private boolean updateNeeded;
     
-    public AbstractPomEditorPage(String heading, MevenidePomEditor editor) {
-        super(editor.getParentContainer(), SWT.NONE);
-        this.editor = editor;
-        this.heading = heading;
+    public AbstractPomEditorPage(String mainHeading, MevenidePomEditor pomEditor) {
+        super(pomEditor.getParentContainer(), SWT.NONE);
+        this.editor = pomEditor;
+        this.heading = mainHeading;
         this.factory = new PageWidgetFactory();
         init();
     }
@@ -60,15 +65,19 @@ public abstract class AbstractPomEditorPage
         return heading;
     }
 
-    public void setHeading(String heading) {
-        this.heading = heading;
+    public void setHeading(String mainHeading) {
+        this.heading = mainHeading;
         if (headingLabel != null) {
-        	headingLabel.setText(heading);
+        	headingLabel.setText(mainHeading);
         }
     }
 
     public MevenidePomEditor getEditor() {
         return editor;
+    }
+    
+    protected void addSection(PageSection section) {
+    	sections.add(section);
     }
 
     private void init() {
@@ -127,21 +136,33 @@ public abstract class AbstractPomEditorPage
 		update(e.getPom());
 	}
 
+	/**
+	 * NOTE: this method if called does nothing - isUpdateNeeded is always returning false
+	 * @see org.eclipse.swt.widgets.Control#update()
+	 */
 	public void update() {
 		if (isUpdateNeeded()) {
 			update(getEditor().getPom());
 		}
 	}
 
-	public void update(Project pom) {
+	protected void update(Project pom) {
+		Iterator itr = sections.iterator();
+		while (itr.hasNext()) {
+			((PageSection) itr.next()).updateSection(pom);
+		}
+		setUpdateNeeded(false);
 	}
 	
     protected boolean isUpdateNeeded() {
         return updateNeeded;
     }
 
-    protected void setUpdateNeeded(boolean updateNeeded) {
-        this.updateNeeded = updateNeeded;
+    /**
+	 * FIXME: nothing calls this method currently - remove?
+     */
+    protected void setUpdateNeeded(boolean needsUpdate) {
+        this.updateNeeded = needsUpdate;
     }
 
     public PageWidgetFactory getFactory() {

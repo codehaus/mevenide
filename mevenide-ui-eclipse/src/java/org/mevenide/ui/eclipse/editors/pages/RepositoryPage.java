@@ -16,7 +16,6 @@
  */
 package org.mevenide.ui.eclipse.editors.pages;
 
-import org.apache.maven.project.Project;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -59,26 +58,21 @@ public class RepositoryPage extends AbstractPomEditorPage {
 		GridData gd = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING);
 		gd.horizontalSpan = 2;
 		control.setLayoutData(gd);
+		addSection(scmSection);
 
 		versionsSection = new VersionsSection(this);
 		control = versionsSection.createControl(parent, factory);
 		gd = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING);
 		gd.horizontalSpan = 1;
 		control.setLayoutData(gd);
+		addSection(versionsSection);
 
 		branchesSection = new BranchesSection(this);
 		control = branchesSection.createControl(parent, factory);
 		gd = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING);
 		gd.horizontalSpan = 1;
 		control.setLayoutData(gd);
-	}
-
-	public void update(Project pom) {
-		scmSection.update(pom);
-		versionsSection.update(pom);
-		branchesSection.update(pom);
-		
-		setUpdateNeeded(false);
+		addSection(branchesSection);
 	}
 
 }

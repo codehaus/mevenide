@@ -62,6 +62,7 @@ public class BuildPage extends AbstractPomEditorPage {
 		GridData gd = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING);
 		gd.horizontalSpan = 2;
 		control.setLayoutData(gd);
+		addSection(directoriesSection);
 
 		resourcesSection = new ResourcesSection(this, "BuildResourcesSection");
 		IResourceAdaptor adaptor = new IResourceAdaptor() {
@@ -97,13 +98,7 @@ public class BuildPage extends AbstractPomEditorPage {
 		gd = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING);
 		gd.horizontalSpan = 2;
 		control.setLayoutData(gd);
-	}
-
-	public void update(Project pom) {
-		directoriesSection.update(pom);
-		resourcesSection.update(pom);
-		
-		setUpdateNeeded(false);
+		addSection(resourcesSection);
 	}
 
 }

@@ -16,7 +16,6 @@
  */
 package org.mevenide.ui.eclipse.editors.pages;
 
-import org.apache.maven.project.Project;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -57,12 +56,7 @@ public class DependenciesPage extends AbstractPomEditorPage {
 		GridData gd = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING);
 		gd.horizontalSpan = 2;
 		control.setLayoutData(gd);
-	}
-
-	public void update(Project pom) {
-		depsSection.update(pom);
-		
-		setUpdateNeeded(false);
+		addSection(depsSection);
 	}
 
 }
