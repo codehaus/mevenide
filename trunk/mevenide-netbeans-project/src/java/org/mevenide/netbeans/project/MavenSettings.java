@@ -1,5 +1,5 @@
 /* ==========================================================================
- * Copyright 2003-2004 Apache Software Foundation
+ * Copyright 2003-2004 Mevenide Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,6 +14,7 @@
  *  limitations under the License.
  * =========================================================================
  */
+
 package org.mevenide.netbeans.project;
 
 import org.openide.options.SystemOption;
@@ -37,8 +38,7 @@ public class MavenSettings extends SystemOption {
         super.initialize();
         String[] defaultGoals = new String[] {
             "site:generate",
-            "dist",
-            "nbm"
+            "dist"
         };
         setTopGoals(defaultGoals);
         setShowAddFavouriteHint(true);
