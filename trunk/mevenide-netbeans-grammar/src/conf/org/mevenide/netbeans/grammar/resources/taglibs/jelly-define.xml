@@ -8,24 +8,24 @@
         <attr name="inherit"/>
         <attr name="trim"/>
     </tag>
-    <tag name="tag">
+    <tag name="tag" within="taglib">
         <attr name="name"/>
         <attr name="trim"/>
     </tag>
-    <tag name="bean">
+    <tag name="bean"  within="tag">
         <attr name="classLoader"/>
         <attr name="className"/>
         <attr name="name"/>
         <attr name="varAttribute"/>
         <attr name="trim"/>
     </tag>
-    <tag name="dynaBean">
+    <tag name="dynaBean"  within="tag">
         <attr name="name"/>
-        <attr name ="dynaClass"/>
+        <attr name="dynaClass"/>
         <attr name="varAttribute"/>
         <attr name="trim"/>
     </tag>
-    <tag name="jellyBean">
+    <tag name="jellyBean"  within="tag">
         <attr name="method"/>
         <attr name="classLoader"/>
         <attr name="className"/>
@@ -33,7 +33,7 @@
         <attr name="trim"/>
         <attr name="varAttribute"/>
     </tag>
-    <tag name="attribute">
+    <tag name="attribute" >
         <attr name="defaultValue"/>
         <attr name="required"/>
         <attr name="name"/>
