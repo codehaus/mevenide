@@ -134,18 +134,38 @@ public class Mevenide extends AbstractUIPlugin {
             
             preferenceStore.load();
             
+            //required preferences
             setMavenHome(preferenceStore.getString("maven.home"));
             setJavaHome(preferenceStore.getString("java.home"));
-            setMavenRepository(preferenceStore.getString("maven.repo"));
-            setPomTemplate(preferenceStore.getString("pom.template.location"));
-            setCheckTimestamp(preferenceStore.getBoolean("mevenide.checktimestamp"));
-            setDefaultGoals(preferenceStore.getString("maven.launch.defaultgoals"));
+            
+            //preferences that are defaulted
+			String mavenLocalHome = preferenceStore.getString("maven.local.home");
+			//maven.local.home has not been initialized - defaults to ${user.home}/.maven
+			if ( mavenLocalHome == null || mavenLocalHome.trim().equals("") ) {
+				mavenLocalHome = new File(System.getProperty("user.home"), ".maven").getAbsolutePath();
+			}
+			setMavenLocalHome(mavenLocalHome);
+            
+            String mavenRepo = preferenceStore.getString("maven.repo");
+            //maven.repo has not been initialized - defaults to ${maven.local.home}/repository
+            if ( mavenRepo == null || mavenRepo.trim().equals("") ) { 	
+            	mavenRepo = new File(mavenLocalHome, "repository").getAbsolutePath();
+            }
+			setMavenRepository(mavenRepo);
+			
             int hSize = preferenceStore.getInt("maven.heap.size");
             //heap has been initialized yet. set it to default (160)
             if ( hSize == 0 ) {
 	            hSize = 160;
             }
 			setHeapSize(hSize);
+			
+			//optional preferences
+            setPomTemplate(preferenceStore.getString("pom.template.location"));
+            setCheckTimestamp(preferenceStore.getBoolean("mevenide.checktimestamp"));
+            setDefaultGoals(preferenceStore.getString("maven.launch.defaultgoals"));
+            
+			
             
 		} 
 		catch (Exception x) {

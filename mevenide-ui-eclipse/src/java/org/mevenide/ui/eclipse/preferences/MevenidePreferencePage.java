@@ -122,7 +122,9 @@ public class MevenidePreferencePage extends PreferencePage implements IWorkbench
 		manager.setValue("pom.template.location", dialog.getPomTemplateLocation());
 		manager.setValue("maven.launch.defaultgoals", dialog.getDefaultGoals());
 		manager.setBooleanValue("mevenide.checktimestamp", dialog.getCheckTimestamp());
-		manager.setIntValue("maven.heap.size", dialog.getHeapSize());
+		if ( dialog.getHeapSize() != 0 ) {
+			manager.setIntValue("maven.heap.size", dialog.getHeapSize());
+		}
 		
 		//manager.setValue("maven.plugins.dir", dialog.getPluginsInstallDir());
 		
