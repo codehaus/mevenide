@@ -34,6 +34,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.QualifiedName;
+import org.eclipse.core.runtime.content.IContentDescription;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 
 import com.mockobjects.MockObject;
@@ -428,5 +429,21 @@ public class MockFile
 	
 	public void setCharset(String arg0) throws CoreException {
 		
+	}
+	/**
+	 *
+	 */
+
+	public String getCharset(boolean arg0) throws CoreException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	/**
+	 *
+	 */
+
+	public IContentDescription getContentDescription() throws CoreException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

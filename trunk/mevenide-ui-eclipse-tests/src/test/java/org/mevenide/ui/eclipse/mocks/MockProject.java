@@ -46,6 +46,15 @@ public class MockProject
 	extends MockObject
 	implements IProject {
 
+	public IPath getWorkingLocation(String arg0) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	public String getDefaultCharset(boolean arg0) throws CoreException {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	private String projectName;
 	
 	public MockProject(String name) {
