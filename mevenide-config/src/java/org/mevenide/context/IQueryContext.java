@@ -19,6 +19,7 @@ package org.mevenide.context;
 
 import java.io.File;
 import java.util.Set;
+import org.mevenide.properties.IPropertyResolver;
 
 /**
  * interface to externalize the project files content/models to one place, and reuse
@@ -34,6 +35,10 @@ public interface IQueryContext {
     String getBuildPropertyValue(String key);
     
     String getProjectPropertyValue(String key);
+
+    String getParentBuildPropertyValue(String key);
+    
+    String getParentProjectPropertyValue(String key);
     
     /**
      * all property keys defined in userdir/build.properties
@@ -49,11 +54,30 @@ public interface IQueryContext {
     Set getProjectPropertyKeys();
     
     /**
+     * all property keys defined in parent build.properties
+     */
+    Set getParentBuildPropertyKeys();
+    /**
+     * all property keys defined in parent project.properties
+     */
+    Set getParentProjectPropertyKeys();    
+    
+    /**
      * the directory where the POM is located
      */
     File getProjectDirectory();
-    
+    /**
+     * user directory, location of the build.properties file.
+     */
     File getUserDirectory();
     
+    /**
+     * pom files, parsed xml elements and project instances from the pom files of this project
+     */
     IProjectContext getPOMContext();
+
+    /** 
+     * the default property resolver for this instance of IQueryContext
+     */
+    IPropertyResolver getResolver();
 }

@@ -57,6 +57,23 @@ public class OriginChange {
      * property file action
      */
     public static final String ACTION_RESET_TO_DEFAULT = "DefaultReset";
+    /*
+     * parent property file action
+     */
+    public static final String ACTION_MOVE_TO_PARENT_PROJECT = "MvParentProject";
+    /*
+     * property file action
+     */
+    public static final String ACTION_MOVE_TO_PARENTBUILD = "MvParentBuild";
+    /*
+     * parent build property file action
+     */
+    public static final String ACTION_DEFINE_IN_PARENT_BUILD = "DefParentBuild";    
+    /*
+     * parent property file action
+     */
+    public static final String ACTION_DEFINE_IN_PARENT_PROJECT = "DefParentProject";    
+    
     
 // pom files actions.
     /*

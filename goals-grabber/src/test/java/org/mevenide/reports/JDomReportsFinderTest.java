@@ -17,6 +17,7 @@
 package org.mevenide.reports;
 
 import java.io.File;
+import org.mevenide.environment.LocationFinderAggregator;
 import org.mevenide.goals.test.util.TestUtils;
 
 
@@ -36,7 +37,7 @@ public class JDomReportsFinderTest extends AbstractReportsFinderTest {
     }
     
 	protected IReportsFinder getReportsFinder() {
-        return new JDomReportsFinder();
+        return new JDomReportsFinder(new LocationFinderAggregator(context));
     }
 
 	protected void tearDown() throws Exception {

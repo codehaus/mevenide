@@ -19,6 +19,7 @@ package org.mevenide.project.io;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Set;
+import org.mevenide.context.AbstractQueryContext;
 import org.mevenide.context.IProjectContext;
 import org.mevenide.context.IQueryContext;
 
@@ -26,12 +27,14 @@ import org.mevenide.context.IQueryContext;
  *
  * @author <a href="mailto:ca206216@tiscali.cz">Milos Kleint</a>
  */
-public class TestQueryContext implements IQueryContext {
+public class TestQueryContext extends AbstractQueryContext {
     private File projectDir;
     private File userDir;
     private HashMap userProps;
     private HashMap projectProps;
     private HashMap buildProps;
+    private HashMap parentProjectProps;
+    private HashMap parentBuildProps;
     private IProjectContext projectContext;
     
     TestQueryContext(File projectDirectory, File user) {
@@ -73,17 +76,6 @@ public class TestQueryContext implements IQueryContext {
         return getValue(projectProps, str);
     }
     
-    public String getPropertyValue(String str) {
-        String toReturn = getValue(userProps, str);
-        if (toReturn == null) {
-            toReturn = getValue(buildProps, str);
-        }
-        if (toReturn == null) {
-            toReturn = getValue(projectProps, str);
-        }
-        return toReturn;
-    }
-    
     public java.io.File getUserDirectory() {
         return userDir;
     }
@@ -113,6 +105,22 @@ public class TestQueryContext implements IQueryContext {
      */
     public Set getProjectPropertyKeys() {
         return projectProps.keySet();
+    }
+
+    public String getParentProjectPropertyValue(String key) {
+        return getValue(parentProjectProps, key);
+    }
+
+    public Set getParentProjectPropertyKeys() {
+        return parentProjectProps.keySet();
+    }
+
+    public String getParentBuildPropertyValue(String key) {
+        return getValue(parentBuildProps, key);
+    }
+
+    public Set getParentBuildPropertyKeys() {
+        return parentBuildProps.keySet();
     }
     
 }

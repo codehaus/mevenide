@@ -57,7 +57,11 @@ public interface IPropertyLocator {
      * Parent is the file denoted by the extend tag in the pom file.
      */
     public static final int LOCATION_PARENT_PROJECT_BUILD = 21;
-    
+
+    /**
+     * sys
+     */
+    public static final int LOCATION_SYSENV = 99;
     /**
      * Returns where the key is located.
      */
@@ -72,5 +76,11 @@ public interface IPropertyLocator {
      * returns all the keys at the given location.
      */
     Set getKeysAtLocation(int location);
+    
+    /**
+     * get the value of the property as defined at the given location
+     */
+    String getValueAtLocation(String key, int location);
+    
     
 }

@@ -23,7 +23,7 @@ import org.apache.maven.project.Project;
 import org.mevenide.context.DefaultQueryContext;
 import org.mevenide.context.IProjectContext;
 import org.mevenide.context.IQueryContext;
-import org.mevenide.project.DefaultProjectContext;
+import org.mevenide.context.DefaultProjectContext;
 import org.mevenide.properties.IPropertyLocator;
 import org.mevenide.properties.IPropertyResolver;
 import org.mevenide.properties.resolver.PropertyLocatorFactory;
@@ -110,10 +110,8 @@ public class ResolverUtils {
     
     private QueryContextObjects newQueryContextObjects(File projectFile) {
         IQueryContext queryContext = new DefaultQueryContext(projectFile.getParentFile());
-        IPropertyResolver resolver = PropertyResolverFactory.getFactory().createContextBasedResolver(queryContext);
+        IPropertyResolver resolver = queryContext.getResolver();
         IPropertyLocator locator = PropertyLocatorFactory.getFactory().createContextBasedLocator(queryContext);
-        IProjectContext projectContext = new DefaultProjectContext(queryContext, resolver);
-        ((DefaultQueryContext)queryContext).initializeProjectContext(projectContext);
         return new QueryContextObjects(resolver, locator);
     }
     

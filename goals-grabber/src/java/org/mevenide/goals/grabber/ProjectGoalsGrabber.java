@@ -29,17 +29,17 @@ import org.xmlpull.v1.XmlPullParserFactory;
  * 
  */
 public class ProjectGoalsGrabber extends AbstractGoalsGrabber {
-	private String mavenXmlFile;
+    private String mavenXmlFile;
 	
-	public ProjectGoalsGrabber() { }
-	
+    public ProjectGoalsGrabber() { }
+
     public String getName() {
         return IGoalsGrabber.ORIGIN_PROJECT;
     }
 
     public void refresh() throws Exception {
-		super.refresh();
-    	if ( mavenXmlFile == null ) {
+        super.refresh();
+    	if ( mavenXmlFile == null) {
     		throw new Exception("maven.xml file hasnot been set. Unable to refresh goals.");
     	}
     	parseMavenXml();

@@ -40,12 +40,7 @@ public class PropertyLocatorFactory {
 // querycontext based stuff..
 //
     public IPropertyLocator createContextBasedLocator(IQueryContext context) {
-        LocationFinderAggregator finder = new LocationFinderAggregator(context);
-        return new PropertyFilesAggregator(context, 
-            				new DefaultsResolver(context.getProjectDirectory(), 
-                                                             context.getUserDirectory(), 
-                                                             finder, 
-                                                             PropertyResolverFactory.getFactory().getPluginDefaultsPropertyFinder(finder)));
+        return new PropertyFilesAggregator(context, new DefaultsResolver(context));
     }
     
 }   

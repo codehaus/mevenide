@@ -157,7 +157,7 @@
     </Component>
     <Component class="javax.swing.JCheckBox" name="cbOffline">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Work offline on project."/>
+        <Property name="text" type="java.lang.String" value="Work online."/>
       </Properties>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
@@ -167,7 +167,7 @@
     </Component>
     <Component class="javax.swing.JCheckBox" name="cbRemoteRepoEnabled">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Don&apos;t check remote repository for new snapshot dependencies"/>
+        <Property name="text" type="java.lang.String" value="Check remote repository for new snapshot dependencies"/>
       </Properties>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">

@@ -29,10 +29,7 @@ public class AllTests {
     public static Test suite() {
         TestSuite suite = new TestSuite();
         
-        suite.addTestSuite(BuildPropertiesLocationFinderTest.class);
-        suite.addTestSuite(ProjectPropertiesLocationFinderTest.class);
         suite.addTestSuite(SysEnvLocationFinderTest.class);
-        suite.addTestSuite(UserRefinedPropertiesLocationFinderTest.class);
         
         return suite;
         

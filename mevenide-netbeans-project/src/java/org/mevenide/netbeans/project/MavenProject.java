@@ -40,7 +40,7 @@ import org.mevenide.netbeans.project.queries.MavenForBinaryQueryImpl;
 
 import org.mevenide.netbeans.project.queries.MavenSharabilityQueryImpl;
 import org.mevenide.netbeans.project.queries.MavenTestForSourceImpl;
-import org.mevenide.project.DefaultProjectContext;
+import org.mevenide.context.DefaultProjectContext;
 import org.mevenide.properties.IPropertyLocator;
 import org.mevenide.properties.IPropertyResolver;
 import org.mevenide.properties.resolver.ProjectWalker2;
@@ -54,6 +54,7 @@ import org.openide.filesystems.*;
 import org.openide.util.Lookup;
 import org.openide.util.Utilities;
 import org.openide.util.lookup.Lookups;
+import org.openide.util.lookup.ProxyLookup;
 
 
 /**
@@ -78,6 +79,8 @@ public class MavenProject implements Project {
     private Updater updater1;
     private Updater updater2;
     private Updater updater3;
+    private Lookup staticLookup;
+    private ProjectLookup completeLookup;
     
     /** Creates a new instance of MavenProject */
     MavenProject(FileObject projectFO, File projectFile) throws Exception {
@@ -89,10 +92,8 @@ public class MavenProject implements Project {
         updater3 = new Updater(false);
         File projectDir = FileUtil.toFile(fileObject.getParent());
         queryContext = new DefaultQueryContext(projectDir);
-        properties = PropertyResolverFactory.getFactory().createContextBasedResolver(queryContext);
+        properties = queryContext.getResolver();
         propertyLocator = PropertyLocatorFactory.getFactory().createContextBasedLocator(queryContext);
-        IProjectContext prContext = new DefaultProjectContext(queryContext, properties);
-        ((DefaultQueryContext)queryContext).initializeProjectContext(prContext);
         locFinder = new LocationFinderAggregator(queryContext);
         walker = new ProjectWalker2(queryContext);
     }
@@ -274,15 +275,7 @@ public class MavenProject implements Project {
    }
    
    private URI getDirURI(String path) {
-       File parent = FileUtil.toFile(getProjectDirectory());
-       File src = new File(parent.getAbsolutePath(), path);
-       if (!src.exists()) {
-           src = new File(path);
-           if (!src.exists()) {
-               // the ultimate fallback is the relative path..
-               src = new File(parent.getAbsolutePath(), path);
-           }
-       }
+       File src = FileUtilities.resolveFilePath(FileUtil.toFile(getProjectDirectory()), path);
        return FileUtil.normalizeFile(src).toURI();
    }
 
@@ -318,7 +311,7 @@ public class MavenProject implements Project {
     
     
     private Lookup createLookup() {
-        return Lookups.fixed(new Object[] {
+        staticLookup = Lookups.fixed(new Object[] {
             new MavenForBinaryQueryImpl(this),
             new ActionProviderImpl(this),
             new CustomizerProviderImpl(this),
@@ -332,6 +325,18 @@ public class MavenProject implements Project {
             new MavenSourcesImpl(this), 
             new RecommendedTemplatesImpl()
         });
+        completeLookup = new ProjectLookup(staticLookup);
+        checkDynamicLookup();
+        return completeLookup;
+    }
+    
+    private void checkDynamicLookup() {
+        FileObject fo = FileUtilities.getFileObjectForProperty("maven.war.src", getPropertyResolver());
+        if (fo != null) {
+            completeLookup.setDynamicLookup(Lookups.fixed(new Object[] {
+                new WebModuleImpl(this)
+            }));
+        }
     }
     
    // Private innerclasses ----------------------------------------------------
@@ -487,5 +492,17 @@ public class MavenProject implements Project {
             MavenProject.this.firePropertyChange(PROP_PROJECT);
         }
         
+    }
+    
+    private class ProjectLookup extends ProxyLookup {
+        private Lookup stat;
+        public ProjectLookup(Lookup staticLookup) {
+            super(new Lookup[] {staticLookup});
+            stat = staticLookup;
+        }
+        
+        public final void setDynamicLookup(Lookup look) {
+            setLookups(new Lookup[] {stat, look});
+        }        
     }
 }

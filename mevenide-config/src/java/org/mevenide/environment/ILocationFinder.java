@@ -17,7 +17,7 @@
 package org.mevenide.environment;
 
 /**  
- * 
+ * Finder for important maven locations.
  * @author Gilles Dodinet (gdodinet@wanadoo.fr)
  * @version $Id: ILocationFinder.java,v 1.1 15 nov. 2003 Exp gdodinet 
  * 
@@ -35,5 +35,7 @@ public interface ILocationFinder {
 	String getMavenPluginsDir();
     
 	String getConfigurationFileLocation();
+        
+        String getUserHome();
 
 }

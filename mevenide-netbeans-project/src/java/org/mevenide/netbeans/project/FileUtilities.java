@@ -24,11 +24,13 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
+import java.util.regex.Pattern;
 import org.apache.maven.project.Dependency;
 import org.mevenide.context.IQueryContext;
 import org.mevenide.environment.ILocationFinder;
 import org.mevenide.netbeans.project.customizer.ui.OriginChange;
 import org.mevenide.properties.IPropertyLocator;
+import org.mevenide.properties.IPropertyResolver;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.loaders.DataObject;
@@ -71,15 +73,15 @@ public final class FileUtilities {
         return folder;
     }
     
-    public static FileObject getUserHome() {
-        String home = System.getProperty("user.home"); //NOI18N
-        File file = new File(home);
-        FileObject[] fo = FileUtil.fromFile(file);
-        if (fo.length > 0) {
-            return fo[0];
-        }
-        throw new IllegalStateException("Cannot find user.home fileobject (" + home + ")"); //NOI18N
-    }
+//    public static FileObject getUserHome() {
+//        String home = System.getProperty("user.home"); //NOI18N
+//        File file = new File(home);
+//        FileObject[] fo = FileUtil.fromFile(file);
+//        if (fo.length > 0) {
+//            return fo[0];
+//        }
+//        throw new IllegalStateException("Cannot find user.home fileobject (" + home + ")"); //NOI18N
+//    }
     
     public static FileObject convertURItoFileObject(URI uri) {
         if (uri == null) {
@@ -148,6 +150,20 @@ public final class FileUtilities {
             File[] fls = context.getPOMContext().getProjectFiles();
             if (fls.length > 1) {
                 return fls[1];
+            }
+            return null;
+        }
+        if (location == IPropertyLocator.LOCATION_PARENT_PROJECT) {
+            File[] fls = context.getPOMContext().getProjectFiles();
+            if (fls.length > 1) {
+                return new File(fls[1].getParentFile(), "project.properties");
+            }
+            return null;
+        }
+        if (location == IPropertyLocator.LOCATION_PARENT_PROJECT_BUILD) {
+            File[] fls = context.getPOMContext().getProjectFiles();
+            if (fls.length > 1) {
+                return new File(fls[1].getParentFile(), "build.properties");
             }
             return null;
         }
@@ -243,4 +259,51 @@ public final class FileUtilities {
         }
         return null;
     }
+    
+    /**
+     * find fileobject for given maven property if such property exists and then the value of property exists.
+     */
+    public static FileObject getFileObjectForProperty(String prop, IPropertyResolver resolver) {
+        String val = resolver.getResolvedValue(prop);
+        if (val != null) {
+            File fil = new File(val);
+            fil = FileUtil.normalizeFile(fil);
+            FileObject fo = FileUtil.toFileObject(fil);
+            if (fo != null) {
+                return fo;
+            }
+        }
+        return null;
+    }
+    
+    private static final Pattern RELATIVE_SLASH_SEPARATED_PATH = Pattern.compile("[^:/\\\\.][^:/\\\\]*(/[^:/\\\\.][^:/\\\\]*)*"); // NOI18N
+     
+    /**
+     * copied from netbeans.org's ant/project sources. will find out if path is relative or absolute
+     */
+    public static File resolveFilePath(File basedir, String filename) throws IllegalArgumentException {
+        if (basedir == null) {
+            throw new NullPointerException("null basedir passed to resolveFile"); // NOI18N
+        }
+        if (filename == null) {
+            throw new NullPointerException("null filename passed to resolveFile"); // NOI18N
+        }
+        if (!basedir.isAbsolute()) {
+            throw new IllegalArgumentException("nonabsolute basedir passed to resolveFile: " + basedir); // NOI18N
+        }
+        if (RELATIVE_SLASH_SEPARATED_PATH.matcher(filename).matches()) {
+            // Shortcut - simple relative path. Potentially faster.
+            return new File(basedir, filename.replace('/', File.separatorChar));
+        } else {
+            // All other cases.
+            String machinePath = filename.replace('/', File.separatorChar).replace('\\', File.separatorChar);
+            File f = new File(machinePath);
+            if (!f.isAbsolute()) {
+                f = new File(basedir, machinePath);
+            }
+            assert f.isAbsolute();
+            return new File(f.toURI().normalize());
+        }
+    }
+    
 }

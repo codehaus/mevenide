@@ -23,6 +23,14 @@
       </version>
     </versions>
     <dependencies>
+        <!-- for tests-->
+        <dependency>
+            <groupId>maven</groupId>
+            <artifactId>maven</artifactId>
+            <version>1.0</version>
+            <type>jar</type>
+        </dependency>
+    
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>

@@ -212,7 +212,7 @@ public class BuildPanel extends JPanel implements ProjectPanel {
         gridBagConstraints.insets = new java.awt.Insets(6, 0, 0, 0);
         add(jSeparator1, gridBagConstraints);
 
-        cbOffline.setText("Work offline on project.");
+        cbOffline.setText("Work online.");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 5;
@@ -221,7 +221,7 @@ public class BuildPanel extends JPanel implements ProjectPanel {
         gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
         add(cbOffline, gridBagConstraints);
 
-        cbRemoteRepoEnabled.setText("Don't check remote repository for new snapshot dependencies");
+        cbRemoteRepoEnabled.setText("Check remote repository for new snapshot dependencies");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 6;
@@ -256,8 +256,8 @@ public class BuildPanel extends JPanel implements ProjectPanel {
     }//GEN-END:initComponents
     
   private void populateChangeInstances() {
-        createChangeInstance("maven.mode.online", cbOffline, ocOffline, true, true);
-        createChangeInstance("maven.repo.remote.enabled", cbRemoteRepoEnabled, ocRemoteRepoEnabled, true, true);
+        createChangeInstance("maven.mode.online", cbOffline, ocOffline, true, false);
+        createChangeInstance("maven.repo.remote.enabled", cbRemoteRepoEnabled, ocRemoteRepoEnabled, true, false);
 
         createPOMChangeInstance("sourceDirectory", txtSrc, ocSrc);
         createPOMChangeInstance("unitTestSourceDirectory", txtTestSrc, ocTestSrc);

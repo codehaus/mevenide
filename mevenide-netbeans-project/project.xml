@@ -157,6 +157,17 @@
     </dependency>
     <dependency>     
         <groupId>netbeans</groupId>
+        <artifactId>org-netbeans-api-web-webmodule</artifactId>
+        <!-- include nb specification version.. that's important for compiling -->
+        <version>1.0.1</version>
+        <type>jar</type>
+        <url>http://www.netbeans.org</url>
+        <properties>
+            <netbeans.module.dep>spec</netbeans.module.dep>
+        </properties>
+    </dependency>
+    <dependency>     
+        <groupId>netbeans</groupId>
         <artifactId>org-netbeans-modules-projectuiapi</artifactId>
         <version>1.0-SNAPSHOT</version>
         <type>jar</type>
@@ -255,9 +266,28 @@
         <type>jar</type>
         <url>http://www.netbeans.org</url>
     </dependency>
-             
+    <!-- for tests only.. -->
+     <dependency>
+      <id>commons-jelly</id>
+      <version>20030902.160215</version>
+    </dependency>            
+    <dependency>
+      <id>commons-betwixt</id>
+      <version>1.0-beta-1.20030111.103454</version>
+    </dependency> 
+   <dependency>
+      <id>commons-digester</id>
+      <version>1.4.1</version>
+    </dependency>
+   <dependency>
+      <id>commons-jexl</id>
+      <version>1.0-beta-1</version>
+    </dependency>   
+    <dependency>
+      <id>commons-collections</id>
+      <version>2.1</version>
+    </dependency>         
   </dependencies>
-  
   <build>
     <resources>
       <resource>

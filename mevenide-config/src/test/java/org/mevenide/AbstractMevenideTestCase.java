@@ -22,7 +22,6 @@ import java.io.FileOutputStream;
 
 import junit.framework.TestCase;
 import org.mevenide.environment.ConfigUtils;
-import org.mevenide.environment.CustomLocationFinder;
 import org.mevenide.environment.LocationFinderAggregator;
 
 /**
@@ -43,13 +42,13 @@ public class AbstractMevenideTestCase extends TestCase {
 		if (!mavenHome.exists()) {
 			mavenHome.mkdirs();
 		}
-        CustomLocationFinder custFinder = new CustomLocationFinder();
-        custFinder.setMavenHome(mavenHome.getAbsolutePath());
-        custFinder.setJavaHome(System.getProperty("java.home"));
+//        CustomLocationFinder custFinder = new CustomLocationFinder();
+//        custFinder.setMavenHome(mavenHome.getAbsolutePath());
+//        custFinder.setJavaHome(System.getProperty("java.home"));
 
         File repoFile = new File(mavenHome, "repository");
-		custFinder.setMavenLocalRepository(repoFile.getAbsolutePath());
-		((LocationFinderAggregator)ConfigUtils.getDefaultLocationFinder()).setCustomLocationFinder(custFinder);
+//		custFinder.setMavenLocalRepository(repoFile.getAbsolutePath());
+//		((LocationFinderAggregator)ConfigUtils.getDefaultLocationFinder()).setCustomLocationFinder(custFinder);
 		if (!repoFile.exists()) {
 			repoFile.mkdir();
 		}
