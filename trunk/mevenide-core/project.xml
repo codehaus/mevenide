@@ -7,7 +7,9 @@
     <currentVersion>0.1.1</currentVersion>
     <organization/>
     <package>org.mevenide</package>
-    <shortDescription>Mevenide Core, used by concrete plugin implementations</shortDescription>
+    <description>
+    	Mevenide Core provides various utility classes for manipulating POMs, running Maven, synchronizing POMs and IDEs, etc... It is intended to used by concrete IDE plugin.
+    </description>
     
     <dependencies>
         <dependency>
