@@ -54,6 +54,7 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.maven.project.Project;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -64,6 +65,7 @@ import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -92,7 +94,6 @@ import org.mevenide.ui.eclipse.sync.model.ArtifactMappingContentProvider;
 import org.mevenide.ui.eclipse.sync.model.IArtifactMappingNode;
 import org.mevenide.ui.eclipse.sync.model.IArtifactMappingNodeContainer;
 import org.mevenide.ui.eclipse.sync.model.ProjectContainer;
-import org.mevenide.ui.eclipse.util.FileUtils;
 
 
 
@@ -145,19 +146,49 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
     }
     
     public void setInput(IProject input) {
-        artifactMappingNodeViewer.setInput(input);
 		try {
-			poms = FileUtils.getPoms(input);
+			//poms = FileUtils.getPoms(input);
+		    poms = new PomChooser(input).openPomChoiceDialog();
+		    
+		    if ( poms != null ) {
+		        synchronizeProjectWithPoms(input, poms);
+		    }
 		} 
 		catch (Exception e) {
 			log.error("Cannot find pom for project " + input, e);
+			//@TODO emit message to user
 		}
-		((ArtifactMappingContentProvider) artifactMappingNodeViewer.getContentProvider()).setDirection(this.direction);
-        artifactMappingNodeViewer.refresh(true);
-        artifactMappingNodeViewer.expandAll();
-        assertValidDirection();
     }
     
+    public void setInput(Project input) {
+        try {
+            //poms = FileUtils.getPoms(input);
+            	
+            if ( input != null ) {
+                IProject project = ResourcesPlugin.getWorkspace().getRoot().getFileForLocation(new Path(input.getFile().getAbsolutePath())).getProject();
+                
+                List poms = new ArrayList();
+                poms.add(input);
+                
+                synchronizeProjectWithPoms(project, poms);
+            }
+        } 
+        catch (Exception e) {
+            log.error("Unable to synchronize POM " + input.getFile().getName() + " with project " + input, e);
+        }
+    }
+    
+    private void synchronizeProjectWithPoms(IProject project, List poms) {
+        ((ArtifactMappingContentProvider) artifactMappingNodeViewer.getContentProvider()).setPoms(poms);
+        ((ArtifactMappingContentProvider) artifactMappingNodeViewer.getContentProvider()).setDirection(this.direction);
+
+        artifactMappingNodeViewer.setInput(project);
+        
+        refreshAll();
+        
+        assertValidDirection();
+    }
+
     private void assertValidDirection() {
         if ( direction != ProjectContainer.INCOMING 
                 && direction != ProjectContainer.OUTGOING 

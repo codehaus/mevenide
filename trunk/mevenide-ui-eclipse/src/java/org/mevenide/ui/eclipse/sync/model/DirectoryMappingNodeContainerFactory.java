@@ -53,6 +53,7 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.maven.project.Project;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.mevenide.ui.eclipse.DefaultPathResolver;
@@ -74,35 +75,44 @@ public class DirectoryMappingNodeContainerFactory {
         return factory;
     }
     
-    public IArtifactMappingNodeContainer getContainer(IJavaProject javaProject)  {
-		List nodes = new ArrayList();
-        DirectoryMappingNodeContainer con = new DirectoryMappingNodeContainer();
+    public List getContainer(IJavaProject javaProject, List pomFiles)  {
+        List cons = new ArrayList();
         try {
-	        IClasspathEntry[] classpathEntries = javaProject.getResolvedClasspath(true);
-	        for (int i = 0; i < classpathEntries.length; i++) {
-	            if ( classpathEntries[i].getEntryKind() == IClasspathEntry.CPE_SOURCE) {
-	                
-	                IClasspathEntry classpathEntry = classpathEntries[i];
-	                DirectoryMappingNode node = createDirectoryMappingNode(javaProject, classpathEntry);
-	                String ignoreLine = ((Directory) node.getResolvedArtifact()).getPath();
-	                if ( !FileUtils.isArtifactIgnored(ignoreLine, javaProject.getProject()) ) {
-	                	node.setParent(con);
-	                	nodes.add(node);
-	                }
+	        for (int u = 0; u < pomFiles.size(); u++) {
+	            
+	            Project pom = (Project) pomFiles.get(u);
+	            
+	            List nodes = new ArrayList();
+	            DirectoryMappingNodeContainer con = new DirectoryMappingNodeContainer();
+		        
+	            IClasspathEntry[] classpathEntries = javaProject.getResolvedClasspath(true);
+		        for (int i = 0; i < classpathEntries.length; i++) {
+		            if ( classpathEntries[i].getEntryKind() == IClasspathEntry.CPE_SOURCE) {
+		                
+		                IClasspathEntry classpathEntry = classpathEntries[i];
+		                DirectoryMappingNode node = createDirectoryMappingNode(javaProject, classpathEntry);
+		                String ignoreLine = ((Directory) node.getResolvedArtifact()).getPath();
+		                if ( !FileUtils.isArtifactIgnored(ignoreLine, javaProject.getProject()) ) {
+		                	node.setParent(con);
+		                	nodes.add(node);
+		                }
+		            }
+		        }
+				IArtifactMappingNode[] artifactNodes = new IArtifactMappingNode[nodes.size()]; 
+				for (int i = 0; i < nodes.size(); i++) {
+				    artifactNodes[i] = (IArtifactMappingNode) nodes.get(i);
 	            }
+				con.setNodes(artifactNodes);
+				con.attachJavaProject(javaProject, pom);
+				
+				cons.add(con);
 	        }
-			IArtifactMappingNode[] artifactNodes = new IArtifactMappingNode[nodes.size()]; 
-			for (int i = 0; i < nodes.size(); i++) {
-			    artifactNodes[i] = (IArtifactMappingNode) nodes.get(i);
-            }
-			con.setNodes(artifactNodes);
-			con.attachJavaProject(javaProject);
         }
         catch (  Exception e ) {
             e.printStackTrace();
             log.error(e);
         }
-        return con;
+        return cons;
     }
 
    

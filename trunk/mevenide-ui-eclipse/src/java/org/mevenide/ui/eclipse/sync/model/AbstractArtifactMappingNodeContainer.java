@@ -57,7 +57,6 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Project;
 import org.eclipse.jdt.core.IJavaProject;
 import org.mevenide.project.io.ProjectReader;
-import org.mevenide.ui.eclipse.util.FileUtils;
 
 /**
  * 
@@ -76,8 +75,8 @@ public abstract class AbstractArtifactMappingNodeContainer implements IArtifactM
     
     private Project primaryPom;
     
-    public void attachJavaProject(IJavaProject javaProject) throws Exception {
-        Project pom = ProjectReader.getReader().read(FileUtils.getPom(javaProject.getProject()));
+    public void attachJavaProject(IJavaProject javaProject, Project pom) throws Exception {
+        //Project pom = ProjectReader.getReader().read(FileUtils.getPom(javaProject.getProject()));
         	
         primaryPom = pom;
         
@@ -139,10 +138,6 @@ public abstract class AbstractArtifactMappingNodeContainer implements IArtifactM
         this.parent = parent;
     }
 
-    public Project getPrimaryPom() {
-        return primaryPom;
-    }
-    
     public IArtifactMappingNodeContainer filter(int direction) {
         IArtifactMappingNodeContainer newContainer = this;
     	newContainer.setDirection(direction);
@@ -190,4 +185,9 @@ public abstract class AbstractArtifactMappingNodeContainer implements IArtifactM
     		nodes = newNodes;
     	}
     }
+
+    public Project getPrimaryPom() {
+        return primaryPom;
+    }
+
 }

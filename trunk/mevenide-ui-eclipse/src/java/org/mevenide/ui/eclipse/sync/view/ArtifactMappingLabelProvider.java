@@ -48,6 +48,9 @@
  */
 package org.mevenide.ui.eclipse.sync.view;
 
+import org.apache.maven.project.Project;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.viewers.IColorProvider;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
@@ -73,6 +76,7 @@ import org.mevenide.ui.eclipse.sync.model.ProjectContainer;
  * 
  */
 public class ArtifactMappingLabelProvider implements ILabelProvider, IColorProvider {
+    
     public Image decorateImage(Image image, Object element) {
         if ( !(element instanceof IArtifactMappingNode) ) {
             return image;
@@ -118,7 +122,8 @@ public class ArtifactMappingLabelProvider implements ILabelProvider, IColorProvi
             return ((ProjectContainer) element).getProject().getName();
         }
         if ( element instanceof IArtifactMappingNodeContainer ) {
-            return ((IArtifactMappingNodeContainer) element).getLabel();
+            Project pom = ((IArtifactMappingNodeContainer) element).getPrimaryPom();
+            return ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(pom.getFile().getAbsolutePath())).getProjectRelativePath().removeFirstSegments(1).toOSString();
         }
         if ( element instanceof IArtifactMappingNode ) {
             return ((IArtifactMappingNode) element).getLabel();
