@@ -102,8 +102,7 @@ public class MavenLaunchDelegate extends AbstractRunner implements ILaunchConfig
         IVMRunner vmRunner = getVMInstall().getVMRunner(launchMode);
 		
  		if (vmRunner != null) {
- 			//System.err.println(getBasedir() + " => " + getGoals(configuration));
-            vmRunner.run(vmConfig, launch, monitor);
+ 			vmRunner.run(vmConfig, launch, monitor);
             launch.setAttribute(MAVEN_LAUNCH, "true");
             
             ILaunchesListener2 launchListener = new MavenLaunchesListener();
@@ -165,6 +164,7 @@ public class MavenLaunchDelegate extends AbstractRunner implements ILaunchConfig
                 String key = (String) it.next();
                 String value = (String) dynamicPreferencesMap.get(key);
                 dynamicPreferences[idx] = "-D" + key + "=" + value;
+                idx++;
             }
 			
 			//merge various sources

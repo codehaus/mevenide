@@ -20,7 +20,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import org.mevenide.ui.eclipse.Mevenide;
-import org.mevenide.util.StringUtils;
 
 
 /**  
@@ -52,9 +51,7 @@ public class DynamicPreferencesManager extends PreferencesManager {
 	    for (Iterator it = preferences.keySet().iterator(); it.hasNext();) {
             String key = (String) it.next();
             String value = (String) preferences.get(key);
-            if ( !StringUtils.isNull(key) && !!StringUtils.isNull(value) ) {
-                dynamicPreferences.put(key.indexOf(SEPARATOR) != -1 ? key.substring(key.indexOf(SEPARATOR) + 1, key.length()) : key, value);
-            }
+            dynamicPreferences.put(key.indexOf(SEPARATOR) != -1 ? key.substring(key.indexOf(SEPARATOR) + 1, key.length()) : key, value);
         }
 	    return dynamicPreferences;
 	}
