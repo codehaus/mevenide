@@ -19,7 +19,6 @@ package org.mevenide.ui.eclipse.sync.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.maven.project.Dependency;
 import org.apache.maven.project.Project;
 import org.apache.maven.repository.Artifact;
 import org.eclipse.core.resources.IProject;
@@ -155,10 +154,7 @@ public class MavenArtifactNode extends ArtifactNode {
 	}
 	
 	protected String getIgnoreLine() {
-		Dependency dependency = artifact.getDependency();
-		return dependency.getGroupId() + ":" + 
-		       dependency.getArtifactId() + ":" +
-		       dependency.getVersion() != null ? dependency.getVersion() : "*";
+		return toString();
 	}
 	
 	public void removeFrom(Project project) throws Exception {
