@@ -20,6 +20,7 @@ import java.util.List;
 
 import org.apache.maven.project.Dependency;
 import org.apache.maven.project.Project;
+import org.apache.maven.project.Resource;
 import org.mevenide.ProjectConstants;
 import org.mevenide.project.DependencyUtil;
 
@@ -39,6 +40,7 @@ public class ProjectWriter {
 	
 	private ProjectWriter() throws Exception  {
 		marshaller = new DefaultProjectMarshaller();
+		projectReader = ProjectReader.getReader();
 	}
 	
 	public static ProjectWriter getWriter() throws Exception {
@@ -55,8 +57,84 @@ public class ProjectWriter {
 		}
 	}
 	
-	public void addResource(String path, File pom) {
+	/**
+	 * add a resource entry to the pom (more precisely to the build element). 
+	 * the resource is expected to be a directory, however we will 
+	 * handle the case where it is a single file
+	 * 
+	 * @param path
+	 * @param pom
+	 */
+	public void addResource(String path, File pom) throws Exception {
+		Project project = projectReader.read(pom);
+		Resource resource = getResource(path);
+		if ( !isResourcePresent(project, resource) ) {
+			project.getBuild().addResource(resource);
+			write(project, pom);	
+		}
+	}
+	
+	/**
+	 * check that a resource is declared in the pom. if directory are equal 
+	 * but not the includes, we should remove the resource from the pom and return false.
+	 * 
+	 * @see org.mevenide.project.io.ProjectWriter#areEquals(Resource, Resource)
+	 * 
+	 * @param project
+	 * @param resource
+	 * @return boolean
+	 */
+	private boolean isResourcePresent(Project project, Resource resource) {
+		List resources = project.getBuild().getResources();
 		
+		for (int i = 0; i < resources.size(); i++) {
+			Resource declaredResource = (Resource) resources.get(i);
+			
+			if ( areEquivalent(resource, declaredResource) ) {
+				return true;	
+			}
+			
+			if ( resource.getDirectory().equals(declaredResource.getDirectory()) ) {
+				project.getBuild().getResources().remove(declaredResource);
+			}
+			
+		}
+		return false;
+	}
+	
+	/**
+	 * @pre resource1.directory != null
+	 *  
+	 * @param resource_1
+	 * @param resource_2
+	 */
+	private boolean areEquivalent(Resource resource1, Resource resource2) {		
+		
+		return resource1.getDirectory().equals(resource2.getDirectory())  
+			   && ( resource1.getIncludes().equals(resource2.getIncludes())  
+				  || ( resource1.getIncludes().contains("**/*.*") 
+				       && resource2.getIncludes().contains("**/*.*") 
+				     ) 
+			      );
+		
+	}
+	
+	/**
+	 * construct a Resource from a given path 
+	 * 
+	 * @param path
+	 * @return
+	 */
+	private Resource getResource(String path) {
+		boolean isDirectory = new File(path).isDirectory();
+		String directory =  isDirectory ? path : new File(path).getParent();
+		String singleInclude = isDirectory ? "**/*.*" : new File(path).getName();
+		
+		Resource resource = new Resource();
+		resource.setDirectory(directory);
+		resource.addInclude(singleInclude);
+		
+		return resource;
 	}
 	
 	/**
@@ -126,6 +204,9 @@ public class ProjectWriter {
 	 */
 	boolean isDependencyPresent(Project project, Dependency dependency) {
 		List dependencies = project.getDependencies();
+		if ( dependencies == null ) {
+			return false;
+		}
 		for (int i = 0; i < dependencies.size(); i++) {
 			Dependency declaredDependency = (Dependency) dependencies.get(i);
 			

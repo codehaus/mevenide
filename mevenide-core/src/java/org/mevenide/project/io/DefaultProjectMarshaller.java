@@ -190,18 +190,20 @@ public class DefaultProjectMarshaller implements IProjectMarshaller {
 		List developers = project.getDevelopers();
 		serializer.startTag(NAMESPACE, "developers");
 		Developer developer;
-		for (int i = 0; i < developers.size(); i++) {
-			developer = (Developer) developers.get(i);
-			if ( developer != null ) {
-				serializer.startTag(NAMESPACE, "developer");
-				
-				marshallRequiredString(developer.getId(), "id");
-				marshallRequiredString(developer.getName(), "name");
-				marshallRequiredString(developer.getEmail(), "email");
-				marshallString(developer.getOrganization(), "organization");
-				marshallRoles(developer);
-				
-				serializer.endTag(NAMESPACE, "developer");
+		if ( developers != null ) {
+			for (int i = 0; i < developers.size(); i++) {
+				developer = (Developer) developers.get(i);
+				if ( developer != null ) {
+					serializer.startTag(NAMESPACE, "developer");
+					
+					marshallRequiredString(developer.getId(), "id");
+					marshallRequiredString(developer.getName(), "name");
+					marshallRequiredString(developer.getEmail(), "email");
+					marshallString(developer.getOrganization(), "organization");
+					marshallRoles(developer);
+					
+					serializer.endTag(NAMESPACE, "developer");
+				}
 			}
 		}
 		serializer.endTag(NAMESPACE, "developers");
@@ -287,7 +289,10 @@ public class DefaultProjectMarshaller implements IProjectMarshaller {
 			for (int i = 0; i < dependencies.size(); i++) {
 				dependency = (Dependency) dependencies.get(i);
 				if ( dependency != null ) {
-					marshallString(dependency.getId(), "id");
+					
+					serializer.startTag(NAMESPACE, "dependency");
+					
+					//marshallString(dependency.getId(), "id");
 					marshallString(dependency.getGroupId(), "groupId");
 					marshallString(dependency.getArtifactId(), "artifactId");
 						
@@ -297,6 +302,7 @@ public class DefaultProjectMarshaller implements IProjectMarshaller {
 					marshallString(dependency.getType(), "type");
 					marshallString(dependency.getUrl(), "url");
 					
+					serializer.endTag(NAMESPACE, "dependency");
 					//dependency.properties ?
 				}
 			}
