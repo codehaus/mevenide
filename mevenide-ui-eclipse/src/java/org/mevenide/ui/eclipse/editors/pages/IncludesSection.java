@@ -36,7 +36,7 @@ public class IncludesSection extends PageSection {
 	
 	public IncludesSection(UnitTestsPage page) {
 		super(page);
-		setHeaderText(Mevenide.getResourceString("UnitTestIncludesSection.header"));
+		setTitle(Mevenide.getResourceString("UnitTestIncludesSection.header"));
 	}
 	
 	void setIncludesAdaptor(IIncludesAdaptor adaptor) {

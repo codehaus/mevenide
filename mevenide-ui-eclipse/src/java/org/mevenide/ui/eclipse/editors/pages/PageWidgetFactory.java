@@ -47,6 +47,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.Widget;
 import org.eclipse.ui.actions.ActionFactory;
+import org.eclipse.ui.forms.parts.FormToolkit;
 
 /**
  * Factory for creating SWT widgets for the POM editor ui.
@@ -56,7 +57,7 @@ import org.eclipse.ui.actions.ActionFactory;
  * @author Jeff Bonevich (jeff@bonevich.com)
  * @version $Id$
  */
-public class PageWidgetFactory {
+public class PageWidgetFactory extends FormToolkit{
 
 	public static final String KEY_DRAW_BORDER = "FormWidgetFactory.drawBorder";
 	public static final String TREE_BORDER = "treeBorder";

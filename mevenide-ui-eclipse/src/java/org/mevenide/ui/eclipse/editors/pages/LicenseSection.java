@@ -38,7 +38,7 @@ public class LicenseSection extends PageSection {
 	
     public LicenseSection(OrganizationPage page) {
         super(page);
-		setHeaderText(Mevenide.getResourceString("LicenseSection.header"));
+		setTitle(Mevenide.getResourceString("LicenseSection.header"));
 		setDescription(Mevenide.getResourceString("LicenseSection.description"));
     }
 

@@ -43,7 +43,7 @@ public class OrganizationSection extends PageSection {
 
     public OrganizationSection(OrganizationPage page) {
         super(page);
-		setHeaderText(Mevenide.getResourceString("OrganizationSection.header"));
+		setTitle(Mevenide.getResourceString("OrganizationSection.header"));
 		setDescription(Mevenide.getResourceString("OrganizationSection.description"));
     }
 

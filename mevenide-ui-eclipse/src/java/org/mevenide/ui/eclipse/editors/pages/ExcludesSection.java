@@ -38,7 +38,7 @@ public class ExcludesSection extends PageSection {
 	
 	public ExcludesSection(UnitTestsPage page) {
 		super(page);
-		setHeaderText(Mevenide.getResourceString("UnitTestExcludesSection.header"));
+		setTitle(Mevenide.getResourceString("UnitTestExcludesSection.header"));
 	}
 	
 	void setExcludesAdaptor(IExcludesAdaptor excludesAdaptor) {

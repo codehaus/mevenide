@@ -45,7 +45,7 @@ public class SiteGenerationSection extends PageSection {
 
     public SiteGenerationSection(OrganizationPage page) {
         super(page);
-		setHeaderText(Mevenide.getResourceString("SiteGenerationSection.header"));
+		setTitle(Mevenide.getResourceString("SiteGenerationSection.header"));
 		setDescription(Mevenide.getResourceString("SiteGenerationSection.description"));
     }
 

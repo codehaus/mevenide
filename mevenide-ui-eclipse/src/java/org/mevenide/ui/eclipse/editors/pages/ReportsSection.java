@@ -54,7 +54,7 @@ public class ReportsSection extends PageSection {
     
 	public ReportsSection(ReportsPage page) {
 		super(page);
-		setHeaderText(Mevenide.getResourceString("ReportsSection.header"));
+		setTitle(Mevenide.getResourceString("ReportsSection.header"));
 		setDescription(Mevenide.getResourceString("ReportsSection.description"));
 	}
 

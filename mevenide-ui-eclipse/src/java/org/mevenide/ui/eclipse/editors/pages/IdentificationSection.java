@@ -62,7 +62,7 @@ public class IdentificationSection extends PageSection {
 	
     public IdentificationSection(OverviewPage page) {
         super(page);
-		setHeaderText(Mevenide.getResourceString("IdentificationSection.header"));
+		setTitle(Mevenide.getResourceString("IdentificationSection.header"));
 		setDescription(Mevenide.getResourceString("IdentificationSection.description"));
     }
 

@@ -38,7 +38,7 @@ public class MailingListsSection extends PageSection {
 	
 	public MailingListsSection(TeamPage page) {
 		super(page);
-		setHeaderText(Mevenide.getResourceString("MailingListsSection.header"));
+		setTitle(Mevenide.getResourceString("MailingListsSection.header"));
 		setDescription(Mevenide.getResourceString("MailingListsSection.description"));
 	}
 
