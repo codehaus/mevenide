@@ -25,7 +25,7 @@ import org.mevenide.ui.eclipse.nature.MavenNature;
  * 
  * @todo EXTERNALIZE
  */
-public class AddMavenNatureAction extends AbstractMavenAction {
+public class ManageNatureAction extends AbstractMavenAction {
 	
 	public void run(IAction action) {
 		try {

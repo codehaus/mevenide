@@ -89,7 +89,7 @@
          <action
                label="Disable Maven Nature"
                icon="icons/maven-disable.gif"
-               class="org.mevenide.ui.eclipse.actions.AddMavenNatureAction"
+               class="org.mevenide.ui.eclipse.actions.ManageNatureAction"
                menubarPath="maven.plugin.menu/MavenNature"
                enablesFor="1"
                id="org.mevenide.ui.eclipse.actions.removemavennature">
@@ -105,7 +105,7 @@
          <action
                label="Enable Maven Nature"
                icon="icons/maven.gif"
-               class="org.mevenide.ui.eclipse.actions.AddMavenNatureAction"
+               class="org.mevenide.ui.eclipse.actions.ManageNatureAction"
                menubarPath="maven.plugin.menu/MavenNature"
                enablesFor="1"
                id="org.mevenide.ui.eclipse.actions.addmavennature">
