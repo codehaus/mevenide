@@ -8,42 +8,43 @@
   xmlns:util="jelly:util"
   xmlns:x="jelly:xml"
   xmlns:doc="doc"
-  xmlns="dummy" trim="false">
+  xmlns="dummy" 
+  trim="false">
   <jsl:template match="document" trim="false">
     <j:useBean var="navbean" class="org.apache.maven.NavBean"/>
 	<j:set var="location" value="${outFile.substring(destdir.length())}"/>
 	<util:replace var="location" oldChar="\" newChar="/" value="${location}"/>
-
     <!-- Stores location for publish date / version -->
     <j:set var="date">${maven.xdoc.date}</j:set>
-      
-	<j:setProperties 
-		object="${navbean}"
-  		document="${doc}"
-  		location="${location}"/>
+	<j:setProperties object="${navbean}" document="${doc}" location="${location}"/>
 	
-	<x:doctype name="html"
-      publicId="-//W3C//DTD XHTML 1.0 Transitional//EN"
-      systemId="http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"/>
-
+    <x:doctype name="html" publicId="-//W3C//DTD XHTML 1.0 Transitional//EN" systemId="http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"/>
     <html>
       <head>
-        <j:set var="docTitle">
-          <x:expr select="./properties/title"/>
-        </j:set>
+        <j:set var="docTitle"><x:expr select="./properties/title"/></j:set>
         <x:if select="$nav/title">
-          <title>
-            <x:expr select="$nav/title"/> - ${docTitle}
-          </title>
+          <title><x:expr select="$nav/title"/> - ${docTitle}</title>
         </x:if>
         <x:if select="not($nav/title)">
           <title>${pom.name} - ${docTitle}</title>
         </x:if>
         
         <style type="text/css"><![CDATA[
-          @import url("${relativePath}/style/tigris.css");
-          @import url("${relativePath}/style/maven.css");
+          @import url("${relativePath}/style/maven-base.css");
         ]]></style>
+        
+        <j:set var="themeUrl" value="${maven.xdoc.theme.url}x"/>
+        <j:if test="${themeUrl != 'x'}">
+          <style type="text/css"><![CDATA[
+            @import url("${maven.xdoc.theme.url}");
+          ]]></style>
+        </j:if>
+
+        <j:if test="${themeUrl == 'x'}">
+          <style type="text/css"><![CDATA[
+            @import url("${relativePath}/style/maven-theme.css");
+          ]]></style>
+        </j:if>
         
         <util:file var="projectCssFile" name="${maven.docs.src}/style/project.css"/>
         <j:if test="${projectCssFile.exists()}">
@@ -51,17 +52,8 @@
             @import url("${relativePath}/style/project.css");
           ]]></style>
         </j:if>
-        
-        <!-- FIXME: once someone works out how to stop this breaking
-        <x:element name="script"><x:attribute name="type">text/javascript</x:attribute>
-          if (document.layers) {
-                document.writeln(''+
-                '<link rel="stylesheet" type="text/css" href="${relativePath}/style/ns4_only.css" media="screen" /><link rel="stylesheet" type="text/css" href="${relativePath}/style/maven_ns4_only.css" media="screen"/>');
-              }
-            </x:element>
-        -->
-        <link rel="stylesheet" type="text/css" href="${relativePath}/style/print.css" media="print"/>
-        <meta http-equiv="Content-Type" content="text/html; charset=${outputencoding}"></meta>
+
+        <meta http-equiv="Content-Type" content="text/html; charset=${outputencoding}"/>
         <x:forEach var="author" select="./properties/author">
           <meta name="author" content="${author.text}"/>
           <meta name="email" content="${author.attribute('email').value}"/>
@@ -79,10 +71,8 @@
         </j:whitespace>
 
         <div id="banner">
-          <a name="_generated_top"/>
           <table border="0" cellspacing="0" cellpadding="8" width="100%">
             <tr>
-            	
               <!-- project logo and link -->
               <td align="left" >
                
@@ -97,8 +87,6 @@
                     <a href="${pom.url}">
                       <img src="${image}" align="left" alt="${pom.name}" border="0"/>
                     </a>
-                    
-                   
                     
                   </j:if>
                   
@@ -130,7 +118,6 @@
                 </j:if>
               </td>
 
-              
             </tr>
           </table>
         </div>
@@ -145,9 +132,6 @@
               </j:if>
               <td>
                 <div align="right">
-                  
-                  
-                  
                   <j:if test="${date == 'right'}">
                     Last published: ${build.date}
                     <x:if select="$nav/body/links">|</x:if>
@@ -159,33 +143,27 @@
                   <x:if select="not($nav/body/links)">
                     <!-- FIXME &nbsp; -->
                   </x:if>
-                  <!-- jsl:applyTemplates select="$nav/body/search"/ -->
-                  
-                  
-                  
                 </div>
               </td>
-             
             </tr>
           </table>
         </div>
         <!-- Body of the page -->
-        <table border="0" cellspacing="0" cellpadding="8" width="100%"> <!-- id="main" -->
+        <table border="0" cellspacing="0" cellpadding="8" width="100%" id="layout">
           <tr valign="top">
-            <td id="leftcol" width="20%">
-              <div id="navcolumn">
+            <td id="leftColumn">
+              <div id="navBox">
                 <j:if test="${date == 'navigation-top'}">
-                  <div>
-                    <small>Last published: ${build.date}</small>
+                  <div id="lastPublished">
+                    Last published: ${build.date}
                   </div>
                 </j:if>
-				
-				<table cellspacing="1" width="100%">
-                  <x:if select="$nav">
-                    <jsl:applyTemplates select="$nav/body/menu[not(@type) | @type='header']"/>
-                  </x:if>
-				  <jsl:applyTemplates select="$projectNav/body/menu"/>
-                </table>
+
+                <x:if select="$nav">
+                  <jsl:applyTemplates select="$nav/body/menu[not(@type) | @type='header']"/>
+                </x:if>
+
+				<jsl:applyTemplates select="$projectNav/body/menu"/>
                 
                 <!-- Standard Maven Navigation -->
                 <j:set var="fileName">${file}</j:set>
@@ -195,21 +173,21 @@
                 <j:set var="poweredbyurl">${maven.xdoc.poweredby.url}</j:set>
                 <j:if test="${!empty(poweredbyimage)}">
                 	<div style="margin-top: 20px; width: 100%; text-align: center;">
-                		<a href="${poweredbyurl}" title="${poweredbytitle}"><img alt="${maven.xdoc.poweredby.title}" style="border: 1px solid black" src="${relativePath}/images/logos/${poweredbyimage}"/></a>
+                		<a href="${poweredbyurl}" title="${poweredbytitle}"><img id="poweredBy" alt="${maven.xdoc.poweredby.title}" src="${relativePath}/images/logos/${poweredbyimage}"/></a>
                 	</div>
                 </j:if>
               
                 <j:if test="${date == 'navigation-bottom'}">
-                  <div>
-                    <small>Last published: ${build.date}</small>
+                  <div id="lastPublished">
+                    Last published: ${build.date}
                   </div>
                 </j:if>
               </div>
             </td>
             <td rowspan="2">
-              <div id="bodycol">
+              <div id="bodyColumn">
                 <!-- Insert MAIN body here -->
-                <div class="app">
+                <div class="contentBox">
                   <!-- FIXME really shouldn't use $doc, but jelly loses it's context again -->
                   <jsl:applyTemplates select="$doc/document/body/section"/>
                   <jsl:applyTemplates select="$doc/document/body/glossary" />
@@ -223,6 +201,7 @@
             </td>
           </tr>
         </table>
+        
         <div id="footer">
           <table style='width:100%' border="0" cellspacing="0" cellpadding="4">
             <jsl:applyTemplates select="$nav/body/footer"/>
@@ -252,6 +231,7 @@
             </tr>
           </table>
         </div>
+        
       </x:element>
     </html>
   </jsl:template>
@@ -263,53 +243,59 @@
 
   <!-- Process a menu for the navigation bar -->
   <jsl:template match="menu" trim="false">
-    <tr>
-        <th><x:expr select="@name"/></th>
-    </tr>
-    <tr>
-        <td><jsl:applyTemplates select="item"/></td>
-        <tr><td> </td></tr>
-    </tr>
+    <div class="navSection">
+      <div class="navSectionHead"><x:expr select="@name"/></div>
+      <jsl:applyTemplates select="item"/>
+    </div>
   </jsl:template>
 
   <jsl:template match="item" trim="false">
     <x:set var="item" select="."/>
     <x:set var="_name" select="string(@name)"/>
     <x:set var="_link" select="string(@href)"/>
-    <x:set var="_childCount" select="count(./item)"/>
-    <x:set var="_parentName" select="name(..)"/>
+    <x:set var="_img" select="string(@img)"/>
+	<x:set var="_childCount" select="count(./item)"/>
 	<j:set var="_isCollapsed" value="${navbean.isCollapsed(item.get(0))}"/>
 	<j:set var="_state" value="none"/>
-	<!-- allow one nested level only -->
-	<table cellspacing="0" cellpadding="0" border="0">
-    <tr>
-      <!-- j:if test="${_childCount.intValue() eq 0}" -->
-        <td><small><img src="${relativePath}/images/none.png" width="8" height="16"/></small></td>
-      <!--/j:if-->
-      <td>
+	
+	<j:if test="${_childCount.intValue() gt 0}">
+		<j:if test="${!_isCollapsed}">
+          <j:set var="_state" value="expanded"/>
+		</j:if>
+		<j:if test="${_isCollapsed}">
+          <j:set var="_state" value="collapsed"/>
+		</j:if>
+	</j:if>
+		   
+	
+    <div class="navLink">
       <small>
+        <j:set var="ancestor" value=".."/>
+        <x:set var="ancestorName" select="name(${ancestor})"/>
+        <!-- j:while test="${ancestorName == 'item'}" -->
+        <j:if test="${ancestorName == 'item'}">
+             <img src="${relativePath}/images/none.png" width="5"/>
+             <!-- x:set var="ancestorName" select="name(${ancestor + '/..'})"/ -->
+        <!-- /j:while -->
+        </j:if>
       	<j:if test="${navbean.isSelected(item.get(0))}">
-      		<j:if test="${_childCount.intValue() eq 0}"><j:if test="${_parentName == 'item'}"><small><img src="${relativePath}/images/none.png" width="8" height="1"/><img src="${relativePath}/images/_dummy.png" width="1"/></small></j:if><doc:itemLink name="${_name}" link="${_link}" /></j:if>
-      		<j:if test="${_childCount.intValue() gt 0}"><a href="${_link}">-</a><doc:itemLink name="${_name}" link="${_link}" state="_dummy"/></j:if>
+      		<b><doc:itemLink name="${_name}" link="${_link}" img="${_img}" state="${_state}"/></b>
       	</j:if>
       	<j:if test="${!navbean.isSelected(item.get(0))}">
-      		<j:if test="${_childCount.intValue() eq 0}"><j:if test="${_parentName == 'item'}"><small><img src="${relativePath}/images/none.png" width="8" height="1"/><img src="${relativePath}/images/_dummy.png" width="1"/></small></j:if><doc:itemLink name="${_name}" link="${_link}" /></j:if>
-      		<j:if test="${_childCount.intValue() gt 0}"><j:if test="${navbean.isCollapsed(item.get(0))}"><a href="${_link}">+</a></j:if><j:if test="${!navbean.isCollapsed(item.get(0))}"><a href="${_link}">-</a></j:if><doc:itemLink name="${_name}" link="${_link}" state="_dummy"/></j:if>
+      		<doc:itemLink name="${_name}" link="${_link}" img="${_img}" state="${_state}"/>
       	</j:if>
       </small>
 	  <j:if test="${!navbean.isCollapsed(item.get(0))}">
-	  	<jsl:applyTemplates select="item"/>
+        <jsl:applyTemplates select="item"/>
       </j:if>
-      </td>
-      </tr>
-    </table>
+    </div>
   </jsl:template>
 
   <!-- Process the breadcrumb navbar -->
   <jsl:template match="links" trim="false">
     <j:set var="linkCount" value="1"/>
     <x:forEach var="link" select="item">
-      <j:if test="${linkCount != 1}"> </j:if>
+      <j:if test="${linkCount != 1}">${maven.xdoc.crumb.separator}</j:if>
       <j:set var="_name"><x:expr select="@name"/></j:set>
       <j:set var="_link"><x:expr select="@href"/></j:set>
       <doc:itemLink name="${_name}" link="${_link}"/>
@@ -347,15 +333,22 @@
 
   <!-- process a documentation section -->
   <jsl:template match="section" trim="false">
-    <div class="h3">
+    <div class="section">
       <j:set var="_sectionName"><x:expr select="@name"/></j:set>
       <j:if test="${!empty(_sectionName)}">
-      	<h3>
-          <a name="${_sectionName}">${_sectionName}</a>
-        </h3>
+          <div class="sectionTitle"><a name="${_sectionName}">${_sectionName}</a></div>
       </j:if>
       <jsl:applyTemplates select="*"/>
-      
+    </div>
+  </jsl:template>
+
+  <jsl:template match="subsection" trim="false">
+    <div class="subsection">
+      <j:set var="_sectionName"><x:expr select="@name"/></j:set>
+      <j:if test="${!empty(_sectionName)}">
+          <div class="subsectionTitle"><a name="${_sectionName}">${_sectionName}</a></div>
+      </j:if>
+      <jsl:applyTemplates select="*"/>
     </div>
   </jsl:template>
 
@@ -365,6 +358,7 @@
   	<x:set var="_toc" select="string(@toc)"/>
   	<x:set var="_next" select="string(@next)"/>
   	<div align="center" class="navbar">
+  	<p>
   	[ 
   		<j:if test="${ ! empty(_prev) }"><a href="${_prev}">previous</a></j:if>
   		<j:if test="${ empty(_prev) }">previous</j:if>
@@ -374,25 +368,22 @@
   	|
   		<j:if test="${ ! empty(_next)}"><a href="${_next}">next</a></j:if>	
   		<j:if test="${ empty(_next)}">next</j:if> 
-  	]
+  	]</p>
   	</div>
   </jsl:template>
   
-  
-  <jsl:template match="subsection" trim="false">
-    <div class="h4">
+  <jsl:template match="subsubsection" trim="false">
+    <div class="subsubsection">
       <j:set var="_sectionName"><x:expr select="@name"/></j:set>
       <j:if test="${!empty(_sectionName)}">
-        <h4>
-          <a name="${_sectionName}">${_sectionName}</a>
-        </h4>
+          <div class="subsubsectionTitle"><a name="${_sectionName}">${_sectionName}</a></div>
       </j:if>
       <jsl:applyTemplates select="*"/>
     </div>
   </jsl:template>
 
   <jsl:template match="source" trim="false">
-    <div id="source">
+    <div class="source">
       <pre><x:expr select="."/></pre>
     </div>
   </jsl:template>
@@ -407,7 +398,10 @@
 
   <jsl:template match="table" trim="false">
     <j:set var="rowcount" value="0"/>
+<!--
     <table cellpadding="3" cellspacing="2" border="1" width="100%">
+-->
+    <table class="bodyTable">
       <jsl:applyTemplates select="*"/>
     </table>
   </jsl:template>
@@ -533,25 +527,15 @@
       </jsl:template>
 
   <!-- remove the space at the end of parsed "a" anchors -->
-  <jsl:template match="a" trim="false">
-    <jsl:copy trim="true">
-      <jsl:applyTemplates trim="true"/>
-    </jsl:copy>
-  </jsl:template>
-
+  <jsl:template match="a" trim="false"><jsl:copy trim="true"><jsl:applyTemplates trim="true"/></jsl:copy></jsl:template>
+  
   <!-- copy any other elements through -->
-  <jsl:template match="*" trim="false">
-    <jsl:copy trim="false">
-      <jsl:applyTemplates trim="false"/>
-    </jsl:copy>
-   </jsl:template>
+  <jsl:template match="*" trim="false"><jsl:copy trim="false"><jsl:applyTemplates trim="false"/></jsl:copy></jsl:template>
 
    <!-- element values don't pass through as text -->
    <jsl:template match="@*"/>
 
    <!-- CDATA and text nodes pass-thru -->
-   <jsl:template match="text()">
-     <x:expr select="."/>
-   </jsl:template>
+   <jsl:template match="text()"><x:expr select="."/></jsl:template>
 
 </jsl:stylesheet>
