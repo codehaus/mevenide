@@ -16,7 +16,10 @@
   	  <action dev="gdodinet" type="fix" issue="MEVENIDE-71">
 		Missing ~/build.properties does not cause synchronization to fail anymore 
       </action>
-      <action dev="gdodinet" type="fix" issue="MEVENIDE-66">
+      <action dev="gdodinet" type="fix" issue="MEVENIDE-70">
+	     Now checks that maven_home, java_home and tools_jar are correctly defined before trying to launch
+	  </action>
+	  <action dev="gdodinet" type="fix" issue="MEVENIDE-66">
 		Fix odd focus behavior in the Maven Project Wizard
       </action>
       <action dev="gdodinet" type="fix" issue="MEVENIDE-57">
@@ -35,7 +38,7 @@
 		Dynamic preference pages donot rely anymore on explicit plugin activation
       </action>
       <action dev="gdodinet" type="add">
-		Add Maven Nature and Builder. This enables to enable/disable goals on a per-pattern basis. Also allows to auto-trigger goals
+		Add Maven Nature and Builder. Allows to enable/disable goals on a per-pattern basis. Also allows to auto-trigger goals
       </action>
     </release>
 	<release version="0.2.2" date="2004-07-25">
