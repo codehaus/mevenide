@@ -9,11 +9,11 @@
   xmlns:artifact="artifact">
 
   <!--==================================================================-->
-  <!-- Default goal : Builds a uberjar file                             -->
+  <!-- Default goal : Builds a nbm file                             -->
   <!--==================================================================-->    
   <goal 
     name="nbm" 
-    prereqs="nbm:jar" 
+    prereqs="nbm:nbm" 
     description="Build NBM file"/>
 
   <!--==================================================================-->
@@ -25,11 +25,9 @@
     <j:set var="maven.nbm.jar.location" value="netbeans/modules"/>    
     <j:choose>
         <j:when test="${maven.nbm.autoload}">
-           <ant:echo message="HELLO BABY!!!!!! autoload" />
            <j:set var="maven.nbm.jar.location" value="netbeans/modules/autoload"/>
         </j:when>
         <j:otherwise>
-            <ant:echo message="HELLO BABY!!!!!!" />
             <j:set var="maven.nbm.jar.location" value="netbeans/modules"/>    
         </j:otherwise>
     </j:choose>
@@ -63,7 +61,7 @@ The maven.nbm.manifest.bundle.basedir and  maven.nbm.manifest.bundle.include hav
        includes="${maven.nbm.manifest.bundle.include}" />
    </goal>
   <!--==================================================================-->
-  <!-- Build the uberjar                                                -->
+  <!-- Build the nbm                                               -->
   <!--==================================================================-->    
   <goal 
     name="nbm:nbm"
@@ -76,11 +74,12 @@ The maven.nbm.manifest.bundle.basedir and  maven.nbm.manifest.bundle.include hav
   </ant:taskdef>
     <!-- copy resulting jar in the relevant location -->
     
+<!--DEBUG
     <ant:echo message="autoload=${maven.nbm.autoload}" />
     <ant:echo message="module=${maven.nbm.jar.location}/${maven.final.name}.jar" />
     <ant:echo message="url=${pom.url}" />
     <ant:echo message="licence=${maven.nbm.licence}" />
-    
+    -->
     <ant:makenbm file="${maven.final.name}.nbm"
              topdir="${maven.nbm.build.dir}"
              module="${maven.nbm.build.dir}/${maven.nbm.jar.location}/${maven.final.name}.jar"
@@ -90,6 +89,10 @@ The maven.nbm.manifest.bundle.basedir and  maven.nbm.manifest.bundle.include hav
       <license file="${maven.nbm.licence}"/>
       <signature keystore="?" storepass="?" alias="?"/> -->
     </ant:makenbm>
+    <!--
+     HACK.. makeNBM will drop the file to the basedir.. move it to the target/nbm folder
+    -->
+    <ant:move toDir="${maven.nbm.build.dir}" file="${basedir}/${maven.final.name}.nbm"/>
 
     <!--    <j:choose>
         <j:when test="${maven.nbm.autoload}">
