@@ -18,16 +18,21 @@ package org.mevenide.project.validation;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Branch;
 import org.apache.maven.project.Build;
 import org.apache.maven.project.Contributor;
+import org.apache.maven.project.Dependency;
 import org.apache.maven.project.Developer;
 import org.apache.maven.project.MailingList;
 import org.apache.maven.project.Organization;
 import org.apache.maven.project.Project;
 import org.apache.maven.project.Repository;
 import org.apache.maven.project.Version;
+import org.mevenide.reports.JDomReportsFinder;
 import org.mevenide.util.ResolverUtils;
 import org.mevenide.util.StringUtils;
 
@@ -40,6 +45,7 @@ import org.mevenide.util.StringUtils;
  * 
  */
 public class ContentValidator implements IProjectValidator {
+    private static final Log log = LogFactory.getLog(ContentValidator.class);
     
     private List validationWarnings = new ArrayList();
     private List validationErrors = new ArrayList();
@@ -50,25 +56,42 @@ public class ContentValidator implements IProjectValidator {
         validateSimpleElement(project.getGroupId(), "groupId");
         validateSimpleElement(project.getArtifactId(), "artifactId");
         validateSimpleElement(project.getCurrentVersion(), "currentVersion");
-        validateOrganization(project.getOrganization());
+        validateOrganization(project, project.getOrganization());
         validateSimpleElement(project.getInceptionYear(), "inceptionYear");
-        validatePackage(project.getPackage());
         validateFileElement(project, project.getLogo(), "logo");
         validateSimpleElement(project.getShortDescription(), "shortDescription");
-        validateRepository(project.getRepository()); //@todo
-        validateVersions(project.getVersions());  //@todo
-        validateBranches(project.getBranches());  //@todo
-        validateMailingLists(project.getMailingLists());  //@todo
+        validateRepository(project.getRepository()); 
+        validateVersions(project.getVersions());  
+        validateBranches(project.getBranches());  
+        validateMailingLists(project.getMailingLists());  
         validateDevelopers(project.getDevelopers());  
         validateContributors(project.getContributors());
-        validateLicenses(project.getLicenses());  //@todo
-        validateDependencies(project.getDependencies());  //@todo
+        validateDependencies(project.getDependencies());  
         validateBuild(project.getBuild());  //@todo
         validateReports(project.getReports());  //@todo
     }
     
     private void validateReports(List reports) {
-        
+        try {
+            if ( reports != null ) {
+                String[] availableReports = new JDomReportsFinder().findReports();
+                for (int i = 0; i < reports.size(); i++) {
+                    validateReport((String) reports.get(i), i, Arrays.asList(availableReports));
+                }
+            }
+        }
+        catch (Exception e) {
+            String message = "Error occured while retrieving report goal registrars"; 
+            log.error(message, e);
+        }
+    }
+
+    private void validateReport(String report, int index, List availableReports) {
+         if ( !StringUtils.isNull(report) ) {
+             if ( !availableReports.contains(report) ) {
+                 validationWarnings.add("report[" + index + "] is an unknown report : " + report);
+             }
+         }
     }
 
     private void validateBuild(Build build) {
@@ -76,19 +99,30 @@ public class ContentValidator implements IProjectValidator {
     }
 
     private void validateDependencies(List dependencies) {
-     
+        if ( dependencies != null ) {
+            for (int i = 0; i < dependencies.size(); i++) {
+                validateDependency((Dependency) dependencies.get(i), i);
+            }
+        }
     }
 
-    private void validateLicenses(List licenses) {
+    private void validateDependency(Dependency dependency, int index) {
+        validateId(dependency, index);
+        validateSimpleElement(dependency.getVersion(), "dependency[" + index + "].version");
         
     }
 
-    private void validatePackage(String packageList) {
-        
+    private void validateId(Dependency dependency, int index) {
+        try {
+            dependency.getId();
+        }
+        catch ( IllegalStateException e ) {
+            validationErrors.add("dependency[" + index + "] must declare either <groupId/> and <artifactId/>");
+        }
     }
-    
+
     private void validateFileElement(Project project, String file, String elementName) {
-        if ( file != null ) {
+        if ( !StringUtils.isNull(file) ) {
             if ( !new File(project.getFile().getParent(), ResolverUtils.getInstance().resolve(project, file)).exists() ) {
                 validationWarnings.add(elementName + " file doesnot exist.");
             }
@@ -134,11 +168,11 @@ public class ContentValidator implements IProjectValidator {
 	        try {
 	            int tz = Integer.parseInt(timezone);
 	            if ( tz > 14 || tz < - 14 ) {
-	                validationErrors.add(prefix + "[" + index + "].timezone should be less than 14 and greater than -14");
+	                validationErrors.add(prefix + "[" + index + "].timezone must be less than 14 and greater than -14");
 	            }
 	        }
 	        catch ( NumberFormatException nfe ) {
-	            validationErrors.add(prefix + "[" + index + "].timezone should be an integer");
+	            validationErrors.add(prefix + "[" + index + "].timezone must be an integer");
 	        }
         }
     }
@@ -156,36 +190,60 @@ public class ContentValidator implements IProjectValidator {
         validateContactDetails(contributor, "contributor", index);
     }
     
-    private void validateOrganization(Organization organization) {
-        
+    private void validateOrganization(Project project, Organization organization) {
+        if ( organization == null ) {
+            validationErrors.add("organization must not be null");
+        }
+        else {
+            validateSimpleElement(organization.getName(), "organization.name");
+            validateFileElement(project, organization.getLogo(), "organization.logo");
+        }
     }
     
     private void validateRepository(Repository repository) {
-        
+        if ( repository != null ) {
+            validateSimpleElement(repository.getConnection(), "repository.connection");
+        }
     }
     
     private void validateVersions(List versions) {
-        
+        if ( versions != null ) {
+            for (int i = 0; i < versions.size(); i++) {
+                validateVersion((Version) versions.get(i), i);
+            }
+        }
     }
     
-    private void validateVersion(Version version) {
-        
+    private void validateVersion(Version version, int index) {
+        validateSimpleElement(version.getId(), "version[" + index + "].id");
+        validateSimpleElement(version.getName(), "version[" + index + "].name");
+        validateSimpleElement(version.getTag(), "version[" + index + "].tag");
     }
     
     private void validateBranches(List branches) {
-        
+        if ( branches != null ) {
+            for (int i = 0; i < branches.size(); i++) {
+                validateBranch((Branch) branches.get(i), i);
+            }
+        }
     }
     
-    private void validateBranch(Branch branch) {
-        
+    private void validateBranch(Branch branch, int index) {
+        validateSimpleElement(branch.getTag(), "branch[" + index + "].tag");
     }
     
     private void validateMailingLists(List mailingLists) {
-        
+        if ( mailingLists != null ) {
+            for (int i = 0; i < mailingLists.size(); i++) {
+                validateMailingList((MailingList) mailingLists.get(i), i);
+            }
+        }
     }
     
-    private void validateMailingList(MailingList mailingList) {
-        
+    private void validateMailingList(MailingList mailingList, int index) {
+        validateSimpleElement(mailingList.getName(), "mailingList[" + index + "].name");
+        validateSimpleElement(mailingList.getSubscribe(), "mailingList[" + index + "].subscribe");
+        validateSimpleElement(mailingList.getUnsubscribe(), "mailingList[" + index + "].unsubscribe");
     }
 
 }

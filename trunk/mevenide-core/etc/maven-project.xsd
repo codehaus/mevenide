@@ -24,9 +24,9 @@
       <xs:sequence>
         <xs:element ref="extend" minOccurs="0"/>
         <xs:element ref="pomVersion"/>
+		<xs:element ref="artifactId"/>
         <xs:element ref="name"/>
         <xs:element ref="groupId" minOccurs="0"/>
-        <xs:element ref="artifactId"/>
         <xs:element ref="currentVersion"/>
         <xs:element ref="organization"/>
         <xs:element ref="inceptionYear"/>

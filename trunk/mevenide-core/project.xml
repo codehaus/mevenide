@@ -22,6 +22,14 @@
       </version>
     </versions>    
     <dependencies>
+    	<dependency>     
+            <groupId>mevenide</groupId>
+            <artifactId>goals-grabber</artifactId>
+            <version>0.3-SNAPSHOT</version>
+        	<properties>
+                <eclipse.plugin.bundle>false</eclipse.plugin.bundle>
+         	</properties>
+        </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
