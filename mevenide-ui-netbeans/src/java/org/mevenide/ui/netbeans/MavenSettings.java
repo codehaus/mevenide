@@ -74,7 +74,15 @@ public class MavenSettings extends SystemOption
             exec = new MavenExecutor();
         }
         setExecutor(exec);
-        setTopGoals("clean java jar dist javadoc"); //NOI18N
+        String[] defaultGoals = new String[]
+        {
+            "clean",
+            "java",
+            "jar",
+            "dist",
+            "javadoc"
+        };
+        setTopGoals(defaultGoals);
     }
     
     public String displayName()
@@ -141,16 +149,16 @@ public class MavenSettings extends SystemOption
      * @return Value of property topGoals.
      *
      */
-    public String getTopGoals()
+    public String[] getTopGoals()
     {
-        return (String)getProperty(PROP_TOP_GOALS);
+        return (String[])getProperty(PROP_TOP_GOALS);
     }
     
     /** will set the favourite maven goals, used in executor action
      * @param topGoals New value of property topGoals.
      *
      */
-    public void setTopGoals(String topGoals)
+    public void setTopGoals(String[] topGoals)
     {
         putProperty(PROP_TOP_GOALS, topGoals);
     }

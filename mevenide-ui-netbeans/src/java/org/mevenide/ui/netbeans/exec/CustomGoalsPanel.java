@@ -49,42 +49,88 @@
 
 package org.mevenide.ui.netbeans.exec;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+import javax.swing.event.DocumentListener;
 import javax.swing.tree.TreeSelectionModel;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.mevenide.goals.grabber.IGoalsGrabber;
-import org.mevenide.goals.manager.GoalsGrabbersManager;
-import org.mevenide.ui.netbeans.MavenProjectCookie;
+import org.mevenide.ui.netbeans.GoalsGrabberProvider;
 import org.mevenide.ui.netbeans.goals.GoalNameCookie;
 import org.mevenide.ui.netbeans.goals.GoalsRootNode;
 import org.openide.ErrorManager;
 import org.openide.explorer.ExplorerManager;
-import org.openide.loaders.DataObject;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
+import org.openide.nodes.Children.Array;
 import org.openide.util.NbBundle;
 import org.openide.util.RequestProcessor;
+
 
 /**
  *
  * @author  Milos Kleint (ca206216@tiscali.cz)
  */
-public class CustomGoalsPanel extends javax.swing.JPanel
+public class CustomGoalsPanel extends JPanel
 {
     private static final Log logger = LogFactory.getLog(CustomGoalsPanel.class);
+    /**
+     * Action name, fired when the text in the goals textfield changes.
+     */
+    public static final String ACTION_GOALS_CHANGED = "GoalsChanged"; //NOI18N
     
-    private DataObject projectDO;
+    private GoalsGrabberProvider provider;
+    private List actionListeners = new ArrayList();
+    
     /** Creates new form CustomGoalsPanel */
-    public CustomGoalsPanel(DataObject projectDataObject)
+    public CustomGoalsPanel(GoalsGrabberProvider goalsProvider)
     {
         initComponents();
-        projectDO = projectDataObject;
+        provider = goalsProvider;
         tvGoals.setSelectionMode(TreeSelectionModel.DISCONTIGUOUS_TREE_SELECTION);
         tvGoals.setRootVisible(false);
+        txtEnter.getDocument().addDocumentListener(new DocListener());
+    }
+    
+    public void addActionListener(ActionListener listener)
+    {
+        synchronized (actionListeners) {
+            actionListeners.add(listener);
+        }
+    }
+    public void removeActionListener(ActionListener listener)
+    {
+        synchronized (actionListeners) {
+            actionListeners.remove(listener);
+        }
+    }
+    
+    protected void fireActionEvent(ActionEvent event)
+    {
+        if (actionListeners.size() > 0) {
+            List listeners = new ArrayList();
+            synchronized (actionListeners) {
+                listeners.addAll(actionListeners);
+            }
+            if (listeners.size() > 0)
+            {
+                Iterator it = listeners.iterator();
+                while (it.hasNext())
+                {
+                    ActionListener list = (ActionListener)it.next();
+                    list.actionPerformed(event);
+                }
+            }
+        }
     }
     
     public String getGoalsToExecute()
@@ -92,9 +138,11 @@ public class CustomGoalsPanel extends javax.swing.JPanel
         return txtEnter.getText();
     }
     
-    public boolean shouldSaveToFavourites()
+    public void setGoalsToExecute(String goals)
     {
-        return cbSaveToFavourites.isSelected();
+        txtEnter.setText(goals);
+        txtEnter.setSelectionStart(0);
+        txtEnter.setSelectionEnd(goals.length());
     }
     
     /** This method is called from within the constructor to
@@ -111,21 +159,19 @@ public class CustomGoalsPanel extends javax.swing.JPanel
         lblGoals = new javax.swing.JLabel();
         epGoals = new org.openide.explorer.ExplorerPanel();
         tvGoals = new org.openide.explorer.view.BeanTreeView();
-        cbSaveToFavourites = new javax.swing.JCheckBox();
 
         setLayout(new java.awt.GridBagLayout());
 
         lblEnter.setLabelFor(txtEnter);
         lblEnter.setText(org.openide.util.NbBundle.getBundle(CustomGoalsPanel.class).getString("CustomGoalsPanel.lblEnter.text"));
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.insets = new java.awt.Insets(12, 12, 0, 0);
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         add(lblEnter, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.insets = new java.awt.Insets(12, 6, 0, 12);
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(0, 6, 0, 0);
         add(txtEnter, gridBagConstraints);
 
         lblGoals.setLabelFor(epGoals);
@@ -134,8 +180,8 @@ public class CustomGoalsPanel extends javax.swing.JPanel
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.gridwidth = 2;
-        gridBagConstraints.insets = new java.awt.Insets(6, 12, 0, 0);
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(6, 0, 0, 0);
         add(lblGoals, gridBagConstraints);
 
         epGoals.add(tvGoals, java.awt.BorderLayout.CENTER);
@@ -145,20 +191,11 @@ public class CustomGoalsPanel extends javax.swing.JPanel
         gridBagConstraints.gridy = 2;
         gridBagConstraints.gridwidth = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.insets = new java.awt.Insets(3, 12, 0, 12);
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         gridBagConstraints.weightx = 0.1;
         gridBagConstraints.weighty = 0.1;
+        gridBagConstraints.insets = new java.awt.Insets(6, 0, 0, 0);
         add(epGoals, gridBagConstraints);
-
-        cbSaveToFavourites.setText(org.openide.util.NbBundle.getBundle(CustomGoalsPanel.class).getString("CustomGoalsPanel.cbSaveToFavs.text"));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 3;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.insets = new java.awt.Insets(6, 6, 12, 12);
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        add(cbSaveToFavourites, gridBagConstraints);
 
     }//GEN-END:initComponents
   
@@ -173,16 +210,15 @@ public class CustomGoalsPanel extends javax.swing.JPanel
             {
                 try
                 {
-                    MavenProjectCookie cookie = (MavenProjectCookie)projectDO.getCookie(MavenProjectCookie.class);
-                    final IGoalsGrabber grabber = GoalsGrabbersManager.getGoalsGrabber(cookie.getProjectFile().getAbsolutePath());
+                    final IGoalsGrabber grabber = provider.getGoalsGrabber();
                     if (grabber == null)
                     {
+                        logger.error("No grabber");
                         throw new Exception("no grabber");
                     }
                     if (grabber.getPlugins() == null)
                     {
                         grabber.refresh();
-                        
                     }
                     SwingUtilities.invokeLater(new Runnable()
                     {
@@ -210,7 +246,7 @@ public class CustomGoalsPanel extends javax.swing.JPanel
     
     private Node createLoadingNode()
     {
-        Children childs = new Children.Array();
+        Children childs = new Array();
         Node loading = new AbstractNode(Children.LEAF);
         loading.setName("Loading"); //NOI18N
         loading.setDisplayName(NbBundle.getBundle(CustomGoalsPanel.class).getString("Loading"));
@@ -220,7 +256,7 @@ public class CustomGoalsPanel extends javax.swing.JPanel
 
     private Node createNoGoalsNode()
     {
-        Children childs = new Children.Array();
+        Children childs = new Array();
         Node node = new AbstractNode(Children.LEAF);
         node.setName("NoGoals"); //NOI18N
         node.setDisplayName(NbBundle.getBundle(CustomGoalsPanel.class).getString("NoGoals"));
@@ -230,7 +266,6 @@ public class CustomGoalsPanel extends javax.swing.JPanel
     
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JCheckBox cbSaveToFavourites;
     private org.openide.explorer.ExplorerPanel epGoals;
     private javax.swing.JLabel lblEnter;
     private javax.swing.JLabel lblGoals;
@@ -279,5 +314,33 @@ public class CustomGoalsPanel extends javax.swing.JPanel
             }
         }
         
+    }
+
+    /**
+     * listener for changes in the text field, will trigger action events for the whole panel.
+     */
+    private class DocListener implements DocumentListener
+    {
+        
+        public void changedUpdate(javax.swing.event.DocumentEvent e)
+        {
+            generateActionEvent();
+        }
+        
+        public void insertUpdate(javax.swing.event.DocumentEvent e)
+        {
+            generateActionEvent();
+        }
+        
+        public void removeUpdate(javax.swing.event.DocumentEvent e)
+        {
+            generateActionEvent();
+        }
+        
+        private void generateActionEvent()
+        {
+                ActionEvent newEvent = new ActionEvent(CustomGoalsPanel.this, ActionEvent.ACTION_PERFORMED, ACTION_GOALS_CHANGED);
+                fireActionEvent(newEvent);
+        }
     }
 }

@@ -48,6 +48,9 @@
  */
 package org.mevenide.ui.netbeans.exec;
 
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -55,13 +58,17 @@ import java.util.List;
 import java.util.StringTokenizer;
 import javax.swing.JButton;
 import javax.swing.JMenuItem;
+import javax.swing.JPanel;
 import javax.swing.event.ChangeListener;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.mevenide.goals.grabber.IGoalsGrabber;
 import org.mevenide.goals.grabber.ProjectGoalsGrabber;
 import org.mevenide.goals.manager.GoalsGrabbersManager;
+import org.mevenide.ui.netbeans.GoalsGrabberProvider;
 import org.mevenide.ui.netbeans.MavenProjectCookie;
 import org.mevenide.ui.netbeans.MavenSettings;
+import org.mevenide.ui.netbeans.goals.GoalUtils;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.ErrorManager;
@@ -87,6 +94,7 @@ public class RunGoalsAction extends CookieAction implements Presenter.Popup {
     private static Log log = LogFactory.getLog(RunGoalsAction.class);
 
     private static final int MAX_ITEMS_IN_POPUP = 17;
+    private static final int MAX_LENGTH_OF_ITEM = 30;
     
     public JMenuItem getPopupPresenter() {
         return new SpecialSubMenu (this, new ActSubMenuModel (this), true);
@@ -177,7 +185,8 @@ public class RunGoalsAction extends CookieAction implements Presenter.Popup {
             final DataObject obj = (DataObject)nds[0].getCookie(DataObject.class);
             if (item.getType() == ACTION_SHOW_CUSTOM_DIALOG)
             {
-                CustomGoalsPanel panel = new CustomGoalsPanel(obj);
+                final MavenProjectCookie cook = (MavenProjectCookie)obj.getCookie(MavenProjectCookie.class);
+                GPanel panel = new GPanel(GoalUtils.createProjectGoalsProvider(cook.getProjectFile().getAbsolutePath()));
                 DialogDescriptor desc = new DialogDescriptor(panel, NbBundle.getMessage(RunGoalsAction.class, "RunGoalsAction.dialog.title"));
                 Object[] options = new Object[] {
                     new JButton(NbBundle.getMessage(RunGoalsAction.class, "RunGoalsAction.executeButton")),
@@ -249,19 +258,15 @@ public class RunGoalsAction extends CookieAction implements Presenter.Popup {
                     log.error("Error loading project-specific goals",ioe);
                 }
             }
-            String str = MavenSettings.getDefault().getTopGoals();
+            String[] str = MavenSettings.getDefault().getTopGoals();
             if (str != null)
             {
-                StringTokenizer tok = new StringTokenizer(str, " ", false);
-                if (tok.hasMoreTokens())
+                for (int i = 0; i < str.length; i++)
                 {
-                    while (tok.hasMoreTokens())
-                    {
-                        String next = tok.nextToken();
                         if (targets.size() < MAX_ITEMS_IN_POPUP) {
-                            targets.add(new ItemWrapper(next));
+                            targets.add(new ItemWrapper(
+                                    str[i].length() > MAX_LENGTH_OF_ITEM ? str[i].substring(0, MAX_LENGTH_OF_ITEM - 3) + "..." : str[i]));
                         }
-                    }
                 }
             }
             targets.add(new ItemWrapper(NbBundle.getMessage(RunGoalsAction.class, "RunGoalsAction.moreGoals"), ACTION_SHOW_CUSTOM_DIALOG));
@@ -313,4 +318,25 @@ public class RunGoalsAction extends CookieAction implements Presenter.Popup {
         
     }
 
+    /** a class that puts the CustomGoalsPanel into correct constraints
+     */
+    private static class GPanel extends JPanel
+    {
+        private CustomGoalsPanel panel;
+        public GPanel(GoalsGrabberProvider provider)
+        {
+            super();
+            setLayout(new GridBagLayout());
+            GridBagConstraints con = new GridBagConstraints();
+            con.insets = new Insets(12, 12, 12, 12);
+            panel = new CustomGoalsPanel(provider);
+            add(panel, con);
+        }
+        
+        public String getGoalsToExecute()
+        {
+            return panel.getGoalsToExecute();
+        }
+    }
+    
 }
