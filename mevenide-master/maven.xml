@@ -3,50 +3,64 @@
 		 xmlns:j="jelly:core"
 		 xmlns:velocity="jelly:org.apache.commons.jelly.tags.velocity.VelocityTagLibrary">
 
+
   <!-- 
   	TODO "debug" site generation !!!
   -->
-  
-
+ 
   <preGoal name="build">
-  	<!-- simulate project.properties inheritance -->
-  	<j:if test="${properties.inheritance}">
-  	  <copy file="${basedir}/project.properties" todir="${basedir}/../goals-grabber"/>	
-  	  <copy file="${basedir}/project.properties" todir="${basedir}/../mevenide-core"/>	
-  	  <copy file="${basedir}/project.properties" todir="${basedir}/../mevenide-ui-eclipse"/>	
-  	</j:if>
+	<!-- 
+		crappy trick to be removed when maven-new released
+	-->
+	
+	<copy todir="${maven.repo.local}/maven-new/jars" file="../mevenide-core/lib/maven-core-1.0-beta-11-SNAPSHOT.jar"/>
+	
+	
+	<!-- set eclipse.home property -->
+	<property environment="env"/>
+  	<property name="eclipse.home" location="${env.ECLIPSE_HOME}"/>
+	
+  	 	  
   	<!-- 
-  		ensure that all dependencies are present in the repository 
-  		by copying all needed eclipse-plugins jars
+  	  ensure that all dependencies are present in the repository 
+  	  by copying all needed eclipse-plugins jars
   	-->
   	<copy file="${eclipse.home}/plugins/org.eclipse.core.resources_2.1.0/resources.jar" 
-  		  tofile="${maven.home}/repository/eclipse/jars/eclipse-resources-2.1.0.jar"/>
+  	      tofile="${maven.repo.local}/eclipse/jars/eclipse-resources-2.1.0.jar"/>
+  
   	<copy file="${eclipse.home}/plugins/org.eclipse.debug.core_2.1.0/dtcore.jar" 
-  		  tofile="${maven.home}/repository/eclipse/jars/eclipse-dtcore-2.1.0.jar"/>
+  	      tofile="${maven.repo.local}/eclipse/jars/eclipse-dtcore-2.1.0.jar"/>
+  
   	<copy file="${eclipse.home}/plugins/org.eclipse.debug.ui_2.1.0/dtui.jar" 
-  		  tofile="${maven.home}/repository/eclipse/jars/eclipse-dtui-2.1.0.jar"/>
-  	<copy file="${eclipse.home}/plugins/org.eclipse.jdt.core_2.1.0/jdtcore.jar" 
-  		  tofile="${maven.home}/repository/eclipse/jars/eclipse-jdtcore-2.1.0.jar"/>
+  	      tofile="${maven.repo.local}/eclipse/jars/eclipse-dtui-2.1.0.jar"/>
+  
+    <copy file="${eclipse.home}/plugins/org.eclipse.jdt.core_2.1.0/jdtcore.jar" 
+  	      tofile="${maven.repo.local}/eclipse/jars/eclipse-jdtcore-2.1.0.jar"/>
+  
   	<copy file="${eclipse.home}/plugins/org.eclipse.jdt.launching_2.1.0/launching.jar" 
-  		  tofile="${maven.home}/repository/eclipse/jars/eclipse-launching-2.1.0.jar"/>
-  	<copy file="${eclipse.home}/plugins/${swt.plugin.dir}/swt.jar" 
-  		  tofile="${maven.home}/repository/eclipse/jars/eclipse-swt-2.1.0.jar"/>  	
+  	  	  tofile="${maven.repo.local}/eclipse/jars/eclipse-launching-2.1.0.jar"/>
+  
+  	<copy file="${eclipse.home}/plugins/org.eclipse.jface_2.1.0/jface.jar" 
+  		  tofile="${maven.repo.local}/eclipse/jars/eclipse-jface-2.1.0.jar"/>  	
+  	
+  	<copy file="${eclipse.home}/plugins/org.eclipse.core.runtime_2.1.0/runtime.jar" 
+  		  tofile="${maven.repo.local}/eclipse/jars/eclipse-runtime-2.1.0.jar"/> 
+  		  
+  	<copy file="${eclipse.home}/plugins/org.eclipse.ui.workbench_2.1.0/workbench.jar" 
+  		  tofile="${maven.repo.local}/eclipse/jars/eclipse-workbench-2.1.0.jar"/> 
+  		  
+    <copy file="${eclipse.home}/plugins/${swt.plugin.dir}/swt.jar" 
+  		  tofile="${maven.repo.local}/eclipse/jars/eclipse-swt-2.1.0.jar"/>  
   </preGoal>
-
-
+ 
+ 
   <goal name="build-all"
     	description="Build all Mevenide modules">
     <attainGoal name="build"/>
   </goal>
   
+  
   <goal name="build" description="Build each Mevenide module">
-	
-	<echo>
-		+-------------------------------------
-		|  maven.home = ${maven.home}        
-		|  maven.repo = ${maven.repo.local}   
-		+-------------------------------------
-	</echo>
 	
     <maven:reactor basedir=".."
       			   includes="goals-grabber/project.xml,mevenide-core/project.xml,mevenide-ui-eclipse/project.xml"
@@ -56,6 +70,8 @@
       			   ignoreFailures="false"/>
     
   </goal>
+  
+  
   
   <!-- build the aggregated site -->
   <goal name="build-site" description="Build Mevenide Site">
@@ -84,17 +100,7 @@
         			  template="${templateName}"/>
 
     </j:forEach -->
-     
-    <copy file="${basedir}/xdocs/images/mevenide-logo.jpg" todir="${pom.siteDirectory}/../goals-grabber/images/"/>		
-    <copy file="${basedir}/xdocs/images/mevenide-logo.jpg" todir="${pom.siteDirectory}/../mevenide-core/images/"/>
-    <copy file="${basedir}/xdocs/images/mevenide-logo.jpg" todir="${pom.siteDirectory}/../mevenide-ui-eclipse/images/"/>
-    <!-- copy file="${basedir}/xdocs/images/mevenide-logo.jpg" todir="${pom.siteDirectory}/../mevenide-master/images/"/ -->
-    		   
     
   </goal>
-  
-  <preGoal name="build-site">
-     <delete dir="E:/workspace/mevenide-site"/>
-  </preGoal>
-  
+ 
 </project>

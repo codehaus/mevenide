@@ -24,7 +24,7 @@
         <dependency>
            <groupId>maven-new</groupId>
            <artifactId>maven-core</artifactId>
-           <version>1.0-beta-11-SNAPSHOT-20032905</version>
+           <version>1.0-beta-11-SNAPSHOT</version>
            <url>http://maven.org/</url>
         </dependency>
         <dependency>
