@@ -23,8 +23,8 @@ import java.util.Enumeration;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.maven.project.Build;
-import org.apache.maven.project.Project;
+import org.apache.maven.model.Build;
+import org.apache.maven.project.MavenProject;
 import org.mevenide.ui.netbeans.MavenProjectCookie;
 import org.mevenide.ui.netbeans.project.FileSystemUtil;
 import org.openide.filesystems.FileSystem;
@@ -81,7 +81,7 @@ public class MountSourcesAction extends CookieAction
     
     private void mountSources(MavenProjectCookie cookie)
     {
-        Project proj = cookie.getMavenProject();
+        MavenProject proj = cookie.getMavenProject();
         if (proj == null)
         {
             //TODO report something?
@@ -97,12 +97,11 @@ public class MountSourcesAction extends CookieAction
         File projFileDir = cookie.getProjectFile().getParentFile();
         try
         {
-            build.resolveDirectories(projFileDir);
+            //build.resolveDirectories(projFileDir);
             
             mount(build.getSourceDirectory());
             mount(build.getUnitTestSourceDirectory());
             mount(build.getAspectSourceDirectory());
-            mount(build.getIntegrationUnitTestSourceDirectory());
         } catch (IOException exc)
         {
             logger.error("Error while resolving absolute paths, maybe not on local fs", exc);

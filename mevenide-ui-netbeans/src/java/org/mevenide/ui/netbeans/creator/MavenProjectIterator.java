@@ -34,11 +34,12 @@ import javax.swing.event.ChangeListener;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.maven.project.Build;
-import org.apache.maven.project.Project;
+import org.apache.maven.model.Build;
+import org.apache.maven.model.Model;
+import org.apache.maven.project.MavenProject;
 import org.mevenide.project.io.CarefulProjectMarshaller;
+import org.mevenide.project.io.DefaultProjectUnmarshaller;
 import org.mevenide.ui.netbeans.MavenProjectCookie;
-import org.mevenide.util.DefaultProjectUnmarshaller;
 import org.openide.WizardDescriptor.Panel;
 import org.openide.cookies.OpenCookie;
 import org.openide.filesystems.FileLock;
@@ -124,7 +125,7 @@ public class MavenProjectIterator implements TemplateWizard.Iterator
         // ALL templates translate to project.xml in the end.. at least for now..
         DataObject projObj = template.createFromTemplate(targetFolder, "project");
         MavenProjectCookie cook = (MavenProjectCookie)projObj.getCookie(MavenProjectCookie.class);
-        Project proj = (Project)wiz.getProperty(PROP_PROJECT);
+        MavenProject proj = (MavenProject)wiz.getProperty(PROP_PROJECT);
         
 //        //TEMPORARY not even sure it belongs here, but it irritates me..
 //        proj.setId(proj.getArtifactId());
@@ -183,11 +184,11 @@ public class MavenProjectIterator implements TemplateWizard.Iterator
         return toReturn;
     }
     
-    private void createSubfolders(Project proj, DataObject projObj, TemplateWizard wiz) throws Exception
+    private void createSubfolders(MavenProject proj, DataObject projObj, TemplateWizard wiz) throws Exception
     {
             File file = FileUtil.toFile(projObj.getPrimaryFile());
             DataFolder parentFolder = wiz.getTargetFolder();
-            Build build = proj.getBuild();
+            Build build = proj.getModel().getBuild();
             if (build != null) 
             {
                 if (build.getSourceDirectory() != null) 
@@ -203,10 +204,7 @@ public class MavenProjectIterator implements TemplateWizard.Iterator
                 {
                     DataFolder.create(parentFolder, build.getAspectSourceDirectory());
                 }
-                if (build.getIntegrationUnitTestSourceDirectory() != null)
-                {
-                    DataFolder.create(parentFolder, build.getIntegrationUnitTestSourceDirectory());
-                }
+               
             }        
     }
 
@@ -252,7 +250,7 @@ public class MavenProjectIterator implements TemplateWizard.Iterator
             }
         }
         //TODO.. read some predefined project..
-        Project project = null;
+        MavenProject project = null;
         try {
             InputStream str = wiz.getTemplate().getPrimaryFile().getInputStream();
             logger.debug("file=" + wiz.getTemplate().getPrimaryFile().getPackageNameExt('/','.'));
@@ -264,16 +262,18 @@ public class MavenProjectIterator implements TemplateWizard.Iterator
 //                logger.debug("line=" + line);
 //                line = read.readLine();
 //            }
-            project = mars.parse(new InputStreamReader(str));
+            project = mars.unmarshall(new InputStreamReader(str));
         } catch (FileNotFoundException exc) {
             logger.error("file not found", exc);
-            project = new Project();
-            project.setPomVersion("3");
+            project = new MavenProject();
+            project.setModel(new Model());
+            project.getModel().setPomVersion("3");
         } catch (Exception exc2)
         {
             logger.error("cannot read project", exc2);
-            project = new Project();
-            project.setPomVersion("3");
+            project = new MavenProject();
+            project.setModel(new Model());
+            project.getModel().setPomVersion("3");
         }
         wiz.putProperty(PROP_PROJECT, project);
     }

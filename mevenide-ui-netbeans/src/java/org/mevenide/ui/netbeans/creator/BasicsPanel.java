@@ -19,9 +19,10 @@ package org.mevenide.ui.netbeans.creator;
 import javax.swing.JPanel;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.maven.project.Project;
+import org.apache.maven.project.MavenProject;
 import org.openide.util.NbBundle;
 
 
@@ -188,22 +189,22 @@ public class BasicsPanel extends JPanel implements ProjectPanel
     private javax.swing.JTextField txtPackage;
     // End of variables declaration//GEN-END:variables
     
-    public void setProject(Project project)
+    public void setProject(MavenProject project)
     {
         txtName.setText(project.getName() == null ? "" : project.getName());
-        txtCurrentVersion.setText(project.getCurrentVersion() == null ? "1.0" : project.getCurrentVersion());
-        txtArtifactID.setText(project.getArtifactId() == null ? "" : project.getArtifactId());
-        txtGroupID.setText(project.getGroupId() == null ? "" : project.getGroupId());
-        txtPackage.setText(project.getPackage() == null ? "" : project.getPackage());
+        txtCurrentVersion.setText(project.getModel().getCurrentVersion() == null ? "1.0" : project.getModel().getCurrentVersion());
+        txtArtifactID.setText(project.getModel().getArtifactId() == null ? "" : project.getModel().getArtifactId());
+        txtGroupID.setText(project.getModel().getGroupId() == null ? "" : project.getModel().getGroupId());
+        txtPackage.setText(project.getModel().getPackage() == null ? "" : project.getModel().getPackage());
     }
     
-    public Project copyProject(Project project)
+    public MavenProject copyProject(MavenProject project)
     {
-        project.setName(txtName.getText());
-        project.setArtifactId(txtArtifactID.getText());
-        project.setGroupId(txtGroupID.getText());
-        project.setCurrentVersion(txtCurrentVersion.getText());
-        project.setPackage(txtPackage.getText());
+        project.getModel().setName(txtName.getText());
+        project.getModel().setArtifactId(txtArtifactID.getText());
+        project.getModel().setGroupId(txtGroupID.getText());
+        project.getModel().setCurrentVersion(txtCurrentVersion.getText());
+        project.getModel().setPackage(txtPackage.getText());
         return project;
     }
     

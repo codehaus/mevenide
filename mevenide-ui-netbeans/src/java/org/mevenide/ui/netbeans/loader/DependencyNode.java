@@ -20,10 +20,11 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Properties;
+
+import org.apache.maven.artifact.MavenArtifact;
+import org.apache.maven.model.Dependency;
 import org.mevenide.ui.netbeans.ArtifactCookie;
-import org.apache.maven.project.Dependency;
-import org.apache.maven.repository.Artifact;
-import org.mevenide.util.MevenideUtils;
 import org.openide.ErrorManager;
 import org.openide.actions.PropertiesAction;
 import org.openide.nodes.AbstractNode;
@@ -39,10 +40,10 @@ import org.openide.util.actions.SystemAction;
  */
 public class DependencyNode extends AbstractNode
 {
-    private Artifact artefact;
+    private MavenArtifact artefact;
     private ArtifactCookie cookie;
     /** Creates a new instance of DependencyNode */
-    public DependencyNode(Artifact art)
+    public DependencyNode(MavenArtifact art)
     {
         super(Children.LEAF);
         artefact = art;
@@ -94,7 +95,7 @@ public class DependencyNode extends AbstractNode
             sheet.put(set);
         }
         set.put(createProps());
-        List depProps = artefact.getDependency().getProperties();
+        Properties depProps = artefact.getDependency().getProperties();
         if (depProps != null && depProps.size() > 0)
         {
             Sheet.Set set2 = new Sheet.Set();
@@ -106,15 +107,15 @@ public class DependencyNode extends AbstractNode
         return sheet;
     }
     
-    private Node.Property[] createDepProps(List list)
+    private Node.Property[] createDepProps(Properties list)
     {
         Node.Property[] props = new Node.Property[list.size()];
-        Iterator it = list.iterator();
+        Iterator it = list.keySet().iterator();
         int count = 0;
         while (it.hasNext())
         {
             String pair = (String)it.next();
-            final String[] str = MevenideUtils.resolveProperty(pair);
+            final String[] str = new String[] { pair, (String) list.get(pair)};
             props[count] = new PropertySupport.ReadOnly(str[0], String.class, str[0], "Dependency property")
             {
                 public Object getValue() throws InvocationTargetException, IllegalAccessException

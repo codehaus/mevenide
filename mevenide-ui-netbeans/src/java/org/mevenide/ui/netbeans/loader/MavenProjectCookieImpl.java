@@ -25,13 +25,12 @@ import java.io.IOException;
 import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.maven.ArtifactListBuilder;
-import org.apache.maven.MavenUtils;
-import org.apache.maven.project.Project;
+import org.apache.maven.artifact.factory.DefaultMavenArtifactFactory;
+import org.apache.maven.project.MavenProject;
 import org.mevenide.environment.LocationFinderAggregator;
+import org.mevenide.project.io.DefaultProjectUnmarshaller;
 import org.mevenide.ui.netbeans.ArtifactCookie;
 import org.mevenide.ui.netbeans.MavenProjectCookie;
-import org.mevenide.util.DefaultProjectUnmarshaller;
 import org.openide.ErrorManager;
 import org.openide.filesystems.FileChangeAdapter;
 import org.openide.filesystems.FileEvent;
@@ -58,7 +57,7 @@ public class MavenProjectCookieImpl implements MavenProjectCookie, ArtifactCooki
     private volatile boolean loaded;
     private volatile boolean loadFailed;
     private File projectFile;
-    private Project project;
+    private MavenProject project;
     private LocationFinderAggregator locationResolver;
     private File projectPropFile;
     private File projectBuildPropFile;
@@ -109,7 +108,7 @@ public class MavenProjectCookieImpl implements MavenProjectCookie, ArtifactCooki
         log.debug("Loading ProjectCookie: " + projectFile);
         if (projectFile != null && !loaded)
         {
-            Project oldProject = project;
+            MavenProject oldProject = project;
             synchronized (lock)
             {
                 if (loaded) return;
@@ -117,12 +116,12 @@ public class MavenProjectCookieImpl implements MavenProjectCookie, ArtifactCooki
                 {
                     log.debug("timestamp - reading project");
                     DefaultProjectUnmarshaller unmars = new DefaultProjectUnmarshaller();
-                    project = unmars.parse(new FileReader(projectFile));
-                    project.setContext(MavenUtils.createContext(projectFile.getParentFile()));
+                    project = unmars.unmarshall(new FileReader(projectFile));
+                   // project.setContext(MavenUtils.createContext(projectFile.getParentFile()));
 //                    project = MavenUtils.getProject(projectFile);
                     log.debug("timestamp - reading project finished.");
                     log.debug("timestamp - reading artifacts");
-                    artefactLst = ArtifactListBuilder.build(project);
+                    artefactLst = new DefaultMavenArtifactFactory().createArtifacts(project);
                     log.debug("timestamp - reading artifacts finished.");
                     loaded = true;
                     loadFailed = false;
@@ -167,7 +166,7 @@ public class MavenProjectCookieImpl implements MavenProjectCookie, ArtifactCooki
     {
         if (loaded && !loadFailed && project != null)
         {
-            return project.getArtifactId() + ":" + project.getCurrentVersion();
+            return project.getArtifactId() + ":" + project.getModel().getCurrentVersion();
         }
         if (name == null)
         {
@@ -286,7 +285,7 @@ public class MavenProjectCookieImpl implements MavenProjectCookie, ArtifactCooki
         return toReturn;
     }
     
-    public Project getMavenProject()
+    public MavenProject getMavenProject()
     {
         log.debug("getMavenProject() of " + projectFile);
         if (!loaded) { 

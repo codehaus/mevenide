@@ -19,10 +19,12 @@ package org.mevenide.ui.netbeans.creator;
 import javax.swing.JPanel;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.maven.project.Build;
-import org.apache.maven.project.Project;
+import org.apache.maven.model.Build;
+import org.apache.maven.project.MavenProject;
+
 import org.mevenide.project.ProjectConstants;
 import org.mevenide.project.source.SourceDirectoryUtil;
 import org.openide.util.NbBundle;
@@ -65,9 +67,7 @@ public class BuildPanel extends JPanel implements ProjectPanel
         txtTestSrc = new javax.swing.JTextField();
         lblAspectSrc = new javax.swing.JLabel();
         txtAspectSrc = new javax.swing.JTextField();
-        lblIntTestSrc = new javax.swing.JLabel();
-        txtIntTestSrc = new javax.swing.JTextField();
-
+        
         setLayout(new java.awt.GridBagLayout());
 
         lblSrc.setLabelFor(txtSrc);
@@ -122,46 +122,24 @@ public class BuildPanel extends JPanel implements ProjectPanel
         gridBagConstraints.weightx = 0.1;
         add(txtAspectSrc, gridBagConstraints);
 
-        lblIntTestSrc.setLabelFor(txtIntTestSrc);
-        lblIntTestSrc.setText(org.openide.util.NbBundle.getMessage(BuildPanel.class, "BuildPanel.txtIntTestSrc.text"));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 3;
-        gridBagConstraints.insets = new java.awt.Insets(6, 0, 0, 0);
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        add(lblIntTestSrc, gridBagConstraints);
-
-        txtIntTestSrc.setPreferredSize(new java.awt.Dimension(60, 26));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 3;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.weightx = 0.1;
-        gridBagConstraints.weighty = 0.1;
-        add(txtIntTestSrc, gridBagConstraints);
-
     }//GEN-END:initComponents
 
-    public Project copyProject(Project project)
+    public MavenProject copyProject(MavenProject project)
     {
         SourceDirectoryUtil.addSource(project, txtSrc.getText().trim(), ProjectConstants.MAVEN_SRC_DIRECTORY);
         SourceDirectoryUtil.addSource(project, txtTestSrc.getText().trim(), ProjectConstants.MAVEN_TEST_DIRECTORY);
-        SourceDirectoryUtil.addSource(project, txtIntTestSrc.getText().trim(), ProjectConstants.MAVEN_INTEGRATION_TEST_DIRECTORY);
         SourceDirectoryUtil.addSource(project, txtAspectSrc.getText().trim(), ProjectConstants.MAVEN_ASPECT_DIRECTORY);
         return project;
     }    
     
-    public void setProject(Project project)
+    public void setProject(MavenProject project)
     {
-        Build build = project.getBuild();
+        Build build = project.getModel().getBuild();
         if (build == null)
         {
             txtSrc.setText("src/java"); //NOI18N
             txtTestSrc.setText("src/test/java"); //NOI18N
             txtAspectSrc.setText(""); //NOI18N 
-            txtIntTestSrc.setText(""); //NOI18N
         } else
         {
             txtSrc.setText(build.getSourceDirectory() == null ? "src/java" : build.getSourceDirectory());
@@ -169,8 +147,6 @@ public class BuildPanel extends JPanel implements ProjectPanel
                              : build.getUnitTestSourceDirectory());
             txtAspectSrc.setText(build.getAspectSourceDirectory() == null ? "" 
                                : build.getAspectSourceDirectory());
-            txtIntTestSrc.setText(build.getIntegrationUnitTestSourceDirectory() == null ? "" 
-                                : build.getIntegrationUnitTestSourceDirectory());
         }
         
     }
@@ -223,11 +199,9 @@ public class BuildPanel extends JPanel implements ProjectPanel
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel lblAspectSrc;
-    private javax.swing.JLabel lblIntTestSrc;
     private javax.swing.JLabel lblSrc;
     private javax.swing.JLabel lblTestSrc;
     private javax.swing.JTextField txtAspectSrc;
-    private javax.swing.JTextField txtIntTestSrc;
     private javax.swing.JTextField txtSrc;
     private javax.swing.JTextField txtTestSrc;
     // End of variables declaration//GEN-END:variables
