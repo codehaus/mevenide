@@ -20,9 +20,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Properties;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -30,6 +28,7 @@ import org.apache.maven.project.Dependency;
 import org.apache.maven.project.Project;
 import org.mevenide.project.dependency.DependencyFactory;
 import org.mevenide.project.dependency.DependencyUtil;
+import org.mevenide.properties.KeyValuePair;
 import org.mevenide.properties.PropertyModel;
 import org.mevenide.properties.PropertyModelFactory;
 
@@ -88,17 +87,34 @@ class JarOverrideWriter {
 	} 
 
 	void unsetOverriding(File propertiesFile) throws Exception {
-		Properties properties = new Properties();
-		properties.load(new FileInputStream(propertiesFile));
-				
-		List keys = Collections.list(properties.keys());
-		for (int i = 0; i < keys.size(); i++) {
-			Object key = keys.get(i);
-			if ( key instanceof String && ((String) key).startsWith("maven.jar.") ) {
-				properties.remove(key);
+		FileInputStream fis = null;
+		FileOutputStream fos = null;
+		try {
+			fis = new FileInputStream(propertiesFile);
+			PropertyModel model = PropertyModelFactory.getFactory().newPropertyModel(fis);
+			
+			List elements = model.getList();
+			for (int i = 0; i < elements.size(); i++) {
+				Object elem = elements.get(i);
+				if ( elem instanceof KeyValuePair ) {
+					KeyValuePair pair = (KeyValuePair) elem; 
+					if ( pair.getKey().startsWith("maven.jar.") ) {
+						model.removeElement(pair);
+					}
+				}
+			}
+	
+			fos = new FileOutputStream(propertiesFile);
+			model.store(fos);
+		}
+		finally {
+			if ( fis != null ) {
+				fis.close();
+			}
+			if ( fos != null ) {
+				fos.close();
 			}
 		}
-		properties.store(new FileOutputStream(propertiesFile), null);
 	}
 
 }
