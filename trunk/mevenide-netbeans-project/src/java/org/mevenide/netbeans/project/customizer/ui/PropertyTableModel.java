@@ -31,7 +31,6 @@ import javax.swing.UIManager;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
 import org.mevenide.properties.IPropertyResolver;
@@ -42,9 +41,9 @@ import org.mevenide.properties.IPropertyResolver;
  */
 public class PropertyTableModel implements TableModel, TableCellRenderer {
     
-    private final static int COLUMN_KEY = 0;
-    private final static int COLUMN_VALUE = 1;
-    private final static int COLUMN_ORIGIN = 2;
+    private static final int COLUMN_KEY = 0;
+    private static final int COLUMN_VALUE = 1;
+    private static final int COLUMN_ORIGIN = 2;
     
     private ArrayList lst;
     

@@ -17,7 +17,6 @@
 package org.mevenide.netbeans.project.customizer.ui;
 
 import java.io.File;
-import javax.swing.DefaultCellEditor;
 import javax.swing.JComponent;
 import org.mevenide.properties.IPropertyLocator;
 

@@ -29,7 +29,11 @@ import org.openide.util.Utilities;
  * Factory for creating and configuring the OriginChange instances.
  * @author  Milos Kleint (ca206216@tiscali.cz)
  */
-public class LocationComboFactory {
+public final class LocationComboFactory {
+    
+    private LocationComboFactory() {
+        
+    }
     
     public static OriginChange createPropertiesChange(MavenProject project) {
         LocationComboBox box = new LocationComboBox(false);
