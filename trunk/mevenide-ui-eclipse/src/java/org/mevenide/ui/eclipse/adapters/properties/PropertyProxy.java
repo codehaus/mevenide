@@ -20,6 +20,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.TextPropertyDescriptor;
+import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.util.MevenideUtils;
 
 /**
@@ -30,8 +31,8 @@ public class PropertyProxy extends AbstractPomPropertySource {
 
 	private static final Log log = LogFactory.getLog(PropertyProxy.class);
 	
-	public static final String PROPERTY_NAME = "name";
-	public static final String PROPERTY_VALUE = "value";
+	public static final String PROPERTY_NAME = "name"; //$NON-NLS-1$
+	public static final String PROPERTY_VALUE = "value"; //$NON-NLS-1$
 
 	private String name;
 	private String value;
@@ -71,7 +72,7 @@ public class PropertyProxy extends AbstractPomPropertySource {
 
 	public Object getPropertyValue(Object id) {
 		if (log.isDebugEnabled()) {
-			log.debug("getPropertyValue called: " + id);
+			log.debug("getPropertyValue called: " + id); //$NON-NLS-1$
 		}
 		if (PROPERTY_NAME.equals(id)) {
 			return valueOrEmptyString(name);
@@ -98,7 +99,7 @@ public class PropertyProxy extends AbstractPomPropertySource {
 
 	public void setPropertyValue(Object id, Object valueObj) {
 		if (log.isDebugEnabled()) {
-			log.debug("setPropertyValue called: " + id + " = " + valueObj);
+			log.debug("setPropertyValue called: " + id + " = " + valueObj);  //$NON-NLS-1$//$NON-NLS-2$
 		}
 		if (valueObj == null) return;
 		
@@ -127,9 +128,9 @@ public class PropertyProxy extends AbstractPomPropertySource {
 
 	public String getLabel(Object o) {
 		if (log.isDebugEnabled()) {
-			log.debug("getLabel called for " + o);
+			log.debug("getLabel called for " + o); //$NON-NLS-1$
 		}
-		return name != null ? name : "[unknown]";
+		return name != null ? name : Mevenide.getResourceString("AbstractPropertySource.Element.Unknown"); //$NON-NLS-1$
 	}
 
 	/**

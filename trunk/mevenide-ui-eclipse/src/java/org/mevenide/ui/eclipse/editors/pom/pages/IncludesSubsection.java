@@ -26,6 +26,7 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.adapters.properties.ResourcePatternProxy;
 import org.mevenide.ui.eclipse.editors.pom.entries.IPomCollectionAdaptor;
 import org.mevenide.ui.eclipse.editors.pom.entries.TableEntry;
@@ -57,7 +58,7 @@ public class IncludesSubsection extends AbstractResourcePatternSubsection {
 			}
 		}
 		TableViewer viewer = section.createTableViewer(container, factory, 1);
-		TableEntry includesTable = new TableEntry(viewer, toggle, "Include", container, factory, section);
+		TableEntry includesTable = new TableEntry(viewer, toggle, Mevenide.getResourceString("IncludesSubsection.TableEntry.Tooltip"), container, factory, section); //$NON-NLS-1$
 		PageSection.OverrideAdaptor adaptor = section.new OverrideAdaptor() {
 			public void overrideParent(Object value) {
 				List includes = (List) value;
@@ -73,7 +74,7 @@ public class IncludesSubsection extends AbstractResourcePatternSubsection {
 		includesTable.addPomCollectionAdaptor(
 			new IPomCollectionAdaptor() {
 				public Object addNewObject(Object parentObject) {
-					String include = "unknown";
+					String include = Mevenide.getResourceString("AbstractPomEditorPage.Element.Unknown"); //$NON-NLS-1$
 					ResourcePatternProxy includeProxy = new ResourcePatternProxy(include, true);
 					includer.addInclude(pom, include);
 					return includeProxy;

@@ -21,6 +21,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.MailingList;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.TextPropertyDescriptor;
+import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.util.MevenideUtils;
 
 /**
@@ -31,10 +32,10 @@ public class MailingListPropertySource extends AbstractPomPropertySource {
 
 	private static final Log log = LogFactory.getLog(MailingListPropertySource.class);
 
-	private static final String MAILINGLIST_NAME = "name";
-	private static final String MAILINGLIST_SUBSCRIBE = "subscribe";
-	private static final String MAILINGLIST_UNSUBSCRIBE = "unsubscribe";
-	private static final String MAILINGLIST_ARCHIVE = "archive";
+	private static final String MAILINGLIST_NAME = "name"; //$NON-NLS-1$
+	private static final String MAILINGLIST_SUBSCRIBE = "subscribe"; //$NON-NLS-1$
+	private static final String MAILINGLIST_UNSUBSCRIBE = "unsubscribe"; //$NON-NLS-1$
+	private static final String MAILINGLIST_ARCHIVE = "archive"; //$NON-NLS-1$
 
 	private MailingList mailingList;
 	
@@ -72,7 +73,7 @@ public class MailingListPropertySource extends AbstractPomPropertySource {
 
 	public Object getPropertyValue(Object id) {
 		if (log.isDebugEnabled()) {
-			log.debug("getPropertyValue called: " + id);
+			log.debug("getPropertyValue called: " + id); //$NON-NLS-1$
 		}
 		if (MAILINGLIST_NAME.equals(id)) {
 			return valueOrEmptyString(mailingList.getName());
@@ -111,7 +112,7 @@ public class MailingListPropertySource extends AbstractPomPropertySource {
 
 	public void setPropertyValue(Object id, Object value) {
 		if (log.isDebugEnabled()) {
-			log.debug("setPropertyValue called: " + id + " = " + value);
+			log.debug("setPropertyValue called: " + id + " = " + value); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 		if (value == null) return;
 		
@@ -154,9 +155,9 @@ public class MailingListPropertySource extends AbstractPomPropertySource {
 
 	public String getLabel(Object o) {
 		if (log.isDebugEnabled()) {
-			log.debug("getLabel called for " + o);
+			log.debug("getLabel called for " + o); //$NON-NLS-1$
 		}
-		return mailingList.getName() != null ? mailingList.getName() : "[unknown]";
+		return mailingList.getName() != null ? mailingList.getName() : Mevenide.getResourceString("AbstractPropertySource.Element.Unknown"); //$NON-NLS-1$
 	}
 
 	/**

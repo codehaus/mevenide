@@ -58,8 +58,8 @@ public class ReportsSection extends PageSection {
 		FormToolkit toolkit) 
    	{
         super(page, parent, toolkit);
-		setTitle(Mevenide.getResourceString("ReportsSection.header"));
-		setDescription(Mevenide.getResourceString("ReportsSection.description"));
+		setTitle(Mevenide.getResourceString("ReportsSection.header")); //$NON-NLS-1$
+		setDescription(Mevenide.getResourceString("ReportsSection.description")); //$NON-NLS-1$
 	}
 
     public Composite createSectionContent(Composite parent, FormToolkit factory) {
@@ -75,7 +75,7 @@ public class ReportsSection extends PageSection {
 			String[] reports = finder.findReports();
 			availableReports = new TreeSet(Arrays.asList(reports));
 		} catch (Exception e) {
-			log.error("Unable to find reports", e);
+			log.error("Unable to find reports", e); //$NON-NLS-1$
 		}
 		
 		availableReportsViewer = createAvailableReportsViewer(container, factory);		
@@ -110,7 +110,7 @@ public class ReportsSection extends PageSection {
 		if (isInherited()) createSpacer(availableContainer, factory);
 		factory.createLabel(
 		    availableContainer, 
-		    Mevenide.getResourceString("ReportsSection.available.reports.label"),
+		    Mevenide.getResourceString("ReportsSection.available.reports.label"), //$NON-NLS-1$
 		    SWT.BOLD
 		);
 
@@ -135,7 +135,7 @@ public class ReportsSection extends PageSection {
 		layout.horizontalSpacing = 5;
 		includedContainer.setLayout(layout);
 		
-		factory.createLabel(includedContainer, Mevenide.getResourceString("ReportsSection.included.reports.label"));
+		factory.createLabel(includedContainer, Mevenide.getResourceString("ReportsSection.included.reports.label")); //$NON-NLS-1$
 
 		TableViewer viewer = new TableViewer(includedContainer, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
 		viewer.setContentProvider(new WorkbenchContentProvider());
@@ -148,7 +148,7 @@ public class ReportsSection extends PageSection {
 
 	private void setReports(List reports) {
 		if (log.isDebugEnabled()) {
-			log.debug("setting reports on pom: " + reports);
+			log.debug("setting reports on pom: " + reports); //$NON-NLS-1$
 		}
 		getPage().getPomEditor().getPom().setReports(reports);
 		getPage().getPomEditor().setModelDirty(true);
@@ -156,7 +156,7 @@ public class ReportsSection extends PageSection {
 
 	public void update(Project pom) {
 		if (log.isDebugEnabled()) {
-			log.debug("updating reports = " + pom.getReports());
+			log.debug("updating reports = " + pom.getReports()); //$NON-NLS-1$
 		}
 		resetViewers();
 

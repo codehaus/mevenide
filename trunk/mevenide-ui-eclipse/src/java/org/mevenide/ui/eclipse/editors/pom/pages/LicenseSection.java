@@ -43,8 +43,8 @@ public class LicenseSection extends PageSection {
        	FormToolkit toolkit)
     {
         super(page, parent, toolkit);
-		setTitle(Mevenide.getResourceString("LicenseSection.header"));
-		setDescription(Mevenide.getResourceString("LicenseSection.description"));
+		setTitle(Mevenide.getResourceString("LicenseSection.header")); //$NON-NLS-1$
+		setDescription(Mevenide.getResourceString("LicenseSection.description")); //$NON-NLS-1$
     }
 
     /**
@@ -64,7 +64,7 @@ public class LicenseSection extends PageSection {
 		// POM license table
 		Button toggle = createOverrideToggle(container, factory, 1, true);
 		TableViewer viewer = createTableViewer(container, factory, 1);
-		licenseTable = new TableEntry(viewer, toggle, "License", container, factory, this);
+		licenseTable = new TableEntry(viewer, toggle, Mevenide.getResourceString("LicenseSection.TableEntry.Tooltip"), container, factory, this); //$NON-NLS-1$
 		OverrideAdaptor adaptor = new OverrideAdaptor() {
 			public void overrideParent(Object value) {
 				List licenses = (List) value;

@@ -43,8 +43,8 @@ public class BranchesSection extends PageSection {
 	    FormToolkit toolkit)
 	{
 		super(page, parent, toolkit);
-		setTitle(Mevenide.getResourceString("BranchesSection.header"));
-		setDescription(Mevenide.getResourceString("BranchesSection.description"));
+		setTitle(Mevenide.getResourceString("BranchesSection.header")); //$NON-NLS-1$
+		setDescription(Mevenide.getResourceString("BranchesSection.description")); //$NON-NLS-1$
 	}
 
     public Composite createSectionContent(Composite parent, FormToolkit factory) {
@@ -61,7 +61,7 @@ public class BranchesSection extends PageSection {
 		// POM branch table
 		Button toggle = createOverrideToggle(container, factory, 1, true);
 		TableViewer viewer = createTableViewer(container, factory, 1);
-		branchTable = new TableEntry(viewer, toggle, "Branch", container, factory, this);
+		branchTable = new TableEntry(viewer, toggle, Mevenide.getResourceString("BranchesSection.TableEntry.ToolTip"), container, factory, this);  //$NON-NLS-1$
 		OverrideAdaptor adaptor = new OverrideAdaptor() {
 			public void overrideParent(Object value) {
 				List branches = (List) value;

@@ -67,8 +67,8 @@ public class IdentificationSection extends PageSection {
    			FormToolkit toolkit) 
    	{
         super(page, parent, toolkit);
-		setTitle(Mevenide.getResourceString("IdentificationSection.header"));
-		setDescription(Mevenide.getResourceString("IdentificationSection.description"));
+		setTitle(Mevenide.getResourceString("IdentificationSection.header")); //$NON-NLS-1$
+		setDescription(Mevenide.getResourceString("IdentificationSection.description")); //$NON-NLS-1$
     }
 
     public Composite createSectionContent(Composite parent, FormToolkit factory) {
@@ -86,8 +86,8 @@ public class IdentificationSection extends PageSection {
 		Button toggle = createOverrideToggle(container, factory);
 		createLabel(
 			container, 
-			Mevenide.getResourceString("IdentificationSection.pomNameText.label"),
-			Mevenide.getResourceString("IdentificationSection.pomNameText.tooltip"),
+			Mevenide.getResourceString("IdentificationSection.pomNameText.label"), //$NON-NLS-1$
+			Mevenide.getResourceString("IdentificationSection.pomNameText.tooltip"), //$NON-NLS-1$
 			factory
 		);
 		pomNameText = new OverridableTextEntry(createText(container, factory, 2), toggle, null);
@@ -107,8 +107,8 @@ public class IdentificationSection extends PageSection {
 		toggle = createOverrideToggle(container, factory);
 		createLabel(
 			container, 
-			Mevenide.getResourceString("IdentificationSection.artifactIdText.label"), 
-			Mevenide.getResourceString("IdentificationSection.artifactIdText.tooltip"),
+			Mevenide.getResourceString("IdentificationSection.artifactIdText.label"),  //$NON-NLS-1$
+			Mevenide.getResourceString("IdentificationSection.artifactIdText.tooltip"), //$NON-NLS-1$
 			factory
 		);
 		artifactIdText = new OverridableTextEntry(createText(container, factory, 2), toggle, null);
@@ -127,8 +127,8 @@ public class IdentificationSection extends PageSection {
 		toggle = createOverrideToggle(container, factory);
 		createLabel(
 			container, 
-			Mevenide.getResourceString("IdentificationSection.groupIdText.label"), 
-			Mevenide.getResourceString("IdentificationSection.groupIdText.tooltip"), 
+			Mevenide.getResourceString("IdentificationSection.groupIdText.label"),  //$NON-NLS-1$
+			Mevenide.getResourceString("IdentificationSection.groupIdText.tooltip"),  //$NON-NLS-1$
 			factory
 		);
 		groupIdText = new OverridableTextEntry(createText(container, factory, 2), toggle, null);
@@ -147,8 +147,8 @@ public class IdentificationSection extends PageSection {
 		toggle = createOverrideToggle(container, factory);
 		createLabel(
 			container, 
-			Mevenide.getResourceString("IdentificationSection.gumpRepoIdText.label"), 
-			Mevenide.getResourceString("IdentificationSection.gumpRepoIdText.tooltip"), 
+			Mevenide.getResourceString("IdentificationSection.gumpRepoIdText.label"),  //$NON-NLS-1$
+			Mevenide.getResourceString("IdentificationSection.gumpRepoIdText.tooltip"),  //$NON-NLS-1$
 			factory
 		);
 		gumpRepoIdText = new OverridableTextEntry(createText(container, factory, 2), toggle, null);
@@ -167,8 +167,8 @@ public class IdentificationSection extends PageSection {
 		if (isInherited()) createSpacer(container, factory);
 		createLabel(
 			container, 
-			Mevenide.getResourceString("IdentificationSection.pomVersionText.label"), 
-			Mevenide.getResourceString("IdentificationSection.pomVersionText.tooltip"), 
+			Mevenide.getResourceString("IdentificationSection.pomVersionText.label"),  //$NON-NLS-1$
+			Mevenide.getResourceString("IdentificationSection.pomVersionText.tooltip"),  //$NON-NLS-1$
 			factory
 		);
 		pomVersionText = new TextEntry(createText(container, factory, 2));
@@ -187,8 +187,8 @@ public class IdentificationSection extends PageSection {
 		if (isInherited()) createSpacer(container, factory);
 		createLabel(
 			container, 
-			Mevenide.getResourceString("IdentificationSection.extendsText.label"), 
-			Mevenide.getResourceString("IdentificationSection.extendsText.tooltip"), 
+			Mevenide.getResourceString("IdentificationSection.extendsText.label"),  //$NON-NLS-1$
+			Mevenide.getResourceString("IdentificationSection.extendsText.tooltip"),  //$NON-NLS-1$
 			factory
 		);
 		extendsText = new TextEntry(createText(container, factory));
@@ -196,7 +196,7 @@ public class IdentificationSection extends PageSection {
 			new EntryChangeListenerAdaptor() {
 				public void entryChanged(PageEntry entry) {
 	                if (log.isDebugEnabled()) {
-	                    log.debug("extend changed to " + extendsText.getText());
+	                    log.debug("extend changed to " + extendsText.getText()); //$NON-NLS-1$
 	                }
 					pom.setExtend(extendsText.getText());
 				}
@@ -212,15 +212,15 @@ public class IdentificationSection extends PageSection {
 		layout.marginHeight = 0;
 		buttonContainer.setLayout(layout);
 
-		String labelName = Mevenide.getResourceString("IdentificationSection.extendButton.label");
-		String toolTip = Mevenide.getResourceString("IdentificationSection.extendButton.tooltip");
+		String labelName = Mevenide.getResourceString("IdentificationSection.extendButton.label"); //$NON-NLS-1$
+		String toolTip = Mevenide.getResourceString("IdentificationSection.extendButton.tooltip"); //$NON-NLS-1$
 		extendButton = factory.createButton(buttonContainer, labelName, SWT.PUSH);
 		data = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING | GridData.VERTICAL_ALIGN_CENTER);
 		extendButton.setLayoutData(data);
 		extendButton.setToolTipText(toolTip);
 
-		final String title = Mevenide.getResourceString("IdentificationSection.extendButton.dialog.title");
-		final String message = Mevenide.getResourceString("IdentificationSection.extendButton.dialog.message");
+		final String title = Mevenide.getResourceString("IdentificationSection.extendButton.dialog.title"); //$NON-NLS-1$
+		final String message = Mevenide.getResourceString("IdentificationSection.extendButton.dialog.message"); //$NON-NLS-1$
 		extendButton.addSelectionListener(
 				new SelectionAdapter() {
 					public void widgetSelected(SelectionEvent e) {
@@ -251,13 +251,13 @@ public class IdentificationSection extends PageSection {
 									String parentName = parentContainer.getName();
 									if (parentName.equals(pomProjectName)) {
 										if (!parentName.equals(extendProjectName)) {
-											path.append("../");
+											path.append("../"); //$NON-NLS-1$
 											path.append(pomResource.getProject().getName());
-											path.append("/");
+											path.append("/"); //$NON-NLS-1$
 										}
 										break;
 									}
-									path.append("../");
+									path.append("../"); //$NON-NLS-1$
 								}
 								path.append(pomResource.getProjectRelativePath());
 								
@@ -268,7 +268,7 @@ public class IdentificationSection extends PageSection {
 							}
 						}
 						catch ( Exception ex ) {
-							log.error("Unable to browse for POM to extend", ex);
+							log.error("Unable to browse for POM to extend", ex); //$NON-NLS-1$
 						}
 					}
 				}
@@ -280,7 +280,7 @@ public class IdentificationSection extends PageSection {
 
     public void update(Project pom) {
         if (log.isDebugEnabled()) {
-            log.debug("updating id section content");
+            log.debug("updating id section content"); //$NON-NLS-1$
         }
 		setIfDefined(pomNameText, pom.getName(), isInherited() ? getParentPom().getName() : null);
 		if (isInherited()) {

@@ -26,6 +26,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.editors.pom.MevenidePomEditor;
+import org.mevenide.util.StringUtils;
 
 /**
  * Presents information on the identification and other core POM
@@ -38,11 +39,11 @@ public class OverviewPage extends AbstractPomEditorPage {
 
     private static final Log log = LogFactory.getLog(OverviewPage.class);
     
-    private static final String ID = Mevenide.getResourceString("OverviewPage.id");
-    private static final String TAB = Mevenide.getResourceString("OverviewPage.tab.label");
-    private static final String HEADING = Mevenide.getResourceString("OverviewPage.heading");
-    private static final String CHILD = Mevenide.getResourceString("OverviewPage.heading.child");
-    private static final String UNNAMED = Mevenide.getResourceString("OverviewPage.heading.unnamed");
+    private static final String ID = Mevenide.getResourceString("OverviewPage.id"); //$NON-NLS-1$
+    private static final String TAB = Mevenide.getResourceString("OverviewPage.tab.label"); //$NON-NLS-1$
+    private static final String HEADING = Mevenide.getResourceString("OverviewPage.heading"); //$NON-NLS-1$
+    private static final String CHILD = Mevenide.getResourceString("OverviewPage.heading.child"); //$NON-NLS-1$
+    private static final String UNNAMED = Mevenide.getResourceString("OverviewPage.heading.unnamed"); //$NON-NLS-1$
     
 	private IdentificationSection idSection;
 	private DescriptionSection descriptionSection;
@@ -86,7 +87,7 @@ public class OverviewPage extends AbstractPomEditorPage {
 
 	protected void update(Project pom) {
 	    if (log.isDebugEnabled()) {
-	        log.debug("updating overview");
+	        log.debug("updating overview"); //$NON-NLS-1$
 	    }
 	    setHeading(pom);
 		
@@ -94,10 +95,10 @@ public class OverviewPage extends AbstractPomEditorPage {
 	}
 	
 	protected void setHeading(Project pom) {
-		if (pom.getName() != null && !"".equals(pom.getName())) {
+		if ( !StringUtils.isNull(pom.getName()) ) {
 		    setHeading(HEADING + pom.getName());
 		}
-		else if (getPomEditor().getParentPom() != null && !"".equals(getPomEditor().getParentPom().getName())){
+		else if (getPomEditor().getParentPom() != null && !StringUtils.isNull(getPomEditor().getParentPom().getName()) ){
 		    setHeading(HEADING + getPomEditor().getParentPom().getName() + CHILD);
 		}
 		else {

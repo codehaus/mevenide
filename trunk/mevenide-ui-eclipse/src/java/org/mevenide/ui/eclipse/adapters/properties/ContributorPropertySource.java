@@ -25,6 +25,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Contributor;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.TextPropertyDescriptor;
+import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.util.MevenideUtils;
 
 /**
@@ -35,12 +36,12 @@ public class ContributorPropertySource extends AbstractPomPropertySource {
 
 	private static final Log log = LogFactory.getLog(ContributorPropertySource.class);
 
-	protected static final String CONTRIBUTOR_NAME = "name";
-	protected static final String CONTRIBUTOR_EMAIL = "email";
-	protected static final String CONTRIBUTOR_ORGANIZATION = "organization";
-	protected static final String CONTRIBUTOR_ROLES = "roles";
-	protected static final String CONTRIBUTOR_URL = "url";
-	protected static final String CONTRIBUTOR_TIMEZONE = "timezone";
+	protected static final String CONTRIBUTOR_NAME = "name"; //$NON-NLS-1$
+	protected static final String CONTRIBUTOR_EMAIL = "email"; //$NON-NLS-1$
+	protected static final String CONTRIBUTOR_ORGANIZATION = "organization"; //$NON-NLS-1$
+	protected static final String CONTRIBUTOR_ROLES = "roles"; //$NON-NLS-1$
+	protected static final String CONTRIBUTOR_URL = "url"; //$NON-NLS-1$
+	protected static final String CONTRIBUTOR_TIMEZONE = "timezone"; //$NON-NLS-1$
 
 	protected Contributor contributor;
 	
@@ -89,7 +90,7 @@ public class ContributorPropertySource extends AbstractPomPropertySource {
 
 	public Object getPropertyValue(Object id) {
 		if (log.isDebugEnabled()) {
-			log.debug("getPropertyValue called: " + id);
+			log.debug("getPropertyValue called: " + id); //$NON-NLS-1$
 		}
 		if (CONTRIBUTOR_NAME.equals(id)) {
 			return valueOrEmptyString(contributor.getName());
@@ -116,7 +117,7 @@ public class ContributorPropertySource extends AbstractPomPropertySource {
 		Set roles = contributor.getRoles();
 		if (roles != null) {
 			Iterator itr = roles.iterator();
-			return StringUtils.join(itr, ",");
+			return StringUtils.join(itr, ","); //$NON-NLS-1$
 		}
 		return EMPTY_STR;
 	}
@@ -149,7 +150,7 @@ public class ContributorPropertySource extends AbstractPomPropertySource {
 
 	public void setPropertyValue(Object id, Object value) {
 		if (log.isDebugEnabled()) {
-			log.debug("setPropertyValue called: " + id + " = " + value);
+			log.debug("setPropertyValue called: " + id + " = " + value);  //$NON-NLS-1$//$NON-NLS-2$
 		}
 		if (value == null) return;
 		
@@ -212,7 +213,7 @@ public class ContributorPropertySource extends AbstractPomPropertySource {
 	private void updateRoles(String newValue) {
 		Set originalRoles = contributor.getRoles();
 		contributor.getRoles().removeAll(originalRoles);
-		String[] roles = newValue.split("\\s*,\\s*");
+		String[] roles = newValue.split("\\s*,\\s*"); //$NON-NLS-1$
 		for (int i = 0; i < roles.length; i++) {
 			contributor.addRole(roles[i]);
 		}
@@ -220,9 +221,9 @@ public class ContributorPropertySource extends AbstractPomPropertySource {
 
 	public String getLabel(Object o) {
 		if (log.isDebugEnabled()) {
-			log.debug("getLabel called for " + o);
+			log.debug("getLabel called for " + o); //$NON-NLS-1$
 		}
-		return contributor.getName() != null ? contributor.getName() : "[unknown]";
+		return contributor.getName() != null ? contributor.getName() : Mevenide.getResourceString("AbstractPropertySource.Element.Unknown"); //$NON-NLS-1$
 	}
 
 	/**

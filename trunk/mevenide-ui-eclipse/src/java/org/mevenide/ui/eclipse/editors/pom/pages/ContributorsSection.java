@@ -43,8 +43,8 @@ public class ContributorsSection extends PageSection {
 	    FormToolkit toolkit)
 	{
 		super(page, parent, toolkit);
-		setTitle(Mevenide.getResourceString("ContributorsSection.header"));
-		setDescription(Mevenide.getResourceString("ContributorsSection.description"));
+		setTitle(Mevenide.getResourceString("ContributorsSection.header")); //$NON-NLS-1$
+		setDescription(Mevenide.getResourceString("ContributorsSection.description")); //$NON-NLS-1$
 	}
 
     public Composite createSectionContent(Composite parent, FormToolkit factory) {
@@ -61,7 +61,7 @@ public class ContributorsSection extends PageSection {
 		// POM contributors table
 		Button toggle = createOverrideToggle(container, factory, 1, true);
 		TableViewer viewer = createTableViewer(container, factory, 1);
-		contribTable = new TableEntry(viewer, toggle, "Contributor", container, factory, this);
+		contribTable = new TableEntry(viewer, toggle, Mevenide.getResourceString("ContributorsSection.TableEntry.Tooltip"), container, factory, this); //$NON-NLS-1$
 		OverrideAdaptor adaptor = new OverrideAdaptor() {
 			public void overrideParent(Object value) {
 				List contributors = (List) value;

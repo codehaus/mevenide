@@ -26,6 +26,7 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.adapters.properties.ResourcePatternProxy;
 import org.mevenide.ui.eclipse.editors.pom.entries.IPomCollectionAdaptor;
 import org.mevenide.ui.eclipse.editors.pom.entries.TableEntry;
@@ -57,7 +58,7 @@ public class ExcludesSubsection extends AbstractResourcePatternSubsection {
 			}
 		}
 		TableViewer viewer = section.createTableViewer(container, factory, 1);
-		TableEntry excludesTable = new TableEntry(viewer, toggle, "Exclude", container, factory, section);
+		TableEntry excludesTable = new TableEntry(viewer, toggle, Mevenide.getResourceString("ExcludesSubsection.TableEntry.Tooltip"), container, factory, section); //$NON-NLS-1$
 		PageSection.OverrideAdaptor adaptor = section.new OverrideAdaptor() {
 			public void overrideParent(Object value) {
 				List excludes = (List) value;
@@ -73,7 +74,7 @@ public class ExcludesSubsection extends AbstractResourcePatternSubsection {
 		excludesTable.addPomCollectionAdaptor(
 			new IPomCollectionAdaptor() {
 				public Object addNewObject(Object parentObject) {
-					String exclude = "unknown";
+					String exclude = Mevenide.getResourceString("AbstractPomEditorPage.Element.Unknown"); //$NON-NLS-1$
 					ResourcePatternProxy excludeProxy = new ResourcePatternProxy(exclude, false);
 					excluder.addExclude(pom, exclude);
 					return excludeProxy;

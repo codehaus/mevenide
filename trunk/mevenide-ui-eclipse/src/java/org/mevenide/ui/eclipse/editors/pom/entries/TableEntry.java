@@ -55,17 +55,17 @@ public class TableEntry extends PageEntry {
 	private static final Log log = LogFactory.getLog(TableEntry.class);
 
 	private static final String ADD_BUTTON_LABEL =
-		Mevenide.getResourceString("TableEntry.addButton.label");
-	private static final String ADD_BUTTON_TOOLTIP_KEY = "TableEntry.addButton.tooltip";
+		Mevenide.getResourceString("TableEntry.addButton.label"); //$NON-NLS-1$
+	private static final String ADD_BUTTON_TOOLTIP_KEY = "TableEntry.addButton.tooltip"; //$NON-NLS-1$
 	private static final String REMOVE_BUTTON_LABEL =
-		Mevenide.getResourceString("TableEntry.removeButton.label");
-	private static final String REMOVE_BUTTON_TOOLTIP_KEY = "TableEntry.removeButton.tooltip";
+		Mevenide.getResourceString("TableEntry.removeButton.label"); //$NON-NLS-1$
+	private static final String REMOVE_BUTTON_TOOLTIP_KEY = "TableEntry.removeButton.tooltip"; //$NON-NLS-1$
 	private static final String UP_BUTTON_LABEL =
-		Mevenide.getResourceString("TableEntry.upButton.label");
-	private static final String UP_BUTTON_TOOLTIP_KEY = "TableEntry.upButton.tooltip";
+		Mevenide.getResourceString("TableEntry.upButton.label"); //$NON-NLS-1$
+	private static final String UP_BUTTON_TOOLTIP_KEY = "TableEntry.upButton.tooltip"; //$NON-NLS-1$
 	private static final String DOWN_BUTTON_LABEL =
-		Mevenide.getResourceString("TableEntry.downButton.label");
-	private static final String DOWN_BUTTON_TOOLTIP_KEY = "TableEntry.downButton.tooltip";
+		Mevenide.getResourceString("TableEntry.downButton.label"); //$NON-NLS-1$
+	private static final String DOWN_BUTTON_TOOLTIP_KEY = "TableEntry.downButton.tooltip"; //$NON-NLS-1$
 
 	private TableViewer viewer;
 	private Button overrideToggle;
@@ -216,7 +216,7 @@ public class TableEntry extends PageEntry {
 				public void selectionChanged(SelectionChangedEvent e) {
 					IStructuredSelection selection = (IStructuredSelection) e.getSelection();
 					if (log.isDebugEnabled()) {
-						log.debug("selection changed; empty = " + selection.isEmpty());
+						log.debug("selection changed; empty = " + selection.isEmpty()); //$NON-NLS-1$
 					}
 					if (section.getPage().isActive()) {
 						section.getPage().getPomEditor().setPropertySourceSelection(selection);
@@ -237,7 +237,7 @@ public class TableEntry extends PageEntry {
 			new ISelectionChangedListener() {
 				public void selectionChanged(SelectionChangedEvent e) {
 					if (log.isDebugEnabled()) {
-						log.debug("selection updated; empty = " + e.getSelection().isEmpty());
+						log.debug("selection updated; empty = " + e.getSelection().isEmpty()); //$NON-NLS-1$
 					}
 					boolean isSelected = ! e.getSelection().isEmpty();
 					removeButton.setEnabled(isSelected);
@@ -303,7 +303,7 @@ public class TableEntry extends PageEntry {
 
 	public void setInherited(boolean inherits) {
 		if (log.isDebugEnabled()) {
-			log.debug("field changed to inherited = " + inherited);
+			log.debug("field changed to inherited = " + inherited); //$NON-NLS-1$
 		}
 		this.inherited = inherits;
 		setEnabled(!inherited);
@@ -372,7 +372,7 @@ public class TableEntry extends PageEntry {
 			new IPropertyChangeListener() {
 				public void propertyChange(PropertyChangeEvent event) {
 					if (log.isDebugEnabled()) {
-						log.debug("property source value changed! " + event.getSource());
+						log.debug("property source value changed! " + event.getSource()); //$NON-NLS-1$
 					}
 					viewer.update(event.getSource(), null);
 					setDirty(true);

@@ -32,12 +32,12 @@ import org.mevenide.util.MevenideUtils;
  */
 public class DependencyPropertySource extends AbstractPomPropertySource {
 
-	public static final String DEPENDENCY_ARTIFACTID = "artifactId";
-	public static final String DEPENDENCY_GROUPID = "groupId";
-	public static final String DEPENDENCY_VERSION = "version";
-	public static final String DEPENDENCY_JAR = "jar";
-	public static final String DEPENDENCY_TYPE = "type";
-	public static final String DEPENDENCY_URL = "url";
+	public static final String DEPENDENCY_ARTIFACTID = "artifactId"; //$NON-NLS-1$
+	public static final String DEPENDENCY_GROUPID = "groupId"; //$NON-NLS-1$
+	public static final String DEPENDENCY_VERSION = "version"; //$NON-NLS-1$
+	public static final String DEPENDENCY_JAR = "jar"; //$NON-NLS-1$
+	public static final String DEPENDENCY_TYPE = "type"; //$NON-NLS-1$
+	public static final String DEPENDENCY_URL = "url"; //$NON-NLS-1$
 
 	private Dependency dependency;
 	
@@ -226,7 +226,7 @@ public class DependencyPropertySource extends AbstractPomPropertySource {
 	}
 
 	public String getLabel(Object o) {
-		return dependency.getArtifact() != null ? dependency.getArtifact() : "[undeclared]";
+		return dependency.getArtifact() != null ? dependency.getArtifact() : Mevenide.getResourceString("AbstractPropertySource.Element.Undeclared"); //$NON-NLS-1$
 	}
 
 	/**
