@@ -31,6 +31,7 @@ import org.apache.maven.project.Project;
 import org.apache.maven.project.Resource;
 import org.apache.maven.project.UnitTest;
 import org.apache.maven.repository.Artifact;
+import org.mevenide.environment.ConfigUtils;
 import org.mevenide.environment.ILocationFinder;
 import org.mevenide.environment.LocationFinderAggregator;
 import org.mevenide.project.ProjectConstants;
@@ -69,7 +70,7 @@ public class ProjectWriter {
 	private ProjectWriter() throws Exception  {
 		marshaller = new CarefulProjectMarshaller();
 		projectReader = ProjectReader.getReader();
-		locationFinder = new LocationFinderAggregator();
+		locationFinder = ConfigUtils.getDefaultLocationFinder();
 	}
 	
 	public static synchronized ProjectWriter getWriter() throws Exception {
