@@ -175,20 +175,13 @@
 
   <!--==================================================================-->
 
-  <!-- Build the nbm                                               -->
+  <!-- Prepare the nbm structure                                        -->
 
   <!--==================================================================-->    
-
-  <goal 
-    name="nbm:nbm"
-    prereqs="nbm:jar"
-    description="Build the NBM">
-  <ant:taskdef name="makenbm" classname="org.netbeans.nbbuild.MakeNBM" >
-        <ant:classpath>
-            <ant:pathelement path="${plugin.getDependencyPath('nbantext')}"/>
-        </ant:classpath>
-  </ant:taskdef>
-
+   
+  <goal name="nbm:prepare-nbm-resources"
+        prereqs="nbm:init"
+        description="Prepare the filesystem structure for building the NBM.">
     <!-- copy the jar to the right location -->
    <ant:copy toDir="${maven.nbm.build.dir}/${maven.nbm.jar.location}" file="${maven.nbm.build.dir}/${maven.final.name}.jar"/>
     <!-- copy dependency jars in the relevant location -->
@@ -199,6 +192,25 @@
         <!--classpath attribute added in the previous step (jar update)-->
       </j:if>
     </j:forEach>
+  </goal>
+   
+   
+  <!--==================================================================-->
+
+  <!-- Build the nbm                                               -->
+
+  <!--==================================================================-->    
+
+  <goal 
+    name="nbm:nbm"
+    prereqs="nbm:jar, nbm:prepare-nbm-resources"
+    description="Build the NBM">
+  <ant:taskdef name="makenbm" classname="org.netbeans.nbbuild.MakeNBM" >
+        <ant:classpath>
+            <ant:pathelement path="${plugin.getDependencyPath('nbantext')}"/>
+        </ant:classpath>
+  </ant:taskdef>
+
 
 <!--DEBUG
     <ant:echo message="autoload=${maven.nbm.autoload}" />
@@ -221,10 +233,7 @@
     </ant:makenbm>
     <!-- now copy the artifact (NBM file) into the local repository
     -->
-    <artifact:install
-        artifact="${maven.nbm.build.dir}/${maven.final.name}.nbm"
-        type="nbm"
-        project="${pom}"/>   
+
 
 <!--    <j:forEach var="lib" items="${pom.artifacts}">
       <ant:copy 
@@ -234,9 +243,24 @@
 -->    
   </goal>
   
+  <goal 
+    name="nbm:install"
+    prereqs="nbm:nbm"
+    description="Install the NBM and the netbeans enhanced jar into the repository">
+
+    <artifact:install
+        artifact="${maven.nbm.build.dir}/${maven.final.name}.nbm"
+        type="nbm"
+        project="${pom}"/>   
+    <artifact:install
+        artifact="${maven.nbm.build.dir}/${maven.final.name}.jar"
+        type="jar"
+        project="${pom}"/>   
+    
+  </goal>
   <goal name="nbm:create-library-artifacts" 
   		prereqs="nbm:init" 
-  		description="">
+  		description="Creates simple netbeans modules for dependencies with the 'netbeans.lib.generate' property.">
     <j:forEach var="artifact" items="${pom.artifacts}">
         <j:set var="dependency" value="${artifact.dependency}"/>
         <j:if test="${dependency.getProperty('netbeans.lib.generate') == 'true'}">
@@ -314,7 +338,7 @@ maven.nbm.license=${dependencyModuleDir}/license.txt
     </j:forEach>
   </goal>  
   
-  <goal name="nbm:collect-nbms" prereqs="nbm:nbm, nbm:create-library-artifacts"
+  <goal name="nbm:collect-nbms" 
         description="Will collect the module nbm and all library nbms (if any) to a single release directory target/nbm_release">
         <j:set var="reldir" value="${maven.nbm.build.release.dir}" />
         <j:if test="${empty(reldir)}">
