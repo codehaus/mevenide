@@ -46,6 +46,9 @@ public class GenAppTemplateFinder {
      * constant for genapp user defined templates
      */
     public static final String LOCATION_USER    = "User"; //NOI18N
+    /**
+     * constant combining default and user defined templates.
+     */
     public static final String LOCATION_ALL     = "All"; //NOI18N
 
     /** Creates a new instance of MavenTemplateEnumerator */
@@ -54,6 +57,12 @@ public class GenAppTemplateFinder {
         props = context.getResolver();
     }
 
+    /**
+     * get genapp templates information for a given location.
+     * @param type one of GenAppTemplateFinder.LOCATION_ALL, 
+     *                    GenAppTemplateFinder.LOCATION_USER or
+     *                    GenAppTemplateFinder.LOCATION_DEFAULT
+     */
     public TemplateInfo[] getTemplates(String type) {
         if (LOCATION_USER.equals(type)) {
             return readTemplates(getUserDir());
@@ -72,6 +81,15 @@ public class GenAppTemplateFinder {
             
         }
         throw new IllegalArgumentException("Wrong template type=" + type);
+    }
+    
+    /**
+     * get genapp templates information for a custom location.
+     * @param customTemplateRootDir a custom root directory where templates are
+     * stored.
+     */
+    public TemplateInfo[] getTemplates(File customTemplateRootDir) {
+        return readTemplates(customTemplateRootDir);
     }
 
     private File getGenAppDir() {
