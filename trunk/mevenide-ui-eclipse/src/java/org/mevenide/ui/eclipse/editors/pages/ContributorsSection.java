@@ -111,8 +111,6 @@ public class ContributorsSection extends PageSection {
 		else {
 			contribTable.setInherited(false);
 		}
-		
-		super.update(pom);
 	}
 
 }

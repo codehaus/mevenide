@@ -165,8 +165,6 @@ public class ReportsSection extends PageSection {
 		else {
 			reportsEntry.setInherited(false);
 		}
-		
-		super.update(pom);
 	}
 
 	private void resetViewers() {

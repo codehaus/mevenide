@@ -111,8 +111,6 @@ public class DevelopersSection extends PageSection {
 		else {
 			devTable.setInherited(false);
 		}
-		
-		super.update(pom);
 	}
 
 }

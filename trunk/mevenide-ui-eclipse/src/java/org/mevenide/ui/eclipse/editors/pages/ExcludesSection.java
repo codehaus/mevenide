@@ -41,8 +41,8 @@ public class ExcludesSection extends PageSection {
 		setTitle(Mevenide.getResourceString("UnitTestExcludesSection.header"));
 	}
 	
-	void setExcludesAdaptor(IExcludesAdaptor excludesAdaptor) {
-		this.excludesAdaptor = excludesAdaptor;
+	void setExcludesAdaptor(IExcludesAdaptor newExcludesAdaptor) {
+		this.excludesAdaptor = newExcludesAdaptor;
 	}
 
 	public Composite createClient(Composite parent, PageWidgetFactory factory) {
@@ -65,8 +65,6 @@ public class ExcludesSection extends PageSection {
 
 	public void update(Project pom) {
 		subsection.updateTableEntries(excludesTable, getExcludes(pom), getInheritedExcludes(), false);
-		
-		super.update(pom);
 	}
 
 	public void setExcludes(Object target, List newExcludes) {

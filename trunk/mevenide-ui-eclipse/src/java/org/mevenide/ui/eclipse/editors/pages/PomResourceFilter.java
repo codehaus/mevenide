@@ -38,9 +38,9 @@ public class PomResourceFilter extends ViewerFilter {
 	
 	private IFile currentPomFile;
     
-    public PomResourceFilter(IFile currentPomFile) {
+    public PomResourceFilter(IFile pomFile) {
         super();
-        this.currentPomFile = currentPomFile;
+        this.currentPomFile = pomFile;
     }
 
     public boolean select(Viewer viewer, Object parent, Object element) {
