@@ -8,7 +8,6 @@
 package org.mevenide.ui.eclipse.launch.jdt;
 
 
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
@@ -29,7 +28,7 @@ public class VMLauncherUtility {
 	private VMLauncherUtility() { 
 	}
 	
-	static IProgressMonitor progressMonitor = new MevenideProgressMonitor();
+	
   
 	static public IVMInstall getVMInstall() {
 		return JavaRuntime.getDefaultVMInstall();
@@ -69,7 +68,7 @@ public class VMLauncherUtility {
         vmConfig.setProgramArguments(prgArgs);
         
         if (vmRunner != null) {
-            vmRunner.run(vmConfig, launch, progressMonitor);
+            vmRunner.run(vmConfig, launch, null);
             DebugUIPlugin.getDefault().getConsoleDocumentManager().launchAdded(launch);
 		}
 	}
