@@ -12,6 +12,13 @@ body {
 	border-left: none #003366;
 
  }
+ 
+#documentContent a {
+ color: #3366AA;
+ text-decoration:none;
+ 
+ }
+
 img.handle {
  border: 0;
  padding-right: 2px;
