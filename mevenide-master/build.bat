@@ -1,11 +1,127 @@
-rmdir /S /Q build
-mkdir build
-cd build
+@echo off
+
+rem ---------------------------------------
+rem this is an interactive script that 
+rem downloads, builds and installs mevenide
+rem ---------------------------------------
+
+echo ***************************************************************************
+echo *                                                                         *
+echo * this script has been tested under winxp and should work under win 2000. *
+echo * i dont think it is compatible with nt4 because of the set /P thingie.   *
+echo *                                                                         *
+echo ***************************************************************************
+
+pause
+
+pushd
+
+if "%ECLIPSE_HOME%" == "" goto noEclipseHome
+goto prepareFs
+
+
+rem ----------------------
+rem process initialization
+rem ----------------------
+
+:prepareFs
+set /P buildDir=enter checkout folder :
+rmdir /S /Q %buildDir%
+mkdir %buildDir%
+cd %buildDir%
+goto checkout
+
+:checkout
+echo checking out mevenide from cvs.sourceforge.net
 cvs -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/mevenide co .
 move update\mevenide-update .
 move update\mevenide-feature .
+goto build
+
+
+rem ---------------------
+rem mevenide construction
+rem ---------------------
+
+:build
+set /P installMep=install maven-eclipse-plugin-plugin (Y/N) ?
+if "%installMep%" == "Y" goto buildMepPlugin
+if "%installMep%" == "N" goto buildMevenide
+goto build
+
+:buildMepPlugin
 cd maven-plugins\maven-eclipse-plugin-plugin
-rem maven plugin:install plugin:deploy
-cd ..\..\mevenide-master\
-maven mevenide:build-all 
+echo installing maven-eclipse-plugin-plugin
+call maven plugin:install plugin:deploy
 cd ..\..
+goto buildMevenide
+
+:buildMevenide
+echo building mevenide with maven. it may take a few minutes. 
+cd mevenide-master
+call maven mevenide:build-all 
+cd ..\..
+goto shouldInstall
+
+
+rem ---------------------------------------------------------
+rem mevenide installation (should be handled by a maven goal)
+rem ---------------------------------------------------------
+
+:shouldInstall
+set /P shouldInstall=install mevenide for eclipse (Y/N) ? 
+if "%shouldInstall%" == "Y" goto installMevenide
+if "%shouldInstall%" == "N" goto end
+goto installMevenide
+
+:installMevenide
+if "%JAVA_HOME%" == "" goto noJavaHome
+popd 
+set mevenideTempInstallDir=mevenideTempInstallDir
+mkdir %buildDir%\%mevenideTempInstallDir%  
+for %%f in ( %buildDir%\mevenide-feature\target\eclipse\dist\plugins\*.jar ) do copy %%f %buildDir%\%mevenideTempInstallDir%
+goto extractJars
+
+:extractJars
+echo installing mevenide into %ECLIPSE_HOME%
+set expandedDirs=%buildDir%\expandedDirs
+mkdir %expandedDirs%
+cd %expandedDirs%
+call %JAVA_HOME%\bin\jar xvf ..\%mevenideTempInstallDir%\org.mevenide.core_0.1.1.jar
+call %JAVA_HOME%\bin\jar xvf ..\%mevenideTempInstallDir%\org.mevenide.grabber_0.1.1.jar
+call %JAVA_HOME%\bin\jar xvf ..\%mevenideTempInstallDir%\org.mevenide.ui_0.1.1.jar
+cd ..\..
+xcopy /S /E %expandedDirs% %ECLIPSE_HOME%\plugins
+goto cleanInstallTemp
+
+:cleanInstallTemp
+rmdir /S /Q %buildDir%\%mevenideTempInstallDir%
+goto finalize
+
+
+rem --------------
+rem error handling
+rem --------------
+
+:noEclipseHome
+echo ECLIPSE_HOME not found. 
+set /P eclipsehome=enter the location of your Eclipse location : 
+set ECLIPSE_HOME = %eclipsehome%
+goto prepareFs
+
+:noJavaHome
+if "%JAVA_HOME%" == "" echo JAVA_HOME not found
+if NOT EXIST "%JAVA_HOME%\bin\jar.exe" echo invalid JAVA_HOME : jar executable not found
+set /P javahome=enter Java Home Directory :
+set JAVA_HOME=%javahome%
+if EXIST "%JAVA_HOME%\bin\jar.exe" goto installMevenide
+goto noJavaHome
+
+rem --------------------
+rem process finalization 
+rem --------------------
+
+:finalize
+set /P shouldDropFiles=mevenide has been installed. drop installation files (Y/N) ?
+if  "%shouldDropFiles%" == "Y" rmdir /S /Q %buildDir%
+
