@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<project name="mevenide-core">
+
+    <properties>
+        <author email="gdodinet@wanadoo.fr">Gilles Dodinet</author>
+        <title>Mevenide Core</title>
+    </properties>
+
+    <body>
+        <links>
+            <item name="Maven" href="http://www.maven.org/"/>
+        </links>
+        <menu name="License">
+            <item name="License" href="/license.html"/>
+        </menu>
+        
+    </body>
+
+</project>
