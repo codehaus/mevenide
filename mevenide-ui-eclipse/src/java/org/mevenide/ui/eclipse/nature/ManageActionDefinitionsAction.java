@@ -16,9 +16,11 @@
  */
 package org.mevenide.ui.eclipse.nature;
 
+import org.eclipse.debug.core.ILaunchConfiguration;
+import org.eclipse.debug.internal.ui.DebugUIPlugin;
+import org.eclipse.debug.ui.DebugUITools;
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.dialogs.Dialog;
-import org.mevenide.ui.eclipse.Mevenide;
+import org.eclipse.ui.PlatformUI;
 
 
 /**  
@@ -41,7 +43,16 @@ public class ManageActionDefinitionsAction extends Action {
     
     
     private void openDialog() {
-        Dialog d = new CustomLaunchConfigurationDialog(Mevenide.getInstance().getWorkbenchWindow().getShell());
-        d.open();    
+        //Dialog d = new CustomLaunchConfigurationDialog(Mevenide.getInstance().getWorkbenchWindow().getShell());
+        //d.open();
+        ILaunchConfiguration conf = DebugUIPlugin.getDefault().getLaunchConfigurationManager().getLastLaunch("org.mevenide.ui.launching.ActionDefinitionTabGroup");
+        
+        DebugUITools.openLaunchConfigurationDialogOnGroup(
+                PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), 
+                null, 
+                "com.example.ExampleLaunchGroupId");
+        
     }
+    
+    
 }

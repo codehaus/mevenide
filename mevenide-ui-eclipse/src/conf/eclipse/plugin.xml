@@ -400,6 +400,22 @@
             name="Generic Jelly Editor">
       </editor>
    </extension>
+   <!-- Custom action definition -->
+   <!-- extension point="org.eclipse.debug.ui.launchConfigurationTabGroups">
+      <launchConfigurationTabGroup type="org.mevenide.ui.launching.ActionDefinitionConfigType" 
+                                   class="org.mevenide.ui.eclipse.nature.CustomActionTabGroup" 
+                                   id="org.mevenide.ui.launching.ActionDefinitionTabGroup">
+      </launchConfigurationTabGroup>
+   </extension>
+   
+   <extension point="org.eclipse.debug.ui.launchGroups">
+ 		<launchGroup
+         label="Maven"
+         category="maven"
+         mode="run"
+         id="org.mevenide.ui.launching.custom.LaunchGroup">
+ 		</launchGroup>
+   </extension -->
    <!-- Maven launcher configuration type -->
    <extension point="org.eclipse.debug.core.launchConfigurationTypes">
       <launchConfigurationType
