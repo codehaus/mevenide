@@ -149,10 +149,13 @@ public class MavenLaunchShortcut implements ILaunchShortcut {
 		name += StringUtils.replace(goals, ":", "_");
 		
 		ILaunch[] launches = manager.getLaunches();
-		for (int i = 0; i < launches.length; i++) {
-			if ( (name).equals(launches[i].getLaunchConfiguration().getName()) ) {
-				return launches[i].getLaunchConfiguration();
-			}	
+		if ( launches != null ) {
+		    //do we still want that behaviour ? is it not better to always return a new configuration ? 
+			for (int i = 0; i < launches.length; i++) {
+				if ( (name).equals(launches[i].getLaunchConfiguration().getName()) ) {
+					return launches[i].getLaunchConfiguration();
+				}	
+			}
 		}
 		
 		name = manager.generateUniqueLaunchConfigurationNameFrom(name);
