@@ -55,7 +55,18 @@ public class DefaultQueryContext implements IQueryContext {
     // it's kind of safer to have one before initializeProjectContext() is called.
     private IProjectContext projectContext = new EmptyProjectContext();
     
-    public DefaultQueryContext() {
+    // a few semi hacks introduced when creating a default non-project based instance.
+    // reason to do: have the user.dir parsed just once..
+    // I guess a special class should be introduced and then delegate from here,
+    // but I didn't feel like doing it.. mkleint
+    private static IQueryContext defaultInstance;
+    
+    /**
+     * this constructor used only in the non-project based default instance.
+     * that one handles the user.home related files and the project based one delegates to it.
+     * -> user.home/build.properties file is read just once for all created contexts..
+     */
+    private DefaultQueryContext() {
         String home = System.getProperty("user.home"); //NOI18N
         userDir = new File(home);
         userPropertyFile = new File(userDir, "build.properties"); //NOI18N
@@ -63,7 +74,6 @@ public class DefaultQueryContext implements IQueryContext {
     }
     
     public DefaultQueryContext(File project) {
-        this();
         projectDir = project;
         projectPropertyFile = new File(projectDir, "project.properties"); //NOI18N
         buildPropertyFile = new File(projectDir, "build.properties"); //NOI18N
@@ -75,8 +85,24 @@ public class DefaultQueryContext implements IQueryContext {
      * implementation comes from mevenide-core which depends on this one..
      */
     public void initializeProjectContext(IProjectContext projContext) {
+        if (this == defaultInstance) {
+            throw new IllegalStateException("Cannot set project context to the default querycontext instance.");
+        }
         projectContext = projContext;
     }
+    
+    /**
+     * the default instance that only refers to the user.dir properties file
+     * non-project based querycontext. To be used only in cases where the project-based
+     * context cannot be obtained for whatever reason.
+     */
+    public static synchronized IQueryContext getNonProjectContextInstance() {
+        if (defaultInstance == null) {
+             defaultInstance = new DefaultQueryContext();
+        }
+        return defaultInstance;
+    }
+    
     
     public String getBuildPropertyValue(String key) {
         buildPropertyFileTimestamp = checkReloadModel(buildPropertyFile, 
@@ -116,14 +142,18 @@ public class DefaultQueryContext implements IQueryContext {
     }
     
     public String getUserPropertyValue(String key) {
-        userPropertyFileTimestamp = checkReloadModel(userPropertyFile, 
-                                                     userPropertyFileTimestamp,
-                                                     userPropertyModel);
+        //HACK - not nice here..
+        if (this != defaultInstance) {
+            return getNonProjectContextInstance().getUserPropertyValue(key);
+        }
+       userPropertyFileTimestamp = checkReloadModel(userPropertyFile, 
+                                                    userPropertyFileTimestamp,
+                                                    userPropertyModel);
         if (userPropertyFileTimestamp == 0) {
             // file does not exist.
             return null;
         }
-        return userPropertyModel.getProperty(key);
+        return userPropertyModel.getProperty(key);        
     }
     
     private long checkReloadModel(File propFile, long timestamp, Properties propModel) {
@@ -144,6 +174,10 @@ public class DefaultQueryContext implements IQueryContext {
     }
     
     public File getUserDirectory() {
+        //HACK - not nice here..
+        if (this != defaultInstance) {
+            return getNonProjectContextInstance().getUserDirectory();
+        }
         return userDir;
     }
     public IProjectContext getPOMContext() {
