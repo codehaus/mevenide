@@ -121,18 +121,14 @@ public class MavenLaunchShortcut implements ILaunchShortcut {
 			String newName= DebugPlugin.getDefault().getLaunchManager().generateUniqueLaunchConfigurationNameFrom(configuration.getName());
 			try {
 				configuration = configuration.copy(newName);
+				if (showDialog) {
+					configuration= ((ILaunchConfigurationWorkingCopy) configuration).doSave();
+				}
+				DebugUITools.launch(configuration, ILaunchManager.RUN_MODE);
 			}
 			catch (Exception e) {
 				log.error("Unable to copy configuration due to : ", e);
 			}
-			try {
-				DebugUITools.launch(configuration, ILaunchManager.RUN_MODE);
-			}
-			catch ( Exception e ) {
-				log.error("problem occured while launching config", e);
-			}
-			
-			
 		}
 	} 
 	
