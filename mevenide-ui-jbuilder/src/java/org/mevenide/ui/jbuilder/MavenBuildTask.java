@@ -14,7 +14,7 @@
  *  limitations under the License.
  * =========================================================================
  */
-package com.jahia.opentools.maven;
+package org.mevenide.ui.jbuilder;
 
 import java.io.BufferedReader;
 import java.io.File;

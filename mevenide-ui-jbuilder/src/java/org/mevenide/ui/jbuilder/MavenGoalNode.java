@@ -14,53 +14,53 @@
  *  limitations under the License.
  * =========================================================================
  */
-package com.jahia.opentools.maven;
-
-import java.util.ArrayList;
+package org.mevenide.ui.jbuilder;
 
 import javax.swing.Icon;
 
 import com.borland.primetime.ide.BrowserIcons;
 import com.borland.primetime.node.LightweightNode;
-import com.borland.primetime.node.Node;
 import com.borland.primetime.node.Project;
 
 /**
- * <p>Title: Abstract Collection Node used to organize project view</p>
- * <p>Description: This class serves as a non-persistant tree node for
- * the project view, so that we can organize large amount of goals in a
- * structure that makes it easier for the user to manage.</p>
+ * <p>Title: </p>
+ * <p>Description: </p>
  * <p>Copyright: Copyright (c) 2004 Jahia Ltd</p>
  * <p>Company: Jahia Ltd</p>
  * @author Serge Huber
  * @version 1.0
  */
-public class MavenCollectionNode extends LightweightNode {
+public class MavenGoalNode extends LightweightNode {
 
-    private ArrayList childNodes = new ArrayList();
+    private String description;
+    private String fullyQualifiedGoalName;
 
-    public MavenCollectionNode (Project project, Node parentNode, String name) {
-        super(project, parentNode, name);
+    // public static final Icon ICON = new ImageIcon(MavenGoalNode.class.getResource("maven.gif"));
+
+    public MavenGoalNode (Project project, MavenFileNode mavenFileNode,
+                          String name,
+                          String description,
+                          String fullyQualifiedGoalName) {
+        super(project, mavenFileNode, name);
+        this.description = description;
+        this.fullyQualifiedGoalName = fullyQualifiedGoalName;
     }
 
     public Icon getDisplayIcon () {
-        return BrowserIcons.ICON_FOLDER;
+        return BrowserIcons.ICON_ANT_TARGET;
+        // return ICON;
     }
 
-    public void addChild (Node childNode) {
-        childNodes.add(childNode);
+    public String getDescription () {
+        return description;
     }
 
-    public boolean hasDisplayChildren () {
-        if (childNodes.size() > 0) {
-            return true;
-        } else {
-            return false;
-        }
+    public MavenFileNode getMavenNode () {
+        return (MavenFileNode)super.getParent();
     }
 
-    public Node[] getDisplayChildren () {
-        return (Node[]) childNodes.toArray(new Node[childNodes.size()]);
+    public String getFullyQualifiedGoalName () {
+        return fullyQualifiedGoalName;
     }
 
     public boolean isPersistent () {

@@ -14,7 +14,7 @@
  *  limitations under the License.
  * =========================================================================
  */
-package com.jahia.opentools.maven;
+package org.mevenide.ui.jbuilder;
 
 import com.borland.primetime.properties.NodeBooleanProperty;
 import com.borland.primetime.properties.NodeProperty;
