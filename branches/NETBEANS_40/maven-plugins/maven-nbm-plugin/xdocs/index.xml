@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<document>
+  <properties>
+    <title>maven-nbm-plugin</title>
+    <author>Milos Kleint (ca206216@tiscali.cz)</author>
+  </properties>
+  <body>
+    <section name="Overview">
+      <div id="documentContent">
+      	<p>
+   	  This Maven plugin generates the Netbeans Module (NBM) files. </p>
+      <p>
+      Currently the plugin ensures that your artifacts become Netbeans modules, creates nbm files for easy updating, not only for your project but possibly also for it's dependencies.
+   	  </p>
+   	  </div>
+    </section>
+    <section name="Versions">
+      <div id="documentContent">
+      	<p>
+   	  Currently the 0.1 version is available for download. 
+      </p>
+      <p>
+      To get latest snapshot of 0.2, please checkout the project from cvs.
+   	  </p>
+   	  </div>
+    </section>
+    <section name="Installing">
+      <div id="documentContent">
+      <p>
+            To install the plugin, go to the <a href="http://sourceforge.net/project/showfiles.php?group_id=54263&amp;package_id=110954&amp;release_id=220320" class="documentLink">Sourceforge download page</a>  and get the zipped/tarred plugin. Then extract it to your MAVEN_HOME/plugins directory.
+   	  </p>
+   	  </div>
+    </section>
+  </body>
+</document>
