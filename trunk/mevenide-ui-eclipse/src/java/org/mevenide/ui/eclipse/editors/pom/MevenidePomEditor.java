@@ -328,6 +328,7 @@ public class MevenidePomEditor extends FormEditor {
             updateModel();
             updateTitleAndToolTip();
             setModelDirty(false);
+            
         } catch (InterruptedException x) {
         } catch (InvocationTargetException x) {
         }
@@ -365,8 +366,9 @@ public class MevenidePomEditor extends FormEditor {
     }
 
     public boolean isDirty() {
-        boolean dirtiness = isModelDirty()
-                || (documentProvider != null && documentProvider.canSaveDocument(getEditorInput()));
+        boolean dirtiness = isModelDirty();
+                //commented because source page was removed
+                //|| (documentProvider != null && documentProvider.canSaveDocument(getEditorInput()));
         if (log.isDebugEnabled()) {
             log.debug("modelDirty = " + isModelDirty() + " and editor dirty " + dirtiness); //$NON-NLS-1$ //$NON-NLS-2$
         }
