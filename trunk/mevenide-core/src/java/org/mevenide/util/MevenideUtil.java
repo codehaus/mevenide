@@ -89,6 +89,10 @@ public class MevenideUtil {
 	}
 	
 	public static String resolve(Project project, String unresolvedString) throws Exception {
+		return resolve(project, unresolvedString, false);
+	}
+	
+	public static String resolve(Project project, String unresolvedString, boolean preserveBasedir) throws Exception {
 		String resolvedString = "";
 		
 		String tempVariable = "";
@@ -116,7 +120,12 @@ public class MevenideUtil {
 				else {
 					Object evaluation = null;
 					if ( tempVariable.startsWith("basedir") ) {
-						evaluation = ".";
+						if ( preserveBasedir  ) {
+							evaluation = "${basedir}";
+						}
+						else {
+							evaluation = ".";
+						}
 					}
 					else {
 						String[] splittedVar = StringUtils.split(tempVariable, ".");

@@ -240,7 +240,7 @@ public class SynchronizeWizardPage extends WizardPage {
 			//check mavenProject nullity, just in case.. should not be necessary
 			if ( mavenProject != null && mavenProject.getExtend() != null && mavenProject.getExtend().trim() != "" ) {
 				//isInheritedEditor.setEnabled(false, bottomControls);
-				String resolvedExtend = MevenideUtil.resolve(mavenProject, mavenProject.getExtend());
+				String resolvedExtend = MevenideUtil.resolve(mavenProject, mavenProject.getExtend(), true);
 				parentPomEditor.getTextControl(bottomControls).setText(resolvedExtend);
 			}
 		}

@@ -147,6 +147,24 @@ public class DependencyGroup extends ArtifactGroup {
 		return nonInheritedDependencies;
 	}
 	
+	public List getInheritedDependencyWrappers() {
+		List inheritedDependencies = new ArrayList();
+		
+		if ( !isInherited ) {
+			log.debug("Group isnot inherited");
+			return inheritedDependencies;
+		}
+		
+		for (int i = 0; i < artifacts.size(); i++) {
+            DependencyWrapper dependencyWrapper = (DependencyWrapper) artifacts.get(i);
+			if ( dependencyWrapper.isInherited() ) {
+				inheritedDependencies.add(dependencyWrapper);
+            }
+        }
+		
+		return inheritedDependencies;
+	}
+
 	public List getDependencyWrappers() {
 		return artifacts;
 	}

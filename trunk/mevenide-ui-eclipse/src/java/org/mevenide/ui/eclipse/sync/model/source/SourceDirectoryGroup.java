@@ -167,4 +167,22 @@ public class SourceDirectoryGroup extends ArtifactGroup {
 		}
         return false;
     }	
+
+	public List getInheritedSourceDirectories() {
+		List inheritedSourceDirectories = new ArrayList();
+
+		log.debug("Group isInherited = " + (isInherited));
+
+		if ( !isInherited ) {
+			return inheritedSourceDirectories;
+		}
+		
+		for (int i = 0; i < artifacts.size(); i++) {
+            SourceDirectory sourceDirectory = (SourceDirectory) artifacts.get(i);
+            if ( sourceDirectory.isInherited() ) {
+				inheritedSourceDirectories.add(sourceDirectory);
+            }
+        }
+		return inheritedSourceDirectories;	
+	}
 }
