@@ -184,11 +184,19 @@ public class OrganizationSection extends PageSection {
 	}
 
 	public void update(Project pom) {
-		setIfDefined(nameText, pom.getOrganization().getName(), isInherited() ? getParentPom().getOrganization().getName() : null);
-		setIfDefined(urlText, pom.getOrganization().getUrl(), isInherited() ? getParentPom().getOrganization().getUrl() : null);
-		setIfDefined(logoText, pom.getOrganization().getLogo(), isInherited() ? getParentPom().getOrganization().getLogo() : null);
+		if ( assertOrganizationNotNull(pom) ) {
+			setIfDefined(nameText, pom.getOrganization().getName(), isInherited() ? getParentPom().getOrganization().getName() : null);
+			setIfDefined(urlText, pom.getOrganization().getUrl(), isInherited() ? getParentPom().getOrganization().getUrl() : null);
+			setIfDefined(logoText, pom.getOrganization().getLogo(), isInherited() ? getParentPom().getOrganization().getLogo() : null);
 
-		super.update(pom);
+			super.update(pom);
+		}
+	}
+
+	private boolean assertOrganizationNotNull(Project pom) {
+		return pom.getOrganization() != null 
+					|| (getParentPom() != null 
+						&& getParentPom().getOrganization().getName() != null);
 	}
 
 }
