@@ -34,6 +34,8 @@ public class AbstractMevenideTestCase extends TestCase {
 	
 	protected void setUp() throws Exception {
 		
+		Environment.setMavenRepository(new File(new File(System.getProperty("user.home"), ".maven"), "repository").getAbsolutePath());
+		
 		File src = new File(AbstractMevenideTestCase.class.getResource("/fixtures/project-fixture.xml").getFile());
 		projectFile = new File(src.getParentFile().getParent(), "project-fixture.xml") ; 
 		copy(src.getAbsolutePath(), projectFile.getAbsolutePath());

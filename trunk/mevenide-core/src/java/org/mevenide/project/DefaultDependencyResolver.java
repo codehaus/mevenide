@@ -172,4 +172,9 @@ public class DefaultDependencyResolver extends AbstractDependencyResolver {
 		}
 		else return null;
 	}
+	
+	public String guessExtension(String fileName) {
+		return fileName.substring(fileName.lastIndexOf('.') + 1);
+	}
+
 }
