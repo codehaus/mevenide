@@ -87,7 +87,7 @@
       <subsection name="Global execution options">
 	  	<div id="documentContent">
 		  <p>
-          To influence the execution of maven, you can define what commaond line switches are used when
+          To influence the execution of maven, you can define what command line switches are used when
           executing Maven. These are not project based, but global for use in the IDE, don't influence
           maven when used on the command-line.
 			<br/>

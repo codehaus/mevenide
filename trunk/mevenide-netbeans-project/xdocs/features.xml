@@ -15,6 +15,7 @@
 			<li><p><a href="#Maven Launcher">Maven Launcher</a></p></li>
 			<li><p><a href="#POM Customizer">POM Visual Customizer</a></p></li>
 			<li><p><a href="#Running and Debugging">Running and Debugging application</a></p></li>
+			<li><p><a href="#Browsing">Browsing remote repositories</a></p></li>
 		  </ul>
           <p>
           For a detailed walkthrough describing the feautures accompanied with picures, see the <a href="user-guide/index.html">User Guide</a>
@@ -45,7 +46,7 @@
 		  <li><p>List of all available goals - plugin-defined ones as well as custom ones for project.</p></li>
 		  <li><p>Possibility to define your own goal-launching popup menu.</p></li>
 		  <li><p>Output to the output window. For compilation and tests hyperlinking to errors.</p></li>
-                  <li><p>Pmd, checkstyle and announcement reports also accessible from the output window.</p></li>
+                  <li><p>Pmd, checkstyle, findbugs and announcement reports also accessible from the output window along with annotations in the editor.</p></li>
 		</ul>
 	  </p>
 	  <p>
@@ -88,6 +89,24 @@
 		<u>Known limitations</u><br/>
 		<ul>
 			<li><p>Currently the IDE can only attach to the debugged JVM it starts. Later IDE can also listen etc.</p></li>
+		</ul>
+	  </p>
+	</div>
+  </section>
+  <section name="Browsing">
+	<div id="documentContent">
+          <p>
+		<ul>
+	  <li><p>Able to browse remote and local repositories.</p></li>
+          <li><p>See each repo separately, or merged together into one tree.</p></li>
+          <li><p>Can download artifacts.</p></li>
+		</ul>
+	  </p>
+	  <p>
+		<u>Known limitations</u><br/>
+		<ul>
+    <li><p>Refreshing of the views not implemented yet.</p></li>
+    <li><p>Searching also not implemented.</p></li>
 		</ul>
 	  </p>
 	</div>

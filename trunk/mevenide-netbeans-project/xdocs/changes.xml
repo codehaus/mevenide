@@ -6,6 +6,21 @@
   </properties>
 
   <body>
+    <release version="0.6" date="20/03/2005" description="Works with 4.0 and 4.1 beta.">
+      <action dev="mkleint" type="add">
+      Add remote and local repository browser. Allow to download artifacts from
+      remote repository.
+      </action>
+      <action dev="mkleint" type="add">
+      Add dependency editing in visual project customizer.
+      </action>
+      <action dev="mkleint" type="add">
+      Link findbugs report output with the IDE's editor. Add annotations into editor.
+      </action>
+      <action dev="mkleint" type="update">
+      All editor annotations show up on errorstripe as well. (4.1 only)
+      </action>
+    </release>
     <release version="0.5" date="23/01/2005" description="">
       <action dev="mkleint" type="add">
       In project customizer show list of available maven plugins and their
