@@ -93,6 +93,7 @@ public class LaunchWizard extends Wizard {
         int i = 0;
         while ( tokenizer.hasMoreTokens() ) {
         	tokens[i] = tokenizer.nextToken();
+        	i++;
         } 
         
         return tokens;

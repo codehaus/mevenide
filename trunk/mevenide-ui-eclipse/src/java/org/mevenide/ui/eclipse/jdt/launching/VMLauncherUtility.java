@@ -65,7 +65,7 @@ public class VMLauncherUtility {
         
         
         VMRunnerConfiguration vmConfig = new VMRunnerConfiguration(classToLaunch, classPath);
-        vmConfig.setVMArguments(vmArgs);
+		vmConfig.setVMArguments(vmArgs);
         vmConfig.setProgramArguments(prgArgs);
         
         if (vmRunner != null) {

@@ -68,11 +68,11 @@ public class LaunchWizardPage extends WizardPage {
 
     public LaunchWizardPage() {
 		super(
-			MavenPlugin.getResourceString("MavenGoalsPage.name"), 
-			MavenPlugin.getResourceString("MavenGoalsPage.title"), 
+			MavenPlugin.getResourceString("MavenLaunchPage.name"), 
+			MavenPlugin.getResourceString("MavenLaunchPage.title"), 
 			MavenPlugin.getImageDescriptor("maven-org-64.gif"));
 	   
-	   setDescription(MavenPlugin.getResourceString("MavenGoalsPage.description"));
+	   setDescription(MavenPlugin.getResourceString("MavenLaunchPage.description"));
 	   
 	   try {
            store = new PreferenceStore(MavenPlugin.getPlugin().getFile("prefs.ini"));
@@ -369,7 +369,7 @@ public class LaunchWizardPage extends WizardPage {
         return goals;
     }
 
-   Map getSysProperties() {
+    Map getSysProperties() {
         return sysProperties;
     }
 
