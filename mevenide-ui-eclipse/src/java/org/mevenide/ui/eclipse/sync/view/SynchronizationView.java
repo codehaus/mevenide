@@ -464,6 +464,7 @@ public class SynchronizationView extends ViewPart implements IActionListener, IR
 		toolBarManager.add(viewIdeToPom);
 		toolBarManager.add(viewPomToIde);
 		toolBarManager.add(viewConflicts);
+		activateWritePropertiesAction(direction);
 	}
 
 	public void propertyChange(PropertyChangeEvent event) {
