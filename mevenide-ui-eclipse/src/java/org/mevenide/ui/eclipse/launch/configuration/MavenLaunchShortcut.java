@@ -149,8 +149,7 @@ public class MavenLaunchShortcut implements ILaunchShortcut {
 				DebugUITools.launch(configuration, ILaunchManager.RUN_MODE);
 			}
 			catch (Exception e) {
-				// @todo Auto-generated catch block
-				//e.printStackTrace();
+				log.debug("Unable to launch configuration due to : ", e);
 			}
 			
 			

@@ -16,10 +16,6 @@ img.handle {
  border: 0;
  padding-right: 2px;
 }
-.app h4 {
- color: #fff;
- background-color: #888;
- }
 #navcolumn div div  {
  background-image: none;
  background-repeat: no-repeat;
@@ -28,6 +24,11 @@ img.handle {
 #navcolumn div div {
   padding-left: 10px;
 }
+.app h4 {
+ color: #fff;
+ background-color: #888;
+ }
+
 .a td { 
  background: #ddd;
  color: #000;
@@ -68,7 +69,6 @@ div#banner {
  border-right: none;
  border-bottom: none;
  border-top: none;
- width:130px;
  }
 
 #breadcrumbs {

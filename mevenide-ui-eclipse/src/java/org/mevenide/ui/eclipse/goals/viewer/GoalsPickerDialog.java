@@ -99,8 +99,6 @@ import org.mevenide.ui.eclipse.goals.model.Plugin;
 
 /**
  * 
- * @todo fix bug that causes selected goals not always to be displayed in goalsText
- * seems to a conflict between plugin names and goals whose shortname is also a plugin name
  * 
  * @author Gilles Dodinet (gdodinet@wanadoo.fr)
  * @version $Id: GoalsPickerDialog.java,v 1.1 8 sept. 2003 Exp gdodinet 
