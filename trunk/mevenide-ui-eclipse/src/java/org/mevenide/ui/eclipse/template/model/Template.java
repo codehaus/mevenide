@@ -40,6 +40,10 @@ public class Template implements IAdaptable {
 	{
 		return fProject.getName();
 	}
+	public Project getProject()
+	{
+		return fProject;
+	}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
