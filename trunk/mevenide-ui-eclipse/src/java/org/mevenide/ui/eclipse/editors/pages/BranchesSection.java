@@ -86,7 +86,7 @@ public class BranchesSection extends PageSection {
 		// POM branch table
 		Button toggle = createOverrideToggle(container, factory, 1, true);
 		TableViewer viewer = createTableViewer(container, factory, 1);
-		branchTable = new TableEntry(viewer, toggle, container, factory, this);
+		branchTable = new TableEntry(viewer, toggle, "Branch", container, factory, this);
 		OverrideAdaptor adaptor = new OverrideAdaptor() {
 			public void overrideParent(Object value) {
 				List branches = (List) value;
@@ -100,24 +100,25 @@ public class BranchesSection extends PageSection {
 		branchTable.addOverrideAdaptor(adaptor);
 		branchTable.addPomCollectionAdaptor(
 			new IPomCollectionAdaptor() {
-				public Object addNewObject() {
+				public Object addNewObject(Object parentObject) {
 					Branch branch = new Branch();
 					pom.addBranch(branch);
 					return branch;
 				}
-				public void moveObjectTo(int index, Object object) {
+				public void moveObjectTo(int index, Object object, Object parentObject) {
 					List branches = pom.getBranches();
 					if (branches != null) {
 						branches.remove(object);
 						branches.add(index, object);
 					}
 				}
-				public void removeObject(Object object) {
+				public void removeObject(Object object, Object parentObject) {
 					List branches = pom.getBranches();
 					if (branches != null) {
 						branches.remove(object);
 					}
 				}
+				public List getDependents(Object parentObject) { return null; }
 			}
 		);
 		

@@ -90,7 +90,7 @@ public class LicenseSection extends PageSection {
 		// POM license table
 		Button toggle = createOverrideToggle(container, factory, 1, true);
 		TableViewer viewer = createTableViewer(container, factory, 1);
-		licenseTable = new TableEntry(viewer, toggle, container, factory, this);
+		licenseTable = new TableEntry(viewer, toggle, "License", container, factory, this);
 		OverrideAdaptor adaptor = new OverrideAdaptor() {
 			public void overrideParent(Object value) {
 				List licenses = (List) value;
@@ -104,24 +104,25 @@ public class LicenseSection extends PageSection {
 		licenseTable.addOverrideAdaptor(adaptor);
 		licenseTable.addPomCollectionAdaptor(
 			new IPomCollectionAdaptor() {
-				public Object addNewObject() {
+				public Object addNewObject(Object parentObject) {
 					License license = new License();
 					pom.addLicense(license);
 					return license;
 				}
-				public void moveObjectTo(int index, Object object) {
+				public void moveObjectTo(int index, Object object, Object parentObject) {
 					List licenses = pom.getLicenses();
 					if (licenses != null) {
 						licenses.remove(object);
 						licenses.add(index, object);
 					}
 				}
-				public void removeObject(Object object) {
+				public void removeObject(Object object, Object parentObject) {
 					List licenses = pom.getLicenses();
 					if (licenses != null) {
 						licenses.remove(object);
 					}
 				}
+				public List getDependents(Object parentObject) { return null; }
 			}
 		);
 		

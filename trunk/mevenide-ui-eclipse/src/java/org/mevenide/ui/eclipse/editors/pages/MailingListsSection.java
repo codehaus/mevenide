@@ -86,7 +86,7 @@ public class MailingListsSection extends PageSection {
 		// POM mailingLists table
 		Button toggle = createOverrideToggle(container, factory, 1, true);
 		TableViewer viewer = createTableViewer(container, factory, 1);
-		mailingListTable = new TableEntry(viewer, toggle, container, factory, this);
+		mailingListTable = new TableEntry(viewer, toggle, "Mailing List", container, factory, this);
 		OverrideAdaptor adaptor = new OverrideAdaptor() {
 			public void overrideParent(Object value) {
 				List mailingLists = (List) value;
@@ -100,24 +100,25 @@ public class MailingListsSection extends PageSection {
 		mailingListTable.addOverrideAdaptor(adaptor);
 		mailingListTable.addPomCollectionAdaptor(
 			new IPomCollectionAdaptor() {
-				public Object addNewObject() {
+				public Object addNewObject(Object parentObject) {
 					MailingList mailingList = new MailingList();
 					pom.addMailingList(mailingList);
 					return mailingList;
 				}
-				public void moveObjectTo(int index, Object object) {
+				public void moveObjectTo(int index, Object object, Object parentObject) {
 					List mailingLists = pom.getMailingLists();
 					if (mailingLists != null) {
 						mailingLists.remove(object);
 						mailingLists.add(index, object);
 					}
 				}
-				public void removeObject(Object object) {
+				public void removeObject(Object object, Object parentObject) {
 					List mailingLists = pom.getMailingLists();
 					if (mailingLists != null) {
 						mailingLists.remove(object);
 					}
 				}
+				public List getDependents(Object parentObject) { return null; }
 			}
 		);
 		

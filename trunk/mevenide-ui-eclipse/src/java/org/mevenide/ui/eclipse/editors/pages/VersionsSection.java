@@ -86,7 +86,7 @@ public class VersionsSection extends PageSection {
 		// POM versions table
 		Button toggle = createOverrideToggle(container, factory, 1, true);
 		TableViewer viewer = createTableViewer(container, factory, 1);
-		versionTable = new TableEntry(viewer, toggle, container, factory, this);
+		versionTable = new TableEntry(viewer, toggle, "Version", container, factory, this);
 		OverrideAdaptor adaptor = new OverrideAdaptor() {
 			public void overrideParent(Object value) {
 				List versions = (List) value;
@@ -100,24 +100,25 @@ public class VersionsSection extends PageSection {
 		versionTable.addOverrideAdaptor(adaptor);
 		versionTable.addPomCollectionAdaptor(
 			new IPomCollectionAdaptor() {
-				public Object addNewObject() {
+				public Object addNewObject(Object parentObject) {
 					Version version = new Version();
 					pom.addVersion(version);
 					return version;
 				}
-				public void moveObjectTo(int index, Object object) {
+				public void moveObjectTo(int index, Object object, Object parentObject) {
 					List versions = pom.getVersions();
 					if (versions != null) {
 						versions.remove(object);
 						versions.add(index, object);
 					}
 				}
-				public void removeObject(Object object) {
+				public void removeObject(Object object, Object parentObject) {
 					List versions = pom.getVersions();
 					if (versions != null) {
 						versions.remove(object);
 					}
 				}
+				public List getDependents(Object parentObject) { return null; }
 			}
 		);
 		
