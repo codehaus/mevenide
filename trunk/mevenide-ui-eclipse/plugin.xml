@@ -143,7 +143,7 @@
                label="Map Source Directories"
                icon="icons/maven-synch-pom-prompt.gif"
                tooltip="Map Source Directory Types"
-               class="org.mevenide.ui.eclipse.actions.SynchronizeAction"
+               class="org.mevenide.ui.eclipse.actions.MapAction"
                menubarPath="maven.plugin.menu/Map"
                enablesFor="1"
                id="maven-plugin.mapSourceDirectories">
@@ -152,7 +152,7 @@
                label="Map Dependencies"
                icon="icons/dependency-16.gif"
                tooltip="Map Artifacts"
-               class="org.mevenide.ui.eclipse.actions.SynchronizeAction"
+               class="org.mevenide.ui.eclipse.actions.MapAction"
                menubarPath="maven.plugin.menu/Map"
                enablesFor="1"
                id="maven-plugin.mapDependencies">
@@ -238,7 +238,7 @@
                label="Map Source Directories"
                icon="icons/maven-synch-pom-prompt.gif"
                tooltip="Map Source Directory Types"
-               class="org.mevenide.ui.eclipse.actions.SynchronizeAction"
+               class="org.mevenide.ui.eclipse.actions.MapAction"
                menubarPath="maven.plugin.menu/Map"
                enablesFor="1"
                id="maven-plugin.mapSourceDirectories">
@@ -247,7 +247,7 @@
                label="Map Dependencies"
                icon="icons/dependency-16.gif"
                tooltip="Map Dependency Artifacts"
-               class="org.mevenide.ui.eclipse.actions.SynchronizeAction"
+               class="org.mevenide.ui.eclipse.actions.MapAction"
                menubarPath="maven.plugin.menu/Map"
                enablesFor="1"
                id="maven-plugin.mapDependencies">
