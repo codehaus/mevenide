@@ -1,7 +1,7 @@
 /* ====================================================================
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 2003 Milos Kleint (ca206216@tiscali.cz).  All rights
+ * Copyright (c) 2003 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -57,7 +57,7 @@ import org.openide.nodes.Node;
 
 /**
  *
- * @author  cenda
+ * @author  Milos Kleint (ca206216@tiscali.cz)
  */
 public class GoalsRootNode extends AbstractNode
 {
