@@ -127,7 +127,7 @@
       <!-- set te final name according to the module def. -->
       <j:set var="modulepackage" value="${maven.nbm.modulename}"/>
       <j:if test="${!empty modulepackage}">
-            <util:replace var="maven.nbm.final.name" value="${modulepackage}" oldChar="." newChar="-"/>
+            <mevenide:check-module-name finalNameVar="maven.nbm.final.name" value="${modulepackage}"/>
       </j:if>
       
       
