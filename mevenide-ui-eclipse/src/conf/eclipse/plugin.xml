@@ -273,7 +273,7 @@
             	id="org.mevenide.ui.eclipse.category.mevenide" />
       <wizard
             name="%ProjectWizard.name"
-            icon="icons/wizard-project.gif"
+            icon="icons/etool16/newmprj_wiz.gif"
             category="org.mevenide.ui.eclipse.category.mevenide"
             class="org.mevenide.ui.eclipse.wizard.MavenProjectWizard"
             finalPerspective="org.eclipse.jdt.ui.JavaPerspective"
