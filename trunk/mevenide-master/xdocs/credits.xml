@@ -15,8 +15,6 @@
   	</p>
     
     <ul>
-      	<li>Bob McWhirter and <a href="http://drools.codehaus.org">Drools</a> team for sharing their site stylesheet, although it has been modified a bit</li>
-      	<li><a href="http://cyclops-group.sourceforge.net/">Cyclops-group</a> project whose jsl template has inspired me</li>
       	<li><a href="http://ant.apache.org">Ant</a> from which some code has been taken (system environment variable lookup) </li>
       	<li>Ute Schneider for initial grepping-like mechanism implementation</li>
     </ul>

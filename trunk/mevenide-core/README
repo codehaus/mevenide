@@ -1,5 +1,0 @@
-its obviously a burden to distribute maven-new-core snapshot with mevenide so i copied the necessary classes 
-into org.mevenide.util :
-   + org.mevenide.util.DeprecationWarning 
-   + org.mevenide.util.DefautlProjectUnmarshaller 
-they have to be removed as soon as possible
