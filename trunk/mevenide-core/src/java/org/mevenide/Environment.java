@@ -116,7 +116,9 @@ public final class Environment {
      * @return the configuration file. for now the value of forehead.conf.file 
      */
 	public static String getConfigurationFile() {
-		return configurationFile;
+		if ( configurationFile == null || javaHome.trim().equals("") )
+		    return new File(new File(EnvironmentUtil.getMavenHome(), "bin"), "forehead.conf").getAbsolutePath();
+	    return configurationFile;
 	}
     
     /**

@@ -75,7 +75,7 @@ public class EnvironmentUtil {
      * this is a slighty modified version of org.apache.tools.ant.taskdefs.Property#loadEnvironment()
      * (c) ASF
      */
-	protected static void loadEnvironment() {
+	public static void loadEnvironment() {
 	   Properties props = new Properties();
 	   Vector osEnv = Execute.getProcEnvironment();
 	   log.debug("loading environment");
@@ -93,8 +93,8 @@ public class EnvironmentUtil {
        log.debug("environment loaded");
 	   log.debug("Maven home = " + getMavenHome());	
 	   log.debug("Java home = " + getJavaHome());
-	   Environment.setJavaHome(getJavaHome());
-	   Environment.setMavenHome(getMavenHome());
+	   if ( Environment.getJavaHome() == null ) Environment.setJavaHome(getJavaHome());
+	   if ( Environment.getMavenHome() == null ) Environment.setMavenHome(getMavenHome());
 	}
 	
 	static String getMavenHome() {
