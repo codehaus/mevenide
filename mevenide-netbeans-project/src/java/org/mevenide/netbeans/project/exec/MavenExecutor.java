@@ -63,11 +63,11 @@ public class MavenExecutor implements Runnable {
     
     // -- default value
     private String goal = "dist"; //NOI18N 
-    private boolean offline = false;
-    private boolean nobanner = false;
-    private boolean debug = false;
-    private boolean exceptions = false;
-    private boolean nonverbose = false;
+//    private boolean offline = false;
+//    private boolean nobanner = false;
+//    private boolean debug = false;
+//    private boolean exceptions = false;
+//    private boolean nonverbose = false;
     private String meter = "silent"; //NOI18N
     
     private static final long serialVersionUID = 7564737833872873L;
@@ -76,13 +76,15 @@ public class MavenExecutor implements Runnable {
     private String format;
     private InputOutput io;
     private Set processors;
+    private RunConfig config;
     
     private static RequestProcessor PROCESSOR = new RequestProcessor("maven execution", 3);
     
-    public MavenExecutor(MavenProject proj, String gl, Set procs) {
+    public MavenExecutor(MavenProject proj, String gl, Set procs, RunConfig conf) {
         project = proj;
         goal = gl;
         processors = procs;
+        config = conf;
         StringBuffer mavenExeFmt = new StringBuffer();
         if (Utilities.isWindows()) {
             mavenExeFmt.append("\"{");
@@ -119,25 +121,6 @@ public class MavenExecutor implements Runnable {
         format = mavenExeFmt.toString();
     }
     
-    public void setOffline(boolean offline) {
-        this.offline = offline;
-    }
-    
-    public void setNoBanner(boolean nb) {
-        nobanner = nb;
-    }
-    
-    public void setDebug(boolean deb) {
-        debug = deb;
-    }
-    
-    public void setExceptions(boolean exc) {
-        exceptions = exc;
-    }
-    
-    public void setNonverbose(boolean nv) {
-        nonverbose = nv;
-    }
     
     public void setDownloadMeter(String met) {
         meter = met;
@@ -148,12 +131,12 @@ public class MavenExecutor implements Runnable {
         HashMap formats = new HashMap(5);
         formats.put(FORMAT_GOAL, goal);
         formats.put(FORMAT_MAVEN_HOME, project.getLocFinder().getMavenHome());
-        formats.put(FORMAT_OFFLINE, offline ? "--offline" : ""); //NOI18N
-        formats.put(FORMAT_NOBANNER, nobanner ? "--nobanner" : ""); //NOI18N
-        formats.put(FORMAT_DEBUG, debug ? "-X" : ""); //NOI18N
-        formats.put(FORMAT_EXCEPTIONS, exceptions ? "--exception" : ""); //NOI18N
-        formats.put(FORMAT_NONVERBOSE, nonverbose ? "--quiet" : ""); //NOI18N
-        if (!offline) {
+        formats.put(FORMAT_OFFLINE, config.isOffline() ? "--offline" : ""); //NOI18N
+        formats.put(FORMAT_NOBANNER, config.isNoBanner() ? "--nobanner" : ""); //NOI18N
+        formats.put(FORMAT_DEBUG, config.isDebug() ? "-X" : ""); //NOI18N
+        formats.put(FORMAT_EXCEPTIONS, config.isExceptions() ? "--exception" : ""); //NOI18N
+        formats.put(FORMAT_NONVERBOSE, config.isNonverbose() ? "--quiet" : ""); //NOI18N
+        if (!config.isOffline()) {
             formats.put(FORMAT_DOWNLOADMETER, "default".equals(meter) ? "" : "-Dmaven.download.meter=" + meter); //NOI18N
         } else {
             formats.put(FORMAT_DOWNLOADMETER, ""); //NOI18N

@@ -123,10 +123,11 @@ public class RunGoalsAction extends AbstractAction implements Presenter.Popup {
             final ItemWrapper item = (ItemWrapper) targets.get(index);
             if (item == null) return;
             String mgoal = item.getGoals();
+            RunConfig config = null;
             log.debug("item=" + item.getGoals() + " of type " + item.getType()); //NOI18N
             if (item.getType() == ACTION_SHOW_CUSTOM_DIALOG) {
                 GoalsGrabberProvider goalProvider = GoalUtils.createProjectGoalsProvider(project.getContext(), project.getLocFinder());
-                GPanel panel = new GPanel(goalProvider);
+                GPanel panel = new GPanel(project, goalProvider);
                 DialogDescriptor desc = new DialogDescriptor(panel, NbBundle.getMessage(RunGoalsAction.class, "RunGoalsAction.dialog.title"));
                 Object[] options = new Object[] {
                     new JButton(NbBundle.getMessage(RunGoalsAction.class, "RunGoalsAction.executeButton")),
@@ -143,13 +144,17 @@ public class RunGoalsAction extends AbstractAction implements Presenter.Popup {
                 if (panel.doAddToFavourites()) {
                     doValidateAndAddToFavs(goalProvider, mgoal);
                 }
+                config = panel;
+            } else {
+                config = new DefaultRunConfig();
             }
             final String goal = mgoal;
+            final RunConfig fConfig = config;
             // now execute in different thread..
             RequestProcessor.postRequest(new Runnable() {
                 public void run() {
                     ActionProviderImpl impl = (ActionProviderImpl)project.getLookup().lookup(ActionProviderImpl.class);
-                    impl.runGoal(goal, project.getLookup());
+                    impl.runGoal(goal, project.getLookup(), fConfig);
                 }
             });
         }
@@ -276,16 +281,16 @@ public class RunGoalsAction extends AbstractAction implements Presenter.Popup {
     
     /** a class that puts the CustomGoalsPanel into correct constraints
      */
-    private static class GPanel extends JPanel {
-        private CustomGoalsPanel panel;
+    private static class GPanel extends JPanel implements RunConfig {
+        private RunGoalsPanel panel;
         private JCheckBox cbAdd;
-        public GPanel(GoalsGrabberProvider provider) {
+        public GPanel(MavenProject project, GoalsGrabberProvider provider) {
             super();
             setLayout(new GridBagLayout());
             GridBagConstraints con = new GridBagConstraints();
             con.insets = new Insets(12, 12, 6, 12);
             con.anchor = GridBagConstraints.NORTHWEST;
-            panel = new CustomGoalsPanel(provider);
+            panel = new RunGoalsPanel(project, provider);
             add(panel, con);
             
             cbAdd = new JCheckBox();
@@ -307,6 +312,29 @@ public class RunGoalsAction extends AbstractAction implements Presenter.Popup {
         public boolean doAddToFavourites() {
             return cbAdd.isSelected();
         }
+        
+        public boolean isOffline() {
+            return panel.isOffline();
+        }
+
+        public boolean isDebug() {
+            return panel.isDebug();
+        }
+        public boolean isExceptions() {
+            return panel.isExceptions();
+        }
+        public boolean isNoBanner() {
+            return panel.isNoBanner();
+        }
+        public boolean isNonverbose() {
+            return panel.isNonverbose();
+        }
+        public String getMavenHome() {
+            return panel.getMavenHome();
+        }
+        public String getMavenLocalHome() {
+            return panel.getMavenLocalHome();
+        }        
     }
     
 }
