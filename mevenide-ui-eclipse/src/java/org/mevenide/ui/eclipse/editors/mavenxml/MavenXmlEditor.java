@@ -16,11 +16,15 @@
  */
 package org.mevenide.ui.eclipse.editors.mavenxml;
 
+import java.io.File;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
+import org.mevenide.ui.eclipse.editors.mavenxml.contentassist.MavenXmlContentAssistProcessor;
 import org.mevenide.ui.eclipse.goals.outline.MavenXmlOutlinePage;
 
 
@@ -50,6 +54,9 @@ public class MavenXmlEditor extends AbstractJellyEditor {
 		super.performSave(overwrite, progressMonitor);
 		try {
             outlinePage.forceRefresh();
+            MavenXmlContentAssistProcessor contentAssist = ((XMLConfiguration) this.getSourceViewerConfiguration()).getTagContentAssist();
+            String basedir = new File(((FileEditorInput) this.getEditorInput()).getFile().getLocation().toOSString()).getParent();
+            contentAssist.setBasedir(basedir);
         }
         catch (Throwable e) {
             String message = "Prblem occured while refreshing outline"; 
@@ -57,3 +64,4 @@ public class MavenXmlEditor extends AbstractJellyEditor {
         }
 	}
 }
+

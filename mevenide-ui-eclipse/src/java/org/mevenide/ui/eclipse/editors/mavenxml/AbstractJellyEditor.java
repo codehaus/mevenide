@@ -11,6 +11,7 @@ import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
 import org.eclipse.ui.texteditor.TextOperationAction;
 import org.mevenide.ui.eclipse.Mevenide;
 
+
 public abstract class AbstractJellyEditor extends TextEditor {
     private static final Log log = LogFactory.getLog(AbstractJellyEditor.class);
     
@@ -60,4 +61,5 @@ public abstract class AbstractJellyEditor extends TextEditor {
     public void setModel(XMLReconciler reconciler) {
         this.reconciler = reconciler;
     }
+    
 }

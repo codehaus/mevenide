@@ -17,6 +17,7 @@
  */
 package org.mevenide.grammar.impl;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -29,24 +30,45 @@ import org.mevenide.grammar.AttributeCompletion;
 
 /**
  * Implementation of a attribute completion that keeps track of available maven
- * goals.
+ * goals. 
+ * 
+ * if basedir is set then custom goals will also be retrieved 
  * 
  * @author Milos Kleint (ca206216@tiscali.cz)
+ * @author <a href="mailto:rhill2@free.fr">Gilles Dodinet</a>
  */
 public class GoalsAttributeCompletionImpl implements AttributeCompletion {
 
     private static Log logger = LogFactory.getLog(GoalsAttributeCompletionImpl.class);
+    
+    /** primary grabber that handles both global and custom goals */
     private IGoalsGrabber grabber;
+    /** fallback grabber - used if grabber isnot available */
+    private IGoalsGrabber defaultGrabber;
 
+    private String basedir;
+    
     /** Creates a new instance of GoalsAttributeCompletionImpl */
     public GoalsAttributeCompletionImpl() throws Exception {
         grabber = GoalsGrabbersManager.getDefaultGoalsGrabber();
+        defaultGrabber = GoalsGrabbersManager.getDefaultGoalsGrabber();
     }
 
     public String getName() {
         return "goal";
     }
 
+    public void setBasedir(String basedir) {
+        this.basedir = basedir;
+		try {
+            grabber = GoalsGrabbersManager.getGoalsGrabber(new File(basedir, "project.xml").getAbsolutePath());
+        }
+        catch (Exception e) {
+            grabber = defaultGrabber;
+            logger.error("Unable to set basedir. It is highly probable that maven.xml is badly formed.");
+        }
+    }
+    
     public Collection getValueHints(String start) {
         Collection toReturn = new TreeSet();
         String[] plugins = grabber.getPlugins();

@@ -17,6 +17,7 @@
  */
 package org.mevenide.ui.eclipse.editors.mavenxml.contentassist;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -38,6 +39,7 @@ import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
 import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.jface.text.contentassist.IContextInformationValidator;
+import org.eclipse.ui.part.FileEditorInput;
 import org.mevenide.grammar.AttributeCompletion;
 import org.mevenide.grammar.impl.EmptyAttributeCompletionImpl;
 import org.mevenide.grammar.impl.GoalsAttributeCompletionImpl;
@@ -69,6 +71,8 @@ public abstract class MavenXmlContentAssistProcessor implements IContentAssistPr
         preferencesManager.loadPreferences();
         try {
             attributeCompletor = new GoalsAttributeCompletionImpl();
+            String basedir = new File(((FileEditorInput) editor.getEditorInput()).getFile().getLocation().toOSString()).getParent();
+            setBasedir(basedir);
         }
         catch (Exception e) {
             log.error("unable to create GoelasAttributeCompletionImpl", e);
@@ -76,6 +80,12 @@ public abstract class MavenXmlContentAssistProcessor implements IContentAssistPr
         }
     }
 
+	public void setBasedir(String basedir) {
+		if ( attributeCompletor instanceof GoalsAttributeCompletionImpl ) {
+			((GoalsAttributeCompletionImpl) attributeCompletor).setBasedir(basedir);
+		}
+	}
+	
     protected XMLNode getNodeAt(IDocument doc, int offset) {
         try {
             Position[] pos = doc.getPositions("__content_types_category");
@@ -385,7 +395,7 @@ public abstract class MavenXmlContentAssistProcessor implements IContentAssistPr
 		
 		XMLNode parentNode = getNodeAt(doc, offset);
 		
-        if ( Namespace.getWerkzList().contains(parentNode.getName()) || "attainGoal".equals(parentNode.getName()) ) {
+        if ( Namespace.getWerkzList().contains(parentNode.getName()) && !"goal".equals(parentNode.getName()) || "attainGoal".equals(parentNode.getName()) ) {
 	        words = new ArrayList(attributeCompletor.getValueHints(start));
         }
         

@@ -25,7 +25,6 @@ import org.eclipse.jface.viewers.Viewer;
 import org.mevenide.goals.grabber.DefaultGoalsGrabber;
 import org.mevenide.goals.grabber.IGoalsGrabber;
 import org.mevenide.goals.manager.GoalsGrabbersManager;
-import org.mevenide.ui.eclipse.Mevenide;
 
 /**  
  * 
@@ -57,8 +56,7 @@ public class GoalsProvider implements ITreeContentProvider {
 
     public void setBasedir(String basedir) throws Exception {
         this.basedir = basedir;
-		String mavenLocalHome = Mevenide.getPlugin().getMavenLocalHome();
-        try {
+		try {
             goalsGrabber = GoalsGrabbersManager.getGoalsGrabber(new File(basedir, "project.xml").getAbsolutePath());
         }
         catch (Exception e) {

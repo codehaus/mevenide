@@ -37,6 +37,8 @@ public class XMLConfiguration extends SourceViewerConfiguration {
 	private Map tokens = new HashMap();
 	 
 	private AbstractJellyEditor editor;
+
+    private MavenXmlContentAssistProcessor tagContentAssist;
 	
 	public XMLConfiguration(ColorManager colorManager, AbstractJellyEditor editor) {
 		this.colorManager = colorManager;
@@ -134,13 +136,13 @@ public class XMLConfiguration extends SourceViewerConfiguration {
 		try {
 		    ContentAssistant assi = new ContentAssistant();
 	        MavenXmlContentAssistProcessor contentAssistForText = new TextContentAssistProcessor(editor);
-	        MavenXmlContentAssistProcessor contentAssistForTags = new TagContentAssistProcessor(editor);
-
-			assi.setContentAssistProcessor(contentAssistForText, IDocument.DEFAULT_CONTENT_TYPE);
-	        assi.setContentAssistProcessor(contentAssistForTags, ITypeConstants.TAG);
+	        tagContentAssist = new TagContentAssistProcessor(editor);
+           
+	        assi.setContentAssistProcessor(contentAssistForText, IDocument.DEFAULT_CONTENT_TYPE);
+	        assi.setContentAssistProcessor(tagContentAssist, ITypeConstants.TAG);
 	        assi.setContentAssistProcessor(contentAssistForText, ITypeConstants.TEXT);
-	        assi.setContentAssistProcessor(contentAssistForTags, ITypeConstants.ENDTAG);
-	        assi.setContentAssistProcessor(contentAssistForTags, ITypeConstants.EMPTYTAG);
+	        assi.setContentAssistProcessor(tagContentAssist, ITypeConstants.ENDTAG);
+	        assi.setContentAssistProcessor(tagContentAssist, ITypeConstants.EMPTYTAG);
 			assi.enableAutoActivation(true);
 	        assi.enableAutoInsert(true);
 			assi.install(viewer);
@@ -161,4 +163,8 @@ public class XMLConfiguration extends SourceViewerConfiguration {
 			}
 		};
 	}
+	
+    public MavenXmlContentAssistProcessor getTagContentAssist() {
+        return tagContentAssist;
+    }
 }
