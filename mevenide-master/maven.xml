@@ -1,16 +1,26 @@
-<project default="build-all" 
-		 xmlns:maven="jelly:maven" 
+<project xmlns:maven="jelly:maven" 
 		 xmlns:j="jelly:core"
 		 xmlns:util="jelly:util"
 		 xmlns:ant="jelly:ant">
   
-  <goal name="mevenide:install-maven-eclipse-plugin-plugin" 
-  	    description="Checkout maven-eclipse-plugin-plugin from cvs and install it">
-  	 <attainGoal name="scm:checkout-project"/>
-  	 <util:file var="mavenEclipsePluginPluginPom" name="${maven.scm.checkout.dir}/maven-plugins/maven-eclipse-plugin-plugin/project.xml"/>
-	 <maven:maven descriptor="${mavenEclipsePluginPluginPom}" goals=" plugin:install,plugin:deploy"/>
+  <!-- ==================================== -->
+  <!--             build section            -->
+  <!-- ==================================== -->
+  <goal name="mevenide:build-all" description="Build all Mevenide modules" prereqs="mevenide:clean,mevenide:init">
+    <attainGoal name="multiproject:goal"/>
+    <attainGoal name="mevenide:create-update-dist"/>
+  </goal>
+  
+  <goal name="mevenide:build-site" description="Build Mevenide Site">
+  	<j:set var="maven.multiproject.excludes" value="${maven.multiproject.excludes}"/>
+  	<j:set var="maven.multiproject.includes" value="${maven.multiproject.includes},${mevenide.eclipse.plugin.project.location}/project.xml"/>
+  	<attainGoal name="multiproject:site"/>
   </goal>
 
+
+  <!-- ==================================== -->
+  <!--             init section             -->
+  <!-- ==================================== -->
   <goal name="mevenide:clean">
   	<ant:delete dir="${maven.repo.local}/eclipse" quiet="true"/>
   	<ant:delete dir="${maven.repo.local}/mevenide" quiet="true"/>
@@ -19,37 +29,36 @@
   <goal name="mevenide:init" description="Copy eclipse dependencies to maven.repo.local if necessary">
     <util:file var="installScript" name="${basedir}/install-dependencies.xml"/>
     <j:include file="${installScript}"/>
-  </goal>
+  </goal>  
   
-  <goal name="mevenide:build-all" description="Build all Mevenide modules" prereqs="mevenide:init">
-    <attainGoal name="multiproject:goal"/>
-    <attainGoal name="mevenide:create-update-dist"/>
-  </goal>
   
+  <!-- ==================================== -->
+  <!--        plugin creation section       -->
+  <!-- ==================================== -->
   <goal name="mevenide:create-update-dist" prereqs="mevenide:init" description="Build Eclipse plugin update site">
    	<util:file var="updateSiteProjectDescriptor" name="${mevenide.eclipse.update.project.location}/project.xml"/>
     <maven:maven descriptor="${updateSiteProjectDescriptor}" goals="eclipse-plugin:create-artifact-dist"/>
-  </goal>
-  
-  <goal name="mevenide:build-core" description="Build Mevenide-core module">
-  	 <util:file var="mevenideCoreProjectdescriptor" name="${mevenide.core.project.location}/project.xml"/>
-	 <maven:maven descriptor="${mevenideCoreProjectdescriptor}" goals="clean,jar:install"/> 	 
-  </goal>
-    
-  <goal name="mevenide:build-site" description="Build Mevenide Site">
-  	<j:set var="maven.multiproject.excludes" value="${maven.multiproject.excludes}"/>
-  	<j:set var="maven.multiproject.includes" value="${maven.multiproject.includes},${mevenide.eclipse.plugin.project.location}/project.xml"/>
-  	<attainGoal name="multiproject:site"/>
-  </goal>
-  
-  <goal name="mevenide:wiki">
-  	<j:set var="goal" value="wiki"/>
-  	<attainGoal name="multiproject:goal"/>
   </goal>
   
   <preGoal name="eclipse-plugin:install-artifact">
   	<util:file var="filters" name="${mevenide.master.project.location}/init-filtersets.xml"/>
   	<j:include file="${filters}"/>
   </preGoal>
+
+
+  <!-- ==================================== -->
+  <!--            utils section             -->
+  <!-- ==================================== -->
+  <goal name="mevenide:install-maven-eclipse-plugin-plugin" 
+  	    description="Checkout maven-eclipse-plugin-plugin from cvs and install it">
+  	 <attainGoal name="scm:checkout-project"/>
+  	 <util:file var="mavenEclipsePluginPluginPom" name="${maven.scm.checkout.dir}/maven-plugins/maven-eclipse-plugin-plugin/project.xml"/>
+	 <maven:maven descriptor="${mavenEclipsePluginPluginPom}" goals=" plugin:install,plugin:deploy"/>
+  </goal>  
+  
+  <goal name="mevenide:build-core" description="Build Mevenide-core module">
+  	 <util:file var="mevenideCoreProjectdescriptor" name="${mevenide.core.project.location}/project.xml"/>
+	 <maven:maven descriptor="${mevenideCoreProjectdescriptor}" goals="clean,jar:install"/> 	 
+  </goal>
   
 </project>
