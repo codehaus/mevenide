@@ -51,9 +51,8 @@ package org.mevenide.project.dependency;
 import java.io.File;
 
 import org.apache.maven.project.Dependency;
+import org.mevenide.AbstractMevenideTestCase;
 import org.mevenide.Environment;
-
-import junit.framework.TestCase;
 
 /**
  * 
@@ -61,43 +60,33 @@ import junit.framework.TestCase;
  * @version $Id$
  * 
  */
-public class DependencyFactoryTest extends TestCase {
+public class DependencyFactoryTest extends AbstractMevenideTestCase{
 	
 	
 	private File artefact;
-	
-	private File testTypeDirectory;
-	private File mevenideHome; 
-	
 	private DependencyFactory dependencyFactory;
-	
-	protected void setUp() throws Exception {
-		File mavenLocal = new File(System.getProperty("user.home"), ".maven");
-		File localRepo = new File(mavenLocal, "repository");
-		Environment.setMavenRepository(localRepo.getAbsolutePath());
-		mevenideHome = new File(System.getProperty("user.home"), ".mevenide");
-		File rootDirectory = new File(mevenideHome, "repository");
-		rootDirectory.mkdirs();
-		
- 		File testArtifactDirectory = new File(rootDirectory, "mevenide"); 
- 		testTypeDirectory = new File(testArtifactDirectory, "txts");
- 		testTypeDirectory.mkdirs();
- 		
- 		artefact = new File(testTypeDirectory, "foo+joe-test2.-bar-1.0.7-dev.txt");
-		artefact.createNewFile();
-		
-		dependencyFactory = DependencyFactory.getFactory();
-		
-		
-	}
 
-	protected void tearDown() throws Exception {
-		//rootDirectory.delete();
-	}
+	private File testTypeDirectory;
+
+    protected void setUp() throws Exception {
+    	super.setUp();
+        String mavenRepo = Environment.getMavenRepository();
+		File testArtifactDirectory = new File(mavenRepo, "mevenide"); 
+		testTypeDirectory = new File(testArtifactDirectory, "txts");
+		testTypeDirectory.mkdirs();
+		dependencyFactory = DependencyFactory.getFactory();
+    }
+
+
+    protected void tearDown() throws Exception {
+    	super.tearDown();
+    	dependencyFactory = null;
+    }
 	
 	public void testGetDependency() throws Exception {
-		Environment.setMavenHome(mevenideHome.getAbsolutePath());
 		
+		
+		artefact = new File(testTypeDirectory, "foo+joe-test2.-bar-1.0.7-dev.txt");
 		Dependency dep = dependencyFactory.getDependency(artefact.getAbsolutePath());
 		assertEquals("mevenide", dep.getGroupId());
 		
@@ -154,7 +143,11 @@ public class DependencyFactoryTest extends TestCase {
 		assertEquals("0.0.1", dep.getVersion());
 		assertEquals("testo", dep.getArtifactId());
 		
-		dep = dependencyFactory.getDependency(new File(Environment.getMavenRepository(), "commons-httpclient\\jars\\commons-httpclient-2.0alpha1-20020829.jar").getAbsolutePath());
+		
+		File httpClientRepo = new File(Environment.getMavenRepository(), "commons-httpclient");
+		File jarDir = new File(httpClientRepo, "jars");
+		jarDir.mkdirs();
+		dep = dependencyFactory.getDependency(new File(jarDir, "commons-httpclient-2.0alpha1-20020829.jar").getAbsolutePath());
 		assertEquals("2.0alpha1-20020829", dep.getVersion());
 		assertEquals("commons-httpclient", dep.getArtifactId());
 		assertEquals("commons-httpclient", dep.getGroupId());

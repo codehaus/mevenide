@@ -67,6 +67,7 @@ public class AbstractDependencyResolverTest extends AbstractMevenideTestCase {
 		File f = new File(tmp, "pyo.jar");
 		f.createNewFile();
 		assertNotNull(AbstractDependencyResolver.newInstance(f.getAbsolutePath()));
+		delete(new File(System.getProperty("user.home"), ".mevenide"));
 	}
 
 }
