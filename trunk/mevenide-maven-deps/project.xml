@@ -1,9 +1,9 @@
 <project>
     <pomVersion>3</pomVersion>
     <artifactId>maven-dependencies</artifactId>
-    <name>Maven 1.0 library for Mevenide</name>
+    <name>Maven 1.0.1 library for Mevenide</name>
     <groupId>mevenide</groupId>
-    <currentVersion>1.0</currentVersion>
+    <currentVersion>1.0.1</currentVersion>
     <package>org.apache.maven</package>
     <description>Library for project mevenide, contains most of the jars needed for maven to run.</description>
     <shortDescription>Library for project mevenide,</shortDescription>
@@ -79,7 +79,7 @@
         <dependency>
             <groupId>commons-jelly</groupId>
             <artifactId>commons-jelly-tags-ant</artifactId>
-            <version>20030625.032346</version>
+            <version>1.0</version>
             <type>jar</type>
             <url>http://jakarta.apache.org/commons/jelly/tags/ant/</url>
             <properties>
@@ -286,7 +286,7 @@
         <dependency>
             <groupId>maven</groupId>
             <artifactId>maven-jelly-tags</artifactId>
-            <version>1.0</version>
+            <version>1.0.1</version>
             <type>jar</type>
             <properties>
                 <netbeans.module.ext>true</netbeans.module.ext>
@@ -296,7 +296,7 @@
         <dependency>
             <groupId>maven</groupId>
             <artifactId>maven</artifactId>
-            <version>1.0</version>
+            <version>1.0.1</version>
             <type>jar</type>
             <properties>
                 <netbeans.module.ext>true</netbeans.module.ext>

@@ -27,7 +27,7 @@
         <dependency>
             <groupId>maven</groupId>
             <artifactId>maven</artifactId>
-            <version>1.0</version>
+            <version>1.0.1</version>
             <type>jar</type>
         </dependency>
     

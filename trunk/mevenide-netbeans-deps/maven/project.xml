@@ -5,9 +5,9 @@
   <id>maven-nb-module</id>
   <artifactId>maven-nb-module</artifactId>
   <groupId>mevenide</groupId>
-  <currentVersion>1.0</currentVersion>
+  <currentVersion>1.0.1</currentVersion>
   <package>org.apache.maven</package>
-  <name>Maven 1.0 library for Mevenide</name>
+  <name>Maven 1.0.1 library for Mevenide</name>
   <shortDescription>Library for project mevenide,</shortDescription>
   <description>Library for project mevenide, contains most of the jars needed for maven to run.</description>
   <url>http://mevenide.codehaus.org</url>
@@ -75,7 +75,7 @@
     <dependency>
       <groupId>commons-jelly</groupId>
       <artifactId>commons-jelly-tags-ant</artifactId>
-      <version>20030625.032346</version>
+      <version>1.0</version>
       <url>http://jakarta.apache.org/commons/jelly/tags/ant/</url>
       <properties>
             <netbeans.module.ext>true</netbeans.module.ext>
@@ -117,7 +117,7 @@
     </dependency>
     <dependency>
       <id>commons-logging</id>
-      <version>1.0.1</version>
+      <version>1.0.3</version>
       <url>http://jakarta.apache.org/commons/logging.html</url>
       <properties>
           <netbeans.module.dep>spec=org.netbeans.libs.commons_logging/1 &gt; 1.0</netbeans.module.dep>      
@@ -265,7 +265,7 @@
     <dependency>
         <groupId>maven</groupId>
         <artifactId>maven-jelly-tags</artifactId>
-        <version>1.0</version>
+        <version>1.0.1</version>
         <type>jar</type>
         <properties>
             <netbeans.module.ext>true</netbeans.module.ext>
@@ -276,7 +276,7 @@
     <dependency>
       <groupId>maven</groupId>
       <artifactId>maven</artifactId>
-      <version>1.0</version>
+      <version>1.0.1</version>
       <properties>
             <netbeans.module.ext>true</netbeans.module.ext>
       </properties>
