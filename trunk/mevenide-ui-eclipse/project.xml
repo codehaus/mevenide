@@ -23,12 +23,12 @@
         <dependency>
            <groupId>maven</groupId>
            <artifactId>maven</artifactId>
-           <version>1.0b10</version>
+           <version>SNAPSHOT</version>
            <url>http://maven.org/</url>
         </dependency>
         <dependency>
            <groupId>mevenide</groupId>
-           <artifactId>goals-grabber</artifactId>
+           <artifactId>mevenide-goals-grabber</artifactId>
            <version>1.0</version>
            <url>http://sf.net/projects/maven-get-goals</url>
         </dependency>

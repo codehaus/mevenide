@@ -2,35 +2,49 @@
   xmlns:maven="jelly:maven">
 
   <preGoal name="build">
-  	<copy file="${basedir}/project.properties" todir="${basedir}/../GoalsGrabber"/>	
+  	<!-- simulate project.properties inheritance -->
+  	<copy file="${basedir}/project.properties" todir="${basedir}/../goals-grabber"/>	
   	<copy file="${basedir}/project.properties" todir="${basedir}/../mevenide-core"/>	
   	<copy file="${basedir}/project.properties" todir="${basedir}/../mevenide-ui-eclipse"/>	
+  	
+  	<!-- 
+  		ensure that all dependencies are present in the repository 
+  		by copying all needed eclipse-plugins jars
+  	-->
+  	<copy file="${eclipse.home}/plugins/org.eclipse.core.resources_2.1.0/resources.jar" 
+  		  tofile="${maven.home}/repository/eclipse/jars/eclipse-resources-2.1.0.jar"/>
+  	<copy file="${eclipse.home}/plugins/org.eclipse.debug.core_2.1.0/dtcore.jar" 
+  		  tofile="${maven.home}/repository/eclipse/jars/eclipse-dtcore-2.1.0.jar"/>
+  	<copy file="${eclipse.home}/plugins/org.eclipse.debug.ui_2.1.0/dtui.jar" 
+  		  tofile="${maven.home}/repository/eclipse/jars/eclipse-dtui-2.1.0.jar"/>
+  	<copy file="${eclipse.home}/plugins/org.eclipse.jdt.core_2.1.0/jdtcore.jar" 
+  		  tofile="${maven.home}/repository/eclipse/jars/eclipse-jdtcore-2.1.0.jar"/>
+  	<copy file="${eclipse.home}/plugins/org.eclipse.jdt.launching_2.1.0/launching.jar" 
+  		  tofile="${maven.home}/repository/eclipse/jars/eclipse-launching-2.1.0.jar"/>
+  	<copy file="${eclipse.home}/plugins/${swt.plugin.dir}/swt.jar" 
+  		  tofile="${maven.home}/repository/eclipse/jars/eclipse-swt-2.1.0.jar"/>  	
   </preGoal>
 
-  <goal
-    name="build-all"
-    description="Build all Mevenide modules">
-    
+  <goal name="build-all"
+    	description="Build all Mevenide modules">
     <attainGoal name="build"/>
-    
   </goal>
   
-  <goal 
-    name="build"
-    description="Build each Mevenide module">
+  <goal name="build"
+    	description="Build each Mevenide module">
 	
 	<echo>
-		+-------------------------------------	
-		|  maven.home = ${maven.home}         
+		+-------------------------------------
+		|  maven.home = ${maven.home}              
 		|  maven.repo = ${maven.repo.local}   
 		+-------------------------------------
 	</echo>
 	
     <maven:reactor
       basedir=".."
-      includes="GoalsGrabber/project.xml,mevenide-core/project.xml,mevenide-ui-eclipse/project.xml"
+      includes="goals-grabber/project.xml,mevenide-core/project.xml,mevenide-ui-eclipse/project.xml"
       excludes=""
-      goals="clean,java:compile,java:jar,jar:install"
+      goals="clean,java:compile,jar:jar,jar:install"
       banner="Building"
       ignoreFailures="false"
     />
