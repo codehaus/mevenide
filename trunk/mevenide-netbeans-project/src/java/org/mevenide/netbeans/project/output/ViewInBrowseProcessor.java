@@ -61,8 +61,8 @@ public class ViewInBrowseProcessor extends AbstractOutputProcessor implements Ou
     private class ViewAction extends AbstractAction {
         
         public ViewAction() {
-            putValue("Question", questionMessage);
-            putValue("Priority", new Integer(priority));
+            putValue(OutputVisitor.ACTION_QUESTION, questionMessage);
+            putValue(OutputVisitor.ACTION_PRIORITY, new Integer(priority));
         }
         
         public void actionPerformed(java.awt.event.ActionEvent event) {

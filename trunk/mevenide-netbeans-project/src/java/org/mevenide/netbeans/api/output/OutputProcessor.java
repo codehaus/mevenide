@@ -24,6 +24,9 @@ package org.mevenide.netbeans.api.output;
  * @author  Milos Kleint (mkleint@codehaus.org)
  */
 public interface OutputProcessor {
-    
+    /**
+     * for each line of output, the registered processor will get a chance to
+     * add highlighting etc.
+     */
     void processLine(String line, OutputVisitor visitor);
 }
