@@ -12,7 +12,7 @@
  * Lesser General Public License for more details.
  * 
  */
-package org.mevenide.ui.eclipse.sync;
+package org.mevenide.ui.eclipse;
 
 import junit.framework.TestCase;
 
@@ -26,10 +26,10 @@ import junit.framework.TestCase;
  */
 public class DefaultPathResolverDelegateTest extends TestCase {
 	
-	private DefaultPathResolverDelegate pathResolver ;
+	private DefaultPathResolver pathResolver ;
 	
 	protected void setUp() throws Exception {
-		pathResolver = new DefaultPathResolverDelegate();
+		pathResolver = new DefaultPathResolver();
 	}
 
 	protected void tearDown() throws Exception {

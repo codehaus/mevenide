@@ -12,7 +12,7 @@
  * Lesser General Public License for more details.
  * 
  */
-package org.mevenide.ui.eclipse.sync;
+package org.mevenide.ui.eclipse;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
@@ -24,7 +24,7 @@ import org.eclipse.jdt.core.IClasspathEntry;
  * @version $Id: IPathResolver.java 4 mai 2003 12:02:3013:34:35 Exp gdodinet 
  * 
  */
-public interface IPathResolverDelegate {
+public interface IPathResolver {
 	/**
 	 * extract the source path to add to the pom from the given classpathentry
 	 * 

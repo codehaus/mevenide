@@ -21,9 +21,9 @@ import org.apache.maven.project.Dependency;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.mevenide.project.dependency.DependencyFactory;
+import org.mevenide.ui.eclipse.DefaultPathResolver;
+import org.mevenide.ui.eclipse.IPathResolver;
 import org.mevenide.ui.eclipse.sync.ArtifactGroup;
-import org.mevenide.ui.eclipse.sync.DefaultPathResolverDelegate;
-import org.mevenide.ui.eclipse.sync.IPathResolverDelegate;
 import org.mevenide.ui.eclipse.util.FileUtil;
 import org.mevenide.ui.eclipse.util.ProjectUtil;
 
@@ -48,7 +48,7 @@ public class DependencyGroup extends ArtifactGroup {
 		
 		IClasspathEntry[] classpathEntries = project.getResolvedClasspath(true);
 		
-		IPathResolverDelegate pathResolver = new DefaultPathResolverDelegate();
+		IPathResolver pathResolver = new DefaultPathResolver();
 		
 		for (int i = 0; i < classpathEntries.length; i++) {
 			if ( classpathEntries[i].getEntryKind() == IClasspathEntry.CPE_LIBRARY

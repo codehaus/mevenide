@@ -22,8 +22,8 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.wizard.Wizard;
 import org.mevenide.sync.ISynchronizer;
 import org.mevenide.sync.SynchronizerFactory;
-import org.mevenide.ui.eclipse.sync.DefaultPathResolverDelegate;
-import org.mevenide.ui.eclipse.sync.IPathResolverDelegate;
+import org.mevenide.ui.eclipse.DefaultPathResolver;
+import org.mevenide.ui.eclipse.IPathResolver;
 
 /**
  * 
@@ -48,7 +48,7 @@ public class SynchronizeWizard extends Wizard {
 
 	public boolean performFinish() {
 		try {
-			IPathResolverDelegate pathResolver = new DefaultPathResolverDelegate();
+			IPathResolver pathResolver = new DefaultPathResolver();
 			
 			IFile pom = project.getFile(new Path("project.xml"));
 			File pomFile = new File(pathResolver.getAbsolutePath(pom.getLocation())); 

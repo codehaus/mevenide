@@ -12,7 +12,7 @@
  * Lesser General Public License for more details.
  * 
  */
-package org.mevenide.ui.eclipse.sync;
+package org.mevenide.ui.eclipse;
 
 import java.util.List;
 
@@ -22,7 +22,6 @@ import org.eclipse.jdt.core.IClasspathEntry;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.input.SAXBuilder;
-import org.mevenide.ui.eclipse.Mevenide;
 
 /**  
  * 
@@ -30,7 +29,7 @@ import org.mevenide.ui.eclipse.Mevenide;
  * @version $Id: ResourcesUtil.java 4 mai 2003 10:17:0413:34:35 Exp gdodinet 
  * 
  */
-public class DefaultPathResolverDelegate implements IPathResolverDelegate {
+public class DefaultPathResolver implements IPathResolver {
 
 	/**
 	 * extract the source path to add to the pom from the given classpathentry
