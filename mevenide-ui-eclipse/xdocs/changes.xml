@@ -39,7 +39,7 @@
         Propagate Maven global plugin directory changes (plugins are now cached in ~/.maven/cache)
       </action>
       <action dev="gdodinet" type="fix" issue="MEVENIDE-41">
-        Mark Argument Tab editor as dirty when a cell lost focus without Enter being hit.
+        Mark Argument Tab editor as dirty when a cell loses focus without Enter having been hit.
       </action>
       <action dev="gdodinet" type="update">
         Preference pages reorganized for better readibility.

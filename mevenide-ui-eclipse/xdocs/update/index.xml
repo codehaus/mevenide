@@ -12,7 +12,9 @@
 			   <source>http://mevenide.codehaus.org/release/eclipse/update/site.xml</source>
 			</p>
 			<p>
-			    and just follow instructions. <br/>
+			    and just follow instructions. 
+			</p>
+            <p>
 			    If this procedure it not suitable, you can download a <a href="http://mevenide.codehaus.org/release/eclipse/">big zip archive</a> containing 
 				the feature and all the plugins. You just need to unzip it into your Eclipse install directory. Please let us know if youd prefer to have a local 
 				install update site packaged instead of just plugins and feature archives.
