@@ -59,12 +59,11 @@ public class MavenExecutor implements Runnable {
     {
         project = proj;
         goal = gl;
-        String mavenExe = "bin/maven"; //NOI18N
+        String mavenExeFmt = "{" + FORMAT_MAVEN_HOME + "}/" + "bin/maven"; //NOI18N
         if (Utilities.isWindows()) {
-            mavenExe = "bin/maven.bat"; //NOI18N
+            mavenExeFmt = "\"{" + FORMAT_MAVEN_HOME + "}/" + "bin/maven.bat\""; //NOI18N
         }
-        format = "{" + FORMAT_MAVEN_HOME + "}/" + mavenExe + //NOI18N
-                 " {" + FORMAT_NOBANNER + "} {" + FORMAT_OFFLINE + "} {" + FORMAT_GOAL + "}"; //NOI18N
+        format = mavenExeFmt + " {" + FORMAT_NOBANNER + "} {" + FORMAT_OFFLINE + "} {" + FORMAT_GOAL + "}"; //NOI18N
     }
     
     public void setOffline(boolean offline)
