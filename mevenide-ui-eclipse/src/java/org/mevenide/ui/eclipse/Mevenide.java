@@ -129,6 +129,7 @@ public class Mevenide extends AbstractUIPlugin {
             
 			loadPreferences();
             
+			initEnvironment();
 		} 
 		catch (Exception x) {
 			log.debug("Mevenide couldnot initialize due to : " + x);
