@@ -14,13 +14,11 @@
  *  limitations under the License.
  * =========================================================================
  */
-package org.mevenide.tags.eclipse;
+package org.mevenide.tags;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import org.apache.commons.jelly.MissingAttributeException;
-import org.apache.commons.jelly.TagSupport;
 import org.apache.commons.jelly.XMLOutput;
 
 /**
@@ -29,7 +27,7 @@ import org.apache.commons.jelly.XMLOutput;
  * @version $Id$
  * 
  */
-public class AdaptVersionTag extends TagSupport {
+public class AdaptVersionTag extends AbstractMevenideTag {
 
     private String version;
     
@@ -99,19 +97,6 @@ public class AdaptVersionTag extends TagSupport {
     
     public void setVar(String var) {
         this.var = var;
-    }
-
-	private void checkAttribute(Object attribute, String attributeName) throws MissingAttributeException {
-        if (attribute == null ) {
-            throw new MissingAttributeException(attributeName + " should be defined.");
-        }
-    }
-
-	private void checkAttribute(String attribute, String attributeName) throws MissingAttributeException {
-		checkAttribute((Object) attribute, attributeName);
-        if (attribute.trim().equals("") ) {
-            throw new MissingAttributeException(attributeName + " should not be empty.");
-        }
     }
 
 }
