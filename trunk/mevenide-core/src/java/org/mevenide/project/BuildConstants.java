@@ -24,27 +24,8 @@ package org.mevenide.project;
  * 
  */
 public abstract class BuildConstants {
-	public static final String MAVEN_TEST = "test";
-	
-	public static final String MAVEN_SRC = "source";
-	
-	public static final String MAVEN_ASPECT = "aspects";
+	public static final String MAVEN_TEST_DIRECTORY = "unitTestSourceDirectory";
+	public static final String MAVEN_SRC_DIRECTORY = "sourceDirectory";
+	public static final String MAVEN_ASPECT_DIRECTORY = "aspectSourceDirectory";
 
-	
-	public static String getResolvedSourceType(String type) throws InvalidSourceTypeException {
-		if ( MAVEN_SRC.equals(type) ) {
-			return "sourceDirectory";
-		}
-		if ( MAVEN_TEST.equals(type) ) {
-			return "unitTestSourceDirectory";
-		}
-		if ( MAVEN_ASPECT.equals(type) ) {
-			return "aspectSourceDirectory";
-		}
-		else {
-			throw new InvalidSourceTypeException(type);
-		}
-	}
-
-	
 }
