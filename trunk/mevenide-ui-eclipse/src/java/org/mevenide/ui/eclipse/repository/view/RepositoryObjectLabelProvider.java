@@ -23,6 +23,7 @@ import org.mevenide.ui.eclipse.IImageRegistry;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.repository.model.Artifact;
 import org.mevenide.ui.eclipse.repository.model.BaseRepositoryObject;
+import org.mevenide.ui.eclipse.repository.model.Group;
 import org.mevenide.ui.eclipse.repository.model.Repository;
 import org.mevenide.util.StringUtils;
 
@@ -41,6 +42,9 @@ public class RepositoryObjectLabelProvider implements ILabelProvider {
     public Image getImage(Object element) {
         if ( element instanceof Repository ) {
             return Mevenide.getInstance().getImageRegistry().getDescriptor(IImageRegistry.MAVEN_REPO).createImage();
+        }
+        if ( element instanceof Group ) {
+            return Mevenide.getInstance().getImageRegistry().getDescriptor(IImageRegistry.MAVEN_REPO_GROUP).createImage();
         }
         return null;
     }
