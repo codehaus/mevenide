@@ -410,6 +410,15 @@
             id="org.mevenide.ui.launching.MavenLaunchConfigType">
       </launchConfigurationType>
    </extension>
+   <!-- Custom Actions Definitions -->
+   <extension point="org.eclipse.debug.core.launchConfigurationTypes">  
+      <launchConfigurationType 
+            name="%RunMaven.label" 
+            delegate="org.mevenide.ui.eclipse.launch.configuration.MavenLaunchDelegate" 
+            modes="run" 
+            id="org.mevenide.ui.launching.ActionDefinitionConfigType">
+      </launchConfigurationType>
+   </extension>
    <!-- Maven launcher configuration type image -->
    <extension point="org.eclipse.debug.ui.launchConfigurationTypeImages">
        <launchConfigurationTypeImage
