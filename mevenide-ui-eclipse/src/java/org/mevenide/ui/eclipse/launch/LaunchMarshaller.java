@@ -115,7 +115,6 @@ public abstract class LaunchMarshaller {
 		for (int i = 0; i < previouslyLaunched.size(); i++) {
 			Element elem = (Element) previouslyLaunched.get(i);
 			if ( elem.getAttributeValue(PROJECT_ATTR).equals(action.getProject().getName()) ) {
-				System.err.println("GOTCHA");
 				document.getRootElement().removeContent(elem);	
 			} 
 		}
