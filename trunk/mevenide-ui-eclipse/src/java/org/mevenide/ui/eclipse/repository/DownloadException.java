@@ -14,8 +14,7 @@
  *  limitations under the License.
  * =========================================================================
  */
-package org.mevenide.ui.eclipse.repository.model;
-
+package org.mevenide.ui.eclipse.repository;
 
 
 /**  
@@ -24,28 +23,21 @@ package org.mevenide.ui.eclipse.repository.model;
  * @version $Id$
  * 
  */
-public class Type extends BaseRepositoryObject {
+public class DownloadException extends Exception {
 
-    private Group parent;
-    
-    private String name;
-    
-    public Type(String name, Group parent) {
-        this.name = name;
-        this.parent = parent;
+    public DownloadException() {
+        super();
     }
-    
-   
-    public String getName() {
-        return name + "s";
+
+    public DownloadException(String message) {
+        super(message);
     }
-    
-    public BaseRepositoryObject getParent() {
-        return parent;
+
+    public DownloadException(Throwable cause) {
+        super(cause);
     }
-    
-    
-    public String getRepositoryUrl() {
-        return parent.getRepositoryUrl();
+
+    public DownloadException(String message, Throwable cause) {
+        super(message, cause);
     }
 }

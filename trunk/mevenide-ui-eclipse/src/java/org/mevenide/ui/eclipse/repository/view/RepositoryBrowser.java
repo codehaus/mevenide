@@ -20,8 +20,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IMenuListener;
+import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.window.Window;
@@ -29,11 +35,13 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.part.ViewPart;
 import org.mevenide.ui.eclipse.IImageRegistry;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.MevenideColors;
 import org.mevenide.ui.eclipse.preferences.PreferencesManager;
+import org.mevenide.ui.eclipse.repository.model.Artifact;
 import org.mevenide.ui.eclipse.repository.model.BaseRepositoryObject;
 import org.mevenide.util.StringUtils;
 
@@ -78,7 +86,8 @@ public class RepositoryBrowser extends ViewPart implements RepositoryEventListen
    
     private Action addRepositoryAction;
     private Action removeRepositoryAction;
-
+    private Action downloadArtifactAction;
+    
     private PreferencesManager preferenceManager;
     
     public void dataLoaded(final RepositoryEvent event) {
@@ -108,6 +117,36 @@ public class RepositoryBrowser extends ViewPart implements RepositoryEventListen
     }
     
     private void createActions() {
+        downloadArtifactAction = new Action() {
+        	public void run() {
+        	    IStructuredSelection selection = (IStructuredSelection) repositoryViewer.getSelection();
+        	    if ( selection != null ) {
+	        	    List downloadList = new ArrayList();
+	        	    for ( Iterator it = selection.iterator(); it.hasNext(); ) {
+	        	        BaseRepositoryObject selectedItem = (BaseRepositoryObject) it.next();
+	                    if ( selectedItem instanceof Artifact ) {
+	                        downloadList.add(selectedItem);
+	                    }
+	                }
+	        	    if ( downloadList.size() > 0 ) {
+	        	        DownloadJob downloadJob = new DownloadJob(downloadList);
+	        	        downloadJob.schedule(Job.LONG);
+	        	    }
+	        	    else {
+	        	        downloadAbortedMessage();
+	        	    }
+        	    }
+        	    else {
+        	        downloadAbortedMessage();
+        	    }
+        	    
+            }
+            private void downloadAbortedMessage() {
+                MessageDialog.openWarning(repositoryViewer.getTree().getShell(), "Download aborted", "No artifact have been selected, and thus none will be downloaded.");
+            }
+        };
+        downloadArtifactAction.setText("Get artifact");
+        
         addRepositoryAction = new Action() {
             public void run() {
                 AddRepositoryDialog dialog = new AddRepositoryDialog();
@@ -140,8 +179,33 @@ public class RepositoryBrowser extends ViewPart implements RepositoryEventListen
         removeRepositoryAction.setToolTipText("Remove repository");
         
         createToolBarManager();
+        createContextualMenu();
     }
 
+    private void createContextualMenu() {
+		MenuManager contextManager = new MenuManager();
+		contextManager.setRemoveAllWhenShown(true);
+		Menu menu = contextManager.createContextMenu(repositoryViewer.getControl());
+		repositoryViewer.getControl().setMenu(menu);
+		contextManager.addMenuListener(new IMenuListener() {
+			public void menuAboutToShow(IMenuManager manager) {
+				manager.add(downloadArtifactAction);
+			    
+			    List selection = ((StructuredSelection) repositoryViewer.getSelection()).toList();
+			    
+			    boolean enableDownload = false;
+			    
+			    for (int i = 0; i < selection.size(); i++) {
+			        if ( selection.get(i) instanceof Artifact ) {
+			            enableDownload = true;
+			            break;
+			        }
+                }
+			    downloadArtifactAction.setEnabled(enableDownload);
+			}
+		});
+	}
+    
     private void asyncUpdateUI() {
         repositoryViewer.getControl().getDisplay().asyncExec(
 				new Runnable() {

@@ -14,8 +14,10 @@
  *  limitations under the License.
  * =========================================================================
  */
-package org.mevenide.ui.eclipse.repository.model;
+package org.mevenide.ui.eclipse.repository.factory;
 
+import org.mevenide.ui.eclipse.repository.RepositoryObjectDownloader;
+import org.mevenide.ui.eclipse.repository.http.HttpRepositoryObjectDownloader;
 
 
 /**  
@@ -24,28 +26,21 @@ package org.mevenide.ui.eclipse.repository.model;
  * @version $Id$
  * 
  */
-public class Type extends BaseRepositoryObject {
+public class RepositoryObjectDownloaderFactory {
 
-    private Group parent;
-    
-    private String name;
-    
-    public Type(String name, Group parent) {
-        this.name = name;
-        this.parent = parent;
+    private RepositoryObjectDownloaderFactory() {
     }
     
-   
-    public String getName() {
-        return name + "s";
+    public static RepositoryObjectDownloader getDownloader(String repositoryType) {
+        return getDownloader(repositoryType, null);
     }
     
-    public BaseRepositoryObject getParent() {
-        return parent;
-    }
-    
-    
-    public String getRepositoryUrl() {
-        return parent.getRepositoryUrl();
+    public static RepositoryObjectDownloader getDownloader(String repositoryType, String localRepository) {
+        if ( RepositoryObjectDownloader.HTTP.equals(repositoryType) ) {
+            return new HttpRepositoryObjectDownloader(localRepository);
+        }
+        else {
+            throw new RuntimeException("Only http-based downloader are implemented for now");
+        }
     }
 }

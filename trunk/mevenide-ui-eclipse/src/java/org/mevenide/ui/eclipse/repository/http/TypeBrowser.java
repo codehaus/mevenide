@@ -21,6 +21,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import org.apache.commons.lang.StringUtils;
+import org.apache.maven.project.Dependency;
 import org.jface.mavenzilla.GroupSearch;
 import org.jface.mavenzilla.Search;
 import org.jface.mavenzilla.SearchResult;
@@ -53,7 +55,7 @@ public class TypeBrowser implements RepositoryObjectCollector {
         Group group = (Group) type.getParent();
         try {
             
-            GroupSearch search = new GroupSearch(((Repository) group.getParent()).getRepositoryUrl(), type.getName(), group.getName());
+            GroupSearch search = new GroupSearch(((Repository) group.getParent()).getRepositoryUrl(), StringUtils.stripEnd(type.getName(), "s"), group.getName());
             
             Collection searchResults = search.search();
             
@@ -68,5 +70,11 @@ public class TypeBrowser implements RepositoryObjectCollector {
         catch ( IOException e ) {
             throw new RepositoryBrowsingException("Unable to browse type " + type.getName() + " for group " + group.getName(), e);
         }
+    }
+    
+    
+    public Dependency download(BaseRepositoryObject object) {
+        
+        return null;
     }
 }

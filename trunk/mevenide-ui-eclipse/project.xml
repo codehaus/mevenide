@@ -40,24 +40,16 @@
       <groupId>jaxen</groupId>
       <artifactId>jaxen</artifactId>
       <version>1.1-beta-4</version>
+      <type>jar</type>
       <url>http://jaxen.codehaus.org/</url>
       <properties>
         <eclipse.plugin.bundle>true</eclipse.plugin.bundle>
       </properties>
     </dependency>
-	<dependency>
-		<groupId>jtidy</groupId>
-		<artifactId>jtidy</artifactId>
-		<version>4aug2000r7-dev</version>
-		<type>jar</type>
-		<properties>
-        	<eclipse.plugin.bundle>true</eclipse.plugin.bundle>
-      	</properties>
-    </dependency>
     <dependency>
-      <groupId>jface</groupId>
-      <artifactId>mavenzilla</artifactId>
-      <version>0.1</version>
+      <groupId>jtidy</groupId>
+      <artifactId>jtidy</artifactId>
+      <version>4aug2000r7-dev</version>
       <type>jar</type>
       <properties>
         <eclipse.plugin.bundle>true</eclipse.plugin.bundle>
@@ -70,7 +62,7 @@
       <type>jar</type>
       <url>http://forehead.werken.com/</url>
       <properties>
-        <eclipse.plugin.bun>true</eclipse.plugin.bun>
+        <eclipse.plugin.bu>true</eclipse.plugin.bu>
       </properties>
     </dependency>
     <dependency>
@@ -80,7 +72,7 @@
       <type>jar</type>
       <url>http://jakarta.apache.org/commons/httpclient/</url>
       <properties>
-        <eclipse.plugin.bun>false</eclipse.plugin.bun>
+        <eclipse.plugin.bu>false</eclipse.plugin.bu>
       </properties>
     </dependency>
     <dependency>
@@ -89,7 +81,7 @@
       <version>0.6</version>
       <type>jar</type>
       <properties>
-        <eclipse.plugin.bun>false</eclipse.plugin.bun>
+        <eclipse.plugin.bu>false</eclipse.plugin.bu>
       </properties>
     </dependency>
     <dependency>
@@ -100,11 +92,11 @@
       <url>http://maven.apache.org/</url>
     </dependency>
     <dependency>
-        <groupId>dom4j</groupId>
-        <artifactId>dom4j</artifactId>
-        <version>1.4-dev-8</version>
-        <type>jar</type>
-        <url>http://www.dom4j.org/</url>
+      <groupId>dom4j</groupId>
+      <artifactId>dom4j</artifactId>
+      <version>1.4-dev-8</version>
+      <type>jar</type>
+      <url>http://www.dom4j.org/</url>
     </dependency>
     <dependency>
       <groupId>jdom</groupId>
@@ -154,6 +146,16 @@
       <version>3.8.1</version>
       <type>jar</type>
       <url>http://junit.org/</url>
+    </dependency>
+    <dependency>
+      <groupId>jface</groupId>
+      <artifactId>mavenzilla</artifactId>
+      <version>0.1</version>
+      <jar>${basedir}/deps/mavenzilla-0.1.jar</jar>
+      <type>jar</type>
+      <properties>
+        <eclipse.plugin.bundle>true</eclipse.plugin.bundle>
+      </properties>
     </dependency>
     <dependency>
       <groupId>mevenide</groupId>
@@ -339,6 +341,24 @@
       <version>3.0.0</version>
       <type>jar</type>
       <url>http://eclipse.org/</url>
+    </dependency>
+    <dependency>
+      <groupId>maven</groupId>
+      <artifactId>wagon-api</artifactId>
+      <version>1.0-alpha-1</version>
+      <type>jar</type>
+      <properties>
+        <eclipse.plugin.bundle>true</eclipse.plugin.bundle>
+      </properties>
+    </dependency>
+    <dependency>
+      <groupId>maven</groupId>
+      <artifactId>wagon-http-lightweight</artifactId>
+      <version>20040714.210443</version>
+      <type>jar</type>
+      <properties>
+        <eclipse.plugin.bundle>true</eclipse.plugin.bundle>
+      </properties>
     </dependency>
   </dependencies>
   <build />
