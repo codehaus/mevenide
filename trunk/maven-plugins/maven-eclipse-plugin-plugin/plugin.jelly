@@ -5,14 +5,15 @@
 		 xmlns:maven="jelly:maven"
 		 xmlns:mevenide="jelly:org.mevenide.tags.eclipse.MevenideTagLibrary"
 		 xmlns:util="jelly:util"
-		 xmlns:x="jelly:xml">
+		 xmlns:x="jelly:xml"
+		 xmlns:artifact="artifact">
 
   <define:taglib uri="eclipse-plugin">
   	
   	<define:tag name="check-type">
   	
-  	  <j:if test="${type != 'plugin' and type != 'feature' and type != 'site'}">
-	  	<ant:fail message="Unrecognized Eclipse plugin type : ${maven.eclipse.plugin.type}. Should be one of {'plugin', 'feature', 'site'}"/>
+  	  <j:if test="${type != 'plugin' and type != 'help' and type != 'feature' and type != 'site'}">
+	  	<ant:fail message="Unrecognized Eclipse plugin type : ${maven.eclipse.plugin.type}. Should be one of {'plugin', 'feature', 'site', 'help'}"/>
 	  </j:if>
 	  
   	</define:tag>
@@ -74,6 +75,18 @@
   	
   </goal>
   
+  <goal name="eclipse-plugin:create-help-dist" prereqs="eclipse-plugin:init,eclipse-plugin:install-artifact"
+  		description="create an help only plugin dist file and put it in ${maven.eclipse.plugin.dist.dir}">
+  	  <j:set var="distVersion" value="${maven.eclipse.plugin.artifact.version}"/>
+	  <j:set var="pluginId" value="${maven.eclipse.plugin.artifact.id}"/>
+  	  <j:set var="pluginFolder">${pluginId.replaceAll('-', '.')}</j:set> 
+      <j:set var="pluginArchive" value="${maven.eclipse.plugin.dist.dir}/${pluginFolder}_${distVersion}.jar"/>
+    
+      <!-- build plugin distribution file. -->
+      <ant:jar destfile="${pluginArchive}">
+        <ant:fileset dir="${maven.eclipse.plugin.help.dir}"/>
+      </ant:jar>
+  </goal>
   
   <goal name="eclipse-plugin:create-plugin-dist" prereqs="eclipse-plugin:init,eclipse-plugin:install-artifact"
   		description="create a plugin dist file containing only the plugin required files and put it in ${maven.eclipse.plugin.dist.dir}">
@@ -153,7 +166,7 @@
 	  	
 	  	<!-- create plugin archive -->
 		<maven:pom var="pluginPom" projectDescriptor="${plugin}"/>
-		<maven:maven goals="eclipse-plugin:create-plugin-dist" descriptor="${plugin}"/>
+		<maven:maven goals="eclipse-plugin:create-artifact-dist" descriptor="${plugin}"/>
 		
 		<!-- copy plugin archives -->
 		<ant:copy todir="${maven.eclipse.plugin.dist.dir}/plugins">
@@ -183,7 +196,7 @@
    	 <j:set var="siteId" value="${maven.eclipse.plugin.artifact.id}"/>
    	 <j:set var="distVersion" value="${maven.eclipse.plugin.artifact.version}"/>
    	 <j:set var="siteFolder">${siteId.replaceAll('-', '.')}</j:set> 
-  	 <j:set var="siteArchive" value="${maven.eclipse.plugin.dist.dir}/${siteFolder}_${distVersion}.zip"/>
+  	 <j:set var="siteArchive" value="${maven.eclipse.plugin.dist.dir}/${siteFolder}-${distVersion}.zip"/>
    	 
    	 <util:tokenize var="includedFeatures" delim=",">${maven.eclipse.plugin.site.features}</util:tokenize>
    	 
@@ -224,22 +237,41 @@
    	   <ant:unjar src="${pluginJar}" dest="${maven.eclipse.plugin.temp.dir}/plugins/${pluginDest}"/>
    	   <ant:delete dir="${maven.eclipse.plugin.temp.dir}/plugins/${pluginDest}/META-INF"/>
 	 </j:forEach>
+
+   	 <!-- wether or not site.* files should be included in ${siteArchive} -->
+   	 <j:set var="includeSiteRootFiles" value="${maven.eclipse.plugin.site.includeRootFiles}"/>
    	 
    	 <ant:zip destfile="${siteArchive}">
    	 	<ant:fileset dir="${maven.eclipse.plugin.temp.dir}"/>
-   	 	<!-- <ant:fileset dir="${basedir}" includes="site.properties,site.xml"/> -->
+   	 	<j:if test="${includeSiteRootFiles == 'true'}">
+	   	   <ant:fileset dir="${basedir}" includes="site.properties,site.xml"/> 
+	   	</j:if>
    	 </ant:zip>
    	 
    	 <ant:copy todir="${maven.eclipse.plugin.dist.dir}/">
-   	 	<ant:fileSet dir="${basedir}" includes="site.properties,site.xml"/>
+   	 	<ant:fileSet dir="${basedir}" includes="site.xml,site.properties"/>
    	 </ant:copy>
    	 
    	 <!-- clean up resources -->
    	 <ant:delete dir="${maven.eclipse.plugin.temp.dir}"/>
    	 
+   	 <!-- 
+   	     install update site into local repo. manual copy because 
+   	     artifact plugin doesnot support folder install
+   	 -->
+   	 <ant:copy todir="${maven.repo.local}/${pom.groupId}/eclipse-update-sites/${distVersion}" overwrite="true">   
+   	 	<ant:fileset dir="${maven.eclipse.plugin.dist.dir}" 
+   	 	 			 includes="**/*" 
+   	 	 			 excludes="${siteFolder}-${distVersion}.zip"/>
+   	 </ant:copy>
+     
+     ${pom.set
+     <!-- install the site bundle into local repo -->
+     <artifact:install artifact="${siteArchive}"
+        			   type="zip"
+        			   project="${pom}"/>   
   </goal>
    
-   	
   
   <goal name="eclipse-plugin:init-filterset" 
   		description="create an empty filterset if ${maven.eclipse.plugin.filterset.id} hasnot been specified">
