@@ -4,7 +4,7 @@
     <pomVersion>3</pomVersion>
     <name>Mevenide XML grammar</name>
     <artifactId>mevenide-netbeans-grammar</artifactId>
-    <currentVersion>0.6</currentVersion>
+    <currentVersion>0.6.1</currentVersion>
     <package>org.mevenide.netbeans.grammar</package>
     <description>Maven files XML grammar and code-completion for Netbeans. (project.xml, maven.xml and plugin.jelly files completion.</description>
     <shortDescription>Maven files XML grammar and code-completion for Netbeans</shortDescription>
@@ -13,12 +13,11 @@
             <groupId>netbeans</groupId>
             <artifactId>org-netbeans-modules-xml-core</artifactId>
             <!-- include nb specification version.. that's important for compiling -->
-            <version>3.999.3</version>
-            <!-- TODO: I wonder if the beta2 has 3.999.3 or 3.999.2 -->
+            <version>1.6.3.999.4</version>
             <type>jar</type>
             <url>http://www.netbeans.org</url>
             <properties>
-                <netbeans.module.dep>impl=org.netbeans.modules.xml.core/2 = release40</netbeans.module.dep>
+                <netbeans.module.dep>impl=org.netbeans.modules.xml.core/2 = 3.999.4</netbeans.module.dep>
             </properties>
         </dependency>
         <dependency>
@@ -63,7 +62,7 @@
         <dependency>
             <groupId>mevenide</groupId>
             <artifactId>goals-grabber</artifactId>
-            <version>0.8-SNAPSHOT</version>
+            <version>0.8</version>
             <type>jar</type>
             <properties>
                 <netbeans.module.dep>spec</netbeans.module.dep>
