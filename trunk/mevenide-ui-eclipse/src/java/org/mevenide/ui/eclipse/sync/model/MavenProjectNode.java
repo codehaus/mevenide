@@ -37,7 +37,7 @@ import org.mevenide.project.io.ProjectReader;
  * @version $Id: MavenProjectNode.java,v 1.1 12 avr. 2004 Exp gdodinet 
  * 
  */
-public class MavenProjectNode implements ISynchronizationNode, ISelectableNode {
+public class MavenProjectNode extends AbstractSynchronizationNode implements ISelectableNode {
 	
 	private static final Log log = LogFactory.getLog(MavenProjectNode.class);
 	

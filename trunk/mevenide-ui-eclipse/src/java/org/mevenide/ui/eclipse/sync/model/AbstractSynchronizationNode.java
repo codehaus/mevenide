@@ -16,6 +16,7 @@
  */
 package org.mevenide.ui.eclipse.sync.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.mevenide.ui.eclipse.sync.event.ISynchronizationNodeListener;
@@ -23,16 +24,27 @@ import org.mevenide.ui.eclipse.sync.event.ISynchronizationNodeListener;
 /**  
  * 
  * @author <a href="mailto:rhill2@free.fr">Gilles Dodinet</a>
- * @version $Id: INode.java,v 1.1 12 avr. 2004 Exp gdodinet 
+ * @version $Id$
  * 
  */
-public interface ISynchronizationNode {
-	Object getData();
-	ISynchronizationNode[] getChildren();
-	ISynchronizationNode getParent();
-	boolean hasChildren();
+public abstract class AbstractSynchronizationNode implements ISynchronizationNode {
 	
-	void addNodeListener(ISynchronizationNodeListener node);
-	void removeNodeListener(ISynchronizationNodeListener node);
-	void setSynchronizationNodesListener(List synchronizationNodesListener) ;
+	private List synchronizationNodesListener = new ArrayList();
+	
+	
+	public void addNodeListener(ISynchronizationNodeListener node) {
+		synchronizationNodesListener.add(node);
+	}
+	
+	public void removeNodeListener(ISynchronizationNodeListener node) {
+		synchronizationNodesListener.remove(node);
+	}
+	
+	public void setSynchronizationNodesListener(List synchronizationNodesListener) {
+		this.synchronizationNodesListener = synchronizationNodesListener;
+	}
+	
+	protected List getSynchronizationNodesListener() {
+		return synchronizationNodesListener;
+	}
 }

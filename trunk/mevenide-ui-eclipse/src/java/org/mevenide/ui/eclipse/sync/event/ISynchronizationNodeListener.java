@@ -14,25 +14,16 @@
  *  limitations under the License.
  * =========================================================================
  */
-package org.mevenide.ui.eclipse.sync.model;
+package org.mevenide.ui.eclipse.sync.event;
 
-import java.util.List;
-
-import org.mevenide.ui.eclipse.sync.event.ISynchronizationNodeListener;
+import org.mevenide.ui.eclipse.sync.model.ISynchronizationNode;
 
 /**  
  * 
  * @author <a href="mailto:rhill2@free.fr">Gilles Dodinet</a>
- * @version $Id: INode.java,v 1.1 12 avr. 2004 Exp gdodinet 
+ * @version $Id: ISynchronizationNodeListener.java,v 1.1 14 mars 2004 Exp gdodinet 
  * 
  */
-public interface ISynchronizationNode {
-	Object getData();
-	ISynchronizationNode[] getChildren();
-	ISynchronizationNode getParent();
-	boolean hasChildren();
-	
-	void addNodeListener(ISynchronizationNodeListener node);
-	void removeNodeListener(ISynchronizationNodeListener node);
-	void setSynchronizationNodesListener(List synchronizationNodesListener) ;
+public interface ISynchronizationNodeListener {
+	void nodeChanged(ISynchronizationNode node);
 }

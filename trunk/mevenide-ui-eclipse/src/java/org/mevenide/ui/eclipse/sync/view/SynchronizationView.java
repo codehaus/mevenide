@@ -63,15 +63,16 @@ import org.mevenide.ui.eclipse.sync.action.ToggleWritePropertiesAction;
 import org.mevenide.ui.eclipse.sync.event.IActionListener;
 import org.mevenide.ui.eclipse.sync.event.ISynchronizationConstraintListener;
 import org.mevenide.ui.eclipse.sync.event.ISynchronizationDirectionListener;
+import org.mevenide.ui.eclipse.sync.event.ISynchronizationNodeListener;
 import org.mevenide.ui.eclipse.sync.event.IdeArtifactEvent;
 import org.mevenide.ui.eclipse.sync.event.NodeEvent;
 import org.mevenide.ui.eclipse.sync.event.PomArtifactEvent;
 import org.mevenide.ui.eclipse.sync.event.SynchronizationConstraintEvent;
 import org.mevenide.ui.eclipse.sync.model.ArtifactNode;
 import org.mevenide.ui.eclipse.sync.model.ISelectableNode;
+import org.mevenide.ui.eclipse.sync.model.ISynchronizationNode;
 import org.mevenide.ui.eclipse.sync.model.MavenArtifactNode;
 import org.mevenide.ui.eclipse.sync.model.PropertyNode;
-import org.mevenide.ui.eclipse.sync.model.SynchronizationNodeContentProvider;
 import org.mevenide.util.MevenideUtils;
 
 
@@ -83,7 +84,7 @@ import org.mevenide.util.MevenideUtils;
  * @version $Id$
  *
  */
-public class SynchronizationView extends ViewPart implements IActionListener, IResourceChangeListener, IPropertyChangeListener, IProjectChangeListener {
+public class SynchronizationView extends ViewPart implements IActionListener, IResourceChangeListener, IPropertyChangeListener, IProjectChangeListener, ISynchronizationNodeListener {
     private static final Log log = LogFactory.getLog(SynchronizationView.class);
 
     private Composite composite;
@@ -173,8 +174,10 @@ public class SynchronizationView extends ViewPart implements IActionListener, IR
     }
     
     private void synchronizeProjectWithPoms(IProject project, List poms) {
-    	SynchronizationNodeContentProvider provider = (SynchronizationNodeContentProvider) artifactMappingNodeViewer.getContentProvider();
-    	artifactMappingNodeViewer.setInput(provider.new RootNode(project, poms));
+    	SynchronizationNodeProvider provider = (SynchronizationNodeProvider) artifactMappingNodeViewer.getContentProvider();
+    	SynchronizationNodeProvider.RootNode root = provider.new RootNode(project, poms);
+    	root.addNodeListener(this);
+    	artifactMappingNodeViewer.setInput(root);
         
         for (int i = 0; i < poms.size(); i++) {
         	Project mavenProject = (Project) poms.get(i);
@@ -258,7 +261,7 @@ public class SynchronizationView extends ViewPart implements IActionListener, IR
     }
 
     private void configureViewer() {
-        artifactMappingNodeViewer.setContentProvider(new SynchronizationNodeContentProvider());
+        artifactMappingNodeViewer.setContentProvider(new SynchronizationNodeProvider());
         artifactMappingNodeViewer.setLabelProvider(new SynchronizationNodeLabelProvider());
         nodeFilter = new SynchronizationNodeFilter();
         assertValidDirection();
@@ -539,7 +542,7 @@ public class SynchronizationView extends ViewPart implements IActionListener, IR
 
 	public void resourceChanged(IResourceChangeEvent event) {
 		try {
-			IProject project = artifactMappingNodeViewer != null && artifactMappingNodeViewer.getInput() != null ? ((SynchronizationNodeContentProvider.RootNode) artifactMappingNodeViewer.getInput()).getProject() : null;
+			IProject project = artifactMappingNodeViewer != null && artifactMappingNodeViewer.getInput() != null ? ((SynchronizationNodeProvider.RootNode) artifactMappingNodeViewer.getInput()).getProject() : null;
 			
 			IResourceDelta d= event.getDelta();
 			if (d != null) {
@@ -569,6 +572,12 @@ public class SynchronizationView extends ViewPart implements IActionListener, IR
         return container;
     }
 	
+    public void nodeChanged(ISynchronizationNode node) {
+    	log.debug("Node changed : " + node);
+    	System.err.println("Node changed : " + node);
+    	refreshAll();
+	}
+    
 	public void projectChanged(ProjectChangeEvent e) {
 	    log.debug("received project change notification. Attribute : " + e.getAttribute());
     	String attribute = e.getAttribute();
