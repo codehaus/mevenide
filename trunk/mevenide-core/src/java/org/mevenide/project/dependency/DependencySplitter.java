@@ -65,6 +65,7 @@ public class DependencySplitter {
 		int i = 0;
 		while ( i < m.groupCount() + 1 && m.find(i) ) {
 			allGroups[i] = m.group(i);
+			System.out.println(allGroups[i]);
 			i++;
 		}
 		

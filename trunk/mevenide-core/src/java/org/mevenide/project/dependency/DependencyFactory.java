@@ -63,22 +63,27 @@ public class DependencyFactory {
 		String groupId = dependencyResolver.getGroupId(fileName);
 		
 		if ( groupId == null ) {
-			groupId = dependencyResolver.guessGroupId(absoluteFileName); 
+			groupId = dependencyResolver.guessGroupId(absoluteFileName);
+			if ( !DependencyUtil.isValidGroupId(groupId) ) {
+				groupId = null;
+			} 
 		}
 		if ( groupId == null ) {
 			//@todo use a logger
-			System.out.println("[WARNING] groupId is null"); 
+			//System.out.println("[WARNING] groupId is null"); 
 		}
 		
 		String artifactId = dependencyResolver.guessArtifactId(fileName);
 		String version = dependencyResolver.guessVersion(fileName);
+		String extension = dependencyResolver.guessExtension(fileName);
 		
 		Dependency dependency = new Dependency();
 		
-		dependency.setGroupId(groupId); //?
+		dependency.setGroupId(groupId == null ? "" : groupId); //?
 		dependency.setArtifactId(artifactId);
 		dependency.setVersion(version);
 		dependency.setArtifact(absoluteFileName);
+		dependency.setType(extension);
 		
 		return dependency;
 	}
