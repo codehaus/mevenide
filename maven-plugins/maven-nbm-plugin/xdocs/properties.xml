@@ -147,7 +147,46 @@ OpenIDE-Module-Specification-Version: normalized version of ${pom.currentVersion
      </table>
      </div>
    </section>
-      
+
+   <section name="NBM signing properties">
+   	<div id="documentContent">
+    <p> These properties are related to the signing of the NBM. You should sign NBMs you release.
+    Otherwise the user will be forced to accept a non-signed NBM.</p>
+     <table>
+     	<tr>
+          <th>Property</th>
+          <th>Optional</th>
+          <th>Description</th>
+        </tr>
+        <tr>
+          <td>maven.nbm.sign.keystore</td>
+          <td>
+          <p>Optional. Default value is <code>?</code>.</p>
+          </td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+          <td>maven.nbm.sign.storepass</td>
+          <td>
+          <p>Optional. Default value is <code>?</code>.</p>
+          </td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+          <td>maven.nbm.sign.alias</td>
+          <td>
+          <p>Optional. Default value is <code>?</code>.</p>
+          </td>
+          <td>
+          </td>
+        </tr>
+        
+     </table>
+     </div>
+   </section>
+         
    <section name="Temporary Properties">
    	<div id="documentContent">
      <table>
@@ -175,8 +214,27 @@ OpenIDE-Module-Specification-Version: normalized version of ${pom.currentVersion
             <p>Relative path to the Bundle.properties file including the name of the file.. Eg. org/mevenide/Bundle.properties</p>
           </td>
         </tr>
+        <tr>
+          <td>maven.nbm.build.release.dir</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+          <td>maven.nbm.autoupdate.name</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+          <td>maven.nbm.autoupdate.distbase</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
      </table>
      </div>
    </section>
+
   </body>
 </document>

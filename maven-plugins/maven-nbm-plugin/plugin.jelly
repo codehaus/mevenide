@@ -213,8 +213,10 @@
         <ant:setProperty name="homepage" value="${pom.url}" />
         <ant:setProperty name="distribution" value="${pom.url}/${maven.final.name}.nbm" />
       </j:if>
-     <license file="${maven.nbm.license}"/>
-     <signature keystore="?" storepass="?" alias="?"/> -->
+     <ant:license file="${maven.nbm.license}" name="Licence for ${maven.final.name}"/>
+     <ant:signature keystore="${maven.nbm.sign.keystore}" 
+                    storepass="${maven.nbm.sign.storepass}" 
+                    alias="${maven.nbm.sign.alias}"/> -->
     </ant:makenbm>
     <!-- now copy the artifact (NBM file) into the local repository
     -->
@@ -313,12 +315,33 @@ maven.nbm.license=${dependencyModuleDir}/license.txt
   
   <goal name="nbm:collect-nbms" prereqs="nbm:nbm, nbm:create-library-artifacts"
         description="Will collect the module nbm and all library nbms (if any) to a single release directory target/nbm_release">
-        <j:set var="maven.nbm.build.release.dir" value="${maven.build.dir}/nbm_release" />
+        <j:set var="reldir" value="${maven.nbm.build.release.dir}" />
+        <j:if test="${empty(reldir)}">
+            <j:set var="maven.nbm.build.release.dir" value="${maven.build.dir}/nbm_release" />
+        </j:if>
         <ant:copy toDir="${maven.nbm.build.release.dir}" flatten="true">
             <ant:fileset dir="${maven.nbm.build.dir}"
                        includes="**/*.nbm"
             />       
         </ant:copy>
   </goal>
-  
+ 
+  <goal name="nbm:autoupdate">
+      <ant:taskdef name="updatedist" classname="org.netbeans.nbbuild.MakeUpdateDesc" >
+        <ant:classpath>
+            <ant:pathelement path="${plugin.getDependencyPath('nbantext')}"/>
+        </ant:classpath>
+      </ant:taskdef>
+      
+      <ant:updatedist desc="${maven.nbm.build.release.dir}/${maven.nbm.autoupdate.name}.xml">
+      <j:set var="nbmdistbase" value="${maven.nbm.autoupdate.distbase}"/>
+      <j:if test="${! empty(nbmdistbase)}">
+        <ant:setProperty name="distbase" value="${nbmdistbase}" />
+      </j:if>
+          <ant:fileset dir="${maven.nbm.build.release.dir}"
+                       includes="**/*.nbm"
+          />       
+      </ant:updatedist>
+      
+  </goal> 
 </project>
