@@ -19,12 +19,14 @@ package org.mevenide.ui.eclipse.sync.view;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Project;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IWorkspaceDescription;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
@@ -343,6 +345,11 @@ public class SynchronizeActionFactory {
 		final AddToClasspathAction action = new AddToClasspathAction();
 		Action addToClasspath = new Action() {
 			public void run() {
+			    IWorkspaceDescription description = ResourcesPlugin.getWorkspace().getDescription();
+		        boolean initialAutoBuildingState = description.isAutoBuilding();
+			    
+		        setAutoBuilding(description, false);
+			    
 				List selections = ((IStructuredSelection) synchronizationView.getArtifactMappingNodeViewer().getSelection()).toList();
 				
 				for (int i = 0; i < selections.size(); i++) {
@@ -358,13 +365,25 @@ public class SynchronizeActionFactory {
 						}
 					}
 				}
+				
+				setAutoBuilding(description, initialAutoBuildingState);
 			}
 		};
 		action.addActionListener(synchronizationView);
 		addToClasspath.setId(ADD_TO_CLASSPATH);
 		addToClasspath.setText("Add to .classpath");
 		actionIds.put(ADD_TO_CLASSPATH, addToClasspath);
-	}	
+	}
+
+    private void setAutoBuilding(IWorkspaceDescription description, boolean autoBuild) {
+        try {
+            description.setAutoBuilding(autoBuild);
+            ResourcesPlugin.getWorkspace().setDescription(description);
+        } 
+        catch (CoreException e) {
+            log.error("Unable to change autobuild state", e); 
+        }
+    }	
 }
 
 
