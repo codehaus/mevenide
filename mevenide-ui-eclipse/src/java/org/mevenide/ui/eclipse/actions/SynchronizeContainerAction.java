@@ -88,9 +88,9 @@ public class SynchronizeContainerAction extends AbstractMevenideAction {
 		
 		Object firstElement = ((StructuredSelection) selection).getFirstElement();
        
-        //if ( firstElement instanceof IContainer ) {
+        if ( firstElement instanceof IContainer ) {
 	   		container = (IContainer) firstElement;        
-        //}
+        }
     }
 
 
