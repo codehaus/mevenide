@@ -7,7 +7,7 @@
     <artifactId>maven-eclipse-plugin-plugin</artifactId>
     <name>MEP Plugin</name>
     
-    <currentVersion>0.1.1-SNAPSHOT</currentVersion>
+    <currentVersion>0.2-SNAPSHOT</currentVersion>
     
     <shortDescription>This plugin helps creating ready to use eclipse plugins and features distribution</shortDescription>
 
@@ -28,6 +28,11 @@
     </developers>
     
     <dependencies>
+        <dependency>
+    		<groupId>commons-jelly</groupId>	
+    		<artifactId>commons-jelly</artifactId>
+    		<version>1.0-beta-4</version>
+    	</dependency>
     	<dependency>
     		<groupId>ant</groupId>	
     		<artifactId>ant</artifactId>
@@ -37,6 +42,11 @@
     		<groupId>commons-jelly</groupId>	
     		<artifactId>commons-jelly-tags-ant</artifactId>
     		<version>20030625.032346</version>
+    	</dependency>
+    	<dependency>
+    		<groupId>commons-jelly</groupId>	
+    		<artifactId>commons-jelly-tags-xml</artifactId>
+    		<version>SNAPSHOT</version>
     	</dependency>
     </dependencies>
     
