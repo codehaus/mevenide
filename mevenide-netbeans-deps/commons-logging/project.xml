@@ -10,13 +10,12 @@
   <name>commons-logging library for Mevenide</name>
   <shortDescription>Library for project Mevenide</shortDescription>
   <description>Library for project Mevenide</description>
-  <url>http://mevenide.sf.net/mevenide-netbeans-grammar</url>
+  <url>http://mevenide.codehaus.org/mevenide-netbeans-project</url>
   <dependencies>
     <dependency>
       <groupId>commons-logging</groupId>
       <artifactId>commons-logging</artifactId>
       <version>1.0.3</version>
-      <type>jar</type>
       <properties>
         <netbeans.module.ext>true</netbeans.module.ext>
       </properties>
