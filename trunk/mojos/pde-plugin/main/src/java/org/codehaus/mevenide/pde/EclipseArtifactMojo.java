@@ -17,9 +17,11 @@
 package org.codehaus.mevenide.pde;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
@@ -160,24 +162,25 @@ public abstract class EclipseArtifactMojo implements Plugin {
      * else dependencies will be grabbed directly from .classpath   
      * 
      * @return  the list of eclipse dependencies
+     * @throws PdePluginException
      */
-    protected List extractEclipseDependencies(File basedir) throws PdePluginException {
+    protected List extractEclipseDependencies() throws PdePluginException {
+        Document document = null; 
+            
         try {
-            SAXBuilder builder = new SAXBuilder();
-            
-            Document document = builder.build(new File(basedir, ".classpath"));
-            
-            Element classpath = document.getRootElement();
-            
-            boolean useDependenciesContainer = useEclipseDependenciesContainer(classpath);
-            
-            return useDependenciesContainer ? extractDependenciesFromDescriptor() 
-                                            : extractDependenciesFromClasspath(classpath);
+            document = new SAXBuilder().build(new File(basedir, ".classpath"));
         }
         catch (Exception e) {
             String message = Messages.get("BuildArtifact.CannotExtractDependencies", e.getMessage()); 
             throw new PdePluginException(message, e);
-        }
+        }    
+ 
+        Element classpath = document.getRootElement();
+            
+        boolean useDependenciesContainer = useEclipseDependenciesContainer(classpath);
+            
+        return useDependenciesContainer ? extractDependenciesFromDescriptor() 
+                                        : extractDependenciesFromClasspath(classpath);
         
     }
 
@@ -199,8 +202,9 @@ public abstract class EclipseArtifactMojo implements Plugin {
      * the case because project may have not been created in the 'default location'  
      * 
      * @return  the list of eclipse dependencies
+     * @throws PdePluginException
      */
-    private List extractDependenciesFromClasspath(Element classpath) {
+    List extractDependenciesFromClasspath(Element classpath) throws PdePluginException {
         return null;
     }
 
@@ -208,9 +212,73 @@ public abstract class EclipseArtifactMojo implements Plugin {
      * extract the dependencies using the requires/import elements in plugin.xml file.
      * 
      * @return  the list of eclipse dependencies
+     * @throws PdePluginException
      */
-    private List extractDependenciesFromDescriptor() {
+    List extractDependenciesFromDescriptor() throws PdePluginException {
+        List dependencies = new ArrayList();
+
+        File pluginDescriptor = new File(basedir, "plugin.xml");
+        
+        Document document = null;
+        
+        try {
+            document = new SAXBuilder().build(pluginDescriptor);
+        }
+        catch (Exception e) {
+            String message = Messages.get("BuildArtifact.CannotExtractDependencies", e.getMessage()); 
+            throw new PdePluginException(message, e);
+        }
+        
+        Element requiresElement = document.getRootElement().getChild("requires");
+        
+        if ( requiresElement != null ) {
+            List importElements = requiresElement.getChildren("import");
+            for ( Iterator it = importElements.iterator(); it.hasNext(); ) {
+                Element importElement = (Element) it.next();
+                String dependency = importElement.getAttributeValue("plugin");
+                
+                String library = dependency.indexOf("org.eclipse.swt") == -1 ? getNonSwtLibrary(dependency) 
+                                                                             : getSwtLibrary(dependency);
+                dependencies.add(library);
+		    }
+        }
+        
+        return dependencies;
+    }
+
+    private String getSwtLibrary(String dependency) {
+        //example
+        //org.eclipse.swt.win32_${maven.eclipse.plugin.swt.version}/ws/win32"
+	    //file="${eclipse.home}/plugins/org.eclipse.swt.win32_${maven.eclipse.plugin.swt.version}/ws/win32/swt.jar"/
         return null;
+    }
+
+    private String getNonSwtLibrary(final String dependency) throws PdePluginException {
+        String library = null;
+        
+        File[] parentNames = new File(eclipseHome, "plugins").listFiles(new FileFilter() {
+            public boolean accept(File pathname) {
+                return pathname.isDirectory() && pathname.getName().indexOf(dependency) >= 0;
+            }
+        });
+        
+        if ( parentNames == null ) {
+            String message = Messages.get("BuildArtifact.ComputeDependencyParent", dependency);
+            throw new PdePluginException(message);
+        }
+        File dependencyHome = parentNames[0];
+        
+        File[] jars = dependencyHome.listFiles(new FileFilter(){
+            public boolean accept(File pathname) {
+                return pathname.isFile() && pathname.getName().endsWith(".jar");
+            } 
+        });
+        
+        if ( jars != null && jars.length > 0 ) {
+            library = jars[0].getAbsolutePath();
+        }
+        
+        return library;
     }
 
     /**
