@@ -7,7 +7,7 @@
     <pomVersion>3</pomVersion>
     <id>goals-grabber</id>
     <name>Goals Grabber</name>
-    <artifactId>mevenide-goals-grabber</artifactId>
+    <artifactId>goals-grabber</artifactId>
     <currentVersion>0.1.1-SNAPSHOT</currentVersion>
     <organization/>
     <package>org.mevenide.goals</package>
