@@ -47,6 +47,9 @@ public class MockFile
 	extends MockObject
 	implements IFile {
 
+    public void setCharset(String newCharset, IProgressMonitor monitor) throws CoreException {
+       
+    }
 	private IPath path;
 	private IProject project;
 	private InputStream in;
