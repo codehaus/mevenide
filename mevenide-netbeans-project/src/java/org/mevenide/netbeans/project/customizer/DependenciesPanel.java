@@ -306,7 +306,7 @@ public class DependenciesPanel extends JPanel implements ExplorerManager.Provide
         txtGroupId.setText(getValue(dependency.getGroupId(), doResolve));
         txtType.setText(dependency.getType() != null ? getValue(dependency.getType(), doResolve) : "");
         txtVersion.setText(dependency.getVersion() != null ? getValue(dependency.getVersion(), doResolve) : "");
-        txtType.setText(dependency.getType() != null ? getValue(dependency.getType(), doResolve) : "");
+        txtURL.setText(dependency.getUrl() != null ? getValue(dependency.getUrl(), doResolve) : "");
     }    
     
     public List getChanges() {
