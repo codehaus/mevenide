@@ -50,8 +50,6 @@ package org.mevenide.ui.eclipse.editors.pages;
 
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.License;
 import org.apache.maven.project.Project;
 import org.eclipse.jface.viewers.TableViewer;
@@ -68,8 +66,6 @@ import org.mevenide.ui.eclipse.editors.entries.TableEntry;
  */
 public class LicenseSection extends PageSection {
 	
-	private static final Log log = LogFactory.getLog(LicenseSection.class);
-
 	private TableEntry licenseTable;
 	
     public LicenseSection(OrganizationPage page) {
@@ -133,9 +129,6 @@ public class LicenseSection extends PageSection {
     }
 	
 	public void update(Project pom) {
-		if (log.isDebugEnabled()) {
-			log.debug("update called");
-		}
 		licenseTable.removeAll();
 		List licenses = pom.getLicenses();
 		List parentLicenses = isInherited() ? getParentPom().getLicenses() : null;
