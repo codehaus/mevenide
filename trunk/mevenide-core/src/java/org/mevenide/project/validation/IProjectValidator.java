@@ -16,7 +16,7 @@
  */
 package org.mevenide.project.validation;
 
-import org.apache.maven.project.Project;
+import java.io.File;
 
 
 /**  
@@ -26,5 +26,5 @@ import org.apache.maven.project.Project;
  * 
  */
 public interface IProjectValidator {
-    void validate(Project project) throws ValidationException;
+    void validate(File file) throws ValidationException;
 }

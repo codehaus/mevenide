@@ -16,13 +16,23 @@
  */
 package org.mevenide.project.validation;
 
-import java.io.FileInputStream;
+import java.io.File;
+import java.io.InputStream;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.ArrayList;
+import java.util.List;
 import org.apache.maven.project.Project;
 import org.apache.maven.util.StringInputStream;
 import org.mevenide.project.io.DefaultProjectMarshaller;
+import org.mevenide.util.ProjectUtils;
+import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
+import com.thaiopensource.util.PropertyMap;
+import com.thaiopensource.util.SinglePropertyMap;
+import com.thaiopensource.validate.ValidateProperty;
 import com.thaiopensource.validate.ValidationDriver;
 
 
@@ -35,25 +45,50 @@ import com.thaiopensource.validate.ValidationDriver;
  */
 public class SchemaValidator implements IProjectValidator {
     
-    public void validate(Project project) throws ValidationException {
-        validateAgainstSchema(project);
+    private List errors;
+    private List warnings;
+    
+    public SchemaValidator() {
+        initialize();
     }
     
-    private void validateAgainstSchema(Project project) throws ValidationException {
-      ValidationDriver driver = new ValidationDriver();
+    public void validate(File file) throws ValidationException {
+        ErrorHandler err = new ErrorHandler() {
+            public void error(SAXParseException exception) throws SAXException {
+	            errors.add(exception.getMessage());
+	        }
+	        public void fatalError(SAXParseException exception) throws SAXParseException {
+	            errors.add(exception.getMessage());
+	        }
+	        public void warning(SAXParseException exception) throws SAXParseException {
+	            warnings.add(exception.getMessage());
+	        }
+        };
       
-      try {
-	      String schema = getClass().getResource("/maven-project.xsd").getFile();
-	      driver.loadSchema(new InputSource(new FileInputStream(schema)));
+        PropertyMap map = new SinglePropertyMap(ValidateProperty.ERROR_HANDLER, err);
+        ValidationDriver driver = new ValidationDriver(map);
+      
+        try {
+	        InputStream schema = getClass().getResourceAsStream("/maven-project.xsd");
+	        driver.loadSchema(new InputSource(schema));
+	        Project pom = ProjectUtils.resolveProjectTree(file);
 	      
-	      Writer stringWriter = new StringWriter();
-	      new DefaultProjectMarshaller().marshall(stringWriter, project);
+	        Writer stringWriter = new StringWriter();
+	        new DefaultProjectMarshaller().marshall(stringWriter, pom);
 	      
-	      driver.validate(new InputSource(new StringInputStream(stringWriter.toString())));
-      }
-      catch (Exception e) {
-          throw new ValidationException("Unable to validate pom against schema", e);
-      }
+	        driver.validate(new InputSource(new StringInputStream(stringWriter.toString())));
+        }
+        catch (Exception e) {
+            throw new ValidationException("Unable to validate pom against schema", e);
+        }
+	    if ( !errors.isEmpty() || !warnings.isEmpty() ) {
+	        throw new ValidationException(errors, warnings);
+	    }   
+    }
+
+    private void initialize() {
+        errors = new ArrayList();
+        warnings = new ArrayList();
     }
 }
 

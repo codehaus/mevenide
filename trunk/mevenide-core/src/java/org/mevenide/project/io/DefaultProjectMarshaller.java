@@ -85,11 +85,11 @@ public class DefaultProjectMarshaller implements IProjectMarshaller {
 		marshallString(project.getPomVersion(), "pomVersion");
 		
 		//marshallString(project.getId(), "id");
+		marshallString(project.getArtifactId(), "artifactId");
 		marshallRequiredString(project.getName(), "name");
 		
 		marshallString(project.getGroupId(), "groupId");
-		marshallString(project.getArtifactId(), "artifactId");
-				
+		
 		marshallRequiredString(project.getCurrentVersion(), "currentVersion");
 		
 		marshallOrganization(project);
@@ -131,15 +131,15 @@ public class DefaultProjectMarshaller implements IProjectMarshaller {
 	}
 	
 	private  void marshallOrganization(Project project) throws Exception {
-		serializer.startTag(NAMESPACE, "organization");
 		
 		if ( project.getOrganization() != null ) {
+		    serializer.startTag(NAMESPACE, "organization");
 			marshallRequiredString(project.getOrganization().getName(), "name");
 			marshallString(project.getOrganization().getUrl(), "url");
 			marshallString(project.getOrganization().getLogo(), "logo");
+			serializer.endTag(NAMESPACE, "organization");
 		}
 		
-		serializer.endTag(NAMESPACE, "organization");
 	}
 	
 	private  void marshallRepository(Project project) throws Exception {
@@ -218,9 +218,9 @@ public class DefaultProjectMarshaller implements IProjectMarshaller {
 	
 	private  void marshallDevelopers(Project project) throws Exception {
 		List developers = project.getDevelopers();
-		serializer.startTag(NAMESPACE, "developers");
 		Developer developer;
 		if ( developers != null ) {
+			serializer.startTag(NAMESPACE, "developers");
 			for (int i = 0; i < developers.size(); i++) {
 				developer = (Developer) developers.get(i);
 				if ( developer != null ) {
@@ -235,8 +235,8 @@ public class DefaultProjectMarshaller implements IProjectMarshaller {
 					serializer.endTag(NAMESPACE, "developer");
 				}
 			}
+			serializer.endTag(NAMESPACE, "developers");
 		}
-		serializer.endTag(NAMESPACE, "developers");
 	}
 
 	private  void marshallContributors(Project project) throws Exception {
