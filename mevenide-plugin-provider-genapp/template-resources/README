@@ -1,1 +1,4 @@
-to generate the eclipse artifact just run maven eclipse-plugin:creat-artifact-dist
+To generate the eclipse artifact just run maven eclipse-plugin:creat-artifact-dist.
+
+You will for that to have the latest version of maven-eclipse-plugin-plugin installed.
+You can grab it at http://dist.codehaus.org/mevenide/repository/
