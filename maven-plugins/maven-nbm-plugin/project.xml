@@ -1,7 +1,10 @@
 <?xml version="1.0" ?>
+<!-- referencing other files will fail when executing the plugin's goal from positions which cannot reach
+     the given path.. eg for me it failed in mevenide-netbeans-deps/commons-logging
 <!DOCTYPE project [
     <!ENTITY code-reports SYSTEM "file:../mevenide-master/pom-fragments/plugin-pom-fragments/code-reports.xml">
-]>    
+    <!ENTITY scm-reports SYSTEM "file:../mevenide-master/pom-fragments/plugin-pom-fragments/scm-reports.xml">
+]>  -->
 <project>
   <extend>${basedir}/../mevenide-master/plugin-base-project.xml</extend>
   
@@ -61,7 +64,7 @@
     <dependency>
           <groupId>maven</groupId>
           <artifactId>maven-artifact-plugin</artifactId>
-          <version>1.0</version>    
+          <version>1.1</version>    
           <type>plugin</type>
     </dependency>
         <dependency>
@@ -110,6 +113,25 @@
    </build>   
   
    <reports>
-		&code-reports;
+        <report>maven-changes-plugin</report> 
+		<report>maven-jellydoc-plugin</report>
+		<report>maven-junit-report-plugin</report>
+        <!-- mkleint - clover doens't work for me, dunno why -->
+<!--		<report>maven-clover-plugin</report> -->
+		
+		<report>maven-pmd-plugin</report>
+	   	<report>maven-checkstyle-plugin</report>
+	   	<report>maven-simian-plugin</report>
+   	    <report>maven-findbugs-plugin</report>
+   	    
+   	    <report>maven-jxr-plugin</report>
+		<report>maven-javadoc-plugin</report>
+        
+<!--		&code-reports;
+        &scm-reports;
+        -->
+        <report>maven-changelog-plugin</report>
+		<report>maven-file-activity-plugin</report>
+		<report>maven-developer-activity-plugin</report>        
 	</reports>
 </project>

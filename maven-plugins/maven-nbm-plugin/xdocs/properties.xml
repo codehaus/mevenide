@@ -176,8 +176,10 @@ OpenIDE-Module-Specification-Version: normalized version of ${pom.currentVersion
           <p>Optional. Since 0.2. Default value is <code>?</code>.</p>
           </td>
           <td>
+          <p>
            Contains the password for the signing of the nbm, you probably want to include it
            in your $HOME/build.properties file.
+           </p>
           </td>
         </tr>
         <tr>
