@@ -32,6 +32,7 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.wizards.newresource.BasicNewResourceWizard;
+import org.mevenide.ui.eclipse.IImageRegistry;
 import org.mevenide.ui.eclipse.Mevenide;
 
 /**
@@ -50,7 +51,7 @@ public class NewPomWizard extends BasicNewResourceWizard implements INewWizard {
     
     public NewPomWizard() {
         super();
-        setDefaultPageImageDescriptor(Mevenide.getImageDescriptor("wizban/newmfile_wiz.gif")); 
+        setDefaultPageImageDescriptor(Mevenide.getInstance().getImageRegistry().getDescriptor(IImageRegistry.MAVEN_POM_WIZ)); 
         setNeedsProgressMonitor(true);
     }
 

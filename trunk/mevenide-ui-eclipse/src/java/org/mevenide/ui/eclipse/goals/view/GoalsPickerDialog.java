@@ -121,19 +121,19 @@ public class GoalsPickerDialog  extends TitleAreaDialog {
 	}
 	
 	protected Control createDialogArea(Composite parent) {
-	    getShell().setText(Mevenide.getResourceString("Available Goals"));
+	    getShell().setText(Mevenide.getResourceString("GoalsPickerDialog.Shell.Text"));
 	    setShellStyle(SWT.RESIZE | SWT.APPLICATION_MODAL);
 	    if ( overrideTitle != null ) {
 	        setTitle(overrideTitle);
 	    }
 	    else {
-	        setTitle("Goals to run");
+	        setTitle(Mevenide.getResourceString("GoalsPickerDialog.Title"));
 	    }
 		if ( overrideMessage != null ) {
 		    setMessage(overrideMessage);
 		}
 		else {
-		    setMessage("Select goals to run from the list below.");
+		    setMessage(Mevenide.getResourceString("GoalsPickerDialog.Message"));
 		}
         try {
         	Composite composite = new Composite(parent, SWT.NONE);

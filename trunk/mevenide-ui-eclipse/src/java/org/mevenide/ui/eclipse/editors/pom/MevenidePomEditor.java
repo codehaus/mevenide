@@ -349,7 +349,7 @@ public class MevenidePomEditor extends FormEditor {
 
     private void updateTitleAndToolTip() {
         if (!StringUtils.isNull(pom.getName())) {
-            setTitle(pom.getName());
+            setPartName(pom.getName());
         }
         IFile pomFile = ((IFileEditorInput) getEditorInput()).getFile();
         setTitleToolTip(pomFile.getProject().getName() + pomFile.getProjectRelativePath());
@@ -468,7 +468,7 @@ public class MevenidePomEditor extends FormEditor {
 
             String pomName = pom.getName();
             if (!StringUtils.isNull(pomName)) {
-                setTitle(pomName);
+                setPartName(pomName);
                 firePropertyChange(PROP_TITLE);
             }
             setModelDirty(false);

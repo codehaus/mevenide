@@ -39,6 +39,7 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.preference.PreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.PlatformUI;
@@ -130,8 +131,16 @@ public class Mevenide extends AbstractUIPlugin {
 		customLocationFinder = new CustomLocationFinder();
 		loadPreferences();
         initEnvironment();
+        initImageRegistry();
         DynamicPreferencePageFactory.getFactory().createPages();
 	}
+
+    private void initImageRegistry() {
+        ImageRegistry registry = getImageRegistry();
+		for (int i = 0; i < IImageRegistry.IMAGE_KEYS.length; i++) {
+            registry.put(IImageRegistry.IMAGE_KEYS[i], getImageDescriptor(IImageRegistry.IMAGE_KEYS[i]));  
+        }
+    }
 
     /**
 	 * osgi shutdown : dispose resources
@@ -242,7 +251,7 @@ public class Mevenide extends AbstractUIPlugin {
 		}
 	}
 	
-    public static ImageDescriptor getImageDescriptor(String relativePath) {
+    private ImageDescriptor getImageDescriptor(String relativePath) {
         String iconPath = Mevenide.getResourceString("IconsPath");
         try {
             URL installURL = plugin.getBundle().getEntry("/");

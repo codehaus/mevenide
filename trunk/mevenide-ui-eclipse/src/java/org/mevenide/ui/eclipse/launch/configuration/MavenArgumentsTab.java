@@ -21,10 +21,9 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.maven.MavenConstants;
+import org.apache.maven.MavenSession;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
@@ -53,6 +52,7 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 import org.mevenide.runner.OptionsRegistry;
+import org.mevenide.ui.eclipse.IImageRegistry;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.goals.view.GoalsPickerDialog;
 
@@ -88,7 +88,7 @@ public class MavenArgumentsTab extends AbstractLaunchConfigurationTab  {
 	}
 	
 	public Image getImage() {
-        return Mevenide.getImageDescriptor("eview16/variable_tab.gif").createImage();
+        return Mevenide.getInstance().getImageRegistry().get(IImageRegistry.ARGUMENTS_TAB_ICON);
     }
 	
 	public String getName() {
@@ -125,7 +125,7 @@ public class MavenArgumentsTab extends AbstractLaunchConfigurationTab  {
 			createGoalsText(composite);
 			log.debug("goals list initialized");
 
-			//createMavenVersionLabel(composite);
+			createMavenVersionLabel(composite);
 
 			
 		}
@@ -139,13 +139,13 @@ public class MavenArgumentsTab extends AbstractLaunchConfigurationTab  {
 	
 	
 	private void createMavenVersionLabel(Composite composite) {
-		GridData data = new GridData(GridData.FILL_HORIZONTAL);
+		GridData data = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING | GridData.FILL_HORIZONTAL);
 		data.horizontalSpan = 2;
 		data.grabExcessHorizontalSpace = true;
 		data.grabExcessVerticalSpace = true;
 		
 		Label label = new Label(composite, SWT.READ_ONLY);
-		label.setText("Maven version: " + MavenConstants.POM_VERSION);
+		label.setText("Maven version: " + MavenSession.APP_VERSION);
 		
 		label.setLayoutData(data);
 	}

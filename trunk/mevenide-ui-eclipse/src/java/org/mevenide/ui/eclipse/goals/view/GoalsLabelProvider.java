@@ -20,6 +20,7 @@ import org.eclipse.jface.viewers.IColorProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
+import org.mevenide.ui.eclipse.IImageRegistry;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.MevenideColors;
 import org.mevenide.ui.eclipse.goals.model.Goal;
@@ -35,8 +36,8 @@ import org.mevenide.ui.eclipse.goals.model.Plugin;
  */
 public class GoalsLabelProvider extends LabelProvider implements IColorProvider {
 	
-    private Image plugin16 = Mevenide.getImageDescriptor("obj16/mplugin_obj.gif").createImage();
-    private Image goal16 = Mevenide.getImageDescriptor("obj16/mgoal_obj.gif").createImage();
+    private Image plugin16 = Mevenide.getInstance().getImageRegistry().get(IImageRegistry.PLUGIN_OBJ);
+    private Image goal16 = Mevenide.getInstance().getImageRegistry().get(IImageRegistry.GOAL_OBJ);
     
     public Image getImage(Object arg0) {
     	if ( arg0 instanceof Plugin )

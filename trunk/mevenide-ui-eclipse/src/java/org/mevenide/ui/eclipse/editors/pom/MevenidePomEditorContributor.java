@@ -33,6 +33,7 @@ import org.eclipse.ui.ide.IDEActionFactory;
 import org.eclipse.ui.part.MultiPageEditorActionBarContributor;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.texteditor.ITextEditorActionConstants;
+import org.mevenide.ui.eclipse.IImageRegistry;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.pom.validation.MarkerHelper;
 import org.mevenide.ui.eclipse.pom.validation.ValidationJob;
@@ -138,7 +139,7 @@ public class MevenidePomEditorContributor extends MultiPageEditorActionBarContri
         };
         clearMarkersAction.setText(Mevenide.getResourceString("MevenidePomEditorContributor.ClearMarkers.Action.Text"));
         clearMarkersAction.setToolTipText("MevenidePomEditorContributor.ClearMarkers.Action.ToolTip");
-        clearMarkersAction.setImageDescriptor(Mevenide.getImageDescriptor("etool16/clr_validate.gif"));
+        clearMarkersAction.setImageDescriptor(Mevenide.getInstance().getImageRegistry().getDescriptor(IImageRegistry.CLEAR_VALIDATE_TOOL));
     }
 
 
@@ -150,7 +151,7 @@ public class MevenidePomEditorContributor extends MultiPageEditorActionBarContri
         };
         validatePomAction.setText(Mevenide.getResourceString("MevenidePomEditorContributor.Validate.Action.Text"));
         validatePomAction.setToolTipText("MevenidePomEditorContributor.Validate.Action.ToolTip");
-        validatePomAction.setImageDescriptor(Mevenide.getImageDescriptor("etool16/validate_pom.gif"));
+        validatePomAction.setImageDescriptor(Mevenide.getInstance().getImageRegistry().getDescriptor(IImageRegistry.VALIDATE_TOOL));
     }
 
 

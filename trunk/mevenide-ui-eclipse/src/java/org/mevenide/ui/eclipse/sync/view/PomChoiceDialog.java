@@ -40,6 +40,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.PlatformUI;
+import org.mevenide.ui.eclipse.IImageRegistry;
 import org.mevenide.ui.eclipse.Mevenide;
 
 /**
@@ -78,7 +79,7 @@ public class PomChoiceDialog extends TitleAreaDialog {
 	    
 	    getShell().setText(DIALOG_NAME);
 	    setTitle(POM_CHOICE_TITLE); 
-	    setTitleImage(Mevenide.getImageDescriptor("wizban/mfile_choose.gif").createImage());
+	    setTitleImage(Mevenide.getInstance().getImageRegistry().get(IImageRegistry.POM_CHOICE_WIZ));
 	    setMessage(POM_CHOICE_MESSAGE); 
 	    
 	    okButton = getButton(IDialogConstants.OK_ID);

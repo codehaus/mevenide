@@ -18,6 +18,7 @@ package org.mevenide.ui.eclipse.template.view;
 
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
+import org.mevenide.ui.eclipse.IImageRegistry;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.template.model.Template;
 
@@ -42,7 +43,7 @@ public class TemplateLabelProvider extends LabelProvider {
 	 */
 	public Image getImage(Object obj) {
 		if (obj instanceof Template) {
-			return Mevenide.getImageDescriptor("obj16/mfile_obj.gif").createImage();
+			return Mevenide.getInstance().getImageRegistry().get(IImageRegistry.MAVEN_POM_OBJ);
 		}
 		return super.getImage(obj);
 	}

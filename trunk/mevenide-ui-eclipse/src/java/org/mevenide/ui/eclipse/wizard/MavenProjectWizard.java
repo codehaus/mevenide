@@ -27,6 +27,7 @@ import org.eclipse.jdt.internal.ui.util.ExceptionHandler;
 import org.eclipse.jdt.internal.ui.wizards.NewElementWizard;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.wizards.newresource.BasicNewProjectResourceWizard;
+import org.mevenide.ui.eclipse.IImageRegistry;
 import org.mevenide.ui.eclipse.Mevenide;
 
 /**
@@ -43,7 +44,7 @@ public class MavenProjectWizard extends NewElementWizard implements IExecutableE
 	 */
 	public MavenProjectWizard() {
 		super();
-		setDefaultPageImageDescriptor(Mevenide.getImageDescriptor("wizban/newmprj_wiz.gif")); //$NON-NLS-1$
+		setDefaultPageImageDescriptor(Mevenide.getInstance().getImageRegistry().getDescriptor(IImageRegistry.MAVEN_PROJECT_WIZ)); //$NON-NLS-1$
 		setWindowTitle(Mevenide.getResourceString("MavenProjectWizard.title")); //$NON-NLS-1$
 	}
 
