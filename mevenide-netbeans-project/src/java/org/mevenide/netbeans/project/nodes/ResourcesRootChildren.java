@@ -45,8 +45,10 @@ class ResourcesRootChildren extends Children.Keys {
     
     private MavenProject project;
     private PropertyChangeListener changeListener;
-    public ResourcesRootChildren(MavenProject project) {
-        this.project = project;
+    private boolean test;
+    public ResourcesRootChildren(MavenProject prj, boolean testResource) {
+        this.project = prj;
+        test = testResource;
         changeListener  = new PropertyChangeListener() {
             public void propertyChange(PropertyChangeEvent evt) {
                 if (MavenProject.PROP_PROJECT.equals(evt.getPropertyName())) {
@@ -76,7 +78,8 @@ class ResourcesRootChildren extends Children.Keys {
         if (srcs == null) {
             throw new IllegalStateException("need Sources instance in lookup");
         }
-        SourceGroup[] resgroup = srcs.getSourceGroups(MavenSourcesImpl.TYPE_RESOURCES);
+        SourceGroup[] resgroup = srcs.getSourceGroups(test ? MavenSourcesImpl.TYPE_TEST_RESOURCES : 
+                                                             MavenSourcesImpl.TYPE_RESOURCES);
         for (int i = 0; i < resgroup.length; i++) {
             list.add(resgroup[i]);
         }

@@ -56,6 +56,7 @@ import org.openide.util.RequestProcessor;
 public class MavenSourcesImpl implements Sources {
     private static final Log logger = LogFactory.getLog(MavenSourcesImpl.class);
     public static final String TYPE_RESOURCES = "Resources"; //NOI18N
+    public static final String TYPE_TEST_RESOURCES = "TestResources"; //NOI18N
     public static final String TYPE_XDOCS = "XDocs"; //NOI18N
     public static final String TYPE_GEN_SOURCES = "GeneratedSources"; //NOI18N
     public static final String NAME_PROJECTROOT = "ProjectRoot"; //NOI18N
@@ -184,11 +185,18 @@ public class MavenSourcesImpl implements Sources {
                 return new SourceGroup[0];
             }
         }
-        if (TYPE_RESOURCES.equals(str)) {
+        if (TYPE_RESOURCES.equals(str) || TYPE_TEST_RESOURCES.equals(str)) {
             List toReturn = new ArrayList();
             Build build = project.getOriginalMavenProject().getBuild();
             if (build != null) {
-                List resources = build.getResources();
+                List resources = null;
+                if (TYPE_RESOURCES.equals(str)) {
+                    resources = build.getResources();
+                } else {
+                    if (build.getUnitTest() != null) {
+                        resources = build.getUnitTest().getResources();
+                    }
+                }
                 if (resources != null) {
                     Iterator it = resources.iterator();
                     int count = 0;
