@@ -41,7 +41,12 @@ public final class RepositoryReaderFactory {
      * Creates a IRepositoryReader for the remote repository.
      */
     public static IRepositoryReader createRemoteRepositoryReader(URI uri) {
-        // TODO
+        if (uri.toString().startsWith("http://")) {
+            return new HttpRepositoryReader(uri);
+        }
+        if (uri.toString().startsWith("file://")) {
+            return new LocalRepositoryReader(new File(uri));
+        }
         return null;
     }
     
