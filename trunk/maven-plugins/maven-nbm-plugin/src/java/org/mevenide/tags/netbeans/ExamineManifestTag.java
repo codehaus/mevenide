@@ -17,7 +17,9 @@
 package org.mevenide.tags.netbeans;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.StringTokenizer;
@@ -37,7 +39,8 @@ public class ExamineManifestTag extends AbstractNbMevenideTag {
     
     private String isNetbeansModuleVar;    
     private String isLocalizedVar;
-    private java.io.File jarFile;
+    private File jarFile;
+    private File manifestFile;    
     private String specVersionVar;    
     private String implVersionVar;
     private String dependVar;
@@ -56,19 +59,36 @@ public class ExamineManifestTag extends AbstractNbMevenideTag {
     
     public void doTag(XMLOutput arg0) throws Exception {
         
-        checkAttribute(jarFile, "jarFile");
-
+//        checkAttribute(jarFile, "jarFile");
+        
         resetExamination();
         
-        JarFile jar = null;
-        try {
-            jar = new JarFile(jarFile);
-            Manifest mf = jar.getManifest();
-            processManifest(mf);
-        } finally {
-            if (jar != null) {
-                jar.close();
+        Manifest mf = null;
+        if (jarFile != null) {
+            JarFile jar = null;
+            try {
+                jar = new JarFile(jarFile);
+                mf = jar.getManifest();
+            } finally {
+                if (jar != null) {
+                    jar.close();
+                }
             }
+        } else if (manifestFile != null) {
+            InputStream stream = null;
+            try {
+                stream = new FileInputStream(manifestFile);
+                mf = new Manifest(stream);
+            } finally {
+                if (stream != null) {
+                    stream.close();
+                }
+            }
+        }
+        if (mf != null) {
+            processManifest(mf);
+        } else {
+            throw new Exception("Cannot read jar file or manifest file");
         }
         setContextVars();
     }
@@ -264,5 +284,22 @@ public class ExamineManifestTag extends AbstractNbMevenideTag {
         this.locBundleVar = locBundleVar;
     }
     
+    /** Getter for property manifestFile.
+     * @return Value of property manifestFile.
+     *
+     */
+    public File getManifestFile()
+    {
+        return this.manifestFile;
+    }    
+    
+    /** Setter for property manifestFile.
+     * @param manifestFile New value of property manifestFile.
+     *
+     */
+    public void setManifestFile(File manifestFile)
+    {
+        this.manifestFile = manifestFile;
+    }
     
 }
