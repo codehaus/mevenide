@@ -48,6 +48,9 @@
  */
 package org.mevenide.ui.eclipse.sync.view;
 
+import java.io.File;
+import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.resources.IFile;
@@ -86,6 +89,7 @@ import org.mevenide.ui.eclipse.sync.model.ArtifactMappingContentProvider;
 import org.mevenide.ui.eclipse.sync.model.IArtifactMappingNode;
 import org.mevenide.ui.eclipse.sync.model.IArtifactMappingNodeContainer;
 import org.mevenide.ui.eclipse.sync.model.ProjectContainer;
+import org.mevenide.ui.eclipse.util.FileUtils;
 
 
 
@@ -121,7 +125,7 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
     
     private int direction;
     
-    
+    List poms;
     
     public void createPartControl(Composite parent) {
         createArtifactViewer(parent);
@@ -136,7 +140,13 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
     
     public void setInput(IProject input) {
         artifactMappingNodeViewer.setInput(input);
-        ((ArtifactMappingContentProvider) artifactMappingNodeViewer.getContentProvider()).setDirection(this.direction);
+		try {
+			poms = FileUtils.getPoms(input);
+		} 
+		catch (Exception e) {
+			log.error("Cannot find pom for project " + input, e);
+		}
+		((ArtifactMappingContentProvider) artifactMappingNodeViewer.getContentProvider()).setDirection(this.direction);
         artifactMappingNodeViewer.refresh(true);
         artifactMappingNodeViewer.expandAll();
     }
@@ -385,6 +395,12 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
 									IFile file = (IFile) r;
 									if ( file.equals(dotClasspath) ) {
 										refreshAll();
+									}
+									for (int i = 0; i < poms.size(); i++) {
+										File f = (File) poms.get(i);
+										if ( new File(file.getLocation().toOSString()).equals(f) ) {
+											refreshAll();
+										}
 									}
 									
 								}
