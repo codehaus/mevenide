@@ -154,10 +154,14 @@ public final class ClassPathProviderImpl implements ClassPathProvider {
         // web app src also considered source..
         dir = FileUtilities.convertURItoFileObject(project.getWebAppDirectory());
         if (dir != null && (dir.equals(file) || FileUtil.isParentOf(dir, file))) {
-            System.out.println("get type is source for webapp");
             return TYPE_SRC;
         }
         dir = FileUtilities.convertURItoFileObject(project.getTestSrcDirectory());
+        if (dir != null && (dir.equals(file) || FileUtil.isParentOf(dir, file))) {
+            return TYPE_TESTSRC;
+        }
+        // cactus is also a test source..
+        dir = FileUtilities.convertURItoFileObject(project.getCactusDirectory());
         if (dir != null && (dir.equals(file) || FileUtil.isParentOf(dir, file))) {
             return TYPE_TESTSRC;
         }
