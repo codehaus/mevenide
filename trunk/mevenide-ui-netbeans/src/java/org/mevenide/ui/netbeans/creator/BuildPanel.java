@@ -148,7 +148,7 @@ public class BuildPanel extends JPanel implements ProjectPanel
     {
         SourceDirectoryUtil.addSource(project, txtSrc.getText().trim(), ProjectConstants.MAVEN_SRC_DIRECTORY);
         SourceDirectoryUtil.addSource(project, txtTestSrc.getText().trim(), ProjectConstants.MAVEN_TEST_DIRECTORY);
-        SourceDirectoryUtil.addSource(project, txtIntTestSrc.getText().trim(), ProjectConstants.MAVEN_INTEGRATION_TEST_DIRECTORY);
+//        SourceDirectoryUtil.addSource(project, txtIntTestSrc.getText().trim(), ProjectConstants.MAVEN_INTEGRATION_TEST_DIRECTORY);
         SourceDirectoryUtil.addSource(project, txtAspectSrc.getText().trim(), ProjectConstants.MAVEN_ASPECT_DIRECTORY);
         return project;
     }    
