@@ -121,7 +121,7 @@ public class MavenArgumentsTab extends AbstractLaunchConfigurationTab  {
 	
 	
 	public String getName() {
-		return Mevenide.getResourceString("Launcher.ArgumentsTab.name");
+		return Mevenide.getResourceString("MavenArgumentsTab.name");
 	}
 	
 	public void setDefaults(ILaunchConfigurationWorkingCopy configuration) {

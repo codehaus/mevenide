@@ -142,17 +142,17 @@ public class MevenidePreferenceDialog {
 		);
 		mavenHomeEditor = createEditor(
 			MevenidePreferenceKeys.MAVEN_HOME_PREFERENCE_KEY, 
-			Mevenide.getResourceString("MevenidePreferenceDialog.java.home.label"), 
+			Mevenide.getResourceString("MevenidePreferenceDialog.maven.home.label"), 
 			mavenHome
 		);
 		mavenLocalHomeEditor = createEditor(
 			MevenidePreferenceKeys.MAVEN_LOCAL_HOME_PREFERENCE_KEY, 
-			Mevenide.getResourceString("MevenidePreferenceDialog.java.home.label"), 
+			Mevenide.getResourceString("MevenidePreferenceDialog.maven.local.home.label"), 
 			mavenLocalHome
 		);
 		mavenRepoEditor = createEditor(
 			MevenidePreferenceKeys.MAVEN_REPO_PREFERENCE_KEY, 
-			Mevenide.getResourceString("MevenidePreferenceDialog.java.home.label"), 
+			Mevenide.getResourceString("MevenidePreferenceDialog.maven.repo.label"), 
 			mavenRepository
 		);
 		
