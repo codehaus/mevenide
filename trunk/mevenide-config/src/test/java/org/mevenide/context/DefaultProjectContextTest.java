@@ -61,18 +61,18 @@ public class DefaultProjectContextTest extends TestCase {
      * Test of doReplaceExtend method, of class org.mevenide.context.DefaultProjectContext.
      */
     public void testDoReplaceExtend() {
-        File basedir = new File("/home/mkleint/sweet");
+        File basedir = new File("sweet");
         IPropertyResolver resolver = new Resolver();
         String result = DefaultProjectContext.doReplaceExtend(basedir, resolver, "hello");
         assertEquals(result, "hello");
         result = DefaultProjectContext.doReplaceExtend(basedir, resolver, "${basedir} yes");
-        assertEquals(result, "/home/mkleint/sweet yes");
+        assertEquals(result, basedir.getAbsolutePath() + " yes");
         result = DefaultProjectContext.doReplaceExtend(basedir, resolver, "${prop.test1} xxx");
-        assertEquals(result, "has /home/mkleint/sweet value1 xxx");
+        assertEquals(result, "has " + basedir.getAbsolutePath() + " value1 xxx");
         result = DefaultProjectContext.doReplaceExtend(basedir, resolver, "${prop.test2} xx");
-        assertEquals(result, "has /home/mkleint/sweet value12 xx");
+        assertEquals(result, "has " + basedir.getAbsolutePath() + " value12 xx");
         result = DefaultProjectContext.doReplaceExtend(basedir, resolver, "yy ${prop.test2} xx ${prop.test3}");
-        assertEquals(result, "yy has /home/mkleint/sweet value12 xx has /home/mkleint/sweet value123");
+        assertEquals(result, "yy has " +basedir.getAbsolutePath() + " value12 xx has " + basedir.getAbsolutePath() + " value123");
     }
 
     // TODO add test methods here. The name must begin with 'test'. For example:
