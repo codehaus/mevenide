@@ -205,9 +205,11 @@
     name="nbm:nbm"
     prereqs="nbm:jar, nbm:prepare-nbm-resources"
     description="Build the NBM">
+    
   <ant:taskdef name="makenbm" classname="org.netbeans.nbbuild.MakeNBM" >
         <ant:classpath>
-            <ant:pathelement path="${plugin.getDependencyPath('nbantext')}"/>
+            <ant:pathelement location="${plugin.getDependencyPath('netbeans:nbantext')}"/>
+            <ant:path refid="maven.dependency.classpath"/>
         </ant:classpath>
   </ant:taskdef>
 
@@ -354,7 +356,8 @@ maven.nbm.license=${dependencyModuleDir}/license.txt
   <goal name="nbm:autoupdate">
       <ant:taskdef name="updatedist" classname="org.netbeans.nbbuild.MakeUpdateDesc" >
         <ant:classpath>
-            <ant:pathelement path="${plugin.getDependencyPath('nbantext')}"/>
+            <ant:pathelement location="${plugin.getDependencyPath('netbeans:nbantext')}"/>
+            <ant:path refid="maven.dependency.classpath"/>
         </ant:classpath>
       </ant:taskdef>
       
