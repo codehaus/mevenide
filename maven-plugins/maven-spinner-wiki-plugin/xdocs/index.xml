@@ -8,10 +8,10 @@
     <section name="Overview">
       <p>
    	  This plugin generates html templates for <a href="http://spinner-wiki.sf.net">spinner-wiki</a> 
-   	  that match the maven generated site look-n-feel. A live example can be found <a href="../cgi-bin/view.pl/FrontPage">here</a>.
+   	  that match the maven generated site look-n-feel. 
    	  </p>
    	  <p>  
-   	  In the near future fs/ssh/ftp deploiement will be supported.
+   	  Please note that this plugin is <font color="#990000">no longer maintained</font>.
    	  </p>
     </section>
   </body>
