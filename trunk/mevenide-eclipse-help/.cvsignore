@@ -1,3 +1,4 @@
 target
 xdocs
 *.log
+plugin.xml

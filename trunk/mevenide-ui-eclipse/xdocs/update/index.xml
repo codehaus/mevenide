@@ -12,7 +12,7 @@
 			   http://dist.codehaus.org/mevenide/release/eclipse/update/site.xml and follow instructions. 
 			</p>
 			<p>
-				If this procedure it not suitable, you can download a <a href="http://dist.codehaus.org/mevenide/release/eclipse/mevenide.update_0.2.0.zip">big zip archive</a> containing 
+				If this procedure it not suitable, you can download a <a href="http://dist.codehaus.org/mevenide/release/eclipse/mevenide.update-0.2.0.zip">big zip archive</a> containing 
 				the feature and all the plugins. You just need to unzip it into your Eclipse install directory.
 			</p>
 			<p>

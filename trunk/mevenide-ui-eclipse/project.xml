@@ -9,7 +9,7 @@
 	<id>mevenide-ui-eclipse</id>
 	<name>Mevenide Eclipse</name>
 	<artifactId>mevenide-ui-eclipse</artifactId>
-	<currentVersion>0.2.0-SNAPSHOT</currentVersion>
+	<currentVersion>0.2.0</currentVersion>
 	<package>org.mevenide.ui.eclipse</package>
 	<shortDescription>provides ide integration for Maven</shortDescription>
 	<versions>
@@ -47,22 +47,22 @@
         <dependency>
            <groupId>mevenide</groupId>
            <artifactId>mevenide-core</artifactId>
-           <version>0.1.1-SNAPSHOT</version>
+           <version>0.1.1</version>
         </dependency>
         <dependency>
            <groupId>mevenide</groupId>
            <artifactId>mevenide-grammar</artifactId>
-           <version>0.1-SNAPSHOT</version>
+           <version>0.1</version>
         </dependency>
         <dependency>
            <groupId>mevenide</groupId>
            <artifactId>mevenide-config</artifactId>
-           <version>0.2-SNAPSHOT</version>
+           <version>0.2</version>
         </dependency>
         <dependency>
            <groupId>mevenide</groupId>
            <artifactId>goals-grabber</artifactId>
-           <version>0.2-SNAPSHOT</version>
+           <version>0.2</version>
         </dependency>
         
 		&inherited-dependencies;

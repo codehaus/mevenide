@@ -278,7 +278,7 @@
       </perspectiveExtension>
    </extension>
 <!-- Maven Project Wizards -->
-   <extension
+   <!-- extension
          point="org.eclipse.ui.newWizards">
       <category
             name="%ProjectWizard.category.name"
@@ -296,6 +296,6 @@
             %ProjectWizard.description
          </description>
       </wizard>
-   </extension>
+   </extension -->
 
 </plugin>
