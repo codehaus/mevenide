@@ -1,7 +1,11 @@
 <project xmlns:maven="jelly:maven" 
 		 xmlns:j="jelly:core"
 		 xmlns:util="jelly:util"
-		 xmlns:ant="jelly:ant">
+		 xmlns:ant="jelly:ant"
+		 default="mevenide:help">
+ 
+
+  
   
   <!-- ==================================== -->
   <!--             build section            -->
@@ -198,6 +202,53 @@
   	<j:set var="maven.multiproject.includes" value="${maven.multiproject.includes},${mevenide.eclipse.plugin.project.name}/project.xml"/>
   	<j:set var="goal" value="xdoc"/>
   	<attainGoal name="multiproject:goal"/>
+  </goal>
+  
+  
+  <!-- ==================================== -->
+  <!--              help section            -->
+  <!-- ==================================== -->  
+  <goal name="mevenide:help">
+  	<ant:echo>
+
+Below are listed relevant goals in the context of the Mevenide project.
+  		
+[Building IDE plugins]
+----------------------
+
+  o mevenide-eclipse:build
+	 Builds Eclipse plugin. It assumes that you have ECLIPSE_HOME environment variable set.
+	 Also it requires that maven-eclipse-eclipse-plugin is installed. You can grab it here : 
+	 http://dist.codehaus.org/mevenide/dist/repository/mevenide/plugins/
+	 Generated artifacts are dropped to mevenide-update/target/eclipse/dist
+	 
+  o mevenide-netbeans:build
+	 Builds Netbeans plugin. It assumes that you have NETBEANS_HOME environment variable set.
+	 Also it requires that maven-nbm-plugin is installed. You can grab it here : 
+	 http://dist.codehaus.org/mevenide/dist/repository/mevenide/plugins/
+	 
+  In both cases make sure the IDE is installed before running maven because 
+  the build process will grab libraries from the install directory.
+  
+[Building Mevenide site]
+------------------------
+  
+  o mevenide-site:build
+     Builds whole Mevenide site.
+      
+  o mevenide-site:eclipse
+     Builds Mevenide Eclipse site part
+     
+[Building utility maven plugins]
+--------------------------------
+
+  o mevenide:install-maven-eclipse-plugin-plugin
+     Builds and deploys the maven-eclipse-eclipse-plugin used to build Eclipse plugin
+     
+  o mevenide:install-maven-nbm-plugin   
+     Builds and deploys the maven-nbm-plugin used to build Netbeans plugin
+     
+  	</ant:echo>
   </goal>
   
 </project>
