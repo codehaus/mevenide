@@ -16,8 +16,6 @@
  */
 package org.mevenide.ui.eclipse.editors;
 
-import org.apache.maven.project.Project;
-
 /**
  * A page within the Mevenide POM Editor.
  * 
@@ -35,12 +33,6 @@ public interface IPomEditorPage {
 	 * page's client control.
 	 */
 	public void setHeading(String heading);
-	
-	/**
-	 * Callback message to update this pages client control with
-	 * the given model object.
-	 */
-    public void update(Project pom);
 	
 	/**
 	 * Callback message sent with this page is activated (i.e.
