@@ -53,8 +53,8 @@ public class SourceDirectoryUtil {
 		}
 		
 		String srcDirectory = project.getBuild().getSourceDirectory();
-		String aspectSrcDirectory = project.getBuild().getSourceDirectory();
-		String unitTestSourceDirectory = project.getBuild().getSourceDirectory();
+		String aspectSrcDirectory = project.getBuild().getAspectSourceDirectory();
+		String unitTestSourceDirectory = project.getBuild().getUnitTestSourceDirectory();
 		String integrationUnitTestSourceDirectory = project.getBuild().getIntegrationUnitTestSourceDirectory();
 		
 		return path.equals(srcDirectory)
