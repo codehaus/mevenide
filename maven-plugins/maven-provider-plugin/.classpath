@@ -11,6 +11,6 @@
 	<classpathentry kind="var" path="MAVEN_REPO/log4j/jars/log4j-1.2.8.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/xmlunit/jars/xmlunit-1.0.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/commons-jelly/jars/commons-jelly-1.0-beta-4.jar"/>
-	<classpathentry kind="var" path="MAVEN_REPO/mevenide/jars/mevenide-config-0.4-SNAPSHOT.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/mevenide/jars/mevenide-config-0.5-SNAPSHOT.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
