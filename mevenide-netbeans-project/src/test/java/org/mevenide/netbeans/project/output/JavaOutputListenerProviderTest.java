@@ -15,9 +15,10 @@
  * =========================================================================
  */
 
-package org.mevenide.netbeans.project.exec;
+package org.mevenide.netbeans.project.output;
 
 import junit.framework.*;
+import org.mevenide.netbeans.project.output.JavaOutputListenerProvider;
 
 /**
  *
@@ -54,12 +55,27 @@ public class JavaOutputListenerProviderTest extends TestCase {
     }
     
     public void testRecognizeLine() {
-        assertNull(provider.recognizeLine("java:compile:"));
-        assertNull(provider.recognizeLine("    [javac] Compiling 3 source files to /home/cenda/mav_src/mevenide/mevenide-netbeans-project/target/test-classes"));
-        assertNotNull(provider.recognizeLine("/home/cenda/mav_src/mevenide/mevenide-netbeans-project/src/test/java/org/mevenide/netbeans/project/exec/JavaOutputListenerProviderTest.java:59: cannot resolve symbol"));
-        assertNull(provider.recognizeLine("symbol  : method assertxxNull (org.openide.windows.OutputListener)"));
-        assertNull(provider.recognizeLine("location: class org.mevenide.netbeans.project.exec.JavaOutputListenerProviderTest"));
-        assertNull(provider.recognizeLine("test:me:"));
-        assertNull(provider.recognizeLine("/home/cenda/mav_src/mevenide/mevenide-netbeans-project/src/test/java/org/mevenide/netbeans/project/exec/JavaOutputListenerProviderTest.java:59: cannot resolve symbol"));
+        OutputVisitor visitor = new OutputVisitor();
+        visitor.resetVisitor();
+        provider.processLine("java:compile:", visitor);
+        assertNull(visitor.getOutputListener());
+        visitor.resetVisitor();
+        provider.processLine("    [javac] Compiling 3 source files to /home/cenda/mav_src/mevenide/mevenide-netbeans-project/target/test-classes", visitor);
+        assertNull(visitor.getOutputListener());
+        visitor.resetVisitor();
+        provider.processLine("/home/cenda/mav_src/mevenide/mevenide-netbeans-project/src/test/java/org/mevenide/netbeans/project/exec/JavaOutputListenerProviderTest.java:59: cannot resolve symbol", visitor);
+        assertNotNull(visitor.getOutputListener());
+        visitor.resetVisitor();
+        provider.processLine("symbol  : method assertxxNull (org.openide.windows.OutputListener)", visitor);
+        assertNull(visitor.getOutputListener());
+        visitor.resetVisitor();
+        provider.processLine("location: class org.mevenide.netbeans.project.exec.JavaOutputListenerProviderTest", visitor);
+        assertNull(visitor.getOutputListener());
+        visitor.resetVisitor();
+        provider.processLine("test:me:", visitor);
+        assertNull(visitor.getOutputListener());
+        visitor.resetVisitor();
+        provider.processLine("/home/cenda/mav_src/mevenide/mevenide-netbeans-project/src/test/java/org/mevenide/netbeans/project/exec/JavaOutputListenerProviderTest.java:59: cannot resolve symbol", visitor);
+        assertNull(visitor.getOutputListener());
     }
 }

@@ -14,17 +14,19 @@
  *  limitations under the License.
  * =========================================================================
  */
-package org.mevenide.netbeans.project.exec;
 
-import org.openide.windows.OutputListener;
+package org.mevenide.netbeans.project.output;
 
 /**
- * implementors of this interface will check the line and attach listener to it
- * if  the line is important. Used for hyperlinking files in output etc..
+ * Custom line based filter for maven executor output when running the application.
  * @author  Milos Kleint (ca206216@tiscali.cz)
  */
-public interface OutputListenerProvider {
-   
-    OutputListener recognizeLine(String line);
+public class RunOutputFilter implements OutputProcessor {
     
+    public void processLine(String line, OutputVisitor visitor) {
+        String ln = line.trim();
+        if (ln.startsWith("[java]")) { //NOI18N
+            visitor.setFilteredLine(line.substring(line.indexOf("[java]") + "[java]".length())); //NOI18N
+        }
+    }
 }

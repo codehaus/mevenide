@@ -1,6 +1,6 @@
 /* ==========================================================================
  * Copyright 2003-2004 Apache Software Foundation
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,19 +15,13 @@
  * =========================================================================
  */
 
-package org.mevenide.netbeans.project.exec;
+package org.mevenide.netbeans.project.output;
 
 /**
- * Custom line based filter for maven executor output when running the application.
+ * A specialized output parser that's able to annotate and process the maven output.
  * @author  Milos Kleint (ca206216@tiscali.cz)
  */
-public class RunOutputFilter implements OutputFilter {
+public interface OutputProcessor {
     
-    public String filterLine(String line) {
-        String ln = line.trim();
-        if (ln.startsWith("[java]")) { //NOI18N
-            return line.substring(line.indexOf("[java]") + "[java]".length()); //NOI18N
-        }
-        return null;
-    }
+    void processLine(String line, OutputVisitor visitor);
 }

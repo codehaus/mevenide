@@ -14,26 +14,27 @@
  *  limitations under the License.
  * =========================================================================
  */
-package org.mevenide.netbeans.project.exec;
+package org.mevenide.netbeans.project.output;
 
 import java.util.Arrays;
 
 /**
- *
+ * abstract implementation of OutputProcessor that has support to focus the processor on certain subsections of the output only.
  * @author  Milos Kleint (ca206216@tiscali.cz)
  */
-public abstract class AbstractOutputListenerProvider implements OutputListenerProvider {
+public abstract class AbstractOutputProcessor implements OutputProcessor {
     private boolean isInWatchedGoals = false;
     /** Creates a new instance of AbstractOutputListenerProvider */
-    protected AbstractOutputListenerProvider() {
+    protected AbstractOutputProcessor() {
     }
     
     final boolean isInWatchedGoals(String line) {
-        if (line.matches("\\p{Alnum}+\\:\\p{Alnum}+\\:")) {
+        if (line.matches("[-\\p{Alnum}]+\\:[-\\p{Alnum}]+\\:") ||
+            line.matches("[-\\p{Alnum}]+\\:")) {
             String[] goals = getWatchedGoals();
             boolean changed = false;
             for (int i = 0; i < goals.length; i++) {
-                if (line.startsWith(goals[i])) {
+                if (line.equals(goals[i])) {
                     isInWatchedGoals = true;
                     changed = true;
                     break;
@@ -46,6 +47,21 @@ public abstract class AbstractOutputListenerProvider implements OutputListenerPr
         return isInWatchedGoals;
     }
     
+    final boolean isWatchedGoalLine(String line) {
+        if (line.matches("[-\\p{Alnum}]+\\:[-\\p{Alnum}]+\\:") ||
+            line.matches("[-\\p{Alnum}]+\\:")) {
+            String[] goals = getWatchedGoals();
+            for (int i = 0; i < goals.length; i++) {
+                if (line.equals(goals[i])) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
     
+    /**
+     * provide a list of goal pattern that shall be checked. eg. java:compile: pmd:report: etc.
+     */
     protected abstract String[] getWatchedGoals();
 }

@@ -36,13 +36,13 @@ import org.openide.loaders.DataObject;
 import org.openide.util.Lookup;
 
 /**
- *
+ * Various File/FileObject related utilities.
  * @author  Milos Kleint (ca206216@tiscali.cz)
  */
-public class FileUtilities {
+public final class FileUtilities {
     
     /** Creates a new instance of FileUtilities */
-    public FileUtilities() {
+    private FileUtilities() {
     }
     
     public static FileObject findFolder(FileObject rootFolder, String relPath) {
@@ -60,7 +60,7 @@ public class FileUtilities {
     public static FileObject findOrCreate(FileObject rootFolder, String relPath) throws IOException {
         FileObject parentFolder = rootFolder;
         FileObject folder = rootFolder;
-        StringTokenizer tok = new StringTokenizer(relPath, "/", false);
+        StringTokenizer tok = new StringTokenizer(relPath, "/", false); //NOI18N
         while (tok.hasMoreTokens()) {
             String name = tok.nextToken();
             folder = parentFolder.getFileObject(name, null);
@@ -73,13 +73,13 @@ public class FileUtilities {
     }
     
     public static FileObject getUserHome() {
-        String home = System.getProperty("user.home");
+        String home = System.getProperty("user.home"); //NOI18N
         File file = new File(home);
         FileObject[] fo = FileUtil.fromFile(file);
         if (fo.length > 0) {
             return fo[0];
         }
-        throw new IllegalStateException("Cannot find user.home fileobject (" + home + ")");
+        throw new IllegalStateException("Cannot find user.home fileobject (" + home + ")"); //NOI18N
     }
     
     public static FileObject convertURItoFileObject(URI uri) {
@@ -109,17 +109,17 @@ public class FileUtilities {
         buff.append(dependency.getArtifactDirectory());
         buff.append(File.separator);
         String type = dependency.getType();
-        buff.append(type != null ? type : "jar");
-        buff.append("s");
+        buff.append(type != null ? type : "jar"); //NOI18N
+        buff.append("s"); //NOI18N
         buff.append(File.separator);
         if (dependency.getJar() == null) {
             String id = dependency.getArtifactId();
             buff.append(id != null ? id : dependency.getId());
-            buff.append("-");
+            buff.append("-"); //NOI18N
             buff.append(dependency.getVersion());
-            buff.append(".");
+            buff.append("."); //NOI18N
             String extension = dependency.getExtension();
-            buff.append(extension != null ? extension : "jar");
+            buff.append(extension != null ? extension : "jar"); //NOI18N
         } else {
             buff.append(dependency.getJar());
         }
@@ -133,13 +133,13 @@ public class FileUtilities {
     public static File locationToFile(int location, MavenProject project) {
         IQueryContext context = project.getContext();
         if (location == IPropertyLocator.LOCATION_PROJECT) {
-            return new File(context.getProjectDirectory(), "project.properties");
+            return new File(context.getProjectDirectory(), "project.properties"); //NOI18N
         }
         if (location == IPropertyLocator.LOCATION_PROJECT_BUILD) {
-            return new File(context.getProjectDirectory(), "build.properties");
+            return new File(context.getProjectDirectory(), "build.properties"); //NOI18N
         }
         if (location == IPropertyLocator.LOCATION_USER_BUILD) {
-            return new File(context.getUserDirectory(), "build.properties");
+            return new File(context.getUserDirectory(), "build.properties"); //NOI18N
         }
         if (location == OriginChange.LOCATION_POM) {
             File[] fls = context.getPOMContext().getProjectFiles();
@@ -224,7 +224,7 @@ public class FileUtilities {
      *
      */
     public static FileObject findTestForFile(MavenProject project, FileObject f) {
-        if (f == null || !"java".equals(f.getExt())) {
+        if (f == null || !"java".equals(f.getExt())) { //NOI18N
             return null;
         }
         File testRootFile = new File(project.getTestSrcDirectory());
@@ -237,8 +237,7 @@ public class FileUtilities {
         if (srcroot != null && FileUtil.isParentOf(srcroot, f)) {
             String relative = FileUtil.getRelativePath(srcroot, f);
             relative = relative.substring(0, relative.length() - f.getNameExt().length());
-            File testFile = new File(testRootFile, relative + f.getName() + "Test.java");
-            System.out.println("testfile=" + testFile);
+            File testFile = new File(testRootFile, relative + f.getName() + "Test.java"); //NOI18N
             if (testFile.exists()) {
                 return FileUtil.toFileObject(testFile);
             }

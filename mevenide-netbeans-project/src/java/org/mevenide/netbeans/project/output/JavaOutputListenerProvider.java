@@ -15,21 +15,23 @@
  * =========================================================================
  */
 
-package org.mevenide.netbeans.project.exec;
+package org.mevenide.netbeans.project.output;
 
 import java.awt.Toolkit;
 import java.io.File;
 import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.regex.Pattern;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.mevenide.netbeans.project.MavenProject;
-import org.openide.cookies.OpenCookie;
+import org.openide.cookies.EditorCookie;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.loaders.DataObject;
 import org.openide.loaders.DataObjectNotFoundException;
+import org.openide.text.Line;
 import org.openide.windows.OutputEvent;
 import org.openide.windows.OutputListener;
 
@@ -39,44 +41,50 @@ import org.openide.windows.OutputListener;
  *
  * @author  Milos Kleint (ca206216@tiscali.cz)
  */
-public class AnnouncementOutputListenerProvider extends AbstractOutputListenerProvider {
-    private static final Log logger = LogFactory.getLog(AnnouncementOutputListenerProvider.class);
+public class JavaOutputListenerProvider extends AbstractOutputProcessor {
+    private static final Log logger = LogFactory.getLog(JavaOutputListenerProvider.class);
     
-    private static final String[] ANNOUNCEGOALS = new String[] {
-        "announcement:generate:",
-        "announcement:generate-all:"
+    private static final String[] JAVAGOALS = new String[] {
+        "java:compile:",
+        "test:compile"
     };
     private Pattern failPattern;
     private MavenProject project;
     
     /** Creates a new instance of TestOutputListenerProvider */
-    public AnnouncementOutputListenerProvider(MavenProject proj) {
-        failPattern = failPattern.compile(".*\\[echo\\] Generating announcement for .* in (.*)\\.\\.\\.");
+    public JavaOutputListenerProvider(MavenProject proj) {
+        failPattern = failPattern.compile("(.*)\\.java\\:([0-9]*)\\: (.*)");
         project = proj;
     }
     
     protected String[] getWatchedGoals() {
-        return ANNOUNCEGOALS;
+        return JAVAGOALS;
     }
     
-    public OutputListener recognizeLine(String line) {
+    public void processLine(String line, OutputVisitor visitor) {
         if (isInWatchedGoals(line)) {
             Matcher match = failPattern.matcher(line);
             if (match.matches()) {
-                String file = match.group(1);
+                String clazz = match.group(1);
+                String lineNum = match.group(2);
                 //TODO just one instance and reuse..
-                return new AnnOutputListener(project, file);
+                visitor.setOutputListener(new JavaOutputListener(project, clazz, lineNum));
             }
         }
-        return null;
     }
     
-    private static class AnnOutputListener implements OutputListener {
+    private static class JavaOutputListener implements OutputListener {
         private MavenProject project;
-        private File file;
-        public AnnOutputListener(MavenProject proj, String fileStr) {
-            file = new File(fileStr);
+        private File clazzfile;
+        private int lineNum;
+        public JavaOutputListener(MavenProject proj, String clazz, String line) {
+            clazzfile = new File(clazz + ".java");
             project = proj;
+            try {
+                lineNum = Integer.parseInt(line);
+            } catch (NumberFormatException exc) {
+                lineNum = -1;
+            }
         }
         /** Called when a line is selected.
          * @param ev the event describing the line
@@ -88,16 +96,29 @@ public class AnnouncementOutputListenerProvider extends AbstractOutputListenerPr
          * @param ev the event describing the line
          */
         public void outputLineAction(OutputEvent ev) {
-            FileObject fo = FileUtil.toFileObject(file);
-            if (fo == null) {
+            FileObject file = FileUtil.toFileObject(clazzfile);
+            if (file == null) {
                 Toolkit.getDefaultToolkit().beep();
                 return;
             }
             try {
-                DataObject dob = DataObject.find(fo);
-                OpenCookie ed = (OpenCookie) dob.getCookie(OpenCookie.class);
-                if (ed != null) {
-                    ed.open();
+                DataObject dob = DataObject.find(file);
+                EditorCookie ed = (EditorCookie) dob.getCookie(EditorCookie.class);
+                if (ed != null && file == dob.getPrimaryFile()) {
+                    if (lineNum == -1) {
+                        ed.open();
+                    } else {
+                        ed.openDocument();
+                        try {
+                            Line l = ed.getLineSet().getOriginal(lineNum - 1);
+                            if (! l.isDeleted()) {
+                                l.show(Line.SHOW_GOTO);
+                            }
+                        } catch (IndexOutOfBoundsException ioobe) {
+                            // Probably harmless. Bogus line number.
+                            ed.open();
+                        }
+                    }
                 } else {
                     Toolkit.getDefaultToolkit().beep();
                 }

@@ -15,51 +15,58 @@
  * =========================================================================
  */
 
-package org.mevenide.netbeans.project.exec;
+package org.mevenide.netbeans.project.output;
 
+import java.io.File;
 import junit.framework.*;
+import org.mevenide.netbeans.project.output.JavaOutputListenerProvider;
 
 /**
  *
  * @author  Milos Kleint (ca206216@tiscali.cz)
  */
-public class TestOutputListenerProviderTest extends TestCase {
-    private TestOutputListenerProvider provider;
-    public TestOutputListenerProviderTest(java.lang.String testName) {
+public class ViewInBrowseProcessorTest extends TestCase {
+    private ViewInBrowseProcessor provider;
+    public ViewInBrowseProcessorTest(java.lang.String testName) {
         super(testName);
     }
     
     public static Test suite() {
-        TestSuite suite = new TestSuite(TestOutputListenerProviderTest.class);
+        TestSuite suite = new TestSuite(JavaOutputListenerProviderTest.class);
         return suite;
     }
 
     protected void setUp() throws java.lang.Exception {
-        provider = new TestOutputListenerProvider(null);
     }
 
     protected void tearDown() throws java.lang.Exception {
     }
 
     public void testIsInWatchedGoals() throws Exception {
+        provider = new ViewInBrowseProcessor(new String[] {"site:"}, new File("/home"), "question", 10);
         assertFalse(provider.isInWatchedGoals("   hello"));
-        assertFalse(provider.isInWatchedGoals("test:single"));
+        assertFalse(provider.isInWatchedGoals("java:compile"));
         assertFalse(provider.isInWatchedGoals(" test:single:"));
-        assertTrue(provider.isInWatchedGoals("test:single:"));
+        assertTrue(provider.isInWatchedGoals("site:"));
         assertTrue(provider.isInWatchedGoals("   hello"));
         assertTrue(provider.isInWatchedGoals("untest:my"));
         assertTrue(provider.isInWatchedGoals(" untest:my"));
         assertFalse(provider.isInWatchedGoals("untest:my:"));
         assertFalse(provider.isInWatchedGoals(" hello"));
     }
+
     
-    public void testRecognizeLine() {
-        assertNull(provider.recognizeLine("test:test:"));
-        assertNull(provider.recognizeLine("    [junit] Running org.mevenide.netbeans.project.nodes.DirScannerSubClassTest"));
-        assertNull(provider.recognizeLine("    [junit] Tests run: 1, Failures: 0, Errors: 0, Time elapsed: 0.586 sec"));
-        assertNull(provider.recognizeLine("    [junit] Running org.mevenide.netbeans.project.exec.TestOutputListenerProviderTest"));
-        assertNull(provider.recognizeLine("    [junit] Tests run: 1, Failures: 1, Errors: 0, Time elapsed: 0.027 sec"));
-        assertNotNull(provider.recognizeLine("    [junit] [ERROR] TEST org.mevenide.netbeans.project.exec.TestOutputListenerProviderTest FAILED        "));
+    public void testIsInWatchedGoals2() throws Exception {
+        provider = new ViewInBrowseProcessor(new String[] {"maven-javadoc-plugin:report:"}, new File("/home"), "question", 10);
+        assertFalse(provider.isInWatchedGoals("   hello"));
+        assertFalse(provider.isInWatchedGoals("java:compile"));
+        assertFalse(provider.isInWatchedGoals(" test:single:"));
+        assertTrue(provider.isInWatchedGoals("maven-javadoc-plugin:report:"));
+        assertTrue(provider.isInWatchedGoals("   hello"));
+        assertTrue(provider.isInWatchedGoals("untest:my"));
+        assertTrue(provider.isInWatchedGoals(" untest:my"));
+        assertFalse(provider.isInWatchedGoals("untest:my:"));
+        assertFalse(provider.isInWatchedGoals(" hello"));
     }
     
 }

@@ -63,7 +63,10 @@ public class MavenForBinaryQueryImpl implements SourceForBinaryQueryImplementati
      */   
     public SourceForBinaryQuery.Result findSourceRoots(URL url) {
         logger.debug("MavenSourceForBinaryQueryImpl project=" + project.getDisplayName() + "url=" + url);
-        return new BinResult(url);
+        if (url.getProtocol().equals("jar")) {
+            return new BinResult(url);
+        }
+        return null;
     }
     
     /**
