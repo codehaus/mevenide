@@ -31,4 +31,4 @@ maven-spinner-wiki-plugin maven-plugins/maven-spinner-wiki-plugin
 mevenide-update update/mevenide-update
 mevenide-feature update/mevenide-feature
 
-all -a goals-grabber mevenide-core mevenide-config mevenide-ui-eclipse mevenide-ui-eclipse-tests mevenide-ui-netbeans mevenide-netbeans-grammar mevenide-master maven-nbm-plugin maven-eclipse-plugin-plugin maven-spinner-wiki-plugin mevenide-update mevenide-feature mevenide-netbeans-deps mevenide-grammar
+all -a goals-grabber mevenide-core mevenide-config mevenide-ui-eclipse mevenide-ui-eclipse-tests mevenide-ui-netbeans mevenide-netbeans-grammar mevenide-master maven-nbm-plugin maven-eclipse-plugin-plugin maven-spinner-wiki-plugin mevenide-update mevenide-feature mevenide-netbeans-deps mevenide-grammar mevenide-netbeans-projects
