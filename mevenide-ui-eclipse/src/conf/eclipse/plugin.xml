@@ -170,7 +170,7 @@
     </extension>
 
    <!-- Maven nature -->
-   <!-- extension
+   <extension
          id="mavennature"
          name="maven nature"
          point="org.eclipse.core.resources.natures">
@@ -197,7 +197,7 @@
                 id="org.mevenide.maven.build">
         </action>
       </actionSet>
-    </extension -->
+    </extension>
     
    <!-- Maven actions -->
    <extension
@@ -247,7 +247,7 @@
             objectClass="org.eclipse.core.resources.IProject"
             adaptable="true"
             id="maven.plugin.project.xml.contribution.iproject">
-         <!-- action
+         <action
                enablesFor="1"
                label="%AddMavenNature.label"
                tooltip="%AddMavenNature.tooltip"
@@ -272,7 +272,7 @@
                  <objectState name="projectNature" 
                              value="org.mevenide.ui.mavennature"/>
                </enablement>
-         </action -->
+         </action>
       </objectContribution>
       <!-- project.xml contributions -->
       <objectContribution 
@@ -401,7 +401,7 @@
       </editor>
    </extension>
    <!-- Custom action definition -->
-   <!-- extension point="org.eclipse.debug.ui.launchConfigurationTabGroups">
+   <extension point="org.eclipse.debug.ui.launchConfigurationTabGroups">
       <launchConfigurationTabGroup type="org.mevenide.ui.launching.ActionDefinitionConfigType" 
                                    class="org.mevenide.ui.eclipse.nature.CustomActionTabGroup" 
                                    id="org.mevenide.ui.launching.ActionDefinitionTabGroup">
@@ -416,7 +416,7 @@
          mode="run"
          id="org.mevenide.ui.launching.custom.LaunchGroup">
  		</launchGroup>
-   </extension -->
+   </extension>
    <!-- Maven launcher configuration type -->
    <extension point="org.eclipse.debug.core.launchConfigurationTypes">
       <launchConfigurationType
