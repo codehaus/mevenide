@@ -70,6 +70,43 @@
   		</table>
   		</div>
   	</section>
+  	<section name="Secondary Goals">
+  		<div id="documentContent">
+  		<table>
+  		  <tr>
+  		  	<th>Goal</th>
+  		  	<th>Description</th>
+  		  </tr>	
+  		  <tr>
+            <td>nbm:prepare-nbm-resources</td>
+            <td>
+<p>            This goal is a prerequisite of nbm:nbm, it copies all the required resources into
+            the <code><![CDATA[${maven.nbm.build.dir}/netbeans]]></code> file structure which is later used to
+            build the nbm file. By default copies the netbeans module jar and all the jars specified by the
+            Class-Path: manifest attribute. This goal can be used in the custom maven.xml scripts
+            to copy additional resources that should be included into the nbm.
+</p>
+            </td>
+          </tr>
+  		  <tr>
+            <td>nbm:install</td>
+            <td>
+<p> Installs the NBM and the jar with netbeans enhanced manifest attributes into the local repository.
+</p>
+            </td>
+          </tr>
+  		  <tr>
+            <td>nbm:collect-nbms</td>
+            <td>
+<p> Collects all the project's NBM files (the primary artifact and also possible generated NBMs for the dependencies.
+Default target location is <code><![CDATA[${maven.build.dir}/nbm_release]]></code> directory. That location is later used by the <code>nbm:autoupdate</code> goal to 
+create the autoupdate server file structure.
+</p>
+            </td>
+          </tr>
+  		</table>
+  		</div>
+  	</section>
   	
   </body>
 </document>

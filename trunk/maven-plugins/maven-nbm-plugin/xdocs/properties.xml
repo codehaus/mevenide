@@ -47,9 +47,11 @@ OpenIDE-Module-Specification-Version: normalized version of ${pom.currentVersion
         </tr>
         <tr>
           <td>maven.nbm.requiresrestart</td>
-          <td><p>Optional. Default value is <code>true</code>.</p></td>
+          <td><p>Optional. Default value is <code>false</code>.</p>
+          <p>In version 0.1 the default was true, incompatible change.</p></td>
           <td>
-            <p>If true, the application restarts after installation of the module.</p>
+            <p>If true, the application restarts after installation of the module. Required generally only when
+            the nbm includes files in netbeans/lib subfolder. (AFAIK)</p>
           </td>
         </tr>
         <tr>
@@ -152,6 +154,8 @@ OpenIDE-Module-Specification-Version: normalized version of ${pom.currentVersion
    	<div id="documentContent">
     <p> These properties are related to the signing of the NBM. You should sign NBMs you release.
     Otherwise the user will be forced to accept a non-signed NBM.</p>
+    <p>See help for jarsigner and keystore executables located in the jdk's bin directory. 
+    These are used to generate the keys and signing the jars. </p>
      <table>
      	<tr>
           <th>Property</th>
@@ -172,6 +176,8 @@ OpenIDE-Module-Specification-Version: normalized version of ${pom.currentVersion
           <p>Optional. Since 0.2. Default value is <code>?</code>.</p>
           </td>
           <td>
+           Contains the password for the signing of the nbm, you probably want to include it
+           in your $HOME/build.properties file.
           </td>
         </tr>
         <tr>
@@ -180,6 +186,7 @@ OpenIDE-Module-Specification-Version: normalized version of ${pom.currentVersion
           <p>Optional. Since 0.2. Default value is <code>?</code>.</p>
           </td>
           <td>
+          
           </td>
         </tr>
         
