@@ -17,9 +17,11 @@
 
      constraints :
      o need to override maven.final.name ?
-     o need to provide jar with no manifest
+     o need to provide jar with no manifest => Zip
      o site should be outputted as a zip as well (local site)
-     o help can come as raw xdoc or ready html files
+     o help can come as raw xdoc or ready html files 
+	     => by default maven.pde.help.generation = false
+	     			   maven.pde.help.targetPath = ???
 
 	 dependency resolution can be : 
 	 1> based on plugin.xml if present
@@ -28,7 +30,7 @@
 	 
 	 choose to not support 2 - rationale : pom duplication
 	 => default is 3 (pom) can be overriden : maven.pde.classpath.resolution = pom | plugin
-	 
+	 if 1 (plugin) then no plugin.xml generation should occur (what about version update ?)
 
      f> feature
 
