@@ -74,4 +74,21 @@ public final class SourceDirectoryUtil {
 		
 	}
 	
+	public static String stripBasedir(String strg) {
+		if ( "${basedir}".equals(strg) || "${basedir}/".equals(strg) || "${basedir}\\".equals(strg) ) {
+			return strg;
+		}
+		String result = stripHeadingString(strg, "${basedir}/");
+		result = stripHeadingString(result, "${basedir}\\");
+		result = stripHeadingString(result, "${basedir}");
+		return result;
+	}
+
+	private static String stripHeadingString(String strg, String headingString) {
+		if ( strg.startsWith(headingString) ) {
+			strg = strg.substring(headingString.length());
+	    }
+		return strg;
+	}
+	
 }

@@ -21,8 +21,8 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Resource;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.ui.views.properties.IPropertySource;
+import org.mevenide.project.source.SourceDirectoryUtil;
 import org.mevenide.ui.eclipse.editors.properties.ResourcePropertySource;
-import org.mevenide.ui.eclipse.util.SourceDirectoryTypeUtil;
 import org.mevenide.util.MevenideUtils;
 
 
@@ -61,13 +61,13 @@ public class DirectoryMappingNode extends AbstractArtifactMappingNode {
    
     public String getLabel() {
     	if ( resolvedArtifact != null ) {
-            return SourceDirectoryTypeUtil.stripBasedir(((Directory) resolvedArtifact).getDisplayPath());
+            return SourceDirectoryUtil.stripBasedir(((Directory) resolvedArtifact).getDisplayPath());
         }
         if ( artifact instanceof Resource ) {
-            return SourceDirectoryTypeUtil.stripBasedir(((Resource) artifact).getDirectory());
+            return SourceDirectoryUtil.stripBasedir(((Resource) artifact).getDirectory());
         }
         if ( artifact instanceof Directory ) {
-            return SourceDirectoryTypeUtil.stripBasedir(((Directory) artifact).getDisplayPath());   
+            return SourceDirectoryUtil.stripBasedir(((Directory) artifact).getDisplayPath());   
         }
         return "Unresolved";
     }
