@@ -21,7 +21,6 @@
   <property category="optimize.0" name="oicc.FilterFile" value="mevenide-ui-jbuilder.oif"/>
   <property category="optimize.0" name="oipr.DisableMemoryProfiler" value="1"/>
   <property category="optimize.0" name="oipr.FilterFile" value="mevenide-ui-jbuilder.oif"/>
-  <property category="runtime" name="ConfigurationCount" value="1"/>
   <property category="runtime" name="DefaultConfiguration" value="-1"/>
   <property category="runtime.0" name="BuildTargetOnRun" value="com.borland.jbuilder.build.ProjectBuilder$ProjectBuildAction;make"/>
   <property category="runtime.0" name="ConfigurationName" value="Default (without Maven goal)"/>
@@ -53,7 +52,7 @@
   <property category="sys" name="InstanceVisibility" value="0"/>
   <property category="sys" name="JDK" value="java version 1.4.2_03-117.1"/>
   <property category="sys" name="LastTag" value="0"/>
-  <property category="sys" name="Libraries" value="Open Tools SDK;ant-1.5.3-1;commons-collections-2.1;commons-lang-1.0.1;commons-logging-1.0.1;goals-grabber-0.4-SNAPSHOT;log4j-1.2.7;maven-1.0;maven-findbugs-plugin-1.0-SNAPSHOT;mevenide-config-0.4-SNAPSHOT;mevenide-core-0.3-SNAPSHOT;xml-apis-1.0.b2;xpp3-1.1.2a"/>
+  <property category="sys" name="Libraries" value="Open Tools SDK;ant-1.5.3-1;commons-collections-2.1;commons-lang-1.0.1;commons-logging-1.0.1;goals-grabber-0.4-SNAPSHOT;log4j-1.2.7;maven-1.0;maven-findbugs-plugin-1.0-SNAPSHOT;mevenide-config-0.4-SNAPSHOT;mevenide-core-0.3-SNAPSHOT;xml-apis-1.0.b2;xpp3-1.1.2a;jdom-1.0b8"/>
   <property category="sys" name="MakeStable" value="0"/>
   <property category="sys" name="OutPath" value="target/classes"/>
   <property category="sys" name="SourcePath" value="src/java;test"/>
