@@ -173,12 +173,7 @@ public class MavenArgumentsTab extends AbstractLaunchConfigurationTab  {
 			
 			optionButton.setText(OptionsRegistry.getRegistry().getDescription(option));
 			optionButton.setToolTipText(new StringBuffer(" -").append(option).toString()); //$NON-NLS-1$
-			if ( optionsMap.get(new Character(option)) != null && ((Boolean)optionsMap.get(new Character(option))).booleanValue() ) {
-			    optionButton.setSelection(true);
-			}
-			else {
-			    optionButton.setSelection(false);
-			}
+			
 			optionsButtons.put(new Character(option), optionButton);			
 
 
