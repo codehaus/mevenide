@@ -14,12 +14,12 @@
  *  limitations under the License.
  * =========================================================================
  */
-package org.codehaus.mevenide.pde;
+package org.codehaus.mevenide.pde.classpath;
 
-import java.io.File;
-import junit.framework.TestCase;
+import java.util.Collection;
 import org.apache.maven.plugin.PluginExecutionRequest;
 import org.apache.maven.plugin.PluginExecutionResponse;
+import org.codehaus.mevenide.pde.EclipseArtifactMojo;
 
 
 /**  
@@ -28,33 +28,12 @@ import org.apache.maven.plugin.PluginExecutionResponse;
  * @version $Id$
  * 
  */
-public abstract class EclipseArtifactMojoTest extends TestCase {
+public class PluginClasspathInitializer extends EclipseArtifactMojo {
     
-    protected EclipseArtifactMojo mojo;
-    
-    private File eclipseHome;
-    
-    
-    protected void setUp() throws Exception {
-        super.setUp();
-        mojo = getMojo() == null ? newMojoStub() : getMojo();
-        eclipseHome = new File(getClass().getResource("/eclipse.home").getFile());
-        mojo.eclipseHome = eclipseHome;
+    public void execute(PluginExecutionRequest request, PluginExecutionResponse response) throws Exception {
+        initialize(request);
+        Collection eclipseDependencies = new PluginClasspathResolver(basedir, eclipseHome.getAbsolutePath()).extractEclipseDependencies();
+        project.getArtifacts().addAll(eclipseDependencies);
     }
 
-    protected abstract EclipseArtifactMojo getMojo();
-    
-    protected EclipseArtifactMojo newMojoStub() {
-        mojo = new EclipseArtifactMojo() { 
-            public void execute(PluginExecutionRequest arg0, PluginExecutionResponse arg1) throws Exception { }
-        };
-        return mojo;
-    }
-    
-    protected void tearDown() throws Exception {
-        super.tearDown();
-        mojo = null;
-    }
-    
 }
-

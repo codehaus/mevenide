@@ -19,6 +19,7 @@ package org.codehaus.mevenide.pde;
 import java.io.File;
 import org.apache.maven.plugin.Plugin;
 import org.apache.maven.plugin.PluginExecutionRequest;
+import org.apache.maven.project.MavenProject;
 import org.codehaus.mevenide.pde.verifier.CompatibilityChecker;
 
 
@@ -47,6 +48,8 @@ public abstract class EclipseArtifactMojo implements Plugin {
     /** base working directory */
     protected File basedir;
     
+    /** project model */
+    protected MavenProject project;
     
     /**
      * extract common parameters from request
@@ -71,5 +74,7 @@ public abstract class EclipseArtifactMojo implements Plugin {
         
         String workspaceLocation = (String) request.getParameter("outputDirectory");
         workspace = new File(workspaceLocation);
+        
+        project = (MavenProject) request.getParameter( "project" );
     }
 }
