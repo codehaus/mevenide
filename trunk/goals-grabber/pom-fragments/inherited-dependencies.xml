@@ -3,6 +3,9 @@
             <artifactId>commons-logging</artifactId>
             <version>1.0.1</version>
             <type>jar</type>
+            <properties>
+                <netbeans.module.dep>spec</netbeans.module.dep>
+            </properties>
         </dependency>
         <dependency>
             <groupId>commons-lang</groupId>

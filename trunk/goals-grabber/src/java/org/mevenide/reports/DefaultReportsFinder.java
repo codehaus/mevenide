@@ -27,8 +27,8 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import org.mevenide.environment.ConfigUtils;
 
-import org.mevenide.Environment;
 import org.mevenide.project.dependency.DependencySplitter;
 
 
@@ -67,7 +67,7 @@ public class DefaultReportsFinder implements IReportsFinder {
 	
 	public String[] findReports() throws Exception {
 		String searchedString = "<doc:registerReport";
-		File pluginsDir = new File(Environment.getMavenPluginsInstallDir());
+		File pluginsDir = new File(ConfigUtils.getDefaultLocationFinder().getMavenPluginsDir());
 		String[] pluginsContainingRegisterReport = grep(searchedString, pluginsDir);
 		for (int i = 0; i < pluginsContainingRegisterReport.length; i++) {
 			DependencySplitter splitter = new DependencySplitter(pluginsContainingRegisterReport[i]);

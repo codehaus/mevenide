@@ -23,6 +23,7 @@ import java.util.HashSet;
 import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.mevenide.environment.ConfigUtils;
 import org.mevenide.environment.CustomLocationFinder;
 import org.mevenide.environment.ILocationFinder;
 import org.mevenide.environment.LocationFinderAggregator;
@@ -46,7 +47,7 @@ public class NbTagLibProvider implements TagLibProvider {
     private MavenTagLibProvider mavenProvider;
     /** Creates a new instance of NbTagLibProvider */
     public NbTagLibProvider() {
-        dynaTagFile = new File(getLocFinder().getMavenPluginsDir(), "dynatag.cache");
+        dynaTagFile = new File(ConfigUtils.getDefaultLocationFinder().getMavenPluginsDir(), "dynatag.cache");
         mavenProvider = new MavenTagLibProvider(dynaTagFile);
     }
     
@@ -98,28 +99,4 @@ public class NbTagLibProvider implements TagLibProvider {
         return toReturn;
         
     }
-    
-    private static ILocationFinder aggregator = null;
-    
-    /**
-     * kind of temporary, not sure if it should be made effective dir aware or not.
-     * Maybe there also should be some kind of singleton instance - better instantiated maybe.
-     */
-    private ILocationFinder getLocFinder() {
-        if (aggregator == null) {
-            CustomLocationFinder finder = new CustomLocationFinder();
-            String userHome = System.getProperty("user.home");
-            File userHomeFile = new File(userHome);
-            finder.setMavenLocalHome(new File(userHomeFile, ".maven").getAbsolutePath());
-            finder.setMavenPluginsDir(new File(finder.getMavenLocalHome(), "plugins").getAbsolutePath());
-            aggregator = new LocationFinderAggregator();
-            ((LocationFinderAggregator)aggregator).setCustomLocationFinder(finder);
-        }
-        return aggregator;
-    }
-    
-    private String getPluginDir() {
-        return getLocFinder().getMavenPluginsDir();
-    }    
-    
 }

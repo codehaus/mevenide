@@ -20,7 +20,6 @@ import java.io.File;
 
 import junit.framework.TestCase;
 
-import org.mevenide.Environment;
 
 /**
  * 
@@ -94,8 +93,9 @@ final class MyAbstractRunnerStub extends AbstractRunnerStub {
 	} 
 	
 	protected void initEnvironment() {
-		Environment.setMavenHome(System.getProperty("maven.home")); 
-		Environment.setJavaHome(System.getProperty("java.home"));
+        //MILOS: not needed anymore, is done in abstracttestcase setup..
+//		Environment.setMavenHome(System.getProperty("maven.home")); 
+//		Environment.setJavaHome(System.getProperty("java.home"));
 	}
 		
 	protected void launchVM(String[] options, String[] goals) throws Exception {

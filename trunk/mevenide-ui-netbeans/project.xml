@@ -18,23 +18,46 @@
         <groupId>mevenide</groupId>
         <artifactId>goals-grabber</artifactId>
         <version>0.1.1-SNAPSHOT</version>
+            <properties>
+                <netbeans.module.dep>spec</netbeans.module.dep>
+            </properties>
     </dependency>
     <dependency>     
         <groupId>mevenide</groupId>
         <artifactId>mevenide-core</artifactId>
         <version>0.1.1-SNAPSHOT</version>
+            <properties>
+                <netbeans.module.dep>spec</netbeans.module.dep>
+            </properties>
     </dependency>
     <dependency>
         <groupId>mevenide</groupId>
         <artifactId>mevenide-config</artifactId>
         <version>0.1-SNAPSHOT</version>
+            <properties>
+                <netbeans.module.dep>spec</netbeans.module.dep>
+            </properties>
     </dependency>
     <dependency>     
         <groupId>maven</groupId>
         <artifactId>maven</artifactId>
         <version>1.0-rc1</version>
+        <type>jar</type>
+        <properties>
+            <netbeans.module.dep>spec</netbeans.module.dep>
+        </properties>
     </dependency>
-    
+        <!-- a runtime dependency for netbeans, will include all the maven related jars on classpath -->
+<!--        <dependency>
+            <groupId>mevenide</groupId>
+            <artifactId>maven-nb-module</artifactId>
+            <version>1.0-RC1</version>
+            <type>jar</type>
+            <properties>
+                <netbeans.module.dep>spec</netbeans.module.dep>
+            </properties>
+        </dependency>
+    -->        
     &netbeans-dependencies;
     
     <dependency>
@@ -42,8 +65,12 @@
         <artifactId>commons-logging</artifactId>
         <version>1.0.1</version>
         <type>jar</type>
+        <properties>
+             <netbeans.module.dep>spec</netbeans.module.dep>
+        </properties>
     </dependency>
     <dependency>
+        <!-- for netbeans part of maven module -->
         <groupId>commons-discovery</groupId>
         <artifactId>commons-discovery</artifactId>
         <version>0.1</version>

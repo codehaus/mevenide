@@ -20,7 +20,7 @@ import java.io.File;
 
 import org.apache.maven.project.Dependency;
 import org.mevenide.AbstractMevenideTestCase;
-import org.mevenide.Environment;
+import org.mevenide.environment.ConfigUtils;
 
 /**
  * 
@@ -38,7 +38,7 @@ public class DependencyFactoryTest extends AbstractMevenideTestCase{
 
     protected void setUp() throws Exception {
     	super.setUp();
-        String mavenRepo = Environment.getMavenLocalRepository();
+        String mavenRepo = ConfigUtils.getDefaultLocationFinder().getMavenLocalRepository();
 		File testArtifactDirectory = new File(mavenRepo, "mevenide"); 
 		testTypeDirectory = new File(testArtifactDirectory, "txts");
 		testTypeDirectory.mkdirs();
@@ -58,7 +58,7 @@ public class DependencyFactoryTest extends AbstractMevenideTestCase{
 		Dependency dep = dependencyFactory.getDependency(artefact.getAbsolutePath());
 		assertEquals("mevenide", dep.getGroupId());
 		
-		Environment.setMavenHome(System.getProperty("user.home"));
+//		Environment.setMavenHome(System.getProperty("user.home"));
 		dep = dependencyFactory.getDependency(artefact.getAbsolutePath());
 		
 		assertEquals("mevenide", dep.getGroupId());
@@ -115,7 +115,7 @@ public class DependencyFactoryTest extends AbstractMevenideTestCase{
 		assertEquals("testo", dep.getArtifactId());
 		
 		
-		File httpClientRepo = new File(Environment.getMavenLocalRepository(), "commons-httpclient");
+		File httpClientRepo = new File(ConfigUtils.getDefaultLocationFinder().getMavenLocalRepository(), "commons-httpclient");
 		File jarDir = new File(httpClientRepo, "jars");
 		jarDir.mkdirs();
 		dep = dependencyFactory.getDependency(new File(jarDir, "commons-httpclient-2.0alpha1-20020829.jar").getAbsolutePath());

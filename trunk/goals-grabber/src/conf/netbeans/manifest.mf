@@ -1,6 +1,4 @@
 Manifest-Version: 1.0
-OpenIDE-Module: org.mevenide.goalsgrabber/1
 OpenIDE-Module-Localizing-Bundle: org/mevenide/goals/Bundle.properties
 OpenIDE-Module-IDE-Dependencies: IDE/1 > 3.40
-OpenIDE-Module-Module-Dependencies: org.mevenide.core/1 > 0.1.1
 

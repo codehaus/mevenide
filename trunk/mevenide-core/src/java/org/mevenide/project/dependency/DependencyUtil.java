@@ -25,7 +25,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Dependency;
 import org.apache.maven.project.Project;
-import org.mevenide.Environment;
+import org.mevenide.environment.ConfigUtils;
 import org.mevenide.util.StringUtils;
 
 /**
@@ -64,7 +64,7 @@ public final class DependencyUtil {
 	}
 	
 	public static boolean isValidGroupId(final String groupId) {
-		File repo = new File(Environment.getMavenLocalRepository());
+		File repo = new File(ConfigUtils.getDefaultLocationFinder().getMavenLocalRepository());
 		File[] children = repo.listFiles(new FileFilter() {
 			public boolean accept(File pathname) {
 				return pathname.isDirectory() && pathname.getName().equals(groupId);

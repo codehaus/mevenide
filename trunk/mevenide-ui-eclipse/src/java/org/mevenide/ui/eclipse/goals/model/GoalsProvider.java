@@ -20,7 +20,6 @@ import java.io.File;
 
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.mevenide.Environment;
 import org.mevenide.goals.grabber.IGoalsGrabber;
 import org.mevenide.goals.manager.GoalsGrabbersManager;
 import org.mevenide.ui.eclipse.Mevenide;
@@ -43,7 +42,8 @@ public class GoalsProvider implements ITreeContentProvider {
     public void setBasedir(String basedir) throws Exception {
         this.basedir = basedir;
 		String mavenLocalHome = Mevenide.getPlugin().getMavenLocalHome();
-		Environment.setMavenLocalHome(mavenLocalHome);
+// MILOS: as I understand it, the Mevenide class should set the ILocationFinder value.. no need to reset..
+//		Environment.setMavenLocalHome(mavenLocalHome);
         goalsGrabber = GoalsGrabbersManager.getGoalsGrabber(new File(basedir, "project.xml").getAbsolutePath());
     }
 

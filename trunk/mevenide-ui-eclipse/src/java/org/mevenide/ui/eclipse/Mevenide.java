@@ -45,7 +45,9 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.mevenide.Environment;
+import org.mevenide.environment.ConfigUtils;
+import org.mevenide.environment.CustomLocationFinder;
+import org.mevenide.environment.LocationFinderAggregator;
 import org.mevenide.runner.RunnerHelper;
 import org.mevenide.ui.eclipse.util.FileUtils;
 
@@ -85,6 +87,7 @@ public class Mevenide extends AbstractUIPlugin {
     private String pomTemplate;
     private boolean checkTimestamp;
 	private String defaultGoals;
+    private CustomLocationFinder customLocationFinder;
 
 
     /// initialization methods ---
@@ -283,12 +286,15 @@ public class Mevenide extends AbstractUIPlugin {
 	 * should not be necessary since the setters already take care of configuring the environment.
 	 */
 	public void initEnvironment() {
-		Environment.setMavenHome(getMavenHome()); 
-		Environment.setJavaHome(getJavaHome());
-		Environment.setMavenLocalRepository(getMavenRepository());
-		Environment.setMavenPluginsInstallDir(getPluginsInstallDir());
-		Environment.setMavenLocalHome(getMavenLocalHome());
-		Environment.setHeapSize(getHeapSize());
+        customLocationFinder = new CustomLocationFinder();
+        customLocationFinder.setJavaHome(getJavaHome());
+        customLocationFinder.setMavenHome(getMavenHome());
+        customLocationFinder.setMavenLocalRepository(getMavenRepository());
+        customLocationFinder.setMavenPluginsDir(getPluginsInstallDir());
+		customLocationFinder.setMavenLocalHome(getMavenLocalHome());
+        ((LocationFinderAggregator)ConfigUtils.getDefaultLocationFinder()).setCustomLocationFinder(customLocationFinder);
+//TODO Milos: what to do with HeapSize, not in ILocationFinder..
+//		Environment.setHeapSize(getHeapSize());
 		RunnerHelper.setHelper(
 			new RunnerHelper() {
 				private String foreHead = null;
@@ -340,21 +346,21 @@ public class Mevenide extends AbstractUIPlugin {
     }
     public void setJavaHome(String javaHome) {
         this.javaHome = javaHome;
-		Environment.setJavaHome(javaHome);
+		customLocationFinder.setJavaHome(javaHome);
     }
     public String getMavenHome() {
         return mavenHome;
     }
     public void setMavenHome(String mavenHome) {
         this.mavenHome = mavenHome;
-		Environment.setMavenHome(mavenHome);
+		customLocationFinder.setMavenHome(mavenHome);
     }
 	public String getMavenRepository() {
 		return mavenRepository;
 	}
 	public void setMavenRepository(String mavenRepository) {
 		this.mavenRepository = mavenRepository;
-		Environment.setMavenLocalRepository(mavenRepository);
+		customLocationFinder.setMavenLocalRepository(mavenRepository);
 	}
 	public String getCurrentDir() {
 		return currentDir;
@@ -394,14 +400,15 @@ public class Mevenide extends AbstractUIPlugin {
     }
     public void setMavenLocalHome(String mavenLocalHome) {
         this.mavenLocalHome = mavenLocalHome;
-        Environment.setMavenLocalHome(mavenLocalHome);
+        customLocationFinder.setMavenLocalHome(mavenLocalHome);
     }
     public int getHeapSize() {
         return heapSize;
     }
     public void setHeapSize(int heapSize) {
         this.heapSize = heapSize;
-        Environment.setHeapSize(heapSize);
+//TODO milos: for now just ignoring.. should be sufficient to have in local var..        
+//        Environment.setHeapSize(heapSize);
     }
 
 }
