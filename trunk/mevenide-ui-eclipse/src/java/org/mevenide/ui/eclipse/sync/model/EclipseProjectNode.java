@@ -22,14 +22,10 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.maven.repository.Artifact;
-import org.apache.maven.repository.DefaultArtifactFactory;
-import org.apache.maven.project.Dependency;
 import org.apache.maven.project.Project;
+import org.apache.maven.repository.Artifact;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
@@ -38,13 +34,11 @@ import org.eclipse.jdt.internal.core.ClasspathEntry;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.ui.PlatformUI;
-import org.mevenide.project.dependency.DependencyFactory;
-import org.mevenide.project.io.ProjectReader;
 import org.mevenide.ui.eclipse.DefaultPathResolver;
 import org.mevenide.ui.eclipse.IPathResolver;
 import org.mevenide.ui.eclipse.sync.event.ISynchronizationNodeListener;
-import org.mevenide.ui.eclipse.util.JavaProjectUtils;
 import org.mevenide.ui.eclipse.util.FileUtils;
+import org.mevenide.ui.eclipse.util.JavaProjectUtils;
 
 /**  
  * 
@@ -105,6 +99,8 @@ public class EclipseProjectNode extends AbstractSynchronizationNode {
 	}
 	
 	//@todo we should also iterate eclipse projects we depend upon and add libraries that are exported
+	//@note not sure if this comment above makes sense : indeed is this not related to transitive dependencies
+	//that are not supported yet ?
 	private void initializeEclipseLibraries() throws Exception {
 		IClasspathEntry[] classpathEntries = JavaCore.create(eclipseProject).getResolvedClasspath(true);
 		
@@ -123,50 +119,12 @@ public class EclipseProjectNode extends AbstractSynchronizationNode {
 	private Artifact createArtifact(IClasspathEntry entry) throws Exception {
 		Artifact artifact = null;
 	    if ( entry.getEntryKind() == ClasspathEntry.CPE_LIBRARY ) {
-			artifact = createArtifactFromLibraryEntry(entry);
+			artifact = JavaProjectUtils.createArtifactFromLibraryEntry(eclipseProject, entry);
 		}
 		else {
-			artifact = createArtifactFromProjectEntry(entry);
+			artifact = JavaProjectUtils.createArtifactFromProjectEntry(eclipseProject, entry);
 		}
 		return artifact;
-	}
-
-	private Artifact createArtifactFromLibraryEntry(IClasspathEntry entry) throws Exception {
-		String path = entry.getPath().toOSString();
-		if ( !new File(path).exists() ) {
-			//not the best way to get the absoluteFile ... 
-			path = eclipseProject.getProject().getLocation().append(entry.getPath().removeFirstSegments(1)).toOSString();
-		}
-		Artifact artifact = DefaultArtifactFactory.createArtifact(DependencyFactory.getFactory().getDependency(path));
-		artifact.setPath(path);
-		
-		return artifact;
-	}
-
-	private Artifact createArtifactFromProjectEntry(IClasspathEntry entry) throws Exception {
-		Artifact artifact = null;
-		String path = entry.getPath().toOSString();
-	
-		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-		String projectName = getProjectName(path);
-		IProject referencedProject = root.getProject(projectName);
-		if ( !referencedProject.getName().equals(eclipseProject.getProject().getName()) ) {
-		    artifact = DefaultArtifactFactory.createArtifact(createDependencyFromProject(referencedProject));
-		}
-	
-		return artifact;
-	}
-
-	private String getProjectName(String projectBasedir) {
-		//crap..
-		String projectName ;
-		if ( projectBasedir.substring(1).indexOf('/') < 0 ) {
-			projectName = projectBasedir.substring(1);
-		}
-		else {
-			projectName = projectBasedir.substring(1, projectBasedir.substring(1).indexOf('/') + 1) ; 
-		}
-		return projectName;
 	}
 
 	private boolean isProjectMavenized(String projectBasedir) {
@@ -174,25 +132,6 @@ public class EclipseProjectNode extends AbstractSynchronizationNode {
 		log.debug("pom : " + pom.getAbsolutePath() + (pom.exists() ? " " : " not ") + "found");
 		return pom.exists();
 	}
-	
-	private Dependency createDependencyFromProject(IProject referencedProject) throws Exception {
-		if ( referencedProject.exists() )  {
-                
-            File referencedPom = FileUtils.getPom(referencedProject);
-            //check if referencedPom exists, tho it should since we just have created it
-
-            if ( !referencedPom.exists() ) {
-                FileUtils.createPom(referencedProject);
-            }
-            ProjectReader reader = ProjectReader.getReader();
-            Dependency dependency = reader.extractDependency(referencedPom);
-            dependency.addProperty("eclipse.dependency:true");
-            dependency.resolvedProperties().put("eclipse.dependency", "true");
-            return dependency;
-        }
-		return null;
-	}
-
 	
 	private boolean isValidEntry(IClasspathEntry entry) throws Exception {
 		IPathResolver pathResolver = new DefaultPathResolver();

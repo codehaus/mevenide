@@ -72,6 +72,8 @@ public abstract class ArtifactNode extends AbstractSynchronizationNode implement
 	
 	public abstract void removeFrom(Project project) throws Exception;
 	
+	public abstract boolean equivalentEntry(IClasspathEntry entry);
+	
 	protected void addClasspathEntry(IClasspathEntry newEntry, IProject project) throws JavaModelException {
 		IJavaProject javaProject = (IJavaProject) JavaCore.create(project);
 		IClasspathEntry[] cpEntries = javaProject.getRawClasspath();

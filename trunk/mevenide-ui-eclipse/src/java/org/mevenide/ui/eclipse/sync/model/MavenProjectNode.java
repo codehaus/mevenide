@@ -273,11 +273,13 @@ public class MavenProjectNode extends AbstractSynchronizationNode implements ISe
 		return node;
 	}
 
-	//@todo include resourceNodes as well
+	
 	public ISynchronizationNode[] getChildren() {
-	    ISynchronizationNode[] children = new ISynchronizationNode[directoryNodes.length + artifactNodes.length];
-	    System.arraycopy(directoryNodes, 0, children, 0, directoryNodes.length);
-	    System.arraycopy(artifactNodes, 0, children, directoryNodes.length, artifactNodes.length);
+	    final int directoryNodesNumber = directoryNodes != null ? directoryNodes.length : 0;
+	    final int artifactNodesNumber = artifactNodes != null ? artifactNodes.length : 0;
+	    ISynchronizationNode[] children = new ISynchronizationNode[directoryNodesNumber + artifactNodesNumber];
+	    System.arraycopy(directoryNodes, 0, children, 0, directoryNodesNumber);
+	    System.arraycopy(artifactNodes, 0, children, directoryNodesNumber, artifactNodesNumber);
 	    return children;
 	}
 	

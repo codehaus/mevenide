@@ -23,9 +23,12 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Dependency;
+import org.apache.maven.repository.Artifact;
+import org.apache.maven.repository.DefaultArtifactFactory;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -36,6 +39,7 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.launching.JavaRuntime;
+import org.mevenide.project.dependency.DependencyFactory;
 import org.mevenide.project.io.ProjectReader;
 import org.mevenide.ui.eclipse.DefaultPathResolver;
 import org.mevenide.ui.eclipse.IPathResolver;
@@ -209,5 +213,61 @@ public class JavaProjectUtils {
     		resource = ResourcesPlugin.getWorkspace().getRoot().getFolder(defaultOuputFolder);
     	}
     	return resource;
+    }
+
+    public static Artifact createArtifactFromProjectEntry(IProject project, IClasspathEntry entry) throws Exception {
+    	Artifact artifact = null;
+    	String path = entry.getPath().toOSString();
+    
+    	IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+    	String projectName = getProjectName(path);
+    	IProject referencedProject = root.getProject(projectName);
+    	if ( !referencedProject.getName().equals(project.getProject().getName()) ) {
+    	    artifact = DefaultArtifactFactory.createArtifact(createDependencyFromProject(referencedProject));
+    	}
+    
+    	return artifact;
+    }
+
+    private static String getProjectName(String projectBasedir) {
+    	//crap..
+    	String projectName ;
+    	if ( projectBasedir.substring(1).indexOf('/') < 0 ) {
+    		projectName = projectBasedir.substring(1);
+    	}
+    	else {
+    		projectName = projectBasedir.substring(1, projectBasedir.substring(1).indexOf('/') + 1) ; 
+    	}
+    	return projectName;
+    }
+
+    private static Dependency createDependencyFromProject(IProject referencedProject) throws Exception {
+    	if ( referencedProject.exists() )  {
+                
+            File referencedPom = FileUtils.getPom(referencedProject);
+            //check if referencedPom exists, tho it should since we just have created it
+    
+            if ( !referencedPom.exists() ) {
+                FileUtils.createPom(referencedProject);
+            }
+            ProjectReader reader = ProjectReader.getReader();
+            Dependency dependency = reader.extractDependency(referencedPom);
+            dependency.addProperty("eclipse.dependency:true");
+            dependency.resolvedProperties().put("eclipse.dependency", "true");
+            return dependency;
+        }
+    	return null;
+    }
+
+    public static Artifact createArtifactFromLibraryEntry(IProject project, IClasspathEntry entry) throws Exception {
+    	String path = entry.getPath().toOSString();
+    	if ( !new File(path).exists() ) {
+    		//not the best way to get the absoluteFile ... 
+    		path = project.getProject().getLocation().append(entry.getPath().removeFirstSegments(1)).toOSString();
+    	}
+    	Artifact artifact = DefaultArtifactFactory.createArtifact(DependencyFactory.getFactory().getDependency(path));
+    	artifact.setPath(path);
+    	
+    	return artifact;
     }
 }
