@@ -37,6 +37,8 @@ public class ConfigUtils {
     /**
      * a default location finder, non-project based, just takes the system environment
      * and userdir based values into account.
+     * @deprecated don't use, doesn't take the project's properties into account. Instead
+     * create and keep an instance of LocatioFinderAgrregator created with IQueryContext of the project.
      */
     public static ILocationFinder getDefaultLocationFinder() {
         if (defaultLocFinder == null) {

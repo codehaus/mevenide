@@ -22,7 +22,7 @@ import org.mevenide.properties.resolver.PropertyResolverFactory;
 
 
 /**
- * 
+ * utility abstract superclass, implementing getResolver() and getPropertyValue() methods.
  * @author  <a href="mailto:ca206216@tiscali.cz">Milos Kleint</a>
  */
 public abstract class AbstractQueryContext implements IQueryContext {

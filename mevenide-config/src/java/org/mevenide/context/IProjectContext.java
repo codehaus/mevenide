@@ -28,7 +28,6 @@ import org.jdom.Element;
  * @author  <a href="mailto:ca206216@tiscali.cz">Milos Kleint</a>
  */
 
-//mkleint - the actual impl that's parsing the project.xml file needs to be defined in mevenide-core
 
 public interface IProjectContext
 {

@@ -39,45 +39,25 @@ public class LocationFinderAggregator implements ILocationFinder {
     
     private IQueryContext context;
     private IPropertyResolver resolver;
+
     /**
-     * Use the default context.
+     * Use the default context (non-project based) WARNING use just when you know what you are doing.
      */
-    public LocationFinderAggregator() {
+    LocationFinderAggregator() {
         this(DefaultQueryContext.getNonProjectContextInstance());
     }
     
+    /**
+     * default constructor for the aggregator
+     * @param queryContext the project's query context.
+     */
     public LocationFinderAggregator(IQueryContext queryContext) {
         sysEnvLocationFinder = SysEnvLocationFinder.getInstance();
         context = queryContext;
-        resolver = PropertyResolverFactory.getFactory().createContextBasedResolver(context);
-        //TODO - have a singleton instance of user home's properties..
-//        buildPropertiesLocationFinder = new BuildPropertiesLocationFinder(context);
-//        userRefinedPropertiesLocationFinder = new UserRefinedPropertiesLocationFinder(context);
-//        projectPropertiesLocationFinder = new ProjectPropertiesLocationFinder(context);
+        resolver = context.getResolver();
     }
     
-//    /**
-//     * @deprecated create the LocatioFinderAggregator with the IQueryContext constructor instead.
-//     * This workflow parses the properties files too often.
-//     */
-//    public void setEffectiveWorkingDirectory(String effectiveWorkingDirectory) {
-//        if (context != null) {
-//            throw new IllegalStateException("Possibly out-of-sych situation. Using IQueryContext and" + 
-//                                            "calling setEffectiveWorkingDirectory");
-//        }
-//        try {
-//	        userRefinedPropertiesLocationFinder = new UserRefinedPropertiesLocationFinder(effectiveWorkingDirectory);
-//        }
-//		catch ( Exception e ) { 
-//			log.debug("UserRefinedPropertiesLocationFinder not created", e);
-//		}
-//        try {
-//            projectPropertiesLocationFinder = new ProjectPropertiesLocationFinder(effectiveWorkingDirectory);
-//        }
-//		catch ( Exception e ) { 
-//			log.debug("ProjectPropertiesLocationFinder not created", e);
-//		}
-//    }
+
 
     public String getConfigurationFileLocation() {
         if ( getMavenHome() != null ) {
@@ -149,7 +129,5 @@ public class LocationFinderAggregator implements ILocationFinder {
         return userHome;
     }    
   
-//    public void setCustomLocationFinder(CustomLocationFinder customLocationFinder) {
-//        this.customLocationFinder = customLocationFinder;
-//    }
+
 }
