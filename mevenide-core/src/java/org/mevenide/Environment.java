@@ -164,7 +164,7 @@ public final class Environment {
 	 * @return maven plugins installation directory. default to mavenLocalHome/plugins if not set
 	 */
     public static String getMavenPluginsInstallDir() {
-    	if ( mavenPluginsInstallDir == null && mavenLocalHome != null ) {
+    	if ( mavenPluginsInstallDir == null && getMavenLocalHome() != null ) {
     		mavenPluginsInstallDir = new File(getMavenLocalHome(), "plugins").getAbsolutePath(); 
     	}
         return mavenPluginsInstallDir;
