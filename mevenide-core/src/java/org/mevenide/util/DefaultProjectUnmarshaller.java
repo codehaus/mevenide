@@ -104,6 +104,9 @@ public class DefaultProjectUnmarshaller {
                 else if (parser.getName().equals("name")) {
                     project.setName(parser.nextText());
                 }
+                else if (parser.getName().equals("logo")) {
+                    project.setLogo(parser.nextText());
+                }
                 else if (parser.getName().equals("currentVersion")) {
                     project.setCurrentVersion(parser.nextText());
                 }
