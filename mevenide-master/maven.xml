@@ -199,22 +199,24 @@
   	rather bad.. this is a hack since theres no support yet for transitive dependencies.
   -->
   <goal name="mevenide:prepare-dist">
-  	<!-- clean lib and dist directories -->
-  	<ant:delete dir="${basedir}/lib" quiet="true"/>
-  	<ant:delete dir="${basedir}/dist" quiet="true"/>
-  	
-  	<mevenide:getTransitiveDependencies var="transitiveDependencies"/>
-	<j:forEach var="dependency" items="${pom.dependencies}">
-	 <j:set var="isTransitive" value="false"/>
-  	  <j:if test="${!(dependency.groupId.equals('eclipse') || dependency.groupId.equals('mevenide') || dependency.groupId.startsWith('mock') || dependency.groupId.startsWith('junit'))}">
-  	  	<mevenide:isTransitiveDependency var="isTransitive" dependency="${dependency}" transitiveDependencies="${transitiveDependencies}"/>
-  	  	<j:if test="${isTransitive != 'true'}">
-  	  		
-  	  		<ant:copy file="${maven.repo.local}/${dependency.groupId}/${dependency.type}s/${dependency.artifactId}-${dependency.version}.${dependency.type}" 
-			 	   	  todir="lib"/>
-	  	</j:if>
-	  </j:if>
-	</j:forEach>
+    <!-- clean lib and dist directories -->
+    <ant:delete dir="${basedir}/lib" quiet="true"/>
+    <ant:delete dir="${basedir}/dist" quiet="true"/>
+
+    <mevenide:getTransitiveDependencies var="transitiveDependencies"/>
+    <j:if test="${!(empty transitiveDependencies)}">
+      <j:forEach var="dependency" items="${pom.dependencies}">
+        <j:set var="isTransitive" value="false"/>
+        <j:if test="${!(dependency.groupId.equals('eclipse') || dependency.groupId.equals('mevenide') || dependency.groupId.startsWith('mock') || dependency.groupId.startsWith('junit'))}">
+          <mevenide:isTransitiveDependency var="isTransitive" dependency="${dependency}" transitiveDependencies="${transitiveDependencies}"/>
+          <j:if test="${isTransitive != 'true'}">
+        
+            <ant:copy file="${maven.repo.local}/${dependency.groupId}/${dependency.type}s/${dependency.artifactId}-${dependency.version}.${dependency.type}" 
+                      todir="lib"/>
+          </j:if>
+        </j:if>
+      </j:forEach>
+    </j:if>
   </goal>
   
   
