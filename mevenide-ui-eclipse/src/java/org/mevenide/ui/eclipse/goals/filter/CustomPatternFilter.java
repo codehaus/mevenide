@@ -71,7 +71,7 @@ public class CustomPatternFilter extends ViewerFilter {
 	}
 	
 	public boolean select(Viewer viewer, Object parentElement, Object element) {
-	    log.debug("Custom fitlers are " + (shouldApply ? "enabled" : "disabled"));
+	    log.debug("Custom filters are " + (shouldApply ? "enabled" : "disabled"));
 	    if ( !shouldApply || !(element instanceof Element) ) {
 	        return true;
 	    }

@@ -145,7 +145,6 @@ public class MavenXmlOutlinePage extends Page implements IContentOutlinePage {
     	viewer.getTree().setLayoutData(gridData);
     	
     	globalGoalFilter.setGoalsGrabber(goalsProvider.getGoalsGrabber());
-    	goalOriginFilter.setFilterOriginPlugin(false);
     	
     	viewer.addFilter(globalGoalFilter);
     	viewer.addFilter(patternFilter);
@@ -215,13 +214,13 @@ public class MavenXmlOutlinePage extends Page implements IContentOutlinePage {
 		
 		filterOriginShortcutAction = new Action(null, Action.AS_CHECK_BOX) {
 			public void run() {
-				goalOriginFilter.setFilterOriginPlugin(isChecked());
+				goalOriginFilter.setEnable(isChecked());
 				setToolTipText(isChecked() ? "Show global goals" : "Hide global goals");
 				goalsViewer.refresh(false);
 			}
 		}; 
-		filterOriginShortcutAction.setChecked(true);
-		filterOriginShortcutAction.setToolTipText(filterOriginShortcutAction.isChecked() ? "Hide global goals" : "Show global goals");
+		filterOriginShortcutAction.setChecked(goalOriginFilter.isEnabled());
+		filterOriginShortcutAction.setToolTipText(filterOriginShortcutAction.isChecked() ? "Show global goals" : "Hide global goals");
 		filterOriginShortcutAction.setId(TOGGLE_FILTER_ORIGIN_ID);
 		filterOriginShortcutAction.setImageDescriptor(Mevenide.getImageDescriptor("filter_global_goals.gif"));
 		
