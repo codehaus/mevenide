@@ -101,11 +101,11 @@ public class DependencyMappingNodeContainerFactory {
 
 					IClasspathEntry classpathEntry = classpathEntries[i];
 					DependencyMappingNode node = createDependencyMappingNode(javaProject, classpathEntry);
-					//String ignoreLine = ((Dependency) node.getResolvedArtifact()).getGroupId() + ":" + ((Dependency) node.getResolvedArtifact()).getArtifactId(); 
-					//if ( !FileUtils.isArtifactIgnored(ignoreLine, javaProject.getProject()) ) {
-					node.setParent(con);
-					nodes.add(node);
-					//}
+					String ignoreLine = ((Dependency) node.getResolvedArtifact()).getGroupId() + ":" + ((Dependency) node.getResolvedArtifact()).getArtifactId();
+					if ( !FileUtils.isArtifactIgnored(ignoreLine, javaProject.getProject()) ) {
+						node.setParent(con);
+						nodes.add(node);
+					}
 				}
 			}
 			

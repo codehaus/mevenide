@@ -51,6 +51,9 @@ package org.mevenide.ui.eclipse.util;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.InputStream;
+import java.io.RandomAccessFile;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -159,7 +162,48 @@ public class FileUtils {
 		return file;	
 	}
 	
+	
+	public static List getIgnoredResources(Project project) {
+		try {
+			IFile file = assertIgnoreFileExists(project);
+			return getIgnoredResources(file);
+		} 
+		catch (Exception e) {
+			log.error("Cannot read ignored resources", e);
+			return new ArrayList();
+		}
+	}
+	
+	public static List getIgnoredResources(IProject project) {
+		try {
+			IFile file = assertIgnoreFileExists(project);
+			return getIgnoredResources(file);
+		} 
+		catch (Exception e) {
+			log.error("Cannot read ignored resources", e);
+			return new ArrayList();
+		} 
+	}
+	
+	private static List getIgnoredResources(IFile ignoredResourceFile) throws Exception {
+		List ignoredLines = new ArrayList();
+	
+		RandomAccessFile raf = new RandomAccessFile(ignoredResourceFile.getLocation().toOSString(), "r");
+		String line = null;
+		while ( (line = raf.readLine()) != null ) {
+			ignoredLines.add(line);
+		}
+		
+		return ignoredLines;
+	}
+	
 	public static  boolean isArtifactIgnored(String ignoreLine, IProject project) {
+		List ignoredResources = getIgnoredResources(project);
+		for ( int u = 0; u < ignoredResources.size(); u++ ) {
+			if ( ((String) ignoredResources.get(u)).equals(ignoreLine) ) {
+				return true;
+			}
+		}
 		return false;
 	}
 	
