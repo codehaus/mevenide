@@ -18,13 +18,13 @@ package org.mevenide.ui.eclipse.goals.filter;
 
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
 import org.eclipse.jface.viewers.ICheckStateListener;
+import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
@@ -54,7 +54,6 @@ import org.mevenide.ui.eclipse.preferences.PreferencesManager;
  */
 public class GoalFilterDialog extends Dialog {
 	
-	private static final String ORIGIN_FILTER_KEY = "mevenide.goals.outline.filter.origin";
 	private static final String GOAL_FILTER_MESSAGE = "...";
 	private static final String GOAL_FILTER_TITLE = "Goal Filter";
 	
@@ -67,10 +66,10 @@ public class GoalFilterDialog extends Dialog {
 	private CheckboxTreeViewer goalsViewer; 
 	private List checkedItems = new ArrayList();
 	
-	//if all goals selected : needed to support main view shortcut
-	private boolean filterOrigin;
 	private GoalsProvider goalsProvider;
-	private Button applyCustomFiltersButton; 
+	private Button applyCustomFiltersButton;
+	private Button deSelectAllButton;
+	private String filteredGoals; 
 	
 	public GoalFilterDialog() {
 		super(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell());
@@ -128,19 +127,22 @@ public class GoalFilterDialog extends Dialog {
 		selectAllButton.addMouseListener(
 			new MouseAdapter() {
 				public void mouseDown(MouseEvent e) {
-					goalsViewer.getTree().setSelection(goalsViewer.getTree().getItems());
+					IStructuredContentProvider provider = (IStructuredContentProvider) goalsViewer.getContentProvider();
+					goalsViewer.setChecked(provider.getElements(Element.NULL_ROOT), true);
+					goalsViewer.setGrayedElements(new Object[0]);
 				}
 			}
 		);
 		
-		Button deSelectAllButton = new Button(composite, SWT.NULL);
+		deSelectAllButton = new Button(composite, SWT.NULL);
 		deSelectAllButton.setText("Deselect All");
 		GridData dsData = new GridData();
 		deSelectAllButton.setLayoutData(dsData);
 		deSelectAllButton.addMouseListener(
 			new MouseAdapter() {
 				public void mouseDown(MouseEvent e) {
-					//goalsViewer.setCheckedElements(new Object[0]);
+					goalsViewer.setCheckedElements(new Object[0]);
+					goalsViewer.setGrayedElements(new Object[0]);
 				}
 			}
 		);
@@ -227,19 +229,27 @@ public class GoalFilterDialog extends Dialog {
 		if ( e.getElement() instanceof Goal ) {
 			Goal goal = (Goal) e.getElement();
 			updateCheckedGoal(isSelectionChecked, goal);
+			updateGrayedState(goal, isSelectionChecked);
 		}
 		else {
 			Plugin plugin = (Plugin) e.getElement();
-			//it is way too confusing when plugins are checkable. indeed when 
-			//theres a default goal, both the default and the plugin should be 
-			//checkable, thus we got the goal multiple times. I think its best
-			//to just disable plugins.
-			
-			//updateCheckedPlugin(isSelectionChecked, plugin);
-			
-			//prevent user to check a plugin	
-			goalsViewer.setChecked(plugin, false);
+			goalsViewer.setSubtreeChecked(plugin, isSelectionChecked);
+			goalsViewer.setGrayed(plugin, false);
 		}
+	}
+	
+	private void updateGrayedState(Goal goal, boolean isGoalChecked) {
+		Plugin parentPlugin = goal.getPlugin();
+		Goal[] goals = (Goal[]) ((IStructuredContentProvider) goalsViewer.getContentProvider()).getElements(parentPlugin);
+		boolean consistentCheckedState = true;
+		for (int i = 0; i < goals.length; i++) {
+			if ( isGoalChecked != goalsViewer.getChecked(goals[i]) ) {
+			    consistentCheckedState = false;
+			    break;
+			}
+		}
+		goalsViewer.setGrayed(parentPlugin, !consistentCheckedState);
+		goalsViewer.setChecked(parentPlugin, consistentCheckedState && isGoalChecked);
 	}
 	
 	private void updateCheckedGoal(boolean isSelectionChecked, Goal goal) {
@@ -255,24 +265,6 @@ public class GoalFilterDialog extends Dialog {
 		}
 	}
 	
-	private void updateCheckedPlugin(boolean isSelectionChecked, Plugin plugin) {
-		String pluginName = plugin.getName();
-		String[] goals = goalsProvider.getGoalsGrabber().getGoals(pluginName);
-		if ( goals != null && goals.length > 0 ) {
-			if ( !Arrays.asList(goals).contains(Goal.DEFAULT_GOAL) ) {
-				goalsViewer.setChecked(pluginName, false);
-			}
-			else {
-				if ( isSelectionChecked ) {
-					checkedItems.add(pluginName);
-				}
-				else {
-					checkedItems.remove(pluginName);
-				}
-			}
-		}
-	}
-	
 	protected void okPressed() {
 		shouldApplyCustomFilters = applyCustomFiltersButton.getSelection();
 		preferencesManager.setBooleanValue(CustomPatternFilter.APPLY_CUSTOM_FILTERS_KEY, shouldApplyCustomFilters);
@@ -280,13 +272,24 @@ public class GoalFilterDialog extends Dialog {
 	    regex = patternText.getText();
 	    preferencesManager.setValue(CustomPatternFilter.CUSTOM_FILTERS_KEY, regex);
 	    
+	    filteredGoals = getSerializedFilteredGoals();
+		preferencesManager.setValue(GlobalGoalFilter.ORIGIN_FILTER_GOALS, filteredGoals);
+	    
 	    preferencesManager.store();
 	    
 	    super.okPressed();
 	}
 	
-	public boolean isFilterOrigin() {
-		return filterOrigin;
+	private String getSerializedFilteredGoals() {
+		Object[] checkedElements = goalsViewer.getCheckedElements();
+		StringBuffer buffer = new StringBuffer("");
+		for (int i = 0; i < checkedElements.length; i++) {
+			buffer.append(((Element) checkedElements[i]).getFullyQualifiedName());
+			if ( i != checkedElements.length - 1 ) {
+				buffer.append(",");
+			}
+		}
+		return buffer.toString();
 	}
 	
 	public String getRegex() {
@@ -295,5 +298,9 @@ public class GoalFilterDialog extends Dialog {
 	
 	public boolean shouldApplyCustomFilters() {
 		return shouldApplyCustomFilters;
+	}
+	
+	public String getFilteredGoals() {
+		return filteredGoals;
 	}
 }

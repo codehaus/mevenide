@@ -35,11 +35,6 @@ public class Goal extends Element {
         this.plugin = plugin;
     }
 
-	public boolean equals(Object obj) {
-		return (obj instanceof Goal) 
-				&& ((Goal) obj).getFullyQualifiedName().equals(getFullyQualifiedName());
-	}
-	
 	public String getFullyQualifiedName() {
 		return (plugin != null ? plugin.getName() + ":" : "") + getName();
 	}

@@ -46,6 +46,7 @@ import org.eclipse.ui.part.Page;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.goals.filter.CustomPatternFilter;
+import org.mevenide.ui.eclipse.goals.filter.GlobalGoalFilter;
 import org.mevenide.ui.eclipse.goals.filter.GoalFilterDialog;
 import org.mevenide.ui.eclipse.goals.filter.GoalOriginFilter;
 import org.mevenide.ui.eclipse.goals.model.Element;
@@ -75,7 +76,8 @@ public class MavenXmlOutlinePage extends Page implements IContentOutlinePage {
 	private GoalsProvider goalsProvider;
 	
 	private CustomPatternFilter patternFilter;
-	private GoalOriginFilter originFilter;
+	private GlobalGoalFilter globalGoalFilter;
+	private GoalOriginFilter goalOriginFilter; 
 	
 	private Menu menu;
 	private IAction toggleOfflineAction, openFilterDialogAction, filterOriginShortcutAction;
@@ -92,7 +94,8 @@ public class MavenXmlOutlinePage extends Page implements IContentOutlinePage {
 		goalsProvider = new GoalsProvider();
 		goalsLabelProvider = new GoalsLabelProvider();
 		patternFilter = new CustomPatternFilter();
-		originFilter = new GoalOriginFilter();
+		globalGoalFilter = new GlobalGoalFilter();
+		goalOriginFilter = new GoalOriginFilter();
 	}
 	
 	public void createControl(Composite parent) {
@@ -141,11 +144,12 @@ public class MavenXmlOutlinePage extends Page implements IContentOutlinePage {
     
     	viewer.getTree().setLayoutData(gridData);
     	
-    	originFilter.setGoalsGrabber(goalsProvider.getGoalsGrabber());
-    	originFilter.setFilterOriginPlugin(true);
-    	viewer.addFilter(originFilter);
+    	globalGoalFilter.setGoalsGrabber(goalsProvider.getGoalsGrabber());
+    	goalOriginFilter.setFilterOriginPlugin(false);
     	
+    	viewer.addFilter(globalGoalFilter);
     	viewer.addFilter(patternFilter);
+    	viewer.addFilter(goalOriginFilter);
     	
         return viewer;
     }
@@ -211,8 +215,8 @@ public class MavenXmlOutlinePage extends Page implements IContentOutlinePage {
 		
 		filterOriginShortcutAction = new Action(null, Action.AS_CHECK_BOX) {
 			public void run() {
-				originFilter.setFilterOriginPlugin(isChecked());
-				setToolTipText(isChecked() ? "Hide global goals" : "Show global goals");
+				goalOriginFilter.setFilterOriginPlugin(isChecked());
+				setToolTipText(isChecked() ? "Show global goals" : "Hide global goals");
 				goalsViewer.refresh(false);
 			}
 		}; 
@@ -255,11 +259,11 @@ public class MavenXmlOutlinePage extends Page implements IContentOutlinePage {
 		int dialogResult = dialog.open();
 		
 		if ( dialogResult == Window.OK ) {
-			String customRegexFilters = dialog.getRegex();
-			boolean shouldApply = dialog.shouldApplyCustomFilters();
+			patternFilter.setPatternFilters(dialog.getRegex());
+			patternFilter.apply(dialog.shouldApplyCustomFilters());
 			
-			patternFilter.setPatternFilters(customRegexFilters);
-			patternFilter.apply(shouldApply);
+			//globalGoalFilter.setFilterOriginPlugin(dialog.isFilterOrigin());
+			globalGoalFilter.setFilteredGoals(dialog.getFilteredGoals());
 			
 			goalsViewer.refresh(false);
 		}
