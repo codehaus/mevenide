@@ -51,9 +51,24 @@
     
   </goal>
    
+  <goal name="eclipse-plugin:init-filterset">
+  	<j:set var="filterRefid" value="${maven.eclipse.plugin.filterset.id}"/>
+  	<j:if test="${empty filterRefid}">
+  	  <j:set var="maven.eclipse.plugin.filterset.id" value="filterSetId"/>
+  	  <ant:filterset id="${maven.eclipse.plugin.filterset.id}"/>
+  	</j:if>
+  </goal>
    
-  <goal name="eclipse-plugin:install" prereqs="eclipse-plugin:prepare-plugin-dist" description="">
-  	
+  <goal name="eclipse-plugin:install" prereqs="eclipse-plugin:init-filterset" 
+  		description="filter and copy the plugin.xml file to $${basedir}">
+  	<ant:copy todir="${basedir}" overwrite="true">
+  	  <ant:fileset dir="${maven.eclipse.plugin.src.dir}"/>
+  	  <ant:filterset>
+  	  	<ant:filterset refid="${maven.eclipse.plugin.filterset.id}"/>
+  	  	<ant:filter token="maven.eclipse.plugin.artifact.id" value="${maven.eclipse.plugin.artifact.id}"/>
+  	  	<ant:filter token="maven.eclipse.plugin.artifact.version" value="${maven.eclipse.plugin.artifact.version}"/>
+  	  </ant:filterset>
+  	</ant:copy>
   </goal>
    
    
