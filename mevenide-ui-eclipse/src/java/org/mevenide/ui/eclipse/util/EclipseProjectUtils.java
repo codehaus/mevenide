@@ -97,13 +97,6 @@ public class EclipseProjectUtils {
 		return jreEntryList;
 	}
 
-	/** 
-	 * @deprecated use getCrossProjectDependencies(IProject) instead
-	 */
-	public static List getCrossProjectDependencies() throws Exception {
-	    return getCrossProjectDependencies(Mevenide.getPlugin().getProject());
-	}
-	
 	public static List getCrossProjectDependencies(IProject project) throws Exception {
 	    List deps = new ArrayList();
 	    IProject[] referencedProjects = project.getReferencedProjects();		
