@@ -175,7 +175,8 @@ public class DefaultProjectContext implements IProjectContext {
                         } else {
                             // TODO - for debugging purposes
                             // later just semisilently ignore??
-                            throw new IllegalStateException("Cannot read parent.(" + extend + ")" );
+                            //throw new IllegalStateException("Cannot read parent.(" + extend + ")" );
+                            logger.error("Cannot read parent.(" + extend + ")");
                         }
                     }
                 }
