@@ -97,7 +97,13 @@ a:link, a:visited {
 }
 
 #poweredBy {
-  border: 0px
+  border: 0px;
+  font-size: 8pt;
+  text-align: center;
+}
+
+#poweredBy a:link, #poweredBy a:visited{
+  color: #009900;
 }
 
 table.bodyTable td,  table.bodyTable th{
