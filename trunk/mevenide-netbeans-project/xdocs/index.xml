@@ -16,7 +16,7 @@
             <p>Mevenide for the upcoming 4.0 version contains these <a href="features.html" class="documentLink"> features </a>.</p>
             <p> You can download the <a href="../download/mevenide-netbeans-0.3.zip"> 0.3 release</a>. It was tested with Maven 1.0 and Netbeans Beta2.
             Reasonable effort is made to have it always working with the latest development builds of Netbeans 4.0. Please note that the grammar module (completion for maven xml files) for 0.3 release will work
-            with beta2 but not with current dev builds. Please download <a href="../download/org-mevenide-netbeans-grammar-0.5.1.nbm">this version </a> that works with Netbeans post-beta2 dev builds.
+            with beta2 but not with current dev builds. Please download <a href="../download/mevenide-netbeans-grammar-0.5.1.nbm">this version </a> that works with Netbeans post-beta2 dev builds.
             To get the latest Netbeans beta and dev builds, go to the <a href="http://www.netbeans.info/downloads/download.php?a=n&amp;p=1"> download page </a> </p>
 	</div>
         </section>
