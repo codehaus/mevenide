@@ -23,7 +23,7 @@
     <repository>
       <connection>scm:cvs:pserver:anonymous@cvs.mevenide.codehaus.org:/home/projects/mevenide/scm:${pom.artifactId}</connection>
       <developerConnection>scm:cvs:ext:${maven.username}@cvs.mevenide.codehaus.org:/home/projects/mevenide/scm:${pom.artifactId}</developerConnection>
-      <url>http://cvs.mevenide.codehaus.org/cvsweb.cgi/${pom.artifactId}/</url>
+      <url>http://cvs.mevenide.codehaus.org/${pom.artifactId}/</url>
     </repository>
     
 <!--	<reports>
