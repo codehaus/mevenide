@@ -74,7 +74,7 @@
         <version>1.0.3</version>
         <type>jar</type>
         <properties>
-             <netbeans.module.dep>spec</netbeans.module.dep>
+             <netbeans.module.dep>spec=org.netbeans.libs.commons_logging/1 &gt; 1.0</netbeans.module.dep>
         </properties>
     </dependency>
    
@@ -160,6 +160,17 @@
         <artifactId>org-netbeans-api-web-webmodule</artifactId>
         <!-- include nb specification version.. that's important for compiling -->
         <version>1.0.1</version>
+        <type>jar</type>
+        <url>http://www.netbeans.org</url>
+        <properties>
+            <netbeans.module.dep>spec</netbeans.module.dep>
+        </properties>
+    </dependency>
+    <dependency>     
+        <groupId>netbeans</groupId>
+        <artifactId>org-netbeans-modules-web-jspparser</artifactId>
+        <!-- include nb specification version.. that's important for compiling -->
+        <version>2.1</version>
         <type>jar</type>
         <url>http://www.netbeans.org</url>
         <properties>

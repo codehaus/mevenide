@@ -39,7 +39,7 @@
             <version>1.0.3</version>
             <type>jar</type>
             <properties>
-                <netbeans.module.dep>spec</netbeans.module.dep>
+                <netbeans.module.dep>spec=org.netbeans.libs.commons_logging/1 &gt; 1.0</netbeans.module.dep>
             	<eclipse.plugin.bundle>false</eclipse.plugin.bundle>
             </properties>
         </dependency>
