@@ -21,11 +21,8 @@ import org.apache.commons.logging.LogFactory;
 import org.eclipse.jface.preference.DirectoryFieldEditor;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
@@ -78,8 +75,6 @@ public class LocationPreferencePage extends PreferencePage implements IWorkbench
 	    
 	    createEditors(composite);
 		
-		createRegenerateButtonArea(composite);
-		
 		return topLevelContainer;
 	}
 
@@ -103,32 +98,18 @@ public class LocationPreferencePage extends PreferencePage implements IWorkbench
 		createMavenRepositoryEditor();
     }
 
-    private void createRegenerateButtonArea(Composite parent) {
-	    Composite composite = new Composite(parent, SWT.NULL);
-	    composite.setLayout(new GridLayout());
-	    GridData data = new GridData(GridData.FILL_BOTH | GridData.HORIZONTAL_ALIGN_END | GridData.VERTICAL_ALIGN_BEGINNING);
-	    data.grabExcessVerticalSpace = true;
-	    composite.setLayoutData(data);
-	    
-	    Button regenerateButton = new Button(composite, SWT.PUSH);
-	    regenerateButton.setText(Mevenide.getResourceString("LocationPreferencePage.Regenerate"));
-	    regenerateButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_END));
-	    
-	    regenerateButton.addSelectionListener(
-	        new SelectionListener() {
-			    public void widgetDefaultSelected(SelectionEvent event) {
-		        }
-			    public void widgetSelected(SelectionEvent event) {
-			        reloadMavenRepository();
-			        reloadMavenLocalHome();
-			        reloadMavenHome();
-			        reloadJavaHome();
-		        }
-	    	}
-	    );
-	    
-
-	}
+	protected void performDefaults() {
+        reloadLocations();
+        super.performDefaults();
+        performOk();
+    }
+	
+    private void reloadLocations() {
+        reloadMavenRepository();
+        reloadMavenLocalHome();
+        reloadMavenHome();
+        reloadJavaHome();
+    }
 	
 	private void createMavenRepositoryEditor() {
         mavenRepositoryEditor = createEditor(
@@ -207,9 +188,9 @@ public class LocationPreferencePage extends PreferencePage implements IWorkbench
     }
 	
     public boolean performOk() {
-        return (!isEditorOk(javaHomeEditor) 
-				|| !isEditorOk(mavenHomeEditor) 
-				|| !isEditorOk(mavenRepositoryEditor)) && finish();
+        return (isEditorOk(javaHomeEditor) 
+				|| isEditorOk(mavenHomeEditor) 
+				|| isEditorOk(mavenRepositoryEditor)) && finish();
     }
     
     private boolean isEditorOk(DirectoryFieldEditor editor) {
