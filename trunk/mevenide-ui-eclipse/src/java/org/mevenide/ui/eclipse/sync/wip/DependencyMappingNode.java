@@ -48,13 +48,10 @@
  */
 package org.mevenide.ui.eclipse.sync.wip;
 
-import java.io.File;
-
 import org.apache.maven.project.Dependency;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.ui.views.properties.IPropertySource;
-import org.mevenide.project.dependency.DependencyUtil;
 import org.mevenide.ui.eclipse.editors.properties.DependencyPropertySource;
 
 /**
@@ -92,7 +89,9 @@ public class DependencyMappingNode implements IArtifactMappingNode, IPropertyCha
 		if ( dependency == null ) {
 			return ProjectContainer.OUTGOING;
 		}
-		if ( !DependencyUtil.areEquals(dependency, resolvedDependency) ) {
+		if ( !dependency.getVersion().equals(resolvedDependency.getVersion()) ) {
+		    //donot compare groupId b/c in most case it may not be resolved
+		    //|| !dependency.getGroupId().equals(resolvedDependency.getGroupId())
 			return ProjectContainer.CONFLICTING;
 		}
         return ProjectContainer.NO_CHANGE;
@@ -100,7 +99,7 @@ public class DependencyMappingNode implements IArtifactMappingNode, IPropertyCha
     
     public String getLabel() {
         if ( (parent.getDirection() & ProjectContainer.OUTGOING) != 0 ) {
-            return new File(resolvedDependency.getArtifact()).getName();
+            return resolvedDependency.getArtifactId() + "-" + resolvedDependency.getVersion();
 		}
         if ( (parent.getDirection() & ProjectContainer.INCOMING) != 0 ) {
             return dependency.getGroupId() + ":" + dependency.getArtifactId(); 

@@ -48,13 +48,20 @@
  */
 package org.mevenide.ui.eclipse.sync.wip;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IMenuListener;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.IPageSite;
 import org.eclipse.ui.part.ViewPart;
@@ -70,7 +77,9 @@ import org.mevenide.ui.eclipse.Mevenide;
  *
  */
 public class SynchronizeView extends ViewPart {
-    
+    private static final Log log = LogFactory.getLog(SynchronizeView.class);
+
+
     private Composite composite;
     private TreeViewer artifactMappingNodeViewer;
     private IPageSite site;
@@ -193,7 +202,12 @@ public class SynchronizeView extends ViewPart {
 
 		viewProperties = new Action() {
 		    public void run() {
-		        
+				try {
+			        PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView("org.eclipse.ui.views.PropertySheet");
+			 	}
+				catch ( PartInitException e ) {
+					log.debug(e, e);
+				}
 		    }
 		};
 		viewProperties.setId("PROPERTIES");
@@ -209,6 +223,19 @@ public class SynchronizeView extends ViewPart {
 		getViewSite().getActionBars().getToolBarManager().add(viewIdeToPom);
 		getViewSite().getActionBars().getToolBarManager().add(viewPomToIde);
 		getViewSite().getActionBars().getToolBarManager().add(viewConflicts);
+
+		MenuManager manager = new MenuManager();
+		manager.setRemoveAllWhenShown(true);
+		Menu menu = manager.createContextMenu(artifactMappingNodeViewer.getControl());
+		artifactMappingNodeViewer.getControl().setMenu(menu);
+
+		manager.addMenuListener(new IMenuListener() {
+			public void menuAboutToShow(IMenuManager manager) {
+				manager.add(addToClasspath);
+				manager.add(pushToPom);
+				manager.add(viewProperties);
+			}
+		});
 
     }
     

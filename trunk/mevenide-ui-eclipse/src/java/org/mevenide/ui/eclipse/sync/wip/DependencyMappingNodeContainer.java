@@ -122,7 +122,7 @@ class DependencyMappingNodeContainer implements IArtifactMappingNodeContainer {
 
 		List newNodeList = new ArrayList(); 
 		for (int i = 0; i < nodes.length; i++) {
-            if ( (nodes[i].getChangeDirection() & direction) != 0) {
+		    if ( (nodes[i].getChangeDirection() & direction) != 0) {
 				newNodeList.add(nodes[i]);
 			}
         }
