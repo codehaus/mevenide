@@ -16,6 +16,7 @@
  */
 package org.mevenide.ui.eclipse.launch.configuration;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -39,6 +40,14 @@ import org.eclipse.jdt.launching.IVMRunner;
 import org.eclipse.jdt.launching.JavaRuntime;
 import org.eclipse.jdt.launching.VMRunnerConfiguration;
 import org.eclipse.ui.externaltools.internal.launchConfigurations.ExternalToolsUtil;
+import org.mevenide.context.DefaultQueryContext;
+import org.mevenide.context.IProjectContext;
+import org.mevenide.context.IQueryContext;
+import org.mevenide.project.DefaultProjectContext;
+import org.mevenide.properties.IPropertyLocator;
+import org.mevenide.properties.IPropertyResolver;
+import org.mevenide.properties.resolver.PropertyLocatorFactory;
+import org.mevenide.properties.resolver.PropertyResolverFactory;
 import org.mevenide.runner.AbstractRunner;
 import org.mevenide.runner.ArgumentsManager;
 import org.mevenide.ui.eclipse.Mevenide;
@@ -119,9 +128,19 @@ public class MavenLaunchDelegate extends AbstractRunner implements ILaunchConfig
 
 	}
 	
-	//this is quicky and should be refactor.. however it could be considered  
+	//this is quicky and should be refactored.. however it could be considered  
 	//as a kind of base for the per-project arguments management (or something like that) 
-	private String[] getDynamicProperties(List vmArgs) {
+	private String[] getDynamicProperties(ILaunchConfiguration configuration, List vmArgs) {
+	    
+	    IQueryContext context = null;
+	    try {
+	        context = getQueryContext(new File(getBasedir()));
+        }
+        catch (Exception e) {
+            String message = "Unable to obtain property resolver"; //$NON-NLS-1$ 
+            log.error(message, e);
+        }
+        
 	    List loadedProperties = new ArrayList();
         for (int i = 0; i < vmArgs.size(); i++) {
             String property = (String) vmArgs.get(i); 
@@ -139,7 +158,7 @@ public class MavenLaunchDelegate extends AbstractRunner implements ILaunchConfig
         for (Iterator it = dynamicPreferencesMap.keySet().iterator(); it.hasNext(); ) {
             String key = (String) it.next();
             String value = (String) dynamicPreferencesMap.get(key);
-            if ( !loadedProperties.contains(key) ) {
+            if ( !loadedProperties.contains(key) && org.mevenide.util.StringUtils.isNull(context.getPropertyValue(key)) ) {
                 dynamicPreferencesList.add("-D" + key + "=" + value); //$NON-NLS-1$ //$NON-NLS-2$
             }
         }
@@ -147,7 +166,16 @@ public class MavenLaunchDelegate extends AbstractRunner implements ILaunchConfig
         return dynamicPreferences;
     }
 	
-	public static boolean isMavenLaunch(ILaunch launch) {
+	private IQueryContext getQueryContext(File file) {
+	    IQueryContext queryContext = new DefaultQueryContext(file);
+	    IPropertyResolver resolver = PropertyResolverFactory.getFactory().createContextBasedResolver(queryContext);
+	    IPropertyLocator locator = PropertyLocatorFactory.getFactory().createContextBasedLocator(queryContext);
+	    IProjectContext projectContext = new DefaultProjectContext(queryContext, resolver);
+	    ((DefaultQueryContext)queryContext).initializeProjectContext(projectContext);
+	    return queryContext;
+    }
+
+    public static boolean isMavenLaunch(ILaunch launch) {
 	    return "true".equals(launch.getAttribute(MavenLaunchDelegate.MAVEN_LAUNCH)); //$NON-NLS-1$
 	}
 	
@@ -186,7 +214,7 @@ public class MavenLaunchDelegate extends AbstractRunner implements ILaunchConfig
 			}
 			String[] result = (String[]) options.toArray(new String[options.size()]);
 			
-			String[] dynamicPreferences = getDynamicProperties(vmArgs); 
+			String[] dynamicPreferences = getDynamicProperties(configuration, vmArgs); 
                     
 			//merge various sources
 			String[] mergedOptions = new String[result.length + dynamicPreferences.length];
