@@ -7,7 +7,10 @@
   <body>
     <section name="Overview">
       <p>
-   	  will provide a short overview of the plugin.
+   	  This plugin generates html templates for <a href="http://spinner-wiki.sf.net">spinner-wiki</a> 
+   	  that match the maven generated site look-n-feel. A live example can be found <a href="../cgi-bin/view.pl/FrontPage">here</a>.
+   	  
+   	  fs/ssh/ftp deploiement will be supported in the near future.
    	  </p>
     </section>
   </body>
