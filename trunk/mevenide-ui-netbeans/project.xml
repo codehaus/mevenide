@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE project [
+  <!ENTITY netbeans-dependencies SYSTEM "file:pom-fragments/netbeans-dependencies.xml">	
+]>
+<project>
+  <!--<extend>${basedir}/../mevenide-master/base-project.xml</extend> -->
+  <!-- the version of maven's project object model -->
+  <pomVersion>3</pomVersion>
+  
+  <!-- a unique name for this project -->
+  <id>mevenide-ui-netbeans</id>
+  
+  <!-- a short but descriptive name for the project -->
+  <name>Netbeans Maven integration</name>
+  
+  <!-- The version of the project under development, e.g.
+       1.1, 1.2, 2.0-SNAPSHOT -->
+  <currentVersion>0.1</currentVersion>
+   
+  <!-- the year the project started -->
+  <inceptionYear>2003</inceptionYear>
+  <package>org.mevenide.ui.netbeans</package>
+  <description>
+    Netbeans Maven integration   
+  </description>
+  <!-- a short description of what the project does -->
+  <shortDescription>
+    netbeansIDE maven module
+  </shortDescription>
+
+  <!-- jar files the project is dependent on -->
+  <dependencies>
+    <dependency>     
+        <groupId>mevenide</groupId>
+        <artifactId>goals-grabber</artifactId>
+        <version>0.1.1-SNAPSHOT</version>
+    </dependency>
+    <dependency>     
+        <groupId>mevenide</groupId>
+        <artifactId>mevenide-core</artifactId>
+        <version>0.1.1-SNAPSHOT</version>
+    </dependency>
+    <dependency>     
+        <groupId>maven</groupId>
+        <artifactId>maven</artifactId>
+        <version>1.0-rc1</version>
+    </dependency>
+    
+    &netbeans-dependencies;
+    
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <version>1.0.1</version>
+            <type>jar</type>
+        </dependency>
+       <dependency>
+            <groupId>commons-discovery</groupId>
+            <artifactId>commons-discovery</artifactId>
+            <version>0.1</version>
+            <type>jar</type>
+        </dependency>
+    
+  </dependencies>
+  
+  <!-- build information for the project -->
+  <build>
+    <nagEmailAddress>ca206216@tiscali.cz</nagEmailAddress>
+    <sourceDirectory>src/java</sourceDirectory>
+    <unitTestSourceDirectory>src/test</unitTestSourceDirectory>
+
+    <unitTest>
+      <includes>
+        <include>**/*Test.java</include>
+      </includes>
+      <excludes>
+        <exclude>**/NaughtyTest.java</exclude>
+      </excludes>
+    </unitTest>
+
+    <resources>
+      <resource>
+        <directory>src/conf</directory>
+        <includes>
+          <include>**</include>
+        </includes>
+        <excludes>
+          <exclude>**/.nbattrs</exclude>
+          <exclude>manifest.mf</exclude>
+        </excludes>
+      </resource>
+    </resources>
+  </build>
+
+</project>
+
