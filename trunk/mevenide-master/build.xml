@@ -6,9 +6,13 @@
 	<target name="build-all">
 		<exec executable="${maven.command}" failonerror="true">
 			<arg value="build-all"/>
-			<!-- arg value="-o"/ -->
-			<!-- arg value="-e"/ -->
-			<!-- arg value="-X"/ -->
 		</exec>
 	</target>
+	
+	<target name="build-site">
+		<exec executable="${maven.command}" failonerror="true">
+			<arg value="build-site"/>
+		</exec>
+	</target>
+	
 </project>
