@@ -21,14 +21,21 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.mevenide.netbeans.project.MavenProject;
+import org.netbeans.api.java.classpath.ClassPath;
+import org.netbeans.api.java.queries.SourceForBinaryQuery;
+import org.openide.cookies.EditorCookie;
 import org.openide.cookies.OpenCookie;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
+import org.openide.filesystems.URLMapper;
 import org.openide.loaders.DataObject;
 import org.openide.loaders.DataObjectNotFoundException;
+import org.openide.text.Line;
+import org.openide.util.Lookup;
 import org.openide.windows.IOProvider;
 import org.openide.windows.InputOutput;
 import org.openide.windows.OutputEvent;
@@ -51,7 +58,7 @@ public class TestOutputListenerProvider extends AbstractOutputProcessor {
     
     /** Creates a new instance of TestOutputListenerProvider */
     public TestOutputListenerProvider(MavenProject proj) {
-        failPattern = failPattern.compile("\\s*\\[junit\\] \\[ERROR\\] TEST (.*) FAILED.*");
+        failPattern = Pattern.compile("\\s*\\[junit\\] \\[ERROR\\] TEST (.*) FAILED.*");
         project = proj;
     }
     
@@ -87,50 +94,26 @@ public class TestOutputListenerProvider extends AbstractOutputProcessor {
          * @param ev the event describing the line
          */
         public void outputLineAction(OutputEvent ev) {
+            File testDir = new File(project.getTestSrcDirectory());
+            String replace = testname.replace('.', '/');
+            File testFile = new File(testDir, replace + ".java");
+            FileObject fo = FileUtil.toFileObject(testFile);
+//            try {
+//                DataObject obj = DataObject.find(fo);
+//                OpenCookie cook = (OpenCookie)obj.getCookie(OpenCookie.class);
+//                if (cook != null) {
+//                    cook.open();
+//                }
+//            } catch (DataObjectNotFoundException exc) {
+//                
+//            }
             String repDir = project.getPropertyResolver().getResolvedValue("maven.test.reportsDirectory");
             File dir = new File(repDir);
             if (dir.exists()) {
                 File testResult = new File(dir, "TEST-" + testname + ".txt");
-                FileObject fo = FileUtil.toFileObject(testResult);
+                FileObject fo2 = FileUtil.toFileObject(testResult);
                 if (fo != null) {
-                    InputOutput io = IOProvider.getDefault().getIO("Test " + testname, false);
-                    io.getOut().flush();
-                    io.select();
-                    BufferedReader reader = null;
-                    OutputWriter writer = io.getOut();
-                    String line = null;
-                    try {
-                         reader = new BufferedReader(new InputStreamReader(fo.getInputStream()));
-                        while ((line = reader.readLine()) != null) {
-                            writer.println(line);
-                        }
-                    } catch (IOException exc) {
-                        
-                    } finally {
-                        try {
-                            if (reader != null) {
-                                reader.close();
-                            }
-                            writer.close();
-                        } catch (IOException ex) {
-                            
-                        }
-                    }
-                }
-            }
-            File testDir = new File(project.getTestSrcDirectory());
-            String replace = testname.replace('.', '/');
-            File testFile = new File(testDir, replace + ".java");
-            if (testFile.exists()) {
-                FileObject fo = FileUtil.toFileObject(testFile);
-                try {
-                    DataObject obj = DataObject.find(fo);
-                    OpenCookie cook = (OpenCookie)obj.getCookie(OpenCookie.class);
-                    if (cook != null) {
-                        cook.open();
-                    }
-                } catch (DataObjectNotFoundException exc) {
-                    
+                    openLog(fo2, "Test " + testname, fo);
                 }
             }
         }
@@ -140,5 +123,99 @@ public class TestOutputListenerProvider extends AbstractOutputProcessor {
          */
         public void outputLineCleared(OutputEvent ev) {
         }
+        
+        private void openLog(FileObject fo, String title, FileObject testFile) {
+            InputOutput io = IOProvider.getDefault().getIO(title, false);
+//            io.getOut().flush();
+            io.select();
+            BufferedReader reader = null;
+            OutputWriter writer = io.getOut();
+            String line = null;
+            try {
+                reader = new BufferedReader(new InputStreamReader(fo.getInputStream()));
+                Pattern linePattern = Pattern.compile("\\sat (.*)\\((.*)\\.java\\:(.*)\\)");
+                ClassPath classPath = ClassPath.getClassPath(testFile, ClassPath.EXECUTE);
+                while ((line = reader.readLine()) != null) {
+                    Matcher match = linePattern.matcher(line);
+                    OutputListener list = null;
+                    if (match.matches()) {
+                        String method = match.group(1);
+                        String file = match.group(2);
+                        String lineNum = match.group(3);
+                        int index = method.indexOf(file);
+                        if (index > -1) {
+                            String packageName = method.substring(0, index).replace('.', '/');
+                            String resourceName = packageName  + file + ".class"; //NOI18N
+                            FileObject resource = classPath.findResource(resourceName);
+                            if (resource != null) {
+                                FileObject root = classPath.findOwnerRoot(resource);
+                                URL url = URLMapper.findURL(root, URLMapper.INTERNAL);
+                                SourceForBinaryQuery.Result res = SourceForBinaryQuery.findSourceRoots(url);
+                                FileObject[] rootz = res.getRoots();
+                                for (int i = 0; i < rootz.length; i++) {
+                                    File rootFile = FileUtil.toFile(rootz[i]);
+                                    File java = new File(rootFile, packageName + file + ".java");
+                                    FileObject javaFo = FileUtil.toFileObject(java);
+                                    if (javaFo != null) {
+                                        DataObject obj = DataObject.find(javaFo);
+                                        EditorCookie cook = (EditorCookie)obj.getCookie(EditorCookie.class);
+                                        int lineInt = Integer.parseInt(lineNum);
+                                        list = new StacktraceOutputListener(cook, lineInt);
+                                    }
+                                }
+                            }
+                        } else {
+                            //weird..
+                        }
+                    }
+                    if (list != null) {
+                        writer.println(line, list);
+                    } else {
+                        writer.println(line);
+                    }
+                }
+            } catch (IOException exc) {
+//                logger.warn("exception IO", exc);
+            } finally {
+                writer.close();
+                try {
+                    if (reader != null) {
+                        reader.close();
+                    }
+                } catch (IOException ex) {
+                    
+                }
+                io.closeInputOutput();
+            }
+        }
     }
+    
+    private static class StacktraceOutputListener implements OutputListener {
+        
+        private EditorCookie cookie;
+        private int line;
+        public StacktraceOutputListener(EditorCookie cook, int ln) {
+            cookie = cook;
+            line = ln - 1;
+        }
+       public void outputLineSelected(OutputEvent ev) {
+           cookie.getLineSet().getCurrent(line).show(Line.SHOW_SHOW);
+        }
+        
+        /** Called when some sort of action is performed on a line.
+         * @param ev the event describing the line
+         */
+        public void outputLineAction(OutputEvent ev) {
+           cookie.getLineSet().getCurrent(line).show(Line.SHOW_GOTO);
+        }
+        
+        /** Called when a line is cleared from the buffer of known lines.
+         * @param ev the event describing the line
+         */
+        public void outputLineCleared(OutputEvent ev) {
+        }        
+        
+    }
+    
+    
 }
