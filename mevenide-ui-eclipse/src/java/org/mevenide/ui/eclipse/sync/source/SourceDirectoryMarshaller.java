@@ -11,7 +11,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  */
-package org.mevenide.ui.eclipse.sync.views;
+package org.mevenide.ui.eclipse.sync.source;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -21,8 +21,6 @@ import org.eclipse.core.resources.IProject;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.input.SAXBuilder;
-import org.mevenide.ui.eclipse.sync.source.SourceDirectory;
-import org.mevenide.ui.eclipse.sync.source.SourceDirectoryGroup;
 import org.mevenide.util.JDomOutputter;
 
 /**
