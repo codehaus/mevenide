@@ -12,7 +12,7 @@
  * Lesser General Public License for more details.
  * 
  */
-package org.mevenide.ui.eclipse.sync.views;
+package org.mevenide.ui.eclipse.sync.source;
 
 import java.util.List;
 
@@ -30,9 +30,6 @@ import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.internal.dialogs.ListContentProvider;
 import org.mevenide.ui.eclipse.Mevenide;
-import org.mevenide.ui.eclipse.sync.source.SourceDirectory;
-import org.mevenide.ui.eclipse.sync.source.SourceDirectoryGroup;
-import org.mevenide.ui.eclipse.sync.source.SourceDirectoryUtil;
 
 /**
  * 

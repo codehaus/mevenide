@@ -22,7 +22,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.sync.dependency.DependencyGroup;
 import org.mevenide.ui.eclipse.sync.dependency.DependencyMarshaller;
-import org.mevenide.ui.eclipse.sync.views.DependencyViewUtil;
+import org.mevenide.ui.eclipse.sync.dependency.DependencyViewUtil;
 
 /**
  * 

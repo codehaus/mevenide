@@ -46,6 +46,7 @@ public abstract class AbstractMevenideAction implements IWorkbenchWindowActionDe
             
             plugin.setProject(selectedProject);
             
+            plugin.initEnvironment();
     	}
 	}
     

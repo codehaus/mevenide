@@ -13,20 +13,26 @@
  */
 package org.mevenide.project.io;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.List;
+import java.util.Properties;
 
 import org.apache.maven.project.Dependency;
 import org.apache.maven.project.Project;
 import org.apache.maven.project.Resource;
+import org.mevenide.Environment;
 import org.mevenide.project.source.SourceDirectoryUtil;
 import org.mevenide.project.dependency.AbstractDependencyResolver;
 import org.mevenide.project.dependency.DependencyFactory;
+import org.mevenide.project.dependency.DependencyUtil;
 import org.mevenide.project.dependency.IDependencyResolver;
 import org.mevenide.project.resource.DefaultResourceResolver;
 import org.mevenide.project.resource.IResourceResolver;
+import org.mevenide.util.MevenideUtil;
 
 /**
  * 
@@ -115,6 +121,8 @@ public class ProjectWriter {
 	 * Try to resolve the dependency using the dependency factory 
 	 * checks first that the Dependency isnot already present is the dependencies list. 
 	 * 
+	 * not optimized.. 
+	 * 
 	 * @param absoluteFileName
 	 * @param pom
 	 * @throws Exception
@@ -132,21 +140,24 @@ public class ProjectWriter {
 		}
 		
 		//@todo manage jar.overridding
-		
+		jarOverride(dependency.getArtifact(), new File(pom.getParent(), "project.properties"), pom);
+
 	}
 	
 	
 	public void addDependency(Dependency dependency, File pom) throws Exception {
 		Project project = projectReader.read(pom);
 
-		if ( !dependencyResolver.isDependencyPresent(project, dependency) ) {
+		if ( !dependencyResolver.isDependencyPresent(project, dependency) && DependencyUtil.isValid(dependency) ) {
 			
 			project.addDependency(dependency);
 			write(project, pom);
 	
 		}
 		
-		//@todo jaroverriding 
+		//jaroverriding
+		jarOverride(dependency.getArtifact(), new File(pom.getParent(), "project.properties"), pom);
+		
 	}
 	
 	public void setDependencies(List dependencies, File pom) throws Exception {
@@ -155,7 +166,11 @@ public class ProjectWriter {
 		project.setDependencies(dependencies);
 		write(project, pom);
 	
-		//@todo jaroverriding 
+		//jaroverriding
+		for (int i = 0; i < dependencies.size(); i++) {
+			Dependency dependency = (Dependency)dependencies.get(i); 
+			jarOverride(dependency.getArtifact(), new File(pom.getParent(), "project.properties"), pom);
+		} 
 	}
 	
 	/** 
@@ -192,5 +207,41 @@ public class ProjectWriter {
 	}
 
 	
-
+    
+    private void jarOverride(String path, File propertiesFile, File pom) throws Exception {
+		Dependency dep = DependencyFactory.getFactory().getDependency(path);
+		String groupId = dep.getGroupId();
+		String artifactId = dep.getArtifactId();
+		
+		System.out.println(Environment.getMavenRepository());
+		System.out.println(MevenideUtil.findFile(new File(Environment.getMavenRepository()), path));
+		
+		if ( !MevenideUtil.findFile(new File(Environment.getMavenRepository()), new File(path).getName()) ) {
+	
+			if ( groupId == null || groupId.trim().equals("") ) {
+				dep.setGroupId("nonResolvedGroupId");
+			}
+			if ( artifactId == null || artifactId.trim().equals("") ) {
+				String fname = new File(path).getName().substring(0, new File(path).getName().lastIndexOf('.'));
+				dep.setArtifactId(fname);
+			}
+			
+			Properties properties = new Properties();
+			properties.load(new FileInputStream(propertiesFile));
+			
+			properties.setProperty("maven.jar.override", "on");
+			
+			properties.setProperty("maven.jar." + dep.getArtifactId(), path);
+			
+			properties.store(new FileOutputStream(propertiesFile), null);
+			
+			Project project = ProjectReader.getReader().read(pom);
+			
+			project.getDependencies().remove(DependencyFactory.getFactory().getDependency(path));
+			project.addDependency(dep);
+			
+			write(project, pom);
+		}
+		
+	} 
 }
