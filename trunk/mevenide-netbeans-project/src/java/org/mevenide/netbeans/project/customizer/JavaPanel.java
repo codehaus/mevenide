@@ -16,25 +16,38 @@
  */
 package org.mevenide.netbeans.project.customizer;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 
 import java.util.List;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.mevenide.netbeans.project.MavenProject;
 import org.mevenide.netbeans.project.customizer.ui.LocationComboFactory;
 import org.mevenide.netbeans.project.customizer.ui.OriginChange;
 import org.mevenide.properties.IPropertyLocator;
+import org.netbeans.api.java.platform.JavaPlatform;
+import org.netbeans.api.java.platform.JavaPlatformManager;
+import org.netbeans.api.java.platform.PlatformsCustomizer;
+import org.openide.filesystems.FileObject;
+import org.openide.filesystems.FileUtil;
+import org.openide.util.Utilities;
 
 /**
  * basic props of java and jar plugins.
- * @author  Milos Kleint (ca206216@tiscali.cz)
+ * @author  Milos Kleint (mkleint@codehaus.org)
  */
 public class JavaPanel extends JPanel implements ProjectPanel {
     private static Log logger = LogFactory.getLog(BuildPanel.class);
@@ -48,6 +61,7 @@ public class JavaPanel extends JPanel implements ProjectPanel {
     private OriginChange ocMainClass;
     private OriginChange ocManifest;
     private OriginChange ocCompress;
+    private OriginChange ocExecutable;
     
     private HashMap changes;
 
@@ -59,6 +73,13 @@ public class JavaPanel extends JPanel implements ProjectPanel {
         valObserver = null;
         setName("Java and Jar");
         populateChangeInstances();
+        populatePlatformCombo(project.getPropertyResolver().getResolvedValue("maven.compile.executable"));
+        comPlatform.setToolTipText("In order to have code completion and other IDE features" +
+                " for the project, the user should define a Java Platform corresponding to the " +
+                " compilate executable.");
+        ExecutableListener lst = new ExecutableListener();
+        comPlatform.addActionListener(lst);
+        txtExecutable.getDocument().addDocumentListener(lst);
     }
     
     /** This method is called from within the constructor to
@@ -91,6 +112,12 @@ public class JavaPanel extends JPanel implements ProjectPanel {
         btnCompress = (JButton)ocCompress.getComponent();
         cbCompress = new javax.swing.JCheckBox();
         jPanel1 = new javax.swing.JPanel();
+        ocExecutable = LocationComboFactory.createPropertiesChange(project);
+        btnExecutable = (JButton)ocExecutable.getComponent();
+        lblExecutable = new javax.swing.JLabel();
+        txtExecutable = new javax.swing.JTextField();
+        comPlatform = new javax.swing.JComboBox();
+        btnEdit = new javax.swing.JButton();
 
         setLayout(new java.awt.GridBagLayout());
 
@@ -132,7 +159,7 @@ public class JavaPanel extends JPanel implements ProjectPanel {
         lblAdditional.setText("Additional Compiler Options:");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridy = 4;
         gridBagConstraints.gridwidth = 2;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(6, 0, 0, 0);
@@ -140,7 +167,7 @@ public class JavaPanel extends JPanel implements ProjectPanel {
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridy = 4;
         gridBagConstraints.gridwidth = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
@@ -149,7 +176,7 @@ public class JavaPanel extends JPanel implements ProjectPanel {
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 4;
-        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridy = 4;
         gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
         add(btnAdditional, gridBagConstraints);
 
@@ -157,7 +184,7 @@ public class JavaPanel extends JPanel implements ProjectPanel {
         lblMainClass.setText("Main Class:");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 4;
+        gridBagConstraints.gridy = 5;
         gridBagConstraints.gridwidth = 2;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(18, 0, 0, 0);
@@ -165,7 +192,7 @@ public class JavaPanel extends JPanel implements ProjectPanel {
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 4;
+        gridBagConstraints.gridy = 5;
         gridBagConstraints.gridwidth = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
@@ -174,7 +201,7 @@ public class JavaPanel extends JPanel implements ProjectPanel {
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 4;
-        gridBagConstraints.gridy = 4;
+        gridBagConstraints.gridy = 5;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(18, 6, 0, 0);
         add(btnMainClass, gridBagConstraints);
@@ -183,7 +210,7 @@ public class JavaPanel extends JPanel implements ProjectPanel {
         lblManifest.setText("Manifest File:");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 5;
+        gridBagConstraints.gridy = 6;
         gridBagConstraints.gridwidth = 2;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(6, 0, 0, 0);
@@ -191,7 +218,7 @@ public class JavaPanel extends JPanel implements ProjectPanel {
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 5;
+        gridBagConstraints.gridy = 6;
         gridBagConstraints.gridwidth = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
@@ -200,14 +227,14 @@ public class JavaPanel extends JPanel implements ProjectPanel {
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 4;
-        gridBagConstraints.gridy = 5;
+        gridBagConstraints.gridy = 6;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
         add(btnManifest, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 6;
+        gridBagConstraints.gridy = 7;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(6, 0, 0, 0);
         add(btnCompress, gridBagConstraints);
@@ -215,7 +242,7 @@ public class JavaPanel extends JPanel implements ProjectPanel {
         cbCompress.setText("Compress JAR File");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 6;
+        gridBagConstraints.gridy = 7;
         gridBagConstraints.gridwidth = 2;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
@@ -223,14 +250,69 @@ public class JavaPanel extends JPanel implements ProjectPanel {
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 7;
+        gridBagConstraints.gridy = 8;
         gridBagConstraints.gridwidth = 5;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         gridBagConstraints.weighty = 0.1;
         add(jPanel1, gridBagConstraints);
 
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 4;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
+        add(btnExecutable, gridBagConstraints);
+
+        lblExecutable.setLabelFor(txtExecutable);
+        lblExecutable.setText("Compilation Executable:");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(6, 0, 0, 0);
+        add(lblExecutable, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
+        add(txtExecutable, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(6, 0, 0, 0);
+        add(comPlatform, gridBagConstraints);
+
+        btnEdit.setText("Edit...");
+        btnEdit.setToolTipText("Edit the Defined Java Platforms");
+        btnEdit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditActionPerformed(evt);
+            }
+        });
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 3;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
+        add(btnEdit, gridBagConstraints);
+
     }//GEN-END:initComponents
+
+    private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditActionPerformed
+        // TODO add your handling code here:
+        PlatformsCustomizer.showCustomizer(null);
+    }//GEN-LAST:event_btnEditActionPerformed
     
   private void populateChangeInstances() {
         createToggleChangeInstance("maven.compile.debug", cbDebug, ocDebug, true);
@@ -239,6 +321,7 @@ public class JavaPanel extends JPanel implements ProjectPanel {
         createChangeInstance("maven.compile.compilerargs", txtAdditional, ocAdditional);
         createChangeInstance("maven.jar.mainclass", txtMainClass, ocMainClass);
         createChangeInstance("maven.jar.manifest", txtManifest, ocManifest);
+        createChangeInstance("maven.compile.executable", txtExecutable, ocExecutable);
         
    }
    
@@ -267,6 +350,7 @@ public class JavaPanel extends JPanel implements ProjectPanel {
         assignValue("maven.compile.compilerargs", resolve);
         assignValue("maven.jar.mainclass", resolve);
         assignValue("maven.jar.manifest", resolve);
+        assignValue("maven.compile.executable", resolve);
    }
    
    
@@ -307,25 +391,126 @@ public class JavaPanel extends JPanel implements ProjectPanel {
         return message;
     }
     
+    private void populatePlatformCombo(String customCompile) {
+        Collection col = new ArrayList();
+        
+        JavaPlatformManager pm = JavaPlatformManager.getDefault();
+        JavaPlatform[] platforms = pm.getInstalledPlatforms();
+        Object selected = new NoCorrectPlatform();
+        String def = pm.getDefaultPlatform().getDisplayName();
+        
+        for (int i = 0; i < platforms.length; i++) {
+            if (!def.equals(platforms[i].getDisplayName())) {
+                col.add(platforms[i].getDisplayName());
+            } else {
+                col.add(selected);
+            }
+        }
+        if (customCompile != null && customCompile.trim().length() > 0) {
+            boolean found = false;
+            File fl = new File(customCompile);
+            if (fl.exists()) {
+                FileObject toolFO = FileUtil.toFileObject(fl);
+                if (toolFO != null) {
+                    String toolname = toolFO.getNameExt();
+                    for (int i = 0; i < platforms.length; i++) {
+                        if (!def.equals(platforms[i].getDisplayName())) {
+                            FileObject fo = platforms[i].findTool(toolname);
+                            if (fo != null && fo.equals(toolFO)) {
+                                selected = platforms[i].getDisplayName();
+                                found = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        comPlatform.setModel(new DefaultComboBoxModel(col.toArray()));
+        comPlatform.setSelectedItem(selected);
+    }
+
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdditional;
     private javax.swing.JButton btnCompress;
     private javax.swing.JButton btnDebug;
     private javax.swing.JButton btnDeprecated;
+    private javax.swing.JButton btnEdit;
+    private javax.swing.JButton btnExecutable;
     private javax.swing.JButton btnMainClass;
     private javax.swing.JButton btnManifest;
     private javax.swing.JCheckBox cbCompress;
     private javax.swing.JCheckBox cbDebug;
     private javax.swing.JCheckBox cbDeprecated;
+    private javax.swing.JComboBox comPlatform;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JLabel lblAdditional;
+    private javax.swing.JLabel lblExecutable;
     private javax.swing.JLabel lblMainClass;
     private javax.swing.JLabel lblManifest;
     private javax.swing.JTextField txtAdditional;
+    private javax.swing.JTextField txtExecutable;
     private javax.swing.JTextField txtMainClass;
     private javax.swing.JTextField txtManifest;
     // End of variables declaration//GEN-END:variables
     
 
+    private static class NoCorrectPlatform {
+        private NoCorrectPlatform() {
+            
+        }
+        
+        public String toString() {
+            return "Default Platform";
+        }
+    }
+    
+    private class ExecutableListener implements ActionListener, DocumentListener {
+        private boolean skip = false;
+        
+        public void actionPerformed(ActionEvent actionEvent) {
+            if (!skip) {
+                skip = true;
+                Object obj = comPlatform.getSelectedItem();
+                if (!(obj instanceof NoCorrectPlatform)) {
+                    String str = (String)obj;
+                    JavaPlatformManager pm = JavaPlatformManager.getDefault();
+                    JavaPlatform[] platforms = pm.getPlatforms(str, null);
+                    if (platforms != null && platforms.length > 0) {
+                        JavaPlatform plat = platforms[0];
+                        String toFind = Utilities.isWindows() ? "javac.exe" : "javac";
+                        FileObject fo = plat.findTool(toFind);
+                        if (fo != null) {
+                            File fil = FileUtil.toFile(fo);
+                            txtExecutable.setText(fil.getAbsolutePath());
+                        }
+                    }
+                }
+                skip = false;
+            }
+        }
+
+        public void changedUpdate(DocumentEvent documentEvent) {
+            change();
+        }
+
+        public void insertUpdate(DocumentEvent documentEvent) {
+            change();
+        }
+
+        public void removeUpdate(DocumentEvent documentEvent) {
+            change();
+        }
+        
+        private void change() {
+            if (!skip) {
+                skip = true;
+                populatePlatformCombo(project.getPropertyResolver().resolveString(txtExecutable.getText()));
+                skip = false;
+            }
+        }
+        
+    } 
     
 }
