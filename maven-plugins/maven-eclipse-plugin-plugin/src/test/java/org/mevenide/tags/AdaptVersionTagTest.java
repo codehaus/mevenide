@@ -46,7 +46,7 @@ public class AdaptVersionTagTest extends TestCase {
         assertEquals("1.0.0", tag.adapt());
         
         tag.setVersion("1..0");
-        assertEquals("1.0", tag.adapt());
+        assertEquals("1.0.0", tag.adapt());
         
         tag.setVersion("1.0-rc1");
         assertEquals("1.0.1", tag.adapt());
@@ -61,7 +61,10 @@ public class AdaptVersionTagTest extends TestCase {
         assertEquals("1.0." + new SimpleDateFormat("yyyyMMdd").format(new Date()), tag.adapt());
         
         tag.setVersion("1.0.");
-        assertEquals("1.0", tag.adapt());
+        assertEquals("1.0.0", tag.adapt());
+        
+        tag.setVersion("1.2");
+        assertEquals("1.2.0", tag.adapt());
     }
 
 }
