@@ -7,16 +7,15 @@
    class="org.mevenide.ui.eclipse.MavenPlugin">
 
    <runtime>
-      <library name="lib/jdom-1.0b8.jar"/>
-      <library name="lib/junit.jar"/>
-      <library name="lib/maven.jar"/>
-      <library name="lib/goals-grabber-1.0.jar"/>
-      <library name="lib/mevenide-core-0.1.jar"/>
-      <library name="lib/forehead-1.0-beta-4.jar"/>
       <library name="lib/commons-discovery.jar"/>
       <library name="lib/commons-logging-1.0.1.jar"/>
+      <library name="lib/forehead-1.0-beta-4.jar"/>
+      <library name="lib/jdom-1.0b8.jar"/>
+      <library name="lib/maven-SNAPSHOT.jar"/>
+      <library name="lib/mevenide-core-1.0.jar"/>
+      <library name="lib/mevenide-goals-grabber-1.0.jar"/>
       <library name="lib/xerces-2.2.1.jar"/>
-      <library name="mevenide-ui-eclipse-0.1.jar">
+      <library name="mevenide-ui-eclipse-1.0.jar">
          <export name="*"/>
       </library>
    </runtime>
@@ -48,6 +47,7 @@
 <!-- Maven actions -->
    <extension
          point="org.eclipse.ui.popupMenus">
+         
       <!-- project contributions (adaptable) -->
       <objectContribution
             objectClass="org.eclipse.core.resources.IProject"
@@ -135,6 +135,7 @@
                </enablement>
          </action>
       </objectContribution>
+      
       <!-- project.xml contributions -->
       <objectContribution
             objectClass="org.eclipse.core.resources.IFile"
@@ -178,7 +179,7 @@
       </objectContribution>
    </extension>
 
-<!-- Maven preferences -->
+   <!-- Maven preferences -->
    <extension
          point="org.eclipse.ui.preferencePages">
       <page
