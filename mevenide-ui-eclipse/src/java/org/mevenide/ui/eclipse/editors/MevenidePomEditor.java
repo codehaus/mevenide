@@ -58,7 +58,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Project;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
@@ -403,14 +402,6 @@ public class MevenidePomEditor extends MultiPageEditorPart {
 			this.modelDirty = modelDirty;
     		fireDirtyStateChanged();
     	}
-    }
-
-    /**
-     * Method declared on IEditorPart
-     */
-    public void gotoMarker(IMarker marker) {
-        setActivePage(0);
-        getEditor(0).gotoMarker(marker);
     }
 
     /**

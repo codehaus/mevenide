@@ -56,6 +56,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.variables.VariablesPlugin;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
@@ -174,7 +175,7 @@ public class MavenLaunchShortcut implements ILaunchShortcut {
 		try {
 			ILaunchConfigurationWorkingCopy workingCopy = type.newInstance(null, name);
 			workingCopy.setAttribute(IExternalToolConstants.ATTR_WORKING_DIRECTORY,
-			        DebugPlugin.getDefault().getStringVariableManager().generateVariableExpression("workspace_loc", project.getFullPath().toString())); 
+			        VariablesPlugin.getDefault().getStringVariableManager().generateVariableExpression("workspace_loc", project.getFullPath().toString())); 
 			workingCopy.setAttribute(MavenArgumentsTab.GOALS_TO_RUN, Mevenide.getPlugin().getDefaultGoals());
 			
 			// set default for common settings
