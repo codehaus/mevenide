@@ -36,12 +36,14 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 
+import com.mockobjects.MockObject;
+
 /**
  * @author Jeffrey Bonevich (jeff@bonevich.com) 
  * @version $Id$
  */
 public class MockFile 
-//	extends MockObject
+	extends MockObject
 	implements IFile {
 
 	private IPath path;
