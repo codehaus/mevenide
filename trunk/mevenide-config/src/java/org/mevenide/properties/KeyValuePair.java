@@ -19,6 +19,13 @@ package org.mevenide.properties;
 
 import org.mevenide.properties.util.Utils;
 
+/**
+ * 
+ * @author  <a href="ca206216@tiscali.cz">Milos Kleint</a>
+ * @author <a href="mailto:rhill2@free.fr">Gilles Dodinet</a>
+ * @version $Id$
+ *
+ */
 public class KeyValuePair extends Element {
     private String key;
     private StringBuffer buf;

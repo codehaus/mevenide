@@ -24,6 +24,7 @@ import java.util.List;
 /**
  * Model of properties file.
  * @author  Milos Kleint (ca206216@tiscali.cz)
+ * @author  <a href="rhill2@free.fr">Gilles Dodinet</a>
  */
 public class PropertyModel
 {

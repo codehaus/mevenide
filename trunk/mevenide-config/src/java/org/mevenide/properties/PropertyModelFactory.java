@@ -30,6 +30,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
+ * @author  <a href="ca206216@tiscali.cz">Milos Kleint</a> 
  * @author <a href="mailto:rhill2@free.fr">Gilles Dodinet</a>
  * @version $Id$
  *  

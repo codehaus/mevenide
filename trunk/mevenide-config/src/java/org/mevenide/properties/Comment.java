@@ -17,6 +17,13 @@
  */
 package org.mevenide.properties;
 
+/**
+ * 
+ * @author  <a href="ca206216@tiscali.cz">Milos Kleint</a>
+ * @author <a href="mailto:rhill2@free.fr">Gilles Dodinet</a>
+ * @version $Id$
+ *
+ */
 public class Comment extends Element {
     private StringBuffer buf;
     
