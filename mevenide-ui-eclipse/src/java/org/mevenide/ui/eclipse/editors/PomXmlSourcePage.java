@@ -70,13 +70,13 @@ public class PomXmlSourcePage
 	extends TextEditor 
 	implements IPomEditorPage {
 
+	private static final Log log = LogFactory.getLog(PomXmlSourcePage.class);
+    
 	private MevenidePomEditor editor;
 	private IDocumentListener documentListener;
 	private boolean modelNeedsUpdating;
 	private boolean active = false;
 
-    private static final Log log = LogFactory.getLog(PomXmlSourcePage.class);
-    
 	public PomXmlSourcePage(MevenidePomEditor editor) {
 		super();
 		this.editor = editor;
