@@ -8,7 +8,8 @@
       <item href="http://maven.apache.org/" name="Maven"/>
       <item href="http://mevenide.sf.net/" name="Mevenide"/>
     </links>
-    <menu name="Overview">
+    <menu name="General">
+      <item href="/index.html" name="Overview"/>
       <item href="/license.html" name="License"/>
     </menu>
     
