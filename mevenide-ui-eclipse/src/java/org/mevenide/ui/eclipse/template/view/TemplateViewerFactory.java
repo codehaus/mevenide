@@ -37,7 +37,7 @@ public class TemplateViewerFactory {
     
     public static TreeViewer createTemplateViewer(Composite parent) {
         GridData gd = new GridData(GridData.FILL_BOTH);
-        TreeViewer templateViewer = new TreeViewer(parent, SWT.V_SCROLL);
+        TreeViewer templateViewer = new TreeViewer(parent, SWT.V_SCROLL | SWT.BORDER);
         templateViewer.getControl().setLayoutData(gd);
         templateViewer.setUseHashlookup(true);
         TemplateContentProvider contentProvider = new TemplateContentProvider();

@@ -19,7 +19,6 @@ package org.mevenide.ui.eclipse.goals.view;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
@@ -29,7 +28,7 @@ import org.apache.commons.logging.LogFactory;
 import org.eclipse.help.browser.IBrowser;
 import org.eclipse.help.internal.browser.BrowserDescriptor;
 import org.eclipse.help.internal.browser.BrowserManager;
-import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
 import org.eclipse.jface.viewers.ICheckStateListener;
@@ -73,7 +72,7 @@ import org.mevenide.ui.eclipse.goals.model.Plugin;
  * @version $Id: GoalsPickerDialog.java,v 1.1 8 sept. 2003 Exp gdodinet 
  * 
  */
-public class GoalsPickerDialog  extends Dialog {
+public class GoalsPickerDialog  extends TitleAreaDialog {
 	private static final String HTTP_SERVER_ERROR = "5";
     private static final String HTTP_CLIENT_ERROR = "4";
     private static Log log = LogFactory.getLog(GoalsPickerDialog.class);
@@ -114,6 +113,9 @@ public class GoalsPickerDialog  extends Dialog {
 	}
 	
 	protected Control createDialogArea(Composite parent) {
+	    getShell().setText(Mevenide.getResourceString("Available Goals"));
+		setShellStyle(SWT.RESIZE | SWT.APPLICATION_MODAL);
+		//setMessage("Choose POM template from the list below.");
         try {
         	Composite composite = new Composite(parent, SWT.NONE);
         	composite.setLayout(new GridLayout());

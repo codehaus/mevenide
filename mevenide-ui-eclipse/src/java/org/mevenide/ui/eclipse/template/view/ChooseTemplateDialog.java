@@ -16,7 +16,7 @@
  */
 package org.mevenide.ui.eclipse.template.view;
 
-import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -38,19 +38,22 @@ import org.mevenide.ui.eclipse.template.model.Templates;
  * @version $Id$
  * 
  */
-public class ChooseTemplateDialog extends Dialog {
+public class ChooseTemplateDialog extends TitleAreaDialog {
     private Template selectedTemplate;
     
     public ChooseTemplateDialog() {
 		super(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell());
-		super.setBlockOnOpen(true);
+		this.setBlockOnOpen(true);
 	}
 	
 	protected Control createDialogArea(Composite parent) {
+	    getShell().setText("Pom Templates");
+		setMessage("Choose POM template from the list below.");
+	    setShellStyle(SWT.RESIZE | SWT.APPLICATION_MODAL);
 	    Composite composite = new Composite(parent, SWT.RESIZE);
         GridLayout layout = new GridLayout();
-        layout.marginHeight = 0;
-        layout.marginWidth = 0;
+        layout.marginHeight = 5;
+        layout.marginWidth = 5;
         layout.numColumns = 1;
         composite.setLayout(layout);
         composite.setLayoutData(new GridData(GridData.FILL_BOTH));

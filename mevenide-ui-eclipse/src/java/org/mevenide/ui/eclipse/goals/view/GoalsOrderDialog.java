@@ -11,7 +11,6 @@
 package org.mevenide.ui.eclipse.goals.view;
 
 import java.util.List;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.jface.dialogs.Dialog;
@@ -27,7 +26,6 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.mevenide.ui.eclipse.Mevenide;
@@ -68,20 +66,14 @@ public class GoalsOrderDialog extends Dialog implements ISelectionChangedListene
 	 */
 	protected Control createDialogArea(Composite parent) {
 		getShell().setText(Mevenide.getResourceString(DIALOG_TITLE));
-		
+		setShellStyle(SWT.RESIZE | SWT.APPLICATION_MODAL);
+		//setMessage("Choose POM template from the list below.");
 		Composite comp = new Composite(parent, SWT.NONE);
 		comp.setFont(parent.getFont());
 		GridLayout layout = new GridLayout(2, false);
 		comp.setLayout(layout);
 		GridData gd = new GridData(GridData.FILL_BOTH);
 		comp.setLayoutData(gd);
-		
-		Label label = new Label(comp, SWT.NONE);
-		label.setText(Mevenide.getResourceString(DIALOG_TITLE));
-		label.setFont(comp.getFont());
-		gd = new GridData(GridData.FILL_HORIZONTAL);
-		gd.horizontalSpan = 2;
-		label.setLayoutData(gd);		
 		
 		createTargetList(comp);
 		
