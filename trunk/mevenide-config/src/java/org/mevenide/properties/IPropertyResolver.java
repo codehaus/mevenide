@@ -28,5 +28,8 @@ public interface IPropertyResolver extends IPropertyFinder {
      * Returns the value for the given key, if found. Otherwise null.
      */
     String getResolvedValue(String key);
-        
+    /**
+     * processes the parameter any definitions with their values.
+     */
+    String resolveString(String original);
 }
