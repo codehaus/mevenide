@@ -31,26 +31,17 @@ import java.util.zip.ZipInputStream;
 import javax.swing.JComponent;
 import javax.swing.event.ChangeListener;
 import org.apache.commons.logging.Log;
-
 import org.apache.commons.logging.LogFactory;
-
-
 import org.jdom.Element;
 import org.jdom.input.DefaultJDOMFactory;
-
 import org.jdom.input.JDOMFactory;
 import org.jdom.output.XMLOutputter;
-
-
 import org.mevenide.project.io.JDomProjectUnmarshaller;
-
-
 import org.netbeans.spi.project.ui.templates.support.Templates;
 import org.openide.WizardDescriptor;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.loaders.DataObject;
-
 import org.openide.loaders.TemplateWizard;
 
 

@@ -286,6 +286,16 @@ public class MavenProject implements Project {
         return null;
     }
     
+   public URI getGeneratedSourcesDir() {
+        String path = properties.getResolvedValue("maven.build.src");
+        if (path != null) {
+            File fl = new File(path);
+            return FileUtil.normalizeFile(fl).toURI();
+        }
+        logger.warn("maven.build.src not defined.");
+        return null;
+    }    
+    
     public URI getTestBuildClassesDir() {
         String path = properties.getResolvedValue("maven.test.dest");
         if (path != null) {
@@ -383,7 +393,6 @@ public class MavenProject implements Project {
             if (!isFolder) {
                 String nameExt = fileEvent.getFile().getNameExt();
                 if (Arrays.binarySearch(filesToWatch, nameExt) != -1)  {
-                    System.out.println("file changed=" + fileEvent);
                     firePropertyChange(PROP_PROJECT);
                 }
             }
@@ -396,7 +405,6 @@ public class MavenProject implements Project {
                 if (Arrays.binarySearch(filesToWatch, nameExt) != -1) {
                     File parent = FileUtil.toFile(fileEvent.getFile().getParent());
                     fileEvent.getFile().addFileChangeListener(getFileUpdater());
-                    System.out.println("file created=" + fileEvent);
                     firePropertyChange(PROP_PROJECT);
                 }
             }
@@ -404,14 +412,12 @@ public class MavenProject implements Project {
         
         public void fileDeleted(FileEvent fileEvent) {
             if (!isFolder) {
-                System.out.println("fileDeleted=" + fileEvent);
                 fileEvent.getFile().removeFileChangeListener(getFileUpdater());
                 firePropertyChange(PROP_PROJECT);
             }
         }
         
         public void fileFolderCreated(FileEvent fileEvent) {
-            System.out.println("folder created=" + fileEvent);
             firePropertyChange(PROP_PROJECT);
         }
         

@@ -98,6 +98,10 @@ class MavenProjectChildren extends Children.Keys {
         for (int i = 0; i < javagroup.length; i++) {
             list.add(javagroup[i]);
         }
+        SourceGroup[] gengroup = srcs.getSourceGroups(MavenSourcesImpl.TYPE_GEN_SOURCES);
+        for (int i = 0; i < gengroup.length; i++) {
+            list.add(gengroup[i]);
+        }
         URI webapp = project.getWebAppDirectory();
         if (webapp != null) {
             currentWebAppKey = KEY_WEBAPP + webapp;

@@ -70,9 +70,7 @@ public class CustomizerProviderImpl implements CustomizerProvider {
         dialogDescriptor.setClosingOptions(new Object[] {options[1], options[2] });
         Object retValue = DialogDisplayer.getDefault().notify(dialogDescriptor);
         if (retValue == options[0] || retValue == options[1]) {
-            System.out.println("applying changes..");
             List changes = customizer.getChanges();
-            System.out.println("number of changes=" + changes.size());
             try {
                 NbProjectWriter writer = new NbProjectWriter(project);
                 writer.applyChanges(changes);
