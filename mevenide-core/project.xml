@@ -105,21 +105,10 @@
                 <netbeans.module.dep>spec</netbeans.module.dep>
             </properties>
         </dependency>
-        <!-- a runtime dependency for netbeans, will include all the maven related jars on classpath -->
-<!--        <dependency>
-            <groupId>mevenide</groupId>
-            <artifactId>maven-nb-module</artifactId>
-            <version>1.0-RC1</version>
-            <type>jar</type>
-            <properties>
-                <netbeans.module.dep>spec</netbeans.module.dep>
-            </properties>
-        </dependency>
-        -->
         <!-- 
-        	following dependencies are required since we have copied 
+        	Following dependencies are required since we have copied 
         	DefaultProjectUnmarshaller into org.mevenide.util
-        	Will be removed as soon as a stable version will be released
+        	Have to find a cleaner solution
         -->
         <dependency>
             <groupId>ant</groupId>
@@ -176,16 +165,16 @@
             	<eclipse.plugin.bundle>true</eclipse.plugin.bundle>
             </properties>
         </dependency>
-    <dependency>
-        <groupId>mevenide</groupId>
-        <artifactId>mevenide-config</artifactId>
-        <version>0.1-SNAPSHOT</version>
-        <type>jar</type>
-	    <properties>
-          	<eclipse.plugin.bundle>true</eclipse.plugin.bundle>
-            <netbeans.module.dep>spec</netbeans.module.dep>
-	    </properties>
-    </dependency>
+        <dependency>
+            <groupId>mevenide</groupId>
+            <artifactId>mevenide-config</artifactId>
+            <version>0.1-SNAPSHOT</version>
+            <type>jar</type>
+            <properties>
+                <eclipse.plugin.bundle>true</eclipse.plugin.bundle>
+                <netbeans.module.dep>spec</netbeans.module.dep>
+            </properties>
+        </dependency>
         
     </dependencies>
 </project>

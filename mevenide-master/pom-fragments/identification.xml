@@ -3,9 +3,9 @@
   <currentVersion>0.1</currentVersion>
   <logo>/images/mevenide-simple-125x37.png</logo>
   <organization>
-    <name>Mevenide @ Sourceforge</name>
-    <url>http://sf.net/</url>
-    <logo>http://sourceforge.net/sflogo.php?group_id=54263&amp;type=2</logo>
+    <name>The Codehaus</name>
+    <url>http://www.codehaus.org/</url>
+    <logo>images/codehaus_209x40.gif</logo>
   </organization>
   <inceptionYear>2003</inceptionYear>
   <package>org.mevenide</package>

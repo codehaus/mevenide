@@ -1,5 +1,7 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
+<?xml versino="1.0" ?>
+<!DOCTYPE project [
+    <!ENTITY code-reports SYSTEM "file:../mevenide-master/pom-fragments/plugin-pom-fragments/code-reports.xml">
+]>    
 <project>
   <extend>${basedir}/../mevenide-master/plugin-base-project.xml</extend>
   
@@ -103,4 +105,7 @@
      </resources> 
    </build>   
   
+   <reports>
+		&code-reports;
+	</reports>
 </project>

@@ -11,13 +11,13 @@
   &base-identification;
   <issueTrackingUrl>http://sourceforge.net/tracker/?group_id=54263&amp;atid=473195</issueTrackingUrl>
 
-  <siteAddress>shell.sourceforge.net</siteAddress>
-  <siteDirectory>/home/groups/m/me/mevenide/htdocs/${artifactId}</siteDirectory>
+  <siteAddress>beaver.codehaus.org</siteAddress>
+  <siteDirectory>/home/projects/mevenide/public_html/${artifactId}</siteDirectory>
   
   <repository>
-    <connection>scm:cvs:pserver:anonymous@cvs.sourceforge.net:/cvsroot/mevenide:${pom.artifactId}</connection>
-    <developerConnection>scm:cvs:ext:${maven.username}@cvs.sourceforge.net:/cvsroot/mevenide:${pom.artifactId}</developerConnection>
-    <url>http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/mevenide/${pom.artifactId}/</url>
+    <connection>scm:cvs:pserver:anonymous@cvs.sourceforge.net:/home/projects/mevenide/scm:${pom.artifactId}</connection>
+    <developerConnection>scm:cvs:ext:${maven.username}@cvs.mevenide.codehaus.org:/cvsroot/mevenide:${pom.artifactId}</developerConnection>
+    <url>http://cvs.mevenide.codehaus.org/cvsweb.cgi/${pom.artifactId}/</url>
   </repository>
   <mailingLists>
     &base-lists;
