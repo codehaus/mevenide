@@ -31,7 +31,11 @@ import org.apache.maven.project.builder.DefaultProjectUnmarshaller;
  * 
  */
 public class ProjectSkeleton {
-	private static String template = "/templates/standard/project.xml";
+	
+	/**
+	 * default template used if user doesnot provide one
+	 */
+	private static final String DEFAULT_TEMPLATE = "/templates/standard/project.xml";
 	
 	private ProjectSkeleton() {
 	}
@@ -44,8 +48,21 @@ public class ProjectSkeleton {
 	 */
 	public static String getSkeleton(String projectName) throws Exception {
 		
-		InputStream is = ProjectSkeleton.class.getResourceAsStream(template);
+		InputStream is = ProjectSkeleton.class.getResourceAsStream(DEFAULT_TEMPLATE);
 		
+		return getSkeleton(projectName, is);
+	}
+
+	
+	/**
+	 * allows user to customize the template
+	 * 
+	 * @param projectName
+	 * @param is
+	 * @return
+	 * @throws Exception
+	 */
+	public static String getSkeleton(String projectName, InputStream is) throws Exception {
 		Reader reader = new InputStreamReader(is);
 		Project project = new DefaultProjectUnmarshaller().parse(reader);
 		reader.close();
@@ -61,7 +78,9 @@ public class ProjectSkeleton {
 		writer.close();
 		return writer.toString();
 	}
-
+	
+	
+	
 	private static String getCurrentYear() {
 		GregorianCalendar calendar = new GregorianCalendar();
 		calendar.setTime(new Date());
