@@ -9,19 +9,8 @@
     <description>
     	Mevenide Core provides various utility classes for manipulating POMs, running Maven, synchronizing POMs and IDEs, etc... It is intended to used by concrete IDE plugin.
     </description>
-    <versions>
-      <version>
-        <id>ea</id>
-        <name>0.1-ea</name>
-        <tag>V_0_1_ALPHA_1</tag>
-      </version>
-      <version>
-        <id>alpha-1</id>
-        <name>0.1-alpha-1</name>
-        <tag>V_0_1_ALPHA_1_1</tag>
-      </version>
-    </versions>    
     <dependencies>
+        <!-- is that dependency not managed by maven-junit-plugin ? -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -31,33 +20,19 @@
             	<eclipse.plugin.bundle>true</eclipse.plugin.bundle>
             </properties>
         </dependency>
+        
+        <!-- CarefulProjectMarshaller specific dependency -->
         <dependency>
             <groupId>jdom</groupId>
             <artifactId>jdom</artifactId>
-            <version>1.0b8</version>
+            <version>1.0b9</version>
             <type>jar</type>
             <properties>
                 <netbeans.module.dep>impl</netbeans.module.dep>
             </properties>
         </dependency>
-        <dependency>
-            <groupId>xerces</groupId>
-            <artifactId>xerces</artifactId>
-            <version>2.4.0</version>
-            <type>jar</type>
-            <properties>
-            	<eclipse.plugin.bundle>true</eclipse.plugin.bundle>
-            </properties>
-        </dependency>
-        <dependency>
-            <groupId>commons-discovery</groupId>
-            <artifactId>commons-discovery</artifactId>
-            <version>0.1</version>
-            <type>jar</type>
-            <properties>
-            	<eclipse.plugin.bundle>true</eclipse.plugin.bundle>
-            </properties>
-        </dependency>
+        
+        <!-- logging dependencies -->
         <dependency>
             <groupId>commons-logging</groupId>
             <artifactId>commons-logging</artifactId>
@@ -69,26 +44,6 @@
             </properties>
         </dependency>
         <dependency>
-            <groupId>xpp3</groupId>
-            <artifactId>xpp3</artifactId>
-            <version>1.1.2a</version>
-            <type>jar</type>
-            <properties>
-            	<eclipse.plugin.bundle>true</eclipse.plugin.bundle>
-                <netbeans.module.ext>true</netbeans.module.ext>
-            </properties>
-        </dependency>
-        <dependency>
-            <groupId>xmlpull</groupId>
-            <artifactId>xmlpull</artifactId>
-            <version>1.1.2.1</version>
-            <type>jar</type>
-            <properties>
-            	<eclipse.plugin.bundle>true</eclipse.plugin.bundle>
-                <netbeans.module.ext>true</netbeans.module.ext>
-            </properties>
-        </dependency>
-        <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
             <version>1.2.8</version>
@@ -97,52 +52,82 @@
             	<eclipse.plugin.bundle>true</eclipse.plugin.bundle>
             </properties>
         </dependency>
+        
+        <!-- maven components -->
         <dependency>
             <groupId>maven</groupId>
-            <artifactId>maven</artifactId>
-            <version>1.0-rc2</version>
+            <artifactId>maven-project</artifactId>
+            <version>2.0-SNAPSHOT</version>
             <type>jar</type>
             <properties>
             	<eclipse.plugin.bundle>true</eclipse.plugin.bundle>
                 <netbeans.module.dep>spec</netbeans.module.dep>
             </properties>
         </dependency>
-        <!-- 
-        	Following dependencies are required since we have copied 
-        	DefaultProjectUnmarshaller into org.mevenide.util
-        	Have to find a cleaner solution
-        -->
         <dependency>
-            <groupId>ant</groupId>
-            <artifactId>ant</artifactId>
-            <version>1.5.3-1</version>
+            <groupId>maven</groupId>
+            <artifactId>maven-model</artifactId>
+            <version>2.0-SNAPSHOT</version>
             <type>jar</type>
             <properties>
             	<eclipse.plugin.bundle>true</eclipse.plugin.bundle>
-            </properties>
-        </dependency>
-        <!-- commons-grant : Runtime dependency used by [un]marshaller - should be unneeded now -->
-        <dependency>
-            <groupId>commons-grant</groupId>
-            <artifactId>commons-grant</artifactId>
-            <version>1.0-beta-4</version>
-            <type>jar</type>
-            <properties>
-            	<eclipse.plugin.bundle>true</eclipse.plugin.bundle>
+                <netbeans.module.dep>spec</netbeans.module.dep>
             </properties>
         </dependency>
         <dependency>
-            <groupId>commons-jelly</groupId>
-            <artifactId>commons-jelly</artifactId>
-            <!-- need this version because that one is included with maven rc2 
-                 see:http://maven.apache.org/faq.html#jelly-site-error -->
-    		<version>20030902.160215</version>
-<!--    		<version>1.0-beta-4</version> -->
+            <groupId>maven</groupId>
+            <artifactId>maven-core</artifactId>
+            <version>2.0-SNAPSHOT</version>
             <type>jar</type>
             <properties>
             	<eclipse.plugin.bundle>true</eclipse.plugin.bundle>
+                <netbeans.module.dep>spec</netbeans.module.dep>
             </properties>
         </dependency>
+        
+        <!-- maven rt dependencies -->
+        <dependency>
+            <groupId>plexus</groupId>
+            <artifactId>plexus</artifactId>
+            <version>0.14-SNAPSHOT</version>
+            <type>jar</type>
+            <properties>
+            	<eclipse.plugin.bundle>true</eclipse.plugin.bundle>
+                <netbeans.module.dep>spec</netbeans.module.dep>
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>classworlds</groupId>
+            <artifactId>classworlds</artifactId>
+            <version>1.1-SNAPSHOT</version>
+            <type>jar</type>
+            <properties>
+            	<eclipse.plugin.bundle>true</eclipse.plugin.bundle>
+                <netbeans.module.dep>spec</netbeans.module.dep>
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>xstream</groupId>
+            <artifactId>xstream</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <type>jar</type>
+            <properties>
+            	<eclipse.plugin.bundle>true</eclipse.plugin.bundle>
+                <netbeans.module.dep>spec</netbeans.module.dep>
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>xpp3</groupId>
+            <artifactId>xpp3</artifactId>
+            <version>1.1.3.3</version>
+            <type>jar</type>
+            <properties>
+            	<eclipse.plugin.bundle>true</eclipse.plugin.bundle>
+                <netbeans.module.ext>true</netbeans.module.ext>
+            </properties>
+        </dependency>
+        
+        <!-- only used in MevenideUtils#resolve() -->
         <dependency>
             <groupId>commons-lang</groupId>
             <artifactId>commons-lang</artifactId>
@@ -153,24 +138,6 @@
             </properties>
         </dependency>
         
-        <!-- needed at runtime for MavenUtils -->
-        <dependency>
-           <groupId>commons-betwixt</groupId>
-           <artifactId>commons-betwixt</artifactId>
-           <version>1.0-beta-1</version>
-           <properties>
-            	<eclipse.plugin.bundle>true</eclipse.plugin.bundle>
-            </properties>
-        </dependency>
-        <!-- needed at runtime for MavenUtils -->
-        <dependency>
-           <groupId>commons-digester</groupId>
-           <artifactId>commons-digester</artifactId>
-           <version>1.4.1</version>
-           <properties>
-            	<eclipse.plugin.bundle>true</eclipse.plugin.bundle>
-            </properties>
-        </dependency>
         <dependency>
             <groupId>mevenide</groupId>
             <artifactId>mevenide-config</artifactId>
