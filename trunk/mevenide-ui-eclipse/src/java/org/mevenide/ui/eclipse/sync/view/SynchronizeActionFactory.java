@@ -30,7 +30,6 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
-import org.mevenide.project.io.ProjectReader;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.sync.action.AddPropertyAction;
 import org.mevenide.ui.eclipse.sync.action.AddToClasspathAction;
@@ -40,9 +39,10 @@ import org.mevenide.ui.eclipse.sync.action.RemoveFromClasspathAction;
 import org.mevenide.ui.eclipse.sync.action.RemoveFromPomAction;
 import org.mevenide.ui.eclipse.sync.action.ToggleViewAction;
 import org.mevenide.ui.eclipse.sync.action.ToggleWritePropertiesAction;
-import org.mevenide.ui.eclipse.sync.model.DependencyMappingNode;
-import org.mevenide.ui.eclipse.sync.model.EclipseContainerContainer;
-import org.mevenide.ui.eclipse.sync.model.IArtifactMappingNode;
+import org.mevenide.ui.eclipse.sync.model.ArtifactNode;
+import org.mevenide.ui.eclipse.sync.model.EclipseProjectNode;
+import org.mevenide.ui.eclipse.sync.model.ISelectableNode;
+import org.mevenide.ui.eclipse.sync.model.MavenArtifactNode;
 
 /**
  * 
@@ -75,17 +75,17 @@ public class SynchronizeActionFactory {
 	
 	private static Map factories = new HashMap();
 	
-	private SynchronizeView synchronizeView;
+	private SynchronizationView synchronizationView;
 	
 	private Map actionIds = new HashMap();
 	
 	
-	private SynchronizeActionFactory (SynchronizeView view) {
-		this.synchronizeView = view;
+	private SynchronizeActionFactory (SynchronizationView view) {
+		this.synchronizationView = view;
 		initActions();
 	}
 	
-	public static synchronized SynchronizeActionFactory getFactory(SynchronizeView view) {
+	public static synchronized SynchronizeActionFactory getFactory(SynchronizationView view) {
 		if ( view == null ) {
 			return null;
 		}
@@ -122,32 +122,31 @@ public class SynchronizeActionFactory {
 		final AddToMvnIgnoreAction action = new AddToMvnIgnoreAction();
 		Action addToIgnoreList = new Action() {
 			public void run() {
-				List selections = ((IStructuredSelection) synchronizeView.getArtifactMappingNodeViewer().getSelection()).toList();
+				List selections = ((IStructuredSelection) synchronizationView.getArtifactMappingNodeViewer().getSelection()).toList();
 				
 				for (int i = 0; i < selections.size(); i++) {
-					if ( selections.get(i) instanceof IArtifactMappingNode ) { 
-					IArtifactMappingNode selectedNode = (IArtifactMappingNode) selections.get(i);
+					if ( selections.get(i) instanceof ArtifactNode ) { 
+					ArtifactNode selectedNode = (ArtifactNode) selections.get(i);
 						try  {
-							int direction = synchronizeView.getDirection();
+							int direction = synchronizationView.getDirection();
 							
-							if ( direction == EclipseContainerContainer.OUTGOING ) {
-								EclipseContainerContainer container = (EclipseContainerContainer) synchronizeView.getArtifactMappingNodeViewer().getTree().getItems()[0].getData();
-								IContainer project = container.getProject();
-								action.addEntry(selectedNode,  project);
+							if ( direction == ISelectableNode.OUTGOING_DIRECTION ) {
+								IContainer container = (IContainer) ((EclipseProjectNode) selectedNode.getParent().getParent()).getData();
+								action.addEntry(selectedNode,  container);
 							}
 							else {
-								Project mavenProject = ProjectReader.getReader().read(selectedNode.getDeclaringPom());
+								Project mavenProject = (Project) selectedNode.getParent().getData();
 								action.addEntry(selectedNode,  mavenProject);
 							}
 						}
 						catch ( Exception e ) {
-							log.debug("Unable to add item " + selectedNode.getArtifact() + " to ignore list ", e );
+							log.debug("Unable to add item " + selectedNode.getData() + " to ignore list ", e );
 						}
 					}
 				}
 			}
 		};
-		action.addActionListener(synchronizeView);
+		action.addActionListener(synchronizationView);
 		addToIgnoreList.setId(MVN_IGNORE);
 		addToIgnoreList.setText("Add to .mvnignore");
 		actionIds.put(MVN_IGNORE, addToIgnoreList);
@@ -173,11 +172,11 @@ public class SynchronizeActionFactory {
 		final AddPropertyAction action = new AddPropertyAction();
 		Action editProperties = new Action() {
 			public void run() {
-				DependencyMappingNode node = (DependencyMappingNode) ((StructuredSelection) synchronizeView.getArtifactMappingNodeViewer().getSelection()).getFirstElement();
+				MavenArtifactNode node = (MavenArtifactNode) ((StructuredSelection) synchronizationView.getArtifactMappingNodeViewer().getSelection()).getFirstElement();
 				action.addProperty(node);
 			}
 		};
-		action.addActionListener(synchronizeView);
+		action.addActionListener(synchronizationView);
 		editProperties.setId(ADD_DEPENDENCY_PROPERTIES);
 		editProperties.setText("Add Property");
 		actionIds.put(ADD_DEPENDENCY_PROPERTIES, editProperties);
@@ -198,26 +197,25 @@ public class SynchronizeActionFactory {
 		final RemoveFromPomAction action = new RemoveFromPomAction();
 		Action removeFromPom = new Action() {
 			public void run() {
-				List selections = ((IStructuredSelection) synchronizeView.getArtifactMappingNodeViewer().getSelection()).toList();
+				List selections = ((IStructuredSelection) synchronizationView.getArtifactMappingNodeViewer().getSelection()).toList();
 				
 				for (int i = 0; i < selections.size(); i++) {
-					if ( selections.get(i) instanceof IArtifactMappingNode ) { 
-						IArtifactMappingNode selectedNode = (IArtifactMappingNode) selections.get(i);
+					if ( selections.get(i) instanceof ArtifactNode ) { 
+						ArtifactNode selectedNode = (ArtifactNode) selections.get(i);
 						try  {
-							log.debug(selectedNode.getDeclaringPom());
-							Project mavenProject = ProjectReader.getReader().read(selectedNode.getDeclaringPom());
+							Project mavenProject = (Project) selectedNode.getParent().getData();
 							if ( mavenProject != null ) {
 								action.removeEntry(selectedNode, mavenProject);
 							}
 						}
 						catch ( Exception e ) {
-							log.debug("Unable to remove item " + selectedNode.getArtifact() + " from pom ", e );
+							log.debug("Unable to remove item " + selectedNode.getData() + " from pom ", e );
 						}
 					}
 				}
 			}
 		};
-		action.addActionListener(synchronizeView);
+		action.addActionListener(synchronizationView);
 		removeFromPom.setId(REMOVE_FROM_POM);
 		removeFromPom.setText("Remove from Pom");
 		actionIds.put(REMOVE_FROM_POM, removeFromPom);
@@ -227,24 +225,24 @@ public class SynchronizeActionFactory {
 		final RemoveFromClasspathAction action = new RemoveFromClasspathAction();
 		Action removeFromProject = new Action() {
 			public void run() {
-				List selections = ((IStructuredSelection) synchronizeView.getArtifactMappingNodeViewer().getSelection()).toList();
+				List selections = ((IStructuredSelection) synchronizationView.getArtifactMappingNodeViewer().getSelection()).toList();
 				
 				for (int i = 0; i < selections.size(); i++) {
-					if ( selections.get(i) instanceof IArtifactMappingNode ) { 
-						IArtifactMappingNode selectedNode = (IArtifactMappingNode) selections.get(i);
-						EclipseContainerContainer container = (EclipseContainerContainer) synchronizeView.getArtifactMappingNodeViewer().getTree().getItems()[0].getData();
+					if ( selections.get(i) instanceof ArtifactNode ) { 
+						ArtifactNode selectedNode = (ArtifactNode) selections.get(i);
+						IContainer container = (IContainer) ((EclipseProjectNode) selectedNode.getParent().getParent()).getData();
 						IProject project = container.getProject().getProject();
 						try  {
 							action.removeEntry(selectedNode, project);
 						}
 						catch ( Exception e ) {
-							log.debug("Unable to remove item " + selectedNode.getResolvedArtifact() + " from classpath ", e );
+							log.debug("Unable to remove item " + selectedNode.getData() + " from classpath ", e );
 						}
 					}
 				}
 			}
 		};
-		action.addActionListener(synchronizeView);
+		action.addActionListener(synchronizationView);
 		removeFromProject.setId(REMOVE_FROM_PROJECT);
 		removeFromProject.setText("Remove from project");
 		actionIds.put(REMOVE_FROM_PROJECT, removeFromProject);
@@ -254,14 +252,12 @@ public class SynchronizeActionFactory {
 		final AddToPomAction action = new AddToPomAction();
 		Action pushToPom = new Action() {
 			public void run() {
-				List selections = ((IStructuredSelection) synchronizeView.getArtifactMappingNodeViewer().getSelection()).toList();
+				List selections = ((IStructuredSelection) synchronizationView.getArtifactMappingNodeViewer().getSelection()).toList();
 				
 				for (int j = 0; j < selections.size(); j++) {
-					if ( selections.get(j) instanceof IArtifactMappingNode ) { 
-						IArtifactMappingNode selectedNode = (IArtifactMappingNode) selections.get(j);
-						//EclipseContainerContainer container = (EclipseContainerContainer) synchronizeView.getArtifactMappingNodeViewer().getTree().getItems()[0].getData();
-						//IContainer project = container.getProject();
-						Project currentPom = selectedNode.getParent().getPrimaryPom();
+					if ( selections.get(j) instanceof ArtifactNode ) { 
+						ArtifactNode selectedNode = (ArtifactNode) selections.get(j);
+						Project currentPom = (Project) selectedNode.getParent().getData();
 						try  {
 						    //IContainer f = synchronizeView.getInputContainer();
 						    List mavenProjects = new PomChooser(currentPom).openPomChoiceDialog(false);
@@ -274,47 +270,47 @@ public class SynchronizeActionFactory {
 		                    }
 						}
 						catch ( Exception e ) {
-							log.debug("Unable to add item " + selectedNode.getResolvedArtifact() + " to pom ", e );
+							log.debug("Unable to add item " + selectedNode.getData() + " to pom ", e );
 						}
 					}
 				}
 			}
 		};
-		synchronizeView.addSynchronizationConstraintListener(action);
-		action.addActionListener(synchronizeView);
+		synchronizationView.addSynchronizationConstraintListener(action);
+		action.addActionListener(synchronizationView);
 		pushToPom.setId(ADD_TO_POM);
 		pushToPom.setText("Update Pom...");
 		actionIds.put(ADD_TO_POM, pushToPom);
 	}
 
 	private void createViewPomToIdeAction() {
-	    ToggleViewAction viewPomToIde = new ToggleViewAction(EclipseContainerContainer.INCOMING);
+	    ToggleViewAction viewPomToIde = new ToggleViewAction(ISelectableNode.INCOMING_DIRECTION);
 		viewPomToIde.setId(VIEW_INCOMING);
 		viewPomToIde.setToolTipText("Incoming Changes");
 		viewPomToIde.setImageDescriptor(Mevenide.getImageDescriptor("pom_to_ide_sync.gif"));
 		actionIds.put(VIEW_INCOMING, viewPomToIde);
-		synchronizeView.addDirectionListener(viewPomToIde);
-		viewPomToIde.addPropertyChangeListener(synchronizeView);
+		synchronizationView.addDirectionListener(viewPomToIde);
+		viewPomToIde.addPropertyChangeListener(synchronizationView);
 	}
 
 	private void createViewIdeToPomAction() {
-	    ToggleViewAction viewIdeToPom = new ToggleViewAction(EclipseContainerContainer.OUTGOING);
+	    ToggleViewAction viewIdeToPom = new ToggleViewAction(ISelectableNode.OUTGOING_DIRECTION);
 		viewIdeToPom.setId(VIEW_OUTGOING);
 		viewIdeToPom.setToolTipText("Outgoing changes");
 		viewIdeToPom.setImageDescriptor(Mevenide.getImageDescriptor("ide_to_pom_sync.gif"));
 		actionIds.put(VIEW_OUTGOING, viewIdeToPom);
-		synchronizeView.addDirectionListener(viewIdeToPom);
-		viewIdeToPom.addPropertyChangeListener(synchronizeView);
+		synchronizationView.addDirectionListener(viewIdeToPom);
+		viewIdeToPom.addPropertyChangeListener(synchronizationView);
 	}
 
 	private void createViewConflictsAction() {
-	    ToggleViewAction viewConflicts = new ToggleViewAction(EclipseContainerContainer.CONFLICTING);
+	    ToggleViewAction viewConflicts = new ToggleViewAction(ISelectableNode.CONFLICTING_DIRECTION);
 		viewConflicts.setId(VIEW_CONFLICTS);
 		viewConflicts.setToolTipText("Conflicts");
 		viewConflicts.setImageDescriptor(Mevenide.getImageDescriptor("conflict_synch.gif"));
 		actionIds.put(VIEW_CONFLICTS, viewConflicts);
-		synchronizeView.addDirectionListener(viewConflicts);
-		viewConflicts.addPropertyChangeListener(synchronizeView);
+		synchronizationView.addDirectionListener(viewConflicts);
+		viewConflicts.addPropertyChangeListener(synchronizationView);
 	}
 
 	private void createWritePropertiesAction() {
@@ -323,13 +319,13 @@ public class SynchronizeActionFactory {
 		writeProperties.setToolTipText("Override project.properties");
 		writeProperties.setImageDescriptor(Mevenide.getImageDescriptor("write_properties.gif"));
 		actionIds.put(WRITE_PROPERTIES, writeProperties);
-		writeProperties.addPropertyChangeListener(synchronizeView);
+		writeProperties.addPropertyChangeListener(synchronizationView);
 	}
 	
 	private void createRefreshAllAction() {
 		Action refreshAll = new Action() {
 			public void run() {
-				synchronizeView.refreshAll(false);
+				synchronizationView.refreshAll();
 			}
 		};
 		refreshAll.setId(REFRESH_ALL);
@@ -342,24 +338,24 @@ public class SynchronizeActionFactory {
 		final AddToClasspathAction action = new AddToClasspathAction();
 		Action addToClasspath = new Action() {
 			public void run() {
-				List selections = ((IStructuredSelection) synchronizeView.getArtifactMappingNodeViewer().getSelection()).toList();
+				List selections = ((IStructuredSelection) synchronizationView.getArtifactMappingNodeViewer().getSelection()).toList();
 				
 				for (int i = 0; i < selections.size(); i++) {
-					if ( selections.get(i) instanceof IArtifactMappingNode ) { 
-						IArtifactMappingNode selectedNode = (IArtifactMappingNode) selections.get(i);
-						EclipseContainerContainer container = (EclipseContainerContainer) synchronizeView.getArtifactMappingNodeViewer().getTree().getItems()[0].getData();
+					if ( selections.get(i) instanceof ArtifactNode ) { 
+						ArtifactNode selectedNode = (ArtifactNode) selections.get(i);
+						IContainer container = (IContainer) ((EclipseProjectNode) selectedNode.getParent().getParent()).getData();
 						IProject project = container.getProject().getProject();
 						try  {
 							action.addEntry(selectedNode, project);
 						}
 						catch ( Exception e ) {
-							log.debug("Unable to add item " + selectedNode.getArtifact() + " to classpath ", e );
+							log.error("Unable to add item " + selectedNode.getData() + " to classpath ", e );
 						}
 					}
 				}
 			}
 		};
-		action.addActionListener(synchronizeView);
+		action.addActionListener(synchronizationView);
 		addToClasspath.setId(ADD_TO_CLASSPATH);
 		addToClasspath.setText("Add to .classpath");
 		actionIds.put(ADD_TO_CLASSPATH, addToClasspath);

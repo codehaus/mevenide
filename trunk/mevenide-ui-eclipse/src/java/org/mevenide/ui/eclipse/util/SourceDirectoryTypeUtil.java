@@ -38,7 +38,6 @@ public class SourceDirectoryTypeUtil {
 		ProjectConstants.MAVEN_SRC_DIRECTORY,
 		ProjectConstants.MAVEN_ASPECT_DIRECTORY,
 		ProjectConstants.MAVEN_TEST_DIRECTORY,
-		ProjectConstants.MAVEN_INTEGRATION_TEST_DIRECTORY,	
 		ProjectConstants.MAVEN_RESOURCE,
 		ProjectConstants.MAVEN_TEST_RESOURCE
 		//ProjectConstants.MAVEN_INTEGRATION_TEST_RESOURCE,		

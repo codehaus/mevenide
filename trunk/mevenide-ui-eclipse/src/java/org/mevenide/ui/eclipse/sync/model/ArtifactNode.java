@@ -16,14 +16,12 @@
  */
 package org.mevenide.ui.eclipse.sync.model;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 
 import org.apache.maven.project.Project;
-import org.apache.maven.util.StringInputStream;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -33,14 +31,26 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.mevenide.ui.eclipse.util.FileUtils;
+import org.apache.maven.util.StringInputStream;
 
-/**
+/**  
  * 
  * @author <a href="mailto:rhill2@free.fr">Gilles Dodinet</a>
- * @version $Id$
+ * @version $Id: ArtifactNode.java,v 1.1 12 avr. 2004 Exp gdodinet 
  * 
  */
-public abstract class ArtifactWrapper {
+public abstract class ArtifactNode implements ISynchronizationNode, ISelectableNode {
+
+	private int direction;
+	
+	public int getDirection() {
+		return direction;
+	}
+	
+	public void setDirection(int direction) {
+		this.direction = direction;
+	}
+	
 	public abstract void addTo(IProject project) throws Exception;
 	
 	public abstract void addTo(Project project) throws Exception;
@@ -55,12 +65,6 @@ public abstract class ArtifactWrapper {
 	}
 	
 	public abstract void removeFrom(Project project) throws Exception;
-	
-	private File declaringPom;
-	
-	protected ArtifactWrapper(File declaringPom) {
-		this.declaringPom = declaringPom;
-	}
 	
 	protected void addClasspathEntry(IClasspathEntry newEntry, IProject project) throws JavaModelException {
 		IJavaProject javaProject = (IJavaProject) JavaCore.create(project);
@@ -77,7 +81,7 @@ public abstract class ArtifactWrapper {
 		InputStream is = mvnIgnoreFile.getContents();
 		Reader reader = new InputStreamReader(is);
 		
-		mvnIgnoreFile.appendContents(new StringInputStream("\r\n" + ignoreLine), true, true, null);
+		mvnIgnoreFile.appendContents(new StringInputStream(Character.LINE_SEPARATOR + ignoreLine), true, true, null);
 	}
 	
 	public void addToMvnIgnore(IContainer container) throws Exception {
@@ -98,7 +102,7 @@ public abstract class ArtifactWrapper {
 
 	protected abstract String getIgnoreLine();
 	
-	public File getDeclaringPom() {
-		return declaringPom;
+	public boolean select(int direction) {
+		return this.direction == direction;
 	}
 }

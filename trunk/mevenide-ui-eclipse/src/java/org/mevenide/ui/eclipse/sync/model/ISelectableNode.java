@@ -16,43 +16,17 @@
  */
 package org.mevenide.ui.eclipse.sync.model;
 
-import org.eclipse.core.resources.IContainer;
-
-/**
+/**  
  * 
  * @author <a href="mailto:rhill2@free.fr">Gilles Dodinet</a>
- * @version $Id$
+ * @version $Id: ISelectableNode.java,v 1.1 15 avr. 2004 Exp gdodinet 
  * 
  */
-public class EclipseContainerContainer {
-    public static final int INCOMING = 8;
-    public static final int OUTGOING = 16;
-    public static final int CONFLICTING = 4;
-    public static final int NO_CHANGE = 32;
-    
-    private IContainer project;
-   
-    private Object[] pomContainers;
-    
-    public EclipseContainerContainer(IContainer project) {
-        this.project = project;
-    }
-    
-    public IContainer getProject() {
-        return project;
-    }
-    
-    public void setContainer(IContainer project) {
-        this.project = project;
-    }
+public interface ISelectableNode {
 
-    
-    public Object[] getPomContainers() {
-        return pomContainers;
-    }
-
-    public void setPomContainers(Object[] containers) {
-        this.pomContainers = containers;
-    }
-
+	public static final int OUTGOING_DIRECTION = 1;
+	public static final int INCOMING_DIRECTION = 2;
+	public static final int CONFLICTING_DIRECTION = 4;
+	
+	boolean select(int direction);
 }

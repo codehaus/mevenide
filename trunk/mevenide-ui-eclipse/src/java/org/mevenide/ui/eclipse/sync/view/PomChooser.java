@@ -27,7 +27,7 @@ import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.dialogs.Dialog;
 import org.mevenide.project.io.ProjectReader;
-import org.mevenide.ui.eclipse.util.EclipseProjectUtils;
+import org.mevenide.ui.eclipse.util.JavaProjectUtils;
 import org.mevenide.ui.eclipse.util.FileUtils;
 import org.mevenide.util.MevenideUtils;
 
@@ -118,8 +118,13 @@ public class PomChooser {
 	    
 	    IProject project = FileUtils.getParentProjectForFile(rootDirectory);
 	    
-	    List outputFolders = EclipseProjectUtils.getOutputFolders(project);
-	    log.debug("Found " + outputFolders.size() + " output folders");
+	    List outputFolders = JavaProjectUtils.getOutputFolders(project);
+		if ( log.isDebugEnabled() ) {
+		    log.debug("Found " + outputFolders.size() + " output folders");
+			for (int j = 0; j < outputFolders.size(); j++) {
+				log.debug("Found OutputFolder : " + outputFolders.get(j));
+			}
+		}
 	    
 		List allPoms = new ArrayList(); 
 		
@@ -127,8 +132,10 @@ public class PomChooser {
 		
 		File[] f = rootDirectory.listFiles();
 		for (int i = 0; i < f.length; i++) {
+			log.debug(f[i].getAbsolutePath());
 			if ( f[i].isDirectory() ) {
 				//@todo exclude ${maven.build.dest}, ${maven.test.dest}, etc. => shoudl be customizable thanks a properties file
+				
 			    if ( !outputFolders.contains(f[i]) ) {
 			        allPoms.addAll(findPoms(f[i]));
 			    }

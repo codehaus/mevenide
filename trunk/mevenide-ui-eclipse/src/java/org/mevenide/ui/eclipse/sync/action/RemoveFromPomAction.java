@@ -17,8 +17,7 @@
 package org.mevenide.ui.eclipse.sync.action;
 
 import org.apache.maven.project.Project;
-import org.mevenide.ui.eclipse.sync.model.ArtifactWrapper;
-import org.mevenide.ui.eclipse.sync.model.IArtifactMappingNode;
+import org.mevenide.ui.eclipse.sync.model.ArtifactNode;
 
 /**
  * 
@@ -27,9 +26,8 @@ import org.mevenide.ui.eclipse.sync.model.IArtifactMappingNode;
  * 
  */
 public class RemoveFromPomAction extends ArtifactAction{
-	public void removeEntry(IArtifactMappingNode selectedNode, Project mavenProject) throws Exception {
-		ArtifactWrapper wrapper = getArtifactWrapper(selectedNode.getDeclaringPom(), selectedNode.getArtifact());
-		wrapper.removeFrom(mavenProject);
+	public void removeEntry(ArtifactNode selectedNode, Project mavenProject) throws Exception {
+		selectedNode.removeFrom(mavenProject);
 		fireArtifactRemovedFromPom(selectedNode, mavenProject);
 	}
 	
