@@ -120,6 +120,7 @@ import org.mevenide.ui.eclipse.util.ResourceSorter;
 import org.mevenide.util.MevenideUtil;
 
 /**  
+ * @todo refactor getSaved${Dependencies|SourceDirectories}Input methods
  * 
  * @author Gilles Dodinet (gdodinet@wanadoo.fr)
  * @version $Id: SynchronizeWizardPage.java 27 août 2003 Exp gdodinet 

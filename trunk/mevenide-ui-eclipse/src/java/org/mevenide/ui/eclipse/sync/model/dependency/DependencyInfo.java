@@ -64,12 +64,13 @@ public abstract class DependencyInfo {
 	protected DependencyWrapper wrapper;
 		
 	private boolean isReadOnly;
-	
+	private boolean isInPom;
 	
 	DependencyInfo(DependencyWrapper d) {
 		this.wrapper = d;
 		this.dependency = d.getDependency();
 		this.isReadOnly = d.isReadOnly();
+		this.isInPom = d.isInPom();
 	}
 		
 	public Dependency getDependency() {
@@ -102,7 +103,7 @@ public abstract class DependencyInfo {
         this.isReadOnly = isReadOnly;
     }
 	public boolean isInPom() {
-		return wrapper.isInPom();
+		return isInPom;
 	}
 
 }

@@ -218,16 +218,7 @@ public class DependencyGroup extends ArtifactGroup {
 		artifacts.remove(wrapper);
 		dependencies.remove(wrapper.getDependency());
 		excludedArtifacts.add(wrapper);
-	
-//		for (int i = 0; i < artifacts.size(); i++) {
-//			DependencyWrapper artifactWrapper = (DependencyWrapper) artifacts.get(i);
-//			if ( artifactWrapper.getDependency().equals(wrapper.getDependency()) ) {
-//				artifacts.remove(artifactWrapper);
-//				dependencies.remove(artifactWrapper.getDependency());
-//				excludedArtifacts.add(artifactWrapper);	
-//				break;
-//			}			
-//        }
+
 	}
 	
 	public List getExcludedDependencyWrappers() {
