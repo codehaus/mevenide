@@ -41,6 +41,7 @@ import org.mevenide.ui.eclipse.template.model.Template;
 import org.mevenide.ui.eclipse.template.model.TemplateContentProvider;
 import org.mevenide.ui.eclipse.template.model.Templates;
 import org.mevenide.ui.eclipse.template.view.TemplateViewerFactory;
+import org.mevenide.util.StringUtils;
 
 
 /**  
@@ -54,6 +55,8 @@ public class NewPomWizardSecondPage extends WizardPage {
     private String pomName;
     private String artifactId;
     private String groupId;
+    private String version;
+    private String shortDescription;
     
     private boolean useTemplate;
     private Template selectedTemplate;
@@ -132,6 +135,8 @@ public class NewPomWizardSecondPage extends WizardPage {
         createPomNameTextField(group);
         createPomGroupIdTextField(group);
         createPomArtifactIdTextField(group);
+        createPomVersionTextField(group);
+        createPomShortDescriptionTextField(group);
     }
 
     private Group createPomDefinitionGroup(Composite pomDefinitionArea) {
@@ -144,13 +149,36 @@ public class NewPomWizardSecondPage extends WizardPage {
         group.setLayout(groupLayout);
         return group;
     }
+    
+    private void createPomShortDescriptionTextField(Group group) {
+        final Text shortDescriptionText = createTextField(group, "NewPomWizardSecondPage.ShortDescription.Label");
+        shortDescriptionText.addModifyListener(
+                new ModifyListener() {
+                    public void modifyText(ModifyEvent event) {
+                        shortDescription = shortDescriptionText.getText();
+                        update();
+                    }
+                });
+    }
 
+    private void createPomVersionTextField(Group group) {
+        final Text versionText = createTextField(group, "NewPomWizardSecondPage.Version.Label");
+        versionText.addModifyListener(
+                new ModifyListener() {
+                    public void modifyText(ModifyEvent event) {
+                        version = versionText.getText();
+                        update();
+                    }
+                });
+    }
+    
     private void createPomArtifactIdTextField(Group group) {
         final Text artifactIdText = createTextField(group, "NewPomWizardSecondPage.ArtifactId.Label");
         artifactIdText.addModifyListener(
                 new ModifyListener() {
                     public void modifyText(ModifyEvent event) {
                         artifactId = artifactIdText.getText();
+                        update();
                     }
                 });
     }
@@ -161,6 +189,7 @@ public class NewPomWizardSecondPage extends WizardPage {
                 new ModifyListener() {
                     public void modifyText(ModifyEvent event) {
                         groupId = groupIdText.getText();
+                        update();
                     }
                 });
     }
@@ -171,6 +200,7 @@ public class NewPomWizardSecondPage extends WizardPage {
                 new ModifyListener() {
                     public void modifyText(ModifyEvent event) {
                         pomName = nameText.getText();
+                        update();
                     }
                 });
     }
@@ -180,12 +210,6 @@ public class NewPomWizardSecondPage extends WizardPage {
         label.setText(Mevenide.getResourceString(labelKey));
         Text text = new Text(group, SWT.BORDER);
         text.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-        text.addModifyListener(
-                new ModifyListener() {
-                    public void modifyText(ModifyEvent event) {
-                        update();
-                    }
-                });
         return text;
     }
 
@@ -197,15 +221,18 @@ public class NewPomWizardSecondPage extends WizardPage {
         else {
             builder = PomSkeletonBuilder.getSkeletonBuilder(selectedTemplate.getProject().getFile().getAbsolutePath());
         }
-        String skeleton = builder.getPomSkeleton(pomName != null ? pomName : ((NewPomWizard) getWizard()).getContainerName(), groupId, artifactId);
+        String skeleton = builder.getPomSkeleton(pomName != null ? pomName : ((NewPomWizard) getWizard()).getContainerName(), 
+                                                 groupId, artifactId, version, shortDescription);
         return new StringInputStream(skeleton);
     }
 
     
     private void update() {
-        pageComplete = (artifactId != null &&
-        			    groupId != null &&
-        			    pomName != null) || 
+        pageComplete = (!StringUtils.isNull(artifactId) &&
+                		!StringUtils.isNull(groupId) &&
+                		!StringUtils.isNull(pomName) &&
+                		!StringUtils.isNull(version) &&
+                		!StringUtils.isNull(shortDescription)) || 
         			   (useTemplate && 
         			    selectedTemplate != null );
         setPageComplete(pageComplete);
