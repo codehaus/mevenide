@@ -48,66 +48,91 @@
  */
 package org.mevenide.ui.eclipse.editors.pages;
 
+import java.util.List;
+
+import org.apache.maven.project.Build;
 import org.apache.maven.project.Project;
-import org.eclipse.swt.layout.GridData;
+import org.apache.maven.project.UnitTest;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.mevenide.ui.eclipse.Mevenide;
-import org.mevenide.ui.eclipse.MevenideColors;
-import org.mevenide.ui.eclipse.editors.MevenidePomEditor;
+import org.mevenide.ui.eclipse.editors.entries.TableEntry;
 
 /**
- * Presents a client control for editing information relating to the
- * build process and environment for this project.
- * 
- * @author Jeff Bonevich (jeff@bonevich.com)
+ * @author Jeffrey Bonevich (jeff@bonevich.com)
  * @version $Id$
  */
-public class UnitTestsPage extends AbstractPomEditorPage {
+public class IncludesSection extends PageSection implements IIncludesAdaptor {
 
-	public static final String HEADING = Mevenide.getResourceString("UnitTestsPage.heading");
-    
-	private IncludesSection includesSection;
-	private ExcludesSection excludesSection;
-	private ResourcesSection resourcesSection;
+	private IncludesSubsection subsection;
+	private TableEntry includesTable;
+	
+	public IncludesSection(UnitTestsPage page) {
+		super(page);
+		setHeaderText(Mevenide.getResourceString("UnitTestIncludesSection.header"));
+	}
 
-    public UnitTestsPage(MevenidePomEditor editor) {
-        super(HEADING, editor);
-    }
-
-	protected void initializePage(Composite parent) {
+	public Composite createClient(Composite parent, PageWidgetFactory factory) {
+		Composite container = factory.createComposite(parent);
 		GridLayout layout = new GridLayout();
-		layout.numColumns = 1;
-		layout.marginWidth = 10;
-		layout.horizontalSpacing = 15;
-		parent.setLayout(layout);
-
-		PageWidgetFactory factory = getFactory();
-		factory.setBackgroundColor(MevenideColors.WHITE);
-
-		includesSection = new IncludesSection(this);
-		Control control = includesSection.createControl(parent, factory);
-		GridData gd = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING);
-		control.setLayoutData(gd);
+		layout.numColumns = isInherited() ? 3 : 2;
+		layout.marginWidth = 2;
+		layout.verticalSpacing = 7;
+		layout.horizontalSpacing = 5;
+		container.setLayout(layout);
 		
-		excludesSection = new ExcludesSection(this);
-		control = excludesSection.createControl(parent, factory);
-		gd = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING);
-		control.setLayoutData(gd);
+		subsection = new IncludesSubsection(this, this);
 		
-		resourcesSection = new ResourcesSection(this);
-		control = resourcesSection.createControl(parent, factory);
-		gd = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING);
-		control.setLayoutData(gd);
+		includesTable = subsection.createWidget(container, factory, true);
+		
+		factory.paintBordersFor(container);
+		
+		return container;
 	}
 
 	public void update(Project pom) {
-		includesSection.update(pom);
-		excludesSection.update(pom);
-		resourcesSection.update(pom);
-		
-		setUpdateNeeded(false);
+		subsection.updateTableEntries(includesTable, getIncludes(pom), getInheritedIncludes(), true);
+		super.update(pom);
+	}
+
+	public void setIncludes(Project pom, List newIncludes) {
+		List includes = getOrCreateUnitTest(pom).getIncludes();
+		includes.removeAll(includes);
+		includes.addAll(newIncludes);
+		getPage().getEditor().setModelDirty(true);
+	}
+	
+	public void addInclude(Project pom, String include) {
+		getOrCreateUnitTest(pom).addInclude(include);
+		getPage().getEditor().setModelDirty(true);
+	}
+	
+	public List getIncludes(Project pom) {
+		return pom.getBuild() != null 
+			? pom.getBuild().getUnitTest() != null
+				? pom.getBuild().getUnitTest().getIncludes()
+				: null
+			: null;
+	}
+	
+	public List getInheritedIncludes() {
+		return isInherited() 
+			? getIncludes(getParentPom())
+			: null;
+	}
+
+	private UnitTest getOrCreateUnitTest(Project pom) {
+		Build build = pom.getBuild();
+		if (build == null) {
+			build = new Build();
+			pom.setBuild(build);
+		}
+		UnitTest unitTest = build.getUnitTest();
+		if (unitTest == null) {
+			unitTest = new UnitTest();
+			build.setUnitTest(unitTest);
+		}
+		return unitTest;
 	}
 
 }
