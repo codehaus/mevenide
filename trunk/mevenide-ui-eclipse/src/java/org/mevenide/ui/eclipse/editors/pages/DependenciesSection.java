@@ -48,8 +48,12 @@
  */
 package org.mevenide.ui.eclipse.editors.pages;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Dependency;
 import org.apache.maven.project.Project;
 import org.eclipse.jface.viewers.TableViewer;
@@ -58,6 +62,8 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.mevenide.ui.eclipse.Mevenide;
+import org.mevenide.ui.eclipse.editors.properties.PropertyProxy;
+import org.mevenide.util.MevenideUtils;
 
 /**
  * @author Jeffrey Bonevich (jeff@bonevich.com)
@@ -65,6 +71,8 @@ import org.mevenide.ui.eclipse.Mevenide;
  */
 public class DependenciesSection extends PageSection {
 
+	private static final Log log = LogFactory.getLog(DependenciesSection.class);
+    
 	private TableEntry dependenciesTable;
 	private TableEntry propertiesTable;
 	
@@ -88,7 +96,7 @@ public class DependenciesSection extends PageSection {
 		// POM dependencies table
 		Button toggle = createOverrideToggle(container, factory, 1, true);
 		TableViewer viewer = createTableViewer(container, factory, 1);
-		dependenciesTable = new TableEntry(viewer, toggle, container, factory, this);
+		dependenciesTable = new TableEntry(viewer, toggle, "Dependency", container, factory, this);
 		OverrideAdaptor adaptor = new OverrideAdaptor() {
 			public void overrideParent(Object value) {
 				List dependencies = (List) value;
@@ -102,24 +110,25 @@ public class DependenciesSection extends PageSection {
 		dependenciesTable.addOverrideAdaptor(adaptor);
 		dependenciesTable.addPomCollectionAdaptor(
 			new IPomCollectionAdaptor() {
-				public Object addNewObject() {
+				public Object addNewObject(Object parentObject) {
 					Dependency dependency = new Dependency();
 					pom.addDependency(dependency);
 					return dependency;
 				}
-				public void moveObjectTo(int index, Object object) {
+				public void moveObjectTo(int index, Object object, Object parentObject) {
 					List dependencies = pom.getDependencies();
 					if (dependencies != null) {
 						dependencies.remove(object);
 						dependencies.add(index, object);
 					}
 				}
-				public void removeObject(Object object) {
+				public void removeObject(Object object, Object parentObject) {
 					List dependencies = pom.getDependencies();
 					if (dependencies != null) {
 						dependencies.remove(object);
 					}
 				}
+				public List getDependents(Object parentObject) { return null; }
 			}
 		);
 		
@@ -134,34 +143,66 @@ public class DependenciesSection extends PageSection {
 		// POM dependency properties table
 		if (isInherited()) createSpacer(container, factory);
 		viewer = createTableViewer(container, factory, 1);
-		propertiesTable = new TableEntry(viewer, null, container, factory, this);
+		propertiesTable = new TableEntry(viewer, null, "Dependency Property", container, factory, this);
+		dependenciesTable.setDependentTableEntry(propertiesTable);
 		propertiesTable.addEntryChangeListener(
 			new EntryChangeListenerAdaptor() {
 				public void entryChanged(PageEntry entry) {
-//					pom.setPomVersion(propertiesTable.getText());
+					List properties = (List) propertiesTable.getValue();
+					if (log.isDebugEnabled()) {
+						log.debug("properties = " + properties);
+					}
+					Dependency dependency = (Dependency) ((TableEntry) entry).getParentPomObject();
+					dependency.setProperties(properties);
+					dependency.resolvedProperties().clear();
+					Iterator itr = properties.iterator();
+					while (itr.hasNext()) {
+						String[] property = MevenideUtils.resolveProperty((String) itr.next());
+						dependency.resolvedProperties().put(property[0], property[1]);
+					}
+					if (log.isDebugEnabled()) {
+						log.debug("resolved properties = " + dependency.resolvedProperties());
+					}
 				}
 			}
 		);
 		propertiesTable.addPomCollectionAdaptor(
 			new IPomCollectionAdaptor() {
-				public Object addNewObject() {
-//					Dependency dependency = new Dependency();
-//					pom.addDependency(dependency);
-//					return dependency;
-					return null;
+				public Object addNewObject(Object parentObject) {
+					Dependency dependency = (Dependency) parentObject;
+					String newPropertyStr = "unknown:unknown";
+					PropertyProxy newProperty = new PropertyProxy(newPropertyStr);
+					dependency.addProperty(newPropertyStr);
+					return newProperty;
 				}
-				public void moveObjectTo(int index, Object object) {
-//					List dependencies = pom.getDependencies();
-//					if (dependencies != null) {
-//						dependencies.remove(object);
-//						dependencies.add(index, object);
-//					}
+				public void moveObjectTo(int index, Object object, Object parentObject) {
+					Dependency dependency = (Dependency) parentObject;
+					List properties = dependency.getProperties();
+					PropertyProxy propertyToMove = (PropertyProxy) object;
+					String property = propertyToMove.toString();
+					if (properties != null) {
+						properties.remove(property);
+						properties.add(index, property);
+					}
 				}
-				public void removeObject(Object object) {
-//					List dependencies = pom.getDependencies();
-//					if (dependencies != null) {
-//						dependencies.remove(object);
-//					}
+				public void removeObject(Object object, Object parentObject) {
+					Dependency dependency = (Dependency) parentObject;
+					List properties = dependency.getProperties();
+					PropertyProxy propertyToMove = (PropertyProxy) object;
+					String property = propertyToMove.toString();
+					if (properties != null) {
+						properties.remove(property);
+					}
+				}
+				public List getDependents(Object parentObject) {
+					Dependency dependency = (Dependency) parentObject;
+					List properties = dependency.getProperties();
+					List propertyProxies = new ArrayList(properties.size());
+					Iterator itr = properties.iterator();
+					while (itr.hasNext()) {
+						propertyProxies.add(new PropertyProxy((String) itr.next()));
+					}
+					return propertyProxies;
 				}
 			}
 		);
