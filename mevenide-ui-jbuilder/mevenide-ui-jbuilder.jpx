@@ -79,7 +79,5 @@
   </node>
   <file path="src/conf/classes.opentools"/>
   <file path="JBMavenOpenTool.html"/>
-  <file path="maven.xml">
-    <property category="maven" name="mavenHome" value="D:\java\technologies\maven"/>
-  </file>
+  <file path="maven.xml" />
 </project>
