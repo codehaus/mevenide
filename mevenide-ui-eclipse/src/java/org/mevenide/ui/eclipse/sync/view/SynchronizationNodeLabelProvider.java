@@ -70,7 +70,7 @@ public class SynchronizationNodeLabelProvider implements ILabelProvider, IColorP
     private String getDirectoryImageName(Directory directory) {
 		String imageName;
 		if ( directory.getType() == null ) {
-			imageName = "sourcefolder_undefined_obj.gif";
+			imageName = "obj16/mundefined_obj.gif";
 		}
 		else if ( directory.getType().equals(ProjectConstants.MAVEN_SRC_DIRECTORY) ) {
 			imageName = "obj16/msources_obj.gif";
@@ -82,7 +82,7 @@ public class SynchronizationNodeLabelProvider implements ILabelProvider, IColorP
 			imageName = "obj16/maspects_obj.gif";
 		}
 		else if ( directory.getType().equals(ProjectConstants.MAVEN_OUTPUT_DIRECTORY) ) {
-			imageName = "sourcefolder_output_obj.gif";
+			imageName = "obj16/moutput_obj.gif";
 		}
 		else if ( directory.getType().equals(ProjectConstants.MAVEN_RESOURCE) 
 				  || directory.getType().equals(ProjectConstants.MAVEN_TEST_RESOURCE)) {
