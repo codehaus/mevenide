@@ -41,7 +41,7 @@ class SynchronizationResourceDeltaVisitor implements IResourceDeltaVisitor {
 	SynchronizationResourceDeltaVisitor(SynchronizationView view, IProject project) {
 		this.project = project;
 		this.synchronizationView = view;
-		dotClasspath = project != null ? project.getFile(".classpath") : null;
+		dotClasspath = project != null ? project.getFile(".classpath") : null; //$NON-NLS-1$
 	}
 	
 	public boolean visit(IResourceDelta delta) {
@@ -49,7 +49,7 @@ class SynchronizationResourceDeltaVisitor implements IResourceDeltaVisitor {
 			IResource r = delta.getResource();									
 			if (r instanceof IFile) {
 				IFile file = (IFile) r;
-				if ( file.equals(dotClasspath) || ".mvnignore".equals(file.getName()) ) {
+				if ( file.equals(dotClasspath) || ".mvnignore".equals(file.getName()) ) { //$NON-NLS-1$
 					this.synchronizationView.asyncRefresh(false);
 				}
 				if ( this.synchronizationView.getPoms() != null ) {
@@ -61,7 +61,7 @@ class SynchronizationResourceDeltaVisitor implements IResourceDeltaVisitor {
 	                            this.synchronizationView.updatePoms(ProjectReader.getReader().read(f));
 	                        } 
 							catch (Exception e) {
-	                            log.error("Unable to update pom list", e);
+	                            log.error("Unable to update pom list", e); //$NON-NLS-1$
 	                        }
 						}
 					}

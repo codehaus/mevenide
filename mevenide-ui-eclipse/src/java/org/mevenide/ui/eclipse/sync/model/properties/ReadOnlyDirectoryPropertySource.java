@@ -21,6 +21,7 @@ import org.apache.commons.logging.LogFactory;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
 import org.mevenide.project.ProjectConstants;
+import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.adapters.properties.AbstractPomPropertySource;
 import org.mevenide.ui.eclipse.sync.model.Directory;
 
@@ -33,8 +34,8 @@ public class ReadOnlyDirectoryPropertySource extends AbstractPomPropertySource {
 
 	private static final Log log = LogFactory.getLog(ReadOnlyDirectoryPropertySource.class);
 
-	public static final String DIRECTORY_PATH = "path";
-	public static final String DIRECTORY_TYPE = "type";
+	public static final String DIRECTORY_PATH = "path"; //$NON-NLS-1$
+	public static final String DIRECTORY_TYPE = "type"; //$NON-NLS-1$
 	
 	private Directory directory;
 	
@@ -60,7 +61,7 @@ public class ReadOnlyDirectoryPropertySource extends AbstractPomPropertySource {
 
 	public Object getPropertyValue(Object id) {
 		if (log.isDebugEnabled()) {
-			log.debug("getPropertyValue called: " + id);
+			log.debug("getPropertyValue called: " + id); //$NON-NLS-1$
 		}
 		if (DIRECTORY_PATH.equals(id)) {
 			return valueOrEmptyString(directory.getPath());
@@ -90,9 +91,9 @@ public class ReadOnlyDirectoryPropertySource extends AbstractPomPropertySource {
 
 	public String getLabel(Object o) {
 		if (log.isDebugEnabled()) {
-			log.debug("getLabel called for " + o);
+			log.debug("getLabel called for " + o); //$NON-NLS-1$
 		}
-		return directory.getPath() != null ? directory.getPath() : "[unable to resolve Directory path]";
+		return directory.getPath() != null ? directory.getPath() : Mevenide.getResourceString("ReadOnlyDirectoryPropertySource.CannotResolveDirectoryPath"); //$NON-NLS-1$
 	}
 
 	/**

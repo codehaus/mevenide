@@ -52,9 +52,9 @@ import org.mevenide.ui.eclipse.Mevenide;
 public class PomChoiceDialog extends TitleAreaDialog {
     
     
-    private static final String POM_CHOICE_MESSAGE = Mevenide.getResourceString("PomChoiceDialog.Message");
-    private static final String DIALOG_NAME = Mevenide.getResourceString("PomChoiceDialog.Name");
-    private static final String POM_CHOICE_TITLE = Mevenide.getResourceString("PomChoiceDialog.Title");
+    private static final String POM_CHOICE_MESSAGE = Mevenide.getResourceString("PomChoiceDialog.Message"); //$NON-NLS-1$
+    private static final String DIALOG_NAME = Mevenide.getResourceString("PomChoiceDialog.Name"); //$NON-NLS-1$
+    private static final String POM_CHOICE_TITLE = Mevenide.getResourceString("PomChoiceDialog.Title"); //$NON-NLS-1$
     
 	private PomChooser pomChooser;
 	
@@ -116,7 +116,7 @@ public class PomChoiceDialog extends TitleAreaDialog {
 		buttonsArea.setLayout(layout);
 		buttonsArea.setLayoutData(new GridData(GridData.FILL_BOTH));
 		
-		String buttonLabel = Mevenide.getResourceString("PomChoiceDialog.SelectAll");
+		String buttonLabel = Mevenide.getResourceString("PomChoiceDialog.SelectAll"); //$NON-NLS-1$
 		Button selectAllButton = createSelectionButton(buttonsArea, buttonLabel);
 		selectAllButton.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent arg0) {
@@ -124,7 +124,7 @@ public class PomChoiceDialog extends TitleAreaDialog {
 			}
 		});
 		
-		buttonLabel = Mevenide.getResourceString("PomChoiceDialog.DeselectAll");
+		buttonLabel = Mevenide.getResourceString("PomChoiceDialog.DeselectAll"); //$NON-NLS-1$
 		Button deselectAllButton = createSelectionButton(buttonsArea, buttonLabel);
 		deselectAllButton.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent arg0) {
@@ -176,7 +176,7 @@ public class PomChoiceDialog extends TitleAreaDialog {
 					if ( element instanceof File ) {
 						return ((File) element).getAbsolutePath();
 					}
-					return "unexpected child... please fill a bug report.";
+					return Mevenide.getResourceString("PomChoiceDialog.UnexpectedChild"); //$NON-NLS-1$
 				}
 			}
 		);

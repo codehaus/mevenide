@@ -43,7 +43,7 @@ import org.mevenide.util.StringUtils;
  */
 public class RunMavenPreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
     
-	private static final String DEFAULT_HEAP_SIZE = "160";
+	private static final String DEFAULT_HEAP_SIZE = "160"; //$NON-NLS-1$
     
     private IntegerFieldEditor heapSizeEditor;
 	private StringButtonFieldEditor defaultGoalsEditor;
@@ -55,7 +55,7 @@ public class RunMavenPreferencePage extends PreferencePage implements IWorkbench
 	private Composite topLevelContainer;
 	
 	public RunMavenPreferencePage() {
-        super(Mevenide.getResourceString("RunMavenPreferencePage.title"));
+        super(Mevenide.getResourceString("RunMavenPreferencePage.title")); //$NON-NLS-1$
         //setImageDescriptor(MavenPlugin.getImageDescriptor("sample.gif"));
         preferencesManager = PreferencesManager.getManager();
         preferencesManager.loadPreferences();
@@ -76,7 +76,7 @@ public class RunMavenPreferencePage extends PreferencePage implements IWorkbench
 	private void createHeapSizeEditor() {
         heapSizeEditor = new IntegerFieldEditor(
 			MevenidePreferenceKeys.JAVA_HEAP_SIZE_PREFERENCE_KEY, 
-			Mevenide.getResourceString("RunMavenPreferencePage.heap.size.label"), 
+			Mevenide.getResourceString("RunMavenPreferencePage.heap.size.label"),  //$NON-NLS-1$
 			topLevelContainer
 		);
 		heapSizeEditor.fillIntoGrid(topLevelContainer, 3);
@@ -92,7 +92,7 @@ public class RunMavenPreferencePage extends PreferencePage implements IWorkbench
 		defaultGoalsEditor = 
 		    new StringButtonFieldEditor(
 		            MevenidePreferenceKeys.MAVEN_LAUNCH_DEFAULTGOALS_PREFERENCE_KEY,
-		            Mevenide.getResourceString("RunMavenPreferencePage.default.goals.label"),
+		            Mevenide.getResourceString("RunMavenPreferencePage.default.goals.label"), //$NON-NLS-1$
 		            topLevelContainer) {
 				protected Button getChangeControl(Composite parent) {
 					Button b = super.getChangeControl(parent);
@@ -102,8 +102,8 @@ public class RunMavenPreferencePage extends PreferencePage implements IWorkbench
 				protected String changePressed() {
 					String backup = defaultGoalsEditor.getTextControl(topLevelContainer).getText();
 					GoalsPickerDialog goalsPickerDialog = new GoalsPickerDialog();
-					goalsPickerDialog.setOverrideMessage(Mevenide.getResourceString("RunMavenPreferencePage.default.goals.choose.message.override"));
-					goalsPickerDialog.setOverrideTitle(Mevenide.getResourceString("RunMavenPreferencePage.default.goals.choose.message.title"));
+					goalsPickerDialog.setOverrideMessage(Mevenide.getResourceString("RunMavenPreferencePage.default.goals.choose.message.override")); //$NON-NLS-1$
+					goalsPickerDialog.setOverrideTitle(Mevenide.getResourceString("RunMavenPreferencePage.default.goals.choose.message.title")); //$NON-NLS-1$
 					goalsPickerDialog.setGoalsOrder(defaultGoalsEditor.getTextControl(topLevelContainer).getText());
 					int ok = goalsPickerDialog.open();
 					if ( ok == Window.OK ) {
@@ -119,9 +119,9 @@ public class RunMavenPreferencePage extends PreferencePage implements IWorkbench
 		defaultGoalsEditor.setPreferenceStore(preferencesManager.getPreferenceStore());
 		defaultGoalsEditor.load();
 		if ( defaultGoalsEditor.getStringValue() == null ) {
-			defaultGoalsEditor.setStringValue(Mevenide.getResourceString("RunMavenPreferencePage.default.goals.null"));
+			defaultGoalsEditor.setStringValue(Mevenide.getResourceString("RunMavenPreferencePage.default.goals.null")); //$NON-NLS-1$
 		} 
-		defaultGoalsEditor.setChangeButtonText(Mevenide.getResourceString("RunMavenPreferencePage.default.goals.choose"));
+		defaultGoalsEditor.setChangeButtonText(Mevenide.getResourceString("RunMavenPreferencePage.default.goals.choose")); //$NON-NLS-1$
 		
 		defaultGoalsEditor.getTextControl(topLevelContainer).addModifyListener(
 			new ModifyListener() {

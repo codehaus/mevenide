@@ -56,7 +56,7 @@ import org.mevenide.util.StringUtils;
 public class DependencyTypesPreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
     
 	
-private static final String ROOT = "ROOT";
+    private static final String ROOT = "ROOT"; //$NON-NLS-1$
     private List types = new ArrayList();   
     
 	private static PreferencesManager preferencesManager;
@@ -72,7 +72,7 @@ private static final String ROOT = "ROOT";
     }
     
 	public DependencyTypesPreferencePage() {
-        super(Mevenide.getResourceString("DependencyTypesPreferencePage.title"));
+        super(Mevenide.getResourceString("DependencyTypesPreferencePage.title")); //$NON-NLS-1$
         //setImageDescriptor(MavenPlugin.getImageDescriptor("sample.gif"));
     }
 	
@@ -152,7 +152,7 @@ private static final String ROOT = "ROOT";
 	    List prefTypes = new ArrayList();
 	    String registeredTypes = preferencesManager.getValue(MevenidePreferenceKeys.REGISTERED_DEPENPENCY_TYPES);
         if ( !StringUtils.isNull(registeredTypes) ) {
-            StringTokenizer tokenizer = new StringTokenizer(registeredTypes, ",");
+            StringTokenizer tokenizer = new StringTokenizer(registeredTypes, ","); //$NON-NLS-1$
             while ( tokenizer.hasMoreTokens() ) {
                 String type = tokenizer.nextToken();
                 if ( !StringUtils.isNull(type) ) {
@@ -180,10 +180,10 @@ private static final String ROOT = "ROOT";
 	}
 	
 	private String serializeTypes() {
-	    String serializedTypes = "";
+	    String serializedTypes = ""; //$NON-NLS-1$
 	    for (int i = 0; i < types.size(); i++) {
 	        if ( !Arrays.asList(Mevenide.KNOWN_DEPENDENCY_TYPES).contains(types.get(i)) ) {
-	            serializedTypes += (String) types.get(i) + ",";
+	            serializedTypes += (String) types.get(i) + ","; //$NON-NLS-1$
 	        }
 	    }
         return serializedTypes;
@@ -209,15 +209,15 @@ private static final String ROOT = "ROOT";
     
     private String openNewTypeDialog() {
         Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
-        String dialogTitle = Mevenide.getResourceString("DependencyTypesPreferencePage.NewType.Dialog.Title");
-        String dialogMessage = Mevenide.getResourceString("DependencyTypesPreferencePage.NewType.Dialog.Message");
+        String dialogTitle = Mevenide.getResourceString("DependencyTypesPreferencePage.NewType.Dialog.Title"); //$NON-NLS-1$
+        String dialogMessage = Mevenide.getResourceString("DependencyTypesPreferencePage.NewType.Dialog.Message"); //$NON-NLS-1$
         IInputValidator validator = new IInputValidator() {
             public String isValid(String newText) {
                 if ( types.contains(newText) ) {
-                    return Mevenide.getResourceString("DependencyTypesPreferencePage.Validator.Type.AlreadyExists");
+                    return Mevenide.getResourceString("DependencyTypesPreferencePage.Validator.Type.AlreadyExists"); //$NON-NLS-1$
                 }
                 if ( StringUtils.isNull(newText) ) {
-                    return Mevenide.getResourceString("DependencyTypesPreferencePage.Validator.Type.NullNotAllowed");
+                    return Mevenide.getResourceString("DependencyTypesPreferencePage.Validator.Type.NullNotAllowed"); //$NON-NLS-1$
                 }
                 return null;
             }  

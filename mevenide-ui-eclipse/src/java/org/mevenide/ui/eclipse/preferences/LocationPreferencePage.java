@@ -58,7 +58,7 @@ public class LocationPreferencePage extends PreferencePage implements IWorkbench
 	private String mavenRepository;
 	
     public LocationPreferencePage() {
-        super(Mevenide.getResourceString("LocationPreferencePage.title"));
+        super(Mevenide.getResourceString("LocationPreferencePage.title")); //$NON-NLS-1$
         //setImageDescriptor(MavenPlugin.getImageDescriptor("sample.gif"));
 		preferencesManager = PreferencesManager.getManager();
 		preferencesManager.loadPreferences();
@@ -90,7 +90,7 @@ public class LocationPreferencePage extends PreferencePage implements IWorkbench
 	    groupData.grabExcessVerticalSpace = false;
 	    topLevelContainer.setLayoutData(groupData);
 	    
-	    topLevelContainer.setText(Mevenide.getResourceString("LocationPreferencePage.RequiredLocations"));
+	    topLevelContainer.setText(Mevenide.getResourceString("LocationPreferencePage.RequiredLocations")); //$NON-NLS-1$
 	    		
 		createJavaHomeEditor();
 		createMavenHomeEditor();
@@ -114,7 +114,7 @@ public class LocationPreferencePage extends PreferencePage implements IWorkbench
 	private void createMavenRepositoryEditor() {
         mavenRepositoryEditor = createEditor(
 			MevenidePreferenceKeys.MAVEN_REPO_PREFERENCE_KEY, 
-			Mevenide.getResourceString("LocationPreferencePage.maven.repo.label"), 
+			Mevenide.getResourceString("LocationPreferencePage.maven.repo.label"),  //$NON-NLS-1$
 			mavenRepository
 		);
 		if ( StringUtils.isNull(mavenRepositoryEditor.getStringValue()) ) {
@@ -129,7 +129,7 @@ public class LocationPreferencePage extends PreferencePage implements IWorkbench
     private void createMavenLocalHomeEditor() {
         mavenLocalHomeEditor = createEditor(
 			MevenidePreferenceKeys.MAVEN_LOCAL_HOME_PREFERENCE_KEY, 
-			Mevenide.getResourceString("LocationPreferencePage.maven.local.home.label"), 
+			Mevenide.getResourceString("LocationPreferencePage.maven.local.home.label"),  //$NON-NLS-1$
 			mavenLocalHome
 		);
 		if ( StringUtils.isNull(mavenLocalHomeEditor.getStringValue()) ) {
@@ -144,11 +144,11 @@ public class LocationPreferencePage extends PreferencePage implements IWorkbench
     private void createMavenHomeEditor() {
         mavenHomeEditor = createEditor(
 			MevenidePreferenceKeys.MAVEN_HOME_PREFERENCE_KEY, 
-			Mevenide.getResourceString("LocationPreferencePage.maven.home.label"), 
+			Mevenide.getResourceString("LocationPreferencePage.maven.home.label"),  //$NON-NLS-1$
 			mavenHome
 		);
 		if ( isNull(mavenHomeEditor) ) {
-			log.debug("mavenHomeEditor is null, loading from env : " + 
+			log.debug("mavenHomeEditor is null, loading from env : " +  //$NON-NLS-1$
 			          getDefaultLocationFinder().getMavenHome());
 		    reloadMavenHome();
 		}
@@ -161,11 +161,11 @@ public class LocationPreferencePage extends PreferencePage implements IWorkbench
     private void createJavaHomeEditor() {
         javaHomeEditor = createEditor(
 			MevenidePreferenceKeys.JAVA_HOME_PREFERENCE_KEY, 
-			Mevenide.getResourceString("LocationPreferencePage.java.home.label"), 
+			Mevenide.getResourceString("LocationPreferencePage.java.home.label"),  //$NON-NLS-1$
 			javaHome
 		);
 		if ( isNull(javaHomeEditor) ) {
-			log.debug("javaHomeEditor is null, loading from env : " + 
+			log.debug("javaHomeEditor is null, loading from env : " +  //$NON-NLS-1$
 			          getDefaultLocationFinder().getJavaHome());
 		    reloadJavaHome();
 		}

@@ -21,6 +21,7 @@ import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
+import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.adapters.properties.AbstractPomPropertySource;
 
 /**
@@ -32,7 +33,7 @@ public class EclipseProjectPropertySource extends AbstractPomPropertySource {
 
 	private static final Log log = LogFactory.getLog(EclipseProjectPropertySource.class);
 
-	static final String PROJECT = "Project";
+	static final String PROJECT = Mevenide.getResourceString("EclipseProjectPropertySource.Project"); //$NON-NLS-1$
 	
 	private IPropertyDescriptor[] descriptors = new IPropertyDescriptor[1];
 
@@ -76,9 +77,9 @@ public class EclipseProjectPropertySource extends AbstractPomPropertySource {
 
 	public String getLabel(Object o) {
 		if (log.isDebugEnabled()) {
-			log.debug("getLabel called for " + o);
+			log.debug("getLabel called for " + o); //$NON-NLS-1$
 		}
-		return projectPath != null ? projectPath : "[unable to resolve Descriptor path]";
+		return projectPath != null ? projectPath : Mevenide.getResourceString("EclipseProjectPropertySource.CannotResolve.DescriptorPath"); //$NON-NLS-1$
 	}
 
 	/**

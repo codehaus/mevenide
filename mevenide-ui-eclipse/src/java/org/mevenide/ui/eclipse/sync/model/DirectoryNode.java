@@ -87,7 +87,7 @@ public class DirectoryNode extends ArtifactNode {
 			}
 		} 
 		catch (Exception e) {
-			String message = "Unable to read resources"; 
+			String message = "Unable to read resources";  //$NON-NLS-1$
 			log.error(message, e);
 		}
 	}
@@ -98,7 +98,7 @@ public class DirectoryNode extends ArtifactNode {
 		List allResources = getMavenProjectResources(mavenProject);
 		for (int i = 0; i < allResources.size(); i++) {
 			Resource nextResource = (Resource) allResources.get(i);
-			if ( directory.getCleanPath().equals(SourceDirectoryUtil.stripBasedir(nextResource.getDirectory()).replaceAll("\\\\", "/")) ) {
+			if ( directory.getCleanPath().equals(SourceDirectoryUtil.stripBasedir(nextResource.getDirectory()).replaceAll("\\\\", "/")) ) {  //$NON-NLS-1$//$NON-NLS-2$
 				if ( nextResource.getExcludes() != null && nextResource.getExcludes().size() > 0 ) {
 				    excludes.addAll(nextResource.getExcludes());
 				}
@@ -141,8 +141,8 @@ public class DirectoryNode extends ArtifactNode {
 		return excludeNodes != null && excludeNodes.length > 0;
 	}
 	public String toString() {
-		boolean isRoot = "${basedir}".equals(directory.getCleanPath()) || ".".equals(directory.getCleanPath());
-		return  isRoot ? "${basedir}" : resolve(directory.getCleanPath());
+		boolean isRoot = "${basedir}".equals(directory.getCleanPath()) || ".".equals(directory.getCleanPath()); //$NON-NLS-1$ //$NON-NLS-2$
+		return  isRoot ? "${basedir}" : resolve(directory.getCleanPath()); //$NON-NLS-1$
 	}
 	
 	
@@ -172,7 +172,7 @@ public class DirectoryNode extends ArtifactNode {
 	}
 	
 	private IClasspathEntry createSourceEntry(IProject project) {
-        String path = "/" + project.getName() + "/" + directory.getCleanPath();
+        String path = "/" + project.getName() + "/" + directory.getCleanPath(); //$NON-NLS-1$ //$NON-NLS-2$
         IPath[] excludePatterns = null;
         if ( excludeNodes != null ) {
             excludePatterns = new Path[excludeNodes.length];
@@ -202,7 +202,7 @@ public class DirectoryNode extends ArtifactNode {
 			    Properties props = new Properties();
 			    fis = new FileInputStream(propFile);
 			    props.load(fis);
-			    props.setProperty("maven.build.dest", directory.getCleanPath());
+			    props.setProperty("maven.build.dest", directory.getCleanPath()); //$NON-NLS-1$
 			    fos = new FileOutputStream(propFile);
 				new CarefulPropertiesWriter().marshall(fos, props, fis);
 		    }
@@ -216,7 +216,7 @@ public class DirectoryNode extends ArtifactNode {
 		    }
 		}
 		else {
-		    log.debug("adding " + directory.getCleanPath() + " failed - reason : unrecognized source type = " + directory.getType() );
+		    log.debug("adding " + directory.getCleanPath() + " failed - reason : unrecognized source type = " + directory.getType() ); //$NON-NLS-1$ //$NON-NLS-2$
 		    ProjectWriter.getWriter().addSource(directory.getCleanPath(), project.getFile(), directory.getType());
 		}
 	}
@@ -234,7 +234,7 @@ public class DirectoryNode extends ArtifactNode {
 	public boolean equivalentEntry(IClasspathEntry entry) {
 	    boolean sameType = entry.getEntryKind() == IClasspathEntry.CPE_SOURCE;
 	    
-	    String relativeEntryPath = entry.getPath().removeFirstSegments(1).toOSString().replaceAll("\\\\", "/");
+	    String relativeEntryPath = entry.getPath().removeFirstSegments(1).toOSString().replaceAll("\\\\", "/");  //$NON-NLS-1$//$NON-NLS-2$
 	    String artifactPath = resolve(directory.getCleanPath());
 	    boolean equivalentPath = relativeEntryPath.equals(artifactPath);
 	    

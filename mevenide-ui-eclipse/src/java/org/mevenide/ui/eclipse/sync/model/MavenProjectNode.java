@@ -80,7 +80,7 @@ public class MavenProjectNode extends AbstractSynchronizationNode implements ISe
 	
 	private void intializeEnvironmentLocator() {
     	File projectDir = new File(eclipseProject.getLocation().toOSString()); 
-    	File userHomeDir = new File(System.getProperty("user.home"));
+    	File userHomeDir = new File(System.getProperty("user.home")); //$NON-NLS-1$
     	LocationFinderAggregator finder = new LocationFinderAggregator();
         finder.setEffectiveWorkingDirectory(projectDir.getAbsolutePath());
     	environmentLocator = new PropertyFilesAggregator(
@@ -97,13 +97,13 @@ public class MavenProjectNode extends AbstractSynchronizationNode implements ISe
 	
     private void initializeOutputFolders() {
     	try {
-			String defaultEclipseOutputFolder = JavaProjectUtils.getRelativeDefaultOuputFolder(eclipseProject).replaceAll("\\\\", "/");
-			String defaultMavenOutputFolder = environmentLocator.getResolvedValue("maven.build.dest").replaceAll("\\\\", "/");
+			String defaultEclipseOutputFolder = JavaProjectUtils.getRelativeDefaultOuputFolder(eclipseProject).replaceAll("\\\\", "/"); //$NON-NLS-1$ //$NON-NLS-2$
+			String defaultMavenOutputFolder = environmentLocator.getResolvedValue("maven.build.dest").replaceAll("\\\\", "/");  //$NON-NLS-1$ //$NON-NLS-2$//$NON-NLS-3$
 			
 			File baseDir = mavenProject.getFile().getParentFile();
 			
 			if ( !new File(defaultMavenOutputFolder).isAbsolute() ) {
-				defaultMavenOutputFolder = new File(baseDir, defaultMavenOutputFolder).getAbsolutePath().replaceAll("\\\\","/");
+				defaultMavenOutputFolder = new File(baseDir, defaultMavenOutputFolder).getAbsolutePath().replaceAll("\\\\","/"); //$NON-NLS-1$ //$NON-NLS-2$
 			}
 			
 			if ( !defaultEclipseOutputFolder.equals(defaultMavenOutputFolder) ) {
@@ -122,7 +122,7 @@ public class MavenProjectNode extends AbstractSynchronizationNode implements ISe
 			}
 		} 
     	catch (Exception e) {
-			String message = "Unable to lookup eclipse default output folder"; 
+			String message = "Unable to lookup eclipse default output folder";  //$NON-NLS-1$
 			log.error(message, e);
 		}
 	}
@@ -147,11 +147,11 @@ public class MavenProjectNode extends AbstractSynchronizationNode implements ISe
 	
 	private void initializeArtifacts(Project project) {
 	    //change user.dir to allow to build artifacts correctly
-	    String backupUserDir = System.getProperty("user.dir");
-	    System.setProperty("user.dir", project.getFile().getParentFile().getAbsolutePath());
+	    String backupUserDir = System.getProperty("user.dir"); //$NON-NLS-1$
+	    System.setProperty("user.dir", project.getFile().getParentFile().getAbsolutePath()); //$NON-NLS-1$
 	    
 	    //needed for rc3 to correctly setRelativePaths
-	    System.setProperty("maven.home", Mevenide.getInstance().getMavenHome());
+	    System.setProperty("maven.home", Mevenide.getInstance().getMavenHome()); //$NON-NLS-1$
 	    
 	    project.setContext(MavenUtils.createContext(project.getFile().getParentFile()));
 	    
@@ -161,7 +161,7 @@ public class MavenProjectNode extends AbstractSynchronizationNode implements ISe
 		List artifacts = ArtifactListBuilder.build(project);
 		
 		//restore user.dir
-		System.setProperty("user.dir", backupUserDir);
+		System.setProperty("user.dir", backupUserDir); //$NON-NLS-1$
 		
 		originalArtifactNodes = new MavenArtifactNode[artifacts.size()];
 		List comparisonList = artifactNodes != null ? Arrays.asList(artifactNodes) : new ArrayList();
@@ -225,7 +225,7 @@ public class MavenProjectNode extends AbstractSynchronizationNode implements ISe
 			joinEclipseSourceFolders();
 		} 
 		catch (Exception e) {
-			log.error("Cannot read source directories for pom " + project.getFile(), e);
+			log.error("Cannot read source directories for pom " + project.getFile(), e); //$NON-NLS-1$
 		}
 	}
 	
@@ -264,7 +264,7 @@ public class MavenProjectNode extends AbstractSynchronizationNode implements ISe
 		List nodeList = new ArrayList();
 		for (int i = 0; i < eclipseSourceDirectories.size(); i++) {
 		    String directoryPath = (String) eclipseSourceDirectories.get(i);
-		    directoryPath = "${basedir}".equals(directoryPath) ? "${basedir}" : directoryPath;
+		    directoryPath = "${basedir}".equals(directoryPath) ? "${basedir}" : directoryPath; //$NON-NLS-1$ //$NON-NLS-2$
 		    Directory eclipseDirectory = new Directory(mavenProject);
 	    	eclipseDirectory.setPath(directoryPath);
 	    	DirectoryNode node = new DirectoryNode(eclipseDirectory, this);
@@ -339,10 +339,10 @@ public class MavenProjectNode extends AbstractSynchronizationNode implements ISe
 	public String toString() {
 		String projectPath = eclipseProject.getLocation().toOSString();
 		try {
-			return MavenUtils.makeRelativePath(new File(projectPath), mavenProject.getFile().getAbsolutePath()).replaceAll("\\\\", "/");
+			return MavenUtils.makeRelativePath(new File(projectPath), mavenProject.getFile().getAbsolutePath()).replaceAll("\\\\", "/");  //$NON-NLS-1$//$NON-NLS-2$
 		} 
 		catch (IOException e) {
-			String message = "Unable to compute pom relative path. returning file.name"; 
+			String message = "Unable to compute pom relative path. returning file.name";  //$NON-NLS-1$
 			log.error(message, e);
 			return mavenProject.getFile().getName();
 		}
@@ -383,7 +383,7 @@ public class MavenProjectNode extends AbstractSynchronizationNode implements ISe
 		}
 		MavenProjectNode node = ((MavenProjectNode) obj);
 		if ( mavenProject.getName() == null ) {
-		    throw new MevenideRuntimeException("MavenProjectNode.PomName.Null");
+		    throw new MevenideRuntimeException(Mevenide.getResourceString("MavenProjectNode.PomName.Null")); //$NON-NLS-1$
 		}
 		return mavenProject.getName().equals(node.mavenProject.getName())
 		       && parentNode.equals(node.parentNode);
