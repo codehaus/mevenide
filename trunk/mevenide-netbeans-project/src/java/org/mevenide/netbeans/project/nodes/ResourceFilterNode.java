@@ -17,26 +17,17 @@
 
 package org.mevenide.netbeans.project.nodes;
 
-import java.awt.Color;
 import java.awt.Image;
 import java.io.CharConversionException;
 import java.io.File;
-import java.io.IOException;
-import java.util.Iterator;
-import java.util.List;
 import javax.swing.Action;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.maven.MavenUtils;
 import org.apache.maven.project.Resource;
-import org.apache.tools.ant.DirectoryScanner;
-import org.mevenide.netbeans.project.MavenProject;
-import org.netbeans.api.queries.SharabilityQuery;
 import org.openide.filesystems.FileUtil;
 import org.openide.loaders.DataObject;
 import org.openide.nodes.FilterNode;
 import org.openide.nodes.Node;
-import org.openide.nodes.FilterNode.Children;
 import org.openide.util.Utilities;
 import org.openide.xml.XMLUtil;
 

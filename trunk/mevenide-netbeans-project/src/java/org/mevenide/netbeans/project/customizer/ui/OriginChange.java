@@ -17,10 +17,7 @@
 package org.mevenide.netbeans.project.customizer.ui;
 
 import java.io.File;
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComponent;
-import javax.swing.JLabel;
-
 import org.mevenide.properties.IPropertyLocator;
 
 /**

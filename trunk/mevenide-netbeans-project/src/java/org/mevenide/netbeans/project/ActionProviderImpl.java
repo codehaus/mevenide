@@ -35,7 +35,6 @@ import org.openide.execution.ExecutorTask;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.util.Lookup;
-import org.openide.util.RequestProcessor;
 import org.openide.util.Task;
 import org.openide.util.TaskListener;
 
@@ -62,6 +61,7 @@ public class ActionProviderImpl implements ActionProvider
                 try {
                     str.close();
                 } catch (IOException exc) {
+                    logger.error("cannot read the default props file2", exc);
                 }
             }
         } else {
@@ -219,8 +219,7 @@ public class ActionProviderImpl implements ActionProvider
 //        return new MultiProjectAction(name, goals);
 //    }
     
-    private class BasicAction extends AbstractAction {
-        private String nm;
+    private final class BasicAction extends AbstractAction {
         private String gls;
         
         
@@ -234,8 +233,7 @@ public class ActionProviderImpl implements ActionProvider
         }
     }
     
-    private class CustomAction extends AbstractAction {
-        private String nm;
+    private final class CustomAction extends AbstractAction {
         private String gls;
         
         

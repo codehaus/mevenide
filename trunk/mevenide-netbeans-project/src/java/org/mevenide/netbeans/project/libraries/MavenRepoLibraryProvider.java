@@ -17,7 +17,6 @@
 
 package org.mevenide.netbeans.project.libraries;
 
-import java.beans.Customizer;
 import java.beans.PropertyChangeSupport;
 import java.io.File;
 import java.net.URL;

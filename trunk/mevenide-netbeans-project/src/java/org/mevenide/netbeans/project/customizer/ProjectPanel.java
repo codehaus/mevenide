@@ -15,10 +15,8 @@
  * =========================================================================
  */
 package org.mevenide.netbeans.project.customizer;
+
 import java.util.List;
-
-
-import org.apache.maven.project.Project;
 
 /**
  *

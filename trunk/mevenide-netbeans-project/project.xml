@@ -209,6 +209,7 @@
    <dependency>
       <id>ant</id>
       <version>1.5.3-1</version>
+      <type>jar</type>
       <url>http://ant.apache.org/</url>
     </dependency>
  
@@ -216,6 +217,7 @@
     <dependency>
       <id>commons-lang</id>
       <version>2.0</version>
+      <type>jar</type>
       <url>http://jakarta.apache.org/commons/</url>
     </dependency>
     

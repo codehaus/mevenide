@@ -320,7 +320,7 @@ public class MavenProject implements Project {
     
     private class Updater implements FileChangeListener {
         
-        private FileObject fileObject;
+//        private FileObject fileObject;
         
         Updater() {
         }

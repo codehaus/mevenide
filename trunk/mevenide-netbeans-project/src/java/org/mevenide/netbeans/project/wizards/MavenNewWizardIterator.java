@@ -20,9 +20,6 @@ import java.awt.Component;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-
-import java.io.OutputStream;
-import java.io.PrintWriter;
 import java.text.MessageFormat;
 import java.util.HashSet;
 import java.util.NoSuchElementException;
@@ -32,7 +29,6 @@ import javax.swing.event.ChangeListener;
 import org.apache.commons.logging.Log;
 
 import org.apache.commons.logging.LogFactory;
-import org.jdom.Document;
 
 
 import org.jdom.Element;
@@ -46,15 +42,11 @@ import org.mevenide.project.io.JDomProjectUnmarshaller;
 
 
 import org.netbeans.spi.project.ui.templates.support.Templates;
-
-import org.openide.ErrorManager;
 import org.openide.WizardDescriptor;
-import org.openide.filesystems.FileLock;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.filesystems.Repository;
 
-import org.openide.util.NbBundle;
 
 
 /**

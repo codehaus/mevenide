@@ -19,7 +19,6 @@ package org.mevenide.netbeans.project.dependencies;
 
 import java.awt.Component;
 import java.awt.Image;
-import java.beans.Customizer;
 import java.io.File;
 import java.net.URI;
 import javax.swing.Action;
