@@ -180,18 +180,8 @@ public class RepositoryBrowser extends ViewPart implements RepositoryEventListen
 	}
     
     private void createRepositoryBrowsingArea(Composite container) {
-        Composite composite = new Composite(container, SWT.NULL);
-        GridLayout layout = new GridLayout();
-        composite.setLayout(layout);
-        GridData layoutData = new GridData(GridData.FILL_BOTH);
-        layoutData.grabExcessHorizontalSpace = true;
-        layoutData.grabExcessVerticalSpace = true;
-        layout.marginWidth = 2;
-        layout.marginHeight = 2;
-        composite.setLayoutData(layoutData);
-        composite.setBackground(MevenideColors.BLUE_GRAY);
-        
-        repositoryViewer = new TreeViewer(composite, SWT.MULTI);
+
+        repositoryViewer = new TreeViewer(container, SWT.MULTI);
         RepositoryContentProvider contentProvider = new RepositoryContentProvider();
         contentProvider.addRepositoryEventListener(this);
         repositoryViewer.setContentProvider(contentProvider);
@@ -201,7 +191,6 @@ public class RepositoryBrowser extends ViewPart implements RepositoryEventListen
         treeViewerLayoutData.grabExcessHorizontalSpace = true;
         treeViewerLayoutData.grabExcessVerticalSpace = true;
         repositoryViewer.getTree().setLayoutData(treeViewerLayoutData);
-        
         
         loadRepositories();
         repositoryViewer.setInput(repositories);
