@@ -232,7 +232,7 @@ public class NewPomWizardFirstPage extends WizardPage  implements Listener {
 			else {
 				// CoreExceptions are handled above, but unexpected runtime exceptions and errors may still occur.
 				log.error(MessageFormat.format("Exception in {0}.getNewFile(): {1}", new Object[] {getClass().getName(), e.getTargetException()}));//$NON-NLS-1$
-				MessageDialog.openError(getContainer().getShell(), Mevenide.getResourceString("NewPomWizardFirstPage.InternalError.Title"), Mevenide.getResourceString("NewPomWIzardFirstPage.InternalError.Message", new String[] {e.getTargetException().getMessage()})); 
+				MessageDialog.openError(getContainer().getShell(), Mevenide.getResourceString("NewPomWizardFirstPage.InternalError.Title"), Mevenide.getResourceString("NewPomWizardFirstPage.InternalError.Message", new String[] {e.getTargetException().getMessage()})); 
 			}
 			return null;
 		}
