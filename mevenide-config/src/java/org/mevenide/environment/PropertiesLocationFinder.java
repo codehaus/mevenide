@@ -20,43 +20,78 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Properties;
+import org.mevenide.context.IQueryContext;
 
 /**  
  * 
  * @author Gilles Dodinet (gdodinet@wanadoo.fr)
+ * @author Milos Kleint (ca206216@tiscali.cz)
  * @version $Id: PropertiesLocationFinder.java,v 1.1 15 nov. 2003 Exp gdodinet 
  * 
  */
 public abstract class PropertiesLocationFinder extends AbstractLocationFinder {
     
     private Properties properties;
+    private IQueryContext context;
+
+    protected PropertiesLocationFinder(IQueryContext querycontext)  {
+        context = querycontext;
+    }
+    
     
     protected PropertiesLocationFinder() throws FileNotFoundException, IOException {
     }
     
     protected void loadProperties() throws IOException, FileNotFoundException {
+        if (context != null) {
+            throw new IllegalStateException("Using both context and internal property loading.");
+        }
         String propertyFile = getPropertyFile();
         properties = new Properties();
         properties.load(new FileInputStream(propertyFile));
     }
 
+    /**
+     * IQueryContext of this instance, if available.
+     */
+    protected final IQueryContext getContext() {
+        return context;
+    }
+    /**
+     * subclasses delegate to a specific method in the context to retrieve the property.
+     */
+    protected abstract String getContextPropertyValue(String key);
+    
     protected abstract String getPropertyFile();
     
     public String getJavaHome() {
-		return properties.getProperty("java.home");
+        if (context != null) {
+            return getContextPropertyValue("java.home");
+        }
+        return properties.getProperty("java.home");
     }
-    
     public String getMavenHome() {
-		return properties.getProperty("maven.home");
+        if (context != null) {
+            return getContextPropertyValue("maven.home");
+        }
+        return properties.getProperty("maven.home");
     }
-    
     public String getMavenLocalHome() {
-		return properties.getProperty("maven.home.local");
+        if (context != null) {
+            return getContextPropertyValue("maven.home.local");
+        }
+        return properties.getProperty("maven.home.local");
     }
     public String getMavenLocalRepository() {
-		return properties.getProperty("maven.repo.local");
+        if (context != null) {
+            return getContextPropertyValue("maven.repo.local");
+        }
+        return properties.getProperty("maven.repo.local");
     }
     public String getMavenPluginsDir() {
-		return properties.getProperty("maven.plugins.dir");
+        if (context != null) {
+            return getContextPropertyValue("maven.plugins.dir");
+        }
+        return properties.getProperty("maven.plugins.dir");
     }
 }

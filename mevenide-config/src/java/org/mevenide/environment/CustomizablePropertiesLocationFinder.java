@@ -19,16 +19,26 @@ package org.mevenide.environment;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import org.mevenide.context.IQueryContext;
 
 /**  
  * 
  * @author Gilles Dodinet (gdodinet@wanadoo.fr)
+ * @author Milos Kleint (ca206216@tiscali.cz)
  * @version $Id: BuildPropertiesLocationFinder.java,v 1.1 15 nov. 2003 Exp gdodinet 
  * 
  */
 public abstract class CustomizablePropertiesLocationFinder extends PropertiesLocationFinder {
     
     private String effectiveWorkingDirectory;
+    
+    public CustomizablePropertiesLocationFinder(IQueryContext context) {
+        super(context);
+        File projDir = context.getProjectDirectory();
+        if (projDir != null) {
+            effectiveWorkingDirectory = projDir.getAbsolutePath();
+        }
+    }
     
     public CustomizablePropertiesLocationFinder(String effectiveWorkingDirectory) throws FileNotFoundException, IOException {
         this.effectiveWorkingDirectory = effectiveWorkingDirectory;
