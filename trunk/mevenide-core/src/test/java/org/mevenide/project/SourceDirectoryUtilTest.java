@@ -17,10 +17,13 @@ import org.apache.maven.project.Build;
 import org.apache.maven.project.Project;
 import org.mevenide.AbstractMevenideTestCase;
 import org.mevenide.ProjectConstants;
+//causes a cycle
 import org.mevenide.project.io.ProjectReader;
 
 
 /**
+ * 
+ * This test introduces a cycle in package dependencies -__-; see imports
  * 
  * @author Gilles Dodinet (gdodinet@wanadoo.fr)
  * @version $Id$
@@ -28,8 +31,9 @@ import org.mevenide.project.io.ProjectReader;
  */
 public class SourceDirectoryUtilTest extends AbstractMevenideTestCase {
 
+	
 	private ProjectReader reader; 
-	private  Project project;
+	protected Project project; 
 	
 	protected void setUp() throws Exception {
 		super.setUp();
