@@ -9,7 +9,7 @@
     <body>
         <links>
             <item name="Maven" href="http://www.maven.org/"/>
-        	<item name="NetBeans" href="http://netbeans.org/"/>
+        	<item name="NetBeans" href="http://www.netbeans.org/"/>
             <item href="http://mevenide.sf.net/" name="Mevenide"/>
         </links>
         
@@ -17,6 +17,7 @@
         	<item name="Overview" href="/index.html"/>
         	<item name="License" href="/license.html"/>
         	<item name="Faq" href="/faq.html"/>
+        	<item name="Features" href="/features.html"/>
         </menu>
        
         <menu name="Modules">

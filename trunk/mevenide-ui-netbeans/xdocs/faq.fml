@@ -3,7 +3,29 @@
    
    <part id="install">
     <title>Installing</title>
-   
+        <faq id="download">
+        <question> 
+            Where can I download the Netbeans module?
+        </question> 
+        <answer>
+           <p> It's not yet available for free download. In order to try out the module, please checkout the meveninde project from cvs and build it. </p>
+        </answer>
+        </faq>
+        <faq id="how-install">
+            <question>
+             How do I install the built snapshot into the Netbeans IDE?
+            </question>
+            <answer>
+               <p> You should have the goal-grabber, mevenide-core and mevenide-ui-netbeans atrifacts built before processing. Also ensure you have Netbeans 3.5.1 and Maven1.0rc1. 
+                  Later versions should be also ok. It will most probably not work with Netbeans 3.4, but 3.5 should be fine.  </p>
+               <p> Let's call your netbeans install directory NETBEANS_HOME, 
+                 and your maven install directory MAVEN_HOME. 
+                 Then your mevenide-ui-netbeans artifact goes into $NETBEANS_HOME/modules 
+                 and both goal-grabber and mevenide-core artifacts go into $NETBEANS_HOME/modules/ext.
+                 Then you will also need to copy the content of $MAVEN_HOME/lib (excluding the "endorsed: subdirectory) into $NETBEANS_HOME/lib/ext
+                 And now you should be able to run the netbeans module that supports maven in the IDE. </p>
+            </answer>
+        </faq>
    </part>
    
 </faqs>
