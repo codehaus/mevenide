@@ -5,16 +5,5 @@
       <import plugin="org.eclipse.text" />
       <import plugin="org.eclipse.core.runtime" />
    </requires>
-   <runtime>
-      <library name="jdom-1.0b8.jar">
-         <export name="*" />
-      </library>
-      <library name="commons-lang-2.0.jar">
-         <export name="*" />
-      </library>
-      <library name="junit-3.8.1.jar">
-         <export name="*" />
-      </library>
-   </runtime>
 </plugin>
 

@@ -111,6 +111,9 @@ public class CommonPluginValuesReplacer {
         if ( requires == null ) {
             requires = new Element("requires");
         }
+        else {
+            requires.detach();
+        }
         
         List dependencies = project.getDependencies();
         
@@ -134,10 +137,8 @@ public class CommonPluginValuesReplacer {
             pluginElement.addContent(runtime);
         }
         
-        if ( requiresUpdated && requires.getParent() != pluginElement ) {
-            pluginElement.addContent(requires);
-    	}
-        
+        pluginElement.addContent(requires);
+    	
     }
 
     private void addRuntimeLibrary(Element runtime, Dependency dependency) throws ReplaceException {
