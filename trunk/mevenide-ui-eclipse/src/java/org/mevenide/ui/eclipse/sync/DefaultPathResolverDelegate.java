@@ -23,8 +23,8 @@ import org.eclipse.jdt.core.IClasspathEntry;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.input.SAXBuilder;
-import org.mevenide.pom.BuildConstants;
-import org.mevenide.pom.InvalidSourceTypeException;
+import org.mevenide.project.BuildConstants;
+import org.mevenide.project.InvalidSourceTypeException;
 import org.mevenide.sync.NoSuchSourcePathException;
 import org.mevenide.ui.eclipse.MavenPlugin;
 

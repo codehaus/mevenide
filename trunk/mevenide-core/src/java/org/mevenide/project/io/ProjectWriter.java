@@ -11,12 +11,13 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  */
-package org.mevenide.pom;
+package org.mevenide.project.io;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.Writer;
 
 import org.apache.maven.project.Project;
+import org.mevenide.project.BuildConstants;
 /**
  * 
  * @author Gilles Dodinet (gdodinet@wanadoo.fr)

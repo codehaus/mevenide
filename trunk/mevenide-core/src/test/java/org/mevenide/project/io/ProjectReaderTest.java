@@ -12,24 +12,28 @@
  * Lesser General Public License for more details.
  * 
  */
-package org.mevenide.pom;
+package org.mevenide.project.io;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import junit.framework.TestCase;
 
 /**
  * 
- * @author Gilles Dodinet (gdodinet@wanadoo.fr)
- * @version $Id: AllTests.java 8 mai 2003 15:32:4913:34:35 Exp gdodinet 
+ * @author <a href="mailto:gdodinet@wanadoo.fr">Gilles Dodinet</a>
+ * @version $Id$
  * 
  */
-public class AllTests  {
-    public static Test suite() {
-        TestSuite suite = new TestSuite();
-        
-        suite.addTestSuite(ProjectReaderTest.class);
-		suite.addTestSuite(ProjectWriterTest.class);
-		
-        return suite;
-    }
+public class ProjectReaderTest extends TestCase {
+
+	
+	protected void setUp() throws Exception {
+		super.setUp();
+	}
+
+	protected void tearDown() throws Exception {
+		super.tearDown();
+	}
+
+	public void testGetAllSourceDirectories() throws Exception {
+	}	
+
 }

@@ -13,7 +13,7 @@
  */
 package org.mevenide.ui.eclipse.dialog.options;
 
-import org.apache.maven.MavenSession;
+import org.apache.maven.MavenConstants;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -65,7 +65,7 @@ public class MavenOptionsDialog {
         layout.grabExcessVerticalSpace = true;
         
         Text textField = new Text(parent, SWT.READ_ONLY);
-        textField.setText("Maven version : " + MavenSession.APP_VERSION);
+        textField.setText("Maven version : " + MavenConstants.MAVEN_VERSION);
         textField.setLayoutData(layout);
     }
 

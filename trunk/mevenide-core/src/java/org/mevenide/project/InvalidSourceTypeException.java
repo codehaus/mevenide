@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2003  Gilles Dodinet (gdodinet@wanadoo.fr)
  * 
  * This library is free software; you can redistribute it and/or modify it under
@@ -10,21 +10,24 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
  */
-package org.mevenide.pom;
+package org.mevenide.project;
 
-import java.io.Writer;
-
-import org.apache.maven.project.Project;
+import org.mevenide.MevenideException;
 
 /**
  * 
- * @author <a href="mailto:gdodinet@wanadoo.fr">Gilles Dodinet</a>
+ * @author Gilles Dodinet (gdodinet@wanadoo.fr)
  * @version $Id$
  * 
  */
-public interface IProjectMarshaller {
-	public abstract void marshall(Writer pom, Project project)
-		throws Exception;
+public class InvalidSourceTypeException extends MevenideException {
+
+	public InvalidSourceTypeException(String arg0) {
+		super(arg0);
+	}
+
+	public InvalidSourceTypeException(int arg0) {
+		super(String.valueOf(arg0));
+	}
 }

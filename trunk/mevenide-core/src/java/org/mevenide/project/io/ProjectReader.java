@@ -11,19 +11,17 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  */
-package org.mevenide.pom;
+package org.mevenide.project.io;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
-import java.util.Hashtable;
 
 import org.apache.maven.project.Project;
 import org.apache.maven.project.builder.DefaultProjectUnmarshaller;
 import org.jdom.input.SAXBuilder;
-import org.mevenide.util.BetwixtHelper;
 
 
 /**
@@ -63,32 +61,32 @@ public class ProjectReader {
 		return project;
 	}
 	
-	public static Hashtable getAllSourceDirectories(File pom) throws Exception {
-		Hashtable srcDirs = new Hashtable();
-		Project project; 
-		
-		if ( pom != null ) {
-			project = BetwixtHelper.readProject(pom);
-		}		
-		else {
-			project = new Project();
-		}
-		
-		if ( project.getBuild().getAspectSourceDirectory() != null 
-		 	&& !project.getBuild().getAspectSourceDirectory().trim().equals("")) {
-			srcDirs.put(project.getBuild().getAspectSourceDirectory(), BuildConstants.MAVEN_ASPECT);
-		}
-		if ( project.getBuild().getSourceDirectory() != null 
-			&& !project.getBuild().getSourceDirectory().trim().equals("")) {
-			srcDirs.put(project.getBuild().getSourceDirectory(), BuildConstants.MAVEN_SRC);	
-		}
-		if ( project.getBuild().getUnitTestSourceDirectory() != null 
-			&& !project.getBuild().getUnitTestSourceDirectory().trim().equals("")) {
-			srcDirs.put(project.getBuild().getUnitTestSourceDirectory(), BuildConstants.MAVEN_TEST);
-		}
-		//srcDirs.put(project.getBuild().getUnitTestSourceDirectory()
-		return srcDirs;
-	}
+//	public static Hashtable getAllSourceDirectories(File pom) throws Exception {
+//		Hashtable srcDirs = new Hashtable();
+//		Project project; 
+//		
+//		if ( pom != null ) {
+//			project = BetwixtHelper.readProject(pom);
+//		}		
+//		else {
+//			project = new Project();
+//		}
+//		
+//		if ( project.getBuild().getAspectSourceDirectory() != null 
+//		 	&& !project.getBuild().getAspectSourceDirectory().trim().equals("")) {
+//			srcDirs.put(project.getBuild().getAspectSourceDirectory(), BuildConstants.MAVEN_ASPECT);
+//		}
+//		if ( project.getBuild().getSourceDirectory() != null 
+//			&& !project.getBuild().getSourceDirectory().trim().equals("")) {
+//			srcDirs.put(project.getBuild().getSourceDirectory(), BuildConstants.MAVEN_SRC);	
+//		}
+//		if ( project.getBuild().getUnitTestSourceDirectory() != null 
+//			&& !project.getBuild().getUnitTestSourceDirectory().trim().equals("")) {
+//			srcDirs.put(project.getBuild().getUnitTestSourceDirectory(), BuildConstants.MAVEN_TEST);
+//		}
+//		//srcDirs.put(project.getBuild().getUnitTestSourceDirectory()
+//		return srcDirs;
+//	}
 	
 	public static boolean isWellFormed(File pom) {
 		try {
