@@ -54,7 +54,7 @@
 		</ul>
 	  </p>
 	  <p>
-	  	<a href="sync.html">More details</a>
+	  	<a href="user-guide/sync.html">More details</a>
 	  </p>
 	</div>
   </section>
@@ -77,7 +77,7 @@
 		</ul>
 	  </p>
 	  <p>
-	  	<a href="run.html">More details</a>
+	  	<a href="user-guide/run.html">More details</a>
 	  </p>
 	</div>
   </section>
@@ -104,7 +104,7 @@
 		</ul>
 	  </p>
 	  <p>
-	  	<a href="edit.html">More details</a>
+	  	<a href="user-guide/edit.html">More details</a>
 	  </p>
 	</div>
   </section>
@@ -137,7 +137,7 @@
 		</ul>
 	  </p>
 	  <p>
-	  	<a href="contentassist.html">More details</a>
+	  	<a href="user-guide/contentassist.html">More details</a>
 	  </p>
 	</div>
   </section>
@@ -147,7 +147,7 @@
 		<ul>
 		  <!-- li>Simple Maven Project Wizard based on Eclipse java project wizard</li>
 		  <li>Maven Project Wizard creates a POM according to the informations entered in the wizard</li -->
-		  <li>Simple, template-based, POM Wizard </li>
+		  <li>Simple, template-based, POM Wizards </li>
 		</ul>
 	  </p>
 	  <!-- p>
@@ -163,7 +163,7 @@
 	  	</ul>
 	  </p>
 	  <p>
-	  	<a href="wizard.html">More details</a>
+	  	<a href="user-guide/wizard.html">More details</a>
 	  </p>
 	</div>
   </section>
@@ -182,7 +182,20 @@
 		</ul>
 	  </p>
 	  <p>
-	  	<a href="templates.html">More details</a>
+	  	<a href="user-guide/pom-templates.html">More details</a>
+	  </p>
+	</div>
+  </section>
+  <section name="Pom validation">
+	<div id="documentContent">
+	  <p>
+		<ul>
+		  <li>Validate a POM against Maven XSD</li>
+		  <li>Integrates into problem view</li>
+		</ul>
+	  </p>
+	  <p>
+	  	<a href="user-guide/validate.html">More details</a>
 	  </p>
 	</div>
   </section>
@@ -194,7 +207,7 @@
 		</ul>
 	  </p>
 	  <p>
-	  	<a href="provider-infrastructure.html">More details</a>
+	  	<a href="user-guide/provider-infrastructure.html">More details</a>
 	  </p>
 	</div>
   </section>
