@@ -13,7 +13,10 @@
  */
 package org.mevenide.project.dependency;
 
+import java.io.File;
+
 import org.mevenide.AbstractMevenideTestCase;
+import org.mevenide.Environment;
 
 /**
  * 
@@ -26,7 +29,6 @@ public class DependencyResolverTest extends AbstractMevenideTestCase {
 	
 	protected void setUp() throws Exception {
 		super.setUp();
-		
 	}
 
 	public void testGuessExtension() throws Exception {
@@ -34,17 +36,21 @@ public class DependencyResolverTest extends AbstractMevenideTestCase {
 		String ext = resolver.guessExtension();
 		assertEquals("txt", ext);
 		
-		
-		resolver = AbstractDependencyResolver.newInstance("/home/bleah/bouh/junit-3.8.1.jar");
-		ext = resolver.guessExtension();
-		assertEquals("jar", ext);
-
 		resolver = AbstractDependencyResolver.newInstance("/home/bleah/bouh/rt.jar");
 		ext = resolver.guessExtension();
 		assertEquals("jar", ext);
 		
 		//BUG-DefaultDependencyResolver_DEP_guessVersion $DEP-3 depends on $DEP-1
 		//assertEquals("tar.gz", ext);
+		
+	}
+
+	public void testGuess() throws Exception {
+		IDependencyResolver resolver = AbstractDependencyResolver.newInstance(new File(Environment.getMavenRepository(), "commons-httpclient\\jars\\commons-httpclient-2.0alpha1-20020829.jar").getAbsolutePath());
+		assertEquals("2.0alpha1-20020829", resolver.guessVersion());
+		assertEquals("commons-httpclient", resolver.guessArtifactId());
+		assertEquals("commons-httpclient", resolver.guessGroupId());
+		
 	}
 	
 	

@@ -26,6 +26,7 @@ import org.eclipse.core.resources.IProject;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.input.SAXBuilder;
+import org.mevenide.project.dependency.DependencyUtil;
 import org.mevenide.util.JDomOutputter;
 
 /**
@@ -72,6 +73,8 @@ public class DependencyGroupMarshaller {
 						dependency.setGroupId(dependencyElement.getAttributeValue("groupId"));
 						dependency.setVersion(dependencyElement.getAttributeValue("version"));
 						dependency.setType(dependencyElement.getAttributeValue("type"));
+						
+						DependencyUtil.refreshGroupId(dependency);
 						
 						String l = dependencyElement.getAttributeValue("timestamp");
 						if ( timeStamp == Long.parseLong(l) ) {

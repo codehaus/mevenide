@@ -130,4 +130,16 @@ public class DependencyUtil {
 		}
 		return false;
 	}
+	
+	public static void refreshGroupId(Dependency dependency) {
+		try {
+			if ( dependency.getGroupId().equals("") ) {
+				dependency.setGroupId(
+						AbstractDependencyResolver.newInstance(dependency.getArtifact()).guessGroupId());
+			}
+		}
+		catch ( Exception ex ) {
+			log.debug("Still unable to resolve groupId due to : " + ex);
+		}	
+	}
 }

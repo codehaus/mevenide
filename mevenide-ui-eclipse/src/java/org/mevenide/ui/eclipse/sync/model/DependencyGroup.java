@@ -16,10 +16,13 @@ package org.mevenide.ui.eclipse.sync.model;
 
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Dependency;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.mevenide.project.dependency.DependencyFactory;
+import org.mevenide.project.dependency.DependencyUtil;
 import org.mevenide.ui.eclipse.DefaultPathResolver;
 import org.mevenide.ui.eclipse.IPathResolver;
 import org.mevenide.ui.eclipse.util.FileUtil;
@@ -32,6 +35,8 @@ import org.mevenide.ui.eclipse.util.ProjectUtil;
  * 
  */
 public class DependencyGroup extends ArtifactGroup {
+	private static Log log = LogFactory.getLog(DependencyGroup.class);
+	
 	
 	public DependencyGroup(IProject project) {
 		super(project);
@@ -50,7 +55,6 @@ public class DependencyGroup extends ArtifactGroup {
 				
 				String path = classpathEntries[i].getPath().toOSString(); 
 				Dependency dependency = DependencyFactory.getFactory().getDependency(path);
-				
 				addDependency(dependency);
 				
 			}
@@ -73,7 +77,9 @@ public class DependencyGroup extends ArtifactGroup {
 			dependency.setArtifactId("");
 		}
 		if ( dependency.getGroupId() == null ) {
-			dependency.setArtifactId("");
+			dependency.setGroupId("");
+			//see if non resolving is due to a past unset mavenrepo property
+			DependencyUtil.refreshGroupId(dependency);
 		}
 		if ( dependency.getVersion() == null ) {
 			dependency.setVersion("");
@@ -84,6 +90,8 @@ public class DependencyGroup extends ArtifactGroup {
 		if ( dependency.getArtifact() == null ) {
 			dependency.setArtifact("");
 		}
+		
+		log.debug("Adding [" + DependencyUtil.toString(dependency));
 		artifacts.add(dependency);
 	
 		for (int i = 0; i < excludedArtifacts.size(); i++) {
