@@ -8,7 +8,7 @@
         <section name="Project Overview">
         	
         	<p>
-			    This project provides various an api to help resolving environment 
+			    This project provides an API to help resolving environment 
 			    related properties/variables, by looking in various sources :
 			    <br/>
 				<ul>

@@ -11,7 +11,7 @@
 			    This module provides POM manipulation methods, like reading, writing POM, 
 			    adding [re]source directories, dependencies, resolving dependencies, etc.. 
 			    and also provides a ProjectComparator that can be used to track changes made to a pom,
-			    notifying registered listener on every detected change.
+			    notifying registered listeners on every detected change.
 			</p>
 		</section>
     </body>
