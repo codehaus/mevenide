@@ -3,11 +3,21 @@
 
   <pomVersion>3</pomVersion>
   <name>Mevenide Core</name>
-  <id>mevenide:mevenide-core</id>
+  <groupId>mevenide</groupId>
   <artifactId>mevenide-core</artifactId>
   <currentVersion>1.0</currentVersion>
   
   <package>org.mevenide</package>
+  
+  <shortDescription>testo testo</shortDescription>
+  
+  <developers>
+  	<developer>
+  		<name>micky mouse</name>
+  		<id>mm</id>
+  		<email>mm@m.net</email>
+  	</developer>	
+  </developers>
   
   <dependencies>
   	<dependency>
@@ -91,9 +101,9 @@
 
 
   <build>
-    <sourceDirectory>${basedir}/src/java</sourceDirectory>
-    <unitTestSourceDirectory>${basedir}/src/test/java</unitTestSourceDirectory>
-    <aspectSourceDirectory>${basedir}/src/aspects</aspectSourceDirectory>
+    <sourceDirectory>src/java</sourceDirectory>
+    <unitTestSourceDirectory>src/test/java</unitTestSourceDirectory>
+    <aspectSourceDirectory>src/aspect</aspectSourceDirectory>
    
     <unitTest>
      
@@ -103,13 +113,13 @@
 
       <resources>
         <resource>
-          <directory>${basedir}/src/test/etc</directory>
+          <directory>src/test/etc</directory>
           <includes>
             <include>**/*.*</include>
           </includes>
         </resource>
         <resource>
-          <directory>${basedir}/etc</directory>
+          <directory>etc</directory>
           <includes>
             <include>**/*.*</include>
           </includes>
@@ -119,7 +129,7 @@
     
     <resources>
       <resource>
-          <directory>${basedir}/etc</directory>
+          <directory>etc</directory>
           <includes>
             <include>**/*.*</include>
           </includes>

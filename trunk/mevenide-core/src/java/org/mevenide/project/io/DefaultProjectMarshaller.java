@@ -34,6 +34,12 @@ import org.xmlpull.v1.XmlSerializer;
 
 /**
  * 
+ * @choice we do not respect the structure defined in maven-project.xsd
+ * 
+ * instead we follow the structure used  by DefaultProjectUnmarshaller
+ * incase we want to respect the xsd, just replace with a previous 
+ * version (should be 1.2)   
+ * 
  * @author <a href="mailto:gdodinet@wanadoo.fr">Gilles Dodinet</a>
  * @version $Id$
  * 
@@ -42,6 +48,7 @@ public class DefaultProjectMarshaller implements IProjectMarshaller {
 	private static final String NAMESPACE = null;
 	//private static final String ENCODING = null;
 	//private static final Boolean STANDALONE = null;
+	
 	private XmlSerializer serializer ;
 	
 	public DefaultProjectMarshaller() throws Exception {
@@ -67,12 +74,11 @@ public class DefaultProjectMarshaller implements IProjectMarshaller {
 		marshallString(project.getExtend(), "extend");
 		marshallString(project.getPomVersion(), "pomVersion");
 		
-		marshallRequiredString(project.getId(), "id");
-		marshallRequiredString(project.getName(), "name");
-		
 		marshallString(project.getGroupId(), "groupId");
 		marshallString(project.getArtifactId(), "artifactId");
 		
+		marshallRequiredString(project.getName(), "name");
+				
 		marshallRequiredString(project.getCurrentVersion(), "currentVersion");
 		
 		marshallOrganization(project);
@@ -116,9 +122,11 @@ public class DefaultProjectMarshaller implements IProjectMarshaller {
 	private  void marshallOrganization(Project project) throws Exception {
 		serializer.startTag(NAMESPACE, "organization");
 		
-		marshallRequiredString(project.getOrganization().getName(), "name");
-		marshallString(project.getOrganization().getUrl(), "url");
-		marshallString(project.getOrganization().getLogo(), "logo");
+		if ( project.getOrganization() != null ) {
+			marshallRequiredString(project.getOrganization().getName(), "name");
+			marshallString(project.getOrganization().getUrl(), "url");
+			marshallString(project.getOrganization().getLogo(), "logo");
+		}
 		
 		serializer.endTag(NAMESPACE, "organization");
 	}
@@ -187,10 +195,11 @@ public class DefaultProjectMarshaller implements IProjectMarshaller {
 			if ( developer != null ) {
 				serializer.startTag(NAMESPACE, "developer");
 				
-				marshallRequiredString(developer.getName(), "name");
 				marshallRequiredString(developer.getId(), "id");
-				
-				marshallContactDetails(developer);
+				marshallRequiredString(developer.getName(), "name");
+				marshallRequiredString(developer.getEmail(), "email");
+				marshallString(developer.getOrganization(), "organization");
+				marshallRoles(developer);
 				
 				serializer.endTag(NAMESPACE, "developer");
 			}
@@ -238,9 +247,9 @@ public class DefaultProjectMarshaller implements IProjectMarshaller {
 					serializer.startTag(NAMESPACE, "contributor");
 					
 					marshallRequiredString(contributor.getName(), "name");
-					//marshallRequiredString(contributor.getEmail(), "email");
+					marshallRequiredString(contributor.getEmail(), "email");
 					
-					marshallContactDetails(contributor);
+					//marshallContactDetails(contributor);
 					
 					serializer.endTag(NAMESPACE, "contributor");
 				}
@@ -284,7 +293,7 @@ public class DefaultProjectMarshaller implements IProjectMarshaller {
 						
 					marshallRequiredString(dependency.getVersion(), "version");
 					
-					marshallString(dependency.getJar(), "jar");
+					marshallString(dependency.getArtifact(), "artifact");
 					marshallString(dependency.getType(), "type");
 					marshallString(dependency.getUrl(), "url");
 					

@@ -127,7 +127,7 @@ class DependencyUtil {
 	 * 
 	 * so we have $1 => artifactId ; $2 => version ; $4 => extension 
 	 *  
-	 * @bug for some artefacts such as jexl (jexl-1.0-beta-1.jar) this pattern donesnt work. 
+	 * @bug for some artefacts such as jexl (jexl-1.0-beta-1.jar) this pattern doesnt work. 
 	 * 
 	 * someone please provide with a more correct pattern ! 
 	 * 

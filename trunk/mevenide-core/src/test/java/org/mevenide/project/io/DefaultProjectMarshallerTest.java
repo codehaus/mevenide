@@ -16,6 +16,7 @@ package org.mevenide.project.io;
 
 import java.io.FileReader;
 import java.io.Reader;
+import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
 
@@ -38,7 +39,7 @@ public class DefaultProjectMarshallerTest extends TestCase {
 	
 	protected void setUp() throws Exception {
 		writer = new StringWriter();
-		String pomFile = DefaultProjectMarshallerTest.class.getResource("/marshall-project.xml").getFile();
+		String pomFile = DefaultProjectMarshallerTest.class.getResource("/project.xml").getFile();
 		Reader reader = new FileReader(pomFile);
 		project = new DefaultProjectUnmarshaller().parse(reader);
 		marshaller = new DefaultProjectMarshaller();
@@ -55,10 +56,10 @@ public class DefaultProjectMarshallerTest extends TestCase {
 		//indeed the Marshaller is based on the xsd, whereas the UnMarshaller is not
 		//i dont know yet what is the correct way
 		
-		//Reader reader = new StringReader(writer.toString());
-		//assertEquals(project, new DefaultProjectUnmarshaller().parse(reader));
+		Reader reader = new StringReader(writer.toString());
+		assertEquals(project, new DefaultProjectUnmarshaller().parse(reader));
 		
-		System.out.print(writer.toString());
+		//System.out.print(writer.toString());
 	}
 	
 	
