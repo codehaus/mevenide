@@ -195,7 +195,7 @@
          point="org.eclipse.debug.ui.launchShortcuts">
       <shortcut
             label="%LaunchShortcut.type.label"
-            icon="icons/full/obj16/ant.gif"
+            icon="icons/maven-run.gif"
             category="org.eclipse.ui.externaltools"
             modes="run"
             class="org.mevenide.ui.eclipse.launch.configuration.MavenLaunchShortcut"
