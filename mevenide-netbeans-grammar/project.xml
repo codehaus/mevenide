@@ -55,7 +55,7 @@
     <dependency>
         <groupId>mevenide</groupId>
         <artifactId>mevenide-config</artifactId>
-        <version>0.2</version>
+        <version>0.3-SNAPSHOT</version>
         <type>jar</type>
 	    <properties>
             <netbeans.module.dep>spec</netbeans.module.dep>
@@ -64,7 +64,7 @@
     <dependency>     
         <groupId>mevenide</groupId>
         <artifactId>goals-grabber</artifactId>
-        <version>0.2</version>
+        <version>0.3-SNAPSHOT</version>
             <properties>
                 <netbeans.module.dep>spec</netbeans.module.dep>
             </properties>
@@ -72,7 +72,7 @@
     <dependency>     
         <groupId>mevenide</groupId>
         <artifactId>mevenide-grammar</artifactId>
-        <version>0.1</version>
+        <version>0.2-SNAPSHOT</version>
             <properties>
                 <netbeans.module.dep>spec</netbeans.module.dep>
             </properties>
