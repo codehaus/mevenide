@@ -55,13 +55,13 @@ public class SchemaValidator implements IProjectValidator {
     public void validate(File file) throws ValidationException {
         ErrorHandler err = new ErrorHandler() {
             public void error(SAXParseException exception) throws SAXException {
-	            errors.add(exception.getMessage());
+	            errors.add(new ValidationProblem(exception));
 	        }
 	        public void fatalError(SAXParseException exception) throws SAXParseException {
-	            errors.add(exception.getMessage());
+	            errors.add(new ValidationProblem(exception));
 	        }
 	        public void warning(SAXParseException exception) throws SAXParseException {
-	            warnings.add(exception.getMessage());
+	            warnings.add(new ValidationProblem(exception));
 	        }
         };
       
