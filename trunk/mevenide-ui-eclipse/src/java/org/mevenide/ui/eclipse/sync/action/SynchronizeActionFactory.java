@@ -216,7 +216,7 @@ public class SynchronizeActionFactory {
 				try  {
 				    //IContainer f = ResourcesPlugin.getWorkspace().getRoot().getContainerForLocation(project.getLocation());
 				    IContainer f = synchronizeView.getInputContainer();
-				    List mavenProjects = new PomChooser(f).openPomChoiceDialog();
+				    List mavenProjects = new PomChooser(f).openPomChoiceDialog(false);
 				    for (int i = 0; i < mavenProjects.size(); i++) {
                         Project mavenProject = (Project) mavenProjects.get(i); 
 						log.debug("POM choice : " + mavenProject);
