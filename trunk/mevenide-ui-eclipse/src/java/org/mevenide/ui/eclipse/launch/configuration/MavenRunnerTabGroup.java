@@ -61,7 +61,7 @@ import org.eclipse.debug.ui.launchVariables.RefreshTab;
  */
 public class MavenRunnerTabGroup extends AbstractLaunchConfigurationTabGroup {
 
-	private MavenOptionsTab optionsTab = new MavenOptionsTab();
+	private MavenArgumentsTab optionsTab = new MavenArgumentsTab();
 	private MavenMainTab mainTab = new MavenMainTab();
 	private RefreshTab refreshTab = new RefreshTab();
 	/**

@@ -223,7 +223,7 @@ public class MavenLaunchShortcut implements ILaunchShortcut {
 			ILaunchConfigurationWorkingCopy workingCopy = type.newInstance(null, name);
 			workingCopy.setAttribute(IExternalToolConstants.ATTR_WORKING_DIRECTORY,
 				LaunchVariableUtil.newVariableExpression(ILaunchVariableManager.VAR_WORKSPACE_LOC, project.getFullPath().toString()));
-			workingCopy.setAttribute(MavenOptionsTab.GOALS_TO_RUN, Mevenide.getPlugin().getDefaultGoals());
+			workingCopy.setAttribute(MavenArgumentsTab.GOALS_TO_RUN, Mevenide.getPlugin().getDefaultGoals());
 			
 			// set default for common settings
 			CommonTab tab = new CommonTab();
