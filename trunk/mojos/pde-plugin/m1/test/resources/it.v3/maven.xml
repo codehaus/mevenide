@@ -1,0 +1,5 @@
+<project xmlns:pde="jelly:org.codehaus.mevenide.pde.taglib.PdeTaglib">
+  <preGoal name="build:start">
+    <attainGoal name="pde:classpath"/>
+  </preGoal>
+</project>

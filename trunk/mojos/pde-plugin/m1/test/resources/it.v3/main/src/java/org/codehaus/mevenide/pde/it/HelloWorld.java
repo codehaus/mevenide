@@ -14,12 +14,9 @@
  *  limitations under the License.
  * =========================================================================
  */
-package org.codehaus.mevenide.pde.taglib;
+package org.codehaus.mevenide.pde.it;
 
-import org.apache.commons.jelly.TagLibrary;
-import org.codehaus.mevenide.pde.classpath.PdeClasspathTag;
-import org.codehaus.mevenide.pde.plugin.PdePluginTag;
-
+import org.eclipse.jface.text.*;
 
 /**  
  * 
@@ -27,9 +24,8 @@ import org.codehaus.mevenide.pde.plugin.PdePluginTag;
  * @version $Id$
  * 
  */
-public class PdeTaglib extends TagLibrary {
-    public PdeTaglib() {
-        registerTag("plugin", PdePluginTag.class);
-        registerTag("classpath", PdeClasspathTag.class);
+public class HelloWorld {
+    public static void main(String[] args) {
+        System.out.println("Hello World");
     }
 }
