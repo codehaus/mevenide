@@ -1,9 +1,8 @@
 /*
  * (c) Copyright 2002 Thomas Papiernik - Cross Systems.
  * 
- * Licensed under CPL 1.0 and LGPL 2.1
+ * Licensed under CPL 1.0
  * http://www.eclipse.org/legal/cpl-v10.html
- * http://www.gnu.org/copyleft/lesser.txt
  * 
  */
 package org.mevenide.ui.eclipse.jdt.launching;
