@@ -52,12 +52,7 @@ public interface IGoalsManager {
 	 */
 	public abstract String[] getGoals(String plugin);
 	
-    /**
-	 * run the runnableGoals
-	 */
-	public abstract void runGoals();
-	
-    /**
+   /**
 	 * @throws IOException
 	 */
 	public abstract void save() throws IOException;

@@ -16,8 +16,6 @@ package org.mevenide.core;
 import java.io.File;
 
 import org.apache.commons.discovery.tools.DiscoverClass;
-import org.mevenide.IOptionsManager;
-import org.mevenide.MevenideException;
 
 
 /**
@@ -33,24 +31,6 @@ public abstract class AbstractRunner {
     /** finalOptions synchronization object */
     private Object optionsLock = new Object();
    
-    /** holds the non final options to be passed to the runner */
-    private IOptionsManager optionsManager;
-   
-   
-   
-	/**
-	 * 
-	 */
-	public AbstractRunner() throws MevenideException {
-       try  {
-           optionsManager = (IOptionsManager) new DiscoverClass().newInstance(IOptionsManager.class);
-       }
-       catch ( Exception ex ) {
-           throw new MevenideException(ex);
-       }
-		
-	}
-
     /**
      * lazyloading (dcl)
      * @return String[] unmodifiable Maven options
@@ -86,7 +66,7 @@ public abstract class AbstractRunner {
 	 *  
 	 * @param goals String[] the goals to run
 	 */
-	public void run(String[] goals) {
+	public void run(String[] options, String[] goals) {
 		String userDir = null;
 		try {
 			//backup user.dir. needed ?
@@ -94,7 +74,7 @@ public abstract class AbstractRunner {
 
 			initEnvironment();
 
-			launchVM(optionsManager.getOptions(), goals);
+			launchVM(options, goals);
 
 		} 
         catch (Exception ex) {

@@ -2,8 +2,10 @@
 <project xmlns:j="jelly:core">
 	<postGoal name="jar:install">
 		<echo>
-			uncomment at deployment time only since i dont want to
-			mess my plugins dir (conflict-friendly at dev. time !!)
+			Deploy Plugin :
+				uncomment at deployment time only since i dont want to
+				mess my plugins dir (conflict-friendly at dev. time !!)
+			TODO : use a dev flag
 		</echo>
 		<!-- attainGoal name="mevenide:deploy"/ -->
 	</postGoal>
