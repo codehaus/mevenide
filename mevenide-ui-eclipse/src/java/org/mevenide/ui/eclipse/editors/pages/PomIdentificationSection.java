@@ -105,8 +105,8 @@ public class PomIdentificationSection extends PageSection {
 		GridLayout layout = new GridLayout();
 		layout.numColumns = 3;
 		layout.marginWidth = 2;
-		layout.verticalSpacing = 3;
-		layout.horizontalSpacing = 3;
+		layout.verticalSpacing = 7;
+		layout.horizontalSpacing = 5;
 		container.setLayout(layout);
 		
 		final Project pom = getPage().getEditor().getPom();
@@ -125,7 +125,7 @@ public class PomIdentificationSection extends PageSection {
 					}
 					String pomName = pomNameText.getText();
 					pom.setName(pomName);
-					getPage().setHeading(OverviewPage.HEADING + pomName);
+					((OverviewPage) getPage()).setHeading(pom);
 				}
 			}
 		);
@@ -144,11 +144,8 @@ public class PomIdentificationSection extends PageSection {
 		);
 		
 		// POM version textbox 
-		// @fixme is this always overriden??  Seems that Maven defaults it to 1 if it goes un-specified
 		labelName = Mevenide.getResourceString("PomIdentificationSection.pomVersionText.label");
-		pomVersionText = new TextEntry(
-			createText(container, labelName, factory)
-		);
+		pomVersionText = new TextEntry(createText(container, labelName, factory));
 		factory.createSpacer(container);
 		pomVersionText.addEntryChangeListener(
 			new EntryChangeListenerAdaptor() {
@@ -157,6 +154,9 @@ public class PomIdentificationSection extends PageSection {
 				}
 			}
 		);
+		if (isInherited) {
+			pomVersionText.setEnabled(false);
+		}
 		
 		// POM extend textbox and file browse button
 		labelName = Mevenide.getResourceString("PomIdentificationSection.extendsText.label");
@@ -306,7 +306,16 @@ public class PomIdentificationSection extends PageSection {
             log.debug("updating id section content");
         }
 		setIfDefined(pomNameText, pom.getName(), isInherited ? parentPom.getName() : null);
-		setIfDefined(pomVersionText, pom.getPomVersion());
+		if (isInherited) {
+			String parentVersion = getPage().getEditor().getParentPom().getPomVersion();
+			setIfDefined(pomVersionText, parentVersion);
+			// force local override with parent if inherited
+			// Seems that Maven defaults it to 1 if it goes un-specified
+			pom.setPomVersion(getPage().getEditor().getParentPom().getPomVersion());
+		}
+		else {
+			setIfDefined(pomVersionText, pom.getPomVersion());
+		}
 		setIfDefined(extendsText, pom.getExtend());
 		setIfDefined(artifactIdText, pom.getArtifactId(), isInherited ? parentPom.getArtifactId() : null);
 		setIfDefined(groupIdText, pom.getGroupId(), isInherited ? parentPom.getGroupId() : null);
