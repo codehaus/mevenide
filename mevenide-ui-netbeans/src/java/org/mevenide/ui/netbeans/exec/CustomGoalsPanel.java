@@ -98,6 +98,7 @@ public class CustomGoalsPanel extends JPanel
         provider = goalsProvider;
         tvGoals.setSelectionMode(TreeSelectionModel.DISCONTIGUOUS_TREE_SELECTION);
         tvGoals.setRootVisible(false);
+        txtEnter.setText("");
         txtEnter.getDocument().addDocumentListener(new DocListener());
     }
     
@@ -168,6 +169,8 @@ public class CustomGoalsPanel extends JPanel
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         add(lblEnter, gridBagConstraints);
 
+        txtEnter.setMinimumSize(new java.awt.Dimension(60, 28));
+        txtEnter.setPreferredSize(new java.awt.Dimension(100, 28));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
@@ -184,6 +187,7 @@ public class CustomGoalsPanel extends JPanel
         gridBagConstraints.insets = new java.awt.Insets(6, 0, 0, 0);
         add(lblGoals, gridBagConstraints);
 
+        epGoals.setMinimumSize(new java.awt.Dimension(150, 100));
         epGoals.add(tvGoals, java.awt.BorderLayout.CENTER);
 
         gridBagConstraints = new java.awt.GridBagConstraints();

@@ -362,18 +362,20 @@ public class GoalCustomEditor extends JPanel
                 DefaultListModel model = (DefaultListModel)lstGoals.getModel();
                 int selected = lstGoals.getSelectedIndex();
                 Object[] sel = lstGoals.getSelectedValues();
+                lstGoals.clearSelection();
                 for (int i = 0; i < sel.length; i++)
                 {
                     model.removeElement(sel[i]);
                 }
                 // only select the next one If there is a next one..
-                if (lstGoals.getModel().getSize() > selected - 1) {
+                if (lstGoals.getModel().getSize() > selected) {
                     lstGoals.setSelectedIndex(selected);
                     lstGoals.grabFocus();
                 }
             } else if ("RemoveAll".equals(e.getActionCommand())) //NOI18N
             {
                 DefaultListModel model = (DefaultListModel)lstGoals.getModel();
+                lstGoals.clearSelection();
                 model.removeAllElements();
             } else if ("MoveUp".equals(e.getActionCommand())) //NOI18N
             {
