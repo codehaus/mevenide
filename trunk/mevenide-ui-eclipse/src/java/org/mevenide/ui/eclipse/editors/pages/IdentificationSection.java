@@ -98,7 +98,7 @@ public class IdentificationSection extends PageSection {
     public Composite createClient(Composite parent, PageWidgetFactory factory) {
 		Composite container = factory.createComposite(parent);
 		GridLayout layout = new GridLayout();
-		layout.numColumns = 3;
+		layout.numColumns = isInherited() ? 4 : 3;
 		layout.marginWidth = 2;
 		layout.verticalSpacing = 7;
 		layout.horizontalSpacing = 5;
@@ -107,11 +107,9 @@ public class IdentificationSection extends PageSection {
 		final Project pom = getPage().getEditor().getPom();
 		
 		// POM name textbox
-		String labelName = Mevenide.getResourceString("IdentificationSection.pomNameText.label");
-		pomNameText = new OverridableTextEntry(
-			createText(container, labelName, factory), 
-			createOverrideToggle(container, factory, isInherited())
-		);
+		Button toggle = createOverrideToggle(container, factory);
+		createLabel(container, Mevenide.getResourceString("IdentificationSection.pomNameText.label"), factory);
+		pomNameText = new OverridableTextEntry(createText(container, factory, 2), toggle);
 		OverrideAdaptor adaptor = new OverrideAdaptor() {
 			public void updateProject(String value) {
 				pom.setName(value);
@@ -125,11 +123,9 @@ public class IdentificationSection extends PageSection {
 		pomNameText.addOverrideAdaptor(adaptor);
 		
 		// POM artifactId textbox
-		labelName = Mevenide.getResourceString("IdentificationSection.artifactIdText.label");
-		artifactIdText = new OverridableTextEntry(
-			createText(container, labelName, factory), 
-			createOverrideToggle(container, factory, isInherited())
-		);
+		toggle = createOverrideToggle(container, factory);
+		createLabel(container, Mevenide.getResourceString("IdentificationSection.artifactIdText.label"), factory);
+		artifactIdText = new OverridableTextEntry(createText(container, factory, 2), toggle);
 		adaptor = new OverrideAdaptor() {
 			public void updateProject(String value) {
 				pom.setArtifactId(value);
@@ -142,11 +138,9 @@ public class IdentificationSection extends PageSection {
 		artifactIdText.addOverrideAdaptor(adaptor);
 		
 		// POM groupId textbox
-		labelName = Mevenide.getResourceString("IdentificationSection.groupIdText.label");
-		groupIdText = new OverridableTextEntry(
-			createText(container, labelName, factory), 
-			createOverrideToggle(container, factory, isInherited())
-		);
+		toggle = createOverrideToggle(container, factory);
+		createLabel(container, Mevenide.getResourceString("IdentificationSection.groupIdText.label"), factory);
+		groupIdText = new OverridableTextEntry(createText(container, factory, 2), toggle);
 		adaptor = new OverrideAdaptor() {
 			public void updateProject(String value) {
 				pom.setGroupId(value);
@@ -158,9 +152,45 @@ public class IdentificationSection extends PageSection {
 		groupIdText.addEntryChangeListener(adaptor);
 		groupIdText.addOverrideAdaptor(adaptor);
 		
+		// POM gumpRepositoryId textbox
+		toggle = createOverrideToggle(container, factory);
+		createLabel(
+			container, 
+			Mevenide.getResourceString("IdentificationSection.gumpRepoIdText.label"), 
+			Mevenide.getResourceString("IdentificationSection.gumpRepoIdText.tooltip"), 
+			factory
+		);
+		gumpRepoIdText = new OverridableTextEntry(createText(container, factory, 2), toggle);
+		adaptor = new OverrideAdaptor() {
+			public void updateProject(String value) {
+				pom.setGumpRepositoryId(value);
+			}
+			public String getParentProjectAttribute() {
+				return getParentPom().getGumpRepositoryId();
+			}
+		};
+		gumpRepoIdText.addEntryChangeListener(adaptor);
+		gumpRepoIdText.addOverrideAdaptor(adaptor);
+		
+		// POM version textbox 
+		if (isInherited()) createSpacer(container, factory);
+		createLabel(container, Mevenide.getResourceString("IdentificationSection.pomVersionText.label"), factory);
+		pomVersionText = new TextEntry(createText(container, factory, 2));
+		pomVersionText.addEntryChangeListener(
+			new EntryChangeListenerAdaptor() {
+				public void entryChanged(PageEntry entry) {
+					pom.setPomVersion(pomVersionText.getText());
+				}
+			}
+		);
+		if (isInherited()) {
+			pomVersionText.setEnabled(false);
+		}
+		
 		// POM extend textbox and file browse button
-		labelName = Mevenide.getResourceString("IdentificationSection.extendsText.label");
-		extendsText = new TextEntry(createText(container, labelName, factory));
+		if (isInherited()) createSpacer(container, factory);
+		createLabel(container, Mevenide.getResourceString("IdentificationSection.extendsText.label"), factory);
+		extendsText = new TextEntry(createText(container, factory));
 		extendsText.addEntryChangeListener(
 			new EntryChangeListenerAdaptor() {
 				public void entryChanged(PageEntry entry) {
@@ -173,7 +203,7 @@ public class IdentificationSection extends PageSection {
 		);
 		
 		Composite buttonContainer = factory.createComposite(container);
-		GridData data = new GridData(GridData.FILL_VERTICAL | GridData.HORIZONTAL_ALIGN_END);
+		GridData data = new GridData(GridData.HORIZONTAL_ALIGN_END | GridData.VERTICAL_ALIGN_CENTER);
 		data.horizontalSpan = 1;
 		buttonContainer.setLayoutData(data);
 		layout = new GridLayout();
@@ -181,10 +211,10 @@ public class IdentificationSection extends PageSection {
 		layout.marginHeight = 0;
 		buttonContainer.setLayout(layout);
 
-		labelName = Mevenide.getResourceString("IdentificationSection.extendButton.label");
+		String labelName = Mevenide.getResourceString("IdentificationSection.extendButton.label");
 		String toolTip = Mevenide.getResourceString("IdentificationSection.extendButton.tooltip");
 		extendButton = factory.createButton(buttonContainer, labelName, SWT.PUSH);
-		data = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING | GridData.VERTICAL_ALIGN_BEGINNING);
+		data = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING | GridData.VERTICAL_ALIGN_CENTER);
 		extendButton.setLayoutData(data);
 		extendButton.setToolTipText(toolTip);
 
@@ -242,38 +272,6 @@ public class IdentificationSection extends PageSection {
 					}
 				}
 		);
-		
-		// POM version textbox 
-		labelName = Mevenide.getResourceString("IdentificationSection.pomVersionText.label");
-		pomVersionText = new TextEntry(createText(container, labelName, factory));
-		factory.createSpacer(container);
-		pomVersionText.addEntryChangeListener(
-			new EntryChangeListenerAdaptor() {
-				public void entryChanged(PageEntry entry) {
-					pom.setPomVersion(pomVersionText.getText());
-				}
-			}
-		);
-		if (isInherited()) {
-			pomVersionText.setEnabled(false);
-		}
-		
-		// POM gumpRepositoryId textbox
-		labelName = Mevenide.getResourceString("IdentificationSection.gumpRepoIdText.label");
-		gumpRepoIdText = new OverridableTextEntry(
-			createText(container, labelName, factory), 
-			createOverrideToggle(container, factory, isInherited())
-		);
-		adaptor = new OverrideAdaptor() {
-			public void updateProject(String value) {
-				pom.setGumpRepositoryId(value);
-			}
-			public String getParentProjectAttribute() {
-				return getParentPom().getGumpRepositoryId();
-			}
-		};
-		gumpRepoIdText.addEntryChangeListener(adaptor);
-		gumpRepoIdText.addOverrideAdaptor(adaptor);
 		
 		factory.paintBordersFor(container);
         return container;
