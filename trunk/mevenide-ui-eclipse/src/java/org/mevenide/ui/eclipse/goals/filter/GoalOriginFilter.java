@@ -14,7 +14,7 @@
  *  limitations under the License.
  * =========================================================================
  */
-package org.mevenide.ui.eclipse.goals.outline;
+package org.mevenide.ui.eclipse.goals.filter;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

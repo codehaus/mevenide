@@ -14,7 +14,7 @@
  *  limitations under the License.
  * =========================================================================
  */
-package org.mevenide.ui.eclipse.goals.outline;
+package org.mevenide.ui.eclipse.goals.filter;
 
 import java.util.ArrayList;
 import java.util.List;
