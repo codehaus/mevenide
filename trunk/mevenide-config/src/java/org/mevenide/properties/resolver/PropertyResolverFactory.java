@@ -18,8 +18,6 @@ package org.mevenide.properties.resolver;
 
 import java.io.File;
 import java.util.HashMap;
-import java.util.Map;
-import java.util.TreeMap;
 import org.mevenide.context.IQueryContext;
 import org.mevenide.properties.IPropertyResolver;
 
@@ -30,7 +28,7 @@ import org.mevenide.properties.IPropertyResolver;
  * @version $Id$
  * 
  */
-public class PropertyResolverFactory {
+public final class PropertyResolverFactory {
     
     private static PropertyResolverFactory factory = new PropertyResolverFactory();
      /**

@@ -22,7 +22,7 @@ import java.io.File;
  * Utility class.
  * @author  Milos Kleint (ca206216@tiscali.cz)
  */
-public class ConfigUtils {
+public final class ConfigUtils {
 
     private static ILocationFinder defaultLocFinder;
     private static Object LOCK = new Object();
