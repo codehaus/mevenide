@@ -127,7 +127,24 @@ public final class ArgumentsManager {
 	
 	    props.put("javax.xml.parsers.DocumentBuilderFactory", "org.apache.xerces.jaxp.DocumentBuilderFactoryImpl");
 	    props.put("javax.xml.parsers.SAXParserFactory", "org.apache.xerces.jaxp.SAXParserFactoryImpl");
-	    props.put("tools.jar" , Environment.getJavaHome() + File.separator + "lib" + File.separator + "tools.jar");
+	   
+	    String toolsJar = Environment.getJavaHome() + File.separator + "lib" + File.separator + "tools.jar";
+	    if ( !new File(toolsJar).exists() ) {
+	    	//mac os x..  
+	    	//TOOLS_JAR=/System/Library/Frameworks/JavaVM.framework/Versions/CurrentJDK/Classes/classes.jar
+	    	//JAVA_HOME=/System/Library/Frameworks/JavaVM.framework/Home
+	    	toolsJar = new File(Environment.getJavaHome()).getParent();
+	    	String classesJarPart = "Versions/CurrentJDK/Classes/classes.jar";
+	    	if ( toolsJar.endsWith("/") ) {
+	    		toolsJar += classesJarPart;
+	    	}
+	    	else {
+	    		toolsJar += "/" + classesJarPart;
+	    	}
+	    }
+	    props.put("tools.jar", toolsJar);
+	    
+	    
 	    props.put("maven.home", Environment.getMavenHome());
 		props.put("maven.repo.local", Environment.getMavenLocalRepository());
 	    props.put("forehead.conf.file", Environment.getConfigurationFile());
