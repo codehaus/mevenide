@@ -480,6 +480,7 @@
             id="org.mevenide.ui.synchronize.view.SynchronizationView">
       </view>
       <!-- view class="org.mevenide.ui.eclipse.repository.view.RepositoryBrowser"
+            icon="icons/eview16/maven_repo.gif"
             category="org.mevenide.ui.synchronize.view"
             name="Repository Browser"
             id="org.mevenide.repository.browser">

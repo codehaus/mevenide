@@ -64,6 +64,10 @@ public interface IImageRegistry {
     public static final String FOLDER_RESOURCE_OBJ = "obj16/mresources_obj.gif"; //$NON-NLS-1$
     public static final String EXCLUSION_OBJ = "obj16/mdir_excl_attr.gif"; //$NON-NLS-1$
     
+    public static final String NEW_REPO_DEFINITION = "etool16/newmrepo.gif"; //$NON-NLS-1$
+    public static final String REMOVE_REPO_DEFINITION = "etool16/delmrepo.gif"; //$NON-NLS-1$
+    public static final String MAVEN_REPO = "obj16/mrepo.gif"; //$NON-NLS-1$
+    
     static final String[] IMAGE_KEYS = new String[] {
             CLEAR_VALIDATE_TOOL,
             VALIDATE_TOOL,
@@ -87,6 +91,8 @@ public interface IImageRegistry {
             XML_END_TAG_OBJ,
             GOAL_OBJ,
             PLUGIN_OBJ,
+            NEW_REPO_DEFINITION,
+            REMOVE_REPO_DEFINITION,
             DEPENDENCY_OBJ,
             PROPERTY_OBJ,
             MAVEN_PROJECT_OBJ,
@@ -101,5 +107,6 @@ public interface IImageRegistry {
             COPY_TOOL,
             EXT_TOOLS_WIZ,
             PATTERN_SEARCH_ICON,
+            MAVEN_REPO,
     };
 }
