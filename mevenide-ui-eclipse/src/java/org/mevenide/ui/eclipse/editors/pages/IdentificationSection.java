@@ -143,26 +143,6 @@ public class IdentificationSection extends PageSection {
 		groupIdText.addEntryChangeListener(adaptor);
 		groupIdText.addOverrideAdaptor(adaptor);
 		
-		// POM gumpRepositoryId textbox
-		toggle = createOverrideToggle(container, factory);
-		createLabel(
-			container, 
-			Mevenide.getResourceString("IdentificationSection.gumpRepoIdText.label"), 
-			Mevenide.getResourceString("IdentificationSection.gumpRepoIdText.tooltip"), 
-			factory
-		);
-		gumpRepoIdText = new OverridableTextEntry(createText(container, factory, 2), toggle, null);
-		adaptor = new OverrideAdaptor() {
-			public void overrideParent(Object value) {
-				pom.getModel().setGumpRepositoryId((String) value);
-			}
-			public Object acceptParent() {
-				return getParentPom().getModel().getGumpRepositoryId();
-			}
-		};
-		gumpRepoIdText.addEntryChangeListener(adaptor);
-		gumpRepoIdText.addOverrideAdaptor(adaptor);
-		
 		// POM version textbox 
 		if (isInherited()) createSpacer(container, factory);
 		createLabel(
@@ -175,7 +155,7 @@ public class IdentificationSection extends PageSection {
 		pomVersionText.addEntryChangeListener(
 			new EntryChangeListenerAdaptor() {
 				public void entryChanged(PageEntry entry) {
-					pom.getModel().setPomVersion(pomVersionText.getText());
+					pom.getModel().setModelVersion(pomVersionText.getText());
 				}
 			}
 		);
@@ -284,19 +264,18 @@ public class IdentificationSection extends PageSection {
         }
 		setIfDefined(pomNameText, pom.getModel().getName(), isInherited() ? getParentPom().getModel().getName() : null);
 		if (isInherited()) {
-			String parentVersion = getPage().getPomEditor().getParentPom().getModel().getPomVersion();
+			String parentVersion = getPage().getPomEditor().getParentPom().getModel().getModelVersion();
 			setIfDefined(pomVersionText, parentVersion);
 			// force local override with parent if inherited
 			// Seems that Maven defaults it to 1 if it goes un-specified
-			pom.getModel().setPomVersion(getPage().getPomEditor().getParentPom().getModel().getPomVersion());
+			pom.getModel().setModelVersion(getPage().getPomEditor().getParentPom().getModel().getModelVersion());
 		}
 		else {
-			setIfDefined(pomVersionText, pom.getModel().getPomVersion());
+			setIfDefined(pomVersionText, pom.getModel().getModelVersion());
 		}
 		setIfDefined(extendsText, pom.getModel().getExtend());
 		setIfDefined(artifactIdText, pom.getModel().getArtifactId(), isInherited() ? getParentPom().getModel().getArtifactId() : null);
 		setIfDefined(groupIdText, pom.getModel().getGroupId(), isInherited() ? getParentPom().getModel().getGroupId() : null);
-		setIfDefined(gumpRepoIdText, pom.getModel().getGumpRepositoryId(), isInherited() ? getParentPom().getModel().getGumpRepositoryId() : null);
     }
 
 }

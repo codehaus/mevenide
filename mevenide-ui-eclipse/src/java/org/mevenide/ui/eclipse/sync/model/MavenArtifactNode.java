@@ -16,6 +16,9 @@
  */
 package org.mevenide.ui.eclipse.sync.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.maven.artifact.MavenArtifact;
 import org.apache.maven.project.MavenProject;
 import org.eclipse.core.resources.IProject;
@@ -24,6 +27,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.JavaCore;
 import org.mevenide.project.dependency.DependencyUtil;
+import org.mevenide.project.io.ProjectWriter;
 import org.mevenide.ui.eclipse.util.JavaProjectUtils;
 
 /**  
@@ -73,7 +77,12 @@ public class MavenArtifactNode extends ArtifactNode {
 		return "[" + artifact.getDependency().getGroupId() + "] " + artifact.getFile().getName();
 	}
 	
-	
+	/**
+	 * @todo manage potential causes of failure : 
+	 * o JavaModelException (CoreException) if project already added
+	 * o ResourceException if .project is out of sync
+	 * 
+	 */
 	public void addTo(IProject project) throws Exception {
 		String eclipseDependencyProperty = (String) artifact.getDependency().getProperties().get("eclipse.dependency");
 		boolean treatAsEclipseDependency = "true".equals(eclipseDependencyProperty);
@@ -89,14 +98,10 @@ public class MavenArtifactNode extends ArtifactNode {
 	
 	private IClasspathEntry createNewLibraryEntry() {
 		System.err.println(artifact.getPath());
-		return JavaCore.newLibraryEntry(new Path(artifact.getPath()), null, null);
+		System.err.println(artifact.generatePath());
+		return JavaCore.newLibraryEntry(new Path(artifact.generatePath()), null, null);
 	}
-	/**
-	 * @todo manage potential causes of failure : 
-	 *   o JavaModelException (CoreException) if project already added
-	 *   o ResourceException if .project is out of sync
-	 * 
-	 */
+	
 	private IClasspathEntry createNewProjectEntry() throws Exception {
 		assertJavaNature();
 		//maven-eclipse-plugin assumes project name = artifactId when eclipse.dependency is set to true
@@ -111,23 +116,29 @@ public class MavenArtifactNode extends ArtifactNode {
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.mevenide.ui.eclipse.sync.model.ArtifactNode#addTo(org.apache.maven.project.MavenProject)
-	 */
 	public void addTo(MavenProject project) throws Exception {
-		// TODO Auto-generated method stub
+		project.getArtifacts().add(artifact);
+		ProjectWriter.getWriter().write(project);
 	}
-	/* (non-Javadoc)
-	 * @see org.mevenide.ui.eclipse.sync.model.ArtifactNode#getIgnoreLine()
-	 */
+	
 	protected String getIgnoreLine() {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	/* (non-Javadoc)
-	 * @see org.mevenide.ui.eclipse.sync.model.ArtifactNode#removeFrom(org.apache.maven.project.MavenProject)
-	 */
+	
 	public void removeFrom(MavenProject project) throws Exception {
-		// TODO Auto-generated method stub
+		List projectArtifacts = project.getArtifacts();
+		List iteratedList = new ArrayList(projectArtifacts);
+		int idx = 0;
+		for (int i = 0; i < iteratedList.size(); i++) {
+			MavenArtifact iteratedArtifact = (MavenArtifact) iteratedList.get(i);
+			if ( artifact.getPath().equals(iteratedArtifact.getPath()) ) {
+				projectArtifacts.remove(idx);
+			}
+			else {
+				idx++;
+			}
+		}
+		ProjectWriter.getWriter().write(project);
 	}
 }

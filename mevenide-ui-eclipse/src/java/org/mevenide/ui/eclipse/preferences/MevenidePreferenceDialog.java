@@ -16,12 +16,14 @@
  */
 package org.mevenide.ui.eclipse.preferences;
 
-import java.io.FileReader;
-import java.io.Reader;
+import java.io.File;
+import java.net.URL;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.maven.MavenCore;
 import org.apache.maven.project.MavenProject;
+import org.codehaus.plexus.embed.Embedder;
 import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.DirectoryFieldEditor;
 import org.eclipse.jface.preference.FileFieldEditor;
@@ -42,7 +44,6 @@ import org.mevenide.environment.ILocationFinder;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.MevenidePreferenceKeys;
 import org.mevenide.ui.eclipse.goals.viewer.GoalsPickerDialog;
-import org.mevenide.project.io.DefaultProjectUnmarshaller;
 
 /**
  * 
@@ -172,9 +173,12 @@ public class MevenidePreferenceDialog {
 				public void modifyText(ModifyEvent event) {
 					try {
 						if ( ((Text)event.getSource()).getText() != null && !((Text)event.getSource()).getText().trim().equals("") ) {
-							DefaultProjectUnmarshaller dpu = new DefaultProjectUnmarshaller();
-							Reader reader = new FileReader(((Text)event.getSource()).getText());
-							MavenProject project = dpu.unmarshall(reader);
+							Embedder embedder = new Embedder();
+							URL url = this.getClass().getResource( "/plexus.xml" );
+					        embedder.setConfiguration( url );
+							embedder.start();
+							MavenCore maven = (MavenCore) embedder.lookup( MavenCore.ROLE );
+							MavenProject project = maven.getProject(new File(((Text)event.getSource()).getText()));
 							invalidPomTemplate = false;
 							page.setErrorMessage(null);
 						}
