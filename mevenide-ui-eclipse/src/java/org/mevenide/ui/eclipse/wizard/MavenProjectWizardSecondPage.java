@@ -42,6 +42,7 @@ import org.eclipse.jdt.ui.PreferenceConstants;
 import org.eclipse.jdt.ui.wizards.JavaCapabilityConfigurationPage;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.ui.actions.WorkspaceModifyDelegatingOperation;
+import org.mevenide.environment.LocationFinderAggregator;
 import org.mevenide.project.io.PomSkeletonBuilder;
 import org.mevenide.project.io.ProjectReader;
 import org.mevenide.ui.eclipse.Mevenide;
@@ -182,14 +183,22 @@ public class MavenProjectWizardSecondPage extends JavaCapabilityConfigurationPag
 				PreferencesManager manager = PreferencesManager.getManager();
 				manager.loadPreferences();
 
-				IPath mavenRepo = new Path(manager.getValue(MevenidePreferenceKeys.MAVEN_REPO_PREFERENCE_KEY));
+				//set maven repo if not set 
 				IPath mavenRepoVar = JavaCore.getClasspathVariable("MAVEN_REPO");
-				if(mavenRepo != null && !mavenRepo.equals(mavenRepoVar))
-					JavaCore.setClasspathVariable("MAVEN_REPO", mavenRepo, null);
+				if(mavenRepoVar == null) {
+				    //lookup maven repo in all available locations
+					IPath mavenRepo = new Path(manager.getValue(MevenidePreferenceKeys.MAVEN_REPO_PREFERENCE_KEY));
+				    if ( mavenRepo == null ) {
+					    LocationFinderAggregator locationFinder = new LocationFinderAggregator();
+					    locationFinder.setEffectiveWorkingDirectory(fCurrProjectLocation.toOSString());
+					    System.err.println(fCurrProjectLocation.toOSString());
+					    mavenRepo = new Path(locationFinder.getMavenLocalRepository());
+					}
+				    JavaCore.setClasspathVariable("MAVEN_REPO", mavenRepo, null);
+				}
 				
 			}
 			
-			 
 			//@TODO might make use of templates sometime in the future
 			IFile propertiesFile = fCurrProject.getFile("project.properties");
 			propertiesFile.create(new ByteArrayInputStream(("#Project property file for " + fCurrProject.getName()).getBytes()), false, null);
@@ -208,9 +217,7 @@ public class MavenProjectWizardSecondPage extends JavaCapabilityConfigurationPag
 			monitor.done();
 		}		
 	}
-	/*
-	 * 
-	 */
+
 	/**
 	 * This method is called from the wizard on cancel.
 	 */
