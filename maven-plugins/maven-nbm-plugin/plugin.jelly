@@ -91,11 +91,6 @@
                        file="${man}"/>
         </j:when>
     </j:choose>
-    <j:set var="bundle" value="${maven.nbm.manifest.bundle.basedir}"/>
-    <j:if test="${!empty bundle}">
-        <ant:available property="maven.nbm.bundle.available" 
-                   file="${bundle}"/>
-    </j:if> 
                        
 <!-- if a netbeans specific manifest is defined, examine this one, otherwise the already included one.
  ignoring the case when some of the netbeans attributes are already defined in the jar and more is included.
@@ -117,12 +112,6 @@
       <j:if test="${maven.nbm.manifest.available}">
 <!--          <ant:echo message="NBM merging manifest.." /> -->
         <ant:setProperty name="manifest" value="${maven.nbm.manifest}" />
-      </j:if>
-      <j:if test="${maven.nbm.bundle.available}">
-<!--          <ant:echo message="NBM adding manifest resources.." /> -->
-          <ant:fileset dir="${maven.nbm.manifest.bundle.basedir}"
-                       includes="${maven.nbm.manifest.bundle.include}"
-          />       
       </j:if>
       <!-- set te final name according to the module def. -->
       <j:set var="modulepackage" value="${maven.nbm.modulename}"/>
@@ -257,7 +246,6 @@
   </ant:taskdef>
 <!-- this way we hook xalan copied from docbook - is probably a major hack!-->
 ${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}
-
   <ant:taskdef name="genlist" classname="org.netbeans.nbbuild.MakeListOfNBM" >
         <ant:classpath>
 <!--            <ant:pathelement location="${plugin.getDependencyPath('xalan:xalan')}"/> -->
@@ -265,7 +253,6 @@ ${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.x
             <ant:path refid="maven.dependency.classpath"/>
         </ant:classpath>
   </ant:taskdef>
-        
     <!-- copy the jar to the right location -->
    <ant:copy toDir="${maven.nbm.build.dir}/${maven.nbm.jar.location}" file="${maven.nbm.build.dir}/${maven.final.name}.jar"/>
    <ant:move file="${maven.nbm.build.dir}/${maven.nbm.jar.location}/${maven.final.name}.jar"
@@ -278,7 +265,6 @@ ${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.x
         <!--classpath attribute added in the previous step (jar update)-->
       </j:if>
     </j:forEach>
-    
     <ant:mkdir dir="${maven.nbm.build.dir}/${maven.nbm.cluster.dir}/config/Modules"/>
     <ant:createmodulexml xmldir="${maven.nbm.build.dir}/${maven.nbm.cluster.dir}/config/Modules">
         <j:choose>
@@ -312,7 +298,6 @@ ${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.x
             <patternset refid="module.files"/>        
         </ant:fileset>
     </ant:genlist>
-
   </goal>
    
    
@@ -356,9 +341,11 @@ ${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.x
       </j:if>
       <j:set var="licensename" value="${maven.nbm.license.name}" />
       <j:if test="${empty(licensename)}">
-          <j:set var="licensename" value="Licence for ${pom.name}" />
+          <j:set var="licensename" value="License for ${pom.name}" />
       </j:if>
-     <ant:license file="${maven.nbm.license}" name="${licensename}"/>
+      <util:available file="${maven.nbm.license}">
+          <ant:license file="${maven.nbm.license}" name="${licensename}"/>
+      </util:available>   
      <ant:signature keystore="${maven.nbm.sign.keystore}" 
                     storepass="${maven.nbm.sign.storepass}" 
                     alias="${maven.nbm.sign.alias}"/> -->

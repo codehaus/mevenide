@@ -262,25 +262,6 @@ OpenIDE-Module-Specification-Version: normalized version of ${pom.currentVersion
           <th>Description</th>
         </tr>
         <tr>
-          <td>maven.nbm.manifest.bundle.basedir</td>
-          <td><p>Optional. Default value is <code>not defined</code>.
-           If defined, then <code> maven.nbm.manifest.bundle.include </code> has to be defined as well. </p>
-          </td>
-          <td>
-            <p>Base folder where the nbm specific resources are expected. 
-             Currently it is only usedto include the Bundle.properties file 
-             into that jar that contains localized manifest entries.</p>
-          </td>
-        </tr>
-        <tr>
-          <td>maven.nbm.manifest.bundle.include</td>
-          <td><p>Optional. Default value is <code>not defined</code>.</p></td>
-           If defined, then <code> maven.nbm.manifest.bundle.basedir </code> has to be defined as well.
-          <td>
-            <p>Relative path to the Bundle.properties file including the name of the file.. Eg. org/mevenide/Bundle.properties</p>
-          </td>
-        </tr>
-        <tr>
           <td>maven.nbm.build.release.dir</td>
           <td><p>Since 0.2</p>
           <p> Optional. Default value is ${maven.build.dir}/nbm_release </p></td>
