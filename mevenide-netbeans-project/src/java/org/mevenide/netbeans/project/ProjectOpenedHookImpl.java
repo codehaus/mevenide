@@ -25,6 +25,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Dependency;
 import org.apache.maven.project.Project;
 import org.mevenide.netbeans.project.classpath.ClassPathProviderImpl;
+import org.mevenide.netbeans.project.queries.MavenFileOwnerQueryImpl;
 import org.mevenide.project.dependency.DefaultDependencyPathFinder;
 import org.mevenide.project.io.JarOverrideReader2;
 import org.netbeans.api.java.classpath.ClassPath;
@@ -49,6 +50,12 @@ public class ProjectOpenedHookImpl extends ProjectOpenedHook {
     protected void projectOpened() {
         logger.debug("Project opened.");
         attachUpdater();
+        MavenFileOwnerQueryImpl q = MavenFileOwnerQueryImpl.getInstance();
+        if (q != null) {
+            q.addMavenProject(project);
+        } else {
+            logger.error("no query MavenFileOwnerQueryImpl :(");
+        }
         // register project's classpaths to GlobalPathRegistry
         ClassPathProviderImpl cpProvider = (ClassPathProviderImpl)project.getLookup().lookup(ClassPathProviderImpl.class);
         GlobalPathRegistry.getDefault().register(ClassPath.BOOT, cpProvider.getProjectClassPaths(ClassPath.BOOT));
@@ -59,6 +66,12 @@ public class ProjectOpenedHookImpl extends ProjectOpenedHook {
     
     protected void projectClosed() {
         logger.debug("Project closed.");
+        MavenFileOwnerQueryImpl q = MavenFileOwnerQueryImpl.getInstance();
+        if (q != null) {
+            q.removeMavenProject(project);
+        } else {
+            logger.error("no query MavenFileOwnerQueryImpl :(");
+        }
         detachUpdater();
         // unregister project's classpaths to GlobalPathRegistry
         ClassPathProviderImpl cpProvider = (ClassPathProviderImpl)project.getLookup().lookup(ClassPathProviderImpl.class);
