@@ -54,7 +54,9 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
@@ -98,7 +100,11 @@ public class SynchronizeView extends ViewPart {
     private Action addToClasspath;
     private Action markAsMerged;
     private Action viewProperties;
-
+    private Action removeFromPom;
+    private Action removeFromProject;
+    private Action addToIgnoreList;
+    private Separator separator;
+    
     private int direction;
     
     public void createPartControl(Composite parent) {
@@ -197,15 +203,25 @@ public class SynchronizeView extends ViewPart {
 		    }
 		};
 		pushToPom.setId("PUSH_TO_POM");
-		pushToPom.setText("Update Pom");
+		pushToPom.setText("Update Pom...");
 
-		addToClasspath = new Action() {
-		    public void run() {
-		        
-		    }
+		removeFromProject = new Action() {
+			public void run() {
+				
+			}
 		};
-		addToClasspath.setId("POP_POM");
-		addToClasspath.setText("Add to .classpath");
+		removeFromProject.setId("REM_FROM_PROJECT");
+		removeFromProject.setText("Remove from project");
+		
+		addToClasspath = new AddToClasspathAction(this);
+		
+		removeFromPom = new Action() {
+			public void run() {
+				
+			}
+		};
+		removeFromPom.setId("REM_FROM_POM");
+		removeFromPom.setText("Remove from Pom");
 
 		markAsMerged = new Action() {
 		    public void run() {
@@ -228,6 +244,29 @@ public class SynchronizeView extends ViewPart {
 		viewProperties.setId("PROPERTIES");
 		viewProperties.setText("Properties");
 
+		addToIgnoreList = new Action() {
+			public void run() {
+				try {
+					PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView("org.eclipse.ui.views.PropertySheet");
+				}
+				catch ( PartInitException e ) {
+					log.debug(e, e);
+				}
+			}
+		};
+		addToIgnoreList.setId("MVN_IGNORE");
+		addToIgnoreList.setText("Add to .mvnignore");
+		
+		separator  = new Separator();
+		
+		addToClasspath.setEnabled(false);
+		pushToPom.setEnabled(false);
+		markAsMerged.setEnabled(false);
+		viewProperties.setEnabled(false);
+		removeFromPom.setEnabled(false);
+		removeFromProject.setEnabled(false);
+		addToIgnoreList.setEnabled(false);
+		
 		artifactMappingNodeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
             public void selectionChanged(SelectionChangedEvent event) {
 				Object selection = ((StructuredSelection) event.getSelection()).getFirstElement();
@@ -242,21 +281,28 @@ public class SynchronizeView extends ViewPart {
 				IArtifactMappingNode selectedNode = (IArtifactMappingNode) selection;
 				if ( (selectedNode.getChangeDirection() & ProjectContainer.OUTGOING) != 0 ) {
 					pushToPom.setEnabled(true);
+					removeFromProject.setEnabled(true);
 				}
 				else {
 				    pushToPom.setEnabled(false);
+				    removeFromProject.setEnabled(false);
 				}
 				if ( (selectedNode.getChangeDirection() & ProjectContainer.INCOMING) != 0 ) {
 					addToClasspath.setEnabled(true);
+					removeFromPom.setEnabled(true);
 				}
 				else {
 					addToClasspath.setEnabled(false);
+					removeFromPom.setEnabled(false);
 				}
 				if ( (selectedNode.getChangeDirection() & ProjectContainer.CONFLICTING) != 0 ) {
 					markAsMerged.setEnabled(true);
+					addToIgnoreList.setEnabled(false);
 				}
 				else {
+					addToIgnoreList.setEnabled(true);
 				    markAsMerged.setEnabled(false);
+				    
 				}
             }
 		});
@@ -265,15 +311,24 @@ public class SynchronizeView extends ViewPart {
     private void plugActions() {
 		IMenuManager topLevelMenuManager = getViewSite().getActionBars().getMenuManager();
 		topLevelMenuManager.add(pushToPom);
+		topLevelMenuManager.add(removeFromProject);
+		topLevelMenuManager.add(separator);
 		topLevelMenuManager.add(addToClasspath);
+		topLevelMenuManager.add(removeFromPom);
+		topLevelMenuManager.add(separator);
 		topLevelMenuManager.add(markAsMerged);
+		topLevelMenuManager.add(separator);
+		topLevelMenuManager.add(addToIgnoreList);
+		topLevelMenuManager.add(separator);
 		topLevelMenuManager.add(viewProperties);
+		
+		IToolBarManager toolBarManager = getViewSite().getActionBars().getToolBarManager();
+		toolBarManager.add(refreshAll);
+		toolBarManager.add(viewIdeToPom);
+		toolBarManager.add(viewPomToIde);
+		toolBarManager.add(viewConflicts);
 
-		getViewSite().getActionBars().getToolBarManager().add(refreshAll);
-		getViewSite().getActionBars().getToolBarManager().add(viewIdeToPom);
-		getViewSite().getActionBars().getToolBarManager().add(viewPomToIde);
-		getViewSite().getActionBars().getToolBarManager().add(viewConflicts);
-
+		
 		MenuManager contextManager = new MenuManager();
 		contextManager.setRemoveAllWhenShown(true);
 		Menu menu = contextManager.createContextMenu(artifactMappingNodeViewer.getControl());
@@ -282,23 +337,32 @@ public class SynchronizeView extends ViewPart {
 		contextManager.addMenuListener(new IMenuListener() {
 			public void menuAboutToShow(IMenuManager manager) {
 			    Object selection = ((StructuredSelection) artifactMappingNodeViewer.getSelection()).getFirstElement();
-				if ( selection instanceof IArtifactMappingNode ) {
+			    if ( selection instanceof IArtifactMappingNode ) {
 				    IArtifactMappingNode selectedNode = (IArtifactMappingNode) selection;
 					if ( (selectedNode.getChangeDirection() & ProjectContainer.OUTGOING) != 0 ) {
 						manager.add(pushToPom);
+						manager.add(removeFromProject);
 					}
 					if ( (selectedNode.getChangeDirection() & ProjectContainer.INCOMING) != 0 ) {
 						manager.add(addToClasspath);
+						manager.add(removeFromPom);
 					}
 					if ( (selectedNode.getChangeDirection() & ProjectContainer.CONFLICTING) != 0 ) {
 						manager.add(markAsMerged);
 					}
-					manager.add(viewProperties);
+					else {
+						manager.add(addToIgnoreList);
+					}
+					manager.add(separator);
+					manager.add(viewProperties);		
 				}
 			}
 		});
 
     }
     
-    
+    public TreeViewer getArtifactMappingNodeViewer() {
+		return artifactMappingNodeViewer;
+	}
+
 }
