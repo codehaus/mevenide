@@ -103,10 +103,15 @@ public class OrganizationSection extends PageSection {
 		urlText = new OverridableTextEntry(createText(container, factory, 2), toggle);
 		adaptor = new OverrideAdaptor() {
 			public void overrideParent(Object value) {
-				pom.getOrganization().setUrl((String) value);
+			    if ( value != null ) {
+				    if ( pom.getOrganization() == null ) {
+				        pom.setOrganization(new Organization());
+				    }
+				    pom.getOrganization().setUrl((String) value);
+			    }
 			}
 			public Object acceptParent() {
-				return getParentPom().getOrganization().getUrl();
+				return getParentPom() != null && getParentPom().getOrganization() != null ? getParentPom().getOrganization().getUrl() : null;
 			}
 		};
 		urlText.addEntryChangeListener(adaptor);
@@ -130,10 +135,15 @@ public class OrganizationSection extends PageSection {
 		);
 		adaptor = new OverrideAdaptor() {
 			public void overrideParent(Object value) {
-				pom.getOrganization().setLogo((String) value);
+			    if ( value != null ) {
+				    if ( pom.getOrganization() == null ) {
+				        pom.setOrganization(new Organization());
+				    }
+				    pom.getOrganization().setLogo((String) value);
+			    }
 			}
 			public Object acceptParent() {
-				return getParentPom().getOrganization().getLogo();
+				return getParentPom() != null && getParentPom().getOrganization() != null ? getParentPom().getOrganization().getLogo() : null;
 			}
 		};
 		logoText.addEntryChangeListener(adaptor);
