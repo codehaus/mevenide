@@ -115,7 +115,6 @@
             <type>jar</type>
             <properties>
             	<eclipse.plugin.bundle>true</eclipse.plugin.bundle>
-                <netbeans.module.dep>spec</netbeans.module.dep>
             </properties>
         </dependency>
         <!-- 
