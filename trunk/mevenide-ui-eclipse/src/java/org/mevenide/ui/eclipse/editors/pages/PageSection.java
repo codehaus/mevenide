@@ -612,14 +612,14 @@ public abstract class PageSection {
 	protected void setIfDefined(OverridableTextEntry entry, String text, String parentText) {
 		if (text != null) {
 			entry.setText(text, true);
-			entry.setOverriden(true);
+			entry.setInherited(false);
 		}
 		else if (parentText != null) {
 			entry.setText(parentText, true);
-			entry.setOverriden(false);
+			entry.setInherited(true);
 		}
 		else {
-			entry.setOverriden(true);
+			entry.setInherited(false);
 		}
 	}
     
