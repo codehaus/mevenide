@@ -27,6 +27,7 @@ import org.apache.maven.repository.Artifact;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
@@ -34,9 +35,11 @@ import org.eclipse.jdt.internal.core.ClasspathEntry;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.views.properties.IPropertySource;
 import org.mevenide.ui.eclipse.DefaultPathResolver;
 import org.mevenide.ui.eclipse.IPathResolver;
 import org.mevenide.ui.eclipse.sync.event.ISynchronizationNodeListener;
+import org.mevenide.ui.eclipse.sync.model.properties.EclipseProjectPropertySource;
 import org.mevenide.ui.eclipse.util.FileUtils;
 import org.mevenide.ui.eclipse.util.JavaProjectUtils;
 
@@ -46,7 +49,7 @@ import org.mevenide.ui.eclipse.util.JavaProjectUtils;
  * @version $Id: EclipseProjectNode.java,v 1.1 12 avr. 2004 Exp gdodinet 
  * 
  */
-public class EclipseProjectNode extends AbstractSynchronizationNode {
+public class EclipseProjectNode extends AbstractSynchronizationNode implements IAdaptable {
 	private static final Log log = LogFactory.getLog(EclipseProjectNode.class);
 	
 	private IContainer eclipseContainer;
@@ -215,4 +218,11 @@ public class EclipseProjectNode extends AbstractSynchronizationNode {
 			((ISynchronizationNodeListener) getSynchronizationNodesListener().get(i)).nodeChanged(changedNode);
 		}
 	}
+	
+	public Object getAdapter(Class adapter) {
+        if ( IPropertySource.class.equals(adapter) ) {
+            return new EclipseProjectPropertySource(this);
+        }
+        return null;
+    }
 }

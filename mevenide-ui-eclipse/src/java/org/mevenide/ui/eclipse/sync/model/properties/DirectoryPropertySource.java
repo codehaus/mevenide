@@ -14,7 +14,7 @@
  *  limitations under the License.
  * =========================================================================
  */
-package org.mevenide.ui.eclipse.sync.model;
+package org.mevenide.ui.eclipse.sync.model.properties;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -24,6 +24,7 @@ import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
 import org.mevenide.project.ProjectConstants;
 import org.mevenide.ui.eclipse.editors.properties.AbstractPomPropertySource;
+import org.mevenide.ui.eclipse.sync.model.Directory;
 import org.mevenide.util.MevenideUtils;
 
 /**
@@ -35,8 +36,8 @@ public class DirectoryPropertySource extends AbstractPomPropertySource {
 
 	private static final Log log = LogFactory.getLog(DirectoryPropertySource.class);
 
-	static final String DIRECTORY_PATH = "path";
-	static final String DIRECTORY_TYPE = "type";
+	public static final String DIRECTORY_PATH = "path";
+	public static final String DIRECTORY_TYPE = "type";
 	
 	private Directory directory;
 	

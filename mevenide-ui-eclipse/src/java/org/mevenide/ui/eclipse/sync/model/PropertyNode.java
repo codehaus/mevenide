@@ -16,6 +16,14 @@
  */
 package org.mevenide.ui.eclipse.sync.model;
 
+import org.apache.maven.project.Dependency;
+import org.apache.maven.repository.Artifact;
+import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
+import org.eclipse.ui.views.properties.IPropertySource;
+import org.mevenide.ui.eclipse.editors.properties.PropertyProxy;
+import org.mevenide.ui.eclipse.sync.model.properties.ReadOnlyPropertyProxy;
 import org.mevenide.util.MevenideUtils;
 
 /**  
@@ -24,7 +32,7 @@ import org.mevenide.util.MevenideUtils;
  * @version $Id: PropertyNode.java,v 1.1 12 avr. 2004 Exp gdodinet 
  * 
  */
-public class PropertyNode extends AbstractSynchronizationNode implements ISelectableNode {
+public class PropertyNode extends AbstractSynchronizationNode implements ISelectableNode, IAdaptable, IPropertyChangeListener {
 	
 	private MavenArtifactNode parentNode;
 	
@@ -64,5 +72,39 @@ public class PropertyNode extends AbstractSynchronizationNode implements ISelect
 	}
 	public String toString() {
 		return key + MevenideUtils.PROPERTY_SEPARATOR + value;
+	}
+	
+	public Object getAdapter(Class adapter) {
+        if ( IPropertySource.class.equals(adapter) ) {
+            if ( ((MavenArtifactNode) getParent()).getDirection() == ISelectableNode.INCOMING_DIRECTION ) {
+                return new ReadOnlyPropertyProxy(this.key, this.value);
+            }
+            if ( ((MavenArtifactNode) getParent()).getDirection() == ISelectableNode.OUTGOING_DIRECTION ) {
+                PropertyProxy proxy = new PropertyProxy(this.key, this.value);
+                proxy.addPropertyChangeListener(this); 
+                return proxy;
+            }
+        }
+        return null;
+    }
+    
+    public void propertyChange(PropertyChangeEvent event) {
+    	String oldKey = null;
+        if ( PropertyProxy.PROPERTY_NAME.equals(event.getProperty()) ) {
+			key = (String) event.getNewValue();
+			oldKey = (String) event.getOldValue();
+		}
+		if ( PropertyProxy.PROPERTY_VALUE.equals(event.getProperty()) ) {
+			value = (String) event.getNewValue();
+			oldKey = key;
+		}
+		Dependency dependency = ((Artifact) parentNode.getData()).getDependency();
+		dependency.resolvedProperties().remove(oldKey);
+		dependency.resolvedProperties().put(key, value);
+		propagateNodeChangeEvent();
+    }
+    
+    protected void propagateNodeChangeEvent() {
+    	((EclipseProjectNode) getParent().getParent().getParent()).fireNodeChanged(this);
 	}
 }

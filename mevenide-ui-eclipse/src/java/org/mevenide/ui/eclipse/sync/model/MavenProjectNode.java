@@ -33,11 +33,14 @@ import org.apache.maven.MavenUtils;
 import org.apache.maven.project.Project;
 import org.apache.maven.repository.Artifact;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.ui.views.properties.IPropertySource;
 import org.mevenide.environment.LocationFinderAggregator;
 import org.mevenide.project.ProjectConstants;
 import org.mevenide.project.io.ProjectReader;
 import org.mevenide.properties.resolver.DefaultsResolver;
 import org.mevenide.properties.resolver.PropertyFilesAggregator;
+import org.mevenide.ui.eclipse.sync.model.properties.MavenProjectPropertySource;
 import org.mevenide.ui.eclipse.util.FileUtils;
 import org.mevenide.ui.eclipse.util.JavaProjectUtils;
 import org.mevenide.ui.eclipse.util.SourceDirectoryTypeUtil;
@@ -49,7 +52,7 @@ import org.mevenide.util.MevenideUtils;
  * @version $Id: MavenProjectNode.java,v 1.1 12 avr. 2004 Exp gdodinet 
  * 
  */
-public class MavenProjectNode extends AbstractSynchronizationNode implements ISelectableNode {
+public class MavenProjectNode extends AbstractSynchronizationNode implements ISelectableNode, IAdaptable {
 	
 	private static final Log log = LogFactory.getLog(MavenProjectNode.class);
 	
@@ -363,5 +366,13 @@ public class MavenProjectNode extends AbstractSynchronizationNode implements ISe
 		return mavenProject.getName().equals(node.mavenProject.getName())
 		       && parentNode.equals(node.parentNode);
 	}
+	
+	
+    public Object getAdapter(Class adapter) {
+        if ( IPropertySource.class.equals(adapter) ) {
+            return new MavenProjectPropertySource(this);
+        }
+        return null;
+    }
 }
 

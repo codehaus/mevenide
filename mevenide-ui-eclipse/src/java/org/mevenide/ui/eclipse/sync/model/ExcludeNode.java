@@ -16,13 +16,17 @@
  */
 package org.mevenide.ui.eclipse.sync.model;
 
+import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.ui.views.properties.IPropertySource;
+import org.mevenide.ui.eclipse.sync.model.properties.ExcludePropertySource;
+
 /**  
  * 
  * @author <a href="mailto:rhill2@free.fr">Gilles Dodinet</a>
  * @version $Id$
  * 
  */
-public class ExcludeNode extends AbstractSynchronizationNode implements ISelectableNode {
+public class ExcludeNode extends AbstractSynchronizationNode implements ISelectableNode, IAdaptable {
 	
 	private DirectoryNode parentNode;
 	
@@ -56,4 +60,11 @@ public class ExcludeNode extends AbstractSynchronizationNode implements ISelecta
 	public String toString() {
 		return excludePattern;
 	}
+	
+	public Object getAdapter(Class adapter) {
+        if ( IPropertySource.class.equals(adapter) ) {
+            return new ExcludePropertySource(this);
+        }
+        return null;
+    }
 }

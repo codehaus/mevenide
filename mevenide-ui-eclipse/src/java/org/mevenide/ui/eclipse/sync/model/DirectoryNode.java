@@ -37,6 +37,7 @@ import org.mevenide.project.io.ProjectReader;
 import org.mevenide.project.io.ProjectWriter;
 import org.mevenide.project.source.SourceDirectoryUtil;
 import org.mevenide.properties.resolver.util.ResolverUtils;
+import org.mevenide.ui.eclipse.sync.model.properties.*;
 import org.mevenide.ui.eclipse.util.JavaProjectUtils;
 
 
