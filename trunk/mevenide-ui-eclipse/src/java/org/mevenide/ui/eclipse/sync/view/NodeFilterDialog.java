@@ -52,6 +52,15 @@ public class NodeFilterDialog extends Dialog {
 	private Button sourceButton;
 
 	private Group directoryTypeChoiceGroup;
+
+	private boolean enableArtifactFiltering;
+	private String groupIdFilter;
+	
+	private boolean enableDirectoryFiltering;
+	private boolean filterSource;
+	private boolean filterTest;
+	private boolean filterAspect;
+	private boolean filterResource;
 	
 	NodeFilterDialog() {
 		super(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell());
@@ -122,7 +131,7 @@ public class NodeFilterDialog extends Dialog {
 		composite.setLayoutData(gridData);
 		
 		enableDirectoryFilteringButton = new Button(composite, SWT.CHECK);
-		enableDirectoryFilteringButton.setSelection(preferencesManager.getBooleanValue(MavenArtifactNodeFilter.APPLY_FILTERS_KEY));
+		enableDirectoryFilteringButton.setSelection(preferencesManager.getBooleanValue(DirectoryNodeFilter.APPLY_FILTERS_KEY));
 		enableDirectoryFilteringButton.setText("Enable directory filtering");
 		GridData checkboxData = new GridData();
 		checkboxData.grabExcessHorizontalSpace = false;
@@ -138,15 +147,19 @@ public class NodeFilterDialog extends Dialog {
 		
 		String buttonText = "Filter Source directories";
 		sourceButton = createDirectoryTypeButton(directoryTypeChoiceGroup, buttonText);
+		sourceButton.setSelection(preferencesManager.getBooleanValue(DirectoryNodeFilter.APPLY_SOURCE_FILTERS_KEY));
 		
 		buttonText = "Filter Test directories";
 		testButton = createDirectoryTypeButton(directoryTypeChoiceGroup, buttonText);
+		testButton.setSelection(preferencesManager.getBooleanValue(DirectoryNodeFilter.APPLY_TEST_FILTERS_KEY));
 		
 		buttonText = "Filter Aspect directories";
 		aspectButton = createDirectoryTypeButton(directoryTypeChoiceGroup, buttonText);
+		aspectButton.setSelection(preferencesManager.getBooleanValue(DirectoryNodeFilter.APPLY_ASPECT_FILTERS_KEY));
 		
 		buttonText = "Filter Resource directories";
 		resourceButton = createDirectoryTypeButton(directoryTypeChoiceGroup, buttonText);
+		resourceButton.setSelection(preferencesManager.getBooleanValue(DirectoryNodeFilter.APPLY_RESOURCE_FILTERS_KEY));
 		
 		enableDirectoryFilteringButton.addSelectionListener(
 			new SelectionAdapter() {
@@ -176,6 +189,50 @@ public class NodeFilterDialog extends Dialog {
 		return button;
 	}
 
+	protected void okPressed() {
+		enableArtifactFiltering = this.enableArtifactFilteringButton.getSelection();
+		groupIdFilter = this.groupIdText.getText();
+		
+		enableDirectoryFiltering = this.enableDirectoryFilteringButton.getSelection();
+		filterSource = this.sourceButton.getSelection();
+		filterTest = this.testButton.getSelection();
+		filterAspect = this.aspectButton.getSelection();
+		filterResource = this.resourceButton.getSelection();
+		
+		preferencesManager.setBooleanValue(DirectoryNodeFilter.APPLY_FILTERS_KEY, enableDirectoryFiltering);
+		preferencesManager.setBooleanValue(DirectoryNodeFilter.APPLY_SOURCE_FILTERS_KEY, filterSource);
+		preferencesManager.setBooleanValue(DirectoryNodeFilter.APPLY_TEST_FILTERS_KEY, filterTest);
+		preferencesManager.setBooleanValue(DirectoryNodeFilter.APPLY_ASPECT_FILTERS_KEY, filterAspect);
+		preferencesManager.setBooleanValue(DirectoryNodeFilter.APPLY_RESOURCE_FILTERS_KEY, filterResource);
+		
+		preferencesManager.setBooleanValue(MavenArtifactNodeFilter.APPLY_FILTERS_KEY, enableArtifactFiltering);
+		preferencesManager.setValue(MavenArtifactNodeFilter.GROUP_ID_FILTER, groupIdFilter);
+		
+		preferencesManager.store();
+		
+		super.okPressed();
+	}
 	
+	public boolean shouldEnableArtifactFiltering() {
+		return enableArtifactFiltering;
+	}
+	public boolean shouldEnableDirectoryFiltering() {
+		return enableDirectoryFiltering;
+	}
+	public boolean shouldFilterAspect() {
+		return filterAspect;
+	}
+	public boolean shouldFilterResource() {
+		return filterResource;
+	}
+	public boolean shouldFilterSource() {
+		return filterSource;
+	}
+	public boolean shouldFilterTest() {
+		return filterTest;
+	}
+	public String getGroupIdFilter() {
+		return groupIdFilter;
+	}
 	
 }
