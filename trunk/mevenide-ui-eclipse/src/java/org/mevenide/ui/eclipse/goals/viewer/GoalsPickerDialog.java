@@ -210,11 +210,15 @@ public class GoalsPickerDialog  extends Dialog {
         }
     }
     
+	/**
+	 * @todo maintain a cache of visited urls
+     */
     boolean isValidUrl(String url) throws Exception {
 		HttpClient httpClient = new HttpClient();
 		HttpMethod method = new GetMethod(url);
 		int status = httpClient.executeMethod(method);
-		return status != 404;
+		//check for 4xx and 5xx return codes
+		return !Integer.toString(status).startsWith("4") && !Integer.toString(status).startsWith("5");
     }
 }
 
