@@ -50,7 +50,7 @@
         <maven.pde.exclude>true</maven.pde.exclude>
       </properties>
     </dependency>
-    <dependency>
+    <!-- dependency>
       <groupId>mevenide</groupId>
       <artifactId>requires-test</artifactId>
       <version>SNAPSHOT</version>
@@ -58,9 +58,9 @@
       <properties>
         <maven.pde.requires>true</maven.pde.requires>
       </properties>
-    </dependency>
+    </dependency -->
     <!-- duplicated dependency -->
-    <dependency>
+    <!-- dependency>
       <groupId>mevenide</groupId>
       <artifactId>requires-test</artifactId>
       <version>SNAPSHOT</version>
@@ -68,7 +68,7 @@
       <properties>
         <maven.pde.requires>true</maven.pde.requires>
       </properties>
-    </dependency>
+    </dependency -->
   </dependencies>
 </project>
 

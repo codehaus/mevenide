@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project>
-  <pomVersion>3.0</pomVersion>
+  <pomVersion>3</pomVersion>
   <name>Maven PDE Plugin</name>
   <groupId>maven</groupId>
   <artifactId>maven-pde-plugin</artifactId>
@@ -68,6 +68,12 @@
   </developers>
 
   <dependencies>
+  	<dependency>
+      <groupId>mevenide</groupId>
+      <artifactId>mevenide-config</artifactId>
+      <version>0.5</version>
+      <type>jar</type>
+    </dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
@@ -133,7 +139,6 @@
       <groupId>maven</groupId>
       <artifactId>wagon-api</artifactId>
       <version>1.0-alpha-1-SNAPSHOT</version>
-      <jar>wagon-api-1.0-SNAPSHOT.jar</jar>
       <type>jar</type>
     </dependency>
   </dependencies>
