@@ -40,7 +40,7 @@ public class ClearValidationMarkersAction extends AbstractMevenideAction {
                 MarkerHelper.deleteMarkers(pomFile);
             }
             catch (Exception e) {
-                String message = "Unable to clear markers for pom : " + pomFile.getRawLocation(); 
+                String message = "Unable to clear markers for pom : " + pomFile.getRawLocation();  //$NON-NLS-1$
                 log.error(message, e);
             }
 	    }
