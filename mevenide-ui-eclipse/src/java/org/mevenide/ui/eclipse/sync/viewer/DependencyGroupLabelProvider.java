@@ -94,6 +94,10 @@ public class DependencyGroupLabelProvider implements ITableLabelProvider, IColor
 			return MevenideColors.GREEN;
 		}
 		if ( element instanceof DependencyInfo
+				&& ((DependencyInfo) element).getDependencyWrapper().getDependencyGroup().isDuplicated(((DependencyInfo) element).getDependencyWrapper()) ) {
+			return MevenideColors.ORANGE;
+		}
+		if ( element instanceof DependencyInfo
 				&& ((DependencyInfo) element).isReadOnly() ) {
 			return MevenideColors.GREY;
 		}
