@@ -53,6 +53,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Project;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.util.PropertyChangeEvent;
+import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Point;
@@ -64,7 +65,10 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Layout;
+import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.model.WorkbenchContentProvider;
+import org.eclipse.ui.model.WorkbenchLabelProvider;
 
 /**
  * Abstract base class for a section of a page in the POM Editor ui.
@@ -518,6 +522,22 @@ public abstract class PageSection {
 		return text;
 	}
 		
+	protected TableViewer createTableViewer(
+		Composite parent, 
+		PageWidgetFactory factory,
+		int style) {
+			
+		Table table = factory.createTable(parent, style);
+		GridData data = new GridData(GridData.FILL_BOTH);
+		table.setLayoutData(data);
+
+		TableViewer viewer = new TableViewer(table);
+		viewer.setContentProvider(new WorkbenchContentProvider());
+		viewer.setLabelProvider(new WorkbenchLabelProvider());
+		
+		return viewer;
+	}
+
 	public void dispose() {
 //		JFaceResources.getFontRegistry().removeListener(this);
 	}

@@ -352,6 +352,7 @@ public class PageWidgetFactory {
 		label.setForeground(borderColor);
 		return label;
 	}
+
 	public Table createTable(Composite parent, int style) {
 		Table table = new Table(parent, BORDER_STYLE | style);
 		table.setBackground(backgroundColor);
