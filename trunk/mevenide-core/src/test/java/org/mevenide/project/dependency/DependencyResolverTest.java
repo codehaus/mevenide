@@ -81,7 +81,11 @@ public class DependencyResolverTest extends AbstractMevenideTestCase {
 	}
 
 	public void testGuess() throws Exception {
-		IDependencyResolver resolver = AbstractDependencyResolver.newInstance(new File(Environment.getMavenRepository(), "commons-httpclient\\jars\\commons-httpclient-2.0alpha1-20020829.jar").getAbsolutePath());
+		File jarDir = new File(Environment.getMavenRepository(), "commons-httpclient/jars");
+		jarDir.mkdirs();
+		File jar = new File(jarDir, "commons-httpclient-2.0alpha1-20020829.jar");
+		jar.createNewFile();
+		IDependencyResolver resolver = AbstractDependencyResolver.newInstance(jar.getAbsolutePath());
 		assertEquals("2.0alpha1-20020829", resolver.guessVersion());
 		assertEquals("commons-httpclient", resolver.guessArtifactId());
 		assertEquals("commons-httpclient", resolver.guessGroupId());
