@@ -37,9 +37,11 @@ public abstract class AbstractGoalsGrabber implements IGoalsGrabber{
     /** goals marshaller/unmarshaller */
 	protected GoalsBean goalsBean; 
 	
-    /** maven runner needed since we use the eclipse:get-goals goal */
-    protected AbstractRunner mavenRunner;
-    
+	/**
+	 * maven runner needed since we use the eclipse:get-goals goal 
+	 */
+	protected AbstractRunner mavenRunner;
+
     /** xml file that holds the available goals */
 	protected String xmlGoals;
 	
@@ -118,7 +120,7 @@ public abstract class AbstractGoalsGrabber implements IGoalsGrabber{
      * @return AbstractGoalsGrabbers
      * @throws Exception
      */
-    public static IGoalsGrabber getGrabber(String xmlGoals) throws Exception {
+   public static AbstractGoalsGrabber getGrabber(String xmlGoals) throws Exception {
         if (grabber != null) {
             return grabber;
         }

@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<editmodel:ClassDiagramEditModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:editmodel="editmodel.xmi" size="1241,1012" id="mccain1gdodinetmevenidecore126" metadata="nsuml-1.4" initialized="true" showWireOptions="7" zoom="0.75" scrolledY="-1">
+  <children xsi:type="editmodel:ClassEditModel" location="16,321" size="249,78" targetConnections="//@children.1/@sourceConnections.1 //@children.1/@sourceConnections.3" id="mccain1gdodinetmevenidecore14" runTimeClassModel="mccain1gdodinetmevenidecore88;mccain1gdodinetmevenidecore83;mccain1gdodinetmevenidecore94;mccain1gdodinetmevenidecore81;mccain1gdodinetmevenidecore77;mccain1gdodinetmevenidecore103;mccain1gdodinetmevenidecore86;mccain1gdodinetmevenidecore101;mccain1gdodinetmevenidecore105">
+    <children xsi:type="editmodel:CompartmentEditModel"/>
+    <children xsi:type="editmodel:CompartmentEditModel" size="95,32">
+      <children xsi:type="editmodel:MethodEditModel" id="mccain1gdodinetmevenidecore83"/>
+      <children xsi:type="editmodel:MethodEditModel" id="mccain1gdodinetmevenidecore88"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel"/>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showPublicMethods="true" showPackageMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" location="426,280" size="289,158" targetConnections="//@children.1/@sourceConnections.0" id="mccain1gdodinetmevenidecore3" runTimeClassModel="mccain1gdodinetmevenidecore162;mccain1gdodinetmevenidecore134;mccain1gdodinetmevenidecore136;mccain1gdodinetmevenidecore139;mccain1gdodinetmevenidecore151;mccain1gdodinetmevenidecore155;mccain1gdodinetmevenidecore144;mccain1gdodinetmevenidecore127;mccain1gdodinetmevenidecore131;mccain1gdodinetmevenidecore158;mccain1gdodinetmevenidecore135;mccain1gdodinetmevenidecore153;mccain1gdodinetmevenidecore129;mccain1gdodinetmevenidecore147">
+    <children xsi:type="editmodel:CompartmentEditModel"/>
+    <children xsi:type="editmodel:CompartmentEditModel" size="117,112">
+      <children xsi:type="editmodel:MethodEditModel" id="mccain1gdodinetmevenidecore158"/>
+      <children xsi:type="editmodel:MethodEditModel" id="mccain1gdodinetmevenidecore147"/>
+      <children xsi:type="editmodel:MethodEditModel" id="mccain1gdodinetmevenidecore144"/>
+      <children xsi:type="editmodel:MethodEditModel" id="mccain1gdodinetmevenidecore162"/>
+      <children xsi:type="editmodel:MethodEditModel" id="mccain1gdodinetmevenidecore139"/>
+      <children xsi:type="editmodel:MethodEditModel" id="mccain1gdodinetmevenidecore136"/>
+      <children xsi:type="editmodel:MethodEditModel" id="mccain1gdodinetmevenidecore151"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel"/>
+    <sourceConnections xsi:type="editmodel:AssociationEditModel" id="mccain1gdodinetmevenidecore127" connectionRouterKind="Manhattan" source="//@children.1" target="//@children.1" targetEnd="//@children.1/@sourceConnections.0/@children.0" sourceEnd="//@children.1/@sourceConnections.0/@children.1">
+      <children xsi:type="editmodel:AssociationEndEditModel" location="0,20" id="mccain1gdodinetmevenidecore127" anchorKind="FixedAtEdge" navigable="true" flags="2" multiplicityLabel="//@children.1/@sourceConnections.0/@children.0/@children.1" roleLabel="//@children.1/@sourceConnections.0/@children.0/@children.0">
+        <children xsi:type="editmodel:LabelEditModel" size="46,14" fontInfo="Arial-8-0" anchorKind="LastPart"/>
+        <children xsi:type="editmodel:LabelEditModel" size="19,14" fontInfo="Arial-8-0" anchorKind="LastPart"/>
+      </children>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="20,0" anchorKind="FixedAtEdge" attachSource="true"/>
+    </sourceConnections>
+    <sourceConnections xsi:type="editmodel:DependencyEditModel" id="mccain1gdodinetmevenidecore182" connectionRouterKind="Manual" source="//@children.1" target="//@children.0" targetEnd="//@children.1/@sourceConnections.1/@children.1" sourceEnd="//@children.1/@sourceConnections.1/@children.0">
+      <children xsi:type="editmodel:AssociationEndEditModel" location="144,79" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel"/>
+      <bendpoints secondRelativeDimension="154,-23" firstRelativeDimension="-168,-22"/>
+    </sourceConnections>
+    <sourceConnections xsi:type="editmodel:GeneralizationEditModel" id="mccain1gdodinetmevenidecore5" connectionRouterKind="Manhattan" source="//@children.1" target="//@children.2" targetEnd="//@children.1/@sourceConnections.2/@children.1" sourceEnd="//@children.1/@sourceConnections.2/@children.0">
+      <children xsi:type="editmodel:AssociationEndEditModel" location="55,158" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel"/>
+    </sourceConnections>
+    <sourceConnections xsi:type="editmodel:AssociationEditModel" id="mccain1gdodinetmevenidecore134" connectionRouterKind="Manual" source="//@children.1" target="//@children.0" targetEnd="//@children.1/@sourceConnections.3/@children.0" label="//@children.1/@sourceConnections.3/@children.2" sourceEnd="//@children.1/@sourceConnections.3/@children.1">
+      <children xsi:type="editmodel:AssociationEndEditModel" id="mccain1gdodinetmevenidecore134" navigable="true" flags="4" multiplicityLabel="//@children.1/@sourceConnections.3/@children.0/@children.1" roleLabel="//@children.1/@sourceConnections.3/@children.0/@children.0">
+        <children xsi:type="editmodel:LabelEditModel" location="268,384" size="77,14" fontInfo="Arial-8-0" automaticRelocationAllowed="false" locationOnWireFromSource="0.4501132075471699" distanceFromWire="15.676811381602423" anchorKind="LastPart"/>
+        <children xsi:type="editmodel:LabelEditModel" location="280,407" size="19,14" fontInfo="Arial-8-0" automaticRelocationAllowed="false" locationOnWireFromSource="0.6301886792452831" distanceFromWire="40.23633015262378" anchorKind="LastPart"/>
+      </children>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="0,41" attachSource="true" roleLabel="//@children.1/@sourceConnections.3/@children.1/@children.0">
+        <children xsi:type="editmodel:LabelEditModel" location="266,316" size="68,14" fontInfo="Arial-8-0" automaticRelocationAllowed="false" locationOnWireFromSource="1.4802537668517048" distanceFromWire="-60.14808055102872" anchorKind="FirstPart"/>
+      </children>
+      <children xsi:type="editmodel:WireLabelEditModel" size="1,14" fontInfo="Arial-8-0" anchorKind="MiddlePart"/>
+      <bendpoints secondRelativeDimension="152,21" firstRelativeDimension="-170,22"/>
+    </sourceConnections>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showPublicMethods="true" showPackageMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true"/>
+  </children>
+  <children xsi:type="editmodel:InterfaceEditModel" location="464,7" size="213,156" targetConnections="//@children.1/@sourceConnections.2 //@children.3/@sourceConnections.1 //@children.3/@sourceConnections.0" id="mccain1gdodinetmevenidecore1" runTimeClassModel="mccain1gdodinetmevenidecore199;mccain1gdodinetmevenidecore206;mccain1gdodinetmevenidecore197;mccain1gdodinetmevenidecore194;mccain1gdodinetmevenidecore202;mccain1gdodinetmevenidecore208">
+    <children xsi:type="editmodel:CompartmentEditModel"/>
+    <children xsi:type="editmodel:CompartmentEditModel" size="122,96">
+      <children xsi:type="editmodel:MethodEditModel" id="mccain1gdodinetmevenidecore208"/>
+      <children xsi:type="editmodel:MethodEditModel" id="mccain1gdodinetmevenidecore202"/>
+      <children xsi:type="editmodel:MethodEditModel" id="mccain1gdodinetmevenidecore199"/>
+      <children xsi:type="editmodel:MethodEditModel" id="mccain1gdodinetmevenidecore197"/>
+      <children xsi:type="editmodel:MethodEditModel" id="mccain1gdodinetmevenidecore194"/>
+      <children xsi:type="editmodel:MethodEditModel" id="mccain1gdodinetmevenidecore206"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel"/>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showPublicMethods="true" showPackageMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" location="910,249" size="293,190" id="mccain1gdodinetmevenidecore8" runTimeClassModel="mccain1gdodinetmevenidecore252;mccain1gdodinetmevenidecore260;mccain1gdodinetmevenidecore232;mccain1gdodinetmevenidecore221;mccain1gdodinetmevenidecore236;mccain1gdodinetmevenidecore262;mccain1gdodinetmevenidecore248;mccain1gdodinetmevenidecore254;mccain1gdodinetmevenidecore224;mccain1gdodinetmevenidecore242;mccain1gdodinetmevenidecore222;mccain1gdodinetmevenidecore217;mccain1gdodinetmevenidecore256;mccain1gdodinetmevenidecore258;mccain1gdodinetmevenidecore228;mccain1gdodinetmevenidecore239">
+    <children xsi:type="editmodel:CompartmentEditModel"/>
+    <children xsi:type="editmodel:CompartmentEditModel" size="133,144">
+      <children xsi:type="editmodel:MethodEditModel" id="mccain1gdodinetmevenidecore222"/>
+      <children xsi:type="editmodel:MethodEditModel" id="mccain1gdodinetmevenidecore224"/>
+      <children xsi:type="editmodel:MethodEditModel" id="mccain1gdodinetmevenidecore248"/>
+      <children xsi:type="editmodel:MethodEditModel" id="mccain1gdodinetmevenidecore236"/>
+      <children xsi:type="editmodel:MethodEditModel" id="mccain1gdodinetmevenidecore239"/>
+      <children xsi:type="editmodel:MethodEditModel" id="mccain1gdodinetmevenidecore262"/>
+      <children xsi:type="editmodel:MethodEditModel" id="mccain1gdodinetmevenidecore228"/>
+      <children xsi:type="editmodel:MethodEditModel" id="mccain1gdodinetmevenidecore252"/>
+      <children xsi:type="editmodel:MethodEditModel" id="mccain1gdodinetmevenidecore256"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel"/>
+    <sourceConnections xsi:type="editmodel:DependencyEditModel" id="mccain1gdodinetmevenidecore305" connectionRouterKind="Manual" source="//@children.3" target="//@children.2" targetEnd="//@children.3/@sourceConnections.0/@children.1" sourceEnd="//@children.3/@sourceConnections.0/@children.0">
+      <children xsi:type="editmodel:AssociationEndEditModel" location="145,94" anchorKind="Automatic" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="105,77" anchorKind="Automatic"/>
+      <bendpoints secondRelativeDimension="173,-10" firstRelativeDimension="-191,-205"/>
+    </sourceConnections>
+    <sourceConnections xsi:type="editmodel:AssociationEditModel" id="mccain1gdodinetmevenidecore221" connectionRouterKind="Manhattan" source="//@children.3" target="//@children.2" targetEnd="//@children.3/@sourceConnections.1/@children.0" label="//@children.3/@sourceConnections.1/@children.2" sourceEnd="//@children.3/@sourceConnections.1/@children.1">
+      <children xsi:type="editmodel:AssociationEndEditModel" id="mccain1gdodinetmevenidecore221" anchorKind="Automatic" navigable="true" flags="4" multiplicityLabel="//@children.3/@sourceConnections.1/@children.0/@children.1" roleLabel="//@children.3/@sourceConnections.1/@children.0/@children.0">
+        <children xsi:type="editmodel:LabelEditModel" location="713,169" size="76,14" fontInfo="Arial-8-0" automaticRelocationAllowed="false" locationOnWireFromSource="0.35714285714285715" distanceFromWire="35.99999999999999" anchorKind="LastPart"/>
+        <children xsi:type="editmodel:LabelEditModel" size="19,14" fontInfo="Arial-8-0" anchorKind="LastPart"/>
+      </children>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="0,12" anchorKind="Automatic" attachSource="true" roleLabel="//@children.3/@sourceConnections.1/@children.1/@children.0">
+        <children xsi:type="editmodel:LabelEditModel" size="67,14" fontInfo="Arial-8-0" anchorKind="FirstPart"/>
+      </children>
+      <children xsi:type="editmodel:WireLabelEditModel" size="1,14" fontInfo="Arial-8-0" anchorKind="MiddlePart"/>
+      <bendpoints secondRelativeDimension="124,129" firstRelativeDimension="-240,-66"/>
+      <bendpoints secondRelativeDimension="132,43" firstRelativeDimension="-232,-150"/>
+    </sourceConnections>
+    <sourceConnections xsi:type="editmodel:GeneralizationEditModel" id="mccain1gdodinetmevenidecore9" connectionRouterKind="Manhattan" source="//@children.3" target="//@children.4" targetEnd="//@children.3/@sourceConnections.2/@children.1" sourceEnd="//@children.3/@sourceConnections.2/@children.0">
+      <children xsi:type="editmodel:AssociationEndEditModel" location="145,94" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="108,77"/>
+    </sourceConnections>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showPublicMethods="true" showPackageMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true"/>
+  </children>
+  <children xsi:type="editmodel:InterfaceEditModel" location="949,4" size="217,156" targetConnections="//@children.3/@sourceConnections.2" id="mccain1gdodinetmevenidecore6" runTimeClassModel="mccain1gdodinetmevenidecore337;mccain1gdodinetmevenidecore326;mccain1gdodinetmevenidecore330;mccain1gdodinetmevenidecore333;mccain1gdodinetmevenidecore322;mccain1gdodinetmevenidecore339">
+    <children xsi:type="editmodel:CompartmentEditModel"/>
+    <children xsi:type="editmodel:CompartmentEditModel" size="99,96">
+      <children xsi:type="editmodel:MethodEditModel" id="mccain1gdodinetmevenidecore322"/>
+      <children xsi:type="editmodel:MethodEditModel" id="mccain1gdodinetmevenidecore333"/>
+      <children xsi:type="editmodel:MethodEditModel" id="mccain1gdodinetmevenidecore330"/>
+      <children xsi:type="editmodel:MethodEditModel" id="mccain1gdodinetmevenidecore326"/>
+      <children xsi:type="editmodel:MethodEditModel" id="mccain1gdodinetmevenidecore339"/>
+      <children xsi:type="editmodel:MethodEditModel" id="mccain1gdodinetmevenidecore337"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel"/>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showPublicMethods="true" showPackageMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true"/>
+  </children>
+  <classDiagramPreferences xsi:type="editmodel:UMLClassDiagramPreference" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showPublicMethods="true" showPackageMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showInterfaceStereotype="true" showClassStereotype="true" showPackageStereotype="true"/>
+</editmodel:ClassDiagramEditModel>
