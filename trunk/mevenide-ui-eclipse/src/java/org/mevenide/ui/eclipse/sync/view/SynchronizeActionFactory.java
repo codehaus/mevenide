@@ -14,7 +14,7 @@
  *  limitations under the License.
  * =========================================================================
  */
-package org.mevenide.ui.eclipse.sync.action;
+package org.mevenide.ui.eclipse.sync.view;
 
 import java.util.HashMap;
 import java.util.List;
@@ -32,11 +32,17 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.mevenide.project.io.ProjectReader;
 import org.mevenide.ui.eclipse.Mevenide;
+import org.mevenide.ui.eclipse.sync.action.AddPropertyAction;
+import org.mevenide.ui.eclipse.sync.action.AddToClasspathAction;
+import org.mevenide.ui.eclipse.sync.action.AddToMvnIgnoreAction;
+import org.mevenide.ui.eclipse.sync.action.AddToPomAction;
+import org.mevenide.ui.eclipse.sync.action.RemoveFromClasspathAction;
+import org.mevenide.ui.eclipse.sync.action.RemoveFromPomAction;
+import org.mevenide.ui.eclipse.sync.action.ToggleViewAction;
+import org.mevenide.ui.eclipse.sync.action.ToggleWritePropertiesAction;
 import org.mevenide.ui.eclipse.sync.model.DependencyMappingNode;
 import org.mevenide.ui.eclipse.sync.model.EclipseContainerContainer;
 import org.mevenide.ui.eclipse.sync.model.IArtifactMappingNode;
-import org.mevenide.ui.eclipse.sync.view.PomChooser;
-import org.mevenide.ui.eclipse.sync.view.SynchronizeView;
 
 /**
  * 
@@ -59,6 +65,8 @@ public class SynchronizeActionFactory {
 	public static final String VIEW_OUTGOING = "VIEW_OUTGOING";
 	public static final String VIEW_INCOMING = "VIEW_INCOMING";
 
+	public static final String WRITE_PROPERTIES = "WRITE_PROPERTIES";
+	
 	public static final String MARK_AS_MERGED = "MARK_AS_MERGED";
 
 	public static final String PROPERTIES = "PROPERTIES";
@@ -107,6 +115,7 @@ public class SynchronizeActionFactory {
 		createViewIdeToPomAction();
 		createViewPomToIdeAction();
 		createViewPropertiesAction();
+		createWritePropertiesAction();
 	}
 	
 	private void createAddToIgnoreListAction() {
@@ -278,29 +287,44 @@ public class SynchronizeActionFactory {
 	}
 
 	private void createViewPomToIdeAction() {
-	    Action viewPomToIde = new ToggleViewAction(synchronizeView, EclipseContainerContainer.INCOMING);
+	    ToggleViewAction viewPomToIde = new ToggleViewAction(EclipseContainerContainer.INCOMING);
 		viewPomToIde.setId(VIEW_INCOMING);
 		viewPomToIde.setToolTipText("Incoming Changes");
 		viewPomToIde.setImageDescriptor(Mevenide.getImageDescriptor("pom_to_ide_sync.gif"));
 		actionIds.put(VIEW_INCOMING, viewPomToIde);
+		synchronizeView.addDirectionListener(viewPomToIde);
+		viewPomToIde.addPropertyChangeListener(synchronizeView);
 	}
 
 	private void createViewIdeToPomAction() {
-	    Action viewIdeToPom = new ToggleViewAction(synchronizeView, EclipseContainerContainer.OUTGOING);
+	    ToggleViewAction viewIdeToPom = new ToggleViewAction(EclipseContainerContainer.OUTGOING);
 		viewIdeToPom.setId(VIEW_OUTGOING);
 		viewIdeToPom.setToolTipText("Outgoing changes");
 		viewIdeToPom.setImageDescriptor(Mevenide.getImageDescriptor("ide_to_pom_sync.gif"));
 		actionIds.put(VIEW_OUTGOING, viewIdeToPom);
+		synchronizeView.addDirectionListener(viewIdeToPom);
+		viewIdeToPom.addPropertyChangeListener(synchronizeView);
 	}
 
 	private void createViewConflictsAction() {
-	    Action viewConflicts = new ToggleViewAction(synchronizeView, EclipseContainerContainer.CONFLICTING);
+	    ToggleViewAction viewConflicts = new ToggleViewAction(EclipseContainerContainer.CONFLICTING);
 		viewConflicts.setId(VIEW_CONFLICTS);
 		viewConflicts.setToolTipText("Conflicts");
 		viewConflicts.setImageDescriptor(Mevenide.getImageDescriptor("conflict_synch.gif"));
 		actionIds.put(VIEW_CONFLICTS, viewConflicts);
+		synchronizeView.addDirectionListener(viewConflicts);
+		viewConflicts.addPropertyChangeListener(synchronizeView);
 	}
 
+	private void createWritePropertiesAction() {
+		Action writeProperties = new ToggleWritePropertiesAction();
+		writeProperties.setId(WRITE_PROPERTIES);
+		writeProperties.setToolTipText("Should write properties");
+		writeProperties.setImageDescriptor(Mevenide.getImageDescriptor("write_properties.gif"));
+		actionIds.put(WRITE_PROPERTIES, writeProperties);
+		writeProperties.addPropertyChangeListener(synchronizeView);
+	}
+	
 	private void createRefreshAllAction() {
 		Action refreshAll = new Action() {
 			public void run() {

@@ -36,6 +36,8 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.ActionContributionItem;
+import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
@@ -60,8 +62,10 @@ import org.mevenide.project.ProjectChangeEvent;
 import org.mevenide.project.ProjectComparator;
 import org.mevenide.project.ProjectComparatorFactory;
 import org.mevenide.project.io.ProjectReader;
-import org.mevenide.ui.eclipse.sync.action.SynchronizeActionFactory;
+import org.mevenide.ui.eclipse.sync.action.ToggleViewAction;
+import org.mevenide.ui.eclipse.sync.action.ToggleWritePropertiesAction;
 import org.mevenide.ui.eclipse.sync.event.IActionListener;
+import org.mevenide.ui.eclipse.sync.event.ISynchronizationDirectionListener;
 import org.mevenide.ui.eclipse.sync.event.IdeArtifactEvent;
 import org.mevenide.ui.eclipse.sync.event.NodeEvent;
 import org.mevenide.ui.eclipse.sync.event.PomArtifactEvent;
@@ -87,11 +91,12 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
     private TreeViewer artifactMappingNodeViewer;
     private IPageSite site;
 
-    //global view actions
+    //global actions
     private Action refreshAll;
     private Action viewIdeToPom;
     private Action viewPomToIde;
     private Action viewConflicts;
+    private IContributionItem writeProperties; 
     
     //contextual actions
     private Action pushToPom;
@@ -153,7 +158,6 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
                 
 				this.container = project;
 				
-				
 				List poms = new ArrayList();
 				
                 poms.add(input);
@@ -204,10 +208,20 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
 	        }
 			artifactMappingNodeViewer.refresh(true);
 	        artifactMappingNodeViewer.expandToLevel(1);
+			activateWritePropertiesAction(direction);
 			fireDirectionChanged();
 		}
     }
 
+    private void activateWritePropertiesAction(int direction) {
+    	if ( direction == EclipseContainerContainer.OUTGOING ) {
+    		getViewSite().getActionBars().getToolBarManager().add(writeProperties);
+    	}
+    	else {
+    		getViewSite().getActionBars().getToolBarManager().remove(writeProperties);
+    	}
+    }
+    
 	private void fireDirectionChanged() {
 		for (int i = 0; i < directionListeners.size(); i++) {
             ISynchronizationDirectionListener listener = (ISynchronizationDirectionListener) directionListeners.get(i);
@@ -257,7 +271,8 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
 		viewConflicts = actionFactory.getAction(SynchronizeActionFactory.VIEW_CONFLICTS);
 		viewIdeToPom = actionFactory.getAction(SynchronizeActionFactory.VIEW_OUTGOING);
 		viewPomToIde = actionFactory.getAction(SynchronizeActionFactory.VIEW_INCOMING);
-
+		writeProperties = new ActionContributionItem(actionFactory.getAction(SynchronizeActionFactory.WRITE_PROPERTIES));
+		
 		pushToPom = actionFactory.getAction(SynchronizeActionFactory.ADD_TO_POM);
 		removeFromProject = actionFactory.getAction(SynchronizeActionFactory.REMOVE_FROM_PROJECT);
 		addToClasspath = actionFactory.getAction(SynchronizeActionFactory.ADD_TO_CLASSPATH);
@@ -376,6 +391,12 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
 	}
 
 	public void propertyChange(PropertyChangeEvent event) {
+		if ( event.getSource() instanceof ToggleViewAction ) {
+			setDirection(((ToggleViewAction) event.getSource()).getDirection());
+		}
+		if ( event.getSource() instanceof ToggleWritePropertiesAction ) {
+			//....
+		}
 		if ( toolBarManager != null ) {
 			log.debug("property changed. updating");
 	    	toolBarManager.update(true);

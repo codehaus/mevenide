@@ -14,7 +14,7 @@
  *  limitations under the License.
  * =========================================================================
  */
-package org.mevenide.ui.eclipse.sync.view;
+package org.mevenide.ui.eclipse.sync.event;
 
 /**
  * 
