@@ -19,9 +19,11 @@ package org.mevenide.reports;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.TreeMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jdom.Document;
@@ -32,7 +34,7 @@ import org.mevenide.context.IQueryContext;
 /**
  * Class encapsulating the result of pmd report. Reads the raw pmd report and makes it accessible from code.
  * Assumes the report file is present.
- * @author  Milos Kleint (ca206216@tiscali.cz)
+ * @author  Milos Kleint (mkleint@codehaus.org)
  */
 public final class PmdResult {
     private static final Log logger = LogFactory.getLog(PmdResult.class);
@@ -40,7 +42,7 @@ public final class PmdResult {
     private IQueryContext context;
     private boolean loaded;
     private Object LOCK = new Object();
-    private HashMap violations;
+    private TreeMap violations;
     /** Creates a new instance of PmdResult */
     public PmdResult(IQueryContext con) {
         context = con;
@@ -69,7 +71,7 @@ public final class PmdResult {
     
     private void loadReport() {
         File reportFile = new File(context.getResolver().getResolvedValue("maven.build.dir"), "pmd-raw-report.xml");
-        violations = new HashMap();
+        violations = new TreeMap(new FileComparator());
         if (reportFile.exists()) {
             try {
                 SAXBuilder builder = new SAXBuilder();
@@ -146,6 +148,15 @@ public final class PmdResult {
 
         void setViolationText(String violationText) {
             this.violationText = violationText;
+        }
+        
+    }
+    
+    private static class FileComparator implements Comparator {
+        public int compare(Object o1, Object o2) {
+            File file1 = (File)o1;
+            File file2 = (File)o2;
+            return file1.getAbsolutePath().compareTo(file2.getAbsolutePath());
         }
         
     }
