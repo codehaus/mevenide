@@ -21,13 +21,12 @@ import junit.framework.TestCase;
 
 /**
  * 
- * This class introduces a cycle in package dependencies -__-; 
- * 
  * @author Gilles Dodinet (gdodinet@wanadoo.fr)
  * @version $Id$
  * 
  */
 public class AbstractMevenideTestCase extends TestCase {
+	
 	
 	protected File projectFile;
 	
@@ -39,6 +38,7 @@ public class AbstractMevenideTestCase extends TestCase {
 		File src = new File(AbstractMevenideTestCase.class.getResource("/fixtures/project-fixture.xml").getFile());
 		projectFile = new File(src.getParentFile().getParent(), "project-fixture.xml") ; 
 		copy(src.getAbsolutePath(), projectFile.getAbsolutePath());
+		
 		
 		
 	}
