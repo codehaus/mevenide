@@ -64,6 +64,11 @@
     		<version>20030625.032346</version>
     	</dependency>
     	<dependency>
+    		<groupId>commons-lang</groupId>	
+    		<artifactId>commons-lang</artifactId>
+    		<version>1.0.1</version>
+    	</dependency>
+    	<dependency>
     		<groupId>commons-jelly</groupId>	
     		<artifactId>commons-jelly-tags-xml</artifactId>
     		<version>SNAPSHOT</version>
@@ -71,6 +76,21 @@
     </dependencies>
     
     <build>
+      <sourceDirectory>src/java</sourceDirectory>
+      <unitTestSourceDirectory>src/test/java</unitTestSourceDirectory>
+      <unitTest>
+		<includes>
+		  <include>**/*Test.java</include>
+		</includes>
+		<resources>
+			<resource>
+				<directory>src/test/conf</directory>
+				<includes>
+					<include>**/*.*</include>
+				</includes>
+			</resource>
+		</resources>
+	  </unitTest>
       <resources>
         <resource>
           <directory>src/plugin-resources</directory>
@@ -86,4 +106,18 @@
       </resources>
 	</build>
 	
+	<reports>
+		<report>maven-jellydoc-plugin</report>
+		<report>maven-junit-report-plugin</report>
+		<report>maven-clover-plugin</report>
+		<report>maven-pmd-plugin</report>
+	   	<report>maven-checkstyle-plugin</report>
+	   	<report>maven-simian-plugin</report>
+   	    <report>maven-findbugs-plugin</report>
+   	    <report>maven-changelog-plugin</report>
+		<report>maven-file-activity-plugin</report>
+		<report>maven-developer-activity-plugin</report>
+		<report>maven-jxr-plugin</report>
+		<report>maven-javadoc-plugin</report>
+	</reports>
 </project>
