@@ -54,4 +54,13 @@
     <ant:copy file="${eclipse.home}/plugins/org.eclipse.ui.externaltools_3.0.0/externaltools.jar" 
   		      tofile="${maven.repo.local}/eclipse/jars/eclipse-externaltools-3.0.0.jar"/> 
   
+    <ant:copy file="${eclipse.home}/plugins/org.eclipse.help.base_3.0.0/helpbase.jar" 
+  	  	      tofile="${maven.repo.local}/eclipse/jars/eclipse-helpbase-3.0.0.jar"/>
+  	  	      
+    <ant:copy file="${eclipse.home}/plugins/org.eclipse.ui.ide_3.0.0/ide.jar" 
+  	  	      tofile="${maven.repo.local}/eclipse/jars/eclipse-ide-3.0.0.jar"/>
+  	  	      
+    <ant:copy file="${eclipse.home}/plugins/org.eclipse.core.variables_3.0.0/variables.jar" 
+  	  	      tofile="${maven.repo.local}/eclipse/jars/eclipse-variables-3.0.0.jar"/>
+  	  	      
 </j:jelly>

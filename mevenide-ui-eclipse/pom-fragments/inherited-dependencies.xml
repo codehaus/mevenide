@@ -1,7 +1,7 @@
         <dependency>
             <groupId>maven</groupId>
             <artifactId>maven</artifactId>
-            <version>1.0-beta-10</version>
+            <version>1.0-rc1</version>
             <url>http://maven.apache.org/</url>
             <type>jar</type>
         </dependency>
