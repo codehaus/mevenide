@@ -15,7 +15,6 @@
     <classpathentry kind="var" path="MAVEN_REPO/mockcreator/jars/de.abstrakt.mock-0.2.4.jar"/>
     <classpathentry kind="var" path="MAVEN_REPO/xpp3/jars/xpp3-1.1.2a.jar"/>
     <classpathentry kind="var" path="MAVEN_REPO/xmlpull/jars/xmlpull-1.1.2.1.jar"/>
-    <classpathentry kind="var" path="MAVEN_REPO/mevenide/jars/mevenide-goals-grabber-0.1.jar"/>
     <classpathentry kind="var" path="MAVEN_REPO/log4j/jars/log4j-1.2.7.jar"/>
     <classpathentry kind="var"
         path="MAVEN_REPO/maven/jars/maven-1.0-beta-10.jar" sourcepath="MAVEN_SRC"/>

@@ -46,55 +46,23 @@
  * SUCH DAMAGE.
  * ====================================================================
  */
-package org.mevenide;
+package org.mevenide.ui.eclipse.launch.jdt;
 
-import java.io.IOException;
+
+import org.eclipse.core.runtime.NullProgressMonitor;
 
 /**
- * 
  * @author Gilles Dodinet (gdodinet@wanadoo.fr)
- * @version $Id: IGoalsManager.java 6 mai 2003 20:03:5813:34:35 Exp gdodinet 
+ * @version $Id: MevenideProgressMonitor.java 27 avr. 2003 14:12:1913:34:35 Exp gdodinet 
  * 
  */
-public interface IGoalsManager {
-	
-    /**
-	 * add the plugin:goal to the list of runnable goals
-	 * if goal is null just add plugin
-	 * 
-	 * @param category
-	 * @param goal 
-	 */
-	public abstract void addGoal(String plugin, String goal) throws GoalNotFoundException;
-	
-    /**
-	 * remove plugin:goal from the list of runnable goals
-	 * if goal is null remove plugin
-	 * @param category
-	 * @param goals   
-	 */
-	public abstract void removeGoal(String plugin, String goal);
-	
-    /**
-	 * @return String[] the list of goals to be run
-	 */
-	public abstract String[] getGoalsToRun();
-	
-    /**
-	 * @param plugin
-	 * @return String[] the selected goals under <code>plugin</code> control 
-	 */
-	public abstract String[] getGoals(String plugin);
-	
-   /**
-	 * @throws IOException
-	 */
-	public abstract void save() throws IOException;
+public class MevenideProgressMonitor extends NullProgressMonitor {
     
-    /**
-     * remove all previously selected goals
-     */
-    public abstract void reset() ;
-   
-   
+	/** 
+	 * @see org.eclipse.core.runtime.IProgressMonitor#worked(int)
+	 */
+	public void worked(int work) {
+		super.worked(work);
+	}
+
 }

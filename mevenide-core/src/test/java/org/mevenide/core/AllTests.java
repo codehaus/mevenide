@@ -64,7 +64,7 @@ public class AllTests {
     public static Test suite() {
         TestSuite suite = new TestSuite();
         
-        suite.addTestSuite(AbstractGoalsManagerTest.class);
+      
 		suite.addTestSuite(AbstractOptionsManagerTest.class);
 		suite.addTestSuite(AbstractRunnerTest.class);
 		
