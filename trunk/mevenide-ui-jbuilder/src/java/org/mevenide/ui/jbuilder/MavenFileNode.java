@@ -167,6 +167,14 @@ public class MavenFileNode extends XMLFileNode {
         return (Node[]) goalNodes.toArray(new Node[goalNodes.size()]);
     }
 
+    public void doSave()
+        throws java.lang.Exception {
+        super.doSave();
+        // if the project file has changed, we refresh the goal and dependencies
+        // in the project.
+        refreshIfChanged();
+    }
+
     public static void initOpenTool (byte major, byte minor) {
         if (PrimeTime.isVerbose()) {
             System.out.println("Registering Maven project file XML node");
