@@ -50,12 +50,7 @@
         <directory>${basedir}/etc</directory>
         <includes>
           <include>*.*</include>
+          <include>META-INF/services/*.*</include>
         </includes>
     </resource>
-    <resource>
-   	  <directory>${basedir}/etc</directory>
-        <includes>
-        <include>META-INF/services/*.*</include>
-        </includes>
-     </resource>
   </resources>
