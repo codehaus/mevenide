@@ -46,7 +46,7 @@
  * SUCH DAMAGE.
  * ====================================================================
  */
-package org.mevenide;
+package org.mevenide.project;
 
 
 
@@ -70,4 +70,7 @@ public abstract class ProjectConstants {
 	//public static final String MAVEN_INTEGRATION_TEST_RESOURCE = "integrationUnitTestResources";
 	
 	public static final String MAVEN_DEFAULT_OUTPUT_LOCATION = "target/classes";
+	
+	public static final String BASEDIR = "${basedir}";
 }
+

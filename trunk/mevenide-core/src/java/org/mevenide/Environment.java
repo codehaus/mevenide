@@ -151,7 +151,7 @@ public class Environment {
 
     public static String getMavenPluginsInstallDir() {
     	if ( mavenPluginsInstallDir == null && mavenLocalHome != null ) {
-    		mavenPluginsInstallDir = new File(mavenLocalHome, "plugins").getAbsolutePath(); 
+    		mavenPluginsInstallDir = new File(getMavenLocalHome(), "plugins").getAbsolutePath(); 
     	}
         return mavenPluginsInstallDir;
     }
@@ -168,11 +168,15 @@ public class Environment {
     }
 
     public static String getMavenLocalHome() {
+    	if ( mavenLocalHome == null ) {
+    		mavenLocalHome = new File(System.getProperty("user.home"), ".maven").getAbsolutePath();
+    	}
         return mavenLocalHome;
     }
 
     public static void setMavenLocalHome(String mavenLocalHome) {
         Environment.mavenLocalHome = mavenLocalHome;
     }
-
+	
+	
 }

@@ -59,7 +59,7 @@ import org.apache.maven.project.Dependency;
 import org.apache.maven.project.Project;
 import org.apache.maven.project.Resource;
 import org.mevenide.AbstractMevenideTestCase;
-import org.mevenide.ProjectConstants;
+import org.mevenide.project.ProjectConstants;
 import org.mevenide.project.dependency.DependencyFactory;
 import org.mevenide.project.dependency.DependencyUtil;
 
