@@ -24,8 +24,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Dependency;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IClasspathContainer;
@@ -142,5 +144,17 @@ public class EclipseProjectUtils {
 		}
 	    
 	    return outputFolders;
+	}
+	
+	public static void attachJavaNature(IProject project) throws CoreException {
+		if ( !project.hasNature(JavaCore.NATURE_ID) ) {
+			IProjectDescription description = project.getDescription();
+			String[] natureIds = description.getNatureIds();
+			String[] newNatures = new String[natureIds.length + 1];
+			System.arraycopy(natureIds, 0, newNatures, 0, natureIds.length);
+			newNatures[newNatures.length - 1] = JavaCore.NATURE_ID;
+			description.setNatureIds(newNatures);
+			project.setDescription(description, null);
+		}
 	}
 }
