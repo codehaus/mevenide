@@ -4,7 +4,8 @@
   <extend>${basedir}/../mevenide-master/base-project.xml</extend>
   <pomVersion>3</pomVersion>
   <name>Mevenide Eclipse</name>
-  <groupId>mevenide</groupId>
+  <!-- groupId>mevenide</groupId -->
+  <id>mevenide:mevenide-ui-eclipse</id>
   <artifactId>mevenide-ui-eclipse</artifactId>
   <currentVersion>1.0</currentVersion>
   
