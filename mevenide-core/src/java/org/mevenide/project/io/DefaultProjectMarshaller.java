@@ -299,7 +299,7 @@ public class DefaultProjectMarshaller implements IProjectMarshaller {
 						
 					marshallRequiredString(dependency.getVersion(), "version");
 					
-					marshallString(dependency.getArtifact(), "artifact");
+					//marshallString(dependency.getArtifact(), "artifact");
 					marshallString(dependency.getType(), "type");
 					marshallString(dependency.getUrl(), "url");
 					
