@@ -4,7 +4,7 @@
         <p><img src="images/none.png"/></p>  
           <form action="$SCRIPTURL$/search.pl/" method="get">
            <p>
-           	 Search for: <input style="border-style: solid;border-width: 1px;border-color:#aaaaaa;" type="text" size="20" name="text"/> <input type="image" src="/images/search.gif"/>
+           	 Search for: <input style="border-style: solid;border-width: 1px;border-color:#aaaaaa;" type="text" size="20" name="text"/> <input type="image" src="$BASEURL$/images/search.gif"/>
            </p>
            
           </form>

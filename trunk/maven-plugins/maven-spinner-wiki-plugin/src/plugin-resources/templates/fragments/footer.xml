@@ -6,7 +6,7 @@
            <p>
            	 <a href="$SCRIPTURL$/edit.pl/$TOPIC$"><font size="2">Edit Page</font></a><img src="images/none.png"/> | <img src="images/none.png"/>
              <a href="$SCRIPTURL$/editlast.pl/$TOPIC$">Revert Changes</a><img src="images/none.png"/> | <img src="images/none.png"/>
-             Search for: <input style="border-style: solid;border-width: 1px;border-color:#aaaaaa;" type="text" size="20" name="text"/> <input type="image" src="/images/search.gif"/>
+             Search for: <input style="border-style: solid;border-width: 1px;border-color:#aaaaaa;" type="text" size="20" name="text"/> <input type="image" src="$BASEURL$/images/search.gif"/>
            </p>
            
           </form>

@@ -62,7 +62,7 @@
 					    <x:set var="oldName" select="name(.)"/>
 					    <x:set var="oldValue" select="string(.)"/>
 					    <j:choose>
-						    <j:when test="${oldName == 'src' and !oldValue.startsWith('http://') and !oldValue.startsWith('/')}">
+						    <j:when test="${oldName == 'src' and !oldValue.startsWith('http://') and !oldValue.startsWith('/') and !oldValue.startsWith('$')}">
 						        <x:attribute name="${oldName}">${wikiRelativePath}/${oldValue}</x:attribute>
 						    </j:when>
 						    <j:otherwise>

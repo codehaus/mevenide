@@ -9,7 +9,7 @@
           <subsection name="Editing $TOPIC$">
 			  <form action="$SCRIPTURL$/save.pl/$TOPIC$" method="POST">
 				  <p align="left">
-					You can make changes to <a href="$SCRIPTURL$/search.pl?text=$TOPIC$&amp;options=topic">this topic</a> using the edit box below.
+					You can make changes to <a href="$SCRIPTURL$/search.pl?text=$TOPIC$&amp;options=topic">this topic </a> using the edit box below.
 					If you decide that you want to quit without saving your changes then use the <code>back</code> button on your browser.
 				  </p>
 				  <p><img src="images/none.png"/></p>  
