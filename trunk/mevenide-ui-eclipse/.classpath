@@ -37,5 +37,7 @@
     <classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.ui.workbench_3.0.0/workbench.jar"/>
     <classpathentry kind="src" path="/mevenide-core"/>
     <classpathentry kind="src" path="/mevenide-goals-grabber"/>
+    <classpathentry kind="src" path="src/conf/eclipse"/>
+    <classpathentry kind="src" path="src/test/etc"/>
     <classpathentry kind="output" path="target/classes"/>
 </classpath>

@@ -17,23 +17,33 @@
   
   <goal name="mevenide:build-all" description="Build all Mevenide modules" prereqs="mevenide:init">
     <attainGoal name="multiproject:goal"/>
-    <attainGoal name="mevenide:create-update"/>
+    <attainGoal name="mevenide:create-update-dist"/>
   </goal>
   
-  <goal name="mevenide:create-update" description="Build Eclipse plugin update site">
-  	<util:file var="updateSiteProjectDescriptor" name="${basedir}/../mevenide-update/project.xml"/>
-    <maven:maven descriptor="${updateSiteProjectDescriptor}" goals="eclipse-plugin:create-site-dist"/>
+  <goal name="mevenide:create-update-dist" prereqs="mevenide:init" description="Build Eclipse plugin update site">
+   	<util:file var="updateSiteProjectDescriptor" name="${mevenide.eclipse.update.project.location}/project.xml"/>
+    <maven:maven descriptor="${updateSiteProjectDescriptor}" goals="eclipse-plugin:create-artifact-dist"/>
   </goal>
   
   <goal name="mevenide:build-core" description="Build Mevenide-core module">
-  	 <util:file var="mevenideCoreProjectdescriptor" name="${basedir}/../mevenide-core/project.xml"/>
+  	 <util:file var="mevenideCoreProjectdescriptor" name="${mevenide.core.project.location}/project.xml"/>
 	 <maven:maven descriptor="${mevenideCoreProjectdescriptor}" goals="clean,jar:install"/> 	 
   </goal>
     
   <goal name="mevenide:build-site" description="Build Mevenide Site">
-  	<j:set var="maven.multiproject.excludes" value="${maven.multiproject.excludes},mevenide-feature/project.xml"/>
-  	<j:set var="maven.multiproject.includes" value="${maven.multiproject.excludes},maven-eclipse-plugin-plugin/project.xml"/>
+  	<j:set var="maven.multiproject.excludes" value="${maven.multiproject.excludes}"/>
+  	<j:set var="maven.multiproject.includes" value="${maven.multiproject.includes},${mevenide.eclipse.plugin.project.location}/project.xml"/>
   	<attainGoal name="multiproject:site"/>
   </goal>
+  
+  <goal name="mevenide:wiki">
+  	<j:set var="goal" value="wiki"/>
+  	<attainGoal name="multiproject:goal"/>
+  </goal>
+  
+  <preGoal name="eclipse-plugin:install-artifact">
+  	<util:file var="filters" name="${mevenide.master.project.location}/init-filtersets.xml"/>
+  	<j:include file="${filters}"/>
+  </preGoal>
   
 </project>

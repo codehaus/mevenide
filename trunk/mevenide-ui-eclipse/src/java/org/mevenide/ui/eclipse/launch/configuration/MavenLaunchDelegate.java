@@ -94,8 +94,7 @@ public class MavenLaunchDelegate extends AbstractRunner implements ILaunchConfig
 			initEnvironment();
 		} 
 		catch (Exception e) {
-			// @todo Auto-generated catch block
-			e.printStackTrace();
+			log.debug("Unable to launch configuration due to : ", e);
 		}
 	
 		VMRunnerConfiguration vmConfig = new VMRunnerConfiguration("com.werken.forehead.Forehead", ArgumentsManager.getMavenClasspath());
@@ -148,8 +147,7 @@ public class MavenLaunchDelegate extends AbstractRunner implements ILaunchConfig
 			return StringUtils.split(strg, " ");
 		}	
 		catch (CoreException e) {
-			e.printStackTrace();
-			//@todo temp return value 
+			log.debug("Unable to get Goals due to : ", e);
 			return new String[0];
 		}		
 	}
@@ -176,8 +174,7 @@ public class MavenLaunchDelegate extends AbstractRunner implements ILaunchConfig
 			return result;
 		} 
 		catch (CoreException e) {
-			e.printStackTrace();
-			//@todo temp return value 
+			log.debug("Unable to get Options due to : ", e);
 			return new String[0];
 		}
 	}

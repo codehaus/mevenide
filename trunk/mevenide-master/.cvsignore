@@ -3,3 +3,4 @@ velocity.log
 target
 maven.out
 checkouts
+build.properties
