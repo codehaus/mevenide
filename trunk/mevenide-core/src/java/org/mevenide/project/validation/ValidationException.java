@@ -16,6 +16,8 @@
  */
 package org.mevenide.project.validation;
 
+import java.util.List;
+
 
 /**  
  * 
@@ -24,7 +26,23 @@ package org.mevenide.project.validation;
  * 
  */
 public class ValidationException extends Exception {
+    private List errors ;
+    private List warnings;
+    
+    ValidationException(List errors, List warnings) {
+        this.errors = errors;
+        this.warnings = warnings;
+    }
+    
     ValidationException(String message, Throwable throwable) {
         super(message, throwable);
+    }
+    
+    public List getErrors() {
+        return errors;
+    }
+    
+    public List getWarnings() {
+        return warnings;
     }
 }
