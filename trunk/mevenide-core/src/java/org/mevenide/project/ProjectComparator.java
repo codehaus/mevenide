@@ -34,6 +34,7 @@ import org.apache.maven.project.Organization;
 import org.apache.maven.project.Project;
 import org.apache.maven.project.Repository;
 import org.apache.maven.project.Resource;
+import org.apache.maven.project.SourceModification;
 import org.apache.maven.project.UnitTest;
 import org.apache.maven.project.Version;
 
@@ -441,9 +442,7 @@ public class ProjectComparator {
 	            detectAttributeChange(newBuild.getSourceDirectory(), originalBuild.getSourceDirectory());
 	            detectAttributeChange(newBuild.getUnitTestSourceDirectory(), originalBuild.getUnitTestSourceDirectory());
 	            detectAttributeChange(newBuild.getAspectSourceDirectory(), originalBuild.getAspectSourceDirectory());
-	            detectAttributeChange(
-	                newBuild.getIntegrationUnitTestSourceDirectory(),
-	                originalBuild.getIntegrationUnitTestSourceDirectory());
+	            compareSourceModifications(newBuild.getSourceModifications(), originalBuild.getSourceModifications());
 	            detectAttributeChange(newBuild.getNagEmailAddress(), originalBuild.getNagEmailAddress());
 	            compareUnitTest(newBuild, originalBuild, newProject);
 	            compareResources(newBuild.getResources(), originalBuild.getResources());
@@ -454,6 +453,27 @@ public class ProjectComparator {
         }
     }
 
+    private void compareSourceModifications(List newSourceModifications, List origSourceModifications) throws ShortCircuitException {
+		if ( comparable(newSourceModifications, origSourceModifications) ) {
+	    	detectObjectChange(newSourceModifications, origSourceModifications);
+	    	detectCollectionChange(newSourceModifications, origSourceModifications);
+	        // just assume order is significant
+	        for (int i = 0; i < origSourceModifications.size(); i++) {
+	            SourceModification origSourceModification = (SourceModification) origSourceModifications.get(i);
+	            SourceModification newSourceModification = (SourceModification) newSourceModifications.get(i);
+	            compareSourceModification(origSourceModification, newSourceModification);
+	        }
+    	}
+    } 
+    
+    private void compareSourceModification(SourceModification origSourceModification, SourceModification newSourceModification) throws ShortCircuitException {
+    	if ( comparable(newSourceModification, origSourceModification) ) {
+	    	detectObjectChange(newSourceModification, origSourceModification);
+	        detectAttributeChange(newSourceModification.getClassName(), origSourceModification.getClassName());
+	        compareResource(origSourceModification, newSourceModification);
+    	}
+    }
+    
     private void compareUnitTest(Build newBuild, Build origBuild, Project newProject) {
 		try {
 	        UnitTest origUnitTest = origBuild.getUnitTest();
