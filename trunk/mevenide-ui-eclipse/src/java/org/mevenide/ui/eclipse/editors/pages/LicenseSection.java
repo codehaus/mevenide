@@ -49,29 +49,78 @@
 package org.mevenide.ui.eclipse.editors.pages;
 
 import org.apache.maven.project.Project;
+import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Table;
+import org.mevenide.ui.eclipse.Mevenide;
 
 /**
  * @author Jeffrey Bonevich (jeff@bonevich.com)
  * @version $Id$
  */
 public class LicenseSection extends PageSection {
+	
+	private Table table;
+	private TableViewer licenseViewer;
 
     public LicenseSection(OrganizationPage page) {
         super(page);
+		setHeaderText(Mevenide.getResourceString("LicenseSection.header"));
+		setDescription(Mevenide.getResourceString("LicenseSection.description"));
     }
 
     public Composite createClient(Composite parent, PageWidgetFactory factory) {
 		Composite container = factory.createComposite(parent);
 		GridLayout layout = new GridLayout();
-		layout.numColumns = isInherited() ? 4 : 3;
+		layout.numColumns = isInherited() ? 3 : 2;
 		layout.marginWidth = 2;
 		layout.verticalSpacing = 7;
 		layout.horizontalSpacing = 5;
 		container.setLayout(layout);
 		
 		final Project pom = getPage().getEditor().getPom();
+		
+		// POM license table
+		Button toggle = createOverrideToggle(container, factory, 1, true);
+		table = new Table(container, SWT.SINGLE);
+		GridData data = new GridData(GridData.FILL_BOTH);
+		table.setLayoutData(data);
+		
+		licenseViewer = new TableViewer(table);
+		
+		Composite buttonContainer = factory.createComposite(container);
+		data = new GridData(GridData.HORIZONTAL_ALIGN_END | GridData.VERTICAL_ALIGN_BEGINNING);
+		data.horizontalSpan = 1;
+		buttonContainer.setLayoutData(data);
+		layout = new GridLayout();
+		layout.marginWidth = 0;
+		layout.marginHeight = 0;
+		buttonContainer.setLayout(layout);
+		
+		Button addButton = factory.createButton(buttonContainer, "Add", SWT.PUSH);
+		data = new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_BEGINNING);
+		data.horizontalSpan = 1;
+		addButton.setLayoutData(data);
+
+		Button removeButton = factory.createButton(buttonContainer, "Remove", SWT.PUSH);
+		data = new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_BEGINNING);
+		data.horizontalSpan = 1;
+		removeButton.setLayoutData(data);
+
+		Button upButton = factory.createButton(buttonContainer, "Up", SWT.PUSH);
+		data = new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_BEGINNING);
+		data.horizontalSpan = 1;
+		upButton.setLayoutData(data);
+
+		Button downButton = factory.createButton(buttonContainer, "Down", SWT.PUSH);
+		data = new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_BEGINNING);
+		data.horizontalSpan = 1;
+		downButton.setLayoutData(data);
 		
 		factory.paintBordersFor(container);
 		return container;
