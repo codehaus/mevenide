@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns:j="jelly:core">
 	<postGoal name="jar:install">
-		<attainGoal name="mevenide:deploy"/>
+		<echo>
+			uncomment at deployment time only since i dont want to
+			mess my plugins dir (conflict-friendly at dev. time !!)
+		</echo>
+		<!-- attainGoal name="mevenide:deploy"/ -->
 	</postGoal>
 	
 	<goal name="mevenide:deploy">
