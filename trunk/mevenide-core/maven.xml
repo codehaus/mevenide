@@ -2,9 +2,11 @@
 <project xmlns:j="jelly:core" xmlns:artifact="artifact" xmlns:ant="jelly:ant" xmlns:test="test">
 	
 	<!-- crap -->
+<!--mkleint - no idea what this is good for, just remove it, seems to work ok.
 	<preGoal name="test:test">
 	  <attainGoal name="mevenide:prepare-fs"/>
 	</preGoal>
+        -->
 	
 	<preGoal name="jar:jar">
 	  <copy toDir="${maven.build.dest}/META-INF/services">
