@@ -7,11 +7,11 @@
       plugin="Mevenide"
       image="mevenide.jpg">
 
-   <description url="http://mevenide.sourceforge.net/docs/mevenide-ui-eclipse/license.html">
+   <description url="http://mevenide.sourceforge.net/docs/mevenide-ui-eclipse/update.html">
       %description
    </description>
 
-   <license>
+   <license url="http://mevenide.sourceforge.net/docs/mevenide-ui-eclipse/license.html">
       %license
    </license>
 
@@ -40,17 +40,17 @@
    <plugin id="org.mevenide.core"
            download-size="0"
            install-size="0"
-           version="0.1"/>
+           version="0.1.1"/>
 
    <plugin id="org.mevenide.goals.grabber"
            download-size="0"
            install-size="0"
-           version="0.1"/>
+           version="0.1.1"/>
 
    <plugin id="org.mevenide.ui"
            download-size="0"
            install-size="0"
-           version="0.1"/>
+           version="0.1.1"/>
 
 </feature>
 

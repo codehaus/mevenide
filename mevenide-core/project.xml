@@ -4,7 +4,7 @@
     <id>mevenide:mevenide-core</id>
     <artifactId>mevenide-core</artifactId>
     <name>Mevenide Core</name>
-    <currentVersion>0.1</currentVersion>
+    <currentVersion>0.1.1</currentVersion>
     <organization/>
     <package>org.mevenide</package>
     <shortDescription>Mevenide Core, used by concrete plugin implementations</shortDescription>
