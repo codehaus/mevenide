@@ -111,14 +111,13 @@ public class DependencyWrapper extends ArtifactWrapper {
 		//if possible refactor *all* code that way (MavenUtils) 
 		if ( dependency.getType() == null || dependency.isAddedToClasspath() ) { //should check maven.jar.override property also..
 			String path = null;
-			if ( dependency.getJar() == null ) {
-				String type = dependency.getType() == null ? "jar" : dependency.getType();
-				File group = new File(Environment.getMavenLocalRepository(), dependency.getGroupId());
-				path = new File(group, type + "s/" + dependency.getArtifactId() + "-" + dependency.getVersion() + "." + type).getAbsolutePath();
-			}
-			else {
-				path = new File(dependency.getJar()).getAbsolutePath();
-			}
+			
+			String type = dependency.getType() == null ? "jar" : dependency.getType();
+			File group = new File(Environment.getMavenLocalRepository(), dependency.getGroupId());
+			path = new File(group, type + "s/" + dependency.getArtifactId() + "-" + dependency.getVersion() + "." + type).getAbsolutePath();
+		
+			//	path = new File(dependency.getJar()).getAbsolutePath();
+			
 			newEntry = JavaCore.newLibraryEntry(new Path(path), null, null);
 		}
 
