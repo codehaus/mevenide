@@ -90,10 +90,22 @@ public class AdaptVersionTag extends AbstractMevenideTag {
 		        newVersion += "." + new SimpleDateFormat("yyyyMMdd").format(new Date()); 
 		    }
 		}
-        return newVersion;
+		if ( countNumbers(newVersion) == 2 ) {
+		    newVersion += ".0"; 
+		}
+	    return newVersion;
     }
 
-
+    private int countNumbers(String version) {
+        int u = 0;
+        for (int i = 0; i < version.length(); i++) {
+            if ( Character.isDigit(version.charAt(i)) ) {
+            	u++;
+            }
+        }
+        return u;
+    }
+    
     public String getVersion() {
         return version;
     }

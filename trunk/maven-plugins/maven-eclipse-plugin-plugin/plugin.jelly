@@ -111,16 +111,16 @@
       </ant:move>
       
       <!-- copy required dependencies and generated artifact to $${maven.eclipse.plugin.temp.dir} -->
-      <ant:copy todir="${maven.eclipse.plugin.temp.dir}/${pluginFolder}_${distVersion}">
+      <ant:copy todir="${maven.eclipse.plugin.temp.dir}"><!-- /${pluginFolder}_${distVersion} -->
        	<ant:fileset dir="${basedir}" includes="${maven.eclipse.plugin.includes}"/>
        	<ant:fileset dir="${maven.build.dir}" includes="${pom.artifactId}-${pom.currentVersion}.jar"/>
       </ant:copy>
 
       <!-- build plugin distribution file. -->
       <ant:jar destfile="${pluginArchive}">
-        <fileset dir="${maven.eclipse.plugin.temp.dir}"/>
+        <ant:fileset dir="${maven.eclipse.plugin.temp.dir}"/>
       </ant:jar>
-      			
+      
       <ant:delete dir="${maven.eclipse.plugin.temp.dir}" quiet="true"/>
       
       <!-- @todo customize me, for runtime testing ? -->
@@ -144,7 +144,7 @@
    	  </ant:copy>
    	  
    	  <ant:jar destfile="${featureArchive}">
-        <fileset dir="${maven.eclipse.plugin.temp.dir}"/>
+        <fileset dir="${maven.eclipse.plugin.temp.dir}/${featureFolder}_${distVersion}"/>
       </ant:jar>
       
       <!-- iterate and build each plugin part of this feature and copy them to $${maven.eclipse.plugin.dist.dir}/plugins -->
@@ -155,7 +155,7 @@
 		<maven:pom var="pluginPom" projectDescriptor="${plugin}"/>
 		<maven:maven goals="eclipse-plugin:create-plugin-dist" descriptor="${plugin}"/>
 		
-		<!-- copy plugin archive -->
+		<!-- copy plugin archives -->
 		<ant:copy todir="${maven.eclipse.plugin.dist.dir}/plugins">
 		  <fileset dir="${pluginPom.getContext().getVariable('maven.eclipse.plugin.dist.dir')}" includes="*.jar"/>
 		</ant:copy>
@@ -174,9 +174,8 @@
 
    <!-- 
    	  build a single artifact containing all plugins and feature, ready to be 
-   	  unzipped into ${eclipse.home} or either to be used in update manager. 
-   	  warning : if unzipped in ${eclipse.home}, site.properties and site.xml,
-   	  as well as META-INF folder will mess up the ${eclipse.home} directory. 
+   	  unzipped into ${eclipse.home}. cannot be used as a local site for update manager
+   	  because the site descriptor is not anu longer included in the distribution
    -->
    <goal name="eclipse-plugin:create-site-dist" prereqs="eclipse-plugin:init,eclipse-plugin:install-artifact"
    		 description="build a single distribution file containing all required plugins and features">
@@ -184,7 +183,7 @@
    	 <j:set var="siteId" value="${maven.eclipse.plugin.artifact.id}"/>
    	 <j:set var="distVersion" value="${maven.eclipse.plugin.artifact.version}"/>
    	 <j:set var="siteFolder">${siteId.replaceAll('-', '.')}</j:set> 
-  	 <j:set var="siteArchive" value="${maven.eclipse.plugin.dist.dir}/${siteFolder}_${distVersion}.jar"/>
+  	 <j:set var="siteArchive" value="${maven.eclipse.plugin.dist.dir}/${siteFolder}_${distVersion}.zip"/>
    	 
    	 <util:tokenize var="includedFeatures" delim=",">${maven.eclipse.plugin.site.features}</util:tokenize>
    	 
@@ -209,23 +208,31 @@
 	 </ant:fileScanner>
 	 
 	 <j:forEach var="featureJar" items="${featureJars.iterator()}">
-	   <ant:unjar src="${featureJar}" dest="${maven.eclipse.plugin.temp.dir}/features"/>
-	   <ant:delete dir="${maven.eclipse.plugin.temp.dir}/features/META-INF"/>
+	   <j:set var="featureDest" value="${featureJar.getName().substring(0, featureJar.getName().lastIndexOf('.'))}" />
+	   <ant:mkdir dir="${maven.eclipse.plugin.temp.dir}/plugins/${featureDest}"	/>
+	   <ant:unjar src="${featureJar}" dest="${maven.eclipse.plugin.temp.dir}/features/${featureDest}"/>
+	   <ant:delete dir="${maven.eclipse.plugin.temp.dir}/features/${featureDest}/META-INF"/>
 	 </j:forEach>
    	 
    	 <ant:fileScanner var="pluginJars">
        <ant:fileset dir="${maven.eclipse.plugin.site.plugin.dest.dir}" includes="*.jar"/>
      </ant:fileScanner>
-     	
+
      <j:forEach var="pluginJar" items="${pluginJars.iterator()}">
-   	   <ant:unjar src="${pluginJar}" dest="${maven.eclipse.plugin.temp.dir}/plugins"/>
-   	   <ant:delete dir="${maven.eclipse.plugin.temp.dir}/plugins/META-INF"/>
+	   <j:set var="pluginDest" value="${pluginJar.getName().substring(0, pluginJar.getName().lastIndexOf('.'))}" />
+       <ant:mkdir dir="${maven.eclipse.plugin.temp.dir}/plugins/${pluginDest}"	/>
+   	   <ant:unjar src="${pluginJar}" dest="${maven.eclipse.plugin.temp.dir}/plugins/${pluginDest}"/>
+   	   <ant:delete dir="${maven.eclipse.plugin.temp.dir}/plugins/${pluginDest}/META-INF"/>
 	 </j:forEach>
    	 
-   	 <ant:jar destfile="${siteArchive}">
+   	 <ant:zip destfile="${siteArchive}">
    	 	<ant:fileset dir="${maven.eclipse.plugin.temp.dir}"/>
-   	 	<ant:fileset dir="${basedir}" includes="site.properties,site.xml"/>
-   	 </ant:jar>
+   	 	<!-- <ant:fileset dir="${basedir}" includes="site.properties,site.xml"/> -->
+   	 </ant:zip>
+   	 
+   	 <ant:copy todir="${maven.eclipse.plugin.dist.dir}/">
+   	 	<ant:fileSet dir="${basedir}" includes="site.properties,site.xml"/>
+   	 </ant:copy>
    	 
    	 <!-- clean up resources -->
    	 <ant:delete dir="${maven.eclipse.plugin.temp.dir}"/>
