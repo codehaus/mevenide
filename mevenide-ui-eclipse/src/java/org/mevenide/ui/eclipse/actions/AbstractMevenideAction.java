@@ -41,7 +41,7 @@ public abstract class AbstractMevenideAction implements IWorkbenchWindowActionDe
         IProject selectedProject = getParentProject(selection);
         
         if ( selectedProject != null ) {
-    		Mevenide plugin = Mevenide.getPlugin();
+    		Mevenide plugin = Mevenide.getInstance();
     		
             currentProject = selectedProject.getProject();
     		String cdir = currentProject.getLocation().toFile().getAbsolutePath();

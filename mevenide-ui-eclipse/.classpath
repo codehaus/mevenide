@@ -27,7 +27,6 @@
 	<classpathentry sourcepath="ORG_ECLIPSE_PLATFORM_SOURCE_SRC/org.eclipse.text_3.0.0/textsrc.zip" kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.text_3.0.0/text.jar"/>
 	<classpathentry sourcepath="ORG_ECLIPSE_PLATFORM_SOURCE_SRC/org.eclipse.ui.workbench.texteditor_3.0.0/texteditorsrc.zip" kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.ui.workbench.texteditor_3.0.0/texteditor.jar"/>
 	<classpathentry sourcepath="ORG_ECLIPSE_PLATFORM_SOURCE_SRC/org.eclipse.ui.editors_3.0.0/editorssrc.zip" kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.ui.editors_3.0.0/editors.jar"/>
-	<classpathentry sourcepath="ORG_ECLIPSE_PLATFORM_SOURCE_SRC/org.eclipse.core.runtime.compatibility_3.0.0/compatibilitysrc.zip" kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.core.runtime.compatibility_3.0.0/compatibility.jar"/>
 	<classpathentry sourcepath="ORG_ECLIPSE_PLATFORM_SOURCE_SRC/org.eclipse.osgi.util_3.0.0/utilsrc.zip" kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.osgi.util_3.0.0/util.jar"/>
 	<classpathentry sourcepath="ORG_ECLIPSE_PLATFORM_SOURCE_SRC/org.eclipse.osgi_3.0.0/osgisrc.zip" kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.osgi_3.0.0/osgi.jar"/>
 	<classpathentry sourcepath="ORG_ECLIPSE_PLATFORM_SOURCE_SRC/org.eclipse.osgi_3.0.0/coresrc.zip" kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.osgi_3.0.0/core.jar"/>

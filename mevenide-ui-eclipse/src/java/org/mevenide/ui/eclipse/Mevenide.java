@@ -61,7 +61,7 @@ import org.osgi.framework.BundleContext;
  * @todo get rid of the static method and make use of new bundle capabilities
  *  
  */
-public class Mevenide extends AbstractUIPlugin {
+public class Mevenide extends AbstractUIPlugin  {
 	
 	private static Log log = LogFactory.getLog(Mevenide.class);
 	 
@@ -90,11 +90,8 @@ public class Mevenide extends AbstractUIPlugin {
 	private String defaultGoals;
     private CustomLocationFinder customLocationFinder;
 
-
     /// initialization methods ---
 	public Mevenide() throws Exception {
-		
-		super();
 		try {
 			plugin = this;
 			NATURE_ID = Mevenide.getResourceString("maven.nature.id");
@@ -183,7 +180,7 @@ public class Mevenide extends AbstractUIPlugin {
     }
 
 	/// usual Plugin methods ---  
-    public static Mevenide getPlugin() {
+    public static Mevenide getInstance() {
         return plugin;
 	}
 
@@ -192,12 +189,12 @@ public class Mevenide extends AbstractUIPlugin {
 	}
 
 	public static String getResourceString(String key) {
-		ResourceBundle bundle = Mevenide.getPlugin().getResourceBundle();
+		ResourceBundle bundle = Mevenide.getInstance().getResourceBundle();
 		try {
 			return bundle.getString(key);
 		} 
 		catch (MissingResourceException e) {
-			log.debug("Cannot find Bundle Key '" + key + "' due to : " + e);
+			log.error("Cannot find Bundle Key '" + key + "' due to : " + e);
 			return key;
 		}
 	}
@@ -245,7 +242,7 @@ public class Mevenide extends AbstractUIPlugin {
     }
 	
 	public String getFile(String fname) {
-		File baseDir = Mevenide.getPlugin().getStateLocation().toFile();
+		File baseDir = Mevenide.getInstance().getStateLocation().toFile();
 		File f = new File(baseDir, fname);
 		return f.getAbsolutePath();
 	}
@@ -331,7 +328,7 @@ public class Mevenide extends AbstractUIPlugin {
 	}
 
 	public void setBuildPath() throws Exception {
-		Mevenide.getPlugin().createProjectProperties();
+		Mevenide.getInstance().createProjectProperties();
 		
 		IJavaProject javaProject = JavaCore.create(project);
 		

@@ -22,7 +22,6 @@ import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.SourceViewerConfiguration;
 import org.eclipse.swt.widgets.Shell;
 import org.mevenide.ui.eclipse.editors.jelly.contentassist.JellyContentAssistProcessor;
-import org.mevenide.ui.eclipse.editors.jelly.contentassist.SourceViewerInformationControl;
 import org.mevenide.ui.eclipse.editors.jelly.contentassist.TagContentAssistProcessor;
 import org.mevenide.ui.eclipse.editors.jelly.contentassist.TextContentAssistProcessor;
 

@@ -16,6 +16,7 @@
  */
 package org.mevenide.ui.eclipse.launch.configuration;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -156,7 +157,7 @@ public class MavenLaunchDelegate extends AbstractRunner implements ILaunchConfig
 		} 
 		catch (Exception e) {
 			log.debug("Unable to obtain basedir due to : " + e + " ; returning : Mevenide.getPlugin().getCurrentDir()");
-			return Mevenide.getPlugin().getCurrentDir();
+			return Mevenide.getInstance().getCurrentDir();
 		}
 	}
 
@@ -164,12 +165,12 @@ public class MavenLaunchDelegate extends AbstractRunner implements ILaunchConfig
 
 
 	protected void initEnvironment() throws Exception  {
-		if ( Mevenide.getPlugin().getMavenHome() == null || Mevenide.getPlugin().getMavenHome().trim().equals("") ) { 
+		if ( Mevenide.getInstance().getMavenHome() == null || Mevenide.getInstance().getMavenHome().trim().equals("") ) { 
 			//noMavenHome();
 			//throw new Exception("Maven Home has not been set");
 	    }
 	    else {
-			Mevenide.getPlugin().initEnvironment();
+			Mevenide.getInstance().initEnvironment();
 	    }
 	}
 

@@ -65,7 +65,7 @@ public class PreferencesManager {
 	}
 	
 	private String getPreferenceStoreFilename() {
-		return Mevenide.getPlugin().getPreferencesFilename() ; 
+		return Mevenide.getInstance().getPreferencesFilename() ; 
 	}
 	
 	public String getValue(String property) {

@@ -93,7 +93,7 @@ public class MavenArgumentsTab extends AbstractLaunchConfigurationTab  {
 	}
 	
 	public void setDefaults(ILaunchConfigurationWorkingCopy configuration) {
-		configuration.setAttribute(GOALS_TO_RUN, Mevenide.getPlugin().getDefaultGoals());
+		configuration.setAttribute(GOALS_TO_RUN, Mevenide.getInstance().getDefaultGoals());
 	}
 
 	

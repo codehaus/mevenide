@@ -154,7 +154,7 @@ public class TemplatePreferencePage extends PreferencePage
 			ProjectReader reader = ProjectReader.getReader();
 			Project pom = reader.read(source.toFile());
 			
-			IPath dest = Mevenide.getPlugin().getStateLocation().append("templates");
+			IPath dest = Mevenide.getInstance().getStateLocation().append("templates");
 
 			//If it's the first template we are going to add then create the
 			//template folder
