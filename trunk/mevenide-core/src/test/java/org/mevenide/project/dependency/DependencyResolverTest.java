@@ -45,6 +45,15 @@ public class DependencyResolverTest extends AbstractMevenideTestCase {
 		
 		//BUG-DefaultDependencyResolver_DEP_guessVersion $DEP-3 depends on $DEP-1
 		//assertEquals("tar.gz", ext);
+		resolver = DependencyResolverFactory.getFactory().newInstance("/home/bleah/gr1/javadoc.jars/myartifact-1.0.1-SNAPSHOT.javadoc.jar");
+		ext = resolver.guessExtension();
+		assertEquals("javadoc.jar", ext);
+                assertEquals("javadoc.jar", resolver.guessType());
+                
+		resolver = DependencyResolverFactory.getFactory().newInstance("/home/bleah/gr1/plugins/myartifact-1.0.1-SNAPSHOT.jar");
+		ext = resolver.guessExtension();
+		assertEquals("jar", ext);
+                assertEquals("plugin", resolver.guessType());
 		
 	}
 

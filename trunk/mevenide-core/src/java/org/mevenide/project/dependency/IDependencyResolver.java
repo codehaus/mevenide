@@ -63,4 +63,11 @@ public interface IDependencyResolver {
 	 * @return guessed groupId
 	 */
 	String guessGroupId() ;
+        
+        /**
+         * similar to guessExtension(), in most cases the same,
+         * but there's stuff like maven plugins which are of type plugin, but their
+         * extension is jar.
+         */
+        String guessType();
 }
