@@ -21,15 +21,15 @@ package org.mevenide.ui.eclipse.sync.views;
  * 
  */
 public class SourceDirectory {
-	private String directoryString;
-	private String directoryType;
+	private String directoryString = "";
+	private String directoryType = "source";
 	
 	public String getDirectoryPath() {
 		return "directory";
 	}
 	
 	public String getDirectoryType() {
-		return "integration test";
+		return directoryType;
 	}
 	
 	public void setDirectoryType(String newDirectoryType) {
