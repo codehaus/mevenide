@@ -235,7 +235,7 @@ public class SynchronizeWizardPage extends WizardPage {
 				Mevenide.getResourceString("SynchronizeWizardPage.legend.already.inparent"),
 				Mevenide.getResourceString("SynchronizeWizardPage.legend.already.inpom"),
 				Mevenide.getResourceString("SynchronizeWizardPage.legend.parent.value"),
-				Mevenide.getResourceString("SynchronizeWizardPage.version.conflict"),
+				Mevenide.getResourceString("SynchronizeWizardPage.legend.version.conflict"),
 			}	
 		);
 		
