@@ -70,7 +70,14 @@ public interface IResourceResolver {
 		Project project,
 		Resource resource);
 
-
+	/**
+	 * iterate ${pom.build.unitTest.resources} and merge those whose directory is equal to 
+	 * the directory of resource passed as parameter with the later.
+	 * 
+	 * @param project
+	 * @param resource
+	 * @return boolean
+	 */
 	public abstract void mergeSimilarUnitTestResources(
 		Project project,
 		Resource resource);

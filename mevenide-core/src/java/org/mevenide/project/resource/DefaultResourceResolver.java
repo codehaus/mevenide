@@ -62,15 +62,6 @@ import org.apache.maven.project.Resource;
  */
 public class DefaultResourceResolver implements IResourceResolver  {
 	
-	
-	/**
-	 * iterate ${pom.build.resources} and merge those whose directory is equal to 
-	 * the directory of resource passed as parameter with the later.
-	 * 
-	 * @param project
-	 * @param resource
-	 * @return boolean
-	 */
 	public void mergeSimilarResources(Project project, Resource resource) {
 		List resources = project.getBuild().getResources();
 		
