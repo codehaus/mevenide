@@ -46,6 +46,13 @@ public class ProjectWalker2 implements IPropertyFinder {
             return null;
         }
         Element proj = context.getPOMContext().getRootProjectElement();
+        return doGetValue(key, proj);
+    }
+    
+    public void reload() {
+    }
+
+    private String doGetValue(String key, Element proj) {
         if (proj == null) {
             return null;
         }
@@ -70,7 +77,19 @@ public class ProjectWalker2 implements IPropertyFinder {
         return null;
     }
     
-    public void reload() {
+    /**
+     * Get to know where the idem is defined.
+     * 0 - POM file, 1 - POM's parent etc..
+     * -1 - not defined.
+     */
+    public int getLocation(String key) {
+        Element[] els = context.getPOMContext().getRootElementLayers();
+        for (int i = 0; i < els.length; i++) {
+            String loc = doGetValue(key, els[i]);
+            if (loc != null) {
+                return i;
+            }
+        }
+        return -1;
     }
-    
 }
