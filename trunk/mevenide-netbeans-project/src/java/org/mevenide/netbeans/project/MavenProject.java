@@ -34,6 +34,7 @@ import org.mevenide.environment.LocationFinderAggregator;
 import org.mevenide.netbeans.project.classpath.ClassPathProviderImpl;
 import org.mevenide.netbeans.project.queries.MavenFileBuiltQueryImpl;
 import org.mevenide.netbeans.project.queries.MavenSharabilityQueryImpl;
+import org.mevenide.netbeans.project.queries.MavenForBinaryQueryImpl;
 import org.mevenide.properties.IPropertyResolver;
 import org.mevenide.properties.resolver.PropertyResolverFactory;
 import org.mevenide.util.DefaultProjectUnmarshaller;
@@ -189,13 +190,14 @@ public class MavenProject implements org.netbeans.api.project.Project {
     
     private Lookup createLookup() {
         return Lookups.fixed(new Object[] {
+            new MavenForBinaryQueryImpl(this),
             new ActionProviderImpl(this),
             new CustomizerProviderImpl(this),
             new LogicalViewProviderImpl(this),
             new ProjectOpenedHookImpl(this),
             new ClassPathProviderImpl(this),
             new MavenSharabilityQueryImpl(this),
-            new MavenFileBuiltQueryImpl(),
+            /** new MavenFileBuiltQueryImpl(), **/
             new SubprojectProviderImpl(this)
         });
     }
