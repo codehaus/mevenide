@@ -20,6 +20,9 @@ package org.mevenide.netbeans.project;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.StringTokenizer;
 import org.apache.maven.project.Dependency;
 import org.mevenide.context.IQueryContext;
@@ -28,6 +31,8 @@ import org.mevenide.properties.IPropertyLocator;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.filesystems.Repository;
+import org.openide.loaders.DataObject;
+import org.openide.util.Lookup;
 
 /**
  *
@@ -130,5 +135,34 @@ public class FileUtilities
             return new File(context.getUserDirectory(), "build.properties");
         }
         throw new IllegalArgumentException("Wrong argument.");
+    }
+    
+    /**
+     * inspired by netbeans's org.apache.tools.ant.module.api.support.ActionUtils.findSelectedFiles
+     */
+    public static FileObject[] findSelectedFiles(Lookup context, FileObject dir, String suffix) {
+        if (dir != null && !dir.isFolder()) {
+            throw new IllegalArgumentException("Not a folder: " + dir); // NOI18N
+        }
+        if (suffix != null && suffix.indexOf('/') != -1) {
+            throw new IllegalArgumentException("Cannot includes slashes in suffix: " + suffix); // NOI18N
+        }
+        List files = new ArrayList();
+        Iterator it = context.lookup(new Lookup.Template(DataObject.class)).allInstances().iterator();
+        while (it.hasNext()) {
+            DataObject d = (DataObject)it.next();
+            FileObject f = d.getPrimaryFile();
+            boolean matches = FileUtil.toFile(f) != null;
+            if (dir != null) {
+                matches &= (FileUtil.isParentOf(dir, f) || dir == f);
+            }
+            if (suffix != null) {
+                matches &= f.getNameExt().endsWith(suffix);
+            }
+            if (matches) {
+                files.add(f);
+            } 
+        }
+        return (FileObject[])files.toArray(new FileObject[files.size()]);
     }
 }
