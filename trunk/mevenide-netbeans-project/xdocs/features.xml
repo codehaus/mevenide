@@ -24,18 +24,12 @@
 	  <p>
 		<ul>
 		  <li>All kind of sources and resources easily accessible</li>
-		  <li>Dependencies recognized and code completion database clreated on the fly.</li>
+		  <li>Dependencies recognized and code completion database created on the fly.</li>
 		  <li>Jar Override Support for dependecies</li>
 		  <li>Updates dynamically once project files are edited.</li>
 		</ul>
 	  </p>
-	  <p>
-		<u>Known limitations</u><br/>
-		<ul>
-			<li>Changes in library sources not reflected in dependent project's completion. </li>
-		</ul>
-	  </p>
-	</div>
+      </div>
   </section>
   <section name="Maven Launcher">
 	<div id="documentContent">
@@ -66,8 +60,8 @@
 	  <p>
 		<u>Known limitations</u><br/>
 		<ul>
-			<li>In this version just no editing.</li>
-			<li>Currently only basic dependencies page is listed.</li>
+			<li>In this version no editing, only viewing</li>
+			<li>Currently only some pages are implemented.</li>
 		</ul>
 	  </p>
 	</div>
