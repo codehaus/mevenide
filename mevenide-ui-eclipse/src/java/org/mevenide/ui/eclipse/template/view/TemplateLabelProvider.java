@@ -42,7 +42,7 @@ public class TemplateLabelProvider extends LabelProvider {
 	 */
 	public Image getImage(Object obj) {
 		if (obj instanceof Template) {
-			return Mevenide.getImageDescriptor("pom_file.gif").createImage();
+			return Mevenide.getImageDescriptor("obj16/mfile_obj.gif").createImage();
 		}
 		return super.getImage(obj);
 	}
