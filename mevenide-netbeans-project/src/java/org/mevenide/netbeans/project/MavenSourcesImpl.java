@@ -176,7 +176,7 @@ public class MavenSourcesImpl implements Sources {
                         Resource res = (Resource)it.next();
                         String path = project.getPropertyResolver().resolveString(res.getDirectory());
                         FileObject folder = FileUtilities.findFolder(project.getProjectDirectory(),
-                        path);
+                                                                     path);
                         if (folder == null) {
                             // maybe we got a absolutepath in the basedir definition.
                             File fl = FileUtil.normalizeFile(new File(path));

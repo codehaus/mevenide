@@ -18,12 +18,16 @@ package org.mevenide.netbeans.project.wizards;
 
 import java.awt.Component;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.text.MessageFormat;
 import java.util.HashSet;
 import java.util.NoSuchElementException;
 import java.util.Set;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 import javax.swing.JComponent;
 import javax.swing.event.ChangeListener;
 import org.apache.commons.logging.Log;
@@ -45,23 +49,25 @@ import org.netbeans.spi.project.ui.templates.support.Templates;
 import org.openide.WizardDescriptor;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
-import org.openide.filesystems.Repository;
+import org.openide.loaders.DataObject;
+
+import org.openide.loaders.TemplateWizard;
 
 
 
 /**
  * Wizard for creating maven projects.
  */
-public class MavenNewWizardIterator implements WizardDescriptor.InstantiatingIterator {
+public class MavenNewWizardIterator implements TemplateWizard.Iterator {
 
     private static final Log logger = LogFactory.getLog(MavenNewWizardIterator.class);
-    private static final String TEMPLATE_LOC_ATTR = "MavenTemplateLocation"; //NOI18N
+//    private static final String TEMPLATE_LOC_ATTR = "MavenTemplateLocation"; //NOI18N
 
     private static final long serialVersionUID = 13334234343323432L;
     
     private transient int index;
     private transient WizardDescriptor.Panel[] panels;
-    private transient WizardDescriptor wiz;
+    private transient TemplateWizard wiz;
     private transient FileObject templateRoot;
     
     
@@ -82,7 +88,7 @@ public class MavenNewWizardIterator implements WizardDescriptor.InstantiatingIte
     }
     
     
-    public Set/*<FileObject>*/ instantiate () throws IOException {
+    public java.util.Set instantiate (org.openide.loaders.TemplateWizard wiz) throws java.io.IOException {
         Set resultSet = new HashSet ();
         String dir = (String)wiz.getProperty("projectDir");        //NOI18N
         String name = (String)wiz.getProperty("artifactID");        //NOI18N
@@ -90,18 +96,18 @@ public class MavenNewWizardIterator implements WizardDescriptor.InstantiatingIte
         if (dirFo == null) {
             throw new IOException("Base Directory doesn't exist");
         }
-        if (templateRoot == null) {
-            throw new IOException("Wrong template definition. File a bug against mevenide");
-        }
+//        if (templateRoot == null) {
+//            throw new IOException("Wrong template definition. File a bug against mevenide");
+//        }
         FileObject projectDir = dirFo.createFolder(name);
-        copyDirs(templateRoot, projectDir);
+        File directory = new File(dir, name);
+        unzip(wiz.getTemplate().getPrimaryFile().getInputStream(), directory);
         FileObject proj = projectDir.getFileObject("project","xml");
         if (proj != null) {
             try {
                 JDomProjectUnmarshaller mars = new JDomProjectUnmarshaller();
                 JDOMFactory factory = new DefaultJDOMFactory();
                 Element project = mars.parseRootElement(new InputStreamReader(proj.getInputStream()));
-                System.out.println("project childs=" + project.getChildren().size());
                 setElementValue(project, "currentVersion", wiz.getProperty("version"), factory);
                 setElementValue(project, "package", wiz.getProperty("packageName"), factory);
                 setElementValue(project, "groupId", wiz.getProperty("groupID"), factory);
@@ -116,7 +122,7 @@ public class MavenNewWizardIterator implements WizardDescriptor.InstantiatingIte
             System.out.println("no project file..");
         }
        
-        resultSet.add (projectDir);
+        resultSet.add (DataObject.find(projectDir));
         return resultSet;
     }
     
@@ -129,33 +135,33 @@ public class MavenNewWizardIterator implements WizardDescriptor.InstantiatingIte
         child.setText(value != null ? value.toString() : "");
     }
     
-    public void initialize(WizardDescriptor wiz) {
+    public void initialize(TemplateWizard wiz) {
         this.wiz = wiz;
         FileObject templateFO = Templates.getTemplate(wiz);
-        if (templateFO != null) {
-            String path = (String)templateFO.getAttribute("MavenTemplateLocation"); //NOI18N
-            if (path != null) {
-                templateRoot = Repository.getDefault().getDefaultFileSystem().findResource(path);
-            }
-        }
-        if (templateRoot != null) {
-            FileObject proj = templateRoot.getFileObject("project","xml");
-            if (proj != null) {
-                try {
-                    JDomProjectUnmarshaller mars = new JDomProjectUnmarshaller();
-                    Element project = mars.parseRootElement(new InputStreamReader(proj.getInputStream()));
-                    wiz.putProperty("version", project.getChildText("currentVersion"));
-                    wiz.putProperty("packageName", project.getChildText("package"));
-                    wiz.putProperty("groupID", project.getChildText("groupId"));
-                    wiz.putProperty("artifactID", project.getChildText("artifactId"));
-                } catch (Exception exc) {
-                    logger.warn("Cannot read template.", exc);
-                }
-            }
-        } else {
-            // not properly configured template..
-            logger.error("Cannot Find the root folder for template.");
-        }
+//        if (templateFO != null) {
+//            String path = (String)templateFO.getAttribute("MavenTemplateLocation"); //NOI18N
+//            if (path != null) {
+//                templateRoot = Repository.getDefault().getDefaultFileSystem().findResource(path);
+//            }
+//        }
+//        if (templateRoot != null) {
+//            FileObject proj = templateRoot.getFileObject("project","xml");
+//            if (proj != null) {
+//                try {
+//                    JDomProjectUnmarshaller mars = new JDomProjectUnmarshaller();
+//                    Element project = mars.parseRootElement(new InputStreamReader(proj.getInputStream()));
+//                    wiz.putProperty("version", project.getChildText("currentVersion"));
+//                    wiz.putProperty("packageName", project.getChildText("package"));
+//                    wiz.putProperty("groupID", project.getChildText("groupId"));
+//                    wiz.putProperty("artifactID", project.getChildText("artifactId"));
+//                } catch (Exception exc) {
+//                    logger.warn("Cannot read template.", exc);
+//                }
+//            }
+//        } else {
+//            // not properly configured template..
+//            logger.error("Cannot Find the root folder for template.");
+//        }
         wiz.putProperty("projectDir", System.getProperty("user.home"));
         index = 0;
         panels = createPanels();
@@ -178,7 +184,7 @@ public class MavenNewWizardIterator implements WizardDescriptor.InstantiatingIte
             }
         }
     }
-    public void uninitialize(WizardDescriptor wiz) {
+    public void uninitialize(TemplateWizard wiz) {
         this.wiz.putProperty("projdir",null); //NOI18N
         this.wiz.putProperty("artifactId",null); //NOI18N
         this.wiz.putProperty("groupId",null); //NOI18N
@@ -215,19 +221,6 @@ public class MavenNewWizardIterator implements WizardDescriptor.InstantiatingIte
     public final void addChangeListener(ChangeListener l) {}
     public final void removeChangeListener(ChangeListener l) {}
     
-    private void copyDirs(FileObject source, FileObject target) throws IOException {
-        FileObject[] fos = source.getChildren();
-        for (int i = 0; i < fos.length; i++) {
-            if (fos[i].isFolder()) {
-                FileObject targetChild = target.createFolder(fos[i].getName());
-                copyDirs(fos[i], targetChild);
-            } else {
-                FileUtil.copyFile(fos[i], target, fos[i].getName());
-            }
-        }
-    }
-    
-    
     static String getPackageName (String displayName) {
         StringBuffer builder = new StringBuffer ();
         boolean changeCase = false;
@@ -251,4 +244,28 @@ public class MavenNewWizardIterator implements WizardDescriptor.InstantiatingIte
         }
         return builder.toString();
     }
+    
+    private static void unzip(InputStream source, File targetFolder) throws IOException {
+        ZipInputStream zip=new ZipInputStream(source);
+        try {
+            ZipEntry ent;
+            while ((ent = zip.getNextEntry()) != null) {
+                File f = new File(targetFolder, ent.getName());
+                if (ent.isDirectory()) {
+                    f.mkdirs();
+                } else {
+                    f.getParentFile().mkdirs();
+                    FileOutputStream out = new FileOutputStream(f);
+                    try {
+                        FileUtil.copy(zip, out);
+                    } finally {
+                        out.close();
+                    }
+                }
+            }
+        } finally {
+            zip.close();
+        }
+    }
+    
 }
