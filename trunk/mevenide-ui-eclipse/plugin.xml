@@ -226,7 +226,8 @@
       <view
             name="Maven Synchronization View"
             icon="icons/maven.gif"
-            class="org.mevenide.ui.eclipse.sync.pom.views.SourceDirectoryPropertyView"
+            category="Mevenide"
+            class="org.mevenide.ui.eclipse.sync.views.SourceDirectoryTypePart"
             id="org.mevenide.sync.view">
       </view>
    </extension>
