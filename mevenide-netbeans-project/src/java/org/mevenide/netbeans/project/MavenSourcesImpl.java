@@ -26,6 +26,8 @@ import java.util.HashMap;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import javax.swing.event.ChangeEvent;
 
 import javax.swing.event.ChangeListener;
@@ -51,16 +53,16 @@ public class MavenSourcesImpl implements Sources {
     private static final Log logger = LogFactory.getLog(MavenSourcesImpl.class);
     public static final String TYPE_RESOURCES = "Resources"; //NOI18N
     public static final String NAME_PROJECTROOT = "ProjectRoot"; //NOI18N
-    public static final String NAME_SOURCE = "SourceRoot"; //NOI18N
-    public static final String NAME_TESTSOURCE = "TestSourceRoot"; //NOI18N
-    public static final String NAME_INTEGRATIONSOURCE = "IntegrationSourceRoot"; //NOI18N
-    public static final String NAME_ASPECTSOURCE = "AspectSourceRoot"; //NOI18N
+    public static final String NAME_SOURCE = "1SourceRoot"; //NOI18N
+    public static final String NAME_TESTSOURCE = "2TestSourceRoot"; //NOI18N
+    public static final String NAME_INTEGRATIONSOURCE = "4IntegrationSourceRoot"; //NOI18N
+    public static final String NAME_ASPECTSOURCE = "3AspectSourceRoot"; //NOI18N
     
     private MavenProject project;
     private List listeners;
     
     private SourceGroup root;
-    private HashMap javaGroup;
+    private Map javaGroup;
     private HashMap resGroup;
     
     private Object LOCK = new Object();
@@ -70,7 +72,7 @@ public class MavenSourcesImpl implements Sources {
     public MavenSourcesImpl(MavenProject proj) {
         project = proj;
         listeners = new ArrayList();
-        javaGroup = new HashMap();
+        javaGroup = new TreeMap();
         resGroup = new HashMap();
         project.addPropertyChangeListener(new PropertyChangeListener() {
             public void propertyChange(PropertyChangeEvent event) {
@@ -84,13 +86,13 @@ public class MavenSourcesImpl implements Sources {
         synchronized (LOCK) {
             try {
                 FileObject folder = URLMapper.findFileObject(project.getSrcDirectory().toURL());
-                changed = changed || checkJavaGroupCache(folder, NAME_SOURCE, "Sources");
+                changed = changed | checkJavaGroupCache(folder, NAME_SOURCE, "Sources");
                 folder = URLMapper.findFileObject(project.getTestSrcDirectory().toURL());
-                changed = changed || checkJavaGroupCache(folder, NAME_TESTSOURCE, "Test Sources");
+                changed = changed | checkJavaGroupCache(folder, NAME_TESTSOURCE, "Test Sources");
                 folder = URLMapper.findFileObject(project.getAspectsDirectory().toURL());
-                changed = changed || checkJavaGroupCache(folder, NAME_ASPECTSOURCE, "Aspect Sources");
+                changed = changed | checkJavaGroupCache(folder, NAME_ASPECTSOURCE, "Aspect Sources");
                 folder = URLMapper.findFileObject(project.getIntegrationTestsDirectory().toURL());
-                changed = changed || checkJavaGroupCache(folder, NAME_INTEGRATIONSOURCE, "Integration Test Sources");
+                changed = changed | checkJavaGroupCache(folder, NAME_INTEGRATIONSOURCE, "Integration Test Sources");
             } catch (MalformedURLException exc) {
                 logger.error("Malformed URL", exc);
                 changed = false;
@@ -147,7 +149,6 @@ public class MavenSourcesImpl implements Sources {
                 checkChanges(false);
                 toReturn.addAll(javaGroup.values());
             }
-            
             SourceGroup[] grp = new SourceGroup[toReturn.size()];
             grp = (SourceGroup[])toReturn.toArray(grp);
             return grp;
@@ -207,7 +208,7 @@ public class MavenSourcesImpl implements Sources {
                 group = GenericSources.group(project, root, name, displayName, null, null);
                 javaGroup.put(name, group);
                 changed = true;
-            }
+            } 
         }
         return changed;
     }
