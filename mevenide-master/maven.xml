@@ -6,13 +6,19 @@
   <!-- ==================================== -->
   <!--             build section            -->
   <!-- ==================================== -->
-  <goal name="mevenide:build-all" description="Build all Mevenide modules" prereqs="mevenide:clean,mevenide:init">
+  <goal name="mevenide-eclipse:build" description="Build all Mevenide modules" prereqs="mevenide-eclipse:clean,mevenide-eclipse:init">
+    <j:set var="maven.multiproject.includes" value="${maven.multiproject.eclipse.includes}"/>
     <attainGoal name="multiproject:goal"/>
     <attainGoal name="mevenide:create-update-dist"/>
   </goal>
   
-  <goal name="mevenide:build-site" description="Build Mevenide Site" prereqs="mevenide:init">
-  	<j:set var="maven.multiproject.includes" value="${maven.multiproject.includes},${mevenide.eclipse.plugin.project.name}/project.xml,${mevenide.spinner.wiki.project.name}/project.xml"/>
+  <goal name="mevenide-netbeans:build" description="Build all Mevenide modules" prereqs="mevenide-netbeans:init">
+      <j:set var="maven.multiproject.includes" value="${maven.multiproject.netbeans.includes}"/>
+      <attainGoal name="multiproject:goal"/>
+  </goal>
+  
+  <goal name="mevenide:build-site" description="Build Mevenide Site" prereqs="mevenide:init-all">
+  	<j:set var="maven.multiproject.includes" value="${maven.multiproject.eclipse.includes},${mevenide.ui.netbeans.project.name},${mevenide.eclipse.plugin.project.name}/project.xml,${mevenide.spinner.wiki.project.name}/project.xml"/>
   	<attainGoal name="multiproject:site"/>
   </goal>
   
@@ -28,7 +34,7 @@
   <!-- ==================================== -->
   <!--             init section             -->
   <!-- ==================================== -->
-  <goal name="mevenide:clean" prereqs="clean:clean">
+  <goal name="mevenide-eclipse:clean" prereqs="clean:clean">
     <ant:delete dir="${maven.repo.local}/eclipse" quiet="true"/>
   	<ant:delete dir="${maven.repo.local}/mevenide" quiet="true"/>
   </goal>
@@ -39,8 +45,13 @@
      </ant:delete> 
   </goal>
   
-  <goal name="mevenide:init" description="Copy eclipse dependencies to maven.repo.local if necessary">
-    <util:file var="installScript" name="${basedir}/install-dependencies.xml"/>
+  <goal name="mevenide-eclipse:init" description="Copy eclipse dependencies to maven.repo.local if necessary">
+    <util:file var="installScript" name="${basedir}/../${mevenide.master.project.name}/install-eclipse-dependencies.xml"/>
+    <j:include file="${installScript}"/>
+  </goal>  
+  
+  <goal name="mevenide-netbeans:init" description="Copy eclipse dependencies to maven.repo.local if necessary">
+    <util:file var="installScript" name="${basedir}/../${mevenide.master.project.name}/install-netbeans-dependencies.xml"/>
     <j:include file="${installScript}"/>
   </goal>  
   
@@ -48,7 +59,7 @@
   <!-- ==================================== -->
   <!--        plugin creation section       -->
   <!-- ==================================== -->
-  <goal name="mevenide:create-update-dist" prereqs="mevenide:init" description="Build Eclipse plugin update site">
+  <goal name="mevenide:create-update-dist" prereqs="mevenide-eclipse:init" description="Build Eclipse plugin update site">
    	<util:file var="updateSiteProjectDescriptor" name="${mevenide.eclipse.update.project.location}/project.xml"/>
     <maven:maven descriptor="${updateSiteProjectDescriptor}" goals="eclipse-plugin:create-artifact-dist"/>
   </goal>

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE project [
-  <!ENTITY base-identification SYSTEM "file:pom-fragments/identification.xml">	
-  <!ENTITY base-lists SYSTEM "file:pom-fragments/lists.xml">
-  <!ENTITY base-developers SYSTEM "file:pom-fragments/developers.xml">
-  <!ENTITY base-build SYSTEM "file:pom-fragments/build.xml">
-  <!ENTITY base-reports SYSTEM "file:pom-fragments/reports.xml">
+  <!ENTITY base-identification SYSTEM "file:../mevenide-master/pom-fragments/identification.xml">	
+  <!ENTITY base-lists SYSTEM "file:../mevenide-master/pom-fragments/lists.xml">
+  <!ENTITY base-developers SYSTEM "file:../mevenide-master/pom-fragments/developers.xml">
+  <!ENTITY base-build SYSTEM "file:../mevenide-master/pom-fragments/build.xml">
+  <!ENTITY base-reports SYSTEM "file:../mevenide-master/pom-fragments/reports.xml">
 ]>
 <project>
   &base-identification;
