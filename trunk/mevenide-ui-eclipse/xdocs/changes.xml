@@ -45,7 +45,10 @@
         Preference pages reorganized for better readibility.
       </action>
       <action dev="gdodinet" type="update">
-        Required location preferences can now be regenerate automatically.
+        Required location preferences can now be regenerated automatically.
+      </action>
+      <action dev="gdodinet" type="update">
+      	Open Property Sheet on List elements double click in POM Editor.
       </action>
       <action dev="gdodinet" type="update">
         Use Jdom-based unmarshaller to support entities reading. No entities writing yet.
