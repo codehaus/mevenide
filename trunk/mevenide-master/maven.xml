@@ -11,12 +11,12 @@
      <ant:delete quiet="true" dir="${basedir}/dist"/>
   </preGoal>
  
-  <preGoal name="build-all">
+  <goal name="init">
     <util:file var="installScript" name="${basedir}/install-dependencies.xml"/>
     <j:include file="${installScript}"/>
-  </preGoal>
+  </goal>
   
-  <goal name="build-all" description="Build all Mevenide modules">
+  <goal name="build-all" description="Build all Mevenide modules" prereqs="init">
     <attainGoal name="multiproject:goal"/>
   </goal>
   
@@ -29,8 +29,7 @@
   	<attainGoal name="multiproject:site"/>
   </goal>
 
-  <!-- build the aggregated distribution files -->
-  <postGoal name="build-all">
+  <postGoal name="build-all" description="Build the aggregated distribution files">
   	<attainGoal name="mevenide:create-update-dist"/>
   </postGoal>
   
