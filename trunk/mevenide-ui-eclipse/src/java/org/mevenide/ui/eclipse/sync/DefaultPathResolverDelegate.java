@@ -23,7 +23,7 @@ import org.eclipse.jdt.core.IClasspathEntry;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.input.SAXBuilder;
-import org.mevenide.project.BuildConstants;
+import org.mevenide.ProjectConstants;
 import org.mevenide.project.InvalidSourceTypeException;
 import org.mevenide.sync.NoSuchSourcePathException;
 import org.mevenide.ui.eclipse.MavenPlugin;
@@ -101,7 +101,7 @@ public class DefaultPathResolverDelegate implements IPathResolverDelegate {
 		    if (path.equals(srcPath)) {
 				if ( mavenSourceType == null ) {
 		            //@todo FUNCTIONAL open a dialog instead
-					return BuildConstants.MAVEN_SRC_DIRECTORY;
+					return ProjectConstants.MAVEN_SRC_DIRECTORY;
 				}
 				return mavenSourceType;
 			}

@@ -11,7 +11,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  */
-package org.mevenide.project;
+package org.mevenide;
 
 
 
@@ -22,7 +22,7 @@ package org.mevenide.project;
  * @version $Id$
  * 
  */
-public abstract class BuildConstants {
+public interface ProjectConstants {
 	public static final String MAVEN_TEST_DIRECTORY = "unitTestSourceDirectory";
 	public static final String MAVEN_SRC_DIRECTORY = "sourceDirectory";
 	public static final String MAVEN_ASPECT_DIRECTORY = "aspectSourceDirectory";
