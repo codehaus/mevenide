@@ -14,7 +14,9 @@
       	<packages prefixes="org.apache.commons.logging"/>
       </library>
       <library name="lib/forehead-1.0-beta-4.jar"/>
-      <library name="lib/jdom-1.0b8.jar"/>
+      <library name="lib/jdom-1.0b8.jar">
+      	<packages prefixes="org.jdom"/>
+      </library>
       <library name="lib/maven-SNAPSHOT.jar"/>
       <library name="lib/xerces-2.2.1.jar"/>
       <library name="lib/mevenide-goals-grabber-1.0.jar">

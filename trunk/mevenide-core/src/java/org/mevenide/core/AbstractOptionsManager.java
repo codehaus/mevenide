@@ -25,4 +25,8 @@ import org.mevenide.IOptionsManager;
  */
 public abstract class AbstractOptionsManager implements IOptionsManager {
     
+	public String[] getOptions() {
+		return new String[0];
+	}
+
 }
