@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<!DOCTYPE project [
+  <!ENTITY jbuilder-dependencies SYSTEM "file:../mevenide-ui-jbuilder/pom-fragments/jbuilder-dependencies.xml">	
+  <!ENTITY inherited-dependencies SYSTEM "file:../mevenide-ui-jbuilder/pom-fragments/inherited-dependencies.xml">
+]>
+<project>
+	<extend>${basedir}/../mevenide-master/base-project.xml</extend>
+    <pomVersion>3</pomVersion>
+    <name>JBuilder Maven OpenTool</name>
+    <id>mevenide-ui-jbuilder</id>
+    <artifactId>mevenide-ui-jbuilder</artifactId>
+    <currentVersion>0.1-SNAPSHOT</currentVersion>
+    <inceptionYear>2004</inceptionYear>
+    <package>com.jahia.opentools.maven</package>
+    <shortDescription>OpenTool JBuilder Maven IDE Plugin</shortDescription>
+    <description>
+      This project integrates Maven with the JBuilder IDE.
+    </description>
+    <versions>
+      <version>
+        <id>0.1b1</id>
+        <name>0.1-b1</name>
+        <tag>HEAD</tag>
+      </version>
+    </versions>
+
+    <dependencies>
+    	<dependency>
+           <groupId>mevenide</groupId>
+           <artifactId>mevenide-core</artifactId>
+           <version>0.2-SNAPSHOT</version>
+            <properties>
+            	<jbuilder.plugin.bundle>true</jbuilder.plugin.bundle>
+            </properties>
+        </dependency>
+        <dependency>
+           <groupId>mevenide</groupId>
+           <artifactId>goals-grabber</artifactId>
+           <version>0.3-SNAPSHOT</version>
+            <properties>
+            	<jbuilder.plugin.bundle>true</jbuilder.plugin.bundle>
+            </properties>
+        </dependency>
+        <dependency>
+           <groupId>mevenide</groupId>
+           <artifactId>mevenide-config</artifactId>
+           <version>0.3-SNAPSHOT</version>
+        </dependency>
+        
+        &inherited-dependencies;
+        
+        &jbuilder-dependencies;
+        
+     </dependencies>
+   
+    
+</project>
