@@ -23,14 +23,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 import org.apache.commons.lang.StringUtils;
-import org.apache.maven.artifact.MavenArtifact;
-import org.apache.maven.artifact.resolver.ArtifactResolver;
+
 import org.apache.maven.model.Dependency;
 import org.apache.maven.project.MavenProject;
-import org.codehaus.classworlds.ClassWorld;
 import org.codehaus.mevenide.pde.resources.Messages;
 import org.codehaus.mevenide.pde.version.VersionAdapter;
-import org.codehaus.plexus.embed.Embedder;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.filter.Filter;
@@ -56,8 +53,6 @@ public class CommonPluginValuesReplacer {
     /** libraryFolder library destination folder - f.i. lib */
     private String libraryFolder;
     
-    private ArtifactResolver resolver;
-    
     private List addedLibraries = new ArrayList();
     
     /**
@@ -73,15 +68,6 @@ public class CommonPluginValuesReplacer {
         this.project = project;
         this.libraryFolder = StringUtils.stripEnd(libraryFolder.replaceAll("\\\\", "/"), "/");
         
-        try {
-            Embedder embedder = new Embedder();
-	        ClassWorld classWorld = new ClassWorld("core", this.getClass().getClassLoader());
-            embedder.start(classWorld);
-	        resolver = (ArtifactResolver) embedder.lookup(ArtifactResolver.ROLE);
-        }
-        catch (Exception e) {
-            throw new ReplaceException(Messages.get("ValuesReplacer.CannotReplaceValues"), e);
-        }
     }
     
     /**
@@ -158,10 +144,7 @@ public class CommonPluginValuesReplacer {
         Properties properties = dependency.getProperties();
         Element library = new Element("library");
         
-        //artifact can also retrieved using project.getDependency(artifactId) but this seems suspicious to me 
-        //since it doesnot handle dependency type. however doesnot ArtifactResolver behaves the same way ?
-        MavenArtifact artifact = resolver.getArtifact(dependency, project); 
-        String libraryName = libraryFolder + "/" + new File(artifact.generatePath()).getName();
+        String libraryName = dependency.getArtifact();
         
         if ( !addedLibraries.contains(libraryName) ) {
 	        library.setAttribute("name", libraryName);

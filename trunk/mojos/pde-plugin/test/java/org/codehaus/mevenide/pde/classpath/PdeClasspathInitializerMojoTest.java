@@ -18,6 +18,7 @@ package org.codehaus.mevenide.pde.classpath;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.apache.maven.model.Model;
 import org.apache.maven.plugin.PluginExecutionRequest;
 import org.apache.maven.plugin.PluginExecutionResponse;
 import org.apache.maven.project.MavenProject;
@@ -42,7 +43,8 @@ public class PdeClasspathInitializerMojoTest extends PdeArtifactMojoTest {
     protected void setUp() throws Exception {
         super.setUp();
         
-        project = new MavenProject();
+        Model model = new Model();
+        project = new MavenProject(model);
         
         Map params = new HashMap();
         params.put("project", project);

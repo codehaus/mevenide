@@ -16,8 +16,8 @@
  */
 package org.codehaus.mevenide.pde.classpath;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import org.apache.maven.plugin.PluginExecutionRequest;
 import org.apache.maven.plugin.PluginExecutionResponse;
 import org.codehaus.mevenide.pde.PdeArtifactMojo;
@@ -35,7 +35,7 @@ public class PdeClasspathInitializerMojo extends PdeArtifactMojo {
         initialize(request);
         Collection eclipseDependencies = new PluginClasspathResolver(basedir, eclipseHome.getAbsolutePath()).extractEclipseDependencies();
         if ( project.getArtifacts() == null ) {
-            project.setArtifacts(new ArrayList(eclipseDependencies));
+            project.setArtifacts(new HashSet(eclipseDependencies));
         }
         else {
             project.getArtifacts().addAll(eclipseDependencies);

@@ -74,8 +74,10 @@ public abstract class PdeArtifactMojo implements Plugin {
         }
 
         String basedirLocation = (String) request.getParameter("basedir");
-        basedir = basedirLocation == null ? project.getBasedir() : new File(basedirLocation);
-        
+        if ( basedirLocation == null ) {
+            throw new ConfigurationException("Configuration.BaseDir.Empty");
+        }
+        basedir = new File(basedirLocation);
         
     }
 
