@@ -127,18 +127,4 @@ public class TableRowPropertyChange implements MavenPropertyChange {
         origin.setSelectedLocationID(loc);
     }
 
-//        public void actionSelected(String changeAction) {
-//            if (ignore) {
-//                return;
-//            }
-//            newLocation = origin.getSelectedLocationID();
-//            if (OriginChange.ACTION_RESET_TO_DEFAULT.equals(changeAction)) {
-//                // assuming the correct default value is not-override..
-//                ignore = true;
-//                newValue = (defaultValue == null ? "" : defaultValue);
-////                field.setText(newValue);
-//                ignore = false;
-//            }
-//        }
-    
 }

@@ -272,6 +272,7 @@ public class MavenCustomizer extends JPanel implements ProjectValidateObserver {
     }
              
     private Node createRootNode(MavenProject project, ExplorerManager manager) {
+        allPanels = new ArrayList();
         ConfigurationDescription[] generalChilds = new ConfigurationDescription[] {
             new ConfigurationDescription(
                 "DescCategory", // NOI18N
@@ -377,8 +378,6 @@ public class MavenCustomizer extends JPanel implements ProjectValidateObserver {
                 "org/mevenide/netbeans/project/resources/Bullet", // NOI18N
                 new PluginListPanel(project, allPanels, manager))
         };
-        
-        allPanels = new ArrayList();
         addPanelsToList(allPanels, descriptions);
 //        addPanelsToList(allPanels, pluginChilds);
         addPanelsToList(allPanels, buildChilds);
