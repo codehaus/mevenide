@@ -34,7 +34,7 @@ public class InvalidDirectoryException extends Exception {
     }
     
     public String toString() {
-        return property + " property should " + (!doesExist ? "not" : "") + " be absolute (" + directory + ")";
+        return property + " property should " + (doesExist ? "not" : "") + " be absolute (" + directory + ")";
     }
     
     public String getMessage() {
