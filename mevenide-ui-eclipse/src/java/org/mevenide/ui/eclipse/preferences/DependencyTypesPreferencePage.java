@@ -214,10 +214,10 @@ private static final String ROOT = "ROOT";
         IInputValidator validator = new IInputValidator() {
             public String isValid(String newText) {
                 if ( types.contains(newText) ) {
-                    return Mevenide.getResourceString("PomEditorPreferencePage.Validator.Type.AlreadyExists");
+                    return Mevenide.getResourceString("DependencyTypesPreferencePage.Validator.Type.AlreadyExists");
                 }
                 if ( StringUtils.isNull(newText) ) {
-                    return Mevenide.getResourceString("PomEditorPreferencePage.Validator.Type.NullNotAllowed");
+                    return Mevenide.getResourceString("DependencyTypesPreferencePage.Validator.Type.NullNotAllowed");
                 }
                 return null;
             }  
