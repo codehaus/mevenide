@@ -71,8 +71,6 @@ import org.mevenide.ui.eclipse.Mevenide;
  */
 public class SynchronizeView extends ViewPart {
     
-    
-    
     private Composite composite;
     private TreeViewer artifactMappingNodeViewer;
     private IPageSite site;
@@ -88,6 +86,8 @@ public class SynchronizeView extends ViewPart {
     private Action addToClasspath;
     private Action viewProperties;
     
+    private int direction;
+    
     public void createPartControl(Composite parent) {
         createArtifactViewer(parent);
         createActions();
@@ -101,6 +101,16 @@ public class SynchronizeView extends ViewPart {
     
     public void setInput(IProject input) {
         artifactMappingNodeViewer.setInput(input);
+        ((ArtifactMappingContentProvider) artifactMappingNodeViewer.getContentProvider()).setDirection(this.direction);
+        artifactMappingNodeViewer.refresh(true);
+    }
+    
+    public void setDirection(int direction) {
+        this.direction = direction;
+        if ( artifactMappingNodeViewer.getInput() != null ) {
+            ((ArtifactMappingContentProvider) artifactMappingNodeViewer.getContentProvider()).setDirection(direction);
+        }
+        artifactMappingNodeViewer.refresh(true);
     }
     
     private void createArtifactViewer(Composite parent) {
@@ -140,7 +150,7 @@ public class SynchronizeView extends ViewPart {
        
 		viewConflicts = new Action() {
 		    public void run() {
-		        
+		        setDirection(ProjectContainer.CONFLICTING);
 		    }
 		};
 		viewConflicts.setId("CONFLICTING");
@@ -149,7 +159,7 @@ public class SynchronizeView extends ViewPart {
 		
 		viewIdeToPom = new Action() {
 		    public void run() {
-		        
+		        setDirection(ProjectContainer.OUTGOING);
 		    }
 		};
 		viewIdeToPom.setId("IDE_TO_POM");
@@ -158,7 +168,7 @@ public class SynchronizeView extends ViewPart {
 
 		viewPomToIde = new Action() {
 		    public void run() {
-		        
+		        setDirection(ProjectContainer.INCOMING);
 		    }
 		};
 		viewPomToIde.setId("POM_TO_IDE");
@@ -201,4 +211,6 @@ public class SynchronizeView extends ViewPart {
 		getViewSite().getActionBars().getToolBarManager().add(viewConflicts);
 
     }
+    
+    
 }

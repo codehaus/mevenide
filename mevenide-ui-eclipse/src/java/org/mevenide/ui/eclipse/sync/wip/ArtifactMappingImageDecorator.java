@@ -92,7 +92,7 @@ public class ArtifactMappingImageDecorator extends CompositeImageDescriptor
 		    //top right
 			drawImage(inheritedImageData, sizeOfImage.x - inheritedImageData.width, 0);
         }
-		if ( (flags & IArtifactMappingNode.CONFLICTING) != 0 ) {
+		if ( (flags & ProjectContainer.CONFLICTING) != 0 ) {
 			ImageData conflictImageData = Mevenide.getImageDescriptor("conflicting.gif").getImageData(); 
 			//bottom right
 			drawImage(conflictImageData, sizeOfImage.x - conflictImageData.width, sizeOfImage.y - conflictImageData.height);

@@ -61,4 +61,8 @@ interface IArtifactMappingNodeContainer {
     void setNodes(IArtifactMappingNode[] nodes) ;
     
     String getLabel();
+    
+    IArtifactMappingNodeContainer filter(int direction) ;
+    
+    
 }

@@ -101,6 +101,7 @@ public class DependencyMappingNodeContainerFactory {
 
 					IClasspathEntry classpathEntry = classpathEntries[i];
 					DependencyMappingNode node = createDependencyMappingNode(javaProject, classpathEntry);
+					node.setParent(con);
 					nodes.add(node);
 				}
 			}

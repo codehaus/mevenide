@@ -70,6 +70,7 @@ public class SynchronizeAction extends AbstractMevenideAction {
         try {
             SynchronizeView view = (SynchronizeView) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(SYNCHRONIZE_VIEW_ID);
             view.setInput(currentProject);
+            view.setDirection(ProjectContainer.OUTGOING);
         }
         catch ( Exception e ) {
             log.debug("WIP execption ", e);
