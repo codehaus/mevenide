@@ -200,7 +200,7 @@
       </category>
       <view
             name="Pom Synchronizer"
-            icon="icons/maven.gif"
+            icon="icons/sync_view.gif"
             category="org.mevenide.ui.synchronize.view"
             class="org.mevenide.ui.eclipse.sync.view.SynchronizeView"
             id="org.mevenide.ui.synchronize.view.SynchronizeView">
