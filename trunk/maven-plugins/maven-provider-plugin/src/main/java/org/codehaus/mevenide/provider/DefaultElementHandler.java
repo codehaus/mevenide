@@ -20,6 +20,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Stack;
+import org.jdom.Document;
+import org.jdom.output.XMLOutputter;
 import org.mevenide.properties.Comment;
 import org.mevenide.properties.Element;
 import org.mevenide.properties.KeyValuePair;
@@ -95,13 +97,30 @@ public class DefaultElementHandler implements IElementHandler {
 //              scope (project|global) "project"
 //    			category CDATA #IMPLIED> 
     public String getXmlDescription() {
+        Document document = new Document();
+        org.jdom.Element root = new org.jdom.Element("plugin");
+        document.setRootElement(root);
         
         for (Iterator it = propertyMap.keySet().iterator(); it.hasNext();) {
             KeyValuePair pair = (KeyValuePair) it.next();
             String description = (String) propertyMap.get(pair);
-            //System.err.println(pair + "=>" + description);
+            
+            org.jdom.Element property = new org.jdom.Element("property");
+            property.setAttribute("name", pair.getKey());
+            property.setAttribute("description", description != null ? description.trim() : "");
+            property.setAttribute("default", pair.getValue());
+            root.addContent(property);
         }
         
-        return null;
+        return getString(document);
+        
     }
+
+	private String getString(Document document) {
+	    XMLOutputter outputter = new XMLOutputter();
+		outputter.setIndent("    ");
+		outputter.setExpandEmptyElements(false);
+		outputter.setNewlines(true);
+		return outputter.outputString(document);
+	}
 }
