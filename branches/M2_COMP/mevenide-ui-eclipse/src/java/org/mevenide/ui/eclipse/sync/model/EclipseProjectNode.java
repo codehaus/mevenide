@@ -42,7 +42,7 @@ import org.mevenide.project.dependency.DependencyFactory;
 import org.mevenide.project.io.ProjectReader;
 import org.mevenide.ui.eclipse.DefaultPathResolver;
 import org.mevenide.ui.eclipse.IPathResolver;
-import org.mevenide.ui.eclipse.util.EclipseProjectUtils;
+import org.mevenide.ui.eclipse.util.JavaProjectUtils;
 import org.mevenide.ui.eclipse.util.FileUtils;
 
 /**  
@@ -199,7 +199,7 @@ public class EclipseProjectNode implements ISynchronizationNode {
 		boolean isProject = entry.getEntryKind() == IClasspathEntry.CPE_PROJECT;
 		boolean isVariable = entry.getEntryKind() == IClasspathEntry.CPE_VARIABLE;
 		boolean isClassFolder = FileUtils.isClassFolder(entry.getPath().toOSString(), eclipseProject.getProject());
-		boolean isJdkLib = EclipseProjectUtils.getJreEntryList(eclipseProject.getProject()).contains(pathResolver.getAbsolutePath(entry.getPath())); 
+		boolean isJdkLib = JavaProjectUtils.getJreEntryList(eclipseProject.getProject()).contains(pathResolver.getAbsolutePath(entry.getPath())); 
 		return ((isLibrary && !isClassFolder) || isVariable || isProject) && !isJdkLib;
 	}
 
@@ -228,7 +228,7 @@ public class EclipseProjectNode implements ISynchronizationNode {
 					new String[] {"Yes", "No"}, 0);
 		int userChoice = dialog.open();
 		if ( userChoice == Window.OK ) {
-			EclipseProjectUtils.attachJavaNature(eclipseProject);
+			JavaProjectUtils.attachJavaNature(eclipseProject);
 		}
 	}
 	

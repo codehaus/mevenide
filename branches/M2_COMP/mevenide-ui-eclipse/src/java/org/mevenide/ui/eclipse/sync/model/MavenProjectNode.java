@@ -66,7 +66,8 @@ public class MavenProjectNode implements ISynchronizationNode, ISelectableNode {
 		List artifacts = new DefaultMavenArtifactFactory().createArtifacts(mavenProject);
 		originalArtifactNodes = new MavenArtifactNode[artifacts.size()];
 	    for (int i = 0; i < artifacts.size(); i++) {
-	    	originalArtifactNodes[i] = new MavenArtifactNode((MavenArtifact) artifacts.get(i), this);
+	    	MavenArtifact artifact = (MavenArtifact) artifacts.get(i);
+	    	originalArtifactNodes[i] = new MavenArtifactNode(artifact, this);
 			originalArtifactNodes[i].setDirection(ISelectableNode.INCOMING_DIRECTION);
 		}
 		artifactNodes = originalArtifactNodes;
