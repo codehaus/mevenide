@@ -16,8 +16,6 @@
  */
 package org.mevenide.ui.eclipse.nature;
 
-import java.io.File;
-import java.net.URL;
 import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -27,7 +25,6 @@ import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Platform;
 import org.mevenide.ui.eclipse.Mevenide;
 
 
@@ -66,9 +63,10 @@ public class ActionActivator implements IResourceDeltaVisitor {
 			        List patterns = definition.getPatterns();
 			        DirectoryScanner scanner;
 		            String[] files = scan(patterns);
-			        definition.setEnabled(project, match(path, files));
+		            definition.setEnabled(project, match(path, files));
 			        if ( match(path, files) ) {
 			            shouldSkipDefinitions[i] = true;
+			            return false;
 			        }
 	            }
             }
@@ -88,11 +86,8 @@ public class ActionActivator implements IResourceDeltaVisitor {
 	    try {
             for (int i = 0; i < files.length; i++) {
                 String file = files[i];
-                URL platformUrl = new URL("platform:/resource" + path.makeAbsolute().append(file));
-                URL url = Platform.resolve(platformUrl);
-                if ( new File(url.getFile()).exists() ) {
-                    return true;
-                }
+                String relativePath = path.makeRelative().removeFirstSegments(1).toOSString().replaceAll("\\\\", "/");
+                return relativePath.equals(file.replaceAll("\\\\", "/"));
             }
         }
         catch (Exception e) {
