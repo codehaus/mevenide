@@ -427,7 +427,7 @@
       </launchConfigurationType>
 	   <!-- Custom Actions Definitions -->
       <launchConfigurationType 
-            name="%RunMaven.label" 
+            name="%CustomConfiguration.label" 
             category="maven"
             delegate="org.mevenide.ui.eclipse.launch.configuration.MavenLaunchDelegate" 
             modes="run" 

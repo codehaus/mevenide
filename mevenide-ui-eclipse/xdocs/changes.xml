@@ -23,16 +23,16 @@
 		Closing square bracket doesnot break anymore jelly syntax highlighting 
       </action>
       <action dev="gdodinet" type="fix" issue="MEVENIDE-55">
-		Fix NPE if jar override is on but no dependencies are present in POM (typically in a multiproject context )
+		Fix NPE if jar override is on but no dependencies are present in POM (typically in a multiproject context)
       </action>
-      <action dev="gdodinet" type="fix" issue="MEVENIDE-23, MEVENIDE-60">
-		POM editor pages are now correctly updated
+      <action dev="gdodinet" type="fix" issue="MEVENIDE-23, MEVENIDE-60, MEVENIDE-85">
+		POM editor pages are now correctly updated. Also remove XML Source page
       </action>
       <action dev="gdodinet" type="update">
 		Dynamic preference pages donot rely anymore on explicit plugin activation
       </action>
       <action dev="gdodinet" type="add">
-		Add Maven Nature and Builder 
+		Add Maven Nature and Builder. This enables to enable/disable goals on a per-pattern basis. Also allows to auto-trigger goals
       </action>
     </release>
 	<release version="0.2.2" date="2004-07-25">
