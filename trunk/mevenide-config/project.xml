@@ -39,4 +39,16 @@
             </properties>
         </dependency>
     </dependencies>
+    <build>
+		<resources>
+			<resource>
+				<directory>${basedir}/etc</directory>
+				<includes>
+					<include>*.*</include>
+					<include>org/mevenide/properties/*.*</include>
+					<include>templates/**/*.*</include>
+				</includes>
+			</resource>
+		</resources>
+    </build>
 </project>

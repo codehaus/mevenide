@@ -47,14 +47,20 @@ public final class PropFilesAggregator implements IPropertyResolver {
     }
     
     private void initialize() {
-        File fo = new File(projectDir, "project.properties");
-        project = new SinglePropFileFinder(fo);
+    	File fo = new File(projectDir, "project.properties");
+        if ( fo.exists() ) {
+        	project = new SinglePropFileFinder(fo);
+        }
         fo = new File(projectDir, "build.properties");
-        projectBuild = new SinglePropFileFinder(fo);
+        if ( fo.exists() ) {
+        	projectBuild = new SinglePropFileFinder(fo);
+        }
         //TODO.. have some caching for user prop file or reuse one instance in all the 
         // agrregators.
         fo = new File(userDir, "build.properties");
-        userBuild = new SinglePropFileFinder(fo);
+        if ( fo.exists() ) {
+        	userBuild = new SinglePropFileFinder(fo);
+        }
     }
     public String getResolvedValue(String key) {
         return getValue(key, true);
@@ -67,13 +73,13 @@ public final class PropFilesAggregator implements IPropertyResolver {
     private String getValue(String key, boolean resolve) {
         String toReturn = null;
         toReturn = userBuild.getValue(key);
-        if (toReturn == null) {
+        if (toReturn == null && projectBuild != null ) {
             toReturn = projectBuild.getValue(key);
         }
-        if (toReturn == null ) {
+        if (toReturn == null && project != null ) {
             toReturn = project.getValue(key);
         }
-        if (toReturn == null) {
+        if (toReturn == null && defaults != null ) {
             toReturn = defaults.getValue(key);
         }
         if (resolve && toReturn != null) {
@@ -105,9 +111,15 @@ public final class PropFilesAggregator implements IPropertyResolver {
     
     public void reload() {
         //TODO have more targetting reload strategy.
-        userBuild.reload();
-        project.reload();
-        projectBuild.reload();
+    	reload(userBuild);
+    	reload(project);
+    	reload(projectBuild);
+    }
+    
+	private void reload(IPropertyFinder finder) {
+		if ( finder != null ) {
+    		finder.reload();
+    	}
     }
 
     
