@@ -28,7 +28,7 @@ import org.apache.maven.project.Dependency;
 import org.apache.maven.project.Project;
 import org.apache.maven.project.Resource;
 import org.mevenide.ProjectConstants;
-import org.mevenide.project.DependencyUtil;
+import org.mevenide.project.DependencyFactory;
 
 /**
  * 
@@ -39,12 +39,15 @@ import org.mevenide.project.DependencyUtil;
 public class ProjectWriterTest extends TestCase {
 	private ProjectWriter pomWriter;
 	private File projectFile;
+	private DependencyFactory dependencyFactory;
 	
 	protected void setUp() throws Exception {
 		pomWriter = ProjectWriter.getWriter();
 		File src = new File(ProjectWriterTest.class.getResource("/fixtures/project-fixture.xml").getFile());
 		projectFile = new File(src.getParentFile().getParent(), "project-fixture.xml") ; 
 		copy(src.getAbsolutePath(), projectFile.getAbsolutePath());
+		dependencyFactory = DependencyFactory.getFactory();
+		
 	}
 
 	protected void tearDown() throws Exception {
@@ -78,23 +81,23 @@ public class ProjectWriterTest extends TestCase {
 		Project project = ProjectReader.getReader().read(projectFile);
 		List dependencies = project.getDependencies();
 		
-		Dependency dep = DependencyUtil.getDependency("E:/maven/repository/junit/jars/junit-3.8.1.jar");
+		Dependency dep = dependencyFactory.getDependency("E:/maven/repository/junit/jars/junit-3.8.1.jar");
 		assertTrue(pomWriter.isDependencyPresent(project, dep));
 		 
-		dep = DependencyUtil.getDependency("E:/bleeeaaaah/junit/jars/junit-3.8.1.jar");
+		dep = dependencyFactory.getDependency("E:/bleeeaaaah/junit/jars/junit-3.8.1.jar");
 		assertTrue(pomWriter.isDependencyPresent(project, dep));
 		 
-		dep = DependencyUtil.getDependency("E:/bleeeaaaah/plouf/jars/junit-3.8.1.jar");
+		dep = dependencyFactory.getDependency("E:/bleeeaaaah/plouf/jars/junit-3.8.1.jar");
 		assertTrue(pomWriter.isDependencyPresent(project, dep));
 		
-		dep = DependencyUtil.getDependency("E:/bleeeaaaah/plouf/junit-3.8.1.jar");
+		dep = dependencyFactory.getDependency("E:/bleeeaaaah/plouf/junit-3.8.1.jar");
 		assertTrue(pomWriter.isDependencyPresent(project, dep));
 	}
 	
 	public void testAddDependency() throws Exception {
 		pomWriter.addDependency("E:/bleeeaaaah/testo/ploufs/testo-0.0.1.plouf", projectFile);
 		Project project = ProjectReader.getReader().read(projectFile);
-		Dependency dep = DependencyUtil.getDependency("E:/bleeeaaaah/testo/ploufs/testo-0.0.1.plouf");
+		Dependency dep = dependencyFactory.getDependency("E:/bleeeaaaah/testo/ploufs/testo-0.0.1.plouf");
 		assertTrue(pomWriter.isDependencyPresent(project, dep));
 	}
 	

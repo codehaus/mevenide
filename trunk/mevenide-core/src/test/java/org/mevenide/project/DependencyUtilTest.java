@@ -35,6 +35,8 @@ public class DependencyUtilTest extends TestCase {
 	private File testTypeDirectory;
 	private File mevenideHome; 
 	
+	private DependencyFactory dependencyFactory;
+	
 	protected void setUp() throws Exception {
 		mevenideHome = new File(System.getProperty("user.home"), ".mevenide");
 		File rootDirectory = new File(mevenideHome, "repository");
@@ -47,6 +49,7 @@ public class DependencyUtilTest extends TestCase {
  		artefact = new File(testTypeDirectory, "foo+joe-test2.-bar-1.0.7-dev.txt");
 		artefact.createNewFile();
 		
+		dependencyFactory = DependencyFactory.getFactory();
 	}
 
 	protected void tearDown() throws Exception {
@@ -55,11 +58,11 @@ public class DependencyUtilTest extends TestCase {
 	
 	public void testGetDependency() {
 		Environment.setMavenHome(mevenideHome.getAbsolutePath());
-		Dependency dep = DependencyUtil.getDependency(artefact.getAbsolutePath());
+		Dependency dep = dependencyFactory.getDependency(artefact.getAbsolutePath());
 		assertEquals("mevenide", dep.getGroupId());
 		
 		Environment.setMavenHome(System.getProperty("user.home"));
-		dep = DependencyUtil.getDependency(artefact.getAbsolutePath());
+		dep = dependencyFactory.getDependency(artefact.getAbsolutePath());
 		
 //		System.out.println(dep.getGroupId());
 //		System.out.println(dep.getArtifactId());
@@ -70,7 +73,7 @@ public class DependencyUtilTest extends TestCase {
 		assertEquals("foo+joe-test2.-bar", dep.getArtifactId());
 		
 		artefact = new File(testTypeDirectory, "foo+joe-test2.-bar-1.0.7-beta-1.txt");
-		dep = DependencyUtil.getDependency(artefact.getAbsolutePath());
+		dep = dependencyFactory.getDependency(artefact.getAbsolutePath());
 		//BUG-DependencyUtil_split-DEP_PATTERN
 		//assertEquals("1.0.7-beta-1", dep.getVersion());
 	}
