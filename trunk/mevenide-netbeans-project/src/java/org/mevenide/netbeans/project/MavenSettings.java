@@ -35,11 +35,9 @@ public class MavenSettings extends SystemOption {
     protected void initialize() {
         super.initialize();
         String[] defaultGoals = new String[] {
-            "clean",
-            "java",
-            "jar",
+            "site:generate",
             "dist",
-            "javadoc"
+            "nbm"
         };
         setTopGoals(defaultGoals);
         setShowAddFavouriteHint(true);
