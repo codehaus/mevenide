@@ -45,7 +45,7 @@ public class MavenModule extends ModuleInstall {
     
     private static final long serialVersionUID = -485754848837354747L;
     
-    public static final String CURRENT_VERSION = "maven-mevenide-plugin-0.2.jar"; //NOI18N
+    public static final String CURRENT_VERSION = "maven-mevenide-plugin-0.3.jar"; //NOI18N
     
     public void restored() {
         // kind of duplicates the same call in mevenide-netbeans-grammar but these
