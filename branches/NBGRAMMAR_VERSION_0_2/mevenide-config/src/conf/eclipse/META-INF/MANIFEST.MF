@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-Localization: plugin
+Bundle-SymbolicName: org.mevenide.config; singleton=true
+Bundle-Vendor: The Codehaus
+Bundle-Name: Mevenide Config
+Bundle-ClassPath: mevenide-config-0.1-SNAPSHOT.jar
+Bundle-Version: 0.1
+Eclipse-AutoStart : true
+Eclipse-AutoStop : true
+    
+
+   

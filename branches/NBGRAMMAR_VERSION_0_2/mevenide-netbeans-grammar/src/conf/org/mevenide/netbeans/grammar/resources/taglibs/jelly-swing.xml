@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- code completion definition for the jelly-tag library -->
+
+<taglib name="jelly:swing">
+    <tag name="action">
+        <attr name="var"/>
+        <attr name="trim"/>
+    </tag>
+    <tag name="borderAlign" within="borderLayout">
+        <attr name="align"/>
+        <attr name="trim"/>
+    </tag>
+    <tag name="borderLayout">
+        <attr name="hgap"/>
+        <attr name="vgap"/>
+        <attr name="var"/>
+        <attr name="trim"/>
+    </tag>
+    <tag name="component">
+        <attr name="action"/>
+        <attr name="border"/>
+        <attr name="map"/>
+        <attr name="font"/>
+        <attr name="layout"/>
+        <attr name="var"/>
+        <attr name="trim"/>
+    </tag>
+    <tag name="constraint">
+        <attr name="dynaBean"/>
+        <attr name="trim"/>
+    </tag>
+    <tag name="dialog">
+        <attr name="trim"/>
+   </tag>
+    <tag name="focusListener">
+         <attr name="gained"/>
+         <attr name="lost"/>
+         <attr name="var"/>
+         <attr name="trim"/>
+   </tag>
+    <tag name="font">
+        <attr name="var"/>
+        <attr name="trim"/>
+    </tag>
+    <tag name="gbc" within="gridBagLayout">
+         <attr name="var"/>
+         <attr name="trim"/>
+    </tag>
+    <tag name="gridBagLayout">
+         <attr name="var"/>
+         <attr name="trim"/>
+    </tag>
+    <tag name="keyListener">
+         <attr name="pressed"/>
+         <attr name="released"/>
+         <attr name="typed"/>
+         <attr name="var"/>
+         <attr name="trim"/>
+    </tag>
+    <tag name="tableLayout">
+         <attr name="var"/>
+         <attr name="trim"/>
+    </tag>
+    <tag name="tableModel">
+         <attr name="var"/>
+         <attr name="trim"/>
+    </tag>
+    <tag name="tableModelColumn">
+         <attr name="var"/>
+         <attr name="trim"/>
+    </tag>
+    <tag name="td" within="tableLayout">
+         <attr name="align"/>
+         <attr name="colfill"/>
+         <attr name="colspan"/>
+         <attr name="rowfill"/>
+         <attr name="rowspan"/>
+         <attr name="valign"/>
+         <attr name="trim"/>
+    </tag>
+    <tag name="titledBorder">
+         <attr name="color"/>
+         <attr name="font"/>
+         <attr name="title"/>
+         <attr name="titleJustification"/>
+         <attr name="titlePosition"/>
+         <attr name="var"/>
+         <attr name="trim"/>
+    </tag>
+    <tag name="tr" within="tableLayout">
+         <attr name="trim"/>
+    </tag>
+    <tag name="windowListener">
+         <attr name="activated"/>
+         <attr name="closed"/>
+         <attr name="closing"/>
+         <attr name="deactivated"/>
+         <attr name="deiconified"/>
+         <attr name="iconified"/>
+         <attr name="opened"/>
+         <attr name="var"/>
+         <attr name="trim"/>
+    </tag>
+</taglib>

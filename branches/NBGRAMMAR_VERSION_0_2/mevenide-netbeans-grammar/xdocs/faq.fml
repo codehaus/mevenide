@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<faqs title="Frequently Asked Questions">
+   
+   <part id="install">
+    <title>Installing</title>
+        <faq id="download">
+        <question> 
+            Where can I download the Netbeans module?
+        </question> 
+        <answer>
+           <p> It's not yet available for free download. In order to try out the module, please checkout the mevenide project from cvs and build it. </p>
+        </answer>
+        </faq>
+   </part>
+   <part id="troubleshooting">
+    <title>Troubleshooting</title>
+        <faq id="jelly">
+        <question> 
+            How come my .jelly files are not displayed as xml?
+        </question> 
+        <answer>
+           <p> The jelly extension is not by default recognized by Netbeans as xml file. 
+           Please go to Tools/Options dialog and there find the "IDE Configuration/System/Object Types/XML Objects" node.
+           
+           It has property named "Extensions and MIME Types". Add jelly extension to the list.</p>
+        </answer>
+        </faq>
+   </part>
+   
+</faqs>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- code completion definition for the jelly-tag library -->
+
+<taglib name="jelly:define">
+    <tag name="taglib">
+        <attr name="uri"/>
+        <attr name="inherit"/>
+        <attr name="trim"/>
+    </tag>
+    <tag name="tag" within="taglib">
+        <attr name="name"/>
+        <attr name="trim"/>
+    </tag>
+    <tag name="bean"  within="taglib">
+        <attr name="classLoader"/>
+        <attr name="className"/>
+        <attr name="name"/>
+        <attr name="varAttribute"/>
+        <attr name="trim"/>
+    </tag>
+    <tag name="dynaBean"  within="taglib">
+        <attr name="name"/>
+        <attr name="dynaClass"/>
+        <attr name="varAttribute"/>
+        <attr name="trim"/>
+    </tag>
+    <tag name="jellyBean"  within="taglib">
+        <attr name="method"/>
+        <attr name="classLoader"/>
+        <attr name="className"/>
+        <attr name="name"/>
+        <attr name="trim"/>
+        <attr name="varAttribute"/>
+    </tag>
+    <tag name="attribute" >
+        <attr name="defaultValue"/>
+        <attr name="required"/>
+        <attr name="name"/>
+        <attr name="trim"/>
+    </tag>
+    <tag name="invokeBody" within="tag">
+        <attr name="trim"/>
+    </tag>
+    <tag name="script">
+        <attr name="var"/>
+        <attr name="trim"/>
+    </tag>
+    <tag name="invoke">
+        <attr name="script"/>
+    </tag>
+    <tag name="classLoader">
+        <attr name="classLoader"/>
+        <attr name="url"/>
+        <attr name="var"/>
+        <attr name="className"/>
+        <attr name="name"/>
+        <attr name="varAttribute"/>
+        <attr name="trim"/>
+    </tag>
+    <tag name="extend">
+        <attr name="name"/>
+        <attr name="trim"/>
+    </tag>
+    <tag name="super">
+        <attr name="trim"/>
+    </tag>
+</taglib>
