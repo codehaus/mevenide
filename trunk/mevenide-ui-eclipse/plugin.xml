@@ -2,7 +2,7 @@
 <plugin
    id="org.mevenide.ui"
    name="%PluginName"
-   version="0.1-alpha-1"
+   version="0.1"
    provider-name="Sourceforge"
    class="org.mevenide.ui.eclipse.Mevenide">
 
@@ -152,9 +152,9 @@
    <extension
          point="org.eclipse.ui.preferencePages">
       <page
-            name="%MavenManu.label"
+            name="%MavenMenu.label"
             class="org.mevenide.ui.eclipse.preferences.MevenidePreferencePage"
-            id="maven.plugin.preferences.MavenPreferencePage">
+            id="org.mevenide.ui.plugin.preferences.MavenPreferencePage">
       </page>
    </extension>
 
@@ -178,7 +178,7 @@
             delegate="org.mevenide.ui.eclipse.launch.configuration.MavenLaunchDelegate"
             category="org.eclipse.ui.externaltools"
             modes="run"
-            id="org.mevenide.launching.MavenLaunchConfigType">
+            id="org.mevenide.ui.launching.MavenLaunchConfigType">
       </launchConfigurationType>
    </extension>
    
@@ -186,20 +186,20 @@
    <extension
          point="org.eclipse.debug.ui.launchConfigurationTabGroups">
       <launchConfigurationTabGroup
-            type="org.mevenide.launching.MavenLaunchConfigType"
+            type="org.mevenide.ui.launching.MavenLaunchConfigType"
             class="org.mevenide.ui.eclipse.launch.configuration.MavenRunnerTabGroup"
-            id="org.mevenide.launching.TabGroup">
+            id="org.mevenide.ui.launching.TabGroup">
       </launchConfigurationTabGroup>
    </extension>
    <extension
          point="org.eclipse.debug.ui.launchShortcuts">
       <shortcut
-            label="%LaunchShortcut.type"
+            label="%LaunchShortcut.type.label"
             icon="icons/full/obj16/ant.gif"
             category="org.eclipse.ui.externaltools"
             modes="run"
             class="org.mevenide.ui.eclipse.launch.configuration.MavenLaunchShortcut"
-            id="org.mevenide.mavenShortcut">
+            id="org.mevenide.ui.mavenShortcut">
       </shortcut>
    </extension>
 
