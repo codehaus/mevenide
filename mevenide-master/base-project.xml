@@ -74,7 +74,7 @@
       	<role>Developer Java</role>
       </roles>
       <url>http://www.bonevich.com/index.php</url>
-      <timezone>GMT-4</timezone>
+      <timezone>-4</timezone>
     </developer>
   </developers>
 
