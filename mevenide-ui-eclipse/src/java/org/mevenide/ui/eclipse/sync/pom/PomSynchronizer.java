@@ -37,6 +37,7 @@ import org.mevenide.sync.ISynchronizer;
 import org.mevenide.ui.eclipse.MavenPlugin;
 import org.mevenide.ui.eclipse.sync.source.DefaultPathResolverDelegate;
 import org.mevenide.ui.eclipse.sync.source.IPathResolverDelegate;
+import org.mevenide.ui.eclipse.util.ProjectUtil;
 
 /**
  * 
@@ -137,7 +138,7 @@ public class PomSynchronizer extends AbstractPomSynchronizer implements ISynchro
 			File referencedPom = new File(pathResolver.getAbsolutePath(referencedProjectLocation.append("project.xml")) );
 			//check if referencedPom exists, tho it should since we just have created it
 			if ( !referencedPom.exists() ) {
-				//@todo project isnot mavenized, mavenize it as well
+				ProjectUtil.createPom(referencedProject);
 			}
 			ProjectReader reader = ProjectReader.getReader();
 			Dependency projectDependency = reader.getDependency(referencedPom);
