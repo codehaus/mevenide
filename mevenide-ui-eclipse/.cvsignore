@@ -5,3 +5,4 @@ build.properties
 lib
 plugin.xml
 velocity.log
+*.jar
