@@ -171,6 +171,9 @@ public class DependenciesSection extends PageSection {
 					Dependency dependency = (Dependency) parentObject;
 					String newPropertyStr = Mevenide.getResourceString("AbstractPomEditorPage.Element.Unknown") + ":" + Mevenide.getResourceString("AbstractPomEditorPage.Element.Unknown"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 					PropertyProxy newProperty = new PropertyProxy(newPropertyStr);
+					if ( dependency.getProperties() == null ) {
+					    pom.setProperties(new ArrayList());
+					}
 					dependency.addProperty(newPropertyStr);
 					return newProperty;
 				}

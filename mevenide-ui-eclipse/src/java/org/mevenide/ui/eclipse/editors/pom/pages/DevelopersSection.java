@@ -16,6 +16,7 @@
  */
 package org.mevenide.ui.eclipse.editors.pom.pages;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.maven.project.Developer;
@@ -77,6 +78,9 @@ public class DevelopersSection extends PageSection {
 			new IPomCollectionAdaptor() {
 				public Object addNewObject(Object parentObject) {
 					Developer developer = new Developer();
+					if ( pom.getDevelopers() == null ) {
+					    pom.setDevelopers(new ArrayList());
+					}
 					pom.addDeveloper(developer);
 					return developer;
 				}
