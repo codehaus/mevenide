@@ -1,5 +1,5 @@
 /* ==========================================================================
- * Copyright 2004 Apache Software Foundation
+ * Copyright 2003-2004 Apache Software Foundation
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,27 +14,25 @@
  *  limitations under the License.
  * =========================================================================
  */
-package org.mevenide.properties.test;
+package org.mevenide.properties.writer;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-/**
+/**  
  * 
- * @author <a href="mailto:rhill2@free.fr">Gilles Dodinet</a>
- * @version $Id$
+ * @author Gilles Dodinet (gdodinet@wanadoo.fr)
+ * @version $Id: AllTests.java,v 1.1 16 nov. 2003 Exp gdodinet 
  * 
  */
 public class AllTests {
     public static Test suite() {
         TestSuite suite = new TestSuite();
         
-        suite.addTest(org.mevenide.environment.AllTests.suite());
-        suite.addTest(org.mevenide.environment.sysenv.AllTests.suite());
-        suite.addTest(org.mevenide.properties.AllTests.suite());
-        suite.addTest(org.mevenide.properties.util.AllTests.suite());
-        suite.addTest(org.mevenide.properties.writer.AllTests.suite());
+        suite.addTestSuite(DefaultPropertiesWriterTest.class);
+        suite.addTestSuite(CarefulPropertiesWriterTest.class);
         
         return suite;
+        
     }
 }

@@ -16,9 +16,6 @@
  */
 package org.mevenide.environment;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-
 import org.mevenide.environment.sysenv.SysEnvProvider;
 
 
