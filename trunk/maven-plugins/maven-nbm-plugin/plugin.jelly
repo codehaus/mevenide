@@ -25,7 +25,16 @@
   <!-- maven.final.name is a fallback, should be module name (pom.packageName) (-->
     <j:set var="maven.nbm.final.name"  value="${maven.final.name}"/> 
     <j:set var="maven.nbm.build.dir" value="${maven.build.dir}/nbm" />
-    <j:set var="maven.nbm.cluster.dir" value="netbeans" />
+    <j:set var="netbeansDir" value="netbeans" /> 
+    <j:set var="clusterVar" value="${maven.nbm.cluster.name}"/> 
+    <j:choose>
+        <j:when test="! empty clusterVar">
+            <j:set var="maven.nbm.cluster.dir" value="${netbeansDir}/${maven.nbm.cluster.name}"/>
+        </j:when>
+        <j:otherwise>
+            <j:set var="maven.nbm.cluster.dir" value="${netbeansDir}/${pom.groupId}"/>
+        </j:otherwise>
+    </j:choose>
     <j:set var="maven.nbm.module.location" value="modules"/>
     <j:choose>
         <j:when test="${maven.nbm.autoload}">
@@ -223,8 +232,8 @@ ${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.x
       </j:if>
     </j:forEach>
     
-    <ant:mkdir dir="${maven.nbm.build.dir}/${maven.nbm.cluster.dir}/system/Modules"/>
-    <ant:createmodulexml xmldir="${maven.nbm.build.dir}/${maven.nbm.cluster.dir}/system/Modules">
+    <ant:mkdir dir="${maven.nbm.build.dir}/${maven.nbm.cluster.dir}/config/Modules"/>
+    <ant:createmodulexml xmldir="${maven.nbm.build.dir}/${maven.nbm.cluster.dir}/config/Modules">
         <j:choose>
             <j:when test="${maven.nbm.autoload}">
                <ant:autoload dir="${maven.nbm.build.dir}/${maven.nbm.cluster.dir}">
@@ -285,8 +294,8 @@ ${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.x
              topdir="${maven.nbm.build.dir}"
     -->
     <ant:echo message="file=${maven.nbm.build.dir}/${maven.nbm.final.name}.nbm" />
-    <ant:echo message="productdir=${maven.nbm.build.dir}/${maven.nbm.cluster.dir}" />
-    <ant:echo message="module=${maven.nbm.module.location}/${maven.nbm.final.name}.jar" />
+    <ant:echo message="productdir=${maven.nbm.build.dir}/${netbeansDir}" />
+    <ant:echo message="module=${maven.nbm.cluster.name}/${maven.nbm.module.location}/${maven.nbm.final.name}.jar" />
     
     <ant:makenbm file="${maven.nbm.build.dir}/${maven.final.name}.nbm"
              topdir="${maven.nbm.build.dir}"
