@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plugin
    id="org.mevenide"
-   name="Mevenide"
+   name="%PluginName"
    version="0.1"
    provider-name="Sourceforge"
    class="org.mevenide.ui.eclipse.Mevenide">
@@ -59,7 +59,7 @@
             adaptable="true"
             id="maven.plugin.project.xml.contribution">
          <menu
-               label="Maven"
+               label="%MavenMenu.label"
                path="additions"
                id="maven.plugin.menu">
             <separator
@@ -73,7 +73,7 @@
             </separator>
          </menu>
          <action
-               label="Run Maven..."
+               label="%RunMaven.label"
                icon="icons/maven-run.gif"
                class="org.mevenide.ui.eclipse.launch.configuration.MavenRunActionDelegate"
                menubarPath="maven.plugin.menu/RunMaven"
@@ -81,49 +81,15 @@
                id="maven.plugin.popup.action">
          </action>
          <action
-               label="Create Pom"
+               label="%CreatePom.label"
                icon="icons/maven-create-pom.gif"
                class="org.mevenide.ui.eclipse.actions.CreatePomAction"
                menubarPath="maven.plugin.menu/MavenNature"
                enablesFor="1"
                id="mevenide.pom.create">
          </action>
-         <!-- action
-               label="Disable Maven Nature"
-               icon="icons/maven-disable.gif"
-               class="org.mevenide.ui.eclipse.actions.ManageNatureAction"
-               menubarPath="maven.plugin.menu/MavenNature"
-               enablesFor="1"
-               id="org.mevenide.ui.eclipse.actions.removemavennature">
-            <enablement>
-               <and>
-                  <objectState
-                        name="nature"
-                        value="mevenide.mavennature">
-                  </objectState>
-               </and>
-            </enablement>
-         </action>
          <action
-               label="Enable Maven Nature"
-               icon="icons/maven.gif"
-               class="org.mevenide.ui.eclipse.actions.ManageNatureAction"
-               menubarPath="maven.plugin.menu/MavenNature"
-               enablesFor="1"
-               id="org.mevenide.ui.eclipse.actions.addmavennature">
-            <enablement>
-               <and>
-                  <not>
-                     <objectState
-                           name="nature"
-                           value="mevenide.mavennature">
-                     </objectState>
-                  </not>
-               </and>
-            </enablement>
-         </action -->
-         <action
-               label="Update Project"
+               label="%UpdateProject.label"
                icon="icons/maven-synch-project.gif"
                class="org.mevenide.ui.eclipse.actions.SynchronizeAction"
                menubarPath="maven.plugin.menu/Synchronize"
@@ -131,7 +97,7 @@
                id="maven-plugin.Synchronize">
          </action>
          <action
-               label="Update POM..."
+               label="%UpdatePom.label"
                icon="icons/maven-synch-pom.gif"
                class="org.mevenide.ui.eclipse.actions.SynchronizeAction"
                menubarPath="maven.plugin.menu/Synchronize"
@@ -145,7 +111,7 @@
             nameFilter="project.xml"
             id="maven.plugin.project.xml.contribution.ifile">
          <menu
-               label="Maven"
+               label="%MavenMenu.label"
                path="additions"
                id="maven.plugin.menu">
             <separator
@@ -156,7 +122,7 @@
             </separator>
          </menu>
          <action
-               label="Run Maven..."
+               label="%RunMaven.label"
                icon="icons/maven-run.gif"
                class="org.mevenide.ui.eclipse.launch.configuration.MavenRunActionDelegate"
                menubarPath="maven.plugin.menu/RunMaven"
@@ -164,7 +130,7 @@
                id="maven.plugin.popup.action">
          </action>
          <action
-               label="Update Project"
+               label="%UpdateProject.label"
                icon="icons/maven-synch-project.gif"
                class="org.mevenide.ui.eclipse.actions.SynchronizeAction"
                menubarPath="maven.plugin.menu/Synchronize"
@@ -172,7 +138,7 @@
                id="maven-plugin.Synchronize">
          </action>
          <action
-               label="Update POM..."
+               label="%UpdatePom.label"
                icon="icons/maven-synch-pom.gif"
                tooltip="synchronize without prompting for Source Directory types"
                class="org.mevenide.ui.eclipse.actions.SynchronizeAction"
@@ -186,7 +152,7 @@
    <extension
          point="org.eclipse.ui.preferencePages">
       <page
-            name="Maven"
+            name="%MavenManu.label"
             class="org.mevenide.ui.eclipse.preferences.MevenidePreferencePage"
             id="maven.plugin.preferences.MavenPreferencePage">
       </page>
@@ -196,7 +162,7 @@
    <extension
          point="org.eclipse.ui.editors">
       <editor
-            name="Project Object Model Editor"
+            name="%PomEditor.name"
             extensions="xml"
             icon="icons/maven.gif"
             contributorClass="org.mevenide.ui.eclipse.editors.MevenidePomEditorContributor"
@@ -208,7 +174,7 @@
    <extension
          point="org.eclipse.debug.core.launchConfigurationTypes">
       <launchConfigurationType
-            name="Run Maven"
+            name="%RunMaven.label"
             delegate="org.mevenide.ui.eclipse.launch.configuration.MavenLaunchDelegate"
             category="org.eclipse.ui.externaltools"
             modes="run"
@@ -228,7 +194,7 @@
    <extension
          point="org.eclipse.debug.ui.launchShortcuts">
       <shortcut
-            label="Maven Project"
+            label="%LaunchShortcut.type"
             icon="icons/full/obj16/ant.gif"
             category="org.eclipse.ui.externaltools"
             modes="run"
