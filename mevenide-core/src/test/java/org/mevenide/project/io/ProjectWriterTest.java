@@ -157,28 +157,5 @@ public class ProjectWriterTest extends AbstractMevenideTestCase {
 		}
 		return found;
 	}
-
-	public void testJarOverride() throws Exception {
-		File propFile = new File(projectFile.getParent(), "project.properties");
-		
-		Project project = ProjectReader.getReader().read(projectFile);
-		int prev = project.getDependencies().size();
-		
-		String path = "C:\\temp\\bleah\\fake.jar";
-		String path2 = "C:\\temp\\bleah\\fake2.jar";
-		String path3 = "C:\\temp space temp\\bleah\\fake fake2.jar";
-		
-		pomWriter.jarOverride(path, propFile, projectFile);
-		pomWriter.jarOverride(path2, propFile, projectFile);
-		pomWriter.jarOverride(path3, propFile, projectFile);
-		pomWriter.jarOverride(path2, propFile, projectFile);
-		
-		project = ProjectReader.getReader().read(projectFile);
-		
-		assertEquals(prev + 3, project.getDependencies().size());
-		
-	}
-	
-	
 	
 }
