@@ -65,7 +65,7 @@ public class DefaultReportsFinderTest extends AbstractTestCase {
 	
 	private String[] testPluginDirs = 
 		{
-			"maven-faq-plugin-1.1-SNAPSHOT",
+			"maven-faq-plugin-1.1-SNAPSHOT", //nota - faq-plugin has been modified in src/test/conf so that doc:registerReport gets called twice
 			"maven-findbugs-plugin-1.0-SNAPSHOT",
 			"maven-tasklist-plugin-2.2-SNAPSHOT",
 			"maven-test-plugin-1.4-SNAPSHOT",

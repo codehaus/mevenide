@@ -130,7 +130,10 @@ public class DefaultReportsFinder implements IReportsFinder {
 					if (line == null) {
 						break;
 					}
-					plugins.add(new File(f).getParentFile().getName());
+					String pluginName = new File(f).getParentFile().getName();
+					if ( !plugins.contains(pluginName) ) {
+					    plugins.add(pluginName);
+					}
 				}
 				g.close();
 			}

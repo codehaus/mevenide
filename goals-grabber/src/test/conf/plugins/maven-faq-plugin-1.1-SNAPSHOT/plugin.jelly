@@ -13,6 +13,11 @@
       pluginName="faq"
       description="Frequently Asked Questions."
       link="faq"/>
+    <doc:registerReport
+      name="AntoherFAQs"
+      pluginName="faq"
+      description="Frequently Asked Questions."
+      link="faq"/>
   </goal>
 
   <goal name="maven-faq-plugin:deregister">
