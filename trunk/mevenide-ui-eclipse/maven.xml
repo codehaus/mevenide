@@ -41,7 +41,7 @@
         
         <mkdir dir="temp/org.mevenide_${dist.version}"/>
         
-        <copy todir="temp/org.mevenide_0.1">
+        <copy todir="temp/org.mevenide_${dist.version}">
         	<fileset dir="${basedir}" includes="icons/*.*"/>
         	<fileset dir="${basedir}" includes="plugin.xml,plugin.properties,license.txt"/>
         	<fileset dir="${basedir}" includes="lib/*.*"/>
