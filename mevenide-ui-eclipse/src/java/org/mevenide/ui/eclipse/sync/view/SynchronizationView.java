@@ -92,8 +92,11 @@ import org.mevenide.util.MevenideUtils;
  *
  */
 public class SynchronizationView extends ViewPart implements IActionListener, IResourceChangeListener, IPropertyChangeListener, IProjectChangeListener, ISynchronizationNodeListener {
-    private static final String SYNC_DIRECTION_VIEW = "SynchronizationView.SYNC_DIRECTION_VIEW";
+    
 	private static final Log log = LogFactory.getLog(SynchronizationView.class);
+
+    private static final String SYNC_DIRECTION_VIEW = "SynchronizationView.SYNC_DIRECTION_VIEW";
+	private static final String SYNC_SHOULD_WRITE_PROPERTIES = "SynchronizationView.SYNC_SHOULD_WRITE_PROPERTIES";
 
     private Composite composite;
     private TreeViewer artifactMappingNodeViewer;
@@ -140,6 +143,8 @@ public class SynchronizationView extends ViewPart implements IActionListener, IR
 	private boolean isDisposed;
 	
 	private PreferencesManager preferencesManager ;
+
+    private boolean initialShouldWriteProperties;
 	
 	public SynchronizationView() {
 		super();
@@ -337,7 +342,10 @@ public class SynchronizationView extends ViewPart implements IActionListener, IR
 		viewIdeToPom.setChecked(direction == ISelectableNode.OUTGOING_DIRECTION);
 		viewPomToIde.setChecked(direction == ISelectableNode.INCOMING_DIRECTION);
 		
-		writeProperties = new ActionContributionItem(actionFactory.getAction(SynchronizeActionFactory.WRITE_PROPERTIES));
+		Action writePropertiesAction = actionFactory.getAction(SynchronizeActionFactory.WRITE_PROPERTIES); 
+		writeProperties = new ActionContributionItem(writePropertiesAction);
+		initialShouldWriteProperties = preferencesManager.getBooleanValue(SYNC_SHOULD_WRITE_PROPERTIES);
+        writePropertiesAction.setChecked(initialShouldWriteProperties);
 		
 		pushToPom = actionFactory.getAction(SynchronizeActionFactory.ADD_TO_POM);
 		removeFromProject = actionFactory.getAction(SynchronizeActionFactory.REMOVE_FROM_PROJECT);
@@ -489,7 +497,10 @@ public class SynchronizationView extends ViewPart implements IActionListener, IR
 			setDirection(((ToggleViewAction) event.getSource()).getDirection());
 		}
 		if ( event.getSource() instanceof ToggleWritePropertiesAction && Action.CHECKED.equals(event.getProperty())) {
-			fireSynchronizationConstraintEvent(new SynchronizationConstraintEvent(SynchronizationConstraintEvent.WRITE_PROPERTIES, ((Boolean) event.getNewValue()).booleanValue()));
+			boolean shouldWriteProperties = ((Boolean) event.getNewValue()).booleanValue();
+            fireSynchronizationConstraintEvent(new SynchronizationConstraintEvent(SynchronizationConstraintEvent.WRITE_PROPERTIES, shouldWriteProperties));
+		    preferencesManager.setBooleanValue(SYNC_SHOULD_WRITE_PROPERTIES, shouldWriteProperties);
+		    preferencesManager.store();
 		}
 		if ( toolBarManager != null ) {
 			log.debug("property changed. updating");
@@ -682,5 +693,9 @@ public class SynchronizationView extends ViewPart implements IActionListener, IR
 	public List getPoms() {
 		return poms;
 	}
+	
+    public boolean getInitialShouldWriteProperties() {
+        return initialShouldWriteProperties;
+    }
 }
 
