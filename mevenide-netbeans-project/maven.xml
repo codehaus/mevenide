@@ -3,12 +3,6 @@
          xmlns:ant="jelly:ant"
          xmlns:util="jelly:util">
 	
-  <postGoal name="xdoc:register-reports">
-  	<!-- deregister test related plugins since there are none -->
-    <attainGoal name="maven-jcoverage-plugin:deregister"/>  
-    <attainGoal name="maven-junit-report-plugin:deregister"/>  
-  </postGoal>
-  
   <preGoal name="java:jar-resources">
   	<!-- do something after jar goal -->
     <j:set var="targetDir" value="${maven.build.dir}/project_templates"/>
