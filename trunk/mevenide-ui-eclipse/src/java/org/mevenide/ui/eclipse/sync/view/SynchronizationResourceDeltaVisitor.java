@@ -49,7 +49,7 @@ class SynchronizationResourceDeltaVisitor implements IResourceDeltaVisitor {
 			IResource r = delta.getResource();									
 			if (r instanceof IFile) {
 				IFile file = (IFile) r;
-				if ( file.equals(dotClasspath) ) {
+				if ( file.equals(dotClasspath) || ".mvnignore".equals(file.getName()) ) {
 					this.synchronizationView.asyncRefresh(false);
 				}
 				if ( this.synchronizationView.getPoms() != null ) {
