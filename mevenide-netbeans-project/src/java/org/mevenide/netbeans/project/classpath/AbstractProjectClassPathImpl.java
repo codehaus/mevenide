@@ -171,10 +171,12 @@ abstract class AbstractProjectClassPathImpl implements ClassPathImplementation {
             } else {
                 uri = FileUtilities.getDependencyURI(dep, getMavenProject());
             }
-            logger.debug("dep uri=" + uri);
+            System.out.println("dep uri=" + uri);
             if (uri != null) {
                 return uri;
             }
+        } else {
+            System.out.println("dependnecy not added to classpath=" + dep.getArtifactId() + "  " + dep.getGroupId() + "  " + dep.getId());
         }
         return null;
     }    

@@ -18,12 +18,15 @@
 package org.mevenide.netbeans.project;
 
 import java.awt.Image;
+import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.File;
 import java.net.URI;
 import java.util.Arrays;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import org.apache.commons.logging.Log;
@@ -175,6 +178,10 @@ public class MavenProject implements Project {
     
     public String getName() {
         return getOriginalMavenProject().getId();
+    }
+    
+    public Action createRefreshAction() {
+        return new RefreshAction();
     }
     
     public FileObject getProjectDirectory() {
@@ -453,5 +460,16 @@ public class MavenProject implements Project {
             return PRIVILEGED_NAMES;
         }
         
-    }    
+    }   
+    
+    private class RefreshAction extends AbstractAction {
+        public RefreshAction() {
+            putValue(Action.NAME, "Reload Project");
+        }
+        
+        public void actionPerformed(java.awt.event.ActionEvent event) {
+            MavenProject.this.firePropertyChange(PROP_PROJECT);
+        }
+        
+    }
 }
