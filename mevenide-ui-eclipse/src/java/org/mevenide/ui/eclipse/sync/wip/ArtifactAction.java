@@ -86,6 +86,10 @@ public class ArtifactAction {
 	
 	protected void fireArtifactAddedToPom(Object item, Project project) {
 		log.debug("Artifact (" + item + ") added to POM : " + project.getFile());
+		for (int i = 0; i < listeners.size(); i++) {
+			ArtifactAddedToPomEvent event = new ArtifactAddedToPomEvent(item, project);
+			((IActionListener)listeners.get(i)).artifactAddedToPom(event);
+		}
 	}
 	
 	//crap..
