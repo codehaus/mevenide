@@ -32,6 +32,7 @@ import org.openide.text.Line;
 import org.openide.util.WeakSet;
 import org.openide.windows.OutputEvent;
 import org.openide.windows.OutputListener;
+import org.mevenide.reports.PmdResult;
 
 
 /**
