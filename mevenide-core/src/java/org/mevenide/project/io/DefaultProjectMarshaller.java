@@ -56,6 +56,7 @@ public class DefaultProjectMarshaller implements IProjectMarshaller {
 			= XmlPullParserFactory.newInstance(
 						System.getProperty(XmlPullParserFactory.PROPERTY_NAME),
 						null);
+		
 		serializer = factory.newSerializer();	
 	}
 

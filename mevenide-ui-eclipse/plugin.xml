@@ -3,7 +3,7 @@
    id="mevenide"
    name="Mevenide"
    version="1.0"
-   provider-name="gdfact"
+   provider-name="Sourceforge"
    class="org.mevenide.ui.eclipse.MavenPlugin">
 
    <runtime>
@@ -42,6 +42,9 @@
          <export name="*"/>
          <packages prefixes="org.mevenide.ui.eclipse"/>
       </library>
+      <library name="etc" type="resource">
+         <export name="*"/>
+      </library>
    </runtime>
    <requires>
       <import plugin="org.eclipse.core.resources"/>
@@ -53,6 +56,7 @@
       <import plugin="org.eclipse.jdt.launching"/>
       <import plugin="org.eclipse.debug.core"/>
       <import plugin="org.eclipse.debug.ui"/>
+      <import plugin="org.aspectj.ajde"/>
    </requires>
 
 
