@@ -23,9 +23,9 @@
         <p>
         	Requirements :
         	<ul>
-        		<li>Eclipse 3.0M8+</li>
+        		<li>Eclipse 3.0M9+</li>
         		<li>JDK 1.4+</li>
-        		<li>Maven 1.0 (tested with RC2, but should be ok with RC1)</li>
+        		<li>Maven 1.0 (tested with RC3)</li>
         	</ul>
         </p>
         <p>

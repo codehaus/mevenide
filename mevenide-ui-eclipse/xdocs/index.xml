@@ -17,10 +17,10 @@
 			</p>
 			<p>
 				Mevenide for Eclipse wont work with Eclipse version 2.x since some APIs and utility classes of the 3.0-stream are used. Also for the POM editor to 
-				work you will need at least the 3.0 M8 build. 
+				work you will need at least the 3.0 M9 build. 
 			</p>
 			<p>
-				Current Mevenide release has been tested under WinXP Eclipse 3.0 M8 With JDK 1.4.1 and Maven 1.0-rc2. Please note that JDK 1.4+ is <b>required</b> since Java 1.4 regex Engine is used.
+				Current Mevenide release has been tested under WinXP Eclipse 3.0 M9 With JDK 1.4.1 and Maven 1.0-rc3. Please note that JDK 1.4+ is <b>required</b> since Java 1.4 regex Engine is used.
 			</p>
 			</div>
 		</section>

@@ -8,7 +8,7 @@
   <id>mevenide-ui-netbeans</id>
   <name>Mevenide Netbeans</name>
   <artifactId>mevenide-ui-netbeans</artifactId>
-  <currentVersion>0.1</currentVersion>
+  <currentVersion>0.1-SNAPSHOT</currentVersion>
   <package>org.mevenide.ui.netbeans</package>
   <description>Netbeans Maven integration</description>
   <shortDescription>NetbeansIDE maven module</shortDescription>
@@ -17,7 +17,7 @@
     <dependency>     
         <groupId>mevenide</groupId>
         <artifactId>goals-grabber</artifactId>
-        <version>0.2-SNAPSHOT</version>
+        <version>0.2</version>
             <properties>
                 <netbeans.module.dep>spec</netbeans.module.dep>
             </properties>
@@ -25,7 +25,7 @@
     <dependency>     
         <groupId>mevenide</groupId>
         <artifactId>mevenide-core</artifactId>
-        <version>0.1.1-SNAPSHOT</version>
+        <version>0.1.1</version>
             <properties>
                 <netbeans.module.dep>spec</netbeans.module.dep>
             </properties>
@@ -33,7 +33,7 @@
     <dependency>
         <groupId>mevenide</groupId>
         <artifactId>mevenide-config</artifactId>
-        <version>0.2-SNAPSHOT</version>
+        <version>0.2</version>
             <properties>
                 <netbeans.module.dep>spec</netbeans.module.dep>
             </properties>
