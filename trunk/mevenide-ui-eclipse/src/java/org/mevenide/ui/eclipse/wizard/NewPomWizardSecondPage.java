@@ -66,6 +66,7 @@ public class NewPomWizardSecondPage extends WizardPage {
     
     public NewPomWizardSecondPage() {
         super(Mevenide.getResourceString("NewPomWizardSecondPage.Name"), Mevenide.getResourceString("NewPomWizardSecondPage.Name"), null);
+        setImageDescriptor(Mevenide.getImageDescriptor("wizban/newmfile_wiz.gif"));
         setDescription(Mevenide.getResourceString("NewPomWizardSecondPage.Description"));
         setPageComplete(false);
     }

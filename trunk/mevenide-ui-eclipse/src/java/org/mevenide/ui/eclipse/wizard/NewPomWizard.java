@@ -50,6 +50,7 @@ public class NewPomWizard extends BasicNewResourceWizard implements INewWizard {
     
     public NewPomWizard() {
         super();
+        setDefaultPageImageDescriptor(Mevenide.getImageDescriptor("wizban/newmfile_wiz.gif")); 
         setNeedsProgressMonitor(true);
     }
 

@@ -78,6 +78,7 @@ public class NewPomWizardFirstPage extends WizardPage implements Listener {
 
     public NewPomWizardFirstPage(IStructuredSelection selection) {
         super(Mevenide.getResourceString("NewPomWizardFirstPage.Name"));
+        setImageDescriptor(Mevenide.getImageDescriptor("wizban/newmfile_wiz.gif"));
         setTitle(Mevenide.getResourceString("NewPomWizardFirstPage.Title"));
         setDescription(Mevenide.getResourceString("NewPomWizardFirstPage.Description"));
         setPageComplete(false);

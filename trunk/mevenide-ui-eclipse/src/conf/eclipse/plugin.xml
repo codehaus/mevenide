@@ -91,7 +91,7 @@
                label="%RunMaven.label"
                tooltip="%RunMaven.tooltip"
                class="org.mevenide.ui.eclipse.actions.RunMavenAction"
-               icon="icons/maven-button.gif"
+               icon="icons/etool16/maven_exc.gif"
                menubarPath="maven.plugin.menu/RunMaven"
                id="maven.plugin.popup.action">
          </action>
@@ -100,7 +100,7 @@
                label="%CreatePom.label"
                tooltip="%CreatePom.tooltip"
                class="org.mevenide.ui.eclipse.actions.CreatePomAction"
-               icon="icons/maven-create-pom.gif"
+               icon="icons/etool16/newmfile_wiz.gif"
                menubarPath="maven.plugin.menu/MavenNature"
                id="mevenide.pom.create">
          </action>
@@ -129,7 +129,7 @@
                label="%RunMaven.label"
                tooltip="%RunMaven.file.tooltip"
                class="org.mevenide.ui.eclipse.actions.RunMavenAction"
-               icon="icons/maven-button.gif"
+               icon="icons/etool16/maven_exc.gif"
                menubarPath="maven.plugin.menu/RunMaven"
                id="maven.plugin.popup.action">
          </action>
@@ -256,7 +256,7 @@
    <extension point="org.eclipse.debug.ui.launchShortcuts">
       <shortcut
             label="%LaunchShortcut.type.label"
-            icon="icons/maven-button.gif"
+            icon="icons/etool16/maven_exc.gif"
             category="org.eclipse.ui.externaltools"
             class="org.mevenide.ui.eclipse.launch.configuration.MavenLaunchShortcut"
             modes="run"
@@ -304,7 +304,7 @@
       <!-- New Pom Wizard -->
       <wizard
               class="org.mevenide.ui.eclipse.wizard.NewPomWizard"
-              icon="icons/maven-create-pom.gif"
+              icon="icons/etool16/newmfile_wiz.gif"
               category="org.mevenide.ui.eclipse.category.mevenide"
               project="false"
               name="%POM.Wizard.Name"
