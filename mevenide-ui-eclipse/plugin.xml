@@ -27,7 +27,9 @@
          <export name="*"/>
          <packages prefixes="org.apache.maven"/>
       </library>
-      <library name="lib/xerces-2.2.1.jar"/>
+      <library name="lib/xerces-2.2.1.jar">
+      	<packages prefixes="org.apache.xerces"/>
+      </library>
       <library name="lib/mevenide-goals-grabber-0.1.jar">
          <export name="*"/>
          <packages prefixes="com.gdfact.maven.plugin.getgoals"/>
