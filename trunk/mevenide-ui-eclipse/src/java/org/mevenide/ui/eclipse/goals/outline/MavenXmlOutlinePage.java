@@ -232,20 +232,20 @@ public class MavenXmlOutlinePage extends Page implements IContentOutlinePage {
 		toggleOfflineAction = new Action(null, Action.AS_CHECK_BOX) {
 			public void run() {
 				runOffline = isChecked();
-				setToolTipText(isChecked() ? "online mode" : "offline mode");
+				setToolTipText(isChecked() ? Mevenide.getResourceString("MavenXmlOutlinePage.OnlineMode") : Mevenide.getResourceString("MavenXmlOutlinePage.OfflineMode"));
 			}
 		};
-		toggleOfflineAction.setToolTipText(toggleOfflineAction.isChecked() ? "online mode" : "offline mode");
+		toggleOfflineAction.setToolTipText(toggleOfflineAction.isChecked() ? Mevenide.getResourceString("MavenXmlOutlinePage.OnlineMode") : Mevenide.getResourceString("MavenXmlOutlinePage.OfflineMode"));
 		toggleOfflineAction.setId(TOGGLE_OFFLINE_ID);
-		toggleOfflineAction.setImageDescriptor(Mevenide.getImageDescriptor("offline.gif"));
+		toggleOfflineAction.setImageDescriptor(Mevenide.getImageDescriptor("etool16/r_offline.gif"));
 		
 		runGoalAction = new Action(null) {
 			public void run() {
 				runMaven();
 			}
 		};
-		runGoalAction.setText("Run Goal");
-		runGoalAction.setToolTipText("Run Goal");
+		runGoalAction.setText(Mevenide.getResourceString("MavenXmlOutlinePage.RunGoal"));
+		runGoalAction.setToolTipText(Mevenide.getResourceString("MavenXmlOutlinePage.RunGoal"));
 		runGoalAction.setId(RUN_GOAL_ID);
 		runGoalAction.setImageDescriptor(Mevenide.getImageDescriptor("run_goal.gif"));
 	}
@@ -254,26 +254,26 @@ public class MavenXmlOutlinePage extends Page implements IContentOutlinePage {
 		filterOriginShortcutAction = new Action(null, Action.AS_CHECK_BOX) {
 			public void run() {
 				goalOriginFilter.setEnable(isChecked());
-				setToolTipText(isChecked() ? "Show global goals" : "Hide global goals");
+				setToolTipText(isChecked() ? Mevenide.getResourceString("MavenXmlOutlinePage.GlobalGoals.Show") : Mevenide.getResourceString("MavenXmlOutlinePage.GlobalGoals.Hide"));
 				goalsViewer.refresh(false);
 			}
 		}; 
 		filterOriginShortcutAction.setChecked(goalOriginFilter.isEnabled());
-		filterOriginShortcutAction.setToolTipText(filterOriginShortcutAction.isChecked() ? "Show global goals" : "Hide global goals");
+		filterOriginShortcutAction.setToolTipText(filterOriginShortcutAction.isChecked() ? Mevenide.getResourceString("MavenXmlOutlinePage.GlobalGoals.Show") : Mevenide.getResourceString("MavenXmlOutlinePage.GlobalGoals.Hide"));
 		filterOriginShortcutAction.setId(TOGGLE_FILTER_ORIGIN_ID);
 		filterOriginShortcutAction.setImageDescriptor(Mevenide.getImageDescriptor("filter_global_goals.gif"));
 		
 		toggleCustomFilteringAction = new Action(null, Action.AS_CHECK_BOX) {
 			public void run() {
 				patternFilter.apply(isChecked());
-				setToolTipText((isChecked() ? "Disable " : "Enable ") + "custom regex filters");
+				setToolTipText(isChecked() ? Mevenide.getResourceString("MavenXmlOutlinePage.RegexFilters.Disable") : Mevenide.getResourceString("MavenXmlOutlinePage.RegexFilters.Enable"));
 				PreferencesManager.getManager().setBooleanValue(CustomPatternFilter.APPLY_CUSTOM_FILTERS_KEY, isChecked());
 				PreferencesManager.getManager().store();
 				goalsViewer.refresh(false); 
 			}
 		};
 		toggleCustomFilteringAction.setChecked(goalOriginFilter.isEnabled());
-		toggleCustomFilteringAction.setToolTipText((toggleCustomFilteringAction.isChecked() ? "Disable " : "Enable ") + "custom regex filters");
+		toggleCustomFilteringAction.setToolTipText(toggleCustomFilteringAction.isChecked() ? Mevenide.getResourceString("MavenXmlOutlinePage.RegexFilters.Disable") : Mevenide.getResourceString("MavenXmlOutlinePage.RegexFilters.Enable"));
 		toggleCustomFilteringAction.setId(TOGGLE_CUSTOM_FILTER_ID);
 		toggleCustomFilteringAction.setImageDescriptor(Mevenide.getImageDescriptor("toggle_regex_filter.gif"));
 
@@ -282,8 +282,8 @@ public class MavenXmlOutlinePage extends Page implements IContentOutlinePage {
 			    openFilterDialog();
 			}
 		};
-		openFilterDialogAction.setText("Filter...");
-		openFilterDialogAction.setToolTipText("Open goal filter dialog");
+		openFilterDialogAction.setText(Mevenide.getResourceString("MavenXmlOutlinePage.FilterDialog.Text"));
+		openFilterDialogAction.setToolTipText(Mevenide.getResourceString("MavenXmlOutlinePage.FilterDialog.TooltipText"));
 		openFilterDialogAction.setId(OPEN_FILTER_DIALOG_ID);
 		openFilterDialogAction.setImageDescriptor(Mevenide.getImageDescriptor("open_filter_dialog.gif"));
 	}
