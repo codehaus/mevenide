@@ -48,6 +48,7 @@ import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.part.Page;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
+import org.mevenide.ui.eclipse.IImageRegistry;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.MevenideColors;
 import org.mevenide.ui.eclipse.goals.filter.CustomPatternFilter;
@@ -251,7 +252,7 @@ public class MavenXmlOutlinePage extends Page implements IContentOutlinePage {
 		};
 		toggleOfflineAction.setToolTipText(toggleOfflineAction.isChecked() ? Mevenide.getResourceString("MavenXmlOutlinePage.OnlineMode") : Mevenide.getResourceString("MavenXmlOutlinePage.OfflineMode"));
 		toggleOfflineAction.setId(TOGGLE_OFFLINE_ID);
-		toggleOfflineAction.setImageDescriptor(Mevenide.getImageDescriptor("elcl16/run_offline.gif"));
+		toggleOfflineAction.setImageDescriptor(Mevenide.getInstance().getImageRegistry().getDescriptor(IImageRegistry.OFFLINE));
 		
 		runGoalAction = new Action(null) {
 			public void run() {
@@ -262,8 +263,8 @@ public class MavenXmlOutlinePage extends Page implements IContentOutlinePage {
 		runGoalAction.setText(Mevenide.getResourceString("MavenXmlOutlinePage.RunGoal"));
 		runGoalAction.setToolTipText(Mevenide.getResourceString("MavenXmlOutlinePage.RunGoal"));
 		runGoalAction.setId(RUN_GOAL_ID);
-		runGoalAction.setImageDescriptor(Mevenide.getImageDescriptor("elcl16/run_goal.gif"));
-		runGoalAction.setDisabledImageDescriptor(Mevenide.getImageDescriptor("dlcl16/run_goal.gif"));
+		runGoalAction.setImageDescriptor(Mevenide.getInstance().getImageRegistry().getDescriptor(IImageRegistry.RUN_GOAL_ENABLED));
+		runGoalAction.setDisabledImageDescriptor(Mevenide.getInstance().getImageRegistry().getDescriptor(IImageRegistry.RUN_GOAL_DISABLED));
 	}
 
 	private void createFilterActions() {
@@ -277,7 +278,7 @@ public class MavenXmlOutlinePage extends Page implements IContentOutlinePage {
 		filterOriginShortcutAction.setChecked(goalOriginFilter.isEnabled());
 		filterOriginShortcutAction.setToolTipText(filterOriginShortcutAction.isChecked() ? Mevenide.getResourceString("MavenXmlOutlinePage.GlobalGoals.Show") : Mevenide.getResourceString("MavenXmlOutlinePage.GlobalGoals.Hide"));
 		filterOriginShortcutAction.setId(TOGGLE_FILTER_ORIGIN_ID);
-		filterOriginShortcutAction.setImageDescriptor(Mevenide.getImageDescriptor("elcl16/goals_filter.gif"));
+		filterOriginShortcutAction.setImageDescriptor(Mevenide.getInstance().getImageRegistry().getDescriptor(IImageRegistry.FILTER_GOALS));
 		
 		toggleCustomFilteringAction = new Action(null, Action.AS_CHECK_BOX) {
 			public void run() {
@@ -291,7 +292,7 @@ public class MavenXmlOutlinePage extends Page implements IContentOutlinePage {
 		toggleCustomFilteringAction.setChecked(goalOriginFilter.isEnabled());
 		toggleCustomFilteringAction.setToolTipText(toggleCustomFilteringAction.isChecked() ? Mevenide.getResourceString("MavenXmlOutlinePage.RegexFilters.Disable") : Mevenide.getResourceString("MavenXmlOutlinePage.RegexFilters.Enable"));
 		toggleCustomFilteringAction.setId(TOGGLE_CUSTOM_FILTER_ID);
-		toggleCustomFilteringAction.setImageDescriptor(Mevenide.getImageDescriptor("elcl16/regex_filter.gif"));
+		toggleCustomFilteringAction.setImageDescriptor(Mevenide.getInstance().getImageRegistry().getDescriptor(IImageRegistry.CUSTOM_FILTER));
 
 		openFilterDialogAction = new Action(null) {
 			public void run() {
@@ -301,7 +302,7 @@ public class MavenXmlOutlinePage extends Page implements IContentOutlinePage {
 		openFilterDialogAction.setText(Mevenide.getResourceString("MavenXmlOutlinePage.FilterDialog.Text"));
 		openFilterDialogAction.setToolTipText(Mevenide.getResourceString("MavenXmlOutlinePage.FilterDialog.TooltipText"));
 		openFilterDialogAction.setId(OPEN_FILTER_DIALOG_ID);
-		openFilterDialogAction.setImageDescriptor(Mevenide.getImageDescriptor("elcl16/filter_def.gif"));
+		openFilterDialogAction.setImageDescriptor(Mevenide.getInstance().getImageRegistry().getDescriptor(IImageRegistry.OPEN_FILTER_DIALOG));
 	}
 
 	private void contextualMenuAboutToShow(IMenuManager menuManager) {

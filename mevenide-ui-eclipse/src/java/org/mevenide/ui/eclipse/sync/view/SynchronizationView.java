@@ -65,6 +65,7 @@ import org.mevenide.project.IProjectChangeListener;
 import org.mevenide.project.ProjectChangeEvent;
 import org.mevenide.project.ProjectComparator;
 import org.mevenide.project.ProjectComparatorFactory;
+import org.mevenide.ui.eclipse.IImageRegistry;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.preferences.PreferencesManager;
 import org.mevenide.ui.eclipse.sync.action.ToggleViewAction;
@@ -398,7 +399,7 @@ public class SynchronizationView extends ViewPart implements IActionListener, IR
 			}
 		};
 		openFilterDialogAction.setText(Mevenide.getResourceString("SynchronizationView.FilterDialog.Text"));
-		openFilterDialogAction.setImageDescriptor(Mevenide.getImageDescriptor("elcl16/filter_def.gif"));
+		openFilterDialogAction.setImageDescriptor(Mevenide.getInstance().getImageRegistry().getDescriptor(IImageRegistry.OPEN_FILTER_DIALOG));
 		
 		separator  = new Separator();
 		

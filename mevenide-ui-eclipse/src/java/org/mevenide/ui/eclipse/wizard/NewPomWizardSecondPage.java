@@ -36,6 +36,7 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.mevenide.project.io.PomSkeletonBuilder;
+import org.mevenide.ui.eclipse.IImageRegistry;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.template.model.Template;
 import org.mevenide.ui.eclipse.template.model.TemplateContentProvider;
@@ -66,7 +67,7 @@ public class NewPomWizardSecondPage extends WizardPage {
     
     public NewPomWizardSecondPage() {
         super(Mevenide.getResourceString("NewPomWizardSecondPage.Name"), Mevenide.getResourceString("NewPomWizardSecondPage.Name"), null);
-        setImageDescriptor(Mevenide.getImageDescriptor("wizban/newmfile_wiz.gif"));
+        setImageDescriptor(Mevenide.getInstance().getImageRegistry().getDescriptor(IImageRegistry.MAVEN_POM_WIZ));
         setDescription(Mevenide.getResourceString("NewPomWizardSecondPage.Description"));
         setPageComplete(false);
     }
