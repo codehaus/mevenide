@@ -23,6 +23,9 @@
            <artifactId>forehead</artifactId>
            <version>1.0-beta-4</version>
            <url>http://forehead.werken.com/</url>
+           <properties>
+            	<eclipse.plugin.bundle>true</eclipse.plugin.bundle>
+            </properties>
         </dependency>
         <dependency>
             <groupId>maven</groupId>
@@ -40,6 +43,9 @@
             <version>2.0-rc1</version>
             <url>http://jakarta.apache.org/commons/httpclient/</url>
             <type>jar</type>
+            <properties>
+            	<eclipse.plugin.bundle>true</eclipse.plugin.bundle>
+            </properties>
         </dependency>
         <!-- mevenide dependencies -->
         <dependency>
