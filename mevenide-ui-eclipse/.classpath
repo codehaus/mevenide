@@ -48,7 +48,7 @@
     <classpathentry kind="var"
         path="ECLIPSE_HOME/plugins/org.eclipse.update.ui.forms_3.0.0/forms.jar" sourcepath="ECLIPSE_HOME/plugins/org.eclipse.platform.source_3.0.0/src/org.eclipse.update.ui.forms_3.0.0/formssrc.zip"/>
     <classpathentry exported="true" kind="var" path="LOGGING_COMMONS_LIB"/>
-    <classpathentry kind="var" path="SWT_LIB"/>
+    <classpathentry kind="var" path="SWT_LIB" sourcepath="ORG_ECLIPSE_PLATFORM_SOURCE_LINUX_GTK_X86_SRC/org.eclipse.swt.gtk_3.0.0/ws/gtk/swtsrc.zip"/>
     <classpathentry kind="var" path="MAVEN_REPO/commons-httpclient/jars/commons-httpclient-2.0-rc1.jar"/>
     <classpathentry kind="var" path="MAVEN_REPO/forehead/jars/forehead-1.0-beta-5.jar"/>
     <classpathentry kind="output" path="target/classes"/>
