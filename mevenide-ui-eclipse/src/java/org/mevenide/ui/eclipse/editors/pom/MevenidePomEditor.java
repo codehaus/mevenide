@@ -335,6 +335,13 @@ public class MevenidePomEditor extends FormEditor {
             log.debug("dirty = " + isDirty()); //$NON-NLS-1$
             log.debug("modeldirty = " + isModelDirty()); //$NON-NLS-1$
         }
+        
+        try {
+            this.pom = unmarshaller.parse(((IFileEditorInput) getEditorInput()).getFile().getRawLocation().toFile());
+        }
+        catch ( Exception e ) {
+            e.printStackTrace();
+        }
     }
 
     /**
