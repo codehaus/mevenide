@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plugin
    id="@maven.eclipse.plugin.artifact.id@"
-   name="%PluginName"
+   name="Mevenide UI"
    version="@maven.eclipse.plugin.artifact.version@"
    provider-name="Sourceforge"
    class="org.mevenide.ui.eclipse.Mevenide">
@@ -21,6 +21,7 @@
    <requires>
       <import plugin="@org.mevenide.core.id@"/>
       <import plugin="@org.mevenide.grabber.id@"/>
+      <import plugin="@org.mevenide.config.id@"/>
       <import plugin="org.eclipse.help.base"/>
       <import plugin="org.eclipse.ui.ide"/>
       <import plugin="org.eclipse.core.variables"/>

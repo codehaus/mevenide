@@ -40,6 +40,15 @@
             	<eclipse.plugin.bundle>true</eclipse.plugin.bundle>
             </properties>
         </dependency>
+        <dependency>
+            <groupId>mevenide</groupId>
+            <artifactId>mevenide-core-test</artifactId>
+            <version>0.1.1-SNAPSHOT</version>
+            <type>jar</type>
+            <properties>
+            	<eclipse.plugin.bundle>false</eclipse.plugin.bundle>
+            </properties>
+        </dependency>
         &inherited-dependencies;
     </dependencies>
 </project>
