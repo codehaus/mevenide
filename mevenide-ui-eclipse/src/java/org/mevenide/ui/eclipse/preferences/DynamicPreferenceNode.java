@@ -41,18 +41,18 @@ public class DynamicPreferenceNode extends PreferenceNode {
     private String pageTitle;
     private String pluginDescription;
     
-    private List pluginProperties;
+    private List pluginCategories;
     
     private IPreferencePage page;
 	private List subNodes;
 	private ImageDescriptor imageDescriptor;
 	private Image image;
 	
-    public DynamicPreferenceNode(String pageId, String pageTitle, String pluginDescription, List properties) {
+    public DynamicPreferenceNode(String pageId, String pageTitle, String pluginDescription, List categories) {
         super(pageId, pageTitle, null, DynamicPreferencePage.class.getName());
         this.pageId = pageId;
         this.pageTitle = pageTitle; 
-        this.pluginProperties = properties;
+        this.pluginCategories = categories;
         this.pluginDescription = pluginDescription;
     }
     
@@ -60,8 +60,9 @@ public class DynamicPreferenceNode extends PreferenceNode {
         if ( page == null ) {
             page = new DynamicPreferencePage();
             page.setTitle(pageTitle);
-            ((DynamicPreferencePage) page).setProperties(pluginProperties);
+            ((DynamicPreferencePage) page).setCategories(pluginCategories);
             ((DynamicPreferencePage) page).setPluginDescription(pluginDescription);
+            ((DynamicPreferencePage) page).setPluginName(pageTitle);
             if (getLabelImage() != null) {
     			page.setImageDescriptor(imageDescriptor);
             }
@@ -129,8 +130,7 @@ public class DynamicPreferenceNode extends PreferenceNode {
 	public IPreferenceNode[] getSubNodes() {
 		if (subNodes == null)
 			return new IPreferenceNode[0];
-		return (IPreferenceNode[]) subNodes
-				.toArray(new IPreferenceNode[subNodes.size()]);
+		return (IPreferenceNode[]) subNodes.toArray(new IPreferenceNode[subNodes.size()]);
 	}
 	
 	public IPreferenceNode remove(String id) {

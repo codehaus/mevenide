@@ -49,7 +49,7 @@
          <sequence>
             <element ref="description" minOccurs="0" maxOccurs="1"/>
             <sequence>
-               <element ref="property"/>
+               <element ref="category" minOccurs="1" maxOccurs="unbounded"/>
             </sequence>
          </sequence>
          <attribute name="name" type="string" use="required">
@@ -101,7 +101,7 @@
          <attribute name="label" type="string">
             <annotation>
                <documentation>
-                  the label used in the preference page to refer to this property. if not specified, id will be used.
+                  Human readable label used in the preference page to refer to this property. if not specified, id will be used.
                </documentation>
             </annotation>
          </attribute>
@@ -116,6 +116,26 @@
             <annotation>
                <documentation>
                   Provides a description of the property.
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="category">
+      <annotation>
+         <documentation>
+            allow to categorize plugin properties. It is especially useful for plugins that expose quite a number of properties (as does the Maven  PDE plugin).
+         </documentation>
+      </annotation>
+      <complexType>
+         <sequence>
+            <element ref="property" minOccurs="1" maxOccurs="unbounded"/>
+         </sequence>
+         <attribute name="name" type="string" use="required">
+            <annotation>
+               <documentation>
+                  Human readable name of the category.
                </documentation>
             </annotation>
          </attribute>
@@ -140,7 +160,8 @@
 &lt;extension point=&quot;org.mevenide.ui.preference&quot;&gt;
   &lt;plugin-provider id=&quot;maven-eclipse-plugin-plugin&quot; 
                    name=&quot;PDE Plugin&quot;&gt;
-      &lt;description&gt;%Plugin.Description&lt;/description&gt;
+    &lt;description&gt;%Plugin.Description&lt;/description&gt;
+    &lt;category name=&quot;Build&quot;&gt;
       &lt;property name=&quot;maven.eclipse.plugin.mode&quot; 
                 label=&quot;Build Mode&quot;
                 default=&quot;bundle&quot;
@@ -151,6 +172,7 @@
                 default=&quot;${maven.build.dir}/eclipse/dist&quot;
                 required=&quot;true&quot;
                 description=&quot;%DistDirectory.Description&quot;/&gt;
+    &lt;/category&gt;
   &lt;/plugin-provider&gt;
 &lt;/extension&gt;
 &lt;/pre&gt;
