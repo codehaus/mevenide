@@ -32,8 +32,7 @@ import org.mevenide.environment.LocationFinderAggregator;
 /**
  * 
  * @author <a href="mailto:rhill2@free.fr">Gilles Dodinet </a>
- * @version $Id: ExtractPropertiesTag.java,v 1.2 2004/07/17 17:06:25 gdodinet
- *          Exp $
+ * @version $Id$
  *  
  */
 public class ExtractPropertiesTag extends TagSupport {
