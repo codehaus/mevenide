@@ -35,7 +35,14 @@ import org.mevenide.util.JDomOutputter;
  */
 public class SourceDirectoryMarshaller {
 	
-	
+	/**
+	 * @refactor cyclomatic complexity &gt;&gt; 4
+	 * 
+	 * @param project
+	 * @param file
+	 * @return
+	 * @throws Exception
+	 */
 	public static SourceDirectoryGroup getSourceDirectoryGroup(IProject project, String file) throws Exception {
 		SourceDirectoryGroup group = new SourceDirectoryGroup(project);
 		List sourceDirectoryList = new ArrayList();
@@ -63,6 +70,12 @@ public class SourceDirectoryMarshaller {
 							sourceDirectoryList.add(sourceDirectory);
 						}
 					}
+				}
+			}
+			
+			for (int i = 0; i < group.getSourceDirectories().size(); i++) {
+				if ( !sourceDirectoryList.contains(group.getSourceDirectories().get(i)) ) {
+					sourceDirectoryList.add(group.getSourceDirectories().get(i));
 				}
 			}
 			
