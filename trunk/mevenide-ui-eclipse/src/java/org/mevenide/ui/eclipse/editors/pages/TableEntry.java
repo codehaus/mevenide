@@ -104,7 +104,7 @@ public class TableEntry extends PageEntry {
 	private TableEntry dependentEntry;
 	private Object parentPomObject;
 
-	private class OverridableSelectionAdapter extends SelectionAdapter {
+	private final class OverridableSelectionAdapter extends SelectionAdapter {
 		private IOverrideAdaptor adaptor;
     	
 		private OverridableSelectionAdapter(IOverrideAdaptor adaptor) {

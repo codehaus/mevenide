@@ -48,7 +48,6 @@
  */
 package org.mevenide.ui.eclipse.editors.pages;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.TreeSet;
@@ -56,20 +55,15 @@ import java.util.TreeSet;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Project;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Table;
 import org.eclipse.ui.model.WorkbenchContentProvider;
 import org.mevenide.reports.DefaultReportsFinder;
 import org.mevenide.reports.IReportsFinder;
@@ -81,9 +75,13 @@ import org.mevenide.ui.eclipse.Mevenide;
  */
 public class ReportsSection extends PageSection {
 
-	private static final Log log = LogFactory.getLog(OrganizationSection.class);
+	private static final Log log = LogFactory.getLog(ReportsSection.class);
 	
-	private TableViewer reportViewer, useViewer;
+	private TableViewer availableReportsViewer;
+	private TableViewer includedReportsViewer;
+	private Button overrideToggle;
+	private DraggableTableEntry entry;
+	private TreeSet availableReports = new TreeSet();
     
 	public ReportsSection(ReportsPage page) {
 		super(page);
@@ -93,140 +91,119 @@ public class ReportsSection extends PageSection {
 
 	public Composite createClient(Composite parent, PageWidgetFactory factory) {
 		Composite container = factory.createComposite(parent);
-		GridLayout layout = new GridLayout();
-		layout.numColumns = isInherited() ? 4 : 3;
+		FillLayout layout = new FillLayout();
 		layout.marginWidth = 2;
-		layout.verticalSpacing = 7;
-		layout.horizontalSpacing = 5;
+		layout.marginHeight = 2;
+		layout.spacing = 5;
 		container.setLayout(layout);
-		
-		final Project pom = getPage().getEditor().getPom();
-		
-		// Available reports table
-		Button toggle = createOverrideToggle(container, factory, 1, true);
-
-		Table table = factory.createTable(container, SWT.MULTI);
-		GridData data = new GridData(GridData.FILL_BOTH);
-		table.setLayoutData(data);
-
-		reportViewer = new TableViewer(table);
-		reportViewer.setContentProvider(new WorkbenchContentProvider());
-		reportViewer.setLabelProvider(new LabelProvider());
-		reportViewer.setSorter(new ViewerSorter());
 		
 		try {
 			IReportsFinder finder = new DefaultReportsFinder();
 			String[] reports = finder.findReports();
-			TreeSet reportSet = new TreeSet(Arrays.asList(reports));
-			reportViewer.add(reportSet.toArray());
+			availableReports = new TreeSet(Arrays.asList(reports));
 		} catch (Exception e) {
 			log.error("Unable to find reports", e);
 		}
-
-		Composite buttonContainer = factory.createComposite(container);
-		layout = new GridLayout();
-		layout.numColumns = 1;
-		layout.marginWidth = 2;
-		layout.verticalSpacing = 7;
-		layout.horizontalSpacing = 5;
-		buttonContainer.setLayout(layout);
-
-		final Button addButton = factory.createButton(buttonContainer, "Add Report >>", SWT.PUSH);
-		data = new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_BEGINNING);
-		data.horizontalSpan = 1;
-		addButton.setLayoutData(data);
 		
-		final Button removeButton = factory.createButton(buttonContainer, "<< Remove Report", SWT.PUSH);
-		data = new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_BEGINNING);
-		data.horizontalSpan = 1;
-		removeButton.setLayoutData(data);
-
-		table = factory.createTable(container, SWT.MULTI);
-		data = new GridData(GridData.FILL_BOTH);
-		table.setLayoutData(data);
-
-		useViewer = new TableViewer(table);
-		useViewer.setContentProvider(new WorkbenchContentProvider());
-		useViewer.setLabelProvider(new LabelProvider());
-		useViewer.setSorter(new ViewerSorter());
+		availableReportsViewer = createAvailableReportsViewer(container, factory);		
+		includedReportsViewer = createIncludedReportsViewer(container, factory);
 		
-		reportViewer.addPostSelectionChangedListener(
-			new ISelectionChangedListener() {
-				public void selectionChanged(SelectionChangedEvent e) {
-					if (e.getSelection().isEmpty()) {
-						addButton.setEnabled(false);
-					} else {
-						addButton.setEnabled(true);
-					}
-				}
+		entry = new DraggableTableEntry(availableReportsViewer, includedReportsViewer, overrideToggle);
+		OverrideAdaptor adaptor = new OverrideAdaptor() {
+			public void overrideParent(Object value) {
+				setReports((List) value);
 			}
-		);
-		useViewer.addPostSelectionChangedListener(
-			new ISelectionChangedListener() {
-				public void selectionChanged(SelectionChangedEvent e) {
-					if (e.getSelection().isEmpty()) {
-						removeButton.setEnabled(false);
-					} else {
-						removeButton.setEnabled(true);
-					}
-				}
+			public Object acceptParent() {
+				resetViewers();
+				return getParentPom().getReports();
 			}
-		);
-		
-		addButton.addSelectionListener(
-			new SelectionAdapter() {
-				public void widgetSelected(SelectionEvent e) {
-					IStructuredSelection selected = (IStructuredSelection) reportViewer.getSelection();
-					Object[] reportsToAdd = selected.toArray();
-					reportViewer.remove(reportsToAdd);
-					useViewer.add(reportsToAdd);
-					
-					setReports(pom, useViewer);
-				}
-			}
-		);
-		
-		removeButton.addSelectionListener(
-			new SelectionAdapter() {
-				public void widgetSelected(SelectionEvent e) {
-					IStructuredSelection selected = (IStructuredSelection) useViewer.getSelection();
-					Object[] reportsToRemove = selected.toArray();
-					useViewer.remove(reportsToRemove);
-					reportViewer.add(reportsToRemove);
-					
-					setReports(pom, useViewer);
-				}
-			}
-		);
-		
-		addButton.setEnabled(false);
-		removeButton.setEnabled(false);
+		};
+		entry.addEntryChangeListener(adaptor);
+		entry.addOverrideAdaptor(adaptor);
 
 		factory.paintBordersFor(container);
 		return container;
 	}
 
-	private void setReports(Project pom, TableViewer viewer) {
-		int reportCount = viewer.getTable().getItemCount();
-		List reports = new ArrayList(reportCount);
-		for (int i = 0; i < reportCount; i++) {
-			String report = (String) viewer.getElementAt(i);
-			reports.add(report);
-		}
-		pom.setReports(reports);
+	private TableViewer createAvailableReportsViewer(Composite container, PageWidgetFactory factory) {
+		Composite availableContainer = factory.createComposite(container);
+		GridLayout layout = new GridLayout();
+		layout.numColumns = isInherited() ? 2 : 1;
+		layout.marginWidth = 2;
+		layout.verticalSpacing = 7;
+		layout.horizontalSpacing = 5;
+		availableContainer.setLayout(layout);
 		
+		if (isInherited()) createSpacer(availableContainer, factory);
+		factory.createHeadingLabel(availableContainer, Mevenide.getResourceString("ReportsSection.available.reports.label"));
+
+		overrideToggle = createOverrideToggle(availableContainer, factory, 1, true);
+
+		TableViewer viewer = new TableViewer(availableContainer, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
+		viewer.setContentProvider(new WorkbenchContentProvider());
+		viewer.setLabelProvider(new LabelProvider());
+		viewer.setSorter(new ViewerSorter());
+		GridData data = new GridData(GridData.FILL_BOTH);
+		viewer.getTable().setLayoutData(data);
+		
+		return viewer;
+	}
+
+	private TableViewer createIncludedReportsViewer(Composite container, PageWidgetFactory factory) {
+		Composite includedContainer = factory.createComposite(container);
+		GridLayout layout = new GridLayout();
+		layout.numColumns = 1;
+		layout.marginWidth = 2;
+		layout.verticalSpacing = 7;
+		layout.horizontalSpacing = 5;
+		includedContainer.setLayout(layout);
+		
+		factory.createHeadingLabel(includedContainer, Mevenide.getResourceString("ReportsSection.included.reports.label"));
+
+		TableViewer viewer = new TableViewer(includedContainer, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
+		viewer.setContentProvider(new WorkbenchContentProvider());
+		viewer.setLabelProvider(new LabelProvider());
+		GridData data = new GridData(GridData.FILL_BOTH);
+		viewer.getTable().setLayoutData(data);
+
+		return viewer;
+	}
+
+	private void setReports(List reports) {
+		if (log.isDebugEnabled()) {
+			log.debug("setting reports on pom: " + reports);
+		}
+		getPage().getEditor().getPom().setReports(reports);
 		getPage().getEditor().setModelDirty(true);
 	}
 
 	public void update(Project pom) {
+		if (log.isDebugEnabled()) {
+			log.debug("updating reports = " + pom.getReports());
+		}
+		resetViewers();
+
 		List pomReports = pom.getReports();
-		if (pomReports != null) {
-			Object[] reports = pomReports.toArray();
-			useViewer.add(reports);
-			reportViewer.remove(reports);
+		List parentReports = isInherited() ? getParentPom().getReports() : null;
+		if (pomReports != null && !pomReports.isEmpty()) {
+			entry.addEntries(pomReports);
+			entry.setInherited(false);
+		}
+		else if (parentReports != null) {
+			entry.addEntries(parentReports, true);
+			entry.setInherited(true);
+		}
+		else {
+			entry.setInherited(false);
 		}
 		
 		super.update(pom);
+	}
+
+	private void resetViewers() {
+		availableReportsViewer.getTable().removeAll();
+		availableReportsViewer.add(availableReports.toArray());
+		includedReportsViewer.getTable().removeAll();
 	}
 
 }
