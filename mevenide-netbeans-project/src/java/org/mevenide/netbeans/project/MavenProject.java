@@ -172,7 +172,7 @@ public class MavenProject implements Project {
             logger.warn("Strange thing here. src dir not found.");
             return null;
         }
-        File fl = new File(path, "src/java");
+        File fl = new File(path, "java");
         return fl.toURI();
     }
     
