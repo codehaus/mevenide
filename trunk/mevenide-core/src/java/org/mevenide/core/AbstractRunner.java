@@ -57,8 +57,7 @@ public abstract class AbstractRunner {
 	 * @throws Exception
 	 */
 	public static AbstractRunner getRunner() throws Exception {
-		return (AbstractRunner) new DiscoverClass().newInstance(
-			AbstractRunner.class);
+		return (AbstractRunner) new DiscoverClass().newInstance(AbstractRunner.class);
 	}
 
 	/**

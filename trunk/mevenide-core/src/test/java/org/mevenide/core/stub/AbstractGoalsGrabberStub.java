@@ -12,42 +12,20 @@
  * Lesser General Public License for more details.
  * 
  */
-package org.mevenide.core;
+package org.mevenide.core.stub;
 
-
-import junit.framework.TestCase;
+import org.mevenide.core.AbstractGoalsGrabber;
 
 /**
  * 
  * @author Gilles Dodinet (gdodinet@wanadoo.fr)
- * @version $Id: AbstractGoalsGrabberTest.java 20 avr. 2003 21:03:4513:34:35 Exp gdodinet 
+ * @version $Id: AbstractGoalsGrabberStub.java 8 mai 2003 14:56:2213:34:35 Exp gdodinet 
  * 
  */
-public class AbstractGoalsGrabberTest extends TestCase {
+public class AbstractGoalsGrabberStub extends AbstractGoalsGrabber {
 
-	protected void setUp() throws Exception {
-		super.setUp();
+	
+	public void load() throws Exception {
 	}
 
-	protected void tearDown() throws Exception {
-		super.tearDown();
-	}
-
-	public void testLoadString() {
-      
-	}
-
-	public void testGetPlugins() {
-	}
-
-	public void testGetGoals() {
-	}
-
-	public void testGetDescription() {
-	}
-
-	public void testLoad() {
-	}
-
-   
 }

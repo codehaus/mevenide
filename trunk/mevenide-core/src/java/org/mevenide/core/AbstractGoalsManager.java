@@ -117,7 +117,7 @@ public abstract class AbstractGoalsManager implements IGoalsManager {
      * @param plugin
      * @return String[] the selected goals under <code>plugin</code> control 
      */
-    public String[] getSelectedGoals(String plugin) {
+    public String[] getGoals(String plugin) {
         List selectedGoals = new ArrayList(); 
         Iterator iterator = runnableGoals.iterator();
         while ( iterator.hasNext() ) {
