@@ -270,4 +270,12 @@ public class JavaProjectUtils {
     	
     	return artifact;
     }
+    
+    public static void setDefaultOuputLocation(IProject project, String outputLocation) throws Exception {
+        IJavaProject javaProject = JavaCore.create(project);
+        javaProject.setOutputLocation(project.getFullPath().append(outputLocation), null);
+        
+    }
+    
 }
+

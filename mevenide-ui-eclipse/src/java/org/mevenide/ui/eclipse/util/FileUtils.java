@@ -18,6 +18,7 @@ package org.mevenide.ui.eclipse.util;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
@@ -245,11 +246,31 @@ public class FileUtils {
 	public static void refreshProperties(IContainer eclipseContainer) {
         IFile file = eclipseContainer.getFile(new Path("project.properties"));
         try {
-            file.refreshLocal(IResource.DEPTH_ZERO, null);
+            if ( file.exists() ) {
+                file.refreshLocal(IResource.DEPTH_ZERO, null);
+            }
         }
         catch (CoreException e) {
             String message = "Unable to refresh project.properties"; 
             log.error(message, e);
         }
     }
+	
+	public static File getProjectPropertiesFile(File containerDir) throws IOException {
+	    File file = new File(containerDir, "project.properties");
+	    String errorMessage = "Unable to create project.properties in directory " + containerDir;
+	    if ( !file.exists() ) {
+	        try {
+                boolean result = file.createNewFile();
+                if ( !result ) {
+                    log.warn(errorMessage);
+                }
+            }
+            catch (IOException e) {
+                log.error(errorMessage, e);
+                throw e;
+            }
+	    }
+	    return file;
+	}
 }

@@ -48,7 +48,6 @@ public class SourceDirectoryUtilTest extends AbstractMevenideTestCase {
 		SourceDirectoryUtil.addSource(project, "src/pyo/javaa", ProjectConstants.MAVEN_SRC_DIRECTORY);
 		SourceDirectoryUtil.addSource(project, "src/pyo/teest/javaa", ProjectConstants.MAVEN_TEST_DIRECTORY);
 		SourceDirectoryUtil.addSource(project, "src/pyo/aspeect", ProjectConstants.MAVEN_ASPECT_DIRECTORY);
-		SourceDirectoryUtil.addSource(project, "src/pyo/iut/javaa", ProjectConstants.MAVEN_INTEGRATION_TEST_DIRECTORY);
 		
 		assertEquals("src/pyo/javaa", project.getBuild().getSourceDirectory());
 		assertEquals("src/pyo/teest/javaa", project.getBuild().getUnitTestSourceDirectory());
