@@ -16,7 +16,7 @@ package org.mevenide.ui.eclipse.sync.wizard;
 
 import java.io.File;
 
-import org.apache.maven.project.Dependency;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.Path;
@@ -76,10 +76,12 @@ public class SynchronizeWizard extends Wizard {
 				}				
 			}
 			
-			for (int i = 0; i < dependencyGoup.getDependencies().size(); i++) {
-				Dependency dependency = (Dependency) dependencyGoup.getDependencies().get(i);
-				pomWriter.addDependency(dependency, pomFile);
-			}
+//			for (int i = 0; i < dependencyGoup.getDependencies().size(); i++) {
+//				Dependency dependency = (Dependency) dependencyGoup.getDependencies().get(i);
+//				pomWriter.addDependency(dependency, pomFile);
+//			}
+
+			pomWriter.setDependencies(dependencyGoup.getDependencies(), pomFile);
 			
 			sourcePage.saveState();
 			dependencyPage.saveState();
