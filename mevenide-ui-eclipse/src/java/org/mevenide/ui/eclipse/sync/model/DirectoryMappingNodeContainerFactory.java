@@ -56,6 +56,7 @@ import org.apache.commons.logging.LogFactory;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.mevenide.ui.eclipse.DefaultPathResolver;
+import org.mevenide.ui.eclipse.util.FileUtils;
 import org.mevenide.ui.eclipse.util.SourceDirectoryTypeUtil;
 
 /**
@@ -83,8 +84,11 @@ public class DirectoryMappingNodeContainerFactory {
 	                
 	                IClasspathEntry classpathEntry = classpathEntries[i];
 	                DirectoryMappingNode node = createDirectoryMappingNode(javaProject, classpathEntry);
-	                node.setParent(con);
-	                nodes.add(node);
+	                String ignoreLine = ((Directory) node.getResolvedArtifact()).getPath();
+	                if ( !FileUtils.isArtifactIgnored(ignoreLine, javaProject.getProject()) ) {
+	                	node.setParent(con);
+	                	nodes.add(node);
+	                }
 	            }
 	        }
 			IArtifactMappingNode[] artifactNodes = new IArtifactMappingNode[nodes.size()]; 
