@@ -48,11 +48,11 @@ public class ProjectReaderTest extends TestCase {
 	public void testGetSourceDirectories() throws Exception {
 		Map sourceDirectories = projectReader.getSourceDirectories(pom);
 		
-		Iterator it = sourceDirectories.keySet().iterator();
-		while (it.hasNext()) {
-			String sourceType = (String) it.next();
-			System.err.println(sourceType + " : " + sourceDirectories.get(sourceType));
-		}
+//		Iterator it = sourceDirectories.keySet().iterator();
+//		while (it.hasNext()) {
+//			String sourceType = (String) it.next();
+//			System.err.println(sourceType + " : " + sourceDirectories.get(sourceType));
+//		}
 		
 		assertEquals(3, sourceDirectories.size());
 		
