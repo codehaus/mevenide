@@ -46,7 +46,7 @@ import org.mevenide.environment.LocationFinderAggregator;
 import org.mevenide.project.io.PomSkeletonBuilder;
 import org.mevenide.project.io.ProjectReader;
 import org.mevenide.ui.eclipse.Mevenide;
-import org.mevenide.ui.eclipse.MevenidePreferenceKeys;
+import org.mevenide.ui.eclipse.preferences.MevenidePreferenceKeys;
 import org.mevenide.ui.eclipse.preferences.PreferencesManager;
 import org.mevenide.ui.eclipse.util.FileUtils;
 
