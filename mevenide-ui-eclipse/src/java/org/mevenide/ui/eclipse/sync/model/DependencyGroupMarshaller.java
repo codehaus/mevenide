@@ -73,10 +73,6 @@ import org.mevenide.util.JDomOutputter;
  * 
  */
 public abstract class DependencyGroupMarshaller {
-	private static final String PROPERTY_VALUE = "value";
-	private static final String PROPERTY_KEY = "key";
-	private static final String PROPERTY_ELEM = "property";
-	private static final String PROPERTIES_ELEM = "properties";
 	private static Log log = LogFactory.getLog(DependencyGroupMarshaller.class);
 	
 	
@@ -93,6 +89,12 @@ public abstract class DependencyGroupMarshaller {
 	private static final String ARTIFACT_ID_ATTR = "artifactId";
 	private static final String ARTIFACT_ATTR = "artifact";
 	private static final String TIMESTAMP_ATTR = "timestamp";
+	private static final String INHERIT_ATTR = "isInherited";
+
+    private static final String PROPERTY_VALUE = "value";
+	private static final String PROPERTY_KEY = "key";
+	private static final String PROPERTY_ELEM = "property";
+	private static final String PROPERTIES_ELEM = "properties";
 	
 	
 	
@@ -154,11 +156,13 @@ public abstract class DependencyGroupMarshaller {
 						
 						DependencyUtil.refreshGroupId(dependency);
 						
+						boolean isInherited = Boolean.valueOf(dependencyElement.getAttributeValue(INHERIT_ATTR)).booleanValue();
+
 						String l = dependencyElement.getAttributeValue(TIMESTAMP_ATTR);
 						if ( timeStamp == Long.parseLong(l) ) {
-							dependenciesList.add(dependency);
+							dependenciesList.add(new DependencyWrapper(dependency, isInherited, group));
 						}
-						allDependenciesList.add(dependency);
+						allDependenciesList.add(new DependencyWrapper(dependency, isInherited, group));
 						
 					}
 				}
@@ -171,10 +175,10 @@ public abstract class DependencyGroupMarshaller {
 			List projectDependencies = group.getDependencies();
 			for (int i = 0; i < projectDependencies.size(); i++) {
 				boolean alreadyAddedDependency = false;
-				Dependency projectDependency = (Dependency) projectDependencies.get(i);
+				DependencyWrapper projectDependency = (DependencyWrapper) projectDependencies.get(i);
 				for (int j = 0; j < allDependenciesList.size(); j++) {
-					Dependency savedDependency = (Dependency) allDependenciesList.get(j);
-					if ( savedDependency.getArtifact().equals(projectDependency.getArtifact()) ) {
+					DependencyWrapper savedDependency = (DependencyWrapper) allDependenciesList.get(j);
+					if ( savedDependency.getDependency().getArtifact().equals(projectDependency.getDependency().getArtifact()) ) {
 						alreadyAddedDependency = true;
 						break;
 					}
@@ -277,7 +281,7 @@ public abstract class DependencyGroupMarshaller {
 		
 		
 		for (int i = 0; i < dependencies.size(); i++) {
-			Dependency dependency = (Dependency) dependencies.get(i);
+			Dependency dependency = ((DependencyWrapper) dependencies.get(i)).getDependency();
 			Element dependencyElement = new Element(DEPENDENCY_ELEM);
 			dependencyElement.setAttribute(GROUP_ID_ATTR, dependency.getGroupId() == null ? "" : dependency.getGroupId()) ;
 			dependencyElement.setAttribute(ARTIFACT_ID_ATTR, dependency.getArtifactId() == null ? "" : dependency.getArtifactId()) ;
@@ -285,7 +289,7 @@ public abstract class DependencyGroupMarshaller {
 			dependencyElement.setAttribute(VERSION_ATTR, dependency.getVersion() == null ? "" : dependency.getVersion()) ;
 			dependencyElement.setAttribute(TYPE_ATTR, dependency.getType() == null ? "" : dependency.getType()) ;
 			dependencyElement.setAttribute(TIMESTAMP_ATTR, Long.toString(timeStamp));
-			
+			dependencyElement.setAttribute(INHERIT_ATTR, Boolean.toString(((DependencyWrapper) dependencies.get(i)).isInherited()));
 			saveDependencyProperties(dependency, dependencyElement, timeStamp);
 			
 			

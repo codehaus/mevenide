@@ -76,7 +76,9 @@ import org.mevenide.ui.eclipse.util.SourceDirectoryTypeUtil;
  */
 public class SourceDirectoryMappingViewControl {
 	
-	private SourceDirectoryMappingViewControl(){
+	private static final String SOURCE_TYPE = "source.type";
+    private static final String SOURCE_DIRECTORY = "source.directory";
+    private SourceDirectoryMappingViewControl(){
 	}
 	
 	public static TableViewer getViewer(Composite parent) {
@@ -113,7 +115,7 @@ public class SourceDirectoryMappingViewControl {
 		
 	}
 	private static void configureViewer(final TableViewer tableViewer) {
-		tableViewer.setColumnProperties(new String[] {"source.directory", "source.type"});
+		tableViewer.setColumnProperties(new String[] {SourceDirectoryMappingViewControl.SOURCE_DIRECTORY, SourceDirectoryMappingViewControl.SOURCE_TYPE});
 		
 		tableViewer.setCellEditors(new CellEditor[] {
 			new TextCellEditor(), 
@@ -122,21 +124,21 @@ public class SourceDirectoryMappingViewControl {
 		
 		tableViewer.setCellModifier(new ICellModifier() {
 			public boolean canModify(Object element, String property) {
-				return "source.type".equals(property);
+				return SourceDirectoryMappingViewControl.SOURCE_TYPE.equals(property);
 			}
 			
 			public void modify(Object element, String property, Object value) {
-				if ( "source.type".equals(property) ) {
+				if ( SourceDirectoryMappingViewControl.SOURCE_TYPE.equals(property) ) {
 					if (element instanceof Item) {
 						element = ((Item) element).getData();
 					}
 					((SourceDirectory) element).setDirectoryType(SourceDirectoryTypeUtil.sourceTypes[((Integer)value).intValue()]);
-					tableViewer.update(element, new String[] {"source.type"});
+					tableViewer.update(element, new String[] {SourceDirectoryMappingViewControl.SOURCE_TYPE});
 				}
 			}
 			
 			public Object getValue(Object element, String property) {
-				if ( "source.directory".equals(property) ) {
+				if ( SourceDirectoryMappingViewControl.SOURCE_DIRECTORY.equals(property) ) {
 					return ((SourceDirectory) element).getDisplayPath();
 				}
 				else {

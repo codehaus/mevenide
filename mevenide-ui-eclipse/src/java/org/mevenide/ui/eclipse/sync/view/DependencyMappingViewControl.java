@@ -49,6 +49,7 @@
 package org.mevenide.ui.eclipse.sync.view;
 
 import org.eclipse.jface.viewers.CellEditor;
+import org.eclipse.jface.viewers.CheckboxCellEditor;
 import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.jface.viewers.TableTreeViewer;
 import org.eclipse.jface.viewers.TextCellEditor;
@@ -62,6 +63,7 @@ import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.sync.model.DependencyGroup;
 import org.mevenide.ui.eclipse.sync.model.DependencyGroupContentProvider;
 import org.mevenide.ui.eclipse.sync.model.DependencyGroupLabelProvider;
+import org.mevenide.ui.eclipse.sync.model.DependencyWrapper;
 
 /**
  * 
@@ -71,7 +73,12 @@ import org.mevenide.ui.eclipse.sync.model.DependencyGroupLabelProvider;
  */
 public class DependencyMappingViewControl {
 	
-	private DependencyMappingViewControl(){
+	private static final String INHERITED = "inherited";
+    private static final String VALUE = "value";
+    private static final String ATTRIBUTE = "attribute";
+    
+    
+    private DependencyMappingViewControl(){
 	}
 	
 	public static TableTreeViewer getViewer(Composite parent) {
@@ -79,7 +86,7 @@ public class DependencyMappingViewControl {
 	}
 	
 	public static TableTreeViewer getViewer(Composite parent, int styles) {
-			
+		
 		//configure viewer layout
 		TableTreeViewer tableTreeViewer = new TableTreeViewer(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION | styles);
 		
@@ -109,39 +116,57 @@ public class DependencyMappingViewControl {
 		column.setText("Value");
 		column.setWidth(300);
 		
+		column = new TableColumn(table, SWT.LEFT);
+		column.setText("I");
+		column.setWidth(16);
+		
 	}
 	private static void configureViewer(final TableTreeViewer tableTreeViewer) {
-		tableTreeViewer.setColumnProperties(new String[] {"attribute", "value"});
-		
 		TextCellEditor editor = new TextCellEditor(tableTreeViewer.getTableTree().getTable());
 		editor.activate();
 		
+		CheckboxCellEditor cbEditor =  new CheckboxCellEditor(tableTreeViewer.getTableTree().getTable());
+		cbEditor.activate();
+		
+		
 		tableTreeViewer.setCellEditors(new CellEditor[] {
 			new TextCellEditor(),
-			editor
-			
+			editor,
+			cbEditor,
 		});
 		
 		tableTreeViewer.setCellModifier(new ICellModifier() {
 			public boolean canModify(Object element, String property) {
-				return "value".equals(property) && element instanceof DependencyGroupContentProvider.DependencyInfo;
+				return 
+					DependencyMappingViewControl.VALUE.equals(property) && element instanceof DependencyGroupContentProvider.DependencyInfo
+					|| DependencyMappingViewControl.INHERITED.equals(property) && element instanceof DependencyWrapper;
+					
 			}
 			
 			public void modify(Object element, String property, Object value) {
-				if ( "value".equals(property) ) {
+				if ( DependencyMappingViewControl.VALUE.equals(property) ) {
 					if (element instanceof Item) {
 						element = ((Item) element).getData();
 					}
 					((DependencyGroupContentProvider.DependencyInfo) element).setInfo((String)value);
-					tableTreeViewer.update(element, null);
 				}
+				if ( DependencyMappingViewControl.INHERITED.equals(property) ) {
+					if (element instanceof Item) {
+						element = ((Item) element).getData();
+					}	
+					((DependencyWrapper) element).setInherited(((Boolean)value).booleanValue());
+				}
+				tableTreeViewer.update(element, null);
 			}
 			
 			public Object getValue(Object element, String property) {
-				if ( element instanceof DependencyGroupContentProvider.DependencyInfo && "attribute".equals("property") ) {
+				if ( element instanceof DependencyWrapper && DependencyMappingViewControl.INHERITED.equals(property) ) {
+					return new Boolean(((DependencyWrapper) element).isInherited());
+				}
+				if ( element instanceof DependencyGroupContentProvider.DependencyInfo && DependencyMappingViewControl.ATTRIBUTE.equals(property) ) {
 					return ((DependencyGroupContentProvider.DependencyInfo) element).getDependency().getArtifact();
 				}
-				if ( element instanceof DependencyGroupContentProvider.DependencyInfo && "value".equals(property) ) {
+				if ( element instanceof DependencyGroupContentProvider.DependencyInfo && DependencyMappingViewControl.VALUE.equals(property) ) {
 					return ((DependencyGroupContentProvider.DependencyInfo) element).getInfo();
 				}
 				else {
@@ -149,18 +174,18 @@ public class DependencyMappingViewControl {
 				} 
 			}
 		});
-
-		tableTreeViewer.setContentProvider(new DependencyGroupContentProvider());
 		
-		//tableTreeViewer.setLabelProvider(new );
+		tableTreeViewer.setColumnProperties(new String[] {DependencyMappingViewControl.ATTRIBUTE, DependencyMappingViewControl.VALUE, DependencyMappingViewControl.INHERITED});
+		
+		tableTreeViewer.setContentProvider(new DependencyGroupContentProvider());
 		
 //		viewer.setSorter(new ViewerSorter() {
 //			
 //		});
 
-		tableTreeViewer.setLabelProvider(new DependencyGroupLabelProvider());
-
 		tableTreeViewer.setInput(new DependencyGroup(Mevenide.getPlugin().getProject()));
+		
+		tableTreeViewer.setLabelProvider(new DependencyGroupLabelProvider());
 	}
 	
 }

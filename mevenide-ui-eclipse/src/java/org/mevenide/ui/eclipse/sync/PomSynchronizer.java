@@ -110,6 +110,7 @@ public class PomSynchronizer extends AbstractPomSynchronizer implements ISynchro
 			
 		}
 		catch (Exception e) {
+			//e.printStackTrace();
 			log.debug("Unable to synchronize project '" + project.getName() + "' due to : " + e);
 		}
 	}
@@ -162,7 +163,8 @@ public class PomSynchronizer extends AbstractPomSynchronizer implements ISynchro
 			}				
 		}
 		
-		List dependencies = dependencyGoup.getDependencies();
+		//List dependencies = dependencyGoup.getDependencies();
+		List dependencies = dependencyGoup.getNonInheritedDependencies();
 		log.debug("Writing back " + dependencies.size() + " dependencies to file '" + pomFile.getName() +"'");
 		//dependencies.addAll(ProjectUtil.getCrossProjectDependencies());
 		
