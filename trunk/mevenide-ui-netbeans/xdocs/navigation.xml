@@ -33,7 +33,7 @@
         </menu>
         
         <menu name="Developer">
-            <item name="Task List" href="todos.html">
+            <item name="Task List" href="todos.html"/>
         </menu>
         
         <search/>
