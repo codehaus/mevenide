@@ -240,7 +240,11 @@ public class Mevenide extends AbstractUIPlugin {
     public String getPreferencesFilename() {
 		return getFile("prefs.ini");   
     }
-	
+    
+    public String getDynamicPreferencesFilename() {
+		return getFile("dyn_prefs.ini");   
+    }
+    
 	public String getFile(String fname) {
 		File baseDir = Mevenide.getInstance().getStateLocation().toFile();
 		File f = new File(baseDir, fname);

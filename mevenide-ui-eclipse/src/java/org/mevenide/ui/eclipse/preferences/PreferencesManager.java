@@ -33,6 +33,8 @@ public class PreferencesManager {
 	private static Log log = LogFactory.getLog(PreferencesManager.class);
 	
 	private static PreferencesManager manager = new PreferencesManager();
+	private static PreferencesManager dynamicPreferencesManager = new PreferencesManager();
+	
 	private PreferenceStore preferenceStore;
 	
 	
@@ -41,6 +43,10 @@ public class PreferencesManager {
 	
 	public static PreferencesManager getManager()  {
 		return manager;
+	}
+	
+	public static PreferencesManager getDynamicPreferencesManager()  {
+		return dynamicPreferencesManager;
 	}
 	
 	public void loadPreferences() {
@@ -65,7 +71,15 @@ public class PreferencesManager {
 	}
 	
 	private String getPreferenceStoreFilename() {
-		return Mevenide.getInstance().getPreferencesFilename() ; 
+	    String preferenceStoreFileName = null;
+	    if ( this == manager ) {
+	        preferenceStoreFileName = Mevenide.getInstance().getPreferencesFilename();
+	    }
+	    else {
+	        preferenceStoreFileName = Mevenide.getInstance().getDynamicPreferencesFilename();
+	    }
+	    return preferenceStoreFileName;
+	    
 	}
 	
 	public String getValue(String property) {

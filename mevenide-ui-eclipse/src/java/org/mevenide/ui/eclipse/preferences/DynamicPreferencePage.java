@@ -47,7 +47,7 @@ public class DynamicPreferencePage extends PreferencePage implements IWorkbenchP
     
     public DynamicPreferencePage() {
         super();
-        preferencesManager = PreferencesManager.getManager();
+        preferencesManager = PreferencesManager.getDynamicPreferencesManager();
 		preferencesManager.loadPreferences();
     }
     
