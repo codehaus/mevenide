@@ -20,14 +20,20 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Project;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Layout;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
@@ -49,7 +55,11 @@ import org.mevenide.ui.eclipse.editors.PomXmlSourcePage;
 public abstract class AbstractPomEditorPage 
 	extends EditorPart
 	implements IPomEditorPage, IProjectChangeListener {
+	
+	private static final Log log = LogFactory.getLog(AbstractPomEditorPage.class);
 
+	private ScrolledComposite scroller;
+	private Composite control;
 	private PageWidgetFactory factory;
     private MevenidePomEditor editor;
     private String heading;
@@ -59,7 +69,34 @@ public abstract class AbstractPomEditorPage
 	private boolean updateNeeded;
 	private boolean active;
     
-    public AbstractPomEditorPage(String mainHeading, MevenidePomEditor pomEditor) {
+	class PageLayout extends Layout
+	{
+		protected Point computeSize(Composite composite, int widthHint, int heightHint, boolean flushCache)
+		{
+			if (widthHint != SWT.DEFAULT && heightHint != SWT.DEFAULT) {
+				return new Point(widthHint, heightHint);
+			}
+			return computeMinimumSize(composite, heightHint, flushCache);
+		}
+		protected void layout(Composite composite, boolean flushCache)
+		{
+			Rectangle clientArea = composite.getClientArea();
+			Control client = composite.getChildren()[0];
+			if (client != null && !client.isDisposed())
+			{
+				client.setBounds(clientArea.x, clientArea.y, clientArea.width, clientArea.height);
+			}
+		}
+		
+		private Point computeMinimumSize(Composite composite, int heightHint, boolean flushCache) {
+			Control client = composite.getChildren()[0];
+			Rectangle clientBounds = client.getBounds();
+			int widthHint = clientBounds.x + clientBounds.width;
+			return client.computeSize(widthHint, heightHint, flushCache);			
+		}
+	}
+	
+	public AbstractPomEditorPage(String mainHeading, MevenidePomEditor pomEditor) {
         this.editor = pomEditor;
         this.heading = mainHeading;
         this.factory = new PageWidgetFactory();
@@ -89,26 +126,26 @@ public abstract class AbstractPomEditorPage
      */
     public void createPartControl(Composite parent)
 	{
-    	Composite control = new Composite(parent, SWT.NONE);
+    	Composite pageContainer = new Composite(parent, SWT.NONE);
     	
 		GridLayout layout = new GridLayout();
 		layout.numColumns = 1;
 		layout.marginHeight = 0;
 		layout.marginWidth = 0;
-		control.setLayout(layout);
-		control.setBackground(MevenideColors.WHITE);
+		pageContainer.setLayout(layout);
+		pageContainer.setBackground(MevenideColors.WHITE);
 
         // heading
 		GridData data = new GridData(GridData.FILL_HORIZONTAL);
 		data.horizontalSpan = 1;
-        headingLabel = new Label(control, SWT.NONE);
+        headingLabel = new Label(pageContainer, SWT.NONE);
         headingLabel.setFont(MevenideFonts.EDITOR_HEADER);
         headingLabel.setBackground(MevenideColors.WHITE);
 		headingLabel.setText(getHeading());
 		headingLabel.setLayoutData(data);
         
         // create parent for pages
-		ScrolledComposite scroller = new ScrolledComposite(control, SWT.H_SCROLL | SWT.V_SCROLL);
+		scroller = new ScrolledComposite(pageContainer, SWT.H_SCROLL | SWT.V_SCROLL);
 		scroller.setExpandHorizontal(true);
 		scroller.setExpandVertical(true);
 		scroller.setBackground(MevenideColors.WHITE);
@@ -117,16 +154,22 @@ public abstract class AbstractPomEditorPage
 		data.horizontalSpan = 1;
 		scroller.setLayoutData(data);
 
-        Composite container = new Composite(scroller, SWT.NONE);
-        container.setBackground(MevenideColors.WHITE);
-
+        Composite canvas = factory.createComposite(scroller);
+        canvas.setBackground(MevenideColors.WHITE);
+        canvas.setForeground(MevenideColors.BLACK);
+        canvas.setLayout(new PageLayout());
+        canvas.setMenu(parent.getMenu());
+        
+        Composite container = factory.createComposite(canvas);
+        
         // now the rest of the page
         initializePage(container);
         
 		scroller.setContent(container);
-        scroller.setMinSize(container.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+		this.control = canvas;
         
-        update(getEditor().getPom());
+		setUpdateNeeded(true);
+        update();
     }
 
     protected abstract void initializePage(Composite parent);
@@ -149,13 +192,21 @@ public abstract class AbstractPomEditorPage
 	}
 
 	/**
-	 * NOTE: this method if called does nothing - isUpdateNeeded is always returning false
 	 * @see org.eclipse.swt.widgets.Control#update()
 	 */
 	public void update() {
+		log.debug("update called - resetting size on scoller");
+		updateScrolledComposite();
 		if (isUpdateNeeded()) {
 			update(getEditor().getPom());
 		}
+	}
+
+	private void updateScrolledComposite()
+	{
+		Point updatedSize = control.computeSize(SWT.DEFAULT, SWT.DEFAULT);
+		control.setSize(updatedSize);
+		scroller.setMinSize(updatedSize);
 	}
 
 	protected void update(Project pom) {
@@ -234,6 +285,8 @@ public abstract class AbstractPomEditorPage
      */
     public void setFocus()
 	{
+    	update();
+    	control.setFocus();
     }
     
 	public boolean isActive()

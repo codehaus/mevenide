@@ -52,7 +52,7 @@ public class OverviewPage extends AbstractPomEditorPage {
 
 	protected void initializePage(Composite parent) {
 		GridLayout layout = new GridLayout();
-		layout.numColumns = 2;
+		layout.numColumns = 1;
 		layout.marginWidth = 10;
 		layout.horizontalSpacing = 15;
 		parent.setLayout(layout);
@@ -76,7 +76,7 @@ public class OverviewPage extends AbstractPomEditorPage {
 		fullDesctiptionSection = new FullDescriptionSection(this);
 		control = fullDesctiptionSection.createControl(parent, factory);
 		gd = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING);
-		gd.horizontalSpan = 2;
+		gd.horizontalSpan = 1;
 		control.setLayoutData(gd);
 		addSection(fullDesctiptionSection);
 	}
