@@ -12,12 +12,14 @@
 # ----------------------
 
 function prepareFs {
-	if test "$ECLIPSE_HOME" = "" 
-	    then noEclipseHome
+	if test "$ECLIPSE_HOME" = "" ; then
+	    noEclipseHome
 	fi
 	echo enter checkout folder :
 	read buildDir
-	rm -R $buildDir
+	if [ -d "$buildDir" ] ; then
+		rm -R $buildDir
+	fi
 	mkdir $buildDir
 	cd $buildDir
 	prepareMavenOptions
@@ -26,8 +28,8 @@ function prepareFs {
 function prepareMavenOptions {
 	echo build in debug mode Y/N ?
 	read debug
-	if test "$debug" = "Y" 
-	    then export maven_opts=-e 
+	if test "$debug" = "Y" || test "$debug" = "y" ; then
+	    export maven_opts=-e 
 	fi
 	checkout
 }
@@ -47,13 +49,11 @@ function checkout {
 function build {
 	echo install maven-eclipse-plugin-plugin Y/N ?
 	read installMep
-	if test "$installMep" = "Y" 
-	    then buildMepPlugin
+	if test "$installMep" = "Y" || test "$installMep" = "y" ; then
+	    buildMepPlugin
+	else
+	    buildMevenide
 	fi
-	if test "$installMep" = "N" 
-	    then buildMevenide
-	fi
-	build
 }
 
 function buildMepPlugin {
@@ -79,18 +79,16 @@ function buildMevenide {
 function shouldInstall {
 	echo install mevenide for eclipse Y/N ? 
 	read shouldInstall
-	if test "$shouldInstall" = "Y" 
-	    then installMevenide
+	if test "$shouldInstall" = "Y" || test "$shouldInstall" = "y" ; then
+	    installMevenide
+	else
+	    finalize
 	fi
-	if test "$shouldInstall" = "N" 
-	    then finalize
-	fi
-	installMevenide
 }
 
 function installMevenide {
-	if test "$JAVA_HOME" = "" 
-	    then noJavaHome
+	if test "$JAVA_HOME" = "" ; then
+	    noJavaHome
 	fi
 	#popd 
 	export mevenideTempInstallDir=mevenideTempInstallDir
@@ -121,9 +119,9 @@ function extractJars {
 }
 
 function cleanInstallTemp {
-    cd $buildDir
-    rm -R $mevenideTempInstallDir
-    cd ..
+	cd $buildDir
+	rm -R $mevenideTempInstallDir
+	cd ..
 	finalize
 }
 
@@ -140,17 +138,17 @@ function noEclipseHome {
 }
 
 function noJavaHome {
-	if test "$JAVA_HOME" = "" 
-	    then echo JAVA_HOME not found
+	if test "$JAVA_HOME" = "" ; then
+	    echo JAVA_HOME not found
 	fi
-	if ![-e $JAVA_HOME/bin/jar.exe] 
-	    then echo invalid JAVA_HOME : jar tool not found
+	if ![-e $JAVA_HOME/bin/jar.exe] ; then
+	    echo invalid JAVA_HOME : jar tool not found
 	fi
 	echo enter Java Home Directory :
 	read javahome
 	export JAVA_HOME=$javahome
-	if [-e $JAVA_HOME/bin/jar.exe] 
-	    then installMevenide
+	if [-e $JAVA_HOME/bin/jar.exe] ; then
+	    installMevenide
 	fi
 	noJavaHome
 }
@@ -162,8 +160,8 @@ function noJavaHome {
 function finalize {
 	echo drop installation files before exiting Y/N ?
 	read shouldDropFiles
-	if  test "$shouldDropFiles" = "Y" 
-	    then rm -R $buildDir
+	if test "$shouldDropFiles" = "Y" ; then
+	    rm -R $buildDir
 	fi
 	echo done
 }
