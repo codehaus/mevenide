@@ -15,7 +15,7 @@
         <groupId>netbeans</groupId>
         <artifactId>xml-core</artifactId>
         <!-- include nb specification version.. that's important for compiling -->
-        <version>1.0.3.6.0</version>
+        <version>3.999.1</version>
         <url>http://www.netbeans.org</url>
         <properties>
             <netbeans.module.dep>impl</netbeans.module.dep>
