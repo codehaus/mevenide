@@ -76,6 +76,7 @@ import org.mevenide.ui.eclipse.sync.model.DependencyMappingNode;
 import org.mevenide.ui.eclipse.sync.model.DependencyPropertyWrapper;
 import org.mevenide.ui.eclipse.sync.model.EclipseContainerContainer;
 import org.mevenide.ui.eclipse.sync.model.IArtifactMappingNode;
+import org.mevenide.ui.eclipse.sync.model.IArtifactMappingNodeContainer;
 
 
 
@@ -185,6 +186,8 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
             comparator = ProjectComparatorFactory.getComparator(mavenProject);
 			comparator.addProjectChangeListener(ProjectComparator.BUILD, this);
 			comparator.addProjectChangeListener(ProjectComparator.DEPENDENCIES, this); 
+			comparator.addProjectChangeListener(ProjectComparator.UNIT_TESTS, this);
+			comparator.addProjectChangeListener(ProjectComparator.RESOURCES, this);
         }
         
         this.poms = poms;
@@ -472,9 +475,9 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
 	}
 	
 	private void refreshNode(IArtifactMappingNode artifact) {
-		//IArtifactMappingNodeContainer container = (IArtifactMappingNodeContainer) getContentProvider().getParent(artifact);
-    	//container.removeNode(artifact);
-    	artifactMappingNodeViewer.refresh(artifact.getParent());
+		IArtifactMappingNodeContainer container = (IArtifactMappingNodeContainer) getContentProvider().getParent(artifact);
+		container.removeNode(artifact);
+        artifactMappingNodeViewer.refresh(container);
 	}
 	
 	private ITreeContentProvider getContentProvider() {
@@ -484,8 +487,8 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
 	public void artifactAddedToPom(PomArtifactEvent event) {
 		IArtifactMappingNode artifact = (IArtifactMappingNode) event.getArtifact();
 		log.debug("artifact modified : " + artifact);
-		updatePoms(event.getProject());
 		refreshNode(artifact);
+		updatePoms(event.getProject());
 		try {
 			IFile file = this.project.getFile(MavenUtils.makeRelativePath(this.project.getLocation().toFile(), event.getProject().getFile().getAbsolutePath()));
 			file.refreshLocal(IResource.DEPTH_ZERO, null);
@@ -625,7 +628,10 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
 	public void projectChanged(ProjectChangeEvent e) {
 	    log.debug("received project change notification. Attribute : " + e.getAttribute());
     	String attribute = e.getAttribute();
-		if ( ProjectComparator.BUILD.equals(attribute) || ProjectComparator.DEPENDENCIES.equals(attribute) ) {
+		if ( ProjectComparator.RESOURCES.equals(attribute) 
+				|| ProjectComparator.UNIT_TESTS.equals(attribute) 
+				|| ProjectComparator.BUILD.equals(attribute) 
+				|| ProjectComparator.DEPENDENCIES.equals(attribute) ) {
 		    updatePoms(e.getPom());
 			refreshAll(false);
 		}     
