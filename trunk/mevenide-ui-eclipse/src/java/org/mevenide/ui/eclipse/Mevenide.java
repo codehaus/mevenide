@@ -398,9 +398,7 @@ public class Mevenide extends AbstractUIPlugin {
 		this.project = project;
 		this.currentDir = project.getLocation().toOSString();
 	}
-	public File getPom() {
-		return new File(new DefaultPathResolver().getAbsolutePath(project.getFile("project.xml").getLocation()));
-	}
+
 	public boolean getCheckTimestamp() {
 		return checkTimestamp;
 	}
