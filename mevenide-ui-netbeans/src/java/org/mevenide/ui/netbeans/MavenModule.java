@@ -18,6 +18,7 @@ package org.mevenide.ui.netbeans;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.mevenide.environment.SysEnvLocationFinder;
 import org.openide.modules.ModuleInfo;
 import org.openide.modules.ModuleInstall;
 import org.openide.util.Lookup;
@@ -35,8 +36,9 @@ public class MavenModule extends ModuleInstall
     
     public void restored()
     {
-        // By default, do nothing.
-        // Put your startup code here.
+        // kind of duplicates the same call in mevenide-netbeans-grammar but these
+        // can be used independently.
+        SysEnvLocationFinder.setDefaultSysEnvProvider(new NbSysEnvProvider());
     }
     
     public void validate() throws java.lang.IllegalStateException
@@ -47,16 +49,16 @@ public class MavenModule extends ModuleInstall
             throw new IllegalStateException("Maven not installed or the MAVEN_HOME property not set.");
         }
         
-        //DEBUG
-        Lookup.Template template = new Lookup.Template(ModuleInfo.class, "Module[org.mevenide.ui.netbeans", null); //NOI18N
-        Lookup.Item item = Lookup.getDefault().lookupItem(template);
-        if (item != null)
-        {
-            ModuleInfo info = (ModuleInfo)item.getInstance();
-            log.debug("classpath = " + info.getAttribute("Class-Path"));
-        } else {
-            log.debug("module not found :(");
-        }
+//        //DEBUG
+//        Lookup.Template template = new Lookup.Template(ModuleInfo.class, "Module[org.mevenide.ui.netbeans", null); //NOI18N
+//        Lookup.Item item = Lookup.getDefault().lookupItem(template);
+//        if (item != null)
+//        {
+//            ModuleInfo info = (ModuleInfo)item.getInstance();
+//            log.debug("classpath = " + info.getAttribute("Class-Path"));
+//        } else {
+//            log.debug("module not found :(");
+//        }
     }    
     
     // Less commonly needed:
