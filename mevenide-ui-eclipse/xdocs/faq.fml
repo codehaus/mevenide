@@ -4,7 +4,7 @@
   <part id="general">
     <title>General</title>
    
-    <faq id="what-is-maven">
+    <faq id="why-mevenide">
       <question>Why is this project named Mevenide, not Mavenide ?</question>
       <answer>
         Typo at the creation of the project. Tho is not Mevenide way cooler than Mavenide ?

@@ -22,13 +22,16 @@
         <menu name="Documentation">
         	<item name="Features" href="/features.html"/>
         	<item name="Wiki" href="http://mevenide.sourceforge.net/cgi-bin/view.pl/FrontPage"/>	
-        	<item name="Help" href="/help.html"/>
+        	<item name="Getting Started" href="/help.html"/>
         </menu>
         
         <menu name="Mevenide">
         	<item name="Mevenide" href="/../../index.html"/>
+        	<item name="Mevenide Goals Grabber" href="/../../multiproject/Goals Grabber/index.html"/>
         	<item name="Mevenide Core" href="/../../multiproject/Mevenide Core/index.html"/>
         </menu>
+        
+        <!-- search/ -->
     </body>
 
 </project>

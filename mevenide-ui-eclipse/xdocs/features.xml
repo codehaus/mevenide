@@ -24,6 +24,7 @@ Implemented features can be splitted into two categories :
 <li>Pom skeleton creation</li>
 <li>Eclipse Project synchronization - using maven-eclipse-plugin</li>
 <li>Pom synchronization - SourceModification and Filtering not managed for now</li>
+<li>Support for Pom Inheritance when synchronizing POMs</li>
 </ul>
 
 <i>For more information, please see <a href="http://mevenide.sourceforge.net/cgi-bin/view.pl/MevenideSynchronization">Mevenide Wiki</a></i>
@@ -31,14 +32,14 @@ Implemented features can be splitted into two categories :
 <p>
 <b>Maven Launcher</b>
 <ul>
-<li>Maven Runner - goals should be entered manually, doesnt rely anymore on goals-grabber</li>
-<li>Quick Launch - doesnot use LaunchConfig for now</li>
+<li>Maven Runner - goals should be entered manually.</li>
+<li>Integration into Eclipse External Tools.</li>
 </ul>
 
 <i>For more information, please see <a href="http://mevenide.sourceforge.net/cgi-bin/view.pl/MavenRunner">Mevenide Wiki</a></i>
 </p>
 <p>
-Please note that a <a href="http://mevenide.sourceforge.net/cgi-bin/view.pl/MevenidePomEditor">POM Editor</a> is also on the todo list.
+Please note that a <a href="http://mevenide.sourceforge.net/cgi-bin/view.pl/MevenidePomEditor">POM Editor</a> is also in progress.
 </p>
 		
 		</section>
