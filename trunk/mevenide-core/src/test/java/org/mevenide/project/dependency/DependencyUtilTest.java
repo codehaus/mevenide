@@ -54,7 +54,11 @@ public class DependencyUtilTest extends TestCase {
 		assertFalse(DependencyUtil.isValid(DependencyFactory.getFactory().getDependency("E:\\jtestcase\\lib\\xtype.jar")));
 		assertFalse(DependencyUtil.isValid(DependencyFactory.getFactory().getDependency("E:\\clover-1.2\\lib\\clover.jar")));
 		assertFalse(DependencyUtil.isValid(DependencyFactory.getFactory().getDependency("E:\\jtestcase\\lib\\xmlutil.jar")));
-		
+		Dependency d = new Dependency();
+		d.setGroupId("rtt");
+		d.setArtifactId("rtt");
+		d.setVersion("5.0");
+		assertTrue(DependencyUtil.isValid(d));
 	}
 	
 }

@@ -201,13 +201,15 @@ public class ProjectWriter {
 	 * @return list of non resolved dependencies  
 	 */
 	List getNonResolvedDependencies(List dependencies) {
+		List temp = new ArrayList(dependencies);
 		List nonResolvedDependencies = new ArrayList();
-		for (int i = 0; i < dependencies.size(); i++) {
-			Dependency dependency = (Dependency)dependencies.get(i); 
+		for (int i = 0; i < temp.size(); i++) {
+			Dependency dependency = (Dependency)temp.get(i); 
 			if ( !DependencyUtil.isValid(dependency) ) {
 				dependencies.remove(dependency);
 				nonResolvedDependencies.add(dependency);
 			}
+			
 		} 
 		return nonResolvedDependencies;
 	}
