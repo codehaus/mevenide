@@ -5,7 +5,7 @@
     <id>mevenide-config</id>
     <artifactId>mevenide-config</artifactId>
     <name>Mevenide Config</name>
-    <currentVersion>0.7-SNAPSHOT</currentVersion>
+    <currentVersion>0.7</currentVersion>
     <package>org.mevenide.config</package>
 <!--    <package>org.mevenide</package> -->
     <description>
