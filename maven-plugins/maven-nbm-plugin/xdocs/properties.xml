@@ -61,6 +61,13 @@ OpenIDE-Module-Specification-Version: normalized version of ${pom.currentVersion
             <p>Location of the license file to be included with the nbm.</p>
           </td>
         </tr>
+        <tr>
+          <td>maven.nbm.cluster.name</td>
+          <td><p>Optional. Default value is <code>${pom.groupId}</code>.</p></td>
+          <td>
+            <p></p>
+          </td>
+        </tr>
      </table>
      </div>
    </section>
