@@ -36,6 +36,12 @@
 		</ul>
 	  </p>
 	  <p>
+		<u>Known issues</u><br/>
+		<ul>
+			<li>if output folder is set to ${basedir} folder, it will always appear in the Synchronization view, even if in synch </li>
+		</ul>
+	  </p>
+	  <p>
 		<u>Known limitations</u><br/>
 		<ul>
 			<li>No conflict support (e.g. if dependencies version conflict)</li>
