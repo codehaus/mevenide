@@ -12,8 +12,28 @@
         It currently works with Netbeans 3.5.
         </p>
 	</div>
-        </section>
+   </section>
+   <section name="Versions">
+      <div id="documentContent">
+      	<p>
+   	  Currently the 0.1 version is available for download. It works with Netbeans 3.5.1.
+      </p>
+      <p>
+      To get latest snapshot of 0.2, please checkout the project from cvs. (Snapshot also available on the Download page)
+      It works with Netbeans 3.6 beta.
+   	  </p>
+   	  </div>
+    </section>
 
+    <section name="Installing">
+      <div id="documentContent">
+      <p>
+            To install the plugin, go to the <a href="http://sourceforge.net/project/showfiles.php?group_id=54263&amp;package_id=110955" class="documentLink">Sourceforge download page</a>  and get the zipped/tarred release. 
+            Then extract it, and install the nbm files using your IDE's "Tools/Update Center" wizard.
+   	  </p>
+   	  </div>
+    </section>
+    
     </body>
 
 </document>
