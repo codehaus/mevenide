@@ -57,7 +57,7 @@ import java.util.regex.Pattern;
  * @version $Id$
  * 
  */
-public class DependencySplitter {
+public class DependencySplitter implements IDependencySplitter {
 	
 	private String fileName;
 	
@@ -78,20 +78,18 @@ public class DependencySplitter {
 	 * we should provide a mecanism to allow the user to specify more patterns that
 	 * will be successfully applied still success considering, e.g.,
 	 * that (artifactId, version and extension not null) implies success  
-	 * 
-	 * @param fileName
-	 * @return {artifactId, version, extension}
+	 *
+	 * @see IDependencySplitter#split()
 	 */
-	public String[] split() {
+	public DependencyParts split() {
 	
 		Pattern p = Pattern.compile("(.|(-\\D)*)-((\\d)+(.*))\\.(\\w+)");
 		
-		String[] consistentGroups = applySplitStrategy(p, 3, 6);
-	
-		return consistentGroups;
+		return applySplitStrategy(p, 3, 6);
+		
 	}
 
-	private String[] applySplitStrategy(Pattern p, int expectedVersionIndex, int expectedExtensionIndex) {
+	private DependencyParts applySplitStrategy(Pattern p, int expectedVersionIndex, int expectedExtensionIndex) {
 		Matcher m = p.matcher(fileName);
 		
 		String[] allGroups = new String[m.groupCount() + 1];
@@ -102,13 +100,13 @@ public class DependencySplitter {
 			i++;
 		}
 		
-		String[] consistentGroups = new String[3];
-		consistentGroups[1] = allGroups[expectedVersionIndex];
-		consistentGroups[2] = allGroups[expectedExtensionIndex];
-		if ( consistentGroups[1] != null ) {
-			consistentGroups[0] = fileName.substring(0, fileName.indexOf(consistentGroups[1]) - 1);
+		DependencyParts dependencyParts = new DependencyParts();
+		dependencyParts.version = allGroups[expectedVersionIndex];
+		dependencyParts.extension = allGroups[expectedExtensionIndex];
+		if ( dependencyParts.version != null ) {
+			dependencyParts.artifactId = fileName.substring(0, fileName.indexOf(dependencyParts.version) - 1);
 		}
 		
-		return consistentGroups;
+		return dependencyParts;
 	}
 }
