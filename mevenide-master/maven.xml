@@ -17,7 +17,7 @@
     <attainGoal name="mevenide-eclipse:create-update-dist"/>
   </goal>
   
-  <goal name="mevenide-netbeans:build" description="Build all Mevenide modules" prereqs="mevenide-netbeans:init">
+  <goal name="mevenide-netbeans:build" description="Build all Mevenide modules" prereqs="mevenide-netbeans:init, mevenide-netbeans:build-deps">
       <j:set var="maven.multiproject.includes" value="${maven.multiproject.netbeans.includes}"/>
       <j:set var="maven.nbm.cluster.name" value="mevenide"/>
       <j:set var="goal" value="nbm:install"/> 
@@ -180,7 +180,7 @@
       <ant:delete dir="${maven.repo.local}/mevenide" quiet="true"/>
   </goal>
 
-  <goal name="mevenide-netbeans:build-deps" description="Create nbms for the Mevenide dependencies">
+  <goal name="mevenide-netbeans:build-deps" description="Create nbms for the Mevenide dependencies" prereqs="mevenide-netbeans:init">
 	<!-- j:scope> -->
         <j:set var="backupincludes" value="${maven.multiproject.includes}"/>
         <j:set var="maven.nbm.cluster.name" value="mevenide"/>
@@ -259,11 +259,11 @@ Below are listed relevant goals in the context of the Mevenide project.
   o mevenide-netbeans:build
 	 Builds Netbeans modules (NBMs). 
 	 Also it requires that maven-nbm-plugin is installed. You can grab it here : 
-	 http://dist.codehaus.org/mevenide/dist/repository/mevenide/plugins/
+	 http://mevenide.codehaus.org/repository/mevenide/plugins/
          Or by running "maven -DartifactId=maven-nbm-plugin -DgroupId=mevenide -Dversion=[CURRENT_VERSION] plugin:download"
          All required dependencies should be retrieved from the remote repository.
-         For a complete, initial build run maven "mevenide-netbeans:build-deps mevenide-netbeans:build mevenide-netbeans:autoupdate"
-         All built NBMs will be then placed under target/nbm_release directory. 
+         For a complete build, run maven "mevenide-netbeans:build mevenide-netbeans:autoupdate"
+         All built NBMs will be then placed under mevenide-master/target/nbm_release directory. 
 	 
   
 [Building Mevenide site]
