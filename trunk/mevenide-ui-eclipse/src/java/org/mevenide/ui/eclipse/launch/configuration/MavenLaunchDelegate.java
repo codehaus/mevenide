@@ -95,6 +95,7 @@ public class MavenLaunchDelegate extends AbstractRunner implements ILaunchConfig
         IVMRunner vmRunner = getVMInstall().getVMRunner(launchMode);
 		
  		if (vmRunner != null) {
+ 			System.err.println(getBasedir() + " => " + getGoals(configuration));
             vmRunner.run(vmConfig, launch, monitor);
             DebugUIPlugin.getDefault().getConsoleDocumentManager().launchAdded(launch);
 		}
