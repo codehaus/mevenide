@@ -23,12 +23,16 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.TreeSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.Vector;
 import javax.swing.Icon;
@@ -80,7 +84,7 @@ public class MavenJellyGrammar implements GrammarQuery {
    
    private TagLib getDefaultTagLib() {
        //TODO define default taglib
-       return getManager().getTagLibrary("maven-default");
+       return getManager().getTagLibrary("default-maven");
    }
 
     private Node findRootNode(HintContext virtualElementCtx) 
@@ -164,7 +168,7 @@ public class MavenJellyGrammar implements GrammarQuery {
     {
         String start = ownerElementCtx.getCurrentPrefix();
         logger.debug("start=" + start);
-        Vector toReturn = new Vector();
+        Set toReturn = new TreeSet(new SimpleComparator());
         String elName = ownerElementCtx.getNodeName();
         int separ = elName.indexOf(':');
         TagLib lib = null;
@@ -178,7 +182,6 @@ public class MavenJellyGrammar implements GrammarQuery {
         } else {
             //TODO what now? default namespace
             lib = getDefaultTagLib();
-            
         }
         if (lib != null) {
             Iterator it = lib.getTagAttrs(tag).iterator();
@@ -189,7 +192,7 @@ public class MavenJellyGrammar implements GrammarQuery {
                 }
             }
         }
-        return toReturn.elements();
+        return Collections.enumeration(toReturn);
     }
    /**
      * query default value for given context. Two context types must be handled:
@@ -224,18 +227,24 @@ public class MavenJellyGrammar implements GrammarQuery {
         
         while (parent != null) {
             String name = parent.getNodeName();
-            int separ = name.indexOf(':');
-            if (separ > 0) 
+            if (name != null)
             {
-                String nameSpace = name.substring(0, separ);
-                logger.debug("findParentInSameNamespace-" + nameSpace );
-                if (nameSpace.equals(ns)) {
-                    return parent;
-                }
-            } else {
-                // no namespace here, 
-                if (ns == null) {
-                    return parent;
+                int separ = name.indexOf(':');
+                if (separ > 0)
+                {
+                    String nameSpace = name.substring(0, separ);
+                    logger.debug("findParentInSameNamespace-" + nameSpace );
+                    if (nameSpace.equals(ns))
+                    {
+                        return parent;
+                    }
+                } else
+                {
+                    // no namespace here,
+                    if (ns == null)
+                    {
+                        return parent;
+                    }
                 }
             }
             parent = parent.getParentNode();
@@ -283,7 +292,7 @@ public class MavenJellyGrammar implements GrammarQuery {
     {
         String start = virtualElementCtx.getCurrentPrefix();
         logger.debug("start=" + start);
-        Vector toReturn = new Vector();
+        Collection toReturn = new TreeSet(new ElementComparator());
         int separ = start.indexOf(':');
         if (separ > 0) 
         {
@@ -307,9 +316,10 @@ public class MavenJellyGrammar implements GrammarQuery {
         } else {
             logger.debug("no namespace yet");
             Map libs = findTagLibs(start, virtualElementCtx);
-            Vector singleTags = new Vector();
+            Collection singleTags = new ArrayList();
             if (libs.size() > 0) {
-                Iterator it = libs.keySet().iterator();
+                Set sortedLibs = new TreeSet(libs.keySet());
+                Iterator it = sortedLibs.iterator();
                 while (it.hasNext())
                 {
                     String ns = (String)it.next();
@@ -331,11 +341,11 @@ public class MavenJellyGrammar implements GrammarQuery {
             // add single tags from namespaces last, to have the default tags first (after namespaces)
             toReturn.addAll(singleTags);
         }
-        return toReturn.elements();
+        return Collections.enumeration(toReturn);
     }
     
     
-    private void createTagElements(Collection col, Vector elemList, String namespace, String start) {
+    private void createTagElements(Collection col, Collection elemList, String namespace, String start) {
         Iterator it = col.iterator();
         while (it.hasNext()) {
             String name = (String)it.next();
@@ -381,7 +391,7 @@ public class MavenJellyGrammar implements GrammarQuery {
         logger.debug("query values..");
         Node parent = virtualTextCtx;
         String start = virtualTextCtx.getCurrentPrefix();
-        Vector toReturn = new Vector();
+        Set toReturn = new TreeSet(new SimpleComparator());
         logger.debug("parent node=" + parent);
         logger.debug("context prefix= " + virtualTextCtx.getCurrentPrefix());
         logger.debug("context name=" + virtualTextCtx.getNodeName());
@@ -402,7 +412,7 @@ public class MavenJellyGrammar implements GrammarQuery {
                 }
             }
         }
-        return toReturn.elements();
+        return Collections.enumeration(toReturn);
     }
 
     /**
@@ -434,6 +444,19 @@ public class MavenJellyGrammar implements GrammarQuery {
          */
         public String getDisplayName() {
             return getNodeName() + " disp";
+        }
+        
+        public boolean equals(Object obj) {
+            if (obj == null || !(obj instanceof AbstractResultNode)) {
+                return false;
+            }
+            AbstractResultNode res = (AbstractResultNode)obj;
+            int index1 = getNodeName().indexOf(':');
+            int index2 = res.getNodeName().indexOf(':');
+            if ( (index1 >= 0 && index2 < 0) || (index2 >= 0 && index1 < 0)) {
+                return false;
+            }
+            return getNodeName().equals(res.getNodeName());
         }
     }
     
@@ -532,6 +555,43 @@ public class MavenJellyGrammar implements GrammarQuery {
         }
         
     }    
-    
+
+    private class SimpleComparator implements Comparator {
+        
+        public int compare(Object o1, Object o2)
+        {
+            AbstractResultNode nd1 = (AbstractResultNode)o1;
+            AbstractResultNode nd2 = (AbstractResultNode)o2;
+            return nd1.getTagName().compareTo(nd2.getTagName());
+        }
+        
+    }
+
+    private class ElementComparator implements Comparator {
+        
+        public int compare(Object o1, Object o2)
+        {
+            AbstractResultNode nd1 = (AbstractResultNode)o1;
+            AbstractResultNode nd2 = (AbstractResultNode)o2;
+            if ((nd1 instanceof TagLibElement) && !(nd2 instanceof TagLibElement)) {
+                return -1;
+            }
+            if (!(nd1 instanceof TagLibElement) && (nd2 instanceof TagLibElement)) {
+                return 1;
+            }
+            String name1 = nd1.getNodeName();
+            String name2 = nd2.getNodeName();
+            int index1 = name1.indexOf(':');
+            int index2 = name2.indexOf(':');
+            if ( index1 >= 0 && index2 < 0) {
+                return 1;
+            }
+            if ( index2 >= 0 && index1 < 0) {
+                return -1;
+            }
+            return name1.compareTo(name2);
+        }
+        
+    }
     
 }
