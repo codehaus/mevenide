@@ -21,6 +21,8 @@ package org.mevenide.netbeans.project;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Properties;
 import java.util.Set;
 import javax.swing.AbstractAction;
@@ -98,6 +100,13 @@ public class ActionProviderImpl implements ActionProvider {
     }
     
     public String[] getSupportedActions() {
+        // allow compile single to be hooked..
+        if (project.getPropertyResolver().getResolvedValue(
+                 "maven.netbeans.exec." + COMMAND_COMPILE_SINGLE) != null) {
+            ArrayList arr = new ArrayList(Arrays.asList(supported));
+            arr.add(ActionProvider.COMMAND_COMPILE_SINGLE);
+            return (String[])arr.toArray(new String[arr.size()]);
+        }
         return supported;
     }
     
@@ -245,7 +254,7 @@ public class ActionProviderImpl implements ActionProvider {
             }
             return found;
         } 
-        if (COMMAND_RUN_SINGLE.equals(str)) {
+        if (COMMAND_RUN_SINGLE.equals(str) || COMMAND_COMPILE_SINGLE.equals(str)) {
             FileObject[] fos = findSources(lookup);
             return  fos != null && fos.length == 1;
         }

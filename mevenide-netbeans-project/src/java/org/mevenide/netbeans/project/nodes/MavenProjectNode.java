@@ -19,6 +19,7 @@ package org.mevenide.netbeans.project.nodes;
 import java.awt.Image;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
 
@@ -58,8 +59,7 @@ public class MavenProjectNode extends AbstractNode {
     }
     
     
-    public String getDisplayName()
-    {
+    public String getDisplayName() {
         return project.getDisplayName();
     }
     
@@ -75,34 +75,32 @@ public class MavenProjectNode extends AbstractNode {
     
     public javax.swing.Action[] getActions(boolean param) {
 //       javax.swing.Action[] spr = super.getActions(param);
+        boolean hasCompile = project.getPropertyResolver().getResolvedValue("maven.netbeans.exec.compile.single") != null;
         boolean isMultiproject = (project.getPropertyLocator().getPropertyLocation("maven.multiproject.includes") 
                                     > IPropertyLocator.LOCATION_DEFAULTS); //NOI18N
-        int slip = (isMultiproject ? 2 : 0);
-        Action[] toReturn = new Action[14 + slip];
+        ArrayList lst = new ArrayList();
         ActionProviderImpl provider = (ActionProviderImpl)project.getLookup().lookup(ActionProviderImpl.class);
-        toReturn[0] = CommonProjectActions.newFileAction();
-        toReturn[1] = null;
-        toReturn[2] = provider.createBasicMavenAction("Build", ActionProvider.COMMAND_BUILD);
-        toReturn[3] = provider.createBasicMavenAction("Clean", ActionProvider.COMMAND_CLEAN);
-        toReturn[4] = provider.createBasicMavenAction("Rebuild", ActionProvider.COMMAND_REBUILD);
-        toReturn[5] = provider.createBasicMavenAction("Generate Javadoc", "javadoc");
+        lst.add(CommonProjectActions.newFileAction());
+        lst.add(null);
+        lst.add(provider.createBasicMavenAction("Build", ActionProvider.COMMAND_BUILD));
+        lst.add(provider.createBasicMavenAction("Rebuild", ActionProvider.COMMAND_REBUILD));
+        lst.add(provider.createBasicMavenAction("Clean", ActionProvider.COMMAND_CLEAN));
+        lst.add(provider.createBasicMavenAction("Generate Javadoc", "javadoc"));
         if (isMultiproject) {
-            toReturn[6] = provider.createBasicMavenAction("Build (multiproject)", ActionProviderImpl.COMMAND_MULTIPROJECTBUILD);
-            toReturn[7] = provider.createBasicMavenAction("Clean (multiproject)", ActionProviderImpl.COMMAND_MULTIPROJECTCLEAN);
+            lst.add(provider.createBasicMavenAction("Build (multiproject)", ActionProviderImpl.COMMAND_MULTIPROJECTBUILD));
+            lst.add(provider.createBasicMavenAction("Clean (multiproject)", ActionProviderImpl.COMMAND_MULTIPROJECTCLEAN));
         }
-        toReturn[6 + slip] = new RunGoalsAction(project);
+        lst.add(new RunGoalsAction(project));
         // separator
-        toReturn[7 + slip] = null;
-        toReturn[8 + slip] = project.createRefreshAction();
-        toReturn[9 + slip] = CommonProjectActions.setAsMainProjectAction();
-        toReturn[10 + slip] = CommonProjectActions.openSubprojectsAction();
-        toReturn[11 + slip] = CommonProjectActions.closeProjectAction();
-        toReturn[12 + slip] = null;
-        toReturn[13 + slip] = CommonProjectActions.customizeProjectAction();
-//        for (int i = 0; i < spr.length; i++) {
-//            toReturn[i + 6] = spr[i];
-//        }
-        return toReturn;
+        lst.add(null);
+        lst.add(project.createRefreshAction());
+        lst.add(CommonProjectActions.setAsMainProjectAction());
+        lst.add(CommonProjectActions.openSubprojectsAction());
+        lst.add(CommonProjectActions.closeProjectAction());
+        lst.add(null);
+        lst.add(CommonProjectActions.customizeProjectAction());
+        
+        return (Action[])lst.toArray(new Action[lst.size()]);
     }
 
     public String getShortDescription() {
