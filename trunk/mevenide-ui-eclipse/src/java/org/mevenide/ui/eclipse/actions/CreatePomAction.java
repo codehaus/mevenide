@@ -45,7 +45,7 @@ public class CreatePomAction extends AbstractMevenideAction {
 	
 	public void run(IAction action) {
 		try {
-			if ( FileUtils.getPom(currentProject) != null && !FileUtils.getPom(currentProject).exists() ) {
+			if ( FileUtils.getPom(currentContainer) != null && !FileUtils.getPom(currentContainer).exists() ) {
 			    String pomTemplate = chooseTemplate();
 			    boolean createPom = true;
 			    if ( StringUtils.isNull(pomTemplate) ) {

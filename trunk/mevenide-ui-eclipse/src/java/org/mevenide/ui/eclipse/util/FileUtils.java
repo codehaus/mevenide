@@ -102,6 +102,16 @@ public class FileUtils {
 		return null;
 	}
 
+	public static File getPom(IContainer container) {
+		//weird trick to fix a NPE. dont know yet why we got that NPE
+		if ( container.exists() ) {
+			IPathResolver pathResolver = new DefaultPathResolver();
+			IPath referencedProjectLocation = container.getLocation();
+			return new File(pathResolver.getAbsolutePath(referencedProjectLocation.append("project.xml")) );
+		}
+		return null;
+	}
+	
 	public static void refresh(IProject project) throws Exception {
 		IFile projectFile = project.getFile("project.xml");
 		projectFile.refreshLocal(IResource.DEPTH_ZERO, null);
