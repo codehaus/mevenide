@@ -5,6 +5,8 @@
 <taglib name="default:maven">
     <tag name="goal"> 
       <attr name="name"/>
+      <attr name="description"/>
+      <attr name="prereqs"/>
     </tag>
     <tag name="preGoal"> 
       <attr name="name"/>
