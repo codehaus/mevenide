@@ -24,7 +24,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.MavenUtils;
 import org.apache.maven.project.Project;
-
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -35,9 +34,7 @@ import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
-
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -51,7 +48,6 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -59,13 +55,11 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.part.IPageSite;
 import org.eclipse.ui.part.ViewPart;
-
 import org.mevenide.project.IProjectChangeListener;
 import org.mevenide.project.ProjectChangeEvent;
 import org.mevenide.project.ProjectComparator;
 import org.mevenide.project.ProjectComparatorFactory;
 import org.mevenide.project.io.ProjectReader;
-
 import org.mevenide.ui.eclipse.sync.action.SynchronizeActionFactory;
 import org.mevenide.ui.eclipse.sync.event.IActionListener;
 import org.mevenide.ui.eclipse.sync.event.IdeArtifactEvent;
@@ -488,14 +482,14 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
 	}
 
 	public void resourceChanged(IResourceChangeEvent event) {
-		final IProject project = (IProject) artifactMappingNodeViewer.getInput();
-		final IFile dotClasspath = project.getFile(".classpath");
-		
-		IResourceDelta d= event.getDelta();
-		if (d == null) {
-			return;
-		}
 		try {
+			final IProject project = (IProject) artifactMappingNodeViewer.getInput();
+			final IFile dotClasspath = project.getFile(".classpath");
+			
+			IResourceDelta d= event.getDelta();
+			if (d == null) {
+				return;
+			}
 			d.accept(
 					new IResourceDeltaVisitor() {
 						public boolean visit(IResourceDelta delta) {
@@ -533,8 +527,8 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
 					}
 			);
 		} 
-		catch (CoreException e) {
-			log.error("processing resource delta", e); //$NON-NLS-1$
+		catch (Exception e) {
+			log.debug("error processing resource delta", e); //$NON-NLS-1$
 		}		
 	}
 
