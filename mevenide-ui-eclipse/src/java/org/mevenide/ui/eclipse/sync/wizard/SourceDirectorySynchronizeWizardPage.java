@@ -49,6 +49,7 @@ public class SourceDirectorySynchronizeWizardPage extends WizardPage {
 	public void createControl(Composite arg0) {
 		Composite composite = new Composite(arg0, SWT.NONE);
 		viewer = SourceDirectoryViewUtil.getViewer(composite);
+		setInput(((SynchronizeWizard)getWizard()).getProject());
 		setControl(composite);
 	}
 	
@@ -84,6 +85,7 @@ public class SourceDirectorySynchronizeWizardPage extends WizardPage {
 		String savedStates = MavenPlugin.getPlugin().getFile("sourceTypes.xml");
 		
 		return SourceDirectoryMarshaller.getSourceDirectoryGroup(project, savedStates);
+		
 		
 	}
 

@@ -50,6 +50,7 @@ public class DependencySynchronizeWizardPage extends WizardPage {
 	public void createControl(Composite arg0) {
 		Composite composite = new Composite(arg0, SWT.NONE);
 		viewer = DependencyViewUtil.getViewer(composite);
+		setInput(((SynchronizeWizard)getWizard()).getProject());
 		setControl(composite);
 	}
 	
