@@ -1,0 +1,184 @@
+<project xmlns:maven="jelly:maven" 
+		 xmlns:j="jelly:core"
+		 xmlns:util="jelly:util"
+		 xmlns:ant="jelly:ant">
+  
+  <!-- ==================================== -->
+  <!--             build section            -->
+  <!-- ==================================== -->
+  <goal name="mevenide-eclipse:build" description="Build all Mevenide modules" prereqs="mevenide-eclipse:clean,mevenide-eclipse:init">
+    <j:set var="maven.multiproject.includes" value="${maven.multiproject.eclipse.includes}"/>
+    <j:set var="maven.multiproject.excludes" value="mevenide-master/project.xml"/>
+    <attainGoal name="multiproject:goal"/>
+    <attainGoal name="mevenide-eclipse:create-update-dist"/>
+  </goal>
+  
+  <goal name="mevenide-netbeans:build" description="Build all Mevenide modules" prereqs="mevenide-netbeans:init">
+      <j:set var="maven.multiproject.includes" value="${maven.multiproject.netbeans.includes}"/>
+      <j:set var="goal" value="nbm:install"/> 
+      <attainGoal name="multiproject:goal"/>
+  </goal>
+  
+
+  <goal name="mevenide-netbeans:autoupdate">
+      <j:set var="maven.nbm.build.release.dir" value="${basedir}/../mevenide-master/target/nbm_release"/>
+      <j:set var="maven.nbm.build.dir" value="${basedir}/.."/>
+      <attainGoal name="nbm:collect-nbms"/>
+<!--      <j:set var="maven.nbm.autoupdate.distbase" value="nb_autoupdate"/> -->
+      <attainGoal name="nbm:autoupdate"/>
+      <ant:copy toDir="${maven.docs.dest}">
+          <ant:fileset dir="${basedir}/../mevenide-master/target"
+                     includes="nbm_release/*"
+          />       
+      </ant:copy>
+  </goal>  
+
+    
+  <!-- ==================================== -->
+  <!--            site generation           -->   
+  <!-- ==================================== -->
+  <goal name="mevenide-site:build" description="Build Mevenide Site" prereqs="mevenide-site:init">
+  	<j:set var="maven.multiproject.includes" value="${maven.multiproject.site.includes}"/>
+  	<attainGoal name="multiproject:site"/>
+  	<attainGoal name="mevenide-site:generate-wiki-templates"/>
+  </goal>
+  
+  <goal name="mevenide-plugins:site">
+  	<j:set var="maven.multiproject.includes" value="${maven.multiproject.plugins.includes}"/>
+  	<attainGoal name="multiproject:site"/>
+  </goal>
+  <!-- do NOT call site:deploy because we dont want to attain 'site' goal -->
+  <goal name="mevenide-site:ssh-deploy" description="Deploy Site" prereqs="mevenide-site:build">
+    <attainGoal name="site:sshdeploy"/>
+    <!-- attainGoal name="spinner-wiki:sshdeploy"/ -->
+  </goal>
+  
+  <goal name="mevenide-site:generate-wiki-templates" description="Build Mevenide Site">
+  	<attainGoal name="spinner-wiki:generate-templates"/>
+  </goal>
+  
+  
+  <!-- ==================================== -->
+  <!--  ide modules initialization section  -->
+  <!-- ==================================== -->
+  <goal name="mevenide-eclipse:clean" prereqs="clean:clean">
+    <ant:delete dir="${maven.repo.local}/eclipse" quiet="true"/>
+  	<ant:delete dir="${maven.repo.local}/mevenide" quiet="true"/>
+  </goal>
+  
+  <goal name="mevenide:clean-lib">
+     <ant:delete>
+        <ant:fileset dir="${basedir}" includes="lib/*.jar"/>
+     </ant:delete> 
+  </goal>
+  
+  <goal name="mevenide-eclipse:init" description="Copy eclipse dependencies to maven.repo.local if necessary">
+    <util:file var="installScript" name="${basedir}/../${mevenide.master.project.name}/scripts/init/install-eclipse-dependencies.xml"/>
+    <j:include file="${installScript}"/>
+  </goal>  
+  
+  <goal name="mevenide-netbeans:init" description="Copy netbeans dependencies to maven.repo.local if necessary">
+    <util:file var="installScript" name="${basedir}/../${mevenide.master.project.name}/scripts/init/install-netbeans-dependencies.xml"/>
+    <j:include file="${installScript}"/>
+  </goal>  
+
+  <goal name="mevenide-ide:init-all" description="Try to install eclipse and netbeans dependencies. Used to initialize repository before building site.">
+      <ant:property environment="env"/>
+      <ant:property name="eclipse_home" location="env.ECLIPSE_HOME"/>
+      <ant:property name="netbeans_home" location="env.NETBEANS_HOME"/>
+      <j:if test="${!empty(eclipse_home)}">
+        <attainGoal name="mevenide-eclipse:init"/>
+      </j:if>
+      <j:if test="${!empty(netbeans_home)}">
+        <attainGoal name="mevenide-netbeans:init"/>  
+      </j:if>
+  </goal>
+  
+  
+  <!-- ==================================== -->
+  <!--      site initialization section     -->
+  <!-- ==================================== -->
+  <goal name="mevenide-site:set-clover-jar" description="Set clover overriden jar">
+      <j:set var="maven.jar.override" value="on"/>
+      <j:set var="maven.clover.jar" value="${mevenide.master.project.location}/lib/clover/jars/clover-1.2.4.jar"/>
+  </goal>
+  
+  <goal name="mevenide-site:install-css" description="Iterate each subprojects and copy master project.css to ${subproject.location}/xdocs/style">
+      <util:tokenize var="projects" delim=",">${maven.multiproject.site.includes}</util:tokenize>
+      <j:forEach var="project" items="${projects}">
+          <util:file var="projectFile" name="${project}"/>
+          <ant:copy file="${mevenide.master.project.location}/xdocs/style/project.css" 
+                    todir="${basedir}/../${projectFile.getParent()}/xdocs/style" overwrite="true"/>
+      </j:forEach>
+  </goal>
+  
+  <goal name="mevenide-site:init" 
+        description="Main initialization goal" 
+        prereqs="mevenide-ide:init-all,mevenide-site:set-clover-jar,mevenide-site:install-css" />
+  
+  
+  <!-- ==================================== -->
+  <!--   eclipse plugins creation section   -->
+  <!-- ==================================== -->
+  <goal name="mevenide-eclipse:create-update-dist" prereqs="mevenide-eclipse:init" description="Build Eclipse plugin update site">
+   	<util:file var="updateSiteProjectDescriptor" name="${mevenide.eclipse.update.project.location}/project.xml"/>
+    <maven:maven descriptor="${updateSiteProjectDescriptor}" goals="eclipse-plugin:create-artifact-dist"/>
+  </goal>
+  
+  <preGoal name="eclipse-plugin:install-artifact">
+  	<util:file var="filters" name="${mevenide.master.project.location}/scripts/init/init-filtersets.xml"/>
+  	<j:include file="${filters}"/>
+  </preGoal>
+
+  <!-- ==================================== -->
+  <!--      netbeans section                -->
+  <!-- ==================================== -->
+  <goal name="mevenide-netbeans:clean" description="clean all Mevenide modules" prereqs="">
+      <j:set var="maven.multiproject.includes" value="${maven.multiproject.netbeans.includes}"/>
+      <j:set var="goal" value="clean"/> 
+      <attainGoal name="multiproject:goal"/>
+  </goal>
+
+  <goal name="mevenide-netbeans:build-deps" description="Create nbms for the Mevenide dependencies">
+<!--    <j:scope> -->
+        <j:set var="backupincludes" value="${maven.multiproject.includes}"/>
+<!--        <j:set var="backupbasedir" value="${maven.multiproject.basedir}"/> -->
+<!--        <j:set var="maven.multiproject.basedir" value="${basedir}/../mevenide-netbeans-deps"/> -->
+        <j:set var="maven.multiproject.includes" value="mevenide-netbeans-deps/*/project.xml"/>
+        <j:set var="goal" value="nbm:install"/> 
+        <attainGoal name="multiproject:goal"/>
+        <!-- how to execute without influencing the original -->
+        <j:set var="maven.multiproject.includes" value="${backupincludes}"/>
+<!--        <j:set var="maven.multiproject.basedir" value="${backupbasedir}"/> -->
+<!--     </j:scope> -->
+  </goal>  
+    
+
+  <!-- ==================================== -->
+  <!--           optional section           -->
+  <!-- ==================================== -->
+  <goal name="mevenide:install-maven-eclipse-plugin-plugin" description="Checkout maven-eclipse-plugin-plugin from cvs and install it">
+  	 <attainGoal name="scm:checkout-project"/>
+  	 <util:file var="mavenEclipsePluginPluginPom" name="${maven.scm.checkout.dir}/maven-plugins/maven-eclipse-plugin-plugin/project.xml"/>
+	 <maven:maven descriptor="${mavenEclipsePluginPluginPom}" goals=" plugin:install,plugin:deploy"/>
+  </goal>  
+
+  <goal name="mevenide:install-maven-nbm-plugin" description="Checkout maven-nbm-plugin from cvs and install it">
+    <j:set var="maven.scm.cvs.module" value="maven-plugins/maven-nbm-plugin"/>
+  	 <attainGoal name="scm:checkout-project"/>
+  	 <util:file var="mavenNbmPluginPom" name="${maven.scm.checkout.dir}/maven-plugins/maven-nbm-plugin/project.xml"/>
+	 <maven:maven descriptor="${mavenNbmPluginPom}" goals=" plugin:install,plugin:deploy"/>
+  </goal>  
+  
+  <goal name="mevenide:build-core" description="Build Mevenide-core module">
+  	 <util:file var="mevenideCoreProjectdescriptor" name="${mevenide.core.project.location}/project.xml"/>
+	 <maven:maven descriptor="${mevenideCoreProjectdescriptor}" goals="clean,jar:install"/> 	 
+  </goal>
+  
+  <goal name="mevenide:build-xdoc" description="Build each module doco, without aggregating them. Provided for convenience, since building the whole can take a long time.">
+  	<j:set var="maven.multiproject.includes" value="${maven.multiproject.includes},${mevenide.eclipse.plugin.project.name}/project.xml"/>
+  	<j:set var="goal" value="xdoc"/>
+  	<attainGoal name="multiproject:goal"/>
+  </goal>
+  
+</project>
