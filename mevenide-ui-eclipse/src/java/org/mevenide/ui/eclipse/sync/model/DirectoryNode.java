@@ -25,6 +25,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -91,7 +93,7 @@ public class DirectoryNode extends ArtifactNode {
 	}
 
 	private List findExclusionPatterns() {
-		List excludes = new ArrayList();
+		Set excludes = new TreeSet();
 		Project mavenProject = ((Project) parentNode.getData());
 		List allResources = getMavenProjectResources(mavenProject);
 		for (int i = 0; i < allResources.size(); i++) {
@@ -102,7 +104,7 @@ public class DirectoryNode extends ArtifactNode {
 				}
 			}
 		}
-		return excludes;
+		return new ArrayList(excludes);
 	}
 
 	private List getMavenProjectResources(Project mavenProject) {
