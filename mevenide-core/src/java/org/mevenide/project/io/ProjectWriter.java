@@ -22,6 +22,7 @@ import org.apache.maven.project.Dependency;
 import org.apache.maven.project.Project;
 import org.mevenide.ProjectConstants;
 import org.mevenide.project.DependencyUtil;
+
 /**
  * 
  * @author Gilles Dodinet (gdodinet@wanadoo.fr)
