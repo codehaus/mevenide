@@ -60,4 +60,16 @@
         &eclipse-dependencies;
 
   	</dependencies>
+  	
+  	<build>
+  		<sourceModifications>
+  		  <sourceModification>
+  		  	<className>org.eclipse.ui.forms.parts.FormToolkit</className>
+   			<excludes>
+  			  <exclude>org/mevenide/ui/eclipse/editors/**/*.java</exclude>
+  			</excludes>
+  		  </sourceModification>  		
+  		</sourceModifications>
+  	</build>
+  	
 </project>
