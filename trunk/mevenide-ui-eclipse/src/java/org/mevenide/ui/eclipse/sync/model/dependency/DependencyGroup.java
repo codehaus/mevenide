@@ -63,6 +63,7 @@ import org.mevenide.project.dependency.DependencyFactory;
 import org.mevenide.project.dependency.DependencyUtil;
 import org.mevenide.ui.eclipse.DefaultPathResolver;
 import org.mevenide.ui.eclipse.IPathResolver;
+import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.sync.model.ArtifactGroup;
 import org.mevenide.ui.eclipse.util.FileUtils;
 import org.mevenide.ui.eclipse.util.EclipseProjectUtils;
@@ -112,8 +113,8 @@ public class DependencyGroup extends ArtifactGroup {
 			}
 			
 		}
-		for (int i = 0; i < EclipseProjectUtils.getCrossProjectDependencies().size(); i++) {
-        	addDependency(new DependencyWrapper((Dependency) EclipseProjectUtils.getCrossProjectDependencies().get(i), false, this));   
+		for (int i = 0; i < EclipseProjectUtils.getCrossProjectDependencies(Mevenide.getPlugin().getProject()).size(); i++) {
+        	addDependency(new DependencyWrapper((Dependency) EclipseProjectUtils.getCrossProjectDependencies(Mevenide.getPlugin().getProject()).get(i), false, this));   
         }
 		
 		

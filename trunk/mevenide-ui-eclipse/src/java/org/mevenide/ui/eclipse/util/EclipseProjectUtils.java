@@ -97,28 +97,35 @@ public class EclipseProjectUtils {
 		return jreEntryList;
 	}
 
+	/** 
+	 * @deprecated use getCrossProjectDependencies(IProject) instead
+	 */
 	public static List getCrossProjectDependencies() throws Exception {
-		List deps = new ArrayList();
-		IProject[] referencedProjects = Mevenide.getPlugin().getProject().getReferencedProjects();		
-		for (int i = 0; i < referencedProjects.length; i++) {
-			IProject referencedProject = referencedProjects[i];
-			
-			if ( referencedProject.exists() && !referencedProject.getName().equals(Mevenide.getPlugin().getProject().getName()) )  {
-						
-				File referencedPom = FileUtils.getPom(referencedProject);
-				//check if referencedPom exists, tho it should since we just have created it
-
-				if ( !referencedPom.exists() ) {
-					FileUtils.createPom(referencedProject);
-				}
-				ProjectReader reader = ProjectReader.getReader();
-				Dependency projectDependency = reader.extractDependency(referencedPom);
-				log.debug("dependency artifact : " + projectDependency.getArtifact());
-				deps.add(projectDependency);
-			}
-		}
-		return deps;
+	    return getCrossProjectDependencies(Mevenide.getPlugin().getProject());
 	}
 	
+	public static List getCrossProjectDependencies(IProject project) throws Exception {
+	    List deps = new ArrayList();
+	    IProject[] referencedProjects = project.getReferencedProjects();		
+	    for (int i = 0; i < referencedProjects.length; i++) {
+	        IProject referencedProject = referencedProjects[i];
+	        
+	        if ( referencedProject.exists() && !referencedProject.getName().equals(project.getName()) )  {
+	            
+	            File referencedPom = FileUtils.getPom(referencedProject);
+	            //check if referencedPom exists, tho it should since we just have created it
 
+	            if ( !referencedPom.exists() ) {
+	                FileUtils.createPom(referencedProject);
+	            }
+	            ProjectReader reader = ProjectReader.getReader();
+	            Dependency projectDependency = reader.extractDependency(referencedPom);
+	            log.debug("dependency artifact : " + projectDependency.getArtifact());
+	            deps.add(projectDependency);
+	        }
+	    }
+	    return deps;
+	}
+	
+	
 }
