@@ -22,7 +22,7 @@ import org.mevenide.netbeans.project.MavenProject;
 
 /**
  *
- * @author  Milos Kleint (ca206216@tiscali.cz)
+ * @author  Milos Kleint (mkleint@codehaus.org)
  */
 public class TestSrcClassPathImpl extends AbstractProjectClassPathImpl {
     
@@ -33,9 +33,16 @@ public class TestSrcClassPathImpl extends AbstractProjectClassPathImpl {
     
     URI[] createPath() {
         //TODO add integration tests src dir as well?
-        return new URI[] { getMavenProject().getTestSrcDirectory(),
-                           getMavenProject().getSrcDirectory(),
-                           getMavenProject().getGeneratedSourcesDir() };
+        if (getMavenProject().getCactusDirectory() != null) {
+            return new URI[] { getMavenProject().getTestSrcDirectory(),
+//                               getMavenProject().getSrcDirectory(),
+                               getMavenProject().getGeneratedSourcesDir(),
+                               getMavenProject().getCactusDirectory() };
+        } else {
+            return new URI[] { getMavenProject().getTestSrcDirectory(),
+//                               getMavenProject().getSrcDirectory(),
+                               getMavenProject().getGeneratedSourcesDir() };
+        }
     }
     
 }

@@ -289,6 +289,16 @@ public class MavenProject implements Project {
        String path = getPropertyResolver().getResolvedValue("maven.ear.src"); //NOI18N
        return path == null ? null : getDirURI(path);
    }
+
+   /**
+    * URI denoted by the cactus.src.dir property in the project context. Relates to the maven-cactus-plugin.
+    */
+   public URI getCactusDirectory() {
+       String path = getPropertyResolver().getResolvedValue("cactus.src.dir"); //NOI18N
+       return path == null ? null : getDirURI(path);
+   }
+   
+   
    
    private URI getDirURI(String path) {
        File src = FileUtilities.resolveFilePath(FileUtil.toFile(getProjectDirectory()), path);
