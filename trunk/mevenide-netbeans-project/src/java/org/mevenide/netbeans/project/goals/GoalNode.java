@@ -1,6 +1,6 @@
 /* ==========================================================================
  * Copyright 2003-2004 Apache Software Foundation
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -25,22 +25,19 @@ import org.openide.nodes.Node;
  *
  * @author  Milos Kleint (ca206216@tiscali.cz)
  */
-public class GoalNode extends AbstractNode implements GoalNameCookie
-{
+public class GoalNode extends AbstractNode implements GoalNameCookie {
     private IGoalsGrabber grabber;
     private String goal;
     private String plugin;
     /** Creates a new instance of GoalNode */
-    public GoalNode(String plugin, IGoalsGrabber grabber, String goal)
-    {
+    public GoalNode(String plugin, IGoalsGrabber grabber, String goal) {
         super(Children.LEAF);
         setName(plugin + ":" + goal); //NOI18N
         this.goal = goal;
         this.plugin = plugin;
         setDisplayName(goal);
         String desc = grabber.getDescription(getName());
-        if (desc == null)
-        {
+        if (desc == null || "null".equals(desc)) {
             desc = "<No description>";
         }
         setShortDescription(desc);
@@ -48,8 +45,7 @@ public class GoalNode extends AbstractNode implements GoalNameCookie
         setIconBase("org/mevenide/netbeans/project/goals/GoalIcon"); //NOI18N
     }
     
-    public String getGoalName()
-    {
+    public String getGoalName() {
         if ("(default)".equals(goal)) //NOI18N
         {
             return plugin;
@@ -57,16 +53,14 @@ public class GoalNode extends AbstractNode implements GoalNameCookie
         return getName();
     }
     
-    public Node.Cookie getCookie(Class clazz)
-    {
+    public Node.Cookie getCookie(Class clazz) {
         Node.Cookie retValue;
-        if (GoalNameCookie.class.isAssignableFrom(clazz))
-        {
+        if (GoalNameCookie.class.isAssignableFrom(clazz)) {
             return this;
         }
         retValue = super.getCookie(clazz);
         return retValue;
-    }    
-
+    }
+    
     
 }
