@@ -83,6 +83,7 @@
 		  	<ul>
 		  		<li>No xml entities support yet - we need to think about some solutions to support full bidirectionnal I/O - altho it is definitively on the TODO list.</li>
 		  		<li>No contentassist in the soure page yet</li>
+		  		<li>In the current state, POM Editor wont open non-conform files</li>
 		  	</ul>
 		  </p>
 		</div>
