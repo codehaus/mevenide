@@ -9,7 +9,7 @@
 ]>
 <project>
   &base-identification;
-  <issueTrackingUrl>http://sourceforge.net/tracker/?group_id=54263&amp;atid=473195</issueTrackingUrl>
+  <issueTrackingUrl>http://jira.codehaus.org/secure/BrowseProject.jspa?id=10480</issueTrackingUrl>
 
   <siteAddress>beaver.codehaus.org</siteAddress>
   <siteDirectory>/home/projects/mevenide/public_html/${artifactId}</siteDirectory>

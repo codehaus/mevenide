@@ -9,4 +9,4 @@
   </organization>
   <inceptionYear>2003</inceptionYear>
   <package>org.mevenide</package>
-  <url>http://mevenide.sf.net/${pom.artifactId}</url>
+  <url>http://mevenide.codehaus.org/${pom.artifactId}</url>
