@@ -26,7 +26,7 @@
          <export name="*"/>
          <packages prefixes="org.apache.maven"/>
       </library>
-      <library name="lib/xerces-2.2.1.jar">
+      <library name="lib/xerces-2.4.0.jar">
          <export name="*"/>
          <packages prefixes="org.apache.xerces"/>
       </library>
