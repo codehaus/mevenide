@@ -45,7 +45,7 @@
         <dependency>
            <groupId>mevenide</groupId>
            <artifactId>mevenide-core</artifactId>
-           <version>0.1</version>
+           <version>0.1.1</version>
            <properties>
             	<mevenide.transient>true</mevenide.transient>
            </properties>
@@ -53,7 +53,7 @@
         <dependency>
            <groupId>mevenide</groupId>
            <artifactId>mevenide-goals-grabber</artifactId>
-           <version>0.1</version>
+           <version>0.1.1</version>
            <properties>
             	<mevenide.transient>true</mevenide.transient>
            </properties>
