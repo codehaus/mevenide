@@ -277,7 +277,7 @@ public class SynchronizationView extends ViewPart implements IActionListener, IR
 
     private void createArtifactViewer(Composite parent) {
         artifactMappingNodeViewer = new TreeViewer(parent, SWT.MULTI | SWT.FULL_SELECTION);
-        artifactMappingNodeViewer.setAutoExpandLevel(4);
+        artifactMappingNodeViewer.setAutoExpandLevel(3);
         
         GridLayout gridLayout= new GridLayout();
         gridLayout.makeColumnsEqualWidth= false;
