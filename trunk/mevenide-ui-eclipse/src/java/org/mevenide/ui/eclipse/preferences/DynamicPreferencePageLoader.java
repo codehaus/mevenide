@@ -16,7 +16,7 @@
  */
 package org.mevenide.ui.eclipse.preferences;
 
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Map;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
@@ -51,17 +51,20 @@ public class DynamicPreferencePageLoader implements IRegistryChangeListener  {
 	        IConfigurationElement[] configurationElements = extension.getConfigurationElements();
 	        for (int i = 0; i < configurationElements.length; i++) {
 	            IConfigurationElement configurationElement = configurationElements[i]; 
-	            IPreferenceNode node = createPreferencePage(configurationElement);
+	            IPreferenceNode node = createPreferenceNode(configurationElement);
 	            Mevenide.getInstance().getWorkbench().getPreferenceManager().addTo(MAIN_PREFERENCE_PAGE_PATH, node);
 	        }
         }
     }
 
-    private IPreferenceNode createPreferencePage(IConfigurationElement configurationElement) {
+    private IPreferenceNode createPreferenceNode(IConfigurationElement configurationElement) {
+        //plugin-provider name and id
         String pageName = configurationElement.getAttribute(PAGE_NAME);
         String pageId = configurationElement.getAttribute(PAGE_ID);
+        
+        //plugin-provider properties
         IConfigurationElement[] childrenElements = configurationElement.getChildren("property");
-        Map properties = new HashMap(childrenElements.length);
+        Map properties = new Hashtable(childrenElements.length);
         for (int i = 0; i < childrenElements.length; i++) {
             IConfigurationElement childElement = childrenElements[i];
             String propertyName = childElement.getAttribute(PROPERTY_NAME);
