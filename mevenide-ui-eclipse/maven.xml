@@ -6,15 +6,8 @@
 
   	
 	<postGoal name="jar:install">
-		<echo>
-			<!-- 
-				Deploy Plugin :
-				uncomment at deployment time only since i dont want to
-				mess my plugins dir (conflict-friendly at dev. time !!)
-			-->
-		</echo>
 		<attainGoal name="mevenide:prepare-lib"/>
-		<j:if test="deploiement">
+		<j:if test="${deploiement}">
 		    <attainGoal name="mevenide:deploy"/>
 		</j:if>
 	</postGoal>
@@ -23,7 +16,11 @@
 	<goal name="mevenide:prepare-lib">
 		<!-- copy dependencies to mevenide lib directory -->
 		<j:forEach var="dependency" items="${pom.dependencies}">
-			<j:if test="${!dependency.groupId.equals('eclipse')}">
+			<!--
+				shouldnot copy test only dependencies.
+				doesnt work for now... 
+			-->
+			<j:if test="${!(dependency.groupId.equals('eclipse') || dependency.artifactId.startsWith('mock') || dependency.artifactId.endsWith('mock') || dependency.groupId.startsWith('junit'))}">
             	<copy file="${maven.repo.local}/${dependency.groupId}/${dependency.type}s/${dependency.artifactId}-${dependency.version}.${dependency.type}" 
             		  todir="lib"/>
             </j:if>
@@ -32,18 +29,30 @@
 	
 	<goal name="mevenide:deploy">
 		
-		<attainGoal name="mevenide:prepare-lib"/>
+		<!-- attainGoal name="mevenide:prepare-lib"/ -->
         <mkdir dir="dist"/>
         
-        <zip destfile="dist/org.mevenide-1.0.zip">
-        	<fileset dir="${basedir}/icons"/>
+        <property environment="env"/>
+  		<property name="eclipse.home" location="${env.ECLIPSE_HOME}"/>
+        
+        <mkdir dir="org.mevenide_0.1"/>
+        
+        <copy todir="org.mevenide_0.1">
+        	<fileset dir="${basedir}" includes="icons/*.*"/>
+        	<fileset dir="${basedir}" includes="MavenPluginResources.properties"/>
         	<fileset dir="${basedir}" includes="plugin.xml,plugin.properties,license.txt"/>
-        	<fileset dir="${basedir}/icons"/>
-        	<fileset dir="etc" excludes=".cvsignore"/>
+        	<fileset dir="${basedir}" includes="lib/*.*"/>
+        	<fileset dir="${basedir}/target" includes="mevenide-ui-eclipse-0.1.jar"/>
+        </copy>
+        
+        <zip destfile="dist/org.mevenide-0.1-ea.zip">
+        	<fileset dir="org.mevenide_0.1"/>
         </zip>
         
-        <copy file="dist/org.mevenide-1.0.zip"
-        	  todir="${eclipse.home}/plugins/org.mevenide_1.0"/>
+        <copy file="dist/org.mevenide-0.1-ea.zip"
+        	  todir="${eclipse.home}/plugins/org.mevenide_0.1"/>
+        	  
+        <delete dir="org.mevenide_0.1"/>
    </goal>
    
    
