@@ -103,16 +103,15 @@ public class MavenCustomizer extends JPanel implements ProjectValidateObserver {
 
         categoryPanel.setBorder(new javax.swing.border.EtchedBorder());
         categoryPanel.setMinimumSize(new java.awt.Dimension(150, 4));
-        categoryPanel.setPreferredSize(new java.awt.Dimension(200, 4));
+        categoryPanel.setPreferredSize(new java.awt.Dimension(220, 4));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.gridheight = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.insets = new java.awt.Insets(6, 6, 6, 6);
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.weightx = 0.3;
         gridBagConstraints.weighty = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(6, 6, 6, 6);
         add(categoryPanel, gridBagConstraints);
 
         customizerPanel.setLayout(new java.awt.GridBagLayout());
@@ -125,7 +124,7 @@ public class MavenCustomizer extends JPanel implements ProjectValidateObserver {
         gridBagConstraints.gridheight = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.weightx = 0.7;
+        gridBagConstraints.weightx = 0.75;
         gridBagConstraints.weighty = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(6, 0, 6, 6);
         add(customizerPanel, gridBagConstraints);
@@ -135,16 +134,16 @@ public class MavenCustomizer extends JPanel implements ProjectValidateObserver {
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.insets = new java.awt.Insets(0, 0, 6, 6);
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(0, 0, 6, 6);
         add(lblValidateMessage, gridBagConstraints);
 
         cbResolve.setText("Resolve Values");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 3;
-        gridBagConstraints.insets = new java.awt.Insets(0, 6, 6, 0);
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(0, 6, 6, 0);
         add(cbResolve, gridBagConstraints);
 
     }//GEN-END:initComponents
@@ -191,7 +190,7 @@ public class MavenCustomizer extends JPanel implements ProjectValidateObserver {
             
             setLayout( new BorderLayout() );
             
-            Dimension size = new Dimension( 220, 4 );
+            Dimension size = new Dimension( 190, 4 );
             btv = new BeanTreeView();    // Add the BeanTreeView
             btv.setSelectionMode( TreeSelectionModel.SINGLE_TREE_SELECTION );
             btv.setPopupAllowed( false );
