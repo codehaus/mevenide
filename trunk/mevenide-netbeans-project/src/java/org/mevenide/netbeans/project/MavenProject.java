@@ -52,6 +52,7 @@ public class MavenProject implements org.netbeans.api.project.Project {
     private File file;
     private FileObject fileObject;
     private IPropertyResolver properties;
+    private ILocationFinder locFinder;
     private Image icon;
     private Lookup lookup;
     private PropertyChangeSupport support;
@@ -67,6 +68,8 @@ public class MavenProject implements org.netbeans.api.project.Project {
             throw new IOException("Not a maven project file.");
         }
         properties = ProjectPropFactory.getInstance().createResolver(FileUtil.toFile(fileObject.getParent()));
+        locFinder = new LocationFinderAggregator();
+        ((LocationFinderAggregator)locFinder).setEffectiveWorkingDirectory(projectFile.getParentFile().getAbsolutePath());
     }
     
     
@@ -95,9 +98,13 @@ public class MavenProject implements org.netbeans.api.project.Project {
         return properties;
     }
     
+    public ILocationFinder getLocFinder() {
+        return locFinder;
+    }
+    
     public Image getIcon() {
         if (icon == null) {
-            icon = Utilities.loadImage("org/mevenide/netbeans/projects/resources/MavenIcon.gif");
+            icon = Utilities.loadImage("org/mevenide/netbeans/project/resources/MavenIcon.gif");
         }
         return icon;
     }

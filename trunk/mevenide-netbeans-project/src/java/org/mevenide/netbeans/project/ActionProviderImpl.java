@@ -17,8 +17,19 @@
 
 package org.mevenide.netbeans.project;
 
+import java.io.File;
+import java.net.MalformedURLException;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.mevenide.netbeans.project.exec.MavenExecutor;
 import org.netbeans.spi.project.ActionProvider;
+import org.openide.awt.HtmlBrowser;
+import org.openide.execution.ExecutionEngine;
+import org.openide.execution.ExecutorTask;
 import org.openide.util.Lookup;
+import org.openide.util.RequestProcessor;
+import org.openide.util.Task;
+import org.openide.util.TaskListener;
 
 /**
  *
@@ -26,6 +37,8 @@ import org.openide.util.Lookup;
  */
 public class ActionProviderImpl implements ActionProvider
 {
+    private static final Log logger = LogFactory.getLog(ActionProviderImpl.class);
+    
     private MavenProject project;
     private static String[] supported = new String[] {
             ActionProvider.COMMAND_BUILD,
@@ -47,6 +60,39 @@ public class ActionProviderImpl implements ActionProvider
     
     public void invokeAction(String str, Lookup lookup) throws java.lang.IllegalArgumentException
     {
+        String goal = str;
+        if (ActionProvider.COMMAND_BUILD.equals(str)) {
+            goal = "jar";
+        }
+        if (ActionProvider.COMMAND_CLEAN.equals(str)) {
+            goal = "clean";
+        }
+        if (ActionProvider.COMMAND_REBUILD.equals(str)) {
+            goal = "clean jar";
+        }
+        MavenExecutor exec = new MavenExecutor(project, goal);
+        exec.setNoBanner(MavenSettings.getDefault().isNoBanner());
+        exec.setOffline(MavenSettings.getDefault().isOffline());
+        ExecutorTask task = ExecutionEngine.getDefault().execute("maven", exec, exec.getInputOutput());
+//        RequestProcessor.getDefault().post();
+        if ("javadoc".equals(goal)) {
+            task.addTaskListener(new TaskListener() {
+                public void taskFinished(Task task2) {
+                    String javadoc = project.getPropertyResolver().getResolvedValue("maven.javadoc.destdir");
+                    if (javadoc == null) {
+                        return;
+                    }
+                    File fil = new File(javadoc);
+                    if (fil.exists()) {
+                        try {
+                            HtmlBrowser.URLDisplayer.getDefault().showURL(fil.toURI().toURL());
+                        } catch (MalformedURLException exc) {
+                            logger.error(exc);
+                        }   
+                    }
+                }
+            });
+        }
     }
     
     public boolean isActionEnabled(String str, Lookup lookup) throws java.lang.IllegalArgumentException
