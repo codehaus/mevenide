@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<document>
+ <properties>
+    <author email="rhill@wanadoo.fr">Gilles Dodinet</author>
+    <title>Getting started</title>
+  </properties>
+
+  <body>
+    <section name="Preambule">
+		This document presents the Mevenide structure  and explains how to build and test it using the Eclipse runtime-workbench. 
+		It focuses on Eclipse integration. <br/>
+		To begin with you should chek out a fresh version of the various Mevenide modules. There are atm four modules you need :
+		<ul>
+			<li>
+				goals-grabber
+			</li>
+			<li>
+				mevenide-core
+			</li>
+			<li>
+				mevenide-master
+			</li>
+			<li>
+				mevenide-ui-eclipse
+			</li>
+		</ul>
+		Those are the various artifacts of Mevenide. 
+		<br/>
+		The <b>master project</b> (name should be self-explanatory) is the build process controller. 
+		The build process is triggered by calling <br/><code>maven build-all</code><br/>. 
+		<br/>
+		The <b>goals-grabber</b> project is a Maven plugin that defines the <code>goals:grab</code> goal which grabs 
+		all the available goals defined in $${maven.home}/plugins/goals.cache and provides a hook 
+		(during postGoal) to store them in an xml file. It is messy and should be rewritten. 
+		<br/>
+		The <b>mevenide-core</b> defines interfaces and abstract classes, and some utility classes, that concrete plugin 
+		implementations shall use and extend. It makes huge use of the Template pattern. commons-discovery is used 
+		to retrieve concrete implementations at runtime.
+		<br/>
+		The <b>mevenide-ui-eclipse</b> is the concrete Eclipse plugin. We will see later its layout.
+		<br/>
+		The picture below depicts the relationships between those modules.
+		<img alt="modules relationships" src="images/uml/module-relationships.gif"/>
+	</section>
+	
+	<section name="Building the various artifacts">
+		The <code>build-all</code> custom goal defined in mevenide-master/maven.xml allows us to <i>reactor</i> the project.
+		There's a ant buildfile (build.xml) present in near maven.xml that wraps maven call by defining 
+		a target <code>build-all</code> which uses an <code>exec</code> target. by default it works offline.
+		<br/>
+		Also the site generation, tho buggy, has been reactored too. The site generation process can be triggered by running 
+		<br/><code>maven build-site</code><br/>. This goal has been too wrapped by an ant target (<code>build-site</code>).
+		For the build to be successful, you need to NOT rename the various projects (or at least, make sure the modifications 
+		are done in the maven.xml as well). Why do i rely on project names ? Cuz i have only one workspace (not counting the runtime-worskpace :)
+		ok, thats perhaps bad practice), and so i cannot reactor projects without explicitly specifying subproject names. 
+		<br/>
+		In base-project.xml, which all our POMs should inherit, you can see that some unit tests have been explicitly exclude. Indeed they  
+		fail if ran from maven, althoguh they're successful from within eclipse. I guess there's here a problem with the way i declared the resources.
+		There are also other tests that have been excluded cuz they're expected to fail if not launched from within Eclipse through the 
+		<code>org.eclipse.pde.junit</code> plugin ; that plugin (expected to be provided with Eclipse 3) allows us to test plugins (altho i have not 
+		managed to use it successfully for now). I think its a better (smarter, easier, &lt;whatever you want ot insert here&gt;)  way to test plugins than mocking the Eclipse interfaces.
+	</section>
+	
+	<section name="Configuring the build process">
+
+	</section>
+	
+	<section name="Before launching the Runtime-workbench">
+	  
+	</section>
+	<section name="Runtime testing">
+	</section>
+  </body>
+ </document>
