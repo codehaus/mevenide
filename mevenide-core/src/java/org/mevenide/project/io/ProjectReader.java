@@ -158,7 +158,7 @@ public class ProjectReader {
 	 * @throws Exception
 	 * @throws FileNotFoundException
 	 */
-	private static Build getBuild(File pom) throws Exception, FileNotFoundException {
+	private Build getBuild(File pom) throws Exception, FileNotFoundException {
 		Project project; 
 		if ( pom != null ) {
 			project = new DefaultProjectUnmarshaller().parse(new FileReader(pom));

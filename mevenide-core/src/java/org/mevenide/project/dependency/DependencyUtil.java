@@ -76,7 +76,7 @@ public class DependencyUtil {
 				(   
 				    d1 != null && d2 != null
 				    && areEquals(d1.getArtifactId(), d2.getArtifactId())
-					//&& areEquals(d1.getGroupId(), d2.getGroupId())
+					&& areEquals(d1.getGroupId(), d2.getGroupId())
 					&& areEquals(d1.getVersion(), d2.getVersion())
 				);
 	}
