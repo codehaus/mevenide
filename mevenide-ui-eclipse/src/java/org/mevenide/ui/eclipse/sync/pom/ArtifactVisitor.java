@@ -15,16 +15,11 @@
 package org.mevenide.ui.eclipse.sync.pom;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
-import org.eclipse.jdt.core.IClasspathContainer;
 import org.eclipse.jdt.core.IClasspathEntry;
-import org.eclipse.jdt.core.JavaCore;
-import org.eclipse.jdt.launching.JavaRuntime;
 import org.mevenide.ProjectConstants;
 import org.mevenide.project.io.ProjectWriter;
 import org.mevenide.ui.eclipse.sync.IPathResolverDelegate;
@@ -80,25 +75,14 @@ public class ArtifactVisitor {
 		ProjectWriter writer = ProjectWriter.getWriter();
 		IPathResolverDelegate pathResolver = pomSynchronizer.getPathResolver();
 		
-		IClasspathEntry jreEntry = JavaRuntime.getJREVariableEntry();
-		IClasspathEntry resolvedJreEntry = JavaCore.getResolvedClasspathEntry(jreEntry);
-		String jrePath = pathResolver.getAbsolutePath(resolvedJreEntry.getPath());
-		
 		IClasspathEntry classpathEntry = entry.getClasspathEntry();
 		String entryPath = pathResolver.getAbsolutePath(classpathEntry.getPath());
-		
-		IClasspathContainer container = JavaCore.getClasspathContainer(new Path("org.eclipse.jdt.launching.JRE_CONTAINER"), JavaCore.create(this.pomSynchronizer.getProject()));
-		IClasspathEntry[] jreEntries = container.getClasspathEntries();
-		
-		List jreEntryList = new ArrayList();
-		
-		for (int i = 0; i < jreEntries.length; i++) {
-        	jreEntryList.add(pathResolver.getAbsolutePath(jreEntries[i].getPath()));
-		}    
+				
+		List jreEntryList = ProjectUtil.getJreEntryList(this.pomSynchronizer.getProject());
         
-        boolean isClassFolder = FileUtil.isClassFolder(pathResolver.getRelativeSourceDirectoryPath(classpathEntry, pomSynchronizer.getProject()), pomSynchronizer.getProject());
+        boolean isClassFolder = FileUtil.isClassFolder(classpathEntry.getPath().toOSString(), pomSynchronizer.getProject());
         
-        if ( !jrePath.equals(entryPath) && !jreEntryList.contains(entryPath) && !isClassFolder ) {
+        if ( !jreEntryList.contains(entryPath) && !isClassFolder ) {
 			writer.addDependency(
 				entryPath, 
 				pomSynchronizer.getPom()
@@ -115,7 +99,7 @@ public class ArtifactVisitor {
  		}
 		
 	}
-	
+
 	public void add(ProjectEntry entry) throws Exception {
 		IClasspathEntry classpathEntry = entry.getClasspathEntry();
 		IPath projectPath = classpathEntry.getPath();

@@ -18,12 +18,15 @@ package org.mevenide.ui.eclipse.actions;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.wizard.Wizard;
+import org.eclipse.jface.wizard.WizardDialog;
+import org.eclipse.ui.PlatformUI;
 import org.mevenide.sync.ISynchronizer;
 import org.mevenide.sync.SynchronizerFactory;
 import org.mevenide.ui.eclipse.MavenPlugin;
+import org.mevenide.ui.eclipse.sync.views.DependencyTypePart;
 import org.mevenide.ui.eclipse.sync.views.SourceDirectoryTypePart;
-//import org.mevenide.ui.eclipse.sync.pom.views.SourceDirectoryPropertyView;
-//import org.mevenide.ui.eclipse.MavenPlugin;
+import org.mevenide.ui.eclipse.sync.wizard.SynchronizeWizard;
 
 /**
  * either synchronize pom add .classpath 
@@ -50,10 +53,21 @@ public class SynchronizeAction extends AbstractMavenAction {
 				}
 			}
 			if ( action.getId().equals("maven-plugin.SynchronizePom") ) {
-				SourceDirectoryTypePart.synchronizeWithoutPrompting(currentProject);
+				//show synch wizard
+				Wizard wizard = new SynchronizeWizard();
+				WizardDialog dialog 
+					= new WizardDialog(
+						PlatformUI.getWorkbench()
+								  .getActiveWorkbenchWindow()
+								  .getShell(), wizard);
+				dialog.create();
+				dialog.open();
 			}
 			if ( action.getId().equals("maven-plugin.mapSourceDirectories") ) {
-				SourceDirectoryTypePart.sourceDirectoriesPrompt(currentProject);
+				SourceDirectoryTypePart.prompt(currentProject);
+			}
+			if ( action.getId().equals("maven-plugin.mapDependencies") ) {
+				DependencyTypePart.prompt(currentProject);
 			}
 		}
 		catch (Exception e) {

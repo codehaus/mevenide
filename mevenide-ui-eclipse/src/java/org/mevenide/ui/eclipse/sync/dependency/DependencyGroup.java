@@ -24,6 +24,8 @@ import org.mevenide.project.dependency.DependencyFactory;
 import org.mevenide.ui.eclipse.sync.DefaultPathResolverDelegate;
 import org.mevenide.ui.eclipse.sync.IPathResolverDelegate;
 import org.mevenide.ui.eclipse.sync.pom.ArtifactGroup;
+import org.mevenide.ui.eclipse.util.FileUtil;
+import org.mevenide.ui.eclipse.util.ProjectUtil;
 
 /**
  * 
@@ -39,16 +41,41 @@ public class DependencyGroup extends ArtifactGroup {
 	}
 
 	protected void initialize() throws Exception {
-		dependencies = new ArrayList();
+		
+		if ( dependencies == null ) {
+			dependencies = new ArrayList();
+		}
+		
 		IClasspathEntry[] classpathEntries = project.getResolvedClasspath(true);
 		
 		IPathResolverDelegate pathResolver = new DefaultPathResolverDelegate();
 		
 		for (int i = 0; i < classpathEntries.length; i++) {
-			if ( classpathEntries[i].getEntryKind() == IClasspathEntry.CPE_SOURCE) {
-				String path = pathResolver.getAbsolutePath(classpathEntries[i].getPath());
+			if ( classpathEntries[i].getEntryKind() == IClasspathEntry.CPE_LIBRARY
+					&& !FileUtil.isClassFolder(classpathEntries[i].getPath().toOSString(), project.getProject()) 
+					&& !ProjectUtil.getJreEntryList(project.getProject()).contains(pathResolver.getAbsolutePath(classpathEntries[i].getPath())) ) {
+				
+				String path = classpathEntries[i].getPath().toOSString(); 
 				Dependency dependency = DependencyFactory.getFactory().getDependency(path);
+				
+				if ( dependency.getArtifactId() == null ) {
+					dependency.setArtifactId("");
+				}
+				if ( dependency.getGroupId() == null ) {
+					dependency.setArtifactId("");
+				}
+				if ( dependency.getVersion() == null ) {
+					dependency.setVersion("");
+				}
+				if ( dependency.getType() == null ) {
+					dependency.setType("");
+				}
+				if ( dependency.getArtifact() == null ) {
+					dependency.setArtifact("");
+				}
+				
 				dependencies.add(dependency);
+				
 			}
 		}
 		
@@ -67,3 +94,4 @@ public class DependencyGroup extends ArtifactGroup {
 		dependencies.add(dep);
 	}
 }
+

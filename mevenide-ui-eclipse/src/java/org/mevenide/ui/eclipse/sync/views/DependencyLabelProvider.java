@@ -1,4 +1,4 @@
-/*
+/* 
  * Copyright (C) 2003  Gilles Dodinet (gdodinet@wanadoo.fr)
  * 
  * This library is free software; you can redistribute it and/or modify it under
@@ -10,54 +10,56 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
+ * 
  */
 package org.mevenide.ui.eclipse.sync.views;
 
-import org.eclipse.jface.util.Assert;
+import org.apache.maven.project.Dependency;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.swt.graphics.Image;
 import org.mevenide.ui.eclipse.MavenPlugin;
-import org.mevenide.ui.eclipse.sync.source.*;
+import org.mevenide.ui.eclipse.sync.dependency.DependencyGroup;
 
 
-public class SourceDirectoryLabelProvider implements ITableLabelProvider {
+public class DependencyLabelProvider implements ITableLabelProvider {
 	
-	private final String[] sourceTypes;
-	
-	public SourceDirectoryLabelProvider(String[] sourceTypes) {
-		this.sourceTypes = sourceTypes;
+	public DependencyLabelProvider() {
+		
 	}
+	public void addListener(ILabelProviderListener listener) {
 	
+	}
+	public void dispose() {
+	
+	}
 	public Image getColumnImage(Object element, int columnIndex) {
-		if ( columnIndex == 0 ) {
-			return MavenPlugin.getImageDescriptor("source-directory-16.gif").createImage();
+		if ( element instanceof Dependency && columnIndex == 0 ) {
+			return MavenPlugin.getImageDescriptor("dependency-16.gif").createImage();
 		}
 		return null;
 	}
 	
+	//@refactor if/else are scary !
 	public String getColumnText(Object element, int columnIndex) {
-		Assert.isTrue(element instanceof SourceDirectory);
-		if ( columnIndex == 0  ) { 
-			return ((SourceDirectory) element).getDisplayPath();
+		if ( columnIndex == 0 ) {
+			if ( element instanceof Dependency ) {
+				return ((Dependency) element).getArtifact();
+			}
+			if ( element instanceof DependencyGroup && columnIndex == 0 ) {
+				return "Dependencies";
+			}
 		}
-		else {
-			String directoryType = ((SourceDirectory) element).getDirectoryType();
-			//Assert.isTrue(Arrays.asList(sourceTypes).contains(directoryType));
-			return directoryType;
-		} 
+		if ( element instanceof DependencyContentProvider.DependencyInfo ) {
+			DependencyContentProvider.DependencyInfo info = 
+					(DependencyContentProvider.DependencyInfo) element;
+			return columnIndex == 0 ? info.getTitle() : info.getInfo();
+		}
+		return "";
 	}
-	
-	public void addListener(ILabelProviderListener listener) {
-	}
-	
 	public boolean isLabelProperty(Object element, String property) {
-		return true;
+		return "attribute".equals(property);
 	}
-	
 	public void removeListener(ILabelProviderListener listener) {
-	}
-	
-	public void dispose() {
 	}
 }
