@@ -13,7 +13,6 @@
  */
 package org.mevenide.ui.eclipse.sync.model;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.resources.IProject;
@@ -29,44 +28,41 @@ import org.mevenide.ui.eclipse.DefaultPathResolver;
  */
 public class SourceDirectoryGroup extends ArtifactGroup {
 	
-	private List sourceDirectories;
-	
 	public SourceDirectoryGroup(IProject project)  {
 		super(project);	
 	}
 	
 	protected void initialize() throws Exception {
-		sourceDirectories = new ArrayList();
-		IClasspathEntry[] classpathEntries = project.getResolvedClasspath(true);
+		IClasspathEntry[] classpathEntries = javaProject.getResolvedClasspath(true);
 		for (int i = 0; i < classpathEntries.length; i++) {
 			if ( classpathEntries[i].getEntryKind() == IClasspathEntry.CPE_SOURCE) {
-				String path = new DefaultPathResolver().getRelativeSourceDirectoryPath(classpathEntries[i], project.getProject());
+				String path = new DefaultPathResolver().getRelativeSourceDirectoryPath(classpathEntries[i], javaProject.getProject());
 				SourceDirectory sourceDirectory = new SourceDirectory(path);
 				sourceDirectory.setDirectoryType(ProjectConstants.MAVEN_SRC_DIRECTORY); 
-				sourceDirectories.add(sourceDirectory);
+				artifacts.add(sourceDirectory);
 			}
 		}
 	}
 	
 	public void addSourceDirectory(SourceDirectory sourceDirectory) {
-		sourceDirectories.add(sourceDirectory);
+		artifacts.add(sourceDirectory);
 	}
 	
 	public List getSourceDirectories() {
-		return sourceDirectories;
+		return artifacts;
 	}
 	
 	
 
 	public void setSourceDirectories(List list) {
-		sourceDirectories = list;
+		artifacts = list;
 	}
 
 	public boolean equals(Object obj) {
 		return  obj != null 
 				&& (obj instanceof SourceDirectoryGroup)
-				&& areEquals(((SourceDirectoryGroup)obj).sourceDirectories, sourceDirectories)
-				&& areEquals(((SourceDirectoryGroup)obj).project, project);
+				&& areEquals(((SourceDirectoryGroup)obj).artifacts, artifacts)
+				&& areEquals(((SourceDirectoryGroup)obj).javaProject, javaProject);
 	}
 	
 	private boolean areEquals(Object o1, Object o2) {
