@@ -1,0 +1,21 @@
+    <developer>
+      <name>Gilles Dodinet</name>
+      <id>gdodinet</id>
+      <email>rhill@wanadoo.fr</email>
+      <organization/>
+      <roles>
+      	<role>Developer Java</role>
+      </roles>
+      <timezone>GMT+1</timezone>
+    </developer>
+    <developer>
+      <name>Jeffrey Bonevich</name>
+      <id>jbonevic</id>
+      <email>jeff@bonevich.com</email>
+      <organization/>
+      <roles>
+      	<role>Developer Java</role>
+      </roles>
+      <url>http://www.bonevich.com/index.php</url>
+      <timezone>-4</timezone>
+    </developer>
