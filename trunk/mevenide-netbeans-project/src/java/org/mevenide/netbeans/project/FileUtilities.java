@@ -100,25 +100,33 @@ public class FileUtilities {
      */
     public static URI getDependencyURI(Dependency dependency, MavenProject project) {
         ILocationFinder finder = project.getLocFinder();
-        StringBuffer buff = new StringBuffer();
         File repo = new File(finder.getMavenLocalRepository());
-        buff.append(dependency.getArtifactDirectory());
-        buff.append("/");
-        String type = dependency.getType();
-        buff.append(type != null ? type : "jar");
-        buff.append("s/");
-        String id = dependency.getArtifactId();
-        buff.append(id != null ? id : dependency.getId());
-        buff.append("-");
-        buff.append(dependency.getVersion());
-        buff.append(".");
-        String extension = dependency.getExtension();
-        buff.append(extension != null ? extension : "jar");
-        File file = new File(repo, buff.toString());
-        file = FileUtil.normalizeFile(file);
-        return file.toURI();
+        return getDependencyURI(dependency, repo);
     }
     
+    static URI getDependencyURI(Dependency dependency, File repoFile) {
+        StringBuffer buff = new StringBuffer();
+        buff.append(dependency.getArtifactDirectory());
+        buff.append(File.separator);
+        String type = dependency.getType();
+        buff.append(type != null ? type : "jar");
+        buff.append("s");
+        buff.append(File.separator);
+        if (dependency.getJar() == null) {
+            String id = dependency.getArtifactId();
+            buff.append(id != null ? id : dependency.getId());
+            buff.append("-");
+            buff.append(dependency.getVersion());
+            buff.append(".");
+            String extension = dependency.getExtension();
+            buff.append(extension != null ? extension : "jar");
+        } else {
+            buff.append(dependency.getJar());
+        }
+        File file = new File(repoFile, buff.toString());
+        file = FileUtil.normalizeFile(file);
+        return file.toURI();
+    }    
     /**
      * find the right file for the given location and project. The returned file doesn't have to exist on disk.
      */

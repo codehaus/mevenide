@@ -75,7 +75,7 @@ public class MavenProjectNode extends AbstractNode {
         boolean isMultiproject = (project.getPropertyLocator().getPropertyLocation("maven.multiproject.includes") 
                                     > IPropertyLocator.LOCATION_DEFAULTS); //NOI18N
         int slip = (isMultiproject ? 2 : 0);
-        Action[] toReturn = new Action[13 + slip];
+        Action[] toReturn = new Action[14 + slip];
         ActionProviderImpl provider = (ActionProviderImpl)project.getLookup().lookup(ActionProviderImpl.class);
         toReturn[0] = LogicalViews.newFileAction();
         toReturn[1] = null;
@@ -90,11 +90,12 @@ public class MavenProjectNode extends AbstractNode {
         toReturn[6 + slip] = new RunGoalsAction(project);
         // separator
         toReturn[7 + slip] = null;
-        toReturn[8 + slip] = LogicalViews.setAsMainProjectAction();
-        toReturn[9 + slip] = LogicalViews.openSubprojectsAction();
-        toReturn[10 + slip] = LogicalViews.closeProjectAction();
-        toReturn[11 + slip] = null;
-        toReturn[12 + slip] = LogicalViews.customizeProjectAction();
+        toReturn[8 + slip] = project.createRefreshAction();
+        toReturn[9 + slip] = LogicalViews.setAsMainProjectAction();
+        toReturn[10 + slip] = LogicalViews.openSubprojectsAction();
+        toReturn[11 + slip] = LogicalViews.closeProjectAction();
+        toReturn[12 + slip] = null;
+        toReturn[13 + slip] = LogicalViews.customizeProjectAction();
 //        for (int i = 0; i < spr.length; i++) {
 //            toReturn[i + 6] = spr[i];
 //        }
