@@ -132,7 +132,6 @@ public class TestOutputListenerProvider extends AbstractOutputProcessor {
                 Pattern linePattern = Pattern.compile("\\sat (.*)\\((.*)\\.java\\:(.*)\\)");
                 ClassPath classPath = ClassPath.getClassPath(testFile, ClassPath.EXECUTE);
                 while ((line = reader.readLine()) != null) {
-                    System.out.println("line=" + line);
                     Matcher match = linePattern.matcher(line);
                     OutputListener list = null;
                     if (match.matches()) {
