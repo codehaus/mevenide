@@ -145,7 +145,13 @@ public class MavenArgumentsTab extends AbstractLaunchConfigurationTab  {
 		data.grabExcessVerticalSpace = true;
 		
 		Label label = new Label(composite, SWT.READ_ONLY);
-		label.setText("Maven version: " + MavenSession.APP_VERSION); //$NON-NLS-1$
+		label.setText("Maven version: " + "1.0.1");
+                        
+//TODO how to get maven version?
+// in maven 1.0.1 and beyond org.apache.App changed from mavenSession.APP_VERSION                        
+// to reading "driver.properties" file and getting getProperty( "maven.application.version" )                        
+                        
+//                        MavenSession.APP_VERSION); //$NON-NLS-1$
 		
 		label.setLayoutData(data);
 	}
