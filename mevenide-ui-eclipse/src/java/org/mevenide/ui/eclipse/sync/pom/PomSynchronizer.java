@@ -118,8 +118,8 @@ public class PomSynchronizer extends AbstractPomSynchronizer implements ISynchro
      * @throws Exception
      */
 	private void updatePom(IClasspathEntry classpathEntry) throws Exception {
-		Entry entry = Entry.getEntry(classpathEntry);
-		LibraryVisitor visitor = new LibraryVisitor();
+		DependencyEntry entry = DependencyEntry.getEntry(classpathEntry);
+		DependencyVisitor visitor = new DependencyVisitor();
 		if ( entry != null ) {
 			entry.accept(visitor);
 		}

@@ -14,7 +14,6 @@
  */
 package org.mevenide.ui.eclipse.sync.pom;
 
-import org.eclipse.jdt.core.IClasspathEntry;
 
 /**
  * 
@@ -22,11 +21,8 @@ import org.eclipse.jdt.core.IClasspathEntry;
  * @version $Id$
  * 
  */
-public class LibraryVisitor {
-	public void accept(IClasspathEntry entry) {
-		
-		
-	}
+public class DependencyVisitor {
+	
 	
 	public void visit(SourceEntry entry) {
 		
@@ -41,7 +37,7 @@ public class LibraryVisitor {
 //		);
 	}
 	
-	public void visit(DependencyEntry entry) {
+	public void visit(LibraryEntry entry) {
 //		IClasspathEntry classpathEntry = entry.getClasspathEntry();
 //		ProjectWriter.getWriter().addDependency(
 //				pathResolver.getAbsolutePath(classpathEntry.getPath()), 

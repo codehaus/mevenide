@@ -22,14 +22,14 @@ import org.eclipse.jdt.core.IClasspathEntry;
  * @version $Id$
  * 
  */
-public abstract class Entry {
+public abstract class DependencyEntry {
 	private IClasspathEntry classpathEntry ;
 	
-	public Entry(IClasspathEntry entry) {
+	public DependencyEntry(IClasspathEntry entry) {
 		classpathEntry = entry;
 	}
 
-	public abstract void accept(LibraryVisitor visitor);
+	public abstract void accept(DependencyVisitor visitor);
 	
 	/** 
 	 * sucky but the way IClasspathEntry is designed is sucky as well.. 
@@ -38,12 +38,12 @@ public abstract class Entry {
 	 * @param entry
 	 * @return
 	 */
-	public static Entry getEntry(IClasspathEntry entry) {
+	public static DependencyEntry getEntry(IClasspathEntry entry) {
 		switch ( entry.getEntryKind() ) {
 			case IClasspathEntry.CPE_SOURCE:
 				return new SourceEntry(entry);
 			case IClasspathEntry.CPE_LIBRARY:
-				return new DependencyEntry(entry);
+				return new LibraryEntry(entry);
 		}
 		return null;
 	}
@@ -54,20 +54,20 @@ public abstract class Entry {
 
 }
 
-class SourceEntry extends Entry {
+class SourceEntry extends DependencyEntry {
 	public SourceEntry(IClasspathEntry entry) {
 		super(entry);
 	}
-	public void accept(LibraryVisitor visitor) {
+	public void accept(DependencyVisitor visitor) {
 		visitor.visit(this);
 	}
 }
 
-class DependencyEntry extends Entry {
-	public DependencyEntry(IClasspathEntry entry) {
+class LibraryEntry extends DependencyEntry {
+	public LibraryEntry(IClasspathEntry entry) {
 		super(entry);
 	}
-	public void accept(LibraryVisitor visitor) {
+	public void accept(DependencyVisitor visitor) {
 		visitor.visit(this);
 	}
 
