@@ -22,7 +22,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Project;
@@ -49,7 +48,6 @@ import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.ui.actions.WorkspaceModifyDelegatingOperation;
 import org.mevenide.environment.LocationFinderAggregator;
 import org.mevenide.project.io.DefaultProjectMarshaller;
-import org.mevenide.project.io.PomSkeletonBuilder;
 import org.mevenide.project.io.ProjectReader;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.preferences.MevenidePreferenceKeys;
