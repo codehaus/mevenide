@@ -103,7 +103,7 @@ public class DefaultReportsFinder implements IReportsFinder {
 		String[] pluginsContainingRegisterReport = grep(searchedString, pluginsDir);
 		for (int i = 0; i < pluginsContainingRegisterReport.length; i++) {
 			DependencySplitter splitter = new DependencySplitter(pluginsContainingRegisterReport[i]);
-			pluginsContainingRegisterReport[i] = splitter.split()[0];
+			pluginsContainingRegisterReport[i] = splitter.split().artifactId;
         }
 		return pluginsContainingRegisterReport;
 	}
