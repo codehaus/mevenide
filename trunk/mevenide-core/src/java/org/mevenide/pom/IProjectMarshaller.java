@@ -24,7 +24,7 @@ import org.apache.maven.project.Project;
  * @version $Id$
  * 
  */
-public interface IPomMarshaller {
+public interface IProjectMarshaller {
 	public abstract void marshall(Writer pom, Project project)
 		throws Exception;
 }

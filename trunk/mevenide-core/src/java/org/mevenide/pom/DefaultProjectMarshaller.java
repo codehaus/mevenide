@@ -56,7 +56,7 @@ public class DefaultProjectMarshaller implements IPomMarshaller {
 		serializer.setProperty("http://xmlpull.org/v1/doc/properties.html#serializer-indentation", "    ");
 		serializer.setProperty("http://xmlpull.org/v1/doc/properties.html#serializer-line-separator", "\r\n");
 		serializer.setOutput(pom);
-		serializer.startDocument(ENCODING, STANDALONE);	
+		//serializer.startDocument(ENCODING, STANDALONE);	
 	}
 
 	public  void marshall(Writer pom, Project project) throws Exception {
