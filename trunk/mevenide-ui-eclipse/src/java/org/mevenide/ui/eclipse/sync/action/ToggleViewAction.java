@@ -1,7 +1,7 @@
 /* ====================================================================
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 2003 The Apache Software Foundation.  All rights
+ * Copyright (c) 2003-2004 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -46,35 +46,43 @@
  * SUCH DAMAGE.
  * ====================================================================
  */
-package org.mevenide.ui.eclipse.actions;
+package org.mevenide.ui.eclipse.sync.action;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.eclipse.jface.action.IAction;
-import org.eclipse.ui.PlatformUI;
+import org.eclipse.jface.action.Action;
+import org.mevenide.ui.eclipse.sync.view.ISynchronizationDirectionListener;
 import org.mevenide.ui.eclipse.sync.view.SynchronizeView;
 
 /**
- * either synchronize pom add .classpath 
  * 
- * @author Gilles Dodinet (gdodinet@wanadoo.fr)
+ * @author <a href="mailto:rhill2@free.fr">Gilles Dodinet</a>
  * @version $Id$
  * 
  */
-public class SynchronizeAction extends AbstractMevenideAction {
-    private static final String SYNCHRONIZE_VIEW_ID = "org.mevenide.ui.synchronize.view.SynchronizeView";
+public class ToggleViewAction extends Action implements ISynchronizationDirectionListener {
+    private static final Log log = LogFactory.getLog(ToggleViewAction.class);
+
+    private SynchronizeView synchronizeView;
+    private int direction;
     
-    private static Log log = LogFactory.getLog(SynchronizeAction.class);
-	
-    public void run(IAction action) {
-        try {
-            SynchronizeView view = (SynchronizeView) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(SYNCHRONIZE_VIEW_ID);
-            view.setInput(currentProject);
-        }
-        catch ( Exception e ) {
-            log.debug("WIP execption ", e);
-        }
-	}
-
-
+    public ToggleViewAction(SynchronizeView view, int direction) {
+        super(null, AS_RADIO_BUTTON);
+        this.synchronizeView = view;
+		this.direction = direction;			
+        synchronizeView.addDirectionListener(this);
+        addPropertyChangeListener(synchronizeView);
+    }
+    
+    public void run() {
+        synchronizeView.setDirection(direction);
+    }
+    
+    public void directionChanged(int direction) {
+        boolean masked = (direction & this.direction) != 0;
+        boolean oldValue = isChecked();
+        log.debug("directionChanged - oldValue = " + isChecked() + "newValue = " + masked);
+        setChecked(masked);
+        firePropertyChange(CHECKED, new Boolean(oldValue), new Boolean(masked));
+    }
 }
