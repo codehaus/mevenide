@@ -6,7 +6,7 @@
   </properties>
 
   <body>
-    <release version="0.3">
+    <release version="0.3" date="16/03/2005">
       <action dev="mkleint" type="add">   
       Introduction of goals mevenide:src-distribution, mevenide:src-distribution-install and mevenide:src-distribution-deploy
       which are capable of creating a source distribution of the project. It contains sources
