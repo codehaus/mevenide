@@ -1,2 +1,2 @@
- + use timestamp when persisting sourceDirectorie, also when retrieving them P: H
+ + fix build-all  goals so that providers files are bundled with mevenide-ui-eclipse artifact  rather than mevenide-core one P: H
  + factorize SourceDirectoryMappingWizardPage and DependencyWizardPage
