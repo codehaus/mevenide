@@ -35,8 +35,8 @@ import org.mevenide.ui.eclipse.goals.model.Plugin;
  */
 public class GoalsLabelProvider extends LabelProvider implements IColorProvider {
 	
-    private Image plugin16 = Mevenide.getImageDescriptor("plugin-16.gif").createImage();
-    private Image goal16 = Mevenide.getImageDescriptor("goal-16.gif").createImage();
+    private Image plugin16 = Mevenide.getImageDescriptor("obj16/mplugin_obj.gif").createImage();
+    private Image goal16 = Mevenide.getImageDescriptor("obj16/mgoal_obj.gif").createImage();
     
     public Image getImage(Object arg0) {
     	if ( arg0 instanceof Plugin )
