@@ -135,13 +135,32 @@ public class MevenidePreferenceDialog {
 		GridLayout layout = new GridLayout();
 		layout.numColumns = 3;
 		
-		javaHomeEditor = createEditor(MevenidePreferenceKeys.JAVA_HOME_PREFERENCE_KEY, "Java home", javaHome);
-		mavenHomeEditor = createEditor(MevenidePreferenceKeys.MAVEN_HOME_PREFERENCE_KEY, "Maven home", mavenHome);
-		mavenLocalHomeEditor = createEditor(MevenidePreferenceKeys.MAVEN_LOCAL_HOME_PREFERENCE_KEY, "Maven local home", mavenLocalHome);
-		mavenRepoEditor = createEditor(MevenidePreferenceKeys.MAVEN_REPO_PREFERENCE_KEY, "Maven Repository", mavenRepository);
-		//pluginsInstallDirEditor = createEditor("maven.plugins.dir", "Plugins Directory", mavenRepository);
+		javaHomeEditor = createEditor(
+			MevenidePreferenceKeys.JAVA_HOME_PREFERENCE_KEY, 
+			Mevenide.getResourceString("MevenidePreferenceDialog.java.home.label"), 
+			javaHome
+		);
+		mavenHomeEditor = createEditor(
+			MevenidePreferenceKeys.MAVEN_HOME_PREFERENCE_KEY, 
+			Mevenide.getResourceString("MevenidePreferenceDialog.java.home.label"), 
+			mavenHome
+		);
+		mavenLocalHomeEditor = createEditor(
+			MevenidePreferenceKeys.MAVEN_LOCAL_HOME_PREFERENCE_KEY, 
+			Mevenide.getResourceString("MevenidePreferenceDialog.java.home.label"), 
+			mavenLocalHome
+		);
+		mavenRepoEditor = createEditor(
+			MevenidePreferenceKeys.MAVEN_REPO_PREFERENCE_KEY, 
+			Mevenide.getResourceString("MevenidePreferenceDialog.java.home.label"), 
+			mavenRepository
+		);
 		
-		heapSizeEditor = new IntegerFieldEditor(MevenidePreferenceKeys.MAVEN_HEAP_SIZE_PREFERENCE_KEY, "Heap Size", topLevelContainer);
+		heapSizeEditor = new IntegerFieldEditor(
+			MevenidePreferenceKeys.JAVA_HEAP_SIZE_PREFERENCE_KEY, 
+			Mevenide.getResourceString("MevenidePreferenceDialog.heap.size.label"), 
+			topLevelContainer
+		);
 		heapSizeEditor.fillIntoGrid(topLevelContainer, 2);
 		heapSizeEditor.setPreferenceStore(preferencesManager.getPreferenceStore());
 		heapSizeEditor.load();
@@ -149,7 +168,12 @@ public class MevenidePreferenceDialog {
 		Label label = new Label(topLevelContainer, SWT.NONE);
 		label.setLayoutData(new GridData());
 		
-		pomTemplateLocationEditor = new FileFieldEditor(MevenidePreferenceKeys.POM_TEMPLATE_LOCATION_PREFERENCE_KEY, "POM Template", true, topLevelContainer);
+		pomTemplateLocationEditor = new FileFieldEditor(
+			MevenidePreferenceKeys.POM_TEMPLATE_LOCATION_PREFERENCE_KEY, 
+			Mevenide.getResourceString("MevenidePreferenceDialog.pom.template.label"), 
+			true, 
+			topLevelContainer
+		);
 		pomTemplateLocationEditor.fillIntoGrid(topLevelContainer, 3);
 		pomTemplateLocationEditor.setPreferenceStore(preferencesManager.getPreferenceStore());
 		pomTemplateLocationEditor.load();
@@ -168,7 +192,7 @@ public class MevenidePreferenceDialog {
 					catch (Exception e) {
 						//e.printStackTrace();
 						invalidPomTemplate = true;
-						page.setErrorMessage("Pom Template is not a valid Maven project Descriptor.");
+						page.setErrorMessage(Mevenide.getResourceString("MevenidePreferenceDialog.invalid.pom.error"));
 					}
 					page.getContainer().updateButtons();
 					page.getContainer().updateMessage();
@@ -196,7 +220,11 @@ public class MevenidePreferenceDialog {
 		compositeB.setLayoutData(new GridData(GridData.FILL_BOTH));
 		
 		
-		checkTimestampEditor = new BooleanFieldEditor(MevenidePreferenceKeys.MEVENIDE_CHECKTIMESTAMP_PREFERENCE_KEY, "Check timestamp before synchronizing", compositeB);
+		checkTimestampEditor = new BooleanFieldEditor(
+			MevenidePreferenceKeys.MEVENIDE_CHECKTIMESTAMP_PREFERENCE_KEY, 
+			Mevenide.getResourceString("MevenidePreferenceDialog.check.timestamp.label"), 
+			compositeB
+		);
 		checkTimestampEditor.fillIntoGrid(compositeB, 3);		
 		checkTimestampEditor.setPreferenceStore(preferencesManager.getPreferenceStore());
 		checkTimestampEditor.load();
@@ -226,15 +254,15 @@ public class MevenidePreferenceDialog {
 		};
 		
 		defaultGoalsEditor.setPreferenceName(MevenidePreferenceKeys.MAVEN_LAUNCH_DEFAULTGOALS_PREFERENCE_KEY);
-		defaultGoalsEditor.setLabelText("Default Goals");
+		defaultGoalsEditor.setLabelText(Mevenide.getResourceString("MevenidePreferenceDialog.default.goals.label"));
 		defaultGoalsEditor.setPreferencePage(page);
 		defaultGoalsEditor.fillIntoGrid(topLevelContainer, 3);
 		defaultGoalsEditor.setPreferenceStore(preferencesManager.getPreferenceStore());
 		defaultGoalsEditor.load();
 		if ( defaultGoalsEditor.getStringValue() == null ) {
-			defaultGoalsEditor.setStringValue("java:compile");
+			defaultGoalsEditor.setStringValue(Mevenide.getResourceString("MevenidePreferenceDialog.default.goals.null"));
 		} 
-		defaultGoalsEditor.setChangeButtonText("Choose...");
+		defaultGoalsEditor.setChangeButtonText(Mevenide.getResourceString("MevenidePreferenceDialog.default.goals.choose"));
 		
 	}
 
@@ -278,8 +306,6 @@ public class MevenidePreferenceDialog {
 		if ( heapSize != 0 ) {
 			Mevenide.getPlugin().setHeapSize(heapSize);
 		}
-		//pluginsInstallDir = pluginsInstallDirEditor.getTextControl(topLevelContainer).getText();
-		//Mevenide.getPlugin().setPluginsInstallDir(pluginsInstallDir);
 	}
 	
 	
@@ -355,15 +381,7 @@ public class MevenidePreferenceDialog {
 	public boolean isInvalidPomTemplate() {
 		return invalidPomTemplate;
 	}
-
-//    public String getPluginsInstallDir() {
-//        return pluginsInstallDir;
-//    }
-//
-//    public void setPluginsInstallDir(String pluginsInstallDir) {
-//        this.pluginsInstallDir = pluginsInstallDir;
-//    }
-
+	
     public int getHeapSize() {
         return heapSize;
     }

@@ -61,6 +61,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.externaltools.internal.launchConfigurations.ExternalToolsMainTab;
 import org.eclipse.ui.externaltools.internal.model.IExternalToolConstants;
+import org.mevenide.ui.eclipse.Mevenide;
 
 /**
  * 
@@ -120,7 +121,7 @@ public class MavenMainTab extends ExternalToolsMainTab {
 		return true;
 	}
 	protected String getWorkingDirectoryLabel() {
-		return "Base Directory";
+		return Mevenide.getResourceString("MavenMainTab.working.directory.label");
 	}
 	
 }

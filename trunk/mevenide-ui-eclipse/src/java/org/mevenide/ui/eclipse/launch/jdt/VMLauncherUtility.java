@@ -19,6 +19,7 @@ import org.eclipse.jdt.launching.IVMInstall;
 import org.eclipse.jdt.launching.IVMRunner;
 import org.eclipse.jdt.launching.JavaRuntime;
 import org.eclipse.jdt.launching.VMRunnerConfiguration;
+import org.mevenide.ui.eclipse.Mevenide;
 
 /**
  * @author Thomas Papiernik
@@ -58,7 +59,7 @@ public class VMLauncherUtility {
         
         ILaunchManager manager = DebugPlugin.getDefault().getLaunchManager();
 		ILaunchConfigurationType[] launchTypes = manager.getLaunchConfigurationTypes();
-		ILaunchConfiguration config = launchTypes[0].newInstance(null, "Maven");
+		ILaunchConfiguration config = launchTypes[0].newInstance(null, Mevenide.getResourceString("VMLauncherUtility.launch.name"));
         
         ILaunch launch = new Launch(config, launchMode, null);
         

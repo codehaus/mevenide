@@ -85,7 +85,7 @@ public class ProjectUtil {
 		IClasspathEntry resolvedJreEntry = JavaCore.getResolvedClasspathEntry(jreEntry);
 		String jrePath = pathResolver.getAbsolutePath(resolvedJreEntry.getPath());
 		
-		IClasspathContainer container = JavaCore.getClasspathContainer(new Path("org.eclipse.jdt.launching.JRE_CONTAINER"), JavaCore.create(project));
+		IClasspathContainer container = JavaCore.getClasspathContainer(new Path(Mevenide.getResourceString("ProjectUtil.eclipse.jre.container")), JavaCore.create(project));
 		IClasspathEntry[] jreEntries = container.getClasspathEntries();
 		
 		List jreEntryList = new ArrayList();
