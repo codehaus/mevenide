@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<document>
+    <properties>
+    	<author email="rhill2@free.fr">Gilles Dodinet</author>
+        <title>Pom Validation</title>
+    </properties>
+    <body>
+		<section name="Pom Validation">
+        	<div id="documentContent">
+        		<p>
+					Mevenide can validate your POMs against a POMv3 XSD. A SLighty modified version of the POM is bundled with Mevenide 
+					where <code>artifactId</code> element replaces deprecated <code>id</code> element.
+				</p>
+				<p>
+					Validation can be triggered either from any xml file contextual menu (Screenshot 1) or from the Maven Menu contributed by the POM editor (Screenshot 2).
+					<center>
+						<br/>
+						<img src="../images/screenshots/validate/validate_ctx_menu.png" border="1px"/>
+						<br/>
+						<font size="-1"><b>Screenshot 1</b> Validation contextual action</font>
+					</center>
+					<br/>
+					<center>
+						<img src="../images/screenshots/validate/validate_pom_contribution.png" border="1px"/>
+						<br/>
+						<font size="-1"><b>Screenshot 2</b> Pom contribution</font>
+					</center>
+					<br/>
+				</p>
+				<p>
+					Validation errors are directed to the Problems View, however you first need to enable them by unfiltering them (Screenshot 3).
+					<center>
+						<br/>
+						<img src="../images/screenshots/validate/validate_problem_view.png" border="1px"/>
+						<br/>
+						<font size="-1"><b>Screenshot 1</b> Problem View</font>
+					</center>
+					<br/>
+				</p>
+        	</div>
+        </section>
+        <section>
+			<p>
+				<navbar prev="provider-infrastructure.html" toc="help.html"/>
+			</p>
+		</section>
+	</body>
+</document>
