@@ -46,7 +46,7 @@ public class RepositoryObjectCollectorJob extends Job {
     private String baseUrl;
     
     public RepositoryObjectCollectorJob(BaseRepositoryObject repositoryElement, String baseUrl) {
-        super("Repository object collector");
+        super("Repository object collector [" + baseUrl + "]");
         this.repositoryElement = repositoryElement;
         this.baseUrl = baseUrl;
     }
