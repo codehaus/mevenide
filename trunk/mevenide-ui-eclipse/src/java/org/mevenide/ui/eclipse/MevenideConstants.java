@@ -46,84 +46,33 @@
  * SUCH DAMAGE.
  * ====================================================================
  */
-package org.mevenide.ui.eclipse.sync.model;
+package org.mevenide.ui.eclipse;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.eclipse.swt.graphics.Color;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.jdt.core.JavaCore;
-
-/**
+/**  
  * 
- * @author <a href="mailto:gdodinet@wanadoo.fr">Gilles Dodinet</a>
- * @version $Id$
+ * @author Gilles Dodinet (gdodinet@wanadoo.fr)
+ * @version $Id: MevenideConstants.java 30 août 2003 Exp gdodinet 
  * 
  */
-public abstract class ArtifactGroup {
-	private static Log log = LogFactory.getLog(ArtifactGroup.class);
+public class MevenideConstants {
 	
-	protected IJavaProject javaProject;
-	
-	private IProject project;
-	private String projectName;
-	
-	protected List artifacts = new ArrayList(); 
-	protected List excludedArtifacts = new ArrayList();
-	
-	protected boolean isInherited;
-	
-	public ArtifactGroup()  { }
-	
-	public ArtifactGroup(IProject project)  {
-		try {
-			if ( project != null && project.hasNature(JavaCore.NATURE_ID) ) {
-				this.javaProject = JavaCore.create(project);
-				this.projectName = project.getName();
-				log.debug("Initializing ArtifactGroup for project " + projectName);
-				initialize();
+	static {
+		Runtime.getRuntime().addShutdownHook(
+			new Thread() {
+                public void run() {
+                    WHITE.dispose();
+					GREY.dispose();
+					BLACK.dispose();
+                }	
 			}
-			setProject(project);
-		}
-		catch ( Exception ex ) {
-			log.debug("Error in ArtifactGroup initializer. reason : " + ex);
-			ex.printStackTrace();
-		}
+		);
 	}
 	
-	protected abstract void initialize() throws Exception; 
-	
-	public IJavaProject getJavaProject() {
-		return javaProject;
-	}
-
-	public void setJavaProject(IJavaProject project) throws Exception {
-		this.javaProject = project;
-		initialize();
-	}
-	
-	public String getProjectName() {
-		return projectName;
-	}
-
-	public void setProject(IProject project) {
-		this.project = project;
-		this.projectName = project.getName();
-	}
-
-	public void setInherited(boolean isInherited) {
-	   this.isInherited = isInherited;
-    }
-
-	public boolean isInherited() {
-		return isInherited;
-	}
-
-	public IProject getProject() {
-		return project;
-	}
+	public static final Color WHITE = new Color(null, 255, 255, 255);
+	public static final Color GREY = new Color(null, 156, 156, 156);
+	public static final Color BLACK = new Color(null, 0, 0, 0);
 
 }
+

@@ -46,7 +46,7 @@
  * SUCH DAMAGE.
  * ====================================================================
  */
-package org.mevenide.ui.eclipse.sync.model;
+package org.mevenide.ui.eclipse.sync.model.source;
 
 import java.io.File;
 import java.util.ArrayList;

@@ -46,84 +46,72 @@
  * SUCH DAMAGE.
  * ====================================================================
  */
-package org.mevenide.ui.eclipse.sync.model;
+package org.mevenide.ui.eclipse.sync.viewer;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.eclipse.jface.util.Assert;
+import org.eclipse.jface.viewers.ILabelProviderListener;
+import org.eclipse.jface.viewers.ITableLabelProvider;
+import org.eclipse.swt.graphics.Image;
+import org.mevenide.ui.eclipse.Mevenide;
+import org.mevenide.ui.eclipse.sync.model.source.SourceDirectory;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.jdt.core.JavaCore;
 
-/**
- * 
- * @author <a href="mailto:gdodinet@wanadoo.fr">Gilles Dodinet</a>
- * @version $Id$
- * 
- */
-public abstract class ArtifactGroup {
-	private static Log log = LogFactory.getLog(ArtifactGroup.class);
+public class SourceDirectoryGroupLabelProvider implements ITableLabelProvider {
 	
-	protected IJavaProject javaProject;
+	private static final int INHERIT_IDX = 2;
+    private static final int SRC_TYPE_IDX = 1;
+    private static final int DIRECTORY_IDX = 0;
+
+    private final String[] sourceTypes;
 	
-	private IProject project;
-	private String projectName;
+	public SourceDirectoryGroupLabelProvider(String[] sourceTypes) {
+		this.sourceTypes = sourceTypes;
+	}
 	
-	protected List artifacts = new ArrayList(); 
-	protected List excludedArtifacts = new ArrayList();
-	
-	protected boolean isInherited;
-	
-	public ArtifactGroup()  { }
-	
-	public ArtifactGroup(IProject project)  {
-		try {
-			if ( project != null && project.hasNature(JavaCore.NATURE_ID) ) {
-				this.javaProject = JavaCore.create(project);
-				this.projectName = project.getName();
-				log.debug("Initializing ArtifactGroup for project " + projectName);
-				initialize();
+	public Image getColumnImage(Object element, int columnIndex) {
+		if ( columnIndex == DIRECTORY_IDX ) {
+			return Mevenide.getImageDescriptor("source-directory-16.gif").createImage();
+		}
+		if ( columnIndex == INHERIT_IDX ) {
+			if ( ((SourceDirectory) element).isInherited() ) {
+				if ( !((SourceDirectory) element).getGroup().isInherited() ) {
+					return Mevenide.getImageDescriptor("checked-grayed-16.gif").createImage();
+				}
+				return Mevenide.getImageDescriptor("checked-16.gif").createImage();
 			}
-			setProject(project);
+			
+			if ( !((SourceDirectory) element).getGroup().isInherited() ) {
+				return Mevenide.getImageDescriptor("unchecked-grayed-16.gif").createImage();
+			}
+			return Mevenide.getImageDescriptor("unchecked-16.gif").createImage();
+						
+			
 		}
-		catch ( Exception ex ) {
-			log.debug("Error in ArtifactGroup initializer. reason : " + ex);
-			ex.printStackTrace();
+		return null;
+	}
+	
+	public String getColumnText(Object element, int columnIndex) {
+		Assert.isTrue(element instanceof SourceDirectory);
+		if ( columnIndex == DIRECTORY_IDX  ) { 
+			return ((SourceDirectory) element).getDisplayPath();
 		}
+		if ( columnIndex == SRC_TYPE_IDX ) {
+			String directoryType = ((SourceDirectory) element).getDirectoryType();
+			return directoryType;
+		}
+		return "";
 	}
 	
-	protected abstract void initialize() throws Exception; 
-	
-	public IJavaProject getJavaProject() {
-		return javaProject;
-	}
-
-	public void setJavaProject(IJavaProject project) throws Exception {
-		this.javaProject = project;
-		initialize();
+	public void addListener(ILabelProviderListener listener) {
 	}
 	
-	public String getProjectName() {
-		return projectName;
+	public boolean isLabelProperty(Object element, String property) {
+		return false;
 	}
-
-	public void setProject(IProject project) {
-		this.project = project;
-		this.projectName = project.getName();
+	
+	public void removeListener(ILabelProviderListener listener) {
 	}
-
-	public void setInherited(boolean isInherited) {
-	   this.isInherited = isInherited;
-    }
-
-	public boolean isInherited() {
-		return isInherited;
+	
+	public void dispose() {
 	}
-
-	public IProject getProject() {
-		return project;
-	}
-
 }

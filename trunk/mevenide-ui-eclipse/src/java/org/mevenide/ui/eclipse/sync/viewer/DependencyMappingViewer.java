@@ -46,7 +46,7 @@
  * SUCH DAMAGE.
  * ====================================================================
  */
-package org.mevenide.ui.eclipse.sync.control;
+package org.mevenide.ui.eclipse.sync.viewer;
 
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CheckboxCellEditor;
@@ -59,9 +59,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
-import org.mevenide.ui.eclipse.sync.model.DependencyGroupContentProvider;
-import org.mevenide.ui.eclipse.sync.model.DependencyGroupLabelProvider;
-import org.mevenide.ui.eclipse.sync.model.DependencyWrapper;
+import org.mevenide.ui.eclipse.sync.model.dependency.DependencyGroupContentProvider;
+import org.mevenide.ui.eclipse.sync.model.dependency.DependencyInfo;
+import org.mevenide.ui.eclipse.sync.model.dependency.DependencyWrapper;
 
 /**
  * 
@@ -69,14 +69,14 @@ import org.mevenide.ui.eclipse.sync.model.DependencyWrapper;
  * @version $Id$
  * 
  */
-public class DependencyMappingViewControl {
+public class DependencyMappingViewer {
 	
 	private static final String INHERITED = "inherited";
     private static final String VALUE = "value";
     private static final String ATTRIBUTE = "attribute";
     
     
-    private DependencyMappingViewControl(){
+    private DependencyMappingViewer(){
 	}
 	
 	public static TableTreeViewer getViewer(Composite parent) {
@@ -135,8 +135,8 @@ public class DependencyMappingViewControl {
 		
 		tableTreeViewer.setCellModifier(new ICellModifier() {
 			public boolean canModify(Object element, String property) {
-				return 	( DependencyMappingViewControl.VALUE.equals(property) && element instanceof DependencyGroupContentProvider.DependencyInfo )
-					 || ( DependencyMappingViewControl.INHERITED.equals(property) );
+				return 	( DependencyMappingViewer.VALUE.equals(property) && element instanceof DependencyInfo && !((DependencyInfo) element).isReadOnly())
+					 || ( DependencyMappingViewer.INHERITED.equals(property) && element instanceof DependencyWrapper && !((DependencyWrapper) element).isReadOnly() );
 					
 			}
 			
@@ -144,10 +144,10 @@ public class DependencyMappingViewControl {
 				if (element instanceof Item) {
 					element = ((Item) element).getData();
 				}
-				if ( DependencyMappingViewControl.VALUE.equals(property) ) {
-					((DependencyGroupContentProvider.DependencyInfo) element).setInfo((String)value);
+				if ( DependencyMappingViewer.VALUE.equals(property) ) {
+					((DependencyInfo) element).setInfo((String)value);
 				}
-				if ( DependencyMappingViewControl.INHERITED.equals(property) 
+				if ( DependencyMappingViewer.INHERITED.equals(property) 
 						&& ((DependencyWrapper) element).getDependencyGroup().isInherited() ) { 
 					((DependencyWrapper) element).setInherited(((Boolean)value).booleanValue());
 				}
@@ -155,14 +155,14 @@ public class DependencyMappingViewControl {
 			}
 			
 			public Object getValue(Object element, String property) {
-				if ( element instanceof DependencyWrapper && DependencyMappingViewControl.INHERITED.equals(property) ) {
+				if ( element instanceof DependencyWrapper && DependencyMappingViewer.INHERITED.equals(property) ) {
 					return new Boolean(((DependencyWrapper) element).isInherited());
 				}
-				if ( element instanceof DependencyGroupContentProvider.DependencyInfo && DependencyMappingViewControl.ATTRIBUTE.equals(property) ) {
-					return ((DependencyGroupContentProvider.DependencyInfo) element).getDependency().getArtifact();
+				if ( element instanceof DependencyInfo && DependencyMappingViewer.ATTRIBUTE.equals(property) ) {
+					return ((DependencyInfo) element).getDependency().getArtifact();
 				}
-				if ( element instanceof DependencyGroupContentProvider.DependencyInfo && DependencyMappingViewControl.VALUE.equals(property) ) {
-					return ((DependencyGroupContentProvider.DependencyInfo) element).getInfo();
+				if ( element instanceof DependencyInfo && DependencyMappingViewer.VALUE.equals(property) ) {
+					return ((DependencyInfo) element).getInfo();
 				}
 				else {
 					return "";
@@ -170,7 +170,7 @@ public class DependencyMappingViewControl {
 			}
 		});
 		
-		tableTreeViewer.setColumnProperties(new String[] {DependencyMappingViewControl.ATTRIBUTE, DependencyMappingViewControl.VALUE, DependencyMappingViewControl.INHERITED});
+		tableTreeViewer.setColumnProperties(new String[] {DependencyMappingViewer.ATTRIBUTE, DependencyMappingViewer.VALUE, DependencyMappingViewer.INHERITED});
 		
 		tableTreeViewer.setContentProvider(new DependencyGroupContentProvider());
 		

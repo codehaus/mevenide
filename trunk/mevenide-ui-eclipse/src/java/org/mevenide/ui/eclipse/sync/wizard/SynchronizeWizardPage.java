@@ -102,16 +102,17 @@ import org.mevenide.Environment;
 import org.mevenide.project.dependency.DependencyFactory;
 import org.mevenide.project.io.ProjectReader;
 import org.mevenide.ui.eclipse.Mevenide;
-import org.mevenide.ui.eclipse.sync.control.DependencyMappingViewControl;
-import org.mevenide.ui.eclipse.sync.control.SourceDirectoryMappingViewControl;
-import org.mevenide.ui.eclipse.sync.model.DependencyGroup;
-import org.mevenide.ui.eclipse.sync.model.DependencyGroupContentProvider;
-import org.mevenide.ui.eclipse.sync.model.DependencyGroupMarshaller;
-import org.mevenide.ui.eclipse.sync.model.DependencyWrapper;
-import org.mevenide.ui.eclipse.sync.model.SourceDirectory;
-import org.mevenide.ui.eclipse.sync.model.SourceDirectoryGroup;
-import org.mevenide.ui.eclipse.sync.model.SourceDirectoryGroupMarshaller;
+import org.mevenide.ui.eclipse.sync.model.dependency.DependencyGroup;
+import org.mevenide.ui.eclipse.sync.model.dependency.DependencyGroupMarshaller;
+import org.mevenide.ui.eclipse.sync.model.dependency.DependencyInfo;
+import org.mevenide.ui.eclipse.sync.model.dependency.DependencyWrapper;
+import org.mevenide.ui.eclipse.sync.model.source.SourceDirectory;
+import org.mevenide.ui.eclipse.sync.model.source.SourceDirectoryGroup;
+import org.mevenide.ui.eclipse.sync.model.source.SourceDirectoryGroupMarshaller;
+import org.mevenide.ui.eclipse.sync.viewer.DependencyMappingViewer;
+import org.mevenide.ui.eclipse.sync.viewer.SourceDirectoryMappingViewer;
 import org.mevenide.ui.eclipse.util.ResourceSorter;
+import org.mevenide.util.MevenideUtil;
 
 /**  
  * 
@@ -235,21 +236,24 @@ public class SynchronizeWizardPage extends WizardPage {
 		parentPomEditor.load();
 		
 		try {
-			if ( parentPomEditor.getTextControl(bottomControls).getText() == null 
-				|| parentPomEditor.getTextControl(bottomControls).getText().trim().equals("") ) {
-				Project mavenProject = ProjectReader.getReader().read(new File(project.getFile("project.xml").getLocation().toOSString()));
-				//check mavenProject nullity, just in case.. should not be necessary
-				if ( mavenProject != null && mavenProject.getExtend() != null && mavenProject.getExtend().trim() != "" ) {
-					//isInheritedEditor.setEnabled(false, bottomControls);
-					parentPomEditor.getTextControl(bottomControls).setText(mavenProject.getExtend());
-				}
+			Project mavenProject = ProjectReader.getReader().read(new File(project.getFile("project.xml").getLocation().toOSString()));
+			//check mavenProject nullity, just in case.. should not be necessary
+			if ( mavenProject != null && mavenProject.getExtend() != null && mavenProject.getExtend().trim() != "" ) {
+				//isInheritedEditor.setEnabled(false, bottomControls);
+				String resolvedExtend = MevenideUtil.resolve(mavenProject, mavenProject.getExtend());
+				parentPomEditor.getTextControl(bottomControls).setText(resolvedExtend);
 			}
 		}
 		catch (Exception e) {
 			//e.printStackTrace();
-			log.debug("Unable to retrieve pom inheritance elem due to : " + e);
+			log.error("Unable to retrieve pom inheritance elem due to : " + e);
 		}
 		
+		if ( parentPomEditor.getTextControl(bottomControls).getText() == null 
+				|| parentPomEditor.getTextControl(bottomControls).getText().equals("") ) {
+			isInheritedEditor.loadDefault();
+		}
+
 		parentPomEditor.setEnabled(isInheritedEditor.getBooleanValue(), bottomControls);
 	}
 	
@@ -280,7 +284,7 @@ public class SynchronizeWizardPage extends WizardPage {
 		data.grabExcessHorizontalSpace = true;
 		composite.setLayoutData(data);
 	
-		sourceDirectoriesViewer = SourceDirectoryMappingViewControl.getViewer(composite, SWT.BORDER);
+		sourceDirectoriesViewer = SourceDirectoryMappingViewer.getViewer(composite, SWT.BORDER);
 		setSourceDirectoriesInput(((SynchronizeWizard)getWizard()).getProject());
 	}
 
@@ -465,7 +469,7 @@ public class SynchronizeWizardPage extends WizardPage {
 		data.grabExcessHorizontalSpace = true;
 		composite.setLayoutData(data);
 	
-		dependenciesViewer = DependencyMappingViewControl.getViewer(composite, SWT.BORDER);
+		dependenciesViewer = DependencyMappingViewer.getViewer(composite, SWT.BORDER);
 		setDependenciesViewerInput(((SynchronizeWizard)getWizard()).getProject());
 	
 		dependenciesViewer.getTableTree().addSelectionListener(
@@ -565,10 +569,12 @@ public class SynchronizeWizardPage extends WizardPage {
 						while ( item.getParentItem() != null ) {
 							item = item.getParentItem();
 						}
-						((DependencyGroup) dependenciesViewer.getInput()).excludeDependency((DependencyWrapper) item.getData());
-						dependenciesViewer.refresh(true);
-						removeDependencyButton.setEnabled(false);
-						dependencyPropertiesButton.setEnabled(false);
+						if ( !((DependencyWrapper) item.getData()).isReadOnly() ) {
+							((DependencyGroup) dependenciesViewer.getInput()).excludeDependency((DependencyWrapper) item.getData());
+							dependenciesViewer.refresh(true);
+							removeDependencyButton.setEnabled(false);
+							dependencyPropertiesButton.setEnabled(false);
+						}
 					}
 				}
 		);
@@ -606,7 +612,7 @@ public class SynchronizeWizardPage extends WizardPage {
 							affectedDependency = ((DependencyWrapper) sel).getDependency();
 						}
 						else {
-							affectedDependency = ((DependencyGroupContentProvider.DependencyInfo) sel).getDependency();
+							affectedDependency = ((DependencyInfo) sel).getDependency();
 						}
 						return affectedDependency;
 					}
@@ -656,7 +662,28 @@ public class SynchronizeWizardPage extends WizardPage {
 		
 		String savedStates = Mevenide.getPlugin().getFile("statedDependencies.xml");
 		
-		return DependencyGroupMarshaller.getDependencyGroup(project, savedStates);
+		DependencyGroup group = DependencyGroupMarshaller.getDependencyGroup(project, savedStates);
+		
+		Project mavenProject = ProjectReader.getReader().read(new File(project.getFile("project.xml").getLocation().toOSString()));
+		String extend = mavenProject.getExtend();
+		
+		if ( extend != null && !extend.trim().equals("") ) {
+			String resolvedExtend = MevenideUtil.resolve(mavenProject, extend);
+			
+			if ( new File(resolvedExtend).exists() ) {
+				DependencyGroup parentGroup = new DependencyGroup();
+				Project parentProject = ProjectReader.getReader().read(new File(resolvedExtend));
+				List parentDependencies = parentProject.getDependencies();
+				for (int i = 0; i < parentDependencies.size(); i++) {
+					DependencyWrapper wrapper = new DependencyWrapper((Dependency) parentDependencies.get(i), false, parentGroup);
+					wrapper.setReadOnly(true);
+					parentGroup.addDependency(wrapper);
+                }
+				group.setParentGroup(parentGroup);
+			}
+		}
+		
+		return group;
 		
 	}
 	

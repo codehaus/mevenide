@@ -46,71 +46,74 @@
  * SUCH DAMAGE.
  * ====================================================================
  */
-package org.mevenide.ui.eclipse.sync.model;
+package org.mevenide.ui.eclipse.sync.model.dependency;
 
-import org.eclipse.jface.util.Assert;
-import org.eclipse.jface.viewers.ILabelProviderListener;
-import org.eclipse.jface.viewers.ITableLabelProvider;
-import org.eclipse.swt.graphics.Image;
-import org.mevenide.ui.eclipse.Mevenide;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.maven.project.Dependency;
 
+/**  
+ * 
+ * @author Gilles Dodinet (gdodinet@wanadoo.fr)
+ * @version $Id: DependencyWrapper.java 26 août 2003 Exp gdodinet 
+ * 
+ */
+public class DependencyWrapper {
+	private static Log log = LogFactory.getLog(DependencyWrapper.class);
+	
+	private Dependency dependency;
+	private boolean isInherited;
+	private DependencyGroup dependencyGroup;
+	
+	private boolean isReadOnly;
+	
+	public DependencyWrapper(Dependency dependency, boolean isInherited, DependencyGroup group) {
+		if ( dependency == null ) {
+			throw new RuntimeException("Trying to initialize a DependencyWrapper with a null Exception");
+		}
+		this.dependency = dependency;
+		this.isInherited = isInherited;
+		this.dependencyGroup = group;
+	}
+	
+    public Dependency getDependency() {
+        return dependency;
+    }
 
-public class SourceDirectoryGroupLabelProvider implements ITableLabelProvider {
-	
-	private static final int INHERIT_IDX = 2;
-    private static final int SRC_TYPE_IDX = 1;
-    private static final int DIRECTORY_IDX = 0;
+        public boolean isInherited() {
+        return isInherited;
+    }
 
-    private final String[] sourceTypes;
-	
-	public SourceDirectoryGroupLabelProvider(String[] sourceTypes) {
-		this.sourceTypes = sourceTypes;
-	}
-	
-	public Image getColumnImage(Object element, int columnIndex) {
-		if ( columnIndex == DIRECTORY_IDX ) {
-			return Mevenide.getImageDescriptor("source-directory-16.gif").createImage();
-		}
-		if ( columnIndex == INHERIT_IDX ) {
-			if ( ((SourceDirectory) element).isInherited() ) {
-				if ( !((SourceDirectory) element).getGroup().isInherited() ) {
-					return Mevenide.getImageDescriptor("checked-grayed-16.gif").createImage();
-				}
-				return Mevenide.getImageDescriptor("checked-16.gif").createImage();
-			}
-			
-			if ( !((SourceDirectory) element).getGroup().isInherited() ) {
-				return Mevenide.getImageDescriptor("unchecked-grayed-16.gif").createImage();
-			}
-			return Mevenide.getImageDescriptor("unchecked-16.gif").createImage();
-						
-			
-		}
-		return null;
-	}
-	
-	public String getColumnText(Object element, int columnIndex) {
-		Assert.isTrue(element instanceof SourceDirectory);
-		if ( columnIndex == DIRECTORY_IDX  ) { 
-			return ((SourceDirectory) element).getDisplayPath();
-		}
-		if ( columnIndex == SRC_TYPE_IDX ) {
-			String directoryType = ((SourceDirectory) element).getDirectoryType();
-			return directoryType;
-		}
-		return "";
-	}
-	
-	public void addListener(ILabelProviderListener listener) {
-	}
-	
-	public boolean isLabelProperty(Object element, String property) {
-		return false;
-	}
-	
-	public void removeListener(ILabelProviderListener listener) {
-	}
-	
-	public void dispose() {
-	}
+    public void setInherited(boolean isInherited) {
+    	log.debug("setting isInherited to " + (isInherited));
+        this.isInherited = isInherited;
+        this.dependencyGroup.setDependencyInheritance(this.dependency, isInherited);
+    }
+    
+    public boolean equals(Object obj) {
+    	if ( obj == null || !(obj instanceof DependencyWrapper) ) {
+    		return false;
+    	}
+    	DependencyWrapper wrapper = (DependencyWrapper) obj;
+    	return this.dependency.equals(wrapper.getDependency())
+    			&& this.isInherited == wrapper.isInherited
+    			&& this.dependencyGroup.equals(wrapper.dependencyGroup);
+    }
+
+    public DependencyGroup getDependencyGroup() {
+        return dependencyGroup;
+    }
+
+    public boolean isReadOnly() {
+        return isReadOnly;
+    }
+
+    public void setReadOnly(boolean isReadOnly) {
+        this.isReadOnly = isReadOnly;
+    }
+
+    public void setDependencyGroup(DependencyGroup dependencyGroup) {
+        this.dependencyGroup = dependencyGroup;
+    }
+
 }

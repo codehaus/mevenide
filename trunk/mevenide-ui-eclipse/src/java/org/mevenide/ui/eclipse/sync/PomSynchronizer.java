@@ -64,12 +64,12 @@ import org.mevenide.sync.ISynchronizer;
 import org.mevenide.ui.eclipse.DefaultPathResolver;
 import org.mevenide.ui.eclipse.IPathResolver;
 import org.mevenide.ui.eclipse.Mevenide;
-import org.mevenide.ui.eclipse.sync.model.DependencyGroup;
-import org.mevenide.ui.eclipse.sync.model.DependencyGroupMarshaller;
-import org.mevenide.ui.eclipse.sync.model.DependencyWrapper;
-import org.mevenide.ui.eclipse.sync.model.SourceDirectory;
-import org.mevenide.ui.eclipse.sync.model.SourceDirectoryGroup;
-import org.mevenide.ui.eclipse.sync.model.SourceDirectoryGroupMarshaller;
+import org.mevenide.ui.eclipse.sync.model.dependency.DependencyGroup;
+import org.mevenide.ui.eclipse.sync.model.dependency.DependencyGroupMarshaller;
+import org.mevenide.ui.eclipse.sync.model.dependency.DependencyWrapper;
+import org.mevenide.ui.eclipse.sync.model.source.SourceDirectory;
+import org.mevenide.ui.eclipse.sync.model.source.SourceDirectoryGroup;
+import org.mevenide.ui.eclipse.sync.model.source.SourceDirectoryGroupMarshaller;
 import org.mevenide.ui.eclipse.util.FileUtil;
 
 /**
@@ -187,6 +187,8 @@ public class PomSynchronizer extends AbstractPomSynchronizer implements ISynchro
 		pomWriter.updateExtend(pomFile, dependencyGoup.isInherited(), store.getString("pom." + sourceGroup.getProjectName() + ".parent"));
 		
 		Mevenide.getPlugin().setBuildPath();
+		
+		//update parent pom if necessary
 	}
 	
 }
