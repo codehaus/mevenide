@@ -100,7 +100,7 @@ public class LocationComboFactory {
                 OriginChange.ACTION_REMOVE_ENTRY
             };
         }
-        Icon icon = new ImageIcon(Utilities.loadImage("org/mevenide/netbeans/project/resources/LocProject.png"));
+        Icon icon = new ImageIcon(Utilities.loadImage("org/mevenide/netbeans/project/resources/LocPomFile.png"));
         wraps[0] = new LocationComboBox.LocationWrapper("Defined in project's POM file", icon,
                              FileUtilities.locationToFile(OriginChange.LOCATION_POM, project), 
                              OriginChange.LOCATION_POM,
@@ -115,7 +115,7 @@ public class LocationComboFactory {
                 OriginChange.ACTION_POM_MOVE_TO_CHILD
             };
         }
-        icon = new ImageIcon(Utilities.loadImage("org/mevenide/netbeans/project/resources/LocNotDefined.png"));
+        icon = new ImageIcon(Utilities.loadImage("org/mevenide/netbeans/project/resources/LocDefault.png"));
         wraps[1] = new LocationComboBox.LocationWrapper("No defined value", icon,
                              null, 
                              IPropertyLocator.LOCATION_NOT_DEFINED,
@@ -125,7 +125,7 @@ public class LocationComboFactory {
                 OriginChange.ACTION_POM_MOVE_TO_CHILD,
                 OriginChange.ACTION_REMOVE_ENTRY
             };
-            icon = new ImageIcon(Utilities.loadImage("org/mevenide/netbeans/project/resources/LocBuild.png"));
+            icon = new ImageIcon(Utilities.loadImage("org/mevenide/netbeans/project/resources/LocParentPOM.png"));
             wraps[2] = new LocationComboBox.LocationWrapper("Defined in POM's parent definition", icon,
                                  FileUtilities.locationToFile(OriginChange.LOCATION_POM_PARENT, project), 
                                  OriginChange.LOCATION_POM_PARENT,

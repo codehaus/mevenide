@@ -334,7 +334,7 @@ public class MavenCustomizer extends JPanel implements ProjectValidateObserver {
                 "FilesCategory", // NOI18N
                 "Project Files", 
                 "org/mevenide/netbeans/project/resources/Bullet", // NOI18N
-                new FilesPanel(false, false, project),  
+                new FilesPanel(false, project),  
                 null),
             new ConfigurationDescription(
                 "MappingCategory", // NOI18N

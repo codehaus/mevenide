@@ -21,8 +21,10 @@ import java.util.Collections;
 import java.util.List;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
+import javax.swing.JSeparator;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.maven.project.Project;
 import org.mevenide.netbeans.project.MavenProject;
 import org.openide.util.Utilities;
 
@@ -34,20 +36,28 @@ import org.openide.util.Utilities;
 public class FilesPanel extends JPanel implements ProjectPanel {
     private static Log logger = LogFactory.getLog(FilesPanel.class);
     
-    private boolean propagate;
     private ProjectValidateObserver valObserver;
     private MavenProject project;
+    private boolean hasParent = false;
     
     /** Creates new form BasicsPanel */
-    public FilesPanel(boolean propagateImmediately, boolean enable, MavenProject proj) {
+    public FilesPanel( boolean enable, MavenProject proj) {
         initComponents();
 	project = proj;
-        propagate = propagateImmediately;
         valObserver = null;
-        setEnableFields(enable);
         lblProject.setIcon(new ImageIcon(Utilities.loadImage("org/mevenide/netbeans/project/resources/LocProject.png")));
         lblBuild.setIcon(new ImageIcon(Utilities.loadImage("org/mevenide/netbeans/project/resources/LocBuild.png")));
         lblUser.setIcon(new ImageIcon(Utilities.loadImage("org/mevenide/netbeans/project/resources/LocUser.png")));
+        lblPOMFile.setIcon(new ImageIcon(Utilities.loadImage("org/mevenide/netbeans/project/resources/LocPomFile.png")));
+        Project[] projs = proj.getContext().getPOMContext().getProjectLayers();
+        if (projs.length > 1) {
+            hasParent = true;
+            initParentComponents();
+            lblParentProject.setIcon(new ImageIcon(Utilities.loadImage("org/mevenide/netbeans/project/resources/LocParentProject.png")));
+            lblParentBuild.setIcon(new ImageIcon(Utilities.loadImage("org/mevenide/netbeans/project/resources/LocParentBuild.png")));
+            lblParentPOMFile.setIcon(new ImageIcon(Utilities.loadImage("org/mevenide/netbeans/project/resources/LocParentPOM.png")));
+        }
+        setEnableFields(enable);
     }
     
     public void setEnableFields(boolean enable) {
@@ -57,6 +67,12 @@ public class FilesPanel extends JPanel implements ProjectPanel {
         txtProjectDir.setEditable(enable);
         txtUser.setEditable(enable);
         txtUserDirectory.setEditable(enable);
+        if (hasParent) {
+            txtParentBuild.setEditable(enable);
+            txtParentProject.setEditable(enable);
+            txtParentPOMFile.setEditable(enable);
+            txtExtends.setEditable(enable);
+        }
     }
     
     /** This method is called from within the constructor to
@@ -75,15 +91,15 @@ public class FilesPanel extends JPanel implements ProjectPanel {
         lblProject = new javax.swing.JLabel();
         txtProject = new javax.swing.JTextField();
         lblProjectState = new javax.swing.JLabel();
+        lblBuild = new javax.swing.JLabel();
+        txtBuild = new javax.swing.JTextField();
+        lblBuildState = new javax.swing.JLabel();
         jSeparator1 = new javax.swing.JSeparator();
         lblUserDirectory = new javax.swing.JLabel();
         txtUserDirectory = new javax.swing.JTextField();
         lblUser = new javax.swing.JLabel();
         txtUser = new javax.swing.JTextField();
         lblUserState = new javax.swing.JLabel();
-        lblBuild = new javax.swing.JLabel();
-        txtBuild = new javax.swing.JTextField();
-        lblBuildState = new javax.swing.JLabel();
 
         setLayout(new java.awt.GridBagLayout());
 
@@ -111,13 +127,14 @@ public class FilesPanel extends JPanel implements ProjectPanel {
         gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
         add(lblPOMFile, gridBagConstraints);
 
+        txtPOMFile.setMinimumSize(new java.awt.Dimension(50, 28));
+        txtPOMFile.setPreferredSize(new java.awt.Dimension(100, 28));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.gridwidth = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.weightx = 0.1;
         gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
         add(txtPOMFile, gridBagConstraints);
 
@@ -128,8 +145,8 @@ public class FilesPanel extends JPanel implements ProjectPanel {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 4;
         gridBagConstraints.gridy = 1;
-        gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
         add(lblPOMFileState, gridBagConstraints);
 
         lblProject.setText("Project Properties :");
@@ -140,13 +157,14 @@ public class FilesPanel extends JPanel implements ProjectPanel {
         gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
         add(lblProject, gridBagConstraints);
 
+        txtProject.setMinimumSize(new java.awt.Dimension(50, 28));
+        txtProject.setPreferredSize(new java.awt.Dimension(100, 28));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 2;
         gridBagConstraints.gridwidth = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.weightx = 0.1;
         gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
         add(txtProject, gridBagConstraints);
 
@@ -157,66 +175,9 @@ public class FilesPanel extends JPanel implements ProjectPanel {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 4;
         gridBagConstraints.gridy = 2;
-        gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
         add(lblProjectState, gridBagConstraints);
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 4;
-        gridBagConstraints.gridwidth = 5;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.insets = new java.awt.Insets(6, 0, 0, 0);
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        add(jSeparator1, gridBagConstraints);
-
-        lblUserDirectory.setText("User Directory :");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 5;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
-        add(lblUserDirectory, gridBagConstraints);
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 5;
-        gridBagConstraints.gridwidth = 4;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.weightx = 0.2;
-        gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
-        add(txtUserDirectory, gridBagConstraints);
-
-        lblUser.setText("User Properies :");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 6;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
-        add(lblUser, gridBagConstraints);
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 6;
-        gridBagConstraints.gridwidth = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.weightx = 0.1;
-        gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
-        add(txtUser, gridBagConstraints);
-
-        lblUserState.setText("jLabel8");
-        lblUserState.setMaximumSize(new java.awt.Dimension(80, 24));
-        lblUserState.setMinimumSize(new java.awt.Dimension(80, 24));
-        lblUserState.setPreferredSize(new java.awt.Dimension(80, 24));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 4;
-        gridBagConstraints.gridy = 6;
-        gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.weighty = 0.1;
-        add(lblUserState, gridBagConstraints);
 
         lblBuild.setText("Build Properties :");
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -226,13 +187,14 @@ public class FilesPanel extends JPanel implements ProjectPanel {
         gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
         add(lblBuild, gridBagConstraints);
 
+        txtBuild.setMinimumSize(new java.awt.Dimension(50, 28));
+        txtBuild.setPreferredSize(new java.awt.Dimension(100, 28));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 3;
         gridBagConstraints.gridwidth = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.weightx = 0.1;
         gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
         add(txtBuild, gridBagConstraints);
 
@@ -243,12 +205,195 @@ public class FilesPanel extends JPanel implements ProjectPanel {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 4;
         gridBagConstraints.gridy = 3;
-        gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
         add(lblBuildState, gridBagConstraints);
 
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 9;
+        gridBagConstraints.gridwidth = 5;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(6, 0, 0, 0);
+        add(jSeparator1, gridBagConstraints);
+
+        lblUserDirectory.setText("User Directory :");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 10;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
+        add(lblUserDirectory, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 10;
+        gridBagConstraints.gridwidth = 4;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.weightx = 0.2;
+        gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
+        add(txtUserDirectory, gridBagConstraints);
+
+        lblUser.setText("User Properies :");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 11;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.weighty = 0.1;
+        gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
+        add(lblUser, gridBagConstraints);
+
+        txtUser.setMinimumSize(new java.awt.Dimension(50, 28));
+        txtUser.setPreferredSize(new java.awt.Dimension(100, 28));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 11;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.weighty = 0.1;
+        gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
+        add(txtUser, gridBagConstraints);
+
+        lblUserState.setText("jLabel8");
+        lblUserState.setMaximumSize(new java.awt.Dimension(80, 24));
+        lblUserState.setMinimumSize(new java.awt.Dimension(80, 24));
+        lblUserState.setPreferredSize(new java.awt.Dimension(80, 24));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 4;
+        gridBagConstraints.gridy = 11;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.weighty = 0.1;
+        gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
+        add(lblUserState, gridBagConstraints);
+
     }//GEN-END:initComponents
-    
+    private void initParentComponents() {                          
+        java.awt.GridBagConstraints gridBagConstraints;
+        
+        lblExtends = new javax.swing.JLabel();
+        txtExtends = new javax.swing.JTextField();
+        lblParentPOMFile = new javax.swing.JLabel();
+        txtParentPOMFile = new javax.swing.JTextField();
+        lblParentPOMFileState = new javax.swing.JLabel();
+        lblParentProject = new javax.swing.JLabel();
+        txtParentProject = new javax.swing.JTextField();
+        lblParentProjectState = new javax.swing.JLabel();
+        lblParentBuild = new javax.swing.JLabel();
+        txtParentBuild = new javax.swing.JTextField();
+        lblParentBuildState = new javax.swing.JLabel();
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 4;
+        gridBagConstraints.gridwidth = 4;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
+        add(new JSeparator(), gridBagConstraints);
+        
+        
+        lblExtends.setText("Extends :");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 5;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
+        add(lblExtends, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 5;
+        gridBagConstraints.gridwidth = 4;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.weightx = 0.2;
+        gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
+        add(txtExtends, gridBagConstraints);
+
+        lblParentPOMFile.setText("POM File :");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 6;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
+        add(lblParentPOMFile, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 6;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
+        add(txtParentPOMFile, gridBagConstraints);
+
+        lblParentPOMFileState.setMaximumSize(new java.awt.Dimension(80, 24));
+        lblParentPOMFileState.setMinimumSize(new java.awt.Dimension(80, 24));
+        lblParentPOMFileState.setPreferredSize(new java.awt.Dimension(80, 24));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 4;
+        gridBagConstraints.gridy = 6;
+        gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        add(lblParentPOMFileState, gridBagConstraints);
+
+        lblParentProject.setText("Project Properties :");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 7;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
+        add(lblParentProject, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 7;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
+        add(txtParentProject, gridBagConstraints);
+
+        lblParentProjectState.setMaximumSize(new java.awt.Dimension(80, 24));
+        lblParentProjectState.setMinimumSize(new java.awt.Dimension(80, 24));
+        lblParentProjectState.setPreferredSize(new java.awt.Dimension(80, 24));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 4;
+        gridBagConstraints.gridy = 7;
+        gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        add(lblParentProjectState, gridBagConstraints);
+
+        lblParentBuild.setText("Build Properties :");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 8;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
+        add(lblParentBuild, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 8;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
+        add(txtParentBuild, gridBagConstraints);
+
+        lblParentBuildState.setMaximumSize(new java.awt.Dimension(80, 24));
+        lblParentBuildState.setMinimumSize(new java.awt.Dimension(80, 24));
+        lblParentBuildState.setPreferredSize(new java.awt.Dimension(80, 24));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 4;
+        gridBagConstraints.gridy = 8;
+        gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        add(lblParentBuildState, gridBagConstraints);
+      } 
     
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -270,6 +415,17 @@ public class FilesPanel extends JPanel implements ProjectPanel {
     private javax.swing.JTextField txtUser;
     private javax.swing.JTextField txtUserDirectory;
     // End of variables declaration//GEN-END:variables
+    private javax.swing.JLabel lblParentBuild;
+    private javax.swing.JLabel lblParentBuildState;
+    private javax.swing.JLabel lblParentPOMFile;
+    private javax.swing.JLabel lblParentPOMFileState;
+    private javax.swing.JLabel lblParentProject;
+    private javax.swing.JLabel lblExtends;
+    private javax.swing.JLabel lblParentProjectState;
+    private javax.swing.JTextField txtParentBuild;
+    private javax.swing.JTextField txtParentPOMFile;
+    private javax.swing.JTextField txtParentProject;
+    private javax.swing.JTextField txtExtends;
     
      public void setResolveValues(boolean resolve) {
         txtBuild.setText("build.properties");
@@ -301,6 +457,14 @@ public class FilesPanel extends JPanel implements ProjectPanel {
             lblPOMFileState.setText("");
         } else {
             lblPOMFileState.setText("Doesn't exist");
+        }
+        if (hasParent) {
+            txtParentBuild.setText("build.properties");
+            txtParentProject.setText("project.properties");
+            Project[] projs = project.getContext().getPOMContext().getProjectLayers();
+            File[] projFiles = project.getContext().getPOMContext().getProjectFiles();
+            txtExtends.setText(projs[0].getExtend());
+            txtParentPOMFile.setText(projFiles[1].getName());
         }
     }
     
