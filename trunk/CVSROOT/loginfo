@@ -28,4 +28,4 @@
 
 CVSROOT /bin/true
 
-DEFAULT /usr/local/despots/cvs/log_accum.pl %s
+DEFAULT /home/projects/mevenide/scm/CVSROOT/log_accum.pl %s
