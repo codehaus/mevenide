@@ -39,6 +39,7 @@ import org.eclipse.ui.externaltools.internal.launchConfigurations.ExternalToolsU
 import org.mevenide.runner.AbstractRunner;
 import org.mevenide.runner.ArgumentsManager;
 import org.mevenide.ui.eclipse.Mevenide;
+import org.mevenide.ui.eclipse.preferences.DynamicPreferencesManager;
 
 
 
@@ -136,6 +137,7 @@ public class MavenLaunchDelegate extends AbstractRunner implements ILaunchConfig
 
 	private String[] getOptions(ILaunchConfiguration configuration) {
 		try {
+		    //static options
 			Map map = (Map) configuration.getAttribute(MavenArgumentsTab.OPTIONS_MAP, new HashMap());
 			log.debug("Found " + map.size() + " options in configuration : ");
 			String[] options = new String[map.size()];
@@ -152,8 +154,32 @@ public class MavenLaunchDelegate extends AbstractRunner implements ILaunchConfig
 			}
 			String[] result = new String[idx];
 			System.arraycopy(options, 0, result, 0, idx);
-			log.debug("options passed to Maven " + result.length);
-			return result;
+			
+			//dynamic preferences
+			DynamicPreferencesManager preferencesManager = DynamicPreferencesManager.getDynamicManager();
+			preferencesManager.loadPreferences();
+			Map dynamicPreferencesMap = preferencesManager.getPreferences();
+			String[] dynamicPreferences = new String[dynamicPreferencesMap.size()];
+			idx = 0;
+			for (Iterator it = dynamicPreferencesMap.keySet().iterator(); it.hasNext(); ) {
+                String key = (String) it.next();
+                String value = (String) dynamicPreferencesMap.get(key);
+                dynamicPreferences[idx] = "-D" + key + "=" + value;
+            }
+			
+			//merge various sources
+			String[] mergedOptions = new String[result.length + dynamicPreferences.length];
+			System.arraycopy(result, 0, mergedOptions, 0, result.length);
+			System.arraycopy(dynamicPreferences, 0, mergedOptions, result.length, dynamicPreferences.length);
+			
+			log.debug("options passed to Maven " + mergedOptions.length);
+			System.err.println("options passed to Maven : " );
+			for (int i = 0; i < mergedOptions.length; i++) {
+				System.err.println("\t" + mergedOptions[i]);
+                
+            }
+			
+			return mergedOptions;
 		} 
 		catch (CoreException e) {
 			log.debug("Unable to get Options due to : ", e);

@@ -16,6 +16,8 @@
  */
 package org.mevenide.ui.eclipse.preferences;
 
+import org.mevenide.util.StringUtils;
+
 
 /**  
  * 
@@ -104,5 +106,19 @@ public class PluginProperty {
     
     public void setDescription(String description) {
         this.description = description;
+    }
+    
+    
+    public boolean equals(Object obj) {
+        if ( obj == null || !(obj instanceof PluginProperty) ) {
+            return false;
+        }
+        PluginProperty property = (PluginProperty) obj;
+        return StringUtils.relaxEqual(this.defaultValue, property.defaultValue) &&
+        	   StringUtils.relaxEqual(this.description, property.description) &&
+        	   StringUtils.relaxEqual(this.label, property.label) &&
+        	   StringUtils.relaxEqual(this.name, property.name) &&
+        	   StringUtils.relaxEqual(this.pageId, property.pageId) &&
+        	   StringUtils.relaxEqual(this.type, property.type) ;
     }
 }
