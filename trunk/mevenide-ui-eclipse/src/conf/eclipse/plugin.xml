@@ -109,7 +109,7 @@
                label="%Synchronize.Label"
                tooltip="%SynchronizePom.tooltip"
                class="org.mevenide.ui.eclipse.actions.SynchronizeContainerAction"
-               icon="icons/synced.gif"
+               icon="icons/eview16/synch_synch.gif"
                menubarPath="maven.plugin.menu/Synchronize"
                id="maven-plugin.Synchronize">
          </action>
@@ -147,7 +147,7 @@
          </menu>
          <action
                label="%Synchronize.Label"
-               icon="icons/synced.gif"
+               icon="icons/eview16/synch_synch.gif"
                class="org.mevenide.ui.eclipse.actions.SynchronizePomAction"
                menubarPath="maven.plugin.menu/Synchronize"
                enablesFor="1"
@@ -207,7 +207,7 @@
    	  <!-- Maven POM editor -->
       <editor
             name="%PomEditor.name"
-            icon="icons/pom_file.gif"
+            icon="icons/obj16/mfile_obj.gif"
             filenames="project.xml"
             extensions="xml"
             class="org.mevenide.ui.eclipse.editors.pom.MevenidePomEditor"
@@ -268,7 +268,7 @@
       <category name="Maven"
             	id="org.mevenide.ui.synchronize.view" />
       <view name="Pom Synchronizer"
-            icon="icons/sync_view.gif"
+            icon="icons/eview16/synch_synch.gif"
             category="org.mevenide.ui.synchronize.view"
             class="org.mevenide.ui.eclipse.sync.view.SynchronizationView"
             id="org.mevenide.ui.synchronize.view.SynchronizationView">
