@@ -74,6 +74,7 @@
       <import plugin="org.aspectj.ajde"/>
       <import plugin="org.eclipse.ui.views"/>
       <import plugin="org.eclipse.jdt.ui"/>
+      <import plugin="org.eclipse.ui.externaltools"/>
    </requires>
 
 
@@ -232,7 +233,7 @@
             id="maven.plugin.preferences.MavenPreferencePage">
       </page>
    </extension>
-  <extension
+   <extension
          point="org.eclipse.ui.actionSets">
       <actionSet
             label="Run Maven"
@@ -249,5 +250,24 @@
          </action>
       </actionSet>
    </extension>
-	
+   <extension
+         point="org.eclipse.debug.core.launchConfigurationTypes">
+      <launchConfigurationType
+            name="Run Maven"
+            delegate="org.mevenide.ui.eclipse.launch.configuration.MavenLaunchDelegate"
+            category="org.eclipse.ui.externaltools"
+            modes="run"
+            id="org.mevenide.launching.MavenLaunchConfigType">
+      </launchConfigurationType>
+   </extension>
+   <extension
+         point="org.eclipse.debug.ui.launchConfigurationTabGroups">
+      <launchConfigurationTabGroup
+            type="org.mevenide.launching.MavenLaunchConfigType"
+            class="org.mevenide.ui.eclipse.launch.configuration.MavenRunnerTabGroup"
+            id="org.mevenide.launching.TabGroup">
+      </launchConfigurationTabGroup>
+   </extension>
+
+
 </plugin>
