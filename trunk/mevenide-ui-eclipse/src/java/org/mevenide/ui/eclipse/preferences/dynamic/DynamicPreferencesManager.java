@@ -87,4 +87,19 @@ public class DynamicPreferencesManager extends PreferencesManager {
 	        store();
 	    }
 	}
+	
+	public Properties  exportProperties() {
+	    Properties properties = new Properties();
+	    Map dynamicPreferences = getPreferences();
+	    Map pluginsPreferences = getPluginsPreferences();
+	    for (Iterator it = dynamicPreferences.keySet().iterator(); it.hasNext(); ) {
+            String key = (String) it.next();
+            if ( pluginsPreferences.containsKey(key) && pluginsPreferences.get(key) != null ) {
+                String value = (String) dynamicPreferences.get(key);
+                key = key.substring(key.indexOf(SEPARATOR) + 1, key.length());
+                properties.put(key, value);
+            }
+        }
+	    return properties;
+	}
 }
