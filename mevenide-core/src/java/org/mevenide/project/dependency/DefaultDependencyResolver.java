@@ -18,7 +18,7 @@ import java.io.File;
 import org.mevenide.Environment;
 
 /**
- * @still some refactoring to be done (init-phase)
+ * @todo still some refactoring to be done (init-phase)
  * 
  * @author Gilles Dodinet (gdodinet@wanadoo.fr)
  * @version $Id$
