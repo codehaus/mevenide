@@ -4,14 +4,14 @@
 
 <taglib name="jelly:werkz">
     <tag name="attainGoal">
-        <attr name="name"/>
+        <attr name="name" cctypes="goal"/>
         <attr name="session"/>
         <attr name="trim"/>
     </tag>
     <tag name="mavenGoal">
         <attr name="description"/>
-        <attr name="name"/>
-        <attr name="prereqs"/>
+        <attr name="name" cctypes="goal"/>
+        <attr name="prereqs" cctypes="goal"/>
         <attr name="trim"/>
     </tag>
 </taglib>

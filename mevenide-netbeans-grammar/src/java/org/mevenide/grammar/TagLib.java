@@ -48,4 +48,10 @@ public interface TagLib
      */
     Collection getSubTags(String tagName);
     
+    /**
+     * Collection of <String>, AttributeCompletion identifiers that denote what 
+     * types of completion apply to the given attribute.
+     */
+    Collection getAttrCompletionTypes(String tag, String attribute);
+    
 }

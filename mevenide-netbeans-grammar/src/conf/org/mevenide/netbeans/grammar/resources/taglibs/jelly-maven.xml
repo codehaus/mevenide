@@ -11,7 +11,7 @@
     <tag name="concat"> 
       <attr name="basedir"/>
       <attr name="descriptor"/>
-      <attr name="goals"/>
+      <attr name="goals" cctypes="goal"/>
       <attr name="ignoreFailures"/>
       <attr name="outputFile"/>
       <attr name="trim"/>
@@ -25,7 +25,7 @@
       <attr name="basedir"/>
       <attr name="descriptor"/>
       <attr name="file"/>
-      <attr name="goals"/>
+      <attr name="goals" cctypes="goal"/>
       <attr name="ignoreFailures"/>
       <attr name="trim"/>
     </tag>
@@ -45,7 +45,7 @@
     <tag name="maven"> 
       <attr name="basedir"/>
       <attr name="descriptor"/>
-      <attr name="goals"/>
+      <attr name="goals" cctypes="goal"/>
       <attr name="ignoreFailures"/>
       <attr name="trim"/>
     </tag>
@@ -78,7 +78,7 @@
       <attr name="descriptor"/>
       <attr name="excludes"/>
       <attr name="glob"/>
-      <attr name="goals"/>
+      <attr name="goals" cctypes="goal"/>
       <attr name="ignoreFailures"/>
       <attr name="includes"/>
       <attr name="postProcessing"/>

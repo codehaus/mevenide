@@ -15,48 +15,29 @@
  * =========================================================================
  */
 
-package org.mevenide.grammar.impl;
+package org.mevenide.grammar;
 
 import java.util.Collection;
-import java.util.Collections;
-import org.mevenide.grammar.TagLib;
 
 /**
- * Empty implementation of a taglib. A fallback impl.
+ * Container for attribute content code completion data.
+ * Implementation can/should read the data lazily and cache it once read.
  * @author  Milos Kleint (ca206216@tiscali.cz)
  */
-public class EmptyTagLibImpl implements TagLib
+public interface AttributeCompletion
 {
-    private String name;
-    /** Creates a new instance of EmptyTagLibImpl */
-    public EmptyTagLibImpl(String tagLibName)
-    {
-        name = tagLibName;
-    }
+
+    /**
+     * Unique Identifier
+     */
+    String getName(); 
     
-    public String getName()
-    {
-        return name;
-    }
-    
-    public Collection getRootTags()
-    {
-        return Collections.EMPTY_LIST;
-    }
-    
-    public Collection getSubTags(String tagName)
-    {
-        return Collections.EMPTY_LIST;
-    }
-    
-    public Collection getTagAttrs(String tag)
-    {
-        return Collections.EMPTY_LIST;
-    }
-    
-    public Collection getAttrCompletionTypes(String tag, String attribute)
-    {
-        return Collections.EMPTY_LIST;
-    }
+    /**
+     * Collection of <String>, all possible attribute values that match 
+     * the start parameter [name.startsWith(start)]
+     * @work-in-progress
+     *@param start - start of the word that should be matched, if null, everything matches.
+     */
+    Collection getValueHints(String start);
     
 }

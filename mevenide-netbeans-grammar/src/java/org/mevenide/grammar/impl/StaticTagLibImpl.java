@@ -17,6 +17,7 @@
 
 package org.mevenide.grammar.impl;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -50,13 +51,14 @@ public class StaticTagLibImpl implements TagLib
     private Map tags;
     private Map nestedtags;
     private Set roottags;
-    
+    private Map attrCompletions;
     /** Creates a new instance of TagLib */
     public StaticTagLibImpl(InputStream libDef) throws Exception
     {
         tags = new HashMap();
         nestedtags = new HashMap();
         roottags = new HashSet();
+        attrCompletions = new HashMap();
         configure(libDef);
     }
     
@@ -77,9 +79,20 @@ public class StaticTagLibImpl implements TagLib
             {
                 Element attrEl = (Element)it2.next();
                 String attr = attrEl.getAttributeValue("name");
-                if (attr != null)
-                {
-                    col.add(attr);
+                if (attr == null)
+                { 
+                    throw new IOException("Badly formed document. Name attribute for 'attribute' element is mandatory.");
+                }
+                col.add(attr);
+                String attrCompls = attrEl.getAttributeValue("cctypes");
+                if (attrCompls != null) {
+                    String completionID = tagName + "|" + attr;
+                    Collection compl = new ArrayList();
+                    attrCompletions.put(completionID, compl);
+                    StringTokenizer tok = new StringTokenizer(attrCompls, ",", false);
+                    while (tok.hasMoreTokens()) {
+                        compl.add(tok.nextToken());
+                    }
                 }
             }
             addTag(tagName, col);
@@ -98,7 +111,6 @@ public class StaticTagLibImpl implements TagLib
             } else {
                 roottags.add(tagName);
             }
-            
         }
     }
 
@@ -129,6 +141,13 @@ public class StaticTagLibImpl implements TagLib
     
     public Collection getSubTags(String tagName) {
         return (Collection)nestedtags.get(tagName);
+    }
+    
+    public Collection getAttrCompletionTypes(String tag, String attribute)
+    {
+        String completionID = tag + "|" + attribute;
+        Collection compls = (Collection)attrCompletions.get(completionID);
+        return compls == null ? Collections.EMPTY_LIST : compls;
     }
     
 }

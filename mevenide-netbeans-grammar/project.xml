@@ -61,6 +61,15 @@
             <netbeans.module.dep>spec</netbeans.module.dep>
 	    </properties>
     </dependency>
+    <dependency>     
+        <groupId>mevenide</groupId>
+        <artifactId>goals-grabber</artifactId>
+        <version>0.1.1-SNAPSHOT</version>
+            <properties>
+                <netbeans.module.dep>spec</netbeans.module.dep>
+            </properties>
+    </dependency>
+    
         <dependency>
             <groupId>jdom</groupId>
             <artifactId>jdom</artifactId>

@@ -19,19 +19,19 @@ package org.mevenide.grammar.impl;
 
 import java.util.Collection;
 import java.util.Collections;
-import org.mevenide.grammar.TagLib;
+import org.mevenide.grammar.AttributeCompletion;
 
 /**
- * Empty implementation of a taglib. A fallback impl.
+ * Empty implementation of a attribute completion. A fallback impl.
  * @author  Milos Kleint (ca206216@tiscali.cz)
  */
-public class EmptyTagLibImpl implements TagLib
+public class EmptyAttributeCompletionImpl implements AttributeCompletion
 {
     private String name;
     /** Creates a new instance of EmptyTagLibImpl */
-    public EmptyTagLibImpl(String tagLibName)
+    public EmptyAttributeCompletionImpl(String attrComplName)
     {
-        name = tagLibName;
+        name = attrComplName;
     }
     
     public String getName()
@@ -39,22 +39,7 @@ public class EmptyTagLibImpl implements TagLib
         return name;
     }
     
-    public Collection getRootTags()
-    {
-        return Collections.EMPTY_LIST;
-    }
-    
-    public Collection getSubTags(String tagName)
-    {
-        return Collections.EMPTY_LIST;
-    }
-    
-    public Collection getTagAttrs(String tag)
-    {
-        return Collections.EMPTY_LIST;
-    }
-    
-    public Collection getAttrCompletionTypes(String tag, String attribute)
+    public Collection getValueHints(String start)
     {
         return Collections.EMPTY_LIST;
     }
