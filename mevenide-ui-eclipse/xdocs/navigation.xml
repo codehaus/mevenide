@@ -26,6 +26,8 @@
         		<item name="Running" href="/run.html"/>
         		<item name="Synchronization" href="/sync.html"/>
         		<item name="Pom Editor" href="/edit.html"/>
+        		<item name="Jelly Editor" href="/contentassist.html"/>
+        		<item name="Maven Wizards" href="/wizard.html"/>
         	</item>
         	<item name="Eclipse Update Site" href="/update/index.html"/>
         </menu>
