@@ -19,9 +19,6 @@
       <action dev="gdodinet" type="fix" issue="MEVENIDE-59">
 
       </action>
-      <action dev="gdodinet" type="fix" issue="MEVENIDE-23">
-
-      </action>
       <action dev="gdodinet" type="fix" issue="MEVENIDE-60">
 
       </action>
@@ -36,6 +33,9 @@
       </action>
       <action dev="gdodinet" type="fix" issue="MEVENIDE-23">
 
+      </action>
+      <action dev="gdodinet" type="add">
+		Add Maven Nature and Builder
       </action>
     </release>
 	<release version="0.2.2" date="2004-07-25">
