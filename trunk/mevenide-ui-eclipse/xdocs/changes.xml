@@ -32,29 +32,38 @@
       <action dev="gdodinet" type="fix" issue="MEVENIDE-31">
         AutoBuild is now set to false prior to adding artifacts to .classpath and is restored after that.
       </action>
-      <action dev="gdodinet" type="add">
-        Maven Plugin Provider Infrastructure allows plugin providers to statically contribute to Mevenide preference pages.
-      </action>
       <action dev="gdodinet" type="update">
         Preference pages reorganization for better readibility.
+      </action>
+      <action dev="gdodinet" type="update">
+        Required location preferences can now be regenerate automatically.
+      </action>
+      <action dev="gdodinet" type="update">
+        Use JDomProjectUnmarshaller instead of DefaultProjectUnmarshaller to support entities. No entities writing yet.
+      </action>
+      <action dev="gdodinet" type="update">
+      	Icons now follow new 3.0 LnF.
+      </action>
+      <action dev="gdodinet" type="update">
+      	Offline mode in maven.xml outline page is now functional.
+      </action>
+      <action dev="gdodinet" type="update">
+        Pom Creation Action now works on any IContainer.
+      </action>
+      <action dev="gdodinet" type="update">
+        Pom Creation Action can now use templates. 
       </action>
       <action dev="jens" type="add">
         Add POM Template management through a preference pages.
       </action>
       <action dev="gdodinet" type="add">
-        Pom Creation Action can now use templates. 
-      </action>
-      <action dev="gdodinet" type="add">
-        Pom Creation Action now works on any IContainer.
-      </action>
-      <action dev="gdodinet" type="update">
-        Required location preferences can now be regenrate automatically.
-      </action>
-      <action dev="gdodinet" type="update">
-        Use JDomProjectUnmarshaller instead of DefaultProjectUnmarshaller to support entities. No entities writing yet.
+        Maven Plugin Provider Infrastructure allows plugin providers to statically contribute to Mevenide preference pages.
       </action>
       <action dev="gdodinet" type="add">
       	Add simple POM wizard that can use templates. 
+      </action>
+      <action dev="gdodinet" type="add">
+      	Add Pom validation. Supports infinite inheritance scheme. 
       </action>
     </release>
   </body>
