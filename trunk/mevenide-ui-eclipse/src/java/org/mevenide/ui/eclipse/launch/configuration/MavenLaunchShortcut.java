@@ -49,8 +49,6 @@
 package org.mevenide.ui.eclipse.launch.configuration;
 
 
-import java.io.ByteArrayInputStream;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -137,28 +135,23 @@ public class MavenLaunchShortcut implements ILaunchShortcut {
 					return;
 				}
 				
-				
 			}
 			
 			try {
-				//crappy trick to avoid that popup
-				
-				if ( configuration.getFile() != null) {
-					configuration.getFile().setContents(new ByteArrayInputStream(configuration.getMemento().getBytes()), true, false, null);
-				}
-				else {
-					log.debug("LC location = " + configuration.getLocation());
-					project.getFile(configuration.getLocation()).create(new ByteArrayInputStream(configuration.getMemento().getBytes()), false, null);
-				}
+				String newName= DebugPlugin.getDefault().getLaunchManager().generateUniqueLaunchConfigurationNameFrom(configuration.getName());
+				configuration = configuration.copy(newName);
+				DebugUITools.launch(configuration, ILaunchManager.RUN_MODE);
 			}
 			catch (Exception e) {
 				// @todo Auto-generated catch block
 				e.printStackTrace();
 			}
 			
-			DebugUITools.launch(configuration, ILaunchManager.RUN_MODE);
+			
 		}
 	} 
+	
+	
 	
 	private ILaunchConfiguration getDefaultLaunchConfiguration(IProject project) {
 		ILaunchManager manager = DebugPlugin.getDefault().getLaunchManager();

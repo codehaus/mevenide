@@ -114,7 +114,6 @@ public class MavenMainTab extends ExternalToolsMainTab {
 		} else {
 			configuration.setAttribute(IExternalToolConstants.ATTR_WORKING_DIRECTORY, workingDirectory);
 		}
-		//getLaunchConfigurationDialog().
 	}
 	
 	public boolean isValid(ILaunchConfiguration launchConfig) {
