@@ -70,8 +70,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.externaltools.internal.launchConfigurations.ExternalToolsUtil;
-import org.mevenide.core.AbstractRunner;
-import org.mevenide.core.ArgumentsManager;
+import org.mevenide.runner.AbstractRunner;
+import org.mevenide.runner.ArgumentsManager;
 import org.mevenide.ui.eclipse.Mevenide;
 
 

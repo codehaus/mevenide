@@ -52,7 +52,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.resources.IProject;
 import org.mevenide.MevenideException;
-import org.mevenide.core.AbstractRunner;
+import org.mevenide.runner.AbstractRunner;
 import org.mevenide.sync.AbstractIdeSynchronizer;
 import org.mevenide.sync.ISynchronizer;
 import org.mevenide.ui.eclipse.Mevenide;
