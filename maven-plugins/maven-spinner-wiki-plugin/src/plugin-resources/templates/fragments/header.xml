@@ -1,6 +1,6 @@
     
     <section>
-        <div width="100%" style="margin-bottom: 10px; border-bottom:1px solid #dddddd;border-top:1px solid #dddddd;color:#cccccc;background-color:#ffffff;">
+        <div>
           <p>
           <img src="images/none.png"/>Mevenide Wiki -
           <img src="images/none.png"/><a href="$SCRIPTURL$/view.pl/FrontPage">Front Page</a><img src="images/none.png"/>

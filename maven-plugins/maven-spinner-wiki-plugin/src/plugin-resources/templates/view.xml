@@ -8,8 +8,9 @@
     <section name="$TOPIC$">
         <div>
         	<p>$TEXT$</p>
+        	<p>This page last edited on $LASTMODIFIED$</p>
         </div>
-        <div style="margin-top: 10px; border-top: solid 1px #cccccc;">This page last edited on $LASTMODIFIED$</div>
+        
     </section>
     &footer;
   </body>

@@ -23,7 +23,7 @@
 	           	</td>
         	</tr>
         	<tr>
-        		<td style="background-color: #ffffff;border: none;color: #777777" colspan="2">$REPEAT$</td>
+        		<td colspan="2">$REPEAT$</td>
         	</tr>
 		</table>
      </section>
