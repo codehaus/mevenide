@@ -13,14 +13,16 @@
 					to learn more about Mevenide for Eclipse. Latest release and zipped sources can be 
 					downloaded <a href="http://dist.codehaus.org/mevenide/release" class="documentLink">here</a>. 
 					However the preferred way to install Mevenide for Eclipse is through the Eclipse Update Manager ; please refer to 
-					<a href="update/index.html">this document</a> for instructions on using it.
+					<a href="update/index.html">this document</a> for instructions on using it. 
+					<br/>
+					3.1 M2 has brought some API change. So if you're using eclipse 3.0.x or 3.1 M2 you need to grab Mevenide <a href="update/3.0/site.xml">here</a> - the big'ol'jar can be found <a href="http://dist.codehaus.org/mevenide/release" class="documentLink">here</a>.
 				</p>
 			</div>
 			<subsection name="Requirements">
 				<div id="documentContent">
 					<p>
 						Mevenide for Eclipse wont work with Eclipse version 2.x since some APIs and utility classes of the 3.0-stream are used. Also for the POM editor to 
-						work you will need at least the 3.0 M9 build. Recommended version is however the 3.0 final release. Also the goals-grabbing mechanism wont work with Maven version lower than rc4.
+						work you will need at least the 3.0 M9 build. Recommended version is however the 3.1 M2 final release. Also the goals-grabbing mechanism wont work with Maven version lower than rc4.
 					</p>
 					<p>
 						Current Mevenide release has been tested under WinXP with Eclipse 3.1 M1 and M2, JDK 1.4.2_05 and Maven 1.0. Please note that JDK 1.4+ is <b>required</b> since Java 1.4 regex engine is used.
