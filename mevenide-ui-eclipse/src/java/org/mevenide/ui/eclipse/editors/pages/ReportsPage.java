@@ -96,4 +96,11 @@ public class ReportsPage extends AbstractPomEditorPage {
 		setUpdateNeeded(false);
 	}
 
+	/**
+	 * @see org.mevenide.ui.eclipse.editors.IPomEditorPage#isPropertySourceSupplier()
+	 */
+	public boolean isPropertySourceSupplier() {
+		return false;
+	}
+	
 }

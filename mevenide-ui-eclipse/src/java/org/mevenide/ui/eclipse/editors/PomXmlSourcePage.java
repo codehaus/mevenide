@@ -167,5 +167,12 @@ public class PomXmlSourcePage
     }
     
     public void setHeading(String heading) {}
+
+	/**
+	 * @see org.mevenide.ui.eclipse.editors.IPomEditorPage#isPropertySourceSupplier()
+	 */
+	public boolean isPropertySourceSupplier() {
+		return false;
+	}
 	
 }

@@ -85,4 +85,17 @@ public interface IPomEditorPage {
 	 * user selects another page in the multi-page editor).
 	 */
 	public void pageDeactivated(IPomEditorPage newPage);
+	
+	/**
+	 * Callback message sent to allow the page to dispose any
+	 * resources it has allocated.
+	 */
+	public void dispose();
+	
+	/**
+	 * Message indicating whether this page presents components
+	 * editable in the properties editor view.
+	 */
+	public boolean isPropertySourceSupplier();
+	
 }

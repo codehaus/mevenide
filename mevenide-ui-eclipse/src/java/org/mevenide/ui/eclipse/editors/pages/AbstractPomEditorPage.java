@@ -180,4 +180,11 @@ public abstract class AbstractPomEditorPage
         return factory;
     }
 
+    /**
+     * @see org.mevenide.ui.eclipse.editors.IPomEditorPage#isPropertySourceSupplier()
+     */
+    public boolean isPropertySourceSupplier() {
+    	return true;
+    }
+    
 }
