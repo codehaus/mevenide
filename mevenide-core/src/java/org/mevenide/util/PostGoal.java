@@ -20,6 +20,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.jdom.Comment;
 import org.jdom.Document;
 import org.jdom.Element;
@@ -33,7 +35,8 @@ import org.jdom.input.SAXBuilder;
  * 
  */
 public class PostGoal {
-	
+	private static Log log = LogFactory.getLog(PostGoal.class);
+	 
 	private PostGoal() {
 	}
 
@@ -79,7 +82,7 @@ public class PostGoal {
 			JDomOutputter.output(doc, mavenXml);
 		} 
         catch (IOException e) {
-			e.printStackTrace();
+			log.debug("Unable to output Document to file '" + mavenXml.getAbsolutePath() + "' due to : " + e);
 		}
 
 	}
@@ -105,7 +108,7 @@ public class PostGoal {
 			return false;
 		} 
         catch (Exception ex) {
-			ex.printStackTrace();
+			log.debug("Unable to validate maven.xml file ('" + mavenXml.getAbsolutePath() + "' due to : " + ex);
 			return false;
 		}
 	}

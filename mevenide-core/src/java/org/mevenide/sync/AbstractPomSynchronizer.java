@@ -13,6 +13,9 @@
  */
 package org.mevenide.sync;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 
 /**
  * 
@@ -21,7 +24,7 @@ package org.mevenide.sync;
  * 
  */
 public abstract class AbstractPomSynchronizer implements ISynchronizer {
-	
+	private static Log log = LogFactory.getLog(AbstractPomSynchronizer.class);
     /**
      * template pattern
      * @see org.mevenide.core.sync.ISynchronizer#synchronize
@@ -33,7 +36,7 @@ public abstract class AbstractPomSynchronizer implements ISynchronizer {
 			postSynchronization();
 		}
 		catch ( Exception e ) {
-			e.printStackTrace();
+			log.debug("Unable to synchronize POM dur to : " + e );
 		}
 	}
     

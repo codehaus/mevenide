@@ -20,6 +20,9 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.TreeMap;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 
 
 
@@ -38,6 +41,7 @@ import java.util.TreeMap;
  * 
  */
 public class OptionsRegistry {
+    private static Log log = LogFactory.getLog(OptionsRegistry.class);
     
     private static Map options = new TreeMap();
     
@@ -53,7 +57,7 @@ public class OptionsRegistry {
 			    options.put(optionChar, props.get(key));
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.debug("Unable to init options map due to : " + e);
         }
     }
     
