@@ -6,7 +6,7 @@
   </properties>
 
   <body>
-
+	
     <release version="0.1-alpha-1" date="20030907">
       <action dev="gdodinet" type="add">
         Added String parsing mechanism that allows to resolve jelly variables rooted at Maven Project.

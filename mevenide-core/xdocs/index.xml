@@ -6,11 +6,17 @@
     </properties>
     <body>
         <section name="Project Overview">
+        	<div id="documentContent">
         	<p>
 			    This module should be the foundation for IDE integration. it provides POM manipulation methods, like
-			    reading, writing POM, adding [re]source directories, dependencies, resolving depedencies, etc.. and provide an abstract Maven Runner and abstract Pom and IDE Synchronizers.
-			    IDE plugins should extend and use the Core.  
+			    reading, writing POM, adding [re]source directories, dependencies, resolving dependencies, etc.. 
+			    and provides an abstract Maven Runner and abstract Pom and IDE Synchronizers. It is recommended that IDE 
+			    plugins should extend and use the Core. 
 			</p>
+			<p>
+			    <a href="packages.html">This document</a> describes the package structure of the module. 
+			</p>
+			</div>
 		</section>
     </body>
 </document>
