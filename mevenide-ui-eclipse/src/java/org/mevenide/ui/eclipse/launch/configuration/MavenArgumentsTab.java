@@ -451,8 +451,8 @@ public class MavenArgumentsTab extends AbstractLaunchConfigurationTab  {
 	private void initGoals(ILaunchConfiguration configuration) {
 		try {
 			selectedGoals = configuration.getAttribute(GOALS_TO_RUN, "");
+			log.debug("goalsText == null ? " + (goalsText == null));
 			goalsText.setText(selectedGoals);
-			
 		} 
 		catch (CoreException e) {
 			//e.printStackTrace();

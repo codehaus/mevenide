@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plugin
-   id="org.mevenide.grabber"
+   id="org.mevenide.goals.grabber"
    name="Mevenide Goals Grabber"
    version="0.1"
    provider-name="Sourceforge">

@@ -51,8 +51,6 @@ package org.mevenide.project.dependency;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.discovery.tools.DiscoverClass;
-
 /**
  * 
  * @author Gilles Dodinet (gdodinet@wanadoo.fr)
@@ -74,7 +72,7 @@ public abstract class AbstractDependencyResolver implements IDependencyResolver 
 		}
 		synchronized (lock) {
 			if (!resolvers.containsKey(absoluteFileName)) {
-				IDependencyResolver resolver = (IDependencyResolver) new  DiscoverClass().newInstance(IDependencyResolver.class);
+				IDependencyResolver resolver = new DefaultDependencyResolver(); //(IDependencyResolver) new  DiscoverClass().newInstance(IDependencyResolver.class);
 				resolver.setFileName(absoluteFileName);
 				resolvers.put(absoluteFileName, resolver);
 			}
