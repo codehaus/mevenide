@@ -43,7 +43,7 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 import org.mevenide.OptionsRegistry;
-import org.mevenide.ui.eclipse.MavenPlugin;
+import org.mevenide.ui.eclipse.Mevenide;
 
 /**
  * 
@@ -68,14 +68,14 @@ public class LaunchWizardPage extends WizardPage {
 
     public LaunchWizardPage() {
 		super(
-			MavenPlugin.getResourceString("MavenLaunchPage.name"), 
-			MavenPlugin.getResourceString("MavenLaunchPage.title"), 
-			MavenPlugin.getImageDescriptor("maven-run-64.gif"));
+			Mevenide.getResourceString("MavenLaunchPage.name"), 
+			Mevenide.getResourceString("MavenLaunchPage.title"), 
+			Mevenide.getImageDescriptor("maven-run-64.gif"));
 	   
-	   setDescription(MavenPlugin.getResourceString("MavenLaunchPage.description"));
+	   setDescription(Mevenide.getResourceString("MavenLaunchPage.description"));
 	   
 	   try {
-           store = new PreferenceStore(MavenPlugin.getPlugin().getFile("prefs.ini"));
+           store = new PreferenceStore(Mevenide.getPlugin().getFile("prefs.ini"));
            store.load();
        }
        catch (IOException e) {

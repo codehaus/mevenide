@@ -23,9 +23,9 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.ui.PlatformUI;
 import org.mevenide.sync.ISynchronizer;
 import org.mevenide.sync.SynchronizerFactory;
-import org.mevenide.ui.eclipse.MavenPlugin;
-import org.mevenide.ui.eclipse.sync.views.DependencyTypePart;
-import org.mevenide.ui.eclipse.sync.views.SourceDirectoryTypePart;
+import org.mevenide.ui.eclipse.Mevenide;
+import org.mevenide.ui.eclipse.sync.views.DependencyViewPart;
+import org.mevenide.ui.eclipse.sync.views.SourceDirectoryViewPart;
 import org.mevenide.ui.eclipse.sync.wizard.SynchronizeWizard;
 
 /**
@@ -35,19 +35,19 @@ import org.mevenide.ui.eclipse.sync.wizard.SynchronizeWizard;
  * @version $Id$
  * 
  */
-public class SynchronizeAction extends AbstractMavenAction {
+public class SynchronizeAction extends AbstractMevenideAction {
 	
     public void run(IAction action) {
 		try {
             if ( action.getId().equals("maven-plugin.Synchronize") ) {
-            	String mavenHome = MavenPlugin.getPlugin().getMavenHome();
-            	String mavenRepository = MavenPlugin.getPlugin().getMavenRepository();
+            	String mavenHome = Mevenide.getPlugin().getMavenHome();
+            	String mavenRepository = Mevenide.getPlugin().getMavenRepository();
             	if ( isNull(mavenHome) || isNull(mavenRepository) ) {
-					MavenPlugin.popUp("Mevenide", "Please set maven preferences before synchronizing");
+					Mevenide.popUp("Mevenide", "Please set maven preferences before synchronizing");
 				}
 				else {
 					if ( JavaCore.getClasspathVariable("MAVEN_REPO") == null ) {
-						JavaCore.setClasspathVariable("MAVEN_REPO", new Path(MavenPlugin.getPlugin().getMavenRepository()), null);
+						JavaCore.setClasspathVariable("MAVEN_REPO", new Path(Mevenide.getPlugin().getMavenRepository()), null);
 					}
 					SynchronizerFactory.getSynchronizer(ISynchronizer.POM_TO_IDE).synchronize();
 				}
@@ -65,10 +65,10 @@ public class SynchronizeAction extends AbstractMavenAction {
 			}
 			//@todo extract those two actions in their own AbstractMavenAction
 			if ( action.getId().equals("maven-plugin.mapSourceDirectories") ) {
-				SourceDirectoryTypePart.prompt(currentProject);
+				SourceDirectoryViewPart.prompt(currentProject);
 			}
 			if ( action.getId().equals("maven-plugin.mapDependencies") ) {
-				DependencyTypePart.prompt(currentProject);
+				DependencyViewPart.prompt(currentProject);
 			}
 		}
 		catch (Exception e) {

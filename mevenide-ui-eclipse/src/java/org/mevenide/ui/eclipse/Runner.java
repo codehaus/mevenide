@@ -30,7 +30,7 @@ import org.mevenide.ui.eclipse.jdt.launching.VMLauncherUtility;
  * @version $Id$
  */
 public class Runner extends AbstractRunner {
-	MavenPlugin plugin = MavenPlugin.getPlugin();
+	Mevenide plugin = Mevenide.getPlugin();
 
 	public Runner() throws MevenideException {
 		super();

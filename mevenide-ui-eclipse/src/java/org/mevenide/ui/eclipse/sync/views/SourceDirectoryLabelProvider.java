@@ -17,7 +17,7 @@ import org.eclipse.jface.util.Assert;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.swt.graphics.Image;
-import org.mevenide.ui.eclipse.MavenPlugin;
+import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.sync.source.*;
 
 
@@ -31,7 +31,7 @@ public class SourceDirectoryLabelProvider implements ITableLabelProvider {
 	
 	public Image getColumnImage(Object element, int columnIndex) {
 		if ( columnIndex == 0 ) {
-			return MavenPlugin.getImageDescriptor("source-directory-16.gif").createImage();
+			return Mevenide.getImageDescriptor("source-directory-16.gif").createImage();
 		}
 		return null;
 	}

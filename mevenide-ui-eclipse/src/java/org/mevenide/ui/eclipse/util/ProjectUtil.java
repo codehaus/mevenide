@@ -15,8 +15,11 @@ package org.mevenide.ui.eclipse.util;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -25,9 +28,11 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IClasspathContainer;
 import org.eclipse.jdt.core.IClasspathEntry;
+import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.launching.JavaRuntime;
 import org.mevenide.project.io.ProjectSkeleton;
+import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.sync.DefaultPathResolverDelegate;
 import org.mevenide.ui.eclipse.sync.IPathResolverDelegate;
 
@@ -71,5 +76,23 @@ public class ProjectUtil {
 		}    
 		jreEntryList.add(jrePath);
 		return jreEntryList;
+	}
+	
+	public static void setBuildPath() throws Exception {
+		Mevenide.getPlugin().createProjectProperties();
+		IProject project = Mevenide.getPlugin().getProject();
+		
+		IJavaProject javaProject = JavaCore.create(project);
+	 
+		IFile props = project.getFile("project.properties");
+		File f = new Path(project.getLocation().append("project.properties").toOSString()).toFile();
+		Properties properties = new Properties();
+		properties.load(new FileInputStream(f));
+	
+		IPathResolverDelegate resolver = new DefaultPathResolverDelegate();
+	
+		String buildPath = resolver.getRelativePath(project, javaProject.getOutputLocation()); 
+		properties.setProperty("maven.build.dest", buildPath);
+		properties.store(new FileOutputStream(f), null);
 	}
 }

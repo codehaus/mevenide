@@ -27,8 +27,8 @@ import org.eclipse.jdt.core.ElementChangedEvent;
 import org.eclipse.jdt.core.IElementChangedListener;
 import org.eclipse.jdt.core.IJavaElementDelta;
 import org.eclipse.jdt.core.JavaCore;
-import org.mevenide.ui.eclipse.MavenPlugin;
-import org.mevenide.ui.eclipse.sync.views.SourceDirectoryTypePart;
+import org.mevenide.ui.eclipse.Mevenide;
+import org.mevenide.ui.eclipse.sync.views.SourceDirectoryViewPart;
 
 /**
  * 
@@ -37,7 +37,7 @@ import org.mevenide.ui.eclipse.sync.views.SourceDirectoryTypePart;
  * @version $Id$
  *
  */
-public class MavenNature implements IProjectNature {
+public class MevenideNature implements IProjectNature {
 	
 	private IProject project;
 
@@ -57,8 +57,8 @@ public class MavenNature implements IProjectNature {
 	public static void configureProject(IProject project) throws Exception {
 
 		addPomNature(project);
-		MavenPlugin.getPlugin().createPom();
-		SourceDirectoryTypePart.showView();
+		Mevenide.getPlugin().createPom();
+		SourceDirectoryViewPart.showView();
 		
 		//listen to .classpath changes
 		JavaCore.addElementChangedListener(
@@ -82,7 +82,7 @@ public class MavenNature implements IProjectNature {
 			String[] natures = projectDescription.getNatureIds();
 			String[] newNatures = new String[natures.length + 1];
 			System.arraycopy(natures, 0, newNatures, 0, natures.length);
-			newNatures[natures.length] = MavenPlugin.NATURE_ID; 
+			newNatures[natures.length] = Mevenide.NATURE_ID; 
 			projectDescription.setNatureIds(newNatures);
 			project.setDescription(projectDescription, null);
 		} 
@@ -96,8 +96,8 @@ public class MavenNature implements IProjectNature {
 			IProjectDescription description = project.getDescription();
 			String[] prevNatures= description.getNatureIds();
 			List newNatures = new ArrayList(Arrays.asList(prevNatures));
-			if ( newNatures.contains(MavenPlugin.NATURE_ID) ) {
-				newNatures.remove(MavenPlugin.NATURE_ID);
+			if ( newNatures.contains(Mevenide.NATURE_ID) ) {
+				newNatures.remove(Mevenide.NATURE_ID);
 				String[] setNatures = new String[newNatures.size()];
 				for (int i = 0; i < setNatures.length; i++) {
 					setNatures[i] = (String) newNatures.get(i);

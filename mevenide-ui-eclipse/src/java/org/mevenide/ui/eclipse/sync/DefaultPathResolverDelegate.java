@@ -22,7 +22,7 @@ import org.eclipse.jdt.core.IClasspathEntry;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.input.SAXBuilder;
-import org.mevenide.ui.eclipse.MavenPlugin;
+import org.mevenide.ui.eclipse.Mevenide;
 
 /**  
  * 
@@ -39,13 +39,19 @@ public class DefaultPathResolverDelegate implements IPathResolverDelegate {
 	 * @return
 	 */
 	public String getRelativeSourceDirectoryPath(IClasspathEntry classpathEntry, IProject project) {
-		String pathToAdd = classpathEntry.getPath().toOSString();
+		IPath path = classpathEntry.getPath();
+		
+		return getRelativePath(project, path);
+	}
+
+	public String getRelativePath(IProject project, IPath path) {
+		String pathToAdd = path.toOSString();
 		
 		pathToAdd = pathToAdd.substring(project.getFullPath().toOSString().length(), pathToAdd.length());
 		
 		pathToAdd = (pathToAdd.equals("/") || pathToAdd.equals("")) 
 		            ? "${basedir}" : pathToAdd.substring(1); 
-	                
+		            
 		return pathToAdd;
 	}
 
@@ -64,7 +70,7 @@ public class DefaultPathResolverDelegate implements IPathResolverDelegate {
 		if ( project == null ) {
 			throw new Exception("project should not be null");
 		}
-		Document doc = new SAXBuilder().build(MavenPlugin.getPlugin().getFile("sourceTypes.xml"));
+		Document doc = new SAXBuilder().build(Mevenide.getPlugin().getFile("sourceTypes.xml"));
 		Element root = doc.getRootElement();
 		List sdGroupElements = root.getChildren("sourceDirectoryGroup");
 		

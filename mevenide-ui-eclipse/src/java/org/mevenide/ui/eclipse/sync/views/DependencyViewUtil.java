@@ -25,7 +25,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
-import org.mevenide.ui.eclipse.MavenPlugin;
+import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.sync.dependency.DependencyGroup;
 
 /**
@@ -130,7 +130,7 @@ public class DependencyViewUtil {
 
 		tableTreeViewer.setLabelProvider(new DependencyLabelProvider());
 
-		tableTreeViewer.setInput(new DependencyGroup(MavenPlugin.getPlugin().getProject()));
+		tableTreeViewer.setInput(new DependencyGroup(Mevenide.getPlugin().getProject()));
 	}
 	
 }

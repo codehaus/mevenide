@@ -21,7 +21,7 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
-import org.mevenide.ui.eclipse.MavenPlugin;
+import org.mevenide.ui.eclipse.Mevenide;
 
 /**
  * 
@@ -29,7 +29,7 @@ import org.mevenide.ui.eclipse.MavenPlugin;
  * @version $Id$
  * 
  */
-public abstract class AbstractMavenAction implements IWorkbenchWindowActionDelegate  {
+public abstract class AbstractMevenideAction implements IWorkbenchWindowActionDelegate  {
     private IWorkbenchWindow window;
     protected IProject currentProject;
 	
@@ -38,7 +38,7 @@ public abstract class AbstractMavenAction implements IWorkbenchWindowActionDeleg
         IProject selectedProject = getParentProject(selection);
         
         if ( selectedProject != null ) {
-    		MavenPlugin plugin = MavenPlugin.getPlugin();
+    		Mevenide plugin = Mevenide.getPlugin();
     		
             currentProject = selectedProject.getProject();
     		String cdir = currentProject.getLocation().toFile().getAbsolutePath();

@@ -25,15 +25,17 @@ import org.apache.maven.project.Project;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jdt.core.IClasspathEntry;
+import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.mevenide.project.dependency.DependencyFactory;
 import org.mevenide.project.dependency.DependencyUtil;
 import org.mevenide.project.dependency.InvalidDependencyException;
 import org.mevenide.project.io.DefaultProjectMarshaller;
 import org.mevenide.project.io.ProjectReader;
+import org.mevenide.project.source.SourceDirectoryUtil;
 import org.mevenide.sync.AbstractPomSynchronizer;
 import org.mevenide.sync.ISynchronizer;
-import org.mevenide.ui.eclipse.MavenPlugin;
+import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.sync.DefaultPathResolverDelegate;
 import org.mevenide.ui.eclipse.sync.IPathResolverDelegate;
 import org.mevenide.ui.eclipse.util.ProjectUtil;
@@ -61,11 +63,9 @@ public class PomSynchronizer extends AbstractPomSynchronizer implements ISynchro
     private IPathResolverDelegate pathResolver;
     
     
-    private List unresolvedDependencies = new ArrayList();
-    
     public void initialize() {
 		
-		this.project = MavenPlugin.getPlugin().getProject();
+		this.project = Mevenide.getPlugin().getProject();
 		this.pom = project.getFile("project.xml");
 		assertPomNotEmpty();
 		pathResolver = new DefaultPathResolverDelegate(); 
@@ -94,24 +94,26 @@ public class PomSynchronizer extends AbstractPomSynchronizer implements ISynchro
 	protected void mavenize() {
 		try {
 			assertPomNotEmpty();
-			IClasspathEntry[] cpEntries = JavaCore.create(project).getResolvedClasspath(true);
+			
+			SourceDirectoryUtil.resetSourceDirectories(getPom());
+			
+			IJavaProject javaProject = JavaCore.create(project);
+			IClasspathEntry[] cpEntries = javaProject.getResolvedClasspath(true);
+			
 			for (int i = 0; i < cpEntries.length; i++) {
             	updatePom(cpEntries[i]);
 			}
 			removeUnusedDependencies(cpEntries);
-			if ( unresolvedDependencies.size() > 0 ) {
-				String message = "there may be non resolved dependencies : ";
-				for (int i = 0; i < unresolvedDependencies.size(); i++) {
-					message += "\n  o " + unresolvedDependencies.get(i);
-				}
-				 
-				//MavenPlugin.popUp("Pom Synchronization Warning", message);
-			}
+			
+			ProjectUtil.setBuildPath();
+		
 		}
 		catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
+
+	
 	
 	/**
 	 * 
@@ -183,19 +185,14 @@ public class PomSynchronizer extends AbstractPomSynchronizer implements ISynchro
      */
 	public void preSynchronization() {
 		try {
-			MavenPlugin.getPlugin().createPom();
-			unresolvedDependencies = new ArrayList();
+			Mevenide.getPlugin().createPom();
 		}
 		catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 	
-	public void addUnresolvedDependency(String entryPath) {
-		unresolvedDependencies.add(entryPath);
-	}
-	
-    /**
+	/**
      * @see org.mevenide.core.sync.AbstractPomSynchronizer#postSynchronization()
      */
 	public void postSynchronization() {

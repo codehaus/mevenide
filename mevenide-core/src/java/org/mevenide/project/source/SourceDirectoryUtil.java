@@ -13,9 +13,15 @@
  */
 package org.mevenide.project.source;
 
+import java.io.File;
+import java.io.FileWriter;
+
 import org.apache.maven.project.Build;
 import org.apache.maven.project.Project;
 import org.mevenide.ProjectConstants;
+import org.mevenide.project.io.DefaultProjectMarshaller;
+import org.mevenide.project.io.IProjectMarshaller;
+import org.mevenide.project.io.ProjectReader;
 
 /**
  * 
@@ -48,19 +54,38 @@ public class SourceDirectoryUtil {
 	}
 	
 	public static boolean isSourceDirectoryPresent(Project project, String path) {
-		if ( project.getBuild() == null ) {
+		if ( project.getBuild() == null || path == null ) {
 			return false;
 		}
-		
+			
 		String srcDirectory = project.getBuild().getSourceDirectory();
 		String aspectSrcDirectory = project.getBuild().getAspectSourceDirectory();
 		String unitTestSourceDirectory = project.getBuild().getUnitTestSourceDirectory();
 		String integrationUnitTestSourceDirectory = project.getBuild().getIntegrationUnitTestSourceDirectory();
-		
+			
 		return path.equals(srcDirectory)
 			   || path.equals(aspectSrcDirectory)
 		       || path.equals(unitTestSourceDirectory)
 			   || path.equals(integrationUnitTestSourceDirectory);
 		
+	}
+	
+	public static void resetSourceDirectories(File pomFile) throws Exception {
+		ProjectReader reader = ProjectReader.getReader();
+		Project project = reader.read(pomFile);
+		
+		project.getBuild().setAspectSourceDirectory(null);
+		project.getBuild().setIntegrationUnitTestSourceDirectory(null);
+		project.getBuild().setUnitTestSourceDirectory(null);
+		project.getBuild().setSourceDirectory(null);
+		
+		IProjectMarshaller marshaller = new DefaultProjectMarshaller();
+		marshaller.marshall(new FileWriter(pomFile), project);
+		
+//		ProjectWriter pomWriter = ProjectWriter.getWriter();
+//		pomWriter.addSource(null, pomFile, ProjectConstants.MAVEN_SRC_DIRECTORY);
+//		pomWriter.addSource(null, pomFile, ProjectConstants.MAVEN_TEST_DIRECTORY);
+//		pomWriter.addSource(null, pomFile, ProjectConstants.MAVEN_ASPECT_DIRECTORY);
+//		pomWriter.addSource(null, pomFile, ProjectConstants.MAVEN_INTEGRATION_TEST_DIRECTORY);
 	}
 }

@@ -4,7 +4,7 @@
    name="Mevenide"
    version="0.1"
    provider-name="Sourceforge"
-   class="org.mevenide.ui.eclipse.MavenPlugin">
+   class="org.mevenide.ui.eclipse.Mevenide">
 
    <runtime>
       <library name="lib/commons-discovery-0.1.jar">
@@ -60,7 +60,7 @@
          point="org.eclipse.core.resources.natures">
       <runtime>
          <run
-               class="org.mevenide.ui.eclipse.nature.MavenNature">
+               class="org.mevenide.ui.eclipse.nature.MevenideNature">
          </run>
       </runtime>
    </extension>
@@ -259,7 +259,7 @@
          point="org.eclipse.ui.preferencePages">
       <page
             name="Maven"
-            class="org.mevenide.ui.eclipse.preferences.MavenPreferencePage"
+            class="org.mevenide.ui.eclipse.preferences.MevenidePreferencePage"
             id="maven.plugin.preferences.MavenPreferencePage">
       </page>
    </extension>
@@ -270,14 +270,14 @@
             name="Mevenide Source Folders"
             icon="icons/maven.gif"
             category="Mevenide"
-            class="org.mevenide.ui.eclipse.sync.views.SourceDirectoryTypePart"
+            class="org.mevenide.ui.eclipse.sync.views.SourceDirectoryViewPart"
             id="org.mevenide.sync.view">
       </view>
       <view
             name="Mevenide Dependencies"
             icon="icons/maven.gif"
             category="Mevenide"
-            class="org.mevenide.ui.eclipse.sync.views.DependencyTypePart"
+            class="org.mevenide.ui.eclipse.sync.views.DependencyViewPart"
             id="org.mevenide.sync.view.dep">
       </view>
    </extension>

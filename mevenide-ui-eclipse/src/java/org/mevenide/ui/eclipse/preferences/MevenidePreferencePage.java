@@ -20,7 +20,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
-import org.mevenide.ui.eclipse.MavenPlugin;
+import org.mevenide.ui.eclipse.Mevenide;
 
 /**
  * 
@@ -29,15 +29,15 @@ import org.mevenide.ui.eclipse.MavenPlugin;
  * @version $Id$
  *
  */
-public class MavenPreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
+public class MevenidePreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
 
 	private PreferencesManager manager;
-    private MavenPreferenceDialog dialog;
+    private MevenidePreferenceDialog dialog;
     
-    public MavenPreferencePage() {
-        super(MavenPlugin.getResourceString("MavenPreferencePage.title"));
+    public MevenidePreferencePage() {
+        super(Mevenide.getResourceString("MavenPreferencePage.title"));
         //setImageDescriptor(MavenPlugin.getImageDescriptor("sample.gif"));
-        dialog = new MavenPreferenceDialog();
+        dialog = new MevenidePreferenceDialog();
        	manager = new PreferencesManager();
        	manager.loadPreferences();
     }

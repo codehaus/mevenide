@@ -14,7 +14,7 @@
 package org.mevenide.ui.eclipse.actions;
 
 import org.eclipse.jface.action.IAction;
-import org.mevenide.ui.eclipse.nature.MavenNature;
+import org.mevenide.ui.eclipse.nature.MevenideNature;
 
 /**
  * 
@@ -25,17 +25,17 @@ import org.mevenide.ui.eclipse.nature.MavenNature;
  * 
  * @todo EXTERNALIZE
  */
-public class ManageNatureAction extends AbstractMavenAction {
+public class ManageNatureAction extends AbstractMevenideAction {
 	
 	public void run(IAction action) {
 		try {
 			
 			if ( currentProject != null ) {	
 				if ( action.getId().equals("org.mevenide.ui.eclipse.actions.addmavennature") ) {
-					MavenNature.configureProject(currentProject);
+					MevenideNature.configureProject(currentProject);
 				}
 				else {
-					MavenNature.deconfigureProject(currentProject);	
+					MevenideNature.deconfigureProject(currentProject);	
 				}
 			}
 		} 

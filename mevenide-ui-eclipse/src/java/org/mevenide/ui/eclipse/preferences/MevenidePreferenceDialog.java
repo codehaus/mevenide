@@ -17,7 +17,7 @@ import org.eclipse.jface.preference.DirectoryFieldEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 
-import org.mevenide.ui.eclipse.MavenPlugin;
+import org.mevenide.ui.eclipse.Mevenide;
 
 /**
  * 
@@ -25,7 +25,7 @@ import org.mevenide.ui.eclipse.MavenPlugin;
  * @version $Id$
  * 
  */
-public class MavenPreferenceDialog {
+public class MevenidePreferenceDialog {
 	private Composite topLevelContainer;
 	private DirectoryFieldEditor mavenHomeEditor;
 	private DirectoryFieldEditor javaHomeEditor;
@@ -51,11 +51,11 @@ public class MavenPreferenceDialog {
 	
 	public void update() {
 		mavenHome = mavenHomeEditor.getTextControl(topLevelContainer).getText();
-		MavenPlugin.getPlugin().setMavenHome(mavenHome);
+		Mevenide.getPlugin().setMavenHome(mavenHome);
 		javaHome = javaHomeEditor.getTextControl(topLevelContainer).getText();
-		MavenPlugin.getPlugin().setJavaHome(javaHome);
+		Mevenide.getPlugin().setJavaHome(javaHome);
 		mavenRepository = mavenRepoEditor.getTextControl(topLevelContainer).getText();
-		MavenPlugin.getPlugin().setMavenRepository(mavenRepository);
+		Mevenide.getPlugin().setMavenRepository(mavenRepository);
 	}
 	
 	
