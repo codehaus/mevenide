@@ -25,7 +25,6 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.event.DocumentListener;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.mevenide.netbeans.project.MavenProject;

@@ -33,8 +33,6 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.UIManager;
 import javax.swing.border.Border;
-import javax.swing.table.TableCellEditor;
-import javax.swing.table.TableCellRenderer;
 import org.mevenide.properties.IPropertyLocator;
 import org.openide.util.Utilities;
 

@@ -26,7 +26,7 @@ import org.mevenide.netbeans.project.MavenProject;
  * factory creating different sets of processors
  * @author  Milos Kleint (ca206216@tiscali.cz)
  */
-public class OutputProcessorFactory {
+public final class OutputProcessorFactory {
     
     private static OutputProcessorFactory instance;
     

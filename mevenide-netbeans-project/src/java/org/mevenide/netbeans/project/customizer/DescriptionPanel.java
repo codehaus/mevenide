@@ -28,7 +28,6 @@ import javax.swing.JButton;
 
 
 import javax.swing.JPanel;
-import javax.swing.event.DocumentListener;
 import javax.swing.text.JTextComponent;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

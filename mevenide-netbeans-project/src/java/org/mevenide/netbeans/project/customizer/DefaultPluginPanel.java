@@ -22,13 +22,8 @@ import java.util.Iterator;
 
 import java.util.List;
 import java.util.Properties;
-import javax.swing.DefaultCellEditor;
-import javax.swing.JComboBox;
 import javax.swing.JPanel;
-import javax.swing.table.DefaultTableColumnModel;
-import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
-import javax.swing.table.TableColumnModel;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.mevenide.netbeans.project.MavenProject;

@@ -18,10 +18,7 @@ package org.mevenide.netbeans.project.customizer.ui;
 
 import java.awt.Component;
 import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.event.DocumentListener;
 import org.mevenide.netbeans.project.customizer.MavenPropertyChange;
-import org.mevenide.netbeans.project.customizer.ui.OriginChange;
 import org.mevenide.properties.IPropertyLocator;
 
 
