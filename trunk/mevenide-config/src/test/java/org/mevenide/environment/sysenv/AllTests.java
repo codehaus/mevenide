@@ -22,7 +22,7 @@ import junit.framework.TestSuite;
 /**  
  * 
  * @author Gilles Dodinet (gdodinet@wanadoo.fr)
- * @version $Id: AllTests.java,v 1.1 16 nov. 2003 Exp gdodinet 
+ * @version $Id: AllTests.java,v 1.1 2004/03/07 Exp gdodinet 
  * 
  */
 public class AllTests {
