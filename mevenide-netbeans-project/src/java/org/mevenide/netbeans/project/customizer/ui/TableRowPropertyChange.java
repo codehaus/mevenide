@@ -17,7 +17,6 @@
 package org.mevenide.netbeans.project.customizer.ui;
 
 import java.awt.Component;
-import javax.swing.JTable;
 import org.mevenide.netbeans.project.customizer.MavenPropertyChange;
 import org.mevenide.properties.IPropertyLocator;
 

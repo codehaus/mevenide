@@ -32,7 +32,6 @@ import org.openide.loaders.DataObject;
 import org.openide.nodes.FilterNode;
 import org.openide.nodes.Node;
 import org.openide.util.Utilities;
-import org.openide.util.WeakListeners;
 import org.openide.xml.XMLUtil;
 
 
