@@ -73,7 +73,6 @@ public class DependencyTypePart extends ViewPart {
 
 	public void setInput(IProject project) {
 		this.project = project;
-		//@todo manage project swapping via the memento
 		if ( viewer.getContentProvider() != null ) {
 			DependencyGroup newInput = null ;
 			try {

@@ -56,7 +56,6 @@ public class SourceDirectorySynchronizeWizardPage extends WizardPage {
 	
 	public void setInput(IProject project) {
 		this.project = project;
-		//@todo manage project swapping via the memento
 		if ( viewer.getContentProvider() != null ) {
 			SourceDirectoryGroup newInput = null ;
 			try {

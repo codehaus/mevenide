@@ -242,9 +242,7 @@ public class MavenPlugin extends AbstractUIPlugin {
 	/**
 	 * create a new POM skeleton if no project.xml currently exists
 	 * 
-	 * @todo GENERALIZE add a POM_FILE_NAME property somewhere
-	 * @todo EXTERNALIZE POM_FILE_NAME
-	 * @throws Exception
+	* @throws Exception
 	 */
 	public void createPom() throws Exception {
 		IFile pom = project.getFile("project.xml");
