@@ -32,6 +32,7 @@ class LocalRepositoryReader extends AbstractRepositoryReader {
     private File rootRepository;
     /** Creates a new instance of LocalRepositoryReader */
     public LocalRepositoryReader(File rootFile) {
+        super(rootFile.toURI());
         rootRepository = rootFile;
     }
     

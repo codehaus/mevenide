@@ -49,5 +49,16 @@ public final class RepositoryReaderFactory {
         }
         return null;
     }
+
+    /**
+     * Creates a IRepositoryReader for the remote repository.
+     */
+    public static IRepositoryReader createRemoteRepositoryReader(URI uri, 
+                                    String proxyHost, String proxyPort) {
+        if (uri.toString().startsWith("http://")) {
+            return new HttpRepositoryReader(uri, proxyHost, proxyPort);
+        }
+        return null;
+    }
     
 }

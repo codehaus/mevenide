@@ -16,6 +16,8 @@
  */
 package org.mevenide.repository;
 
+import java.net.URI;
+
 /**
  * Reader of the repository, be it local or remote.
  * @author  Milos Kleint (mkleint@codehaus.org)
@@ -25,4 +27,6 @@ public interface IRepositoryReader {
      * read the children for the parent element.
      */
     RepoPathElement[] readElements(RepoPathElement element) throws Exception;
+    
+    URI getRootURI();
 }
