@@ -17,6 +17,7 @@
 package org.mevenide.project.io;
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
@@ -57,7 +58,7 @@ public class ProjectWriter {
 	private IResourceResolver resourceResolver = new DefaultResourceResolver();
 	private ProjectReader projectReader ;
 	private DefaultProjectMarshaller marshaller ; 
-	private JarOverrideWriter overrider = new JarOverrideWriter(this);
+	private JarOverrideWriter jarOverrideWriter = new JarOverrideWriter(this);
 	
 	private ProjectWriter() throws Exception  {
 		marshaller = new DefaultProjectMarshaller();
@@ -126,9 +127,11 @@ public class ProjectWriter {
 		
 	}
 	
-
-	
 	public void setDependencies(List dependencies, File pom) throws Exception {
+		setDependencies(dependencies, pom, true);
+	}
+	
+	public void setDependencies(List dependencies, File pom, boolean shouldWriteProperties) throws Exception {
 		Project project = projectReader.read(pom);
 		List nonResolvedDependencies = DependencyUtil.getNonResolvedDependencies(dependencies);
 		
@@ -137,18 +140,23 @@ public class ProjectWriter {
 		project.setDependencies(dependencies);
 		write(project, pom);
 		
+		if ( shouldWriteProperties ) {
+			overrideUnresolvedDependencies(pom, nonResolvedDependencies);
+		}
+	}
+
+	private void overrideUnresolvedDependencies(File pom, List nonResolvedDependencies) throws IOException, Exception {
 		File propertiesFile = new File(pom.getParent(), "project.properties");
 		if ( !propertiesFile.exists() ) {
 			propertiesFile.createNewFile();
 		}
-		overrider.unsetOverriding(propertiesFile);
+		jarOverrideWriter.unsetOverriding(propertiesFile);
 		
 		//jaroverriding
 		for (int i = 0; i < nonResolvedDependencies.size(); i++) {
 			Dependency dependency = (Dependency) nonResolvedDependencies.get(i); 
-			overrider.jarOverride(dependency.getArtifact(), propertiesFile, pom);
+			jarOverrideWriter.jarOverride(dependency.getArtifact(), propertiesFile, pom);
 		}
-		
 	}
 
 	void write(Project project, File pom) throws Exception {
