@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<document>
+    <properties>
+    	<author email="rhill@wanadoo.fr">Gilles Dodinet</author>
+        <title>Overview</title>
+    </properties>
+    <body>
+        <section name="Project Overview">
+        	
+        	<p>
+			    This module should be the foundation for IDE integration. it provides POM manipulation methods, like
+			    reading, writing POM, adding [re]source directories, dependencies, resolving dependencies, etc.. 
+			    and provides an abstract Maven Runner and abstract Pom and IDE Synchronizers. It is recommended that IDE 
+			    plugins should extend and use the Core. 
+			</p>
+			<p>
+			    <a href="packages.html">This document</a> describes the package structure of the module. 
+			</p>
+		</section>
+    </body>
+</document>
