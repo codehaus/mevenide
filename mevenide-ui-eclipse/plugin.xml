@@ -76,9 +76,9 @@
                label="Maven"
                path="additions"
                id="maven.plugin.menu">
-            <separator
+            <!-- separator
                   name="RunMaven">
-            </separator>
+            </separator -->
             <separator
                   name="Synchronize">
             </separator>
@@ -86,7 +86,7 @@
                   name="MavenNature">
             </separator>
          </menu>
-         <action
+         <!-- action
                label="Run Maven..."
                icon="icons/maven-run.gif"
                class="org.mevenide.ui.eclipse.actions.RunMavenAction"
@@ -101,7 +101,7 @@
                   </objectState>
                </and>
             </enablement>
-         </action>
+         </action -->
          <action
                label="Synchronize Project"
                icon="icons/maven-synch-project.gif"
@@ -181,18 +181,18 @@
             <separator
                   name="RunMaven">
             </separator>
-            <separator
+            <!-- separator
                   name="Synchronize">
-            </separator>
+            </separator -->
          </menu>
-         <action
+         <!-- action
                label="Run Maven..."
                icon="icons/maven-run.gif"
                class="org.mevenide.ui.eclipse.actions.RunMavenAction"
                menubarPath="maven.plugin.menu/RunMaven"
                enablesFor="1"
                id="maven.plugin.popup.action">
-         </action>
+         </action -->
          <action
                label="Synchronize Project"
                icon="icons/maven-synch-project.gif"
