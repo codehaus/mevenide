@@ -39,5 +39,7 @@ public class PropertyGrabberTest extends TestCase {
     
     public void testGrab() throws Exception {
         grabber.grab();
+        //@todo assert
+        //System.err.println(grabber.getPropertyDescription());
     }
 }

@@ -42,6 +42,8 @@ public class PropertyGrabber {
 
     private IElementHandler elementHandler;
     
+    private String propertyDescription;
+    
     public void grab() throws GrabberException {
         createElementHandler();
         
@@ -53,15 +55,13 @@ public class PropertyGrabber {
                 elementHandler.handle(element);
             }
             
-            String xmlDescription = elementHandler.getXmlDescription();
+            propertyDescription = elementHandler.getXmlDescription();
         }
         catch (IOException e) {
             String message = "unable to create grab properties"; //$NON-NLS-1$ 
             log.error(message, e);
         }
     }
-    
-    
     
     private void createElementHandler() {
         try {
@@ -72,9 +72,17 @@ public class PropertyGrabber {
         }
     }
 
-
-
-
+    public String getElementHandlerClassName() {
+        return elementHandlerClassName;
+    }
+    
+    public void setElementHandlerClassName(String elementHandlerClassName) {
+        this.elementHandlerClassName = elementHandlerClassName;
+    }
+    
+    public String getPropertyDescription() {
+        return propertyDescription;
+    }
 
     public File getPropertyFile() {
         return propertyFile;
