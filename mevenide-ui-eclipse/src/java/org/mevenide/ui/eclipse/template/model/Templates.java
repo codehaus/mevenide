@@ -21,7 +21,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
-
 import org.apache.maven.project.Project;
 import org.eclipse.core.runtime.IAdaptable;
 import org.mevenide.project.io.ProjectReader;
@@ -29,54 +28,60 @@ import org.mevenide.ui.eclipse.Mevenide;
 
 /**
  * A Templates object is a container for Templates
- * @author	<a href="mailto:jens@iostream.net">Jens Andersen</a>, Last updated by $Author$
+ * 
+ * @author <a href="mailto:jens@iostream.net">Jens Andersen </a>, Last updated
+ *         by $Author$
  * @version $Id$
  */
-public class Templates  extends Observable implements IAdaptable {
-	private List fTemplates;
-	/**
-	 * 
-	 */
-	public Templates() {
-		fTemplates = new ArrayList();
-	}
-	/**
-	 * Add a template to the Templates container
-	 * @param template - template to be added
-	 */
-	public void addTemplate(Template template)
-	{
-		fTemplates.add(template);
-		setChanged();
-		notifyObservers();
-	}
-	/**
-	 * Remove a template from the Templates container
-	 * @param template - template to be removed
-	 */
-	public void removeTemplate(Template template)
-	{
-		fTemplates.remove(template);
-		setChanged();
-		notifyObservers();
-	}
-	/**
-	 * Get all templates as an array
-	 * @return a template array
-	 */
-	public Object[] getTemplates()
-	{
-		return fTemplates.toArray();
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
-	 */
-	public Object getAdapter(Class arg0) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
+public class Templates extends Observable implements IAdaptable {
+
+    private List fTemplates;
+
+    public Templates() {
+        fTemplates = new ArrayList();
+    }
+
+    /**
+     * Add a template to the Templates container
+     * 
+     * @param template - template to be added
+     */
+    public void addTemplate(Template template) {
+        fTemplates.add(template);
+        setChanged();
+        notifyObservers();
+    }
+
+    /**
+     * Remove a template from the Templates container
+     * 
+     * @param template - template to be removed
+     */
+    public void removeTemplate(Template template) {
+        fTemplates.remove(template);
+        setChanged();
+        notifyObservers();
+    }
+
+    /**
+     * Get all templates as an array
+     * 
+     * @return a template array
+     */
+    public Object[] getTemplates() {
+        return fTemplates.toArray();
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
+     */
+    public Object getAdapter(Class arg0) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
     public static Templates newTemplates() {
         Templates templates = new Templates();
         File tmplFolder = Mevenide.getInstance().getStateLocation().append("templates").toFile();//$NON-NLS-1$
