@@ -272,13 +272,16 @@ public class ProjectComparator {
         List newBranches = newProject.getBranches();
         List origBranches = originalProject.getBranches();
         try {
-            detectCollectionChange(newBranches, origBranches);
-            // just assume order is significant
-            for (int i = 0; i < origBranches.size(); i++) {
-                Branch newBranch = (Branch) newBranches.get(i);
-                Branch origBranch = (Branch) origBranches.get(i);
-                detectAttributeChange(newBranch.getName(), origBranch.getName());
-                detectAttributeChange(newBranch.getTag(), origBranch.getTag());
+            if ( comparable(newBranches, origBranches) ) {
+            	detectObjectChange(newBranches, origBranches);
+                detectCollectionChange(newBranches, origBranches);
+	            // just assume order is significant
+	            for (int i = 0; i < origBranches.size(); i++) {
+	                Branch newBranch = (Branch) newBranches.get(i);
+	                Branch origBranch = (Branch) origBranches.get(i);
+	                detectAttributeChange(newBranch.getName(), origBranch.getName());
+	                detectAttributeChange(newBranch.getTag(), origBranch.getTag());
+	            }
             }
         }
         catch (ShortCircuitException e) {
@@ -291,6 +294,7 @@ public class ProjectComparator {
         List origVersions = originalProject.getVersions();
         if (comparable(newVersions, origVersions)) {
 	        try {
+	            detectObjectChange(newVersions, origVersions);
 	            detectCollectionChange(newVersions, origVersions);
 	            // just assume order is significant
 	            for (int i = 0; i < origVersions.size(); i++) {
@@ -312,6 +316,7 @@ public class ProjectComparator {
         List origMailingLists = originalProject.getMailingLists();
         if ( comparable(newMailingLists, origMailingLists) ) {
 	        try {
+	            detectObjectChange(newMailingLists, origMailingLists);
 	            detectCollectionChange(newMailingLists, origMailingLists);
 	            // just assume order is significant
 	            for (int i = 0; i < origMailingLists.size(); i++) {
@@ -334,6 +339,7 @@ public class ProjectComparator {
         List origContributors = originalProject.getContributors();
         if ( comparable(newContributors, origContributors) ) {
 	        try {
+	            detectObjectChange(newContributors, origContributors);
 	        	detectCollectionChange(newContributors, origContributors);
 	        	// just assume order is significant
 	        	for (int i = 0; i < origContributors.size(); i++) {
@@ -357,6 +363,7 @@ public class ProjectComparator {
 
             SortedSet origRoles = origContributor.getRoles();
             SortedSet newRoles = newContributor.getRoles();
+            detectObjectChange(newRoles, origRoles);
             detectCollectionChange(newRoles, origRoles);
             Iterator itrOrig = origRoles.iterator();
             Iterator itrNew = newRoles.iterator();
@@ -370,6 +377,7 @@ public class ProjectComparator {
         List origDevelopers = originalProject.getDevelopers();
         if ( comparable(newDevelopers, origDevelopers ) ) {
 	        try {
+	            detectObjectChange(newDevelopers, origDevelopers);
 	            detectCollectionChange(newDevelopers, origDevelopers);
 	            // just assume order is significant
 	            for (int i = 0; i < origDevelopers.size(); i++) {
@@ -390,6 +398,7 @@ public class ProjectComparator {
         List newLicenses = newProject.getLicenses();
         if ( comparable(newLicenses, origLicenses) ) {
 	        try {
+	            detectObjectChange(newLicenses, origLicenses);
 	            detectCollectionChange(newLicenses, origLicenses);
 	            // just assume order is significant
 	            for (int i = 0; i < origLicenses.size(); i++) {
@@ -412,6 +421,7 @@ public class ProjectComparator {
         List origDependencies = originalProject.getDependencies();
         if ( comparable(newDependencies, origDependencies) ) {
 	        try {
+	            detectObjectChange(newDependencies, origDependencies);
 	            detectCollectionChange(newDependencies, origDependencies);
 	            // just assume order is significant
 	            for (int i = 0; i < origDependencies.size(); i++) {
@@ -480,12 +490,12 @@ public class ProjectComparator {
 	        UnitTest newUnitTest = newBuild.getUnitTest();
 	        if ( comparable(newUnitTest, origUnitTest) ) {
 		        detectObjectChange(newUnitTest, origUnitTest);
-		        
+		        detectObjectChange(newUnitTest.getIncludes(), origUnitTest.getIncludes());
 		        detectCollectionChange(newUnitTest.getIncludes(), origUnitTest.getIncludes());
 		        for (int j = 0; j < newUnitTest.getIncludes().size(); j++) {
 		            detectAttributeChange(origUnitTest.getIncludes().get(j), newUnitTest.getIncludes().get(j));
 		        }
-		
+		        detectObjectChange(newUnitTest.getExcludes(), origUnitTest.getExcludes());
 		        detectCollectionChange(newUnitTest.getExcludes(), origUnitTest.getExcludes());
 		        for (int j = 0; j < origUnitTest.getExcludes().size(); j++) {
 		            detectAttributeChange(origUnitTest.getExcludes().get(j), newUnitTest.getExcludes().get(j));
@@ -518,12 +528,12 @@ public class ProjectComparator {
 	        detectAttributeChange(newResource.getDirectory(), origResource.getDirectory());
 	        detectAttributeChange(newResource.getTargetPath(), origResource.getTargetPath());
 	        detectAttributeChange(newResource.getFiltering(), origResource.getFiltering());
-	
+	        detectObjectChange(newResource.getIncludes(), origResource.getIncludes());
 	        detectCollectionChange(newResource.getIncludes(), origResource.getIncludes());
 	        for (int j = 0; j < origResource.getIncludes().size(); j++) {
 	            detectAttributeChange(origResource.getIncludes().get(j), newResource.getIncludes().get(j));
 	        }
-	
+	        detectObjectChange(newResource.getExcludes(), origResource.getExcludes());
 	        detectCollectionChange(newResource.getExcludes(), origResource.getExcludes());
 	        for (int j = 0; j < origResource.getExcludes().size(); j++) {
 	            detectAttributeChange(origResource.getExcludes().get(j), newResource.getExcludes().get(j));
@@ -536,6 +546,7 @@ public class ProjectComparator {
         List origReports = originalProject.getReports();
         if ( comparable(newReports, origReports) ) {
 	        try {
+	            detectObjectChange(newReports, origReports);
 	            detectCollectionChange(newReports, origReports);
 	            // just assume order is significant
 	            for (int i = 0; i < origReports.size(); i++) {
@@ -552,6 +563,7 @@ public class ProjectComparator {
 
     private void compareProperties(List newProps, List origProps) throws ShortCircuitException {
     	if ( comparable(newProps, origProps) ) {
+    	    detectObjectChange(newProps, origProps);
 	        detectCollectionChange(newProps, origProps);
 	        // just assume order is significant
 	        // FIXME: ?? properties in BaseObject are stored as 'name:value',
