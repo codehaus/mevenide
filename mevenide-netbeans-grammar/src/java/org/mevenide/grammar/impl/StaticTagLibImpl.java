@@ -15,7 +15,7 @@
  * =========================================================================
  */
 
-package org.mevenide.grammar;
+package org.mevenide.grammar.impl;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -33,6 +33,7 @@ import org.apache.commons.logging.LogFactory;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.input.SAXBuilder;
+import org.mevenide.grammar.TagLib;
 
 /**
  * Container for tag library code completion data.
@@ -62,24 +63,20 @@ public class StaticTagLibImpl implements TagLib
     private void configure(InputStream stream) throws Exception
     {
         SAXBuilder builder = new SAXBuilder();
-        logger.debug("stream is not null=" + (stream != null));
         Document schemaDoc = builder.build(stream);
         Element root = schemaDoc.getRootElement();
         setName(root.getAttributeValue("name"));
-        logger.debug("name=" + getName());
         Iterator it = root.getChildren("tag").iterator();
         while (it.hasNext())
         {
             Element tagEl = (Element)it.next();
             String tagName = tagEl.getAttributeValue("name");
-            logger.debug("tagname=" + tagName);
             Iterator it2 = tagEl.getChildren("attr").iterator();
             Collection col = new ArrayList(10);
             while (it2.hasNext())
             {
                 Element attrEl = (Element)it2.next();
                 String attr = attrEl.getAttributeValue("name");
-                logger.debug("attr=" + attr);
                 if (attr != null)
                 {
                     col.add(attr);
@@ -99,7 +96,6 @@ public class StaticTagLibImpl implements TagLib
                     nest.add(tagName);
                 }
             } else {
-                logger.debug("add to roottags");
                 roottags.add(tagName);
             }
             

@@ -305,9 +305,10 @@ public class MavenJellyGrammar implements GrammarQuery {
                     logger.debug("adding namespace=" + ns);
                     toReturn.add(new TagLibElement(ns));
                     // add the tags as well, tothe end however.
-                    logger.debug("adding lib=" + lb);
                     if (lb != null) {
-                        createTagElements(lb.getRootTags(), singleTags, ns, start);
+                        logger.debug("adding lib=" + lb);
+                        // add all elements for given namespace.. that's why the last parameter is null.
+                        createTagElements(lb.getRootTags(), singleTags, ns, null);
                         //TODO add non root tags..
                     }
                 }
