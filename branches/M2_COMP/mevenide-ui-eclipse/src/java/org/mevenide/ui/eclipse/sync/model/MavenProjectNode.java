@@ -34,7 +34,7 @@ import org.mevenide.project.dependency.DependencyUtil;
  * @version $Id: MavenProjectNode.java,v 1.1 12 avr. 2004 Exp gdodinet 
  * 
  */
-public class MavenProjectNode implements INode {
+public class MavenProjectNode implements ISynchronizationNode, ISelectableNode {
 	
 	private MavenProject mavenProject;
 	
@@ -64,7 +64,8 @@ public class MavenProjectNode implements INode {
 		List artifacts = new DefaultMavenArtifactFactory().createArtifacts(mavenProject);
 		originalArtifactNodes = new MavenArtifactNode[artifacts.size()];
 	    for (int i = 0; i < artifacts.size(); i++) {
-			originalArtifactNodes[i] = new MavenArtifactNode((MavenArtifact) artifacts.get(i), this);
+	    	originalArtifactNodes[i] = new MavenArtifactNode((MavenArtifact) artifacts.get(i), this);
+			originalArtifactNodes[i].setDirection(ISelectableNode.INCOMING_DIRECTION);
 		}
 		artifactNodes = originalArtifactNodes;
 		joinEclipseProjectArtifacts();
@@ -76,8 +77,13 @@ public class MavenProjectNode implements INode {
 	    for (int i = 0; i < eclipseArtifacts.size(); i++) {
 	    	MavenArtifact eclipseArtifact = (MavenArtifact) eclipseArtifacts.get(i);
 	    	if ( !isPresent(eclipseArtifact)  ) {
-			    tempNodes.add(new MavenArtifactNode(eclipseArtifact, this));
+	    		MavenArtifactNode node = new MavenArtifactNode(eclipseArtifact, this);
+	    		node.setDirection(ISelectableNode.OUTGOING_DIRECTION);
+			    tempNodes.add(node);
 			}
+//	    	else {
+//	    	    //remove artifact from tempNodes 	
+//	    	}
 		}
 		artifactNodes = (MavenArtifactNode[]) tempNodes.toArray(new MavenArtifactNode[0]);
 	}
@@ -97,8 +103,8 @@ public class MavenProjectNode implements INode {
 		directoryNodes = new DirectoryNode[0];
 	}
 	
-	public INode[] getChildren() {
-	    INode[] children = new INode[directoryNodes.length + artifactNodes.length];
+	public ISynchronizationNode[] getChildren() {
+	    ISynchronizationNode[] children = new ISynchronizationNode[directoryNodes.length + artifactNodes.length];
 	    System.arraycopy(directoryNodes, 0, children, 0, directoryNodes.length);
 	    System.arraycopy(artifactNodes, 0, children, 0, artifactNodes.length);
 		return children;
@@ -108,7 +114,7 @@ public class MavenProjectNode implements INode {
 		return mavenProject;
 	}
 	
-	public INode getParent() {
+	public ISynchronizationNode getParent() {
 		return parentNode;
 	}
 	
@@ -119,6 +125,26 @@ public class MavenProjectNode implements INode {
 	
 	public String toString() {
 		return mavenProject.getFile().getName();
+	}
+	
+	
+	//quicky.. might be done more properly at initialization stage ?
+	public boolean select(int direction) {
+		for (int i = 0; i < this.artifactNodes.length; i++) {
+			if ( artifactNodes[i].getDirection() == direction ) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public boolean selectArtifacts(ArtifactNode[] nodes, int direction) {
+		for (int i = 0; i < nodes.length; i++) {
+			if ( artifactNodes[i].getDirection() == direction ) {
+				return true;
+			}
+		}
+		return false;
 	}
 }
 

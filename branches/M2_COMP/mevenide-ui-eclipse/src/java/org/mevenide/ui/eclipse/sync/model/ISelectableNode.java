@@ -19,12 +19,14 @@ package org.mevenide.ui.eclipse.sync.model;
 /**  
  * 
  * @author <a href="mailto:rhill2@free.fr">Gilles Dodinet</a>
- * @version $Id: INode.java,v 1.1 12 avr. 2004 Exp gdodinet 
+ * @version $Id: ISelectableNode.java,v 1.1 15 avr. 2004 Exp gdodinet 
  * 
  */
-public interface INode {
-	Object getData();
-	INode[] getChildren();
-	INode getParent();
-	boolean hasChildren();
+public interface ISelectableNode {
+
+	public static final int OUTGOING_DIRECTION = 1;
+	public static final int INCOMING_DIRECTION = 2;
+	public static final int CONFLICTING_DIRECTION = 4;
+	
+	boolean select(int direction);
 }

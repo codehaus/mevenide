@@ -43,13 +43,13 @@ public class MavenArtifactNode extends ArtifactNode {
 		
 	}
 	
-	public INode[] getChildren() {
+	public ISynchronizationNode[] getChildren() {
 		return properties;
 	}
 	public Object getData() {
 		return artifact;
 	}
-	public INode getParent() {
+	public ISynchronizationNode getParent() {
 		return parent;
 	}
 	public boolean hasChildren() {

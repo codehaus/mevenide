@@ -19,33 +19,12 @@ package org.mevenide.ui.eclipse.sync.model;
 /**  
  * 
  * @author <a href="mailto:rhill2@free.fr">Gilles Dodinet</a>
- * @version $Id: PropertyNode.java,v 1.1 12 avr. 2004 Exp gdodinet 
+ * @version $Id: INode.java,v 1.1 12 avr. 2004 Exp gdodinet 
  * 
  */
-public class PropertyNode implements ISynchronizationNode, ISelectableNode {
-	
-	public boolean select(int direction) {
-		return ((MavenArtifactNode) getParent()).select(direction);
-	}
-	
-	public ISynchronizationNode[] getChildren() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	public Object getData() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	public ISynchronizationNode getParent() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	public boolean hasChildren() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-	public String toString() {
-		// TODO Auto-generated method stub
-		return super.toString();
-	}
+public interface ISynchronizationNode {
+	Object getData();
+	ISynchronizationNode[] getChildren();
+	ISynchronizationNode getParent();
+	boolean hasChildren();
 }

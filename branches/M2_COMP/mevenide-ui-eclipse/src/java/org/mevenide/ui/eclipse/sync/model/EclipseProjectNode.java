@@ -43,7 +43,6 @@ import org.mevenide.project.dependency.DependencyFactory;
 import org.mevenide.project.io.ProjectReader;
 import org.mevenide.ui.eclipse.DefaultPathResolver;
 import org.mevenide.ui.eclipse.IPathResolver;
-import org.mevenide.ui.eclipse.sync.view.PomChooser;
 import org.mevenide.ui.eclipse.util.EclipseProjectUtils;
 import org.mevenide.ui.eclipse.util.FileUtils;
 
@@ -53,7 +52,7 @@ import org.mevenide.ui.eclipse.util.FileUtils;
  * @version $Id: EclipseProjectNode.java,v 1.1 12 avr. 2004 Exp gdodinet 
  * 
  */
-public class EclipseProjectNode implements INode {
+public class EclipseProjectNode implements ISynchronizationNode {
 	private static final Log log = LogFactory.getLog(EclipseProjectNode.class);
 	
 	private IContainer eclipseContainer;
@@ -224,7 +223,7 @@ public class EclipseProjectNode implements INode {
 		}
 	}
 	
-	public INode[] getChildren() {
+	public ISynchronizationNode[] getChildren() {
 		return mavenProjectNodes;
 	}
 	
@@ -232,7 +231,7 @@ public class EclipseProjectNode implements INode {
 		return eclipseContainer;
 	}
 	
-	public INode getParent() {
+	public ISynchronizationNode getParent() {
 		return null;
 	}
 	public boolean hasChildren() {

@@ -26,7 +26,7 @@ import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.MevenideColors;
 import org.mevenide.ui.eclipse.sync.model.DirectoryNode;
 import org.mevenide.ui.eclipse.sync.model.EclipseProjectNode;
-import org.mevenide.ui.eclipse.sync.model.INode;
+import org.mevenide.ui.eclipse.sync.model.ISynchronizationNode;
 import org.mevenide.ui.eclipse.sync.model.MavenArtifactNode;
 import org.mevenide.ui.eclipse.sync.model.MavenProjectNode;
 import org.mevenide.ui.eclipse.sync.model.PropertyNode;
@@ -60,8 +60,8 @@ public class ArtifactMappingLabelProvider implements ILabelProvider, IColorProvi
     }
     
     public String getText(Object element) {
-        if ( element instanceof INode ) {
-        	return ((INode) element).toString();
+        if ( element instanceof ISynchronizationNode ) {
+        	return ((ISynchronizationNode) element).toString();
         }
         return null;
     }

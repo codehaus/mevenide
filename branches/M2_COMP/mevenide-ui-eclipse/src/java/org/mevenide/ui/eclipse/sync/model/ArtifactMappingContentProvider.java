@@ -37,22 +37,22 @@ public class ArtifactMappingContentProvider implements ITreeContentProvider {
     
     
     public Object[] getChildren(Object parentElement) {
-    	if ( parentElement instanceof INode ) {
-			return ((INode) parentElement).getChildren();
+    	if ( parentElement instanceof ISynchronizationNode ) {
+			return ((ISynchronizationNode) parentElement).getChildren();
 		}
         return null;
     }
  
 	public Object getParent(Object element) {
-		if ( element instanceof INode )  {
-			return ((INode) element).getParent();
+		if ( element instanceof ISynchronizationNode )  {
+			return ((ISynchronizationNode) element).getParent();
 		}
         return null;
     }
     
     public boolean hasChildren(Object element) {
-        if ( element instanceof INode )  {
-			return ((INode) element).hasChildren();
+        if ( element instanceof ISynchronizationNode )  {
+			return ((ISynchronizationNode) element).hasChildren();
 		}
 		return false;
     }
