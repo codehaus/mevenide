@@ -1,6 +1,6 @@
 /* ==========================================================================
  * Copyright 2003-2004 Apache Software Foundation
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -30,8 +30,6 @@ import com.borland.primetime.node.Project;
  * <p>Description: This class serves as a non-persistant tree node for
  * the project view, so that we can organize large amount of goals in a
  * structure that makes it easier for the user to manage.</p>
- * <p>Copyright: Copyright (c) 2004 Jahia Ltd</p>
- * <p>Company: Jahia Ltd</p>
  * @author Serge Huber
  * @version 1.0
  */

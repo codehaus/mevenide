@@ -1,6 +1,6 @@
 /* ==========================================================================
  * Copyright 2003-2004 Apache Software Foundation
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -29,10 +29,6 @@ import com.borland.primetime.help.HelpTopic;
 import com.borland.primetime.properties.PropertyPage;
 
 /**
- * <p>Title: </p>
- * <p>Description: </p>
- * <p>Copyright: Copyright (c) 2004 Jahia Ltd</p>
- * <p>Company: Jahia Ltd</p>
  * @author Serge Huber
  * @version 1.0
  */
@@ -41,8 +37,6 @@ public class MavenPropertyPage extends PropertyPage {
     private JCheckBox obfuscateCheckBox = new JCheckBox();
     private XMLFileNode archiveNode;
     private JLabel label = new JLabel();
-    private JLabel scriptLabel = new JLabel();
-    private JTextField scriptTextField = new JTextField();
 
     public MavenPropertyPage (XMLFileNode xmlFileNode) {
         try {
@@ -56,8 +50,6 @@ public class MavenPropertyPage extends PropertyPage {
     public void writeProperties () {
         MavenPropertyGroup.DEBUG_MODE.setBoolean(archiveNode,
                                                  obfuscateCheckBox.isSelected());
-        MavenPropertyGroup.MAVEN_HOME.setValue(archiveNode,
-                                               scriptTextField.getText());
     }
 
     public HelpTopic getHelpTopic () {
@@ -67,8 +59,6 @@ public class MavenPropertyPage extends PropertyPage {
     public void readProperties () {
         obfuscateCheckBox.setSelected(MavenPropertyGroup.DEBUG_MODE.
                                       getBoolean(archiveNode));
-        scriptTextField.setText(MavenPropertyGroup.MAVEN_HOME.
-                                getValue(archiveNode));
     }
 
     private void jbInit ()
@@ -77,7 +67,6 @@ public class MavenPropertyPage extends PropertyPage {
         obfuscateCheckBox.setMnemonic('m');
         label.setText(
             "Select the checkbox if you want to start Maven in debug mode");
-        scriptLabel.setText("Maven home directory :");
         this.setLayout(gridBagLayout1);
         add(label, new GridBagConstraints(0, 0, 2, 1, 1.0, 0.0,
                                           GridBagConstraints.CENTER,
@@ -86,13 +75,6 @@ public class MavenPropertyPage extends PropertyPage {
         add(obfuscateCheckBox, new GridBagConstraints(0, 1, 2, 1, 0.0, 0.0,
             GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
             new Insets(0, 0, 0, 0), 0, 0));
-        add(scriptLabel, new GridBagConstraints(0, 2, 1, 1, 0.0, 0.0,
-                                                GridBagConstraints.CENTER,
-                                                GridBagConstraints.HORIZONTAL,
-                                                new Insets(0, 0, 0, 0), 0, 0));
-        add(scriptTextField, new GridBagConstraints(1, 2, 1, 1, 1.0, 0.0,
-            GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
-            new Insets(0, 6, 0, 0), 0, 0));
         add(new JPanel(), new GridBagConstraints(1, 5, 1, 1, 0.0, 1.0,
                                                  GridBagConstraints.CENTER,
                                                  GridBagConstraints.VERTICAL,

@@ -1,6 +1,6 @@
 /* ==========================================================================
  * Copyright 2003-2004 Apache Software Foundation
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -32,8 +32,6 @@ import com.borland.primetime.node.Node;
  * add entries to the local menu in the Project View, and also
  * to the local menu in the "source" window in the Content pane.
  * </p>
- * <p>Copyright: Copyright (c) 2004 Jahia Ltd</p>
- * <p>Company: Jahia Ltd</p>
  * @author Serge Huber
  * @version 1.0
  */

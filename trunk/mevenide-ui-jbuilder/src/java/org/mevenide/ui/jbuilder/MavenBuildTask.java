@@ -1,6 +1,6 @@
 /* ==========================================================================
  * Copyright 2003-2004 Apache Software Foundation
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -34,14 +34,13 @@ import com.borland.primetime.build.BuildTask;
 import com.borland.primetime.build.ExternalTask;
 import com.borland.primetime.ide.BrowserIcons;
 import com.borland.primetime.vfs.Url;
+import org.mevenide.environment.ConfigUtils;
 
 /**
  * <p>Title: Maven Build Task</p>
  * <p>Description: This class actually does the dispatching to Maven, executing
  * the requested goals. The dispatching code is based on the contents of the
  * Maven launcher script but still a little hardcoded. </p>
- * <p>Copyright: Copyright (c) 2004 Jahia Ltd</p>
- * <p>Company: Jahia Ltd</p>
  * @author Serge Huber
  * @version 1.0
  */
@@ -107,9 +106,9 @@ public class MavenBuildTask extends BuildTask
 
     public boolean build (BuildProcess buildProcess) {
 
-        String mavenHome = MavenPropertyGroup.MAVEN_HOME.getValue(mavenFileNode);
+        String mavenHome = ConfigUtils.getDefaultLocationFinder().getMavenHome();
         if ( (mavenHome == null) || (mavenHome.equals(""))) {
-            buildProcess.fireBuildProblem(null, true, "Please set home Maven home location by right-clicking the maven.xml file and selecting properties",
+            buildProcess.fireBuildProblem(null, true, "No MAVEN_HOME variable set in user's environment, please set it and relaunch JBuilder",
                                           BuildProcess.UNKNOWN_LINE,
                                           BuildProcess.UNKNOWN_COLUMN, null);
             return false;
