@@ -17,6 +17,8 @@
 package org.mevenide.netbeans.project.nodes;
 
 import java.awt.Image;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import javax.swing.Action;
 
 import org.apache.commons.logging.Log;
@@ -42,9 +44,14 @@ public class MavenProjectNode extends AbstractNode {
      
      private MavenProject project;
      private Image icon;
-     public MavenProjectNode( Lookup lookup, MavenProject project) {
-        super(new MavenProjectChildren(project), lookup);
-        this.project = project;
+     public MavenProjectNode( Lookup lookup, MavenProject proj) {
+        super(new MavenProjectChildren(proj), lookup);
+        this.project = proj;
+        project.addPropertyChangeListener(new PropertyChangeListener() {
+            public void propertyChange(PropertyChangeEvent event) {
+                fireDisplayNameChange(null, getDisplayName());
+            }
+        });
 //        setIconBase("org/mevenide/netbeans/projects/resources/MavenIcon");
     }
     
