@@ -79,9 +79,9 @@
             <!-- separator
                   name="RunMaven">
             </separator -->
-            <separator
+            <!-- separator
                   name="Synchronize">
-            </separator>
+            </separator -->
             <separator
                   name="MavenNature">
             </separator>
@@ -102,7 +102,7 @@
                </and>
             </enablement>
          </action -->
-         <action
+         <!-- action
                label="Synchronize Project"
                icon="icons/maven-synch-project.gif"
                class="org.mevenide.ui.eclipse.actions.SynchronizeAction"
@@ -113,11 +113,11 @@
                <and>
                   <objectState
                         name="nature"
-                        value="mavenplugin.mavennature">
+                        value="mevenide.mavennature">
                   </objectState>
                </and>
             </enablement>
-         </action>
+         </action -->
          <action
                label="Disable Maven Nature"
                icon="icons/maven-disable.gif"
@@ -129,7 +129,7 @@
                <and>
                   <objectState
                         name="nature"
-                        value="mavenplugin.mavennature">
+                        value="mevenide.mavennature">
                   </objectState>
                </and>
             </enablement>
@@ -146,13 +146,13 @@
                   <not>
                      <objectState
                            name="nature"
-                           value="mavenplugin.mavennature">
+                           value="mevenide.mavennature">
                      </objectState>
                   </not>
                </and>
             </enablement>
          </action>
-         <action
+         <!-- action
                label="Synchronize POM"
                icon="icons/maven-synch-pom.gif"
                class="org.mevenide.ui.eclipse.actions.SynchronizeAction"
@@ -163,11 +163,11 @@
                <and>
                   <objectState
                         name="nature"
-                        value="mavenplugin.mavennature">
+                        value="mevenide.mavennature">
                   </objectState>
                </and>
             </enablement>
-         </action>
+         </action -->
       </objectContribution>
 <!-- project.xml contributions -->
       <objectContribution
