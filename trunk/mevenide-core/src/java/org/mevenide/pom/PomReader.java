@@ -16,10 +16,9 @@ package org.mevenide.pom;
 import java.io.File;
 import java.util.Hashtable;
 
-import org.jdom.Document;
-import org.jdom.Element;
-import org.jdom.JDOMException;
+import org.apache.maven.project.Project;
 import org.jdom.input.SAXBuilder;
+import org.mevenide.util.BetwixtHelper;
 
 
 /**
@@ -30,26 +29,26 @@ import org.jdom.input.SAXBuilder;
  */
 public class PomReader {
 	
-	public static Hashtable getAllSourceDirectories(File pom) throws JDOMException {
+	public static Hashtable getAllSourceDirectories(File pom) throws Exception {
 		Hashtable srcDirs = new Hashtable();
-		Document pomDoc = new SAXBuilder().build(pom);
-		getSource(BuildConstants.MAVEN_SRC, pomDoc, srcDirs);
-		getSource(BuildConstants.MAVEN_ASPECT, pomDoc, srcDirs);
-		getSource(BuildConstants.MAVEN_TEST, pomDoc, srcDirs);
+		
+		Project project = BetwixtHelper.readProject(pom);
+		
+		if ( project.getBuild().getAspectSourceDirectory() != null 
+		 	&& !project.getBuild().getAspectSourceDirectory().trim().equals("")) {
+			srcDirs.put(project.getBuild().getAspectSourceDirectory(), BuildConstants.MAVEN_ASPECT);
+		}
+		if ( project.getBuild().getSourceDirectory() != null 
+			&& !project.getBuild().getSourceDirectory().trim().equals("")) {
+			srcDirs.put(project.getBuild().getSourceDirectory(), BuildConstants.MAVEN_SRC);	
+		}
+		if ( project.getBuild().getUnitTestSourceDirectory() != null 
+			&& !project.getBuild().getUnitTestSourceDirectory().trim().equals("")) {
+			srcDirs.put(project.getBuild().getUnitTestSourceDirectory(), BuildConstants.MAVEN_TEST);
+		}
+		//srcDirs.put(project.getBuild().getUnitTestSourceDirectory()
+	
 		return srcDirs;
-	}
-
-	private static void getSource(String sourceType, Document pomDocument, Hashtable srcDirs) {
-		try {
-			String resolvedSourceType = BuildConstants.getResolvedSourceType(sourceType);
-			Element src = pomDocument.getRootElement().getChild("build").getChild(resolvedSourceType);
-			if ( src != null ) {
-				srcDirs.put(src.getText(), sourceType);
-			}
-		}
-		catch (InvalidSourceTypeException e) {
-			e.printStackTrace();
-		}
 	}
 	
 	public static boolean isWellFormed(File pom) {
@@ -57,7 +56,7 @@ public class PomReader {
 			new SAXBuilder().build(pom);
 			return true;
 		}
-		catch (JDOMException e) {
+		catch (Exception e) {
 			return false;
 		}
 	}

@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<info>
+   <element name='project'>
+     <hide property='dependencyPaths'/>
+     <hide property='dependencyMap'/>
+     <hide property='artifactList'/>
+     <hide property='context'/> 
+     <hide property='pluginContexts'/> 
+     <hide property='packageGroups'/> 
+     <hide property='file'/> 
+     <hide property='goalNames'/> 
+     <hide property='dependentProjectIds'/> 
+     <hide property='artifacts'/> 
+     <hide property='artifactDirectory'/> 
+     <hide property='pomCurrent'/>
+     <element name='id'/>
+     <element name='pomVersion'/>
+     <addDefaults/>
+   </element>
+</info>
+
+
+    
+
+   
+  
+  

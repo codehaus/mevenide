@@ -66,7 +66,7 @@ public class PomSynchronizer extends AbstractPomSynchronizer implements ISynchro
 		try {
 			IClasspathEntry[] cpEntries = JavaCore.create(project).getRawClasspath();
             for (int i = 0; i < cpEntries.length; i++) {
-				updatePomDependencies(cpEntries[i]);
+				updatePom(cpEntries[i]);
 			}
 		}
 		catch (Exception e) {
@@ -117,7 +117,7 @@ public class PomSynchronizer extends AbstractPomSynchronizer implements ISynchro
      * @param classpathEntry
      * @throws Exception
      */
-	private void updatePomDependencies(IClasspathEntry classpathEntry) throws Exception {
+	private void updatePom(IClasspathEntry classpathEntry) throws Exception {
 		
 		switch (classpathEntry.getEntryKind()) {
 			case IClasspathEntry.CPE_SOURCE :
@@ -130,9 +130,9 @@ public class PomSynchronizer extends AbstractPomSynchronizer implements ISynchro
 //					//IClasspathEntry resolved = JavaCore.getResolvedClasspathEntry(classpathEntry);
 //					//updatePomDependencies(resolved);
 //					return;
-            default : throw new Exception("Unknown classpath entry kind (" + classpathEntry.getEntryKind() + ")");
-			//@todo FUNCTIONAL eclipse projects dependencies
-			//@todo FUNCTIONAL dependencies of type CPE_CONTAINER
+//            default : throw new Exception("Unknown classpath entry kind (" + classpathEntry.getEntryKind() + ")");
+//			@todo FUNCTIONAL eclipse projects dependencies
+//			@todo FUNCTIONAL dependencies of type CPE_CONTAINER
 		}
 
 	}

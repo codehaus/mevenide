@@ -1,0 +1,130 @@
+
+<project>
+
+  <pomVersion>3</pomVersion>
+  <name>Mevenide Core</name>
+  <id>mevenide:mevenide-core</id>
+  <artifactId>mevenide-core</artifactId>
+  <currentVersion>1.0</currentVersion>
+  
+  <package>org.mevenide</package>
+  
+  <dependencies>
+  	<dependency>
+      <groupId>maven</groupId>
+      <artifactId>maven</artifactId>
+      <version>SNAPSHOT</version>
+      <url>http://maven.org/</url>
+    </dependency>
+        
+    <dependency>
+      <groupId>mevenide</groupId>
+      <artifactId>mevenide-goals-grabber</artifactId>
+      <version>1.0</version>
+      <url>http://sf.net/projects/mevenide</url>
+    </dependency>
+        
+    <dependency>
+      <groupId>jdom</groupId>
+      <artifactId>jdom</artifactId>
+      <version>1.0b8</version>
+      <url>http://jdom.org/</url>
+    </dependency>
+
+    <dependency>
+      <groupId>xerces</groupId>
+      <artifactId>xerces</artifactId>
+      <version>2.2.1</version>
+      <url>http://xml.apache.org/xerces2-j/</url>
+    </dependency>
+        
+    <dependency>
+      <groupId>commons-discovery</groupId>
+      <artifactId>commons-discovery</artifactId>
+      <version>0.1</version>
+      <url>http://jakarta.apache.org/commons/discovery</url>
+    </dependency>
+        
+    <dependency>
+      <groupId>commons-logging</groupId>
+      <artifactId>commons-logging</artifactId>
+      <version>1.0.1</version>
+      <url>http://jakarta.apache.org/commons/logging</url>
+    </dependency>
+        
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <url>http://junit.org/</url>
+    </dependency>
+        
+    <dependency>
+      <groupId>mockobjects</groupId>
+      <artifactId>mockobjects-core</artifactId>
+      <version>0.07</version>
+      <url>http://www.mockobjects.com/</url>
+    </dependency>
+        
+    <dependency>
+      <groupId>mockobjects</groupId>
+      <artifactId>mockobjects-jdk1.4</artifactId>
+      <version>0.07</version>
+      <url>http://www.mockobjects.com/</url>
+    </dependency>
+        
+    <dependency>
+      <groupId>mockcreator</groupId>
+      <artifactId>mockcreator</artifactId>
+      <version>0.2.4</version>
+      <url>http://www.abstrakt.de/mockcreator.html</url>
+    </dependency>
+    
+    <!-- dependency>
+    	<groupId>configuration</groupId>	
+    	<artifactId>configuration</artifactId>
+    	<version>1.0</version>
+    	<url>http://gdfact.fr.st/</url>
+    </dependency -->
+		
+  </dependencies>
+
+
+  <build>
+    <!-- sourceDirectory>${basedir}/src/java</sourceDirectory>
+    <unitTestSourceDirectory>${basedir}/src/test/java</unitTestSourceDirectory>
+    <aspectSourceDirectory>${basedir}/src/aspects</aspectSourceDirectory -->
+   
+    <unitTest>
+     
+      <includes>
+        <include>*/*Test.java</include>
+      </includes>
+
+      <resources>
+        <resource>
+          <directory>${basedir}/src/test/etc</directory>
+          <includes>
+            <include>**/*.*</include>
+          </includes>
+        </resource>
+        <resource>
+          <directory>${basedir}/etc</directory>
+          <includes>
+            <include>**/*.*</include>
+          </includes>
+        </resource>
+      </resources>
+    </unitTest>
+    
+    <resources>
+      <resource>
+          <directory>${basedir}/etc</directory>
+          <includes>
+            <include>**/*.*</include>
+          </includes>
+      </resource>
+    </resources>
+    
+  </build>
+</project>

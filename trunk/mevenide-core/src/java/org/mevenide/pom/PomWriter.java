@@ -16,10 +16,12 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+import org.apache.maven.project.Project;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
+import org.mevenide.util.BetwixtHelper;
 import org.mevenide.util.JDomOutputter;
 /**
  * 
@@ -48,19 +50,22 @@ public class PomWriter {
 		}
 	}
 	
-	public void addSource(String path, File pom, String sourceType)
-		throws JDOMException, IOException {
-		Document doc = new SAXBuilder().build(pom);
-		Element project = doc.getRootElement();
-		Element build = project.getChild("build");
-		Element sourceDirectoryType = build.getChild(sourceType);
-		if (sourceDirectoryType != null) {
-			build.removeChild(sourceType);
+	public void addSource(String path, File pom, String sourceType) throws Exception {
+		
+		Project project = BetwixtHelper.readProject(pom);
+		
+		if ( BuildConstants.MAVEN_ASPECT.equals(sourceType) ) {
+			project.getBuild().setAspectSourceDirectory(path);
 		}
-		Element srcDir = new Element(sourceType);
-		srcDir.setText(path);
-		build.addContent(srcDir);
-		JDomOutputter.output(doc, pom);
+		if ( BuildConstants.MAVEN_SRC.equals(sourceType) ) {
+			project.getBuild().setSourceDirectory(path);
+		}
+		if ( BuildConstants.MAVEN_TEST.equals(sourceType) ) {
+			project.getBuild().setUnitTestSourceDirectory(path);
+		}
+		
+		BetwixtHelper.writeProject(pom, project);
+
 	}
 	
 	public void addDependency(String depName, File pom)

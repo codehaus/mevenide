@@ -49,7 +49,7 @@ public abstract class AbstractGoalsManager implements IGoalsManager {
     protected Set runnableGoals = new TreeSet();
 
     /** bean that holds the list of all available goals */
-	private IGoalsGrabber goalsGrabber;
+	protected IGoalsGrabber goalsGrabber;
     
     /**
      * initalize goalsGrabber and load the previously saved runnableGoals
@@ -140,6 +140,34 @@ public abstract class AbstractGoalsManager implements IGoalsManager {
             goalsToRun[i++] = (String) iterator.next();
         }
 		return goalsToRun;
+	}
+	
+	public String[] getPlugins() {
+		ArrayList plugins = new ArrayList();
+	
+		for (int i = 0; i < getGoalsToRun().length; i++) {
+			String qualifiedGoal = getGoalsToRun()[i];
+			int separator = qualifiedGoal.indexOf(':');
+			if ( separator != -1 ) {
+				String plugin = qualifiedGoal.substring(0, separator);
+				if ( !plugins.contains(plugin) ) {
+					plugins.add(plugin);
+				}		
+			}
+			else {
+				plugins.add(qualifiedGoal);
+			}
+		}
+	
+		return toArray(plugins);
+	}
+	
+	private String[] toArray(ArrayList plugins) {
+		String[] retVal = new String[plugins.size()];
+		for (int i = 0; i < retVal.length; i++) {
+			retVal[i] = (String) plugins.get(i);
+		}
+		return retVal;
 	}
 	
     /**
