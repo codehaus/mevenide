@@ -102,6 +102,13 @@
         		<p>build mode. if value != 'dist' then dependencies will be handled as runtime libraries, else dependencies will be handled as require imports</p>
         	</td>
         </tr>
+        <tr>
+            <td>maven.eclipse.plugin.export.default</td>
+            <td>Optional. Default value is <code>*</code></td>
+            <td>
+                <p>defines the default value for $plugin/runtime/library/export elements. if empty no export element is added.</p>
+            </td>
+        </tr>
      </table>
      </div>
    </section>
