@@ -48,6 +48,7 @@ import org.mevenide.environment.CustomLocationFinder;
 import org.mevenide.environment.LocationFinderAggregator;
 import org.mevenide.runner.RunnerHelper;
 import org.mevenide.ui.eclipse.preferences.DynamicPreferencePageFactory;
+import org.mevenide.ui.eclipse.preferences.MevenidePreferenceKeys;
 import org.mevenide.ui.eclipse.util.FileUtils;
 import org.osgi.framework.BundleContext;
 

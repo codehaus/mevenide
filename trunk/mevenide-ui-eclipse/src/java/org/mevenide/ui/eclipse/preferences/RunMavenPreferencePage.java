@@ -31,7 +31,6 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.mevenide.ui.eclipse.Mevenide;
-import org.mevenide.ui.eclipse.MevenidePreferenceKeys;
 import org.mevenide.ui.eclipse.goals.view.GoalsPickerDialog;
 import org.mevenide.util.StringUtils;
 

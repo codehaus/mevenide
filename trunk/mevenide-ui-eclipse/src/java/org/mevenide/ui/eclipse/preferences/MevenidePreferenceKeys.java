@@ -14,7 +14,7 @@
  *  limitations under the License.
  * =========================================================================
  */
-package org.mevenide.ui.eclipse;
+package org.mevenide.ui.eclipse.preferences;
 
 /**  
  * 

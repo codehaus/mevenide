@@ -34,7 +34,6 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.mevenide.environment.ConfigUtils;
 import org.mevenide.environment.ILocationFinder;
 import org.mevenide.ui.eclipse.Mevenide;
-import org.mevenide.ui.eclipse.MevenidePreferenceKeys;
 import org.mevenide.util.StringUtils;
 
 
