@@ -66,66 +66,74 @@ import org.mevenide.ui.eclipse.Mevenide;
  * @version $Id$
  */
 public class OverridableTextEntry extends TextEntry {
-	
-	private static final Log log = LogFactory.getLog(OverridableTextEntry.class);
 
-	private Button overrideToggle;
-	private boolean overriden;
-	
-	public abstract class OverridableSelectionAdapter extends SelectionAdapter {
-		public void widgetSelected(SelectionEvent e) {
-			toggleOverride();
-			if (isOverriden()) {
-				setText(null);
-				updateProject("");
-			}
-			else {
-				setText(getParentProjectAttribute());
-				updateProject(null);
-			}
-		}
-		
-		public abstract void updateProject(String value);
-		
-		public abstract String getParentProjectAttribute();
-	}
-		
+    private static final Log log = LogFactory.getLog(OverridableTextEntry.class);
+
+    private static final String INHERITED_TOOLTIP =
+        Mevenide.getResourceString("OverridableTextEntry.toggle.tooltip.inherited");
+    private static final String OVERRIDEN_TOOLTIP =
+        Mevenide.getResourceString("OverridableTextEntry.toggle.tooltip.overriden");
+
+    private Button overrideToggle;
+    private boolean inherited;
+
+    public abstract class OverridableSelectionAdapter extends SelectionAdapter {
+        public void widgetSelected(SelectionEvent e) {
+            toggleOverride();
+            if (isInherited()) {
+                setText(getParentProjectAttribute());
+                updateProject(null);
+            }
+            else {
+                setText(null);
+                updateProject("");
+            }
+            refreshUI();
+        }
+
+        public abstract void updateProject(String value);
+
+        public abstract String getParentProjectAttribute();
+
+		public abstract void refreshUI();
+    }
+
     public OverridableTextEntry(Text text, Button overrideToggle) {
         super(text);
         this.overrideToggle = overrideToggle;
+    }
+
+    public void addSelectionListener(SelectionListener listener) {
         if (overrideToggle != null) {
-			overrideToggle.setToolTipText(Mevenide.getResourceString("OverridableTextEntry.toggle.tooltip"));
+            overrideToggle.addSelectionListener(listener);
         }
     }
 
-	public void addSelectionListener(SelectionListener listener) {
-		if (overrideToggle != null) {
-			overrideToggle.addSelectionListener(listener);
-    	}
-    }
-    
-    public boolean isOverriden() {
-        return overriden;
+    public boolean isInherited() {
+        return inherited;
     }
 
-    public void setOverriden(boolean overriden) {
+    public void setInherited(boolean inherited) {
         if (log.isDebugEnabled()) {
-            log.debug("field changed to override = " + overriden);
+            log.debug("field changed to inherited = " + inherited);
         }
-		this.overriden = overriden;
-		setEnabled(overriden);
-		setFocus();
+        this.inherited = inherited;
+        setEnabled(!inherited);
+        setFocus();
+        if (overrideToggle != null) {
+            overrideToggle.setToolTipText(inherited ? INHERITED_TOOLTIP : OVERRIDEN_TOOLTIP);
+        }
     }
 
     public void setEnabled(boolean enable) {
         super.setEnabled(enable);
         if (overrideToggle != null) {
-	        overrideToggle.setSelection(enable);
+            overrideToggle.setSelection(!enable);
         }
     }
 
     protected void toggleOverride() {
-    	setOverriden(!overriden);
+        setInherited(!inherited);
     }
 
 }
