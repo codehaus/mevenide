@@ -17,7 +17,6 @@
 
 package org.mevenide.netbeans.project.classpath;
 
-import java.io.File;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -26,15 +25,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Dependency;
 import org.apache.maven.project.Project;
-import org.mevenide.environment.ILocationFinder;
-import org.mevenide.netbeans.project.FileUtilities;
 import org.mevenide.netbeans.project.MavenProject;
-import org.mevenide.project.dependency.DefaultDependencyPathFinder;
-import org.mevenide.project.dependency.DependencyResolverFactory;
-import org.mevenide.project.dependency.IDependencyResolver;
-import org.mevenide.project.io.JarOverrideReader2;
-import org.openide.filesystems.FileObject;
-import org.openide.filesystems.FileUtil;
 
 /**
  *

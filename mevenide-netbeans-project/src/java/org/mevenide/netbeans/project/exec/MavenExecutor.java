@@ -16,30 +16,22 @@
  */
 package org.mevenide.netbeans.project.exec;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.PipedOutputStream;
-import java.io.PrintStream;
+import java.io.*;
 import java.util.HashMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.mevenide.netbeans.project.MavenProject;
 import org.openide.ErrorManager;
-import org.openide.execution.ExecutorTask;
 import org.openide.execution.NbProcessDescriptor;
 import org.openide.filesystems.FileUtil;
 
-import org.openide.loaders.DataObject;
-import org.openide.util.HelpCtx;
 import org.openide.util.MapFormat;
 import org.openide.util.RequestProcessor;
 import org.openide.util.Utilities;
 import org.openide.windows.IOProvider;
 import org.openide.windows.InputOutput;
 import org.openide.windows.OutputWriter;
+
 
 public class MavenExecutor implements Runnable {
     private static final Log logger = LogFactory.getLog(MavenExecutor.class);
@@ -101,7 +93,7 @@ public class MavenExecutor implements Runnable {
         return proc;
     }
     
-    private org.openide.windows.InputOutput createInputOutput() {
+    private InputOutput createInputOutput() {
         InputOutput io = IOProvider.getDefault().getIO("Maven", false);
         io.setErrSeparated(false);
         try {
@@ -112,7 +104,7 @@ public class MavenExecutor implements Runnable {
         return io;
     }    
     
-    public org.openide.windows.InputOutput getInputOutput() {
+    public InputOutput getInputOutput() {
         if (io == null) {
             io = createInputOutput();
         }
