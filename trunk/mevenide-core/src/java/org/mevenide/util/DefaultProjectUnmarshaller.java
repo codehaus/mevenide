@@ -446,11 +446,11 @@ public class DefaultProjectUnmarshaller
                                 }
                                 else if ( parser.getName().equals( "jar" ) )
                                 {
+                                   d.setJar( parser.nextText() );
                                    String msg = "You should be using <artifact> tag " 
                                    				+ "instead of <jar> for Dependency: " 
-                                   				+ d.getId(); 
+                                   				+ d.getJar(); 
                                    DeprecationWarning.warn( msg );                                   
-                                   d.setJar( parser.nextText() );
                                 }
                                 // E X P E R I M E N T A L 
                                 // 
