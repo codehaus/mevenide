@@ -59,7 +59,7 @@ import org.mevenide.project.IProjectChangeListener;
 import org.mevenide.project.ProjectChangeEvent;
 import org.mevenide.ui.eclipse.MevenideColors;
 import org.mevenide.ui.eclipse.MevenideFonts;
-import org.mevenide.ui.eclipse.editors.*;
+import org.mevenide.ui.eclipse.editors.IPomEditorPage;
 import org.mevenide.ui.eclipse.editors.MevenidePomEditor;
 import org.mevenide.ui.eclipse.editors.PomXmlSourcePage;
 
@@ -156,6 +156,7 @@ public abstract class AbstractPomEditorPage
 	}
 	
 	public void projectChanged(ProjectChangeEvent e) {
+		update(e.getPom());
 	}
 
 	public void update() {
