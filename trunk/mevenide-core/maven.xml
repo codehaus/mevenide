@@ -69,4 +69,11 @@
 		  </fileset>
 		</copy>
    </goal>
+   
+  <preGoal name="nbm:jar">
+     <ant:jar destfile="${maven.build.dir}/${maven.final.name}.jar"
+              update="true"
+              basedir="${basedir}/src/conf/netbeans"
+              includes="**/Bundle.properties"/>
+  </preGoal>   
 </project>
