@@ -76,6 +76,8 @@
       		note that they do NOT fail when launched from within Eclipse.
       		We exclude them for now cuz the integration has more weigth than tests here
       		
+      		may be related to MAVEN-442. 
+      		
       		Please run the tests from your favorite IDE (aka Eclipse ?)
       	-->
       	<exclude>**/DefaultProjectMarshallerTest.java</exclude>
