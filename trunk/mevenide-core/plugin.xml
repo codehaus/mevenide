@@ -27,6 +27,7 @@
          <packages prefixes="org.apache.maven"/>
       </library>
       <library name="lib/xerces-2.2.1.jar">
+         <export name="*"/>
          <packages prefixes="org.apache.xerces"/>
       </library>
       <library name="lib/jdom-1.0b8.jar">
@@ -40,8 +41,8 @@
       	  (see Dependency.setArtifact, Dependency properties management, etc..)
       -->
       <library name="lib/ant-1.5.3-1.jar">
-         <packages prefixes="org.apache.tools"/>
          <export name="*"/>
+         <packages prefixes="org.apache.tools"/>
       </library>
       <library name="lib/commons-jelly-1.0-beta-4.jar">
          <export name="*"/>
