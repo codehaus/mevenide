@@ -49,7 +49,7 @@ public class MavenFileNode extends XMLFileNode {
     private ArrayList goalNodes = new ArrayList();
     private ArrayList childNodes = new ArrayList();
     private long lastModifTime = Long.MAX_VALUE;
-    Object fileNodeWorker = null;
+    IFileNodeWorker fileNodeWorker = null;
     Class fileNodeWorkerClass = null;
     private static FilteringClassLoader filteringClassLoader = null;
 
@@ -64,25 +64,24 @@ public class MavenFileNode extends XMLFileNode {
             String curPath = tokens.nextToken();
             File pathFile = new File(curPath);
             try {
-                if ((pathFile.toString().indexOf("maven") == -1) &&
-                    (pathFile.toString().indexOf("mevenide") == -1)) {
-                    System.out.println("Skipping JAR : " + pathFile.toURL());
+                if ((pathFile.toURL().toString().indexOf(".maven/repository") == -1) &&
+                    (pathFile.toURL().toString().indexOf("mevenide-ui-jbuilder") == -1)) {
+                    //System.out.println("Skipping JAR : " + pathFile.toURL());
                     continue;
                 }
-                System.out.println("Adding path : " + pathFile.toURL());
+                //System.out.println("Adding path : " + pathFile.toURL());
                 urls.add(pathFile.toURL());
             } catch (MalformedURLException mue) {
                 mue.printStackTrace();
             }
         }
-        System.out.println("Parent to our class loader is : " + getParent());
         if (filteringClassLoader == null) {
             filteringClassLoader = new FilteringClassLoader((URL[]) urls.toArray(new URL[urls.size()]));
         }
         try {
             fileNodeWorkerClass = filteringClassLoader.loadClass(
                 "org.mevenide.ui.jbuilder.FileNodeWorker");
-            fileNodeWorker = fileNodeWorkerClass.newInstance();
+            fileNodeWorker = (IFileNodeWorker) fileNodeWorkerClass.newInstance();
         } catch (ClassNotFoundException cnfe) {
             cnfe.printStackTrace();
         } catch (InstantiationException ie) {
@@ -102,56 +101,30 @@ public class MavenFileNode extends XMLFileNode {
     private void refreshDependencies(Url url, Project project) {
         ClassLoader curContextClassLoader = Thread.currentThread().getContextClassLoader();
         Thread.currentThread().setContextClassLoader(filteringClassLoader);
-        try {
-            Class[] parameterTypes = new Class[2];
-            parameterTypes[0] = Url.class;
-            parameterTypes[1] = Project.class;
-            Method refreshDepsMethod = fileNodeWorkerClass.getMethod("refreshDependencies", parameterTypes);
-            Object[] args = new Object[2];
-            args[0] = url;
-            args[1] = project;
-            refreshDepsMethod.invoke(fileNodeWorker, args);
-        } catch (Throwable t) {
-            t.printStackTrace();
-        } finally {
-            Thread.currentThread().setContextClassLoader(curContextClassLoader);
-        }
+        fileNodeWorker.refreshDependencies(url, project);
+        Thread.currentThread().setContextClassLoader(curContextClassLoader);
     }
 
 
     private void refreshGoals () {
-        System.out.println("Building goals list...");
+        if (PrimeTime.isVerbose()) {
+            System.out.println("Building goals list...");
+        }
         File mavenFile = getUrl().getFileObject();
         lastModifTime = mavenFile.lastModified();
         goalNodes.clear();
         childNodes.clear();
         initMavenFileNode(this, getProject(), getUrl(), goalNodes, childNodes);
-        System.out.println("Goals list completed.");
+        if (PrimeTime.isVerbose()) {
+            System.out.println("Goals list completed.");
+        }
     }
 
     private void initMavenFileNode(MavenFileNode mavenFileNode, Project project, Url url, ArrayList goalNodes, ArrayList childNodes) {
         ClassLoader curContextClassLoader = Thread.currentThread().getContextClassLoader();
         Thread.currentThread().setContextClassLoader(filteringClassLoader);
-        try {
-            Class[] parameterTypes = new Class[5];
-            parameterTypes[0] = MavenFileNode.class;
-            parameterTypes[1] = Project.class;
-            parameterTypes[2] = Url.class;
-            parameterTypes[3] = ArrayList.class;
-            parameterTypes[4] = ArrayList.class;
-            Method refreshDepsMethod = fileNodeWorkerClass.getMethod("initMavenFileNode", parameterTypes);
-            Object[] args = new Object[5];
-            args[0] = mavenFileNode;
-            args[1] = project;
-            args[2] = url;
-            args[3] = goalNodes;
-            args[4] = childNodes;
-            refreshDepsMethod.invoke(fileNodeWorker, args);
-        } catch (Throwable t) {
-            t.printStackTrace();
-        } finally {
-            Thread.currentThread().setContextClassLoader(curContextClassLoader);
-        }
+        fileNodeWorker.initMavenFileNode(mavenFileNode, project, url, goalNodes, childNodes);
+        Thread.currentThread().setContextClassLoader(curContextClassLoader);
     }
 
     private void refreshIfChanged () {

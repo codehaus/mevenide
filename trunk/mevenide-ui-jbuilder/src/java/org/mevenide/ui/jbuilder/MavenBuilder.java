@@ -30,7 +30,6 @@ import com.borland.primetime.node.FileNode;
 import com.borland.primetime.node.Node;
 import com.borland.primetime.node.Project;
 import com.borland.primetime.properties.MapProperty;
-import com.borland.primetime.properties.PropertyPage;
 import com.borland.primetime.properties.PropertyPageFactory;
 import com.borland.primetime.vfs.Url;
 

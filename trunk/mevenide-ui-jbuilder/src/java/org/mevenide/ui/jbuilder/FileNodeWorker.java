@@ -9,25 +9,27 @@ package org.mevenide.ui.jbuilder;
  * @version 1.0
  */
 
-import org.apache.maven.project.Dependency;
-import org.mevenide.goals.grabber.IGoalsGrabber;
-import org.mevenide.goals.manager.GoalsGrabbersManager;
-import org.mevenide.project.io.ProjectReader;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
-import com.borland.jbuilder.node.JBProject;
-import com.borland.jbuilder.paths.ProjectPathSet;
-import com.borland.jbuilder.paths.PathSet;
-import com.borland.primetime.vfs.Url;
-import com.borland.primetime.node.Project;
-import com.borland.primetime.node.Node;
-import org.mevenide.context.IQueryContext;
-import org.mevenide.context.DefaultQueryContext;
-import org.mevenide.properties.resolver.PropertyResolverFactory;
-import org.mevenide.properties.IPropertyResolver;
 
-public class FileNodeWorker {
+import org.apache.maven.project.Dependency;
+import org.mevenide.context.DefaultQueryContext;
+import org.mevenide.context.IQueryContext;
+import org.mevenide.goals.grabber.IGoalsGrabber;
+import org.mevenide.goals.manager.GoalsGrabbersManager;
+import org.mevenide.project.io.ProjectReader;
+import org.mevenide.properties.IPropertyResolver;
+import org.mevenide.properties.resolver.PropertyResolverFactory;
+import com.borland.jbuilder.node.JBProject;
+import com.borland.jbuilder.paths.PathSet;
+import com.borland.jbuilder.paths.ProjectPathSet;
+import com.borland.primetime.PrimeTime;
+import com.borland.primetime.node.Project;
+import com.borland.primetime.vfs.Url;
+
+public class FileNodeWorker
+    implements IFileNodeWorker {
     public FileNodeWorker() {
     }
 
@@ -120,17 +122,21 @@ public class FileNodeWorker {
         }
     }
 
-    public void buildGoalNodes (MavenFileNode mavenFileNode, Project project,
+    private void buildGoalNodes (MavenFileNode mavenFileNode, Project project,
                                  IGoalsGrabber goalsGrabber, ArrayList goalNodes, ArrayList childNodes) {
         String[] plugins = goalsGrabber.getPlugins();
         for (int i = 0; i < plugins.length; i++) {
-            System.out.println("plugin=" + plugins[i]);
+            if (PrimeTime.isVerbose()) {
+                System.out.println("plugin=" + plugins[i]);
+            }
             MavenCollectionNode pluginNode = new MavenCollectionNode(project, mavenFileNode,
                 plugins[i]);
             childNodes.add(pluginNode);
             String[] goals = goalsGrabber.getGoals(plugins[i]);
             for (int j = 0; j < goals.length; j++) {
-                System.out.println("  goal=" + goals[j]);
+                if (PrimeTime.isVerbose()) {
+                    System.out.println("  goal=" + goals[j]);
+                }
                 MavenGoalNode newNode = null;
                 if (goals[j].equalsIgnoreCase("(default)")) {
                     // in the case of the default goal, the full goal name
@@ -145,7 +151,9 @@ public class FileNodeWorker {
                     pluginNode.addChild(newNode);
                     goalNodes.add(newNode);
                 } else {
-                    System.out.println("WARNING, NULL MAVENNODE !");
+                    if (PrimeTime.isVerbose()) {
+                        System.out.println("WARNING, NULL MAVENNODE !");
+                    }
                 }
             }
         }
