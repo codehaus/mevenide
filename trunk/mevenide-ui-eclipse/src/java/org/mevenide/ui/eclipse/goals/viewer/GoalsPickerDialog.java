@@ -55,6 +55,7 @@ import java.util.List;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.help.browser.IBrowser;
@@ -95,6 +96,9 @@ import org.mevenide.ui.eclipse.goals.model.GoalsProvider;
 import org.mevenide.ui.eclipse.goals.model.Plugin;
 
 /**
+ * 
+ * @todo fix bug that causes selected goals not always to be displayed in goalsText
+ * seems to a conflict between plugin names and goals whose shortname is also a plugin name
  * 
  * @author Gilles Dodinet (gdodinet@wanadoo.fr)
  * @version $Id: GoalsPickerDialog.java,v 1.1 8 sept. 2003 Exp gdodinet 
@@ -199,6 +203,8 @@ public class GoalsPickerDialog  extends Dialog {
 
 			createGoalsOrderingComposite(composite);
 			
+			initOrderGoalsText();
+
             return composite;
             
         }
@@ -209,6 +215,10 @@ public class GoalsPickerDialog  extends Dialog {
         }
     }
     
+	private void initOrderGoalsText() {
+
+	}
+
     private void setInput(Object obj) {
 		goalsViewer.setInput(Element.NULL_ROOT);
 		goalsViewer.setGrayed(goalsProvider.getChildren(Element.NULL_ROOT), true);
@@ -236,13 +246,46 @@ public class GoalsPickerDialog  extends Dialog {
 		orderTextGridData.verticalSpan = 2;
 		goalsOrderText.setLayoutData(orderTextGridData);
 		
-        Button goalsOrderButton = new Button(composite, SWT.PUSH);
+		final Button goalsOrderButton = new Button(composite, SWT.PUSH);
 		goalsOrderButton.setText("Order...");
+		String text = goalsOrderText.getText();
+		boolean orderButtonEnabled = text != null && !text.trim().equals("");
+        goalsOrderButton.setEnabled(orderButtonEnabled);
+
+        goalsOrderText.addModifyListener(
+        	new ModifyListener() {
+        		public void modifyText(ModifyEvent e) {
+                	String text = goalsOrderText.getText();
+					boolean orderButtonEnabled = text != null && !text.trim().equals("");
+	        		goalsOrderButton.setEnabled(orderButtonEnabled);
+        		}
+        	}
+        );
        
         goalsOrderButton.addSelectionListener(
     		new SelectionAdapter() {
-    		}
+    			public void widgetSelected(SelectionEvent e) {
+					
+	                GoalsOrderDialog dialog = new GoalsOrderDialog(getShell(), StringUtils.split(goalsOrder));
+					
+					int ok = dialog.open();
+					if (ok == SWT.OK) {
+						String newOrder = "";
+						Object[] targets = dialog.getTargets();
+						for (int i = 0; i < targets.length -1; i++) {
+							newOrder += targets[i] + " ";
+						}
+						newOrder += targets[targets.length-1];
+						goalsOrderText.setText(newOrder);
+					}
+    			}
+		    }
         );
+
+		if ( goalsOrder != null ) {
+			goalsOrderText.setText(goalsOrder);
+			//@todo check goals and expand parent also...
+		}
     }
 
     private void updateCheckedItems(CheckStateChangedEvent e) {
@@ -280,7 +323,6 @@ public class GoalsPickerDialog  extends Dialog {
         if ( !goal.getName().equals("(default)") ) {
         	fullyQualifiedGoalName += ":" + goal.getName();
         }
-
         if ( isSelectionChecked ) {
         	checkedItems.add(fullyQualifiedGoalName);
         }
@@ -437,6 +479,10 @@ public class GoalsPickerDialog  extends Dialog {
 	public String getOrderedGoals() {
 		return goalsOrder;
 	}
+
+    public void setGoalsOrder(String goalsOrder) {
+        this.goalsOrder = goalsOrder;
+    }
 
 }
 
