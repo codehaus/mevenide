@@ -23,12 +23,25 @@
     <!-- Resolve according to root element: -->
     <file>
         <ext name="jelly"/>
-        <resolver mime="text/x-xml">
-            <xml-rule>
+        <resolver mime="text/xml">
+<!--            <xml-rule>
                 <element name="project">
                     <attr name="default"/>
                 </element>
             </xml-rule>
+-->
+        </resolver>
+    </file>
+    
+    <file>
+        <ext name="fml"/>
+        <resolver mime="text/xml">
+<!--            <xml-rule>
+                <element name="faqs">
+                    <attr name="default"/>
+                </element>
+            </xml-rule>
+-->
         </resolver>
     </file>
     
