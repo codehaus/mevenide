@@ -7,7 +7,7 @@
     <links>
       <item name="Maven" href="http://maven.apache.org"/>
       <item name="Eclipse" href="http://eclipse.org"/>
-      <item name="Netbeans" href="http://ww.netbeans.org"/>
+      <item name="Netbeans" href="http://www.netbeans.org"/>
     </links>
     <menu name="General">
       <item name="Overview" href="index.html"/>
