@@ -30,6 +30,12 @@ import org.mevenide.project.SourceDirectoryUtil;
  * 
  * @todo use a single instancce per POM
  * 
+ * each addition writes the pom :
+ *     <code>write(project, pom);</code>
+ * thus if the process fails it doesnt affect 
+ * the previously added artifacts. that is obviously not optimized, tho performance 
+ * isnot a issue here. 
+ * 
  * @author Gilles Dodinet (gdodinet@wanadoo.fr)
  * @version $Id$
  * 
