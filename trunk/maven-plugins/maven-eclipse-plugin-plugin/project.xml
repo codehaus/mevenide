@@ -7,7 +7,14 @@
     <currentVersion>0.1.1</currentVersion>
     <shortDescription>This plugin helps creating ready to eclipse plugins and features distribution</shortDescription>
     <inceptionYear>2003</inceptionYear>
-    
+    <siteAddress>shell.sourceforge.net</siteAddress>
+	<!-- siteDirectory>/home/groups/m/me/mevenide/htdocs</siteDirectory -->
+  	<siteDirectory>${user.home}/.mevenide/${pom.artifactId}</siteDirectory>
+  	<repository>
+      <connection>scm:cvs:pserver:anonymous@cvs.sourceforge.net:/cvsroot/mevenide:maven-plugins/${pom.artifactId}</connection>
+      <developerConnection>scm:cvs:ext:${maven.username}@cvs.sourceforge.net:/cvsroot/mevenide:maven-plugins/${pom.artifactId}</developerConnection>
+      <url>http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/mevenide/maven-plugins/${pom.artifactId}/</url>
+    </repository>
     <developers>
     	<developer>
     		<name>Gilles Dodinet</name>
@@ -19,7 +26,6 @@
     		<timezone>+1</timezone>
     	</developer>
     </developers>
-    
     <dependencies>
     	<dependency>
     		<groupId>ant</groupId>	
@@ -32,7 +38,6 @@
     		<version>20030625.032346</version>
     	</dependency>
     </dependencies>
-    
     <build>
     	<resources>
     		<resource>
