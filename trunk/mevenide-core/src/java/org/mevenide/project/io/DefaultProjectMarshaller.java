@@ -34,6 +34,7 @@ import org.apache.maven.project.License;
 import org.apache.maven.project.MailingList;
 import org.apache.maven.project.Project;
 import org.apache.maven.project.Resource;
+import org.apache.maven.project.SourceModification;
 import org.apache.maven.project.Version;
 import org.xmlpull.v1.XmlPullParserFactory;
 import org.xmlpull.v1.XmlSerializer;
@@ -83,10 +84,11 @@ public class DefaultProjectMarshaller implements IProjectMarshaller {
 		marshallString(project.getExtend(), "extend");
 		marshallString(project.getPomVersion(), "pomVersion");
 		
+		//marshallString(project.getId(), "id");
+		marshallRequiredString(project.getName(), "name");
+		
 		marshallString(project.getGroupId(), "groupId");
 		marshallString(project.getArtifactId(), "artifactId");
-		
-		marshallRequiredString(project.getName(), "name");
 				
 		marshallRequiredString(project.getCurrentVersion(), "currentVersion");
 		
@@ -121,7 +123,7 @@ public class DefaultProjectMarshaller implements IProjectMarshaller {
 		
 // 		properties element not managed by DefaultProjectUnmarshaller
 //		should we do it here ?
-//		marshallProperties(serializer, project);
+		marshallProperties(project.resolvedProperties());
 		
 		serializer.endTag(NAMESPACE, "project");
 		serializer.endDocument();
@@ -223,7 +225,10 @@ public class DefaultProjectMarshaller implements IProjectMarshaller {
 				if ( developer != null ) {
 					serializer.startTag(NAMESPACE, "developer");
 					
+					marshallRequiredString(developer.getName(), "name");
+					
 					marshallRequiredString(developer.getId(), "id");
+					
 					marshallContactDetails(developer);
 					
 					serializer.endTag(NAMESPACE, "developer");
@@ -242,6 +247,7 @@ public class DefaultProjectMarshaller implements IProjectMarshaller {
 				contributor = (Contributor) contributors.get(i);
 				if ( contributor != null ) {
 					serializer.startTag(NAMESPACE, "contributor");
+					marshallRequiredString(contributor.getName(), "name");
 					
 					marshallContactDetails(contributor);
 					
@@ -253,12 +259,11 @@ public class DefaultProjectMarshaller implements IProjectMarshaller {
 	}
 	
 	private void marshallContactDetails(Contributor contributor) throws Exception  {
-		marshallRequiredString(contributor.getName(), "name");
 		marshallRequiredString(contributor.getEmail(), "email");
 		marshallString(contributor.getOrganization(), "organization");
-		marshallString(contributor.getTimezone(), "timezone");
-		marshallString(contributor.getUrl(), "url");
 		marshallRoles(contributor);
+		marshallString(contributor.getUrl(), "url");
+		marshallString(contributor.getTimezone(), "timezone");
 	}
 	
 	private  void marshallRoles(Contributor contributor) throws IOException {
@@ -288,7 +293,7 @@ public class DefaultProjectMarshaller implements IProjectMarshaller {
 					marshallString(license.getName(), "name");
 					marshallString(license.getUrl(), "url");
 					marshallString(license.getDistribution(), "distribution");
-					marshallString(license.getComments(), "comments");
+					//marshallString(license.getComments(), "comments");
 					
 					serializer.endTag(NAMESPACE, "license");
 				}
@@ -364,7 +369,9 @@ public class DefaultProjectMarshaller implements IProjectMarshaller {
 			
 			marshallString(build.getNagEmailAddress(), "nagEmailAddress");
 			marshallString(build.getSourceDirectory(), "sourceDirectory");
+			marshallSourceModifications(build.getSourceModifications());
 			marshallString(build.getUnitTestSourceDirectory(), "unitTestSourceDirectory");
+			marshallString(build.getAspectSourceDirectory(), "aspectSourceDirectory");
 			
 			if ( build.getUnitTest() != null ) {
 				serializer.startTag(NAMESPACE, "unitTest");
@@ -374,8 +381,7 @@ public class DefaultProjectMarshaller implements IProjectMarshaller {
 				serializer.endTag(NAMESPACE, "unitTest");
 			}
 			
-			marshallString(build.getAspectSourceDirectory(), "aspectSourceDirectory");
-			marshallString(build.getIntegrationUnitTestSourceDirectory(), "integrationUnitTestSourceDirectory");
+			//marshallString(build.getIntegrationUnitTestSourceDirectory(), "integrationUnitTestSourceDirectory");
 			 
 			marshallResources(build.getResources());
 			
@@ -383,8 +389,30 @@ public class DefaultProjectMarshaller implements IProjectMarshaller {
 		}
 	}
 
-	private  void marshallResources(List resources)
-		throws IOException {
+	private void marshallSourceModifications(List sourceModifications) throws IOException {
+	    if ( sourceModifications != null && sourceModifications.size() > 0 ) {
+			 serializer.startTag(NAMESPACE, "sourceModifications");
+			
+			 SourceModification sourceModification;
+			 for (int i = 0; i < sourceModifications.size(); i++) {
+				sourceModification = (SourceModification) sourceModifications.get(i);
+				if ( sourceModification != null ) {
+					serializer.startTag(NAMESPACE, "sourceModification");
+
+					marshallString(sourceModification.getClassName(), "className");
+					
+					marshallIncludes(sourceModification.getIncludes());
+					marshallExcludes(sourceModification.getExcludes());
+
+					serializer.endTag(NAMESPACE, "sourceModification");
+				}
+			}
+			
+			serializer.endTag(NAMESPACE, "sourceModifications");
+		}
+	}
+	
+	private  void marshallResources(List resources) throws IOException {
 		if ( resources != null && resources.size() > 0 ) {
 			 serializer.startTag(NAMESPACE, "resources");
 			
@@ -396,10 +424,11 @@ public class DefaultProjectMarshaller implements IProjectMarshaller {
 
 					marshallString(resource.getDirectory(), "directory");
 					marshallString(resource.getTargetPath(), "targetPath");
-					marshallString(Boolean.toString(resource.getFiltering()), "filtering");
 
 					marshallIncludes(resource.getIncludes());
 					marshallExcludes(resource.getExcludes());
+
+					marshallString(Boolean.toString(resource.getFiltering()), "filtering");
 
 					serializer.endTag(NAMESPACE, "resource");
 				}
