@@ -18,7 +18,6 @@
 package org.mevenide.context;
 
 import java.io.File;
-import org.apache.maven.project.Project;
 
 /**
  * interface to externalize the project files content/models to one place, and reuse
