@@ -55,7 +55,8 @@ public class MavenLaunchShortcut implements ILaunchShortcut {
 
 	private boolean showDialog = false;
 
-
+	private String goalsToRun = null;
+		
 	public void setShowDialog(boolean showDialog) {
 		this.showDialog = showDialog;
 
@@ -139,8 +140,8 @@ public class MavenLaunchShortcut implements ILaunchShortcut {
 		ILaunchConfigurationType type = manager.getLaunchConfigurationType("org.mevenide.ui.launching.MavenLaunchConfigType");
 		
 		String name = "[" + basedir.lastSegment() + "] ";
-		String goals = StringUtils.replace(Mevenide.getPlugin().getDefaultGoals(), ":", "_");
-		name += goals;
+		String goals = goalsToRun == null ? Mevenide.getPlugin().getDefaultGoals() : goalsToRun;
+		name += StringUtils.replace(goals, ":", "_");
 		
 		ILaunch[] launches = manager.getLaunches();
 		for (int i = 0; i < launches.length; i++) {
@@ -155,7 +156,7 @@ public class MavenLaunchShortcut implements ILaunchShortcut {
 			ILaunchConfigurationWorkingCopy workingCopy = type.newInstance(null, name);
 			workingCopy.setAttribute(IExternalToolConstants.ATTR_WORKING_DIRECTORY,
 			        VariablesPlugin.getDefault().getStringVariableManager().generateVariableExpression("workspace_loc", basedir.toString())); 
-			workingCopy.setAttribute(MavenArgumentsTab.GOALS_TO_RUN, Mevenide.getPlugin().getDefaultGoals());
+			workingCopy.setAttribute(MavenArgumentsTab.GOALS_TO_RUN, goals);
 			
 			// set default for common settings
 			CommonTab tab = new CommonTab();
@@ -174,6 +175,8 @@ public class MavenLaunchShortcut implements ILaunchShortcut {
 			return null;
 		}
 	}
-
 	
+	public void setGoalsToRun(String goalsToRun) {
+		this.goalsToRun = goalsToRun;
+	}
 }

@@ -20,6 +20,7 @@ import java.io.File;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuListener;
@@ -48,6 +49,7 @@ import org.mevenide.ui.eclipse.goals.model.Element;
 import org.mevenide.ui.eclipse.goals.model.Goal;
 import org.mevenide.ui.eclipse.goals.model.GoalsProvider;
 import org.mevenide.ui.eclipse.goals.viewer.GoalsLabelProvider;
+import org.mevenide.ui.eclipse.launch.configuration.MavenLaunchShortcut;
 
 /**  
  * 
@@ -78,10 +80,12 @@ public class MavenXmlOutlinePage extends Page implements IContentOutlinePage {
 	
 	private boolean runOffline;
 	
-	private String basedir;
+	private String basedir; 
+	private IPath basedirPath;  
 	
 	public MavenXmlOutlinePage(IFileEditorInput input) {
 		this.basedir = new File(input.getFile().getLocation().toOSString()).getParent();
+		this.basedirPath = input.getFile().getParent().getFullPath();
 		goalsProvider = new GoalsProvider();
 		goalsLabelProvider = new GoalsLabelProvider();
 		patternFilter = new CustomPatternFilter();
@@ -157,7 +161,7 @@ public class MavenXmlOutlinePage extends Page implements IContentOutlinePage {
         	new Listener () {
         		public void handleEvent (Event event) {
 					//shortcut to run selected goal
-        			//runMaven();
+        			runMaven();
         		}
         	}
         );
@@ -221,7 +225,9 @@ public class MavenXmlOutlinePage extends Page implements IContentOutlinePage {
 		openFilterDialogAction.setImageDescriptor(Mevenide.getImageDescriptor("open_filter_dialog.gif"));
 		
 		runGoalAction = new Action(null) {
-			//runMaven();
+			public void run() {
+				runMaven();
+			}
 		};
 		runGoalAction.setText("Run Goal");
 		runGoalAction.setToolTipText("Run Goal");
@@ -237,6 +243,14 @@ public class MavenXmlOutlinePage extends Page implements IContentOutlinePage {
 		}
 	}
 	
+	private void runMaven() {
+		Goal goal = (Goal) ((StructuredSelection) goalsViewer.getSelection()).getFirstElement();
+		MavenLaunchShortcut shortcut = new MavenLaunchShortcut();
+		shortcut.setShowDialog(false);
+		shortcut.setGoalsToRun(goal.getFullyQualifiedName());
+		shortcut.launch(basedirPath);
+	}
+	
 	public void dispose() {
 	}
 	
@@ -245,6 +259,7 @@ public class MavenXmlOutlinePage extends Page implements IContentOutlinePage {
 	}
 	
 	public void setActionBars(IActionBars actionBars) {
+		super.setActionBars(actionBars);
 	}
 	
 	public void setFocus() {
@@ -257,7 +272,7 @@ public class MavenXmlOutlinePage extends Page implements IContentOutlinePage {
 		return goalsViewer.getSelection();
 	}
 	
-	public void setSelection(ISelection selection) {	
+	public void setSelection(ISelection selection) {
 	}
 	
 	public void removeSelectionChangedListener(ISelectionChangedListener listener) {
