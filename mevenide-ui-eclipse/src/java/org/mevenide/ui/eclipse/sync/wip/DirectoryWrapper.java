@@ -53,6 +53,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Project;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jdt.core.IClasspathEntry;
+import org.mevenide.project.ProjectConstants;
 import org.mevenide.project.io.ProjectWriter;
 
 /**
@@ -87,5 +88,23 @@ public class DirectoryWrapper extends SourceFolder {
 		
 		ProjectWriter.getWriter().addSource(path, project.getFile(), type);
 		
+	}
+	
+	public void removeFrom(Project project) throws Exception {
+		if ( project.getBuild() != null ) { 
+			String type = directory.getType();
+			String path = directory.getPath();
+			
+			if ( ProjectConstants.MAVEN_SRC_DIRECTORY.equals(type) ) {
+				project.getBuild().setSourceDirectory(null);
+			}
+			if ( ProjectConstants.MAVEN_TEST_DIRECTORY.equals(type) ) {
+				project.getBuild().setUnitTestSourceDirectory(null);
+			}
+			if ( ProjectConstants.MAVEN_ASPECT_DIRECTORY.equals(type) ) {
+				project.getBuild().setAspectSourceDirectory(null);
+			}
+			ProjectWriter.getWriter().write(project);
+		}
 	}
 }

@@ -1,7 +1,7 @@
 /* ====================================================================
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 2003 The Apache Software Foundation.  All rights
+ * Copyright (c) 2003-2004 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -48,15 +48,7 @@
  */
 package org.mevenide.ui.eclipse.sync.wip;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.maven.project.Dependency;
 import org.apache.maven.project.Project;
-import org.apache.maven.project.Resource;
-import org.eclipse.core.resources.IProject;
 
 /**
  * 
@@ -64,52 +56,11 @@ import org.eclipse.core.resources.IProject;
  * @version $Id$
  * 
  */
-public class ArtifactAction {
-	private static Log log = LogFactory.getLog(ArtifactAction.class);
-	
-	private List listeners = new ArrayList();
-	
-	public void addActionListener(IActionListener listener) {
-		listeners.add(listener);	
+public class RemoveFromPomAction extends ArtifactAction{
+	public void removeEntry(IArtifactMappingNode selectedNode, Project mavenProject) throws Exception {
+		ArtifactWrapper wrapper = getArtifactWrapper(selectedNode.getArtifact());
+		wrapper.removeFrom(mavenProject);
+		fireArtifactRemovedFromPom(selectedNode, mavenProject);
 	}
 	
-	public void removeActionListener(IActionListener listener) {
-		listeners.remove(listener);
-	}
-	
-	protected void fireArtifactAddedToClasspath(Object item, IProject project) {
-		for (int i = 0; i < listeners.size(); i++) {
-			ClasspathArtifactEvent event = new ClasspathArtifactEvent(item, project);
-			((IActionListener)listeners.get(i)).artifactAddedToClasspath(event);
-		}
-	}
-	
-	protected void fireArtifactRemovedFromPom(Object item, Project project) {
-		for (int i = 0; i < listeners.size(); i++) {
-			PomArtifactEvent event = new PomArtifactEvent(item, project);
-			((IActionListener)listeners.get(i)).artifactRemovedFromPom(event);
-		}
-	}
-	
-	protected void fireArtifactAddedToPom(Object item, Project project) {
-		log.debug("Artifact (" + item + ") added to POM : " + project.getFile());
-		for (int i = 0; i < listeners.size(); i++) {
-			PomArtifactEvent event = new PomArtifactEvent(item, project);
-			((IActionListener)listeners.get(i)).artifactAddedToPom(event);
-		}
-	}
-	
-	//crap..
-	protected ArtifactWrapper getArtifactWrapper(Object item) {
-		if ( item instanceof Dependency ) {
-			return new DependencyWrapper((Dependency) item);
-		}
-		if ( item instanceof Directory ) {
-			return new DirectoryWrapper((Directory) item);
-		}
-		if ( item instanceof Resource ) {
-			return new ResourceWrapper((Resource) item);
-		}
-		return null;
-	}
 }

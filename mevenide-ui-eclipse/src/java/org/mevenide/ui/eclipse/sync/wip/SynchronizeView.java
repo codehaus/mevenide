@@ -292,7 +292,7 @@ public class SynchronizeView extends ViewPart implements IActionListener {
 	}
 
 	
-	public void artifactAddedToClasspath(ArtifactAddedToClasspathEvent event) {
+	public void artifactAddedToClasspath(ClasspathArtifactEvent event) {
 		IArtifactMappingNode artifact = (IArtifactMappingNode) event.getArtifact();
 		log.debug("artifact modified : " + artifact);
     	refreshNode(artifact);
@@ -308,7 +308,13 @@ public class SynchronizeView extends ViewPart implements IActionListener {
 		return ((ITreeContentProvider) artifactMappingNodeViewer.getContentProvider());
 	}
 
-	public void artifactAddedToPom(ArtifactAddedToPomEvent event) {
+	public void artifactAddedToPom(PomArtifactEvent event) {
+		IArtifactMappingNode artifact = (IArtifactMappingNode) event.getArtifact();
+		log.debug("artifact modified : " + artifact);
+		refreshNode(artifact);
+	}
+	
+	public void artifactRemovedFromPom(PomArtifactEvent event) {
 		IArtifactMappingNode artifact = (IArtifactMappingNode) event.getArtifact();
 		log.debug("artifact modified : " + artifact);
 		refreshNode(artifact);
@@ -319,5 +325,5 @@ public class SynchronizeView extends ViewPart implements IActionListener {
 	}
 	
 	
-
+	
 }

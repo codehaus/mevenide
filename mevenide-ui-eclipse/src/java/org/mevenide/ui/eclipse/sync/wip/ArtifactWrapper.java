@@ -66,6 +66,8 @@ public abstract class ArtifactWrapper {
 	
 	public abstract void addTo(Project project) throws Exception;
 	
+	public abstract void removeFrom(Project project) throws Exception;
+	
 	protected void addClasspathEntry(IClasspathEntry newEntry, IProject project) throws JavaModelException {
 		IJavaProject javaProject = (IJavaProject) JavaCore.create(project);
 		IClasspathEntry[] cpEntries = javaProject.getRawClasspath();
