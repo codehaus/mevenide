@@ -84,7 +84,7 @@ public class DefaultPathResolverDelegate implements IPathResolverDelegate {
 			//path = path.substring(1, path.length());
 		}
 	
-		String entryKind = "src";
+//		String entryKind = "src";
 		Document doc = new SAXBuilder().build(project.getFile(".classpath").getLocation().toFile().getAbsoluteFile());
 		Element classpath = doc.getRootElement();
 		List classpathEntries = classpath.getChildren("classpathentry");
