@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="Mevenide">
+
+  <title>Mevenide, Maven IDE Integration</title>
+
+  <body>
+    <links>
+      <item name="Maven" href="http://maven.apache.org"/>
+      <item name="Eclipse" href="http://eclipse.org"/>
+    </links>
+    <menu name="Overview">
+      <item name="License" href="license.html"/>
+      <item name="Download" href="download.html"/>
+    </menu>
+    <menu name="Projects">
+    	<item name="Mevenide Core" href="mevenide-core/index.html"/>
+    	<item name="Goals Grabber" href="mevenide-goals-grabber/index.html"/>
+    	<item name="Eclipse Plugin" href="mevenide-ui-eclipse/index.html"/>
+    	<item name="MEP Plugin" href="maven-eclipse-plugin-plugin/index.html"/>
+    </menu>
+    <menu name="Developers">
+        <item name="Developer's Guide" href="developer-guide.html"/>
+        <item name="Directory Layout" href="layout.html"/>
+        <item name="Mevenide Wiki" href="http://mevenide.sourceforge.net/cgi-bin/view.pl/FrontPage"/>
+    </menu>
+    <serach/>
+  </body>
+</project>
