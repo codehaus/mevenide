@@ -135,4 +135,26 @@ public abstract class AbstractArtifactMappingNodeContainer implements IArtifactM
     public void setParent(ProjectContainer parent) {
         this.parent = parent;
     }
+
+    public IArtifactMappingNodeContainer filter(int direction) {
+        IArtifactMappingNodeContainer newContainer = this;
+    	newContainer.setDirection(direction);
+    
+    	List newNodeList = new ArrayList(); 
+    	for (int i = 0; i < nodes.length; i++) {
+    	    if ( (nodes[i].getChangeDirection() & direction) != 0) {
+    			newNodeList.add(nodes[i]);
+    		}
+        }
+    
+    	IArtifactMappingNode[] newNodeArray = new IArtifactMappingNode[newNodeList.size()]; 
+    	for (int i = 0; i < newNodeArray.length; i++) {
+    		IArtifactMappingNode newNode = (IArtifactMappingNode) newNodeList.get(i);
+    		newNode.setParent(newContainer);
+            newNodeArray[i] = newNode;
+        }
+    	newContainer.setNodes(newNodeArray);
+    
+        return newContainer;
+    }
 }

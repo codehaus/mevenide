@@ -79,6 +79,9 @@ public abstract class AbstractArtifactMappingNode implements IArtifactMappingNod
     public IArtifactMappingNodeContainer getParent() {
         return parent;
     }
+    public void setParent(IArtifactMappingNodeContainer parent) {
+        this.parent = parent;
+    }
     public File getDeclaringPom() {
         return declaringPom;
     }

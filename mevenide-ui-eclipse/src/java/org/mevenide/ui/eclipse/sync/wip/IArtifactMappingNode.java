@@ -102,4 +102,6 @@ public interface IArtifactMappingNode extends IAdaptable {
      * @return parent container
      */
     IArtifactMappingNodeContainer getParent();
+    
+    void setParent(IArtifactMappingNodeContainer parent);
 }

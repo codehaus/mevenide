@@ -76,7 +76,16 @@ public class DirectoryMappingNode extends AbstractArtifactMappingNode {
     
    
     public String getLabel() {
-        return ((Directory) resolvedArtifact).getDisplayPath();
+        if ( resolvedArtifact != null ) {
+            return ((Directory) resolvedArtifact).getDisplayPath();
+        }
+        if ( artifact instanceof Resource ) {
+            return ((Resource) artifact).getDirectory();
+        }
+        if ( artifact instanceof Directory ) {
+            return ((Directory) artifact).getDisplayPath();   
+        }
+        return "Unresolved";
     }
     
     public void setResolvedDirectory(Directory directory) {
