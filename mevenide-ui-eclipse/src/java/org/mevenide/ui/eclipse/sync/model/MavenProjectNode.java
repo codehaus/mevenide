@@ -33,6 +33,7 @@ import org.apache.maven.project.Project;
 import org.apache.maven.repository.Artifact;
 import org.eclipse.core.resources.IProject;
 import org.mevenide.project.io.ProjectReader;
+import org.mevenide.ui.eclipse.util.EclipseProjectUtils;
 import org.mevenide.ui.eclipse.util.SourceDirectoryTypeUtil;
 
 /**  
@@ -170,11 +171,25 @@ public class MavenProjectNode extends AbstractSynchronizationNode implements ISe
 	    	Directory eclipseDirectory = new Directory();
 	    	eclipseDirectory.setPath(directoryPath);
 	    	DirectoryNode node = new DirectoryNode(eclipseDirectory, this);
+	    	node.setExcludeNodes(getEclipseExclusionFilterNodes(directoryPath, node));
 	    	nodeList.add(node);
 	    }
 	    return nodeList;
 	}
 
+	private ExcludeNode[] getEclipseExclusionFilterNodes(String eclipseSourceFolder, DirectoryNode directoryNode) {
+		IProject eclipseProject = (IProject) parentNode.getData();
+		String[] exclusionPatterns = EclipseProjectUtils.findExclusionPatterns(eclipseSourceFolder, eclipseProject);
+		if ( exclusionPatterns != null ) {
+			ExcludeNode[] nodes = new ExcludeNode[exclusionPatterns.length];
+			for (int i = 0; i < exclusionPatterns.length; i++) {
+				nodes[i] = new ExcludeNode(directoryNode, exclusionPatterns[i]);
+			}
+			return nodes;
+		}
+		return null;
+	}
+	
 	private void createDirectoryNodes(Map sourceDirectoryMap) {
 		originalDirectoryNodes = new DirectoryNode[sourceDirectoryMap.size()];
 		Iterator iterator = sourceDirectoryMap.keySet().iterator();

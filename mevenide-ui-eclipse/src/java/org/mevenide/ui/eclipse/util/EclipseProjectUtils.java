@@ -157,4 +157,28 @@ public class EclipseProjectUtils {
 			project.setDescription(description, null);
 		}
 	}
+
+	public static String[] findExclusionPatterns(String eclipseSourceFolder, IProject eclipseProject) {
+		try {
+			String[] exclusionPatterns = null;
+			IJavaProject javaProject = JavaCore.create(eclipseProject);
+			IClasspathEntry[] entries = javaProject.getRawClasspath();
+			for (int i = 0; i < entries.length; i++) {
+				IClasspathEntry entry = entries[i];
+				if ( entry.getEntryKind() == IClasspathEntry.CPE_SOURCE && entry.getPath().removeFirstSegments(1).makeRelative().toString().equals(eclipseSourceFolder.replaceAll("\\\\", "/")) ) {
+					IPath[] eclipseExclusions = entry.getExclusionPatterns();
+					exclusionPatterns = new String[eclipseExclusions.length];
+					for (int j = 0; j < eclipseExclusions.length; j++) {
+						exclusionPatterns[j] = eclipseExclusions[j].makeRelative().toString();	
+					}
+				}
+			}
+			return exclusionPatterns;
+		} 
+		catch (JavaModelException e) {
+			String message = "Unable to get exclusion patterns for " + eclipseSourceFolder; 
+			log.error(message, e);
+			return null;
+		}
+	}
 }
