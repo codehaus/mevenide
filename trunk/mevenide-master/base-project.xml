@@ -65,26 +65,43 @@
       </includes>
 
       <resources>
+      	
         <resource>
           <directory>src/test/etc</directory>
           <includes>
-            <include>**/*.*</include>
+            <include>*.*</include>
           </includes>
         </resource>
+        
         <resource>
           <directory>etc</directory>
           <includes>
-            <include>**/*.*</include>
+            <include>*.*</include>
           </includes>
         </resource>
+        
+        <resource>
+      	  <directory>etc/META-INF/services</directory>
+          <includes>
+            <include>*.*</include>
+          </includes>
+        </resource>
+        
       </resources>
+      
     </unitTest>
     
     <resources>
       <resource>
           <directory>etc</directory>
           <includes>
-            <include>**/*.*</include>
+            <include>*.*</include>
+          </includes>
+      </resource>
+      <resource>
+      	  <directory>etc/META-INF/services</directory>
+          <includes>
+            <include>*.*</include>
           </includes>
       </resource>
     </resources>
