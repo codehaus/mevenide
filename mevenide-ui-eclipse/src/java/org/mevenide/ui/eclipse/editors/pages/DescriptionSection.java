@@ -68,6 +68,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.ui.dialogs.SelectionDialog;
 import org.mevenide.ui.eclipse.Mevenide;
+
 /**
  * @author Jeffrey Bonevich (jeff@bonevich.com)
  * @version $Id$
@@ -79,6 +80,7 @@ public class DescriptionSection extends PageSection {
 	private OverridableTextEntry shortDescText;
 	private OverridableTextEntry inceptionYearText;
 	private OverridableTextEntry urlText;
+	private OverridableTextEntry currentVersionText;
 	private OverridableTextEntry logoText;
 	private OverridableTextEntry packageText;
 	private Button logoButton;
@@ -101,30 +103,22 @@ public class DescriptionSection extends PageSection {
 		
 		final Project pom = getPage().getEditor().getPom();
 		
-		// POM name textbox
+		// POM short description textbox
 		String labelName = Mevenide.getResourceString("DescriptionSection.shortDescText.label");
 		shortDescText = new OverridableTextEntry(
 			createText(container, labelName, factory), 
 			createOverrideToggle(container, factory, isInherited())
 		);
-		shortDescText.addEntryChangeListener(
-			new EntryChangeListenerAdaptor() {
-				public void entryChanged(PageEntry entry) {
-					String shortDesc = shortDescText.getText();
-					pom.setShortDescription(shortDesc);
-				}
+		OverrideAdaptor adaptor = new OverrideAdaptor() {
+			public void updateProject(String value) {
+				pom.setShortDescription(value);
 			}
-		);
-		shortDescText.addOverrideAdaptor(
-			new OverrideAdaptor() {
-				public void updateProject(String value) {
-					pom.setShortDescription(value);
-				}
-				public String getParentProjectAttribute() {
-					return getParentPom().getShortDescription();
-				}
+			public String getParentProjectAttribute() {
+				return getParentPom().getShortDescription();
 			}
-		);
+		};
+		shortDescText.addEntryChangeListener(adaptor);
+		shortDescText.addOverrideAdaptor(adaptor);
 		
 		// POM project inception year textbox
 		labelName = Mevenide.getResourceString("DescriptionSection.inceptionYearText.label");
@@ -132,24 +126,16 @@ public class DescriptionSection extends PageSection {
 			createText(container, labelName, factory), 
 			createOverrideToggle(container, factory, isInherited())
 		);
-		inceptionYearText.addEntryChangeListener(
-			new EntryChangeListenerAdaptor() {
-				public void entryChanged(PageEntry entry) {
-					String year = inceptionYearText.getText();
-					pom.setShortDescription(year);
-				}
+		adaptor = new OverrideAdaptor() {
+			public void updateProject(String value) {
+				pom.setInceptionYear(value);
 			}
-		);
-		inceptionYearText.addOverrideAdaptor(
-			new OverrideAdaptor() {
-				public void updateProject(String value) {
-					pom.setInceptionYear(value);
-				}
-				public String getParentProjectAttribute() {
-					return getParentPom().getInceptionYear();
-				}
+			public String getParentProjectAttribute() {
+				return getParentPom().getInceptionYear();
 			}
-		);
+		};
+		inceptionYearText.addEntryChangeListener(adaptor);
+		inceptionYearText.addOverrideAdaptor(adaptor);
 		
 		// POM project url textbox
 		labelName = Mevenide.getResourceString("DescriptionSection.urlText.label");
@@ -157,49 +143,50 @@ public class DescriptionSection extends PageSection {
 			createText(container, labelName, factory), 
 			createOverrideToggle(container, factory, isInherited())
 		);
-		urlText.addEntryChangeListener(
-			new EntryChangeListenerAdaptor() {
-				public void entryChanged(PageEntry entry) {
-					String url = urlText.getText();
-					pom.setUrl(url);
-				}
+		adaptor = new OverrideAdaptor() {
+			public void updateProject(String value) {
+				pom.setUrl(value);
 			}
-		);
-		urlText.addOverrideAdaptor(
-			new OverrideAdaptor() {
-				public void updateProject(String value) {
-					pom.setUrl(value);
-				}
-				public String getParentProjectAttribute() {
-					return getParentPom().getUrl();
-				}
+			public String getParentProjectAttribute() {
+				return getParentPom().getUrl();
 			}
-		);
+		};
+		urlText.addEntryChangeListener(adaptor);
+		urlText.addOverrideAdaptor(adaptor);
 		
-		// POM extend textbox and file browse button
+		// POM current version textbox
+		labelName = Mevenide.getResourceString("DescriptionSection.currentVersionText.label");
+		currentVersionText = new OverridableTextEntry(
+			createText(container, labelName, factory), 
+			createOverrideToggle(container, factory, isInherited())
+		);
+		adaptor = new OverrideAdaptor() {
+			public void updateProject(String value) {
+				pom.setCurrentVersion(value);
+			}
+			public String getParentProjectAttribute() {
+				return getParentPom().getCurrentVersion();
+			}
+		};
+		currentVersionText.addEntryChangeListener(adaptor);
+		currentVersionText.addOverrideAdaptor(adaptor);
+		
+		// POM logo textbox and file browse button
 		labelName = Mevenide.getResourceString("DescriptionSection.logoText.label");
 		logoText = new OverridableTextEntry(
 			createText(container, labelName, factory), 
 			createOverrideToggle(container, factory, isInherited())
 		);
-		logoText.addEntryChangeListener(
-			new EntryChangeListenerAdaptor() {
-				public void entryChanged(PageEntry entry) {
-					String logo = logoText.getText();
-					pom.setLogo(logo);
-				}
+		adaptor = new OverrideAdaptor() {
+			public void updateProject(String value) {
+				pom.setLogo(value);
 			}
-		);
-		logoText.addOverrideAdaptor(
-			new OverrideAdaptor() {
-				public void updateProject(String value) {
-					pom.setLogo(value);
-				}
-				public String getParentProjectAttribute() {
-					return getParentPom().getLogo();
-				}
+			public String getParentProjectAttribute() {
+				return getParentPom().getLogo();
 			}
-		);
+		};
+		logoText.addEntryChangeListener(adaptor);
+		logoText.addOverrideAdaptor(adaptor);
 		
 		Composite buttonContainer = factory.createComposite(container);
 		GridData data = new GridData(GridData.FILL_VERTICAL | GridData.HORIZONTAL_ALIGN_END);
@@ -247,24 +234,16 @@ public class DescriptionSection extends PageSection {
 			createText(container, labelName, factory), 
 			createOverrideToggle(container, factory, isInherited())
 		);
-		packageText.addEntryChangeListener(
-			new EntryChangeListenerAdaptor() {
-				public void entryChanged(PageEntry entry) {
-					String packageName = packageText.getText();
-					pom.setPackage(packageName);
-				}
+		adaptor = new OverrideAdaptor() {
+			public void updateProject(String value) {
+				pom.setPackage(value);
 			}
-		);
-		packageText.addOverrideAdaptor(
-			new OverrideAdaptor() {
-				public void updateProject(String value) {
-					pom.setPackage(value);
-				}
-				public String getParentProjectAttribute() {
-					return getParentPom().getPackage();
-				}
+			public String getParentProjectAttribute() {
+				return getParentPom().getPackage();
 			}
-		);
+		};
+		packageText.addEntryChangeListener(adaptor);
+		packageText.addOverrideAdaptor(adaptor);
 		
 		buttonContainer = factory.createComposite(container);
 		data = new GridData(GridData.FILL_VERTICAL | GridData.HORIZONTAL_ALIGN_END);
