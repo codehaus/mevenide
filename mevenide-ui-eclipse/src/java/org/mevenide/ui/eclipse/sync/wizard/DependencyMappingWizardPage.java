@@ -146,6 +146,7 @@ public class DependencyMappingWizardPage extends WizardPage {
 							String path = dialog.open();
 							if ( path != null ) {
 								((DependencyGroup)viewer.getInput()).addDependency(DependencyFactory.getFactory().getDependency(path));
+								log.debug("Added Dependency : " + path);
 							}
 							viewer.refresh();
 						}

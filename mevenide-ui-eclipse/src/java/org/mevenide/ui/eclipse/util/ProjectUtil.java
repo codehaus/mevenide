@@ -67,15 +67,20 @@ public class ProjectUtil {
 		IProject[] referencedProjects = Mevenide.getPlugin().getProject().getReferencedProjects();		
 		for (int i = 0; i < referencedProjects.length; i++) {
 			IProject referencedProject = referencedProjects[i];
-			File referencedPom = FileUtil.getPom(referencedProject);
-			//check if referencedPom exists, tho it should since we just have created it
-			if ( !referencedPom.exists() ) {
-				FileUtil.createPom(referencedProject);
+			
+			if ( referencedProject.exists() && !referencedProject.getName().equals(Mevenide.getPlugin().getProject().getName()) )  {
+						
+				File referencedPom = FileUtil.getPom(referencedProject);
+				//check if referencedPom exists, tho it should since we just have created it
+
+				if ( !referencedPom.exists() ) {
+					FileUtil.createPom(referencedProject);
+				}
+				ProjectReader reader = ProjectReader.getReader();
+				Dependency projectDependency = reader.getDependency(referencedPom);
+				log.debug("dependency artifact : " + projectDependency.getArtifact());
+				deps.add(projectDependency);
 			}
-			ProjectReader reader = ProjectReader.getReader();
-			Dependency projectDependency = reader.getDependency(referencedPom);
-			log.debug("dependency artifact : " + projectDependency.getArtifact());
-			deps.add(projectDependency);
 		}
 		return deps;
 	}

@@ -57,9 +57,13 @@ public class FileUtil {
 	}
 
 	public static File getPom(IProject project) {
-		IPathResolver pathResolver = new DefaultPathResolver();
-		IPath referencedProjectLocation = project.getLocation();
-		return new File(pathResolver.getAbsolutePath(referencedProjectLocation.append("project.xml")) );
+		//weird trick to fix a NPE. dont know yet why we got that NPE
+		if ( project.exists() ) {
+			IPathResolver pathResolver = new DefaultPathResolver();
+			IPath referencedProjectLocation = project.getLocation();
+			return new File(pathResolver.getAbsolutePath(referencedProjectLocation.append("project.xml")) );
+		}
+		return null;
 	}
 	
 	
