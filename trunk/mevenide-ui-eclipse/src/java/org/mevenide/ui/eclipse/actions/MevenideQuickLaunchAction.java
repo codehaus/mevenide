@@ -83,30 +83,39 @@ public class MevenideQuickLaunchAction implements IWorkbenchWindowPulldownDelega
 			}
 		}
 		
-		if ( actions != null && actions.length > 0 ) {
-			Separator separator = new Separator();
-			separator.fill(menu, menu.getItemCount());
-			
-			Action manageConfigsAction = 
-				new Action("Manage configurations...") {
-					public void run() {
-						//@todo implement me
-					}
-				};
+		Separator separator = new Separator();
+		separator.fill(menu, menu.getItemCount());
+		
+		Action manageConfigsAction = 
+			new Action("Manage configurations...") {
+				public void run() {
+					//@todo implement me
+				}
+			};
 
-			ActionContributionItem manageItem = new ActionContributionItem(manageConfigsAction);
-			manageItem.fill(menu, -1);
+		ActionContributionItem manageItem = new ActionContributionItem(manageConfigsAction);
+		manageItem.fill(menu, -1);
+		//since it is not enabled yet, disable it
+		//should we just not display it ? 
+		manageConfigsAction.setEnabled(false);
 			
-			Action clearMenuAction = 
-				new Action("Delete all configurations") {
-					public void run() {
-						LaunchHistory.getHistory().clear();
-					}
-				};
-			
-			ActionContributionItem deleteItem = new ActionContributionItem(clearMenuAction);
-			deleteItem.fill(menu, -1);
+		Action clearMenuAction = 
+			new Action("Delete all configurations") {
+				public void run() {
+					LaunchHistory.getHistory().clear();
+				}
+			};
+		
+		ActionContributionItem deleteItem = new ActionContributionItem(clearMenuAction);
+		deleteItem.fill(menu, -1);
+		
+		if ( actions != null && actions.length > 0 ) {
+			clearMenuAction.setEnabled(true);
 		}
+		else {
+			clearMenuAction.setEnabled(false);
+		}
+		
 		return menu;
 	}
 
