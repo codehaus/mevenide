@@ -6,8 +6,10 @@
   </properties>
 
   <body>
-
-    <release version="0.3" date="in CVS">
+  
+    <release version="0.4" date="in CVS" description="">
+    </release>
+    <release version="0.3" date="20040601" description="First release for the upcoming 4.0 version of Netbeans.">
       <action dev="mkleint" type="add">
         Added property maven.nbm.license.name to use when building the nbm.
       </action>
@@ -21,7 +23,7 @@
         Refactored goals, allowing more customizations by projects.
       </action>
       <action dev="mkleint" type="add">
-        Added autoupdate server generation goal. (Not tested well)
+        Added autoupdate server generation goal. 
       </action>
       <action dev="mkleint" type="add">
         Added properties for signing NBMs.
