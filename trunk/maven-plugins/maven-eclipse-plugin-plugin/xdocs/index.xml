@@ -25,7 +25,7 @@
     <section name="Versions">
     	<div id="documentContent">
       	  <p>
-      	  	 Latest version available for download is 0.3. It works with Eclipse 3.0, and should also with 2.x stream builds. 
+      	  	 Latest version available for download is 0.3.1. It works with Eclipse 3.0, and should also with 2.x stream builds. 
       	  	 Also please note that the PDE Plugin doesnot support OSGI Bundles yet.
       	  </p>
       	</div>
