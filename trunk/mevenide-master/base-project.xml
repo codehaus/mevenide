@@ -3,6 +3,7 @@
   <!ENTITY base-identification SYSTEM "file:../mevenide-master/pom-fragments/identification.xml">	
   <!ENTITY base-lists SYSTEM "file:../mevenide-master/pom-fragments/lists.xml">
   <!ENTITY base-developers SYSTEM "file:../mevenide-master/pom-fragments/developers.xml">
+  <!ENTITY base-contributors SYSTEM "file:../mevenide-master/pom-fragments/contributors.xml">
   <!ENTITY base-build SYSTEM "file:../mevenide-master/pom-fragments/build.xml">
   <!ENTITY base-reports SYSTEM "file:../mevenide-master/pom-fragments/reports.xml">
 ]>
@@ -24,6 +25,9 @@
   <developers>
 	&base-developers;
   </developers>
+  <contributors>
+  	&base-contributors;
+  </contributors>
   <dependencies>
   	<!-- required for maven-jcoverage-plugin to work -->
   	<dependency>
