@@ -22,7 +22,7 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.ui.views.properties.IPropertySource;
-import org.mevenide.ui.eclipse.editors.properties.PropertyProxy;
+import org.mevenide.ui.eclipse.adapters.properties.PropertyProxy;
 import org.mevenide.ui.eclipse.sync.model.properties.ReadOnlyPropertyProxy;
 import org.mevenide.util.MevenideUtils;
 

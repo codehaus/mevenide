@@ -23,7 +23,7 @@ import org.eclipse.ui.views.properties.ComboBoxPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
 import org.mevenide.project.ProjectConstants;
-import org.mevenide.ui.eclipse.editors.properties.AbstractPomPropertySource;
+import org.mevenide.ui.eclipse.adapters.properties.AbstractPomPropertySource;
 import org.mevenide.ui.eclipse.sync.model.Directory;
 import org.mevenide.util.MevenideUtils;
 

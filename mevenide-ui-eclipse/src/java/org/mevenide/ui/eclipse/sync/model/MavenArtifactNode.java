@@ -34,7 +34,7 @@ import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.mevenide.project.dependency.DependencyUtil;
 import org.mevenide.project.io.ProjectWriter;
-import org.mevenide.ui.eclipse.editors.properties.DependencyPropertySource;
+import org.mevenide.ui.eclipse.adapters.properties.DependencyPropertySource;
 import org.mevenide.ui.eclipse.sync.model.properties.ReadOnlyDependencyPropertySource;
 import org.mevenide.ui.eclipse.util.FileUtils;
 import org.mevenide.ui.eclipse.util.JavaProjectUtils;
