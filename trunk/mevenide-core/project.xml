@@ -237,7 +237,7 @@
         <dependency>
             <groupId>mevenide</groupId>
             <artifactId>goals-grabber</artifactId>
-            <version>0.7</version>
+            <version>0.8-SNAPSHOT</version>
             <properties>
                 <eclipse.plugin.bundle>false</eclipse.plugin.bundle>
                 <netbeans.module.dep>spec</netbeans.module.dep>
