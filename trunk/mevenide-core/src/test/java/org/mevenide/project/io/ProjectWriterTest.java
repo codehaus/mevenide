@@ -17,6 +17,7 @@ package org.mevenide.project.io;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -71,11 +72,15 @@ public class ProjectWriterTest extends AbstractMevenideTestCase {
 		assertEquals("src/pyo/aspect", h.get(ProjectConstants.MAVEN_ASPECT_DIRECTORY));
 	}
 
-	public void testAddDependency() throws Exception {
-		pomWriter.addDependency("E:/bleeeaaaah/testo/ploufs/testo-0.0.1.plouf", projectFile);
+	public void testSetDependencies() throws Exception {
+		Dependency dep = dependencyFactory.getDependency("E:/bleeeaaaah/testo/ploufs/testo-0.0.1.plouf");
+		
+		List l = new ArrayList();
+		l.add(dep);
+		
+		pomWriter.setDependencies(l, projectFile);
 		Project project = ProjectReader.getReader().read(projectFile);
 		
-		Dependency dep = dependencyFactory.getDependency("E:/bleeeaaaah/testo/ploufs/testo-0.0.1.plouf");
 		assertTrue(DependencyUtil.isDependencyPresent(project, dep));
 	}
 	
