@@ -16,13 +16,10 @@
  */
 package org.mevenide.environment;
 
-import java.util.Enumeration;
-import java.util.Properties;
-import java.util.Vector;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.tools.ant.taskdefs.Execute;
+import org.mevenide.environment.sysenv.DefaultSysEnvProvider;
+import org.mevenide.environment.sysenv.SysEnvProvider;
 
 /**  
  * 
@@ -33,55 +30,66 @@ import org.apache.tools.ant.taskdefs.Execute;
 public class SysEnvLocationFinder extends AbstractLocationFinder {
     private static Log log = LogFactory.getLog(SysEnvLocationFinder.class); 
     
-    private static SysEnvLocationFinder locationFinder = new SysEnvLocationFinder();
-    
-	private Properties envProperties;
+    private static SysEnvLocationFinder locationFinder;
+    private static SysEnvProvider defaultProvider = null;
+    private SysEnvProvider provider = null;
+    private static Object LOCK = new Object();
 	
     private SysEnvLocationFinder() {
-        loadEnvironment();
     }
     
-    
-	/**
-	 * this is a slighty modified version of org.apache.tools.ant.taskdefs.Property#loadEnvironment()
-	 * (c) ASF
-	 */
-	private void loadEnvironment() {
-	   Properties props = new Properties();
-	   Vector osEnv = Execute.getProcEnvironment();
-	   log.debug("loading environment");
-	   for (Enumeration e = osEnv.elements(); e.hasMoreElements();) {
-		   String entry = (String) e.nextElement();
-		   int pos = entry.indexOf('=');
-		   if (pos == -1) {
-			log.debug("Ignoring: " + entry);
-		   } else {
-			   props.put(entry.substring(0, pos),
-			   entry.substring(pos + 1));
-		   }
-	   }
-	   envProperties = props;
-	   log.debug("environment loaded");
-	}
-    
     static SysEnvLocationFinder getInstance() {
+        if (locationFinder == null) {
+            synchronized (LOCK) {
+                if (locationFinder == null) {
+                    if (defaultProvider == null) {
+                        defaultProvider = new DefaultSysEnvProvider();
+                    }
+                    locationFinder = new SysEnvLocationFinder();
+                    locationFinder.setSysEnvProvider(defaultProvider);
+                }
+            }
+        }
         return locationFinder; 
     }
     
+    /**
+     * Sets the SysEnv provider instance for the locationFinder. Please not that if you
+     * define a custom one impl, you should set it *before* the singleton SysEnvLocationFinder instance is 
+     * created, thus before the getInstance() method is called for the first time. Best place is during the
+     * startup sequence of your IDE. (For performance reasons your provider impl should be lazy initialized).
+     */
+    public static void setDefaultSysEnvProvider(SysEnvProvider prov) {
+        synchronized (LOCK) {
+            defaultProvider = prov;
+            if (locationFinder != null) {
+                // if setting provider later in the game, do discard the created LocationFinder??
+                // or just ignore? or set to the current singleton?
+                locationFinder = null;
+                log.warn("Setting defaultSysEnvProvider while the singleton isntance of SysEnvLocationFinder exists");
+            }
+        }
+    }
+    
+    private void setSysEnvProvider(SysEnvProvider prov)
+    {
+        provider = prov;
+    }
+    
     public String getJavaHome() {
-		return (String) envProperties.get("JAVA_HOME");
+		return provider.getProperty("JAVA_HOME");
     }
     
     public String getMavenHome() {
-		return (String) envProperties.get("MAVEN_HOME");
+		return provider.getProperty("MAVEN_HOME");
     }
     
     public String getMavenLocalHome() {
-		return (String) envProperties.get("MAVEN_HOME_LOCAL");
+		return provider.getProperty("MAVEN_HOME_LOCAL");
     }
     
     public String getMavenLocalRepository() {
-		return (String) envProperties.get("MAVEN_REPO_LOCAL");
+		return provider.getProperty("MAVEN_REPO_LOCAL");
     }
     
     public String getMavenPluginsDir() {
