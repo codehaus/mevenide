@@ -103,9 +103,8 @@ public class DependencyGroupMarshaller {
 				}
 			}
 		
-			if ( dependenciesList.size() > 0 ) {
-				group.setDependencies(dependenciesList);
-			}
+			group.setDependencies(dependenciesList);
+			
 	
 		}
 
@@ -115,6 +114,7 @@ public class DependencyGroupMarshaller {
 	
 	public static void saveDependencyGroup(DependencyGroup group, String file) throws Exception {
 		if ( group == null ) {
+			log.debug("DependencyGroup is null // shouldnot happen");
 			return;
 		}
 		
@@ -122,8 +122,7 @@ public class DependencyGroupMarshaller {
 
 		Document document = null;
 		
-		log.debug("DependencyGroup is " + (group == null ? "" : "not") + " null");
-	
+		
 		if ( new File(file).exists() ) {
 	
 			SAXBuilder builder = new SAXBuilder(false);
@@ -150,10 +149,10 @@ public class DependencyGroupMarshaller {
 		
 		dependencyGroup.setAttribute("timestamp", Long.toString(timeStamp));
 		
-		if ( group.getDependencies().size() == 0 ) {
-			document.getRootElement().addContent(dependencyGroup);
-			return;
-		}
+//		if ( group.getDependencies().size() == 0 ) {
+//			document.getRootElement().addContent(dependencyGroup);
+//			return;
+//		}
 		
 		saveDependencies(group.getDependencies(), timeStamp, dependencyGroup);
 		saveDependencies(group.getExcludedDependencies(), 0, dependencyGroup);
@@ -169,6 +168,7 @@ public class DependencyGroupMarshaller {
 	}
 
 	private static void saveDependencies(List dependencies, long timeStamp, Element dependencyGroup) {
+		log.debug("saving " + dependencies.size() + " dependencies - timestamp=" + timeStamp);
 		List previousDependencies = dependencyGroup.getChildren("dependency");
 		if ( previousDependencies == null ) {
 			previousDependencies = new ArrayList();

@@ -186,7 +186,6 @@ public class DependencyPropertiesDialog extends Dialog {
 		final TextCellEditor cellEditor = new TextCellEditor(table);
 		cellEditor.setValidator(new ICellEditorValidator() {
 			public String isValid(Object value) {
-				System.out.println("VALIDATING");
 				if ( value == null ) {
 					return "null value not allowed";	
 				}
