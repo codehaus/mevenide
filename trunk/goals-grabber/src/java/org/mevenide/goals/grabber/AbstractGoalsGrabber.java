@@ -53,6 +53,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeSet;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -134,9 +135,19 @@ public abstract class AbstractGoalsGrabber implements IGoalsGrabber {
     public String[] getPrereqs(String fullyQualifiedGoalName) {
         return (String[]) prereqs.get(fullyQualifiedGoalName);
     }
-
+	
+	
+	/**
+	 * 
+	 * convert a Collection of Strings into an String[]
+	 * The resulted array is also sorted according to 
+	 * the natural order 
+	 * 
+	 * @see {@link java.util.TreeSet}   
+	 * 
+	 */
     protected String[] toStringArray(Collection stringCollection) {
-    	Object[] obj = stringCollection.toArray();
+    	Object[] obj = new TreeSet(stringCollection).toArray();
     	String[] strg = new String[obj.length];
     	for (int i = 0; i < strg.length; i++) {
     		strg[i] = (String) obj[i];
