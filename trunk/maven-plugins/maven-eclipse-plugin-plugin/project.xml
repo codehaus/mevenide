@@ -6,7 +6,23 @@
     <organization/>
     <inceptionYear>2003</inceptionYear>
     <shortDescription>This plugin helps creating ready to use eclipse plugins and features distribution</shortDescription>
-    <versions/>
+    <versions>
+    	<version>
+    		<id>0.3.1</id>
+    		<name>0.3.1</name>
+    		<tag>V_0_3_1</tag>
+    	</version>
+    	<version>
+    		<id>0.3</id>
+    		<name>0.3</name>
+    		<tag>V_0_3</tag>
+    	</version>
+    	<version>
+    		<id>0.2</id>
+    		<name>0.2</name>
+    		<tag>V_0_2</tag>
+    	</version>
+	</versions>    	    	
     <branches/>
     <mailingLists/>
     <developers>
