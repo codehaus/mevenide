@@ -25,7 +25,7 @@ import org.apache.commons.discovery.tools.DiscoverClass;
  * 
  */
 public abstract class AbstractDependencyResolver implements IDependencyResolver {
-//	private static IDependencyResolver dependencyUtil;
+
 	private static Object lock = new Object();
 	
 	private static Map resolvers = new HashMap();

@@ -16,20 +16,20 @@ package org.mevenide.project.dependency;
 import java.io.File;
 
 /**
- * @todo still some refactoring to be done (group init)
  * 
  * @author Gilles Dodinet (gdodinet@wanadoo.fr)
  * @version $Id$
  * 
  */
 public class DefaultDependencyResolver extends AbstractDependencyResolver {
-	private String absoluteFileName;
+	private String artifact;
 	
 	private String fileName;
 	
 	private String artifactId;
 	private String version;
 	private String extension;
+	private String groupId;
 	
 	/**
 	 * 
@@ -41,7 +41,7 @@ public class DefaultDependencyResolver extends AbstractDependencyResolver {
 	private String[] decomposition = new String[3];
 	
 	public void setFileName(String fName) {
-		this.absoluteFileName = fName;
+		this.artifact = fName;
 		this.fileName = new File(fName).getName();
 		decomposition = new DependencySplitter(fileName).split();
 		init();
@@ -51,6 +51,7 @@ public class DefaultDependencyResolver extends AbstractDependencyResolver {
 		initArtifactId();
 		initVersion();
 		initExtension();
+		initGroupId();
 	}
 	
 	private void initArtifactId() {
@@ -71,7 +72,14 @@ public class DefaultDependencyResolver extends AbstractDependencyResolver {
 		extension = fileName.substring(fileName.lastIndexOf('.') + 1);
 	}
 	
-	
+	private void initGroupId() {
+		File fileToCompute = new File(artifact);
+		File firstLevelParent = fileToCompute.getParentFile();
+		if ( firstLevelParent.getParentFile() != null ) {
+			groupId = firstLevelParent.getParentFile().getName();
+		}
+		if ( !DependencyUtil.isValidGroupId(groupId) ) groupId = null;
+	}
 
 	public String guessArtifactId() {
 		return artifactId;
@@ -85,33 +93,11 @@ public class DefaultDependencyResolver extends AbstractDependencyResolver {
 		return extension;
 	}
 
-
-	/**
-	 * assume a layout similar to the one of the local repo 
-	 * e.g. mevenide/jars/mevenide-core-0.1.jar 
-	 * else it is quite impossible  to guess the groupÎd..
-	 * 
-	 * f.i. if the artefact is located under project_home/lib
-	 * this method returns project_home and thats not quite consistent..
-	 * 
-	 * just wondering : is it so important to have the groupId ? we could just
-	 * leave it as "Not Found" and warn the user about it 
-	 * 
-	 * @wonder get rid of that method ? 
-	 * 
-	 * @param absoluteFileName
-	 * @return
-	 */
 	public String guessGroupId()  {
-		File fileToCompute = new File(absoluteFileName);
-		File firstLevelParent = fileToCompute.getParentFile();
-		String candidate = null;
-		if ( firstLevelParent.getParentFile() != null ) {
-			candidate = firstLevelParent.getParentFile().getName();
-		}
-		if ( !DependencyUtil.isValidGroupId(candidate) ) candidate = null;
-		return candidate;
+		return groupId;
 	}
+
+	
 	
 	
 	

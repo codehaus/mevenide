@@ -73,9 +73,6 @@ public class DependencyFactory {
 		
 		return dependency;
 	}
-	
-//	public IDependencyResolver getDependencyResolver() {
-//		return dependencyResolver;
-//	}
+
 
 }
