@@ -243,7 +243,12 @@ public class TableEntry extends PageEntry {
 			new ISelectionChangedListener() {
 				public void selectionChanged(SelectionChangedEvent e) {
 					IStructuredSelection selection = (IStructuredSelection) e.getSelection();
-					section.getPage().getEditor().setPropertySourceSelection(selection);
+					if (log.isDebugEnabled()) {
+						log.debug("selection changed; empty = " + selection.isEmpty());
+					}
+					if (section.getPage().isVisible()) {
+						section.getPage().getEditor().setPropertySourceSelection(selection);
+					}
 					IPomPropertySource source = (IPomPropertySource) selection.getFirstElement();
 					if (source != null && dependentEntries != null && !dependentEntries.isEmpty()) {
 						Iterator itr = dependentEntries.iterator();
