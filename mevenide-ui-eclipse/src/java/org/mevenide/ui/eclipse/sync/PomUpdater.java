@@ -60,14 +60,14 @@ import org.apache.maven.project.Dependency;
 import org.apache.maven.project.Project;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.preference.PreferenceStore;
-import org.mevenide.ProjectConstants;
+import org.mevenide.ui.eclipse.sync.model.source.SourceDirectory;
+import org.mevenide.project.ProjectConstants;
 import org.mevenide.project.dependency.DependencyUtil;
 import org.mevenide.project.io.ProjectReader;
 import org.mevenide.project.io.ProjectWriter;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.sync.model.dependency.DependencyGroup;
 import org.mevenide.ui.eclipse.sync.model.dependency.DependencyWrapper;
-import org.mevenide.ui.eclipse.sync.model.source.SourceDirectory;
 import org.mevenide.ui.eclipse.sync.model.source.SourceDirectoryGroup;
 import org.mevenide.util.MevenideUtil;
 

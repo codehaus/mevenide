@@ -50,7 +50,7 @@ package org.mevenide.ui.eclipse.sync.model.source;
 
 import java.io.File;
 
-import org.mevenide.ProjectConstants;
+import org.mevenide.project.ProjectConstants;
 
 
 /**
@@ -60,8 +60,9 @@ import org.mevenide.ProjectConstants;
  * 
  */
 public class SourceDirectory {
-	private String directoryPath = "";
-	private String directoryType = "sourceDirectory";
+	
+    private String directoryPath = "";
+	private String directoryType = ProjectConstants.MAVEN_SRC_DIRECTORY;
 	
 	private boolean isInherited;
 	private SourceDirectoryGroup group;
@@ -76,10 +77,10 @@ public class SourceDirectory {
 	}
 	
 	public String getDisplayPath() {
-		if ( directoryPath.equals("${basedir}")) {
-			return "${basedir}";
+		if ( directoryPath.equals(ProjectConstants.BASEDIR)) {
+			return ProjectConstants.BASEDIR;
 		}
-		return "${basedir}" + File.separator +  directoryPath;
+		return ProjectConstants.BASEDIR + File.separator +  directoryPath;
 	}
 	
 	public String getDirectoryPath() {
