@@ -17,7 +17,7 @@
           <td>maven.eclipse.plugin.artifact.type</td>
           <td>Optional. Default value is <code>plugin</code>.</td>
           <td>
-            <p>Describes the type of the generated artifact - can be of 'plugin', 'feature' or 'site'.</p>
+            <p>Describes the type of the generated artifact - can be of 'plugin', 'feature', 'site', 'help' or 'lib'.</p>
           </td>
         </tr>
         <tr>
