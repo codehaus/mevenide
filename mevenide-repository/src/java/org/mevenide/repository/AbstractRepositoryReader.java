@@ -18,6 +18,7 @@
 package org.mevenide.repository;
 
 import java.io.File;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -30,7 +31,13 @@ import org.mevenide.project.dependency.IDependencyResolver;
  */
 abstract class AbstractRepositoryReader implements IRepositoryReader {
     /** Creates a new instance of LocalRepositoryReader */
-    protected AbstractRepositoryReader() {
+    private URI rootURI;
+    protected AbstractRepositoryReader(URI root) {
+        rootURI = root;
+    }
+    
+    public URI getRootURI() {
+        return rootURI;
     }
     
     protected final RepoPathElement copyElement(RepoPathElement old) {
@@ -49,6 +56,8 @@ abstract class AbstractRepositoryReader implements IRepositoryReader {
                   && resolver.guessVersion() != null) {
             boolean filterOut = true;
             if ("plugin".equals(parent.getType()) && "jar".equals(resolver.guessExtension())) {
+                filterOut = false;
+            } else if ("distribution".equals(parent.getType()) && "zip".equals(resolver.guessExtension())) {
                 filterOut = false;
             } else if (resolver.guessType().equals(resolver.guessExtension())) {
                 //default behaviour, take only *.jar in jars/ etc.
@@ -71,6 +80,9 @@ abstract class AbstractRepositoryReader implements IRepositoryReader {
             if (!knownArtifacts.contains(resolver.guessArtifactId())) {
                 boolean filterOut = true;
                 if ("plugin".equals(parent.getType()) && "jar".equals(resolver.guessExtension())) {
+                    filterOut = false;
+                } else if ("distribution".equals(parent.getType()) 
+                    && ("zip".equals(resolver.guessExtension()) || "tar.gz".equals(resolver.guessExtension()))) {
                     filterOut = false;
                 } else if (resolver.guessType().equals(resolver.guessExtension())) {
                     //default behaviour, take only *.jar in jars/ etc.

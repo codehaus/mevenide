@@ -25,6 +25,7 @@ import java.util.Iterator;
 import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
@@ -37,10 +38,18 @@ import org.mevenide.project.dependency.URIDependencyResolver;
  * @author  Milos Kleint (mkleint@codehaus.org)
  */
 class HttpRepositoryReader extends AbstractRepositoryReader {
-    private URI root;
     /** Creates a new instance of HttpRepositoryReader */
+    private HttpClient client;
     public HttpRepositoryReader(URI rootUri) {
-        root = rootUri;
+        super(rootUri);
+        client = new HttpClient();
+    }
+    
+    public HttpRepositoryReader(URI rootUri, String host, String port) {
+        this(rootUri);
+        HostConfiguration config = new HostConfiguration();
+        config.setProxy(host, Integer.parseInt(port));
+        client.setHostConfiguration(config);
     }
 
     public RepoPathElement[] readElements(RepoPathElement element) throws Exception {
@@ -48,8 +57,8 @@ class HttpRepositoryReader extends AbstractRepositoryReader {
             return new RepoPathElement[0];
         }
         String part = element.getPartialURIPath();
-        StringBuffer complete = new StringBuffer(root.toString());
-        if (!root.toString().endsWith("/")) {
+        StringBuffer complete = new StringBuffer(getRootURI().toString());
+        if (!getRootURI().toString().endsWith("/")) {
             complete.append("/");
         }
         complete.append(part);
@@ -60,7 +69,6 @@ class HttpRepositoryReader extends AbstractRepositoryReader {
         // TODO code application logic here
         HttpMethod method = new GetMethod(uri.toString());
         try {
-            HttpClient client = new HttpClient();
             client.executeMethod(method);
             String response = method.getResponseBodyAsString();
             return createChildren(element, getNames(response), uri);

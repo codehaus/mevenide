@@ -24,7 +24,7 @@ package org.mevenide.repository;
  * is calling getChildren()
  * @author  Milos Kleint (mkleint@codehaus.org)
  */
-public class RepoPathElement {
+public final class RepoPathElement {
     /**
      * constant returned from getLevel(), 
      * denotes an instance that has nothing filled out.
@@ -159,5 +159,8 @@ public class RepoPathElement {
         children = childs;
     } 
 
+    public boolean isRemote() {
+        return reader.getRootURI().toString().startsWith("http://");
+    }
     
 }
