@@ -45,7 +45,8 @@ public abstract class AbstractRunner {
                 finalOptions = new String[3];
                 finalOptions[0] = "-b";
                 finalOptions[1] = "-f";
-                finalOptions[2] = basedir != null ? basedir + File.separator + "project.xml" : "project.xml" ;
+                String tmpFile = basedir != null ? basedir + File.separator + "project.xml" : "project.xml" ;
+				finalOptions[2] = "file:///" + new File(tmpFile).getAbsolutePath();
             }
             return finalOptions;
         }
@@ -68,12 +69,13 @@ public abstract class AbstractRunner {
 	 */
 	public void run(String[] options, String[] goals) {
 		String userDir = null;
+		
 		try {
 			//backup user.dir. still needed ?
             userDir = System.getProperty("user.dir");
 
 			initEnvironment();
-
+			
 			launchVM(options, goals);
 
 		} 
