@@ -18,7 +18,9 @@ package org.codehaus.mevenide.ui.eclipse.launch;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringTokenizer;
 import org.codehaus.mevenide.m2.embedder.M2Embedder;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPlatformRunnable;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.ui.externaltools.internal.launchConfigurations.ExternalToolsUtil;
@@ -41,8 +43,8 @@ public class M2Runner implements IPlatformRunnable {
         
         embedder.setFile(file);
         
-        List goals = new ArrayList();
-        goals.add("surefire:test");
+        List goals = getGoals();
+        
         embedder.setGoals(goals);
         
         embedder.run();
@@ -50,6 +52,16 @@ public class M2Runner implements IPlatformRunnable {
         return null;
     }
     
+    private List getGoals() throws CoreException {
+        List goals = new ArrayList();
+        String serializedGoals = configuration.getAttribute(M2ArgumentsTab.GOALS_TO_RUN, ""); //$NON-NLS-1$
+        StringTokenizer tokenizer = new StringTokenizer(serializedGoals, " ");
+		while ( tokenizer.hasMoreTokens() ) {
+		    goals.add(tokenizer.nextToken());
+		}
+        return goals;
+    }
+
     public void setConfiguration(ILaunchConfiguration configuration) {
         this.configuration = configuration;
     }
