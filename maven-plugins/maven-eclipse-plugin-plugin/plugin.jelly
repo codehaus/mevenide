@@ -7,13 +7,18 @@
 		 xmlns:util="jelly:util"
 		 xmlns:x="jelly:xml"
 		 xmlns:artifact="artifact">
-
+  
+  <!-- 
+    @warn this plugin will be refactored as soon as soon i find some time to do it, and all 
+          this jelly crap will be removed in favor of pojos ready to be integrated into m2
+   -->
+  
   <define:taglib uri="eclipse-plugin">
   	
   	<define:tag name="check-type">
   	
-  	  <j:if test="${type != 'plugin' and type != 'help' and type != 'feature' and type != 'site'}">
-	  	<ant:fail message="Unrecognized Eclipse plugin type : ${maven.eclipse.plugin.type}. Should be one of {'plugin', 'feature', 'site', 'help'}"/>
+  	  <j:if test="${type != 'plugin' and type != 'help' and type != 'lib' and type != 'feature' and type != 'site'}">
+	  	<ant:fail message="Unrecognized Eclipse plugin type : ${maven.eclipse.plugin.type}. Should be one of {'plugin', 'feature', 'site', 'help', 'lib'}"/>
 	  </j:if>
 	  
   	</define:tag>
@@ -73,6 +78,37 @@
   	  </ant:filterset>
   	</ant:copy>
   	
+  </goal>
+  
+  <!-- copied from eclipse-plugin:create-help-dist -->
+  <goal name="eclipse-plugin:create-lib-dist" prereqs="eclipse-plugin:init,eclipse-plugin:install-artifact"
+  		description="create an lib only plugin dist file and put it in ${maven.eclipse.plugin.dist.dir}">
+  	  <j:set var="distVersion" value="${maven.eclipse.plugin.artifact.version}"/>
+	  <j:set var="pluginId" value="${maven.eclipse.plugin.artifact.id}"/>
+  	  <j:set var="pluginFolder">${pluginId.replaceAll('-', '.')}</j:set> 
+      <j:set var="pluginArchive" value="${maven.eclipse.plugin.dist.dir}/${pluginFolder}_${distVersion}.jar"/>
+    
+      <!-- @todo update plugin descriptor -->
+  	  <mevenide:update-plugin-libraries pom="${pom}"/>
+  	  
+  	  <ant:move todir="${basedir}" filtering="true">
+        <fileset dir="${maven.eclipse.plugin.temp.dir}">
+          <include name="plugin.xml"/>
+        </fileset>
+        <ant:filterset>
+  	  	  <ant:filterset refid="${maven.eclipse.plugin.filterset.id}"/>
+  	  	  <ant:filter token="maven.eclipse.plugin.artifact.id" value="${maven.eclipse.plugin.artifact.id}"/>
+  	  	  <ant:filter token="maven.eclipse.plugin.artifact.version" value="${maven.eclipse.plugin.artifact.version}"/>
+  	      <ant:filter token="maven.eclipse.plugin.artifact.internal.id" value="${maven.eclipse.plugin.artifact.internal.id}"/>
+  	  	  <ant:filter token="maven.eclipse.plugin.artifact.internal.version" value="${maven.eclipse.plugin.artifact.internal.version}"/>
+  	    </ant:filterset>
+      </ant:move>
+      
+      <!-- build plugin distribution file. -->
+      <ant:jar destfile="${pluginArchive}">
+        <ant:fileset dir="${basedir}" includes="${maven.eclipse.plugin.lib.dir}/**/*"/>
+        <ant:fileset dir="${basedir}" includes="${maven.eclipse.plugin.includes}"/>
+      </ant:jar>
   </goal>
   
   <goal name="eclipse-plugin:create-help-dist" prereqs="eclipse-plugin:init,eclipse-plugin:install-artifact"
@@ -135,7 +171,7 @@
         <ant:fileset dir="${maven.eclipse.plugin.temp.dir}"/>
       </ant:jar>
       
-      <ant:delete dir="${maven.eclipse.plugin.temp.dir}" quiet="true"/>
+      <!-- ant:delete dir="${maven.eclipse.plugin.temp.dir}" quiet="true"/ -->
       
       <!-- @todo customize me, for runtime testing ? -->
       <ant:copy todir="${basedir}" file="${maven.build.dir}/${maven.final.name}.jar"/>
@@ -164,7 +200,7 @@
       <!-- iterate and build each plugin part of this feature and copy them to $${maven.eclipse.plugin.dist.dir}/plugins -->
       <util:tokenize var="featurePlugins" delim=",">${maven.eclipse.plugin.feature.plugins}</util:tokenize>	
 	  <j:forEach var="plugin" items="${featurePlugins}">
-	  	
+	  	<ant:echo>HEEEERE</ant:echo>
 	  	<!-- create plugin archive -->
 		<maven:pom var="pluginPom" projectDescriptor="${plugin}"/>
 		<maven:maven goals="eclipse-plugin:create-artifact-dist" descriptor="${plugin}"/>

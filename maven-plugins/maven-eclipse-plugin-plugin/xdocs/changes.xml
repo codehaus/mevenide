@@ -17,5 +17,10 @@
         	Install generated update site and bundled site archive into local repo
         </action>
       </release>
+      <release version="0.3" date="in CVS">
+        <action dev="gdodinet" type="add">
+          Add support for Lib-only eclipse plugin
+        </action>
+      </release>
    </body>
 </document>

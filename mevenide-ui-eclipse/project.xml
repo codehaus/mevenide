@@ -41,7 +41,7 @@
             <url>http://jakarta.apache.org/commons/httpclient/</url>
             <type>jar</type>
             <properties>
-            	<eclipse.plugin.bundle>true</eclipse.plugin.bundle>
+            	<eclipse.plugin.bundle>false</eclipse.plugin.bundle>
             </properties>
         </dependency>
         <dependency>

@@ -428,7 +428,7 @@ public class Mevenide extends AbstractUIPlugin {
 		this.defaultGoals = defaultGoals;
 	}
     public String getPluginsInstallDir() {
-        return new File(mavenLocalHome, "plugins").getAbsolutePath();
+        return new File(mavenLocalHome, "cache").getAbsolutePath();
     }
     public String getMavenLocalHome() {
         return mavenLocalHome;

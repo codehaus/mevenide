@@ -16,5 +16,6 @@
    <requires>
       <import plugin="@org.mevenide.grabber.id@"/>
       <import plugin="@org.mevenide.config.id@"/>
+      <import plugin="org.apache.maven"/>
    </requires>
 </plugin>
