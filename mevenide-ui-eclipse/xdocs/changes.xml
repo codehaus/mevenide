@@ -7,7 +7,7 @@
 
   <body>
 	
-    <release version="0.2.1" date="20040620" date="in CVS">
+    <release version="0.2.1" date="in CVS">
    	  <action dev="gdodinet" type="fix" issue="MEVENIDE-11">
         Pages correctly refreshed if they have already been opened (see also MEVENIDE-23)
       </action>
@@ -33,7 +33,7 @@
         Maven Plugin Provider Infrastructure allows plugin providers to statically contribute to Mevenide preference pages.
       </action>
       <action dev="gdodinet" type="update">
-        preference pages reorg for better readibility.
+        Preference pages reorganization for better readibility.
       </action>
       <action dev="jens" type="add">
         Add POM Template management through a preference pages.

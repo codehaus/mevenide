@@ -3,10 +3,9 @@
 <schema targetNamespace="org.mevenide.ui">
 <annotation>
       <appInfo>
-         <meta.schema plugin="org.mevenide.ui" id="preference" name="Mevenide Preference Extension Point"/>
+         <meta.schema plugin="org.mevenide.ui" id="preference" name="Maven Plugins Provider Extension Point"/>
       </appInfo>
       <documentation>
-         TBD
          This extension allows Maven plugin provider to add Preferences Page under Maven Preference Node in a strictly declarative way.
       </documentation>
    </annotation>
@@ -40,10 +39,48 @@
       </complexType>
    </element>
 
+   <element name="plugin-provider">
+      <annotation>
+         <documentation>
+            aggregates specific properties used in the context of a maven plugin.
+         </documentation>
+      </annotation>
+      <complexType>
+         <sequence>
+            <element ref="description" minOccurs="0" maxOccurs="1"/>
+            <sequence>
+               <element ref="property"/>
+            </sequence>
+         </sequence>
+         <attribute name="name" type="string" use="required">
+            <annotation>
+               <documentation>
+                  name of the maven plugin, for instance if installing maven-xdoc-plugin, name should be &apos;XDoc&apos;.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string" use="required">
+            <annotation>
+               <documentation>
+                  unique identifier of the maven plugin, for instance if installing maven-xdoc-plugin, name should be &apos;maven-xdoc-plugin&apos;.
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="description" type="string">
+      <annotation>
+         <documentation>
+            an optional description of the Maven plugin.
+         </documentation>
+      </annotation>
+   </element>
+
    <element name="property">
       <annotation>
          <documentation>
-            defines a new specific property used by the maven plugin.
+            defines a new specific property used by the maven plugin. No validator can be specified yet, but it is definitively on the TODO list.
          </documentation>
       </annotation>
       <complexType>
@@ -85,33 +122,6 @@
       </complexType>
    </element>
 
-   <element name="plugin-provider">
-      <annotation>
-         <documentation>
-            aggregates specific properties used in the context of a maven plugin.
-         </documentation>
-      </annotation>
-      <complexType>
-         <sequence>
-            <element ref="property" minOccurs="1" maxOccurs="unbounded"/>
-         </sequence>
-         <attribute name="name" type="string" use="required">
-            <annotation>
-               <documentation>
-                  name of the maven plugin, for instance if installing maven-xdoc-plugin, name should be &apos;XDoc&apos;.
-               </documentation>
-            </annotation>
-         </attribute>
-         <attribute name="id" type="string" use="required">
-            <annotation>
-               <documentation>
-                  unique identifier of the maven plugin, for instance if installing maven-xdoc-plugin, name should be &apos;maven-xdoc-plugin&apos;.
-               </documentation>
-            </annotation>
-         </attribute>
-      </complexType>
-   </element>
-
    <annotation>
       <appInfo>
          <meta.section type="since"/>
@@ -126,7 +136,24 @@
          <meta.section type="examples"/>
       </appInfo>
       <documentation>
-         [Enter extension point usage example here.]
+         &lt;pre&gt;
+&lt;extension point=&quot;org.mevenide.ui.preference&quot;&gt;
+  &lt;plugin-provider id=&quot;maven-eclipse-plugin-plugin&quot; 
+                   name=&quot;PDE Plugin&quot;&gt;
+      &lt;description&gt;%Plugin.Description&lt;/description&gt;
+      &lt;property name=&quot;maven.eclipse.plugin.mode&quot; 
+                label=&quot;Build Mode&quot;
+                default=&quot;bundle&quot;
+                required=&quot;false&quot;
+                description=&quot;%BuildMode.Description&quot;/&gt;
+      &lt;property name=&quot;maven.eclipse.plugin.dist.dir&quot; 
+                label=&quot;Distribution Directory&quot;
+                default=&quot;${maven.build.dir}/eclipse/dist&quot;
+                required=&quot;true&quot;
+                description=&quot;%DistDirectory.Description&quot;/&gt;
+  &lt;/plugin-provider&gt;
+&lt;/extension&gt;
+&lt;/pre&gt;
       </documentation>
    </annotation>
 

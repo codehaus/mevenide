@@ -31,7 +31,10 @@
 							<a href="contentassist.html" class="documentLink">Jelly Editor</a>
 						</li>
 						<li>
-							<a href="wizard.html" class="documentLink">Maven wizard</a>
+							<a href="wizard.html" class="documentLink">Maven wizards</a>
+						</li>
+						<li>
+							<a href="provider-infrastructure.html" class="documentLink">Plugins Provider Infrastructure</a>
 						</li>
 					</ul>
 				</div>

@@ -1,20 +1,22 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <document>
   <properties>
-	<author email="rhill@wanadoo.fr">Gilles Dodinet</author>
+	<author email="rhill2@free.fr">Gilles Dodinet</author>
 	<title>Features</title>
   </properties>
   <body>
 	<section name="Features List">
 	  <div id="documentContent">
 		<p>
-		  Implemented features fall into five categories :
+		  Implemented features fall into seven categories :
 		  <ul>
 			<li><a href="#Bidirectional Synchronization">Bidirectional Synchronization</a></li>
 			<li><a href="#Maven Launcher">Maven Launcher</a></li>
 			<li><a href="#POM Editor">POM Editor</a></li>
 			<li><a href="#Jelly Editor">Jelly Editor</a></li>
 			<li><a href="#Maven oriented wizards">Maven Oriented Wizards</a></li>
+			<li><a href="#Templates">Templates</a></li>
+			<li><a href="#Provider Infrastructure">Provider Infrastructure</a></li>
 		  </ul>
 		</p>
 	  </div>
@@ -48,7 +50,7 @@
 			<li>Doesnot support "Output folder per Source folder" Eclipse option</li>
 			<li>Doesnot support Eclipse 3.0-M9 inclusion patterns</li>
 			<li>Link to external resources/files not tested</li>
-			<li>POM defining entities may not be accurately synchronized</li>
+			<li>POM defining entities may not be accurately synchronized because we donot support entities writing yet</li>
 		</ul>
 	  </p>
 	</div>
@@ -68,7 +70,6 @@
 		<ul>
 			<li>No debug mode (Jelly debugging, attach to a remote VM, etc.)</li>
 			<li>Cannot set JVM options</li>
-			<li>Doesnot Refresh upon completion (see MEVENIDE-20)</li>
 		</ul>
 	  </p>
 	</div>
@@ -78,6 +79,7 @@
 	  <p>
 		<ul>
 		  <li>Multipart Editor based on Eclipse Forms API</li>
+		  <li>Can now read POMs that use entities</li>
 		</ul>
 	  </p>
 	  <p>
@@ -89,7 +91,7 @@
 	  <p>
 		<u>Known limitations</u><br/>
 		<ul>
-			<li>No xml entities support yet - we need to think about some solutions to support full bidirectionnal I/O - altho it is definitively on the TODO list.</li>
+			<li>No support to write xml entities support yet - we need to think about some solutions to support full bidirectionnal I/O.</li>
 			<li>No contentassist in the soure page yet</li>
 			<li>In the current state, POM Editor wont open non-conform files</li>
 		</ul>
@@ -110,7 +112,7 @@
 	  <p>
 		<u>Known issues</u><br/>
 		<ul>
-			<li>Big blocks of TEXT or COMMENT seem to make the editor lag really badly (non 100% reproductible)</li>
+			<li>Big blocks of TEXT or COMMENT seem to make the editor lag really badly (<b>non 100% reproductible</b>)</li>
 			<li>Conflicts between custom goals and global goals when namespace is identical (e.g. 'war:some-custom-goal')</li>
 		</ul>
 	  </p>
@@ -131,14 +133,46 @@
 	<div id="documentContent">
 	  <p>
 		<ul>
-		  <li>Simple Maven Wizard based on java project wizard</li>
-		  <li>Creates a POM according to the informations entered in the wizard</li>
+		  <li>Simple Maven Project Wizard based on Eclipse java project wizard</li>
+		  <li>Maven Project Wizard creates a POM according to the informations entered in the wizard</li>
+		  <li>Simple POM Wizard based on Eclipse simple file wizard</li>
 		</ul>
 	  </p>
 	  <p>
 		<u>Known limitations</u><br/>
 		<ul>
 			<li>Cannot fully customize the generated POM before the creation</li>
+		</ul>
+	  </p>
+	</div>
+  </section>
+  <section name="Templates">
+	<div id="documentContent">
+	  <p>
+		<ul>
+		  <li>POM Templates can be managed (creation/deletion) through the Preference pages</li>
+		  <li>Pom Creation Action allows to quickly generate a new POM, possibly using a predefined template.</li>
+		</ul>
+	  </p>
+	  <p>
+		<u>Known limitations</u><br/>
+		<ul>
+			<li>Cannot edit templates from within Eclipse yet</li>
+		</ul>
+	  </p>
+	</div>
+  </section>
+  <section name="Provider Infrasctructure">
+	<div id="documentContent">
+	  <p>
+		<ul>
+		  <li>Maven Plugin Providers can now plug in Mevenide really easily thanks org.mevenide.ui.preference extension point</li>
+		</ul>
+	  </p>
+	  <p>
+		<u>Known limitations</u><br/>
+		<ul>
+			<li>Cannot edit templates from within Eclipse yet</li>
 		</ul>
 	  </p>
 	</div>

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<document>
+  <properties>
+	<author email="rhill2@free.fr">Gilles Dodinet</author>
+	<title>Maven Plugin Provider Infrastructure</title>
+  </properties>
+  <body>
+	<section name="Maven Plugin Provider Infrastructure">
+	  <subsection name="Rationale">
+	    <div id="documentContent">
+		  <p>
+			There are many Maven plugins that are available out there 
+			and there will be ever more in the future. Making the best
+			use of them requires the user to have a good knowledge of the 
+			exposed properties.
+			<br/>
+			Mevenide can help by providing a infrastructure to help Maven 
+			Plugins to expose their properties in a easy way.
+		  </p>
+	    </div>
+	  </subsection>
+	  <subsection name="Plug into Mevenide">
+	  	<div id="documentContent">
+		  <p>
+			To attain that goal Maven plugins providers can declaratively 
+			plug into Mevenide preference pages. Screenshot 1 below is an 
+			example of that interaction : 
+			<br/>
+			<center>
+				<img border="1px" src="images/plugins-providers.png"/>
+				<br/><br/>
+				<font size="-1"><b>Screenshot 1</b> PDE plugin provider</font>
+				<br/><br/>
+			</center>
+			To add a new page, plugins provider have to contribute a new 
+			Eclipse plugin that use the org.mevenide.ui.preference extension 
+			point. Please refer to the <a href="extension-point.html">extension point documentation</a>
+			for more details.
+			<br/>
+			A template  for the <a href="http://maven.apache.org/reference/plugins/genapp/">Genapp plugin</a> 
+			is available in <a href="http://cvs.mevenide.codehaus.org/mevenide-plugin-provider-genapp/">Mevenide CVS Head</a> 
+			for quicker startup.
+			<br/>
+			However we are aware that all needed informations is already availabel in the goals.xml and 
+			properties.xml documents. So in the near future we will provide a Maven plugin to automatically generate 
+			the Eclipse plugin.
+		  </p>
+	    </div>
+	  </subsection>
+	</section>
+	<section>
+		<p>
+			<navbar prev="wizard.html" toc="help.html" />
+		</p>
+	</section>
+  </body>
+</document>
