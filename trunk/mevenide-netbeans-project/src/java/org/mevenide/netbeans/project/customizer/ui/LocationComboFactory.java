@@ -44,9 +44,9 @@ public final class LocationComboFactory {
         }
         LocationComboBox.LocationWrapper[] wraps;
         if (justSingle) {
-            wraps = new LocationComboBox.LocationWrapper[5];
+            wraps = new LocationComboBox.LocationWrapper[6];
         } else {
-            wraps = new LocationComboBox.LocationWrapper[7];
+            wraps = new LocationComboBox.LocationWrapper[8];
         }
         // project.properties file
         String[] actions = (justSingle ? 
@@ -132,7 +132,11 @@ public final class LocationComboFactory {
                              null, 
                              IPropertyLocator.LOCATION_NOT_DEFINED,
                              actions);
-        
+        icon = new ImageIcon(Utilities.loadImage("org/mevenide/netbeans/project/resources/LocNotDefined.png"));
+        wraps[5] = new LocationComboBox.LocationWrapper("Defined in System Environment Variable", icon,
+                             null, 
+                             IPropertyLocator.LOCATION_SYSENV,
+                             new String[0]);
         if (!justSingle) {
             // parent project.properties file
             actions = new String[] {
@@ -143,7 +147,7 @@ public final class LocationComboFactory {
                 OriginChange.ACTION_RESET_TO_DEFAULT
             };
             icon = new ImageIcon(Utilities.loadImage("org/mevenide/netbeans/project/resources/LocParentProject.png"));
-            wraps[5] = new LocationComboBox.LocationWrapper("Defined in parent project.properties", icon,
+            wraps[6] = new LocationComboBox.LocationWrapper("Defined in parent project.properties", icon,
                             FileUtilities.locationToFile(IPropertyLocator.LOCATION_PARENT_PROJECT, project),
                             IPropertyLocator.LOCATION_PARENT_PROJECT,
                             actions);
@@ -156,7 +160,7 @@ public final class LocationComboFactory {
                 OriginChange.ACTION_RESET_TO_DEFAULT
             };
             icon = new ImageIcon(Utilities.loadImage("org/mevenide/netbeans/project/resources/LocParentBuild.png"));
-            wraps[6] = new LocationComboBox.LocationWrapper("Defined in parent build.properties", icon,
+            wraps[7] = new LocationComboBox.LocationWrapper("Defined in parent build.properties", icon,
                             FileUtilities.locationToFile(IPropertyLocator.LOCATION_PARENT_PROJECT_BUILD, project),
                             IPropertyLocator.LOCATION_PARENT_PROJECT_BUILD,
                             actions);
