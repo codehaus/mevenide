@@ -54,7 +54,7 @@ import org.eclipse.ui.PlatformUI;
 import org.mevenide.MevenideException;
 import org.mevenide.core.AbstractRunner;
 import org.mevenide.core.ArgumentsManager;
-import org.mevenide.ui.eclipse.jdt.launching.VMLauncherUtility;
+import org.mevenide.ui.eclipse.launch.jdt.VMLauncherUtility;
 
 //import com.werken.forehead.Forehead;
 

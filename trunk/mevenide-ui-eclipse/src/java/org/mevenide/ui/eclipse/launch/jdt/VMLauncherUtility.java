@@ -5,7 +5,7 @@
  * http://www.eclipse.org/legal/cpl-v10.html
  * 
  */
-package org.mevenide.ui.eclipse.jdt.launching;
+package org.mevenide.ui.eclipse.launch.jdt;
 
 
 import org.eclipse.core.runtime.IProgressMonitor;

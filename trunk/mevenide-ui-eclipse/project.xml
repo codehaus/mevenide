@@ -32,12 +32,12 @@
         </dependency>
         
         <!-- mevenide dependencies -->
-        <dependency>
+        <!-- dependency>
            <groupId>mevenide</groupId>
            <artifactId>mevenide-goals-grabber</artifactId>
            <version>0.1</version>
            <url/>
-        </dependency>
+        </dependency -->
         <dependency>
            <groupId>mevenide</groupId>
            <artifactId>mevenide-core</artifactId>
