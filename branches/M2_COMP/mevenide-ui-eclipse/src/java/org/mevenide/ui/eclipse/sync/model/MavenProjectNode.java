@@ -22,11 +22,11 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.maven.artifact.MavenArtifact;
 import org.apache.maven.artifact.factory.DefaultMavenArtifactFactory;
-import org.apache.maven.model.Dependency;
 import org.apache.maven.project.MavenProject;
-import org.mevenide.project.dependency.DependencyUtil;
 
 /**  
  * 
@@ -35,6 +35,8 @@ import org.mevenide.project.dependency.DependencyUtil;
  * 
  */
 public class MavenProjectNode implements ISynchronizationNode, ISelectableNode {
+	
+	private static final Log log = LogFactory.getLog(MavenProjectNode.class);
 	
 	private MavenProject mavenProject;
 	
@@ -73,31 +75,29 @@ public class MavenProjectNode implements ISynchronizationNode, ISelectableNode {
 	
 	private void joinEclipseProjectArtifacts() {
 	    List tempNodes = new ArrayList(Arrays.asList(artifactNodes));
-	    List eclipseArtifacts = parentNode.getEclipseClasspathArtifacts();
+	    List eclipseArtifacts = createNodes(parentNode.getEclipseClasspathArtifacts());
 	    for (int i = 0; i < eclipseArtifacts.size(); i++) {
-	    	MavenArtifact eclipseArtifact = (MavenArtifact) eclipseArtifacts.get(i);
-	    	if ( !isPresent(eclipseArtifact)  ) {
-	    		MavenArtifactNode node = new MavenArtifactNode(eclipseArtifact, this);
-	    		node.setDirection(ISelectableNode.OUTGOING_DIRECTION);
-			    tempNodes.add(node);
+	    	MavenArtifactNode eclipseArtifactNode = (MavenArtifactNode) eclipseArtifacts.get(i);
+	    	if ( !tempNodes.contains(eclipseArtifactNode)  ) {
+				eclipseArtifactNode.setDirection(ISelectableNode.OUTGOING_DIRECTION);
+				tempNodes.add(eclipseArtifactNode);
 			}
-//	    	else {
-//	    	    //remove artifact from tempNodes 	
-//	    	}
+	    	else {
+				tempNodes.remove(eclipseArtifactNode); 	
+	    	}
 		}
 		artifactNodes = (MavenArtifactNode[]) tempNodes.toArray(new MavenArtifactNode[0]);
 	}
 	
-	private boolean isPresent(MavenArtifact artifact) {
-	    for (int i = 0; i < artifactNodes.length; i++) {
-	    	MavenArtifactNode node = (MavenArtifactNode) artifactNodes[i];
-	        Dependency dependency = ((MavenArtifact) node.getData()).getDependency(); 
-			if ( DependencyUtil.areEquals(dependency, artifact.getDependency()) ) {
-			    return true;
-			}
-		}
-	    return false;
-	} 
+	private List createNodes(List mavenArtifacts) {
+		List nodeList = new ArrayList(mavenArtifacts.size());
+		for (int i = 0; i < mavenArtifacts.size(); i++) {
+	    	MavenArtifact eclipseArtifact = (MavenArtifact) mavenArtifacts.get(i);
+	    	MavenArtifactNode node = new MavenArtifactNode(eclipseArtifact, this);
+	    	nodeList.add(node);
+	    }
+		return nodeList;
+	}
 	
 	private void initializeDirectories() {
 		directoryNodes = new DirectoryNode[0];
@@ -145,6 +145,15 @@ public class MavenProjectNode implements ISynchronizationNode, ISelectableNode {
 			}
 		}
 		return false;
+	}
+	
+	public boolean equals(Object obj) {
+		if ( !(obj instanceof MavenProjectNode) ) {
+			return false;
+		}
+		MavenProjectNode node = ((MavenProjectNode) obj);
+		return mavenProject.getName().equals(node.mavenProject.getName())
+		       && parentNode.equals(node.parentNode);
 	}
 }
 

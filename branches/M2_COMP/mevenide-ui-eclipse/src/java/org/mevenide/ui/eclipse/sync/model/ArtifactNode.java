@@ -103,7 +103,6 @@ public abstract class ArtifactNode implements ISynchronizationNode, ISelectableN
 	protected abstract String getIgnoreLine();
 	
 	public boolean select(int direction) {
-		System.err.println("selecting node [" + getData() + "-" + getDirection() + "]" + direction);
 		return this.direction == direction;
 	}
 }

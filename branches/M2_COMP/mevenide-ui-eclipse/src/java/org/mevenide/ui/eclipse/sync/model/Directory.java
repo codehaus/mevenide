@@ -39,6 +39,13 @@ public class Directory {
         return path;
     }
     
+    public boolean equals(Object obj) {
+    	if ( !(obj instanceof Directory) ) {
+    		return false;
+    	}
+    	Directory dir = (Directory) obj;
+    	return path.equals(dir.path) && type.equals(dir.path); 
+	}
     public String getPath() {
         return path;
     }

@@ -16,7 +16,7 @@
  */
 package org.mevenide.ui.eclipse.editors.pages;
 
-import org.apache.maven.model.Repository;
+import org.apache.maven.model.Scm;
 import org.apache.maven.project.MavenProject;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -131,7 +131,7 @@ public class ScmConnectionSection extends PageSection {
 	}
 	
 	private String getConnection(MavenProject pom) {
-		return pom.getModel().getRepository() != null ? pom.getModel().getRepository().getConnection() : null;
+		return pom.getModel().getScm() != null ? pom.getModel().getScm().getConnection() : null;
 	}
 	
 	private String getInheritedConnection() {
@@ -145,7 +145,7 @@ public class ScmConnectionSection extends PageSection {
 	}
 	
 	private String getDeveloperConnection(MavenProject pom) {
-		return pom.getModel().getRepository() != null ? pom.getModel().getRepository().getDeveloperConnection() : null;
+		return pom.getModel().getScm() != null ? pom.getModel().getScm().getDeveloperConnection() : null;
 	}
 	
 	private String getInheritedDeveloperConnection() {
@@ -159,7 +159,7 @@ public class ScmConnectionSection extends PageSection {
 	}
 	
 	private String getWebAddress(MavenProject pom) {
-		return pom.getModel().getRepository() != null ? pom.getModel().getRepository().getUrl() : null;
+		return pom.getModel().getScm() != null ? pom.getModel().getScm().getUrl() : null;
 	}
 	
 	private String getInheritedWebAddress() {
@@ -168,11 +168,11 @@ public class ScmConnectionSection extends PageSection {
 			: null;
 	}
 
-	private Repository getOrCreateRepository(MavenProject pom) {
-		Repository repository = pom.getModel().getRepository();
+	private Scm getOrCreateRepository(MavenProject pom) {
+		Scm repository = pom.getModel().getScm();
 		if (repository == null) {
-			repository = new Repository();
-			pom.getModel().setRepository(repository);
+			repository = new Scm();
+			pom.getModel().setScm(repository);
 		}
 		return repository;
 	}
