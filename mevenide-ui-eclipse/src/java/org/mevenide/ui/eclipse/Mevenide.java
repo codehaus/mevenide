@@ -51,6 +51,7 @@ import org.mevenide.environment.ConfigUtils;
 import org.mevenide.environment.CustomLocationFinder;
 import org.mevenide.environment.LocationFinderAggregator;
 import org.mevenide.runner.RunnerHelper;
+import org.mevenide.ui.eclipse.nature.ActionDefinitionsManager;
 import org.mevenide.ui.eclipse.preferences.MevenidePreferenceKeys;
 import org.mevenide.ui.eclipse.preferences.dynamic.DynamicPreferencePageFactory;
 import org.mevenide.ui.eclipse.util.FileUtils;
@@ -63,8 +64,7 @@ import org.osgi.framework.BundleContext;
  * @author Gilles Dodinet (gdodinet@wanadoo.fr)
  * @version $Id$
  * 
- * @todo move preferences related fields outside of Mevenide class 
- * @todo get rid of the static method and make use of new bundle capabilities
+ * @todo clean-me move preferences related fields outside of Mevenide class 
  *  
  */
 public class Mevenide extends AbstractUIPlugin {
@@ -111,6 +111,16 @@ public class Mevenide extends AbstractUIPlugin {
     private static final String DEPENDENCY_TYPE_ASPECT = "aspect"; //$NON-NLS-1$
     private static final String DEPENDENCY_TYPE_WAR = "war"; //$NON-NLS-1$
 
+    
+    private ActionDefinitionsManager actionDefinitionsManager;
+    
+    public ActionDefinitionsManager getActionDefinitionsManager() {
+        if ( actionDefinitionsManager == null ) {
+            actionDefinitionsManager = new ActionDefinitionsManager();
+        }
+        return actionDefinitionsManager;
+    }
+    
     public static final String[] KNOWN_DEPENDENCY_TYPES = new String[] {
     	DEPENDENCY_TYPE_JAR, 
     	DEPENDENCY_TYPE_EJB, 
@@ -118,6 +128,8 @@ public class Mevenide extends AbstractUIPlugin {
     	DEPENDENCY_TYPE_ASPECT,
     	DEPENDENCY_TYPE_WAR
     };
+
+    public static final String MAVEN_MENU_ID = "org.mevenide.maven.menu.id";
 
     /// initialization methods ---
 	public Mevenide() throws Exception {

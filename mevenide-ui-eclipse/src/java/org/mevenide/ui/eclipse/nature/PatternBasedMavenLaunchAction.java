@@ -16,7 +16,8 @@
  */
 package org.mevenide.ui.eclipse.nature;
 
-import java.util.List;
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IAction;
 
 
 /**  
@@ -25,35 +26,9 @@ import java.util.List;
  * @version $Id$
  * 
  */
-public class ActionDefinitions {
+public class PatternBasedMavenLaunchAction extends Action {
+	public void run(IAction action) {
+	    //TODO
+	}
 
-    private List goals;
-    
-    private List patterns;
-    
-    private boolean enabled;
-    
-    public List getGoals() {
-        return goals;
-    }
-    
-    public void setGoals(List goals) {
-        this.goals = goals;
-    }
-    
-    public List getPatterns() {
-        return patterns;
-    }
-    
-    public void setPatterns(List patterns) {
-        this.patterns = patterns;
-    }
-    
-    public boolean isEnabled() {
-        return enabled;
-    }
-    
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
-    }
 }

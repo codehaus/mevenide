@@ -184,6 +184,28 @@
          <run class="org.mevenide.ui.eclipse.nature.MavenBuilder"/>
       </builder> 
    </extension> 
+   
+   <extension point="org.eclipse.ui.actionSets">
+      <actionSet label="Maven Action Set"
+                 visible="true"
+                 id="org.mevenide.maven.menu.actionSet">
+         <menu label="Maven" id="org.mevenide.maven.menu.id">
+         <separator
+                  name="actionsGroup">
+            </separator>
+         </menu>
+         <action
+               label="Build"
+               icon="icons/full/obj16/external_tools.gif"
+               tooltip="Manage Build Definitions"
+               pulldown="true"
+               class="org.mevenide.ui.eclipse.nature.CustomMavenLaunchManager"
+               menubarPath="org.mevenide.maven.menu.id/actionsGroup"
+               id="org.mevenide.maven.build">
+         </action>
+      </actionSet>
+    </extension>
+    
    <!-- Maven actions -->
    <extension
          point="org.eclipse.ui.popupMenus">

@@ -20,6 +20,7 @@ import java.util.List;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 
 
 /**  
@@ -32,22 +33,24 @@ public class ActionActivator implements IResourceDeltaVisitor {
 
     private List definitionCandidates;
     
-    private List definitions;
-    
     public ActionActivator(List actionDefinitions) {
         this.definitionCandidates = actionDefinitions;
     }
     
     public boolean visit(IResourceDelta delta) throws CoreException {
-        //TODO
+        for (int i = 0; i < definitionCandidates.size(); i++) {
+            ActionDefinitions definition = (ActionDefinitions) definitionCandidates.get(i);
+	        IPath path = delta.getFullPath();
+	        List patterns = definition.getPatterns();
+	        if ( match(path, patterns) ) {
+	            definition.setEnabled(true);
+	        }
+        }
         return true;
     }
 
-    public List getDefinitions() {
-        return definitions;
+    private boolean match(IPath path, List patterns) {
+        return false; //TODO
     }
-    
-    public void setDefinitions(List definitionCandidates) {
-        this.definitionCandidates = definitionCandidates;
-    }
+
 }
