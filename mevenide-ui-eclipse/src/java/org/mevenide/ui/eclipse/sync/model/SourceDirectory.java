@@ -26,7 +26,7 @@ import org.mevenide.ProjectConstants;
  */
 public class SourceDirectory {
 	private String directoryPath = "";
-	private String directoryType = "source";
+	private String directoryType = "sourceDirectory";
 	
 	public SourceDirectory(String path) {
 		//directoryPath = "${basedir}" + File.separator + path;
