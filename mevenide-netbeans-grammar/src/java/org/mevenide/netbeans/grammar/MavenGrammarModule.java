@@ -24,13 +24,7 @@ import java.net.URLClassLoader;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.mevenide.environment.SysEnvLocationFinder;
-import org.netbeans.modules.xml.core.XMLDataLoader;
-import org.openide.DialogDisplayer;
-import org.openide.NotifyDescriptor;
-import org.openide.NotifyDescriptor.Confirmation;
-import org.openide.loaders.ExtensionList;
-import org.openide.modules.ModuleInstall;
-import org.openide.util.SharedClassObject;
+
 
 
 /** Manages a module's lifecycle.
