@@ -60,7 +60,7 @@ public class PdePluginBuilder {
 	    DependencyCollector collector = new DependencyCollector(basedir.getAbsolutePath(), libFolder, project); 
 	    collector.collect();
 	    
-	    SimpleZipCreator zipCreator = new SimpleZipCreator(new File(basedir, classesLocation).getAbsolutePath(), new File(basedir, artifactName).getAbsolutePath());
+	    SimpleZipCreator zipCreator = new SimpleZipCreator(new File(classesLocation).getAbsolutePath(), new File(basedir, artifactName).getAbsolutePath());
 	    zipCreator.setExcludes(excludes);
 	    zipCreator.setIncludes(includes);
 	    zipCreator.zip();

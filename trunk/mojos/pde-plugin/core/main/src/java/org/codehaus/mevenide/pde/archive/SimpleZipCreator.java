@@ -105,12 +105,16 @@ public class SimpleZipCreator {
 	            }
                 File fileToZip = new File(filePath);
                 if ( !fileToZip.exists() ) {
-                    throw new PdeArchiveException("ZipCreator.IncludePath.DoesnotExist");
+                    //@todo handle this case properly by emitting a warning
+                    //no need to fail here
+                    //throw new PdeArchiveException("ZipCreator.IncludePath.DoesnotExist");
                 }
-	            String targetPath = include.getTargetPath();
-	            targetPath = targetPath != null ? targetPath : "";
-	            targetPath = !targetPath.startsWith("/") ? "/" + targetPath : targetPath; 
-	            addFile(fileToZip, targetPath + ("/".equals(targetPath) ? "" : "/") + fileToZip.getName(), zipStream);
+                else {
+		            String targetPath = include.getTargetPath();
+		            targetPath = targetPath != null ? targetPath : "";
+		            targetPath = !targetPath.startsWith("/") ? "/" + targetPath : targetPath; 
+		            addFile(fileToZip, targetPath + ("/".equals(targetPath) ? "" : "/") + fileToZip.getName(), zipStream);
+                }
 	        }
         }
     }

@@ -17,9 +17,13 @@
 package org.codehaus.mevenide.pde.converter;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
+import org.apache.maven.ArtifactListBuilder;
+import org.apache.maven.MavenUtils;
 import org.apache.maven.model.Build;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Model;
@@ -29,6 +33,8 @@ import org.apache.maven.model.SourceModification;
 import org.apache.maven.model.UnitTest;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.Project;
+import org.apache.maven.artifact.Artifact;
+import org.apache.maven.artifact.DefaultArtifact;
 import org.mevenide.context.DefaultQueryContext;
 import org.mevenide.context.IProjectContext;
 import org.mevenide.context.IQueryContext;
@@ -41,6 +47,8 @@ import org.mevenide.properties.resolver.PropertyResolverFactory;
 
 /**  
  * 
+ * @todo trash this converter when real converter discovered (if exists)
+ * 
  * @author <a href="mailto:rhill2@free.fr">Gilles Dodinet</a>
  * @version $Id$
  * 
@@ -48,12 +56,15 @@ import org.mevenide.properties.resolver.PropertyResolverFactory;
 public class MavenProjectConverter {
 
     private Project m1Project;
+    private IPropertyResolver propertyResolver;
  
     public MavenProjectConverter() {
+        propertyResolver = getPropertyResolver();
     }
     
     public MavenProjectConverter(Project project) {
         this.m1Project = project;
+        propertyResolver = getPropertyResolver();
     }
     
     public MavenProject convert() throws ConverterException {
@@ -91,9 +102,45 @@ public class MavenProjectConverter {
         //model.setReports(getReports());
         //model.setScm(getScm());
         
-        return new MavenProject(model);
+        MavenProject project = new MavenProject(model);
+        project.setFile(m1Project.getFile());
+        
+        setArtifacts(project);
+        
+        return project;
     }
     
+
+    //copied from mevenide-ui-eclipse
+    private void setArtifacts(MavenProject project) {
+        //change user.dir to allow to build artifacts correctly
+	    String backupUserDir = System.getProperty("user.dir"); //$NON-NLS-1$
+	    System.setProperty("user.dir", project.getFile().getParentFile().getAbsolutePath()); //$NON-NLS-1$
+	    
+	    //needed for rc3 to correctly setRelativePaths
+	    System.setProperty("maven.home", propertyResolver.getResolvedValue("maven.home")); //$NON-NLS-1$
+	    
+	    m1Project.setContext(MavenUtils.createContext(m1Project.getFile().getParentFile()));
+	    
+	    if ( project.getDependencies() == null ) {
+	        project.setDependencies(new ArrayList());
+	    }
+		List artifacts = ArtifactListBuilder.build(m1Project);
+		
+		Set m2Artifacts = new HashSet();
+		
+		for (Iterator iter = artifacts.iterator(); iter.hasNext();) {
+            org.apache.maven.repository.Artifact m1Artifact = (org.apache.maven.repository.Artifact) iter.next();
+            org.apache.maven.project.Dependency m1Dependency = m1Artifact.getDependency();
+            Artifact artifact = new DefaultArtifact(m1Dependency.getArtifactId(), m1Dependency.getGroupId(), m1Dependency.getVersion(), m1Dependency.getType());
+            artifact.setPath(m1Artifact.getPath());
+            m2Artifacts.add(artifact);
+        }
+		
+		project.setArtifacts(m2Artifacts);
+		
+		System.setProperty("user.dir", backupUserDir);
+    }
 
     private List getDependencies() {
         List dependencies = null;
@@ -141,25 +188,28 @@ public class MavenProjectConverter {
         if ( m1Build != null ) {
 	        build = new Build();
 	        
-	        IQueryContext queryContext = new DefaultQueryContext(m1Project.getFile());
-		    IPropertyResolver resolver = PropertyResolverFactory.getFactory().createContextBasedResolver(queryContext);
-		    IPropertyLocator locator = PropertyLocatorFactory.getFactory().createContextBasedLocator(queryContext);
-		    IProjectContext projectContext = new DefaultProjectContext(queryContext, resolver);
-		    ((DefaultQueryContext)queryContext).initializeProjectContext(projectContext);
-	        
 	        build.setAspectSourceDirectory(m1Build.getAspectSourceDirectory());
-	        build.setDirectory(resolver.getResolvedValue("maven.build.dir"));
-	        build.setFinalName(resolver.getResolvedValue("maven.final.name"));
+	        build.setDirectory(propertyResolver.getResolvedValue("maven.build.dir"));
+	        build.setFinalName(propertyResolver.getResolvedValue("maven.final.name"));
 	        build.setIntegrationUnitTestSourceDirectory(m1Build.getIntegrationUnitTestSourceDirectory());
-	        build.setOutput(resolver.getResolvedValue("maven.build.dest"));
+	        build.setOutput(propertyResolver.getResolvedValue("maven.build.dest"));
 	        build.setResources(getResources(m1Build));
 	        build.setSourceDirectory(m1Build.getSourceDirectory());
 	        build.setSourceModifications(getSourceModification(m1Build));
-	        build.setTestOutput(resolver.getResolvedValue("maven.test.dest"));
+	        build.setTestOutput(propertyResolver.getResolvedValue("maven.test.dest"));
 	        build.setUnitTest(getUnitTest());
 	        build.setUnitTestSourceDirectory(m1Build.getUnitTestSourceDirectory());
         }
         return build;
+    }
+
+    private IPropertyResolver getPropertyResolver() {
+        IQueryContext queryContext = new DefaultQueryContext(m1Project.getFile());
+        IPropertyResolver resolver = PropertyResolverFactory.getFactory().createContextBasedResolver(queryContext);
+        IPropertyLocator locator = PropertyLocatorFactory.getFactory().createContextBasedLocator(queryContext);
+        IProjectContext projectContext = new DefaultProjectContext(queryContext, resolver);
+        ((DefaultQueryContext)queryContext).initializeProjectContext(projectContext);
+        return resolver;
     }
 
     private UnitTest getUnitTest() {

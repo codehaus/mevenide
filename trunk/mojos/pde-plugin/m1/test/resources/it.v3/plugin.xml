@@ -1,15 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.0"?>
-<plugin
-   id="maven.pde.plugin.test"
-   name="Descriptor Test"
-   version="1.0.0"
-   provider-name="Provider Test">
-   <runtime>
-     <library name="none.jar"/>
-   </runtime>
+<plugin id="org.codehaus.mevenide.pde" name="maven pde plugin" version="0.1.0" provider-name="the codehaus">
    <requires>
-      <import plugin="org.eclipse.text"/>
-      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.text" />
+      <import plugin="org.eclipse.core.runtime" />
    </requires>
+   <runtime>
+      <library name="jdom-1.0b8.jar">
+         <export name="*" />
+      </library>
+      <library name="commons-lang-2.0.jar">
+         <export name="*" />
+      </library>
+      <library name="junit-3.8.1.jar">
+         <export name="*" />
+      </library>
+   </runtime>
 </plugin>
+

@@ -23,7 +23,9 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 import org.apache.commons.lang.StringUtils;
+import org.apache.maven.artifact.Artifact;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.IOUtil;
@@ -49,6 +51,7 @@ public class DependencyCollector {
     public DependencyCollector(String basedir, String defaultTargetPath, MavenProject project) {
         this.basedir = basedir;
         this.project = project;
+        this.defaultTargetPath = defaultTargetPath != null ? defaultTargetPath : "lib";
     }
     
     public void collect() throws CollectException {
@@ -68,7 +71,7 @@ public class DependencyCollector {
                 targetDir.mkdirs();
             }
             
-            String artifact = dependency.getArtifact();
+            String artifact = getArtifact(dependency);
             
             try {
                 IOUtil.copy(new FileInputStream(artifact), new FileOutputStream(new File(targetPath, new File(artifact).getName())));
@@ -77,6 +80,26 @@ public class DependencyCollector {
                 throw new CollectException("Collector.CannotCollect", e);
             }
         }
+    }
+
+    //@todo optimize - even better : drop it when correct method found in m2 
+    private String getArtifact(Dependency dependency) {
+        
+        Set artifacts = project.getArtifacts();
+        
+        String dependencyArtifact = dependency.getArtifact();
+        String fullArtifactPath = null;
+        
+        for (Iterator iter = artifacts.iterator(); iter.hasNext();) {
+            Artifact artifact = (Artifact) iter.next();
+            File artifactFile = artifact.getFile();
+            if ( dependencyArtifact.equals(artifact.getFile().getName()) ) {
+                fullArtifactPath = artifactFile.getAbsolutePath();
+                break;
+            }
+        }
+        
+        return fullArtifactPath;
     }
     
 }

@@ -100,6 +100,65 @@
       <version>1.0-alpha-1-SNAPSHOT</version>
       <type>jar</type>
     </dependency>
+    <!-- 
+    	following deps just to make ArtifactListBuilder happy
+    	only used from within MavenProjectConverter 
+    	thats really a too big list for just four lines of code..
+    -->
+    <dependency>
+      <groupId>commons-betwixt</groupId>
+      <artifactId>commons-betwixt</artifactId>
+      <version>1.0-beta-1</version>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>commons-beanutils</groupId>
+      <artifactId>commons-beanutils</artifactId>
+      <version>1.6.1</version>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>commons-digester</groupId>
+      <artifactId>commons-digester</artifactId>
+      <version>1.5</version>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>commons-collections</groupId>
+      <artifactId>commons-collections</artifactId>
+      <version>2.1</version>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>maven</groupId>
+      <artifactId>maven-jelly-tags</artifactId>
+      <version>1.0</version>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>werkz</groupId>
+      <artifactId>werkz</artifactId>
+      <version>1.0-beta-10</version>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>commons-jelly</groupId>
+      <artifactId>commons-jelly-tags-ant</artifactId>
+      <version>20030211.142045</version>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>dom4j</groupId>
+      <artifactId>dom4j</artifactId>
+      <version>1.5</version>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>commons-jexl</groupId>
+      <artifactId>commons-jexl</artifactId>
+      <version>1.0-beta-1</version>
+      <type>jar</type>
+    </dependency>
   </dependencies>
   <build>
   	<resources>
