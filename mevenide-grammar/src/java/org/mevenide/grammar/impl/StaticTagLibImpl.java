@@ -59,16 +59,30 @@ public final class StaticTagLibImpl implements TagLib {
     private Set roottags;
     private Map attrCompletions;
     
-    public StaticTagLibImpl(String uri) throws Exception {
-        this(StaticTagLibImpl.class.getClassLoader().getResourceAsStream("org/mevenide/grammar/resources/taglibs/" + uri.replaceFirst(":", "-") + ".xml"));
-    }
-    
-    /** Creates a new instance of TagLib */
-    public StaticTagLibImpl(InputStream libDef) throws Exception {
+    private StaticTagLibImpl() {
         tags = new HashMap();
         nestedtags = new HashMap();
         roottags = new HashSet();
         attrCompletions = new HashMap();
+    }
+    
+    public StaticTagLibImpl(String uri) throws Exception {
+        this();
+        InputStream is = null;
+        try {
+            is = this.getClass().getClassLoader().getResourceAsStream("org/mevenide/grammar/resources/taglibs/" + uri.replaceFirst(":", "-") + ".xml");
+            configure(is);
+        }
+        finally {
+            if ( is != null ) {
+            	is.close();
+            }
+        }
+    }
+    
+    /** Creates a new instance of TagLib */
+    public StaticTagLibImpl(InputStream libDef) throws Exception {
+        this();
         configure(libDef);
     }
 
