@@ -124,7 +124,7 @@ public class PomChoiceDialog extends TitleAreaDialog {
 			}
 		});
 		
-		buttonLabel = Mevenide.getResourceString("PomChoiceDialog.DeselectAll");;
+		buttonLabel = Mevenide.getResourceString("PomChoiceDialog.DeselectAll");
 		Button deselectAllButton = createSelectionButton(buttonsArea, buttonLabel);
 		deselectAllButton.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent arg0) {
