@@ -112,14 +112,16 @@ public class EclipseProjectUtils {
 				//add default ouput location
 				IPath defaultOuputFolder = project.getOutputLocation();
 				IResource resource;
+
 				//handle case where Project has been configured yet and output folders is set to /
-				IProject prj = ResourcesPlugin.getWorkspace().getRoot().getProject(defaultOuputFolder.toString());
-				if ( project.exists() ) {
-					resource = prj;
+				if ( defaultOuputFolder.segmentCount() == 1 ) {
+					System.err.println(defaultOuputFolder.removeTrailingSeparator().toString());
+					resource = ResourcesPlugin.getWorkspace().getRoot().getProject(defaultOuputFolder.removeTrailingSeparator().toString());
 				}
 				else {
 					resource = ResourcesPlugin.getWorkspace().getRoot().getFolder(defaultOuputFolder);
 				}
+
 				outputFolders.add(resource.getLocation().toFile());
 				log.debug("Added " + resource.getLocation() + " to output folder list");
 
