@@ -16,6 +16,7 @@
  */
 package org.mevenide.ui.eclipse.preferences;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -56,9 +57,11 @@ public class DynamicPreferencePage extends PreferencePage implements IWorkbenchP
     
     private PreferencesManager preferencesManager;
     
+    private List dirtyProperties = new ArrayList();
+    
     public DynamicPreferencePage() {
         super();
-        preferencesManager = PreferencesManager.getDynamicPreferencesManager();
+        preferencesManager = DynamicPreferencesManager.getDynamicManager();
 		preferencesManager.loadPreferences();
     }
     
@@ -123,7 +126,7 @@ public class DynamicPreferencePage extends PreferencePage implements IWorkbenchP
         return propertiesGroup;
     }
 
-    private StringFieldEditor createPluginPropertyEditor(Composite parent, PluginProperty pluginProperty) {
+    private StringFieldEditor createPluginPropertyEditor(Composite parent, final PluginProperty pluginProperty) {
         String propertyName = pluginProperty.getName(); 
         String propertyDefault = pluginProperty.getDefault();
         String propertyLabel = pluginProperty.getLabel();
@@ -131,7 +134,7 @@ public class DynamicPreferencePage extends PreferencePage implements IWorkbenchP
         String propertyType = pluginProperty.getType();
         String pageId = pluginProperty.getPageId();
         
-        StringFieldEditor editor = new StringFieldEditor(pageId + "." + propertyName, propertyLabel, parent);
+        StringFieldEditor editor = new StringFieldEditor(pageId + DynamicPreferencesManager.SEPARATOR + propertyName, propertyLabel, parent);
         editor.fillIntoGrid(parent, 2);
         
         editor.setPreferenceStore(preferencesManager.getPreferenceStore());
@@ -142,20 +145,24 @@ public class DynamicPreferencePage extends PreferencePage implements IWorkbenchP
         
         ModifyListener editorListener = new ModifyListener() {
             public void modifyText(ModifyEvent arg0) {
-                getContainer().updateButtons();
+                dirtyProperties.add(pluginProperty);
                 updateApplyButton();
+                getContainer().updateButtons();
             }
         };
-        editor.getTextControl(parent).addModifyListener(editorListener);
-        
+
         String toolTip = propertyName + " : " + 
-        				(!StringUtils.isNull(propertyDescription) ? propertyDescription : Mevenide.getResourceString("DynamicPreferencePage.property.nodescription"));
+        				(!StringUtils.isNull(propertyDescription) ? 
+        				        					propertyDescription : 
+        				        					Mevenide.getResourceString("DynamicPreferencePage.property.nodescription"));
         editor.getLabelControl(parent).setToolTipText(toolTip);
         
         if ( StringUtils.isNull(editor.getStringValue()) && 
                 !StringUtils.isNull(propertyDefault) ) {
             editor.setStringValue(propertyDefault);
         }
+        
+        editor.getTextControl(parent).addModifyListener(editorListener);
         
         return editor;
     }
@@ -194,13 +201,16 @@ public class DynamicPreferencePage extends PreferencePage implements IWorkbenchP
         }
         return valid;
     }
+    
     public boolean performOk() {
         for (Iterator it = editors.keySet().iterator(); it.hasNext(); ) {
             PluginProperty pluginProperty = (PluginProperty) it.next();
-            StringFieldEditor editor = (StringFieldEditor) editors.get(pluginProperty);
-            String pageId = pluginProperty.getPageId();
-            String propertyName = pluginProperty.getName();
-            preferencesManager.setValue(pageId + "." + propertyName, editor.getStringValue());
+            if ( dirtyProperties.contains(pluginProperty) ) {
+	            StringFieldEditor editor = (StringFieldEditor) editors.get(pluginProperty);
+	            String pageId = pluginProperty.getPageId();
+	            String propertyName = pluginProperty.getName();
+	            preferencesManager.setValue(pageId + DynamicPreferencesManager.SEPARATOR + propertyName, editor.getStringValue());
+            }
         }
         return preferencesManager.store();
     }

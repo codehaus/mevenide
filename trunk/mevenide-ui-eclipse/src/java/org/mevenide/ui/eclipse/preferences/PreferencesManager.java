@@ -17,6 +17,8 @@
 package org.mevenide.ui.eclipse.preferences;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -33,20 +35,14 @@ public class PreferencesManager {
 	private static Log log = LogFactory.getLog(PreferencesManager.class);
 	
 	private static PreferencesManager manager = new PreferencesManager();
-	private static PreferencesManager dynamicPreferencesManager = new PreferencesManager();
 	
 	private PreferenceStore preferenceStore;
 	
-	
-	private PreferencesManager() {
+	protected PreferencesManager() {
 	}
 	
 	public static PreferencesManager getManager()  {
 		return manager;
-	}
-	
-	public static PreferencesManager getDynamicPreferencesManager()  {
-		return dynamicPreferencesManager;
 	}
 	
 	public void loadPreferences() {
@@ -70,16 +66,8 @@ public class PreferencesManager {
 		}
 	}
 	
-	private String getPreferenceStoreFilename() {
-	    String preferenceStoreFileName = null;
-	    if ( this == manager ) {
-	        preferenceStoreFileName = Mevenide.getInstance().getPreferencesFilename();
-	    }
-	    else {
-	        preferenceStoreFileName = Mevenide.getInstance().getDynamicPreferencesFilename();
-	    }
-	    return preferenceStoreFileName;
-	    
+	protected String getPreferenceStoreFilename() {
+	    return Mevenide.getInstance().getPreferencesFilename();
 	}
 	
 	public String getValue(String property) {
@@ -114,4 +102,14 @@ public class PreferencesManager {
 		preferenceStore = store;
 	}
 
+	public Map getPreferences() {
+	    Map preferences = new HashMap();
+	    String[] names = preferenceStore.preferenceNames();
+	    if ( names != null ) {
+	        for (int i = 0; i < names.length; i++) {
+                preferences.put(names[i], getValue(names[i]));
+            }
+	    }
+	    return preferences;
+	}
 }
