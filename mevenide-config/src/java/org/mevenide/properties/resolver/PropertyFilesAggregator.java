@@ -161,7 +161,7 @@ public final class PropertyFilesAggregator implements IPropertyResolver, IProper
             int end = value.indexOf("}", index);
             if (end > index + 2) {
                 String key = value.substring(index + 2, end);
-                String keyvalue = getValue(key, true);
+                String keyvalue = getValue(key, false);
                 if (keyvalue != null) {
                     toReturn.replace(index, end + 1, keyvalue);
                     return resolve(toReturn);
