@@ -78,6 +78,8 @@ public abstract class AbstractGoalsGrabberTestCase extends TestCase {
 		Environment.setMavenHome(mavenHomeLocal.getAbsolutePath());
 		
 		pluginsLocal = new File(mavenHomeLocal, "plugins");
+		Environment.setMavenPluginsInstallDir(pluginsLocal.getAbsolutePath());
+		
 		if (!pluginsLocal.exists()) {
 			pluginsLocal.mkdir();
 		}
