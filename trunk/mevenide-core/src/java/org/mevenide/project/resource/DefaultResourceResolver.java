@@ -37,16 +37,30 @@ public class DefaultResourceResolver implements IResourceResolver  {
 	 * @return boolean
 	 */
 	public void mergeSimilarResources(Project project, Resource resource) {
-		List similar = getSimilarResources(project, resource);
+		List resources = project.getBuild().getResources();
+		
+		prepareResource(resource, resources);
+		
+		project.getBuild().addResource(resource);
+	}
+	
+	public void mergeSimilarUnitTestResources(Project project, Resource resource) {
+		List resources = project.getBuild().getUnitTest().getResources();
+	
+		prepareResource(resource, resources);
+		
+		project.getBuild().getUnitTest().addResource(resource);
+	}
+
+	private void prepareResource(Resource resource, List resources) {
+		List similar = getSimilarResources(resources, resource);
 		
 		for (int i = 0; i < similar.size(); i++) {
 			Resource similarResource = (Resource) similar.get(i);
 			mergeIncludes(resource, similarResource);
 			mergeExcludes(resource, similarResource);
-			project.getBuild().getResources().remove(similarResource);
+			resources.remove(similarResource);
 		}
-		
-		project.getBuild().addResource(resource);
 	}
 
 	private void mergeExcludes(Resource resource, Resource similarResource) {
@@ -65,10 +79,8 @@ public class DefaultResourceResolver implements IResourceResolver  {
 		}
 	}
 
-	private List getSimilarResources(Project project, Resource resource) {
+	private List getSimilarResources(List resources, Resource resource) {
 		List similar = new ArrayList();
-		
-		List resources = project.getBuild().getResources();
 		
 		for (int i = 0; i < resources.size(); i++) {
 			Resource declaredResource = (Resource) resources.get(i);

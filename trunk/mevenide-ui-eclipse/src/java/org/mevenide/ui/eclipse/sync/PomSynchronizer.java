@@ -118,7 +118,7 @@ public class PomSynchronizer extends AbstractPomSynchronizer implements ISynchro
 				pomWriter.addResource(directory.getDirectoryPath(), pomFile);
 			}
 			if ( directory.getDirectoryType().equals(ProjectConstants.MAVEN_TEST_RESOURCE ) ) {
-				log.debug("Unimplemented feature : " + ProjectConstants.MAVEN_TEST_RESOURCE );
+				pomWriter.addUnitTestResource(directory.getDirectoryPath(), pomFile);
 			}				
 		}
 		
