@@ -27,9 +27,11 @@ import org.mevenide.netbeans.project.ActionProviderImpl;
 import org.mevenide.netbeans.project.MavenProject;
 import org.mevenide.netbeans.project.exec.RunGoalsAction;
 import org.netbeans.spi.project.ui.support.LogicalViews;
+import org.openide.nodes.AbstractNode;
 
 import org.openide.nodes.FilterNode;
 import org.openide.nodes.Node;
+import org.openide.util.Lookup;
 import org.openide.util.Utilities;
 
 
@@ -37,14 +39,14 @@ import org.openide.util.Utilities;
  *
  * @author Milos Kleint (ca206216@tiscali.cz)
  */
-public class MavenProjectNode extends FilterNode {
+public class MavenProjectNode extends AbstractNode {
      private static Log log = LogFactory.getLog(MavenProjectNode.class);
      
      
      private MavenProject project;
      private Image icon;
-     public MavenProjectNode(Node original, MavenProject project) {
-        super(original, new MavenProjectChildren(project));
+     public MavenProjectNode( Lookup lookup, MavenProject project) {
+        super(new MavenProjectChildren(project), lookup);
         this.project = project;
 //        setIconBase("org/mevenide/netbeans/projects/resources/MavenIcon");
     }
@@ -77,7 +79,7 @@ public class MavenProjectNode extends FilterNode {
                                     > IPropertyLocator.LOCATION_DEFAULTS); //NOI18N
         int slip = (isMultiproject ? 2 : 0);
         Action[] toReturn = new Action[13 + slip];
-        ActionProviderImpl provider = (ActionProviderImpl)getLookup().lookup(ActionProviderImpl.class);
+        ActionProviderImpl provider = (ActionProviderImpl)project.getLookup().lookup(ActionProviderImpl.class);
         toReturn[0] = LogicalViews.newFileAction();
         toReturn[1] = null;
         toReturn[2] = provider.createBasicMavenAction("Build", "jar:install");

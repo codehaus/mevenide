@@ -93,6 +93,10 @@ public class SubprojectProviderImpl implements SubprojectProvider {
             FileObject[] fos = FileUtil.fromFile(projectFile);
             if (fos.length > 0) {
                 FileObject projectDir = fos[0].getParent();
+                if (project.getProjectDirectory().equals(projectDir)) {
+                    // don't include itself into the list of subprojects..
+                    return null;
+                }
                 if (ProjectManager.getDefault().isProject(projectDir)) {
                     try {
                         Project proj = ProjectManager.getDefault().findProject(projectDir);
@@ -111,4 +115,11 @@ public class SubprojectProviderImpl implements SubprojectProvider {
         }
         return null;
     }
+    
+    public void addChangeListener(javax.swing.event.ChangeListener changeListener) {
+    }
+    
+    public void removeChangeListener(javax.swing.event.ChangeListener changeListener) {
+    }
+    
 }

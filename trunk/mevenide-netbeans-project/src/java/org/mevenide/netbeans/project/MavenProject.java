@@ -42,7 +42,7 @@ import org.mevenide.properties.IPropertyResolver;
 import org.mevenide.properties.resolver.PropertyLocatorFactory;
 import org.mevenide.properties.resolver.PropertyResolverFactory;
 import org.netbeans.api.project.Project;
-import org.netbeans.spi.project.ProjectInformation;
+import org.netbeans.api.project.ProjectInformation;
 import org.openide.filesystems.*;
 import org.openide.util.Lookup;
 import org.openide.util.Utilities;
@@ -127,7 +127,7 @@ public class MavenProject implements Project {
         return propertyLocator;
     }
     
-    IQueryContext getContext() {
+    public IQueryContext getContext() {
         return queryContext;
     }
     
@@ -172,7 +172,7 @@ public class MavenProject implements Project {
             logger.warn("Strange thing here. src dir not found.");
             return null;
         }
-        File fl = new File(path, "java");
+        File fl = new File(path, "src/java");
         return fl.toURI();
     }
     
