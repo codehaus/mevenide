@@ -25,6 +25,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import org.apache.maven.project.Project;
 import org.mevenide.util.MevenideUtils;
+import org.mevenide.util.StringUtils;
 //import org.mevenide.util.DefaultProjectUnmarshaller;
 
 /**
@@ -70,16 +71,28 @@ public final class PomSkeletonBuilder {
 	
 	/**
 	 * return the pom skeleton as a string
-	 * 
+	 * equivalent to getPomSkeleton(projectName, projectName, projectName)
+	 *  
 	 * @param projectName
-	 * @return
+	 * @return a new project skeleton 
 	 * @throws Exception
 	 */
 	public String getPomSkeleton(String projectName) throws Exception {
         return getPomSkeleton(projectName, projectName, projectName);
 	}
 	
+	/**
+	 *
+	 * @param projectName
+	 * @param groupId
+	 * @param artifactId 
+	 * @return a new project skeleton 
+	 * @throws Exception 
+	 */ 
 	public String getPomSkeleton(String projectName, String groupId, String artifactId) throws Exception {
+	    if ( StringUtils.isNull(projectName) ) {
+	        throw new Exception("Project name should be defined");
+	    }
         InputStream is = null;
 	    try {
             if ( template != null ) {
@@ -92,7 +105,12 @@ public final class PomSkeletonBuilder {
             Project project = new JDomProjectUnmarshaller().parse(file);
             
             is.close();
-            
+            if ( artifactId == null ) {
+                artifactId = projectName;
+            }
+            if ( groupId == null ) {
+                groupId = projectName;
+            }
             project.setId(artifactId.toLowerCase());
             project.setName(projectName);
             project.setGroupId(groupId.toLowerCase());
