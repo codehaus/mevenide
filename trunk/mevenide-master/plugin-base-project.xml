@@ -1,6 +1,6 @@
-<?xml versino="1.0" ?>
+<?xml version="1.0" ?>
 <!DOCTYPE project [
-    <!ENTITY code-reports SYSTEM "file:../mevenide-master/pom-fragments/plugin-pom-fragments/scm-reports.xml">
+    <!ENTITY scm-reports SYSTEM "file:../mevenide-master/pom-fragments/plugin-pom-fragments/scm-reports.xml">
 ]>    
 <project>
 	
