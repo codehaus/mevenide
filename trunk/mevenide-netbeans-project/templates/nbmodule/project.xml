@@ -49,8 +49,8 @@
         <properties>
             <netbeans.module.dep>spec</netbeans.module.dep>
         </properties>
-        -->
     </dependency>    
+        -->
   </dependencies>
   <build>
     <sourceDirectory>src</sourceDirectory>
