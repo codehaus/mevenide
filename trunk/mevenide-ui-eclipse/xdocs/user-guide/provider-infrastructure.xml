@@ -22,9 +22,8 @@
 		  	VM. However properties specified in the launch config are particular to a specific build and thus 
 		  	take precedence. 
 		  	<br/>
-		  	So you can see those dynamic preference pages much like a particular view of the ~/build.properties file - later 
-		  	we will also provide a simple way to edit the ~/build.properties file, and import/export functions will be 
-		  	available for ease of use.
+		  	So you can see those dynamic preference pages much like a particular view of a default.properties file - later 
+		  	we will also provide a simple way to edit the ~/build.properties file.
 		  </p>
 	    </div>
 	  </subsection>
@@ -41,11 +40,13 @@
 				<font size="-1"><b>Screenshot 1</b> PDE plugin provider</font>
 				<br/>
 			</center>
+		</p>
+		<p>
 			First Tab presents a short description of the plugin. The other Tabs display the various properties 
 			that the plugin exposes, each Tab representing a different categories. We introduced categories to 
 			allow better organization of the properties - it is helpful for plugins exposing quite a number of properties,
 			as the Maven PDE Plugin example demonstrates it.
-			<br/>
+			<br/><br/>
 			<center>
 				<img border="1px" src="../images/screenshots/providers/plugins_providers_properties.png"/>
 				<br/>

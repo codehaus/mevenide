@@ -28,7 +28,7 @@
 						It can added to or removed from a project through the project contextual menu (Screenshot 1).
 						<br/>
 						<center>
-							<img border="1px" src="../images/screenshots/nature/nature_management.png"/>
+							<img border="1px" src="../images/screenshots/builder/nature_management.png"/>
 							<br/>
 								<font size="-1"><b>Screenshot 1</b> Adding and removing Mevenide nature</font>
 							<br/>
@@ -46,27 +46,31 @@
 						The builder configuration dialog can be popped up through the 'Project' menu (Screenshot 2).
 						<br/>
 						<center>
-							<img border="1px" src="../images/screenshots/nature/builder_configuration_menu.png"/>
+							<img border="1px" src="../images/screenshots/builder/builder_configuration_menu.png"/>
 							<br/>
 								<font size="-1"><b>Screenshot 2</b> Builder configuration menu</font>
 							<br/>
 						</center>
+					</p>
+					<p>
 						This brings up a similar dialog than the Mevenide External Tools integration dialog (Figure 2).
-						The big difference lies in the third tab : in this you must specify which file modifications 
+						The big difference lies in the third tab : in the 'Patterns tab' you must specify which file modifications 
 						will trigger goal activation - eventually you can specify there that the goals should 
 						be auto-launched (Screenshot 3).
 						<br/>
 						<center>
-							<img border="1px" src="../images/screenshots/nature/builder_configuration_dialog.png"/>
+							<img border="1px" src="../images/screenshots/builder/builder_configuration_dialog.png"/>
 							<br/>
 								<font size="-1"><b>Screenshot 3</b> Builder configuration : specifying file pattern</font>
 							<br/>
 						</center>
+					</p>
+					<p>
 						The custom configuration will then populate the builder menu ; the goals to be launched being displayed 
 						- as opposed as the configuration name (Screenshot 4). 
 						<br/>
 						<center>
-							<img border="1px" src="../images/screenshots/nature/builder_populated_menu.png"/>
+							<img border="1px" src="../images/screenshots/builder/builder_populated_menu.png"/>
 							<br/>
 								<font size="-1"><b>Screenshot 4</b> Populated Builder configuration menu</font>
 							<br/>
