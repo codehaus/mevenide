@@ -4,9 +4,14 @@
     <id>mevenide:mevenide-feature</id>
     <artifactId>mevenide-feature</artifactId>
     <name>Mevenide Feature</name>
-    <currentVersion>0.3.0-SNAPSHOT</currentVersion>
+    <currentVersion>0.3.0</currentVersion>
     <inceptionYear>2003</inceptionYear>
     <versions>
+      <version>
+        <id>0.3.0</id>
+        <name>0.3.0</name>
+        <tag>V_0_3_0</tag>
+      </version>
       <version>
         <id>0.2.2</id>
         <name>0.2.2</name>
