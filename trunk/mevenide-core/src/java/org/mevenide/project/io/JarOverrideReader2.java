@@ -51,7 +51,7 @@ public final class JarOverrideReader2 {
         return instance;
     }
 
-    public final void processOverride(Project project, IPropertyResolver resolver, ILocationFinder finder) {
+    public void processOverride(Project project, IPropertyResolver resolver, ILocationFinder finder) {
         List deps = project.getDependencies();
         if (deps != null) {
             Iterator it = deps.iterator();
@@ -65,7 +65,7 @@ public final class JarOverrideReader2 {
         }
     }
     
-    public final void processOverride(Project project, IQueryContext context) {
+    public void processOverride(Project project, IQueryContext context) {
         IPropertyResolver resolver = PropertyResolverFactory.getFactory().createContextBasedResolver(context);
         ILocationFinder finder = new LocationFinderAggregator(context);
         processOverride(project, resolver, finder);
@@ -76,7 +76,7 @@ public final class JarOverrideReader2 {
      * if so, returns the override's absolute path, otherwise null.
      * @returns absolute path to the override jar, or null if not overriding
      */
-    public final String processOverride(Dependency dependency, IQueryContext context) {
+    public String processOverride(Dependency dependency, IQueryContext context) {
         IPropertyResolver resolver = PropertyResolverFactory.getFactory().createContextBasedResolver(context);
         ILocationFinder finder = new LocationFinderAggregator(context);
         return processOverride(dependency, resolver, finder);
@@ -86,7 +86,7 @@ public final class JarOverrideReader2 {
      * if so, returns the override's absolute path, otherwise null.
      * @returns absolute path to the override jar, or null if not overriding
      */
-    public final String processOverride(Dependency dependency, IPropertyResolver resolver, ILocationFinder finder) {
+    public String processOverride(Dependency dependency, IPropertyResolver resolver, ILocationFinder finder) {
         boolean isJarOverrideOn = isJarOverrideOn(resolver);
         log.debug("jar override " + (isJarOverrideOn ? " on " : " off"));
         if ( isJarOverrideOn ) {
