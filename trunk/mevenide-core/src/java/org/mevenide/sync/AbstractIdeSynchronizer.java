@@ -71,12 +71,15 @@ public abstract class AbstractIdeSynchronizer implements ISynchronizer {
     /** instantiate the maven runner */
     public AbstractIdeSynchronizer() {
         try {
-            runner = AbstractRunner.getRunner();
+            //runner = AbstractRunner.getRunner();
+            runner = createRunner();
     	} 
         catch (Exception e) {
     		log.debug("Unable to init AbstractIdeAynchronizer due to : " + e);
     	}
 	}
+
+	protected abstract AbstractRunner createRunner();
 
     /**
      * template pattern
@@ -111,4 +114,6 @@ public abstract class AbstractIdeSynchronizer implements ISynchronizer {
 	public boolean canHandle(int direction) {
 		return direction == ISynchronizer.POM_TO_IDE;
 	}
+	
+	
 }

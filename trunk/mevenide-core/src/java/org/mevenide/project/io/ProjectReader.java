@@ -79,18 +79,11 @@ public class ProjectReader {
 	private static ProjectReader projectReader = null;
 	private static Object lock = new Object();
 	
-	public static ProjectReader getReader() throws Exception {
-		if (projectReader != null) {
-			return projectReader;
+	public synchronized static ProjectReader getReader() throws Exception {
+		if (projectReader == null) {
+			projectReader = new ProjectReader();
 		}
-		else {
-			synchronized (lock) {
-				if (projectReader == null) {
-					projectReader = new ProjectReader();
-				}
-			}
-			return projectReader;
-		}
+		return projectReader;
 	}
 	
 	private ProjectReader() {

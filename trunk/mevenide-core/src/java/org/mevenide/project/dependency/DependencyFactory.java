@@ -49,6 +49,8 @@
 package org.mevenide.project.dependency;
 
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Dependency;
 
 /**
@@ -58,24 +60,19 @@ import org.apache.maven.project.Dependency;
  * 
  */
 public class DependencyFactory {
-	
-	private DependencyFactory() throws Exception {
+	private static final Log log = LogFactory.getLog(DependencyFactory.class);
+
+	private DependencyFactory() {
 	}
 	
 	/** singleton related */
-	private static DependencyFactory factory = null;
+	private static DependencyFactory factory = new DependencyFactory();
 	private static Object lock = new Object();
 
-	public static DependencyFactory getFactory() throws Exception {
-		if (factory != null) {
-			return factory;
-		}
-		synchronized (lock) {
-			if (factory == null) {
-				factory = new DependencyFactory();
-			}
-			return factory;
-		}
+	
+
+	public static DependencyFactory getFactory() {
+		return factory;
 	}
 		
 	/**
