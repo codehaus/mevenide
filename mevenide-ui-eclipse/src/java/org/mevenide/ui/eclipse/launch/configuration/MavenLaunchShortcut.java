@@ -42,6 +42,7 @@ public class MavenLaunchShortcut implements ILaunchShortcut {
 
 	public void setShowDialog(boolean showDialog) {
 		this.showDialog = showDialog;
+
 	}
 
 	public void launch(IEditorPart editor, String mode) {
@@ -80,11 +81,13 @@ public class MavenLaunchShortcut implements ILaunchShortcut {
 		List configurations = findExistingLaunchConfigurations(project);
 		if (configurations.isEmpty()) {
 			configuration = createDefaultLaunchConfiguration(project);
+			//return;
 		} 
 		else {
 			if (configurations.size() == 1) {
 				configuration= (ILaunchConfiguration)configurations.get(0);
-			} else {
+			} 
+			else {
 				configuration= chooseConfig(configurations);
 				if (configuration == null) {
 					// User cancelled selection
@@ -98,7 +101,10 @@ public class MavenLaunchShortcut implements ILaunchShortcut {
 		if (configuration != null) {
 			if ( showDialog ) {
 				//IStatus status = new Status(IStatus.INFO, Mevenide.PLUGIN_ID, 0, "", null); //$NON-NLS-1$
-				DebugUITools.openLaunchConfigurationDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), configuration, IExternalToolConstants.ID_EXTERNAL_TOOLS_LAUNCH_GROUP, null);
+				int val = DebugUITools.openLaunchConfigurationDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), configuration, IExternalToolConstants.ID_EXTERNAL_TOOLS_LAUNCH_GROUP, null);
+				if ( val == Window.CANCEL ) {
+					return;
+				}	
 			}
 			DebugUITools.launch(configuration, ILaunchManager.RUN_MODE);
 		}
