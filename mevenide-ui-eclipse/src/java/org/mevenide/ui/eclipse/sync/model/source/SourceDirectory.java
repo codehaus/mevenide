@@ -80,6 +80,9 @@ public class SourceDirectory {
 		if ( directoryPath.equals(ProjectConstants.BASEDIR)) {
 			return ProjectConstants.BASEDIR;
 		}
+		if ( directoryPath.startsWith(ProjectConstants.BASEDIR) ) {
+			return directoryPath;
+		}
 		return ProjectConstants.BASEDIR + File.separator +  directoryPath;
 	}
 	
