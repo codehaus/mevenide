@@ -42,7 +42,7 @@
    </requires>
 
    <!-- extension used by Maven plugin providers to declaratively add pages to Maven preference menu -->
-   <extension-point id="preference" name="Mevenide Preference Extension Point" schema="extension-schemas/org.mevenide.ui.preference.exsd"/>
+   <extension-point id="preference" name="Mevenide Preference Extension Point" schema="extensions-schemas/org.mevenide.ui.preference.exsd"/>
 
    <!-- Maven nature -->
    <extension
