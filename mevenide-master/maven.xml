@@ -24,24 +24,24 @@
   	  @var 
   	-->
   	<define:tag name="getTransitiveDependencies">
-  		<mevenide:getDependencies var="mevenideCoreDependencies" projectDescriptor="${basedir}/../mevenide-core/project.xml"/>
-  		<mevenide:getDependencies var="mevenideMasterDependencies" projectDescriptor="${basedir}/../mevenide-master/project.xml"/>
+  		<j:useList var="dependencies" class="java.util.ArrayList"/>
+ 		${context.getParent().setVariable(var, dependencies)}
+
+  		<j:if test="${!(pom.artifactId.equals('mevenide-core'))}">
+  		  <mevenide:getDependencies var="mevenideCoreDependencies" projectDescriptor="${basedir}/../mevenide-core/project.xml"/>
+		  <j:set var="dummy">${dependencies.addAll(mevenideCoreDependencies)}</j:set>
+		
+  		  <j:if test="${pom.artifactId.equals('mevenide-goals-grabber')}">
+  			${context.getParent().setVariable(var, dependencies)}
+  		  </j:if>
   		
-  		<j:useList var="dependencies" class="java.util.ArrayList"/>	
-		<j:set var="dummy">${dependencies.addAll(mevenideCoreDependencies)}</j:set>
-			
-  		<j:if test="${pom.artifactId.equals('mevenide-goals-grabber')}">
-  			${context.getParent().setVariable(var, dependencies)}	
+  		  <j:if test="${pom.artifactId.equals('mevenide-ui-eclipse')}">
+  		    <j:set var="dummy">${dependencies.addAll(mevenideCoreDependencies)}</j:set>
+  		    <mevenide:getDependencies var="mevenideGoalsGrabberDependencies" projectDescriptor="${basedir}/../mevenide-goals-grabber/project.xml"/>
+  		    <j:set var="dummy">${dependencies.addAll(mevenideGoalsGrabberDependencies)}</j:set>
+  		    ${context.getParent().setVariable(var, dependencies)}	  
+  		  </j:if>
   		</j:if>
-  		
-  		<j:if test="${pom.artifactId.equals('mevenide-ui-eclipse')}">
-  		  <j:set var="dummy">${dependencies.addAll(mevenideCoreDependencies)}</j:set>
-  		  <mevenide:getDependencies var="mevenideGoalsGrabberDependencies" projectDescriptor="${basedir}/../mevenide-goals-grabber/project.xml"/>
-  		  <j:set var="dummy">${dependencies.addAll(mevenideGoalsGrabberDependencies)}</j:set>
-  		  ${context.getParent().setVariable(var, dependencies)}	  
-  		</j:if>
-  		
-  		
   	</define:tag>
   	
   	<!--
@@ -204,19 +204,16 @@
     <ant:delete dir="${basedir}/dist" quiet="true"/>
 
     <mevenide:getTransitiveDependencies var="transitiveDependencies"/>
-    <j:if test="${!(empty transitiveDependencies)}">
-      <j:forEach var="dependency" items="${pom.dependencies}">
-        <j:set var="isTransitive" value="false"/>
-        <j:if test="${!(dependency.groupId.equals('eclipse') || dependency.groupId.equals('mevenide') || dependency.groupId.startsWith('mock') || dependency.groupId.startsWith('junit'))}">
-          <mevenide:isTransitiveDependency var="isTransitive" dependency="${dependency}" transitiveDependencies="${transitiveDependencies}"/>
-          <j:if test="${isTransitive != 'true'}">
-        
-            <ant:copy file="${maven.repo.local}/${dependency.groupId}/${dependency.type}s/${dependency.artifactId}-${dependency.version}.${dependency.type}" 
-                      todir="lib"/>
-          </j:if>
+    <j:forEach var="dependency" items="${pom.dependencies}">
+      <j:set var="isTransitive" value="false"/>
+      <j:if test="${!(dependency.groupId.equals('eclipse') || dependency.groupId.equals('mevenide') || dependency.groupId.startsWith('mock') || dependency.groupId.startsWith('junit'))}">
+        <mevenide:isTransitiveDependency var="isTransitive" dependency="${dependency}" transitiveDependencies="${transitiveDependencies}"/>
+        <j:if test="${isTransitive != 'true'}">
+          <ant:copy file="${maven.repo.local}/${dependency.groupId}/${dependency.type}s/${dependency.artifactId}-${dependency.version}.${dependency.type}" 
+                    todir="lib"/>
         </j:if>
-      </j:forEach>
-    </j:if>
+      </j:if>
+    </j:forEach>
   </goal>
   
   
