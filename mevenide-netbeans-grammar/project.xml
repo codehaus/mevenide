@@ -5,9 +5,9 @@
   <id>mevenide-netbeans-grammar</id>
   <name>Mevenide XML grammar</name>
   <artifactId>mevenide-netbeans-grammar</artifactId>
-  <currentVersion>0.3-SNAPSHOT</currentVersion>
+  <currentVersion>0.3</currentVersion>
   <package>org.mevenide.netbeans.grammar</package>
-  <description>Maven files XML grammar and code-completion for Netbeans</description>
+  <description>Maven files XML grammar and code-completion for Netbeans. (project.xml, maven.xml and plugin.jelly files completion.</description>
   <shortDescription>Maven files XML grammar and code-completion for Netbeans</shortDescription>
   
   <dependencies>
