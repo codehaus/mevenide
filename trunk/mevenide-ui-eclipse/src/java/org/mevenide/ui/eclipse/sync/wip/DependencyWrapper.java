@@ -49,10 +49,12 @@
 package org.mevenide.ui.eclipse.sync.wip;
 
 import java.io.File;
+import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Dependency;
+import org.apache.maven.project.Project;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -62,6 +64,7 @@ import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.mevenide.Environment;
+import org.mevenide.project.io.ProjectWriter;
 
 /**
  * 
@@ -144,6 +147,12 @@ public class DependencyWrapper extends ArtifactWrapper {
 		}
 
 		return newEntry;
+	}
+	
+	public void addTo(Project project) throws Exception {
+		List dependencies = project.getDependencies();
+		dependencies.add(dependency);
+		ProjectWriter.getWriter().setDependencies(dependencies, project.getFile());
 	}
 	
 

@@ -50,9 +50,12 @@ package org.mevenide.ui.eclipse.sync.wip;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.maven.project.Build;
+import org.apache.maven.project.Project;
 import org.apache.maven.project.Resource;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jdt.core.IClasspathEntry;
+import org.mevenide.project.io.ProjectWriter;
 
 /**
  * 
@@ -79,5 +82,16 @@ public class ResourceWrapper extends SourceFolder {
 		IClasspathEntry srcEntry = newSourceEntry(path, project);		
 
 		addClasspathEntry(srcEntry, project);
+	}
+	
+	public void addTo(Project project) throws Exception {
+		if ( project.getBuild() == null ) {
+			project.setBuild(new Build());
+		}
+		
+		//add it to resources list for now..
+		//@TODO manage case where it is a unitTestResourceDirectory
+		//project.getBuild().addResource(resource);
+		ProjectWriter.getWriter().addResource(resource.getDirectory(), project.getFile());
 	}
 }

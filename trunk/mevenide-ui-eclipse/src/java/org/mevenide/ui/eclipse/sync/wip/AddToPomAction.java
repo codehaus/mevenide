@@ -48,9 +48,6 @@
  */
 package org.mevenide.ui.eclipse.sync.wip;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Project;
@@ -61,21 +58,21 @@ import org.apache.maven.project.Project;
  * @version $Id$
  * 
  */
-public class AddToPomAction {
+public class AddToPomAction extends ArtifactAction {
 	private static Log log = LogFactory.getLog(AddToPomAction.class);
 	
-	private List listeners = new ArrayList();
+	public void addEntry(Object item, Project project) throws Exception {
+		ArtifactWrapper artifactWrapper = getArtifactWrapper(item);
+		
+		if ( artifactWrapper != null ) {
+			artifactWrapper.addTo(project);
+		}
+		
+		fireArtifactAddedToPom(item, project);
+	}
 	
-	public void addEntry(Object item, Project project) {
-
-	}
-
-	public void addModelChangeListener(SynchronizeActionListener listener) {
-		listeners.add(listener);	
-	}
 	
-	public void removeModelChangeListener(SynchronizeActionListener listener) {
-		listeners.remove(listener);
-	}
+
+	
 	
 }

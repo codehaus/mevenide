@@ -49,10 +49,16 @@
 package org.mevenide.ui.eclipse.sync.wip;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Project;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.jface.dialogs.Dialog;
+import org.mevenide.project.io.ProjectReader;
+import org.mevenide.util.MevenideUtils;
 
 /**
  * 
@@ -61,6 +67,8 @@ import org.eclipse.core.resources.IProject;
  * 
  */
 public class PomChooser {
+	private static final Log log = LogFactory.getLog(PomChooser.class); 
+	
 	private IProject project;
 	
 	public PomChooser(IProject project) {
@@ -69,15 +77,66 @@ public class PomChooser {
 	
 	/**
 	 * display a Dialog to allow the user to choose a pom  
-	 * 
 	 */
-	public Project openPomChoiceDialog() {
-		List allPoms = getPoms();
-		return null;
+	public Project openPomChoiceDialog() throws Exception {
+		File projectRoot = new File(project.getLocation().toString());
+		List allPoms = findPoms(projectRoot);
+		
+		PomChoiceDialog dialog = new PomChoiceDialog();
+		
+		int result = dialog.open();
+		
+		if ( result == Dialog.CANCEL ) {
+			return null;
+		}
+		
+		 Project project = ProjectReader.getReader().read(dialog.getPom());
+		 project.setFile(dialog.getPom());
+		 return project;
 	}
 	
-	private List getPoms() {
-		File projectRoot = new File(project.getLocation().toString());
-		return null;
+	
+	private List findPoms(File rootDirectory) {
+		List allPoms = new ArrayList(); 
+		
+		String fileName = "project.xml";
+		
+		File[] f = rootDirectory.listFiles();
+		for (int i = 0; i < f.length; i++) {
+			if ( f[i].isDirectory() ) {
+				allPoms.add(findPoms(f[i]));
+			}
+			else {
+				if ( f[i].getName().equals(fileName) ) {
+					allPoms.add(f[i]);
+					allPoms.addAll(findAncestors(f[i]));
+				}
+			}
+		}
+		log.debug("Found " + allPoms.size() + " POM file");
+		return allPoms;
+	}
+	
+	private List findAncestors(File pom) {
+		List ancestors = new ArrayList();
+		
+		try {
+		
+			Project project = ProjectReader.getReader().read(pom);
+			String parent = project.getExtend();
+			if ( parent != null ) {
+				String resolvedParent = MevenideUtils.resolve(project, parent);
+				File parentPomFile = new File(resolvedParent);
+				if ( parentPomFile.exists() ) {
+					ancestors.add(resolvedParent);
+					ancestors.addAll(findAncestors(parentPomFile));
+				}
+			}
+		}
+		catch ( Exception e ) {
+			log.error("Unable to retrieve ancestors for " + pom.getAbsolutePath(), e);
+		}
+		
+		return ancestors;
 	}
 }
