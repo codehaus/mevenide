@@ -21,8 +21,10 @@
 		<!-- copy dependencies to mevenide lib directory -->
 		<j:forEach var="dependency" items="${pom.dependencies}">
 			<!--
-				shouldnot copy test only dependencies.
+				shouldnot copy test-only dependencies. 
 				doesnt work for now... 
+				
+				also shouldnot copy xmlpull.
 			-->
 			<j:if test="${!(dependency.groupId.equals('eclipse') || dependency.artifactId.startsWith('mock') || dependency.artifactId.endsWith('mock') || dependency.groupId.startsWith('junit'))}">
             	<copy file="${maven.repo.local}/${dependency.groupId}/${dependency.type}s/${dependency.artifactId}-${dependency.version}.${dependency.type}" 

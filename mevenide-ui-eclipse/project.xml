@@ -15,6 +15,8 @@
 
 
   <dependencies>
+  	
+  	    <!-- maven -->
         <dependency>
            <groupId>forehead</groupId>
            <artifactId>forehead</artifactId>
@@ -27,6 +29,8 @@
            <version>1.0-beta-11-SNAPSHOT</version>
            <url>http://maven.org/</url>
         </dependency>
+        
+        <!-- mevenide dependencies -->
         <dependency>
            <groupId>mevenide</groupId>
            <artifactId>mevenide-goals-grabber</artifactId>
@@ -39,6 +43,8 @@
            <version>0.1</version>
            <url/>
         </dependency>
+        
+        <!-- xml libraries -->
         <dependency>
            <groupId>jdom</groupId>
            <artifactId>jdom</artifactId>
@@ -52,6 +58,7 @@
            <url>http://xml.apache.org/xerces2-j/</url>
         </dependency>
         
+        <!-- wrappers -->
         <dependency>
            <groupId>commons-discovery</groupId>
            <artifactId>commons-discovery</artifactId>
@@ -65,6 +72,7 @@
            <url>http://jakarta.apache.org/commons/logging</url>
         </dependency>
         
+        <!-- testing -->
         <dependency>
            <groupId>junit</groupId>
            <artifactId>junit</artifactId>
@@ -90,6 +98,7 @@
            <url>http://www.abstrakt.de/mockcreator.html</url>
         </dependency>
 		
+		<!-- eclipse libraries -->
 	    <dependency>
            <groupId>eclipse</groupId>
            <artifactId>eclipse-resources</artifactId>
@@ -125,31 +134,32 @@
            <artifactId>eclipse-launching</artifactId>
            <version>2.1.0</version>
            <url>http://eclipse.org/</url>
-    </dependency>
-	<dependency>
-	   <groupId>eclipse</groupId>
-       <artifactId>eclipse-jface</artifactId>
-       <version>2.1.0</version>
-       <url>http://eclipse.org/</url>
-    </dependency>
-	<dependency>
-	   <groupId>eclipse</groupId>
-       <artifactId>eclipse-swt</artifactId>
-       <version>2.1.0</version>
-       <url>http://eclipse.org/</url>
-    </dependency>
-	<dependency>
-	   <groupId>eclipse</groupId>
-       <artifactId>eclipse-workbench</artifactId>
-       <version>2.1.0</version>
-       <url>http://eclipse.org/</url>
-    </dependency>
-    <dependency>
-	   <groupId>eclipse</groupId>
-       <artifactId>eclipse-views</artifactId>
-       <version>2.1.0</version>
-       <url>http://eclipse.org/</url>
-    </dependency>
+        </dependency>
+	    <dependency>
+	       <groupId>eclipse</groupId>
+           <artifactId>eclipse-jface</artifactId>
+           <version>2.1.0</version>
+           <url>http://eclipse.org/</url>
+        </dependency>
+	    <dependency>
+	       <groupId>eclipse</groupId>
+           <artifactId>eclipse-swt</artifactId>
+           <version>2.1.0</version>
+           <url>http://eclipse.org/</url>
+        </dependency>
+	    <dependency>
+	       <groupId>eclipse</groupId>
+           <artifactId>eclipse-workbench</artifactId>
+           <version>2.1.0</version>
+           <url>http://eclipse.org/</url>
+        </dependency>
+        <dependency>
+	       <groupId>eclipse</groupId>
+           <artifactId>eclipse-views</artifactId>
+           <version>2.1.0</version>
+           <url>http://eclipse.org/</url>
+        </dependency>
+    
   </dependencies>
 
 </project>
