@@ -16,9 +16,14 @@
  */
 package org.mevenide.project.io;
 
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import org.apache.maven.project.BaseObject;
 import org.apache.maven.project.Branch;
@@ -39,28 +44,60 @@ import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.input.SAXBuilder;
 import org.mevenide.util.MevenideUtils;
+import org.xml.sax.EntityResolver;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 /**
  * @author <a href="mailto:rhill2@free.fr">Gilles Dodinet</a>
  * @version $Id: JDomProjectUnmarshaller.java,v 1.1 2004/05/09 20:16:15
  */
 public class JDomProjectUnmarshaller implements IProjectUnmarshaller {
-
+    private static final Log logger = LogFactory.getLog(JDomProjectUnmarshaller.class);
+    /**
+     * @deprecated no way to create a reasonable entity resolver.
+     */
     public Project parse(Reader reader) throws Exception {
-        Project mavenProject = new Project();
         SAXBuilder builder = new SAXBuilder();
         builder.setExpandEntities(true);
-        //builder.setFeature();
-        //builder.setProperty();
-        
+        logger.fatal("deprecated. no way to create a reasonable entity resolver.");
+//        builder.setEntityResolver(new EntResolver(file.getParentFile()));
         Document document = builder.build(reader);
-        Element projectElement = document.getRootElement();
+        return generateProject(document.getRootElement());
+    }
+
+    public Project parse(File file) throws Exception {
+        return generateProject(parseRootElement(file));
+    }
+    
+    public Element parseRootElement(File file) throws Exception {
+        SAXBuilder builder = new SAXBuilder();
+        builder.setExpandEntities(true);
+// TODO mkleint - I wonder if the directory in resolver is based on 
+//        the current file being parsed or rather the initial project.xml file
+//        (extend files inherit the directory from the origin..)
+        
+        builder.setEntityResolver(new EntResolver(file.getParentFile()));
+        Document document = builder.build(file);
+        return document.getRootElement();
+    }
+    
+    public Project generateProject(Element projectElement) {
+        Project mavenProject = new Project();
         
         //simple childs
         mavenProject.setExtend(projectElement.getChildText("extend"));
         mavenProject.setPomVersion(projectElement.getChildText("pomVersion"));
         mavenProject.setName(projectElement.getChildText("name"));
-        mavenProject.setGroupId(projectElement.getChildText("groupId"));
+        String id = projectElement.getChildText("id");
+        String groupId = projectElement.getChildText("groupId");
+        String artifactId = projectElement.getChildText("artifactId");
+        if (id != null && groupId == null && artifactId == null) {
+            mavenProject.setId(id);
+        } else {
+            mavenProject.setGroupId(groupId);
+            mavenProject.setArtifactId(artifactId);
+        }
         mavenProject.setCurrentVersion(projectElement.getChildText("currentVersion"));
         mavenProject.setInceptionYear(projectElement.getChildText("inceptionYear"));
         mavenProject.setPackage(projectElement.getChildText("package"));
@@ -96,14 +133,14 @@ public class JDomProjectUnmarshaller implements IProjectUnmarshaller {
         return mavenProject;
     }
 
-	private void populateResolvedProperties(BaseObject obj, List properties) {
-		if ( properties != null && properties.size() > 0 ) {
-			for (int i = 0; i < properties.size(); i++) {
+    private void populateResolvedProperties(BaseObject obj, List properties) {
+        if ( properties != null && properties.size() > 0 ) {
+            for (int i = 0; i < properties.size(); i++) {
                 String[] prop = MevenideUtils.resolveProperty((String) properties.get(i));
                 obj.resolvedProperties().put(prop[0], prop[1]);
             }
-		}
-	}
+        }
+    }
 
     private Organization parseOrganization(Element projectElement) {
         Organization organization = null;
@@ -493,4 +530,27 @@ public class JDomProjectUnmarshaller implements IProjectUnmarshaller {
         return excludes;
     }
     
+    /**
+     * simplistic entity resolver. Might need refinement later.
+     */
+    private class EntResolver implements EntityResolver {
+        private File directory;
+        EntResolver(File dir) {
+            directory = dir;
+        }
+        public InputSource resolveEntity(String publicId, String systemId) throws SAXException, IOException {
+            logger.debug("resolver");
+            if (systemId.startsWith("file:")) {
+                String path = systemId.substring("file:".length());
+                logger.debug("path=" + path);
+                File file = new File(directory, path);
+                file = MevenideUtils.normalizeFile(file);
+                if (file.exists()) {
+                    return new InputSource(new FileReader(file));
+                }
+            }
+            return new InputSource(systemId);
+        }
+        
+    }
 }
