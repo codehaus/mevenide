@@ -232,9 +232,9 @@ public class SynchronizeWizardPage extends WizardPage {
 		);
 		item1.setText(
 			new String[] {
-				"Duplicate value",
+				"Already in parent",
 				"Already in POM",
-				"Parent Value",
+				"Parent Value (RO)",
 				"Version conflict",
 			}	
 		);
