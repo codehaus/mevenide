@@ -78,6 +78,9 @@ public class SourceDirectoryTypeUtil {
         if ( path.indexOf("conf") != -1 || path.indexOf("etc") != -1) {
     		return ProjectConstants.MAVEN_RESOURCE;
         } 
+        if ( path.indexOf("src") != -1 || path.indexOf("src") != -1 ) {
+        	return ProjectConstants.MAVEN_SRC_DIRECTORY;
+        }
         return null;
     }
 

@@ -33,6 +33,8 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Build;
 import org.apache.maven.project.Project;
 import org.apache.maven.project.Resource;
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -146,13 +148,26 @@ public class DirectoryNode extends ArtifactNode {
 	public void addTo(IProject project) throws Exception {
 	    if ( ProjectConstants.MAVEN_OUTPUT_DIRECTORY.equals(directory.getType() )) {
 	        JavaProjectUtils.setDefaultOuputLocation(project, directory.getCleanPath());
-	        return;
 	    }
-	    IClasspathEntry entry = createSourceEntry(project);
-	    if ( !project.getFolder(directory.getCleanPath()).exists() ) {
-	        project.getFolder(directory.getCleanPath()).create(true, true, null);
+	    else {
+		    IFolder folder = project.getFolder(directory.getCleanPath());
+		    createFolder(folder, true, true);
+		    
+		    IClasspathEntry entry = createSourceEntry(project);
+		    
+		    JavaProjectUtils.addClasspathEntry(JavaCore.create(project), entry);
 	    }
-	    JavaProjectUtils.addClasspathEntry(JavaCore.create(project), entry);
+	}
+	
+	private void createFolder(IFolder folder, boolean force, boolean local) throws Exception {
+		
+	    if ( !folder.exists() ) {
+	    	IContainer parent= folder.getParent();
+			if (parent instanceof IFolder) {
+				createFolder((IFolder)parent, force, local);
+			}
+			folder.create(force, local, null);
+	    }
 	}
 	
 	private IClasspathEntry createSourceEntry(IProject project) {

@@ -40,6 +40,7 @@
 		<ul>
 			<li>No conflict support (e.g. if dependencies version conflict)</li>
 			<li>Doesnot support "Output folder per Source folder" Eclipse option</li>
+			<li>Doesnot support Eclipse 3.0-M9 inclusion patterns</li>
 			<li>Link to external resources/files not tested</li>
 			<li>POM defining entities may not be accurately synchronized</li>
 		</ul>
@@ -61,6 +62,7 @@
 		<ul>
 			<li>No debug mode (Jelly debugging, attach to a remote VM, etc.)</li>
 			<li>Cannot set JVM options</li>
+			<li>Doesnot Refresh upon completion (see MEVENIDE-20)</li>
 		</ul>
 	  </p>
 	</div>
@@ -103,6 +105,7 @@
 		<u>Known issues</u><br/>
 		<ul>
 			<li>Big blocks of TEXT or COMMENT seem to make the editor lag really badly</li>
+			<li>Conflicts between custom goals and global goals when namespace is identical (e.g. 'war:some-custom-goal')</li>
 		</ul>
 	  </p>
 	  <p>

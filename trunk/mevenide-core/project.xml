@@ -108,6 +108,16 @@
                 <netbeans.module.dep>spec</netbeans.module.dep>
             </properties>
         </dependency>
+        <dependency>
+            <groupId>maven</groupId>
+            <artifactId>maven-jelly-tags</artifactId>
+            <version>1.0</version>
+            <type>jar</type>
+            <properties>
+            	<eclipse.plugin.bundle>true</eclipse.plugin.bundle>
+                <netbeans.module.dep>spec</netbeans.module.dep>
+            </properties>
+        </dependency>
         <!-- 
         	Following dependencies are required since we have copied 
         	DefaultProjectUnmarshaller into org.mevenide.util

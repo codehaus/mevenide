@@ -40,6 +40,7 @@ import org.mevenide.project.ProjectConstants;
 import org.mevenide.project.io.ProjectReader;
 import org.mevenide.properties.resolver.DefaultsResolver;
 import org.mevenide.properties.resolver.PropertyFilesAggregator;
+import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.sync.model.properties.MavenProjectPropertySource;
 import org.mevenide.ui.eclipse.util.FileUtils;
 import org.mevenide.ui.eclipse.util.JavaProjectUtils;
@@ -101,14 +102,14 @@ public class MavenProjectNode extends AbstractSynchronizationNode implements ISe
 			
 			File baseDir = mavenProject.getFile().getParentFile();
 			
-			if ( !new File(defaultMavenOutputFolder).exists() ) {
-			    defaultMavenOutputFolder = new File(baseDir, defaultMavenOutputFolder).getAbsolutePath().replaceAll("\\\\", "/");
+			if ( !new File(defaultMavenOutputFolder).isAbsolute() ) {
+				defaultMavenOutputFolder = new File(baseDir, defaultMavenOutputFolder).getAbsolutePath().replaceAll("\\\\","/");
 			}
 			
 			if ( !defaultEclipseOutputFolder.equals(defaultMavenOutputFolder) ) {
 				DirectoryNode[] newNodes = new DirectoryNode[directoryNodes.length + 2];
 				System.arraycopy(directoryNodes, 0, newNodes, 0, directoryNodes.length);
-
+				
 				DirectoryNode eclipseOutputFolderNode = createOutputFolderDirectoryNode(defaultEclipseOutputFolder);
 				eclipseOutputFolderNode.setDirection(ISelectableNode.OUTGOING_DIRECTION);
 				DirectoryNode mavenOutputFolderNode = createOutputFolderDirectoryNode(defaultMavenOutputFolder);
@@ -148,6 +149,9 @@ public class MavenProjectNode extends AbstractSynchronizationNode implements ISe
 	    //change user.dir to allow to build artifacts correctly
 	    String backupUserDir = System.getProperty("user.dir");
 	    System.setProperty("user.dir", project.getFile().getParentFile().getAbsolutePath());
+	    
+	    //needed for rc3 to correctly setRelativePaths
+	    System.setProperty("maven.home", Mevenide.getInstance().getMavenHome());
 	    
 	    project.setContext(MavenUtils.createContext(project.getFile().getParentFile()));
 		List artifacts = ArtifactListBuilder.build(project);
@@ -256,7 +260,7 @@ public class MavenProjectNode extends AbstractSynchronizationNode implements ISe
 		List nodeList = new ArrayList();
 		for (int i = 0; i < eclipseSourceDirectories.size(); i++) {
 		    String directoryPath = (String) eclipseSourceDirectories.get(i);
-	    	Directory eclipseDirectory = new Directory(mavenProject);
+		    Directory eclipseDirectory = new Directory(mavenProject);
 	    	eclipseDirectory.setPath(directoryPath);
 	    	DirectoryNode node = new DirectoryNode(eclipseDirectory, this);
 	    	node.setExcludeNodes(getEclipseExclusionFilterNodes(directoryPath, node));
