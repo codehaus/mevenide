@@ -16,6 +16,7 @@
  */
 package org.mevenide.ui.eclipse.editors.pom.pages;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.maven.project.Build;
@@ -81,7 +82,11 @@ public class BuildPage extends AbstractPomEditorPage {
 		
 			public void addResource(Object target, Resource resource) {
 				Project pom = (Project) target;
-				getOrCreateBuild(pom).addResource(resource);
+				Build build = getOrCreateBuild(pom);
+				if ( build.getResources() == null ) {
+				    build.setResources(new ArrayList());
+				}
+                build.addResource(resource);
 				getPomEditor().setModelDirty(true);
 			}
 		
@@ -117,7 +122,11 @@ public class BuildPage extends AbstractPomEditorPage {
 		
 			public void addSourceModification(Object target, SourceModification sourceModification) {
 				Project pom = (Project) target;
-				getOrCreateBuild(pom).addSourceModification(sourceModification);
+				Build build = getOrCreateBuild(pom);
+				if ( build.getSourceModifications() == null ) {
+				    build.setSourceModification(new ArrayList());
+				}
+                build.addSourceModification(sourceModification);
 				getPomEditor().setModelDirty(true);
 			}
 		
