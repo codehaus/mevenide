@@ -45,6 +45,8 @@ import org.eclipse.ui.externaltools.internal.launchConfigurations.ExternalToolsU
 import org.mevenide.context.DefaultQueryContext;
 import org.mevenide.context.IProjectContext;
 import org.mevenide.context.IQueryContext;
+import org.mevenide.environment.ConfigUtils;
+import org.mevenide.environment.ILocationFinder;
 import org.mevenide.project.DefaultProjectContext;
 import org.mevenide.properties.IPropertyLocator;
 import org.mevenide.properties.IPropertyResolver;
@@ -54,6 +56,7 @@ import org.mevenide.runner.AbstractRunner;
 import org.mevenide.runner.ArgumentsManager;
 import org.mevenide.runner.RunnerUtils;
 import org.mevenide.ui.eclipse.Mevenide;
+import org.mevenide.ui.eclipse.preferences.MevenidePreferenceKeys;
 import org.mevenide.ui.eclipse.preferences.PreferencesManager;
 import org.mevenide.ui.eclipse.preferences.dynamic.DynamicPreferencesManager;
 
@@ -74,12 +77,15 @@ public class MavenLaunchDelegate extends AbstractRunner implements ILaunchConfig
 
 	public void launch(ILaunchConfiguration configuration, String mode, ILaunch launch, IProgressMonitor monitor) throws CoreException {
 		config = configuration;
+		
 		try {
 			initEnvironment();
 		} 
 		catch (Exception e) {
 			log.debug("Unable to launch configuration due to : ", e); //$NON-NLS-1$
 		}
+		
+		assertRequiredLocationsConfigured();
 		
 		String[] mavenClasspath = ArgumentsManager.getMavenClasspath();
 
@@ -140,7 +146,31 @@ public class MavenLaunchDelegate extends AbstractRunner implements ILaunchConfig
 
 	}
 	
-	//this is quicky and should be refactored.. however it could be considered  
+	private void assertRequiredLocationsConfigured() throws CoreException {
+				
+        ILocationFinder finder = ConfigUtils.getDefaultLocationFinder();
+
+        String javaHome = PreferencesManager.getManager().getValue(MevenidePreferenceKeys.MAVEN_HOME_PREFERENCE_KEY);
+        javaHome = org.mevenide.util.StringUtils.isNull(javaHome) ? finder.getJavaHome() : javaHome;
+        
+        String mavenHome = PreferencesManager.getManager().getValue(MevenidePreferenceKeys.MAVEN_HOME_PREFERENCE_KEY);
+        mavenHome = org.mevenide.util.StringUtils.isNull(mavenHome) ? finder.getMavenHome() : mavenHome;
+        
+        String toolsJarArg = !org.mevenide.util.StringUtils.isNull(RunnerUtils.getToolsJar()) ? 
+							 RunnerUtils.getToolsJar(javaHome) : PreferencesManager.getManager().getValue("tools.jar"); //$NON-NLS-1$
+        
+        
+        boolean mavenHomeDefined = !org.mevenide.util.StringUtils.isNull(mavenHome); 
+        boolean javaHomeDefined = !org.mevenide.util.StringUtils.isNull(javaHome);
+        boolean toolsJarDefined = !org.mevenide.util.StringUtils.isNull(toolsJarArg);  
+        
+        if ( !(toolsJarDefined && mavenHomeDefined && javaHomeDefined) ) {
+            Status status = new Status(IStatus.ERROR, "mevenide", 0, "Missing required locations. Please use Preference page to set them.", null);
+            throw new CoreException(status);
+        }
+    }
+
+    //this is quicky and should be refactored.. however it could be considered  
 	//as a kind of base for the per-project arguments management (or something like that) 
 	private String[] getDynamicProperties(ILaunchConfiguration configuration, List vmArgs) {
 	    

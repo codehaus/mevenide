@@ -7,6 +7,9 @@
 
   <body>
   	<release version="0.3.0" date="in CVS">
+  	  <action dev="gdodinet" type="fix" issue="MEVENIDE-80">
+		Added a preference to control the location of tools.jar
+      </action>
       <action dev="gdodinet" type="fix" issue="MEVENIDE-73">
 		Update site generation now uses zip task instead of jar
       </action>
@@ -23,10 +26,10 @@
 		Closing square bracket doesnot break anymore jelly syntax highlighting 
       </action>
       <action dev="gdodinet" type="fix" issue="MEVENIDE-55">
-		Fix NPE if jar override is on but no dependencies are present in POM (typically in a multiproject context)
+		Fix NPE if jar override is on but no dependencies are present in POM (typically occured when using inheritance)
       </action>
       <action dev="gdodinet" type="fix" issue="MEVENIDE-23, MEVENIDE-60, MEVENIDE-85">
-		POM editor pages are now correctly updated. Also remove XML Source page
+		POM editor pages are now correctly updated. 
       </action>
       <action dev="gdodinet" type="update">
 		Dynamic preference pages donot rely anymore on explicit plugin activation
