@@ -17,7 +17,6 @@
 package org.mevenide.ui.eclipse.sync.model;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -34,11 +33,8 @@ import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
-import org.mevenide.environment.ConfigUtils;
+import org.mevenide.project.dependency.DefaultDependencyPathFinder;
 import org.mevenide.project.io.ProjectWriter;
-import org.mevenide.properties.KeyValuePair;
-import org.mevenide.properties.PropertyModel;
-import org.mevenide.properties.PropertyModelFactory;
 import org.mevenide.ui.eclipse.Mevenide;
 
 /**
@@ -87,17 +83,7 @@ public class DependencyWrapper extends ArtifactWrapper {
 		//if possible refactor *all* code that way (MavenUtils) 
 		if ( dependency.getType() == null || dependency.isAddedToClasspath() ) { 
 			
-			String path = null;
-			
-			if ( isMavenOverrideOn() ) {
-				path = getPathOverride();
-			}
-			
-			if ( path == null ) {
-				path = buildArtifactPath(dependency.getVersion());
-			}
-			
-			path = path.replaceAll("\\\\", "/");
+			String path = new DefaultDependencyPathFinder(dependency, getDeclaringPom()).resolve();
 			
 			IPath mavenRepoPath = JavaCore.getClasspathVariable("MAVEN_REPO");
 			String mavenRepo = Mevenide.getPlugin().getMavenRepository();
@@ -122,11 +108,7 @@ public class DependencyWrapper extends ArtifactWrapper {
 		return newEntry;
 	}
 
-	private String buildArtifactPath(String version) {
-		String type = dependency.getType() == null ? "jar" : dependency.getType();
-		File group = new File(ConfigUtils.getDefaultLocationFinder().getMavenLocalRepository(), dependency.getGroupId());
-		return new File(group, type + "s/" + dependency.getArtifactId() + "-" + version + "." + type).getAbsolutePath();
-	}
+	
 
 	private IClasspathEntry newProjectEntry(Dependency dependency) throws CoreException {
 		IClasspathEntry newEntry;
@@ -173,75 +155,5 @@ public class DependencyWrapper extends ArtifactWrapper {
 		return dependency.getGroupId() + ":" + dependency.getArtifactId();
 	}
 	
-	private boolean isMavenOverrideOn() {
-		PropertyModel model = getPropertyModel();
-		if ( model == null ) {
-			return false;
-		}
-		KeyValuePair pair = model.findByKey("maven.jar.override");
-		return pair != null 
-				&& pair.getValue() != null 
-				&& (pair.getValue().equals("on") || pair.getValue().equals("1") || pair.getValue().equals("true")); 
-	}
-	
-	private PropertyModel getPropertyModel() {
-		PropertyModel model = null;
-		
-		File projectProperties = new File(getDeclaringPom().getParentFile(), "project.properties");
-		
-		if ( projectProperties.exists() ) {
-		
-			PropertyModelFactory factory = PropertyModelFactory.getFactory();
-			
-			try {
-				model = factory.newPropertyModel(projectProperties);
-			} 
-			catch (IOException e) {
-				log.error("Unable to mount project PropertyModel", e);
-			}
-		}
-		
-		return model;
-	}
 
-	private String getPathOverride() {
-		String result = null;
-		
-		PropertyModel model = getPropertyModel();
-		KeyValuePair kvp = model.findByKey("maven.jar." + dependency.getArtifactId());
-		
-		if ( kvp != null ) {
-			String value = kvp.getValue();
-			if ( new File(value).exists() ) {
-			    result = value;
-			}
-			else {
-			    //assume value is a version
-			    String path = buildArtifactPath(value);
-			    System.err.println(path);
-			    if ( new File(path).exists() ) {
-			    	result = path;
-			    }
-			    else {
-			    	//if no valid artifact file can be constructed then it is problematic.. 
-			        //@TODO warn user about that problem..
-			        result = value;
-			    }
-			}
-		}
-		return resolvePathOverride(result);
-		
-	}
-	
-	private String resolvePathOverride(String result) {
-		if ( result != null && !new File(result).isAbsolute() ) {
-			if ( result.startsWith("{basedir}") ) {
-			    result = result.replaceAll("{basedir}", this.getDeclaringPom().getParent());
-			}
-			else {
-			    result = new File(this.getDeclaringPom().getParent(), result).getAbsolutePath();
-			}
-		}
-		return result;
-	}
 }
