@@ -28,6 +28,7 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.mevenide.ui.eclipse.Mevenide;
+import org.mevenide.ui.eclipse.editors.pom.IPomEditorPage;
 import org.mevenide.ui.eclipse.editors.pom.MevenidePomEditor;
 import org.mevenide.util.StringUtils;
 
@@ -51,6 +52,8 @@ public class OverviewPage extends AbstractPomEditorPage implements IPropertyList
 	private IdentificationSection idSection;
 	private DescriptionSection descriptionSection;
 	private FullDescriptionSection fullDesctiptionSection;
+
+    private boolean updateHeadingNeeded;
 	
     public OverviewPage(MevenidePomEditor editor) {
         super(editor, ID, TAB);
@@ -97,6 +100,14 @@ public class OverviewPage extends AbstractPomEditorPage implements IPropertyList
 		super.update(pom);
 	}
 	
+	
+    public void pageActivated(IPomEditorPage oldPage) {
+        super.pageActivated(oldPage);
+        if ( updateHeadingNeeded ) {
+            redrawHeading(getManagedForm().getForm());
+        }
+    }
+	
 	protected void setHeading(Project pom) {
 		if ( !StringUtils.isNull(pom.getName()) ) {
 		    setHeading(HEADING + pom.getName());
@@ -121,8 +132,18 @@ public class OverviewPage extends AbstractPomEditorPage implements IPropertyList
     public void propertyChanged(Object arg0, int arg1) {
         if ( getPomEditor().equals(arg0) && arg1 == IWorkbenchPart.PROP_TITLE ) {
             ScrolledForm parent = getManagedForm().getForm();
-    		parent.setText(getHeading());
-    		parent.redraw();
+            if ( parent != null && !parent.isDisposed() ) {
+	    		redrawHeading(parent);
+            }
+            else {
+                updateHeadingNeeded = true;
+            }
         }
+    }
+
+    private void redrawHeading(ScrolledForm parent) {
+        parent.setText(getHeading());
+        parent.redraw();
+        updateHeadingNeeded = false;
     }
 }
