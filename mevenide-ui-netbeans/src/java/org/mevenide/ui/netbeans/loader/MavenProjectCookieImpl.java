@@ -20,6 +20,7 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
 import org.apache.commons.logging.Log;
@@ -30,6 +31,7 @@ import org.apache.maven.project.Project;
 import org.mevenide.environment.LocationFinderAggregator;
 import org.mevenide.ui.netbeans.ArtifactCookie;
 import org.mevenide.ui.netbeans.MavenProjectCookie;
+import org.mevenide.util.DefaultProjectUnmarshaller;
 import org.openide.ErrorManager;
 import org.openide.filesystems.FileChangeAdapter;
 import org.openide.filesystems.FileEvent;
@@ -67,11 +69,10 @@ public class MavenProjectCookieImpl implements MavenProjectCookie, ArtifactCooki
     private Object lock = new Object();
     private PropertyChangeSupport support;
     
-    /** Creates a new instance of MavenProjectCookieImpl */
-    public MavenProjectCookieImpl(DataObject dobj)
+    public MavenProjectCookieImpl(File projFile)
     {
         support = new PropertyChangeSupport(this);
-        projectFile = FileUtil.toFile(dobj.getPrimaryFile());
+        projectFile = projFile;
         loaded = false;
         loadFailed = false;
         locationResolver = new LocationFinderAggregator();
@@ -81,6 +82,12 @@ public class MavenProjectCookieImpl implements MavenProjectCookie, ArtifactCooki
         projectBuildPropFile = new File(parentDir, FILENAME_BUILD);
         userBuildPropFile = new File(System.getProperty("user.home"), FILENAME_BUILD);
         mavenCust = new File(parentDir, FILENAME_MAVEN);
+    }
+    
+    /** Creates a new instance of MavenProjectCookieImpl */
+    public MavenProjectCookieImpl(DataObject dobj)
+    {
+        this(FileUtil.toFile(dobj.getPrimaryFile()));
         dobj.getPrimaryFile().addFileChangeListener(new FileChangeAdapter()
         {
                 public void fileChanged (FileEvent fe) {
@@ -109,7 +116,10 @@ public class MavenProjectCookieImpl implements MavenProjectCookie, ArtifactCooki
                 try
                 {
                     log.debug("timestamp - reading project");
-                    project = MavenUtils.getProject(projectFile);
+                    DefaultProjectUnmarshaller unmars = new DefaultProjectUnmarshaller();
+                    project = unmars.parse(new FileReader(projectFile));
+                    project.setContext(MavenUtils.createContext(projectFile.getParentFile()));
+//                    project = MavenUtils.getProject(projectFile);
                     log.debug("timestamp - reading project finished.");
                     log.debug("timestamp - reading artifacts");
                     artefactLst = ArtifactListBuilder.build(project);
