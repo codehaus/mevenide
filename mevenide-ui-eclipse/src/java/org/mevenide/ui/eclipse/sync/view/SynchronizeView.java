@@ -55,6 +55,7 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Project;
+import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -131,7 +132,8 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
     private List directionListeners = new ArrayList(); 
     
 	private List poms;
-
+	private IContainer container;
+	
     private IToolBarManager toolBarManager;
     
     public void createPartControl(Composite parent) {
@@ -145,13 +147,14 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
         composite.setFocus();
     }
     
-    public void setInput(IProject input) {
+    public void setInput(IContainer input) {
 		try {
+			this.container = input;
 			//poms = FileUtils.getPoms(input);
 		    poms = new PomChooser(input).openPomChoiceDialog();
 		    
 		    if ( poms != null ) {
-		        synchronizeProjectWithPoms(input, poms);
+		        synchronizeProjectWithPoms(input.getProject(), poms);
 		    }
 		} 
 		catch (Exception e) {
@@ -167,6 +170,8 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
             if ( input != null ) {
                 IProject project = ResourcesPlugin.getWorkspace().getRoot().getFileForLocation(new Path(input.getFile().getAbsolutePath())).getProject();
                 
+				this.container = project;
+
                 List poms = new ArrayList();
                 poms.add(input);
                 
@@ -500,5 +505,9 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
 
 		artifactMappingNodeViewer.expandAll();
 	}
+
+    public IContainer getInputContainer() {
+        return container;
+    }
 
 }

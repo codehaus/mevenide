@@ -59,6 +59,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Project;
 import org.apache.maven.util.StringInputStream;
+import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -142,8 +143,8 @@ public class FileUtils {
 		}
 	}
 	
-	public static IFile assertIgnoreFileExists(IProject project)  throws Exception {		
-		IFile file = project.getFile(".mvnignore");
+	public static IFile assertIgnoreFileExists(IContainer container)  throws Exception {		
+		IFile file = container.getFile(new Path(".mvnignore"));
 		if ( !file.exists() ) {
 			InputStream is = new StringInputStream("");
 			file.create(is,true, null);

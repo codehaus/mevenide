@@ -48,7 +48,7 @@
  */
 package org.mevenide.ui.eclipse.sync.event;
 
-import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IContainer;
 
 /**
  * 
@@ -58,16 +58,16 @@ import org.eclipse.core.resources.IProject;
  *
  */
 public class IdeArtifactEvent extends ArtifactEvent {
-	private IProject project;
+	private IContainer container;
 	
-	public IdeArtifactEvent(Object item, IProject project) {
+	public IdeArtifactEvent(Object item, IContainer container) {
 	    this.artifact = item;
-	    this.project = project;
+	    this.container = container;
 	}
 	
 
-	public IProject getProject() {
-		return project;
+	public IContainer getContainer() {
+		return container;
 	}
 
 }

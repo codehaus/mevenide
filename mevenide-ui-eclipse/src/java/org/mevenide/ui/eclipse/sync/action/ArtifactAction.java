@@ -56,6 +56,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Dependency;
 import org.apache.maven.project.Project;
 import org.apache.maven.project.Resource;
+import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IProject;
 import org.mevenide.ui.eclipse.sync.event.IActionListener;
 import org.mevenide.ui.eclipse.sync.event.IdeArtifactEvent;
@@ -114,9 +115,9 @@ public class ArtifactAction {
 		}
 	}
 	
-	protected void fireArtifactIgnored(Object item, IProject project) {
+	protected void fireArtifactIgnored(Object item, IContainer container) {
 		for (int i = 0; i < listeners.size(); i++) {
-			IdeArtifactEvent event = new IdeArtifactEvent(item, project);
+			IdeArtifactEvent event = new IdeArtifactEvent(item, container);
 			((IActionListener)listeners.get(i)).artifactIgnored(event);
 		}
 	}

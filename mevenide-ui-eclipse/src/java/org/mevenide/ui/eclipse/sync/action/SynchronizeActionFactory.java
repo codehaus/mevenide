@@ -55,6 +55,7 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Project;
+import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -147,7 +148,7 @@ public class SynchronizeActionFactory {
 					
 					if ( direction == ProjectContainer.OUTGOING ) {
 						ProjectContainer container = (ProjectContainer) synchronizeView.getArtifactMappingNodeViewer().getTree().getItems()[0].getData();
-						IProject project = container.getProject();
+						IContainer project = container.getProject();
 						action.addEntry(selectedNode,  project);
 					}
 					else {
@@ -222,7 +223,7 @@ public class SynchronizeActionFactory {
 			public void run() {
 				IArtifactMappingNode selectedNode = (IArtifactMappingNode) ((IStructuredSelection) synchronizeView.getArtifactMappingNodeViewer().getSelection()).getFirstElement();
 				ProjectContainer container = (ProjectContainer) synchronizeView.getArtifactMappingNodeViewer().getTree().getItems()[0].getData();
-				IProject project = container.getProject();
+				IProject project = container.getProject().getProject();
 				try  {
 					action.removeEntry(selectedNode, project);
 				}
@@ -243,9 +244,11 @@ public class SynchronizeActionFactory {
 			public void run() {
 				IArtifactMappingNode selectedNode = (IArtifactMappingNode) ((IStructuredSelection) synchronizeView.getArtifactMappingNodeViewer().getSelection()).getFirstElement();
 				ProjectContainer container = (ProjectContainer) synchronizeView.getArtifactMappingNodeViewer().getTree().getItems()[0].getData();
-				IProject project = container.getProject();
+				IContainer project = container.getProject();
 				try  {
-				    List mavenProjects = new PomChooser(project).openPomChoiceDialog();
+				    //IContainer f = ResourcesPlugin.getWorkspace().getRoot().getContainerForLocation(project.getLocation());
+				    IContainer f = synchronizeView.getInputContainer();
+				    List mavenProjects = new PomChooser(f).openPomChoiceDialog();
 				    for (int i = 0; i < mavenProjects.size(); i++) {
                         Project mavenProject = (Project) mavenProjects.get(i); 
 						log.debug("POM choice : " + mavenProject);
@@ -307,7 +310,7 @@ public class SynchronizeActionFactory {
 			public void run() {
 				IArtifactMappingNode selectedNode = (IArtifactMappingNode) ((IStructuredSelection) synchronizeView.getArtifactMappingNodeViewer().getSelection()).getFirstElement();
 				ProjectContainer container = (ProjectContainer) synchronizeView.getArtifactMappingNodeViewer().getTree().getItems()[0].getData();
-				IProject project = container.getProject();
+				IProject project = container.getProject().getProject();
 				try  {
 					action.addEntry(selectedNode, project);
 				}

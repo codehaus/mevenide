@@ -49,7 +49,7 @@
 package org.mevenide.ui.eclipse.sync.action;
 
 import org.apache.maven.project.Project;
-import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IContainer;
 import org.mevenide.ui.eclipse.sync.model.ArtifactWrapper;
 import org.mevenide.ui.eclipse.sync.model.IArtifactMappingNode;
 
@@ -60,14 +60,14 @@ import org.mevenide.ui.eclipse.sync.model.IArtifactMappingNode;
  * 
  */
 public class AddToMvnIgnoreAction extends ArtifactAction {
-	public void addEntry(IArtifactMappingNode item, IProject project) throws Exception {
+	public void addEntry(IArtifactMappingNode item, IContainer container) throws Exception {
 		ArtifactWrapper artifactWrapper = getArtifactWrapper(item.getResolvedArtifact());
 		
 		if ( artifactWrapper != null ) {
-			artifactWrapper.addToMvnIgnore(project);
+			artifactWrapper.addToMvnIgnore(container);
 		}
 		
-		fireArtifactIgnored(item, project);
+		fireArtifactIgnored(item, container);
 	}
 	
 	public void addEntry(IArtifactMappingNode item, Project project) throws Exception {
