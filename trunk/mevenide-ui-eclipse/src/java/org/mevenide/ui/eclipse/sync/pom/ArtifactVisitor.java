@@ -18,11 +18,14 @@ import java.io.File;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.launching.JavaRuntime;
 import org.mevenide.project.io.ProjectWriter;
 import org.mevenide.ui.eclipse.sync.source.IPathResolverDelegate;
+
 
 
 /**
@@ -66,7 +69,7 @@ public class ArtifactVisitor {
 		IClasspathEntry classpathEntry = entry.getClasspathEntry();
 		String entryPath = pathResolver.getAbsolutePath(classpathEntry.getPath());
 		
-		if ( !jrePath.equals(entryPath) ) {
+		if ( !jrePath.equals(entryPath) && !isClassFolder(entryPath) ) {
 			writer.addDependency(
 				entryPath, 
 				pomSynchronizer.getPom()
@@ -74,6 +77,11 @@ public class ArtifactVisitor {
  		}
 		
 		
+	}
+	
+	private boolean isClassFolder(String entryPath) {
+		System.out.println(Platform.getLocation().append(new Path(entryPath)).toOSString());
+		return new File(Platform.getLocation().append(new Path(entryPath)).toOSString()).isDirectory();
 	}
 	
 	public void add(ProjectEntry entry) throws Exception {

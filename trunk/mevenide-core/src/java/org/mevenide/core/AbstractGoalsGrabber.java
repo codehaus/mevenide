@@ -127,6 +127,9 @@ public abstract class AbstractGoalsGrabber implements IGoalsGrabber{
         synchronized (lock) {
             if (grabber == null) {
                 grabber = (AbstractGoalsGrabber) new  DiscoverClass().newInstance(AbstractGoalsGrabber.class);
+                if ( !new File(xmlGoals).exists() ) {
+					PostGoal.create(new File(xmlGoals));
+                }
                 grabber.load(xmlGoals);
             }
             return grabber;
@@ -141,6 +144,7 @@ public abstract class AbstractGoalsGrabber implements IGoalsGrabber{
      */
     public void createMavenXmlFile(String effectiveDirectory, String output) {
         File mavenXml = new File(effectiveDirectory, "maven.xml");
+        System.out.println(output);
         if ( !PostGoal.validate(mavenXml, output) ) {
             PostGoal.create(mavenXml);
         }

@@ -31,6 +31,7 @@
 			<!-- arg value="-X"/ -->
 			<arg value="build-all"/>
 		</exec>
+		<!-- should copy all jars to mevenide-ui-eclipse/lib -->
 	</target>
 	
 	<target name="build-site" depends="init" description="o build mevenide site using maven:reactor ">
