@@ -59,6 +59,7 @@ import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusAdapter;
@@ -75,6 +76,7 @@ import org.mevenide.ui.eclipse.editors.pages.PageSection;
 import org.mevenide.ui.eclipse.editors.pages.PageWidgetFactory;
 import org.mevenide.ui.eclipse.editors.properties.IPomPropertySource;
 import org.mevenide.ui.eclipse.editors.properties.PomPropertySourceProvider;
+import org.mevenide.ui.eclipse.editors.properties.ResourcePatternProxy;
 
 /**
  * @author Jeff Bonevich (jeff@bonevich.com)
@@ -174,7 +176,9 @@ public class TableEntry extends PageEntry {
 				public void widgetSelected(SelectionEvent e) {
 					IStructuredSelection selected = (IStructuredSelection) viewer.getSelection();
 					Object[] itemsToRemove = selected.toArray();
+					int index = viewer.getTable().getSelectionIndices()[0];
 					viewer.remove(itemsToRemove);
+					viewer.setSelection(new StructuredSelection(viewer.getElementAt(index)));
 					for (int i = 0; i < itemsToRemove.length; i++) {
 						IPomPropertySource property = (IPomPropertySource) itemsToRemove[i];
 						collectionAdaptor.removeObject(property.getSource(), parentPomObject);
@@ -198,7 +202,7 @@ public class TableEntry extends PageEntry {
 						Object item = viewer.getElementAt(index);
 						viewer.remove(item);
 						viewer.insert(item,--index);
-						viewer.getTable().select(index);
+						viewer.setSelection(new StructuredSelection(viewer.getElementAt(index)));
 						collectionAdaptor.moveObjectTo(index, ((IPomPropertySource) item).getSource(), parentPomObject);
 						setDirty(true);
 						fireEntryDirtyEvent();
@@ -220,7 +224,7 @@ public class TableEntry extends PageEntry {
 						Object item = viewer.getElementAt(index);
 						viewer.remove(item);
 						viewer.insert(item, ++index);
-						viewer.getTable().select(index);
+						viewer.setSelection(new StructuredSelection(viewer.getElementAt(index)));
 						collectionAdaptor.moveObjectTo(index, ((IPomPropertySource) item).getSource(), parentPomObject);
 						setDirty(true);
 						fireEntryDirtyEvent();
@@ -245,6 +249,9 @@ public class TableEntry extends PageEntry {
 		viewer.addPostSelectionChangedListener(
 			new ISelectionChangedListener() {
 				public void selectionChanged(SelectionChangedEvent e) {
+					if (log.isDebugEnabled()) {
+						log.debug("selection updated; empty = " + e.getSelection().isEmpty());
+					}
 					if (e.getSelection().isEmpty()) {
 						removeButton.setEnabled(false);
 						upButton.setEnabled(false);
@@ -366,10 +373,13 @@ public class TableEntry extends PageEntry {
 		source.addPropertyChangeListener(
 			new IPropertyChangeListener() {
 				public void propertyChange(PropertyChangeEvent event) {
+					if (log.isDebugEnabled()) {
+						log.debug("property source value changed! " + event.getSource());
+					}
 					viewer.update(event.getSource(), null);
 					setDirty(true);
 					fireEntryDirtyEvent();
-					if (parentPomObject != null) {
+					if (parentPomObject != null || event.getSource() instanceof ResourcePatternProxy) {
 						fireEntryChangeEvent();
 					}
 				}
