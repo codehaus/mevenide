@@ -104,6 +104,7 @@ public class Mevenide extends AbstractUIPlugin {
 	private ResourceBundle resourceBundle;
 	
 	private String mavenHome;
+	private String mavenLocalHome;
     private String javaHome;
     private String mavenRepository;
     private String pluginsInstallDir;
@@ -335,7 +336,7 @@ public class Mevenide extends AbstractUIPlugin {
 		Environment.setMavenHome(getMavenHome()); 
 		Environment.setJavaHome(getJavaHome());
 		Environment.setMavenRepository(getMavenRepository());
-		Environment.setMavenPluginsInstallDir(pluginsInstallDir);
+		Environment.setMavenPluginsInstallDir(getPluginsInstallDir());
 	}
 
 	public void setBuildPath() throws Exception {
@@ -383,11 +384,15 @@ public class Mevenide extends AbstractUIPlugin {
 		this.defaultGoals = defaultGoals;
 	}
     public String getPluginsInstallDir() {
-        return pluginsInstallDir;
+        return new File(mavenLocalHome, "plugins").getAbsolutePath();
     }
 
-    public void setPluginsInstallDir(String pluginsInstallDir) {
-        this.pluginsInstallDir = pluginsInstallDir;
+    public String getMavenLocalHome() {
+        return mavenLocalHome;
+    }
+
+    public void setMavenLocalHome(String mavenLocalHome) {
+        this.mavenLocalHome = mavenLocalHome;
     }
 
 }
