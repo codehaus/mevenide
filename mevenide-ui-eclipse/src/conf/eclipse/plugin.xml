@@ -58,6 +58,28 @@
    <!-- Maven actions -->
    <extension
          point="org.eclipse.ui.popupMenus">
+      <!-- folder contributions (adaptable) -->
+      <objectContribution
+            objectClass="org.eclipse.core.resources.IFolder"
+            adaptable="true"
+            id="maven.plugin.folder.xml.contribution">
+          <menu
+               label="%MavenMenu.label"
+               path="additions"
+               id="maven.plugin.menu">
+            <separator
+                  name="Synchronize">
+            </separator>
+         </menu>
+         <action
+               label="%Synchronize.Label"
+               icon="icons/synced.gif"
+               class="org.mevenide.ui.eclipse.actions.SynchronizeContainerAction"
+               menubarPath="maven.plugin.menu/Synchronize"
+               enablesFor="1"
+               id="maven-plugin.Synchronize">
+         </action>
+      </objectContribution>
       <!-- project contributions (adaptable) -->
       <objectContribution
             objectClass="org.eclipse.core.resources.IProject"
@@ -96,7 +118,7 @@
          <action
                label="%Synchronize.Label"
                icon="icons/synced.gif"
-               class="org.mevenide.ui.eclipse.actions.SynchronizeProjectAction"
+               class="org.mevenide.ui.eclipse.actions.SynchronizeContainerAction"
                menubarPath="maven.plugin.menu/Synchronize"
                enablesFor="1"
                id="maven-plugin.Synchronize">
