@@ -61,7 +61,7 @@ public class ProjectWriter {
 	private JarOverrideWriter jarOverrideWriter = new JarOverrideWriter(this);
 	
 	private ProjectWriter() throws Exception  {
-		marshaller = new CarefulProjectMarshaller();
+		marshaller = new DefaultProjectMarshaller();
 		projectReader = ProjectReader.getReader();
 	}
 	
@@ -208,8 +208,7 @@ public class ProjectWriter {
 //				project.getBuild().getUnitTest().setResources(new ArrayList());
 //			}
 			
-			IProjectMarshaller iProjectMarshaller = new CarefulProjectMarshaller();
-			iProjectMarshaller.marshall(new FileWriter(pomFile), project);
+			marshaller.marshall(new FileWriter(pomFile), project);
 	
 		}
 	}
@@ -224,8 +223,7 @@ public class ProjectWriter {
 		else {
 			project.setExtend(parentPom);
 		}
-		IProjectMarshaller iProjectMarshaller = new CarefulProjectMarshaller();
-		iProjectMarshaller.marshall(new FileWriter(pomFile), project);
+		marshaller.marshall(new FileWriter(pomFile), project);
 	}
 	
 	public void write(Project project) throws Exception {
