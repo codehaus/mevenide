@@ -75,6 +75,5 @@
   <file path="project.properties"/>
   <file path="project.xml">
     <property category="antparams" name="build.compiler" value="com.borland.jbuilder.ant.compiler.Bmj"/>
-    <property category="maven" name="mavenOffLineMode" value="1"/>
   </file>
 </project>

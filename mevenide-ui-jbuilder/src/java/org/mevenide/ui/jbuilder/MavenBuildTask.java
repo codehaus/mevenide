@@ -24,6 +24,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import org.mevenide.environment.ConfigUtils;
 import com.borland.jbuilder.node.JBProject;
 import com.borland.jbuilder.paths.JDKPathSet;
 import com.borland.primetime.PrimeTime;
@@ -34,7 +35,6 @@ import com.borland.primetime.build.BuildTask;
 import com.borland.primetime.build.ExternalTask;
 import com.borland.primetime.ide.BrowserIcons;
 import com.borland.primetime.vfs.Url;
-import org.mevenide.environment.ConfigUtils;
 
 /**
  * <p>Title: Maven Build Task</p>

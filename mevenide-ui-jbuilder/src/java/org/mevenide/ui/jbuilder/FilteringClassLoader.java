@@ -1,12 +1,7 @@
 package org.mevenide.ui.jbuilder;
 
-import com.borland.primetime.PrimeTime;
-import java.net.URLClassLoader;
-import java.util.StringTokenizer;
-import java.io.File;
-import java.util.ArrayList;
 import java.net.URL;
-import java.net.MalformedURLException;
+import java.net.URLClassLoader;
 
 /**
  * <p>Title: </p>
@@ -24,13 +19,15 @@ public class FilteringClassLoader extends URLClassLoader {
     }
 
     public Class findClass(String name) throws ClassNotFoundException {
-        System.out.println("Finding class " + name);
+        // System.out.println("Finding class " + name);
         if (name.startsWith("java.") ||
             name.startsWith("com.borland.") ||
             name.startsWith("org.apache.xerces.") ||
             name.startsWith("org.xml.sax.") ||
             name.startsWith("org.apache.xalan.") ||
-            name.equals("org.mevenide.ui.jbuilder.MavenFileNode")) {
+            name.equals("org.mevenide.ui.jbuilder.MavenFileNode") ||
+            name.equals("org.mevenide.ui.jbuilder.MavenGoalNode") ||
+            name.equals("org.mevenide.ui.jbuilder.IFileNodeWorker")) {
             return super.findSystemClass(name);
         }
         return super.findClass(name);
