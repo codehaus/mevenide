@@ -14,8 +14,7 @@
     <shortDescription>This plugin Spinner Wiki templates that has the same look-n-feel than the generated site.</shortDescription>
     <inceptionYear>2003</inceptionYear>
     <siteAddress>shell.sourceforge.net</siteAddress>
-	<!-- siteDirectory>/home/groups/m/me/mevenide/htdocs</siteDirectory -->
-  	<siteDirectory>${user.home}/.mevenide/${pom.artifactId}</siteDirectory>
+	<siteDirectory>/home/groups/m/me/mevenide/htdocs/${artifactId}</siteDirectory>
   	<repository>
       <connection>scm:cvs:pserver:anonymous@cvs.sourceforge.net:/cvsroot/mevenide:maven-plugins/${pom.artifactId}</connection>
       <developerConnection>scm:cvs:ext:${maven.username}@cvs.sourceforge.net:/cvsroot/mevenide:maven-plugins/${pom.artifactId}</developerConnection>

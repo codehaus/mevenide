@@ -27,6 +27,8 @@
     <shortDescription>This plugin helps creating ready to use Netbeans module distribution</shortDescription>
     <inceptionYear>2004</inceptionYear>
     <siteAddress>shell.sourceforge.net</siteAddress>
+    <siteDirectory>/home/groups/m/me/mevenide/htdocs/${artifactId}</siteDirectory>
+    
   	<repository>
       <connection>scm:cvs:pserver:anonymous@cvs.sourceforge.net:/cvsroot/mevenide:maven-plugins/${pom.artifactId}</connection>
       <developerConnection>scm:cvs:ext:${maven.username}@cvs.sourceforge.net:/cvsroot/mevenide:maven-plugins/${pom.artifactId}</developerConnection>

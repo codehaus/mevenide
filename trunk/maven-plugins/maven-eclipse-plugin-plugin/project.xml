@@ -14,8 +14,7 @@
     <shortDescription>This plugin helps creating ready to use eclipse plugins and features distribution</shortDescription>
     <inceptionYear>2003</inceptionYear>
     <siteAddress>shell.sourceforge.net</siteAddress>
-	<!-- siteDirectory>/home/groups/m/me/mevenide/htdocs</siteDirectory -->
-  	<siteDirectory>${user.home}/.mevenide/${pom.artifactId}</siteDirectory>
+	<siteDirectory>/home/groups/m/me/mevenide/htdocs/${artifactId}</siteDirectory>
   	<repository>
       <connection>scm:cvs:pserver:anonymous@cvs.sourceforge.net:/cvsroot/mevenide:maven-plugins/${pom.artifactId}</connection>
       <developerConnection>scm:cvs:ext:${maven.username}@cvs.sourceforge.net:/cvsroot/mevenide:maven-plugins/${pom.artifactId}</developerConnection>
