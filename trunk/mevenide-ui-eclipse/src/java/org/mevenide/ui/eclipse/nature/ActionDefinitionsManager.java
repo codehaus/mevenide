@@ -18,6 +18,8 @@ package org.mevenide.ui.eclipse.nature;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.DebugPlugin;
@@ -33,6 +35,7 @@ import org.eclipse.debug.core.ILaunchConfigurationType;
  */
 public class ActionDefinitionsManager implements IActionDefinitionManager {
 
+    private static final Log log = LogFactory.getLog(ActionDefinitions.class);
     
     public ActionDefinitionsManager() {
     }
@@ -51,7 +54,7 @@ public class ActionDefinitionsManager implements IActionDefinitionManager {
             }
         }
         catch (CoreException e) {
-            e.printStackTrace();
+            log.error("Unable to retrieve launch configurations", e);
         }
         return definitions;
     }
