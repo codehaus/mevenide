@@ -138,12 +138,16 @@ public class MavenRepoLibraryProvider implements LibraryProvider {
                     try {
                         IDependencyResolver res = DependencyResolverFactory.getFactory().newInstance(
                                                     FileUtil.toFile(artifacts[i]).getAbsolutePath());
-                    MavenLibraryImpl library = new MavenLibraryImpl();
+                    MavenLibraryImpl library = new MavenLibraryImpl(res.guessArtifactId(), 
+                                                                    res.guessGroupId(),
+                                                                    res.guessVersion(),
+                                                                    res.guessExtension());
                     library.setName(artifacts[i].getNameExt() + " (Maven Repo)");
                     StringBuffer desc = new StringBuffer();
-                    desc.append("GroupID:").append(res.guessGroupId());
-                    desc.append("\nArtifactID:").append(res.guessArtifactId());
-                    desc.append("\nVersion:").append(res.guessVersion());
+                    desc.append("GroupID:").append(library.getGroupID());
+                    desc.append("\nArtifactID:").append(library.getArtifactID());
+                    desc.append("\nVersion:").append(library.getVersion());
+                    desc.append("\nType:").append(library.getType());
                     library.setDescription( desc.toString());
                     library.setLocalizingBundle(null);
                     List urls = new ArrayList();
