@@ -23,6 +23,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.launching.JavaRuntime;
+import org.mevenide.ProjectConstants;
 import org.mevenide.project.io.ProjectWriter;
 import org.mevenide.ui.eclipse.sync.source.IPathResolverDelegate;
 
@@ -50,6 +51,11 @@ public class ArtifactVisitor {
 		IPathResolverDelegate pathResolver = pomSynchronizer.getPathResolver();
 		IProject project = pomSynchronizer.getProject();
 		String pathToAdd = pathResolver.computePath(classpathEntry, project);
+	
+	
+		if ( pathResolver.getMavenSourceType(pathToAdd, project).equals(ProjectConstants.MAVEN_RESOURCE) ) {
+			writer.addResource(pathToAdd, pomSynchronizer.getPom());
+		}
 	
 		writer.addSource(
 			pathToAdd, 
