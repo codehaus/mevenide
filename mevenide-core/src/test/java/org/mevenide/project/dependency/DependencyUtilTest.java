@@ -14,6 +14,7 @@
 package org.mevenide.project.dependency;
 
 import org.apache.maven.project.Dependency;
+import org.mevenide.Environment;
 
 import junit.framework.TestCase;
 
@@ -24,6 +25,10 @@ import junit.framework.TestCase;
  * 
  */
 public class DependencyUtilTest extends TestCase {
+
+	protected void setUp() throws Exception {
+		Environment.setMavenRepository("C:\\Documents and Settings\\gdodinet.MCCAIN-1\\.maven\\repository");
+	}
 
 
 	public void testAreEqualsD() {
@@ -42,6 +47,13 @@ public class DependencyUtilTest extends TestCase {
 		assertTrue(!DependencyUtil.areEquals(null, d1));
 		assertTrue(!DependencyUtil.areEquals(d1, d2));
 		assertTrue(!DependencyUtil.areEquals(d2, d1));
+		
+	}
+	
+	public void testIsValid() throws Exception {
+		assertFalse(DependencyUtil.isValid(DependencyFactory.getFactory().getDependency("E:\\jtestcase\\lib\\xtype.jar")));
+		assertFalse(DependencyUtil.isValid(DependencyFactory.getFactory().getDependency("E:\\clover-1.2\\lib\\clover.jar")));
+		assertFalse(DependencyUtil.isValid(DependencyFactory.getFactory().getDependency("E:\\jtestcase\\lib\\xmlutil.jar")));
 		
 	}
 	

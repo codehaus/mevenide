@@ -63,9 +63,10 @@ public class DependencyUtil {
 		if ( d == null ) { 
 			return false;
 		} 
-		log.debug("Dependency <groupId=" + d.getGroupId() + ">, <artifactId=" + d.getArtifactId() + ">, <version=" + d.getVersion() + ">" );
-		return  d.getGroupId() != null && !d.getGroupId().trim().equals("")
-				&& d.getArtifactId() != null && !d.getArtifactId().trim().equals("")
-				&& d.getVersion() != null && !d.getVersion().trim().equals("");
+		boolean valid = d.getGroupId() != null && d.getGroupId().length() != 0
+						&& d.getArtifactId() != null && d.getArtifactId().length() != 0
+						&& d.getVersion() != null && d.getVersion().length() != 0;
+		log.debug("Dependency " + d.getArtifact() + " valid=" + valid + " <groupId=" + d.getGroupId() + ">, <artifactId=" + d.getArtifactId() + ">, <version=" + d.getVersion() + ">" );
+		return  valid;
 	}
 }
