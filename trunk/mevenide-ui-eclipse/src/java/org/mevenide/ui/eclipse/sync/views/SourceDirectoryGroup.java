@@ -28,6 +28,6 @@ public class SourceDirectoryGroup {
 	}
 	
 	public SourceDirectory[] getSourceDirectories() {
-		return new SourceDirectory[]{new SourceDirectory()};
+		return new SourceDirectory[]{new SourceDirectory(), new SourceDirectory()};
 	}
 }

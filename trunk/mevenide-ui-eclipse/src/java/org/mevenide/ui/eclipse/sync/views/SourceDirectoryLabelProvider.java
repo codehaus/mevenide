@@ -47,7 +47,7 @@ public class SourceDirectoryLabelProvider implements ITableLabelProvider {
 	}
 	
 	public boolean isLabelProperty(Object element, String property) {
-		return false;
+		return true;
 	}
 	
 	public void removeListener(ILabelProviderListener listener) {

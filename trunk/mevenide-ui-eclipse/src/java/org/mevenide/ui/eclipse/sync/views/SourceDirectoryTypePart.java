@@ -100,7 +100,7 @@ public class SourceDirectoryTypePart extends ViewPart {
 		
 		viewer.setCellEditors(new CellEditor[] {
 			new TextCellEditor(), 
-			getComboBoxCellEditor()
+			createComboBoxCellEditor()
 		});
 		
 		viewer.setCellModifier(new ICellModifier() {
@@ -114,6 +114,7 @@ public class SourceDirectoryTypePart extends ViewPart {
 						element = ((Item) element).getData();
 					}
 					((SourceDirectory) element).setDirectoryType(SourceDirectoryUtil.sourceTypes[((Integer)value).intValue()]);
+					viewer.update(element, new String[] {"source.type"});
 				}
 			}
 			
@@ -138,7 +139,7 @@ public class SourceDirectoryTypePart extends ViewPart {
 		
 	}
 
-	private ComboBoxCellEditor getComboBoxCellEditor() {
+	private ComboBoxCellEditor createComboBoxCellEditor() {
 		ComboBoxCellEditor comboBoxCellEditor = new ComboBoxCellEditor();
 		comboBoxCellEditor.create(viewer.getTable());
 		comboBoxCellEditor.setItems(SourceDirectoryUtil.sourceTypes);
