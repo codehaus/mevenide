@@ -25,7 +25,12 @@ import org.mevenide.goals.grabber.IGoalsGrabber;
 import org.mevenide.ui.eclipse.goals.model.Goal;
 import org.mevenide.ui.eclipse.goals.model.Plugin;
 
-
+/** 
+* 
+* @author <a href="mailto:rhill2@free.fr">Gilles Dodinet</a>
+* @version $Id: GlobalOriginFilter.java,v 1.2 4 avr. 2004 Exp gdodinet 
+* 
+*/
 public class GoalOriginFilter extends ViewerFilter {
 	private static final Log log = LogFactory.getLog(GoalOriginFilter.class);
 	

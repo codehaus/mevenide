@@ -29,7 +29,12 @@ import org.mevenide.goals.grabber.IGoalsGrabber;
 import org.mevenide.ui.eclipse.goals.model.Element;
 import org.mevenide.ui.eclipse.preferences.PreferencesManager;
 
-
+/** 
+* 
+* @author <a href="mailto:rhill2@free.fr">Gilles Dodinet</a>
+* @version $Id: GlobalGoalFilter.java,v 1.2 4 avr. 2004 Exp gdodinet 
+* 
+*/
 public class GlobalGoalFilter extends ViewerFilter {
 	private static final Log log = LogFactory.getLog(GlobalGoalFilter.class);
 	
