@@ -93,7 +93,11 @@ public class ProjectWriter {
 		
 		Resource resource = ResourceUtil.newResource(path, exclusionPatterns);
 		
+		if ( project.getBuild().getResources() == null ) {
+		    project.getBuild().setResources(new ArrayList());
+		}
 		project.getBuild().getResources().add(resource);
+		    
 		write(project, pom);	
 	}
 	
@@ -108,6 +112,10 @@ public class ProjectWriter {
 		}
 		
 		Resource resource = ResourceUtil.newResource(path, exclusionPatterns);
+		
+		if ( project.getBuild().getUnitTest().getResources() == null ) {
+		    project.getBuild().getUnitTest().setResources(new ArrayList());
+		}
 		project.getBuild().getUnitTest().getResources().add(resource);
 		
 		write(project, pom);	

@@ -166,12 +166,14 @@ public class ProjectReader {
 	
 	Map readResources(Project project, List resources, String resourceType) {
 	    Map resourceMap = new TreeMap();
-        for (int i = 0; i < resources.size(); i++) {
-            String directory = ((Resource) resources.get(i)).getDirectory();
-            if ( !resourceMap.containsValue(directory) ) {
-            	resourceMap.put(directory, resourceType);
-            }
-        }
+	    if ( resources != null ) {
+	        for (int i = 0; i < resources.size(); i++) {
+	            String directory = ((Resource) resources.get(i)).getDirectory();
+	            if ( !resourceMap.containsValue(directory) ) {
+	            	resourceMap.put(directory, resourceType);
+	            }
+	        }
+	    }
         return resourceMap;
     }
 
