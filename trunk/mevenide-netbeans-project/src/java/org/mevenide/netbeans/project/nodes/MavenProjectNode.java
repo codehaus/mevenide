@@ -55,7 +55,7 @@ public class MavenProjectNode extends FilterNode {
     public Image getIcon(int param)
     {
         if (icon == null) {
-            icon = Utilities.loadImage("org/mevenide/netbeans/project/resources/MavenIcon.gif");
+            icon = Utilities.loadImage("org/mevenide/netbeans/project/resources/MavenIcon.gif"); //NOI18N
         }
         return icon;
     }
@@ -63,16 +63,17 @@ public class MavenProjectNode extends FilterNode {
     public Image getOpenedIcon(int param)
     {
         if (icon == null) {
-            icon = Utilities.loadImage("org/mevenide/netbeans/project/resources/MavenIcon.gif");
+            icon = Utilities.loadImage("org/mevenide/netbeans/project/resources/MavenIcon.gif"); //NOI18N
         }
         return icon;
     }
     
     public javax.swing.Action[] getActions(boolean param) {
 //       javax.swing.Action[] spr = super.getActions(param);
-        Action[] toReturn = new Action[14];
+        boolean isMultiproject = (project.getPropertyResolver().getValue("maven.multiproject.includes") != null); //NOI18N
+        int slip = (isMultiproject ? 2 : 0);
+        Action[] toReturn = new Action[13 + slip];
         ActionProviderImpl provider = (ActionProviderImpl)getLookup().lookup(ActionProviderImpl.class);
-        
         toReturn[0] = LogicalViews.newFileAction();
         toReturn[1] = null;
         toReturn[2] = provider.createBasicMavenAction("Build", "jar:install");
@@ -80,13 +81,15 @@ public class MavenProjectNode extends FilterNode {
         toReturn[4] = provider.createBasicMavenAction("Rebuild", "clean jar:install");
         toReturn[5] = provider.createBasicMavenAction("Generate Javadoc", "javadoc");
         toReturn[6] = provider.createBasicMavenAction("Temporary: Create NBM", "nbm:install");
+        toReturn[7] = provider.createMultiProjectAction("Build (multiproject)", "jar:install");
+        toReturn[8] = provider.createMultiProjectAction("Clean (multiproject)", "clean");
         // separator
-        toReturn[7] = null;
-        toReturn[8] = LogicalViews.setAsMainProjectAction();
-        toReturn[9] = LogicalViews.openSubprojectsAction();
-        toReturn[10] = LogicalViews.closeProjectAction();
-        toReturn[11] = null;
-        toReturn[12] = LogicalViews.customizeProjectAction();
+        toReturn[7 + slip] = null;
+        toReturn[8 + slip] = LogicalViews.setAsMainProjectAction();
+        toReturn[9 + slip] = LogicalViews.openSubprojectsAction();
+        toReturn[10 + slip] = LogicalViews.closeProjectAction();
+        toReturn[11 + slip] = null;
+        toReturn[12 + slip] = LogicalViews.customizeProjectAction();
 //        for (int i = 0; i < spr.length; i++) {
 //            toReturn[i + 6] = spr[i];
 //        }
