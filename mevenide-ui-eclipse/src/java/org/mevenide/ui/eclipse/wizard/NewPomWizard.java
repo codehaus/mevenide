@@ -39,7 +39,6 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
-import org.eclipse.ui.internal.ide.DialogUtil;
 import org.eclipse.ui.wizards.newresource.BasicNewResourceWizard;
 import org.mevenide.ui.eclipse.Mevenide;
 
@@ -61,7 +60,7 @@ public class NewPomWizard extends BasicNewResourceWizard implements INewWizard {
     }
 
     public void addPages() {
-        page = new NewPomWizardFirstPage("POM Wizard", (IStructuredSelection) selection);
+        page = new NewPomWizardFirstPage((IStructuredSelection) selection);
         page2 = new NewPomWizardSecondPage();
         addPage(page);
         addPage(page2);
@@ -85,8 +84,7 @@ public class NewPomWizard extends BasicNewResourceWizard implements INewWizard {
             }
         }
         catch (PartInitException e) {
-            DialogUtil.openError(dw.getShell(), Mevenide.getResourceString("FileResource.errorMessage"), //$NON-NLS-1$
-                    e.getMessage(), e);
+            Mevenide.popUp(Mevenide.getResourceString("NewPomWizard.Error.Text"), e.getMessage());
         }
         return true;
     }
