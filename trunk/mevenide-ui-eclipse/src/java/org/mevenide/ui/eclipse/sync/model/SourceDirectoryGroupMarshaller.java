@@ -17,6 +17,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.resources.IProject;
 import org.jdom.Document;
 import org.jdom.Element;
@@ -33,6 +35,7 @@ import org.mevenide.util.JDomOutputter;
  * 
  */
 public class SourceDirectoryGroupMarshaller {
+	private static Log log = LogFactory.getLog(SourceDirectoryGroupMarshaller.class);
 	
 	/**
 	 * @refactor cyclomatic complexity &gt;&gt; 4

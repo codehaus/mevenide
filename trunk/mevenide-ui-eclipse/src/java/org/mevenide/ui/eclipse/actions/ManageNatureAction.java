@@ -25,7 +25,6 @@ import org.mevenide.ui.eclipse.nature.MevenideNature;
  * @author Gilles Dodinet (gdodinet@wanadoo.fr)
  * @version $Id$
  * 
- * @todo EXTERNALIZE
  */
 public class ManageNatureAction extends AbstractMevenideAction {
 	
