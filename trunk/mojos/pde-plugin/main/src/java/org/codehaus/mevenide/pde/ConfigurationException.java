@@ -23,7 +23,7 @@ package org.codehaus.mevenide.pde;
  * @version $Id$
  * 
  */
-public class ConfigurationException extends PdeException {
+public class ConfigurationException extends PdePluginException {
     
     public ConfigurationException(String message) {
         super(message);

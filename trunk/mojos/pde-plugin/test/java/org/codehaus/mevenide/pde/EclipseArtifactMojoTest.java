@@ -39,7 +39,7 @@ public class EclipseArtifactMojoTest extends TestCase {
             public void execute(PluginExecutionRequest arg0, PluginExecutionResponse arg1) throws Exception { }
         };
         eclipseHome = new File(getClass().getResource("/eclipse.home").getFile());
-        mojo.setEclipseHome(eclipseHome);
+        mojo.eclipseHome = eclipseHome;
     }
 
     
@@ -51,10 +51,10 @@ public class EclipseArtifactMojoTest extends TestCase {
     public void testGetBuildId() throws Exception {
         assertEquals(200409240800l, mojo.getBuildId());
         
-        mojo.setConfigurationFolder(new File(eclipseHome, "configuration"));
+        mojo.configurationFolder = new File(eclipseHome, "configuration");
         assertEquals(200409240800l, mojo.getBuildId());
         
-        mojo.setConfigurationFolder(new File(eclipseHome, "nofolder"));
+        mojo.configurationFolder = new File(eclipseHome, "nofolder");
         try {
             mojo.getBuildId();
             fail("expected ConfigurationException : configuration set to an invalid path");
