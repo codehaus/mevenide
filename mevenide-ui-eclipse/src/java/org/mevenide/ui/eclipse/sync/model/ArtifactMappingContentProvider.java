@@ -48,11 +48,16 @@
  */
 package org.mevenide.ui.eclipse.sync.model;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.maven.project.Project;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.JavaCore;
@@ -73,8 +78,12 @@ public class ArtifactMappingContentProvider implements ITreeContentProvider {
     private List poms;
     
     public Object[] getChildren(Object parentElement) {
+		if ( parentElement instanceof PomContainer ) {
+			return ((PomContainer) parentElement).getNodes();
+		}
+
         if ( parentElement instanceof ProjectContainer ) {
-            
+            //@TODO move to ProjectContainer
             IProject project = ((ProjectContainer) parentElement).getProject();
             List dependencyContainers = null;
             List directoryContainers = null;
@@ -112,15 +121,15 @@ public class ArtifactMappingContentProvider implements ITreeContentProvider {
                 }
 				idx++;
             }
-            Object[] containers = allContainers.toArray(); 
-            
-//            IArtifactMappingNodeContainer[] containers = new IArtifactMappingNodeContainer[directoryContainers.size() + dependencyContainers.size()];
-//            for (int i = 0; i < directoryContainers.size(); i++) {
-//                containers[i] = (IArtifactMappingNodeContainer) directoryContainers.get(i);
-//            }
-//            for (int i = 0; i < dependencyContainers.size(); i++) {
-//                containers[i + directoryContainers.size()] = (IArtifactMappingNodeContainer) dependencyContainers.get(i);
-//            } 
+
+            Object[] containers = null; 
+			try {
+				containers = getPomContainers(allContainers, (ProjectContainer) parentElement); 
+			}
+          	catch ( Exception e ) {
+				log.error("Unable to retrieve pom containers", e);
+			}
+			((ProjectContainer) parentElement).setPomContainers(containers);
             return containers;
         }
         if ( parentElement instanceof IArtifactMappingNodeContainer ) {
@@ -129,7 +138,38 @@ public class ArtifactMappingContentProvider implements ITreeContentProvider {
         return null;
     }
     
+	private Object[] getPomContainers(List containers, ProjectContainer projectContainer) throws Exception {
+		Map hashMap = new HashMap();
+		for (int i = 0; i < containers.size(); i++) {
+            IArtifactMappingNodeContainer container = (IArtifactMappingNodeContainer) containers.get(i);
+			Project pom = container.getPrimaryPom();
+			if ( hashMap.containsKey(pom.getFile()) ) {
+				((List) hashMap.get(pom.getFile())).add(container);
+			}
+			else {
+        	    List list = new ArrayList();
+				list.add(container);
+				hashMap.put(pom.getFile(), list);
+			}
+        }
+
+		List pomContainers = new ArrayList();
+		Iterator itr = hashMap.keySet().iterator();
+		while ( itr.hasNext() ) {
+			File pomFile = (File) itr.next();
+            PomContainer pomContainer = new PomContainer(pomFile);
+			pomContainer.setNodes(((List) hashMap.get(pomFile)).toArray());
+			pomContainer.setParent(projectContainer);
+			pomContainers.add(pomContainer);
+		}
+
+		return pomContainers.toArray();
+	}
+ 
     public Object getParent(Object element) {
+		if ( element instanceof PomContainer )  {
+			return ((PomContainer) element).getParent();
+		}
         if ( element instanceof IArtifactMappingNode ) {
             return ((IArtifactMappingNode) element).getParent();
         }
@@ -140,8 +180,19 @@ public class ArtifactMappingContentProvider implements ITreeContentProvider {
     }
     
     public boolean hasChildren(Object element) {
-        //find a better way to determine if element has children
-        return getChildren(element) != null;
+        if ( element instanceof ProjectContainer )  {
+			return ((ProjectContainer) element).getPomContainers() != null && ((ProjectContainer) element).getPomContainers().length > 0;
+		}
+		if ( element instanceof PomContainer )  {
+			return ((PomContainer) element).getNodes() != null && ((PomContainer) element).getNodes().length > 0;
+		}
+        if ( element instanceof AbstractArtifactMappingNodeContainer ) {
+            return ((AbstractArtifactMappingNodeContainer) element).getNodes() != null && ((AbstractArtifactMappingNodeContainer) element).getNodes().length > 0;
+        }
+        if ( element instanceof IArtifactMappingNode ) {
+            return false;
+        }
+        return getChildren(element) != null && getChildren(element).length > 0;
     }
     
     public void dispose() {

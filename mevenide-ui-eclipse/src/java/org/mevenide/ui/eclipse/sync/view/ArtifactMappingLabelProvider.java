@@ -66,6 +66,7 @@ import org.mevenide.ui.eclipse.sync.model.DirectoryMappingNode;
 import org.mevenide.ui.eclipse.sync.model.DirectoryMappingNodeContainer;
 import org.mevenide.ui.eclipse.sync.model.IArtifactMappingNode;
 import org.mevenide.ui.eclipse.sync.model.IArtifactMappingNodeContainer;
+import org.mevenide.ui.eclipse.sync.model.PomContainer;
 import org.mevenide.ui.eclipse.sync.model.ProjectContainer;
 
 
@@ -98,9 +99,11 @@ public class ArtifactMappingLabelProvider implements ILabelProvider, IColorProvi
     
     public Image getImage(Object element) {
         Image baseImage = null;
+        if ( element instanceof PomContainer ) {
+            return Mevenide.getImageDescriptor("pom_file.gif").createImage();
+        }
         if ( element instanceof ProjectContainer ) {
             baseImage = PlatformUI.getWorkbench().getSharedImages().getImage(IDE.SharedImages.IMG_OBJ_PROJECT);
-            
         }
         if ( element instanceof DirectoryMappingNodeContainer ) {
             return Mevenide.getImageDescriptor("maven_source_tree.gif").createImage();
@@ -118,6 +121,9 @@ public class ArtifactMappingLabelProvider implements ILabelProvider, IColorProvi
     }
     
     public String getText(Object element) {
+        if ( element instanceof PomContainer ) {
+            return ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(((PomContainer) element).getPomFile().getAbsolutePath())).getProjectRelativePath().removeFirstSegments(1).toOSString();
+        }
         if ( element instanceof ProjectContainer ) {
             return ((ProjectContainer) element).getProject().getName();
         }
@@ -146,7 +152,9 @@ public class ArtifactMappingLabelProvider implements ILabelProvider, IColorProvi
 	}
     
     public Color getForeground(Object element) {
-        if ( element instanceof IArtifactMappingNodeContainer || element instanceof ProjectContainer ) {
+        if ( ( element instanceof PomContainer && (((PomContainer) element).getNodes() == null || ((PomContainer) element).getNodes().length == 0) )
+        		|| ( element instanceof ProjectContainer && (((ProjectContainer) element).getPomContainers() == null || ((ProjectContainer) element).getPomContainers().length == 0) )
+        		|| ( element instanceof IArtifactMappingNodeContainer && (((IArtifactMappingNodeContainer) element).getNodes() == null || ((IArtifactMappingNodeContainer) element).getNodes().length == 0) )) {
             return MevenideColors.GREY;
         }
     	return MevenideColors.BLACK;	
