@@ -18,7 +18,7 @@
         	<item name="License" href="/license.html"/>
         	<item name="Changes" href="/changes-report.html"/>
         	<item name="Providers" href="/user-guide/provider-infrastructure.html" collapse="true">
-        		<item name="Extension point" href="/extension-point.html" target="_blank"/>
+        		<item name="Extension point" href="/user-guide/extension-point.html" target="_blank"/>
         	</item>
         	<item name="Report a bug" href="/bug-report.html"/>
         	<item name="Faq" href="/faq.html"/>

@@ -17,25 +17,34 @@
 			Mevenide can help by providing an infrastructure to help Maven 
 			Plugins to expose their properties in a easy way.
 		  </p>
+		  <p>
+		  	Properties modified through those pages (i.e. properties whose value is not the default one) are passed to the 
+		  	VM. However properties specified in the launch config are particular to a specific build and thus 
+		  	take precedence. 
+		  	<br/>
+		  	So you can see those dynamic preference pages much like a particular view of the ~/build.properties file - later 
+		  	we will also provide a simple way to edit the ~/build.properties file, and import/export functions will be 
+		  	available for ease of use.
+		  </p>
 	    </div>
 	  </subsection>
 	  <subsection name="Plug into Mevenide">
 	  	<div id="documentContent">
 		  <p>
-			To attain that goal Maven plugins providers can declaratively 
+			To provide their own page Maven plugin providers can declaratively 
 			plug into Mevenide preference pages. Screenshot 1 below is an 
 			example of that interaction (just a sample so not all properties 
 			are displayed in the preferences page) : 
 			<br/>
 			<center>
-				<img border="1px" src="../images/plugins-providers.png"/>
+				<img border="1px" src="../images/screenshots/providers/plugins-providers.png"/>
 				<br/>
 				<font size="-1"><b>Screenshot 1</b> PDE plugin provider</font>
 				<br/>
 			</center>
 			To add a new page, plugins provider have to contribute a new 
 			Eclipse plugin that uses the org.mevenide.ui.preference extension 
-			point. Please refer to the <a href="extension-point.html" target="_blank">extension point documentation</a>
+			point. Please refer to the <a href="extension-point.html" target="_blank" class="newWindow">extension point documentation</a>
 			for more details.
 			<br/>
 			A template  for the <a href="http://maven.apache.org/reference/plugins/genapp/">Genapp plugin</a> 
