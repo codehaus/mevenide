@@ -297,7 +297,11 @@ public class Mevenide extends AbstractUIPlugin {
 		Mevenide.getPlugin().createProjectProperties();
 		
 		IJavaProject javaProject = JavaCore.create(project);
-	
+		
+		if ( !javaProject.exists() ) {
+			return;
+		}
+		
 		File f = new Path(project.getLocation().append("project.properties").toOSString()).toFile();
 		Properties properties = new Properties();
 		properties.load(new FileInputStream(f));
