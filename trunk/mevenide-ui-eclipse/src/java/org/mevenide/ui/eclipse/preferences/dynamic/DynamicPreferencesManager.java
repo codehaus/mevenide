@@ -14,12 +14,13 @@
  *  limitations under the License.
  * =========================================================================
  */
-package org.mevenide.ui.eclipse.preferences;
+package org.mevenide.ui.eclipse.preferences.dynamic;
 
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import org.mevenide.ui.eclipse.Mevenide;
+import org.mevenide.ui.eclipse.preferences.PreferencesManager;
 
 
 /**  

@@ -14,7 +14,7 @@
  *  limitations under the License.
  * =========================================================================
  */
-package org.mevenide.ui.eclipse.preferences;
+package org.mevenide.ui.eclipse.preferences.pages;
 
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.swt.SWT;

@@ -14,7 +14,7 @@
  *  limitations under the License.
  * =========================================================================
  */
-package org.mevenide.ui.eclipse.preferences;
+package org.mevenide.ui.eclipse.preferences.pages;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -31,6 +31,8 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.mevenide.environment.ConfigUtils;
 import org.mevenide.environment.ILocationFinder;
 import org.mevenide.ui.eclipse.Mevenide;
+import org.mevenide.ui.eclipse.preferences.MevenidePreferenceKeys;
+import org.mevenide.ui.eclipse.preferences.PreferencesManager;
 import org.mevenide.util.StringUtils;
 
 

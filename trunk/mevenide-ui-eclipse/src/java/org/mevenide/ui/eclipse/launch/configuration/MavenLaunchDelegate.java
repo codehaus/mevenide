@@ -51,7 +51,7 @@ import org.mevenide.properties.resolver.PropertyResolverFactory;
 import org.mevenide.runner.AbstractRunner;
 import org.mevenide.runner.ArgumentsManager;
 import org.mevenide.ui.eclipse.Mevenide;
-import org.mevenide.ui.eclipse.preferences.DynamicPreferencesManager;
+import org.mevenide.ui.eclipse.preferences.dynamic.DynamicPreferencesManager;
 
 
 
