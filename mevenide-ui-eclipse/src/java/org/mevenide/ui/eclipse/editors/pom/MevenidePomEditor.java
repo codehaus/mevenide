@@ -178,7 +178,7 @@ public class MevenidePomEditor extends FormEditor {
      */
     private void createOrganizationPage() throws PartInitException {
         OrganizationPage orgPage = new OrganizationPage(this);
-        comparator.addProjectChangeListener(ProjectComparator.PROJECT, orgPage);
+        comparator.addProjectChangeListener(ProjectComparator.ORGANIZATION, orgPage);
         addPage(orgPage);
     }
 
@@ -220,6 +220,8 @@ public class MevenidePomEditor extends FormEditor {
     private void createBuildPage() throws PartInitException {
         BuildPage buildPage = new BuildPage(this);
         comparator.addProjectChangeListener(ProjectComparator.BUILD, buildPage);
+        comparator.addProjectChangeListener(ProjectComparator.RESOURCES, buildPage);
+        comparator.addProjectChangeListener(ProjectComparator.UNIT_TESTS, buildPage);
         addPage(buildPage);
     }
 
