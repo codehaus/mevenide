@@ -126,31 +126,6 @@ public class ProjectOpenedHookImpl extends ProjectOpenedHook {
         }
     }        
 
-    private void checkUnresolvedDependencies() {
-        List lst = new ArrayList();
-        Project mavproj = project.getOriginalMavenProject();
-        if (mavproj.getDependencies() == null) {
-            return;
-        }
-        Iterator it = mavproj.getDependencies().iterator();
-        
-        while (it.hasNext()) {
-            Dependency dep = (Dependency)it.next();
-            if (!dependencyExists(dep)) {
-                lst.add(dep);
-            }
-        }
-        
-//        if (lst.size() > 0) {
-// makes no sense to show dialog.. is run also when restarting..
-// maybe have some kind of project annotation..            
-//            DependenciesExplorerPanel panel = new DependenciesExplorerPanel(lst, project);
-//            DialogDescriptor dd = new DialogDescriptor(panel, "There are some dependencies missing.");
-//            Object retValue = DialogDisplayer.getDefault().notify(dd);
-            
-//        }
-    }
-    
     private boolean dependencyExists(Dependency dep) {
         // only those added to classpath matter..
         if (dep.getType() == null || dep.isAddedToClasspath()) {

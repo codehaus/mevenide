@@ -29,7 +29,6 @@ import org.netbeans.spi.java.classpath.support.ClassPathSupport;
 
 import org.netbeans.api.java.platform.JavaPlatform;
 import org.netbeans.api.java.platform.JavaPlatformManager;
-import org.netbeans.api.java.platform.Specification;
 import org.netbeans.api.java.classpath.ClassPath;
 
 

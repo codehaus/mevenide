@@ -91,15 +91,11 @@ public class MavenFileOwnerQueryImpl implements FileOwnerQueryImplementation {
             currentProjects = new HashSet(set);
         }
         File file = new File(uri);
-        File type = file.getParentFile();
-        File group = file.getParentFile();
-        File repository = file.getParentFile();
         try {
             IDependencyResolver resolver = DependencyResolverFactory.getFactory().newInstance(file.getAbsolutePath());
             String version = resolver.guessVersion();
             String artifactid = resolver.guessArtifactId();
             String groupid = resolver.guessGroupId();
-            String ext = resolver.guessExtension();
  //           logger.debug("version=" + version + "  artifact=" + artifactid + "  groupid=" + groupid);
             Iterator it = currentProjects.iterator();
             while (it.hasNext()) {

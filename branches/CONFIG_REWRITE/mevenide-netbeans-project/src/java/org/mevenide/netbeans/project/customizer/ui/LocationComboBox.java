@@ -43,7 +43,6 @@ import org.openide.util.Utilities;
 class LocationComboBox extends JButton {
     private LocationWrapper current;
     private LocationWrapper initial;
-    private boolean hasChanged = false;
     private LocationWrapper[] all;
     private JPopupMenu currentLoc;
     private HashMap actionToLoc;

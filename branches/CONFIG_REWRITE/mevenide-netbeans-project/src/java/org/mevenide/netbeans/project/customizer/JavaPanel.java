@@ -24,7 +24,6 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -32,7 +31,6 @@ import org.mevenide.netbeans.project.MavenProject;
 import org.mevenide.netbeans.project.customizer.ui.LocationComboFactory;
 import org.mevenide.netbeans.project.customizer.ui.OriginChange;
 import org.mevenide.properties.IPropertyLocator;
-import org.openide.util.NbBundle;
 
 /**
  * basic props of java and jar plugins.
@@ -42,7 +40,6 @@ public class JavaPanel extends JPanel implements ProjectPanel {
     private static Log logger = LogFactory.getLog(BuildPanel.class);
     
     private ProjectValidateObserver valObserver;
-    private DocumentListener listener;
     private MavenProject project;
     
     private OriginChange ocDebug;

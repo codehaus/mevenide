@@ -59,7 +59,6 @@ public class MavenNewWizardIterator implements TemplateWizard.Iterator {
     private transient int index;
     private transient WizardDescriptor.Panel[] panels;
     private transient TemplateWizard wiz;
-    private transient FileObject templateRoot;
     
     
     /** Create a new wizard iterator. */

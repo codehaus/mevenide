@@ -17,7 +17,6 @@
 package org.mevenide.netbeans.project.customizer;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
