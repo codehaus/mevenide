@@ -19,7 +19,6 @@ package org.mevenide.properties.writer;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Iterator;
@@ -28,7 +27,11 @@ import java.util.Properties;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.mevenide.properties.*;
+import org.mevenide.properties.Element;
+import org.mevenide.properties.ElementFactory;
+import org.mevenide.properties.KeyValuePair;
+import org.mevenide.properties.PropertyModel;
+import org.mevenide.properties.PropertyModelFactory;
 
 /**
  *
@@ -85,13 +88,7 @@ public class CarefulPropertiesWriter implements IPropertiesWriter
     
     private void marshallModel(PropertyModel model, OutputStream stream) throws IOException
     {
-        OutputStreamWriter writer = new OutputStreamWriter(stream);
-        Iterator it = model.getList().iterator();
-        while (it.hasNext())
-        {
-            writer.write(it.next().toString());
-        }
-        writer.close();
+        model.store(stream);
     }
     
     /*
