@@ -1,15 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--JBuilder XML Project-->
 <project>
+  <property category="debug.0" name="SmartStepRedefineClasses" value="0"/>
+  <property category="debug.0" name="SmartStepSkipStaticInitializers" value="0"/>
+  <property category="debug.0" name="SmartStepSkipSynthetics" value="0"/>
   <property category="generalFormatting" name="blockIndent" value="4"/>
   <property category="generalFormatting" name="tabSize" value="4"/>
   <property category="idl" name="ProcessIDL" value="false"/>
-  <property category="javaFormatting" name="alwaysClasses" value="1"/>
   <property category="javaFormatting" name="arrayInitDataOnNewLine" value="0"/>
   <property category="javaFormatting" name="catchOnNewLine" value="0"/>
   <property category="javaFormatting" name="elseOnNewLine" value="0"/>
   <property category="javaFormatting" name="extendsOnNewLine" value="0"/>
   <property category="javaFormatting" name="finallyOnNewLine" value="0"/>
+  <property category="javaFormatting" name="packageThreshold" value="0"/>
   <property category="javaFormatting" name="spaceBeforeMethodDefLparen" value="1"/>
   <property category="javaFormatting" name="throwsOnNewLine" value="1"/>
   <property category="javaFormatting" name="whileOnNewLine" value="0"/>
@@ -48,9 +51,9 @@
   <property category="sys" name="ExcludeClassEnabled" value="0"/>
   <property category="sys" name="IncludeTestPath" value="1"/>
   <property category="sys" name="InstanceVisibility" value="0"/>
-  <property category="sys" name="JDK" value="java version 1.4.2_01-b06"/>
+  <property category="sys" name="JDK" value="java version 1.4.2_03-117.1"/>
   <property category="sys" name="LastTag" value="0"/>
-  <property category="sys" name="Libraries" value="Open Tools SDK;MevenIDE"/>
+  <property category="sys" name="Libraries" value="Open Tools SDK;ant-1.5.3-1;commons-collections-2.1;commons-lang-1.0.1;commons-logging-1.0.1;goals-grabber-0.4-SNAPSHOT;log4j-1.2.7;maven-1.0;maven-findbugs-plugin-1.0-SNAPSHOT;mevenide-config-0.4-SNAPSHOT;mevenide-core-0.3-SNAPSHOT;xml-apis-1.0.b2;xpp3-1.1.2a"/>
   <property category="sys" name="MakeStable" value="0"/>
   <property category="sys" name="OutPath" value="target/classes"/>
   <property category="sys" name="SourcePath" value="src/java;test"/>
@@ -61,7 +64,7 @@
   <property category="sys" name="VersionLabel" value="@version"/>
   <property category="sys" name="WorkingDirectory" value="."/>
   <property category="sys" name="enable.auto.packages" value="false"/>
-  <node name="com.jahia.opentools.maven" type="Package"/>
+  <node name="org.mevenide.ui.jbuilder" type="Package"/>
   <node name="Documentation" type="Archive">
     <property category="archiving" name="contentRules.1" value="F:JBMavenOpenTool.html;JBMavenOpenTool.html"/>
     <property category="archiving" name="extraDeployRoots.1" value="F:wood/keith/opentools/otrunner/OTRunner.html"/>
@@ -74,12 +77,11 @@
   <node name="OpenTool" type="Archive">
     <property category="archiving" name="archiverClass" value="com.borland.jbuilder.wizard.archive.OpenToolArchiver"/>
     <property category="archiving" name="contentRules.1" value="I:**/*.*"/>
-    <property category="archiving" name="libraryStates.1" value="3:MevenIDE"/>
-    <property category="archiving" name="overrideManifestPath" value="classes.opentools"/>
+    <property category="archiving" name="overrideManifestPath" value="src/conf/classes.opentools"/>
     <property category="archiving" name="targetPath" value="mevenide-ui-jbuilder.jar"/>
     <property category="archiving" name="usingRules" value="1"/>
   </node>
-  <file path="classes.opentools"/>
+  <file path="src/conf/classes.opentools"/>
   <file path="JBMavenOpenTool.html"/>
   <file path="maven.xml">
     <property category="maven" name="mavenHome" value="D:\java\technologies\maven"/>
