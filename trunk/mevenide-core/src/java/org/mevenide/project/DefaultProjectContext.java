@@ -38,6 +38,11 @@ import org.apache.maven.project.Resource;
 import org.apache.maven.project.SourceModification;
 import org.apache.maven.project.UnitTest;
 import org.apache.maven.project.Version;
+import org.jdom.Document;
+import org.jdom.Element;
+import org.jdom.Text;
+import org.jdom.input.DefaultJDOMFactory;
+import org.jdom.input.JDOMFactory;
 import org.mevenide.context.IProjectContext;
 import org.mevenide.context.IQueryContext;
 import org.mevenide.properties.IPropertyResolver;
@@ -56,6 +61,7 @@ public class DefaultProjectContext implements IProjectContext {
     private List projects;
     private List projectFiles;
     private List projectTimestamps;
+    private List jdomRootElements;
     
     private Object LOCK = new Object();
     private JDomProjectUnmarshaller unmarshaller;
@@ -69,6 +75,7 @@ public class DefaultProjectContext implements IProjectContext {
         projectTimestamps = new ArrayList();
         projectFiles = new ArrayList();
         projects = new ArrayList();
+        jdomRootElements = new ArrayList();
         if (context.getProjectDirectory() == null) {
             throw new IllegalStateException("Cannot initialize ProjectContext without a project-based Querycontext");
         }
@@ -82,12 +89,17 @@ public class DefaultProjectContext implements IProjectContext {
         projectFiles.clear();
         projectTimestamps.clear();
         projects.clear();
+        jdomRootElements.clear();
         mergedProject = new Project();
         readProject(new File(queryContext.getProjectDirectory(), "project.xml"));
-        Iterator it = projects.iterator();
+        Iterator it = jdomRootElements.iterator();
+        Element mergedJDomRoot = factory.element("project"); // blank initial root
         while (it.hasNext()) {
-            mergedProject = mergeProjects(mergedProject, (Project)it.next());
+            Element root = (Element)it.next();
+            mergedJDomRoot = mergeProjectDOMs(mergedJDomRoot, root);
+            projects.add(unmarshaller.generateProject(root));
         }
+        mergedProject = unmarshaller.generateProject(mergedJDomRoot);
     }
     
     public Project getFinalProject() {
@@ -133,18 +145,18 @@ public class DefaultProjectContext implements IProjectContext {
     private void readProject(File file) {
         logger.debug("readproject=" + file);
         if (file.exists()) {
-            Project proj;
+            Element proj;
             try {
-                proj = unmarshaller.parse(new FileReader(file));
+                proj = unmarshaller.parseRootElement(file);
             } catch (Exception exc) {
                 logger.error("cannot parse file=" + file, exc);
                 return;
             }
             if (proj != null) {
-                projects.add(proj);
+                jdomRootElements.add(proj);
                 projectFiles.add(file);
                 projectTimestamps.add(new Long(file.lastModified()));
-                String extend = proj.getExtend();
+                String extend = proj.getChildText("extend");
                 if (extend != null) {
                     extend = propResolver.resolveString(extend);
                     File absolute = new File(extend);
@@ -169,385 +181,182 @@ public class DefaultProjectContext implements IProjectContext {
     
     //##########################################################################
     // project merge related
-    //##########################################################################
+    //##########################################################################    
+    private static JDOMFactory factory = new DefaultJDOMFactory();
     
-    private Project mergeProjects(Project primary, Project secondary) {
-        Project toReturn = new Project();
+    private void mergeSimpleElement(String name, Element primaryParent, Element secondaryParent, Element resultParent) {
+        String primary = primaryParent != null ? primaryParent.getChildText(name) : null;
+        String secondary = secondaryParent != null ? secondaryParent.getChildText(name) : null;
+        String source = (primary != null ? primary : secondary);
+        if (source != null) {
+            Element toReturn = factory.element(name);
+            toReturn.addContent(factory.text(source));
+            resultParent.addContent(toReturn);
+        }
+    }
+    
+    private void mergeSubtree(String name, Element primaryParent, Element secondaryParent, Element resultParent) {
+        Element primary = (primaryParent != null ? primaryParent.getChild(name) : null);
+        Element secondary = (secondaryParent != null ? secondaryParent.getChild(name) : null);
+        Element source = (primary != null ? primary : secondary);
+        if (source != null) {
+            Element toReturnRoot = copyTree(source);
+            resultParent.addContent(toReturnRoot);
+        }
+    }
+    
+    private Element copyTree(Element source) {
+        Element toReturn = factory.element(source.getName());
+        Iterator it = source.getContent().iterator();
+        while (it.hasNext()) {
+            Object content = it.next();
+            if (content instanceof Element) {
+                toReturn.addContent(copyTree((Element)content));
+            }
+            if (content instanceof Text) {
+                Text text = (Text)content;
+                toReturn.addContent(factory.text(text.getText()));
+            }
+        }
+        return toReturn;
+    }
+
+    
+    private Element mergeProjectDOMs(Element primary, Element secondary) {
+        Element toReturn = factory.element("project");
         if (primary != null && secondary != null) {
-            toReturn.setExtend(primary.getExtend() != null ? primary.getExtend() : secondary.getExtend());
-            toReturn.setPomVersion(primary.getPomVersion() != null ? primary.getPomVersion() : secondary.getPomVersion());
-            toReturn.setId(primary.getId() != null ? primary.getId() : secondary.getId());
-            toReturn.setName(primary.getName() != null ? primary.getName() : secondary.getName());
-            toReturn.setGroupId(primary.getGroupId() != null ? primary.getGroupId() : secondary.getGroupId());
-            toReturn.setArtifactId(primary.getArtifactId() != null ? primary.getArtifactId() : secondary.getArtifactId());
-            toReturn.setCurrentVersion(primary.getCurrentVersion() != null ? primary.getCurrentVersion() : secondary.getCurrentVersion());
-            toReturn.setOrganization(mergeOrganization(primary.getOrganization(), secondary.getOrganization()));
-            toReturn.setInceptionYear(primary.getInceptionYear() != null ? primary.getInceptionYear() : secondary.getInceptionYear());
-            toReturn.setPackage(primary.getPackage() != null ? primary.getPackage() : secondary.getPackage());
-            toReturn.setLogo(primary.getLogo() != null ? primary.getLogo() : secondary.getLogo());
-            toReturn.setGumpRepositoryId(primary.getGumpRepositoryId() != null ? primary.getGumpRepositoryId() : secondary.getGumpRepositoryId());
-            toReturn.setDescription(primary.getDescription() != null ? primary.getDescription() : secondary.getDescription());
-            toReturn.setShortDescription(primary.getShortDescription() != null ? primary.getShortDescription() : secondary.getShortDescription());
-            toReturn.setUrl(primary.getUrl() != null ? primary.getUrl() : secondary.getUrl());
-            toReturn.setIssueTrackingUrl(primary.getIssueTrackingUrl() != null ? primary.getIssueTrackingUrl() : secondary.getIssueTrackingUrl());
-            toReturn.setSiteAddress(primary.getSiteAddress() != null ? primary.getSiteAddress() : secondary.getSiteAddress());
-            toReturn.setSiteDirectory(primary.getSiteDirectory() != null ? primary.getSiteDirectory() : secondary.getSiteDirectory());
-            toReturn.setDistributionSite(primary.getDistributionSite() != null ? primary.getDistributionSite() : secondary.getDistributionSite());
-            toReturn.setDistributionDirectory(primary.getDistributionDirectory() != null ? primary.getDistributionDirectory() : secondary.getDistributionDirectory());
-            toReturn.setRepository(mergeRepository(primary.getRepository(), secondary.getRepository()));
-            toReturn.setVersions(mergeVersions(primary.getVersions(), secondary.getVersions()));
-            toReturn.setBranches(mergeBranches(primary.getBranches(), secondary.getBranches()));
-            toReturn.setMailingLists(mergeMailingLists(primary.getMailingLists(), secondary.getMailingLists()));
-            toReturn.setDevelopers(mergeDevelopers(primary.getDevelopers(), secondary.getDevelopers()));
-            toReturn.setContributors(mergeContributors(primary.getContributors(), secondary.getContributors()));
-            toReturn.setLicenses(mergeLicenses(primary.getLicenses(), secondary.getLicenses()));
-            toReturn.setDependencies(mergeDependencies(primary.getDependencies(), secondary.getDependencies()));
-            toReturn.setBuild(mergeBuild(primary.getBuild(), secondary.getBuild()));
-            toReturn.setReports(mergeReports(primary.getReports(), secondary.getReports()));
-            toReturn.setProperties(mergeProperties(primary.getProperties(), secondary.getProperties()));
+            mergeSimpleElement("extend", primary, secondary, toReturn);
+            mergeSimpleElement("pomVersion", primary, secondary, toReturn);
+            mergeSimpleElement("id", primary, secondary, toReturn);
+            mergeSimpleElement("groupId", primary, secondary, toReturn);
+            mergeSimpleElement("artifactId", primary, secondary, toReturn);
+            mergeSimpleElement("name", primary, secondary, toReturn);
+            mergeSimpleElement("currentVersion", primary, secondary, toReturn);
+            mergeSubtree("organization", primary, secondary, toReturn);
+            mergeSimpleElement("inceptionYear", primary, secondary, toReturn);
+            mergeSimpleElement("package", primary, secondary, toReturn);
+            mergeSimpleElement("logo", primary, secondary, toReturn);
+            mergeSimpleElement("gumpRepositoryId", primary, secondary, toReturn);
+            mergeSimpleElement("description", primary, secondary, toReturn);
+            mergeSimpleElement("shortDescription", primary, secondary, toReturn);
+            mergeSimpleElement("url", primary, secondary, toReturn);
+            mergeSimpleElement("issueTrackingUrl", primary, secondary, toReturn);
+            mergeSimpleElement("siteAddress", primary, secondary, toReturn);
+            mergeSimpleElement("siteDirectory", primary, secondary, toReturn);
+            mergeSimpleElement("distributionSite", primary, secondary, toReturn);
+            mergeSimpleElement("distributionDirectory", primary, secondary, toReturn);
+            mergeSubtree("repository", primary, secondary, toReturn);
+            mergeSubtree("versions", primary, secondary, toReturn);
+            mergeSubtree("branches", primary, secondary, toReturn);
+            mergeSubtree("mailingLists", primary, secondary, toReturn);
+            mergeSubtree("developers", primary, secondary, toReturn);
+            mergeSubtree("contributors", primary, secondary, toReturn);
+            mergeSubtree("licenses", primary, secondary, toReturn);
+            mergeDependencies(primary, secondary, toReturn);
+            mergeBuild(primary, secondary, toReturn);
+            mergeSubtree("reports", primary, secondary, toReturn);
+            mergeProperties(primary, secondary, toReturn);
         } else {
             throw new IllegalStateException("Shall not call method with null params.");
         }
         return toReturn;
     }
     
-    private Organization mergeOrganization(Organization primary, Organization secondary) {
-        Organization source = (primary != null ? primary : secondary);
-        if (source != null) {
-            Organization toReturn = new Organization();
-            toReturn.setName(source.getName());
-            toReturn.setUrl(source.getUrl());
-            toReturn.setLogo(source.getLogo());
-            return toReturn;
-        }
-        return null;
-    }
-    
-    private Repository mergeRepository(Repository primary, Repository secondary) {
-        Repository source = (primary != null ? primary : secondary);
-        if (source != null) {
-            Repository toReturn = new Repository();
-            toReturn.setConnection(source.getConnection());
-            toReturn.setUrl(source.getUrl());
-            toReturn.setDeveloperConnection(source.getDeveloperConnection());
-            return toReturn;
-        }
-        return null;
-    }
-    
-    private List mergeVersions(List primary, List secondary) {
-        List source = (primary != null ? primary : secondary);
-        if (source != null) {
-            List toReturn = new ArrayList();
-            Iterator it = source.iterator();
-            while (it.hasNext()) {
-                Version ver = (Version)it.next();
-                Version target = new Version();
-                target.setId(ver.getId());
-                target.setName(ver.getName());
-                target.setTag(ver.getTag());
-                toReturn.add(target);
-            }
-            return toReturn;
-        }
-        return null;
-    }
-    
-    private List mergeBranches(List primary, List secondary) {
-        List source = (primary != null ? primary : secondary);
-        if (source != null) {
-            List toReturn = new ArrayList();
-            Iterator it = source.iterator();
-            while (it.hasNext()) {
-                Branch ver = (Branch)it.next();
-                Branch target = new Branch();
-                target.setTag(ver.getTag());
-                toReturn.add(target);
-            }
-            return toReturn;
-        }
-        return null;
-    }
-    
-    private List mergeMailingLists(List primary, List secondary) {
-        List source = (primary != null ? primary : secondary);
-        if (source != null) {
-            List toReturn = new ArrayList();
-            Iterator it = source.iterator();
-            while (it.hasNext()) {
-                MailingList orig = (MailingList)it.next();
-                MailingList target = new MailingList();
-                target.setName(orig.getName());
-                target.setArchive(orig.getArchive());
-                target.setSubscribe(orig.getSubscribe());
-                target.setUnsubscribe(orig.getUnsubscribe());
-                toReturn.add(target);
-            }
-            return toReturn;
-        }
-        return null;
-    }
-    
-    private List mergeDevelopers(List primary, List secondary) {
-        List source = (primary != null ? primary : secondary);
-        if (source != null) {
-            List toReturn = new ArrayList();
-            Iterator it = source.iterator();
-            while (it.hasNext()) {
-                Developer orig = (Developer)it.next();
-                Developer target = new Developer();
-                target.setName(orig.getName());
-                target.setId(orig.getId());
-                target.setEmail(orig.getEmail());
-                target.setOrganization(orig.getOrganization());
-                target.setUrl(orig.getUrl());
-                target.setTimezone(orig.getTimezone());
-                SortedSet roles = orig.getRoles();
-                if (roles != null) {
-                    Iterator it2 = roles.iterator();
-                    while (it2.hasNext()) {
-                        target.addRole((String)it2.next());
-                    }
-                }
-                toReturn.add(target);
-            }
-            return toReturn;
-        }
-        return null;
-    }
-    
-    
-    private List mergeContributors(List primary, List secondary) {
-        List source = (primary != null ? primary : secondary);
-        if (source != null) {
-            List toReturn = new ArrayList();
-            Iterator it = source.iterator();
-            while (it.hasNext()) {
-                Contributor orig = (Contributor)it.next();
-                Contributor target = new Contributor();
-                target.setName(orig.getName());
-                target.setEmail(orig.getEmail());
-                target.setOrganization(orig.getOrganization());
-                target.setUrl(orig.getUrl());
-                target.setTimezone(orig.getTimezone());
-                SortedSet roles = orig.getRoles();
-                if (roles != null) {
-                    Iterator it2 = roles.iterator();
-                    while (it2.hasNext()) {
-                        target.addRole((String)it2.next());
-                    }
-                }
-                toReturn.add(target);
-            }
-            return toReturn;
-        }
-        return null;
-    }
-    
-    private List mergeLicenses(List primary, List secondary) {
-        List source = (primary != null ? primary : secondary);
-        if (source != null) {
-            List toReturn = new ArrayList();
-            Iterator it = source.iterator();
-            while (it.hasNext()) {
-                License orig = (License)it.next();
-                License target = new License();
-                target.setName(orig.getName());
-                target.setUrl(orig.getUrl());
-                target.setDistribution(orig.getDistribution());
-                toReturn.add(target);
-            }
-            return toReturn;
-        }
-        return null;
-    }
     /**
      * truly merging dependencies.
      */
-    private List mergeDependencies(List primary, List secondary) {
-        List source = new ArrayList();
-        if (primary != null) {
-            source.addAll(primary);
+    private void mergeDependencies(Element primary, Element secondary, Element toReturn) {
+        Element primarySource = (primary != null ? primary.getChild("dependencies") : null);
+        Element secondarySource = (secondary != null ? secondary.getChild("dependencies") : null);
+        if (primarySource == null && secondarySource == null) {
+            return;
         }
-        if (secondary != null) {
-            source.addAll(secondary);
-        }
-        
-        List toReturn = new ArrayList();
-        Iterator it = source.iterator();
-        while (it.hasNext()) {
-            Dependency orig = (Dependency)it.next();
-            Dependency target = new Dependency();
-            target.setUrl(orig.getUrl());
-            target.setGroupId(orig.getGroupId());
-            target.setArtifactId(orig.getArtifactId());
-            target.setId(orig.getId());
-            target.setVersion(orig.getVersion());
-            //TODO - throws NPE on me now..
-            //            target.setJar(orig.getJar());
-            target.setType(orig.getType());
-            List props = orig.getProperties();
-            if (props != null) {
-                Iterator it2 = props.iterator();
-                while (it2.hasNext()) {
-                    target.addProperty((String)it2.next());
-                }
-            }
-            toReturn.add(target);
-        }
-        return toReturn;
-        
-    }
-    
-    private Build mergeBuild(Build primary, Build secondary) {
-        Build toReturn = new Build();
-        if (primary == null) {
-            primary = new Build();
-        }
-        if (secondary == null) {
-            secondary = new Build();
-        }
-        toReturn.setNagEmailAddress(primary.getNagEmailAddress() != null ? primary.getNagEmailAddress() : secondary.getNagEmailAddress());
-        toReturn.setSourceDirectory(primary.getSourceDirectory() != null ? primary.getSourceDirectory() : secondary.getSourceDirectory());
-        toReturn.setAspectSourceDirectory(primary.getAspectSourceDirectory() != null ? primary.getAspectSourceDirectory() : secondary.getAspectSourceDirectory());
-        toReturn.setUnitTestSourceDirectory(primary.getUnitTestSourceDirectory() != null ? primary.getUnitTestSourceDirectory() : secondary.getUnitTestSourceDirectory());
-        toReturn.setIntegrationUnitTestSourceDirectory(primary.getIntegrationUnitTestSourceDirectory() != null ? primary.getIntegrationUnitTestSourceDirectory() : secondary.getIntegrationUnitTestSourceDirectory());
-        toReturn.setSourceModification(mergeSourceModifications(primary.getSourceModifications(), secondary.getSourceModifications()));
-        toReturn.setUnitTest(mergeUnitTest(primary.getUnitTest(), secondary.getUnitTest()));
-        toReturn.setResources(mergeResources(primary.getResources(), secondary.getResources()));
-        return toReturn;
-    }
-    
-    /**
-     * truly merging sourcemodifications.
-     */
-    private List mergeSourceModifications(List primary, List secondary) {
-        List source = new ArrayList();
-        if (primary != null) {
-            source.addAll(primary);
-        }
-        if (secondary != null) {
-            source.addAll(secondary);
-        }
-        
-        List toReturn = new ArrayList();
-        Iterator it = source.iterator();
-        while (it.hasNext()) {
-            SourceModification orig = (SourceModification)it.next();
-            SourceModification target = new SourceModification();
-            target.setClassName(orig.getClassName());
-            List includes = orig.getIncludes();
-            if (includes != null) {
-                Iterator it2 = includes.iterator();
-                while (it2.hasNext()) {
-                    target.addInclude((String)it2.next());
-                }
-            }
-            List excludes = orig.getExcludes();
-            if (excludes != null) {
-                Iterator it2 = excludes.iterator();
-                while (it2.hasNext()) {
-                    target.addExclude((String)it2.next());
-                }
-            }
-            toReturn.add(target);
-        }
-        return toReturn;
-        
-    }
-    
-    // TODO no idea here.. merge or select one?
-    private UnitTest mergeUnitTest(UnitTest primary, UnitTest secondary) {
-        UnitTest source = (primary != null ? primary : secondary);
-        if (source != null) {
-            UnitTest toReturn = new UnitTest();
-            List includes = source.getIncludes();
-            if (includes != null) {
-                Iterator it2 = includes.iterator();
-                while (it2.hasNext()) {
-                    toReturn.addInclude((String)it2.next());
-                }
-            }
-            List excludes = source.getExcludes();
-            if (excludes != null) {
-                Iterator it2 = excludes.iterator();
-                while (it2.hasNext()) {
-                    toReturn.addExclude((String)it2.next());
-                }
-            }
-            // passing null se secondary becasue we want just resources from the
-            // current source instance.
-            toReturn.setResources(mergeResources(source.getResources(), null));
-            return toReturn;
-        }
-        return null;
-    }
-    
-    // TODO no idea here.. merge or select one?
-    private List mergeResources(List primary, List secondary) {
-        List source = ((primary != null && primary.size() > 0) ? primary : secondary);
-        //        List source = new ArrayList();
-        //        if (primary != null) {
-        //            source.addAll(primary);
-        //        }
-        //        if (secondary != null) {
-        //            source.addAll(secondary);
-        //        }
-        List toReturn = new ArrayList();
-        if (source != null) {
-            Iterator it = source.iterator();
+        Element root = factory.element("dependencies");
+        if (primarySource != null) {
+            Iterator it = primarySource.getChildren("dependency").iterator();
             while (it.hasNext()) {
-                Resource orig = (Resource)it.next();
-                Resource target = new Resource();
-                target.setDirectory(orig.getDirectory());
-                target.setFiltering(orig.getFiltering());
-                target.setTargetPath(orig.getTargetPath());
-                List includes = orig.getIncludes();
-                if (includes != null) {
-                    Iterator it2 = includes.iterator();
-                    while (it2.hasNext()) {
-                        target.addInclude((String)it2.next());
-                    }
-                }
-                List excludes = orig.getExcludes();
-                if (excludes != null) {
-                    Iterator it2 = excludes.iterator();
-                    while (it2.hasNext()) {
-                        target.addExclude((String)it2.next());
-                    }
-                }
-                toReturn.add(target);
+                Element dependency = (Element)it.next();
+                root.addContent(copyTree(dependency));
             }
         }
-        return toReturn;
+        if (secondarySource != null) {
+            Iterator it = secondarySource.getChildren("dependency").iterator();
+            while (it.hasNext()) {
+                Element dependency = (Element)it.next();
+                root.addContent(copyTree(dependency));
+            }
+        }
+        toReturn.addContent(root);
     }
     
-    /**
-     * one wins, or shall a real merge happen?
-     */
-    private List mergeReports(List primary, List secondary) {
-        List source = (primary != null ? primary : secondary);
-        if (source != null) {
-            List toReturn = new ArrayList();
-            Iterator it = source.iterator();
-            while (it.hasNext()) {
-                toReturn.add(it.next());
-            }
-            return toReturn;
+    private void mergeBuild(Element primary, Element secondary, Element toReturn) {
+        Element primarySource = primary.getChild("build");
+        Element secondarySource = secondary.getChild("build");
+        if (primarySource == null && secondarySource == null) {
+            return;
         }
-        return null;
+        Element root = factory.element("build");
+        mergeSimpleElement("nagEmailAddress", primarySource, secondarySource, root);
+        mergeSimpleElement("sourceDirectory", primarySource, secondarySource, root);
+        mergeSimpleElement("aspectSourceDirectory", primarySource, secondarySource, root);
+        mergeSimpleElement("unitTestSourceDirectory", primarySource, secondarySource, root);
+        mergeSimpleElement("integrationUnitTestSourceDirectory", primarySource, secondarySource, root);
+        mergeSourceModifications(primarySource, secondarySource, root);
+        // TODO no idea here.. merge or select one?
+        mergeSubtree("unitTest", primarySource, secondarySource, root);
+        mergeSubtree("resources", primarySource, secondarySource, root);
+        toReturn.addContent(root);
     }
-    /**
-     * truly merging sourcemodifications.
+    
+   /**
+     * truly merging dependencies.
      */
-    private List mergeProperties(List primary, List secondary) {
-        List toReturn = new ArrayList();
-        if (primary != null) {
-            toReturn.addAll(primary);
+    private void mergeSourceModifications(Element primary, Element secondary, Element toReturn) {
+        Element primarySource = (primary != null ? primary.getChild("sourceModifications") : null);
+        Element secondarySource = (secondary != null ? secondary.getChild("sourceModifications") : null);
+        if (primarySource == null && secondarySource == null) {
+            return;
         }
-        if (secondary != null) {
-            toReturn.addAll(secondary);
+        Element root = factory.element("sourceModifications");
+        if (primarySource != null) {
+            Iterator it = primarySource.getChildren("sourceModification").iterator();
+            while (it.hasNext()) {
+                Element dependency = (Element)it.next();
+                root.addContent(copyTree(dependency));
+            }
         }
-        return toReturn;
+        if (secondarySource != null) {
+            Iterator it = secondarySource.getChildren("sourceModification").iterator();
+            while (it.hasNext()) {
+                Element dependency = (Element)it.next();
+                root.addContent(copyTree(dependency));
+            }
+        }
+    }    
+
+    /**
+     * truly merging properties.
+     */
+    private void mergeProperties(Element primary, Element secondary, Element toReturn) {
+        Element primarySource = (primary != null ? primary.getChild("properties") : null);
+        Element secondarySource = (secondary != null ? secondary.getChild("properties") : null);
+        if (primarySource == null && secondarySource == null) {
+            return;
+        }
+        Element root = factory.element("properties");
+        if (primarySource != null) {
+            Iterator it = primarySource.getChildren().iterator();
+            while (it.hasNext()) {
+                Element prop = (Element)it.next();
+                root.addContent(copyTree(prop));
+            }
+        }
+        if (secondarySource != null) {
+            Iterator it = secondarySource.getChildren("").iterator();
+            while (it.hasNext()) {
+                Element prop = (Element)it.next();
+                root.addContent(copyTree(prop));
+            }
+        }
     }
 }
