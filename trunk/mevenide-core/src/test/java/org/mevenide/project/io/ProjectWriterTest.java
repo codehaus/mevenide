@@ -87,12 +87,11 @@ public class ProjectWriterTest extends AbstractMevenideTestCase {
 	}
 	
 	public void testAddResource() throws Exception {
-		pomWriter.addResource("src/conf", projectFile);
-		assertTrue(isResourcePresent("src/conf", new String[] {"**/*.*"}));
+		pomWriter.addResource("src/conf", projectFile, new String[0]);
+		assertTrue(isResourcePresent("src/conf"));
 		
-		pomWriter.addResource("etc", projectFile);
-		assertTrue(isResourcePresent("etc", new String[] {"**/*.*", "fake.xml"}));
-		
+		pomWriter.addResource("etc", projectFile, new String[0]);
+		assertTrue(isResourcePresent("etc"));
 		
 	}
 
@@ -107,23 +106,18 @@ public class ProjectWriterTest extends AbstractMevenideTestCase {
 		assertTrue(DependencyUtil.isDependencyPresent(project, dep));
 	}
 
-	private boolean isResourcePresent(String testDirectory, String[] includes) throws FileNotFoundException, Exception, IOException {
+	private boolean isResourcePresent(String testDirectory) throws FileNotFoundException, Exception, IOException {
 		Project project = ProjectReader.getReader().read(projectFile);
 		List resources = project.getBuild().getResources();
-		boolean found = false;
 		for (int i = 0; i < resources.size(); i++) {
 			Resource resource = (Resource) resources.get(i);
 			if ( resource.getDirectory() != null ) {
-				boolean temp = resource.getDirectory().equals(testDirectory); 
-				for (int j = 0; j < includes.length; j++) {
-					temp &= resource.getIncludes().contains(includes[j]);
-				} 
-				if ( temp ) {
-					found = true;	
+				if ( resource.getDirectory().equals(testDirectory) ) {
+					return true;
 				}
 			}
 		}
-		return found;
+		return false;
 	}
 	
 }

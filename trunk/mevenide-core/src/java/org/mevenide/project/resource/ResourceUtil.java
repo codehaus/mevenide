@@ -35,18 +35,22 @@ public final class ResourceUtil {
 	private ResourceUtil() { }
 
 	/**
-	 * construct a Resource from a given path, including ALL children
+	 * construct a Resource from a given path
 	 * 
 	 * @param path
 	 * @return
 	 */
-	public static Resource newResource(String path) {
-		Resource resource = new Resource();
+	public static Resource newResource(String path, String[] exclusionPatterns) {
+	    Resource resource = new Resource();
 		resource.setDirectory(path);
-		resource.addInclude("**/*.*");
+		for (int i = 0; i < exclusionPatterns.length; i++) {
+			resource.addExclude(exclusionPatterns[i]);
+        }
 		
 		return resource;
 	}
+	
+	
 	
 	/**
 	 * scans project.build and project.build.unitTest for resources which directory matches the directory parameter
