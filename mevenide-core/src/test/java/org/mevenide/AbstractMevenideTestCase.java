@@ -100,7 +100,7 @@ public class AbstractMevenideTestCase extends TestCase {
 		
 	}
 	
-	private void copy(String sourceFile, String destFile) throws Exception {
+	protected void copy(String sourceFile, String destFile) throws Exception {
 
 		FileInputStream from = new FileInputStream(sourceFile);
 		FileOutputStream to = new FileOutputStream(destFile);
