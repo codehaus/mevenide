@@ -63,10 +63,7 @@ public class PomSynchronizer extends AbstractPomSynchronizer implements ISynchro
     
     private List unresolvedDependencies = new ArrayList();
     
-    /**
-     * @todo GENERALIZE add a POM_FILE_NAME project property
-	 */
-	public void initialize() {
+    public void initialize() {
 		
 		this.project = MavenPlugin.getPlugin().getProject();
 		this.pom = project.getFile("project.xml");
