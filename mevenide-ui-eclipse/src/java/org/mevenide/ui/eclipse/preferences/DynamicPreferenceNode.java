@@ -39,6 +39,7 @@ public class DynamicPreferenceNode extends PreferenceNode {
 
     private String pageId;
     private String pageTitle;
+    private String pluginDescription;
     
     private List pluginProperties;
     
@@ -47,11 +48,12 @@ public class DynamicPreferenceNode extends PreferenceNode {
 	private ImageDescriptor imageDescriptor;
 	private Image image;
 	
-    public DynamicPreferenceNode(String pageId, String pageTitle, List properties) {
+    public DynamicPreferenceNode(String pageId, String pageTitle, String pluginDescription, List properties) {
         super(pageId, pageTitle, null, DynamicPreferencePage.class.getName());
         this.pageId = pageId;
         this.pageTitle = pageTitle; 
         this.pluginProperties = properties;
+        this.pluginDescription = pluginDescription;
     }
     
     public void createPage() {
@@ -59,6 +61,7 @@ public class DynamicPreferenceNode extends PreferenceNode {
             page = new DynamicPreferencePage();
             page.setTitle(pageTitle);
             ((DynamicPreferencePage) page).setProperties(pluginProperties);
+            ((DynamicPreferencePage) page).setPluginDescription(pluginDescription);
             if (getLabelImage() != null) {
     			page.setImageDescriptor(imageDescriptor);
             }
