@@ -12,25 +12,16 @@
  * Lesser General Public License for more details.
  * 
  */
-package org.mevenide.test;
-
-import junit.framework.Test;
-import junit.framework.TestSuite;
+package org.mevenide;
 
 /**
  * 
  * @author Gilles Dodinet (gdodinet@wanadoo.fr)
- * @version $Id: AllTests.java 8 mai 2003 15:34:3813:34:35 Exp gdodinet 
+ * @version $Id: MevenideException.java 21 avr. 2003 16:06:1713:34:35 Exp gdodinet 
  * 
  */
-public class AllTests {
-    public static Test suite() {
-        TestSuite suite = new TestSuite();
-    
-        suite.addTest(org.mevenide.core.AllTests.suite());
-        suite.addTest(org.mevenide.pom.AllTests.suite());
-        suite.addTest(org.mevenide.util.AllTests.suite());
-        
-        return suite;
+public abstract class MevenideException extends Exception {
+    public MevenideException(String arg0) {
+        super(arg0);
     }
 }

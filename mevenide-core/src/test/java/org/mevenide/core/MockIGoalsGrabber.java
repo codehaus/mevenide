@@ -22,7 +22,7 @@ package org.mevenide.core;
  * @version $Id: MockIGoalsGrabber.java 20 avr. 2003 21:03:4513:34:35 Exp gdodinet 
  * 
  */
-public class MockIGoalsGrabber extends de.abstrakt.mock.MockObject implements org.mevenide.core.IGoalsGrabber
+public class MockIGoalsGrabber extends de.abstrakt.mock.MockObject implements org.mevenide.IGoalsGrabber
 {
 	private java.lang.Object	_createMavenXmlFileDummyValue;
 	private java.lang.Boolean	_createMavenXmlFileExpectFlag;

@@ -22,10 +22,10 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.JavaCore;
 
-import org.mevenide.core.pom.PomReader;
-import org.mevenide.core.pom.PomWriter;
-import org.mevenide.core.sync.AbstractPomSynchronizer;
-import org.mevenide.core.sync.ISynchronizer;
+import org.mevenide.pom.PomReader;
+import org.mevenide.pom.PomWriter;
+import org.mevenide.sync.AbstractPomSynchronizer;
+import org.mevenide.sync.ISynchronizer;
 import org.mevenide.ui.eclipse.MavenPlugin;
 
 /**

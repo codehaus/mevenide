@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2003  Gilles Dodinet (gdodinet@wanadoo.fr)
  * 
  * This library is free software; you can redistribute it and/or modify it under
@@ -10,9 +10,9 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
  */
-package org.mevenide.core.util;
+package org.mevenide.sync;
+
 
 /**
  * 
@@ -20,20 +20,32 @@ package org.mevenide.core.util;
  * @version $Id$
  * 
  */
-public class InvalidOptionException extends Exception {
-	private String message;
+public abstract class AbstractPomSynchronizer implements ISynchronizer {
 	
-	public InvalidOptionException(char option) {
-		message = new StringBuffer("invalid option : '-").append(option).append("'").toString();
+    /**
+     * template pattern
+     * @see org.mevenide.core.sync.ISynchronizer#synchronize
+     */
+    public void synchronize()  {
+		try {
+			preSynchronization();
+			mavenize();
+			postSynchronization();
+		}
+		catch ( Exception e ) {
+			e.printStackTrace();
+		}
+	}
+    
+    /**
+     * @see org.mevenide.core.sync.ISynchronizer#canHandle
+     */
+	public boolean canHandle(int direction) {
+		return direction == ISynchronizer.IDE_TO_POM;
 	}
 	
-	public String toString() {
-        return message;
-    }
-    
-    public String getMessage() {
-        return message;
-    }
-
-
+    /**
+     * synchronize the POM with the current project properties
+     */
+	protected abstract void mavenize();
 }

@@ -12,7 +12,7 @@
  * Lesser General Public License for more details.
  * 
  */
-package org.mevenide.core.util;
+package org.mevenide.util;
 
 import java.io.FileInputStream;
 import java.util.Iterator;

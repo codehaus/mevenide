@@ -17,7 +17,7 @@ package org.mevenide.ui.eclipse.dialog.goals.listeners;
 import org.eclipse.jface.viewers.CheckboxTableViewer;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.mevenide.core.IGoalsGrabber;
+import org.mevenide.IGoalsGrabber;
 import org.mevenide.ui.eclipse.dialog.goals.model.MevenideProvider;
 
 

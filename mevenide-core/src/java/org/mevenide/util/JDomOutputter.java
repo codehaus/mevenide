@@ -11,7 +11,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  */
-package org.mevenide.core.util;
+package org.mevenide.util;
 
 import java.io.File;
 import java.io.FileOutputStream;

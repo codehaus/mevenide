@@ -12,7 +12,7 @@
  * Lesser General Public License for more details.
  * 
  */
-package org.mevenide.core;
+package org.mevenide;
 
 import java.util.Collection;
 

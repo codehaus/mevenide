@@ -12,16 +12,23 @@
  * Lesser General Public License for more details.
  * 
  */
-package org.mevenide.core;
+package org.mevenide.pom;
+
+import junit.framework.Test;
+import junit.framework.TestSuite;
 
 /**
  * 
  * @author Gilles Dodinet (gdodinet@wanadoo.fr)
- * @version $Id$
+ * @version $Id: AllTests.java 8 mai 2003 15:32:4913:34:35 Exp gdodinet 
  * 
  */
-public class GoalNotFoundException extends RuntimeException {
-	public GoalNotFoundException(String strg) {
-		super(strg);
-	}
+public class AllTests  {
+    public static Test suite() {
+        TestSuite suite = new TestSuite();
+        
+        suite.addTestSuite(PomHelperTest.class);
+        
+        return suite;
+    }
 }

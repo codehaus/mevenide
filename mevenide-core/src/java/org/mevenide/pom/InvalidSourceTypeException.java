@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2003  Gilles Dodinet (gdodinet@wanadoo.fr)
  * 
  * This library is free software; you can redistribute it and/or modify it under
@@ -10,18 +10,24 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
  */
-package org.mevenide.core;
+package org.mevenide.pom;
+
+import org.mevenide.MevenideException;
 
 /**
  * 
  * @author Gilles Dodinet (gdodinet@wanadoo.fr)
- * @version $Id: MevenideException.java 21 avr. 2003 16:06:1713:34:35 Exp gdodinet 
+ * @version $Id$
  * 
  */
-public abstract class MevenideException extends Exception {
-    public MevenideException(String arg0) {
-        super(arg0);
-    }
+public class InvalidSourceTypeException extends MevenideException {
+
+	public InvalidSourceTypeException(String arg0) {
+		super(arg0);
+	}
+
+	public InvalidSourceTypeException(int arg0) {
+		super(String.valueOf(arg0));
+	}
 }

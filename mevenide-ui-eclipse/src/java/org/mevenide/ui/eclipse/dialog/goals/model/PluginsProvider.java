@@ -18,7 +18,7 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import org.eclipse.swt.graphics.Image;
-import org.mevenide.core.IGoalsGrabber;
+import org.mevenide.IGoalsGrabber;
 import org.mevenide.ui.eclipse.MavenPlugin;
 
 

@@ -11,7 +11,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  */
-package org.mevenide.core.pom;
+package org.mevenide.pom;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -20,7 +20,7 @@ import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
-import org.mevenide.core.util.JDomOutputter;
+import org.mevenide.util.JDomOutputter;
 /**
  * 
  * @todo JDOM do NOT manipulate POM directly ?

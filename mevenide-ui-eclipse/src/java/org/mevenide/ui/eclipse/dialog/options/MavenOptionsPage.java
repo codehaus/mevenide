@@ -17,7 +17,7 @@ package org.mevenide.ui.eclipse.dialog.options;
 
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.widgets.Composite;
-import org.mevenide.core.util.InvalidOptionException;
+import org.mevenide.util.InvalidOptionException;
 import org.mevenide.ui.eclipse.MavenPlugin;
 
 /**

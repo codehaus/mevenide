@@ -11,7 +11,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  */
-package org.mevenide.core;
+package org.mevenide.sync;
+
+import org.mevenide.MevenideException;
 
 /**
  * 

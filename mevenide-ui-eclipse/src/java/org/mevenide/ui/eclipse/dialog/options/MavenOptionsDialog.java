@@ -20,8 +20,8 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
-import org.mevenide.core.util.InvalidOptionException;
-import org.mevenide.core.util.OptionsRegistry;
+import org.mevenide.util.InvalidOptionException;
+import org.mevenide.util.OptionsRegistry;
 import org.mevenide.ui.eclipse.dialog.options.listeners.OptionSelectionListener;
 
 

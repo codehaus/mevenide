@@ -18,8 +18,8 @@ import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.JavaCore;
-import org.mevenide.core.sync.ISynchronizer;
-import org.mevenide.core.sync.SynchronizerFactory;
+import org.mevenide.sync.ISynchronizer;
+import org.mevenide.sync.SynchronizerFactory;
 /**
  * 
  * @author Gilles Dodinet (gdodinet@wanadoo.fr)

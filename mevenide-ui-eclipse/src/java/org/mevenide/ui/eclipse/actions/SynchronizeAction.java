@@ -16,8 +16,8 @@
 package org.mevenide.ui.eclipse.actions;
 
 import org.eclipse.jface.action.IAction;
-import org.mevenide.core.sync.ISynchronizer;
-import org.mevenide.core.sync.SynchronizerFactory;
+import org.mevenide.sync.ISynchronizer;
+import org.mevenide.sync.SynchronizerFactory;
 //import org.mevenide.ui.eclipse.MavenPlugin;
 
 /**
