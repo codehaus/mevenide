@@ -29,7 +29,10 @@ import org.apache.maven.project.Project;
 import org.mevenide.environment.ILocationFinder;
 import org.mevenide.environment.LocationFinderAggregator;
 import org.mevenide.netbeans.project.classpath.ClassPathProviderImpl;
-import org.mevenide.netbeans.project.propfiles.PropFilesAggregator;
+import org.mevenide.netbeans.project.queries.MavenFileBuiltQueryImpl;
+import org.mevenide.netbeans.project.queries.MavenSharabilityQueryImpl;
+import org.mevenide.properties.IPropertyResolver;
+import org.mevenide.properties.ProjectPropFactory;
 import org.mevenide.util.DefaultProjectUnmarshaller;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
@@ -47,10 +50,9 @@ public class MavenProject implements org.netbeans.api.project.Project {
     private Project project;
     private File file;
     private FileObject fileObject;
-    private PropFilesAggregator properties;
+    private IPropertyResolver properties;
     private Image icon;
     private Lookup lookup;
-    private ILocationFinder locFinder;
     /** Creates a new instance of MavenProject */
     MavenProject(FileObject projectFO, File projectFile) throws Exception {
         DefaultProjectUnmarshaller unmars = new DefaultProjectUnmarshaller();
@@ -61,10 +63,7 @@ public class MavenProject implements org.netbeans.api.project.Project {
         && (project.getPomVersion() == null || project.getExtend() == null)) {
             throw new IOException("Not a maven project file.");
         }
-        locFinder = new LocationFinderAggregator();
-        FileObject parent = fileObject.getParent();
-        ((LocationFinderAggregator)locFinder).setEffectiveWorkingDirectory(FileUtil.toFile(parent).getAbsolutePath());
-        properties = new PropFilesAggregator(fileObject.getParent(), FileUtilities.getUserHome(), locFinder);
+        properties = ProjectPropFactory.getInstance().createResolver(FileUtil.toFile(fileObject.getParent()));
     }
     
     
@@ -82,6 +81,10 @@ public class MavenProject implements org.netbeans.api.project.Project {
     
     public Project getOriginalMavenProject() {
         return project;
+    }
+    
+    public IPropertyResolver getPropertyResolver() {
+        return properties;
     }
     
     public Image getIcon() {
@@ -111,12 +114,12 @@ public class MavenProject implements org.netbeans.api.project.Project {
             String path = project.getBuild().getSourceDirectory();
             if (path != null) {
                 File parent = FileUtil.toFile(getProjectDirectory());
-                File src = new File(parent, path);
+                File src = new File(parent.getAbsolutePath() + "/" + path);
                 return src.toURI();
             }
         }
         // this one should not fail
-        String path = properties.getValue("maven.src.dir");
+        String path = properties.getResolvedValue("maven.src.dir");
         if (path == null) {
             logger.warn("Strange thing here. src dir not found.");
             return null;
@@ -129,14 +132,13 @@ public class MavenProject implements org.netbeans.api.project.Project {
         if (project.getBuild() != null) {
             String path = project.getBuild().getUnitTestSourceDirectory();
             if (path != null) {
-                
                 File parent = FileUtil.toFile(getProjectDirectory());
-                File src = new File(parent, path);
+                File src = new File(parent.getAbsolutePath() + "/" + path);
                 return src.toURI();
             }
         }
         // this one should not fail
-        String path = properties.getValue("maven.src.dir");
+        String path = properties.getResolvedValue("maven.src.dir");
         if (path == null) {
             logger.warn("Strange thing here. testsrc dir not found.");
             return null;
@@ -146,7 +148,7 @@ public class MavenProject implements org.netbeans.api.project.Project {
     }
     
     public URI getBuildClassesDir() {
-        String path = properties.getValue("maven.build.dest");
+        String path = properties.getResolvedValue("maven.build.dest");
         if (path != null) {
             File fl = new File(path);
             return fl.toURI();
@@ -156,7 +158,7 @@ public class MavenProject implements org.netbeans.api.project.Project {
     }
     
     public URI getTestBuildClassesDir() {
-        String path = properties.getValue("maven.test.dest");
+        String path = properties.getResolvedValue("maven.test.dest");
         if (path != null) {
             File fl = new File(path);
             return fl.toURI();
@@ -174,7 +176,10 @@ public class MavenProject implements org.netbeans.api.project.Project {
             new CustomizerProviderImpl(this),
             new LogicalViewProviderImpl(this),
             new ProjectOpenedHookImpl(this),
-            new ClassPathProviderImpl(this)
+            new ClassPathProviderImpl(this),
+            new MavenSharabilityQueryImpl(this),
+            new MavenFileBuiltQueryImpl(),
+            new SubprojectProviderImpl(this)
         });
     }
     //    private Lookup createLookup(ExtensibleMetadataProvider emp) {
