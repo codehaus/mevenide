@@ -36,7 +36,7 @@ import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.editor.IFormPage;
 import org.mevenide.project.IProjectChangeListener;
 import org.mevenide.project.ProjectChangeEvent;
-import org.mevenide.project.io.JDomProjectUnmarshaller;
+import org.mevenide.context.JDomProjectUnmarshaller;
 import org.mevenide.ui.eclipse.Mevenide;
 
 /**

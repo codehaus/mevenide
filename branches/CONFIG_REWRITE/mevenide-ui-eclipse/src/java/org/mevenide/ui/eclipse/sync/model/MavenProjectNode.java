@@ -35,9 +35,12 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.mevenide.MevenideRuntimeException;
+import org.mevenide.context.DefaultQueryContext;
+import org.mevenide.context.IQueryContext;
 import org.mevenide.environment.LocationFinderAggregator;
 import org.mevenide.project.ProjectConstants;
 import org.mevenide.project.io.ProjectReader;
+import org.mevenide.properties.IPropertyResolver;
 import org.mevenide.properties.resolver.DefaultsResolver;
 import org.mevenide.properties.resolver.PropertyFilesAggregator;
 import org.mevenide.ui.eclipse.Mevenide;
@@ -68,7 +71,7 @@ public class MavenProjectNode extends AbstractSynchronizationNode implements ISe
 	private EclipseProjectNode parentNode;
 	private IProject eclipseProject;
 	
-	private PropertyFilesAggregator environmentLocator;
+	private IPropertyResolver environmentLocator;
 	
 	public MavenProjectNode(Project project, EclipseProjectNode parentNode) {
 		mavenProject = project;
@@ -78,16 +81,12 @@ public class MavenProjectNode extends AbstractSynchronizationNode implements ISe
 		initialize();
 	}
 	
-	private void intializeEnvironmentLocator() {
-    	File projectDir = new File(eclipseProject.getLocation().toOSString()); 
-    	File userHomeDir = new File(System.getProperty("user.home")); //$NON-NLS-1$
-    	LocationFinderAggregator finder = new LocationFinderAggregator();
-        finder.setEffectiveWorkingDirectory(projectDir.getAbsolutePath());
-    	environmentLocator = new PropertyFilesAggregator(
-    			                     projectDir, 
-    			                     userHomeDir, 
-									 new DefaultsResolver(projectDir, userHomeDir, finder));
-	}
+        private void intializeEnvironmentLocator() {
+            File projectDir = new File(eclipseProject.getLocation().toOSString());
+            File userHomeDir = new File(System.getProperty("user.home")); //$NON-NLS-1$
+            IQueryContext context = new DefaultQueryContext(projectDir);
+            environmentLocator = context.getResolver();
+        }
 
 	private void initialize() {
 	    initializeArtifacts();
