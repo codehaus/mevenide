@@ -16,8 +16,11 @@
  */
 package org.mevenide.ui.eclipse.launch.configuration;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -94,7 +97,7 @@ public class MavenLaunchDelegate extends AbstractRunner implements ILaunchConfig
 		
 		vmConfig.setVMArguments(allVmArgs);
 		
-        vmConfig.setProgramArguments( getMavenArgs(getOptions(configuration), getGoals(configuration) ) );
+        vmConfig.setProgramArguments( getMavenArgs(getOptions(configuration, Arrays.asList(allVmArgs)), getGoals(configuration) ) );
         vmConfig.setWorkingDirectory(getBasedir());
         
 		String launchMode = ILaunchManager.RUN_MODE;
@@ -134,7 +137,7 @@ public class MavenLaunchDelegate extends AbstractRunner implements ILaunchConfig
 		}		
 	}
 
-	private String[] getOptions(ILaunchConfiguration configuration) {
+	private String[] getOptions(ILaunchConfiguration configuration, List vmArgs) {
 		try {
 		    //static options
 			Map map = (Map) configuration.getAttribute(MavenArgumentsTab.OPTIONS_MAP, new HashMap());
@@ -158,26 +161,27 @@ public class MavenLaunchDelegate extends AbstractRunner implements ILaunchConfig
 			DynamicPreferencesManager preferencesManager = DynamicPreferencesManager.getDynamicManager();
 			preferencesManager.loadPreferences();
 			Map dynamicPreferencesMap = preferencesManager.getPreferences();
-			String[] dynamicPreferences = new String[dynamicPreferencesMap.size()];
-			idx = 0;
+			List dynamicPreferencesList = new ArrayList();
 			for (Iterator it = dynamicPreferencesMap.keySet().iterator(); it.hasNext(); ) {
                 String key = (String) it.next();
-                String value = (String) dynamicPreferencesMap.get(key);
-                dynamicPreferences[idx] = "-D" + key + "=" + value;
-                idx++;
+                if ( !vmArgs.contains(key) ) {
+                    String value = (String) dynamicPreferencesMap.get(key);
+                    dynamicPreferencesList.add("-D" + key + "=" + value);
+                }
             }
-			
+			String[] dynamicPreferences = (String[]) dynamicPreferencesList.toArray(new String[dynamicPreferencesList.size()]); 
+                    
 			//merge various sources
-			String[] mergedOptions = new String[result.length + dynamicPreferences.length];
-			System.arraycopy(result, 0, mergedOptions, 0, result.length);
-			System.arraycopy(dynamicPreferences, 0, mergedOptions, result.length, dynamicPreferences.length);
+			String[] mergedOptions = new String[options.length + dynamicPreferences.length];
+			System.arraycopy(dynamicPreferences, 0, mergedOptions, 0, dynamicPreferences.length);
+			System.arraycopy(options, 0, mergedOptions, dynamicPreferences.length, options.length);
 			
-			log.debug("options passed to Maven " + mergedOptions.length);
-			System.err.println("options passed to Maven : " );
-			for (int i = 0; i < mergedOptions.length; i++) {
-				System.err.println("\t" + mergedOptions[i]);
-                
-            }
+			if ( log.isDebugEnabled() ) {
+				log.debug("options passed to Maven " + mergedOptions.length);
+				for (int i = 0; i < mergedOptions.length; i++) {
+					log.debug("\t" + mergedOptions[i]);       
+	            }
+			}
 			
 			return mergedOptions;
 		} 

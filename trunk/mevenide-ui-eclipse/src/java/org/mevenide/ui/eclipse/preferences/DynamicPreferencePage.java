@@ -206,10 +206,15 @@ public class DynamicPreferencePage extends PreferencePage implements IWorkbenchP
         for (Iterator it = editors.keySet().iterator(); it.hasNext(); ) {
             PluginProperty pluginProperty = (PluginProperty) it.next();
             if ( dirtyProperties.contains(pluginProperty) ) {
-	            StringFieldEditor editor = (StringFieldEditor) editors.get(pluginProperty);
+                StringFieldEditor editor = (StringFieldEditor) editors.get(pluginProperty);
 	            String pageId = pluginProperty.getPageId();
 	            String propertyName = pluginProperty.getName();
-	            preferencesManager.setValue(pageId + DynamicPreferencesManager.SEPARATOR + propertyName, editor.getStringValue());
+	            if ( !StringUtils.relaxEqual(pluginProperty.getDefault(), editor.getStringValue()) ) {
+	                preferencesManager.setValue(pageId + DynamicPreferencesManager.SEPARATOR + propertyName, editor.getStringValue());
+	            }
+	            else {
+	                preferencesManager.remove(pageId + DynamicPreferencesManager.SEPARATOR + propertyName);
+	            }
             }
         }
         return preferencesManager.store();

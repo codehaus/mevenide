@@ -112,4 +112,8 @@ public class PreferencesManager {
 	    }
 	    return preferences;
 	}
+	
+	public void remove(String key) {
+	    preferenceStore.setToDefault(key);
+	}
 }
