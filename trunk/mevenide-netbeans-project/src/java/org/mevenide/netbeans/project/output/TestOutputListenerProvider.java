@@ -72,7 +72,7 @@ public class TestOutputListenerProvider extends AbstractOutputProcessor {
             if (match.matches()) {
                 String test = match.group(1);
                 //TODO just one instance and reuse..
-                visitor.setOutputListener(new TestOutputListener(project, test));
+                visitor.setOutputListener(new TestOutputListener(project, test), true);
             }
         }
     }
