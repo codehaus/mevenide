@@ -96,11 +96,13 @@ public class UpdatePluginLibsTag extends AbstractMevenideTag {
     		setUpDescriptor();
         
     		List artifacts = pom.getArtifacts();
-
-            for (int i = 0; i < artifacts.size(); i++) {
-                Artifact artifact = (Artifact) artifacts.get(i);
-                updateDescriptor(artifact);
-            }
+    		
+    		if ( artifacts != null ) {
+	            for (int i = 0; i < artifacts.size(); i++) {
+	                Artifact artifact = (Artifact) artifacts.get(i);
+	                updateDescriptor(artifact);
+	            }
+    		}
         
             outputDescriptor();
         } catch (Exception exc) {
