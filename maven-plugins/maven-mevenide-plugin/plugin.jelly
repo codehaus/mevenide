@@ -92,7 +92,8 @@
    
    <goal name="mevenide:java-debug-class" 
          prereqs="java, mevenide:debug-class"
-         description="Compile the sources and then run the class with debug environment set."/>
+         description="Compile the sources and then run the class with debug environment set.">
+   </goal>      
    
    <goal name="mevenide:debug-artifact"
          description="Run the project's jar artifact and debug it.">
@@ -111,6 +112,7 @@
    
    <goal name="mevenide:jar-debug-artifact" 
          prereqs="jar, mevenide:debug-artifact"
-         description="Build the artifact and then start the application with debug environment set."/>
+         description="Build the artifact and then start the application with debug environment set.">
+   </goal>
    
 </project>
