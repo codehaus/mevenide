@@ -72,7 +72,6 @@ public class ArtifactVisitor {
 	 * this method is quite complex because we take care to not add anything from the jdk 
 	 * so we check both JRE_LIB and JRE_CONTAINER
 	 * 
-	 * @todo check that "org.eclipse.jdt.launching.JRE_CONTAINER" is ok regardless of the platform/project/whatever
 	 * 
 	 * @param entry
 	 * @throws Exception

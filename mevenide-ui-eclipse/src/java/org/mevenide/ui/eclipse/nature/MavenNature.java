@@ -111,7 +111,6 @@ public class MavenNature implements IProjectNature {
 	
 	private static void synchronizeProject(IProject project) {
 		try {
-			//@todo FUNCTIONAL update .classpath : add correct src type (src, test, aspect) to each entry whose kind is CPE_SRC
 			//AbstractSynchronizer cpSync = AbstractSynchronizer.getSynchronizer(AbstractSynchronizer.POM_TO_IDE);
 			//cpSync.synchronize(getSrcTypes());
 		

@@ -340,8 +340,7 @@ public class LaunchWizardPage extends WizardPage {
 	
 	/**
 	 * 
-	 * @todo debug validator
-	 * 
+	 *
 	 * thats obviously not the correct way to use it 
 	 * 
 	 * @author g.dodinet
