@@ -176,7 +176,7 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
 			comparator.addProjectChangeListener(ProjectComparator.DEPENDENCIES, this); 
         }
         
-        refreshAll();
+        refreshAll(true);
         
         assertValidDirection();
     }
@@ -410,7 +410,7 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
 	private void refreshNode(IArtifactMappingNode artifact) {
 		IArtifactMappingNodeContainer container = (IArtifactMappingNodeContainer) getContentProvider().getParent(artifact);
     	container.removeNode(artifact);
-    	artifactMappingNodeViewer.update(container, null);
+    	artifactMappingNodeViewer.refresh(container);
 	}
 	
 	private ITreeContentProvider getContentProvider() {
@@ -490,7 +490,7 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
 								if (r instanceof IFile) {
 									IFile file = (IFile) r;
 									if ( file.equals(dotClasspath) ) {
-										refreshAll();
+										refreshAll(false);
 									}
 									for (int i = 0; i < poms.size(); i++) {
 										File f = ((Project) poms.get(i)).getFile();
@@ -504,13 +504,12 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
                                             }
 										}
 									}
-									refreshAll();
+									refreshAll(false);
 								}
 								if ( r instanceof IProject ) {
 									IProject prj = (IProject) r;
 									if ( prj.getName().equals(project.getName()) ) {
-										//doesnot seem to work ??
-										refreshAll();
+										refreshAll(false);
 									}
 								}
 							}
@@ -525,10 +524,11 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
 		}		
 	}
 
-	public void refreshAll() {
-		System.err.println("REFRESH ALL");
+	public void refreshAll(boolean shouldExpand) {
 		artifactMappingNodeViewer.refresh(true);
-		artifactMappingNodeViewer.expandAll();
+		if ( shouldExpand ) {
+			artifactMappingNodeViewer.expandAll();
+		}
 	}
 
     public IContainer getInputContainer() {
@@ -540,7 +540,7 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
     	String attribute = e.getAttribute();
 		if ( ProjectComparator.BUILD.equals(attribute) || ProjectComparator.DEPENDENCIES.equals(attribute) ) {
 		    updatePoms(e.getPom());
-			refreshAll();
+			refreshAll(true);
 		}     
 	}
 }
