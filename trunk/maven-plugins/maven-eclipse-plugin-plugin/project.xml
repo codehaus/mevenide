@@ -1,0 +1,47 @@
+<project>
+    <pomVersion>3</pomVersion>
+    <groupId>mevenide</groupId>
+    <id>mevenide:maven-eclipse-plugin-plugin</id>
+    <artifactId>maven-eclipse-plugin-plugin</artifactId>
+    <name>maven-eclipse-plugin-plugin</name>
+    <currentVersion>0.1.1</currentVersion>
+    <shortDescription>This plugin helps creating ready to eclipse plugins and features distribution</shortDescription>
+    <inceptionYear>2003</inceptionYear>
+    
+    <developers>
+    	<developer>
+    		<name>Gilles Dodinet</name>
+    		<id>gdodinet</id>
+    		<roles>
+    			<role>Creator</role>
+    			<role>Developer</role>
+    		</roles>
+    		<timezone>+1</timezone>
+    	</developer>
+    </developers>
+    
+    <dependencies>
+    	<dependency>
+    		<groupId>ant</groupId>	
+    		<artifactId>ant</artifactId>
+    		<version>1.5.3-1</version>
+    	</dependency>	
+    	<dependency>
+    		<groupId>commons-jelly</groupId>	
+    		<artifactId>commons-jelly-tags-ant</artifactId>
+    		<version>20030625.032346</version>
+    	</dependency>
+    </dependencies>
+    
+    <build>
+    	<resources>
+    		<resource>
+    			<directory>${basedir}</directory>
+    			<includes>
+    				<include>plugin.*</include>
+    				<include>project.*</include>
+    			</includes>
+    		</resource>	
+    	</resources>	
+    </build>
+</project>
