@@ -48,6 +48,10 @@
  */
 package org.mevenide.project.resource;
 
+import java.util.Iterator;
+import java.util.List;
+
+import org.apache.maven.project.Project;
 import org.apache.maven.project.Resource;
 
 /**
@@ -72,5 +76,45 @@ public final class ResourceUtil {
 		resource.addInclude("**/*.*");
 		
 		return resource;
+	}
+	
+	/**
+	 * scans project.build and project.build.unitTest for resources which directory matches the directory parameter
+	 * @return true if a resource denoted by the directory passed as parameter is found 
+	 */
+	public static boolean isResourcePresent(Project project, String directory) {
+	    //if directory is null return
+	    if ( directory == null ) {
+	        return false;
+	    }
+	    
+	    if ( project.getBuild() == null ) {
+	        return false;
+	    }
+	    
+	    //scan build.resources
+	    List buildResources = project.getBuild().getResources();
+	    for ( Iterator itr = buildResources.iterator(); itr.hasNext(); ) {
+	        Resource resource = (Resource) itr.next();
+	        if ( resource.getDirectory() != null && resource.getDirectory().equals(directory) ) {
+	            return true;
+	        }
+	    }
+	    
+	    if ( project.getBuild().getUnitTest() == null ) {
+	        return false;
+	    }
+	    
+	    //scan build.unitTest.resources
+	    List unitTestResources = project.getBuild().getUnitTest().getResources();
+	    for ( Iterator itr = unitTestResources.iterator(); itr.hasNext(); ) {
+	        Resource resource = (Resource) itr.next();
+	        if ( resource.getDirectory() != null && resource.getDirectory().equals(directory) ) {
+	            return true;
+	        }
+	    }
+	    
+	    //not found
+	    return false;
 	}
 }

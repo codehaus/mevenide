@@ -73,9 +73,9 @@ public class ArtifactMappingLabelProvider implements ILabelProvider {
         if ( !DecoratorManager.getManager().isMappingComplete(node) ) {
             flags |= IArtifactMappingNode.INCOMPLETE;
         }
-        if ( DecoratorManager.getManager().isConflicting(node) ) {
-            flags |= ProjectContainer.CONFLICTING;
-        }
+//        if ( DecoratorManager.getManager().isConflicting(node) ) {
+//            flags |= ProjectContainer.CONFLICTING;
+//        }
         if ( DecoratorManager.getManager().isInherited(node) ) {
             flags |= IArtifactMappingNode.INHERITED;
         }

@@ -74,9 +74,12 @@ public abstract class AbstractArtifactMappingNodeContainer implements IArtifactM
     
     private ProjectContainer parent;
     
+    private Project primaryPom;
     
     public void attachJavaProject(IJavaProject javaProject) throws Exception {
         Project pom = ProjectReader.getReader().read(FileUtils.getPom(javaProject.getProject()));
+        	
+        primaryPom = pom;
         
         attachPom(pom);
         
@@ -136,6 +139,10 @@ public abstract class AbstractArtifactMappingNodeContainer implements IArtifactM
         this.parent = parent;
     }
 
+    public Project getPrimaryPom() {
+        return primaryPom;
+    }
+    
     public IArtifactMappingNodeContainer filter(int direction) {
         IArtifactMappingNodeContainer newContainer = this;
     	newContainer.setDirection(direction);
