@@ -37,7 +37,7 @@
                 <x:set var="oldItemLink" select="string(./@href)"/>
                 <x:element name="a">
                     <j:choose>
-                        <j:when test="${!oldItemLink.startsWith('http') and !oldItemLink.startsWith('/')}">
+                        <j:when test="${!oldItemLink.startsWith('http') and !oldItemLink.startsWith('/') and !oldItemLink.startsWith('$')}">
                             <x:attribute name="href">${wikiRelativePath}/${oldItemLink}</x:attribute>
                         </j:when>
                         <j:otherwise>
