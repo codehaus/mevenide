@@ -7,20 +7,7 @@
   <id>mevenide:master</id>
   <artifactId>mevenide-master</artifactId>
   <url>http://mevenide.sf.net/</url>
-  <dependencies>
-    <dependency>
-      <groupId>commons-jelly</groupId>
-      <artifactId>commons-jelly-tags-velocity</artifactId>
-      <version>SNAPSHOT</version>
-    </dependency>
-
-    <dependency>
-   	  <groupId>velocity</groupId>
-      <artifactId>velocity</artifactId>
-      <version>1.3</version>
-    </dependency>
-
-  </dependencies>
+  
  
  
 </project>

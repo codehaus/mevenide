@@ -55,7 +55,7 @@
          <export name="*"/>
          <packages prefixes="org.apache.commons.lang"/>
       </library>
-      <library name="mevenide-core">
+      <library name="mevenide-core-0.1.jar">
          <export name="*"/>
          <packages prefixes="org.mevenide"/>
       </library>

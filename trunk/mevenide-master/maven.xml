@@ -21,8 +21,7 @@
   	</define:tag>
   	
   	<!-- 
-  	  @var
-  	  @projectDescriptor
+  	  @var 
   	-->
   	<define:tag name="getTransitiveDependencies">
   		<mevenide:getDependencies var="mevenideCoreDependencies" projectDescriptor="${basedir}/../mevenide-core/project.xml"/>
@@ -62,7 +61,15 @@
   	
   </define:taglib>
  
+  <preGoal name="clean:clean">
+     <ant:delete quiet="true" dir="${basedir}/dist"/>
+  </preGoal>
+ 
   <preGoal name="build">
+	
+	<!-- clean dist directories -->
+	<ant:delete quiet="true" dir="${basedir}/../mevenide-feature/dist"/>
+	<ant:delete quiet="true" dir="${basedir}/../mevenide-update/dist"/>
 	
 	<!-- set eclipse.home property -->
 	<ant:property environment="env"/>
@@ -183,15 +190,15 @@
   </goal>
 
   <!-- build the aggregated distribution files -->
-  <postGoal name="build">
-  	<attainGoal name="mevenide:aggregate-dists"/>
+  <postGoal name="build-all">
+  	<attainGoal name="mevenide:create-feature-dist"/>
+  	<attainGoal name="mevenide:bundle-dist"/>
   </postGoal>
   
   <!-- inherited postGoal -->
   <postGoal name="jar:install">
   	<attainGoal name="mevenide:prepare-dist"/>
 	<attainGoal name="mevenide:dist"/>
-	<!-- attainGoal name="mevenide:finalize"/ -->
   </postGoal>
   
   
@@ -202,7 +209,7 @@
   <goal name="mevenide:prepare-dist">
   	<ant:delete dir="${basedir}/lib" quiet="true"/>
   	
-  	<mevenide:getTransitiveDependencies var="transitiveDependencies" projectDescriptor="${pom}"/>
+  	<mevenide:getTransitiveDependencies var="transitiveDependencies"/>
 	<j:forEach var="dependency" items="${pom.dependencies}">
 	 <j:set var="isTransitive" value="false"/>
   	  <j:if test="${!(dependency.groupId.equals('eclipse') || dependency.groupId.equals('mevenide') || dependency.groupId.startsWith('mock') || dependency.groupId.startsWith('junit'))}">
@@ -217,12 +224,15 @@
   </goal>
   
   
+  <!-- 
+  	forEach module create a plugin dist file containing only the plugin required files and put it in ${basedir}/dist.
+  -->
   <goal name="mevenide:dist">
 		
       <ant:mkdir dir="dist"/>
       
       <!-- suffix -->
-  	  <j:set var="distVersion" value="0.1-alpha-1"/>
+  	  <j:set var="distVersion" value="${pom.currentVersion}"/>
   	  
       <ant:property environment="env"/>
    	  <ant:property name="eclipse.home" location="${env.ECLIPSE_HOME}"/>
@@ -246,22 +256,98 @@
         </ant:jar>
       </j:if>
       
-      <!-- build separate plugin distribution file -->
-      <ant:zip destfile="${basedir}/dist/${directoryName}-${distVersion}.zip">
+      <!-- build separate plugin distribution file. we use jar task b/c eclipse update expects a jar file -->
+      <ant:jar destfile="${basedir}/dist/${directoryName}-${distVersion}.jar">
         <fileset dir="${basedir}/temp"/>
-      </ant:zip>
+      </ant:jar>
         
-      <!-- j:if test="${!deploiement}">
-      	<ant:copy file="${basedir}/dist/${directoryName}-${dist.version}.zip"
-       		      todir="${eclipse.home}/plugins/${directoryName}_${dist.version}"/>
-      </j:if -->
-
       <ant:delete dir="${basedir}/temp"/>
+      	
+      <!-- copy all plugins to mevenide-update/plugins -->
+      <ant:copy todir="${basedir}/../mevenide-update/plugins"
+      			file="${basedir}/dist/${directoryName}-${distVersion}.jar" />
+      			
    </goal>
    
+   <!-- create the feature archive -->
+   <goal name="mevenide:create-feature-dist">
    
-   <goal name="mevenide:aggregate-dists">
-   	
+   	  <j:set var="featureName" value="org.mevenide.eclipse.feature"/>
+   	  <j:set var="distVersion" value="${pom.currentVersion}"/>
+   	  
+   	  <ant:mkdir dir="${basedir}/../mevenide-feature/dist"/>
+   	  
+   	  <!-- create feature dist file. should we create a POM for mevenide-feature ? -->
+   	  <j:set var="tempDirectory" value="${basedir}/temp"/>
+   	  <ant:mkdir dir="${tempDirectory}/${featureName}"/>
+   	  
+	  <ant:copy todir="${tempDirectory}/${featureName}">
+	   	  <ant:fileset dir="${basedir}/../mevenide-feature">
+            <ant:include name="feature.properties"/>
+            <ant:include name="feature.xml"/>
+            <ant:include name="mevenide.jpg"/>
+            <ant:include name="license.txt"/>
+         </ant:fileset>
+      </ant:copy>
+      
+   	  <ant:jar destfile="${basedir}/../mevenide-feature/dist/${featureName}_${distVersion}.jar">
+         <ant:fileset dir="${basedir}/temp">
+            <ant:include name="${featureName}/*.*"/>
+         </ant:fileset>	
+      </ant:jar>
+      
+      <ant:delete dir="${tempDirectory}" quiet="true"/>
+      
+      <!-- copy feature archive to mevenide-update/features -->
+      <ant:copy todir="${basedir}/../mevenide-update/features"
+      			file="${basedir}/../mevenide-feature/dist/${featureName}_${distVersion}.jar" />
+      
+   </goal>
+
+   <!-- 
+   	  build a single artifact containing all plugins and feature, ready to be unzipped into ${eclipse.home}
+   	  or either to be used in update manager
+   -->
+   <goal name="mevenide:bundle-dist">
+   	 
+   	 <j:set var="distName" value="org.mevenide"/>
+   	 <j:set var="distVersion" value="${pom.currentVersion}"/>
+   	 
+   	 <ant:mkdir dir="${basedir}/../mevenide-update/dist/"/>
+   	 
+   	 <!-- expand previously generated jars -->
+   	 <j:set var="tempDirectory" value="${basedir}/temp"/>
+   	 <ant:mkdir dir="${tempDirectory}"/>
+   	 
+   	 <!-- plugin jars -->
+     <ant:fileScanner var="pluginJars">
+        <ant:fileset dir="${basedir}/../mevenide-update/plugins">
+           <ant:include name="*.jar"/>
+        </ant:fileset>
+     </ant:fileScanner>
+   	<j:forEach var="pluginJar" items="${pluginJars.iterator()}">
+   		<ant:unjar src="${pluginJar}" dest="${tempDirectory}/plugins"/>
+   		<ant:delete dir="${tempDirectory}/plugins/META-INF" quiet="true"/>
+	</j:forEach>
+	
+	<!-- feature jars -->
+	<j:set var="featureJar" 
+		   value="${basedir}/../mevenide-update/features/org.mevenide.eclipse.feature_${distVersion}.jar"/>
+	<ant:unjar src="${featureJar}" dest="${tempDirectory}/features"/>
+	<ant:delete dir="${tempDirectory}/features/META-INF" quiet="true"/>
+	
+	<!-- build an aggregated distribution -->
+	<ant:mkdir dir="${basedir}/../mevenide-update/dist/aggregated"/>
+	
+	<ant:zip destfile="${basedir}/../mevenide-update/dist/aggregated/${distName}_${distVersion}.zip">
+		<fileset dir="${tempDirectory}/" includes="**/*.*"/>
+		<fileset dir="${basedir}/../mevenide-update" includes="site.xml"/>
+		<fileset dir="${basedir}/../mevenide-update" includes="site.properties"/>
+	</ant:zip>
+	
+   	<ant:delete dir="${tempDirectory}" quiet="true"/>
+   	 
+   	 
    </goal>
  
 </project>
