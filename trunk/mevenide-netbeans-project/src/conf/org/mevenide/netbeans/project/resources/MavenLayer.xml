@@ -18,23 +18,26 @@
                 <attr name="SystemFileSystem.localizingBundle" stringvalue="org.mevenide.netbeans.project.resources.Bundle"/>
                 <attr name="instantiatingWizardURL" urlvalue="nbresloc:/org/mevenide/netbeans/resources/maven_projects.html"/>
 
-                <file name="empty.zip" url="empty.zip">
+                <file name="empty.zip" url="genapp.txt">
                     <attr name="template" boolvalue="true"/>
                     <attr name="instantiatingIterator" newvalue="org.mevenide.netbeans.project.wizards.MavenNewWizardIterator"/>
+                    <attr name="templatename" stringvalue="empty"/>
                     <attr name="SystemFileSystem.localizingBundle" stringvalue="org.mevenide.netbeans.project.resources.Bundle"/>
                     <attr name="SystemFileSystem.icon" urlvalue="nbresloc:/org/mevenide/netbeans/project/resources/MavenIcon.gif"/>
                     <attr name="instantiatingWizardURL" urlvalue="nbresloc:/org/mevenide/netbeans/project/resources/emptyProject.html"/>
                 </file>
-                <file name="mavenplugin.zip" url="mavenplugin.zip">
+                <file name="mavenplugin.zip" url="genapp.txt">
                     <attr name="template" boolvalue="true"/>
                     <attr name="instantiatingIterator" newvalue="org.mevenide.netbeans.project.wizards.MavenNewWizardIterator"/>
+                    <attr name="templatename" stringvalue="mavenplugin"/>
                     <attr name="SystemFileSystem.localizingBundle" stringvalue="org.mevenide.netbeans.project.resources.Bundle"/>
                     <attr name="SystemFileSystem.icon" urlvalue="nbresloc:/org/mevenide/netbeans/project/resources/MavenIcon.gif"/>
                     <attr name="instantiatingWizardURL" urlvalue="nbresloc:/org/mevenide/netbeans/project/resources/mavenpluginProject.html"/>
                 </file>
-                <file name="nbmodule.zip" url="nbmodule.zip">
+                <file name="nbmodule.zip" url="genapp.txt">
                     <attr name="template" boolvalue="true"/>
                     <attr name="instantiatingIterator" newvalue="org.mevenide.netbeans.project.wizards.MavenNewWizardIterator"/>
+                    <attr name="templatename" stringvalue="nbmodule"/>
                     <attr name="SystemFileSystem.localizingBundle" stringvalue="org.mevenide.netbeans.project.resources.Bundle"/>
                     <attr name="SystemFileSystem.icon" urlvalue="nbresloc:/org/mevenide/netbeans/project/resources/MavenIcon.gif"/>
                     <attr name="instantiatingWizardURL" urlvalue="nbresloc:/org/mevenide/netbeans/project/resources/nbmoduleProject.html"/>

@@ -58,19 +58,22 @@ public class GenAppWizardIterator implements TemplateWizard.Iterator {
     private transient int index;
     private transient WizardDescriptor.Panel[] panels;
     
+    public static final String TEMPLATE = "gatemplate"; //NOI18N
+    
+    public static final String PROPERTY_PREFIX = "property.";
     
     /** Create a new wizard iterator. */
     public GenAppWizardIterator() {
     }
     
-    private WizardDescriptor.Panel[] createPanels () {
+    protected WizardDescriptor.Panel[] createPanels () {
         return new WizardDescriptor.Panel[] {
                 new GenAppTemplatePanel(),
                 new GenAppPropsPanel()
             };
     }
     
-    private String[] createSteps() {
+    protected String[] createSteps() {
             return new String[] {
                 "Choose GenApp template",
                 "Fill out properties"
@@ -92,17 +95,21 @@ public class GenAppWizardIterator implements TemplateWizard.Iterator {
         FileObject projectDir = dirFo.createFolder(name);
         
         // now let's construct what gets executed.
-        TemplateInfo info = (TemplateInfo)wiz.getProperty("gatemplate");
+        TemplateInfo info = (TemplateInfo)wiz.getProperty(TEMPLATE);
         String[] params = info.getParameters();
-        String[] add = new String[params.length + 2];
+        boolean customTemplateLoc = getCustomTemplateLocation() != null;
+        String[] add = new String[params.length + (customTemplateLoc ? 3: 2)];
         add[0] = "genapp";
         add[1] = "-Dmaven.genapp.template=" + info.getName();
         for (int i = 0; i < params.length; i++) {
-            String val = (String)wiz.getProperty("property." + params[i]);
+            String val = (String)wiz.getProperty(PROPERTY_PREFIX + params[i]);
             if (val == null) {
                 val = info.getDefaultValue(params[i]);
             }
             add[i + 2] = "-Dmaven.genapp.template." + params[i] + "=" + val;
+        }
+        if (customTemplateLoc) {
+            add[add.length - 1] = "-Dmaven.genapp.template.dir=" + getCustomTemplateLocation().getAbsolutePath();
         }
         BeanRunContext context = new BeanRunContext("GenApp", 
                     ConfigUtils.getDefaultLocationFinder().getMavenHome(), 
@@ -114,6 +121,13 @@ public class GenAppWizardIterator implements TemplateWizard.Iterator {
         
         resultSet.add (DataObject.find(projectDir));
         return resultSet;
+    }
+    
+    /**
+     * overridable from subclasses
+     */
+    public File getCustomTemplateLocation() {
+        return null;
     }
     
     public void initialize(TemplateWizard wiz) {
@@ -142,8 +156,8 @@ public class GenAppWizardIterator implements TemplateWizard.Iterator {
     }
     
     public void uninitialize(TemplateWizard wizard) {
-        wizard.putProperty("projectDir",null); //NOI18N
-        wizard.putProperty("artifactId",null); //NOI18N
+//        wizard.putProperty("projectDir",null); //NOI18N
+        wizard.putProperty("artifactID",null); //NOI18N
         wizard = null;
         panels = null;
     }

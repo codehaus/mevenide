@@ -1,16 +1,16 @@
 <?xml version="1.0" ?>
 <project>
   <pomVersion>3</pomVersion>
-  <artifactId/>
-  <groupId/>
-  <currentVersion>1.0</currentVersion>
-  <name/>
-  <package/>
-
+  <artifactId>@ARTIFACTID@</artifactId>
+  <groupId>@GROUPID@</groupId>
+  <currentVersion>@VERSION@</currentVersion>
+  <name>@NAME@</name>
+  <package>@PACKAGE@</package>
+  <logo>/images/logo.gif</logo>
+  <inceptionYear>2005</inceptionYear>
   
-  <shortDescription>This plugin helps creating ready to use Netbeans module distribution</shortDescription>
+  <shortDescription>This is a maven plugin.</shortDescription>
   
-  <inceptionYear>2004</inceptionYear>
 <!--  <licenses>
     <license>
         <name>Apache Public License 2.0 - for the plugin itself</name>
