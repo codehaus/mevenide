@@ -28,6 +28,9 @@
       <action dev="gdodinet" type="fix" issue="MEVENIDE-23, MEVENIDE-60">
 		POM editor pages are now correctly updated
       </action>
+      <action dev="gdodinet" type="update">
+		Dynamic preference pages donot rely anymore on explicit plugin activation
+      </action>
       <action dev="gdodinet" type="add">
 		Add Maven Nature and Builder 
       </action>
