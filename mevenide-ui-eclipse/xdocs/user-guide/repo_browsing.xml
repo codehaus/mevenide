@@ -19,6 +19,7 @@
 						<font size="-1"><b>Screenshot 1</b> Repository Browser</font>
 						<br/>
 					</center>
+				  </p>
 				  <p>
 					Altho some well known repositories are provided by default, as well as some known primary repo mirrors, 
 					you can define new repositories by clicking the 'Add Repository' button (in the ToolBar). This brings up a
