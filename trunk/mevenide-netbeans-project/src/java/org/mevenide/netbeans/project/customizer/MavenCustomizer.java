@@ -153,7 +153,7 @@ public class MavenCustomizer extends JPanel implements ProjectValidateObserver {
                 //reset messages.
                 lblValidateMessage.setText("");
                 prpanel.setValidateObserver(MavenCustomizer.this);
-                prpanel.setProject(project.getOriginalMavenProject(), cbResolve.isSelected());
+                prpanel.setResolveValues(cbResolve.isSelected());
             }
             customizerPanel.add( currentCustomizer, fillConstraints );
             customizerPanel.validate();
@@ -326,13 +326,19 @@ public class MavenCustomizer extends JPanel implements ProjectValidateObserver {
                 "Project Files", 
                 "org/mevenide/netbeans/project/resources/Bullet", // NOI18N
                 new FilesPanel(false, false, project),  
+                null),
+            new ConfigurationDescription(
+                "MappingCategory", // NOI18N
+                "Goal to IDE Action Mappings", 
+                "org/mevenide/netbeans/project/resources/Bullet", // NOI18N
+                new ActionMappingPanel(project),  
                 null)
         };
         
         ConfigurationDescription rootDescription = new ConfigurationDescription(
-            "InvisibleRoot", "InvisibleRoot", null, null, descriptions );  // NOI18N
+            "InvisibleRoot", "InvisibleRoot", null, null, descriptions);  // NOI18N
         
-        return new ConfigurationNode( rootDescription );
+        return new ConfigurationNode(rootDescription);
         
         
     }

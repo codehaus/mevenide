@@ -82,9 +82,6 @@ class LocationComboBox extends JButton {
         return current;
     }
     
-    public boolean hasChangedSelection() {
-        return current != initial;
-    }
     
     public void setInitialItem(int location) {
         LocationWrapper selected = findWrapper(location);
@@ -95,6 +92,7 @@ class LocationComboBox extends JButton {
     private void setSelectedItem(LocationWrapper selected) {
         setToolTipText(selected.getName());
         setIcon(selected.getIcon());
+        setDisabledIcon(selected.getIcon());
         currentLoc.removeAll();
         initStatePopup(currentLoc, selected.getActions());
         current = selected;

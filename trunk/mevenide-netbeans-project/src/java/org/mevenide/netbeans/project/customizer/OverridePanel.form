@@ -52,7 +52,7 @@
         <Component class="javax.swing.JButton" name="btnJarOverrideLoc">
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_CreateCodePre" type="java.lang.String" value="originChange2 = LocationComboFactory.createPropertiesChange(project);"/>
-            <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="btnJarOverrideLoc = (JButton)originChange2.getComponent();"/>
+            <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="(JButton)originChange2.getComponent();"/>
           </AuxValues>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">

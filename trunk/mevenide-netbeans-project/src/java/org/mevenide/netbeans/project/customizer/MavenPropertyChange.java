@@ -15,39 +15,36 @@
  * =========================================================================
  */
 package org.mevenide.netbeans.project.customizer;
-import java.util.List;
 
-
-import org.apache.maven.project.Project;
 
 /**
- *
  * @author  Milos Kleint (ca206216@tiscali.cz)
  */
-public interface ProjectPanel
-{
+public interface MavenPropertyChange {
     /**
-     * 
+     * property's key
      */
-    List getChanges();
+    String getKey();
+    /**
+     * original value
+     */
+    String getOldValue();
+    /**
+     * current, maybe changed value
+     */
+    String getNewValue();
+    /**
+     * original location of the the property definition.
+     */
+    int getOldLocation();
+    /**
+     * new location of the the property definition.
+     */
+    int getNewLocation();
     
     /**
-     * the panel will update according to the values of project parameter.
+     * check weather the proeprty changed or not. either value or location.
      */
-    void setResolveValues(boolean resolveValues);
-    
-    /**
-     * sets the observer interested in the validity changes of the panel.
-     */
-    void setValidateObserver(ProjectValidateObserver observer);
-    
-    /**
-     * returns if the panel is in valid state.
-     */
-    boolean isInValidState();
-    
-    /**
-     * returns a UI message describing the validity state.
-     */
-    String getValidityMessage();
+    boolean hasChanged();
+ 
 }

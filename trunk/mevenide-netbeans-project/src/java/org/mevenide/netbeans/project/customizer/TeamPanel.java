@@ -353,11 +353,12 @@ public class TeamPanel extends JPanel implements ProjectPanel {
     private javax.swing.JTextField txtURL;
     // End of variables declaration//GEN-END:variables
     
-    public void setProject(Project project, boolean resolve) {
+     public void setResolveValues(boolean resolve) {
 //TODO        setEnableFields(!resolve);                
         doResolve = resolve;
-        List contrib = project.getContributors();
-        List devel = project.getDevelopers();
+        Project proj = project.getOriginalMavenProject();
+        List contrib = proj.getContributors();
+        List devel = proj.getDevelopers();
         comTeam.removeAllItems();
         develModel.removeAllElements();
         if (devel != null) {
@@ -427,7 +428,8 @@ public class TeamPanel extends JPanel implements ProjectPanel {
         
     }
     
-    public Project copyProject(Project project) {
+    public List getChanges() {
+        return Collections.EMPTY_LIST;
         //        // when copying over, we will discard the current instances in the project with our local fresh ones.
         //        // I hope that is ok, and the mailing lists don't have custom properties.
         //        DefaultListModel model = (DefaultListModel)lstLists.getModel();
@@ -438,7 +440,7 @@ public class TeamPanel extends JPanel implements ProjectPanel {
         //            list.add(obj);
         //        }
         //        project.setMailingLists(list);
-        return project;
+//        return project;
     }
     
     public void setValidateObserver(ProjectValidateObserver observer) {

@@ -85,13 +85,6 @@ public class OverridePanel extends JPanel implements ExplorerManager.Provider, P
         pnlDeps.add(btv, fillConstraints);
         manager.addPropertyChangeListener( new ManagerChangeListener() );
         
-//        GridBagConstraints constraints = new GridBagConstraints();
-//        constraints.gridx = 1;
-//        constraints.gridy = 0;
-//        constraints.anchor = GridBagConstraints.NORTHWEST;
-//        constraints.weightx = 0.1;
-//        constraints.insets = new java.awt.Insets(6, 6, 0, 0);
-//        originChange = LocationComboFactory.createPropertiesChange(project);
         originChange.setChangeObserver(new OriginChange.ChangeObserver() {
             public void actionSelected(String action) {
                 if (OriginChange.ACTION_RESET_TO_DEFAULT.equals(action)) {
@@ -132,7 +125,7 @@ public class OverridePanel extends JPanel implements ExplorerManager.Provider, P
         lblOverrideValue = new javax.swing.JLabel();
         txtOverrideValue = new javax.swing.JTextField();
         originChange2 = LocationComboFactory.createPropertiesChange(project);
-        btnJarOverrideLoc = btnJarOverrideLoc = (JButton)originChange2.getComponent();
+        btnJarOverrideLoc = (JButton)originChange2.getComponent();
         originChange = LocationComboFactory.createPropertiesChange(project);
         btnOverrideLoc = (JButton)originChange.getComponent();
 
@@ -197,8 +190,8 @@ public class OverridePanel extends JPanel implements ExplorerManager.Provider, P
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
-        gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
         add(btnOverrideLoc, gridBagConstraints);
 
     }//GEN-END:initComponents
@@ -260,9 +253,8 @@ public class OverridePanel extends JPanel implements ExplorerManager.Provider, P
     public void setDependency(Dependency dependency) {
     }    
     
-    public Project copyProject(Project project) {
-        //TODO
-        return null;
+    public List getChanges() {
+        return Collections.EMPTY_LIST;
     }
     
     public String getValidityMessage() {
@@ -273,8 +265,9 @@ public class OverridePanel extends JPanel implements ExplorerManager.Provider, P
         return true;
     }
     
-    public void setProject(Project proj, boolean resolve) {
-        manager.setRootContext(createRootNode(proj));
+    public void setResolveValues(boolean resolveValues) {
+        setFieldsEditable(!resolveValues);
+        manager.setRootContext(createRootNode(project.getOriginalMavenProject()));
         btv.expandAll();
         selectFirstNode();
         int loc = project.getPropertyLocator().getPropertyLocation("maven.jar.override");
