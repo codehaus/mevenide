@@ -54,4 +54,9 @@ public class Element {
 	public String getFullyQualifiedName() {
 		return name;
 	}
+	
+	public boolean equals(Object obj) {
+		return (obj instanceof Element) 
+				&& ((Element) obj).getFullyQualifiedName().equals(getFullyQualifiedName());
+	}
 }
