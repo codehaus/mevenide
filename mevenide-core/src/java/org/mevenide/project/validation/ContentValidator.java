@@ -68,9 +68,16 @@ public class ContentValidator implements IProjectValidator {
         validateContributors(project.getContributors());
         validateDependencies(project.getDependencies());  
         validateBuild(project.getBuild());  //@todo
-        validateReports(project.getReports());  //@todo
+        validateReports(project.getReports());  
+        handleValidationErrors();
     }
     
+    private void handleValidationErrors() throws ValidationException {
+        if ( !validationWarnings.isEmpty() || !validationErrors.isEmpty() ) {
+            throw new ValidationException(validationErrors, validationWarnings);
+        }
+    }
+
     private void validateReports(List reports) {
         try {
             if ( reports != null ) {
