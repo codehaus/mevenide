@@ -27,13 +27,13 @@ import junit.framework.TestCase;
  * @version $Id$
  * 
  */
-public class PomWriterTest extends TestCase {
+public class ProjectWriterTest extends TestCase {
 	private ProjectWriter pomWriter;
 	private File projectFile;
 
 	protected void setUp() throws Exception {
 		pomWriter = ProjectWriter.getWriter();
-		File src = new File(PomWriterTest.class.getResource("/fixtures/project-fixture.xml").getFile());
+		File src = new File(ProjectWriterTest.class.getResource("/fixtures/project-fixture.xml").getFile());
 		projectFile = new File(src.getParentFile().getParent(), "project-fixture.xml") ; 
 		copy(src.getAbsolutePath(), projectFile.getAbsolutePath());
 	}
