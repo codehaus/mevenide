@@ -46,31 +46,28 @@
  * SUCH DAMAGE.
  * ====================================================================
  */
-package org.mevenide.core;
-
-import org.mevenide.MevenideException;
-
+package org.mevenide.runner;
 
 /**
  * 
  * @author Gilles Dodinet (gdodinet@wanadoo.fr)
- * @version $Id: AbstractRunnerStub.java 8 mai 2003 14:59:0213:34:35 Exp gdodinet 
+ * @version $Id$
  * 
  */
-public class AbstractRunnerStub extends AbstractRunner {
-
-	public AbstractRunnerStub() throws MevenideException {
-		super();
+public class InvalidOptionException extends Exception {
+	private String message;
+	
+	public InvalidOptionException(char option) {
+		message = new StringBuffer("invalid option : '-").append(option).append("'").toString();
 	}
+	
+	public String toString() {
+        return message;
+    }
+    
+    public String getMessage() {
+        return message;
+    }
 
-	protected void initEnvironment() {
-	}
-
-	protected String getBasedir() {
-		return null;
-	}
-
-	protected void launchVM(String[] options, String[] goals) throws Exception {
-	}
 
 }

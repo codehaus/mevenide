@@ -46,26 +46,28 @@
  * SUCH DAMAGE.
  * ====================================================================
  */
-package org.mevenide;
+package org.mevenide.runner;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import junit.framework.TestCase;
 
 /**
  * 
  * @author Gilles Dodinet (gdodinet@wanadoo.fr)
- * @version $Id: AllTests.java 8 mai 2003 15:32:4913:34:35 Exp gdodinet 
+ * @version $Id: OptionsRegistryTest.java 8 mai 2003 15:58:1313:34:35 Exp gdodinet 
  * 
  */
-public class AllTests  {
-	private AllTests() {
-	}
+public class OptionsRegistryTest extends TestCase {
 
-    public static Test suite() {
-        TestSuite suite = new TestSuite();
-        
-        suite.addTestSuite(OptionsRegistryTest.class);
-        
-        return suite;
+	public void testGetOptionDescription() throws Exception {
+	   assertEquals("Define a system property", OptionsRegistry.getDescription('D'));
+       assertEquals("Produce logging information without adornments", OptionsRegistry.getDescription('E'));
+       assertEquals("Produce execution debug output", OptionsRegistry.getDescription('X'));
+       assertEquals("Produce exception stack traces", OptionsRegistry.getDescription('e'));
+       assertEquals("Build is happening offline", OptionsRegistry.getDescription('o'));
+       try {
+	       OptionsRegistry.getDescription('Z');
+           fail("Excepted InvalidOptionException");
+       } 
+       catch (InvalidOptionException e) { }
     }
 }

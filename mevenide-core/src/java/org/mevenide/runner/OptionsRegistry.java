@@ -46,28 +46,73 @@
  * SUCH DAMAGE.
  * ====================================================================
  */
-package org.mevenide;
+package org.mevenide.runner;
 
-import junit.framework.TestCase;
+import java.io.InputStream;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Properties;
+import java.util.TreeMap;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+
+
 
 /**
+ * Maven options : Map(value, description) 
+ * 
+ * some options have been intentionally left out since they dont seem 
+ * to make in the current context.
+ * 
+ * @low use configuration (http://gdfact.fr.st/) instead of Properties  
+ * 
+ * make a singleton of it ?
  * 
  * @author Gilles Dodinet (gdodinet@wanadoo.fr)
- * @version $Id: OptionsRegistryTest.java 8 mai 2003 15:58:1313:34:35 Exp gdodinet 
+ * @version $Id$
  * 
  */
-public class OptionsRegistryTest extends TestCase {
-
-	public void testGetOptionDescription() throws Exception {
-	   assertEquals("Define a system property", OptionsRegistry.getDescription('D'));
-       assertEquals("Produce logging information without adornments", OptionsRegistry.getDescription('E'));
-       assertEquals("Produce execution debug output", OptionsRegistry.getDescription('X'));
-       assertEquals("Produce exception stack traces", OptionsRegistry.getDescription('e'));
-       assertEquals("Build is happening offline", OptionsRegistry.getDescription('o'));
-       try {
-	       OptionsRegistry.getDescription('Z');
-           fail("Excepted InvalidOptionException");
-       } 
-       catch (InvalidOptionException e) { }
+public class OptionsRegistry {
+    private static Log log = LogFactory.getLog(OptionsRegistry.class);
+    
+    private static Map options = new TreeMap();
+    
+    static {
+        try {
+			Properties props = new Properties();
+			InputStream stream = OptionsRegistry.class.getResourceAsStream("/mevenide.properties");
+			props.load(stream);
+			Iterator keys = props.keySet().iterator();
+			log.debug("Found " + props.keySet().size() + " total keys");
+			while ( keys.hasNext() ) {
+				String key = (String) keys.next();
+				log.debug("current key = " + key);
+			    Character optionChar = new Character(key.charAt(key.length() - 1));
+			    log.debug("Found optionChar " + optionChar);
+			    options.put(optionChar, props.get(key));
+			}
+		} catch (Exception e) {
+			log.debug("Unable to init options map due to : " + e);
+        }
     }
+    
+	private OptionsRegistry() {
+	}
+
+   /**
+    * @return the description associated with the given option passed as a single character
+    */
+	public static String getDescription(char option) throws InvalidOptionException {
+	   log.debug("Looking up through " + options.size() + " keys ");
+	   String description = (String) options.get(new Character(option));
+       if ( description == null ) {
+           throw new InvalidOptionException(option);
+       }
+       else return description;  	 
+	}
+	
+	
+
 }
