@@ -323,7 +323,7 @@ public class MavenArgumentsTab extends AbstractLaunchConfigurationTab  {
                 public void widgetSelected(SelectionEvent arg0) {
 					GoalsPickerDialog goalsPickerDialog = new GoalsPickerDialog();
 					goalsPickerDialog.open();
-					System.err.println(goalsPickerDialog.getCheckedItems().size());
+					
                 }                	 
 			}
 		);
