@@ -21,9 +21,14 @@ import org.apache.commons.logging.LogFactory;
 import org.eclipse.jface.preference.DirectoryFieldEditor;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.mevenide.environment.ConfigUtils;
@@ -44,7 +49,7 @@ public class LocationPreferencePage extends PreferencePage implements IWorkbench
     
     private PreferencesManager preferencesManager;
 	
-    private Composite topLevelContainer;
+    private Group topLevelContainer;
     
 	private DirectoryFieldEditor mavenHomeEditor;
 	private DirectoryFieldEditor mavenLocalHomeEditor;
@@ -64,22 +69,68 @@ public class LocationPreferencePage extends PreferencePage implements IWorkbench
     }
 
 	protected Control createContents(Composite parent) {
-	    topLevelContainer = new Composite(parent, SWT.NULL);
-		GridLayout layout = new GridLayout();
-		layout.numColumns = 3;
+	    Composite composite = new Composite(parent, SWT.NULL);
+	    GridLayout layout = new GridLayout();
+	    composite.setLayout(layout);
+	    
+	    GridData data = new GridData(GridData.GRAB_VERTICAL | GridData.VERTICAL_ALIGN_BEGINNING);
+	    data.grabExcessVerticalSpace = true;
+	    composite.setLayoutData(data);
+	    
+	    createEditors(composite);
 		
+		createRegenerateButtonArea(composite);
+		
+		return topLevelContainer;
+	}
+
+	private void createEditors(Composite parent) {
+        topLevelContainer = new Group(parent, SWT.NULL);
+        
+        GridLayout layout = new GridLayout();
+        layout.marginWidth = 10;
+	    layout.marginHeight = 10;
+	    topLevelContainer.setLayout(layout);
+	    
+	    GridData groupData = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING);
+	    groupData.grabExcessVerticalSpace = false;
+	    topLevelContainer.setLayoutData(groupData);
+	    
+	    topLevelContainer.setText(Mevenide.getResourceString("LocationPreferencePage.RequiredLocations"));
+	    		
 		createJavaHomeEditor();
 		createMavenHomeEditor();
 		createMavenLocalHomeEditor();
 		createMavenRepositoryEditor();
+    }
 
-		return topLevelContainer;
+    private void createRegenerateButtonArea(Composite parent) {
+	    Composite composite = new Composite(parent, SWT.NULL);
+	    composite.setLayout(new GridLayout());
+	    GridData data = new GridData(GridData.FILL_BOTH | GridData.HORIZONTAL_ALIGN_END | GridData.VERTICAL_ALIGN_BEGINNING);
+	    data.grabExcessVerticalSpace = true;
+	    composite.setLayoutData(data);
+	    
+	    Button regenerateButton = new Button(composite, SWT.PUSH);
+	    regenerateButton.setText(Mevenide.getResourceString("LocationPreferencePage.Regenerate"));
+	    regenerateButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_END));
+	    
+	    regenerateButton.addSelectionListener(
+	        new SelectionListener() {
+			    public void widgetDefaultSelected(SelectionEvent event) {
+		        }
+			    public void widgetSelected(SelectionEvent event) {
+		        }
+	    	}
+	    );
+	    
+
 	}
-
+	
 	private void createMavenRepositoryEditor() {
         mavenRepositoryEditor = createEditor(
 			MevenidePreferenceKeys.MAVEN_REPO_PREFERENCE_KEY, 
-			Mevenide.getResourceString("MevenidePreferenceDialog.maven.repo.label"), 
+			Mevenide.getResourceString("LocationPreferencePage.maven.repo.label"), 
 			mavenRepository
 		);
 		if ( mavenRepositoryEditor.getStringValue() == null || mavenRepositoryEditor.getStringValue().trim().equals("") ) {
@@ -90,7 +141,7 @@ public class LocationPreferencePage extends PreferencePage implements IWorkbench
     private void createMavenLocalHomeEditor() {
         mavenLocalHomeEditor = createEditor(
 			MevenidePreferenceKeys.MAVEN_LOCAL_HOME_PREFERENCE_KEY, 
-			Mevenide.getResourceString("MevenidePreferenceDialog.maven.local.home.label"), 
+			Mevenide.getResourceString("LocationPreferencePage.maven.local.home.label"), 
 			mavenLocalHome
 		);
 		if ( mavenLocalHomeEditor.getStringValue() == null || mavenLocalHomeEditor.getStringValue().trim().equals("") ) {
@@ -101,7 +152,7 @@ public class LocationPreferencePage extends PreferencePage implements IWorkbench
     private void createMavenHomeEditor() {
         mavenHomeEditor = createEditor(
 			MevenidePreferenceKeys.MAVEN_HOME_PREFERENCE_KEY, 
-			Mevenide.getResourceString("MevenidePreferenceDialog.maven.home.label"), 
+			Mevenide.getResourceString("LocationPreferencePage.maven.home.label"), 
 			mavenHome
 		);
 		if ( isNull(mavenHomeEditor) ) {
@@ -113,7 +164,7 @@ public class LocationPreferencePage extends PreferencePage implements IWorkbench
     private void createJavaHomeEditor() {
         javaHomeEditor = createEditor(
 			MevenidePreferenceKeys.JAVA_HOME_PREFERENCE_KEY, 
-			Mevenide.getResourceString("MevenidePreferenceDialog.java.home.label"), 
+			Mevenide.getResourceString("LocationPreferencePage.java.home.label"), 
 			javaHome
 		);
 		if ( isNull(javaHomeEditor) ) {

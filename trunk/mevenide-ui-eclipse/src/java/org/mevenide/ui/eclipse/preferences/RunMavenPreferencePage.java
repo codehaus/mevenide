@@ -77,7 +77,7 @@ public class RunMavenPreferencePage extends PreferencePage implements IWorkbench
 	private void createHeapSizeEditor() {
         heapSizeEditor = new IntegerFieldEditor(
 			MevenidePreferenceKeys.JAVA_HEAP_SIZE_PREFERENCE_KEY, 
-			Mevenide.getResourceString("MevenidePreferenceDialog.heap.size.label"), 
+			Mevenide.getResourceString("RunMavenPreferencePage.heap.size.label"), 
 			topLevelContainer
 		);
 		heapSizeEditor.fillIntoGrid(topLevelContainer, 3);
@@ -93,7 +93,7 @@ public class RunMavenPreferencePage extends PreferencePage implements IWorkbench
 		defaultGoalsEditor = 
 		    new StringButtonFieldEditor(
 		            MevenidePreferenceKeys.MAVEN_LAUNCH_DEFAULTGOALS_PREFERENCE_KEY,
-		            Mevenide.getResourceString("MevenidePreferenceDialog.default.goals.label"),
+		            Mevenide.getResourceString("RunMavenPreferencePage.default.goals.label"),
 		            topLevelContainer) {
 				protected Button getChangeControl(Composite parent) {
 					Button b = super.getChangeControl(parent);
@@ -103,8 +103,8 @@ public class RunMavenPreferencePage extends PreferencePage implements IWorkbench
 				protected String changePressed() {
 					String backup = defaultGoalsEditor.getTextControl(topLevelContainer).getText();
 					GoalsPickerDialog goalsPickerDialog = new GoalsPickerDialog();
-					goalsPickerDialog.setOverrideMessage("Choose the default goals from the list below");
-					goalsPickerDialog.setOverrideTitle("Default goals");
+					goalsPickerDialog.setOverrideMessage(Mevenide.getResourceString("RunMavenPreferencePage.default.goals.choose.message.override"));
+					goalsPickerDialog.setOverrideTitle(Mevenide.getResourceString("RunMavenPreferencePage.default.goals.choose.message.title"));
 					goalsPickerDialog.setGoalsOrder(defaultGoalsEditor.getTextControl(topLevelContainer).getText());
 					int ok = goalsPickerDialog.open();
 					if ( ok == Window.OK ) {
@@ -120,9 +120,9 @@ public class RunMavenPreferencePage extends PreferencePage implements IWorkbench
 		defaultGoalsEditor.setPreferenceStore(preferencesManager.getPreferenceStore());
 		defaultGoalsEditor.load();
 		if ( defaultGoalsEditor.getStringValue() == null ) {
-			defaultGoalsEditor.setStringValue(Mevenide.getResourceString("MevenidePreferenceDialog.default.goals.null"));
+			defaultGoalsEditor.setStringValue(Mevenide.getResourceString("RunMavenPreferencePage.default.goals.null"));
 		} 
-		defaultGoalsEditor.setChangeButtonText(Mevenide.getResourceString("MevenidePreferenceDialog.default.goals.choose"));
+		defaultGoalsEditor.setChangeButtonText(Mevenide.getResourceString("RunMavenPreferencePage.default.goals.choose"));
 		
 		defaultGoalsEditor.getTextControl(topLevelContainer).addModifyListener(
 			new ModifyListener() {
