@@ -85,7 +85,7 @@
             <type>jar</type>
             <properties>
                 <eclipse.plugin.bundle>false</eclipse.plugin.bundle>
-                <netbeans.module.ext>true</netbeans.module.ext>
+<!--                <netbeans.module.ext>true</netbeans.module.ext> -->
             </properties>
         </dependency>
         <dependency>
