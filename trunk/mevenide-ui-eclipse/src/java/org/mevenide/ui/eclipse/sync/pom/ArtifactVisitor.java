@@ -15,11 +15,14 @@
 package org.mevenide.ui.eclipse.sync.pom;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.jdt.core.IClasspathContainer;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.launching.JavaRuntime;
@@ -64,6 +67,15 @@ public class ArtifactVisitor {
 		);
 	}
 	
+	/**
+	 * this method is quite complex because we take care to not add anything from the jdk 
+	 * so we check both JRE_LIB and JRE_CONTAINER
+	 * 
+	 * @todo check that "org.eclipse.jdt.launching.JRE_CONTAINER" is ok regardless of the platform/project/whatever
+	 * 
+	 * @param entry
+	 * @throws Exception
+	 */
 	public void add(DependencyEntry entry) throws Exception {
 		ProjectWriter writer = ProjectWriter.getWriter();
 		IPathResolverDelegate pathResolver = pomSynchronizer.getPathResolver();
@@ -75,12 +87,22 @@ public class ArtifactVisitor {
 		IClasspathEntry classpathEntry = entry.getClasspathEntry();
 		String entryPath = pathResolver.getAbsolutePath(classpathEntry.getPath());
 		
-		if ( !jrePath.equals(entryPath) && !isClassFolder(entryPath) ) {
+		IClasspathContainer container = JavaCore.getClasspathContainer(new Path("org.eclipse.jdt.launching.JRE_CONTAINER"), JavaCore.create(this.pomSynchronizer.getProject()));
+		IClasspathEntry[] cpEntries = container.getClasspathEntries();
+		
+		List cpEntryList = new ArrayList();
+		
+		for (int i = 0; i < cpEntries.length; i++) {
+        	cpEntryList.add(pathResolver.getAbsolutePath(cpEntries[i].getPath()));
+		}    
+        
+        if ( !jrePath.equals(entryPath) && !cpEntryList.contains(entryPath) && !isClassFolder(entryPath) ) {
 			writer.addDependency(
 				entryPath, 
 				pomSynchronizer.getPom()
 			);
  		}
+		
 		
 	}
 	

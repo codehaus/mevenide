@@ -27,7 +27,7 @@
 	</target>
 	<target name="build-all" depends="init" description="o build all mevenide artifacts using maven:reactor ">
 		<exec executable="${maven.command}" failonerror="true">
-			<arg value="-o"/>
+			<!-- arg value="-o"/ -->
 			<!-- arg value="-X"/ -->
 			<arg value="build-all"/>
 		</exec>
