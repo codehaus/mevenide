@@ -21,12 +21,18 @@ import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.jface.preference.StringButtonFieldEditor;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
@@ -45,7 +51,65 @@ import org.mevenide.util.StringUtils;
  */
 public class RunMavenPreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
     
-	private static final String DEFAULT_HEAP_SIZE = "160"; //$NON-NLS-1$
+	private final class DefaultGoalsEditor extends StringButtonFieldEditor {
+
+        private Button changeButton;
+
+        private DefaultGoalsEditor(String name, String labelText, Composite parent) {
+            super(name, labelText, parent);
+        }
+
+        protected Button getChangeControl(Composite parent) {
+            if ( changeButton == null ) {
+                changeButton = new Button(parent, SWT.NULL);
+                changeButton.setEnabled(true);
+                changeButton.addDisposeListener(new DisposeListener() {
+        			public void widgetDisposed(DisposeEvent event) {
+        				changeButton = null;
+        			}
+        		});
+                changeButton.addSelectionListener(new SelectionAdapter() {
+    				public void widgetSelected(SelectionEvent evt) {
+    					String newValue = changePressed();
+    					if (newValue != null) {
+    						setStringValue(newValue);
+    					}
+    				}
+    			});
+            }
+        	return changeButton;
+        }
+
+        protected void doFillIntoGrid(Composite parent, int numColumns) {
+            super.doFillIntoGrid(parent, numColumns);
+            GridData data = new GridData();
+            data.grabExcessHorizontalSpace = false;
+            data.horizontalAlignment = GridData.END;
+        	changeButton.setLayoutData(data);
+        	
+        	GridData textData = new GridData(GridData.FILL);
+        	textData.grabExcessHorizontalSpace = true;
+        	textData.horizontalAlignment = GridData.FILL;
+        	getTextControl().setLayoutData(textData);
+        }
+
+        protected String changePressed() {
+        	String backup = defaultGoalsEditor.getTextControl(topLevelContainer).getText();
+        	GoalsPickerDialog goalsPickerDialog = new GoalsPickerDialog();
+        	goalsPickerDialog.setOverrideMessage(Mevenide.getResourceString("RunMavenPreferencePage.default.goals.choose.message.override")); //$NON-NLS-1$
+        	goalsPickerDialog.setOverrideTitle(Mevenide.getResourceString("RunMavenPreferencePage.default.goals.choose.message.title")); //$NON-NLS-1$
+        	goalsPickerDialog.setGoalsOrder(defaultGoalsEditor.getTextControl(topLevelContainer).getText());
+        	int ok = goalsPickerDialog.open();
+        	if ( ok == Window.OK ) {
+        		return goalsPickerDialog.getOrderedGoals();
+        	}
+        	else {
+        		return defaultGoalsEditor.getTextControl(topLevelContainer).getText();
+        	}
+        }
+    }
+
+    private static final String DEFAULT_HEAP_SIZE = "160"; //$NON-NLS-1$
     
     private IntegerFieldEditor heapSizeEditor;
 	private StringButtonFieldEditor defaultGoalsEditor;
@@ -67,9 +131,10 @@ public class RunMavenPreferencePage extends PreferencePage implements IWorkbench
 		topLevelContainer = new Composite(parent, SWT.NULL);
 		GridLayout layout = new GridLayout();
 		layout.numColumns = 3;
+		
 		topLevelContainer.setLayout(layout);
 		
-		createHeapSizeEditor();		
+		createHeapSizeEditor();	
 		createDefaultGoalsEditor();
 		
 		return topLevelContainer;
@@ -81,41 +146,17 @@ public class RunMavenPreferencePage extends PreferencePage implements IWorkbench
 			Mevenide.getResourceString("RunMavenPreferencePage.heap.size.label"),  //$NON-NLS-1$
 			topLevelContainer
 		);
-		heapSizeEditor.fillIntoGrid(topLevelContainer, 3);
+		heapSizeEditor.fillIntoGrid(topLevelContainer, 2);
 		heapSizeEditor.setPreferenceStore(preferencesManager.getPreferenceStore());
 		heapSizeEditor.load();
 		if ( heapSizeEditor.getIntValue() <= 0 ) {
 			heapSizeEditor.setStringValue(DEFAULT_HEAP_SIZE);
 		}
-		
+		new Label(topLevelContainer, SWT.NULL);
     }
 
     private void createDefaultGoalsEditor() {
-		defaultGoalsEditor = 
-		    new StringButtonFieldEditor(
-		            MevenidePreferenceKeys.MAVEN_LAUNCH_DEFAULTGOALS_PREFERENCE_KEY,
-		            Mevenide.getResourceString("RunMavenPreferencePage.default.goals.label"), //$NON-NLS-1$
-		            topLevelContainer) {
-				protected Button getChangeControl(Composite parent) {
-					Button b = super.getChangeControl(parent);
-					b.setEnabled(true);
-					return b;
-				}
-				protected String changePressed() {
-					String backup = defaultGoalsEditor.getTextControl(topLevelContainer).getText();
-					GoalsPickerDialog goalsPickerDialog = new GoalsPickerDialog();
-					goalsPickerDialog.setOverrideMessage(Mevenide.getResourceString("RunMavenPreferencePage.default.goals.choose.message.override")); //$NON-NLS-1$
-					goalsPickerDialog.setOverrideTitle(Mevenide.getResourceString("RunMavenPreferencePage.default.goals.choose.message.title")); //$NON-NLS-1$
-					goalsPickerDialog.setGoalsOrder(defaultGoalsEditor.getTextControl(topLevelContainer).getText());
-					int ok = goalsPickerDialog.open();
-					if ( ok == Window.OK ) {
-						return goalsPickerDialog.getOrderedGoals();
-					}
-					else {
-						return defaultGoalsEditor.getTextControl(topLevelContainer).getText();
-					}
-				}
-		};
+		defaultGoalsEditor = new DefaultGoalsEditor(MevenidePreferenceKeys.MAVEN_LAUNCH_DEFAULTGOALS_PREFERENCE_KEY, Mevenide.getResourceString("RunMavenPreferencePage.default.goals.label"), topLevelContainer);
 		
 		defaultGoalsEditor.fillIntoGrid(topLevelContainer, 3);
 		defaultGoalsEditor.setPreferenceStore(preferencesManager.getPreferenceStore());
