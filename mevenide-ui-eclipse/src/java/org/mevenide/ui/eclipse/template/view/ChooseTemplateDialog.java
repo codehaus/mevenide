@@ -49,9 +49,9 @@ public class ChooseTemplateDialog extends TitleAreaDialog {
 	}
 	
 	protected Control createDialogArea(Composite parent) {
-	    getShell().setText("Pom Templates");
-	    setTitle("Choose a POM Template");
-		setMessage("You can add templates through the Preference page.");
+	    getShell().setText(Mevenide.getResourceString("ChoosePomTemplateDialog.Shell.Text")); //$NON-NLS-1$
+	    setTitle(Mevenide.getResourceString("ChoosePomTemplateDialog.Title")); //$NON-NLS-1$
+		setMessage(Mevenide.getResourceString("ChoosePomTemplateDialog.Message")); //$NON-NLS-1$
 	    setShellStyle(SWT.RESIZE | SWT.APPLICATION_MODAL);
 	    Composite composite = new Composite(parent, SWT.RESIZE);
         GridLayout layout = new GridLayout();
@@ -73,7 +73,7 @@ public class ChooseTemplateDialog extends TitleAreaDialog {
         
 		templatesCombo = new Combo(composite, SWT.DROP_DOWN | SWT.READ_ONLY | SWT.SINGLE);
         templatesCombo.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		templatesCombo.add(Mevenide.getResourceString("ChooseTemplateDialog.DefaultTemplate.Label"));
+		templatesCombo.add(Mevenide.getResourceString("ChooseTemplateDialog.DefaultTemplate.Label")); //$NON-NLS-1$
 		for (int i = 0; i < templates.getTemplates().length; i++) {
 			templatesCombo.add(((Template) templates.getTemplates()[i]).getTemplateName());
 		}

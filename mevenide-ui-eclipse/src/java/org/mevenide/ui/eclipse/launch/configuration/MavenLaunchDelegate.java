@@ -57,7 +57,7 @@ import org.mevenide.ui.eclipse.preferences.DynamicPreferencesManager;
 public class MavenLaunchDelegate extends AbstractRunner implements ILaunchConfigurationDelegate {
 	private static Log log = LogFactory.getLog(MavenLaunchDelegate.class); 
 	
-	public static final String MAVEN_LAUNCH = "org.mevenide.maven.launched";
+	public static final String MAVEN_LAUNCH = "org.mevenide.maven.launched"; //$NON-NLS-1$
 
 	private ILaunchConfiguration config;
 
@@ -67,12 +67,12 @@ public class MavenLaunchDelegate extends AbstractRunner implements ILaunchConfig
 			initEnvironment();
 		} 
 		catch (Exception e) {
-			log.debug("Unable to launch configuration due to : ", e);
+			log.debug("Unable to launch configuration due to : ", e); //$NON-NLS-1$
 		}
 		
 		String[] mavenClasspath = ArgumentsManager.getMavenClasspath();
 
-		VMRunnerConfiguration vmConfig = new VMRunnerConfiguration("com.werken.forehead.Forehead", mavenClasspath);
+		VMRunnerConfiguration vmConfig = new VMRunnerConfiguration("com.werken.forehead.Forehead", mavenClasspath); //$NON-NLS-1$
 		String[] vmArgs = ArgumentsManager.getVMArgs(this);
 		
 		Map customVmArgsMap = configuration.getAttribute(MavenArgumentsTab.SYS_PROPERTIES, new HashMap());
@@ -83,7 +83,7 @@ public class MavenLaunchDelegate extends AbstractRunner implements ILaunchConfig
 		while ( iterator.hasNext() ) {
 			String prop = (String) iterator.next();
 			String value = (String) customVmArgsMap.get(prop);
-			customVmArgs[u] = "-D" + prop + "=" + value;
+			customVmArgs[u] = "-D" + prop + "=" + value;  //$NON-NLS-1$//$NON-NLS-2$
 			u++; 
 		}
 		
@@ -91,9 +91,11 @@ public class MavenLaunchDelegate extends AbstractRunner implements ILaunchConfig
 		System.arraycopy(vmArgs, 0, allVmArgs, 0, vmArgs.length);
 		System.arraycopy(customVmArgs, 0, allVmArgs, vmArgs.length, customVmArgs.length);
 		
-		for (int i = 0; i < allVmArgs.length; i++) {
-            log.debug("VM Argument : " + allVmArgs[i]);
-        }
+		if ( log.isDebugEnabled() ) {
+			for (int i = 0; i < allVmArgs.length; i++) {
+	            log.debug("VM Argument : " + allVmArgs[i]); //$NON-NLS-1$
+	        }
+		}
 		
 		vmConfig.setVMArguments(allVmArgs);
 		
@@ -106,7 +108,7 @@ public class MavenLaunchDelegate extends AbstractRunner implements ILaunchConfig
 		
  		if (vmRunner != null) {
  			vmRunner.run(vmConfig, launch, monitor);
-            launch.setAttribute(MAVEN_LAUNCH, "true");
+            launch.setAttribute(MAVEN_LAUNCH, "true"); //$NON-NLS-1$
             
             ILaunchesListener2 launchListener = new MavenLaunchesListener();
             DebugPlugin.getDefault().getLaunchManager().addLaunches(new ILaunch[] {launch});
@@ -138,7 +140,7 @@ public class MavenLaunchDelegate extends AbstractRunner implements ILaunchConfig
             String key = (String) it.next();
             String value = (String) dynamicPreferencesMap.get(key);
             if ( !loadedProperties.contains(key) ) {
-                dynamicPreferencesList.add("-D" + key + "=" + value);
+                dynamicPreferencesList.add("-D" + key + "=" + value); //$NON-NLS-1$ //$NON-NLS-2$
             }
         }
         String[] dynamicPreferences = (String[]) dynamicPreferencesList.toArray(new String[dynamicPreferencesList.size()]);
@@ -146,7 +148,7 @@ public class MavenLaunchDelegate extends AbstractRunner implements ILaunchConfig
     }
 	
 	public static boolean isMavenLaunch(ILaunch launch) {
-	    return "true".equals(launch.getAttribute(MavenLaunchDelegate.MAVEN_LAUNCH));
+	    return "true".equals(launch.getAttribute(MavenLaunchDelegate.MAVEN_LAUNCH)); //$NON-NLS-1$
 	}
 	
 	public IVMInstall getVMInstall() {
@@ -156,11 +158,11 @@ public class MavenLaunchDelegate extends AbstractRunner implements ILaunchConfig
 
 	private String[] getGoals(ILaunchConfiguration configuration) {
 		try {
-			String strg = configuration.getAttribute(MavenArgumentsTab.GOALS_TO_RUN, "");
-			return StringUtils.split(strg, " ");
+			String strg = configuration.getAttribute(MavenArgumentsTab.GOALS_TO_RUN, ""); //$NON-NLS-1$
+			return StringUtils.split(strg, " "); //$NON-NLS-1$
 		}	
 		catch (CoreException e) {
-			log.debug("Unable to get Goals due to : ", e);
+			log.debug("Unable to get Goals due to : ", e); //$NON-NLS-1$
 			return new String[0];
 		}		
 	}
@@ -169,7 +171,7 @@ public class MavenLaunchDelegate extends AbstractRunner implements ILaunchConfig
 		try {
 		    //static options
 			Map map = configuration.getAttribute(MavenArgumentsTab.OPTIONS_MAP, new HashMap());
-			log.debug("Found " + map.size() + " options in configuration : ");
+			log.debug("Found " + map.size() + " options in configuration : ");  //$NON-NLS-1$//$NON-NLS-2$
 			List options = new ArrayList();
 			Iterator iterator = map.keySet().iterator();
 			int idx = 0;
@@ -177,9 +179,9 @@ public class MavenLaunchDelegate extends AbstractRunner implements ILaunchConfig
 				String strg = (String)iterator.next();
 				Character element = new Character(strg.charAt(0));
 				if ( Boolean.valueOf((String)map.get(strg)).booleanValue() )  {
-					options.add("-" + element);
+					options.add("-" + element); //$NON-NLS-1$
 					idx++;
-					log.debug(strg + " => " + map.get(strg));
+					log.debug(strg + " => " + map.get(strg)); //$NON-NLS-1$
 				}
 			}
 			String[] result = (String[]) options.toArray(new String[options.size()]);
@@ -192,16 +194,16 @@ public class MavenLaunchDelegate extends AbstractRunner implements ILaunchConfig
 			System.arraycopy(result, 0, mergedOptions, dynamicPreferences.length, result.length);
 			
 			if ( log.isDebugEnabled() ) {
-				log.debug("options passed to Maven " + mergedOptions.length);
+				log.debug("options passed to Maven " + mergedOptions.length); //$NON-NLS-1$
 				for (int i = 0; i < mergedOptions.length; i++) {
-					log.debug("\t" + mergedOptions[i]);       
+					log.debug("\t" + mergedOptions[i]);        //$NON-NLS-1$
 	            }
 			}
 			
 			return mergedOptions;
 		} 
 		catch (CoreException e) {
-			log.debug("Unable to get Options due to : ", e);
+			log.debug("Unable to get Options due to : ", e); //$NON-NLS-1$
 			return new String[0];
 		}
 	}
@@ -211,25 +213,18 @@ public class MavenLaunchDelegate extends AbstractRunner implements ILaunchConfig
     protected String getBasedir() {
         try {
 			//return Mevenide.getPlugin().getCurrentDir();
-			log.debug("basedir = " + ExternalToolsUtil.getWorkingDirectory(config).toOSString());
+			log.debug("basedir = " + ExternalToolsUtil.getWorkingDirectory(config).toOSString()); //$NON-NLS-1$
 			return ExternalToolsUtil.getWorkingDirectory(config).toOSString();
 			
 		} 
 		catch (Exception e) {
-			log.debug("Unable to obtain basedir due to : " + e + " ; returning : Mevenide.getPlugin().getCurrentDir()");
+			log.debug("Unable to obtain basedir due to : " + e + " ; returning : Mevenide.getPlugin().getCurrentDir()");  //$NON-NLS-1$//$NON-NLS-2$
 			return Mevenide.getInstance().getCurrentDir();
 		}
 	}
 
-
-
-
 	protected void initEnvironment() throws Exception  {
-		if ( Mevenide.getInstance().getMavenHome() == null || Mevenide.getInstance().getMavenHome().trim().equals("") ) { 
-			//noMavenHome();
-			//throw new Exception("Maven Home has not been set");
-	    }
-	    else {
+		if ( !org.mevenide.util.StringUtils.isNull(Mevenide.getInstance().getMavenHome()) ) { 
 			Mevenide.getInstance().initEnvironment();
 	    }
 	}
@@ -239,7 +234,7 @@ public class MavenLaunchDelegate extends AbstractRunner implements ILaunchConfig
    }
 
 	protected void launchVM(String[] options, String[] goals) throws Exception {
-		throw new RuntimeException("Altho this class uses facilities offered by AbstractRunner. It is not meant to be run like that. TODO : refactor me.");
+		throw new RuntimeException("Altho this class uses facilities offered by AbstractRunner. It is not meant to be run like that. TODO : refactor me."); //$NON-NLS-1$
 	}
 
 }

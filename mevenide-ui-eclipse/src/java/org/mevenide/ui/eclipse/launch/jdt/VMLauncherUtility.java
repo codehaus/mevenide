@@ -59,7 +59,7 @@ public class VMLauncherUtility {
         
         ILaunchManager manager = DebugPlugin.getDefault().getLaunchManager();
 		ILaunchConfigurationType[] launchTypes = manager.getLaunchConfigurationTypes();
-		ILaunchConfiguration config = launchTypes[0].newInstance(null, Mevenide.getResourceString("VMLauncherUtility.launch.name"));
+		ILaunchConfiguration config = launchTypes[0].newInstance(null, Mevenide.getResourceString("VMLauncherUtility.launch.name")); //$NON-NLS-1$
         
         ILaunch launch = new Launch(config, launchMode, null);
         

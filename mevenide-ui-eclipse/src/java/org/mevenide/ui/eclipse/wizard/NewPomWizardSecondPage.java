@@ -66,9 +66,9 @@ public class NewPomWizardSecondPage extends WizardPage {
     private boolean pageComplete;
     
     public NewPomWizardSecondPage() {
-        super(Mevenide.getResourceString("NewPomWizardSecondPage.Name"), Mevenide.getResourceString("NewPomWizardSecondPage.Name"), null);
+        super(Mevenide.getResourceString("NewPomWizardSecondPage.Name"), Mevenide.getResourceString("NewPomWizardSecondPage.Name"), null);  //$NON-NLS-1$//$NON-NLS-2$
         setImageDescriptor(Mevenide.getInstance().getImageRegistry().getDescriptor(IImageRegistry.MAVEN_POM_WIZ));
-        setDescription(Mevenide.getResourceString("NewPomWizardSecondPage.Description"));
+        setDescription(Mevenide.getResourceString("NewPomWizardSecondPage.Description")); //$NON-NLS-1$
         setPageComplete(false);
     }
     
@@ -115,7 +115,7 @@ public class NewPomWizardSecondPage extends WizardPage {
 
     private void createUseTemplateButton(Composite templateArea) {
         Button useTemplateButton = new Button(templateArea, SWT.CHECK);
-        useTemplateButton.setText(Mevenide.getResourceString("NewPomWizardSecondPage.UseTemplate.Button"));
+        useTemplateButton.setText(Mevenide.getResourceString("NewPomWizardSecondPage.UseTemplate.Button")); //$NON-NLS-1$
         useTemplateButton.addSelectionListener(
                 new SelectionAdapter() {
 	                public void widgetSelected(SelectionEvent event) {
@@ -143,7 +143,7 @@ public class NewPomWizardSecondPage extends WizardPage {
 
     private Group createPomDefinitionGroup(Composite pomDefinitionArea) {
         Group group = new Group(pomDefinitionArea, SWT.NULL);
-        group.setText(Mevenide.getResourceString("NewPomWizardSecondPage.DefinitionsGroup.Text"));
+        group.setText(Mevenide.getResourceString("NewPomWizardSecondPage.DefinitionsGroup.Text")); //$NON-NLS-1$
         group.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         GridLayout groupLayout = new GridLayout();
         groupLayout.makeColumnsEqualWidth = false;
@@ -153,7 +153,7 @@ public class NewPomWizardSecondPage extends WizardPage {
     }
     
     private void createPomShortDescriptionTextField(Group group) {
-        final Text shortDescriptionText = createTextField(group, "NewPomWizardSecondPage.ShortDescription.Label");
+        final Text shortDescriptionText = createTextField(group, "NewPomWizardSecondPage.ShortDescription.Label"); //$NON-NLS-1$
         shortDescriptionText.addModifyListener(
                 new ModifyListener() {
                     public void modifyText(ModifyEvent event) {
@@ -164,7 +164,7 @@ public class NewPomWizardSecondPage extends WizardPage {
     }
 
     private void createPomVersionTextField(Group group) {
-        final Text versionText = createTextField(group, "NewPomWizardSecondPage.Version.Label");
+        final Text versionText = createTextField(group, "NewPomWizardSecondPage.Version.Label"); //$NON-NLS-1$
         versionText.addModifyListener(
                 new ModifyListener() {
                     public void modifyText(ModifyEvent event) {
@@ -175,7 +175,7 @@ public class NewPomWizardSecondPage extends WizardPage {
     }
     
     private void createPomArtifactIdTextField(Group group) {
-        final Text artifactIdText = createTextField(group, "NewPomWizardSecondPage.ArtifactId.Label");
+        final Text artifactIdText = createTextField(group, "NewPomWizardSecondPage.ArtifactId.Label"); //$NON-NLS-1$
         artifactIdText.addModifyListener(
                 new ModifyListener() {
                     public void modifyText(ModifyEvent event) {
@@ -186,7 +186,7 @@ public class NewPomWizardSecondPage extends WizardPage {
     }
 
     private void createPomGroupIdTextField(Group group) {
-        final Text groupIdText = createTextField(group, "NewPomWizardSecondPage.GroupId.Label");
+        final Text groupIdText = createTextField(group, "NewPomWizardSecondPage.GroupId.Label"); //$NON-NLS-1$
         groupIdText.addModifyListener(
                 new ModifyListener() {
                     public void modifyText(ModifyEvent event) {
@@ -197,7 +197,7 @@ public class NewPomWizardSecondPage extends WizardPage {
     }
 
     private void createPomNameTextField(Group group) {
-        final Text nameText = createTextField(group, "NewPomWizardSecondPage.Name.Label");
+        final Text nameText = createTextField(group, "NewPomWizardSecondPage.Name.Label"); //$NON-NLS-1$
         nameText.addModifyListener(
                 new ModifyListener() {
                     public void modifyText(ModifyEvent event) {
@@ -238,7 +238,7 @@ public class NewPomWizardSecondPage extends WizardPage {
         			   (useTemplate && 
         			    selectedTemplate != null );
         setPageComplete(pageComplete);
-        setErrorMessage(pageComplete ? null : Mevenide.getResourceString("NewPomWizardSecondPage.Error.Message")); 
+        setErrorMessage(pageComplete ? null : Mevenide.getResourceString("NewPomWizardSecondPage.Error.Message"));  //$NON-NLS-1$
     }
     
     public boolean isPageComplete() {

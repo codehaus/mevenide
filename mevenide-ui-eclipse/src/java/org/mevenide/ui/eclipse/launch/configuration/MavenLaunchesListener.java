@@ -48,7 +48,7 @@ public class MavenLaunchesListener implements ILaunchesListener2 {
 	                RefreshTab.refreshResources(launch.getLaunchConfiguration(), new NullProgressMonitor());
                 }
                 catch (CoreException e) {
-                    String message = "Cannot refresh resources"; 
+                    String message = "Cannot refresh resources";  //$NON-NLS-1$
                     log.error(message, e);
                 }
 	        }

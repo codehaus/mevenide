@@ -78,10 +78,10 @@ public class NewPomWizardFirstPage extends WizardPage implements Listener {
     private IFile newFile;
 
     public NewPomWizardFirstPage(IStructuredSelection selection) {
-        super(Mevenide.getResourceString("NewPomWizardFirstPage.Name"));
+        super(Mevenide.getResourceString("NewPomWizardFirstPage.Name")); //$NON-NLS-1$
         setImageDescriptor(Mevenide.getInstance().getImageRegistry().getDescriptor(IImageRegistry.MAVEN_POM_WIZ));
-        setTitle(Mevenide.getResourceString("NewPomWizardFirstPage.Title"));
-        setDescription(Mevenide.getResourceString("NewPomWizardFirstPage.Description"));
+        setTitle(Mevenide.getResourceString("NewPomWizardFirstPage.Title")); //$NON-NLS-1$
+        setDescription(Mevenide.getResourceString("NewPomWizardFirstPage.Description")); //$NON-NLS-1$
         setPageComplete(false);
         this.currentSelection = selection;
     }
@@ -103,7 +103,7 @@ public class NewPomWizardFirstPage extends WizardPage implements Listener {
         resourceGroup = new ResourceAndContainerGroup(topLevel, 
                 										this, 
                 										getNewFileLabel(), 
-                										Mevenide.getResourceString("NewPomWizardFirstPage.File.Name"), 
+                										Mevenide.getResourceString("NewPomWizardFirstPage.File.Name"),  //$NON-NLS-1$
                 										false, 
                 										SIZING_CONTAINER_GROUP_HEIGHT); 
         resourceGroup.setAllowExistingResources(false);
@@ -122,7 +122,7 @@ public class NewPomWizardFirstPage extends WizardPage implements Listener {
     }
 
     protected String getNewFileLabel() {
-        return Mevenide.getResourceString("NewPomWizardFirstPage.File.Label");
+        return Mevenide.getResourceString("NewPomWizardFirstPage.File.Label"); //$NON-NLS-1$
     }
 
     protected void initialPopulateContainerNameField() {
@@ -185,7 +185,7 @@ public class NewPomWizardFirstPage extends WizardPage implements Listener {
             	new ContainerSelectionDialog(getShell(), 
             	        					 ResourcesPlugin.getWorkspace().getRoot(),
             	        					 false, 
-            	        					 Mevenide.getResourceString("NewPomWizardFirstPage.ContainerSelection.Message"));
+            	        					 Mevenide.getResourceString("NewPomWizardFirstPage.ContainerSelection.Message")); //$NON-NLS-1$
         
         if ( dialog.open() == ContainerSelectionDialog.OK ) {
             Object[] result = dialog.getResult();
@@ -239,10 +239,10 @@ public class NewPomWizardFirstPage extends WizardPage implements Listener {
                         			  ((CoreException) e.getTargetException()).getStatus());
             }
             else {
-                log.error("Error creating new file", e.getTargetException());
+                log.error("Error creating new file", e.getTargetException()); //$NON-NLS-1$
                 MessageDialog.openError(getContainer().getShell(), 
-                        				Mevenide.getResourceString("NewPomWizardFirstPage.InternalError.Title"), 
-                        				Mevenide.getResourceString("NewPomWizardFirstPage.InternalError.Message", 
+                        				Mevenide.getResourceString("NewPomWizardFirstPage.InternalError.Title"),  //$NON-NLS-1$
+                        				Mevenide.getResourceString("NewPomWizardFirstPage.InternalError.Message",  //$NON-NLS-1$
                         				new String[]{e.getTargetException().getMessage()}));
             }
             return null;

@@ -20,6 +20,6 @@ import org.mevenide.ui.eclipse.Mevenide;
 
 
 interface IPomValidationMarker {
-    String VALIDATION_ERROR_MARKER = Mevenide.PLUGIN_ID + ".pom_validation_error";
-    String VALIDATION_WARNING_MARKER = Mevenide.PLUGIN_ID + ".pom_validation_warning";
+    String VALIDATION_ERROR_MARKER = Mevenide.PLUGIN_ID + ".pom_validation_error"; //$NON-NLS-1$
+    String VALIDATION_WARNING_MARKER = Mevenide.PLUGIN_ID + ".pom_validation_warning"; //$NON-NLS-1$
 }
