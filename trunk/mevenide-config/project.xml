@@ -4,11 +4,23 @@
     <id>mevenide-config</id>
     <artifactId>mevenide-config</artifactId>
     <name>Mevenide Config</name>
-    <currentVersion>0.3-SNAPSHOT</currentVersion>
+    <currentVersion>0.3</currentVersion>
     <package>org.mevenide.config</package>
     <description>
     	Mevenide Config allows to manipulate Maven config, e.g. system environment variables, project config (project.properties), user-defined config (build.propertie, ...).
     </description>
+    <versions>
+    	<version>
+			<id>0.3</id>
+			<name>0.3</name>
+			<tag>V_0_3</tag>
+    	</version>
+    	<version>
+			<id>0.2</id>
+			<name>0.2</name>
+			<tag>V_0_2</tag>
+    	</version>
+    </versions>
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
@@ -43,7 +55,7 @@
         <dependency>
             <groupId>maven</groupId>
             <artifactId>maven</artifactId>
-            <version>1.0-rc4</version>
+            <version>1.0</version>
             <type>jar</type>
             <properties>
             	<eclipse.plugin.bundle>false</eclipse.plugin.bundle>

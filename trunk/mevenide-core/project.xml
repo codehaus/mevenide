@@ -4,28 +4,38 @@
     <id>mevenide-core</id>
     <artifactId>mevenide-core</artifactId>
     <name>Mevenide Core</name>
-    <currentVersion>0.2-SNAPSHOT</currentVersion>
+    <currentVersion>0.2</currentVersion>
     <package>org.mevenide</package>
     <description>
     	Mevenide Core provides various utility classes for manipulating POMs, running Maven, synchronizing POMs and IDEs, etc... It is intended to used by concrete IDE plugin.
     </description>
     <versions>
       <version>
-        <id>ea</id>
-        <name>0.1-ea</name>
-        <tag>V_0_1_ALPHA_1</tag>
+        <id>0.2</id>
+        <name>0.2</name>
+        <tag>V_0_2</tag>
+      </version>
+      <version>
+        <id>0.1.1</id>
+        <name>0.1.1</name>
+        <tag>V_0_1_1</tag>
       </version>
       <version>
         <id>alpha-1</id>
         <name>0.1-alpha-1</name>
         <tag>V_0_1_ALPHA_1_1</tag>
       </version>
+      <version>
+        <id>ea</id>
+        <name>0.1-ea</name>
+        <tag>V_0_1_ALPHA_1</tag>
+      </version>
     </versions>    
     <dependencies>
     	<dependency>     
             <groupId>mevenide</groupId>
             <artifactId>goals-grabber</artifactId>
-            <version>0.3-SNAPSHOT</version>
+            <version>0.3</version>
         	<properties>
                 <eclipse.plugin.bundle>false</eclipse.plugin.bundle>
                 <netbeans.module.dep>spec</netbeans.module.dep>
@@ -119,7 +129,7 @@
         <dependency>
             <groupId>maven</groupId>
             <artifactId>maven</artifactId>
-            <version>1.0-rc4</version>
+            <version>1.0</version>
             <type>jar</type>
             <properties>
             	<eclipse.plugin.bundle>false</eclipse.plugin.bundle>
@@ -152,7 +162,7 @@
         <dependency>
             <groupId>mevenide</groupId>
             <artifactId>mevenide-config</artifactId>
-            <version>0.3-SNAPSHOT</version>
+            <version>0.3</version>
             <type>jar</type>
             <properties>
                 <eclipse.plugin.bundle>false</eclipse.plugin.bundle>
