@@ -138,6 +138,9 @@ public class DefaultProjectUnmarshaller implements IProjectUnmarshaller {
                 else if (parser.getName().equals("siteDirectory")) {
                     project.setSiteDirectory(parser.nextText());
                 }
+                else if (parser.getName().equals("distributionSite")) {
+                    project.setDistributionSite(parser.nextText());
+                }
                 else if (parser.getName().equals("distributionDirectory")) {
                     project.setDistributionDirectory(parser.nextText());
                 }
