@@ -13,7 +13,11 @@
  */
 package org.mevenide.project.dependency;
 
+import java.io.File;
+import java.io.FileFilter;
+
 import org.apache.maven.project.Dependency;
+import org.mevenide.Environment;
 
 /**
  * 
@@ -37,5 +41,15 @@ public class DependencyUtil {
 				(
 				    s1 != null && s1.equals(s2)
 				);
+	}
+	
+	public static boolean isValidGroupId(final String groupId) {
+		File repo = new File(Environment.getMavenRepository());
+		File[] children = repo.listFiles(new FileFilter() {
+			public boolean accept(File pathname) {
+				return pathname.isDirectory() && pathname.getName().equals(groupId);
+			}
+		});
+		return children.length != 0;
 	}
 }
