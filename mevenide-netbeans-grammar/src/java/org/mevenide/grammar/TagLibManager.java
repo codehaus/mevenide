@@ -21,9 +21,11 @@ import java.util.HashMap;
 import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.mevenide.grammar.impl.EmptyTagLibImpl;
 
 /**
- * Manager of tagLib instances of TagLib instances.
+ * Manager of TagLib instances. Works as a cache lazyily grabbing taglibs from
+ * the TagLibProvider.
  * @author  Milos Kleint (ca206216@tiscali.cz)
  */
 
@@ -40,26 +42,38 @@ public final class TagLibManager {
         libcache = new HashMap();
     }
     
-    
+    /**
+     * sets a TagLibProvider instance that will be used to populate the cache.
+     */
     public void setProvider(TagLibProvider prov) {
         provider = prov;
     }
     
+    /**
+     * get available taglibnames. Returns only String[] so that they  don't need to be fully
+     * initialized. At this point the provider has to be set.
+     */
     public String[] getAvailableTagLibs() {
         assertHasProvider();
         return provider.getAvailableTags();
     }
     
-    
+    /**
+     * Loads the tagLib instance by name. Consults the cache first, if not found, gets it from the 
+     * provider. If not found there, it's not supported somehow, puts an instance of EmptyTagLibImpl in place.
+     * Should never return null. At this point the provider has to be set.
+     */
     public TagLib getTagLibrary(String name) {
+        assertHasProvider();
         TagLib lib = (TagLib)libcache.get(name);
         if (lib == null) {
             lib = provider.retrieveTagLib(name);
             if (lib == null) {
-                logger.error("No such taglibrary defined:" + name);
-            } else {
-                libcache.put(name, lib);
-            }
+                logger.error("No such taglibrary defined by provider:" + name);
+                // create empty impl
+                lib = new EmptyTagLibImpl(name);
+            } 
+            libcache.put(name, lib);
         }
         return lib;
     }
