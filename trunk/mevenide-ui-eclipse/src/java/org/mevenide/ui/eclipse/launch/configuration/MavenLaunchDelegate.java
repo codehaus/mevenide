@@ -101,11 +101,27 @@ public class MavenLaunchDelegate extends AbstractRunner implements ILaunchConfig
 		VMRunnerConfiguration vmConfig = new VMRunnerConfiguration("com.werken.forehead.Forehead", ArgumentsManager.getMavenClasspath());
 		String[] vmArgs = ArgumentsManager.getVMArgs(this);
 		
-		for (int i = 0; i < vmArgs.length; i++) {
-            log.debug("VM Argument : " + vmArgs[i]);
+		Map customVmArgsMap = configuration.getAttribute(MavenArgumentsTab.SYS_PROPERTIES, new HashMap());
+		String[] customVmArgs = new String[customVmArgsMap.size()]; 
+		
+		Iterator iterator = customVmArgsMap.keySet().iterator();
+		int u = 0;
+		while ( iterator.hasNext() ) {
+			String prop = (String) iterator.next();
+			String value = (String) customVmArgsMap.get(prop);
+			customVmArgs[u] = "-D" + prop + "=" + value;
+			u++; 
+		}
+		
+		String[] allVmArgs = new String[vmArgs.length + customVmArgs.length];
+		System.arraycopy(vmArgs, 0, allVmArgs, 0, vmArgs.length);
+		System.arraycopy(customVmArgs, 0, allVmArgs, vmArgs.length, customVmArgs.length);
+		
+		for (int i = 0; i < allVmArgs.length; i++) {
+            log.debug("VM Argument : " + allVmArgs[i]);
         }
 		
-		vmConfig.setVMArguments(vmArgs);
+		vmConfig.setVMArguments(allVmArgs);
 		
         vmConfig.setProgramArguments( getMavenArgs(getOptions(configuration), getGoals(configuration) ) );
         
