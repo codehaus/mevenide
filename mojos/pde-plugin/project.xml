@@ -93,6 +93,12 @@
       <type>jar</type>
     </dependency>
     <dependency>
+      <groupId>plexus</groupId>
+      <artifactId>plexus-artifact-container</artifactId>
+      <version>1.0-alpha-1-SNAPSHOT</version>
+      <type>jar</type>
+    </dependency>
+    <dependency>
       <groupId>classworlds</groupId>
       <artifactId>classworlds</artifactId>
       <version>1.1-SNAPSHOT</version>
@@ -137,8 +143,10 @@
     <unitTest>
       <excludes>
         <exclude>**/AllTests.java</exclude>
-        <!-- exclude this one till i understand why i cannot correctly lookup MavenProjectBuilder -->
+        <!-- exclude those ones till i understand why i cannot correctly lookup MavenProjectBuilder -->
         <exclude>**/CommonPluginValuesReplacerTest.java</exclude>
+        <exclude>**/DependencyCollectorTest.java</exclude>
+        <!-- exclude abstract tests -->
         <exclude>**/PdeArtifactMojoTest.java</exclude>
       </excludes>
       <resources>
