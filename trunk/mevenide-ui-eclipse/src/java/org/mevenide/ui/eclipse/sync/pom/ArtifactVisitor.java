@@ -50,7 +50,7 @@ public class ArtifactVisitor {
 		IPathResolverDelegate pathResolver = pomSynchronizer.getPathResolver();
 		IProject project = pomSynchronizer.getProject();
 		String pathToAdd = pathResolver.computePath(classpathEntry, project);
-
+	
 		writer.addSource(
 			pathToAdd, 
 			pomSynchronizer.getPom(), 

@@ -13,7 +13,6 @@
  */
 package org.mevenide.ui.eclipse.sync.pom;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileWriter;
 import java.util.ArrayList;
@@ -31,7 +30,6 @@ import org.mevenide.project.DependencyUtil;
 import org.mevenide.project.InvalidDependencyException;
 import org.mevenide.project.io.DefaultProjectMarshaller;
 import org.mevenide.project.io.ProjectReader;
-import org.mevenide.project.io.ProjectSkeleton;
 import org.mevenide.sync.AbstractPomSynchronizer;
 import org.mevenide.sync.ISynchronizer;
 import org.mevenide.ui.eclipse.MavenPlugin;
@@ -90,12 +88,14 @@ public class PomSynchronizer extends AbstractPomSynchronizer implements ISynchro
 		List dependencies = mavenProject.getDependencies();
 		List declaredDependencies = getDeclaredDependencies(cpEntries);
 		List newDependencies = new ArrayList();
-		for (int i = 0; i < dependencies.size(); i++) {
-			for (int j = 0; j < declaredDependencies.size(); j++) {
-				if( DependencyUtil.areEquals(
-						(Dependency)declaredDependencies.get(j), 
-						(Dependency)dependencies.get(i)) ) {
-					newDependencies.add(declaredDependencies.get(j));
+		if ( dependencies != null ) {
+			for (int i = 0; i < dependencies.size(); i++) {
+				for (int j = 0; j < declaredDependencies.size(); j++) {
+					if( DependencyUtil.areEquals(
+							(Dependency)declaredDependencies.get(j), 
+							(Dependency)dependencies.get(i)) ) {
+						newDependencies.add(declaredDependencies.get(j));
+					}
 				}
 			}
 		}
@@ -123,9 +123,9 @@ public class PomSynchronizer extends AbstractPomSynchronizer implements ISynchro
 	public void preSynchronization() {
 		try {
 			//Environment.prepareEnv(project.getLocation().toFile().getAbsolutePath());
-			if ( !pom.getFullPath().toFile().exists() ) {
-				createPom();
-			}
+			//if ( !pom.getFullPath().toFile().exists() ) {
+			MavenPlugin.getPlugin().createPom();
+			//
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -139,20 +139,7 @@ public class PomSynchronizer extends AbstractPomSynchronizer implements ISynchro
 		
 	}
 
-	/**
-     * create a new POM skeleton if no project.xml currently exists
-     * 
-     * @todo GENERALIZE add a POM_FILE_NAME property somewhere
-     * @todo EXTERNALIZE POM_FILE_NAME
-	 * @throws Exception
-	 */
-	private void createPom() throws Exception {
-		pom = project.getFile("project.xml");
-		if ( !new File(pom.getLocation().toOSString()).exists() ) {
-			String skel = ProjectSkeleton.getSkeleton(project.getName());
-			pom.create(new ByteArrayInputStream(skel.getBytes()), false, null);
-		}
-	}
+	
 
     /**
      * add this classpathentry' information to the pom  
