@@ -14,7 +14,7 @@
     <dependency>     
         <groupId>mevenide</groupId>
         <artifactId>goals-grabber</artifactId>
-        <version>0.1.1-SNAPSHOT</version>
+        <version>0.2-SNAPSHOT</version>
             <properties>
                 <netbeans.module.dep>spec</netbeans.module.dep>
             </properties>
@@ -30,7 +30,7 @@
     <dependency>
         <groupId>mevenide</groupId>
         <artifactId>mevenide-config</artifactId>
-        <version>0.1-SNAPSHOT</version>
+        <version>0.2-SNAPSHOT</version>
             <properties>
                 <netbeans.module.dep>spec</netbeans.module.dep>
             </properties>
@@ -118,6 +118,15 @@
         <groupId>netbeans</groupId>
         <artifactId>org-netbeans-modules-projectuiapi</artifactId>
         <version>1.0</version>
+        <url>http://www.netbeans.org</url>
+        <properties>
+            <netbeans.module.dep>spec</netbeans.module.dep>
+        </properties>
+    </dependency>
+    <dependency>     
+        <groupId>netbeans</groupId>
+        <artifactId>org-netbeans-modules-project-libraries</artifactId>
+        <version>1.7</version>
         <url>http://www.netbeans.org</url>
         <properties>
             <netbeans.module.dep>spec</netbeans.module.dep>
