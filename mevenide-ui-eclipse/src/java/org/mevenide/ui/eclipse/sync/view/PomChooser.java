@@ -27,7 +27,7 @@ import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.dialogs.Dialog;
 import org.mevenide.project.io.ProjectReader;
-import org.mevenide.ui.eclipse.util.EclipseProjectUtils;
+import org.mevenide.ui.eclipse.util.JavaProjectUtils;
 import org.mevenide.ui.eclipse.util.FileUtils;
 import org.mevenide.util.MevenideUtils;
 
@@ -118,7 +118,7 @@ public class PomChooser {
 	    
 	    IProject project = FileUtils.getParentProjectForFile(rootDirectory);
 	    
-	    List outputFolders = EclipseProjectUtils.getOutputFolders(project);
+	    List outputFolders = JavaProjectUtils.getOutputFolders(project);
 		if ( log.isDebugEnabled() ) {
 		    log.debug("Found " + outputFolders.size() + " output folders");
 			for (int j = 0; j < outputFolders.size(); j++) {

@@ -16,7 +16,6 @@
  */
 package org.mevenide.ui.eclipse.sync.view;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,7 +29,6 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IResourceDelta;
-import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.Path;
@@ -60,7 +58,6 @@ import org.mevenide.project.IProjectChangeListener;
 import org.mevenide.project.ProjectChangeEvent;
 import org.mevenide.project.ProjectComparator;
 import org.mevenide.project.ProjectComparatorFactory;
-import org.mevenide.project.io.ProjectReader;
 import org.mevenide.ui.eclipse.sync.action.ToggleViewAction;
 import org.mevenide.ui.eclipse.sync.action.ToggleWritePropertiesAction;
 import org.mevenide.ui.eclipse.sync.event.IActionListener;
@@ -70,11 +67,11 @@ import org.mevenide.ui.eclipse.sync.event.IdeArtifactEvent;
 import org.mevenide.ui.eclipse.sync.event.NodeEvent;
 import org.mevenide.ui.eclipse.sync.event.PomArtifactEvent;
 import org.mevenide.ui.eclipse.sync.event.SynchronizationConstraintEvent;
-import org.mevenide.ui.eclipse.sync.model.SynchronizationNodeContentProvider;
 import org.mevenide.ui.eclipse.sync.model.ArtifactNode;
 import org.mevenide.ui.eclipse.sync.model.ISelectableNode;
 import org.mevenide.ui.eclipse.sync.model.MavenArtifactNode;
 import org.mevenide.ui.eclipse.sync.model.PropertyNode;
+import org.mevenide.ui.eclipse.sync.model.SynchronizationNodeContentProvider;
 import org.mevenide.util.MevenideUtils;
 
 
@@ -86,8 +83,8 @@ import org.mevenide.util.MevenideUtils;
  * @version $Id$
  *
  */
-public class SynchronizeView extends ViewPart implements IActionListener, IResourceChangeListener, IPropertyChangeListener, IProjectChangeListener {
-    private static final Log log = LogFactory.getLog(SynchronizeView.class);
+public class SynchronizationView extends ViewPart implements IActionListener, IResourceChangeListener, IPropertyChangeListener, IProjectChangeListener {
+    private static final Log log = LogFactory.getLog(SynchronizationView.class);
 
     private Composite composite;
     private TreeViewer artifactMappingNodeViewer;
@@ -192,7 +189,7 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
         this.poms = poms;
         this.project = project;
         
-        refreshAll(true);
+        refreshAll();
         
         assertValidDirection();
     }
@@ -465,16 +462,12 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
 	public void artifactAddedToClasspath(IdeArtifactEvent event) {
 		ArtifactNode artifact = (ArtifactNode) event.getArtifact();
 		log.debug("artifact modified : " + artifact);
-    	refreshNode(artifact);
+    	refreshAll();
 	}
 
 	public void propertyAdded(NodeEvent event) {
 		log.debug("propertyAdded to " + event.getNode());
 		artifactMappingNodeViewer.refresh(event.getNode());
-	}
-	
-	private void refreshNode(ArtifactNode artifact) {
-		artifactMappingNodeViewer.refresh(container);
 	}
 	
 	private ITreeContentProvider getContentProvider() {
@@ -484,7 +477,7 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
 	public void artifactAddedToPom(PomArtifactEvent event) {
 		ArtifactNode artifact = (ArtifactNode) event.getArtifact();
 		log.debug("artifact modified : " + artifact);
-		refreshNode(artifact);
+		refreshAll();
 		updatePoms(event.getProject());
 		try {
 			IFile file = this.project.getFile(MevenideUtils.makeRelativePath(this.project.getLocation().toFile(), event.getProject().getFile().getAbsolutePath()));
@@ -499,12 +492,12 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
 	public void artifactRemovedFromPom(PomArtifactEvent event) {
 		ArtifactNode artifact = (ArtifactNode) event.getArtifact();
 		updatePoms(event.getProject());
-		refreshNode(artifact);
+		refreshAll();
 		comparator.compare(event.getProject());
 	}
 	
 	//@TODO evil.. but actions read poms instead of working on pom references.. 
-	private void updatePoms(MavenProject project) {
+	void updatePoms(MavenProject project) {
 	    for (int i = 0; i < poms.size(); i++) {
 	        MavenProject pom = (MavenProject) poms.get(i);
 			if ( pom.getFile().equals(project.getFile()) ) {
@@ -521,101 +514,55 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
 	
 	public void artifactRemovedFromClasspath(IdeArtifactEvent event) {
 		ArtifactNode artifact = (ArtifactNode) event.getArtifact();
-		refreshNode(artifact);	
+		refreshAll();
 	}
 	
 	public void artifactIgnored(IdeArtifactEvent event) {
 		ArtifactNode artifact = (ArtifactNode) event.getArtifact();
-		refreshNode(artifact);
+		refreshAll();
 	}
 	
 	public void artifactIgnored(PomArtifactEvent event) {
 		ArtifactNode artifact = (ArtifactNode) event.getArtifact();
-		refreshNode(artifact);
+		refreshAll();
 	}
 	
 	public int getDirection() {
 		return direction;
 	}
 
-	public SynchronizeView() {
+	public SynchronizationView() {
 		super();
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		workspace.addResourceChangeListener(this, IResourceChangeEvent.POST_CHANGE);				
 	}
 
-	/**
-	 * @todo FIXME this method becomes ever more scary each time i discover a NPE
-	 */
 	public void resourceChanged(IResourceChangeEvent event) {
 		try {
-			final IProject project = artifactMappingNodeViewer != null && artifactMappingNodeViewer.getInput() != null ? ((SynchronizationNodeContentProvider.RootNode) artifactMappingNodeViewer.getInput()).getProject() : null;
-			final IFile dotClasspath = project != null ? project.getFile(".classpath") : null;
+			IProject project = artifactMappingNodeViewer != null && artifactMappingNodeViewer.getInput() != null ? ((SynchronizationNodeContentProvider.RootNode) artifactMappingNodeViewer.getInput()).getProject() : null;
 			
 			IResourceDelta d= event.getDelta();
-			if (d == null) {
-				return;
+			if (d != null) {
+				d.accept(new SynchronizationResourceDeltaVisitor(this, project));
 			}
-			d.accept(
-					new IResourceDeltaVisitor() {
-						public boolean visit(IResourceDelta delta) {
-							if (delta != null) {
-								IResource r = delta.getResource();									
-								if (r instanceof IFile) {
-									IFile file = (IFile) r;
-									if ( file.equals(dotClasspath) ) {
-										asyncRefresh(false);
-									}
-									if ( poms != null ) {
-										for (int i = 0; i < poms.size(); i++) {
-											File f = ((MavenProject) poms.get(i)).getFile();
-											if ( new File(file.getLocation().toOSString()).equals(f) ) {
-					
-												try {
-	                                                updatePoms(ProjectReader.getReader().read(f));
-	                                            } 
-												catch (Exception e) {
-	                                                log.error("Unable to update pom list", e);
-	                                            }
-											}
-										}
-									}
-									asyncRefresh(false);
-								}
-								if ( r instanceof IProject ) {
-									IProject prj = (IProject) r;
-									if ( project != null && prj.getName().equals(project.getName()) ) {
-										asyncRefresh(false);
-									}
-								}
-							}
-							return true;
-						}
-
-
-					}
-			);
 		} 
 		catch (Exception e) {
 			log.debug("error processing resource delta", e); //$NON-NLS-1$
 		}		
 	}
 	
-	private void asyncRefresh(final boolean shouldExpand) {
+	void asyncRefresh(final boolean shouldExpand) {
 		artifactMappingNodeViewer.getControl().getDisplay().asyncExec(
 				new Runnable() {
 					public void run () {
-						refreshAll(shouldExpand);
+						refreshAll();
 					}
 				}
 		);
 	}
 
-	public void refreshAll(boolean shouldExpand) {
-		artifactMappingNodeViewer.refresh(true);
-		if ( shouldExpand ) {
-			//artifactMappingNodeViewer.expandAll();
-		}
+	public void refreshAll() {
+		artifactMappingNodeViewer.refresh();
 	}
 
     public IContainer getInputContainer() {
@@ -630,7 +577,7 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
 				|| ProjectComparator.BUILD.equals(attribute) 
 				|| ProjectComparator.DEPENDENCIES.equals(attribute) ) {
 		    updatePoms(e.getPom());
-			refreshAll(false);
+			refreshAll();
 		}     
 	}
 	

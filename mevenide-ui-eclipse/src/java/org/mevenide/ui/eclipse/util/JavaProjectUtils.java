@@ -47,10 +47,10 @@ import org.mevenide.ui.eclipse.Mevenide;
  * @version $Id$
  * 
  */
-public class EclipseProjectUtils {
-	private static Log log = LogFactory.getLog(EclipseProjectUtils.class);
+public class JavaProjectUtils {
+	private static Log log = LogFactory.getLog(JavaProjectUtils.class);
 	
-	private EclipseProjectUtils() {
+	private JavaProjectUtils() {
 	}
 
 	public static List getJreEntryList(IProject project) throws Exception {
@@ -81,8 +81,8 @@ public class EclipseProjectUtils {
 	        if ( referencedProject.exists() && !referencedProject.getName().equals(project.getName()) )  {
 	            
 	            File referencedPom = FileUtils.getPom(referencedProject);
-	            //check if referencedPom exists, tho it should since we just have created it
 
+	            //check if referencedPom exists, altho it should since we just have created it
 	            if ( !referencedPom.exists() ) {
 	                FileUtils.createPom(referencedProject);
 	            }
@@ -156,5 +156,13 @@ public class EclipseProjectUtils {
 			description.setNatureIds(newNatures);
 			project.setDescription(description, null);
 		}
+	}
+	
+	public static void addClasspathEntry(IJavaProject project, IClasspathEntry entry) throws Exception {
+		IClasspathEntry[] oldEntries = project.getRawClasspath();
+		IClasspathEntry[] newEntries = new IClasspathEntry[oldEntries.length + 1];
+		System.arraycopy(oldEntries, 0, newEntries, 0, oldEntries.length);
+		newEntries[oldEntries.length] = entry;
+		project.setRawClasspath(newEntries, null);
 	}
 }

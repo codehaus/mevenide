@@ -25,7 +25,7 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.ui.PlatformUI;
-import org.mevenide.ui.eclipse.sync.view.SynchronizeView;
+import org.mevenide.ui.eclipse.sync.view.SynchronizationView;
 
 /**
  * either synchronize pom add .classpath 
@@ -35,7 +35,7 @@ import org.mevenide.ui.eclipse.sync.view.SynchronizeView;
  * 
  */
 public class SynchronizeContainerAction extends AbstractMevenideAction {
-    private static final String SYNCHRONIZE_VIEW_ID = "org.mevenide.ui.synchronize.view.SynchronizeView";
+    private static final String SYNCHRONIZE_VIEW_ID = "org.mevenide.ui.synchronize.view.SynchronizationView";
     
     private static Log log = LogFactory.getLog(SynchronizeContainerAction.class);
 	
@@ -43,12 +43,12 @@ public class SynchronizeContainerAction extends AbstractMevenideAction {
 
     public void run(IAction action) {
         try {
-            SynchronizeView view = (SynchronizeView) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(SYNCHRONIZE_VIEW_ID);
+            SynchronizationView view = (SynchronizationView) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(SYNCHRONIZE_VIEW_ID);
 			IContainer f = ResourcesPlugin.getWorkspace().getRoot().getContainerForLocation(container.getLocation());
 			view.setInput(f);
         }
         catch ( Exception e ) {
-            log.debug("WIP execption ", e);
+            log.error("Unable to create Pom Synchronization View", e);
         }
 	}
 

@@ -19,7 +19,12 @@ package org.mevenide.ui.eclipse.sync.model;
 import org.apache.maven.artifact.MavenArtifact;
 import org.apache.maven.project.MavenProject;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.jdt.core.IClasspathEntry;
+import org.eclipse.jdt.core.JavaCore;
 import org.mevenide.project.dependency.DependencyUtil;
+import org.mevenide.ui.eclipse.util.JavaProjectUtils;
 
 /**  
  * 
@@ -69,12 +74,43 @@ public class MavenArtifactNode extends ArtifactNode {
 	}
 	
 	
-	/* (non-Javadoc)
-	 * @see org.mevenide.ui.eclipse.sync.model.ArtifactNode#addTo(org.eclipse.core.resources.IProject)
-	 */
 	public void addTo(IProject project) throws Exception {
-		// TODO Auto-generated method stub
+		String eclipseDependencyProperty = (String) artifact.getDependency().getProperties().get("eclipse.dependency");
+		boolean treatAsEclipseDependency = "true".equals(eclipseDependencyProperty);
+		IClasspathEntry entry = null;
+		if ( treatAsEclipseDependency ) {
+			entry = createNewProjectEntry();
+		}
+		else {
+			entry = createNewLibraryEntry();
+		}
+		JavaProjectUtils.addClasspathEntry(JavaCore.create(project), entry);
 	}
+	
+	private IClasspathEntry createNewLibraryEntry() {
+		System.err.println(artifact.getPath());
+		return JavaCore.newLibraryEntry(new Path(artifact.getPath()), null, null);
+	}
+	/**
+	 * @todo manage potential causes of failure : 
+	 *   o JavaModelException (CoreException) if project already added
+	 *   o ResourceException if .project is out of sync
+	 * 
+	 */
+	private IClasspathEntry createNewProjectEntry() throws Exception {
+		assertJavaNature();
+		//maven-eclipse-plugin assumes project name = artifactId when eclipse.dependency is set to true
+		//follow same pattern here tho i dont think this is very accurate. need to think of another solution
+		return JavaCore.newProjectEntry(new Path("/" + artifact.getDependency().getArtifactId()));
+	}
+	
+	private void assertJavaNature() throws Exception {
+		IProject project = (IProject) ResourcesPlugin.getWorkspace().getRoot().getProject("/" + artifact.getDependency().getArtifactId());
+		if ( !project.hasNature(JavaCore.NATURE_ID) ) {
+			JavaProjectUtils.attachJavaNature(project);
+		}
+	}
+	
 	/* (non-Javadoc)
 	 * @see org.mevenide.ui.eclipse.sync.model.ArtifactNode#addTo(org.apache.maven.project.MavenProject)
 	 */

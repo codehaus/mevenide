@@ -244,8 +244,8 @@
             name="Pom Synchronizer"
             icon="icons/sync_view.gif"
             category="org.mevenide.ui.synchronize.view"
-            class="org.mevenide.ui.eclipse.sync.view.SynchronizeView"
-            id="org.mevenide.ui.synchronize.view.SynchronizeView">
+            class="org.mevenide.ui.eclipse.sync.view.SynchronizationView"
+            id="org.mevenide.ui.synchronize.view.SynchronizationView">
       </view>
    </extension>
    <extension
