@@ -50,11 +50,11 @@ public class ProjectReader {
 		}
 	}
 	
-	public ProjectReader() {
+	private ProjectReader() {
 		unmarshaller = new DefaultProjectUnmarshaller(); 
 	}
 	
-	public Project readProject(File pom) throws FileNotFoundException, Exception, IOException {
+	public Project read(File pom) throws FileNotFoundException, Exception, IOException {
 		Reader reader = new FileReader(pom);
 		Project project = unmarshaller.parse(reader);
 		reader.close();

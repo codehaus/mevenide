@@ -12,7 +12,7 @@
  * Lesser General Public License for more details.
  * 
  */
-package org.mevenide.ui.eclipse.dialog;
+package org.mevenide.ui.eclipse.launch.dialog;
 
 
 import org.eclipse.jface.wizard.Wizard;
@@ -21,8 +21,8 @@ import org.mevenide.core.AbstractGoalsManager;
 import org.mevenide.ui.eclipse.GoalsManager;
 import org.mevenide.ui.eclipse.OptionsManager;
 import org.mevenide.ui.eclipse.Runner;
-import org.mevenide.ui.eclipse.dialog.goals.MavenGoalsPage;
-import org.mevenide.ui.eclipse.dialog.options.MavenOptionsPage;
+import org.mevenide.ui.eclipse.launch.goals.MavenGoalsPage;
+import org.mevenide.ui.eclipse.launch.options.MavenOptionsPage;
 
 
 /**

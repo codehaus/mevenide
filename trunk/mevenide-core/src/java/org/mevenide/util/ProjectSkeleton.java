@@ -11,7 +11,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  */
-package org.mevenide.project.io;
+package org.mevenide.util;
 
 import java.io.File;
 import java.io.FileReader;
@@ -23,6 +23,7 @@ import java.util.GregorianCalendar;
 
 import org.apache.maven.project.Project;
 import org.apache.maven.project.builder.DefaultProjectUnmarshaller;
+import org.mevenide.project.io.DefaultProjectMarshaller;
 
 /**
  * 
@@ -30,7 +31,7 @@ import org.apache.maven.project.builder.DefaultProjectUnmarshaller;
  * @version $Id$
  * 
  */
-class ProjectSkeleton {
+public class ProjectSkeleton {
 	private static String template = "/templates/standard/project.xml";
 	
 	/**
@@ -39,7 +40,7 @@ class ProjectSkeleton {
 	 * @return
 	 * @throws Exception
 	 */
-	static String getSkeleton(String projectName) throws Exception {
+	public static String getSkeleton(String projectName) throws Exception {
 		File pom = new File(ProjectSkeleton.class.getResource(template).getFile());
 		
 		Reader reader = new FileReader(pom);

@@ -12,7 +12,7 @@
  * Lesser General Public License for more details.
  * 
  */
-package org.mevenide.ui.eclipse.dialog.goals.listeners;
+package org.mevenide.ui.eclipse.launch.goals.listeners;
 
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.CheckboxTableViewer;
@@ -21,23 +21,23 @@ import org.eclipse.jface.viewers.ICheckStateListener;
 import org.mevenide.core.AbstractGoalsManager;
 
 
-public class GoalCheckListener implements ICheckStateListener {
-	private CheckboxTableViewer goalsTable;
+public class PluginCheckListener implements ICheckStateListener {
+    private CheckboxTableViewer goalsTable;
     private AbstractGoalsManager goalsManager;
-	
-    public GoalCheckListener(CheckboxTableViewer goalsTable, AbstractGoalsManager goalsManager) {
-		this.goalsTable = goalsTable;
+    
+    public PluginCheckListener(CheckboxTableViewer goalsTable, AbstractGoalsManager goalsManager) {
+        this.goalsTable = goalsTable;
         this.goalsManager = goalsManager;
-	}
+    }
     
 	public void checkStateChanged(CheckStateChangedEvent event) {
-        String plugin = (String) goalsTable.getInput();
-        String goal = (String) event.getElement();
-    	if (event.getChecked()) {
-            goalsManager.addGoal(plugin, goal);
-    	} 
-        else {
-            goalsManager.removeGoal(plugin, goal);
-    	}
+        String plugin = (String) event.getElement();
+		goalsTable.setInput(plugin);
+		goalsTable.setAllChecked(event.getChecked());
+		if (event.getChecked()) {
+			goalsManager.addGoal(plugin, null);
+		} else {
+			goalsManager.removeGoal(plugin, null);
+		}
 	}
 }

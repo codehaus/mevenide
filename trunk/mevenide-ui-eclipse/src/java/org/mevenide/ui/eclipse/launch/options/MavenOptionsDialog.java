@@ -11,7 +11,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  */
-package org.mevenide.ui.eclipse.dialog.options;
+package org.mevenide.ui.eclipse.launch.options;
 
 import org.apache.maven.MavenConstants;
 import org.eclipse.swt.SWT;
@@ -22,7 +22,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.mevenide.InvalidOptionException;
 import org.mevenide.OptionsRegistry;
-import org.mevenide.ui.eclipse.dialog.options.listeners.OptionSelectionListener;
+import org.mevenide.ui.eclipse.launch.options.listeners.OptionSelectionListener;
 
 
 /**
