@@ -23,6 +23,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Dependency;
 import org.apache.maven.project.Project;
 import org.mevenide.Environment;
+import org.mevenide.util.MevenideUtil;
 
 /**
  * 
@@ -67,9 +68,7 @@ public class DependencyUtil {
 			log.debug("null dependency found");
 			return false;
 		} 
-		boolean valid = d.getGroupId() != null && !d.getGroupId().trim().equals("")
-						&& d.getArtifactId() != null && !d.getArtifactId().trim().equals("")
-						&& d.getVersion() != null && !d.getVersion().trim().equals("");
+		boolean valid = !MevenideUtil.isNull(d.getGroupId()) && !MevenideUtil.isNull(d.getArtifactId()) && !MevenideUtil.isNull(d.getVersion());
 		log.debug("Dependency " + d.getArtifact() + " valid=" + valid + toString(d));
 		return  valid;
 	}
@@ -102,7 +101,9 @@ public class DependencyUtil {
 	 * checks if a Dependency identified by its artifact path is present in the POM.
 	 * 
 	 * testing artifact doesnt seem to be a good solution since it is often omitted
-	 * we rather have to test artifactId and version.
+	 * we rather have to test artifactId and version. 
+	 * 
+	 * i dont rely either on groupId cuz i dont think it is not relevant. 
 	 * 
 	 * @param project
 	 * @param absoluteFileName

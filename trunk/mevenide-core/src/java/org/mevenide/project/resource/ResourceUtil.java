@@ -14,7 +14,6 @@
  */
 package org.mevenide.project.resource;
 
-import org.apache.maven.project.Project;
 import org.apache.maven.project.Resource;
 
 /**
@@ -23,17 +22,19 @@ import org.apache.maven.project.Resource;
  * @version $Id$
  * 
  */
-public interface IResourceResolver {
+public class ResourceUtil {
+
 	/**
-	 * iterate ${pom.build.resources} and merge those whose directory is equal to 
-	 * the directory of resource passed as parameter with the later.
+	 * construct a Resource from a given path, including ALL children
 	 * 
-	 * @param project
-	 * @param resource
-	 * @return boolean
+	 * @param path
+	 * @return
 	 */
-	public abstract void mergeSimilarResources(
-		Project project,
-		Resource resource);
-	
+	public static Resource newResource(String path) {
+		Resource resource = new Resource();
+		resource.setDirectory(path);
+		resource.addInclude("**/*.*");
+		
+		return resource;
+	}
 }

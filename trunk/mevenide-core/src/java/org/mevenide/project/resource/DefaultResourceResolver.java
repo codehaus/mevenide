@@ -71,17 +71,4 @@ public class DefaultResourceResolver implements IResourceResolver  {
 		return similar;
 	}
 	
-	/**
-	 * construct a Resource from a given path, including ALL children
-	 * 
-	 * @param path
-	 * @return
-	 */
-	public Resource newResource(String path) {
-		Resource resource = new Resource();
-		resource.setDirectory(path);
-		resource.addInclude("**/*.*");
-		
-		return resource;
-	}
 }
