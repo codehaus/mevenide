@@ -10,6 +10,7 @@
     <body>
         <links>
             <item name="Maven" href="http://www.maven.org/"/>
+            <item href="http://mevenide.sf.net/" name="Mevenide"/>
         </links>
         <menu name="License">
             <item name="License" href="/license.html"/>

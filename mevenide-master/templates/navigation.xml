@@ -21,7 +21,8 @@
         #set ( $project = $reactorProject.name )
         #set ( $master = $project.endsWith("Master") )
         #if ( !$master )
-          <item name="${reactorProject.name}" href="${reactorProject.siteDirectory}/${reactorProject.artifactId}/index.html"/>
+          <item name="${reactorProject.name}" 
+          	    href="${mevenide.site.prefix}${reactorProject.siteDirectory}/index.html"/>
         #end
       #end
     </menu>

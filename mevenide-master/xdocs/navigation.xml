@@ -17,9 +17,12 @@
     </menu>
 
     <menu name="Sub Projects">
-                        <item name="Goals Grabber" href="E:/workspace/mevenide-site/goals-grabber/index.html"/>
-                                <item name="Mevenide Core" href="E:/workspace/mevenide-site/mevenide-core/index.html"/>
-                                <item name="Mevenide Eclipse" href="E:/workspace/mevenide-site/mevenide-ui-eclipse/index.html"/>
+                        <item name="Goals Grabber" 
+          	    href="file:///E:/workspace/mevenide-site/goals-grabber/index.html"/>
+                                <item name="Mevenide Core" 
+          	    href="file:///E:/workspace/mevenide-site/mevenide-core/index.html"/>
+                                <item name="Mevenide Eclipse" 
+          	    href="file:///E:/workspace/mevenide-site/mevenide-ui-eclipse/index.html"/>
                                 </menu>
 
   </body>

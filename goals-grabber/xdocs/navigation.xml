@@ -5,6 +5,7 @@
   <body>
     <links>
       <item href="http://maven.apache.org/" name="Maven"/>
+      <item href="http://mevenide.sf.net/" name="Mevenide"/>
     </links>
     <menu name="Overview">
       <item href="/goals.html" name="Goals">
