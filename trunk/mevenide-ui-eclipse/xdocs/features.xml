@@ -69,7 +69,7 @@
 		    </ul>
 		  </p>
 		  <p>
-		  	<u>Known issues</u><br/><br/>
+		  	<u>Known issues</u><br/>
 		  	<ul>
 		  		<li>Due to the lazy intitialization that comes for free with the Forms API, changes in source page donot propagate in the pages that havent been opened before</li>
 		  		<li>Editor is marked as dirty on open</li>
@@ -90,7 +90,7 @@
 	  	      <li>Provides contentassist for Jelly files.</li>
 	  	      <li>Refined contentassist for maven.xml : takes Werkz tags into account and propose custom goals as well.</li>
 	  	      <li>Outline page for maven.xml showing all available goals (global ones as well as custom ones)</li>
-	  	      <li>Possibility to run a goa lfrom the outline page by double-clicking it</li>
+	  	      <li>Possibility to run a goal from the outline page by double-clicking it to support fast preview</li>
 	  	      <li>Possibility to filter the outline page - eventually via regular expressions</li>
 		    </ul>
 		  </p>
