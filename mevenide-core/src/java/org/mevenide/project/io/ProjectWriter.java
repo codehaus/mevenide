@@ -54,13 +54,13 @@ public class ProjectWriter {
 		
 		Project project = projectReader.readProject(pom);
 		
-		if ( BuildConstants.MAVEN_ASPECT.equals(sourceType) ) {
+		if ( BuildConstants.MAVEN_ASPECT_DIRECTORY.equals(sourceType) ) {
 			project.getBuild().setAspectSourceDirectory(path);
 		}
-		if ( BuildConstants.MAVEN_SRC.equals(sourceType) ) {
+		if ( BuildConstants.MAVEN_SRC_DIRECTORY.equals(sourceType) ) {
 			project.getBuild().setSourceDirectory(path);
 		}
-		if ( BuildConstants.MAVEN_TEST.equals(sourceType) ) {
+		if ( BuildConstants.MAVEN_TEST_DIRECTORY.equals(sourceType) ) {
 			project.getBuild().setUnitTestSourceDirectory(path);
 		}
 		

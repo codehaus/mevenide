@@ -101,9 +101,9 @@ public class DefaultPathResolverDelegate implements IPathResolverDelegate {
 		    if (path.equals(srcPath)) {
 				if ( mavenSourceType == null ) {
 		            //@todo FUNCTIONAL open a dialog instead
-					return BuildConstants.getResolvedSourceType(BuildConstants.MAVEN_SRC);
+					return BuildConstants.MAVEN_SRC_DIRECTORY;
 				}
-				return BuildConstants.getResolvedSourceType(mavenSourceType);
+				return mavenSourceType;
 			}
 		}
 		throw new NoSuchSourcePathException(path);
