@@ -55,12 +55,15 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.StringTokenizer;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.event.ChangeListener;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.mevenide.goals.grabber.IGoalsGrabber;
 import org.mevenide.goals.grabber.ProjectGoalsGrabber;
 import org.mevenide.ui.netbeans.GoalsGrabberProvider;
 import org.mevenide.ui.netbeans.MavenProjectCookie;
@@ -184,7 +187,8 @@ public class RunGoalsAction extends CookieAction implements Popup {
             if (item.getType() == ACTION_SHOW_CUSTOM_DIALOG)
             {
                 final MavenProjectCookie cook = (MavenProjectCookie)obj.getCookie(MavenProjectCookie.class);
-                GPanel panel = new GPanel(GoalUtils.createProjectGoalsProvider(cook.getProjectFile().getAbsolutePath()));
+                GoalsGrabberProvider goalProvider = GoalUtils.createProjectGoalsProvider(cook.getProjectFile().getAbsolutePath());
+                GPanel panel = new GPanel(goalProvider);
                 DialogDescriptor desc = new DialogDescriptor(panel, NbBundle.getMessage(RunGoalsAction.class, "RunGoalsAction.dialog.title"));
                 Object[] options = new Object[] {
                     new JButton(NbBundle.getMessage(RunGoalsAction.class, "RunGoalsAction.executeButton")),
@@ -192,12 +196,17 @@ public class RunGoalsAction extends CookieAction implements Popup {
                 };
                 desc.setOptions(options);
                 desc.setClosingOptions(options);
+                desc.setValue(options[0]);
                 Object retValue = DialogDisplayer.getDefault().notify(desc);
-                if (!retValue.equals(options[0]))
+                if (!retValue.equals(options[0]) || panel.getGoalsToExecute().trim().length() == 0)
                 {
                     return;
                 }
                 mgoal = panel.getGoalsToExecute();
+                if (panel.doAddToFavourites())
+                {
+                    doValidateAndAddToFavs(goalProvider, mgoal);
+                }
             }
             final String goal = mgoal;
             // now execute in different thread..
@@ -215,6 +224,48 @@ public class RunGoalsAction extends CookieAction implements Popup {
                     }
                 }
             });
+        }
+        
+        private void doValidateAndAddToFavs(GoalsGrabberProvider provider, String goals)
+        {
+            try {
+                IGoalsGrabber grabber = provider.getGoalsGrabber();
+                StringTokenizer token = new StringTokenizer(goals, " ");
+                while (token.hasMoreTokens())
+                {
+                    String goal = token.nextToken();
+                    String origin = grabber.getOrigin(goal);
+                    if (origin == null || IGoalsGrabber.ORIGIN_PROJECT.equals(origin))
+                    {
+                        NotifyDescriptor.Message message = new NotifyDescriptor.Message(
+                            NbBundle.getMessage(RunGoalsAction.class, "RunGoalsAction.warning1", goal));
+                        
+                        DialogDisplayer.getDefault().notify(message);
+                        return;
+                    }
+                }
+                MavenSettings settings = MavenSettings.getDefault();
+                String[] oldGoals = settings.getTopGoals();
+                String[] newGoals = new String[oldGoals.length + 1];
+                for (int i = 0; i < oldGoals.length; i++)
+                {
+                    newGoals[i] = oldGoals[i];
+                }
+                newGoals[oldGoals.length] = goals;
+                settings.setTopGoals(newGoals);
+                if (settings.isShowAddFavouriteHint())
+                {
+                        NotifyDescriptor.Message message = new NotifyDescriptor.Message(
+                            NbBundle.getMessage(RunGoalsAction.class, "RunGoalsAction.hint1"));
+                        //TODO have a checkbox .. "show hint next time".. for now, just display once.
+                        DialogDisplayer.getDefault().notify(message);
+                        MavenSettings.getDefault().setShowAddFavouriteHint(false);
+                }
+            } catch (Exception exc)
+            {
+                log.error("Cannot create goals grabber", exc);
+                ErrorManager.getDefault().notify(ErrorManager.EXCEPTION, exc);
+            }
         }
 
         void addNotify () {
@@ -321,19 +372,37 @@ public class RunGoalsAction extends CookieAction implements Popup {
     private static class GPanel extends JPanel
     {
         private CustomGoalsPanel panel;
+        private JCheckBox cbAdd;
         public GPanel(GoalsGrabberProvider provider)
         {
             super();
             setLayout(new GridBagLayout());
             GridBagConstraints con = new GridBagConstraints();
-            con.insets = new Insets(12, 12, 12, 12);
+            con.insets = new Insets(12, 12, 6, 12);
+            con.anchor = GridBagConstraints.NORTHWEST;
             panel = new CustomGoalsPanel(provider);
             add(panel, con);
+            
+            cbAdd = new JCheckBox();
+            cbAdd.setText(NbBundle.getMessage(RunGoalsAction.class, "RunGoalsAction.cbAdd.text"));
+            cbAdd.setToolTipText(NbBundle.getMessage(RunGoalsAction.class, "RunGoalsAction.cbAdd.tooltip"));
+            cbAdd.setMnemonic(NbBundle.getMessage(RunGoalsAction.class, "RunGoalsAction.cbAdd.mnemonic").charAt(0));
+            con = new GridBagConstraints();
+            con.insets = new Insets(0, 12, 12, 12);
+            con.gridx = 0;
+            con.gridy = 1;
+            con.anchor = GridBagConstraints.NORTHWEST;
+            add(cbAdd, con);
         }
         
         public String getGoalsToExecute()
         {
             return panel.getGoalsToExecute();
+        }
+        
+        public boolean doAddToFavourites()
+        {
+            return cbAdd.isSelected();
         }
     }
     

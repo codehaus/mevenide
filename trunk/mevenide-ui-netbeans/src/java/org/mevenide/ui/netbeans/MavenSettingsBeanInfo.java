@@ -73,10 +73,12 @@ public class MavenSettingsBeanInfo extends SimpleBeanInfo {
             topGoals.setDisplayName (NbBundle.getMessage (MavenSettingsBeanInfo.class, "PROP_topGoals")); //NOI18N
             topGoals.setShortDescription (NbBundle.getMessage (MavenSettingsBeanInfo.class, "HINT_topGoals")); //NOI18N
             topGoals.setPropertyEditorClass(GoalsListPropEditor.class);
-            return new PropertyDescriptor[] { mavenHome, executor, topGoals };
+            PropertyDescriptor hint = new PropertyDescriptor ("showAddFavouriteHint", MavenSettings.class); //NOI18N
+            hint.setHidden(true);
+            return new PropertyDescriptor[] { mavenHome, executor, topGoals, hint };
         } catch (IntrospectionException ie) {
             ErrorManager.getDefault().notify(ie);
-            return null;
+            return new PropertyDescriptor[0];
         }
     }
 

@@ -62,6 +62,7 @@ public class MavenSettings extends SystemOption
     public static final String PROP_EXECUTOR = "executor"; // NOI18N
     public static final String PROP_MAVEN_HOME = "MAVEN_HOME"; // NOI18N
     public static final String PROP_TOP_GOALS = "topGoals"; // NOI18N
+    public static final String PROP_SHOW_FAVOURITE_HINT = "showAddFavouriteHint"; //NOI18N    
     
     private static final long serialVersionUID = -4857548488373547L;
     
@@ -83,6 +84,7 @@ public class MavenSettings extends SystemOption
             "javadoc"
         };
         setTopGoals(defaultGoals);
+        setShowAddFavouriteHint(true);
     }
     
     public String displayName()
@@ -160,7 +162,26 @@ public class MavenSettings extends SystemOption
      */
     public void setTopGoals(String[] topGoals)
     {
-        putProperty(PROP_TOP_GOALS, topGoals);
+        putProperty(PROP_TOP_GOALS, topGoals, true);
+    }
+    
+    /** Getter for property showAddFavouriteHint.
+     * @return Value of property showAddFavouriteHint.
+     *
+     */
+    public boolean isShowAddFavouriteHint()
+    {
+        Boolean obj = (Boolean)getProperty(PROP_SHOW_FAVOURITE_HINT);
+        return obj == null ? true : obj.booleanValue();
+    }
+    
+    /** Setter for property showAddFavouriteHint.
+     * @param showAddFavouriteHint New value of property showAddFavouriteHint.
+     *
+     */
+    public void setShowAddFavouriteHint(boolean showHint)
+    {
+        putProperty(PROP_SHOW_FAVOURITE_HINT, Boolean.valueOf(showHint), true);
     }
     
 }

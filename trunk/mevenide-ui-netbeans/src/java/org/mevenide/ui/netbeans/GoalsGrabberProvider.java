@@ -53,7 +53,7 @@ package org.mevenide.ui.netbeans;
 import org.mevenide.goals.grabber.IGoalsGrabber;
 
 /**
- *
+ * A level of indirection to allow lazy creation of the IGoalsgrabber instances.
  * @author  Milos Kleint (ca206216@tiscali.cz)
  */
 public interface GoalsGrabberProvider
