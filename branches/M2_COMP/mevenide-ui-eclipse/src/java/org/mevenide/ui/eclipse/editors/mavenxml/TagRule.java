@@ -1,16 +1,16 @@
 package org.mevenide.ui.eclipse.editors.mavenxml;
 
-import org.eclipse.jface.text.rules.*;
+
+import org.eclipse.jface.text.rules.ICharacterScanner;
+import org.eclipse.jface.text.rules.IToken;
+import org.eclipse.jface.text.rules.MultiLineRule;
+
 
 public class TagRule extends MultiLineRule {
-
 	public TagRule(IToken token) {
 		super("<", ">", token);
 	}
-	protected boolean sequenceDetected(
-		ICharacterScanner scanner,
-		char[] sequence,
-		boolean eofAllowed) {
+	protected boolean sequenceDetected(ICharacterScanner scanner, char[] sequence, boolean eofAllowed) {
 		int c = scanner.read();
 		if (sequence[0] == '<') {
 			if (c == '?') {
@@ -28,4 +28,5 @@ public class TagRule extends MultiLineRule {
 		}
 		return super.sequenceDetected(scanner, sequence, eofAllowed);
 	}
+	
 }

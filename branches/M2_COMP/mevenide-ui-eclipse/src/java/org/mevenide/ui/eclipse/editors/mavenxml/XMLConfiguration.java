@@ -3,6 +3,8 @@ package org.mevenide.ui.eclipse.editors.mavenxml;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.IInformationControl;
+import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.jface.text.ITextDoubleClickStrategy;
 import org.eclipse.jface.text.TextAttribute;
 import org.eclipse.jface.text.contentassist.ContentAssistant;
@@ -14,6 +16,7 @@ import org.eclipse.jface.text.rules.DefaultDamagerRepairer;
 import org.eclipse.jface.text.rules.Token;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.SourceViewerConfiguration;
+import org.eclipse.swt.widgets.Shell;
 
 public class XMLConfiguration extends SourceViewerConfiguration {
 	private static final Log log = LogFactory.getLog(XMLConfiguration.class);
@@ -97,9 +100,11 @@ public class XMLConfiguration extends SourceViewerConfiguration {
 			   
 			// Set this processor for each supported content type
 			assistant.setContentAssistProcessor(processor, XMLPartitionScanner.XML_TAG);
-			assistant.setContentAssistProcessor(processor, XMLPartitionScanner.XML_DEFAULT);
-			assistant.setContentAssistProcessor(processor, IDocument.DEFAULT_CONTENT_TYPE);
-			  
+			assistant.setInformationControlCreator(getInformationControlCreator(viewer));
+
+			//assistant.setContentAssistProcessor(processor, XMLPartitionScanner.XML_DEFAULT);
+			//assistant.setContentAssistProcessor(processor, IDocument.DEFAULT_CONTENT_TYPE);
+			
 			assistant.enableAutoActivation(true);
 			assistant.enableAutoInsert(true);
 			   
@@ -110,5 +115,13 @@ public class XMLConfiguration extends SourceViewerConfiguration {
 			log.error("Unable to create ContentAssistant. Unasigned assistant will be returned.", e);
 		}
 		return assistant;
+	}
+	
+	public IInformationControlCreator getInformationControlCreator(ISourceViewer sourceViewer) {
+		return new IInformationControlCreator() {
+			public IInformationControl createInformationControl(Shell parent) {
+				return  new SourceViewerInformationControl(parent);
+			}
+		};
 	}
 }

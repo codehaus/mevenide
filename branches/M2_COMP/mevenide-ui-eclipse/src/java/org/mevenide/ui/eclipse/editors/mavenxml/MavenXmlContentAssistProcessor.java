@@ -60,7 +60,9 @@ public class MavenXmlContentAssistProcessor implements IContentAssistProcessor {
 			goalsGrabber = GoalsGrabbersManager.getGoalsGrabber(editedFile.getLocation().toOSString());
 		} 
 		catch (Exception e) {
-			log.error("Cannot create GoalsGrabberManager from " +  editedFile.getLocation().toOSString() + ". Trying to instantiate the default one..", e);
+		    String message = "Cannot create GoalsGrabberManager from " +  editedFile.getLocation().toOSString() + 
+                             ". Trying to instantiate the default one..";
+			log.error(message, e);
 			goalsGrabber = new DefaultGoalsGrabber();
 		}
 		
@@ -125,8 +127,10 @@ public class MavenXmlContentAssistProcessor implements IContentAssistProcessor {
 		List matches = new ArrayList();
 		if ( names != null ) {
 			for (int i = 0; i < names.length; i++) {
-				if ( names[i].startsWith(goal.getName()) ) {
-				    CompletionProposal proposal = new CompletionProposal(names[i], documentOffset, 0, names[i].length(), null, names[i], null, null);
+				if ( names[i].startsWith(goal.getFullyQualifiedName()) ) {
+					String proposalInformation = goalsGrabber.getDescription(names[i]);
+				    CompletionProposal proposal = new CompletionProposal(names[i], documentOffset, 0, names[i].length(), 
+				                                                         null, names[i], null, proposalInformation);
 				    matches.add(proposal);
 				}
 			}
@@ -165,7 +169,7 @@ public class MavenXmlContentAssistProcessor implements IContentAssistProcessor {
 				switch ( c ) {
 					case '\"': return buf.reverse().toString(); 
 					case '>' : return "";
-					case '<' : 
+					case '<' : return buf.reverse().toString();
 					default  : buf.append(c); 
 				}
 			} 
