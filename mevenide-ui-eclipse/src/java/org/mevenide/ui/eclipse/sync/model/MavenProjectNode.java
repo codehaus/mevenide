@@ -19,7 +19,9 @@ package org.mevenide.ui.eclipse.sync.model;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -27,6 +29,7 @@ import org.apache.maven.ArtifactListBuilder;
 import org.apache.maven.MavenUtils;
 import org.apache.maven.project.Project;
 import org.apache.maven.repository.Artifact;
+import org.mevenide.project.io.ProjectReader;
 
 /**  
  * 
@@ -45,6 +48,7 @@ public class MavenProjectNode implements ISynchronizationNode, ISelectableNode {
 	
 	private DirectoryNode[] originalDirectoryNodes;
 	private MavenArtifactNode[] originalArtifactNodes;
+	//private ResourceNode[] originalResourceNodes;
 	
 	private EclipseProjectNode parentNode;
 	
@@ -57,27 +61,17 @@ public class MavenProjectNode implements ISynchronizationNode, ISelectableNode {
 	private void initialize() {
 	    initializeArtifacts();
 	    initializeDirectories();
+	    //initializeResources();
 	}
 	
+    /**
+     * @todo iterate through parents to build the complete list of inherited artifacts
+     * actually i thought again about it and im not too sure about that. if user wants to synchronize
+     * projects with parent pom too shouldnot he as well pick up the parent in the dialog ? 
+     * i believe it would make things more intuitive. 
+     */
 	private void initializeArtifacts() {
 		initializeArtifacts(mavenProject);
-		
-//		@todo iterate through parents to build the complete list of inherited artifacts   
-//		Project tempProject = mavenProject;
-//		
-//		
-//		try {
-//			String extend = MevenideUtils.resolve(tempProject, tempProject.getExtend());
-//			while ( extend != null ) {
-//				tempProject = ProjectReader.getReader().read(new File(MavenUtils.makeAbsolutePath(tempProject.getFile().getParentFile(), extend)));
-//				initializeArtifacts();
-//				extend = MevenideUtils.resolve(tempProject, tempProject.getExtend());
-//			}
-//		} 
-//		catch (Exception e) {
-//			log.error("Couldnot read parent project", e);
-//		}
-		
 	}
 	
 	private void initializeArtifacts(Project project) {
@@ -100,7 +94,7 @@ public class MavenProjectNode implements ISynchronizationNode, ISelectableNode {
 
 	private void joinEclipseProjectArtifacts() {
 	    List tempNodes = new ArrayList(Arrays.asList(artifactNodes));
-	    List eclipseArtifacts = createNodes(parentNode.getEclipseClasspathArtifacts());
+	    List eclipseArtifacts = createArtifactNodes(parentNode.getEclipseClasspathArtifacts());
 	    for (int i = 0; i < eclipseArtifacts.size(); i++) {
 	    	MavenArtifactNode eclipseArtifactNode = (MavenArtifactNode) eclipseArtifacts.get(i);
 	    	if ( !tempNodes.contains(eclipseArtifactNode)  ) {
@@ -114,7 +108,7 @@ public class MavenProjectNode implements ISynchronizationNode, ISelectableNode {
 		artifactNodes = (MavenArtifactNode[]) tempNodes.toArray(new MavenArtifactNode[0]);
 	}
 	
-	private List createNodes(List mavenArtifacts) {
+	private List createArtifactNodes(List mavenArtifacts) {
 		List nodeList = new ArrayList(mavenArtifacts.size());
 		for (int i = 0; i < mavenArtifacts.size(); i++) {
 	    	Artifact eclipseArtifact = (Artifact) mavenArtifacts.get(i);
@@ -124,14 +118,76 @@ public class MavenProjectNode implements ISynchronizationNode, ISelectableNode {
 		return nodeList;
 	}
 	
+	/**
+	 * @see #initializeArtifacts()
+	 */
 	private void initializeDirectories() {
-		directoryNodes = new DirectoryNode[0];
+		initializeDirectories(mavenProject);
 	}
 	
+	private void initializeDirectories(Project project) {
+		try {
+			ProjectReader projectReader = ProjectReader.getReader();
+			Map sourceDirectoryMap = projectReader.readSourceDirectories(project.getFile());
+			if ( sourceDirectoryMap == null || sourceDirectoryMap.size() == 0 ) {
+				directoryNodes = new DirectoryNode[0];
+				return;
+			}
+			createDirectoryNodes(sourceDirectoryMap);
+		} 
+		catch (Exception e) {
+			log.error("Cannot read source directories for pom " + project.getFile());
+		}
+	}
+	
+	private void createDirectoryNodes(Map sourceDirectoryMap) {
+		originalDirectoryNodes = new DirectoryNode[sourceDirectoryMap.size()];
+		Iterator iterator = sourceDirectoryMap.keySet().iterator();
+		int u = 0;
+		while ( iterator.hasNext() ) {
+			String nextType = (String) iterator.next();
+			String nextPath = (String) sourceDirectoryMap.get(nextType);
+			DirectoryNode node = createDirectoryNode(nextType, nextPath);
+			node.setDirection(ISelectableNode.INCOMING_DIRECTION);
+			originalDirectoryNodes[u] = node;
+			u++;
+		}
+		directoryNodes = originalDirectoryNodes;
+	}
+
+	private DirectoryNode createDirectoryNode(String type, String path) {
+		Directory directory = new Directory();
+		directory.setPath(path);
+		directory.setType(type);
+		DirectoryNode node = new DirectoryNode(directory, this);
+		return node;
+	}
+
+	/**
+	 * @see #initializeArtifacts()
+	 */
+	private void initializeResources() {
+		initializeDirectories(mavenProject);
+	}
+	
+	private void initializeResources(Project project) {
+		try {
+			ProjectReader projectReader = ProjectReader.getReader();
+			Map resourceDirectoryMap = projectReader.readAllResources(project.getFile());
+		} 
+		catch (Exception e) {
+			log.error("Cannot Read resource for pom " + project.getFile());
+		}
+	}
+	
+	//@todo include resourceNodes as well
 	public ISynchronizationNode[] getChildren() {
 	    ISynchronizationNode[] children = new ISynchronizationNode[directoryNodes.length + artifactNodes.length];
 	    System.arraycopy(directoryNodes, 0, children, 0, directoryNodes.length);
-	    System.arraycopy(artifactNodes, 0, children, 0, artifactNodes.length);
+	    System.arraycopy(artifactNodes, 0, children, directoryNodes.length, artifactNodes.length);
+	    for (int i = 0; i < children.length; i++) {
+			System.err.println(children[i]);
+		}
 		return children;
 	}
 	

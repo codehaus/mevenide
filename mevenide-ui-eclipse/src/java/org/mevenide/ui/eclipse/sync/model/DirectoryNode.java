@@ -18,6 +18,8 @@ package org.mevenide.ui.eclipse.sync.model;
 
 import org.apache.maven.project.Project;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.ui.views.properties.IPropertySource;
 
 
 /**  
@@ -26,7 +28,7 @@ import org.eclipse.core.resources.IProject;
  * @version $Id: DirectoryNode.java,v 1.1 12 avr. 2004 Exp gdodinet 
  * 
  */
-public class DirectoryNode extends ArtifactNode {
+public class DirectoryNode extends ArtifactNode implements IAdaptable {
 	
 	private Directory directory;
 	
@@ -85,5 +87,12 @@ public class DirectoryNode extends ArtifactNode {
 	 */
 	public void removeFrom(Project project) throws Exception {
 		// TODO Auto-generated method stub
+	}
+	
+	public Object getAdapter(Class adapteeClass) {
+		if ( adapteeClass == IPropertySource.class ) {
+			return new DirectoryPropertySource(directory);
+		}
+		return null;
 	}
 }
