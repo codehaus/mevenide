@@ -54,9 +54,13 @@ import java.io.InputStream;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.maven.project.Project;
+import org.apache.maven.util.StringInputStream;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -64,7 +68,6 @@ import org.mevenide.project.io.PomSkeletonBuilder;
 import org.mevenide.ui.eclipse.DefaultPathResolver;
 import org.mevenide.ui.eclipse.IPathResolver;
 import org.mevenide.ui.eclipse.Mevenide;
-import org.mevenide.ui.eclipse.sync.PomSynchronizer;
 import org.mevenide.util.MevenideUtils;
 
 /**
@@ -124,16 +127,40 @@ public class FileUtils {
 				InputStream inputStream = pom.getContents(true);
 			
 				if ( inputStream.read() == -1 ) {
-					InputStream stream = PomSynchronizer.class.getResourceAsStream("/templates/standard/project.xml"); 
+					InputStream stream = FileUtils.class.getResourceAsStream("/templates/standard/project.xml"); 
 					pom.setContents(stream, true, true, null);
 					stream.close();
 				}
 				inputStream.close();
 			}
 		} catch (Exception e) {
-			log.debug("Unable to check if POM already exists due to : " + e);
+			log.error("Unable to check if POM already exists due to : " + e);
 		}
 	}
 	
+	public static IFile assertIgnoreFileExists(IProject project)  throws Exception {		
+		IFile file = project.getFile(".mvnignore");
+		if ( !file.exists() ) {
+			InputStream is = new StringInputStream("");
+			file.create(is,true, null);
+		}
+		return file;	
+	}
+	
+	public static IFile assertIgnoreFileExists(Project project)  throws Exception {		
+		File systemFile = new File(project.getFile().getParent(), ".mvnignore");
+		IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
+		
+		IFile file = workspaceRoot.getFileForLocation(new Path(systemFile.getAbsolutePath()).makeAbsolute());
+		if ( !file.exists() ) {
+			InputStream is = new StringInputStream("");
+			file.create(is,true, null);
+		}
+		return file;	
+	}
+	
+	public static  boolean isArtifactIgnored(String ignoreLine, IProject project) {
+		return false;
+	}
 	
 }

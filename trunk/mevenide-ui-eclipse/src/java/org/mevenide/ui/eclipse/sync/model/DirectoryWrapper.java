@@ -46,37 +46,69 @@
  * SUCH DAMAGE.
  * ====================================================================
  */
-package org.mevenide.ui.eclipse.actions;
+package org.mevenide.ui.eclipse.sync.model;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.eclipse.jface.action.IAction;
-import org.eclipse.ui.PlatformUI;
-import org.mevenide.ui.eclipse.sync.model.ProjectContainer;
-import org.mevenide.ui.eclipse.sync.view.SynchronizeView;
+import org.apache.maven.project.Project;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.jdt.core.IClasspathEntry;
+import org.mevenide.project.ProjectConstants;
+import org.mevenide.project.io.ProjectWriter;
 
 /**
- * either synchronize pom add .classpath 
  * 
- * @author Gilles Dodinet (gdodinet@wanadoo.fr)
+ * 
+ * @author <a href="mailto:rhill2@free.fr">Gilles Dodinet</a>
  * @version $Id$
- * 
+ *
  */
-public class SynchronizeAction extends AbstractMevenideAction {
-    private static final String SYNCHRONIZE_VIEW_ID = "org.mevenide.ui.synchronize.view.SynchronizeView";
-    
-    private static Log log = LogFactory.getLog(SynchronizeAction.class);
+public class DirectoryWrapper extends SourceFolder {
+	private static Log log = LogFactory.getLog(DirectoryWrapper.class); 
 	
-    public void run(IAction action) {
-        try {
-            SynchronizeView view = (SynchronizeView) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(SYNCHRONIZE_VIEW_ID);
-            view.setInput(currentProject);
-            view.setDirection(ProjectContainer.OUTGOING);
-        }
-        catch ( Exception e ) {
-            log.debug("WIP execption ", e);
-        }
+	private Directory directory ;
+	
+	public DirectoryWrapper(Directory directory) {
+		this.directory = directory;
+	}
+	
+	public void addTo(IProject project) throws Exception {
+		String type = directory.getType();
+		String path = directory.getPath();
+		log.debug("adding src entry to .classpath : "  + path + "(" + type + ")");
+		
+		IClasspathEntry srcEntry = newSourceEntry(path, project);
+		
+		addClasspathEntry(srcEntry, project);
 	}
 
-
+	public void addTo(Project project) throws Exception {
+		String type = directory.getType();
+		String path = directory.getPath();
+		
+		ProjectWriter.getWriter().addSource(path, project.getFile(), type);
+		
+	}
+	
+	public void removeFrom(Project project) throws Exception {
+		if ( project.getBuild() != null ) { 
+			String type = directory.getType();
+			String path = directory.getPath();
+			
+			if ( ProjectConstants.MAVEN_SRC_DIRECTORY.equals(type) ) {
+				project.getBuild().setSourceDirectory(null);
+			}
+			if ( ProjectConstants.MAVEN_TEST_DIRECTORY.equals(type) ) {
+				project.getBuild().setUnitTestSourceDirectory(null);
+			}
+			if ( ProjectConstants.MAVEN_ASPECT_DIRECTORY.equals(type) ) {
+				project.getBuild().setAspectSourceDirectory(null);
+			}
+			ProjectWriter.getWriter().write(project);
+		}
+	}
+	
+	protected String getIgnoreLine() {
+		return directory.getPath();
+	}
 }

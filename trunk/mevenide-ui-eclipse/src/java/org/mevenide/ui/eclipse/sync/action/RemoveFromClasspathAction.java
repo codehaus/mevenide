@@ -1,7 +1,7 @@
 /* ====================================================================
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 2003 The Apache Software Foundation.  All rights
+ * Copyright (c) 2003-2004 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -46,37 +46,37 @@
  * SUCH DAMAGE.
  * ====================================================================
  */
-package org.mevenide.ui.eclipse.actions;
+package org.mevenide.ui.eclipse.sync.action;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.eclipse.jface.action.IAction;
-import org.eclipse.ui.PlatformUI;
-import org.mevenide.ui.eclipse.sync.model.ProjectContainer;
-import org.mevenide.ui.eclipse.sync.view.SynchronizeView;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.jdt.core.IClasspathEntry;
+import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.JavaCore;
+import org.mevenide.ui.eclipse.sync.model.IArtifactMappingNode;
 
 /**
- * either synchronize pom add .classpath 
  * 
- * @author Gilles Dodinet (gdodinet@wanadoo.fr)
+ * @author <a href="mailto:rhill2@free.fr">Gilles Dodinet</a>
  * @version $Id$
  * 
  */
-public class SynchronizeAction extends AbstractMevenideAction {
-    private static final String SYNCHRONIZE_VIEW_ID = "org.mevenide.ui.synchronize.view.SynchronizeView";
-    
-    private static Log log = LogFactory.getLog(SynchronizeAction.class);
-	
-    public void run(IAction action) {
-        try {
-            SynchronizeView view = (SynchronizeView) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(SYNCHRONIZE_VIEW_ID);
-            view.setInput(currentProject);
-            view.setDirection(ProjectContainer.OUTGOING);
-        }
-        catch ( Exception e ) {
-            log.debug("WIP execption ", e);
-        }
+public class RemoveFromClasspathAction extends ArtifactAction {
+	public void removeEntry(IArtifactMappingNode selectedNode, IProject project) throws Exception {
+		IClasspathEntry entry = (IClasspathEntry) selectedNode.getIdeEntry();
+		IJavaProject javaProject = JavaCore.create(project);
+		IClasspathEntry[] entries = javaProject.getRawClasspath();
+		IClasspathEntry[] newEntries = new IClasspathEntry[entries.length - 1];
+		int i = 0;
+		while ( !entries[i].equals(entry) ) {
+			newEntries[i] = entries[i];
+			i++;
+		}
+		for (int j = i; j < newEntries.length; j++) {
+			newEntries[j] = entries[j];
+		}
+		javaProject.setRawClasspath(newEntries, null);
+		project.refreshLocal(0, null);
+		fireArtifactRemovedFromClasspath(selectedNode, project);
 	}
-
-
+	
 }

@@ -46,37 +46,66 @@
  * SUCH DAMAGE.
  * ====================================================================
  */
-package org.mevenide.ui.eclipse.actions;
+package org.mevenide.ui.eclipse.sync.view;
+
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.eclipse.jface.action.IAction;
-import org.eclipse.ui.PlatformUI;
-import org.mevenide.ui.eclipse.sync.model.ProjectContainer;
-import org.mevenide.ui.eclipse.sync.view.SynchronizeView;
+import org.apache.maven.project.Dependency;
+import org.apache.maven.project.Resource;
+import org.mevenide.project.dependency.DependencyUtil;
+import org.mevenide.project.resource.ResourceUtil;
+import org.mevenide.project.source.SourceDirectoryUtil;
+import org.mevenide.ui.eclipse.sync.model.DependencyMappingNode;
+import org.mevenide.ui.eclipse.sync.model.Directory;
+import org.mevenide.ui.eclipse.sync.model.DirectoryMappingNode;
+import org.mevenide.ui.eclipse.sync.model.IArtifactMappingNode;
+
 
 /**
- * either synchronize pom add .classpath 
  * 
- * @author Gilles Dodinet (gdodinet@wanadoo.fr)
+ * @author <a href="mailto:rhill2@free.fr">Gilles Dodinet</a>
  * @version $Id$
  * 
  */
-public class SynchronizeAction extends AbstractMevenideAction {
-    private static final String SYNCHRONIZE_VIEW_ID = "org.mevenide.ui.synchronize.view.SynchronizeView";
+public class DecoratorManager {
+    private static final Log log = LogFactory.getLog(DecoratorManager.class);
     
-    private static Log log = LogFactory.getLog(SynchronizeAction.class);
-	
-    public void run(IAction action) {
+    private static DecoratorManager manager = new DecoratorManager();
+    
+    public static DecoratorManager getManager() {
+        return manager;
+    }
+    
+    public boolean isInherited(IArtifactMappingNode node) {
         try {
-            SynchronizeView view = (SynchronizeView) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(SYNCHRONIZE_VIEW_ID);
-            view.setInput(currentProject);
-            view.setDirection(ProjectContainer.OUTGOING);
+            if ( node instanceof DirectoryMappingNode ) {
+                if ( node.getArtifact() != null ) {
+                    if ( node.getArtifact() instanceof Directory ) {
+                        return !SourceDirectoryUtil.isSourceDirectoryPresent(node.getParent().getPrimaryPom(), ((Directory) node.getArtifact()).getPath().replaceAll("\\\\", "/"));
+                    }
+                    //node instanceof Resource 
+                    return !ResourceUtil.isResourcePresent(node.getParent().getPrimaryPom(), ((Resource) node.getArtifact()).getDirectory());
+                }
+                return false;
+            }
+            else  {
+                //node instanceof DependencyMappingNode
+                DependencyMappingNode dependencyMappingNode = (DependencyMappingNode) node;
+                if ( dependencyMappingNode.getArtifact() != null ) {
+                    return !DependencyUtil.isDependencyPresent(node.getParent().getPrimaryPom(), (Dependency) dependencyMappingNode.getArtifact());
+                }
+                return false;
+            }
         }
-        catch ( Exception e ) {
-            log.debug("WIP execption ", e);
+        catch (Exception e) {
+            e.printStackTrace();
+            log.error(e);
+            return false;
         }
-	}
-
-
+    }
+    
+    public boolean isMappingComplete(IArtifactMappingNode node) {
+        return true;
+    }
 }
