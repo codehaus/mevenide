@@ -14,7 +14,7 @@
  */
 package org.mevenide;
 
-import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
@@ -48,11 +48,13 @@ public class OptionsRegistry {
     static {
         try {
 			Properties props = new Properties();
-			String src = OptionsRegistry.class.getResource("/mevenide.properties").getFile();
-			props.load(new FileInputStream(src));
+			InputStream stream = OptionsRegistry.class.getResourceAsStream("/mevenide.properties");
+			props.load(stream);
 			Iterator keys = props.keySet().iterator();
+			log.debug("Found " + props.keySet().size() + " total keys");
 			while ( keys.hasNext() ) {
-			    String key = (String) keys.next();
+				String key = (String) keys.next();
+				log.debug("current key = " + key);
 			    Character optionChar = new Character(key.charAt(key.length() - 1));
 			    log.debug("Found optionChar " + optionChar);
 			    options.put(optionChar, props.get(key));
@@ -69,6 +71,7 @@ public class OptionsRegistry {
     * @return the description associated with the given option passed as a single character
     */
 	public static String getDescription(char option) throws InvalidOptionException {
+	   log.debug("Looking up through " + options.size() + " keys ");
 	   String description = (String) options.get(new Character(option));
        if ( description == null ) {
            throw new InvalidOptionException(option);
