@@ -7,7 +7,6 @@
     <classpathentry kind="lib" path="lib/forehead-1.0-beta-4.jar"/>
     <classpathentry kind="lib" path="lib/jdom-1.0b8.jar"/>
     <classpathentry kind="lib" path="lib/xpp3-1.1.2a.jar"/>
-    <classpathentry exported="true" kind="lib" path="lib/maven-core-1.0-beta-11-SNAPSHOT.jar"/>
     <classpathentry kind="var"
         path="ECLIPSE_HOME/plugins/org.eclipse.core.resources_2.1.0/resources.jar" sourcepath="ORG_ECLIPSE_PLATFORM_SOURCE_SRC/org.eclipse.core.resources_2.1.0/resourcessrc.zip"/>
     <classpathentry kind="var"
@@ -43,5 +42,6 @@
     <classpathentry kind="lib" path="lib/xerces-2.2.1.jar"/>
     <classpathentry kind="var"
         path="ECLIPSE_HOME/plugins/org.eclipse.jdt.ui_2.1.0/jdt.jar" sourcepath="ECLIPSE_HOME/plugins/org.eclipse.jdt.source_2.1.0/src/org.eclipse.jdt.ui_2.1.0/jdtsrc.zip"/>
+    <classpathentry kind="lib" path="lib/maven-1.0-beta-10.jar"/>
     <classpathentry kind="output" path="target/classes"/>
 </classpath>

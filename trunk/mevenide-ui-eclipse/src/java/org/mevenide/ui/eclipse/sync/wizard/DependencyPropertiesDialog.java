@@ -128,7 +128,8 @@ public class DependencyPropertiesDialog extends Dialog {
 	}
 
 	private void initInput() {
-		Map dependencyProperties = dependency.getProperties();
+		Map dependencyProperties = dependency.resolvedProperties();
+		//Map dependencyProperties = dependency.getProperties();
 		if ( dependencyProperties != null ) {
 			Iterator it = dependencyProperties.keySet().iterator();
 			while ( it.hasNext() ) {

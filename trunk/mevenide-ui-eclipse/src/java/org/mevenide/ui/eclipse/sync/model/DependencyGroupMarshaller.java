@@ -92,7 +92,8 @@ public abstract class DependencyGroupMarshaller {
 						Dependency dependency = new Dependency();
 						
 						String savedArtifact = dependencyElement.getAttributeValue(ARTIFACT_ATTR);
-						dependency.setArtifact(savedArtifact == null ? "" : savedArtifact);
+						//dependency.setArtifact(savedArtifact == null ? "" : savedArtifact);
+						dependency.setJar(savedArtifact == null ? "" : savedArtifact);
 						
 						String savedArtifactId = dependencyElement.getAttributeValue(ARTIFACT_ID_ATTR);
 						dependency.setArtifactId(savedArtifactId == null ? "" : savedArtifactId);
@@ -106,7 +107,16 @@ public abstract class DependencyGroupMarshaller {
 						String savedType = dependencyElement.getAttributeValue(TYPE_ATTR);
 						dependency.setType(savedType == null ? "" : savedType);
 						
-						dependency.setProperties(getProperties(dependencyElement, timeStamp));
+						//dependency.setProperties(getProperties(dependencyElement, timeStamp));
+						Map ps = getProperties(dependencyElement, timeStamp);
+						Iterator it = ps.keySet().iterator();
+						while ( it.hasNext() ) {
+							String pName = (String) it.next();
+							String pValue = (String) ps.get(pName);
+							dependency.addProperty(pName + ":" + pValue);
+							dependency.resolvedProperties().put(pName, pValue); 
+						}
+						
 						
 						DependencyUtil.refreshGroupId(dependency);
 						
@@ -264,7 +274,8 @@ public abstract class DependencyGroupMarshaller {
 		}
 		Element propertiesElement = new Element(PROPERTIES_ELEM);
 		
-		Map depProperties = dependency.getProperties();
+		//Map depProperties = dependency.getProperties();
+		Map depProperties = dependency.resolvedProperties();
 		Iterator it = depProperties.keySet().iterator();
 		 
 		while ( it.hasNext() ) {
