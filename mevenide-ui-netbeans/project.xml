@@ -24,6 +24,11 @@
         <artifactId>mevenide-core</artifactId>
         <version>0.1.1-SNAPSHOT</version>
     </dependency>
+    <dependency>
+        <groupId>mevenide</groupId>
+        <artifactId>mevenide-config</artifactId>
+        <version>0.1-SNAPSHOT</version>
+    </dependency>
     <dependency>     
         <groupId>maven</groupId>
         <artifactId>maven</artifactId>

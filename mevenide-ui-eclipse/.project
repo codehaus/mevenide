@@ -4,6 +4,7 @@
 	<comment></comment>
 	<projects>
 		<project>goals-grabber</project>
+		<project>mevenide-config</project>
 		<project>mevenide-core</project>
 	</projects>
 	<buildSpec>
