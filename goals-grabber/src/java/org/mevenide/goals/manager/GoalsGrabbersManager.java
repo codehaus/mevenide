@@ -99,11 +99,20 @@ public final class GoalsGrabbersManager {
         if (def == null) {
             GoalsGrabbersAggregator aggregator = new GoalsGrabbersAggregator();
             aggregator.addGoalsGrabber(getDefaultGoalsGrabber(finder));
-            String mavenXmlPath = new File(context.getProjectDirectory(), "maven.xml").getAbsolutePath();
-            if ( new File(mavenXmlPath).exists() ) {
+            File mavenXml = new File(context.getProjectDirectory(), "maven.xml");
+            if (mavenXml.exists() ) {
                 ProjectGoalsGrabber projectGoalsGrabber = new ProjectGoalsGrabber();
-                projectGoalsGrabber.setMavenXmlFile(mavenXmlPath);
+                projectGoalsGrabber.setMavenXmlFile(mavenXml.getAbsolutePath());
                 aggregator.addGoalsGrabber(projectGoalsGrabber);
+            }
+            File[] fls = context.getPOMContext().getProjectFiles();
+            if (fls != null && fls.length > 1) {
+                File parentMaven = new File(fls[1].getParentFile(), "maven.xml");
+                if (parentMaven.exists()) {
+                    ProjectGoalsGrabber projectGoalsGrabber = new ProjectGoalsGrabber();
+                    projectGoalsGrabber.setMavenXmlFile(parentMaven.getAbsolutePath());
+                    aggregator.addGoalsGrabber(projectGoalsGrabber);
+                }
             }
             def = aggregator;
             grabbers.put(finder, def);
