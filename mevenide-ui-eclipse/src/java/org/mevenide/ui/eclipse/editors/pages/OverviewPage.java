@@ -71,11 +71,14 @@ public class OverviewPage extends AbstractPomEditorPage {
     private static final Log log = LogFactory.getLog(OverviewPage.class);
     
     public static final String HEADING = Mevenide.getResourceString("OverviewPage.heading");
+	public static final String CHILD = Mevenide.getResourceString("OverviewPage.heading.child");
+	public static final String UNNAMED = Mevenide.getResourceString("OverviewPage.heading.unnamed");
     
 	private PomIdentificationSection idSection;
 	
-    public OverviewPage(MevenidePomEditor editor, String pomName) {
-        super(HEADING + pomName, editor);
+    public OverviewPage(MevenidePomEditor editor) {
+        super(HEADING, editor);
+		setHeading(editor.getPom());
     }
 
 	protected void initializePage(Composite parent) {
@@ -102,8 +105,20 @@ public class OverviewPage extends AbstractPomEditorPage {
 	    if (log.isDebugEnabled()) {
 	        log.debug("updating overview");
 	    }
-		setHeading(HEADING + pom.getName());
+		setHeading(pom);
 		idSection.update(pom);
 		setUpdateNeeded(false);
+	}
+	
+	protected void setHeading(Project pom) {
+		if (pom.getName() != null && !"".equals(pom.getName())) {
+			setHeading(HEADING + pom.getName());
+		}
+		else if (getEditor().getParentPom() != null && !"".equals(getEditor().getParentPom().getName())){
+			setHeading(HEADING + getEditor().getParentPom().getName() + CHILD);
+		}
+		else {
+			setHeading(HEADING + UNNAMED);
+		}
 	}
 }
