@@ -36,19 +36,19 @@ public class LaunchHistory {
 	
 	private List launchedActions = new ArrayList();
 	
-	private static LaunchHistory history;
+	private static LaunchHistory history ;
 	
-	static {
-		history = new LaunchHistory();
-	}
 	
 	private LaunchHistory() {
-		load();
 	}
 	
 	
-	public static LaunchHistory getHistory() {
-		return history;
+	public synchronized static LaunchHistory getHistory() {
+		if ( history == null ) {
+			history = new LaunchHistory();
+			history.load();
+		}
+		return history;	
 	}
 	
 	public LaunchedAction[] getLaunchedActions() {

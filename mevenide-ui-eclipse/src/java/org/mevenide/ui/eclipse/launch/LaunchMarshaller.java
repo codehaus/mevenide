@@ -137,7 +137,7 @@ public abstract class LaunchMarshaller {
 		
 		Document document = getDocument();
 		
-		List previouslyLaunched = document.getRootElement().getChildren();
+		List previouslyLaunched = document.getRootElement().getChildren(ACTION_ELEM);
 		
 		for (int i = 0; i < previouslyLaunched.size(); i++) {
 			Element elem = (Element) previouslyLaunched.get(i);
@@ -151,11 +151,10 @@ public abstract class LaunchMarshaller {
 			LaunchedAction action = new LaunchedAction(project, actionOptions, actionGoals);
 			previous.add(action);
 			
-			if ( Boolean.getBoolean(elem.getAttributeValue(LAST_LAUNCHED_ATTR)) ) {
+			if ( Boolean.valueOf(elem.getAttributeValue(LAST_LAUNCHED_ATTR)).booleanValue() ) {
 				LaunchHistory.getHistory().setLastlaunched(action);
 			}
 			
-			elem.getAttributeValue(LAST_LAUNCHED_ATTR);
 		}
 		
 		return previous;
