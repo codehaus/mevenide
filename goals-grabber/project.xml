@@ -39,10 +39,16 @@
         <groupId>mevenide</groupId>
         <artifactId>mevenide-core</artifactId>
         <version>0.1.1-SNAPSHOT</version>
+<!-- HACK - ignore mevenide-core dependency for netbeans, is used in reports package only..
+            for now not used in netbeans.
+            DependencySplitter referenced from there.
             <properties>
                 <netbeans.module.dep>spec</netbeans.module.dep>
             </properties>
+        -->
     </dependency>
+    
+   <!-- MILOS: AFAIK it's not used?
         <dependency>
             <groupId>commons-collections</groupId>
             <artifactId>commons-collections</artifactId>
@@ -53,6 +59,7 @@
             	<eclipse.plugin.bundle>true</eclipse.plugin.bundle>
             </properties>
         </dependency>
+        -->
         <dependency>
             <groupId>mevenide</groupId>
             <artifactId>mevenide-core-test</artifactId>

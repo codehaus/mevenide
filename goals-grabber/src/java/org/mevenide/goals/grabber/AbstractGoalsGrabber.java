@@ -21,9 +21,9 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.StringTokenizer;
 import java.util.TreeSet;
-
-import org.apache.commons.lang.StringUtils;
 
 /**  
  * 
@@ -54,35 +54,41 @@ public abstract class AbstractGoalsGrabber implements IGoalsGrabber {
     }
 
     protected void registerGoalName(String fullyQualifiedGoalName) {
-        String[] splittedGoal = StringUtils.split(fullyQualifiedGoalName, ":");
-    	String plugin = splittedGoal[0];
+        StringTokenizer splittedGoal = new StringTokenizer(fullyQualifiedGoalName, ":", false);
+    	String plugin = splittedGoal.nextToken();
     
     	String goalName = "(default)";
-    	if ( splittedGoal.length > 1 ) {
-    		goalName = splittedGoal[1];
+    	if (splittedGoal.hasMoreTokens()) {
+    		goalName = splittedGoal.nextToken();
     	}
-    
-    	List goals = (List) plugins.get(plugin);
+    	Set goals = (Set) plugins.get(plugin);
     	if ( goals == null ) { 
-    		goals = new ArrayList();
+    		goals = new TreeSet();
+        	plugins.put(plugin, goals);
     	}
-    	if ( !goals.contains(goalName) ) {
-    		goals.add(goalName);
-    	}
-    	plugins.remove(plugin);
-    	plugins.put(plugin, goals);
+  		goals.add(goalName);
     }
 
     protected void registerGoalProperties(String fullyQualifiedGoalName, String properties) {
-        String[] splittedProperties = StringUtils.split(properties, ">");
-    	if ( splittedProperties.length > 0 ) {
-    		String description = splittedProperties[0];
-    		descriptions.put(fullyQualifiedGoalName, description);
-    	}
-    	if ( splittedProperties.length > 1 ) {
-    		String[] commaSeparatedPrereqs = StringUtils.split(splittedProperties[1], ",");
-    		prereqs.put(fullyQualifiedGoalName, commaSeparatedPrereqs);
-    	}
+        int index1 = (properties == null ? -1 : properties.indexOf('>'));
+        if (properties != null) {
+            String description = "";
+        	if ( index1 > 0) {
+        		description = properties.substring(0, index1);
+        		descriptions.put(fullyQualifiedGoalName, description);
+        	}
+        	if ( index1 > -1  && index1 < properties.length() - 1) {
+                String prereqsString = properties.substring(index1 + 1);
+                StringTokenizer tok = new StringTokenizer(prereqsString, ",", false);
+                String[] commaSeparatedPrereqs = new String[tok.countTokens()];
+                int count = 0;
+                while (tok.hasMoreTokens()) {
+                    commaSeparatedPrereqs[count] = tok.nextToken();
+                    count = count + 1;
+                }
+        		prereqs.put(fullyQualifiedGoalName, commaSeparatedPrereqs);
+        	}
+        }
     }
 
     public String[] getPlugins() {
@@ -97,19 +103,18 @@ public abstract class AbstractGoalsGrabber implements IGoalsGrabber {
     }
 
      protected  boolean containsGoal(String fullyQualifiedGoalName) {
-        String[] splittedGoal = StringUtils.split(fullyQualifiedGoalName, ":");
-    	String plugin = splittedGoal[0];
-    
-    	String goalName = null;
-    	if ( splittedGoal.length > 1 ) {
-    		goalName = splittedGoal[1];
+        StringTokenizer splittedGoal = new StringTokenizer(fullyQualifiedGoalName, ":", false);
+    	String plugin = splittedGoal.nextToken();
+      
+    	String goalName = "(default)";
+    	if (splittedGoal.hasMoreTokens()) {
+    		goalName = splittedGoal.nextToken();
     	}
-    
-    	List goals = (List) plugins.get(plugin);
+    	Collection goals = (Collection) plugins.get(plugin);
     	if ( goals == null) {
     		return false;
     	}
-        if (goalName != null && !goals.contains(goalName)) { 
+        if (goalName != null && !goals.contains(goalName)) {
             return false;
         }
         return true;
