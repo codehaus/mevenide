@@ -31,7 +31,7 @@ public interface IPropertyLocator {
     /**
      * Location constant, the given key is default. Either maven itself or maven plugin default.
      */
-    public static final int LOCATION_DEFAULTS = 0;
+    public static final int LOCATION_DEFAULTS = -2;
     /**
      * Location constant, the given key is in project.properties file.
      */
@@ -44,6 +44,17 @@ public interface IPropertyLocator {
      * Location constant, the given key is in ${user.home}/build.properties file.
      */
     public static final int LOCATION_USER_BUILD = 12;
+
+    /**
+     * Location constant, the given key is in parent's directory project.properties file.
+     * Parent is the file denoted by the extend tag in the pom file.
+     */
+    public static final int LOCATION_PARENT_PROJECT = 20;
+    /**
+     * Location constant, the given key is in parent's directory build.properties file.
+     * Parent is the file denoted by the extend tag in the pom file.
+     */
+    public static final int LOCATION_PARENT_PROJECT_BUILD = 21;
     
     /**
      * Returns where the key is located.

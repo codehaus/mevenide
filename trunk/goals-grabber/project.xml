@@ -1,14 +1,11 @@
 <?xml version="1.0" ?>
-<!DOCTYPE project [
-  <!ENTITY inherited-dependencies SYSTEM "file:../goals-grabber/pom-fragments/inherited-dependencies.xml">
-]>
 <project>
     <extend>${basedir}/../mevenide-master/base-project.xml</extend>
     <pomVersion>3</pomVersion>
     <id>goals-grabber</id>
     <name>Goals Grabber</name>
     <artifactId>goals-grabber</artifactId>
-    <currentVersion>0.4</currentVersion>
+    <currentVersion>0.5-SNAPSHOT</currentVersion>
     <package>org.mevenide.goals</package>
     <shortDescription>Gets all the available goals and reports</shortDescription>
     <description>This project provides generic Goals Grabbing mechanism. It is articulated around IGoalsGrabber interface.</description>
@@ -43,7 +40,7 @@
         <dependency>
             <groupId>mevenide</groupId>
             <artifactId>mevenide-config</artifactId>
-            <version>0.4</version>
+            <version>0.5-SNAPSHOT</version>
             <type>jar</type>
             <properties>
                 <netbeans.module.dep>spec</netbeans.module.dep>
@@ -59,6 +56,31 @@
                 <netbeans.module.dep>impl</netbeans.module.dep>
             </properties>
         </dependency>
-        &inherited-dependencies;
+       <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <version>1.0.3</version>
+            <type>jar</type>
+            <properties>
+				<eclipse.plugin.bundle>false</eclipse.plugin.bundle>
+                <netbeans.module.dep>spec</netbeans.module.dep>
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>xpp3</groupId>
+            <artifactId>xpp3</artifactId>
+            <version>1.1.2a</version>
+            <type>jar</type>
+            <properties>
+               <netbeans.module.ext>true</netbeans.module.ext>
+			   <eclipse.plugin.bundle>false</eclipse.plugin.bundle>
+            </properties>
+        </dependency>
+        <dependency>
+           <groupId>log4j</groupId>
+           <artifactId>log4j</artifactId>
+           <version>1.2.8</version>
+           <url>http://jakarta.apache.org/log4j/</url>
+        </dependency>
     </dependencies>
 </project>

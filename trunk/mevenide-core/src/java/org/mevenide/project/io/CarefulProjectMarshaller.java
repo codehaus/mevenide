@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -50,13 +51,14 @@ import org.jdom.input.SAXBuilder;
 import org.jdom.output.XMLOutputter;
 
 /**
+ * a pom marshaller that attempts to preserve formatting and add items to the correct positions.
  * 
- * 
- * 
+ * @author  Milos Kleint (ca206216@tiscali.cz)
+ * @author Gilles Dodinet (gdodinet@wanadoo.fr)
  */
 public class CarefulProjectMarshaller implements IProjectMarshaller {
-	
-	private static final Log log = LogFactory.getLog(CarefulProjectMarshaller.class);
+    
+    private static final Log log = LogFactory.getLog(CarefulProjectMarshaller.class);
 	//private static final String ENCODING = null;
 	//private static final Boolean STANDALONE = null;
 
@@ -64,7 +66,7 @@ public class CarefulProjectMarshaller implements IProjectMarshaller {
     private JDOMFactory factory;
     private SAXBuilder builder;
 	
-	public CarefulProjectMarshaller() throws Exception {
+    public CarefulProjectMarshaller() throws Exception {
         builder = new SAXBuilder();
         factory = new DefaultJDOMFactory();
         outputter = new XMLOutputter();
@@ -74,106 +76,115 @@ public class CarefulProjectMarshaller implements IProjectMarshaller {
 //in beta10 only.        outputter.setFormat(Format.getPrettyFormat());
 	}
 
-    public void marshall(Writer pom, Project project) throws Exception
-    {
+    public void marshall(Writer pom, Project project) throws Exception {
         log.debug("do Marshall()");
         Document originalDoc = factory.document(factory.element("project"));
         log.debug("  updating document");
-        doUpdateDocument(originalDoc, project);
+        doUpdateDocument(originalDoc, new BeanContentProvider(project));
         log.debug("  saving document");
         saveDocument(pom, originalDoc);
     }
     
-    public void marshall(Writer pom, Project project, InputStream source) throws Exception
-    {
+    public void marshall(Writer pom, Project project, InputStream source) throws Exception {
         log.debug("do Marshall2()");
         Document originalDoc = builder.build(source);
         log.debug("  updating document");
-        doUpdateDocument(originalDoc, project);
+        doUpdateDocument(originalDoc, new BeanContentProvider(project));
+        log.debug("  saving document");
+        saveDocument(pom, originalDoc);
+    }
+
+    public void marshall(Writer pom, IContentProvider provider) throws Exception {
+        log.debug("do Marshall()");
+        Document originalDoc = factory.document(factory.element("project"));
+        log.debug("  updating document");
+        doUpdateDocument(originalDoc, provider);
         log.debug("  saving document");
         saveDocument(pom, originalDoc);
     }
     
+    public void marshall(Writer pom, IContentProvider provider, Document originalDoc) throws Exception {
+        log.debug("do Marshall2()");
+        log.debug("  updating document");
+        doUpdateDocument(originalDoc, provider);
+        log.debug("  saving document");
+        saveDocument(pom, originalDoc);
+    }    
     
     
-    private void saveDocument(Writer pom, Document doc) throws Exception
-    {
+    private void saveDocument(Writer pom, Document doc) throws Exception {
         outputter.output(doc, pom);
     }
     
-    private void doUpdateDocument(Document document, Project project) throws Exception
-    {
+    private void doUpdateDocument(Document document, IContentProvider project) throws Exception {
         Element root = document.getRootElement();
         if (!"project".equals(root.getName()))
         {
             throw new IOException("not a maven project xml");
         }
         Counter counter = new Counter();
-        findAndReplaceSimpleElement(counter, root, "extend", project.getExtend());
-        findAndReplaceSimpleElement(counter, root, "pomVersion", project.getPomVersion());
+        findAndReplaceSimpleElement(counter, root, "extend", project.getValue("extend"));
+        findAndReplaceSimpleElement(counter, root, "pomVersion", project.getValue("pomVersion"));
 //        findAndReplaceSimpleElement(counter, root, "id", project.getId());
         //REQUIRED
-        findAndReplaceSimpleElement(counter, root, "artifactId", project.getArtifactId());
-        findAndReplaceSimpleElement(counter, root, "name", project.getName());
-        findAndReplaceSimpleElement(counter, root, "groupId", project.getGroupId());
+        findAndReplaceSimpleElement(counter, root, "artifactId", project.getValue("artifactId"));
+        findAndReplaceSimpleElement(counter, root, "name", project.getValue("name"));
+        findAndReplaceSimpleElement(counter, root, "groupId", project.getValue("groupId"));
         //REQUIRED
-        findAndReplaceSimpleElement(counter, root, "currentVersion", project.getCurrentVersion());
-        doUpdateOrganization(counter, root, project.getOrganization());
-        findAndReplaceSimpleElement(counter, root, "inceptionYear", project.getInceptionYear());
-        findAndReplaceSimpleElement(counter, root, "package", project.getPackage());
-        findAndReplaceSimpleElement(counter, root, "logo", project.getLogo());
-        findAndReplaceSimpleElement(counter, root, "gumpRepositoryId", project.getGumpRepositoryId());
-        findAndReplaceSimpleElement(counter, root, "description", project.getDescription());
+        findAndReplaceSimpleElement(counter, root, "currentVersion", project.getValue("currentVersion"));
+        doUpdateOrganization(counter, root, project.getSubContentProvider("organization"));
+        findAndReplaceSimpleElement(counter, root, "inceptionYear", project.getValue("inceptionYear"));
+        findAndReplaceSimpleElement(counter, root, "package", project.getValue("package"));
+        findAndReplaceSimpleElement(counter, root, "logo", project.getValue("logo"));
+        findAndReplaceSimpleElement(counter, root, "gumpRepositoryId", project.getValue("gumpRepositoryId"));
+        findAndReplaceSimpleElement(counter, root, "description", project.getValue("description"));
         //REQUIRED
-        findAndReplaceSimpleElement(counter, root, "shortDescription", project.getShortDescription());
-        findAndReplaceSimpleElement(counter, root, "url", project.getUrl());
-        findAndReplaceSimpleElement(counter, root, "issueTrackingUrl", project.getIssueTrackingUrl());
-        findAndReplaceSimpleElement(counter, root, "siteAddress", project.getSiteAddress());
-        findAndReplaceSimpleElement(counter, root, "siteDirectory", project.getSiteDirectory());
-        findAndReplaceSimpleElement(counter, root, "distributionSite", project.getDistributionSite());
-        findAndReplaceSimpleElement(counter, root, "distributionDirectory", project.getDistributionDirectory());
-        doUpdateRepository(counter, root, project.getRepository());
-        doUpdateVersions(counter, root, project.getVersions());
-        doUpdateBranches(counter, root, project.getBranches());
-        doUpdateMailingLists(counter, root, project.getMailingLists());
-        doUpdateDevelopers(counter, root, project.getDevelopers());
-        doUpdateContributors(counter, root, project.getContributors());
-        doUpdateLicenses(counter, root, project.getLicenses());
-        doUpdateDependencies(counter, root, project.getDependencies());
-        doUpdateBuild(counter, root, project.getBuild());
-        doUpdateReports(counter, root, project.getReports());
+        findAndReplaceSimpleElement(counter, root, "shortDescription", project.getValue("shortDescription"));
+        findAndReplaceSimpleElement(counter, root, "url", project.getValue("url"));
+        findAndReplaceSimpleElement(counter, root, "issueTrackingUrl", project.getValue("issueTrackingUrl"));
+        findAndReplaceSimpleElement(counter, root, "siteAddress", project.getValue("siteAddress"));
+        findAndReplaceSimpleElement(counter, root, "siteDirectory", project.getValue("siteDirectory"));
+        findAndReplaceSimpleElement(counter, root, "distributionSite", project.getValue("distributionSite"));
+        findAndReplaceSimpleElement(counter, root, "distributionDirectory", project.getValue("distributionDirectory"));
+        doUpdateRepository(counter, root, project.getSubContentProvider("repository"));
+        doUpdateVersions(counter, root, project.getSubContentProviderList("versions", "version"));
+        doUpdateBranches(counter, root, project.getSubContentProviderList("branches", "branch"));
+        doUpdateMailingLists(counter, root, project.getSubContentProviderList("mailingLists", "mailingList"));
+        doUpdateDevelopers(counter, root, project.getSubContentProviderList("developers", "developer"));
+        doUpdateContributors(counter, root, project.getSubContentProviderList("contributors", "contributor"));
+        doUpdateLicenses(counter, root, project.getSubContentProviderList("licenses", "license"));
+        doUpdateDependencies(counter, root, project.getSubContentProviderList("dependencies", "dependency"));
+        doUpdateBuild(counter, root, project.getSubContentProvider("build"));
+        doUpdateReports(counter, root, project.getValueList("reports", "report"));
     }
     
-	private void doUpdateOrganization(Counter counter, Element root, Organization org) 
-            throws Exception 
-    {
+    private void doUpdateOrganization(Counter counter, Element root, IContentProvider org) 
+            throws Exception {
         boolean shouldExist = org != null;
         Element orgElem = updateElement(counter, root, "organization", shouldExist);
         if (shouldExist) {
             Counter innerCount = new Counter();
-    		findAndReplaceSimpleElement(innerCount, orgElem, "name", org.getName());
-    		findAndReplaceSimpleElement(innerCount, orgElem, "url", org.getUrl());
-    		findAndReplaceSimpleElement(innerCount, orgElem, "logo", org.getLogo());
+    	    findAndReplaceSimpleElement(innerCount, orgElem, "name", org.getValue("name"));
+    	    findAndReplaceSimpleElement(innerCount, orgElem, "url", org.getValue("url"));
+            findAndReplaceSimpleElement(innerCount, orgElem, "logo", org.getValue("logo"));
         }
     }
     
-	private void doUpdateRepository(Counter counter, Element root, Repository repos) 
-            throws Exception 
-    {
+    private void doUpdateRepository(Counter counter, Element root, IContentProvider repos) 
+            throws Exception {
         boolean shouldExist = repos != null;
         Element orgElem = updateElement(counter, root, "repository", shouldExist);
         if (shouldExist) {
             Counter innerCounter = new Counter();
-    		findAndReplaceSimpleElement(innerCounter, orgElem, "connection", repos.getConnection());
-    		findAndReplaceSimpleElement(innerCounter, orgElem, "developerConnection", repos.getDeveloperConnection());
-    		findAndReplaceSimpleElement(innerCounter, orgElem, "url", repos.getUrl());
+            findAndReplaceSimpleElement(innerCounter, orgElem, "connection", repos.getValue("connection"));
+            findAndReplaceSimpleElement(innerCounter, orgElem, "developerConnection", repos.getValue("developerConnection"));
+            findAndReplaceSimpleElement(innerCounter, orgElem, "url", repos.getValue("url"));
         }
     }    
 
     
-	private void doUpdateVersions(Counter counter, Element root, List versions) 
-            throws Exception 
-    {
+    private void doUpdateVersions(Counter counter, Element root, List versions) 
+            throws Exception {
         boolean shouldExist = versions != null && versions.size() > 0;
         Element versionsElem = updateElement(counter, root, "versions", shouldExist);
         if (shouldExist) {
@@ -183,15 +194,12 @@ public class CarefulProjectMarshaller implements IProjectMarshaller {
             // is used later to get rid of the non-existing ones.
             List usedElems = new ArrayList();
             Iterator it = versions.iterator();
-            while (it.hasNext())
-            {
-                Version version = (Version)it.next();
-                String id = version.getId();
+            while (it.hasNext()) {
+                IContentProvider version = (IContentProvider)it.next();
+                String id = version.getValue("id");
                 List list = versionsElem.getContent(new SpecificElementFilter("version", "id", id));
-                if (list != null && list.size() > 0)
-                {
-                    if (list.size() > 1)
-                    {
+                if (list != null && list.size() > 0) {
+                    if (list.size() > 1) {
                         log.info("filter returned multiple instances, the primary key is not unique - key=" + id);
                         // what to do, we found multiple ones instead of one..
                     } else {
@@ -213,18 +221,16 @@ public class CarefulProjectMarshaller implements IProjectMarshaller {
         }
     }    
     
-    private void doUpdateSingleVersion(Element versionElement, Version version)
-    {
+    private void doUpdateSingleVersion(Element versionElement, IContentProvider version) {
         Counter count = new Counter();
-        findAndReplaceSimpleElement(count, versionElement, "id", version.getId());
-        findAndReplaceSimpleElement(count, versionElement, "name", version.getName());
-        findAndReplaceSimpleElement(count, versionElement, "tag", version.getTag());
+        findAndReplaceSimpleElement(count, versionElement, "id", version.getValue("id"));
+        findAndReplaceSimpleElement(count, versionElement, "name", version.getValue("name"));
+        findAndReplaceSimpleElement(count, versionElement, "tag", version.getValue("tag"));
     }
 
     
-	private void doUpdateBranches(Counter counter, Element root, List branches) 
-            throws Exception 
-    {
+    private void doUpdateBranches(Counter counter, Element root, List branches) 
+            throws Exception {
         boolean shouldExist = branches != null && branches.size() > 0;
         Element branchesElem = updateElement(counter, root, "branches", shouldExist);
         if (shouldExist) {
@@ -234,15 +240,12 @@ public class CarefulProjectMarshaller implements IProjectMarshaller {
             // is used later to get rid of the non-existing ones.
             List usedElems = new ArrayList();
             Iterator it = branches.iterator();
-            while (it.hasNext())
-            {
-                Branch branch = (Branch)it.next();
-                String id = branch.getTag();
+            while (it.hasNext()) {
+                IContentProvider branch = (IContentProvider)it.next();
+                String id = branch.getValue("tag");
                 List list = branchesElem.getContent(new SpecificElementFilter("branch", "tag", id));
-                if (list != null && list.size() > 0)
-                {
-                    if (list.size() > 1)
-                    {
+                if (list != null && list.size() > 0) {
+                    if (list.size() > 1) {
                         log.info("filter returned multiple instances, the primary key is not unique - key=" + id);
                         // what to do, we found multiple ones instead of one..
                     } else {
@@ -264,12 +267,11 @@ public class CarefulProjectMarshaller implements IProjectMarshaller {
         }
     }    
     
-    private void doUpdateSingleBranch(Element branchElement, Branch branch)
-    {
-        findAndReplaceSimpleElement(new Counter(), branchElement, "tag", branch.getTag());
+    private void doUpdateSingleBranch(Element branchElement, IContentProvider branch) {
+        findAndReplaceSimpleElement(new Counter(), branchElement, "tag", branch.getValue("tag"));
     }
 
-	private void doUpdateMailingLists(Counter counter, Element root, List mails) 
+    private void doUpdateMailingLists(Counter counter, Element root, List mails) 
             throws Exception 
     {
         boolean shouldExist = mails != null && mails.size() > 0;
@@ -281,15 +283,12 @@ public class CarefulProjectMarshaller implements IProjectMarshaller {
             // is used later to get rid of the non-existing ones.
             List usedElems = new ArrayList();
             Iterator it = mails.iterator();
-            while (it.hasNext())
-            {
-                MailingList mail = (MailingList)it.next();
-                String id = mail.getName();
+            while (it.hasNext()) {
+                IContentProvider mail = (IContentProvider)it.next();
+                String id = mail.getValue("name");
                 List list = mailsElem.getContent(new SpecificElementFilter("mailingList", "name", id));
-                if (list != null && list.size() > 0)
-                {
-                    if (list.size() > 1)
-                    {
+                if (list != null && list.size() > 0) {
+                    if (list.size() > 1) {
                         log.info("filter returned multiple instances, the primary key is not unique - key=" + id);
                         // what to do, we found multiple ones instead of one..
                     } else {
@@ -311,18 +310,16 @@ public class CarefulProjectMarshaller implements IProjectMarshaller {
         }
     }    
     
-    private void doUpdateSingleMailingList(Element mailElement, MailingList mail)
-    {
+    private void doUpdateSingleMailingList(Element mailElement, IContentProvider mail) {
         Counter count = new Counter();
-        findAndReplaceSimpleElement(count, mailElement, "name", mail.getName());
-        findAndReplaceSimpleElement(count, mailElement, "subscribe", mail.getSubscribe());
-        findAndReplaceSimpleElement(count, mailElement, "unsubscribe", mail.getUnsubscribe());
-        findAndReplaceSimpleElement(count, mailElement, "archive", mail.getArchive());
+        findAndReplaceSimpleElement(count, mailElement, "name", mail.getValue("name"));
+        findAndReplaceSimpleElement(count, mailElement, "subscribe", mail.getValue("subscribe"));
+        findAndReplaceSimpleElement(count, mailElement, "unsubscribe", mail.getValue("unsubscribe"));
+        findAndReplaceSimpleElement(count, mailElement, "archive", mail.getValue("archive"));
     }
 
-	private void doUpdateDevelopers(Counter counter, Element root, List developers) 
-            throws Exception 
-    {
+    private void doUpdateDevelopers(Counter counter, Element root, List developers) 
+            throws Exception {
         boolean shouldExist = developers != null && developers.size() > 0;
         Element developersElem = updateElement(counter, root, "developers", shouldExist);
         if (shouldExist) {
@@ -330,15 +327,12 @@ public class CarefulProjectMarshaller implements IProjectMarshaller {
             // is used later to get rid of the non-existing ones.
             List usedElems = new ArrayList();
             Iterator it = developers.iterator();
-            while (it.hasNext())
-            {
-                Developer dev = (Developer)it.next();
-                String id = dev.getName();
+            while (it.hasNext()) {
+                IContentProvider dev = (IContentProvider)it.next();
+                String id = dev.getValue("name");
                 List list = developersElem.getContent(new SpecificElementFilter("developer", "name", id));
-                if (list != null && list.size() > 0)
-                {
-                    if (list.size() > 1)
-                    {
+                if (list != null && list.size() > 0) {
+                    if (list.size() > 1) {
                         log.info("filter returned multiple instances, the primary key is not unique - key=" + id);
                         // what to do, we found multiple ones instead of one..
                     } else {
@@ -360,23 +354,21 @@ public class CarefulProjectMarshaller implements IProjectMarshaller {
         }
     }    
     
-    private void doUpdateSingleDeveloper(Element devElement, Developer developer)
-        throws Exception
-    {
+    private void doUpdateSingleDeveloper(Element devElement, IContentProvider developer)
+        throws Exception {
         Counter count = new Counter();
-        findAndReplaceSimpleElement(count, devElement, "name", developer.getName());
-        findAndReplaceSimpleElement(count, devElement, "id", developer.getId());
-        findAndReplaceSimpleElement(count, devElement, "email", developer.getEmail());
-        findAndReplaceSimpleElement(count, devElement, "organization", developer.getOrganization());
+        findAndReplaceSimpleElement(count, devElement, "name", developer.getValue("name"));
+        findAndReplaceSimpleElement(count, devElement, "id", developer.getValue("id"));
+        findAndReplaceSimpleElement(count, devElement, "email", developer.getValue("email"));
+        findAndReplaceSimpleElement(count, devElement, "organization", developer.getValue("organization"));
         // roles
-        doUpdateRoles(count, devElement, developer.getRoles());
-        findAndReplaceSimpleElement(count, devElement, "url", developer.getUrl());
-        findAndReplaceSimpleElement(count, devElement, "timezone", developer.getTimezone());
+        doUpdateRoles(count, devElement, developer.getValueList("roles", "role"));
+        findAndReplaceSimpleElement(count, devElement, "url", developer.getValue("url"));
+        findAndReplaceSimpleElement(count, devElement, "timezone", developer.getValue("timezone"));
     }
 
-	private void doUpdateContributors(Counter counter, Element root, List contributors) 
-            throws Exception 
-    {
+    private void doUpdateContributors(Counter counter, Element root, List contributors) 
+            throws Exception {
         boolean shouldExist = contributors != null && contributors.size() > 0;
         Element contributorsElem = updateElement(counter, root, "contributors", shouldExist);
         if (shouldExist) {
@@ -384,15 +376,12 @@ public class CarefulProjectMarshaller implements IProjectMarshaller {
             // is used later to get rid of the non-existing ones.
             List usedElems = new ArrayList();
             Iterator it = contributors.iterator();
-            while (it.hasNext())
-            {
-                Contributor cont = (Contributor)it.next();
-                String id = cont.getName();
+            while (it.hasNext()) {
+                IContentProvider cont = (IContentProvider)it.next();
+                String id = cont.getValue("name");
                 List list = contributorsElem.getContent(new SpecificElementFilter("contributor", "name", id));
-                if (list != null && list.size() > 0)
-                {
-                    if (list.size() > 1)
-                    {
+                if (list != null && list.size() > 0) {
+                    if (list.size() > 1) {
                         log.info("filter returned multiple instances, the primary key is not unique - key=" + id);
                         // what to do, we found multiple ones instead of one..
                     } else {
@@ -414,22 +403,20 @@ public class CarefulProjectMarshaller implements IProjectMarshaller {
         }
     }    
     
-    private void doUpdateSingleContributor(Element conElement, Contributor contributor)
-        throws Exception
-    {
+    private void doUpdateSingleContributor(Element conElement, IContentProvider contributor)
+        throws Exception {
         Counter count = new Counter();
-        findAndReplaceSimpleElement(count, conElement, "name", contributor.getName());
-        findAndReplaceSimpleElement(count, conElement, "email", contributor.getEmail());
-        findAndReplaceSimpleElement(count, conElement, "organization", contributor.getOrganization());
+        findAndReplaceSimpleElement(count, conElement, "name", contributor.getValue("name"));
+        findAndReplaceSimpleElement(count, conElement, "email", contributor.getValue("email"));
+        findAndReplaceSimpleElement(count, conElement, "organization", contributor.getValue("organization"));
         // roles
-        doUpdateRoles(count, conElement, contributor.getRoles());
-        findAndReplaceSimpleElement(count, conElement, "url", contributor.getUrl());
-        findAndReplaceSimpleElement(count, conElement, "timezone", contributor.getTimezone());
+        doUpdateRoles(count, conElement, contributor.getValueList("roles", "role"));
+        findAndReplaceSimpleElement(count, conElement, "url", contributor.getValue("url"));
+        findAndReplaceSimpleElement(count, conElement, "timezone", contributor.getValue("timezone"));
     }
 
-    private void doUpdateRoles(Counter counter, Element root, SortedSet roles) 
-            throws Exception 
-    {
+    private void doUpdateRoles(Counter counter, Element root, Collection roles) 
+            throws Exception {
         boolean shouldExist = roles != null && roles.size() > 0;
         Element rolesElem = updateElement(counter, root, "roles", shouldExist);
         if (shouldExist) {
@@ -437,19 +424,17 @@ public class CarefulProjectMarshaller implements IProjectMarshaller {
             // is sortedset, just drop everything in..
             rolesElem.removeChildren();
             Iterator it = roles.iterator();
-            while (it.hasNext())
-            {
+            while (it.hasNext()) {
                 String roleStr = (String)it.next();
                 Element role = factory.element("role");
                 role.setText(roleStr);
                 rolesElem.addContent(role);
             } // end iterator
-        }
+        } 
     }    
     
-	private void doUpdateLicenses(Counter counter, Element root, List licenses) 
-            throws Exception 
-    {
+    private void doUpdateLicenses(Counter counter, Element root, List licenses) 
+            throws Exception {
         boolean shouldExist = licenses != null && licenses.size() > 0;
         Element licensesElem = updateElement(counter, root, "licenses", shouldExist);
         if (shouldExist) {
@@ -457,15 +442,12 @@ public class CarefulProjectMarshaller implements IProjectMarshaller {
             // is used later to get rid of the non-existing ones.
             List usedElems = new ArrayList();
             Iterator it = licenses.iterator();
-            while (it.hasNext())
-            {
-                License license = (License)it.next();
-                String id = license.getName();
+            while (it.hasNext()) {
+                IContentProvider license = (IContentProvider)it.next();
+                String id = license.getValue("name");
                 List list = licensesElem.getContent(new SpecificElementFilter("license", "name", id));
-                if (list != null && list.size() > 0)
-                {
-                    if (list.size() > 1)
-                    {
+                if (list != null && list.size() > 0) {
+                    if (list.size() > 1) {
                         log.info("filter returned multiple instances, the primary key is not unique - key=" + id);
                         // what to do, we found multiple ones instead of one..
                     } else {
@@ -487,18 +469,16 @@ public class CarefulProjectMarshaller implements IProjectMarshaller {
         }
     }    
     
-    private void doUpdateSingleLicense(Element licElement, License license)
-    {
+    private void doUpdateSingleLicense(Element licElement, IContentProvider license) {
         Counter count = new Counter();
-        findAndReplaceSimpleElement(count, licElement, "name", license.getName());
-        findAndReplaceSimpleElement(count, licElement, "url", license.getUrl());
-        findAndReplaceSimpleElement(count, licElement, "distribution", license.getDistribution());
-        findAndReplaceSimpleElement(count, licElement, "comments", license.getComments());
+        findAndReplaceSimpleElement(count, licElement, "name", license.getValue("name"));
+        findAndReplaceSimpleElement(count, licElement, "url", license.getValue("url"));
+        findAndReplaceSimpleElement(count, licElement, "distribution", license.getValue("distribution"));
+        findAndReplaceSimpleElement(count, licElement, "comments", license.getValue("comments"));
     }
     
-	private void doUpdateDependencies(Counter counter, Element root, List dependencies) 
-            throws Exception 
-    {
+    private void doUpdateDependencies(Counter counter, Element root, List dependencies) 
+            throws Exception {
         boolean shouldExist = dependencies != null && dependencies.size() > 0;
         Element dependenciesElem = updateElement(counter, root, "dependencies", shouldExist);
         if (shouldExist) {
@@ -506,16 +486,13 @@ public class CarefulProjectMarshaller implements IProjectMarshaller {
             // is used later to get rid of the non-existing ones.
             List usedElems = new ArrayList();
             Iterator it = dependencies.iterator();
-            while (it.hasNext())
-            {
-                Dependency dep = (Dependency)it.next();
+            while (it.hasNext()) {
+                IContentProvider dep = (IContentProvider)it.next();
                 List list = dependenciesElem.getContent(
-                        new DependencyElementFilter(dep.getId(), dep.getGroupId(), dep.getArtifactId()));
-                if (list != null && list.size() > 0)
-                {
-                    if (list.size() > 1)
-                    {
-                        log.info("filter returned multiple instances, the primary key is not unique - key=" + dep.getId());
+                        new DependencyElementFilter(dep.getValue("id"), dep.getValue("groupId"), dep.getValue("artifactId")));
+                if (list != null && list.size() > 0) {
+                    if (list.size() > 1) {
+                        log.info("filter returned multiple instances, the primary key is not unique - key=" + dep.getValue("id"));
                         // what to do, we found multiple ones instead of one..
                     } else {
                         Element vElem = (Element)list.get(0);
@@ -536,32 +513,27 @@ public class CarefulProjectMarshaller implements IProjectMarshaller {
         }
     }    
     
-    private void doUpdateSingleDependency(Element depElement, Dependency dependency)
-        throws Exception
-    {
+    private void doUpdateSingleDependency(Element depElement, IContentProvider dependency)
+        throws Exception {
 //        findAndReplaceSimpleElement(0, depElement, "id", dependency.getId());
         Counter count = new Counter();
-        findAndReplaceSimpleElement(count, depElement, "groupId", dependency.getGroupId());
-        findAndReplaceSimpleElement(count, depElement, "artifactId", dependency.getArtifactId());
-        findAndReplaceSimpleElement(count, depElement, "version", dependency.getVersion());
-        findAndReplaceSimpleElement(count, depElement, "jar", dependency.getJar());
-        findAndReplaceSimpleElement(count, depElement, "type", dependency.getType());
-        findAndReplaceSimpleElement(count, depElement, "url", dependency.getUrl());
+        findAndReplaceSimpleElement(count, depElement, "groupId", dependency.getValue("groupId"));
+        findAndReplaceSimpleElement(count, depElement, "artifactId", dependency.getValue("artifactId"));
+        findAndReplaceSimpleElement(count, depElement, "version", dependency.getValue("version"));
+        findAndReplaceSimpleElement(count, depElement, "jar", dependency.getValue("jar"));
+        findAndReplaceSimpleElement(count, depElement, "type", dependency.getValue("type"));
+        findAndReplaceSimpleElement(count, depElement, "url", dependency.getValue("url"));
         doUpdateProperties(count, depElement, myResolveProperties(dependency.getProperties()));
     }    
     
-    private Map myResolveProperties(List propList)
-    {
+    private Map myResolveProperties(List propList) {
         Map toReturn = new TreeMap();
-        if (propList != null) 
-        {
+        if (propList != null) {
             Iterator it = propList.iterator();
-            while (it.hasNext())
-            {
+            while (it.hasNext()) {
                 String prop = (String)it.next();
                 int index = prop.indexOf(':');
-                if (index > 0)
-                {
+                if (index > 0) {
                     toReturn.put(prop.substring(0, index - 1), prop.substring(index + 1));
                 } else {
                     toReturn.put(prop, null);
@@ -571,8 +543,7 @@ public class CarefulProjectMarshaller implements IProjectMarshaller {
         return toReturn;
     }
     
-    private void doUpdateProperties(Counter counter, Element parent, Map props)
-    {
+    private void doUpdateProperties(Counter counter, Element parent, Map props) {
         boolean shouldExist = props != null && props.size() > 0;
         Element propsElem = updateElement(counter, parent, "properties", shouldExist);
         if (shouldExist) {
@@ -581,13 +552,11 @@ public class CarefulProjectMarshaller implements IProjectMarshaller {
             List usedElems = new ArrayList();
             Iterator it = props.keySet().iterator();
             System.out.println("--------------------- properties.. --------------------");
-            while (it.hasNext())
-            {
+            while (it.hasNext()) {
                 String key = (String)it.next();
                 System.out.println("key=" + key);
                 Element propEl = propsElem.getChild(key);
-                if (propEl != null)
-                {
+                if (propEl != null) {
                     propEl.setText((String)props.get(key));
                     usedElems.add(propEl);
                     System.out.println("updating property element " + key);
@@ -601,8 +570,7 @@ public class CarefulProjectMarshaller implements IProjectMarshaller {
                 }
             } // end iterator
             it = propsElem.getChildren().iterator();
-            while (it.hasNext())
-            {
+            while (it.hasNext()) {
                 Element el = (Element)it.next();
                 if (!usedElems.contains(el)) {
                     System.out.println("removing element=" + el);
@@ -612,34 +580,32 @@ public class CarefulProjectMarshaller implements IProjectMarshaller {
         }
     }
     
-	private void doUpdateBuild(Counter counter, Element root, Build build) 
-            throws Exception 
-    {
+    private void doUpdateBuild(Counter counter, Element root, IContentProvider build) 
+            throws Exception {
         boolean shouldExist = build != null;
         Element buildElem = updateElement(counter, root, "build", shouldExist);
         if (shouldExist) {
             Counter innerCount = new Counter();
-    		findAndReplaceSimpleElement(innerCount, buildElem, "nagEmailAddress", build.getNagEmailAddress());
-    		findAndReplaceSimpleElement(innerCount, buildElem, "sourceDirectory", build.getSourceDirectory());
+            findAndReplaceSimpleElement(innerCount, buildElem, "nagEmailAddress", build.getValue("nagEmailAddress"));
+            findAndReplaceSimpleElement(innerCount, buildElem, "sourceDirectory", build.getValue("sourceDirectory"));
             //doUpdateSourceModifications(innerCount, buildElem, build.getSourceModifications());
-    		findAndReplaceSimpleElement(innerCount, buildElem, "unitTestSourceDirectory", build.getUnitTestSourceDirectory());
-    		findAndReplaceSimpleElement(innerCount, buildElem, "integrationUnitTestSourceDirectory", build.getIntegrationUnitTestSourceDirectory());
-    		findAndReplaceSimpleElement(innerCount, buildElem, "aspectSourceDirectory", build.getAspectSourceDirectory());
-            doUpdateUnitTest(innerCount, buildElem, build.getUnitTest());
-            doUpdateResources(innerCount, buildElem, build.getResources());
+            findAndReplaceSimpleElement(innerCount, buildElem, "unitTestSourceDirectory", build.getValue("unitTestSourceDirectory"));
+            findAndReplaceSimpleElement(innerCount, buildElem, "integrationUnitTestSourceDirectory", build.getValue("integrationUnitTestSourceDirectory"));
+            findAndReplaceSimpleElement(innerCount, buildElem, "aspectSourceDirectory", build.getValue("aspectSourceDirectory"));
+            doUpdateUnitTest(innerCount, buildElem, build.getSubContentProvider("unitTest"));
+            doUpdateResources(innerCount, buildElem, build.getSubContentProviderList("resources", "resource"));
         }
     }
     
-	private void doUpdateUnitTest(Counter counter, Element parent, UnitTest test) 
-            throws Exception 
-    {
+    private void doUpdateUnitTest(Counter counter, Element parent, IContentProvider test) 
+            throws Exception {
         boolean shouldExist = test != null;
         Element testElem = updateElement(counter, parent, "unitTest", shouldExist);
         if (shouldExist) {
             Counter innerCount = new Counter();
-            doUpdateExIncludes(innerCount, testElem, test.getIncludes(), "includes", "include");
-            doUpdateExIncludes(innerCount, testElem, test.getExcludes(), "excludes", "exclude");
-            doUpdateResources(innerCount, testElem, test.getResources());
+            doUpdateExIncludes(innerCount, testElem, test.getValueList("includes", "include"), "includes", "include");
+            doUpdateExIncludes(innerCount, testElem, test.getValueList("excludes", "exclude"), "excludes", "exclude");
+            doUpdateResources(innerCount, testElem, test.getSubContentProviderList("resources", "resource"));
         }
     }
 
@@ -647,31 +613,27 @@ public class CarefulProjectMarshaller implements IProjectMarshaller {
      * updates resources, however the replacement algorithm here is not ideal,
      * no real primary id of simgle elements available..
      */
-	private void doUpdateResources(Counter counter, Element root, List resources) 
-            throws Exception 
-    {
+    private void doUpdateResources(Counter counter, Element root, List resources) 
+            throws Exception {
         boolean shouldExist = resources != null && resources.size() > 0;
         Element resourcesElem = updateElement(counter, root, "resources", shouldExist);
         if (shouldExist) {
             List newElems = new ArrayList(resources);
             Iterator it = resourcesElem.getChildren("resource").iterator();
             Iterator it2 = newElems.iterator();
-            while (it.hasNext() && it2.hasNext())
-            {
+            while (it.hasNext() && it2.hasNext()) {
                 Element el = (Element)it.next();
-                Resource res = (Resource)it2.next();
+                IContentProvider res = (IContentProvider)it2.next();
                 doUpdateSingleResource(el, res);
                 log.debug("updating element " + el.getChildText("directory"));
             } // end iterator
-            while (it.hasNext())
-            {
+            while (it.hasNext()) {
                 // when some resources are obsolete, remove them..
                 it.next();
                 it.remove();
             }
-            while (it2.hasNext())
-            {
-                Resource res = (Resource)it2.next();
+            while (it2.hasNext()) {
+                IContentProvider res = (IContentProvider)it2.next();
                 Element newEl = factory.element("resource");
                 doUpdateSingleResource(newEl, res);
                 resourcesElem.addContent(newEl);
@@ -679,20 +641,18 @@ public class CarefulProjectMarshaller implements IProjectMarshaller {
         }
     }    
 
-    private void doUpdateSingleResource(Element resElem, Resource resource)
-            throws Exception
-    {
+    private void doUpdateSingleResource(Element resElem, IContentProvider resource)
+            throws Exception {
         Counter innerCount = new Counter();
-  		findAndReplaceSimpleElement(innerCount, resElem, "directory", resource.getDirectory());
-  		findAndReplaceSimpleElement(innerCount, resElem, "targetPath", resource.getTargetPath());
-        doUpdateExIncludes(innerCount, resElem, resource.getIncludes(), "includes", "include");
-        doUpdateExIncludes(innerCount, resElem, resource.getExcludes(), "excludes", "exclude");
-  		findAndReplaceSimpleElement(innerCount, resElem, "filtering", "" + resource.getFiltering());
+        findAndReplaceSimpleElement(innerCount, resElem, "directory", resource.getValue("directory"));
+  	findAndReplaceSimpleElement(innerCount, resElem, "targetPath", resource.getValue("targetPath"));
+        doUpdateExIncludes(innerCount, resElem, resource.getValueList("includes", "include"), "includes", "include");
+        doUpdateExIncludes(innerCount, resElem, resource.getValueList("excludes", "exclude"), "excludes", "exclude");
+  	findAndReplaceSimpleElement(innerCount, resElem, "filtering", resource.getValue("filtering"));
     }
     
     
-    private void doUpdateReports(Counter counter, Element parent, List reports)
-    {
+    private void doUpdateReports(Counter counter, Element parent, List reports) {
         boolean shouldExist = reports != null && reports.size() > 0;
         Element reportsElem = updateElement(counter, parent, "reports", shouldExist);
         if (shouldExist) {
@@ -727,10 +687,9 @@ public class CarefulProjectMarshaller implements IProjectMarshaller {
         }
     }
 
-	private void doUpdateExIncludes(Counter counter, Element parent, List cludes, 
+    private void doUpdateExIncludes(Counter counter, Element parent, List cludes, 
                                     String motherElementName, String childElementName) 
-            throws Exception 
-    {
+            throws Exception {
         boolean shouldExist = cludes != null && cludes.size() > 0;
         Element cludeElem = updateElement(counter, parent, motherElementName, shouldExist);
         if (shouldExist) {
@@ -739,24 +698,20 @@ public class CarefulProjectMarshaller implements IProjectMarshaller {
             List usedElems = new ArrayList();
             List newOnes = new ArrayList(cludes);
             Iterator it = cludeElem.getChildren(childElementName).iterator();
-            while (it.hasNext())
-            {
+            while (it.hasNext()) {
                 Element el = (Element)it.next();
                 int index = newOnes.indexOf(el.getText());
-                if (index < 0)
-                {
+                if (index < 0) {
                     // not there anymore
                     it.remove();
                 } else {
                     newOnes.remove(index);
                 }
             } // end iterator
-            if (newOnes.size() > 0)
-            {
+            if (newOnes.size() > 0) {
                 // now add the new ones to the end..
                 it = newOnes.iterator();
-                while (it.hasNext())
-                {
+                while (it.hasNext()) {
                     String ns = (String)it.next();
                     Element newEl = factory.element(childElementName);
                     newEl.setText(ns);
@@ -868,16 +823,14 @@ public class CarefulProjectMarshaller implements IProjectMarshaller {
     }
 
     /**
-     * 
+     *
      */
-    private static class SpecificElementFilter implements Filter
-    {
+    private static class SpecificElementFilter implements Filter {
         private String elemName;
         private String keyElem;
         private String keyVal;
         
-        public SpecificElementFilter(String elementName, String keyElement, String keyValue)
-        {
+        public SpecificElementFilter(String elementName, String keyElement, String keyValue) {
             elemName = elementName;
             keyElem = keyElement;
             keyVal = keyValue;
@@ -886,25 +839,20 @@ public class CarefulProjectMarshaller implements IProjectMarshaller {
         /**
          * not raally implemented.. is removed in beta9 anyway
          */
-        public boolean canRemove(Object obj)
-        {
+        public boolean canRemove(Object obj) {
             return true;
         }
         /**
          * not raally implemented.. is removed in beta9 anyway
          */
-        public boolean canAdd(Object obj)
-        {
+        public boolean canAdd(Object obj) {
             return true;
         }
         
-        public boolean matches(Object obj)
-        {
-            if (obj instanceof Element)
-            {
+        public boolean matches(Object obj) {
+            if (obj instanceof Element) {
                 Element elem = (Element)obj;
-                if (elem.getName().equals(elemName)) 
-                {
+                if (elem.getName().equals(elemName)) {
                     String key = elem.getChildText(keyElem);
                     if (key != null && key.equals(keyVal)) {
                         return true;
@@ -914,45 +862,41 @@ public class CarefulProjectMarshaller implements IProjectMarshaller {
             return false;
         }
     }
-    
+
     /**
      * 
      */
-    private static class DependencyElementFilter implements Filter
-    {
+    private static class DependencyElementFilter implements Filter {
         private String id;
         private String artifactId;
         private String groupId;
         
-        public DependencyElementFilter(String id, String artifactId, String groupId)
-        {
+        public DependencyElementFilter(String id, String artifactId, String groupId) {
             this.id = id;
             this.artifactId = artifactId;
             this.groupId = groupId;
+//            if (id == null) {
+//                this.id = artifactId + ":" + groupId;
+//            }
         }
         
         /**
          * not raally implemented.. is removed in beta9 anyway
          */
-        public boolean canRemove(Object obj)
-        {
+        public boolean canRemove(Object obj) {
             return true;
         }
         /**
          * not raally implemented.. is removed in beta9 anyway
          */
-        public boolean canAdd(Object obj)
-        {
+        public boolean canAdd(Object obj) {
             return true;
         }
         
-        public boolean matches(Object obj)
-        {
-            if (obj instanceof Element)
-            {
+        public boolean matches(Object obj) {
+            if (obj instanceof Element) {
                 Element elem = (Element)obj;
-                if (elem.getName().equals("dependency")) 
-                {
+                if (elem.getName().equals("dependency")) {
                     String elId = elem.getChildText("id");
                     String elGroupId = elem.getChildText("groupId");
                     String elArtifactId = elem.getChildText("artifactId");
@@ -962,8 +906,7 @@ public class CarefulProjectMarshaller implements IProjectMarshaller {
                         return true;
                     }
                     if (elGroupId != null && elArtifactId != null &&
-                        elGroupId.equals(groupId) && elArtifactId.equals(artifactId))
-                    {
+                        elGroupId.equals(groupId) && elArtifactId.equals(artifactId)) {
                         return true;
                     }
                 }
@@ -972,20 +915,16 @@ public class CarefulProjectMarshaller implements IProjectMarshaller {
         }
     }    
     
-    private static class Counter 
-    {
+    private static class Counter {
         int currentIndex = 0;
-        public Counter()
-        {
+        public Counter() {
         }
         
-        public void increaseCount()
-        {
+        public void increaseCount() {
             currentIndex = currentIndex + 1;
         }
         
-        public int getCurrentIndex()
-        {
+        public int getCurrentIndex() {
             return currentIndex;
         }
     }
