@@ -25,6 +25,8 @@ import org.mevenide.project.io.ProjectWriterTest;
 
 /**
  * 
+ * This class introduces a cycle in package dependencies -__-; 
+ * 
  * @author Gilles Dodinet (gdodinet@wanadoo.fr)
  * @version $Id$
  * 

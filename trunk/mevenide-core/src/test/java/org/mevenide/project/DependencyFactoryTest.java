@@ -77,15 +77,15 @@ public class DependencyFactoryTest extends TestCase {
 		artefact = new File(testTypeDirectory, "foo+joe-test2.-bar-1.0.7-beta-1.txt");
 		dep = dependencyFactory.getDependency(artefact.getAbsolutePath());
 		//BUG-DependencyUtil_split-DEP_PATTERN
-		//assertEquals("1.0.7-beta-1", dep.getVersion());
+		assertEquals("1.0.7-beta-1", dep.getVersion());
+		assertEquals("foo+joe-test2.-bar", dep.getArtifactId());
 		
 		artefact = new File("c:/jdk1.4.1/jre/lib/rt.jar");
 		dep = dependencyFactory.getDependency(artefact.getAbsolutePath());
 		//BUG-DependencyUtil_getDependency-NOT_RECOGNIZED_PATTERN
-		//assertEquals("", dep.getVersion());	
-		
+		assertNull(dep.getVersion());	
+		assertNull(dep.getArtifactId());
 	}
 
-	
 	
 }
