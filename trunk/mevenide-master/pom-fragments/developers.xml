@@ -6,7 +6,7 @@
       <roles>
       	<role>Developer Java</role>
       </roles>
-      <timezone>GMT+1</timezone>
+      <timezone>+1</timezone>
     </developer>
     <developer>
       <name>Jeffrey Bonevich</name>

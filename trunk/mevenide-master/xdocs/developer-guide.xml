@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<!DOCTYPE document [
+	<!ENTITY developer-guide-description SYSTEM "developer/description.txt">
+]>
+
+<document>
+
+  <properties>
+    <author email="rhill@wanadoo.fr">Gilles Dodinet</author>
+    <title>Mevenide - Developer's Guide</title>
+  </properties>
+  
+  <body>
+
+    <section name="Developer Guide">
+      <p>
+      	&developer-guide-description;
+      </p>
+    </section>
+
+	<section name="Relationships">
+	  <p>To be done.</p>
+	</section>
+	
+	<section name="Guidelines">
+	  <p>To be done.</p>
+	</section>
+
+  </body>
+
+
+</document>

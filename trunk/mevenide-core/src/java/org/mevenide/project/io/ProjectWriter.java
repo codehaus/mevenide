@@ -70,7 +70,7 @@ import org.mevenide.project.source.SourceDirectoryUtil;
  * 
  * @todo use a single instancce per POM
  * 
- * each addition writes the pom :
+ * @doco each addition writes the pom :
  *     <code>write(project, pom);</code>
  * thus if the process fails it doesnt affect 
  * the previously added artifacts.
