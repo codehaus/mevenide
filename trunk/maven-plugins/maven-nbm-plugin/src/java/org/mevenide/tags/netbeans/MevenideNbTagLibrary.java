@@ -32,5 +32,6 @@ public class MevenideNbTagLibrary extends TagLibrary {
         registerTag("examine-manifest", ExamineManifestTag.class);
         registerTag("find-license", FindLicenseTag.class);
         registerTag("check-dependency-property", CheckDependencyTypeTag.class);
+        registerTag("check-module-name", CheckModuleNameTag.class);
     }
 }
