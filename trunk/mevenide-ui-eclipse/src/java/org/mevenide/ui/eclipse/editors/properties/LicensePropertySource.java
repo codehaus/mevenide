@@ -48,8 +48,6 @@
  */
 package org.mevenide.ui.eclipse.editors.properties;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.License;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.ui.views.properties.ComboBoxPropertyDescriptor;
@@ -62,8 +60,6 @@ import org.mevenide.util.MevenideUtils;
  * @version $Id$
  */
 public class LicensePropertySource extends AbstractPomPropertySource {
-
-	private static final Log log = LogFactory.getLog(LicensePropertySource.class);
 
 	private static final String LICENSE_NAME = "name";
 	private static final String LICENSE_URL = "url";
@@ -123,9 +119,6 @@ public class LicensePropertySource extends AbstractPomPropertySource {
 	}
 
 	public Object getPropertyValue(Object id) {
-		if (log.isDebugEnabled()) {
-			log.debug("getPropertyValue called: " + id);
-		}
 		if (LICENSE_NAME.equals(id)) {
 			return valueOrEmptyString(license.getName());
 		}
@@ -143,9 +136,6 @@ public class LicensePropertySource extends AbstractPomPropertySource {
 	
 	private Integer getIndexOfDistribution() {
 		String dist = license.getDistribution();
-		if (log.isDebugEnabled()) {
-			log.debug("getIndexOfDistribution called: " + dist);
-		}
 		if (LICENSE_DIST_MANUAL.equals(dist)) {
 			return LICENSE_DIST_MANUAL_INDEX;
 		}
@@ -176,9 +166,6 @@ public class LicensePropertySource extends AbstractPomPropertySource {
 	}
 
 	public void setPropertyValue(Object id, Object value) {
-		if (log.isDebugEnabled()) {
-			log.debug("setPropertyValue called: " + id + " = " + value);
-		}
 		if (value == null) return;
 		
 		String newValue = value.toString();
@@ -230,9 +217,6 @@ public class LicensePropertySource extends AbstractPomPropertySource {
 	}
 
 	public String getLabel(Object o) {
-		if (log.isDebugEnabled()) {
-			log.debug("getLabel called for " + o);
-		}
 		return license.getName() != null ? license.getName() : "[unnamed]";
 	}
 
