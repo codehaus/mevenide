@@ -40,7 +40,6 @@ import org.mevenide.netbeans.project.queries.MavenForBinaryQueryImpl;
 
 import org.mevenide.netbeans.project.queries.MavenSharabilityQueryImpl;
 import org.mevenide.netbeans.project.queries.MavenTestForSourceImpl;
-import org.mevenide.context.DefaultProjectContext;
 import org.mevenide.properties.IPropertyLocator;
 import org.mevenide.properties.IPropertyResolver;
 import org.mevenide.properties.resolver.ProjectWalker2;
