@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin
+   id="org.mevenide.core"
+   name="Mevenide Core"
+   version="0.1"
+   provider-name="Sourceforge">
+
+   <runtime>
+      <library name="lib/commons-discovery-0.1.jar">
+         <export name="*"/>
+         <packages prefixes="org.apache.commons.discovery"/>
+      </library>
+      <library name="lib/commons-logging-1.0.1.jar">
+         <export name="*"/>
+         <packages prefixes="org.apache.commons.logging"/>
+      </library>
+      <library name="lib/log4j-1.2.7.jar">
+         <export name="*"/>
+         <packages prefixes="org.apache.log4j"/>
+      </library>
+      <library name="lib/xpp3-1.1.2a.jar">
+         <export name="*"/>
+         <packages prefixes="org.xmlpull"/>
+      </library>
+      <library name="lib/maven-1.0-beta-10.jar">
+         <export name="*"/>
+         <packages prefixes="org.apache.maven"/>
+      </library>
+      <library name="lib/xerces-2.2.1.jar">
+         <packages prefixes="org.apache.xerces"/>
+      </library>
+      <library name="lib/jdom-1.0b8.jar">
+         <export name="*"/>
+         <packages prefixes="org.jdom"/>
+      </library>
+	  <!-- 
+      	  following dependencies are necessary 
+      	  because of DefaultProjectUnmarshaller that comes out
+      	  with mevenide until maven stabilize
+      	  (see Dependency.setArtifact, Dependency properties management, etc..)
+      -->
+      <library name="lib/ant-1.5.3-1.jar">
+         <packages prefixes="org.apache.tools"/>
+         <export name="*"/>
+      </library>
+      <library name="lib/commons-jelly-1.0-beta-4.jar">
+         <export name="*"/>
+         <packages prefixes="org.apache.commons.jelly"/>
+      </library>
+      <library name="lib/commons-grant-1.0-beta-4.jar">
+         <export name="*"/>
+         <packages prefixes="org.apache.tools,org.apache.commons.grant"/>
+      </library>
+      <library name="lib/commons-lang-1.0.1.jar">
+         <export name="*"/>
+         <packages prefixes="org.apache.commons.lang"/>
+      </library>
+      <library name="mevenide-core">
+         <export name="*"/>
+         <packages prefixes="org.mevenide"/>
+      </library>
+   </runtime>
+
+</plugin>

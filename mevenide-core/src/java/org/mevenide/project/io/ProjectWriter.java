@@ -100,18 +100,11 @@ public class ProjectWriter {
 	
 	private DefaultProjectMarshaller marshaller ; 
 		
-	public static ProjectWriter getWriter() throws Exception {
-		if (projectWriter != null) {
-			return projectWriter;
+	public synchronized static ProjectWriter getWriter() throws Exception {
+		if (projectWriter == null) {
+			projectWriter = new ProjectWriter();
 		}
-		else {
-			synchronized (lock) {
-				if (projectWriter == null) {
-					projectWriter = new ProjectWriter();
-				}
-			}
-			return projectWriter;
-		}
+		return projectWriter;
 	}
 	
 	private ProjectWriter() throws Exception  {

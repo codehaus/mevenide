@@ -65,7 +65,6 @@ public class AllTests {
         TestSuite suite = new TestSuite();
         
       
-		suite.addTestSuite(AbstractOptionsManagerTest.class);
 		suite.addTestSuite(AbstractRunnerTest.class);
 		
         return suite;
