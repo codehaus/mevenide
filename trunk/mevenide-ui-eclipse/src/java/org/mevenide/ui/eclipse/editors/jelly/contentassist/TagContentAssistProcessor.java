@@ -20,7 +20,7 @@ import org.mevenide.ui.eclipse.editors.jelly.XMLNode;
  * To change the template for this generated type comment go to
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
-public class TagContentAssistProcessor extends MavenXmlContentAssistProcessor {
+public class TagContentAssistProcessor extends JellyContentAssistProcessor {
 
     public TagContentAssistProcessor(AbstractJellyEditor editor) {
         super(editor);

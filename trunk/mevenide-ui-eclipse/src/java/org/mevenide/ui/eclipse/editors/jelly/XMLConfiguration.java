@@ -21,7 +21,7 @@ import org.eclipse.jface.text.rules.Token;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.SourceViewerConfiguration;
 import org.eclipse.swt.widgets.Shell;
-import org.mevenide.ui.eclipse.editors.jelly.contentassist.MavenXmlContentAssistProcessor;
+import org.mevenide.ui.eclipse.editors.jelly.contentassist.JellyContentAssistProcessor;
 import org.mevenide.ui.eclipse.editors.jelly.contentassist.SourceViewerInformationControl;
 import org.mevenide.ui.eclipse.editors.jelly.contentassist.TagContentAssistProcessor;
 import org.mevenide.ui.eclipse.editors.jelly.contentassist.TextContentAssistProcessor;
@@ -38,7 +38,7 @@ public class XMLConfiguration extends SourceViewerConfiguration {
 	 
 	private AbstractJellyEditor editor;
 
-    private MavenXmlContentAssistProcessor tagContentAssist;
+    private JellyContentAssistProcessor tagContentAssist;
 	
 	public XMLConfiguration(ColorManager colorManager, AbstractJellyEditor editor) {
 		this.colorManager = colorManager;
@@ -135,7 +135,7 @@ public class XMLConfiguration extends SourceViewerConfiguration {
 		ContentAssistant assistant = new ContentAssistant();
 		try {
 		    ContentAssistant assi = new ContentAssistant();
-	        MavenXmlContentAssistProcessor contentAssistForText = new TextContentAssistProcessor(editor);
+	        JellyContentAssistProcessor contentAssistForText = new TextContentAssistProcessor(editor);
 	        tagContentAssist = new TagContentAssistProcessor(editor);
            
 	        assi.setContentAssistProcessor(contentAssistForText, IDocument.DEFAULT_CONTENT_TYPE);
@@ -164,7 +164,7 @@ public class XMLConfiguration extends SourceViewerConfiguration {
 		};
 	}
 	
-    public MavenXmlContentAssistProcessor getTagContentAssist() {
+    public JellyContentAssistProcessor getTagContentAssist() {
         return tagContentAssist;
     }
 }
