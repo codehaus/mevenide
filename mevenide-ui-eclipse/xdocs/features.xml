@@ -82,6 +82,7 @@
 		  	<u>Known limitations</u><br/>
 		  	<ul>
 		  		<li>No xml entities support yet - we need to think about some solutions to support full bidirectionnal I/O - altho it is definitively on the TODO list.</li>
+		  		<li>No contentassist in the soure page yet</li>
 		  	</ul>
 		  </p>
 		</div>
@@ -104,6 +105,8 @@
 		  		<li>Limited jelly:ant taglib support</li>
 		  		<li>Completion proposals (custom goals) not computed from the buffer but from the previously saved file</li>
 		  		<li>Offline option not functionnal yet when launching a goal from the outline page</li>
+		  		<li>No proposal context information yet</li>
+		  		<li>No namespace proposal yet</li>
 		  	</ul>
 		  </p>
 		</div>

@@ -7,12 +7,24 @@
     <body>
 		<section name="POM Edition">
         	<div id="documentContent">
-        	<p>To be done.</p>
+        	<p>
+				Mevenide provides a multipart POM editor (Screenshot below). Each page is kept in synch with the source page.
+				If the POM is inherited (i.e. ${pom.extend} is not empty) then a checkbox will be present next to each field allowing you to specify if the field is inherited ; in that case the field will be read-only.
+				<center>
+					<br/><br/>
+					<center>
+						<img border="1px" src="images/pom-editor.png"/>
+						<br/><br/>
+						<font size="-1"><b>Screenshot 11</b> Pom Editor</font>	
+					</center>
+					<br/><br/>	
+				</center>
+			</p>
         	</div>
         </section>
         <section>
 			<p>
-				<navbar prev="sync.html" toc="help.html"/>
+				<navbar prev="sync.html" toc="help.html" next="contentassist.html"/>
 			</p>
 		</section>
 	</body>

@@ -25,13 +25,13 @@
 							<a href="sync.html" class="documentLink">POM Synchronization</a>
 						</li>
 						<li>
-							<a href="edit.html" class="documentLink">POM Edition</a>
+							<a href="edit.html" class="documentLink">POM Editor</a>
 						</li>
 						<li>
-							<a href="contentassist.html" class="documentLink">POM Edition</a>
+							<a href="contentassist.html" class="documentLink">Jelly Editor</a>
 						</li>
 						<li>
-							<a href="wizard.html" class="documentLink">POM Edition</a>
+							<a href="wizard.html" class="documentLink">Maven wizard</a>
 						</li>
 					</ul>
 				</div>

@@ -18,14 +18,16 @@
 				<div id="documentContent">
 			<p>	
 				The synchronization View can be populated either through a container (folders, projects, ..) or the pom (project.xml, or more generally xml files) 
-				contextual menu (Screenshot 1, below). In the later case, only the selected file will be involved in the synchronization process. 
+				contextual menu (Screenshot 7, below). In the later case, only the selected file will be involved in the synchronization process. 
 				<br/><br/>
 				<center>
 					<img border="1px" src="images/sync_pom.png"/>
 					<br/><br/>
-					<font size="-1"><b>Screenshot 1</b> synchronization Contextual Menu</font>
+					<font size="-1"><b>Screenshot 7</b> synchronization Contextual Menu</font>
 					<br/><br/>
 				</center>
+			</p>
+			<p>
 				Under each POM node, only the artifact declared in this POM are dispalyed, if you want to synchronize a multiproject, you have to select 
 				all relevant POMs from the dialog. Any artefact can be added or removed to and from pom or .classpath. Availability of the various actions depends of the 
 				current vizualisation mode.  
@@ -38,7 +40,7 @@
 				<center>
 					<img border="1px" src="images/pom_choice_dialog.png"/>
 					<br/><br/>
-					<font size="-1"><b>Screenshot 2</b> Project synchronization Contextual Menu</font>
+					<font size="-1"><b>Screenshot 8</b> Project synchronization Contextual Menu</font>
 					<br/><br/>
 				</center>
 			</p>
@@ -65,9 +67,11 @@
 				<center>
 					<img border="1px" src="images/synch_view.png"/>
 					<br/><br/>
-					<font size="-1"><b>Screenshot 3</b> Synchronization View</font>
+					<font size="-1"><b>Screenshot 9</b> Synchronization View</font>
 				</center>
 				<br/><br/>
+			</p>
+			<p>
 				In the Outgoing mode (POM to IDE) Properties can also be attached to dependencies.
 			</p>
 			<p>
@@ -77,7 +81,7 @@
 				<center>
 					<img border="1px" src="images/synch_properties.png"/>
 					<br/><br/>
-					<font size="-1"><b>Screenshot 4</b> Properties View</font>	
+					<font size="-1"><b>Screenshot 10</b> Properties View</font>	
 				</center>
 				<br/><br/>		
 			</p>
@@ -92,5 +96,10 @@
 			</div>
           </subsection>
         </section>  
+        <section>
+			<p>
+				<navbar prev="run.html" toc="help.html" next="edit.html"/>
+			</p>
+		</section>
     </body>
 </document>
