@@ -240,10 +240,10 @@ public abstract class MavenXmlContentAssistProcessor implements IContentAssistPr
             for (Iterator it = namespaces.keySet().iterator(); it.hasNext();) {
                 String key = (String) it.next();
                 Namespace ns = (Namespace) namespaces.get(key);
-                Map inc = ns.getAttributes();
-                List tags = (List) inc.get(node.getName());
-                if (tags != null) {
-                    words.addAll(tags);
+                Map attributeMap = ns.getAttributes();
+                List candidates = (List) attributeMap.get(node.getName());
+                if (candidates != null) {
+                    words.addAll(candidates);
                 }
             }
         }
@@ -256,8 +256,9 @@ public abstract class MavenXmlContentAssistProcessor implements IContentAssistPr
         }
         cp = new ICompletionProposal[words.size()];
         for (int i = 0; i < cp.length; i++) {
-            String text = (String) words.get(i);
-            cp[i] = new CompletionProposal(text, offset - start.length(), start.length(), text.length(), null, text, null, null);
+            String displayText = (String) words.get(i) ;
+            String text = displayText + "=\"\"";
+            cp[i] = new CompletionProposal(text, offset - start.length(), start.length(), text.length() - 1, null, displayText, null, null);
         }
         return cp;
     }

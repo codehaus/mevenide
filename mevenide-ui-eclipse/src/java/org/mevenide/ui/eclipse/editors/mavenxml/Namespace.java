@@ -75,7 +75,11 @@ public class Namespace {
             Collection tags = taglib.getRootTags();
             for (Iterator it = tags.iterator(); it.hasNext();) {
             	String tag = (String) it.next();
-            	attributes.put(tag, taglib.getTagAttrs(tag));
+            	String tagKey = tag;
+            	if ( tagKey.indexOf(":") == -1 ) {
+    	            tagKey = prefix + ":" + tagKey;
+    	        }
+            	attributes.put(tagKey, taglib.getTagAttrs(tag));
             }
                 
         }
@@ -119,23 +123,31 @@ public class Namespace {
         	return rootTags;
         }
         else {
-        	Collection coll = (List) subTags.get(outerTag);
-        	if ( coll != null ) {
-        		if ( outerTag.indexOf(":") != 1 ) {
-        		    outerTag = StringUtils.split(outerTag, ":")[1];
-        		}
-        		System.err.println(outerTag);
-        		coll = getTaglib().getSubTags(outerTag);
-        		List list = new ArrayList();
-        		for (Iterator iter = coll.iterator(); iter.hasNext();) {
-                    String tag = (String) iter.next();
-                    list.add(prefix + ":" + tag);
-                }
-        		list.addAll(getTaglib().getRootTags());
-        		coll = list;
-        		subTags.put(outerTag, coll);
-        	}  
-            return coll;
+	        if ( outerTag.indexOf(":") != -1 ) {
+	            outerTag = StringUtils.split(outerTag, ":")[1];
+	        }
+            return getCandidateTags(outerTag);
         }
+    }
+
+    private Collection getCandidateTags(String outerTag) {
+        List collectedTags = new ArrayList();
+        Collection candidates = (List) subTags.get(outerTag);
+        
+        if ( candidates == null ) {
+        	candidates = getTaglib().getSubTags(outerTag);
+        	candidates = candidates == null ? new ArrayList() : candidates;
+        	
+        	for (Iterator iter = candidates.iterator(); iter.hasNext();) {
+                String tag = (String) iter.next();
+                collectedTags.add(prefix + ":" + tag);
+            }
+        	
+        	collectedTags.addAll(rootTags);
+        	candidates = collectedTags;
+        	subTags.put(outerTag, candidates);
+        }
+        
+        return candidates;
     }
 }
