@@ -31,7 +31,7 @@
            <version>1.0-beta-5</version>
            <url>http://forehead.werken.com/</url>
            <properties>
-            	<eclipse.plugin.bundle>false</eclipse.plugin.bundle>
+            	<eclipse.plugin.bundle>true</eclipse.plugin.bundle>
             </properties>
         </dependency>
         <dependency>
