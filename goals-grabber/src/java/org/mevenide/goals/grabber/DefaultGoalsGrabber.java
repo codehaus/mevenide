@@ -56,6 +56,7 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.mevenide.Environment;
 
 
 /**
@@ -77,7 +78,7 @@ public class DefaultGoalsGrabber extends AbstractGoalsGrabber {
  	public void refresh() throws Exception {
 		super.refresh();
 
-        File pluginsLocal = new File(new File(System.getProperty("user.home"), ".maven"), "plugins");
+        File pluginsLocal = new File(Environment.getMavenHome(), "plugins");
   		File goalsCache = new File(pluginsLocal, "goals.cache");
 
   		Properties props = new Properties();
