@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<document>
+  <properties>
+    <title>maven-nbm-plugin Properties</title>
+    <author>Milos Kleint (ca206216@tiscali.cz)</author>
+  </properties>
+  <body>
+    <section name="Building Properties">
+    	<div id="documentContent">
+        These properties form a bridge between maven goals and the actions that 
+        trigger building, compilation, running of tests etc. in the IDE.
+        By redefining them in your project.properties or build.properties files, you can 
+        customize what the IDE will run when the action is triggered. That way you can map your custom
+        maven.xml based goal to the IDE's Build shortcut (F11) for example, and have it easily accessible for you and also your fellow
+        developers.
+      <table>
+        <tr>
+          <th>Property</th>
+          <th>Default Value</th>
+          <th>Description</th>
+        </tr>
+        <tr>
+          <td>maven.netbeans.exec.build</td>
+          <td>jar:install</td>
+          <td>
+            <p>This goal is triggered when one invokes Build action on the project's popup or the Build Main Project action (F11) from the main menu.</p>
+          </td>
+        </tr>
+        <tr>
+          <td>maven.netbeans.exec.clean</td>
+          <td>clean</td>
+          <td>
+            <p>This goal is triggered when one invokes Clean action on the project's popup. </p>
+          </td>
+        </tr>
+        <tr>
+          <td>maven.netbeans.exec.rebuild</td>
+          <td>clean jar:install</td>
+          <td>
+            <p>This goal is triggered when one invokes Rebuild action on the project's popup or the Clean and Build Main Project action (Shift-F11) from the main menu.</p>
+          </td>
+        </tr>
+        <tr>
+          <td>maven.netbeans.exec.test</td>
+          <td>test</td>
+          <td>
+            <p>Triggered by the Run tests action. Will run all the tests for the project. </p>
+          </td>
+        </tr>
+        <tr>
+          <td>maven.netbeans.exec.test-single</td>
+          <td>-Dtestcase=%TESTCLASS% test:single</td>
+          <td>
+            <p>Will run only the currently selected test. %TESTCLASS% string is replaced by the packagename of the currently selected java file. </p>
+          </td>
+        </tr>
+        <tr>
+          <td>maven.netbeans.exec.javadoc</td>
+          <td>javadoc</td>
+          <td>
+            <p> Triggered by the Generate Javadoc actionin the main menu or from the popup. Builds javadoc for the project.</p>
+          </td>
+        </tr>
+        <tr>
+          <td>maven.netbeans.exec.multiprojectbuild</td>
+          <td>-Dgoal=jar:install multiproject:goal</td>
+          <td>
+            <p>For projects that declare the maven.multiproject.includes property, the popup action will run this goal. </p>
+          </td>
+        </tr>
+        <tr>
+          <td>maven.netbeans.exec.multiprojectclean</td>
+          <td>multiproject:clean</td>
+          <td>
+            <p>For projects that declare the maven.multiproject.includes property, the popup action will clean the multiproject. </p>
+          </td>
+        </tr>
+      </table>
+      </div>
+      </section>
+  </body>
+</document>

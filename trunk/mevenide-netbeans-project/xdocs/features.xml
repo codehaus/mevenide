@@ -35,7 +35,8 @@
 	<div id="documentContent">
 	  <p>
 		<ul>
-		  <li>Direct integration with menu action and keyboard shotcuts for Build/Rebuild/Clean etc.</li>
+		  <li>Direct integration with menu action and keyboard shotcuts for Build/Rebuild/Clean etc. 
+                  See <a href="properties.html" class="documentLink"> how to customize</a> what gets run in the IDE.</li>
 		  <li>List of all available goals - plugin-defined ones as well as custom ones for project.</li>
 		  <li>Possibility to define your own goal-launching popup menu.</li>
 		  <li>Output to the output window.</li>

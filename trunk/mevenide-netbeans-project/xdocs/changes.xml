@@ -18,7 +18,7 @@
       </action>
       <action dev="mkleint" type="add">
         Possible to execute arbitrary maven goal or sequence of goals. IDE actions and shortcuts are matched
-        to relevant maven goals.
+        to relevant maven goals. The goals are customizable per project or user.
       </action>
     </release>
   </body>
