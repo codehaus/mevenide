@@ -54,7 +54,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import org.mevenide.ui.netbeans.ArtifactCookie;
-import org.mevenide.ui.netbeans.loader.MountDependenciesAction;
 import org.apache.maven.project.Dependency;
 import org.apache.maven.repository.Artifact;
 import org.mevenide.util.MevenideUtils;

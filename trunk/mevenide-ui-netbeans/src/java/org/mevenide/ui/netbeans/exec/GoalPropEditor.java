@@ -65,7 +65,6 @@ import org.mevenide.ui.netbeans.goals.GoalUtils;
  */
 public class GoalPropEditor extends PropertyEditorSupport
 {
-    private final static String GOAL_SEPARATOR = "/"; //NOI18N
     /** Creates new Goal */
     public GoalPropEditor()
     {

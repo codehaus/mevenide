@@ -53,41 +53,26 @@ import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.beans.PropertyEditor;
-import java.util.Enumeration;
-import java.util.StringTokenizer;
 import javax.swing.DefaultListModel;
-import javax.swing.FocusManager;
+import javax.swing.JPanel;
 import javax.swing.ListSelectionModel;
-import javax.swing.SwingUtilities;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import org.mevenide.ui.netbeans.goals.GoalNameCookie;
-import org.mevenide.ui.netbeans.goals.GoalsRootNode;
-import org.mevenide.Environment;
 import org.mevenide.goals.grabber.IGoalsGrabber;
 import org.mevenide.goals.manager.GoalsGrabbersManager;
 import org.mevenide.ui.netbeans.GoalsGrabberProvider;
-import org.openide.ErrorManager;
-import org.openide.explorer.ExplorerManager;
-import org.openide.nodes.AbstractNode;
-import org.openide.nodes.Children;
-import org.openide.nodes.Node;
 import org.openide.util.NbBundle;
-import org.openide.util.RequestProcessor;
 
 /**
  *
  * @author  Milos Kleint (ca206216@tiscali.cz)
  */
-public class GoalCustomEditor extends javax.swing.JPanel
+public class GoalCustomEditor extends JPanel
 {
     private PropertyEditor editor;
     private Listener listener;
@@ -108,8 +93,8 @@ public class GoalCustomEditor extends javax.swing.JPanel
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.gridheight = 7;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.fill = GridBagConstraints.BOTH;
+        gridBagConstraints.anchor = GridBagConstraints.NORTHWEST;
         gridBagConstraints.weightx = 0.2;
         gridBagConstraints.insets = new Insets(12, 12, 12, 0);
         // add as the first one..
@@ -441,7 +426,6 @@ public class GoalCustomEditor extends javax.swing.JPanel
         private void setValue()
         {
             DefaultListModel model = (DefaultListModel)lstGoals.getModel();
-            Enumeration en = model.elements();
             String[] arr = new String[model.size()];
             model.copyInto(arr);
             editor.setValue(arr);

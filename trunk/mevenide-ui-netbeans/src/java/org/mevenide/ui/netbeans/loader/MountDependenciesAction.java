@@ -54,16 +54,12 @@ import java.io.IOException;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
-import org.apache.maven.ArtifactListBuilder;
-import org.mevenide.ui.netbeans.ArtifactCookie;
-import org.mevenide.ui.netbeans.MavenProjectCookie;
-import org.apache.maven.project.Dependency;
 import org.apache.maven.repository.Artifact;
-import org.mevenide.Environment;
-import org.mevenide.EnvironmentUtil;
+import org.mevenide.ui.netbeans.ArtifactCookie;
 import org.openide.DialogDisplayer;
 import org.openide.ErrorManager;
 import org.openide.NotifyDescriptor;
+import org.openide.NotifyDescriptor.Message;
 import org.openide.awt.StatusDisplayer;
 import org.openide.filesystems.FileSystem;
 import org.openide.filesystems.JarFileSystem;
@@ -73,6 +69,7 @@ import org.openide.util.HelpCtx;
 import org.openide.util.NbBundle;
 import org.openide.util.RequestProcessor;
 import org.openide.util.actions.CookieAction;
+
 
 /** Action sensitive to some cookie that does something useful.
  *
@@ -153,7 +150,7 @@ public class MountDependenciesAction extends CookieAction
         }
         if (!allMounted)
         {
-            NotifyDescriptor desc = new NotifyDescriptor.Message("Some of the dependencies could not be mounted", NotifyDescriptor.ERROR_MESSAGE);
+            NotifyDescriptor desc = new Message("Some of the dependencies could not be mounted", NotifyDescriptor.ERROR_MESSAGE);
             DialogDisplayer.getDefault().notify(desc);
         }
     }

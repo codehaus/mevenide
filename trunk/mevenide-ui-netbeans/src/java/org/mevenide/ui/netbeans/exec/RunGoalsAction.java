@@ -55,16 +55,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.StringTokenizer;
 import javax.swing.JButton;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.event.ChangeListener;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.mevenide.goals.grabber.IGoalsGrabber;
 import org.mevenide.goals.grabber.ProjectGoalsGrabber;
-import org.mevenide.goals.manager.GoalsGrabbersManager;
 import org.mevenide.ui.netbeans.GoalsGrabberProvider;
 import org.mevenide.ui.netbeans.MavenProjectCookie;
 import org.mevenide.ui.netbeans.MavenSettings;
@@ -73,7 +70,8 @@ import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.ErrorManager;
 import org.openide.NotifyDescriptor;
-import org.openide.awt.Actions;
+import org.openide.awt.Actions.SubMenu;
+import org.openide.awt.Actions.SubMenuModel;
 import org.openide.loaders.DataObject;
 
 import org.openide.nodes.Node;
@@ -83,13 +81,13 @@ import org.openide.util.NbBundle;
 import org.openide.util.RequestProcessor;
 import org.openide.util.actions.CookieAction;
 import org.openide.util.actions.NodeAction;
-import org.openide.util.actions.Presenter;
 import org.openide.util.actions.SystemAction;
+import org.openide.util.actions.Presenter.Popup;
 
 /** Action to run favourite in a maven project. combines the favourite items from 
  * mavensettings and adds the local maven.xml goals.
  */
-public class RunGoalsAction extends CookieAction implements Presenter.Popup {
+public class RunGoalsAction extends CookieAction implements Popup {
 
     private static Log log = LogFactory.getLog(RunGoalsAction.class);
 
@@ -123,7 +121,7 @@ public class RunGoalsAction extends CookieAction implements Presenter.Popup {
 /**
  * copied from AntTargetAction. @thanks to Jesse Glick.
  */ 
-    private static final class SpecialSubMenu extends Actions.SubMenu {
+    private static final class SpecialSubMenu extends SubMenu {
 
         private final ActSubMenuModel model;
 
@@ -141,7 +139,7 @@ public class RunGoalsAction extends CookieAction implements Presenter.Popup {
 
     /** Model to use for the submenu.
     */
-    private static final class ActSubMenuModel implements Actions.SubMenuModel {
+    private static final class ActSubMenuModel implements SubMenuModel {
 
         private List targets = null; // List<String>
         private MavenProjectCookie project = null;
