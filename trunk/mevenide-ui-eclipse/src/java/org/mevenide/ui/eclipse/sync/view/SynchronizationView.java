@@ -43,6 +43,7 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
@@ -53,6 +54,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.part.IPageSite;
 import org.eclipse.ui.part.ViewPart;
@@ -305,6 +308,20 @@ public class SynchronizationView extends ViewPart implements IActionListener, IR
         ViewerSorter sorter = new SynchronizatioNodeSorter(); 
         artifactMappingNodeViewer.setSorter(sorter);
         
+        artifactMappingNodeViewer.getTree().addListener (SWT.MouseDoubleClick, 
+            	new Listener () {
+            		public void handleEvent (Event event) {
+            		    Object selection = ((IStructuredSelection) artifactMappingNodeViewer.getSelection()).getFirstElement();
+        	            boolean isExpanded = artifactMappingNodeViewer.getExpandedState(selection);
+        	            if ( !isExpanded ) {
+        	                artifactMappingNodeViewer.expandToLevel(selection, 1);
+        	            }
+        	            else {
+        	                artifactMappingNodeViewer.collapseToLevel(selection, 1);
+        	            }
+            		}
+            	}
+            );
         isDisposed = false;
     }
     
