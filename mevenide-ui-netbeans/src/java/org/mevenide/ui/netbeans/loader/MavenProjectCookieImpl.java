@@ -248,7 +248,7 @@ public class MavenProjectCookieImpl implements MavenProjectCookie, ArtifactCooki
             toReturn = new Property[0];
         } else
         {
-            toReturn = new Property[13];
+            toReturn = new Property[14];
             try
             {
                 toReturn[0] = new Reflection(project, String.class, "getDescription", null);
@@ -293,6 +293,9 @@ public class MavenProjectCookieImpl implements MavenProjectCookie, ArtifactCooki
                 toReturn[12] = new Reflection(project, String.class, "getGroupId", null);
                 toReturn[12].setName("GroupId");
                 toReturn[12].setDisplayName("Group ID");
+                toReturn[13] = new Reflection(project, String.class, "getArtifactId", null);
+                toReturn[13].setName("artifactId");
+                toReturn[13].setDisplayName("Artifact ID");
                 
                 //TODO add other properties and better organization of props..
             } catch (NoSuchMethodException exc)
@@ -370,10 +373,14 @@ public class MavenProjectCookieImpl implements MavenProjectCookie, ArtifactCooki
     {
         private static final String ELEMENT_VERSION = "currentVersion"; //NOI18N
         private static final String ELEMENT_ID = "id"; //NOI18N
+        private static final String ELEMENT_ARTIFACTID = "artifactId"; //NOI18N
         private String version;
         private String artifactID;
+        private String id;
         private boolean isVersion = false;
         private boolean isID = false;
+        private boolean isArtifactID = false;
+        
         private StringBuffer buff;
         private int level = 0;
         
@@ -383,12 +390,13 @@ public class MavenProjectCookieImpl implements MavenProjectCookie, ArtifactCooki
         }
         public String getName()
         {
-            return artifactID;
+            if (artifactID != null) return artifactID;
+            return id;
         }
         
         public void characters(char[] ch, int start, int length) throws SAXException
         {
-            if (isVersion || isID)
+            if (isVersion || isID || isArtifactID)
             {
                 buff.append(ch, start, length);
             }
@@ -398,10 +406,15 @@ public class MavenProjectCookieImpl implements MavenProjectCookie, ArtifactCooki
         public void endElement(String namespaceURI, String localName, String qName) throws SAXException
         {
             level = level - 1;
+            if (ELEMENT_ARTIFACTID.equals(qName) && level == 1)
+            {
+                isArtifactID = false;
+                artifactID = buff.toString();
+            }
             if (ELEMENT_ID.equals(qName) && level == 1)
             {
                 isID = false;
-                artifactID = buff.toString();
+                id = buff.toString();
             }
             if (ELEMENT_VERSION.equals(qName) && level == 1)
             {
@@ -413,6 +426,11 @@ public class MavenProjectCookieImpl implements MavenProjectCookie, ArtifactCooki
         
         public void startElement(String namespaceURI, String localName, String qName, Attributes atts) throws SAXException
         {
+            if (ELEMENT_ARTIFACTID.equals(qName) && level == 1)
+            {
+                isArtifactID = true;
+                buff = new StringBuffer();
+            }
             if (ELEMENT_ID.equals(qName) && level == 1)
             {
                 isID = true;
