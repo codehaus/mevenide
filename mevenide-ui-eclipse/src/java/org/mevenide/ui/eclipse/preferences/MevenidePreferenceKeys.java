@@ -33,5 +33,6 @@ public class MevenidePreferenceKeys {
     public static final String MAVEN_REPO_PREFERENCE_KEY = "maven.repo";
     public static final String POM_TEMPLATE_LOCATION_PREFERENCE_KEY = "pom.template.location";
     public static final String DEFAULT_GOALS_PREFERENCE_KEY = "maven.launch.defaultgoals";
+    public static final String REGISTERED_DEPENPENCY_TYPES = "mevenide.pom.dependency.type";
 
 }

@@ -16,11 +16,14 @@
  */
 package org.mevenide.ui.eclipse.adapters.properties;
 
+import java.util.Arrays;
 import org.apache.maven.project.Dependency;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.ui.views.properties.ComboBoxPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.TextPropertyDescriptor;
+import org.mevenide.ui.eclipse.Mevenide;
+import org.mevenide.ui.eclipse.preferences.PomEditorPreferencePage;
 import org.mevenide.util.MevenideUtils;
 
 /**
@@ -36,28 +39,31 @@ public class DependencyPropertySource extends AbstractPomPropertySource {
 	public static final String DEPENDENCY_TYPE = "type";
 	public static final String DEPENDENCY_URL = "url";
 
-	private static final String DEPENDENCY_TYPE_JAR = "jar";
-	private static final String DEPENDENCY_TYPE_EJB = "ejb";
-	private static final String DEPENDENCY_TYPE_PLUGIN = "plugin";
-	private static final String DEPENDENCY_TYPE_ASPECT = "aspect";
-	private static final String DEPENDENCY_TYPE_WAR = "war";
-	
-	private static final String[] DEPENDENCY_TYPES = new String[] {
-		DEPENDENCY_TYPE_JAR, 
-		DEPENDENCY_TYPE_EJB, 
-		DEPENDENCY_TYPE_PLUGIN,
-		DEPENDENCY_TYPE_ASPECT,
-		DEPENDENCY_TYPE_WAR
-	};
-
 	private Dependency dependency;
 	
+	private String[] availableTypes;
+	
 	private IPropertyDescriptor[] descriptors = new IPropertyDescriptor[6];
-	{
+
+	private String[] getAvailableTypes() {
+	    String[] userRegisteredTypes = PomEditorPreferencePage.getUserRegisteredTypes();
+	    String[] coreTypes = Mevenide.KNOWN_DEPENDENCY_TYPES;
+	    String[] availableTypes = new String[userRegisteredTypes.length + coreTypes.length];
+	    
+	    System.arraycopy(userRegisteredTypes, 0, availableTypes, 0, userRegisteredTypes.length);
+	    System.arraycopy(coreTypes, 0, availableTypes, userRegisteredTypes.length, coreTypes.length);
+	    Arrays.sort(availableTypes);
+	    
+	    return availableTypes;
+	}
+	
+	public DependencyPropertySource(Dependency dependency) {
+		this.dependency = dependency;
+		this.availableTypes = getAvailableTypes();
 		descriptors[0] = new TextPropertyDescriptor(
-			DEPENDENCY_ARTIFACTID,
-			DEPENDENCY_ARTIFACTID
-		);
+				DEPENDENCY_ARTIFACTID,
+				DEPENDENCY_ARTIFACTID
+			);
 		descriptors[1] = new TextPropertyDescriptor(
 			DEPENDENCY_GROUPID,
 			DEPENDENCY_GROUPID
@@ -73,7 +79,7 @@ public class DependencyPropertySource extends AbstractPomPropertySource {
 		descriptors[4] = new ComboBoxPropertyDescriptor(
 			DEPENDENCY_TYPE,
 			DEPENDENCY_TYPE,
-			DEPENDENCY_TYPES
+			availableTypes
 		);
 		((ComboBoxPropertyDescriptor) descriptors[4]).setLabelProvider(
 			new LabelProvider() {
@@ -89,10 +95,6 @@ public class DependencyPropertySource extends AbstractPomPropertySource {
 			DEPENDENCY_URL,
 			DEPENDENCY_URL
 		);
-	}
-
-	public DependencyPropertySource(Dependency dependency) {
-		this.dependency = dependency;
 	}
 
 	public Object getEditableValue() {
@@ -127,8 +129,8 @@ public class DependencyPropertySource extends AbstractPomPropertySource {
 	
 	private Integer getIndexOfType() {
 		String type = dependency.getType();
-		for (int i = 0; i < DEPENDENCY_TYPES.length; i++) {
-			if (DEPENDENCY_TYPES[i].equals(type)) {
+		for (int i = 0; i < availableTypes.length; i++) {
+			if (availableTypes[i].equals(type)) {
 				return new Integer(i);
 			}
 		}
@@ -217,8 +219,8 @@ public class DependencyPropertySource extends AbstractPomPropertySource {
 	}
 
 	private String getTypeForIndex(int index) {
-		if (index < DEPENDENCY_TYPES.length) {
-			return DEPENDENCY_TYPES[index];
+		if (index < availableTypes.length) {
+			return availableTypes[index];
 		}
 		return EMPTY_STR;
 	}

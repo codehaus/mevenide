@@ -103,9 +103,14 @@ public class DependenciesSection extends PageSection {
 					dependency.setGroupId("[groupId]");
 					dependency.setVersion("[version]");
 					dependency.setType("jar");
+					if ( pom.getDependencies() == null ) {
+					    pom.setDependencies(new ArrayList());
+					}
 					pom.addDependency(dependency);
 					Artifact artifact = DefaultArtifactFactory.createArtifact(dependency);
-					pom.setArtifacts(new ArrayList());
+					if ( pom.getArtifacts() == null ) {
+					    pom.setArtifacts(new ArrayList());
+					}
 					pom.getArtifacts().add(artifact);
 					return dependency;
 				}
