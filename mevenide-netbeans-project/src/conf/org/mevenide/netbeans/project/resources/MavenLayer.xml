@@ -60,10 +60,9 @@
             
             <folder name="Templates">
                <folder name="Empty">
-                   <folder name="src">
-                      <folder name="java"/>
-                      <folder name="conf"/>
-                   </folder> 
+                   <folder name="src"/>
+                   <folder name="test"/>
+                   <folder name="conf"/>
                    <file name="project.xml" url="nbresloc:/org/mevenide/netbeans/project/resources/empty/project.xml"/>
                    <file name="project.properties" url="nbresloc:/org/mevenide/netbeans/project/resources/empty/project.properties"/>
                    <file name="maven.xml" url="nbresloc:/org/mevenide/netbeans/project/resources/empty/maven.xml"/>

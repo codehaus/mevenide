@@ -20,8 +20,8 @@
   </mailingLists>
 
   <build>
-    <sourceDirectory>src/java</sourceDirectory>
-    <unitTestSourceDirectory>src/test</unitTestSourceDirectory>
+    <sourceDirectory>src</sourceDirectory>
+    <unitTestSourceDirectory>test</unitTestSourceDirectory>
     <!-- Unit test classes -->
     <unitTest>
       <includes>
