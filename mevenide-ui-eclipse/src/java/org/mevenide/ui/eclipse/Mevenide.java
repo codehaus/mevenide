@@ -150,7 +150,6 @@ public class Mevenide extends AbstractUIPlugin {
 		customLocationFinder = new CustomLocationFinder();
 		loadPreferences();
         initEnvironment();
-        initImageRegistry();
         DynamicPreferencePageFactory.getFactory().createPages();
         PlatformUI.getWorkbench().addWindowListener(new IWindowListener() {
 	        public void windowOpened(IWorkbenchWindow window) {
@@ -164,13 +163,15 @@ public class Mevenide extends AbstractUIPlugin {
         });
 	}
 
-    private void initImageRegistry() {
-        ImageRegistry registry = getImageRegistry();
-		for (int i = 0; i < IImageRegistry.IMAGE_KEYS.length; i++) {
-            registry.put(IImageRegistry.IMAGE_KEYS[i], getImageDescriptor(IImageRegistry.IMAGE_KEYS[i]));  
+	
+    protected void initializeImageRegistry(ImageRegistry reg) {
+        for (int i = 0; i < IImageRegistry.IMAGE_KEYS.length; i++) {
+            reg.put(IImageRegistry.IMAGE_KEYS[i], getImageDescriptor(IImageRegistry.IMAGE_KEYS[i]));  
         }
     }
-
+    
+    
+    
     /**
      * @warn we cast here because we need a WorkbenchWindow to access the MenuManager
      *       however WorkbenchWindow is part of internal api
