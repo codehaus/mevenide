@@ -18,7 +18,40 @@
       <name>${pom.name} User List</name>
     </mailingList>
   </mailingLists>
-
+  <dependencies>
+   <dependency>     
+        <groupId>netbeans</groupId>
+        <artifactId>openide</artifactId>
+        <!-- include nb module specification version..-->
+        <version>4.41</version>
+        <type>jar</type>
+        <url>http://www.netbeans.org</url>
+    </dependency>
+    <dependency>     
+        <groupId>netbeans</groupId>
+        <artifactId>org-openide-io</artifactId>
+        <version>1.2</version>
+        <type>jar</type>
+        <url>http://www.netbeans.org</url>
+        <!-- dependencies other than the openide jar need to specify the netbeans.module.dep
+         property in order for the maven0nbm-plugin to generate the correct Module's manifest entries.
+         see maven-nbm-plugin's help for more. -->
+        <properties>
+             <netbeans.module.dep>spec</netbeans.module.dep>
+        </properties>
+    </dependency>    
+<!--    <dependency>     
+        <groupId>netbeans</groupId>
+        <artifactId>org-netbeans-api-java</artifactId>
+        <version>1.5-SNAPSHOT</version>
+        <type>jar</type>
+        <url>http://www.netbeans.org</url>
+        <properties>
+            <netbeans.module.dep>spec</netbeans.module.dep>
+        </properties>
+        -->
+    </dependency>    
+  </dependencies>
   <build>
     <sourceDirectory>src</sourceDirectory>
     <unitTestSourceDirectory>test</unitTestSourceDirectory>

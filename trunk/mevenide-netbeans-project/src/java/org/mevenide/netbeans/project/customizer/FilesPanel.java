@@ -127,7 +127,7 @@ public class FilesPanel extends JPanel implements ProjectPanel {
         gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
         add(lblPOMFile, gridBagConstraints);
 
-        txtPOMFile.setMinimumSize(new java.awt.Dimension(50, 28));
+        txtPOMFile.setMinimumSize(new java.awt.Dimension(100, 28));
         txtPOMFile.setPreferredSize(new java.awt.Dimension(100, 28));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
@@ -157,7 +157,7 @@ public class FilesPanel extends JPanel implements ProjectPanel {
         gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
         add(lblProject, gridBagConstraints);
 
-        txtProject.setMinimumSize(new java.awt.Dimension(50, 28));
+        txtProject.setMinimumSize(new java.awt.Dimension(100, 28));
         txtProject.setPreferredSize(new java.awt.Dimension(100, 28));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
@@ -187,7 +187,7 @@ public class FilesPanel extends JPanel implements ProjectPanel {
         gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
         add(lblBuild, gridBagConstraints);
 
-        txtBuild.setMinimumSize(new java.awt.Dimension(50, 28));
+        txtBuild.setMinimumSize(new java.awt.Dimension(100, 28));
         txtBuild.setPreferredSize(new java.awt.Dimension(100, 28));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
@@ -245,7 +245,7 @@ public class FilesPanel extends JPanel implements ProjectPanel {
         gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
         add(lblUser, gridBagConstraints);
 
-        txtUser.setMinimumSize(new java.awt.Dimension(50, 28));
+        txtUser.setMinimumSize(new java.awt.Dimension(100, 28));
         txtUser.setPreferredSize(new java.awt.Dimension(100, 28));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
@@ -288,7 +288,7 @@ public class FilesPanel extends JPanel implements ProjectPanel {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 4;
-        gridBagConstraints.gridwidth = 4;
+        gridBagConstraints.gridwidth = 5;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);

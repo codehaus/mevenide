@@ -46,6 +46,8 @@ public class DependencyNode extends AbstractNode {
         project = proj;
         if (dep.isPlugin()) {
             setIconBase("org/mevenide/netbeans/project/resources/DependencyPlugin"); //NOI18N
+        } else if (dep.getType() != null && "pom".equalsIgnoreCase(dep.getType())) {
+            setIconBase("org/mevenide/netbeans/project/resources/DependencyPom"); //NOI18N
         } else {
             setIconBase("org/mevenide/netbeans/project/resources/DependencyIcon"); //NOI18N
         }
@@ -109,7 +111,7 @@ public class DependencyNode extends AbstractNode {
         } else {
             return Utilities.mergeImages(retValue, 
                         Utilities.loadImage("org/mevenide/netbeans/project/resources/ResourceNotIncluded.gif"),
-                        0, 16);
+                        0, 0);
         }
     }
     
@@ -121,7 +123,7 @@ public class DependencyNode extends AbstractNode {
         } else {
             return Utilities.mergeImages(retValue, 
                         Utilities.loadImage("org/mevenide/netbeans/project/resources/ResourceNotIncluded.gif"),
-                        0,16);
+                        0,0);
         }
     }    
     

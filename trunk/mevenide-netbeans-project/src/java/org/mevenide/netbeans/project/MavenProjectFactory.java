@@ -61,7 +61,9 @@ public class MavenProjectFactory implements ProjectFactory
             return null;
         }
         File projectDiskFile = FileUtil.toFile(projectFile);
-        if (projectDiskFile == null) return null;
+        if (projectDiskFile == null)  {
+            return null;
+        }
         try {
             Project proj =  new MavenProject(projectFile, projectDiskFile);
             return proj;
@@ -70,38 +72,10 @@ public class MavenProjectFactory implements ProjectFactory
             ErrorManager.getDefault().getInstance(MavenProjectFactory.class.getName()).notify(ErrorManager.INFORMATIONAL, exc);
             return null;
         }
-//        Document projectXml;
-//        try {
-//            projectXml = XMLUtil.parse(new InputSource(projectDiskFile.toURI().toString()), false, true, /*XXX need error handler*/null, null);
-//        } catch (SAXException e) {
-//            throw (IOException)new IOException(e.toString()).initCause(e);
-//        }
-//        Element projectEl = projectXml.getDocumentElement();
-//        if (!"project".equals(projectEl.getLocalName()) || !PROJECT_NS.equals(projectEl.getNamespaceURI())) { // NOI18N
-//            return null;
-//        }
-//        Element typeEl = Util.findElement(projectEl, "type", PROJECT_NS); // NOI18N
-//        if (typeEl == null) {
-//            return null;
-//        }
-//        String type = Util.findText(typeEl);
-//        if (type == null) {
-//            return null;
-//        }
-//        AntBasedProjectType provider = findAntBasedProjectType(type);
-//        if (provider == null) {
-//            return null;
-//        }
-//        AntProjectHelper helper = HELPER_CALLBACK.createHelper(projectDirectory, projectXml, state, provider);
-//        Project project = provider.createProject(helper);
-//        project2Helper.put(project, helper);
-//        helper2Project.put(helper, project);
-//        return project;
-        
     }
     
-    public void saveProject(Project project) throws IOException, java.lang.ClassCastException
-    {
+    public void saveProject(Project project) throws IOException {
+        // what to do here??
     }
     
 }

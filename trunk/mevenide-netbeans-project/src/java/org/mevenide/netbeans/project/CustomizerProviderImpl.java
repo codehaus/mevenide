@@ -18,15 +18,12 @@
 package org.mevenide.netbeans.project;
 
 import java.util.List;
-
 import javax.swing.JButton;
 import org.mevenide.netbeans.project.customizer.MavenCustomizer;
 import org.mevenide.netbeans.project.writer.NbProjectWriter;
-
 import org.netbeans.spi.project.ui.CustomizerProvider;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
-
 import org.openide.ErrorManager;
 
 /**
@@ -70,14 +67,58 @@ public class CustomizerProviderImpl implements CustomizerProvider {
         dialogDescriptor.setClosingOptions(new Object[] {options[1], options[2] });
         Object retValue = DialogDisplayer.getDefault().notify(dialogDescriptor);
         if (retValue == options[0] || retValue == options[1]) {
+//TODO - when Identification changes, propose to update other projects as well.
+            
+//            // remember old identification.
+//            String oldGroup = project.getOriginalMavenProject().getGroupId();
+//            String oldArtifact = project.getOriginalMavenProject().getArtifactId();
+//            String oldVersion = project.getOriginalMavenProject().getCurrentVersion();
             List changes = customizer.getChanges();
+            boolean wasError = false;
             try {
                 NbProjectWriter writer = new NbProjectWriter(project);
                 writer.applyChanges(changes);
             } catch (Exception exc) {
                 ErrorManager.getDefault().notify(ErrorManager.USER, exc);
+                wasError = true;
             }
+//            if (!wasError) {
+//                String newGroup = project.getOriginalMavenProject().getGroupId();
+//                String newArtifact = project.getOriginalMavenProject().getArtifactId();
+//                String newVersion = project.getOriginalMavenProject().getCurrentVersion();
+//                if (!stringsEqual(newArtifact, oldArtifact) ||
+//                    !stringsEqual(newVersion, oldVersion) ||
+//                    !stringsEqual(newGroup, oldGroup)) 
+//                {
+//                    Set opened = MavenFileOwnerQueryImpl.getInstance().getOpenedProjects();
+//                    List hasDeclared = new ArrayList();
+//                    Iterator it = opened.iterator();
+//                    while (it.hasNext()) {
+//                        MavenProject proj = (MavenProject)it.next();
+//                        List deps = proj.getOriginalMavenProject().getDependencies();
+//                        Iterator depIt = deps.iterator();
+//                        while (depIt.hasNext()) {
+//                            Dependency dep = (Dependency)depIt.next();
+//                            if (oldArtifact.equals(dep.getArtifact()) && 
+//                                oldGroup.equals(dep.getGroupId()) &&
+//                                oldVersion.equals(dep.getVersion())) {
+//                                    
+//                            }
+//                        }
+//                    }
+//                }
+//            }
         }
+    }
+    
+    private boolean stringsEqual(String one, String two) {
+        if (one == null && two == null) {
+            return true;
+        }
+        if (one == null || two == null) {
+            return false;
+        }
+        return (one.trim().equals(two.trim()));
     }
     
 }

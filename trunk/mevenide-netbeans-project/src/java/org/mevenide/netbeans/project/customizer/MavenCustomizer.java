@@ -278,13 +278,13 @@ public class MavenCustomizer extends JPanel implements ProjectValidateObserver {
                 "ListsCategory", // NOI18N
                 "Lists", 
                 "org/mevenide/netbeans/project/resources/Bullet", // NOI18N
-                new ListsPanel(false, false, project), 
+                new ListsPanel(project), 
                 null),
             new ConfigurationDescription(
                 "TeamCategory", // NOI18N
                 "Team", 
                 "org/mevenide/netbeans/project/resources/Bullet", // NOI18N
-                new TeamPanel(false, false, project), 
+                new TeamPanel(project), 
                 null),
             new ConfigurationDescription(
                 "ReportsCategory", // NOI18N

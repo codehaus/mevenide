@@ -237,31 +237,42 @@ public class MavenProject implements Project {
         // TODO - huh? what is the default location of the aspects? is there any?
         File fl = new File(path, "aspects"); //NOI18N
         return  FileUtil.normalizeFile(fl).toURI();
-    }    
+   }
    
-  public URI getIntegrationTestsDirectory() {
-        if (getOriginalMavenProject().getBuild() != null) {
-            String path = getOriginalMavenProject().getBuild().getIntegrationUnitTestSourceDirectory();
-            if (path != null) {
-                return getDirURI(getPropertyResolver().resolveString(path));
-            }
-        }
-        // this one should not fail
-        String path = properties.getResolvedValue("maven.src.dir"); //NOI18N
-        if (path == null) {
-            logger.warn("Strange thing here. src dir not found.");
-            return null;
-        }
-        // TODO - huh? what is the default location of the integration tests? is there any?
-        File fl = new File(path, "test/integration"); //NOI18N
-        return  FileUtil.normalizeFile(fl).toURI();
-    }    
-  
-  public URI getWebAppDirectory() {
-      String path = getPropertyResolver().getResolvedValue("maven.war.src"); //NOI18N
-      return path == null ? null : getDirURI(path);
-  }
-    
+   public URI getIntegrationTestsDirectory() {
+       if (getOriginalMavenProject().getBuild() != null) {
+           String path = getOriginalMavenProject().getBuild().getIntegrationUnitTestSourceDirectory();
+           if (path != null) {
+               return getDirURI(getPropertyResolver().resolveString(path));
+           }
+       }
+       // this one should not fail
+       String path = properties.getResolvedValue("maven.src.dir"); //NOI18N
+       if (path == null) {
+           logger.warn("Strange thing here. src dir not found.");
+           return null;
+       }
+       // TODO - huh? what is the default location of the integration tests? is there any?
+       File fl = new File(path, "test/integration"); //NOI18N
+       return  FileUtil.normalizeFile(fl).toURI();
+   }
+   
+   /**
+    * URI denoted by the maven.war.src property in the project context.
+    */
+   public URI getWebAppDirectory() {
+       String path = getPropertyResolver().getResolvedValue("maven.war.src"); //NOI18N
+       return path == null ? null : getDirURI(path);
+   }
+   
+   /**
+    * URI denoted by the maven.ear.src property in the project context.
+    */
+   public URI getEarDirectory() {
+       String path = getPropertyResolver().getResolvedValue("maven.ear.src"); //NOI18N
+       return path == null ? null : getDirURI(path);
+   }
+   
    private URI getDirURI(String path) {
        File parent = FileUtil.toFile(getProjectDirectory());
        File src = new File(parent.getAbsolutePath(), path);
@@ -274,7 +285,7 @@ public class MavenProject implements Project {
        }
        return FileUtil.normalizeFile(src).toURI();
    }
-   
+
     public URI getBuildClassesDir() {
         String path = properties.getResolvedValue("maven.build.dest");
         if (path != null) {
