@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<document>
+    <properties>
+    	<author email="rhill@wanadoo.fr">Gilles Dodinet</author>
+        <title>Help Page</title>
+    </properties>
+    <body>
+    	<section name="Entries">
+    		<a href="#Configure Mevenide">Configure Mevenide</a><br/>
+    		<a href="#Mevenide Menu">Mevenide Menu</a><br/>
+    		<a href="#Run Maven">Run Maven</a><br/>
+    		<a href="#Synchronize POM">Synchronize POM</a><br/>
+    		<a href="#Synchronize Project">Synchronize Project</a><br/>
+    		<a href="#Maven Console">Maven Console</a>
+    	</section>
+        <section name="Configure Mevenide">
+        	<p>
+			    Before using Mevenide, you will have to configure it. That is done through Maven Preferences page :
+				<i><code>Window &gt; Preferences &gt; Maven</code></i>. Java Home, Maven Home and 
+				Maven repository are required in order to successfully use Mevenide. 
+				<br/><br/>
+				Also a POM template can be specified that will be used when creating POM skeleton.
+				<br/><br/>
+				<img src="images/set-preferences.png"/><br/>
+				<br/>
+				<font size="-1"><b>Screenshot 1</b>Mevenide Preferences Page</font>
+			    <br/><br/>
+				Last thing to do : <i><code>Window &gt; Customize Perspective &gt; Other</code></i> please check 'Run Maven' to display the QuickLaunch  
+				button in the button bar.
+				<br/><br/>
+				<img src="images/customize-perspective.png"/>
+				<br/>
+				<font size="-1"><b>Screenshot 2</b>Customizing the perspective</font>
+				<br/>
+			</p>
+        </section>
+            
+        <section name="Mevenide Menu">
+			<p>	
+			    Mevenide actions can be accessed through the 'Maven' menu in either 
+			    <code>project.xml</code> or Eclipse Project contextual menu.
+			    <br/><br/>
+				<img src="images/mevenide-menu.png"/>
+				<br/>
+				<font size="-1"><b>Screenshot 3</b>Mevenide Menu</font>
+				<br/>
+            </p>
+        </section>
+        <section name="Run Maven">
+			<p>
+				When selecting '<code>Run Maven...</code>' from 'Maven' menu, a wizard appears that allows you
+				to pick options relevant in the context of the IDE (that means, f.i, <code>-b</code>, <code>-h</code>, <code>-p</code> options, among others, are not accessible).
+				System properties can also be specified using the 'Add' button. 
+				<br/><br/>
+				The Combo at the bottom of the wizard page is writable and goals to run are to be passed in there. The combo remembers last launched goals, 
+				<b>for all projects</b>. that means that theres no per-project launcher yet.
+				<br/><br/>
+				<img src="images/run-maven.png"/><br/>
+				<br/>
+				<font size="-1"><b>Screenshot 4</b>Run Maven Dialog</font>
+				<br/><br/>
+				Previously launched goals can be recalled using the QuickLaunch button. Config is added to the QuickLaunch list if not already present.
+				The <code>equals()</code> method is used to determine it. Two configs c1 and c2 are equal if and only c1.project = c2.project and c1.goals = c2.goals, 
+				whatever their options are. Tho, those are of course persisted.
+				<br/><br/>
+				<img src="images/mevenide-quicklaunch.png"/>
+				<br/>
+				<font size="-1"><b>Screenshot 5</b>QuickLaunch Button</font>
+            </p>
+        </section>
+        <section name="Synchronize POM">
+			<p>
+				Since POM contains much more information than Eclipse .classpath, when synchronizing POm,
+				user have to specify some info. For every Eclipse SourceFolder, the type of Maven Source Directory has to be specified
+				through the SourceDirectory Mapping wizard page. 
+				<img src="images/sourcedirectory-mapping.png"/>
+				<br/>
+				<font size="-1"><b>Screenshot 6</b>Source Directory Mapping Wizard Page</font>
+				<br/><br/>
+				Mevenide provides an automatic Dependency resolving mechanism that can determine in a rather accurate way the groupId, artifactId and version of a given Dependency.
+				Tho it can fail, then the user can help it using the Dependency Mapping wizard page.
+				Also please note that if the library is not installed in the local repo, groupId will NOT be resolved, but will be assigned to <code>nonResolvedGroupId</code> and a key 
+				will be added to project.properties to make use of Maven jar overriding facility.
+				<br/><br/>
+				<img src="images/dependency-mapping.png"/>
+				<br/>
+				<font size="-1"><b>Screenshot 7</b>Dependency Mapping Wizard Page</font>
+				<br/><br/>
+				Mevenide provides support for Dependency properties through the Dependency Property dialog that can be attained by pressing the 'Properties' button.
+				<br/><br/>
+				<img src="images/dependency-properties.png"/>
+				<br/>
+				<font size="-1"><b>Screenshot 8</b>Dependency Properties Dialog</font>				
+            </p>
+        </section>
+        <section name="Synchronize Project">
+        	<p>
+        		Eclipse Project Synchronization relies on maven-eclipse-plugin for now, so there are some known limitations (see MAVEN-525).
+        		<br/><br/>
+        		However it is planned to provide really integrated support, that will use the JDT API.
+        	</p>
+        </section>
+        <section name="Maven Console">
+        	<p>
+        		Mevenide doesnot provide yet an integrated Maven Console, tho Maven Console can still be used thanks the Eclipse Debug Console.
+        		<br/><br/>
+        		<img src="images/maven-console.png"/>
+        		<br/>
+        		<font size="-1"><b>Screenshot 9</b>Running Maven Console</font>				
+        	</p>
+        </section>
+   </body>
+</document>
