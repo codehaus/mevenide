@@ -119,6 +119,7 @@ public class PluginPanel extends JPanel implements ProjectPanel {
         col.setCellRenderer(mod);
         col = tblProperties.getTableHeader().getColumnModel().getColumn(0);
         col.setCellRenderer(mod);
+        tblProperties.setSurrendersFocusOnKeystroke(true);
         
     }
     
