@@ -14,6 +14,9 @@
  */
 package org.mevenide.ui.eclipse.sync.pom;
 
+import org.eclipse.jdt.core.IClasspathEntry;
+import org.mevenide.project.io.ProjectWriter;
+
 
 /**
  * 
@@ -21,10 +24,15 @@ package org.mevenide.ui.eclipse.sync.pom;
  * @version $Id$
  * 
  */
-public class DependencyVisitor {
+public class ArtifactVisitor {
 	
+	PomSynchronizer pomSynchronizer;
 	
-	public void visit(SourceEntry entry) {
+	ArtifactVisitor(PomSynchronizer synchronizer) {
+		this.pomSynchronizer = synchronizer;
+	}
+	
+	public void add(SourceEntry entry) {
 		
 //		IClasspathEntry classpathEntry = entry.getClasspathEntry();
 		
@@ -37,14 +45,13 @@ public class DependencyVisitor {
 //		);
 	}
 	
-	public void visit(LibraryEntry entry) {
-//		IClasspathEntry classpathEntry = entry.getClasspathEntry();
-//		ProjectWriter.getWriter().addDependency(
-//				pathResolver.getAbsolutePath(classpathEntry.getPath()), 
-//				getPom()
-//			);
-//		}
-		
+	public void add(DependencyEntry entry) throws Exception {
+		IClasspathEntry classpathEntry = entry.getClasspathEntry();
+		ProjectWriter writer = ProjectWriter.getWriter();
+		writer.addDependency(
+			pomSynchronizer.getPathResolver().getAbsolutePath(classpathEntry.getPath()), 
+			pomSynchronizer.getPom()
+		);
 	}
 	
 }

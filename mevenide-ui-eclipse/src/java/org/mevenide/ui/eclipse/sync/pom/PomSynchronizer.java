@@ -21,13 +21,12 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.JavaCore;
-import org.mevenide.project.io.ProjectReader;
 import org.mevenide.sync.AbstractPomSynchronizer;
-import org.mevenide.util.ProjectSkeleton;
 import org.mevenide.sync.ISynchronizer;
 import org.mevenide.ui.eclipse.MavenPlugin;
 import org.mevenide.ui.eclipse.sync.DefaultPathResolverDelegate;
 import org.mevenide.ui.eclipse.sync.IPathResolverDelegate;
+import org.mevenide.util.ProjectSkeleton;
 
 /**
  * 
@@ -80,10 +79,10 @@ public class PomSynchronizer extends AbstractPomSynchronizer implements ISynchro
      */
 	public void preSynchronization() {
 		try {
-            //Environment.prepareEnv(project.getLocation().toFile().getAbsolutePath());
-			if ( !ProjectReader.isWellFormed(pom.getFullPath().toFile()) ) {
-				createPom();
-			}
+//			Environment.prepareEnv(project.getLocation().toFile().getAbsolutePath());
+//			if ( !ProjectReader.isWellFormed(pom.getFullPath().toFile()) ) {
+//				createPom();
+//			}
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -118,8 +117,8 @@ public class PomSynchronizer extends AbstractPomSynchronizer implements ISynchro
      * @throws Exception
      */
 	private void updatePom(IClasspathEntry classpathEntry) throws Exception {
-		DependencyEntry entry = DependencyEntry.getEntry(classpathEntry);
-		DependencyVisitor visitor = new DependencyVisitor();
+		ArtifactEntry entry = ArtifactEntry.getEntry(classpathEntry);
+		ArtifactVisitor visitor = new ArtifactVisitor(this);
 		if ( entry != null ) {
 			entry.accept(visitor);
 		}
@@ -131,10 +130,12 @@ public class PomSynchronizer extends AbstractPomSynchronizer implements ISynchro
      * 
      * @return the maven Project Object Model
      */
-	private File getPom() {
+	File getPom() {
 		return new File(pathResolver.getAbsolutePath(pom.getLocation()));
 	}
 	
-    
+    public IPathResolverDelegate getPathResolver() {
+		return pathResolver;
+	}
 
 }

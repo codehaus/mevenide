@@ -22,14 +22,14 @@ import org.eclipse.jdt.core.IClasspathEntry;
  * @version $Id$
  * 
  */
-public abstract class DependencyEntry {
+public abstract class ArtifactEntry {
 	private IClasspathEntry classpathEntry ;
 	
-	public DependencyEntry(IClasspathEntry entry) {
+	public ArtifactEntry(IClasspathEntry entry) {
 		classpathEntry = entry;
 	}
 
-	public abstract void accept(DependencyVisitor visitor);
+	public abstract void accept(ArtifactVisitor visitor) throws Exception;
 	
 	/** 
 	 * sucky but the way IClasspathEntry is designed is sucky as well.. 
@@ -38,12 +38,12 @@ public abstract class DependencyEntry {
 	 * @param entry
 	 * @return
 	 */
-	public static DependencyEntry getEntry(IClasspathEntry entry) {
+	public static ArtifactEntry getEntry(IClasspathEntry entry) {
 		switch ( entry.getEntryKind() ) {
 			case IClasspathEntry.CPE_SOURCE:
 				return new SourceEntry(entry);
 			case IClasspathEntry.CPE_LIBRARY:
-				return new LibraryEntry(entry);
+				return new DependencyEntry(entry);
 		}
 		return null;
 	}
@@ -54,21 +54,20 @@ public abstract class DependencyEntry {
 
 }
 
-class SourceEntry extends DependencyEntry {
+class SourceEntry extends ArtifactEntry {
 	public SourceEntry(IClasspathEntry entry) {
 		super(entry);
 	}
-	public void accept(DependencyVisitor visitor) {
-		visitor.visit(this);
+	public void accept(ArtifactVisitor visitor) throws Exception {
+		visitor.add(this);
 	}
 }
 
-class LibraryEntry extends DependencyEntry {
-	public LibraryEntry(IClasspathEntry entry) {
+class DependencyEntry extends ArtifactEntry {
+	public DependencyEntry(IClasspathEntry entry) {
 		super(entry);
 	}
-	public void accept(DependencyVisitor visitor) {
-		visitor.visit(this);
+	public void accept(ArtifactVisitor visitor) throws Exception {
+		visitor.add(this);
 	}
-
 }
