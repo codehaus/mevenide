@@ -4,3 +4,4 @@ target
 *.log
 META-INF
 lib
+*.ser
