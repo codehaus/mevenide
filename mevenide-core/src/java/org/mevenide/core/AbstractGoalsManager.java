@@ -48,9 +48,11 @@ public abstract class AbstractGoalsManager implements IGoalsManager {
      */
     protected Set runnableGoals = new TreeSet();
 
-    /** bean that holds the list of all available goals */
+	/**
+	 * bean that holds the list of all available goals 
+	 */
 	protected IGoalsGrabber goalsGrabber;
-    
+
     /**
      * initalize goalsGrabber and load the previously saved runnableGoals
      * implement the Template pattern :

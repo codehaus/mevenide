@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<editmodel:DeploymentDiagramEditModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:editmodel="editmodel.xmi" metadata="nsuml-1.4" initialized="true" scrolledX="-5" scrolledY="105">
+<editmodel:DeploymentDiagramEditModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:editmodel="editmodel.xmi" metadata="nsuml-1.4" initialized="true" scrolledX="-5" scrolledY="14">
   <children xsi:type="editmodel:NodeEditModel" location="611,120" size="257,342" itemName="/lib" type="librairies" instanceLevel="true" stereotypeValue="directory">
     <children xsi:type="editmodel:ComponentEditModel" location="27,68" size="190,45" targetConnections="//@children.1/@sourceConnections.0" itemName="mevenide-core-1.0.jar" stereotypeValue="framework"/>
     <children xsi:type="editmodel:ComponentEditModel" location="25,135" size="190,45" targetConnections="//@children.1/@sourceConnections.1" itemName="goals-grabber-1.0.jar" stereotypeValue="library"/>
