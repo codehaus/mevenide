@@ -30,6 +30,8 @@ import org.apache.maven.project.Dependency;
 import org.apache.maven.project.Project;
 import org.mevenide.project.dependency.DependencyFactory;
 import org.mevenide.project.dependency.DependencyUtil;
+import org.mevenide.properties.PropertyModel;
+import org.mevenide.properties.PropertyModelFactory;
 
 /**  
  * 
@@ -76,15 +78,13 @@ class JarOverrideWriter {
 	}
 
 	private void addPropertiesOverride(String path, File propertiesFile, Dependency dep) throws Exception {
-		Properties properties = new Properties();
-		properties.load(new FileInputStream(propertiesFile));
+		PropertyModel model = PropertyModelFactory.getFactory().newPropertyModel(propertiesFile);
+		
+		model.newKeyPair("maven.jar.override", '=', "on");
+		
+		model.newKeyPair("maven.jar." + dep.getArtifactId(), '=', path);
 	
-	
-		properties.setProperty("maven.jar.override", "on");
-	
-		properties.setProperty("maven.jar." + dep.getArtifactId(), path);
-	
-		properties.store(new FileOutputStream(propertiesFile), null);
+		model.store(new FileOutputStream(propertiesFile));
 	} 
 
 	void unsetOverriding(File propertiesFile) throws Exception {
