@@ -35,8 +35,8 @@ public class DirectoryPropertySource extends AbstractPomPropertySource {
 
 	private static final Log log = LogFactory.getLog(DirectoryPropertySource.class);
 
-	private static final String DIRECTORY_PATH = "path";
-	private static final String DIRECTORY_TYPE = "type";
+	static final String DIRECTORY_PATH = "path";
+	static final String DIRECTORY_TYPE = "type";
 	
 	private Directory directory;
 	
@@ -59,6 +59,7 @@ public class DirectoryPropertySource extends AbstractPomPropertySource {
 			DIRECTORY_TYPE,
 			DIRECTORY_TYPE_VALUES
 		);
+		
 		((ComboBoxPropertyDescriptor) descriptors[1]).setLabelProvider(
 			new LabelProvider() {
 				public String getText(Object element) {
@@ -130,11 +131,7 @@ public class DirectoryPropertySource extends AbstractPomPropertySource {
 		String oldValue = null;
 		boolean changed = false;
 		if (DIRECTORY_PATH.equals(id)) {
-			oldValue = directory.getPath();
-			if (MevenideUtils.notEquivalent(newValue, oldValue)) {
-				directory.setPath(newValue);
-				changed = true;
-			}
+			//user shouldnot be allowed to modify path directly
 		}
 		else if (DIRECTORY_TYPE.equals(id)) {
 			newValue = DIRECTORY_TYPE_VALUES[((Integer) value).intValue()];
@@ -144,8 +141,7 @@ public class DirectoryPropertySource extends AbstractPomPropertySource {
 				changed = true;
 			}
 		}
-		if (changed)
-		{
+		if (changed) {
 			firePropertyChangeEvent(id.toString(), oldValue, newValue);
 		}
 	}

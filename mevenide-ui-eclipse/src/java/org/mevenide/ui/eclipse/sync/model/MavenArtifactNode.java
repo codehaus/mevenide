@@ -19,20 +19,20 @@ package org.mevenide.ui.eclipse.sync.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.maven.repository.Artifact;
 import org.apache.maven.project.Project;
+import org.apache.maven.repository.Artifact;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.ui.views.properties.IPropertySource;
+import org.mevenide.project.dependency.DefaultDependencyPathFinder;
 import org.mevenide.project.dependency.DependencyUtil;
 import org.mevenide.project.io.ProjectWriter;
 import org.mevenide.ui.eclipse.editors.properties.DependencyPropertySource;
 import org.mevenide.ui.eclipse.util.JavaProjectUtils;
-import org.mevenide.util.MevenideUtils;
 
 /**  
  * 
@@ -40,7 +40,7 @@ import org.mevenide.util.MevenideUtils;
  * @version $Id: DependencyNode.java,v 1.1 12 avr. 2004 Exp gdodinet 
  * 
  */
-public class MavenArtifactNode extends ArtifactNode implements IAdaptable {
+public class MavenArtifactNode extends ArtifactNode {
 	
 	private Artifact artifact;
 	private MavenProjectNode parent;
@@ -79,7 +79,10 @@ public class MavenArtifactNode extends ArtifactNode implements IAdaptable {
 		return properties != null && properties.length > 0;
 	}
 	public String toString() {
-		return "[" + artifact.getDependency().getGroupId() + "] " + artifact.getFile().getName();
+		String groupId = artifact.getDependency().getGroupId() + " : ";
+		String artifactId = artifact.getDependency().getArtifactId();
+		String version = artifact.getDependency().getVersion();
+		return groupId + artifactId + (version != null ? " : " + version : "") ;
 	}
 	
 	/**
@@ -89,8 +92,9 @@ public class MavenArtifactNode extends ArtifactNode implements IAdaptable {
 	 * 
 	 */
 	public void addTo(IProject project) throws Exception {
-		String eclipseDependencyProperty = MevenideUtils.resolveProperty((String) artifact.getDependency().getProperty("eclipse.dependency"))[1];
-		boolean treatAsEclipseDependency = "true".equals(eclipseDependencyProperty);
+		boolean treatAsEclipseDependency = false;
+		String eclipseDependencyProperty = (String) artifact.getDependency().getProperty("eclipse.dependency");
+		treatAsEclipseDependency = "true".equals(eclipseDependencyProperty);
 		IClasspathEntry entry = null;
 		if ( treatAsEclipseDependency ) {
 			entry = createNewProjectEntry();
@@ -102,9 +106,8 @@ public class MavenArtifactNode extends ArtifactNode implements IAdaptable {
 	}
 	
 	private IClasspathEntry createNewLibraryEntry() {
-		System.err.println(artifact.getPath());
-		System.err.println(artifact.generatePath());
-		return JavaCore.newLibraryEntry(new Path(artifact.generatePath()), null, null);
+		String artifactPath = new DefaultDependencyPathFinder(artifact.getDependency()).resolve();
+		return JavaCore.newLibraryEntry(new Path(artifactPath), null, null);
 	}
 	
 	private IClasspathEntry createNewProjectEntry() throws Exception {
@@ -149,8 +152,34 @@ public class MavenArtifactNode extends ArtifactNode implements IAdaptable {
 	
 	public Object getAdapter(Class adapter) {
 		if (adapter == IPropertySource.class) {
-			return new DependencyPropertySource(artifact.getDependency());
+			DependencyPropertySource propertySource = new DependencyPropertySource(artifact.getDependency());
+			propertySource.addPropertyChangeListener(this);
+			return propertySource;
 		}
 		return null;
+	}
+	
+	public void propertyChange(PropertyChangeEvent event) {
+		if ( DependencyPropertySource.DEPENDENCY_ARTIFACTID.equals(event.getProperty()) ) {
+			artifact.getDependency().setArtifactId((String) event.getNewValue());
+			System.err.println("1I");
+		}
+		if ( DependencyPropertySource.DEPENDENCY_GROUPID.equals(event.getProperty()) ) {
+			artifact.getDependency().setGroupId((String) event.getNewValue());
+			System.err.println("GI");
+		}
+		if ( DependencyPropertySource.DEPENDENCY_JAR.equals(event.getProperty()) ) {
+			artifact.getDependency().setJar((String) event.getNewValue());
+		}
+		if ( DependencyPropertySource.DEPENDENCY_TYPE.equals(event.getProperty()) ) {
+			artifact.getDependency().setType((String) event.getNewValue());
+		}
+		if ( DependencyPropertySource.DEPENDENCY_URL.equals(event.getProperty()) ) {
+			artifact.getDependency().setUrl((String) event.getNewValue());
+		}
+		if ( DependencyPropertySource.DEPENDENCY_VERSION.equals(event.getProperty()) ) {
+			artifact.getDependency().setVersion((String) event.getNewValue());
+		}
+		propagateNodeChangeEvent();
 	}
 }

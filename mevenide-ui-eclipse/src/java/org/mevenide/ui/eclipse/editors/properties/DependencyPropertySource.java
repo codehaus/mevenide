@@ -29,12 +29,12 @@ import org.mevenide.util.MevenideUtils;
  */
 public class DependencyPropertySource extends AbstractPomPropertySource {
 
-	private static final String DEPENDENCY_ARTIFACTID = "artifactId";
-	private static final String DEPENDENCY_GROUPID = "groupId";
-	private static final String DEPENDENCY_VERSION = "version";
-	private static final String DEPENDENCY_JAR = "jar";
-	private static final String DEPENDENCY_TYPE = "type";
-	private static final String DEPENDENCY_URL = "url";
+	public static final String DEPENDENCY_ARTIFACTID = "artifactId";
+	public static final String DEPENDENCY_GROUPID = "groupId";
+	public static final String DEPENDENCY_VERSION = "version";
+	public static final String DEPENDENCY_JAR = "jar";
+	public static final String DEPENDENCY_TYPE = "type";
+	public static final String DEPENDENCY_URL = "url";
 
 	private static final String DEPENDENCY_TYPE_JAR = "jar";
 	private static final String DEPENDENCY_TYPE_EJB = "ejb";

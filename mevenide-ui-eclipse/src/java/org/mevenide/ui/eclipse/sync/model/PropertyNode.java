@@ -22,7 +22,7 @@ package org.mevenide.ui.eclipse.sync.model;
  * @version $Id: PropertyNode.java,v 1.1 12 avr. 2004 Exp gdodinet 
  * 
  */
-public class PropertyNode implements ISynchronizationNode, ISelectableNode {
+public class PropertyNode extends AbstractSynchronizationNode implements ISelectableNode {
 	
 	private MavenArtifactNode parentNode;
 	

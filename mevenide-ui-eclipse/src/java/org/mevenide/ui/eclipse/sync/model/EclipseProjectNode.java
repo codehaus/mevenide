@@ -42,6 +42,7 @@ import org.mevenide.project.dependency.DependencyFactory;
 import org.mevenide.project.io.ProjectReader;
 import org.mevenide.ui.eclipse.DefaultPathResolver;
 import org.mevenide.ui.eclipse.IPathResolver;
+import org.mevenide.ui.eclipse.sync.event.ISynchronizationNodeListener;
 import org.mevenide.ui.eclipse.util.JavaProjectUtils;
 import org.mevenide.ui.eclipse.util.FileUtils;
 
@@ -51,7 +52,7 @@ import org.mevenide.ui.eclipse.util.FileUtils;
  * @version $Id: EclipseProjectNode.java,v 1.1 12 avr. 2004 Exp gdodinet 
  * 
  */
-public class EclipseProjectNode implements ISynchronizationNode {
+public class EclipseProjectNode extends AbstractSynchronizationNode {
 	private static final Log log = LogFactory.getLog(EclipseProjectNode.class);
 	
 	private IContainer eclipseContainer;
@@ -265,5 +266,11 @@ public class EclipseProjectNode implements ISynchronizationNode {
 	
 	public void setMavenProjects(List mavenProjects) {
 		this.mavenProjects = mavenProjects;
+	}
+	
+	protected void fireNodeChanged(ISynchronizationNode changedNode) {
+		for (int i = 0; i < getSynchronizationNodesListener().size(); i++) {
+			((ISynchronizationNodeListener) getSynchronizationNodesListener().get(i)).nodeChanged(changedNode);
+		}
 	}
 }

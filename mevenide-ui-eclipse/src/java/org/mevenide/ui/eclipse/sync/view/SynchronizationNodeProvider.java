@@ -14,8 +14,9 @@
  *  limitations under the License.
  * =========================================================================
  */
-package org.mevenide.ui.eclipse.sync.model;
+package org.mevenide.ui.eclipse.sync.view;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -23,6 +24,9 @@ import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
+import org.mevenide.ui.eclipse.sync.event.ISynchronizationNodeListener;
+import org.mevenide.ui.eclipse.sync.model.EclipseProjectNode;
+import org.mevenide.ui.eclipse.sync.model.ISynchronizationNode;
 
 /**
  * 
@@ -30,11 +34,10 @@ import org.eclipse.jface.viewers.Viewer;
  * @version $Id$
  * 
  */
-public class SynchronizationNodeContentProvider implements ITreeContentProvider {
-    private static Log log = LogFactory.getLog(SynchronizationNodeContentProvider.class); 
+public class SynchronizationNodeProvider implements ITreeContentProvider {
+    private static Log log = LogFactory.getLog(SynchronizationNodeProvider.class); 
     
     private int direction;
-    
     
     public Object[] getChildren(Object parentElement) {
     	if ( parentElement instanceof ISynchronizationNode ) {
@@ -66,12 +69,16 @@ public class SynchronizationNodeContentProvider implements ITreeContentProvider 
     
     public Object[] getElements(Object inputElement) {
     	RootNode node = (RootNode) inputElement;
-    	return new Object[] { new EclipseProjectNode(node.getProject(), node.getMavenProjects()) };
+    	EclipseProjectNode root = new EclipseProjectNode(node.getProject(), node.getMavenProjects());
+    	root.setSynchronizationNodesListener(node.getSynchronizationNodesListener());
+		return new Object[] { root };
     }
     
     public class RootNode {
     	private IProject project;
     	private List mavenProjects;
+    
+    	private List synchronizationNodesListener = new ArrayList();
     	
     	public RootNode(IProject project, List mavenProjects) {
     		this.project = project;
@@ -84,6 +91,19 @@ public class SynchronizationNodeContentProvider implements ITreeContentProvider 
 		
 		public IProject getProject() {
 			return project;
+		}
+
+		public void addNodeListener(ISynchronizationNodeListener node) {
+			synchronizationNodesListener.add(node);
+		}
+		
+		public void removeNodeListener(ISynchronizationNodeListener node) {
+			synchronizationNodesListener.remove(node);
+		}
+		
+		
+		List getSynchronizationNodesListener() {
+			return synchronizationNodesListener;
 		}
     }
 }

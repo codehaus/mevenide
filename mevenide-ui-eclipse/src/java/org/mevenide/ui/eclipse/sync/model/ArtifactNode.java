@@ -26,10 +26,12 @@ import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.jface.util.IPropertyChangeListener;
 import org.mevenide.ui.eclipse.util.FileUtils;
 import org.apache.maven.util.StringInputStream;
 
@@ -39,7 +41,7 @@ import org.apache.maven.util.StringInputStream;
  * @version $Id: ArtifactNode.java,v 1.1 12 avr. 2004 Exp gdodinet 
  * 
  */
-public abstract class ArtifactNode implements ISynchronizationNode, ISelectableNode {
+public abstract class ArtifactNode extends AbstractSynchronizationNode implements ISelectableNode, IAdaptable, IPropertyChangeListener {
 
 	private int direction;
 	
@@ -105,4 +107,10 @@ public abstract class ArtifactNode implements ISynchronizationNode, ISelectableN
 	public boolean select(int direction) {
 		return this.direction == direction;
 	}
+	
+	protected void propagateNodeChangeEvent() {
+		((EclipseProjectNode) getParent().getParent()).fireNodeChanged(this);
+	}
+	
 }
+
