@@ -164,7 +164,7 @@ public class MavenExecutor implements Runnable {
     }
     
     private InputOutput createInputOutput() {
-        InputOutput newio = IOProvider.getDefault().getIO("Maven", false);
+        InputOutput newio = IOProvider.getDefault().getIO("Maven (" + project.getName() + ")", false);
         newio.setErrSeparated(false);
         try {
             newio.getOut().reset();
