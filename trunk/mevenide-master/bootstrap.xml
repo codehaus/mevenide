@@ -1,0 +1,39 @@
+<project default="bootstrap">
+  <target name="init" description="o set the properties needed bby the build process">
+    
+    <input message="Enter the root directory where to put the modules"
+    	   addproperty="co.dir"/>	
+   	
+   	<condition property="quiet">
+   	  <not>
+        <available file="${co.dir}" type="dir" property="co.dir.present"/>
+      </not>
+    </condition>
+    <delete quiet="${quiet}" dir="${co.dir}"/>
+    <mkdir dir="${co.dir}" />
+    
+    
+  </target>
+  
+  <target name="bootstrap" depends="init, checkout" description="o run the build process">
+  	<ant antfile="${co.dir}/mevenide-master/build.xml"
+  		 dir="${co.dir}/mevenide-master"
+  		 target="build-all"/>
+  </target>
+  
+  <target name="checkout" depends="init">
+    <cvs cvsRoot=":pserver:anonymous@cvs.sourceforge.net:/cvsroot/mevenide"
+  		 dest="${co.dir}"
+  		 package="goals-grabber"/>
+  	<cvs cvsRoot=":pserver:anonymous@cvs.sourceforge.net:/cvsroot/mevenide"
+  		 dest="${co.dir}"
+  		 package="mevenide-master"/>
+    <cvs cvsRoot=":pserver:anonymous@cvs.sourceforge.net:/cvsroot/mevenide"
+  		 dest="${co.dir}"
+  		 package="mevenide-core"/>	 
+    <cvs cvsRoot=":pserver:anonymous@cvs.sourceforge.net:/cvsroot/mevenide"
+  		 dest="${co.dir}"
+  		 package="mevenide-ui-eclipse"/>
+  </target>
+  
+</project>
