@@ -32,6 +32,7 @@ public class CustomActionTabGroup extends AbstractLaunchConfigurationTabGroup {
 
 	private MavenArgumentsTab optionsTab = new MavenArgumentsTab();
 	private RefreshTab refreshTab = new RefreshTab();
+	private PatternsTab patternsTab = new PatternsTab();
 	/**
 	 * @see org.eclipse.debug.ui.ILaunchConfigurationTabGroup#createTabs(org.eclipse.debug.ui.ILaunchConfigurationDialog, java.lang.String)
 	 */
@@ -39,6 +40,7 @@ public class CustomActionTabGroup extends AbstractLaunchConfigurationTabGroup {
 		ILaunchConfigurationTab[] tabs = new ILaunchConfigurationTab[] {
 			optionsTab,
 			refreshTab,
+			patternsTab,
 		};
 		setTabs(tabs);
 	}
