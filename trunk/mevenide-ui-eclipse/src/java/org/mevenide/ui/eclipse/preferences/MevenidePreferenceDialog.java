@@ -83,6 +83,7 @@ public class MevenidePreferenceDialog {
 	private DirectoryFieldEditor mavenHomeEditor;
 	private DirectoryFieldEditor javaHomeEditor;
 	private DirectoryFieldEditor mavenRepoEditor;
+	private DirectoryFieldEditor pluginsInstallDirEditor;
 	private FileFieldEditor pomTemplateLocationEditor; 
 	private BooleanFieldEditor checkTimestampEditor;
 	
@@ -92,6 +93,7 @@ public class MevenidePreferenceDialog {
 	private String mavenHome ;
 	private String mavenRepository;
 	private String pomTemplateLocation;
+	private String pluginsInstallDir;
 	private boolean checkTimestamp;
 	
 	private String defaultGoals;
@@ -123,6 +125,7 @@ public class MevenidePreferenceDialog {
 		mavenHomeEditor = createEditor("maven.home", "Maven home", mavenHome);
 		javaHomeEditor = createEditor("java.home", "Java home", javaHome);
 		mavenRepoEditor = createEditor("maven.repo", "Maven Repository", mavenRepository);
+		pluginsInstallDirEditor = createEditor("maven.plugins.dir", "Plugins Directory", mavenRepository);
 		
 		pomTemplateLocationEditor = new FileFieldEditor("pom.template.location", "POM Template", true, topLevelContainer);
 		pomTemplateLocationEditor.fillIntoGrid(topLevelContainer, 3);
@@ -229,6 +232,9 @@ public class MevenidePreferenceDialog {
 		
 		defaultGoals = defaultGoalsEditor.getTextControl(topLevelContainer).getText();
 		Mevenide.getPlugin().setDefaultGoals(defaultGoals);
+		
+		pluginsInstallDir = pluginsInstallDirEditor.getTextControl(topLevelContainer).getText();
+		Mevenide.getPlugin().setPluginsInstallDir(pluginsInstallDir);
 	}
 	
 	
@@ -296,5 +302,13 @@ public class MevenidePreferenceDialog {
 	public boolean isInvalidPomTemplate() {
 		return invalidPomTemplate;
 	}
+
+    public String getPluginsInstallDir() {
+        return pluginsInstallDir;
+    }
+
+    public void setPluginsInstallDir(String pluginsInstallDir) {
+        this.pluginsInstallDir = pluginsInstallDir;
+    }
 
 }
