@@ -1,6 +1,12 @@
 <project default="build-all"
   xmlns:maven="jelly:maven">
 
+  <preGoal name="build">
+  	<copy file="${basedir}/project.properties" todir="${basedir}/../GoalsGrabber"/>	
+  	<copy file="${basedir}/project.properties" todir="${basedir}/../mevenide-core"/>	
+  	<copy file="${basedir}/project.properties" todir="${basedir}/../mevenide-ui-eclipse"/>	
+  </preGoal>
+
   <goal
     name="build-all"
     description="Build all Mevenide modules">
@@ -12,15 +18,25 @@
   <goal 
     name="build"
     description="Build each Mevenide module">
-
+	
+	<echo>
+		+-------------------------------------	
+		|  maven.home = ${maven.home}         
+		|  maven.repo = ${maven.repo.local}   
+		+-------------------------------------
+	</echo>
+	
     <maven:reactor
-      basedir="${basedir}"
-      includes="goals-grabber/project.xml, mevenide-core/project.xml, mevenide-ui-eclipse/project.xml"
-      goals="clean,java:compile,java:jar"
+      basedir=".."
+      includes="GoalsGrabber/project.xml,mevenide-core/project.xml,mevenide-ui-eclipse/project.xml"
+      excludes=""
+      goals="clean,java:compile,java:jar,jar:install"
       banner="Building"
       ignoreFailures="false"
     />
     
   </goal>
 
+
+  
 </project>

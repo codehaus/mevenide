@@ -1,0 +1,31 @@
+<cruisecontrol>
+   <project name="sampleproject">
+      <bootstrappers>
+         <currentbuildstatusbootstrapper file="logs/currentbuildstatus.txt"/>
+      </bootstrappers>
+      <modificationset  quietperiod="">
+         <cvs cvsroot=":pserver:anonymous@cvs.sourceforge.net:/cvsroot/mevenide" defaultbranchonly="" localworkingcopy=""
+                 tag="" property="" propertyondelete=""/>
+      </modificationset>
+      <schedule>
+         <ant buildfile="build.xml" target="maven">
+            <jvmarg arg=""/>
+         </ant>
+      </schedule>
+      <log dir="">
+         <merge file=""/>
+         <merge dir=""/>
+      </log>
+      <publishers>
+         <currentbuildstatuspublisher file="logs/currentbuildstatus.txt"/>
+         <email mailhost="" returnaddress="" defaultsuffix=""
+                   reportsuccess="" spamwhilebroken="" buildresultsurl="">
+            <always address=""/>
+            <failure address=""/>
+            <map alias="" address=""/>
+         </email>
+      </publishers>
+      <dateformat format=""/>
+      <plugin name="" classname=""/>
+   </project>
+</cruisecontrol>
