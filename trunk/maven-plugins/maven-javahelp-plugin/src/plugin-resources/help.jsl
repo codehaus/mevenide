@@ -1,8 +1,11 @@
 <?xml version="1.0"?>
+
 <!-- stylesheet to be used -->
+
 <jsl:stylesheet select="$doc"
     xmlns:define="jelly:define"
     xmlns:j="jelly:core"
+    xmlns:ant="jelly:ant"
     xmlns:jsl="jelly:jsl"
     xmlns:log="jelly:log"
     xmlns:util="jelly:util"
@@ -10,6 +13,7 @@
     xmlns:doc="doc"
     xmlns="dummy" 
     trim="true">
+
   <jsl:template match="document" trim="true">
     <j:useBean var="navbean" class="org.apache.maven.NavBean"/>
     <j:set var="location" value="${outFile.substring(destdir.length())}"/>
@@ -69,27 +73,37 @@
             <tr>
               <!-- project logo and link -->
               <td align="left" width="150">
-               
+                
+                <j:invoke var="_pos" method="length" on="${maven.docs.src}"/>
+                <j:invoke var="_relFile" method="substring" on="${file.toString()}">
+                  <j:arg type="int" value="${_pos + 1}"/>
+                </j:invoke>
+                <j:if test="${_relFile.equalsIgnoreCase('index.xml')}">
+                  <!-- The logo shall only be included in the root (index.xml) -->
                   <j:set var="logo" value="${pom.logo}"/>
                   <j:if test="${logo != null and logo != ''}">
                     <!-- set image to relative or complete -->
                     <j:set var="image" value="${pom.logo}"/>
                     <j:if test="${!image.startsWith('http://')}">
-                      <j:set var="image" value="${relativePath}${image}"/>
+                      <j:set var="image" value="${basedir}/${image}"/>
                     </j:if>
-					
+
+                    <!-- copy image into help -->
+                    <ant:copy file="${image}" toDir="${maven.javahelp.gen}/images"/>
+                    <util:replace var="image" oldChar="\" newChar="/" value="${image}"/>
+                    <j:set var="_pos" value="${image.lastIndexOf('/')}"/>
+                    <j:invoke var="image" method="substring" on="${image}">
+                      <j:arg type="int" value="${_pos + 1}"/>
+                    </j:invoke>
+                    <j:set var="image" value="/images/${image}"/>
                     <a href="${pom.url}">
                       <img src="${image}" align="left" alt="${pom.name}" border="0"/>
                     </a>
-                    
+
                   </j:if>
+                </j:if>
               </td>
               
-              <td align="center">
-                  <div id="mainTitle">
-                   <p valign="bottom"><img src="images/none.png"/> ${mevenide.title} </p>
-               	  </div>
-              </td>
               <!-- organization logo -->
               <td align="right" width="150">
                 <j:set var="logo" value="${pom.organization.logo}"/>
@@ -337,7 +351,6 @@
       </j:scope>
     </j:if>
   </jsl:template>
-
 
   <jsl:template match="item" trim="true">
     <j:scope>
