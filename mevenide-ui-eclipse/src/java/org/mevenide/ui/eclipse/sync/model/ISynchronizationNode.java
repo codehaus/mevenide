@@ -16,31 +16,15 @@
  */
 package org.mevenide.ui.eclipse.sync.model;
 
-import org.apache.maven.project.Project;
-
-/**
+/**  
  * 
  * @author <a href="mailto:rhill2@free.fr">Gilles Dodinet</a>
- * @version $Id$
+ * @version $Id: INode.java,v 1.1 12 avr. 2004 Exp gdodinet 
  * 
  */
-public interface IArtifactMappingNodeContainer {
-    
-    IArtifactMappingNode[] getNodes() ;
-    
-    void setNodes(IArtifactMappingNode[] nodes) ;
-    
-    String getLabel();
-    
-    IArtifactMappingNodeContainer filter(int direction) ;
-    
-    void attachPom(Project pom) ;
-    
-    int getDirection();
-    
-    void setDirection(int direction);
-    
-    Project getPrimaryPom();
-    
-    void removeNode(Object node);
+public interface ISynchronizationNode {
+	Object getData();
+	ISynchronizationNode[] getChildren();
+	ISynchronizationNode getParent();
+	boolean hasChildren();
 }

@@ -27,7 +27,7 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.ui.PlatformUI;
 import org.mevenide.project.io.ProjectReader;
-import org.mevenide.ui.eclipse.sync.view.SynchronizeView;
+import org.mevenide.ui.eclipse.sync.view.SynchronizationView;
 
 /**
  * either synchronize pom add .classpath 
@@ -37,7 +37,7 @@ import org.mevenide.ui.eclipse.sync.view.SynchronizeView;
  * 
  */
 public class SynchronizePomAction extends AbstractMevenideAction {
-    private static final String SYNCHRONIZE_VIEW_ID = "org.mevenide.ui.synchronize.view.SynchronizeView";
+    private static final String SYNCHRONIZE_VIEW_ID = "org.mevenide.ui.synchronize.view.SynchronizationView";
     
     private static Log log = LogFactory.getLog(SynchronizePomAction.class);
 	
@@ -45,7 +45,7 @@ public class SynchronizePomAction extends AbstractMevenideAction {
     
     public void run(IAction action) {
         try {
-            SynchronizeView view = (SynchronizeView) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(SYNCHRONIZE_VIEW_ID);
+            SynchronizationView view = (SynchronizationView) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(SYNCHRONIZE_VIEW_ID);
             view.setInput(mavenProject);
         }
         catch ( Exception e ) {

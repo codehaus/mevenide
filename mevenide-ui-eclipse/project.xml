@@ -31,7 +31,7 @@
            <version>1.0-beta-5</version>
            <url>http://forehead.werken.com/</url>
            <properties>
-            	<eclipse.plugin.bundle>true</eclipse.plugin.bundle>
+            	<eclipse.plugin.bundle>false</eclipse.plugin.bundle>
             </properties>
         </dependency>
         <dependency>
@@ -48,6 +48,11 @@
            <groupId>mevenide</groupId>
            <artifactId>mevenide-core</artifactId>
            <version>0.1.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+           <groupId>mevenide</groupId>
+           <artifactId>mevenide-grammar</artifactId>
+           <version>0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
            <groupId>mevenide</groupId>

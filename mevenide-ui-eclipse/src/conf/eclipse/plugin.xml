@@ -17,6 +17,7 @@
       <import plugin="@org.mevenide.core.id@"/>
       <import plugin="@org.mevenide.grabber.id@"/>
       <import plugin="@org.mevenide.config.id@"/>
+      <import plugin="@org.mevenide.grammar.id@"/>
       <import plugin="org.eclipse.help.base"/>
       <import plugin="org.eclipse.ui.ide"/>
       <import plugin="org.eclipse.core.variables"/>
@@ -244,8 +245,8 @@
             name="Pom Synchronizer"
             icon="icons/sync_view.gif"
             category="org.mevenide.ui.synchronize.view"
-            class="org.mevenide.ui.eclipse.sync.view.SynchronizeView"
-            id="org.mevenide.ui.synchronize.view.SynchronizeView">
+            class="org.mevenide.ui.eclipse.sync.view.SynchronizationView"
+            id="org.mevenide.ui.synchronize.view.SynchronizationView">
       </view>
    </extension>
    <extension
@@ -255,7 +256,7 @@
          <view
                ratio="0.5"
                relative="org.eclipse.ui.views.TaskList"
-               id="org.mevenide.ui.synchronize.view.SynchronizeView"
+               id="org.mevenide.ui.synchronize.view.SynchronizationView"
                relationship="right">
          </view>
       </perspectiveExtension>

@@ -40,7 +40,7 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="var" path="MAVEN_REPO/commons-httpclient/jars/commons-httpclient-2.0-rc1.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/forehead/jars/forehead-1.0-beta-5.jar"/>
-	<classpathentry kind="src" path="src/test/java"/>
 	<classpathentry sourcepath="ECLIPSE_HOME/plugins/org.eclipse.platform.source_3.0.0/src/org.eclipse.ui.forms_3.0.0/formssrc.zip" kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.ui.forms_3.0.0/forms.jar"/>
+	<classpathentry kind="src" path="/mevenide-grammar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
