@@ -98,7 +98,7 @@ class DirectoryMappingNodeContainer extends AbstractArtifactMappingNodeContainer
 			        }
 		        }
 	    	}
-	        attachOrphanArtifacts(orphanResources);
+	        attachOrphanArtifacts(orphanResources, project);
         }
     }
     
@@ -108,7 +108,7 @@ class DirectoryMappingNodeContainer extends AbstractArtifactMappingNodeContainer
         return resource.getDirectory().replaceAll("\\\\", "/").equals(directory.getPath().replaceAll("\\\\", "/"));
     }
     
-    private void attachOrphanArtifacts(List orphanArtifacts) {
+    private void attachOrphanArtifacts(List orphanArtifacts, Project project) {
 		
 		removeDuplicate(orphanArtifacts);		
 
@@ -119,6 +119,7 @@ class DirectoryMappingNodeContainer extends AbstractArtifactMappingNodeContainer
             DirectoryMappingNode node = new DirectoryMappingNode();
 			node.setArtifact(orphanArtifacts.get(i - nodes.length));
             node.setParent(this);
+            node.setDeclaringPom(project.getFile());
             newNodes[i] = node;
         }
 
@@ -176,11 +177,11 @@ class DirectoryMappingNodeContainer extends AbstractArtifactMappingNodeContainer
 	                }
                 }
             }
-            attachOrphanDirectories(orphanDirectories);
+            attachOrphanDirectories(orphanDirectories, project);
         }
     }
 
-    private void attachOrphanDirectories(Map directoriesCopy) {
+    private void attachOrphanDirectories(Map directoriesCopy, Project project) {
 		
 		List orphanDirectories = new ArrayList();
 		
@@ -194,7 +195,7 @@ class DirectoryMappingNodeContainer extends AbstractArtifactMappingNodeContainer
 			
 			orphanDirectories.add(directory);
 		}
-		attachOrphanArtifacts(orphanDirectories);
+		attachOrphanArtifacts(orphanDirectories, project);
 	}
 
 	private Map getPomSourceDirectories(Project project) {

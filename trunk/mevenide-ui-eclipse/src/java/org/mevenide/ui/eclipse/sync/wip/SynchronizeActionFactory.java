@@ -59,6 +59,7 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
+import org.mevenide.project.io.ProjectReader;
 import org.mevenide.ui.eclipse.Mevenide;
 
 /**
@@ -134,12 +135,7 @@ public class SynchronizeActionFactory {
 	private void createToIgnoreListAction() {
 		Action addToIgnoreList = new Action() {
 			public void run() {
-				try {
-					PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView("org.eclipse.ui.views.PropertySheet");
-				}
-				catch ( PartInitException e ) {
-					log.debug(e, e);
-				}
+				
 			}
 		};
 		addToIgnoreList.setId(MVN_IGNORE);
@@ -175,11 +171,26 @@ public class SynchronizeActionFactory {
 	}
 
 	private void createRemoveFromPomAction() {
+		final RemoveFromPomAction action = new RemoveFromPomAction();
 		Action removeFromPom = new Action() {
 			public void run() {
+				IArtifactMappingNode selectedNode = (IArtifactMappingNode) ((IStructuredSelection) synchronizeView.getArtifactMappingNodeViewer().getSelection()).getFirstElement();
 				
+				try  {
+					log.debug(selectedNode.getDeclaringPom());
+					Project mavenProject = ProjectReader.getReader().read(selectedNode.getDeclaringPom());
+					
+					if ( mavenProject != null ) {
+						action.removeEntry(selectedNode, mavenProject);
+					}
+					
+				}
+				catch ( Exception e ) {
+					log.debug("Unable to add item " + selectedNode.getArtifact() + " to classpath ", e );
+				}
 			}
 		};
+		action.addActionListener(synchronizeView);
 		removeFromPom.setId(REMOVE_FROM_POM);
 		removeFromPom.setText("Remove from Pom");
 		actionIds.put(REMOVE_FROM_POM, removeFromPom);

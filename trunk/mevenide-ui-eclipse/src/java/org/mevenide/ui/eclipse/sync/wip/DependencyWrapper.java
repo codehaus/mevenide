@@ -155,5 +155,10 @@ public class DependencyWrapper extends ArtifactWrapper {
 		ProjectWriter.getWriter().setDependencies(dependencies, project.getFile());
 	}
 	
-
+	public void removeFrom(Project project) throws Exception {
+		List newDeps = project.getDependencies();
+		newDeps.remove(dependency);
+		project.setDependencies(newDeps);
+		ProjectWriter.getWriter().setDependencies(newDeps, project.getFile());
+	}
 }

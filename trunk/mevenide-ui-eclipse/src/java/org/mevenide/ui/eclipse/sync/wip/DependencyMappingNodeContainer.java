@@ -90,16 +90,17 @@ class DependencyMappingNodeContainer extends AbstractArtifactMappingNodeContaine
             }
         }
         
-        attachOrphanDependencies(dependenciesCopy);
+        attachOrphanDependencies(dependenciesCopy, pom);
     }
 
-    private void attachOrphanDependencies(List dependenciesCopy) {
+    private void attachOrphanDependencies(List dependenciesCopy, Project project) {
         IArtifactMappingNode[] newNodes = new IArtifactMappingNode[nodes.length + dependenciesCopy.size()];
         System.arraycopy(nodes, 0, newNodes, 0, nodes.length);
         for (int i = nodes.length; i < newNodes.length; i++) {
             DependencyMappingNode node = new DependencyMappingNode();
             node.setDependency((Dependency) dependenciesCopy.get(i - nodes.length));
 			node.setParent(this);
+			node.setDeclaringPom(project.getFile());
 			newNodes[i] = node;
         }
         this.nodes = newNodes;

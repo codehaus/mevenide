@@ -48,6 +48,9 @@
  */
 package org.mevenide.ui.eclipse.sync.wip;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Build;
@@ -93,5 +96,33 @@ public class ResourceWrapper extends SourceFolder {
 		//@TODO manage case where it is a unitTestResourceDirectory
 		//project.getBuild().addResource(resource);
 		ProjectWriter.getWriter().addResource(resource.getDirectory(), project.getFile());
+	}
+	
+	public void removeFrom(Project project) throws Exception {
+		if ( project.getBuild() != null ) {
+			//remove from pom.build.resources
+			List resources = project.getBuild().getResources();
+			removeFromList(resources);
+			project.getBuild().setResources(resources);
+			
+			//remove from pom.build.unitTest.resources
+			if ( project.getBuild().getUnitTest() != null ) {
+				List unitTestResources = new ArrayList(project.getBuild().getResources());
+				removeFromList(unitTestResources);
+				project.getBuild().getUnitTest().setResources(unitTestResources);
+			}
+		}
+		ProjectWriter.getWriter().write(project);
+	}
+
+	private void removeFromList(List resources) {
+		List iteratorResources = new ArrayList(resources); 
+		for ( int i = 0; i < iteratorResources.size(); i++ ) {
+			Resource res = (Resource) iteratorResources.get(i);
+			String directory = res.getDirectory();
+			if ( directory != null && directory.equals(resource.getDirectory()) ) {
+				resources.remove(res);
+			}
+		}
 	}
 }
