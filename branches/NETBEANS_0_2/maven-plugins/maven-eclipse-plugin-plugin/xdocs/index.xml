@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<document>
+  <properties>
+    <title>maven-eclipse-plugin-plugin Properties</title>
+  </properties>
+  <body>
+    <section name="Overview">
+      <div id="documentContent">
+      	<p>
+   	      This plugin aims to simplify management of Eclipse plugin artefacts interdependency. It allows to track required plugin version, 
+   	      and also to automatically generate feature and site update distribution. Flexibility is attained through the declaration of 
+   	      user-defined Ant filter that allows to use custom replacement strings in the templates. 
+   	    </p>
+   	    <p>
+   	      In the future, maven-eclipse-plugin-plugin may also support fs/ssh/ftp deploiement of generated artifact archives. We're also 
+   	      working on a different build mode that will allow to generate eclipse plugins from a stated dependency instead of bundling it as a 
+   	      runtime library. 
+   	    </p>
+   	    <p>
+          Please refer to <a href="goals.html">this document</a> for a complete list of features.   	        
+   	    </p>
+   	  </div>
+    </section>
+    <section name="Versions">
+    	<div id="documentContent">
+      	  <p>
+      	  	 Latest version available for download is 0.3.1. It works with Eclipse 3.0, and should also with 2.x stream builds. 
+      	  	 Also please note that the PDE Plugin doesnot support OSGI Bundles yet.
+      	  </p>
+      	</div>
+    </section>
+    <section name="Installing">
+      <div id="documentContent">
+      <p>
+		To install the plugin automatically, please add the <code>http://mevenide.codehaus.org/repository</code> to your <code>maven.repo.remote</code> parameter.
+		And use the plugin:download maven goal to install the plugin.
+		<source>
+	maven -DartifactId=maven-eclipse-plugin-plugin -DgroupId=mevenide -Dversion=0.3.1 plugin:download
+		</source>
+	  </p>
+   	  </div>
+    </section>
+  </body>
+</document>
