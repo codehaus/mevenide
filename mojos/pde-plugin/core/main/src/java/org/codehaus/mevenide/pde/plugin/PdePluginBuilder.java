@@ -45,7 +45,7 @@ public class PdePluginBuilder {
     private String classesLocation;
     
     /** name of generated zip file */
-    private String artifactName;
+    private String artifact;
     
     /** comma separated list of files to exclude from the generated zip */
     private String excludes;
@@ -60,14 +60,14 @@ public class PdePluginBuilder {
 	    DependencyCollector collector = new DependencyCollector(basedir.getAbsolutePath(), libFolder, project); 
 	    collector.collect();
 	    
-	    SimpleZipCreator zipCreator = new SimpleZipCreator(new File(classesLocation).getAbsolutePath(), new File(basedir, artifactName).getAbsolutePath());
+	    SimpleZipCreator zipCreator = new SimpleZipCreator(new File(classesLocation).getAbsolutePath(), new File(artifact).getAbsolutePath());
 	    zipCreator.setExcludes(excludes);
 	    zipCreator.setIncludes(includes);
 	    zipCreator.zip();
     }
     
-    public String getArtifactName() { return artifactName; }
-    public void setArtifactName(String artifactName) { this.artifactName = artifactName; }
+    public String getArtifact() { return artifact; }
+    public void setArtifact(String artifact) { this.artifact = artifact; }
     
     public File getBasedir() { return basedir; }
     public void setBasedir(File basedir) { this.basedir = basedir; }
@@ -86,4 +86,5 @@ public class PdePluginBuilder {
  
     public MavenProject getProject() { return project; }
     public void setProject(MavenProject project) { this.project = project; }
+    
 }

@@ -26,6 +26,8 @@ import org.apache.maven.project.Project;
 import org.codehaus.mevenide.pde.PdePluginException;
 import org.codehaus.mevenide.pde.archive.Include;
 import org.codehaus.mevenide.pde.converter.MavenProjectConverter;
+import org.codehaus.mevenide.pde.version.VersionAdapter;
+import org.codehaus.plexus.util.StringUtils;
 
 
 /**  
@@ -38,17 +40,30 @@ public class PdePluginTag extends JellyTag {
     
     public void doTag(XMLOutput arg0) throws JellyTagException {
         try {
+            
+            Project m1Project = (Project) getContext().getVariable("pom");
+            
             PdePluginBuilder builder = new PdePluginBuilder();
             
-            builder.setArtifactName((String) getContext().getVariable("maven.final.name"));
+            String artifactName = (String) getContext().getVariable("maven.pde.name");
+            if ( StringUtils.isEmpty(artifactName) ) {
+                artifactName = m1Project.getArtifactId() + "-" + 
+                               new VersionAdapter().adapt(m1Project.getCurrentVersion());
+            }
+            
+            String destinationFolder = (String) getContext().getVariable("maven.build.dir");
+            builder.setArtifact(destinationFolder + "/" + artifactName + ".zip");
             
             File basedir = new File((String) getContext().getVariable("basedir"));
             builder.setBasedir(basedir);
            
-            builder.setClassesLocation((String) getContext().getVariable("maven.build.dir"));
-            builder.setExcludes((String) getContext().getVariable("maven.pde.excludes"));
+            String excludes = StringUtils.stripEnd((String) getContext().getVariable("maven.pde.excludes"), ",");
+            builder.setExcludes(excludes);
+            
             builder.setLibFolder((String) getContext().getVariable("maven.pde.libTargetPath"));
-            builder.setProject(new MavenProjectConverter((Project) getContext().getVariable("pom")).convert());
+            builder.setClassesLocation((String) getContext().getVariable("maven.build.dest"));
+
+            builder.setProject(new MavenProjectConverter(m1Project).convert());
             
             List includes = getCommonIncludes(basedir);
                 
@@ -56,6 +71,7 @@ public class PdePluginTag extends JellyTag {
             builder.setIncludes(includes);
             
             builder.build();
+           
         }
         catch (PdePluginException e) {
             throw new JellyTagException("Unable to build plugin", e);

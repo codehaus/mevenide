@@ -3,34 +3,20 @@
   <extend>../project.xml</extend>
   <pomVersion>3</pomVersion>
   <name>Maven PDE Plugin (M1)</name>
+  <groupId>maven-pde-m1-plugin</groupId>
   <artifactId>maven-pde-m1-plugin</artifactId>
   <currentVersion>0.1-SNAPSHOT</currentVersion>
   <dependencies>
-  	<dependency>
-  		<groupId>mevenide</groupId>
-  		<artifactId>maven-pde-core-plugin</artifactId>
-  		<version>0.1-SNAPSHOT</version>
-  	</dependency>
-  	<dependency>
-  		<groupId>maven</groupId>
-  		<artifactId>maven</artifactId>
-  		<version>1.0</version>
-  	</dependency>
-  	<dependency>
-  		<groupId>commons-jelly</groupId>
-  		<artifactId>commons-jelly</artifactId>
-  		<version>20030902.160215</version>
-  	</dependency>
-  	<dependency>
-      <groupId>mevenide</groupId>
-      <artifactId>mevenide-config</artifactId>
-      <version>0.5</version>
+    <dependency>
+      <groupId>maven</groupId>
+      <artifactId>maven</artifactId>
+      <version>1.0</version>
       <type>jar</type>
     </dependency>
     <dependency>
-      <groupId>mevenide</groupId>
-      <artifactId>mevenide-core</artifactId>
-      <version>0.4</version>
+      <groupId>commons-jelly</groupId>
+      <artifactId>commons-jelly</artifactId>
+      <version>20030902.160215</version>
       <type>jar</type>
     </dependency>
     <dependency>
@@ -58,46 +44,10 @@
       <type>jar</type>
     </dependency>
     <dependency>
-      <groupId>plexus</groupId>
-      <artifactId>plexus-artifact-container</artifactId>
-      <version>1.0-alpha-1-SNAPSHOT</version>
-      <type>jar</type>
-    </dependency>
-    <dependency>
       <groupId>classworlds</groupId>
       <artifactId>classworlds</artifactId>
       <version>1.1-SNAPSHOT</version>
       <jar>classworlds-1.1-SNAPSHOT.jar</jar>
-      <type>jar</type>
-    </dependency>
-    <dependency>
-      <groupId>maven</groupId>
-      <artifactId>maven-plugin</artifactId>
-      <version>2.0-SNAPSHOT</version>
-      <type>jar</type>
-    </dependency>
-    <dependency>
-      <groupId>maven</groupId>
-      <artifactId>maven-model</artifactId>
-      <version>2.0-SNAPSHOT</version>
-      <type>jar</type>
-    </dependency>
-    <dependency>
-      <groupId>maven</groupId>
-      <artifactId>maven-artifact</artifactId>
-      <version>2.0-SNAPSHOT</version>
-      <type>jar</type>
-    </dependency>
-    <dependency>
-      <groupId>maven</groupId>
-      <artifactId>maven-core</artifactId>
-      <version>2.0-SNAPSHOT</version>
-      <type>jar</type>
-    </dependency>
-    <dependency>
-      <groupId>maven</groupId>
-      <artifactId>wagon-api</artifactId>
-      <version>1.0-alpha-1-SNAPSHOT</version>
       <type>jar</type>
     </dependency>
     <!-- 
@@ -130,21 +80,9 @@
       <type>jar</type>
     </dependency>
     <dependency>
-      <groupId>maven</groupId>
-      <artifactId>maven-jelly-tags</artifactId>
-      <version>1.0</version>
-      <type>jar</type>
-    </dependency>
-    <dependency>
       <groupId>werkz</groupId>
       <artifactId>werkz</artifactId>
-      <version>1.0-beta-10</version>
-      <type>jar</type>
-    </dependency>
-    <dependency>
-      <groupId>commons-jelly</groupId>
-      <artifactId>commons-jelly-tags-ant</artifactId>
-      <version>20030211.142045</version>
+      <version>20040426.222000</version>
       <type>jar</type>
     </dependency>
     <dependency>
@@ -159,18 +97,84 @@
       <version>1.0-beta-1</version>
       <type>jar</type>
     </dependency>
+    <dependency>
+      <groupId>mevenide</groupId>
+      <artifactId>maven-pde-core-plugin</artifactId>
+      <version>0.1-SNAPSHOT</version>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>mevenide</groupId>
+      <artifactId>mevenide-config</artifactId>
+      <version>0.5</version>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>mevenide</groupId>
+      <artifactId>mevenide-core</artifactId>
+      <version>0.4</version>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>plexus</groupId>
+      <artifactId>plexus-artifact-container</artifactId>
+      <version>1.0-alpha-1-SNAPSHOT</version>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>maven</groupId>
+      <artifactId>maven-plugin</artifactId>
+      <version>2.0-SNAPSHOT</version>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>maven</groupId>
+      <artifactId>maven-model</artifactId>
+      <version>2.0-SNAPSHOT</version>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>maven</groupId>
+      <artifactId>maven-artifact</artifactId>
+      <version>2.0-SNAPSHOT</version>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>maven</groupId>
+      <artifactId>maven-core</artifactId>
+      <version>2.0-SNAPSHOT</version>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>maven</groupId>
+      <artifactId>wagon-api</artifactId>
+      <version>1.0-alpha-1-SNAPSHOT</version>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>maven</groupId>
+      <artifactId>maven-jelly-tags</artifactId>
+      <version>1.0</version>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>commons-jelly</groupId>
+      <artifactId>commons-jelly-tags-ant</artifactId>
+      <version>20030625.032346</version>
+      <type>jar</type>
+    </dependency>
   </dependencies>
   <build>
-  	<resources>
-  	  <resource>
+    <resources>
+      <resource>
         <directory>${basedir}</directory>
         <filtering>false</filtering>
         <includes>
-        	<include>plugin.jelly</include>
-        	<include>project.xml</include>
+          <include>plugin.jelly</include>
+          <include>project.xml</include>
         </includes>
       </resource>
-  	</resources>
+    </resources>
   </build>
 </project>
 

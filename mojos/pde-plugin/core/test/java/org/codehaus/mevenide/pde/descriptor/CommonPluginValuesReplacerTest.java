@@ -28,6 +28,7 @@ import org.jdom.input.SAXBuilder;
 
 
 /**  
+ * @todo use eclipse property indirection (%value) 
  * 
  * @author <a href="mailto:rhill2@free.fr">Gilles Dodinet</a>
  * @version $Id$
