@@ -66,8 +66,8 @@ public class JarOverrideReader {
 	}
 
 	String getOverrideValue(File pom, Dependency dependency) throws Exception {
-		PropertyModel projectProperties = projectModelFactory.newPropertyModel(new File(pom.getParent(), "project.properties"), true);
-		PropertyModel buildProperties = projectModelFactory.newPropertyModel(new File(pom.getParent(), "project.properties"), true);
+		PropertyModel projectProperties = projectModelFactory.newPropertyModel(new File(pom.getParent(), "project.properties"), false);
+		PropertyModel buildProperties = projectModelFactory.newPropertyModel(new File(pom.getParent(), "project.properties"), false);
 		
 		String artifactId = dependency.getArtifactId();
 
@@ -143,9 +143,9 @@ public class JarOverrideReader {
 	
 	private boolean isJarOverrideOn(KeyValuePair jarOverrideKvp) {
 		if ( jarOverrideKvp != null 
-				&& ( "on".equals(jarOverrideKvp.getValue()) 
-					 ||	"1".equals(jarOverrideKvp.getValue()) 
-					 ||	"true".equals(jarOverrideKvp.getValue())		
+				&& ( "on".equals(jarOverrideKvp.getValue().trim()) 
+					 ||	"1".equals(jarOverrideKvp.getValue().trim()) 
+					 ||	"true".equals(jarOverrideKvp.getValue().trim())		
 					)
 			) {
 			return true;
