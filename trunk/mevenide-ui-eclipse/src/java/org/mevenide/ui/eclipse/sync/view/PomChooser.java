@@ -55,7 +55,7 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Project;
-import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IContainer;
 import org.eclipse.jface.dialogs.Dialog;
 import org.mevenide.project.io.ProjectReader;
 import org.mevenide.util.MevenideUtils;
@@ -69,10 +69,10 @@ import org.mevenide.util.MevenideUtils;
 public class PomChooser {
     private static final Log log = LogFactory.getLog(PomChooser.class);
     
-	private IProject project;
+	private IContainer container;
 	
-	public PomChooser(IProject project) {
-		this.project = project;
+	public PomChooser(IContainer container) {
+		this.container = container;
 	}
 	
 	/**
@@ -101,7 +101,7 @@ public class PomChooser {
 	
 	
 	public List getPoms() {
-		File projectRoot = new File(project.getLocation().toString());
+	    File projectRoot = new File(container.getLocation().toOSString());
 		List allPoms = findPoms(projectRoot);
 		log.debug("Found " + allPoms.size() + " POM file");
 		return allPoms;

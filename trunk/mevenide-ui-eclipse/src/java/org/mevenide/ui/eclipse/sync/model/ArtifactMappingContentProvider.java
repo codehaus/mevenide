@@ -84,7 +84,7 @@ public class ArtifactMappingContentProvider implements ITreeContentProvider {
 
         if ( parentElement instanceof ProjectContainer ) {
             //@TODO move to ProjectContainer
-            IProject project = ((ProjectContainer) parentElement).getProject();
+            IProject project = ((ProjectContainer) parentElement).getProject().getProject();
             List dependencyContainers = null;
             List directoryContainers = null;
             try {

@@ -55,6 +55,7 @@ import java.io.Reader;
 
 import org.apache.maven.project.Project;
 import org.apache.maven.util.StringInputStream;
+import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
@@ -95,10 +96,10 @@ public abstract class ArtifactWrapper {
 		mvnIgnoreFile.appendContents(new StringInputStream("\r\n" + ignoreLine), true, true, null);
 	}
 	
-	public void addToMvnIgnore(IProject project) throws Exception {
+	public void addToMvnIgnore(IContainer container) throws Exception {
 		String ignoreLine = getIgnoreLine();
 		
-		IFile mvnIgnoreFile = FileUtils.assertIgnoreFileExists(project);
+		IFile mvnIgnoreFile = FileUtils.assertIgnoreFileExists(container);
 		
 		addIgnoreLine(ignoreLine, mvnIgnoreFile);
 	}

@@ -48,7 +48,7 @@
  */
 package org.mevenide.ui.eclipse.sync.model;
 
-import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IContainer;
 
 /**
  * 
@@ -62,19 +62,19 @@ public class ProjectContainer {
     public static final int CONFLICTING = 4;
     public static final int NO_CHANGE = 32;
     
-    private IProject project;
+    private IContainer project;
    
     private Object[] pomContainers;
     
-    public ProjectContainer(IProject project) {
+    public ProjectContainer(IContainer project) {
         this.project = project;
     }
     
-    public IProject getProject() {
+    public IContainer getProject() {
         return project;
     }
     
-    public void setProject(IProject project) {
+    public void setContainer(IContainer project) {
         this.project = project;
     }
 

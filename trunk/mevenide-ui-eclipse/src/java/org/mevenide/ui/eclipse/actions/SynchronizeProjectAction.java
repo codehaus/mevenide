@@ -50,7 +50,11 @@ package org.mevenide.ui.eclipse.actions;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.ui.PlatformUI;
 import org.mevenide.ui.eclipse.sync.view.SynchronizeView;
 
@@ -66,15 +70,28 @@ public class SynchronizeProjectAction extends AbstractMevenideAction {
     
     private static Log log = LogFactory.getLog(SynchronizeProjectAction.class);
 	
+	private IContainer container;
+
     public void run(IAction action) {
         try {
             SynchronizeView view = (SynchronizeView) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(SYNCHRONIZE_VIEW_ID);
-            view.setInput(currentProject);
+			IContainer f = ResourcesPlugin.getWorkspace().getRoot().getContainerForLocation(container.getLocation());
+			view.setInput(f);
         }
         catch ( Exception e ) {
             log.debug("WIP execption ", e);
         }
 	}
+
+	public void selectionChanged(IAction action, ISelection selection) {
+        super.selectionChanged(action, selection);
+		
+		Object firstElement = ((StructuredSelection) selection).getFirstElement();
+       
+        //if ( firstElement instanceof IContainer ) {
+	   		container = (IContainer) firstElement;        
+        //}
+    }
 
 
 }
