@@ -13,7 +13,7 @@
 						any project.xml file. When triggered a <a href="#Launch Wizard">dialog</a> pops up to let the user choose goals and options.
 						<br/>
 						<center> 
-							<img border="1px" src="images/screenshots/run/project_context_menu.png"/><br/>
+							<img border="1px" src="../images/screenshots/run/project_context_menu.png"/><br/>
 							<font size="-1"><b>Screenshot 1</b> Project contextual menu</font> 
 							<br/> 
 						</center> 
@@ -35,7 +35,7 @@
 						button can be used to <a href="#Goals Picker">graphically pick goals</a>. 
 						<br/> 
 						<center> 
-							<img border="1px" src="images/screenshots/run/run_maven.png"/><br/>
+							<img border="1px" src="../images/screenshots/run/run_maven.png"/><br/>
 							<font size="-1"><b>Screenshot 2</b> Launch wizard dialog</font> 
 							<br/> 
 						</center> 
@@ -52,7 +52,7 @@
 						the wizard is triggered from contextual menus), then the dialog displays both 
 						custom and global defined goals. <br />
 						<center> 
-							<img border="1px" src="images/screenshots/run/mevenide_goals_picker.png"/> 
+							<img border="1px" src="../images/screenshots/run/mevenide_goals_picker.png"/> 
 							<br/> 
 							<font size="-1"><b>Screenshot 3</b> Goals Picker Dialog</font> 
 						</center> 
@@ -68,7 +68,7 @@
 						the default Maven goals that have been specified in the 
 						<a href="conf.html"><i>Run preferences page</i></a> in the context of the selected Project. <br/>
 						<center> 
-							<img border="1px" src="images/screenshots/run/mevenide_quicklaunch.png"/> <br/>
+							<img border="1px" src="../images/screenshots/run/mevenide_quicklaunch.png"/> <br/>
 							<font size="-1"><b>Screenshot 4</b> QuickLaunch Command</font> 
 						</center> 
 					</p>
@@ -82,7 +82,7 @@
 						Eclipse Debug Console as shown on Screenshot 5 below. 
 						<br/> 
 						<center> 
-							<img border="1px" src="images/screenshots/run/maven_console.png"/> 
+							<img border="1px" src="../images/screenshots/run/maven_console.png"/> 
 							<br/> <font size="-1"><b>Screenshot 5</b> Running Maven Console</font> 
 						</center> 
 						<br/> 
