@@ -108,6 +108,9 @@ public class FileNodeWorker
         if (jarFile.exists()) {
             return jarFile;
         } else {
+            if (PrimeTime.isVerbose()) {
+                System.out.println("Warning : couldn't find dependency at " + pathToJar);
+            }
             return null;
         }
     }
