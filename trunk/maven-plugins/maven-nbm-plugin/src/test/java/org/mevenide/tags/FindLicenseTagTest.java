@@ -17,8 +17,6 @@
 package org.mevenide.tags;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import junit.framework.TestCase;
 

@@ -17,12 +17,6 @@
 package org.mevenide.tags.netbeans;
 
 import java.io.InputStream;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
 import junit.framework.TestCase;
