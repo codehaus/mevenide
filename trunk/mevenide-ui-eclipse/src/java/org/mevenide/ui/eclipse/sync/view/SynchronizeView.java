@@ -22,6 +22,7 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.maven.MavenUtils;
 import org.apache.maven.project.Project;
 
 import org.eclipse.core.resources.IContainer;
@@ -110,6 +111,7 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
     private List directionListeners = new ArrayList(); 
     
 	private List poms;
+	private IProject project;
 	private IContainer container;
 	
     private IToolBarManager toolBarManager;
@@ -151,8 +153,10 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
                 IProject project = ResourcesPlugin.getWorkspace().getRoot().getFileForLocation(new Path(input.getFile().getAbsolutePath())).getProject();
                 
 				this.container = project;
-
-                List poms = new ArrayList();
+				
+				
+				List poms = new ArrayList();
+				
                 poms.add(input);
                 
                 synchronizeProjectWithPoms(project, poms);
@@ -175,6 +179,9 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
 			comparator.addProjectChangeListener(ProjectComparator.BUILD, this);
 			comparator.addProjectChangeListener(ProjectComparator.DEPENDENCIES, this); 
         }
+        
+        this.poms = poms;
+        this.project = project;
         
         refreshAll(true);
         
@@ -422,6 +429,13 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
 		log.debug("artifact modified : " + artifact);
 		updatePoms(event.getProject());
 		refreshNode(artifact);
+		try {
+			IFile file = this.project.getFile(MavenUtils.makeRelativePath(this.project.getLocation().toFile(), event.getProject().getFile().getAbsolutePath()));
+			file.refreshLocal(IResource.DEPTH_ZERO, null);
+		} 
+		catch (Exception e) {
+			log.error("Uanble to refresh POM", e);
+		}
 		comparator.compare(event.getProject());
 	}
 	

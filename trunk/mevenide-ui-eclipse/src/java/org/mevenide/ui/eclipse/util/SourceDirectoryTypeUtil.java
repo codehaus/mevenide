@@ -71,6 +71,9 @@ public class SourceDirectoryTypeUtil {
     }
 
 	public static String stripBasedir(String strg) {
+		if ( "${basedir}".equals(strg) || "${basedir}/".equals(strg) || "${basedir}\\".equals(strg) ) {
+			return strg;
+		}
 		String result = stripHeadingString(strg, "${basedir}/");
 		result = stripHeadingString(result, "${basedir}\\");
 		result = stripHeadingString(result, "${basedir}");
