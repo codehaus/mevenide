@@ -46,60 +46,76 @@
  * SUCH DAMAGE.
  * ====================================================================
  */
-package org.mevenide.ui.eclipse.sync.model;
+package org.mevenide.ui.eclipse.sync.model.source;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.maven.project.Dependency;
+import java.io.File;
 
-/**  
+import org.mevenide.ProjectConstants;
+
+
+/**
  * 
  * @author Gilles Dodinet (gdodinet@wanadoo.fr)
- * @version $Id: DependencyWrapper.java 26 août 2003 Exp gdodinet 
+ * @version $Id$
  * 
  */
-public class DependencyWrapper {
-	private static Log log = LogFactory.getLog(DependencyWrapper.class);
+public class SourceDirectory {
+	private String directoryPath = "";
+	private String directoryType = "sourceDirectory";
 	
-	private Dependency dependency;
 	private boolean isInherited;
-	private DependencyGroup dependencyGroup;
+	private SourceDirectoryGroup group;
 	
-	public DependencyWrapper(Dependency dependency, boolean isInherited, DependencyGroup group) {
-		if ( dependency == null ) {
-			throw new RuntimeException("Trying to initialize a DependencyWrapper with a null Exception");
-		}
-		this.dependency = dependency;
-		this.isInherited = isInherited;
-		this.dependencyGroup = group;
+	
+	public SourceDirectory(String path, SourceDirectoryGroup group) {
+		//directoryPath = "${basedir}" + File.separator + path;
+		directoryPath = path;
+		this.group = group;
 	}
 	
-    public Dependency getDependency() {
-        return dependency;
-    }
-
-        public boolean isInherited() {
+	public String getDisplayPath() {
+		if ( directoryPath.equals("${basedir}")) {
+			return "${basedir}";
+		}
+		return "${basedir}" + File.separator +  directoryPath;
+	}
+	
+	public String getDirectoryPath() {
+		return directoryPath;
+	}
+	
+	public String getDirectoryType() {
+		return directoryType;
+	}
+	
+	public void setDirectoryType(String newDirectoryType) {
+		directoryType = newDirectoryType;
+	}
+	
+	public boolean equals(Object o) {
+		return (o instanceof SourceDirectory)
+				&& ((SourceDirectory) o).getDirectoryPath() != null
+				&& ((SourceDirectory) o).getDirectoryPath().equals(directoryPath);
+				
+	}
+	
+	public boolean isSource() {
+		boolean b = getDirectoryType().equals(ProjectConstants.MAVEN_ASPECT_DIRECTORY)
+					|| getDirectoryType().equals(ProjectConstants.MAVEN_SRC_DIRECTORY)
+					|| getDirectoryType().equals(ProjectConstants.MAVEN_TEST_DIRECTORY)
+					|| getDirectoryType().equals(ProjectConstants.MAVEN_INTEGRATION_TEST_DIRECTORY);
+		return b;					
+	}
+    public boolean isInherited() {
         return isInherited;
     }
 
     public void setInherited(boolean isInherited) {
-    	log.debug("setting isInherited to " + (isInherited));
         this.isInherited = isInherited;
-        this.dependencyGroup.setDependencyInheritance(this.dependency, isInherited);
-    }
-    
-    public boolean equals(Object obj) {
-    	if ( obj == null || !(obj instanceof DependencyWrapper) ) {
-    		return false;
-    	}
-    	DependencyWrapper wrapper = (DependencyWrapper) obj;
-    	return this.dependency.equals(wrapper.getDependency())
-    			&& this.isInherited == wrapper.isInherited
-    			&& this.dependencyGroup.equals(wrapper.dependencyGroup);
     }
 
-    public DependencyGroup getDependencyGroup() {
-        return dependencyGroup;
+    public SourceDirectoryGroup getGroup() {
+        return group;
     }
 
 }

@@ -46,11 +46,11 @@
  * SUCH DAMAGE.
  * ====================================================================
  */
-package org.mevenide.ui.eclipse.sync.model;
+package org.mevenide.ui.eclipse.sync.model.dependency;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.maven.project.Dependency;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 
@@ -62,91 +62,17 @@ import org.eclipse.jface.viewers.Viewer;
  */
 public class DependencyGroupContentProvider implements ITreeContentProvider {
 	
-	public abstract class DependencyInfo {
-		
-		protected Dependency dependency;
-		protected String title;
-		protected String info;
-		protected DependencyWrapper wrapper;
-		
-		DependencyInfo(DependencyWrapper d) {
-			this.dependency = d.getDependency();
-		}
-		
-		public Dependency getDependency() {
-			return dependency;
-		}
-		
-		public void setInfo(String string) {
-			info = string;
-			updateDependency();
-		}
-		public String getInfo() {
-			return info;
-		}
-		public String getTitle() {
-			return title;
-		}
-        public DependencyWrapper getDependencyWrapper() {
-            return wrapper;
-        }
-        public void setDependencyWrapper(DependencyWrapper wrapper) {
-            this.wrapper = wrapper;
-        }
-		protected abstract void updateDependency();
-	}
-	
-	class GroupId extends DependencyInfo {
-		public GroupId(DependencyWrapper d) {
-			super(d);
-			title = "groupId";
-			info = dependency.getGroupId();
-		}
-		protected void updateDependency() {
-			dependency.setGroupId(info);
-		}
-	}
-	
-	class ArtifactId extends DependencyInfo {
-		public ArtifactId(DependencyWrapper d) {
-			super(d);
-			title = "artifactId";
-			info = dependency.getArtifactId();
-		}
-		protected void updateDependency() {
-			dependency.setArtifactId(info);
-		}
-	}
-	
-	class Version extends DependencyInfo {
-		public Version(DependencyWrapper d) {
-			super(d);
-			title = "version";
-			info = dependency.getVersion();
-		}	
-		protected void updateDependency() {
-			dependency.setVersion(info);
-		}	
-	}
-	
-	class Type extends DependencyInfo {
-		public Type(DependencyWrapper d) {
-			super(d);
-			title = "type";
-			info = dependency.getType();
-		}	
-		protected void updateDependency() {
-			dependency.setType(info);
-		}
-	}
-	
-	
 	public Object[] getChildren(Object parentElement) {
 		
 		if ( parentElement instanceof DependencyGroup ) {
 			DependencyGroup group = (DependencyGroup) parentElement;
 		
-			List list = group.getDependencyWrappers();
+			List list = new ArrayList();
+			list.addAll(group.getDependencyWrappers());
+			if ( group.getParentGroup() != null ) {
+				list.addAll(group.getParentGroup().getDependencyWrappers());
+			}
+					
 			if ( list != null ) {
 				Object[] elements = new Object[list.size()];
 				for (int i = 0; i < list.size(); i++) {
@@ -195,3 +121,5 @@ public class DependencyGroupContentProvider implements ITreeContentProvider {
 	}
 
 }
+
+ 

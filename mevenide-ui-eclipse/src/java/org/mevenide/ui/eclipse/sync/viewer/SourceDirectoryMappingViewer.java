@@ -46,7 +46,7 @@
  * SUCH DAMAGE.
  * ====================================================================
  */
-package org.mevenide.ui.eclipse.sync.control;
+package org.mevenide.ui.eclipse.sync.viewer;
 
 import java.util.List;
 
@@ -66,9 +66,8 @@ import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.internal.dialogs.ListContentProvider;
 import org.mevenide.ui.eclipse.Mevenide;
-import org.mevenide.ui.eclipse.sync.model.SourceDirectory;
-import org.mevenide.ui.eclipse.sync.model.SourceDirectoryGroup;
-import org.mevenide.ui.eclipse.sync.model.SourceDirectoryGroupLabelProvider;
+import org.mevenide.ui.eclipse.sync.model.source.SourceDirectory;
+import org.mevenide.ui.eclipse.sync.model.source.SourceDirectoryGroup;
 import org.mevenide.ui.eclipse.util.SourceDirectoryTypeUtil;
 
 /**
@@ -77,14 +76,14 @@ import org.mevenide.ui.eclipse.util.SourceDirectoryTypeUtil;
  * @version $Id$
  * 
  */
-public class SourceDirectoryMappingViewControl {
-	private static Log log = LogFactory.getLog(SourceDirectoryMappingViewControl.class);
+public class SourceDirectoryMappingViewer {
+	private static Log log = LogFactory.getLog(SourceDirectoryMappingViewer.class);
 
 	private static final String INHERIT = "isInherited";
     private static final String SOURCE_TYPE = "source.type";
     private static final String SOURCE_DIRECTORY = "source.directory";
     
-	private SourceDirectoryMappingViewControl(){
+	private SourceDirectoryMappingViewer(){
 	}
 	
 	public static TableViewer getViewer(Composite parent) {
@@ -125,7 +124,7 @@ public class SourceDirectoryMappingViewControl {
 		
 	}
 	private static void configureViewer(final TableViewer tableViewer) {
-		tableViewer.setColumnProperties(new String[] {SourceDirectoryMappingViewControl.SOURCE_DIRECTORY, SourceDirectoryMappingViewControl.SOURCE_TYPE, SourceDirectoryMappingViewControl.INHERIT});
+		tableViewer.setColumnProperties(new String[] {SourceDirectoryMappingViewer.SOURCE_DIRECTORY, SourceDirectoryMappingViewer.SOURCE_TYPE, SourceDirectoryMappingViewer.INHERIT});
 		
 		tableViewer.setCellEditors(new CellEditor[] {
 			new TextCellEditor(), 
@@ -136,18 +135,18 @@ public class SourceDirectoryMappingViewControl {
 		tableViewer.setCellModifier(new ICellModifier() {
 			public boolean canModify(Object element, String property) {
 				return 
-					SourceDirectoryMappingViewControl.SOURCE_TYPE.equals(property)
-					|| SourceDirectoryMappingViewControl.INHERIT.equals(property);
+					SourceDirectoryMappingViewer.SOURCE_TYPE.equals(property)
+					|| SourceDirectoryMappingViewer.INHERIT.equals(property);
 			}
 			
 			public void modify(Object element, String property, Object value) {
 				if (element instanceof Item) {
 					element = ((Item) element).getData();
 				}
-				if ( SourceDirectoryMappingViewControl.SOURCE_TYPE.equals(property) ) {
+				if ( SourceDirectoryMappingViewer.SOURCE_TYPE.equals(property) ) {
 					((SourceDirectory) element).setDirectoryType(SourceDirectoryTypeUtil.sourceTypes[((Integer)value).intValue()]);
 				}
-				if ( SourceDirectoryMappingViewControl.INHERIT.equals(property) 
+				if ( SourceDirectoryMappingViewer.INHERIT.equals(property) 
 						&& ((SourceDirectory) element).getGroup().isInherited() ) {
 					((SourceDirectory) element).setInherited(((Boolean) value).booleanValue());
 				}
@@ -155,10 +154,10 @@ public class SourceDirectoryMappingViewControl {
 			}
 			
 			public Object getValue(Object element, String property) {
-				if ( SourceDirectoryMappingViewControl.SOURCE_DIRECTORY.equals(property) ) {
+				if ( SourceDirectoryMappingViewer.SOURCE_DIRECTORY.equals(property) ) {
 					return ((SourceDirectory) element).getDisplayPath();
 				}
-				if ( SourceDirectoryMappingViewControl.INHERIT.equals(property) ) {
+				if ( SourceDirectoryMappingViewer.INHERIT.equals(property) ) {
 					return new Boolean(((SourceDirectory) element).isInherited());
 				}
 				else {

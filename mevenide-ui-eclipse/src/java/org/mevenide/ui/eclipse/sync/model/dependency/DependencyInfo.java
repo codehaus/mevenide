@@ -46,76 +46,102 @@
  * SUCH DAMAGE.
  * ====================================================================
  */
-package org.mevenide.ui.eclipse.sync.model;
+package org.mevenide.ui.eclipse.sync.model.dependency;
 
-import java.io.File;
+import org.apache.maven.project.Dependency;
 
-import org.mevenide.ProjectConstants;
-
-
-/**
+/**  
  * 
  * @author Gilles Dodinet (gdodinet@wanadoo.fr)
- * @version $Id$
+ * @version $Id: DependencyInfo.java 30 août 2003 Exp gdodinet 
  * 
  */
-public class SourceDirectory {
-	private String directoryPath = "";
-	private String directoryType = "sourceDirectory";
+public abstract class DependencyInfo {
+		
+	protected Dependency dependency;
+	protected String title;
+	protected String info;
+	protected DependencyWrapper wrapper;
+		
+	private boolean isReadOnly;
 	
-	private boolean isInherited;
-	private SourceDirectoryGroup group;
-	
-	
-	public SourceDirectory(String path, SourceDirectoryGroup group) {
-		//directoryPath = "${basedir}" + File.separator + path;
-		directoryPath = path;
-		this.group = group;
+	DependencyInfo(DependencyWrapper d) {
+		this.dependency = d.getDependency();
+		this.isReadOnly = d.isReadOnly();
 	}
-	
-	public String getDisplayPath() {
-		if ( directoryPath.equals("${basedir}")) {
-			return "${basedir}";
-		}
-		return "${basedir}" + File.separator +  directoryPath;
+		
+	public Dependency getDependency() {
+		return dependency;
 	}
-	
-	public String getDirectoryPath() {
-		return directoryPath;
+		
+	public void setInfo(String string) {
+		info = string;
+		updateDependency();
 	}
-	
-	public String getDirectoryType() {
-		return directoryType;
+	public String getInfo() {
+		return info;
 	}
-	
-	public void setDirectoryType(String newDirectoryType) {
-		directoryType = newDirectoryType;
+	public String getTitle() {
+		return title;
 	}
-	
-	public boolean equals(Object o) {
-		return (o instanceof SourceDirectory)
-				&& ((SourceDirectory) o).getDirectoryPath() != null
-				&& ((SourceDirectory) o).getDirectoryPath().equals(directoryPath);
-				
+	public DependencyWrapper getDependencyWrapper() {
+		return wrapper;
 	}
-	
-	public boolean isSource() {
-		boolean b = getDirectoryType().equals(ProjectConstants.MAVEN_ASPECT_DIRECTORY)
-					|| getDirectoryType().equals(ProjectConstants.MAVEN_SRC_DIRECTORY)
-					|| getDirectoryType().equals(ProjectConstants.MAVEN_TEST_DIRECTORY)
-					|| getDirectoryType().equals(ProjectConstants.MAVEN_INTEGRATION_TEST_DIRECTORY);
-		return b;					
+	public void setDependencyWrapper(DependencyWrapper wrapper) {
+		this.wrapper = wrapper;
 	}
-    public boolean isInherited() {
-        return isInherited;
+	protected abstract void updateDependency();
+	
+    public boolean isReadOnly() {
+        return isReadOnly;
     }
 
-    public void setInherited(boolean isInherited) {
-        this.isInherited = isInherited;
+    public void setReadOnly(boolean isReadOnly) {
+        this.isReadOnly = isReadOnly;
     }
 
-    public SourceDirectoryGroup getGroup() {
-        return group;
-    }
-
+}
+	
+class GroupId extends DependencyInfo {
+	public GroupId(DependencyWrapper d) {
+		super(d);
+		title = "groupId";
+		info = dependency.getGroupId();
+	}
+	protected void updateDependency() {
+		dependency.setGroupId(info);
+	}
+}
+	
+class ArtifactId extends DependencyInfo {
+	public ArtifactId(DependencyWrapper d) {
+		super(d);
+		title = "artifactId";
+		info = dependency.getArtifactId();
+	}
+	protected void updateDependency() {
+		dependency.setArtifactId(info);
+	}
+}
+	
+class Version extends DependencyInfo {
+	public Version(DependencyWrapper d) {
+		super(d);
+		title = "version";
+		info = dependency.getVersion();
+	}	
+	protected void updateDependency() {
+		dependency.setVersion(info);
+	}	
+}
+	
+class Type extends DependencyInfo {
+	public Type(DependencyWrapper d) {
+		super(d);
+		title = "type";
+		info = dependency.getType();
+	}	
+	protected void updateDependency() {
+		dependency.setType(info);
+	}
 }

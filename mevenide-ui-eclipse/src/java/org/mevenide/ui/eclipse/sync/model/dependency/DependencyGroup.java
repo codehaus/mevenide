@@ -46,7 +46,7 @@
  * SUCH DAMAGE.
  * ====================================================================
  */
-package org.mevenide.ui.eclipse.sync.model;
+package org.mevenide.ui.eclipse.sync.model.dependency;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -63,6 +63,7 @@ import org.mevenide.project.dependency.DependencyFactory;
 import org.mevenide.project.dependency.DependencyUtil;
 import org.mevenide.ui.eclipse.DefaultPathResolver;
 import org.mevenide.ui.eclipse.IPathResolver;
+import org.mevenide.ui.eclipse.sync.model.ArtifactGroup;
 import org.mevenide.ui.eclipse.util.FileUtil;
 import org.mevenide.ui.eclipse.util.ProjectUtil;
 
@@ -77,7 +78,11 @@ public class DependencyGroup extends ArtifactGroup {
 	
 	private Map dependencies = new HashMap();
 	
+	private DependencyGroup parentGroup; 
 	
+	public DependencyGroup() {
+			super();
+	}
 	
 	public DependencyGroup(IProject project) {
 		super(project);
@@ -226,5 +231,14 @@ public class DependencyGroup extends ArtifactGroup {
 
    
 
+    public DependencyGroup getParentGroup() {
+        return parentGroup;
+    }
+
+    public void setParentGroup(DependencyGroup parentGroup) {
+        this.parentGroup = parentGroup;
+    }
+
+	
 }
 

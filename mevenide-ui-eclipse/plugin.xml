@@ -162,7 +162,7 @@
             </enablement>
          </action -->
          <action
-               label="Synchronize Project"
+               label="Update Project"
                icon="icons/maven-synch-project.gif"
                class="org.mevenide.ui.eclipse.actions.SynchronizeAction"
                menubarPath="maven.plugin.menu/Synchronize"
@@ -170,7 +170,7 @@
                id="maven-plugin.Synchronize">
          </action>
          <action
-               label="Synchronize POM"
+               label="Update POM..."
                icon="icons/maven-synch-pom.gif"
                class="org.mevenide.ui.eclipse.actions.SynchronizeAction"
                menubarPath="maven.plugin.menu/Synchronize"
@@ -206,7 +206,7 @@
                id="maven.plugin.popup.action">
          </action>
          <action
-               label="Synchronize Project"
+               label="Update Project"
                icon="icons/maven-synch-project.gif"
                class="org.mevenide.ui.eclipse.actions.SynchronizeAction"
                menubarPath="maven.plugin.menu/Synchronize"
@@ -214,7 +214,7 @@
                id="maven-plugin.Synchronize">
          </action>
          <action
-               label="Synchronize POM"
+               label="Update POM..."
                icon="icons/maven-synch-pom.gif"
                tooltip="synchronize without prompting for Source Directory types"
                class="org.mevenide.ui.eclipse.actions.SynchronizeAction"

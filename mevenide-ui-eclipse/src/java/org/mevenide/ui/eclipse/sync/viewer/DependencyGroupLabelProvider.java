@@ -46,26 +46,48 @@
  * SUCH DAMAGE.
  * ====================================================================
  */
-package org.mevenide.ui.eclipse.sync.model;
+package org.mevenide.ui.eclipse.sync.viewer;
 
 import java.io.File;
 
+import org.eclipse.jface.viewers.IColorProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.mevenide.ui.eclipse.Mevenide;
+import org.mevenide.ui.eclipse.MevenideConstants;
+import org.mevenide.ui.eclipse.sync.model.dependency.DependencyGroup;
+import org.mevenide.ui.eclipse.sync.model.dependency.DependencyInfo;
+import org.mevenide.ui.eclipse.sync.model.dependency.DependencyWrapper;
 
 
-public class DependencyGroupLabelProvider implements ITableLabelProvider {
+public class DependencyGroupLabelProvider implements ITableLabelProvider, IColorProvider {
 	
     private static final int DESCRIPTION_IDX = 0;
 	private static final int VALUE_IDX = 1;
 	private static final int INHERIT_IDX = 2;
 	
-	
-    public DependencyGroupLabelProvider() {
+	public DependencyGroupLabelProvider() {
 
 	}
+	
+	public Color getBackground(Object element) {
+		return MevenideConstants.WHITE;
+	}
+
+	public Color getForeground(Object element) {
+		if ( element instanceof DependencyWrapper 
+				&& ((DependencyWrapper) element).isReadOnly() ) {
+			return MevenideConstants.GREY;
+		}
+		if ( element instanceof DependencyInfo
+				&& ((DependencyInfo) element).isReadOnly() ) {
+			return MevenideConstants.GREY;
+		}
+		return MevenideConstants.BLACK;
+	}
+	
 	public void addListener(ILabelProviderListener listener) {
 	
 	}
@@ -109,9 +131,8 @@ public class DependencyGroupLabelProvider implements ITableLabelProvider {
 				return "Dependencies";
 			}
 		}
-		if ( element instanceof DependencyGroupContentProvider.DependencyInfo ) {
-			DependencyGroupContentProvider.DependencyInfo info = 
-					(DependencyGroupContentProvider.DependencyInfo) element;
+		if ( element instanceof DependencyInfo ) {
+			DependencyInfo info = (DependencyInfo) element;
 			String inf = 
 				info.getInfo() == null || info.getInfo().trim().equals("") ? 
 					"<unresolved>" : info.getInfo();

@@ -46,7 +46,7 @@
  * SUCH DAMAGE.
  * ====================================================================
  */
-package org.mevenide.ui.eclipse.sync.model;
+package org.mevenide.ui.eclipse.sync.model.source;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,6 +56,7 @@ import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.mevenide.ui.eclipse.DefaultPathResolver;
+import org.mevenide.ui.eclipse.sync.model.ArtifactGroup;
 import org.mevenide.ui.eclipse.util.SourceDirectoryTypeUtil;
 
 /**
