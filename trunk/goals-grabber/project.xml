@@ -14,42 +14,53 @@
            <groupId>mevenide</groupId>
            <artifactId>mevenide-core</artifactId>
            <version>0.1</version>
+           <properties>
+            	<mevenide.transient>true</mevenide.transient>
+            </properties>
         </dependency>
         <dependency>
             <groupId>commons-collections</groupId>
             <artifactId>commons-collections</artifactId>
             <version>2.1</version>
             <type>jar</type>
-            <properties/>
         </dependency>
         <dependency>
             <groupId>commons-logging</groupId>
             <artifactId>commons-logging</artifactId>
             <version>1.0.1</version>
             <type>jar</type>
-            <properties/>
+            <properties>
+            	<mevenide.transient>true</mevenide.transient>
+            </properties>
         </dependency>
         <dependency>
             <groupId>commons-lang</groupId>
             <artifactId>commons-lang</artifactId>
             <version>1.0.1</version>
             <type>jar</type>
-            <properties/>
+            <properties>
+            	<mevenide.transient>true</mevenide.transient>
+            </properties>
         </dependency>
         <dependency>
             <groupId>xpp3</groupId>
             <artifactId>xpp3</artifactId>
             <version>1.1.2a</version>
             <type>jar</type>
-            <properties/>
+            <properties>
+            	<mevenide.transient>true</mevenide.transient>
+            </properties>
         </dependency>
 
         <!-- logging -->
         <dependency>
-        <groupId>log4j</groupId>
+           <groupId>log4j</groupId>
            <artifactId>log4j</artifactId>
            <version>1.2.7</version>
            <url>http://jakarta.apache.org/log4j/</url>
+           <properties>
+            	<mevenide.transient>true</mevenide.transient>
+            </properties>
         </dependency>
     </dependencies>
     <build>
