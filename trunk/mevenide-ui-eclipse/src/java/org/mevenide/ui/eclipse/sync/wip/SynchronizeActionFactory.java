@@ -48,11 +48,13 @@
  */
 package org.mevenide.ui.eclipse.sync.wip;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.maven.project.Project;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -196,11 +198,25 @@ public class SynchronizeActionFactory {
 	}
 
 	private void createPushToPomAction() {
+		final AddToPomAction action = new AddToPomAction();
 		Action pushToPom = new Action() {
 			public void run() {
+				IArtifactMappingNode selectedNode = (IArtifactMappingNode) ((IStructuredSelection) synchronizeView.getArtifactMappingNodeViewer().getSelection()).getFirstElement();
 				
+				ProjectContainer container = (ProjectContainer) synchronizeView.getArtifactMappingNodeViewer().getTree().getItems()[0].getData();
+				IProject project = container.getProject();
+				
+				Project mavenProject = new PomChooser(project).openPomChoiceDialog();			
+				
+				try  {
+					action.addEntry(selectedNode.getArtifact(), mavenProject);
+				}
+				catch ( Exception e ) {
+					log.debug("Unable to add item " + selectedNode.getArtifact() + " to classpath ", e );
+				}
 			}
 		};
+		action.addModelChangeListener(synchronizeView);
 		pushToPom.setId(ADD_TO_POM);
 		pushToPom.setText("Update Pom...");
 		actionIds.put(ADD_TO_POM, pushToPom);

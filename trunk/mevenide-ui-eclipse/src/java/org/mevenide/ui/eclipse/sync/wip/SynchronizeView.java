@@ -78,7 +78,7 @@ import org.eclipse.ui.part.ViewPart;
  * @version $Id$
  *
  */
-public class SynchronizeView extends ViewPart implements IModelChangeListener {
+public class SynchronizeView extends ViewPart implements SynchronizeActionListener {
     private static final Log log = LogFactory.getLog(SynchronizeView.class);
 
     private Composite composite;
@@ -290,10 +290,10 @@ public class SynchronizeView extends ViewPart implements IModelChangeListener {
 		});
 	}
 
-	public void artifactAdded(ArtifactEvent event) {
+	public void artifactAddedToClasspath(ArtifactEvent event) {
     	log.debug("artifact modified : " + event.getArtifact());
     	artifactMappingNodeViewer.getExpandedElements();
-    	artifactMappingNodeViewer.refresh(((ArtifactMappingContentProvider) artifactMappingNodeViewer.getContentProvider()).getParent(event.getArtifact()));
+    	artifactMappingNodeViewer.refresh();
     	artifactMappingNodeViewer.expandAll();
 	}
 
