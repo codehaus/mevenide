@@ -58,23 +58,7 @@ public class DependencyGroup extends ArtifactGroup {
 				String path = classpathEntries[i].getPath().toOSString(); 
 				Dependency dependency = DependencyFactory.getFactory().getDependency(path);
 				
-				if ( dependency.getArtifactId() == null ) {
-					dependency.setArtifactId("");
-				}
-				if ( dependency.getGroupId() == null ) {
-					dependency.setArtifactId("");
-				}
-				if ( dependency.getVersion() == null ) {
-					dependency.setVersion("");
-				}
-				if ( dependency.getType() == null ) {
-					dependency.setType("");
-				}
-				if ( dependency.getArtifact() == null ) {
-					dependency.setArtifact("");
-				}
-				
-				dependencies.add(dependency);
+				addDependency(dependency);
 				
 			}
 		}
@@ -90,8 +74,23 @@ public class DependencyGroup extends ArtifactGroup {
 		dependencies = list;
 	}
 	
-	public void addDependency(Dependency dep) {
-		dependencies.add(dep);
+	public void addDependency(Dependency dependency) {
+		if ( dependency.getArtifactId() == null ) {
+			dependency.setArtifactId("");
+		}
+		if ( dependency.getGroupId() == null ) {
+			dependency.setArtifactId("");
+		}
+		if ( dependency.getVersion() == null ) {
+			dependency.setVersion("");
+		}
+		if ( dependency.getType() == null ) {
+			dependency.setType("");
+		}
+		if ( dependency.getArtifact() == null ) {
+			dependency.setArtifact("");
+		}
+		dependencies.add(dependency);
 	}
 }
 
