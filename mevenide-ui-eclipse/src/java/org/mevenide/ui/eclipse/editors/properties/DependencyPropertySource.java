@@ -75,7 +75,6 @@ public class DependencyPropertySource extends AbstractPomPropertySource {
 	private static final String DEPENDENCY_TYPE_WAR = "war";
 	
 	private static final String[] DEPENDENCY_TYPES = new String[] {
-		EMPTY_STR, 
 		DEPENDENCY_TYPE_JAR, 
 		DEPENDENCY_TYPE_EJB, 
 		DEPENDENCY_TYPE_PLUGIN,
