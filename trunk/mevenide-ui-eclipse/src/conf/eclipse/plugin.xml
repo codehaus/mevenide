@@ -187,8 +187,7 @@
    
    <extension point="org.eclipse.ui.actionSets">
       <action label="Maven" 
-              icon="icons/full/obj16/external_tools.gif" 
-              tooltip="Manage Build Definitions" 
+              tooltip="%Maven.ProjectMenu.Addition.Tooltip" 
               pulldown="true" 
               class="org.mevenide.ui.eclipse.nature.CustomMavenLaunchManager" 
               menubarPath="project/additions" 
