@@ -56,11 +56,14 @@ public class ExtractPropertiesTag extends TagSupport {
      */
     private String destFile;
     
-    /** name of the input file */
+    /** name of the optional input file */
     private String inputFile;
+
+    /** fully qualified class name of the IElementHandler to use */
+    private String elementHandlerClassName; 
     
     private PropertyGrabber grabber;
-
+    
     public void doTag(XMLOutput arg0) throws Exception {
         validate();
         initialize();
@@ -69,23 +72,23 @@ public class ExtractPropertiesTag extends TagSupport {
     }
 
     private void validate() throws Exception {
-        if ( isNull(inputFile) ) {
-            checkAttribute(pluginVersion, "pluginVersion");
-            checkAttribute(pluginName, "pluginName");
-        }
-        else {
-            if ( !new File(inputFile).exists() ) {
-                //we should have another exception for this error
-                throw new Exception("Input file : " + inputFile + " doesnot exist");
-            }
+        checkAttribute(pluginVersion, "pluginVersion");
+        checkAttribute(pluginName, "pluginName");
+        
+        if ( !isNull(inputFile) && !new File(inputFile).exists() ) {
+            //we should have another exception for this error
+            throw new Exception("Input file : " + inputFile + " doesnot exist");
         }
     }
 
     private void initialize() {
         grabber = new PropertyGrabber();
+        grabber.setPluginName(pluginName);
+        grabber.setPluginVersion(pluginVersion);
+        grabber.setElementHandlerClassName(elementHandlerClassName);
         ILocationFinder finder = new LocationFinderAggregator();
         if ( isNull(inputFile) ) {
-            File pluginDir = new File(finder.getMavenPluginsDir(), pluginName + "-" + pluginVersion); //$NON-NLS-1$ 
+            File pluginDir = new File(finder.getMavenPluginsDir(), pluginName + "-" + pluginVersion); //$NON-NLS-1$
             grabber.setPropertyFile(new File(pluginDir, "plugin.properties")); //$NON-NLS-1$
         }
         else {
@@ -115,7 +118,7 @@ public class ExtractPropertiesTag extends TagSupport {
             }
         }
         else {
-            System.err.println("Attribute destFile not specified. Redirecting output to console \n" + propertyDescription);
+            System.out.println("Attribute destFile not specified. Redirecting output to console \n" + propertyDescription);
         }
     }
 
@@ -159,5 +162,13 @@ public class ExtractPropertiesTag extends TagSupport {
 
     public void setInputFile(String inputFile) {
         this.inputFile = inputFile;
+    }
+    
+    public String getElementHandlerClassName() {
+        return elementHandlerClassName;
+    }
+    
+    public void setElementHandlerClassName(String elementHandlerClassName) {
+        this.elementHandlerClassName = elementHandlerClassName;
     }
 }

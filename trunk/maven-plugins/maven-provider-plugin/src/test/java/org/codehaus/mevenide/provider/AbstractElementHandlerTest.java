@@ -18,10 +18,15 @@ package org.codehaus.mevenide.provider;
 
 import java.io.File;
 import java.io.FileReader;
+import java.io.InputStream;
 import java.io.StringReader;
+import java.util.List;
 import org.custommonkey.xmlunit.Diff;
 import org.custommonkey.xmlunit.ElementNameAndAttributeQualifier;
-import org.custommonkey.xmlunit.XMLTestCase;
+import org.mevenide.properties.Element;
+import org.mevenide.properties.PropertyModel;
+import org.mevenide.properties.PropertyModelFactory;
+import junit.framework.TestCase;
 
 
 /**  
@@ -30,28 +35,28 @@ import org.custommonkey.xmlunit.XMLTestCase;
  * @version $Id$
  * 
  */
-public class PropertyGrabberTest extends XMLTestCase {
-
-    private PropertyGrabber grabber;
-    private File pluginProperties;
+public abstract class AbstractElementHandlerTest extends TestCase {
+  
+    private IElementHandler elementHandler;
     
     protected void setUp() throws Exception {
-        grabber = new PropertyGrabber();
-        pluginProperties = new File(getClass().getResource("/test_plugin.properties").getFile());
-        grabber.setPropertyFile(pluginProperties);
-        grabber.setPluginName("maven-aspectj-plugin");
-        grabber.setPluginVersion("3.1.1");
+        InputStream stream = getClass().getResourceAsStream("/test_plugin.properties");
+        elementHandler = getElementHandler();
+        elementHandler.setPluginName("maven-aspectj-plugin");
+        elementHandler.setPluginVersion("3.1.1");
+        PropertyModel model = PropertyModelFactory.getFactory().newPropertyModel(stream);
+        List modelElements = model.getList();
+        for (int i = 0; i < modelElements.size(); i++) {
+            Element element = (Element) modelElements.get(i);
+            elementHandler.handle(element);
+        }
     }
     
-    protected void tearDown() throws Exception {
-        grabber = null;
-        pluginProperties = null;
-    }
+    protected abstract IElementHandler getElementHandler();
     
-    public void testGrab() throws Exception {
-        grabber.grab();
+    public void testGetXmlDescription() throws Exception {
         File expectedResult = new File(getClass().getResource("/expected.xml").getFile());
-        Diff diff = new Diff(new FileReader(expectedResult), new StringReader(grabber.getPropertyDescription()));
+        Diff diff = new Diff(new FileReader(expectedResult), new StringReader(elementHandler.getXmlDescription()));
         diff.overrideElementQualifier(new ElementNameAndAttributeQualifier());
         assertTrue(diff.similar());
     }

@@ -13,7 +13,7 @@
 	          scope (project|global) "project" 
 	          category CDATA #IMPLIED>
 ]>
-<plugin>
+<plugin name="maven-aspectj-plugin" version="3.1.1">
     <property name="maven.aspectj.verbose" description="If true, emit compiler status messages during the compile." default="false" />
     <property name="maven.aspectj.fork" description="Run process in another VM. This gets the forking classpath either explicitly from a forkclasspath entry or by searching the task or system/Ant classpath for the first readable file with a name of the form aspectj{-}tools{.*}.jar. When forking you can specify the amount of memory used with maxmem. Fork cannot be used in incremental mode, unless using a tag file." default="false" />
     <property name="maven.aspectj.incremental" description="incremental mode: Build once, then recompile only required source files when user provides input." default="false" />
