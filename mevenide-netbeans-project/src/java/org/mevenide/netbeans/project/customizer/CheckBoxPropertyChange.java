@@ -54,7 +54,7 @@ public class CheckBoxPropertyChange implements MavenPropertyChange {
         
         boolean boolValue = false;
         if (value != null) {
-            boolValue = Boolean.valueOf(value).booleanValue();
+            boolValue = checkResolvedBoolean(value);
         } else {
             boolValue = defaultValue;
         }
@@ -86,7 +86,7 @@ public class CheckBoxPropertyChange implements MavenPropertyChange {
     }
     
     public boolean hasChanged() {
-        return newLocation != location || !getOldValue().equals(getNewValue());
+        return newLocation != location || checkResolvedBoolean(getOldValue()) != checkResolvedBoolean(getNewValue());
     }
     
     private void setCheckBoxValue(boolean boolValue, boolean opposite) {
@@ -134,6 +134,20 @@ public class CheckBoxPropertyChange implements MavenPropertyChange {
             }
         }
         
-    }    
+    }   
+  
+  static boolean checkResolvedBoolean(String value) {
+      if (value == null) {
+          return false;
+      }
+      String tr = value.trim();
+      if ("on".equalsIgnoreCase(tr) || 
+          "true".equalsIgnoreCase(tr) ||
+          "yes".equalsIgnoreCase(tr)) 
+      {
+          return true;
+      }
+      return false;
+  }
     
 }
