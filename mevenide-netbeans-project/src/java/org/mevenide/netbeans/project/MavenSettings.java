@@ -17,6 +17,11 @@
 
 package org.mevenide.netbeans.project;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
 import org.openide.options.SystemOption;
 import org.openide.util.HelpCtx;
 import org.openide.util.NbBundle;
@@ -191,6 +196,25 @@ public class MavenSettings extends SystemOption {
     
     public void setDependencyProperties(String[] repos) {
         putProperty(PROP_DEP_PROPS, repos, true);
-    }    
+    }
+    
+    /**
+     * will add unknown dependency properties names to the list.
+     */
+    public void checkDependencyProperties(Collection newones) {
+        List lst = new ArrayList(Arrays.asList(getDependencyProperties()));
+        Iterator it = newones.iterator();
+        boolean updated = false;
+        while (it.hasNext()) {
+            Object key = it.next();
+            if (!lst.contains(key)) {
+                updated = true;
+                lst.add(key);
+            }
+        }
+        if (updated) {
+            setDependencyProperties((String[])lst.toArray(new String[lst.size()]));
+        }
+    }
     
 }

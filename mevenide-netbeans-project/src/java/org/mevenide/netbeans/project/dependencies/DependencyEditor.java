@@ -54,6 +54,7 @@ public class DependencyEditor extends javax.swing.JPanel {
     /** Creates new form DependencyEditor */
     public DependencyEditor(MavenProject proj, DependencyPOMChange change) {
         initComponents();
+        
         project = proj;
         IContentProvider content = change.getChangedContent();
         assignValue(content, "groupId", txtGroupId);
@@ -97,7 +98,7 @@ public class DependencyEditor extends javax.swing.JPanel {
         txtOverride.setVisible(false);
         lblOverride.setVisible(false);
         btnOverride.setVisible(false);
-        
+        jSeparator1.setVisible(false);
     }
     
     private void assignValue(IContentProvider provider, String key, JTextField field) {
@@ -164,7 +165,6 @@ public class DependencyEditor extends javax.swing.JPanel {
         jSeparator2 = new javax.swing.JSeparator();
         lblOverride = new javax.swing.JLabel();
         txtOverride = new javax.swing.JTextField();
-        jSeparator3 = new javax.swing.JSeparator();
         jScrollPane2 = new javax.swing.JScrollPane();
         tblProperties = new javax.swing.JTable();
 
@@ -337,15 +337,6 @@ public class DependencyEditor extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
         add(txtOverride, gridBagConstraints);
 
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 8;
-        gridBagConstraints.gridwidth = 4;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(6, 0, 6, 0);
-        add(jSeparator3, gridBagConstraints);
-
         jScrollPane2.setPreferredSize(new java.awt.Dimension(200, 200));
         tblProperties.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -409,7 +400,6 @@ public class DependencyEditor extends javax.swing.JPanel {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
-    private javax.swing.JSeparator jSeparator3;
     private javax.swing.JLabel lblArtifactId;
     private javax.swing.JLabel lblGroupId;
     private javax.swing.JLabel lblOverride;
