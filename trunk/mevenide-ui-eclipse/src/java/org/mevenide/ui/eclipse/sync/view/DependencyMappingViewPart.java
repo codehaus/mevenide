@@ -11,7 +11,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  */
-package org.mevenide.ui.eclipse.sync.dependency;
+package org.mevenide.ui.eclipse.sync.view;
 
 import java.util.List;
 
@@ -33,7 +33,8 @@ import org.mevenide.sync.ISynchronizer;
 import org.mevenide.sync.SynchronizerFactory;
 import org.mevenide.ui.eclipse.DefaultPathResolver;
 import org.mevenide.ui.eclipse.Mevenide;
-import org.mevenide.ui.eclipse.sync.source.SourceDirectoryMarshaller;
+import org.mevenide.ui.eclipse.sync.model.*;
+import org.mevenide.ui.eclipse.sync.model.SourceDirectoryGroupMarshaller;
 
 /**
  * 
@@ -41,27 +42,27 @@ import org.mevenide.ui.eclipse.sync.source.SourceDirectoryMarshaller;
  * @version $Id$
  * 
  */
-public class DependencyViewPart extends ViewPart {
-	private static Log log = LogFactory.getLog(DependencyViewPart.class);
+public class DependencyMappingViewPart extends ViewPart {
+	private static Log log = LogFactory.getLog(DependencyMappingViewPart.class);
 	
 	private TableTreeViewer viewer;
 	
 	private IProject project;
 	
-	private static DependencyViewPart partInstance; 
+	private static DependencyMappingViewPart partInstance; 
 	
 	//public constructor : it should be instantiated by Eclipse 
-	public DependencyViewPart() {
+	public DependencyMappingViewPart() {
 		partInstance = this;
 	}
 	
-	public static DependencyViewPart getInstance() {
+	public static DependencyMappingViewPart getInstance() {
 		return partInstance;
 	}
 	
 	public void createPartControl(Composite parent) {
 		
-		viewer = DependencyViewUtil.getViewer(parent);
+		viewer = DependencyMappingViewControl.getViewer(parent);
 
 		getSite().setSelectionProvider(viewer);
 		
@@ -95,7 +96,7 @@ public class DependencyViewPart extends ViewPart {
 		
 		String savedStates = Mevenide.getPlugin().getFile("statedDependencies.xml");
 		
-		return DependencyMarshaller.getDependencyGroup(project, savedStates);
+		return DependencyGroupMarshaller.getDependencyGroup(project, savedStates);
 		
 	}
 
@@ -163,7 +164,7 @@ public class DependencyViewPart extends ViewPart {
 	}
 
 	public void saveState() throws Exception {
-		DependencyMarshaller.saveDependencyGroup((DependencyGroup)viewer.getInput(), Mevenide.getPlugin().getFile("statedDependencies.xml"));
+		DependencyGroupMarshaller.saveDependencyGroup((DependencyGroup)viewer.getInput(), Mevenide.getPlugin().getFile("statedDependencies.xml"));
 	}
 	
 	public static void showView() throws Exception {
@@ -180,7 +181,7 @@ public class DependencyViewPart extends ViewPart {
 	 */
 	public static void synchronizeWithoutPrompting(IProject currentProject) throws Exception {
 		String savedState = Mevenide.getPlugin().getFile("statedDependencies.xml");
-		List lastSourceList = SourceDirectoryMarshaller.getLastStoredSourceDirectories(currentProject, savedState);
+		List lastSourceList = SourceDirectoryGroupMarshaller.getLastStoredSourceDirectories(currentProject, savedState);
 		
 		boolean newSourceFolder = false;
 		boolean newDependency = false;

@@ -12,7 +12,7 @@
  * Lesser General Public License for more details.
  * 
  */
-package org.mevenide.ui.eclipse.sync.source;
+package org.mevenide.ui.eclipse.sync.view;
 
 import java.util.List;
 
@@ -30,6 +30,8 @@ import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.internal.dialogs.ListContentProvider;
 import org.mevenide.ui.eclipse.Mevenide;
+import org.mevenide.ui.eclipse.sync.model.*;
+import org.mevenide.ui.eclipse.util.*;
 
 /**
  * 
@@ -37,9 +39,9 @@ import org.mevenide.ui.eclipse.Mevenide;
  * @version $Id$
  * 
  */
-public class SourceDirectoryViewUtil {
+public class SourceDirectoryMappingViewControl {
 	
-	private SourceDirectoryViewUtil(){
+	private SourceDirectoryMappingViewControl(){
 	}
 	public static TableViewer getViewer(Composite parent) {
 		GridLayout layout = new GridLayout();
@@ -92,7 +94,7 @@ public class SourceDirectoryViewUtil {
 					if (element instanceof Item) {
 						element = ((Item) element).getData();
 					}
-					((SourceDirectory) element).setDirectoryType(SourceDirectoryUtil.sourceTypes[((Integer)value).intValue()]);
+					((SourceDirectory) element).setDirectoryType(SourceDirectoryTypeUtil.sourceTypes[((Integer)value).intValue()]);
 					tableViewer.update(element, new String[] {"source.type"});
 				}
 			}
@@ -102,7 +104,7 @@ public class SourceDirectoryViewUtil {
 					return ((SourceDirectory) element).getDisplayPath();
 				}
 				else {
-					return SourceDirectoryUtil.getSourceTypeIndex(((SourceDirectory) element).getDirectoryType());
+					return SourceDirectoryTypeUtil.getSourceTypeIndex(((SourceDirectory) element).getDirectoryType());
 				} 
 			}
 		});
@@ -120,7 +122,7 @@ public class SourceDirectoryViewUtil {
 			}
 		});
 		
-		tableViewer.setLabelProvider(new SourceDirectoryLabelProvider(SourceDirectoryUtil.sourceTypes));
+		tableViewer.setLabelProvider(new SourceDirectoryGroupLabelProvider(SourceDirectoryTypeUtil.sourceTypes));
 		
 //		viewer.setSorter(new ViewerSorter() {
 //			
@@ -131,7 +133,7 @@ public class SourceDirectoryViewUtil {
 	
 	
 	private static ComboBoxCellEditor createComboBoxCellEditor(TableViewer tableViewer) {
-		ComboBoxCellEditor comboBoxCellEditor = new ComboBoxCellEditor(tableViewer.getTable(), SourceDirectoryUtil.sourceTypes, SWT.READ_ONLY);
+		ComboBoxCellEditor comboBoxCellEditor = new ComboBoxCellEditor(tableViewer.getTable(), SourceDirectoryTypeUtil.sourceTypes, SWT.READ_ONLY);
 		comboBoxCellEditor.activate();
 		return comboBoxCellEditor;
 	}

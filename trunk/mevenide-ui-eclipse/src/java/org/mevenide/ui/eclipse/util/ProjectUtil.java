@@ -41,11 +41,11 @@ import org.mevenide.project.source.SourceDirectoryUtil;
 import org.mevenide.ui.eclipse.DefaultPathResolver;
 import org.mevenide.ui.eclipse.IPathResolver;
 import org.mevenide.ui.eclipse.Mevenide;
-import org.mevenide.ui.eclipse.sync.dependency.DependencyGroup;
-import org.mevenide.ui.eclipse.sync.dependency.DependencyMarshaller;
-import org.mevenide.ui.eclipse.sync.source.SourceDirectory;
-import org.mevenide.ui.eclipse.sync.source.SourceDirectoryGroup;
-import org.mevenide.ui.eclipse.sync.source.SourceDirectoryMarshaller;
+import org.mevenide.ui.eclipse.sync.model.DependencyGroup;
+import org.mevenide.ui.eclipse.sync.model.DependencyGroupMarshaller;
+import org.mevenide.ui.eclipse.sync.model.SourceDirectory;
+import org.mevenide.ui.eclipse.sync.model.SourceDirectoryGroup;
+import org.mevenide.ui.eclipse.sync.model.SourceDirectoryGroupMarshaller;
 
 /**
  * 
@@ -106,7 +106,7 @@ public class ProjectUtil {
 		//WICKED if/else
 		for (int i = 0; i < sourceGroup.getSourceDirectories().size(); i++) {
 			SourceDirectory directory = (SourceDirectory) sourceGroup.getSourceDirectories().get(i);
-			if ( org.mevenide.ui.eclipse.sync.source.SourceDirectoryUtil.isSource(directory) ) {
+			if ( org.mevenide.ui.eclipse.util.SourceDirectoryTypeUtil.isSource(directory) ) {
 				pomWriter.addSource(directory.getDirectoryPath(), pomFile, directory.getDirectoryType());
 			}
 			if ( directory.getDirectoryType().equals(ProjectConstants.MAVEN_RESOURCE ) ) {
@@ -191,8 +191,8 @@ public class ProjectUtil {
 	public static void synchronize(IProject project) throws Exception {
 		SourceDirectoryUtil.resetSourceDirectories(Mevenide.getPlugin().getPom());
 	
-		DependencyGroup dependencyGroup = DependencyMarshaller.getDependencyGroup(project, Mevenide.getPlugin().getFile("statedDependencies.xml"));
-		SourceDirectoryGroup sourceGroup = SourceDirectoryMarshaller.getSourceDirectoryGroup(project, Mevenide.getPlugin().getFile("sourceTypes.xml"));
+		DependencyGroup dependencyGroup = DependencyGroupMarshaller.getDependencyGroup(project, Mevenide.getPlugin().getFile("statedDependencies.xml"));
+		SourceDirectoryGroup sourceGroup = SourceDirectoryGroupMarshaller.getSourceDirectoryGroup(project, Mevenide.getPlugin().getFile("sourceTypes.xml"));
 	
 		updatePom(sourceGroup, dependencyGroup, Mevenide.getPlugin().getPom());
 	}

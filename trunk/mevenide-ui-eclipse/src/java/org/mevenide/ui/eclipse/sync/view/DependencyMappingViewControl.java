@@ -12,7 +12,7 @@
  * Lesser General Public License for more details.
  * 
  */
-package org.mevenide.ui.eclipse.sync.dependency;
+package org.mevenide.ui.eclipse.sync.view;
 
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ICellModifier;
@@ -26,6 +26,7 @@ import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.mevenide.ui.eclipse.Mevenide;
+import org.mevenide.ui.eclipse.sync.model.*;
 
 /**
  * 
@@ -33,9 +34,9 @@ import org.mevenide.ui.eclipse.Mevenide;
  * @version $Id$
  * 
  */
-public class DependencyViewUtil {
+public class DependencyMappingViewControl {
 	
-	private DependencyViewUtil(){
+	private DependencyMappingViewControl(){
 	}
 	
 	
@@ -93,7 +94,7 @@ public class DependencyViewUtil {
 		
 		tableTreeViewer.setCellModifier(new ICellModifier() {
 			public boolean canModify(Object element, String property) {
-				return "value".equals(property) && element instanceof DependencyContentProvider.DependencyInfo;
+				return "value".equals(property) && element instanceof DependencyGroupContentProvider.DependencyInfo;
 			}
 			
 			public void modify(Object element, String property, Object value) {
@@ -101,17 +102,17 @@ public class DependencyViewUtil {
 					if (element instanceof Item) {
 						element = ((Item) element).getData();
 					}
-					((DependencyContentProvider.DependencyInfo) element).setInfo((String)value);
+					((DependencyGroupContentProvider.DependencyInfo) element).setInfo((String)value);
 					tableTreeViewer.update(element, null);
 				}
 			}
 			
 			public Object getValue(Object element, String property) {
-				if ( element instanceof DependencyContentProvider.DependencyInfo && "attribute".equals("property") ) {
-					return ((DependencyContentProvider.DependencyInfo) element).getDependency().getArtifact();
+				if ( element instanceof DependencyGroupContentProvider.DependencyInfo && "attribute".equals("property") ) {
+					return ((DependencyGroupContentProvider.DependencyInfo) element).getDependency().getArtifact();
 				}
-				if ( element instanceof DependencyContentProvider.DependencyInfo && "value".equals(property) ) {
-					return ((DependencyContentProvider.DependencyInfo) element).getInfo();
+				if ( element instanceof DependencyGroupContentProvider.DependencyInfo && "value".equals(property) ) {
+					return ((DependencyGroupContentProvider.DependencyInfo) element).getInfo();
 				}
 				else {
 					return "";
@@ -119,7 +120,7 @@ public class DependencyViewUtil {
 			}
 		});
 
-		tableTreeViewer.setContentProvider(new DependencyContentProvider());
+		tableTreeViewer.setContentProvider(new DependencyGroupContentProvider());
 		
 		//tableTreeViewer.setLabelProvider(new );
 		
@@ -127,7 +128,7 @@ public class DependencyViewUtil {
 //			
 //		});
 
-		tableTreeViewer.setLabelProvider(new DependencyLabelProvider());
+		tableTreeViewer.setLabelProvider(new DependencyGroupLabelProvider());
 
 		tableTreeViewer.setInput(new DependencyGroup(Mevenide.getPlugin().getProject()));
 	}

@@ -12,7 +12,7 @@
  * Lesser General Public License for more details.
  * 
  */
-package org.mevenide.ui.eclipse.sync.dependency;
+package org.mevenide.ui.eclipse.sync.model;
 
 import java.util.List;
 
@@ -26,9 +26,9 @@ import org.eclipse.jface.viewers.Viewer;
  * @version $Id$
  * 
  */
-public class DependencyContentProvider implements ITreeContentProvider {
+public class DependencyGroupContentProvider implements ITreeContentProvider {
 	
-	abstract class DependencyInfo {
+	public abstract class DependencyInfo {
 		protected Dependency dependency;
 		protected String title;
 		protected String info;

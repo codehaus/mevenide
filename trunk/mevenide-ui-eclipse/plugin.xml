@@ -270,14 +270,14 @@
             name="Mevenide Source Folders"
             icon="icons/maven.gif"
             category="Mevenide"
-            class="org.mevenide.ui.eclipse.sync.views.SourceDirectoryViewPart"
+            class="org.mevenide.ui.eclipse.sync.view.SourceDirectoryMappingViewPart"
             id="org.mevenide.sync.view">
       </view>
       <view
             name="Mevenide Dependencies"
             icon="icons/maven.gif"
             category="Mevenide"
-            class="org.mevenide.ui.eclipse.sync.views.DependencyViewPart"
+            class="org.mevenide.ui.eclipse.sync.view.DependencyMappingViewPart"
             id="org.mevenide.sync.view.dep">
       </view -->
    </extension>

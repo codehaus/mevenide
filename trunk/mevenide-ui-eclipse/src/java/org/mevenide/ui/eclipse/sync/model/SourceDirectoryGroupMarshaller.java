@@ -11,7 +11,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  */
-package org.mevenide.ui.eclipse.sync.source;
+package org.mevenide.ui.eclipse.sync.model;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -32,7 +32,7 @@ import org.mevenide.util.JDomOutputter;
  * @version $Id$
  * 
  */
-public class SourceDirectoryMarshaller {
+public class SourceDirectoryGroupMarshaller {
 	
 	/**
 	 * @refactor cyclomatic complexity &gt;&gt; 4

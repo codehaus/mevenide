@@ -36,15 +36,15 @@ import org.mevenide.ui.eclipse.IPathResolver;
 public class SynchronizeWizard extends Wizard {
 	private static Log log = LogFactory.getLog(SynchronizeWizard.class);
 	
-	private SourceDirectorySynchronizeWizardPage sourcePage;
-	private DependencySynchronizeWizardPage dependencyPage;
+	private SourceDirectoryMappingWizardPage sourcePage;
+	private DependencyMappingWizardPage dependencyPage;
 	
 	private IProject project;
 	
 	public SynchronizeWizard(IProject project) {
 		this.project = project;
-		sourcePage = new SourceDirectorySynchronizeWizardPage();
-		dependencyPage = new DependencySynchronizeWizardPage();
+		sourcePage = new SourceDirectoryMappingWizardPage();
+		dependencyPage = new DependencyMappingWizardPage();
 		addPage(sourcePage);
 		addPage(dependencyPage);
 	}

@@ -11,12 +11,13 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  */
-package org.mevenide.ui.eclipse.sync.source;
+package org.mevenide.ui.eclipse.util;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import org.mevenide.ProjectConstants;
+import org.mevenide.ui.eclipse.sync.model.*;
 
 /**
  * 
@@ -24,9 +25,9 @@ import org.mevenide.ProjectConstants;
  * @version $Id$
  * 
  */
-public class SourceDirectoryUtil {
+public class SourceDirectoryTypeUtil {
 
-	private SourceDirectoryUtil() {
+	private SourceDirectoryTypeUtil() {
 	}
 	
 	private static Map sourceIndexMap;

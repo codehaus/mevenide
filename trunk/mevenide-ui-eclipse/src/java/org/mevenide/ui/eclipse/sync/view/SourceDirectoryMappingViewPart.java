@@ -11,7 +11,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  */
-package org.mevenide.ui.eclipse.sync.source;
+package org.mevenide.ui.eclipse.sync.view;
 
 import java.util.List;
 
@@ -33,6 +33,7 @@ import org.mevenide.sync.ISynchronizer;
 import org.mevenide.sync.SynchronizerFactory;
 import org.mevenide.ui.eclipse.DefaultPathResolver;
 import org.mevenide.ui.eclipse.Mevenide;
+import org.mevenide.ui.eclipse.sync.model.*;
 
 /**
  * 
@@ -40,28 +41,28 @@ import org.mevenide.ui.eclipse.Mevenide;
  * @version $Id$
  * 
  */
-public class SourceDirectoryViewPart extends ViewPart {
-	private static Log log = LogFactory.getLog(SourceDirectoryViewPart.class);
+public class SourceDirectoryMappingViewPart extends ViewPart {
+	private static Log log = LogFactory.getLog(SourceDirectoryMappingViewPart.class);
 	
 	/** 2 columns table viewer [source dir, source type] where source type is displayed in a CCombo */
 	private TableViewer viewer;
 	
 	private IProject project;
 	
-	private static SourceDirectoryViewPart partInstance; 
+	private static SourceDirectoryMappingViewPart partInstance; 
 	
 	//public constructor : it should be instantiated by Eclipse 
-	public SourceDirectoryViewPart() {
+	public SourceDirectoryMappingViewPart() {
 		partInstance = this;
 	}
 	
-	public static SourceDirectoryViewPart getInstance() {
+	public static SourceDirectoryMappingViewPart getInstance() {
 		return partInstance;
 	}
 	
 	public void createPartControl(Composite parent) {
 		
-		viewer = SourceDirectoryViewUtil.getViewer(parent);
+		viewer = SourceDirectoryMappingViewControl.getViewer(parent);
 
 		getSite().setSelectionProvider(viewer);
 		
@@ -95,7 +96,7 @@ public class SourceDirectoryViewPart extends ViewPart {
 		
 		String savedStates = Mevenide.getPlugin().getFile("sourceTypes.xml");
 		
-		return SourceDirectoryMarshaller.getSourceDirectoryGroup(project, savedStates);
+		return SourceDirectoryGroupMarshaller.getSourceDirectoryGroup(project, savedStates);
 		
 	}
 
@@ -163,7 +164,7 @@ public class SourceDirectoryViewPart extends ViewPart {
 	}
 
 	public void saveState() throws Exception {
-		SourceDirectoryMarshaller.saveSourceDirectoryGroup((SourceDirectoryGroup)viewer.getInput(), Mevenide.getPlugin().getFile("sourceTypes.xml"));
+		SourceDirectoryGroupMarshaller.saveSourceDirectoryGroup((SourceDirectoryGroup)viewer.getInput(), Mevenide.getPlugin().getFile("sourceTypes.xml"));
 	}
 	
 	public static void showView() throws Exception {
@@ -180,7 +181,7 @@ public class SourceDirectoryViewPart extends ViewPart {
 	 */
 	public static void synchronizeWithoutPrompting(IProject currentProject) throws Exception {
 		String savedState = Mevenide.getPlugin().getFile("sourceTypes.xml");
-		List lastSourceList = SourceDirectoryMarshaller.getLastStoredSourceDirectories(currentProject, savedState);
+		List lastSourceList = SourceDirectoryGroupMarshaller.getLastStoredSourceDirectories(currentProject, savedState);
 		
 		boolean newSourceFolder = false;
 		boolean newDependency = false;

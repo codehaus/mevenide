@@ -17,14 +17,14 @@ package org.mevenide.ui.eclipse.sync.wizard;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.TableTreeViewer;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.mevenide.ui.eclipse.Mevenide;
-import org.mevenide.ui.eclipse.sync.source.SourceDirectoryGroup;
-import org.mevenide.ui.eclipse.sync.source.SourceDirectoryMarshaller;
-import org.mevenide.ui.eclipse.sync.source.SourceDirectoryViewUtil;
+import org.mevenide.ui.eclipse.sync.view.DependencyMappingViewControl;
+import org.mevenide.ui.eclipse.sync.model.DependencyGroup;
+import org.mevenide.ui.eclipse.sync.model.DependencyGroupMarshaller;
 
 /**
  * 
@@ -32,19 +32,19 @@ import org.mevenide.ui.eclipse.sync.source.SourceDirectoryViewUtil;
  * @version $Id$
  * 
  */
-public class SourceDirectorySynchronizeWizardPage extends WizardPage {
+public class DependencyMappingWizardPage extends WizardPage {
+	private static Log log = LogFactory.getLog(DependencyMappingWizardPage.class);
 	
-	private static Log log = LogFactory.getLog(SourceDirectorySynchronizeWizardPage.class);
-	
-	private TableViewer viewer;
+	private TableTreeViewer viewer;
 	
 	private IProject project;
 	
-	public SourceDirectorySynchronizeWizardPage() {
-		super("Source Directories Synchronization");
-		setTitle("Source Directory Synchronization");
-		setDescription("Please enter source directory types.");
-		setImageDescriptor(Mevenide.getImageDescriptor("source-synch-64.gif"));
+	public DependencyMappingWizardPage() {
+		super("Dependencies Synchronization");
+		setTitle("Dependency Synchronization");
+		setDescription("Please check the dependencies' groupId, artifactId and version");
+		setImageDescriptor(Mevenide.getImageDescriptor("dep-synch-64.gif"));
+		
 		
 	}
 
@@ -52,7 +52,7 @@ public class SourceDirectorySynchronizeWizardPage extends WizardPage {
 
 	public void createControl(Composite arg0) {
 		Composite composite = new Composite(arg0, SWT.NONE);
-		viewer = SourceDirectoryViewUtil.getViewer(composite);
+		viewer = DependencyMappingViewControl.getViewer(composite);
 		setInput(((SynchronizeWizard)getWizard()).getProject());
 		setControl(composite);
 	}
@@ -61,41 +61,43 @@ public class SourceDirectorySynchronizeWizardPage extends WizardPage {
 	public void setInput(IProject project) {
 		this.project = project;
 		if ( viewer.getContentProvider() != null ) {
-			SourceDirectoryGroup newInput = null ;
+			DependencyGroup newInput = null ;
 			try {
 			
 				newInput = getSavedInput(project);
 			}
 			catch (Exception e) {
-				log.info("Error occured while restoring previously saved SourceDirectoryGroup for project '" + project.getName() + "'. Reason : " + e); 
+				log.info("Error occured while restoring previously saved DependencyGroup for project '" + project.getName() + "'. Reason : " + e);
 	
 			}
 			if ( newInput == null ) {
-				newInput = new SourceDirectoryGroup(project);
+				newInput = new DependencyGroup(project);
 			}
 		
 			viewer.setInput(newInput);
 		}
 	}
 	
-	public SourceDirectoryGroup getInput() {
-		return (SourceDirectoryGroup) viewer.getInput();
+	public DependencyGroup getInput() {
+		return (DependencyGroup) viewer.getInput();
 	}
 	
 	
-	private SourceDirectoryGroup getSavedInput(IProject project) throws Exception {
+	private DependencyGroup getSavedInput(IProject project) throws Exception {
 		
-		String savedStates = Mevenide.getPlugin().getFile("sourceTypes.xml");
-		
-		return SourceDirectoryMarshaller.getSourceDirectoryGroup(project, savedStates);
-		
-		
+		String savedStates = Mevenide.getPlugin().getFile("statedDependencies.xml");
+			
+		return DependencyGroupMarshaller.getDependencyGroup(project, savedStates);
+			
 	}
-
-
+	
+	
 	public void saveState() throws Exception {
-		SourceDirectoryMarshaller.saveSourceDirectoryGroup((SourceDirectoryGroup)viewer.getInput(), Mevenide.getPlugin().getFile("sourceTypes.xml"));
+		DependencyGroupMarshaller.saveDependencyGroup((DependencyGroup)viewer.getInput(), Mevenide.getPlugin().getFile("statedDependencies.xml"));
 	}
+	
+
+
 	
 
 
