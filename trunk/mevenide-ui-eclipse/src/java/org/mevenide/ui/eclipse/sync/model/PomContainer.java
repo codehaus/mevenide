@@ -48,7 +48,10 @@
  */
 package org.mevenide.ui.eclipse.sync.model;
 
-import org.eclipse.core.resources.IProject;
+import java.io.File;
+
+import org.apache.maven.project.Project;
+import org.mevenide.project.io.ProjectReader;
 
 /**
  * 
@@ -56,35 +59,49 @@ import org.eclipse.core.resources.IProject;
  * @version $Id$
  * 
  */
-public class ProjectContainer {
-    public static final int INCOMING = 8;
-    public static final int OUTGOING = 16;
-    public static final int CONFLICTING = 4;
-    public static final int NO_CHANGE = 32;
+public class PomContainer {
+    private Object[] nodes;
     
-    private IProject project;
-   
-    private Object[] pomContainers;
+    private Project project;
+    private ProjectContainer parent;
+    private File pomFile;
     
-    public ProjectContainer(IProject project) {
-        this.project = project;
+    public PomContainer(File projectFile) throws Exception {
+        this.pomFile = projectFile;
+        this.project = ProjectReader.getReader().read(projectFile);
     }
     
-    public IProject getProject() {
+    public Project getProject() {
         return project;
     }
     
-    public void setProject(IProject project) {
+    public void setProject(Project project) {
         this.project = project;
     }
 
     
-    public Object[] getPomContainers() {
-        return pomContainers;
+    public Object[] getNodes() {
+        return nodes;
     }
 
-    public void setPomContainers(Object[] containers) {
-        this.pomContainers = containers;
+    public void setNodes(Object[] nodes) {
+        this.nodes = nodes;
+    }
+
+	public ProjectContainer getParent() {
+	    return parent;
+	}
+	
+	public void setParent(ProjectContainer parent) {
+	    this.parent = parent;
+	}
+
+    public File getPomFile() {
+        return pomFile;
+    }
+
+    public void setPomFile(File pomFile) {
+        this.pomFile = pomFile;
     }
 
 }

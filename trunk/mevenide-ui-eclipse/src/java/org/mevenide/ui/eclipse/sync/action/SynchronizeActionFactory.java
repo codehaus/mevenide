@@ -292,8 +292,7 @@ public class SynchronizeActionFactory {
 	private void createRefreshAllAction() {
 		Action refreshAll = new Action() {
 			public void run() {
-				synchronizeView.getArtifactMappingNodeViewer().refresh(true);
-				synchronizeView.getArtifactMappingNodeViewer().expandAll();
+				synchronizeView.refreshAll();
 			}
 		};
 		refreshAll.setId(REFRESH_ALL);
