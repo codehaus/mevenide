@@ -65,6 +65,8 @@ public class AllTests {
 		
 		suite.addTestSuite(DefaultGoalsGrabberTest.class);
 		suite.addTestSuite(ProjectGoalsGrabberTest.class);
+		suite.addTestSuite(GoalsGrabbersAggregatorTest.class);
+		
 		return suite; 
 	} 
 }

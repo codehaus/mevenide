@@ -48,9 +48,12 @@
  */
 package org.mevenide.goals.grabber;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Set;
+import java.util.List;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**  
  * 
@@ -58,36 +61,74 @@ import java.util.Set;
  * @version $Id: GoalsGrabberAggregator.java 6 sept. 2003 Exp gdodinet 
  * 
  */
-public class GoalsGrabbersAggregator extends AbstractGoalsGrabber {
-	private Set goalsGrabbers = new HashSet();
+public class GoalsGrabbersAggregator implements IGoalsGrabber {
+	private static Log log = LogFactory.getLog(GoalsGrabbersAggregator.class);
+	
+	private List goalsGrabbers = new ArrayList();
 	
 	public void refresh() throws Exception {
-        super.refresh();
+        
         Iterator iterator = goalsGrabbers.iterator();
         while ( iterator.hasNext() ) {
         	IGoalsGrabber goalsGrabber = (IGoalsGrabber) iterator.next();
         	goalsGrabber.refresh();
-        	mergeGrabber(goalsGrabber);
         }
     }
     
     public void addGoalsGrabber(IGoalsGrabber goalsGrabber) {
     	goalsGrabbers.add(goalsGrabber);
-    	mergeGrabber(goalsGrabber);
     } 
-    
-	private void mergeGrabber(IGoalsGrabber goalsGrabber) {
-	
-	}
-    
+
 	public void removeGoalsGrabber(IGoalsGrabber goalsGrabber) {
 		goalsGrabbers.remove(goalsGrabber);
-		undoMerge(goalsGrabber);
-	}
-	
-    private void undoMerge(IGoalsGrabber goalsGrabber) {
-	
 	}
     
-    
+    public String getDescription(String fullyQualifiedGoalName) {
+        String description = null;
+        for (int i = 0; i < goalsGrabbers.size(); i++) {
+            description = ((IGoalsGrabber)goalsGrabbers.get(i)).getDescription(fullyQualifiedGoalName);
+			if ( description != null ) {
+				return description;
+			}
+        }
+        return description;
+    }
+
+    public String[] getGoals(String plugin) {
+		String[] goals = null;
+		for (int i = 0; i < goalsGrabbers.size(); i++) {
+			goals = ((IGoalsGrabber)goalsGrabbers.get(i)).getGoals(plugin);
+			if ( goals != null ) {
+				return goals;
+			}
+		}
+		return goals;
+    }
+
+    public String[] getPlugins() {
+        String[] plugins = new String[0];
+		for (int i = 0; i < goalsGrabbers.size(); i++) {
+			String[] currentPlugins = ((IGoalsGrabber)goalsGrabbers.get(i)).getPlugins();
+
+			String[] tmpArray = new String[plugins.length];
+			System.arraycopy(plugins, 0, tmpArray, 0, plugins.length);
+			
+			plugins = new String[plugins.length + currentPlugins.length];
+			System.arraycopy(currentPlugins, 0, plugins, 0, currentPlugins.length);
+			System.arraycopy(tmpArray, 0, plugins, currentPlugins.length, tmpArray.length);
+		}
+		return plugins;
+    }
+
+    public String[] getPrereqs(String fullyQualifiedGoalName) {
+        String[] prereqs = null;
+        for (int i = 0; i < goalsGrabbers.size(); i++) {
+			prereqs = ((IGoalsGrabber)goalsGrabbers.get(i)).getPrereqs(fullyQualifiedGoalName);
+            if ( prereqs != null ) {
+				return prereqs;
+			} 
+        }
+        return prereqs;
+    }
+
 }
