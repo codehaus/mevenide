@@ -15,6 +15,8 @@
 
 package org.mevenide.ui.eclipse.actions;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.action.IAction;
@@ -34,10 +36,13 @@ import org.mevenide.ui.eclipse.sync.wizard.SynchronizeWizard;
  * 
  */
 public class SynchronizeAction extends AbstractMevenideAction {
+	private static Log log = LogFactory.getLog(SynchronizeAction.class);
 	
     public void run(IAction action) {
+    	boolean pom = true;
 		try {
             if ( action.getId().equals("maven-plugin.Synchronize") ) {
+            	pom = false;
             	String mavenHome = Mevenide.getPlugin().getMavenHome();
             	String mavenRepository = Mevenide.getPlugin().getMavenRepository();
             	if ( isNull(mavenHome) || isNull(mavenRepository) ) {
@@ -63,7 +68,7 @@ public class SynchronizeAction extends AbstractMevenideAction {
 			}
 		}
 		catch (Exception e) {
-			e.printStackTrace();
+			log.debug("Unable to synchronize " + (pom ? "POM" : "project") + " due to : " + e);
 		}
 	}
 

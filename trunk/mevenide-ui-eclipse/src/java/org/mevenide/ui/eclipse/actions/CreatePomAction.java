@@ -14,9 +14,10 @@
  */
 package org.mevenide.ui.eclipse.actions;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
-import org.mevenide.ui.eclipse.sync.source.SourceDirectoryViewPart;
 import org.mevenide.ui.eclipse.util.FileUtil;
 
 /**
@@ -26,27 +27,27 @@ import org.mevenide.ui.eclipse.util.FileUtil;
  * 
  */
 public class CreatePomAction extends AbstractMevenideAction {
-
+	private static Log log = LogFactory.getLog(AbstractMevenideAction.class);
+	
 	public void run(IAction action) {
 		try {
 			if ( !FileUtil.getPom(currentProject).exists() ) {
 				FileUtil.createPom(currentProject);
-				SourceDirectoryViewPart.showView();
-				SourceDirectoryViewPart.getInstance().setInput(currentProject);
+//				SourceDirectoryViewPart.showView();
+//				SourceDirectoryViewPart.getInstance().setInput(currentProject);
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.debug("Unable to create POM due to : " + e);
 		}
 	}
 
 	public void selectionChanged(IAction action, ISelection selection) {
 		super.selectionChanged(action, selection);
-		//thats the idea...
-		//however it is doesnt bahaves exactly as expected (e.g. action disabled and ui activated)
-		 
-//		if ( ProjectUtil.getPom(currentProject).exists() ) {
-//			action.setEnabled(false);
-//		}
+		
+		//i still have to figure out how to disable the ui associated to the action
+		//if ( Mevenide.getPlugin().getPom().exists() ) {
+		//    action.setEnabled(false);
+		//}
 
 	}
 
