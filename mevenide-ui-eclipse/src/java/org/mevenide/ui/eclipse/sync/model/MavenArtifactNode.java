@@ -143,7 +143,7 @@ public class MavenArtifactNode extends ArtifactNode {
 		}
 	}
 	
-	public void addTo(Project project) throws Exception {
+	public void addTo(Project project, boolean shouldWriteProperties) throws Exception {
 	    if ( project.getArtifacts() == null ) {
 	        project.setArtifacts(new ArrayList());
 	    }
@@ -152,9 +152,13 @@ public class MavenArtifactNode extends ArtifactNode {
 	    }
 	    
 	    project.getArtifacts().add(artifact);
-	    project.getDependencies().add(artifact.getDependency());
-
-	    ProjectWriter.getWriter().write(project);
+	    List artifacts = new ArrayList(project.getArtifacts());
+	    
+	    ProjectWriter.getWriter().setArtifacts(artifacts, project, shouldWriteProperties);
+	}
+	
+	public void addTo(Project project) throws Exception {
+	    addTo(project, false);
 	}
 	
 	protected String getIgnoreLine() {
