@@ -1,5 +1,6 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <project>
-    <extend>${basedir}/../mevenide-master/base-project.xml</extend>
+    <extend>${basedir}/../mevenide-parent/project.xml</extend>
     <pomVersion>3</pomVersion>
     <id>mevenide-core</id>
     <artifactId>mevenide-core</artifactId>

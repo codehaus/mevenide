@@ -1,10 +1,9 @@
 <project>
-    <extend>${basedir}/../mevenide-master/plugin-base-project.xml</extend>
+    <extend>${basedir}/../mevenide-plugin-parent/project.xml</extend>
     <name>MEP Plugin</name>
     <artifactId>maven-eclipse-plugin-plugin</artifactId>
     <currentVersion>0.3.1-SNAPSHOT</currentVersion>
     <package>org.mevenide.tags</package>
-    <organization/>
     <inceptionYear>2003</inceptionYear>
     <shortDescription>This plugin helps creating ready to use eclipse plugins and features distribution</shortDescription>
     <versions>

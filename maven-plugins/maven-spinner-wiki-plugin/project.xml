@@ -1,5 +1,5 @@
 <project>
-	<extend>${basedir}/../mevenide-master/plugin-base-project.xml</extend>
+    <extend>${basedir}/../mevenide-plugin-parent/project.xml</extend>
 	
 	<pomVersion>3</pomVersion>
 	
