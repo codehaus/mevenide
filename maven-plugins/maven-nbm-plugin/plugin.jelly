@@ -30,9 +30,11 @@
     <j:choose>
         <j:when test="! empty clusterVar">
             <j:set var="maven.nbm.cluster.dir" value="${netbeansDir}/${maven.nbm.cluster.name}"/>
+            <j:set var="cluster.dirXXX" value="${maven.nbm.cluster.name}"/>
         </j:when>
         <j:otherwise>
             <j:set var="maven.nbm.cluster.dir" value="${netbeansDir}/${pom.groupId}"/>
+            <j:set var="cluster.dirXXX" value="${pom.groupId}"/>
         </j:otherwise>
     </j:choose>
     <j:set var="maven.nbm.module.location" value="modules"/>
@@ -254,16 +256,19 @@ ${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.x
             </j:otherwise>
         </j:choose>
     </ant:createmodulexml>
-    
+    <ant:loadproperties srcfile="${plugin.resources}/directories.properties"/>
+    <ant:property name="cluster.dir" value="${cluster.dirXXX}"/>
+    <ant:property name="module.name" value="${maven.nbm.final.name}"/>
+    <ant:echo message="moduleName=${module.name}"/>
     <ant:patternset id="module.files">
         <ant:include name="${maven.nbm.module.location}/${maven.nbm.final.name}.jar"/>
+        <ant:include name="${maven.nbm.module.location}/ext/*"/>
 <!--        <include name="${javahelp.jar}" if="has.javahelp"/> -->
         <ant:include name="system/Modules/${maven.nbm.final.name}.xml"/>
     </ant:patternset>
-    
     <ant:genlist outputfiledir="${maven.nbm.build.dir}/${maven.nbm.cluster.dir}" 
                  module="${maven.nbm.module.location}/${maven.nbm.final.name}.jar">
-        <ant:fileset dir="${netbeans.dest.dir}/${cluster.dir}">
+        <ant:fileset dir="${maven.nbm.build.dir}/${maven.nbm.cluster.dir}">
             <patternset refid="module.files"/>        
         </ant:fileset>
     </ant:genlist>
