@@ -269,7 +269,7 @@
    <!-- Maven Project Wizards -->
    <extension
          point="org.eclipse.ui.newWizards">
-      <category name="%ProjectWizard.category.name"
+      <category name="%MevenideWizards.category.name"
             	id="org.mevenide.ui.eclipse.category.mevenide" />
       <wizard
             name="%ProjectWizard.name"
