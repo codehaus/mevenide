@@ -46,7 +46,7 @@
  * SUCH DAMAGE.
  * ====================================================================
  */
-package org.mevenide.test;
+package org.mevenide.project;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
@@ -54,24 +54,18 @@ import junit.framework.TestSuite;
 /**
  * 
  * @author Gilles Dodinet (gdodinet@wanadoo.fr)
- * @version $Id: AllTests.java 8 mai 2003 15:34:3813:34:35 Exp gdodinet 
+ * @version $Id: AllTests.java 8 mai 2003 15:32:4913:34:35 Exp gdodinet 
  * 
  */
-public class AllTests {
+public class AllTests  {
 	private AllTests() {
 	}
 
     public static Test suite() {
         TestSuite suite = new TestSuite();
-    
-		suite.addTest(org.mevenide.AllTests.suite());
-		suite.addTest(org.mevenide.util.AllTests.suite());
-		suite.addTest(org.mevenide.core.AllTests.suite());
-		suite.addTest(org.mevenide.project.AllTests.suite());
-		suite.addTest(org.mevenide.project.dependency.AllTests.suite());
-		suite.addTest(org.mevenide.project.io.AllTests.suite());
-		suite.addTest(org.mevenide.project.source.AllTests.suite());
-		
+        
+        suite.addTestSuite(ProjectComparatorTest.class);
+        
         return suite;
     }
 }
