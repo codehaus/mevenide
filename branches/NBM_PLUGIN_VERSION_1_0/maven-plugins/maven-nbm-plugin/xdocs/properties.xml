@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<document>
+  <properties>
+    <title>maven-nbm-plugin Properties</title>
+    <author>Milos Kleint (ca206216@tiscali.cz)</author>
+  </properties>
+  <body>
+    <section name="Basic Properties">
+    	<div id="documentContent">
+      <table>
+        <tr>
+          <th>Property</th>
+          <th>Optional</th>
+          <th>Description</th>
+        </tr>
+         <tr>
+          <td>maven.nbm.manifest</td>
+          <td><p>Optional.</p></td>
+          <td>
+            <p> File containing Netbeans-specific manifest entries. The plugin automatically generates some of the entries:
+            </p>
+            <source><![CDATA[
+OpenIDE-Module-Implementation-Version: ${pom.currentVersion}
+OpenIDE-Module: ${maven.nbm.modulename}
+OpenIDE-Module-Specification-Version: normalized version of ${pom.currentVersion}
+            
+            ]]></source> 
+            <p>etc.etc.</p>
+            <p>If you define any of the entries in your manifest file, it overrides anything that gets automatically generated. </p>
+          </td>
+        </tr>
+        <tr>
+          <td>maven.nbm.modulename</td>
+          <td><p>Since 0.6</p><p>Optional. Default value is <code>${pom.package}</code>. </p></td>
+          <td>
+            <p>Module name.</p>
+            <p>Used when generating the manifest entries and module jar file names.</p>
+          </td>
+        </tr>
+        <tr>
+          <td>maven.nbm.autoload</td>
+          <td><p>Optional. Default value is <code>false</code>. </p></td>
+          <td>
+            <p>Determines if the module is an autoload module or not.</p>
+            <p>A module cannot be both eager and autoload.</p>
+          </td>
+        </tr>
+        <tr>
+          <td>maven.nbm.eager</td>
+          <td><p>Optional. Default value is <code>false</code>.</p></td>
+          <td>
+            <p>Determines if the module is an eager module or not.</p>
+            <p>A module cannot be both eager and autoload.</p>
+          </td>
+        </tr>
+        <tr>
+          <td>maven.nbm.requiresrestart</td>
+          <td><p>Optional. Default value is <code>false</code>.</p>
+          <p>In version 0.1 the default was true, incompatible change.</p></td>
+          <td>
+            <p>If true, the application restarts after installation of the module. Required generally only when
+            the nbm includes files in netbeans/lib subfolder. (AFAIK)</p>
+          </td>
+        </tr>
+        <tr>
+          <td>maven.nbm.license</td>
+          <td><p>Optional. Default value is <code>${maven.license.licenseFile}</code>.</p></td>
+          <td>
+            <p>Location of the license file to be included with the nbm.</p>
+          </td>
+        </tr>
+        <tr>
+          <td>maven.nbm.license.name</td>
+          <td><p>Since 0.3</p><p>Optional. Default value is <code>License for ${pom.name}</code>.</p></td>
+          <td>
+            <p>Name of the license file to be included with the nbm. Eg. <code>Apache License, Version 2.0</code> </p>
+          </td>
+        </tr>
+        <tr>
+          <td>maven.nbm.cluster.name</td>
+          <td><p>Since 0.3</p><p>Optional. Default value is <code>${pom.groupId}</code>.</p></td>
+          <td>
+            <p>The name of the cluster that the module belongs to.</p>
+          </td>
+        </tr>
+        <tr>
+          <td>maven.nbm.build.dir</td>
+          <td><p>Since 0.6</p><p>Optional. Default value is <code>${maven.build.dir}/nbm</code>.</p></td>
+          <td>
+            <p>The output directory of the nbm plugin. The modified project's artifact is placed here. Later also the nbm file for the project.</p>
+            <p>The plugin will create a <code>netbeans/${maven.nbm.cluster.name}</code> subdirectory in here where all the files are placed that are later put into the nbm. Regular Netbeans directory/file layout applies.</p>
+            <p>You might want to make use of this property when you want to merge multiple projects belonging to one cluster and create an installation for it. </p>
+          </td>
+        </tr>
+        <tr>
+          <td>maven.nbm.distributionURL</td>
+          <td><p>Since 0.6</p><p>Optional. Default value is <code>${pom.url}/${maven.final.name}.nbm</code>.</p></td>
+          <td>
+            <p>The URL of the nbm once deployed on the server. Is used when creating the xml description of the autoupdate server.</p>
+            <p></p>
+          </td>
+        </tr>
+        
+     </table>
+     </div>
+   </section>
+   
+   
+    <section name="Dependency Properties">
+    	<div id="documentContent">
+      <table>
+        <tr>
+          <th>Property</th>
+          <th>Optional</th>
+          <th>Description</th>
+        </tr>
+         <tr>
+          <td>netbeans.module.ext</td>
+          <td><p>OPTIONAL. Allowed value <code>true</code></p> </td>
+          <td>
+            <p> A property of dependency in the POM, if set to <code>true</code>, the plugin
+                includes the dependency jar in the <code>ext</code> subdirectory. Such a dependency will
+                become part of the Netbeans module. Please note that if 2+ interdependant modules reference the same library, only one of them is allowed to add it to the Class-Path.
+                Usually it's the module that the others depend on. So the property should be set only in one of the projects.</p>
+                <p> For example:
+                <source><![CDATA[
+       <dependency>
+           <groupId>forehead</groupId>
+           <artifactId>forehead</artifactId>
+           <version>1.0-beta-5</version>
+           <url>http://forehead.werken.com/</url>
+           <properties>
+            	<netbeans.module.ext>true</netbeans.module.ext>
+            </properties>
+        </dependency>
+                        ]]></source>
+                </p>
+            <p> In case you didn't define the Class-Path manifest attribute, it will be added for you automatically.</p>
+          </td>
+        </tr>
+         <tr>
+          <td>netbeans.module.dep</td>
+          <td><p>OPTIONAL. Allowed types are <code>loose, spec, impl</code> </p></td>
+          <td>
+            <p> If the property is set on the dependency, it is expected to be a Netbeans module dependency.
+                When the project is built using the nbm:jar goal, it will build a <code>OpenIDE-Module-Module-Dependencies</code> manifest attribute. 
+                Again it will only be included in the jar, unless you define your own custom manifest attribute in the manifest file.
+                These dependencies are expected to be present in the IDE when deploying.
+                All of them should be Netbeans modules, not necessarily at build time, but definitely at runtime (installation).
+                </p> 
+             <p>For example:
+                <source><![CDATA[
+       <dependency>
+           <groupId>forehead</groupId>
+           <artifactId>forehead</artifactId>
+           <version>1.0-beta-5</version>
+           <properties>
+            	<netbeans.module.dep>impl</netbeans.module.dep>
+            </properties>
+        </dependency>
+        
+        <dependency>     
+           <groupId>netbeans</groupId>
+           <artifactId>org-netbeans-modules-projectuiapi</artifactId>
+           <version>1.0-SNAPSHOT</version>
+           <type>jar</type>
+           <properties>
+                <netbeans.module.dep>spec=org.netbeans.modules.projectuiapi/0 &gt; 1.0</netbeans.module.dep>
+           </properties>
+        </dependency>
+        
+                        ]]></source>
+                </p>
+                <p>There are 3 types of allowed values: </p>
+                <p> <b>loose</b> creates a dependency in the format <code>org.openide.execution</code> It's very loosely coupled and it just expects some version of the dependency module to be present and enabled.
+                </p>
+                <p> <b>spec</b> creates a dependency based on the specification number. In the module's manifest it looks like this: <code>org.openide.execution > 1.0.1</code>
+                The module will work with any subsequent version of the dependency module (unless that one breaks backward compatibility).
+                The version number to can be explicitly specified as is shown in the example above or the plugin will try to guess it.
+                The dependency jar is examined and if it is a netbeans module, its specification number and module name are used. The dependency version from the pom is used as fallback.
+                </p>
+                <p> <b>impl</b> creates a dependency based on the implementation number. It looks like this: <code>org.openide.execution = 1.0.1</code>
+                It will require a specific version of the dependency module. Use only when you depend on a non-public feature or code that was changed in later versions or could be changed.
+                The version number to can be explicitly specified or the plugin will try to guess it.
+                The dependency jar is examined and if it is a netbeans module, its implementation version and module name are used. The dependency version from the pom is used as fallback.
+                </p>
+                
+          </td>
+        </tr>
+<!--         <tr>
+          <td>netbeans.lib.generate</td>
+          <td><p>OPTIONAL. Allowed value <code>true</code> Actually makes sense only together with <code>netbeans.module.dep</code> on non-netbeans dependencies.</p></td>
+          <td>
+               <p> If the dependency is not a netbeans module and the <code>netbeans.module.dep</code> property is defined on it, 
+               you might want the plugin to generate a Netbeans module for you. That is done by running the <code>nbm:create-library-artifacts</code> goal.
+               The goal will attempt to guess all the important properties of the dependency and create an appropriate Netbeans module for it. 
+               </p>
+               <p> Gory details: That is done using the nbm plugin itself. We generate the project files and put them in target/nbm/{name-of-dependency} folder.
+               That's where you should be looking for the generated nbm as well.
+               In case there are any problems with the generated stuff, or you want a more complicated module structure, you can customize it manually and copy to your source structures.
+               </p>
+          </td>
+        </tr>
+          -->
+     </table>
+     </div>
+   </section>
+
+   <section name="NBM signing properties">
+   	<div id="documentContent">
+    <p> These properties are related to the signing of the NBM. You should sign NBMs you release.
+    Otherwise the user will be forced to accept a non-signed NBM.</p>
+    <p>See help for jarsigner and keystore executables located in the jdk's bin directory. 
+    These are used to generate the keys and signing the jars. </p>
+     <table>
+     	<tr>
+          <th>Property</th>
+          <th>Optional</th>
+          <th>Description</th>
+        </tr>
+        <tr>
+          <td>maven.nbm.sign.keystore</td>
+          <td>
+          <p>Optional. Since 0.2. Default value is <code>?</code>.</p>
+          </td>
+          <td>
+          <p>
+          Shall contain path the keystore file.
+          </p>
+          </td>
+        </tr>
+        <tr>
+          <td>maven.nbm.sign.storepass</td>
+          <td>
+          <p>Optional. Since 0.2. Default value is <code>?</code>.</p>
+          </td>
+          <td>
+          <p>
+           Contains the password for the signing of the nbm, you probably want to include it
+           in your $HOME/build.properties file.
+           </p>
+          </td>
+        </tr>
+        <tr>
+          <td>maven.nbm.sign.alias</td>
+          <td>
+          <p>Optional. Since 0.2. Default value is <code>?</code>.</p>
+          </td>
+          <td><p>
+          Alias in the keystore for signing the nbm.
+          </p>
+          </td>
+        </tr>
+        
+     </table>
+     </div>
+   </section>
+   
+    <section name="Autoupdate Properties">
+    	<div id="documentContent">
+        <p> These properties are relevant only if you want to generate NBM autoupdate server content. (goals nbm:collect-nbms and <b>nbm:autoupdate</b>)
+        </p>
+      <table>
+        <tr>
+          <th>Property</th>
+          <th>Optional</th>
+          <th>Description</th>
+        </tr>
+        <tr>
+          <td>maven.nbm.autoupdate.name</td>
+          <td><p>Since 0.2</p>
+          <p>Optional, required for nbm:autoupdate goal. Default value is "NBM_AutoUpdate" </p>
+          </td>
+          <td><p>
+          Name for the xml file describing the autoupdate server content information.
+          </p>
+          </td>
+        </tr>
+        <tr>
+          <td>maven.nbm.build.release.dir</td>
+          <td><p>Since 0.2</p>
+          <p> Optional. Default value is ${maven.build.dir}/nbm_release </p>
+          </td>
+          <td>
+          <p>Output location of the autoupdate server content.</p>
+          </td>
+        </tr>
+
+     </table>
+     </div>
+   </section>
+   
+         
+   <section name="Temporary Properties">
+   	<div id="documentContent">
+     <table>
+     	<tr>
+          <th>Property</th>
+          <th>Optional</th>
+          <th>Description</th>
+        </tr>
+        <tr>
+          <td>maven.nbm.autoupdate.distbase</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+     </table>
+     </div>
+   </section>
+
+  </body>
+</document>
