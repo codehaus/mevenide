@@ -54,6 +54,11 @@ public class ArtifactVisitor {
 	}
 	
 	public void add(DependencyEntry entry) throws Exception {
+//		IClasspathEntry[] cpe = PreferenceConstants.getDefaultJRELibrary();
+//		for (int i = 0; i < cpe.length; i++) {
+//			System.out.println(cpe[i].getPath());
+//		}
+
 		IClasspathEntry classpathEntry = entry.getClasspathEntry();
 		
 		ProjectWriter writer = ProjectWriter.getWriter();
