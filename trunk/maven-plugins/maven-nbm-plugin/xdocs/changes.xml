@@ -2,10 +2,12 @@
 <document>
   <properties>
     <title>Changes</title>
-    <author email="ca206216@tiscali.cz">Milos Kleint</author>
+    <author email="mkleint@codehaus.org">Milos Kleint</author>
   </properties>
 
   <body>
+    <release version="1.0" date="in CVS" description="First stable release.">
+    </release>
     <release version="0.6" date="20041030" description="">
       <action dev="mkleint" type="update">
       More customizations for netbeans.module.dep dependency property.
