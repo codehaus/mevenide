@@ -38,3 +38,12 @@
       	<role>Developer Java</role>
       </roles>
     </developer>
+    <developer>
+       <name>Serge Huber</name>
+       <id>shuber</id>
+       <email>shuber2@jahia.com</email>
+       <organization>Jahia Ltd</organization>
+       <roles>
+      	 <role>Developer Java</role>
+       </roles>
+    </developer>
