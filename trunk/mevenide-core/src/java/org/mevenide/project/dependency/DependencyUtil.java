@@ -26,6 +26,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Dependency;
 import org.apache.maven.project.Project;
 import org.mevenide.environment.ConfigUtils;
+import org.mevenide.properties.resolver.util.ResolverUtils;
 import org.mevenide.util.StringUtils;
 
 /**
@@ -46,6 +47,20 @@ public final class DependencyUtil {
 				    && areEquals(d1.getArtifactId(), d2.getArtifactId())
 					&& areEquals(d1.getGroupId(), d2.getGroupId())
 					&& areEquals(d1.getVersion(), d2.getVersion())
+				);
+	} 
+	
+	/**
+	 * test dependecies equality in the context of a specific project.
+	 * this is required to enable properties resolution
+	 */
+	public static boolean areEquals(Project context, Dependency d1, Dependency d2) {
+		return  (d1 == null && d2 == null) ||
+				(   
+				    d1 != null && d2 != null
+				    && areEquals(ResolverUtils.resolve(context, d1.getArtifactId()), ResolverUtils.resolve(context, d2.getArtifactId()))
+					&& areEquals(ResolverUtils.resolve(context, d1.getGroupId()), ResolverUtils.resolve(context, d2.getGroupId()))
+					&& areEquals(ResolverUtils.resolve(context, d1.getVersion()), ResolverUtils.resolve(context, d2.getVersion()))
 				);
 	}
 	
