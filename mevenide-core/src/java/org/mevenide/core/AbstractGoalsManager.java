@@ -47,6 +47,9 @@ public abstract class AbstractGoalsManager implements IGoalsManager {
     /** bean that holds the list of all available goals */
 	private IGoalsGrabber goalsGrabber;
 	
+    /** holds the non final options to be passed to the runner */
+    private IOptionsManager optionsManager;
+    
     /**
      * initalize goalsGrabber and load the previously saved runnableGoals
      * implement the Template pattern :
@@ -59,6 +62,7 @@ public abstract class AbstractGoalsManager implements IGoalsManager {
             //give subclasses a chance to do proper initialization 
             initialize();
             goalsGrabber = AbstractGoalsGrabber.getGrabber(getXmlGoals().getAbsolutePath());
+            //optionsManager = 
             load();
         }
         catch ( Exception e ) {

@@ -18,6 +18,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import org.jdom.Comment;
 import org.jdom.Document;
@@ -91,10 +92,10 @@ public class PostGoal {
 			List postGoals = projectRoot.getChildren("postGoal");
 			for (int i = 0; i < postGoals.size(); i++) {
 				Element postGoal = ((Element) postGoals.get(i));
-				//@todo EXTERNALIZE postGoal name (goals:grab)
+				ResourceBundle rb = ResourceBundle.getBundle("mevenide");
                 if (postGoal
 					.getAttribute("name")
-					.equals("goals:grab")) {
+					.equals(rb.getString("goals.grabber.name"))) {
 					return postGoal.getText().equals(output);
 				}
 			}

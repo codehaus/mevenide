@@ -25,13 +25,13 @@ import junit.framework.TestCase;
 public class OptionsRegistryTest extends TestCase {
 
 	public void testGetOptionDescription() throws Exception {
-	   assertEquals("Define a system property", OptionsRegistry.getOptionDescription('D'));
-       assertEquals("Produce logging information without adornments", OptionsRegistry.getOptionDescription('E'));
-       assertEquals("Produce execution debug output", OptionsRegistry.getOptionDescription('X'));
-       assertEquals("Produce exception stack traces", OptionsRegistry.getOptionDescription('e'));
-       assertEquals("Build is happening offline", OptionsRegistry.getOptionDescription('o'));
+	   assertEquals("Define a system property", OptionsRegistry.getDescription('D'));
+       assertEquals("Produce logging information without adornments", OptionsRegistry.getDescription('E'));
+       assertEquals("Produce execution debug output", OptionsRegistry.getDescription('X'));
+       assertEquals("Produce exception stack traces", OptionsRegistry.getDescription('e'));
+       assertEquals("Build is happening offline", OptionsRegistry.getDescription('o'));
        try {
-	       OptionsRegistry.getOptionDescription('Z');
+	       OptionsRegistry.getDescription('Z');
            fail("Excepted InvalidOptionException");
        } 
        catch (InvalidOptionException e) { }
