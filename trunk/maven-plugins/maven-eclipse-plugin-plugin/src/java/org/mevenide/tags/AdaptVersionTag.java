@@ -43,7 +43,7 @@ public class AdaptVersionTag extends AbstractMevenideTag {
     }
     
 
-    protected String adapt() {
+    public String adapt() {
         String validValues = "0123456789.";
         String newVersion = "";
         
