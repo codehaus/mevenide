@@ -26,7 +26,6 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.mevenide.ui.eclipse.Mevenide;
-import org.mevenide.ui.eclipse.MevenideColors;
 import org.mevenide.ui.eclipse.editors.MevenidePomEditor;
 
 /**
@@ -55,7 +54,6 @@ public class BuildPage extends AbstractPomEditorPage {
 		parent.setLayout(layout);
 
 		PageWidgetFactory factory = getFactory();
-		factory.setBackgroundColor(MevenideColors.WHITE);
 
 		directoriesSection = new BuildDirectoriesSection(this);
 		Control control = directoriesSection.createControl(parent, factory);
