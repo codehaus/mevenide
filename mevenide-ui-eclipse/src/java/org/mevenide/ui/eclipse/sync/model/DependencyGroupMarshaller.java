@@ -44,6 +44,8 @@ public class DependencyGroupMarshaller {
 	public static DependencyGroup getDependencyGroup(IProject project, String file) throws Exception {
 		DependencyGroup group = new DependencyGroup(project);
 		List dependenciesList = new ArrayList();
+	
+		List allDependenciesList = new ArrayList();
 		
 		if ( new File(file).exists() ) {
 
@@ -71,13 +73,12 @@ public class DependencyGroupMarshaller {
 						dependency.setVersion(dependencyElement.getAttributeValue("version"));
 						dependency.setType(dependencyElement.getAttributeValue("type"));
 						
-						//for (int k = 0; k < group.getDependencies().size(); k++) {
-							String l = dependencyElement.getAttributeValue("timestamp");
-							//if ( ((Dependency) group.getDependencies().get(k)).getArtifact().equals(dependency.getArtifact()) ) {
-							if ( timeStamp == Long.parseLong(l) ) {
-								dependenciesList.add(dependency);
-							}
-						//}
+						String l = dependencyElement.getAttributeValue("timestamp");
+						if ( timeStamp == Long.parseLong(l) ) {
+							dependenciesList.add(dependency);
+						}
+						allDependenciesList.add(dependency);
+						
 					}
 				}
 			}
@@ -85,22 +86,22 @@ public class DependencyGroupMarshaller {
 			log.debug("Found " + dependenciesList.size() + " previously stored dependencies");
 			
 //          dont check project again. all required pom dependencies should have been saved to file
-// 
-//			List projectDependencies = group.getDependencies();
-//			for (int i = 0; i < projectDependencies.size(); i++) {
-//				boolean alreadyAddedDependency = false;
-//				Dependency projectDependency = (Dependency) projectDependencies.get(i);
-//				for (int j = 0; j < dependenciesList.size(); j++) {
-//					Dependency savedDependency = (Dependency) dependenciesList.get(j);
-//					if ( savedDependency.getArtifact().equals(projectDependency.getArtifact()) ) {
-//						alreadyAddedDependency = true;
-//						break;
-//					}
-//				}
-//				if ( !alreadyAddedDependency ) {
-//					dependenciesList.add(projectDependency);
-//				}
-//			}
+ 
+			List projectDependencies = group.getDependencies();
+			for (int i = 0; i < projectDependencies.size(); i++) {
+				boolean alreadyAddedDependency = false;
+				Dependency projectDependency = (Dependency) projectDependencies.get(i);
+				for (int j = 0; j < allDependenciesList.size(); j++) {
+					Dependency savedDependency = (Dependency) allDependenciesList.get(j);
+					if ( savedDependency.getArtifact().equals(projectDependency.getArtifact()) ) {
+						alreadyAddedDependency = true;
+						break;
+					}
+				}
+				if ( !alreadyAddedDependency ) {
+					dependenciesList.add(projectDependency);
+				}
+			}
 		
 			if ( dependenciesList.size() > 0 ) {
 				group.setDependencies(dependenciesList);
@@ -147,19 +148,35 @@ public class DependencyGroupMarshaller {
 			}
 		}
 		
+		dependencyGroup.setAttribute("timestamp", Long.toString(timeStamp));
+		
 		if ( group.getDependencies().size() == 0 ) {
 			document.getRootElement().addContent(dependencyGroup);
 			return;
 		}
 		
+		saveDependencies(group.getDependencies(), timeStamp, dependencyGroup);
+		saveDependencies(group.getExcludedDependencies(), 0, dependencyGroup);
+		
+		log.debug("Saving " + dependencyGroup.getChildren("dependency").size() + " dependencies");
+		
+		document.getRootElement().addContent(dependencyGroup);
+	
+		File saveFile = new File(file); 
+	
+		JDomOutputter.output(document, saveFile, false);
+	
+	}
+
+	private static void saveDependencies(List dependencies, long timeStamp, Element dependencyGroup) {
 		List previousDependencies = dependencyGroup.getChildren("dependency");
 		if ( previousDependencies == null ) {
 			previousDependencies = new ArrayList();
 		}
 		
-		dependencyGroup.setAttribute("timestamp", Long.toString(timeStamp));
-		for (int i = 0; i < group.getDependencies().size(); i++) {
-			Dependency dependency = (Dependency) group.getDependencies().get(i);
+		
+		for (int i = 0; i < dependencies.size(); i++) {
+			Dependency dependency = (Dependency) dependencies.get(i);
 			Element dependencyElement = new Element("dependency");
 			dependencyElement.setAttribute("groupId", dependency.getGroupId()) ;
 			dependencyElement.setAttribute("artifactId", dependency.getArtifactId()) ;
@@ -178,14 +195,5 @@ public class DependencyGroupMarshaller {
 			dependencyGroup.addContent( dependencyElement );
 						
 		}
-	
-		log.debug("Saving " + dependencyGroup.getChildren("dependency").size() + " dependencies");
-		
-		document.getRootElement().addContent(dependencyGroup);
-	
-		File saveFile = new File(file); 
-	
-		JDomOutputter.output(document, saveFile, false);
-	
 	}
 }

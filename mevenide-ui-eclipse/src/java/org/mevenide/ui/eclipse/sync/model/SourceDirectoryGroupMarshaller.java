@@ -15,6 +15,7 @@ package org.mevenide.ui.eclipse.sync.model;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.eclipse.core.resources.IProject;
@@ -38,7 +39,6 @@ public class SourceDirectoryGroupMarshaller {
 	private SourceDirectoryGroupMarshaller() { 
 	}
 	/**
-	 * @refactor cyclomatic complexity &gt;&gt; 4
 	 * 
 	 * @param project
 	 * @param file
@@ -62,11 +62,14 @@ public class SourceDirectoryGroupMarshaller {
 					(Element) sourceDirectories.get(i);
 				
 				if ( sourceDirectoryGroupElement.getAttributeValue("projectName").equals(project.getName()) ) {
+					long timestamp = Long.parseLong(sourceDirectoryGroupElement.getAttributeValue("timestamp"));
+					
 					List sources = sourceDirectoryGroupElement.getChildren("sourceDirectory");
 					for (int j = 0; j < sources.size(); j++) {
 						Element sourceDirectoryElement =  (Element) sources.get(j);
 						SourceDirectory sourceDirectory 
 							= new SourceDirectory(sourceDirectoryElement.getAttributeValue("path"));
+						long sdTimestamp = Long.parseLong(sourceDirectoryElement.getAttributeValue("timestamp"));
 						if ( group.getSourceDirectories().contains(sourceDirectory) ) {
 							sourceDirectory.setDirectoryType(sourceDirectoryElement.getAttributeValue("type"));
 							sourceDirectoryList.add(sourceDirectory);
@@ -74,6 +77,7 @@ public class SourceDirectoryGroupMarshaller {
 					}
 				}
 			}
+			
 			
 			for (int i = 0; i < group.getSourceDirectories().size(); i++) {
 				if ( !sourceDirectoryList.contains(group.getSourceDirectories().get(i)) ) {
@@ -92,7 +96,8 @@ public class SourceDirectoryGroupMarshaller {
 
 
 	public static void saveSourceDirectoryGroup(SourceDirectoryGroup group, String file) throws Exception {
-	
+		long timestamp = new Date().getTime();
+		
 		if ( group == null ) {
 			return;
 		}
@@ -110,22 +115,45 @@ public class SourceDirectoryGroupMarshaller {
 			document.setRootElement(root);
 		}
 		
+		Element sourceDirGroup = new Element("sourceDirectoryGroup");
+		sourceDirGroup.setAttribute("projectName", group.getProjectName());
+		
 		List candidates = document.getRootElement().getChildren("sourceDirectoryGroup");
 		for (int i = 0; i < candidates.size(); i++) {
 			Element elem = (Element) candidates.get(i);
 			String projectName = elem.getAttributeValue("projectName");
 			if ( projectName != null && projectName.equals(group.getProjectName()) )  {
+				sourceDirGroup = elem;
 				document.getRootElement().removeContent(elem);
 			}
 		}
 		
-		Element sourceDirGroup = new Element("sourceDirectoryGroup");
-		sourceDirGroup.setAttribute("projectName", group.getProjectName());
+		sourceDirGroup.setAttribute("timestamp", Long.toString(timestamp));
+		
+		if ( group.getSourceDirectories().size() == 0 ) {
+			document.getRootElement().addContent(sourceDirGroup);
+			return;
+		}
+		
+		List previousSourceDirectories = sourceDirGroup.getChildren("sourceDirectory");
+		if ( previousSourceDirectories == null ) {
+			previousSourceDirectories = new ArrayList();
+		}
+		
 		for (int i = 0; i < group.getSourceDirectories().size(); i++) {
 			SourceDirectory dir = (SourceDirectory) group.getSourceDirectories().get(i);
 			Element sourceDir = new Element("sourceDirectory");
 			sourceDir.setAttribute("path", dir.getDirectoryPath()) ;
 			sourceDir.setAttribute("type", dir.getDirectoryType());
+			sourceDir.setAttribute("timestamp", Long.toString(timestamp));
+			
+			for (int j = 0; j < previousSourceDirectories.size(); j++) {
+				Element dirElem = (Element) previousSourceDirectories.get(j);
+				if ( dirElem.getAttributeValue("path").equals(dir.getDirectoryPath()) ) {
+					sourceDirGroup.removeContent(dirElem);
+				}
+			}
+			
 			sourceDirGroup.addContent( sourceDir );
 		}
 		

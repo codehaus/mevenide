@@ -55,6 +55,7 @@
       <import plugin="org.eclipse.debug.ui"/>
       <import plugin="org.aspectj.ajde"/>
       <import plugin="org.eclipse.ui.views"/>
+      <import plugin="org.eclipse.jdt.ui"/>
    </requires>
 
 
@@ -142,18 +143,18 @@
             </enablement>
          </action -->
          <action
-               menubarPath="maven.plugin.menu/Synchronize"
-               class="org.mevenide.ui.eclipse.actions.SynchronizeAction"
-               icon="icons/maven-synch-project.gif"
                label="Synchronize Project"
+               icon="icons/maven-synch-project.gif"
+               class="org.mevenide.ui.eclipse.actions.SynchronizeAction"
+               menubarPath="maven.plugin.menu/Synchronize"
                enablesFor="1"
                id="maven-plugin.Synchronize">
          </action>
          <action
-               menubarPath="maven.plugin.menu/Synchronize"
-               class="org.mevenide.ui.eclipse.actions.SynchronizeAction"
-               icon="icons/maven-synch-pom.gif"
                label="Synchronize POM"
+               icon="icons/maven-synch-pom.gif"
+               class="org.mevenide.ui.eclipse.actions.SynchronizeAction"
+               menubarPath="maven.plugin.menu/Synchronize"
                enablesFor="1"
                id="maven-plugin.SynchronizePom">
          </action>
