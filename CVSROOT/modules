@@ -26,6 +26,7 @@
 # spread out over the entire source repository.
 
 maven-nbm-plugin maven-plugins/maven-nbm-plugin
+maven-mevenide-plugin maven-plugins/maven-mevenide-plugin
 maven-provider-plugin maven-plugins/maven-provider-plugin
 maven-eclipse-plugin-plugin maven-plugins/maven-eclipse-plugin-plugin
 maven-spinner-wiki-plugin maven-plugins/maven-spinner-wiki-plugin
