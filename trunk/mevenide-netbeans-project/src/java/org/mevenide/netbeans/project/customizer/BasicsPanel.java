@@ -297,8 +297,10 @@ public class BasicsPanel extends JPanel implements ProjectPanel {
             value = "";
         } 
         changes.put("pom.id", new TextComponentPOMChange("pom.id", value, location, txtId, ocID));
-        createPOMChangeInstance("artifactId", txtArtifactID, ocArtifactID);
-        createPOMChangeInstance("groupId", txtGroupID, ocGroupID);
+        btnId.setVisible(false);
+        
+        createArtifactIDChangeInstance();
+        createGroupIDChangeInstance();
         createPOMChangeInstance("currentVersion", txtCurrentVersion, ocCurrentVersion);
         createPOMChangeInstance("name", txtName, ocName);
         createPOMChangeInstance("package", txtPackage, ocPackage);
@@ -312,7 +314,44 @@ public class BasicsPanel extends JPanel implements ProjectPanel {
            value = "";
        } 
        changes.put(key, new TextComponentPOMChange(key, value, location, field, oc));
-   }        
+   }    
+   
+   /**
+    * special handling, if not defined explicitly, get it from org.apache.maven.Project instance
+    * which has logic to obtain it from pom.id
+    */
+   private void createArtifactIDChangeInstance() {
+       String key = "pom.artifactId";
+       String value = project.getProjectWalker().getValue(key);
+       int location = project.getProjectWalker().getLocation(key);
+       if (value == null) {
+           value = "";
+           changes.put(key, new TextComponentPOMChange(key, value, location, txtArtifactID, ocArtifactID));
+//           ocArtifactID.setSelectedLocationID(OriginChange.LOCATION_POM);
+           txtArtifactID.setText(project.getOriginalMavenProject().getArtifactId());
+       } 
+       else {
+           changes.put(key, new TextComponentPOMChange(key, value, location, txtArtifactID, ocArtifactID));
+       }
+   }   
+   
+   /**
+    * special handling, if not defined explicitly, get it from org.apache.maven.Project instance
+    * which has logic to obtain it from pom.id
+    */
+   private void createGroupIDChangeInstance() {
+       String key = "pom.groupId";
+       String value = project.getProjectWalker().getValue(key);
+       int location = project.getProjectWalker().getLocation(key);
+       if (value == null) {
+           value = "";
+           changes.put(key, new TextComponentPOMChange(key, value, location, txtGroupID, ocGroupID));
+           txtGroupID.setText(project.getOriginalMavenProject().getGroupId());
+       } 
+       else {
+           changes.put(key, new TextComponentPOMChange(key, value, location, txtGroupID, ocGroupID));
+       }
+   }   
    
      public void setResolveValues(boolean resolve) {
         assignValue("id", true);
