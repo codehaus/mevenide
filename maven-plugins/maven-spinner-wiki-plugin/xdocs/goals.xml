@@ -7,7 +7,7 @@
   </properties>
   
   <body>
-  	<section name="Goals">
+  	<section name="Public Goals">
   		<div id="documentContent">
   		<table>
   		  <tr>
@@ -19,8 +19,12 @@
             <td>Create Spinner Wiki templates</td>
           </tr>
           <tr>
-            <td>spinner-wiki:clean</td>
-            <td>Delete generated Spinner Wiki templates</td>
+            <td>spinner-wiki:copy-resources</td>
+            <td>Copy wiki specific images to site ${maven.docs.dest}/images</td>
+          </tr>
+          <tr>
+            <td>spinner-wiki:ssh-deploy</td>
+            <td>Not available yet</td>
           </tr>
   		</table>
   		</div>
