@@ -50,14 +50,15 @@ package org.mevenide.ui.eclipse.editors.pages;
 
 import java.util.List;
 
-import org.apache.maven.project.Version;
 import org.apache.maven.project.Project;
+import org.apache.maven.project.Version;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.mevenide.ui.eclipse.Mevenide;
-import org.mevenide.ui.eclipse.editors.entries.*;
+import org.mevenide.ui.eclipse.editors.entries.IPomCollectionAdaptor;
+import org.mevenide.ui.eclipse.editors.entries.TableEntry;
 
 /**
  * @author Jeffrey Bonevich (jeff@bonevich.com)

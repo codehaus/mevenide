@@ -59,7 +59,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.DirectoryDialog;
 import org.mevenide.ui.eclipse.Mevenide;
-import org.mevenide.ui.eclipse.editors.entries.*;
+import org.mevenide.ui.eclipse.editors.entries.OverridableTextEntry;
 
 /**
  * @author Jeffrey Bonevich (jeff@bonevich.com)
