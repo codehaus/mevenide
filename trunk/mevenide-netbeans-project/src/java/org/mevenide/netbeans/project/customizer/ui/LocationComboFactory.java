@@ -123,8 +123,8 @@ public class LocationComboFactory {
                              IPropertyLocator.LOCATION_DEFAULTS,
                              actions);
         // no defined value
-        icon = new ImageIcon(Utilities.loadImage("org/mevenide/netbeans/project/resources/LocNotDefined.png"));
-        wraps[4] = new LocationComboBox.LocationWrapper("No defined value", icon,
+//        icon = new ImageIcon(Utilities.loadImage("org/mevenide/netbeans/project/resources/LocNotDefined.png"));
+        wraps[4] = new LocationComboBox.LocationWrapper("Default value", icon,
                              null, 
                              IPropertyLocator.LOCATION_NOT_DEFINED,
                              actions);
