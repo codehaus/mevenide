@@ -56,7 +56,9 @@ import org.eclipse.swt.graphics.Color;
  * @version $Id: MevenideColors.java 30 août 2003 Exp gdodinet 
  * 
  */
-public class MevenideColors {
+public abstract class MevenideColors {
+	
+	private MevenideColors() { }
 	
 	protected void finalize() throws Throwable {
         WHITE.dispose();

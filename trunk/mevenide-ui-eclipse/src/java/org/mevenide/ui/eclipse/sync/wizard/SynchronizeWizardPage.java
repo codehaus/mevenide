@@ -84,14 +84,18 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.TableTreeItem;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FileDialog;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.ElementTreeSelectionDialog;
@@ -184,18 +188,66 @@ public class SynchronizeWizardPage extends WizardPage {
 		tabFolderData.grabExcessHorizontalSpace = true;
 		tabFolder.setLayoutData(tabFolderData);
 		
+		createLegend(topLevelContainer);
+		
+		Label separator = new Label (topLevelContainer, SWT.SEPARATOR | SWT.HORIZONTAL);
+		GridData separatorData = new GridData(GridData.FILL_BOTH);
+		tabFolderData.grabExcessHorizontalSpace = true;
+		separator.setLayoutData(separatorData);
+		
 		createBottomControls(topLevelContainer);
 		
         setControl(topLevelContainer);
         
     }
 
-	private void createBottomControls(Composite parent) {
+	private void createLegend(Composite parent) {
+		Composite legendsComposite = new Composite(parent, SWT.NULL);
+		legendsComposite.setLayout(new GridLayout());
+		legendsComposite.setLayoutData(new GridData());
+		
+		
+		Table table = new Table(legendsComposite, SWT.NULL);
+		table.setLayoutData(new GridData());
+		table.setBackground(parent.getBackground());
+		
+		new TableColumn(table, SWT.NULL );
+		new TableColumn(table, SWT.NULL );
+		new TableColumn(table, SWT.NULL );
+		new TableColumn(table, SWT.NULL );
+	
+		for (int i = 0; i < table.getColumns().length; i++) {
+            table.getColumns()[i].setWidth(156);
+        }
+		
+		TableItem item1 = new TableItem(table, SWT.NULL);
+		item1.setImage(
+			new Image[] {
+					Mevenide.getImageDescriptor("color-orange-16.gif").createImage(),
+					Mevenide.getImageDescriptor("color-green-16.gif").createImage(),
+					Mevenide.getImageDescriptor("color-grey-16.gif").createImage(),
+					Mevenide.getImageDescriptor("color-black-16.gif").createImage(),			
+			}
+		);
+		item1.setText(
+			new String[] {
+				"Duplicate value",
+				"Present in POM",
+				"Parent Value",
+				"Default",
+			}	
+		);
+		
+		
+	}
+
+    private void createBottomControls(Composite parent) {
 		bottomControls = new Composite(parent, SWT.NULL);
         GridLayout layout = new GridLayout();
 		layout.numColumns = 3;
 		bottomControls.setLayout(layout);
-		GridData bottomControlsData = new GridData(GridData.VERTICAL_ALIGN_END | GridData.FILL_HORIZONTAL);
+		GridData bottomControlsData = new GridData(GridData.FILL_HORIZONTAL);
+		bottomControlsData.verticalAlignment = GridData.END;
 		bottomControls.setLayoutData(bottomControlsData);
 
 		inheritancePropertiesStore = new PreferenceStore(Mevenide.getPlugin().getPreferencesFilename());
