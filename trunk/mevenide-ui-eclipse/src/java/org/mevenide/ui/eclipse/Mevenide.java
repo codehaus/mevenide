@@ -77,6 +77,7 @@ import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.mevenide.Environment;
+import org.mevenide.runner.RunnerHelper;
 import org.mevenide.ui.eclipse.util.FileUtils;
 
 /**
@@ -311,6 +312,26 @@ public class Mevenide extends AbstractUIPlugin {
 		Environment.setMavenPluginsInstallDir(getPluginsInstallDir());
 		Environment.setMavenLocalHome(getMavenLocalHome());
 		Environment.setHeapSize(getHeapSize());
+		RunnerHelper.setHelper(
+			new RunnerHelper() {
+				private String foreHead = null;
+				public String[] getMainClass() {
+					if ( foreHead == null ) {
+						try {
+							URL foreHeadURL = new URL(Platform.resolve(Mevenide.getPlugin().getDescriptor().getInstallURL()), "lib/" + Mevenide.getResourceString("forehead.library"));
+                          	//@todo could cause bug if plugin isnot installed locally. URLs should be resolved in other way
+                          	foreHead = foreHeadURL.getFile();
+                            log.debug("ForeHead library : " + foreHeadURL);
+                        }
+                        catch (IOException e) {
+                            log.debug("Unable to get forehead lib : ", e);
+                        }
+                        
+					}
+				    return new String[] { foreHead };
+                }	
+			}
+		);
 	}
 
 	public void setBuildPath() throws Exception {
