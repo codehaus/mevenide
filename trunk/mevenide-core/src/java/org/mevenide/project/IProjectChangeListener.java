@@ -49,7 +49,10 @@
 package org.mevenide.project;
 
 /**
- * @author jbonevic
+ * 
+ * @author Jeffrey Bonevich 
+ * @version $Id$
+ * 
  */
 public interface IProjectChangeListener {
 	public void projectChanged(ProjectChangeEvent e);

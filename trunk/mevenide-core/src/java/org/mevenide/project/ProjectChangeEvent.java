@@ -53,7 +53,10 @@ import java.util.EventObject;
 import org.apache.maven.project.Project;
 
 /**
- * @author jbonevic
+ * 
+ * @author Jeffrey Bonevich 
+ * @version $Id$
+ * 
  */
 public class ProjectChangeEvent extends EventObject {
 	
