@@ -10,10 +10,8 @@
   	<section name="Netbeans plugin Task List">
 	    <p>
             <ul>
-                <li>Create a version for 3.6</li>
                 <li>Attempt to integrate with the ant-grammar Netbeans module to get ant elements and attributes in cc.</li>
-                <li>Add dynamic tags.</li>
-                <li>Add maven-plugin tags. Retrieve these dynamically from the taglib cache.</li>
+                <li>Add completion for xdoc based documents. Like changes.xml, faq.fml etc. </li>
             </ul>
         </p>
 	</section>

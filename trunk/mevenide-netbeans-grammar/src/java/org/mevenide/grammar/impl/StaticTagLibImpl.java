@@ -114,14 +114,14 @@ public class StaticTagLibImpl implements TagLib
         }
     }
 
-    private void setName(String name)
+    private void setName(String libname)
     {
-        this.name = name;
+        name = libname;
     }
     
-    private void addTag(String name, Collection attrs)
+    private void addTag(String tagName, Collection attrs)
     {
-        tags.put(name, attrs);
+        tags.put(tagName, attrs);
     }
     
     public String getName() {

@@ -17,15 +17,17 @@
 
 package org.mevenide.grammar;
 
-import java.util.Collection;
 
 /**
  * Utility methods that don't fit elsewhere
  * @author  Milos Kleint (ca206216@tiscali.cz)
  */
-public class GrammarUtilities
+public final class GrammarUtilities
 {
     private static char[] nowordseparators = {':', '-', '.'}; 
+    
+    private GrammarUtilities() {
+    }
     
     public static String extractLastWord(String text) {
         StringBuffer buff = new StringBuffer();
