@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.maven.project.Build;
+import org.apache.maven.project.Dependency;
 import org.apache.maven.project.Project;
 import org.apache.maven.project.builder.DefaultProjectUnmarshaller;
 import org.jdom.input.SAXBuilder;
@@ -146,6 +147,14 @@ public class ProjectReader {
 		return build;
 	}
 	
+	public Dependency getDependency(File referencedPom) throws FileNotFoundException, Exception, IOException {
+		Project referencedProject = read(referencedPom);
+		Dependency dependency = new Dependency();
+		dependency.setGroupId(referencedProject.getGroupId());
+		dependency.setArtifactId(referencedProject.getArtifactId());
+		dependency.setVersion(referencedProject.getCurrentVersion());
+		return dependency;
+	}
 	/**
 	 * @deprecated no replacement 
 	 * 
