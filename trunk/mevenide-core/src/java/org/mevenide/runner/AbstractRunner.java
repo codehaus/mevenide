@@ -50,8 +50,6 @@ package org.mevenide.runner;
 
 import java.io.File;
 
-import org.apache.commons.discovery.tools.DiscoverClass;
-
 
 /**
  * 
@@ -63,39 +61,22 @@ public abstract class AbstractRunner {
     /** unmodifiable Maven options */
     private String[] finalOptions = null;
     
-    /** finalOptions synchronization object */
-    private Object optionsLock = new Object();
    
     /**
-     * lazyloading (dcl)
      * @return String[] unmodifiable Maven options
      */  
-    public String[] getFinalOptions() {
-        if ( finalOptions != null ) {
-            return finalOptions;
+    public synchronized String[] getFinalOptions() {
+        if ( finalOptions == null ) {
+            String basedir = getBasedir();
+            finalOptions = new String[3];
+            finalOptions[0] = "-b";
+            finalOptions[1] = "-f";
+            String tmpFile = basedir != null ? basedir + File.separator + "project.xml" : "project.xml" ;
+			finalOptions[2] = "file:///" + new File(tmpFile).getAbsolutePath();
         }
-        synchronized (optionsLock) {
-            if ( finalOptions == null ) {
-                String basedir = getBasedir();
-                finalOptions = new String[3];
-                finalOptions[0] = "-b";
-                finalOptions[1] = "-f";
-                String tmpFile = basedir != null ? basedir + File.separator + "project.xml" : "project.xml" ;
-				finalOptions[2] = "file:///" + new File(tmpFile).getAbsolutePath();
-            }
-            return finalOptions;
-        }
+        return finalOptions;
     }
     
-    /** 
-	 * get a concrete implementation of AbstractRunner using commons-discovery
-	 * 
-	 * @throws Exception
-	 */
-	public static AbstractRunner getRunner() throws Exception {
-		return (AbstractRunner) new DiscoverClass().newInstance(AbstractRunner.class);
-	}
-
 	/**
 	 * configure the environment and run the specified goals in a new VM 
      * with the given environment
@@ -103,34 +84,18 @@ public abstract class AbstractRunner {
 	 * @param goals String[] the goals to run
 	 */
 	public void run(String[] options, String[] goals) {
-		String userDir = null;
-		
 		try {
-			//backup user.dir. still needed ?
-            userDir = System.getProperty("user.dir");
-
-			setUpEnvironment();
-			
+			initEnvironment();
 			launchVM(options, goals);
-
 		} 
         catch (Exception ex) {
 			//ex.printStackTrace();
-		} 
-        finally {
-			//restore user.dir
-			if (userDir != null) {
-				System.setProperty("user.dir", userDir);
-			}
 		}
 	}
     
-    private final void setUpEnvironment() throws Exception {
-    	initEnvironment();
-    }
-    
+   
     /**
-     * construct Maven from of unmodifiable otpions, user-defined options and goals
+     * construct Maven from list of unmodifiable options, user-defined options and goals
      * 
      * @param options user-defined options
      * @param goals goals to run
@@ -138,10 +103,7 @@ public abstract class AbstractRunner {
      */
     protected String[] getMavenArgs(String[] options, String[] goals) {
         
-        String[] mavenArgs = 
-                new String[options.length 
-                            + goals.length 
-                            + getFinalOptions().length];
+        String[] mavenArgs = new String[options.length + goals.length + getFinalOptions().length];
         
         System.arraycopy(getFinalOptions(), 0, mavenArgs, 0, getFinalOptions().length);
         System.arraycopy(options, 0, mavenArgs, getFinalOptions().length, options.length);
@@ -163,7 +125,7 @@ public abstract class AbstractRunner {
 	protected abstract String getBasedir();
     
     /**
-     * return the specified goals with the specified Maven options in a new VM
+     * run the specified goals with the specified Maven options in a new VM
      * 
      * @note i tohught a new VM should have solved classloading encountered with eclipse plugin.
      * @note however that wasnt the case. so is a new VM really required ? should we let the user choose ? 

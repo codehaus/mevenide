@@ -64,11 +64,10 @@ import org.apache.commons.logging.LogFactory;
  * Maven options : Map(value, description) 
  * 
  * some options have been intentionally left out since they dont seem 
- * to make in the current context.
+ * to make in the current context. 
  * 
- * @low use configuration (http://gdfact.fr.st/) instead of Properties  
+ * it is still possible to register other options at rt using #registerCharOption()
  * 
- * make a singleton of it ?
  * 
  * @author Gilles Dodinet (gdodinet@wanadoo.fr)
  * @version $Id$
@@ -77,34 +76,49 @@ import org.apache.commons.logging.LogFactory;
 public class OptionsRegistry {
     private static Log log = LogFactory.getLog(OptionsRegistry.class);
     
-    private static Map options = new TreeMap();
+    private static OptionsRegistry registry = new OptionsRegistry();
+    private Map options = new TreeMap();
     
-    static {
-        try {
+	public static OptionsRegistry getRegistry() {
+		return registry;
+	}
+   
+    private OptionsRegistry() {
+		try {
 			Properties props = new Properties();
 			InputStream stream = OptionsRegistry.class.getResourceAsStream("/mevenide.properties");
 			props.load(stream);
+			
 			Iterator keys = props.keySet().iterator();
 			log.debug("Found " + props.keySet().size() + " total keys");
 			while ( keys.hasNext() ) {
 				String key = (String) keys.next();
 				log.debug("current key = " + key);
-			    Character optionChar = new Character(key.charAt(key.length() - 1));
-			    log.debug("Found optionChar " + optionChar);
-			    options.put(optionChar, props.get(key));
+				
+				Character optionChar = new Character(key.charAt(key.length() - 1));
+				log.debug("Found optionChar " + optionChar);
+				
+				this.registerCharOption(optionChar.charValue(), (String) props.get(key));
 			}
-		} catch (Exception e) {
+		} 
+		catch (Exception e) {
 			log.debug("Unable to init options map due to : " + e);
-        }
-    }
-    
-	private OptionsRegistry() {
+		}
 	}
+
+	public void registerCharOption(char option, String optionDescription) {
+		options.put(new Character(option), optionDescription);
+	} 
+	
+	public void registerCharOption(char option) {
+		registerCharOption(option, "No available description");
+	}
+
 
    /**
     * @return the description associated with the given option passed as a single character
     */
-	public static String getDescription(char option) throws InvalidOptionException {
+	public String getDescription(char option) throws InvalidOptionException {
 	   log.debug("Looking up through " + options.size() + " keys ");
 	   String description = (String) options.get(new Character(option));
        if ( description == null ) {
