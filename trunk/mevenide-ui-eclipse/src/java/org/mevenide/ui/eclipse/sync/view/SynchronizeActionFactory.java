@@ -320,7 +320,7 @@ public class SynchronizeActionFactory {
 	private void createWritePropertiesAction() {
 		Action writeProperties = new ToggleWritePropertiesAction();
 		writeProperties.setId(WRITE_PROPERTIES);
-		writeProperties.setToolTipText("Should write properties");
+		writeProperties.setToolTipText("Override project.properties");
 		writeProperties.setImageDescriptor(Mevenide.getImageDescriptor("write_properties.gif"));
 		actionIds.put(WRITE_PROPERTIES, writeProperties);
 		writeProperties.addPropertyChangeListener(synchronizeView);

@@ -47,6 +47,7 @@ public class DependencyFactory {
 	 * as parameters, we'll use ${absoluteFileName.parent.parent.name} as 
 	 * groupId. in either case we have to guess artifactId and version from the fileName.
 	 * 
+	 * 
 	 * @param absoluteFileName
 	 * @return
 	 */

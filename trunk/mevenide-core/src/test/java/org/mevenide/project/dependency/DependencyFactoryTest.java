@@ -90,7 +90,8 @@ public class DependencyFactoryTest extends AbstractMevenideTestCase{
 		dep = dependencyFactory.getDependency(artefact.getAbsolutePath());
 		//BUG-DependencyResolver_getDependency-NOT_RECOGNIZED_PATTERN $DEP-2
 		assertNull(dep.getVersion());	
-		assertNull(dep.getArtifactId());
+		assertEquals("rt", dep.getArtifactId());
+		assertEquals("", dep.getGroupId());
 		assertEquals("rt.jar", dep.getJar());
 		
 		artefact = new File(testTypeDirectory, "ojb-1.0.rc3.pyo");
