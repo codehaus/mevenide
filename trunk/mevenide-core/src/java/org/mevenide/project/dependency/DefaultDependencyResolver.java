@@ -56,7 +56,7 @@ import java.io.File;
  * @version $Id$
  * 
  */
-public class DefaultDependencyResolver extends AbstractDependencyResolver {
+public class DefaultDependencyResolver implements IDependencyResolver {
 	private String artifact;
 	
 	private String fileName;
