@@ -55,6 +55,7 @@ public class DependencyUtil {
 	
 	public static boolean isValid(Dependency d) {
 		return  d != null && d.getGroupId() != null && !d.getGroupId().trim().equals("")
-				&& d.getArtifactId() != null && !d.getArtifactId().trim().equals("");
+				&& d.getArtifactId() != null && !d.getArtifactId().trim().equals("")
+				&& d.getVersion() != null && !d.getVersion().trim().equals("");
 	}
 }

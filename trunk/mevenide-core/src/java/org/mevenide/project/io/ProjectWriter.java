@@ -18,6 +18,7 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
@@ -123,6 +124,10 @@ public class ProjectWriter {
 	 * 
 	 * not optimized.. 
 	 * 
+	 * 
+	 * @wonder deprecate ? 
+	 * 
+	 * 
 	 * @param absoluteFileName
 	 * @param pom
 	 * @throws Exception
@@ -144,7 +149,13 @@ public class ProjectWriter {
 
 	}
 	
-	
+	/**
+	 * @wonder deprecate ? 
+	 * 
+	 * @param dependency
+	 * @param pom
+	 * @throws Exception
+	 */
 	public void addDependency(Dependency dependency, File pom) throws Exception {
 		Project project = projectReader.read(pom);
 
@@ -156,20 +167,32 @@ public class ProjectWriter {
 		}
 		
 		//jaroverriding
-		jarOverride(dependency.getArtifact(), new File(pom.getParent(), "project.properties"), pom);
-		
+		if ( !DependencyUtil.isValid(dependency) ) {
+			jarOverride(dependency.getArtifact(), new File(pom.getParent(), "project.properties"), pom);
+		}
 	}
 	
 	public void setDependencies(List dependencies, File pom) throws Exception {
 		Project project = projectReader.read(pom);
 
+		List nonResolvedDependencies = new ArrayList();
+		for (int i = 0; i < dependencies.size(); i++) {
+			Dependency dependency = (Dependency)dependencies.get(i); 
+			if ( !DependencyUtil.isValid(dependency) ) {
+				dependencies.remove(dependency);
+				nonResolvedDependencies.add(dependency);
+			}
+		} 
+		
 		project.setDependencies(dependencies);
 		write(project, pom);
 	
 		//jaroverriding
-		for (int i = 0; i < dependencies.size(); i++) {
-			Dependency dependency = (Dependency)dependencies.get(i); 
+		for (int i = 0; i < nonResolvedDependencies.size(); i++) {
+			Dependency dependency = (Dependency)nonResolvedDependencies.get(i); 
+			//if ( !DependencyUtil.isValid(dependency) ) {
 			jarOverride(dependency.getArtifact(), new File(pom.getParent(), "project.properties"), pom);
+			//}
 		} 
 	}
 	
@@ -213,11 +236,7 @@ public class ProjectWriter {
 		String groupId = dep.getGroupId();
 		String artifactId = dep.getArtifactId();
 		
-		System.out.println(Environment.getMavenRepository());
-		System.out.println(MevenideUtil.findFile(new File(Environment.getMavenRepository()), path));
-		
 		if ( !MevenideUtil.findFile(new File(Environment.getMavenRepository()), new File(path).getName()) ) {
-	
 			if ( groupId == null || groupId.trim().equals("") ) {
 				dep.setGroupId("nonResolvedGroupId");
 			}
