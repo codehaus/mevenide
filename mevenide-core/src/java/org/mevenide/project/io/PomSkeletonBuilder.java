@@ -72,11 +72,14 @@ public final class PomSkeletonBuilder {
 	 * return the pom skeleton as a string
 	 * 
 	 * @param projectName
-	 * @param is
 	 * @return
 	 * @throws Exception
 	 */
 	public String getPomSkeleton(String projectName) throws Exception {
+        return getPomSkeleton(projectName, projectName, projectName);
+	}
+	
+	public String getPomSkeleton(String projectName, String groupId, String artifactId) throws Exception {
         InputStream is = null;
 	    try {
             if ( template != null ) {
@@ -90,10 +93,10 @@ public final class PomSkeletonBuilder {
             
             is.close();
             
-            project.setId(projectName.toLowerCase());
+            project.setId(artifactId.toLowerCase());
             project.setName(projectName);
-            project.setGroupId(projectName.toLowerCase());
-            project.setArtifactId(projectName.toLowerCase());
+            project.setGroupId(groupId.toLowerCase());
+            project.setArtifactId(artifactId.toLowerCase());
             project.setInceptionYear(getCurrentYear());
             
             Writer writer = new StringWriter();
