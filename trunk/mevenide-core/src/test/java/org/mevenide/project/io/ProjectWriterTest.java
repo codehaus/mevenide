@@ -50,11 +50,15 @@ public class ProjectWriterTest extends AbstractMevenideTestCase {
 		pomWriter.addSource(
 			"src/pyo/java",
 			projectFile,
-		ProjectConstants.MAVEN_SRC_DIRECTORY);
+			ProjectConstants.MAVEN_SRC_DIRECTORY);
 		pomWriter.addSource(
 			"src/pyo/aspect",
 			projectFile,
 			ProjectConstants.MAVEN_ASPECT_DIRECTORY);
+		pomWriter.addSource(
+			"src/test/java",
+			projectFile,
+			ProjectConstants.MAVEN_TEST_DIRECTORY);
 		
 		Map h = ProjectReader.getReader().getSourceDirectories(projectFile);
 		

@@ -32,6 +32,7 @@ public class AllTests {
         
         suite.addTestSuite(AbstractGoalsManagerTest.class);
 		suite.addTestSuite(AbstractOptionsManagerTest.class);
+		suite.addTestSuite(AbstractRunnerTest.class);
 		
         return suite;
     }
