@@ -8,10 +8,9 @@
     	<section name="POM Synchronization">
          	<div id="documentContent">
 			<p>
-				POM Synchronization View is being rewritten because the previous wizard lacked of ergonomy and simplicity.
+				POM Synchronization View has been entirely rewritten because the previous wizard lacked of ergonomy and simplicity.
 				The synchronization process now is handled through a view (Eclipse View) ala "Team Synchronization".
-				In its current state, it is far from complete and misses some features of the previous UI. However 
-				multiproject support is much better now since it has been handled in the early stage.  
+				Multiproject support is also much better now since it has been handled in the early stage.  
 			</p>
 			</div>
 			<subsection name="Synchronization Process">
