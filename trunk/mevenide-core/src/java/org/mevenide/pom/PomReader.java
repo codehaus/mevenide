@@ -31,8 +31,14 @@ public class PomReader {
 	
 	public static Hashtable getAllSourceDirectories(File pom) throws Exception {
 		Hashtable srcDirs = new Hashtable();
+		Project project; 
 		
-		Project project = BetwixtHelper.readProject(pom);
+		if ( pom != null ) {
+			project = BetwixtHelper.readProject(pom);
+		}		
+		else {
+			project = new Project();
+		}
 		
 		if ( project.getBuild().getAspectSourceDirectory() != null 
 		 	&& !project.getBuild().getAspectSourceDirectory().trim().equals("")) {
@@ -47,7 +53,6 @@ public class PomReader {
 			srcDirs.put(project.getBuild().getUnitTestSourceDirectory(), BuildConstants.MAVEN_TEST);
 		}
 		//srcDirs.put(project.getBuild().getUnitTestSourceDirectory()
-	
 		return srcDirs;
 	}
 	

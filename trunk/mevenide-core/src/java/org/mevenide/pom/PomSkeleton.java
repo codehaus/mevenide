@@ -45,6 +45,8 @@ class PomSkeleton {
 	 */
 	static String getSkeleton(String projectName) throws Exception {
 		File projectDescriptor = new File(PomSkeleton.class.getResource(template).getFile());
+		
+		//Project project = 
 		SAXBuilder builder = new SAXBuilder();
 		Document document = builder.build(projectDescriptor);
 		Element project = document.getRootElement();

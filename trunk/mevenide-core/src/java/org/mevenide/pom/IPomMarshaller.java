@@ -14,22 +14,17 @@
  */
 package org.mevenide.pom;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import java.io.Writer;
+
+import org.apache.maven.project.Project;
 
 /**
  * 
- * @author Gilles Dodinet (gdodinet@wanadoo.fr)
- * @version $Id: AllTests.java 8 mai 2003 15:32:4913:34:35 Exp gdodinet 
+ * @author <a href="mailto:gdodinet@wanadoo.fr">Gilles Dodinet</a>
+ * @version $Id$
  * 
  */
-public class AllTests  {
-    public static Test suite() {
-        TestSuite suite = new TestSuite();
-        
-        suite.addTestSuite(PomReaderTest.class);
-		suite.addTestSuite(PomWriterTest.class);
-		
-        return suite;
-    }
+public interface IPomMarshaller {
+	public abstract void marshall(Writer pom, Project project)
+		throws Exception;
 }
