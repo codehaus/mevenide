@@ -6,7 +6,6 @@
  */
 package org.mevenide.ui.eclipse.launch.configuration;
 
-import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.mevenide.ui.eclipse.actions.AbstractMevenideAction;
@@ -22,11 +21,13 @@ public class MavenRunActionDelegate extends AbstractMevenideAction {
 	
 	public void run(IAction action) {
 		MavenLaunchShortcut shortcut = new MavenLaunchShortcut();
-		//shortcut.setShowDialog(true);
-		shortcut.launch(selection, ILaunchManager.RUN_MODE);
+		shortcut.setShowDialog(true);
+		shortcut.launch(this.currentProject);
 		
 	}
 
+	
+	
 	public void selectionChanged(IAction action, ISelection selection) {
 		this.selection = selection; 
 		super.selectionChanged(action, selection);

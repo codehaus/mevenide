@@ -114,7 +114,7 @@
          <action
                label="Run Maven..."
                icon="icons/maven-run.gif"
-               class="org.mevenide.ui.eclipse.actions.LaunchAction"
+               class="org.mevenide.ui.eclipse.launch.configuration.MavenRunActionDelegate"
                menubarPath="maven.plugin.menu/RunMaven"
                enablesFor="1"
                id="maven.plugin.popup.action">
@@ -200,7 +200,7 @@
          <action
                label="Run Maven..."
                icon="icons/maven-run.gif"
-               class="org.mevenide.ui.eclipse.actions.LaunchAction"
+               class="org.mevenide.ui.eclipse.launch.configuration.MavenRunActionDelegate"
                menubarPath="maven.plugin.menu/RunMaven"
                enablesFor="1"
                id="maven.plugin.popup.action">
@@ -260,6 +260,8 @@
             id="org.mevenide.launching.MavenLaunchConfigType">
       </launchConfigurationType>
    </extension>
+   
+   
    <extension
          point="org.eclipse.debug.ui.launchConfigurationTabGroups">
       <launchConfigurationTabGroup
@@ -268,6 +270,16 @@
             id="org.mevenide.launching.TabGroup">
       </launchConfigurationTabGroup>
    </extension>
-
+	<extension
+         point="org.eclipse.debug.ui.launchShortcuts">
+      <shortcut
+            label="Maven Project"
+            icon="icons/full/obj16/ant.gif"
+            category="org.eclipse.ui.externaltools"
+            modes="run"
+            class="org.mevenide.ui.eclipse.launch.configuration.MavenLaunchShortcut"
+            id="org.mevenide.mavenShortcut">
+      </shortcut>
+   </extension>
 
 </plugin>

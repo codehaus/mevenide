@@ -111,8 +111,8 @@ public class MavenLaunchDelegate extends AbstractRunner implements ILaunchConfig
 			
 		} 
 		catch (Exception e) {
-			log.debug("Unable to obtain basedir due to : " + e);
-			return null;
+			log.debug("Unable to obtain basedir due to : " + e + " ; returning : Mevenide.getPlugin().getCurrentDir()");
+			return Mevenide.getPlugin().getCurrentDir();
 		}
 	}
 
