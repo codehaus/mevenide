@@ -41,26 +41,43 @@ public final class PluginPropertiesFinder implements IPropertyFinder {
     private static final Log logger = LogFactory.getLog(PluginPropertiesFinder.class);
     
     private File pluginDir;
+    private File valid;
     private Properties props;
+    private long lastModified = -1;
     private Object LOCK = new Object();
     /** Creates a new instance of DefaultsResolver */
     PluginPropertiesFinder(File pluginDir) {
         this.pluginDir = pluginDir;
+        valid = new File(pluginDir, "valid.cache");
     }
     
     public String getValue(String key) {
         synchronized (LOCK) {
-            if (props == null) {
-                loadAllProperties();
-            }
+            checkReload();
             return props.getProperty(key);
+        }
+    }
+    
+    public Set getDefaultPluginKeys() {
+        synchronized (LOCK) {
+            checkReload();
+            return new HashSet(props.keySet());
         }
     }
     
     public void reload() {
         synchronized(LOCK) {
-            props = null;
+            checkReload();
         }
+    }
+
+    private void checkReload() {
+        long validStamp = valid.exists() ? valid.lastModified() : 0;
+        if (validStamp != lastModified) {
+            props = null;
+            loadAllProperties();
+        }
+        lastModified = validStamp;
     }
     
     private void loadAllProperties() {
@@ -86,13 +103,5 @@ public final class PluginPropertiesFinder implements IPropertyFinder {
         }
     }
     
-    public Set getDefaultPluginKeys() {
-        synchronized (LOCK) {
-            if (props == null) {
-                loadAllProperties();
-            }
-            return new HashSet(props.keySet());
-        }
-    }
     
 }
