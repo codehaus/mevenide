@@ -21,6 +21,9 @@
 	
    <requires>
       <import plugin="org.eclipse.osgi"/>
+      <import plugin="org.eclipse.help.base"/>
+      <import plugin="org.eclipse.ui.ide"/>
+      <import plugin="org.eclipse.core.variables"/>
       <import plugin="org.eclipse.core.resources"/>
       <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.eclipse.jdt.core"/>
@@ -34,8 +37,12 @@
       <import plugin="org.eclipse.ui.views"/>
       <import plugin="org.eclipse.jdt.ui"/>
       <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.team.ui"/>
       <import plugin="org.eclipse.ui.externaltools"/>
       <import plugin="org.eclipse.jface.text"/>
+      <import plugin="org.eclipse.update.ui.forms"/>
+      <import plugin="org.eclipse.ui.workbench.texteditor"/>
+      <import plugin="org.eclipse.ui.editors"/>
    </requires>
 
    <plugin id="@org.mevenide.core.id@"
