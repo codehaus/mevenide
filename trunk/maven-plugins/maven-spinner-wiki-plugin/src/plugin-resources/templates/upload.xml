@@ -19,14 +19,14 @@
 					<input type="file" name="upload" size="40" maxlength="120"/>
 				</td>
 				<td>
-					<input type="reset" value="Clear" style="border: solid 1px #888888;background-color: #eeeeee; color:#333333;"/>
-					<input style="border: solid 1px #888888;background-color: #eeeeee; color:#333333;" type="submit" value="Upload"/>
+					<input type="reset" value="Clear" class="submit_input"/>
+					<input class="submit_input" type="submit" value="Upload"/>
 				</td>
 			</tr>
 		</table>
 	</form>
 	
-	<div style="border-bottom: solid 1px #cccccc;margin-bottom: 7px;">
+	<div>
 		<p>
 			<small>If you upload a file with the same name as an existing file, the existing file will be overwritten.</small>
 		</p>
@@ -36,12 +36,12 @@
     </p>
     <table cellpadding="0" cellspacing="0" width="90%">
     	<tr>
-        	<td  style="background-color: #ffffff;border: none;color: #777777" colspan="3">$REPEAT$</td>
+        	<td  colspan="3">$REPEAT$</td>
         </tr>
         <tr>
-        	<td bgcolor="#E0E0E0"><a title="$FILENAME$" href="$BASEURL$/files/$FILENAME$">$FILENAME$</a> <i>$FILENOTE$</i></td>
-            <td bgcolor="#E0E0E0" width="80" align="right">$FILESIZE$ KB</td>
-            <td bgcolor="#E0E0E0" width="30" align="right"><a href="$SCRIPTURL$/search.pl?text=$FILENAME$"><img src="$BASEURL$/images/search.gif" border="0" hspace="1" vspace="2" alt="Search for references to $FILENAME$"/></a></td>
+        	<td ><a title="$FILENAME$" href="$BASEURL$/files/$FILENAME$">$FILENAME$</a> <i>$FILENOTE$</i></td>
+            <td width="80" align="right">$FILESIZE$ KB</td>
+            <td width="30" align="right"><a href="$SCRIPTURL$/search.pl?text=$FILENAME$"><img src="$BASEURL$/images/search.gif" border="0" hspace="1" vspace="2" alt="Search for references to $FILENAME$"/></a></td>
         </tr>
         <tr>
         	<td  style="background-color: #ffffff;border: none;color: #777777" colspan="3">$REPEAT$</td>

@@ -15,6 +15,8 @@
         <j:set var="wikiTemplatesLocation" value="${wikiTemplatesLocation.substring(0, wikiTemplatesLocation.length() - 1)}"/>
     </j:if>
     
+    <log:info>Generating Spinner-Wiki templates from xdocs templates. location: ${wikiTemplatesLocation}</log:info>
+    
     <!-- remove trailing slash from ${maven.spinner.wiki.relativePath} -->
     <j:set var="wikiRelativePath" value="${maven.spinner.wiki.relativePath}"/>
     <j:if test="${wikiRelativePath.endsWith('/') || wikiRelativePath.endsWith('\\')}">
@@ -126,6 +128,11 @@
   	</ant:copy> 
   	
   	<attainGoal name="spinner-wiki:finalize"/>
+  	
+  </goal>
+  
+  
+  <goal name="spinner-wiki:ssh-deploy">
   	
   </goal>
   
