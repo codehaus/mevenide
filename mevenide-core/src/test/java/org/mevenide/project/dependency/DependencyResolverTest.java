@@ -33,25 +33,16 @@ public class DependencyResolverTest extends AbstractMevenideTestCase {
 		IDependencyResolver resolver = AbstractDependencyResolver.newInstance("/home/bleah/bouh/foo+joe-test2.-bar-1.0.7-beta-1.txt");
 		String ext = resolver.guessExtension();
 		assertEquals("txt", ext);
-		System.err.println(resolver.guessArtifactId());
-		System.err.println(resolver.guessGroupId());
-		System.err.println(resolver.guessVersion());
 		
 		
 		resolver = AbstractDependencyResolver.newInstance("/home/bleah/bouh/junit-3.8.1.jar");
 		ext = resolver.guessExtension();
 		assertEquals("jar", ext);
-		System.err.println(resolver.guessArtifactId());
-		System.err.println(resolver.guessGroupId());
-		System.err.println(resolver.guessVersion());
 
 		resolver = AbstractDependencyResolver.newInstance("/home/bleah/bouh/rt.jar");
 		ext = resolver.guessExtension();
 		assertEquals("jar", ext);
-		System.err.println(resolver.guessArtifactId());
-		System.err.println(resolver.guessGroupId());
-		System.err.println(resolver.guessVersion());		
-			
+		
 		//BUG-DefaultDependencyResolver_DEP_guessVersion $DEP-3 depends on $DEP-1
 		//assertEquals("tar.gz", ext);
 	}
