@@ -16,12 +16,10 @@
  */
 package org.mevenide.ui.eclipse.preferences;
 
-import java.util.Hashtable;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.IExtension;
-import org.eclipse.core.runtime.IRegistryChangeEvent;
-import org.eclipse.core.runtime.IRegistryChangeListener;
+import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.preference.IPreferenceNode;
 import org.eclipse.jface.preference.PreferenceNode;
@@ -34,25 +32,39 @@ import org.mevenide.ui.eclipse.Mevenide;
  * @version $Id$
  * 
  */
-public class DynamicPreferencePageLoader implements IRegistryChangeListener  {
+public class DynamicPreferencePageFactory {
     
-    private static final String MAIN_PREFERENCE_PAGE_PATH = "org.mevenide.ui.plugin.preferences.MavenPreferencePage";
+	private static final String MAIN_PREFERENCE_PAGE_PATH = "org.mevenide.ui.plugin.preferences.MavenPreferencePage";
+    private static final String ROOT_PAGE_PATH = MAIN_PREFERENCE_PAGE_PATH + "/org.mevenide.ui.eclipse.preferences.PluginsRoot";
+    
+    private static final String PLUGIN_DESCRIPTION = "description";
+	private static final String PLUGIN_PROPERTY = "property";
 
     private static final String PAGE_ID = "id";
 	private static final String PAGE_NAME = "name";
 	
 	private static final String PROPERTY_DEFAULT = "default";
 	private static final String PROPERTY_NAME = "name";
+	private static final String PROPERTY_LABEL = "label";
+	private static final String PROPERTY_TYPE = "type";
+	private static final String PROPERTY_REQUIRED = "required";
+	private static final String PROPERTY_DESCRIPTION = "description";
 	
+	private static DynamicPreferencePageFactory factory = new DynamicPreferencePageFactory();	
 	
-    public void registryChanged(IRegistryChangeEvent event) {
-        IExtension extension = Platform.getExtensionRegistry().getExtension("org.mevenide.ui.preference");
+	public static DynamicPreferencePageFactory getFactory() {
+        return factory;
+    }
+    
+    public void createPages() {
+        
+        IExtensionPoint extension = Platform.getExtensionRegistry().getExtensionPoint("org.mevenide.ui.preference");
         if ( extension != null ) {
 	        IConfigurationElement[] configurationElements = extension.getConfigurationElements();
 	        for (int i = 0; i < configurationElements.length; i++) {
 	            IConfigurationElement configurationElement = configurationElements[i]; 
 	            IPreferenceNode node = createPreferenceNode(configurationElement);
-	            Mevenide.getInstance().getWorkbench().getPreferenceManager().addTo(MAIN_PREFERENCE_PAGE_PATH, node);
+	            Mevenide.getInstance().getWorkbench().getPreferenceManager().addTo(ROOT_PAGE_PATH, node);
 	        }
         }
     }
@@ -62,14 +74,28 @@ public class DynamicPreferencePageLoader implements IRegistryChangeListener  {
         String pageName = configurationElement.getAttribute(PAGE_NAME);
         String pageId = configurationElement.getAttribute(PAGE_ID);
         
+        //plugin-provider description
+        IConfigurationElement[] descriptionElements = configurationElement.getChildren(PLUGIN_DESCRIPTION);
+        
+        
         //plugin-provider properties
-        IConfigurationElement[] childrenElements = configurationElement.getChildren("property");
-        Map properties = new Hashtable(childrenElements.length);
-        for (int i = 0; i < childrenElements.length; i++) {
-            IConfigurationElement childElement = childrenElements[i];
+        IConfigurationElement[] propertyElements = configurationElement.getChildren(PLUGIN_PROPERTY);
+        List properties = new ArrayList(propertyElements.length);
+        for (int i = 0; i < propertyElements.length; i++) {
+            IConfigurationElement childElement = propertyElements[i];
             String propertyName = childElement.getAttribute(PROPERTY_NAME);
             String propertyDefault = childElement.getAttribute(PROPERTY_DEFAULT);
-            properties.put(propertyName, propertyDefault);
+            String propertyType = childElement.getAttribute(PROPERTY_TYPE);
+            String propertyLabel = childElement.getAttribute(PROPERTY_LABEL);
+            String propertyRequired = childElement.getAttribute(PROPERTY_REQUIRED);
+            String propertyDescription = childElement.getAttribute(PROPERTY_DESCRIPTION);
+            properties.add(new PluginProperty(pageId, 
+                    						  propertyName, 
+                    						  propertyLabel, 
+                    						  propertyDefault, 
+                    						  propertyType, 
+                    						  "true".equals(propertyRequired),
+                    						  propertyDescription));
         }
         DynamicPreferencePage page = new DynamicPreferencePage();
         page.setTitle(pageName);

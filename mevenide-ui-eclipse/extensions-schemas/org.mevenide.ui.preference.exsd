@@ -61,6 +61,27 @@
                </documentation>
             </annotation>
          </attribute>
+         <attribute name="label" type="string">
+            <annotation>
+               <documentation>
+                  the label used in the preference page to refer to this property. if not specified, id will be used.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="required" type="boolean">
+            <annotation>
+               <documentation>
+                  indicates if this specific is a required one.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="description" type="string" use="required">
+            <annotation>
+               <documentation>
+                  Provides a description of the property.
+               </documentation>
+            </annotation>
+         </attribute>
       </complexType>
    </element>
 
