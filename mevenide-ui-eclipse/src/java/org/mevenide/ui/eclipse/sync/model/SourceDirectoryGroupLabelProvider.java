@@ -11,7 +11,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  */
-package org.mevenide.ui.eclipse.sync.source;
+package org.mevenide.ui.eclipse.sync.model;
 
 import org.eclipse.jface.util.Assert;
 import org.eclipse.jface.viewers.ILabelProviderListener;
@@ -20,11 +20,11 @@ import org.eclipse.swt.graphics.Image;
 import org.mevenide.ui.eclipse.Mevenide;
 
 
-public class SourceDirectoryLabelProvider implements ITableLabelProvider {
+public class SourceDirectoryGroupLabelProvider implements ITableLabelProvider {
 	
 	private final String[] sourceTypes;
 	
-	public SourceDirectoryLabelProvider(String[] sourceTypes) {
+	public SourceDirectoryGroupLabelProvider(String[] sourceTypes) {
 		this.sourceTypes = sourceTypes;
 	}
 	

@@ -12,7 +12,7 @@
  * Lesser General Public License for more details.
  * 
  */
-package org.mevenide.ui.eclipse.sync.dependency;
+package org.mevenide.ui.eclipse.sync.model;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -31,9 +31,9 @@ import org.mevenide.util.JDomOutputter;
  * @version $Id$
  * 
  */
-public class DependencyMarshaller {
+public class DependencyGroupMarshaller {
 	
-	private DependencyMarshaller() {
+	private DependencyGroupMarshaller() {
 	}
 	
 	public static DependencyGroup getDependencyGroup(IProject project, String file) throws Exception {

@@ -12,7 +12,7 @@
  * Lesser General Public License for more details.
  * 
  */
-package org.mevenide.ui.eclipse.sync.dependency;
+package org.mevenide.ui.eclipse.sync.model;
 
 import org.apache.maven.project.Dependency;
 import org.eclipse.jface.viewers.ILabelProviderListener;
@@ -21,9 +21,9 @@ import org.eclipse.swt.graphics.Image;
 import org.mevenide.ui.eclipse.Mevenide;
 
 
-public class DependencyLabelProvider implements ITableLabelProvider {
+public class DependencyGroupLabelProvider implements ITableLabelProvider {
 	
-	public DependencyLabelProvider() {
+	public DependencyGroupLabelProvider() {
 		
 	}
 	public void addListener(ILabelProviderListener listener) {
@@ -49,9 +49,9 @@ public class DependencyLabelProvider implements ITableLabelProvider {
 				return "Dependencies";
 			}
 		}
-		if ( element instanceof DependencyContentProvider.DependencyInfo ) {
-			DependencyContentProvider.DependencyInfo info = 
-					(DependencyContentProvider.DependencyInfo) element;
+		if ( element instanceof DependencyGroupContentProvider.DependencyInfo ) {
+			DependencyGroupContentProvider.DependencyInfo info = 
+					(DependencyGroupContentProvider.DependencyInfo) element;
 			String inf = 
 				info.getInfo() == null || info.getInfo().trim().equals("") ? 
 					"<unresolved>" : info.getInfo();

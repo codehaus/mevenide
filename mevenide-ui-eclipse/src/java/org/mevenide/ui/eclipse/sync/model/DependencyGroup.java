@@ -12,7 +12,7 @@
  * Lesser General Public License for more details.
  * 
  */
-package org.mevenide.ui.eclipse.sync.dependency;
+package org.mevenide.ui.eclipse.sync.model;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -11,7 +11,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  */
-package org.mevenide.ui.eclipse.sync.source;
+package org.mevenide.ui.eclipse.sync.model;
 
 import java.util.ArrayList;
 import java.util.List;

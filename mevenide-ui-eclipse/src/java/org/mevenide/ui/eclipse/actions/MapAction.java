@@ -17,8 +17,8 @@ package org.mevenide.ui.eclipse.actions;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.jface.action.IAction;
-import org.mevenide.ui.eclipse.sync.dependency.DependencyViewPart;
-import org.mevenide.ui.eclipse.sync.source.SourceDirectoryViewPart;
+import org.mevenide.ui.eclipse.sync.view.DependencyMappingViewPart;
+import org.mevenide.ui.eclipse.sync.view.SourceDirectoryMappingViewPart;
 
 /**
  * 
@@ -33,11 +33,11 @@ public class MapAction extends AbstractMevenideAction {
 		boolean source = true;
 		try {
 			if ( action.getId().equals("maven-plugin.mapSourceDirectories") ) {
-				SourceDirectoryViewPart.prompt(currentProject);
+				SourceDirectoryMappingViewPart.prompt(currentProject);
 			}
 			if ( action.getId().equals("maven-plugin.mapDependencies") ) {
 				source = false;
-				DependencyViewPart.prompt(currentProject);
+				DependencyMappingViewPart.prompt(currentProject);
 			}	
 		}
 		catch ( Exception e ) {
