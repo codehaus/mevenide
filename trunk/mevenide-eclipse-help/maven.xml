@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:j="jelly:core" xmlns:ant="jelly:ant">
+	<goal name="mevenide-help:create-doc">
+
+	  <ant:mkdir dir="${basedir}/xdocs"/>
+	  <ant:copy todir="${basedir}/xdocs" overwrite="true"> 
+	     <ant:fileSet dir="${mevenide.ui.eclipse.project.location}/xdocs" includes="**/*"/>
+	  </ant:copy>
+	  <ant:copy todir="${basedir}/xdocs" overwrite="true"> 
+	     <ant:fileSet dir="src/xdocs" includes="**/*"/>
+	  </ant:copy>
+	  
+	  <attainGoal name="site"/>
+	</goal>
+	
+	<!-- override reports registration because reports are of no interest here -->
+	<goal name="xdoc:register-reports"/>
+	
+</project>
