@@ -17,8 +17,6 @@
 
 package org.mevenide.netbeans.project;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.netbeans.modules.web.api.webmodule.WebModule;
 import org.netbeans.modules.web.spi.webmodule.WebModuleImplementation;
 import org.openide.filesystems.FileObject;
@@ -29,13 +27,14 @@ import org.openide.filesystems.FileObject;
  * @author  Milos Kleint (ca206216@tiscali.cz)
  */
 public class WebModuleImpl implements WebModuleImplementation {
-    private static final Log logger = LogFactory.getLog(WebModuleImpl.class);
     private MavenProject project;
     public WebModuleImpl(MavenProject proj) {
+        System.out.println("WebModuleImpl - constructor");
         project = proj;
     }
 
     public FileObject getWebInf() {
+        System.out.println("getwebinf");
         FileObject fo = FileUtilities.getFileObjectForProperty("maven.war.src", project.getPropertyResolver()); //NOI18N
         if (fo != null) {
             return fo.getFileObject("WEB-INF"); //NOI18N
@@ -44,18 +43,22 @@ public class WebModuleImpl implements WebModuleImplementation {
     }
 
     public String getJ2eePlatformVersion() {
+        System.out.println("getJ2eePlatformVersion");
         return WebModule.J2EE_13_LEVEL;
     }
 
     public FileObject getDocumentBase() {
+        System.out.println("getDocumentBase" + FileUtilities.getFileObjectForProperty("maven.war.src", project.getPropertyResolver()));
         return FileUtilities.getFileObjectForProperty("maven.war.src", project.getPropertyResolver()); //NOI18N
     }
 
     public FileObject getDeploymentDescriptor() {
+        System.out.println("getDeploymentDescriptor");
         return FileUtilities.getFileObjectForProperty("maven.war.webxml", project.getPropertyResolver()); //NOI18N
     }
 
     public String getContextPath() {
+        System.out.println("getContextPath");
         return "";
     }
     
