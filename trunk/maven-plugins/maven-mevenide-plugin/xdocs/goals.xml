@@ -38,7 +38,7 @@
           </tr>
           <tr>
             <td>mevenide:run-exec</td>
-            <td><p>Execute the application using a custom script or executable. The executable/script path is passes in the <source>maven.mevenide,run.exec</source>  variable. </p>
+            <td><p>Execute the application using a custom script or executable. The executable/script path is passes in the <code>maven.mevenide.run.exec</code>  variable. </p>
             </td> 
           </tr>
           <tr>

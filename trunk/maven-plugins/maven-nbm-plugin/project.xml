@@ -9,12 +9,12 @@
   <extend>${basedir}/../mevenide-master/plugin-base-project.xml</extend>
   
   <pomVersion>3</pomVersion>
-
   <id>maven-nbm-plugin</id>
   <artifactId>maven-nbm-plugin</artifactId>
   <name>Maven NBM Plugin</name>
   
   <currentVersion>0.6-SNAPSHOT</currentVersion>
+  <package>org.mevenide.tags</package>
   
   <!-- shortDescription>The NBM plugin will create a Netbeans module file (.nbm) </shortDescription -->
   <shortDescription>This plugin helps creating ready to use Netbeans module distribution</shortDescription>

@@ -8,12 +8,12 @@
   <body>
     <section name="Building Properties">
     	<div id="documentContent">
-        These properties form a bridge between maven goals and the actions that 
+      <p>  These properties form a bridge between maven goals and the actions that 
         trigger building, compilation, running of tests etc. in the IDE.
         By redefining them in your project.properties or build.properties files, you can 
         customize what the IDE will run when the action is triggered. That way you can map your custom
         maven.xml based goal to the IDE's Build shortcut (F11) for example, and have it easily accessible for you and also your fellow
-        developers.
+        developers. </p>
       <table>
         <tr>
           <th>Property</th>
