@@ -19,6 +19,8 @@ package org.mevenide.netbeans.project;
 
 import java.io.File;
 import java.io.IOException;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.netbeans.api.project.Project;
 import org.netbeans.spi.project.ProjectFactory;
 import org.netbeans.spi.project.ProjectState;
@@ -32,6 +34,7 @@ import org.openide.filesystems.FileUtil;
  */
 public class MavenProjectFactory implements ProjectFactory
 {
+    private static final Log logger = LogFactory.getLog(MavenProjectFactory.class);
     
     /** Creates a new instance of MavenProjectFactory */
     public MavenProjectFactory()
@@ -63,6 +66,7 @@ public class MavenProjectFactory implements ProjectFactory
             Project proj =  new MavenProject(projectFile, projectDiskFile);
             return proj;
         } catch (Exception exc) {
+            logger.error("Cannot load project=" + projectDiskFile, exc);
             ErrorManager.getDefault().getInstance(MavenProjectFactory.class.getName()).notify(ErrorManager.INFORMATIONAL, exc);
             return null;
         }

@@ -31,6 +31,8 @@ import org.netbeans.api.java.classpath.ClassPath;
 import org.netbeans.api.java.classpath.GlobalPathRegistry;
 import org.netbeans.api.project.ProjectManager;
 import org.netbeans.spi.project.ui.ProjectOpenedHook;
+import org.openide.filesystems.FileObject;
+import org.openide.filesystems.FileUtil;
 
 /**
  *
@@ -46,6 +48,7 @@ public class ProjectOpenedHookImpl extends ProjectOpenedHook {
     
     protected void projectOpened() {
         logger.debug("Project opened.");
+        attachUpdater();
         // register project's classpaths to GlobalPathRegistry
         ClassPathProviderImpl cpProvider = (ClassPathProviderImpl)project.getLookup().lookup(ClassPathProviderImpl.class);
         GlobalPathRegistry.getDefault().register(ClassPath.BOOT, cpProvider.getProjectClassPaths(ClassPath.BOOT));
@@ -56,12 +59,53 @@ public class ProjectOpenedHookImpl extends ProjectOpenedHook {
     
     protected void projectClosed() {
         logger.debug("Project closed.");
+        detachUpdater();
         // unregister project's classpaths to GlobalPathRegistry
         ClassPathProviderImpl cpProvider = (ClassPathProviderImpl)project.getLookup().lookup(ClassPathProviderImpl.class);
         GlobalPathRegistry.getDefault().unregister(ClassPath.BOOT, cpProvider.getProjectClassPaths(ClassPath.BOOT));
         GlobalPathRegistry.getDefault().unregister(ClassPath.SOURCE, cpProvider.getProjectClassPaths(ClassPath.SOURCE));
         GlobalPathRegistry.getDefault().unregister(ClassPath.COMPILE, cpProvider.getProjectClassPaths(ClassPath.COMPILE));
     }
+   
+    private void attachUpdater() {
+        FileObject fo = FileUtil.toFileObject(project.getContext().getProjectDirectory());
+        FileObject userFo = FileUtil.toFileObject(project.getContext().getUserDirectory());
+        fo.addFileChangeListener(project.getUpdater());
+        userFo.addFileChangeListener(project.getUpdater());
+        FileObject xml = fo.getFileObject("project.xml");
+        FileObject prop = fo.getFileObject("project.properties");
+        FileObject prop2 = fo.getFileObject("build.properties");
+        FileObject prop3 = userFo.getFileObject("build.properties");
+        if (prop != null) {
+            prop.addFileChangeListener(project.getUpdater());
+        }
+        if (prop2 != null) {
+            prop2.addFileChangeListener(project.getUpdater());
+        }
+        if (prop3 != null) {
+            prop3.addFileChangeListener(project.getUpdater());
+        }
+    }    
+    
+   private void detachUpdater() {
+        FileObject fo = FileUtil.toFileObject(project.getContext().getProjectDirectory());
+        FileObject userFo = FileUtil.toFileObject(project.getContext().getUserDirectory());
+        fo.removeFileChangeListener(project.getUpdater());
+        userFo.removeFileChangeListener(project.getUpdater());
+        FileObject xml = fo.getFileObject("project.xml");
+        FileObject prop = fo.getFileObject("project.properties");
+        FileObject prop2 = fo.getFileObject("build.properties");
+        FileObject prop3 = userFo.getFileObject("build.properties");
+        if (prop != null) {
+            prop.removeFileChangeListener(project.getUpdater());
+        }
+        if (prop2 != null) {
+            prop2.removeFileChangeListener(project.getUpdater());
+        }
+        if (prop3 != null) {
+            prop3.removeFileChangeListener(project.getUpdater());
+        }
+    }        
     
     private void checkUnresolvedDependencies() {
         List lst = new ArrayList();

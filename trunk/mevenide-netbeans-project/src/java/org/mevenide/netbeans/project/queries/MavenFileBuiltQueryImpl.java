@@ -18,6 +18,7 @@
 package org.mevenide.netbeans.project.queries;
 
 import javax.swing.event.ChangeListener;
+import org.mevenide.netbeans.project.MavenProject;
 import org.netbeans.api.queries.FileBuiltQuery;
 import org.netbeans.spi.queries.FileBuiltQueryImplementation;
 import org.openide.filesystems.FileObject;
@@ -28,8 +29,10 @@ import org.openide.filesystems.FileObject;
  */
 public class MavenFileBuiltQueryImpl implements FileBuiltQueryImplementation {
     
+    private MavenProject project;
     /** Creates a new instance of MavenFileBuiltQueryImpl */
-    public MavenFileBuiltQueryImpl() {
+    public MavenFileBuiltQueryImpl(MavenProject proj) {
+        project = proj;
     }
     
     /**
@@ -56,7 +59,7 @@ public class MavenFileBuiltQueryImpl implements FileBuiltQueryImplementation {
         }
         
         public boolean isBuilt() {
-            return false;
+            return true;
         }
         
         public void removeChangeListener(ChangeListener changeListener) {
