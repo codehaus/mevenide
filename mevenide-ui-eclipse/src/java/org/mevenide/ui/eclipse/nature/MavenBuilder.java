@@ -64,7 +64,7 @@ public class MavenBuilder extends IncrementalProjectBuilder {
     private IProject[] getMavenRequiredProjects() {
         List projects = new ArrayList(); 
         try {
-	        IFile file = getProject().getFile("project.xml");
+	        IFile file = getProject().getFile("project.xml"); //$NON-NLS-1$
 	        if ( file.exists() ) {
 	            File currentPomFile = file.getLocation().toFile();
 	            Project currentPom = ProjectReader.getReader().read(currentPomFile);
@@ -98,7 +98,7 @@ public class MavenBuilder extends IncrementalProjectBuilder {
     
     private boolean isExplicitelyDependingUpon(Project currentPom, IProject wsProject) {
         try {
-            IFile file = wsProject.getFile("project.xml");
+            IFile file = wsProject.getFile("project.xml"); //$NON-NLS-1$
             if ( file.exists() ) {
                 Dependency dependency = ProjectReader.getReader().extractDependency(file.getLocation().toFile());
                 List dependencies = currentPom.getDependencies();

@@ -39,6 +39,8 @@ public class ActionDefinitionsManager implements IActionDefinitionManager, ILaun
     public static final String BUILD_CONFIG_TYPE = "org.mevenide.ui.launching.ActionDefinitionConfigType"; //$NON-NLS-1$
     public static final String AUTO_BUILD = "AUTO_BUILD"; //$NON-NLS-1$
     public static final String PATTERNS_LIST = "PATTERNS_LIST"; //$NON-NLS-1$
+    static final String CUSTOM_CONFIG_LAUNCHGROUP_ID = "org.mevenide.ui.launching.custom.LaunchGroup"; //$NON-NLS-1$ 
+    static final String CUSTOM_CONFIG_TABGROUP_ID = "org.mevenide.ui.launching.ActionDefinitionTabGroup"; //$NON-NLS-1$
     
     private List definitions = new ArrayList();
     

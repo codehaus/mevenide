@@ -114,11 +114,11 @@ public class PatternsTab extends AbstractLaunchConfigurationTab {
 		table.setHeaderVisible(true);
 		
 		TableColumn column1 = new TableColumn(table, SWT.NULL);
-		column1.setText("File pattern"); //$NON-NLS-1$
+		column1.setText(Mevenide.getResourceString("PatternsTab.Table.Column.FilePattern.Text")); //$NON-NLS-1$
 		column1.setWidth(200);
 		
 		TableColumn column2 = new TableColumn(table, SWT.NULL);
-		column2.setText("Optional description"); //$NON-NLS-1$
+		column2.setText(Mevenide.getResourceString("PatternsTab.Table.Column.Description.Text")); //$NON-NLS-1$
 		column2.setWidth(200);
 		
 		createTableEditor();
@@ -130,7 +130,7 @@ public class PatternsTab extends AbstractLaunchConfigurationTab {
 		buttonsArea.setLayoutData(topData);
 		
 		Button addButton = new Button(buttonsArea, SWT.PUSH);
-		addButton.setText("Add"); //$NON-NLS-1$
+		addButton.setText(Mevenide.getResourceString("PatternsTab.AddButton.Text")); //$NON-NLS-1$ 
 		GridData data1 = new GridData(GridData.FILL_HORIZONTAL);
 		addButton.setLayoutData(data1);
 		addButton.addSelectionListener(new SelectionAdapter() {
@@ -239,7 +239,7 @@ public class PatternsTab extends AbstractLaunchConfigurationTab {
 
     private void initAutoBuild(ILaunchConfiguration configuration) {
         try {
-            autoBuild = configuration.getAttribute("AUTO_BUILD", false);
+            autoBuild = configuration.getAttribute(ActionDefinitionsManager.AUTO_BUILD, false);
         }
         catch (CoreException e) {
             String message = "Unable to retrieve autobuild value from configuration";  //$NON-NLS-1$
@@ -252,7 +252,7 @@ public class PatternsTab extends AbstractLaunchConfigurationTab {
         table.removeAll();	
         Map patternList = new HashMap();
         try {
-            patternList = configuration.getAttribute("PATTERNS_LIST", new HashMap());
+            patternList = configuration.getAttribute(ActionDefinitionsManager.PATTERNS_LIST, new HashMap());
         }
         catch (CoreException e) {
             String message = "Unable to retrieve pattern list from configuration";  //$NON-NLS-1$
@@ -275,7 +275,7 @@ public class PatternsTab extends AbstractLaunchConfigurationTab {
     }
 
     private void storeAutoBuild(ILaunchConfigurationWorkingCopy configuration) {
-        configuration.setAttribute("AUTO_BUILD", autoBuild);
+        configuration.setAttribute(ActionDefinitionsManager.AUTO_BUILD, autoBuild);
         
     }
 
@@ -287,7 +287,7 @@ public class PatternsTab extends AbstractLaunchConfigurationTab {
  		   String value = items[i].getText(1);
  		   patterns.put(key, value);
  	   }
- 	   configuration.setAttribute("PATTERNS_LIST", patterns);
+ 	   configuration.setAttribute(ActionDefinitionsManager.PATTERNS_LIST, patterns);
     }
 
     public String getName() {

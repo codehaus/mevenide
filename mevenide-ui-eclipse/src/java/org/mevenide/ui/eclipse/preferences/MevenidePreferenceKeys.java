@@ -34,6 +34,6 @@ public class MevenidePreferenceKeys {
     public static final String POM_TEMPLATE_LOCATION_PREFERENCE_KEY = "pom.template.location"; //$NON-NLS-1$
     public static final String DEFAULT_GOALS_PREFERENCE_KEY = "maven.launch.defaultgoals"; //$NON-NLS-1$
     public static final String REGISTERED_DEPENPENCY_TYPES = "mevenide.pom.dependency.type"; //$NON-NLS-1$
-    public static final String TOOLS_JAR_PREFERENCE_KEY = "tools.jar";
+    public static final String TOOLS_JAR_PREFERENCE_KEY = "tools.jar"; //$NON-NLS-1$
 
 }

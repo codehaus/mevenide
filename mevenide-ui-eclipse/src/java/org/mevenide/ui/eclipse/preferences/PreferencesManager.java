@@ -121,7 +121,7 @@ public class PreferencesManager {
         }
         catch (NullPointerException e) {
             //catch NPE thrown if preferenceStore cannot be properly initialized
-            String message = "No preferences found"; 
+            String message = "No preferences found";  //$NON-NLS-1$
             log.info(message, e);
         }
 	    

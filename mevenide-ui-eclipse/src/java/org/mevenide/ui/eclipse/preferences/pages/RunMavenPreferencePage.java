@@ -156,7 +156,7 @@ public class RunMavenPreferencePage extends PreferencePage implements IWorkbench
     }
 
     private void createDefaultGoalsEditor() {
-		defaultGoalsEditor = new DefaultGoalsEditor(MevenidePreferenceKeys.MAVEN_LAUNCH_DEFAULTGOALS_PREFERENCE_KEY, Mevenide.getResourceString("RunMavenPreferencePage.default.goals.label"), topLevelContainer);
+		defaultGoalsEditor = new DefaultGoalsEditor(MevenidePreferenceKeys.MAVEN_LAUNCH_DEFAULTGOALS_PREFERENCE_KEY, Mevenide.getResourceString("RunMavenPreferencePage.default.goals.label"), topLevelContainer); //$NON-NLS-1$
 		
 		defaultGoalsEditor.fillIntoGrid(topLevelContainer, 3);
 		defaultGoalsEditor.setPreferenceStore(preferencesManager.getPreferenceStore());
