@@ -25,7 +25,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.mevenide.environment.LocationFinderAggregator;
+import org.mevenide.environment.ConfigUtils;
 import org.mevenide.grammar.TagLib;
 import org.mevenide.grammar.TagLibProvider;
 
@@ -60,7 +60,7 @@ public abstract class MavenTagLibProvider implements TagLibProvider {
 	public MavenTagLibProvider() {
 		taglibs = new TreeMap();
 		cacheRead = false;
-		cacheFile = new File(new LocationFinderAggregator() .getMavenPluginsDir(), ".dynatag.cache");
+		cacheFile = new File(ConfigUtils.getDefaultLocationFinder().getMavenPluginsDir(), ".dynatag.cache");
 		pluginDir = cacheFile.getParentFile();
 	}
 	
