@@ -55,6 +55,8 @@ package org.mevenide.ui.eclipse.goals.model;
  * 
  */
 public class Goal extends Element {
+	public static final String DEFAULT_GOAL = "(default)"; 
+	
 	private Plugin plugin ;
 	
 	public Plugin getPlugin() {

@@ -65,7 +65,8 @@ import org.jdom.input.SAXBuilder;
  */
 public class DefaultPathResolver implements IPathResolver {
 
-	/**
+	private static final String UNKNOWN_SRC_TYPE = "UNKNOWN";
+    /**
 	 * extract the source path to add to the pom from the given classpathentry
 	 * 
 	 * @param classpathEntry
@@ -105,26 +106,26 @@ public class DefaultPathResolver implements IPathResolver {
 		}
 		Document doc = new SAXBuilder().build(Mevenide.getPlugin().getFile("sourceTypes.xml"));
 		Element root = doc.getRootElement();
-		List sdGroupElements = root.getChildren("sourceDirectoryGroup");
+		List sdGroupElements = root.getChildren(XmlSerializationConstants.SOURCE_DIRECTORY_GROUP_ELEM);
 		
 		for (int i = 0; i < sdGroupElements.size(); i++) {
 			Element group = (Element) sdGroupElements.get(i); 
-			if ( project.getName().equals(group.getAttributeValue("projectName")) ) {
+			if ( project.getName().equals(group.getAttributeValue(XmlSerializationConstants.PROJECT_NAME_ATTR)) ) {
 				return getType(sourceDirectoryPath, group);
 			}
 		}
 		
-		return "UNKNOWN";
+		return UNKNOWN_SRC_TYPE;
 	}
 
 	private String getType(String path, Element group) {
-		List sourceDirectories = group.getChildren("sourceDirectory");
+		List sourceDirectories = group.getChildren(XmlSerializationConstants.SOURCE_DIRECTORY_GROUP_ELEM);
 		for (int i = 0; i < sourceDirectories.size(); i++) {
 			Element sourceDirectory = (Element) sourceDirectories.get(i);
-			if ( sourceDirectory.getAttributeValue("path").equals(path) ) {
-				return sourceDirectory.getAttributeValue("type");
+			if ( sourceDirectory.getAttributeValue(XmlSerializationConstants.PATH_ATTR).equals(path) ) {
+				return sourceDirectory.getAttributeValue(XmlSerializationConstants.TYPE_ATTR);
 			}
 		}
-		return "UNKNOWN";
+		return UNKNOWN_SRC_TYPE;
 	}
 }

@@ -63,7 +63,7 @@ public abstract class GoalFactory {
 		Plugin plugin = new Plugin();
 		plugin.setName(pluginName);
 	
-		String goalName = "(default)";
+		String goalName = Goal.DEFAULT_GOAL;
 		if ( splittedGoal.length > 1 ) {
 			goalName = splittedGoal[1];
 		}
