@@ -16,7 +16,9 @@ package org.mevenide.project.io;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -24,6 +26,7 @@ import junit.framework.TestCase;
 
 import org.apache.maven.project.Dependency;
 import org.apache.maven.project.Project;
+import org.apache.maven.project.Resource;
 import org.mevenide.ProjectConstants;
 import org.mevenide.project.DependencyUtil;
 
@@ -95,8 +98,39 @@ public class ProjectWriterTest extends TestCase {
 		assertTrue(pomWriter.isDependencyPresent(project, dep));
 	}
 	
-	public void testAddResource() {
+	public void testAddResource() throws Exception {
+		String testDirectory = System.getProperty("user.dir");
 		
+		String testFile1 = new File(testDirectory, "fake1.xml").getAbsolutePath(); 
+		String testFile2 = new File(testDirectory, "fake2.xml").getAbsolutePath();
+		
+		pomWriter.addResource(testFile1, projectFile);
+		
+		assertTrue(isResourcePresent(testDirectory, new String[] {"fake1.xml"}));
+		
+		pomWriter.addResource(testFile2, projectFile);
+		assertTrue(isResourcePresent(testDirectory, new String[] {"fake1.xml", "fake2.xml"}));
+		
+		pomWriter.addResource(testDirectory, projectFile);
+		assertTrue(isResourcePresent(testDirectory, new String[] {"fake1.xml", "fake2.xml", "**/*.*"}));
+		
+	}
+
+	private boolean isResourcePresent(String testDirectory, String[] includes) throws FileNotFoundException, Exception, IOException {
+		Project project = ProjectReader.getReader().read(projectFile);
+		List resources = project.getBuild().getResources();
+		boolean found = false;
+		for (int i = 0; i < resources.size(); i++) {
+			Resource resource = (Resource) resources.get(i);
+			boolean temp = resource.getDirectory().equals(testDirectory); 
+			for (int j = 0; j < includes.length; j++) {
+				temp &= resource.getIncludes().contains(includes[j]);
+			} 
+			if ( temp ) {
+				found = true;	
+			}
+		}
+		return found;
 	}
 
 	private void copy(String sourceFile, String destFile) throws Exception {
