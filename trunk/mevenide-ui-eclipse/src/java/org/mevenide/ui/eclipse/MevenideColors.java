@@ -63,16 +63,25 @@ public abstract class MevenideColors {
 	protected void finalize() throws Throwable {
         WHITE.dispose();
 		GREY.dispose();
+		LIGHT_GRAY.dispose();
 		BLACK.dispose();
 		ORANGE.dispose();
 		GREEN.dispose();
+		BLUE_GRAY.dispose();
+		BLUE.dispose();
+		DARK_BLUE.dispose();
+		DARK_RED.dispose();
     }
 	
 	public static final Color WHITE = new Color(null, 255, 255, 255);
 	public static final Color GREY = new Color(null, 156, 156, 156);
+	public static final Color LIGHT_GRAY = new Color(null, 127, 127, 127);
 	public static final Color BLACK = new Color(null, 0, 0, 0);
 	public static final Color ORANGE = new Color(null, 255, 178, 0);
 	public static final Color GREEN = new Color(null, 0, 127, 0);
-
+	public static final Color BLUE_GRAY = new Color(null, 156, 170, 197);
+	public static final Color BLUE = new Color(null, 0, 0, 255);
+	public static final Color DARK_BLUE = new Color(null, 0, 0, 127);
+	public static final Color DARK_RED = new Color(null, 127, 0, 0);
 }
 
