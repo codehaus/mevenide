@@ -26,12 +26,15 @@ import java.util.Enumeration;
 import java.util.Properties;
 import java.util.Set;
 import java.util.TreeSet;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  *
  * @author  <a href="mailto:mkleint@codehaus.org">Milos Kleint</a>
  */
 class PluginInfoParser {
+    private static Log logger = LogFactory.getLog(PluginInfoParser.class);
     
     private File cachedDir;
     private File artToPluginFile;
@@ -82,7 +85,7 @@ class PluginInfoParser {
                     infoList.add(info);
                 }
             } catch (IOException exc) {
-                System.out.println("exception=" +exc);
+                logger.error("Cannot read file", exc);
             }
             finally {
                 artToPluginFileTimestamp = lastModified;
@@ -91,6 +94,7 @@ class PluginInfoParser {
                         stream.close();
                     } catch (IOException exc) {
                         //ignore
+                        logger.error("Cannot close file", exc);
                     }
                 }
             }
