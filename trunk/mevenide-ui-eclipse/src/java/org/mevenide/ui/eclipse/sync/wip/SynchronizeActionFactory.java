@@ -197,11 +197,25 @@ public class SynchronizeActionFactory {
 	}
 
 	private void createRemoveFromProjectAction() {
+		final RemoveFromClasspathAction action = new RemoveFromClasspathAction();
 		Action removeFromProject = new Action() {
 			public void run() {
+				IArtifactMappingNode selectedNode = (IArtifactMappingNode) ((IStructuredSelection) synchronizeView.getArtifactMappingNodeViewer().getSelection()).getFirstElement();
 				
+				ProjectContainer container = (ProjectContainer) synchronizeView.getArtifactMappingNodeViewer().getTree().getItems()[0].getData();
+				IProject project = container.getProject();
+				
+				try  {
+					
+					action.removeEntry(selectedNode, project);
+					
+				}
+				catch ( Exception e ) {
+					log.debug("Unable to add item " + selectedNode.getResolvedArtifact() + " to classpath ", e );
+				}
 			}
 		};
+		action.addActionListener(synchronizeView);
 		removeFromProject.setId(REMOVE_FROM_PROJECT);
 		removeFromProject.setText("Remove from project");
 		actionIds.put(REMOVE_FROM_PROJECT, removeFromProject);
