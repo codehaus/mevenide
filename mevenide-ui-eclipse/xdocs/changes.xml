@@ -7,7 +7,7 @@
 
   <body>
 	
-    <release version="0.2.1" date="in CVS">
+    <release version="0.2.1" date="2004-07-13">
    	  <action dev="gdodinet" type="fix" issue="MEVENIDE-11">
         Pages correctly refreshed if they have already been opened (see also MEVENIDE-23)
       </action>
