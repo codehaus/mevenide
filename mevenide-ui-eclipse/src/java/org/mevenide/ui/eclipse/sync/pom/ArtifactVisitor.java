@@ -21,13 +21,13 @@ import java.util.List;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.jdt.core.IClasspathContainer;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.launching.JavaRuntime;
 import org.mevenide.ProjectConstants;
 import org.mevenide.project.io.ProjectWriter;
+import org.mevenide.ui.eclipse.MavenPlugin;
 import org.mevenide.ui.eclipse.sync.source.IPathResolverDelegate;
 import org.mevenide.ui.eclipse.util.ProjectUtil;
 
@@ -102,12 +102,44 @@ public class ArtifactVisitor {
 				entryPath, 
 				pomSynchronizer.getPom()
 			);
+			
+			//check if entryPath is in repo, if not warn the user about the guessed groupId
+			//add it to the pomSynchronizer list of unresolved dependencies so that we can 
+			//later display a MessageBox
+			String path = new File(pathResolver.getAbsolutePath(classpathEntry.getPath())).getName();
+			if ( !isClassFolder(pathResolver.getRelativeSourceDirectoryPath(classpathEntry, pomSynchronizer.getProject())) 
+					&& !inLocalRepository(path) ) {
+				pomSynchronizer.addUnresolvedDependency(entryPath);
+			}
+			
  		}
 		
 	}
 	
+	private boolean inLocalRepository(String entryPath) {
+		File localRepo = new File(MavenPlugin.getPlugin().getMavenRepository());
+		return findFile(localRepo, entryPath);
+	}
+	
+	private boolean findFile(File rootDirectory, String fileName) {
+		File[] f = rootDirectory.listFiles();
+		for (int i = 0; i < f.length; i++) {
+			if ( f[i].isDirectory() ) {
+				if ( findFile(f[i], fileName) ) {
+					return true;
+				}
+			}
+			else {
+				if ( f[i].getName().equals(fileName) ) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
 	private boolean isClassFolder(String entryPath) {
-		return new File(Platform.getLocation().append(new Path(entryPath)).toOSString()).isDirectory();
+		return new File(pomSynchronizer.getProject().getLocation().append(new Path(entryPath)).toOSString()).isDirectory();
 	}
 	
 	public void add(ProjectEntry entry) throws Exception {

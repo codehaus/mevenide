@@ -18,9 +18,6 @@ package org.mevenide.ui.eclipse.actions;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.action.IAction;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.MessageBox;
-import org.eclipse.ui.PlatformUI;
 import org.mevenide.sync.ISynchronizer;
 import org.mevenide.sync.SynchronizerFactory;
 import org.mevenide.ui.eclipse.MavenPlugin;
@@ -43,10 +40,7 @@ public class SynchronizeAction extends AbstractMavenAction {
             	String mavenHome = MavenPlugin.getPlugin().getMavenHome();
             	String mavenRepository = MavenPlugin.getPlugin().getMavenRepository();
             	if ( isNull(mavenHome) || isNull(mavenRepository) ) {
-					MessageBox dialog = new MessageBox (PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), SWT.ICON_WARNING | SWT.OK);
-					dialog.setText ("Mevenide");
-					dialog.setMessage ("Please set maven preferences before synchronizing");
-					dialog.open ();
+					MavenPlugin.popUp("Mevenide", "Please set maven preferences before synchronizing");
 				}
 				else {
 					if ( JavaCore.getClasspathVariable("MAVEN_REPO") == null ) {
@@ -66,7 +60,7 @@ public class SynchronizeAction extends AbstractMavenAction {
 			e.printStackTrace();
 		}
 	}
-    
+
     private boolean isNull(String strg) {
 		return strg == null || strg.trim().equals("");
     }
