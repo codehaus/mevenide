@@ -50,4 +50,9 @@ public interface IPropertyLocator {
      */
     int getPropertyLocation(String key);
     
+    /**
+     * the return value indicates if the property is defined in the particular properties file.
+     */
+    boolean isDefinedInLocation(String key, int location);
+    
 }

@@ -33,7 +33,9 @@ public interface IQueryContext
     String getBuildPropertyValue(String key);
     
     String getProjectPropertyValue(String key);
-    
+    /**
+     * the directory where the POM is located
+     */
     File getProjectDirectory();
     
     File getUserDirectory();
