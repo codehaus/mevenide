@@ -48,9 +48,12 @@
  */
 package org.mevenide.ui.eclipse.editors.pages;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.maven.project.Project;
+import org.apache.maven.project.Resource;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
@@ -121,7 +124,17 @@ public class ExcludesSubsection extends AbstractResourcePatternSubsection {
 						excludes.remove(pattern);
 					}
 				}
-				public List getDependents(Object parentObject) { return null; }
+				// only ever called if this subsection belongs to a ResourceSection
+				public List getDependents(Object parentObject) {
+					Resource resource = (Resource) parentObject;
+					List excludes = resource.getExcludes();
+					List patternProxies = new ArrayList(excludes.size());
+					Iterator itr = excludes.iterator();
+					while (itr.hasNext()) {
+						patternProxies.add(new ResourcePatternProxy((String) itr.next(), false));
+					}
+					return patternProxies;
+				}
 			}
 		);
 		return excludesTable;

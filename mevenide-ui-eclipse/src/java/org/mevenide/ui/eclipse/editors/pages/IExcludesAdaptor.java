@@ -50,15 +50,12 @@ package org.mevenide.ui.eclipse.editors.pages;
 
 import java.util.List;
 
-import org.apache.maven.project.Project;
-
 /**
  * @author Jeffrey Bonevich (jeff@bonevich.com)
  * @version $Id$
  */
 public interface IExcludesAdaptor {
-	abstract void setExcludes(Project pom, List newExcludes);
-	abstract void addExclude(Project pom, String exclude);
-	abstract List getExcludes(Project pom);
-	abstract List getInheritedExcludes();
+	abstract void setExcludes(Object target, List newExcludes);
+	abstract void addExclude(Object target, String exclude);
+	abstract List getExcludes(Object source);
 }

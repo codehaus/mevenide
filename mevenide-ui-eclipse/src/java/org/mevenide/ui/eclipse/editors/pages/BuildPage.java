@@ -48,7 +48,11 @@
  */
 package org.mevenide.ui.eclipse.editors.pages;
 
+import java.util.List;
+
+import org.apache.maven.project.Build;
 import org.apache.maven.project.Project;
+import org.apache.maven.project.Resource;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -91,7 +95,36 @@ public class BuildPage extends AbstractPomEditorPage {
 		gd.horizontalSpan = 2;
 		control.setLayoutData(gd);
 
-		resourcesSection = new ResourcesSection(this);
+		resourcesSection = new ResourcesSection(this, "BuildResourcesSection");
+		IResourceAdaptor adaptor = new IResourceAdaptor() {
+			public void setResources(Object target, List resources) {
+				Project pom = (Project) target;
+				getOrCreateBuild(pom).setResources(resources);
+				getEditor().setModelDirty(true);
+			}
+		
+			public void addResource(Object target, Resource resource) {
+				Project pom = (Project) target;
+				getOrCreateBuild(pom).addResource(resource);
+				getEditor().setModelDirty(true);
+			}
+		
+			public List getResources(Object source) {
+				Project pom = (Project) source;
+				return pom.getBuild() != null ? pom.getBuild().getResources() : null;
+			}
+		
+			private Build getOrCreateBuild(Project pom) {
+				Build build = pom.getBuild();
+				if (build == null) {
+					build = new Build();
+					pom.setBuild(build);
+				}
+				return build;
+			}
+		};
+		resourcesSection.setResourceAdaptor(adaptor);
+		
 		control = resourcesSection.createControl(parent, factory);
 		gd = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING);
 		gd.horizontalSpan = 2;

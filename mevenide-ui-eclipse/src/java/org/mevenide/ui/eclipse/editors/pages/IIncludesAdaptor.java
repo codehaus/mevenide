@@ -50,15 +50,12 @@ package org.mevenide.ui.eclipse.editors.pages;
 
 import java.util.List;
 
-import org.apache.maven.project.Project;
-
 /**
  * @author Jeffrey Bonevich (jeff@bonevich.com)
  * @version $Id$
  */
 public interface IIncludesAdaptor {
-	abstract void setIncludes(Project pom, List newIncludes);
-	abstract void addInclude(Project pom, String include);
-	abstract List getIncludes(Project pom);
-	abstract List getInheritedIncludes();
+	abstract void setIncludes(Object target, List newIncludes);
+	abstract void addInclude(Object target, String include);
+	abstract List getIncludes(Object source);
 }

@@ -50,9 +50,7 @@ package org.mevenide.ui.eclipse.editors.pages;
 
 import java.util.List;
 
-import org.apache.maven.project.Build;
 import org.apache.maven.project.Project;
-import org.apache.maven.project.UnitTest;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.mevenide.ui.eclipse.Mevenide;
@@ -62,14 +60,19 @@ import org.mevenide.ui.eclipse.editors.entries.TableEntry;
  * @author Jeffrey Bonevich (jeff@bonevich.com)
  * @version $Id$
  */
-public class IncludesSection extends PageSection implements IIncludesAdaptor {
+public class IncludesSection extends PageSection {
 
 	private IncludesSubsection subsection;
+	private IIncludesAdaptor includesAdaptor;
 	private TableEntry includesTable;
 	
 	public IncludesSection(UnitTestsPage page) {
 		super(page);
 		setHeaderText(Mevenide.getResourceString("UnitTestIncludesSection.header"));
+	}
+	
+	void setIncludesAdaptor(IIncludesAdaptor adaptor) {
+		this.includesAdaptor = adaptor;
 	}
 
 	public Composite createClient(Composite parent, PageWidgetFactory factory) {
@@ -81,7 +84,7 @@ public class IncludesSection extends PageSection implements IIncludesAdaptor {
 		layout.horizontalSpacing = 5;
 		container.setLayout(layout);
 		
-		subsection = new IncludesSubsection(this, this);
+		subsection = new IncludesSubsection(this, includesAdaptor);
 		
 		includesTable = subsection.createWidget(container, factory, true);
 		
@@ -95,44 +98,14 @@ public class IncludesSection extends PageSection implements IIncludesAdaptor {
 		super.update(pom);
 	}
 
-	public void setIncludes(Project pom, List newIncludes) {
-		List includes = getOrCreateUnitTest(pom).getIncludes();
-		includes.removeAll(includes);
-		includes.addAll(newIncludes);
-		getPage().getEditor().setModelDirty(true);
+	private List getIncludes(Project pom) {
+		return includesAdaptor.getIncludes(pom);
 	}
 	
-	public void addInclude(Project pom, String include) {
-		getOrCreateUnitTest(pom).addInclude(include);
-		getPage().getEditor().setModelDirty(true);
-	}
-	
-	public List getIncludes(Project pom) {
-		return pom.getBuild() != null 
-			? pom.getBuild().getUnitTest() != null
-				? pom.getBuild().getUnitTest().getIncludes()
-				: null
-			: null;
-	}
-	
-	public List getInheritedIncludes() {
+	private List getInheritedIncludes() {
 		return isInherited() 
 			? getIncludes(getParentPom())
 			: null;
-	}
-
-	private UnitTest getOrCreateUnitTest(Project pom) {
-		Build build = pom.getBuild();
-		if (build == null) {
-			build = new Build();
-			pom.setBuild(build);
-		}
-		UnitTest unitTest = build.getUnitTest();
-		if (unitTest == null) {
-			unitTest = new UnitTest();
-			build.setUnitTest(unitTest);
-		}
-		return unitTest;
 	}
 
 }

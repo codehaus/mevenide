@@ -62,14 +62,19 @@ import org.mevenide.ui.eclipse.editors.entries.TableEntry;
  * @author Jeffrey Bonevich (jeff@bonevich.com)
  * @version $Id$
  */
-public class ExcludesSection extends PageSection implements IExcludesAdaptor {
+public class ExcludesSection extends PageSection {
 
 	private ExcludesSubsection subsection;
+	private IExcludesAdaptor excludesAdaptor;
 	private TableEntry excludesTable;
 	
 	public ExcludesSection(UnitTestsPage page) {
 		super(page);
 		setHeaderText(Mevenide.getResourceString("UnitTestExcludesSection.header"));
+	}
+	
+	void setExcludesAdaptor(IExcludesAdaptor excludesAdaptor) {
+		this.excludesAdaptor = excludesAdaptor;
 	}
 
 	public Composite createClient(Composite parent, PageWidgetFactory factory) {
@@ -81,7 +86,7 @@ public class ExcludesSection extends PageSection implements IExcludesAdaptor {
 		layout.horizontalSpacing = 5;
 		container.setLayout(layout);
 		
-		subsection = new ExcludesSubsection(this, this);
+		subsection = new ExcludesSubsection(this, excludesAdaptor);
 		
 		excludesTable = subsection.createWidget(container, factory, true);
 		
@@ -96,19 +101,20 @@ public class ExcludesSection extends PageSection implements IExcludesAdaptor {
 		super.update(pom);
 	}
 
-	public void setExcludes(Project pom, List newExcludes) {
-		List excludes = getOrCreateUnitTest(pom).getExcludes();
+	public void setExcludes(Object target, List newExcludes) {
+		List excludes = getOrCreateUnitTest(target).getExcludes();
 		excludes.removeAll(excludes);
 		excludes.addAll(newExcludes);
 		getPage().getEditor().setModelDirty(true);
 	}
 	
-	public void addExclude(Project pom, String exclude) {
-		getOrCreateUnitTest(pom).addExclude(exclude);
+	public void addExclude(Object target, String exclude) {
+		getOrCreateUnitTest(target).addExclude(exclude);
 		getPage().getEditor().setModelDirty(true);
 	}
 	
-	public List getExcludes(Project pom) {
+	public List getExcludes(Object source) {
+		Project pom = (Project) source;
 		return pom.getBuild() != null 
 			? pom.getBuild().getUnitTest() != null
 				? pom.getBuild().getUnitTest().getExcludes()
@@ -122,7 +128,8 @@ public class ExcludesSection extends PageSection implements IExcludesAdaptor {
 			: null;
 	}
 
-	private UnitTest getOrCreateUnitTest(Project pom) {
+	private UnitTest getOrCreateUnitTest(Object model) {
+		Project pom = (Project) model;
 		Build build = pom.getBuild();
 		if (build == null) {
 			build = new Build();
