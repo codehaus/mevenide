@@ -23,6 +23,7 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Project;
+
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -35,6 +36,7 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
+
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -48,6 +50,7 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -55,14 +58,20 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.part.IPageSite;
 import org.eclipse.ui.part.ViewPart;
+
+import org.mevenide.project.IProjectChangeListener;
+import org.mevenide.project.ProjectChangeEvent;
+import org.mevenide.project.ProjectComparator;
+import org.mevenide.project.ProjectComparatorFactory;
+
 import org.mevenide.ui.eclipse.sync.action.SynchronizeActionFactory;
 import org.mevenide.ui.eclipse.sync.event.IActionListener;
 import org.mevenide.ui.eclipse.sync.event.IdeArtifactEvent;
 import org.mevenide.ui.eclipse.sync.event.PomArtifactEvent;
 import org.mevenide.ui.eclipse.sync.model.ArtifactMappingContentProvider;
+import org.mevenide.ui.eclipse.sync.model.EclipseContainerContainer;
 import org.mevenide.ui.eclipse.sync.model.IArtifactMappingNode;
 import org.mevenide.ui.eclipse.sync.model.IArtifactMappingNodeContainer;
-import org.mevenide.ui.eclipse.sync.model.EclipseContainerContainer;
 
 
 
@@ -73,7 +82,7 @@ import org.mevenide.ui.eclipse.sync.model.EclipseContainerContainer;
  * @version $Id$
  *
  */
-public class SynchronizeView extends ViewPart implements IActionListener, IResourceChangeListener, IPropertyChangeListener {
+public class SynchronizeView extends ViewPart implements IActionListener, IResourceChangeListener, IPropertyChangeListener, IProjectChangeListener {
     private static final Log log = LogFactory.getLog(SynchronizeView.class);
 
     private Composite composite;
@@ -103,6 +112,8 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
 	private IContainer container;
 	
     private IToolBarManager toolBarManager;
+
+    private ProjectComparator comparator;
     
     public void createPartControl(Composite parent) {
         createArtifactViewer(parent);
@@ -156,6 +167,13 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
         ((ArtifactMappingContentProvider) artifactMappingNodeViewer.getContentProvider()).setDirection(this.direction);
 
         artifactMappingNodeViewer.setInput(project);
+        
+        for (int i = 0; i < poms.size(); i++) {
+            Project mavenProject = (Project) poms.get(i);
+            comparator = ProjectComparatorFactory.getComparator(mavenProject);
+			comparator.addProjectChangeListener(ProjectComparator.BUILD, this);
+			comparator.addProjectChangeListener(ProjectComparator.DEPENDENCIES, this); 
+        }
         
         refreshAll();
         
@@ -386,14 +404,29 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
 		IArtifactMappingNode artifact = (IArtifactMappingNode) event.getArtifact();
 		log.debug("artifact modified : " + artifact);
 		refreshNode(artifact);
+		updatePoms(event);
+		//comparator.compare(event.getProject());
 	}
 	
 	public void artifactRemovedFromPom(PomArtifactEvent event) {
 		IArtifactMappingNode artifact = (IArtifactMappingNode) event.getArtifact();
 		refreshNode(artifact);
+		updatePoms(event);
+		//comparator.compare(event.getProject());
 	}
 	
-	public TreeViewer getArtifactMappingNodeViewer() {
+	//@TODO evil.. but actions read pom instead of working on pom references.. 
+	private void updatePoms(PomArtifactEvent event) {
+        for (int i = 0; i < poms.size(); i++) {
+			Project project = (Project) poms.get(i);
+            if ( project.getFile().equals(event.getProject().getFile()) ) {
+				poms.remove(i);
+				poms.add(i, event.getProject());
+			} 
+        }
+    }
+
+    public TreeViewer getArtifactMappingNodeViewer() {
 		return artifactMappingNodeViewer;
 	}
 	
@@ -442,7 +475,7 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
 										refreshAll();
 									}
 									for (int i = 0; i < poms.size(); i++) {
-										File f = (File) poms.get(i);
+										File f = ((Project) poms.get(i)).getFile();
 										if ( new File(file.getLocation().toOSString()).equals(f) ) {
 											refreshAll();
 										}
@@ -468,13 +501,18 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
 	}
 
 	public void refreshAll() {
-	  	artifactMappingNodeViewer.refresh(true);
-
+		artifactMappingNodeViewer.refresh(false);
 		artifactMappingNodeViewer.expandAll();
 	}
 
     public IContainer getInputContainer() {
         return container;
     }
-
+	
+	public void projectChanged(ProjectChangeEvent e) {
+    	String attribute = e.getAttribute();
+		if ( ProjectComparator.BUILD.equals(attribute) || ProjectComparator.DEPENDENCIES.equals(attribute) ) {
+			refreshAll();
+		}     
+	}
 }
