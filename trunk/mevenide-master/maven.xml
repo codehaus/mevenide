@@ -85,11 +85,11 @@
 
     </j:forEach -->
      
-     
-    <copy file="${basedir}/xdocs/images/mevenide-logo.jpg" todir="${basedir}/../goals-grabber/target/docs/images/"/>		
-    <copy file="${basedir}/xdocs/images/mevenide-logo.jpg" todir="${basedir}/../mevenide-core/target/docs/images/"/>
-    <copy file="${basedir}/xdocs/images/mevenide-logo.jpg" todir="${basedir}/../mevenide-ui-eclipse/target/docs/images/"/>
-    <copy file="${basedir}/xdocs/images/mevenide-logo.jpg" todir="${basedir}/../mevenide-master/target/docs/images/"/>		   
+    <copy file="${basedir}/xdocs/images/mevenide-logo.jpg" todir="${pom.siteDirectory}/../goals-grabber/images/"/>		
+    <copy file="${basedir}/xdocs/images/mevenide-logo.jpg" todir="${pom.siteDirectory}/../mevenide-core/images/"/>
+    <copy file="${basedir}/xdocs/images/mevenide-logo.jpg" todir="${pom.siteDirectory}/../mevenide-ui-eclipse/images/"/>
+    <!-- copy file="${basedir}/xdocs/images/mevenide-logo.jpg" todir="${pom.siteDirectory}/../mevenide-master/images/"/ -->
+    		   
     
   </goal>
   

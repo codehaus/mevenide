@@ -8,11 +8,13 @@
   <body>
   	<links>
       <item href="http://maven.apache.org/" name="Maven"/>
-      <item href="http://mevenide.sf.net/" name="Mevenide"/>
+      <item href="${pom.siteDirectory}/index.html" name="Mevenide"/>
     </links>
   	
     <menu name="Home">
       <item name="About" href="/index.html" />
+      <item name="Status" href="/status.html"/>
+      <item name="License" href="/license.html"/>
       <item name="Source Repositories" href="/source-repos.html" />
     </menu>
 

@@ -40,8 +40,8 @@ import org.xmlpull.v1.XmlSerializer;
  */
 public class DefaultProjectMarshaller implements IProjectMarshaller {
 	private static final String NAMESPACE = null;
-	private static final String ENCODING = null;
-	private static final Boolean STANDALONE = null;
+	//private static final String ENCODING = null;
+	//private static final Boolean STANDALONE = null;
 	private XmlSerializer serializer ;
 	
 	public DefaultProjectMarshaller() throws Exception {

@@ -17,7 +17,7 @@
   <issueTrackingUrl/>
   <siteAddress>shell.sourceforge.net</siteAddress>
   <siteDirectory>${mevenide.local.siteDirectory}/${pom.artifactId}</siteDirectory>
-  <distributionDirectory>/www/jakarta.apache.org/builds/jakarta-turbine-maven/</distributionDirectory>
+  <!-- distributionDirectory>/www/jakarta.apache.org/builds/jakarta-turbine-maven/</distributionDirectory -->
   
   
   <repository>
