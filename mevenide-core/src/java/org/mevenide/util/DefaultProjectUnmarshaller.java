@@ -695,6 +695,10 @@ public class DefaultProjectUnmarshaller
             {
                 r.setTargetPath( parser.nextText() );
             }
+			else if ( parser.getName().equals( "filtering" ) )
+			{
+				r.setFiltering( Boolean.valueOf(parser.nextText()).booleanValue() );
+			}
             else if ( parser.getName().equals( "includes" ) )
             {
                 while ( parser.nextTag() == XmlPullParser.START_TAG )

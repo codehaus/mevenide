@@ -428,6 +428,7 @@ public class DefaultProjectMarshaller implements IProjectMarshaller {
 
 					marshallString(resource.getDirectory(), "directory");
 					marshallString(resource.getTargetPath(), "targetPath");
+					marshallString(Boolean.toString(resource.getFiltering()), "filtering");
 
 					marshallIncludes(resource.getIncludes());
 					marshallExcludes(resource.getExcludes());
