@@ -162,20 +162,14 @@ public class MavenArtifactNode extends ArtifactNode {
 	}
 	
 	public void removeFrom(Project project) throws Exception {
-		List projectArtifacts = project.getArtifacts();
-		List iteratedList = new ArrayList(projectArtifacts);
-		int idx = 0;
-		for (int i = 0; i < iteratedList.size(); i++) {
-			Artifact iteratedArtifact = (Artifact) iteratedList.get(i);
-			if ( DependencyUtil.areEquals(project, artifact.getDependency(), iteratedArtifact.getDependency()) ) {
-				projectArtifacts.remove(idx);
-				project.getDependencies().remove(idx);
-			}
-			else {
-				idx++;
-			}
-		}
-		ProjectWriter.getWriter().write(project);
+	    try {
+            ProjectWriter.getWriter().removeArtifact((Project) parent.getData(), artifact);
+        }
+        catch (Exception e) {
+            String message = "Unable to remove artifact " + artifact.getDependency() + " from pom " + project.getName(); 
+            log.error(message, e);
+        }
+		
 	}
 	
 	public Object getAdapter(Class adapter) {

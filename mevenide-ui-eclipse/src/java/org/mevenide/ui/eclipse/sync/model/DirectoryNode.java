@@ -174,7 +174,9 @@ public class DirectoryNode extends ArtifactNode {
 	}
 	
 	public void removeFrom(Project project) throws Exception {
-		//String type = directory.getType();
+		String type = directory.getType();
+		String path = directory.getPath();
+		ProjectWriter.getWriter().removeDirectory((Project) parentNode.getData(), path, type);
 	}
 	
 	public boolean equivalentEntry(IClasspathEntry entry) {

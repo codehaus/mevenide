@@ -20,7 +20,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -29,6 +31,7 @@ import org.apache.maven.project.Dependency;
 import org.apache.maven.project.Project;
 import org.apache.maven.project.Resource;
 import org.apache.maven.project.UnitTest;
+import org.apache.maven.repository.Artifact;
 import org.mevenide.project.dependency.DependencyUtil;
 import org.mevenide.project.resource.DefaultResourceResolver;
 import org.mevenide.project.resource.IResourceResolver;
@@ -231,6 +234,87 @@ public class ProjectWriter {
 			Writer writer = new FileWriter(project.getFile());
 			
 			marshaller.marshall(writer, project);
+		}
+	}
+	
+	/**
+	 * removes a directory : maybe one of src, test, aspect directory or resource or test resource directory
+	 * 
+	 * @note altho type is not managed yet, it is passed as parameter since this info may be pertinent  
+	 * 
+	 */
+	public void removeDirectory(Project project, String path, String type) throws Exception {
+	    removeSource(project, path);
+	    removeResource(project, path);
+	}
+
+    private void removeResource(Project project, String path) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    private void removeSource(Project project, String path) throws Exception {
+        if ( project == null ) {
+            throw new Exception("project shouldnot be null");
+        }
+        if ( path == null ) {
+            throw new Exception("path shouldnot be null");
+        }
+        
+        resetSourceDirectories(project.getFile());
+        
+        boolean warn = true;
+        
+        Map sourceMap = this.projectReader.readSourceDirectories(project.getFile());
+        Iterator sourceIterator = sourceMap.keySet().iterator();
+        
+        while ( sourceIterator.hasNext() ) {
+            String iteratedKey = (String) sourceIterator.next();
+            String iteratedSource = (String) sourceMap.get(iteratedKey);
+            if ( !path.equals(iteratedSource) ) {
+                SourceDirectoryUtil.addSource(project, iteratedSource, iteratedKey);
+            }
+            else {
+                warn = false;
+            }
+        }
+        
+        if ( warn ) {
+		    log.warn("specified directory (" + path + ") not found");
+		}
+		else {
+		    ProjectWriter.getWriter().write(project);
+		}
+    }
+
+    public void removeArtifact(Project project, Artifact artifact) throws Exception {
+	    if ( project == null ) {
+	        throw new Exception("project shouldnot be null");
+	    } 
+	    if ( artifact == null ) {
+	        throw new Exception("artifact shouldnot be null");
+	    }
+	    
+	    List projectDependencies = project.getDependencies();
+		List iteratedList = new ArrayList(projectDependencies);
+		int idx = 0;
+		boolean warn = true;
+		for (int i = 0; i < iteratedList.size(); i++) {
+			Dependency iteratedDependency = (Dependency) iteratedList.get(i);
+			if ( DependencyUtil.areEquals(project, artifact.getDependency(), iteratedDependency) ) {
+			    project.getDependencies().remove(idx);
+			    warn = false;
+			}
+			else {
+				idx++;
+			}
+		}
+		
+		if ( warn ) {
+		    log.warn("specified dependency not found");
+		}
+		else {
+		    ProjectWriter.getWriter().write(project);
 		}
 	}
 }
