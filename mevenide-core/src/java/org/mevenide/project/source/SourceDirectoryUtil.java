@@ -52,9 +52,6 @@ public final class SourceDirectoryUtil {
 				project.getBuild().setUnitTest(unitTest);
 			}
 		}
-		if ( ProjectConstants.MAVEN_INTEGRATION_TEST_DIRECTORY.equals(sourceType) ) {
-			project.getBuild().setIntegrationUnitTestSourceDirectory(path);
-		}
 	}
 	
 	public static boolean isSourceDirectoryPresent(Project project, String path) {
@@ -65,12 +62,10 @@ public final class SourceDirectoryUtil {
 		String srcDirectory = project.getBuild().getSourceDirectory();
 		String aspectSrcDirectory = project.getBuild().getAspectSourceDirectory();
 		String unitTestSourceDirectory = project.getBuild().getUnitTestSourceDirectory();
-		String integrationUnitTestSourceDirectory = project.getBuild().getIntegrationUnitTestSourceDirectory();
 			
 		return path.equals(srcDirectory)
 			   || path.equals(aspectSrcDirectory)
-		       || path.equals(unitTestSourceDirectory)
-			   || path.equals(integrationUnitTestSourceDirectory);
+		       || path.equals(unitTestSourceDirectory);
 		
 	}
 	

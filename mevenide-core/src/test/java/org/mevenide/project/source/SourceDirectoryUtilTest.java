@@ -53,7 +53,7 @@ public class SourceDirectoryUtilTest extends AbstractMevenideTestCase {
 		assertEquals("src/pyo/javaa", project.getBuild().getSourceDirectory());
 		assertEquals("src/pyo/teest/javaa", project.getBuild().getUnitTestSourceDirectory());
 		assertEquals("src/pyo/aspeect", project.getBuild().getAspectSourceDirectory());
-		assertEquals("src/pyo/iut/javaa", project.getBuild().getIntegrationUnitTestSourceDirectory());
+		
 	}
 	
 	public void testIsDirectoryPresent() {
@@ -71,8 +71,6 @@ public class SourceDirectoryUtilTest extends AbstractMevenideTestCase {
 		SourceDirectoryUtil.addSource(project, "src/pyo/aspeect", ProjectConstants.MAVEN_ASPECT_DIRECTORY);
 		assertTrue(SourceDirectoryUtil.isSourceDirectoryPresent(project, "src/pyo/aspeect"));
 		
-		SourceDirectoryUtil.addSource(project, "src/pyo/iut", ProjectConstants.MAVEN_INTEGRATION_TEST_DIRECTORY);
-		assertTrue(SourceDirectoryUtil.isSourceDirectoryPresent(project, "src/pyo/iut"));
 	}
 
 }
