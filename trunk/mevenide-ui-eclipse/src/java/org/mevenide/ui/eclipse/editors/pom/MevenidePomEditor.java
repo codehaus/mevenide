@@ -17,6 +17,7 @@
 package org.mevenide.ui.eclipse.editors.pom;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -499,7 +500,8 @@ public class MevenidePomEditor extends FormEditor {
             StringWriter newDocument = new StringWriter();
             PrintWriter writer = new PrintWriter(newDocument);
             try {
-                marshaller.marshall(writer, pom);
+                FileInputStream stream = new FileInputStream(((IFileEditorInput) getEditorInput()).getFile().getRawLocation().toFile());
+                ((CarefulProjectMarshaller) marshaller).marshall(writer, pom, stream);
                 writer.flush();
                 document.set(newDocument.toString());
                 setModelDirty(false);
