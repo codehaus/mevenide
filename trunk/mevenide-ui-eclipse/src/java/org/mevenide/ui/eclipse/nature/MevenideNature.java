@@ -25,10 +25,6 @@ import org.eclipse.core.resources.IProjectNature;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.jdt.core.ElementChangedEvent;
-import org.eclipse.jdt.core.IElementChangedListener;
-import org.eclipse.jdt.core.IJavaElementDelta;
-import org.eclipse.jdt.core.JavaCore;
 import org.mevenide.ui.eclipse.Mevenide;
 
 /**
@@ -63,17 +59,7 @@ public class MevenideNature implements IProjectNature {
 		addPomNature(project);
 		Mevenide.getPlugin().createPom();
 		
-		//listen to .classpath changes
-		JavaCore.addElementChangedListener(
-			new IElementChangedListener() {
-				public void elementChanged(ElementChangedEvent e) {
-					IJavaElementDelta delta = e.getDelta();
-					//System.out.println(delta.getElement().getClass());
-					//visitDelta(delta);
-				}
-			}
-		);
-		
+			
 		synchronizeProject(project);
 		
 		

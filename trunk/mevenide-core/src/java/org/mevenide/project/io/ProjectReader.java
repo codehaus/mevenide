@@ -153,6 +153,7 @@ public class ProjectReader {
 		dependency.setGroupId(referencedProject.getGroupId());
 		dependency.setArtifactId(referencedProject.getArtifactId());
 		dependency.setVersion(referencedProject.getCurrentVersion());
+		dependency.setArtifact(referencedPom.getParent());
 		return dependency;
 	}
 	/**

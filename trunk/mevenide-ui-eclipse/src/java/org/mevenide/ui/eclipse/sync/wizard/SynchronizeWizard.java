@@ -14,18 +14,12 @@
  */
 package org.mevenide.ui.eclipse.sync.wizard;
 
-import java.io.File;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.wizard.Wizard;
 import org.mevenide.sync.ISynchronizer;
 import org.mevenide.sync.SynchronizerFactory;
-import org.mevenide.ui.eclipse.DefaultPathResolver;
-import org.mevenide.ui.eclipse.IPathResolver;
 
 /**
  * 
@@ -51,21 +45,19 @@ public class SynchronizeWizard extends Wizard {
 
 	public boolean performFinish() {
 		try {
-			IPathResolver pathResolver = new DefaultPathResolver();
 			
-			IFile pom = project.getFile(new Path("project.xml"));
-			File pomFile = new File(pathResolver.getAbsolutePath(pom.getLocation())); 
 			
 			sourcePage.saveState();
 			log.debug("SourceDirectories saved");
+			
 			dependencyPage.saveState();
 			log.debug("Dependencies saved");
-			
 			
 			SynchronizerFactory.getSynchronizer(ISynchronizer.IDE_TO_POM).synchronize();
 		}
 		catch ( Exception ex ) {
 			log.debug("Unable to synchronize POM due to : " + ex);
+			ex.printStackTrace();
 		}
 		
 		return true;

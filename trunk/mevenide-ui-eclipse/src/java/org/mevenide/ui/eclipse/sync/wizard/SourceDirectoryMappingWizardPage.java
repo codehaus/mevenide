@@ -28,9 +28,9 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.TableItem;
 import org.mevenide.ui.eclipse.Mevenide;
-import org.mevenide.ui.eclipse.sync.view.SourceDirectoryMappingViewControl;
 import org.mevenide.ui.eclipse.sync.model.SourceDirectoryGroup;
 import org.mevenide.ui.eclipse.sync.model.SourceDirectoryGroupMarshaller;
+import org.mevenide.ui.eclipse.sync.view.SourceDirectoryMappingViewControl;
 
 /**
  * 
@@ -112,7 +112,7 @@ public class SourceDirectoryMappingWizardPage extends WizardPage {
 		GridData removeButtonData = new GridData(GridData.FILL_HORIZONTAL);
 		removeButtonData.grabExcessHorizontalSpace = true;
 		removeButton.setLayoutData(removeButtonData);
-		removeButton.setEnabled(false);
+		removeButton.setEnabled(true);
 		
 		Button refreshButton = new Button(composite, SWT.PUSH);
 		refreshButton.setText("Refresh");

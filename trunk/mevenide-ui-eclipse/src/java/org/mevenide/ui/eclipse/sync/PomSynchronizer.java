@@ -34,7 +34,6 @@ import org.mevenide.ui.eclipse.sync.model.DependencyGroupMarshaller;
 import org.mevenide.ui.eclipse.sync.model.SourceDirectory;
 import org.mevenide.ui.eclipse.sync.model.SourceDirectoryGroup;
 import org.mevenide.ui.eclipse.sync.model.SourceDirectoryGroupMarshaller;
-import org.mevenide.ui.eclipse.util.ProjectUtil;
 
 /**
  * 
@@ -140,11 +139,13 @@ public class PomSynchronizer extends AbstractPomSynchronizer implements ISynchro
 				pomWriter.addResource(directory.getDirectoryPath(), pomFile);
 			}
 			if ( directory.getDirectoryType().equals(ProjectConstants.MAVEN_TEST_RESOURCE ) ) {
+				log.debug("Unimplemented feature : " + ProjectConstants.MAVEN_TEST_RESOURCE );
 			}				
 		}
 		
 		List dependencies = dependencyGoup.getDependencies();
-		dependencies.addAll(ProjectUtil.getCrossProjectDependencies());
+		log.debug("Writing back " + dependencies.size() + " dependencies to file '" + pomFile.getName() +"'");
+		//dependencies.addAll(ProjectUtil.getCrossProjectDependencies());
 		
 		pomWriter.setDependencies(dependencies, pomFile);
 		

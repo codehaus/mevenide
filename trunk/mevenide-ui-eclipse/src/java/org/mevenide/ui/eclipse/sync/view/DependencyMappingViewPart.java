@@ -197,7 +197,6 @@ public class DependencyMappingViewPart extends ViewPart {
 		
 		
 		boolean newSourceFolder = false;
-		boolean newDependency = false;
 		
 		IClasspathEntry[] entries = JavaCore.create(currentProject).getResolvedClasspath(true);
 
@@ -212,9 +211,9 @@ public class DependencyMappingViewPart extends ViewPart {
 					break;
 				}
 			}
-			if ( entries[i].getEntryKind() == IClasspathEntry.CPE_LIBRARY) {
-				
-			}
+//			if ( entries[i].getEntryKind() == IClasspathEntry.CPE_LIBRARY) {
+//				
+//			}
 		}
 		if ( newSourceFolder ) {
 			prompt(currentProject);
