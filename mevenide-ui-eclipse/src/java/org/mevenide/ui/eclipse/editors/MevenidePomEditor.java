@@ -449,11 +449,10 @@ public class MevenidePomEditor extends MultiPageEditorPart {
 		}
         IPomEditorPage oldPage = getCurrentPage();
         IPomEditorPage newPage = getPage(newPageIndex);
-        if ( oldPage != null ) {
+        if (oldPage != null && newPage != null) {
 	        oldPage.pageDeactivated(newPage);
-        	newPage.pageActivated(oldPage);
+	        newPage.pageActivated(oldPage);
         }
-
         super.pageChange(newPageIndex);
 
         currentPageIndex = newPageIndex;
