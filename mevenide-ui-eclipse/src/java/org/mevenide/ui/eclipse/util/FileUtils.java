@@ -68,6 +68,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.mevenide.project.io.PomSkeletonBuilder;
+import org.mevenide.project.io.ProjectReader;
 import org.mevenide.ui.eclipse.DefaultPathResolver;
 import org.mevenide.ui.eclipse.IPathResolver;
 import org.mevenide.ui.eclipse.Mevenide;
@@ -205,6 +206,49 @@ public class FileUtils {
 			}
 		}
 		return false;
+	}
+	
+	
+	public static List getPoms(IProject project) throws Exception {
+
+		Project pom = ProjectReader.getReader().read(FileUtils.getPom(project));
+		List visitedPoms = new ArrayList();		
+
+		if ( pom != null ) {
+			//dirty trick to avoid infinite loops if user has introduced one by mistake
+			visitedPoms.add(pom.getFile());
+	
+			String extend = pom.getExtend();
+			
+			//recurse poms
+			while ( extend != null && !extend.trim().equals("") ) {
+				
+				//resolve extend
+				extend = extend.replaceAll("\\$\\{basedir\\}", pom.getFile().getParent().replaceAll("\\\\", "/"));
+				File extendFile = new File(extend);
+				if ( !extendFile.exists() ) {
+					
+					extendFile = new File(pom.getFile().getParent(), extend);
+					if ( !extendFile.exists() ) {
+						log.debug(extendFile.getAbsolutePath() + " doesnot exist. break.");
+						//@ TODO throw new ExtendDoesnotExistException(..)
+						break;
+					}
+				}
+				
+				//assert pom has not been visited yet
+				if ( visitedPoms.contains(extendFile.getAbsolutePath()) ) {
+					//@TODO throw new InfinitePomRecursionException(..)
+					break;
+				}
+				visitedPoms.add(extendFile.getAbsolutePath());
+				pom = ProjectReader.getReader().read(extendFile);
+			
+				extend = pom.getExtend();
+			}
+		}
+		
+		return visitedPoms;
 	}
 	
 }
