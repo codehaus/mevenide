@@ -228,6 +228,11 @@ public class SynchronizeActionFactory {
 		final RemoveFromClasspathAction action = new RemoveFromClasspathAction();
 		Action removeFromProject = new Action() {
 			public void run() {
+			    IWorkspaceDescription description = ResourcesPlugin.getWorkspace().getDescription();
+		        boolean initialAutoBuildingState = description.isAutoBuilding();
+			    
+		        setAutoBuilding(description, false);
+			    
 				List selections = ((IStructuredSelection) synchronizationView.getArtifactMappingNodeViewer().getSelection()).toList();
 				
 				for (int i = 0; i < selections.size(); i++) {
@@ -243,6 +248,8 @@ public class SynchronizeActionFactory {
 						}
 					}
 				}
+				
+				setAutoBuilding(description, initialAutoBuildingState);
 			}
 		};
 		action.addActionListener(synchronizationView);
