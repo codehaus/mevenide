@@ -93,7 +93,9 @@ public class ExtractPropertiesTag extends TagSupport {
         if ( destFile != null ) {
             FileOutputStream fos = null;
             try {
-	            fos = new FileOutputStream(destFile);
+                File destination = new File(destFile);
+                destination.getParentFile().mkdirs();
+	            fos = new FileOutputStream(destination);
 	            fos.write(propertyDescription.getBytes());
             }
             catch ( IOException e ) {
@@ -114,7 +116,7 @@ public class ExtractPropertiesTag extends TagSupport {
 
     protected void checkAttribute(String attribute, String attributeName) throws MissingAttributeException {
         if ( isNull(attribute) ) {
-            throw new MissingAttributeException(attributeName + " should not be empty."); 
+            throw new MissingAttributeException(attributeName); 
         }
     }
     
