@@ -6,9 +6,9 @@
   </properties>
 
   <body>
-    <release version="0.4" date="in CVS" description="">
+    <release version="0.4" date="25/11/2004" description="Release for 4.0 RC1">
       <action dev="mkleint" type="fix">
-      MEVENIDE-115 - improved support for webapps.
+      MEVENIDE-115 - improved support for webapps. (JSTL)
       </action>
       <action dev="mkleint" type="fix">
       MEVENIDE-63 and MEVENIDE-14 - inherited properties files taken into account in the UI.
@@ -23,9 +23,8 @@
       Link pmd and checkstyle report output with the IDE's editor. Annotate the rule violations in the editor.
       </action>
       <action dev="mkleint" type="add">
-       additional properties panels, updated some other panels.
+       Additional properties panels, updated some other panels.
       </action>
-    
     </release>
   
     <release version="0.3" date="28/09/2004" description="">
