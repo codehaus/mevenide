@@ -14,7 +14,7 @@
   
   <goal name="mevenide-netbeans:build" description="Build all Mevenide modules" prereqs="mevenide-netbeans:init">
       <j:set var="maven.multiproject.includes" value="${maven.multiproject.netbeans.includes}"/>
-      <j:set var="maven.jar.manifest" value="${basedir}/../${mevenide.ui.netbeans.project.name}/src/conf/manifest.mf"/> 
+      <j:set var="goal" value="nbm"/> 
       <attainGoal name="multiproject:goal"/>
   </goal>
   
