@@ -133,7 +133,6 @@ public class ArgumentsManager {
 	                "org.apache.xerces.jaxp.SAXParserFactoryImpl");
 	    props.put("tools.jar" , Environment.getJavaHome() + File.separator + "lib" + File.separator + "tools.jar");
 	    props.put("maven.home", Environment.getMavenHome());
-		//props.put("maven.repo", Environment.getMavenRepository());
 		props.put("maven.repo.local", Environment.getMavenRepository());
 	    props.put("forehead.conf.file", Environment.getConfigurationFile());
 	    props.put("java.endorsed.dirs", Environment.getEndorsedDirs());
