@@ -24,6 +24,7 @@ import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.wizard.MavenProjectWizardDependencySettingsPage.Dependencies;
+import org.mevenide.util.StringUtils;
 
 /**
  * @author <a href="mailto:jens@iostream.net">Jens Andersen </a>, Last updated by $Author$
@@ -56,23 +57,29 @@ public class NewDependencyWizard extends Wizard implements INewWizard {
 	 * @see org.eclipse.jface.wizard.IWizard#performFinish()
 	 */
 	public boolean performFinish() {
-		if(!fPage.getName().equalsIgnoreCase(""))
-		{
-			fDependency = new Dependency();
-			fDependency.setArtifactId(fPage.getArtifactId());
-			fDependency.setGroupId(fPage.getGroupId());
-			fDependency.setId(fPage.getId());
-			fDependency.setJar(fPage.getJar());
-			fDependency.setName(fPage.getName());
-			fDependency.setType(fPage.getType());
-			fDependency.setUrl(fPage.getUrl());
-			fDependency.setVersion(fPage.getVersion());
-			fDependencies.addDependency(fDependency);
-			return true;
-		}
-		return false;
+		//if(!fPage.getName().equalsIgnoreCase(""))
+		//{
+		fDependency = new Dependency();
+		//fDependency.setId(fPage.getId());
+		fDependency.setArtifactId(fPage.getArtifactId());
+		fDependency.setGroupId(fPage.getGroupId());
+		fDependency.setJar(fPage.getJar());
+		fDependency.setName(fPage.getName());
+		fDependency.setType(fPage.getType());
+		fDependency.setUrl(fPage.getUrl());
+		fDependency.setVersion(fPage.getVersion());
+		fDependencies.addDependency(fDependency);
+		return true;
+		//}
+		//not sure why name shouldnot be empty ?  
+		//return false;
 	}
 
+	
+    public boolean canFinish() {
+        return !StringUtils.isNull(fPage.getArtifactId()) && !StringUtils.isNull(fPage.getGroupId());
+    }
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -83,4 +90,7 @@ public class NewDependencyWizard extends Wizard implements INewWizard {
 		//Do nothing
 	}
 
+    public Dependency getDependency() {
+        return fDependency;
+    }
 }

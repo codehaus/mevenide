@@ -27,16 +27,21 @@ import org.apache.maven.project.Project;
 import org.apache.maven.repository.Artifact;
 import org.apache.maven.repository.DefaultArtifactFactory;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.window.Window;
+import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.adapters.properties.PropertyProxy;
 import org.mevenide.ui.eclipse.editors.pom.entries.IPomCollectionAdaptor;
 import org.mevenide.ui.eclipse.editors.pom.entries.PageEntry;
 import org.mevenide.ui.eclipse.editors.pom.entries.TableEntry;
+import org.mevenide.ui.eclipse.wizard.MavenProjectWizardDependencySettingsPage;
+import org.mevenide.ui.eclipse.wizard.NewDependencyWizard;
 import org.mevenide.util.MevenideUtils;
 
 /**
@@ -98,20 +103,22 @@ public class DependenciesSection extends PageSection {
 		dependenciesTable.addPomCollectionAdaptor(
 			new IPomCollectionAdaptor() {
 				public Object addNewObject(Object parentObject) {
-					Dependency dependency = new Dependency();
-					dependency.setArtifactId("[artifactId]"); //$NON-NLS-1$
-					dependency.setGroupId("[groupId]"); //$NON-NLS-1$
-					dependency.setVersion("[version]"); //$NON-NLS-1$
-					dependency.setType("jar"); //$NON-NLS-1$
 					if ( pom.getDependencies() == null ) {
 					    pom.setDependencies(new ArrayList());
 					}
-					pom.addDependency(dependency);
-					Artifact artifact = DefaultArtifactFactory.createArtifact(dependency);
-					if ( pom.getArtifacts() == null ) {
-					    pom.setArtifacts(new ArrayList());
-					}
-					pom.getArtifacts().add(artifact);
+					NewDependencyWizard wizard = new NewDependencyWizard(new MavenProjectWizardDependencySettingsPage().new Dependencies(pom.getDependencies()));
+					WizardDialog dialog = new WizardDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), wizard);
+	            	dialog.create();
+	            	int result = dialog.open();
+	            	Dependency dependency = wizard.getDependency();
+	            	if ( result == Window.OK && dependency != null ) {
+	            		pom.addDependency(dependency);
+						Artifact artifact = DefaultArtifactFactory.createArtifact(dependency);
+						if ( pom.getArtifacts() == null ) {
+						    pom.setArtifacts(new ArrayList());
+						}
+						pom.getArtifacts().add(artifact);	
+	            	}
 					return dependency;
 				}
 				public void moveObjectTo(int index, Object object, Object parentObject) {
