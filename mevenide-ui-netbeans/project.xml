@@ -132,7 +132,7 @@
         <dependency>
             <groupId>plexus</groupId>
             <artifactId>plexus-i18n</artifactId>
-            <version>1.0-beta2-SNAPSHOT</version>
+            <version>1.0-beta-2-SNAPSHOT</version>
             <type>jar</type>
             <properties>
             	<eclipse.plugin.bundle>true</eclipse.plugin.bundle>
@@ -167,6 +167,16 @@
             <properties>
             	<eclipse.plugin.bundle>true</eclipse.plugin.bundle>
                 <netbeans.module.ext>true</netbeans.module.ext>
+            </properties>
+        </dependency>
+    
+        <dependency>
+            <groupId>jdom</groupId>
+            <artifactId>jdom</artifactId>
+            <version>b9</version>
+            <type>jar</type>
+            <properties>
+                <netbeans.module.dep>impl</netbeans.module.dep>
             </properties>
         </dependency>
     
