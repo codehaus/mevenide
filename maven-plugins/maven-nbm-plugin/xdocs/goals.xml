@@ -16,11 +16,22 @@
   		  </tr>	
   		  <tr>
             <td>nbm:jar</td>
-            <td>Creates a netbeans module jar. Includes the additional netbeans manifest entries.</td>
+            <td>Creates a netbeans module jar. 
+            Includes the additional netbeans manifest entries defined in the file 
+            denoted by the <code> maven.nbm.manifest </code> property.
+            Some netbeans manifest attributes are also defined by default.
+            <code> OpenIDE-Module-Implementation-Version, OpenIDE-Module, OpenIDE-Module-Specification-Version </code>
+            These are fallback values if they are not defined in manifest file.
+            </td> 
           </tr>
           <tr>
             <td>nbm:nbm</td>
-            <td>Creates the nbm file.</td>
+            <td>Creates the nbm file. Will include the module jar, and also it's dependencies if they are marked in this manner:
+            <code>
+                <properties>
+                  	<netbeans.module.ext>true</netbeans.module.ext>
+                </properties>
+            </code></td>
           </tr>
   		</table>
   		</div>

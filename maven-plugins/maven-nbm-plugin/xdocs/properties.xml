@@ -18,14 +18,30 @@
           <td>maven.nbm.manifest</td>
           <td>REQUIRED. Default value is <code>${maven.jar.manifest}</code>.</td>
           <td>
-            <p> File contains Netbeans-specific manifest entries.</p>
+            <p> File containing Netbeans-specific manifest entries. The plugin will automatically generate some of the entries:
+            <source><![CDATA[
+OpenIDE-Module-Implementation-Version: <timestamp value in the format yyyyMMddhhmm>
+OpenIDE-Module: ${pom.package}/1
+OpenIDE-Module-Specification-Version: ${pom.currentVersion}
+            
+            ]]></source> </p>
+            <p>If you define the entries in your manifest file, it will override these defaults. </p>
           </td>
         </tr>
         <tr>
           <td>maven.nbm.autoload</td>
           <td>Optional. Default value is <code>false</code>.</td>
           <td>
-            <p>Determines if the modules is an autoload module or not.</p>
+            <p>Determines if the module is an autoload module or not.</p>
+            <p>A module cannot be both eager and autoload.</p>
+          </td>
+        </tr>
+        <tr>
+          <td>maven.nbm.eager</td>
+          <td>Optional. Default value is <code>false</code>.</td>
+          <td>
+            <p>Determines if the module is an eager module or not.</p>
+            <p>A module cannot be both eager and autoload.</p>
           </td>
         </tr>
         <tr>
@@ -42,10 +58,55 @@
             <p>Location of the licence file to be included with the nbm.</p>
           </td>
         </tr>
+        <tr>
+          <td>maven.nbm.nonlocalized</td>
+          <td>Optional. Default value is <code>false</code>.</td>
+          <td>
+            <p>If set to true, the plugin will generate default values for manifest attributes <code>
+            OpenIDE-Module-Display-Category, OpenIDE-Module-Name,
+            OpenIDE-Module-Long-Description, OpenIDE-Module-Short-Description </code> according to the values from POM.</p>
+            <p> Please note that using non-localized values is discouraged.</p>
+          </td>
+        </tr>
+        
      </table>
      </div>
    </section>
-   
+
+    <section name="Dependency Properties">
+    	<div id="documentContent">
+      <table>
+        <tr>
+          <th>Property</th>
+          <th>Optional</th>
+          <th>Description</th>
+        </tr>
+         <tr>
+          <td>netbeans.module.ext</td>
+          <td>OPTIONAL. Allowed value <code>true</code> </td>
+          <td>
+            <p> A property of dependency in the POM, if set to <code>true</code>, the plugin
+                will include the dependency jar in the <code>ext</code> subdirectory.</p>
+                <p> For example:
+                <source><![CDATA[
+       <dependency>
+           <groupId>forehead</groupId>
+           <artifactId>forehead</artifactId>
+           <version>1.0-beta-5</version>
+           <url>http://forehead.werken.com/</url>
+           <properties>
+            	<netbeans.module.ext>true</netbeans.module.ext>
+            </properties>
+        </dependency>
+                        ]]></source>
+                </p>
+            <p> For now, you have to add the Class-Path manifest entry for that file manually.</p>
+          </td>
+        </tr>
+     </table>
+     </div>
+   </section>
+      
    <section name="Temporary Properties">
    	<div id="documentContent">
      <table>
@@ -56,7 +117,9 @@
         </tr>
         <tr>
           <td>maven.nbm.manifest.bundle.basedir</td>
-          <td>REQUIRED. Default value is <code>not defined</code>.</td>
+          <td>Optional. Default value is <code>not defined</code>.
+           If defined, then <code> maven.nbm.manifest.bundle.include </code> has to be defined as well.
+          </td>
           <td>
             <p>Base folder where the nbm specific resources are expected. 
              Currently is only used for including the Bundle.properties file 
@@ -65,7 +128,8 @@
         </tr>
         <tr>
           <td>maven.nbm.manifest.bundle.include</td>
-          <td>REQUIRED. Default value is <code>not defined</code>.</td>
+          <td>Optional. Default value is <code>not defined</code>.</td>
+           If defined, then <code> maven.nbm.manifest.bundle.basedir </code> has to be defined as well.
           <td>
             <p>Relative path to the Bundle.properties file including the name of the file.. Eg. org/mevenide/Bundle.properties</p>
           </td>

@@ -20,12 +20,15 @@
   <!-- Initializations                                                  -->
   <!--==================================================================-->    
   <goal name="nbm:init">
-    <j:set var="maven.nbm.final.name"  value="${maven.build.dir}/${maven.final.name}.nbm"/>
+<!--    <j:set var="maven.nbm.final.name"  value="${maven.build.dir}/${maven.final.name}.nbm"/> -->
     <j:set var="maven.nbm.build.dir" value="${maven.build.dir}/nbm" />
     <j:set var="maven.nbm.jar.location" value="netbeans/modules"/>    
     <j:choose>
         <j:when test="${maven.nbm.autoload}">
            <j:set var="maven.nbm.jar.location" value="netbeans/modules/autoload"/>
+        </j:when>
+        <j:when test="${maven.nbm.eager}">
+           <j:set var="maven.nbm.jar.location" value="netbeans/modules/eager"/>
         </j:when>
         <j:otherwise>
             <j:set var="maven.nbm.jar.location" value="netbeans/modules"/>    
@@ -40,7 +43,7 @@
       prereqs="nbm:init" 
       description="Build the Netbeans jar.">
 <!--    <j:set var="maven.jar.manifest" value="${maven.nbm.manifest}"/> -->
-    <j:set var="bundle" value="${maven.nbm.manifest.bundle.basedir}"/>
+<!--    <j:set var="bundle" value="${maven.nbm.manifest.bundle.basedir}"/>
     <j:if test="${empty(bundle)}">
       <fail message="">
  
@@ -48,17 +51,50 @@ The maven.nbm.manifest.bundle.basedir and  maven.nbm.manifest.bundle.include hav
        
       </fail>
     </j:if>
-
+-->
 
     <util:file var="thisPom" name="${basedir}/project.xml"/>  
-    <ant:echo message="manifest=${maven.jar.manifest}" />
+<!--    <ant:echo message="manifest=${maven.jar.manifest}" /> -->
     
-    <maven:maven descriptor="${thisPom}" goals="jar:jar"/> 
-    <ant:copy toDir="${maven.nbm.build.dir}/${maven.nbm.jar.location}" file="${maven.build.dir}/${maven.final.name}.jar"/>
-     <ant:jar destfile="${maven.nbm.build.dir}/${maven.nbm.jar.location}/${maven.final.name}.jar"
-        manifest="${maven.nbm.manifest}" update="true"
-        basedir="${maven.nbm.manifest.bundle.basedir}"
-       includes="${maven.nbm.manifest.bundle.include}" />
+    <maven:maven descriptor="${thisPom}" goals="jar:install"/> 
+    <!-- copy the original jar made by jar:jar goal to target/nbm -->
+    <ant:copy toDir="${maven.nbm.build.dir}" file="${maven.build.dir}/${maven.final.name}.jar"/>
+    <!--
+     create a timestamp value for OpenIDE-Module-Implementation-Version: manifest entry
+    -->
+    <ant:tstamp>
+      <ant:format property="maven.nbm.timestamp" pattern="yyyyMMddhhmm" />
+    </ant:tstamp>  
+      
+     <ant:jar destfile="${maven.nbm.build.dir}/${maven.final.name}.jar"
+        manifest="${maven.nbm.manifest}" update="true">
+        <!-- include the bundle file, if defined -->
+        <ant:echo message="basedir=${maven.nbm.manifest.bundle.basedir}" /> 
+        <ant:echo message="include=${maven.nbm.manifest.bundle.include}" /> 
+        <j:choose>
+           <j:when test="empty(${maven.nbm.manifest.bundle.basedir}) or empty(${maven.nbm.manifest.bundle.include})">
+            </j:when>
+            <j:otherwise>
+                <ant:fileset dir="${maven.nbm.manifest.bundle.basedir}"
+                         includes="${maven.nbm.manifest.bundle.include}"
+                />       
+            </j:otherwise>
+        </j:choose>
+       <ant:manifest>
+       <!-- these attributes get defined this way only if not present in the manifest file -->
+          <ant:attribute name="OpenIDE-Module-Implementation-Version" value="${maven.nbm.timestamp}"/>
+          <ant:attribute name="OpenIDE-Module" value="${pom.package}/1"/>
+          <ant:attribute name="OpenIDE-Module-Specification-Version" value="${pom.currentVersion}"/>
+          <j:choose>
+              <j:when test="${maven.nbm.nonlocalized}">
+                <ant:attribute name="OpenIDE-Module-Display-Category" value="${pom.groupId}" />
+                <ant:attribute name="OpenIDE-Module-Name" value="${pom.name}" />
+                <ant:attribute name="OpenIDE-Module-Long-Description" value="${pom.description}" />
+                <ant:attribute name="OpenIDE-Module-Short-Description" value="${pom.shortDescription}" />
+              </j:when>
+          </j:choose>
+       </ant:manifest>
+     </ant:jar>
    </goal>
   <!--==================================================================-->
   <!-- Build the nbm                                               -->
@@ -72,7 +108,19 @@ The maven.nbm.manifest.bundle.basedir and  maven.nbm.manifest.bundle.include hav
          <ant:pathelement path="${plugin.getDependencyPath('nbantext')}"/>
         </ant:classpath>
   </ant:taskdef>
-    <!-- copy resulting jar in the relevant location -->
+
+    <!-- copy the jar to the right location -->
+   <ant:copy toDir="${maven.nbm.build.dir}/${maven.nbm.jar.location}" file="${maven.nbm.build.dir}/${maven.final.name}.jar"/>
+
+    <!-- copy dependency jars in the relevant location -->
+    <j:forEach var="artifact" items="${pom.artifacts}">
+      <j:set var="dependency" value="${artifact.dependency}"/>
+      <j:if test="${dependency.getProperty('netbeans.module.ext') == 'true'}">
+        <ant:copy todir="${maven.nbm.build.dir}/${maven.nbm.jar.location}/ext" file="${artifact.path}"/>
+        <!--todo add to classpath attribute in manifest as well-->
+      </j:if>
+    </j:forEach>
+    
     
 <!--DEBUG
     <ant:echo message="autoload=${maven.nbm.autoload}" />
@@ -80,7 +128,7 @@ The maven.nbm.manifest.bundle.basedir and  maven.nbm.manifest.bundle.include hav
     <ant:echo message="url=${pom.url}" />
     <ant:echo message="licence=${maven.nbm.licence}" />
     -->
-    <ant:makenbm file="${maven.final.name}.nbm"
+    <ant:makenbm file="${maven.nbm.build.dir}/${maven.final.name}.nbm"
              topdir="${maven.nbm.build.dir}"
              module="${maven.nbm.build.dir}/${maven.nbm.jar.location}/${maven.final.name}.jar"
             homepage="${pom.url}"
@@ -89,40 +137,20 @@ The maven.nbm.manifest.bundle.basedir and  maven.nbm.manifest.bundle.include hav
       <license file="${maven.nbm.licence}"/>
       <signature keystore="?" storepass="?" alias="?"/> -->
     </ant:makenbm>
-    <!--
-     HACK.. makeNBM will drop the file to the basedir.. move it to the target/nbm folder
+    <!-- now copy the artifact (NBM file) into the local repository
     -->
-    <ant:move toDir="${maven.nbm.build.dir}" file="${basedir}/${maven.final.name}.nbm"/>
+    <artifact:install
+        artifact="${maven.nbm.build.dir}/${maven.final.name}.nbm"
+        type="nbm"
+        project="${pom}"/>   
 
-    <!--    <j:choose>
-        <j:when test="${maven.nbm.autoload}">
-           <ant:echo message="HELLO BABY!!!!!! autoload" />
-           <ant:mkdir dir="${maven.nbm.dest}/modules/autoload" />
-           <ant:copy toDir="${maven.nbm.dest}/modules/autoload" file="${maven.build.dir}/${maven.final.name}.jar"/>
-        </j:when>
-        <j:otherwise>
-            <ant:echo message="HELLO BABY!!!!!!" />
-            <ant:copy toDir="${maven.nbm.dest}/modules" file="${maven.build.dir}/${maven.final.name}.jar"/>
-        </j:otherwise>
-    </j:choose>
-    -->
-    
     
 <!--    <j:forEach var="lib" items="${pom.artifacts}">
       <ant:copy 
         todir="${libdir}"
         file="${lib.path}"/>
     </j:forEach>
+-->    
     
-    
-    <ant:makenbm file="${maven.nbm.final.name}.nbm"
-             topdir="${dest}"
-             module="netbeans/lib/core.jar"
-	     homepage="http://core.${homepage.base}/"
-	     distribution="http://${dist.base}/core.nbm">
-      <license file="${license.file}"/>
-      <signature keystore="${keystore}" storepass="${storepass}" alias="${nbm_alias}"/>
-    </ant:makenbm>
-  -->
   </goal>
 </project>

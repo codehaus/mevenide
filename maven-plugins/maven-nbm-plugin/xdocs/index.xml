@@ -13,7 +13,8 @@
       <p>
       In order to run the plugin, you will need to 
       get the nbantext.jar file from netbeans.org. Currently it's not downloadable, you will need to build it from the sources,
-      checkout the nbbuild module from Netbeans' cvs.
+      and checkout the nbbuild module from Netbeans' cvs. Then go to nbbuild directory and run ant. 
+      Once the nbantext.jar file is created you can about the build.
       
    	  </p>
    	  </div>
