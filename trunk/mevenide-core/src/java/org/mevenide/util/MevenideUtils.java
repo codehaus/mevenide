@@ -90,6 +90,22 @@ public final class MevenideUtils {
 	}
 	
 	/**
+	 * @param newValue
+	 * @param oldValue
+	 * @return true if new and old values are not equal (or new is null, but old is not null)
+	 */
+	public static boolean notEquivalent(Object newValue, Object oldValue) {
+		// if both null, no difference
+		if (newValue == null && oldValue == null) {
+			return false;
+		}
+		else if (newValue == null){
+			return true;
+		}
+		return (!newValue.equals(oldValue));
+	}
+
+	/**
 	 * retrieve a string containing jelly scripting variable by navigating pom object
 	 * so until a jelly variable is a descendant of pom it wont be resolved and the 
 	 * returnde string will still contains the reference.
