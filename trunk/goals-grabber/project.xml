@@ -2,7 +2,6 @@
 <project>
     <extend>${basedir}/../mevenide-parent/project.xml</extend>
     <pomVersion>3</pomVersion>
-    <id>goals-grabber</id>
     <name>Goals Grabber</name>
     <artifactId>goals-grabber</artifactId>
     <currentVersion>0.8-SNAPSHOT</currentVersion>

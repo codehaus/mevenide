@@ -2,7 +2,6 @@
 <project>
   <extend>${basedir}/../mevenide-parent/project.xml</extend>
   <pomVersion>3</pomVersion>
-  <id>mevenide-netbeans-autoupdate</id>
   <name>Mevenide Autoupdate Server</name>
   <artifactId>mevenide-netbeans-autoupdate</artifactId>
   <currentVersion>1.0</currentVersion>

@@ -2,7 +2,6 @@
 <project>
     <extend>${basedir}/../mevenide-parent/project.xml</extend>
     <pomVersion>3</pomVersion>
-    <id>mevenide-core</id>
     <artifactId>mevenide-core</artifactId>
     <name>Mevenide Core</name>
     <currentVersion>0.7-SNAPSHOT</currentVersion>
