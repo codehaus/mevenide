@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<document>
+
+  <properties>
+   	<author email="rhill@wanadoo.fr">Gilles Dodinet</author>
+   	<title>Mevenide Goals Grabber Class Diagram</title>
+  </properties>
+  	
+  <body>
+    <section name="Class diagram">
+    	<div id="documentContent">
+      <p>
+	  The class diagram below depicts the module structure in a rough way. 
+	  There are three concrete classes implementing the <code>IGoalsGrabber</code> interface :
+	  <ul>
+	    <li><code>ProjectGoalsGrabber</code> retrieves the custom goals defined in <code>maven.xml</code> script</li>	
+	    <li><code>DefaultGoalsGrabber</code> retrieves the goals defined by Maven plugins.</li>
+	    <li><code>GoalsGrabberAggregator</code>, as its name implies, aggregates various <code>IGoalsGrabber</code>s</li>
+	  </ul>
+	  </p>
+	  <p>
+	  Finally we find the <code>GoalsGrabberManager</code> that acts as a <code>IGoalsGrabber</code> factory.
+	  <center>
+		  <img src="images/diags/class-diagram.gif" border="0"/><br/>
+		  <font size="-1"><b>Figure 1</b><i>Goals-Grabber Classes</i></font>
+	  </center>
+	  </p>
+	  </div>
+    </section>
+  </body>
+</document>
