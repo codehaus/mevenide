@@ -52,8 +52,8 @@ public class PomEditorSelectionProvider
 		listeners.removeElement(listener);
 	}
 
-	public void setSelection(ISelection selection) {
-		this.selection = selection;
+	public void setSelection(ISelection newSelection) {
+		this.selection = newSelection;
 		SelectionChangedEvent event = new SelectionChangedEvent(this, selection);
 
 		Iterator itr = ((Vector) listeners.clone()).iterator();

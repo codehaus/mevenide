@@ -45,9 +45,9 @@ public class PomXmlSourcePage
 	private boolean modelNeedsUpdating;
 	private boolean active = false;
 
-	public PomXmlSourcePage(MevenidePomEditor editor) {
+	public PomXmlSourcePage(MevenidePomEditor pomEditor) {
 		super();
-		this.editor = editor;
+		this.editor = pomEditor;
 		
 		setSourceViewerConfiguration(new PomXmlConfiguration());
 		initializeDocumentListener();
@@ -80,13 +80,13 @@ public class PomXmlSourcePage
 		};
 	}
 	
-    private boolean isActive() {
+    public boolean isActive() {
         //return editor.getCurrentPage() == this;
         return active;
     }
     
-    private void setActive(boolean active) {
-    	this.active = active;
+    private void setActive(boolean activeFlag) {
+    	this.active = activeFlag;
     }
     
     public void pageActivated(IPomEditorPage oldPage) {
@@ -126,8 +126,8 @@ public class PomXmlSourcePage
         return modelNeedsUpdating;
     }
 
-	private void setModelNeedsUpdating(boolean modelNeedsUpdating) {
-        this.modelNeedsUpdating = modelNeedsUpdating;
+	private void setModelNeedsUpdating(boolean needsUpdating) {
+        this.modelNeedsUpdating = needsUpdating;
     }
 
 	public MevenidePomEditor getEditor() {
