@@ -52,6 +52,8 @@ public class ProjectSkeleton {
 		
 		project.setId(projectName.toLowerCase());
 		project.setName(projectName);
+		project.setGroupId(projectName.toLowerCase());
+		project.setArtifactId(projectName.toLowerCase());
 		project.setInceptionYear(getCurrentYear());
 		
 		Writer writer = new StringWriter();

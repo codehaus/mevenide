@@ -30,6 +30,7 @@ import org.mevenide.ProjectConstants;
 import org.mevenide.project.io.ProjectWriter;
 import org.mevenide.ui.eclipse.sync.source.DefaultPathResolverDelegate;
 import org.mevenide.ui.eclipse.sync.source.IPathResolverDelegate;
+import org.mevenide.ui.eclipse.util.ProjectUtil;
 
 
 
@@ -123,7 +124,13 @@ public class ArtifactVisitor {
 				IPath referencedProjectLocation = referencedProjects[i].getLocation();
 				File referencedPom = new File(pathResolver.getAbsolutePath(referencedProjectLocation.append("project.xml")) );
 				if ( !referencedPom.exists() ) {
-					//@todo project isnot mavenized, mavenize it as well
+					/* 
+					 * project isnot mavenized, mavenize it as well
+					 * since we're already in the process of mavenizing
+					 * a project, the synch view is busy so we cannot rely on user input
+					 * that why we just create a skeleton
+					 */
+					ProjectUtil.createPom(referencedProjects[i]);
 				}
 				ProjectWriter writer = ProjectWriter.getWriter();
 				writer.addProject(referencedPom, pomSynchronizer.getPom());	
