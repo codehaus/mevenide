@@ -94,6 +94,8 @@
   </dependencies>
   
   <build>
+  	<nagEmailAddress>rhill@localhost</nagEmailAddress>
+  	
     <sourceDirectory>src/java</sourceDirectory>
     <unitTestSourceDirectory>src/test/java</unitTestSourceDirectory>
     <aspectSourceDirectory>src/aspects</aspectSourceDirectory>
