@@ -54,7 +54,7 @@ public class WebModuleImpl implements WebModuleImplementation {
     }
 
     public String getContextPath() {
-        return "";
+        return project.getName();
     }
     
 
