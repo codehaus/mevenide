@@ -1,0 +1,12 @@
+
+		<report>maven-jellydoc-plugin</report>
+		<report>maven-junit-report-plugin</report>
+		<report>maven-clover-plugin</report>
+		
+		<report>maven-pmd-plugin</report>
+	   	<report>maven-checkstyle-plugin</report>
+	   	<report>maven-simian-plugin</report>
+   	    <report>maven-findbugs-plugin</report>
+   	    
+   	    <report>maven-jxr-plugin</report>
+		<report>maven-javadoc-plugin</report>

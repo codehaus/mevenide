@@ -1,3 +1,7 @@
+<?xml versino="1.0" ?>
+<!DOCTYPE project [
+    <!ENTITY code-reports SYSTEM "file:../mevenide-master/pom-fragments/plugin-pom-fragments/scm-reports.xml">
+]>    
 <project>
 	
     <pomVersion>3</pomVersion>
@@ -7,22 +11,22 @@
     <logo>/images/mevenide-simple-125x37.png</logo>
     
     <organization>
-      <name>Mevenide @ Sourceforge</name>
-      <url>http://sf.net/</url>
-      <logo>http://sourceforge.net/sflogo.php?group_id=54263&amp;type=2</logo>
+      <name>The Codehaus</name>
+      <url>http://www.codehaus.org/</url>
+      <logo>images/codehaus_209x40.gif</logo>
     </organization>
     
-    <siteAddress>shell.sourceforge.net</siteAddress>
-	<siteDirectory>/home/groups/m/me/mevenide/htdocs/${artifactId}</siteDirectory>
+    <siteAddress>beaver.codehaus.org</siteAddress>
+	<siteDirectory>/home/projects/mevenide/public_html/${artifactId}</siteDirectory>
 	
   	<repository>
-      <connection>scm:cvs:pserver:anonymous@cvs.sourceforge.net:/cvsroot/mevenide:maven-plugins/${pom.artifactId}</connection>
-      <developerConnection>scm:cvs:ext:${maven.username}@cvs.sourceforge.net:/cvsroot/mevenide:maven-plugins/${pom.artifactId}</developerConnection>
-      <url>http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/mevenide/maven-plugins/${pom.artifactId}/</url>
+      <connection>scm:cvs:pserver:anonymous@cvs.sourceforge.net:/home/projects/mevenide/scm:maven-plugins/${pom.artifactId}</connection>
+      <developerConnection>scm:cvs:ext:${maven.username}@cvs.sourceforge.net:/home/projects/mevenide/scm:maven-plugins/${pom.artifactId}</developerConnection>
+      <url>http://cvs.mevenide.codehaus.org/cvsweb.cgi/maven-plugins/${pom.artifactId}/</url>
     </repository>
     
 	<reports>
-		<!-- to be done -->
+		&scm-reports;
 	</reports>
 	
 </project>
