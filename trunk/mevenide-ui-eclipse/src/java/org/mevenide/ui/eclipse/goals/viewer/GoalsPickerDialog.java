@@ -49,6 +49,7 @@
 package org.mevenide.ui.eclipse.goals.viewer;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.httpclient.HttpClient;
@@ -60,7 +61,9 @@ import org.eclipse.help.browser.IBrowser;
 import org.eclipse.help.internal.browser.BrowserDescriptor;
 import org.eclipse.help.internal.browser.BrowserManager;
 import org.eclipse.jface.dialogs.Dialog;
-import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.viewers.CheckStateChangedEvent;
+import org.eclipse.jface.viewers.CheckboxTreeViewer;
+import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.ModifyEvent;
@@ -97,7 +100,9 @@ import org.mevenide.ui.eclipse.goals.model.Plugin;
 public class GoalsPickerDialog  extends Dialog {
 	private static Log log = LogFactory.getLog(GoalsPickerDialog.class);
 	
-	private TreeViewer goalsViewer;
+	private CheckboxTreeViewer goalsViewer;
+
+	private List checkedItems = new ArrayList();
 
 	/** dummy implementation of a href-like behavior */ 
 	private StyledText pluginHomeURLText;
@@ -112,6 +117,8 @@ public class GoalsPickerDialog  extends Dialog {
      */
 	private boolean shouldTestUrls = false;
 
+    private GoalsProvider goalsProvider;
+
     public StyledText getTextWidget() {
         return pluginHomeURLText;
     }
@@ -122,6 +129,7 @@ public class GoalsPickerDialog  extends Dialog {
 
 	public GoalsPickerDialog() {
 		super(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell());
+		super.setBlockOnOpen(true);
 	}
 	
 	protected Control createDialogArea(Composite parent) {
@@ -178,70 +186,7 @@ public class GoalsPickerDialog  extends Dialog {
 				}
 			);
 			
-			//update StyledWidget hyperlink
-			goalsViewer.getTree().addSelectionListener(
-				new SelectionAdapter() {
-					public void widgetSelected(SelectionEvent e) {
-						TreeItem item = (TreeItem) e.item;
-						
-						String urlPrefix = Mevenide.getResourceString("maven.plugins.url.prefix");
-						log.debug("Looked up urlPrefix = " + urlPrefix);
-						String pluginName = "";
-						if ( item.getParentItem() == null ) {
-							pluginName = item.getText();
-						}
-						else {
-							pluginName = item.getParentItem().getText();
-						}
-						if ( !shouldTestUrls ) {
-							pluginHomeURLText.setText(urlPrefix + pluginName);
-						}
-						else {
-							try {
-	                            if ( isValidUrl(urlPrefix + pluginName) ) {
-	                            	pluginHomeURLText.setText(urlPrefix + pluginName);
-	                            }
-	                            else {
-	                            	pluginHomeURLText.setText(pluginName + "  (unable to find plugin home)");
-	                            }
-	                        }
-	                        catch (Exception e1) {
-	                            pluginHomeURLText.setText(pluginName + "  (unable to find plugin home)");
-	                        }
-						}
-						
-					}
-				}
-			);
-			
-			//update tooltip 
-			//there should a smarter way to enable tooltip on a treeviewer 
-			final Tree tree = goalsViewer.getTree(); 
-			tree.addListener (SWT.MouseHover, 
-				new Listener () {
-					public void handleEvent (Event event) {
-			
-						Rectangle clientArea = tree.getClientArea ();
-						Point pt = new Point (event.x, event.y);
-						TreeItem item = tree.getItem(pt);
-						if ( item != null ) {
-							if ( item.getData() instanceof Plugin ) {
-								tree.setToolTipText(item.getText() + " plugin");
-							}
-							if ( item.getData() instanceof Goal ) {
-								Goal goal = (Goal) item.getData();
-								if ( "(default)".equals(goal.getName()) ) {
-									tree.setToolTipText("default " + goal.getPlugin().getName() + " goal");
-								}
-								else {
-									tree.setToolTipText("goal " + goal.getPlugin().getName() + ":" + goal.getName());
-								}
-							}
-						}
-					
-					}
-				}
-			);
+			configureViewer();
 			
 			goalsViewer.setInput(Element.NULL_ROOT);
 			
@@ -256,7 +201,120 @@ public class GoalsPickerDialog  extends Dialog {
     }
     
     
-	boolean isValidUrl(String url) throws Exception {
+	private void updateCheckedItems(CheckStateChangedEvent e) {
+		  
+		boolean isSelectionChecked = ((CheckboxTreeViewer) e.getSource()).getChecked(e.getElement());
+		if ( isSelectionChecked ) {
+			if ( e.getElement() instanceof Goal ) {
+				checkedItems.add(e.getElement());
+			}
+			else {
+				Plugin plugin = (Plugin) e.getElement();
+				String[] goals = goalsProvider.getGoalsGrabber().getGoals(plugin.getName());
+				if ( goals != null && goals.length > 0 ) {
+					if ( !Arrays.asList(goals).contains("(default)") ) {
+						goalsViewer.setChecked(e.getElement(), false);
+					}
+					else {
+						checkedItems.add(e.getElement());
+					}
+				}	
+			}
+		}
+		else {
+			checkedItems.remove(e.getElement());
+		}
+	}
+
+    private void updateStyledTextWidgetHyperlink(SelectionEvent e) {
+		TreeItem item = (TreeItem) e.item;
+		
+		String urlPrefix = Mevenide.getResourceString("maven.plugins.url.prefix");
+		log.debug("Looked up urlPrefix = " + urlPrefix);
+		String pluginName = "";
+		if ( item.getParentItem() == null ) {
+			pluginName = item.getText();
+		}
+		else {
+			pluginName = item.getParentItem().getText();
+		}
+		if ( !shouldTestUrls ) {
+			pluginHomeURLText.setText(urlPrefix + pluginName);
+		}
+		else {
+			try {
+                if ( isValidUrl(urlPrefix + pluginName) ) {
+                	pluginHomeURLText.setText(urlPrefix + pluginName);
+                }
+                else {
+                	pluginHomeURLText.setText(pluginName + "  (unable to find plugin home)");
+                }
+            }
+            catch (Exception e1) {
+                pluginHomeURLText.setText(pluginName + "  (unable to find plugin home)");
+            }
+		}
+	}
+
+	private void updateTooltipText(Event event) {
+        final Tree tree = goalsViewer.getTree();
+ 
+		//update tooltip 
+        //there should a smarter way to enable tooltip on a treeviewer 
+		Rectangle clientArea = tree.getClientArea ();
+		Point pt = new Point (event.x, event.y);
+		TreeItem item = tree.getItem(pt);
+		if ( item != null ) {
+			if ( item.getData() instanceof Plugin ) {
+				String tooltip = item.getText() + " plugin";
+				Plugin plugin = (Plugin) item.getData();
+				String[] goals = goalsProvider.getGoalsGrabber().getGoals(plugin.getName());
+				if ( goals != null && goals.length > 0 ) {
+					if ( !Arrays.asList(goals).contains("(default)") ) {
+						tooltip += "(no default goal)";
+					}
+				}
+				tree.setToolTipText(tooltip);
+			}
+			if ( item.getData() instanceof Goal ) {
+				Goal goal = (Goal) item.getData();
+				if ( "(default)".equals(goal.getName()) ) {
+					tree.setToolTipText("default " + goal.getPlugin().getName() + " goal");
+				}
+				else {
+					tree.setToolTipText("goal " + goal.getPlugin().getName() + ":" + goal.getName());
+				}
+			}
+		}
+	}
+
+	private void configureViewer() {
+        goalsViewer.getTree().addSelectionListener(
+        	new SelectionAdapter() {
+        		public void widgetSelected(SelectionEvent e) {
+					updateStyledTextWidgetHyperlink(e);
+        		}
+        	}
+        );
+        
+		goalsViewer.addCheckStateListener(
+        	new ICheckStateListener() {
+				public void checkStateChanged(CheckStateChangedEvent event) {
+                	updateCheckedItems(event);
+        		}
+        	}
+        );
+        
+        goalsViewer.getTree().addListener (SWT.MouseHover, 
+        	new Listener () {
+        		public void handleEvent (Event event) {
+        			updateTooltipText(event);
+        		}
+        	}
+        );
+    }
+
+    boolean isValidUrl(String url) throws Exception {
     	if ( visitedUrls.contains(url) ) {
     		return !notFoundUrls.contains(url);
     	}
@@ -272,13 +330,13 @@ public class GoalsPickerDialog  extends Dialog {
 		return fileExists;
     }
 
-    private TreeViewer getViewer(Composite parent) throws Exception {
+    private CheckboxTreeViewer getViewer(Composite parent) throws Exception {
     	String basedir = Mevenide.getPlugin().getCurrentDir();
     	
-    	TreeViewer viewer = new TreeViewer(parent, SWT.CHECK | SWT.V_SCROLL | SWT.H_SCROLL);
+    	CheckboxTreeViewer viewer = new CheckboxTreeViewer(parent, SWT.V_SCROLL | SWT.H_SCROLL);
     	
-    	GoalsProvider goalsProvider = new GoalsProvider();
-    	GoalsLabelProvider goalsLabelProvider = new GoalsLabelProvider();
+    	goalsProvider = new GoalsProvider();
+        GoalsLabelProvider goalsLabelProvider = new GoalsLabelProvider();
     	goalsProvider.setBasedir(basedir);
     	
     	viewer.setContentProvider(goalsProvider);
@@ -291,24 +349,17 @@ public class GoalsPickerDialog  extends Dialog {
     
     	viewer.getTree().setLayoutData(gridData);
     	
-        /////////////////////////////////////////////////////////////////////////////////////////////////////
-        //                                                                                                 // 
-        // manage prereqs checked and grayed state                                                         //
-        //                                                                                                 //
-        // rules are :                                                                                     //
-        //                                                                                                 //
-        // o  when user checks a non-grayed item, all prereqs items are grayed and checked                 //
-        // o  when user checks a grayed item, all prereqs items are grayed and checked                     //
-        // o  when a user unchecks a non-grayed items, all grayed prereqs items are ungrayed and unchecked //
-        // o  a user isnot allowed to uncheck a grayed item                                                //
-        //                                                                                                 // 
-        // when dialog is closed the returned goals are the checked ones                                   //
-        //                                                                                                 // 
-        /////////////////////////////////////////////////////////////////////////////////////////////////////
-        
-        
-    	return viewer;
+        return viewer;
     }
+
+	public int open() {
+ 	   return super.open();
+	}	
+    
+    public List getCheckedItems() {
+        return checkedItems;
+    }
+
 }
 
 class HyperLinkMouseListener extends MouseAdapter {
@@ -352,5 +403,7 @@ class HyperLinkMouseListener extends MouseAdapter {
         	
         }
     }
+
+	
 
 }

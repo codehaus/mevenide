@@ -129,4 +129,8 @@ public class GoalsProvider implements ITreeContentProvider {
     }
     
 
+    public IGoalsGrabber getGoalsGrabber() {
+        return goalsGrabber;
+    }
+
 }

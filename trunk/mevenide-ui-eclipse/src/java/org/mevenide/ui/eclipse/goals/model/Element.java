@@ -55,9 +55,13 @@ package org.mevenide.ui.eclipse.goals.model;
  * 
  */
 public class Element {
-    public static final Object NULL_ROOT = new Object();
+    public static final Element NULL_ROOT = new Element();
     
-	private String name;
+	private String name = "";
+    
+	private Element[] prereqs;
+	
+	    
     
 	public String getName() {
         return name;
@@ -70,4 +74,16 @@ public class Element {
 	public String toString() {
         return name;
     }
+    
+    public Element[] getPrereqs() {
+        return prereqs;
+    }
+
+    public void setPrereqs(Element[] prereqs) {
+        this.prereqs = prereqs;
+    }
+	
+	public boolean equals(Object obj) {
+		return (obj instanceof Element) && ((Element) obj).name.equals(name); 
+	}
 }
