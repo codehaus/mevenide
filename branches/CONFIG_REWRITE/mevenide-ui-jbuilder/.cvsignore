@@ -1,0 +1,10 @@
+MavenAutoUpdated.library
+mevenide-ui-jbuilder.jpx.local
+lib/*
+*.jar
+target
+.classpath
+.project
+MevenIDE.library
+classes.opentools
+bin
