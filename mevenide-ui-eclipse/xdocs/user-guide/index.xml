@@ -42,6 +42,9 @@
 						<li>
 							<a href="validate.html" class="documentLink">POM Validation</a>
 						</li>
+						<li>
+							<a href="builder.html" class="documentLink">Mevenide Nature and Builder</a>
+						</li>
 					</ul>
 				</div>
 			</subsection>

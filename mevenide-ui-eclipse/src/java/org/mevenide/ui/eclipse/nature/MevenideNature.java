@@ -55,7 +55,7 @@ public class MevenideNature implements IProjectNature {
         }
         catch (Exception e) {
             log.debug("Unable to add MevenideNature to project '" + project.getName(), e); //$NON-NLS-1$
-            throw new CoreException(new Status(IStatus.ERROR, "mevenide", 1, e.getMessage(), e)); //$NON-NLS-1$
+            //throw new CoreException(new Status(IStatus.ERROR, "mevenide", 1, e.getMessage(), e)); //$NON-NLS-1$
         }
     }
 
