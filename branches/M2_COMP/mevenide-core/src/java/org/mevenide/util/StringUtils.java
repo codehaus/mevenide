@@ -56,5 +56,21 @@ public class StringUtils {
     	}
     	return result;
     }
+
+	/**
+	 * split a goal in the form of pluginName:goalName
+	 * @return  {pluginName, goalName} where pluginName may be the empty string
+	 */
+	public static String[] splitGoal(String qualifier) {
+		String[] parts = qualifier.split(":");
+		String pluginName = parts[0];
+		String goalName;
+		if (parts.length > 1) {
+			goalName = parts[1];
+		} else {
+			goalName = EMPTY_STR;
+		}
+		return new String[] {pluginName, goalName};
+	}
 	
 }
