@@ -81,20 +81,12 @@ public class ProjectWriterTest extends AbstractMevenideTestCase {
 	}
 	
 	public void testAddResource() throws Exception {
-		String testDirectory = System.getProperty("user.dir");
+		pomWriter.addResource("src/conf", projectFile);
+		assertTrue(isResourcePresent("src/conf", new String[] {"**/*.*"}));
 		
-		String testFile1 = new File(testDirectory, "fake1.xml").getAbsolutePath(); 
-		String testFile2 = new File(testDirectory, "fake2.xml").getAbsolutePath();
+		pomWriter.addResource("etc", projectFile);
+		assertTrue(isResourcePresent("etc", new String[] {"**/*.*", "fake.xml"}));
 		
-		pomWriter.addResource(testFile1, projectFile);
-		
-		assertTrue(isResourcePresent(testDirectory, new String[] {"fake1.xml"}));
-		
-		pomWriter.addResource(testFile2, projectFile);
-		assertTrue(isResourcePresent(testDirectory, new String[] {"fake1.xml", "fake2.xml"}));
-		
-		pomWriter.addResource(testDirectory, projectFile);
-		assertTrue(isResourcePresent(testDirectory, new String[] {"fake1.xml", "fake2.xml", "**/*.*"}));
 		
 	}
 
@@ -114,12 +106,14 @@ public class ProjectWriterTest extends AbstractMevenideTestCase {
 		boolean found = false;
 		for (int i = 0; i < resources.size(); i++) {
 			Resource resource = (Resource) resources.get(i);
-			boolean temp = resource.getDirectory().equals(testDirectory); 
-			for (int j = 0; j < includes.length; j++) {
-				temp &= resource.getIncludes().contains(includes[j]);
-			} 
-			if ( temp ) {
-				found = true;	
+			if ( resource.getDirectory() != null ) {
+				boolean temp = resource.getDirectory().equals(testDirectory); 
+				for (int j = 0; j < includes.length; j++) {
+					temp &= resource.getIncludes().contains(includes[j]);
+				} 
+				if ( temp ) {
+					found = true;	
+				}
 			}
 		}
 		return found;

@@ -122,7 +122,7 @@
       <resource>
           <directory>etc</directory>
           <includes>
-            <include>**/*.*</include>
+            <include>fake.xml</include>
           </includes>
       </resource>
       <resource>
