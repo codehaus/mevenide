@@ -108,6 +108,7 @@ public class TableEntry extends PageEntry {
 		this.viewer = tableViewer;
 		this.overrideToggle = toggle;
 		init(parent, factory, section, tooltipInfo);
+		addEntries(new ArrayList());
 	}
 	
 	private void init(Composite parent, FormToolkit factory, final PageSection section, String tooltipInfo) {

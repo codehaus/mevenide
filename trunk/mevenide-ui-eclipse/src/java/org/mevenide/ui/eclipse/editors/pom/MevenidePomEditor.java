@@ -179,6 +179,7 @@ public class MevenidePomEditor extends FormEditor {
     private void createOrganizationPage() throws PartInitException {
         OrganizationPage orgPage = new OrganizationPage(this);
         comparator.addProjectChangeListener(ProjectComparator.ORGANIZATION, orgPage);
+        comparator.addProjectChangeListener(ProjectComparator.LICENSES, orgPage);
         addPage(orgPage);
     }
 
@@ -189,6 +190,8 @@ public class MevenidePomEditor extends FormEditor {
     private void createRepositoryPage() throws PartInitException {
         RepositoryPage repoPage = new RepositoryPage(this);
         comparator.addProjectChangeListener(ProjectComparator.REPOSITORY, repoPage);
+        comparator.addProjectChangeListener(ProjectComparator.VERSIONS, repoPage);
+        comparator.addProjectChangeListener(ProjectComparator.BRANCHES, repoPage);
         addPage(repoPage);
     }
 
@@ -221,7 +224,6 @@ public class MevenidePomEditor extends FormEditor {
         BuildPage buildPage = new BuildPage(this);
         comparator.addProjectChangeListener(ProjectComparator.BUILD, buildPage);
         comparator.addProjectChangeListener(ProjectComparator.RESOURCES, buildPage);
-        comparator.addProjectChangeListener(ProjectComparator.UNIT_TESTS, buildPage);
         addPage(buildPage);
     }
 
