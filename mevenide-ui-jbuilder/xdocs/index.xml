@@ -47,6 +47,7 @@
 			
 			<subsection name="History">
 				<div id="documentContent">
+				<p>Version 0.2<br />Updated to support JBuilder 2005</p>
 				<p>Version 0.1<br />Initial release</p>
 				</div>
 			</subsection>
