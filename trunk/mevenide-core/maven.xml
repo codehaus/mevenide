@@ -3,19 +3,19 @@
 	
 	<!-- crap -->
 	<preGoal name="test:test">
-		<copy toDir="target/test-classes">
+		<copy toDir="${maven.test.dest}">
 		  <fileset dir="src/test/etc">
   			<include name="*.properties"/>
   			<include name="*.xml"/>
 		  </fileset>
 		</copy>
-		<copy toDir="target/test-classes">
+		<copy toDir="${maven.test.dest}">
 		  <fileset dir="etc">
   			<include name="*.properties"/>
   			<include name="*.xml"/>
 		  </fileset>
 		</copy>
-		<copy toDir="target/test-classes/META-INF/services">
+		<copy toDir="${maven.test.dest}/META-INF/services">
 		  <fileset dir="etc/META-INF/services">
   			<include name="*.*"/>
 		  </fileset>
@@ -23,17 +23,17 @@
 	</preGoal>
 	
 	<preGoal name="jar:jar">
-		<copy toDir="target/classes/META-INF/services">
+		<copy toDir="${maven.build.dest}/META-INF/services">
 		  <fileset dir="etc/META-INF/services">
   			<include name="*.*"/>
 		  </fileset>
 		</copy>
-		<copy toDir="target/classes/templates/standard">
+		<copy toDir="${maven.build.dest}/templates/standard">
 		  <fileset dir="etc/templates/standard">
   			<include name="*.*"/>
 		  </fileset>
 		</copy>
-		<copy toDir="target/classes/">
+		<copy toDir="${maven.build.dest}">
 		  <fileset dir="etc">
   			<include name="*.*"/>
 		  </fileset>
@@ -41,7 +41,7 @@
 	</preGoal>
 	
 	<goal name="mevenide:finalize">
-		<copy file="etc/mevenide.properties" todir="../mevenide-ui-eclipse/etc"/> 
+		<copy file="etc/mevenide.properties" todir="${mevenide.ui.eclipse.project.name}/etc"/> 
 	</goal>
 	
 

@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<document>
+  <properties>
+    <title>maven-eclipse-plugin-plugin Properties</title>
+  </properties>
+  <body>
+    <section name="maven-eclipse-plugin-plugin Settings">
+      <table>
+        <tr>
+          <th>Property</th>
+          <th>Optional?</th>
+          <th>Description</th>
+        </tr>
+        <tr>
+          <td>maven.eclipse.plugin.feature.includes</td>
+          <td>Yes</td>
+          <td>
+            <p>Default value is
+              <code>feature.xml,feature.properties,license.txt,logo.jpg</code>.</p>
+          </td>
+        </tr>
+        <tr>
+          <td>maven.eclipse.plugin.includes</td>
+          <td>Yes</td>
+          <td>
+            <p>Default value is
+              <code>plugin.xml,plugin.properties,license.txt,lib/*.*,icons/*.*</code>.</p>
+          </td>
+        </tr>
+        <tr>
+          <td>maven.eclipse.plugin.artifact.internal.id</td>
+          <td>Yes</td>
+          <td>
+            <p>Default value is
+              <code>${pom.artifactId}</code>.</p>
+          </td>
+        </tr>
+        <tr>
+          <td>maven.eclipse.plugin.lib.dir</td>
+          <td>Yes</td>
+          <td>
+            <p>Default value is
+              <code>${basedir}/lib</code>.</p>
+          </td>
+        </tr>
+        <tr>
+          <td>maven.eclipse.plugin.dist.dir</td>
+          <td>Yes</td>
+          <td>
+            <p>Default value is
+              <code>${maven.build.dir}/eclipse/dist</code>.</p>
+          </td>
+        </tr>
+        <tr>
+          <td>maven.eclipse.plugin.artifact.internal.version</td>
+          <td>Yes</td>
+          <td>
+            <p>Default value is
+              <code>${pom.currentVersion}</code>.</p>
+          </td>
+        </tr>
+        <tr>
+          <td>maven.eclipse.plugin.artifact.type</td>
+          <td>Yes</td>
+          <td>
+            <p>Default value is
+              <code>plugin</code>.</p>
+          </td>
+        </tr>
+        <tr>
+          <td>maven.eclipse.plugin.filterset.id</td>
+          <td>Yes</td>
+          <td>
+            <p>Default value is
+              <code>
+              </code>.</p>
+          </td>
+        </tr>
+        <tr>
+          <td>maven.eclipse.plugin.artifact.version</td>
+          <td>Yes</td>
+          <td>
+            <p>Default value is
+              <code>${pom.currentVersion}</code>.</p>
+          </td>
+        </tr>
+        <tr>
+          <td>maven.eclipse.plugin.feature.plugins</td>
+          <td>Yes</td>
+          <td>
+            <p>Default value is
+              <code>
+              </code>.</p>
+          </td>
+        </tr>
+        <tr>
+          <td>maven.eclipse.plugin.artifact.id</td>
+          <td>Yes</td>
+          <td>
+            <p>Default value is
+              <code>${pom.artifactId}</code>.</p>
+          </td>
+        </tr>
+        <tr>
+          <td>maven.eclipse.plugin.temp.dir</td>
+          <td>Yes</td>
+          <td>
+            <p>Default value is
+              <code>${maven.build.dir}/eclipse/temp</code>.</p>
+          </td>
+        </tr>
+        <tr>
+          <td>maven.eclipse.plugin.site.feature.dest.dir</td>
+          <td>Yes</td>
+          <td>
+            <p>Default value is
+              <code>${maven.eclipse.plugin.dist.dir}/features</code>.</p>
+          </td>
+        </tr>
+        <tr>
+          <td>maven.eclipse.plugin.site.features</td>
+          <td>Yes</td>
+          <td>
+            <p>Default value is
+              <code>
+              </code>.</p>
+          </td>
+        </tr>
+        <tr>
+          <td>maven.eclipse.plugin.site.plugin.dest.dir</td>
+          <td>Yes</td>
+          <td>
+            <p>Default value is
+              <code>${maven.eclipse.plugin.dist.dir}/plugins</code>.</p>
+          </td>
+        </tr>
+        <tr>
+          <td>maven.eclipse.plugin.src.dir</td>
+          <td>Yes</td>
+          <td>
+            <p>Default value is
+              <code>${maven.src.dir}/conf/eclipse</code>.</p>
+          </td>
+        </tr>
+      </table>
+    </section>
+  </body>
+</document>

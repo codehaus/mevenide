@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<document>
+  <properties>
+    <title>maven-eclipse-plugin-plugin Goals</title>
+  </properties>
+  <body>
+    <goals>
+      <goal>
+        <name>eclipse-plugin:create-artifact-dist</name>
+        <description>dispatch to the correct artifact creation goal, based on the specified eclipse plugin type (plugin, site or feature)</description>
+      </goal>
+      <goal>
+        <name>eclipse-plugin:create-feature-dist</name>
+        <description>create a feature dist file containing only the feature required files and put it in $${maven.eclipse.plugin.dist.dir}</description>
+      </goal>
+      <goal>
+        <name>eclipse-plugin:create-plugin-dist</name>
+        <description>create a plugin dist file containing only the plugin required files and put it in $${maven.eclipse.plugin.dist.dir}</description>
+      </goal>
+      <goal>
+        <name>eclipse-plugin:create-site-dist</name>
+        <description>build a single distribution file containing all required plugins and features</description>
+      </goal>
+      <goal>
+        <name>eclipse-plugin:install-artifact</name>
+        <description>filter and copy the plugin artifact descriptor file to $${basedir}</description>
+      </goal>
+    </goals>
+  </body>
+</document>
