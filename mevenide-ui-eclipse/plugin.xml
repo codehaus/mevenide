@@ -239,7 +239,7 @@
             visible="true"
             id="org.mevenide.quickrun">
          <action
-               label="&amp;Run Maven"
+               label="Run Maven"
                pulldown="true"
                icon="icons/maven-run.gif"
                tooltip="Run Last Launched Maven Process"

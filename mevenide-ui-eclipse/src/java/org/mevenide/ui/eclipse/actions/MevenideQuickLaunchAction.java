@@ -25,21 +25,23 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowPulldownDelegate;
 import org.mevenide.ui.eclipse.launch.LaunchHistory;
+import org.mevenide.ui.eclipse.launch.LaunchedAction;
 
 /**
  * 
- * @todo implement-me
+ * to be dropped when support for LaunchConfiguration is ready
  * 
  * @author <a href="mailto:rhill@wanadoo.fr">Gilles Dodinet</a>
  * @version $Id$
  * 
  */
 public class MevenideQuickLaunchAction implements IWorkbenchWindowPulldownDelegate {
+	private IWorkbenchWindow window;
 	
 	public Menu getMenu(Control parent) {
 		Menu menu = new Menu(parent);
 		
-		LaunchHistory.LaunchedAction[] actions = LaunchHistory.getHistory().getLaunchedActions();
+		LaunchedAction[] actions = LaunchHistory.getHistory().getLaunchedActions();
 		if ( actions != null ){
 			for (int i = 0; i < actions.length; i++) {
 				ActionContributionItem item= new ActionContributionItem(actions[i]);	
@@ -51,7 +53,7 @@ public class MevenideQuickLaunchAction implements IWorkbenchWindowPulldownDelega
 		separator.fill(menu, menu.getItemCount());
 		
 		Action clearMenuAction = 
-			new Action("delete configurations") {
+			new Action("Delete configurations") {
 				public void run() {
 					LaunchHistory.getHistory().clear();
 				}
@@ -66,8 +68,12 @@ public class MevenideQuickLaunchAction implements IWorkbenchWindowPulldownDelega
 
 	}
 
+	/**
+	 * run last launch
+	 */
 	public void run(IAction action) {
-	
+		LaunchedAction lastLaunched = LaunchHistory.getHistory().getLastlaunched();
+		lastLaunched.run();
 	}
 	
 	public void dispose() {
@@ -75,7 +81,7 @@ public class MevenideQuickLaunchAction implements IWorkbenchWindowPulldownDelega
 	}
 
 	public void init(IWorkbenchWindow window) {
-
+		this.window = window;
 	}
 
 }
