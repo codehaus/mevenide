@@ -239,7 +239,7 @@ public class MavenCustomizer extends JPanel implements ProjectValidateObserver {
                 "RepositoryCategory", // NOI18N
                 "Repository", 
                 "org/mevenide/netbeans/project/resources/Bullet", // NOI18N
-                createEmptyLabel("WORK IN PROGRESS..."), 
+                new RepositoryPanel(false, false, project), 
                 null),
             new ConfigurationDescription(
                 "ListsCategory", // NOI18N
