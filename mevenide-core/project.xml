@@ -131,7 +131,10 @@
         <dependency>
             <groupId>commons-jelly</groupId>
             <artifactId>commons-jelly</artifactId>
-            <version>1.0-beta-4</version>
+            <!-- need this version because that one is included with maven rc2 
+                 see:http://maven.apache.org/faq.html#jelly-site-error -->
+    		<version>20030902.160215</version>
+<!--    		<version>1.0-beta-4</version> -->
             <type>jar</type>
             <properties>
             	<eclipse.plugin.bundle>true</eclipse.plugin.bundle>
