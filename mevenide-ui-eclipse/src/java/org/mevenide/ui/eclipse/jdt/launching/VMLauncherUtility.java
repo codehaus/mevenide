@@ -27,6 +27,9 @@ import org.eclipse.jdt.launching.VMRunnerConfiguration;
  * @author Gilles Dodinet
  */
 public class VMLauncherUtility {
+	private VMLauncherUtility() { 
+	}
+	
 	static IProgressMonitor progressMonitor = new MevenideProgressMonitor();
   
 	static public IVMInstall getVMInstall() {
