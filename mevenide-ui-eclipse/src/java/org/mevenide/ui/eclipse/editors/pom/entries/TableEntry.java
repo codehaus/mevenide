@@ -145,6 +145,7 @@ public class TableEntry extends PageEntry {
 			new SelectionAdapter() {
 				public void widgetSelected(SelectionEvent e) {
 					IStructuredSelection selected = (IStructuredSelection) viewer.getSelection();
+					
 					Object[] itemsToRemove = selected.toArray();
 					int index = viewer.getTable().getSelectionIndices()[0];
 					viewer.remove(itemsToRemove);
@@ -153,10 +154,12 @@ public class TableEntry extends PageEntry {
 					} else if (index >= viewer.getTable().getItemCount()) {
 						index = viewer.getTable().getItemCount() - 1;
 					}
-					viewer.setSelection(new StructuredSelection(viewer.getElementAt(index)));
-					for (int i = 0; i < itemsToRemove.length; i++) {
-						IPomPropertySource property = (IPomPropertySource) itemsToRemove[i];
-						collectionAdaptor.removeObject(property.getSource(), parentPomObject);
+					if ( viewer.getElementAt(index) != null ) {
+						viewer.setSelection(new StructuredSelection(viewer.getElementAt(index)));
+						for (int i = 0; i < itemsToRemove.length; i++) {
+							IPomPropertySource property = (IPomPropertySource) itemsToRemove[i];
+							collectionAdaptor.removeObject(property.getSource(), parentPomObject);
+						}
 					}
 					setDirty(true);
 					fireEntryDirtyEvent();
