@@ -203,12 +203,12 @@ public final class ClassPathProviderImpl implements ClassPathProvider {
     private ClassPath getCompileTimeClasspath(FileObject file) {
         int type = getType(file);
         logger.debug("getCompileTimeClasspath type=" + type);
-        if (type != TYPE_CLASS &&  type != TYPE_TESTCLASS) {
+        if (type != TYPE_SRC &&  type != TYPE_TESTSRC) {
             return null;
         }
         ClassPath cp = null;
         if (cache[2+type] == null || (cp = (ClassPath)cache[2+type].get()) == null) {
-            if (type == TYPE_CLASS) {
+            if (type == TYPE_SRC) {
                 logger.debug("CompileTimeClasspath src");
                 cp = ClassPathFactory.createClassPath(new SrcBuildClassPathImpl(project));
             }

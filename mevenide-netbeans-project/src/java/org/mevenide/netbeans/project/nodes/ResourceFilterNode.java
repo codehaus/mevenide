@@ -19,6 +19,7 @@ package org.mevenide.netbeans.project.nodes;
 
 import java.awt.Color;
 import java.awt.Image;
+import java.io.CharConversionException;
 import java.io.File;
 import java.io.IOException;
 import java.util.Iterator;
@@ -36,6 +37,7 @@ import org.openide.nodes.FilterNode;
 import org.openide.nodes.Node;
 import org.openide.nodes.FilterNode.Children;
 import org.openide.util.Utilities;
+import org.openide.xml.XMLUtil;
 
 
 /**
@@ -60,7 +62,7 @@ class ResourceFilterNode extends FilterNode
         isIncluded = true;
         if (dobj != null) {
             File file = FileUtil.toFile(dobj.getPrimaryFile());
-            if (file != null && !file.isDirectory()) {
+            if (file != null /**&& !file.isDirectory() **/) {
                 isIncluded = checkIncluded(file);
             }
         }
@@ -81,12 +83,18 @@ class ResourceFilterNode extends FilterNode
         }
         List includes = resource.getIncludes();
         if (includes != null) {
+            boolean doInclude = false;
             Iterator it = includes.iterator();
             while (it.hasNext()) {
                 String pattern = (String)it.next();
-                if (!DirectoryScanner.match(pattern, relPath)) {
-                    return false;
+                // exact match or pattern match
+                if (pattern.equals(relPath) || DirectoryScanner.match(pattern, relPath)) {
+                    doInclude = true;
+                    break;
                 }
+            }
+            if (!doInclude) {
+                return false;
             }
         }
         
@@ -95,7 +103,7 @@ class ResourceFilterNode extends FilterNode
             Iterator it = excludes.iterator();
             while (it.hasNext()) {
                 String pattern = (String)it.next();
-                if (DirectoryScanner.match(pattern, relPath)) {
+                if (pattern.equals(relPath) || DirectoryScanner.match(pattern, relPath)) {
                     return false;
                 }
             }
@@ -133,6 +141,21 @@ class ResourceFilterNode extends FilterNode
                         Utilities.loadImage("org/mevenide/netbeans/project/resources/ResourceNotIncluded.gif"),
                         0,0);
         }
+    }
+    
+    public String getDisplayName() {
+        String retValue;
+        retValue = super.getDisplayName();
+        if (!isIncluded) {
+            // try use html, need to escape all the unallowed characters..
+            // how to do? is XmlUtil the answer?
+            try {
+                retValue = "<HTML><S>" + XMLUtil.toAttributeValue(retValue) + "</S></HTML>";
+            } catch (CharConversionException exc) {
+                
+            }
+        }
+        return retValue;
     }
     
     private static class ResFilterChildren extends Children {

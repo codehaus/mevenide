@@ -19,24 +19,29 @@ package org.mevenide.netbeans.project.nodes;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.net.MalformedURLException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Build;
 import org.apache.maven.project.Project;
 import org.mevenide.netbeans.project.FileUtilities;
 import org.mevenide.netbeans.project.MavenProject;
 import org.openide.filesystems.FileObject;
+import org.openide.filesystems.URLMapper;
 import org.openide.loaders.DataFolder;
 import org.openide.nodes.Node;
-import org.openide.nodes.Children.Keys;
+import org.openide.nodes.Children;
 
 /**
  *
  * @author  Milos Kleint (ca206216@tiscali.cz)
  */
-class MavenProjectChildren extends Keys
-{
+class MavenProjectChildren extends Children.Keys {
+    private static final Log logger = LogFactory.getLog(MavenProjectChildren.class);
     
     private static final Object KEY_SOURCE_DIR = "srcDir"; // NOI18N
     private static final Object KEY_TEST_SOURCE_DIR = "testSrcDir"; // NOI18N
@@ -76,16 +81,17 @@ class MavenProjectChildren extends Keys
     private void regenerateKeys() {
         List list = new ArrayList();
         Project proj = project.getOriginalMavenProject();
+        if (project.getSrcDirectory() != null) {
+            list.add(KEY_SOURCE_DIR);
+        }
+        if (project.getTestSrcDirectory() != null) {
+            list.add(KEY_TEST_SOURCE_DIR);
+        }
+
         Build build = proj.getBuild();
         if (build != null) {
             if (build.getAspectSourceDirectory() != null) {
                 list.add(KEY_ASPECT_SOURCE_DIR);
-            }
-            if (build.getUnitTestSourceDirectory() != null) {
-                list.add(KEY_TEST_SOURCE_DIR);
-            }
-            if (build.getSourceDirectory() != null) {
-                list.add(KEY_SOURCE_DIR);
             }
             if (build.getIntegrationUnitTestSourceDirectory() != null) {
                 list.add(KEY_INTEG_TEST_SOURCE_DIR);
@@ -110,21 +116,29 @@ class MavenProjectChildren extends Keys
         Project proj = project.getOriginalMavenProject();
         if (key == KEY_SOURCE_DIR)
         {
-            String relPath = proj.getBuild().getSourceDirectory();
-            if (relPath == null) {
+            URI path = project.getSrcDirectory();
+            if (path == null) {
                 //TODO better visual representation for the sources when not defined..
                 n = null;
             } else {
-                n = new PackageRootNode( getFolder(relPath), "srcDir", "Sources" ); // NOI18N
+                
+                DataFolder def = getFolder(path);
+                if (def != null) {
+                    n = new PackageRootNode( def, "srcDir", "Sources" ); // NOI18N
+                }
             }
         } 
         else if (key == KEY_TEST_SOURCE_DIR)
         {
-            String relPath = proj.getBuild().getUnitTestSourceDirectory();
-            if (relPath == null) {
+            URI path= project.getTestSrcDirectory();
+            if (path == null) {
+                //TODO better visual representation for the sources when not defined..
                 n = null;
             } else {
-                n = new PackageRootNode( getFolder(relPath), "testSrcDir", "Test Sources" ); // NOI18N
+                DataFolder def = getFolder(path);
+                if (def != null) {
+                    n = new PackageRootNode( def, "testSrcDir", "Test Sources" ); // NOI18N
+                }
             }
         }
         else if (key == KEY_ASPECT_SOURCE_DIR)
@@ -133,7 +147,10 @@ class MavenProjectChildren extends Keys
             if (relPath == null) {
                 n = null;
             } else {
-                n = new PackageRootNode( getFolder(relPath), "aspectSrcDir", "Aspect Sources" ); // NOI18N
+                DataFolder def = getFolder(relPath);
+                if (def != null) {
+                    n = new PackageRootNode( def, "aspectSrcDir", "Aspect Sources" ); // NOI18N
+                }
             }
         }
         else if (key == KEY_ASPECT_SOURCE_DIR)
@@ -142,7 +159,10 @@ class MavenProjectChildren extends Keys
             if (relPath == null) {
                 n = null;
             } else {
-                n = new PackageRootNode( getFolder(relPath), "integrationSrcDir", "Integration Test Sources" ); // NOI18N
+                DataFolder def = getFolder(relPath);
+                if (def != null) {
+                    n = new PackageRootNode( def, "integrationSrcDir", "Integration Test Sources" ); // NOI18N
+                }
             }
         }
         else if (key == KEY_JELLY_SCRIPT) {
@@ -162,5 +182,19 @@ class MavenProjectChildren extends Keys
         //TODO - create the folder if it doesn't exist? and do it here? I'd rather do it when opening project..
         return null;
     }
+    
+    private DataFolder getFolder(URI path) {
+        try {
+            FileObject folder = URLMapper.findFileObject(path.toURL());
+            if (folder != null) {
+                return DataFolder.findFolder(folder);
+            }
+        } catch (MalformedURLException exc) {
+            logger.warn("malformed URI=" + path, exc);
+        }
+        //TODO - create the folder if it doesn't exist? and do it here? I'd rather do it when opening project..
+        return null;
+    }
+                
 
 }
