@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+	<description url="index.html">
+		Mevenide update Site blah blah
+	</description>
+
+	<feature url="http://osdn.dl.sourceforge.net/sourceforge/mevenide/org.mevenide.eclipse.feature_0.1.jar" id="org.mevenide" version="0.1-alpha-1">
+		<category name="Mevenide"/>
+	</feature>
+
+	<archive url="http://osdn.dl.sourceforge.net/sourceforge/mevenide/org.mevenide.core-0.1-alpha-1.zip" path="plugins/org.mevenide.core_0.1.jar"/>
+	<archive url="http://osdn.dl.sourceforge.net/sourceforge/mevenide/org.mevenide.goals.grabber-0.1-alpha-1.zip" path="plugins/org.mevenide.goals.grabber_0.1.jar"/>
+	<archive url="http://osdn.dl.sourceforge.net/sourceforge/mevenide/org.mevenide.ui.eclipse-0.1-alpha-1.zip" path="plugins/org.mevenide_0.1.jar"/>
+	
+	<category-def label="org.mevenide-0.1.x" name="Mevenide">
+		<description>
+			Mevenide 0.1 blah blah
+		</description>
+	</category-def>
+
+
+</site>
