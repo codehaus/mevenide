@@ -19,6 +19,7 @@ package org.mevenide.project.io;
 import java.io.File;
 import java.util.HashMap;
 import org.apache.maven.project.Project;
+import org.mevenide.context.IProjectContext;
 import org.mevenide.context.IQueryContext;
 
 /**
@@ -31,11 +32,10 @@ public class TestQueryContext implements IQueryContext {
     private HashMap userProps;
     private HashMap projectProps;
     private HashMap buildProps;
-    private Project[] projects;
-    private File[] projectFiles;
+    private IProjectContext projectContext;
     
-    TestQueryContext(File project, File user) {
-        projectDir = project;
+    TestQueryContext(File projectDirectory, File user) {
+        projectDir = projectDirectory;
         userDir = user;
     }
     
@@ -49,13 +49,10 @@ public class TestQueryContext implements IQueryContext {
         buildProps = keyvalues;
     }
     
-    public void setProjects(Project[] projs) {
-        projects = projs;
+    public void setProjectContext(IProjectContext projs) {
+        projectContext = projs;
     }
     
-    public void setProjectFiles(File[] projs) {
-        projectFiles = projs;
-    }
     
     private String getValue(HashMap map, String key) {
         if (map != null) {
@@ -95,25 +92,8 @@ public class TestQueryContext implements IQueryContext {
         return getValue(userProps, str);
     }
     
-   public Project getFinalProject() {
-        if (projects != null) {
-            return projects[0];
-        }
-        return null;
-    }
-    
-    public File[] getProjectFiles() {
-        if (projectFiles != null) {
-            return projectFiles;
-        }
-	return new File[0];
-    }
-    
-    public Project[] getProjectLayers() {
-        if (projects != null) {
-            return projects;
-        }
-        return new Project[0];
+    public IProjectContext getPOMContext() {
+        return projectContext;
     }    
     
 }

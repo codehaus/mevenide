@@ -23,6 +23,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * 
@@ -31,11 +33,42 @@ import java.util.Properties;
  * 
  */
 public final class MevenideUtils {
+    private static final Log logger = LogFactory.getLog(MevenideUtils.class);
+    
 	public static final String EMPTY_STR = "";
 	public static final String PROPERTY_SEPARATOR = ":";
 	
 	private MevenideUtils() { }
 	
+/**
+ * change relative files to absolute, (especially important for the <path>/../..<path> style of file path descriptions.
+ * On windows normalized case, on unix don't follow symlinks..
+ */         
+        public static File normalizeFile(File file) {
+            String osName = System.getProperty ("os.name");
+            boolean isWindows = osName.startsWith("Wind");
+            if (isWindows) {
+                // On Windows, best to canonicalize.
+                if (file.getParent() != null) {
+                    try {
+                        file = file.getCanonicalFile();
+                    } catch (IOException e) {
+                        logger.warn("getCanonicalFile() on file "+file+" failed. "+ e.toString()); // NOI18N
+                        // OK, so at least try to absolutize the path
+                        file = file.getAbsoluteFile();
+                    }
+                } else {
+                    // this is for the drive File.
+                    file = file.getAbsoluteFile();
+                }
+            } else {
+                // On Unix, do not want to traverse symlinks.
+                // what about Mac?
+                file = new File(file.toURI().normalize()).getAbsoluteFile();
+            }
+            return file;
+        }
+        
 	public static boolean findFile(File rootDirectory, String fileName) {
 		File[] f = rootDirectory.listFiles();
 		for (int i = 0; i < f.length; i++) {
