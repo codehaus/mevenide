@@ -1,10 +1,8 @@
 <project>
     <extend>${basedir}/../mevenide-master/plugin-base-project.xml</extend>
-    <pomVersion>3</pomVersion>
     <name>MEP Plugin</name>
-    <groupId>maven-eclipse-plugin-plugin</groupId>
     <artifactId>maven-eclipse-plugin-plugin</artifactId>
-    <currentVersion>0.2-SNAPSHOT</currentVersion>
+    <currentVersion>0.3-SNAPSHOT</currentVersion>
     <organization/>
     <inceptionYear>2003</inceptionYear>
     <shortDescription>This plugin helps creating ready to use eclipse plugins and features distribution</shortDescription>
