@@ -2,10 +2,45 @@
 
 <!DOCTYPE filesystem PUBLIC "-//NetBeans//DTD Filesystem 1.0//EN" "http://www.netbeans.org/dtds/filesystem-1_0.dtd">
 <filesystem>
+    <folder name="Templates">
+        <folder name="Project">
+            <!-- XXX why are these here? should be moved elsewhere -->
+            <attr name="Standard/Maven" boolvalue="true"/>
+
+            <folder name="Maven">
+                <attr name="SystemFileSystem.localizingBundle" stringvalue="org.mevenide.netbeans.project.resources.Bundle"/>
+                <attr name="instantiatingWizardURL" urlvalue="nbresloc:/org/mevenide/netbeans/resources/maven_projects.html"/>
+
+                <file name="emptyMaven.xml">
+                    <attr name="template" boolvalue="true"/>
+                    <attr name="instantiatingIterator" newvalue="org.mevenide.netbeans.project.wizards.MavenNewWizardIterator"/>
+                    <attr name="SystemFileSystem.localizingBundle" stringvalue="org.mevenide.netbeans.project.resources.Bundle"/>
+                    <attr name="SystemFileSystem.icon" urlvalue="nbresloc:/org/mevenide/netbeans/project/resources/MavenIcon.gif"/>
+                    <attr name="instantiatingWizardURL" urlvalue="nbresloc:/org/mevenide/netbeans/project/resources/emptyProject.html"/>
+                    <attr name="MavenTemplateLocation" stringvalue="Plugins/Maven/Templates/Empty"/>
+                </file>
+            </folder>
+        </folder>
+    </folder>
+
+
+
     <folder name="Plugins">
         <folder name="Maven">
             <folder name="Properties">
                 <file name="defaults.properties" url="maven_defaults.properties"/>
+            </folder>
+            
+            <folder name="Templates">
+               <folder name="Empty">
+                   <folder name="src">
+                      <folder name="java"/>
+                      <folder name="conf"/>
+                   </folder> 
+                   <file name="project.xml" url="nbresloc:/org/mevenide/netbeans/project/resources/empty/project.xml"/>
+                   <file name="project.properties" url="nbresloc:/org/mevenide/netbeans/project/resources/empty/project.properties"/>
+                   <file name="maven.xml" url="nbresloc:/org/mevenide/netbeans/project/resources/empty/maven.xml"/>
+               </folder>
             </folder>
         </folder>
     </folder>

@@ -16,35 +16,155 @@
  */
 package org.mevenide.netbeans.project.customizer.ui;
 
+import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
+import java.util.HashMap;
+import javax.swing.AbstractAction;
+import javax.swing.AbstractButton;
+import javax.swing.Action;
+import javax.swing.ComboBoxModel;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import org.mevenide.properties.IPropertyLocator;
+import org.openide.util.Utilities;
 
 /**
  *
  * @author  Milos Kleint (ca206216@tiscali.cz)
  */
-class LocationComboBox extends JComboBox {
+class LocationComboBox extends JButton {
+    private LocationWrapper current;
     private LocationWrapper initial;
+    private boolean hasChanged = false;
+    private LocationWrapper[] all;
+    private JPopupMenu currentLoc;
+    private HashMap actionToLoc;
+    private OriginChange.ChangeObserver observer;
+    
     public LocationComboBox() {
-        super();
-        setRenderer(new ListRenderer());
+        setMargin(new Insets(0,0,0,0));
+        setBorderPainted(false);
+        setRolloverEnabled(true);
+        currentLoc = new JPopupMenu();
+        addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent event) {
+                currentLoc.show(LocationComboBox.this, 0, LocationComboBox.this.getSize().height);
+            }
+        });
+        actionToLoc = new HashMap();
+        actionToLoc.put(OriginChange.ACTION_DEFINE_IN_BUILD, new Integer(IPropertyLocator.LOCATION_PROJECT_BUILD));
+        actionToLoc.put(OriginChange.ACTION_MOVE_TO_BUILD, new Integer(IPropertyLocator.LOCATION_PROJECT_BUILD));
+        actionToLoc.put(OriginChange.ACTION_DEFINE_IN_PROJECT, new Integer(IPropertyLocator.LOCATION_PROJECT));
+        actionToLoc.put(OriginChange.ACTION_MOVE_TO_PROJECT, new Integer(IPropertyLocator.LOCATION_PROJECT));
+        actionToLoc.put(OriginChange.ACTION_DEFINE_IN_USER, new Integer(IPropertyLocator.LOCATION_USER_BUILD));
+        actionToLoc.put(OriginChange.ACTION_MOVE_TO_USER, new Integer(IPropertyLocator.LOCATION_USER_BUILD));
+        actionToLoc.put(OriginChange.ACTION_RESET_TO_DEFAULT, new Integer(IPropertyLocator.LOCATION_DEFAULTS));
+//        add(currentLoc);
+        setIcon(new ImageIcon(Utilities.loadImage("org/openide/resources/actions/empty.gif")));
+        setText("");
     }
     
-    public void startLoggingChanges() {
-        initial = (LocationWrapper)getSelectedItem();
+    public LocationWrapper getSelectedItem() {
+        return current;
     }
     
-    /**
-     * true if the currently selected value is different from the initial one.
-     */
     public boolean hasChangedSelection() {
-        Object selected = getSelectedItem();
-        return (selected != initial);
+        return current != initial;
+    }
+    
+    public void setInitialItem(int location) {
+        LocationWrapper selected = findWrapper(location);
+        initial = selected;
+        setSelectedItem(selected);
+    }
+    
+    private void setSelectedItem(LocationWrapper selected) {
+        setToolTipText(selected.getName());
+        setIcon(selected.getIcon());
+        currentLoc.removeAll();
+        initStatePopup(currentLoc, selected.getActions());
+        current = selected;
+    }
+    
+    public void setItems(LocationWrapper[] wrappers) {
+        all = wrappers;
+    }
+    
+    public LocationWrapper[] getItems() {
+        return all;
+    }
+    
+    public void invokePopupAction(String action) {
+        Integer loc = (Integer)actionToLoc.get(action);
+        if (loc != null) {
+            setSelectedItem(findWrapper(loc.intValue()));
+            if (observer != null) {
+                observer.actionSelected(action);
+            }
+        } else {
+            throw new IllegalArgumentException("Unknown action=" + action);
+        }
+    }
+    
+    private LocationWrapper findWrapper(int location) {
+        for (int i = 0; i < all.length; i++) {
+            if (all[i].getID() == location) {
+                return all[i];
+            }
+        }
+        throw new IllegalStateException("Wrong location of prop file=" + location);
+    }
+    
+    public void setChangeObserver(OriginChange.ChangeObserver obs) {
+        observer = obs;
+    }
+    
+    private void initStatePopup(JPopupMenu menu, String[] actions) {
+        String name = "";
+        Icon icon = null;
+        if (actions == null) {
+            return;
+        }
+        for (int i = 0; i < actions.length; i++) {
+            if (OriginChange.ACTION_DEFINE_IN_USER.equals(actions[i])) {
+                name = "Define in User";
+                icon = new ImageIcon(Utilities.loadImage("org/mevenide/netbeans/project/resources/ToUser.png"));
+            } else if (OriginChange.ACTION_DEFINE_IN_PROJECT.equals(actions[i])) {
+                name = "Define in Project";
+                icon = new ImageIcon(Utilities.loadImage("org/mevenide/netbeans/project/resources/ToProject.png"));
+            } else if (OriginChange.ACTION_DEFINE_IN_BUILD.equals(actions[i])) {
+                name = "Define in Build";
+                icon = new ImageIcon(Utilities.loadImage("org/mevenide/netbeans/project/resources/ToBuild.png"));
+            } else if (OriginChange.ACTION_MOVE_TO_BUILD.equals(actions[i])) {
+                name = "Move to Build";
+                icon = new ImageIcon(Utilities.loadImage("org/mevenide/netbeans/project/resources/ToBuild.png"));
+            } else if (OriginChange.ACTION_MOVE_TO_PROJECT.equals(actions[i])) {
+                name = "Move to Project";
+                icon = new ImageIcon(Utilities.loadImage("org/mevenide/netbeans/project/resources/ToProject.png"));
+            } else if (OriginChange.ACTION_MOVE_TO_USER.equals(actions[i])) {
+                name = "Move to User";
+                icon = new ImageIcon(Utilities.loadImage("org/mevenide/netbeans/project/resources/ToUser.png"));
+            } else if (OriginChange.ACTION_RESET_TO_DEFAULT.equals(actions[i])) {
+                name = "Reset to Default";
+                icon = new ImageIcon(Utilities.loadImage("org/mevenide/netbeans/project/resources/ToDefault.png"));
+            }
+            JMenuItem item = currentLoc.add(name);
+            item.setAction(new MyAction(actions[i], name, icon));
+        }
     }
     
     static class LocationWrapper {
@@ -52,12 +172,15 @@ class LocationComboBox extends JComboBox {
         private Icon icon;
         private File file;
         private int ID;
+        private String[] actions;
         
-        public LocationWrapper(String name, Icon icon, File file, int id) {
+        public LocationWrapper(String name, Icon icon, File file, int id, String[] actions) {
             this.name = name;
             this.icon = icon;
             this.file = file;
+            this.actions = actions;
             ID = id;
+            
         }
         public Icon getIcon() {
             return icon;
@@ -76,41 +199,22 @@ class LocationComboBox extends JComboBox {
         public int getID() {
             return ID;
         }
+        
+        public String[] getActions() {
+            return actions;
+        }
     }
     
-    private class ListRenderer extends DefaultListCellRenderer {
+    private class MyAction extends AbstractAction {
+        private String id;
+        public MyAction(String i, String name, Icon icon) {
+            id = i;
+            putValue(Action.NAME, name);
+            putValue(Action.SMALL_ICON, icon);
+        }
         
-        /**
-         * Return a component that has been configured to display the specified
-         * value. That component's <code>paint</code> method is then called to
-         * "render" the cell.  If it is necessary to compute the dimensions
-         * of a list because the list cells do not have a fixed size, this method
-         * is called to generate a component on which <code>getPreferredSize</code>
-         * can be invoked.
-         *
-         * @param list The JList we're painting.
-         * @param value The value returned by list.getModel().getElementAt(index).
-         * @param index The cells index.
-         * @param isSelected True if the specified cell was selected.
-         * @param cellHasFocus True if the specified cell has the focus.
-         * @return A component whose paint() method will render the specified value.
-         *
-         * @see JList
-         * @see ListSelectionModel
-         * @see ListModel
-         */
-        public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-            JLabel retValue;
-            
-            retValue = (JLabel)super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-            if (value instanceof LocationWrapper) {
-                LocationWrapper wrapper = (LocationWrapper)value;
-//                retValue.setText("");
-                retValue.setIcon(wrapper.getIcon());
-            } else {
-                throw new IllegalStateException("Wrong usage");
-            }
-            return retValue;
+        public void actionPerformed(ActionEvent e) {
+            invokePopupAction(id);
         }
         
     }
