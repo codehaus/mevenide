@@ -68,51 +68,156 @@ public class LocationFinderAggregator implements ILocationFinder {
     
     
     
-    public LocationFinderAggregator(String effectiveWorkingDirectory) {
+    public LocationFinderAggregator() {
         sysEnvLocationFinder = SysEnvLocationFinder.getInstance();
         
         try {
             buildPropertiesLocationFinder = BuildPropertiesLocationFinder.getInstance();
         }
         catch ( Exception e ) { 
-            log.debug("BuildPropertiesLocationFinder not created");
+            log.debug("BuildPropertiesLocationFinder not created", e);
         }
+       
+    }
+    
+    public void setEffectiveWorkingDirectory(String effectiveWorkingDirectory) {
         try {
 	        userRefinedPropertiesLocationFinder = new UserRefinedPropertiesLocationFinder(effectiveWorkingDirectory);
         }
 		catch ( Exception e ) { 
-			log.debug("UserRefinedPropertiesLocationFinder not created");
+			log.debug("UserRefinedPropertiesLocationFinder not created", e);
 		}
         try {
             projectPropertiesLocationFinder = new ProjectPropertiesLocationFinder(effectiveWorkingDirectory);
         }
 		catch ( Exception e ) { 
-			log.debug("ProjectPropertiesLocationFinder not created");
+			log.debug("ProjectPropertiesLocationFinder not created", e);
 		}
     }
-    
+
     public String getConfigurationFileLocation() {
-        // @todo Auto-generated method stub
-        return null;
+        String configurationFile = null;
+        if ( projectPropertiesLocationFinder !=  null 
+                && projectPropertiesLocationFinder.getConfigurationFileLocation() != null ) {
+			configurationFile = projectPropertiesLocationFinder.getConfigurationFileLocation();
+		}
+		if ( userRefinedPropertiesLocationFinder !=  null 
+		        && userRefinedPropertiesLocationFinder.getConfigurationFileLocation() != null ) {
+			configurationFile = userRefinedPropertiesLocationFinder.getConfigurationFileLocation();
+		}        
+		if ( buildPropertiesLocationFinder !=  null 
+		        && buildPropertiesLocationFinder.getConfigurationFileLocation() != null ) {
+			configurationFile = buildPropertiesLocationFinder.getConfigurationFileLocation();
+		}
+		if ( sysEnvLocationFinder !=  null 
+		        && sysEnvLocationFinder.getConfigurationFileLocation() != null ) {
+		    configurationFile = sysEnvLocationFinder.getConfigurationFileLocation();
+	    }
+        return configurationFile;
     }
+
     public String getJavaHome() {
-        // @todo Auto-generated method stub
-        return null;
+		String javaHome = null;
+		if ( projectPropertiesLocationFinder !=  null 
+				&& projectPropertiesLocationFinder.getJavaHome() != null ) {
+			javaHome = projectPropertiesLocationFinder.getJavaHome();
+		}
+		if ( userRefinedPropertiesLocationFinder !=  null 
+				&& userRefinedPropertiesLocationFinder.getJavaHome() != null ) {
+			javaHome = userRefinedPropertiesLocationFinder.getJavaHome();
+		}        
+		if ( buildPropertiesLocationFinder !=  null 
+				&& buildPropertiesLocationFinder.getJavaHome() != null ) {
+			javaHome = buildPropertiesLocationFinder.getJavaHome();
+		}
+		if ( sysEnvLocationFinder !=  null 
+				&& sysEnvLocationFinder.getJavaHome() != null ) {
+			javaHome = sysEnvLocationFinder.getJavaHome();
+		}
+		return javaHome;
     }
     public String getMavenHome() {
-        // @todo Auto-generated method stub
-        return null;
+		String mavenHome = null;
+		if ( projectPropertiesLocationFinder !=  null 
+				&& projectPropertiesLocationFinder.getMavenHome() != null ) {
+			mavenHome = projectPropertiesLocationFinder.getMavenHome();
+		}
+		if ( userRefinedPropertiesLocationFinder !=  null 
+				&& userRefinedPropertiesLocationFinder.getMavenHome() != null ) {
+			mavenHome = userRefinedPropertiesLocationFinder.getMavenHome();
+		}        
+		if ( buildPropertiesLocationFinder !=  null 
+				&& buildPropertiesLocationFinder.getMavenHome() != null ) {
+			mavenHome = buildPropertiesLocationFinder.getMavenHome();
+		}
+		if ( sysEnvLocationFinder !=  null 
+				&& sysEnvLocationFinder.getMavenHome() != null ) {
+			mavenHome = sysEnvLocationFinder.getMavenHome();
+		}
+		return mavenHome;
     }
     public String getMavenLocalHome() {
-        // @todo Auto-generated method stub
-        return null;
+		String mavenLocalHome = null;
+		if ( projectPropertiesLocationFinder !=  null 
+				&& projectPropertiesLocationFinder.getMavenLocalHome() != null ) {
+			mavenLocalHome = projectPropertiesLocationFinder.getMavenLocalHome();
+		}
+		if ( userRefinedPropertiesLocationFinder !=  null 
+				&& userRefinedPropertiesLocationFinder.getMavenLocalHome() != null ) {
+			mavenLocalHome = userRefinedPropertiesLocationFinder.getMavenLocalHome();
+		}        
+		if ( buildPropertiesLocationFinder !=  null 
+				&& buildPropertiesLocationFinder.getMavenLocalHome() != null ) {
+			mavenLocalHome = buildPropertiesLocationFinder.getMavenLocalHome();
+		}
+		if ( sysEnvLocationFinder !=  null 
+				&& sysEnvLocationFinder.getMavenLocalHome() != null ) {
+			mavenLocalHome = sysEnvLocationFinder.getMavenLocalHome();
+		}
+		return mavenLocalHome;
     }
+    
     public String getMavenLocalRepository() {
-        // @todo Auto-generated method stub
-        return null;
+		String mavenLocalRepository = null;
+		if ( projectPropertiesLocationFinder !=  null 
+				&& projectPropertiesLocationFinder.getMavenLocalRepository() != null ) {
+			mavenLocalRepository = projectPropertiesLocationFinder.getMavenLocalRepository();
+		}
+		if ( userRefinedPropertiesLocationFinder !=  null 
+				&& userRefinedPropertiesLocationFinder.getMavenLocalRepository() != null ) {
+			mavenLocalRepository = userRefinedPropertiesLocationFinder.getMavenLocalRepository();
+		}        
+		if ( buildPropertiesLocationFinder !=  null 
+				&& buildPropertiesLocationFinder.getMavenLocalRepository() != null ) {
+			mavenLocalRepository = buildPropertiesLocationFinder.getMavenLocalRepository();
+		}
+		if ( sysEnvLocationFinder !=  null 
+				&& sysEnvLocationFinder.getMavenLocalRepository() != null ) {
+			mavenLocalRepository = sysEnvLocationFinder.getMavenLocalRepository();
+		}
+		return mavenLocalRepository;
     }
+    
     public String getMavenPluginsDir() {
-        // @todo Auto-generated method stub
-        return null;
+		String mavenPluginsDir = null;
+		if ( projectPropertiesLocationFinder !=  null 
+				&& projectPropertiesLocationFinder.getMavenPluginsDir() != null ) {
+			mavenPluginsDir = projectPropertiesLocationFinder.getMavenPluginsDir();
+		}
+		if ( userRefinedPropertiesLocationFinder !=  null 
+				&& userRefinedPropertiesLocationFinder.getMavenPluginsDir() != null ) {
+			mavenPluginsDir = userRefinedPropertiesLocationFinder.getMavenPluginsDir();
+		}        
+		if ( buildPropertiesLocationFinder !=  null 
+				&& buildPropertiesLocationFinder.getMavenPluginsDir() != null ) {
+			mavenPluginsDir = buildPropertiesLocationFinder.getMavenPluginsDir();
+		}
+		if ( sysEnvLocationFinder !=  null 
+				&& sysEnvLocationFinder.getMavenPluginsDir() != null ) {
+			mavenPluginsDir = sysEnvLocationFinder.getMavenPluginsDir();
+		}
+		return mavenPluginsDir;
     }
+    
+  
 }
