@@ -91,7 +91,6 @@ public class PomSynchronizer extends AbstractPomSynchronizer implements ISynchro
 		}
 		catch (Exception e) {
 			log.debug("Unable to synchronize project '" + project.getName() + "' due to : " + e);
-			e.printStackTrace();
 		}
 	}
 
