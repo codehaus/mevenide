@@ -48,6 +48,7 @@
  */
 package org.mevenide.ui.eclipse.sync.wip;
 
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.maven.project.Dependency;
@@ -81,16 +82,16 @@ class DependencyMappingNodeContainer implements IArtifactMappingNodeContainer {
         for (int i = 0; i < nodes.length; i++) {
             DependencyMappingNode currentNode = (DependencyMappingNode) nodes[i];
             Dependency resolvedDependency = (Dependency) currentNode.getResolvedArtifact();
-            for (int j = 0; j < dependencies.size(); j++) {
-                if ( lowMatch(((Dependency) dependencies.get(j)), resolvedDependency) ) {
-                    currentNode.setDependency((Dependency) dependencies.get(j));
+            for (Iterator itr = dependencies.iterator(); itr.hasNext(); ) {
+                Dependency pomDependency = (Dependency) itr.next();
+                if ( lowMatch((pomDependency), resolvedDependency) ) {
+                    currentNode.setDependency(pomDependency);
                 }
             }
         }
     }
     
     private boolean lowMatch(Dependency d1, Dependency d2) {
-        System.err.println("d1 : " + d1.getArtifactId() + " - d2 : " + d2.getArtifactId());
         return d1.getArtifactId().equals(d2.getArtifactId());
     }
 }

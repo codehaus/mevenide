@@ -104,7 +104,7 @@ public class SynchronizeView extends ViewPart {
         artifactMappingNodeViewer.getTree().setLayoutData(gridData);
         
         configureViewer();
-        
+      
     }
 
     private void configureViewer() {
@@ -114,7 +114,9 @@ public class SynchronizeView extends ViewPart {
 //               
 //        );
         getSite().setSelectionProvider(artifactMappingNodeViewer);
+        
     }
     
+   
     
 }
