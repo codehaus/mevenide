@@ -62,7 +62,7 @@
       <type>jar</type>
       <url>http://forehead.werken.com/</url>
       <properties>
-        <eclipse.plugin.bu>true</eclipse.plugin.bu>
+        <eclipse.plugin.bundle>true</eclipse.plugin.bundle>
       </properties>
     </dependency>
     <dependency>
@@ -72,7 +72,7 @@
       <type>jar</type>
       <url>http://jakarta.apache.org/commons/httpclient/</url>
       <properties>
-        <eclipse.plugin.bu>false</eclipse.plugin.bu>
+        <eclipse.plugin.bundle>false</eclipse.plugin.bundle>
       </properties>
     </dependency>
     <dependency>
@@ -81,7 +81,7 @@
       <version>0.6</version>
       <type>jar</type>
       <properties>
-        <eclipse.plugin.bu>false</eclipse.plugin.bu>
+        <eclipse.plugin.bundle>false</eclipse.plugin.bundle>
       </properties>
     </dependency>
     <dependency>
