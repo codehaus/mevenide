@@ -6,6 +6,14 @@
   </properties>
 
   <body>
+    <release version="0.2.2" date="21/06/2004" description="fix release">
+      <action dev="mkleint" type="fix">    
+      MEVENIDE-77 - before running any goal, save edited files.
+      </action>
+      <action dev="mkleint" type="fix">    
+      MEVENIDE-76 - completed the fix, also debugging of artifact works now.
+      </action>
+    </release>
     <release version="0.2.1" date="17/06/2004" description="hotfix release">
       <action dev="mkleint" type="fix">    
       hotfix MEVENIDE-76 - run project fixed.
