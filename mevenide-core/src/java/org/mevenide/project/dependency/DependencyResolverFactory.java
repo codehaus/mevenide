@@ -57,14 +57,19 @@ import java.util.Map;
  * @version $Id$
  * 
  */
-public abstract class DependencyResolverFactory implements IDependencyResolver {
+public class DependencyResolverFactory  {
 
-	private static Map resolvers = new HashMap();
+	private Map resolvers = new HashMap();
+	private static DependencyResolverFactory factory = new DependencyResolverFactory();
 	
-	protected DependencyResolverFactory() {
+	private DependencyResolverFactory() {
 	}
 		
-	public static synchronized IDependencyResolver newInstance(String absoluteFileName) throws  Exception {
+	public static synchronized DependencyResolverFactory getFactory() {
+	    return factory;
+	}
+	
+	public synchronized IDependencyResolver newInstance(String absoluteFileName) throws  Exception {
 		if (resolvers.containsKey(absoluteFileName)) {
 			return (IDependencyResolver) resolvers.get(absoluteFileName);
 		}

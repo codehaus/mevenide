@@ -109,6 +109,15 @@ public class DependencyUtilTest extends AbstractMevenideTestCase {
 		dep = dependencyFactory.getDependency("E:/bleeeaaaah/plouf/junit-3.8.1.jar");
 		assertTrue(DependencyUtil.isDependencyPresent(project, dep));
 		
+		project.setDependencies(null);
+		assertFalse(DependencyUtil.isDependencyPresent(project, dep));
+
+		project.setDependencies(new ArrayList());
+		
+		project.addDependency(dep);
+		Dependency dep2 = dependencyFactory.getDependency("E:/bleeeaaaah/plouf/jars/junit-3.7.jar");
+		assertFalse(DependencyUtil.isDependencyPresent(project, dep2));
+		
 	}
 	
 	public void testAreEquals() {
@@ -176,6 +185,8 @@ public class DependencyUtilTest extends AbstractMevenideTestCase {
 		d.setArtifactId("rtt");
 		d.setVersion("5.0");
 		assertTrue(DependencyUtil.isValid(d));
+		
+		assertFalse(DependencyUtil.isValid(null));
 	}
 	
 	public void testGetNonResolvedDependencies() throws Exception {

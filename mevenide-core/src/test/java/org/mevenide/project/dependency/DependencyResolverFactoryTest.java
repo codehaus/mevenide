@@ -66,7 +66,7 @@ public class DependencyResolverFactoryTest extends AbstractMevenideTestCase {
 		tmp.mkdirs();
 		File f = new File(tmp, "pyo.jar");
 		f.createNewFile();
-		assertNotNull(DependencyResolverFactory.newInstance(f.getAbsolutePath()));
+		assertNotNull(DependencyResolverFactory.getFactory().newInstance(f.getAbsolutePath()));
 		delete(new File(System.getProperty("user.home"), ".mevenide"));
 	}
 
