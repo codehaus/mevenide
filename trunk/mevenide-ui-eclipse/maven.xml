@@ -5,6 +5,7 @@
   	<!-- deregister test related plugins since there are none -->
     <attainGoal name="maven-jcoverage-plugin:deregister"/>  
     <attainGoal name="maven-junit-report-plugin:deregister"/>  
+    <attainGoal name="maven-clover-plugin:deregister"/>
   </postGoal>
 	  
   <preGoal name="jar:jar">
