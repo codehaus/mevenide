@@ -61,11 +61,12 @@ public class DependencyUtil {
 	
 	public static boolean isValid(Dependency d) {
 		if ( d == null ) { 
+			log.debug("null dependency found");
 			return false;
 		} 
-		boolean valid = d.getGroupId() != null && d.getGroupId().length() != 0
-						&& d.getArtifactId() != null && d.getArtifactId().length() != 0
-						&& d.getVersion() != null && d.getVersion().length() != 0;
+		boolean valid = d.getGroupId() != null && !d.getGroupId().trim().equals("")
+						&& d.getArtifactId() != null && !d.getArtifactId().trim().equals("")
+						&& d.getVersion() != null && !d.getVersion().trim().equals("");
 		log.debug("Dependency " + d.getArtifact() + " valid=" + valid + toString(d));
 		return  valid;
 	}
