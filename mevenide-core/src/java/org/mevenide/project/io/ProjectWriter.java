@@ -20,7 +20,7 @@ import java.io.Writer;
 import org.apache.maven.project.Dependency;
 import org.apache.maven.project.Project;
 import org.apache.maven.project.Resource;
-import org.mevenide.project.SourceDirectoryUtil;
+import org.mevenide.project.source.SourceDirectoryUtil;
 import org.mevenide.project.dependency.AbstractDependencyResolver;
 import org.mevenide.project.dependency.DependencyFactory;
 import org.mevenide.project.dependency.IDependencyResolver;
