@@ -406,7 +406,6 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
 		log.debug("artifact modified : " + artifact);
 		updatePoms(event.getProject());
 		refreshNode(artifact);
-		//refreshAll();
 		comparator.compare(event.getProject());
 	}
 	
@@ -414,18 +413,19 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
 		IArtifactMappingNode artifact = (IArtifactMappingNode) event.getArtifact();
 		updatePoms(event.getProject());
 		refreshNode(artifact);
-		//refreshAll();
 		comparator.compare(event.getProject());
 	}
 	
 	//@TODO evil.. but actions read poms instead of working on pom references.. 
 	private void updatePoms(Project project) {
 	    for (int i = 0; i < poms.size(); i++) {
-			if ( project.getFile().equals(project.getFile()) ) {
+	        Project pom = (Project) poms.get(i);
+			if ( pom.getFile().equals(project.getFile()) ) {
 				poms.remove(i);
 				poms.add(i, project);
 			} 
         }
+	    ((ArtifactMappingContentProvider) artifactMappingNodeViewer.getContentProvider()).setPoms(poms);
     }
 
     public TreeViewer getArtifactMappingNodeViewer() {
