@@ -15,7 +15,7 @@
  * =========================================================================
  */
 
-package org.mevenide.netbeans.project.exec;
+package org.mevenide.netbeans.project.output;
 
 import org.netbeans.api.debugger.jpda.DebuggerStartException;
 import org.netbeans.api.debugger.jpda.JPDADebugger;
@@ -27,32 +27,28 @@ import org.openide.util.RequestProcessor;
  * Custom line based filter for maven executor output when running the application.
  * @author  Milos Kleint (ca206216@tiscali.cz)
  */
-public class AttachDebuggerOutputFilter implements OutputFilter {
+public class AttachDebuggerOutputHook implements OutputProcessor {
     private int timeout;
     private String host;
     private int port;
     
-    public AttachDebuggerOutputFilter(int delay, String hostname, int p) {
+    public AttachDebuggerOutputHook(int delay, String hostname, int p) {
         timeout = delay;
         host = hostname;
         port = p;
     }
-    public String filterLine(String line) {
+    
+    public void processLine(String line, OutputVisitor visitor) {
         if (line.indexOf("[mevenide-debug-start]") != -1) { //NOI18N
-            System.out.println("tstarting thread..");
             RequestProcessor.postRequest(new Runnable() {
                 public void run() {
                     try {
-                        System.out.println("starting jpda debugger..");
                         JPDADebugger debug = JPDADebugger.attach(host, port, new Object[0]);
                     } catch (DebuggerStartException exc) {
-                        System.out.println("exception while runnign debugger.");
-                        exc.printStackTrace();
                         DialogDisplayer.getDefault().notify(new NotifyDescriptor.Message("Cannot attach debugger.", NotifyDescriptor.ERROR_MESSAGE));
                     }
                 }
             }, timeout);
         }
-        return line;
     }
 }

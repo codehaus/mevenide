@@ -16,22 +16,37 @@
  */
 package org.mevenide.netbeans.project.exec;
 
+import java.awt.event.ActionEvent;
 import java.io.*;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import javax.swing.Action;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.mevenide.netbeans.project.MavenProject;
+import org.mevenide.netbeans.project.output.OutputProcessor;
+import org.mevenide.netbeans.project.output.OutputVisitor;
+import org.openide.DialogDisplayer;
 import org.openide.ErrorManager;
+import org.openide.NotifyDescriptor;
 import org.openide.filesystems.FileUtil;
 
 import org.openide.util.MapFormat;
 import org.openide.util.RequestProcessor;
+import org.openide.util.Task;
 import org.openide.util.Utilities;
 import org.openide.windows.IOProvider;
 import org.openide.windows.InputOutput;
 import org.openide.windows.OutputListener;
 import org.openide.windows.OutputWriter;
 import org.openide.execution.NbProcessDescriptor;
+import org.mevenide.netbeans.project.output.JavaOutputListenerProvider;
+import org.mevenide.netbeans.project.output.TestOutputListenerProvider;
+import org.mevenide.netbeans.project.output.AnnouncementOutputListenerProvider;
 
 /**
  *
@@ -64,14 +79,14 @@ public class MavenExecutor implements Runnable {
     private Process proces;
     private String format;
     private InputOutput io;
-    private OutputFilter outFilter;
-    private OutputFilter errFilter;
+    private Set processors;
     
     private static RequestProcessor PROCESSOR = new RequestProcessor("maven execution", 3);
     
-    public MavenExecutor(MavenProject proj, String gl) {
+    public MavenExecutor(MavenProject proj, String gl, Set procs) {
         project = proj;
         goal = gl;
+        processors = procs;
         StringBuffer mavenExeFmt = new StringBuffer();
         if (Utilities.isWindows()) {
             mavenExeFmt.append("\"{");
@@ -149,14 +164,6 @@ public class MavenExecutor implements Runnable {
         }
         String procString = MapFormat.format(format, formats);
         Process proc = Runtime.getRuntime().exec(procString, null, execDir);
-        InputOutput ioput = getInputOutput();
-        OutputListenerProvider[] providers = new OutputListenerProvider[] {
-            new TestOutputListenerProvider(project),
-            new JavaOutputListenerProvider(project),
-            new AnnouncementOutputListenerProvider(project)
-        };
-        PROCESSOR.post(new Output(proc.getInputStream(), ioput.getOut(), outFilter, providers));
-        PROCESSOR.post(new Output(proc.getErrorStream(), ioput.getErr(), errFilter, providers));
         return proc;
     }
     
@@ -182,21 +189,64 @@ public class MavenExecutor implements Runnable {
         io = inout;
     }
     
-    public void setFilterOutput(OutputFilter filter) {
-        outFilter = filter;
-    }
-    
-    public void setFilterError(OutputFilter filter) {
-        errFilter = filter;
-    }
-
     /**
      * not to be called directrly.. use execute();
      */
     public void run() {
         try {
             proces = createProcess();
+            InputOutput ioput = getInputOutput();
+            OutputProcessor[] providers = new OutputProcessor[processors.size()];
+            providers = (OutputProcessor[])processors.toArray(providers);
+            Output out = new Output(proces.getInputStream(), ioput.getOut(),  providers);
+            Output err = new Output(proces.getErrorStream(), ioput.getErr(),  providers);
+            Task outTask = PROCESSOR.post(out);
+            Task errTask = PROCESSOR.post(err);
             proces.waitFor();
+            outTask.waitFinished();
+            errTask.waitFinished();
+            if (out.wasSuccessfull()) {
+                // out.wasSuccessfull() is not happening when limiting output..
+                List succActions = new ArrayList();
+                succActions.addAll(out.getSuccessActions() != null ? out.getSuccessActions() : Collections.EMPTY_LIST);
+                succActions.addAll(err.getSuccessActions() != null ? err.getSuccessActions() : Collections.EMPTY_LIST);
+                if (succActions.size() > 0) {
+                    Action action = null;
+                    if (succActions.size() == 1) {
+                        action = (Action)succActions.iterator().next();
+                    } else {
+                        int maxPriotity = -1;
+                        Iterator it = succActions.iterator();
+                        while (it.hasNext()) {
+                            Action act = (Action)it.next();
+                            Integer priority = (Integer)act.getValue("Priority");
+                            if (priority.intValue() > maxPriotity) {
+                                action = act;
+                                maxPriotity = priority.intValue();
+                            }
+                        }
+                    }
+                    String question = (String)action.getValue("Question");
+                    String title = (String)action.getValue(Action.SHORT_DESCRIPTION);
+                    if (question != null) {
+                        NotifyDescriptor desc = new NotifyDescriptor.Confirmation(question,
+                        title == null ? "" : title,
+                        NotifyDescriptor.OK_CANCEL_OPTION,
+                        NotifyDescriptor.QUESTION_MESSAGE);
+                        Object returned = DialogDisplayer.getDefault().notify(desc);
+                        if (NotifyDescriptor.OK_OPTION.equals(returned)) {
+                            action.actionPerformed(new ActionEvent(MavenExecutor.this, ActionEvent.ACTION_PERFORMED, "Performed"));
+                        }
+
+                    } else {
+                        //TODO
+                        System.out.println("size is not 1");
+                    }
+                    
+                }
+            }
+            
+            
         } catch (IOException io) {
             ErrorManager.getDefault().notify(io);
         } catch (InterruptedException exc) {
@@ -207,40 +257,47 @@ public class MavenExecutor implements Runnable {
     private static class Output implements Runnable {
         private InputStream str;
         private OutputWriter writer;
-        private OutputFilter filter;
-        private OutputListenerProvider[] providers;
-        public Output(InputStream instream, OutputWriter out, OutputFilter filt, OutputListenerProvider[] provs) {
+        private OutputProcessor[] providers;
+        private List successActions;
+        private boolean success = false;
+        private boolean failed = false;
+        public Output(InputStream instream, OutputWriter out, OutputProcessor[] provs) {
             str = instream;
             writer = out;
-            filter = filt;
             providers = provs;
+            successActions = new ArrayList();
         }
         
         public void run() {
             BufferedReader read = new BufferedReader(new InputStreamReader(str), 50);
             String line; 
+            OutputVisitor visitor = new OutputVisitor();
             try {
                 while ((line = read.readLine()) != null) {
-                    if (filter != null) {
-                        line = filter.filterLine(line);
+                    if (line.equals("BUILD SUCCESSFUL")) {
+                        success = true;
                     }
-                    if (line != null) {
-                        OutputListener listener = null;
-                        if (providers != null) {
-                            for (int i = 0; i < providers.length; i++) {
-                                listener = providers[i].recognizeLine(line);
-                                if (listener != null) {
-                                    break;
-                                }
-                            }
-                        }
-                        if (listener == null) {
-                            writer.println(line);
-                        } else {
-                            writer.println(line, listener);
-                        }
-                        writer.flush();
+                    if (line.equals("BUILD FAILED")) {
+                        failed = true;
                     }
+                    visitor.resetVisitor();
+                    if (providers != null) {
+                        for (int i = 0; i < providers.length; i++) {
+                            providers[i].processLine(line,visitor);
+                        }
+                    }
+                    if (visitor.getFilteredLine() != null) {
+                        line = visitor.getFilteredLine();
+                    }
+                    if (visitor.getOutputListener() == null) {
+                        writer.println(line);
+                    } else {
+                        writer.println(line, visitor.getOutputListener());
+                    }
+                    if (visitor.getSuccessAction() != null) {
+                        successActions.add(visitor.getSuccessAction());
+                    }
+                    writer.flush();
                 }
                 read.close();
             } catch (IOException io) {
@@ -253,6 +310,18 @@ public class MavenExecutor implements Runnable {
                     logger.error(ioexc);
                 }
             }
+        }
+        
+        public List getSuccessActions() {
+            return successActions;
+        }
+        
+        public boolean wasSuccessfull() {
+            return success;
+        }
+        
+        public boolean wasFailed() {
+            return failed;
         }
     }
 }

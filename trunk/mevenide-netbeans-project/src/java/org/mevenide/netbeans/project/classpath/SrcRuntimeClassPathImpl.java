@@ -57,7 +57,6 @@ public class SrcRuntimeClassPathImpl extends AbstractProjectClassPathImpl {
                 Resource res = (Resource)it.next();
                 URI uri = checkOneResource(res);                    
                 if (uri != null) {
-                    System.out.println("adding resource uri=" + uri);
                     lst.add(uri);
                 }
             }

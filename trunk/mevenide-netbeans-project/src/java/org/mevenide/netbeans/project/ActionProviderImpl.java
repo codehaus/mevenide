@@ -22,14 +22,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.util.Properties;
+import java.util.Set;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.mevenide.netbeans.project.exec.AttachDebuggerOutputFilter;
+import org.mevenide.netbeans.project.output.AttachDebuggerOutputHook;
 import org.mevenide.netbeans.project.exec.MavenExecutor;
-import org.mevenide.netbeans.project.exec.OutputFilter;
-import org.mevenide.netbeans.project.exec.RunOutputFilter;
+import org.mevenide.netbeans.project.output.OutputProcessor;
+import org.mevenide.netbeans.project.output.OutputProcessorFactory;
+import org.mevenide.netbeans.project.output.RunOutputFilter;
 import org.mevenide.properties.IPropertyLocator;
 import org.mevenide.properties.IPropertyResolver;
 import org.netbeans.spi.project.ActionProvider;
@@ -189,38 +191,38 @@ public class ActionProviderImpl implements ActionProvider {
         try {
             int port = Integer.parseInt(portStr);
             int delay = Integer.parseInt(delStr);
-            OutputFilter filter = new AttachDebuggerOutputFilter(delay, host, port);
-            runGoal(goal, lookup, filter, filter, null);
+            OutputProcessor filter = new AttachDebuggerOutputHook(delay, host, port);
+            Set procs = OutputProcessorFactory.getDefault().createDetaultProcessorsSet(project);
+            procs.add(filter);
+            runGoal(goal, lookup, procs, null);
         } catch (NumberFormatException exc) {
             logger.error("Cannot parse", exc);
         }
     }
     
     public void runGoal(String goal, Lookup lookup) throws java.lang.IllegalArgumentException {
-        runGoal(goal, lookup, null, null, null);
+        runGoal(goal, lookup, OutputProcessorFactory.getDefault().createDetaultProcessorsSet(project), null);
     }
     
     private void runGoal(String goal, Lookup lookup, 
-                         OutputFilter out, OutputFilter err, 
+                         Set processors, 
                          InputOutput io) throws java.lang.IllegalArgumentException {
         // save all edited files.. maybe finetune for project's files only, however that would fail for multiprojects..
         LifecycleManager.getDefault().saveAll();                             
         // setup executor first..                     
-        MavenExecutor exec = new MavenExecutor(project, goal);
+        MavenExecutor exec = new MavenExecutor(project, goal, processors);
         exec.setNoBanner(MavenSettings.getDefault().isNoBanner());
         exec.setOffline(MavenSettings.getDefault().isOffline());
         exec.setDebug(MavenSettings.getDefault().isDebug());
         exec.setExceptions(MavenSettings.getDefault().isExceptions());
         exec.setNonverbose(MavenSettings.getDefault().isNonverbose());
         int meterLoc = project.getPropertyLocator().getPropertyLocation("maven.download.meter"); //NOI18N
-        if (meterLoc == IPropertyLocator.LOCATION_NOT_DEFINED 
-                   ||  meterLoc == IPropertyLocator.LOCATION_DEFAULTS) {
+        if (    meterLoc == IPropertyLocator.LOCATION_NOT_DEFINED 
+            ||  meterLoc == IPropertyLocator.LOCATION_DEFAULTS) {
             exec.setDownloadMeter(MavenSettings.getDefault().getDownloader());
         } else {
             exec.setDownloadMeter(project.getPropertyResolver().getResolvedValue("maven.download.meter")); //NOI18N
         }
-        exec.setFilterError(err);
-        exec.setFilterOutput(out);
         exec.setCustomInputOutput(io);
         ExecutorTask task = ExecutionEngine.getDefault().execute("Maven", exec, exec.getInputOutput());
         //        RequestProcessor.getDefault().post();
@@ -231,47 +233,6 @@ public class ActionProviderImpl implements ActionProvider {
                     project.firePropertyChange(MavenProject.PROP_PROJECT);
                 }
         });
-        //-------------------------------------------------------------------------
-        // these are temporary..
-        // need a more general way of checking for opening browser.
-        if ("javadoc".equals(goal)) {
-            task.addTaskListener(new TaskListener() {
-                public void taskFinished(Task task2) {
-                    String javadoc = project.getPropertyResolver().getResolvedValue("maven.javadoc.destdir"); //NOI18N
-                    if (javadoc == null) {
-                        return;
-                    }
-                    File fil = new File(javadoc, "index.html"); //NOI18N
-                    fil = FileUtil.normalizeFile(fil);
-                    if (fil.exists()) {
-                        try {
-                            HtmlBrowser.URLDisplayer.getDefault().showURL(fil.toURI().toURL());
-                        } catch (MalformedURLException exc) {
-                            logger.error(exc);
-                        }
-                    }
-                }
-            });
-        }
-        if ("site:generate".equals(goal)) {
-            task.addTaskListener(new TaskListener() {
-                public void taskFinished(Task task2) {
-                    String docs = project.getPropertyResolver().getResolvedValue("maven.docs.dest"); //NOI18N
-                    if (docs == null) {
-                        return;
-                    }
-                    File fil = new File(docs, "index.html"); //NOI18N
-                    fil = FileUtil.normalizeFile(fil);
-                    if (fil.exists()) {
-                        try {
-                            HtmlBrowser.URLDisplayer.getDefault().showURL(fil.toURI().toURL());
-                        } catch (MalformedURLException exc) {
-                            logger.error(exc);
-                        }
-                    }
-                }
-            });
-        }
     }
     
     public boolean isActionEnabled(String str, Lookup lookup) throws java.lang.IllegalArgumentException {
@@ -293,12 +254,10 @@ public class ActionProviderImpl implements ActionProvider {
             return found;
         }
         if (COMMAND_DEBUG_TEST_SINGLE.equals(str)) {
-            System.out.println("COMMAND=" + str);
             FileObject[] fos = FileUtilities.extractFileObjectsfromLookup(lookup);
             boolean found = fos != null && fos.length == 1;
             if (found) {
                 found = FileUtilities.findTestForFile(project, fos[0]) != null;
-                System.out.println("found1" + found + " for =" + fos[0]);
             }
             return found;
         }

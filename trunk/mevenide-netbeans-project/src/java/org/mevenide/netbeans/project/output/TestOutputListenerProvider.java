@@ -15,7 +15,7 @@
  * =========================================================================
  */
 
-package org.mevenide.netbeans.project.exec;
+package org.mevenide.netbeans.project.output;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -40,7 +40,7 @@ import org.openide.windows.OutputWriter;
  *
  * @author  Milos Kleint (ca206216@tiscali.cz)
  */
-public class TestOutputListenerProvider extends AbstractOutputListenerProvider {
+public class TestOutputListenerProvider extends AbstractOutputProcessor {
     private static final String[] TESTGOALS = new String[] {
         "test:test:",
         "test:single:",
@@ -59,16 +59,15 @@ public class TestOutputListenerProvider extends AbstractOutputListenerProvider {
         return TESTGOALS;
     }
     
-    public OutputListener recognizeLine(String line) {
+    public void processLine(String line, OutputVisitor visitor) {
         if (isInWatchedGoals(line)) {
             Matcher match = failPattern.matcher(line);
             if (match.matches()) {
                 String test = match.group(1);
                 //TODO just one instance and reuse..
-                return new TestOutputListener(project, test);
+                visitor.setOutputListener(new TestOutputListener(project, test));
             }
         }
-        return null;
     }
     
     private static class TestOutputListener implements OutputListener {

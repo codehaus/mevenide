@@ -6,6 +6,15 @@
   </properties>
 
   <body>
+  
+    <release version="0.3" date="in CVS" description="">
+      <action dev="mkleint" type="fix">    
+        MEVENIDE-83 - fix classpath dependencies resolution.
+      </action>
+      <action dev="mkleint" type="add">
+      Some POM properties already editable.
+      </action>
+    </release>
     <release version="0.2.2" date="21/08/2004" description="fix release">
       <action dev="mkleint" type="fix">    
       MEVENIDE-77 - before running any goal, save edited files.

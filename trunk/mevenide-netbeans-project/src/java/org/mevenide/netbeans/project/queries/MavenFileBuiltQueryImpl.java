@@ -52,7 +52,7 @@ public class MavenFileBuiltQueryImpl implements FileBuiltQueryImplementation {
      *         or null for no answer
      */   
     public FileBuiltQuery.Status getStatus(FileObject fileObject) {
-        logger.debug("status for=" + fileObject);
+        logger.debug("status for=" + fileObject); //NOI18N
         return new Status();
     }
     
@@ -60,7 +60,7 @@ public class MavenFileBuiltQueryImpl implements FileBuiltQueryImplementation {
     private class Status implements FileBuiltQuery.Status {
         
         public void addChangeListener(ChangeListener changeListener) {
-            logger.warn("adding listeenr=" + changeListener.getClass());
+            logger.warn("adding listeenr=" + changeListener.getClass()); //NOI18N
         }
         
         public boolean isBuilt() {
@@ -68,7 +68,7 @@ public class MavenFileBuiltQueryImpl implements FileBuiltQueryImplementation {
         }
         
         public void removeChangeListener(ChangeListener changeListener) {
-            logger.warn("removing listeenr=" + changeListener.getClass());
+            logger.warn("removing listeenr=" + changeListener.getClass()); //NOI18N
         }
         
     }

@@ -124,6 +124,7 @@
         <artifactId>org-openide-execution</artifactId>
         <!-- include nb specification version.. that's important for compiling -->
         <version>1.3</version>
+        <type>jar</type>
         <url>http://www.netbeans.org</url>
         <properties>
              <netbeans.module.dep>spec</netbeans.module.dep>

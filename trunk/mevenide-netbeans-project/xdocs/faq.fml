@@ -1,17 +1,56 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <faqs title="Frequently Asked Questions">
    
-<!--   <part id="install">
+   <part id="install">
     <title>Installing</title>
-        <faq id="download">
+        <faq id="macosx">
         <question> 
-            Where can I download the Netbeans module?
+            How do I setup mevenide on Mac OSX?
         </question> 
         <answer>
-           <p> It's not yet available for free download. In order to try out the module, please checkout the meveninde project from cvs and build it. </p>
+           <p>Apart from downloading the mevenide binaries, you need to setup the MAVEN_HOME and JAVA_HOME environment variables.
+           You can do it in the netbeans install dir's  etc/netbeans.conf file. For details and alternate ways, see <a href="http://jira.codehaus.org/browse/MEVENIDE-88">MEVENIDE-88 bug report.</a></p>
+           <p> Courtesy of Travis Risner. </p>
         </answer>
         </faq>
-        <faq id="build">
+        
+    </part>
+    
+   <part id="setup">
+    <title>Project Setup</title>
+        <faq id="dependency">
+        <question> 
+            How come my dependency is not on classpath?
+        </question> 
+        <answer>
+           <p>When you get red underlines for classes and methods from one of your dependencies, please check if you define it's type element. Make it either jar or ejb, depending on the type of the dependency. </p>
+        </answer>
+        </faq>
+        <faq id="javadoc">
+        <question>
+        How will I get javadoc for my dependencies to show up in code completion?
+        </question>
+        <answer>
+         <p>
+           Put the zip with javadocs into your local repository (in the group's folder create a "javadocs" subfolder), give it the same name as the jar and the "javadoc" extension (instead of default "zip") and the IDE will find it.
+           When the javadoc is on remote repository, just declare additional dependency of type javadoc.
+           If you have the project opened, the javadoc:install goal will create the javadoc and put it in the local repository for you.
+           </p>
+        </answer>
+        </faq>
+        <faq id="multiproject">
+        <question>
+        I have a project and several subprojects, how do I link them together?
+        </question>
+        <answer>
+       <p> Use the multiproject plugin's properties </p><source>maven.multiproject.basedir</source> <p>and</p> <source>maven.multiproject.includes</source> <p>to denote your subprojects.
+        When opening such project, the subprojects can be opened as well. Refactoring and other cross project features work then on all the projects. </p>
+        </answer>
+        </faq>
+        
+    </part>
+    
+<!--        <faq id="build">
         <question> 
             How do I build the Netbeans module?
         </question> 

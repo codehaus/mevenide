@@ -15,23 +15,21 @@
  * =========================================================================
  */
 
-package org.mevenide.netbeans.project.exec;
+package org.mevenide.netbeans.project.output;
 
 import java.awt.Toolkit;
 import java.io.File;
 import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.regex.Pattern;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.mevenide.netbeans.project.MavenProject;
-import org.openide.cookies.EditorCookie;
+import org.openide.cookies.OpenCookie;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.loaders.DataObject;
 import org.openide.loaders.DataObjectNotFoundException;
-import org.openide.text.Line;
 import org.openide.windows.OutputEvent;
 import org.openide.windows.OutputListener;
 
@@ -41,50 +39,43 @@ import org.openide.windows.OutputListener;
  *
  * @author  Milos Kleint (ca206216@tiscali.cz)
  */
-public class JavaOutputListenerProvider extends AbstractOutputListenerProvider {
-    private static final Log logger = LogFactory.getLog(JavaOutputListenerProvider.class);
+public class AnnouncementOutputListenerProvider extends AbstractOutputProcessor {
+    private static final Log logger = LogFactory.getLog(AnnouncementOutputListenerProvider.class);
     
-    private static final String[] JAVAGOALS = new String[] {
-        "java:compile:"
+    private static final String[] ANNOUNCEGOALS = new String[] {
+        "announcement:generate:",
+        "announcement:generate-all:"
     };
-    private Pattern failPattern;
+    private Pattern pattern;
     private MavenProject project;
     
     /** Creates a new instance of TestOutputListenerProvider */
-    public JavaOutputListenerProvider(MavenProject proj) {
-        failPattern = failPattern.compile("(.*)\\.java\\:([0-9]*)\\: (.*)");
+    public AnnouncementOutputListenerProvider(MavenProject proj) {
+        pattern = pattern.compile(".*\\[echo\\] Generating announcement for .* in (.*)\\.\\.\\.");
         project = proj;
     }
     
     protected String[] getWatchedGoals() {
-        return JAVAGOALS;
+        return ANNOUNCEGOALS;
     }
     
-    public OutputListener recognizeLine(String line) {
+    public void processLine(String line, OutputVisitor visitor) {
         if (isInWatchedGoals(line)) {
-            Matcher match = failPattern.matcher(line);
+            Matcher match = pattern.matcher(line);
             if (match.matches()) {
-                String clazz = match.group(1);
-                String lineNum = match.group(2);
+                String file = match.group(1);
                 //TODO just one instance and reuse..
-                return new JavaOutputListener(project, clazz, lineNum);
+                visitor.setOutputListener(new AnnOutputListener(project, file));
             }
         }
-        return null;
     }
     
-    private static class JavaOutputListener implements OutputListener {
+    private static class AnnOutputListener implements OutputListener {
         private MavenProject project;
-        private File clazzfile;
-        private int lineNum;
-        public JavaOutputListener(MavenProject proj, String clazz, String line) {
-            clazzfile = new File(clazz + ".java");
+        private File file;
+        public AnnOutputListener(MavenProject proj, String fileStr) {
+            file = new File(fileStr);
             project = proj;
-            try {
-                lineNum = Integer.parseInt(line);
-            } catch (NumberFormatException exc) {
-                lineNum = -1;
-            }
         }
         /** Called when a line is selected.
          * @param ev the event describing the line
@@ -96,29 +87,16 @@ public class JavaOutputListenerProvider extends AbstractOutputListenerProvider {
          * @param ev the event describing the line
          */
         public void outputLineAction(OutputEvent ev) {
-            FileObject file = FileUtil.toFileObject(clazzfile);
-            if (file == null) {
+            FileObject fo = FileUtil.toFileObject(file);
+            if (fo == null) {
                 Toolkit.getDefaultToolkit().beep();
                 return;
             }
             try {
-                DataObject dob = DataObject.find(file);
-                EditorCookie ed = (EditorCookie) dob.getCookie(EditorCookie.class);
-                if (ed != null && file == dob.getPrimaryFile()) {
-                    if (lineNum == -1) {
-                        ed.open();
-                    } else {
-                        ed.openDocument();
-                        try {
-                            Line l = ed.getLineSet().getOriginal(lineNum - 1);
-                            if (! l.isDeleted()) {
-                                l.show(Line.SHOW_GOTO);
-                            }
-                        } catch (IndexOutOfBoundsException ioobe) {
-                            // Probably harmless. Bogus line number.
-                            ed.open();
-                        }
-                    }
+                DataObject dob = DataObject.find(fo);
+                OpenCookie ed = (OpenCookie) dob.getCookie(OpenCookie.class);
+                if (ed != null) {
+                    ed.open();
                 } else {
                     Toolkit.getDefaultToolkit().beep();
                 }
