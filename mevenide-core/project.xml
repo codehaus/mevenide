@@ -175,7 +175,7 @@
         <dependency>
             <groupId>mevenide</groupId>
             <artifactId>mevenide-config</artifactId>
-            <version>0.1-SNAPSHOT</version>
+            <version>0.2-SNAPSHOT</version>
             <type>jar</type>
             <properties>
                 <eclipse.plugin.bundle>true</eclipse.plugin.bundle>
