@@ -48,14 +48,10 @@
  */
 package org.mevenide.ui.eclipse.sync.wip;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.maven.project.Dependency;
-import org.apache.maven.project.Resource;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.jdt.core.IClasspathEntry;
 
 /**
  * 
@@ -64,51 +60,23 @@ import org.eclipse.core.resources.IProject;
  * @version $Id$
  *
  */
-public class AddToClasspathAction {
-	private static Log log = LogFactory.getLog(AddToClasspathAction.class);
+public class DirectoryWrapper extends SourceFolder {
+	private static Log log = LogFactory.getLog(DirectoryWrapper.class); 
 	
-	private List listeners = new ArrayList();
+	private Directory directory ;
 	
-	public void addEntry(Object item, IProject project) throws Exception {
-		ArtifactWrapper action = getArtifactWrapper(item);
-		if ( action != null ) {
-			action.addTo(project);
-			
-			fireArtifactAddedToClasspath(item, project);
-			
-		}
+	public DirectoryWrapper(Directory directory) {
+		this.directory = directory;
 	}
 	
-	public void addModelChangeListener(IModelChangeListener listener) {
-		listeners.add(listener);	
+	public void addTo(IProject project) throws Exception {
+		String type = directory.getType();
+		String path = directory.getPath();
+		log.debug("adding src entry to .classpath : "  + path + "(" + type + ")");
+		
+		IClasspathEntry srcEntry = newSourceEntry(path, project);
+		
+		addClasspathEntry(srcEntry, project);
 	}
-	
-	public void removeModelChangeListener(IModelChangeListener listener) {
-		listeners.remove(listener);
-	}
-	
-	private void fireArtifactAddedToClasspath(Object item, IProject project) {
-		for (int i = 0; i < listeners.size(); i++) {
-			ArtifactEvent event = new ArtifactEvent(item, project);
-			((IModelChangeListener)listeners.get(i)).artifactAdded(event);
-		}
-	}
-	
-	//crap..
-	private ArtifactWrapper getArtifactWrapper(Object item) {
-		if ( item instanceof Dependency ) {
-			return new DependencyWrapper((Dependency) item);
-		}
-		if ( item instanceof Directory ) {
-			return new DirectoryWrapper((Directory) item);
-		}
-		if ( item instanceof Resource ) {
-			return new ResourceWrapper((Resource) item);
-		}
-		return null;
-	}
-	
-	
-	
 
 }

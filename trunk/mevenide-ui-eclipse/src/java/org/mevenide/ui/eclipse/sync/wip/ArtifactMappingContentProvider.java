@@ -69,13 +69,6 @@ public class ArtifactMappingContentProvider implements ITreeContentProvider {
     
     public Object[] getChildren(Object parentElement) {
         if ( parentElement instanceof ProjectContainer ) {
-//            IArtifactMappingNodeContainer directoryContainer = new DirectoryMappingNodeContainer();
-//            DirectoryMappingNode node = new DirectoryMappingNode();
-//            Directory dir = new Directory();
-//            dir.setPath("${basedir}/src/java");
-//            dir.setType("sourceDirectory");
-//            node.setDirectory(dir);
-//            directoryContainer.setNodes(new IArtifactMappingNode[] { node });
             
             IProject project = ((ProjectContainer) parentElement).getProject();
             IArtifactMappingNodeContainer dependencyContainer = null;

@@ -66,11 +66,8 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
-import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.IPageSite;
 import org.eclipse.ui.part.ViewPart;
-import org.mevenide.ui.eclipse.Mevenide;
 
 
 
@@ -81,14 +78,13 @@ import org.mevenide.ui.eclipse.Mevenide;
  * @version $Id$
  *
  */
-public class SynchronizeView extends ViewPart {
+public class SynchronizeView extends ViewPart implements IModelChangeListener {
     private static final Log log = LogFactory.getLog(SynchronizeView.class);
-
 
     private Composite composite;
     private TreeViewer artifactMappingNodeViewer;
     private IPageSite site;
-    
+
     //global view actions
     private Action refreshAll;
     private Action viewIdeToPom;
@@ -160,105 +156,35 @@ public class SynchronizeView extends ViewPart {
     }
     
     private void createActions() {
-        refreshAll = new Action() {
-            public void run() {
-                artifactMappingNodeViewer.refresh(true);
-                artifactMappingNodeViewer.expandAll();
-            }
-        };
-		refreshAll.setId("REFRESH_VIEWER");
-		refreshAll.setToolTipText("Refresh All");
-		refreshAll.setImageDescriptor(Mevenide.getImageDescriptor("refresh.gif"));
+    	SynchronizeActionFactory actionFactory = SynchronizeActionFactory.getFactory(this);
+    	
+        refreshAll = actionFactory.getAction(SynchronizeActionFactory.REFRESH_ALL);
        
-		viewConflicts = new Action() {
-		    public void run() {
-		        setDirection(ProjectContainer.CONFLICTING);
-		    }
-		};
-		viewConflicts.setId("CONFLICTING");
-		viewConflicts.setToolTipText("Conflicts");
-		viewConflicts.setImageDescriptor(Mevenide.getImageDescriptor("conflicting.gif"));
-		
-		viewIdeToPom = new Action() {
-		    public void run() {
-		        setDirection(ProjectContainer.OUTGOING);
-		    }
-		};
-		viewIdeToPom.setId("IDE_TO_POM");
-		viewIdeToPom.setToolTipText("Outgoing changes");
-		viewIdeToPom.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(org.eclipse.ui.ISharedImages.IMG_TOOL_FORWARD_HOVER));
+		viewConflicts = actionFactory.getAction(SynchronizeActionFactory.VIEW_CONFLICTS);
+		viewIdeToPom = actionFactory.getAction(SynchronizeActionFactory.VIEW_OUTGOING);
+		viewPomToIde = actionFactory.getAction(SynchronizeActionFactory.VIEW_INCOMING);
 
-		viewPomToIde = new Action() {
-		    public void run() {
-		        setDirection(ProjectContainer.INCOMING);
-		    }
-		};
-		viewPomToIde.setId("POM_TO_IDE");
-		viewPomToIde.setToolTipText("Incoming Changes");
-		viewPomToIde.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(org.eclipse.ui.ISharedImages.IMG_TOOL_BACK_HOVER));
+		pushToPom = actionFactory.getAction(SynchronizeActionFactory.ADD_TO_POM);
+		removeFromProject = actionFactory.getAction(SynchronizeActionFactory.REMOVE_FROM_PROJECT);
+		addToClasspath = actionFactory.getAction(SynchronizeActionFactory.ADD_TO_CLASSPATH);
+		removeFromPom = actionFactory.getAction(SynchronizeActionFactory.REMOVE_FROM_POM);
 
-		pushToPom = new Action() {
-		    public void run() {
-		        
-		    }
-		};
-		pushToPom.setId("PUSH_TO_POM");
-		pushToPom.setText("Update Pom...");
+		markAsMerged = actionFactory.getAction(SynchronizeActionFactory.MARK_AS_MERGED);
 
-		removeFromProject = new Action() {
-			public void run() {
-				
-			}
-		};
-		removeFromProject.setId("REM_FROM_PROJECT");
-		removeFromProject.setText("Remove from project");
-		
-		addToClasspath = new AddToClasspathAction(this);
-		
-		removeFromPom = new Action() {
-			public void run() {
-				
-			}
-		};
-		removeFromPom.setId("REM_FROM_POM");
-		removeFromPom.setText("Remove from Pom");
+		viewProperties = actionFactory.getAction(SynchronizeActionFactory.PROPERTIES);
 
-		markAsMerged = new Action() {
-		    public void run() {
-		        
-		    }
-		};
-		markAsMerged.setId("MERGE");
-		markAsMerged.setText("Mark as Merged");
-
-		viewProperties = new Action() {
-		    public void run() {
-				try {
-			        PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView("org.eclipse.ui.views.PropertySheet");
-			 	}
-				catch ( PartInitException e ) {
-					log.debug(e, e);
-				}
-		    }
-		};
-		viewProperties.setId("PROPERTIES");
-		viewProperties.setText("Properties");
-
-		addToIgnoreList = new Action() {
-			public void run() {
-				try {
-					PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView("org.eclipse.ui.views.PropertySheet");
-				}
-				catch ( PartInitException e ) {
-					log.debug(e, e);
-				}
-			}
-		};
-		addToIgnoreList.setId("MVN_IGNORE");
-		addToIgnoreList.setText("Add to .mvnignore");
+		addToIgnoreList = actionFactory.getAction(SynchronizeActionFactory.MVN_IGNORE);
 		
 		separator  = new Separator();
 		
+		disableContextualActions();
+		
+		createSelectionChangedListener();
+    }
+   
+    
+
+	private void disableContextualActions() {
 		addToClasspath.setEnabled(false);
 		pushToPom.setEnabled(false);
 		markAsMerged.setEnabled(false);
@@ -266,10 +192,14 @@ public class SynchronizeView extends ViewPart {
 		removeFromPom.setEnabled(false);
 		removeFromProject.setEnabled(false);
 		addToIgnoreList.setEnabled(false);
-		
+	}
+
+	private void createSelectionChangedListener() {
 		artifactMappingNodeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
             public void selectionChanged(SelectionChangedEvent event) {
 				Object selection = ((StructuredSelection) event.getSelection()).getFirstElement();
+				
+				//temp
 				if ( !(selection instanceof IArtifactMappingNode) ) {
 					addToClasspath.setEnabled(false);
 					pushToPom.setEnabled(false);
@@ -277,38 +207,36 @@ public class SynchronizeView extends ViewPart {
 					viewProperties.setEnabled(false);
 					return;
 				}
+				
 				viewProperties.setEnabled(true);
+				
 				IArtifactMappingNode selectedNode = (IArtifactMappingNode) selection;
-				if ( (selectedNode.getChangeDirection() & ProjectContainer.OUTGOING) != 0 ) {
-					pushToPom.setEnabled(true);
-					removeFromProject.setEnabled(true);
-				}
-				else {
-				    pushToPom.setEnabled(false);
-				    removeFromProject.setEnabled(false);
-				}
-				if ( (selectedNode.getChangeDirection() & ProjectContainer.INCOMING) != 0 ) {
-					addToClasspath.setEnabled(true);
-					removeFromPom.setEnabled(true);
-				}
-				else {
-					addToClasspath.setEnabled(false);
-					removeFromPom.setEnabled(false);
-				}
-				if ( (selectedNode.getChangeDirection() & ProjectContainer.CONFLICTING) != 0 ) {
-					markAsMerged.setEnabled(true);
-					addToIgnoreList.setEnabled(false);
-				}
-				else {
-					addToIgnoreList.setEnabled(true);
-				    markAsMerged.setEnabled(false);
-				    
-				}
+				
+				//outgoing 
+				pushToPom.setEnabled((selectedNode.getChangeDirection() & ProjectContainer.OUTGOING) != 0);
+				removeFromProject.setEnabled((selectedNode.getChangeDirection() & ProjectContainer.OUTGOING) != 0);
+					
+				//incoming
+				addToClasspath.setEnabled((selectedNode.getChangeDirection() & ProjectContainer.INCOMING) != 0);
+				removeFromPom.setEnabled((selectedNode.getChangeDirection() & ProjectContainer.INCOMING) != 0);
+				
+				//conflicting
+				markAsMerged.setEnabled((selectedNode.getChangeDirection() & ProjectContainer.CONFLICTING) != 0);
+				addToIgnoreList.setEnabled((selectedNode.getChangeDirection() & ProjectContainer.CONFLICTING) == 0);
+					
             }
 		});
+	}
+
+	
+
+	private void plugActions() {
+		createMenuManager();
+		createToolBarManager();
+		createContextualMenu();
     }
-    
-    private void plugActions() {
+
+	private void createMenuManager() {
 		IMenuManager topLevelMenuManager = getViewSite().getActionBars().getMenuManager();
 		topLevelMenuManager.add(pushToPom);
 		topLevelMenuManager.add(removeFromProject);
@@ -321,19 +249,21 @@ public class SynchronizeView extends ViewPart {
 		topLevelMenuManager.add(addToIgnoreList);
 		topLevelMenuManager.add(separator);
 		topLevelMenuManager.add(viewProperties);
-		
+	}
+
+	private void createToolBarManager() {
 		IToolBarManager toolBarManager = getViewSite().getActionBars().getToolBarManager();
 		toolBarManager.add(refreshAll);
 		toolBarManager.add(viewIdeToPom);
 		toolBarManager.add(viewPomToIde);
 		toolBarManager.add(viewConflicts);
+	}
 
-		
+	private void createContextualMenu() {
 		MenuManager contextManager = new MenuManager();
 		contextManager.setRemoveAllWhenShown(true);
 		Menu menu = contextManager.createContextMenu(artifactMappingNodeViewer.getControl());
 		artifactMappingNodeViewer.getControl().setMenu(menu);
-
 		contextManager.addMenuListener(new IMenuListener() {
 			public void menuAboutToShow(IMenuManager manager) {
 			    Object selection = ((StructuredSelection) artifactMappingNodeViewer.getSelection()).getFirstElement();
@@ -358,11 +288,20 @@ public class SynchronizeView extends ViewPart {
 				}
 			}
 		});
+	}
 
-    }
-    
-    public TreeViewer getArtifactMappingNodeViewer() {
+	public void artifactAdded(ArtifactEvent event) {
+    	log.debug("artifact modified : " + event.getArtifact());
+    	artifactMappingNodeViewer.getExpandedElements();
+    	artifactMappingNodeViewer.refresh(((ArtifactMappingContentProvider) artifactMappingNodeViewer.getContentProvider()).getParent(event.getArtifact()));
+    	artifactMappingNodeViewer.expandAll();
+	}
+
+
+	public TreeViewer getArtifactMappingNodeViewer() {
 		return artifactMappingNodeViewer;
 	}
+	
+	
 
 }
