@@ -7,15 +7,6 @@
 		 xmlns:util="jelly:util"
 		 xmlns:mevenide="mevenide">
 
-  <!-- 
-  	this script builds the various subprojects into thre different eclipse plugins.
-  	however we cannot use it yet. we need before that to do a bit refactoring to 
-  	decouple the core from ui-eclipse (implicit dependency through commons-discovery)
-  	indeed since each eclipse plugin has its own classloaders, this cannot possibly 
-  	work. baddesign, bigtroubles..
-  	also, if this script actually works, references to subprojects are hardcoded when 
-  	looking up dependencies of the subprojects they depend upon.
-  -->
   
   <define:taglib uri="mevenide">
   	
