@@ -71,7 +71,7 @@ public class DependencyNode extends AbstractNode {
             setIconBase("org/mevenide/netbeans/project/resources/DependencyPlugin"); //NOI18N
         } else if (dependency.getValue("type") != null && "pom".equalsIgnoreCase(dependency.getValue("type"))) { //NOI18N
             setIconBase("org/mevenide/netbeans/project/resources/DependencyPom"); //NOI18N
-        } else if (dependency.getValue("type") != null && "jar".equalsIgnoreCase(dependency.getValue("type"))) { //NOI18N
+        } else if ("jar".equalsIgnoreCase(dependency.getValue("type"))) { //NOI18N
             setIconBase("org/mevenide/netbeans/project/resources/DependencyJar"); //NOI18N
         } else {
             setIconBase("org/mevenide/netbeans/project/resources/DependencyIcon"); //NOI18N
@@ -186,11 +186,38 @@ public class DependencyNode extends AbstractNode {
         return false;
     }
     
+    public boolean hasJavadocInRepository() {
+        Dependency depSnap = createDependencySnapshot();
+        depSnap.setType("javadoc.jar");
+        URI uri = FileUtilities.getDependencyURI(depSnap, project);
+        return (uri != null && new File(uri).exists());
+    }
+    
+    public boolean hasSourceInRepository() {
+        Dependency depSnap = createDependencySnapshot();
+        depSnap.setType("src.jar");
+        URI uri = FileUtilities.getDependencyURI(depSnap, project);
+        return (uri != null && new File(uri).exists());
+    }
     
     public java.awt.Image getIcon(int param) {
         java.awt.Image retValue;
         retValue = super.getIcon(param);
         if (checkLocal()) {
+            if ("jar".equalsIgnoreCase(dependency.getValue("type"))) {
+                if (hasJavadocInRepository()) {
+                    retValue = Utilities.mergeImages(retValue, 
+                        Utilities.loadImage("org/mevenide/netbeans/project/resources/DependencyJavadocIncluded.png"),
+                        12, 12);
+                }
+                if (hasSourceInRepository()) {
+                    retValue = Utilities.mergeImages(retValue, 
+                        Utilities.loadImage("org/mevenide/netbeans/project/resources/DependencySrcIncluded.png"),
+                        12, 8);
+                }
+                return retValue;
+                
+            } 
             return retValue;
         } else {
             return Utilities.mergeImages(retValue, 
