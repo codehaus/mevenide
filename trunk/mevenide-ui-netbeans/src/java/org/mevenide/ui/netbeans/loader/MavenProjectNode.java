@@ -92,28 +92,32 @@ public class MavenProjectNode extends DataNode {
     
     public MavenProjectNode(MavenProjectDataObject obj, Children ch) {
         super(obj, ch);
-        setIconBase("org/mevenide/ui/netbeans/resources/MyDataIcon");
+        setIconBase("org/mevenide/ui/netbeans/resources/MyDataIcon"); //NOI18N
         final MavenProjectCookie cook = (MavenProjectCookie)obj.getCookie(MavenProjectCookie.class);
-        cook.addPropertyChangeListener(new PropertyChangeListener()
-        {
-            public void propertyChange(PropertyChangeEvent event)
+        if (cook != null) {
+            //for templates the projectcookie is not there..
+            cook.addPropertyChangeListener(new PropertyChangeListener()
             {
-                log.debug("property changed " + event.getPropertyName());
-                fireDisplayNameChange(null, getDisplayName());
-                if (sheetCreated)
+                public void propertyChange(PropertyChangeEvent event)
                 {
-                    log.debug("Updating sheet");
-                    Sheet.Set props = getSheet().get(SHEET_MAVEN_PROPS);
-                    if (props == null)
+                    log.debug("property changed " + event.getPropertyName());
+                    fireDisplayNameChange(null, getDisplayName());
+                    if (sheetCreated)
                     {
-                        createSheet();
-                    } else {
-                        props.put(cook.getProperties());
-                        firePropertySetsChange(null, getSheet().toArray());
+                        log.debug("Updating sheet");
+                        Sheet.Set props = getSheet().get(SHEET_MAVEN_PROPS);
+                        if (props == null)
+                        {
+                            createSheet();
+                        } else
+                        {
+                            props.put(cook.getProperties());
+                            firePropertySetsChange(null, getSheet().toArray());
+                        }
                     }
                 }
-            }
-        });
+            });
+        }
     }
     
     public String getDisplayName()

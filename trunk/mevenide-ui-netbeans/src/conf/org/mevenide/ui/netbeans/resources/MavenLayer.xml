@@ -22,13 +22,28 @@
           <attr name="template" boolvalue="true"/>
           <attr name="SystemFileSystem.localizingBundle" stringvalue="org.mevenide.ui.netbeans.resources.TemplateNames"/>
           <attr name="templateWizardURL" urlvalue="nbresloc:/org/mevenide/ui/netbeans/resources/templates/SampleProject.html"/>
-          <attr name="SystemFileSystem.icon" urlvalue="nbresloc:/org/mevenide/ui/netbeans/resources/MavenIcon.gif"/>
+<!--          <attr name="SystemFileSystem.icon" urlvalue="nbresloc:/org/mevenide/ui/netbeans/resources/MavenIcon.gif"/> -->
         </file>
         <file name="project.properties" url="nbresloc:/org/mevenide/ui/netbeans/resources/templates/project.properties"/>
         <file name="maven.xml" url="nbresloc:/org/mevenide/ui/netbeans/resources/templates/maven.xml"/>
         <file name="project.xml" url="nbresloc:/org/mevenide/ui/netbeans/resources/templates/project.xml">
 <!--          <attr name="NetBeansAttrExecutor" methodvalue="org.netbeans.modules.apisupport.APIModule.lookupSystemActionTester"/> -->
         </file>        
+        <!-- template from the mevenide-core module -->
+        <file name="SourceForgeProject.xml" url="nbresloc:/org/mevenide/ui/netbeans/resources/templates/sourceforge/project.xml">
+          <attr name="template" boolvalue="true"/>
+          <attr name="SystemFileSystem.localizingBundle" stringvalue="org.mevenide.ui.netbeans.resources.TemplateNames"/>
+          <attr name="templateWizardURL" urlvalue="nbresloc:/org/mevenide/ui/netbeans/resources/templates/SourceforgeProject.html"/>
+          <attr name="templateWizardIterator" methodvalue="org.mevenide.ui.netbeans.creator.MavenProjectIterator.getDefault"/>
+          <attr name="SystemFileSystem.icon" urlvalue="nbresloc:/org/mevenide/ui/netbeans/resources/MavenIcon.gif"/>
+        </file>
+        <file name="StandardProject.xml" url="nbresloc:/org/mevenide/ui/netbeans/resources/templates/standard/project.xml">
+          <attr name="template" boolvalue="true"/>
+          <attr name="SystemFileSystem.localizingBundle" stringvalue="org.mevenide.ui.netbeans.resources.TemplateNames"/>
+          <attr name="templateWizardURL" urlvalue="nbresloc:/org/mevenide/ui/netbeans/resources/templates/StandardProject.html"/>
+          <attr name="templateWizardIterator" methodvalue="org.mevenide.ui.netbeans.creator.MavenProjectIterator.getDefault"/>
+          <attr name="SystemFileSystem.icon" urlvalue="nbresloc:/org/mevenide/ui/netbeans/resources/MavenIcon.gif"/>
+        </file>
         
       </folder>
 
