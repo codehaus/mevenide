@@ -28,6 +28,7 @@
             <version>0.3-SNAPSHOT</version>
         	<properties>
                 <eclipse.plugin.bundle>false</eclipse.plugin.bundle>
+                <netbeans.module.dep>spec</netbeans.module.dep>
          	</properties>
         </dependency>
         <dependency>
