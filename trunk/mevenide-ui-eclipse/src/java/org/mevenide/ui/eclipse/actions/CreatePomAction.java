@@ -19,10 +19,14 @@ package org.mevenide.ui.eclipse.actions;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.window.Window;
+import org.eclipse.ui.PlatformUI;
+import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.template.view.ChooseTemplateDialog;
 import org.mevenide.ui.eclipse.util.FileUtils;
+import org.mevenide.util.StringUtils;
 
 /**
  * 
@@ -37,8 +41,16 @@ public class CreatePomAction extends AbstractMevenideAction {
 		try {
 			if ( FileUtils.getPom(currentProject) != null && !FileUtils.getPom(currentProject).exists() ) {
 			    String pomTemplate = chooseTemplate();
-			    //should test nullity and ask user if he wants to use default template
-				FileUtils.createPom(currentProject, pomTemplate);
+			    boolean createPom = true;
+			    if ( StringUtils.isNull(pomTemplate) ) {
+			        createPom = MessageDialog.openQuestion(
+                            PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+                            Mevenide.getResourceString("CreatePomAction.template.null.title"), 
+                            Mevenide.getResourceString("CreatePomAction.template.null.message"));
+			    }
+			    if ( createPom ) {
+			        FileUtils.createPom(currentProject, pomTemplate);
+			    }
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
