@@ -96,7 +96,7 @@ public class DependencyMappingViewer {
 		GridData gridData = new GridData(GridData.FILL_BOTH);
 		gridData.grabExcessVerticalSpace = true;
 		gridData.grabExcessHorizontalSpace = true;
-		gridData.heightHint = 450;
+		gridData.heightHint = 200;
 		
 		tableTreeViewer.getTableTree().setLayoutData(gridData);
 		

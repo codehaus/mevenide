@@ -187,6 +187,8 @@ public class SynchronizeWizardPage extends WizardPage {
 		tabFolder.setSelection(0);
 		GridData tabFolderData = new GridData(GridData.FILL_BOTH);
 		tabFolderData.grabExcessHorizontalSpace = true;
+		tabFolderData.heightHint = 300;
+		tabFolderData.heightHint = 420;
 		tabFolder.setLayoutData(tabFolderData);
 		
 		createLegend(topLevelContainer);
