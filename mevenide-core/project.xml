@@ -123,7 +123,7 @@
 
     <sourceDirectory>src/java</sourceDirectory>
     <unitTestSourceDirectory>src/test/java</unitTestSourceDirectory>
-	<aspectDirectory>src/aspects</aspectDirectory>
+	<!-- aspectDirectory>src/aspects</aspectDirectory -->
 	
 	<!-- JUnit test cases -->
     <unitTest>

@@ -12,7 +12,7 @@
  * Lesser General Public License for more details.
  * 
  */
-package org.mevenide.core;
+package org.mevenide.core.mock;
 
 /**
  * 
@@ -59,7 +59,7 @@ public class MockIGoalsManager extends de.abstrakt.mock.MockObject implements or
 		return (java.lang.String[])returnValue;
 	}
 
-	public java.lang.String[] getSelectedGoals( java.lang.String plugin )
+	public java.lang.String[] getGoals( java.lang.String plugin )
 	{
 		Object returnValue = null;
 		if( _getSelectedGoalsExpectFlag != null && _getSelectedGoalsExpectFlag.booleanValue() )

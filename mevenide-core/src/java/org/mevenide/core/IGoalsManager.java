@@ -34,7 +34,7 @@ public interface IGoalsManager {
 		throws GoalNotFoundException;
 	/**
 	 * remove plugin:goal from the list of runnable goals
-	 * if goal is null just add plugin
+	 * if goal is null remove plugin
 	 * @param category
 	 * @param goals   
 	 */
@@ -49,7 +49,7 @@ public interface IGoalsManager {
 	 * @param plugin
 	 * @return String[] the selected goals under <code>plugin</code> control 
 	 */
-	public abstract String[] getSelectedGoals(String plugin);
+	public abstract String[] getGoals(String plugin);
 	/**
 	 * run the runnableGoals
 	 * @todo FUNCTIONAL add options
