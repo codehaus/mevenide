@@ -104,10 +104,18 @@ public class PreferencesManager {
 		return preferenceStore.getBoolean(property);
 	}
 	
+	public int getIntValue(String property) {
+		return preferenceStore.getInt(property);
+	}
+	
 	public void setBooleanValue(String property, boolean value) {
 		preferenceStore.setValue(property, value);
 	}
 	
+	public void setIntValue(String property, int value) {
+		preferenceStore.setValue(property, value);
+	}
+		
 	public PreferenceStore getPreferenceStore() {
 		return preferenceStore;
 	}

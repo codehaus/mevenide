@@ -109,6 +109,8 @@ public class Mevenide extends AbstractUIPlugin {
     private String mavenRepository;
     private String pluginsInstallDir;
     
+    private int heapSize;
+    
     private String pomTemplate;
     private boolean checkTimestamp;
     
@@ -337,6 +339,8 @@ public class Mevenide extends AbstractUIPlugin {
 		Environment.setJavaHome(getJavaHome());
 		Environment.setMavenRepository(getMavenRepository());
 		Environment.setMavenPluginsInstallDir(getPluginsInstallDir());
+		Environment.setMavenLocalHome(getMavenLocalHome());
+		Environment.setHeapSize(getHeapSize());
 	}
 
 	public void setBuildPath() throws Exception {
@@ -393,6 +397,14 @@ public class Mevenide extends AbstractUIPlugin {
 
     public void setMavenLocalHome(String mavenLocalHome) {
         this.mavenLocalHome = mavenLocalHome;
+    }
+
+    public int getHeapSize() {
+        return heapSize;
+    }
+
+    public void setHeapSize(int heapSize) {
+        this.heapSize = heapSize;
     }
 
 }

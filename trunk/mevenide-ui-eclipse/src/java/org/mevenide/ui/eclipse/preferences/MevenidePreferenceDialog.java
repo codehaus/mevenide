@@ -58,6 +58,7 @@ import org.apache.maven.project.Project;
 import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.DirectoryFieldEditor;
 import org.eclipse.jface.preference.FileFieldEditor;
+import org.eclipse.jface.preference.IntegerFieldEditor;
 import org.eclipse.jface.preference.StringButtonFieldEditor;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
@@ -67,6 +68,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.goals.viewer.GoalsPickerDialog;
@@ -78,7 +80,8 @@ import org.mevenide.ui.eclipse.goals.viewer.GoalsPickerDialog;
  * 
  */
 public class MevenidePreferenceDialog {
-	public static final String MAVEN_LAUNCH_DEFAULTGOALS_PREFERENCE = "maven.launch.defaultgoals";
+	private static final String MAVEN_HEAP_SIZE_PREFERENCE = "maven.heap.size";
+    public static final String MAVEN_LAUNCH_DEFAULTGOALS_PREFERENCE = "maven.launch.defaultgoals";
     public static final String MEVENIDE_CHECKTIMESTAMP_PREFERENCE = "mevenide.checktimestamp";
     private static final String POM_TEMPLATE_LOCATION_PREFERENCE = "pom.template.location";
     public static final String MAVEN_REPO_PREFERENCE = "maven.repo";
@@ -96,6 +99,7 @@ public class MevenidePreferenceDialog {
 	private DirectoryFieldEditor mavenRepoEditor;
 	//private DirectoryFieldEditor pluginsInstallDirEditor;
 	private FileFieldEditor pomTemplateLocationEditor; 
+	private IntegerFieldEditor heapSizeEditor;
 	private BooleanFieldEditor checkTimestampEditor;
 	
 	private StringButtonFieldEditor defaultGoalsEditor;
@@ -106,6 +110,9 @@ public class MevenidePreferenceDialog {
 	private String mavenRepository;
 	private String pomTemplateLocation;
 	//private String pluginsInstallDir;
+
+	private int heapSize;
+
 	private boolean checkTimestamp;
 	
 	private String defaultGoals;
@@ -139,6 +146,14 @@ public class MevenidePreferenceDialog {
 		mavenLocalHomeEditor = createEditor(MAVEN_LOCAL_HOME_PREFERENCE, "Maven home", mavenLocalHome);
 		mavenRepoEditor = createEditor(MevenidePreferenceDialog.MAVEN_REPO_PREFERENCE, "Maven Repository", mavenRepository);
 		//pluginsInstallDirEditor = createEditor("maven.plugins.dir", "Plugins Directory", mavenRepository);
+		
+		heapSizeEditor = new IntegerFieldEditor(MAVEN_HEAP_SIZE_PREFERENCE, "Heap Size", topLevelContainer);
+		heapSizeEditor.fillIntoGrid(topLevelContainer, 2);
+		heapSizeEditor.setPreferenceStore(preferencesManager.getPreferenceStore());
+		heapSizeEditor.load();
+
+		Label label = new Label(topLevelContainer, SWT.NONE);
+		label.setLayoutData(new GridData());
 		
 		pomTemplateLocationEditor = new FileFieldEditor(POM_TEMPLATE_LOCATION_PREFERENCE, "POM Template", true, topLevelContainer);
 		pomTemplateLocationEditor.fillIntoGrid(topLevelContainer, 3);
@@ -258,7 +273,9 @@ public class MevenidePreferenceDialog {
 		
 		defaultGoals = defaultGoalsEditor.getTextControl(topLevelContainer).getText();
 		Mevenide.getPlugin().setDefaultGoals(defaultGoals);
-		
+
+		heapSize = heapSizeEditor.getIntValue();
+		Mevenide.getPlugin().setHeapSize(heapSize);
 		//pluginsInstallDir = pluginsInstallDirEditor.getTextControl(topLevelContainer).getText();
 		//Mevenide.getPlugin().setPluginsInstallDir(pluginsInstallDir);
 	}
@@ -344,5 +361,13 @@ public class MevenidePreferenceDialog {
 //    public void setPluginsInstallDir(String pluginsInstallDir) {
 //        this.pluginsInstallDir = pluginsInstallDir;
 //    }
+
+    public int getHeapSize() {
+        return heapSize;
+    }
+
+    public void setHeapSize(int heapSize) {
+        this.heapSize = heapSize;
+    }
 
 }
