@@ -43,7 +43,7 @@ public class GoalsLabelProvider extends LabelProvider implements IColorProvider 
     	if ( arg0 instanceof Plugin )
 			return plugin16;
         if ( arg0 instanceof Goal )
-			return goal16;;
+			return goal16;
         return null;
     }
     

@@ -398,7 +398,7 @@ public class MavenArgumentsTab extends AbstractLaunchConfigurationTab  {
 
 	private void initSysProperties(ILaunchConfiguration configuration) {
 		try {
-			sysProperties = (Map) configuration.getAttribute(SYS_PROPERTIES, new HashMap());
+			sysProperties = configuration.getAttribute(SYS_PROPERTIES, new HashMap());
 			initTableItems(table);
 		} 
 		catch (CoreException e) {
@@ -437,7 +437,7 @@ public class MavenArgumentsTab extends AbstractLaunchConfigurationTab  {
 
 	private void initOptionsMap(ILaunchConfiguration configuration) {
 		try {
-			Map storedMap = (Map)configuration.getAttribute(OPTIONS_MAP, new HashMap());
+			Map storedMap = configuration.getAttribute(OPTIONS_MAP, new HashMap());
 			log.debug("stored Options Map .size() = " + storedMap.size());
 			
 			Iterator iter = storedMap.keySet().iterator();

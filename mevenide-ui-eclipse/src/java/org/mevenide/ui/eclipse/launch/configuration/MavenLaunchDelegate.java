@@ -156,7 +156,7 @@ public class MavenLaunchDelegate extends AbstractRunner implements ILaunchConfig
 
 	private String[] getGoals(ILaunchConfiguration configuration) {
 		try {
-			String strg = (String) configuration.getAttribute(MavenArgumentsTab.GOALS_TO_RUN, "");
+			String strg = configuration.getAttribute(MavenArgumentsTab.GOALS_TO_RUN, "");
 			return StringUtils.split(strg, " ");
 		}	
 		catch (CoreException e) {
@@ -168,7 +168,7 @@ public class MavenLaunchDelegate extends AbstractRunner implements ILaunchConfig
 	private String[] getOptions(ILaunchConfiguration configuration, List vmArgs) {
 		try {
 		    //static options
-			Map map = (Map) configuration.getAttribute(MavenArgumentsTab.OPTIONS_MAP, new HashMap());
+			Map map = configuration.getAttribute(MavenArgumentsTab.OPTIONS_MAP, new HashMap());
 			log.debug("Found " + map.size() + " options in configuration : ");
 			List options = new ArrayList();
 			Iterator iterator = map.keySet().iterator();

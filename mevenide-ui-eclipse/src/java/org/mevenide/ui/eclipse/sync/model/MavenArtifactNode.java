@@ -121,7 +121,7 @@ public class MavenArtifactNode extends ArtifactNode {
 	 */
 	public void addTo(IProject project) throws Exception {
 		boolean treatAsEclipseDependency = false;
-		String eclipseDependencyProperty = (String) artifact.getDependency().getProperty("eclipse.dependency");
+		String eclipseDependencyProperty = artifact.getDependency().getProperty("eclipse.dependency");
 		treatAsEclipseDependency = "true".equals(eclipseDependencyProperty);
 		IClasspathEntry entry = null;
 		if ( treatAsEclipseDependency ) {
@@ -173,7 +173,7 @@ public class MavenArtifactNode extends ArtifactNode {
 	}
 	
 	private void assertJavaNature() throws Exception {
-		IProject project = (IProject) ResourcesPlugin.getWorkspace().getRoot().getProject("/" + artifact.getDependency().getArtifactId());
+		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject("/" + artifact.getDependency().getArtifactId());
 		if ( !project.hasNature(JavaCore.NATURE_ID) ) {
 			JavaProjectUtils.attachJavaNature(project);
 		}
