@@ -67,13 +67,18 @@ public class DependencyFactory {
 	 * @param absoluteFileName
 	 * @return
 	 */
-	public Dependency getDependency(String absoluteFileName) {
+	public Dependency getDependency(String absoluteFileName) throws InvalidDependencyException {
 		String fileName = new File(absoluteFileName).getName();
 		String groupId = getGroupId(fileName);
 		
 		if ( groupId == null ) {
 			groupId = guessGroupId(absoluteFileName); 
 		}
+		if ( groupId == null ) {
+			//@todo use a logger
+			System.out.println("[WARNING] groupId is null"); 
+		}
+		
 		String artifactId = guessArtifactId(fileName);
 		String version = guessVersion(fileName);
 		
@@ -95,7 +100,7 @@ public class DependencyFactory {
 	 * @return
 	 */
 	private String getGroupId(String fileName) {
-		File mavenLocalRepo = new File(Environment.getMavenHome(), "repository");
+		File mavenLocalRepo = new File(Environment.getMavenRepository());
 		return getGroupId(fileName, mavenLocalRepo);
 	}
 	
@@ -150,7 +155,7 @@ public class DependencyFactory {
 	 * 
 	 * 
 	 * @param fileName
-	 * @return
+	 * @return 
 	 */
 	private String[] split(String fileName) {
 		String[] groups ;
@@ -181,7 +186,15 @@ public class DependencyFactory {
 	 * @param absoluteFileName
 	 * @return
 	 */
-	private String guessGroupId(String absoluteFileName) {
-		return new File(absoluteFileName).getParentFile().getParentFile().getName();
+	private String guessGroupId(String absoluteFileName) throws InvalidDependencyException {
+		File fileToCompute = new File(absoluteFileName);
+		if ( fileToCompute.isDirectory() ){
+			throw new InvalidDependencyException(absoluteFileName + " is a directory");
+		}
+		File firstLevelParent = fileToCompute.getParentFile();
+		if ( firstLevelParent.getParentFile() != null ) {
+			return firstLevelParent.getParentFile().getName();
+		}
+		else return null;
 	}
 }

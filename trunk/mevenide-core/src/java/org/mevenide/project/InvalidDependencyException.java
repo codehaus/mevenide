@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2003  Gilles Dodinet (gdodinet@wanadoo.fr)
  * 
  * This library is free software; you can redistribute it and/or modify it under
@@ -10,29 +10,25 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
  */
 package org.mevenide.project;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.mevenide.MevenideException;
 
 /**
  * 
  * @author Gilles Dodinet (gdodinet@wanadoo.fr)
- * @version $Id: AllTests.java 8 mai 2003 15:32:4913:34:35 Exp gdodinet 
+ * @version $Id$
  * 
  */
-public class AllTests  {
-	private AllTests() {
+public class InvalidDependencyException extends MevenideException {
+
+	public InvalidDependencyException(Throwable cause) {
+		super(cause);
 	}
 
-    public static Test suite() {
-        TestSuite suite = new TestSuite();
-        
-		suite.addTestSuite(DependencyFactoryTest.class);
-		suite.addTestSuite(DependencyUtilTest.class);
-		
-        return suite;
-    }
+	public InvalidDependencyException(String arg0) {
+		super(arg0);
+	}
+
 }

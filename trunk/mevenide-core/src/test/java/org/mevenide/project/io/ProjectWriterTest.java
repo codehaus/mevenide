@@ -15,20 +15,17 @@
 package org.mevenide.project.io;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-
-import junit.framework.TestCase;
 
 import org.apache.maven.project.Dependency;
 import org.apache.maven.project.Project;
 import org.apache.maven.project.Resource;
 import org.mevenide.ProjectConstants;
-import org.mevenide.project.DependencyFactory;
+import org.mevenide.project.DependencyUtil;
+import org.mevenide.test.AbstractMevenideTestCase;
 
 /**
  * 
@@ -36,23 +33,8 @@ import org.mevenide.project.DependencyFactory;
  * @version $Id$
  * 
  */
-public class ProjectWriterTest extends TestCase {
-	private ProjectWriter pomWriter;
-	private File projectFile;
-	private DependencyFactory dependencyFactory;
+public class ProjectWriterTest extends AbstractMevenideTestCase {
 	
-	protected void setUp() throws Exception {
-		pomWriter = ProjectWriter.getWriter();
-		File src = new File(ProjectWriterTest.class.getResource("/fixtures/project-fixture.xml").getFile());
-		projectFile = new File(src.getParentFile().getParent(), "project-fixture.xml") ; 
-		copy(src.getAbsolutePath(), projectFile.getAbsolutePath());
-		dependencyFactory = DependencyFactory.getFactory();
-		
-	}
-
-	protected void tearDown() throws Exception {
-		projectFile.delete();
-	}
 
 	public void testAddSource() throws Exception {
 		pomWriter.addSource(
@@ -77,28 +59,11 @@ public class ProjectWriterTest extends TestCase {
 		assertEquals("src/pyo/aspect", h.get(ProjectConstants.MAVEN_ASPECT_DIRECTORY));
 	}
 
-	public void testIsDependencyPresent()throws Exception {
-		Project project = ProjectReader.getReader().read(projectFile);
-		List dependencies = project.getDependencies();
-		
-		Dependency dep = dependencyFactory.getDependency("E:/maven/repository/junit/jars/junit-3.8.1.jar");
-		assertTrue(pomWriter.isDependencyPresent(project, dep));
-		 
-		dep = dependencyFactory.getDependency("E:/bleeeaaaah/junit/jars/junit-3.8.1.jar");
-		assertTrue(pomWriter.isDependencyPresent(project, dep));
-		 
-		dep = dependencyFactory.getDependency("E:/bleeeaaaah/plouf/jars/junit-3.8.1.jar");
-		assertTrue(pomWriter.isDependencyPresent(project, dep));
-		
-		dep = dependencyFactory.getDependency("E:/bleeeaaaah/plouf/junit-3.8.1.jar");
-		assertTrue(pomWriter.isDependencyPresent(project, dep));
-	}
-	
 	public void testAddDependency() throws Exception {
 		pomWriter.addDependency("E:/bleeeaaaah/testo/ploufs/testo-0.0.1.plouf", projectFile);
 		Project project = ProjectReader.getReader().read(projectFile);
 		Dependency dep = dependencyFactory.getDependency("E:/bleeeaaaah/testo/ploufs/testo-0.0.1.plouf");
-		assertTrue(pomWriter.isDependencyPresent(project, dep));
+		assertTrue(DependencyUtil.isDependencyPresent(project, dep));
 	}
 	
 	public void testAddResource() throws Exception {
@@ -126,7 +91,7 @@ public class ProjectWriterTest extends TestCase {
 		
 		Project project = ProjectReader.getReader().read(projectFile);
 		Dependency dep = dependencyFactory.getDependency("X:/bleah/mevenide/mevenide-core-1.0.jar");
-		assertTrue(pomWriter.isDependencyPresent(project, dep));
+		assertTrue(DependencyUtil.isDependencyPresent(project, dep));
 	}
 
 	private boolean isResourcePresent(String testDirectory, String[] includes) throws FileNotFoundException, Exception, IOException {
@@ -146,26 +111,6 @@ public class ProjectWriterTest extends TestCase {
 		return found;
 	}
 
-	private void copy(String sourceFile, String destFile) throws Exception {
-
-		FileInputStream from = new FileInputStream(sourceFile);
-		FileOutputStream to = new FileOutputStream(destFile);
-		try {
-			byte[] buffer = new byte[4096]; 
-			int bytes_read; 
-			while ((bytes_read = from.read(buffer)) != -1) {
-				to.write(buffer, 0, bytes_read);
-			}
-		} 
-		finally {
-			if (from != null) {
-				from.close();
-			}
-			if (to != null) {
-				to.close();
-			}
-		}
-
-	}
+	
 	
 }
