@@ -4,8 +4,6 @@
     <classpathentry kind="src" path="etc"/>
     <classpathentry kind="src" path="src/conf/eclipse"/>
     <classpathentry kind="src" path="src/test/etc"/>
-    <classpathentry kind="lib" path="lib/forehead-1.0-beta-5.jar"/>
-    <classpathentry kind="lib" path="lib/commons-httpclient-2.0-rc1.jar"/>
     <classpathentry kind="src" path="/mevenide-core"/>
     <classpathentry kind="src" path="/goals-grabber"/>
     <classpathentry kind="var"
@@ -51,5 +49,7 @@
         path="ECLIPSE_HOME/plugins/org.eclipse.update.ui.forms_3.0.0/forms.jar" sourcepath="ECLIPSE_HOME/plugins/org.eclipse.platform.source_3.0.0/src/org.eclipse.update.ui.forms_3.0.0/formssrc.zip"/>
     <classpathentry exported="true" kind="var" path="LOGGING_COMMONS_LIB"/>
     <classpathentry kind="var" path="SWT_LIB"/>
+    <classpathentry kind="var" path="MAVEN_REPO/commons-httpclient/jars/commons-httpclient-2.0-rc1.jar"/>
+    <classpathentry kind="var" path="MAVEN_REPO/forehead/jars/forehead-1.0-beta-5.jar"/>
     <classpathentry kind="output" path="target/classes"/>
 </classpath>
