@@ -210,10 +210,14 @@ public class PomSynchronizer extends AbstractPomSynchronizer implements ISynchro
 				Project parentProject = ProjectReader.getReader().read(new File(resolvedExtend));
 				List parentDependencies = parentProject.getDependencies();
 				for (int i = 0; i < parentDependencies.size(); i++) {
+					boolean shouldAddDependency = true;
                     for (int j = 0; j < inheritedDependencies.size(); j++) {
-						if ( !DependencyUtil.areEquals((Dependency) inheritedDependencies.get(j), (Dependency) parentDependencies.get(i)) ) {
-	                        inheritedDependencies.add(parentDependencies.get(i));
+						if ( DependencyUtil.areEquals((Dependency) inheritedDependencies.get(j), (Dependency) parentDependencies.get(i)) ) {
+	                        shouldAddDependency = false;
 						}
+                    }
+                    if ( shouldAddDependency ) {
+						inheritedDependencies.add(parentDependencies.get(i));
                     }
                 }
 				ProjectWriter.getWriter().setDependencies(inheritedDependencies, new File(resolvedExtend));
