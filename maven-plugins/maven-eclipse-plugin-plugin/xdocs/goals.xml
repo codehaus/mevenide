@@ -53,8 +53,8 @@
           <tr>
             <td>eclipse-plugin:create-site-dist</td>
             <td>
-            	build a single distribution zip file containing all required plugins and features, and create a local Update Site in 
-            	${maven.build.dir}/eclipse/dist/
+            	build a single distribution zip file containing all required plugins and features and put it in ${maven.eclipse.plugin.dist.dir}. Also create a local Update Site in 
+            	${maven.eclipse.plugin.dist.dir}/
             </td>
           </tr>  		  
   		</table>

@@ -25,13 +25,17 @@ import org.apache.commons.jelly.XMLOutput;
 
 /**
  * Adapt an artifact version to make it match Eclipse plugin expected version : 
- * only valid chars will be kept. <br/>Valid values are ones of ([0..9]|\.)  
+ * only valid chars will be kept. <br/>Valid values are ones of ([0..9]|\.). Also if 
+ * the version to adapt contains only two digits, ".0" will appended at the end so that 
+ * it matches Eclipse Update Manager expectations (3 digits required).
  * 
  * <br/>
  * examples : 
  * <ul>
  * <li>a version such as 1.0-beta-1 will be transformed to 1.0.1</li>
- * <li>a SNAPSHOT version will be cut to remove the SNAPSHOT</li>
+ * <li>a version such as 1.1 (or 1) will be transformed to 1.1.0 (respectively 1.0.0)</li>
+ * <li>a SNAPSHOT version will be cut to remove the SNAPSHOT, so 1.1-SNAPSHOT will resolved as 1.1.20040519, where 20040519 is the current date. however this may causes issues in regard to plugin version compatibility concerns</li>
+ * <li>invalid version such as 1.0..1 (or 1.1.) will be transformed to 1.0.1 (respectively, 1.1.0)</li>
  * </ul> 
  * 
  * @author <a href="mailto:rhill2@free.fr">Gilles Dodinet</a>
@@ -90,8 +94,10 @@ public class AdaptVersionTag extends AbstractMevenideTag {
 		        newVersion += "." + new SimpleDateFormat("yyyyMMdd").format(new Date()); 
 		    }
 		}
-		if ( countNumbers(newVersion) == 2 ) {
-		    newVersion += ".0"; 
+		int digitNumber = countNumbers(newVersion);
+		while ( digitNumber < 3 ) {
+		    newVersion += ".0";
+		    digitNumber++;
 		}
 	    return newVersion;
     }
