@@ -30,9 +30,9 @@ public class ProjectChangeEvent extends EventObject {
 	
 	private String attribute;
 	
-    public ProjectChangeEvent(Object source, String attribute) {
-        super(source);
-        this.attribute = attribute;
+    public ProjectChangeEvent(Object eventSource, String attr) {
+        super(eventSource);
+        this.attribute = attr;
     }
 
     public String getAttribute() {
