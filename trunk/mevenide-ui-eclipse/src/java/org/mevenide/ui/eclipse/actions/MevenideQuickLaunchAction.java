@@ -53,17 +53,25 @@ public class MevenideQuickLaunchAction implements IWorkbenchWindowPulldownDelega
 			Separator separator = new Separator();
 			separator.fill(menu, menu.getItemCount());
 			
+			Action manageConfigsAction = 
+				new Action("Manage configurations...") {
+					public void run() {
+						//@todo implement me
+					}
+				};
+
+			ActionContributionItem manageItem = new ActionContributionItem(manageConfigsAction);
+			manageItem.fill(menu, -1);
+			
 			Action clearMenuAction = 
-				new Action("Delete configurations") {
+				new Action("Delete all configurations") {
 					public void run() {
 						LaunchHistory.getHistory().clear();
 					}
 				};
 			
-				
-			
-			ActionContributionItem item = new ActionContributionItem(clearMenuAction);
-			item.fill(menu, -1);
+			ActionContributionItem deleteItem = new ActionContributionItem(clearMenuAction);
+			deleteItem.fill(menu, -1);
 		}
 		return menu;
 	}

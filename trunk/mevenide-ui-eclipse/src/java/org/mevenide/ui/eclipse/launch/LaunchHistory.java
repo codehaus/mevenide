@@ -17,6 +17,8 @@ package org.mevenide.ui.eclipse.launch;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.resources.IProject;
 
 /**
@@ -28,6 +30,8 @@ import org.eclipse.core.resources.IProject;
  * 
  */
 public class LaunchHistory {
+	private static Log log = LogFactory.getLog(LaunchHistory.class);
+	
 	private LaunchedAction lastlaunched;
 	
 	private List launchedActions = new ArrayList();
@@ -65,11 +69,23 @@ public class LaunchHistory {
 	public void save(IProject project, String[] options, String[] goals) {
 		LaunchedAction action = new LaunchedAction(this, project, options, goals);
 		if ( launchedActions.contains(action) ) {
+			//action present in list means it has already saved. 
+			//just remove it from to place it at first position
+			
+			//@todo manage the case where just options differ
 			launchedActions.remove(action);
+		}
+		else {
+			try {
+				LaunchMarshaller.saveConfig(action);
+			} 
+			catch (Exception e) {
+				//e.printStackTrace();
+				log.error("Unable to save action due to : " + e);
+			}
 		}
 		launchedActions.add(0, action);
 		lastlaunched = action;
-		
 	}
 	
 	/**
@@ -77,7 +93,7 @@ public class LaunchHistory {
 	 *
 	 */
 	public void clear() {
-		
+		LaunchMarshaller.clearConfigs();
 	}
 	
 	/**
@@ -86,7 +102,7 @@ public class LaunchHistory {
 	 *
 	 */
 	private void load() {
-	
+		launchedActions = LaunchMarshaller.getSavedConfigs();
 	}
 	
 	/**
@@ -95,5 +111,7 @@ public class LaunchHistory {
 	public LaunchedAction getLastlaunched() {
 		return lastlaunched;
 	}
+
+	
 
 }
