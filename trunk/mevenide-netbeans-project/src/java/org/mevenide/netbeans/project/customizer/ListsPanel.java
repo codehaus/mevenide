@@ -66,7 +66,7 @@ public class ListsPanel extends JPanel implements ProjectPanel {
     private ListModelPOMChange change;
     private MultiTextComponentPOMChange currentList;
     private boolean isResolvingValues = false;
-
+    private boolean initialized;
     /** Creates new form BasicsPanel */
     public ListsPanel(MavenProject proj) {
         project = proj;
@@ -94,7 +94,7 @@ public class ListsPanel extends JPanel implements ProjectPanel {
             }
         });
         lstLists.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        populateChangeInstances();        
+        initialized = false;     
     }
     
     /** This method is called from within the constructor to
@@ -255,6 +255,10 @@ public class ListsPanel extends JPanel implements ProjectPanel {
     
     public void addNotify() {
         super.addNotify();
+        if (!initialized) {
+            initialized = true;
+            populateChangeInstances();
+        }
         listener = new Listener();
         btnAdd.addActionListener(listener);
         btnRemove.addActionListener(listener);

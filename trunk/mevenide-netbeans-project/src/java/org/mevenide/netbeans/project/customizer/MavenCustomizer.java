@@ -154,6 +154,7 @@ public class MavenCustomizer extends JPanel implements ProjectValidateObserver {
         }
         if ( node.hasCustomizer() ) {
             currentCustomizer = node.getCustomizer();
+            customizerPanel.add( currentCustomizer, fillConstraints );
             if (currentCustomizer instanceof ProjectPanel) {
                 ProjectPanel prpanel = (ProjectPanel)currentCustomizer;
                 //reset messages.
@@ -161,7 +162,6 @@ public class MavenCustomizer extends JPanel implements ProjectValidateObserver {
                 prpanel.setValidateObserver(MavenCustomizer.this);
                 prpanel.setResolveValues(cbResolve.isSelected());
             }
-            customizerPanel.add( currentCustomizer, fillConstraints );
             customizerPanel.validate();
             customizerPanel.repaint();
         }
@@ -202,8 +202,6 @@ public class MavenCustomizer extends JPanel implements ProjectValidateObserver {
             this.add( btv, BorderLayout.CENTER );                        
             manager.setRootContext(createRootNode(project, manager));
             manager.addPropertyChangeListener( new ManagerChangeListener() );
-            doExpand();
-            selectFirstNode();
                                                 
         }
         
@@ -213,7 +211,8 @@ public class MavenCustomizer extends JPanel implements ProjectValidateObserver {
         
         public void addNotify() {
             super.addNotify();
-//            btv.expandAll();
+            doExpand();
+            selectFirstNode();
         }
         
         private void doExpand() {

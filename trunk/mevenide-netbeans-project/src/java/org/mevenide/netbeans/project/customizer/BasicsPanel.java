@@ -52,6 +52,7 @@ public class BasicsPanel extends JPanel implements ProjectPanel {
     private OriginChange ocName;
     
     private HashMap changes;
+    private boolean initialized;
     
     /** Creates new form BasicsPanel */
     public BasicsPanel(MavenProject proj) {
@@ -64,7 +65,7 @@ public class BasicsPanel extends JPanel implements ProjectPanel {
         valObserver = null;
         //TODO add listeners for immediatePropagation stuff.
         setName(NbBundle.getMessage(BasicsPanel.class, "BasicsPanel.name"));
-        populateChangeInstances();
+        initialized = false;
     }
     
     /** This method is called from within the constructor to
@@ -290,6 +291,14 @@ public class BasicsPanel extends JPanel implements ProjectPanel {
     private javax.swing.JTextField txtPackage;
     // End of variables declaration//GEN-END:variables
 
+    public void addNotify() {
+        super.addNotify();
+        if (!initialized) {
+            initialized = true;
+            populateChangeInstances();
+        }
+    }    
+    
    private void populateChangeInstances() {
         String value = project.getOriginalMavenProject().getId();
         int location = project.getProjectWalker().getLocation("pom.id");
@@ -354,6 +363,11 @@ public class BasicsPanel extends JPanel implements ProjectPanel {
    }   
    
      public void setResolveValues(boolean resolve) {
+         // basics panel is somewhat special, this cal be called before addnotify..
+        if (!initialized) {
+            initialized = true;
+            populateChangeInstances();
+        }
         assignValue("id", true);
         assignValue("artifactId", resolve);
         assignValue("groupId", resolve);
@@ -441,6 +455,8 @@ public class BasicsPanel extends JPanel implements ProjectPanel {
         }
         return message;
     }
+
+
     
     /**
      * attach to the fields that are validated.

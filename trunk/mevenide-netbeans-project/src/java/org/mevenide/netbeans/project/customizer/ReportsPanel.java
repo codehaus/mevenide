@@ -60,7 +60,7 @@ public class ReportsPanel extends JPanel implements ProjectPanel {
     private DefaultListModel model;
     private ListModelPOMChange change;
     private IReportsFinder finder;
-
+    private boolean initialized;
     /** Creates new form BasicsPanel */
     public ReportsPanel(MavenProject proj) {
         project = proj;
@@ -69,7 +69,7 @@ public class ReportsPanel extends JPanel implements ProjectPanel {
         setName("Reports");
 
         lstLists.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-        populateChangeInstances();
+        initialized = false;
     }
     
     /** This method is called from within the constructor to
@@ -141,6 +141,10 @@ public class ReportsPanel extends JPanel implements ProjectPanel {
     
     public void addNotify() {
         super.addNotify();
+        if (!initialized) {
+            initialized = true;
+            populateChangeInstances();
+        }
         listener = new Listener();
         btnAdd.addActionListener(listener);
         btnRemove.addActionListener(listener);

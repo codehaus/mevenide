@@ -46,6 +46,7 @@ import org.openide.explorer.ExplorerManager;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
+import org.openide.util.RequestProcessor;
 
 
 
@@ -64,6 +65,7 @@ public class PluginListPanel extends JPanel implements ProjectPanel {
     private ConfigurationChildren childNodes;
     private List subPanelList;
     private ExplorerManager manager;
+    private boolean initialized;
     
     /** Creates new form BuildPanel */
     public PluginListPanel(MavenProject proj, List panelsList, ExplorerManager man) {
@@ -74,7 +76,7 @@ public class PluginListPanel extends JPanel implements ProjectPanel {
         childNodes = new ConfigurationChildren();
         initComponents();
         valObserver = null;
-        populateTable();
+        initialized = false;
     }
     
     /** This method is called from within the constructor to
@@ -109,6 +111,13 @@ public class PluginListPanel extends JPanel implements ProjectPanel {
 
     }//GEN-END:initComponents
     
+    public void addNotify() {
+        super.addNotify();
+        if (!initialized) {
+            initialized = true;
+            populateTable();
+        }
+    }
     private void populateTable() {
         PluginInfoManager man = PluginInfoFactory.getInstance().createManager(project.getContext());
         IPluginInfo[] infos = man.getCurrentPlugins();
@@ -438,6 +447,10 @@ public class PluginListPanel extends JPanel implements ProjectPanel {
         }
         
         public void addNotify() {
+             if (!initialized) {
+                initialized = true;
+                populateTable();
+            }
             Set st = new TreeSet(new Comp());
             st.addAll(subPanelList);
             setKeys(st);
