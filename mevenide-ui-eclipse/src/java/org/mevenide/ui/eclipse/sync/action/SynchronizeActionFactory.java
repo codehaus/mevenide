@@ -282,7 +282,7 @@ public class SynchronizeActionFactory {
 		};
 		viewPomToIde.setId(VIEW_INCOMING);
 		viewPomToIde.setToolTipText("Incoming Changes");
-		viewPomToIde.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(org.eclipse.ui.ISharedImages.IMG_TOOL_BACK_HOVER));
+		viewPomToIde.setImageDescriptor(Mevenide.getImageDescriptor("pom_to_ide_sync.gif"));
 		actionIds.put(VIEW_INCOMING, viewPomToIde);
 	}
 
@@ -294,7 +294,7 @@ public class SynchronizeActionFactory {
 		};
 		viewIdeToPom.setId(VIEW_OUTGOING);
 		viewIdeToPom.setToolTipText("Outgoing changes");
-		viewIdeToPom.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(org.eclipse.ui.ISharedImages.IMG_TOOL_FORWARD_HOVER));
+		viewIdeToPom.setImageDescriptor(Mevenide.getImageDescriptor("ide_to_pom_sync.gif"));
 		actionIds.put(VIEW_OUTGOING, viewIdeToPom);
 	}
 
@@ -306,7 +306,7 @@ public class SynchronizeActionFactory {
 		};
 		viewConflicts.setId(VIEW_CONFLICTS);
 		viewConflicts.setToolTipText("Conflicts");
-		viewConflicts.setImageDescriptor(Mevenide.getImageDescriptor("conflicting.gif"));
+		viewConflicts.setImageDescriptor(Mevenide.getImageDescriptor("conflict_synch.gif"));
 		actionIds.put(VIEW_CONFLICTS, viewConflicts);
 	}
 
