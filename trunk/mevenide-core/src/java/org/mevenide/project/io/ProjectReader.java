@@ -94,6 +94,7 @@ public class ProjectReader {
 	public Project read(File pom) throws Exception {
 		Reader reader = new FileReader(pom);
 		Project project = unmarshaller.parse(reader);
+		project.setFile(pom);
 		reader.close();
 		return project;
 	}
