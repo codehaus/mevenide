@@ -1,4 +1,4 @@
-/*
+/* 
  * Copyright (C) 2003  Gilles Dodinet (gdodinet@wanadoo.fr)
  * 
  * This library is free software; you can redistribute it and/or modify it under
@@ -10,32 +10,32 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
+ * 
  */
-package org.mevenide.project;
+package org.mevenide.project.dependency;
 
-import org.apache.maven.project.Dependency;
+
+
+import junit.framework.Test;
+import junit.framework.TestSuite;
 
 /**
  * 
  * @author Gilles Dodinet (gdodinet@wanadoo.fr)
- * @version $Id$
+ * @version $Id: AllTests.java 8 mai 2003 15:32:4913:34:35 Exp gdodinet 
  * 
  */
-public class DependencyUtil {
-	public static boolean areEquals(Dependency d1, Dependency d2) {
-		return  (d1 == null && d2 == null) ||
-				(   
-				    d1 != null && d2 != null
-				    && areEquals(d1.getArtifactId(), d2.getArtifactId())
-					&& areEquals(d1.getGroupId(), d2.getGroupId())
-					&& areEquals(d1.getVersion(), d2.getVersion())
-				);
+public class AllTests  {
+	private AllTests() {
 	}
-	
-	private static boolean areEquals(String s1, String s2) {
-		return  (s1 == null && s2 == null) ||
-				(
-				    s1 != null && s1.equals(s2)
-				);
-	}
+
+    public static Test suite() {
+        TestSuite suite = new TestSuite();
+        
+		suite.addTestSuite(DependencyFactoryTest.class);
+		suite.addTestSuite(DependencyResolverTest.class);
+		suite.addTestSuite(DependencyUtilTest.class);
+		
+        return suite;
+    }
 }

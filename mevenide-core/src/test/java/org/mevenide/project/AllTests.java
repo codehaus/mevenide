@@ -14,6 +14,8 @@
  */
 package org.mevenide.project;
 
+
+
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
@@ -30,9 +32,6 @@ public class AllTests  {
     public static Test suite() {
         TestSuite suite = new TestSuite();
         
-		suite.addTestSuite(DependencyFactoryTest.class);
-		suite.addTestSuite(DependencyResolverTest.class);
-		suite.addTestSuite(DependencyUtilTest.class);
 		suite.addTestSuite(SourceDirectoryUtilTest.class);
 		
         return suite;

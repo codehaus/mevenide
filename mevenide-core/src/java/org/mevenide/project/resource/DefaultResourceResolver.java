@@ -11,7 +11,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  */
-package org.mevenide.project;
+package org.mevenide.project.resource;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +25,7 @@ import org.apache.maven.project.Resource;
  * @version $Id$
  * 
  */
-public class DefaultResourceResolver {
+public class DefaultResourceResolver implements IResourceResolver  {
 	
 	
 	/**
@@ -36,7 +36,7 @@ public class DefaultResourceResolver {
 	 * @param resource
 	 * @return boolean
 	 */
-	public static void mergeSimilarResources(Project project, Resource resource) {
+	public void mergeSimilarResources(Project project, Resource resource) {
 		List similar = getSimilarResources(project, resource);
 		
 		for (int i = 0; i < similar.size(); i++) {
@@ -57,7 +57,7 @@ public class DefaultResourceResolver {
 		project.getBuild().addResource(resource);
 	}
 
-	private static List getSimilarResources(Project project, Resource resource) {
+	private List getSimilarResources(Project project, Resource resource) {
 		List similar = new ArrayList();
 		
 		List resources = project.getBuild().getResources();
@@ -77,7 +77,7 @@ public class DefaultResourceResolver {
 	 * @param path
 	 * @return
 	 */
-	public static Resource newResource(String path) {
+	public Resource newResource(String path) {
 		Resource resource = new Resource();
 		resource.setDirectory(path);
 		resource.addInclude("**/*.*");

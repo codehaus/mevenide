@@ -11,11 +11,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  */
-package org.mevenide.project;
+package org.mevenide.project.dependency;
 
-import org.apache.maven.project.Dependency;
-
-import junit.framework.TestCase;
+import org.apache.commons.discovery.tools.DiscoverClass;
 
 /**
  * 
@@ -23,27 +21,23 @@ import junit.framework.TestCase;
  * @version $Id$
  * 
  */
-public class DependencyUtilTest extends TestCase {
-
-
-	public void testAreEqualsD() {
-		Dependency d1 = new Dependency();
-		d1.setArtifactId("one");
-		d1.setGroupId("groupone");
-		d1.setVersion("1.0");
-		
-		Dependency d2 = new Dependency();
-		d2.setArtifactId("one");
-		d2.setGroupId("groupone");
-		d2.setVersion(null);
-		
-		assertTrue(DependencyUtil.areEquals(d1, d1));
-		assertTrue(!DependencyUtil.areEquals(d1, null));
-		assertTrue(!DependencyUtil.areEquals(null, d1));
-		assertTrue(!DependencyUtil.areEquals(d1, d2));
-		assertTrue(!DependencyUtil.areEquals(d2, d1));
-		
-	}
+public abstract class AbstractDependencyResolver implements IDependencyResolver {
+	private static IDependencyResolver dependencyUtil;
+	private static Object lock = new Object();
 	
+	protected AbstractDependencyResolver() {
+	}
+		
+	public static IDependencyResolver getInstance() throws  Exception {
+		if (dependencyUtil != null) {
+			return dependencyUtil;
+		}
+		synchronized (lock) {
+			if (dependencyUtil == null) {
+				dependencyUtil = (IDependencyResolver) new  DiscoverClass().newInstance(IDependencyResolver.class);
+			}
+			return dependencyUtil;
+		}
+	}
 	
 }

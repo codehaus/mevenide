@@ -20,11 +20,12 @@ import java.io.Writer;
 import org.apache.maven.project.Dependency;
 import org.apache.maven.project.Project;
 import org.apache.maven.project.Resource;
-import org.mevenide.project.AbstractDependencyResolver;
-import org.mevenide.project.DefaultResourceResolver;
-import org.mevenide.project.DependencyFactory;
-import org.mevenide.project.IDependencyResolver;
 import org.mevenide.project.SourceDirectoryUtil;
+import org.mevenide.project.dependency.AbstractDependencyResolver;
+import org.mevenide.project.dependency.DependencyFactory;
+import org.mevenide.project.dependency.IDependencyResolver;
+import org.mevenide.project.resource.DefaultResourceResolver;
+import org.mevenide.project.resource.IResourceResolver;
 
 /**
  * 
@@ -44,6 +45,7 @@ public class ProjectWriter {
 	private ProjectReader projectReader ;
 	private DefaultProjectMarshaller marshaller ; 
 	private IDependencyResolver dependencyResolver;
+	private IResourceResolver resourceResolver;
 	
 	private static ProjectWriter projectWriter = null;
 	private static Object lock = new Object();
@@ -66,6 +68,7 @@ public class ProjectWriter {
 		marshaller = new DefaultProjectMarshaller();
 		projectReader = ProjectReader.getReader();
 		dependencyResolver = AbstractDependencyResolver.getInstance();
+		resourceResolver = new DefaultResourceResolver();
 	}
 	
 	/**
@@ -78,8 +81,8 @@ public class ProjectWriter {
 	 */
 	public void addResource(String path, File pom) throws Exception {
 		Project project = projectReader.read(pom);
-		Resource resource = DefaultResourceResolver.newResource(path);
-		DefaultResourceResolver.mergeSimilarResources(project, resource);
+		Resource resource = resourceResolver.newResource(path);
+		resourceResolver.mergeSimilarResources(project, resource);
 		write(project, pom);	
 	}
 	

@@ -11,7 +11,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  */
-package org.mevenide.project;
+package org.mevenide.project.dependency;
 
 import java.io.File;
 import java.util.List;
@@ -19,7 +19,6 @@ import java.util.List;
 import org.apache.maven.project.Dependency;
 import org.apache.maven.project.Project;
 import org.mevenide.Environment;
-import org.mevenide.project.dependency.DependencySplitter;
 
 /**
  * 
