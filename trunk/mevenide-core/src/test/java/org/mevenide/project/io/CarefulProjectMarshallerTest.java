@@ -16,28 +16,18 @@
  */
 package org.mevenide.project.io;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
-
 /**
  * 
- * @author Gilles Dodinet (gdodinet@wanadoo.fr)
- * @version $Id: AllTests.java 8 mai 2003 15:32:4913:34:35 Exp gdodinet 
+ * @author <a href="mailto:gdodinet@wanadoo.fr">Gilles Dodinet</a>
+ * @version $Id$
  * 
  */
-public class AllTests  {
-	private AllTests() {
-	}
+public class CarefulProjectMarshallerTest extends AbstractMarshallerTestCase {
 
-    public static Test suite() {
-        TestSuite suite = new TestSuite();
-        
-		suite.addTestSuite(DefaultProjectMarshallerTest.class);
-		suite.addTestSuite(CarefulProjectMarshallerTest.class);
-		suite.addTestSuite(ProjectReaderTest.class);
-		suite.addTestSuite(JarOverriderTest.class);
-		suite.addTestSuite(ProjectWriterTest.class);
-		
-        return suite;
+    protected IProjectMarshaller getMarshaller() throws Exception {
+        return new CarefulProjectMarshaller();
     }
+	
+    
 }
+ 

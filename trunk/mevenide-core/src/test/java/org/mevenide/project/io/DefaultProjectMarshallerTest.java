@@ -16,16 +16,6 @@
  */
 package org.mevenide.project.io;
 
-import java.io.FileReader;
-import java.io.Reader;
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.io.Writer;
-
-import junit.framework.TestCase;
-
-import org.apache.maven.project.Project;
-import org.mevenide.util.DefaultProjectUnmarshaller;
 
 /**
  * 
@@ -33,32 +23,11 @@ import org.mevenide.util.DefaultProjectUnmarshaller;
  * @version $Id$
  * 
  */
-public class DefaultProjectMarshallerTest extends TestCase {
-
-	private Writer writer;
-	private Project project;
-	private DefaultProjectMarshaller marshaller;
+public class DefaultProjectMarshallerTest extends AbstractMarshallerTestCase {
 	
-	protected void setUp() throws Exception {
-		writer = new StringWriter();
-		String pomFile = DefaultProjectMarshallerTest.class.getResource("/project.xml").getFile();
-		Reader reader = new FileReader(pomFile);
-		project = new DefaultProjectUnmarshaller().parse(reader);
-		marshaller = new DefaultProjectMarshaller();
-	}
-
-	protected void tearDown() throws Exception {
-		writer = null;
-	}
-
-	public void testMarshall() throws Exception {
-		marshaller.marshall(writer, project);
-		
-		Reader reader = new StringReader(writer.toString());
-		assertEquals(project, new DefaultProjectUnmarshaller().parse(reader));
-		
-		//System.out.print(writer.toString());
-	}
+    protected IProjectMarshaller getMarshaller() throws Exception {
+        return new DefaultProjectMarshaller();
+    }
 	
 	
 
