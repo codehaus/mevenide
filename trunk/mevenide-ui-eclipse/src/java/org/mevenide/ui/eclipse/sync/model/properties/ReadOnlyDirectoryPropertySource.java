@@ -18,37 +18,40 @@ package org.mevenide.ui.eclipse.sync.model.properties;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.maven.project.Project;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
+import org.mevenide.project.ProjectConstants;
 import org.mevenide.ui.eclipse.editors.properties.AbstractPomPropertySource;
+import org.mevenide.ui.eclipse.sync.model.Directory;
 
 /**
  *
  * @author <a href="mailto:rhill2@free.fr">Gilles Dodinet</a>
  * @version $Id$
  */
-public class MavenProjectPropertySource extends AbstractPomPropertySource {
+public class ReadOnlyDirectoryPropertySource extends AbstractPomPropertySource {
 
-	private static final Log log = LogFactory.getLog(MavenProjectPropertySource.class);
+	private static final Log log = LogFactory.getLog(ReadOnlyDirectoryPropertySource.class);
 
-	static final String DESCRIPTOR_FILE = "POM Descriptor";
+	public static final String DIRECTORY_PATH = "path";
+	public static final String DIRECTORY_TYPE = "type";
 	
-	private Project mavenProject;
+	private Directory directory;
 	
-	private IPropertyDescriptor[] descriptors = new IPropertyDescriptor[1];
-
-    private String descriptorPath;
+	private IPropertyDescriptor[] descriptors = new IPropertyDescriptor[2];
+	{
+		descriptors[0] = new PropertyDescriptor(DIRECTORY_PATH, DIRECTORY_TYPE);
+		descriptors[1] = new PropertyDescriptor(DIRECTORY_TYPE, DIRECTORY_TYPE);
+		
+	}
 	
 
-	public MavenProjectPropertySource(Project mavenProject) {
-		this.mavenProject = mavenProject;
-        descriptorPath = mavenProject.getFile().getAbsolutePath();
-        descriptors[0] = new PropertyDescriptor(DESCRIPTOR_FILE, DESCRIPTOR_FILE);
+	public ReadOnlyDirectoryPropertySource(Directory directory) {
+		this.directory = directory;
 	}
 
 	public Object getEditableValue() {
-		return EMPTY_STR;
+		return directory.getType() != null ? directory.getType() : EMPTY_STR;
 	}
 
 	public IPropertyDescriptor[] getPropertyDescriptors() {
@@ -56,22 +59,30 @@ public class MavenProjectPropertySource extends AbstractPomPropertySource {
 	}
 
 	public Object getPropertyValue(Object id) {
-		if (DESCRIPTOR_FILE.equals(id)) {
-			return valueOrEmptyString(descriptorPath);
+		if (log.isDebugEnabled()) {
+			log.debug("getPropertyValue called: " + id);
+		}
+		if (DIRECTORY_PATH.equals(id)) {
+			return valueOrEmptyString(directory.getPath());
+		}
+		if (DIRECTORY_TYPE.equals(id)) {
+		    return valueOrEmptyString(directory.getType());
 		}
 		return EMPTY_STR;
 	}
 	
-	
 	public boolean isPropertySet(Object id) {
-		if (DESCRIPTOR_FILE.equals(id)) {
-			return !isEmpty(descriptorPath);
+		if (DIRECTORY_PATH.equals(id)) {
+			return !isEmpty(directory.getPath());
+		}
+		if (DIRECTORY_TYPE.equals(id)) {
+			return !isEmpty(directory.getType());
 		}
 		return false;
 	}
 	
 	public void resetPropertyValue(Object id) {
-		setPropertyValue(id, descriptorPath);
+		setPropertyValue(id, ProjectConstants.MAVEN_RESOURCE);
 	}
 
 	public void setPropertyValue(Object id, Object value) {
@@ -81,13 +92,13 @@ public class MavenProjectPropertySource extends AbstractPomPropertySource {
 		if (log.isDebugEnabled()) {
 			log.debug("getLabel called for " + o);
 		}
-		return descriptorPath != null ? descriptorPath : "[unable to resolve Descriptor path]";
+		return directory.getPath() != null ? directory.getPath() : "[unable to resolve Directory path]";
 	}
 
 	/**
 	 * @see org.mevenide.ui.eclipse.editors.pages.AbstractPomPropertySource#getSource()
 	 */
 	public Object getSource() {
-		return mavenProject;
+		return directory;
 	}
 }

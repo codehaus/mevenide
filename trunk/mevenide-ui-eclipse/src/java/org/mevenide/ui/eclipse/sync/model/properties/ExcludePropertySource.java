@@ -21,8 +21,6 @@ import org.apache.commons.logging.LogFactory;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
 import org.mevenide.ui.eclipse.editors.properties.AbstractPomPropertySource;
-import org.mevenide.ui.eclipse.sync.model.Directory;
-import org.mevenide.ui.eclipse.sync.model.ExcludeNode;
 
 /**
  *
@@ -36,8 +34,6 @@ public class ExcludePropertySource extends AbstractPomPropertySource {
 	public static final String DIRECTORY = "Directory";
 	public static final String EXCLUSION_PATTERN = "Exclusion pattern";
 	
-	private ExcludeNode excludeNode;
-	
 	private String directory;
 	private String exclusionPattern;
 	
@@ -48,10 +44,9 @@ public class ExcludePropertySource extends AbstractPomPropertySource {
 	}
 	
 
-	public ExcludePropertySource(ExcludeNode excludeNode) {
-		this.excludeNode = excludeNode;
-		directory = ((Directory) excludeNode.getParent().getData()).getPath();
-		exclusionPattern = (String) excludeNode.getData();
+	public ExcludePropertySource(String directory, String exclusionPattern) {
+		this.directory = directory;
+		this.exclusionPattern = exclusionPattern;
 	}
 
 	public Object getEditableValue() {
@@ -97,6 +92,6 @@ public class ExcludePropertySource extends AbstractPomPropertySource {
 	 * @see org.mevenide.ui.eclipse.editors.pages.AbstractPomPropertySource#getSource()
 	 */
 	public Object getSource() {
-		return excludeNode;
+		return exclusionPattern;
 	}
 }

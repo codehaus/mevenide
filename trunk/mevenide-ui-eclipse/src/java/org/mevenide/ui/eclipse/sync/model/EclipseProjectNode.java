@@ -221,7 +221,7 @@ public class EclipseProjectNode extends AbstractSynchronizationNode implements I
 	
 	public Object getAdapter(Class adapter) {
         if ( IPropertySource.class.equals(adapter) ) {
-            return new EclipseProjectPropertySource(this);
+            return new EclipseProjectPropertySource((IProject) this.getData());
         }
         return null;
     }
