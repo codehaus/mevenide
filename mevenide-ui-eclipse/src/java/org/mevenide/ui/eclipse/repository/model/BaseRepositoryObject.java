@@ -34,6 +34,8 @@ public abstract class BaseRepositoryObject {
     
     public abstract BaseRepositoryObject getParent();
     
+    public abstract String getRepositoryUrl();
+    
     public String toString() {
         return getName();
     }

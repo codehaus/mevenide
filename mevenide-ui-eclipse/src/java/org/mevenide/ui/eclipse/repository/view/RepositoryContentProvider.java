@@ -17,6 +17,8 @@
 package org.mevenide.ui.eclipse.repository.view;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -40,8 +42,6 @@ public class RepositoryContentProvider implements ITreeContentProvider {
     
     private List repositoryEventListeners = new ArrayList();
     
-    private String baseUrl;
-    
     public void addRepositoryEventListener(RepositoryEventListener listener) {
         repositoryEventListeners.add(listener);
     }
@@ -61,6 +61,7 @@ public class RepositoryContentProvider implements ITreeContentProvider {
                 return currentNodeObject.getChildren();
             }
             else {
+                String baseUrl = currentNodeObject.getRepositoryUrl();
                 RepositoryObjectCollectorJob job = new RepositoryObjectCollectorJob(currentNodeObject, baseUrl);
 	            job.setListeners(this.repositoryEventListeners);
 	            job.schedule(Job.LONG);
@@ -82,9 +83,16 @@ public class RepositoryContentProvider implements ITreeContentProvider {
     }
     
     public Object[] getElements(Object inputElement) {
-        if ( inputElement instanceof String ) {
-            this.baseUrl = (String) inputElement;
-            return new Object[] {new Repository((String) inputElement)};
+        if ( inputElement instanceof Collection ) {
+            Collection repoUrls = (Collection) inputElement;
+            
+            Repository[] repos = new Repository[repoUrls.size()];
+            int i = 0;
+            for (Iterator it = repoUrls.iterator(); it.hasNext();) {
+                repos[i] = new Repository((String) it.next());
+                i++;
+            }
+            return repos;
         }
         return null;
     }

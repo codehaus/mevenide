@@ -42,4 +42,9 @@ public class Group extends BaseRepositoryObject {
     public BaseRepositoryObject getParent() {
         return parent;
     }
+    
+    
+    public String getRepositoryUrl() {
+        return parent.getRepositoryUrl();
+    }
 }

@@ -40,7 +40,7 @@ public class Repository extends BaseRepositoryObject {
         return null;
     }
     
-    public String getUrl() {
+    public String getRepositoryUrl() {
         return url;
     }
   

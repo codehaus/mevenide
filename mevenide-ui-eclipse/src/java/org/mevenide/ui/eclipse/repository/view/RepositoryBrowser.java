@@ -16,15 +16,27 @@
  */
 package org.mevenide.ui.eclipse.repository.view;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.part.ViewPart;
 import org.mevenide.ui.eclipse.MevenideColors;
+import org.mevenide.ui.eclipse.preferences.PreferencesManager;
+import org.mevenide.ui.eclipse.repository.model.BaseRepositoryObject;
+import org.mevenide.util.StringUtils;
 
 
 /**  
@@ -36,15 +48,25 @@ import org.mevenide.ui.eclipse.MevenideColors;
 public class RepositoryBrowser extends ViewPart implements RepositoryEventListener {
     
     
-    private String repositoryUrl = "http://www.ibiblio.org/maven/";
     
-    private Text repositoryUrlText;
+    private static final String MAVEN_REPOSITORIES = "MAVEN_REPOSITORIES";
+    private static List DEFAULT_REPOSITORIES = new ArrayList();
+    static {
+        DEFAULT_REPOSITORIES.add("http://www.ibiblio.org/maven/");
+    }
     
     private TreeViewer repositoryViewer;
     
+    private List repositories = new ArrayList();
+    private List selectedRepositories = new ArrayList();
+    
+    private Action addRepositoryAction;
+    private Action removeRepositoryAction;
+
+    private PreferencesManager preferenceManager;
     
     public void dataLoaded(final RepositoryEvent event) {
-        if ( repositoryUrl != null && repositoryUrl.equals(event.getRepositoryUrl()) ) {
+        if ( repositories.contains(event.getRepositoryUrl()) ) {
             repositoryViewer.getControl().getDisplay().asyncExec(
     				new Runnable() {
     					public void run () {
@@ -63,10 +85,72 @@ public class RepositoryBrowser extends ViewPart implements RepositoryEventListen
         container.setLayoutData(new GridData(GridData.FILL_BOTH));
         container.setBackground(MevenideColors.WHITE);
         
-        createRepositoryUrlComposite(container);
-        
         createRepositoryBrowsingArea(container);
+        
+        createActions();
+        
     }
+    
+    private void createActions() {
+        addRepositoryAction = new Action() {
+            public void run() {
+                AddRepositoryDialog dialog = new AddRepositoryDialog();
+                int result = dialog.open();
+                String repo = dialog.getRepository();
+                if ( result == Window.OK && !StringUtils.isNull(repo) ) {
+                    repositories.add(repo);
+                    saveRepositories();
+                    asyncUpdateUI();
+                }
+            }
+        };
+        removeRepositoryAction = new Action() {
+            public void run() { 
+                repositories.removeAll(selectedRepositories);
+                selectedRepositories.clear();
+                saveRepositories();
+                asyncUpdateUI();
+            }
+        };
+        createToolBarManager();
+    }
+
+    private void asyncUpdateUI() {
+        repositoryViewer.getControl().getDisplay().asyncExec(
+				new Runnable() {
+					public void run () {
+			            repositoryViewer.setInput(repositories);
+					}
+				}
+        );
+    }
+    
+    private void saveRepositories() {
+        preferenceManager = PreferencesManager.getManager();
+        String serializedRepos = "";
+        for (Iterator it = repositories.iterator(); it.hasNext();) {
+            serializedRepos += it.next() + ",";
+        }
+        preferenceManager.setValue(MAVEN_REPOSITORIES, serializedRepos);
+        preferenceManager.store();
+    }
+    
+    private void loadRepositories() {
+        preferenceManager = PreferencesManager.getManager();
+        String repos = preferenceManager.getValue(MAVEN_REPOSITORIES);
+        if ( !StringUtils.isNull(repos) ) {
+            repositories = new ArrayList(Arrays.asList(org.apache.commons.lang.StringUtils.split(repos, ",")));
+        }
+        else {
+            repositories = DEFAULT_REPOSITORIES;
+        }
+    }
+    
+    private void createToolBarManager() {
+		IToolBarManager toolBarManager = getViewSite().getActionBars().getToolBarManager();
+        toolBarManager.add(addRepositoryAction);
+        toolBarManager.add(removeRepositoryAction);
+	}
     
     private void createRepositoryBrowsingArea(Composite container) {
         Composite composite = new Composite(container, SWT.NULL);
@@ -80,7 +164,7 @@ public class RepositoryBrowser extends ViewPart implements RepositoryEventListen
         composite.setLayoutData(layoutData);
         composite.setBackground(MevenideColors.BLUE_GRAY);
         
-        repositoryViewer = new TreeViewer(composite, SWT.NULL);
+        repositoryViewer = new TreeViewer(composite, SWT.MULTI);
         RepositoryContentProvider contentProvider = new RepositoryContentProvider();
         contentProvider.addRepositoryEventListener(this);
         repositoryViewer.setContentProvider(contentProvider);
@@ -90,48 +174,22 @@ public class RepositoryBrowser extends ViewPart implements RepositoryEventListen
         treeViewerLayoutData.grabExcessHorizontalSpace = true;
         treeViewerLayoutData.grabExcessVerticalSpace = true;
         repositoryViewer.getTree().setLayoutData(treeViewerLayoutData);
-
-        repositoryViewer.setInput(repositoryUrl);
+        repositoryViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+            public void selectionChanged(SelectionChangedEvent event) {
+                StructuredSelection selection = (StructuredSelection) event.getSelection();
+                for ( Iterator it = selection.iterator(); it.hasNext(); ) {
+                    String selectedRepo = ((BaseRepositoryObject) it.next()).getRepositoryUrl();
+                    selectedRepositories.add(selectedRepo);
+                }
+            }
+        });
+        
+        
+        loadRepositories();
+        repositoryViewer.setInput(repositories);
     }
-
-    private void createRepositoryUrlComposite(Composite container) {
-        Composite composite = new Composite(container, SWT.NULL);
-        composite.setBackground(MevenideColors.BLUE_GRAY);
-        GridLayout topLayout = new GridLayout();
-        topLayout.marginWidth = 2;
-        topLayout.marginHeight = 2;
-        composite.setLayout(topLayout);
-        GridData layoutData = new GridData(GridData.FILL_HORIZONTAL);
-        composite.setLayoutData(layoutData);
-        
-        Composite textComposite = new Composite(composite, SWT.NULL);
-        GridLayout layout = new GridLayout();
-        layout.numColumns = 3;
-        layout.makeColumnsEqualWidth = false;
-        textComposite.setLayout(layout);
-        textComposite.setBackground(MevenideColors.WHITE);
-        textComposite.setLayout(layout);
-        GridLayout textLayout = new GridLayout();
-        GridData topData = new GridData(GridData.FILL_HORIZONTAL);
-        topData.grabExcessHorizontalSpace = true;
-        textComposite.setLayoutData(topData);
-        
-        Text repositoryLabel = new Text(textComposite, SWT.READ_ONLY | SWT.BOLD);
-        repositoryLabel.setText("Repository");
-        repositoryLabel.setBackground(MevenideColors.WHITE);
-        repositoryLabel.setForeground(MevenideColors.BLUE_GRAY);
-        
-        repositoryUrlText = new Text(textComposite, SWT.BORDER);
-        GridData data = new GridData(GridData.FILL_HORIZONTAL);
-        data.grabExcessHorizontalSpace = true;
-        repositoryUrlText.setLayoutData(data);
-        
-        Button browseRepoButton = new Button(textComposite, SWT.FLAT);
-        browseRepoButton.setText("Browse");
-        GridData browseButtonLayoutData = new GridData(GridData.HORIZONTAL_ALIGN_END);
-        browseButtonLayoutData.grabExcessHorizontalSpace = false;
-        browseRepoButton.setLayoutData(browseButtonLayoutData);
-    }
+    
+    
 
     public void setFocus() {
     }
