@@ -73,9 +73,10 @@ import org.mevenide.ui.eclipse.goals.model.Plugin;
  * 
  */
 public class GoalsPickerDialog  extends TitleAreaDialog {
-	private static final String HTTP_SERVER_ERROR = "5";
-    private static final String HTTP_CLIENT_ERROR = "4";
     private static Log log = LogFactory.getLog(GoalsPickerDialog.class);
+
+    private static final String HTTP_SERVER_ERROR = "5";
+    private static final String HTTP_CLIENT_ERROR = "4";
 	
 	private CheckboxTreeViewer goalsViewer;
 
@@ -99,6 +100,13 @@ public class GoalsPickerDialog  extends TitleAreaDialog {
 	private Text goalsOrderText; 
 	private String goalsOrder;
 	
+	private String overrideMessage;
+	private String overrideTitle;
+	
+    public void setOverrideTitle(String overrideTitle) {
+        this.overrideTitle = overrideTitle;
+    }
+    
     public StyledText getTextWidget() {
         return pluginHomeURLText;
     }
@@ -114,8 +122,19 @@ public class GoalsPickerDialog  extends TitleAreaDialog {
 	
 	protected Control createDialogArea(Composite parent) {
 	    getShell().setText(Mevenide.getResourceString("Available Goals"));
-		setShellStyle(SWT.RESIZE | SWT.APPLICATION_MODAL);
-		//setMessage("Choose POM template from the list below.");
+	    setShellStyle(SWT.RESIZE | SWT.APPLICATION_MODAL);
+	    if ( overrideTitle != null ) {
+	        setTitle(overrideTitle);
+	    }
+	    else {
+	        setTitle("Goals to run");
+	    }
+		if ( overrideMessage != null ) {
+		    setMessage(overrideMessage);
+		}
+		else {
+		    setMessage("Select goals to run from the list below.");
+		}
         try {
         	Composite composite = new Composite(parent, SWT.NONE);
         	composite.setLayout(new GridLayout());
@@ -483,6 +502,9 @@ public class GoalsPickerDialog  extends TitleAreaDialog {
         this.goalsOrder = goalsOrder;
     }
 
+    public void setOverrideMessage(String message) {
+        overrideMessage = message;
+    }
 }
 
 class HyperLinkMouseListener extends MouseAdapter {
