@@ -19,10 +19,8 @@
     <classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.jdt.launching_3.0.0/launching.jar"/>
     <classpathentry kind="var"
         path="ECLIPSE_HOME/plugins/org.eclipse.jdt.ui_3.0.0/jdt.jar" sourcepath="JDT_UI_SRC"/>
-    <classpathentry exported="true" kind="var" path="LOGGING_COMMONS_LIB"/>
     <classpathentry kind="var"
         path="ECLIPSE_HOME/plugins/org.eclipse.ui.externaltools_3.0.0/externaltools.jar" sourcepath="ORG_ECLIPSE_PLATFORM_SOURCE_SRC/org.eclipse.ui.externaltools_3.0.0/externaltoolssrc.zip"/>
-    <classpathentry kind="var" path="MAVEN_REPO/commons-lang/jars/commons-lang-1.0.1.jar"/>
     <classpathentry kind="var" path="SWT_LIB" sourcepath="SWT_SRC"/>
     <classpathentry kind="var"
         path="ECLIPSE_HOME/plugins/org.eclipse.text_3.0.0/text.jar" sourcepath="ORG_ECLIPSE_PLATFORM_SOURCE_SRC/org.eclipse.text_3.0.0/textsrc.zip"/>
