@@ -105,11 +105,16 @@ public abstract class AbstractPomEditorPage
 	}
 	
 	protected void update(Project pom) {
-		IFormPart[] sections = getManagedForm().getParts();
-		for (int i = 0; i < sections.length; i++) {
-			((PageSection) sections[i]).updateSection(pom);
-		}
-		setUpdateNeeded(false);
+	    if ( getManagedForm() != null ) {
+		    IFormPart[] sections = getManagedForm().getParts();
+			for (int i = 0; i < sections.length; i++) {
+				((PageSection) sections[i]).updateSection(pom);
+			}
+			setUpdateNeeded(false);
+	    }
+	    else {
+	        //mark as allRefreshNeeded so that when page activates later it will update
+	    }
 	}
 	
 	protected boolean isUpdateNeeded() {

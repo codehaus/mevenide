@@ -18,6 +18,7 @@ package org.mevenide.ui.eclipse.editors.pom.pages;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.maven.project.Organization;
 import org.apache.maven.project.Project;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -77,10 +78,15 @@ public class OrganizationSection extends PageSection {
 		nameText = new OverridableTextEntry(createText(container, factory, 2), toggle);
 		OverrideAdaptor adaptor = new OverrideAdaptor() {
 			public void overrideParent(Object value) {
-				pom.getOrganization().setName((String) value);
+			    if ( value != null ) {
+				    if ( pom.getOrganization() == null ) {
+				        pom.setOrganization(new Organization());
+				    }
+				    pom.getOrganization().setName((String) value);
+			    }
 			}
 			public Object acceptParent() {
-				return getParentPom().getOrganization().getName();
+			    return getParentPom() != null && getParentPom().getOrganization() != null ? getParentPom().getOrganization().getName() : null;
 			}
 		};
 		nameText.addEntryChangeListener(adaptor);
