@@ -94,5 +94,10 @@ public class ProjectGoalsGrabberTest extends AbstractGoalsGrabberTestCase {
 		};
 	}
      
-
+   protected String[] getGetOriginParameters() {
+       return new String[] { "build", "build-all"};
+   }
+    protected String[] getGetOriginResults() {
+       return new String[] { IGoalsGrabber.ORIGIN_PROJECT, IGoalsGrabber.ORIGIN_PROJECT };
+    }
 }

@@ -139,6 +139,19 @@ public class GoalsGrabbersAggregatorTest extends AbstractGoalsGrabberTestCase {
 		return ArrayUtils.concatenateArrays(defaultGetPrereqsResults, projectGetPrereqsResults);
     }
 
+    protected String[] getGetOriginParameters()
+    {
+        String[] defaultGetOriginParameters = defaultGoalsGrabberTest.getGetOriginParameters();
+		String[] projectGetOriginParameters = projectGoalsGrabberTest.getGetOriginParameters();
+		return ArrayUtils.concatenateArrays(defaultGetOriginParameters, projectGetOriginParameters);
+    }    
+    
+    protected String[] getGetOriginResults()
+    {
+        String[] defaultGetOriginResults = defaultGoalsGrabberTest.getGetOriginResults();
+		String[] projectGetOriginResults = projectGoalsGrabberTest.getGetOriginResults();
+		return ArrayUtils.concatenateArrays(defaultGetOriginResults, projectGetOriginResults);
+    }    
 
 }
 
