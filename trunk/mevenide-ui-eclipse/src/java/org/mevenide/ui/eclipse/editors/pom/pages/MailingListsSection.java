@@ -16,6 +16,7 @@
  */
 package org.mevenide.ui.eclipse.editors.pom.pages;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.maven.project.MailingList;
@@ -77,6 +78,9 @@ public class MailingListsSection extends PageSection {
 			new IPomCollectionAdaptor() {
 				public Object addNewObject(Object parentObject) {
 					MailingList mailingList = new MailingList();
+					if ( pom.getMailingLists() == null ) {
+					    pom.setMailingLists(new ArrayList());
+					}
 					pom.addMailingList(mailingList);
 					return mailingList;
 				}

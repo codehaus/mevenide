@@ -296,6 +296,7 @@ public abstract class PageSection extends SectionPart {
 
         section.setClient(client);
         section.setExpanded(true);
+        
     }
 
     protected String getRelativePath(final String directory) throws IOException {

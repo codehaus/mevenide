@@ -203,6 +203,7 @@ public class MevenidePomEditor extends FormEditor {
         TeamPage teamPage = new TeamPage(this);
         comparator.addProjectChangeListener(ProjectComparator.CONTRIBUTORS, teamPage);
         comparator.addProjectChangeListener(ProjectComparator.DEVELOPERS, teamPage);
+        comparator.addProjectChangeListener(ProjectComparator.MAILINGLISTS, teamPage);
         addPage(teamPage);
     }
 
@@ -470,7 +471,7 @@ public class MevenidePomEditor extends FormEditor {
                 firePropertyChange(PROP_TITLE);
             }
             setModelDirty(false);
-            pom = updatedPom;
+            
             clean = true;
         } catch (Exception e) {
             log.error("Unable to update model", e);
