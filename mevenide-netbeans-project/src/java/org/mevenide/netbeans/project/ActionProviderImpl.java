@@ -35,7 +35,7 @@ import org.mevenide.netbeans.project.exec.RunConfig;
 import org.mevenide.netbeans.project.output.AttachDebuggerOutputHook;
 import org.mevenide.netbeans.project.exec.MavenExecutor;
 import org.mevenide.netbeans.api.output.OutputProcessor;
-import org.mevenide.netbeans.project.output.OutputProcessorFactory;
+import org.mevenide.netbeans.project.output.DefaultOutputProcessorFactory;
 import org.mevenide.properties.IPropertyLocator;
 import org.mevenide.properties.IPropertyResolver;
 import org.netbeans.spi.project.ActionProvider;
@@ -52,7 +52,7 @@ import org.openide.windows.InputOutput;
 
 /**
  *
- * @author  Milos Kleint (ca206216@tiscali.cz)
+ * @author  Milos Kleint (mkleint@codehaus.org)
  */
 public class ActionProviderImpl implements ActionProvider {
     private static final Log logger = LogFactory.getLog(ActionProviderImpl.class);
@@ -203,7 +203,7 @@ public class ActionProviderImpl implements ActionProvider {
             int port = Integer.parseInt(portStr);
             int delay = Integer.parseInt(delStr);
             OutputProcessor filter = new AttachDebuggerOutputHook(delay, host, port);
-            Set procs = OutputProcessorFactory.getDefault().createDetaultProcessorsSet(project);
+            Set procs = DefaultOutputProcessorFactory.getAllProcessors(project);
             procs.add(filter);
             runGoal(goal, lookup, procs, null, new DefaultRunConfig());
         } catch (NumberFormatException exc) {
@@ -216,7 +216,7 @@ public class ActionProviderImpl implements ActionProvider {
     }
     
     public void runGoal(String goal, Lookup lookup, RunConfig config) throws java.lang.IllegalArgumentException {
-        runGoal(goal, lookup, OutputProcessorFactory.getDefault().createDetaultProcessorsSet(project), null, config);
+        runGoal(goal, lookup, DefaultOutputProcessorFactory.getAllProcessors(project), null, config);
     }
     
     private void runGoal(String goal, Lookup lookup, 
