@@ -115,9 +115,9 @@ public class DependenciesSection extends PageSection {
 			new IPomCollectionAdaptor() {
 				public Object addNewObject(Object parentObject) {
 					Dependency dependency = new Dependency();
-					dependency.setArtifactId("<artifactId>");
-					dependency.setGroupId("<groupId>");
-					dependency.setVersion("<version>");
+					dependency.setArtifactId("[artifactId]");
+					dependency.setGroupId("[groupId]");
+					dependency.setVersion("[version]");
 					dependency.setType("jar");
 					pom.addDependency(dependency);
 					return dependency;
@@ -225,7 +225,6 @@ public class DependenciesSection extends PageSection {
 		if (dependencies != null && !dependencies.isEmpty()) {
 		    for (Iterator iter = dependencies.iterator(); iter.hasNext(); ) {
 		        Dependency element = (Dependency) iter.next();
-		        log.debug(element);
 		        if (element.getType() == null) {
 		            element.setType("jar");
 		        }
