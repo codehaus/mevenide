@@ -293,7 +293,7 @@ public class MavenProjectWizardBasicSettingsPOMPage extends WizardPage {
 			if (fProjectGroup.getInceptionYear().length() != 4) {
 				setErrorMessage(Mevenide.getResourceString("MavenProjectWizardBasicSettingsPOMPage.Message.enterInceptionYearError")); //$NON-NLS-1$
 				setPageComplete(false);
-				fProjectGroup.setFocus();
+				//fProjectGroup.setFocus();
 				return;
 			}
 
