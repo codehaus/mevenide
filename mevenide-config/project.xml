@@ -38,7 +38,7 @@
             	<eclipse.plugin.bundle>false</eclipse.plugin.bundle>
             </properties>
         </dependency>
-        <dependency>
+<!--        <dependency>
             <groupId>ant</groupId>
             <artifactId>ant</artifactId>
             <version>1.5.3-1</version>
@@ -47,6 +47,7 @@
             	<eclipse.plugin.bundle>false</eclipse.plugin.bundle>
             </properties>
         </dependency>
+        -->
         <dependency>
         	<groupId>mevenide</groupId>
             <artifactId>mevenide-core-test</artifactId>
