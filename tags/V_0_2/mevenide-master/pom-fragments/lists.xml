@@ -1,0 +1,12 @@
+	<mailingList>
+      <name>Mevenide User List</name>
+      <subscribe>mevenide-user-request@lists.sourceforge.net?body=subscribe</subscribe>
+      <unsubscribe>mevenide-user-request@lists.sourceforge.net?body=unsubscribe</unsubscribe>
+      <archive>http://sourceforge.net/mailarchive/forum.php?forum_id=9925</archive>
+    </mailingList>
+    <mailingList>
+      <name>Mevenide Developer List</name>
+      <subscribe>mevenide-general-dev-request@lists.sourceforge.net?body=subscribe</subscribe>
+      <unsubscribe>mevenide-general-dev-request@lists.sourceforge.net?body=unsubscribe</unsubscribe>
+      <archive>http://sourceforge.net/mailarchive/forum.php?forum_id=10398</archive>
+    </mailingList>

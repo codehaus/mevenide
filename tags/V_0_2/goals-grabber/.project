@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<projectDescription>
+	<name>goals-grabber</name>
+	<comment>This project provides a Maven plugin that grabs all the goals cached in ${maven.home}/plugins/goals.cache and provides a hook to store them in an xml file during postGoal execution. Also the GoalsBean can be unmarshalled from an xml file containing the list of goals.</comment>
+	<projects>
+		<project>mevenide-config</project>
+		<project>mevenide-core</project>
+	</projects>
+	<buildSpec>
+		<buildCommand>
+			<name>org.eclipse.jdt.core.javabuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+	</buildSpec>
+	<natures>
+		<nature>org.eclipse.jdt.core.javanature</nature>
+	</natures>
+</projectDescription>

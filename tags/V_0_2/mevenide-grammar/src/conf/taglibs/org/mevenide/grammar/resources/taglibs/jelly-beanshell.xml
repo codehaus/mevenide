@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- code completion definition for the jelly-tag library -->
+
+<taglib name="jelly:beanshell">
+    <tag name="script">
+        <attr name="trim"/>
+    <!-- no idea what is inside, prooly dynamic -->
+    </tag>
+</taglib>

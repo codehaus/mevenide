@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<document>
+    <properties>
+    	<author email="rhill@wanadoo.fr">Gilles Dodinet</author>
+        <title>Overview</title>
+    </properties>
+    <body>
+        <section name="Project Overview">
+        	
+        	<p>
+			    This module provides POM manipulation methods, like reading, writing POM, 
+			    adding [re]source directories, dependencies, resolving dependencies, etc.. 
+			    and also provides a ProjectComparator that can be used to track changes made to a pom,
+			    notifying registered listeners on every detected change.
+			</p>
+		</section>
+    </body>
+</document>

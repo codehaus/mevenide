@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- code completion definition for the jelly-tag library -->
+
+<taglib name="jelly:wizard">
+     <tag name="wizardDialog">
+        <attr name="performCancel"/>
+        <attr name="performFinish"/>
+        <attr name="trim"/>
+    </tag>
+     <tag name="wizardPage">
+        <attr name="trim"/>
+    </tag>
+</taglib>
