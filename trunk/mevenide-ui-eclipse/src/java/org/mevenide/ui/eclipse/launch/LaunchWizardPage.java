@@ -105,10 +105,17 @@ public class LaunchWizardPage extends WizardPage {
 
 
 			createCheckBoxes(composite);
+			log.debug("checkboxes initialized");
+			
 			createSysPropertiesTable(composite);
-			createGoalsText(composite);
+			log.debug("table initialized");
+			
+			createGoalsList(composite);
+			log.debug("goals list initialized");
+			
 			//createMavenVersionLabel(composite);
-	
+			
+			
             setControl(composite);
         }
         catch (Exception e) {
@@ -265,7 +272,7 @@ public class LaunchWizardPage extends WizardPage {
 	}
 
 
-	private void createGoalsText(Composite parent) {
+	private void createGoalsList(Composite parent) {
 		
 		initGoals();
 		
@@ -295,7 +302,9 @@ public class LaunchWizardPage extends WizardPage {
 			}	
 		);
 		
-		goalsComboList.setText(selectedGoals);
+		if ( selectedGoals != null ) {
+			goalsComboList.setText(selectedGoals);
+		}
 		
 		Composite buttonsArea = new Composite(parent, SWT.NULL);
 		GridLayout bLayout = new GridLayout();

@@ -14,31 +14,44 @@
  */
 package org.mevenide.ui.eclipse.launch;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.core.resources.IProject;
-import org.eclipse.jface.action.Action;
 
 /**
- * @todo implement-me
+ * i guess it will be dropped when i ll take a look at the Eclipse LaunchConfiguration
+ * However for now its quicker to implement
  * 
  * @author <a href="mailto:rhill@wanadoo.fr">Gilles Dodinet</a>
  * @version $Id$
  * 
  */
 public class LaunchHistory {
-	public class LaunchedAction extends Action {
-		public void run() {
-			super.run();
-		}
+	private LaunchedAction lastlaunched;
+	
+	private List launchedActions = new ArrayList();
+	
+	private static LaunchHistory history;
+	
+	static {
+		history = new LaunchHistory();
 	}
 	
-	private static LaunchHistory history = new LaunchHistory();
+	private LaunchHistory() {
+		load();
+	}
+	
 	
 	public static LaunchHistory getHistory() {
 		return history;
 	}
 	
 	public LaunchedAction[] getLaunchedActions() {
-		LaunchedAction[] hist = new LaunchedAction[0];
+		LaunchedAction[] hist = new LaunchedAction[launchedActions.size()];
+		for (int i = 0; i < hist.length; i++) {
+			hist[i] = (LaunchedAction) launchedActions.get(i);
+		}
 		return hist;
 	}
 	
@@ -50,6 +63,9 @@ public class LaunchHistory {
 	 * @param goals
 	 */
 	public void save(IProject project, String[] options, String[] goals) {
+		LaunchedAction action = new LaunchedAction(this, project, options, goals);
+		launchedActions.add(action);
+		lastlaunched = action;
 		
 	}
 	
@@ -61,5 +77,20 @@ public class LaunchHistory {
 		
 	}
 	
+	/**
+	 * 
+	 * load previously saved config 
+	 *
+	 */
+	private void load() {
 	
+	}
+	
+	/**
+	 * @return
+	 */
+	public LaunchedAction getLastlaunched() {
+		return lastlaunched;
+	}
+
 }
