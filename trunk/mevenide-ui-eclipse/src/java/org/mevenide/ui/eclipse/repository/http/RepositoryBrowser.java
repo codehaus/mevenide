@@ -71,7 +71,7 @@ public class RepositoryBrowser implements RepositoryObjectCollector {
     
     public RepositoryBrowser(Repository repository) {
         this.repository = repository;
-        String url = repository.getUrl(); 
+        String url = repository.getRepositoryUrl(); 
         search = new RepositorySearch(url.endsWith("/") ? url : url + "/");
     }
     
@@ -90,7 +90,7 @@ public class RepositoryBrowser implements RepositoryObjectCollector {
             return (Group[]) groups.toArray(new Group[groups.size()]);
         }
         catch ( IOException e ) {
-            throw new RepositoryBrowsingException("Unable to browse repository " + repository.getUrl(), e);
+            throw new RepositoryBrowsingException("Unable to browse repository " + repository.getRepositoryUrl(), e);
         }
     }
 }

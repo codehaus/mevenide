@@ -75,7 +75,7 @@ public class GroupBrowser implements RepositoryObjectCollector {
     
     public GroupBrowser(Group group) {
         this.group = group;
-        this.search = new GroupSearch(((Repository) group.getParent()).getUrl(), group.getName());
+        this.search = new GroupSearch(((Repository) group.getParent()).getRepositoryUrl(), group.getName());
     }
     
     
