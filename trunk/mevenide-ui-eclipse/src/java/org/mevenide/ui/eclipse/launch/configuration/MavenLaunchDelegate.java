@@ -71,7 +71,6 @@ public class MavenLaunchDelegate extends AbstractRunner implements ILaunchConfig
 			return StringUtils.split(strg, " ");
 		}	
 		catch (CoreException e) {
-			// @todo Auto-generated catch block
 			e.printStackTrace();
 			//@todo temp return value 
 			return new String[0];
@@ -81,18 +80,22 @@ public class MavenLaunchDelegate extends AbstractRunner implements ILaunchConfig
 	private String[] getOptions(ILaunchConfiguration configuration) {
 		try {
 			Map map = (Map) configuration.getAttribute(MavenOptionsTab.OPTIONS_MAP, new HashMap());
+			log.debug("Found " + map.size() + " options in configuration : ");
 			String[] options = new String[map.size()];
 			Iterator iterator = map.keySet().iterator();
 			int idx = 0;
 			while (iterator.hasNext()) {
-				Character element = new Character(((String)iterator.next()).charAt(0));
-				if ( Boolean.valueOf((String)map.get(element)).booleanValue() )  {
+				String strg = (String)iterator.next();
+				Character element = new Character(strg.charAt(0));
+				if ( Boolean.valueOf((String)map.get(strg)).booleanValue() )  {
 					options[idx] = "-" + element;
 					idx++;
+					log.debug(strg + " => " + map.get(strg));
 				}
 			}
 			String[] result = new String[idx];
 			System.arraycopy(options, 0, result, 0, idx);
+			log.debug("options passed to Maven " + result.length);
 			return result;
 		} 
 		catch (CoreException e) {

@@ -71,7 +71,7 @@ public class MavenOptionsTab extends AbstractLaunchConfigurationTab  {
 	}
 	
 	public String getName() {
-		return "Maven Configuration";
+		return "Arguments";
 	}
 	
 	public void setDefaults(ILaunchConfigurationWorkingCopy arg0) {
