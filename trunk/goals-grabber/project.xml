@@ -4,7 +4,7 @@
     <id>mevenide:mevenide-goals-grabber</id>
     <artifactId>mevenide-goals-grabber</artifactId>
     <name>Goals Grabber</name>
-    <currentVersion>0.1</currentVersion>
+    <currentVersion>0.1.1</currentVersion>
     <organization/>
     <package>org.mevenide.goals.grabber</package>
     <shortDescription>Gets all the available goals</shortDescription>
