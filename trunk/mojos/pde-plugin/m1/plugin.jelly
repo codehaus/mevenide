@@ -4,7 +4,7 @@
          xmlns:ant="jelly:ant">
 	
 	<goal name="pde:plugin" prereqs="test:test">
-		<pde:plugin/>
+	    <pde:plugin />
 	</goal>
 	
 	<goal name="pde:classpath">
