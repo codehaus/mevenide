@@ -410,7 +410,8 @@ public abstract class MavenXmlContentAssistProcessor implements IContentAssistPr
 		
 		XMLNode parentNode = getNodeAt(doc, offset);
 		
-        if ( Namespace.getWerkzList().contains(parentNode.getName()) && !("goal".equals(parentNode.getName()) && !"prereqs".equals(attribute.getName())) || "attainGoal".equals(parentNode.getName()) ) {
+        //if ( Namespace.getWerkzList().contains(parentNode.getName()) && !("goal".equals(parentNode.getName()) && !"prereqs".equals(attribute.getName())) || "attainGoal".equals(parentNode.getName()) ) {
+        if ( Namespace.getWerkzList().contains(parentNode.getName()) && "goal".equals(parentNode.getName()) || "attainGoal".equals(parentNode.getName()) ) {
 	        words = new ArrayList(attributeCompletor.getValueHints(start));
         }
         
