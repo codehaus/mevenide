@@ -59,6 +59,6 @@ import org.apache.maven.project.Project;
  * 
  */
 public interface IProjectMarshaller {
-	public abstract void marshall(Writer pom, Project project)
+	void marshall(Writer pom, Project project)
 		throws Exception;
 }

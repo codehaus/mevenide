@@ -55,6 +55,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Build;
 import org.apache.maven.project.Contributor;
 import org.apache.maven.project.Dependency;
@@ -80,6 +82,8 @@ import org.xmlpull.v1.XmlSerializer;
  * 
  */
 public class DefaultProjectMarshaller implements IProjectMarshaller {
+	
+	private static final Log log = LogFactory.getLog(DefaultProjectMarshaller.class);
 	private static final String NAMESPACE = null;
 	//private static final String ENCODING = null;
 	//private static final Boolean STANDALONE = null;
@@ -245,21 +249,7 @@ public class DefaultProjectMarshaller implements IProjectMarshaller {
 		serializer.endTag(NAMESPACE, "developers");
 	}
 
-	private  void marshallContactDetails(Contributor contributor) throws IOException {
-		serializer.startTag(NAMESPACE, "contactDetails");
-		
-		marshallRequiredString(contributor.getEmail(), "email");
-		marshallString(contributor.getOrganization(), "organization");
-		
-		marshallRoles(contributor);
-		
-		marshallString(contributor.getUrl(), "url");
-		
-		//timezone skipped
-		
-		serializer.endTag(NAMESPACE, "contactDetails");
-	}
-
+	
 	private  void marshallRoles(Contributor contributor) throws IOException {
 		SortedSet roles = contributor.getRoles();
 		if ( roles != null ) {
@@ -467,7 +457,7 @@ public class DefaultProjectMarshaller implements IProjectMarshaller {
 	
 	private  void marshallRequiredString(String line, String tag) throws IOException {
 		if ( isNull(line) ) {
-			//System.out.println("WARNING : " + tag + " should not be null");
+			log.warn(tag + " should not be null");
 		}
 		marshallString(line, tag);
 	}

@@ -64,8 +64,8 @@ public abstract class RunnerHelper {
     	return helper;	
     }
     
-    public static synchronized void setHelper(RunnerHelper helper) {
-    	RunnerHelper.helper = helper;
+    public static synchronized void setHelper(RunnerHelper runnerHelper) {
+    	RunnerHelper.helper = runnerHelper;
     }
     
     public abstract String[] getMainClass();

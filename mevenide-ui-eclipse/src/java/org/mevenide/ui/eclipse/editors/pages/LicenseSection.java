@@ -51,7 +51,6 @@ package org.mevenide.ui.eclipse.editors.pages;
 import org.apache.maven.project.Project;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;

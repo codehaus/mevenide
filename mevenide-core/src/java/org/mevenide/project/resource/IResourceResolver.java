@@ -66,7 +66,7 @@ public interface IResourceResolver {
 	 * @param resource
 	 * @return boolean
 	 */
-	public abstract void mergeSimilarResources(
+	void mergeSimilarResources(
 		Project project,
 		Resource resource);
 
@@ -78,7 +78,7 @@ public interface IResourceResolver {
 	 * @param resource
 	 * @return boolean
 	 */
-	public abstract void mergeSimilarUnitTestResources(
+	void mergeSimilarUnitTestResources(
 		Project project,
 		Resource resource);
 	

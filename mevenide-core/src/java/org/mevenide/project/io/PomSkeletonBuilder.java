@@ -67,7 +67,7 @@ import org.mevenide.util.DefaultProjectUnmarshaller;
  * @version $Id$
  * 
  */
-public class PomSkeletonBuilder {
+public final class PomSkeletonBuilder {
 	
 	/**
 	 * default template used if user doesnot provide one
@@ -89,7 +89,6 @@ public class PomSkeletonBuilder {
 	 */
 	public static PomSkeletonBuilder getSkeletonBuilder(String template) throws Exception {
 		PomSkeletonBuilder pomBuilder = new PomSkeletonBuilder();
-		InputStream is = null;
 		if ( template == null || !new File(template).exists() ) {
 			pomBuilder.template = new File(PomSkeletonBuilder.class.getResource(DEFAULT_TEMPLATE).getFile());
 		}

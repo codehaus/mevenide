@@ -60,8 +60,10 @@ package org.mevenide.util;
  * @author <a href="bwalding@jakarta.org">Ben Walding</a>
  * @version $Id$
  */
-public class DeprecationWarning
-{
+public final class DeprecationWarning {
+	
+	private DeprecationWarning() { }
+	
 	/** return code for use of a completely deprecated item - eg. you must not be using it anymore */
 	public static final int RC_DEPRECATED = 100;
 		

@@ -64,7 +64,7 @@ public abstract class DependencyResolverFactory implements IDependencyResolver {
 	protected DependencyResolverFactory() {
 	}
 		
-	public synchronized static IDependencyResolver newInstance(String absoluteFileName) throws  Exception {
+	public static synchronized IDependencyResolver newInstance(String absoluteFileName) throws  Exception {
 		if (resolvers.containsKey(absoluteFileName)) {
 			return (IDependencyResolver) resolvers.get(absoluteFileName);
 		}

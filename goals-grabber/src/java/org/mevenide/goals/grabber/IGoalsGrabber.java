@@ -62,7 +62,7 @@ public interface IGoalsGrabber {
 	 *  
 	 * @return Collection
 	 */
-	public abstract String[] getPlugins();
+	String[] getPlugins();
 
 	/**
 	 * return the goals declared by the plugin whose name is passed as parameter
@@ -70,7 +70,7 @@ public interface IGoalsGrabber {
 	 * @param plugin   
 	 * @return Collection
 	 */
-	public abstract String[] getGoals(String plugin);
+	String[] getGoals(String plugin);
 	
 	/**
 	 * return the description of plugin:goal
@@ -79,10 +79,10 @@ public interface IGoalsGrabber {
 	 * @param goal
 	 * 
 	 */
-	public abstract String getDescription(String fullyQualifiedGoalName);
+	String getDescription(String fullyQualifiedGoalName);
 	
-	public abstract String[] getPrereqs(String fullyQualifiedGoalName);
+	String[] getPrereqs(String fullyQualifiedGoalName);
 	
-	public abstract void refresh() throws Exception;
+	void refresh() throws Exception;
 	
 }

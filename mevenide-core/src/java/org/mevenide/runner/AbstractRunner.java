@@ -50,6 +50,9 @@ package org.mevenide.runner;
 
 import java.io.File;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 
 /**
  * 
@@ -58,6 +61,9 @@ import java.io.File;
  * 
  */
 public abstract class AbstractRunner {
+	private static final Log log =  LogFactory.getLog(AbstractRunner.class);
+	
+	
     /** unmodifiable Maven options */
     private String[] finalOptions = null;
     
@@ -88,8 +94,8 @@ public abstract class AbstractRunner {
 			initEnvironment();
 			launchVM(options, goals);
 		} 
-        catch (Exception ex) {
-			//ex.printStackTrace();
+        catch (Exception e) {
+			log.debug("Cannot run Maven due to : " + e, e);
 		}
 	}
     

@@ -72,5 +72,5 @@ public interface IDependencySplitter {
      * @param fileName
      * @return DependencyParts
      */
-    public abstract DependencyParts split();
+    DependencyParts split();
 }

@@ -61,8 +61,8 @@ public class DependencySplitter implements IDependencySplitter {
 	
 	private String fileName;
 	
-	public DependencySplitter(String fileName) {
-		this.fileName = fileName;
+	public DependencySplitter(String fileNameToSplit) {
+		this.fileName = fileNameToSplit;
 	}
 
 	/**

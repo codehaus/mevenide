@@ -57,7 +57,7 @@ package org.mevenide.project;
  * @version $Id$
  * 
  */
-public abstract class ProjectConstants {
+public final class ProjectConstants {
 	private ProjectConstants() { }
 	
 	public static final String MAVEN_TEST_DIRECTORY = "unitTestSourceDirectory";

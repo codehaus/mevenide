@@ -56,22 +56,22 @@ package org.mevenide.sync;
  */
 public interface ISynchronizer {
     /** update POM from IDE project setup */
-    public static final int IDE_TO_POM = 1;
+    final int IDE_TO_POM = 1;
     
     /** update IDE project setup from POM data */
-    public static final int POM_TO_IDE = 2;
+    final int POM_TO_IDE = 2;
     
     /** ISynchronizer initialization */
-	public void initialize();
+	void initialize();
 	
     /** presynchronization callback */
-    public void preSynchronization();
+    void preSynchronization();
     
     /** postsynchronization callback */
-	public void postSynchronization();
+	void postSynchronization();
     
     /** synchronization */
-    public void synchronize() ; 
+    void synchronize() ; 
     
     /**
      * return wether this synchronizer can handle POM_TO_IDE 
@@ -80,7 +80,7 @@ public interface ISynchronizer {
      * @param direction
      * @return
      */
-    public boolean canHandle(int direction) ;  
+    boolean canHandle(int direction) ;  
     
 	
 }

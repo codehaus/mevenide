@@ -60,7 +60,8 @@ import org.apache.maven.project.Project;
  * @version $Id$
  * 
  */
-public class MevenideUtils {
+public final class MevenideUtils {
+	private MevenideUtils() { }
 	
 	public static boolean findFile(File rootDirectory, String fileName) {
 		File[] f = rootDirectory.listFiles();

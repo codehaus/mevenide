@@ -99,8 +99,8 @@ public class ProjectGoalsGrabber extends AbstractGoalsGrabber {
         return mavenXmlFile;
     }
 
-    public void setMavenXmlFile(String mavenXmlFile) {
-        this.mavenXmlFile = mavenXmlFile;
+    public void setMavenXmlFile(String mavenXml) {
+        this.mavenXmlFile = mavenXml;
     }
 
 }

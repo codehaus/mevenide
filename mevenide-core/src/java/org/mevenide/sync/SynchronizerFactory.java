@@ -60,7 +60,7 @@ import org.apache.commons.logging.LogFactory;
  * @version $Id$
  * 
  */
-public abstract class SynchronizerFactory  {
+public final class SynchronizerFactory  {
 	private static Log log = LogFactory.getLog(SynchronizerFactory.class);
 	
 	private SynchronizerFactory() {

@@ -66,15 +66,16 @@ import org.mevenide.goals.grabber.ProjectGoalsGrabber;
  * @version $Id: GoalsManager.java,v 1.1 7 sept. 2003 Exp gdodinet 
  * 
  */
-public class GoalsGrabbersManager {
+public final class GoalsGrabbersManager {
 	private static Log log = LogFactory.getLog(GoalsGrabbersManager.class);
 		
 	private static Map goalsGrabbers = new HashMap();
 	
 	private static DefaultGoalsGrabber defaultGoalsGrabber;
 	
+	private GoalsGrabbersManager() { }
 	
-	public static IGoalsGrabber getGoalsGrabber(String projectDescriptorPath) throws Exception {
+	public static synchronized IGoalsGrabber getGoalsGrabber(String projectDescriptorPath) throws Exception {
 		if ( defaultGoalsGrabber == null ) {
 			defaultGoalsGrabber = new DefaultGoalsGrabber();
 		}
@@ -100,7 +101,7 @@ public class GoalsGrabbersManager {
 		return aggregator;
 	}
 	
-	public static IGoalsGrabber getDefaultGoalsGrabber() {
+	public static synchronized IGoalsGrabber getDefaultGoalsGrabber() {
 		return defaultGoalsGrabber;
 	}
 }

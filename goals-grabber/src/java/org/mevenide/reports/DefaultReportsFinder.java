@@ -80,10 +80,10 @@ public class DefaultReportsFinder implements IReportsFinder {
 		private String substring;
 		private BufferedReader bufferedReader;
 		
-		public GrepInputStream(DataInputStream inputStream, String substring) {
+		public GrepInputStream(DataInputStream inputStream, String substringToSearchFor) {
 			super(inputStream);
 			this.bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-			this.substring = substring;
+			this.substring = substringToSearchFor;
 		}
 
 		public final String readLine() throws IOException {

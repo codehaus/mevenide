@@ -73,7 +73,7 @@ import org.apache.commons.logging.LogFactory;
  * @version $Id$
  * 
  */
-public class OptionsRegistry {
+public final class OptionsRegistry {
     private static Log log = LogFactory.getLog(OptionsRegistry.class);
     
     private static OptionsRegistry registry = new OptionsRegistry();
@@ -124,7 +124,9 @@ public class OptionsRegistry {
        if ( description == null ) {
            throw new InvalidOptionException(option);
        }
-       else return description;  	 
+       else {
+           return description;  	 
+       }
 	}
 	
 	
