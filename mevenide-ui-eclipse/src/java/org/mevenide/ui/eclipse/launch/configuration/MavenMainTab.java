@@ -73,7 +73,7 @@ public class MavenMainTab extends ExternalToolsMainTab {
 	private static Log log = LogFactory.getLog(MavenMainTab.class);
 	
 	public MavenMainTab() {
-		super(false);
+		super();
 	}
 	
 	public void createControl(Composite parent) {
