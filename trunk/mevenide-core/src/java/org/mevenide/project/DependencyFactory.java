@@ -132,43 +132,54 @@ public class DependencyFactory {
 	}
 	
 	private String guessArtifactId(String fileName) {
-		return fileName.substring(0,1) + split(fileName)[1];
+		return split(fileName)[0];
 	}
 	
 	private String guessVersion(String fileName) {
 		if ( fileName.indexOf("SNAPSHOT") > 0 ) {
 			return "SNAPSHOT";
 		}
-		return split(fileName)[2];
+		return split(fileName)[1];
 	}
 	
 	/**
 	 * we assume that fileName follow that kind of pattern :
 	 * 
-	 * (.*)-(\\d+(.*))*\\.(\\w*)
+	 * (.|(-\\D)+)-((\\d)+(.*))\\.(\\w+)
 	 * 
-	 * so we have $1 => artifactId ; $2 => version ; $4 => extension 
+	 * so we have $4 => version ; $7 => extension 
 	 *  
-	 * @bug for some artefacts such as jexl (jexl-1.0-beta-1.jar) this pattern doesnt work. 
+	 * This assumes also that the file has not a multi-extension (e.g. tar.gz)
 	 * 
 	 * someone please provide with a more correct pattern ! 
 	 * 
 	 * 
 	 * @param fileName
-	 * @return 
+	 * @return {artifactId, version, extension}
 	 */
 	private String[] split(String fileName) {
-		String[] groups ;
 		
-		Pattern p = Pattern.compile("(.*)-(\\d+(.*))*\\.(\\w*)");
+		Pattern p = Pattern.compile("(.|(-\\D)+)-((\\d)+(.*))\\.(\\w+)");
 		Matcher m = p.matcher(fileName);
-		groups = new String[m.groupCount() + 1];
+		
+		String[] allGroups = new String[m.groupCount() + 1];
+		
 		int i = 0;
 		while ( i < m.groupCount() + 1 && m.find(i) ) {
-			groups[i] = m.group(i);
+			allGroups[i] = m.group(i);
 			i++;
 		}
-		return groups;
+		
+		String[] consistentGroups = new String[3];
+		consistentGroups[1] = allGroups[3];
+		consistentGroups[2] = allGroups[6];
+		
+		
+		if ( consistentGroups[1] != null ) {
+			consistentGroups[0] = fileName.substring(0, fileName.indexOf(consistentGroups[1]) - 1);
+		}
+		
+		return consistentGroups;
 	}
 	
 	/**
