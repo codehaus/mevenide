@@ -69,8 +69,7 @@ public class DefaultPathResolverDelegate implements IPathResolverDelegate {
 	 * @return
 	 */
     public String getAbsolutePath(IPath path) {
-    	System.out.println("HERE " + path.toOSString());
-	    return path.toOSString();
+    	return path.toOSString();
 	}
 
 	public String getMavenSourceType(String sourceDirectoryPath, IProject project) throws Exception {

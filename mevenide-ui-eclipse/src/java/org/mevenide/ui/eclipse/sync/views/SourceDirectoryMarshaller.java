@@ -115,6 +115,5 @@ public class SourceDirectoryMarshaller {
 		
 		JDomOutputter.output(document, saveFile, false);
 		
-		System.out.println(file);
 	}
 }

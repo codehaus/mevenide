@@ -13,8 +13,8 @@
  */
 package org.mevenide.project.io;
 
-import java.io.File;
-import java.io.FileReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringWriter;
 import java.io.Writer;
@@ -43,9 +43,10 @@ public class ProjectSkeleton {
 	 * @throws Exception
 	 */
 	public static String getSkeleton(String projectName) throws Exception {
-		File pom = new File(ProjectSkeleton.class.getResource(template).getFile());
 		
-		Reader reader = new FileReader(pom);
+		InputStream is = ProjectSkeleton.class.getResourceAsStream(template);
+		
+		Reader reader = new InputStreamReader(is);
 		Project project = new DefaultProjectUnmarshaller().parse(reader);
 		reader.close();
 		

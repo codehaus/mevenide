@@ -89,7 +89,7 @@ public class ArtifactVisitor {
 		
 		IPath projectPath = classpathEntry.getPath();
 		
-		File referencedPom = projectPath.append("project.xml").toFile();
+		File referencedPom = new File(projectPath.append("project.xml").toOSString());
 		if ( !referencedPom.exists() ) {
 			//@todo project isnot mavenized, mavenize it as well
 		}
