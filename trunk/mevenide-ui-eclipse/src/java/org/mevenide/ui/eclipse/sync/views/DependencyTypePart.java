@@ -114,7 +114,7 @@ public class DependencyTypePart extends ViewPart {
 					e.printStackTrace();
 				}
 				
-				//SynchronizerFactory.getSynchronizer(ISynchronizer.IDE_TO_POM).synchronize();
+				SynchronizerFactory.getSynchronizer(ISynchronizer.IDE_TO_POM).synchronize();
 			}
 		};	
 		saveAction.setImageDescriptor(MavenPlugin.getImageDescriptor("save-16.gif"));
