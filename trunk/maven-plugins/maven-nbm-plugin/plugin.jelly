@@ -137,8 +137,12 @@
             </j:if>
             <!-- netbeans dependency -instead of adding to classpath, add to Openide-Module-Dependencies attribute 
             -->
-            <j:set var="moduleDep" value="${dependency.getProperty('netbeans.module.dep')}" />
-            <j:if test="${!empty moduleDep}">
+            <j:set var="moduleDepVal" value="${dependency.getProperty('netbeans.module.dep')}" />
+            <j:if test="${!empty moduleDepVal}">
+                <mevenide:check-dependency-property value="${moduleDepVal}"
+                                                    typeVar="moduleDep" 
+                                                    dependencyValueVar="dependencyValue"
+                                                    completeVar="isCompleteDep"/>
 <!--                <ant:echo message="${dependency.artifactId} is a module dependency - jar is ${artifact.path}" /> -->
                 <mevenide:examine-manifest jarFile="${artifact.path}" 
                                            isLocalizedVar="nbdepIsLocalized"
@@ -152,19 +156,40 @@
                 </j:if>
                 <j:choose>
                     <j:when test="${moduleDep == 'loose'}">
-                        <j:set var="moduleDependencies" value="${moduleDependencies}${nbdep.separator} ${nbdepModule}"/>
+                        <j:choose>
+                            <j:when test="${isCompleteDep == true}">
+                                <j:set var="moduleDependencies" value="${moduleDependencies}${nbdep.separator} ${dependencyValue}"/>
+                            </j:when>
+                            <j:otherwise>
+                                <j:set var="moduleDependencies" value="${moduleDependencies}${nbdep.separator} ${nbdepModule}"/>
+                            </j:otherwise>
+                        </j:choose>
                     </j:when>
                     <j:when test="${moduleDep == 'impl'}">
-                        <j:if test="${nbdepIsNetbeansModule != true}">
-                            <mevenide:adapt-version var="nbdepImplVersion" version="${dependency.version}" type="impl"/>
-                        </j:if>
-                        <j:set var="moduleDependencies" value="${moduleDependencies}${nbdep.separator} ${nbdepModule} = ${nbdepImplVersion}"/>
+                        <j:choose>
+                            <j:when test="${isCompleteDep == true}">
+                                <j:set var="moduleDependencies" value="${moduleDependencies}${nbdep.separator} ${dependencyValue}"/>
+                            </j:when>
+                            <j:otherwise>
+                                <j:if test="${nbdepIsNetbeansModule != true}">
+                                    <mevenide:adapt-version var="nbdepImplVersion" version="${dependency.version}" type="impl"/>
+                                </j:if>
+                                <j:set var="moduleDependencies" value="${moduleDependencies}${nbdep.separator} ${nbdepModule} = ${nbdepImplVersion}"/>
+                            </j:otherwise>
+                        </j:choose>
                     </j:when>
                     <j:when test="${moduleDep == 'spec'}">
-                        <j:if test="${nbdepIsNetbeansModule != true}">
-                            <mevenide:adapt-version var="nbdepSpecVersion" version="${dependency.version}" type="spec"/>
-                        </j:if>
-                        <j:set var="moduleDependencies" value="${moduleDependencies}${nbdep.separator} ${nbdepModule} > ${nbdepSpecVersion}"/>
+                        <j:choose>
+                            <j:when test="${isCompleteDep == true}">
+                                <j:set var="moduleDependencies" value="${moduleDependencies}${nbdep.separator} ${dependencyValue}"/>
+                            </j:when>
+                            <j:otherwise>
+                                <j:if test="${nbdepIsNetbeansModule != true}">
+                                    <mevenide:adapt-version var="nbdepSpecVersion" version="${dependency.version}" type="spec"/>
+                                </j:if>
+                                <j:set var="moduleDependencies" value="${moduleDependencies}${nbdep.separator} ${nbdepModule} > ${nbdepSpecVersion}"/>
+                            </j:otherwise>
+                        </j:choose>
                     </j:when>
                     <j:otherwise>
                 	  	<ant:fail message="Unrecognized netbeans module dependecy type : ${moduleDep}. Should be one of {'spec', 'impl', 'loose'}"/>
