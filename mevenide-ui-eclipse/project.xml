@@ -9,7 +9,7 @@
 	<id>mevenide-ui-eclipse</id>
 	<name>Mevenide Eclipse</name>
 	<artifactId>mevenide-ui-eclipse</artifactId>
-	<currentVersion>0.1.1-SNAPSHOT</currentVersion>
+	<currentVersion>0.2.0-SNAPSHOT</currentVersion>
 	<package>org.mevenide.ui.eclipse</package>
 	<shortDescription>provides ide integration for Maven</shortDescription>
 	<versions>

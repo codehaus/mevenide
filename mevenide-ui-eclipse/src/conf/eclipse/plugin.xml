@@ -3,7 +3,7 @@
    id="@maven.eclipse.plugin.artifact.id@"
    name="Mevenide UI"
    version="@maven.eclipse.plugin.artifact.version@"
-   provider-name="Sourceforge"
+   provider-name="The Codehaus"
    class="org.mevenide.ui.eclipse.Mevenide">
 
    <runtime>
