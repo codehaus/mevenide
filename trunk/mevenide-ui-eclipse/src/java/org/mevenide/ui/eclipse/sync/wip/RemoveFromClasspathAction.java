@@ -1,7 +1,7 @@
 /* ====================================================================
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 2003 The Apache Software Foundation.  All rights
+ * Copyright (c) 2003-2004 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -48,20 +48,34 @@
  */
 package org.mevenide.ui.eclipse.sync.wip;
 
+import org.eclipse.core.resources.IProject;
+import org.eclipse.jdt.core.IClasspathEntry;
+import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.JavaCore;
+
 /**
- * 
  * 
  * @author <a href="mailto:rhill2@free.fr">Gilles Dodinet</a>
  * @version $Id$
- *
+ * 
  */
-public interface IActionListener {
+public class RemoveFromClasspathAction extends ArtifactAction {
+	public void removeEntry(IArtifactMappingNode selectedNode, IProject project) throws Exception {
+		IClasspathEntry entry = (IClasspathEntry) selectedNode.getIdeEntry();
+		IJavaProject javaProject = JavaCore.create(project);
+		IClasspathEntry[] entries = javaProject.getRawClasspath();
+		IClasspathEntry[] newEntries = new IClasspathEntry[entries.length - 1];
+		int i = 0;
+		while ( !entries[i].equals(entry) ) {
+			newEntries[i] = entries[i];
+			i++;
+		}
+		for (int j = i; j < newEntries.length; j++) {
+			newEntries[j] = entries[j];
+		}
+		javaProject.setRawClasspath(newEntries, null);
+		project.refreshLocal(0, null);
+		fireArtifactRemovedFromClasspath(selectedNode, project);
+	}
 	
-    void artifactAddedToClasspath(ClasspathArtifactEvent event);
-    
-    void artifactAddedToPom(PomArtifactEvent event);
-    
-    void artifactRemovedFromPom(PomArtifactEvent event);
-    
-    void artifactRemovedFromClasspath(ClasspathArtifactEvent event);
 }
