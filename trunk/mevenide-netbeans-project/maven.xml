@@ -33,6 +33,16 @@
                  >
         </ant:zip>
      </j:if>
+    <util:available file="${targetDir}/mavenplugin.zip">
+       <j:set var="emptyExists" value="true"/>
+    </util:available>
+    <j:if test="${empty emptyExists}"> 
+        <ant:zip basedir="${basedir}/templates/mavenplugin"
+                 destfile="${targetDir}/mavenplugin.zip"
+                 excludes="CVS"
+                 >
+        </ant:zip>
+     </j:if>
   </preGoal>
 	
   <preGoal name="nbm:prepare-nbm-resources">
