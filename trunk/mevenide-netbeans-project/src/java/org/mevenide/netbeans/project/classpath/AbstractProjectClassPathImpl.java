@@ -65,8 +65,14 @@ abstract class AbstractProjectClassPathImpl implements ClassPathImplementation {
     }
     
     private boolean hasChanged(List oldValues, List newValues) {
+        if (oldValues == null) {
+            return (newValues != null);
+        }
         Iterator it = oldValues.iterator();
-        ArrayList nl = new ArrayList(newValues);
+        ArrayList nl = new ArrayList();
+        if (newValues != null) {
+            nl.addAll(newValues);
+        }
         while (it.hasNext()) {
             PathResourceImplementation res = (PathResourceImplementation)it.next();
             URL oldUrl = res.getRoots()[0];
