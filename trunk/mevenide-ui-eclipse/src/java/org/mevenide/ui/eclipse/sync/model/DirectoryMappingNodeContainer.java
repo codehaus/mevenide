@@ -31,6 +31,7 @@ import org.mevenide.project.ProjectConstants;
 import org.mevenide.project.resource.ResourceUtil;
 import org.mevenide.project.source.SourceDirectoryUtil;
 import org.mevenide.ui.eclipse.util.FileUtils;
+import org.mevenide.util.StringUtils;
 
 /**
  * 
@@ -103,7 +104,10 @@ public class DirectoryMappingNodeContainer extends AbstractArtifactMappingNodeCo
         }
     }
     
-    private boolean lowMatch(Resource resource, Directory directory) {
+    /**
+     * @todo extract-me
+     */
+    boolean lowMatch(Resource resource, Directory directory) {
         if ( resource.getDirectory() == null ) {
         	return false;
         }
@@ -111,11 +115,13 @@ public class DirectoryMappingNodeContainer extends AbstractArtifactMappingNodeCo
         String resourcePath = SourceDirectoryUtil.stripBasedir(resource.getDirectory());
         String directoryPath = SourceDirectoryUtil.stripBasedir(directory.getPath());
         
+        resourcePath = StringUtils.removeEndingSlash(resourcePath);
+        directoryPath = StringUtils.removeEndingSlash(directoryPath);
+        
         log.debug("resource dir : " + resourcePath + ", directory path : " + directoryPath + " match ? " + (resource.getDirectory() != null && resource.getDirectory().replaceAll("\\\\", "/").equals(directory.getPath().replaceAll("\\\\", "/"))));
         return resourcePath.replaceAll("\\\\", "/").equals(directoryPath.replaceAll("\\\\", "/"));
     }
     
-   
 	private void attachOrphanArtifacts(List orphanArtifacts, Project project) {
 		
 		removeDuplicate(orphanArtifacts);		
@@ -135,23 +141,13 @@ public class DirectoryMappingNodeContainer extends AbstractArtifactMappingNodeCo
         
     }
 
-	private void removeDuplicate(List orphanArtifacts) {
-		List listCopy = new ArrayList(orphanArtifacts);
-		List tempList = new ArrayList();
-		int u = 0;
-		Iterator itr = listCopy.iterator();
-		while ( itr.hasNext() ) {
-			DirectoryMappingNode orphanNode = new DirectoryMappingNode();
-			orphanNode.setArtifact(itr.next());
-			if ( !tempList.contains(orphanNode.getLabel()) ) {
-				tempList.add(orphanNode.getLabel());
-				u++;
-			}
-			else {
-				orphanArtifacts.remove(u);
-			}
-		}
-		
+	void removeDuplicate(List orphanArtifacts) {
+		removeEquivalentItems(orphanArtifacts);
+		removeAlreadyPresentNodes(orphanArtifacts);
+	}
+
+	
+	private void removeAlreadyPresentNodes(List orphanArtifacts) {
 		List modifiedOrphanList = new ArrayList(orphanArtifacts);
 		for (int j = 0; j < modifiedOrphanList.size(); j++) {
 			for (int i = 0; i < nodes.length; i++) {
@@ -164,10 +160,30 @@ public class DirectoryMappingNodeContainer extends AbstractArtifactMappingNodeCo
 				}
 			}
 		}
-
 	}
 
-	private boolean haveSamePath(DirectoryMappingNode node1, DirectoryMappingNode node2) {
+	void removeEquivalentItems(List orphanArtifacts) {
+		List listCopy = new ArrayList(orphanArtifacts);
+		List tempList = new ArrayList();
+		int u = 0;
+		Iterator itr = listCopy.iterator();
+		while ( itr.hasNext() ) {
+			DirectoryMappingNode orphanNode = new DirectoryMappingNode();
+			orphanNode.setArtifact(itr.next());
+			if ( !tempList.contains(orphanNode.getLabel()) ) {
+				tempList.add(orphanNode.getLabel());
+			}
+			else {
+				orphanArtifacts.remove(u);
+			}
+			u++;
+		}
+	}
+
+	/**
+     * @todo extract-me
+     */
+	boolean haveSamePath(DirectoryMappingNode node1, DirectoryMappingNode node2) {
 		return node1.getLabel().equals(node2.getLabel());
 	}
 
@@ -231,6 +247,9 @@ public class DirectoryMappingNodeContainer extends AbstractArtifactMappingNodeCo
 		attachOrphanArtifacts(orphanDirectories, project);
 	}
 
+    /**
+     * @todo extract-me
+     */
 	private Map getPomSourceDirectories(Project project) {
         //use HashTable to disallow null values..
         Map directories = new Hashtable();
