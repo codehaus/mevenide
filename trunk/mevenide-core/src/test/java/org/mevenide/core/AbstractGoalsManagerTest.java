@@ -42,19 +42,25 @@ import junit.framework.TestCase;
  */
 public class AbstractGoalsManagerTest extends TestCase {
 
-    IGoalsManager goalsManager;
+    AbstractGoalsManager goalsManager;
     
     protected void setUp() throws Exception {
         System.setProperty("org.mevenide.core.AbstractGoalsGrabber", 
-                           "org.mevenide.core.stub.AbstractGoalsGrabberStub");
+                           "org.mevenide.core.AbstractGoalsGrabberStub");
         System.setProperty("org.mevenide.core.AbstractRunner", 
-                           "org.mevenide.core.stub.AbstractRunnerStub");
+                           "org.mevenide.core.AbstractRunnerStub");
 		goalsManager = new AbstractGoalsManagerStub();
 	}
 
 	protected void tearDown() throws Exception {
 		goalsManager = null;
 	}
+
+    public void testReset() {
+        goalsManager.addGoal("eclipse", "generate-project");
+        goalsManager.reset();
+        assertEquals(0, goalsManager.getRunnableGoals().size());
+    }
 
 	public void testAddGoal() {
         goalsManager.addGoal("eclipse", "generate-project");
@@ -75,13 +81,7 @@ public class AbstractGoalsManagerTest extends TestCase {
         
 	}
 
-	public void testRemoveGoal() {
-	}
-
-	public void testGetGoalsToRun() {
-	}
-
-	public void testGetGoals() {
+    public void testGetGoals() {
         List expectedGoals = new ArrayList();
         
         goalsManager.addGoal("eclipse", "generate-project");
@@ -94,7 +94,50 @@ public class AbstractGoalsManagerTest extends TestCase {
         goalsManager.addGoal("eclipse", "(default)");
         expectedGoals.add(0, "eclipse:(default)");
         assertEquals(expectedGoals, Arrays.asList(goalsManager.getGoals("eclipse")));
+        
+        assertEquals(0, goalsManager.getGoals("noSuchPlugin").length);
 	}
 
+    public void testGetGoalsToRun() {
+        List expectedGoals = new ArrayList();
+        
+        goalsManager.addGoal("eclipse", "generate-project");
+        expectedGoals.add("eclipse:generate-project");
+        assertEquals(expectedGoals, Arrays.asList(goalsManager.getGoalsToRun()));
 
+        goalsManager.addGoal("eclipse", "generate-project");
+        assertEquals(expectedGoals, Arrays.asList(goalsManager.getGoalsToRun()));
+        
+        goalsManager.addGoal("eclipse", "external-tools");
+        expectedGoals.add(0, "eclipse:external-tools");
+        assertEquals(expectedGoals, Arrays.asList(goalsManager.getGoalsToRun()));
+       
+        goalsManager.reset();
+        expectedGoals.clear();
+        
+        goalsManager.addGoal("eclipse", null);
+        expectedGoals.add("eclipse");
+        assertEquals(expectedGoals, Arrays.asList(goalsManager.getGoalsToRun()));
+        
+        goalsManager.reset();
+        expectedGoals.clear();
+        
+    }
+
+    public void testRemoveGoal() {
+        goalsManager.addGoal("eclipse", "generate-project");
+        goalsManager.removeGoal("eclipse", "generate-project");
+        assertEquals(0, goalsManager.getRunnableGoals().size());
+        
+        goalsManager.addGoal("eclipse", "generate-project");
+        goalsManager.addGoal("eclipse", "external-tools");
+        goalsManager.removeGoal("eclipse", "generate-project");
+        assertEquals(1, goalsManager.getRunnableGoals().size());
+        
+        goalsManager.addGoal("eclipse", "generate-project");
+        goalsManager.addGoal("eclipse", "external-tools");
+        goalsManager.removeGoal("eclipse", null);
+        assertEquals(0, goalsManager.getRunnableGoals().size());
+    }
 }
+    

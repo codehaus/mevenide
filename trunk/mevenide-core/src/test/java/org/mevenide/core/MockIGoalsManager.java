@@ -292,4 +292,11 @@ public class MockIGoalsManager extends de.abstrakt.mock.MockObject implements or
 		_saveExpectFlag = checkDummy( _saveExpectFlag, false );
 		_saveDummyValue = throwable;
 	}
+	
+    /**
+     * passive code generation tools are really shitty things ! >< 
+     */
+    public void reset() {
+	}
+
 }
