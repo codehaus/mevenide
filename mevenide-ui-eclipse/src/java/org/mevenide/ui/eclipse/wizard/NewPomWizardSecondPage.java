@@ -16,6 +16,8 @@
  */
 package org.mevenide.ui.eclipse.wizard;
 
+import java.io.InputStream;
+import org.apache.maven.util.StringInputStream;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -33,6 +35,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.mevenide.project.io.PomSkeletonBuilder;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.template.model.Template;
 import org.mevenide.ui.eclipse.template.model.TemplateContentProvider;
@@ -48,7 +51,7 @@ import org.mevenide.ui.eclipse.template.view.TemplateViewerFactory;
  */
 public class NewPomWizardSecondPage extends WizardPage {
     
-    private String name;
+    private String pomName;
     private String artifactId;
     private String groupId;
     
@@ -100,6 +103,7 @@ public class NewPomWizardSecondPage extends WizardPage {
                     public void selectionChanged(SelectionChangedEvent event) {
                         IStructuredSelection selection = (IStructuredSelection) event.getSelection();
                         selectedTemplate = (Template) selection.getFirstElement();
+                        update();
                     }
                 });
     }
@@ -166,7 +170,7 @@ public class NewPomWizardSecondPage extends WizardPage {
         nameText.addModifyListener(
                 new ModifyListener() {
                     public void modifyText(ModifyEvent event) {
-                        name = nameText.getText();
+                        pomName = nameText.getText();
                     }
                 });
     }
@@ -185,28 +189,31 @@ public class NewPomWizardSecondPage extends WizardPage {
         return text;
     }
 
+    protected InputStream getInitialContents() throws Exception {
+        PomSkeletonBuilder builder = null;
+        if ( !useTemplate ) {
+            builder = PomSkeletonBuilder.getSkeletonBuilder();
+        }
+        else {
+            builder = PomSkeletonBuilder.getSkeletonBuilder(selectedTemplate.getProject().getFile().getAbsolutePath());
+        }
+        String skeleton = builder.getPomSkeleton(pomName, groupId, artifactId);
+        
+        return new StringInputStream(skeleton);
+    }
+
+    
     private void update() {
         pageComplete = (artifactId != null &&
         			    groupId != null &&
-        			    name != null) || 
-        			   useTemplate;
+        			    pomName != null) || 
+        			   (useTemplate && 
+        			    selectedTemplate != null );
         setPageComplete(pageComplete);
         setErrorMessage(pageComplete ? null : Mevenide.getResourceString("NewPomWizardSecondPage.Error.Message")); 
     }
     
     public boolean isPageComplete() {
         return pageComplete;
-    }
-    
-    public String getArtifactId() {
-        return artifactId;
-    }
-    
-    public String getGroupId() {
-        return groupId;
-    }
-    
-    public String getName() {
-        return name;
     }
 }
