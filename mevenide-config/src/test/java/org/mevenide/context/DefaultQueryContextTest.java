@@ -70,7 +70,7 @@ public class DefaultQueryContextTest extends TestCase {
     }
     
     
-    public void testAAANonProjectBased() {
+    public void testNonProjectBased() {
         IQueryContext query = DefaultQueryContext.getNonProjectContextInstance();
         assertNull(query.getProjectDirectory());
         assertNotNull(query.getUserDirectory());
