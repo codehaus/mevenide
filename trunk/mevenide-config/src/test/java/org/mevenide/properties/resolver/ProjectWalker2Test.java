@@ -16,13 +16,8 @@
  */
 package org.mevenide.properties.resolver;
 
-import org.apache.maven.project.Build;
-import org.apache.maven.project.Project;
-import org.apache.maven.project.Repository;
-
 import junit.framework.TestCase;
-import org.apache.maven.project.Resource;
-import org.apache.maven.project.UnitTest;
+import org.apache.maven.project.Project;
 import org.jdom.Element;
 import org.jdom.input.DefaultJDOMFactory;
 import org.jdom.input.JDOMFactory;
