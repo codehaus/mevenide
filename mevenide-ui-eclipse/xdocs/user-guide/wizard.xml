@@ -13,7 +13,7 @@
 					in the future the wizard will be more flexible allowing to specify the POM more precisely.
 					<br/><br/>
 					<center>
-						<img border="1px" src="images/maven-wizard.png"/>
+						<img border="1px" src="../images/maven-wizard.png"/>
 						<br/><br/>
 						<font size="-1"><b>Screenshot 1</b> Maven project wizard</font>
 						<br/><br/>
@@ -35,7 +35,7 @@
 					identification informations are to be filled.
 					<br/><br/>
 					<center>
-						<img border="1px" src="images/pom-wizard.png"/>
+						<img border="1px" src="../images/pom-wizard.png"/>
 						<br/><br/>
 						<font size="-1"><b>Screenshot 2</b> Maven project wizard</font>
 						<br/><br/>

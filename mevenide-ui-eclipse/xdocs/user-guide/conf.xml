@@ -13,7 +13,7 @@
 						<i><code>Window &gt; Preferences &gt; Maven</code></i>. Preferences Pages 
 						have been reorganized for better readibility.<br/>
 						<center>
-							<img src="images/screenshots/conf/set_preferences.png" border="1px"/>
+							<img src="../images/screenshots/conf/set_preferences.png" border="1px"/>
 							<br/>
 							<font size="-1"><b>Screenshot 1</b> Mevenide Preferences Pages</font>
 						</center>
@@ -36,7 +36,7 @@
 					the POM though the <a href="edit.html">POM editor</a> or while synchronizing an Eclipse project through the <a href="sync.html">POM Synchronizer</a>.
 					<br/>
 					<center>
-					<img src="images/screenshots/conf/dep_types_prefs.png" border="1px"/><br/>
+					<img src="../images/screenshots/conf/dep_types_prefs.png" border="1px"/><br/>
 					<font size="-1"><b>Screenshot 2</b> Pom Editor Preferences Pages</font>
 					</center>
 					<br/>
