@@ -16,6 +16,7 @@
  */
 package org.mevenide.ui.eclipse.nature;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -25,35 +26,10 @@ import java.util.List;
  * @version $Id$
  * 
  */
-public class ActionDefinitions {
+public class ActionDefinitionsManager {
 
-    private List goals;
-    
-    private List patterns;
-    
-    private boolean enabled;
-    
-    public List getGoals() {
-        return goals;
+    public List getDefinitions() {
+        return new ArrayList();
     }
     
-    public void setGoals(List goals) {
-        this.goals = goals;
-    }
-    
-    public List getPatterns() {
-        return patterns;
-    }
-    
-    public void setPatterns(List patterns) {
-        this.patterns = patterns;
-    }
-    
-    public boolean isEnabled() {
-        return enabled;
-    }
-    
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
-    }
 }

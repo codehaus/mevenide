@@ -23,13 +23,6 @@ import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.GroupMarker;
-import org.eclipse.jface.action.IMenuManager;
-import org.eclipse.jface.action.MenuManager;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.internal.WorkbenchWindow;
 import org.mevenide.ui.eclipse.Mevenide;
 
 
@@ -49,59 +42,13 @@ public class MavenBuilder extends IncrementalProjectBuilder {
         }
         IResourceDelta d = getDelta(getProject());
         if ( d != null ) {
-	        List actionDefinitions = getAllActionDefinitions();
+	        List actionDefinitions = Mevenide.getInstance().getActionDefinitionsManager().getDefinitions();
 	        ActionActivator activator = new ActionActivator(actionDefinitions);
 	        d.accept(activator);
-	        activateActions(activator.getDefinitions());
         }
-        return new IProject[0];
+        return new IProject[0]; //TODO
     }
 
-    private void activateActions(final List definitions) {
-        for (int i = 0; i < definitions.size(); i++) {
-            ActionDefinitions definition = (ActionDefinitions) definitions.get(i); 
-            activateAction(definition);
-        }
-    }
-
-    private void activateAction(final ActionDefinitions definition) {
-        Action action = new Action() {
-            public String getText() {
-                String actionText = ""; //$NON-NLS-1$
-                List goals = definition.getGoals();
-                for (int i = 0; i < goals.size() - 1; i++) {
-                    actionText += goals.get(i) + " "; //$NON-NLS-1$
-                }
-                return actionText + goals.get(goals.size() - 1);
-            }
-            public void run() {
-                //TODO
-                MessageDialog.openInformation(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Faking Maven run", "Faking Maven run");
-            }
-        };
-
-        final IMenuManager menu = new MenuManager("Maven"); //TODO
-        menu.add(new GroupMarker("Maven")); //TODO
-        menu.add(action);
-        
-        //retrieval of the window instance is delegated to Mevenide instance which is registered
-        //as a window listener because the builder runs in a non-ui thread and thus has 
-        //no way to retrieve this reference itself through the default IWorkbench instance
-        WorkbenchWindow window = Mevenide.getInstance().getWorkbenchWindow(); 
-
-        window.getMenuBarManager().add(menu);
-        PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
-            public void run() {
-	            Mevenide.getInstance().getWorkbenchWindow().getMenuBarManager().update(true);
-	            menu.setVisible(true);
-            }
-            
-        });
-    }
-
-    private List getAllActionDefinitions() {
-        return null;
-    }
 }
 
 
