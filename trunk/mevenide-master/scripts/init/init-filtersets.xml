@@ -16,9 +16,9 @@
     <ant:filter token="org.mevenide.config.version" value="0.4.0"/>	
     <ant:filter token="org.mevenide.grabber.version" value="0.4.0"/>	
     <ant:filter token="org.mevenide.grammar.version" value="0.3.0"/>	
-    <ant:filter token="org.mevenide.ui.eclipse.version" value="0.2.3"/>	
-    <ant:filter token="org.mevenide.help.version" value="0.2.3"/>
-    <ant:filter token="org.mevenide.eclipse.feature.version" value="0.2.3"/>		
+    <ant:filter token="org.mevenide.ui.eclipse.version" value="0.3.0"/>	
+    <ant:filter token="org.mevenide.help.version" value="0.3.0"/>
+    <ant:filter token="org.mevenide.eclipse.feature.version" value="0.3.0"/>		
   </ant:filterset>	
   
   <ant:filterset id="${maven.eclipse.plugin.filterset.id}">
