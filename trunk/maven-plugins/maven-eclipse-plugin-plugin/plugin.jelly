@@ -74,10 +74,7 @@
       </ant:copy>
        
       <!-- @todo update plugin descriptor -->
-      <!-- j:if test="${mode == 'bundle'}" -->
-      <ant:echo>MODE = ${mode}</ant:echo>
   	  <mevenide:update-plugin-libraries pom="${pom}"/>
-  	  <!-- /j:if -->
   	  
       <!-- build plugin distribution file. -->
       <ant:jar destfile="${pluginArchive}">
@@ -315,7 +312,7 @@
                   <x:attribute name="name">*</x:attribute>
                 </x:element>
                 <!-- x:element name="packages">
-                  <x:attribute name="prefixes">*</x:attribute>
+                  <x:attribute name="prefixes">@todo</x:attribute>
                 </x:element -->
               </x:element>
             </x:element>
