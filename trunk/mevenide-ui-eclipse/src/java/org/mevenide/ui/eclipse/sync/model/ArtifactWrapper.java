@@ -92,16 +92,7 @@ public abstract class ArtifactWrapper {
 		InputStream is = mvnIgnoreFile.getContents();
 		Reader reader = new InputStreamReader(is);
 		
-		String oldContent = "";
-		
-		char[] buffer = new char[4096]; 
-		int bytes_read; 
-		while ((bytes_read = reader.read(buffer)) != -1) {
-			oldContent += new String(buffer);
-		}
-		oldContent += ignoreLine;
-		
-		mvnIgnoreFile.setContents(new StringInputStream(oldContent), true, true, null);
+		mvnIgnoreFile.appendContents(new StringInputStream("\r\n" + ignoreLine), true, true, null);
 	}
 	
 	public void addToMvnIgnore(IProject project) throws Exception {
