@@ -32,6 +32,8 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.part.ViewPart;
+import org.mevenide.ui.eclipse.IImageRegistry;
+import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.MevenideColors;
 import org.mevenide.ui.eclipse.preferences.PreferencesManager;
 import org.mevenide.ui.eclipse.repository.model.BaseRepositoryObject;
@@ -57,8 +59,7 @@ public class RepositoryBrowser extends ViewPart implements RepositoryEventListen
     private TreeViewer repositoryViewer;
     
     private List repositories = new ArrayList();
-    private List selectedRepositories = new ArrayList();
-    
+   
     private Action addRepositoryAction;
     private Action removeRepositoryAction;
 
@@ -103,14 +104,25 @@ public class RepositoryBrowser extends ViewPart implements RepositoryEventListen
                 }
             }
         };
+        addRepositoryAction.setImageDescriptor(Mevenide.getInstance().getImageRegistry().getDescriptor(IImageRegistry.NEW_REPO_DEFINITION));
+        addRepositoryAction.setToolTipText("Add repository");
+        
         removeRepositoryAction = new Action() {
             public void run() { 
+                StructuredSelection selection = (StructuredSelection) repositoryViewer.getSelection();
+                List selectedRepositories = new ArrayList();
+                for ( Iterator it = selection.iterator(); it.hasNext(); ) {
+                    String selectedRepo = ((BaseRepositoryObject) it.next()).getRepositoryUrl();
+                    selectedRepositories.add(selectedRepo);
+                }
                 repositories.removeAll(selectedRepositories);
-                selectedRepositories.clear();
                 saveRepositories();
                 asyncUpdateUI();
             }
         };
+        removeRepositoryAction.setImageDescriptor(Mevenide.getInstance().getImageRegistry().getDescriptor(IImageRegistry.REMOVE_REPO_DEFINITION));
+        removeRepositoryAction.setToolTipText("Remove repository");
+        
         createToolBarManager();
     }
 
@@ -173,15 +185,6 @@ public class RepositoryBrowser extends ViewPart implements RepositoryEventListen
         treeViewerLayoutData.grabExcessHorizontalSpace = true;
         treeViewerLayoutData.grabExcessVerticalSpace = true;
         repositoryViewer.getTree().setLayoutData(treeViewerLayoutData);
-        repositoryViewer.addSelectionChangedListener(new ISelectionChangedListener() {
-            public void selectionChanged(SelectionChangedEvent event) {
-                StructuredSelection selection = (StructuredSelection) event.getSelection();
-                for ( Iterator it = selection.iterator(); it.hasNext(); ) {
-                    String selectedRepo = ((BaseRepositoryObject) it.next()).getRepositoryUrl();
-                    selectedRepositories.add(selectedRepo);
-                }
-            }
-        });
         
         
         loadRepositories();
