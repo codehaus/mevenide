@@ -55,6 +55,7 @@ public class PropertyModelFactoryTest extends TestCase {
 //slash then 2 ws
 // my.prop.8  :  value line1 \n value line2 \n value \
 //line 3 \n value line 4   
+//my.prop.9 = c:/test.jar
     protected void setUp() throws Exception {
         factory = PropertyModelFactory.getFactory();
         propertyStream = PropertyModelFactoryTest.class.getResourceAsStream("/org/mevenide/properties/test_prop.properties");
@@ -90,7 +91,10 @@ public class PropertyModelFactoryTest extends TestCase {
 		assertEquals("slash then 2 ws", model.findByKey("my.prop.7").getValue());
 		
 		assertEquals("my.prop.8", model.findByKey("my.prop.8").getKey());
-		assertEquals("value line1 " + new String(new byte[]{Character.LINE_SEPARATOR}) + " value line2 " + new String(new byte[]{Character.LINE_SEPARATOR}) + " valueline 3 " + new String(new byte[]{Character.LINE_SEPARATOR}) + " value line 4", model.findByKey("my.prop.8").getValue()); 
+		assertEquals("value line1 " + new String(new byte[]{Character.LINE_SEPARATOR}) + " value line2 " + new String(new byte[]{Character.LINE_SEPARATOR}) + " valueline 3 " + new String(new byte[]{Character.LINE_SEPARATOR}) + " value line 4", model.findByKey("my.prop.8").getValue());
+		
+		assertEquals("my.prop.9", model.findByKey("my.prop.9").getKey());
+		assertEquals("c:/test.jar", model.findByKey("my.prop.9").getValue());
     }
 
 }
