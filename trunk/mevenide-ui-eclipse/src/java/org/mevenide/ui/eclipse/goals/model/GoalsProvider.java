@@ -72,13 +72,13 @@ public class GoalsProvider implements ITreeContentProvider {
 
     public void setBasedir(String basedir) throws Exception {
         this.basedir = basedir;
-        goalsGrabber = GoalsGrabbersManager.getGoalsGrabber(new File(basedir, "proejct.xml").getAbsolutePath());
+        goalsGrabber = GoalsGrabbersManager.getGoalsGrabber(new File(basedir, "project.xml").getAbsolutePath());
     }
 
     public Object[] getChildren(Object parent) {
     	if ( parent == Element.NULL_ROOT ) {
     		Plugin[] plugins = new Plugin[goalsGrabber.getPlugins().length];
-    		//sort the array... Arrays.sort(..) throws NPE..
+    		
     		for (int i = 0; i < plugins.length; i++) {
     			Plugin plugin = new Plugin();
     			plugin.setName(goalsGrabber.getPlugins()[i]);
