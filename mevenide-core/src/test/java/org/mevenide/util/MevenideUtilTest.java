@@ -48,25 +48,42 @@
  */
 package org.mevenide.util;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.apache.maven.project.Build;
+import org.apache.maven.project.Project;
+import org.apache.maven.project.Repository;
 
-/**
+import junit.framework.TestCase;
+
+/**  
  * 
  * @author Gilles Dodinet (gdodinet@wanadoo.fr)
- * @version $Id: AllTests.java 8 mai 2003 15:32:4913:34:35 Exp gdodinet 
+ * @version $Id: MevenideUtilTest.java 30 août 2003 Exp gdodinet 
  * 
  */
-public class AllTests  {
-	private AllTests() {
-	}
-
-    public static Test suite() {
-        TestSuite suite = new TestSuite();
+public class MevenideUtilTest extends TestCase {
+	private Project project ; 
+	
+    protected void setUp() throws Exception {
+        project = new Project();
         
-		suite.addTestSuite(DefaultProjectUnmarshallerTest.class);
-		suite.addTestSuite(MevenideUtilTest.class);
-		
-        return suite;
+        Build build = new Build(); 
+        build.setSourceDirectory("mySourceDir");
+        project.setBuild(build);
+        
+        Repository repository = new Repository();
+        repository.setConnection("myCvsConnection");
+        project.setRepository(repository);
+        
     }
+
+    protected void tearDown() throws Exception {
+        project = null;
+    }
+
+    public void testResolve() throws Exception {
+    	assertEquals("mySourceDir", MevenideUtil.resolve(project, "${pom.build.sourceDirectory}"));
+		assertEquals("this is myCvsConnection test", MevenideUtil.resolve(project, "this is ${pom.repository.connection} test"));
+    	
+    }
+
 }

@@ -49,6 +49,10 @@
 package org.mevenide.util;
 
 import java.io.File;
+import java.lang.reflect.Field;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.maven.project.Project;
 
 /**
  * 
@@ -82,5 +86,47 @@ public class MevenideUtil {
 	public static boolean isNull(String string) {
 		return string == null 
 		 		|| string.trim().equals("");
+	}
+	
+	public static String resolve(Project project, String unresolvedString) throws Exception {
+		String resolvedString = "";
+		
+		String tempVariable = "";
+		
+		for (int i = 0; i < unresolvedString.length(); i++) {
+			if ( unresolvedString.charAt(i) == '$' ) {
+				tempVariable += unresolvedString.charAt(i);
+			}
+            if ( unresolvedString.charAt(i) != '$'
+            		&& unresolvedString.charAt(i) != '{'
+					&& unresolvedString.charAt(i) != '}' ) {
+				if ( !tempVariable.equals("") ) {
+					tempVariable += unresolvedString.charAt(i);
+				}		
+				else {
+					resolvedString += unresolvedString.charAt(i);
+				}
+			}
+			if ( unresolvedString.charAt(i) == '}' ) {
+				tempVariable = tempVariable.substring(1, tempVariable.length()); 
+				if ( !tempVariable.startsWith("pom") ) {
+					//return the string as is since we wont be able to resolve it
+					return unresolvedString;
+				}
+				else {
+					String[] splittedVar = StringUtils.split(tempVariable, ".");
+					Object evaluation = project;
+					for (int j = 1; j < splittedVar.length; j++) {
+						Field f = evaluation.getClass().getDeclaredField(splittedVar[j]);
+						f.setAccessible(true);
+	                    evaluation = f.get(evaluation);
+	                    f.setAccessible(false);
+	                }
+	                resolvedString += evaluation;
+	                tempVariable = "";
+				}
+			}
+		}
+		return resolvedString;
 	}
 }
