@@ -49,6 +49,12 @@ public class StringUtils {
 		} 
 	}
 	
-	
+	public static String removeEndingSlash(String path) {
+    	String result = path;
+    	if ( result != null && result.endsWith("/") ) {
+    		result = result.substring(0, result.length() - 1);
+    	}
+    	return result;
+    }
 	
 }
