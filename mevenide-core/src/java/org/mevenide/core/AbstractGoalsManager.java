@@ -162,7 +162,7 @@ public abstract class AbstractGoalsManager implements IGoalsManager {
 		return toArray(plugins);
 	}
 	
-	private String[] toArray(ArrayList plugins) {
+	private String[] toArray(List plugins) {
 		String[] retVal = new String[plugins.size()];
 		for (int i = 0; i < retVal.length; i++) {
 			retVal[i] = (String) plugins.get(i);

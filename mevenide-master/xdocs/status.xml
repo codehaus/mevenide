@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<document>
+    <properties>
+        <title>Status</title>
+    </properties>
+    <body>
+    	<section name="Preambule">
+    		<p>
+    		Mevenide aims at integrating Maven in the major IDEs. 
+    		For now we focus primarily on <a href="../mevenide-ui-eclipse/index.html">Eclipse</a> integration.
+    		</p>
+    	</section>
+        <section name="Keeping the IDE and the POM Synchronized">
+        	<table>
+        			<tr>
+        				<td width="300">
+        					Synchronizing Maven project.xml 
+        				</td>
+        				<td>
+        					<img src="images/ok.gif" alt="done"/>
+        				</td>
+        			</tr>
+        			<tr>
+        				<td width="300">
+        					Synchronizing IDE project settings
+        				</td>
+        				<td>
+        					<img src="images/ko.gif" alt="to be done"/>
+        				</td>
+        			</tr>
+        		</table>
+		</section>
+        <section name="Providing a Maven Launcher">
+        	<table>
+        		<tr>	
+        			<td width="300">
+        				Plugging Mevenide as <i>external-tools</i>
+        			</td>
+        			<td>
+        				<img src="images/ko.gif" alt="to be done"/>
+        			</td>
+        		</tr>
+        		<tr>
+        			<td width="300">
+						Abstract (non GUI) Maven Runner 
+        			</td>
+        			<td>
+        				<img src="images/ok.gif" alt="done"/>
+        			</td>
+        		</tr>
+        		<tr>
+        			<td width="300">
+						Maven projects enablement 
+        			</td>
+        			<td>
+        				<img src="images/ok.gif" alt="done"/>
+        			</td>        		
+       	 		</tr>
+        		<tr>
+        			<td width="300">
+						Maven goals launching dialog 
+        			</td>
+        			<td>
+        				<img src="images/ok.gif" alt="done"/>
+        			</td>        		
+        		</tr>
+      	  		<tr>	
+        			<td width="300">
+						Maven launching behavior 
+       	 			</td>
+       		 		<td>
+        				<img src="images/ko.gif" alt="to be done"/>
+        			</td>        		
+        		</tr>
+        	</table>
+		</section>
+        <section name="Adding a Maven Capability">
+        	<table>
+        		<tr>
+        			<td width="300">
+        				AutoSynchronization through a <i>MavenBuilder</i> (eclipse only ?)
+        			</td>
+        			<td>
+        				<img src="images/ko.gif" alt="to be done"/>
+        			</td>
+        		</tr>
+        		<tr>
+        			<td width="300">
+        				Providing templates layouts for different project kind (e.g. java, j2ee, etc..)
+        			</td>
+        			<td>
+        				<img src="images/ko.gif" alt="to be done"/>
+        			</td>
+        		</tr>       
+        	</table> 	
+		</section>		
+		<section name="Unresolved issues">
+			<ul>
+			 	<li>
+					There are still some classloading problems. We hope those will be resolved with the beta 11 and classworlds.
+				</li>
+				<li>
+					Find a way to generate a dependency from the path information ; that sounds quite feasible if the artifacts is located under maven repo, else we could use the maven overriding feature.
+				</li>
+			</ul>		
+		</section>
+	</body>
+</document>
