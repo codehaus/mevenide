@@ -1,6 +1,6 @@
 /* ==========================================================================
  * Copyright 2004 Apache Software Foundation
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -27,9 +27,12 @@ import javax.swing.Action;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.mevenide.netbeans.project.exec.MavenExecutor;
+import org.mevenide.netbeans.project.exec.OutputFilter;
+import org.mevenide.netbeans.project.exec.RunOutputFilter;
 import org.mevenide.properties.IPropertyResolver;
 import org.netbeans.spi.project.ActionProvider;
 import org.openide.awt.HtmlBrowser;
+import org.openide.awt.StatusDisplayer;
 import org.openide.execution.ExecutionEngine;
 import org.openide.execution.ExecutorTask;
 import org.openide.filesystems.FileObject;
@@ -37,13 +40,14 @@ import org.openide.filesystems.FileUtil;
 import org.openide.util.Lookup;
 import org.openide.util.Task;
 import org.openide.util.TaskListener;
+import org.openide.windows.IOProvider;
+import org.openide.windows.InputOutput;
 
 /**
  *
  * @author  Milos Kleint (ca206216@tiscali.cz)
  */
-public class ActionProviderImpl implements ActionProvider
-{
+public class ActionProviderImpl implements ActionProvider {
     private static final Log logger = LogFactory.getLog(ActionProviderImpl.class);
     private static final Properties defaultIDEGoals;
     
@@ -71,21 +75,21 @@ public class ActionProviderImpl implements ActionProvider
     
     private MavenProject project;
     private static String[] supported = new String[] {
-            ActionProvider.COMMAND_BUILD,
-            ActionProvider.COMMAND_CLEAN,
-            ActionProvider.COMMAND_REBUILD, 
-            "javadoc", //NOI18N
-            ActionProvider.COMMAND_TEST,
-            ActionProvider.COMMAND_TEST_SINGLE
-        };
+        ActionProvider.COMMAND_BUILD,
+        ActionProvider.COMMAND_CLEAN,
+        ActionProvider.COMMAND_REBUILD,
+        "javadoc", //NOI18N
+        ActionProvider.COMMAND_TEST,
+        ActionProvider.COMMAND_TEST_SINGLE,
+        ActionProvider.COMMAND_RUN,
+        ActionProvider.COMMAND_RUN_SINGLE
+    };
     /** Creates a new instance of ActionProviderImpl */
-    public ActionProviderImpl(MavenProject proj)
-    {
+    public ActionProviderImpl(MavenProject proj) {
         project = proj;
     }
     
-    public String[] getSupportedActions()
-    {
+    public String[] getSupportedActions() {
         return supported;
     }
     
@@ -103,46 +107,63 @@ public class ActionProviderImpl implements ActionProvider
         return defaultIDEGoals.getProperty(key);
     }
     
-    public void invokeAction(String str, Lookup lookup) throws java.lang.IllegalArgumentException
-    {
+    public void invokeAction(String str, Lookup lookup) throws java.lang.IllegalArgumentException {
         String goal = getGoalDefForAction(str);
         if (goal != null) {
             int index = goal.indexOf("%TESTCLASS%");
             if (index != -1) {
-                FileObject[] fos = findTestSources(lookup);
-                if (fos != null && fos.length == 1) {
-                    FileObject testSrcDir = FileUtil.toFileObject(new File(project.getTestSrcDirectory()));
-                    String path = FileUtil.getRelativePath(testSrcDir, fos[0]);
-                    path = path.replace('/', '.');
-                    path = path.replace('\\', '.');
-                    if (path.endsWith(".java")) {
-                        path = path.substring(0, path.length() - ".java".length());
-                    }
-                    goal = goal.substring(0, index) + path + goal.substring(index + "%TESTCLASS%".length());
-                    System.out.println("goal=" + goal);
+                String path = extractPackageName(lookup, FileUtil.toFileObject(new File(project.getTestSrcDirectory())), true);
+                if (path != null) {
+                    goal = goal.substring(0, index) + path + goal.substring(index + "%TESTCLASS%".length()); //NOI18N
                 } else {
+                    StatusDisplayer.getDefault().setStatusText("Cannot execute Maven goal:" + goal);
                     logger.debug("cannot execute:" + goal);
                     return;
                 }
             }
-            runGoal(goal, lookup);
+            index = goal.indexOf("%CLASS%");
+            if (index != -1) {
+                String path = extractPackageName(lookup, FileUtil.toFileObject(new File(project.getSrcDirectory())), false);
+                if (path != null) {
+                    goal = goal.substring(0, index) + path + goal.substring(index + "%CLASS%".length());
+                } else {
+                    StatusDisplayer.getDefault().setStatusText("Cannot execute Maven goal:" + goal); //NOI18N
+                    logger.debug("cannot execute:" + goal);
+                    return;
+                }
+            }
+//            if (ActionProvider.COMMAND_RUN.equals(str) || ActionProvider.COMMAND_RUN_SINGLE.equals(str)) {
+//                OutputFilter filter = new RunOutputFilter();
+//                InputOutput io = IOProvider.getDefault().getIO("Run-" + project.getDisplayName(), true);
+//                runGoal(goal, lookup, filter, filter, io);
+//            } else {
+                runGoal(goal, lookup);
+//            }
         } else {
             logger.error("cannot find the action=" + str);
         }
     }
-    
     public void runGoal(String goal, Lookup lookup) throws java.lang.IllegalArgumentException {
+        runGoal(goal, lookup, null, null, null);
+    }
+    
+    private void runGoal(String goal, Lookup lookup, 
+                         OutputFilter out, OutputFilter err, 
+                         InputOutput io) throws java.lang.IllegalArgumentException {
         MavenExecutor exec = new MavenExecutor(project, goal);
         exec.setNoBanner(MavenSettings.getDefault().isNoBanner());
         exec.setOffline(MavenSettings.getDefault().isOffline());
         exec.setDebug(MavenSettings.getDefault().isDebug());
         exec.setExceptions(MavenSettings.getDefault().isExceptions());
         exec.setNonverbose(MavenSettings.getDefault().isNonverbose());
+        exec.setFilterError(err);
+        exec.setFilterOutput(out);
+        exec.setCustomInputOutput(io);
         ExecutorTask task = ExecutionEngine.getDefault().execute("Maven", exec, exec.getInputOutput());
-//        RequestProcessor.getDefault().post();
+        //        RequestProcessor.getDefault().post();
         
         //-------------------------------------------------------------------------
-        // these are temporary.. 
+        // these are temporary..
         // need a more general way of checking for opening browser.
         if ("javadoc".equals(goal)) {
             task.addTaskListener(new TaskListener() {
@@ -158,7 +179,7 @@ public class ActionProviderImpl implements ActionProvider
                             HtmlBrowser.URLDisplayer.getDefault().showURL(fil.toURI().toURL());
                         } catch (MalformedURLException exc) {
                             logger.error(exc);
-                        }   
+                        }
                     }
                 }
             });
@@ -177,24 +198,27 @@ public class ActionProviderImpl implements ActionProvider
                             HtmlBrowser.URLDisplayer.getDefault().showURL(fil.toURI().toURL());
                         } catch (MalformedURLException exc) {
                             logger.error(exc);
-                        }   
+                        }
                     }
                 }
             });
         }
     }
     
-    public boolean isActionEnabled(String str, Lookup lookup) throws java.lang.IllegalArgumentException
-    {   
+    public boolean isActionEnabled(String str, Lookup lookup) throws java.lang.IllegalArgumentException {
         if (COMMAND_TEST_SINGLE.equals(str)) {
             FileObject[] fos = findTestSources(lookup);
+            return  fos != null && fos.length == 1;
+        } 
+        if (COMMAND_RUN_SINGLE.equals(str)) {
+            FileObject[] fos = findSources(lookup);
             return  fos != null && fos.length == 1;
         }
         return true;
     }
     
     
-   /** Find either selected tests or tests which belong to selected source files
+    /** Find either selected tests or tests which belong to selected source files
      */
     private FileObject[] findTestSources(Lookup lookup) {
         FileObject testSrcDir = FileUtil.toFileObject(new File(project.getTestSrcDirectory()));
@@ -203,8 +227,32 @@ public class ActionProviderImpl implements ActionProvider
             return files;
         }
         return null;
-    }        
+    }
     
+   /** Find either selected tests or tests which belong to selected source files
+     */
+    private FileObject[] findSources(Lookup lookup) {
+        FileObject testSrcDir = FileUtil.toFileObject(new File(project.getSrcDirectory()));
+        if (testSrcDir != null) {
+            FileObject[] files = FileUtilities.findSelectedFiles(lookup, testSrcDir, ".java");
+            return files;
+        }
+        return null;
+    }    
+    
+    private String extractPackageName(Lookup lookup, FileObject root, boolean test) {
+        FileObject[] fos = test ? findTestSources(lookup) : findSources(lookup);
+        if (fos != null && fos.length == 1) {
+            String path = FileUtil.getRelativePath(root, fos[0]);
+            path = path.replace('/', '.');
+            path = path.replace('\\', '.');
+            if (path.endsWith(".java")) {
+                path = path.substring(0, path.length() - ".java".length());
+            }
+            return path;
+        }
+        return null;
+    }
     
     public Action createBasicMavenAction(String name, String action) {
         return new BasicAction(name, action);
@@ -212,12 +260,12 @@ public class ActionProviderImpl implements ActionProvider
     
     public Action createCustomMavenAction(String name, String goal) {
         return new CustomAction(name, goal);
-    }    
+    }
     
     
-//    public Action createMultiProjectAction(String name, String goals) {
-//        return new MultiProjectAction(name, goals);
-//    }
+    //    public Action createMultiProjectAction(String name, String goals) {
+    //        return new MultiProjectAction(name, goals);
+    //    }
     
     private final class BasicAction extends AbstractAction {
         private String gls;
@@ -246,24 +294,5 @@ public class ActionProviderImpl implements ActionProvider
             ActionProviderImpl.this.runGoal(gls, ActionProviderImpl.this.project.getLookup());
         }
     }
-    
-//    private class MultiProjectAction extends AbstractAction {
-//        private String nm;
-//        private String gls;
-//        
-//        
-//        private MultiProjectAction(String name, String goals) {
-//            gls = goals;
-//            putValue(Action.NAME, name);
-//        }
-//        
-//        public void actionPerformed(java.awt.event.ActionEvent e) {
-//            if ("clean".equals(gls)) {
-//                ActionProviderImpl.this.runGoal("multiproject:clean", ActionProviderImpl.this.project.getLookup());
-//                return;
-//            }
-//            ActionProviderImpl.this.runGoal("multiproject:goal -Dgoal=" + gls, ActionProviderImpl.this.project.getLookup());
-//        }
-//    }
-
+ 
 }
