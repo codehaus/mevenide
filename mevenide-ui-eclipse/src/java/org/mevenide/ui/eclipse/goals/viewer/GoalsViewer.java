@@ -50,10 +50,10 @@ package org.mevenide.ui.eclipse.goals.viewer;
 
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.mevenide.ui.eclipse.Mevenide;
-import org.mevenide.ui.eclipse.goals.model.Element;
 import org.mevenide.ui.eclipse.goals.model.GoalsProvider;
 
 
@@ -69,12 +69,12 @@ public class GoalsViewer {
 		
 		TreeViewer viewer = new TreeViewer(parent, SWT.CHECK | SWT.V_SCROLL | SWT.H_SCROLL);
 		
-		GoalsProvider provider = new GoalsProvider();
-		provider.setBasedir(basedir);
+		GoalsProvider goalsProvider = new GoalsProvider();
+		GoalsLabelProvider goalsLabelProvider = new GoalsLabelProvider();
+		goalsProvider.setBasedir(basedir);
 		
-		viewer.setContentProvider(provider);
-		viewer.setLabelProvider(new GoalsLabelProvider());
-		viewer.setInput(Element.NULL_ROOT);
+		viewer.setContentProvider(goalsProvider);
+		viewer.setLabelProvider(goalsLabelProvider);
 		
 		GridData gridData = new GridData(GridData.FILL_BOTH | SWT.V_SCROLL | SWT.H_SCROLL);
 		gridData.grabExcessVerticalSpace = true;
@@ -83,10 +83,19 @@ public class GoalsViewer {
 
 		viewer.getTree().setLayoutData(gridData);
 		
+		//add mousetracklistener to manage tooltip
+		viewer.getTree().addMouseListener(new GoalsMouseListener());
 		
 		//add "check" listener
 		return viewer;
 	}
 	
+	
+}
+
+class GoalsMouseListener extends MouseAdapter {
+	GoalsMouseListener() {
+		super();
+	}
 	
 }
