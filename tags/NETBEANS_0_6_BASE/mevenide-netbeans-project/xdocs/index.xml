@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<document>
+    <properties>
+    	<author email="mkleint@codehaus.org">Milos Kleint</author>
+        <title>Overview</title>
+    </properties>
+    <body>
+       <section name="Netbeans Module page">
+        <div id="documentContent">
+            <p>This project allows to open and work with Maven projects in the Netbeans IDE. Mevenide currently supports NetBeans 4.0 and upcoming 4.1.</p>
+	</div>
+        </section>
+        
+       <section name="Netbeans 4.0 and 4.1 beta">
+        <div id="documentContent">
+            <p>Mevenide for the 4.0 version and upcoming 4.1 version contains these <a href="features.html" class="documentLink"> features </a>.</p>
+            <p> You can download the <a href="../download/mevenide-netbeans-0.6.zip"> 0.6 release</a>. It was tested with Maven 1.0.2 and Netbeans IDE 4.0 final and 4.1 beta.</p>
+            <p>Reasonable effort is made to have it always working with the latest development builds of Netbeans 4.1. Please note that the grammar module 
+            (editor completion for maven xml files) in 0.6 release zip will work
+            with the 4.0 but to get it working with 4.1 beta you need the <a href="../download/mevenide-netbeans-grammar-0.6.1.nbm">updated 4.1 nbm </a>.
+            </p>
+            <p>
+            To get the latest Netbeans builds, go to the <a href="http://www.netbeans.info/downloads/download.php?a=n&amp;p=1"> download page </a> </p>
+	</div>
+        </section>
+
+    </body>
+
+</document>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- code completion definition for the jelly-tag library -->
+
+<taglib name="jelly:junit">
+    <tag name="assert">
+        <attr name="test"/>
+        <attr name="xpath"/>
+        <attr name="trim"/>
+    </tag>
+    <tag name="assertEquals">
+        <attr name="actual"/>
+        <attr name="expected"/>
+        <attr name="trim"/>
+    </tag>
+    <tag name="assertThrows">
+        <attr name="classLoader"/>
+        <attr name="expected"/>
+        <attr name="var"/>
+        <attr name="trim"/>
+    </tag>
+    <tag name="case">
+        <attr name="name"/>
+        <attr name="trim"/>
+    </tag>
+    <tag name="fail">
+        <attr name="message"/>
+        <attr name="trim"/>
+    </tag>
+    <tag name="run">
+        <attr name="listener"/>
+        <attr name="result"/>
+        <attr name="test"/>
+    </tag>
+    <tag name="suite">
+        <attr name="name"/>
+        <attr name="var"/>
+        <attr name="test"/>
+    </tag>
+</taglib>

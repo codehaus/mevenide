@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<checkstyle version="3.4">
+<file name="/home/cenda/mav_src/mevenide/goals-grabber/src/java/org/mevenide/reports/CheckstyleResult.java">
+<error line="42" column="20" severity="error" message="Name &apos;LOCK&apos; must match pattern &apos;^[a-z][a-zA-Z0-9]*$&apos;." source="com.puppycrawl.tools.checkstyle.checks.naming.MemberNameCheck"/>
+<error line="70" column="5" severity="error" message="Method length is 43 lines (max allowed is 42)." source="com.puppycrawl.tools.checkstyle.checks.sizes.MethodLengthCheck"/>
+<error line="130" column="29" severity="error" message="&apos;line&apos; hides a field." source="com.puppycrawl.tools.checkstyle.checks.coding.HiddenFieldCheck"/>
+<error line="138" column="27" severity="error" message="&apos;file&apos; hides a field." source="com.puppycrawl.tools.checkstyle.checks.coding.HiddenFieldCheck"/>
+<error line="146" column="31" severity="error" message="&apos;column&apos; hides a field." source="com.puppycrawl.tools.checkstyle.checks.coding.HiddenFieldCheck"/>
+<error line="154" column="32" severity="error" message="&apos;message&apos; hides a field." source="com.puppycrawl.tools.checkstyle.checks.coding.HiddenFieldCheck"/>
+<error line="162" column="33" severity="error" message="&apos;severity&apos; hides a field." source="com.puppycrawl.tools.checkstyle.checks.coding.HiddenFieldCheck"/>
+<error line="170" column="31" severity="error" message="&apos;source&apos; hides a field." source="com.puppycrawl.tools.checkstyle.checks.coding.HiddenFieldCheck"/>
+</file>
+<file name="/home/cenda/mav_src/mevenide/goals-grabber/src/java/org/mevenide/reports/PmdResult.java">
+<error line="42" column="20" severity="error" message="Name &apos;LOCK&apos; must match pattern &apos;^[a-z][a-zA-Z0-9]*$&apos;." source="com.puppycrawl.tools.checkstyle.checks.naming.MemberNameCheck"/>
+<error line="123" column="29" severity="error" message="&apos;line&apos; hides a field." source="com.puppycrawl.tools.checkstyle.checks.coding.HiddenFieldCheck"/>
+<error line="139" column="27" severity="error" message="&apos;file&apos; hides a field." source="com.puppycrawl.tools.checkstyle.checks.coding.HiddenFieldCheck"/>
+<error line="147" column="38" severity="error" message="&apos;violationText&apos; hides a field." source="com.puppycrawl.tools.checkstyle.checks.coding.HiddenFieldCheck"/>
+</file>
+<file name="/home/cenda/mav_src/mevenide/goals-grabber/src/java/org/mevenide/plugins/IPluginInfo.java">
+</file>
+</checkstyle>
