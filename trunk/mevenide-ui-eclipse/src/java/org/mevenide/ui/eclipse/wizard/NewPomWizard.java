@@ -19,15 +19,9 @@ package org.mevenide.ui.eclipse.wizard;
 
 import java.io.IOException;
 import java.io.InputStream;
-import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -36,7 +30,6 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.wizards.newresource.BasicNewResourceWizard;
 import org.mevenide.ui.eclipse.Mevenide;
@@ -71,6 +64,25 @@ public class NewPomWizard extends BasicNewResourceWizard implements INewWizard {
         if ( file == null ) {
             return false;
         }
+        InputStream stream = null;
+        try {
+            stream = page2.getInitialContents();
+            if ( file.exists() ) {
+                file.setContents(stream, true, true, null);
+            }
+            else {
+                file.create(stream, true, null);
+            }
+        }
+        catch (Exception e) { }
+        finally {
+            try {
+                if ( stream != null ) {
+                    stream.close();
+                }
+            }
+            catch (IOException e1) { }
+        }
         selectAndReveal(file);
         // Open editor on new file.
         IWorkbenchWindow dw = getWorkbench().getActiveWorkbenchWindow();
@@ -83,55 +95,13 @@ public class NewPomWizard extends BasicNewResourceWizard implements INewWizard {
             }
         }
         catch (PartInitException e) {
-            Mevenide.popUp(Mevenide.getResourceString("NewPomWizard.Error.Text"), e.getMessage());
+            Mevenide.popUp(Mevenide.getResourceString("NewPomWizard.Error.Title"), e.getMessage());
         }
         return true;
     }
 
-    private void doFinish(String containerName, String fileName, IProgressMonitor monitor) throws CoreException {
-        // create a sample file
-        monitor.beginTask("Creating " + fileName, 2);
-        IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-        IResource resource = root.findMember(new Path(containerName));
-        if ( !resource.exists() || !(resource instanceof IContainer) ) {
-            throwCoreException("Container \"" + containerName + "\" does not exist.");
-        }
-        IContainer container = (IContainer) resource;
-        final IFile file = container.getFile(new Path(fileName));
-        try {
-            InputStream stream = openContentStream();
-            if ( file.exists() ) {
-                file.setContents(stream, true, true, monitor);
-            }
-            else {
-                file.create(stream, true, monitor);
-            }
-            stream.close();
-        }
-        catch (IOException e) {
-        }
-        monitor.worked(1);
-        monitor.setTaskName("Opening file for editing...");
-        getShell().getDisplay().asyncExec(new Runnable() {
-
-            public void run() {
-                IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-                try {
-                    IDE.openEditor(page, file, true);
-                }
-                catch (PartInitException e) {
-                }
-            }
-        });
-        monitor.worked(1);
-    }
-
-    private InputStream openContentStream() {
-        return page.getInitialContents();
-    }
-
     private void throwCoreException(String message) throws CoreException {
-        IStatus status = new Status(IStatus.ERROR, "org.mevenide.ui", IStatus.OK, message, null);
+        IStatus status = new Status(IStatus.ERROR, Mevenide.PLUGIN_ID, IStatus.OK, message, null);
         throw new CoreException(status);
     }
 
