@@ -166,17 +166,9 @@ public class OrganizationSection extends PageSection {
 	}
 
 	public void update(Project pom) {
-		if ( assertOrganizationNotNull(pom) ) {
-			setIfDefined(nameText, pom.getOrganization().getName(), isInherited() ? getParentPom().getOrganization().getName() : null);
-			setIfDefined(urlText, pom.getOrganization().getUrl(), isInherited() ? getParentPom().getOrganization().getUrl() : null);
-			setIfDefined(logoText, pom.getOrganization().getLogo(), isInherited() ? getParentPom().getOrganization().getLogo() : null);
-		}
-	}
-
-	private boolean assertOrganizationNotNull(Project pom) {
-		return pom.getOrganization() != null 
-					|| (getParentPom() != null 
-						&& getParentPom().getOrganization().getName() != null);
+	    setIfDefined(nameText, pom.getOrganization() != null ? pom.getOrganization().getName() : null, isInherited() ? (getParentPom() != null && getParentPom().getOrganization() != null ? getParentPom().getOrganization().getName() : null) : null);
+		setIfDefined(urlText, pom.getOrganization() != null ? pom.getOrganization().getUrl() : null, isInherited() ? (getParentPom() != null && getParentPom().getOrganization() != null ? getParentPom().getOrganization().getUrl() : null) : null);
+		setIfDefined(logoText, pom.getOrganization() != null ? pom.getOrganization().getLogo() : null, isInherited() ? (getParentPom() != null && getParentPom().getOrganization() != null ? getParentPom().getOrganization().getLogo() : null) : null);
 	}
 
 }
