@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.mevenide.GoalNotFoundException;
 import org.mevenide.IGoalsGrabber;
 import org.mevenide.IGoalsManager;
@@ -36,7 +38,7 @@ import org.mevenide.IGoalsManager;
  * 
  */
 public abstract class AbstractGoalsManager implements IGoalsManager {
-	
+	private static Log log = LogFactory.getLog(AbstractGoalsManager.class);
 	/** 
      * list of goals to be run. 
      * 
@@ -68,7 +70,7 @@ public abstract class AbstractGoalsManager implements IGoalsManager {
             load();
         }
         catch ( Exception e ) {
-            e.printStackTrace();
+            log.debug("Unable to init AbstractGoalsManager due to : " + e);
             throw new RuntimeException("A problem occured while trying to load the checked categories/goals. Reason : " + e);
         }
 	}

@@ -23,6 +23,8 @@ package org.mevenide;
  * 
  */
 public abstract class ProjectConstants {
+	private ProjectConstants() { }
+	
 	public static final String MAVEN_TEST_DIRECTORY = "unitTestSourceDirectory";
 	public static final String MAVEN_SRC_DIRECTORY = "sourceDirectory";
 	public static final String MAVEN_ASPECT_DIRECTORY = "aspectSourceDirectory";

@@ -18,6 +18,8 @@ import java.io.File;
 import java.util.Collection;
 
 import org.apache.commons.discovery.tools.DiscoverClass;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.mevenide.*;
 import org.mevenide.util.PostGoal;
 
@@ -30,6 +32,8 @@ import com.gdfact.maven.plugin.getgoals.GoalsBean;
  * 
  */
 public abstract class AbstractGoalsGrabber implements IGoalsGrabber{
+    private static Log log = LogFactory.getLog(AbstractGoalsGrabber.class);
+    
     /** singleton related */
 	private static AbstractGoalsGrabber grabber = null;
     private static Object lock = new Object();
@@ -60,7 +64,7 @@ public abstract class AbstractGoalsGrabber implements IGoalsGrabber{
 			goalsBean.unMarshall(xmlGoals);
 		}
 		catch ( Exception ex ) {
-			ex.printStackTrace();  
+			log.debug("Unable to load goals from file '" + xmlGoals + "' due to : " + ex);  
 		}
 	}
 

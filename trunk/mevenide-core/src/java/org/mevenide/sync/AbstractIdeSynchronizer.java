@@ -14,6 +14,8 @@
 package org.mevenide.sync;
 
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.mevenide.core.AbstractRunner;
 
 /**
@@ -23,6 +25,8 @@ import org.mevenide.core.AbstractRunner;
  * 
  */
 public abstract class AbstractIdeSynchronizer implements ISynchronizer {
+	private static Log log = LogFactory.getLog(AbstractIdeSynchronizer.class);
+	
 	/** the goal passed to the maven runner, f.i. 'eclipse:generate-classpath' */
 	protected String synchronizationGoal;
     
@@ -35,7 +39,7 @@ public abstract class AbstractIdeSynchronizer implements ISynchronizer {
             runner = AbstractRunner.getRunner();
     	} 
         catch (Exception e) {
-    		e.printStackTrace();
+    		log.debug("Unable to init AbstractIdeAynchronizer due to : " + e);
     	}
 	}
 
@@ -50,7 +54,7 @@ public abstract class AbstractIdeSynchronizer implements ISynchronizer {
 			postSynchronization();
 		}
 		catch ( Exception e ) {
-			e.printStackTrace();
+			log.debug("Unable to synchronize project due to : " + e);
 		}
 	}
 	

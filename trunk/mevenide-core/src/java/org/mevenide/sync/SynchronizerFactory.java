@@ -16,6 +16,8 @@ package org.mevenide.sync;
 import java.util.Enumeration;
 
 import org.apache.commons.discovery.tools.Service;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * 
@@ -24,6 +26,7 @@ import org.apache.commons.discovery.tools.Service;
  * 
  */
 public abstract class SynchronizerFactory  {
+	private static Log log = LogFactory.getLog(SynchronizerFactory.class);
 	
 	private SynchronizerFactory() {
 	}
@@ -50,7 +53,7 @@ public abstract class SynchronizerFactory  {
 			return null;
 		}
 		catch (Exception e) {
-			e.printStackTrace();
+			log.debug("Unable to get synchronizer due to : " + e);
 			throw new RuntimeException(e);
 		}
 	}
