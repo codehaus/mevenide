@@ -49,8 +49,10 @@
 package org.mevenide.ui.eclipse.sync.view;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.jface.util.Assert;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
@@ -62,6 +64,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Table;
@@ -74,16 +77,40 @@ import org.eclipse.ui.PlatformUI;
  * 
  */
 public class PomChoiceDialog extends TitleAreaDialog {
+    
+    //@todo externalize
+    private static final String POM_CHOICE_MESSAGE = 
+        "Choose the POMs you want to update from the list below.\n" +
+        "    "; //blank line. donot remove
+    
+    private static final String POM_CHOICE_TITLE = "POM Choice Dialog";
+    
 	private PomChooser pomChooser;
 	
 	private CheckboxTableViewer tableViewer;
 	
-	private File chosenPom;
+	private List chosenPoms = new ArrayList();
+
+    private Button okButton;
 	
 	public PomChoiceDialog(PomChooser chooser) {
 		super(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell());
 		super.setBlockOnOpen(true);
 		this.pomChooser = chooser;
+	}
+	
+	protected Control createContents(Composite parent) {
+	    
+	    Control contents = super.createContents(parent);
+	    
+	    setTitle(POM_CHOICE_TITLE); 
+	    //setTitleImage(dlgTitleImage);
+	    setMessage(POM_CHOICE_MESSAGE); 
+	    
+	    okButton = getButton(IDialogConstants.OK_ID);
+	    okButton.setEnabled(false);
+	    
+        return contents;
 	}
 	
 	protected Control createDialogArea(Composite parent) {
@@ -129,10 +156,13 @@ public class PomChoiceDialog extends TitleAreaDialog {
 			new ICheckStateListener() {
 				public void checkStateChanged(CheckStateChangedEvent event) {
 					File checkedElement = (File) event.getElement();
-					System.err.println(checkedElement);
-					tableViewer.setCheckedElements(new Object[0]);
-					tableViewer.setChecked(checkedElement, true);
-					chosenPom = checkedElement;
+					if ( event.getChecked() ) {
+					    chosenPoms.add(checkedElement);
+					}
+					else {
+					    chosenPoms.remove(checkedElement);
+					}
+					okButton.setEnabled(chosenPoms.size() > 0);
 				}
 			}
 		);
@@ -147,8 +177,8 @@ public class PomChoiceDialog extends TitleAreaDialog {
 		tableViewer.setInput(pomFiles);
 	}
 	
-	public File getPom() {
-		return this.chosenPom;
+	public List getPoms() {
+		return this.chosenPoms;
 	}
 	
 }

@@ -49,6 +49,7 @@
 package org.mevenide.ui.eclipse.sync.action;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -244,11 +245,14 @@ public class SynchronizeActionFactory {
 				ProjectContainer container = (ProjectContainer) synchronizeView.getArtifactMappingNodeViewer().getTree().getItems()[0].getData();
 				IProject project = container.getProject();
 				try  {
-					Project mavenProject = new PomChooser(project).openPomChoiceDialog();
-					log.debug("POM choice : " + mavenProject);
-					if ( mavenProject != null ) {
-						action.addEntry(selectedNode, mavenProject);
-					}	
+				    List mavenProjects = new PomChooser(project).openPomChoiceDialog();
+					for (int i = 0; i < mavenProjects.size(); i++) {
+                        Project mavenProject = (Project) mavenProjects.get(i); 
+						log.debug("POM choice : " + mavenProject);
+						if ( mavenProject != null ) {
+							action.addEntry(selectedNode, mavenProject);
+						}	
+                    }
 				}
 				catch ( Exception e ) {
 					log.debug("Unable to add item " + selectedNode.getResolvedArtifact() + " to classpath ", e );

@@ -69,14 +69,6 @@ import org.mevenide.util.MevenideUtils;
 public class PomChooser {
     private static final Log log = LogFactory.getLog(PomChooser.class);
     
-    //@todo externalize
-	private static final String POM_CHOICE_MESSAGE = 
-	    "The list below presents the hierarchy of POM " + 
-	    "involved in the synchronization process. " +
-	    "Please choose the one you want to update.";
-	
-	private static final String POM_CHOICE_TITLE = "Pom Choice Dialog";
-	
 	private IProject project;
 	
 	public PomChooser(IProject project) {
@@ -86,25 +78,25 @@ public class PomChooser {
 	/**
 	 * display a Dialog to allow the user to choose a pom  
 	 */
-	public Project openPomChoiceDialog() throws Exception {
+	public List openPomChoiceDialog() throws Exception {
 		
-		
+		List projects = new ArrayList();
 		PomChoiceDialog dialog = new PomChoiceDialog(this);
 		
-		
 		int result = dialog.open();
-		
-		dialog.setTitle(POM_CHOICE_TITLE);
-		//setTitleImage();
-		//dialog.setMessage(POM_CHOICE_MESSAGE);
 		
 		if ( result == Dialog.CANCEL ) {
 			return null;
 		}
 		
-		 Project project = ProjectReader.getReader().read(dialog.getPom());
-		 project.setFile(dialog.getPom());
-		 return project;
+		List chosenPoms = dialog.getPoms();
+		for (int i = 0; i < chosenPoms.size(); i++) {
+		    File pom = (File) chosenPoms.get(i);
+			Project project = ProjectReader.getReader().read(pom);
+			project.setFile(pom);
+			projects.add(project);
+        }
+		return projects;
 	}
 	
 	
