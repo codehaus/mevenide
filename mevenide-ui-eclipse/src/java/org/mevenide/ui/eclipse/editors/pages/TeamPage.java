@@ -48,9 +48,14 @@
  */
 package org.mevenide.ui.eclipse.editors.pages;
 
+import org.apache.maven.project.Project;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.mevenide.project.ProjectChangeEvent;
 import org.mevenide.ui.eclipse.Mevenide;
-import org.mevenide.ui.eclipse.editors.IPomEditorPage;
+import org.mevenide.ui.eclipse.MevenideColors;
 import org.mevenide.ui.eclipse.editors.MevenidePomEditor;
 
 /**
@@ -64,16 +69,53 @@ public class TeamPage extends AbstractPomEditorPage {
 
 	public static final String HEADING = Mevenide.getResourceString("TeamPage.heading");
     
+	private ContributorsSection contribSection;
+	private DevelopersSection devSection;
+	private MailingListsSection mailListSection;
+	
     public TeamPage(MevenidePomEditor editor) {
         super(HEADING, editor);
     }
 
 	protected void initializePage(Composite parent) {
+		GridLayout layout = new GridLayout();
+		layout.numColumns = 2;
+		layout.marginWidth = 10;
+		layout.horizontalSpacing = 15;
+		parent.setLayout(layout);
+
+		PageWidgetFactory factory = getFactory();
+		factory.setBackgroundColor(MevenideColors.WHITE);
+
+		devSection = new DevelopersSection(this);
+		Control control = devSection.createControl(parent, factory);
+		GridData gd = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING);
+		gd.horizontalSpan = 2;
+		control.setLayoutData(gd);
+
+		contribSection = new ContributorsSection(this);
+		control = contribSection.createControl(parent, factory);
+		gd = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING);
+		gd.horizontalSpan = 2;
+		control.setLayoutData(gd);
+
+		mailListSection = new MailingListsSection(this);
+		control = mailListSection.createControl(parent, factory);
+		gd = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING);
+		gd.horizontalSpan = 2;
+		control.setLayoutData(gd);
 	}
 
-    public void pageActivated(IPomEditorPage oldPage) {
-    }
+	public void projectChanged(ProjectChangeEvent e) {
+		update(e.getPom());
+	}
+	
+	public void update(Project pom) {
+		contribSection.update(pom);
+		devSection.update(pom);
+		mailListSection.update(pom);
+		
+		setUpdateNeeded(false);
+	}
 
-    public void pageDeactivated(IPomEditorPage newPage) {
-    }
 }

@@ -48,74 +48,100 @@
  */
 package org.mevenide.ui.eclipse.editors.pages;
 
+import java.util.List;
+
+import org.apache.maven.project.Branch;
 import org.apache.maven.project.Project;
-import org.eclipse.swt.layout.GridData;
+import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
-import org.mevenide.project.ProjectChangeEvent;
 import org.mevenide.ui.eclipse.Mevenide;
-import org.mevenide.ui.eclipse.MevenideColors;
-import org.mevenide.ui.eclipse.editors.MevenidePomEditor;
 
 /**
- * Presents a client control for editing information on the source 
- * configuration management system used by this project.
- * 
- * @author Jeff Bonevich (jeff@bonevich.com)
+ * @author Jeffrey Bonevich (jeff@bonevich.com)
  * @version $Id$
  */
-public class RepositoryPage extends AbstractPomEditorPage {
+public class BranchesSection extends PageSection {
 
-	public static final String HEADING = Mevenide.getResourceString("RepositoryPage.heading");
-    
-	private ScmConnectionSection scmSection;
-	private VersionsSection versionsSection;
-	private BranchesSection branchesSection;
-
-	public RepositoryPage(MevenidePomEditor editor) {
-        super(HEADING, editor);
-    }
-
-	protected void initializePage(Composite parent) {
-		GridLayout layout = new GridLayout();
-		layout.numColumns = 2;
-		layout.marginWidth = 10;
-		layout.horizontalSpacing = 15;
-		parent.setLayout(layout);
-
-		PageWidgetFactory factory = getFactory();
-		factory.setBackgroundColor(MevenideColors.WHITE);
-
-		scmSection = new ScmConnectionSection(this);
-		Control control = scmSection.createControl(parent, factory);
-		GridData gd = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING);
-		gd.horizontalSpan = 2;
-		control.setLayoutData(gd);
-
-		versionsSection = new VersionsSection(this);
-		control = versionsSection.createControl(parent, factory);
-		gd = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING);
-		gd.horizontalSpan = 1;
-		control.setLayoutData(gd);
-
-		branchesSection = new BranchesSection(this);
-		control = branchesSection.createControl(parent, factory);
-		gd = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING);
-		gd.horizontalSpan = 1;
-		control.setLayoutData(gd);
-	}
-
-	public void projectChanged(ProjectChangeEvent e) {
-		update(e.getPom());
-	}
+	private TableEntry branchTable;
 	
-	public void update(Project pom) {
-		scmSection.update(pom);
-		versionsSection.update(pom);
-		branchesSection.update(pom);
+	public BranchesSection(RepositoryPage page) {
+		super(page);
+		setHeaderText(Mevenide.getResourceString("BranchesSection.header"));
+		setDescription(Mevenide.getResourceString("BranchesSection.description"));
+	}
+
+	public Composite createClient(Composite parent, PageWidgetFactory factory) {
+		Composite container = factory.createComposite(parent);
+		GridLayout layout = new GridLayout();
+		layout.numColumns = isInherited() ? 3 : 2;
+		layout.marginWidth = 2;
+		layout.verticalSpacing = 7;
+		layout.horizontalSpacing = 5;
+		container.setLayout(layout);
 		
-		setUpdateNeeded(false);
+		final Project pom = getPage().getEditor().getPom();
+		
+		// POM branch table
+		Button toggle = createOverrideToggle(container, factory, 1, true);
+		TableViewer viewer = createTableViewer(container, factory, 1);
+		branchTable = new TableEntry(viewer, toggle, container, factory, this);
+		OverrideAdaptor adaptor = new OverrideAdaptor() {
+			public void overrideParent(Object value) {
+				List branches = (List) value;
+				pom.setBranches(branches);
+			}
+			public Object acceptParent() {
+				return getParentPom().getBranches();
+			}
+		};
+		branchTable.addEntryChangeListener(adaptor);
+		branchTable.addOverrideAdaptor(adaptor);
+		branchTable.addPomCollectionAdaptor(
+			new IPomCollectionAdaptor() {
+				public Object addNewObject() {
+					Branch branch = new Branch();
+					pom.addBranch(branch);
+					return branch;
+				}
+				public void moveObjectTo(int index, Object object) {
+					List branches = pom.getBranches();
+					if (branches != null) {
+						branches.remove(object);
+						branches.add(index, object);
+					}
+				}
+				public void removeObject(Object object) {
+					List branches = pom.getBranches();
+					if (branches != null) {
+						branches.remove(object);
+					}
+				}
+			}
+		);
+		
+		factory.paintBordersFor(container);
+		return container;
+	}
+
+	public void update(Project pom) {
+		branchTable.removeAll();
+		List branches = pom.getBranches();
+		List parentBranches = isInherited() ? getParentPom().getBranches() : null;
+		if (branches != null && !branches.isEmpty()) {
+			branchTable.addEntries(branches);
+			branchTable.setInherited(false);
+		}
+		else if (parentBranches != null) {
+			branchTable.addEntries(branches, true);
+			branchTable.setInherited(true);
+		}
+		else {
+			branchTable.setInherited(false);
+		}
+		
+		super.update(pom);
 	}
 
 }
