@@ -16,21 +16,16 @@
  */
 
 package org.mevenide.netbeans.project.dependencies;
-import java.net.URI;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.TreeSet;
-import org.mevenide.repository.IRepositoryReader;
 import org.mevenide.repository.RepoPathElement;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
 import org.openide.util.Lookup;
 import org.openide.util.RequestProcessor;
-import org.openide.util.lookup.InstanceContent;
 import org.openide.util.lookup.Lookups;
 
 /**
@@ -216,11 +211,11 @@ public class MultiRepositoryNode extends AbstractNode implements LocalRepoRefres
             super.addNotify();
         }
         
-        public void addChild(RepoPathElement element) {
-            if (isInitialized()) {
-                
-            }
-        }
+//        public void addChild(RepoPathElement element) {
+//            if (isInitialized()) {
+//                
+//            }
+//        }
     }
 
     private static class Provider implements Lookup.Provider {

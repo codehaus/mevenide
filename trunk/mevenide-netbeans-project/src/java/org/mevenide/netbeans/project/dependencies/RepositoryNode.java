@@ -20,7 +20,6 @@ import java.net.URI;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.TreeSet;
 import org.mevenide.repository.RepoPathElement;
 import org.openide.nodes.AbstractNode;
@@ -131,7 +130,6 @@ public class RepositoryNode extends AbstractNode implements LocalRepoRefresher {
     
     public void markAsDownloaded() {
         //what do to?
-        return;
 //        
 //        if (element.isRemote() || isLeaf()) {
 //            return;

@@ -19,29 +19,19 @@ import java.awt.GridBagConstraints;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
-import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
 import java.util.StringTokenizer;
 import javax.swing.JPanel;
 import javax.swing.tree.TreeSelectionModel;
-import org.apache.maven.util.DownloadMeter;
 import org.mevenide.environment.ILocationFinder;
 import org.mevenide.netbeans.project.ProxyUtilities;
 import org.mevenide.properties.IPropertyResolver;
 import org.mevenide.repository.IRepositoryReader;
 import org.mevenide.repository.RepoPathElement;
 import org.mevenide.repository.RepositoryReaderFactory;
-import org.netbeans.api.project.libraries.Library;
-import org.netbeans.api.project.libraries.LibraryManager;
-import org.netbeans.modules.project.libraries.LibraryTypeRegistry;
-import org.netbeans.spi.project.libraries.LibraryImplementation;
-import org.netbeans.spi.project.libraries.LibraryTypeProvider;
-import org.netbeans.spi.project.libraries.support.LibrariesSupport;
 import org.openide.awt.StatusDisplayer;
 import org.openide.explorer.ExplorerManager;
 import org.openide.explorer.view.BeanTreeView;
@@ -260,7 +250,7 @@ public class RepositoryExplorerPanel extends JPanel implements ExplorerManager.P
         }
         
         roots = (RepoPathElement[])cols.toArray(new RepoPathElement[cols.size()]);
-        rootUris = (URI[])cols2.toArray(new URI[cols2.size()]);;
+        rootUris = (URI[])cols2.toArray(new URI[cols2.size()]);
     }
     
     private Node createSeparateRootNode() {
