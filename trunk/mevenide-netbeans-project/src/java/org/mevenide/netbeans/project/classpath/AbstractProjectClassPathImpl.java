@@ -89,9 +89,15 @@ abstract class AbstractProjectClassPathImpl implements ClassPathImplementation {
     }
     
     public void addPropertyChangeListener(java.beans.PropertyChangeListener propertyChangeListener) {
+        synchronized (support) {
+            support.addPropertyChangeListener(propertyChangeListener);
+        }
     }
     
     public void removePropertyChangeListener(java.beans.PropertyChangeListener propertyChangeListener) {
+        synchronized (support) {
+            support.removePropertyChangeListener(propertyChangeListener);
+        }
     }
     
 }
