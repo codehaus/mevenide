@@ -13,7 +13,7 @@
   
     
   <description>
-  	This project provides a Maven plugin that grabs all the goals 
+  	Deprecated ! This project provides a Maven plugin that grabs all the goals 
   	cached in $${maven.home}/plugins/goals.cache and provides a hook 
   	to store them in an xml file during postGoal execution. Also the
   	GoalsBean can be unmarshalled from an xml file containing the list
@@ -39,10 +39,10 @@
       <version>2.2.1</version>
     </dependency>
     
-    <dependency>
+    <!-- dependency>
       <id>xml-apis</id>
       <version>2.0.2</version>
-    </dependency>
+    </dependency -->
     
   </dependencies>
   

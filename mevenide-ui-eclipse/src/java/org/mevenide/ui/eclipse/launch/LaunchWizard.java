@@ -22,8 +22,10 @@ import java.util.StringTokenizer;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.wizard.Wizard;
 import org.mevenide.core.AbstractRunner;
+import org.mevenide.ui.eclipse.Mevenide;
 
 /**
  * 
@@ -43,11 +45,17 @@ public class LaunchWizard extends Wizard {
 
 	public boolean performFinish() {
 		try {
+            IProject project = Mevenide.getPlugin().getProject();
             
             launchPage.performFinish();
         
-			AbstractRunner.getRunner().run(getOptions(), getGoals());
+        	String[] options = getOptions();
+        	String[] goals = getGoals();
+        	 
+			AbstractRunner.getRunner().run(options, goals);
 			
+			LaunchHistory history = LaunchHistory.getHistory();
+			history.save(project, options, goals); 
 		}
 		catch (Exception e) {
 			log.debug("Unable to launch MavenRunner due to : " + e);

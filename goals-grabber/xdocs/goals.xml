@@ -10,7 +10,7 @@
       <goal>
         <name>goals:grab</name>
         <description>
-        	This plugin grabs all the goals cached in ${maven.home}/plugins/goals.cache 
+        	<b>deprecated</b> This plugin grabs all the goals cached in ${maven.home}/plugins/goals.cache 
         	and provides a hook to store them in an xml file during postGoal execution. 
         	The GoalsBean can be unmarshalled from an xml file listing all the goals
         </description>
