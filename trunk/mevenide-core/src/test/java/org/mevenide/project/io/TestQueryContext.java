@@ -18,6 +18,7 @@ package org.mevenide.project.io;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.Set;
 import org.mevenide.context.IProjectContext;
 import org.mevenide.context.IQueryContext;
 
@@ -94,5 +95,24 @@ public class TestQueryContext implements IQueryContext {
     public IProjectContext getPOMContext() {
         return projectContext;
     }    
+    
+    /**
+     * all property keys defined in userdir/build.properties
+     */
+    public Set getUserPropertyKeys() {
+        return userProps.keySet();
+    }
+    /**
+     * all property keys defined in build.properties
+     */
+    public Set getBuildPropertyKeys() {
+        return buildProps.keySet();
+    }
+    /**
+     * all property keys defined in project.properties
+     */
+    public Set getProjectPropertyKeys() {
+        return projectProps.keySet();
+    }
     
 }
