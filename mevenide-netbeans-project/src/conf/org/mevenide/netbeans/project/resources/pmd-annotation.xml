@@ -14,11 +14,11 @@ Microsystems, Inc. All Rights Reserved.
 <!DOCTYPE type PUBLIC
           "-//NetBeans//DTD annotation type 1.0//EN"
           "http://www.netbeans.org/dtds/annotation-type-1_0.dtd">
-<type name="org-mevenide-netbeans-project-error"
-      description_key="LBL_error_annotation"
+<type name="org-mevenide-netbeans-project-pmd"
+      description_key="LBL_pmd_annotation"
       localizing_bundle="org.mevenide.netbeans.project.resources.Bundle"
       visible="true"
-      glyph="nbresloc:/org/mevenide/netbeans/project/resources/error-glyph.gif"
-      highlight="#FF8080"
+      glyph="nbresloc:/org/mevenide/netbeans/project/resources/pmd-glyph.gif"
+      highlight="#FFBF80"
       type="line"
 />

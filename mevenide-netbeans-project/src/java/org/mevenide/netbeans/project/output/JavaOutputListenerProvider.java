@@ -66,72 +66,10 @@ public class JavaOutputListenerProvider extends AbstractOutputProcessor {
             if (match.matches()) {
                 String clazz = match.group(1);
                 String lineNum = match.group(2);
-                //TODO just one instance and reuse..
-                visitor.setOutputListener(new JavaOutputListener(project, clazz, lineNum));
+                String text = match.group(3);
+                visitor.setOutputListener(new CompileAnnotation(project, clazz, lineNum, text));
             }
         }
     }
     
-    private static class JavaOutputListener implements OutputListener {
-        private MavenProject project;
-        private File clazzfile;
-        private int lineNum;
-        public JavaOutputListener(MavenProject proj, String clazz, String line) {
-            clazzfile = new File(clazz + ".java");
-            project = proj;
-            try {
-                lineNum = Integer.parseInt(line);
-            } catch (NumberFormatException exc) {
-                lineNum = -1;
-            }
-        }
-        /** Called when a line is selected.
-         * @param ev the event describing the line
-         */
-        public void outputLineSelected(OutputEvent ev) {
-        }
-        
-        /** Called when some sort of action is performed on a line.
-         * @param ev the event describing the line
-         */
-        public void outputLineAction(OutputEvent ev) {
-            FileObject file = FileUtil.toFileObject(clazzfile);
-            if (file == null) {
-                Toolkit.getDefaultToolkit().beep();
-                return;
-            }
-            try {
-                DataObject dob = DataObject.find(file);
-                EditorCookie ed = (EditorCookie) dob.getCookie(EditorCookie.class);
-                if (ed != null && file == dob.getPrimaryFile()) {
-                    if (lineNum == -1) {
-                        ed.open();
-                    } else {
-                        ed.openDocument();
-                        try {
-                            Line l = ed.getLineSet().getOriginal(lineNum - 1);
-                            if (! l.isDeleted()) {
-                                l.show(Line.SHOW_GOTO);
-                            }
-                        } catch (IndexOutOfBoundsException ioobe) {
-                            // Probably harmless. Bogus line number.
-                            ed.open();
-                        }
-                    }
-                } else {
-                    Toolkit.getDefaultToolkit().beep();
-                }
-            } catch (DataObjectNotFoundException donfe) {
-                logger.warn("DO not found.", donfe);
-            } catch (IOException ioe) {
-                logger.warn(ioe);
-            }
-        }
-        
-        /** Called when a line is cleared from the buffer of known lines.
-         * @param ev the event describing the line
-         */
-        public void outputLineCleared(OutputEvent ev) {
-        }
-    }
 }
