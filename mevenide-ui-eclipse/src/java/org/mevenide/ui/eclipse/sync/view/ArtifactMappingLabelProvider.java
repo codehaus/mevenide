@@ -77,7 +77,7 @@ import org.mevenide.ui.eclipse.sync.model.ProjectContainer;
  */
 public class ArtifactMappingLabelProvider implements ILabelProvider, IColorProvider {
     
-    public Image decorateImage(Image image, Object element) {
+    private Image decorateImage(Image image, Object element) {
         if ( !(element instanceof IArtifactMappingNode) ) {
             return image;
         }
@@ -112,7 +112,7 @@ public class ArtifactMappingLabelProvider implements ILabelProvider, IColorProvi
             baseImage = Mevenide.getImageDescriptor("maven_dep_sync.gif").createImage();
         }
         if ( element instanceof DirectoryMappingNode ) {
-           baseImage = Mevenide.getImageDescriptor("packagefolder_obj.gif").createImage();
+           baseImage = Mevenide.getImageDescriptor("sourcefolder_obj.gif").createImage();
         }
         return decorateImage(baseImage, element);
     }
@@ -146,6 +146,9 @@ public class ArtifactMappingLabelProvider implements ILabelProvider, IColorProvi
 	}
     
     public Color getForeground(Object element) {
+        if ( element instanceof IArtifactMappingNodeContainer || element instanceof ProjectContainer ) {
+            return MevenideColors.GREY;
+        }
     	return MevenideColors.BLACK;	
 	}
 }

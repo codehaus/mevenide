@@ -48,6 +48,7 @@
  */
 package org.mevenide.ui.eclipse.sync.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -81,8 +82,8 @@ public class ArtifactMappingContentProvider implements ITreeContentProvider {
                 if ( project.hasNature(JavaCore.NATURE_ID) ) {
                     dependencyContainers = DependencyMappingNodeContainerFactory.getFactory().getContainer(JavaCore.create(project), poms);
                     for (int i = 0; i < dependencyContainers.size(); i++) {
-                        AbstractArtifactMappingNodeContainer dependencyContainer = (AbstractArtifactMappingNodeContainer) dependencyContainers.get(i); 
-	                    dependencyContainer.setParent((ProjectContainer) parentElement);
+                        AbstractArtifactMappingNodeContainer dependencyContainer = (AbstractArtifactMappingNodeContainer) dependencyContainers.get(i);
+                        dependencyContainer.setParent((ProjectContainer) parentElement);
 	                    dependencyContainer.filter(direction);
                     }
                     directoryContainers = DirectoryMappingNodeContainerFactory.getFactory().getContainer(JavaCore.create(project), poms);
@@ -100,13 +101,26 @@ public class ArtifactMappingContentProvider implements ITreeContentProvider {
                 log.error(e);
             }
             
-            IArtifactMappingNodeContainer[] containers = new IArtifactMappingNodeContainer[directoryContainers.size() + dependencyContainers.size()];
-            for (int i = 0; i < directoryContainers.size(); i++) {
-                containers[i] = (IArtifactMappingNodeContainer) directoryContainers.get(i);
+            
+            List allContainers = new ArrayList(directoryContainers);
+            allContainers.addAll(dependencyContainers);
+            int idx = 0;
+            while ( idx < allContainers.size() ) {
+				IArtifactMappingNodeContainer container = (IArtifactMappingNodeContainer) allContainers.get(idx);
+                if ( container.getNodes().length == 0 ) {
+                    allContainers.remove(container);
+                }
+				idx++;
             }
-            for (int i = 0; i < dependencyContainers.size(); i++) {
-                containers[i + directoryContainers.size()] = (IArtifactMappingNodeContainer) dependencyContainers.get(i);
-            } 
+            Object[] containers = allContainers.toArray(); 
+            
+//            IArtifactMappingNodeContainer[] containers = new IArtifactMappingNodeContainer[directoryContainers.size() + dependencyContainers.size()];
+//            for (int i = 0; i < directoryContainers.size(); i++) {
+//                containers[i] = (IArtifactMappingNodeContainer) directoryContainers.get(i);
+//            }
+//            for (int i = 0; i < dependencyContainers.size(); i++) {
+//                containers[i + directoryContainers.size()] = (IArtifactMappingNodeContainer) dependencyContainers.get(i);
+//            } 
             return containers;
         }
         if ( parentElement instanceof IArtifactMappingNodeContainer ) {
