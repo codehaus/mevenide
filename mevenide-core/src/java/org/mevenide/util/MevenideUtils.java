@@ -51,15 +51,6 @@ public final class MevenideUtils {
 		return false;
 	}
 
-	/** 
-	 * @param sourceDirectory
-	 * @return false if source is null or does only contain whitespaces
-	 */
-	public static boolean isNull(String string) {
-		return string == null 
-		 		|| string.trim().equals(EMPTY_STR);
-	}
-	
 	/**
 	 * @param newValue
 	 * @param oldValue

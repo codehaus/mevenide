@@ -29,7 +29,7 @@ import org.apache.maven.project.Project;
 import org.apache.maven.project.Resource;
 import org.mevenide.project.ProjectConstants;
 import org.mevenide.util.DefaultProjectUnmarshaller;
-import org.mevenide.util.MevenideUtils;
+import org.mevenide.util.StringUtils;
 
 
 /**
@@ -81,7 +81,7 @@ public class ProjectReader {
 		Build build = getBuild(pom);
 		
 		String aspectSourceDirectory = build.getAspectSourceDirectory();
-		if ( !MevenideUtils.isNull(aspectSourceDirectory)) {
+		if ( !StringUtils.isNull(aspectSourceDirectory)) {
 			sourceDirectories.put(
 				ProjectConstants.MAVEN_ASPECT_DIRECTORY,
 				aspectSourceDirectory
@@ -89,7 +89,7 @@ public class ProjectReader {
 		}
 		
 		String sourceDirectory = build.getSourceDirectory();
-		if ( !MevenideUtils.isNull(sourceDirectory) ) {
+		if ( !StringUtils.isNull(sourceDirectory) ) {
 			sourceDirectories.put(
 				ProjectConstants.MAVEN_SRC_DIRECTORY,
 				sourceDirectory
@@ -97,7 +97,7 @@ public class ProjectReader {
 		}
 		
 		String unitTestSourceDirectory = build.getUnitTestSourceDirectory();
-		if ( !MevenideUtils.isNull(unitTestSourceDirectory) ) {
+		if ( !StringUtils.isNull(unitTestSourceDirectory) ) {
 			sourceDirectories.put(
 				ProjectConstants.MAVEN_TEST_DIRECTORY,
 				unitTestSourceDirectory
@@ -105,7 +105,7 @@ public class ProjectReader {
 		}
 		
 		String integrationUnitTestSourceDirectory = build.getIntegrationUnitTestSourceDirectory();
-		if ( !MevenideUtils.isNull(integrationUnitTestSourceDirectory) ) {
+		if ( !StringUtils.isNull(integrationUnitTestSourceDirectory) ) {
 			sourceDirectories.put(
 				ProjectConstants.MAVEN_INTEGRATION_TEST_DIRECTORY,
 				integrationUnitTestSourceDirectory

@@ -26,7 +26,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Dependency;
 import org.apache.maven.project.Project;
 import org.mevenide.Environment;
-import org.mevenide.util.MevenideUtils;
+import org.mevenide.util.StringUtils;
 
 /**
  * 
@@ -78,7 +78,7 @@ public final class DependencyUtil {
 			log.debug("null dependency found");
 			return false;
 		} 
-		boolean valid = !MevenideUtils.isNull(d.getGroupId()) && !MevenideUtils.isNull(d.getArtifactId()) && !MevenideUtils.isNull(d.getVersion());
+		boolean valid = !StringUtils.isNull(d.getGroupId()) && !StringUtils.isNull(d.getArtifactId()) && !StringUtils.isNull(d.getVersion());
 		log.debug("Dependency " + d.getArtifact() + " valid=" + valid + toString(d));
 		return  valid;
 	}
