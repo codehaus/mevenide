@@ -25,6 +25,7 @@ import java.util.Iterator;
 
 import java.util.List;
 import java.util.Map;
+import java.util.HashMap;
 import javax.swing.JButton;
 
 import javax.swing.JPanel;
@@ -36,7 +37,7 @@ import org.mevenide.project.io.IContentProvider;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.awt.HtmlBrowser;
-
+import org.apache.maven.project.Repository;
 
 /**
  *
