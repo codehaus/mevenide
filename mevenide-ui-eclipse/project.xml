@@ -10,6 +10,11 @@
   <shortDescription>provides ide integration for Maven</shortDescription>
   <versions>
     <version>
+      <id>0.3.0</id>
+      <name>0.3.0</name>
+      <tag>V_0_3_0</tag>
+    </version>
+    <version>
       <id>0.2.2</id>
       <name>0.2.2</name>
       <tag>V_0_2_2</tag>
