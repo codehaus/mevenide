@@ -9,11 +9,15 @@
 	  <div id="documentContent">
 		<p>
 		  Implemented features fall into these categories :
+          </p>
 		  <ul>
-			<li><a href="#Maven Project recognition">Maven Project recognition</a></li>
-			<li><a href="#Maven Launcher">Maven Launcher</a></li>
-			<li><a href="#POM Customizer">POM Visual Customizer</a></li>
+			<li><p><a href="#Maven Project recognition">Maven Project recognition</a></p></li>
+			<li><p><a href="#Maven Launcher">Maven Launcher</a></p></li>
+			<li><p><a href="#POM Customizer">POM Visual Customizer</a></p></li>
 		  </ul>
+          <p>
+          For a detailed walkthrough describing the feautures accompanied with picures, see the <a href="user-guide/index.html">User Guide</a>
+          
 		</p>
 	  </div>
   </section>
@@ -23,10 +27,10 @@
           the module retrieves and stores data directly to/from Maven project files.</p>
 	  <p>
 		<ul>
-		  <li>All kind of sources and resources easily accessible</li>
-		  <li>Dependencies recognized and code completion database created on the fly.</li>
-		  <li>Jar Override Support for dependecies</li>
-		  <li>Updates dynamically once project files are edited.</li>
+		  <li><p>All kind of sources and resources easily accessible.</p></li>
+		  <li><p>Dependencies recognized and code completion database created on the fly.</p></li>
+		  <li><p>Jar Override Support for dependecies</p></li>
+		  <li><p>Updates dynamically once project files are edited.</p></li>
 		</ul>
 	  </p>
       </div>
@@ -35,18 +39,18 @@
 	<div id="documentContent">
 	  <p>
 		<ul>
-		  <li>Direct integration with menu action and keyboard shotcuts for Build/Rebuild/Clean etc. 
-                  See <a href="properties.html" class="documentLink"> how to customize</a> what gets run in the IDE.</li>
-		  <li>List of all available goals - plugin-defined ones as well as custom ones for project.</li>
-		  <li>Possibility to define your own goal-launching popup menu.</li>
-		  <li>Output to the output window.</li>
+		  <li><p>Direct integration with menu action and keyboard shotcuts for Build/Rebuild/Clean etc. 
+                  See <a href="properties.html" class="documentLink"> how to customize</a> what gets run in the IDE.</p></li>
+		  <li><p>List of all available goals - plugin-defined ones as well as custom ones for project.</p></li>
+		  <li><p>Possibility to define your own goal-launching popup menu.</p></li>
+		  <li><p>Output to the output window.</p></li>
 		</ul>
 	  </p>
 	  <p>
 		<u>Known limitations</u><br/>
 		<ul>
-                        <li>Executes maven as external process. Thus cannot set JVM options etc.</li>
-			<li>No hyperlinking in output window to errors when compiling.</li>
+            <li><p>Executes maven as external process. Thus cannot set JVM options etc.</p></li>
+			<li><p>No hyperlinking in output window to errors when compiling.</p></li>
 		</ul>
 	  </p>
 	</div>
@@ -55,15 +59,15 @@
 	<div id="documentContent">
           <p>
 		<ul>
-		  <li>Visual customization of Maven project.</li>
-                  <li>Creation of new Maven projects from templates.</li>
+		  <li><p>Visual customization of Maven project.</p></li>
+           <li><p>Creation of new Maven projects from templates.</p></li>
 		</ul>
 	  </p>
 	  <p>
 		<u>Known limitations</u><br/>
 		<ul>
-			<li>In this version no editing, only viewing</li>
-			<li>Currently only some pages are implemented.</li>
+			<li><p>In this version no editing, only viewing.</p></li>
+			<li><p>Currently only some pages are implemented.</p></li>
 		</ul>
 	  </p>
 	</div>

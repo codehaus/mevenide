@@ -20,6 +20,9 @@
         	<item name="Features" href="/features.html"/>
                 <item name="Changes" href="/changes-report.html"/>
         </menu>
+        <menu name="User">
+            <item name="User guide" href="/user-guide/index.html"/>
+        </menu>
        
 		<menu name="Modules">
 			<item name="Master Project" href="../index.html"/>

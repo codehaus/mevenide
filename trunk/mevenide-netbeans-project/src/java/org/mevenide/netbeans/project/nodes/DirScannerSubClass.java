@@ -118,7 +118,6 @@ public final class DirScannerSubClass extends DirectoryScanner {
         if (defaults != null) {
             for (int i =0; i < defaults.length; i++) {
                 if (DirectoryScanner.match(defaults[i], file.getAbsolutePath())) {
-                    System.out.println("kick out=" + relPath + " because of=" + defaults[i]);
                     return false;
                 }
             }
