@@ -83,7 +83,7 @@
       	<exclude>**/ProjectWriterTest.java</exclude>
       	<exclude>**/DependencyResolverTest.java</exclude>
       	<exclude>**/DependencyFactoryTest.java</exclude>
-      	
+      	<exclude>**/SourceDirectoryUtilTest.java</exclude>
       	<!-- 
       		those ones will require org.eclipse.pde.junit plugin 
       	-->
