@@ -38,7 +38,6 @@ public class PropertyResolverFactory {
      */
     private HashMap pluginDirProps = new HashMap();
    
-    private Map resolvers = new TreeMap();
     
     private PropertyResolverFactory() {
     }
@@ -46,37 +45,11 @@ public class PropertyResolverFactory {
     public static PropertyResolverFactory getFactory() {
         return factory;
     }
-    /**
-     * @deprecated.. for performance reasons, use IQueryContext based methods
-     */
-    public IPropertyResolver getResolver(File projectDir, boolean forceRefresh) {
-        PropertyFilesAggregator aggregator = (PropertyFilesAggregator) resolvers.get(projectDir.getAbsolutePath());
-        
-        if ( aggregator == null ) {
-            String userHome = System.getProperty("user.home"); //NOI18N
-            File userFile = new File(userHome);
-            aggregator = new PropertyFilesAggregator(projectDir, userFile, 
-                             new DefaultsResolver(projectDir, userFile));
-            resolvers.put(projectDir.getAbsolutePath(), aggregator);
-        }
-        
-        if ( forceRefresh ) {
-            aggregator.reload();
-        }
-        
-        return aggregator;
-    }
-    
-    /**
-     * @deprecated.. for performance reasons, use IQueryContext based methods
-     */
-    public IPropertyResolver getResolver(File projectDir) {
-        return getResolver(projectDir, false);
-    }
 
-//
-// querycontext based stuff..
-//
+    /**
+     * create a property resolver
+     * @param context the context that the resolver will be using..
+     */
     public IPropertyResolver createContextBasedResolver(IQueryContext context) {
         return new PropertyFilesAggregator(context, new DefaultsResolver(context)); 
     }

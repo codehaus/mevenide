@@ -30,39 +30,16 @@ import org.mevenide.properties.IPropertyResolver;
 
 /**
  *
- * @author  <a href="mailto:ca206216@tiscali.cz">Milos Kleint</a>
+ * @author  <a href="mailto:mkleint@codehaus.org">Milos Kleint</a>
  */
 public class PropertyFilesAggregator implements IPropertyResolver, IPropertyLocator {
     private static final Log logger = LogFactory.getLog(PropertyFilesAggregator.class);
     
-    private File projectDir;
-    private File userDir;
-    private IPropertyFinder project;
-    private IPropertyFinder projectBuild;
-    private IPropertyFinder userBuild;
     private IPropertyFinder defaults;
     private IPropertyFinder projectWalker;
     
     private IQueryContext context;
 
-    /** 
-     * Creates a new instance of PropFilesAggregator 
-     * @param project parent directory of project.xml
-     * @param user the user home directory
-     * @param defs property finder which override properies definition that may be found in <code>user</code> and <code>project</code> properties files 
-     * @deprecated use IQueryContext based constructor
-     */
-    PropertyFilesAggregator(File project, File user, DefaultsResolver defs) {
-        projectDir = project;
-        userDir = user;
-        defaults = defs;
-        initialize();
-        // cannot use the ILocationFinder here, since Loc finders use resolvers -> cyclic dependency
-        String val = getResolvedValue("maven.plugin.unpacked.dir"); //NOI18N
-        if (val != null) {
-            defs.initPluginPropsFinder(PropertyResolverFactory.getFactory().getPluginDefaultsPropertyFinder(new File(val)));
-        }
-    }
     
     /**
      * IQueryContext based constructor. not public, use PropertyResolverfactory
@@ -78,34 +55,8 @@ public class PropertyFilesAggregator implements IPropertyResolver, IPropertyLoca
         }
     }
     
-    private void initialize() { 
-        if (context != null) {
-            throw new IllegalStateException("wrong initializer");
-        }
-        
-    	File fo = new File(projectDir, "project.properties");
-        if ( fo.exists() ) {
-        	project = new SinglePropertyFileFinder(fo);
-        }
-        fo = new File(projectDir, "build.properties");
-        if ( fo.exists() ) {
-        	projectBuild = new SinglePropertyFileFinder(fo);
-        }
-        //TODO.. have some caching for user prop file or reuse one instance in all the 
-        // agrregators.
-        fo = new File(userDir, "build.properties");
-        if ( fo.exists() ) {
-        	userBuild = new SinglePropertyFileFinder(fo);
-        }
-    }
     
     private void initializeContext() {
-        if (context == null) {
-            throw new IllegalStateException("wrong initializer");
-        }
-        userBuild = QueryBasedFinderFactory.createUserPropertyFinder(context);
-        project = QueryBasedFinderFactory.createProjectPropertyFinder(context);
-        projectBuild = QueryBasedFinderFactory.createBuildPropertyFinder(context);
         projectWalker = new ProjectWalker2(context);
     }
     
@@ -124,18 +75,8 @@ public class PropertyFilesAggregator implements IPropertyResolver, IPropertyLoca
             toReturn = projectWalker.getValue(key);
         } else {
             toReturn = checkSysEnv(key);
-            if (toReturn == null && context != null) {
+            if (toReturn == null) {
                 toReturn = context.getPropertyValue(key);
-            } else {
-                if (toReturn == null && userBuild != null) {
-                    toReturn = userBuild.getValue(key);
-                }
-                if (toReturn == null && projectBuild != null ) {
-                    toReturn = projectBuild.getValue(key);
-                }
-                if (toReturn == null && project != null ) {
-                    toReturn = project.getValue(key);
-                }
             }
             if (toReturn == null && defaults != null ) {
                 toReturn = defaults.getValue(key);
@@ -168,22 +109,22 @@ public class PropertyFilesAggregator implements IPropertyResolver, IPropertyLoca
         if (checkSysEnv(key) != null) {
             return IPropertyLocator.LOCATION_SYSENV;
         }
-        if (userBuild != null && userBuild.getValue(key) != null) {
+        if (context.getUserPropertyValue(key) != null) {
             toReturn = IPropertyLocator.LOCATION_USER_BUILD;
         }
-        else if (projectBuild != null && projectBuild.getValue(key) != null) {
+        else if (context.getBuildPropertyValue(key) != null) {
             toReturn = IPropertyLocator.LOCATION_PROJECT_BUILD;
         }
-        else if (project != null && project.getValue(key) != null) {
+        else if (context.getProjectPropertyValue(key) != null) {
             toReturn = IPropertyLocator.LOCATION_PROJECT;
         } 
-        else if (context != null && context.getParentBuildPropertyValue(key) != null) {
+        else if (context.getParentBuildPropertyValue(key) != null) {
             toReturn = IPropertyLocator.LOCATION_PARENT_PROJECT_BUILD;
         }
-        else if (context != null && context.getParentProjectPropertyValue(key) != null) {
+        else if (context.getParentProjectPropertyValue(key) != null) {
             toReturn = IPropertyLocator.LOCATION_PARENT_PROJECT;
         }
-        else if (defaults != null && defaults.getValue(key) != null) {
+        else if (defaults.getValue(key) != null) {
             toReturn = IPropertyLocator.LOCATION_DEFAULTS;
         }
         return toReturn;
@@ -216,18 +157,8 @@ public class PropertyFilesAggregator implements IPropertyResolver, IPropertyLoca
      */
     public void reload() {
         // mkleint - makes no sense for IQueryContext based instances.
-        //TODO have more targetting reload strategy.
-    	reload(userBuild);
-    	reload(project);
-    	reload(projectBuild);
-        reload(projectWalker);
     }
     
-    private void reload(IPropertyFinder finder) {
-        if ( finder != null ) {
-    		finder.reload();
-    	}
-    }
 
     public String resolveString(String original) {
         if (original ==  null) {
@@ -239,43 +170,43 @@ public class PropertyFilesAggregator implements IPropertyResolver, IPropertyLoca
     
     public boolean isDefinedInLocation(String key, int location) {
         if (location == IPropertyLocator.LOCATION_USER_BUILD) {
-            return (userBuild != null && userBuild.getValue(key) != null);
+            return context.getUserPropertyValue(key) != null;
         }
         else if (location == IPropertyLocator.LOCATION_PROJECT_BUILD) {
-            return (projectBuild != null && projectBuild.getValue(key) != null);
+            return context.getBuildPropertyValue(key) != null;
         }
         else if (location == IPropertyLocator.LOCATION_PROJECT) {
-           return (project != null && project.getValue(key) != null);
+           return context.getProjectPropertyValue(key) != null;
         }
         else if (location == IPropertyLocator.LOCATION_DEFAULTS) {
-            return (defaults != null && defaults.getValue(key) != null);
+            return defaults.getValue(key) != null;
         } 
         else if (location == IPropertyLocator.LOCATION_PARENT_PROJECT) {
-            return (context != null && context.getParentProjectPropertyValue(key) != null);
+            return context.getParentProjectPropertyValue(key) != null;
         }
         else if (location == IPropertyLocator.LOCATION_PARENT_PROJECT_BUILD) {
-            return (context != null && context.getParentBuildPropertyValue(key) != null);
+            return context.getParentBuildPropertyValue(key) != null;
         }
         return false;        
     } 
     
     public String getValueAtLocation(String key, int location) {
-        if (location == IPropertyLocator.LOCATION_USER_BUILD && userBuild != null) {
-            return userBuild.getValue(key);
+        if (location == IPropertyLocator.LOCATION_USER_BUILD) {
+            return context.getUserPropertyValue(key);
         }
-        else if (location == IPropertyLocator.LOCATION_PROJECT_BUILD && projectBuild != null) {
-            return projectBuild.getValue(key);
+        else if (location == IPropertyLocator.LOCATION_PROJECT_BUILD) {
+            return context.getBuildPropertyValue(key);
         }
-        else if (location == IPropertyLocator.LOCATION_PROJECT && project != null) {
-           return project.getValue(key);
+        else if (location == IPropertyLocator.LOCATION_PROJECT) {
+           return context.getProjectPropertyValue(key);
         }
-        else if (location == IPropertyLocator.LOCATION_DEFAULTS && defaults != null) {
+        else if (location == IPropertyLocator.LOCATION_DEFAULTS) {
             return defaults.getValue(key);
         } 
-        else if (location == IPropertyLocator.LOCATION_PARENT_PROJECT && context != null) {
+        else if (location == IPropertyLocator.LOCATION_PARENT_PROJECT) {
             return context.getParentProjectPropertyValue(key);
         }
-        else if (location == IPropertyLocator.LOCATION_PARENT_PROJECT_BUILD && context != null) {
+        else if (location == IPropertyLocator.LOCATION_PARENT_PROJECT_BUILD) {
             return context.getParentBuildPropertyValue(key);
         }
         return null;
@@ -285,10 +216,6 @@ public class PropertyFilesAggregator implements IPropertyResolver, IPropertyLoca
      * returns all the keys at the given location.
      */
     public Set getKeysAtLocation(int location) {
-        if (context == null) {
-            // Mkleint - no implementation for non-query based instance
-            return Collections.EMPTY_SET;
-        }
         if (location == IPropertyLocator.LOCATION_USER_BUILD) {
             return context.getUserPropertyKeys();
         }
@@ -297,9 +224,11 @@ public class PropertyFilesAggregator implements IPropertyResolver, IPropertyLoca
         }
         else if (location == IPropertyLocator.LOCATION_PROJECT) {
            return context.getProjectPropertyKeys();
-        } else if (location == IPropertyLocator.LOCATION_PARENT_PROJECT) {
+        } 
+        else if (location == IPropertyLocator.LOCATION_PARENT_PROJECT) {
             return context.getParentProjectPropertyKeys();
-        } else if (location == IPropertyLocator.LOCATION_PARENT_PROJECT_BUILD) {
+        } 
+        else if (location == IPropertyLocator.LOCATION_PARENT_PROJECT_BUILD) {
             return context.getParentBuildPropertyKeys();
         }
         else if (location == IPropertyLocator.LOCATION_DEFAULTS) {
