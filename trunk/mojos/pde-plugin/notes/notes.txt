@@ -39,7 +39,7 @@
      version => grabbed version by default OR maven.pde.version
      provider-name => pom.organization.name
      plugin => pom.name OR maven.pde.name
-     image => maven.pde.image OR none
+     image => pom.logo OR maven.pde.image
 
      description => pom.description
      license => license.txt OR none
