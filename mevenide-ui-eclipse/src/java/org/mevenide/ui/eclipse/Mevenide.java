@@ -50,6 +50,7 @@ import org.mevenide.environment.CustomLocationFinder;
 import org.mevenide.environment.LocationFinderAggregator;
 import org.mevenide.runner.RunnerHelper;
 import org.mevenide.ui.eclipse.util.FileUtils;
+import org.osgi.framework.BundleContext;
 
 /**
  * Created on 01 feb. 03	
@@ -97,19 +98,30 @@ public class Mevenide extends AbstractUIPlugin {
 		try {
 			plugin = this;
 			NATURE_ID = Mevenide.getResourceString("maven.nature.id");
-			
-			customLocationFinder = new CustomLocationFinder();
-			
-			loadPreferences();
-            
-			initEnvironment();
 		} 
 		catch (Exception x) {
 			log.debug("Mevenide couldnot initialize due to : ", x);
 			throw x;
 		}
 	}
+	
+	/**
+	 * osgi startup : initialize resources
+	 */
+	public void start(BundleContext context) throws Exception {
+		super.start(context);
+		customLocationFinder = new CustomLocationFinder();
+		loadPreferences();
+        initEnvironment();
+	}
 
+	/**
+	 * osgi shutdown : dispose resources
+	 */
+	public void stop(BundleContext context) throws Exception {
+		super.stop(context);
+	}
+	
     private void loadPreferences() throws IOException {
         if ( !new File(getPreferencesFilename()).exists() ) {
         	new File(getPreferencesFilename()).createNewFile();
