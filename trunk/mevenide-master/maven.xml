@@ -35,11 +35,6 @@
   	<j:set var="maven.multiproject.excludes" value="${maven.multiproject.excludes},mevenide-feature/project.xml"/>
   	<attainGoal name="multiproject:site"/>
   </goal>
-	
-  <!-- inherited postGoal..  -->
-  <!-- postGoal name="jar:install">
-	<attainGoal name="eclipse-plugin:create-artifact-dist"/>
-  </postGoal -->
   
   
 </project>

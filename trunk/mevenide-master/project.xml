@@ -4,7 +4,7 @@
   <extend>${basedir}/base-project.xml</extend>
   <pomVersion>3</pomVersion>
   <name>Mevenide Master</name>
-  <id>mevenide:master</id>
+  <id>mevenide-master</id>
   <artifactId>mevenide-master</artifactId>
   <currentVersion>0.1.1</currentVersion>
   <url>http://mevenide.sf.net/</url>

@@ -1,10 +1,6 @@
 <?xml version="1.0"?>
 <j:jelly xmlns:ant="jelly:ant" xmlns:j="jelly:core">
   
-	<!-- clean dist directories -->
-	<ant:delete quiet="true" dir="${basedir}/../mevenide-feature/dist"/>
-	<ant:delete quiet="true" dir="${basedir}/../mevenide-update/dist"/>
-	
 	<!-- set eclipse.home property -->
 	<ant:property environment="env"/>
   	<ant:property name="eclipse.home" location="${env.ECLIPSE_HOME}"/>
