@@ -95,7 +95,7 @@
             <type>jar</type>
             <properties>
             	<eclipse.plugin.bundle>false</eclipse.plugin.bundle>
-                <netbeans.module.dep>spec</netbeans.module.dep>
+                <netbeans.module.dep>spec=org.netbeans.libs.commons_logging/1 &gt; 1.0</netbeans.module.dep>
             </properties>
         </dependency>
         <dependency>
