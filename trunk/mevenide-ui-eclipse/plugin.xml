@@ -225,7 +225,7 @@
          point="org.eclipse.ui.views">
       <view
             name="Maven Synchronization View"
-            icon="icons/aspectjConsole.gif"
+            icon="icons/maven.gif"
             class="org.mevenide.ui.eclipse.sync.pom.views.SourceDirectoryPropertyView"
             id="org.mevenide.sync.view">
       </view>

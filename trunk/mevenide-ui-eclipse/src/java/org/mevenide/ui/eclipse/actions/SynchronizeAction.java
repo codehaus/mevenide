@@ -18,7 +18,7 @@ package org.mevenide.ui.eclipse.actions;
 import org.eclipse.jface.action.IAction;
 import org.mevenide.sync.ISynchronizer;
 import org.mevenide.sync.SynchronizerFactory;
-import org.mevenide.ui.eclipse.sync.pom.views.SourceDirectoryPropertyView;
+//import org.mevenide.ui.eclipse.sync.pom.views.SourceDirectoryPropertyView;
 //import org.mevenide.ui.eclipse.MavenPlugin;
 
 /**
@@ -37,7 +37,7 @@ public class SynchronizeAction extends AbstractMavenAction {
 			}
 			if ( action.getId().equals("maven-plugin.SynchronizePom") ) {
 				//SynchronizerFactory.getSynchronizer(ISynchronizer.IDE_TO_POM).synchronize();
-				SourceDirectoryPropertyView.showView();
+				//SourceDirectoryPropertyView.showView();
 			}
 		}
 		catch (Exception e) {
