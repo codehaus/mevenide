@@ -145,6 +145,14 @@
             </enablement>
          </action>
          <action
+               label="Create Pom"
+               icon="icons/maven-create-pom.gif"
+               class="org.mevenide.ui.eclipse.actions.CreatePomAction"
+               menubarPath="maven.plugin.menu/MavenNature"
+               enablesFor="1"
+               id="mevenide.pom.create">
+         </action>
+         <action
                label="Synchronize POM"
                icon="icons/maven-synch-pom.gif"
                class="org.mevenide.ui.eclipse.actions.SynchronizeAction"
