@@ -57,6 +57,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.mevenide.project.ProjectChangeEvent;
 import org.mevenide.ui.eclipse.Mevenide;
+import org.mevenide.ui.eclipse.MevenideColors;
 import org.mevenide.ui.eclipse.editors.MevenidePomEditor;
 
 /**
@@ -76,6 +77,7 @@ public class OverviewPage extends AbstractPomEditorPage {
     
 	private IdentificationSection idSection;
 	private DescriptionSection descriptionSection;
+	private FullDescriptionSection fullDesctiptionSection;
 	
     public OverviewPage(MevenidePomEditor editor) {
         super(HEADING, editor);
@@ -90,6 +92,7 @@ public class OverviewPage extends AbstractPomEditorPage {
 		parent.setLayout(layout);
 
 		PageWidgetFactory factory = getFactory();
+		factory.setBackgroundColor(MevenideColors.WHITE);
 
 		idSection = new IdentificationSection(this);
 		Control control = idSection.createControl(parent, factory);
@@ -102,6 +105,12 @@ public class OverviewPage extends AbstractPomEditorPage {
 		gd = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING);
 		gd.horizontalSpan = 1;
 		control.setLayoutData(gd);
+
+		fullDesctiptionSection = new FullDescriptionSection(this);
+		control = fullDesctiptionSection.createControl(parent, factory);
+		gd = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING);
+		gd.horizontalSpan = 2;
+		control.setLayoutData(gd);
 	}
 
 	public void projectChanged(ProjectChangeEvent e) {
@@ -113,7 +122,11 @@ public class OverviewPage extends AbstractPomEditorPage {
 	        log.debug("updating overview");
 	    }
 		setHeading(pom);
+		
 		idSection.update(pom);
+		descriptionSection.update(pom);
+		fullDesctiptionSection.update(pom);
+		
 		setUpdateNeeded(false);
 	}
 	
