@@ -13,7 +13,7 @@
 		crappy trick to be removed when maven-new released
 	-->
 	
-	<copy todir="${maven.repo.local}/maven-new/jars" file="../mevenide-core/lib/maven-core-1.0-beta-11-SNAPSHOT.jar"/>
+	<!-- copy todir="${maven.repo.local}/maven-new/jars" file="../mevenide-core/lib/maven-core-1.0-beta-11-SNAPSHOT.jar"/ -->
 	
 	
 	<!-- set eclipse.home property -->
