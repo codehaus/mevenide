@@ -67,8 +67,6 @@ public class CreatePomAction extends AbstractMevenideAction {
 		try {
 			if ( FileUtil.getPom(currentProject) != null && !FileUtil.getPom(currentProject).exists() ) {
 				FileUtil.createPom(currentProject);
-//				SourceDirectoryViewPart.showView();
-//				SourceDirectoryViewPart.getInstance().setInput(currentProject);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

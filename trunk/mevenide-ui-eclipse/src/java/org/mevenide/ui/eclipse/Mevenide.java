@@ -99,6 +99,7 @@ public class Mevenide extends AbstractUIPlugin {
 	public static String NATURE_ID ;
 	public static String SYNCH_VIEW_ID = "org.mevenide.sync.view"; 
 	public static String PLUGIN_ID = "org.mevenide";
+	public static String PLUGIN_NAME = "Mevenide";
 	
 	private ResourceBundle resourceBundle;
 	

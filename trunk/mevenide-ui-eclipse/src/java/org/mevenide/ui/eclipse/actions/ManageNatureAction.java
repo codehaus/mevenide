@@ -63,14 +63,16 @@ import org.mevenide.ui.eclipse.nature.MevenideNature;
  */
 public class ManageNatureAction extends AbstractMevenideAction {
 	
-	private static Log log = LogFactory.getLog(ManageNatureAction.class);
+	private static final String ADD_MAVEN_NATURE_ACTION_ID = "org.mevenide.ui.eclipse.actions.addmavennature";
+  
+    private static Log log = LogFactory.getLog(ManageNatureAction.class);
 	 
 	public void run(IAction action) {
 		boolean add = true;
 		try {
 			
 			if ( currentProject != null ) {	
-				if ( action.getId().equals("org.mevenide.ui.eclipse.actions.addmavennature") ) {
+				if ( action.getId().equals(ADD_MAVEN_NATURE_ACTION_ID) ) {
 					MevenideNature.configureProject(currentProject);
 				}
 				else {
