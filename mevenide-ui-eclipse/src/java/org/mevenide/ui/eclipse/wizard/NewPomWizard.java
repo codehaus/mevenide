@@ -17,7 +17,6 @@
  */
 package org.mevenide.ui.eclipse.wizard;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import org.eclipse.core.resources.IContainer;
@@ -128,8 +127,7 @@ public class NewPomWizard extends BasicNewResourceWizard implements INewWizard {
     }
 
     private InputStream openContentStream() {
-        String contents = "This is the initial file contents for *.xml file that should be word-sorted in the Preview page of the multi-page editor";
-        return new ByteArrayInputStream(contents.getBytes());
+        return page.getInitialContents();
     }
 
     private void throwCoreException(String message) throws CoreException {
