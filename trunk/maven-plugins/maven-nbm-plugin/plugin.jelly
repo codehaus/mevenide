@@ -213,7 +213,7 @@ The maven.nbm.manifest.bundle.basedir and  maven.nbm.manifest.bundle.include hav
     <ant:echo message="autoload=${maven.nbm.autoload}" />
     <ant:echo message="module=${maven.nbm.jar.location}/${maven.final.name}.jar" />
     <ant:echo message="url=${pom.url}" />
-    <ant:echo message="licence=${maven.nbm.licence}" />
+    <ant:echo message="license=${maven.nbm.license}" />
     -->
     <ant:makenbm file="${maven.nbm.build.dir}/${maven.final.name}.nbm"
              topdir="${maven.nbm.build.dir}"
@@ -221,7 +221,7 @@ The maven.nbm.manifest.bundle.basedir and  maven.nbm.manifest.bundle.include hav
              homepage="${pom.url}"
              distribution="${pom.url}/${maven.final.name}.nbm"
              needsrestart="${maven.nbm.requiresrestart}">
-     <license file="${maven.nbm.licence}"/>
+     <license file="${maven.nbm.license}"/>
      <signature keystore="?" storepass="?" alias="?"/> -->
     </ant:makenbm>
     <!-- now copy the artifact (NBM file) into the local repository
