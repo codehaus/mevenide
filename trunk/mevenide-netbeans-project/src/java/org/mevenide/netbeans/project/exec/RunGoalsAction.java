@@ -1,6 +1,6 @@
 /* ==========================================================================
  * Copyright 2003-2004 Apache Software Foundation
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -51,13 +51,13 @@ import org.openide.util.NbBundle;
 import org.openide.util.RequestProcessor;
 import org.openide.util.actions.Presenter;
 
-/** Action to run favourite in a maven project. combines the favourite items from 
+/** Action to run favourite in a maven project. combines the favourite items from
  * mavensettings and adds the local maven.xml goals.
  */
 public class RunGoalsAction extends AbstractAction implements Presenter.Popup {
-
+    
     private static Log log = LogFactory.getLog(RunGoalsAction.class);
-
+    
     private static final int MAX_ITEMS_IN_POPUP = 17;
     private static final int MAX_LENGTH_OF_ITEM = 30;
     private MavenProject project;
@@ -68,64 +68,63 @@ public class RunGoalsAction extends AbstractAction implements Presenter.Popup {
     }
     
     public javax.swing.JMenuItem getPopupPresenter() {
-        return new SpecialSubMenu (this, new ActSubMenuModel (project), true);
+        return new SpecialSubMenu(this, new ActSubMenuModel(project), true);
     }
     
     public void actionPerformed(java.awt.event.ActionEvent e) {
     }
     
-/**
- * copied from AntTargetAction. @thanks to Jesse Glick.
- */ 
+    /**
+     * copied from AntTargetAction. @thanks to Jesse Glick.
+     */
     private static final class SpecialSubMenu extends Actions.SubMenu {
-
+        
         private final ActSubMenuModel model;
-
-        SpecialSubMenu (Action action, ActSubMenuModel model, boolean popup) {
-            super (action, model, popup);
+        
+        SpecialSubMenu(Action action, ActSubMenuModel model, boolean popup) {
+            super(action, model, popup);
             this.model = model;
         }
-
-        public void addNotify () {
-            model.addNotify ();
-            super.addNotify ();
+        
+        public void addNotify() {
+            model.addNotify();
+            super.addNotify();
         }
-
+        
     }
-
+    
     /** Model to use for the submenu.
-    */
+     */
     private static final class ActSubMenuModel implements Actions.SubMenuModel {
-
+        
         private List targets = null; // List<String>
         private MavenProject project = null;
-
         
-        ActSubMenuModel (MavenProject proj) {
+        
+        ActSubMenuModel(MavenProject proj) {
             project = proj;
         }
-
-        public int getCount () {
+        
+        public int getCount() {
             if (targets == null) return 0;
-            return targets.size ();
+            return targets.size();
         }
-
-        public String getLabel (int index) {
-            ItemWrapper item = (ItemWrapper)targets.get (index);
+        
+        public String getLabel(int index) {
+            ItemWrapper item = (ItemWrapper)targets.get(index);
             return item == null ? null : item.getGoals();
         }
-
-        public HelpCtx getHelpCtx (int index) {
-            return new HelpCtx ("org.mevenide.ui.netbeans"); // NOI18N
+        
+        public HelpCtx getHelpCtx(int index) {
+            return new HelpCtx("org.mevenide.ui.netbeans"); // NOI18N
         }
-
-        public void performActionAt (final int index) {
-            final ItemWrapper item = (ItemWrapper) targets.get (index);
+        
+        public void performActionAt(final int index) {
+            final ItemWrapper item = (ItemWrapper) targets.get(index);
             if (item == null) return;
             String mgoal = item.getGoals();
             log.debug("item=" + item.getGoals() + " of type " + item.getType()); //NOI18N
-            if (item.getType() == ACTION_SHOW_CUSTOM_DIALOG)
-            {
+            if (item.getType() == ACTION_SHOW_CUSTOM_DIALOG) {
                 FileObject projxml = project.getProjectDirectory().getFileObject("project.xml");
                 File projxmlFile  = FileUtil.toFile(projxml);
                 GoalsGrabberProvider goalProvider = GoalUtils.createProjectGoalsProvider(projxmlFile.getAbsolutePath());
@@ -139,13 +138,11 @@ public class RunGoalsAction extends AbstractAction implements Presenter.Popup {
                 desc.setClosingOptions(options);
                 desc.setValue(options[0]);
                 Object retValue = DialogDisplayer.getDefault().notify(desc);
-                if (!retValue.equals(options[0]) || panel.getGoalsToExecute().trim().length() == 0)
-                {
+                if (!retValue.equals(options[0]) || panel.getGoalsToExecute().trim().length() == 0) {
                     return;
                 }
                 mgoal = panel.getGoalsToExecute();
-                if (panel.doAddToFavourites())
-                {
+                if (panel.doAddToFavourites()) {
                     doValidateAndAddToFavs(goalProvider, mgoal);
                 }
             }
@@ -159,19 +156,16 @@ public class RunGoalsAction extends AbstractAction implements Presenter.Popup {
             });
         }
         
-        private void doValidateAndAddToFavs(GoalsGrabberProvider provider, String goals)
-        {
+        private void doValidateAndAddToFavs(GoalsGrabberProvider provider, String goals) {
             try {
                 IGoalsGrabber grabber = provider.getGoalsGrabber();
                 StringTokenizer token = new StringTokenizer(goals, " ");
-                while (token.hasMoreTokens())
-                {
+                while (token.hasMoreTokens()) {
                     String goal = token.nextToken();
                     String origin = grabber.getOrigin(goal);
-                    if (origin == null || IGoalsGrabber.ORIGIN_PROJECT.equals(origin))
-                    {
+                    if (origin == null || IGoalsGrabber.ORIGIN_PROJECT.equals(origin)) {
                         NotifyDescriptor.Message message = new NotifyDescriptor.Message(
-                            NbBundle.getMessage(RunGoalsAction.class, "RunGoalsAction.warning1", goal));
+                              NbBundle.getMessage(RunGoalsAction.class, "RunGoalsAction.warning1", goal));
                         
                         DialogDisplayer.getDefault().notify(message);
                         return;
@@ -180,129 +174,114 @@ public class RunGoalsAction extends AbstractAction implements Presenter.Popup {
                 MavenSettings settings = MavenSettings.getDefault();
                 String[] oldGoals = settings.getTopGoals();
                 String[] newGoals = new String[oldGoals.length + 1];
-                for (int i = 0; i < oldGoals.length; i++)
-                {
+                for (int i = 0; i < oldGoals.length; i++) {
                     newGoals[i] = oldGoals[i];
                 }
                 newGoals[oldGoals.length] = goals;
                 settings.setTopGoals(newGoals);
-                if (settings.isShowAddFavouriteHint())
-                {
-                        NotifyDescriptor.Message message = new NotifyDescriptor.Message(
-                            NbBundle.getMessage(RunGoalsAction.class, "RunGoalsAction.hint1"));
-                        //TODO have a checkbox .. "show hint next time".. for now, just display once.
-                        DialogDisplayer.getDefault().notify(message);
-                        MavenSettings.getDefault().setShowAddFavouriteHint(false);
+                if (settings.isShowAddFavouriteHint()) {
+                    NotifyDescriptor.Message message = new NotifyDescriptor.Message(
+                               NbBundle.getMessage(RunGoalsAction.class, "RunGoalsAction.hint1"));
+                    //TODO have a checkbox .. "show hint next time".. for now, just display once.
+                    DialogDisplayer.getDefault().notify(message);
+                    MavenSettings.getDefault().setShowAddFavouriteHint(false);
                 }
-            } catch (Exception exc)
-            {
+            } catch (Exception exc) {
                 log.error("Cannot create goals grabber", exc);
                 ErrorManager.getDefault().notify(ErrorManager.EXCEPTION, exc);
             }
         }
-
-        void addNotify () {
+        
+        void addNotify() {
             targets = Collections.EMPTY_LIST;
             if (project.getOriginalMavenProject() == null) return;
             targets = new ArrayList(15);
             File dir = FileUtil.toFile(project.getProjectDirectory());
             File mavenxml = new File(dir, "maven.xml");
-            if (mavenxml.exists())
-            {
-                try
-                {
+            if (mavenxml.exists()) {
+                try {
                     ProjectGoalsGrabber grabber = new ProjectGoalsGrabber();
                     grabber.setMavenXmlFile(mavenxml.getAbsolutePath());
                     grabber.refresh();
                     String[] plugins = grabber.getPlugins();
-                    if (plugins != null)
-                    {
-                        for (int i =0; i < plugins.length; i++)
-                        {
+                    if (plugins != null) {
+                        for (int i =0; i < plugins.length; i++) {
                             String[] goals = grabber.getGoals(plugins[i]);
-                            if (goals != null)
-                            {
-                                for (int j =0; j < goals.length; j++)
-                                {
-                                    targets.add(new ItemWrapper(plugins[i] + ":" + goals[j]));
+                            if (goals != null) {
+                                for (int j =0; j < goals.length; j++) {
+                                    if ("(default)".equals(goals[j])) {
+                                        targets.add(new ItemWrapper(plugins[i]));
+                                    } else {
+                                        targets.add(new ItemWrapper(plugins[i] + ":" + goals[j]));
+                                    }
                                 }
                             }
                         }
                         targets.add(null);
                     }
-                } catch (Exception ioe)
-                {
+                } catch (Exception ioe) {
                     log.error("Error loading project-specific goals",ioe);
                 }
             }
             String[] str = MavenSettings.getDefault().getTopGoals();
-            if (str != null)
-            {
-                for (int i = 0; i < str.length; i++)
-                {
-                        if (targets.size() < MAX_ITEMS_IN_POPUP) {
-                            targets.add(new ItemWrapper(
-                                    str[i].length() > MAX_LENGTH_OF_ITEM ? str[i].substring(0, MAX_LENGTH_OF_ITEM - 3) + "..." : str[i]));
-                        }
+            if (str != null) {
+                for (int i = 0; i < str.length; i++) {
+                    if (targets.size() < MAX_ITEMS_IN_POPUP) {
+                        targets.add(new ItemWrapper(
+                               str[i].length() > MAX_LENGTH_OF_ITEM ? str[i].substring(0, MAX_LENGTH_OF_ITEM - 3) + "..." : str[i]));
+                    }
                 }
             }
             targets.add(new ItemWrapper(NbBundle.getMessage(RunGoalsAction.class, "RunGoalsAction.moreGoals"), ACTION_SHOW_CUSTOM_DIALOG));
             // In fact we should ensure there are >1 items (workaround for
             // undesired behavior of Actions.SubMenu):
-            if (targets.size () == 1) {
+            if (targets.size() == 1) {
                 // The extra separator will not actually be displayed:
-                targets.add (null);
+                targets.add(null);
             }
         }
-
-        public synchronized void addChangeListener (ChangeListener l) {
+        
+        public synchronized void addChangeListener(ChangeListener l) {
         }
-
-        public synchronized void removeChangeListener (ChangeListener l) {
+        
+        public synchronized void removeChangeListener(ChangeListener l) {
         }
-
+        
     }
     
     private static final int ACTION_RUN = 0;
     private static final int ACTION_SHOW_CUSTOM_DIALOG = 1;
     
-    private static class ItemWrapper
-    {
+    private static class ItemWrapper {
         private String goals;
         private int actionType;
-        public ItemWrapper(String goals)
-        {
+        public ItemWrapper(String goals) {
             this.goals = goals;
             actionType = ACTION_RUN;
             
         }
-        public ItemWrapper(String goals, int actionType)
-        {
+        public ItemWrapper(String goals, int actionType) {
             this(goals);
             this.actionType = actionType;
         }
         
-        public String getGoals()
-        {
+        public String getGoals() {
             return goals;
         }
         
-        public int getType()
-        {
+        public int getType() {
             return actionType;
         }
         
         
     }
-
+    
     /** a class that puts the CustomGoalsPanel into correct constraints
      */
-    private static class GPanel extends JPanel
-    {
+    private static class GPanel extends JPanel {
         private CustomGoalsPanel panel;
         private JCheckBox cbAdd;
-        public GPanel(GoalsGrabberProvider provider)
-        {
+        public GPanel(GoalsGrabberProvider provider) {
             super();
             setLayout(new GridBagLayout());
             GridBagConstraints con = new GridBagConstraints();
@@ -323,13 +302,11 @@ public class RunGoalsAction extends AbstractAction implements Presenter.Popup {
             add(cbAdd, con);
         }
         
-        public String getGoalsToExecute()
-        {
+        public String getGoalsToExecute() {
             return panel.getGoalsToExecute();
         }
         
-        public boolean doAddToFavourites()
-        {
+        public boolean doAddToFavourites() {
             return cbAdd.isSelected();
         }
     }
