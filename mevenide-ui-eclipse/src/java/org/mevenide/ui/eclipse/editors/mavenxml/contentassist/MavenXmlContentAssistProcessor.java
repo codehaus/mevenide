@@ -164,7 +164,7 @@ public abstract class MavenXmlContentAssistProcessor implements IContentAssistPr
         words.addAll(rootTags);
         
         
-        if (node != null && node.getType() != null && "TEXT".equals(node.getType())) {
+        if (node != null && node.getType() != null && "TEXT".equalsIgnoreCase(node.getType())) {
             cp = new ICompletionProposal[words.size()];
             for (int i = 0; i < cp.length; i++) {
                 String text = (String) words.get(i);
@@ -219,7 +219,8 @@ public abstract class MavenXmlContentAssistProcessor implements IContentAssistPr
                     ArrayList cpL = new ArrayList();
                     for (int i = 0; i < words.size(); i++) {
                         String text = (String) words.get(i);
-                        if (text.startsWith(start)) {
+                        //if (text.startsWith(start)) {
+                        if (text.regionMatches(true, 0, start, 0, start.length())) {
                             //if (preferencesManager.getBooleanValue("InsertEndTag")) {
                                 cpL.add(new CompletionProposal(text + "></" + text + ">", node.getOffset() + 1, offset - node.getOffset() - 1, text.length() + 1, null, text, null, null));
                             //}
@@ -276,7 +277,8 @@ public abstract class MavenXmlContentAssistProcessor implements IContentAssistPr
         Collections.sort(words);
         for (Iterator it = words.iterator(); it.hasNext();) {
             String s = (String) it.next();
-            if (!s.startsWith(start)) {
+            //if (!s.startsWith(start)) {
+            if (!s.regionMatches(true, 0, start, 0, start.length())) {
                 it.remove();
             }
         }
