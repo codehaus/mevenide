@@ -11,9 +11,9 @@
         <a href="features.html" class="documentLink">features list</a>  <!-- and the <a href="help.html" class="documentLink">Help page</a> -->
 	    to learn more about Mevenide for Netbeans IDE. </p>
         <p>
-        It works with development builds of Netbeans 4.0, JDK 1.4.1 and Maven 1.0-rc2. 
+        It works with development builds of Netbeans 4.0, JDK 1.4.1 and Maven 1.0-rc3. 
         To get the Netbeans builds, go to the <a href="http://www.netbeans.org/downloads/ide/archive/builds_archive_dev.html"> download page </a>
-        Mevenide  was tested with build 200405191800.
+        Mevenide  was tested with build 20040529xxxx and later.
         </p>
         <p>
         If you are using previous versions of Netbeans (3.5.1 and 3.6), please check the
