@@ -11,8 +11,8 @@
   <goal name="mevenide-eclipse:build" description="Build all Mevenide modules" prereqs="mevenide-eclipse:clean,mevenide-eclipse:init">
     <j:set var="maven.multiproject.includes" value="${maven.multiproject.eclipse.includes}"/>
     <j:set var="maven.multiproject.excludes" value="mevenide-master/project.xml"/>
+    <j:set var="maven.multiproject.goal" value="mevenide-eclipse:create-update-dist"/>
     <attainGoal name="multiproject:goal"/>
-    <attainGoal name="mevenide-eclipse:create-update-dist"/>
   </goal>
   
   <goal name="mevenide-netbeans:build" description="Build all Mevenide modules">
