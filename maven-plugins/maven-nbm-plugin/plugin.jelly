@@ -1,0 +1,125 @@
+<?xml version="1.0"?>
+
+<project 
+  xmlns:j="jelly:core"
+  xmlns:util="jelly:util"
+  xmlns:log="jelly:log"
+  xmlns:ant="jelly:ant"
+  xmlns:maven="jelly:maven"
+  xmlns:artifact="artifact">
+
+  <!--==================================================================-->
+  <!-- Default goal : Builds a uberjar file                             -->
+  <!--==================================================================-->    
+  <goal 
+    name="nbm" 
+    prereqs="nbm:jar" 
+    description="Build NBM file"/>
+
+  <!--==================================================================-->
+  <!-- Initializations                                                  -->
+  <!--==================================================================-->    
+  <goal name="nbm:init">
+    <j:set var="maven.nbm.final.name"  value="${maven.build.dir}/${maven.final.name}.nbm"/>
+    <j:set var="maven.nbm.build.dir" value="${maven.build.dir}/nbm" />
+    <j:set var="maven.nbm.jar.location" value="netbeans/modules"/>    
+    <j:choose>
+        <j:when test="${maven.nbm.autoload}">
+           <ant:echo message="HELLO BABY!!!!!! autoload" />
+           <j:set var="maven.nbm.jar.location" value="netbeans/modules/autoload"/>
+        </j:when>
+        <j:otherwise>
+            <ant:echo message="HELLO BABY!!!!!!" />
+            <j:set var="maven.nbm.jar.location" value="netbeans/modules"/>    
+        </j:otherwise>
+    </j:choose>
+    <ant:mkdir dir="${maven.nbm.build.dir}/${maven.nbm.jar.location}"/>
+    
+  </goal>
+
+  
+  <goal name="nbm:jar"
+      prereqs="nbm:init" 
+      description="Build the Netbeans jar.">
+<!--    <j:set var="maven.jar.manifest" value="${maven.nbm.manifest}"/> -->
+    <j:set var="bundle" value="${maven.nbm.manifest.bundle.basedir}"/>
+    <j:if test="${empty(bundle)}">
+      <fail message="">
+ 
+The maven.nbm.manifest.bundle.basedir and  maven.nbm.manifest.bundle.include have to be set.
+       
+      </fail>
+    </j:if>
+
+
+    <util:file var="thisPom" name="${basedir}/project.xml"/>  
+    <ant:echo message="manifest=${maven.jar.manifest}" />
+    
+    <maven:maven descriptor="${thisPom}" goals="jar:jar"/> 
+    <ant:copy toDir="${maven.nbm.build.dir}/${maven.nbm.jar.location}" file="${maven.build.dir}/${maven.final.name}.jar"/>
+     <ant:jar destfile="${maven.nbm.build.dir}/${maven.nbm.jar.location}/${maven.final.name}.jar"
+        manifest="${maven.nbm.manifest}" update="true"
+        basedir="${maven.nbm.manifest.bundle.basedir}"
+       includes="${maven.nbm.manifest.bundle.include}" />
+   </goal>
+  <!--==================================================================-->
+  <!-- Build the uberjar                                                -->
+  <!--==================================================================-->    
+  <goal 
+    name="nbm:nbm"
+    prereqs="nbm:jar"
+    description="Build the NBM">
+  <ant:taskdef name="makenbm" classname="org.netbeans.nbbuild.MakeNBM" >
+       <ant:classpath>
+         <ant:pathelement path="${plugin.getDependencyPath('nbantext')}"/>
+        </ant:classpath>
+  </ant:taskdef>
+    <!-- copy resulting jar in the relevant location -->
+    
+    <ant:echo message="autoload=${maven.nbm.autoload}" />
+    <ant:echo message="module=${maven.nbm.jar.location}/${maven.final.name}.jar" />
+    <ant:echo message="url=${pom.url}" />
+    <ant:echo message="licence=${maven.nbm.licence}" />
+    
+    <ant:makenbm file="${maven.final.name}.nbm"
+             topdir="${maven.nbm.build.dir}"
+             module="${maven.nbm.build.dir}/${maven.nbm.jar.location}/${maven.final.name}.jar"
+            homepage="${pom.url}"
+            distribution="${pom.url}/${maven.final.name}.nbm"
+            needsrestart="${maven.nbm.requiresrestart}">
+      <license file="${maven.nbm.licence}"/>
+      <signature keystore="?" storepass="?" alias="?"/> -->
+    </ant:makenbm>
+
+    <!--    <j:choose>
+        <j:when test="${maven.nbm.autoload}">
+           <ant:echo message="HELLO BABY!!!!!! autoload" />
+           <ant:mkdir dir="${maven.nbm.dest}/modules/autoload" />
+           <ant:copy toDir="${maven.nbm.dest}/modules/autoload" file="${maven.build.dir}/${maven.final.name}.jar"/>
+        </j:when>
+        <j:otherwise>
+            <ant:echo message="HELLO BABY!!!!!!" />
+            <ant:copy toDir="${maven.nbm.dest}/modules" file="${maven.build.dir}/${maven.final.name}.jar"/>
+        </j:otherwise>
+    </j:choose>
+    -->
+    
+    
+<!--    <j:forEach var="lib" items="${pom.artifacts}">
+      <ant:copy 
+        todir="${libdir}"
+        file="${lib.path}"/>
+    </j:forEach>
+    
+    
+    <ant:makenbm file="${maven.nbm.final.name}.nbm"
+             topdir="${dest}"
+             module="netbeans/lib/core.jar"
+	     homepage="http://core.${homepage.base}/"
+	     distribution="http://${dist.base}/core.nbm">
+      <license file="${license.file}"/>
+      <signature keystore="${keystore}" storepass="${storepass}" alias="${nbm_alias}"/>
+    </ant:makenbm>
+  -->
+  </goal>
+</project>

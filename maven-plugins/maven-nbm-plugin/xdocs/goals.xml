@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<document>
+  <properties>
+    <title>maven-nbm-plugin Goals</title>
+    <author>Milos Kleint (ca206216@tiscali.cz)</author>
+  </properties>
+  
+  <body>
+  	<section name="Primary Goals">
+  		<div id="documentContent">
+  		<table>
+  		  <tr>
+  		  	<th>Goal</th>
+  		  	<th>Description</th>
+  		  </tr>	
+  		  <tr>
+            <td>nbm:jar</td>
+            <td>Creates a netbeans module jar. Includes the additional netbeans manifest entries.</td>
+          </tr>
+          <tr>
+            <td>nbm:nbm</td>
+            <td>Creates the nbm file.</td>
+          </tr>
+  		</table>
+  		</div>
+  	</section>
+  	
+  </body>
+</document>

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project>
+
+  <pomVersion>3</pomVersion>
+
+  <groupId>mevenide</groupId>
+  <id>maven-nbm-plugin</id>
+  <artifactId>maven-nbm-plugin</artifactId>
+  <!-- a short but descriptive name for the project -->
+
+  <name>Maven NBM (Netbeans Module) Plugin</name>
+  <!-- The version of the project under development, e.g.
+       1.1, 1.2, 2.0-dev -->
+
+  <currentVersion>0.1-SNAPSHOT</currentVersion>
+  <!-- a short description of what the project does -->
+
+  <shortDescription>The NBM plugin will create a Netbeans module file (.nbm) </shortDescription>
+  <!-- the project home page -->
+
+    <organization>
+      <name>Mevenide @ Sourceforge</name>
+      <url>http://sf.net/</url>
+      <logo>http://sourceforge.net/sflogo.php?group_id=54263&amp;type=2</logo>
+    </organization>
+    <shortDescription>This plugin helps creating ready to use Netbeans module distribution</shortDescription>
+    <inceptionYear>2004</inceptionYear>
+    <siteAddress>shell.sourceforge.net</siteAddress>
+  	<repository>
+      <connection>scm:cvs:pserver:anonymous@cvs.sourceforge.net:/cvsroot/mevenide:maven-plugins/${pom.artifactId}</connection>
+      <developerConnection>scm:cvs:ext:${maven.username}@cvs.sourceforge.net:/cvsroot/mevenide:maven-plugins/${pom.artifactId}</developerConnection>
+      <url>http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/mevenide/maven-plugins/${pom.artifactId}/</url>
+    </repository>
+
+  <developers>
+    <developer>
+      <name>Milos Kleint</name>
+      <id>mkleint</id>
+      <email>ca206216@tiscali.cz</email>
+      <roles>
+        <role>Creator </role>
+        <role>Developer</role>
+      </roles>
+    </developer>
+  </developers>
+  <!-- jar files the project is dependent on -->
+
+  <dependencies>
+    <dependency>
+      <id>ant</id>
+      <version>1.5.3-1</version>
+      <properties>
+        <classloader>root</classloader>
+      </properties>
+    </dependency>
+    <dependency>
+          <groupId>netbeans</groupId>
+          <artifactId>nbantext</artifactId>
+          <type>jar</type>
+          <version>3.6-SNAPSHOT</version>
+          <properties>
+            <classloader>root</classloader>
+        </properties>
+    </dependency>
+
+  </dependencies>
+  
+    <build> 
+        <resources> 
+            <resource> 
+                <directory>${basedir}/src/plugin-resources</directory> 
+                <targetPath>plugin-resources</targetPath> 
+            </resource> 
+            <resource> 
+                <directory>${basedir}</directory> 
+                <includes> 
+                    <include>plugin.jelly</include> 
+                    <include>plugin.properties</include> 
+                    <include>project.properties</include> 
+                    <include>project.xml</include> 
+                </includes> 
+            </resource> 
+        </resources> 
+    </build>   
+  
+</project>
