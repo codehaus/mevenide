@@ -18,7 +18,6 @@
 package org.mevenide.netbeans.project;
 
 import java.awt.Image;
-import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;

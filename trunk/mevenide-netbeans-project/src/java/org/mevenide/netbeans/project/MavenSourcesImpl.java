@@ -69,7 +69,6 @@ public class MavenSourcesImpl implements Sources {
     private MavenProject project;
     private List listeners;
     
-    private SourceGroup rootGroup;
     private Map javaGroup;
     private HashMap resGroup;
     private SourceGroup xdocsGroup;

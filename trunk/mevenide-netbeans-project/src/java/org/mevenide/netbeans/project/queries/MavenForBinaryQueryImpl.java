@@ -260,7 +260,6 @@ public class MavenForBinaryQueryImpl implements SourceForBinaryQueryImplementati
        }
         
         public java.net.URL[] getRoots() {
-            URL binRoot = FileUtil.getArchiveFile(url);
             if (checkURL(url) != -1) {
                 results = getJavadocRoot();
             } else {

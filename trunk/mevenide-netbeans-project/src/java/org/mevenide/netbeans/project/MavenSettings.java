@@ -16,7 +16,6 @@
  */
 package org.mevenide.netbeans.project;
 
-import java.io.File;
 import org.openide.options.SystemOption;
 import org.openide.util.HelpCtx;
 import org.openide.util.NbBundle;

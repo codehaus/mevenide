@@ -21,8 +21,6 @@ import javax.swing.ImageIcon;
 import org.mevenide.netbeans.project.FileUtilities;
 import org.mevenide.netbeans.project.MavenProject;
 import org.mevenide.properties.IPropertyLocator;
-import org.openide.filesystems.FileObject;
-import org.openide.filesystems.FileUtil;
 import org.openide.util.Utilities;
 
 

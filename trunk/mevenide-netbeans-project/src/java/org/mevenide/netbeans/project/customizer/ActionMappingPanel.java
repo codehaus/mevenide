@@ -26,7 +26,6 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import org.mevenide.netbeans.project.ActionProviderImpl;
 import org.mevenide.netbeans.project.MavenProject;
-import org.mevenide.netbeans.project.customizer.ProjectValidateObserver;
 import org.mevenide.netbeans.project.customizer.ui.LocationComboFactory;
 import org.mevenide.netbeans.project.customizer.ui.OriginChange;
 import org.mevenide.properties.IPropertyLocator;

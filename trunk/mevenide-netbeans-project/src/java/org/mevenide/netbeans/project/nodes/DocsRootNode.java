@@ -18,20 +18,11 @@
 package org.mevenide.netbeans.project.nodes;
 
 import javax.swing.Action;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import javax.swing.event.EventListenerList;
 import org.mevenide.netbeans.project.ActionProviderImpl;
 import org.mevenide.netbeans.project.MavenProject;
 import org.netbeans.api.project.SourceGroup;
-import org.netbeans.api.queries.VisibilityQuery;
-import org.netbeans.spi.project.ui.PrivilegedTemplates;
-import org.netbeans.spi.project.ui.RecommendedTemplates;
 import org.netbeans.spi.project.ui.support.LogicalViews;
-import org.openide.filesystems.FileObject;
-import org.openide.loaders.ChangeableDataFilter;
 import org.openide.loaders.DataFolder;
-import org.openide.loaders.DataObject;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.util.lookup.Lookups;

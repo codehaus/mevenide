@@ -31,7 +31,6 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Dependency;
 import org.apache.maven.project.Project;
 import org.mevenide.netbeans.project.MavenProject;
-import org.mevenide.netbeans.project.customizer.ProjectValidateObserver;
 import org.mevenide.netbeans.project.customizer.ui.LocationComboFactory;
 import org.mevenide.netbeans.project.customizer.ui.OriginChange;
 import org.mevenide.netbeans.project.dependencies.DependencyNode;

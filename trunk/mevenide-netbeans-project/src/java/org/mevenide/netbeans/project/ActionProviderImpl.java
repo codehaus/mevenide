@@ -20,7 +20,6 @@ package org.mevenide.netbeans.project;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.util.Properties;
 import java.util.Set;
 import javax.swing.AbstractAction;
@@ -31,12 +30,10 @@ import org.mevenide.netbeans.project.output.AttachDebuggerOutputHook;
 import org.mevenide.netbeans.project.exec.MavenExecutor;
 import org.mevenide.netbeans.project.output.OutputProcessor;
 import org.mevenide.netbeans.project.output.OutputProcessorFactory;
-import org.mevenide.netbeans.project.output.RunOutputFilter;
 import org.mevenide.properties.IPropertyLocator;
 import org.mevenide.properties.IPropertyResolver;
 import org.netbeans.spi.project.ActionProvider;
 import org.openide.LifecycleManager;
-import org.openide.awt.HtmlBrowser;
 import org.openide.awt.StatusDisplayer;
 import org.openide.execution.ExecutionEngine;
 import org.openide.execution.ExecutorTask;
@@ -45,7 +42,6 @@ import org.openide.filesystems.FileUtil;
 import org.openide.util.Lookup;
 import org.openide.util.Task;
 import org.openide.util.TaskListener;
-import org.openide.windows.IOProvider;
 import org.openide.windows.InputOutput;
 
 /**

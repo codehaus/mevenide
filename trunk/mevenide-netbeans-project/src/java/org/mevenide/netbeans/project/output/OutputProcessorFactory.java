@@ -18,8 +18,6 @@
 package org.mevenide.netbeans.project.output;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import org.mevenide.netbeans.project.MavenProject;
