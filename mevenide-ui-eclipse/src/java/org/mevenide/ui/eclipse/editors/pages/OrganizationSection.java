@@ -48,11 +48,12 @@
  */
 package org.mevenide.ui.eclipse.editors.pages;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Project;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
@@ -65,10 +66,11 @@ import org.mevenide.ui.eclipse.Mevenide;
  */
 public class OrganizationSection extends PageSection {
 
+	private static final Log log = LogFactory.getLog(OrganizationSection.class);
+    
 	private OverridableTextEntry nameText;
 	private OverridableTextEntry urlText;
 	private OverridableTextEntry logoText;
-	private Button logoButton;
 
     public OrganizationSection(OrganizationPage page) {
         super(page);
@@ -97,10 +99,10 @@ public class OrganizationSection extends PageSection {
 		);
 		nameText = new OverridableTextEntry(createText(container, factory, 2), toggle);
 		OverrideAdaptor adaptor = new OverrideAdaptor() {
-			public void updateProject(String value) {
+			public void overrideParent(String value) {
 				pom.getOrganization().setName(value);
 			}
-			public String getParentProjectAttribute() {
+			public String acceptParent() {
 				return getParentPom().getOrganization().getName();
 			}
 		};
@@ -117,10 +119,10 @@ public class OrganizationSection extends PageSection {
 		);
 		urlText = new OverridableTextEntry(createText(container, factory, 2), toggle);
 		adaptor = new OverrideAdaptor() {
-			public void updateProject(String value) {
+			public void overrideParent(String value) {
 				pom.getOrganization().setUrl(value);
 			}
-			public String getParentProjectAttribute() {
+			public String acceptParent() {
 				return getParentPom().getOrganization().getUrl();
 			}
 		};
@@ -135,36 +137,25 @@ public class OrganizationSection extends PageSection {
 			Mevenide.getResourceString("OrganizationSection.logoText.tooltip"), 
 			factory
 		);
-		logoText = new OverridableTextEntry(createText(container, factory), toggle);
+		String labelName = Mevenide.getResourceString("OrganizationSection.logoButton.label");
+		String toolTip = Mevenide.getResourceString("OrganizationSection.logoButton.tooltip");
+		final String title = Mevenide.getResourceString("OrganizationSection.logoButton.dialog.title");
+		logoText = new OverridableTextEntry(
+			createText(container, factory), 
+			toggle,
+			createBrowseButton(container, factory, labelName, toolTip, 1)
+		);
 		adaptor = new OverrideAdaptor() {
-			public void updateProject(String value) {
+			public void overrideParent(String value) {
 				pom.getOrganization().setLogo(value);
 			}
-			public String getParentProjectAttribute() {
+			public String acceptParent() {
 				return getParentPom().getOrganization().getLogo();
 			}
 		};
 		logoText.addEntryChangeListener(adaptor);
 		logoText.addOverrideAdaptor(adaptor);
-		
-		Composite buttonContainer = factory.createComposite(container);
-		GridData data = new GridData(GridData.HORIZONTAL_ALIGN_END | GridData.VERTICAL_ALIGN_CENTER);
-		data.horizontalSpan = 1;
-		buttonContainer.setLayoutData(data);
-		layout = new GridLayout();
-		layout.marginWidth = 0;
-		layout.marginHeight = 0;
-		buttonContainer.setLayout(layout);
-
-		String labelName = Mevenide.getResourceString("OrganizationSection.logoButton.label");
-		String toolTip = Mevenide.getResourceString("OrganizationSection.logoButton.tooltip");
-		logoButton = factory.createButton(buttonContainer, labelName, SWT.PUSH);
-		data = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING | GridData.VERTICAL_ALIGN_CENTER);
-		logoButton.setLayoutData(data);
-		logoButton.setToolTipText(toolTip);
-
-		final String title = Mevenide.getResourceString("OrganizationSection.logoButton.dialog.title");
-		logoButton.addSelectionListener(
+		logoText.addBrowseButtonListener(
 			new SelectionAdapter() {
 				public void widgetSelected(SelectionEvent e) {
 					try {
@@ -181,7 +172,7 @@ public class OrganizationSection extends PageSection {
 						}
 					}
 					catch ( Exception ex ) {
-//						log.error("Unable to browse for logo images", ex);
+						log.error("Unable to browse for logo images", ex);
 					}
 				}
 			}
