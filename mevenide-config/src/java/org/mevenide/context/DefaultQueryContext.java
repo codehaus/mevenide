@@ -21,7 +21,10 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Properties;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -185,6 +188,45 @@ public class DefaultQueryContext implements IQueryContext {
     }
     public IProjectContext getPOMContext() {
         return projectContext;
+    } 
+    
+    
+
+    public Set getBuildPropertyKeys() {
+        buildPropertyFileTimestamp = checkReloadModel(buildPropertyFile, 
+                                                      buildPropertyFileTimestamp,
+                                                      buildPropertyModel);
+        if (buildPropertyFileTimestamp == 0) {
+            // file does not exist.
+            return Collections.EMPTY_SET;
+        }
+        return new HashSet(buildPropertyModel.keySet());
+    }
+
+    public Set getProjectPropertyKeys() {
+        projectPropertyFileTimestamp = checkReloadModel(projectPropertyFile, 
+                                                        projectPropertyFileTimestamp,
+                                                        projectPropertyModel);
+        if (projectPropertyFileTimestamp == 0) {
+            // file does not exist.
+            return Collections.EMPTY_SET;
+        }
+        return new HashSet(projectPropertyModel.keySet());
+    }
+
+    public Set getUserPropertyKeys() {
+        //HACK - not nice here..
+        if (this != defaultInstance) {
+            return getNonProjectContextInstance().getUserPropertyKeys();
+        }
+       userPropertyFileTimestamp = checkReloadModel(userPropertyFile, 
+                                                    userPropertyFileTimestamp,
+                                                    userPropertyModel);
+        if (userPropertyFileTimestamp == 0) {
+            // file does not exist.
+            return Collections.EMPTY_SET;
+        }
+        return new HashSet(userPropertyModel.keySet());        
     }
     
     // is this necesaary, maybe just return null from getRootProjectElement()

@@ -21,7 +21,9 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.Properties;
+import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.mevenide.properties.IPropertyFinder;
@@ -81,6 +83,15 @@ public final class PluginPropertiesFinder implements IPropertyFinder {
             } catch (IOException exc) {
                 logger.warn("Cannot read defaults from file:" + propFile, exc); //NOI18N
             }
+        }
+    }
+    
+    public Set getDefaultPluginKeys() {
+        synchronized (LOCK) {
+            if (props == null) {
+                loadAllProperties();
+            }
+            return new HashSet(props.keySet());
         }
     }
     

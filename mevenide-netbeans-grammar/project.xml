@@ -16,6 +16,7 @@
         <artifactId>xml-core</artifactId>
         <!-- include nb specification version.. that's important for compiling -->
         <version>3.999.1</version>
+        <type>jar</type>
         <url>http://www.netbeans.org</url>
         <properties>
             <netbeans.module.dep>impl</netbeans.module.dep>
@@ -66,6 +67,7 @@
         <groupId>mevenide</groupId>
         <artifactId>goals-grabber</artifactId>
         <version>0.5-SNAPSHOT</version>
+        <type>jar</type>
             <properties>
                 <netbeans.module.dep>spec</netbeans.module.dep>
             </properties>
@@ -73,6 +75,7 @@
     <dependency>     
         <groupId>mevenide</groupId>
         <artifactId>mevenide-grammar</artifactId>
+        <type>jar</type>
         <version>0.4-SNAPSHOT</version>
             <properties>
                 <netbeans.module.dep>spec</netbeans.module.dep>

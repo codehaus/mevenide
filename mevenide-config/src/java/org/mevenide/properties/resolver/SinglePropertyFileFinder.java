@@ -30,6 +30,7 @@ import org.mevenide.properties.PropertyModelFactory;
 /**
  * A IPropertyFinder implementation that maps a single properties file.
  * The cache is based on PropertyModel.
+ * @deprecated
  * @author  <a href="mailto:ca206216@tiscali.cz">Milos Kleint</a>
  */
 final class SinglePropertyFileFinder implements IPropertyFinder {

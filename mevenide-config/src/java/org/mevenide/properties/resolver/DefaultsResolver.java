@@ -19,7 +19,10 @@ package org.mevenide.properties.resolver;
 
 import java.io.File;
 import java.io.InputStream;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Properties;
+import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.mevenide.environment.ILocationFinder;
@@ -94,6 +97,12 @@ public final class DefaultsResolver implements IPropertyFinder {
         return toReturn;
     }   
     
- 
+    public Set getDefaultKeys() {
+        HashSet set = new HashSet(defaults.keySet());
+        if (pluginDefaults != null && pluginDefaults instanceof PluginPropertiesFinder) {
+            set.addAll(((PluginPropertiesFinder)pluginDefaults).getDefaultPluginKeys());
+        }
+        return set;
+    }
     
 }

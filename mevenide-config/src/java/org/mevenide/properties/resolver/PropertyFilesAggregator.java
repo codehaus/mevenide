@@ -18,6 +18,8 @@
 package org.mevenide.properties.resolver;
 
 import java.io.File;
+import java.util.Collections;
+import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.mevenide.context.IQueryContext;
@@ -47,6 +49,7 @@ public final class PropertyFilesAggregator implements IPropertyResolver, IProper
      * @param project parent directory of project.xml
      * @param user the user home directory
      * @param defs property finder which override properies definition that may be found in <code>user</code> and <code>project</code> properties files 
+     * @deprecated use IQueryContext based constructor
      */
     public PropertyFilesAggregator(File project, File user, IPropertyFinder defs) {
         projectDir = project;
@@ -209,6 +212,31 @@ public final class PropertyFilesAggregator implements IPropertyResolver, IProper
             return (defaults != null && defaults.getValue(key) != null);
         }
         return false;        
-    }    
+    }   
+    
+    /**
+     * returns all the keys at the given location.
+     */
+    public Set getKeysAtLocation(int location) {
+        if (context == null) {
+            // Mkleint - no implementation for non-query based instance
+            return Collections.EMPTY_SET;
+        }
+        if (location == IPropertyLocator.LOCATION_USER_BUILD) {
+            return context.getUserPropertyKeys();
+        }
+        else if (location == IPropertyLocator.LOCATION_PROJECT_BUILD) {
+            return context.getBuildPropertyKeys();
+        }
+        else if (location == IPropertyLocator.LOCATION_PROJECT) {
+           return context.getProjectPropertyKeys();
+        }
+        else if (location == IPropertyLocator.LOCATION_DEFAULTS) {
+            if (defaults != null && defaults instanceof DefaultsResolver) {
+                return ((DefaultsResolver)defaults).getDefaultKeys();
+            }
+        }
+        return Collections.EMPTY_SET;        
+    }
     
 }
