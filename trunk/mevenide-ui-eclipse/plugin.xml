@@ -2,7 +2,7 @@
 <plugin
    id="mevenide"
    name="Mevenide"
-   version="1.0"
+   version="0.1"
    provider-name="Sourceforge"
    class="org.mevenide.ui.eclipse.MavenPlugin">
 
