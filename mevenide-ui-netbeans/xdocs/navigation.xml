@@ -32,6 +32,10 @@
     	    </item>
         </menu>
         
+        <menu name="Developer">
+            <item name="Task List" href="todos.html">
+        </menu>
+        
         <search/>
     </body>
 

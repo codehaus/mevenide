@@ -34,7 +34,10 @@
         	<item name="Coding Guidelines" href="/guidelines.html"/>
         </item>
         <item name="Directory Layout" href="layout.html"/>
-        <item name="Task List" href="todos.html"/>
+        <item name="Task List" href="/todos.html">
+            <item name="Eclipse plugin todos" href="/mevenide-ui-eclipse/todos.html"/>
+            <item name="Netbeans plugin todos" href="/mevenide-ui-netbeans/todos.html"/>
+        </item>
         <item name="Mevenide Wiki" href="/cgi-bin/view.pl/FrontPage"/>
     </menu>
     <search/>
