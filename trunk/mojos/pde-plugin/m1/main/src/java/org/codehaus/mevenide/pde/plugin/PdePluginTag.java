@@ -52,6 +52,8 @@ public class PdePluginTag extends JellyTag {
                                new VersionAdapter().adapt(m1Project.getCurrentVersion());
             }
             
+			builder.setArtifactName(artifactName);
+			
             String destinationFolder = (String) context.getVariable("maven.build.dir");
             builder.setArtifact(destinationFolder + "/" + artifactName + ".zip");
             
@@ -71,6 +73,8 @@ public class PdePluginTag extends JellyTag {
             //@todo custom includes
             builder.setIncludes(includes);
             
+			builder.setExportArtifact((String) context.getVariable("maven.pde.export"));
+			
             builder.build();
            
         }

@@ -23,6 +23,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import org.apache.commons.lang.StringUtils;
@@ -44,10 +45,10 @@ public class SimpleZipCreator {
     private File destinationFile;  
     
     /** list of excluded files */
-    private List excludes;
+    private List excludes = new ArrayList();
     
     /** list of files ot include */
-    private List includes;
+    private List includes = new ArrayList();
     
     public SimpleZipCreator(String directory, String destinationFile) {
         this.directory = directory;
@@ -70,7 +71,9 @@ public class SimpleZipCreator {
             output = new FileOutputStream(destinationFile);
             ZipOutputStream zipStream = new ZipOutputStream(output);
             
-            addDirectory(directory, zipStream);
+			if ( directory != null ) {
+				addDirectory(directory, zipStream);
+			}
             addIncludes(zipStream);
             
             zipStream.close();
@@ -161,11 +164,13 @@ public class SimpleZipCreator {
     }
 
     public void setExcludes(String excludes) { 
-        DirectoryScanner scanner = new DirectoryScanner();
-        scanner.setBasedir(directory);
-        scanner.setExcludes(StringUtils.split(excludes, ','));
-        scanner.scan();
-        this.excludes = Arrays.asList(scanner.getExcludedFiles());
+		if ( directory != null ) {
+			DirectoryScanner scanner = new DirectoryScanner();
+			scanner.setBasedir(directory);
+			scanner.setExcludes(StringUtils.split(excludes, ','));
+			scanner.scan();
+			this.excludes = Arrays.asList(scanner.getExcludedFiles());
+		}
     }
     public void setIncludes(List includes) { this.includes = includes; }
     public void setDestinationFile(File destinationFile) { this.destinationFile = destinationFile; }

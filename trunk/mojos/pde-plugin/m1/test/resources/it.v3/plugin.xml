@@ -1,20 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.0"?>
 <plugin id="org.codehaus.mevenide.pde" name="maven pde plugin" version="0.1.0" provider-name="the codehaus">
-   <runtime>
-      <library name="jdom-1.0b8.jar">
-         <export name="*" />
-      </library>
-      <library name="commons-lang-2.0.jar">
-         <export name="*" />
-      </library>
-      <library name="junit-3.8.1.jar">
-         <export name="*" />
-      </library>
-   </runtime>
-   <requires>
-      <import plugin="org.eclipse.text" />
-      <import plugin="org.eclipse.core.runtime" />
-   </requires>
+  <runtime>
+    <library name="lib/jdom-1.0.jar">
+      <export name="*" />
+    </library>
+    <library name="lib/commons-lang-2.0.jar">
+      <export name="*" />
+    </library>
+    <library name="lib/junit-3.8.1.jar">
+      <export name="*" />
+    </library>
+    <library name="maven-pde-plugin-0.1-DUHHU.jar">
+      <export name="*" />
+    </library>
+  </runtime>
+  <requires>
+    <import plugin="org.eclipse.text" />
+    <import plugin="org.eclipse.core.runtime" />
+  </requires>
 </plugin>
 

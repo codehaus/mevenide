@@ -50,8 +50,15 @@ public class CommonPluginValuesReplacer {
     /** libraryFolder library destination folder - f.i. lib */
     private String libraryFolder;
     
+	/** list of already added dependencies - used to avoid duplicate libs in plugin descriptor */
     private List addedLibraries = new ArrayList();
     
+	/** indicates if the primary artifact should marked as exported in the plugin descriptor */
+	private boolean shouldExportArtifact; 
+	
+	/** artifactName referencing the primary artifact */
+	private String artifactName;
+	
     /**
      * @param basedir plugin.xml parent directory
      * @param project maven project on which to operate
@@ -89,9 +96,7 @@ public class CommonPluginValuesReplacer {
         
         try {
             XMLOutputter outputter = new XMLOutputter();
-            outputter.setIndent("   ");
-            outputter.setExpandEmptyElements(false);
-            outputter.setNewlines(true);
+			outputter.setFormat(org.jdom.output.Format.getPrettyFormat());
             outputter.output(doc, new FileWriter(pluginDescriptor));
         }
         catch (Exception e) {
@@ -99,11 +104,18 @@ public class CommonPluginValuesReplacer {
         }
     }
 
+	private void detach(Element kid) {
+		if (kid.getParent() != null) {
+			kid.getParent().removeContent(kid);
+		}
+	}
+	
     private void updateDependencies(Element pluginElement) throws ReplaceException {
         Element runtime = pluginElement.getChild("runtime");
         
         if ( runtime != null ) {
             runtime.detach();
+			//detach(runtime);
         }
         runtime = new Element("runtime");
 
@@ -113,6 +125,7 @@ public class CommonPluginValuesReplacer {
         }
         else {
             requires.detach();
+			//detach(requires);
         }
         
         List dependencies = project.getDependencies();
@@ -133,6 +146,8 @@ public class CommonPluginValuesReplacer {
         	}
         }
         
+		runtimeUpdated |= addThisDependency(runtime); 
+			
         if ( runtimeUpdated ) {
             pluginElement.addContent(runtime);
         }
@@ -140,7 +155,35 @@ public class CommonPluginValuesReplacer {
         pluginElement.addContent(requires);
     	
     }
+	
+	private boolean addThisDependency(Element runtime) {
+		String thisDependencyName = getArtifactName();
+		boolean shouldUpdate = true;
+		List libraries = runtime.getChildren("library");
+		for ( int u = 0; u < libraries.size(); u++ ) {
+			Element library = (Element) libraries.get(u);
+			if ( library.getText().equals(thisDependencyName) ) {
+				shouldUpdate = false;
+				break;
+			}
+		}
+		if ( shouldUpdate ) {
+			Element library = new Element("library");
+			library.setAttribute("name", thisDependencyName);
+			if ( shouldExportArtifact ) {
+				exportLibrary(library);
+			}
+			runtime.addContent(library);
+		}
+		return shouldUpdate;
+	}
 
+	private void exportLibrary(Element library) {
+		Element export = new Element("export");
+		export.setAttribute("name", "*");
+		library.addContent(export);
+	}
+	
     private void addRuntimeLibrary(Element runtime, Dependency dependency) throws ReplaceException {
         Properties properties = dependency.getProperties();
         Element library = new Element("library");
@@ -148,11 +191,9 @@ public class CommonPluginValuesReplacer {
         String libraryName = dependency.getArtifact();
         
         if ( !addedLibraries.contains(libraryName) ) {
-	        library.setAttribute("name", libraryName);
+	        library.setAttribute("name", libraryFolder + "/" + libraryName);
 	        if ( !"false".equals(properties.getProperty("maven.pde.export")) ) {
-	            Element export = new Element("export");
-	            export.setAttribute("name", "*");
-	            library.addContent(export);
+				exportLibrary(library);
 	        }
 	        if ( properties.getProperty("maven.pde.package") != null ) {
 	            Element packageElement = new Element("package");
@@ -193,7 +234,20 @@ public class CommonPluginValuesReplacer {
         pluginElement.setAttribute("provider-name", project.getOrganization().getName()); //provider-name="The Codehaus"
         //no replacement for class attribute
     }
+	
+	public void shouldExportArtifact(boolean export) { shouldExportArtifact = export; }
+	public void setArtifactName(String name) { this.artifactName = name; }
     
-    
+	private String getArtifactName() {
+		if ( artifactName == null || artifactName.trim().length() == 0 ){
+			String artifactId = project.getArtifactId();
+			String version = project.getVersion();
+			String thisDependencyName = artifactId + "-" + version + ".jar";
+			return thisDependencyName;
+		}
+		else {
+			return artifactName + ".jar";
+		}
+	}
 }
  

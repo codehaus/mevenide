@@ -46,12 +46,12 @@ public class DependencyCollector {
     private MavenProject project;
     
     /** default directory where collected deps will be placed. relative to <code>basedir</code> */
-    private String defaultTargetPath;
+    private String targetPath;
     
-    public DependencyCollector(String basedir, String defaultTargetPath, MavenProject project) {
+    public DependencyCollector(String basedir, String targetPath, MavenProject project) {
         this.basedir = basedir;
         this.project = project;
-        this.defaultTargetPath = defaultTargetPath != null ? defaultTargetPath : "lib";
+        this.targetPath = targetPath;
     }
     
     public void collect() throws CollectException {
@@ -65,8 +65,8 @@ public class DependencyCollector {
             if ( props != null ) {
                 overridenTargetPath = props.getProperty("maven.pde.targetPath");
             }
-            String targetPath = !StringUtils.isEmpty(overridenTargetPath) ? overridenTargetPath : defaultTargetPath;
-            File targetDir = new File(basedir, targetPath);
+            String path = !StringUtils.isEmpty(overridenTargetPath) ? overridenTargetPath : targetPath;
+            File targetDir = new File(basedir, path);
             if ( !targetDir.exists() ) {
                 targetDir.mkdirs();
             }

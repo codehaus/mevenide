@@ -22,8 +22,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
+
 import org.apache.maven.ArtifactListBuilder;
-import org.apache.maven.MavenUtils;
+import org.apache.maven.artifact.Artifact;
+import org.apache.maven.artifact.DefaultArtifact;
 import org.apache.maven.jelly.MavenJellyContext;
 import org.apache.maven.model.Build;
 import org.apache.maven.model.Dependency;
@@ -34,16 +36,8 @@ import org.apache.maven.model.SourceModification;
 import org.apache.maven.model.UnitTest;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.Project;
-import org.apache.maven.artifact.Artifact;
-import org.apache.maven.artifact.DefaultArtifact;
 import org.mevenide.context.DefaultQueryContext;
-import org.mevenide.context.IProjectContext;
-import org.mevenide.context.IQueryContext;
-import org.mevenide.project.DefaultProjectContext;
-import org.mevenide.properties.IPropertyLocator;
 import org.mevenide.properties.IPropertyResolver;
-import org.mevenide.properties.resolver.PropertyLocatorFactory;
-import org.mevenide.properties.resolver.PropertyResolverFactory;
 
 
 /**  
@@ -209,12 +203,16 @@ public class MavenProjectConverter {
     }
 
     private IPropertyResolver getPropertyResolver() {
-        IQueryContext queryContext = new DefaultQueryContext(m1Project.getFile());
+		java.io.File projectDir = m1Project.getFile().getParentFile();
+		DefaultQueryContext queryContext = new DefaultQueryContext(projectDir);
+        return queryContext.getResolver();
+		
+        /* IQueryContext queryContext = new DefaultQueryContext(m1Project.getFile());
         IPropertyResolver resolver = PropertyResolverFactory.getFactory().createContextBasedResolver(queryContext);
         IPropertyLocator locator = PropertyLocatorFactory.getFactory().createContextBasedLocator(queryContext);
         IProjectContext projectContext = new DefaultProjectContext(queryContext, resolver);
         ((DefaultQueryContext)queryContext).initializeProjectContext(projectContext);
-        return resolver;
+        return resolver;*/
     }
 
     private UnitTest getUnitTest() {

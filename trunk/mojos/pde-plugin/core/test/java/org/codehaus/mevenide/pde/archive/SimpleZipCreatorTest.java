@@ -63,6 +63,11 @@ public class SimpleZipCreatorTest extends TestCase {
         simpleZipCreator = null;
     }
     
+	public void testZipNoDirectory() throws Exception {
+		simpleZipCreator.setDirectory(null);
+		simpleZipCreator.zip();
+	}
+	
     public void testZip() throws Exception {
         simpleZipCreator.zip();
         
