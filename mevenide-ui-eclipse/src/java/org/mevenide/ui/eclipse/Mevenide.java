@@ -64,16 +64,22 @@ import org.osgi.framework.BundleContext;
  *  
  */
 public class Mevenide extends AbstractUIPlugin {
+    
     private static Log log = LogFactory.getLog(Mevenide.class);
 	 
 	private static Mevenide plugin;
 	
 	private Object lock = new Object();
 	
-	public static String NATURE_ID ;
-	public static String SYNCH_VIEW_ID = "org.mevenide.sync.view"; 
-	public static String PLUGIN_ID = "org.mevenide.ui";
-	public static String PLUGIN_NAME = "Mevenide";
+	public static final String NATURE_ID = "org.mevenide.ui.mavennature";
+	public static final String SYNCHRONIZE_VIEW_ID = "org.mevenide.ui.synchronize.view.SynchronizationView";
+	public static final String PLUGIN_ID = "org.mevenide.ui";
+	public static final String PLUGIN_NAME = "Mevenide";
+
+	private static final String ICONS_PATH = "icons/";
+	private static final String LIB_FOLDER = "lib/";
+	private static final String FOREHEAD_LIBRARY = "forehead-1.0-beta-5.jar";
+	private static final String PROJECT_PROPERTIES_FILE_NAME = "project.properties";
 	
 	private ResourceBundle resourceBundle;
 	
@@ -91,16 +97,11 @@ public class Mevenide extends AbstractUIPlugin {
 	private String defaultGoals;
     private CustomLocationFinder customLocationFinder;
 
-    public static final String SYNCHRONIZE_VIEW_ID = "org.mevenide.ui.synchronize.view.SynchronizationView";
 
     private static final String DEPENDENCY_TYPE_JAR = "jar";
-
     private static final String DEPENDENCY_TYPE_EJB = "ejb";
-
     private static final String DEPENDENCY_TYPE_PLUGIN = "plugin";
-
     private static final String DEPENDENCY_TYPE_ASPECT = "aspect";
-
     private static final String DEPENDENCY_TYPE_WAR = "war";
 
     public static final String[] KNOWN_DEPENDENCY_TYPES = new String[] {
@@ -115,7 +116,6 @@ public class Mevenide extends AbstractUIPlugin {
 	public Mevenide() throws Exception {
 		try {
 			plugin = this;
-			NATURE_ID = Mevenide.getResourceString("maven.nature.id");
 		} 
 		catch (Exception x) {
 			log.debug("Mevenide couldnot initialize due to : ", x);
@@ -252,7 +252,7 @@ public class Mevenide extends AbstractUIPlugin {
 	}
 	
     private ImageDescriptor getImageDescriptor(String relativePath) {
-        String iconPath = Mevenide.getResourceString("IconsPath");
+        String iconPath = ICONS_PATH;
         try {
             URL installURL = plugin.getBundle().getEntry("/");
             URL url = new URL(installURL, iconPath + "/" + relativePath);
@@ -291,7 +291,7 @@ public class Mevenide extends AbstractUIPlugin {
 	}
 	
 	public void createProjectProperties() throws Exception {
-		IFile props = project.getFile("project.properties");
+		IFile props = project.getFile(PROJECT_PROPERTIES_FILE_NAME);
 		if ( !new File(props.getLocation().toOSString()).exists() ) {
 			props.create(new ByteArrayInputStream(new byte[0]), false, null);
 		}
@@ -345,8 +345,7 @@ public class Mevenide extends AbstractUIPlugin {
 				public String getForeheadLibrary() {
 					if ( foreHead == null ) {
 						try {
-							URL foreHeadURL = new URL(Platform.resolve(getBundle().getEntry("/")), "lib/" + Mevenide.getResourceString("forehead.library"));
-                          	//@todo could cause bug if plugin isnot installed locally. URLs should be resolved in other way
+							URL foreHeadURL = new URL(Platform.resolve(getBundle().getEntry("/")), LIB_FOLDER + FOREHEAD_LIBRARY);
                           	foreHead = foreHeadURL.getFile();
                             log.debug("ForeHead library : " + foreHeadURL);
                         }
@@ -370,7 +369,7 @@ public class Mevenide extends AbstractUIPlugin {
 			return;
 		}
 		
-		File f = new Path(project.getLocation().append("project.properties").toOSString()).toFile();
+		File f = new Path(project.getLocation().append(PROJECT_PROPERTIES_FILE_NAME).toOSString()).toFile();
 		Properties properties = new Properties();
 		properties.load(new FileInputStream(f));
 	
