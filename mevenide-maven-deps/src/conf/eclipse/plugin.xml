@@ -3,7 +3,7 @@
 <plugin
    id="org.apache.maven"
    name="Maven"
-   version="1.0.0.4"
+   version="1.0.0"
    provider-name="Apache Software Foundation">
 
 </plugin>
