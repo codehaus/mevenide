@@ -1,6 +1,6 @@
     
     <section>
-        <div>
+        <div class="navigateWiki">
           <p>
           <img src="images/none.png"/>Mevenide Wiki -
           <img src="images/none.png"/><a href="$SCRIPTURL$/view.pl/FrontPage">Front Page</a><img src="images/none.png"/>
