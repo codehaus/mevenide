@@ -16,39 +16,14 @@
  */
 package org.mevenide.properties.util;
 
+import junit.framework.TestCase;
+
 /**
  * 
  * @author <a href="mailto:rhill2@free.fr">Gilles Dodinet</a>
  * @version $Id$
  * 
  */
-public class Utils {
-    private static final String WS = "\t\r\n\f";
-    
-    private Utils() { }
-    
-    public static boolean areEqual(Object o1, Object o2) {
-        if ( o1 == null && o2 == null ) {
-            return true;
-        }
-        if ( o1 == null ) {
-            return false;
-        }
-        return o1.equals(o2);
-    }
-    
-    public static String removeTrailingWhitespaces(String strg) {
-        String localCopy = strg;
-        while ( WS.indexOf(localCopy.charAt(strg.length() - 1)) != -1 ) {
-            localCopy = localCopy.substring(0, strg.length() - 1);
-        }
-        return localCopy;
-    }
-    
-    public static String removeTrailingSlash(String strg) {
-        if ( strg.charAt(strg.length() - 1) == '\\' ) {
-            return strg.substring(0, strg.length() - 1);   
-        }
-        return strg;
-    }
+public class UtilsTest extends TestCase {
+    //TODO
 }
