@@ -61,6 +61,9 @@ import org.apache.maven.project.Project;
  * 
  */
 public final class MevenideUtils {
+	public static final String EMPTY_STR = "";
+	public static final String PROPERTY_SEPARATOR = ":";
+	
 	private MevenideUtils() { }
 	
 	public static boolean findFile(File rootDirectory, String fileName) {
@@ -86,7 +89,7 @@ public final class MevenideUtils {
 	 */
 	public static boolean isNull(String string) {
 		return string == null 
-		 		|| string.trim().equals("");
+		 		|| string.trim().equals(EMPTY_STR);
 	}
 	
 	/**
@@ -135,9 +138,9 @@ public final class MevenideUtils {
 	 * @see #resolve(Project project, String unresolvedString, boolean preserveBasedir)
 	 */
 	public static String resolve(Project project, String unresolvedString, boolean preserveBasedir) throws Exception {
-		String resolvedString = "";
+		String resolvedString = EMPTY_STR;
 		
-		String tempVariable = "";
+		String tempVariable = EMPTY_STR;
 		
 		for (int i = 0; i < unresolvedString.length(); i++) {
 			if ( unresolvedString.charAt(i) == '$' ) {
@@ -146,7 +149,7 @@ public final class MevenideUtils {
             if ( unresolvedString.charAt(i) != '$'
             		&& unresolvedString.charAt(i) != '{'
 					&& unresolvedString.charAt(i) != '}' ) {
-				if ( !tempVariable.equals("") ) {
+				if ( !tempVariable.equals(EMPTY_STR) ) {
 					tempVariable += unresolvedString.charAt(i);
 				}		
 				else {
@@ -180,10 +183,28 @@ public final class MevenideUtils {
 	                	}
 					}
 	                resolvedString += evaluation;
-	                tempVariable = "";
+	                tempVariable = EMPTY_STR;
 				}
 			}
 		}
 		return resolvedString;
+	}
+	
+	/**
+	 * Resolves a string in the Maven kludgy name:value format to an array
+	 * of strings, guaranteed to be exactly two items in length: [name, value].
+	 * @param property
+	 * @return
+	 */
+	public static String[] resolveProperty(String property) {
+		String[] parts = property.split(PROPERTY_SEPARATOR);
+		String name = parts[0];
+		String value;
+		if (parts.length > 1) {
+			value = parts[1];
+		} else {
+			value = EMPTY_STR;
+		}
+		return new String[] {name, value};
 	}
 }
