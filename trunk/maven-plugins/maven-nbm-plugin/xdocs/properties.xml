@@ -20,12 +20,12 @@
           <td>
             <p> File containing Netbeans-specific manifest entries. The plugin will automatically generate some of the entries:
             <source><![CDATA[
-OpenIDE-Module-Implementation-Version: <timestamp value in the format yyyyMMddhhmm>
+OpenIDE-Module-Implementation-Version: 
 OpenIDE-Module: ${pom.package}/1
-OpenIDE-Module-Specification-Version: ${pom.currentVersion}
+OpenIDE-Module-Specification-Version: 
             
             ]]></source> etc.etc.</p>
-            <p>If you define the entries in your manifest file, it will override these defaults. </p>
+            <p>If you define any of the entries in your manifest file, it will override anything that gets automatically generated. </p>
           </td>
         </tr>
         <tr>
@@ -75,7 +75,9 @@ OpenIDE-Module-Specification-Version: ${pom.currentVersion}
           <td>OPTIONAL. Allowed value <code>true</code> </td>
           <td>
             <p> A property of dependency in the POM, if set to <code>true</code>, the plugin
-                will include the dependency jar in the <code>ext</code> subdirectory.</p>
+                will include the dependency jar in the <code>ext</code> subdirectory.</p> Such a dependency will
+                become part of the Netbeans module. Please note that if 2+ interdependant modules reference the same library, only one of them is allowed to add it to the Class-Path, 
+                usually it's the module that the others depend on. So the property should be set only in one of the project files.
                 <p> For example:
                 <source><![CDATA[
        <dependency>
@@ -90,6 +92,40 @@ OpenIDE-Module-Specification-Version: ${pom.currentVersion}
                         ]]></source>
                 </p>
             <p> In case you didn't define the Class-Path manifest attribute, it will be added for you automatically.</p>
+          </td>
+        </tr>
+         <tr>
+          <td>netbeans.module.dep</td>
+          <td>OPTIONAL. Allowed values <code>loose, spec, impl</code> </td>
+          <td>
+            <p> If the property is set on the dependency, it is expected to be a Netbeans module dependency.
+                When the project is built using the nbm:jar goal, it will build a <code>OpenIDE-Module-Module-Dependencies</code> manifest attribute. (again it will only be included in the jar, unless you define your own custom manifest attribute in the manifest file.
+                containing dependecies with this property. These are expected to be present in the IDE when deploying.
+                All of them should be Netbeans modules (not necessarily at build time, but definitely at runtime (installation).
+                </p> 
+             <p>For example:
+                <source><![CDATA[
+       <dependency>
+           <groupId>forehead</groupId>
+           <artifactId>forehead</artifactId>
+           <version>1.0-beta-5</version>
+           <url>http://forehead.werken.com/</url>
+           <properties>
+            	<netbeans.module.dep>spec</netbeans.module.dep>
+            </properties>
+        </dependency>
+                        ]]></source>
+                </p>
+                <p>There are 3 allowed values: </p>
+                <p> <code>loose</code> will create a dependency in the format <code>org.openide.execution</code> It's very loosely coupled and it just expects some version of the dependency module to be present and enabled.
+                </p>
+                <p> <code>spec</code> creates a dependency based on the specification number. It looks like this: <code>org.openide.execution > 1.0.1</code>
+                The module will work with any subsequent version of the dependency module (unless that one breaks backward compatibility)
+                </p>
+                <p> <code>impl</code> creates a dependency based on the implementation number. It looks like this: <code>org.openide.execution = 1.0.1</code>
+                It will require a specific version of the dependency module. Use only when you depend on a non-public feature or code that was changed in later versions or could be changed.
+                </p>
+                
           </td>
         </tr>
      </table>
