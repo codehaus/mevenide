@@ -11,7 +11,7 @@
              Works with latest post-beta2 Netbeans builds.
          </action>
     </release>
-    <release version="0.5" date="in CVS">
+    <release version="0.5" date="28/09/2004">
      <action dev="mkleint" type="fix">
      Works with Netbeans 4.0 Beta2.
      </action>

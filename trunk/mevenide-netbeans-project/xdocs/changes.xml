@@ -7,7 +7,7 @@
 
   <body>
   
-    <release version="0.3" date="in CVS" description="">
+    <release version="0.3" date="28/09/2004" description="">
       <action dev="mkleint" type="add">
       New Maven project templates for creation of Maven plugins and Netbeans modules.
       </action>
