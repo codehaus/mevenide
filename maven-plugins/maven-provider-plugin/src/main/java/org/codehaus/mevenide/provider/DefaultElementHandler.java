@@ -35,7 +35,14 @@ import org.mevenide.properties.KeyValuePair;
  */
 public class DefaultElementHandler implements IElementHandler {
 
-    //stack of the comments found so far
+	private static final String INDENT = "    "; //$NON-NLS-1$
+	private static final String DEFAULT_ATTR = "default"; //$NON-NLS-1$
+	private static final String DESCRIPTION_ATTR = "description"; //$NON-NLS-1$
+	private static final String NAME_ATTR = "name"; //$NON-NLS-1$
+	private static final String PROPERTY_ELEMENT = "property"; //$NON-NLS-1$
+	private static final String PLUGIN_ELEMENT = "plugin"; //$NON-NLS-1$
+
+	//stack of the comments found so far
     private Stack contextStack = new Stack(); 
 
     //commentStack is copied to backupStack before being cleared
@@ -98,17 +105,17 @@ public class DefaultElementHandler implements IElementHandler {
 //    			category CDATA #IMPLIED> 
     public String getXmlDescription() {
         Document document = new Document();
-        org.jdom.Element root = new org.jdom.Element("plugin");
+        org.jdom.Element root = new org.jdom.Element(PLUGIN_ELEMENT);
         document.setRootElement(root);
         
         for (Iterator it = propertyMap.keySet().iterator(); it.hasNext();) {
             KeyValuePair pair = (KeyValuePair) it.next();
             String description = (String) propertyMap.get(pair);
             
-            org.jdom.Element property = new org.jdom.Element("property");
-            property.setAttribute("name", pair.getKey());
-            property.setAttribute("description", description != null ? description.trim() : "");
-            property.setAttribute("default", pair.getValue());
+            org.jdom.Element property = new org.jdom.Element(PROPERTY_ELEMENT);
+            property.setAttribute(NAME_ATTR, pair.getKey());
+            property.setAttribute(DESCRIPTION_ATTR, description != null ? description.trim() : "");
+            property.setAttribute(DEFAULT_ATTR, pair.getValue());
             root.addContent(property);
         }
         
@@ -118,7 +125,7 @@ public class DefaultElementHandler implements IElementHandler {
 
 	private String getString(Document document) {
 	    XMLOutputter outputter = new XMLOutputter();
-		outputter.setIndent("    ");
+		outputter.setIndent(INDENT);
 		outputter.setExpandEmptyElements(false);
 		outputter.setNewlines(true);
 		return outputter.outputString(document);
