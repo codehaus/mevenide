@@ -23,7 +23,6 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Project;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.ui.PlatformUI;
@@ -69,8 +68,8 @@ public class SynchronizePomAction extends AbstractMevenideAction {
         } 
         catch (Exception e) {
             log.error("Unable to read project file", e);
-            MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Invalid POM", "Unable to read project descriptor.");
-            //@TODO emit meesage to user
+            //shouldnot warn b/c malformed xml will then prevent user to do any action on that resource
+            //MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Invalid POM", "Unable to read project descriptor.");
         }
         
     }
