@@ -89,15 +89,17 @@ public class ArtifactVisitor {
 		String entryPath = pathResolver.getAbsolutePath(classpathEntry.getPath());
 		
 		IClasspathContainer container = JavaCore.getClasspathContainer(new Path("org.eclipse.jdt.launching.JRE_CONTAINER"), JavaCore.create(this.pomSynchronizer.getProject()));
-		IClasspathEntry[] cpEntries = container.getClasspathEntries();
+		IClasspathEntry[] jreEntries = container.getClasspathEntries();
 		
-		List cpEntryList = new ArrayList();
+		List jreEntryList = new ArrayList();
 		
-		for (int i = 0; i < cpEntries.length; i++) {
-        	cpEntryList.add(pathResolver.getAbsolutePath(cpEntries[i].getPath()));
+		for (int i = 0; i < jreEntries.length; i++) {
+        	jreEntryList.add(pathResolver.getAbsolutePath(jreEntries[i].getPath()));
 		}    
         
-        if ( !jrePath.equals(entryPath) && !cpEntryList.contains(entryPath) && !isClassFolder(entryPath) ) {
+        boolean isClassFolder = isClassFolder(pathResolver.getRelativeSourceDirectoryPath(classpathEntry, pomSynchronizer.getProject()));
+        
+        if ( !jrePath.equals(entryPath) && !jreEntryList.contains(entryPath) && !isClassFolder ) {
 			writer.addDependency(
 				entryPath, 
 				pomSynchronizer.getPom()
@@ -107,8 +109,7 @@ public class ArtifactVisitor {
 			//add it to the pomSynchronizer list of unresolved dependencies so that we can 
 			//later display a MessageBox
 			String path = new File(pathResolver.getAbsolutePath(classpathEntry.getPath())).getName();
-			if ( !isClassFolder(pathResolver.getRelativeSourceDirectoryPath(classpathEntry, pomSynchronizer.getProject())) 
-					&& !inLocalRepository(path) ) {
+			if ( !isClassFolder && !inLocalRepository(path) ) {
 				pomSynchronizer.addUnresolvedDependency(entryPath);
 			}
 			
