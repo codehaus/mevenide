@@ -82,83 +82,82 @@ public class SourceDirectoryGroupMarshaller {
 	
 	private SourceDirectoryGroupMarshaller() { 
 	}
-	/**
-	 * 
-	 * @param project
-	 * @param file
-	 * @return
-	 * @throws Exception
-	 */
-	public static SourceDirectoryGroup getSourceDirectoryGroup(IProject project, String file) throws Exception {
+
+
+
+
+	public static SourceDirectoryGroup getSourceDirectoryGroup(IProject project, String file, int arg0) throws Exception {
 		SourceDirectoryGroup group = new SourceDirectoryGroup(project);
 		List sourceDirectoryList = new ArrayList();
 		List allSourceDirectoryList = new ArrayList();
-		
-		
+	
+	
 		if ( new File(file).exists() ) {
-		
+	
 			SAXBuilder builder = new SAXBuilder(false);
-			
+		
 			Document document = builder.build(file);
-			
+		
 			Element projects = document.getRootElement();
 			List sourceDirectories = projects.getChildren(SOURCE_DIRECTORY_GROUP_ELEM);
 			for (int i = 0; i < sourceDirectories.size(); i++) {
 				Element sourceDirectoryGroupElement = 
 					(Element) sourceDirectories.get(i);
-				
+			
 				if ( sourceDirectoryGroupElement.getAttributeValue(PROJECT_NAME_ATTR).equals(project.getName()) ) {
 					long timestamp = Long.parseLong(sourceDirectoryGroupElement.getAttributeValue(TIMESTAMP_ATTR));
-					
+					boolean isGroupInherited = new Boolean(sourceDirectoryGroupElement.getAttributeValue(INHERIT_ATTR)).booleanValue();
+				    group.setInherited(isGroupInherited);
+				    
 					List sources = sourceDirectoryGroupElement.getChildren(SOURCE_DIRECTORY_ELEM);
 					for (int j = 0; j < sources.size(); j++) {
 						Element sourceDirectoryElement =  (Element) sources.get(j);
-						
+					
 						SourceDirectory sourceDirectory 
 							= new SourceDirectory(sourceDirectoryElement.getAttributeValue(PATH_ATTR), group);
-						
-						boolean isInherited = Boolean.valueOf(sourceDirectoryElement.getAttributeValue(INHERIT_ATTR)).booleanValue();
+					
+						boolean isInherited = Boolean.valueOf(sourceDirectoryElement.getAttributeValue(INHERIT_ATTR)).booleanValue() ;
 						sourceDirectory.setInherited(isInherited);
-												
+											
 						long sdTimestamp = Long.parseLong(sourceDirectoryElement.getAttributeValue(TIMESTAMP_ATTR));
 						if ( sdTimestamp == timestamp ){
 							sourceDirectory.setDirectoryType(sourceDirectoryElement.getAttributeValue(TYPE_ATTR));
 							sourceDirectoryList.add(sourceDirectory);
 						}
-						
 						allSourceDirectoryList.add(sourceDirectory);
 					}
 				}
 			}
-			
+		
 			log.debug("Found " + allSourceDirectoryList.size() + " previously saved SourceDirectories - " + sourceDirectoryList.size() + " active ones");
-			
-			for (int i = 0; i < group.getSourceDirectories().size(); i++) {
-				SourceDirectory dir = (SourceDirectory) group.getSourceDirectories().get(i);
-				boolean shouldAdd = true;
+		
+			List projectDependencies = group.getSourceDirectories();
+			for (int i = 0; i < projectDependencies.size(); i++) {
+				boolean alreadyAddedSourceDirectory = false;
+				SourceDirectory projectSourceDirectory = (SourceDirectory) projectDependencies.get(i);
 				for (int j = 0; j < allSourceDirectoryList.size(); j++) {
-					SourceDirectory savedDir = (SourceDirectory) allSourceDirectoryList.get(j);
-					if ( dir.getDirectoryPath().equals(savedDir.getDirectoryPath())) {
-						shouldAdd = false;
+					SourceDirectory savedSourceDirectory = (SourceDirectory) allSourceDirectoryList.get(j);
+					if ( savedSourceDirectory.getDirectoryPath().equals(projectSourceDirectory.getDirectoryPath()) ) {
+						alreadyAddedSourceDirectory = true;
 						break;
 					}
 				}
-				if ( shouldAdd ) {
-					sourceDirectoryList.add(dir);
+				if ( !alreadyAddedSourceDirectory ) {
+					sourceDirectoryList.add(projectSourceDirectory);
 				}
 			}
 			
-			
 			group.setSourceDirectories(sourceDirectoryList);
-			
-			log.debug("Finished loading SourceDirectoryGroup artifacts. Found " + sourceDirectoryList.size());
-			
-		}
 		
+			log.debug("Finished loading SourceDirectoryGroup artifacts. Found " + sourceDirectoryList.size() + " : ");
+			for (int i = 0; i < sourceDirectoryList.size(); i++) {
+                log.debug("		" + ((SourceDirectory)sourceDirectoryList.get(i)).getDirectoryPath());
+            }
+		}
+	
 		return group;
 	}
-
-
+		
 	public static void saveSourceDirectoryGroup(SourceDirectoryGroup group, String file) throws Exception {
 		long timestamp = new Date().getTime();
 		
@@ -193,7 +192,7 @@ public class SourceDirectoryGroupMarshaller {
 		}
 		
 		sourceDirGroup.setAttribute(TIMESTAMP_ATTR, Long.toString(timestamp));
-		
+		sourceDirGroup.setAttribute(INHERIT_ATTR, Boolean.toString(group.isInherited()));
 		if ( group.getSourceDirectories().size() == 0 ) {
 			document.getRootElement().addContent(sourceDirGroup);
 			return;

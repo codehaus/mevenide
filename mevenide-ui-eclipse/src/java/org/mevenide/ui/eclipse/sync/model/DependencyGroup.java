@@ -85,20 +85,19 @@ public class DependencyGroup extends ArtifactGroup {
 	}
 
 
-	private void initializeDependenciesInheritanceMap() {
-		for (int i = 0; i < artifacts.size(); i++) {
-			DependencyWrapper dependency = (DependencyWrapper) artifacts.get(i);
-			setDependencyInheritance(dependency.getDependency(), dependency.isInherited());
-			log.debug("Updated Inheritance for Dependency : " + dependency + " (" + (dependency.isInherited()) + ")");   
-        }	
-	}
+//	private void initializeDependenciesInheritanceMap() {
+//		for (int i = 0; i < artifacts.size(); i++) {
+//			DependencyWrapper dependency = (DependencyWrapper) artifacts.get(i);
+//			setDependencyInheritance(dependency.getDependency(), dependency.isInherited());
+//			log.debug("Updated Inheritance for Dependency : " + dependency + " (" + (dependency.isInherited()) + ")");   
+//        }	
+//	}
 	
 
 	protected void initialize() throws Exception {
 		if ( dependencies == null ) {
 			dependencies = new HashMap();
 		}
-		
 		IClasspathEntry[] classpathEntries = javaProject.getResolvedClasspath(true);
 		
 		IPathResolver pathResolver = new DefaultPathResolver();
@@ -125,24 +124,25 @@ public class DependencyGroup extends ArtifactGroup {
 		
 	}
 	
-	public List getNonInheritedDependencies() {
+	public List getNonInheritedDependencyWrappers() {
+		List nonInheritedDependencies = new ArrayList();
+		
 		if ( !isInherited ) {
+			log.debug("Group isnot inherited");
 			return artifacts;
 		}
 		
-		List nonInheritedDependencies = new ArrayList();
-		
 		for (int i = 0; i < artifacts.size(); i++) {
-            Dependency dependency = ((DependencyWrapper) artifacts.get(i)).getDependency();
-			if ( !((DependencyWrapper) artifacts.get(i)).isInherited() ) {
-				nonInheritedDependencies.add(dependency);
+            DependencyWrapper dependencyWrapper = (DependencyWrapper) artifacts.get(i);
+			if ( !dependencyWrapper.isInherited() ) {
+				nonInheritedDependencies.add(dependencyWrapper);
             }
         }
 		
 		return nonInheritedDependencies;
 	}
 	
-	public List getDependencies() {
+	public List getDependencyWrappers() {
 		return artifacts;
 	}
 
@@ -177,7 +177,7 @@ public class DependencyGroup extends ArtifactGroup {
 		
 	    
 		for (int i = 0; i < excludedArtifacts.size(); i++) {
-			Dependency excluded = (Dependency) excludedArtifacts.get(i);
+			Dependency excluded = ((DependencyWrapper) excludedArtifacts.get(i)).getDependency();
 			if ( excluded.getArtifact().equals(dependency.getArtifact())) {
 			 	 excludedArtifacts.remove(excluded);
 			 }
@@ -195,9 +195,19 @@ public class DependencyGroup extends ArtifactGroup {
 		artifacts.remove(wrapper);
 		dependencies.remove(wrapper.getDependency());
 		excludedArtifacts.add(wrapper);
+	
+//		for (int i = 0; i < artifacts.size(); i++) {
+//			DependencyWrapper artifactWrapper = (DependencyWrapper) artifacts.get(i);
+//			if ( artifactWrapper.getDependency().equals(wrapper.getDependency()) ) {
+//				artifacts.remove(artifactWrapper);
+//				dependencies.remove(artifactWrapper.getDependency());
+//				excludedArtifacts.add(artifactWrapper);	
+//				break;
+//			}			
+//        }
 	}
 	
-	public List getExcludedDependencies() {
+	public List getExcludedDependencyWrappers() {
 		return excludedArtifacts;
 	}
 	

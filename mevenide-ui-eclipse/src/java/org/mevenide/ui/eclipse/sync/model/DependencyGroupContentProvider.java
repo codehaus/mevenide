@@ -146,7 +146,7 @@ public class DependencyGroupContentProvider implements ITreeContentProvider {
 		if ( parentElement instanceof DependencyGroup ) {
 			DependencyGroup group = (DependencyGroup) parentElement;
 		
-			List list = group.getDependencies();
+			List list = group.getDependencyWrappers();
 			if ( list != null ) {
 				Object[] elements = new Object[list.size()];
 				for (int i = 0; i < list.size(); i++) {

@@ -93,7 +93,7 @@ public class DependencyWrapper {
     		return false;
     	}
     	DependencyWrapper wrapper = (DependencyWrapper) obj;
-    	return this.dependency.equals(wrapper)
+    	return this.dependency.equals(wrapper.getDependency())
     			&& this.isInherited == wrapper.isInherited
     			&& this.dependencyGroup.equals(wrapper.dependencyGroup);
     }

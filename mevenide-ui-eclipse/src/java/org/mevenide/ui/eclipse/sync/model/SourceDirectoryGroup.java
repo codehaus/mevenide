@@ -51,10 +51,12 @@ package org.mevenide.ui.eclipse.sync.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jdt.core.IClasspathEntry;
-import org.mevenide.ProjectConstants;
 import org.mevenide.ui.eclipse.DefaultPathResolver;
+import org.mevenide.ui.eclipse.util.SourceDirectoryTypeUtil;
 
 /**
  * 
@@ -63,7 +65,8 @@ import org.mevenide.ui.eclipse.DefaultPathResolver;
  * 
  */
 public class SourceDirectoryGroup extends ArtifactGroup {
-	
+	private static Log log = LogFactory.getLog(SourceDirectoryGroup.class);
+	 
 	public SourceDirectoryGroup(IProject project)  {
 		super(project);	
 	}
@@ -74,14 +77,15 @@ public class SourceDirectoryGroup extends ArtifactGroup {
 			if ( classpathEntries[i].getEntryKind() == IClasspathEntry.CPE_SOURCE) {
 				String path = new DefaultPathResolver().getRelativeSourceDirectoryPath(classpathEntries[i], javaProject.getProject());
 				SourceDirectory sourceDirectory = new SourceDirectory(path, this);
-				sourceDirectory.setDirectoryType(ProjectConstants.MAVEN_SRC_DIRECTORY); 
+				String sourceType = SourceDirectoryTypeUtil.guessSourceType(path); 
+				sourceDirectory.setDirectoryType(sourceType);
 				addSourceDirectory(sourceDirectory);
 				
 			}
 		}
 	}
 	
-	public void addSourceDirectory(SourceDirectory sourceDirectory) {
+    public void addSourceDirectory(SourceDirectory sourceDirectory) {
 		for (int j = 0; j < excludedArtifacts.size(); j++) {
 			SourceDirectory excluded = (SourceDirectory) excludedArtifacts.get(j);
 			if ( sourceDirectory.getDirectoryPath().equals(excluded.getDirectoryPath()) ) {
@@ -97,6 +101,7 @@ public class SourceDirectoryGroup extends ArtifactGroup {
 	}
 	
 	public List getNonInheritedSourceDirectories() {
+		log.debug("Group isInherited = " + (isInherited));
 		if ( !isInherited ) {
 			return artifacts;
 		}

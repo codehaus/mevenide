@@ -34,8 +34,7 @@
     <classpathentry kind="var" path="MAVEN_REPO/commons-lang/jars/commons-lang-1.0.1.jar"/>
     <classpathentry kind="src" path="/mevenide-core"/>
     <classpathentry kind="src" path="/mevenide-goals-grabber"/>
-    <classpathentry kind="var"
-        path="SWT_LIB" sourcepath="SWT_SRC"/>
+    <classpathentry kind="var" path="SWT_LIB" sourcepath="SWT_SRC"/>
     <classpathentry kind="var"
         path="ECLIPSE_HOME/plugins/org.eclipse.text_3.0.0/text.jar" sourcepath="ORG_ECLIPSE_PLATFORM_SOURCE_SRC/org.eclipse.text_3.0.0/textsrc.zip"/>
     <classpathentry kind="var"

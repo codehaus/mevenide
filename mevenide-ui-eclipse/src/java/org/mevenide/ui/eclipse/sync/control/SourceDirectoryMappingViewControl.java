@@ -141,19 +141,15 @@ public class SourceDirectoryMappingViewControl {
 			}
 			
 			public void modify(Object element, String property, Object value) {
+				if (element instanceof Item) {
+					element = ((Item) element).getData();
+				}
 				if ( SourceDirectoryMappingViewControl.SOURCE_TYPE.equals(property) ) {
-					if (element instanceof Item) {
-						element = ((Item) element).getData();
-					}
 					((SourceDirectory) element).setDirectoryType(SourceDirectoryTypeUtil.sourceTypes[((Integer)value).intValue()]);
 				}
-				if ( SourceDirectoryMappingViewControl.INHERIT.equals(property) ) {
-					if (element instanceof Item) {
-						element = ((Item) element).getData();
-					}
-					if ( !((SourceDirectory) element).getGroup().isInherited() ) {
-						((SourceDirectory) element).setInherited(((Boolean) value).booleanValue());
-					}
+				if ( SourceDirectoryMappingViewControl.INHERIT.equals(property) 
+						&& ((SourceDirectory) element).getGroup().isInherited() ) {
+					((SourceDirectory) element).setInherited(((Boolean) value).booleanValue());
 				}
 				tableViewer.update(element, null);
 			}

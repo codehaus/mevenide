@@ -59,8 +59,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
-import org.mevenide.ui.eclipse.Mevenide;
-import org.mevenide.ui.eclipse.sync.model.DependencyGroup;
 import org.mevenide.ui.eclipse.sync.model.DependencyGroupContentProvider;
 import org.mevenide.ui.eclipse.sync.model.DependencyGroupLabelProvider;
 import org.mevenide.ui.eclipse.sync.model.DependencyWrapper;
@@ -137,28 +135,23 @@ public class DependencyMappingViewControl {
 		
 		tableTreeViewer.setCellModifier(new ICellModifier() {
 			public boolean canModify(Object element, String property) {
-				return 
-					DependencyMappingViewControl.VALUE.equals(property) && element instanceof DependencyGroupContentProvider.DependencyInfo
-					|| DependencyMappingViewControl.INHERITED.equals(property) && element instanceof DependencyWrapper;
+				return 	( DependencyMappingViewControl.VALUE.equals(property) && element instanceof DependencyGroupContentProvider.DependencyInfo )
+					 || ( DependencyMappingViewControl.INHERITED.equals(property) );
 					
 			}
 			
 			public void modify(Object element, String property, Object value) {
+				if (element instanceof Item) {
+					element = ((Item) element).getData();
+				}
 				if ( DependencyMappingViewControl.VALUE.equals(property) ) {
-					if (element instanceof Item) {
-						element = ((Item) element).getData();
-					}
 					((DependencyGroupContentProvider.DependencyInfo) element).setInfo((String)value);
 				}
-				if ( DependencyMappingViewControl.INHERITED.equals(property) ) {
-					if (element instanceof Item) {
-						element = ((Item) element).getData();
-					}	
-					if ( !((DependencyWrapper) element).getDependencyGroup().isInherited() ) { 
-						((DependencyWrapper) element).setInherited(((Boolean)value).booleanValue());
-					}
+				if ( DependencyMappingViewControl.INHERITED.equals(property) 
+						&& ((DependencyWrapper) element).getDependencyGroup().isInherited() ) { 
+					((DependencyWrapper) element).setInherited(((Boolean)value).booleanValue());
 				}
-				tableTreeViewer.update(element, null);
+				tableTreeViewer.refresh();
 			}
 			
 			public Object getValue(Object element, String property) {
@@ -180,12 +173,6 @@ public class DependencyMappingViewControl {
 		tableTreeViewer.setColumnProperties(new String[] {DependencyMappingViewControl.ATTRIBUTE, DependencyMappingViewControl.VALUE, DependencyMappingViewControl.INHERITED});
 		
 		tableTreeViewer.setContentProvider(new DependencyGroupContentProvider());
-		
-//		viewer.setSorter(new ViewerSorter() {
-//			
-//		});
-
-		tableTreeViewer.setInput(new DependencyGroup(Mevenide.getPlugin().getProject()));
 		
 		tableTreeViewer.setLabelProvider(new DependencyGroupLabelProvider());
 	}

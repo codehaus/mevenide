@@ -205,7 +205,7 @@ public class SynchronizeWizardPage extends WizardPage {
         isInheritedEditor.fillIntoGrid(bottomControls, 3);		
 		isInheritedEditor.setPreferenceStore(inheritancePropertiesStore);
 		isInheritedEditor.load();
-
+		
 		isInheritedEditor.setPropertyChangeListener(
 			new IPropertyChangeListener() {
 				public void propertyChange(PropertyChangeEvent event) {
@@ -219,7 +219,13 @@ public class SynchronizeWizardPage extends WizardPage {
                 }
 			}
 		);		
-
+		
+		((SourceDirectoryGroup)sourceDirectoriesViewer.getInput()).setInherited(isInheritedEditor.getBooleanValue());
+		sourceDirectoriesViewer.refresh();
+		((DependencyGroup)dependenciesViewer.getInput()).setInherited(isInheritedEditor.getBooleanValue());
+		dependenciesViewer.refresh();
+		
+		
 		parentPomEditor = new FileFieldEditor("pom." + project.getName() + ".parent", "Parent POM", bottomControls);
         parentPomEditor.setFileExtensions(new String[] { "*.xml" });
 		parentPomEditor.fillIntoGrid(bottomControls, 3);		
@@ -270,7 +276,7 @@ public class SynchronizeWizardPage extends WizardPage {
 	
 		Button addButton = new Button(composite, SWT.PUSH);
 		addButton.setText("Add...");
-		addButton.setToolTipText("Add a dependency");
+		addButton.setToolTipText("Add a SourceDirectory");
 		GridData addButtonData = new GridData(GridData.FILL_HORIZONTAL);
 		addButtonData.grabExcessHorizontalSpace = true;
 		addButton.setLayoutData(addButtonData);
@@ -278,7 +284,7 @@ public class SynchronizeWizardPage extends WizardPage {
 	
 		Button removeButton = new Button(composite, SWT.PUSH);
 		removeButton.setText("Remove");
-		removeButton.setToolTipText("Remove dependency");
+		removeButton.setToolTipText("Remove SourceDirectory");
 		GridData removeButtonData = new GridData(GridData.FILL_HORIZONTAL);
 		removeButtonData.grabExcessHorizontalSpace = true;
 		removeButton.setLayoutData(removeButtonData);
@@ -286,7 +292,7 @@ public class SynchronizeWizardPage extends WizardPage {
 	
 		Button refreshButton = new Button(composite, SWT.PUSH);
 		refreshButton.setText("Refresh");
-		refreshButton.setToolTipText("Refresh project dependencies");
+		refreshButton.setToolTipText("Refresh project SourceDirectories");
 		GridData refreshButtonData = new GridData(GridData.FILL_HORIZONTAL);
 		refreshButtonData.grabExcessHorizontalSpace = true;
 		refreshButton.setLayoutData(refreshButtonData);
@@ -329,7 +335,10 @@ public class SynchronizeWizardPage extends WizardPage {
 	}
 
 	private void initSourceDirectoriesInput(IProject project) {
-		sourceDirectoriesViewer.setInput(new SourceDirectoryGroup(project));
+		SourceDirectoryGroup sourceDirectoryGroup = new SourceDirectoryGroup(project);
+		sourceDirectoryGroup.setInherited(isInheritedEditor.getBooleanValue());
+		sourceDirectoriesViewer.setInput(sourceDirectoryGroup);
+		sourceDirectoriesViewer.refresh();
 	}
 
 	private IContainer openSourceDirectoryDialog() {
@@ -394,14 +403,16 @@ public class SynchronizeWizardPage extends WizardPage {
 			}
 	
 			sourceDirectoriesViewer.setInput(newInput);
+			sourceDirectoriesViewer.refresh();
 		}
 	}
 		
 	private SourceDirectoryGroup getSavedSourceDirectoriesInput(IProject project) throws Exception {
 		
 		String savedStates = Mevenide.getPlugin().getFile("sourceTypes.xml");
-	
-		return SourceDirectoryGroupMarshaller.getSourceDirectoryGroup(project, savedStates);
+		SourceDirectoryGroup group = SourceDirectoryGroupMarshaller.getSourceDirectoryGroup(project, savedStates, 0);
+		log.debug(" group.length = " + group.getSourceDirectories().size());
+		return group;
 	
 	
 	}
@@ -508,7 +519,7 @@ public class SynchronizeWizardPage extends WizardPage {
 								if ( !((DependencyGroup)dependenciesViewer.getInput()).containsDependency(dependencyToAdd) ) {
 									((DependencyGroup)dependenciesViewer.getInput()).addDependency(new DependencyWrapper(dependencyToAdd, false, (DependencyGroup)dependenciesViewer.getInput()));
 									log.debug("Added Dependency : " + path);
-									dependenciesViewer.refresh();
+									dependenciesViewer.refresh(true);
 									if ( Environment.getMavenRepository() == null || Environment.getMavenRepository().trim().equals("") ) {
 										MessageBox messageBox = new MessageBox (PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), SWT.ICON_WARNING | SWT.OK);
 										messageBox.setText ("Unset Property : Meven Local Repository");
@@ -530,14 +541,12 @@ public class SynchronizeWizardPage extends WizardPage {
 				new SelectionAdapter() {
 					public void widgetSelected(SelectionEvent e) {
 						TableTreeItem[] items = dependenciesViewer.getTableTree().getSelection();
-						for (int i = 0; i < items.length; i++) {
-							TableTreeItem item = items[i];
-							while ( item.getParentItem() != null ) {
-								item = item.getParentItem();
-							}
-							((DependencyGroup) dependenciesViewer.getInput()).excludeDependency((DependencyWrapper) item.getData());
-							dependenciesViewer.refresh();
+						TableTreeItem item = items[0];
+						while ( item.getParentItem() != null ) {
+							item = item.getParentItem();
 						}
+						((DependencyGroup) dependenciesViewer.getInput()).excludeDependency((DependencyWrapper) item.getData());
+						dependenciesViewer.refresh(true);
 						removeDependencyButton.setEnabled(false);
 						dependencyPropertiesButton.setEnabled(false);
 					}
@@ -595,7 +604,10 @@ public class SynchronizeWizardPage extends WizardPage {
 	}
 	
 	private void initDependenciesViewerInput(IProject project) {
-		dependenciesViewer.setInput(new DependencyGroup(project));
+		DependencyGroup newInput = new DependencyGroup(project);
+		newInput.setInherited(isInheritedEditor.getBooleanValue());
+		dependenciesViewer.setInput(newInput);
+		dependenciesViewer.refresh();
 	}
 
 	private void setDependenciesViewerInput(IProject project) {
@@ -613,8 +625,10 @@ public class SynchronizeWizardPage extends WizardPage {
 			if ( newInput == null ) {
 				newInput = new DependencyGroup(project);
 			}
-	
+			
+			//newInput.setInherited(isInheritedEditor.getBooleanValue());
 			dependenciesViewer.setInput(newInput);
+			dependenciesViewer.refresh();
 		}
 	}
 	
