@@ -34,6 +34,7 @@ import org.eclipse.ui.views.properties.IPropertySource;
 import org.mevenide.project.dependency.DependencyUtil;
 import org.mevenide.project.io.ProjectWriter;
 import org.mevenide.ui.eclipse.editors.properties.DependencyPropertySource;
+import org.mevenide.ui.eclipse.sync.model.properties.ReadOnlyDependencyPropertySource;
 import org.mevenide.ui.eclipse.util.JavaProjectUtils;
 import org.mevenide.util.MevenideUtils;
 
@@ -177,9 +178,14 @@ public class MavenArtifactNode extends ArtifactNode {
 	
 	public Object getAdapter(Class adapter) {
 		if (adapter == IPropertySource.class) {
-			DependencyPropertySource propertySource = new DependencyPropertySource(artifact.getDependency());
-			propertySource.addPropertyChangeListener(this);
-			return propertySource;
+		    if ( getDirection() == ISelectableNode.OUTGOING_DIRECTION ) {
+				DependencyPropertySource propertySource = new DependencyPropertySource(artifact.getDependency());
+				propertySource.addPropertyChangeListener(this);
+				return propertySource;
+		    }
+		    else {
+		        return new ReadOnlyDependencyPropertySource(artifact.getDependency());
+		    }
 		}
 		return null;
 	}
