@@ -16,6 +16,8 @@
  */
 package org.mevenide.ui.eclipse.sync.model;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,11 +29,15 @@ import org.apache.maven.repository.Artifact;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.ui.views.properties.IPropertySource;
+import org.mevenide.context.DefaultQueryContext;
+import org.mevenide.environment.ILocationFinder;
+import org.mevenide.environment.LocationFinderAggregator;
 import org.mevenide.project.dependency.DependencyUtil;
 import org.mevenide.project.io.ProjectWriter;
 import org.mevenide.ui.eclipse.adapters.properties.DependencyPropertySource;
@@ -53,10 +59,12 @@ public class MavenArtifactNode extends ArtifactNode {
 	private MavenProjectNode parent;
 	
 	private PropertyNode[] properties;
+	private ILocationFinder locationFinder;
 	
 	public MavenArtifactNode(Artifact artifact, MavenProjectNode project) {
 		this.artifact = artifact;
 		parent = project;
+		locationFinder = new LocationFinderAggregator(new DefaultQueryContext(((Project) project.getData()).getFile()));
 		initialize();
 	}
 	
@@ -128,7 +136,30 @@ public class MavenArtifactNode extends ArtifactNode {
 	
 	private IClasspathEntry createNewLibraryEntry() {
 		String artifactPath = artifact.getPath();
+		String mavenRepo = locationFinder.getMavenLocalRepository();
+		if ( artifactPath.replaceAll("\\\\","/").startsWith(mavenRepo.replaceAll("\\\\","/")) ) {
+		    try {
+                artifactPath = MevenideUtils.makeRelativePath(new File(mavenRepo), artifactPath);
+                //create MAVEN_REPO variable if not exists
+                IPath mavenRepoVar = JavaCore.getClasspathVariable("MAVEN_REPO");
+                if ( mavenRepoVar == null ) {
+                    try {
+                        JavaCore.setClasspathVariable("MAVEN_REPO", new Path(mavenRepo), null);
+                    }
+                    catch( Exception e ) {
+                        String message = "Unable to set MAVEN_REPO variable"; 
+                        log.error(message, e);     
+                    }
+                }
+                return JavaCore.newVariableEntry(new Path("MAVEN_REPO/" + artifactPath.replaceAll("\\\\","/")), null, null);
+            }
+            catch (IOException e) {
+                String message = "Unable to get mavenRepo relative Path for " + artifactPath; 
+                log.error(message, e);
+            }
+		}
 		return JavaCore.newLibraryEntry(new Path(artifactPath), null, null);
+		
 	}
 	
 	private IClasspathEntry createNewProjectEntry() throws Exception {
