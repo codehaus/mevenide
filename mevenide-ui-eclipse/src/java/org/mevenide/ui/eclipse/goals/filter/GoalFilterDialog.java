@@ -109,6 +109,7 @@ public class GoalFilterDialog extends Dialog {
 		createSelectionButtonPanel(composite);
 		
 		goalsViewer.setInput(Element.NULL_ROOT);
+		initializeTree();
 		
 		return composite;
 	}
@@ -225,7 +226,7 @@ public class GoalFilterDialog extends Dialog {
     	goalsViewer.getTree().setLayoutData(gridData);
     	
     	createTreeListeners();
-    	initializeTree();
+    	
 	}
 	
 	private void createTreeListeners() {
