@@ -26,6 +26,7 @@
 
 .navSectionHead {
   /* background-color: #ccddff; */
+  font-variant : small-caps;
 }
 
 #breadcrumbs {
