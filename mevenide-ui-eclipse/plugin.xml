@@ -36,10 +36,13 @@
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.ui.externaltools"/>
       <import plugin="org.eclipse.jface.text"/>
+      <import plugin="org.eclipse.help.base"/>
+      <import plugin="org.eclipse.ui.ide"/>
+      <import plugin="org.eclipse.core.variables"/>
    </requires>
 
 
-   <!-- Maven nature -->
+<!-- Maven nature -->
    <extension
          id="mavennature"
          name="maven nature"
@@ -50,13 +53,13 @@
          </run>
       </runtime>
    </extension>
-   <!-- Maven actions -->
+<!-- Maven actions -->
    <extension
          point="org.eclipse.ui.popupMenus">
-      <!-- project contributions (adaptable) -->
+<!-- project contributions (adaptable) -->
       <objectContribution
-            objectClass="org.eclipse.core.resources.IProject"
             adaptable="true"
+            objectClass="org.eclipse.core.resources.IProject"
             id="maven.plugin.project.xml.contribution">
          <menu
                label="%MavenMenu.label"
@@ -105,7 +108,7 @@
                id="maven-plugin.SynchronizePom">
          </action>
       </objectContribution>
-      <!-- project.xml contributions -->
+<!-- project.xml contributions -->
       <objectContribution
             objectClass="org.eclipse.core.resources.IFile"
             nameFilter="project.xml"
@@ -140,15 +143,15 @@
          <action
                label="%UpdatePom.label"
                icon="icons/maven-synch-pom.gif"
-               tooltip="synchronize without prompting for Source Directory types"
                class="org.mevenide.ui.eclipse.actions.SynchronizeAction"
+               tooltip="synchronize without prompting for Source Directory types"
                menubarPath="maven.plugin.menu/Synchronize"
                enablesFor="1"
                id="maven-plugin.SynchronizePom">
          </action>
       </objectContribution>
    </extension>
-   <!-- Maven preferences -->
+<!-- Maven preferences -->
    <extension
          point="org.eclipse.ui.preferencePages">
       <page
@@ -157,20 +160,18 @@
             id="org.mevenide.ui.plugin.preferences.MavenPreferencePage">
       </page>
    </extension>
-
-   <!-- Maven POM editor -->
+<!-- Maven POM editor -->
    <extension
          point="org.eclipse.ui.editors">
       <editor
             name="%PomEditor.name"
-            extensions="xml"
             icon="icons/maven.gif"
-            contributorClass="org.mevenide.ui.eclipse.editors.MevenidePomEditorContributor"
+            extensions="xml"
             class="org.mevenide.ui.eclipse.editors.MevenidePomEditor"
+            contributorClass="org.mevenide.ui.eclipse.editors.MevenidePomEditorContributor"
             id="org.mevenide.ui.eclipse.editors.MevenidePomEditor">
       </editor>
    </extension>
-
    <extension
          point="org.eclipse.debug.core.launchConfigurationTypes">
       <launchConfigurationType
@@ -181,8 +182,7 @@
             id="org.mevenide.ui.launching.MavenLaunchConfigType">
       </launchConfigurationType>
    </extension>
-   
-   <!-- external tools integration -->
+<!-- external tools integration -->
    <extension
          point="org.eclipse.debug.ui.launchConfigurationTabGroups">
       <launchConfigurationTabGroup
@@ -197,8 +197,8 @@
             label="%LaunchShortcut.type.label"
             icon="icons/maven-run.gif"
             category="org.eclipse.ui.externaltools"
-            modes="run"
             class="org.mevenide.ui.eclipse.launch.configuration.MavenLaunchShortcut"
+            modes="run"
             id="org.mevenide.ui.mavenShortcut">
       </shortcut>
    </extension>
