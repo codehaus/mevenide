@@ -46,6 +46,9 @@ public class MockProject
 	extends MockObject
 	implements IProject {
 
+    public void setDefaultCharset(String charset, IProgressMonitor monitor) throws CoreException {
+        // TODO Auto-generated method stub
+    }
 	public IPath getWorkingLocation(String arg0) {
 		// TODO Auto-generated method stub
 		return null;
