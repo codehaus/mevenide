@@ -102,13 +102,18 @@
    <goal name="mevenide:debug-artifact"
          description="Run the project's jar artifact and debug it.">
       <ant:path id="cp">
-        <ant:path refid="maven.dependency.classpath"/>
+         <ant:pathelement location="${maven.mevenide.run.jar}"/> 
+         <ant:path refid="maven.dependency.classpath"/>
        </ant:path>
+       <j:set var="mainClass" value="${maven.jar.mainclass}"/>
+       <j:if test="empty mainClass">
+          <fail message="Your project doesn't define maven.jar.mainclass property. Cannot debug the jar properly."/>
+       </j:if>
 [mevenide-debug-start] Starting the debugged application...
 
        <ant:echo message="jvmargs=${maven.mevenide.debug.jvmargs} ${maven.mevenide.run.jvmargs}"/>
 <!-- ant:echo seems to be necesary to flush the maven output before running the app -->       
-       <ant:java jar="${maven.mevenide.run.jar}" classpathref="cp" fork="true">
+       <ant:java classname="${mainClass}" classpathref="cp" fork="true">
          <ant:arg line="${maven.mevenide.run.args}"/>
          <ant:jvmarg line="${maven.mevenide.debug.jvmargs} ${maven.mevenide.run.jvmargs}"/>
        </ant:java>

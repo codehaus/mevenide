@@ -6,6 +6,11 @@
   </properties>
 
   <body>
+    <release version="0.1.2" date="20/08/2004" description="fix release">
+      <action dev="mkleint" type="fix">   
+      MEVENIDE-76 - fixed also the debugging of artifact.
+      </action>
+    </release>
     <release version="0.1.1" date="17/08/2004" description="hotfix release">
       <action dev="mkleint" type="fix">   
       hotfix MEVENIDE-76 - run project fixed.
