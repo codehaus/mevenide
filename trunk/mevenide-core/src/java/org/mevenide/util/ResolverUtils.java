@@ -32,7 +32,7 @@ import org.mevenide.properties.resolver.PropertyLocatorFactory;
  * @version $Id$
  * 
  */
-public class ResolverUtils {
+public final class ResolverUtils {
     
     private static class QueryContextObjects {
         IPropertyResolver resolver;

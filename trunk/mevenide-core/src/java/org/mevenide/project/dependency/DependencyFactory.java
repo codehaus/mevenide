@@ -27,7 +27,7 @@ import org.apache.maven.project.Dependency;
  * @version $Id$
  * 
  */
-public class DependencyFactory {
+public final class DependencyFactory {
 	
 
 	private DependencyFactory() {
