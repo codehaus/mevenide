@@ -144,5 +144,24 @@
             	<eclipse.plugin.bundle>true</eclipse.plugin.bundle>
             </properties>
         </dependency>
+        
+        <!-- needed at runtime for MavenUtils -->
+        <dependency>
+           <groupId>commons-betwixt</groupId>
+           <artifactId>commons-betwixt</artifactId>
+           <version>1.0-beta-1</version>
+           <properties>
+            	<eclipse.plugin.bundle>true</eclipse.plugin.bundle>
+            </properties>
+        </dependency>
+        <!-- needed at runtime for MavenUtils -->
+        <dependency>
+           <groupId>commons-digester</groupId>
+           <artifactId>commons-digester</artifactId>
+           <version>1.4.1</version>
+           <properties>
+            	<eclipse.plugin.bundle>true</eclipse.plugin.bundle>
+            </properties>
+        </dependency>
     </dependencies>
 </project>
