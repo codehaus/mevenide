@@ -18,10 +18,12 @@ package org.mevenide.ui.eclipse.nature;
 
 import java.util.List;
 import org.apache.plexus.util.DirectoryScanner;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.mevenide.ui.eclipse.Mevenide;
 
 
 /**  
@@ -36,21 +38,27 @@ public class ActionActivator implements IResourceDeltaVisitor {
     
     private String basedir;
     
-    public ActionActivator(List actionDefinitions, String basedir) {
+    private IProject project;
+    
+    public ActionActivator(List actionDefinitions, IProject project) {
         this.definitionCandidates = actionDefinitions;
-        this.basedir = basedir;
+        this.basedir = project.getLocation().toOSString();
+        this.project = project;
     }
     
     public boolean visit(IResourceDelta delta) throws CoreException {
         for (int i = 0; i < definitionCandidates.size(); i++) {
             ActionDefinitions definition = (ActionDefinitions) definitionCandidates.get(i);
-	        IPath path = delta.getFullPath();
-	        List patterns = definition.getPatterns();
-	        DirectoryScanner scanner;
-            String[] files = scan(patterns);
-	        if ( match(path, files) ) {
-	            definition.setEnabled(true);
-	        }
+            if ( !project.hasNature(Mevenide.NATURE_ID) ) {
+                definition.setEnabled(false);
+            }
+            else {
+		        IPath path = delta.getFullPath();
+		        List patterns = definition.getPatterns();
+		        DirectoryScanner scanner;
+	            String[] files = scan(patterns);
+		        definition.setEnabled(match(path, files));
+            }
         }
         return true;
     }
