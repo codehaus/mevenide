@@ -79,6 +79,7 @@
         </j:whitespace>
 
         <div id="banner">
+          <a name="_generated_top"/>
           <table border="0" cellspacing="0" cellpadding="8" width="100%">
             <tr>
             	
@@ -349,11 +350,12 @@
     <div class="h3">
       <j:set var="_sectionName"><x:expr select="@name"/></j:set>
       <j:if test="${!empty(_sectionName)}">
-        <h3>
+      	<h3>
           <a name="${_sectionName}">${_sectionName}</a>
         </h3>
       </j:if>
       <jsl:applyTemplates select="*"/>
+      
     </div>
   </jsl:template>
 
