@@ -20,6 +20,7 @@ package org.mevenide.properties.resolver;
 import java.io.File;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.mevenide.context.IQueryContext;
 import org.mevenide.properties.IPropertyFinder;
 import org.mevenide.properties.IPropertyResolver;
 
@@ -36,6 +37,8 @@ public final class PropertyFilesAggregator implements IPropertyResolver {
     private IPropertyFinder projectBuild;
     private IPropertyFinder userBuild;
     private IPropertyFinder defaults;
+    
+    private IQueryContext context;
 
     /** Creates a new instance of PropFilesAggregator */
     public PropertyFilesAggregator(File project, File user, IPropertyFinder defs) {
@@ -46,7 +49,20 @@ public final class PropertyFilesAggregator implements IPropertyResolver {
         //TODO - add change listeners to figure out added/remove prop files.
     }
     
+    /**
+     * IQueryContext based constructor.
+     */
+    public PropertyFilesAggregator(IQueryContext querycontext, IPropertyFinder defs) {
+        context = querycontext;
+        defaults = defs;
+        initializeContext();
+    }
+    
     private void initialize() {
+        if (context != null) {
+            throw new IllegalStateException("wrong initializer");
+        }
+        
     	File fo = new File(projectDir, "project.properties");
         if ( fo.exists() ) {
         	project = new SinglePropertyFileFinder(fo);
@@ -62,6 +78,16 @@ public final class PropertyFilesAggregator implements IPropertyResolver {
         	userBuild = new SinglePropertyFileFinder(fo);
         }
     }
+    
+    private void initializeContext() {
+        if (context == null) {
+            throw new IllegalStateException("wrong initializer");
+        }
+        userBuild = QueryBasedFinderFactory.createUserPropertyFinder(context);
+        project = QueryBasedFinderFactory.createProjectPropertyFinder(context);
+        projectBuild = QueryBasedFinderFactory.createBuildPropertyFinder(context);
+    }
+    
     public String getResolvedValue(String key) {
         return getValue(key, true);
     }
@@ -111,6 +137,7 @@ public final class PropertyFilesAggregator implements IPropertyResolver {
     }
     
     public void reload() {
+        // mkleint - makes no sense for IQueryContext based instances.
         //TODO have more targetting reload strategy.
     	reload(userBuild);
     	reload(project);

@@ -19,6 +19,7 @@ package org.mevenide.environment;
 import java.io.File;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.mevenide.context.IQueryContext;
 
 /**  
  * 
@@ -36,6 +37,8 @@ public class LocationFinderAggregator implements ILocationFinder {
     private SysEnvLocationFinder sysEnvLocationFinder;
     private CustomLocationFinder customLocationFinder;
     
+    private IQueryContext context;
+    
     public LocationFinderAggregator() {
         sysEnvLocationFinder = SysEnvLocationFinder.getInstance();
         
@@ -48,7 +51,20 @@ public class LocationFinderAggregator implements ILocationFinder {
        
     }
     
+    public LocationFinderAggregator(IQueryContext queryContext) {
+        this();
+        context = queryContext;
+        //TODO - have a singleton instance of user home's properties..
+        buildPropertiesLocationFinder = new BuildPropertiesLocationFinder(context);
+        userRefinedPropertiesLocationFinder = new UserRefinedPropertiesLocationFinder(context);
+        projectPropertiesLocationFinder = new ProjectPropertiesLocationFinder(context);
+    }
+    
     public void setEffectiveWorkingDirectory(String effectiveWorkingDirectory) {
+        if (context != null) {
+            throw new IllegalStateException("Possibly out-of-sych situation. Using IQueryContext and" + 
+                                            "calling setEffectiveWorkingDirectory");
+        }
         try {
 	        userRefinedPropertiesLocationFinder = new UserRefinedPropertiesLocationFinder(effectiveWorkingDirectory);
         }

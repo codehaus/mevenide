@@ -19,6 +19,7 @@ package org.mevenide.properties.resolver;
 import java.io.File;
 import java.util.Map;
 import java.util.TreeMap;
+import org.mevenide.context.IQueryContext;
 
 import org.mevenide.environment.LocationFinderAggregator;
 import org.mevenide.properties.IPropertyResolver;
@@ -60,6 +61,14 @@ public class PropertyResolverFactory {
         }
         
         return aggregator;
+    }
+    
+    public IPropertyResolver createContextBasedResolver(IQueryContext context) {
+        LocationFinderAggregator finder = new LocationFinderAggregator(context);
+        return new PropertyFilesAggregator(context, 
+            				new DefaultsResolver(context.getProjectDirectory(), 
+                                                             context.getUserDirectory(), 
+                                                             finder));
     }
     
     public IPropertyResolver getResolver(File projectDir) {

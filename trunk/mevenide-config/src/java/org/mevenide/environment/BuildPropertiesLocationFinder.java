@@ -19,10 +19,12 @@ package org.mevenide.environment;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import org.mevenide.context.IQueryContext;
 
 /**  
  * 
  * @author Gilles Dodinet (gdodinet@wanadoo.fr)
+ * @author Milos Kleint (ca206216@tiscali.cz)
  * @version $Id: BuildPropertiesLocationFinder.java,v 1.1 15 nov. 2003 Exp gdodinet 
  * 
  */
@@ -34,9 +36,13 @@ public class BuildPropertiesLocationFinder extends PropertiesLocationFinder {
         String userHome = System.getProperty("user.home");
         return new File(userHome, "build.properties").getAbsolutePath();
     }
+    // TODO mkleint - temporary package-private, to work with context, later make a singleton as well.
+    BuildPropertiesLocationFinder(IQueryContext context) {
+        super(context);
+    }
     
     private BuildPropertiesLocationFinder() throws FileNotFoundException, IOException {
-		loadProperties();
+        loadProperties();
     }
     
     public synchronized static BuildPropertiesLocationFinder getInstance() throws FileNotFoundException, IOException {
@@ -45,5 +51,13 @@ public class BuildPropertiesLocationFinder extends PropertiesLocationFinder {
         }
         return finder;
     }
+    
+    protected String getContextPropertyValue(String key) {
+        if (getContext() == null) {
+            throw new IllegalStateException("No context available.");
+        }
+        return getContext().getUserPropertyValue(key);
+    }
+    
 }
 
