@@ -144,7 +144,6 @@ public class SourceDirectoryMappingWizardPage extends WizardPage {
 		addButton.addSelectionListener(
 				new SelectionAdapter() {
 					public void widgetSelected(SelectionEvent e) {
-						//ProjectDirectoryBrowser browser = new ProjectDirectoryBrowser(Mevenide.getPlugin().getProject());
 						IContainer container = openSourceDirectoryDialog();
 						if ( container != null ) {
 							SourceDirectory directory = new SourceDirectory(container.getFullPath().removeFirstSegments(1).toOSString());
@@ -238,12 +237,14 @@ public class SourceDirectoryMappingWizardPage extends WizardPage {
 			try {
 			
 				newInput = getSavedInput(project);
+				log.debug("Found " + newInput.getSourceDirectories().size() + " previously stored SourceDirectories");
 			}
 			catch (Exception e) {
 				log.debug("Error occured while restoring previously saved SourceDirectoryGroup for project '" + project.getName() + "'. Reason : " + e); 
 	
 			}
 			if ( newInput == null ) {
+				
 				newInput = new SourceDirectoryGroup(project);
 			}
 		

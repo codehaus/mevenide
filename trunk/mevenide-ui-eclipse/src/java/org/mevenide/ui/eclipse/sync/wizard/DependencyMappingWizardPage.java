@@ -16,6 +16,7 @@ package org.mevenide.ui.eclipse.sync.wizard;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.maven.project.Dependency;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.viewers.TableTreeViewer;
@@ -168,6 +169,7 @@ public class DependencyMappingWizardPage extends WizardPage {
 								item = item.getParentItem();
 							}
 							((DependencyGroup) viewer.getInput()).getDependencies().remove(item.getData());
+							((DependencyGroup) viewer.getInput()).excludeDependency((Dependency) item.getData());
 							viewer.refresh();
 						}
 					}

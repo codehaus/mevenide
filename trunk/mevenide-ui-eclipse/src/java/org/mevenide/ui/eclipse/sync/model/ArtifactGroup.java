@@ -38,6 +38,7 @@ public abstract class ArtifactGroup {
 	private String projectName;
 	
 	protected List artifacts = new ArrayList(); 
+	protected List excludedArtifacts = new ArrayList();
 	
 	public ArtifactGroup(IProject project)  {
 		try {

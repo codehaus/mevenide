@@ -38,8 +38,11 @@
     <classpathentry kind="var" path="MAVEN_REPO/junit/jars/junit-3.8.1.jar"/>
     <classpathentry kind="var"
         path="ECLIPSE_HOME/plugins/org.eclipse.ui.views_2.1.0/views.jar" sourcepath="ECLIPSE_HOME/plugins/org.eclipse.platform.source_2.1.0/src/org.eclipse.ui.views_2.1.0/viewssrc.zip"/>
-    <classpathentry kind="lib" path="E:/workspace/mevenide-ui-eclipse/lib/mevenide-core-0.1.jar"/>
+    <classpathentry kind="lib"
+        path="E:/workspace/mevenide-ui-eclipse/lib/mevenide-core-0.1.jar" sourcepath="/mevenide-core/src/java"/>
     <classpathentry kind="lib" path="E:/workspace/mevenide-ui-eclipse/lib/mevenide-goals-grabber-0.1.jar"/>
     <classpathentry kind="lib" path="lib/xerces-2.2.1.jar"/>
+    <classpathentry kind="var"
+        path="ECLIPSE_HOME/plugins/org.eclipse.jdt.ui_2.1.0/jdt.jar" sourcepath="ECLIPSE_HOME/plugins/org.eclipse.jdt.source_2.1.0/src/org.eclipse.jdt.ui_2.1.0/jdtsrc.zip"/>
     <classpathentry kind="output" path="target/classes"/>
 </classpath>

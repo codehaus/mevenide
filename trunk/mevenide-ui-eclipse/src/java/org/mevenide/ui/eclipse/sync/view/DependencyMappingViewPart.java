@@ -41,6 +41,7 @@ import org.mevenide.ui.eclipse.sync.model.SourceDirectoryGroup;
 import org.mevenide.ui.eclipse.sync.model.SourceDirectoryGroupMarshaller;
 
 /**
+ * @deprecated made it clear at least =)
  * 
  * @author Gilles Dodinet (gdodinet@wanadoo.fr)
  * @version $Id$

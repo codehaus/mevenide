@@ -20,6 +20,7 @@ import org.apache.maven.project.Dependency;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.mevenide.project.dependency.DependencyFactory;
+import org.mevenide.project.dependency.DependencyUtil;
 import org.mevenide.ui.eclipse.DefaultPathResolver;
 import org.mevenide.ui.eclipse.IPathResolver;
 import org.mevenide.ui.eclipse.util.FileUtil;
@@ -85,6 +86,22 @@ public class DependencyGroup extends ArtifactGroup {
 			dependency.setArtifact("");
 		}
 		artifacts.add(dependency);
+	
+		for (int i = 0; i < excludedArtifacts.size(); i++) {
+			Dependency excluded = (Dependency) excludedArtifacts.get(i);
+			if ( excluded.getArtifact().equals(dependency.getArtifact()) 
+			 		|| DependencyUtil.areEquals(excluded, dependency) ) {
+			 	 excludedArtifacts.remove(excluded);
+			 }
+		}
+	}
+	
+	public void excludeDependency(Dependency dependency) {
+		excludedArtifacts.add(dependency);
+	}
+	
+	public List getExcludedDependencies() {
+		return excludedArtifacts;
 	}
 }
 
