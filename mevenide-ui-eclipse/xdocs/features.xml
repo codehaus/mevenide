@@ -246,6 +246,7 @@
 		<ul>
 			<li>Local repositories not browsable yet</li>
 			<li>Only HTTP repositories are managed for now</li>
+			<li>No proxy support</li>
 			<li>Cannot honor cancellation</li>
 		</ul>
 	  </p>
