@@ -13,6 +13,24 @@
             </file>
         </folder>
     </folder>
+    
+    <folder name="Maven">
+        <attr name="SystemFileSystem.localizingBundle" stringvalue="org.mevenide.ui.netbeans.resources.TemplateNames"/>
+        <attr name="templateWizardURL" urlvalue="nbresloc:/org/mevenide/ui/netbeans/resources/templates/Maven.html"/>
+        
+        <file name="SampleProject.group" url="templates/SampleProject.group">
+          <attr name="template" boolvalue="true"/>
+          <attr name="SystemFileSystem.localizingBundle" stringvalue="org.mevenide.ui.netbeans.resources.TemplateNames"/>
+          <attr name="templateWizardURL" urlvalue="nbresloc:/org/mevenide/ui/netbeans/resources/templates/SampleProject.html"/>
+          <attr name="SystemFileSystem.icon" urlvalue="nbresloc:/org/mevenide/ui/netbeans/resources/MavenIcon.gif"/>
+        </file>
+        <file name="project.properties" url="nbresloc:/org/mevenide/ui/netbeans/resources/templates/project.properties"/>
+        <file name="maven.xml" url="nbresloc:/org/mevenide/ui/netbeans/resources/templates/maven.xml"/>
+        <file name="project.xml" url="nbresloc:/org/mevenide/ui/netbeans/resources/templates/project.xml">
+<!--          <attr name="NetBeansAttrExecutor" methodvalue="org.netbeans.modules.apisupport.APIModule.lookupSystemActionTester"/> -->
+        </file>        
+        
+      </folder>
 
   </folder>
 
@@ -55,7 +73,6 @@
         </file>
       </folder> <!-- Building -->
     </folder> <!-- Services -->
-
   </folder> <!-- UI -->
-
+  
 </filesystem>
