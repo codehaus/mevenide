@@ -69,31 +69,31 @@ public class ArtifactMappingContentProvider implements ITreeContentProvider {
     
     public Object[] getChildren(Object parentElement) {
         if ( parentElement instanceof ProjectContainer ) {
-            IArtifactMappingNodeContainer directoryContainer = new DirectoryMappingNodeContainer();
-            DirectoryMappingNode node = new DirectoryMappingNode();
-            Directory dir = new Directory();
-            dir.setPath("${basedir}/src/java");
-            dir.setType("sourceDirectory");
-            node.setDirectory(dir);
-            directoryContainer.setNodes(new IArtifactMappingNode[] { node });
+//            IArtifactMappingNodeContainer directoryContainer = new DirectoryMappingNodeContainer();
+//            DirectoryMappingNode node = new DirectoryMappingNode();
+//            Directory dir = new Directory();
+//            dir.setPath("${basedir}/src/java");
+//            dir.setType("sourceDirectory");
+//            node.setDirectory(dir);
+//            directoryContainer.setNodes(new IArtifactMappingNode[] { node });
             
             IProject project = ((ProjectContainer) parentElement).getProject();
-            IArtifactMappingNodeContainer dependencyContainer = new DependencyMappingNodeContainer();
+            IArtifactMappingNodeContainer dependencyContainer = null;
+            IArtifactMappingNodeContainer directoryContainer = null;
             try {
                 if ( project.hasNature(JavaCore.NATURE_ID) ) {
                     dependencyContainer = DependencyMappingNodeContainerFactory.getFactory().getContainer(JavaCore.create(project));
+                    ((AbstractArtifactMappingNodeContainer) dependencyContainer).setParent((ProjectContainer) parentElement);
+                    directoryContainer = DirectoryMappingNodeContainerFactory.getFactory().getContainer(JavaCore.create(project));
+                    ((AbstractArtifactMappingNodeContainer) directoryContainer).setParent((ProjectContainer) parentElement);
+                }
+                else {
+                    //@TODO user should know that the project has not been processed b/c it is not a java project 
                 }
             }
             catch (CoreException e) {
                 log.error(e);
             }
-//            DependencyMappingNode d = new DependencyMappingNode();
-//            Dependency dep = new Dependency();
-//            dep.setArtifactId("myArtifactId");
-//            dep.setGroupId("myGroupId");
-//            dep.setVersion("1.0.1");
-//            d.setDependency(dep);
-//            dependencyContainer.setNodes(new IArtifactMappingNode[] { d });
             
             return new IArtifactMappingNodeContainer[] { directoryContainer.filter(direction), dependencyContainer.filter(direction) }; 
         }
@@ -104,12 +104,17 @@ public class ArtifactMappingContentProvider implements ITreeContentProvider {
     }
     
     public Object getParent(Object element) {
-        // TODO Auto-generated method stub
+        if ( element instanceof IArtifactMappingNode ) {
+            return ((IArtifactMappingNode) element).getParent();
+        }
+        if ( element instanceof AbstractArtifactMappingNodeContainer ) {
+            return ((AbstractArtifactMappingNodeContainer) element).getParent();
+        }
         return null;
     }
     
     public boolean hasChildren(Object element) {
-        // TODO Auto-generated method stub
+        //find a better way to determine if element has children
         return getChildren(element) != null;
     }
     

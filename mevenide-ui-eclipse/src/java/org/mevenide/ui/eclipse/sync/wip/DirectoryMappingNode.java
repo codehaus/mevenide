@@ -48,7 +48,12 @@
  */
 package org.mevenide.ui.eclipse.sync.wip;
 
-import java.io.File;
+import org.apache.maven.project.Resource;
+import org.eclipse.jdt.core.IClasspathEntry;
+import org.eclipse.ui.views.properties.IPropertySource;
+import org.mevenide.ui.eclipse.editors.properties.ResourcePropertySource;
+import org.mevenide.util.MevenideUtils;
+
 
 /**
  * 
@@ -56,52 +61,55 @@ import java.io.File;
  * @version $Id$
  * 
  */
-public class DirectoryMappingNode implements IArtifactMappingNode {
-    private Directory directory;
-    
-    private DirectoryMappingNodeContainer parent;
+public class DirectoryMappingNode extends AbstractArtifactMappingNode {
     
     public Object getAdapter(Class adapter) {
         // TODO Auto-generated method stub
+		if ( adapter == IPropertySource.class ) {
+			System.err.println(artifact == null);
+			if ( artifact instanceof Resource ) {
+				return new ResourcePropertySource((Resource) artifact);
+			}
+		}
         return null;
-    }
-    public Object getIdeEntry() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    public Object getArtifact() {
-        return directory;
-    }
-
-    public int getChangeDirection() {
-        // TODO Auto-generated method stub
-        return 0;
     }
     
+   
     public String getLabel() {
-        return directory.getDisplayPath();
+        return ((Directory) resolvedArtifact).getDisplayPath();
     }
     
-    public void setDirectory(Directory directory) {
-        this.directory = directory;
+    public void setResolvedDirectory(Directory directory) {
+        this.resolvedArtifact = directory;
     }
     
-    public Object getResolvedArtifact() {
-        // TODO Auto-generated method stub
-        return null;
+	/**
+	 * either a Resource or Directory 
+	 */
+	public void setArtifact(Object object) {
+		this.artifact = object;
+	}
+
+    public void setIdeEntry(IClasspathEntry entry) {
+        this.ideEntry = entry;
     }
-    
-    public IArtifactMappingNodeContainer getParent() {
-        return parent;
+   
+    public void setParent(DirectoryMappingNodeContainer container) {
+        this.parent = container;
     }
-    
-    public void setParent(DirectoryMappingNodeContainer parent) {
-        this.parent = parent;
-    }
-    
-    public File getDeclaringPom() {
-        // TODO Auto-generated method stub
-        return null;
+
+	public int getChangeDirection() {
+        if ( artifact == null ) {
+			return ProjectContainer.OUTGOING;
+		}
+		if ( resolvedArtifact == null ) {
+			return ProjectContainer.INCOMING;
+		}
+		if ( artifact instanceof Directory 
+				&& MevenideUtils.notEquivalent(((Directory) artifact).getType(), ((Directory) resolvedArtifact).getType()) ) {
+			return ProjectContainer.CONFLICTING;
+		} 
+        return ProjectContainer.NO_CHANGE;
+		
     }
 }

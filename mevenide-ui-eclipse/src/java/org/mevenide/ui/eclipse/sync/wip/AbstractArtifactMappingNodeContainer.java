@@ -48,7 +48,16 @@
  */
 package org.mevenide.ui.eclipse.sync.wip;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Project;
+import org.eclipse.jdt.core.IJavaProject;
+import org.mevenide.project.io.ProjectReader;
+import org.mevenide.ui.eclipse.util.FileUtils;
 
 /**
  * 
@@ -56,17 +65,74 @@ import org.apache.maven.project.Project;
  * @version $Id$
  * 
  */
-interface IArtifactMappingNodeContainer {
+public abstract class AbstractArtifactMappingNodeContainer implements IArtifactMappingNodeContainer {
+    private static final Log log = LogFactory.getLog(AbstractArtifactMappingNodeContainer.class);
     
-    IArtifactMappingNode[] getNodes() ;
+    protected IArtifactMappingNode[] nodes;
     
-    void setNodes(IArtifactMappingNode[] nodes) ;
+    protected int direction;
     
-    String getLabel();
+    private ProjectContainer parent;
     
-    IArtifactMappingNodeContainer filter(int direction) ;
     
-    void attachPom(Project pom) ;
+    public void attachJavaProject(IJavaProject javaProject) throws Exception {
+        Project pom = ProjectReader.getReader().read(FileUtils.getPom(javaProject.getProject()));
+        
+        attachPom(pom);
+        
+        //dirty trick to avoid infinite loops if user has introduced one by mistake
+        List visitedPoms = new ArrayList();
+        
+        String extend = pom.getExtend();
+        
+        //recurse poms
+        while ( extend != null && !extend.trim().equals("") ) {
+            
+            //resolve extend
+            extend = extend.replaceAll("\\$\\{basedir\\}", pom.getFile().getParent().replaceAll("\\\\", "/"));
+            File extendFile = new File(extend);
+            if ( !extendFile.exists() ) {
+              
+                extendFile = new File(pom.getFile().getParent(), extend);
+                if ( !extendFile.exists() ) {
+                    log.debug(extendFile.getAbsolutePath() + " doesnot exist. break.");
+                    //@ TODO throw new ExtendDoesnotExistException(..)
+                    break;
+                }
+            }
+            
+            //assert pom has not been visited yet
+            if ( visitedPoms.contains(extendFile.getAbsolutePath()) ) {
+                //@TODO throw new InfinitePomRecursionException(..)
+                break;
+            }
+            visitedPoms.add(extendFile.getAbsolutePath());
+            
+            //attach pom
+            pom = ProjectReader.getReader().read(extendFile);
+            attachPom(pom);
+            extend = pom.getExtend();
+        }
+    }
     
-    int getDirection();
+    public int getDirection() {
+        return direction;
+    }
+    public void setDirection(int direction) {
+        this.direction = direction;
+    }
+    public IArtifactMappingNode[] getNodes() {
+        return nodes;
+    }
+    public void setNodes(IArtifactMappingNode[] nodes) {
+        this.nodes = nodes;
+    }
+
+    public ProjectContainer getParent() {
+        return parent;
+    }
+    
+    public void setParent(ProjectContainer parent) {
+        this.parent = parent;
+    }
 }
