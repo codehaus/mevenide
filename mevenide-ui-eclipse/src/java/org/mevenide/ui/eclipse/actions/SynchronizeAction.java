@@ -17,7 +17,6 @@ package org.mevenide.ui.eclipse.actions;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.action.IAction;
@@ -76,17 +75,17 @@ public class SynchronizeAction extends AbstractMevenideAction {
 
 	public void selectionChanged(IAction action, ISelection selection) {
 		super.selectionChanged(action, selection);
-		try {
-			if ( !currentProject.hasNature(JavaCore.NATURE_ID) ) {
-				action.setEnabled(false);
-			}
-			else {
-				action.setEnabled(true);
-			}
-		} 
-		catch (CoreException e) {
-			log.debug("Unable to disable action '" + action.getText() + "' due to : " + e);
-		}
+//		try {
+//			if ( !currentProject.hasNature(JavaCore.NATURE_ID) ) {
+//				action.setEnabled(false);
+//			}
+//			else {
+//				action.setEnabled(true);
+//			}
+//		} 
+//		catch (Exception e) {
+//			log.debug("Unable to disable action '" + action.getText() + "' due to : " + e);
+//		}
 	}
 
 
