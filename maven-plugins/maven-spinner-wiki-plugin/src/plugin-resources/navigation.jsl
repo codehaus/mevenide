@@ -13,7 +13,7 @@
                     <x:attribute name="name">${oldName}</x:attribute>
                     <j:choose>
                         <j:when test="${!oldItemLink.startsWith('http') and !oldItemLink.startsWith('/')}">
-                            <x:attribute name="href">${maven.spinner.wiki.relativePath}/${oldItemLink}</x:attribute>
+                            <x:attribute name="href">${wikiRelativePath}/${oldItemLink}</x:attribute>
                         </j:when>
                         <j:otherwise>
                             <x:attribute name="href">${oldItemLink}</x:attribute>
