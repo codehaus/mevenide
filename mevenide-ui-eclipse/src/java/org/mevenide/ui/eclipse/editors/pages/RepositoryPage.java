@@ -53,7 +53,6 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.mevenide.project.ProjectChangeEvent;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.MevenideColors;
 import org.mevenide.ui.eclipse.editors.MevenidePomEditor;
@@ -106,10 +105,6 @@ public class RepositoryPage extends AbstractPomEditorPage {
 		control.setLayoutData(gd);
 	}
 
-	public void projectChanged(ProjectChangeEvent e) {
-		update(e.getPom());
-	}
-	
 	public void update(Project pom) {
 		scmSection.update(pom);
 		versionsSection.update(pom);
