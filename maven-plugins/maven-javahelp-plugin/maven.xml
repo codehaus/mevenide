@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project default="javahelp-plugin-project:deploy-plugin-locally"
+         xmlns:j="jelly:core"
+         xmlns:util="jelly:util"
+         xmlns:x="jelly:xml">
+
+  <goal name="javahelp-plugin-project:create-plugin">
+    <mkdir dir="${maven.build.dir}"/>
+    <copy todir="${maven.build.dir}" overwrite="yes" verbose="true">
+      <fileset dir="${maven.src.dir}/conf">
+        <include name="*"/>
+        <exclude name="manifest.mf"/>
+      </fileset>
+    </copy>
+    <mkdir dir="${maven.build.dir}/META-INF"/>
+    <copy todir="${maven.build.dir}/META-INF" overwrite="yes">
+      <fileset dir="${maven.src.dir}/conf">
+        <include name="manifest.mf"/>
+      </fileset>
+    </copy>
+    <mkdir dir="${maven.build.dir}/plugin-resources"/>
+    <copy todir="${maven.build.dir}/plugin-resources" overwrite="yes" verbose="true">
+      <fileset dir="${maven.src.dir}/plugin-resources">
+        <include name="*"/>
+      </fileset>
+    </copy>
+  </goal>
+
+  <goal name="javahelp-plugin-project:install-plugin-locally" prereqs="javahelp-plugin-project:create-plugin">
+    <attainGoal name="plugin:install"/>
+  </goal>
+
+  <goal name="javahelp-plugin-project:deploy-plugin-locally" prereqs="javahelp-plugin-project:create-plugin">
+    <util:file var="pluginPomFile" name="${maven.build.dir}/project.xml"/>
+    <x:parse var="pluginXML" xml="${pluginPomFile}"/>
+    <x:set var="pluginPOM" select="$pluginXML/project"/>
+    <j:set var="pluginID"><x:expr select="$pluginPOM/id"/></j:set>
+    <j:set var="pluginVersion"><x:expr select="$pluginPOM/currentVersion"/></j:set>
+    <util:file var="pluginBuildDir" name="${maven.build.dir}"/>
+    <j:set var="pluginFileList" value="${pluginBuildDir.listFiles()}"/>
+    <j:new var="pluginIncludeTags" className="java.lang.StringBuffer"/>
+    <j:new var="pluginIncludeList" className="java.lang.StringBuffer"/>
+
+<echo>---------------------------------------------------------</echo>
+<echo>Getting reference to System.out for correct output of XML</echo>
+<echo>---------------------------------------------------------</echo>
+<!-- j:getStatic var="outfile" className="java.lang.System" field="out"/ -->
+<echo>Processing workaround for missing J:getStatic tag</echo>
+<j:catch var="ex">
+ <!-- j:invokeStatic var="class" className="java.lang.System" method="getClass"/ -->
+ <j:invokeStatic var="class" className="java.lang.Class" method="forName">
+   <j:arg type="java.lang.String" value="java.lang.System"/>
+ </j:invokeStatic>
+ <j:invoke var="field" method="getField" on="${class}">
+   <j:arg type="java.lang.String" value="out"/>
+ </j:invoke>
+ <j:invoke var="outfile" method="get" on="${field}">
+   <j:arg type="java.lang.Object" value=""/>
+ </j:invoke>
+</j:catch>
+<echo>---------------------------------------------------------</echo>
+<echo>out = ${outfile}</echo>
+<echo>---------------------------------------------------------</echo>
+
+    <j:forEach var="file" items="${pluginFileList}">
+      <j:choose>
+        <j:when test="${file.isFile()}">
+<echo>Including file: ${file.getName()}</echo>
+          <j:set var="line" encode="false"><![CDATA[<include name="${file.getName()}"/>]]></j:set>
+
+<j:invoke method="println" on="${outfile}">
+  <j:arg type="java.lang.String" value="${line}"/>
+</j:invoke>
+
+          <j:set var="dummy" encode="false">${pluginIncludeTags.append(line)}</j:set>
+
+          <j:set var="line" encode="false"><![CDATA[,${file.getName()}]]></j:set>
+          <j:set var="dummy" encode="false">${pluginIncludeList.append(line)}</j:set>
+        </j:when>
+        <j:otherwise>
+          <j:invoke var="cfiles" method="list" on="${file}"/>
+          <j:if test="${!empty(cfiles)}">
+<echo>Including dir: ${file.getName()}</echo>
+<j:forEach var="cfile" items="${file.list()}">
+<echo>               containing: ${cfile}</echo>
+</j:forEach>
+            <j:set var="line" encode="false"><![CDATA[<include name="${file.getName()}/**/*"/>]]></j:set>
+
+<j:invoke method="println" on="${outfile}">
+  <j:arg type="java.lang.String" value="${line}"/>
+</j:invoke>
+
+            <j:set var="dummy" encode="false">${pluginIncludeTags.append(line)}</j:set>
+
+          <j:set var="line" encode="false"><![CDATA[,${file.getName()}/**/*]]></j:set>
+          <j:set var="dummy" encode="false">${pluginIncludeList.append(line)}</j:set>
+          </j:if>
+        </j:otherwise>
+      </j:choose>
+    </j:forEach>
+
+<j:invoke method="println" on="${outfile}">
+  <j:arg type="java.lang.String" value="pluginIncludeTags = ${pluginIncludeTags}"/>
+</j:invoke>
+<j:invoke method="println" on="${outfile}">
+  <j:arg type="java.lang.String" value="pluginIncludeList = ${pluginIncludeList}"/>
+</j:invoke>
+
+    <delete file="${maven.createdPlugin.web.dist}/${maven.createdPlugin.groupId}/plugins/${pluginID}-${pluginVersion}.jar"/>
+    <jar destfile="${maven.createdPlugin.web.dist}/${maven.createdPlugin.groupId}/plugins/${pluginID}-${pluginVersion}.jar"
+         basedir="${maven.build.dir}"
+         manifest="${maven.build.dir}/META-INF/manifest.mf"
+         includes="${pluginIncludeList.substring(2)}"
+         verbose="true"/>
+  </goal>
+
+</project>
+
