@@ -67,23 +67,18 @@ import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.source.IAnnotationModel;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.eclipse.ui.part.MultiPageEditorPart;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.IElementStateListener;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
-import org.eclipse.ui.views.properties.IPropertySheetPage;
-import org.eclipse.ui.views.properties.IPropertySource;
-import org.eclipse.ui.views.properties.IPropertySourceProvider;
-import org.eclipse.ui.views.properties.PropertySheetPage;
 import org.mevenide.project.ProjectComparator;
 import org.mevenide.project.io.DefaultProjectMarshaller;
 import org.mevenide.project.io.ProjectReader;
@@ -106,7 +101,7 @@ import org.mevenide.util.MevenideUtils;
  * @author Jeff Bonevich (jeff@bonevich.com)
  * @version $Id$
  */
-public class MevenidePomEditor extends MultiPageEditorPart implements ISelectionProvider, IPropertySourceProvider {
+public class MevenidePomEditor extends MultiPageEditorPart { 
 
 	private static final Log log = LogFactory.getLog(MevenidePomEditor.class);
 
@@ -136,7 +131,7 @@ public class MevenidePomEditor extends MultiPageEditorPart implements ISelection
     private DefaultProjectUnmarshaller unmarshaller;
     private ProjectComparator comparator;
     
-    private PomEditorSelectionProvider selectionProvider = new PomEditorSelectionProvider();
+    private PomEditorSelectionProvider selectionProvider = new PomEditorSelectionProvider(this);
     private IDocumentProvider documentProvider;
     private ElementListener elementListener;
     private PomXmlSourcePage sourcePage;
@@ -417,7 +412,7 @@ public class MevenidePomEditor extends MultiPageEditorPart implements ISelection
         setInput(editorInput);
         setSite(site);
         
-        site.setSelectionProvider(this);
+        site.setSelectionProvider(selectionProvider);
 
         try {
             initializeModel(pomFile);
@@ -571,17 +566,7 @@ public class MevenidePomEditor extends MultiPageEditorPart implements ISelection
 		if (IContentOutlinePage.class.equals(adapter)) {
 			return getContentOutline();
 		}
-		if (IPropertySheetPage.class.equals(adapter)) {
-			return getPropertySheet();
-		}
 		return super.getAdapter(adapter);
-	}
-
-	private Object getPropertySheet() {
-		log.debug("getPropertySheet called");
-		PropertySheetPage sheet = new PropertySheetPage();
-		sheet.setPropertySourceProvider(this);
-		return sheet;
 	}
 
 	private Object getContentOutline() {
@@ -630,37 +615,14 @@ public class MevenidePomEditor extends MultiPageEditorPart implements ISelection
             }
         });
     }
-
-	public void addSelectionChangedListener(ISelectionChangedListener listener) {
-		selectionProvider.addSelectionChangedListener(listener);
-	}
-
-	public ISelection getSelection() {
-		return selectionProvider.getSelection();
-	}
-
-	public void removeSelectionChangedListener(ISelectionChangedListener listener) {
-		selectionProvider.removeSelectionChangedListener(listener);
-	}
-
-	public void setSelection(ISelection selection) {
-		selectionProvider.setSelection(selection);
-	}
 	
 	public void setPropertySourceSelection(ISelection selection) {
 		try {
-			getSite().getPage().showView("org.eclipse.ui.views.PropertySheet");
+			selectionProvider.setSelection(selection);
+			IViewPart part = getSite().getPage().showView("org.eclipse.ui.views.PropertySheet");
 		} catch (PartInitException e) {
 			log.error(e);
 		}
-		setSelection(selection);
-	}
-
-	public IPropertySource getPropertySource(Object object) {
-		if (object instanceof IPropertySource) {
-			return (IPropertySource) object;
-		}
-		return null;
 	}
 
 }
