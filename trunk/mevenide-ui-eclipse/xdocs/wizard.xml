@@ -8,12 +8,12 @@
 		<section name="POM Edition">
         	<div id="documentContent">
         	<p>
-				Mevenide provides simple wizard (Wizard 16) based on java project wizards for creating maven-based projects. Convenient source and output folders are already filled in, and upon commit, a POM skelton will be created.
+				Mevenide provides simple wizard (Screenshot 1) based on java project wizards for creating maven-based projects. Convenient source and output folders are already filled in, and upon commit, a POM skeleton will be created.
 				in the future the wizard will be more flexible allowing to specify the POM more precisely.
 				<center>
 					<img border="1px" src="images/maven-wizard.png"/>
 					<br/><br/>
-					<font size="-1"><b>Screenshot 16</b> Maven project wizard</font>
+					<font size="-1"><b>Screenshot 1</b> Maven project wizard</font>
 					<br/><br/>
 				</center>
 			</p>
