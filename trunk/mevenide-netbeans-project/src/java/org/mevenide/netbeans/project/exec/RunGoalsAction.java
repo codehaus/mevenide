@@ -151,7 +151,7 @@ public class RunGoalsAction extends AbstractAction implements Presenter.Popup {
             final String goal = mgoal;
             final RunConfig fConfig = config;
             // now execute in different thread..
-            RequestProcessor.postRequest(new Runnable() {
+            RequestProcessor.getDefault().post(new Runnable() {
                 public void run() {
                     ActionProviderImpl impl = (ActionProviderImpl)project.getLookup().lookup(ActionProviderImpl.class);
                     impl.runGoal(goal, project.getLookup(), fConfig);

@@ -22,12 +22,10 @@ import java.beans.PropertyVetoException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Iterator;
 
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
-import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTable;
@@ -46,7 +44,6 @@ import org.openide.explorer.ExplorerManager;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
-import org.openide.util.RequestProcessor;
 
 
 
@@ -55,7 +52,7 @@ import org.openide.util.RequestProcessor;
  * @author  Milos Kleint (mkleint@codehaus.org)
  */
 public class PluginListPanel extends JPanel implements ProjectPanel {
-    private static Log logger = LogFactory.getLog(DefaultPluginPanel.class);
+    private static Log logger = LogFactory.getLog(PluginListPanel.class);
     
     private ProjectValidateObserver valObserver;
     private MavenProject project;
