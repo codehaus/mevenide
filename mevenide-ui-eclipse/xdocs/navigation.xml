@@ -35,7 +35,8 @@
         		<item name="Extension point" href="/user-guide/extension-point.html" target="_blank"/>
         	</item> 
         	<topic name="Manage Templates" href="/user-guide/pom-templates.html"/>
-        	<item name="Mevenide Nature" href="/user-guide/builder.xml"/>
+        	<item name="Mevenide Nature" href="/user-guide/builder.html"/>
+        	<item name="Repository Browser" href="/user-guide/repo_browsing.html"/>
         </menu>
         
         <menu name="Modules">
