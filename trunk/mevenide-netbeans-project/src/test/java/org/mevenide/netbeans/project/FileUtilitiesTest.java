@@ -29,6 +29,7 @@ import org.mevenide.context.IQueryContext;
 import org.mevenide.environment.ILocationFinder;
 import org.mevenide.netbeans.project.customizer.ui.OriginChange;
 import org.mevenide.properties.IPropertyLocator;
+import org.mevenide.properties.IPropertyResolver;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.filesystems.Repository;
@@ -61,11 +62,12 @@ public class FileUtilitiesTest extends TestCase {
      * Test of getDependencyURI method, of class org.mevenide.netbeans.project.FileUtilities.
      */
     public void testGetDependencyURI() {
+        IPropertyResolver res = new Res();
         File repo = new File("/home");
         Dependency dep = new Dependency();
         dep.setId("junit");
         dep.setVersion("3.8.1");
-        URI uri = FileUtilities.getDependencyURI(dep, repo);
+        URI uri = FileUtilities.getDependencyURI(dep, repo, res);
         File result = new File("/home/junit/jars/junit-3.8.1.jar");
         assertEquals(result.toURI(), uri);
         
@@ -73,7 +75,7 @@ public class FileUtilitiesTest extends TestCase {
         dep.setId("springframework");
         dep.setVersion("1.0.2");
         dep.setType("jar");
-        uri = FileUtilities.getDependencyURI(dep, repo);
+        uri = FileUtilities.getDependencyURI(dep, repo, res);
         result = new File("/home/springframework/jars/springframework-1.0.2.jar");
         assertEquals(result.toURI(), uri);
         
@@ -82,7 +84,7 @@ public class FileUtilitiesTest extends TestCase {
         dep.setArtifactId("ibatis-sqlmap");
         dep.setVersion("2.0.2");
         dep.setType("jar");
-        uri = FileUtilities.getDependencyURI(dep, repo);
+        uri = FileUtilities.getDependencyURI(dep, repo, res);
         result = new File("/home/ibatis/jars/ibatis-sqlmap-2.0.2.jar");
         assertEquals(result.toURI(), uri);
         
@@ -90,10 +92,43 @@ public class FileUtilitiesTest extends TestCase {
         dep.setId("tiles");
         dep.setJar("tiles.jar");
         dep.setType("jar");
-        uri = FileUtilities.getDependencyURI(dep, repo);
+        uri = FileUtilities.getDependencyURI(dep, repo, res);
         result = new File("/home/tiles/jars/tiles.jar");
         assertEquals(result.toURI(), uri);
+
+        dep = new Dependency();
+        dep.setGroupId("${pom.groupId}");
+        dep.setArtifactId("${pom.groupId}");
+        dep.setVersion("1.0.2");
+        dep.setType("jar");
+        uri = FileUtilities.getDependencyURI(dep, repo, res);
+        result = new File("/home/haveit/jars/haveit-1.0.2.jar");
+        assertEquals(result.toURI(), uri);
+        
         
     }
+    
+    private static class Res implements IPropertyResolver {
+        public String getResolvedValue(String key) {
+            return key;
+        }
+
+        public String getValue(String key) {
+            return key;
+        }
+
+        public void reload() {
+        }
+
+        public String resolveString(String original) {
+            if ("${pom.groupId}".equals(original)) {
+                return "haveit";
+            }
+            return original;
+        }
+        
+    }
+            
+           
     
 }
