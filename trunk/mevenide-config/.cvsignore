@@ -1,2 +1,4 @@
 plugin.xml
 target
+*.jar
+*.log

@@ -9,3 +9,4 @@ dist
 plugin.xml
 *.ser
 *.properties
+*.jar
