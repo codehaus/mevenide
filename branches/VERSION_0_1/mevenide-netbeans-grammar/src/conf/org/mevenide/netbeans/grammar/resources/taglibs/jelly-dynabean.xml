@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- code completion definition for the jelly-tag library -->
+
+<taglib name="jelly:dynabean">
+    <tag name="dynabean">
+        <attr name="var"/>
+        <attr name="dynaclass"/>
+        <attr name="trim"/>
+    </tag>
+    <tag name="dynaclass">
+        <attr name="var"/>
+        <attr name="name"/>
+        <attr name="trim"/>
+    </tag>
+    <tag name="property" within="dynaclass">
+        <attr name="type"/>
+        <attr name="name"/>
+        <attr name="propertyClass"/>
+        <attr name="trim"/>
+    </tag>
+    <tag name="set">
+        <attr name="value"/>
+        <attr name="var"/>
+        <attr name="scope"/>
+        <attr name="property"/>
+        <attr name="target"/>
+        <attr name="trim"/>
+    </tag>
+    
+    <!-- the rest is dynamic?? -->
+</taglib>
