@@ -4,7 +4,7 @@
 		%siteDescription
 	</description>
 
-	<feature url="features/org.mevenide.feature_0.2.0.jar" id="org.mevenide.feature" version="0.2.0">
+	<feature url="features/@org.mevenide.eclipse.feature.id@_@org.mevenide.eclipse.feature.version@.jar" id="@org.mevenide.eclipse.feature.id@" version="@org.mevenide.eclipse.feature.version@">
 		<category name="Mevenide"/>
 	</feature>
 	<!--
@@ -14,7 +14,7 @@
 	<archive url="http://dist.codehaus.org/mevenide/release/org.mevenide.grammar_0.1.0.jar" path="plugins/org.mevenide.grammar_0.1.0.jar"/>
 	<archive url="http://dist.codehaus.org/mevenide/release/org.mevenide.ui.eclipse_0.2.0.jar" path="plugins/org.mevenide.ui.eclipse_0.2.0.jar"/>
 	-->
-	<category-def label="org.mevenide_0.2.0" name="Mevenide">
+	<category-def label="@maven.eclipse.plugin.artifact.id@_@maven.eclipse.plugin.artifact.version@" name="Mevenide">
 		<description>
 			%mevenideCategoryDescription
 		</description>
