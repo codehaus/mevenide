@@ -66,7 +66,11 @@ public class DependencyUtil {
 		boolean valid = d.getGroupId() != null && d.getGroupId().length() != 0
 						&& d.getArtifactId() != null && d.getArtifactId().length() != 0
 						&& d.getVersion() != null && d.getVersion().length() != 0;
-		log.debug("Dependency " + d.getArtifact() + " valid=" + valid + " <groupId=" + d.getGroupId() + ">, <artifactId=" + d.getArtifactId() + ">, <version=" + d.getVersion() + ">" );
+		log.debug("Dependency " + d.getArtifact() + " valid=" + valid + toString(d));
 		return  valid;
+	}
+
+	public static String toString(Dependency d) {
+		return " <groupId=" + d.getGroupId() + ">, <artifactId=" + d.getArtifactId() + ">, <version=" + d.getVersion() + ">" ;
 	}
 }
