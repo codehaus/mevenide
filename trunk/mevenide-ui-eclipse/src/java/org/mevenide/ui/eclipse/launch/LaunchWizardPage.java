@@ -14,11 +14,13 @@
 package org.mevenide.ui.eclipse.launch;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -28,6 +30,8 @@ import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.TableEditor;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
@@ -35,6 +39,7 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
@@ -45,6 +50,7 @@ import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 import org.mevenide.OptionsRegistry;
 import org.mevenide.ui.eclipse.Mevenide;
+
 
 /**
  * 
@@ -63,8 +69,9 @@ public class LaunchWizardPage extends WizardPage {
 	
 	private PreferenceStore store;
 	
-	private String goals; 
-	private Text goalsText;
+	private Collection goals = new TreeSet(); 
+	private Combo goalsComboList;
+	private String selectedGoals;
 	
 	private Table table;
 
@@ -264,12 +271,33 @@ public class LaunchWizardPage extends WizardPage {
 		
 		initGoals();
 		
-		goalsText = new Text(parent, SWT.BORDER);
-		goalsText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		goalsComboList = new Combo(parent, SWT.BORDER);
+		goalsComboList.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		
-		if ( goals != null )  {
-			goalsText.setText(goals);
+		Object[] goalsObjects = goals.toArray();
+		String[] goalsStrings = new String[goalsObjects.length]; 
+		for (int i = 0; i < goalsObjects.length; i++) {
+			goalsStrings[i] = (String) goalsObjects[i];
 		}
+		goalsComboList.setItems(goalsStrings);
+		
+		goalsComboList.addModifyListener(new ModifyListener() {
+				public void modifyText(ModifyEvent event) {
+					log.debug("setting selectedGoals to=" + ((Combo)event.getSource()).getText());
+					selectedGoals = ((Combo)event.getSource()).getText();
+				}
+			}
+		);
+		
+		goalsComboList.addSelectionListener(new SelectionAdapter() {
+				public void widgetSelected(SelectionEvent event) {
+					log.debug("setting selectedGoals to=" + goalsComboList.getItem(goalsComboList.getSelectionIndex()));
+					selectedGoals = goalsComboList.getItem(goalsComboList.getSelectionIndex());
+				}
+			}	
+		);
+		
+		goalsComboList.setText(selectedGoals);
 		
 		Composite buttonsArea = new Composite(parent, SWT.NULL);
 		GridLayout bLayout = new GridLayout();
@@ -286,7 +314,14 @@ public class LaunchWizardPage extends WizardPage {
 
 	private void initGoals() {
 		String storedGoals = store.getString("launch.options.goals");
-		goals = storedGoals;
+		int idx = 0;
+		StringTokenizer tokenizer = new StringTokenizer(storedGoals, ",");
+		while ( tokenizer.hasMoreTokens() ) {
+			String token = tokenizer.nextToken();
+			if ( idx == 0 ) selectedGoals = token;
+			goals.add(token);
+			idx++;
+		}
 		
 	}
 
@@ -383,7 +418,8 @@ public class LaunchWizardPage extends WizardPage {
 	}
 	
     String getGoals() {
-        return goals;
+    	log.debug("selectedGoals=" + selectedGoals);
+        return selectedGoals;
     }
 
     Map getSysProperties() {
@@ -409,8 +445,16 @@ public class LaunchWizardPage extends WizardPage {
 
 
     private void storeGoals() {
-        goals = goalsText.getText();
-		store.setValue("launch.options.goals", goals);
+    	String allGoals = selectedGoals;
+    	Iterator goalsIterator = goals.iterator(); 
+    	while ( goalsIterator.hasNext() ) {
+    		String nextGoal = (String) goalsIterator.next();
+    		if ( !nextGoal.equals(selectedGoals) ) {
+				log.debug("storing nextGoal=" + nextGoal);
+	    		allGoals += "," + nextGoal;
+    		} 
+		}
+        store.setValue("launch.options.goals", allGoals);
     }
 
 
