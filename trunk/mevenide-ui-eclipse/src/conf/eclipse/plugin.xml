@@ -87,7 +87,7 @@
 	                    description="Specifies the temporary to use. this property is exposed to avoid potential conflicts."/>
 	          <property name="maven.eclipse.plugin.filterset.id" 
 	          			label="Custom filterset"
-	                    default="${maven.src.dir}/conf/eclipse"
+	                    default=""
 	                    required="false"
 	                    description="Filterset to use when installing plugin inplace. optionnal. if specified default filterset will refine it."/>
 	      </category>
@@ -116,7 +116,7 @@
 	                    description="Controls which files are to be included in the feature distribution file"/>                    
 	          <property name="maven.eclipse.plugin.feature.plugins" 
 	          			label="Feature plugins"
-	                    default="feature.xml,feature.properties,license.txt,logo.jpg"
+	                    default=""
 	                    required="true"
 	                    description="specify which plugins should be in this feature. This property serves two purposes : 1. it permits to update the feature.xml file with the relevant plugin versions 2. it is used by update-site creation goal to retrieve the plugins to package"/>                    
           </category>
