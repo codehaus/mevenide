@@ -7,6 +7,18 @@
 
   <body>
   	<release version="0.2.3" date="in CVS">
+  	  <action dev="gdodinet" type="fix" issue="MEVENIDE-71">
+
+      </action>
+      <action dev="gdodinet" type="fix" issue="MEVENIDE-73">
+
+      </action>
+      <action dev="gdodinet" type="fix" issue="MEVENIDE-66">
+
+      </action>
+      <action dev="gdodinet" type="fix" issue="MEVENIDE-59">
+
+      </action>
       <action dev="gdodinet" type="fix" issue="MEVENIDE-23">
 
       </action>
@@ -17,6 +29,12 @@
 
       </action>
   	  <action dev="gdodinet" type="fix" issue="MEVENIDE-56">
+
+      </action>
+      <action dev="gdodinet" type="fix" issue="MEVENIDE-55">
+
+      </action>
+      <action dev="gdodinet" type="fix" issue="MEVENIDE-23">
 
       </action>
     </release>
