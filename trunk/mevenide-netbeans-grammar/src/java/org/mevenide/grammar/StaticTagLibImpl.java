@@ -20,6 +20,7 @@ package org.mevenide.grammar;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -63,7 +64,6 @@ public class StaticTagLibImpl implements TagLib
         SAXBuilder builder = new SAXBuilder();
         logger.debug("stream is not null=" + (stream != null));
         Document schemaDoc = builder.build(stream);
-        logger.debug("stream parsed");
         Element root = schemaDoc.getRootElement();
         setName(root.getAttributeValue("name"));
         logger.debug("name=" + getName());
@@ -99,6 +99,7 @@ public class StaticTagLibImpl implements TagLib
                     nest.add(tagName);
                 }
             } else {
+                logger.debug("add to roottags");
                 roottags.add(tagName);
             }
             
@@ -122,7 +123,8 @@ public class StaticTagLibImpl implements TagLib
     
     public Collection getTagAttrs(String tag)
     {
-        return (Collection)tags.get(tag);
+        Collection toReturn = (Collection)tags.get(tag);
+        return toReturn == null ? Collections.EMPTY_LIST : toReturn;
     }
     
     public Collection getRootTags() {

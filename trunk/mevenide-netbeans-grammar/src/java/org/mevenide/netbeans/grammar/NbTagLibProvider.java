@@ -19,6 +19,7 @@ package org.mevenide.netbeans.grammar;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -46,14 +47,17 @@ public class NbTagLibProvider implements TagLibProvider {
         // retrieve the tags anew each time, maybe can be cached to improve performance.
         FileObject tagLibFolder = Repository.getDefault().getDefaultFileSystem().findResource("Plugins/Mevenide-Grammar");
         FileObject[] libFOs = tagLibFolder.getChildren();
-        Collection toReturn = new ArrayList();
+        Collection toReturn = new HashSet();
         if (libFOs != null)
         {
             for (int i = 0; i < libFOs.length; i++)
             {
-                if (libFOs[i].getExt().equals("xml")) {
+                if (libFOs[i].getExt().equals("xml") 
+                 && !libFOs[i].getName().startsWith("default")) { //kind of hack not to show the default code completion..
                     // kind of weird condition however for now it's ok.. maybe we can live without any condition or make it mimetype one.
-                    toReturn.add(libFOs[i].getName());
+                     
+                     //additional hack replacing - with : in name.
+                    toReturn.add(libFOs[i].getName().replace('-',':'));
                 }
             }
         }
@@ -63,6 +67,7 @@ public class NbTagLibProvider implements TagLibProvider {
     }
     
     public TagLib retrieveTagLib(String name) {
+        name = name.replace(':', '-');
         FileObject tagLib = Repository.getDefault().getDefaultFileSystem().findResource("Plugins/Mevenide-Grammar/" + name + ".xml");
         if (tagLib == null) {
             logger.error("cannot find taglib with name=" + name + "  (no fileobject found)");
