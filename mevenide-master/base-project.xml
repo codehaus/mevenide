@@ -4,7 +4,7 @@
   <pomVersion>3</pomVersion>
   <groupId>mevenide</groupId>
   <currentVersion>0.1</currentVersion>
-
+  <logo>/images/mevenide-logo.jpg</logo>
   <organization>
     <name>Sourceforge</name>
     <url>http://sf.net/</url>
@@ -16,7 +16,7 @@
   <url>http://mevenide.sf.net/${pom.artifactId}/</url>
   <issueTrackingUrl/>
   <siteAddress>shell.sourceforge.net</siteAddress>
-  <siteDirectory>/home/groups/m/me/mevenide/htdocs</siteDirectory>
+  <siteDirectory>${mevenide.local.siteDirectory}</siteDirectory>
   <distributionDirectory>/www/jakarta.apache.org/builds/jakarta-turbine-maven/</distributionDirectory>
   
   
@@ -62,7 +62,7 @@
     <unitTest>
      
       <includes>
-        <include>${basedir}/src/test/**/test/AllTests.java</include>
+        <include>${basedir}/src/test/**/*Test.java</include>
       </includes>
 
       <resources>

@@ -4,8 +4,7 @@
   <title>Mevenide Goals Grabber</title>
   <body>
     <links>
-      <item href="http://maven.apache.org/" name="Maven">
-      </item>
+      <item href="http://maven.apache.org/" name="Maven"/>
     </links>
     <menu name="Overview">
       <item href="/goals.html" name="Goals">
