@@ -10,6 +10,10 @@
  *******************************************************************************/
 package org.mevenide.ui.eclipse.goals.viewer;
 
+import java.util.List;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.LabelProvider;
@@ -27,8 +31,16 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 
-
+/**
+ * derived work from org.eclipse.ant.ui.internal.launchConfiguration.TargetOrderDialog   
+ * 
+ * @author IBM Corporation and others
+ * @version $Id: GoalsOrderDialog.java,v 1.1 14 sept. 2003 Exp gdodinet 
+ *
+ */
 public class GoalsOrderDialog extends Dialog implements ISelectionChangedListener {
+	private static Log log = LogFactory.getLog(GoalsOrderDialog.class);
+	
 	
 	private Button fUp;
 	private Button fDown;
@@ -164,7 +176,12 @@ public class GoalsOrderDialog extends Dialog implements ISelectionChangedListene
 	 * Returns the ordered targets
 	 */
 	public Object[] getTargets() {
-		return fTargets;
+		List sortedTargets = fContentProvider.getTargets();
+		String[] targets =  new String[sortedTargets.size()];
+		for (int i = 0; i < targets.length; i++) {
+            targets[i] = (String) sortedTargets.get(i);
+        }
+        return targets;
 	}
 	
 	/**

@@ -59,6 +59,7 @@ import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.DirectoryFieldEditor;
 import org.eclipse.jface.preference.FileFieldEditor;
 import org.eclipse.jface.preference.StringButtonFieldEditor;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -68,6 +69,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.mevenide.ui.eclipse.Mevenide;
+import org.mevenide.ui.eclipse.goals.viewer.GoalsPickerDialog;
 
 /**
  * 
@@ -166,6 +168,7 @@ public class MevenidePreferenceDialog {
 			}
 		);
 
+
 		Composite compositeB = new Composite(parent, SWT.NULL);
 		GridLayout layoutB = new GridLayout();
 		layoutB.numColumns = 3;
@@ -181,15 +184,24 @@ public class MevenidePreferenceDialog {
 	}
 
 	
-	private void createDefaultGoalsComposite(Composite parent) {
+	private void createDefaultGoalsComposite(final Composite parent) {
 		defaultGoalsEditor = new StringButtonFieldEditor() {
 			protected Button getChangeControl(Composite parent) {
 				Button b = super.getChangeControl(parent);
-				b.setEnabled(false);
+				b.setEnabled(true);
 				return b;
 			}
 			protected String changePressed() {
-				return "java:compile";
+				String backup = defaultGoalsEditor.getTextControl(topLevelContainer).getText();
+				GoalsPickerDialog goalsPickerDialog = new GoalsPickerDialog();
+				goalsPickerDialog.setGoalsOrder(defaultGoalsEditor.getTextControl(topLevelContainer).getText());
+				int ok = goalsPickerDialog.open();
+				if ( ok == Window.OK ) {
+					return goalsPickerDialog.getOrderedGoals();
+				}
+				else {
+					return defaultGoalsEditor.getTextControl(topLevelContainer).getText();
+				}
 			}
 		};
 		
