@@ -52,10 +52,10 @@ OpenIDE-Module-Specification-Version:
           </td>
         </tr>
         <tr>
-          <td>maven.nbm.licence</td>
+          <td>maven.nbm.license</td>
           <td>Optional. Default value is <code>${maven.license.licenseFile}</code>.</td>
           <td>
-            <p>Location of the licence file to be included with the nbm.</p>
+            <p>Location of the license file to be included with the nbm.</p>
           </td>
         </tr>
      </table>
