@@ -63,6 +63,7 @@ import org.mevenide.project.IProjectChangeListener;
 import org.mevenide.project.ProjectChangeEvent;
 import org.mevenide.project.ProjectComparator;
 import org.mevenide.project.ProjectComparatorFactory;
+import org.mevenide.project.io.ProjectReader;
 
 import org.mevenide.ui.eclipse.sync.action.SynchronizeActionFactory;
 import org.mevenide.ui.eclipse.sync.event.IActionListener;
@@ -403,25 +404,26 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
 	public void artifactAddedToPom(PomArtifactEvent event) {
 		IArtifactMappingNode artifact = (IArtifactMappingNode) event.getArtifact();
 		log.debug("artifact modified : " + artifact);
-		refreshNode(artifact);
-		updatePoms(event);
-		//comparator.compare(event.getProject());
+		updatePoms(event.getProject());
+		//refreshNode(artifact);
+		refreshAll();
+		comparator.compare(event.getProject());
 	}
 	
 	public void artifactRemovedFromPom(PomArtifactEvent event) {
 		IArtifactMappingNode artifact = (IArtifactMappingNode) event.getArtifact();
-		refreshNode(artifact);
-		updatePoms(event);
-		//comparator.compare(event.getProject());
+		updatePoms(event.getProject());
+		//refreshNode(artifact);
+		refreshAll();
+		comparator.compare(event.getProject());
 	}
 	
-	//@TODO evil.. but actions read pom instead of working on pom references.. 
-	private void updatePoms(PomArtifactEvent event) {
+	//@TODO evil.. but actions read poms instead of working on pom references.. 
+	private void updatePoms(Project project) {
         for (int i = 0; i < poms.size(); i++) {
-			Project project = (Project) poms.get(i);
-            if ( project.getFile().equals(event.getProject().getFile()) ) {
+			if ( project.getFile().equals(project.getFile()) ) {
 				poms.remove(i);
-				poms.add(i, event.getProject());
+				poms.add(i, project);
 			} 
         }
     }
@@ -477,6 +479,14 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
 									for (int i = 0; i < poms.size(); i++) {
 										File f = ((Project) poms.get(i)).getFile();
 										if ( new File(file.getLocation().toOSString()).equals(f) ) {
+				
+											try {
+                                                updatePoms(ProjectReader.getReader().read(f));
+                                            } 
+											catch (Exception e) {
+                                                log.error("Unable to update pom list", e);
+                                            }
+				
 											refreshAll();
 										}
 									}
