@@ -172,11 +172,11 @@ public class DirectoryMappingNodeContainer extends AbstractArtifactMappingNodeCo
 			orphanNode.setArtifact(itr.next());
 			if ( !tempList.contains(orphanNode.getLabel()) ) {
 				tempList.add(orphanNode.getLabel());
+				u++;
 			}
 			else {
 				orphanArtifacts.remove(u);
 			}
-			u++;
 		}
 	}
 
