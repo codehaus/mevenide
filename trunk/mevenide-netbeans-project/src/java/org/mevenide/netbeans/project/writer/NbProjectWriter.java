@@ -58,17 +58,20 @@ public class NbProjectWriter {
     public NbProjectWriter(MavenProject proj) {
         project = proj;
     }
-    
+
     public void applyChanges(List changes) throws Exception {
         HashMap locFileToModelMap = new HashMap();
         HashMap locFileToLockMap = new HashMap();
         Iterator it = changes.iterator();
+        boolean checkDependencies = false;
+        String newArtifact = null;
+        String newGroup = null;
+        String newVersion = null;
+        String oldArtifact = null;
+        String oldGroup = null;
+        String oldVersion = null;
         try {
             List pomChanges = new ArrayList();
-            boolean checkDependencies = false;
-            String newArtifact = null;
-            String newGroup = null;
-            String newVersion = null;
             while (it.hasNext()) {
                 Object obj = it.next();
                 if (obj instanceof MavenPropertyChange) {
@@ -100,9 +103,6 @@ public class NbProjectWriter {
                     }
                 }
             }
-            String oldArtifact = null;
-            String oldGroup = null;
-            String oldVersion = null;
             if (checkDependencies) {
                 oldArtifact = project.getOriginalMavenProject().getArtifactId();
                 oldGroup = project.getOriginalMavenProject().getGroupId();
@@ -123,9 +123,6 @@ public class NbProjectWriter {
                 FileObject fo = FileUtil.toFileObject(file);
                 model.store(fo.getOutputStream(lock));
             }
-            if (checkDependencies) {
-                DependencyUpdater.checkOpenedProjects(oldArtifact, oldGroup, oldVersion, newArtifact, newGroup, newVersion);
-            }
         } finally {
             // release the locks
             Iterator locIt = locFileToLockMap.values().iterator();
@@ -134,6 +131,9 @@ public class NbProjectWriter {
                 if (lock.isValid()) {
                     lock.releaseLock();
                 }
+            }
+            if (checkDependencies) {
+                DependencyUpdater.checkOpenedProjects(oldArtifact, oldGroup, oldVersion, newArtifact, newGroup, newVersion);
             }
         }
     }

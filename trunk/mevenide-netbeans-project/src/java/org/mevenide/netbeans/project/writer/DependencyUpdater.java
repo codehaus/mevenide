@@ -56,7 +56,7 @@ import org.openide.util.UserQuestionException;
 
 /**
  * 
- * @author  Milos Kleint (ca206216@tiscali.cz)
+ * @author  Milos Kleint (mkleint@codehaus.org)
  */
 public final class DependencyUpdater {
 
@@ -120,6 +120,7 @@ public final class DependencyUpdater {
             //write now
             Writer writer = null;
             InputStream stream = null;
+            FileLock lock = null;
             try {
                 for (int i = 0; i < files.length; i++) {
                     IContentProvider provider = new ElementContentProvider(roots[i]);
@@ -131,17 +132,17 @@ public final class DependencyUpdater {
                     SAXBuilder builder = new SAXBuilder();
                     Document originalDoc = builder.build(stream);
                     stream.close();
-                    FileLock lock = fo.lock();
+                    lock = fo.lock();
                     writer = new OutputStreamWriter(fo.getOutputStream(lock));
                     marshall.marshall(writer, provider, originalDoc);
-                    if (lock.isValid()) {
-                        lock.releaseLock();
-                    }
                 }
             } catch (UserQuestionException exc) {
                 throw new IOException("Cannot obtain lock. User interaction required.");
             }
             finally {
+                if (lock != null && lock.isValid()) {
+                    lock.releaseLock();
+                }
                 if (writer != null) {
                     writer.close();
                 }

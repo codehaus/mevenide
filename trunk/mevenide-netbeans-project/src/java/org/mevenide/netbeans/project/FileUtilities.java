@@ -89,11 +89,7 @@ public final class FileUtilities {
             return null;
         }
         File fil = new File(uri);
-        FileObject[] fos = FileUtil.fromFile(fil);
-        if (fos.length > 0) {
-            return fos[0];
-        }
-        return null;
+        return FileUtil.toFileObject(fil);
     }
     
     /**
