@@ -65,6 +65,9 @@ public class AdaptVersionTagTest extends TestCase {
         
         tag.setVersion("1.2");
         assertEquals("1.2.0", tag.adapt());
+        
+        tag.setVersion("1");
+        assertEquals("1.0.0", tag.adapt());
     }
 
 }
