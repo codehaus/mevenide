@@ -264,9 +264,7 @@ public class LaunchWizardPage extends WizardPage {
 		}
 	}
 
-	/**
-	 * @todo use a list instead, thus allowing to remember previously entered values
-	 */
+
 	private void createGoalsText(Composite parent) {
 		
 		initGoals();
