@@ -167,7 +167,4 @@ function finalize {
 }
 
 
-echo this script has been tested under winxp/cygwin. 
-echo i think it is still buggy. so any nix user help is welcome.
-
 prepareFs
