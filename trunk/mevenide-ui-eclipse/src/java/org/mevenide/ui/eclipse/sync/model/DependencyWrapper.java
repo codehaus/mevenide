@@ -28,15 +28,18 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jdt.core.JavaModelException;
 import org.mevenide.environment.ConfigUtils;
 import org.mevenide.project.io.ProjectWriter;
 import org.mevenide.properties.KeyValuePair;
 import org.mevenide.properties.PropertyModel;
 import org.mevenide.properties.PropertyModelFactory;
+import org.mevenide.ui.eclipse.Mevenide;
 
 /**
  * 
@@ -87,14 +90,33 @@ public class DependencyWrapper extends ArtifactWrapper {
 			String path = null;
 			
 			if ( isMavenOverrideOn() ) {
-				path = getPathOverride().replaceAll("\\\\", "/");
+				path = getPathOverride();
 			}
 			
 			if ( path == null ) {
 				path = buildArtifactPath(dependency.getVersion());
 			}
 			
-			newEntry = JavaCore.newLibraryEntry(new Path(path), null, null);
+			path = path.replaceAll("\\\\", "/");
+			
+			IPath mavenRepoPath = JavaCore.getClasspathVariable("MAVEN_REPO");
+			String mavenRepo = Mevenide.getPlugin().getMavenRepository();
+			if ( mavenRepoPath == null ) {
+				try {
+					JavaCore.setClasspathVariable("MAVEN_REPO", new Path(mavenRepo), null);
+				} catch (JavaModelException e) {
+					log.error("cannot add MAVEN_REPO variable", e);
+				}
+			}
+			
+			if ( path.indexOf(mavenRepo) > -1 ) {
+				path = "MAVEN_REPO/" + path.substring(mavenRepo.length() + 1, path.length());
+				newEntry = JavaCore.newVariableEntry(new Path(path), null, null);
+			}
+			else {
+				newEntry = JavaCore.newLibraryEntry(new Path(path), null, null);
+			}
+				
 		}
 
 		return newEntry;
@@ -207,8 +229,8 @@ public class DependencyWrapper extends ArtifactWrapper {
 			    }
 			}
 		}
-		
 		return resolvePathOverride(result);
+		
 	}
 	
 	private String resolvePathOverride(String result) {

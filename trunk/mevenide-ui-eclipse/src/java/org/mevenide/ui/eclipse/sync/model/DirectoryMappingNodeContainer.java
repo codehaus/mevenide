@@ -28,6 +28,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Project;
 import org.apache.maven.project.Resource;
 import org.mevenide.project.ProjectConstants;
+import org.mevenide.project.resource.ResourceUtil;
 import org.mevenide.project.source.SourceDirectoryUtil;
 import org.mevenide.ui.eclipse.util.FileUtils;
 
@@ -64,22 +65,37 @@ public class DirectoryMappingNodeContainer extends AbstractArtifactMappingNodeCo
 	        for (Iterator itr = resources.iterator(); itr.hasNext(); ) {
 	            Resource pomResource = (Resource) itr.next();
 	            if ( ignoredResources.contains(pomResource.getDirectory().replaceAll("\\\\", "/")) ) {
-	            	orphanResources.remove(pomResource);
+	            	ResourceUtil.remove(orphanResources, pomResource); 
 	            }
 	            else {
 		            for (int i = 0; i < nodes.length; i++) {
 				        DirectoryMappingNode currentNode = (DirectoryMappingNode) nodes[i];
-				        Directory resolvedDirectory = (Directory) currentNode.getResolvedArtifact();
+				        
+				        
 				        if ( currentNode.getArtifact() == null ) {
-				        	if ( lowMatch(pomResource, resolvedDirectory) ) {
-				        		orphanResources.remove(pomResource);
-				        	}
-				            else if ( resolvedDirectory == null ) {
-				                currentNode.setArtifact(pomResource);
-				                currentNode.setDeclaringPom(project.getFile());
-				                orphanResources.remove(pomResource);
-				            }
-				        }
+			                Directory resolvedDirectory = (Directory) currentNode.getResolvedArtifact();
+			                if ( resolvedDirectory != null ) {
+			                	if ( lowMatch(pomResource, resolvedDirectory) ) {
+			                		currentNode.setArtifact(pomResource);
+					                currentNode.setDeclaringPom(project.getFile());
+					                ResourceUtil.remove(orphanResources, pomResource);
+			                    }
+			                }
+		                }
+				        
+//				        Directory resolvedDirectory = (Directory) currentNode.getResolvedArtifact();
+//				        if ( currentNode.getArtifact() == null ) {
+//				        	if ( lowMatch(pomResource, resolvedDirectory) ) {
+//				        		//orphanResources.remove(pomResource);
+//				        		ResourceUtil.remove(orphanResources, pomResource);
+//				        	}
+//				            else if ( resolvedDirectory == null ) {
+//				                currentNode.setArtifact(pomResource);
+//				                currentNode.setDeclaringPom(project.getFile());
+//				                //orphanResources.remove(pomResource);
+//				                ResourceUtil.remove(orphanResources, pomResource);
+//				            }
+//				        }
 			        }
 	            }
 	    	}

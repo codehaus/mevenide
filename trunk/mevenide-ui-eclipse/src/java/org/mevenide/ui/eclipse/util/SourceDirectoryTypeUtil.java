@@ -71,6 +71,18 @@ public class SourceDirectoryTypeUtil {
     }
 
 	
-
+    public static boolean isSource(String type) {
+    	return ProjectConstants.MAVEN_SRC_DIRECTORY.equals(type)
+					|| ProjectConstants.MAVEN_TEST_DIRECTORY.equals(type)
+					|| ProjectConstants.MAVEN_ASPECT_DIRECTORY.equals(type);
+    }
+    
+    public static boolean isResource(String type) {
+    	return ProjectConstants.MAVEN_RESOURCE.equals(type);
+    }
+    
+    public static boolean isUnitTestResource(String type) {
+    	return ProjectConstants.MAVEN_TEST_RESOURCE.equals(type);
+    }
 	
 }

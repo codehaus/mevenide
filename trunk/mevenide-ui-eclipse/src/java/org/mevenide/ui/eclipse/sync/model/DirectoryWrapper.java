@@ -25,6 +25,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.mevenide.project.ProjectConstants;
 import org.mevenide.project.io.ProjectWriter;
+import org.mevenide.ui.eclipse.util.SourceDirectoryTypeUtil;
 
 /**
  * 
@@ -57,8 +58,17 @@ public class DirectoryWrapper extends SourceFolder {
 		String type = directory.getType();
 		String path = directory.getPath();
 		
-		ProjectWriter.getWriter().addSource(path, project.getFile(), type);
+		if ( SourceDirectoryTypeUtil.isSource(type) ) {	
+			ProjectWriter.getWriter().addSource(path, project.getFile(), type);
+		}
 		
+		if ( SourceDirectoryTypeUtil.isResource(type) ) {
+			ProjectWriter.getWriter().addResource(path, project.getFile());
+		}
+		
+		if ( SourceDirectoryTypeUtil.isUnitTestResource(type) ) {
+			ProjectWriter.getWriter().addUnitTestResource(path, project.getFile());
+		}
 	}
 	
 	public void removeFrom(Project project) throws Exception {

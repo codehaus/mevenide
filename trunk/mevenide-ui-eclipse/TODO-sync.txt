@@ -1,11 +1,7 @@
 
 BUGS
 ====
-use MAVEN_REPO whenever possible 
-write jar override : 1. do nothing if !write project.properties  2. totally ovrride properties instead of appending
-write project : lose jelly scripting in dependency and update project.properties !!!
-add to pom [when synch  only one pom] still asks for the pom to update
-add to pom doesnot only lookup poms in hierarchy when adding to pom
+sync directory / resource : refreshment issue (comparator ? order of operations ?)
 
 
 TODO
@@ -14,11 +10,18 @@ edit dependency properties
 exclusion filter / excludes
 output folder / target path
 define and manage conflicts
-add junit if tests are defined
+add junit if tests are defined + tests output folder 
 
 
 FIXED
 =====
+write jar override : totally ovrrides properties instead of appending
+write jar override : does nothing if !write project.properties 
+write project : lose jelly scripting in dependency and update project.properties !!! (see DependencyUtil#isValid())
+add to pom doesnot lookup pom hierarchy => WONT FIX (see @open in PomChooser<init>)
+add to pom doesnot only lookup poms in hierarchy when adding to pom (same as below)
+add to pom [when synch  only one pom] still asks for the pom to update
+use MAVEN_REPO whenever possible 
 add dependency properties
 ${basedir} added to .cp
 declared package in plugin descriptor of org.mevenide.config incorrect (remove .environment) 

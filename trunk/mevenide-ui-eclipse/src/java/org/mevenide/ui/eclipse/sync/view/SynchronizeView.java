@@ -544,9 +544,12 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
 		workspace.addResourceChangeListener(this, IResourceChangeEvent.POST_CHANGE);				
 	}
 
+	/**
+	 * @todo FIXME this method becomes ever more scary each time i discover a NPE
+	 */
 	public void resourceChanged(IResourceChangeEvent event) {
 		try {
-			final IProject project = (IProject) artifactMappingNodeViewer.getInput();
+			final IProject project = artifactMappingNodeViewer != null ? (IProject) artifactMappingNodeViewer.getInput() : null;
 			final IFile dotClasspath = project != null ? project.getFile(".classpath") : null;
 			
 			IResourceDelta d= event.getDelta();
@@ -561,36 +564,34 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
 								if (r instanceof IFile) {
 									IFile file = (IFile) r;
 									if ( file.equals(dotClasspath) ) {
-										refreshAll(false);
+										asyncRefresh(false);
 									}
-									for (int i = 0; i < poms.size(); i++) {
-										File f = ((Project) poms.get(i)).getFile();
-										if ( new File(file.getLocation().toOSString()).equals(f) ) {
-				
-											try {
-                                                updatePoms(ProjectReader.getReader().read(f));
-                                            } 
-											catch (Exception e) {
-                                                log.error("Unable to update pom list", e);
-                                            }
+									if ( poms != null ) {
+										for (int i = 0; i < poms.size(); i++) {
+											File f = ((Project) poms.get(i)).getFile();
+											if ( new File(file.getLocation().toOSString()).equals(f) ) {
+					
+												try {
+	                                                updatePoms(ProjectReader.getReader().read(f));
+	                                            } 
+												catch (Exception e) {
+	                                                log.error("Unable to update pom list", e);
+	                                            }
+											}
 										}
 									}
-									refreshAll(false);
+									asyncRefresh(false);
 								}
 								if ( r instanceof IProject ) {
 									IProject prj = (IProject) r;
 									if ( project != null && prj.getName().equals(project.getName()) ) {
-										artifactMappingNodeViewer.getControl().getDisplay().asyncExec(
-												new Runnable() {
-													public void run () {
-														refreshAll(false);
-													}
-												});
+										asyncRefresh(false);
 									}
 								}
 							}
 							return true;
 						}
+
 
 					}
 			);
@@ -598,6 +599,16 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
 		catch (Exception e) {
 			log.debug("error processing resource delta", e); //$NON-NLS-1$
 		}		
+	}
+	
+	private void asyncRefresh(boolean shouldExpand) {
+		artifactMappingNodeViewer.getControl().getDisplay().asyncExec(
+				new Runnable() {
+					public void run () {
+						refreshAll(false);
+					}
+				}
+		);
 	}
 
 	public void refreshAll(boolean shouldExpand) {
@@ -616,7 +627,7 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
     	String attribute = e.getAttribute();
 		if ( ProjectComparator.BUILD.equals(attribute) || ProjectComparator.DEPENDENCIES.equals(attribute) ) {
 		    updatePoms(e.getPom());
-			refreshAll(true);
+			refreshAll(false);
 		}     
 	}
 	
@@ -627,6 +638,10 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
 	
 	public boolean isDisposed() {
 		return isDisposed;
+	}
+	
+	public List getPoms() {
+		return poms;
 	}
 }
 

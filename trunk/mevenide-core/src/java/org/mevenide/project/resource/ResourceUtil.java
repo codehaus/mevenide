@@ -16,11 +16,13 @@
  */
 package org.mevenide.project.resource;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import org.apache.maven.project.Project;
 import org.apache.maven.project.Resource;
+import org.mevenide.util.StringUtils;
 
 /**
  * 
@@ -84,5 +86,32 @@ public final class ResourceUtil {
 	    
 	    //not found
 	    return false;
+	}
+	
+	/**
+	 * 
+	 * @return true if res1.directory == res2.directory in the StringUtils.relaxEquals sense
+	 */
+	public static boolean areEquivalent(Resource res1, Resource res2) {
+		if ( res1 == null && res2 == null ) {
+			return true;
+		}
+		if ( res1 != null ) {
+			if ( res2 == null ) return false;
+			return StringUtils.relaxEqual(res1.getDirectory(), res2.getDirectory());
+		}
+		return false;
+	}
+	
+	public static void remove(List resources, Resource resource) {
+		List resCopy = new ArrayList();
+		resCopy.addAll(resources);
+		for ( int u = 0; u < resCopy.size(); u++ ) {
+			for (int i = 0; i < resources.size(); i++) {
+				if ( ResourceUtil.areEquivalent((Resource) resCopy.get(u), (Resource) resources.get(i)) ) {
+					resources.remove(i);
+				}
+			}
+		}
 	}
 }

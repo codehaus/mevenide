@@ -259,13 +259,13 @@ public class SynchronizeActionFactory {
 				for (int j = 0; j < selections.size(); j++) {
 					if ( selections.get(j) instanceof IArtifactMappingNode ) { 
 						IArtifactMappingNode selectedNode = (IArtifactMappingNode) selections.get(j);
-						EclipseContainerContainer container = (EclipseContainerContainer) synchronizeView.getArtifactMappingNodeViewer().getTree().getItems()[0].getData();
-						IContainer project = container.getProject();
+						//EclipseContainerContainer container = (EclipseContainerContainer) synchronizeView.getArtifactMappingNodeViewer().getTree().getItems()[0].getData();
+						//IContainer project = container.getProject();
+						Project currentPom = selectedNode.getParent().getPrimaryPom();
 						try  {
-						    //IContainer f = ResourcesPlugin.getWorkspace().getRoot().getContainerForLocation(project.getLocation());
-						    IContainer f = synchronizeView.getInputContainer();
-						    List mavenProjects = new PomChooser(f).openPomChoiceDialog(false);
-						    for (int i = 0; i < mavenProjects.size(); i++) {
+						    //IContainer f = synchronizeView.getInputContainer();
+						    List mavenProjects = new PomChooser(currentPom).openPomChoiceDialog(false);
+							for (int i = 0; i < mavenProjects.size(); i++) {
 		                        Project mavenProject = (Project) mavenProjects.get(i); 
 								log.debug("POM choice : " + mavenProject);
 								if ( mavenProject != null ) {
@@ -329,7 +329,7 @@ public class SynchronizeActionFactory {
 	private void createRefreshAllAction() {
 		Action refreshAll = new Action() {
 			public void run() {
-				synchronizeView.refreshAll(true);
+				synchronizeView.refreshAll(false);
 			}
 		};
 		refreshAll.setId(REFRESH_ALL);
