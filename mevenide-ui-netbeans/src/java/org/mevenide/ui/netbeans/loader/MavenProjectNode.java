@@ -63,6 +63,7 @@ import org.openide.nodes.Node;
 import org.openide.nodes.Children.Array;
 import org.openide.nodes.Node.Cookie;
 import org.openide.nodes.Sheet;
+import org.openide.util.NbBundle;
 import org.openide.util.actions.SystemAction;
 
 /** A node to represent this object.
@@ -71,6 +72,11 @@ import org.openide.util.actions.SystemAction;
  */
 public class MavenProjectNode extends DataNode {
      private static Log log = LogFactory.getLog(MavenProjectNode.class);
+     
+     /**
+      * id name for maven properties Sheet.
+      */
+     public static final String SHEET_MAVEN_PROPS = "MavenProperties"; //NOI18N
    
     private boolean sheetCreated = false;
     
@@ -97,9 +103,14 @@ public class MavenProjectNode extends DataNode {
                 if (sheetCreated)
                 {
                     log.debug("Updating sheet");
-                    Sheet.Set props = getSheet().get(Sheet.PROPERTIES);
-                    props.put(cook.getProperties());
-                    firePropertySetsChange(null, getSheet().toArray());
+                    Sheet.Set props = getSheet().get(SHEET_MAVEN_PROPS);
+                    if (props == null)
+                    {
+                        createSheet();
+                    } else {
+                        props.put(cook.getProperties());
+                        firePropertySetsChange(null, getSheet().toArray());
+                    }
                 }
             }
         });
@@ -118,9 +129,10 @@ public class MavenProjectNode extends DataNode {
     
     protected Sheet createSheet() {
         Sheet sheet = super.createSheet();
-        Sheet.Set set = sheet.get(Sheet.PROPERTIES);
+        Sheet.Set set = sheet.get(SHEET_MAVEN_PROPS);
         if (set == null) {
-            set = sheet.createPropertiesSet();
+            set = createMavenPropsSet();
+            sheet.put(set);
         }
         MavenProjectCookie cook = (MavenProjectCookie)this.getCookie(MavenProjectCookie.class);
         sheetCreated = true;
@@ -160,6 +172,18 @@ public class MavenProjectNode extends DataNode {
             return actions;
         }        
         
+    }
+    
+    /** 
+    * Convenience method to create new sheet set named MavenProjectNode.SHEET_MAVEN_PROPS.
+    * @return a new properties sheet set
+    */
+    public static final Sheet.Set createMavenPropsSet () {
+        Sheet.Set ps = new Sheet.Set ();
+        ps.setName(SHEET_MAVEN_PROPS);
+        ps.setDisplayName(NbBundle.getMessage(MavenProjectNode.class, "MavenProjectNode.sheetName"));
+        ps.setShortDescription(NbBundle.getMessage(MavenProjectNode.class, "MavenProjectNode.sheetDesc"));
+        return ps;
     }
     
     // Don't use getDefaultAction(); just make that first in the data loader's getActions list
