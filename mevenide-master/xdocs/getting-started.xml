@@ -7,11 +7,13 @@
 
   <body>
     <section name="Preambule">
+		<p>
 		If you read this, i guess you're a developper that want to/do participate in the Mevenide project, 
 		or you want to build Mevenide from the sources, and/or want to understand some of the internals. 
-		<br/>
+		</p>
+		<p>
 		This document presents the Mevenide structure  and explains how to build and test it using the Eclipse runtime-workbench. 
-		It focuses on Eclipse integration. This is a draft subject to change.<br/>
+		It focuses on Eclipse integration. This is a draft subject to change.
 		To begin with you should chek out a fresh version of the various Mevenide modules. There are atm four modules you need :
 		<ul>
 			<li>goals-grabber</li>
@@ -19,45 +21,63 @@
 			<li>mevenide-master</li>
 			<li>mevenide-ui-eclipse</li>
 		</ul>
+		<p>
 		Those are the various artifacts of Mevenide. 
-		<br/>
-		The <b>master project</b> (name should be self-explanatory) is the build process controller. 
-		The build process is triggered by calling <br/><code>maven build-all</code><br/>. 
-		<br/>
+		</p>
+		</p>
+		<p>
+		The <b>mevenide-master</b> project (name should be self-explanatory) is the build process controller. 
+		The build process is triggered by calling <source>maven build-all</source><br/> 
+		</p>
+		<p>
 		The <b>goals-grabber</b> project is a Maven plugin that defines the <code>goals:grab</code> goal which grabs 
-		all the available goals defined in $${maven.home}/plugins/goals.cache and provides a hook 
-		(during postGoal) to store them in an xml file. It is messy and should be rewritten. 
-		<br/>
+		all the available goals defined in ${maven.home}/plugins/goals.cache and provides a hook 
+		(during postGoal) to store them in an xml file. Altho working, it is messy and should be rewritten. <br/>
+		</p>
+		<p>
 		The <b>mevenide-core</b> defines interfaces and abstract classes, and some utility classes, that concrete plugin 
 		implementations shall use and extend. It makes huge use of the Template pattern. commons-discovery is used 
-		to retrieve concrete implementations at runtime.
-		<br/>
-		The <b>mevenide-ui-eclipse</b> is the concrete Eclipse plugin. We will see later its layout.
-		<br/>
-		The picture below depicts the relationships between those modules.
+		to retrieve concrete implementations at runtime.<br/>
+		</p>
+		<p>
+		The <b>mevenide-ui-eclipse</b> is the concrete Eclipse plugin. We will see later its layout.<br/>
+		</p>
+		<p>
+		The picture below depicts the relationships between those modules.<br/><br/>
+		</p>
+		<p>
 		<img alt="modules relationships" src="images/uml/module-relationships.gif"/>
+		<br/><center><font size="-1">Figure 1. module relationships</font></center>
+		</p>
 	</section>
 	
 	<section name="Building the various artifacts">
+		<p>
 		The <code>build-all</code> custom goal defined in mevenide-master/maven.xml allows us to <i>reactor</i> the project.
 		There's an ANT buildfile (build.xml) present near maven.xml that wraps maven call by defining 
-		a target <code>build-all</code> which uses an <code>exec</code> target. by default it works offline.
-		<br/>
+		a target <code>build-all</code> which uses an <code>exec</code> target. By default it works offline.
+		</p>
+		<p>
 		Also the site generation, tho buggy, has been reactored too. The site generation process can be triggered by running 
-		<br/><code>maven build-site</code><br/>. This goal too has been wrapped by an ANT target (<code>build-site</code>).
+		<code>maven build-site</code>. This goal too has been wrapped by an ANT target (<code>build-site</code>).
+		</p>
+		<p>
 		For the build to be successful, you need to NOT rename the various projects (or at least, make sure the modifications 
 		are done in the maven.xml as well). Why do i rely on project names ? Cuz i have only one workspace (not counting the runtime-worskpace :)
 		ok, thats perhaps bad practice), and so i cannot reactor projects without explicitly specifying subproject names. 
-		<br/>
+		</p>
+		<p>
 		In base-project.xml, which all our POMs should inherit, you can see that some unit tests have been explicitly exclude. Indeed they  
-		fail if ran from maven, although they're successful from within eclipse. I guess there's here a problem with the way i declared the resources.
+		fail if ran from maven, although they're successful from within Eclipse. I guess there's here a problem with the way i declared the resources.
 		There are also other tests that have been excluded cuz they're expected to fail if not launched from within Eclipse through the 
 		<code>org.eclipse.pde.junit</code> plugin ; that plugin (expected to be provided with Eclipse 3) extends the junit Eclipse plugin 
 		and allows us to test plugins (altho i have not managed to use it successfully for now - it keeps on throwing NoClassDefFoundError). 
 		I think its a better (smarter, easier, &lt;whatever you want to insert here&gt;)  way to test plugins than mocking the Eclipse API.
+		</p>
 	</section>
 	
 	<section name="Configuring the build process">
+		<p>
 		If there should be no problem to build the goals-grabber and the mevenide-core subprojects, the mevenide-ui-eclipse project is a little bit 
 		trickier to configure since most of the Eclipse libraries are not present at ibiblio (perhaps should we ask to upload them ? im not sure here).
 		So i can see two ways of solving that issue : 
@@ -65,34 +85,54 @@
 				<li>copy all required missing dependencies to the repository</li>
 				<li>use the maven jar overriding feature</li>
 			</ol>
-		I choose the first solution because 1. it uses then the common mechanism and 2. it doesnt pollute the project.properties file.
+		</p>
+		<p>
+		I choose the first solution because (1) it uses then the common mechanism and (2) it doesnt pollute the project.properties file.
 		However in either case we need to set properties :
 		  	<ul>
-				<li>$${eclipse.home} because it is config dependent</li>
-				<li>$${swt.plugin.dir} because it is system dependent</li>
+				<li>eclipse.home because it is config dependent</li>
+				<li>swt.plugin.dir because it is system dependent</li>
 			</ul> 
-		We take care of the jars copy by adding a preGoal for <code>build</code> in which, among other things we find those lines below :
-		<code>
-		<![CDATA[
-			<copy file="${eclipse.home}/plugins/org.eclipse.core.resources_2.1.0/resources.jar" 
-			  tofile="${maven.home}/repository/eclipse/jars/eclipse-resources-2.1.0.jar"/>
-			  ...
-			<copy file="${eclipse.home}/plugins/${swt.plugin.dir}/swt.jar" 
-			  tofile="${maven.home}/repository/eclipse/jars/eclipse-swt-2.1.0.jar"/>  	
-		 ]]>
-		 </code>
+		</p>
+		<p>
+		We take care of the jars copy by adding a preGoal for <code>build</code> in which, among other things, we find those lines below :
+		
+	
+		<source><![CDATA[
+			
+<copy file="${eclipse.home}/plugins/org.eclipse.core.resources_2.1.0/resources.jar" 
+      tofile="${maven.home}/repository/eclipse/jars/eclipse-resources-2.1.0.jar"/>
+...
+<copy file="${eclipse.home}/plugins/${swt.plugin.dir}/swt.jar" 
+      tofile="${maven.home}/repository/eclipse/jars/eclipse-swt-2.1.0.jar"/>	
+			]]>
+		 </source>
+	
+		 </p>
+		 <p>
 		 Concerning the site generation, i chose to use a property to identify the siteDirectory <code>mevenide.local.siteDirectory</code> and, 
 		 in order for the links to be correct urls, ive added another property that identifies the protocol used : <code>mevenide.site.prefix</code>
-		 
-		 So, in brief, you need to set those properties :  
+		 </p>
+		 <p>
+		 So, in brief, you need to set those properties in project.properties :  
 		 <ul>
 		 	<li>eclipse.home</li>
 			<li>swt.plugin.dir</li>
 			<li>mevenide.local.siteDirectory (optional, for site generation only)</li>
 			<li>mevenide.site.prefix (optional, for site generation only)</li>
 		 </ul>
-		 
-		 and then invoke <code>maven build</code>. This process isnot as simple as it should. We need to think about make it easier and more straightforward.
+		 </p>
+		 <p>
+		 In addition, for the ANT script to work, you to set those two properties in build.properties : 
+		 <ul>
+		 	<li>maven.home</li>
+			<li>maven.script</li>
+		 </ul>
+		 </p>
+		 <p>
+		 and then invoke <code>maven build</code>. This process isnot as simple as it should. We need to think about making it easier and more 
+		 straightforward, so that configuration could be abstracted.
+		 </p>
 	</section>
 	
 	<section name="Before launching the Runtime-workbench">
