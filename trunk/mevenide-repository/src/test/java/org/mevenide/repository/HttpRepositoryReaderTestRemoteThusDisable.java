@@ -30,9 +30,9 @@ import org.mevenide.project.dependency.IDependencyResolver;
 /**
  * @author  Milos Kleint (mkleint@codehaus.org)
  */
-public class HttpRepositoryReaderTest extends TestCase {
+public class HttpRepositoryReaderTestRemoteThusDisable extends TestCase {
     private IRepositoryReader reader;
-    public HttpRepositoryReaderTest(String testName) {
+    public HttpRepositoryReaderTestRemoteThusDisable(String testName) {
         super(testName);
     }
     
@@ -47,7 +47,7 @@ public class HttpRepositoryReaderTest extends TestCase {
     }
 
     public static Test suite() {
-        TestSuite suite = new TestSuite(HttpRepositoryReaderTest.class);
+        TestSuite suite = new TestSuite(HttpRepositoryReaderTestRemoteThusDisable.class);
         
         return suite;
     }
