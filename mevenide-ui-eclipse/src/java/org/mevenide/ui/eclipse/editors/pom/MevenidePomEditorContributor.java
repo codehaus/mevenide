@@ -32,6 +32,7 @@ import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.ide.IDEActionFactory;
 import org.eclipse.ui.part.MultiPageEditorActionBarContributor;
 import org.eclipse.ui.texteditor.ITextEditor;
+import org.mevenide.ui.eclipse.Mevenide;
 
 /**
  * Manages the installation/deinstallation of global actions for the Mevenide
@@ -43,7 +44,7 @@ import org.eclipse.ui.texteditor.ITextEditor;
  */
 public class MevenidePomEditorContributor extends MultiPageEditorActionBarContributor {
     private IEditorPart activeEditorPart;
-    private Action sampleAction;
+    private Action validateAction;
     
     public MevenidePomEditorContributor() {
         super();
@@ -101,14 +102,14 @@ public class MevenidePomEditorContributor extends MultiPageEditorActionBarContri
     }
     
     private void createActions() {
-        sampleAction = new Action() {
+        validateAction = new Action() {
             public void run() {
-                MessageDialog.openInformation(null, "Mevenide", "Sample Action Executed");
+                MessageDialog.openInformation(null, "Mevenide", "Not implemented yet");
             }
         };
-        sampleAction.setText("Sample Action");
-        sampleAction.setToolTipText("Sample Action tool tip");
-        sampleAction.setImageDescriptor(
+        validateAction.setText(Mevenide.getResourceString("MevenidePomEditorContributor.Action.Text"));
+        validateAction.setToolTipText("MevenidePomEditorContributor.Action.ToolTip");
+        validateAction.setImageDescriptor(
             PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(
                     IDE.SharedImages.IMG_OBJS_TASK_TSK
             )
@@ -116,14 +117,14 @@ public class MevenidePomEditorContributor extends MultiPageEditorActionBarContri
     }
     
     public void contributeToMenu(IMenuManager manager) {
-        IMenuManager menu = new MenuManager("Editor &Menu");
+        IMenuManager menu = new MenuManager(Mevenide.getResourceString("MevenidePomEditorContributor.Menu.Text"));
         manager.prependToGroup(IWorkbenchActionConstants.MB_ADDITIONS, menu);
-        menu.add(sampleAction);
+        menu.add(validateAction);
     }
     
     public void contributeToToolBar(IToolBarManager manager) {
         manager.add(new Separator());
-        manager.add(sampleAction);
+        manager.add(validateAction);
     }
 
     public void updateActions() {
