@@ -19,6 +19,7 @@ package org.mevenide.netbeans.project;
 
 import java.awt.Image;
 import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -53,8 +54,10 @@ public class MavenProject implements org.netbeans.api.project.Project {
     private IPropertyResolver properties;
     private Image icon;
     private Lookup lookup;
+    private PropertyChangeSupport support;
     /** Creates a new instance of MavenProject */
     MavenProject(FileObject projectFO, File projectFile) throws Exception {
+        support = new PropertyChangeSupport(this);
         DefaultProjectUnmarshaller unmars = new DefaultProjectUnmarshaller();
         file = projectFile;
         fileObject = projectFO;
@@ -69,6 +72,11 @@ public class MavenProject implements org.netbeans.api.project.Project {
     
     
     public void addPropertyChangeListener(PropertyChangeListener propertyChangeListener) {
+        support.addPropertyChangeListener(propertyChangeListener);
+    }
+    
+    public void removePropertyChangeListener(PropertyChangeListener propertyChangeListener) {
+        support.removePropertyChangeListener(propertyChangeListener);
     }
     
     public String getDisplayName() {
@@ -167,8 +175,6 @@ public class MavenProject implements org.netbeans.api.project.Project {
         return null;
     }
     
-    public void removePropertyChangeListener(PropertyChangeListener propertyChangeListener) {
-    }
     
     private Lookup createLookup() {
         return Lookups.fixed(new Object[] {

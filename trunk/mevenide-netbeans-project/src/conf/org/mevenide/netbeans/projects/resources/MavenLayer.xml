@@ -9,4 +9,14 @@
             </folder>
         </folder>
     </folder>
+    <folder name="org-netbeans-api-project-libraries">
+        <folder name="LibraryTypeProviders">
+            <file name="maven_library_provider.instance">
+                <attr name="instanceOf" stringvalue="org.netbeans.spi.project.libraries.LibraryTypeProvider"/>
+                <attr name="instanceClass" stringvalue="org.mevenide.netbeans.project.libraries.MavenRepoLibraryProvider" />
+                <attr name="instanceCreate" methodvalue="org.mevenide.netbeans.project.libraries.MavenRepoLibraryProvider.createInstance"/>
+            </file>
+        </folder>
+    </folder>
+    
 </filesystem>

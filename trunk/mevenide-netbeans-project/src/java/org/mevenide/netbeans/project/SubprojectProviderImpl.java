@@ -12,8 +12,10 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.StringTokenizer;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.tools.ant.DirectoryScanner;
 import org.netbeans.api.project.Project;
 import org.netbeans.api.project.ProjectManager;
 import org.netbeans.spi.project.SubprojectProvider;
@@ -29,8 +31,9 @@ import org.openide.util.Lookup;
  */
 public class SubprojectProviderImpl implements SubprojectProvider {
     private static final Log logger = LogFactory.getLog(SubprojectProviderImpl.class);
-
-    private static final String MULTIPROJECT = "maven.multiproject.includes"; //NOI18N
+    
+    private static final String MULTIPROJECT_INCLUDES = "maven.multiproject.includes"; //NOI18N
+    private static final String MULTIPROJECT_EXCLUDES = "maven.multiproject.excludes"; //NOI18N
     private static final String MULTIPROJECT_BASEDIR = "maven.multiproject.basedir"; //NOI18N
     
     private MavenProject project;
@@ -41,38 +44,27 @@ public class SubprojectProviderImpl implements SubprojectProvider {
     
     public Set getSubProjects() {
         logger.debug("getSubProjects()");
-        String multis = project.getPropertyResolver().getResolvedValue(MULTIPROJECT);
-        if (multis != null) {
+        String includes = project.getPropertyResolver().getResolvedValue(MULTIPROJECT_INCLUDES);
+        String excludes = project.getPropertyResolver().getResolvedValue(MULTIPROJECT_EXCLUDES);
+        String basedir = project.getPropertyResolver().getResolvedValue(MULTIPROJECT_BASEDIR);
+        if (includes != null) {
             Set toReturn = new HashSet();
-            String basedir = project.getPropertyResolver().getResolvedValue(MULTIPROJECT_BASEDIR);
             File basefile = FileUtil.normalizeFile(new File(basedir));
             if (basefile.exists()) {
-                StringTokenizer tok = new StringTokenizer(multis, ",", false);
-                while (tok.hasMoreTokens()) {
-                    String one = tok.nextToken();
-                    File projectFile = FileUtil.normalizeFile(new File(basefile.getAbsolutePath() + File.separator + one));
-                    if (projectFile.exists()) {
-                        FileObject[] fos = FileUtil.fromFile(projectFile);
-                        if (fos.length > 0) {
-                            FileObject projectDir = fos[0].getParent();
-                            if (ProjectManager.getDefault().isProject(projectDir)) {
-                                try {
-                                    Project proj = ProjectManager.getDefault().findProject(projectDir);
-                                    if (proj != null) {
-                                        toReturn.add(proj);
-                                    } else {
-                                        logger.debug("returned project was null");
-                                    }
-                                } catch (IOException exc) {
-                                    logger.debug("IO exc. while loading project", exc);
-                                }
-                            }
-                        } else {
-                            // HUH?
-                            logger.debug("fileobject not found=" + one + " in basedir=" + basedir);
-                        }
-                    } else {
-                        logger.debug("project file not found=" + one + " in basedir=" + basedir);
+                DirectoryScanner scanner = new DirectoryScanner();
+                scanner.setBasedir(basefile);
+                if (excludes != null) {
+                    String[] exc = StringUtils.split(excludes, ",");
+                    scanner.setExcludes(exc);
+                }
+                String[] inc = StringUtils.split(includes, ",");
+                scanner.setIncludes(inc);
+                scanner.scan();
+                String[] results = scanner.getIncludedFiles();
+                for (int i = 0; i < results.length; i++) {
+                    Project proj = processOneSubproject(basefile, results[i]);
+                    if (proj != null) {
+                        toReturn.add(proj);
                     }
                 }
             } else {
@@ -83,4 +75,28 @@ public class SubprojectProviderImpl implements SubprojectProvider {
         return Collections.EMPTY_SET;
     }
     
+    private Project processOneSubproject(File basefile, String relPath) {
+        File projectFile = FileUtil.normalizeFile(new File(basefile.getAbsolutePath() + File.separator + relPath));
+        if (projectFile.exists()) {
+            FileObject[] fos = FileUtil.fromFile(projectFile);
+            if (fos.length > 0) {
+                FileObject projectDir = fos[0].getParent();
+                if (ProjectManager.getDefault().isProject(projectDir)) {
+                    try {
+                        Project proj = ProjectManager.getDefault().findProject(projectDir);
+                        return proj;
+                    } catch (IOException exc) {
+                        logger.debug("IO exc. while loading project", exc);
+                    }
+                }
+            } else {
+                // HUH?
+                logger.debug("fileobject not found=" + relPath + " in basedir=" + basefile);
+            }
+            
+        } else {
+            logger.debug("project file not found=" + relPath + " in basedir=" + basefile);
+        }
+        return null;
+    }
 }

@@ -174,7 +174,39 @@
             <netbeans.module.dep>spec</netbeans.module.dep>
         </properties>
     </dependency>
-         
+
+    <!-- depending on ant, the module dep for netbeans runtime, ant dep for compile time -->
+   <dependency>
+      <id>ant-nb-module</id>
+      <groupId>mevenide</groupId>
+      <version>1.5.3-1</version>
+      <properties>
+            <netbeans.module.dep>spec</netbeans.module.dep>
+      </properties>
+    </dependency>
+   <dependency>
+      <id>ant</id>
+      <version>1.5.3-1</version>
+      <url>http://ant.apache.org/</url>
+    </dependency>
+ 
+<!-- commons-lang is part of the maven bundle at netbeans runtime -->       
+    <dependency>
+      <id>commons-lang</id>
+      <version>2.0</version>
+      <url>http://jakarta.apache.org/commons/</url>
+    </dependency>
+    <dependency>     
+        <groupId>maven</groupId>
+        <artifactId>maven</artifactId>
+        <version>1.0-rc2</version>
+        <type>jar</type>
+        <properties>
+            <netbeans.module.dep>spec</netbeans.module.dep>
+        </properties>
+    </dependency>
+    
+             
   </dependencies>
   
   <build>
