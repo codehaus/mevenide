@@ -51,7 +51,7 @@
         </dependency>
         <dependency>
            <groupId>mevenide</groupId>
-           <artifactId>mevenide-goals-grabber</artifactId>
+           <artifactId>goals-grabber</artifactId>
            <version>0.1.1-SNAPSHOT</version>
         </dependency>
 		&inherited-dependencies;

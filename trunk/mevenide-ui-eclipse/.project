@@ -3,8 +3,8 @@
 	<name>mevenide-ui-eclipse</name>
 	<comment></comment>
 	<projects>
+		<project>goals-grabber</project>
 		<project>mevenide-core</project>
-		<project>mevenide-goals-grabber</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
