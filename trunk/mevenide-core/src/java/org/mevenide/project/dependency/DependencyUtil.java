@@ -20,13 +20,12 @@ import java.io.File;
 import java.io.FileFilter;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Dependency;
 import org.apache.maven.project.Project;
 import org.mevenide.environment.ConfigUtils;
-import org.mevenide.properties.resolver.util.ResolverUtils;
+import org.mevenide.util.ResolverUtils;
 import org.mevenide.util.StringUtils;
 
 /**
@@ -58,9 +57,9 @@ public final class DependencyUtil {
 		return  (d1 == null && d2 == null) ||
 				(   
 				    d1 != null && d2 != null
-				    && areEquals(ResolverUtils.resolve(context, d1.getArtifactId()), ResolverUtils.resolve(context, d2.getArtifactId()))
-					&& areEquals(ResolverUtils.resolve(context, d1.getGroupId()), ResolverUtils.resolve(context, d2.getGroupId()))
-					&& areEquals(ResolverUtils.resolve(context, d1.getVersion()), ResolverUtils.resolve(context, d2.getVersion()))
+				    && areEquals(ResolverUtils.getInstance().resolve(context, d1.getArtifactId()), ResolverUtils.getInstance().resolve(context, d2.getArtifactId()))
+					&& areEquals(ResolverUtils.getInstance().resolve(context, d1.getGroupId()), ResolverUtils.getInstance().resolve(context, d2.getGroupId()))
+					&& areEquals(ResolverUtils.getInstance().resolve(context, d1.getVersion()), ResolverUtils.getInstance().resolve(context, d2.getVersion()))
 				);
 	}
 	
@@ -170,4 +169,6 @@ public final class DependencyUtil {
 			log.debug("Still unable to resolve groupId due to : " + ex);
 		}	
 	}
+	
 }
+

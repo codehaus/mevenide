@@ -27,7 +27,6 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.TreeSet;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Build;
@@ -46,7 +45,6 @@ import org.mevenide.project.ProjectConstants;
 import org.mevenide.project.io.ProjectReader;
 import org.mevenide.project.io.ProjectWriter;
 import org.mevenide.project.source.SourceDirectoryUtil;
-import org.mevenide.properties.resolver.util.ResolverUtils;
 import org.mevenide.properties.writer.CarefulPropertiesWriter;
 import org.mevenide.ui.eclipse.sync.model.properties.DirectoryPropertySource;
 import org.mevenide.ui.eclipse.sync.model.properties.ReadOnlyDirectoryPropertySource;
@@ -222,7 +220,7 @@ public class DirectoryNode extends ArtifactNode {
 	}
 	
 	protected String getIgnoreLine() {
-		return ResolverUtils.resolve((Project) parentNode.getData(), directory.getCleanPath());
+		return resolve(directory.getCleanPath());
 	}
 	
 	public void removeFrom(Project project) throws Exception {
@@ -235,7 +233,7 @@ public class DirectoryNode extends ArtifactNode {
 	    boolean sameType = entry.getEntryKind() == IClasspathEntry.CPE_SOURCE;
 	    
 	    String relativeEntryPath = entry.getPath().removeFirstSegments(1).toOSString().replaceAll("\\\\", "/");
-	    String artifactPath = ResolverUtils.resolve((Project) parentNode.getData(), directory.getCleanPath());
+	    String artifactPath = resolve(directory.getCleanPath());
 	    boolean equivalentPath = relativeEntryPath.equals(artifactPath);
 	    
 	    return sameType && equivalentPath;
@@ -265,5 +263,5 @@ public class DirectoryNode extends ArtifactNode {
 	public void setExcludeNodes(ExcludeNode[] excludeNodes) {
 		this.excludeNodes = excludeNodes;
 	}
-	
+
 }

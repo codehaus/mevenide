@@ -20,7 +20,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Dependency;
@@ -136,6 +135,9 @@ public class MavenArtifactNode extends ArtifactNode {
 	
 	private IClasspathEntry createNewLibraryEntry() {
 		String artifactPath = artifact.getPath();
+		System.err.println(artifactPath);
+		artifactPath = resolve(artifactPath);
+		System.err.println(artifactPath);
 		String mavenRepo = locationFinder.getMavenLocalRepository();
 		if ( artifactPath.replaceAll("\\\\","/").startsWith(mavenRepo.replaceAll("\\\\","/")) ) {
 		    try {
@@ -166,7 +168,9 @@ public class MavenArtifactNode extends ArtifactNode {
 		assertJavaNature();
 		//maven-eclipse-plugin assumes project name = artifactId when eclipse.dependency is set to true
 		//follow same pattern here tho i dont think this is very accurate. need to think of another solution
-		return JavaCore.newProjectEntry(new Path("/" + artifact.getDependency().getArtifactId()));
+		String referencedProjectName = artifact.getDependency().getArtifactId();
+		referencedProjectName = resolve(referencedProjectName);
+		return JavaCore.newProjectEntry(new Path("/" + referencedProjectName));
 	}
 	
 	private void assertJavaNature() throws Exception {
@@ -309,4 +313,6 @@ public class MavenArtifactNode extends ArtifactNode {
 		
 		this.properties = newNodes;
     }
+    
+    
 }

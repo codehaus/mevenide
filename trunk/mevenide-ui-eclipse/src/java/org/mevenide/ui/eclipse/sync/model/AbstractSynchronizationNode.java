@@ -18,7 +18,6 @@ package org.mevenide.ui.eclipse.sync.model;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.mevenide.ui.eclipse.sync.event.ISynchronizationNodeListener;
 
 /**  

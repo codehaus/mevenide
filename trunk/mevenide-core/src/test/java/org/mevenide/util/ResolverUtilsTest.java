@@ -14,24 +14,25 @@
  *  limitations under the License.
  * =========================================================================
  */
-package org.mevenide.ui.eclipse.sync.model;
+package org.mevenide.util;
+import java.io.File;
+import junit.framework.TestCase;
+import org.mevenide.AbstractMevenideTestCase;
+import org.mevenide.properties.IPropertyResolver;
 
-import java.util.List;
-import org.mevenide.ui.eclipse.sync.event.ISynchronizationNodeListener;
 
 /**  
  * 
  * @author <a href="mailto:rhill2@free.fr">Gilles Dodinet</a>
- * @version $Id: INode.java,v 1.1 12 avr. 2004 Exp gdodinet 
+ * @version $Id$
  * 
  */
-public interface ISynchronizationNode {
-	Object getData();
-	ISynchronizationNode[] getChildren();
-	ISynchronizationNode getParent();
-	boolean hasChildren();
-	
-	void addNodeListener(ISynchronizationNodeListener node);
-	void removeNodeListener(ISynchronizationNodeListener node);
-	void setSynchronizationNodesListener(List synchronizationNodesListener) ;
+public class ResolverUtilsTest extends TestCase {
+
+    public void testResolve()  {
+        File projectFile = new File(AbstractMevenideTestCase.class.getResource("/fixtures/project.xml").getFile());
+        IPropertyResolver resolver = ResolverUtils.getInstance().getResolver(projectFile);
+        assertEquals("Mevenide Core", resolver.getResolvedValue("pom.name"));
+        assertEquals("My Test", resolver.getResolvedValue("my.prop.test"));
+    }
 }

@@ -53,7 +53,7 @@ public class AbstractMevenideTestCase extends TestCase {
 		}
         
 		File src = new File(AbstractMevenideTestCase.class.getResource("/fixtures/project-fixture.xml").getFile());
-		projectFile = new File(src.getParentFile().getParent(), "project-fixture.xml") ; 
+		projectFile = new File(src.getParentFile().getParent(), "project-fixture.xml") ;
 		copy(src.getAbsolutePath(), projectFile.getAbsolutePath());
 		
 		

@@ -20,5 +20,6 @@
 	<classpathentry kind="src" path="src/conf/eclipse"/>
 	<classpathentry exported="true" kind="var" path="MAVEN_REPO/maven/jars/maven-1.0-rc2.jar"/>
 	<classpathentry kind="src" path="/mevenide-config"/>
+	<classpathentry kind="var" path="MAVEN_REPO/dom4j/jars/dom4j-1.4.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
