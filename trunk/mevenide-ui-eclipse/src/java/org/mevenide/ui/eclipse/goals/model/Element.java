@@ -83,7 +83,5 @@ public class Element {
         this.prereqs = prereqs;
     }
 	
-	public boolean equals(Object obj) {
-		return (obj instanceof Element) && ((Element) obj).name.equals(name); 
-	}
+	
 }

@@ -291,6 +291,8 @@ public class GoalsPickerDialog  extends Dialog {
 			//@todo check goals and expand parent also...
 			
 		}
+		
+		goalsViewer.setGrayed(goalsProvider.getChildren(Element.NULL_ROOT), true);
     }
 
     private void updateCheckedItems(CheckStateChangedEvent e) {
