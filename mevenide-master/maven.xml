@@ -77,7 +77,7 @@
   
   <goal name="mevenide-jbuilder:clean" prereqs="mevenide:clean-lib,clean:clean">
     <ant:delete dir="${maven.repo.local}/jbuilder" quiet="true"/>
-  	<ant:delete dir="${maven.repo.local}/mevenide" quiet="true"/>
+  	<ant:delete dir="${maven.repo.local}/mevenide/jars" quiet="true"/>
   </goal>
   
   <goal name="mevenide-jbuilder:init" description="Copy JBuilder dependencies to maven.repo.local if necessary">
