@@ -46,33 +46,37 @@
  * SUCH DAMAGE.
  * ====================================================================
  */
-package org.mevenide.ui.eclipse;
+package org.mevenide.ui.eclipse.sync.model.source;
 
-import org.eclipse.swt.graphics.Color;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.eclipse.core.internal.runtime.Assert;
+import org.eclipse.jdt.internal.ui.viewsupport.ListContentProvider;
 
 /**  
  * 
  * @author Gilles Dodinet (gdodinet@wanadoo.fr)
- * @version $Id: MevenideConstants.java 30 août 2003 Exp gdodinet 
+ * @version $Id: SourceDirectoryContentProvider.java 31 août 2003 Exp gdodinet 
  * 
  */
-public class MevenideConstants {
-	
-	static {
-		Runtime.getRuntime().addShutdownHook(
-			new Thread() {
-                public void run() {
-                    WHITE.dispose();
-					GREY.dispose();
-					BLACK.dispose();
-                }	
-			}
-		);
+public class SourceDirectoryContentProvider extends ListContentProvider {
+	public Object[] getElements(Object input) {
+		Assert.isTrue(input instanceof SourceDirectoryGroup);
+		
+		List directoriesList = new ArrayList();
+		
+		directoriesList.addAll(((SourceDirectoryGroup) input).getSourceDirectories());
+		
+		SourceDirectoryGroup parentGroup = (SourceDirectoryGroup) ((SourceDirectoryGroup) input).getParentGroup();
+		
+		if ( parentGroup != null ) {
+			directoriesList.addAll(parentGroup.getSourceDirectories());
+		}
+		
+		return directoriesList.toArray();
+		
+		
 	}
-	
-	public static final Color WHITE = new Color(null, 255, 255, 255);
-	public static final Color GREY = new Color(null, 156, 156, 156);
-	public static final Color BLACK = new Color(null, 0, 0, 0);
 
 }
-

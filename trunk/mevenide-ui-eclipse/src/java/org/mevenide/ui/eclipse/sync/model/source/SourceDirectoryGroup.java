@@ -72,6 +72,10 @@ public class SourceDirectoryGroup extends ArtifactGroup {
 		super(project);	
 	}
 	
+	public SourceDirectoryGroup()  {
+		super();	
+	}
+	
 	protected void initialize() throws Exception {
 		IClasspathEntry[] classpathEntries = javaProject.getResolvedClasspath(true);
 		for (int i = 0; i < classpathEntries.length; i++) {
@@ -144,5 +148,23 @@ public class SourceDirectoryGroup extends ArtifactGroup {
 		return allNull || firstNotNull;
 	}
 	
-	
+    public boolean isDuplicated(Object element) {
+    	SourceDirectory sourceDirectory = (SourceDirectory) element;
+    	
+		if ( ((SourceDirectoryGroup) parentGroup) != null ) {
+	    	List parentSourceDirectories = ((SourceDirectoryGroup) parentGroup).getSourceDirectories();
+	    	
+	    	for (int i = 0; i < parentSourceDirectories.size(); i++) {
+	    		SourceDirectory parentSourceDirectory = (SourceDirectory) parentSourceDirectories.get(i);
+	    		
+				String directoryPath = sourceDirectory.getDirectoryPath();
+				String parentDirectoryPath = parentSourceDirectory.getDirectoryPath();
+				
+				if ( directoryPath.replace('\\', '/').equals(parentDirectoryPath.replace('\\', '/')) ) {
+					return true; 
+	            }
+	        }
+		}
+        return false;
+    }	
 }

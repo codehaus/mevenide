@@ -78,7 +78,7 @@ public class DependencyGroup extends ArtifactGroup {
 	
 	private Map dependencies = new HashMap();
 	
-	private DependencyGroup parentGroup; 
+	
 	
 	public DependencyGroup() {
 			super();
@@ -227,17 +227,25 @@ public class DependencyGroup extends ArtifactGroup {
 		}
 		return contains;
 	}
+
+	public boolean isDuplicated(Object element) {
+    	DependencyWrapper wrapper = (DependencyWrapper) element;
+    	
+		if ( parentGroup != null ) {
+	    	List parentWrappers = ((DependencyGroup)parentGroup).getDependencyWrappers();
+	    	
+	    	for (int i = 0; i < parentWrappers.size(); i++) {
+	            DependencyWrapper parentWrapper = (DependencyWrapper) parentWrappers.get(i);
+				if ( DependencyUtil.areEquals(wrapper.getDependency(), parentWrapper.getDependency()) ) {
+					return true;
+				}
+	        }
+		}
+    	
+    	return false;
+	}
+
     
-
-   
-
-    public DependencyGroup getParentGroup() {
-        return parentGroup;
-    }
-
-    public void setParentGroup(DependencyGroup parentGroup) {
-        this.parentGroup = parentGroup;
-    }
 
 	
 }

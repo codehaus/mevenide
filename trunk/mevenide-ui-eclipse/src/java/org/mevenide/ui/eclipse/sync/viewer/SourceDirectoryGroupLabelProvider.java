@@ -49,14 +49,17 @@
 package org.mevenide.ui.eclipse.sync.viewer;
 
 import org.eclipse.jface.util.Assert;
+import org.eclipse.jface.viewers.IColorProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.mevenide.ui.eclipse.Mevenide;
+import org.mevenide.ui.eclipse.MevenideColors;
 import org.mevenide.ui.eclipse.sync.model.source.SourceDirectory;
 
 
-public class SourceDirectoryGroupLabelProvider implements ITableLabelProvider {
+public class SourceDirectoryGroupLabelProvider implements ITableLabelProvider, IColorProvider {
 	
 	private static final int INHERIT_IDX = 2;
     private static final int SRC_TYPE_IDX = 1;
@@ -64,12 +67,30 @@ public class SourceDirectoryGroupLabelProvider implements ITableLabelProvider {
 
     private final String[] sourceTypes;
 	
+	
+	public Color getBackground(Object element) {
+        return MevenideColors.WHITE;
+    }
+    
+    public Color getForeground(Object element) {
+		if ( ((SourceDirectory) element).isReadOnly() ) {
+			return MevenideColors.GREY;
+		}
+		if ( ((SourceDirectory) element).getGroup().isDuplicated(element) ) {
+			return MevenideColors.ORANGE;
+		}
+		return MevenideColors.BLACK;
+    }
+    
 	public SourceDirectoryGroupLabelProvider(String[] sourceTypes) {
 		this.sourceTypes = sourceTypes;
 	}
 	
 	public Image getColumnImage(Object element, int columnIndex) {
 		if ( columnIndex == DIRECTORY_IDX ) {
+			if ( ((SourceDirectory) element).isReadOnly() ) {
+				return Mevenide.getImageDescriptor("source-directory-grayed-16.gif").createImage();
+			}
 			return Mevenide.getImageDescriptor("source-directory-16.gif").createImage();
 		}
 		if ( columnIndex == INHERIT_IDX ) {

@@ -58,6 +58,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.preference.PreferenceStore;
 import org.mevenide.ProjectConstants;
+import org.mevenide.project.io.ProjectReader;
 import org.mevenide.project.io.ProjectWriter;
 import org.mevenide.sync.AbstractPomSynchronizer;
 import org.mevenide.sync.ISynchronizer;
@@ -71,6 +72,7 @@ import org.mevenide.ui.eclipse.sync.model.source.SourceDirectory;
 import org.mevenide.ui.eclipse.sync.model.source.SourceDirectoryGroup;
 import org.mevenide.ui.eclipse.sync.model.source.SourceDirectoryGroupMarshaller;
 import org.mevenide.ui.eclipse.util.FileUtil;
+import org.mevenide.util.MevenideUtil;
 
 /**
  * 
@@ -188,7 +190,9 @@ public class PomSynchronizer extends AbstractPomSynchronizer implements ISynchro
 		
 		Mevenide.getPlugin().setBuildPath();
 		
-		//update parent pom if necessary
+		//update parent pom if necessary ?
+		String resolvedExtend = MevenideUtil.resolve(ProjectReader.getReader().read(pomFile), store.getString("pom." + sourceGroup.getProjectName() + ".parent"));
+		
 	}
 	
 }

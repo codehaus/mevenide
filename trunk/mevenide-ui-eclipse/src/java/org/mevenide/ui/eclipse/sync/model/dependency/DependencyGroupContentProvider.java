@@ -70,7 +70,7 @@ public class DependencyGroupContentProvider implements ITreeContentProvider {
 			List list = new ArrayList();
 			list.addAll(group.getDependencyWrappers());
 			if ( group.getParentGroup() != null ) {
-				list.addAll(group.getParentGroup().getDependencyWrappers());
+				list.addAll(((DependencyGroup)group.getParentGroup()).getDependencyWrappers());
 			}
 					
 			if ( list != null ) {

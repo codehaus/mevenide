@@ -56,7 +56,7 @@ import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.mevenide.ui.eclipse.Mevenide;
-import org.mevenide.ui.eclipse.MevenideConstants;
+import org.mevenide.ui.eclipse.MevenideColors;
 import org.mevenide.ui.eclipse.sync.model.dependency.DependencyGroup;
 import org.mevenide.ui.eclipse.sync.model.dependency.DependencyInfo;
 import org.mevenide.ui.eclipse.sync.model.dependency.DependencyWrapper;
@@ -73,19 +73,23 @@ public class DependencyGroupLabelProvider implements ITableLabelProvider, IColor
 	}
 	
 	public Color getBackground(Object element) {
-		return MevenideConstants.WHITE;
+		return MevenideColors.WHITE;
 	}
 
 	public Color getForeground(Object element) {
 		if ( element instanceof DependencyWrapper 
 				&& ((DependencyWrapper) element).isReadOnly() ) {
-			return MevenideConstants.GREY;
+			return MevenideColors.GREY;
+		}
+		if ( element instanceof DependencyWrapper
+				&& ((DependencyWrapper) element).getDependencyGroup().isDuplicated(element) ) {
+			return MevenideColors.ORANGE;
 		}
 		if ( element instanceof DependencyInfo
 				&& ((DependencyInfo) element).isReadOnly() ) {
-			return MevenideConstants.GREY;
+			return MevenideColors.GREY;
 		}
-		return MevenideConstants.BLACK;
+		return MevenideColors.BLACK;
 	}
 	
 	public void addListener(ILabelProviderListener listener) {
@@ -125,7 +129,20 @@ public class DependencyGroupLabelProvider implements ITableLabelProvider, IColor
 		}
 		if ( columnIndex == DESCRIPTION_IDX ) {
 			if ( element instanceof DependencyWrapper ) {
-				return new File((((DependencyWrapper) element).getDependency()).getArtifact()).getName();
+				
+				String artifact =  new File((((DependencyWrapper) element).getDependency()).getArtifact()).getName();
+			
+				//CRAP -- just a workaround
+				if ( artifact.endsWith(".") ) {
+					if ( ((DependencyWrapper) element).getDependency().getType() == null 
+						|| ((DependencyWrapper) element).getDependency().getType().trim().equals("") ) {
+						((DependencyWrapper) element).getDependency().setType("jar");
+					}
+					artifact += ((DependencyWrapper) element).getDependency().getType();
+				}
+
+				return artifact;
+				//return new File((((DependencyWrapper) element).getDependency()).getJar()).getName();
 			}
 			if ( element instanceof DependencyGroup ) {
 				return "Dependencies";

@@ -352,17 +352,19 @@ public class SynchronizeWizardPage extends WizardPage {
 		refreshButton.addSelectionListener(
 				new SelectionAdapter() {
 					public void widgetSelected(SelectionEvent e) {
-						initSourceDirectoriesInput(project);
+						try {
+					        SourceDirectoryGroup sourceDirectoryGroup = getSavedSourceDirectoriesInput(project); //new SourceDirectoryGroup(project);
+					        sourceDirectoryGroup.setInherited(isInheritedEditor.getBooleanValue());
+					        sourceDirectoriesViewer.setInput(sourceDirectoryGroup);
+					        sourceDirectoriesViewer.refresh();
+					    }
+					    catch (Exception ex) {
+					        //e.printStackTrace();
+							log.error("Unable to refresh sourceDirectories Input due to : " + ex);
+					    }
 					}
 				}
 		);
-	}
-
-	private void initSourceDirectoriesInput(IProject project) {
-		SourceDirectoryGroup sourceDirectoryGroup = new SourceDirectoryGroup(project);
-		sourceDirectoryGroup.setInherited(isInheritedEditor.getBooleanValue());
-		sourceDirectoriesViewer.setInput(sourceDirectoryGroup);
-		sourceDirectoriesViewer.refresh();
 	}
 
 	private IContainer openSourceDirectoryDialog() {
@@ -418,7 +420,8 @@ public class SynchronizeWizardPage extends WizardPage {
 				log.debug("Found " + newInput.getSourceDirectories().size() + " previously stored SourceDirectories");
 			}
 			catch (Exception e) {
-				log.debug("Error occured while restoring previously saved SourceDirectoryGroup for project '" + project.getName() + "'. Reason : " + e); 
+				//e.printStackTrace();
+				log.error("Error occured while restoring previously saved SourceDirectoryGroup for project '" + project.getName() + "'. Reason : " + e); 
 
 			}
 			if ( newInput == null ) {
@@ -435,6 +438,33 @@ public class SynchronizeWizardPage extends WizardPage {
 		
 		String savedStates = Mevenide.getPlugin().getFile("sourceTypes.xml");
 		SourceDirectoryGroup group = SourceDirectoryGroupMarshaller.getSourceDirectoryGroup(project, savedStates, 0);
+
+		Project mavenProject = ProjectReader.getReader().read(new File(project.getFile("project.xml").getLocation().toOSString()));
+		String extend = mavenProject.getExtend();
+
+		if ( extend != null && !extend.trim().equals("") ) {
+			String resolvedExtend = MevenideUtil.resolve(mavenProject, extend);
+			
+			if ( new File(resolvedExtend).exists() ) {
+				SourceDirectoryGroup parentGroup = new SourceDirectoryGroup();
+				//Project parentProject = ProjectReader.getReader().read(new File(resolvedExtend));
+				Map parentSourceDirectories = ProjectReader.getReader().getSourceDirectories(new File(resolvedExtend));
+				
+				Iterator iterator = parentSourceDirectories.keySet().iterator();
+				while (iterator.hasNext()) {
+                    String element = (String) iterator.next();
+                    //DependencyWrapper wrapper = new DependencyWrapper((Dependency) parentDependencies.get(i), false, parentGroup);
+					
+					SourceDirectory sourceDir = new SourceDirectory((String)parentSourceDirectories.get(element), parentGroup);
+					sourceDir.setDirectoryType(element); 
+					sourceDir.setReadOnly(true);
+					((SourceDirectoryGroup)parentGroup).addSourceDirectory(sourceDir);
+                }
+				log.debug("setting parentGroup for sdGroup (parentGroup has " + parentGroup.getSourceDirectories().size()+ " sourcedirectories)");
+				group.setParentGroup(parentGroup);
+			}
+		}
+
 		log.debug(" group.length = " + group.getSourceDirectories().size());
 		return group;
 	
@@ -622,20 +652,22 @@ public class SynchronizeWizardPage extends WizardPage {
 		refreshDependenciesButton.addSelectionListener(
 				new SelectionAdapter() {
 					public void widgetSelected(SelectionEvent e) {
-						initDependenciesViewerInput(project);
+						try {
+				            //DependencyGroup newInput = new DependencyGroup(project);
+				            //newInput.setInherited(isInheritedEditor.getBooleanValue());
+				            dependenciesViewer.setInput(getSavedDependenciesViewerInput(project));
+				            dependenciesViewer.refresh();
+				        }
+				        catch (Exception ex) {
+				            //e.printStackTrace();
+							log.error("Unable to refresh Dependencies Viewer due to : " + ex);
+				        }
 					}
 				}
 		);
 	
 	}
 	
-	private void initDependenciesViewerInput(IProject project) {
-		DependencyGroup newInput = new DependencyGroup(project);
-		newInput.setInherited(isInheritedEditor.getBooleanValue());
-		dependenciesViewer.setInput(newInput);
-		dependenciesViewer.refresh();
-	}
-
 	private void setDependenciesViewerInput(IProject project) {
 		this.project = project;
 		if ( dependenciesViewer.getContentProvider() != null ) {

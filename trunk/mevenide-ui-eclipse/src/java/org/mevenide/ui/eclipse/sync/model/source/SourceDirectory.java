@@ -66,6 +66,8 @@ public class SourceDirectory {
 	private boolean isInherited;
 	private SourceDirectoryGroup group;
 	
+	private boolean isReadOnly;
+	
 	
 	public SourceDirectory(String path, SourceDirectoryGroup group) {
 		//directoryPath = "${basedir}" + File.separator + path;
@@ -118,4 +120,12 @@ public class SourceDirectory {
         return group;
     }
 
+    public boolean isReadOnly() {
+        return isReadOnly;
+    }
+
+    public void setReadOnly(boolean isReadOnly) {
+        this.isReadOnly = isReadOnly;
+    }
+	
 }

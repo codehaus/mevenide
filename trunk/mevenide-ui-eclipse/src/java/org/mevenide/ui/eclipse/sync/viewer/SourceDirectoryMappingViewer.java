@@ -48,11 +48,8 @@
  */
 package org.mevenide.ui.eclipse.sync.viewer;
 
-import java.util.List;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.eclipse.jface.util.Assert;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CheckboxCellEditor;
 import org.eclipse.jface.viewers.ComboBoxCellEditor;
@@ -64,10 +61,8 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.ui.internal.dialogs.ListContentProvider;
-import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.sync.model.source.SourceDirectory;
-import org.mevenide.ui.eclipse.sync.model.source.SourceDirectoryGroup;
+import org.mevenide.ui.eclipse.sync.model.source.SourceDirectoryContentProvider;
 import org.mevenide.ui.eclipse.util.SourceDirectoryTypeUtil;
 
 /**
@@ -135,7 +130,8 @@ public class SourceDirectoryMappingViewer {
 		tableViewer.setCellModifier(new ICellModifier() {
 			public boolean canModify(Object element, String property) {
 				return 
-					SourceDirectoryMappingViewer.SOURCE_TYPE.equals(property)
+					(SourceDirectoryMappingViewer.SOURCE_TYPE.equals(property)
+						&& !((SourceDirectory) element).isReadOnly())
 					|| SourceDirectoryMappingViewer.INHERIT.equals(property);
 			}
 			
@@ -166,18 +162,7 @@ public class SourceDirectoryMappingViewer {
 			}
 		});
 		
-		tableViewer.setContentProvider(new ListContentProvider(){
-			public Object[] getElements(Object input) {
-				Assert.isTrue(input instanceof SourceDirectoryGroup);
-				List directoriesList = ((SourceDirectoryGroup) input).getSourceDirectories();
-				if (directoriesList != null ) {
-					return directoriesList.toArray();
-				}
-				else {
-					return new Object[0]; 
-				}
-			}
-		});
+		tableViewer.setContentProvider(new SourceDirectoryContentProvider());
 		
 		tableViewer.setLabelProvider(new SourceDirectoryGroupLabelProvider(SourceDirectoryTypeUtil.sourceTypes));
 		
@@ -185,7 +170,7 @@ public class SourceDirectoryMappingViewer {
 //			
 //		});
 
-		tableViewer.setInput(new SourceDirectoryGroup(Mevenide.getPlugin().getProject()));
+		//tableViewer.setInput(new SourceDirectoryGroup(Mevenide.getPlugin().getProject()));
 	}
 	
 	
