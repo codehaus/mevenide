@@ -68,13 +68,21 @@
       		TODO tests from mevenide-core and mevenide-ui-eclipse are mixed here. bad !
       	-->
       	<!-- 
-      		those ones fail with maven.. dont know why yet. perhaps classloading ? 
-      		TODO solve thosse issues..
+      		those ones fail with maven. dont know why yet. perhaps classloading ? 
+      		
+      		TODO solve thosse issues
+      		
+      		note that they do NOT fail when launched from within Eclipse.
+      		We exclude them for now cuz the integration has more weigth than tests here
       	-->
       	<exclude>**/DefaultProjectMarshallerTest.java</exclude>
       	<exclude>**/ProjectReaderTest.java</exclude>
       	<exclude>**/ProjectWriterTest.java</exclude>
-      	<!-- those one will require org.eclipse.pde.junit plugin -->
+      	<exclude>**/DependencyUtilTest.java</exclude>
+      	
+      	<!-- 
+      		those ones will require org.eclipse.pde.junit plugin 
+      	-->
       	<exclude>**/GoalsManagerTest.java</exclude>
       	<exclude>**/DefaultPathResolverDelegateTest.java</exclude>
       </excludes>
