@@ -193,7 +193,6 @@ public class MavenProjectNode extends AbstractSynchronizationNode implements ISe
 			sourceDirectoryMap.putAll(resourceDirectoryMap);
 			if ( sourceDirectoryMap == null || sourceDirectoryMap.size() == 0 ) {
 				directoryNodes = new DirectoryNode[0];
-				return;
 			}
 			createDirectoryNodes(sourceDirectoryMap);
 			joinEclipseSourceFolders();
@@ -278,8 +277,8 @@ public class MavenProjectNode extends AbstractSynchronizationNode implements ISe
 	    final int directoryNodesNumber = directoryNodes != null ? directoryNodes.length : 0;
 	    final int artifactNodesNumber = artifactNodes != null ? artifactNodes.length : 0;
 	    ISynchronizationNode[] children = new ISynchronizationNode[directoryNodesNumber + artifactNodesNumber];
-	    System.arraycopy(directoryNodes, 0, children, 0, directoryNodesNumber);
-	    System.arraycopy(artifactNodes, 0, children, directoryNodesNumber, artifactNodesNumber);
+	    System.arraycopy(directoryNodes == null ? new DirectoryNode[0] : directoryNodes, 0, children, 0, directoryNodesNumber);
+	    System.arraycopy(artifactNodes == null ? new MavenArtifactNode[0] : artifactNodes, 0, children, directoryNodesNumber, artifactNodesNumber);
 	    return children;
 	}
 	
