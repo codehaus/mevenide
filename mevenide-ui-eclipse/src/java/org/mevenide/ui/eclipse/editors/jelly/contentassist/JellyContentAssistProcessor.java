@@ -55,9 +55,9 @@ import org.mevenide.ui.eclipse.preferences.PreferencesManager;
  * @version $Id: MavenXmlContentAssistProcessor.java,v 1.1 18 avr. 2004 Exp gdodinet
  *  
  */
-public abstract class MavenXmlContentAssistProcessor implements IContentAssistProcessor {
+public abstract class JellyContentAssistProcessor implements IContentAssistProcessor {
 
-    private static final  Log log = LogFactory.getLog(MavenXmlContentAssistProcessor.class);
+    private static final  Log log = LogFactory.getLog(JellyContentAssistProcessor.class);
     
     private AbstractJellyEditor editor;
 
@@ -65,7 +65,7 @@ public abstract class MavenXmlContentAssistProcessor implements IContentAssistPr
     
     private AttributeCompletion attributeCompletor ; 
     
-    public MavenXmlContentAssistProcessor(AbstractJellyEditor editor) {
+    public JellyContentAssistProcessor(AbstractJellyEditor editor) {
         this.editor = editor;
         preferencesManager = PreferencesManager.getManager();
         preferencesManager.loadPreferences();

@@ -24,7 +24,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
-import org.mevenide.ui.eclipse.editors.jelly.contentassist.MavenXmlContentAssistProcessor;
+import org.mevenide.ui.eclipse.editors.jelly.contentassist.JellyContentAssistProcessor;
 import org.mevenide.ui.eclipse.goals.outline.MavenXmlOutlinePage;
 
 
@@ -54,7 +54,7 @@ public class MavenXmlEditor extends AbstractJellyEditor {
 		super.performSave(overwrite, progressMonitor);
 		try {
             outlinePage.forceRefresh();
-            MavenXmlContentAssistProcessor contentAssist = ((XMLConfiguration) this.getSourceViewerConfiguration()).getTagContentAssist();
+            JellyContentAssistProcessor contentAssist = ((XMLConfiguration) this.getSourceViewerConfiguration()).getTagContentAssist();
             String basedir = new File(((FileEditorInput) this.getEditorInput()).getFile().getLocation().toOSString()).getParent();
             contentAssist.setBasedir(basedir);
         }
