@@ -23,11 +23,19 @@ import java.util.Map;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
+import org.eclipse.ui.PlatformUI;
+import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.util.StringUtils;
 
 
@@ -40,6 +48,7 @@ import org.mevenide.util.StringUtils;
 public class DynamicPreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
     
     private List properties;
+    private String pluginDescription;
     
     private Map editors = new HashMap();
     
@@ -53,19 +62,66 @@ public class DynamicPreferencePage extends PreferencePage implements IWorkbenchP
     
     protected Control createContents(Composite parent) {
         Composite composite = new Composite(parent, SWT.NULL);
-        if( properties != null ) {
-            GridLayout layout = new GridLayout();
-            layout.numColumns = 2;
-            for ( Iterator it = properties.iterator(); it.hasNext(); ) {
-                PluginProperty pluginProperty = (PluginProperty) it.next();
-                StringFieldEditor editor = createPluginPropertyEditor(composite, pluginProperty);
-                editors.put(pluginProperty, editor);
-            }
-        }
+        composite.setLayout(new GridLayout());
+        
+        createDescriptionComposite(composite);
+        
+        createPropertyComposite(composite);
+        
         return composite; 
 	}
   
-	private StringFieldEditor createPluginPropertyEditor(Composite parent, PluginProperty pluginProperty) {
+	private void createDescriptionComposite(Composite composite) {
+	    Text title = new Text(composite, SWT.READ_ONLY);
+	    title.setText("Description");
+	    title.setFont(new Font(PlatformUI.getWorkbench().getDisplay(), new FontData("bold", composite.getFont().getFontData()[0].getHeight(), SWT.BOLD)));
+	    title.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+	    
+        Text textDescription = new Text(composite, SWT.READ_ONLY | SWT.MULTI);
+        textDescription.setText(pluginDescription != null ? pluginDescription : Mevenide.getResourceString("DynamicPreferencePage.nodescription"));
+        GridData data = new GridData(GridData.FILL_HORIZONTAL);
+        textDescription.setLayoutData(data);
+        
+        new Label(composite, SWT.NULL);
+    }
+
+    private void createPropertyComposite(Composite composite) {
+        Text title = new Text(composite, SWT.READ_ONLY | SWT.MULTI);
+	    title.setText("Configuration");
+	    title.setFont(new Font(PlatformUI.getWorkbench().getDisplay(), new FontData("bold", composite.getFont().getFontData()[0].getHeight(), SWT.BOLD)));
+	    title.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        
+        Group propertiesGroup = createPropertyGroup(composite);
+        
+        if( properties != null && properties.size() > 0 ) {
+            for ( Iterator it = properties.iterator(); it.hasNext(); ) {
+		        PluginProperty pluginProperty = (PluginProperty) it.next();
+                StringFieldEditor editor = createPluginPropertyEditor(propertiesGroup, pluginProperty);
+                editors.put(pluginProperty, editor);
+            }
+        }
+        else {
+            Text noPropertyWarningText = new Text(propertiesGroup, SWT.READ_ONLY);
+            noPropertyWarningText.setText(Mevenide.getResourceString("DynamicPreferencePage.noproperty"));
+            GridData warningData = new GridData(GridData.FILL_BOTH);
+            noPropertyWarningText.setLayoutData(warningData);
+        }
+    }
+
+    private Group createPropertyGroup(Composite composite) {
+        Group propertiesGroup = new Group(composite, SWT.NULL);
+        GridLayout layout = new GridLayout();
+        layout.numColumns = 2;
+        layout.verticalSpacing = 30;
+        layout.horizontalSpacing = 30;
+        propertiesGroup.setLayout(layout);
+        GridData groupData = new GridData(GridData.FILL_HORIZONTAL);
+        propertiesGroup.setLayoutData(groupData);
+        propertiesGroup.setText(Mevenide.getResourceString("DynamicPreferencePage.propertygroup.text"));
+        return propertiesGroup;
+    }
+
+    private StringFieldEditor createPluginPropertyEditor(Composite parent, PluginProperty pluginProperty) {
         String propertyName = pluginProperty.getName(); 
         String propertyDefault = pluginProperty.getDefault();
         String propertyLabel = pluginProperty.getLabel();
@@ -123,5 +179,13 @@ public class DynamicPreferencePage extends PreferencePage implements IWorkbenchP
             preferencesManager.setValue(pageId + "." + propertyName, editor.getStringValue());
         }
         return preferencesManager.store();
+    }
+    
+    public String getPluginDescription() {
+        return pluginDescription;
+    }
+    
+    public void setPluginDescription(String pluginDescription) {
+        this.pluginDescription = pluginDescription;
     }
 }

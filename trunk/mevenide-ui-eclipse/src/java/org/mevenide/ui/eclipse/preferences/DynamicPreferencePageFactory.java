@@ -75,7 +75,10 @@ public class DynamicPreferencePageFactory {
         
         //plugin-provider description
         IConfigurationElement[] descriptionElements = configurationElement.getChildren(PLUGIN_DESCRIPTION);
-        
+        String pluginDescription = null;
+        if ( descriptionElements.length > 0 ) {
+            pluginDescription = descriptionElements[0].getValue();
+        }
         
         //plugin-provider properties
         IConfigurationElement[] propertyElements = configurationElement.getChildren(PLUGIN_PROPERTY);
@@ -96,7 +99,7 @@ public class DynamicPreferencePageFactory {
                     						  "true".equals(propertyRequired),
                     						  propertyDescription));
         }
-        IPreferenceNode node = new DynamicPreferenceNode(pageId, pageName, properties);
+        IPreferenceNode node = new DynamicPreferenceNode(pageId, pageName, pluginDescription, properties);
         return node;
     }
     

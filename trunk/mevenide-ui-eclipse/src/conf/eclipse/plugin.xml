@@ -47,9 +47,7 @@
 	<!-- sample extension -->
 	<extension point="org.mevenide.ui.preference">
        <plugin-provider id="maven-eclipse-plugin-plugin" name="PDE Plugin">
-          <description>
-            Sample Dynamic Page which demonstates the use of the org.mevenide.ui.preference extension point.
-          </description>
+          <description>%PDEPlugin.Description</description>
           <property name="maven.eclipse.plugin.mode" 
           			label="Build Mode"
                     default="bundle"
