@@ -23,7 +23,6 @@ import java.util.List;
 import org.apache.maven.project.Dependency;
 import org.apache.maven.project.Project;
 import org.mevenide.AbstractMevenideTestCase;
-import org.mevenide.project.io.ProjectWriterTest;
 import org.mevenide.util.DefaultProjectUnmarshaller;
 
 /**
