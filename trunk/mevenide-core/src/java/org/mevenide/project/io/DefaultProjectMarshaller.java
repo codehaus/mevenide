@@ -293,7 +293,7 @@ public class DefaultProjectMarshaller implements IProjectMarshaller {
 					marshallString(license.getName(), "name");
 					marshallString(license.getUrl(), "url");
 					marshallString(license.getDistribution(), "distribution");
-					//marshallString(license.getComments(), "comments");
+					marshallString(license.getComments(), "comments");
 					
 					serializer.endTag(NAMESPACE, "license");
 				}
