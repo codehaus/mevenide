@@ -18,23 +18,7 @@
 package org.mevenide.netbeans.grammar;
 
 import java.awt.Component;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.TreeSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-import java.util.TreeMap;
-import java.util.Vector;
+import java.util.*;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import org.apache.commons.logging.Log;
@@ -45,16 +29,10 @@ import org.netbeans.modules.xml.api.model.GrammarQuery;
 import org.netbeans.modules.xml.api.model.GrammarResult;
 import org.netbeans.modules.xml.api.model.HintContext;
 import org.netbeans.modules.xml.spi.dom.AbstractNode;
-import org.openide.filesystems.FileObject;
-import org.openide.filesystems.Repository;
+import org.openide.nodes.Node.Property;
 import org.openide.util.Utilities;
 import org.openide.util.enum.EmptyEnumeration;
-import org.openide.util.enum.SingletonEnumeration;
-import org.w3c.dom.Attr;
-import org.w3c.dom.DOMException;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.Text;
+import org.w3c.dom.*;
 
 /**
  */
@@ -135,9 +113,9 @@ public class MavenJellyGrammar implements GrammarQuery {
      * @param ctx the hint context node
      * @return an array of properties for this context
      */        
-    public org.openide.nodes.Node.Property[] getProperties(HintContext nodeCtx)
+    public Property[] getProperties(HintContext nodeCtx)
     {
-        return new org.openide.nodes.Node.Property[0];
+        return new Property[0];
     }
     
     public boolean hasCustomizer(HintContext nodeCtx)
@@ -460,7 +438,7 @@ public class MavenJellyGrammar implements GrammarQuery {
         }
     }
     
-    private static class MyElement extends AbstractResultNode implements org.w3c.dom.Element {
+    private static class MyElement extends AbstractResultNode implements Element {
         
         private String name;
         private String namespace;
@@ -483,7 +461,7 @@ public class MavenJellyGrammar implements GrammarQuery {
         }
     }    
 
-    private static class TagLibElement extends AbstractResultNode implements org.w3c.dom.Element {
+    private static class TagLibElement extends AbstractResultNode implements Element {
         
         private String namespace;
         
@@ -508,7 +486,7 @@ public class MavenJellyGrammar implements GrammarQuery {
         }        
     }        
     
-    private static class Attribute extends AbstractResultNode implements org.w3c.dom.Attr {
+    private static class Attribute extends AbstractResultNode implements Attr {
         
         private String name;
         
@@ -530,7 +508,7 @@ public class MavenJellyGrammar implements GrammarQuery {
         
     }    
 
-    private static class TextNode extends AbstractResultNode implements org.w3c.dom.Text {
+    private static class TextNode extends AbstractResultNode implements Text {
         
         private String name;
         
@@ -556,7 +534,7 @@ public class MavenJellyGrammar implements GrammarQuery {
         
     }    
 
-    private class SimpleComparator implements Comparator {
+    private static class SimpleComparator implements Comparator {
         
         public int compare(Object o1, Object o2)
         {
@@ -567,7 +545,7 @@ public class MavenJellyGrammar implements GrammarQuery {
         
     }
 
-    private class ElementComparator implements Comparator {
+    private static class ElementComparator implements Comparator {
         
         public int compare(Object o1, Object o2)
         {

@@ -26,21 +26,17 @@ import java.util.Vector;
 import javax.swing.Icon;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.jdom.Attribute;
 import org.jdom.Document;
-import org.jdom.Element;
 import org.jdom.filter.ElementFilter;
-import org.jdom.filter.Filter;
 import org.jdom.input.SAXBuilder;
 import org.netbeans.modules.xml.api.model.GrammarQuery;
 import org.netbeans.modules.xml.api.model.GrammarResult;
 import org.netbeans.modules.xml.api.model.HintContext;
 import org.netbeans.modules.xml.spi.dom.AbstractNode;
+import org.openide.nodes.Node.Property;
 import org.openide.util.enum.EmptyEnumeration;
-import org.openide.util.enum.SingletonEnumeration;
-import org.w3c.dom.DOMException;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import org.w3c.dom.Text;
 
 /**
  */
@@ -76,9 +72,9 @@ public class MavenProjectGrammar implements GrammarQuery {
      * @param ctx the hint context node
      * @return an array of properties for this context
      */        
-    public org.openide.nodes.Node.Property[] getProperties(HintContext nodeCtx)
+    public Property[] getProperties(HintContext nodeCtx)
     {
-        return new org.openide.nodes.Node.Property[0];
+        return new Property[0];
     }
     
     public boolean hasCustomizer(HintContext nodeCtx)
@@ -139,7 +135,7 @@ public class MavenProjectGrammar implements GrammarQuery {
         {
             String parentName = parentNode.getNodeName();
             logger.debug("parent name=" + parentName);
-            Element schemaRoot = schemaDoc.getRootElement();
+            org.jdom.Element schemaRoot = schemaDoc.getRootElement();
             List content = schemaRoot.getContent(new RootDefinitionElementFilter(parentName));
             logger.debug("returned items=" + content.size());
             Vector toReturn = new Vector();
@@ -147,8 +143,8 @@ public class MavenProjectGrammar implements GrammarQuery {
             while (it.hasNext())
             {
                 // should be just one..
-                Element parentEl = (Element)it.next();
-                Element seq = findSequenceElement(parentEl);
+                org.jdom.Element parentEl = (org.jdom.Element)it.next();
+                org.jdom.Element seq = findSequenceElement(parentEl);
                 if (seq != null)
                 {
                     processSequence(start, seq, toReturn, schemaRoot);
@@ -162,11 +158,11 @@ public class MavenProjectGrammar implements GrammarQuery {
         }
     }
     
-    private Element findSequenceElement(Element parent) 
+    private org.jdom.Element findSequenceElement(org.jdom.Element parent) 
     {
         logger.debug("findSequence parent name=" + parent.getAttributeValue("name"));
         logger.debug("findSequence parent content size=" + parent.getChildren().size());
-        Element complex = parent.getChild("complexType", parent.getNamespace());
+        org.jdom.Element complex = parent.getChild("complexType", parent.getNamespace());
         logger.debug("findSequence complex found" + (complex != null));
         if (complex != null) {
             return  complex.getChild("sequence", parent.getNamespace()); //NOI18N
@@ -174,7 +170,7 @@ public class MavenProjectGrammar implements GrammarQuery {
         return null;
     }
     
-    private void processElement(String matches, Element childEl, Vector suggestions, Element rootSchemaElement)
+    private void processElement(String matches, org.jdom.Element childEl, Vector suggestions, org.jdom.Element rootSchemaElement)
     {
         if (childEl.getName().equals("element")) //NOI18N
         {
@@ -198,7 +194,7 @@ public class MavenProjectGrammar implements GrammarQuery {
                 boolean found = false;
                 while (it.hasNext())
                 {
-                    Element grEl = (Element)it.next();
+                    org.jdom.Element grEl = (org.jdom.Element)it.next();
                     String grId = grEl.getAttributeValue("name");
                     if (grId != null && grId.equals(grName))
                     {
@@ -218,22 +214,22 @@ public class MavenProjectGrammar implements GrammarQuery {
         
     }
 
-    private void processGroup(String matches, Element groupEl, Vector suggestions, Element rootSchemaElement)
+    private void processGroup(String matches, org.jdom.Element groupEl, Vector suggestions, org.jdom.Element rootSchemaElement)
     {
-        Element seq = groupEl.getChild("sequence", groupEl.getNamespace());
+        org.jdom.Element seq = groupEl.getChild("sequence", groupEl.getNamespace());
         if (seq != null) {
             processSequence(matches, seq, suggestions, rootSchemaElement);
         }
     }
     
-    private void processSequence(String matches, Element seqEl, Vector suggestions, Element rootSchemaElement)
+    private void processSequence(String matches, org.jdom.Element seqEl, Vector suggestions, org.jdom.Element rootSchemaElement)
     {
         List availables = seqEl.getContent(new DefinitionContentElementFilter());
         logger.debug("content size=" + availables.size());
         Iterator availIt = availables.iterator();
         while (availIt.hasNext())
         {
-            Element childEl = (Element)availIt.next();
+            org.jdom.Element childEl = (org.jdom.Element)availIt.next();
             processElement(matches, childEl, suggestions, rootSchemaElement);
         }
     }
@@ -340,7 +336,7 @@ public class MavenProjectGrammar implements GrammarQuery {
         }
     }
     
-    private static class MyElement extends AbstractResultNode implements org.w3c.dom.Element {
+    private static class MyElement extends AbstractResultNode implements Element {
         
         private String name;
         
@@ -374,7 +370,7 @@ public class MavenProjectGrammar implements GrammarQuery {
             boolean toReturn = super.matches(obj);
             if (toReturn)
             {
-                Element el = (Element)obj;
+                org.jdom.Element el = (org.jdom.Element)obj;
                 toReturn = false;
                 if ("element".equals(el.getName()))
                 {
@@ -404,7 +400,7 @@ public class MavenProjectGrammar implements GrammarQuery {
             boolean toReturn = super.matches(obj);
             if (toReturn)
             {
-                Element el = (Element)obj;
+                org.jdom.Element el = (org.jdom.Element)obj;
                 toReturn = false;
                 if ("element".equals(el.getName()) || "group".equals(el.getName())) //NOI18N
                 {
