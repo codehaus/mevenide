@@ -35,6 +35,7 @@ import com.borland.primetime.build.BuildTask;
 import com.borland.primetime.build.ExternalTask;
 import com.borland.primetime.ide.BrowserIcons;
 import com.borland.primetime.vfs.Url;
+import com.borland.primetime.node.Project;
 
 /**
  * <p>Title: Maven Build Task</p>
@@ -114,26 +115,27 @@ public class MavenBuildTask extends BuildTask
             return false;
         }
         String mavenBootStrapLib = findBootstrapJar(mavenHome);
-        String mavenForeheadConf = mavenHome + File.separator + "bin" +
-            File.separator + "forehead.conf";
+        String mavenForeheadConf = delimitArgument(mavenHome + File.separator + "bin" +
+            File.separator + "forehead.conf");
         String mavenMainClass = "com.werken.forehead.Forehead";
 
-        // Use JDK that JBuilder is hosted on:
-        JDKPathSet hostJdk = JDKPathSet.getHostJDK();
+        // Get the project JDK
+        final Project project = buildProcess.getProject();
+        final JDKPathSet hostJdk = ((JBProject)project).getPaths().getJDKPathSet();
         String javaHome = delimitArgument(hostJdk.getHomePath().getFileObject().
                                           getAbsolutePath());
         String jvmArgs =
             " -Djavax.xml.parsers.DocumentBuilderFactory=org.apache.xerces.jaxp.DocumentBuilderFactoryImpl" +
             " -Djavax.xml.parsers.SAXParserFactory=org.apache.xerces.jaxp.SAXParserFactoryImpl" +
-            " -Dmaven.home=" + mavenHome +
+            " -Dmaven.home=" + delimitArgument(mavenHome) +
             " -Dtools.jar=" + buildToolsJarLocation(javaHome) +
             " -Dforehead.conf.file=" + mavenForeheadConf +
             " -Djava.endorsed.dirs=" + javaHome + File.separator + "lib" +
-            File.separator + "endorsed" + File.pathSeparator + mavenHome +
-            File.separator + "lib" +
-            File.separator + "endorsed" +
+            File.separator + "endorsed" + File.pathSeparator +
+            delimitArgument(mavenHome + File.separator + "lib" +
+                            File.separator + "endorsed") +
             " -Xmx160m" +
-            " -classpath " + mavenBootStrapLib;
+            " -classpath " + delimitArgument(mavenBootStrapLib);
         JBProject jbProject = (JBProject) mavenFileNode.getProject();
 
         File runDirFile = mavenFileNode.getUrl().getFileObject().getParentFile();
@@ -165,6 +167,10 @@ public class MavenBuildTask extends BuildTask
 
         if (MavenPropertyGroup.OFFLINE_MODE.getBoolean(mavenFileNode)) {
             command.append(" -o ");
+        }
+
+        if (MavenPropertyGroup.QUIET_MODE.getBoolean(mavenFileNode)) {
+            command.append(" -q ");
         }
 
         if (goals.size() > 0) {
@@ -331,7 +337,7 @@ public class MavenBuildTask extends BuildTask
         this.refreshDelay = refreshDelay;
     }
 
-    private static class MavenBuildListener extends BuildListener {
+    private class MavenBuildListener extends BuildListener {
         private boolean error = false;
         public void buildProblem (BuildProcess buildProcess, Url url,
                                   boolean error, String string, int line,
