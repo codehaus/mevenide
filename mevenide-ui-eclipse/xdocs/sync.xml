@@ -21,14 +21,14 @@
 				contextual menu (Screenshot 1, below). In the later case, only the selected file will be involved in the synchronization process. 
 				<br/><br/>
 				<center>
-					<img border="1px" src="images/synch-pom.png"/>
+					<img border="1px" src="images/sync_pom.png"/>
 					<br/><br/>
 					<font size="-1"><b>Screenshot 1</b> synchronization Contextual Menu</font>
 					<br/><br/>
 				</center>
-				When triggered from the project contextual menu, if multiple project.xml files are found in the selected project, 
+				When triggered from the Eclipse project contextual menu, if multiple project.xml files are found in the selected project
 				user will be asked to choose which POMs are to be included in the synchronization process. Also if any project.xml 
-				inherits from another POM this POM can be synchronized as well (Screenshot 2).
+				inherits from another POM, this POM can be synchronized as well (Screenshot 2).
 				<br/><br/>
 				<center>
 					<img border="1px" src="images/pom_choice_dialog.png"/>
@@ -60,7 +60,8 @@
 				by a rose triangle.
 			</p>
 			<p>
-				Any artefact can be added or removed to pom or .classpath. Actions are available depending of the vizualisation mode.  
+				Any artefact can be added or removed to and from pom or .classpath. Availability of the various actions depends of the 
+				current vizualisation mode.  
 				<br/><br/>
 				<center>
 					<img border="1px" src="images/synch_view.png"/>
@@ -70,11 +71,11 @@
 				<br/><br/>
 			</p>
 			<p>
-				Mevenide provides support for Dependency properties through the Property View (Screenshot 4, below).
-				Artefact (both dependencies and folders) synchronization can be customized through that view.
+				Artefacts (both dependencies and folders) synchronization can be customized through the properties view (Screenshot 4, below).
+				Mevenide will provide support for Dependency properties through that View as well.
 				<br/><br/>
 				<center>
-					<img border="1px" src="images/dependency-properties.png"/>
+					<img border="1px" src="images/synch_properties.png"/>
 					<br/><br/>
 					<font size="-1"><b>Screenshot 4</b> Properties View</font>	
 				</center>
