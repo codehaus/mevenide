@@ -81,7 +81,7 @@ public class ReportsSection extends PageSection {
 	private TableViewer availableReportsViewer;
 	private TableViewer includedReportsViewer;
 	private Button overrideToggle;
-	private DraggableTableEntry entry;
+	private DraggableTableEntry reportsEntry;
 	private TreeSet availableReports = new TreeSet();
     
 	public ReportsSection(ReportsPage page) {
@@ -109,7 +109,7 @@ public class ReportsSection extends PageSection {
 		availableReportsViewer = createAvailableReportsViewer(container, factory);		
 		includedReportsViewer = createIncludedReportsViewer(container, factory);
 		
-		entry = new DraggableTableEntry(availableReportsViewer, includedReportsViewer, overrideToggle);
+		reportsEntry = new DraggableTableEntry(availableReportsViewer, includedReportsViewer, overrideToggle);
 		OverrideAdaptor adaptor = new OverrideAdaptor() {
 			public void overrideParent(Object value) {
 				setReports((List) value);
@@ -119,8 +119,8 @@ public class ReportsSection extends PageSection {
 				return getParentPom().getReports();
 			}
 		};
-		entry.addEntryChangeListener(adaptor);
-		entry.addOverrideAdaptor(adaptor);
+		reportsEntry.addEntryChangeListener(adaptor);
+		reportsEntry.addOverrideAdaptor(adaptor);
 
 		factory.paintBordersFor(container);
 		return container;
@@ -187,15 +187,15 @@ public class ReportsSection extends PageSection {
 		List pomReports = pom.getReports();
 		List parentReports = isInherited() ? getParentPom().getReports() : null;
 		if (pomReports != null && !pomReports.isEmpty()) {
-			entry.addEntries(pomReports);
-			entry.setInherited(false);
+			reportsEntry.addEntries(pomReports);
+			reportsEntry.setInherited(false);
 		}
 		else if (parentReports != null) {
-			entry.addEntries(parentReports, true);
-			entry.setInherited(true);
+			reportsEntry.addEntries(parentReports, true);
+			reportsEntry.setInherited(true);
 		}
 		else {
-			entry.setInherited(false);
+			reportsEntry.setInherited(false);
 		}
 		
 		super.update(pom);
