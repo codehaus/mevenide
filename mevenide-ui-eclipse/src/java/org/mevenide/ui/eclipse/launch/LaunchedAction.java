@@ -88,7 +88,8 @@ public class LaunchedAction extends Action {
 		try {
 			Mevenide.getPlugin().setProject(project);
 			AbstractRunner.getRunner().run(options, goals);
-			LaunchHistory.getHistory().setLastlaunched(this);
+			LaunchHistory history = LaunchHistory.getHistory();
+			history.save(project, options, goals); 
 		} catch (Exception e) {
 			log.error("Unable to run LaunchedAction due to : " + e);
 		}
