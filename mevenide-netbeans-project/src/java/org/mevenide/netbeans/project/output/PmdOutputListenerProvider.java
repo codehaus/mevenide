@@ -110,6 +110,12 @@ public class PmdOutputListenerProvider extends AbstractOutputProcessor {
                 File[] files = result.getFiles();
                 File srcRoot = new File(project.getSrcDirectory());
                 FileObject rootFo = FileUtil.toFileObject(srcRoot);
+                if (files.length == 0) {
+                    writer.println("No files matched the defined pmd rules.");
+                } else {
+                    writer.println("Number of matched files: " + files.length);
+                    writer.println(" ");
+                }
                 for (int i = 0; i < files.length; i++) {
                     FileObject file = FileUtil.toFileObject(files[i]);
                     String relative = FileUtil.getRelativePath(rootFo, file);
