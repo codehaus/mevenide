@@ -32,9 +32,27 @@ import org.eclipse.ui.part.ViewPart;
  * @version $Id$
  * 
  */
-public class RepositoryBrowser extends ViewPart {
+public class RepositoryBrowser extends ViewPart implements RepositoryEventListener {
+    
+    
+    private String repositoryUrl = "http://www.ibiblio.org/maven/";
     
     private Text repositoryUrlText;
+    
+    private TreeViewer repositoryViewer;
+    
+    
+    public void dataLoaded(final RepositoryEvent event) {
+        if ( repositoryUrl != null && repositoryUrl.equals(event.getRepositoryUrl()) ) {
+            repositoryViewer.getControl().getDisplay().asyncExec(
+    				new Runnable() {
+    					public void run () {
+				            repositoryViewer.refresh(event.getElement());
+    					}
+    				}
+    		);
+        }   
+    }
     
     public void createPartControl(Composite parent) {
         parent.setLayoutData(new GridData(GridData.FILL_BOTH));
@@ -58,11 +76,13 @@ public class RepositoryBrowser extends ViewPart {
         layoutData.grabExcessVerticalSpace = true;
         composite.setLayoutData(layoutData);
         
-        TreeViewer repoViewer = new TreeViewer(composite, SWT.NULL);
-        repoViewer.setContentProvider(new RepositoryContentProvider());
-        repoViewer.setLabelProvider(new RepositoryObjectLabelProvider());
-        repoViewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
-        repoViewer.setInput("http://www.ibiblio.org/maven/");
+        repositoryViewer = new TreeViewer(composite, SWT.NULL);
+        RepositoryContentProvider contentProvider = new RepositoryContentProvider();
+        contentProvider.addRepositoryEventListener(this);
+        repositoryViewer.setContentProvider(contentProvider);
+        repositoryViewer.setLabelProvider(new RepositoryObjectLabelProvider());
+        repositoryViewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
+        repositoryViewer.setInput(repositoryUrl);
     }
 
     private void createRepositoryUrlComposite(Composite container) {
