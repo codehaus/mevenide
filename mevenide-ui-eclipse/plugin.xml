@@ -76,9 +76,9 @@
                label="Maven"
                path="additions"
                id="maven.plugin.menu">
-            <!-- separator
+            <separator
                   name="RunMaven">
-            </separator -->
+            </separator>
             <separator
                   name="Synchronize">
             </separator>
@@ -86,22 +86,22 @@
                   name="MavenNature">
             </separator>
          </menu>
-         <!-- action
+         <action
                label="Run Maven..."
                icon="icons/maven-run.gif"
-               class="org.mevenide.ui.eclipse.actions.RunMavenAction"
+               class="org.mevenide.ui.eclipse.actions.LaunchAction"
                menubarPath="maven.plugin.menu/RunMaven"
                enablesFor="1"
                id="maven.plugin.popup.action">
-            <enablement>
+            <!-- enablement>
                <and>
                   <objectState
                         name="nature"
                         value="mavenplugin.mavennature">
                   </objectState>
                </and>
-            </enablement>
-         </action -->
+            </enablement -->
+         </action>
          <action
                label="Synchronize Project"
                icon="icons/maven-synch-project.gif"
@@ -165,18 +165,18 @@
             <separator
                   name="RunMaven">
             </separator>
-            <!-- separator
+            <separator
                   name="Synchronize">
-            </separator -->
+            </separator>
          </menu>
-         <!-- action
+         <action
                label="Run Maven..."
                icon="icons/maven-run.gif"
-               class="org.mevenide.ui.eclipse.actions.RunMavenAction"
+               class="org.mevenide.ui.eclipse.actions.LaunchAction"
                menubarPath="maven.plugin.menu/RunMaven"
                enablesFor="1"
                id="maven.plugin.popup.action">
-         </action -->
+         </action>
          <action
                label="Synchronize Project"
                icon="icons/maven-synch-project.gif"
