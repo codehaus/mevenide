@@ -28,7 +28,6 @@ import org.openide.util.Utilities;
  */
 class ResourcesRootNode extends AbstractNode {
     private MavenProject project;
-    private static Action actions[];
     
     ResourcesRootNode(MavenProject mavproject) {
         super(new ResourcesRootChildren(mavproject));

@@ -1,5 +1,5 @@
 /* ==========================================================================
- * Copyright 2003-2004 Apache Software Foundation
+ * Copyright 2003-2004 Mevenide Team
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,6 @@ import org.jdom.Element;
  * @author  <a href="mailto:ca206216@tiscali.cz">Milos Kleint</a>
  */
 
-//mkleint - the actual impl that's parsing the project.xml file needs to be defined in mevenide-core
 
 public interface IProjectContext
 {

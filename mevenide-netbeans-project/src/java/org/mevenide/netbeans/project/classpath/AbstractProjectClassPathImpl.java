@@ -174,7 +174,7 @@ abstract class AbstractProjectClassPathImpl implements ClassPathImplementation {
                     getMavenProject().getPropertyResolver(),
                     getMavenProject().getLocFinder());
             if (path != null) {
-                File file = new File(path);
+                File file = FileUtil.normalizeFile(new File(path));
                 uri = file.toURI();
             } else {
                 uri = FileUtilities.getDependencyURI(dep, getMavenProject());

@@ -25,9 +25,9 @@ import java.util.List;
 import java.util.StringTokenizer;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.maven.MavenUtils;
 import org.apache.maven.project.Resource;
 import org.apache.tools.ant.DirectoryScanner;
+import org.mevenide.util.MevenideUtils;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 
@@ -127,7 +127,7 @@ public final class DirScannerSubClass extends DirectoryScanner {
     public static boolean checkVisible(File file, File rootFile) {
         String relPath = "";
         try {
-            relPath = MavenUtils.makeRelativePath(rootFile, file.getAbsolutePath());
+            relPath = MevenideUtils.makeRelativePath(rootFile, file.getAbsolutePath());
         } catch (IOException exc) {
             logger.info(exc);
             return false;

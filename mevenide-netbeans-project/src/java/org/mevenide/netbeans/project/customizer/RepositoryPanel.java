@@ -21,27 +21,23 @@ import java.awt.event.ActionListener;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
 
 import java.util.List;
 import java.util.Map;
+import java.util.HashMap;
 import javax.swing.JButton;
 
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import org.apache.maven.project.Project;
-import org.apache.maven.project.Repository;
 import org.mevenide.netbeans.project.MavenProject;
-import org.mevenide.netbeans.project.customizer.ProjectValidateObserver;
 import org.mevenide.netbeans.project.customizer.ui.LocationComboFactory;
 import org.mevenide.netbeans.project.customizer.ui.OriginChange;
 import org.mevenide.project.io.IContentProvider;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.awt.HtmlBrowser;
-
+import org.apache.maven.project.Repository;
 
 /**
  *

@@ -94,6 +94,7 @@
   <folder name="Editors">
     <folder name="AnnotationTypes">
       <file name="org-mevenide-netbeans-project-error.xml" url="error-annotation.xml"/>
+      <file name="org-mevenide-netbeans-project-pmd.xml" url="pmd-annotation.xml"/>
     </folder>
   </folder>    
 </filesystem>

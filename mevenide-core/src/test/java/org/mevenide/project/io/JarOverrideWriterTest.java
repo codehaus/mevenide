@@ -1,5 +1,5 @@
 /* ==========================================================================
- * Copyright 2003-2004 Apache Software Foundation
+ * Copyright 2003-2004 Mevenide Team
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -75,7 +75,7 @@ public class JarOverrideWriterTest  extends AbstractMevenideTestCase {
 		overrider.jarOverride(dep2.getArtifactId(), path2, project);
 	
 		PropertyModel model = PropertyModelFactory.getFactory().newPropertyModel(new File(projectFile.getParentFile(), "project.properties"));
-		System.err.println(model.toString());
+//		System.err.println(model.toString());
 //		assertEquals(path, model.findByKey("maven.jar." + dep.getArtifactId()).getValue());
 //		assertEquals(path2, model.findByKey("maven.jar." + dep2.getArtifactId()).getValue());
 //		assertEquals(path3, model.findByKey("maven.jar." + dep3.getArtifactId()).getValue());

@@ -5,8 +5,9 @@
     <id>mevenide-config</id>
     <artifactId>mevenide-config</artifactId>
     <name>Mevenide Config</name>
-    <currentVersion>0.5</currentVersion>
+    <currentVersion>0.6-SNAPSHOT</currentVersion>
     <package>org.mevenide.config</package>
+<!--    <package>org.mevenide</package> -->
     <description>
     	Mevenide Config allows to manipulate Maven config, e.g. system environment variables, project config (project.properties), user-defined config (build.propertie, ...).
     </description>
@@ -38,7 +39,7 @@
             <version>1.0.3</version>
             <type>jar</type>
             <properties>
-                <netbeans.module.dep>spec</netbeans.module.dep>
+                <netbeans.module.dep>spec=org.netbeans.libs.commons_logging/1 &gt; 1.0</netbeans.module.dep>
             	<eclipse.plugin.bundle>false</eclipse.plugin.bundle>
             </properties>
         </dependency>
@@ -84,11 +85,11 @@
         <dependency>
             <groupId>jdom</groupId>
             <artifactId>jdom</artifactId>
-            <version>1.0b8</version>
+            <version>1.0</version>
             <type>jar</type>
             <properties>
             	<eclipse.plugin.bundle>true</eclipse.plugin.bundle>
-                <netbeans.module.dep>impl</netbeans.module.dep>
+                <netbeans.module.dep>spec=jdom &gt; 1.0.1</netbeans.module.dep>
             </properties>
         </dependency>
         

@@ -1,5 +1,5 @@
 /* ==========================================================================
- * Copyright 2003-2004 Apache Software Foundation
+ * Copyright 2003-2004 Mevenide Team
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,7 +34,6 @@ public class AllTests  {
         
 		suite.addTestSuite(DefaultProjectMarshallerTest.class);
 		suite.addTestSuite(CarefulProjectMarshallerTest.class);
-		suite.addTestSuite(JarOverrideReaderTest.class);
 		suite.addTestSuite(JarOverrideReader2Test.class);
 		suite.addTestSuite(ProjectReaderTest.class);
 		suite.addTestSuite(JarOverrideWriterTest.class);

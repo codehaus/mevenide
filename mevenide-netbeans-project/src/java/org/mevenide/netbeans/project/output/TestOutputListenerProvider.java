@@ -122,7 +122,7 @@ public class TestOutputListenerProvider extends AbstractOutputProcessor {
         }
         
         private void openLog(FileObject fo, String title, FileObject testFile) {
-            InputOutput io = IOProvider.getDefault().getIO(title, true);
+            InputOutput io = IOProvider.getDefault().getIO(title, false);
             io.select();
             BufferedReader reader = null;
             OutputWriter writer = io.getOut();

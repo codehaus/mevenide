@@ -26,6 +26,8 @@ import org.mevenide.context.DefaultQueryContext;
 import org.mevenide.environment.ILocationFinder;
 import org.mevenide.environment.LocationFinderAggregator;
 import org.mevenide.environment.SysEnvLocationFinder;
+import org.mevenide.netbeans.project.output.CompileAnnotation;
+import org.mevenide.netbeans.project.output.PmdAnnotation;
 import org.openide.modules.InstalledFileLocator;
 import org.openide.modules.ModuleInstall;
 
@@ -48,6 +50,11 @@ public class MavenModule extends ModuleInstall {
         SysEnvLocationFinder.setDefaultSysEnvProvider(new NbSysEnvProvider());
     }
     
+   public void uninstalled () {
+        PmdAnnotation.detachAllAnnotations();
+        CompileAnnotation.detachAllAnnotations();
+    }
+   
     public void validate() throws java.lang.IllegalStateException {
         String maven_home = System.getProperty("Env-MAVEN_HOME");//NOI18N
         if (maven_home == null) {

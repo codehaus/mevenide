@@ -17,7 +17,6 @@
 package org.mevenide.netbeans.project.customizer;
 
 import java.awt.event.ActionListener;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -38,9 +37,7 @@ import org.netbeans.spi.project.ActionProvider;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
-import org.openide.filesystems.FileObject;
-import org.openide.filesystems.FileUtil;
-import org.openide.util.NbBundle;
+
 
 
 /**
@@ -825,9 +822,7 @@ public class ActionMappingPanel extends JPanel implements ProjectPanel {
             fld = field;
         }
         public void actionPerformed(java.awt.event.ActionEvent actionEvent) {
-            FileObject projxml = project.getProjectDirectory().getFileObject("project.xml"); //NOI18N
-            File projxmlFile  = FileUtil.toFile(projxml);
-            GoalsGrabberProvider goalProvider = GoalUtils.createProjectGoalsProvider(projxmlFile.getAbsolutePath());
+            GoalsGrabberProvider goalProvider = GoalUtils.createProjectGoalsProvider(project.getContext(), project.getLocFinder());
             CustomGoalsPanel panel = new CustomGoalsPanel(goalProvider);
             panel.setGoalsToExecute(fld.getText());
             DialogDescriptor desc = new DialogDescriptor(panel, "Select goal(s)");

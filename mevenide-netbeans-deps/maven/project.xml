@@ -115,18 +115,17 @@
             <netbeans.module.ext>true</netbeans.module.ext>
       </properties>
     </dependency>
-<!--    <dependency>
+    <dependency>
       <id>commons-logging</id>
       <version>1.0.1</version>
       <url>http://jakarta.apache.org/commons/logging.html</url>
       <properties>
-            <netbeans.module.dep>spec</netbeans.module.dep>
+          <netbeans.module.dep>spec=org.netbeans.libs.commons_logging/1 &gt; 1.0</netbeans.module.dep>      
       </properties>
     </dependency>
-    -->
 
    <!-- replacer for commons-logging+log4j -->
-    <dependency>
+<!--    <dependency>
       <id>commons-logging-nb-module</id>
       <groupId>mevenide</groupId>
       <version>1.0.3</version>
@@ -134,7 +133,7 @@
             <netbeans.module.dep>spec</netbeans.module.dep>
       </properties>
     </dependency>
-    
+    -->
     <dependency>
       <id>werkz</id>
       <version>20040426.222000</version>

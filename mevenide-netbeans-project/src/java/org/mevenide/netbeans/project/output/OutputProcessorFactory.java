@@ -47,6 +47,7 @@ public class OutputProcessorFactory {
         processors.add(new TestOutputListenerProvider(project));
         processors.add(new JavaOutputListenerProvider(project));
         processors.add(new AnnouncementOutputListenerProvider(project));
+        processors.add(new PmdOutputListenerProvider(project));
         String javadoc = project.getPropertyResolver().getResolvedValue("maven.javadoc.destdir"); //NOI18N
         if (javadoc != null) {
             File fil = new File(javadoc, "index.html"); //NOI18N

@@ -47,7 +47,6 @@ import org.mevenide.context.IProjectContext;
 import org.mevenide.context.IQueryContext;
 import org.mevenide.environment.ConfigUtils;
 import org.mevenide.environment.ILocationFinder;
-import org.mevenide.project.DefaultProjectContext;
 import org.mevenide.properties.IPropertyLocator;
 import org.mevenide.properties.IPropertyResolver;
 import org.mevenide.properties.resolver.PropertyLocatorFactory;
@@ -210,10 +209,6 @@ public class MavenLaunchDelegate extends AbstractRunner implements ILaunchConfig
 	
 	private IQueryContext getQueryContext(File file) {
 	    IQueryContext queryContext = new DefaultQueryContext(file);
-	    IPropertyResolver resolver = PropertyResolverFactory.getFactory().createContextBasedResolver(queryContext);
-	    IPropertyLocator locator = PropertyLocatorFactory.getFactory().createContextBasedLocator(queryContext);
-	    IProjectContext projectContext = new DefaultProjectContext(queryContext, resolver);
-	    ((DefaultQueryContext)queryContext).initializeProjectContext(projectContext);
 	    return queryContext;
     }
 

@@ -71,7 +71,6 @@ public class MavenExecutor implements Runnable {
     private String meter = "silent"; //NOI18N
     
     private static final long serialVersionUID = 7564737833872873L;
-    private NbProcessDescriptor descriptor;
     private MavenProject project;
     private Process proces;
     private String format;
@@ -165,7 +164,7 @@ public class MavenExecutor implements Runnable {
     }
     
     private InputOutput createInputOutput() {
-        InputOutput newio = IOProvider.getDefault().getIO("Maven", false);
+        InputOutput newio = IOProvider.getDefault().getIO("Maven (" + project.getName() + ")", false);
         newio.setErrSeparated(false);
         try {
             newio.getOut().reset();

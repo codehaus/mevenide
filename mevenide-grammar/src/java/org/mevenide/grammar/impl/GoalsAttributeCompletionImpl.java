@@ -1,6 +1,5 @@
-/*
- * ==========================================================================
- * Copyright 2003-2004 Apache Software Foundation
+/* ==========================================================================
+ * Copyright 2003-2004 Mevenide Team
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -24,6 +23,10 @@ import java.util.Iterator;
 import java.util.TreeSet;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.mevenide.context.DefaultQueryContext;
+import org.mevenide.context.IQueryContext;
+import org.mevenide.environment.ILocationFinder;
+import org.mevenide.environment.LocationFinderAggregator;
 import org.mevenide.goals.grabber.IGoalsGrabber;
 import org.mevenide.goals.manager.GoalsGrabbersManager;
 import org.mevenide.grammar.AttributeCompletion;
@@ -50,8 +53,9 @@ public class GoalsAttributeCompletionImpl implements AttributeCompletion {
     
     /** Creates a new instance of GoalsAttributeCompletionImpl */
     public GoalsAttributeCompletionImpl() throws Exception {
-        grabber = GoalsGrabbersManager.getDefaultGoalsGrabber();
-        defaultGrabber = GoalsGrabbersManager.getDefaultGoalsGrabber();
+        ILocationFinder finder = new LocationFinderAggregator(DefaultQueryContext.getNonProjectContextInstance());
+        grabber = GoalsGrabbersManager.getDefaultGoalsGrabber(finder);
+        defaultGrabber = grabber;
     }
 
     public String getName() {
@@ -60,8 +64,9 @@ public class GoalsAttributeCompletionImpl implements AttributeCompletion {
 
     public void setBasedir(String basedir) {
         this.basedir = basedir;
-		try {
-            grabber = GoalsGrabbersManager.getGoalsGrabber(new File(basedir, "project.xml").getAbsolutePath());
+        try {
+            IQueryContext context = new DefaultQueryContext(new File(basedir));
+            grabber = GoalsGrabbersManager.getGoalsGrabber(context, new LocationFinderAggregator(context));
         }
         catch (Exception e) {
             grabber = defaultGrabber;

@@ -1,5 +1,5 @@
 /* ==========================================================================
- * Copyright 2003-2004 Apache Software Foundation
+ * Copyright 2003-2004 Mevenide Team
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,24 +14,22 @@
  *  limitations under the License.
  * =========================================================================
  */
-package org.mevenide.environment;
+package org.mevenide.context;
 
+import org.mevenide.context.AbstractUnmarshallerTestCase;
+import org.mevenide.context.IProjectUnmarshaller;
+import org.mevenide.context.JDomProjectUnmarshaller;
 
-
-
-/**  
+/**
  * 
  * @author Gilles Dodinet (gdodinet@wanadoo.fr)
- * @version $Id: UserRefinedPropertiesLocationFinderTest.java,v 1.1 16 nov. 2003 Exp gdodinet 
+ * @version $Id: DefaultProjectUnmarshallerTest.java 8 mai 2003 15:32:4913:34:35 Exp gdodinet 
  * 
  */
-public class ProjectPropertiesLocationFinderTest extends AbstractCustomizablePropertiesLocationFinderTest {
-    
-    protected String getFileName() {
-		return "build.properties";
+public class JDomProjectUnmarshallerTest extends AbstractUnmarshallerTestCase {
+
+	protected IProjectUnmarshaller getUnmarshaller() {
+        return new JDomProjectUnmarshaller();
     }
-    
-	protected PropertiesLocationFinder getPropertiesLocationFinder() throws Exception {
-	    return new UserRefinedPropertiesLocationFinder(getPropertyFile().getParent());
-    }
+	
 }

@@ -1,5 +1,5 @@
 /* ==========================================================================
- * Copyright 2003-2004 Apache Software Foundation
+ * Copyright 2003-2004 Mevenide Team
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,8 @@
 package org.mevenide.properties.resolver;
 
 import java.io.File;
+import org.mevenide.environment.ILocationFinder;
+import org.mevenide.environment.LocationFinderAggregator;
 import org.mevenide.properties.IPropertyFinder;
 import org.mevenide.properties.IPropertyLocator;
 
@@ -27,15 +29,32 @@ import org.mevenide.properties.IPropertyLocator;
 public class PropertyFilesAggregatorTest extends AbstractResolverTestCase {
     
     protected PropertyFilesAggregator def;
+    protected ILocationFinder finder;
     /** Creates a new instance of DefaultsResolverTest */
     public PropertyFilesAggregatorTest() {
     }
     
     protected void setUp() throws Exception {
         super.setUp();
-        def = new PropertyFilesAggregator(projectDir, userHomeDir, 
-                new DefaultsResolver(projectDir, userHomeDir, finder, 
-                    new DummyPropFilesFinder()));
+        File buildprop = new File(AbstractResolverTestCase.class.getResource("/org/mevenide/properties/maven-test-plugin/plugin.properties").getFile());
+        File repo = new File(projectDir, ".maven");
+        if (!repo.exists()) {
+            repo.mkdir();
+        }
+        File cache = new File(repo, "cache");
+        if (!cache.exists()) {
+            cache.mkdir();
+        }
+        File test = new File(cache, "maven-test-plugin");
+        if (!test.exists()) {
+            test.mkdir();
+        }
+        File copyTo = new File(test, "plugin.properties");
+        copy(buildprop.getAbsolutePath(), copyTo.getAbsolutePath());
+        
+        def = new PropertyFilesAggregator(context, new DefaultsResolver(context));
+        finder = new LocationFinderAggregator(context);
+        
     }
     
     public void testGetValue() throws Exception {
@@ -54,6 +73,15 @@ public class PropertyFilesAggregatorTest extends AbstractResolverTestCase {
         assertNotNull(test);
         assertEquals("${maven.build.dir}/test-classes", test);
         
+        String parentValue = def.getValue("test1");
+        assertNotNull(parentValue);
+        assertEquals("parentbuild", parentValue);
+        assertEquals(IPropertyLocator.LOCATION_PARENT_PROJECT_BUILD, def.getPropertyLocation("test1"));
+        
+        parentValue = def.getValue("test2");
+        assertNotNull(parentValue);
+        assertEquals("parentproject", parentValue);
+        assertEquals(IPropertyLocator.LOCATION_PARENT_PROJECT, def.getPropertyLocation("test2"));
     }
 
     public void testGetResolvedValue() throws Exception {
@@ -79,7 +107,6 @@ public class PropertyFilesAggregatorTest extends AbstractResolverTestCase {
         assertNotNull(test);
         correct = new File(projectDir.getAbsolutePath() + "/target_yyy/test-classes");
         assertEquals(correct.getAbsolutePath().replaceAll("\\\\", "/"), test.replaceAll("\\\\", "/"));
-        
     }
     
     public void testResolveString() throws Exception {
@@ -101,21 +128,9 @@ public class PropertyFilesAggregatorTest extends AbstractResolverTestCase {
     }
     
     protected void tearDown() throws Exception {
-        super.tearDown();
+ //       super.tearDown();
         def = null;
     }
     
-    private class DummyPropFilesFinder implements IPropertyFinder {
-        
-        public String getValue(String key) {
-            if (key.equals("maven.test.dest")) {
-                return "${maven.build.dir}/test-classes";
-            }
-            return null;
-        }
-        
-        public void reload() {
-        }
-        
-    }
+
 }

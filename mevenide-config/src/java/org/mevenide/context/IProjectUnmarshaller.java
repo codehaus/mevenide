@@ -1,5 +1,5 @@
 /* ==========================================================================
- * Copyright 2003-2004 Apache Software Foundation
+ * Copyright 2003-2004 Mevenide Team
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,21 +14,20 @@
  *  limitations under the License.
  * =========================================================================
  */
-package org.mevenide.project.io;
+package org.mevenide.context;
 
-import org.mevenide.project.io.AbstractUnmarshallerTestCase;
-import org.mevenide.project.io.IProjectUnmarshaller;
+import java.io.Reader;
 
-/**
+import org.apache.maven.project.Project;
+
+
+/**  
  * 
- * @author Gilles Dodinet (gdodinet@wanadoo.fr)
- * @version $Id: DefaultProjectUnmarshallerTest.java 8 mai 2003 15:32:4913:34:35 Exp gdodinet 
+ * @author <a href="mailto:rhill2@free.fr">Gilles Dodinet</a>
+ * @version $Id$
  * 
  */
-public class JDomProjectUnmarshallerTest extends AbstractUnmarshallerTestCase {
-
-	protected IProjectUnmarshaller getUnmarshaller() {
-        return new JDomProjectUnmarshaller();
-    }
-	
+public interface IProjectUnmarshaller {
+    Project parse(Reader reader) throws Exception ;
+    
 }

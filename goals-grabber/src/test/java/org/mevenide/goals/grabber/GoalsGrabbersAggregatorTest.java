@@ -1,5 +1,5 @@
 /* ==========================================================================
- * Copyright 2003-2004 Apache Software Foundation
+ * Copyright 2003-2004 Mevenide Team
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,8 @@
  * =========================================================================
  */
 package org.mevenide.goals.grabber;
+
+import org.mevenide.environment.LocationFinderAggregator;
 
 
 
@@ -54,7 +56,7 @@ public class GoalsGrabbersAggregatorTest extends AbstractGoalsGrabberTestCase {
 	private AbstractGoalsGrabberTestCase projectGoalsGrabberTest = new ProjectGoalsGrabberTest();
 
 	protected IGoalsGrabber getGoalsGrabber() throws Exception {
-        defaultGoalsGrabber = defaultGoalsGrabberTest.getGoalsGrabber();
+        defaultGoalsGrabber = new DefaultGoalsGrabber(new LocationFinderAggregator(context));
 		projectGoalsGrabber = projectGoalsGrabberTest.getGoalsGrabber();
 		
 		goalsGrabber = new GoalsGrabbersAggregator();

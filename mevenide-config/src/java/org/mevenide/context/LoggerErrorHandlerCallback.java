@@ -1,6 +1,6 @@
 /* ==========================================================================
- * Copyright 2003-2004 Apache Software Foundation
- * 
+ * Copyright 2003-2004 Mevenide Team
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,24 +14,29 @@
  *  limitations under the License.
  * =========================================================================
  */
-package org.mevenide.environment;
 
+package org.mevenide.context;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
-
-/**  
- * 
- * @author Gilles Dodinet (gdodinet@wanadoo.fr)
- * @version $Id: UserRefinedPropertiesLocationFinderTest.java,v 1.1 16 nov. 2003 Exp gdodinet 
- * 
+/**
+ *
+ * @author  <a href="mailto:mkleint@gmail.com">Milos Kleint</a>
  */
-public class UserRefinedPropertiesLocationFinderTest extends AbstractCustomizablePropertiesLocationFinderTest {
+class LoggerErrorHandlerCallback implements IQueryErrorCallback {
+    private static final Log logger = LogFactory.getLog(LoggerErrorHandlerCallback.class);
     
-    protected String getFileName() {
-		return "build.properties";
+    /** Creates a new instance of NoopErrorHandlerCallback */
+    public LoggerErrorHandlerCallback() {
+    }
+
+    public void handleError(int errorNumber, Exception exception) {
+        logger.error("exception while reading IQueryContext", exception);
     }
     
-	protected PropertiesLocationFinder getPropertiesLocationFinder() throws Exception {
-	    return new UserRefinedPropertiesLocationFinder(getPropertyFile().getParent());
+    public void discardError(int errorNumber) {
+        
     }
+    
 }

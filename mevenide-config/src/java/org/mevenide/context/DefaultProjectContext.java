@@ -1,5 +1,5 @@
 /* ==========================================================================
- * Copyright 2003-2004 Apache Software Foundation
+ * Copyright 2003-2004 Mevenide Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,9 +14,11 @@
  *  limitations under the License.
  * =========================================================================
  */
-package org.mevenide.project;
+package org.mevenide.context;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -26,22 +28,19 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Project;
 import org.jdom.Element;
 import org.jdom.Text;
-import org.jdom.input.DefaultJDOMFactory;
-import org.jdom.input.JDOMFactory;
-import org.mevenide.context.IProjectContext;
-import org.mevenide.context.IQueryContext;
-import org.mevenide.project.io.JDomProjectUnmarshaller;
+import org.jdom.DefaultJDOMFactory;
+import org.jdom.JDOMFactory;
 import org.mevenide.properties.IPropertyResolver;
-import org.mevenide.util.MevenideUtils;
 
 
 /**
  * @author  <a href="mailto:ca206216@tiscali.cz">Milos Kleint</a>
  *
  */
-public class DefaultProjectContext implements IProjectContext {
+class DefaultProjectContext implements IProjectContext {
     private static final Log logger = LogFactory.getLog(DefaultProjectContext.class);
     
+    private IQueryErrorCallback callback;
     private Project mergedProject;
     private List projects;
     private List projectFiles;
@@ -54,7 +53,8 @@ public class DefaultProjectContext implements IProjectContext {
     private IPropertyResolver propResolver;
     private IQueryContext queryContext;
     
-    public DefaultProjectContext(IQueryContext context, IPropertyResolver resolver) {
+    public DefaultProjectContext(IQueryContext context, IPropertyResolver resolver, IQueryErrorCallback errorCallback) {
+        callback = errorCallback;
         unmarshaller = new JDomProjectUnmarshaller();
         propResolver = resolver;
         queryContext = context;
@@ -149,11 +149,16 @@ public class DefaultProjectContext implements IProjectContext {
     private void readProject(File file) {
         logger.debug("readproject=" + file);
         if (file.exists()) {
+            callback.discardError(IQueryErrorCallback.ERROR_CANNOT_FIND_POM);
             Element proj;
             try {
                 proj = unmarshaller.parseRootElement(file);
             } catch (Exception exc) {
-                logger.error("cannot parse file=" + file, exc);
+                JDOMFactory fact = new DefaultJDOMFactory();
+                jdomRootElements.add(fact.element("project"));
+                projectFiles.add(file);
+                projectTimestamps.add(new Long(file.lastModified()));
+                callback.handleError(IQueryErrorCallback.ERROR_UNPARSABLE_POM, exc);
                 return;
             }
             if (proj != null) {
@@ -161,26 +166,31 @@ public class DefaultProjectContext implements IProjectContext {
                 projectFiles.add(file);
                 projectTimestamps.add(new Long(file.lastModified()));
                 String extend = proj.getChildText("extend");
+                callback.discardError(IQueryErrorCallback.ERROR_UNPARSABLE_POM);
                 if (extend != null) {
                     extend = propResolver.resolveString(extend);
                     File absolute = new File(extend);
-                    absolute = MevenideUtils.normalizeFile(absolute);
+                    absolute = JDomProjectUnmarshaller.normalizeFile(absolute);
                     if (absolute.exists() && (!absolute.equals(file))) {
+                        callback.discardError(IQueryErrorCallback.ERROR_CANNOT_FIND_PARENT_POM);
                         readProject(absolute);
                     } else {
                         File relative = new File(queryContext.getProjectDirectory(), extend);
-                        relative = MevenideUtils.normalizeFile(relative);
+                        relative = JDomProjectUnmarshaller.normalizeFile(relative);
                         if (relative.exists() && (!relative.equals(file))) {
+                            callback.discardError(IQueryErrorCallback.ERROR_CANNOT_FIND_PARENT_POM);
                             readProject(relative);
                         } else {
-                            // TODO - for debugging purposes
-                            // later just semisilently ignore??
-                            //throw new IllegalStateException("Cannot read parent.(" + extend + ")" );
-                            logger.error("Cannot read parent.(" + extend + ")");
+                                //throw new IllegalStateException("Cannot read parent.(" + extend + ")" );
+                            callback.handleError(IQueryErrorCallback.ERROR_CANNOT_FIND_PARENT_POM, 
+                                   new FileNotFoundException("Cannot find <extend> file:" + extend));
                         }
                     }
                 }
             }
+        } else {
+            callback.handleError(IQueryErrorCallback.ERROR_CANNOT_FIND_POM, 
+                       new FileNotFoundException("Cannot find project.xml file:" + file.getAbsolutePath()));
         }
     }
     
@@ -365,5 +375,32 @@ public class DefaultProjectContext implements IProjectContext {
         }
     }
     
+	/**
+	 * copied from mevenide-core.. cannot reference, but I didn't want to move MevenideUtil to mevenide-config
+	 * 
+     * Convert an absolute path to a relative path if it is under a given base directory.
+     * @param basedir the base directory for relative paths
+     * @param path the directory to resolve
+     * @return the relative path
+     * @throws IOException if canonical path fails
+     */
+    static String makeRelativePath( File basedir, String path ) throws IOException {
+        String canonicalBasedir = basedir.getCanonicalPath();
+        String canonicalPath = new File( path ).getCanonicalPath();
+
+        if ( canonicalPath.equals(canonicalBasedir) ) {
+            return ".";
+        }
+
+        if ( canonicalPath.startsWith( canonicalBasedir ) ) {
+            if ( canonicalPath.charAt( canonicalBasedir.length() ) == File.separatorChar ) {
+                canonicalPath = canonicalPath.substring( canonicalBasedir.length() + 1 );
+            }
+            else {
+                canonicalPath = canonicalPath.substring( canonicalBasedir.length() );
+            }
+        }
+        return canonicalPath;
+    }    
  
 }

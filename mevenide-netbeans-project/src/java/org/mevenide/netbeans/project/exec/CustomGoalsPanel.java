@@ -214,10 +214,7 @@ public class CustomGoalsPanel extends JPanel
                         logger.error("No grabber");
                         throw new Exception("no grabber");
                     }
-                    if (grabber.getPlugins() == null)
-                    {
-                        grabber.refresh();
-                    }
+                    grabber.refresh();
                     SwingUtilities.invokeLater(new Runnable()
                     {
                         public void run()

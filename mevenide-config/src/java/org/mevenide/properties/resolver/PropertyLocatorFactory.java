@@ -1,5 +1,5 @@
 /* ==========================================================================
- * Copyright 2003-2004 Apache Software Foundation
+ * Copyright 2003-2004 Mevenide Team
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@
 package org.mevenide.properties.resolver;
 
 import org.mevenide.context.IQueryContext;
-import org.mevenide.environment.LocationFinderAggregator;
 import org.mevenide.properties.IPropertyLocator;
 
 /**  
@@ -40,12 +39,7 @@ public class PropertyLocatorFactory {
 // querycontext based stuff..
 //
     public IPropertyLocator createContextBasedLocator(IQueryContext context) {
-        LocationFinderAggregator finder = new LocationFinderAggregator(context);
-        return new PropertyFilesAggregator(context, 
-            				new DefaultsResolver(context.getProjectDirectory(), 
-                                                             context.getUserDirectory(), 
-                                                             finder, 
-                                                             PropertyResolverFactory.getFactory().getPluginDefaultsPropertyFinder(finder)));
+        return new PropertyFilesAggregator(context, new DefaultsResolver(context));
     }
     
 }   

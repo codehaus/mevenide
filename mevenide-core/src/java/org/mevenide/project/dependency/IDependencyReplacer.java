@@ -1,5 +1,5 @@
 /* ==========================================================================
- * Copyright 2003-2004 Apache Software Foundation
+ * Copyright 2003-2004 Mevenide Team
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,20 +14,23 @@
  *  limitations under the License.
  * =========================================================================
  */
-package org.mevenide.project.io;
+package org.mevenide.project.dependency;
 
-import java.io.Reader;
-
-import org.apache.maven.project.Project;
-
+import org.mevenide.project.io.IContentProvider;
 
 /**  
- * 
- * @author <a href="mailto:rhill2@free.fr">Gilles Dodinet</a>
- * @version $Id$
- * 
+ * interface used in DependencyMatcher to replace the current dependency content 
+ * with the changed/updated  one.
+ *
+ * @author Milos Kleint
  */
-public interface IProjectUnmarshaller {
-    Project parse(Reader reader) throws Exception ;
-    
+public interface IDependencyReplacer {
+  
+    /**
+     * this method allows the replacer to influence the content provider's data structures
+     * when writing down the pom file.
+     * @param original content provider for the given dependency
+     * @return either the original if the dependency doesn't match or a replacing one.
+     */
+    IContentProvider replace(IContentProvider original);
 }

@@ -299,6 +299,21 @@ public class MavenCustomizer extends JPanel implements ProjectValidateObserver {
 //                createEmptyLabel("WORK IN PROGRESS..."),  
                 null),
         };
+        ConfigurationDescription[] buildChilds = new ConfigurationDescription[] {
+            new ConfigurationDescription(
+                "JavaCategory", // NOI18N
+                "Java/Jar", 
+                "org/mevenide/netbeans/project/resources/Bullet", // NOI18N
+                new JavaPanel(project), 
+                null),
+            new ConfigurationDescription(
+                "UnitTestsCategory", // NOI18N
+                "Unit Tests", 
+                "org/mevenide/netbeans/project/resources/Bullet", // NOI18N
+                createEmptyLabel("WORK IN PROGRESS..."),  
+                null)
+        };
+        
 //        ConfigurationDescription[] dependencyChilds = new ConfigurationDescription[] {
 //            new ConfigurationDescription(
 //                "DependencyOverrideCategory", // NOI18N
@@ -328,13 +343,7 @@ public class MavenCustomizer extends JPanel implements ProjectValidateObserver {
                 "Build", 
                 "org/mevenide/netbeans/project/resources/Bullet", // NOI18N
                 new BuildPanel(project), 
-                null),
-            new ConfigurationDescription(
-                "UnitTestsCategory", // NOI18N
-                "Unit Tests", 
-                "org/mevenide/netbeans/project/resources/Bullet", // NOI18N
-                createEmptyLabel("WORK IN PROGRESS..."),  
-                null),
+                buildChilds),
             new ConfigurationDescription(
                 "FilesCategory", // NOI18N
                 "Project Files", 
@@ -352,6 +361,7 @@ public class MavenCustomizer extends JPanel implements ProjectValidateObserver {
         allPanels = new ArrayList();
         addPanelsToList(allPanels, descriptions);
 //        addPanelsToList(allPanels, dependencyChilds);
+        addPanelsToList(allPanels, buildChilds);
         addPanelsToList(allPanels, generalChilds);
         
         ConfigurationDescription rootDescription = new ConfigurationDescription(

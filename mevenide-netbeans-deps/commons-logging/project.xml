@@ -5,8 +5,8 @@
   <id>commons-logging-nb-module</id>
   <artifactId>commons-logging-nb-module</artifactId>
   <groupId>mevenide</groupId>
-  <currentVersion>1.0.3</currentVersion>
-  <package>org.apache.commons.logging</package>
+  <currentVersion>1.0</currentVersion>
+  <package>org.netbeans.libs.commons_logging</package>
   <name>commons-logging library for Mevenide</name>
   <shortDescription>Library for project Mevenide</shortDescription>
   <description>Library for project Mevenide</description>

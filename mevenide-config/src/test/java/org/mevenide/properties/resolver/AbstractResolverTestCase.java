@@ -1,5 +1,5 @@
 /* ==========================================================================
- * Copyright 2003-2004 Apache Software Foundation
+ * Copyright 2003-2004 Mevenide Team
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 
 import junit.framework.TestCase;
+import org.mevenide.TestQueryContext;
 
 import org.mevenide.environment.LocationFinderAggregator;
 
@@ -32,40 +33,43 @@ public class AbstractResolverTestCase extends TestCase {
     
     protected File userHomeDir;
     protected File projectDir;
-    protected LocationFinderAggregator finder;
+    protected TestQueryContext context;
     /** Creates a new instance of DefaultsResolverTest */
     public AbstractResolverTestCase() {
     }
     
     protected void setUp() throws Exception {
+        context = new TestQueryContext();
         String userHome = System.getProperty("user.home"); //NOI18N
         userHomeDir  = new File(userHome, ".mevenide_test");
         if (!userHomeDir.exists()) {
             userHomeDir.mkdir();
         }
-        File userprop = new File(AbstractResolverTestCase.class.getResource("/org/mevenide/properties/user.properties").getFile());
-        File copyTo = new File(userHomeDir, "build.properties");
-        copy(userprop.getAbsolutePath(), copyTo.getAbsolutePath());
         projectDir = new File (userHomeDir, "test_project");
         if (!projectDir.exists()) {
             projectDir.mkdir();
         }
-        File buildprop = new File(AbstractResolverTestCase.class.getResource("/org/mevenide/properties/build.properties").getFile());
-        copyTo = new File(projectDir, "build.properties");
-        copy(buildprop.getAbsolutePath(), copyTo.getAbsolutePath());
-
-        File projectprop = new File(AbstractResolverTestCase.class.getResource("/org/mevenide/properties/project.properties").getFile());
-        copyTo = new File(projectDir, "project.properties");
-        copy(projectprop.getAbsolutePath(), copyTo.getAbsolutePath());
+        context.setProjectDirectory(projectDir);
         
-        finder = new LocationFinderAggregator();
-        finder.setEffectiveWorkingDirectory(projectDir.getAbsolutePath());
+        context.addUserPropertyValue("maven.repo.remote", "http://mevenide.codehaus.org");
+        context.addUserPropertyValue("maven.home.local", "${basedir}/.maven");
         
+        
+        context.addBuildPropertyValue("maven.conf.dir", "${basedir}/conf_yyy");
+        context.addBuildPropertyValue("maven.build.dir", "${basedir}/target_yyy");
+        
+        context.addProjectPropertyValue("maven.conf.dir", "${basedir}/conf_xxx");
+        context.addProjectPropertyValue("maven.build.src", "${maven.build.dir}/src2");
+        
+        context.addParentProjectPropertyValue("maven.build.src", "wrong value");
+        context.addParentProjectPropertyValue("test1", "parentproject");
+        context.addParentProjectPropertyValue("test2", "parentproject");
+        
+        context.addParentBuildPropertyValue("test1", "parentbuild");
     }
 
     protected void tearDown() throws Exception {
         delete(userHomeDir);
-        finder = null;
     }
     
 	protected void delete(File file) {

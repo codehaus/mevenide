@@ -1,5 +1,5 @@
 /* ==========================================================================
- * Copyright 2003-2004 Apache Software Foundation
+ * Copyright 2003-2004 Mevenide Team
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,14 +21,10 @@ import java.util.HashMap;
 import java.util.Map;
 import org.apache.maven.project.Project;
 import org.mevenide.context.DefaultQueryContext;
-import org.mevenide.context.IProjectContext;
 import org.mevenide.context.IQueryContext;
-import org.mevenide.project.DefaultProjectContext;
 import org.mevenide.properties.IPropertyLocator;
 import org.mevenide.properties.IPropertyResolver;
 import org.mevenide.properties.resolver.PropertyLocatorFactory;
-import org.mevenide.properties.resolver.PropertyResolverFactory;
-
 
 /**  
  * 
@@ -110,10 +106,8 @@ public class ResolverUtils {
     
     private QueryContextObjects newQueryContextObjects(File projectFile) {
         IQueryContext queryContext = new DefaultQueryContext(projectFile.getParentFile());
-        IPropertyResolver resolver = PropertyResolverFactory.getFactory().createContextBasedResolver(queryContext);
+        IPropertyResolver resolver = queryContext.getResolver();
         IPropertyLocator locator = PropertyLocatorFactory.getFactory().createContextBasedLocator(queryContext);
-        IProjectContext projectContext = new DefaultProjectContext(queryContext, resolver);
-        ((DefaultQueryContext)queryContext).initializeProjectContext(projectContext);
         return new QueryContextObjects(resolver, locator);
     }
     
