@@ -57,7 +57,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -373,81 +372,117 @@ public abstract class PageSection {
 		control.getParent().setRedraw(true);
 	}
 	
-	protected Button createOverrideToggle(
+	protected Label createSpacer(
+		Composite parent, 
+		PageWidgetFactory factory) {
+
+		return createSpacer(parent, factory, 1);
+	}
+	
+	protected Label createSpacer(
 		Composite parent, 
 		PageWidgetFactory factory,
-		boolean isInherited) {
+		int span) {
 
-		return createOverrideToggle(parent, factory, isInherited, 1);
+		Label spacer = factory.createSpacer(parent);
+		GridData data = new GridData(GridData.VERTICAL_ALIGN_CENTER | GridData.HORIZONTAL_ALIGN_BEGINNING);
+		data.horizontalSpan = span;
+		data.widthHint = 5;
+		data.heightHint = 5;
+		spacer.setLayoutData(data);
+		return spacer;
+	}
+	
+	protected Label createLabel(
+		Composite parent, 
+		String label,
+		PageWidgetFactory factory) {
+
+		return createLabel(parent, label, null, factory);
+	}
+	
+	protected Label createLabel(
+		Composite parent, 
+		String label,
+		String tooltip,
+		PageWidgetFactory factory) {
+
+		Label widget = factory.createLabel(parent, label);
+		if (tooltip != null) {
+			widget.setToolTipText(tooltip);
+		}
+		return widget;
+	}
+	
+	protected Button createOverrideToggle(
+		Composite parent, 
+		PageWidgetFactory factory) {
+
+		return createOverrideToggle(parent, factory, 1);
 	}
 	
 	protected Button createOverrideToggle(
 		Composite parent, 
 		PageWidgetFactory factory,
-		boolean isInherited, 
 		int span) {
-
-		Composite toggleContainer = factory.createComposite(parent);
-		GridData data = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING | GridData.FILL_VERTICAL);
-		data.horizontalSpan = span;
-		toggleContainer.setLayoutData(data);
-		GridLayout layout = new GridLayout();
-		layout.marginWidth = 0;
-		layout.marginHeight = 0;
-		layout.horizontalSpacing = 0;
-		layout.verticalSpacing = 0;
-		toggleContainer.setLayout(layout);
 		
+		return createOverrideToggle(parent, factory, span, false);			
+	}
+
+	protected Button createOverrideToggle(
+		Composite parent, 
+		PageWidgetFactory factory,
+		int span,
+		boolean alignTop) {
+
 		Button inheritanceToggle = null;
-		if (isInherited) {
-			inheritanceToggle = factory.createButton(toggleContainer, " ", SWT.CHECK);
-			data = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
+		if (isInherited()) {
+			inheritanceToggle = factory.createButton(parent, "", SWT.CHECK);
+			int vAlign = alignTop 
+				? GridData.VERTICAL_ALIGN_BEGINNING 
+				: GridData.VERTICAL_ALIGN_CENTER;
+			GridData data = new GridData(vAlign | GridData.HORIZONTAL_ALIGN_BEGINNING);
+			data.horizontalSpan = span;
+			data.widthHint = 5;
+			data.heightHint = 5;
 			inheritanceToggle.setLayoutData(data);
 			inheritanceToggle.setSize(SWT.DEFAULT, SWT.DEFAULT);
-		}
-		else {
-			factory.createLabel(toggleContainer, "");
 		}
 		return inheritanceToggle;
 	}
 
-	protected Text createText(
+	protected Text createMultilineText(
 		Composite parent,
-		String label,
 		PageWidgetFactory factory) {
 
-		return createText(parent, label, factory, 1);
+		Text text = factory.createText(parent, "", SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
+		GridData data = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING);
+		data.heightHint = 80;
+		text.setLayoutData(data);
+		return text;
 	}
 		
 	protected Text createText(
 		Composite parent,
-		String label,
+		PageWidgetFactory factory) {
+
+		return createText(parent, factory, 1);
+	}
+		
+	protected Text createText(
+		Composite parent,
 		PageWidgetFactory factory,
 		int span) {
-		factory.createLabel(parent, label);
-		Text text = factory.createText(parent, "");
-		int hfill = span == 1
-			? GridData.FILL_HORIZONTAL
-			: GridData.HORIZONTAL_ALIGN_FILL;
-		GridData gd = new GridData(hfill | GridData.VERTICAL_ALIGN_CENTER);
-		gd.horizontalSpan = span;
-		text.setLayoutData(gd);
-		return text;
+
+		return createText(parent, factory, span, SWT.NONE);
 	}
 	
 	protected Text createText(
 		Composite parent,
-		String label,
 		PageWidgetFactory factory,
 		int span,
 		int style) {
 
-		Label l = factory.createLabel(parent, label);
-		if ((style & SWT.MULTI) != 0) {
-			GridData gd = new GridData(GridData.VERTICAL_ALIGN_BEGINNING);
-			l.setLayoutData(gd);
-		}
-		
 		Text text = factory.createText(parent, "", style);
 		int hfill = span == 1
 			? GridData.FILL_HORIZONTAL
@@ -457,23 +492,7 @@ public abstract class PageSection {
 		text.setLayoutData(gd);
 		return text;
 	}
-	
-	protected Text createText(
-		Composite parent,
-		PageWidgetFactory factory,
-		int span) {
-		Text text = factory.createText(parent, "");
-		int hfill =
-			span == 1
-				? GridData.FILL_HORIZONTAL
-				: GridData.HORIZONTAL_ALIGN_FILL;
-		GridData gd = new GridData(hfill | GridData.VERTICAL_ALIGN_CENTER);
-		//gd.grabExcessHorizontalSpace = true;
-		gd.horizontalSpan = span;
-		text.setLayoutData(gd);
-		return text;
-	}
-	
+		
 	public void dispose() {
 //		JFaceResources.getFontRegistry().removeListener(this);
 	}
