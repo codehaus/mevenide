@@ -68,7 +68,7 @@ public class UpdatePluginLibsTag extends AbstractMevenideTag {
     private static final String BUNDLE_DEPENDENCY_PROPERTY = "eclipse.plugin.bundle";
 	private static final String BUILD_MODE_PROPERTY = "maven.eclipse.plugin.build.mode";
     private static final String DEFAULT_EXPORT_PROPERTY = "maven.eclipse.plugin.export.default";
-	private static final String DEPENDENCY_PREFIXES_PROPERTY = "eclipse.plugin.prackages";
+	private static final String DEPENDENCY_PREFIXES_PROPERTY = "eclipse.plugin.packages";
 	private static final String DEPENDENCY_EXPORT_PROPERTY = "eclipse.plugin.export";
 
 	private static final String PLUGIN_FILENAME = "plugin.xml";
