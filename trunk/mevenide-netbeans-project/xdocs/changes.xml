@@ -8,6 +8,9 @@
   <body>
     <release version="0.2" date="in CVS">
       <action dev="mkleint" type="add">
+      Add basic support for running the project and running single class.
+      </action>
+      <action dev="mkleint" type="add">
       Add project view support for web apps.
       </action>
     </release>  

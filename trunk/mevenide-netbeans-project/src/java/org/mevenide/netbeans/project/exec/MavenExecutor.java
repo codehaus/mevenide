@@ -32,7 +32,10 @@ import org.openide.windows.IOProvider;
 import org.openide.windows.InputOutput;
 import org.openide.windows.OutputWriter;
 
-
+/**
+ *
+ * @author  Milos Kleint (ca206216@tiscali.cz)
+ */
 public class MavenExecutor implements Runnable {
     private static final Log logger = LogFactory.getLog(MavenExecutor.class);
     
@@ -58,6 +61,8 @@ public class MavenExecutor implements Runnable {
     private Process proces;
     private String format;
     private InputOutput io;
+    private OutputFilter outFilter;
+    private OutputFilter errFilter;
     
     private static RequestProcessor PROCESSOR = new RequestProcessor("maven execution", 3);
     
@@ -131,20 +136,20 @@ public class MavenExecutor implements Runnable {
         String procString = MapFormat.format(format, formats);
         Process proc = Runtime.getRuntime().exec(procString, null, execDir);
         InputOutput ioput = getInputOutput();
-        PROCESSOR.post(new Output(proc.getInputStream(), ioput.getOut()));
-        PROCESSOR.post(new Output(proc.getErrorStream(), ioput.getErr()));
+        PROCESSOR.post(new Output(proc.getInputStream(), ioput.getOut(), outFilter));
+        PROCESSOR.post(new Output(proc.getErrorStream(), ioput.getErr(), errFilter));
         return proc;
     }
     
     private InputOutput createInputOutput() {
-        InputOutput io = IOProvider.getDefault().getIO("Maven", false);
-        io.setErrSeparated(false);
+        InputOutput newio = IOProvider.getDefault().getIO("Maven", false);
+        newio.setErrSeparated(false);
         try {
-            io.getOut().reset();
+            newio.getOut().reset();
         } catch (IOException exc) {
             logger.error("Cannot reset InputOutput", exc);
         }
-        return io;
+        return newio;
     }    
     
     public InputOutput getInputOutput() {
@@ -152,19 +157,19 @@ public class MavenExecutor implements Runnable {
             io = createInputOutput();
         }
         return io;
-    }    
-     
-//    public int result() {
-//        return proces.exitValue();
-//    }
-//    
-//    public void stop() {
-//        proces.destroy();
-//    }
-//
-//    public ExecutorTask execute() {
-//        return new WrapperTask();
-//    }
+    }
+    
+    public void setCustomInputOutput(InputOutput inout) {
+        io = inout;
+    }
+    
+    public void setFilterOutput(OutputFilter filter) {
+        outFilter = filter;
+    }
+    
+    public void setFilterError(OutputFilter filter) {
+        errFilter = filter;
+    }
 
     /**
      * not to be called directrly.. use execute();
@@ -180,12 +185,14 @@ public class MavenExecutor implements Runnable {
         }
     }
     
-    private class Output implements Runnable {
+    private static class Output implements Runnable {
         private InputStream str;
         private OutputWriter writer;
-        public Output(InputStream instream, OutputWriter out) {
+        private OutputFilter filter;
+        public Output(InputStream instream, OutputWriter out, OutputFilter filt) {
             str = instream;
             writer = out;
+            filter = filt;
         }
         
         public void run() {
@@ -193,7 +200,12 @@ public class MavenExecutor implements Runnable {
             String line; 
             try {
                 while ((line = read.readLine()) != null) {
-                    writer.println(line);
+                    if (filter != null) {
+                        line = filter.filterLine(line);
+                    }
+                    if (line != null) {
+                        writer.println(line);
+                    }
                 }
                 read.close();
             } catch (IOException io) {
@@ -208,23 +220,4 @@ public class MavenExecutor implements Runnable {
             }
         }
     }
-    
-//    private class WrapperTask extends ExecutorTask {
-//        
-//        public  WrapperTask() {
-//            super(MavenExecutor.this);
-//        }
-//        public InputOutput getInputOutput() {
-//            return MavenExecutor.this.getInputOutput();
-//        }
-//        
-//        public int result() {
-//            return MavenExecutor.this.result();
-//        }
-//        
-//        public void stop() {
-//            MavenExecutor.this.stop();
-//        }
-//        
-//    }
 }

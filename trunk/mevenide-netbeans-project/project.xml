@@ -14,6 +14,12 @@
   <dependencies>
     <dependency>     
         <groupId>mevenide</groupId>
+        <artifactId>maven-mevenide-plugin</artifactId>
+        <version>0.1-SNAPSHOT</version>
+        <type>plugin</type>
+    </dependency>
+    <dependency>     
+        <groupId>mevenide</groupId>
         <artifactId>goals-grabber</artifactId>
         <version>0.3</version>
         <type>jar</type>
@@ -220,7 +226,13 @@
       <type>jar</type>
       <url>http://jakarta.apache.org/commons/</url>
     </dependency>
-    
+<!--    <dependency>
+      <id>commons-io</id>
+      <type>jar</type>
+      <version>20030203.000550</version>
+      <url>http://jakarta.apache.org/commons/</url>
+    </dependency>
+    -->
              
   </dependencies>
   
