@@ -78,8 +78,8 @@ public class DefaultGoalsGrabber extends AbstractGoalsGrabber {
  	public void refresh() throws Exception {
 		super.refresh();
 
-        File pluginsLocal = new File(Environment.getMavenHome(), "plugins");
-  		File goalsCache = new File(pluginsLocal, "goals.cache");
+        //File pluginsLocal = new File(Environment.getMavenHome(), "plugins");
+  		File goalsCache = new File(Environment.getMavenPluginsInstallDir(), "goals.cache");
 
   		Properties props = new Properties();
   		props.load(new FileInputStream(goalsCache));
