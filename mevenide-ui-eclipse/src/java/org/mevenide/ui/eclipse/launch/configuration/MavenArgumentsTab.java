@@ -338,13 +338,13 @@ public class MavenArgumentsTab extends AbstractLaunchConfigurationTab  {
 									switch (e.type) {
 										case SWT.FocusOut:
 											item.setText (column, text.getText ());
+											updateLaunchConfigurationDialog();
 											text.dispose ();
 											break;
 										case SWT.Traverse:
 											switch (e.detail) {
 												case SWT.TRAVERSE_RETURN:
 													item.setText (column, text.getText ());
-													setDirty(true);
 													updateLaunchConfigurationDialog();
 													//FALL THROUGH
 												case SWT.TRAVERSE_ESCAPE:
