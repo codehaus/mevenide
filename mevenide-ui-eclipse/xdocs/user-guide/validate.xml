@@ -14,6 +14,7 @@
 				<p>
 					Validation can be triggered either from any xml file contextual menu (Screenshot 1) or from the Maven Menu contributed by the POM editor (Screenshot 2).
 					<center>
+						<br/>
 						<img src="../images/screenshots/validate/validate_ctx_menu.png" border="1px"/>
 						<br/>
 						<font size="-1"><b>Screenshot 1</b> Validation contextual action</font>
@@ -29,6 +30,7 @@
 				<p>
 					Validation errors are directed to the Problems View, however you first need to enable them by unfiltering them (Screenshot 3).
 					<center>
+						<br/>
 						<img src="../images/screenshots/validate/validate_problem_view.png" border="1px"/>
 						<br/>
 						<font size="-1"><b>Screenshot 1</b> Problem View</font>
