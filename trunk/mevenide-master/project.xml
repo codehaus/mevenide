@@ -15,13 +15,20 @@
       <artifactId>commons-jelly-tags-xml</artifactId>
   	  <version>SNAPSHOT</version>
   	</dependency>
+  	<dependency>
+  	  <groupId>maven</groupId>
+      <artifactId>maven-dashboard-plugin</artifactId>
+  	  <version>1.0</version>
+  	  <type>plugin</type>
+  	</dependency>
   </dependencies>
   
   <reports>
     <report>maven-changes-plugin</report>
     <report>maven-faq-plugin</report>
     <report>maven-multiproject-plugin</report>
-    <report>maven-linkcheck-plugin</report>
+    <!-- report>maven-linkcheck-plugin</report -->
+    <!-- report>maven-dashboard-plugin</report -->
   </reports>
  
 </project>
