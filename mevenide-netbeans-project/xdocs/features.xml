@@ -60,14 +60,15 @@
           <p>
 		<ul>
 		  <li><p>Visual customization of Maven project.</p></li>
-           <li><p>Creation of new Maven projects from templates.</p></li>
+		  <li><p>Locating the definitions is easy without searching multiple files, 
+                   possible to move between location easily.</p></li>
+                   <li><p>Creation of new Maven projects from templates.</p></li>
 		</ul>
 	  </p>
 	  <p>
 		<u>Known limitations</u><br/>
 		<ul>
-			<li><p>In this version no editing, only viewing.</p></li>
-			<li><p>Currently only some pages are implemented.</p></li>
+        		<li><p>Currently not all pages are implemented.</p></li>
 		</ul>
 	  </p>
 	</div>

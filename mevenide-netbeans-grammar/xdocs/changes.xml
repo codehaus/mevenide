@@ -6,10 +6,18 @@
   </properties>
 
   <body>
+    <release version="0.5.1" date="in CVS">
+         <action dev="mkleint" type="fix">
+             Works with latest post-beta2 Netbeans builds.
+         </action>
+    </release>
     <release version="0.5" date="in CVS">
+     <action dev="mkleint" type="fix">
+     Works with Netbeans 4.0 Beta2.
+     </action>
       <action dev="mkleint" type="add">
-      Added completion of plugin variables. The list is taken from the maven plugin cache. For each plugin the
-      plugin.properties file is scanned to get the variable keys.
+      To maven.xml and plugin.jelly files added completion of plugin variables. The list is taken from the maven plugin cache. 
+      For each plugin the plugin.properties file is scanned to get the variable keys.
       Starts completing after "maven." is typed in any attribute value.
       </action>
     </release>

@@ -47,15 +47,17 @@
         which describes the features in more details and is accompanied with screenshots.
         </p>
         <p>
-        The latest release 0.2 can be downloaded in <a href="download/mevenide-netbeans-0.2.zip">zip format</a>. Or it can be downloaded using the Netbeans
-        Autoupdate feature. Create a new Autoupdate server in the Tools/Options dialog with the following URL: 
+        The latest release 0.3 can be downloaded in <a href="download/mevenide-netbeans-0.3.zip">zip format</a>. 
+        </p>
+        <p>Or it can be downloaded using the Netbeans
+        Autoupdate feature. Download and installl this small <a href="download/org-mevenide-netbeans-grammar-0.5.1.nbm">autoupdate module</a> or create a new Autoupdate server in the Tools/Options dialog with the following URL: 
         <b>http://mevenide.codehaus.org/nbm_release/NBM_AutoUpdate.xml</b>
         </p>
         <p>If you already installed the 0.1 release, updating through Autoupdate is a better option because only the updated modules get downloaded. </p>
         <p>
         	Requirements :
         	<ul>
-        		<li>Netbeans 4.0, <a href="http://www.netbeans.info/downloads/download.php?a=n&amp;p=1&amp;step=2&amp;os=7&amp;lang=1&amp;rv=4.0&amp;bt=5&amp;buildnr=200408121535">Q-build from 12/Aug/2004</a> and later.</li>
+        		<li>Netbeans 4.0 beta2 </li>
         		<li>JDK 1.4+</li>
         		<li>Maven 1.0</li>
         	</ul>
