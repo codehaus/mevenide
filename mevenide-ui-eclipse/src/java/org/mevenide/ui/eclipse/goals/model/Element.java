@@ -51,5 +51,7 @@ public class Element {
         this.prereqs = prereqs;
     }
 	
-	
+	public String getFullyQualifiedName() {
+		return name;
+	}
 }
