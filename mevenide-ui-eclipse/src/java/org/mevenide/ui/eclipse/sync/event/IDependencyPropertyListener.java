@@ -16,7 +16,7 @@
  */
 package org.mevenide.ui.eclipse.sync.event;
 
-import org.mevenide.ui.eclipse.sync.model.DependencyPropertyWrapper;
+import org.mevenide.ui.eclipse.sync.model.PropertyNode;
 
 /**  
  * 
@@ -26,6 +26,6 @@ import org.mevenide.ui.eclipse.sync.model.DependencyPropertyWrapper;
  */
 public interface IDependencyPropertyListener {
 	
-	void propertyChanged(DependencyPropertyWrapper wrapper, String oldValue, String newValue);
+	void propertyChanged(PropertyNode wrapper, String oldValue, String newValue);
 	
 }

@@ -16,7 +16,7 @@
  */
 package org.mevenide.ui.eclipse.editors.properties;
 
-import org.apache.maven.project.Dependency;
+import org.apache.maven.model.Dependency;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.ui.views.properties.ComboBoxPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
@@ -32,7 +32,7 @@ public class DependencyPropertySource extends AbstractPomPropertySource {
 	private static final String DEPENDENCY_ARTIFACTID = "artifactId";
 	private static final String DEPENDENCY_GROUPID = "groupId";
 	private static final String DEPENDENCY_VERSION = "version";
-	private static final String DEPENDENCY_JAR = "jar";
+	private static final String DEPENDENCY_ARTIFACT = "artifact";
 	private static final String DEPENDENCY_TYPE = "type";
 	private static final String DEPENDENCY_URL = "url";
 
@@ -67,8 +67,8 @@ public class DependencyPropertySource extends AbstractPomPropertySource {
 			DEPENDENCY_VERSION
 		);
 		descriptors[3] = new TextPropertyDescriptor(
-			DEPENDENCY_JAR,
-			DEPENDENCY_JAR
+			DEPENDENCY_ARTIFACT,
+			DEPENDENCY_ARTIFACT
 		);
 		descriptors[4] = new ComboBoxPropertyDescriptor(
 			DEPENDENCY_TYPE,
@@ -113,8 +113,8 @@ public class DependencyPropertySource extends AbstractPomPropertySource {
 		else if (DEPENDENCY_VERSION.equals(id)) {
 			return valueOrEmptyString(dependency.getVersion());
 		}
-		else if (DEPENDENCY_JAR.equals(id)) {
-			return valueOrEmptyString(dependency.getJar());
+		else if (DEPENDENCY_ARTIFACT.equals(id)) {
+			return valueOrEmptyString(dependency.getArtifact());
 		}
 		else if (DEPENDENCY_TYPE.equals(id)) {
 			return getIndexOfType();
@@ -145,8 +145,8 @@ public class DependencyPropertySource extends AbstractPomPropertySource {
 		else if (DEPENDENCY_VERSION.equals(id)) {
 			return !isEmpty(dependency.getVersion());
 		}
-		else if (DEPENDENCY_JAR.equals(id)) {
-			return !isEmpty(dependency.getJar());
+		else if (DEPENDENCY_ARTIFACT.equals(id)) {
+			return !isEmpty(dependency.getArtifact());
 		}
 		else if (DEPENDENCY_TYPE.equals(id)) {
 			return !isEmpty(dependency.getType());
@@ -188,10 +188,10 @@ public class DependencyPropertySource extends AbstractPomPropertySource {
 				changed = true;
 			}
 		}
-		else if (DEPENDENCY_JAR.equals(id)) {
-			oldValue = dependency.getJar();
+		else if (DEPENDENCY_ARTIFACT.equals(id)) {
+			oldValue = dependency.getArtifact();
 			if (MevenideUtils.notEquivalent(newValue, oldValue)) {
-				dependency.setJar(newValue);
+				dependency.setArtifact(newValue);
 				changed = true;
 			}
 		}
@@ -224,7 +224,14 @@ public class DependencyPropertySource extends AbstractPomPropertySource {
 	}
 
 	public String getLabel(Object o) {
-		return dependency.getArtifact() != null ? dependency.getArtifact() : "[undeclared]";
+		//return dependency.getArtifact() != null ? dependency.getArtifact() : "[undeclared]";
+		if ( dependency.getArtifact() != null ) {
+			return dependency.getArtifact();
+		}
+		String groupId = dependency.getGroupId() != null ? dependency.getGroupId() + ":" : ""; 
+		String artifactId = dependency.getArtifactId() != null ? dependency.getArtifactId() + ":" : "";
+		String version = dependency.getVersion() != null ? dependency.getVersion() : "";
+		return groupId + artifactId + version;
 	}
 
 	/**

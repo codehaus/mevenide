@@ -18,7 +18,7 @@ package org.mevenide.ui.eclipse.editors.pages;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.maven.project.Project;
+import org.apache.maven.project.MavenProject;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -84,7 +84,7 @@ public class OverviewPage extends AbstractPomEditorPage {
 		addSection(fullDesctiptionSection);
 	}
 
-	protected void update(Project pom) {
+	protected void update(MavenProject pom) {
 	    if (log.isDebugEnabled()) {
 	        log.debug("updating overview");
 	    }
@@ -93,12 +93,12 @@ public class OverviewPage extends AbstractPomEditorPage {
 		super.update(pom);
 	}
 	
-	protected void setHeading(Project pom) {
-		if (pom.getName() != null && !"".equals(pom.getName())) {
-		    setHeading(HEADING + pom.getName());
+	protected void setHeading(MavenProject pom) {
+		if (pom.getModel().getName() != null && !"".equals(pom.getModel().getName())) {
+		    setHeading(HEADING + pom.getModel().getName());
 		}
-		else if (getPomEditor().getParentPom() != null && !"".equals(getPomEditor().getParentPom().getName())){
-		    setHeading(HEADING + getPomEditor().getParentPom().getName() + CHILD);
+		else if (getPomEditor().getParentPom() != null && !"".equals(getPomEditor().getParentPom().getModel().getName())){
+		    setHeading(HEADING + getPomEditor().getParentPom().getModel().getName() + CHILD);
 		}
 		else {
 		    setHeading(HEADING + UNNAMED);

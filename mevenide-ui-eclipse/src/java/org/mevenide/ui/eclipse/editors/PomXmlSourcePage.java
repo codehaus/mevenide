@@ -18,7 +18,7 @@ package org.mevenide.ui.eclipse.editors;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.maven.project.Project;
+import org.apache.maven.project.MavenProject;
 import org.eclipse.jface.text.DocumentEvent;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IDocumentListener;
@@ -122,7 +122,7 @@ public class PomXmlSourcePage
         document.addDocumentListener(documentListener);
     }
     
-    public void update(Project pom) {}
+    public void update(MavenProject pom) {}
 
     private boolean isModelNeedsUpdating() {
         return modelNeedsUpdating;

@@ -16,7 +16,7 @@
  */
 package org.mevenide.ui.eclipse.sync.event;
 
-import org.apache.maven.project.Project;
+import org.apache.maven.project.MavenProject;
 
 /**
  * 
@@ -26,15 +26,15 @@ import org.apache.maven.project.Project;
  *
  */
 public class PomArtifactEvent extends ArtifactEvent {
-	private Project project;
+	private MavenProject project;
 	
-	public PomArtifactEvent(Object item, Project project) {
+	public PomArtifactEvent(Object item, MavenProject project) {
 	    this.artifact = item;
 	    this.project = project;
 	}
 	
 	
-	public Project getProject() {
+	public MavenProject getProject() {
 		return project;
 	}
 

@@ -18,7 +18,7 @@ package org.mevenide.ui.eclipse.editors.pages;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.maven.project.Project;
+import org.apache.maven.project.MavenProject;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IFormPart;
 import org.eclipse.ui.forms.IManagedForm;
@@ -104,7 +104,7 @@ public abstract class AbstractPomEditorPage
 		}
 	}
 	
-	protected void update(Project pom) {
+	protected void update(MavenProject pom) {
 		IFormPart[] sections = getManagedForm().getParts();
 		for (int i = 0; i < sections.length; i++) {
 			((PageSection) sections[i]).updateSection(pom);

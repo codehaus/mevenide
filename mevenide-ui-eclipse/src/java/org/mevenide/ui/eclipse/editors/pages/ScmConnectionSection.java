@@ -16,8 +16,8 @@
  */
 package org.mevenide.ui.eclipse.editors.pages;
 
-import org.apache.maven.project.Project;
-import org.apache.maven.project.Repository;
+import org.apache.maven.model.Repository;
+import org.apache.maven.project.MavenProject;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
@@ -54,7 +54,7 @@ public class ScmConnectionSection extends PageSection {
 		layout.horizontalSpacing = 5;
 		container.setLayout(layout);
 		
-		final Project pom = getPage().getPomEditor().getPom();
+		final MavenProject pom = getPage().getPomEditor().getPom();
 		
 		// Repository connection textbox
 		Button toggle = createOverrideToggle(container, factory);
@@ -120,18 +120,18 @@ public class ScmConnectionSection extends PageSection {
 		return container;
 	}
 
-	public void update(Project pom) {
+	public void update(MavenProject pom) {
 		setIfDefined(connectionText, getConnection(pom), getInheritedConnection());
 		setIfDefined(developerConnectionText, getDeveloperConnection(pom), getInheritedDeveloperConnection());
 		setIfDefined(webAddressText, getWebAddress(pom), getInheritedWebAddress());
 	}
 	
-	private void setConnection(Project pom, String connection) {
+	private void setConnection(MavenProject pom, String connection) {
 		getOrCreateRepository(pom).setConnection(connection);
 	}
 	
-	private String getConnection(Project pom) {
-		return pom.getRepository() != null ? pom.getRepository().getConnection() : null;
+	private String getConnection(MavenProject pom) {
+		return pom.getModel().getRepository() != null ? pom.getModel().getRepository().getConnection() : null;
 	}
 	
 	private String getInheritedConnection() {
@@ -140,12 +140,12 @@ public class ScmConnectionSection extends PageSection {
 			: null;
 	}
 
-	private void setDeveloperConnection(Project pom, String connection) {
+	private void setDeveloperConnection(MavenProject pom, String connection) {
 		getOrCreateRepository(pom).setDeveloperConnection(connection);
 	}
 	
-	private String getDeveloperConnection(Project pom) {
-		return pom.getRepository() != null ? pom.getRepository().getDeveloperConnection() : null;
+	private String getDeveloperConnection(MavenProject pom) {
+		return pom.getModel().getRepository() != null ? pom.getModel().getRepository().getDeveloperConnection() : null;
 	}
 	
 	private String getInheritedDeveloperConnection() {
@@ -154,12 +154,12 @@ public class ScmConnectionSection extends PageSection {
 			: null;
 	}
 
-	private void setWebAddress(Project pom, String url) {
+	private void setWebAddress(MavenProject pom, String url) {
 		getOrCreateRepository(pom).setUrl(url);
 	}
 	
-	private String getWebAddress(Project pom) {
-		return pom.getRepository() != null ? pom.getRepository().getUrl() : null;
+	private String getWebAddress(MavenProject pom) {
+		return pom.getModel().getRepository() != null ? pom.getModel().getRepository().getUrl() : null;
 	}
 	
 	private String getInheritedWebAddress() {
@@ -168,11 +168,11 @@ public class ScmConnectionSection extends PageSection {
 			: null;
 	}
 
-	private Repository getOrCreateRepository(Project pom) {
-		Repository repository = pom.getRepository();
+	private Repository getOrCreateRepository(MavenProject pom) {
+		Repository repository = pom.getModel().getRepository();
 		if (repository == null) {
 			repository = new Repository();
-			pom.setRepository(repository);
+			pom.getModel().setRepository(repository);
 		}
 		return repository;
 	}

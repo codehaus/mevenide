@@ -18,10 +18,10 @@ package org.mevenide.ui.eclipse.editors.pages;
 
 import java.util.List;
 
-import org.apache.maven.project.Build;
-import org.apache.maven.project.Project;
-import org.apache.maven.project.Resource;
-import org.apache.maven.project.UnitTest;
+import org.apache.maven.model.Build;
+import org.apache.maven.model.Resource;
+import org.apache.maven.model.UnitTest;
+import org.apache.maven.project.MavenProject;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -66,7 +66,7 @@ public class UnitTestsPage extends AbstractPomEditorPage {
 		includesSection = new IncludesSection(this, parent, factory);
 		IIncludesAdaptor includesAdaptor = new IIncludesAdaptor() {
 			public void setIncludes(Object target, List newIncludes) {
-				Project pom = (Project) target;
+				MavenProject pom = (MavenProject) target;
 				List includes = getOrCreateUnitTest(pom).getIncludes();
 				includes.removeAll(includes);
 				includes.addAll(newIncludes);
@@ -74,16 +74,16 @@ public class UnitTestsPage extends AbstractPomEditorPage {
 			}
 	
 			public void addInclude(Object target, String include) {
-				Project pom = (Project) target;
+				MavenProject pom = (MavenProject) target;
 				getOrCreateUnitTest(pom).addInclude(include);
 				getPomEditor().setModelDirty(true);
 			}
 	
 			public List getIncludes(Object source) {
-				Project pom = (Project) source;
-				return pom.getBuild() != null 
-					? pom.getBuild().getUnitTest() != null
-						? pom.getBuild().getUnitTest().getIncludes()
+				MavenProject pom = (MavenProject) source;
+				return pom.getModel().getBuild() != null 
+					? pom.getModel().getBuild().getUnitTest() != null
+						? pom.getModel().getBuild().getUnitTest().getIncludes()
 						: null
 					: null;
 			}
@@ -97,7 +97,7 @@ public class UnitTestsPage extends AbstractPomEditorPage {
 		excludesSection = new ExcludesSection(this, parent, factory);
 		IExcludesAdaptor excludesAdaptor = new IExcludesAdaptor() {
 			public void setExcludes(Object target, List newExcludes) {
-				Project pom = (Project) target;
+				MavenProject pom = (MavenProject) target;
 				List excludes = getOrCreateUnitTest(pom).getExcludes();
 				excludes.removeAll(excludes);
 				excludes.addAll(newExcludes);
@@ -105,16 +105,16 @@ public class UnitTestsPage extends AbstractPomEditorPage {
 			}
 	
 			public void addExclude(Object target, String exclude) {
-				Project pom = (Project) target;
+				MavenProject pom = (MavenProject) target;
 				getOrCreateUnitTest(pom).addExclude(exclude);
 				getPomEditor().setModelDirty(true);
 			}
 	
 			public List getExcludes(Object source) {
-				Project pom = (Project) source;
-				return pom.getBuild() != null 
+				MavenProject pom = (MavenProject) source;
+				return pom.getModel().getBuild() != null 
 					? pom.getBuild().getUnitTest() != null
-						? pom.getBuild().getUnitTest().getExcludes()
+						? pom.getModel().getBuild().getUnitTest().getExcludes()
 						: null
 					: null;
 			}
@@ -128,20 +128,20 @@ public class UnitTestsPage extends AbstractPomEditorPage {
 		resourcesSection = new ResourcesSection(this, parent, factory, "UnitTestResourcesSection");
 		IResourceAdaptor adaptor = new IResourceAdaptor() {
 			public void setResources(Object target, List resources) {
-				Project pom = (Project) target;
+				MavenProject pom = (MavenProject) target;
 				getOrCreateUnitTest(pom).setResources(resources);
 				getPomEditor().setModelDirty(true);
 			}
 		
 			public void addResource(Object target, Resource resource) {
-				Project pom = (Project) target;
+				MavenProject pom = (MavenProject) target;
 				getOrCreateUnitTest(pom).addResource(resource);
 				getPomEditor().setModelDirty(true);
 			}
 		
 			public List getResources(Object source) {
-				Project pom = (Project) source;
-				Build build = pom.getBuild();
+				MavenProject pom = (MavenProject) source;
+				Build build = pom.getModel().getBuild();
 				if (build != null) {
 					UnitTest unitTest = build.getUnitTest();
 					if (unitTest != null) {
@@ -159,11 +159,11 @@ public class UnitTestsPage extends AbstractPomEditorPage {
 		addSection(resourcesSection);
 	}
 
-	private UnitTest getOrCreateUnitTest(Project pom) {
-		Build build = pom.getBuild();
+	private UnitTest getOrCreateUnitTest(MavenProject pom) {
+		Build build = pom.getModel().getBuild();
 		if (build == null) {
 			build = new Build();
-			pom.setBuild(build);
+			pom.getModel().setBuild(build);
 		}
 		UnitTest unitTest = build.getUnitTest();
 		if (unitTest == null) {

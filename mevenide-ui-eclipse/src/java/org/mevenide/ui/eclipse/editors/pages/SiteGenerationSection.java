@@ -18,7 +18,7 @@ package org.mevenide.ui.eclipse.editors.pages;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.maven.project.Project;
+import org.apache.maven.project.MavenProject;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -66,7 +66,7 @@ public class SiteGenerationSection extends PageSection {
 		layout.horizontalSpacing = 5;
 		container.setLayout(layout);
 		
-		final Project pom = getPage().getPomEditor().getPom();
+		final MavenProject pom = getPage().getPomEditor().getPom();
 		
 		// Site address textbox
 		Button toggle = createOverrideToggle(container, factory);
@@ -79,10 +79,10 @@ public class SiteGenerationSection extends PageSection {
 		siteAddressText = new OverridableTextEntry(createText(container, factory, 2), toggle);
 		OverrideAdaptor adaptor = new OverrideAdaptor() {
 			public void overrideParent(Object value) {
-				pom.setSiteAddress((String) value);
+				pom.getModel().setSiteAddress((String) value);
 			}
 			public Object acceptParent() {
-				return getParentPom().getSiteAddress();
+				return getParentPom().getModel().getSiteAddress();
 			}
 		};
 		siteAddressText.addEntryChangeListener(adaptor);
@@ -99,10 +99,10 @@ public class SiteGenerationSection extends PageSection {
 		distSiteText = new OverridableTextEntry(createText(container, factory, 2), toggle);
 		adaptor = new OverrideAdaptor() {
 			public void overrideParent(Object value) {
-				pom.setDistributionSite((String) value);
+				pom.getModel().setDistributionSite((String) value);
 			}
 			public Object acceptParent() {
-				return getParentPom().getDistributionSite();
+				return getParentPom().getModel().getDistributionSite();
 			}
 		};
 		distSiteText.addEntryChangeListener(adaptor);
@@ -119,10 +119,10 @@ public class SiteGenerationSection extends PageSection {
 		issueTrackingText = new OverridableTextEntry(createText(container, factory, 2), toggle);
 		adaptor = new OverrideAdaptor() {
 			public void overrideParent(Object value) {
-				pom.setIssueTrackingUrl((String) value);
+				pom.getModel().setIssueTrackingUrl((String) value);
 			}
 			public Object acceptParent() {
-				return getParentPom().getIssueTrackingUrl();
+				return getParentPom().getModel().getIssueTrackingUrl();
 			}
 		};
 		issueTrackingText.addEntryChangeListener(adaptor);
@@ -146,10 +146,10 @@ public class SiteGenerationSection extends PageSection {
 		);
 		adaptor = new OverrideAdaptor() {
 			public void overrideParent(Object value) {
-				pom.setSiteDirectory((String) value);
+				pom.getModel().setSiteDirectory((String) value);
 			}
 			public Object acceptParent() {
-				return getParentPom().getSiteDirectory();
+				return getParentPom().getModel().getSiteDirectory();
 			}
 		};
 		siteDirectoryText.addEntryChangeListener(adaptor);
@@ -196,10 +196,10 @@ public class SiteGenerationSection extends PageSection {
 		);
 		adaptor = new OverrideAdaptor() {
 			public void overrideParent(Object value) {
-				pom.setDistributionDirectory((String) value);
+				pom.getModel().setDistributionDirectory((String) value);
 			}
 			public Object acceptParent() {
-				return getParentPom().getDistributionDirectory();
+				return getParentPom().getModel().getDistributionDirectory();
 			}
 		};
 		distDirectoryText.addEntryChangeListener(adaptor);
@@ -231,11 +231,11 @@ public class SiteGenerationSection extends PageSection {
 		return container;
 	}
 
-	public void update(Project pom) {
-		setIfDefined(siteAddressText, pom.getSiteAddress(), isInherited() ? getParentPom().getSiteAddress() : null);
-		setIfDefined(issueTrackingText, pom.getIssueTrackingUrl(), isInherited() ? getParentPom().getIssueTrackingUrl() : null);
-		setIfDefined(siteDirectoryText, pom.getSiteDirectory(), isInherited() ? getParentPom().getSiteDirectory() : null);
-		setIfDefined(distDirectoryText, pom.getDistributionDirectory(), isInherited() ? getParentPom().getDistributionDirectory() : null);
+	public void update(MavenProject pom) {
+		setIfDefined(siteAddressText, pom.getModel().getSiteAddress(), isInherited() ? getParentPom().getModel().getSiteAddress() : null);
+		setIfDefined(issueTrackingText, pom.getModel().getIssueTrackingUrl(), isInherited() ? getParentPom().getModel().getIssueTrackingUrl() : null);
+		setIfDefined(siteDirectoryText, pom.getModel().getSiteDirectory(), isInherited() ? getParentPom().getModel().getSiteDirectory() : null);
+		setIfDefined(distDirectoryText, pom.getModel().getDistributionDirectory(), isInherited() ? getParentPom().getModel().getDistributionDirectory() : null);
 	}
 
 }

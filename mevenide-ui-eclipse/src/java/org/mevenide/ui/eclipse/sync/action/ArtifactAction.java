@@ -16,27 +16,19 @@
  */
 package org.mevenide.ui.eclipse.sync.action;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.maven.project.Dependency;
-import org.apache.maven.project.Project;
-import org.apache.maven.project.Resource;
+import org.apache.maven.project.MavenProject;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IProject;
 import org.mevenide.ui.eclipse.sync.event.IActionListener;
 import org.mevenide.ui.eclipse.sync.event.IdeArtifactEvent;
 import org.mevenide.ui.eclipse.sync.event.NodeEvent;
 import org.mevenide.ui.eclipse.sync.event.PomArtifactEvent;
-import org.mevenide.ui.eclipse.sync.model.ArtifactWrapper;
-import org.mevenide.ui.eclipse.sync.model.DependencyWrapper;
-import org.mevenide.ui.eclipse.sync.model.Directory;
-import org.mevenide.ui.eclipse.sync.model.DirectoryWrapper;
-import org.mevenide.ui.eclipse.sync.model.IArtifactMappingNode;
-import org.mevenide.ui.eclipse.sync.model.ResourceWrapper;
+import org.mevenide.ui.eclipse.sync.model.ArtifactNode;
 
 /**
  * 
@@ -64,7 +56,7 @@ public class ArtifactAction {
 		}
 	}
 	
-	protected void fireArtifactRemovedFromPom(Object item, Project project) {
+	protected void fireArtifactRemovedFromPom(Object item, MavenProject project) {
 		for (int i = 0; i < listeners.size(); i++) {
 			PomArtifactEvent event = new PomArtifactEvent(item, project);
 			((IActionListener)listeners.get(i)).artifactRemovedFromPom(event);
@@ -78,7 +70,7 @@ public class ArtifactAction {
 		}
 	}
 	
-	protected void fireArtifactAddedToPom(Object item, Project project) {
+	protected void fireArtifactAddedToPom(Object item, MavenProject project) {
 		log.debug("Artifact (" + item + ") added to POM : " + project.getFile());
 		for (int i = 0; i < listeners.size(); i++) {
 			PomArtifactEvent event = new PomArtifactEvent(item, project);
@@ -93,31 +85,18 @@ public class ArtifactAction {
 		}
 	}
 	
-	protected void fireArtifactIgnored(Object item, Project project) {
+	protected void fireArtifactIgnored(Object item, MavenProject project) {
 		for (int i = 0; i < listeners.size(); i++) {
 			PomArtifactEvent event = new PomArtifactEvent(item, project);
 			((IActionListener)listeners.get(i)).artifactIgnored(event);
 		}
 	}
 	
-	protected void firePropertyAdded(IArtifactMappingNode node) {
+	protected void firePropertyAdded(ArtifactNode node) {
 		for (int i = 0; i < listeners.size(); i++) {
 			NodeEvent event = new NodeEvent(node);
 			((IActionListener)listeners.get(i)).propertyAdded(event);
 		}
 	}
 	
-	//crap..
-	protected ArtifactWrapper getArtifactWrapper(File declaringPom, Object item) {
-		if ( item instanceof Dependency ) {
-			return new DependencyWrapper(declaringPom, (Dependency) item);
-		}
-		if ( item instanceof Directory ) {
-			return new DirectoryWrapper(declaringPom, (Directory) item);
-		}
-		if ( item instanceof Resource ) {
-			return new ResourceWrapper(declaringPom, (Resource) item);
-		}
-		return null;
-	}
 }

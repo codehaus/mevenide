@@ -18,9 +18,9 @@ package org.mevenide.ui.eclipse.editors.pages;
 
 import java.util.List;
 
-import org.apache.maven.project.Build;
-import org.apache.maven.project.Project;
-import org.apache.maven.project.UnitTest;
+import org.apache.maven.model.Build;
+import org.apache.maven.model.UnitTest;
+import org.apache.maven.project.MavenProject;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
@@ -68,7 +68,7 @@ public class ExcludesSection extends PageSection {
 		return container;
 	}
 
-	public void update(Project pom) {
+	public void update(MavenProject pom) {
 		subsection.updateTableEntries(excludesTable, getExcludes(pom), getInheritedExcludes(), false);
 	}
 
@@ -85,10 +85,10 @@ public class ExcludesSection extends PageSection {
 	}
 	
 	public List getExcludes(Object source) {
-		Project pom = (Project) source;
-		return pom.getBuild() != null 
-			? pom.getBuild().getUnitTest() != null
-				? pom.getBuild().getUnitTest().getExcludes()
+		MavenProject pom = (MavenProject) source;
+		return pom.getModel().getBuild() != null 
+			? pom.getModel().getBuild().getUnitTest() != null
+				? pom.getModel().getBuild().getUnitTest().getExcludes()
 				: null
 			: null;
 	}
@@ -100,11 +100,11 @@ public class ExcludesSection extends PageSection {
 	}
 
 	private UnitTest getOrCreateUnitTest(Object model) {
-		Project pom = (Project) model;
-		Build build = pom.getBuild();
+		MavenProject pom = (MavenProject) model;
+		Build build = pom.getModel().getBuild();
 		if (build == null) {
 			build = new Build();
-			pom.setBuild(build);
+			pom.getModel().setBuild(build);
 		}
 		UnitTest unitTest = build.getUnitTest();
 		if (unitTest == null) {

@@ -18,9 +18,7 @@ package org.mevenide.ui.eclipse.editors.properties;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.maven.project.Resource;
-import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.ui.views.properties.ComboBoxPropertyDescriptor;
+import org.apache.maven.model.Resource;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.TextPropertyDescriptor;
 import org.mevenide.util.MevenideUtils;
@@ -47,7 +45,7 @@ public class ResourcePropertySource extends AbstractPomPropertySource {
 
 	private Resource resource;
 	
-	private IPropertyDescriptor[] descriptors = new IPropertyDescriptor[3];
+	private IPropertyDescriptor[] descriptors = new IPropertyDescriptor[2];
 	{
 		descriptors[0] = new TextPropertyDescriptor(
 			RESOURCE_DIRECTORY,
@@ -57,21 +55,21 @@ public class ResourcePropertySource extends AbstractPomPropertySource {
 			RESOURCE_TARGETPATH,
 			RESOURCE_TARGETPATH
 		);
-		descriptors[2] = new ComboBoxPropertyDescriptor(
-			RESOURCE_FILTERING,
-			RESOURCE_FILTERING,
-			RESOURCE_FILTERING_VALUES
-		);
-		((ComboBoxPropertyDescriptor) descriptors[2]).setLabelProvider(
-			new LabelProvider() {
-				public String getText(Object element) {
-					if (element instanceof Integer) {
-						return getBooleanForIndex(((Integer) element).intValue());
-					}
-					return super.getText(element);
-				}
-			}
-		);
+//		descriptors[2] = new ComboBoxPropertyDescriptor(
+//			RESOURCE_FILTERING,
+//			RESOURCE_FILTERING,
+//			RESOURCE_FILTERING_VALUES
+//		);
+//		((ComboBoxPropertyDescriptor) descriptors[2]).setLabelProvider(
+//			new LabelProvider() {
+//				public String getText(Object element) {
+//					if (element instanceof Integer) {
+//						return getBooleanForIndex(((Integer) element).intValue());
+//					}
+//					return super.getText(element);
+//				}
+//			}
+//		);
 	}
 
 	public ResourcePropertySource(Resource resource) {
@@ -96,9 +94,9 @@ public class ResourcePropertySource extends AbstractPomPropertySource {
 		if (RESOURCE_TARGETPATH.equals(id)) {
 			return valueOrEmptyString(resource.getTargetPath());
 		}
-		if (RESOURCE_FILTERING.equals(id)) {
-			return getIndexOfType();
-		}
+//		if (RESOURCE_FILTERING.equals(id)) {
+//			return getIndexOfType();
+//		}
 		return null;
 	}
 	
@@ -109,9 +107,9 @@ public class ResourcePropertySource extends AbstractPomPropertySource {
 		if (RESOURCE_TARGETPATH.equals(id)) {
 			return !isEmpty(resource.getTargetPath());
 		}
-		if (RESOURCE_FILTERING.equals(id)) {
-			return resource.getFiltering();
-		}
+//		if (RESOURCE_FILTERING.equals(id)) {
+//			return resource.getFiltering();
+//		}
 		return false;
 	}
 	
@@ -142,15 +140,15 @@ public class ResourcePropertySource extends AbstractPomPropertySource {
 				changed = true;
 			}
 		}
-		else if (RESOURCE_FILTERING.equals(id)) {
-			newValue = getBooleanForIndex(((Integer) value).intValue());
-			oldValue = Boolean.toString(resource.getFiltering());
-			if (MevenideUtils.notEquivalent(newValue, oldValue)) {
-				boolean filtering = Boolean.valueOf(newValue).booleanValue();
-				resource.setFiltering(filtering);
-				changed = true;
-			}
-		}
+//		else if (RESOURCE_FILTERING.equals(id)) {
+//			newValue = getBooleanForIndex(((Integer) value).intValue());
+//			oldValue = Boolean.toString(resource.getFiltering());
+//			if (MevenideUtils.notEquivalent(newValue, oldValue)) {
+//				boolean filtering = Boolean.valueOf(newValue).booleanValue();
+//				resource.setFiltering(filtering);
+//				changed = true;
+//			}
+//		}
 		if (changed)
 		{
 			firePropertyChangeEvent(id.toString(), oldValue, newValue);
@@ -158,7 +156,8 @@ public class ResourcePropertySource extends AbstractPomPropertySource {
 	}
 
 	private Integer getIndexOfType() {
-		return resource.getFiltering() ? new Integer(0) : new Integer(1);
+		//return resource.getFiltering() ? new Integer(0) : new Integer(1);
+		return new Integer(1);
 	}
 	
 	private String getBooleanForIndex(int index) {

@@ -22,7 +22,7 @@ import java.util.TreeSet;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.maven.project.Project;
+import org.apache.maven.project.MavenProject;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.ViewerSorter;
@@ -89,7 +89,7 @@ public class ReportsSection extends PageSection {
 			}
 			public Object acceptParent() {
 				resetViewers();
-				return getParentPom().getReports();
+				return getParentPom().getModel().getReports();
 			}
 		};
 		reportsEntry.addEntryChangeListener(adaptor);
@@ -151,18 +151,18 @@ public class ReportsSection extends PageSection {
 		if (log.isDebugEnabled()) {
 			log.debug("setting reports on pom: " + reports);
 		}
-		getPage().getPomEditor().getPom().setReports(reports);
+		getPage().getPomEditor().getPom().getModel().setReports(reports);
 		getPage().getPomEditor().setModelDirty(true);
 	}
 
-	public void update(Project pom) {
+	public void update(MavenProject pom) {
 		if (log.isDebugEnabled()) {
 			log.debug("updating reports = " + pom.getReports());
 		}
 		resetViewers();
 
-		List pomReports = pom.getReports();
-		List parentReports = isInherited() ? getParentPom().getReports() : null;
+		List pomReports = pom.getModel().getReports();
+		List parentReports = isInherited() ? getParentPom().getModel().getReports() : null;
 		if (pomReports != null && !pomReports.isEmpty()) {
 			reportsEntry.addEntries(pomReports);
 			reportsEntry.setInherited(false);

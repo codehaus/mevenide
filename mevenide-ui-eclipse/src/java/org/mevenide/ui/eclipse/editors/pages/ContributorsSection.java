@@ -18,8 +18,8 @@ package org.mevenide.ui.eclipse.editors.pages;
 
 import java.util.List;
 
-import org.apache.maven.project.Contributor;
-import org.apache.maven.project.Project;
+import org.apache.maven.model.Contributor;
+import org.apache.maven.project.MavenProject;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -56,7 +56,7 @@ public class ContributorsSection extends PageSection {
 		layout.horizontalSpacing = 5;
 		container.setLayout(layout);
 		
-		final Project pom = getPage().getPomEditor().getPom();
+		final MavenProject pom = getPage().getPomEditor().getPom();
 		
 		// POM contributors table
 		Button toggle = createOverrideToggle(container, factory, 1, true);
@@ -65,10 +65,10 @@ public class ContributorsSection extends PageSection {
 		OverrideAdaptor adaptor = new OverrideAdaptor() {
 			public void overrideParent(Object value) {
 				List contributors = (List) value;
-				pom.setContributors(contributors);
+				pom.getModel().setContributors(contributors);
 			}
 			public Object acceptParent() {
-				return getParentPom().getContributors();
+				return getParentPom().getModel().getContributors();
 			}
 		};
 		contribTable.addEntryChangeListener(adaptor);
@@ -77,18 +77,18 @@ public class ContributorsSection extends PageSection {
 			new IPomCollectionAdaptor() {
 				public Object addNewObject(Object parentObject) {
 					Contributor contributor = new Contributor();
-					pom.addContributor(contributor);
+					pom.getModel().addContributor(contributor);
 					return contributor;
 				}
 				public void moveObjectTo(int index, Object object, Object parentObject) {
-					List contributors = pom.getContributors();
+					List contributors = pom.getModel().getContributors();
 					if (contributors != null) {
 						contributors.remove(object);
 						contributors.add(index, object);
 					}
 				}
 				public void removeObject(Object object, Object parentObject) {
-					List contributors = pom.getContributors();
+					List contributors = pom.getModel().getContributors();
 					if (contributors != null) {
 						contributors.remove(object);
 					}
@@ -101,10 +101,10 @@ public class ContributorsSection extends PageSection {
 		return container;
 	}
 
-	public void update(Project pom) {
+	public void update(MavenProject pom) {
 		contribTable.removeAll();
-		List contributors = pom.getContributors();
-		List parentContributors = isInherited() ? getParentPom().getContributors() : null;
+		List contributors = pom.getModel().getContributors();
+		List parentContributors = isInherited() ? getParentPom().getModel().getContributors() : null;
 		if (contributors != null && !contributors.isEmpty()) {
 			contribTable.addEntries(contributors);
 			contribTable.setInherited(false);

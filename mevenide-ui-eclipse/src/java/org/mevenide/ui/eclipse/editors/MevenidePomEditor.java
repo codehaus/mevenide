@@ -24,7 +24,7 @@ import java.lang.reflect.InvocationTargetException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.maven.project.Project;
+import org.apache.maven.project.MavenProject;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -46,6 +46,7 @@ import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.mevenide.project.ProjectComparator;
 import org.mevenide.project.ProjectComparatorFactory;
 import org.mevenide.project.io.DefaultProjectMarshaller;
+import org.mevenide.project.io.DefaultProjectUnmarshaller;
 import org.mevenide.project.io.ProjectReader;
 import org.mevenide.ui.eclipse.editors.pages.BuildPage;
 import org.mevenide.ui.eclipse.editors.pages.DependenciesPage;
@@ -55,7 +56,6 @@ import org.mevenide.ui.eclipse.editors.pages.ReportsPage;
 import org.mevenide.ui.eclipse.editors.pages.RepositoryPage;
 import org.mevenide.ui.eclipse.editors.pages.TeamPage;
 import org.mevenide.ui.eclipse.editors.pages.UnitTestsPage;
-import org.mevenide.util.DefaultProjectUnmarshaller;
 import org.mevenide.util.MevenideUtils;
 import org.mevenide.util.StringUtils;
 
@@ -71,8 +71,8 @@ public class MevenidePomEditor extends FormEditor {
 
     private static final Log log = LogFactory.getLog(MevenidePomEditor.class);
 
-    private Project pom;
-    private Project parentPom;
+    private MavenProject pom;
+    private MavenProject parentPom;
     private DefaultProjectMarshaller marshaller;
     private DefaultProjectUnmarshaller unmarshaller;
     private ProjectComparator comparator;
@@ -130,11 +130,11 @@ public class MevenidePomEditor extends FormEditor {
         }
     }
 
-    public Project getPom() {
+    public MavenProject getPom() {
         return pom;
     }
 
-    public Project getParentPom() {
+    public MavenProject getParentPom() {
         return parentPom;
     }
 
@@ -415,8 +415,8 @@ public class MevenidePomEditor extends FormEditor {
             ProjectReader reader = ProjectReader.getReader();
             pom = reader.read(file);
 
-            if (pom.getExtend() != null && !"".equals(pom.getExtend().trim())) {
-                String resolvedExtend = MevenideUtils.resolve(pom, pom.getExtend());
+            if (pom.getModel().getExtend() != null && !"".equals(pom.getModel().getExtend().trim())) {
+                String resolvedExtend = MevenideUtils.resolve(pom, pom.getModel().getExtend());
                 File extendFile = new File(resolvedExtend);
                 if (log.isDebugEnabled()) {
                     log.debug("parentPom path = " + resolvedExtend + "; exists = " + extendFile.exists());
@@ -450,9 +450,9 @@ public class MevenidePomEditor extends FormEditor {
         boolean clean = false;
         IDocument document = documentProvider.getDocument(getEditorInput());
         StringReader reader = new StringReader(document.get());
-        Project updatedPom = null;
+        MavenProject updatedPom = null;
         try {
-            updatedPom = unmarshaller.parse(reader);
+            updatedPom = unmarshaller.unmarshall(reader);
 
             if (log.isDebugEnabled()) {
                 log.debug("old pom name = " + pom.getName() + " and new = " + updatedPom.getName());
@@ -490,7 +490,7 @@ public class MevenidePomEditor extends FormEditor {
                 document.set(newDocument.toString());
                 setModelDirty(false);
                 if (log.isDebugEnabled()) {
-                    log.debug("current project name = " + pom.getName() + " and extends = " + pom.getExtend());
+                    log.debug("current project name = " + pom.getName() + " and extends = " + pom.getModel().getExtend());
                 }
             } catch (Exception e) {
                 log.error("Marshalling POM failed", e);

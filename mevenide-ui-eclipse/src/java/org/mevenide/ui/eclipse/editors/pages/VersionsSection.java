@@ -18,8 +18,8 @@ package org.mevenide.ui.eclipse.editors.pages;
 
 import java.util.List;
 
-import org.apache.maven.project.Project;
-import org.apache.maven.project.Version;
+import org.apache.maven.model.Version;
+import org.apache.maven.project.MavenProject;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -56,7 +56,7 @@ public class VersionsSection extends PageSection {
 		layout.horizontalSpacing = 5;
 		container.setLayout(layout);
 		
-		final Project pom = getPage().getPomEditor().getPom();
+		final MavenProject pom = getPage().getPomEditor().getPom();
 		
 		// POM versions table
 		Button toggle = createOverrideToggle(container, factory, 1, true);
@@ -65,10 +65,10 @@ public class VersionsSection extends PageSection {
 		OverrideAdaptor adaptor = new OverrideAdaptor() {
 			public void overrideParent(Object value) {
 				List versions = (List) value;
-				pom.setVersions(versions);
+				pom.getModel().setVersions(versions);
 			}
 			public Object acceptParent() {
-				return getParentPom().getVersions();
+				return getParentPom().getModel().getVersions();
 			}
 		};
 		versionTable.addEntryChangeListener(adaptor);
@@ -77,18 +77,18 @@ public class VersionsSection extends PageSection {
 			new IPomCollectionAdaptor() {
 				public Object addNewObject(Object parentObject) {
 					Version version = new Version();
-					pom.addVersion(version);
+					pom.getModel().addVersion(version);
 					return version;
 				}
 				public void moveObjectTo(int index, Object object, Object parentObject) {
-					List versions = pom.getVersions();
+					List versions = pom.getModel().getVersions();
 					if (versions != null) {
 						versions.remove(object);
 						versions.add(index, object);
 					}
 				}
 				public void removeObject(Object object, Object parentObject) {
-					List versions = pom.getVersions();
+					List versions = pom.getModel().getVersions();
 					if (versions != null) {
 						versions.remove(object);
 					}
@@ -101,10 +101,10 @@ public class VersionsSection extends PageSection {
 		return container;
 	}
 
-	public void update(Project pom) {
+	public void update(MavenProject pom) {
 		versionTable.removeAll();
-		List versions = pom.getVersions();
-		List parentVersions = isInherited() ? getParentPom().getVersions() : null;
+		List versions = pom.getModel().getVersions();
+		List parentVersions = isInherited() ? getParentPom().getModel().getVersions() : null;
 		if (versions != null && !versions.isEmpty()) {
 			versionTable.addEntries(versions);
 			versionTable.setInherited(false);

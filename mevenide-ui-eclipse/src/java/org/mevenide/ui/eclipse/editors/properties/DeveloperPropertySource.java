@@ -16,10 +16,10 @@
  */
 package org.mevenide.ui.eclipse.editors.properties;
 
-import org.apache.maven.project.Developer;
+import org.apache.maven.model.Developer;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.TextPropertyDescriptor;
-import org.mevenide.util.MevenideUtils;
+//import org.mevenide.util.MevenideUtils;
 
 /**
  * @author Jeffrey Bonevich (jeff@bonevich.com)
@@ -34,62 +34,62 @@ public class DeveloperPropertySource extends ContributorPropertySource {
 	}
 
 	protected void initializeDescriptors() {
-		descriptors = new IPropertyDescriptor[7];
+		descriptors = new IPropertyDescriptor[6];
 		descriptors[0] = new TextPropertyDescriptor(
 			CONTRIBUTOR_NAME,
 			CONTRIBUTOR_NAME
 		);
+//		descriptors[1] = new TextPropertyDescriptor(
+//			DEVELOPER_ID,
+//			DEVELOPER_ID
+//		);
 		descriptors[1] = new TextPropertyDescriptor(
-			DEVELOPER_ID,
-			DEVELOPER_ID
-		);
-		descriptors[2] = new TextPropertyDescriptor(
 			CONTRIBUTOR_EMAIL,
 			CONTRIBUTOR_EMAIL
 		);
-		descriptors[3] = new TextPropertyDescriptor(
+		descriptors[2] = new TextPropertyDescriptor(
 			CONTRIBUTOR_ORGANIZATION,
 			CONTRIBUTOR_ORGANIZATION
 		);
-		descriptors[4] = new TextPropertyDescriptor(
+		descriptors[3] = new TextPropertyDescriptor(
 			CONTRIBUTOR_ROLES,
 			CONTRIBUTOR_ROLES
 		);
-		descriptors[5] = new TextPropertyDescriptor(
+		descriptors[4] = new TextPropertyDescriptor(
 			CONTRIBUTOR_URL,
 			CONTRIBUTOR_URL
 		);
-		descriptors[6] = new TextPropertyDescriptor(
+		descriptors[5] = new TextPropertyDescriptor(
 			CONTRIBUTOR_TIMEZONE,
 			CONTRIBUTOR_TIMEZONE
 		);
 	}
 
-	public Object getPropertyValue(Object id) {
-		if (DEVELOPER_ID.equals(id)) {
-			return valueOrEmptyString(contributor.getId());
-		}
-		return super.getPropertyValue(id);
-	}
-	
-	public boolean isPropertySet(Object id) {
-		if (DEVELOPER_ID.equals(id)) {
-			return !isEmpty(contributor.getId());
-		}
-		return super.isPropertySet(id);
-	}
-	
-	/**
-	 * @see org.mevenide.ui.eclipse.editors.properties.ContributorPropertySource#setOtherProperties(java.lang.Object, java.lang.Object)
-	 */
-	protected String setOtherProperties(Object id, Object value) {
-		if (DEVELOPER_ID.equals(id)) {
-			String oldValue = contributor.getId();
-			if (MevenideUtils.notEquivalent(value, oldValue)) {
-				contributor.setId(value.toString());
-			}
-			return oldValue != null ? oldValue : EMPTY_STR;
-		}
-		return super.setOtherProperties(id, value);
-	}
+//	public Object getPropertyValue(Object id) {
+//		if (DEVELOPER_ID.equals(id)) {
+//			return valueOrEmptyString(contributor.getId());
+//		}
+//		return super.getPropertyValue(id);
+//	}
+//	
+//	public boolean isPropertySet(Object id) {
+//		if (DEVELOPER_ID.equals(id)) {
+//			return !isEmpty(contributor.getId());
+//		}
+//		return super.isPropertySet(id);
+//	}
+//	
+//	/**
+//	 * @see org.mevenide.ui.eclipse.editors.properties.ContributorPropertySource#setOtherProperties(java.lang.Object, java.lang.Object)
+//	 */
+//	protected String setOtherProperties(Object id, Object value) {
+//		if (DEVELOPER_ID.equals(id)) {
+//			String oldValue = contributor.getId();
+//			if (MevenideUtils.notEquivalent(value, oldValue)) {
+//				contributor.setId(value.toString());
+//			}
+//			return oldValue != null ? oldValue : EMPTY_STR;
+//		}
+//		return super.setOtherProperties(id, value);
+//	}
 }

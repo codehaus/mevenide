@@ -18,7 +18,7 @@ package org.mevenide.ui.eclipse.editors.pages;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.maven.project.Project;
+import org.apache.maven.project.MavenProject;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -54,7 +54,7 @@ public abstract class PageSection extends SectionPart {
     private static final Log log = LogFactory.getLog(PageSection.class);
 
     private IPomEditorPage page;
-    private Project parentPom;
+    private MavenProject parentPom;
     private boolean inherited;
 
     class EntryChangeListenerAdaptor implements IEntryChangeListener {
@@ -220,9 +220,9 @@ public abstract class PageSection extends SectionPart {
 
     protected abstract Composite createSectionContent(Composite parent, FormToolkit factory);
 
-    protected abstract void update(Project pom);
+    protected abstract void update(MavenProject pom);
 
-    public void updateSection(Project pom) {
+    public void updateSection(MavenProject pom) {
         update(pom);
         redrawSection();
     }
@@ -267,11 +267,11 @@ public abstract class PageSection extends SectionPart {
         return inherited;
     }
 
-    protected Project getParentPom() {
+    protected MavenProject getParentPom() {
         return parentPom;
     }
 
-    protected void setParentPom(Project newParentPom) {
+    protected void setParentPom(MavenProject newParentPom) {
         this.parentPom = newParentPom;
     }
 

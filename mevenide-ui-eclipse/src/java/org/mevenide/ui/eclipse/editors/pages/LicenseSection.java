@@ -18,8 +18,8 @@ package org.mevenide.ui.eclipse.editors.pages;
 
 import java.util.List;
 
-import org.apache.maven.project.License;
-import org.apache.maven.project.Project;
+import org.apache.maven.model.License;
+import org.apache.maven.project.MavenProject;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -59,7 +59,7 @@ public class LicenseSection extends PageSection {
 		layout.horizontalSpacing = 5;
 		container.setLayout(layout);
 		
-		final Project pom = getPage().getPomEditor().getPom();
+		final MavenProject pom = getPage().getPomEditor().getPom();
 		
 		// POM license table
 		Button toggle = createOverrideToggle(container, factory, 1, true);
@@ -68,10 +68,10 @@ public class LicenseSection extends PageSection {
 		OverrideAdaptor adaptor = new OverrideAdaptor() {
 			public void overrideParent(Object value) {
 				List licenses = (List) value;
-				pom.setLicenses(licenses);
+				pom.getModel().setLicenses(licenses);
 			}
 			public Object acceptParent() {
-				return getParentPom().getLicenses();
+				return getParentPom().getModel().getLicenses();
 			}
 		};
 		licenseTable.addEntryChangeListener(adaptor);
@@ -80,7 +80,7 @@ public class LicenseSection extends PageSection {
 			new IPomCollectionAdaptor() {
 				public Object addNewObject(Object parentObject) {
 					License license = new License();
-					pom.addLicense(license);
+					pom.getModel().addLicense(license);
 					return license;
 				}
 				public void moveObjectTo(int index, Object object, Object parentObject) {
@@ -104,10 +104,10 @@ public class LicenseSection extends PageSection {
 		return container;
     }
 	
-	public void update(Project pom) {
+	public void update(MavenProject pom) {
 		licenseTable.removeAll();
-		List licenses = pom.getLicenses();
-		List parentLicenses = isInherited() ? getParentPom().getLicenses() : null;
+		List licenses = pom.getModel().getLicenses();
+		List parentLicenses = isInherited() ? getParentPom().getModel().getLicenses() : null;
 		if (licenses != null && !licenses.isEmpty()) {
 			licenseTable.addEntries(licenses);
 			licenseTable.setInherited(false);

@@ -21,7 +21,7 @@ import java.io.Reader;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.maven.project.Project;
+import org.apache.maven.project.MavenProject;
 import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.DirectoryFieldEditor;
 import org.eclipse.jface.preference.FileFieldEditor;
@@ -42,7 +42,7 @@ import org.mevenide.environment.ILocationFinder;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.MevenidePreferenceKeys;
 import org.mevenide.ui.eclipse.goals.viewer.GoalsPickerDialog;
-import org.mevenide.util.DefaultProjectUnmarshaller;
+import org.mevenide.project.io.DefaultProjectUnmarshaller;
 
 /**
  * 
@@ -174,7 +174,7 @@ public class MevenidePreferenceDialog {
 						if ( ((Text)event.getSource()).getText() != null && !((Text)event.getSource()).getText().trim().equals("") ) {
 							DefaultProjectUnmarshaller dpu = new DefaultProjectUnmarshaller();
 							Reader reader = new FileReader(((Text)event.getSource()).getText());
-							Project project = dpu.parse(reader);
+							MavenProject project = dpu.unmarshall(reader);
 							invalidPomTemplate = false;
 							page.setErrorMessage(null);
 						}

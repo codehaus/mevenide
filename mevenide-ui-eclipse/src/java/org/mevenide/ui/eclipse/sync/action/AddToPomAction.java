@@ -18,11 +18,10 @@ package org.mevenide.ui.eclipse.sync.action;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.maven.project.Project;
+import org.apache.maven.project.MavenProject;
 import org.mevenide.ui.eclipse.sync.event.ISynchronizationConstraintListener;
 import org.mevenide.ui.eclipse.sync.event.SynchronizationConstraintEvent;
-import org.mevenide.ui.eclipse.sync.model.ArtifactWrapper;
-import org.mevenide.ui.eclipse.sync.model.IArtifactMappingNode;
+import org.mevenide.ui.eclipse.sync.model.ArtifactNode;
 
 /**
  * 
@@ -35,12 +34,9 @@ public class AddToPomAction extends ArtifactAction implements ISynchronizationCo
 	
 	private boolean shouldWriteProperties;
 	
-	public void addEntry(IArtifactMappingNode item, Project project) throws Exception {
-		ArtifactWrapper artifactWrapper = getArtifactWrapper(item.getDeclaringPom(), item.getResolvedArtifact());
+	public void addEntry(ArtifactNode item, MavenProject project) throws Exception {
 		
-		if ( artifactWrapper != null ) {
-			artifactWrapper.addTo(project, shouldWriteProperties);
-		}
+		item.addTo(project, shouldWriteProperties);
 		
 		fireArtifactAddedToPom(item, project);
 	}

@@ -20,8 +20,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.maven.project.Project;
-import org.apache.maven.project.Resource;
+import org.apache.maven.model.Resource;
+import org.apache.maven.project.MavenProject;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
@@ -45,7 +45,7 @@ public class IncludesSubsection extends AbstractResourcePatternSubsection {
 	}
 	
 	public TableEntry createWidget(Composite container, FormToolkit factory, boolean isOverrideable) {
-		final Project pom = section.getPage().getPomEditor().getPom();
+		final MavenProject pom = section.getPage().getPomEditor().getPom();
 
 		// Include table
 		Button toggle = null;
