@@ -102,7 +102,9 @@ public class MavenExecutor implements Runnable {
     }
     
     private org.openide.windows.InputOutput createInputOutput() {
-        return IOProvider.getDefault().getIO("maven", true);
+        InputOutput io = IOProvider.getDefault().getIO("Maven", true);
+        io.setErrSeparated(false);
+        return io;
     }    
     
     public org.openide.windows.InputOutput getInputOutput() {
@@ -159,6 +161,7 @@ public class MavenExecutor implements Runnable {
             } finally {
                 try {
                     read.close();
+                    writer.close();
                 } catch (IOException ioexc) {
                     logger.error(ioexc);
                 }
