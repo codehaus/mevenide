@@ -26,6 +26,7 @@
 # or
 #DEFAULT (echo ""; id; echo %{sVv}; date; cat) >> $CVSROOT/CVSROOT/commitlog
 
-CVSROOT /bin/true
+#CVSROOT /bin/true
+#DEFAULT /usr/local/despots/cvs/log_accum.pl %s
 
-DEFAULT /usr/local/despots/cvs/log_accum.pl %s
+ALL /usr/local/despots/cvs/collect_diffs.rb --to scm@mevenide.codehaus.org %{sVv}
