@@ -159,9 +159,9 @@ public class SynchronizeWizardPage extends WizardPage {
 	
 
     public SynchronizeWizardPage() {
-		super("Artifacts Synchronization");
-		setTitle("Artifacts Synchronization");
-		setDescription("This page let you control which artifact should be synchronized and allow you to specify which ones are inherited.");
+		super(Mevenide.getResourceString("SynchronizeWizardPage.name"));
+		setTitle(Mevenide.getResourceString("SynchronizeWizardPage.title"));
+		setDescription(Mevenide.getResourceString("SynchronizeWizardPage.description"));
 		setImageDescriptor(Mevenide.getImageDescriptor("dep-synch-64.gif"));
 	
 	}
@@ -174,11 +174,11 @@ public class SynchronizeWizardPage extends WizardPage {
         tabFolder = new TabFolder(topLevelContainer, SWT.NULL);
         
         sourceDirectoriesSynchronizationTab = new TabItem(tabFolder, SWT.NORMAL);
-		sourceDirectoriesSynchronizationTab.setText("Source Directories");
+		sourceDirectoriesSynchronizationTab.setText(Mevenide.getResourceString("SynchronizeWizardPage.source.dirs.tab.title"));
 		//sourceDirectoriesSynchronizationTab.setImage(Mevenide.getImageDescriptor("source-directory-16.gif").createImage());
 		
 		dependenciesSynchronizationTab = new TabItem(tabFolder, SWT.NORMAL);
-		dependenciesSynchronizationTab.setText("Dependencies");
+		dependenciesSynchronizationTab.setText(Mevenide.getResourceString("SynchronizeWizardPage.dependencies.tab.title"));
 		//sourceDirectoriesSynchronizationTab.setImage(Mevenide.getImageDescriptor("dependencies-16.gif").createImage());
         
         initSourceSynchronizationTabControl();
@@ -232,10 +232,10 @@ public class SynchronizeWizardPage extends WizardPage {
 		);
 		item1.setText(
 			new String[] {
-				"Already in parent",
-				"Already in POM",
-				"Parent Value (RO)",
-				"Version conflict",
+				Mevenide.getResourceString("SynchronizeWizardPage.legend.already.inparent"),
+				Mevenide.getResourceString("SynchronizeWizardPage.legend.already.inpom"),
+				Mevenide.getResourceString("SynchronizeWizardPage.legend.parent.value"),
+				Mevenide.getResourceString("SynchronizeWizardPage.version.conflict"),
 			}	
 		);
 		
