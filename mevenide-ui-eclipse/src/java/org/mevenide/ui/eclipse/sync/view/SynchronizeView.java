@@ -70,7 +70,6 @@ import org.mevenide.ui.eclipse.sync.model.DependencyMappingNode;
 import org.mevenide.ui.eclipse.sync.model.DependencyPropertyWrapper;
 import org.mevenide.ui.eclipse.sync.model.EclipseContainerContainer;
 import org.mevenide.ui.eclipse.sync.model.IArtifactMappingNode;
-import org.mevenide.ui.eclipse.sync.model.IArtifactMappingNodeContainer;
 
 
 
@@ -116,6 +115,8 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
 
     private ProjectComparator comparator;
     
+	private boolean isDisposed;
+	
     public void createPartControl(Composite parent) {
         createArtifactViewer(parent);
         createActions();
@@ -245,6 +246,7 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
     private void configureViewer() {
         artifactMappingNodeViewer.setContentProvider(new ArtifactMappingContentProvider());
         artifactMappingNodeViewer.setLabelProvider(new ArtifactMappingLabelProvider());
+        isDisposed = false;
     }
     
     private void createActions() {
@@ -425,14 +427,14 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
 	}
 
 	public void propertyAdded(NodeEvent event) {
-		log.debug("propertyAdded : ");
-		artifactMappingNodeViewer.refresh(event.getNode().getParent());
+		log.debug("propertyAdded to " + event.getNode());
+		artifactMappingNodeViewer.refresh(event.getNode());
 	}
 	
 	private void refreshNode(IArtifactMappingNode artifact) {
-		IArtifactMappingNodeContainer container = (IArtifactMappingNodeContainer) getContentProvider().getParent(artifact);
-    	container.removeNode(artifact);
-    	artifactMappingNodeViewer.refresh(container);
+		//IArtifactMappingNodeContainer container = (IArtifactMappingNodeContainer) getContentProvider().getParent(artifact);
+    	//container.removeNode(artifact);
+    	artifactMappingNodeViewer.refresh(artifact.getParent());
 	}
 	
 	private ITreeContentProvider getContentProvider() {
@@ -572,4 +574,14 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
 			refreshAll(true);
 		}     
 	}
+	
+	public void dispose() {
+		super.dispose();
+		this.isDisposed = true;
+	}
+	
+	public boolean isDisposed() {
+		return isDisposed;
+	}
 }
+

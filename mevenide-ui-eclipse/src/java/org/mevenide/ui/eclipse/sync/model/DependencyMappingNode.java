@@ -16,11 +16,14 @@
  */
 package org.mevenide.ui.eclipse.sync.model;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Dependency;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.mevenide.ui.eclipse.editors.properties.DependencyPropertySource;
+import org.mevenide.ui.eclipse.sync.event.IDependencyPropertyListener;
 
 /**
  * 
@@ -28,8 +31,9 @@ import org.mevenide.ui.eclipse.editors.properties.DependencyPropertySource;
  * @version $Id$
  * 
  */
-public class DependencyMappingNode extends AbstractArtifactMappingNode implements IPropertyChangeListener {
-    
+public class DependencyMappingNode extends AbstractArtifactMappingNode implements IPropertyChangeListener, IDependencyPropertyListener {
+    private Log log = LogFactory.getLog(DependencyMappingNode.class);
+    	
     private Dependency dirtyDependency;
     
     public String getLabel() {
@@ -106,4 +110,8 @@ public class DependencyMappingNode extends AbstractArtifactMappingNode implement
     public void setDirtyDependency(Dependency dirtyDependency) {
         this.dirtyDependency = dirtyDependency;
     }
+    
+	public void propertyChanged(DependencyPropertyWrapper wrapper, String oldValue, String newValue) {
+		log.debug("property has been updated oldValue : " + oldValue + ", newValue : " + newValue);
+	}
 }
