@@ -77,6 +77,8 @@ import org.mevenide.ui.eclipse.Mevenide;
 
 /**
  * 
+ * @todo refactor-me so that MavenLaunchDelegate doesnot extend AbstractRunner but rather AbstractLaunchConfigurationDelegate rather 
+ * 
  * @author Gilles Dodinet (gdodinet@wanadoo.fr)
  * @version $Id$
  * 
@@ -97,7 +99,13 @@ public class MavenLaunchDelegate extends AbstractRunner implements ILaunchConfig
 		}
 	
 		VMRunnerConfiguration vmConfig = new VMRunnerConfiguration("com.werken.forehead.Forehead", ArgumentsManager.getMavenClasspath());
-		vmConfig.setVMArguments(ArgumentsManager.getVMArgs(this));
+		String[] vmArgs = ArgumentsManager.getVMArgs(this);
+		
+		for (int i = 0; i < vmArgs.length; i++) {
+            log.debug("VM Argument : " + vmArgs[i]);
+        }
+		
+		vmConfig.setVMArguments(vmArgs);
 		
         vmConfig.setProgramArguments( getMavenArgs(getOptions(configuration), getGoals(configuration) ) );
         

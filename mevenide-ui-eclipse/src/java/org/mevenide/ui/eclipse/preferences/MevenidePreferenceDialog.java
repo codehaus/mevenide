@@ -226,6 +226,9 @@ public class MevenidePreferenceDialog {
 		
 		checkTimestamp = checkTimestampEditor.getBooleanValue();
 		Mevenide.getPlugin().setCheckTimestamp(checkTimestamp);
+		
+		defaultGoals = defaultGoalsEditor.getTextControl(topLevelContainer).getText();
+		Mevenide.getPlugin().setDefaultGoals(defaultGoals);
 	}
 	
 	

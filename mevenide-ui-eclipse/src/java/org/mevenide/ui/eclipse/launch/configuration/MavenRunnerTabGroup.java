@@ -75,6 +75,7 @@ public class MavenRunnerTabGroup extends AbstractLaunchConfigurationTabGroup {
 		};
 		setTabs(tabs);
 	}
-
+	
+	
 
 }

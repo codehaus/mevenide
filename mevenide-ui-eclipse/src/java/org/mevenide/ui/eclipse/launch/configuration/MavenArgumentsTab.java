@@ -82,6 +82,7 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 import org.mevenide.OptionsRegistry;
+import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.launch.LaunchWizardPage;
 
 /**
@@ -107,17 +108,20 @@ public class MavenArgumentsTab extends AbstractLaunchConfigurationTab  {
 
 	private Text goalsText;
 	private Table table;
-
+	
+	
 	public MavenArgumentsTab() {
-		setDirty(false); 
+		setDirty(false);
 	}
+	
+	
 	
 	public String getName() {
 		return "Arguments";
 	}
 	
-	public void setDefaults(ILaunchConfigurationWorkingCopy arg0) {
-		// @todo Auto-generated method stub
+	public void setDefaults(ILaunchConfigurationWorkingCopy configuration) {
+		configuration.setAttribute(GOALS_TO_RUN, Mevenide.getPlugin().getDefaultGoals());
 	}
 
 	
@@ -290,6 +294,7 @@ public class MavenArgumentsTab extends AbstractLaunchConfigurationTab  {
 					log.debug("setting selectedGoals to=" + ((Text)event.getSource()).getText());
 					selectedGoals = ((Text)event.getSource()).getText();
 					setDirty(true);
+					
 					updateLaunchConfigurationDialog();
 				}
 			}
@@ -395,7 +400,6 @@ public class MavenArgumentsTab extends AbstractLaunchConfigurationTab  {
 		storeGoals(configuration);
 		storeSysProperties(configuration);
 		storeOptionsMap(configuration);
-		
 	}
 
 	private void initSysProperties(ILaunchConfiguration configuration) {
@@ -485,5 +489,5 @@ public class MavenArgumentsTab extends AbstractLaunchConfigurationTab  {
         configuration.setAttribute(OPTIONS_MAP, storingMap);
     }
 
-    
+ 
 }
