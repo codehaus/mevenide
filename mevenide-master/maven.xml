@@ -163,18 +163,10 @@
   
   <goal name="build-core"
     	description="Build Mevenide-core module">
-    <maven:reactor basedir="${basedir}/.."
-      			   includes="mevenide-core/project.xml"
-      			   excludes="goals-grabber/project.xml,mevenide-master/project.xml,mevenide-ui-eclipse/project.xml"
-      			   goals="clean,jar:install"
-      			   banner="Building"
-      			   ignoreFailures="false"/>
-	 <!-- 
-	 	copy the resulting artifact into plugin lib directory 
-	 	Q : how to get the currentVersion and artifactName ? 
-	 	R ? copy this to goal to mevenide-core/maven.xml as a postGoal (on ?)
-	 -->
-     <ant:copy todir="../mevenide-ui-eclipse/lib" file="../mevenide-core/target/mevenide-core-0.1.jar"/>
+  
+	 <util:file var="mevenideCoreProjectdescriptor" name="${basedir}/../mevenide-core/project.xml"/>
+	 <maven:maven descriptor="${mevenideCoreProjectdescriptor}" goals="clean,jar:install"/> 
+	 
   </goal>
     
     
@@ -207,7 +199,9 @@
   	rather bad.. this is a hack since theres no support yet for transitive dependencies.
   -->
   <goal name="mevenide:prepare-dist">
+  	<!-- clean lib and dist directories -->
   	<ant:delete dir="${basedir}/lib" quiet="true"/>
+  	<ant:delete dir="${basedir}/dist" quiet="true"/>
   	
   	<mevenide:getTransitiveDependencies var="transitiveDependencies"/>
 	<j:forEach var="dependency" items="${pom.dependencies}">
@@ -246,12 +240,12 @@
        	<ant:fileset dir="${basedir}" includes="icons/*.*"/>
        	<ant:fileset dir="${basedir}" includes="plugin.xml,plugin.properties,license.txt"/>
        	<ant:fileset dir="${basedir}" includes="lib/*.*"/>
-       	<ant:fileset dir="${maven.build.dir}" includes="${pom.artifactId}-${pom.currentVersion}.jar"/>
+       	<ant:fileset dir="${maven.build.dir}" includes="${pom.artifactId}-${distVersion}.jar"/>
       </ant:copy>
        
       <!-- copy mevenide-ui-eclipse subproject specific files -->
       <j:if test="${pom.artifactId.equals('mevenide-ui-eclipse')}">
-        <ant:jar update="true" destfile="${basedir}/temp/${directoryName}_${distVersion}/${pom.artifactId}-${pom.currentVersion}.jar">
+        <ant:jar update="true" destfile="${basedir}/temp/${directoryName}_${distVersion}/${pom.artifactId}-${distVersion}.jar">
        	  <fileset dir="${basedir}" includes="MavenPluginResources.properties"/>
         </ant:jar>
       </j:if>
@@ -279,9 +273,9 @@
    	  
    	  <!-- create feature dist file. should we create a POM for mevenide-feature ? -->
    	  <j:set var="tempDirectory" value="${basedir}/temp"/>
-   	  <ant:mkdir dir="${tempDirectory}/${featureName}"/>
+   	  <ant:mkdir dir="${tempDirectory}/${featureName}_${distVersion}"/>
    	  
-	  <ant:copy todir="${tempDirectory}/${featureName}">
+	  <ant:copy todir="${tempDirectory}/${featureName}_${distVersion}">
 	   	  <ant:fileset dir="${basedir}/../mevenide-feature">
             <ant:include name="feature.properties"/>
             <ant:include name="feature.xml"/>
@@ -292,7 +286,7 @@
       
    	  <ant:jar destfile="${basedir}/../mevenide-feature/dist/${featureName}_${distVersion}.jar">
          <ant:fileset dir="${basedir}/temp">
-            <ant:include name="${featureName}/*.*"/>
+            <ant:include name="${featureName}_${distVersion}/*.*"/>
          </ant:fileset>	
       </ant:jar>
       
@@ -305,8 +299,10 @@
    </goal>
 
    <!-- 
-   	  build a single artifact containing all plugins and feature, ready to be unzipped into ${eclipse.home}
-   	  or either to be used in update manager
+   	  build a single artifact containing all plugins and feature, ready to be 
+   	  unzipped into ${eclipse.home} or either to be used in update manager. 
+   	  warn : if unzipped in ${eclipse.home}, site.properties and site.xml 
+   	  will mess up the ${eclipse.home} directory.
    -->
    <goal name="mevenide:bundle-dist">
    	 
@@ -327,6 +323,7 @@
      </ant:fileScanner>
    	<j:forEach var="pluginJar" items="${pluginJars.iterator()}">
    		<ant:unjar src="${pluginJar}" dest="${tempDirectory}/plugins"/>
+   	    <!-- we dont want to include the manifest file -->   		
    		<ant:delete dir="${tempDirectory}/plugins/META-INF" quiet="true"/>
 	</j:forEach>
 	
@@ -334,6 +331,7 @@
 	<j:set var="featureJar" 
 		   value="${basedir}/../mevenide-update/features/org.mevenide.eclipse.feature_${distVersion}.jar"/>
 	<ant:unjar src="${featureJar}" dest="${tempDirectory}/features"/>
+	<!-- we dont want to include the manifest file -->
 	<ant:delete dir="${tempDirectory}/features/META-INF" quiet="true"/>
 	
 	<!-- build an aggregated distribution -->
