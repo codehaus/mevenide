@@ -18,7 +18,7 @@
     <dependency>     
         <groupId>mevenide</groupId>
         <artifactId>maven-mevenide-plugin</artifactId>
-        <version>0.1.2</version>
+        <version>0.2</version>
         <type>plugin</type> 
     </dependency>
     <dependency>     
