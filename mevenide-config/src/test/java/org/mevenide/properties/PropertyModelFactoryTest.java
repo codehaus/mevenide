@@ -51,6 +51,8 @@ public class PropertyModelFactoryTest extends TestCase {
 // is defined on multiple lines
 //    
 // my.prop.6 = trailing whitespaces and a tab   	
+//my.prop.7 = \  
+//slash then 2 ws
     
     protected void setUp() throws Exception {
         factory = PropertyModelFactory.getFactory();
@@ -82,6 +84,9 @@ public class PropertyModelFactoryTest extends TestCase {
 		
 		assertEquals("my.prop.6", model.findByKey("my.prop.6").getKey());
 		assertEquals("trailing whitespaces and a tab", model.findByKey("my.prop.6").getValue());
+		
+		assertEquals("my.prop.7", model.findByKey("my.prop.7").getKey());
+		assertEquals("slash then 2 ws", model.findByKey("my.prop.7").getValue());
     }
 
 }

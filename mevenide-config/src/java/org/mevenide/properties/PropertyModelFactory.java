@@ -99,6 +99,8 @@ public class PropertyModelFactory {
         
         while ( (line = reader.readLine()) != null ) {
 			
+            line = Utils.removeTrailingWhitespaces(line);
+            
             // Find start of key first..
             // apparently doens't have to be the first in line..
             int len = line.length();

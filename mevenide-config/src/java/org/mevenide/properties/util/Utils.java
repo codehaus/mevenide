@@ -39,7 +39,7 @@ public class Utils {
     
     public static String removeTrailingWhitespaces(String strg) {
         String localCopy = strg;
-        while ( WS.indexOf(localCopy.charAt(localCopy.length() - 1)) != -1 ) {
+        while ( localCopy.length() > 0 && WS.indexOf(localCopy.charAt(localCopy.length() - 1)) != -1 ) {
             localCopy = localCopy.substring(0, localCopy.length() - 1);
         }
         return localCopy;
