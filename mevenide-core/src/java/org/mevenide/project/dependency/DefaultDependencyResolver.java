@@ -22,6 +22,8 @@ import org.mevenide.Environment;
 
 /**
  * 
+ * @todo DefaultDependencyResolver(String fileName) => extract all fileName method attributes, => will impact IDependencyResolver and AbstractDependencyResolver 
+ * 
  * @author Gilles Dodinet (gdodinet@wanadoo.fr)
  * @version $Id$
  * 
