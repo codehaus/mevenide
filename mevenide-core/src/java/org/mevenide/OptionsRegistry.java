@@ -12,13 +12,14 @@
  * Lesser General Public License for more details.
  * 
  */
-package org.mevenide.util;
+package org.mevenide;
 
 import java.io.FileInputStream;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 import java.util.TreeMap;
+
 
 
 

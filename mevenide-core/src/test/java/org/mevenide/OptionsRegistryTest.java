@@ -12,7 +12,7 @@
  * Lesser General Public License for more details.
  * 
  */
-package org.mevenide.util;
+package org.mevenide;
 
 import junit.framework.TestCase;
 

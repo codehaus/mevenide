@@ -29,7 +29,7 @@ public class AllTests {
     
         suite.addTest(org.mevenide.core.AllTests.suite());
         suite.addTest(org.mevenide.pom.AllTests.suite());
-        suite.addTest(org.mevenide.util.AllTests.suite());
+        suite.addTest(org.mevenide.AllTests.suite());
         
         return suite;
     }

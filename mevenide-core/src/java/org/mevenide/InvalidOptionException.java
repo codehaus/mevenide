@@ -12,23 +12,28 @@
  * Lesser General Public License for more details.
  * 
  */
-package org.mevenide.util;
-
-import junit.framework.Test;
-import junit.framework.TestSuite;
+package org.mevenide;
 
 /**
  * 
  * @author Gilles Dodinet (gdodinet@wanadoo.fr)
- * @version $Id: AllTests.java 8 mai 2003 15:32:4913:34:35 Exp gdodinet 
+ * @version $Id$
  * 
  */
-public class AllTests  {
-    public static Test suite() {
-        TestSuite suite = new TestSuite();
-        
-        suite.addTestSuite(OptionsRegistryTest.class);
-        
-        return suite;
+public class InvalidOptionException extends Exception {
+	private String message;
+	
+	public InvalidOptionException(char option) {
+		message = new StringBuffer("invalid option : '-").append(option).append("'").toString();
+	}
+	
+	public String toString() {
+        return message;
     }
+    
+    public String getMessage() {
+        return message;
+    }
+
+
 }
