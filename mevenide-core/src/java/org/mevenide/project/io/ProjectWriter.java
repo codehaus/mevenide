@@ -67,7 +67,7 @@ public class ProjectWriter {
 	private ILocationFinder locationFinder;
 	
 	private ProjectWriter() throws Exception  {
-		marshaller = new DefaultProjectMarshaller();
+		marshaller = new CarefulProjectMarshaller();
 		projectReader = ProjectReader.getReader();
 		locationFinder = new LocationFinderAggregator();
 	}

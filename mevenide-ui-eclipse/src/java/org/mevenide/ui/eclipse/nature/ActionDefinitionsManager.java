@@ -19,6 +19,11 @@ package org.mevenide.ui.eclipse.nature;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.debug.core.DebugPlugin;
+import org.eclipse.debug.core.ILaunchConfiguration;
+import org.eclipse.debug.core.ILaunchConfigurationListener;
+import org.eclipse.debug.core.ILaunchConfigurationType;
 
 
 /**  
@@ -27,25 +32,42 @@ import org.eclipse.core.resources.IProject;
  * @version $Id$
  * 
  */
-public class ActionDefinitionsManager implements IActionDefinitionManager {
+public class ActionDefinitionsManager implements IActionDefinitionManager, ILaunchConfigurationListener {
     private List definitions = new ArrayList();
 
     
     public ActionDefinitionsManager() {
-//	      Just to stub.. even if the interface was introduced for this purpose.. 
-//		  need to create a proper stub implementation        
-        ActionDefinitions def = new ActionDefinitions();
-        List patterns = new ArrayList();
-        patterns.add("**/*.java");
-        def.setPatterns(patterns);
-        List goals = new ArrayList();
-        goals.add("jar:install");
-        def.setGoals(goals);
-        definitions.add(def);
+        try {
+            ILaunchConfigurationType type = DebugPlugin.getDefault().getLaunchManager().getLaunchConfigurationType("org.mevenide.ui.launching.ActionDefinitionConfigType");
+            ILaunchConfiguration[] configurations = DebugPlugin.getDefault().getLaunchManager().getLaunchConfigurations(type);
+            for (int i = 0; i < configurations.length; i++) {
+                ActionDefinitions definition = new ActionDefinitions();
+                definition.setConfiguration(configurations[i]);
+                definitions.add(definition);
+            }
+        }
+        catch (CoreException e) {
+            e.printStackTrace();
+        }
     }
     
     public List getDefinitions(IProject project) {
         return definitions;
     }
     
+    
+    public void launchConfigurationAdded(ILaunchConfiguration configuration) {
+        ActionDefinitions definition = new ActionDefinitions();
+        definition.setConfiguration(configuration);
+        definitions.add(definition);
+    }
+    
+    public void launchConfigurationChanged(ILaunchConfiguration configuration) {
+    }
+    
+    public void launchConfigurationRemoved(ILaunchConfiguration configuration) {
+        ActionDefinitions definition = new ActionDefinitions();
+        definition.setConfiguration(configuration);
+        System.out.println(definitions.remove(definition));
+    }
 }

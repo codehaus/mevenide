@@ -45,7 +45,7 @@ import org.eclipse.ui.texteditor.IElementStateListener;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.mevenide.project.ProjectComparator;
 import org.mevenide.project.ProjectComparatorFactory;
-import org.mevenide.project.io.DefaultProjectMarshaller;
+import org.mevenide.project.io.CarefulProjectMarshaller;
 import org.mevenide.project.io.IProjectMarshaller;
 import org.mevenide.project.io.JDomProjectUnmarshaller;
 import org.mevenide.project.io.ProjectReader;
@@ -126,7 +126,7 @@ public class MevenidePomEditor extends FormEditor {
     public MevenidePomEditor() {
         super();
         try {
-            marshaller = new DefaultProjectMarshaller();
+            marshaller = new CarefulProjectMarshaller();
             unmarshaller = new JDomProjectUnmarshaller();
         } catch (Exception e) {
             log.error("Could not create a POM marshaller", e); //$NON-NLS-1$
@@ -305,9 +305,9 @@ public class MevenidePomEditor extends FormEditor {
         if (log.isDebugEnabled()) {
             log.debug("attempting save..."); //$NON-NLS-1$
         }
-
+        
         updateDocument();
-
+        
         final IEditorInput input = getEditorInput();
         WorkspaceModifyOperation op = new WorkspaceModifyOperation() {
 
@@ -321,10 +321,10 @@ public class MevenidePomEditor extends FormEditor {
         };
 
         try {
-            op.run(monitor);
-            updateModel();
             documentProvider.aboutToChange(input);
+            op.run(monitor);
             documentProvider.changed(input);
+            updateModel();
             updateTitleAndToolTip();
             setModelDirty(false);
         } catch (InterruptedException x) {
@@ -334,13 +334,6 @@ public class MevenidePomEditor extends FormEditor {
             log.debug("saved!"); //$NON-NLS-1$
             log.debug("dirty = " + isDirty()); //$NON-NLS-1$
             log.debug("modeldirty = " + isModelDirty()); //$NON-NLS-1$
-        }
-        
-        try {
-            this.pom = unmarshaller.parse(((IFileEditorInput) getEditorInput()).getFile().getRawLocation().toFile());
-        }
-        catch ( Exception e ) {
-            e.printStackTrace();
         }
     }
 

@@ -82,7 +82,7 @@ public class CustomMavenLaunchManager implements IWorkbenchWindowPulldownDelegat
 				Menu m = (Menu)e.widget;
 				MenuItem[] items = m.getItems();
 				for (int i=0; i < items.length; i++) {
-					items[i].dispose();
+				    items[i].dispose();
 				}
 				fillMenu(m);
 			}            
