@@ -90,8 +90,8 @@ public abstract class PropertiesLocationFinder extends AbstractLocationFinder {
     }
     public String getMavenPluginsDir() {
         if (context != null) {
-            return getContextPropertyValue("maven.plugins.dir");
+            return getContextPropertyValue("maven.plugin.unpacked.dir");
         }
-        return properties.getProperty("maven.plugins.dir");
+        return properties.getProperty("maven.plugin.unpacked.dir");
     }
 }
