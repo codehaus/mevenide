@@ -13,6 +13,8 @@
  */
 package org.mevenide.ui.eclipse.sync.views;
 
+import java.io.File;
+
 
 /**
  * 
@@ -21,11 +23,15 @@ package org.mevenide.ui.eclipse.sync.views;
  * 
  */
 public class SourceDirectory {
-	private String directoryString = "";
+	private String directoryPath = "";
 	private String directoryType = "source";
 	
+	public SourceDirectory(String path) {
+		directoryPath = "${basedir}" + File.separator + path;
+	}
+	
 	public String getDirectoryPath() {
-		return "directory";
+		return directoryPath;
 	}
 	
 	public String getDirectoryType() {

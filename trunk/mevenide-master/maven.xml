@@ -50,6 +50,9 @@
     
     <copy file="${eclipse.home}/plugins/org.eclipse.jdt.ui_2.1.0/jdt.jar" 
   		  tofile="${maven.repo.local}/eclipse/jars/eclipse-jdt-2.1.0.jar"/> 
+  	
+    <copy file="${eclipse.home}/plugins/org.eclipse.ui.views_2.1.0/views.jar" 
+  		  tofile="${maven.repo.local}/eclipse/jars/eclipse-views-2.1.0.jar"/> 
   		  
     <copy file="${eclipse.home}/plugins/${swt.plugin.dir}/swt.jar" 
   		  tofile="${maven.repo.local}/eclipse/jars/eclipse-swt-2.1.0.jar"/>  

@@ -13,7 +13,14 @@
  */
 package org.mevenide.ui.eclipse.sync.views;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.core.resources.IProject;
+import org.eclipse.jdt.core.IClasspathEntry;
+import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.JavaCore;
+import org.mevenide.ui.eclipse.sync.DefaultPathResolverDelegate;
 
 /**
  * 
@@ -23,11 +30,33 @@ import org.eclipse.core.resources.IProject;
  */
 public class SourceDirectoryGroup {
 	
+	private List sourceDirectories;
+	private IJavaProject project;
+	
 	public SourceDirectoryGroup(IProject project) {
-		
+		try {
+			if ( project.hasNature(JavaCore.NATURE_ID) ) {
+				this.project = JavaCore.create(project);
+				initialize();
+			}
+		}
+		catch ( Exception ex ) {
+			ex.printStackTrace();
+		}
 	}
 	
-	public SourceDirectory[] getSourceDirectories() {
-		return new SourceDirectory[]{new SourceDirectory(), new SourceDirectory()};
+	private void initialize() throws Exception {
+		sourceDirectories = new ArrayList();
+		IClasspathEntry[] classpathEntries = project.getResolvedClasspath(true);
+		for (int i = 0; i < classpathEntries.length; i++) {
+			if ( classpathEntries[i].getEntryKind() == IClasspathEntry.CPE_SOURCE) {
+				String path = new DefaultPathResolverDelegate().computePath(classpathEntries[i], project.getProject());
+				sourceDirectories.add(new SourceDirectory(path));
+			}
+		}
+	}
+	
+	public List getSourceDirectories() {
+		return sourceDirectories;
 	}
 }
