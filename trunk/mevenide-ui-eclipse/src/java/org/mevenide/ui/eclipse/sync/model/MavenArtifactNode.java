@@ -86,7 +86,7 @@ public class MavenArtifactNode extends ArtifactNode {
 		}
 		MavenArtifactNode node = (MavenArtifactNode) obj;
 		Project context = (Project) parent.getData();
-		return DependencyUtil.areEquals(context, this.artifact.getDependency(), node.artifact.getDependency());
+		return new File(artifact.getPath()).getName() !=  null && new File(artifact.getPath()).getName().equals(new File(node.artifact.getPath()).getName()) ;
 	}
 	
 	public ISynchronizationNode[] getChildren() {
