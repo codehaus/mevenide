@@ -99,6 +99,7 @@ public class MavenProjectDataLoader extends UniFileLoader {
             SystemAction.get(OpenAction.class),
             SystemAction.get(EditAction.class),
             SystemAction.get(ShowProjectPropertiesAction.class),
+            SystemAction.get(MountSourcesAction.class),
             SystemAction.get(MountDependenciesAction.class),
             // SystemAction.get(CustomizeBeanAction.class),
             SystemAction.get(FileSystemAction.class),
