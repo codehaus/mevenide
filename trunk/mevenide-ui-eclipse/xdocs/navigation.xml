@@ -16,27 +16,24 @@
         <menu name="General">
         	<item name="Overview" href="/index.html"/>
         	<item name="License" href="/license.html"/>
+        	<item name="Features" href="/features.html"/>
         	<item name="Changes" href="/changes-report.html"/>
-        	<item name="Providers" href="/user-guide/provider-infrastructure.html" collapse="true">
-        		<item name="Extension point" href="/user-guide/extension-point.html" target="_blank"/>
-        	</item>
-        	<item name="Report a bug" href="/bug-report.html"/>
-        	<item name="Faq" href="/faq.html"/>
+        	<item name="Download" href="/update/index.html"/>
+        	<item name="Bug Report" href="/bug-report.html"/>
+        	<item name="FAQ" href="/faq.html"/>
         </menu>
         
         <menu name="Documentation">
-        	<item name="Features" href="/user-guide/features.html"/>
-        	<item name="User Guide" href="/user-guide/index.html" collapse="true">
-        		<item name="Configuration" href="/user-guide/conf.html"/>
-        		<item name="Running" href="/user-guide/run.html"/>
-        		<item name="Synchronization" href="/user-guide/sync.html"/>
-        		<item name="Pom Editor" href="/user-guide/edit.html"/>
-        		<item name="Jelly Editor" href="/user-guide/contentassist.html"/>
-        		<item name="Maven Wizards" href="/user-guide/wizard.html"/>
-        		<item name="Providers" href="/user-guide/provider-infrastructure.html" />
-        		<item name="POM Validation" href="/user-guide/validate.html"/>
-       		</item>
-        	<item name="Eclipse Update Site" href="/update/index.html"/>
+        	<item name="Configuration" href="/user-guide/conf.html"/>
+			<item name="Running" href="/user-guide/run.html"/>
+			<item name="Synchronization" href="/user-guide/sync.html"/>
+			<item name="Pom Editor" href="/user-guide/edit.html"/>
+			<item name="Jelly Editor" href="/user-guide/contentassist.html"/>
+			<item name="Maven Wizards" href="/user-guide/wizard.html"/>
+			<item name="POM Validation" href="/user-guide/validate.html"/>
+        	<item name="Providers" href="/user-guide/provider-infrastructure.html" collapse="true">
+        		<item name="Extension point" href="/user-guide/extension-point.html" target="_blank"/>
+        	</item>       		
         </menu>
         
         <menu name="Modules">
