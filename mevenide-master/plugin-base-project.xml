@@ -20,8 +20,8 @@
 	<siteDirectory>/home/projects/mevenide/public_html/${artifactId}</siteDirectory>
 	
     <repository>
-      <connection>scm:cvs:pserver:anonymous@cvs.sourceforge.net:/home/projects/mevenide/scm:${pom.artifactId}</connection>
-      <developerConnection>scm:cvs:ext:${maven.username}@cvs.mevenide.codehaus.org:/cvsroot/mevenide:${pom.artifactId}</developerConnection>
+      <connection>scm:cvs:pserver:anonymous@cvs.mevenide.codehaus.org:/home/projects/mevenide/scm:${pom.artifactId}</connection>
+      <developerConnection>scm:cvs:ext:${maven.username}@cvs.mevenide.codehaus.org:/home/projects/mevenide/scm:${pom.artifactId}</developerConnection>
       <url>http://cvs.mevenide.codehaus.org/cvsweb.cgi/${pom.artifactId}/</url>
     </repository>
     
