@@ -17,7 +17,9 @@
 package org.mevenide.util;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -166,5 +168,10 @@ public final class MevenideUtils {
 		}
     	return props;
     }
-
+    
+    public static File createFile(InputStream is) throws Exception {
+        File file = File.createTempFile("pom", "template");
+        IOUtil.copy(is, new FileOutputStream(file));
+        return file;
+    }
 }

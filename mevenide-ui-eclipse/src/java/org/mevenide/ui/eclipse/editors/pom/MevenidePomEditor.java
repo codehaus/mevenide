@@ -17,6 +17,7 @@
 package org.mevenide.ui.eclipse.editors.pom;
 
 import java.io.File;
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -25,6 +26,7 @@ import java.lang.reflect.InvocationTargetException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Project;
+import org.apache.maven.util.StringInputStream;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -47,6 +49,7 @@ import org.mevenide.project.ProjectComparator;
 import org.mevenide.project.ProjectComparatorFactory;
 import org.mevenide.project.io.DefaultProjectMarshaller;
 import org.mevenide.project.io.IProjectMarshaller;
+import org.mevenide.project.io.JDomProjectUnmarshaller;
 import org.mevenide.project.io.ProjectReader;
 import org.mevenide.properties.resolver.ProjectWalker;
 import org.mevenide.ui.eclipse.editors.pom.pages.BuildPage;
@@ -58,6 +61,7 @@ import org.mevenide.ui.eclipse.editors.pom.pages.RepositoryPage;
 import org.mevenide.ui.eclipse.editors.pom.pages.TeamPage;
 import org.mevenide.ui.eclipse.editors.pom.pages.UnitTestsPage;
 import org.mevenide.util.DefaultProjectUnmarshaller;
+import org.mevenide.util.MevenideUtils;
 import org.mevenide.util.StringUtils;
 
 /**
@@ -75,7 +79,7 @@ public class MevenidePomEditor extends FormEditor {
     private Project pom;
     private Project parentPom;
     private IProjectMarshaller marshaller;
-    private DefaultProjectUnmarshaller unmarshaller;
+    private JDomProjectUnmarshaller unmarshaller;
     private ProjectComparator comparator;
     private PomEditorSelectionProvider selectionProvider = new PomEditorSelectionProvider(this);
     private IDocumentProvider documentProvider;
@@ -125,7 +129,7 @@ public class MevenidePomEditor extends FormEditor {
         super();
         try {
             marshaller = new DefaultProjectMarshaller();
-            unmarshaller = new DefaultProjectUnmarshaller();
+            unmarshaller = new JDomProjectUnmarshaller();
         } catch (Exception e) {
             log.error("Could not create a POM marshaller", e);
         }
@@ -456,10 +460,10 @@ public class MevenidePomEditor extends FormEditor {
         }
         boolean clean = false;
         IDocument document = documentProvider.getDocument(getEditorInput());
-        StringReader reader = new StringReader(document.get());
+        InputStream is = new StringInputStream(document.get());
         Project updatedPom = null;
         try {
-            updatedPom = unmarshaller.parse(reader);
+            updatedPom = unmarshaller.parse(((IFileEditorInput) getEditorInput()).getFile().getRawLocation().toFile());
 
             if (log.isDebugEnabled()) {
                 log.debug("old pom name = " + pom.getName() + " and new = " + updatedPom.getName());
