@@ -76,11 +76,9 @@ public class ArtifactVisitor {
 			);
  		}
 		
-		
 	}
 	
 	private boolean isClassFolder(String entryPath) {
-		System.out.println(Platform.getLocation().append(new Path(entryPath)).toOSString());
 		return new File(Platform.getLocation().append(new Path(entryPath)).toOSString()).isDirectory();
 	}
 	
