@@ -14,31 +14,18 @@
  *  limitations under the License.
  * =========================================================================
  */
-package org.mevenide.ui.eclipse.sync.action;
+package org.mevenide.ui.eclipse.sync.event;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.maven.project.Dependency;
-import org.mevenide.ui.eclipse.sync.model.DependencyMappingNode;
+import org.mevenide.ui.eclipse.sync.model.DependencyPropertyWrapper;
 
-/**
+/**  
  * 
  * @author <a href="mailto:rhill2@free.fr">Gilles Dodinet</a>
- * @version $Id$
+ * @version $Id: IDependencyPropertyListener.java,v 1.1 13 mars 2004 Exp gdodinet 
  * 
  */
-public class AddPropertyAction extends ArtifactAction {
-	private static Log log = LogFactory.getLog(AddPropertyAction.class);
+public interface IDependencyPropertyListener {
 	
-	public void addProperty(DependencyMappingNode node) {
-		log.debug("adding property unknown:unknown");
-		Dependency dependency = (Dependency) node.getWrappedObject();
-		dependency.addProperty("unknown:unknown");
-		dependency.resolvedProperties().put("unknown", "unknown");
-		firePropertyAdded(node);
-	}
-	
-	
-	
+	void propertyChanged(DependencyPropertyWrapper wrapper, String oldValue, String newValue);
 	
 }

@@ -16,6 +16,9 @@
  */
 package org.mevenide.ui.eclipse.sync.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Dependency;
@@ -24,6 +27,7 @@ import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.mevenide.ui.eclipse.editors.properties.PropertyProxy;
+import org.mevenide.ui.eclipse.sync.event.IDependencyPropertyListener;
 
 
 /**
@@ -38,6 +42,8 @@ public class DependencyPropertyWrapper implements IPropertyChangeListener, IAdap
 	private Dependency dependency;
 	private String formattedProperty;
 	
+	private List propertyListeners = new ArrayList();
+	
 	public DependencyPropertyWrapper(Dependency dependency, String formattedProperty) {
 		log.debug("formatted property = " + formattedProperty);
 		this.dependency = dependency;
@@ -46,15 +52,37 @@ public class DependencyPropertyWrapper implements IPropertyChangeListener, IAdap
 	
 	public Object getAdapter(Class adapter) {
 		if ( adapter == IPropertySource.class ) {
-			return new PropertyProxy(formattedProperty);
+			PropertyProxy proxy = new PropertyProxy(formattedProperty);
+			proxy.addPropertyChangeListener(this);
+			return proxy;
 		}
 		return null;
 	}
 	
 	public void propertyChange(PropertyChangeEvent event) {
+		log.debug("property change...");
+		String oldValue = formattedProperty;
 		setFormattedProperty((String) ((PropertyProxy) event.getSource()).getSource());
+		firePropertyChange(oldValue);
     }
 
+	private void firePropertyChange(String oldValue) {
+		for (int i = 0; i < propertyListeners.size(); i++) {
+			IDependencyPropertyListener listener = (IDependencyPropertyListener) propertyListeners.get(i);
+			listener.propertyChanged(this, oldValue, formattedProperty);
+		}
+	}
+	
+	public void addDependencyPropertyListener(IDependencyPropertyListener listener) {
+		if ( !propertyListeners.contains(listener) ) {
+			propertyListeners.add(listener);
+		}
+	}
+	
+	public void removeDependencyPropertyListener(IDependencyPropertyListener listener) {
+		propertyListeners.remove(listener);
+	}
+	
 	public String getFormattedProperty() {
 		return formattedProperty;
 	}

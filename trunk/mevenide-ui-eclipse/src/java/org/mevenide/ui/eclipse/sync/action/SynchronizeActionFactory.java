@@ -132,7 +132,7 @@ public class SynchronizeActionFactory {
 							}
 						}
 						catch ( Exception e ) {
-							log.debug("Unable to add item " + selectedNode.getArtifact() + " to classpath ", e );
+							log.debug("Unable to add item " + selectedNode.getArtifact() + " to ignore list ", e );
 						}
 					}
 				}
@@ -168,6 +168,7 @@ public class SynchronizeActionFactory {
 				action.addProperty(node);
 			}
 		};
+		action.addActionListener(synchronizeView);
 		editProperties.setId(ADD_DEPENDENCY_PROPERTIES);
 		editProperties.setText("Add Property");
 		actionIds.put(ADD_DEPENDENCY_PROPERTIES, editProperties);
@@ -201,7 +202,7 @@ public class SynchronizeActionFactory {
 							}
 						}
 						catch ( Exception e ) {
-							log.debug("Unable to add item " + selectedNode.getArtifact() + " to classpath ", e );
+							log.debug("Unable to remove item " + selectedNode.getArtifact() + " from pom ", e );
 						}
 					}
 				}
@@ -228,7 +229,7 @@ public class SynchronizeActionFactory {
 							action.removeEntry(selectedNode, project);
 						}
 						catch ( Exception e ) {
-							log.debug("Unable to add item " + selectedNode.getResolvedArtifact() + " to classpath ", e );
+							log.debug("Unable to remove item " + selectedNode.getResolvedArtifact() + " from classpath ", e );
 						}
 					}
 				}
@@ -264,7 +265,7 @@ public class SynchronizeActionFactory {
 		                    }
 						}
 						catch ( Exception e ) {
-							log.debug("Unable to add item " + selectedNode.getResolvedArtifact() + " to classpath ", e );
+							log.debug("Unable to add item " + selectedNode.getResolvedArtifact() + " to pom ", e );
 						}
 					}
 				}

@@ -117,7 +117,9 @@ public class ArtifactMappingContentProvider implements ITreeContentProvider {
         	Dependency dependency = (Dependency) ((DependencyMappingNode) parentElement).getWrappedObject();
         	Object[] properties = new Object[dependency.getProperties().size()];
         	for (int i = 0; i < properties.length; i++) {
-        		properties[i] = new DependencyPropertyWrapper(dependency, (String) dependency.getProperties().get(i));
+        		DependencyPropertyWrapper propertyWrapper = new DependencyPropertyWrapper(dependency, (String) dependency.getProperties().get(i));
+        		propertyWrapper.addDependencyPropertyListener((DependencyMappingNode) parentElement);
+        		properties[i] = propertyWrapper;
 			}
         	return properties;
         }
@@ -188,6 +190,7 @@ public class ArtifactMappingContentProvider implements ITreeContentProvider {
     }
     
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+    	
     }
     
     public Object[] getElements(Object inputElement) {
