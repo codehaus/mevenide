@@ -52,25 +52,22 @@ import java.util.Iterator;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.maven.project.License;
 import org.apache.maven.project.Project;
-import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Table;
-import org.eclipse.ui.views.properties.IPropertySheetPage;
-import org.eclipse.ui.views.properties.PropertySheetPage;
+import org.eclipse.ui.model.WorkbenchContentProvider;
+import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.mevenide.ui.eclipse.Mevenide;
 
 /**
@@ -79,15 +76,12 @@ import org.mevenide.ui.eclipse.Mevenide;
  */
 public class LicenseSection extends PageSection {
 	
-	private static final Log log = LogFactory.getLog(DescriptionSection.class);
+	private static final Log log = LogFactory.getLog(LicenseSection.class);
 
 	private Table table;
 	private TableViewer licenseViewer;
 	private Button addButton, removeButton, upButton, downButton;
 	
-	//FIXME: Remove me!!!!
-	static int count;
-
     public LicenseSection(OrganizationPage page) {
         super(page);
 		setHeaderText(Mevenide.getResourceString("LicenseSection.header"));
@@ -112,6 +106,8 @@ public class LicenseSection extends PageSection {
 		table.setLayoutData(data);
 		
 		licenseViewer = new TableViewer(table);
+		licenseViewer.setContentProvider(new WorkbenchContentProvider());
+		licenseViewer.setLabelProvider(new WorkbenchLabelProvider());
 		
 		Composite buttonContainer = factory.createComposite(container);
 		data = new GridData(GridData.HORIZONTAL_ALIGN_END | GridData.VERTICAL_ALIGN_BEGINNING);
@@ -130,10 +126,10 @@ public class LicenseSection extends PageSection {
 			new SelectionAdapter() {
 				public void widgetSelected(SelectionEvent e) {
 					log.debug("adding");
-					licenseViewer.add("license" + ++count);
-					IPropertySheetPage page = new PropertySheetPage();
-					Control c = page.getControl();
-					log.debug(c);
+					License license = new License();
+					pom.addLicense(license);
+					LicensePropertySource source = new LicensePropertySource(license);
+					licenseViewer.add(source);
 				}
 			}
 		);
@@ -196,6 +192,14 @@ public class LicenseSection extends PageSection {
 		upButton.setEnabled(false);
 		downButton.setEnabled(false);
 
+		licenseViewer.addSelectionChangedListener(
+		new ISelectionChangedListener() {
+			public void selectionChanged(SelectionChangedEvent e) {
+				getPage().getEditor().setPropertySourceSelection(e.getSelection());
+			}
+		}
+		);
+		
 		licenseViewer.addPostSelectionChangedListener(
 			new ISelectionChangedListener() {
 				public void selectionChanged(SelectionChangedEvent e) {
@@ -216,5 +220,14 @@ public class LicenseSection extends PageSection {
 		factory.paintBordersFor(container);
 		return container;
     }
+	
+	public void update(Project pom) {
+		Iterator itr = pom.getLicenses().iterator();
+		while (itr.hasNext()) {
+			licenseViewer.add(new LicensePropertySource((License) itr.next()));
+		}
+		
+		super.update(pom);
+	}
 
 }
