@@ -20,10 +20,13 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import org.apache.commons.lang.StringUtils;
 import org.codehaus.mevenide.pde.resources.Messages;
+import org.codehaus.plexus.util.DirectoryScanner;
 
 
 /**  
@@ -39,11 +42,8 @@ public class SimpleZipCreator {
     /** output file */
     private File destinationFile;  
     
-    /** list of comma-separated patterns of excluded files */
-    private String[] excludes;
-    
-    public SimpleZipCreator() { 
-    }
+    /** list of excluded files */
+    private List excludes;
     
     public SimpleZipCreator(String directory, String destinationFile) {
         this.directory = directory;
@@ -53,7 +53,7 @@ public class SimpleZipCreator {
     
     public SimpleZipCreator(String directory, String destinationFile, String excludes) {
         this(directory, destinationFile);
-        this.excludes = StringUtils.split(excludes, ',');
+        setExcludes(excludes);
     }
     
     public void zip() throws PdeArchiveException {
@@ -95,35 +95,38 @@ public class SimpleZipCreator {
                 addDirectory(files[i].getAbsolutePath(), zipStream);
             }
             else {
-	            ZipEntry e = new ZipEntry(files[i].getAbsolutePath().substring(this.directory.length()));
-	            zipStream.putNextEntry(e);
-	            
-	            FileInputStream in = null;
-	            
-	            try {
-		            in = new FileInputStream(files[i]);
-		
-		            int len;
-		            while ((len = in.read(buf)) > 0) {
-		                zipStream.write(buf, 0, len);
-		            } 
-	            }
-	            finally {
-	                if ( in != null ) {
-	                    in.close();
-	                }
-	            }
-	            zipStream.closeEntry();
+                if ( !excludes.contains(files[i].getAbsolutePath().substring(this.directory.length() + 1)) ) {
+		            ZipEntry e = new ZipEntry(files[i].getAbsolutePath().substring(this.directory.length()));
+		            zipStream.putNextEntry(e);
+		            
+		            FileInputStream in = null;
+		            
+		            try {
+			            in = new FileInputStream(files[i]);
+			
+			            int len;
+			            while ((len = in.read(buf)) > 0) {
+			                zipStream.write(buf, 0, len);
+			            } 
+		            }
+		            finally {
+		                if ( in != null ) {
+		                    in.close();
+		                }
+		            }
+		            zipStream.closeEntry();
+                }
             }
         }
     }
 
-    public String[] getExcludes() { return excludes; }
-    public void setExcludes(String[] excludes) { this.excludes = excludes; }
-    
-    public File getDestinationFile() { return destinationFile; }
+    public void setExcludes(String excludes) { 
+        DirectoryScanner scanner = new DirectoryScanner();
+        scanner.setBasedir(directory);
+        scanner.setExcludes(StringUtils.split(excludes, ','));
+        scanner.scan();
+        this.excludes = Arrays.asList(scanner.getExcludedFiles());
+    }
     public void setDestinationFile(File destinationFile) { this.destinationFile = destinationFile; }
-    
-    public String getDirectory() { return directory; }
     public void setDirectory(String directory) { this.directory = directory; }
 }
