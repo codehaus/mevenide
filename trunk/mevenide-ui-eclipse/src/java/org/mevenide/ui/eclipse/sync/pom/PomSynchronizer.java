@@ -108,7 +108,7 @@ public class PomSynchronizer extends AbstractPomSynchronizer implements ISynchro
 					message += "\n  o " + unresolvedDependencies.get(i);
 				}
 				 
-				MavenPlugin.popUp("Pom Synchronization Warning", message);
+				//MavenPlugin.popUp("Pom Synchronization Warning", message);
 			}
 		}
 		catch (Exception e) {

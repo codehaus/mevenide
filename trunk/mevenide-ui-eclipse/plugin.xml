@@ -83,6 +83,9 @@
                   name="Synchronize">
             </separator>
             <separator
+                  name="Map">
+            </separator>
+            <separator
                   name="MavenNature">
             </separator>
          </menu>
@@ -139,11 +142,20 @@
          <action
                label="Map Source Directories"
                icon="icons/maven-synch-pom-prompt.gif"
-               tooltip="prompt for Source Directory types before synchronizing"
+               tooltip="Map Source Directory Types"
                class="org.mevenide.ui.eclipse.actions.SynchronizeAction"
-               menubarPath="maven.plugin.menu/Synchronize"
+               menubarPath="maven.plugin.menu/Map"
                enablesFor="1"
                id="maven-plugin.mapSourceDirectories">
+         </action>
+         <action
+               label="Map Dependencies"
+               icon="icons/dependency-16.gif"
+               tooltip="Map Artifacts"
+               class="org.mevenide.ui.eclipse.actions.SynchronizeAction"
+               menubarPath="maven.plugin.menu/Map"
+               enablesFor="1"
+               id="maven-plugin.mapDependencies">
          </action>
       </objectContribution>
       <objectContribution
@@ -191,6 +203,9 @@
                   name="RunMaven">
             </separator>
             <separator
+                  name="Map">
+            </separator>
+            <separator
                   name="Synchronize">
             </separator>
          </menu>
@@ -222,11 +237,20 @@
          <action
                label="Map Source Directories"
                icon="icons/maven-synch-pom-prompt.gif"
-               tooltip="prompt for Source Directory types before synchronizing"
+               tooltip="Map Source Directory Types"
                class="org.mevenide.ui.eclipse.actions.SynchronizeAction"
-               menubarPath="maven.plugin.menu/Synchronize"
+               menubarPath="maven.plugin.menu/Map"
                enablesFor="1"
                id="maven-plugin.mapSourceDirectories">
+         </action>
+         <action
+               label="Map Dependencies"
+               icon="icons/dependency-16.gif"
+               tooltip="Map Dependency Artifacts"
+               class="org.mevenide.ui.eclipse.actions.SynchronizeAction"
+               menubarPath="maven.plugin.menu/Map"
+               enablesFor="1"
+               id="maven-plugin.mapDependencies">
          </action>
       </objectContribution>
    </extension>
@@ -243,11 +267,18 @@
    <extension
          point="org.eclipse.ui.views">
       <view
-            name="Maven Synchronization View"
+            name="Mevenide Source Folders"
             icon="icons/maven.gif"
             category="Mevenide"
             class="org.mevenide.ui.eclipse.sync.views.SourceDirectoryTypePart"
             id="org.mevenide.sync.view">
+      </view>
+      <view
+            name="Mevenide Dependencies"
+            icon="icons/maven.gif"
+            category="Mevenide"
+            class="org.mevenide.ui.eclipse.sync.views.DependencyTypePart"
+            id="org.mevenide.sync.view.dep">
       </view>
    </extension>
 

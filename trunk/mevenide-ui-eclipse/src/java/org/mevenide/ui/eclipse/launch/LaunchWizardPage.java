@@ -70,7 +70,7 @@ public class LaunchWizardPage extends WizardPage {
 		super(
 			MavenPlugin.getResourceString("MavenLaunchPage.name"), 
 			MavenPlugin.getResourceString("MavenLaunchPage.title"), 
-			MavenPlugin.getImageDescriptor("maven-org-64.gif"));
+			MavenPlugin.getImageDescriptor("maven-run-64.gif"));
 	   
 	   setDescription(MavenPlugin.getResourceString("MavenLaunchPage.description"));
 	   

@@ -51,6 +51,8 @@ public class FileUtil {
 	}
 
 	public static boolean isClassFolder(String entryPath, IProject project) {
-		return new File(project.getLocation().append(new Path(entryPath)).toOSString()).isDirectory();
+		return new File(project.getLocation().append(new Path(entryPath).removeFirstSegments(1)).toOSString()).isDirectory();
 	}
+	
+	
 }
