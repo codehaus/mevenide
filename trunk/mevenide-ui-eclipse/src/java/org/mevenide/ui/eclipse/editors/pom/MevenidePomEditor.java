@@ -44,6 +44,8 @@ import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.IElementStateListener;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
+import org.mevenide.project.IProjectChangeListener;
+import org.mevenide.project.ProjectChangeEvent;
 import org.mevenide.project.ProjectComparator;
 import org.mevenide.project.ProjectComparatorFactory;
 import org.mevenide.project.io.CarefulProjectMarshaller;
@@ -69,7 +71,7 @@ import org.mevenide.util.StringUtils;
  * @author Jeff Bonevich (jeff@bonevich.com)
  * @version $Id$
  */
-public class MevenidePomEditor extends FormEditor {
+public class MevenidePomEditor extends FormEditor implements IProjectChangeListener {
 
     private static final Log log = LogFactory.getLog(MevenidePomEditor.class);
 	
@@ -159,7 +161,7 @@ public class MevenidePomEditor extends FormEditor {
             createBuildPage();
             createUnitTestsPage();
             createReportsPage();
-            //createSourcePage();
+            createSourcePage();
         } catch (PartInitException e) {
             log.error("Unable to create source page", e); //$NON-NLS-1$
         }
@@ -173,6 +175,7 @@ public class MevenidePomEditor extends FormEditor {
         OverviewPage overviewPage = new OverviewPage(this);
         comparator.addProjectChangeListener(ProjectComparator.PROJECT, overviewPage);
         overviewPageIndex = addPage(overviewPage);
+        addPropertyListener(overviewPage);
     }
 
     /**
@@ -259,6 +262,7 @@ public class MevenidePomEditor extends FormEditor {
     private void createSourcePage() throws PartInitException {
         sourcePage = new PomXmlSourcePage(this);
         addPage(sourcePage, sourcePage.getEditorInput());
+        comparator.addProjectChangeListener(sourcePage);
     }
 
     protected void pageChange(int newPageIndex) {
@@ -366,9 +370,8 @@ public class MevenidePomEditor extends FormEditor {
     }
 
     public boolean isDirty() {
-        boolean dirtiness = isModelDirty();
-                //commented because source page was removed
-                //|| (documentProvider != null && documentProvider.canSaveDocument(getEditorInput()));
+        boolean dirtiness = isModelDirty() 
+        					|| (documentProvider != null && documentProvider.canSaveDocument(getEditorInput()));
         if (log.isDebugEnabled()) {
             log.debug("modelDirty = " + isModelDirty() + " and editor dirty " + dirtiness); //$NON-NLS-1$ //$NON-NLS-2$
         }
@@ -413,7 +416,7 @@ public class MevenidePomEditor extends FormEditor {
         documentProvider = new PomXmlDocumentProvider();
         createModel(pomFile);
         comparator = ProjectComparatorFactory.getComparator(pom);
-
+        
         IEditorInput editorInput = getEditorInput();
         documentProvider.connect(editorInput);
         IAnnotationModel annotModel = documentProvider.getAnnotationModel(editorInput);
@@ -422,8 +425,11 @@ public class MevenidePomEditor extends FormEditor {
         }
         elementListener = new ElementListener();
         documentProvider.addElementStateListener(elementListener);
+        
+        comparator.addProjectChangeListener(this);
     }
-
+    
+    
     private void createModel(IFile pomFile) throws CoreException {
         try {
             File file = pomFile.getRawLocation().toFile();
@@ -462,7 +468,9 @@ public class MevenidePomEditor extends FormEditor {
         if (log.isDebugEnabled()) {
             log.debug("updateModel entered"); //$NON-NLS-1$
         }
+        
         boolean clean = false;
+	    
         IDocument document = documentProvider.getDocument(getEditorInput());
         InputStream is = new StringInputStream(document.get());
         Project updatedPom = null;
@@ -474,7 +482,7 @@ public class MevenidePomEditor extends FormEditor {
             }
             
             comparator.compare(updatedPom);
-           
+            
             updateTitleAndToolTip();
             
             setModelDirty(false);
@@ -487,7 +495,6 @@ public class MevenidePomEditor extends FormEditor {
         if (log.isDebugEnabled()) {
             log.debug("updateModel exiting"); //$NON-NLS-1$
         }
-        
         return clean;
     }
 
@@ -504,6 +511,7 @@ public class MevenidePomEditor extends FormEditor {
                 ((CarefulProjectMarshaller) marshaller).marshall(writer, pom, stream);
                 writer.flush();
                 document.set(newDocument.toString());
+                
                 setModelDirty(false);
                 if (log.isDebugEnabled()) {
                     log.debug("current project name = " + pom.getName() + " and extends = " + pom.getExtend()); //$NON-NLS-1$ //$NON-NLS-2$
@@ -578,4 +586,43 @@ public class MevenidePomEditor extends FormEditor {
         selectionProvider.setSelection(selection);
     }
 
+    
+    //this is crap but it will allow us to move forward (fix editor pages synchro)
+    public void projectChanged(ProjectChangeEvent e) {
+        updatePom(e.getPom());
+    }
+    
+    private void updatePom(Project p) {
+        pom.setVersions(p.getVersions());
+        pom.setUrl(p.getUrl());
+        pom.setSiteDirectory(p.getSiteDirectory());
+        pom.setSiteAddress(p.getSiteAddress());
+        pom.setShortDescription(p.getShortDescription());
+        pom.setRepository(p.getRepository());
+        pom.setReports(p.getReports());
+        pom.setPomVersion(p.getPomVersion());
+        pom.setPackage(p.getPackage());
+        pom.setParent(p.getParent());
+        pom.setOrganization(p.getOrganization());
+        pom.setName(p.getName());
+        pom.setMailingLists(p.getMailingLists());
+        pom.setLogo(p.getLogo());
+        pom.setLicenses(p.getLicenses());
+        pom.setInceptionYear(p.getInceptionYear());
+        pom.setId(p.getId());
+        pom.setGumpRepositoryId(p.getGumpRepositoryId());
+        pom.setGroupId(p.getGroupId());
+        pom.setExtend(p.getExtend());
+        pom.setDistributionSite(p.getDistributionSite());
+        pom.setDistributionDirectory(p.getDistributionDirectory());
+        pom.setCurrentVersion(p.getCurrentVersion());
+        pom.setDevelopers(p.getDevelopers());
+        pom.setDescription(p.getDescription());
+        pom.setDependencies(p.getDependencies());
+        pom.setContributors(p.getContributors());
+        pom.setBuild(p.getBuild());
+        pom.setBranches(p.getBranches());
+        pom.setArtifacts(p.getArtifacts());
+    }
+    
 }

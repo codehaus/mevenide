@@ -104,7 +104,7 @@ public class TextEntry extends PageEntry {
     }
     
     public boolean setFocus() {
-		if (textbox != null) {
+		if (textbox != null && !textbox.isDisposed()) {
 			return textbox.setFocus();
 		}
 		return false;

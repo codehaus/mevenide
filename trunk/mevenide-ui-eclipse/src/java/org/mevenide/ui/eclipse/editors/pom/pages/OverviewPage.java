@@ -23,6 +23,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.ui.IPropertyListener;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.editors.pom.MevenidePomEditor;
@@ -35,7 +36,7 @@ import org.mevenide.util.StringUtils;
  * @author Jeff Bonevich (jeff@bonevich.com)
  * @version $Id$
  */
-public class OverviewPage extends AbstractPomEditorPage {
+public class OverviewPage extends AbstractPomEditorPage implements IPropertyListener {
 
     private static final Log log = LogFactory.getLog(OverviewPage.class);
     
@@ -113,4 +114,11 @@ public class OverviewPage extends AbstractPomEditorPage {
 		return false;
 	}
 
+	
+    
+    public void propertyChanged(Object arg0, int arg1) {
+//        if ( getPomEditor().equals(arg0) && arg1 == IWorkbenchPart.PROP_TITLE ) {
+//            setHeading(getPomEditor().getPom());
+//        }
+    }
 }

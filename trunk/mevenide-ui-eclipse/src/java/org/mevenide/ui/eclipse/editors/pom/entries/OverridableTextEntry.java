@@ -95,10 +95,10 @@ public class OverridableTextEntry extends TextEntry {
 
     public void setEnabled(boolean enable) {
         super.setEnabled(enable);
-        if (overrideToggle != null) {
+        if (overrideToggle != null && !overrideToggle.isDisposed()) {
             overrideToggle.setSelection(!enable);
         }
-        if (browseButton != null) {
+        if (browseButton != null && !browseButton.isDisposed()) {
         	browseButton.setEnabled(enable);
         }
     }

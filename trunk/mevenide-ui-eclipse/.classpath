@@ -13,8 +13,8 @@
 	<classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.core.resources_3.1.0/resources.jar"/>
 	<classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.core.runtime_3.1.0/runtime.jar"/>
 	<classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.jdt.core_3.1.0/jdtcore.jar"/>
-	<classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.jface_3.1.0/jface.jar"/>
-	<classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.ui.workbench_3.1.0/workbench.jar"/>
+	<classpathentry sourcepath="ECLIPSE_HOME/plugins/org.eclipse.platform.source_3.1.0/src/org.eclipse.jface_3.1.0/jfacesrc.zip" kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.jface_3.1.0/jface.jar"/>
+	<classpathentry sourcepath="ECLIPSE_HOME/plugins/org.eclipse.platform.source_3.1.0/src/org.eclipse.ui.workbench_3.1.0/workbenchsrc.zip" kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.ui.workbench_3.1.0/workbench.jar"/>
 	<classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.jdt.launching_3.1.0/launching.jar"/>
 	<classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.debug.core_3.1.0/dtcore.jar"/>
 	<classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.debug.ui_3.1.0/dtui.jar"/>
