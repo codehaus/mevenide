@@ -81,16 +81,17 @@ public class NewDependencyWizardPage extends WizardPage {
 			}
 		});
 
-		label = new Label(composite, SWT.NULL);
-		label.setText(Mevenide.getResourceString("NewDependencyWizardPage.page.id.label"));//$NON-NLS-1$
-		fIdText = new Text(composite, SWT.BORDER | SWT.SINGLE);
-		gd = new GridData(GridData.FILL_HORIZONTAL);
-		fIdText.setLayoutData(gd);
-		fIdText.addModifyListener(new ModifyListener() {
-			public void modifyText(ModifyEvent e) {
-				dialogChanged();
-			}
-		});
+//		label = new Label(composite, SWT.NULL);
+//		label.setText(Mevenide.getResourceString("NewDependencyWizardPage.page.id.label"));//$NON-NLS-1$
+//		fIdText = new Text(composite, SWT.BORDER | SWT.SINGLE);
+//		gd = new GridData(GridData.FILL_HORIZONTAL);
+//		fIdText.setLayoutData(gd);
+//		fIdText.addModifyListener(new ModifyListener() {
+//			public void modifyText(ModifyEvent e) {
+//				dialogChanged();
+//			}
+//		});
+		
 		label = new Label(composite, SWT.NULL);
 		label.setText(Mevenide.getResourceString("NewDependencyWizardPage.page.jar.label"));//$NON-NLS-1$
 		fJarText = new Text(composite, SWT.BORDER | SWT.SINGLE);
