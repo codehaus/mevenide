@@ -80,6 +80,10 @@ public class MavenModule extends ModuleInstall {
                 }
             });
             File current = InstalledFileLocator.getDefault().locate("maven-plugins/" + CURRENT_VERSION, null, false);
+            if (current == null) {
+                log.error("cannot copy maven-mevenide-plugin - the assumed version is not present -" + CURRENT_VERSION);
+                return;
+            }
             // TODO refine here, to not overwrite everytime but only when changed.
             ILocationFinder finder = new LocationFinderAggregator(DefaultQueryContext.getNonProjectContextInstance());
             File cache = new File(finder.getMavenPluginsDir());
