@@ -3,6 +3,7 @@
     <classpathentry kind="src" path="src/java"/>
     <classpathentry kind="src" path="src/test/java"/>
     <classpathentry kind="src" path="etc"/>
+    <classpathentry kind="src" path="src/aspects"/>
     <classpathentry kind="lib" path="lib/commons-discovery-0.1.jar"/>
     <classpathentry kind="lib" path="lib/commons-logging-1.0.1.jar"/>
     <classpathentry kind="lib" path="lib/forehead-1.0-beta-4.jar"/>

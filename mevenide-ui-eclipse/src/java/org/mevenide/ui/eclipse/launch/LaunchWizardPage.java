@@ -20,7 +20,6 @@ import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.TreeMap;
 
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.PreferenceStore;
 import org.eclipse.jface.viewers.ICellEditorValidator;
 import org.eclipse.jface.viewers.TextCellEditor;
@@ -262,13 +261,8 @@ public class LaunchWizardPage extends WizardPage {
 		Button chooseButton = new Button(buttonsArea, SWT.PUSH);
 		GridData data1 = new GridData(GridData.FILL_HORIZONTAL);
 		chooseButton.setLayoutData(data1);
-		chooseButton.setText("Choose");
-		
-		chooseButton.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent e) {
-				MessageDialog.openInformation(getShell(), "Add Goal", "Functionality not implemented.");
-			}
-		});
+		chooseButton.setText("Choose...");
+		chooseButton.setEnabled(false);
 	}
 
 	private void initGoals() {

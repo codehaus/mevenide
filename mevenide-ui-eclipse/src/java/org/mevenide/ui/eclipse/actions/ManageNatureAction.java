@@ -13,6 +13,8 @@
  */
 package org.mevenide.ui.eclipse.actions;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.eclipse.jface.action.IAction;
 import org.mevenide.ui.eclipse.nature.MevenideNature;
 
@@ -27,7 +29,10 @@ import org.mevenide.ui.eclipse.nature.MevenideNature;
  */
 public class ManageNatureAction extends AbstractMevenideAction {
 	
+	private static Log log = LogFactory.getLog(ManageNatureAction.class);
+	 
 	public void run(IAction action) {
+		boolean add = true;
 		try {
 			
 			if ( currentProject != null ) {	
@@ -35,12 +40,13 @@ public class ManageNatureAction extends AbstractMevenideAction {
 					MevenideNature.configureProject(currentProject);
 				}
 				else {
+					add = false;
 					MevenideNature.deconfigureProject(currentProject);	
 				}
 			}
 		} 
 		catch(Exception e) {
-			e.printStackTrace();
+			log.debug("Unable to " + (add ? " add " : " remove ") + " Maven Nature due to : " + e);
 		}
 	}
 
