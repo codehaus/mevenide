@@ -6,6 +6,11 @@
   </properties>
 
   <body>
+    <release version="0.5" date="in CVS" description="Changes because of Maven RC4">
+      <action dev="mkleint" type="fix">
+        Upgraded to latest artifact plugin dependency, to make it work with Maven RC4.
+      </action>
+    </release>
     <release version="0.4" date="20040613" description="Uncompatible nbantext snapshot in the repository, 0.3 won't work correctly with it.">
       <action dev="mkleint" type="update">
         Upgraded to latest nbantext dependency snapshot (as of 2004/06/11).
