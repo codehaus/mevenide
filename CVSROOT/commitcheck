@@ -1,9 +1,0 @@
-#!/bin/sh
-echo Starting commitcheck... 
-if /home/projects/mevenide/scm/CVSROOT/cvs_acls.pl ${1+"$@"}; then
-   if /home/projects/mevenide/scm/CVSROOT/commit_prep.pl ${1+"$@"}; then
-      exit 0
-   fi
-fi
- 
-exit 1
