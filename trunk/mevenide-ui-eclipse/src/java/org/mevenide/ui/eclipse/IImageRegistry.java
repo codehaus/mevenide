@@ -71,6 +71,8 @@ public interface IImageRegistry {
     public static final String MAVEN_REPO_TYPE = "obj16/mtype.gif"; //$NON-NLS-1$
     public static final String SEARCH_BUTTON_ICON = "etool16/search_8x8.gif"; //$NON-NLS-1$
     
+    public static final String NEW_MAVEN_REPO_WIZ = "wizban/newmrepo.gif"; //$NON-NLS-1$
+    
     public static final String FILE_OBJ = "obj16/file_obj.gif"; //$NON-NLS-1$
     
     static final String[] IMAGE_KEYS = new String[] {
@@ -117,5 +119,6 @@ public interface IImageRegistry {
             SEARCH_BUTTON_ICON,
             MAVEN_REPO_TYPE,
             FILE_OBJ,
+            NEW_MAVEN_REPO_WIZ,
     };
 }

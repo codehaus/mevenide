@@ -18,6 +18,7 @@
 			<li><a href="#Templates">Templates</a></li>
 			<li><a href="#Provider Infrastructure">Provider Infrastructure</a></li>
 			<li><a href="#Maven Builder">Maven Builder</a></li>
+			<li><a href="#Repository Browser And Search Engine">Repository Browser And Search Engine</a></li>
 		  </ul>
 		</p>
 	  </div>
@@ -217,7 +218,7 @@
 	  <p>
 		<ul>
 		  <li>Allows to easily keep track of goals that need to be run on projects depending on the files that have changed since goal run</li>
-		  <li>Allow to autolaunch goals (disabled by default)</li>
+		  <li>Allows to autolaunch goals (disabled by default)</li>
 		</ul>
 	  </p>
 	  <p>
@@ -228,6 +229,31 @@
 	  </p>
 	  <p>
 	  	<a href="user-guide/builder.html">More details</a>
+	  </p>
+	</div>
+  </section>
+  <section name="Repository Browser and Search Engine">
+	<div id="documentContent">
+	  <p>
+		<ul>
+		  <li>Allows to browse a repository</li>
+		  <li>Allows to download remote artifact to local repository</li>
+		  <li>Allows to search artifacts in a repository</li>
+		</ul>
+	  </p>
+	  <p>
+		<u>Known limitations</u><br/>
+		<ul>
+			<li>Local repositories not browsable yet</li>
+			<li>Only HTTP repositories are managed for now</li>
+			<li>Cannot honor cancellation</li>
+		</ul>
+	  </p>
+	  <p>
+	     <u>Notes: This feature is in an alpha state. It depends on deprecated <a href="http://jface.sourceforge.net/mavenzilla">Mavenzilla</a> 0.1 API.</u>
+	  </p>
+	  <p>
+	  	<a href="user-guide/repo_browsing.html">More details</a>
 	  </p>
 	</div>
   </section>

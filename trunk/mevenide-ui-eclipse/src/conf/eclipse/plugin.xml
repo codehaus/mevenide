@@ -485,15 +485,16 @@
             name="Repository Browser"
             id="org.mevenide.repository.browser">
       </view>
-      <!-- view class="org.mevenide.ui.eclipse.repository.view.SearchResultView" 
+      <view class="org.mevenide.ui.eclipse.repository.view.SearchResultView" 
             category="org.mevenide.ui.synchronize.view" 
-            name="Search Result" id="org.mevenide.repository.search.result">
+            name="Search Result" id="org.mevenide.repository.search.result"
+            icon="icons/eview16/search_results.gif">
       </view>
       <view class="org.mevenide.ui.eclipse.repository.view.SearchQueryView" 
             category="org.mevenide.ui.synchronize.view" 
             icon="icons/eview16/search_repo.gif"
             name="Search Query" id="org.mevenide.repository.search.query">
-      </view -->
+      </view>
    </extension>
    <extension point="org.eclipse.ui.perspectiveExtensions">
       <perspectiveExtension targetID="org.eclipse.ui.resourcePerspective">
