@@ -142,8 +142,8 @@ public class MevenidePreferenceDialog {
 		layout.numColumns = 3;
 		
 		javaHomeEditor = createEditor(MevenidePreferenceDialog.JAVA_HOME_PREFERENCE, "Java home", javaHome);
-		mavenHomeEditor = createEditor(MevenidePreferenceDialog.MAVEN_HOME_PREFERENCE, "Maven Local home", mavenHome);
-		mavenLocalHomeEditor = createEditor(MAVEN_LOCAL_HOME_PREFERENCE, "Maven home", mavenLocalHome);
+		mavenHomeEditor = createEditor(MevenidePreferenceDialog.MAVEN_HOME_PREFERENCE, "Maven home", mavenHome);
+		mavenLocalHomeEditor = createEditor(MAVEN_LOCAL_HOME_PREFERENCE, "Maven local home", mavenLocalHome);
 		mavenRepoEditor = createEditor(MevenidePreferenceDialog.MAVEN_REPO_PREFERENCE, "Maven Repository", mavenRepository);
 		//pluginsInstallDirEditor = createEditor("maven.plugins.dir", "Plugins Directory", mavenRepository);
 		
@@ -275,7 +275,9 @@ public class MevenidePreferenceDialog {
 		Mevenide.getPlugin().setDefaultGoals(defaultGoals);
 
 		heapSize = heapSizeEditor.getIntValue();
-		Mevenide.getPlugin().setHeapSize(heapSize);
+		if ( heapSize != 0 ) {
+			Mevenide.getPlugin().setHeapSize(heapSize);
+		}
 		//pluginsInstallDir = pluginsInstallDirEditor.getTextControl(topLevelContainer).getText();
 		//Mevenide.getPlugin().setPluginsInstallDir(pluginsInstallDir);
 	}

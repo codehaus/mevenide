@@ -52,8 +52,10 @@ import java.io.File;
 
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
+import org.mevenide.Environment;
 import org.mevenide.goals.grabber.IGoalsGrabber;
 import org.mevenide.goals.manager.GoalsGrabbersManager;
+import org.mevenide.ui.eclipse.Mevenide;
 
 /**  
  * 
@@ -72,6 +74,8 @@ public class GoalsProvider implements ITreeContentProvider {
 
     public void setBasedir(String basedir) throws Exception {
         this.basedir = basedir;
+        //make sure maven.locla.home has been initialized so we can compute a default value for pluginInstallDirs
+        Environment.setMavenLocalHome(Mevenide.getPlugin().getMavenLocalHome());
         goalsGrabber = GoalsGrabbersManager.getGoalsGrabber(new File(basedir, "project.xml").getAbsolutePath());
     }
 
