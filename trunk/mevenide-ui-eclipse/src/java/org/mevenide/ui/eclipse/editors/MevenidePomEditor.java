@@ -34,7 +34,6 @@ import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.source.IAnnotationModel;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
@@ -61,6 +60,7 @@ import org.mevenide.ui.eclipse.editors.pages.TeamPage;
 import org.mevenide.ui.eclipse.editors.pages.UnitTestsPage;
 import org.mevenide.util.DefaultProjectUnmarshaller;
 import org.mevenide.util.MevenideUtils;
+import org.mevenide.util.StringUtils;
 
 /**
  * The Mevenide multi-page POM editor.  This editor presents the user with
@@ -340,7 +340,7 @@ public class MevenidePomEditor extends MultiPageEditorPart {
     }
 
     private void updateTitleAndToolTip() {
-        if (!MevenideUtils.isNull(pom.getName())) {
+        if (!StringUtils.isNull(pom.getName())) {
 			setTitle(pom.getName());
 		}
 		IFile pomFile = ((IFileEditorInput) getEditorInput()).getFile();
@@ -501,7 +501,7 @@ public class MevenidePomEditor extends MultiPageEditorPart {
             comparator.compare(updatedPom);
 
             String pomName = pom.getName();
-            if (!MevenideUtils.isNull(pomName)) {
+            if (!StringUtils.isNull(pomName)) {
                 setTitle(pomName);
                 firePropertyChange(PROP_TITLE);
             }
