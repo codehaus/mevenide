@@ -67,7 +67,19 @@
             </p>
             </td>
           </tr>
+          <tr>
+            <td>nbm:autoupdate</td>
+            <td><p>Creates a Netbeans autoupdate structure.
+            </p>
+            <p>
+            For nbms collected by the <code>nbm:collect-nbms</code> the goal generates the xml describing the autoupdate server.
+            That can be used for setting up an autoupdate server.
+            </p>
+            </td>
+          </tr>
   		</table>
+        
+        
   		</div>
   	</section>
   	<section name="Secondary Goals">
