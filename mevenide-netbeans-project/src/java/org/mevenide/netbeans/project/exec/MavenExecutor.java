@@ -238,14 +238,14 @@ public class MavenExecutor implements Runnable {
                         Iterator it = succActions.iterator();
                         while (it.hasNext()) {
                             Action act = (Action)it.next();
-                            Integer priority = (Integer)act.getValue("Priority");
+                            Integer priority = (Integer)act.getValue(OutputVisitor.ACTION_PRIORITY);
                             if (priority.intValue() > maxPriotity) {
                                 action = act;
                                 maxPriotity = priority.intValue();
                             }
                         }
                     }
-                    String question = (String)action.getValue("Question");
+                    String question = (String)action.getValue(OutputVisitor.ACTION_QUESTION);
                     String title = (String)action.getValue(Action.SHORT_DESCRIPTION);
                     if (question != null) {
                         NotifyDescriptor desc = new NotifyDescriptor.Confirmation(question,
@@ -256,11 +256,12 @@ public class MavenExecutor implements Runnable {
                         if (NotifyDescriptor.OK_OPTION.equals(returned)) {
                             action.actionPerformed(new ActionEvent(MavenExecutor.this, ActionEvent.ACTION_PERFORMED, "Performed"));
                         }
-
+                        
                     } else {
-                        //TODO
-                        System.out.println("size is not 1");
+                        // no question, just process.
+                        action.actionPerformed(new ActionEvent(MavenExecutor.this, ActionEvent.ACTION_PERFORMED, "Performed"));
                     }
+                } else {
                     
                 }
             }
@@ -312,9 +313,6 @@ public class MavenExecutor implements Runnable {
                         for (int i = 0; i < providers.length; i++) {
                             providers[i].processLine(line,visitor);
                         }
-                    }
-                    if (visitor.getFilteredLine() != null) {
-                        line = visitor.getFilteredLine();
                     }
                     if (visitor.getOutputListener() == null) {
                         writer.println(line);

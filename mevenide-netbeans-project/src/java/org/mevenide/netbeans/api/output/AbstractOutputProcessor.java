@@ -21,8 +21,9 @@ import java.util.regex.Pattern;
 
 
 /**
- * abstract implementation of OutputProcessor that has support to focus the processor on certain subsections of the output only.
- * @author  Milos Kleint (ca206216@tiscali.cz)
+ * abstract implementation of OutputProcessor that has support to focus the processor 
+ * on certain subsections of the output only.
+ * @author  Milos Kleint (mkleint@codehaus.org)
  */
 public abstract class AbstractOutputProcessor implements OutputProcessor {
     private boolean isInWatchedGoals = false;
@@ -35,7 +36,9 @@ public abstract class AbstractOutputProcessor implements OutputProcessor {
     }
     
     /**
-     *
+     * watches for important goal (as specified by <code>getWatchedGoals()</code>)
+     * and returns true when processing a line for the goal's section.
+     * helps the subclass to focus on processing just the important section of output.
      */
     public final boolean isInWatchedGoals(String line) {
         if (pattern1.matcher(line).matches() ||
