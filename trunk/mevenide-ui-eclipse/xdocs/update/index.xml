@@ -12,7 +12,8 @@
 			   <source>http://mevenide.codehaus.org/release/eclipse/update/site.xml</source>
 			</p>
 			<p>
-			    and just follow instructions. 
+			    and just follow instructions. 3.0.x and 3.1M1 users should use : <br/>
+			    http://mevenide.codehaus.org/release/eclipse/update/3.0/
 			</p>
             <p>
 			    If this procedure it not suitable, you can download a <a href="http://mevenide.codehaus.org/release/eclipse/">big zip archive</a> containing 
