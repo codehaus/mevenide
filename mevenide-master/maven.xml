@@ -9,7 +9,7 @@
   <goal name="mevenide-eclipse:build" description="Build all Mevenide modules" prereqs="mevenide-eclipse:clean,mevenide-eclipse:init">
     <j:set var="maven.multiproject.includes" value="${maven.multiproject.eclipse.includes}"/>
     <attainGoal name="multiproject:goal"/>
-    <attainGoal name="mevenide:create-update-dist"/>
+    <attainGoal name="mevenide-eclipse:create-update-dist"/>
   </goal>
   
   <goal name="mevenide-netbeans:build" description="Build all Mevenide modules" prereqs="mevenide-netbeans:init">
@@ -60,7 +60,7 @@
   <!-- ==================================== -->
   <!--        plugin creation section       -->
   <!-- ==================================== -->
-  <goal name="mevenide:create-update-dist" prereqs="mevenide-eclipse:init" description="Build Eclipse plugin update site">
+  <goal name="mevenide-eclipse:create-update-dist" prereqs="mevenide-eclipse:init" description="Build Eclipse plugin update site">
    	<util:file var="updateSiteProjectDescriptor" name="${mevenide.eclipse.update.project.location}/project.xml"/>
     <maven:maven descriptor="${updateSiteProjectDescriptor}" goals="eclipse-plugin:create-artifact-dist"/>
   </goal>
