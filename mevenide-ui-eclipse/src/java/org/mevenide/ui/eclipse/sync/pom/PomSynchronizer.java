@@ -64,7 +64,7 @@ public class PomSynchronizer extends AbstractPomSynchronizer implements ISynchro
      */
 	protected void mavenize() {
 		try {
-			IClasspathEntry[] cpEntries = JavaCore.create(project).getRawClasspath();
+			IClasspathEntry[] cpEntries = JavaCore.create(project).getResolvedClasspath(true);
             for (int i = 0; i < cpEntries.length; i++) {
 				updatePom(cpEntries[i]);
 			}

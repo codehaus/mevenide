@@ -14,7 +14,10 @@
  */
 package org.mevenide.ui.eclipse.sync.pom;
 
+import java.io.File;
+
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.mevenide.project.io.ProjectWriter;
 import org.mevenide.ui.eclipse.sync.IPathResolverDelegate;
@@ -62,5 +65,19 @@ public class ArtifactVisitor {
 		);
 	}
 	
+	public void add(ProjectEntry entry) throws Exception {
+		IClasspathEntry classpathEntry = entry.getClasspathEntry();
+		
+		IPath projectPath = classpathEntry.getPath();
+		
+		File referencedPom = projectPath.append("project.xml").toFile();
+		if ( !referencedPom.exists() ) {
+			//project isnot mavenized, mavenize it as well
+		}
+		
+		ProjectWriter writer = ProjectWriter.getWriter();
+		writer.addProject(referencedPom, pomSynchronizer.getPom());
+	}
+
 }
 

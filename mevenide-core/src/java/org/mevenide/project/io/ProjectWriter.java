@@ -27,6 +27,8 @@ import org.mevenide.project.DependencyFactory;
 
 /**
  * 
+ * @todo use a single instancce per POM
+ * 
  * @author Gilles Dodinet (gdodinet@wanadoo.fr)
  * @version $Id$
  * 
@@ -82,6 +84,19 @@ public class ProjectWriter {
 	 * @return boolean
 	 */
 	private void mergeSimilarResources(Project project, Resource resource) {
+		List similar = getSimilarResources(project, resource);
+		
+		for (int i = 0; i < similar.size(); i++) {
+			Resource similarResource = (Resource) similar.get(i);
+			resource.getIncludes().addAll(similarResource.getIncludes());
+			resource.getExcludes().addAll(similarResource.getExcludes());
+			project.getBuild().getResources().remove(similarResource);
+		}
+		
+		project.getBuild().addResource(resource);
+	}
+
+	private List getSimilarResources(Project project, Resource resource) {
 		List similar = new ArrayList();
 		
 		List resources = project.getBuild().getResources();
@@ -92,15 +107,7 @@ public class ProjectWriter {
 				similar.add(declaredResource);
 			}
 		}
-		
-		for (int i = 0; i < similar.size(); i++) {
-			Resource similarResource = (Resource) similar.get(i);
-			resource.getIncludes().addAll(similarResource.getIncludes());
-			resource.getExcludes().addAll(similarResource.getExcludes());
-			project.getBuild().getResources().remove(similarResource);
-		}
-		
-		project.getBuild().addResource(resource);
+		return similar;
 	}
 	
 	/**
@@ -217,6 +224,29 @@ public class ProjectWriter {
 		Writer writer = new FileWriter(pom, false);
 		marshaller.marshall(writer, project);
 		writer.close();
+	}
+	
+	
+	/**
+	 * add a project dependency to this POM, reading required information from the referenced POM
+	 * 
+	 * @param referencedPom
+	 * @param pom
+	 * @throws Exception
+	 */
+	public void addProject(File referencedPom, File pom) throws Exception {
+		ProjectReader reader = ProjectReader.getReader();
+		
+		Project referencedProject = reader.read(referencedPom);
+		Dependency dependency = new Dependency();
+		dependency.setGroupId(referencedProject.getGroupId());
+		dependency.setArtifactId(referencedProject.getArtifactId());
+		dependency.setVersion(referencedProject.getCurrentVersion());
+		
+		Project project = reader.read(pom);
+		project.addDependency(dependency);
+		
+		write(project, pom);
 	}
 
 }
