@@ -5,7 +5,7 @@
     <id>mevenide-eclipse-help</id>
     <name>Mevenide Eclipse Help</name>
     <artifactId>mevenide-eclipse-help</artifactId>
-    <currentVersion>0.2</currentVersion>
+    <currentVersion>0.2.1-SNAPSHOT</currentVersion>
     <shortDescription>This project provides HTML Help plugin for Eclipse</shortDescription>
     <description>This project provides HTML Help plugin for Eclipse</description>
     <reports>

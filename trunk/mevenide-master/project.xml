@@ -6,7 +6,7 @@
   <name>Mevenide Master</name>
   <id>mevenide-master</id>
   <artifactId>mevenide-master</artifactId>
-  <currentVersion>0.2</currentVersion>
+  <currentVersion>0.2.1-SNAPSHOT</currentVersion>
   <url>http://mevenide.codehaus.org/</url>
   
   <siteDirectory>/home/projects/mevenide/public_html</siteDirectory>
