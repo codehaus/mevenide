@@ -19,6 +19,7 @@ package org.mevenide.ui.eclipse.sync.model;
 import org.apache.maven.artifact.MavenArtifact;
 import org.apache.maven.project.MavenProject;
 import org.eclipse.core.resources.IProject;
+import org.mevenide.project.dependency.DependencyUtil;
 
 /**  
  * 
@@ -43,6 +44,14 @@ public class MavenArtifactNode extends ArtifactNode {
 		
 	}
 	
+	public boolean equals(Object obj) {
+		if ( !(obj instanceof MavenArtifactNode) ) {
+			return false;
+		}
+		MavenArtifactNode node = (MavenArtifactNode) obj;
+		return DependencyUtil.areEquals(this.artifact.getDependency(), node.artifact.getDependency());
+	}
+	
 	public ISynchronizationNode[] getChildren() {
 		return properties;
 	}
@@ -56,7 +65,7 @@ public class MavenArtifactNode extends ArtifactNode {
 		return properties != null && properties.length > 0;
 	}
 	public String toString() {
-		return artifact.getFile().getName();
+		return "[" + artifact.getDependency().getGroupId() + "] " + artifact.getFile().getName();
 	}
 	
 	

@@ -117,7 +117,7 @@ public class EclipseProjectUtils {
 
 				//handle case where Project has not been configured yet and output folders is set to /
 				if ( defaultOuputFolder.segmentCount() == 1 ) {
-					//System.err.println(defaultOuputFolder.removeTrailingSeparator().toString());
+					log.debug(defaultOuputFolder.removeTrailingSeparator().toString());
 					resource = ResourcesPlugin.getWorkspace().getRoot().getProject(defaultOuputFolder.removeTrailingSeparator().toString());
 				}
 				else {

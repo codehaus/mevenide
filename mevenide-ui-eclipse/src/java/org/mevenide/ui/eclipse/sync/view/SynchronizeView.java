@@ -549,7 +549,7 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
 	 */
 	public void resourceChanged(IResourceChangeEvent event) {
 		try {
-			final IProject project = artifactMappingNodeViewer != null ? (IProject) artifactMappingNodeViewer.getInput() : null;
+			final IProject project = artifactMappingNodeViewer != null && artifactMappingNodeViewer.getInput() != null ? ((ArtifactMappingContentProvider.RootNode) artifactMappingNodeViewer.getInput()).getProject() : null;
 			final IFile dotClasspath = project != null ? project.getFile(".classpath") : null;
 			
 			IResourceDelta d= event.getDelta();
@@ -601,11 +601,11 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
 		}		
 	}
 	
-	private void asyncRefresh(boolean shouldExpand) {
+	private void asyncRefresh(final boolean shouldExpand) {
 		artifactMappingNodeViewer.getControl().getDisplay().asyncExec(
 				new Runnable() {
 					public void run () {
-						refreshAll(false);
+						refreshAll(shouldExpand);
 					}
 				}
 		);

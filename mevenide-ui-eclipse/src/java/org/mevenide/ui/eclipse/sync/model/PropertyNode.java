@@ -24,10 +24,24 @@ package org.mevenide.ui.eclipse.sync.model;
  */
 public class PropertyNode implements ISynchronizationNode, ISelectableNode {
 	
+	private MavenArtifactNode parentNode;
+	
+	private String key;
+	private String value;
+	
 	public boolean select(int direction) {
 		return ((MavenArtifactNode) getParent()).select(direction);
 	}
 	
+	public boolean equals(Object obj) {
+		if ( !(obj instanceof PropertyNode) ) {
+			return false;
+		}
+		PropertyNode node = (PropertyNode) obj;
+		return key.equals(node.key) 
+		       && value.equals(node.value)
+			   && parentNode.equals(node.parentNode);
+	}
 	public ISynchronizationNode[] getChildren() {
 		// TODO Auto-generated method stub
 		return null;

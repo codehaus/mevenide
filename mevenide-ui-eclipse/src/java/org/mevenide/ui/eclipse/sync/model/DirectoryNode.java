@@ -30,13 +30,20 @@ public class DirectoryNode extends ArtifactNode {
 	
 	private Directory directory;
 	
-	private MavenProjectNode parent;
+	private MavenProjectNode parentNode;
 	
 	public DirectoryNode(Directory dir, MavenProjectNode project) {
 		directory = dir;
-		parent = project;
+		parentNode = project;
 	}
 	
+	public boolean equals(Object obj) {
+		if ( !(obj instanceof DirectoryNode) ) {
+			return false;
+		}
+		DirectoryNode node = (DirectoryNode) obj;
+		return directory.equals(node.directory) && parentNode.equals(node.parentNode);
+	}
 	public ISynchronizationNode[] getChildren() {
 		return null;
 	}
@@ -44,7 +51,7 @@ public class DirectoryNode extends ArtifactNode {
 		return directory;
 	}
 	public ISynchronizationNode getParent() {
-		return parent;
+		return parentNode;
 	}
 	public boolean hasChildren() {
 		return false;

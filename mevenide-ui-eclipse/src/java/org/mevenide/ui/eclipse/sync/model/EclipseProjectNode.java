@@ -28,7 +28,6 @@ import org.apache.maven.model.Dependency;
 import org.apache.maven.project.MavenProject;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -134,7 +133,7 @@ public class EclipseProjectNode implements ISynchronizationNode {
 		String path = entry.getPath().toOSString();
 		DefaultMavenArtifactFactory artifactFactory = new DefaultMavenArtifactFactory();
 		MavenArtifact artifact = null;
-		if ( !new File(path).exists() ) {
+		if ( artifact != null && !new File(path).exists() ) {
 			//not the best way to get the absoluteFile ... 
 			path = eclipseProject.getProject().getLocation().append(entry.getPath().removeFirstSegments(1)).toOSString();
 			artifact = artifactFactory.createArtifact(DependencyFactory.getFactory().getDependency(path));
@@ -145,29 +144,39 @@ public class EclipseProjectNode implements ISynchronizationNode {
 	}
 
 	private MavenArtifact createArtifactFromProjectEntry(IClasspathEntry entry) throws Exception {
-		String path = entry.getPath().toOSString();
-	    DefaultMavenArtifactFactory artifactFactory = new DefaultMavenArtifactFactory();
 		MavenArtifact artifact = null;
+		String path = entry.getPath().toOSString();
+	
+		DefaultMavenArtifactFactory artifactFactory = new DefaultMavenArtifactFactory();
 		
-		final IWorkspace workspace = ResourcesPlugin.getWorkspace();
-		IWorkspaceRoot root = workspace.getRoot();
-		
-		//crap..
-		String projectName ;
-		if ( path.substring(1).indexOf('/') < 0 ) {
-			projectName = path.substring(1);
-		}
-		else {
-			projectName = path.substring(1, path.substring(1).indexOf('/') + 1) ; 
-		}
+		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+		String projectName = getProjectName(path);
 		IProject referencedProject = root.getProject(projectName);
 		if ( !referencedProject.getName().equals(eclipseProject.getProject().getName()) ) {
 		    artifact = artifactFactory.createArtifact(createDependencyFromProject(referencedProject));
 		}
-		
+	
 		return artifact;
 	}
 
+	private String getProjectName(String projectBasedir) {
+		//crap..
+		String projectName ;
+		if ( projectBasedir.substring(1).indexOf('/') < 0 ) {
+			projectName = projectBasedir.substring(1);
+		}
+		else {
+			projectName = projectBasedir.substring(1, projectBasedir.substring(1).indexOf('/') + 1) ; 
+		}
+		return projectName;
+	}
+
+	private boolean isProjectMavenized(String projectBasedir) {
+		File pom = new File(projectBasedir, "project.xml");
+		log.debug("pom : " + pom.getAbsolutePath() + (pom.exists() ? " " : " not ") + "found");
+		return pom.exists();
+	}
+	
 	private Dependency createDependencyFromProject(IProject referencedProject) throws Exception {
 		if ( referencedProject.exists() )  {
                 
@@ -221,6 +230,14 @@ public class EclipseProjectNode implements ISynchronizationNode {
 		if ( userChoice == Window.OK ) {
 			EclipseProjectUtils.attachJavaNature(eclipseProject);
 		}
+	}
+	
+	public boolean equals(Object obj) {
+		if ( !(obj instanceof EclipseProjectNode )) {
+			return false;
+		}
+		EclipseProjectNode node = (EclipseProjectNode) obj;
+		return eclipseContainer.equals(node.eclipseContainer);
 	}
 	
 	public ISynchronizationNode[] getChildren() {
