@@ -8,7 +8,7 @@
             Where can I download the Netbeans module?
         </question> 
         <answer>
-           <p> It's not yet available for free download. In order to try out the module, please checkout the meveninde project from cvs and build it. </p>
+           <p> It's not yet available for free download. In order to try out the module, please checkout the mevenide project from cvs and build it. </p>
         </answer>
         </faq>
    </part>

@@ -16,21 +16,22 @@
         </tr>
          <tr>
           <td>maven.nbm.manifest</td>
-          <td>Optional.</td>
+          <td><p>Optional.</p></td>
           <td>
             <p> File containing Netbeans-specific manifest entries. The plugin will automatically generate some of the entries:
             <source><![CDATA[
-OpenIDE-Module-Implementation-Version: 
-OpenIDE-Module: ${pom.package}/1
-OpenIDE-Module-Specification-Version: 
+OpenIDE-Module-Implementation-Version: ${pom.currentVersion}
+OpenIDE-Module: ${pom.package}
+OpenIDE-Module-Specification-Version: normalized version of ${pom.currentVersion}
             
-            ]]></source> etc.etc.</p>
+            ]]></source> 
+            etc.etc.</p>
             <p>If you define any of the entries in your manifest file, it will override anything that gets automatically generated. </p>
           </td>
         </tr>
         <tr>
           <td>maven.nbm.autoload</td>
-          <td>Optional. Default value is <code>false</code>.</td>
+          <td><p>Optional. Default value is <code>false</code>. </p></td>
           <td>
             <p>Determines if the module is an autoload module or not.</p>
             <p>A module cannot be both eager and autoload.</p>
@@ -38,7 +39,7 @@ OpenIDE-Module-Specification-Version:
         </tr>
         <tr>
           <td>maven.nbm.eager</td>
-          <td>Optional. Default value is <code>false</code>.</td>
+          <td><p>Optional. Default value is <code>false</code>.</p></td>
           <td>
             <p>Determines if the module is an eager module or not.</p>
             <p>A module cannot be both eager and autoload.</p>
@@ -46,14 +47,14 @@ OpenIDE-Module-Specification-Version:
         </tr>
         <tr>
           <td>maven.nbm.requiresrestart</td>
-          <td>Optional. Default value is <code>true</code>.</td>
+          <td><p>Optional. Default value is <code>true</code>.</p></td>
           <td>
             <p>If true, the application will restart after installation of the module.</p>
           </td>
         </tr>
         <tr>
           <td>maven.nbm.license</td>
-          <td>Optional. Default value is <code>${maven.license.licenseFile}</code>.</td>
+          <td><p>Optional. Default value is <code>${maven.license.licenseFile}</code>.</p></td>
           <td>
             <p>Location of the license file to be included with the nbm.</p>
           </td>
@@ -72,12 +73,12 @@ OpenIDE-Module-Specification-Version:
         </tr>
          <tr>
           <td>netbeans.module.ext</td>
-          <td>OPTIONAL. Allowed value <code>true</code> </td>
+          <td><p>OPTIONAL. Allowed value <code>true</code></p> </td>
           <td>
             <p> A property of dependency in the POM, if set to <code>true</code>, the plugin
-                will include the dependency jar in the <code>ext</code> subdirectory.</p> Such a dependency will
+                will include the dependency jar in the <code>ext</code> subdirectory. Such a dependency will
                 become part of the Netbeans module. Please note that if 2+ interdependant modules reference the same library, only one of them is allowed to add it to the Class-Path, 
-                usually it's the module that the others depend on. So the property should be set only in one of the project files.
+                usually it's the module that the others depend on. So the property should be set only in one of the project files.</p>
                 <p> For example:
                 <source><![CDATA[
        <dependency>
@@ -96,7 +97,7 @@ OpenIDE-Module-Specification-Version:
         </tr>
          <tr>
           <td>netbeans.module.dep</td>
-          <td>OPTIONAL. Allowed values <code>loose, spec, impl</code> </td>
+          <td><p>OPTIONAL. Allowed values <code>loose, spec, impl</code> </p></td>
           <td>
             <p> If the property is set on the dependency, it is expected to be a Netbeans module dependency.
                 When the project is built using the nbm:jar goal, it will build a <code>OpenIDE-Module-Module-Dependencies</code> manifest attribute. (again it will only be included in the jar, unless you define your own custom manifest attribute in the manifest file.
@@ -130,7 +131,7 @@ OpenIDE-Module-Specification-Version:
         </tr>
          <tr>
           <td>netbeans.lib.generate</td>
-          <td>OPTIONAL. Allowed value <code>true</code> Actually makes sense only together with <code>netbeans.module.dep</code> on non-netbeans dependencies.</td>
+          <td><p>OPTIONAL. Allowed value <code>true</code> Actually makes sense only together with <code>netbeans.module.dep</code> on non-netbeans dependencies.</p></td>
           <td>
                <p> If the dependency is not a netbeans module and the <code>netbeans.module.dep</code> property is defined on it, 
                you might want teh plugin to generate a netbeans module for you. That is done by running the <code>nbm:create-library-artifacts</code> goal.
@@ -156,8 +157,8 @@ OpenIDE-Module-Specification-Version:
         </tr>
         <tr>
           <td>maven.nbm.manifest.bundle.basedir</td>
-          <td>Optional. Default value is <code>not defined</code>.
-           If defined, then <code> maven.nbm.manifest.bundle.include </code> has to be defined as well.
+          <td><p>Optional. Default value is <code>not defined</code>.
+           If defined, then <code> maven.nbm.manifest.bundle.include </code> has to be defined as well. </p>
           </td>
           <td>
             <p>Base folder where the nbm specific resources are expected. 
@@ -167,7 +168,7 @@ OpenIDE-Module-Specification-Version:
         </tr>
         <tr>
           <td>maven.nbm.manifest.bundle.include</td>
-          <td>Optional. Default value is <code>not defined</code>.</td>
+          <td><p>Optional. Default value is <code>not defined</code>.</p></td>
            If defined, then <code> maven.nbm.manifest.bundle.basedir </code> has to be defined as well.
           <td>
             <p>Relative path to the Bundle.properties file including the name of the file.. Eg. org/mevenide/Bundle.properties</p>

@@ -13,6 +13,9 @@
         <p>At this stage, there are no binaries released. If you want to try the module, please see <a href="faq.html" class="documentLink"> FAQ document </a> for details.
         It works with Netbeans 3.5 and later, JDK 1.4.1 and Maven 1.0-rc1. Please note that JDK 1.4+ is <b>required</b> since Java 1.4 regex Engine is used.
         </p>
+        <p> There is another Netbeans module that adds code completion to Maven related xml files. It's a lightweight module independent of the rest of mevenide. 
+          For details, go to <a href="../mevenide-netbeans-grammar/index.html" class="documentLink"> Mevenide Grammar module </a>
+        </p>
 	</div>
         </section>
 

@@ -16,7 +16,7 @@
   		  </tr>	
   		  <tr>
             <td>nbm:jar</td>
-            <td>Creates a netbeans module jar. 
+            <td><p>Creates a netbeans module jar. </p>
             <p>
             Includes the additional netbeans manifest entries defined in the file 
             denoted by the <code> maven.nbm.manifest </code> property.
@@ -34,20 +34,35 @@
             </p>
             <p>
             Also localizable attributes <code> OpenIDE-Module-Display-Category OpenIDE-Module-Name OpenIDE-Module-Short-Description OpenIDE-Module-Long-Description </code>
-            are defined however only in the case the manifest entry doen't include the <code> OpenIDE-Module-Localizing-Bundle </code> attribute. If that one is defined, it is assumed the attbibutes are defined in the 
+            are defined however only in the case the manifest entry doen't include the <code> OpenIDE-Module-Localizing-Bundle </code> attribute. If that one is defined, it is assumed the attributes are defined in the 
             properties file.
             </p>
             </td> 
           </tr>
           <tr>
             <td>nbm:nbm</td>
-            <td>Creates the nbm file. Will include the module jar, and also it's dependencies if they are marked in this manner:
-            <code>
+            <td><p>Creates the nbm file. Will include the module jar, and also it's dependencies if they are marked in this manner:
+            <code><![CDATA[
                 <properties>
                   	<netbeans.module.ext>true</netbeans.module.ext>
                 </properties>
-            </code>
+            ]]></code>
             The license file is included if defined.
+            </p>
+            </td>
+          </tr>
+          <tr>
+            <td>nbm:create-library-artifacts</td>
+            <td><p>Creates the nbm file(s) for dependencies marked by this property
+            <code><![CDATA[
+                <properties>
+                  	<netbeans.lib.generate>true</netbeans.lib.generate>
+                </properties>
+            ]]></code>
+            </p>
+            <p>
+            It will create an simple netbeans module jar and put the dependency on the module's classpath. Your own module can then declade dependency on this module. That is especially handy when multiple projects share dependencies.
+            </p>
             </td>
           </tr>
   		</table>
