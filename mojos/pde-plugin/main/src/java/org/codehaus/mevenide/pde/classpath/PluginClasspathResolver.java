@@ -71,10 +71,7 @@ public class PluginClasspathResolver {
     }
     
     /**
-     * extract the eclipse dependencies from the .classpath. 
-     * 
-     * if "org.eclipse.pde.core.requiredPlugins" container is found  then dependencies will be extracted from the plugin descriptor 
-     * else dependencies will be grabbed directly from .classpath   
+     * extract the eclipse dependencies from plugin.xml 
      * 
      * @return  the list of eclipse dependencies
      * @throws PdePluginException

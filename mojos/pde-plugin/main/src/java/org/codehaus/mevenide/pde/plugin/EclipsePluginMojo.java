@@ -77,8 +77,5 @@ public class EclipsePluginMojo extends EclipseArtifactMojo {
     
     public void execute(PluginExecutionRequest request, PluginExecutionResponse response) throws Exception {
         initialize(request);
-        
-        //List eclipseDependencies = extractEclipseDependencies();
-        
     }
 }
