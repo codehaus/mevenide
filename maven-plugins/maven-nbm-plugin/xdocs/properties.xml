@@ -128,6 +128,20 @@ OpenIDE-Module-Specification-Version:
                 
           </td>
         </tr>
+         <tr>
+          <td>netbeans.lib.generate</td>
+          <td>OPTIONAL. Allowed value <code>true</code> Actually makes sense only together with <code>netbeans.module.dep</code> on non-netbeans dependencies.</td>
+          <td>
+               <p> If the dependency is not a netbeans module and the <code>netbeans.module.dep</code> property is defined on it, 
+               you might want teh plugin to generate a netbeans module for you. That is done by running the <code>nbm:create-library-artifacts</code> goal.
+               The goal will attempt to guess all the important properties of the dependency and create an appropriate Netbeans module for it. 
+               </p>
+               <p> Gory details: That is done using the nbm plugin itself. We generate the projects files and put them in target/nbm/{name-of-dependency} folder.
+               That's where you should be looking for the generated nbm as well.
+               In case there are any problems with the generated stuff, or you want a more complicated module structure, you can customize it manually and copy to your source structures.
+               </p>
+          </td>
+        </tr>
      </table>
      </div>
    </section>

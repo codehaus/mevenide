@@ -17,11 +17,26 @@
   		  <tr>
             <td>nbm:jar</td>
             <td>Creates a netbeans module jar. 
+            <p>
             Includes the additional netbeans manifest entries defined in the file 
             denoted by the <code> maven.nbm.manifest </code> property.
-            Some netbeans manifest attributes are also defined by default.
-            <code> OpenIDE-Module-Implementation-Version, OpenIDE-Module, OpenIDE-Module-Specification-Version </code>
-            These are fallback values if they are not defined in manifest file.
+            Basic Netbeans manifest attributes are also defined by default. These generated defaults only apply when the attributes are not defined
+            in the manifest entry of the jar or the <code> maven.nbm.manifest </code> file.
+            <code> OpenIDE-Module, OpenIDE-Module-Specification-Version, OpenIDE-Module-Implementation-Version, 
+            OpenIDE-Module-Build-Version, </code>
+            </p>
+            <p>
+            <code> OpenIDE-Module-Module-Dependencies </code> attribute is constructed, however only the dependencies marked with property <code> netbeans.module.dep </code>
+            are included.
+            </p>
+            <p>
+            <code> Class-Path </code> attribute is also constructed, only for dependencies with property <code> netbeans.module.ext </code>
+            </p>
+            <p>
+            Also localizable attributes <code> OpenIDE-Module-Display-Category OpenIDE-Module-Name OpenIDE-Module-Short-Description OpenIDE-Module-Long-Description </code>
+            are defined however only in the case the manifest entry doen't include the <code> OpenIDE-Module-Localizing-Bundle </code> attribute. If that one is defined, it is assumed the attbibutes are defined in the 
+            properties file.
+            </p>
             </td> 
           </tr>
           <tr>
@@ -31,7 +46,9 @@
                 <properties>
                   	<netbeans.module.ext>true</netbeans.module.ext>
                 </properties>
-            </code></td>
+            </code>
+            The license file is included if defined.
+            </td>
           </tr>
   		</table>
   		</div>
