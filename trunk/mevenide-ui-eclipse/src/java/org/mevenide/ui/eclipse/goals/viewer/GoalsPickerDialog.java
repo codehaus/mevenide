@@ -33,6 +33,7 @@ import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
 import org.eclipse.jface.viewers.ICheckStateListener;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
@@ -416,6 +417,21 @@ public class GoalsPickerDialog  extends Dialog {
         		}
         	}
         );
+        
+        goalsViewer.getTree().addListener (SWT.MouseDoubleClick, 
+            	new Listener () {
+            		public void handleEvent (Event event) {
+            		    Object selection = ((IStructuredSelection) goalsViewer.getSelection()).getFirstElement();
+        	            boolean isExpanded = goalsViewer.getExpandedState(selection);
+        	            if ( !isExpanded ) {
+        	                goalsViewer.expandToLevel(selection, 1);
+        	            }
+        	            else {
+        	                goalsViewer.collapseToLevel(selection, 1);
+        	            }
+            		}
+            	}
+            );
     }
 
     boolean isValidUrl(String url) throws Exception {
