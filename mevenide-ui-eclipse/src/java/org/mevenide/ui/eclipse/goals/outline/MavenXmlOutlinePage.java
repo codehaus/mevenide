@@ -17,9 +17,6 @@
 package org.mevenide.ui.eclipse.goals.outline;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -42,12 +39,9 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
-import org.mevenide.goals.grabber.DefaultGoalsGrabber;
-import org.mevenide.goals.grabber.IGoalsGrabber;
 import org.mevenide.ui.eclipse.goals.model.Element;
 import org.mevenide.ui.eclipse.goals.model.Goal;
 import org.mevenide.ui.eclipse.goals.model.GoalsProvider;
-import org.mevenide.ui.eclipse.goals.model.Plugin;
 import org.mevenide.ui.eclipse.goals.viewer.GoalsLabelProvider;
 
 /**  
@@ -59,31 +53,27 @@ import org.mevenide.ui.eclipse.goals.viewer.GoalsLabelProvider;
 public class MavenXmlOutlinePage implements IContentOutlinePage {
 	private static final Log log = LogFactory.getLog(MavenXmlOutlinePage.class);
 	
-	private List customFilters = new ArrayList();
-	private boolean filterOriginPlugin = true;
-	
-	//global actions
-	private IAction toggleOfflineAction, openFilterDialogAction;
-	
-	//context actions
-	private IAction runGoalAction;
-	
-	private TreeViewer goalsViewer;
-	private Menu menu;
-	
 	private Composite control;
 	
-	private IGoalsGrabber defaultGoalsGrabber;
+	private TreeViewer goalsViewer;
+    private GoalsLabelProvider goalsLabelProvider;
+	private GoalsProvider goalsProvider;
+	
+	private CustomPatternFilter patternFilter;
+	private GoalOriginFilter originFilter;
+	
+	private Menu menu;
+	private IAction toggleOfflineAction, openFilterDialogAction;
+	private IAction runGoalAction;
+	
 	private String basedir;
 	
 	public MavenXmlOutlinePage(IFileEditorInput input) {
 		this.basedir = new File(input.getFile().getLocation().toOSString()).getParent();
-		try {
-			defaultGoalsGrabber = new DefaultGoalsGrabber();
-		} 
-		catch (Exception e) {
-			log.error("Unable to create DefaultGoalsGrabber : ", e);
-		}
+		goalsProvider = new GoalsProvider();
+		goalsLabelProvider = new GoalsLabelProvider();
+		patternFilter = new CustomPatternFilter();
+		originFilter = new GoalOriginFilter();
 	}
 	
 	public void createControl(Composite parent) {
@@ -108,7 +98,6 @@ public class MavenXmlOutlinePage implements IContentOutlinePage {
 			configureViewer();
 			
 			goalsViewer.setInput(Element.NULL_ROOT);
-		
             
         }
         catch (Exception e) {
@@ -121,77 +110,6 @@ public class MavenXmlOutlinePage implements IContentOutlinePage {
 		
     	TreeViewer viewer = new TreeViewer(parent, SWT.V_SCROLL | SWT.H_SCROLL);
     	
-    	GoalsProvider goalsProvider = new GoalsProvider() {
-    		public Object[] getChildren(Object parent) {
-    			Object[] superChildren = super.getChildren(parent);
-    			List filteredChildren = filterGoals(superChildren);
-				return filteredChildren.toArray();
-			}
-
-			private List filterGoals(Object[] superChildren) {
-				List toBeFiltered = new ArrayList(Arrays.asList(superChildren));
-				List filteredChildren = new ArrayList();
-				
-				if ( filterOriginPlugin ) {
-					filterGlobalPlugins(toBeFiltered);
-					filterGlobalGoals(toBeFiltered);
-				}
-				
-    			filteredChildren.addAll(applyCustomFilters(toBeFiltered));
-    			
-				return filteredChildren;
-			}
-			
-			private List applyCustomFilters(List toBeFiltered) {
-				List filtered = new ArrayList();
-				for (int i = 0; i < toBeFiltered.size(); i++) {
-    				boolean filter = false;
-    				
-    				if ( customFilters.size() > 0 ) {
-						for (int j = 0; j < customFilters.size(); j++) {
-							Element element = (Element) toBeFiltered.get(i);
-							if ( element.getFullyQualifiedName().startsWith((String) customFilters.get(j)) 
-									|| element.getName().startsWith((String) customFilters.get(j)) ) {
-								filter = true;
-								break;
-							}
-						}
-    				}
-    				
-    				if ( !filter ) {
-    					//element is not filtered.. add it to list
-    					filtered.add(toBeFiltered.get(i));
-    				}
-				}
-				
-				return filtered;
-			}
-
-			private void filterGlobalGoals(List superChildren) {
-				List toBeFiltered = new ArrayList(superChildren);
-				for (int i = 0; i < toBeFiltered.size(); i++) {
-					if ( toBeFiltered.get(i) instanceof Goal 
-							&& IGoalsGrabber.ORIGIN_PLUGIN.equals(getGoalsGrabber().getOrigin(((Goal) toBeFiltered.get(i)).getFullyQualifiedName())) ) {
-						superChildren.remove(toBeFiltered.get(i));
-					}
-				}
-			}
-			
-			private void filterGlobalPlugins(List superChildren) {
-				List copy = new ArrayList(superChildren);
-				String[] plugins = defaultGoalsGrabber.getPlugins();
-				for (int i = 0; i < copy.size(); i++) {
-					for (int j = 0; j < plugins.length; j++) {
-						if ( copy.get(i) instanceof Plugin && plugins[j].equals(((Plugin) copy.get(i)).getName()) ) {
-							superChildren.remove(copy.get(i));
-						}
-					}
-				}
-				
-			}
-    	};
-    	
-        GoalsLabelProvider goalsLabelProvider = new GoalsLabelProvider();
     	goalsProvider.setBasedir(basedir);
     	
     	viewer.setContentProvider(goalsProvider);
@@ -203,6 +121,12 @@ public class MavenXmlOutlinePage implements IContentOutlinePage {
     	gridData.heightHint = 300;
     
     	viewer.getTree().setLayoutData(gridData);
+    	
+    	originFilter.setGoalsGrabber(goalsProvider.getGoalsGrabber());
+    	originFilter.setFilterOriginPlugin(false);
+    	viewer.addFilter(originFilter);
+    	
+    	viewer.addFilter(patternFilter);
     	
         return viewer;
     }
@@ -237,6 +161,8 @@ public class MavenXmlOutlinePage implements IContentOutlinePage {
 		});
         menu = manager.createContextMenu(goalsViewer.getTree());
 		goalsViewer.getTree().setMenu(menu);
+		
+		
     }
 	
 	private void createActions() {
