@@ -201,6 +201,8 @@ public class DependencyMappingWizardPage extends WizardPage {
 							((DependencyGroup) viewer.getInput()).excludeDependency((Dependency) item.getData());
 							viewer.refresh();
 						}
+						removeButton.setEnabled(false);
+						propertiesButton.setEnabled(false);
 					}
 				}
 		);
