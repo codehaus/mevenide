@@ -58,13 +58,19 @@ class CustomLaunchConfigurationDialog extends TitleAreaDialog {
 
     private Composite parentComposite;
     
-    private Composite layer;
-
     private TabFolder launchConfigurationTabFolder;
     
     private TabItem nullTab;
     
     private static final Point DEFAULT_INITIAL_DIALOG_SIZE = new Point(620, 560);
+
+    private Composite configurationTabsArea;
+
+    private MavenArgumentsTab argumentsTab;
+
+    private RefreshTab refreshTab;
+
+    private TableViewer configurationsViewer;
     
     CustomLaunchConfigurationDialog(Shell parentShell) {
         super(parentShell);
@@ -91,12 +97,12 @@ class CustomLaunchConfigurationDialog extends TitleAreaDialog {
     }
 
     private void createTabFolder(Composite parent) {
-        TableViewer viewer = new TableViewer(parent);
+        configurationsViewer = new TableViewer(parent);
         GridData gd = new GridData(GridData.FILL_BOTH);
         gd.grabExcessHorizontalSpace = false;
-        viewer.getTable().setLayoutData(gd);
+        configurationsViewer.getTable().setLayoutData(gd);
         
-        Composite configurationTabsArea = new Composite(parent, SWT.NULL);
+        configurationTabsArea = new Composite(parent, SWT.NULL);
         configurationTabsArea.setLayout(new GridLayout());
         configurationTabsArea.setLayoutData(new GridData(GridData.FILL_BOTH));
         
@@ -146,11 +152,15 @@ class CustomLaunchConfigurationDialog extends TitleAreaDialog {
         Button newButton = createConfigurationHandlerButton(newDeleteButtonsArea, "New");
         newButton.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent arg0) {
-                if ( layer != null ) {
-                    layer.dispose();
-                }
                 createLaunchConfiguration();
-                createTabItems(parentComposite);
+                if ( argumentsTab != null ) {
+                    argumentsTab.initializeFrom(launchConfiguration);
+                    refreshTab.initializeFrom(launchConfiguration);
+                }
+                else {
+                    createTabItems(parentComposite);
+                }
+                configurationsViewer.add(launchConfiguration.getName());
             }
         });
         createConfigurationHandlerButton(newDeleteButtonsArea, "Delete");
@@ -170,11 +180,10 @@ class CustomLaunchConfigurationDialog extends TitleAreaDialog {
         
         nullTab.dispose();
         
-        MavenArgumentsTab argumentsTab = new MavenArgumentsTab();
+        argumentsTab = new MavenArgumentsTab();
         createTabItem(launchConfigurationTabFolder, argumentsTab, "Arguments", launchConfiguration);
         
-        RefreshTab refreshTab = new RefreshTab();
-        
+        refreshTab = new RefreshTab();
         createTabItem(launchConfigurationTabFolder, refreshTab, "Refresh", launchConfiguration);
         
         launchConfigurationTabFolder.update();
