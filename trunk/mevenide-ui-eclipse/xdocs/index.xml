@@ -16,7 +16,7 @@
 			    <a href="">there</a>. 
 			</p>
 			<p>
-			    Mevenide has been tested under WinXP, Eclipse 2.1.0 (build 200303272130) and Eclipse 3.0 M1 With JDK 1.4.1.
+			    Mevenide has been tested under WinXP, Eclipse 2.1.0 (build 200303272130) and Eclipse 3.0 M1 With JDK 1.4.1 and Maven 1.0-beta-10.
 			    <br/><br/>
 			    Please note that JDK 1.4+ is <b>required</b> since Java 1.4 regex Engine is used.
 			</p>
