@@ -112,7 +112,8 @@ public class DefaultDependencyResolver extends AbstractDependencyResolver {
 	 * f.i. if the artefact is located under project_home/lib
 	 * this method returns project_home and thats not quite consistent..
 	 * 
-	 * just wondering : is it so important to have the groupId ?
+	 * just wondering : is it so important to have the groupId ? we could just
+	 * leave it as "Not Found" and warn the user about it 
 	 * 
 	 * @wonder get rid of that method ? 
 	 * 
@@ -129,6 +130,7 @@ public class DefaultDependencyResolver extends AbstractDependencyResolver {
 			return firstLevelParent.getParentFile().getName();
 		}
 		else return null;
+//		return "Not Found";
 	}
 	
 	public String guessExtension(String fileName) {

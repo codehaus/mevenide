@@ -130,6 +130,7 @@ public class ProjectWriter {
 		}
 		
 		//@todo manage jar.overridding
+		
 	}
 	
 	
