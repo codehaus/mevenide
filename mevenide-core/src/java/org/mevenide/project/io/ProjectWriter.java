@@ -245,4 +245,12 @@ public class ProjectWriter {
 		IProjectMarshaller iProjectMarshaller = new DefaultProjectMarshaller();
 		iProjectMarshaller.marshall(new FileWriter(pomFile), project);
 	}
+	
+	public void write(Project project) throws Exception {
+		if ( project.getFile() != null ) {
+			Writer writer = new FileWriter(project.getFile());
+			
+			marshaller.marshall(writer, project);
+		}
+	}
 }
