@@ -49,6 +49,7 @@ public class CheckDependencyTypeTag extends AbstractNbMevenideTag {
         
         checkAttribute(value, "value");
         resetExamination();
+        processValue(value);
         setContextVars();
     }
 
