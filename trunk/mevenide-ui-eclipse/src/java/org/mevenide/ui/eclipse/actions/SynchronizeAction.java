@@ -54,7 +54,7 @@ public class SynchronizeAction extends AbstractMavenAction {
 			}
 			if ( action.getId().equals("maven-plugin.SynchronizePom") ) {
 				//show synch wizard
-				Wizard wizard = new SynchronizeWizard();
+				Wizard wizard = new SynchronizeWizard(currentProject);
 				WizardDialog dialog 
 					= new WizardDialog(
 						PlatformUI.getWorkbench()
