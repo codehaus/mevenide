@@ -53,16 +53,16 @@ public class SynchronizationNodeLabelProvider implements ILabelProvider, IColorP
     		return Mevenide.getImageDescriptor(imageName).createImage();
     	}
     	if ( element instanceof EclipseProjectNode ) {
-    		return Mevenide.getImageDescriptor("maven_project.gif").createImage();
+    		return Mevenide.getImageDescriptor("obj16/mprj_obj.gif").createImage();
     	}
     	if ( element instanceof MavenProjectNode ) {
-    		return Mevenide.getImageDescriptor("pom_file.gif").createImage();
+    		return Mevenide.getImageDescriptor("obj16/mfile_obj.gif").createImage();
     	}
     	if ( element instanceof PropertyNode ) {
     		return Mevenide.getImageDescriptor("property.gif").createImage();
     	}
     	if ( element instanceof ExcludeNode ) {
-    		return Mevenide.getImageDescriptor("exclude_obj.gif").createImage();
+    		return Mevenide.getImageDescriptor("obj16/mdir_excl_attr.gif").createImage();
     	}
     	return null;
     }
