@@ -111,8 +111,10 @@ public class DirectoryNode extends ArtifactNode {
 		List resources = new ArrayList();
 		Build build = mavenProject.getBuild();
 		if ( build != null ) {
-			resources = build.getResources();
-			if ( build.getUnitTest() != null ) {
+		    if ( build.getResources() != null ) {
+		        resources = build.getResources();
+		    }
+			if ( build.getUnitTest() != null && build.getUnitTest().getResources() != null ) {
 				resources.addAll(build.getUnitTest().getResources());
 			}
 		}
@@ -187,7 +189,7 @@ public class DirectoryNode extends ArtifactNode {
            	exclusionPatterns[i] = (String) excludeNodes[i].getData();
         }
 		if ( ProjectConstants.MAVEN_RESOURCE.equals(directory.getType()) ) {
-			ProjectWriter.getWriter().addResource(directory.getCleanPath(), project.getFile(), exclusionPatterns);
+		    ProjectWriter.getWriter().addResource(directory.getCleanPath(), project.getFile(), exclusionPatterns);
 		}
 		else if ( ProjectConstants.MAVEN_TEST_RESOURCE.equals(directory.getType()) ) {
 			ProjectWriter.getWriter().addUnitTestResource(directory.getCleanPath(), project.getFile(), exclusionPatterns);
