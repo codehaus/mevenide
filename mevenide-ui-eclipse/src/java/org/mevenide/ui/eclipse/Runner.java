@@ -79,12 +79,14 @@ public class Runner extends AbstractRunner {
 //			 System.out.println("\t" + mavenCp[i] + ";");
 //		}
 		
+	
+		
 	    VMLauncherUtility.runVM(
 			"com.werken.forehead.Forehead",
 			ArgumentsManager.getMavenClasspath(),
 		    ArgumentsManager.getVMArgs(this),
 	        getMavenArgs(options, goals));
-	
+		
 	}
 
 }
