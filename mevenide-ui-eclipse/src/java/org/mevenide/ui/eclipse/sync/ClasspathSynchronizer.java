@@ -33,13 +33,12 @@ public class ClasspathSynchronizer extends AbstractIdeSynchronizer implements IS
 	private IProject project ;
 	
     /**
-     * @todo EXTERNALIZE extract synch-goal string
      * 
      * @see org.mevenide.core.sync.ISynchronizer#initialize()
      */
 	public void initialize() {
 		setProject(Mevenide.getPlugin().getProject());
-		synchronizationGoal = "eclipse:generate-classpath";
+		synchronizationGoal = Mevenide.getResourceString("eclipse.synch.project.goal");
 	}
     
     /**
