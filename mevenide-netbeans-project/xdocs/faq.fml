@@ -32,12 +32,25 @@
         </question>
         <answer>
          <p>
-           Put the zip with javadocs into your local repository (in the group's folder create a "javadocs" subfolder), give it the same name as the jar and the "javadoc" extension (instead of default "zip") and the IDE will find it.
-           When the javadoc is on remote repository, just declare additional dependency of type javadoc.
+           Put the jar with javadocs into your local repository (in the group's folder create a "javadoc.jars" subfolder), give it the same name as the jar and the "javadoc.jar" extension (instead of default "jar") and the IDE will find it.
+           When the javadoc is on remote repository, just declare additional dependency of type javadoc. In the latest versions of maven-javadoc-plugin, the javadoc's artifact type was changed from "javadoc" to "javadoc.jar", so the javadoc file should be put into the "javadoc.jars" directory and have the extension "javadoc.jar".
            If you have the project opened, the javadoc:install goal will create the javadoc and put it in the local repository for you.
            </p>
         </answer>
         </faq>
+
+        <faq id="src">
+        <question>
+        How can I add sources to my dependencies, for use in debugging and for code browsing?
+        </question>
+        <answer>
+         <p>
+Similarly as the javadocs, the jar with artifacts sources belongs to the local repository under the src.jar category.
+So for example for log4j-2.8.3.jar dependency, the sources belong to ${maven.repo.local}/log4j/src.jar/log4j-2.8.3.src.jar
+          </p>
+        </answer>
+        </faq>
+
         <faq id="multiproject">
         <question>
         I have a project and several subprojects, how do I link them together?

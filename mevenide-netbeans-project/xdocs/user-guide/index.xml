@@ -28,7 +28,7 @@
 							<a href="run.html" class="documentLink">Maven Launching</a> Running the maven goals.
 						</li>
 						<li>
-							<a href="reports.html" class="documentLink">Output Parsing</a>
+							<a href="reports.html" class="documentLink">Output Parsing</a> See how the Maven build output interacts with the editor.
 						</li>
 						<li>
 							<a href="customizer.html" class="documentLink">Project Configuration</a> Setup the POM and plugin properties.
