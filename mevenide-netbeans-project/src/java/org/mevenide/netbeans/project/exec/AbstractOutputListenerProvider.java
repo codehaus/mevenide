@@ -30,9 +30,16 @@ public abstract class AbstractOutputListenerProvider implements OutputListenerPr
     
     final boolean isInWatchedGoals(String line) {
         if (line.matches("\\p{Alnum}+\\:\\p{Alnum}+\\:")) {
-            if (Arrays.binarySearch(getWatchedGoals(), line) != -1) {
-                isInWatchedGoals = true;
-            } else {
+            String[] goals = getWatchedGoals();
+            boolean changed = false;
+            for (int i = 0; i < goals.length; i++) {
+                if (line.startsWith(goals[i])) {
+                    isInWatchedGoals = true;
+                    changed = true;
+                    break;
+                }
+            }
+            if (!changed) {
                 isInWatchedGoals = false;
             }
         } 

@@ -21,9 +21,9 @@
        <section name="Netbeans 4.0 Dev">
         <div id="documentContent">
             <p>Mevenide for the upcoming 4.0 version contains these <a href="features.html" class="documentLink"> features </a>.</p>
-            <p> You can download the <a href="../download/mevenide-netbeans-0.1.zip"> 0.2 release</a>. It was tested with Maven 1.0 and Netbeans <a href="http://www.netbeans.info/downloads/download.php?a=n&amp;p=1&amp;step=2&amp;os=7&amp;lang=1&amp;rv=4.0&amp;bt=5&amp;buildnr=200407151450">Q-build from 15/07/2004 </a>.
+            <p> You can download the <a href="../download/mevenide-netbeans-0.2.zip"> 0.2 release</a>. It was tested with Maven 1.0 and Netbeans <a href="http://www.netbeans.info/downloads/download.php?a=n&amp;p=1&amp;step=2&amp;os=7&amp;lang=1&amp;rv=4.0&amp;bt=5&amp;buildnr=200408121535">Q-build from 12/08/2004 </a>.
             Reasonable effort is made to have it always working with the latest development builds of Netbeans 4.0.
-            At the time of the writing it was the <a href="http://www.netbeans.info/downloads/download.php?a=n&amp;p=1&amp;step=2&amp;os=7&amp;lang=1&amp;rv=4.0&amp;bt=5&amp;buildnr=200407151450">Q-build from 15/Jul/2004</a> and later. To get the latest Netbeans dev builds, go to the <a href="http://www.netbeans.org/downloads/ide/archive/builds_archive_dev.html"> download page </a> </p>
+            To get the latest Netbeans dev builds, go to the <a href="http://www.netbeans.org/downloads/ide/archive/builds_archive_dev.html"> download page </a> </p>
 	</div>
         </section>
     </body>

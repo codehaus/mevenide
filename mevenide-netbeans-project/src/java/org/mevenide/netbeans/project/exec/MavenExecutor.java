@@ -152,8 +152,8 @@ public class MavenExecutor implements Runnable {
         InputOutput ioput = getInputOutput();
         OutputListenerProvider[] providers = new OutputListenerProvider[] {
             new TestOutputListenerProvider(project),
-            new JavaOutputListenerProvider(project)
-            
+            new JavaOutputListenerProvider(project),
+            new AnnouncementOutputListenerProvider(project)
         };
         PROCESSOR.post(new Output(proc.getInputStream(), ioput.getOut(), outFilter, providers));
         PROCESSOR.post(new Output(proc.getErrorStream(), ioput.getErr(), errFilter, providers));

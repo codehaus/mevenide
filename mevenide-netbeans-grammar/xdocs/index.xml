@@ -19,7 +19,7 @@
    	  Currently the 0.2 version is available for download which works with Netbeans 3.6. 
       </p>
       <p>
-      The same version is bundled with the project support module for 4.0. 
+      The same (or later) version is bundled with the project support module for 4.0. 
       </p>
    	  </div>
     </section>
@@ -32,7 +32,7 @@
             Extract them to a temporary location and install the nbm files using your IDE's "Tools/Update Center" wizard.
    	  </p>
       <p>
-      If you're using 4.0 builds, <a href="../download.html">download</a> the whole project support.
+      If you're using 4.0 builds, please <a href="../download.html">download</a> the whole project support.
       </p>
    	  </div>
     </section>

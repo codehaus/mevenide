@@ -38,6 +38,7 @@
 			<item name="Maven Helper Plugins" collapse="true" href="/maven-plugins.html">
 				<item name="PDE Plugin" href="../maven-eclipse-plugin-plugin/index.html"/>
 				<item name="NBM Plugin" href="../maven-nbm-plugin/index.html"/>
+    			<item name="Mevenide Plugin" href="../maven-mevenide-plugin/index.html"/>
 				<item name="Spinner Wiki Plugin" href="../maven-spinner-wiki-plugin/index.html"/>
 			</item>
 		</menu>

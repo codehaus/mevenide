@@ -13,7 +13,7 @@
   <artifactId>maven-mevenide-plugin</artifactId>
   <name>Maven Mevenide Plugin</name>
   
-  <currentVersion>0.1-SNAPSHOT</currentVersion>
+  <currentVersion>0.1</currentVersion>
   <shortDescription>Plugin to run and debug Maven projects.</shortDescription>
   
   <inceptionYear>2004</inceptionYear>
