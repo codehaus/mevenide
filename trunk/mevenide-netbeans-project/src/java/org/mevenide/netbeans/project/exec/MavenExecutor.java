@@ -102,8 +102,9 @@ public class MavenExecutor implements Runnable {
     }
     
     private org.openide.windows.InputOutput createInputOutput() {
-        InputOutput io = IOProvider.getDefault().getIO("Maven", true);
+        InputOutput io = IOProvider.getDefault().getIO("Maven", false);
         io.setErrSeparated(false);
+        io.getOut().reset();
         return io;
     }    
     

@@ -17,12 +17,14 @@
 package org.mevenide.netbeans.project.nodes;
 
 import java.awt.Image;
+import javax.swing.AbstractAction;
 import javax.swing.Action;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.mevenide.netbeans.project.ActionProviderImpl;
 import org.mevenide.netbeans.project.MavenProject;
+import org.mevenide.netbeans.project.exec.RunGoalsAction;
 import org.netbeans.spi.project.ui.support.LogicalViews;
 
 import org.openide.nodes.FilterNode;
@@ -80,9 +82,11 @@ public class MavenProjectNode extends FilterNode {
         toReturn[3] = provider.createBasicMavenAction("Clean", "clean");
         toReturn[4] = provider.createBasicMavenAction("Rebuild", "clean jar:install");
         toReturn[5] = provider.createBasicMavenAction("Generate Javadoc", "javadoc");
-        toReturn[6] = provider.createBasicMavenAction("Temporary: Create NBM", "nbm:install");
-        toReturn[7] = provider.createMultiProjectAction("Build (multiproject)", "jar:install");
-        toReturn[8] = provider.createMultiProjectAction("Clean (multiproject)", "clean");
+        if (isMultiproject) {
+            toReturn[6] = provider.createMultiProjectAction("Build (multiproject)", "jar:install");
+            toReturn[7] = provider.createMultiProjectAction("Clean (multiproject)", "clean");
+        }
+        toReturn[6 + slip] = new RunGoalsAction(project);
         // separator
         toReturn[7 + slip] = null;
         toReturn[8 + slip] = LogicalViews.setAsMainProjectAction();
@@ -95,7 +99,7 @@ public class MavenProjectNode extends FilterNode {
 //        }
         return toReturn;
     }
-    
+
 //    protected Sheet createSheet() {
 //        Sheet sheet = super.createSheet();
 //        Sheet.Set set = sheet.get(SHEET_MAVEN_PROPS);
