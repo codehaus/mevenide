@@ -68,7 +68,8 @@ public class DependencyFactory {
 		dependency.setGroupId(groupId == null ? "" : groupId); //?
 		dependency.setArtifactId(artifactId);
 		dependency.setVersion(version);
-		dependency.setArtifact(absoluteFileName);
+		//dependency.setArtifact(absoluteFileName);
+		dependency.setJar(absoluteFileName);
 		dependency.setType(extension);
 		
 		return dependency;
