@@ -21,9 +21,9 @@
 	<classpathentry sourcepath="ORG_ECLIPSE_PLATFORM_SOURCE_SRC/org.eclipse.ui.ide_3.0.0/idesrc.zip" kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.ui.ide_3.0.0/ide.jar"/>
 	<classpathentry sourcepath="ORG_ECLIPSE_PLATFORM_SOURCE_SRC/org.eclipse.jface_3.0.0/jfacesrc.zip" kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.jface_3.0.0/jface.jar"/>
 	<classpathentry kind="var" path="SWT_LIB"/>
-	<classpathentry kind="var" path="MAVEN_REPO/mockobjects/jars/mockobjects-alt-jdk1.4-0.09.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/mockobjects/jars/mockobjects-core-0.09.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/mockobjects/jars/mockobjects-jdk1.4-0.09.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry sourcepath="ECLIPSE_HOME/plugins/org.eclipse.platform.source_3.0.0/src/org.eclipse.ui.forms_3.0.0/formssrc.zip" kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.ui.forms_3.0.0/forms.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

@@ -225,4 +225,20 @@ public class PomXmlSourcePage
     public String getTitle() {
         return TAB;
     }
+    
+    /* (non-Javadoc)
+	 * @see org.eclipse.ui.forms.editor.IFormPage#isEditor()
+	 */
+	public boolean isEditor() {
+		//TODO Auto-generated method stub
+		return true;
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.eclipse.ui.forms.editor.IFormPage#selectReveal(java.lang.Object)
+	 */
+	public boolean selectReveal(Object object) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }

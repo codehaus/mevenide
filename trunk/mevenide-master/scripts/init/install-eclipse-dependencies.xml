@@ -60,7 +60,7 @@
     <ant:copy file="${eclipse.home}/plugins/org.eclipse.ui.ide_3.0.0/ide.jar" 
   	  	      tofile="${maven.repo.local}/eclipse/jars/eclipse-ide-3.0.0.jar"/>
   	  	      
-    <ant:copy file="${eclipse.home}/plugins/org.eclipse.update.ui.forms_3.0.0/forms.jar" 
+    <ant:copy file="${eclipse.home}/plugins/org.eclipse.ui.forms_3.0.0/forms.jar" 
   	  	      tofile="${maven.repo.local}/eclipse/jars/eclipse-forms-3.0.0.jar"/>
   	  	      
     <ant:copy file="${eclipse.home}/plugins/org.eclipse.core.variables_3.0.0/variables.jar" 

@@ -440,5 +440,11 @@ public class MockProject
 	public boolean isConflicting(ISchedulingRule rule) {
 		return false;
 	}
-
+	
+	
+	public String getDefaultCharset() throws CoreException {
+		return null;
+	}
+	public void setDefaultCharset(String arg0) throws CoreException {
+	}
 }
