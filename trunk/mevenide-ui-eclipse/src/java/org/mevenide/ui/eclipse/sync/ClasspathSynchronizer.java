@@ -13,6 +13,8 @@
  */
 package org.mevenide.ui.eclipse.sync;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.resources.IProject;
 import org.mevenide.sync.AbstractIdeSynchronizer;
 import org.mevenide.sync.ISynchronizer;
@@ -28,6 +30,7 @@ import org.mevenide.ui.eclipse.Mevenide;
  *
  */
 public class ClasspathSynchronizer extends AbstractIdeSynchronizer implements ISynchronizer {
+	private Log log = LogFactory.getLog(ClasspathSynchronizer.class);
 	
     /** the project we want to keep in synch with the pom */
 	private IProject project ;
@@ -47,6 +50,12 @@ public class ClasspathSynchronizer extends AbstractIdeSynchronizer implements IS
      * @see org.mevenide.core.sync.ISynchronizer#postSynchronization() 
      */
 	public void postSynchronization() {
+		try {
+			project.refreshLocal(IProject.DEPTH_INFINITE, null);
+		}
+		catch ( Exception e ) {
+			log.debug("Unable to refresh project due to : " + e);
+		}
 	}
     
     /**

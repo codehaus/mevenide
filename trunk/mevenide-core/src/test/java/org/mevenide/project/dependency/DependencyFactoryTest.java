@@ -103,6 +103,16 @@ public class DependencyFactoryTest extends TestCase {
 		dep = dependencyFactory.getDependency(artefact.getAbsolutePath());
 		assertEquals("1.0.rc3", dep.getVersion());
 		assertEquals("ojb", dep.getArtifactId());
+		
+		artefact = new File(testTypeDirectory, "ojb-1.0.rc3-SNAPSHOT.pyo");
+		dep = dependencyFactory.getDependency(artefact.getAbsolutePath());
+		assertEquals("1.0.rc3-SNAPSHOT", dep.getVersion());
+		assertEquals("ojb", dep.getArtifactId());
+		
+		artefact = new File(testTypeDirectory, "ojb-SNAPSHOT.pyo");
+		dep = dependencyFactory.getDependency(artefact.getAbsolutePath());
+		assertEquals("SNAPSHOT", dep.getVersion());
+		assertEquals("ojb", dep.getArtifactId());
 	}
 
 	
