@@ -16,11 +16,13 @@
  */
 package org.mevenide.ui.eclipse.nature;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.core.resources.IProject;
-import org.mevenide.util.StringUtils;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.debug.core.ILaunchConfiguration;
 
 
 /**  
@@ -31,33 +33,13 @@ import org.mevenide.util.StringUtils;
  */
 public class ActionDefinitions {
 
-    private List goals;
-    
-    private List patterns;
-    
     private Map perProjectEnablementMap;
     
-    private String name;
+    private ILaunchConfiguration configuration;
     
     
     public ActionDefinitions() {
         perProjectEnablementMap = new HashMap();
-    }
-    
-    public List getGoals() {
-        return goals;
-    }
-    
-    public void setGoals(List goals) {
-        this.goals = goals;
-    }
-    
-    public List getPatterns() {
-        return patterns;
-    }
-    
-    public void setPatterns(List patterns) {
-        this.patterns = patterns;
     }
     
     public boolean isEnabled(IProject project) {
@@ -78,28 +60,40 @@ public class ActionDefinitions {
         perProjectEnablementMap.put(project.getLocation().toString(), Boolean.valueOf(enabled));
     }
     
-    public String toString() {
-        String displayValue = name;
-        if ( StringUtils.isNull(displayValue) ) {
-            displayValue = getGoalList();
-        }
-        return displayValue;
+    
+    
+    public ILaunchConfiguration getConfiguration() {
+        return configuration;
+    }
+    public void setConfiguration(ILaunchConfiguration configuration) {
+        this.configuration = configuration;
     }
     
     public String getGoalList() {
-        String goalList = ""; //$NON-NLS-1$
-        for (int i = 0; i < goals.size() - 1; i++) {
-            goalList += goals.get(i) + " "; //$NON-NLS-1$
+        String list = "";
+        try {
+            String goals = configuration.getAttribute("GOALS_TO_RUN", "");
+            return goals;
         }
-        goalList += goals.get(goals.size() - 1);
-        return goalList;
-    }
-
-    public String getName() {
-        return name;
+        catch (CoreException e) {
+            e.printStackTrace();
+        }
+        return list;
     }
     
-    public void setName(String name) {
-        this.name = name;
+    public List getPatterns() {
+        List list = new ArrayList();
+        try {
+            list = configuration.getAttribute("PATTERNS", new ArrayList());
+        }
+        catch (CoreException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+    
+    public boolean equals(Object obj) {
+        return obj instanceof ActionDefinitions && 
+               this.configuration.equals(((ActionDefinitions) obj).configuration);  
     }
 }

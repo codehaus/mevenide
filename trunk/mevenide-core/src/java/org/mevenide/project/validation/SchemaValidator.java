@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.apache.maven.project.Project;
 import org.apache.maven.util.StringInputStream;
-import org.mevenide.project.io.DefaultProjectMarshaller;
+import org.mevenide.project.io.CarefulProjectMarshaller;
 import org.mevenide.util.ProjectUtils;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
@@ -55,13 +55,22 @@ public class SchemaValidator implements IProjectValidator {
     public void validate(File file) throws ValidationException {
         ErrorHandler err = new ErrorHandler() {
             public void error(SAXParseException exception) throws SAXException {
-	            errors.add(new ValidationProblem(exception));
+                ValidationProblem problem = new ValidationProblem(exception);
+	            if ( !errors.contains(problem) ) {
+	                errors.add(problem);
+	            }
 	        }
 	        public void fatalError(SAXParseException exception) throws SAXParseException {
-	            errors.add(new ValidationProblem(exception));
+	            ValidationProblem problem = new ValidationProblem(exception);
+	            if ( !errors.contains(problem) ) {
+	                errors.add(problem);
+	            }
 	        }
 	        public void warning(SAXParseException exception) throws SAXParseException {
-	            warnings.add(new ValidationProblem(exception));
+	            ValidationProblem problem = new ValidationProblem(exception);
+	            if ( !warnings.contains(problem) ) {
+	                warnings.add(problem);
+	            }
 	        }
         };
       
@@ -74,8 +83,8 @@ public class SchemaValidator implements IProjectValidator {
 	        Project pom = ProjectUtils.resolveProjectTree(file);
 	      
 	        Writer stringWriter = new StringWriter();
-	        new DefaultProjectMarshaller().marshall(stringWriter, pom);
-	      
+	        new CarefulProjectMarshaller().marshall(stringWriter, pom);
+	        System.out.println(stringWriter);
 	        driver.validate(new InputSource(new StringInputStream(stringWriter.toString())));
         }
         catch (Exception e) {

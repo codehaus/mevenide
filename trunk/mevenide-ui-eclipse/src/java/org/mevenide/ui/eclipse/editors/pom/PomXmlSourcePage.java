@@ -105,6 +105,11 @@ public class PomXmlSourcePage
 		setActive(true);
     }
 
+    
+    public boolean isDirty() {
+        return isModelNeedsUpdating();
+    }
+    
 	public void pageDeactivated(IPomEditorPage newPage) {
 		if (log.isDebugEnabled()) {
 			log.debug("PomXmlSourcePage made inactive!"); //$NON-NLS-1$

@@ -123,7 +123,7 @@ public final class PomSkeletonBuilder {
                 project.setShortDescription(shortDescription);
             }
             Writer writer = new StringWriter();
-            new DefaultProjectMarshaller().marshall(writer, project);
+            new CarefulProjectMarshaller().marshall(writer, project);
             writer.close();
             return writer.toString();
         }

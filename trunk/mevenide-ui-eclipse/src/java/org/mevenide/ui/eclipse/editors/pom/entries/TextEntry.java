@@ -72,11 +72,13 @@ public class TextEntry extends PageEntry {
 
 	public void setText(String text) {
 		value = text;
-		if (text != null ) {
-			textbox.setText(text);
-		}
-		else {
-			textbox.setText(""); //$NON-NLS-1$
+		if ( !textbox.isDisposed() ) {
+			if (text != null ) {
+				textbox.setText(text);
+			}
+			else {
+				textbox.setText(""); //$NON-NLS-1$
+			}
 		}
 	}
 
@@ -109,7 +111,7 @@ public class TextEntry extends PageEntry {
     }
 
     public void setEnabled(boolean enable) {
-		if (textbox != null) {
+		if (textbox != null && !textbox.isDisposed()) {
 			textbox.setEnabled(enable);
 		}
     }

@@ -39,4 +39,10 @@ public class ValidationProblem {
     public void setException(SAXParseException exception) {
         this.exception = exception;
     }
+    
+    
+    public boolean equals(Object obj) {
+        return obj instanceof ValidationProblem && 
+               exception.getMessage().equals(((ValidationProblem) obj).exception.getMessage());
+    }
 }

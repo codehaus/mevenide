@@ -47,7 +47,7 @@ import org.eclipse.jdt.ui.wizards.JavaCapabilityConfigurationPage;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.ui.actions.WorkspaceModifyDelegatingOperation;
 import org.mevenide.environment.LocationFinderAggregator;
-import org.mevenide.project.io.DefaultProjectMarshaller;
+import org.mevenide.project.io.CarefulProjectMarshaller;
 import org.mevenide.project.io.ProjectReader;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.preferences.MevenidePreferenceKeys;
@@ -282,7 +282,7 @@ public class MavenProjectWizardSecondPage extends JavaCapabilityConfigurationPag
 
 			MavenProjectWizard wizard = (MavenProjectWizard)getWizard();
 			StringWriter strWriter = new StringWriter();
-			new DefaultProjectMarshaller().marshall(strWriter, wizard.getProjectObjectModel());
+			new CarefulProjectMarshaller().marshall(strWriter, wizard.getProjectObjectModel());
 
 			IFile referencedProjectFile = fCurrProject.getFile("project.xml"); //$NON-NLS-1$
 			referencedProjectFile.create(new ByteArrayInputStream(strWriter.toString().getBytes()), false, null);

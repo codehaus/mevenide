@@ -113,8 +113,8 @@ public class CarefulProjectMarshaller implements IProjectMarshaller {
         findAndReplaceSimpleElement(counter, root, "pomVersion", project.getPomVersion());
 //        findAndReplaceSimpleElement(counter, root, "id", project.getId());
         //REQUIRED
-        findAndReplaceSimpleElement(counter, root, "name", project.getName());
         findAndReplaceSimpleElement(counter, root, "artifactId", project.getArtifactId());
+        findAndReplaceSimpleElement(counter, root, "name", project.getName());
         findAndReplaceSimpleElement(counter, root, "groupId", project.getGroupId());
         //REQUIRED
         findAndReplaceSimpleElement(counter, root, "currentVersion", project.getCurrentVersion());
@@ -541,8 +541,8 @@ public class CarefulProjectMarshaller implements IProjectMarshaller {
     {
 //        findAndReplaceSimpleElement(0, depElement, "id", dependency.getId());
         Counter count = new Counter();
-        findAndReplaceSimpleElement(count, depElement, "artifactId", dependency.getArtifactId());
         findAndReplaceSimpleElement(count, depElement, "groupId", dependency.getGroupId());
+        findAndReplaceSimpleElement(count, depElement, "artifactId", dependency.getArtifactId());
         findAndReplaceSimpleElement(count, depElement, "version", dependency.getVersion());
         findAndReplaceSimpleElement(count, depElement, "jar", dependency.getJar());
         findAndReplaceSimpleElement(count, depElement, "type", dependency.getType());
