@@ -81,9 +81,9 @@
         </resource>
         
         <resource>
-      	  <directory>etc/META-INF/services</directory>
+      	  <directory>etc</directory>
           <includes>
-            <include>*.*</include>
+            <include>META-INF/services/*.*</include>
           </includes>
         </resource>
         
@@ -99,9 +99,9 @@
           </includes>
       </resource>
       <resource>
-      	  <directory>etc/META-INF/services</directory>
+      	  <directory>etc</directory>
           <includes>
-            <include>*.*</include>
+            <include>META-INF/services/*.*</include>
           </includes>
       </resource>
     </resources>
