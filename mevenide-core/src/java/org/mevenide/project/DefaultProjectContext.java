@@ -46,6 +46,7 @@ public class DefaultProjectContext implements IProjectContext {
     private List projects;
     private List projectFiles;
     private List projectTimestamps;
+    private Element mergedJDomRoot;
     private List jdomRootElements;
     
     private Object LOCK = new Object();
@@ -78,7 +79,7 @@ public class DefaultProjectContext implements IProjectContext {
         mergedProject = new Project();
         readProject(new File(queryContext.getProjectDirectory(), "project.xml"));
         Iterator it = jdomRootElements.iterator();
-        Element mergedJDomRoot = factory.element("project"); // blank initial root
+        mergedJDomRoot = factory.element("project"); // blank initial root
         while (it.hasNext()) {
             Element root = (Element)it.next();
             mergedJDomRoot = mergeProjectDOMs(mergedJDomRoot, root);
@@ -113,6 +114,24 @@ public class DefaultProjectContext implements IProjectContext {
         }
         return prjs;
     }
+    
+    public Element[] getRootElementLayers() {
+        Element[] prjs;
+        synchronized (LOCK) {
+            checkTimeStamps();
+            prjs = new Element[jdomRootElements.size()];
+            prjs = (Element[])jdomRootElements.toArray(prjs);
+        }
+        return prjs;
+    }
+    
+    public Element getRootProjectElement() {
+        synchronized (LOCK) {
+            checkTimeStamps();
+            return mergedJDomRoot;
+        }
+    }
+    
     
     // shall be run in synchronized lock.
     private void checkTimeStamps() {
@@ -344,4 +363,6 @@ public class DefaultProjectContext implements IProjectContext {
             }
         }
     }
+    
+ 
 }
