@@ -20,7 +20,7 @@
       MEVENIDE-72 - when changing version/artifactId/groupId suggest to update projects that depend on it.
       </action>
       <action dev="mkleint" type="add">
-      Link pmd report output with the IDE's editor.
+      Link pmd and checkstyle report output with the IDE's editor. Annotate the rule violations in the editor.
       </action>
       <action dev="mkleint" type="add">
        additional properties panels, updated some other panels.
