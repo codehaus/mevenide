@@ -58,7 +58,7 @@
            <url>http://xml.apache.org/xerces2-j/</url>
         </dependency>
         
-        <!-- wrappers -->
+        <!-- commons -->
         <dependency>
            <groupId>commons-discovery</groupId>
            <artifactId>commons-discovery</artifactId>
@@ -70,6 +70,14 @@
            <artifactId>commons-logging</artifactId>
            <version>1.0.1</version>
            <url>http://jakarta.apache.org/commons/logging</url>
+        </dependency>
+        <dependency>
+        
+        <!-- logging -->
+        <groupId>log4j</groupId>
+           <artifactId>log4j</artifactId>
+           <version>1.2.7</version>
+           <url>http://jakarta.apache.org/log4j/</url>
         </dependency>
         
         <!-- testing -->
