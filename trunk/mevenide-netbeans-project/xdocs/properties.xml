@@ -111,6 +111,15 @@
             <p></p>
           </td>
         </tr>
+        <tr>
+          <td>maven.netbeans.exec.debug.compile.single</td>
+          <td>Doesn't have a default value.</td>
+          <td>
+            <p>If you want to enable building of single files within the IDE, create a Maven goal for that and
+            add this property to the maven properties files. %CLASS% token will be replaced by the actual class requested for
+            compilation.</p>
+          </td>
+        </tr>
       </table>
       </div>
       </section>
