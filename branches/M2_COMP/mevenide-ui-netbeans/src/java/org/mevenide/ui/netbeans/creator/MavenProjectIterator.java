@@ -38,7 +38,7 @@ import org.apache.maven.model.Build;
 import org.apache.maven.model.Model;
 import org.apache.maven.project.MavenProject;
 import org.mevenide.project.io.CarefulProjectMarshaller;
-import org.mevenide.project.io.DefaultProjectUnmarshaller;
+import org.mevenide.project.io.ProjectReader;
 import org.mevenide.ui.netbeans.MavenProjectCookie;
 import org.openide.WizardDescriptor.Panel;
 import org.openide.cookies.OpenCookie;
@@ -252,9 +252,9 @@ public class MavenProjectIterator implements TemplateWizard.Iterator
         //TODO.. read some predefined project..
         MavenProject project = null;
         try {
-            InputStream str = wiz.getTemplate().getPrimaryFile().getInputStream();
+            //InputStream str = wiz.getTemplate().getPrimaryFile().getInputStream();
             logger.debug("file=" + wiz.getTemplate().getPrimaryFile().getPackageNameExt('/','.'));
-            DefaultProjectUnmarshaller mars = new DefaultProjectUnmarshaller();
+            ProjectReader mars = ProjectReader.getReader();
 //            BufferedReader read = new BufferedReader(new InputStreamReader(str));
 //            String line = read.readLine();
 //            while (line != null)
@@ -262,18 +262,18 @@ public class MavenProjectIterator implements TemplateWizard.Iterator
 //                logger.debug("line=" + line);
 //                line = read.readLine();
 //            }
-            project = mars.unmarshall(new InputStreamReader(str));
+            project = mars.read(FileUtil.toFile(wiz.getTemplate().getPrimaryFile()));
         } catch (FileNotFoundException exc) {
             logger.error("file not found", exc);
             project = new MavenProject();
             project.setModel(new Model());
-            project.getModel().setPomVersion("3");
+            project.getModel().setModelVersion("4");
         } catch (Exception exc2)
         {
             logger.error("cannot read project", exc2);
             project = new MavenProject();
             project.setModel(new Model());
-            project.getModel().setPomVersion("3");
+            project.getModel().setModelVersion("4");
         }
         wiz.putProperty(PROP_PROJECT, project);
     }
