@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project>
-  <pomVersion>3.0</pomVersion>
-  <name>Maven PDE Plugin</name>
+  <!-- @todo extend from pomV3 if possible -->
+  <pomVersion>4.0.0</pomVersion>
+  <name>Maven PDE Plugin (M2)</name>
   <groupId>maven</groupId>
-  <artifactId>maven-pde-plugin</artifactId>
-  <version>0.1</version>
+  <artifactId>maven-pde-m2-plugin</artifactId>
+  <version>0.1-SNAPSHOT</version>
   <type>plugin</type>
   <description>This plugin helps creating pde enabled artifacts. it is intended to replaced old maven-eclipse-plugin-plugin</description>
   <shortDescription>Creates PDE artifacts</shortDescription>
@@ -14,47 +15,31 @@
     <name>The Codehaus</name>
     <url>http://www.codehaus.org</url>
   </organization>
-  
   <inceptionYear>2004</inceptionYear>
   
-  <issueTrackingUrl>http://jira.codehaus.org/secure/BrowseProject.jspa?id=10480</issueTrackingUrl>
+  <distributionManagement>
+    <repository>
+      <id>default</id>
+      <name>Mevenide Dist</name>
+      <url>scp://beaver.codehaus.org//home/projects/mevenide/public/html</url>
+    </repository>
+  </distributionManagement>
 
-  <siteAddress>beaver.codehaus.org</siteAddress>
-  <siteDirectory>/home/projects/mevenide/public_html/${pom.artifactId}</siteDirectory>
-  
-  <repository>
-    <connection>scm:cvs:pserver:anonymous@cvs.mevenide.codehaus.org:/home/projects/mevenide/scm:${pom.artifactId}</connection>
-    <developerConnection>scm:cvs:ext:${maven.username}@cvs.mevenide.codehaus.org:/home/projects/mevenide/scm:${pom.artifactId}</developerConnection>
-    <url>http://cvs.mevenide.codehaus.org/${pom.artifactId}/</url>
-  </repository>
-  
-  <mailingLists>
-    <mailingList>
-      <name>Mevenide User List</name>
-      <subscribe>user-subscribe@mevenide.codehaus.org</subscribe>
-      <unsubscribe>user-unsubscribe@mevenide.codehaus.org</unsubscribe>
-      <archive>http://archive.mevenide.codehaus.org/user/</archive>
-    </mailingList>
-    <mailingList>
-      <name>Mevenide Developer List</name>
-      <subscribe>dev-subscribe@mevenide.codehaus.org</subscribe>
-      <unsubscribe>dev-unsubscribe@mevenide.codehaus.org</unsubscribe>
-      <archive>http://archive.mevenide.codehaus.org/dev/</archive>
-    </mailingList>
-    <mailingList>
-      <name>Mevenide Announce List</name>
-      <subscribe>announce-subscribe@mevenide.codehaus.org</subscribe>
-      <unsubscribe>announce-unsubscribe@mevenide.codehaus.org</unsubscribe>
-      <archive>http://archive.mevenide.codehaus.org/announce/</archive>
-    </mailingList>    
-    <mailingList>
-      <name>Mevenide SCM List</name>
-      <subscribe>scm-subscribe@mevenide.codehaus.org</subscribe>
-      <unsubscribe>scm-unsubscribe@mevenide.codehaus.org</unsubscribe>
-      <archive>http://archive.mevenide.codehaus.org/scm/</archive>
-    </mailingList>        
-  </mailingLists>
-  
+  <ciManagement>
+    <nagEmailAddress>mevenide-dev@codehaus.org</nagEmailAddress>
+  </ciManagement>
+    
+  <scm>
+    <connection>scm:cvs:pserver:anonymous@cvs.mevenide.codehaus.org:/home/projects/mevenide/scm:mojos/maven-pde-plugin</connection>
+    <developerConnection>scm:cvs:ext:${maven.username}@cvs.mevenide.codehaus.org:/home/project/mevenide/scm:mojos/maven-pde-plugin</developerConnection>
+    <url>http://cvs.mevenide.codehaus.org/mojos/maven-pde-plugin</url>
+  </scm>
+
+  <issueManagement>
+    <system>jira</system>
+    <url>http://jira.codehaus.org/browse/MEVENIDE</url>
+  </issueManagement>
+
   <developers>
     <developer>
       <name>Gilles Dodinet</name>
