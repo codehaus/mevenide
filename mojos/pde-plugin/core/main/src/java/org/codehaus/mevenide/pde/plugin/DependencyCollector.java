@@ -69,6 +69,7 @@ public class DependencyCollector {
             }
             
             String artifact = dependency.getArtifact();
+            
             try {
                 IOUtil.copy(new FileInputStream(artifact), new FileOutputStream(new File(targetPath, new File(artifact).getName())));
             }
