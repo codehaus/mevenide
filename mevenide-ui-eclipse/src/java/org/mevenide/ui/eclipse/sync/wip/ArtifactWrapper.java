@@ -48,6 +48,7 @@
  */
 package org.mevenide.ui.eclipse.sync.wip;
 
+import org.apache.maven.project.Project;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
@@ -62,6 +63,8 @@ import org.eclipse.jdt.core.JavaModelException;
  */
 public abstract class ArtifactWrapper {
 	public abstract void addTo(IProject project) throws Exception;
+	
+	public abstract void addTo(Project project) throws Exception;
 	
 	protected void addClasspathEntry(IClasspathEntry newEntry, IProject project) throws JavaModelException {
 		IJavaProject javaProject = (IJavaProject) JavaCore.create(project);

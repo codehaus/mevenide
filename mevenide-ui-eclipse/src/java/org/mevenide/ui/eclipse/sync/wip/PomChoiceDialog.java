@@ -48,44 +48,88 @@
  */
 package org.mevenide.ui.eclipse.sync.wip;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.maven.project.Project;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.jdt.core.IClasspathEntry;
-import org.mevenide.project.io.ProjectWriter;
+import java.io.File;
+import java.util.List;
+
+import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.viewers.CheckStateChangedEvent;
+import org.eclipse.jface.viewers.CheckboxTableViewer;
+import org.eclipse.jface.viewers.ICheckStateListener;
+import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.ui.PlatformUI;
 
 /**
  * 
- * 
  * @author <a href="mailto:rhill2@free.fr">Gilles Dodinet</a>
  * @version $Id$
- *
+ * 
  */
-public class DirectoryWrapper extends SourceFolder {
-	private static Log log = LogFactory.getLog(DirectoryWrapper.class); 
+public class PomChoiceDialog extends Dialog {
 	
-	private Directory directory ;
+	private CheckboxTableViewer tableViewer;
 	
-	public DirectoryWrapper(Directory directory) {
-		this.directory = directory;
+	private File chosenPom;
+	
+	public PomChoiceDialog() {
+		super(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell());
+		super.setBlockOnOpen(true);
 	}
 	
-	public void addTo(IProject project) throws Exception {
-		String type = directory.getType();
-		String path = directory.getPath();
-		log.debug("adding src entry to .classpath : "  + path + "(" + type + ")");
+	protected Control createDialogArea(Composite parent) {
+		Composite composite = new Composite(parent, SWT.NULL);
+		composite.setLayout(new GridLayout());
 		
-		IClasspathEntry srcEntry = newSourceEntry(path, project);
+		GridData gridData = new GridData(GridData.FILL_BOTH);
+		gridData.grabExcessVerticalSpace = true;
+		gridData.grabExcessHorizontalSpace = true;
 		
-		addClasspathEntry(srcEntry, project);
+		composite.setLayoutData(gridData);
+		
+		Table table = new Table(composite, SWT.NULL);
+		GridData orderTextGridData = new GridData(GridData.FILL_BOTH);
+		orderTextGridData.grabExcessVerticalSpace = true;
+		orderTextGridData.grabExcessHorizontalSpace = true;
+		table.setLayoutData(orderTextGridData);
+		
+		tableViewer = new CheckboxTableViewer(table);
+		
+		tableViewer.setLabelProvider(
+			new LabelProvider() {
+				public String getText(Object element) {
+					if ( element instanceof File ) {
+						return ((File) element).getAbsolutePath();
+					}
+					return "NOT A FILE : " + element.getClass();
+				}
+			}
+		);
+		
+		tableViewer.addCheckStateListener(
+			new ICheckStateListener() {
+				public void checkStateChanged(CheckStateChangedEvent event) {
+					File checkedElement = (File) event.getElement();
+					tableViewer.setCheckedElements(null);
+					tableViewer.setChecked(checkedElement, true);
+					chosenPom = checkedElement;
+				}
+			}
+		);
+		
+		return composite;
 	}
-
-	public void addTo(Project project) throws Exception {
-		String type = directory.getType();
-		String path = directory.getPath();
-		
-		ProjectWriter.getWriter().addSource(path, project.getFile(), type);
-		
+	
+	public void setInput(List pomFiles) {
+		tableViewer.setInput(pomFiles);
 	}
+	
+	public File getPom() {
+		return this.chosenPom;
+	}
+	
 }

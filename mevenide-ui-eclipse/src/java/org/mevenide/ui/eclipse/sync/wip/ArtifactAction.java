@@ -48,44 +48,57 @@
  */
 package org.mevenide.ui.eclipse.sync.wip;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.maven.project.Dependency;
 import org.apache.maven.project.Project;
+import org.apache.maven.project.Resource;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.jdt.core.IClasspathEntry;
-import org.mevenide.project.io.ProjectWriter;
 
 /**
  * 
- * 
  * @author <a href="mailto:rhill2@free.fr">Gilles Dodinet</a>
  * @version $Id$
- *
+ * 
  */
-public class DirectoryWrapper extends SourceFolder {
-	private static Log log = LogFactory.getLog(DirectoryWrapper.class); 
+public class ArtifactAction {
+	private static Log log = LogFactory.getLog(ArtifactAction.class);
 	
-	private Directory directory ;
+	private List listeners = new ArrayList();
 	
-	public DirectoryWrapper(Directory directory) {
-		this.directory = directory;
+	public void addModelChangeListener(SynchronizeActionListener listener) {
+		listeners.add(listener);	
 	}
 	
-	public void addTo(IProject project) throws Exception {
-		String type = directory.getType();
-		String path = directory.getPath();
-		log.debug("adding src entry to .classpath : "  + path + "(" + type + ")");
-		
-		IClasspathEntry srcEntry = newSourceEntry(path, project);
-		
-		addClasspathEntry(srcEntry, project);
+	public void removeModelChangeListener(SynchronizeActionListener listener) {
+		listeners.remove(listener);
 	}
-
-	public void addTo(Project project) throws Exception {
-		String type = directory.getType();
-		String path = directory.getPath();
-		
-		ProjectWriter.getWriter().addSource(path, project.getFile(), type);
-		
+	
+	protected void fireArtifactAddedToClasspath(Object item, IProject project) {
+		for (int i = 0; i < listeners.size(); i++) {
+			ArtifactEvent event = new ArtifactEvent(item, project);
+			((SynchronizeActionListener)listeners.get(i)).artifactAddedToClasspath(event);
+		}
+	}
+	
+	protected void fireArtifactAddedToPom(Object item, Project project) {
+		log.debug("Artifact (" + item + ") added to POM : " + project.getFile());
+	}
+	
+	//crap..
+	protected ArtifactWrapper getArtifactWrapper(Object item) {
+		if ( item instanceof Dependency ) {
+			return new DependencyWrapper((Dependency) item);
+		}
+		if ( item instanceof Directory ) {
+			return new DirectoryWrapper((Directory) item);
+		}
+		if ( item instanceof Resource ) {
+			return new ResourceWrapper((Resource) item);
+		}
+		return null;
 	}
 }
