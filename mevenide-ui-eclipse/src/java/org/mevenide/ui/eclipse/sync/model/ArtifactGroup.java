@@ -12,7 +12,7 @@
  * Lesser General Public License for more details.
  * 
  */
-package org.mevenide.ui.eclipse.sync;
+package org.mevenide.ui.eclipse.sync.model;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

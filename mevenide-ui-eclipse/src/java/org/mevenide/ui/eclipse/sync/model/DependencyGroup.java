@@ -23,7 +23,6 @@ import org.eclipse.jdt.core.IClasspathEntry;
 import org.mevenide.project.dependency.DependencyFactory;
 import org.mevenide.ui.eclipse.DefaultPathResolver;
 import org.mevenide.ui.eclipse.IPathResolver;
-import org.mevenide.ui.eclipse.sync.ArtifactGroup;
 import org.mevenide.ui.eclipse.util.FileUtil;
 import org.mevenide.ui.eclipse.util.ProjectUtil;
 
