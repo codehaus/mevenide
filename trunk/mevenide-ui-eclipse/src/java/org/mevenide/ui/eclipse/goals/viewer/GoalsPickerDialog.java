@@ -93,6 +93,7 @@ import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.MevenideColors;
 import org.mevenide.ui.eclipse.goals.model.Element;
 import org.mevenide.ui.eclipse.goals.model.Goal;
+import org.mevenide.ui.eclipse.goals.model.GoalFactory;
 import org.mevenide.ui.eclipse.goals.model.GoalsProvider;
 import org.mevenide.ui.eclipse.goals.model.Plugin;
 
@@ -289,7 +290,12 @@ public class GoalsPickerDialog  extends Dialog {
 		if ( goalsOrder != null ) {
 			goalsOrderText.setText(goalsOrder);
 			//@todo check goals and expand parent also...
-			
+			String[] goals = StringUtils.split(goalsOrder);
+			for (int i = 0; i < goals.length; i++) {
+				Goal goal = GoalFactory.newGoal(goals[i]);
+				goalsViewer.setExpandedState(goal.getPlugin(), true);
+				goalsViewer.setChecked(goal, true);
+		    }
 		}
 		
 		goalsViewer.setGrayed(goalsProvider.getChildren(Element.NULL_ROOT), true);

@@ -48,26 +48,29 @@
  */
 package org.mevenide.ui.eclipse.goals.model;
 
+import org.apache.commons.lang.StringUtils;
+
 /**  
  * 
  * @author Gilles Dodinet (gdodinet@wanadoo.fr)
- * @version $Id: Goal.java,v 1.1 7 sept. 2003 Exp gdodinet 
+ * @version $Id: GoalFactory.java,v 1.1 15 sept. 2003 Exp gdodinet 
  * 
  */
-public class Goal extends Element {
-	private Plugin plugin ;
+public abstract class GoalFactory {
+	public static Goal newGoal(String fullyQualifiedGoalName) {                
+		String[] splittedGoal = StringUtils.split(fullyQualifiedGoalName, ":");
+		String pluginName = splittedGoal[0];
+		Plugin plugin = new Plugin();
+		plugin.setName(pluginName);
 	
-	public Plugin getPlugin() {
-        return plugin;
-    }
-
-    public void setPlugin(Plugin plugin) {
-        this.plugin = plugin;
-    }
-
-	public boolean equals(Object obj) {
-		return (obj instanceof Goal) 
-				&& ((Goal) obj).getName().equals(getName())
-				&& ((Goal) obj).getPlugin().getName().equals(plugin.getName()); 
+		String goalName = "(default)";
+		if ( splittedGoal.length > 1 ) {
+			goalName = splittedGoal[1];
+		}
+		Goal goal = new Goal();
+		goal.setName(goalName);
+		goal.setPlugin(plugin);
+		
+		return goal; 
 	}
 }
