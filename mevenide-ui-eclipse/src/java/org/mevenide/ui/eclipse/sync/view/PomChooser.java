@@ -24,8 +24,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Project;
 import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.dialogs.Dialog;
 import org.mevenide.project.io.ProjectReader;
+import org.mevenide.ui.eclipse.util.EclipseProjectUtils;
+import org.mevenide.ui.eclipse.util.FileUtils;
 import org.mevenide.util.MevenideUtils;
 
 /**
@@ -97,7 +100,16 @@ public class PomChooser {
 		return poms;
 	}
 	
+	/** 
+	 * @pre rootDirectory is a valid Eclipse IResource
+	 */
 	private List findPoms(File rootDirectory) {
+	    
+	    IProject project = FileUtils.getParentProjectForFile(rootDirectory);
+	    
+	    List outputFolders = EclipseProjectUtils.getOutputFolders(project);
+	    log.debug("Found " + outputFolders.size() + " output folders");
+	    
 		List allPoms = new ArrayList(); 
 		
 		String fileName = "project.xml";
@@ -106,7 +118,9 @@ public class PomChooser {
 		for (int i = 0; i < f.length; i++) {
 			if ( f[i].isDirectory() ) {
 				//@todo exclude ${maven.build.dest}, ${maven.test.dest}, etc. => shoudl be customizable thanks a properties file
-				allPoms.addAll(findPoms(f[i]));
+			    if ( !outputFolders.contains(f[i]) ) {
+			        allPoms.addAll(findPoms(f[i]));
+			    }
 			}
 			else {
 				if ( f[i].getName().equals(fileName) ) {
