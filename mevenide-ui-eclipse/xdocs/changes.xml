@@ -29,6 +29,9 @@
       <action dev="gdodinet" type="fix" issue="MEVENIDE-29">
         Fix NPE when no launch configurations exist.
       </action>
+      <action dev="gdodinet" type="fix" issue="MEVENIDE-31">
+        AutoBuild is now set to false prior to adding artifacts to .classpath and is restored after that.
+      </action>
       <action dev="gdodinet" type="add">
         Maven Plugin Provider Infrastructure allows plugin providers to statically contribute to Mevenide preference pages.
       </action>
