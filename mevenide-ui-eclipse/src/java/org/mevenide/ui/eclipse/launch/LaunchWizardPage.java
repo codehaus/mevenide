@@ -24,6 +24,7 @@ import java.util.TreeSet;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.maven.MavenConstants;
 import org.eclipse.jface.preference.PreferenceStore;
 import org.eclipse.jface.viewers.ICellEditorValidator;
 import org.eclipse.jface.viewers.TextCellEditor;
@@ -134,7 +135,7 @@ public class LaunchWizardPage extends WizardPage {
 		data.grabExcessVerticalSpace = true;
 		
 		Label label = new Label(composite, SWT.READ_ONLY);
-		label.setText("Maven version: ");
+		label.setText("Maven version: " + MavenConstants.POM_VERSION);
 		
 		label.setLayoutData(data);
 	}

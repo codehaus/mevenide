@@ -33,8 +33,10 @@ import org.mevenide.util.JDomOutputter;
 public abstract class LaunchMarshaller {
 	
 	private static String ROOT_ELEM = "launchedActions";
+	
 	private static String ACTION_ELEM = "action";
 	private static String PROJECT_ATTR = "project";
+	private static String LAST_LAUNCHED_ATTR = "isLastLaunchedAction";
 	
 	private static String GOALS_ELEM = "goals";
 	private static String GOAL_NAME_ATTR = "name";
@@ -65,6 +67,12 @@ public abstract class LaunchMarshaller {
 			document.setRootElement(root);
 		}
 		
+		List previouslyLaunched = document.getRootElement().getChildren();
+		for (int i = 0; i < previouslyLaunched.size(); i++) {
+			Element elem = (Element) previouslyLaunched.get(i);
+			elem.setAttribute(LAST_LAUNCHED_ATTR, "false");
+		}
+		
 		Element actionElem = new Element(ACTION_ELEM);
 		actionElem.setAttribute(PROJECT_ATTR, action.getProject().getName());
 		
@@ -84,11 +92,17 @@ public abstract class LaunchMarshaller {
 		}
 		actionElem.addContent(optionsElem);
 		
+		actionElem.setAttribute(LAST_LAUNCHED_ATTR, "true");
+		
 		document.getRootElement().addContent(actionElem);
 		
 		File saveFile = new File(file); 
 	
 		JDomOutputter.output(document, saveFile, false);
+	}
+	
+	public static void removeConfig(LaunchedAction action) {
+		
 	}
 	
 	public static void clearConfigs() {

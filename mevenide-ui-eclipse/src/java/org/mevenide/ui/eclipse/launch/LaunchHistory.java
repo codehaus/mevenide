@@ -73,6 +73,10 @@ public class LaunchHistory {
 			//just remove it from to place it at first position
 			
 			//@todo manage the case where just options differ
+			//@todo should also update the "isLastLaunchedAction" attrbiute
+			//so best option seems to be to remove also the marshalled form
+			
+			LaunchMarshaller.removeConfig(action);
 			launchedActions.remove(action);
 		}
 		else {
@@ -94,6 +98,8 @@ public class LaunchHistory {
 	 */
 	public void clear() {
 		LaunchMarshaller.clearConfigs();
+		launchedActions = new ArrayList();
+		lastlaunched = null;
 	}
 	
 	/**
@@ -105,13 +111,12 @@ public class LaunchHistory {
 		launchedActions = LaunchMarshaller.getSavedConfigs();
 	}
 	
-	/**
-	 * @return
-	 */
 	public LaunchedAction getLastlaunched() {
 		return lastlaunched;
 	}
 
-	
+	public void setLastlaunched(LaunchedAction action) {
+		lastlaunched = action;
+	}
 
 }
