@@ -73,13 +73,16 @@ public class PomSynchronizer extends AbstractPomSynchronizer implements ISynchro
 
 	private void assertPomNotEmpty() {
 		try {
-			InputStream inputStream = pom.getContents(true);
-			if ( inputStream.read() == -1 ) {
-				InputStream stream = PomSynchronizer.class.getResourceAsStream("/templates/standard/project.xml"); 
-				pom.setContents(stream, true, true, null);
-				stream.close();
+			if ( pom.exists() ) {
+				InputStream inputStream = pom.getContents(true);
+			
+				if ( inputStream.read() == -1 ) {
+					InputStream stream = PomSynchronizer.class.getResourceAsStream("/templates/standard/project.xml"); 
+					pom.setContents(stream, true, true, null);
+					stream.close();
+				}
+				inputStream.close();
 			}
-			inputStream.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
