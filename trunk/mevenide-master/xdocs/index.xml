@@ -31,6 +31,7 @@
             <ul>
     	      <li><a href="mevenide-ui-eclipse/features.html" class="documentLink">Eclipse plugin</a></li>
               <li><a href="mevenide-ui-netbeans/features.html" class="documentLink">NetBeans plugin</a></li>
+              <li><a href="mevenide-ui-jbuilder/JBMavenOpenTool.html" class="documentLink">JBuilder plugin</a></li>
             </ul>
     </p>
     </div>
