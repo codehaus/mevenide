@@ -555,11 +555,18 @@ public class JDomProjectUnmarshaller implements IProjectUnmarshaller {
             directory = dir;
         }
         public InputSource resolveEntity(String publicId, String systemId) throws SAXException, IOException {
-            logger.debug("resolver");
+            logger.debug("resolver" + systemId);
             if (systemId.startsWith("file:")) {
-                String path = systemId.substring("file:".length());
-                logger.debug("path=" + path);
+                String path = systemId.substring("file:".length()); //NOI18N
                 File file = new File(directory, path);
+                // kind of bug in jdom.. for file:dependency.ent one gets wrong systemId 
+                //MEVENIDE-110
+                int index = path.indexOf("file:"); //NOI18N
+                if (index > -1) {
+                    path = path.substring(0, index) + path.substring(index + "file:".length()); //NOI18N
+                    file = new File(path);
+                }
+                logger.debug("path=" + path);
                 file = normalizeFile(file);
                 if (file.exists()) {
                     return new InputSource(new FileReader(file));
