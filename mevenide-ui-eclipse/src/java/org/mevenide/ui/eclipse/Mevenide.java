@@ -157,7 +157,7 @@ public class Mevenide extends AbstractUIPlugin {
     }
 
     private void loadHeapSize(PreferenceStore preferenceStore) {
-        int hSize = preferenceStore.getInt(MevenidePreferenceKeys.MAVEN_HEAP_SIZE_PREFERENCE_KEY);
+        int hSize = preferenceStore.getInt(MevenidePreferenceKeys.JAVA_HEAP_SIZE_PREFERENCE_KEY);
         //heap has been initialized yet. set it to default (160)
         if ( hSize == 0 ) {
             hSize = 160;

@@ -57,6 +57,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.mevenide.ui.eclipse.Mevenide;
+import org.mevenide.ui.eclipse.MevenidePreferenceKeys;
 
 /**
  * 
@@ -68,6 +69,7 @@ import org.mevenide.ui.eclipse.Mevenide;
 public class MevenidePreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
 
 	private PreferencesManager manager;
+	
     private MevenidePreferenceDialog dialog;
     
     public MevenidePreferencePage() {
@@ -89,15 +91,14 @@ public class MevenidePreferencePage extends PreferencePage implements IWorkbench
 		composite.setLayout(layout);
 		composite.setLayoutData(new GridData(GridData.FILL_BOTH));
 		
-		//shouldnot be necessary
-		dialog.setJavaHome(manager.getValue("java.home"));
-		dialog.setMavenHome(manager.getValue("maven.home"));
-		dialog.setMavenRepo(manager.getValue("maven.repo"));
-		dialog.setPomTemplateLocation(manager.getValue("pom.template.location"));
-		dialog.setHeapSize(manager.getIntValue("maven.heap.size"));
-		dialog.setDefaultGoals(manager.getValue("maven.launch.defaultgoals"));
-		
-		dialog.setCheckTimestamp(manager.getBooleanValue("mevenide.checktimestamp"));
+		//*should*not be necessary
+		dialog.setJavaHome(manager.getValue(MevenidePreferenceKeys.JAVA_HOME_PREFERENCE_KEY));
+		dialog.setMavenHome(manager.getValue(MevenidePreferenceKeys.MAVEN_HOME_PREFERENCE_KEY));
+		dialog.setMavenRepo(manager.getValue(MevenidePreferenceKeys.MAVEN_REPO_PREFERENCE_KEY));
+		dialog.setPomTemplateLocation(manager.getValue(MevenidePreferenceKeys.POM_TEMPLATE_LOCATION_PREFERENCE_KEY));
+		dialog.setHeapSize(manager.getIntValue(MevenidePreferenceKeys.JAVA_HEAP_SIZE_PREFERENCE_KEY));
+		dialog.setDefaultGoals(manager.getValue(MevenidePreferenceKeys.DEFAULT_GOALS_PREFERENCE_KEY));
+		dialog.setCheckTimestamp(manager.getBooleanValue(MevenidePreferenceKeys.MEVENIDE_CHECKTIMESTAMP_PREFERENCE_KEY));
 		
 		return dialog.createContent(composite);
 	}
@@ -115,18 +116,38 @@ public class MevenidePreferencePage extends PreferencePage implements IWorkbench
 	private boolean finish() {
 		dialog.update();
 		
-		manager.setValue("maven.home", dialog.getMavenHome());
-		manager.setValue("maven.local.home", dialog.getMavenLocalHome());
-		manager.setValue("java.home", dialog.getJavaHome());
-		manager.setValue("maven.repo", dialog.getMavenRepo());
-		manager.setValue("pom.template.location", dialog.getPomTemplateLocation());
-		manager.setValue("maven.launch.defaultgoals", dialog.getDefaultGoals());
-		manager.setBooleanValue("mevenide.checktimestamp", dialog.getCheckTimestamp());
-		if ( dialog.getHeapSize() != 0 ) {
-			manager.setIntValue("maven.heap.size", dialog.getHeapSize());
-		}
+		manager.setValue(
+			MevenidePreferenceKeys.MAVEN_HOME_PREFERENCE_KEY, 
+			dialog.getMavenHome()
+		);
+		manager.setValue(
+			MevenidePreferenceKeys.MAVEN_LOCAL_HOME_PREFERENCE_KEY, 
+			dialog.getMavenLocalHome()
+		);
+		manager.setValue(
+			MevenidePreferenceKeys.JAVA_HOME_PREFERENCE_KEY, 
+			dialog.getJavaHome()
+		);
+		manager.setValue(
+			MevenidePreferenceKeys.MAVEN_REPO_PREFERENCE_KEY, 
+			dialog.getMavenRepo()
+		);
+		manager.setValue(
+			MevenidePreferenceKeys.POM_TEMPLATE_LOCATION_PREFERENCE_KEY, 
+			dialog.getPomTemplateLocation()
+		);
+		manager.setValue(
+			MevenidePreferenceKeys.DEFAULT_GOALS_PREFERENCE_KEY, 
+			dialog.getDefaultGoals()
+		);
+		manager.setBooleanValue(
+			MevenidePreferenceKeys.MEVENIDE_CHECKTIMESTAMP_PREFERENCE_KEY, 
+			dialog.getCheckTimestamp()
+		);
 		
-		//manager.setValue("maven.plugins.dir", dialog.getPluginsInstallDir());
+		if ( dialog.getHeapSize() != 0 ) {
+			manager.setIntValue(MevenidePreferenceKeys.JAVA_HEAP_SIZE_PREFERENCE_KEY, dialog.getHeapSize());
+		}
 		
 		Mevenide.getPlugin().initEnvironment();
 		

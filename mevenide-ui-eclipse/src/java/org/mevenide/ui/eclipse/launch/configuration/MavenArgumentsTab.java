@@ -86,7 +86,6 @@ import org.eclipse.swt.widgets.Text;
 import org.mevenide.OptionsRegistry;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.goals.viewer.GoalsPickerDialog;
-import org.mevenide.ui.eclipse.launch.LaunchWizardPage;
 
 /**
  * 
@@ -95,7 +94,7 @@ import org.mevenide.ui.eclipse.launch.LaunchWizardPage;
  * 
  */
 public class MavenArgumentsTab extends AbstractLaunchConfigurationTab  {
-	private static Log log = LogFactory.getLog(LaunchWizardPage.class);
+	private static Log log = LogFactory.getLog(AbstractLaunchConfigurationTab.class);
 
 	public static final String OPTIONS_MAP = "OPTIONS_MAP";
 	public static final String GOALS_TO_RUN = "GOALS_TO_RUN";	
@@ -122,7 +121,7 @@ public class MavenArgumentsTab extends AbstractLaunchConfigurationTab  {
 	
 	
 	public String getName() {
-		return "Arguments";
+		return Mevenide.getResourceString("Launcher.ArgumentsTab.name");
 	}
 	
 	public void setDefaults(ILaunchConfigurationWorkingCopy configuration) {
@@ -232,11 +231,11 @@ public class MavenArgumentsTab extends AbstractLaunchConfigurationTab  {
 		table.setHeaderVisible(true);
 		
 		TableColumn column1 = new TableColumn(table, SWT.NULL);
-		column1.setText("key");
+		column1.setText(Mevenide.getResourceString("MavenArgumentsTab.system.properties.key.column.name"));
 		column1.setWidth(200);
 		
 		TableColumn column2 = new TableColumn(table, SWT.NULL);
-		column2.setText("value");
+		column2.setText(Mevenide.getResourceString("MavenArgumentsTab.system.properties.value.column.name"));
 		column2.setWidth(200);
 		
 		createTableEditor();
@@ -248,13 +247,18 @@ public class MavenArgumentsTab extends AbstractLaunchConfigurationTab  {
 		buttonsArea.setLayoutData(topData);
 		
 		Button addButton = new Button(buttonsArea, SWT.PUSH);
-		addButton.setText("Add");
+		addButton.setText(Mevenide.getResourceString("MavenArgumentsTab.system.properties.add"));
 		GridData data1 = new GridData(GridData.FILL_HORIZONTAL);
 		addButton.setLayoutData(data1);
 		addButton.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				TableItem item = new TableItem(table,SWT.NULL);
-				item.setText(new String[] {"<custom key>", "<custom value>"});
+				item.setText(
+					new String[] {
+						Mevenide.getResourceString("MavenArgumentsTab.system.properties.key.new"), 
+						Mevenide.getResourceString("MavenArgumentsTab.system.properties.value.new")
+					}
+				);
 				setDirty(true);
 				updateLaunchConfigurationDialog();
 			} 
@@ -262,7 +266,7 @@ public class MavenArgumentsTab extends AbstractLaunchConfigurationTab  {
 		
 		
 		Button removeButton = new Button(buttonsArea, SWT.PUSH);
-		removeButton.setText("Remove");
+		removeButton.setText(Mevenide.getResourceString("MavenArgumentsTab.system.properties.remove"));
 		GridData data2 = new GridData(GridData.FILL_HORIZONTAL);
 		removeButton.setLayoutData(data2);
 		removeButton.addSelectionListener(new SelectionAdapter() {
@@ -316,7 +320,7 @@ public class MavenArgumentsTab extends AbstractLaunchConfigurationTab  {
 		Button chooseButton = new Button(buttonsArea, SWT.PUSH);
 		GridData data1 = new GridData(GridData.FILL_HORIZONTAL);
 		chooseButton.setLayoutData(data1);
-		chooseButton.setText("Choose...");
+		chooseButton.setText(Mevenide.getResourceString("MavenArgumentsTab.system.properties.choose"));
 		chooseButton.setEnabled(true);
 		
 		chooseButton.addSelectionListener(

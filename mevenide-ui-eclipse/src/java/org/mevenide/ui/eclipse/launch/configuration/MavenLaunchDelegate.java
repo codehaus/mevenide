@@ -214,8 +214,8 @@ public class MavenLaunchDelegate extends AbstractRunner implements ILaunchConfig
 
 	private void noMavenHome() {
 		MessageBox dialog = new MessageBox (PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), SWT.ICON_WARNING | SWT.OK);
-		dialog.setText ("Unset Property : Maven Home");
-		dialog.setMessage ("Cannot run Maven unless you set Maven Home. Please see Windows > Preferences > Maven");
+		dialog.setText (Mevenide.getResourceString("Runner.mavenHome.NotSet.title"));
+		dialog.setMessage (Mevenide.getResourceString("Runner.mavenHome.NotSet.message"));
 		dialog.open ();
    }
 
