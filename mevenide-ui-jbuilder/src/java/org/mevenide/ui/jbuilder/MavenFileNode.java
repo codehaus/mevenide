@@ -1,6 +1,6 @@
 /* ==========================================================================
  * Copyright 2003-2004 Apache Software Foundation
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -44,8 +44,6 @@ import com.borland.primetime.vfs.Url;
  * <p>It seems that JBuilder has an undocumented mechanism to avoid having to
  * revert to tricks like this one, using a setXmlHandler method on XMLFileNode,
  * but as it is not documented I prefer not to use it.</p>
- * <p>Copyright: Copyright (c) 2004 Jahia Ltd</p>
- * <p>Company: Jahia Ltd</p>
  * @author Serge Huber
  * @version 1.0
  */
