@@ -37,6 +37,7 @@ public final class PropertyFilesAggregator implements IPropertyResolver {
     private IPropertyFinder projectBuild;
     private IPropertyFinder userBuild;
     private IPropertyFinder defaults;
+    private IPropertyFinder projectWalker;
     
     private IQueryContext context;
 
@@ -86,6 +87,7 @@ public final class PropertyFilesAggregator implements IPropertyResolver {
         userBuild = QueryBasedFinderFactory.createUserPropertyFinder(context);
         project = QueryBasedFinderFactory.createProjectPropertyFinder(context);
         projectBuild = QueryBasedFinderFactory.createBuildPropertyFinder(context);
+        projectWalker = new ProjectWalker2(context);
     }
     
     public String getResolvedValue(String key) {
@@ -99,15 +101,19 @@ public final class PropertyFilesAggregator implements IPropertyResolver {
     
     private String getValue(String key, boolean resolve) {
         String toReturn = null;
-        toReturn = userBuild.getValue(key);
-        if (toReturn == null && projectBuild != null ) {
-            toReturn = projectBuild.getValue(key);
-        }
-        if (toReturn == null && project != null ) {
-            toReturn = project.getValue(key);
-        }
-        if (toReturn == null && defaults != null ) {
-            toReturn = defaults.getValue(key);
+        if (key.startsWith("pom.") && projectWalker != null) {
+            toReturn = projectWalker.getValue(key);
+        } else {
+            toReturn = userBuild.getValue(key);
+            if (toReturn == null && projectBuild != null ) {
+                toReturn = projectBuild.getValue(key);
+            }
+            if (toReturn == null && project != null ) {
+                toReturn = project.getValue(key);
+            }
+            if (toReturn == null && defaults != null ) {
+                toReturn = defaults.getValue(key);
+            }
         }
         if (resolve && toReturn != null) {
             toReturn = resolve(new StringBuffer(toReturn)).toString();
@@ -142,6 +148,7 @@ public final class PropertyFilesAggregator implements IPropertyResolver {
     	reload(userBuild);
     	reload(project);
     	reload(projectBuild);
+        reload(projectWalker);
     }
     
     private void reload(IPropertyFinder finder) {
