@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<document>
+  <properties>
+	<author email="ca206216@tiscali.cz">Milos Kleint</author>
+	<title>Features</title>
+  </properties>
+  <body>
+	<section name="Features List">
+	  <div id="documentContent">
+		<p>
+		  <ul>
+			<li>Code completion for Maven project.ml files.</li>
+			<li>Code completion for standard jelly-taglibs and maven taglibs. Includes static tags and tag attributes definitions. (plugin.jelly and maven.xml files)</li>
+		  </ul>
+		</p>
+	  </div>
+	</section>
+  </body>
+</document>

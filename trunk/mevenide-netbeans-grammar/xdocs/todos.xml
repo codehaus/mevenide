@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<document>
+
+  <properties>
+    <author email="ca206216@tiscali.cz">Milos Kleint</author>
+    <title>Jelly/Maven Netbeans grammar module</title>
+  </properties>
+
+  <body>
+  	<section name="Netbeans plugin Task List">
+	    <p>
+            <ul>
+                <li>Create a version for 3.6</li>
+                <li>Attempt to integrate with the ant-grammar netbeans module to get ant elements and attributes in cc.</li>
+                <li>Add dynamic tags.</li>
+                <li>Add maven-plugin tags.</li>
+            </ul>
+        </p>
+	</section>
+  </body>
+</document>
