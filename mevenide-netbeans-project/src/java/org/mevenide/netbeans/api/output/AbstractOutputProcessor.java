@@ -14,7 +14,11 @@
  *  limitations under the License.
  * =========================================================================
  */
-package org.mevenide.netbeans.project.output;
+package org.mevenide.netbeans.api.output;
+
+import java.util.regex.Pattern;
+
+
 
 /**
  * abstract implementation of OutputProcessor that has support to focus the processor on certain subsections of the output only.
@@ -23,12 +27,20 @@ package org.mevenide.netbeans.project.output;
 public abstract class AbstractOutputProcessor implements OutputProcessor {
     private boolean isInWatchedGoals = false;
     /** Creates a new instance of AbstractOutputListenerProvider */
+    private Pattern pattern1;
+    private Pattern pattern2;
     protected AbstractOutputProcessor() {
+        pattern1 = Pattern.compile("[-\\p{Alnum}]+\\:[-\\p{Alnum}]+\\:"); //NOI18N
+        pattern2 = Pattern.compile("[-\\p{Alnum}]+\\:"); //NOI18N
     }
     
-    final boolean isInWatchedGoals(String line) {
-        if (line.matches("[-\\p{Alnum}]+\\:[-\\p{Alnum}]+\\:") ||
-            line.matches("[-\\p{Alnum}]+\\:")) {
+    /**
+     *
+     */
+    public final boolean isInWatchedGoals(String line) {
+        if (pattern1.matcher(line).matches() ||
+            pattern2.matcher(line).matches()) 
+        {
             String[] goals = getWatchedGoals();
             boolean changed = false;
             for (int i = 0; i < goals.length; i++) {
@@ -45,9 +57,14 @@ public abstract class AbstractOutputProcessor implements OutputProcessor {
         return isInWatchedGoals;
     }
     
-    final boolean isWatchedGoalLine(String line) {
-        if (line.matches("[-\\p{Alnum}]+\\:[-\\p{Alnum}]+\\:") ||
-            line.matches("[-\\p{Alnum}]+\\:")) {
+    /**
+     * check if the current line matches any of the goals returned
+     * by the getWatchedGoals() method.
+     */
+    public final boolean isWatchedGoalLine(String line) {
+        if (pattern1.matcher(line).matches() ||
+            pattern2.matcher(line).matches()) 
+        {
             String[] goals = getWatchedGoals();
             for (int i = 0; i < goals.length; i++) {
                 if (line.equals(goals[i])) {
@@ -61,5 +78,5 @@ public abstract class AbstractOutputProcessor implements OutputProcessor {
     /**
      * provide a list of goal pattern that shall be checked. eg. java:compile: pmd:report: etc.
      */
-    protected abstract String[] getWatchedGoals();
+    public abstract String[] getWatchedGoals();
 }

@@ -15,14 +15,14 @@
  * =========================================================================
  */
 
-package org.mevenide.netbeans.project.output;
+package org.mevenide.netbeans.api.output;
 
 import javax.swing.Action;
 import org.openide.windows.OutputListener;
 
 /**
  * Is collecting line parsing information from all the registered Outputprocessors.
- * @author  Milos Kleint (ca206216@tiscali.cz)
+ * @author  Milos Kleint (mkleint@codehaus.org)
  */
 public final class OutputVisitor {
     

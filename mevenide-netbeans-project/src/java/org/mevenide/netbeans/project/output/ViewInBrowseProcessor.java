@@ -24,6 +24,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openide.awt.HtmlBrowser;
 import org.openide.filesystems.FileUtil;
+import org.mevenide.netbeans.api.output.OutputVisitor;
+import org.mevenide.netbeans.api.output.OutputProcessor;
+import org.mevenide.netbeans.api.output.AbstractOutputProcessor;
 
 /**
  * @author  Milos Kleint (ca206216@tiscali.cz)
@@ -51,7 +54,7 @@ public class ViewInBrowseProcessor extends AbstractOutputProcessor implements Ou
         }
     }
     
-   protected String[] getWatchedGoals() {
+   public String[] getWatchedGoals() {
         return goalsToWatch;
     }    
     

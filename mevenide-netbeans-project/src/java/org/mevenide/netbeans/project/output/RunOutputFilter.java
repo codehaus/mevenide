@@ -16,6 +16,9 @@
  */
 package org.mevenide.netbeans.project.output;
 
+import org.mevenide.netbeans.api.output.OutputVisitor;
+import org.mevenide.netbeans.api.output.OutputProcessor;
+
 /**
  * Custom line based filter for maven executor output when running the application.
  * @author  Milos Kleint (ca206216@tiscali.cz)

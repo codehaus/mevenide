@@ -39,6 +39,8 @@ import org.openide.windows.InputOutput;
 import org.openide.windows.OutputEvent;
 import org.openide.windows.OutputListener;
 import org.openide.windows.OutputWriter;
+import org.mevenide.netbeans.api.output.OutputVisitor;
+import org.mevenide.netbeans.api.output.AbstractOutputProcessor;
 
 
 
@@ -63,7 +65,7 @@ public class FindbugsOutputListenerProvider extends AbstractOutputProcessor {
         failPattern = Pattern.compile(".*\\[findbugs\\] Running FindBugs.*");
     }
     
-    protected String[] getWatchedGoals() {
+    public String[] getWatchedGoals() {
         return FINDBUGSGOALS;
     }
     

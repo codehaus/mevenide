@@ -21,6 +21,8 @@ import java.util.regex.Pattern;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.mevenide.netbeans.project.MavenProject;
+import org.mevenide.netbeans.api.output.OutputVisitor;
+import org.mevenide.netbeans.api.output.AbstractOutputProcessor;
 
 
 
@@ -45,7 +47,7 @@ public class JavaOutputListenerProvider extends AbstractOutputProcessor {
         project = proj;
     }
     
-    protected String[] getWatchedGoals() {
+    public String[] getWatchedGoals() {
         return JAVAGOALS;
     }
     
