@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -189,12 +190,13 @@ public class MavenProjectNode extends AbstractSynchronizationNode implements ISe
 		try {
 			ProjectReader projectReader = ProjectReader.getReader();
 			Map sourceDirectoryMap = projectReader.readSourceDirectories(project.getFile());
+			Map map = reverseMap(sourceDirectoryMap);
 			Map resourceDirectoryMap = projectReader.readAllResources(project.getFile());
-			sourceDirectoryMap.putAll(resourceDirectoryMap);
+			map.putAll(resourceDirectoryMap);
+			createDirectoryNodes(map);
 			if ( sourceDirectoryMap == null || sourceDirectoryMap.size() == 0 ) {
 				directoryNodes = new DirectoryNode[0];
 			}
-			createDirectoryNodes(sourceDirectoryMap);
 			joinEclipseSourceFolders();
 		} 
 		catch (Exception e) {
@@ -202,7 +204,20 @@ public class MavenProjectNode extends AbstractSynchronizationNode implements ISe
 		}
 	}
 	
-	private void joinEclipseSourceFolders() {
+	private Map reverseMap(Map map) {
+        Map result = new HashMap();
+	    if ( map != null ) {
+		    Iterator iterator = map.keySet().iterator();
+		    while ( iterator.hasNext() ) {
+		        Object nextKey = iterator.next();
+	        	Object nextValue = map.get(nextKey);
+	        	result.put(nextValue, nextKey);
+		    }
+	    }
+        return result;
+    }
+
+    private void joinEclipseSourceFolders() {
 		List tempNodes = new ArrayList(Arrays.asList(directoryNodes));
 	    List eclipseSourceFolders = createSourceFolderNodes(parentNode.getEclipseSourceFolders());
 	    for (int i = 0; i < eclipseSourceFolders.size(); i++) {
@@ -251,8 +266,8 @@ public class MavenProjectNode extends AbstractSynchronizationNode implements ISe
 		Iterator iterator = sourceDirectoryMap.keySet().iterator();
 		int u = 0;
 		while ( iterator.hasNext() ) {
-			String nextType = (String) iterator.next();
-			String nextPath = (String) sourceDirectoryMap.get(nextType);
+			String nextPath = (String) iterator.next();
+			String nextType = (String) sourceDirectoryMap.get(nextPath);
 			DirectoryNode node = createDirectoryNode(nextType, nextPath);
 			node.setDirection(ISelectableNode.INCOMING_DIRECTION);
 			if ( !FileUtils.isArtifactIgnored(node.toString(), eclipseProject) ) {
