@@ -81,17 +81,28 @@ import org.mevenide.ui.eclipse.editors.properties.PomPropertySourceProvider;
 public class TableEntry extends PageEntry {
 	private static final Log log = LogFactory.getLog(TableEntry.class);
 
-	private static final String INHERITED_TOOLTIP =
-		Mevenide.getResourceString("OverridableTextEntry.toggle.tooltip.inherited");
-	private static final String OVERRIDEN_TOOLTIP =
-		Mevenide.getResourceString("OverridableTextEntry.toggle.tooltip.overriden");
+	private static final String ADD_BUTTON_LABEL =
+		Mevenide.getResourceString("TableEntry.addButton.label");
+	private static final String ADD_BUTTON_TOOLTIP_KEY = "TableEntry.addButton.tooltip";
+	private static final String REMOVE_BUTTON_LABEL =
+		Mevenide.getResourceString("TableEntry.removeButton.label");
+	private static final String REMOVE_BUTTON_TOOLTIP_KEY = "TableEntry.removeButton.tooltip";
+	private static final String UP_BUTTON_LABEL =
+		Mevenide.getResourceString("TableEntry.upButton.label");
+	private static final String UP_BUTTON_TOOLTIP_KEY = "TableEntry.upButton.tooltip";
+	private static final String DOWN_BUTTON_LABEL =
+		Mevenide.getResourceString("TableEntry.downButton.label");
+	private static final String DOWN_BUTTON_TOOLTIP_KEY = "TableEntry.downButton.tooltip";
 
 	private TableViewer viewer;
 	private Button overrideToggle;
 	private Button addButton, removeButton, upButton, downButton;
 	private boolean inherited;
 	private PomPropertySourceProvider propertyProvider = new PomPropertySourceProvider();
-	private IPomCollectionAdaptor objectFactory;
+	private IPomCollectionAdaptor collectionAdaptor;
+	
+	private TableEntry dependentEntry;
+	private Object parentPomObject;
 
 	private class OverridableSelectionAdapter extends SelectionAdapter {
 		private IOverrideAdaptor adaptor;
@@ -116,16 +127,17 @@ public class TableEntry extends PageEntry {
 	public TableEntry(
 		TableViewer viewer, 
 		Button overrideToggle, 
+		String tooltipInfo, 
 		Composite parent, 
 		PageWidgetFactory factory,
 		PageSection section) {
 			
 		this.viewer = viewer;
 		this.overrideToggle = overrideToggle;
-		init(parent, factory, section);
+		init(parent, factory, section, tooltipInfo);
 	}
 	
-	private void init(Composite parent, PageWidgetFactory factory, final PageSection section) {
+	private void init(Composite parent, PageWidgetFactory factory, final PageSection section, String tooltipInfo) {
 		Composite buttonContainer = factory.createComposite(parent);
 		GridData data = new GridData(GridData.HORIZONTAL_ALIGN_END | GridData.VERTICAL_ALIGN_BEGINNING);
 		data.horizontalSpan = 1;
@@ -135,24 +147,26 @@ public class TableEntry extends PageEntry {
 		layout.marginHeight = 0;
 		buttonContainer.setLayout(layout);
 		
-		addButton = factory.createButton(buttonContainer, "Add", SWT.PUSH);
+		addButton = factory.createButton(buttonContainer, ADD_BUTTON_LABEL, SWT.PUSH);
 		data = new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_BEGINNING);
 		data.horizontalSpan = 1;
 		addButton.setLayoutData(data);
+		addButton.setToolTipText(Mevenide.getResourceString(ADD_BUTTON_TOOLTIP_KEY, tooltipInfo));
 		addButton.addSelectionListener(
 			new SelectionAdapter() {
 				public void widgetSelected(SelectionEvent e) {
-					addEntry(objectFactory.addNewObject());
+					addEntry(collectionAdaptor.addNewObject(parentPomObject));
 					setDirty(true);
 					fireEntryDirtyEvent();
 				}
 			}
 		);
 
-		removeButton = factory.createButton(buttonContainer, "Remove", SWT.PUSH);
+		removeButton = factory.createButton(buttonContainer, REMOVE_BUTTON_LABEL, SWT.PUSH);
 		data = new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_BEGINNING);
 		data.horizontalSpan = 1;
 		removeButton.setLayoutData(data);
+		removeButton.setToolTipText(Mevenide.getResourceString(REMOVE_BUTTON_TOOLTIP_KEY, tooltipInfo));
 		removeButton.addSelectionListener(
 			new SelectionAdapter() {
 				public void widgetSelected(SelectionEvent e) {
@@ -161,8 +175,7 @@ public class TableEntry extends PageEntry {
 					viewer.remove(itemsToRemove);
 					for (int i = 0; i < itemsToRemove.length; i++) {
 						IPomPropertySource property = (IPomPropertySource) itemsToRemove[i];
-						objectFactory.removeObject(property.getSource());
-						objectFactory.removeObject(property.getSource());
+						collectionAdaptor.removeObject(property.getSource(), parentPomObject);
 					}
 					setDirty(true);
 					fireEntryDirtyEvent();
@@ -170,10 +183,11 @@ public class TableEntry extends PageEntry {
 			}
 		);
 
-		upButton = factory.createButton(buttonContainer, "Up", SWT.PUSH);
+		upButton = factory.createButton(buttonContainer, UP_BUTTON_LABEL, SWT.PUSH);
 		data = new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_BEGINNING);
 		data.horizontalSpan = 1;
 		upButton.setLayoutData(data);
+		upButton.setToolTipText(Mevenide.getResourceString(UP_BUTTON_TOOLTIP_KEY, tooltipInfo));
 		upButton.addSelectionListener(
 			new SelectionAdapter() {
 				public void widgetSelected(SelectionEvent e) {
@@ -183,7 +197,7 @@ public class TableEntry extends PageEntry {
 						viewer.remove(item);
 						viewer.insert(item,--index);
 						viewer.getTable().select(index);
-						objectFactory.moveObjectTo(index, ((IPomPropertySource) item).getSource());
+						collectionAdaptor.moveObjectTo(index, ((IPomPropertySource) item).getSource(), parentPomObject);
 						setDirty(true);
 						fireEntryDirtyEvent();
 					}
@@ -191,10 +205,11 @@ public class TableEntry extends PageEntry {
 			}
 		);
 
-		downButton = factory.createButton(buttonContainer, "Down", SWT.PUSH);
+		downButton = factory.createButton(buttonContainer, DOWN_BUTTON_LABEL, SWT.PUSH);
 		data = new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_BEGINNING);
 		data.horizontalSpan = 1;
 		downButton.setLayoutData(data);
+		downButton.setToolTipText(Mevenide.getResourceString(DOWN_BUTTON_TOOLTIP_KEY, tooltipInfo));
 		downButton.addSelectionListener(
 			new SelectionAdapter() {
 				public void widgetSelected(SelectionEvent e) {
@@ -204,7 +219,7 @@ public class TableEntry extends PageEntry {
 						viewer.remove(item);
 						viewer.insert(item, ++index);
 						viewer.getTable().select(index);
-						objectFactory.moveObjectTo(index, ((IPomPropertySource) item).getSource());
+						collectionAdaptor.moveObjectTo(index, ((IPomPropertySource) item).getSource(), parentPomObject);
 						setDirty(true);
 						fireEntryDirtyEvent();
 					}
@@ -215,7 +230,12 @@ public class TableEntry extends PageEntry {
 		viewer.addSelectionChangedListener(
 			new ISelectionChangedListener() {
 				public void selectionChanged(SelectionChangedEvent e) {
-					section.getPage().getEditor().setPropertySourceSelection(e.getSelection());
+					IStructuredSelection selection = (IStructuredSelection) e.getSelection();
+					section.getPage().getEditor().setPropertySourceSelection(selection);
+					if (dependentEntry != null) {
+						IPomPropertySource source = (IPomPropertySource) selection.getFirstElement();
+						dependentEntry.setParentPomObject(source.getSource());
+					}
 				}
 			}
 		);
@@ -254,6 +274,20 @@ public class TableEntry extends PageEntry {
 		downButton.setEnabled(false);
 	}
 
+	void setParentPomObject(Object object) {
+		this.parentPomObject = object;
+		removeAll();
+		addEntries(collectionAdaptor.getDependents(parentPomObject), true);
+	}
+	
+	public Object getParentPomObject() {
+		return parentPomObject;
+	}
+	
+	public void setDependentTableEntry(TableEntry entry ) {
+		this.dependentEntry = entry;
+	}
+
 	public void addOverrideAdaptor(IOverrideAdaptor adaptor) {
 		if (overrideToggle != null) {
 			overrideToggle.addSelectionListener(new OverridableSelectionAdapter(adaptor));
@@ -262,7 +296,7 @@ public class TableEntry extends PageEntry {
 	
 	public void addPomCollectionAdaptor(IPomCollectionAdaptor factory)
 	{
-		this.objectFactory = factory;
+		this.collectionAdaptor = factory;
 	}
 
 	public boolean isInherited() {
@@ -310,6 +344,12 @@ public class TableEntry extends PageEntry {
 		return values;
 	}
 
+	public void addEntries(List entries, boolean shouldDisableNotification) {
+		this.disableNotification = shouldDisableNotification;
+		addEntries(entries);
+		this.disableNotification = false;
+	}
+
 	public void addEntries(List entries) {
 		if (viewer != null) {
 			Iterator itr = entries.iterator();
@@ -327,18 +367,15 @@ public class TableEntry extends PageEntry {
 					viewer.update(event.getSource(), null);
 					setDirty(true);
 					fireEntryDirtyEvent();
+					if (parentPomObject != null) {
+						fireEntryChangeEvent();
+					}
 				}
 			}
 		);
 		viewer.add(source);
 	}
 	
-	public void addEntries(List entries, boolean shouldDisableNotification) {
-		this.disableNotification = shouldDisableNotification;
-		addEntries(entries);
-		this.disableNotification = false;
-	}
-
 	public void removeAll() {
 		if (viewer != null) {
 			while (viewer.getTable().getItemCount() > 0) {
