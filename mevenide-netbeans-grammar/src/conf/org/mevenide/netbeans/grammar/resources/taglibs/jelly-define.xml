@@ -12,20 +12,20 @@
         <attr name="name"/>
         <attr name="trim"/>
     </tag>
-    <tag name="bean"  within="tag">
+    <tag name="bean"  within="taglib">
         <attr name="classLoader"/>
         <attr name="className"/>
         <attr name="name"/>
         <attr name="varAttribute"/>
         <attr name="trim"/>
     </tag>
-    <tag name="dynaBean"  within="tag">
+    <tag name="dynaBean"  within="taglib">
         <attr name="name"/>
         <attr name="dynaClass"/>
         <attr name="varAttribute"/>
         <attr name="trim"/>
     </tag>
-    <tag name="jellyBean"  within="tag">
+    <tag name="jellyBean"  within="taglib">
         <attr name="method"/>
         <attr name="classLoader"/>
         <attr name="className"/>
