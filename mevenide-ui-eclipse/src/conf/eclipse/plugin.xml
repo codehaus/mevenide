@@ -411,6 +411,7 @@
    <extension point="org.eclipse.debug.ui.launchGroups">
  		<launchGroup
          label="Maven"
+         bannerImage="icons/wizban/ext_tools_wiz.gif"
          category="maven"
          mode="run"
          id="org.mevenide.ui.launching.custom.LaunchGroup">
