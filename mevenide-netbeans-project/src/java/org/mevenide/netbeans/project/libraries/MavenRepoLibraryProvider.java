@@ -1,6 +1,6 @@
 /* ==========================================================================
  * Copyright 2004 Apache Software Foundation
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -47,7 +47,7 @@ public class MavenRepoLibraryProvider implements LibraryProvider {
     
     public static final String TYPE = "MavenRepository"; //NOI18N
     public static final String VOLUME_TYPE_CLASSPATH = "classpath";       //NOI18N
-
+    
     private PropertyChangeSupport support;
     private ILocationFinder finder;
     private File locRepoFile;
@@ -61,9 +61,9 @@ public class MavenRepoLibraryProvider implements LibraryProvider {
         logger.debug("repo=" + locRepoFile);
     }
     
-//    public static MavenRepoLibraryProvider createInstance() {
-//        return new MavenRepoLibraryProvider();
-//    }
+    //    public static MavenRepoLibraryProvider createInstance() {
+    //        return new MavenRepoLibraryProvider();
+    //    }
     
     public void setMavenContext(ILocationFinder locFinder) {
         finder = locFinder;
@@ -89,7 +89,7 @@ public class MavenRepoLibraryProvider implements LibraryProvider {
     public void addPropertyChangeListener(java.beans.PropertyChangeListener propertyChangeListener) {
         support.addPropertyChangeListener(propertyChangeListener);
     }
-
+    
     public void removePropertyChangeListener(java.beans.PropertyChangeListener propertyChangeListener) {
         support.removePropertyChangeListener(propertyChangeListener);
     }
@@ -126,7 +126,10 @@ public class MavenRepoLibraryProvider implements LibraryProvider {
                     if (type.length() > 1 && type.endsWith("s")) {
                         type = type.substring(0, type.length() - 1);
                     }
-                    processType(types[i], type, libraries);
+                    if ("jar".equals(type)) {
+                        // ignore non-jar for now..
+                        processType(types[i], type, libraries);
+                    }
                 }
             }
         }
@@ -141,29 +144,57 @@ public class MavenRepoLibraryProvider implements LibraryProvider {
                 if (artifacts[i].isData() && artifacts[i].getExt().equals(typStr)) {
                     try {
                         IDependencyResolver res = DependencyResolverFactory.getFactory().newInstance(
-                                                    FileUtil.toFile(artifacts[i]).getAbsolutePath());
-                    MavenLibraryImpl library = new MavenLibraryImpl(res.guessArtifactId(), 
-                                                                    res.guessGroupId(),
-                                                                    res.guessVersion(),
-                                                                    res.guessExtension());
-                    library.setName(artifacts[i].getNameExt() + " (Maven Repo)");
-                    StringBuffer desc = new StringBuffer();
-                    desc.append("GroupID:").append(library.getGroupID());
-                    desc.append("\nArtifactID:").append(library.getArtifactID());
-                    desc.append("\nVersion:").append(library.getVersion());
-                    desc.append("\nType:").append(library.getType());
-                    library.setDescription( desc.toString());
-                    library.setLocalizingBundle(null);
-                    List urls = new ArrayList();
-                    URL url = FileUtil.toFile(artifacts[i]).toURI().toURL();
-                    urls.add(url);
-                    logger.debug("url=" + url);
-                    library.setContent("classpath", urls);
-                    libraries.add(library);
+                                                          FileUtil.toFile(artifacts[i]).getAbsolutePath());
+                        MavenLibraryImpl library = new MavenLibraryImpl(res.guessArtifactId(),
+                                                                        res.guessGroupId(),
+                                                                        res.guessVersion(),
+                                                                        res.guessExtension());
+                        library.setName(artifacts[i].getNameExt() + " (Maven Repo)");
+                        StringBuffer desc = new StringBuffer();
+                        desc.append("GroupID:").append(library.getGroupID());
+                        desc.append("\nArtifactID:").append(library.getArtifactID());
+                        desc.append("\nVersion:").append(library.getVersion());
+                        desc.append("\nType:").append(library.getType());
+                        library.setDescription( desc.toString());
+                        library.setLocalizingBundle(null);
+                        List urls = new ArrayList();
+                        URL url = FileUtil.toFile(artifacts[i]).toURI().toURL();
+                        urls.add(url);
+                        logger.debug("url=" + url);
+                        library.setContent("classpath", urls);
+                        checkJavadocAndSrc(library, artifacts[i]);
+                        libraries.add(library);
                     } catch (Exception exc) {
                         logger.error("Error while creating library", exc);
                     }
                 }
+            }
+        }
+    }
+    
+    private void checkJavadocAndSrc(MavenLibraryImpl library, FileObject artifact) throws Exception {
+        String artName = artifact.getName();
+        FileObject groupDir = artifact.getParent().getParent();
+        FileObject javadocsDir = groupDir.getFileObject("javadocs"); //NOI18N
+        FileObject srcsDir = groupDir.getFileObject("src"); //NOI18N
+        if (javadocsDir != null) {
+            FileObject javadocFile = javadocsDir.getFileObject(artName, "javadoc"); //NOI18N
+            if (javadocFile != null) {
+                List urls = new ArrayList();
+                URL url = FileUtil.toFile(javadocFile).toURI().toURL();
+                urls.add(url);
+                logger.debug("javadoc url=" + url);
+                library.setContent("javadoc", urls);
+            }
+        }
+        if (srcsDir != null) {
+            FileObject srcFile = srcsDir.getFileObject(artName, "src"); //NOI18N
+            if (srcFile != null) {
+                List urls = new ArrayList();
+                URL url = FileUtil.toFile(srcFile).toURI().toURL();
+                urls.add(url);
+                logger.debug("src url=" + url);
+                library.setContent("src", urls);
             }
         }
     }
