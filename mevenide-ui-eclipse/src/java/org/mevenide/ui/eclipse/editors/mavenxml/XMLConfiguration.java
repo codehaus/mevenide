@@ -36,9 +36,9 @@ public class XMLConfiguration extends SourceViewerConfiguration {
 
 	private Map tokens = new HashMap();
 	 
-	private MavenXmlEditor editor;
+	private AbstractJellyEditor editor;
 	
-	public XMLConfiguration(ColorManager colorManager, MavenXmlEditor editor) {
+	public XMLConfiguration(ColorManager colorManager, AbstractJellyEditor editor) {
 		this.colorManager = colorManager;
 		this.editor = editor;
 		generateToken("TextColor");

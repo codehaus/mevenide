@@ -11,7 +11,7 @@ import org.eclipse.jface.text.contentassist.CompletionProposal;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.jface.text.contentassist.IContextInformationValidator;
-import org.mevenide.ui.eclipse.editors.mavenxml.MavenXmlEditor;
+import org.mevenide.ui.eclipse.editors.mavenxml.AbstractJellyEditor;
 import org.mevenide.ui.eclipse.editors.mavenxml.XMLNode;
 
 /**
@@ -25,7 +25,7 @@ public class TextContentAssistProcessor extends MavenXmlContentAssistProcessor {
     /**
      * @param editor
      */
-    public TextContentAssistProcessor(MavenXmlEditor editor) {
+    public TextContentAssistProcessor(AbstractJellyEditor editor) {
         super(editor);
     }
 

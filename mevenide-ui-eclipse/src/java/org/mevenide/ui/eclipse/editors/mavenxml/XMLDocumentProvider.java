@@ -11,12 +11,12 @@ import org.mevenide.ui.eclipse.goals.outline.MavenXmlOutlinePage;
 
 public class XMLDocumentProvider extends FileDocumentProvider {
 
-    private MavenXmlEditor editor;
+    private AbstractJellyEditor editor;
 	private IDocument document;
 	private static RuleBasedPartitionScanner scanner;
 
 	
-	public XMLDocumentProvider(MavenXmlEditor editor) {
+	public XMLDocumentProvider(AbstractJellyEditor editor) {
         super();
         this.editor = editor;
     }
