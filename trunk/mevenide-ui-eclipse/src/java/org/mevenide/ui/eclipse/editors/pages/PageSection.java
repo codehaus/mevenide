@@ -213,8 +213,7 @@ public abstract class PageSection extends SectionPart {
 		PageWidgetFactory factory) {
 
 		Text text = factory.createText(parent, "", SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
-		GridData data = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING);
-		data.heightHint = 80;
+		GridData data = new GridData(GridData.FILL_BOTH);
 		text.setLayoutData(data);
 		return text;
 	}
