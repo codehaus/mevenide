@@ -21,6 +21,7 @@ import java.util.List;
 import org.apache.maven.project.Build;
 import org.apache.maven.project.Project;
 import org.apache.maven.project.Resource;
+import org.apache.maven.project.SourceModification;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -34,6 +35,7 @@ import org.mevenide.ui.eclipse.editors.pom.MevenidePomEditor;
  * build process and environment for this project.
  * 
  * @author Jeff Bonevich (jeff@bonevich.com)
+ * @author <a href="mailto:rhill2@free.fr">Gilles Dodinet</a>
  * @version $Id$
  */
 public class BuildPage extends AbstractPomEditorPage {
@@ -44,7 +46,8 @@ public class BuildPage extends AbstractPomEditorPage {
     
 	private BuildDirectoriesSection directoriesSection;
 	private ResourcesSection resourcesSection;
-
+	private SourceModificationsSection sourceModificationsSection;
+	
 	public BuildPage(MevenidePomEditor editor) {
         super(editor, ID, TAB, HEADING);
     }
@@ -103,6 +106,42 @@ public class BuildPage extends AbstractPomEditorPage {
 		gd.horizontalSpan = 2;
 		control.setLayoutData(gd);
 		addSection(resourcesSection);
+		
+		sourceModificationsSection = new SourceModificationsSection(this, parent, factory, "BuildSourceModificationsSection");
+		ISourceModificationAdaptor sourceModificationsSectionAdaptor = new ISourceModificationAdaptor() {
+			public void setSourceModifications(Object target, List sourceModifications) {
+			    Project pom = (Project) target;
+			    getOrCreateBuild(pom).setSourceModification(sourceModifications);
+				getPomEditor().setModelDirty(true);
+			}
+		
+			public void addSourceModification(Object target, SourceModification sourceModification) {
+				Project pom = (Project) target;
+				getOrCreateBuild(pom).addSourceModification(sourceModification);
+				getPomEditor().setModelDirty(true);
+			}
+		
+			public List getSourceModifications(Object source) {
+				Project pom = (Project) source;
+				return pom.getBuild() != null ? pom.getBuild().getSourceModifications() : null;
+			}
+		
+			private Build getOrCreateBuild(Project pom) {
+				Build build = pom.getBuild();
+				if (build == null) {
+					build = new Build();
+					pom.setBuild(build);
+				}
+				return build;
+			}
+		};
+		sourceModificationsSection.setSourceModificationAdaptor(sourceModificationsSectionAdaptor);
+		
+		Control sourceModificationControl = sourceModificationsSection.getSection();
+		gd = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING);
+		gd.horizontalSpan = 2;
+		sourceModificationControl.setLayoutData(gd);
+		addSection(sourceModificationsSection);
 	}
 
 }
