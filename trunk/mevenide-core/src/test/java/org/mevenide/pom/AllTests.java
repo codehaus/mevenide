@@ -27,8 +27,8 @@ public class AllTests  {
     public static Test suite() {
         TestSuite suite = new TestSuite();
         
-        suite.addTestSuite(PomReaderTest.class);
-		suite.addTestSuite(PomWriterTest.class);
+        suite.addTestSuite(ProjectReaderTest.class);
+		suite.addTestSuite(ProjectWriterTest.class);
 		
         return suite;
     }
