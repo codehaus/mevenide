@@ -69,6 +69,7 @@
       	-->
       	<!-- 
       		those ones fail with maven. dont know why yet. perhaps classloading ? 
+      		what about that META-INF directory ?
       		
       		TODO solve thosse issues
       		
@@ -78,7 +79,7 @@
       	<exclude>**/DefaultProjectMarshallerTest.java</exclude>
       	<exclude>**/ProjectReaderTest.java</exclude>
       	<exclude>**/ProjectWriterTest.java</exclude>
-      	<exclude>**/DependencyUtilTest.java</exclude>
+      	<exclude>**/DependencyResolverTest.java</exclude>
       	
       	<!-- 
       		those ones will require org.eclipse.pde.junit plugin 
