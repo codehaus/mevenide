@@ -68,14 +68,31 @@ import org.mevenide.project.io.ProjectWriterTest;
 public class DependencyUtilTest extends AbstractMevenideTestCase {
 	
 	protected DependencyFactory dependencyFactory;
+
+    private Dependency dependency_one_groupone_1_0;
+    private Dependency dependency_one_groupone_null;
+    private Dependency dependency_one_groupone_1_0_;
+    private Dependency dependency_one_grouptwo_1_0;
+    private Dependency dependency_two_groupone_1_0;
 	
 	protected void setUp() throws Exception {
 		super.setUp();
 		Environment.setMavenRepository("C:\\Documents and Settings\\gdodinet.MCCAIN-1\\.maven\\repository");
 		dependencyFactory = DependencyFactory.getFactory();
+		initDependencies();
 		
 	}
 		
+	protected void tearDown() throws Exception {
+        super.tearDown();
+        dependency_one_groupone_1_0 = null;
+		dependency_one_groupone_null = null;
+		dependency_one_groupone_1_0_ = null;
+		dependency_one_grouptwo_1_0 = null;
+		dependency_two_groupone_1_0 = null;
+    }
+
+
 	public void testIsDependencyPresent()throws Exception {
 		Project project = new DefaultProjectUnmarshaller().parse(new FileReader(projectFile));
 		List dependencies = project.getDependencies();
@@ -94,31 +111,63 @@ public class DependencyUtilTest extends AbstractMevenideTestCase {
 		
 	}
 	
-	
-
-	
-
+	public void testAreEquals() {
+		assertTrue(DependencyUtil.areEquals("AaaC", "AaaC"));
+		assertTrue(!DependencyUtil.areEquals("AaaC", null));
+		assertTrue(!DependencyUtil.areEquals(null, "AaaC"));
+		assertTrue(!DependencyUtil.areEquals("AaC", "AaaC"));
+	}
 
 	public void testAreEqualsD() {
-		Dependency d1 = new Dependency();
-		d1.setArtifactId("one");
-		d1.setGroupId("groupone");
-		d1.setVersion("1.0");
-		
-		Dependency d2 = new Dependency();
-		d2.setArtifactId("one");
-		d2.setGroupId("groupone");
-		d2.setVersion(null);
-		
-		assertTrue(DependencyUtil.areEquals(d1, d1));
-		assertTrue(!DependencyUtil.areEquals(d1, null));
-		assertTrue(!DependencyUtil.areEquals(null, d1));
-		assertTrue(!DependencyUtil.areEquals(d1, d2));
-		assertTrue(!DependencyUtil.areEquals(d2, d1));
-		
+		assertTrue(DependencyUtil.areEquals(dependency_one_groupone_1_0, dependency_one_groupone_1_0));
+		assertTrue(DependencyUtil.areEquals(dependency_one_groupone_1_0, dependency_one_groupone_1_0_));
+		assertTrue(DependencyUtil.areEquals(dependency_one_groupone_1_0_, dependency_one_groupone_1_0));
+		assertTrue(!DependencyUtil.areEquals(dependency_one_groupone_1_0, null));
+		assertTrue(!DependencyUtil.areEquals(null, dependency_one_groupone_1_0));
+		assertTrue(!DependencyUtil.areEquals(dependency_one_groupone_1_0, dependency_one_groupone_null));
+		assertTrue(!DependencyUtil.areEquals(dependency_one_groupone_1_0, dependency_one_grouptwo_1_0));
+		assertTrue(!DependencyUtil.areEquals(dependency_one_groupone_1_0, dependency_two_groupone_1_0));	
 	}
 	
-	public void testIsValid() throws Exception {
+	public void testConflict() {
+		assertTrue(!DependencyUtil.conflict(dependency_one_groupone_1_0, dependency_one_groupone_1_0));
+		assertTrue(!DependencyUtil.conflict(dependency_one_groupone_1_0, null));
+		assertTrue(!DependencyUtil.conflict(null, dependency_one_groupone_1_0));
+		assertTrue(!DependencyUtil.conflict(dependency_one_groupone_1_0, dependency_one_groupone_1_0_));
+		assertTrue(!DependencyUtil.conflict(dependency_one_grouptwo_1_0, dependency_one_groupone_1_0));
+		assertTrue(DependencyUtil.conflict(dependency_one_groupone_1_0, dependency_one_groupone_null));
+		assertTrue(!DependencyUtil.conflict(dependency_one_groupone_1_0, dependency_one_grouptwo_1_0));
+		assertTrue(!DependencyUtil.conflict(dependency_one_groupone_1_0, dependency_two_groupone_1_0));	
+	}
+
+	private void initDependencies() {
+        dependency_one_groupone_1_0 = new Dependency();
+        dependency_one_groupone_1_0.setArtifactId("one");
+		dependency_one_groupone_1_0.setGroupId("groupone");
+		dependency_one_groupone_1_0.setVersion("1.0");
+		
+		dependency_one_groupone_1_0_ = new Dependency();
+        dependency_one_groupone_1_0_.setArtifactId("one");
+		dependency_one_groupone_1_0_.setGroupId("groupone");
+		dependency_one_groupone_1_0_.setVersion("1.0");
+
+		dependency_one_groupone_null = new Dependency();
+        dependency_one_groupone_null.setArtifactId("one");
+		dependency_one_groupone_null.setGroupId("groupone");
+		dependency_one_groupone_null.setVersion(null);
+		
+		dependency_one_grouptwo_1_0 = new Dependency();
+        dependency_one_grouptwo_1_0.setArtifactId("one");
+		dependency_one_grouptwo_1_0.setGroupId("grouptwo");
+		dependency_one_grouptwo_1_0.setVersion("1.0");
+		
+		dependency_two_groupone_1_0 = new Dependency();
+        dependency_two_groupone_1_0.setArtifactId("two");
+		dependency_two_groupone_1_0.setGroupId("groupone");
+		dependency_two_groupone_1_0.setVersion("1.0");
+    }
+
+    public void testIsValid() throws Exception {
 		assertFalse(DependencyUtil.isValid(DependencyFactory.getFactory().getDependency("E:\\jtestcase\\lib\\xtype.jar")));
 		assertFalse(DependencyUtil.isValid(DependencyFactory.getFactory().getDependency("E:\\clover-1.2\\lib\\clover.jar")));
 		assertFalse(DependencyUtil.isValid(DependencyFactory.getFactory().getDependency("E:\\jtestcase\\lib\\xmlutil.jar")));

@@ -2,7 +2,8 @@
 		 xmlns:maven="jelly:maven" 
 		 xmlns:j="jelly:core"
 		 xmlns:velocity="jelly:org.apache.commons.jelly.tags.velocity.VelocityTagLibrary"
-		 xmlns:multiproject="multiproject">
+		 xmlns:multiproject="multiproject"
+		 xmlns:ant="ant">
 
 
   <!-- 
@@ -106,6 +107,12 @@
       			   goals="clean,jar:install"
       			   banner="Building"
       			   ignoreFailures="false"/>
+	 <!-- 
+	 	copy the resulting artifact into plugin lib directory 
+	 	Q : how to get the currentVersion and artifactName ? 
+	 	R ? copy this to goal to mevenide-core/maven.xml as a postGoal (on ?)
+	 -->
+     <ant:copy todir="../mevenide-ui-eclipse/lib" file="../mevenide-core/target/mevenide-core-0.1.jar"/>
   </goal>
     
   <!-- i didnt alter it since it works as it is now -->
