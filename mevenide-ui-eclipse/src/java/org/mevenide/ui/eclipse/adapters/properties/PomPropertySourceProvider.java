@@ -25,6 +25,7 @@ import org.apache.maven.project.Developer;
 import org.apache.maven.project.License;
 import org.apache.maven.project.MailingList;
 import org.apache.maven.project.Resource;
+import org.apache.maven.project.SourceModification;
 import org.apache.maven.project.Version;
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.eclipse.ui.views.properties.IPropertySourceProvider;
@@ -74,6 +75,9 @@ public class PomPropertySourceProvider implements IPropertySourceProvider {
 		}
 		if (object instanceof Dependency) {
 			return new DependencyPropertySource((Dependency) object);
+		}
+		if ( object instanceof SourceModification ) {
+		    return new SourceModificationPropertySource((SourceModification) object);
 		}
 		if (object instanceof Resource) {
 			return new ResourcePropertySource((Resource) object);
