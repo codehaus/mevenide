@@ -8,7 +8,7 @@
     <organization/>
     <package>org.mevenide.goals.grabber</package>
     <shortDescription>Gets all the available goals</shortDescription>
-    
+    <description>This project provides generic Goals Grabbing mechanism. It is articulated around IGoalsGrabber interface.</description>
     <dependencies>
         <dependency>
             <groupId>commons-collections</groupId>
@@ -31,14 +31,29 @@
             <type>jar</type>
             <properties/>
         </dependency>
+        <dependency>
+            <groupId>xpp3</groupId>
+            <artifactId>xpp3</artifactId>
+            <version>1.1.2a</version>
+            <type>jar</type>
+            <properties/>
+        </dependency>
     </dependencies>
     <build>
-        <sourceDirectory>src\java</sourceDirectory>
-        <unitTestSourceDirectory>src\test\java</unitTestSourceDirectory>
+        <sourceDirectory>${basedir}/src/java</sourceDirectory>
+        <unitTestSourceDirectory>${basedir}/src/test/java</unitTestSourceDirectory>
         <unitTest>
             <includes>
                 <include>**/*Test.java</include>
             </includes>
+            <resources>
+            	<resource>
+            		<directory>${basedir}/src/test/conf</directory>
+            		<includes>
+            			<include>**/*.*</include>
+            		</includes>
+            	</resource>	
+            </resources>
         </unitTest>
     </build>
 </project>

@@ -42,7 +42,7 @@
          <export name="*"/>
          <packages prefixes="org.mevenide.ui.eclipse"/>
       </library>
-<!-- 
+      <!-- 
       	  following dependencies are necessary 
       	  because of DefaultProjectUnmarshaller that comes out
       	  with mevenide until maven stabilize
@@ -78,7 +78,7 @@
    </requires>
 
 
-<!-- Maven nature -->
+   <!-- Maven nature -->
    <extension
          id="mavennature"
          name="maven nature"
@@ -89,10 +89,10 @@
          </run>
       </runtime>
    </extension>
-<!-- Maven actions -->
+   <!-- Maven actions -->
    <extension
          point="org.eclipse.ui.popupMenus">
-<!-- project contributions (adaptable) -->
+      <!-- project contributions (adaptable) -->
       <objectContribution
             objectClass="org.eclipse.core.resources.IProject"
             adaptable="true"
@@ -127,7 +127,7 @@
                enablesFor="1"
                id="mevenide.pom.create">
          </action>
-<!-- action
+         <!-- action
                label="Disable Maven Nature"
                icon="icons/maven-disable.gif"
                class="org.mevenide.ui.eclipse.actions.ManageNatureAction"
@@ -178,7 +178,7 @@
                id="maven-plugin.SynchronizePom">
          </action>
       </objectContribution>
-<!-- project.xml contributions -->
+      <!-- project.xml contributions -->
       <objectContribution
             objectClass="org.eclipse.core.resources.IFile"
             nameFilter="project.xml"
@@ -190,9 +190,6 @@
             <separator
                   name="RunMaven">
             </separator>
-<!-- separator
-                  name="Map">
-            </separator -->
             <separator
                   name="Synchronize">
             </separator>
@@ -224,7 +221,7 @@
          </action>
       </objectContribution>
    </extension>
-<!-- Maven preferences -->
+   <!-- Maven preferences -->
    <extension
          point="org.eclipse.ui.preferencePages">
       <page
@@ -233,23 +230,6 @@
             id="maven.plugin.preferences.MavenPreferencePage">
       </page>
    </extension>
-   <!-- extension
-         point="org.eclipse.ui.actionSets">
-      <actionSet
-            label="Run Maven"
-            visible="true"
-            id="org.mevenide.quickrun">
-         <action
-               label="Run Maven"
-               pulldown="true"
-               icon="icons/maven-run.gif"
-               tooltip="Run Last Launched Maven Process"
-               class="org.mevenide.ui.eclipse.actions.MevenideQuickLaunchAction"
-               toolbarPath="run.maven"
-               id="org.mevenide.ui.eclipse.actions.MevenideQuickLaunchAction">
-         </action>
-      </actionSet>
-   </extension -->
    <extension
          point="org.eclipse.debug.core.launchConfigurationTypes">
       <launchConfigurationType
@@ -261,7 +241,7 @@
       </launchConfigurationType>
    </extension>
    
-   
+   <!-- external tools integration -->
    <extension
          point="org.eclipse.debug.ui.launchConfigurationTabGroups">
       <launchConfigurationTabGroup
@@ -270,7 +250,7 @@
             id="org.mevenide.launching.TabGroup">
       </launchConfigurationTabGroup>
    </extension>
-	<extension
+   <extension
          point="org.eclipse.debug.ui.launchShortcuts">
       <shortcut
             label="Maven Project"

@@ -26,6 +26,19 @@
     <url>http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/mevenide/${pom.artifactId}/</url>
   </repository>
  
+  <versions>
+    <version>
+      <id>ea</id>
+      <name>0.1-ea</name>
+      <tag>V_0_1_ALPHA_1</tag>
+    </version>
+    <version>
+      <id>alpha-1</id>
+      <name>0.1-alpha-A</name>
+      <tag>V_0_1_ALPHA_1_1</tag>
+    </version>
+  </versions>
+    
   <mailingLists>
     <mailingList>
       <name>Mevenide User List</name>
@@ -51,6 +64,15 @@
       	<role>Developer Java</role>
       </roles>
     </developer>
+    <developer>
+      <name>Jeffrey Bonvich</name>
+      <id>jbonevic</id>
+      <email>jeff@bonevich.com</email>
+      <organization/>
+      <roles>
+      	<role>Developer Java</role>
+      </roles>
+    </developer>
   </developers>
   
   <dependencies>
@@ -68,6 +90,7 @@
           <artifactId>commons-jelly-tags-velocity</artifactId>
           <version>SNAPSHOT</version>
        </dependency>	
+       
   </dependencies>
   
   <build>
@@ -80,25 +103,7 @@
       <includes>
         <include>**/*Test.java</include>
       </includes>
-      <excludes>
-      	<!--
-      		TODO tests from mevenide-core and mevenide-ui-eclipse are mixed here. bad !
-      	-->
-      	<!-- 
-      		those ones fail with maven. dont know why yet. perhaps classloading ? 
-      		what about that META-INF directory ?
-      		
-      		TODO solve thosse issues
-      		
-      		note that they do NOT fail when launched from within Eclipse.
-      		We exclude them for now cuz the integration has more weigth than tests here
-      		
-      		may be related to MAVEN-442. 
-      		
-      		Please run the tests from your favorite IDE (aka Eclipse ?)
-      	-->
-      	<exclude>**/*.java</exclude>
-      </excludes>
+      
 
       <resources>
       	
@@ -111,6 +116,13 @@
         
         <resource>
           <directory>${basedir}/src/test/etc</directory>
+          <includes>
+            <include>**/*.*</include>
+          </includes>
+        </resource>
+        
+         <resource>
+          <directory>${basedir}/src/test/conf</directory>
           <includes>
             <include>**/*.*</include>
           </includes>
@@ -148,10 +160,12 @@
   </build>
 
   <reports>
+   
     <report>maven-jdepend-plugin</report>
-    <!-- report>maven-checkstyle-plugin</report -->
+    <report>maven-checkstyle-plugin</report>
     <report>maven-changes-plugin</report>
     <report>maven-changelog-plugin</report>
+    <!-- report>maven-findbugs-plugin</report -->
     <report>maven-file-activity-plugin</report>
     <report>maven-developer-activity-plugin</report>
     <report>maven-javadoc-plugin</report>
@@ -161,9 +175,9 @@
     <!-- report>maven-jellydoc-plugin</report -->
     <report>maven-pmd-plugin</report>
     <!-- report>maven-simian-plugin</report -->
-    
+    <report>maven-faq-plugin</report>
+    <!-- report>maven-multiproject-plugin</report -->
   </reports>
-
 
 
 </project>

@@ -9,11 +9,16 @@
       <item href="http://mevenide.sf.net/" name="Mevenide"/>
     </links>
     <menu name="Overview">
-      <item href="/goals.html" name="Goals">
-      </item>
-      <item href="/properties.html" name="Properties">
-      </item>
       <item href="/license.html" name="License"/>
     </menu>
+    
+    <menu name="Mevenide">
+        <item name="Mevenide" href="/../../index.html"/>
+        <item name="Mevenide Core" href="/../../multiproject/Mevenide Core/index.html"/>
+        <item name="Mevenide Eclipse" href="/../../multiproject/Mevenide Eclipse/index.html"/>
+   </menu>
+   
+   <!-- search/ -->
+   
   </body>
 </project>

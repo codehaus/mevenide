@@ -20,8 +20,11 @@
         
         <menu name="Mevenide">
         	<item name="Mevenide" href="/../../index.html"/>
+            <item name="Mevenide Goals Grabber" href="/../../multiproject/Goals Grabber/index.html"/>
         	<item name="Mevenide Eclipse" href="/../../multiproject/Mevenide Eclipse/index.html"/>
         </menu>
+        
+        <!-- search/ -->
     </body>
 
 </project>
