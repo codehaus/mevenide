@@ -194,7 +194,7 @@ public class MavenProjectNode extends AbstractSynchronizationNode implements ISe
 			Map resourceDirectoryMap = projectReader.readAllResources(project.getFile());
 			map.putAll(resourceDirectoryMap);
 			createDirectoryNodes(map);
-			if ( sourceDirectoryMap == null || sourceDirectoryMap.size() == 0 ) {
+			if ( map == null || map.size() == 0 ) {
 				directoryNodes = new DirectoryNode[0];
 			}
 			joinEclipseSourceFolders();
@@ -206,7 +206,7 @@ public class MavenProjectNode extends AbstractSynchronizationNode implements ISe
 	
 	private Map reverseMap(Map map) {
         Map result = new HashMap();
-	    if ( map != null ) {
+	    if ( map != null && map.size() > 0) {
 		    Iterator iterator = map.keySet().iterator();
 		    while ( iterator.hasNext() ) {
 		        Object nextKey = iterator.next();
