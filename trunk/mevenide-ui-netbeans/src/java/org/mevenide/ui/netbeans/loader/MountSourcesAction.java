@@ -26,9 +26,9 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Build;
 import org.apache.maven.project.Project;
 import org.mevenide.ui.netbeans.MavenProjectCookie;
+import org.mevenide.ui.netbeans.project.FileSystemUtil;
 import org.openide.filesystems.FileSystem;
 import org.openide.filesystems.FileUtil;
-import org.openide.filesystems.LocalFileSystem;
 import org.openide.filesystems.Repository;
 import org.openide.nodes.Node;
 import org.openide.util.HelpCtx;
@@ -121,11 +121,9 @@ public class MountSourcesAction extends CookieAction
     {
         if (absPath != null) {
             File root = new File(absPath);
-            if (root.exists() && !alreadyMounted(root))
+            if (root.exists())
             {
-                LocalFileSystem fs = new LocalFileSystem();
-                fs.setRootDirectory(root);
-                Repository.getDefault().addFileSystem(fs);
+                FileSystemUtil.mountSources(root);
             }
         }
     }
