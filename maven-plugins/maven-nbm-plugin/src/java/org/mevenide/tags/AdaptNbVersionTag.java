@@ -20,7 +20,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.StringTokenizer;
 import org.apache.commons.jelly.JellyTagException;
-import org.apache.commons.jelly.MissingAttributeException;
 
 import org.apache.commons.jelly.XMLOutput;
 
@@ -42,7 +41,7 @@ public class AdaptNbVersionTag extends AbstractNbMevenideTag {
     
     private static final String SNAPSHOT = "SNAPSHOT"; //NOI18N
     
-    public void doTag(XMLOutput arg0) throws MissingAttributeException, JellyTagException {
+    public void doTag(XMLOutput arg0) throws JellyTagException {
         
         checkAttribute(version, "version");
         checkAttribute(var, "var");

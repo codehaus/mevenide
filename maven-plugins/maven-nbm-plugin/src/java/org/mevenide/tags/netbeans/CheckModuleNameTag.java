@@ -16,9 +16,6 @@
  */
 package org.mevenide.tags.netbeans;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.StringTokenizer;
 import org.apache.commons.jelly.JellyTagException;
 import org.apache.commons.jelly.MissingAttributeException;
 

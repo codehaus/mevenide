@@ -16,11 +16,7 @@
  */
 package org.mevenide.tags.netbeans;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.StringTokenizer;
 import org.apache.commons.jelly.JellyTagException;
-import org.apache.commons.jelly.MissingAttributeException;
 
 import org.apache.commons.jelly.XMLOutput;
 import org.mevenide.tags.AbstractNbMevenideTag;
@@ -45,7 +41,7 @@ public class CheckDependencyTypeTag extends AbstractNbMevenideTag {
     String dependencyValue;
     boolean complete;
     
-    public void doTag(XMLOutput arg0) throws MissingAttributeException, JellyTagException {
+    public void doTag(XMLOutput arg0) throws JellyTagException {
         
         checkAttribute(value, "value");
         resetExamination();
@@ -67,7 +63,8 @@ public class CheckDependencyTypeTag extends AbstractNbMevenideTag {
                 dependencyValue = val.substring(index + 1).trim();
                 int greaterIndex = dependencyValue.indexOf("&gt;");
                 if (greaterIndex > -1) {
-                    dependencyValue = dependencyValue.substring(0, greaterIndex) + ">" + dependencyValue.substring(greaterIndex + "&gt;".length());
+                    dependencyValue = dependencyValue.substring(0, greaterIndex) 
+                               + ">" + dependencyValue.substring(greaterIndex + "&gt;".length());
                 }
                 String important = null;
                 if (TYPE_IMPLEMENTATION.equals(type)) {
@@ -80,9 +77,9 @@ public class CheckDependencyTypeTag extends AbstractNbMevenideTag {
             } else {
                 type = val.trim();
             }
-            if (!TYPE_SPECIFICATION.equals(type) &&
-                !TYPE_IMPLEMENTATION.equals(type) &&
-                !TYPE_LOOSE.equals(type)) {
+            if (!TYPE_SPECIFICATION.equals(type) 
+                && !TYPE_IMPLEMENTATION.equals(type) 
+                && !TYPE_LOOSE.equals(type)) {
                     throw new JellyTagException("Dependency type has to be one of 'loose', 'spec', 'impl'");
             }
         }

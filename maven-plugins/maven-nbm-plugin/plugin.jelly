@@ -33,7 +33,7 @@
   <goal 
     name="nbm" 
     prereqs="nbm:nbm" 
-    description="Build NBM file"/>
+    description="Build NBM file, ready to install into the Netbeans IDE"/>
 
   <!--==================================================================-->
   <!-- Initializations                                                  -->
@@ -110,7 +110,6 @@
     <ant:jar destfile="${maven.nbm.build.dir}/${maven.final.name}.jar"
              update="true">
       <j:if test="${maven.nbm.manifest.available}">
-<!--          <ant:echo message="NBM merging manifest.." /> -->
         <ant:setProperty name="manifest" value="${maven.nbm.manifest}" />
       </j:if>
       <!-- set te final name according to the module def. -->
@@ -198,7 +197,7 @@
                         </j:choose>
                     </j:when>
                     <j:otherwise>
-                	  	<ant:fail message="Unrecognized netbeans module dependecy type : ${moduleDep}. Should be one of {'spec', 'impl', 'loose'}"/>
+               	  	<ant:fail message="Unrecognized netbeans module dependecy type : ${moduleDep}. Should be one of {'spec', 'impl', 'loose'}"/>
                     </j:otherwise>
                 </j:choose>
                 <j:set var="nbdep.separator" value="," />
@@ -288,7 +287,6 @@ ${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.x
     <ant:loadproperties srcfile="${plugin.resources}/directories.properties"/>
     <ant:property name="cluster.dir" value="${cluster.dirXXX}"/>
     <ant:property name="module.name" value="${maven.nbm.final.name}"/>
-<!--    <ant:echo message="moduleName=${module.name}"/> -->
     <ant:patternset id="module.files">
         <ant:include name="**"/>
     </ant:patternset>
@@ -350,16 +348,6 @@ ${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.x
                     storepass="${maven.nbm.sign.storepass}" 
                     alias="${maven.nbm.sign.alias}"/> -->
     </ant:makenbm>
-    <!-- now copy the artifact (NBM file) into the local repository
-    -->
-
-
-<!--    <j:forEach var="lib" items="${pom.artifacts}">
-      <ant:copy 
-        todir="${libdir}"
-        file="${lib.path}"/>
-    </j:forEach>
--->    
   </goal>
   
   <goal 
@@ -377,7 +365,7 @@ ${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.x
         project="${pom}"/>   
     
   </goal>
-  <goal name="nbm:create-library-artifacts" 
+<!--  <goal name="nbm:create-library-artifacts" 
   		prereqs="nbm:init" 
   		description="Creates simple netbeans modules for dependencies with the 'netbeans.lib.generate' property.">
     <j:forEach var="artifact" items="${pom.artifacts}">
@@ -394,7 +382,6 @@ ${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.x
             <j:if test="nbdepIsNetbeansModule == true">
                 <ant:fail message="Dependency ${dependency} is already a netbeans module. Do not regenerate!"/>
             </j:if>
- 		<!-- init variables -->
             <j:set var="dependencyModuleDir" value="${maven.nbm.build.dir}/${dependency.groupId}_${dependency.version}"/>
             <ant:mkdir dir="${dependencyModuleDir}"/>
             <j:if test="${empty(nbdepModule)}">
@@ -402,11 +389,8 @@ ${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.x
             </j:if>
      		<mevenide:adapt-version var="depSpecVersion" version="${dependency.version}" type="spec"/>
      		<mevenide:adapt-version var="depImplVersion" version="${dependency.version}" type="impl"/>
-            <!-- handle licensing.. first look in the jar itself, if not found, look in a local license repository -->
-<!--            <ant:echo message="artifact path=${artifact.path}" />-->
             <mevenide:find-license var="liblicense" jarFile="${artifact.path}" />
             <j:if test="${empty(liblicense)}" >
-<!--                <ant:echo message="lib licence not found in jar." /> -->
                 <j:set var="licenseFile" value="${maven.nbm.licenses.dir}/${dependency.groupId}/${dependency.artifactId}.lic"/>
                 <ant:available property="isLicensePresent" file="${licenseFile}"/>
                 <j:if test="${isLicensePresent}">
@@ -419,12 +403,10 @@ ${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.x
             <j:file name="${dependencyModuleDir}/license.txt" omitXmlDeclaration="true">
 ${liblicense}
             </j:file>
-            <!-- create the project's properties-->
             <j:file name="${dependencyModuleDir}/project.properties" omitXmlDeclaration="true">
 maven.nbm.autoload=true
 maven.nbm.license=${dependencyModuleDir}/license.txt
             </j:file>
-            <!-- create the maven project xml-->
             <j:file name="${dependencyModuleDir}/project.xml" prettyPrint="true">
                 <x:element name="project">
                     <x:element name="pomVersion">3</x:element>
@@ -456,9 +438,9 @@ maven.nbm.license=${dependencyModuleDir}/license.txt
        </j:if>
     </j:forEach>
   </goal>  
-  
+-->  
   <goal name="nbm:collect-nbms" 
-        description="Will collect the module nbm and all library nbms (if any) to a single release directory target/nbm_release">
+        description="Will collect the module nbm and all library nbms (if any) to a single release directory maven.nbm.build.release.dir == target/nbm_release">
         <j:set var="reldir" value="${maven.nbm.build.release.dir}" />
         <j:if test="${empty(reldir)}">
             <j:set var="maven.nbm.build.release.dir" value="${maven.build.dir}/nbm_release" />
