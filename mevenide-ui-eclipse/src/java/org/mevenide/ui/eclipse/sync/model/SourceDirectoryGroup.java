@@ -48,6 +48,7 @@
  */
 package org.mevenide.ui.eclipse.sync.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.resources.IProject;
@@ -93,6 +94,17 @@ public class SourceDirectoryGroup extends ArtifactGroup {
 	
 	public List getSourceDirectories() {
 		return artifacts;
+	}
+	
+	public List getNonInheritedSourceDirectories() {
+		List nonInheritedSourceDirectories = new ArrayList();
+		for (int i = 0; i < artifacts.size(); i++) {
+            SourceDirectory sourceDirectory = (SourceDirectory) artifacts.get(i);
+            if ( !sourceDirectory.isInherited() ) {
+				nonInheritedSourceDirectories.add(sourceDirectory);
+            }
+        }
+		return nonInheritedSourceDirectories;	
 	}
 	
 	public void excludeSourceDirectory(SourceDirectory directory) {

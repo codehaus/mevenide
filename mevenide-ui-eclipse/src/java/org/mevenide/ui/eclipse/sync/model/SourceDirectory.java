@@ -63,6 +63,8 @@ public class SourceDirectory {
 	private String directoryPath = "";
 	private String directoryType = "sourceDirectory";
 	
+	private boolean isInherited;
+	
 	public SourceDirectory(String path) {
 		//directoryPath = "${basedir}" + File.separator + path;
 		directoryPath = path;
@@ -101,4 +103,12 @@ public class SourceDirectory {
 					|| getDirectoryType().equals(ProjectConstants.MAVEN_INTEGRATION_TEST_DIRECTORY);
 		return b;					
 	}
+    public boolean isInherited() {
+        return isInherited;
+    }
+
+    public void setInherited(boolean isInherited) {
+        this.isInherited = isInherited;
+    }
+
 }

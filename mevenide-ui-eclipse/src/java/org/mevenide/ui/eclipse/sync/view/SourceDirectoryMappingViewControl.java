@@ -50,8 +50,11 @@ package org.mevenide.ui.eclipse.sync.view;
 
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.eclipse.jface.util.Assert;
 import org.eclipse.jface.viewers.CellEditor;
+import org.eclipse.jface.viewers.CheckboxCellEditor;
 import org.eclipse.jface.viewers.ComboBoxCellEditor;
 import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.jface.viewers.TableViewer;
@@ -75,10 +78,13 @@ import org.mevenide.ui.eclipse.util.SourceDirectoryTypeUtil;
  * 
  */
 public class SourceDirectoryMappingViewControl {
-	
-	private static final String SOURCE_TYPE = "source.type";
+	private static Log log = LogFactory.getLog(SourceDirectoryMappingViewControl.class);
+
+	private static final String INHERIT = "isInherited";
+    private static final String SOURCE_TYPE = "source.type";
     private static final String SOURCE_DIRECTORY = "source.directory";
-    private SourceDirectoryMappingViewControl(){
+    
+	private SourceDirectoryMappingViewControl(){
 	}
 	
 	public static TableViewer getViewer(Composite parent) {
@@ -110,21 +116,28 @@ public class SourceDirectoryMappingViewControl {
 		column.setText("Source Type");
 		column.setWidth(300);
 		
+		column = new TableColumn(tableViewer.getTable(), SWT.LEFT);
+		column.setText("I");
+		column.setWidth(16);
+
 		tableViewer.getTable().setHeaderVisible(true);
 		tableViewer.getTable().setLinesVisible(true);
 		
 	}
 	private static void configureViewer(final TableViewer tableViewer) {
-		tableViewer.setColumnProperties(new String[] {SourceDirectoryMappingViewControl.SOURCE_DIRECTORY, SourceDirectoryMappingViewControl.SOURCE_TYPE});
+		tableViewer.setColumnProperties(new String[] {SourceDirectoryMappingViewControl.SOURCE_DIRECTORY, SourceDirectoryMappingViewControl.SOURCE_TYPE, SourceDirectoryMappingViewControl.INHERIT});
 		
 		tableViewer.setCellEditors(new CellEditor[] {
 			new TextCellEditor(), 
-			createComboBoxCellEditor(tableViewer)
+			createComboBoxCellEditor(tableViewer),
+			new CheckboxCellEditor(),
 		});
 		
 		tableViewer.setCellModifier(new ICellModifier() {
 			public boolean canModify(Object element, String property) {
-				return SourceDirectoryMappingViewControl.SOURCE_TYPE.equals(property);
+				return 
+					SourceDirectoryMappingViewControl.SOURCE_TYPE.equals(property)
+					|| SourceDirectoryMappingViewControl.INHERIT.equals(property);
 			}
 			
 			public void modify(Object element, String property, Object value) {
@@ -133,13 +146,23 @@ public class SourceDirectoryMappingViewControl {
 						element = ((Item) element).getData();
 					}
 					((SourceDirectory) element).setDirectoryType(SourceDirectoryTypeUtil.sourceTypes[((Integer)value).intValue()]);
-					tableViewer.update(element, new String[] {SourceDirectoryMappingViewControl.SOURCE_TYPE});
 				}
+				if ( SourceDirectoryMappingViewControl.INHERIT.equals(property) ) {
+					if (element instanceof Item) {
+						element = ((Item) element).getData();
+					}
+					log.debug("setting SourceDirectory isInherited property to : " + (((Boolean) value).booleanValue()));
+					((SourceDirectory) element).setInherited(((Boolean) value).booleanValue());
+				}
+				tableViewer.update(element, null);
 			}
 			
 			public Object getValue(Object element, String property) {
 				if ( SourceDirectoryMappingViewControl.SOURCE_DIRECTORY.equals(property) ) {
 					return ((SourceDirectory) element).getDisplayPath();
+				}
+				if ( SourceDirectoryMappingViewControl.INHERIT.equals(property) ) {
+					return new Boolean(((SourceDirectory) element).isInherited());
 				}
 				else {
 					return SourceDirectoryTypeUtil.getSourceTypeIndex(((SourceDirectory) element).getDirectoryType());
