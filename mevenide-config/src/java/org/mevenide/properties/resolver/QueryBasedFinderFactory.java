@@ -16,8 +16,6 @@
  */
 package org.mevenide.properties.resolver;
 
-import java.io.File;
-import java.util.HashMap;
 import org.mevenide.context.IQueryContext;
 import org.mevenide.properties.IPropertyFinder;
 
