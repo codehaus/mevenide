@@ -2,6 +2,7 @@ package org.mevenide.ui.eclipse.editors.mavenxml;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -48,6 +49,7 @@ public class Namespace {
             String tag = (String) it.next();
             rootTags.add(prefix + ":" + tag);
         }
+        Collections.sort(rootTags);
     }
 
     private void initializeWerkzList() {
@@ -143,11 +145,15 @@ public class Namespace {
                 collectedTags.add(prefix + ":" + tag);
             }
         	
-        	collectedTags.addAll(rootTags);
+        	Collections.sort((List) collectedTags);
         	candidates = collectedTags;
-        	subTags.put(outerTag, candidates);
+        	subTags.put(outerTag, collectedTags);
         }
         
         return candidates;
+    }
+    
+    public List getRootTags() {
+        return rootTags;
     }
 }
