@@ -7,15 +7,27 @@
 		 xmlns:jsl="jelly:jsl"
 		 xmlns:html="jelly:html">
 		 
-  <!-- 
-      @refactor split this goal into smaller ones
-  -->
-  <goal name="spinner-wiki:generate-templates" prereqs="spinner-wiki:clean">
-  	
+  <goal name="spinner-wiki:init">
+  
+    <!-- remove trailing slash from ${maven.spinner.wiki.plugin.templates.location} -->
+    <j:set var="wikiTemplatesLocation" value="${maven.spinner.wiki.plugin.templates.location}"/>
+    <j:if test="${wikiTemplatesLocation.endsWith('/') || wikiTemplatesLocation.endsWith('\\')}">
+        <j:set var="wikiTemplatesLocation" value="${wikiTemplatesLocation.substring(0, wikiTemplatesLocation.length() - 1)}"/>
+    </j:if>
+    
+    <!-- remove trailing slash from ${maven.spinner.wiki.relativePath} -->
+    <j:set var="wikiRelativePath" value="${maven.spinner.wiki.relativePath}"/>
+    <j:if test="${wikiRelativePath.endsWith('/') || wikiRelativePath.endsWith('\\')}">
+        <j:set var="wikiRelativePath" value="${wikiRelativePath.substring(0, wikiRelativePath.length() - 1)}"/>
+    </j:if>
+    
   	<j:set var="wikiDestTempDir" value="${maven.build.dir}/spinner-wiki-tmp"/>
   	<j:set var="wikiDestDir" value="${maven.build.dir}/spinner-wiki"/>
   	<j:set var="wikiSrcDir" value="${maven.build.dir}/templates/spinner-wiki"/>
 
+	<ant:delete dir="${wikiSrcDir}" quiet="true"/>
+	<ant:delete dir="${wikiDestTempDir}" quiet="true"/>
+	
 	<ant:mkdir dir="${wikiSrcDir}"/>
 	<ant:mkdir dir="${wikiDestTempDir}"/>
 	
@@ -24,7 +36,7 @@
     
     <!-- prepare files to transform -->
 	<ant:copy todir="${wikiSrcDir}">
-  		<ant:fileset dir="${maven.spinner.wiki.plugin.templates.location}"/>
+  		<ant:fileset dir="${wikiTemplatesLocation}"/>
   	</ant:copy>
   	
   	<!-- set correct properties for xdoc -->
@@ -37,6 +49,12 @@
   	<ant:copy todir="${maven.docs.src}">
 	    <ant:fileset dir="${oldMavenDocsSrc}" includes="style/*.*"/>
   	</ant:copy>
+	
+  </goal>
+  
+  
+  <goal name="spinner-wiki:generate-templates" prereqs="spinner-wiki:clean, spinner-wiki:init">
+  	
   	
   	<!-- transform navFile -->
   	<x:parse var="navFile" xml="${siteNavFile}"/>
@@ -68,7 +86,7 @@
   		</ant:fileset>
   	</ant:fileScanner>
   	
-  	<!-- copy generated files to ${wikiSrcDir} -->
+  	<!-- transform generated templates and outputs them to ${wikiSrcDir} -->
   	<j:forEach items="${generatedTemplates.iterator()}" var="template">
   		<log:info>creating template : ${template}</log:info>
   		
@@ -98,7 +116,7 @@
 
   	</j:forEach>
   	
-  	<!-- grab css sheets -->
+  	<!-- grab css stylesheets -->
   	<ant:copy todir="${wikiDestDir}">
 	  	<ant:fileset dir="${wikiSrcDir}" includes="style/*.css"/>
 	</ant:copy>
@@ -107,10 +125,14 @@
 	  	             includes="*.css"/>
   	</ant:copy> 
   	
+  	<attainGoal name="spinner-wiki:finalize"/>
+  	
+  </goal>
+  
+  <goal name="spinner-wiki:finalize">
   	<!-- clean temporary directories -->
-  	<!-- ant:delete dir="${wikiDestTempDir}" quiet="true"/>
-  	<ant:delete dir="${wikiSrcDir}" quiet="true"/ -->
-
+  	<ant:delete dir="${wikiDestTempDir}" quiet="true"/>
+  	<ant:delete dir="${wikiSrcDir}" quiet="true"/>  
   </goal>
   
   <goal name="spinner-wiki:clean">
@@ -119,3 +141,5 @@
   </goal>
 
 </project>
+
+   

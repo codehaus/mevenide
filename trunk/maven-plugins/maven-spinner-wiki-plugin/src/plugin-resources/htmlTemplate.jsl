@@ -7,14 +7,49 @@
             
             <jsl:template match="style">
             	<x:set var="importLine" select="string(.)"/>
+            	
             	<j:set var="cssFile">${importLine.substring(importLine.lastIndexOf('/'), importLine.lastIndexOf('"'))}</j:set>
             	<j:set var="cssFile">${cssFile.substring(1, cssFile.length())}</j:set>
-            	<j:set var="absoluteLocation" value="${maven.spinner.wiki.absolute.css.directory.location}"/>
-            	<j:set var="newImport">url("${absoluteLocation}/${cssFile}");</j:set>
+            	
+            	<!-- remove trailing slash from ${maven.spinner.wiki.absolute.css.directory.location} -->
+			    <j:set var="siteCssLocation" value="${maven.spinner.wiki.absolute.css.directory.location}"/>
+			    <j:if test="siteCssLocation.endsWith('/') || siteCssLocation.endsWith('\\')}">
+			        <j:set var="siteCssLocation" value="${siteCssLocation.substring(0, siteCssLocation.length() - 1)}"/>
+			    </j:if>
+			    
+            	<j:set var="newImport">url("${siteCssLocation}/${cssFile}");</j:set>
             	<x:element name="style">
             	     <x:attribute name="type">text/css</x:attribute>
+            	     <!-- 
+            	     	@constraint : remove whitespaces from url because of jelly special spaces addition 
+            	     -->
             	     @import ${newImport.replaceAll(" ", "")}
             	</x:element>
+            </jsl:template>
+            
+            
+            <jsl:template match="a">
+                
+                <x:set var="oldItemLink" select="string(./@href)"/>
+                <x:element name="a">
+                    <j:choose>
+                        <j:when test="${!oldItemLink.startsWith('http') and !oldItemLink.startsWith('/')}">
+                            <x:attribute name="href">${wikiRelativePath}/${oldItemLink}</x:attribute>
+                        </j:when>
+                        <j:otherwise>
+                            <x:attribute name="href">${oldItemLink}</x:attribute>
+                        </j:otherwise>
+                    </j:choose>
+                    <x:forEach var="attr" select="">
+                        <x:if select="name() != 'href'">
+                            <x:set var="${attrName}" select="name()"/>
+                            <x:set var="${attrValue}" select="string()"/>
+                            <x:attribute name="${attrName}">${attrValue}</x:attribute>
+                        </x:if>
+                    </x:forEach>
+                    <jsl:applyTemplates select="* | text()"/>
+                </x:element>
+                
             </jsl:template>
             
             <jsl:template match="img">
@@ -24,7 +59,7 @@
 					    <x:set var="oldValue" select="string(.)"/>
 					    <j:choose>
 						    <j:when test="${oldName == 'src' and !oldValue.startsWith('http://') and !oldValue.startsWith('/')}">
-						        <x:attribute name="${oldName}">${maven.spinner.wiki.relativePath}/${oldValue}</x:attribute>
+						        <x:attribute name="${oldName}">${wikiRelativePath}/${oldValue}</x:attribute>
 						    </j:when>
 						    <j:otherwise>
 							    <x:attribute name="${oldName}">${oldValue}</x:attribute>
