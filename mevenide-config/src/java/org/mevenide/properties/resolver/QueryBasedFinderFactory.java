@@ -18,9 +18,6 @@ package org.mevenide.properties.resolver;
 
 import org.mevenide.context.IQueryContext;
 import org.mevenide.properties.IPropertyFinder;
-import org.mevenide.properties.IPropertyLocator;
-
-
 
 /**  
  * factory for creating IPropertyFinder instances that delegates to the IQueryContext.

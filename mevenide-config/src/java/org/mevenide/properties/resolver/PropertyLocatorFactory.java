@@ -17,7 +17,6 @@
 package org.mevenide.properties.resolver;
 
 import org.mevenide.context.IQueryContext;
-import org.mevenide.environment.LocationFinderAggregator;
 import org.mevenide.properties.IPropertyLocator;
 
 /**  

@@ -52,10 +52,10 @@ public class CarefulPropertiesWriter implements IPropertiesWriter
         List newOnes = new ArrayList();
         List replacedOnes = new ArrayList();
         
-        Enumeration enum = props.propertyNames();
-        while (enum.hasMoreElements()) 
+        Enumeration en = props.propertyNames();
+        while (en.hasMoreElements()) 
         {
-            String key = (String)enum.nextElement();
+            String key = (String)en.nextElement();
             KeyValuePair kp = model.findByKey(key);
             if (kp != null)
             {
