@@ -22,7 +22,6 @@ import org.apache.commons.logging.LogFactory;
 import org.mevenide.context.DefaultQueryContext;
 import org.mevenide.context.IQueryContext;
 import org.mevenide.properties.IPropertyResolver;
-import org.mevenide.properties.resolver.PropertyResolverFactory;
 
 /**  
  * 

@@ -21,10 +21,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 import org.mevenide.context.IQueryContext;
-import org.mevenide.environment.ILocationFinder;
-
-import org.mevenide.environment.LocationFinderAggregator;
-import org.mevenide.properties.IPropertyFinder;
 import org.mevenide.properties.IPropertyResolver;
 
 
