@@ -15,8 +15,9 @@
 		both Eclipse and Netbeans plugins :
 	</p>
 	<ul>
-		<li>Eclipse plugin</li>	
-		<li>Netbeans plugin</li>
+		<li><a href="mevenide-ui-eclipse/todos.html">Eclipse plugin</a></li>	
+		<li><a href="mevenide-ui-netbeans/todos.html">Netbeans plugin</a></li>
+		<li>JBuilder plugin</li>
 	</ul>
 	<p>
 		Alternatively the various Maven plugins	created to help the build process could make better and more useful/customizable.

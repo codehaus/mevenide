@@ -25,8 +25,8 @@
     <p>
     	Mevenide aims to integrate Maven into standard IDEs. There are a number of areas that 
     	can be worked on such as POM editing, IDE and POM synchronization, launching Maven from within the IDE, 
-    	providing wizards for mavenized projects, managing Maven runtime properties, etc. Please note that only 
-    	<a href="http://eclipse.org/">Eclipse</a> and <a href="http://netbeans.org/">NetBeans</a> are currently targeted ;
+    	providing wizards for mavenized projects, managing Maven runtime properties, etc. Right now Mevenide provides support for 
+    	<a href="http://eclipse.org/">Eclipse</a>, <a href="http://netbeans.org/">NetBeans</a> and <a href="http://www.borland.com/jbuilder">JBuidler</a>. Support for IntelliJ is also planned.
     	you might refer to those documents for a list of implemented features : 
             <ul>
     	      <li><a href="mevenide-ui-eclipse/features.html" class="documentLink">Eclipse plugin</a></li>

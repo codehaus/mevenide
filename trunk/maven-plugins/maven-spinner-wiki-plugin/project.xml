@@ -94,4 +94,8 @@
       </resources>
 	</build>
 
+	<reports>
+	    <!-- just to prevent loading default reports -->
+    	<report>maven-javadoc-plugin</report>    
+	</reports>
 </project>

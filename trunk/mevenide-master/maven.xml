@@ -37,12 +37,7 @@
       <attainGoal name="nbm:collect-nbms"/>
       <!-- j:set var="maven.nbm.autoupdate.distbase" value="nb_autoupdate"/ -->
       <attainGoal name="nbm:autoupdate"/>
-	  <!--  don't copy to webpage.. upload separately somehow.. -->
-      <!-- ant:copy toDir="${maven.docs.dest}">
-          <ant:fileset dir="${basedir}/../mevenide-master/target"
-                     includes="nbm_release/*"
-          />       
-      </ant:copy -->
+
   </goal>  
 
     
@@ -52,17 +47,7 @@
   <goal name="mevenide-site:build" description="Build Mevenide Site" prereqs="mevenide-site:init">
   	<j:set var="maven.multiproject.includes" value="${maven.multiproject.site.includes}"/>
   	<attainGoal name="multiproject:site"/>
-  	<attainGoal name="mevenide-site:generate-wiki-templates"/>
-  </goal>
-  
-  <goal name="mevenide-site:eclipse" description="Build Mevenide Site" prereqs="mevenide-site:init">
-  	<j:set var="maven.multiproject.includes" value="${maven.multiproject.eclipse.includes}"/>
-  	<attainGoal name="multiproject:site"/>
-  </goal>
-  
-  <goal name="mevenide-plugins:site">
-  	<j:set var="maven.multiproject.includes" value="${maven.multiproject.plugins.includes}"/>
-  	<attainGoal name="multiproject:site"/>
+  	<!-- <attainGoal name="mevenide-site:generate-wiki-templates"/> -->
   </goal>
   
   <!-- do NOT call site:deploy because we dont want to attain 'site' goal -->
@@ -152,9 +137,13 @@
       </j:forEach>
   </goal>
   
+  <goal name="mevenide-site:quick-init" 
+        description="Similar to main initialization goal but doesnot clean anything" 
+        prereqs="mevenide-site:set-clover-jar,mevenide-site:install-css" />
+  
   <goal name="mevenide-site:init" 
         description="Main initialization goal" 
-        prereqs="mevenide-ide:init-all,mevenide-site:set-clover-jar,mevenide-site:install-css" />
+        prereqs="mevenide-ide:init-all,mevenide-site:quick-init" />
   
   
   <!-- ==================================== -->
@@ -225,15 +214,33 @@
 	 <maven:maven descriptor="${mavenNbmPluginPom}" goals=" plugin:install,plugin:deploy"/>
   </goal>  
   
-  <goal name="mevenide:build-core" description="Build Mevenide-core module">
-  	 <util:file var="mevenideCoreProjectdescriptor" name="${mevenide.core.project.location}/project.xml"/>
-	 <maven:maven descriptor="${mevenideCoreProjectdescriptor}" goals="clean,jar:install"/> 	 
+  
+  <!-- ==================================== -->
+  <!--     individual sites generation      -->
+  <!-- ==================================== -->
+  <goal name="mevenide-site:common" prereqs="mevenide-site:quick-init">
+  	<j:set var="maven.multiproject.includes" value="${maven.multiproject.common.includes}"/>
+  	<attainGoal name="multiproject:site"/>
   </goal>
   
-  <goal name="mevenide:build-xdoc" description="Build each module doco, without aggregating them. Provided for convenience, since building the whole can take a long time.">
-  	<j:set var="maven.multiproject.includes" value="${maven.multiproject.includes},${mevenide.eclipse.plugin.project.name}/project.xml"/>
-  	<j:set var="goal" value="xdoc"/>
-  	<attainGoal name="multiproject:goal"/>
+  <goal name="mevenide-site:eclipse" prereqs="mevenide-site:quick-init">
+  	<j:set var="maven.multiproject.includes" value="${mevenide.ui.eclipse.project.name}/project.xml"/>
+  	<attainGoal name="multiproject:site"/>
+  </goal>
+  
+  <goal name="mevenide-site:plugins" prereqs="mevenide-site:quick-init">
+  	<j:set var="maven.multiproject.includes" value="${mevenide.eclipse.plugin.project.name}/project.xml,${mevenide.nbm.plugin.project.name}/project.xml,${mevenide.spinner.wiki.plugin.project.name}/project.xml"/>
+  	<attainGoal name="multiproject:site"/>
+  </goal>
+  
+  <goal name="mevenide-site:netbeans" prereqs="mevenide-site:quick-init">
+  	<j:set var="maven.multiproject.includes" value="${mevenide.ui.netbeans.project.name}/project.xml,${mevenide.netbeans.grammar.project.name}/project.xml"/>
+  	<attainGoal name="multiproject:site"/>
+  </goal>
+  
+  <goal name="mevenide-site:jbuilder" prereqs="mevenide-site:quick-init">
+  	<j:set var="maven.multiproject.includes" value="${mevenide.ui.jbuilder.project.name}/project.xml"/>
+  	<attainGoal name="multiproject:site"/>
   </goal>
   
   

@@ -2,15 +2,15 @@
 <document>
     <properties>
     	<author email="rhill@wanadoo.fr">Gilles Dodinet</author>
-        <title>Uml Diagrams</title>
+        <title>Overview</title>
     </properties>
     <body>
-        <section name="Uml Diagrams">
+        <section name="Project Overview">
         	
         	<p>
-			    Short description to be written..
+			    This module provides an API for Maven-oriented code completion 
+			    for both Jelly files (including maven.xml) andd POM files.
 			</p>
-			
 		</section>
     </body>
 </document>

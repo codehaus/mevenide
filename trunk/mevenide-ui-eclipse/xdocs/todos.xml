@@ -15,9 +15,11 @@
                 <li>Provide preferences extension mechanism to allow Maven plugins providers to easily plug into Mevenide</li>
                 <li>Provide project properties page that override mevenide preferences </li>
                 <li>Provide a really integrated Maven Console</li>
-                <li>Provide a MavenBuilder</li>
-                <li>Provide a Mevenide Perspective</li>
-                <li>Polish the Synchronization feature (perhaps providing a view like the new CVS Synchronize View)</li>
+                <li>Provide a Maven Builder</li>
+                <li>Provide a Maven Perspective</li>
+                <li>Provide contentassist for xdoc documents</li>
+                <li>Provide a tool to visualize inter project dependencies</li>
+                <li>Polish contentassist</li>
                 <li>...</li>
             </ul>
         </p>

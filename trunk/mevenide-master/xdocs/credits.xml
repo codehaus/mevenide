@@ -17,6 +17,7 @@
     <ul>
       	<li><a href="http://ant.apache.org">Ant</a> from which some code has been taken (system environment variable lookup) </li>
       	<li>Ute Schneider for initial grepping-like mechanism implementation</li>
+      	<li><a href="http://xmen.sourceforge.net">XMen</a> from which the initial contentassist code for mevenide-eclipse has been taken</li>
     </ul>
     
     </section>
