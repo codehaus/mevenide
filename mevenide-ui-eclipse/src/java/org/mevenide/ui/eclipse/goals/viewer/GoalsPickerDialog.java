@@ -123,7 +123,8 @@ public class GoalsPickerDialog  extends Dialog {
     private GoalsProvider goalsProvider;
 
 	private Text goalsOrderText; 
-
+	private String goalsOrder;
+	
     public StyledText getTextWidget() {
         return pluginHomeURLText;
     }
@@ -270,6 +271,8 @@ public class GoalsPickerDialog  extends Dialog {
             newOrder += " " + checkedItems.get(i); 
         }
 		goalsOrderText.setText(newOrder);
+		
+		goalsOrder = newOrder;
 	}
 
 	private void updateCheckedGoal(boolean isSelectionChecked, Goal goal) {
@@ -430,10 +433,10 @@ public class GoalsPickerDialog  extends Dialog {
         return viewer;
     }
 
-	public int open() {
- 	   return super.open();
-	}	
 
+	public String getOrderedGoals() {
+		return goalsOrder;
+	}
 
 }
 
@@ -478,7 +481,5 @@ class HyperLinkMouseListener extends MouseAdapter {
         	
         }
     }
-
-	
 
 }
