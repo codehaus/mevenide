@@ -53,6 +53,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.StringTokenizer;
+import javax.swing.JButton;
 import javax.swing.JMenuItem;
 import javax.swing.event.ChangeListener;
 import org.apache.commons.logging.Log;
@@ -61,7 +62,10 @@ import org.mevenide.goals.grabber.ProjectGoalsGrabber;
 import org.mevenide.goals.manager.GoalsGrabbersManager;
 import org.mevenide.ui.netbeans.MavenProjectCookie;
 import org.mevenide.ui.netbeans.MavenSettings;
+import org.openide.DialogDescriptor;
+import org.openide.DialogDisplayer;
 import org.openide.ErrorManager;
+import org.openide.NotifyDescriptor;
 import org.openide.awt.Actions;
 import org.openide.loaders.DataObject;
 
@@ -82,6 +86,8 @@ public class RunGoalsAction extends CookieAction implements Presenter.Popup {
 
     private static Log log = LogFactory.getLog(RunGoalsAction.class);
 
+    private static final int MAX_ITEMS_IN_POPUP = 17;
+    
     public JMenuItem getPopupPresenter() {
         return new SpecialSubMenu (this, new ActSubMenuModel (this), true);
     }
@@ -123,8 +129,6 @@ public class RunGoalsAction extends CookieAction implements Presenter.Popup {
             super.addNotify ();
         }
 
-        // removeNotify not useful--might be called before action is invoked
-
     }
 
     /** Model to use for the submenu.
@@ -149,7 +153,8 @@ public class RunGoalsAction extends CookieAction implements Presenter.Popup {
         }
 
         public String getLabel (int index) {
-            return (String) targets.get (index);
+            ItemWrapper item = (ItemWrapper)targets.get (index);
+            return item == null ? null : item.getGoals();
         }
 
         public HelpCtx getHelpCtx (int index) {
@@ -157,8 +162,9 @@ public class RunGoalsAction extends CookieAction implements Presenter.Popup {
         }
 
         public void performActionAt (final int index) {
-            // #16720 part 2: don't do this in the event thread...
-            final String goal = (String) targets.get (index);
+            final ItemWrapper item = (ItemWrapper) targets.get (index);
+            if (item == null) return;
+            String mgoal = item.getGoals();
             MavenExecutor templateexec = (MavenExecutor)MavenSettings.getDefault().getExecutor();
             final boolean nobanner = templateexec.isNoBanner();
             final boolean offline = templateexec.isOffline();
@@ -167,7 +173,27 @@ public class RunGoalsAction extends CookieAction implements Presenter.Popup {
             {
                 return;
             }
+            log.debug("item=" + item.getGoals() + " of type " + item.getType()); //NOI18N
             final DataObject obj = (DataObject)nds[0].getCookie(DataObject.class);
+            if (item.getType() == ACTION_SHOW_CUSTOM_DIALOG)
+            {
+                CustomGoalsPanel panel = new CustomGoalsPanel(obj);
+                DialogDescriptor desc = new DialogDescriptor(panel, NbBundle.getMessage(RunGoalsAction.class, "RunGoalsAction.dialog.title"));
+                Object[] options = new Object[] {
+                    new JButton(NbBundle.getMessage(RunGoalsAction.class, "RunGoalsAction.executeButton")),
+                    NotifyDescriptor.CANCEL_OPTION
+                };
+                desc.setOptions(options);
+                desc.setClosingOptions(options);
+                Object retValue = DialogDisplayer.getDefault().notify(desc);
+                if (!retValue.equals(options[0]))
+                {
+                    return;
+                }
+                mgoal = panel.getGoalsToExecute();
+            }
+            final String goal = mgoal;
+            // now execute in different thread..
             RequestProcessor.postRequest(new Runnable() {
                 public void run() {
                     try {
@@ -212,7 +238,7 @@ public class RunGoalsAction extends CookieAction implements Presenter.Popup {
                             {
                                 for (int j =0; j < goals.length; j++)
                                 {
-                                    targets.add(plugins[i] + ":" + goals[j]);
+                                    targets.add(new ItemWrapper(plugins[i] + ":" + goals[j]));
                                 }
                             }
                         }
@@ -224,13 +250,21 @@ public class RunGoalsAction extends CookieAction implements Presenter.Popup {
                 }
             }
             String str = MavenSettings.getDefault().getTopGoals();
-            if (str == null) return;
-            StringTokenizer tok = new StringTokenizer(str, " ", false);
-            if (!tok.hasMoreTokens()) return;
-            while (tok.hasMoreTokens())
+            if (str != null)
             {
-                targets.add(tok.nextToken());
+                StringTokenizer tok = new StringTokenizer(str, " ", false);
+                if (tok.hasMoreTokens())
+                {
+                    while (tok.hasMoreTokens())
+                    {
+                        String next = tok.nextToken();
+                        if (targets.size() < MAX_ITEMS_IN_POPUP) {
+                            targets.add(new ItemWrapper(next));
+                        }
+                    }
+                }
             }
+            targets.add(new ItemWrapper(NbBundle.getMessage(RunGoalsAction.class, "RunGoalsAction.moreGoals"), ACTION_SHOW_CUSTOM_DIALOG));
             // In fact we should ensure there are >1 items (workaround for
             // undesired behavior of Actions.SubMenu):
             if (targets.size () == 1) {
@@ -245,6 +279,38 @@ public class RunGoalsAction extends CookieAction implements Presenter.Popup {
         public synchronized void removeChangeListener (ChangeListener l) {
         }
 
+    }
+    
+    private static final int ACTION_RUN = 0;
+    private static final int ACTION_SHOW_CUSTOM_DIALOG = 1;
+    
+    private static class ItemWrapper
+    {
+        private String goals;
+        private int actionType;
+        public ItemWrapper(String goals)
+        {
+            this.goals = goals;
+            actionType = ACTION_RUN;
+            
+        }
+        public ItemWrapper(String goals, int actionType)
+        {
+            this(goals);
+            this.actionType = actionType;
+        }
+        
+        public String getGoals()
+        {
+            return goals;
+        }
+        
+        public int getType()
+        {
+            return actionType;
+        }
+        
+        
     }
 
 }

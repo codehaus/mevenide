@@ -65,6 +65,10 @@ public class ProjectGoalsGrabber extends AbstractGoalsGrabber {
 	
 	public ProjectGoalsGrabber() { }
 	
+        public String getName() {
+            return IGoalsGrabber.ORIGIN_PROJECT;
+        }
+
     public void refresh() throws Exception {
 		super.refresh();
     	if ( mavenXmlFile == null ) {

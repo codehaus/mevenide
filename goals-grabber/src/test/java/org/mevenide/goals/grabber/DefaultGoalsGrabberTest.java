@@ -93,6 +93,14 @@ public class DefaultGoalsGrabberTest extends AbstractGoalsGrabberTestCase {
 		return new String[][] { {"jar:jar"}, {"java:prepare-filesystem"} };
 	}
 	
- 	
+    protected String[] getGetOriginParameters()
+    {
+       return new String[] { "java:compile", "java:jar", "java"};        
+    }    
+ 	 
+    protected String[] getGetOriginResults()
+    {
+        return new String[] { IGoalsGrabber.ORIGIN_PLUGIN, IGoalsGrabber.ORIGIN_PLUGIN, IGoalsGrabber.ORIGIN_PLUGIN };
+    }    
 
 }

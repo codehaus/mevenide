@@ -54,10 +54,11 @@ import org.mevenide.goals.grabber.IGoalsGrabber;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
+import org.openide.util.NbBundle;
 
 /**
  *
- * @author  cenda
+ * @author  Milos Kleint (ca206216@tiscali.cz)
  */
 public class PluginNode extends AbstractNode implements GoalNameCookie
 {
@@ -68,7 +69,12 @@ public class PluginNode extends AbstractNode implements GoalNameCookie
     {
         super(new PluginChildren(plugin, grabber));
         setName(plugin);
-        setDisplayName(plugin);
+        String displayName = plugin;
+        if (IGoalsGrabber.ORIGIN_PROJECT.equals(grabber.getOrigin(plugin)))
+        {
+            displayName = displayName + NbBundle.getMessage(PluginNode.class, "PluginNode.projectSpecific"); 
+        }
+        setDisplayName(displayName);
         setShortDescription(grabber.getDescription(plugin));
         this.grabber = grabber;
         setIconBase("org/mevenide/ui/netbeans/goals/PluginIcon");

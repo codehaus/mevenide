@@ -75,6 +75,10 @@ public class DefaultGoalsGrabber extends AbstractGoalsGrabber {
   		refresh();
   	}
     
+        public String getName() {
+            return IGoalsGrabber.ORIGIN_PLUGIN;
+        }
+        
  	public void refresh() throws Exception {
 		super.refresh();
 

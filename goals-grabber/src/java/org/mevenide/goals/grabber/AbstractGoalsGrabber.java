@@ -128,6 +128,30 @@ public abstract class AbstractGoalsGrabber implements IGoalsGrabber {
     	return toStringArray((Collection)plugins.get(plugin));
     }
 
+     protected  boolean containsGoal(String fullyQualifiedGoalName) {
+        String[] splittedGoal = StringUtils.split(fullyQualifiedGoalName, ":");
+    	String plugin = splittedGoal[0];
+    
+    	String goalName = null;
+    	if ( splittedGoal.length > 1 ) {
+    		goalName = splittedGoal[1];
+    	}
+    
+    	List goals = (List) plugins.get(plugin);
+    	if ( goals == null) {
+    		return false;
+    	}
+        if (goalName != null && !goals.contains(goalName)) { 
+            return false;
+        }
+        return true;
+    }
+     
+    public String getOrigin(String fullyQualifiedGoalName)
+    {
+        return containsGoal(fullyQualifiedGoalName) ? getName() : null;
+    }
+    
     public String getDescription(String fullyQualifiedGoalName) {
     	return (String) descriptions.get(fullyQualifiedGoalName);
     }

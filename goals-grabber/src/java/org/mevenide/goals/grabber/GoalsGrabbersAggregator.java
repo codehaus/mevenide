@@ -72,6 +72,22 @@ public class GoalsGrabbersAggregator implements IGoalsGrabber {
         }
     }
     
+    public String getName() {
+        return "Aggregator";
+    }
+    
+    public String getOrigin(String fullyQualifiedGoalName) {
+        String origin = null;
+        for (int i = 0; i < goalsGrabbers.size(); i++) {
+            origin = ((IGoalsGrabber)goalsGrabbers.get(i)).getOrigin(fullyQualifiedGoalName);
+            if ( origin != null ) {
+                break;
+            }
+        }
+        return origin;
+        
+    }
+        
     public void addGoalsGrabber(IGoalsGrabber goalsGrabber) {
     	goalsGrabbers.add(goalsGrabber);
     } 
@@ -135,5 +151,5 @@ public class GoalsGrabbersAggregator implements IGoalsGrabber {
     public void setGoalsGrabbers(List grabbers) {
         this.goalsGrabbers = grabbers;
     }
-
+    
 }

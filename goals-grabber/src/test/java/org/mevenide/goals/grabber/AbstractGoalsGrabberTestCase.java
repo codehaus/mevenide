@@ -100,6 +100,13 @@ public abstract class AbstractGoalsGrabberTestCase extends AbstractTestCase {
 		goalsGrabber.getGoals(null);
 	}
 
+	public void testGetOrigin() {
+		for (int i = 0; i < getGetOriginParameters().length; i++) {
+			String origin = goalsGrabber.getOrigin(getGetOriginParameters()[i]);
+			assertEquals(getGetOriginResults()[i], origin);
+        }
+	}
+    
 	public void testGetDescription() {
 		for (int i = 0; i < getGetDescriptionParameters().length; i++) {
 			assertEquals(getGetDescriptionResults()[i], goalsGrabber.getDescription(getGetDescriptionParameters()[i]));
@@ -130,4 +137,8 @@ public abstract class AbstractGoalsGrabberTestCase extends AbstractTestCase {
 
 	protected abstract String[] getGetPrereqsParameters() ;
 	protected abstract String[][] getGetPrereqsResults() ;
+    
+    protected abstract String[] getGetOriginParameters();
+    protected abstract String[] getGetOriginResults();
+    
 }
