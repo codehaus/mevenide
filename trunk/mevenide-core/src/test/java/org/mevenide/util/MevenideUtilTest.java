@@ -81,8 +81,8 @@ public class MevenideUtilTest extends TestCase {
     }
 
     public void testResolve() throws Exception {
-    	assertEquals("mySourceDir", MevenideUtil.resolve(project, "${pom.build.sourceDirectory}"));
-		assertEquals("this is myCvsConnection test", MevenideUtil.resolve(project, "this is ${pom.repository.connection} test"));
+    	assertEquals("mySourceDir", MevenideUtils.resolve(project, "${pom.build.sourceDirectory}"));
+		assertEquals("this is myCvsConnection test", MevenideUtils.resolve(project, "this is ${pom.repository.connection} test"));
     	
     }
 

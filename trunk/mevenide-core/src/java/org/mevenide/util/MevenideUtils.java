@@ -60,7 +60,7 @@ import org.apache.maven.project.Project;
  * @version $Id$
  * 
  */
-public class MevenideUtil {
+public class MevenideUtils {
 	
 	public static boolean findFile(File rootDirectory, String fileName) {
 		File[] f = rootDirectory.listFiles();
@@ -88,10 +88,35 @@ public class MevenideUtil {
 		 		|| string.trim().equals("");
 	}
 	
+	/**
+	 * retrieve a string containing jelly scripting variable by navigating pom object
+	 * so until a jelly variable is a descendant of pom it wont be resolved and the 
+	 * returnde string will still contains the reference.
+	 * 
+	 * this is equivalent to resolve(project, unresolvedString, false) 
+	 * 
+	 * @param project
+	 * @param unresolvedString
+	 * @return
+	 * @throws Exception
+	 * @see #resolve(Project project, String unresolvedString, boolean preserveBasedir)
+	 */
 	public static String resolve(Project project, String unresolvedString) throws Exception {
 		return resolve(project, unresolvedString, false);
 	}
 	
+	/**
+	 *  retrieve a string containing jelly scripting variable by navigating pom object
+	 * so until a jelly variable is a descendant of pom it wont be resolved and the 
+	 * returnde string will still contains the reference. if preserveBasedir is true, 
+	 * then ${basedir} wont be evaluated, else it will be replaced by "."
+	 * 
+	 * @param project
+	 * @param unresolvedString
+	 * @return
+	 * @throws Exception
+	 * @see #resolve(Project project, String unresolvedString, boolean preserveBasedir)
+	 */
 	public static String resolve(Project project, String unresolvedString, boolean preserveBasedir) throws Exception {
 		String resolvedString = "";
 		
