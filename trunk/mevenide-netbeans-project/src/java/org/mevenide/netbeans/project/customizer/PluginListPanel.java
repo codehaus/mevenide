@@ -22,6 +22,7 @@ import java.beans.PropertyVetoException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Iterator;
 
 import java.util.List;
 import java.util.Set;
@@ -112,16 +113,21 @@ public class PluginListPanel extends JPanel implements ProjectPanel {
         PluginInfoManager man = PluginInfoFactory.getInstance().createManager(project.getContext());
         IPluginInfo[] infos = man.getCurrentPlugins();
         final List vals = new ArrayList(10 + (infos != null ? infos.length : 0));
-        vals.add(new UsedPropsWrapper());
-        vals.add(new DefaultPropsWrapper());
+        WrapperRow rw = new UsedPropsWrapper();
+        vals.add(rw);
+        globalPanelList.add(rw.getCustomizer());
+        rw = new DefaultPropsWrapper();
+        vals.add(rw);
+        globalPanelList.add(rw.getCustomizer());
         subPanelList.addAll(vals);
         if (infos != null) {
             for (int i = 0; i < infos.length; i++) {
                 boolean isUsed = man.isUsedByProject(infos[i]);
-                WrapperRow rw = new PluginWrapper(infos[i], isUsed);
+                rw = new PluginWrapper(infos[i], isUsed);
                 vals.add(rw);
                 if (isUsed) {
                     subPanelList.add(rw);
+                    globalPanelList.add(rw.getCustomizer());
                 }
             }
         }
@@ -248,7 +254,7 @@ public class PluginListPanel extends JPanel implements ProjectPanel {
         
         public Component getCustomizer() {
             if (customizer == null) {
-                return new DefaultPluginPanel(project);
+                customizer = new DefaultPluginPanel(project);
             }
             return customizer;
         }
@@ -275,7 +281,7 @@ public class PluginListPanel extends JPanel implements ProjectPanel {
         }
         public Component getCustomizer() {
             if (customizer == null) {
-                return PluginPanel.createUsedPanel(project);
+                customizer = PluginPanel.createUsedPanel(project);
             }
             return customizer;
         }
@@ -299,6 +305,7 @@ public class PluginListPanel extends JPanel implements ProjectPanel {
             enabled = bool;
             if (enabled) {
                 subPanelList.add(this);
+                globalPanelList.add(this.getCustomizer());
             } else {
                 subPanelList.remove(this);
             }
@@ -321,7 +328,7 @@ public class PluginListPanel extends JPanel implements ProjectPanel {
         }
         public Component getCustomizer() {
             if (customizer == null) {
-                return PluginPanel.createPluginPanel(project, info);
+                customizer = PluginPanel.createPluginPanel(project, info);
             }
             return customizer;
         }
