@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import org.apache.maven.plugin.PluginExecutionRequest;
 import org.apache.maven.plugin.PluginExecutionResponse;
-import org.codehaus.mevenide.pde.EclipseArtifactMojo;
+import org.codehaus.mevenide.pde.PdeArtifactMojo;
 
 
 /**  
@@ -29,7 +29,7 @@ import org.codehaus.mevenide.pde.EclipseArtifactMojo;
  * @version $Id$
  * 
  */
-public class PluginClasspathInitializer extends EclipseArtifactMojo {
+public class PdeClasspathInitializerMojo extends PdeArtifactMojo {
     
     public void execute(PluginExecutionRequest request, PluginExecutionResponse response) throws Exception {
         initialize(request);

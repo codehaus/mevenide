@@ -31,7 +31,7 @@ import org.codehaus.mevenide.pde.verifier.CompatibilityChecker;
  * @version $Id$
  * 
  */
-public abstract class EclipseArtifactMojo implements Plugin {
+public abstract class PdeArtifactMojo implements Plugin {
     
     /** eclipse home directory */
     protected File eclipseHome;  
@@ -64,10 +64,14 @@ public abstract class EclipseArtifactMojo implements Plugin {
         eclipseHome = new File(eclipseHomeLocation);
         
         String outputDirectoryLocation = (String) request.getParameter("outputDirectory");
-        outputDirectory = new File(outputDirectoryLocation);
+        if ( outputDirectoryLocation != null ) {
+            outputDirectory = new File(outputDirectoryLocation);
+        }
         
         String workspaceLocation = (String) request.getParameter("workspace");
-        workspace = new File(workspaceLocation);
+        if ( workspaceLocation != null ) {
+            workspace = new File(workspaceLocation);
+        }
 
         String basedirLocation = (String) request.getParameter("basedir");
         basedir = basedirLocation == null ? project.getBasedir() : new File(basedirLocation);

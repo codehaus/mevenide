@@ -14,12 +14,16 @@
  *  limitations under the License.
  * =========================================================================
  */
-package org.codehaus.mevenide.pde;
+package org.codehaus.mevenide.pde.classpath;
 
-import java.io.File;
-import junit.framework.TestCase;
+import java.util.HashMap;
+import java.util.Map;
 import org.apache.maven.plugin.PluginExecutionRequest;
 import org.apache.maven.plugin.PluginExecutionResponse;
+import org.apache.maven.project.MavenProject;
+import org.codehaus.mevenide.pde.PdeArtifactMojo;
+import org.codehaus.mevenide.pde.PdeArtifactMojoTest;
+
 
 
 /**  
@@ -28,35 +32,37 @@ import org.apache.maven.plugin.PluginExecutionResponse;
  * @version $Id$
  * 
  */
-public abstract class EclipseArtifactMojoTest extends TestCase {
+public class PdeClasspathInitializerMojoTest extends PdeArtifactMojoTest {
     
-    protected EclipseArtifactMojo mojo;
+    private PluginExecutionRequest request;
+    private PluginExecutionResponse response;
     
-    protected File eclipseHome;
-    
-    protected File commonBasedir;
-    
+    private MavenProject project;
+
     protected void setUp() throws Exception {
         super.setUp();
-        mojo = getMojo() == null ? newMojoStub() : getMojo();
-        eclipseHome = new File(getClass().getResource("/eclipse.home").getFile());
-        commonBasedir = new File(getClass().getResource("/basedir.common").getFile());
-        mojo.eclipseHome = eclipseHome;
-    }
-
-    protected abstract EclipseArtifactMojo getMojo();
-    
-    protected EclipseArtifactMojo newMojoStub() {
-        mojo = new EclipseArtifactMojo() { 
-            public void execute(PluginExecutionRequest arg0, PluginExecutionResponse arg1) throws Exception { }
-        };
-        return mojo;
+        
+        project = new MavenProject();
+        
+        Map params = new HashMap();
+        params.put("project", project);
+       
+        params.put("eclipseHome", eclipseHome.getAbsolutePath());
+        params.put("basedir", commonBasedir.getAbsolutePath());
+        
+        request = new PluginExecutionRequest( params );
+        response = new PluginExecutionResponse();
     }
     
-    protected void tearDown() throws Exception {
-        super.tearDown();
-        mojo = null;
+    protected PdeArtifactMojo getMojo() {
+        return new PdeClasspathInitializerMojo();
+    }
+    
+    public void testExecute() throws Exception {
+        
+        mojo.execute(request, response);
+        assertEquals(3, project.getArtifacts().size());
+        
     }
     
 }
-

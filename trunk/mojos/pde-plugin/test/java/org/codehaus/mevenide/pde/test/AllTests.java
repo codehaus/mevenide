@@ -17,6 +17,7 @@
 package org.codehaus.mevenide.pde.test;
 
 import org.codehaus.mevenide.pde.archive.SimpleZipCreatorTest;
+import org.codehaus.mevenide.pde.classpath.PdeClasspathInitializerMojoTest;
 import org.codehaus.mevenide.pde.classpath.PluginClasspathResolverTest;
 import org.codehaus.mevenide.pde.descriptor.CommonPluginValuesReplacerTest;
 import org.codehaus.mevenide.pde.verifier.CompatibilityCheckerTest;
@@ -35,6 +36,7 @@ public class AllTests {
         TestSuite suite = new TestSuite();
         
         suite.addTestSuite(PluginClasspathResolverTest.class);
+        suite.addTestSuite(PdeClasspathInitializerMojoTest.class);
         suite.addTestSuite(CompatibilityCheckerTest.class);
         suite.addTestSuite(PluginClasspathResolverTest.class);
         suite.addTestSuite(SimpleZipCreatorTest.class);

@@ -18,7 +18,7 @@ package org.codehaus.mevenide.pde.plugin;
 
 import org.apache.maven.plugin.PluginExecutionRequest;
 import org.apache.maven.plugin.PluginExecutionResponse;
-import org.codehaus.mevenide.pde.EclipseArtifactMojo;
+import org.codehaus.mevenide.pde.PdeArtifactMojo;
 
 
 /**  
@@ -27,7 +27,7 @@ import org.codehaus.mevenide.pde.EclipseArtifactMojo;
  * @version $Id$
  * 
  */
-public class EclipsePluginMojo extends EclipseArtifactMojo {
+public class PdeEclipsePluginMojo extends PdeArtifactMojo {
     
     public void execute(PluginExecutionRequest request, PluginExecutionResponse response) throws Exception {
         initialize(request);

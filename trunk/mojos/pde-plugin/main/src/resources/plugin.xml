@@ -44,13 +44,13 @@
           <type>String</type>
           <required>false</required>
           <validator></validator>
-          <expression>#maven.build.dir/eclipse</expression>
+          <expression>#maven.pde.output</expression>
           <description>Directory where the generated artifact will be outputted</description>
         </parameter>
         <parameter>
           <name>basedir</name>
           <type>String</type>
-          <required>false</required>
+          <required>true</required>
           <validator></validator>
           <expression>#basedir</expression>
           <description>Base directory where plugin.xml is located</description>
@@ -65,8 +65,33 @@
         </parameter>
       </parameters>
       <prereqs>
+      	<prereq>pde:classpath</prereq>
         <prereq>surefire:test</prereq>
       </prereqs>
+    </mojo>
+    <mojo>
+      <id>pde:classpath</id>
+      <implementation>org.codehaus.mevenide.pde.classpath.PdeClasspathInitializerMojo</implementation>
+      <instantiationStrategy>singleton</instantiationStrategy>
+      <executionStrategy>once-per-session</executionStrategy>
+      <parameters>
+        <parameter>
+          <name>eclipseHome</name>
+          <type>String</type>
+          <required>true</required>
+          <validator></validator>
+          <expression>#maven.pde.eclipse.home</expression>
+          <description>Location of Eclipse home directory</description>
+        </parameter>
+        <parameter>
+          <name>basedir</name>
+          <type>String</type>
+          <required>false</required>
+          <validator></validator>
+          <expression>#basedir</expression>
+          <description>Base directory where plugin.xml is located</description>
+        </parameter>
+      </parameters>
     </mojo>
   </mojos>
   <dependencies>
