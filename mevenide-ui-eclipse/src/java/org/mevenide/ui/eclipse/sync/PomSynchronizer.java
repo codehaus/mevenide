@@ -65,15 +65,8 @@ public class PomSynchronizer extends AbstractPomSynchronizer implements ISynchro
      */
 	protected void mavenize() {
 		try {
-			boolean shouldCheckTimeStamp = Mevenide.getPlugin().getCheckTimestamp();
 			
-			long pomTimestamp = pom.getLocation().toFile().lastModified();
-			long dotClasspathTimestamp = project.getFile(".classpath").getLocation().toFile().lastModified();
-			boolean disSynchro = pomTimestamp < dotClasspathTimestamp;
-			
-			boolean shouldSynchronize = (shouldCheckTimeStamp && disSynchro) || !shouldCheckTimeStamp;
-			
-			if ( shouldSynchronize ) {
+			if ( SynchronizerUtil.shouldSynchronizePom(project) ) {
 				log.debug("About to update pom");
 				DependencyGroup dependencyGroup = DependencyGroupMarshaller.getDependencyGroup(project, Mevenide.getPlugin().getFile("statedDependencies.xml"));
 				SourceDirectoryGroup sourceGroup = SourceDirectoryGroupMarshaller.getSourceDirectoryGroup(project, Mevenide.getPlugin().getFile("sourceTypes.xml"));
@@ -120,7 +113,7 @@ public class PomSynchronizer extends AbstractPomSynchronizer implements ISynchro
 		
 		pomWriter.resetSourceDirectories(pomFile);
 		
-		//WICKED if/else
+		//WICKED if/else -- to be removed when SourceDirectoryBatchUpdate is done - tho this will only move the problem backward
 		for (int i = 0; i < sourceGroup.getSourceDirectories().size(); i++) {
 			SourceDirectory directory = (SourceDirectory) sourceGroup.getSourceDirectories().get(i);
 			if ( directory.isSource() ) {
