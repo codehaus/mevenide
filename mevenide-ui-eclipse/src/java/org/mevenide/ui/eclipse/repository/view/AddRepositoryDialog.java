@@ -30,6 +30,8 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.PlatformUI;
+import org.mevenide.ui.eclipse.IImageRegistry;
+import org.mevenide.ui.eclipse.Mevenide;
 
 
 /**  
@@ -71,6 +73,7 @@ public class AddRepositoryDialog extends TitleAreaDialog {
         getShell().setText("Add Repository");
 		setShellStyle(SWT.RESIZE | SWT.APPLICATION_MODAL);
 		setTitle("Add a new repository");
+		setTitleImage(Mevenide.getInstance().getImageRegistry().get(IImageRegistry.NEW_MAVEN_REPO_WIZ));
 		
 		GridLayout topLayout = new GridLayout();
         topLayout.marginHeight = 5;

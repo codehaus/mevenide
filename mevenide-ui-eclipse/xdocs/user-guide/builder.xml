@@ -81,7 +81,7 @@
 		</section>
 		<section>
 			<p>
-				<navbar prev="pom-templates.html" toc="help.html"/>
+				<navbar prev="pom-templates.html" toc="help.html" next="repo_browsing.html"/>
 			</p>
 		</section>
 	</body>
