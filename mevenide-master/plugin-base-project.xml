@@ -1,7 +1,8 @@
 <?xml version="1.0" ?>
-<!DOCTYPE project [
+<!--<!DOCTYPE project [
     <!ENTITY scm-reports SYSTEM "file:../mevenide-master/pom-fragments/plugin-pom-fragments/scm-reports.xml">
-]>    
+]>  
+-->  
 <project>
 	
     <pomVersion>3</pomVersion>
@@ -25,8 +26,9 @@
       <url>http://cvs.mevenide.codehaus.org/cvsweb.cgi/${pom.artifactId}/</url>
     </repository>
     
-	<reports>
+<!--	<reports>
 		&scm-reports;
 	</reports>
+    -->
 	
 </project>
