@@ -20,7 +20,7 @@
     <dependency>
       <groupId>mevenide</groupId>
       <artifactId>goals-grabber</artifactId>
-      <version>1.0</version>
+      <version>0.3-SNAPSHOT</version>
       <url>http://sf.net/projects/mevenide</url>
     </dependency>
         
@@ -76,18 +76,16 @@
     </dependency>
         
     <dependency>
-      <groupId>mockcreator</groupId>
-      <artifactId>mockcreator</artifactId>
-      <version>0.2.4</version>
-      <url>http://www.abstrakt.de/mockcreator.html</url>
+    	<groupId>forehead</groupId>	
+    	<artifactId>forehead</artifactId>
+    	<version>1.0-beta-5</version>
     </dependency>
     
-    <!-- dependency>
-    	<groupId>configuration</groupId>	
-    	<artifactId>configuration</artifactId>
-    	<version>1.0</version>
-    	<url>http://gdfact.fr.st/</url>
-    </dependency -->
+    <dependency>
+    	<groupId>ant</groupId>	
+    	<artifactId>ant</artifactId>
+    	<version>1.5.3-1</version>
+    </dependency>
 		
   </dependencies>
 

@@ -17,7 +17,6 @@
 package org.mevenide.project.validation;
 
 import org.mevenide.AbstractMevenideTestCase;
-import org.mevenide.project.io.ProjectReader;
 
 
 /**  
@@ -29,9 +28,12 @@ import org.mevenide.project.io.ProjectReader;
 public abstract class AbstractProjectValidatorTest extends AbstractMevenideTestCase {
     public void testValidate() throws Exception  {
         try {
-            getValidator().validate(ProjectReader.getReader().read(projectFile));
+            getValidator().validate(projectFile); 
+            fail();
         }
         catch (ValidationException e) {
+            assertEquals(1, e.getErrors().size());
+            assertEquals(0, e.getWarnings().size());
         }
     }
     

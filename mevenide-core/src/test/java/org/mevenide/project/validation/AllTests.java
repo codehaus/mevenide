@@ -16,17 +16,24 @@
  */
 package org.mevenide.project.validation;
 
+import junit.framework.Test;
+import junit.framework.TestSuite;
 
-
-/**  
+/**
  * 
- * @author <a href="mailto:rhill2@free.fr">Gilles Dodinet</a>
- * @version $Id$
+ * @author Gilles Dodinet (gdodinet@wanadoo.fr)
+ * @version $Id: AllTests.java 8 mai 2003 15:32:4913:34:35 Exp gdodinet 
  * 
  */
-public class ContentValidatorTest extends AbstractProjectValidatorTest {
-    
-    protected IProjectValidator getValidator() {
-        return new ContentValidator();
+public class AllTests  {
+	private AllTests() {
+	}
+
+    public static Test suite() {
+        TestSuite suite = new TestSuite();
+        
+        suite.addTestSuite(SchemaValidatorTest.class);
+        
+        return suite;
     }
 }

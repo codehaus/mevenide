@@ -38,6 +38,7 @@ public class AllTests {
 		suite.addTest(org.mevenide.project.dependency.AllTests.suite());
 		suite.addTest(org.mevenide.project.io.AllTests.suite());
 		suite.addTest(org.mevenide.project.source.AllTests.suite());
+		suite.addTest(org.mevenide.project.validation.AllTests.suite());
 		
         return suite;
     }
