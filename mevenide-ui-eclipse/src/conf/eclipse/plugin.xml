@@ -42,7 +42,7 @@
    </requires>
 
 
-<!-- Maven nature -->
+   <!-- Maven nature -->
    <extension
          id="mavennature"
          name="maven nature"
@@ -53,10 +53,10 @@
          </run>
       </runtime>
    </extension>
-<!-- Maven actions -->
+   <!-- Maven actions -->
    <extension
          point="org.eclipse.ui.popupMenus">
-<!-- folder contributions (adaptable) -->
+      <!-- folder contributions (adaptable) -->
       <objectContribution
             adaptable="true"
             objectClass="org.eclipse.core.resources.IFolder"
@@ -78,7 +78,7 @@
                id="maven-plugin.Synchronize">
          </action>
       </objectContribution>
-<!-- project contributions (adaptable) -->
+      <!-- project contributions (adaptable) -->
       <objectContribution
             adaptable="true"
             objectClass="org.eclipse.core.resources.IProject"
@@ -122,12 +122,12 @@
                id="maven-plugin.Synchronize">
          </action>
       </objectContribution>
-<!-- project.xml contributions -->
-      <objectContribution
+      <!-- project.xml contributions -->
+      <objectContribution 
             objectClass="org.eclipse.core.resources.IFile"
             nameFilter="project.xml"
             id="maven.plugin.project.xml.contribution.ifile">
-         <menu
+         <menu 
                label="%MavenMenu.label"
                path="additions"
                id="maven.plugin.menu">
@@ -166,7 +166,7 @@
          </action>
       </objectContribution>
    </extension>
-<!-- Maven preferences -->
+   <!-- Maven preferences -->
    <extension
          point="org.eclipse.ui.preferencePages">
       <page
@@ -193,7 +193,7 @@
             id="org.mevenide.ui.eclipse.preferences.TemplatePreferencePage">
       </page>
    </extension>
-<!-- Maven POM editor -->
+   <!-- Maven POM editor -->
    <extension
          point="org.eclipse.ui.editors">
       <editor
@@ -205,7 +205,7 @@
             contributorClass="org.mevenide.ui.eclipse.editors.pom.MevenidePomEditorContributor"
             id="org.mevenide.ui.eclipse.editors.pom.MevenidePomEditor">
       </editor>
-<!-- 
+      <!-- 
       	constructed by eclipse extension point template 
       	will provide completion thingie and outline to launch goals from
       -->
@@ -219,10 +219,6 @@
             contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
             id="org.mevenide.ui.eclipse.editors.jelly.MavenXmlEditor">
       </editor>
-<!-- 
-      	constructed by eclipse extension point template 
-      	will provide completion thingie and outline to launch goals from
-      -->
       <editor
             contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
             class="org.mevenide.ui.eclipse.editors.jelly.BasicJellyEditor"
@@ -242,7 +238,7 @@
             id="org.mevenide.ui.launching.MavenLaunchConfigType">
       </launchConfigurationType>
    </extension>
-<!-- external tools integration -->
+   <!-- external tools integration -->
    <extension
          point="org.eclipse.debug.ui.launchConfigurationTabGroups">
       <launchConfigurationTabGroup
@@ -262,7 +258,7 @@
             id="org.mevenide.ui.mavenShortcut">
       </shortcut>
    </extension>
-<!-- Synchronize view -->
+   <!-- Synchronize view -->
    <extension
          point="org.eclipse.ui.views">
       <category
@@ -289,7 +285,7 @@
          </view>
       </perspectiveExtension>
    </extension>
-<!-- Maven Project Wizards -->
+   <!-- Maven Project Wizards -->
    <extension
          point="org.eclipse.ui.newWizards">
       <category
