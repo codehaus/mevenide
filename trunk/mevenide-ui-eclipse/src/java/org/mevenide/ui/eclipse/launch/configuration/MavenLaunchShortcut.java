@@ -144,7 +144,7 @@ public class MavenLaunchShortcut implements ILaunchShortcut {
 		ILaunchConfigurationType type = manager.getLaunchConfigurationType("org.mevenide.ui.launching.MavenLaunchConfigType");
 		
 		String name = "[" + basedir.lastSegment() + "] ";
-		String goals = goalsToRun == null ? Mevenide.getPlugin().getDefaultGoals() : goalsToRun;
+		String goals = goalsToRun == null ? Mevenide.getInstance().getDefaultGoals() : goalsToRun;
 		name += StringUtils.replace(goals, ":", "_");
 		
 		ILaunch[] launches = manager.getLaunches();

@@ -74,7 +74,7 @@ public class DefaultPathResolver implements IPathResolver {
 		if ( project == null ) {
 			throw new Exception("project should not be null");
 		}
-		Document doc = new SAXBuilder().build(Mevenide.getPlugin().getFile(SOURCE_TYPES_XML_FILE));
+		Document doc = new SAXBuilder().build(Mevenide.getInstance().getFile(SOURCE_TYPES_XML_FILE));
 		Element root = doc.getRootElement();
 		List sdGroupElements = root.getChildren(XmlSerializationConstants.SOURCE_DIRECTORY_GROUP_ELEM);
 		

@@ -112,7 +112,7 @@ public class MevenidePreferencePage extends PreferencePage implements IWorkbench
 			manager.setIntValue(MevenidePreferenceKeys.JAVA_HEAP_SIZE_PREFERENCE_KEY, dialog.getHeapSize());
 		}
 		
-		Mevenide.getPlugin().initEnvironment();
+		Mevenide.getInstance().initEnvironment();
 		
 		return manager.store();
 	}

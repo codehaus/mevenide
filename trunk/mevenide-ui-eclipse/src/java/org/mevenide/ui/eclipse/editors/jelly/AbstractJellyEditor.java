@@ -38,7 +38,7 @@ public abstract class AbstractJellyEditor extends TextEditor {
 		super.createActions();
 		
 		IAction action = new TextOperationAction(
-				Mevenide.getPlugin().getResourceBundle(), 
+				Mevenide.getInstance().getResourceBundle(), 
 				"MavenXml.ContentAssistProposal", 
 				this, 
 				ISourceViewer.CONTENTASSIST_PROPOSALS);

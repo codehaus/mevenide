@@ -451,7 +451,7 @@ public class GoalsPickerDialog  extends Dialog {
     }
 
     private CheckboxTreeViewer getViewer(Composite parent) throws Exception {
-    	String basedir = Mevenide.getPlugin().getCurrentDir();
+    	String basedir = Mevenide.getInstance().getCurrentDir();
     	
     	CheckboxTreeViewer viewer = new CheckboxTreeViewer(parent, SWT.V_SCROLL | SWT.H_SCROLL);
     	

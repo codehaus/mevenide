@@ -60,7 +60,7 @@ public class FileUtils {
 	
 
 	public static boolean inLocalRepository(String entryPath) {
-		File localRepo = new File(Mevenide.getPlugin().getMavenRepository());
+		File localRepo = new File(Mevenide.getInstance().getMavenRepository());
 		return MevenideUtils.findFile(localRepo, entryPath);
 	}
 
@@ -69,8 +69,8 @@ public class FileUtils {
 	}
 
 	public static void createPom(IProject project) throws Exception, CoreException {
-		 log.debug("Creating pom skeleton using template : " + Mevenide.getPlugin().getPomTemplate());
-		 PomSkeletonBuilder pomSkeletonBuilder = PomSkeletonBuilder.getSkeletonBuilder( Mevenide.getPlugin().getPomTemplate() ); 
+		 log.debug("Creating pom skeleton using template : " + Mevenide.getInstance().getPomTemplate());
+		 PomSkeletonBuilder pomSkeletonBuilder = PomSkeletonBuilder.getSkeletonBuilder( Mevenide.getInstance().getPomTemplate() ); 
 		 String referencedPomSkeleton = pomSkeletonBuilder.getPomSkeleton(project.getName());
 		 IFile referencedProjectFile = project.getFile("project.xml"); 
 		 referencedProjectFile.create(new ByteArrayInputStream(referencedPomSkeleton.getBytes()), false, null);

@@ -35,7 +35,7 @@ public class Runner extends AbstractRunner {
     private static final String MAVEN_HOME_NOT_SET_MESSAGE = "Runner.mavenHome.NotSet.message";
     private static final String MAVEN_HOME_NOT_SET_TITLE = "Runner.mavenHome.NotSet.title";
     
-    Mevenide plugin = Mevenide.getPlugin();
+    Mevenide plugin = Mevenide.getInstance();
 
 	public Runner() throws MevenideException {
 		super();

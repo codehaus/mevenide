@@ -202,7 +202,7 @@ public class MevenidePreferenceDialog {
 		);
 		
 		if ( StringUtils.isNull(defaultGoalsEditor.getStringValue()) ) {
-		    defaultGoalsEditor.getTextControl(topLevelContainer).setText(Mevenide.getPlugin().getDefaultGoals());
+		    defaultGoalsEditor.getTextControl(topLevelContainer).setText(Mevenide.getInstance().getDefaultGoals());
 		}
 
 		Composite compositeB = new Composite(parent, SWT.NULL);
@@ -263,32 +263,32 @@ public class MevenidePreferenceDialog {
 	
 	public void update() {
 		mavenHome = mavenHomeEditor.getTextControl(topLevelContainer).getText();
-		Mevenide.getPlugin().setMavenHome(mavenHome);
+		Mevenide.getInstance().setMavenHome(mavenHome);
 
 
 		javaHome = javaHomeEditor.getTextControl(topLevelContainer).getText();
-		Mevenide.getPlugin().setJavaHome(javaHome);
+		Mevenide.getInstance().setJavaHome(javaHome);
 		
 		
 		pomTemplateLocation = pomTemplateLocationEditor.getTextControl(topLevelContainer).getText();
-		Mevenide.getPlugin().setPomTemplate(pomTemplateLocation);
+		Mevenide.getInstance().setPomTemplate(pomTemplateLocation);
 		
 		defaultGoals = defaultGoalsEditor.getTextControl(topLevelContainer).getText();
-		Mevenide.getPlugin().setDefaultGoals(defaultGoals);
+		Mevenide.getInstance().setDefaultGoals(defaultGoals);
 
 		mavenLocalHome = mavenLocalHomeEditor.getTextControl(topLevelContainer).getText();
 		if ( mavenLocalHome != null && !mavenLocalHome.trim().equals("") ) {
-			Mevenide.getPlugin().setMavenLocalHome(mavenLocalHome);
+			Mevenide.getInstance().setMavenLocalHome(mavenLocalHome);
 		}
 				
 		mavenRepository = mavenRepoEditor.getTextControl(topLevelContainer).getText();
 		if ( mavenRepository != null && !mavenRepository.trim().equals("") ) {
-			Mevenide.getPlugin().setMavenRepository(mavenRepository);
+			Mevenide.getInstance().setMavenRepository(mavenRepository);
 		}
 		
 		heapSize = heapSizeEditor.getIntValue();
 		if ( heapSize != 0 ) {
-			Mevenide.getPlugin().setHeapSize(heapSize);
+			Mevenide.getInstance().setHeapSize(heapSize);
 		}
 	}
 	

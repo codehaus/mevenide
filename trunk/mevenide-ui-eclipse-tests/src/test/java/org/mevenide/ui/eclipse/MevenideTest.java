@@ -48,7 +48,7 @@ public class MevenideTest extends TestCase {
 	}
 
 	public void testGetPlugin() {
-		assertNotNull(Mevenide.getPlugin());
+		assertNotNull(Mevenide.getInstance());
 	}
 
 	public void testGetWorkspace() {
@@ -77,7 +77,7 @@ public class MevenideTest extends TestCase {
 	}
 
 	public void testGetResourceBundle() {
-		assertNotNull(Mevenide.getPlugin().getResourceBundle());
+		assertNotNull(Mevenide.getInstance().getResourceBundle());
 	}
 
 	public void testGetImageDescriptor() {

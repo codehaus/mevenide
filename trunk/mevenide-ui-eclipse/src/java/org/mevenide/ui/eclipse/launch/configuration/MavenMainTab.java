@@ -27,6 +27,7 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.externaltools.internal.launchConfigurations.ExternalToolsMainTab;
 import org.eclipse.ui.externaltools.internal.model.IExternalToolConstants;
 import org.mevenide.ui.eclipse.Mevenide;
@@ -58,9 +59,14 @@ public class MavenMainTab extends ExternalToolsMainTab {
 		composite.setLayoutData(gd);
 		composite.setFont(font);
 		
+		//just to avoid NPE in ExternalToolsMainTab
+		createLocationComponent(composite);		
+		
+		new Label(composite, SWT.NULL);
+		
 		createWorkDirectoryComponent(composite);
 		
-		workDirectoryField.addModifyListener(
+		locationField.addModifyListener(
 			new ModifyListener() {
 				public void modifyText(ModifyEvent e) {
 					setDirty(true);
@@ -71,23 +77,36 @@ public class MavenMainTab extends ExternalToolsMainTab {
 		
 	}
 	
+	protected void createLocationComponent(Composite composite) {
+		super.createLocationComponent(composite);
+		super.locationField.setEnabled(false);
+		super.fileLocationButton.setEnabled(false);
+		super.variablesLocationButton.setEnabled(false);
+		super.workspaceLocationButton.setEnabled(false);
+	}
+
 	public void initializeFrom(ILaunchConfiguration configuration) {
 		updateWorkingDirectory(configuration);
 
 	}
 
 	public void performApply(ILaunchConfigurationWorkingCopy configuration) {
-		String workingDirectory= workDirectoryField.getText().trim();
-		if (workingDirectory.length() == 0) {
+		String location = locationField.getText().trim();
+		if (location.length() == 0) {
 			configuration.setAttribute(IExternalToolConstants.ATTR_WORKING_DIRECTORY, (String)null);
 		} else {
-			configuration.setAttribute(IExternalToolConstants.ATTR_WORKING_DIRECTORY, workingDirectory);
+			configuration.setAttribute(IExternalToolConstants.ATTR_WORKING_DIRECTORY, location);
 		}
 	}
 	
 	public boolean isValid(ILaunchConfiguration launchConfig) {
 		return true;
 	}
+	
+//	protected String getLocationLabel() {
+//		return Mevenide.getResourceString("MavenMainTab.working.directory.label");
+//	}
+	
 	protected String getWorkingDirectoryLabel() {
 		return Mevenide.getResourceString("MavenMainTab.working.directory.label");
 	}
