@@ -22,8 +22,6 @@
          <packages prefixes="org.xmlpull.v1"/>
       </library>
       <library name="lib/xpp3-1.1.2a.jar">
-         <export name="*"/>
-         <packages prefixes="org.xmlpull"/>
       </library>
       <library name="lib/maven-core-1.0-beta-11-SNAPSHOT.jar">
          <export name="*"/>
@@ -42,9 +40,8 @@
          <export name="*"/>
          <packages prefixes="org.mevenide.ui.eclipse"/>
       </library>
-      <library name="lib/etc.jar" type="resource">
-      </library>
    </runtime>
+   
    <requires>
       <import plugin="org.eclipse.core.resources"/>
       <import plugin="org.eclipse.core.runtime"/>
