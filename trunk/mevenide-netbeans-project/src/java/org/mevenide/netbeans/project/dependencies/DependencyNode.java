@@ -46,8 +46,10 @@ public class DependencyNode extends AbstractNode {
         project = proj;
         if (dep.isPlugin()) {
             setIconBase("org/mevenide/netbeans/project/resources/DependencyPlugin"); //NOI18N
-        } else if (dep.getType() != null && "pom".equalsIgnoreCase(dep.getType())) {
+        } else if (dep.getType() != null && "pom".equalsIgnoreCase(dep.getType())) { //NOI18N
             setIconBase("org/mevenide/netbeans/project/resources/DependencyPom"); //NOI18N
+        } else if (dep.getType() != null && "jar".equalsIgnoreCase(dep.getType())) { //NOI18N
+            setIconBase("org/mevenide/netbeans/project/resources/DependencyJar"); //NOI18N
         } else {
             setIconBase("org/mevenide/netbeans/project/resources/DependencyIcon"); //NOI18N
         }
@@ -59,21 +61,20 @@ public class DependencyNode extends AbstractNode {
             // check if dependency is overriden
         isOverriden = false;
         String ov = project.getPropertyResolver().getResolvedValue("maven.jar.override");
-        if ("true".equalsIgnoreCase(ov)) {
+        if (ov != null) {
+            ov = ov.trim();
+        }
+        if ("true".equalsIgnoreCase(ov) || "on".equalsIgnoreCase(ov)) {
             override = project.getPropertyResolver().getValue("maven.jar." + dependency.getArtifactId());
             isOverriden = override != null;
         }
     }
     
-    public Action[] getActions( boolean context )
-    {
-        
-        if ( actions == null )
-        {
+    public Action[] getActions( boolean context ) {
+        if ( actions == null ) {
             actions = new Action[0];
         }
         return actions;
-        
     }
     
     public boolean canDestroy() {
