@@ -61,7 +61,7 @@ public class DefaultQueryContextTest extends TestCase {
     }
 
     protected void tearDown() throws Exception {
-        delete(userHomeDir);
+//        delete(userHomeDir);
         System.setProperty("user.home", originalUserHome);
     }
     
@@ -92,7 +92,25 @@ public class DefaultQueryContextTest extends TestCase {
         
     }
     
-    
+    public void testRefresh() throws Exception {
+        DefaultQueryContext query = new DefaultQueryContext();
+        assertNull(query.getProjectDirectory());
+        assertNotNull(query.getUserDirectory());
+        assertNotNull(query.getUserPropertyValue("maven.repo.remote"));
+        assertNotNull(query.getPropertyValue("maven.repo.remote"));
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException exc) {
+            
+        }
+        File changes = new File(DefaultQueryContextTest.class.getResource("/org/mevenide/properties/build.properties").getFile());
+        File copyTo = new File(userHomeDir, "build.properties");
+        copy(changes.getAbsolutePath(), copyTo.getAbsolutePath());
+
+        assertNull(query.getUserPropertyValue("maven.repo.remote"));
+        assertNull(query.getPropertyValue("maven.repo.remote"));
+        assertNotNull(query.getUserPropertyValue("maven.build.dir"));
+    } 
     
     
 	protected void delete(File file) {
