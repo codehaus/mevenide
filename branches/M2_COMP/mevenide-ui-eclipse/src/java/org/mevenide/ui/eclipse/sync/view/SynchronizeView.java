@@ -22,8 +22,7 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.maven.MavenUtils;
-import org.apache.maven.project.Project;
+import org.apache.maven.project.MavenProject;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -72,11 +71,11 @@ import org.mevenide.ui.eclipse.sync.event.NodeEvent;
 import org.mevenide.ui.eclipse.sync.event.PomArtifactEvent;
 import org.mevenide.ui.eclipse.sync.event.SynchronizationConstraintEvent;
 import org.mevenide.ui.eclipse.sync.model.ArtifactMappingContentProvider;
-import org.mevenide.ui.eclipse.sync.model.DependencyMappingNode;
-import org.mevenide.ui.eclipse.sync.model.DependencyPropertyWrapper;
-import org.mevenide.ui.eclipse.sync.model.EclipseContainerContainer;
-import org.mevenide.ui.eclipse.sync.model.IArtifactMappingNode;
-import org.mevenide.ui.eclipse.sync.model.IArtifactMappingNodeContainer;
+import org.mevenide.ui.eclipse.sync.model.ArtifactNode;
+import org.mevenide.ui.eclipse.sync.model.EclipseProjectNode;
+import org.mevenide.ui.eclipse.sync.model.MavenArtifactNode;
+import org.mevenide.ui.eclipse.sync.model.PropertyNode;
+import org.mevenide.util.MevenideUtils;
 
 
 
@@ -154,7 +153,7 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
 		}
     }
     
-    public void setInput(Project input) {
+    public void setInput(MavenProject input) {
         try {
             //poms = FileUtils.getPoms(input);
             	
@@ -176,13 +175,11 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
     }
     
     private void synchronizeProjectWithPoms(IProject project, List poms) {
-        ((ArtifactMappingContentProvider) artifactMappingNodeViewer.getContentProvider()).setPoms(poms);
-        ((ArtifactMappingContentProvider) artifactMappingNodeViewer.getContentProvider()).setDirection(this.direction);
-
-        artifactMappingNodeViewer.setInput(project);
+    	ArtifactMappingContentProvider provider = (ArtifactMappingContentProvider) artifactMappingNodeViewer.getContentProvider();
+    	artifactMappingNodeViewer.setInput(provider.new RootNode(project, poms));
         
         for (int i = 0; i < poms.size(); i++) {
-            Project mavenProject = (Project) poms.get(i);
+            MavenProject mavenProject = (MavenProject) poms.get(i);
             comparator = ProjectComparatorFactory.getComparator(mavenProject);
 			comparator.addProjectChangeListener(ProjectComparator.BUILD, this);
 			comparator.addProjectChangeListener(ProjectComparator.DEPENDENCIES, this); 
@@ -199,10 +196,10 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
     }
 
     private void assertValidDirection() {
-        if ( direction != EclipseContainerContainer.INCOMING 
-                && direction != EclipseContainerContainer.OUTGOING 
-                && direction != EclipseContainerContainer.CONFLICTING ) {
-            setDirection(EclipseContainerContainer.INCOMING);
+        if ( direction != ArtifactNode.INCOMING 
+                && direction != ArtifactNode.OUTGOING 
+                && direction != ArtifactNode.CONFLICTING ) {
+            setDirection(ArtifactNode.INCOMING);
         }
     }
     
@@ -211,7 +208,7 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
 		if ( direction != this.direction ) {
 	        this.direction = direction;
 	        if ( artifactMappingNodeViewer.getInput() != null ) {
-	            ((ArtifactMappingContentProvider) artifactMappingNodeViewer.getContentProvider()).setDirection(direction);
+	            //((ArtifactMappingContentProvider) artifactMappingNodeViewer.getContentProvider()).setDirection(direction);
 	        }
 			artifactMappingNodeViewer.refresh(true);
 	        //artifactMappingNodeViewer.expandToLevel(1);
@@ -221,7 +218,7 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
     }
 
     private void activateWritePropertiesAction(int direction) {
-    	if ( direction == EclipseContainerContainer.OUTGOING ) {
+    	if ( direction == ArtifactNode.OUTGOING ) {
     		getViewSite().getActionBars().getToolBarManager().add(writeProperties);
     	}
     	else {
@@ -329,22 +326,22 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
 				for (int i = 0; i < selections.size(); i++) {
 					Object selection = selections.get(i);
 					
-					if ( selection instanceof IArtifactMappingNode ) {
+					if ( selection instanceof ArtifactNode ) {
 
-						IArtifactMappingNode selectedNode = (IArtifactMappingNode) selection;
+						ArtifactNode selectedNode = (ArtifactNode) selection;
 						
 						//outgoing 
-						enablePushToPom = (selectedNode.getChangeDirection() & EclipseContainerContainer.OUTGOING) != 0;
-						enableRemoveFromProject = (selectedNode.getChangeDirection() & EclipseContainerContainer.OUTGOING) != 0;
-						enableAddDependencyProperty = (selectedNode.getChangeDirection() & EclipseContainerContainer.OUTGOING) != 0;
+						enablePushToPom = (selectedNode.getDirection() & ArtifactNode.OUTGOING) != 0;
+						enableRemoveFromProject = (selectedNode.getDirection() & ArtifactNode.OUTGOING) != 0;
+						enableAddDependencyProperty = (selectedNode.getDirection() & ArtifactNode.OUTGOING) != 0;
 							
 						//incoming
-						enableAddToClasspath = (selectedNode.getChangeDirection() & EclipseContainerContainer.INCOMING) != 0;
-						enableRemoveFromPom = (selectedNode.getChangeDirection() & EclipseContainerContainer.INCOMING) != 0;
+						enableAddToClasspath = (selectedNode.getDirection() & ArtifactNode.INCOMING) != 0;
+						enableRemoveFromPom = (selectedNode.getDirection() & ArtifactNode.INCOMING) != 0;
 						
 						//conflicting
-						enableMarkAsMerged = (selectedNode.getChangeDirection() & EclipseContainerContainer.CONFLICTING) != 0;
-						enableAddToIgnoreList = (selectedNode.getChangeDirection() & EclipseContainerContainer.CONFLICTING) == 0;
+						enableMarkAsMerged = (selectedNode.getDirection() & ArtifactNode.CONFLICTING) != 0;
+						enableAddToIgnoreList = (selectedNode.getDirection() & ArtifactNode.CONFLICTING) == 0;
 					}
 				}
 				
@@ -434,20 +431,20 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
 		contextManager.addMenuListener(new IMenuListener() {
 			public void menuAboutToShow(IMenuManager manager) {
 			    Object selection = ((StructuredSelection) artifactMappingNodeViewer.getSelection()).getFirstElement();
-			    if ( selection instanceof IArtifactMappingNode ) {
-				    IArtifactMappingNode selectedNode = (IArtifactMappingNode) selection;
-					if ( (selectedNode.getChangeDirection() & EclipseContainerContainer.OUTGOING) != 0 ) {
+			    if ( selection instanceof ArtifactNode ) {
+			    	ArtifactNode selectedNode = (ArtifactNode) selection;
+					if ( (selectedNode.getDirection() & ArtifactNode.OUTGOING) != 0 ) {
 						manager.add(pushToPom);
 						manager.add(removeFromProject);
-						if ( selection instanceof DependencyMappingNode ) {
+						if ( selection instanceof MavenArtifactNode ) {
 							manager.add(addDependencyProperty);
 						}
 					}
-					if ( (selectedNode.getChangeDirection() & EclipseContainerContainer.INCOMING) != 0 ) {
+					if ( (selectedNode.getDirection() & ArtifactNode.INCOMING) != 0 ) {
 						manager.add(addToClasspath);
 						manager.add(removeFromPom);
 					}
-					if ( (selectedNode.getChangeDirection() & EclipseContainerContainer.CONFLICTING) != 0 ) {
+					if ( (selectedNode.getDirection() & ArtifactNode.CONFLICTING) != 0 ) {
 						//manager.add(markAsMerged);
 					}
 					else {
@@ -456,7 +453,7 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
 					manager.add(separator);
 					manager.add(viewProperties);		
 				}
-				if ( selection instanceof DependencyPropertyWrapper ) {
+				if ( selection instanceof PropertyNode ) {
 					manager.add(viewProperties);
 				}
 			}
@@ -465,7 +462,7 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
 
 	
 	public void artifactAddedToClasspath(IdeArtifactEvent event) {
-		IArtifactMappingNode artifact = (IArtifactMappingNode) event.getArtifact();
+		ArtifactNode artifact = (ArtifactNode) event.getArtifact();
 		log.debug("artifact modified : " + artifact);
     	refreshNode(artifact);
 	}
@@ -475,10 +472,8 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
 		artifactMappingNodeViewer.refresh(event.getNode());
 	}
 	
-	private void refreshNode(IArtifactMappingNode artifact) {
-		IArtifactMappingNodeContainer container = (IArtifactMappingNodeContainer) getContentProvider().getParent(artifact);
-		container.removeNode(artifact);
-        artifactMappingNodeViewer.refresh(container);
+	private void refreshNode(ArtifactNode artifact) {
+		artifactMappingNodeViewer.refresh(container);
 	}
 	
 	private ITreeContentProvider getContentProvider() {
@@ -486,12 +481,12 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
 	}
 
 	public void artifactAddedToPom(PomArtifactEvent event) {
-		IArtifactMappingNode artifact = (IArtifactMappingNode) event.getArtifact();
+		ArtifactNode artifact = (ArtifactNode) event.getArtifact();
 		log.debug("artifact modified : " + artifact);
 		refreshNode(artifact);
 		updatePoms(event.getProject());
 		try {
-			IFile file = this.project.getFile(MavenUtils.makeRelativePath(this.project.getLocation().toFile(), event.getProject().getFile().getAbsolutePath()));
+			IFile file = this.project.getFile(MevenideUtils.makeRelativePath(this.project.getLocation().toFile(), event.getProject().getFile().getAbsolutePath()));
 			file.refreshLocal(IResource.DEPTH_ZERO, null);
 		} 
 		catch (Exception e) {
@@ -501,22 +496,22 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
 	}
 	
 	public void artifactRemovedFromPom(PomArtifactEvent event) {
-		IArtifactMappingNode artifact = (IArtifactMappingNode) event.getArtifact();
+		ArtifactNode artifact = (ArtifactNode) event.getArtifact();
 		updatePoms(event.getProject());
 		refreshNode(artifact);
 		comparator.compare(event.getProject());
 	}
 	
 	//@TODO evil.. but actions read poms instead of working on pom references.. 
-	private void updatePoms(Project project) {
+	private void updatePoms(MavenProject project) {
 	    for (int i = 0; i < poms.size(); i++) {
-	        Project pom = (Project) poms.get(i);
+	        MavenProject pom = (MavenProject) poms.get(i);
 			if ( pom.getFile().equals(project.getFile()) ) {
 				poms.remove(i);
 				poms.add(i, project);
 			} 
         }
-	    ((ArtifactMappingContentProvider) artifactMappingNodeViewer.getContentProvider()).setPoms(poms);
+	    //((ArtifactMappingContentProvider) artifactMappingNodeViewer.getContentProvider()).setPoms(poms);
     }
 
     public TreeViewer getArtifactMappingNodeViewer() {
@@ -524,17 +519,17 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
 	}
 	
 	public void artifactRemovedFromClasspath(IdeArtifactEvent event) {
-		IArtifactMappingNode artifact = (IArtifactMappingNode) event.getArtifact();
+		ArtifactNode artifact = (ArtifactNode) event.getArtifact();
 		refreshNode(artifact);	
 	}
 	
 	public void artifactIgnored(IdeArtifactEvent event) {
-		IArtifactMappingNode artifact = (IArtifactMappingNode) event.getArtifact();
+		ArtifactNode artifact = (ArtifactNode) event.getArtifact();
 		refreshNode(artifact);
 	}
 	
 	public void artifactIgnored(PomArtifactEvent event) {
-		IArtifactMappingNode artifact = (IArtifactMappingNode) event.getArtifact();
+		ArtifactNode artifact = (ArtifactNode) event.getArtifact();
 		refreshNode(artifact);
 	}
 	
@@ -572,7 +567,7 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
 									}
 									if ( poms != null ) {
 										for (int i = 0; i < poms.size(); i++) {
-											File f = ((Project) poms.get(i)).getFile();
+											File f = ((MavenProject) poms.get(i)).getFile();
 											if ( new File(file.getLocation().toOSString()).equals(f) ) {
 					
 												try {

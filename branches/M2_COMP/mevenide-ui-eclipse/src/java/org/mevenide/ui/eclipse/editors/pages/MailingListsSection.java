@@ -18,8 +18,8 @@ package org.mevenide.ui.eclipse.editors.pages;
 
 import java.util.List;
 
-import org.apache.maven.project.MailingList;
-import org.apache.maven.project.Project;
+import org.apache.maven.model.MailingList;
+import org.apache.maven.project.MavenProject;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -56,7 +56,7 @@ public class MailingListsSection extends PageSection {
 		layout.horizontalSpacing = 5;
 		container.setLayout(layout);
 		
-		final Project pom = getPage().getPomEditor().getPom();
+		final MavenProject pom = getPage().getPomEditor().getPom();
 		
 		// POM mailingLists table
 		Button toggle = createOverrideToggle(container, factory, 1, true);
@@ -65,10 +65,10 @@ public class MailingListsSection extends PageSection {
 		OverrideAdaptor adaptor = new OverrideAdaptor() {
 			public void overrideParent(Object value) {
 				List mailingLists = (List) value;
-				pom.setMailingLists(mailingLists);
+				pom.getModel().setMailingLists(mailingLists);
 			}
 			public Object acceptParent() {
-				return getParentPom().getMailingLists();
+				return getParentPom().getModel().getMailingLists();
 			}
 		};
 		mailingListTable.addEntryChangeListener(adaptor);
@@ -101,10 +101,10 @@ public class MailingListsSection extends PageSection {
 		return container;
 	}
 
-	public void update(Project pom) {
+	public void update(MavenProject pom) {
 		mailingListTable.removeAll();
-		List mailingLists = pom.getMailingLists();
-		List parentMailingLists = isInherited() ? getParentPom().getMailingLists() : null;
+		List mailingLists = pom.getModel().getMailingLists();
+		List parentMailingLists = isInherited() ? getParentPom().getModel().getMailingLists() : null;
 		if (mailingLists != null && !mailingLists.isEmpty()) {
 			mailingListTable.addEntries(mailingLists);
 			mailingListTable.setInherited(false);

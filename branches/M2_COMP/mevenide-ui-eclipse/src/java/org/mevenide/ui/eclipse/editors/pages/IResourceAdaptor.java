@@ -18,7 +18,7 @@ package org.mevenide.ui.eclipse.editors.pages;
 
 import java.util.List;
 
-import org.apache.maven.project.Resource;
+import org.apache.maven.model.Resource;
 
 /**
  * @author Jeffrey Bonevich (jeff@bonevich.com)

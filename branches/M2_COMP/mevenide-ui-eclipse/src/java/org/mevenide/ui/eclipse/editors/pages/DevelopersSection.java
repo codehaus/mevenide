@@ -18,8 +18,8 @@ package org.mevenide.ui.eclipse.editors.pages;
 
 import java.util.List;
 
-import org.apache.maven.project.Developer;
-import org.apache.maven.project.Project;
+import org.apache.maven.model.Developer;
+import org.apache.maven.project.MavenProject;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -56,7 +56,7 @@ public class DevelopersSection extends PageSection {
 		layout.horizontalSpacing = 5;
 		container.setLayout(layout);
 		
-		final Project pom = getPage().getPomEditor().getPom();
+		final MavenProject pom = getPage().getPomEditor().getPom();
 		
 		// POM developers table
 		Button toggle = createOverrideToggle(container, factory, 1, true);
@@ -65,10 +65,10 @@ public class DevelopersSection extends PageSection {
 		OverrideAdaptor adaptor = new OverrideAdaptor() {
 			public void overrideParent(Object value) {
 				List developers = (List) value;
-				pom.setDevelopers(developers);
+				pom.getModel().setDevelopers(developers);
 			}
 			public Object acceptParent() {
-				return getParentPom().getDevelopers();
+				return getParentPom().getModel().getDevelopers();
 			}
 		};
 		devTable.addEntryChangeListener(adaptor);
@@ -77,18 +77,18 @@ public class DevelopersSection extends PageSection {
 			new IPomCollectionAdaptor() {
 				public Object addNewObject(Object parentObject) {
 					Developer developer = new Developer();
-					pom.addDeveloper(developer);
+					pom.getModel().addDeveloper(developer);
 					return developer;
 				}
 				public void moveObjectTo(int index, Object object, Object parentObject) {
-					List developers = pom.getDevelopers();
+					List developers = pom.getModel().getDevelopers();
 					if (developers != null) {
 						developers.remove(object);
 						developers.add(index, object);
 					}
 				}
 				public void removeObject(Object object, Object parentObject) {
-					List developers = pom.getDevelopers();
+					List developers = pom.getModel().getDevelopers();
 					if (developers != null) {
 						developers.remove(object);
 					}
@@ -101,10 +101,10 @@ public class DevelopersSection extends PageSection {
 		return container;
 	}
 
-	public void update(Project pom) {
+	public void update(MavenProject pom) {
 		devTable.removeAll();
-		List developers = pom.getDevelopers();
-		List parentDevelopers = isInherited() ? getParentPom().getDevelopers() : null;
+		List developers = pom.getModel().getDevelopers();
+		List parentDevelopers = isInherited() ? getParentPom().getModel().getDevelopers() : null;
 		if (developers != null && !developers.isEmpty()) {
 			devTable.addEntries(developers);
 			devTable.setInherited(false);

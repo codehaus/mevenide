@@ -18,9 +18,9 @@ package org.mevenide.ui.eclipse.editors.pages;
 
 import java.util.List;
 
-import org.apache.maven.project.Build;
-import org.apache.maven.project.Project;
-import org.apache.maven.project.Resource;
+import org.apache.maven.model.Build;
+import org.apache.maven.project.MavenProject;
+import org.apache.maven.model.Resource;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -71,27 +71,27 @@ public class BuildPage extends AbstractPomEditorPage {
 		resourcesSection = new ResourcesSection(this, parent, factory, "BuildResourcesSection");
 		IResourceAdaptor adaptor = new IResourceAdaptor() {
 			public void setResources(Object target, List resources) {
-				Project pom = (Project) target;
+				MavenProject pom = (MavenProject) target;
 				getOrCreateBuild(pom).setResources(resources);
 				getPomEditor().setModelDirty(true);
 			}
 		
 			public void addResource(Object target, Resource resource) {
-				Project pom = (Project) target;
+				MavenProject pom = (MavenProject) target;
 				getOrCreateBuild(pom).addResource(resource);
 				getPomEditor().setModelDirty(true);
 			}
 		
 			public List getResources(Object source) {
-				Project pom = (Project) source;
-				return pom.getBuild() != null ? pom.getBuild().getResources() : null;
+				MavenProject pom = (MavenProject) source;
+				return pom.getModel().getBuild() != null ? pom.getModel().getBuild().getResources() : null;
 			}
 		
-			private Build getOrCreateBuild(Project pom) {
-				Build build = pom.getBuild();
+			private Build getOrCreateBuild(MavenProject pom) {
+				Build build = pom.getModel().getBuild();
 				if (build == null) {
 					build = new Build();
-					pom.setBuild(build);
+					pom.getModel().setBuild(build);
 				}
 				return build;
 			}

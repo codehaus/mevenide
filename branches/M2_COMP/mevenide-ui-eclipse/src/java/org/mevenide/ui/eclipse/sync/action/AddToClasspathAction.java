@@ -20,8 +20,7 @@ package org.mevenide.ui.eclipse.sync.action;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.resources.IProject;
-import org.mevenide.ui.eclipse.sync.model.ArtifactWrapper;
-import org.mevenide.ui.eclipse.sync.model.IArtifactMappingNode;
+import org.mevenide.ui.eclipse.sync.model.ArtifactNode;
 
 /**
  * 
@@ -34,13 +33,9 @@ public class AddToClasspathAction extends ArtifactAction {
 	private static Log log = LogFactory.getLog(AddToClasspathAction.class);
 	
 	
-	public void addEntry(IArtifactMappingNode item, IProject project) throws Exception {
-		ArtifactWrapper artifactWrapper = getArtifactWrapper(item.getDeclaringPom(), item.getArtifact());
-		if ( artifactWrapper != null ) {
-			artifactWrapper.addTo(project);
-			
-			fireArtifactAddedToClasspath(item, project);
-			
-		}
+	public void addEntry(ArtifactNode item, IProject project) throws Exception {
+		item.addTo(project);
+		fireArtifactAddedToClasspath(item, project);
+		
 	}
 }

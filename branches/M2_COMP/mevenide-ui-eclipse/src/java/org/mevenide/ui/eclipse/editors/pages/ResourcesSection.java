@@ -18,8 +18,8 @@ package org.mevenide.ui.eclipse.editors.pages;
 
 import java.util.List;
 
-import org.apache.maven.project.Project;
-import org.apache.maven.project.Resource;
+import org.apache.maven.model.Resource;
+import org.apache.maven.project.MavenProject;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.layout.GridLayout;
@@ -73,7 +73,7 @@ public class ResourcesSection extends PageSection {
 		layout.horizontalSpacing = 5;
 		container.setLayout(layout);
 		
-		final Project pom = getPage().getPomEditor().getPom();
+		final MavenProject pom = getPage().getPomEditor().getPom();
 		
 		// Build resources table
 		Button toggle = createOverrideToggle(container, factory, 1, true);
@@ -178,7 +178,7 @@ public class ResourcesSection extends PageSection {
 		return container;
 	}
 
-	public void update(Project pom) {
+	public void update(MavenProject pom) {
 		resourcesTable.removeAll();
 		List resources = getResources(pom);
 		List parentResources = getInheritedResources();
@@ -195,15 +195,15 @@ public class ResourcesSection extends PageSection {
 		}
 	}
 
-	private void setResources(Project pom, List resources) {
+	private void setResources(MavenProject pom, List resources) {
 		resourceAdaptor.setResources(pom, resources);
 	}
 	
-	private void addResource(Project pom, Resource resource) {
+	private void addResource(MavenProject pom, Resource resource) {
 		resourceAdaptor.addResource(pom, resource);
 	}
 	
-	private List getResources(Project pom) {
+	private List getResources(MavenProject pom) {
 		return resourceAdaptor.getResources(pom);
 	}
 	

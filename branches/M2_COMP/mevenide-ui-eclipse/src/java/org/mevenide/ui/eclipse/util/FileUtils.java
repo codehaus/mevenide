@@ -25,8 +25,8 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.maven.project.Project;
-import org.apache.maven.util.StringInputStream;
+import org.apache.maven.project.MavenProject;
+import org.mevenide.util.StringInputStream;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -120,7 +120,7 @@ public class FileUtils {
 		return file;	
 	}
 	
-	public static IFile assertIgnoreFileExists(Project project)  throws Exception {		
+	public static IFile assertIgnoreFileExists(MavenProject project)  throws Exception {		
 		File systemFile = new File(project.getFile().getParent(), ".mvnignore");
 		IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
 		
@@ -133,7 +133,7 @@ public class FileUtils {
 	}
 	
 	
-	public static List getIgnoredResources(Project project) {
+	public static List getIgnoredResources(MavenProject project) {
 		try {
 			IFile file = assertIgnoreFileExists(project);
 			return getIgnoredResources(file);
@@ -188,14 +188,14 @@ public class FileUtils {
 	
 	public static List getPoms(IProject project) throws Exception {
 
-		Project pom = ProjectReader.getReader().read(FileUtils.getPom(project));
+		MavenProject pom = ProjectReader.getReader().read(FileUtils.getPom(project));
 		List visitedPoms = new ArrayList();		
 
 		if ( pom != null ) {
 			//dirty trick to avoid infinite loops if user has introduced one by mistake
 			visitedPoms.add(pom.getFile());
 	
-			String extend = pom.getExtend();
+			String extend = pom.getModel().getExtend();
 			
 			//recurse poms
 			while ( extend != null && !extend.trim().equals("") ) {
@@ -221,7 +221,7 @@ public class FileUtils {
 				visitedPoms.add(new File(extendFile.getAbsolutePath()));
 				pom = ProjectReader.getReader().read(extendFile);
 			
-				extend = pom.getExtend();
+				extend = pom.getModel().getExtend();
 			}
 		}
 		

@@ -18,8 +18,8 @@ package org.mevenide.ui.eclipse.editors.pages;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.maven.project.Build;
-import org.apache.maven.project.Project;
+import org.apache.maven.model.Build;
+import org.apache.maven.project.MavenProject;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -64,7 +64,7 @@ public class BuildDirectoriesSection extends PageSection {
 		layout.horizontalSpacing = 5;
 		container.setLayout(layout);
 		
-		final Project pom = getPage().getPomEditor().getPom();
+		final MavenProject pom = getPage().getPomEditor().getPom();
 		
 		// Build source directory textbox and browse button
 		Button toggle = createOverrideToggle(container, factory);
@@ -213,55 +213,6 @@ public class BuildDirectoriesSection extends PageSection {
 			}
 		);
 		
-		// Build integration unit tests source directory textbox and browse button
-		toggle = createOverrideToggle(container, factory);
-		createLabel(
-			container, 
-			Mevenide.getResourceString("BuildDirectoriesSection.integrationTestsText.label"),
-			Mevenide.getResourceString("BuildDirectoriesSection.integrationTestsText.tooltip"), 
-			factory
-		);
-		labelName = Mevenide.getResourceString("BuildDirectoriesSection.integrationTestsButton.label");
-		toolTip = Mevenide.getResourceString("BuildDirectoriesSection.integrationTestsButton.tooltip");
-		final String intgrationTestsTitle = Mevenide.getResourceString("BuildDirectoriesSection.integrationTestsButton.dialog.title");
-		integrationTestsText = new OverridableTextEntry(
-			createText(container, factory), 
-			toggle,
-			createBrowseButton(container, factory, labelName, toolTip, 1)
-		);
-		adaptor = new OverrideAdaptor() {
-			public void overrideParent(Object value) {
-				setIntegrationUnitTestSourceDirectory(pom, (String) value);
-			}
-			public Object acceptParent() {
-				return getIntegrationUnitTestSourceDirectory(getParentPom());
-			}
-		};
-		integrationTestsText.addEntryChangeListener(adaptor);
-		integrationTestsText.addOverrideAdaptor(adaptor);
-		integrationTestsText.addBrowseButtonListener(
-			new SelectionAdapter() {
-				public void widgetSelected(SelectionEvent e) {
-					try {
-						DirectoryDialog dialog = new DirectoryDialog(
-							getPage().getPomEditor().getSite().getShell(),
-							SWT.NULL
-						);
-						dialog.setText(intgrationTestsTitle);
-						
-						String directory = dialog.open();
-						if (directory != null) {
-							sourceText.setFocus();
-							sourceText.setText(directory);
-						}
-					}
-					catch ( Exception ex ) {
-						log.error("Unable to browse for intgration tests directory", ex);
-					}
-				}
-			}
-		);
-		
 		// Build integration nag email address textbox
 		toggle = createOverrideToggle(container, factory);
 		createLabel(
@@ -286,19 +237,18 @@ public class BuildDirectoriesSection extends PageSection {
 		return container;
 	}
 
-	public void update(Project pom) {
+	public void update(MavenProject pom) {
 		setIfDefined(sourceText, getSourceDirectory(pom), getInheritedSourceDirectory());
 		setIfDefined(aspectsText, getAspectSourceDirectory(pom), getInheritedAspectSourceDirectory());
 		setIfDefined(unitTestsText, getUnitTestSourceDirectory(pom), getInheritedUnitTestSourceDirectory());
-		setIfDefined(integrationTestsText, getIntegrationUnitTestSourceDirectory(pom), getInheritedIntegrationUnitTestSourceDirectory());
 		setIfDefined(nagEmailText, getNagEmailAddress(pom), getInheritedNagEmailAddress());
 	}
 	
-	private void setSourceDirectory(Project pom, String sourceDir) {
+	private void setSourceDirectory(MavenProject pom, String sourceDir) {
 		getOrCreateBuild(pom).setSourceDirectory(sourceDir);
 	}
 	
-	private String getSourceDirectory(Project pom) {
+	private String getSourceDirectory(MavenProject pom) {
 		return pom.getBuild() != null ? pom.getBuild().getSourceDirectory() : null;
 	}
 	
@@ -308,12 +258,12 @@ public class BuildDirectoriesSection extends PageSection {
 			: null;
 	}
 
-	private void setAspectSourceDirectory(Project pom, String sourceDir) {
+	private void setAspectSourceDirectory(MavenProject pom, String sourceDir) {
 		getOrCreateBuild(pom).setAspectSourceDirectory(sourceDir);
 	}
 	
-	private String getAspectSourceDirectory(Project pom) {
-		return pom.getBuild() != null ? pom.getBuild().getAspectSourceDirectory() : null;
+	private String getAspectSourceDirectory(MavenProject pom) {
+		return pom.getModel().getBuild() != null ? pom.getModel().getBuild().getAspectSourceDirectory() : null;
 	}
 	
 	private String getInheritedAspectSourceDirectory() {
@@ -322,12 +272,12 @@ public class BuildDirectoriesSection extends PageSection {
 			: null;
 	}
 
-	private void setUnitTestSourceDirectory(Project pom, String sourceDir) {
+	private void setUnitTestSourceDirectory(MavenProject pom, String sourceDir) {
 		getOrCreateBuild(pom).setUnitTestSourceDirectory(sourceDir);
 	}
 	
-	private String getUnitTestSourceDirectory(Project pom) {
-		return pom.getBuild() != null ? pom.getBuild().getUnitTestSourceDirectory() : null;
+	private String getUnitTestSourceDirectory(MavenProject pom) {
+		return pom.getModel().getBuild() != null ? pom.getModel().getBuild().getUnitTestSourceDirectory() : null;
 	}
 	
 	private String getInheritedUnitTestSourceDirectory() {
@@ -336,26 +286,12 @@ public class BuildDirectoriesSection extends PageSection {
 			: null;
 	}
 
-	private void setIntegrationUnitTestSourceDirectory(Project pom, String sourceDir) {
-		getOrCreateBuild(pom).setIntegrationUnitTestSourceDirectory(sourceDir);
-	}
-	
-	private String getIntegrationUnitTestSourceDirectory(Project pom) {
-		return pom.getBuild() != null ? pom.getBuild().getIntegrationUnitTestSourceDirectory() : null;
-	}
-	
-	private String getInheritedIntegrationUnitTestSourceDirectory() {
-		return isInherited() 
-			? getIntegrationUnitTestSourceDirectory(getParentPom())
-			: null;
-	}
-
-	private void setNagEmailAddress(Project pom, String sourceDir) {
+	private void setNagEmailAddress(MavenProject pom, String sourceDir) {
 		getOrCreateBuild(pom).setNagEmailAddress(sourceDir);
 	}
 	
-	private String getNagEmailAddress(Project pom) {
-		return pom.getBuild() != null ? pom.getBuild().getNagEmailAddress() : null;
+	private String getNagEmailAddress(MavenProject pom) {
+		return pom.getModel().getBuild() != null ? pom.getModel().getBuild().getNagEmailAddress() : null;
 	}
 	
 	private String getInheritedNagEmailAddress() {
@@ -364,11 +300,11 @@ public class BuildDirectoriesSection extends PageSection {
 			: null;
 	}
 
-	private Build getOrCreateBuild(Project pom) {
-		Build build = pom.getBuild();
+	private Build getOrCreateBuild(MavenProject pom) {
+		Build build = pom.getModel().getBuild();
 		if (build == null) {
 			build = new Build();
-			pom.setBuild(build);
+			pom.getModel().setBuild(build);
 		}
 		return build;
 	}

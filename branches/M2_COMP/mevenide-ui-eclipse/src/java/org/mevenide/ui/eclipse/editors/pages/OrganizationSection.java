@@ -18,7 +18,7 @@ package org.mevenide.ui.eclipse.editors.pages;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.maven.project.Project;
+import org.apache.maven.project.MavenProject;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -64,7 +64,7 @@ public class OrganizationSection extends PageSection {
 		layout.horizontalSpacing = 5;
 		container.setLayout(layout);
 		
-		final Project pom = getPage().getPomEditor().getPom();
+		final MavenProject pom = getPage().getPomEditor().getPom();
 		
 		// POM short description textbox
 		Button toggle = createOverrideToggle(container, factory);
@@ -77,10 +77,10 @@ public class OrganizationSection extends PageSection {
 		nameText = new OverridableTextEntry(createText(container, factory, 2), toggle);
 		OverrideAdaptor adaptor = new OverrideAdaptor() {
 			public void overrideParent(Object value) {
-				pom.getOrganization().setName((String) value);
+				pom.getModel().getOrganization().setName((String) value);
 			}
 			public Object acceptParent() {
-				return getParentPom().getOrganization().getName();
+				return getParentPom().getModel().getOrganization().getName();
 			}
 		};
 		nameText.addEntryChangeListener(adaptor);
@@ -97,10 +97,10 @@ public class OrganizationSection extends PageSection {
 		urlText = new OverridableTextEntry(createText(container, factory, 2), toggle);
 		adaptor = new OverrideAdaptor() {
 			public void overrideParent(Object value) {
-				pom.getOrganization().setUrl((String) value);
+				pom.getModel().getOrganization().setUrl((String) value);
 			}
 			public Object acceptParent() {
-				return getParentPom().getOrganization().getUrl();
+				return getParentPom().getModel().getOrganization().getUrl();
 			}
 		};
 		urlText.addEntryChangeListener(adaptor);
@@ -124,10 +124,10 @@ public class OrganizationSection extends PageSection {
 		);
 		adaptor = new OverrideAdaptor() {
 			public void overrideParent(Object value) {
-				pom.getOrganization().setLogo((String) value);
+				pom.getModel().getOrganization().setLogo((String) value);
 			}
 			public Object acceptParent() {
-				return getParentPom().getOrganization().getLogo();
+				return getParentPom().getModel().getOrganization().getLogo();
 			}
 		};
 		logoText.addEntryChangeListener(adaptor);
@@ -159,18 +159,18 @@ public class OrganizationSection extends PageSection {
 		return container;
 	}
 
-	public void update(Project pom) {
+	public void update(MavenProject pom) {
 		if ( assertOrganizationNotNull(pom) ) {
-			setIfDefined(nameText, pom.getOrganization().getName(), isInherited() ? getParentPom().getOrganization().getName() : null);
-			setIfDefined(urlText, pom.getOrganization().getUrl(), isInherited() ? getParentPom().getOrganization().getUrl() : null);
-			setIfDefined(logoText, pom.getOrganization().getLogo(), isInherited() ? getParentPom().getOrganization().getLogo() : null);
+			setIfDefined(nameText, pom.getModel().getOrganization().getName(), isInherited() ? getParentPom().getModel().getOrganization().getName() : null);
+			setIfDefined(urlText, pom.getModel().getOrganization().getUrl(), isInherited() ? getParentPom().getModel().getOrganization().getUrl() : null);
+			setIfDefined(logoText, pom.getModel().getOrganization().getLogo(), isInherited() ? getParentPom().getModel().getOrganization().getLogo() : null);
 		}
 	}
 
-	private boolean assertOrganizationNotNull(Project pom) {
-		return pom.getOrganization() != null 
+	private boolean assertOrganizationNotNull(MavenProject pom) {
+		return pom.getModel().getOrganization() != null 
 					|| (getParentPom() != null 
-						&& getParentPom().getOrganization().getName() != null);
+						&& getParentPom().getModel().getOrganization().getName() != null);
 	}
 
 }

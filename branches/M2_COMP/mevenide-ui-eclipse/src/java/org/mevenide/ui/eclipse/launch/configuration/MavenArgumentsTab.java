@@ -24,7 +24,7 @@ import java.util.TreeMap;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.maven.MavenConstants;
+//import org.apache.maven.MavenConstants;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
@@ -142,7 +142,7 @@ public class MavenArgumentsTab extends AbstractLaunchConfigurationTab  {
 		data.grabExcessVerticalSpace = true;
 		
 		Label label = new Label(composite, SWT.READ_ONLY);
-		label.setText("Maven version: " + MavenConstants.POM_VERSION);
+		label.setText("Maven version: ");// + MavenConstants.POM_VERSION);
 		
 		label.setLayoutData(data);
 	}

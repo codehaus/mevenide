@@ -22,7 +22,7 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.maven.project.Project;
+import org.apache.maven.project.MavenProject;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.action.Action;
@@ -30,7 +30,6 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
-import org.mevenide.project.io.ProjectReader;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.sync.action.AddPropertyAction;
 import org.mevenide.ui.eclipse.sync.action.AddToClasspathAction;
@@ -40,9 +39,9 @@ import org.mevenide.ui.eclipse.sync.action.RemoveFromClasspathAction;
 import org.mevenide.ui.eclipse.sync.action.RemoveFromPomAction;
 import org.mevenide.ui.eclipse.sync.action.ToggleViewAction;
 import org.mevenide.ui.eclipse.sync.action.ToggleWritePropertiesAction;
-import org.mevenide.ui.eclipse.sync.model.DependencyMappingNode;
-import org.mevenide.ui.eclipse.sync.model.EclipseContainerContainer;
-import org.mevenide.ui.eclipse.sync.model.IArtifactMappingNode;
+import org.mevenide.ui.eclipse.sync.model.ArtifactNode;
+import org.mevenide.ui.eclipse.sync.model.EclipseProjectNode;
+import org.mevenide.ui.eclipse.sync.model.MavenArtifactNode;
 
 /**
  * 
@@ -125,23 +124,22 @@ public class SynchronizeActionFactory {
 				List selections = ((IStructuredSelection) synchronizeView.getArtifactMappingNodeViewer().getSelection()).toList();
 				
 				for (int i = 0; i < selections.size(); i++) {
-					if ( selections.get(i) instanceof IArtifactMappingNode ) { 
-					IArtifactMappingNode selectedNode = (IArtifactMappingNode) selections.get(i);
+					if ( selections.get(i) instanceof ArtifactNode ) { 
+					ArtifactNode selectedNode = (ArtifactNode) selections.get(i);
 						try  {
 							int direction = synchronizeView.getDirection();
 							
-							if ( direction == EclipseContainerContainer.OUTGOING ) {
-								EclipseContainerContainer container = (EclipseContainerContainer) synchronizeView.getArtifactMappingNodeViewer().getTree().getItems()[0].getData();
-								IContainer project = container.getProject();
-								action.addEntry(selectedNode,  project);
+							if ( direction == ArtifactNode.OUTGOING ) {
+								IContainer container = (IContainer) ((EclipseProjectNode) selectedNode.getParent().getParent()).getData();
+								action.addEntry(selectedNode,  container);
 							}
 							else {
-								Project mavenProject = ProjectReader.getReader().read(selectedNode.getDeclaringPom());
+								MavenProject mavenProject = (MavenProject) selectedNode.getParent().getData();
 								action.addEntry(selectedNode,  mavenProject);
 							}
 						}
 						catch ( Exception e ) {
-							log.debug("Unable to add item " + selectedNode.getArtifact() + " to ignore list ", e );
+							log.debug("Unable to add item " + selectedNode.getData() + " to ignore list ", e );
 						}
 					}
 				}
@@ -173,7 +171,7 @@ public class SynchronizeActionFactory {
 		final AddPropertyAction action = new AddPropertyAction();
 		Action editProperties = new Action() {
 			public void run() {
-				DependencyMappingNode node = (DependencyMappingNode) ((StructuredSelection) synchronizeView.getArtifactMappingNodeViewer().getSelection()).getFirstElement();
+				MavenArtifactNode node = (MavenArtifactNode) ((StructuredSelection) synchronizeView.getArtifactMappingNodeViewer().getSelection()).getFirstElement();
 				action.addProperty(node);
 			}
 		};
@@ -201,17 +199,16 @@ public class SynchronizeActionFactory {
 				List selections = ((IStructuredSelection) synchronizeView.getArtifactMappingNodeViewer().getSelection()).toList();
 				
 				for (int i = 0; i < selections.size(); i++) {
-					if ( selections.get(i) instanceof IArtifactMappingNode ) { 
-						IArtifactMappingNode selectedNode = (IArtifactMappingNode) selections.get(i);
+					if ( selections.get(i) instanceof ArtifactNode ) { 
+						ArtifactNode selectedNode = (ArtifactNode) selections.get(i);
 						try  {
-							log.debug(selectedNode.getDeclaringPom());
-							Project mavenProject = ProjectReader.getReader().read(selectedNode.getDeclaringPom());
+							MavenProject mavenProject = (MavenProject) selectedNode.getParent().getData();
 							if ( mavenProject != null ) {
 								action.removeEntry(selectedNode, mavenProject);
 							}
 						}
 						catch ( Exception e ) {
-							log.debug("Unable to remove item " + selectedNode.getArtifact() + " from pom ", e );
+							log.debug("Unable to remove item " + selectedNode.getData() + " from pom ", e );
 						}
 					}
 				}
@@ -230,15 +227,15 @@ public class SynchronizeActionFactory {
 				List selections = ((IStructuredSelection) synchronizeView.getArtifactMappingNodeViewer().getSelection()).toList();
 				
 				for (int i = 0; i < selections.size(); i++) {
-					if ( selections.get(i) instanceof IArtifactMappingNode ) { 
-						IArtifactMappingNode selectedNode = (IArtifactMappingNode) selections.get(i);
-						EclipseContainerContainer container = (EclipseContainerContainer) synchronizeView.getArtifactMappingNodeViewer().getTree().getItems()[0].getData();
+					if ( selections.get(i) instanceof ArtifactNode ) { 
+						ArtifactNode selectedNode = (ArtifactNode) selections.get(i);
+						IContainer container = (IContainer) ((EclipseProjectNode) selectedNode.getParent().getParent()).getData();
 						IProject project = container.getProject().getProject();
 						try  {
 							action.removeEntry(selectedNode, project);
 						}
 						catch ( Exception e ) {
-							log.debug("Unable to remove item " + selectedNode.getResolvedArtifact() + " from classpath ", e );
+							log.debug("Unable to remove item " + selectedNode.getData() + " from classpath ", e );
 						}
 					}
 				}
@@ -257,16 +254,14 @@ public class SynchronizeActionFactory {
 				List selections = ((IStructuredSelection) synchronizeView.getArtifactMappingNodeViewer().getSelection()).toList();
 				
 				for (int j = 0; j < selections.size(); j++) {
-					if ( selections.get(j) instanceof IArtifactMappingNode ) { 
-						IArtifactMappingNode selectedNode = (IArtifactMappingNode) selections.get(j);
-						//EclipseContainerContainer container = (EclipseContainerContainer) synchronizeView.getArtifactMappingNodeViewer().getTree().getItems()[0].getData();
-						//IContainer project = container.getProject();
-						Project currentPom = selectedNode.getParent().getPrimaryPom();
+					if ( selections.get(j) instanceof ArtifactNode ) { 
+						ArtifactNode selectedNode = (ArtifactNode) selections.get(j);
+						MavenProject currentPom = (MavenProject) selectedNode.getParent().getData();
 						try  {
 						    //IContainer f = synchronizeView.getInputContainer();
 						    List mavenProjects = new PomChooser(currentPom).openPomChoiceDialog(false);
 							for (int i = 0; i < mavenProjects.size(); i++) {
-		                        Project mavenProject = (Project) mavenProjects.get(i); 
+		                        MavenProject mavenProject = (MavenProject) mavenProjects.get(i); 
 								log.debug("POM choice : " + mavenProject);
 								if ( mavenProject != null ) {
 									action.addEntry(selectedNode, mavenProject);
@@ -274,7 +269,7 @@ public class SynchronizeActionFactory {
 		                    }
 						}
 						catch ( Exception e ) {
-							log.debug("Unable to add item " + selectedNode.getResolvedArtifact() + " to pom ", e );
+							log.debug("Unable to add item " + selectedNode.getData() + " to pom ", e );
 						}
 					}
 				}
@@ -288,7 +283,7 @@ public class SynchronizeActionFactory {
 	}
 
 	private void createViewPomToIdeAction() {
-	    ToggleViewAction viewPomToIde = new ToggleViewAction(EclipseContainerContainer.INCOMING);
+	    ToggleViewAction viewPomToIde = new ToggleViewAction(ArtifactNode.INCOMING);
 		viewPomToIde.setId(VIEW_INCOMING);
 		viewPomToIde.setToolTipText("Incoming Changes");
 		viewPomToIde.setImageDescriptor(Mevenide.getImageDescriptor("pom_to_ide_sync.gif"));
@@ -298,7 +293,7 @@ public class SynchronizeActionFactory {
 	}
 
 	private void createViewIdeToPomAction() {
-	    ToggleViewAction viewIdeToPom = new ToggleViewAction(EclipseContainerContainer.OUTGOING);
+	    ToggleViewAction viewIdeToPom = new ToggleViewAction(ArtifactNode.OUTGOING);
 		viewIdeToPom.setId(VIEW_OUTGOING);
 		viewIdeToPom.setToolTipText("Outgoing changes");
 		viewIdeToPom.setImageDescriptor(Mevenide.getImageDescriptor("ide_to_pom_sync.gif"));
@@ -308,7 +303,7 @@ public class SynchronizeActionFactory {
 	}
 
 	private void createViewConflictsAction() {
-	    ToggleViewAction viewConflicts = new ToggleViewAction(EclipseContainerContainer.CONFLICTING);
+	    ToggleViewAction viewConflicts = new ToggleViewAction(ArtifactNode.CONFLICTING);
 		viewConflicts.setId(VIEW_CONFLICTS);
 		viewConflicts.setToolTipText("Conflicts");
 		viewConflicts.setImageDescriptor(Mevenide.getImageDescriptor("conflict_synch.gif"));
@@ -345,15 +340,15 @@ public class SynchronizeActionFactory {
 				List selections = ((IStructuredSelection) synchronizeView.getArtifactMappingNodeViewer().getSelection()).toList();
 				
 				for (int i = 0; i < selections.size(); i++) {
-					if ( selections.get(i) instanceof IArtifactMappingNode ) { 
-						IArtifactMappingNode selectedNode = (IArtifactMappingNode) selections.get(i);
-						EclipseContainerContainer container = (EclipseContainerContainer) synchronizeView.getArtifactMappingNodeViewer().getTree().getItems()[0].getData();
+					if ( selections.get(i) instanceof ArtifactNode ) { 
+						ArtifactNode selectedNode = (ArtifactNode) selections.get(i);
+						IContainer container = (IContainer) ((EclipseProjectNode) selectedNode.getParent().getParent()).getData();
 						IProject project = container.getProject().getProject();
 						try  {
 							action.addEntry(selectedNode, project);
 						}
 						catch ( Exception e ) {
-							log.debug("Unable to add item " + selectedNode.getArtifact() + " to classpath ", e );
+							log.debug("Unable to add item " + selectedNode.getData() + " to classpath ", e );
 						}
 					}
 				}

@@ -20,7 +20,7 @@ import java.io.File;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.maven.project.Project;
+import org.apache.maven.project.MavenProject;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
@@ -41,7 +41,7 @@ public class SynchronizePomAction extends AbstractMevenideAction {
     
     private static Log log = LogFactory.getLog(SynchronizePomAction.class);
 	
-    private Project mavenProject;
+    private MavenProject mavenProject;
     
     public void run(IAction action) {
         try {

@@ -18,7 +18,7 @@ package org.mevenide.ui.eclipse.editors.pages;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.maven.project.Project;
+import org.apache.maven.project.MavenProject;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
@@ -80,7 +80,7 @@ public class IdentificationSection extends PageSection {
 		layout.horizontalSpacing = 5;
 		container.setLayout(layout);
 		
-		final Project pom = getPage().getPomEditor().getPom();
+		final MavenProject pom = getPage().getPomEditor().getPom();
 		
 		// POM name textbox
 		Button toggle = createOverrideToggle(container, factory);
@@ -93,11 +93,11 @@ public class IdentificationSection extends PageSection {
 		pomNameText = new OverridableTextEntry(createText(container, factory, 2), toggle, null);
 		OverrideAdaptor adaptor = new OverrideAdaptor() {
 			public void overrideParent(Object value) {
-				pom.setName((String) value);
+				pom.getModel().setName((String) value);
 				((OverviewPage) getPage()).setHeading(pom);
 			}
 			public Object acceptParent() {
-				return getParentPom().getName();
+				return getParentPom().getModel().getName();
 			}
 		};
 		pomNameText.addEntryChangeListener(adaptor);
@@ -114,10 +114,10 @@ public class IdentificationSection extends PageSection {
 		artifactIdText = new OverridableTextEntry(createText(container, factory, 2), toggle, null);
 		adaptor = new OverrideAdaptor() {
 			public void overrideParent(Object value) {
-				pom.setArtifactId((String) value);
+				pom.getModel().setArtifactId((String) value);
 			}
 			public Object acceptParent() {
-				return getParentPom().getArtifactId();
+				return getParentPom().getModel().getArtifactId();
 			}
 		};
 		artifactIdText.addEntryChangeListener(adaptor);
@@ -134,10 +134,10 @@ public class IdentificationSection extends PageSection {
 		groupIdText = new OverridableTextEntry(createText(container, factory, 2), toggle, null);
 		adaptor = new OverrideAdaptor() {
 			public void overrideParent(Object value) {
-				pom.setGroupId((String) value);
+				pom.getModel().setGroupId((String) value);
 			}
 			public Object acceptParent() {
-				return getParentPom().getGroupId();
+				return getParentPom().getModel().getGroupId();
 			}
 		};
 		groupIdText.addEntryChangeListener(adaptor);
@@ -154,10 +154,10 @@ public class IdentificationSection extends PageSection {
 		gumpRepoIdText = new OverridableTextEntry(createText(container, factory, 2), toggle, null);
 		adaptor = new OverrideAdaptor() {
 			public void overrideParent(Object value) {
-				pom.setGumpRepositoryId((String) value);
+				pom.getModel().setGumpRepositoryId((String) value);
 			}
 			public Object acceptParent() {
-				return getParentPom().getGumpRepositoryId();
+				return getParentPom().getModel().getGumpRepositoryId();
 			}
 		};
 		gumpRepoIdText.addEntryChangeListener(adaptor);
@@ -175,7 +175,7 @@ public class IdentificationSection extends PageSection {
 		pomVersionText.addEntryChangeListener(
 			new EntryChangeListenerAdaptor() {
 				public void entryChanged(PageEntry entry) {
-					pom.setPomVersion(pomVersionText.getText());
+					pom.getModel().setPomVersion(pomVersionText.getText());
 				}
 			}
 		);
@@ -198,7 +198,7 @@ public class IdentificationSection extends PageSection {
 	                if (log.isDebugEnabled()) {
 	                    log.debug("extend changed to " + extendsText.getText());
 	                }
-					pom.setExtend(extendsText.getText());
+					pom.getModel().setExtend(extendsText.getText());
 				}
 			}
 		);
@@ -278,25 +278,25 @@ public class IdentificationSection extends PageSection {
 		return container;
     }
 
-    public void update(Project pom) {
+    public void update(MavenProject pom) {
         if (log.isDebugEnabled()) {
             log.debug("updating id section content");
         }
-		setIfDefined(pomNameText, pom.getName(), isInherited() ? getParentPom().getName() : null);
+		setIfDefined(pomNameText, pom.getModel().getName(), isInherited() ? getParentPom().getModel().getName() : null);
 		if (isInherited()) {
-			String parentVersion = getPage().getPomEditor().getParentPom().getPomVersion();
+			String parentVersion = getPage().getPomEditor().getParentPom().getModel().getPomVersion();
 			setIfDefined(pomVersionText, parentVersion);
 			// force local override with parent if inherited
 			// Seems that Maven defaults it to 1 if it goes un-specified
-			pom.setPomVersion(getPage().getPomEditor().getParentPom().getPomVersion());
+			pom.getModel().setPomVersion(getPage().getPomEditor().getParentPom().getModel().getPomVersion());
 		}
 		else {
-			setIfDefined(pomVersionText, pom.getPomVersion());
+			setIfDefined(pomVersionText, pom.getModel().getPomVersion());
 		}
-		setIfDefined(extendsText, pom.getExtend());
-		setIfDefined(artifactIdText, pom.getArtifactId(), isInherited() ? getParentPom().getArtifactId() : null);
-		setIfDefined(groupIdText, pom.getGroupId(), isInherited() ? getParentPom().getGroupId() : null);
-		setIfDefined(gumpRepoIdText, pom.getGumpRepositoryId(), isInherited() ? getParentPom().getGumpRepositoryId() : null);
+		setIfDefined(extendsText, pom.getModel().getExtend());
+		setIfDefined(artifactIdText, pom.getModel().getArtifactId(), isInherited() ? getParentPom().getModel().getArtifactId() : null);
+		setIfDefined(groupIdText, pom.getModel().getGroupId(), isInherited() ? getParentPom().getModel().getGroupId() : null);
+		setIfDefined(gumpRepoIdText, pom.getModel().getGumpRepositoryId(), isInherited() ? getParentPom().getModel().getGumpRepositoryId() : null);
     }
 
 }

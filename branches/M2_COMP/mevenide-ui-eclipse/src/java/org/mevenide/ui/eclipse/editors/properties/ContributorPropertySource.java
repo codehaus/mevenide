@@ -17,12 +17,12 @@
 package org.mevenide.ui.eclipse.editors.properties;
 
 import java.util.Iterator;
-import java.util.Set;
+import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.maven.project.Contributor;
+import org.apache.maven.model.Contributor;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.TextPropertyDescriptor;
 import org.mevenide.util.MevenideUtils;
@@ -113,7 +113,7 @@ public class ContributorPropertySource extends AbstractPomPropertySource {
 	}
 	
 	private String getRolesString() {
-		Set roles = contributor.getRoles();
+		List roles = contributor.getRoles();
 		if (roles != null) {
 			Iterator itr = roles.iterator();
 			return StringUtils.join(itr, ",");
@@ -210,7 +210,7 @@ public class ContributorPropertySource extends AbstractPomPropertySource {
 	}
 
 	private void updateRoles(String newValue) {
-		Set originalRoles = contributor.getRoles();
+		List originalRoles = contributor.getRoles();
 		contributor.getRoles().removeAll(originalRoles);
 		String[] roles = newValue.split("\\s*,\\s*");
 		for (int i = 0; i < roles.length; i++) {

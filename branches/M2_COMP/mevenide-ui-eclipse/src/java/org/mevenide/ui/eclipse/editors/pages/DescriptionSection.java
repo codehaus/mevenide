@@ -18,7 +18,7 @@ package org.mevenide.ui.eclipse.editors.pages;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.maven.project.Project;
+import org.apache.maven.project.MavenProject;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragment;
@@ -72,7 +72,7 @@ public class DescriptionSection extends PageSection {
 		layout.horizontalSpacing = 5;
 		container.setLayout(layout);
 		
-		final Project pom = getPage().getPomEditor().getPom();
+		final MavenProject pom = getPage().getPomEditor().getPom();
 		
 		// POM short description textbox
 		Button toggle = createOverrideToggle(container, factory);
@@ -85,10 +85,10 @@ public class DescriptionSection extends PageSection {
 		shortDescText = new OverridableTextEntry(createText(container, factory, 2), toggle);
 		OverrideAdaptor adaptor = new OverrideAdaptor() {
 			public void overrideParent(Object value) {
-				pom.setShortDescription((String) value);
+				pom.getModel().setShortDescription((String) value);
 			}
 			public Object acceptParent() {
-				return getParentPom().getShortDescription();
+				return getParentPom().getModel().getShortDescription();
 			}
 		};
 		shortDescText.addEntryChangeListener(adaptor);
@@ -105,10 +105,10 @@ public class DescriptionSection extends PageSection {
 		inceptionYearText = new OverridableTextEntry(createText(container, factory, 2), toggle);
 		adaptor = new OverrideAdaptor() {
 			public void overrideParent(Object value) {
-				pom.setInceptionYear((String) value);
+				pom.getModel().setInceptionYear((String) value);
 			}
 			public Object acceptParent() {
-				return getParentPom().getInceptionYear();
+				return getParentPom().getModel().getInceptionYear();
 			}
 		};
 		inceptionYearText.addEntryChangeListener(adaptor);
@@ -125,10 +125,10 @@ public class DescriptionSection extends PageSection {
 		urlText = new OverridableTextEntry(createText(container, factory, 2), toggle);
 		adaptor = new OverrideAdaptor() {
 			public void overrideParent(Object value) {
-				pom.setUrl((String) value);
+				pom.getModel().setUrl((String) value);
 			}
 			public Object acceptParent() {
-				return getParentPom().getUrl();
+				return getParentPom().getModel().getUrl();
 			}
 		};
 		urlText.addEntryChangeListener(adaptor);
@@ -145,10 +145,10 @@ public class DescriptionSection extends PageSection {
 		currentVersionText = new OverridableTextEntry(createText(container, factory, 2), toggle);
 		adaptor = new OverrideAdaptor() {
 			public void overrideParent(Object value) {
-				pom.setCurrentVersion((String) value);
+				pom.getModel().setCurrentVersion((String) value);
 			}
 			public Object acceptParent() {
-				return getParentPom().getCurrentVersion();
+				return getParentPom().getModel().getCurrentVersion();
 			}
 		};
 		currentVersionText.addEntryChangeListener(adaptor);
@@ -172,10 +172,10 @@ public class DescriptionSection extends PageSection {
 		);
 		adaptor = new OverrideAdaptor() {
 			public void overrideParent(Object value) {
-				pom.setLogo((String) value);
+				pom.getModel().setLogo((String) value);
 			}
 			public Object acceptParent() {
-				return getParentPom().getLogo();
+				return getParentPom().getModel().getLogo();
 			}
 		};
 		logoText.addEntryChangeListener(adaptor);
@@ -222,10 +222,10 @@ public class DescriptionSection extends PageSection {
 		);
 		adaptor = new OverrideAdaptor() {
 			public void overrideParent(Object value) {
-				pom.setPackage((String) value);
+				pom.getModel().setPackage((String) value);
 			}
 			public Object acceptParent() {
-				return getParentPom().getPackage();
+				return getParentPom().getModel().getPackage();
 			}
 		};
 		packageText.addEntryChangeListener(adaptor);
@@ -265,13 +265,13 @@ public class DescriptionSection extends PageSection {
 		return container;
     }
 
-	public void update(Project pom) {
-		setIfDefined(shortDescText, pom.getShortDescription(), isInherited() ? getParentPom().getShortDescription() : null);
-		setIfDefined(inceptionYearText, pom.getInceptionYear(), isInherited() ? getParentPom().getInceptionYear() : null);
-		setIfDefined(urlText, pom.getUrl(), isInherited() ? getParentPom().getUrl() : null);
-		setIfDefined(logoText, pom.getLogo(), isInherited() ? getParentPom().getLogo() : null);
-		setIfDefined(packageText, pom.getPackage(), isInherited() ? getParentPom().getPackage() : null);
-		setIfDefined(currentVersionText, pom.getCurrentVersion(), isInherited() ? getParentPom().getCurrentVersion() : null);
+	public void update(MavenProject pom) {
+		setIfDefined(shortDescText, pom.getModel().getShortDescription(), isInherited() ? getParentPom().getModel().getShortDescription() : null);
+		setIfDefined(inceptionYearText, pom.getModel().getInceptionYear(), isInherited() ? getParentPom().getModel().getInceptionYear() : null);
+		setIfDefined(urlText, pom.getModel().getUrl(), isInherited() ? getParentPom().getModel().getUrl() : null);
+		setIfDefined(logoText, pom.getModel().getLogo(), isInherited() ? getParentPom().getModel().getLogo() : null);
+		setIfDefined(packageText, pom.getModel().getPackage(), isInherited() ? getParentPom().getModel().getPackage() : null);
+		setIfDefined(currentVersionText, pom.getModel().getCurrentVersion(), isInherited() ? getParentPom().getModel().getVersion() : null);
 	}
 	
 }

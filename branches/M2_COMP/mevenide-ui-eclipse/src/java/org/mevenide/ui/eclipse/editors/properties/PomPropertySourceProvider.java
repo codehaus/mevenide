@@ -18,14 +18,14 @@ package org.mevenide.ui.eclipse.editors.properties;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.maven.project.Branch;
-import org.apache.maven.project.Contributor;
-import org.apache.maven.project.Dependency;
-import org.apache.maven.project.Developer;
-import org.apache.maven.project.License;
-import org.apache.maven.project.MailingList;
-import org.apache.maven.project.Resource;
-import org.apache.maven.project.Version;
+import org.apache.maven.model.Branch;
+import org.apache.maven.model.Contributor;
+import org.apache.maven.model.Dependency;
+import org.apache.maven.model.Developer;
+import org.apache.maven.model.License;
+import org.apache.maven.model.MailingList;
+import org.apache.maven.model.Resource;
+import org.apache.maven.model.Version;
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.eclipse.ui.views.properties.IPropertySourceProvider;
 

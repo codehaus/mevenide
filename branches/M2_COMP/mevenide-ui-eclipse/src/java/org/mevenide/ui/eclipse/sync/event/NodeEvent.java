@@ -16,7 +16,7 @@
  */
 package org.mevenide.ui.eclipse.sync.event;
 
-import org.mevenide.ui.eclipse.sync.model.IArtifactMappingNode;
+import org.mevenide.ui.eclipse.sync.model.ArtifactNode;
 
 /**
  * 
@@ -25,13 +25,13 @@ import org.mevenide.ui.eclipse.sync.model.IArtifactMappingNode;
  * 
  */
 public class NodeEvent {
-	private IArtifactMappingNode node;
+	private ArtifactNode node;
 	
-	public NodeEvent(IArtifactMappingNode node) {
+	public NodeEvent(ArtifactNode node) {
 		this.node = node;
 	}
 	
-	public IArtifactMappingNode getNode() {
+	public ArtifactNode getNode() {
 		return node;
 	}
 	

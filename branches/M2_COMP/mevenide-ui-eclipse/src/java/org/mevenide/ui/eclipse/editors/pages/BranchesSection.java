@@ -18,8 +18,8 @@ package org.mevenide.ui.eclipse.editors.pages;
 
 import java.util.List;
 
-import org.apache.maven.project.Branch;
-import org.apache.maven.project.Project;
+import org.apache.maven.model.Branch;
+import org.apache.maven.project.MavenProject;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -56,7 +56,7 @@ public class BranchesSection extends PageSection {
 		layout.horizontalSpacing = 5;
 		container.setLayout(layout);
 		
-		final Project pom = getPage().getPomEditor().getPom();
+		final MavenProject pom = getPage().getPomEditor().getPom();
 		
 		// POM branch table
 		Button toggle = createOverrideToggle(container, factory, 1, true);
@@ -65,10 +65,10 @@ public class BranchesSection extends PageSection {
 		OverrideAdaptor adaptor = new OverrideAdaptor() {
 			public void overrideParent(Object value) {
 				List branches = (List) value;
-				pom.setBranches(branches);
+				pom.getModel().setBranches(branches);
 			}
 			public Object acceptParent() {
-				return getParentPom().getBranches();
+				return getParentPom().getModel().getBranches();
 			}
 		};
 		branchTable.addEntryChangeListener(adaptor);
@@ -77,18 +77,18 @@ public class BranchesSection extends PageSection {
 			new IPomCollectionAdaptor() {
 				public Object addNewObject(Object parentObject) {
 					Branch branch = new Branch();
-					pom.addBranch(branch);
+					pom.getModel().addBranch(branch);
 					return branch;
 				}
 				public void moveObjectTo(int index, Object object, Object parentObject) {
-					List branches = pom.getBranches();
+					List branches = pom.getModel().getBranches();
 					if (branches != null) {
 						branches.remove(object);
 						branches.add(index, object);
 					}
 				}
 				public void removeObject(Object object, Object parentObject) {
-					List branches = pom.getBranches();
+					List branches = pom.getModel().getBranches();
 					if (branches != null) {
 						branches.remove(object);
 					}
@@ -101,10 +101,10 @@ public class BranchesSection extends PageSection {
 		return container;
 	}
 
-	public void update(Project pom) {
+	public void update(MavenProject pom) {
 		branchTable.removeAll();
-		List branches = pom.getBranches();
-		List parentBranches = isInherited() ? getParentPom().getBranches() : null;
+		List branches = pom.getModel().getBranches();
+		List parentBranches = isInherited() ? getParentPom().getModel().getBranches() : null;
 		if (branches != null && !branches.isEmpty()) {
 			branchTable.addEntries(branches);
 			branchTable.setInherited(false);

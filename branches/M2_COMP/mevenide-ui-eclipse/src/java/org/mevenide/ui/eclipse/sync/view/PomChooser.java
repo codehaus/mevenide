@@ -22,7 +22,7 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.maven.project.Project;
+import org.apache.maven.project.MavenProject;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.dialogs.Dialog;
@@ -50,7 +50,7 @@ public class PomChooser {
 	 * @warn if using this constructor, container isnot initialized
 	 * @open do we want to recurse into pom hierarchy ??  
 	 */
-	public PomChooser(Project project) {
+	public PomChooser(MavenProject project) {
 		poms = new ArrayList();
 		poms.add(project.getFile());
 	}
@@ -75,7 +75,7 @@ public class PomChooser {
 		//special handling when theres only one pom into the current container
 		if ( getPoms().size() == 1 ) {
 		    File pom = (File) getPoms().get(0);
-			Project project = ProjectReader.getReader().read(pom);
+			MavenProject project = ProjectReader.getReader().read(pom);
 			project.setFile(pom);
 			projects.add(project);
 			return projects;
@@ -92,7 +92,7 @@ public class PomChooser {
 		List chosenPoms = dialog.getPoms();
 		for (int i = 0; i < chosenPoms.size(); i++) {
 		    File pom = (File) chosenPoms.get(i);
-			Project project = ProjectReader.getReader().read(pom);
+			MavenProject project = ProjectReader.getReader().read(pom);
 			project.setFile(pom);
 			projects.add(project);
         }
@@ -148,8 +148,8 @@ public class PomChooser {
 		
 		try {
 		
-			Project project = ProjectReader.getReader().read(pom);
-			String parent = project.getExtend();
+			MavenProject project = ProjectReader.getReader().read(pom);
+			String parent = project.getModel().getExtend();
 			log.debug(parent);
 			if ( parent != null ) {
 				File parentPomFile = resolveFile(pom, project, parent);
@@ -166,7 +166,7 @@ public class PomChooser {
 		return ancestors;
 	}
 
-	private File resolveFile(File pom, Project project, String parent) throws Exception{
+	private File resolveFile(File pom, MavenProject project, String parent) throws Exception{
 		String resolvedParent = MevenideUtils.resolve(project, parent, true);
 		resolvedParent = resolvedParent.replaceAll("\\$\\{basedir\\}", pom.getParent().replaceAll("\\\\", "/"));
 		log.debug(resolvedParent);

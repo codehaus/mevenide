@@ -18,7 +18,7 @@ package org.mevenide.ui.eclipse.editors.pages;
 
 import java.util.List;
 
-import org.apache.maven.project.Project;
+import org.apache.maven.project.MavenProject;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
@@ -66,11 +66,11 @@ public class IncludesSection extends PageSection {
 		return container;
 	}
 
-	public void update(Project pom) {
+	public void update(MavenProject pom) {
 		subsection.updateTableEntries(includesTable, getIncludes(pom), getInheritedIncludes(), true);
 	}
 
-	private List getIncludes(Project pom) {
+	private List getIncludes(MavenProject pom) {
 		return includesAdaptor.getIncludes(pom);
 	}
 	

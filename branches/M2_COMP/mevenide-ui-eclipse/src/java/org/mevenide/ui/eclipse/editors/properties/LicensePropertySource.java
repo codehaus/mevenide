@@ -16,7 +16,7 @@
  */
 package org.mevenide.ui.eclipse.editors.properties;
 
-import org.apache.maven.project.License;
+import org.apache.maven.model.License;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.ui.views.properties.ComboBoxPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;

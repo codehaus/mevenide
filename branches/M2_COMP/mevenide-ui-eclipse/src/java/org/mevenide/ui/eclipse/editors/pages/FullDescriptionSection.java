@@ -16,7 +16,7 @@
  */
 package org.mevenide.ui.eclipse.editors.pages;
 
-import org.apache.maven.project.Project;
+import org.apache.maven.project.MavenProject;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
@@ -51,17 +51,17 @@ public class FullDescriptionSection extends PageSection {
 		layout.horizontalSpacing = 5;
 		container.setLayout(layout);
 
-		final Project pom = getPage().getPomEditor().getPom();
+		final MavenProject pom = getPage().getPomEditor().getPom();
 		
 		// POM short description textbox
 		Button toggle = createOverrideToggle(container, factory, 1, true);
 		descriptionText = new OverridableTextEntry(createMultilineText(container, factory), toggle);
 		OverrideAdaptor adaptor = new OverrideAdaptor() {
 			public void overrideParent(Object value) {
-				pom.setDescription((String) value);
+				pom.getModel().setDescription((String) value);
 			}
 			public Object acceptParent() {
-				return getParentPom().getDescription();
+				return getParentPom().getModel().getDescription();
 			}
 		};
 		descriptionText.addEntryChangeListener(adaptor);
@@ -71,8 +71,8 @@ public class FullDescriptionSection extends PageSection {
 		return container;
 	}
 
-	public void update(Project pom) {
-		setIfDefined(descriptionText, pom.getDescription(), isInherited() ? getParentPom().getDescription() : null);
+	public void update(MavenProject pom) {
+		setIfDefined(descriptionText, pom.getModel().getDescription(), isInherited() ? getParentPom().getModel().getDescription() : null);
 	}
 
 }

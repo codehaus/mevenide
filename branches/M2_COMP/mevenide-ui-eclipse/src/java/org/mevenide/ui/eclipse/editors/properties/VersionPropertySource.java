@@ -18,7 +18,7 @@ package org.mevenide.ui.eclipse.editors.properties;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.maven.project.Version;
+import org.apache.maven.model.Version;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.TextPropertyDescriptor;
 import org.mevenide.util.MevenideUtils;

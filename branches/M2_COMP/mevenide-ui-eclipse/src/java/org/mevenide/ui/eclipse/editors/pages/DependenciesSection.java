@@ -22,8 +22,8 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.maven.project.Dependency;
-import org.apache.maven.project.Project;
+import org.apache.maven.model.Dependency;
+import org.apache.maven.project.MavenProject;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
@@ -67,7 +67,7 @@ public class DependenciesSection extends PageSection {
 		layout.horizontalSpacing = 5;
 		container.setLayout(layout);
 		
-		final Project pom = getPage().getPomEditor().getPom();
+		final MavenProject pom = getPage().getPomEditor().getPom();
 		
 		// POM dependencies table
 		Button toggle = createOverrideToggle(container, factory, 1, true);
@@ -76,10 +76,10 @@ public class DependenciesSection extends PageSection {
 		OverrideAdaptor adaptor = new OverrideAdaptor() {
 			public void overrideParent(Object value) {
 				List dependencies = (List) value;
-				pom.setDependencies(dependencies);
+				pom.getModel().setDependencies(dependencies);
 			}
 			public Object acceptParent() {
-				return getParentPom().getDependencies();
+				return getParentPom().getModel().getDependencies();
 			}
 		};
 		dependenciesTable.addEntryChangeListener(adaptor);
@@ -92,18 +92,18 @@ public class DependenciesSection extends PageSection {
 					dependency.setGroupId("[groupId]");
 					dependency.setVersion("[version]");
 					dependency.setType("jar");
-					pom.addDependency(dependency);
+					pom.getModel().addDependency(dependency);
 					return dependency;
 				}
 				public void moveObjectTo(int index, Object object, Object parentObject) {
-					List dependencies = pom.getDependencies();
+					List dependencies = pom.getModel().getDependencies();
 					if (dependencies != null) {
 						dependencies.remove(object);
 						dependencies.add(index, object);
 					}
 				}
 				public void removeObject(Object object, Object parentObject) {
-					List dependencies = pom.getDependencies();
+					List dependencies = pom.getModel().getDependencies();
 					if (dependencies != null) {
 						dependencies.remove(object);
 					}
@@ -133,15 +133,15 @@ public class DependenciesSection extends PageSection {
 						log.debug("properties = " + properties);
 					}
 					Dependency dependency = (Dependency) ((TableEntry) entry).getParentPomObject();
-					dependency.setProperties(properties);
-					dependency.resolvedProperties().clear();
+					dependency.setProperties(MevenideUtils.asProperties(properties));
+					dependency.getProperties().clear();
 					Iterator itr = properties.iterator();
 					while (itr.hasNext()) {
 						String[] property = MevenideUtils.resolveProperty((String) itr.next());
-						dependency.resolvedProperties().put(property[0], property[1]);
+						dependency.getProperties().put(property[0], property[1]);
 					}
 					if (log.isDebugEnabled()) {
-						log.debug("resolved properties = " + dependency.resolvedProperties());
+						log.debug("resolved properties = " + dependency.getProperties());
 					}
 				}
 			}
@@ -152,12 +152,12 @@ public class DependenciesSection extends PageSection {
 					Dependency dependency = (Dependency) parentObject;
 					String newPropertyStr = "unknown:unknown";
 					PropertyProxy newProperty = new PropertyProxy(newPropertyStr);
-					dependency.addProperty(newPropertyStr);
+					dependency.addProperty("unknown", "unknown");
 					return newProperty;
 				}
 				public void moveObjectTo(int index, Object object, Object parentObject) {
 					Dependency dependency = (Dependency) parentObject;
-					List properties = dependency.getProperties();
+					List properties = MevenideUtils.asList(dependency.getProperties());
 					PropertyProxy propertyToMove = (PropertyProxy) object;
 					String property = propertyToMove.toString();
 					if (properties != null) {
@@ -167,7 +167,7 @@ public class DependenciesSection extends PageSection {
 				}
 				public void removeObject(Object object, Object parentObject) {
 					Dependency dependency = (Dependency) parentObject;
-					List properties = dependency.getProperties();
+					List properties = MevenideUtils.asList(dependency.getProperties());
 					PropertyProxy propertyToMove = (PropertyProxy) object;
 					String property = propertyToMove.toString();
 					if (properties != null) {
@@ -176,7 +176,7 @@ public class DependenciesSection extends PageSection {
 				}
 				public List getDependents(Object parentObject) {
 					Dependency dependency = (Dependency) parentObject;
-					List properties = dependency.getProperties();
+					List properties = MevenideUtils.asList(dependency.getProperties());
 					List propertyProxies = new ArrayList(properties.size());
 					Iterator itr = properties.iterator();
 					while (itr.hasNext()) {
@@ -191,10 +191,10 @@ public class DependenciesSection extends PageSection {
 		return container;
 	}
 
-	public void update(Project pom) {
+	public void update(MavenProject pom) {
 		dependenciesTable.removeAll();
-		List dependencies = pom.getDependencies();
-		List parentDependencies = isInherited() ? getParentPom().getDependencies() : null;
+		List dependencies = pom.getModel().getDependencies();
+		List parentDependencies = isInherited() ? getParentPom().getModel().getDependencies() : null;
 		if (dependencies != null && !dependencies.isEmpty()) {
 		    for (Iterator iter = dependencies.iterator(); iter.hasNext(); ) {
 		        Dependency element = (Dependency) iter.next();
