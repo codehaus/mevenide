@@ -18,9 +18,16 @@
       <attainGoal name="multiproject:goal"/>
   </goal>
   
-  <goal name="mevenide:build-site" description="Build Mevenide Site" prereqs="mevenide:init-all">
-  	<j:set var="maven.multiproject.includes" value="${maven.multiproject.eclipse.includes},${mevenide.ui.netbeans.project.name},${mevenide.eclipse.plugin.project.name}/project.xml,${mevenide.spinner.wiki.project.name}/project.xml"/>
+  <goal name="mevenide-site:build" description="Build Mevenide Site" prereqs="mevenide:init-site">
+  	<j:set var="maven.multiproject.includes" value="${maven.multiproject.site.includes}"/>
   	<attainGoal name="multiproject:site"/>
+  	<attainGoal name="mevenide-site:build-archive"/>
+  </goal>
+  
+  <goal name="mevenide-site:build-archive">
+    <j:set var="siteArchive" value="${maven.build.dir}/mevenide-site-${pom.currentVersion}.zip"/>
+    <ant:delete file="${siteArchive}"/>
+    <ant:zip destfile="${siteArchive}" basedir="${maven.build.dir}/docs"/>
   </goal>
   
   
@@ -55,6 +62,18 @@
     <util:file var="installScript" name="${basedir}/../${mevenide.master.project.name}/install-netbeans-dependencies.xml"/>
     <j:include file="${installScript}"/>
   </goal>  
+  
+  <goal name="mevenide:init-site" description="Try to install eclipse and netbeans dependencies. Used to initialize repository before building site.">
+      <ant:property environment="env"/>
+      <ant:property name="eclipse_home" location="env.ECLIPSE_HOME"/>
+      <ant:property name="netbeans_home" location="env.NETBEANS_HOME"/>
+      <j:if test="${!empty(eclipse_home)}">
+        <attainGoal name="mevenide-eclipse:init"/>
+      </j:if>
+      <j:if test="${!empty(netbeans_home)}">
+        <attainGoal name="mevenide-netbeans:init"/>  
+      </j:if>
+  </goal>
   
   
   <!-- ==================================== -->
