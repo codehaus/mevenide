@@ -97,10 +97,10 @@ public class PropertyResolverFactory {
      * returns a cached or newly created instance of IPropertyFinder that maps the
      * maven plugin defaults for a given maven.plugin.dir
      */
-   IPropertyFinder getPluginDefaultsPropertyFinder(ILocationFinder finder) {
+   PluginPropertiesFinder getPluginDefaultsPropertyFinder(ILocationFinder finder) {
         synchronized (pluginDirProps) {
             String pluginDir = finder.getMavenPluginsDir();
-            IPropertyFinder propfinder = (IPropertyFinder)pluginDirProps.get(pluginDir);
+            PluginPropertiesFinder propfinder = (PluginPropertiesFinder)pluginDirProps.get(pluginDir);
             if (propfinder == null) {
                 propfinder = new PluginPropertiesFinder(new File(pluginDir));
                 pluginDirProps.put(pluginDir, propfinder);

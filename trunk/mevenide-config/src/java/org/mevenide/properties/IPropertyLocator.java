@@ -17,6 +17,8 @@
 
 package org.mevenide.properties;
 
+import java.util.Set;
+
 /**
  * Instances of this interface are able to find out where the given property is defined.
  *
@@ -65,5 +67,10 @@ public interface IPropertyLocator {
      * the return value indicates if the property is defined in the particular properties file.
      */
     boolean isDefinedInLocation(String key, int location);
+    
+    /**
+     * returns all the keys at the given location.
+     */
+    Set getKeysAtLocation(int location);
     
 }

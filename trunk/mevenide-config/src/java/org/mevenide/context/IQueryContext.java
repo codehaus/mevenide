@@ -18,14 +18,15 @@
 package org.mevenide.context;
 
 import java.io.File;
+import java.util.Set;
 
 /**
  * interface to externalize the project files content/models to one place, and reuse
  * in all the queries (ILocationFinder, IPropertyResolver, etc)
  * @author  <a href="mailto:ca206216@tiscali.cz">Milos Kleint</a>
  */
-public interface IQueryContext
-{
+public interface IQueryContext {
+    
     String getPropertyValue(String key);
     
     String getUserPropertyValue(String key);
@@ -33,6 +34,20 @@ public interface IQueryContext
     String getBuildPropertyValue(String key);
     
     String getProjectPropertyValue(String key);
+    
+    /**
+     * all property keys defined in userdir/build.properties
+     */
+    Set getUserPropertyKeys();
+    /**
+     * all property keys defined in build.properties
+     */
+    Set getBuildPropertyKeys();
+    /**
+     * all property keys defined in project.properties
+     */
+    Set getProjectPropertyKeys();
+    
     /**
      * the directory where the POM is located
      */

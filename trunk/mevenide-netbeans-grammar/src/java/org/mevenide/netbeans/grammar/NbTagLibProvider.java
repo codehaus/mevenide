@@ -30,6 +30,7 @@ import org.mevenide.grammar.TagLibProvider;
 import org.mevenide.grammar.impl.EmptyAttributeCompletionImpl;
 import org.mevenide.grammar.impl.GoalsAttributeCompletionImpl;
 import org.mevenide.grammar.impl.MavenTagLibProvider;
+import org.mevenide.grammar.impl.PluginDefaultsCompletionImpl;
 import org.mevenide.grammar.impl.StaticTagLibImpl;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.Repository;
@@ -113,6 +114,9 @@ public class NbTagLibProvider implements TagLibProvider, AttrCompletionProvider 
             } catch (Exception exc) {
                 logger.error("Cannot create new instance of GoalsAttributeCompletionImpl", exc);
             }
+        }
+        if ("pluginDefaults".equals(name)) {
+            completion = new PluginDefaultsCompletionImpl();
         }
         if (completion == null) {
             // fallback implementation.

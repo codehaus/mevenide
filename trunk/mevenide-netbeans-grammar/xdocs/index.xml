@@ -84,6 +84,19 @@
 					<br/><br/>
 				</center>
            </p>
+           <p> In attributes values, you can get various completions. 
+           <ul> <li><p>After typing "maven." in any attribute value, you get a list of 
+           plugins' property keys that modify the plugins' behaviour. </p> </li>
+            <li><p>For goal related attributes, you get a list of applicable goals.
+            </p> </li>           
+           </ul>
+				<center>
+					<img border="1px" src="images/cc_plugin_props.png"/>
+					<br/><br/>
+					<font size="-1"><b>Screenshot 6</b>Completing plugin property keys.</font>
+					<br/><br/>
+				</center>
+           </p>
           </div>
     </section>
   </body>

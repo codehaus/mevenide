@@ -74,6 +74,7 @@
             <groupId>mevenide</groupId>
             <artifactId>goals-grabber</artifactId>
             <version>0.5-SNAPSHOT</version>
+            <type>jar</type>
                 <properties>
                     <netbeans.module.dep>spec</netbeans.module.dep>
                     <eclipse.plugin.bundle>false</eclipse.plugin.bundle>

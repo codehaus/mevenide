@@ -16,6 +16,7 @@
  */
 package org.mevenide.properties.resolver;
 
+import java.util.Collections;
 import junit.framework.TestCase;
 import org.apache.maven.project.Project;
 import org.jdom.Element;
@@ -118,6 +119,18 @@ public class ProjectWalker2Test extends TestCase {
         
         public org.jdom.Element getRootProjectElement() {
             return projectElement;
+        }
+
+        public java.util.Set getBuildPropertyKeys() {
+            return Collections.EMPTY_SET;
+        }
+
+        public java.util.Set getProjectPropertyKeys() {
+            return Collections.EMPTY_SET;
+        }
+
+        public java.util.Set getUserPropertyKeys() {
+            return Collections.EMPTY_SET;
         }
         
     }

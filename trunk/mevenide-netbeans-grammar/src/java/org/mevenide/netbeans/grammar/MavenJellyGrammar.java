@@ -400,6 +400,8 @@ public class MavenJellyGrammar implements GrammarQuery {
                 } else {
                     lib = findTagLib(namespace, elementParent);
                 }
+                String lastWord = GrammarUtilities.extractLastWord(start);
+                String initialPart = start.substring(0, start.length() - lastWord.length());
                 if (lib != null) {
                     logger.debug("found taglib" + lib.getName());
                     Collection types = lib.getAttrCompletionTypes(tagName, virtualTextCtx.getNodeName());
@@ -408,12 +410,20 @@ public class MavenJellyGrammar implements GrammarQuery {
                         String type = (String)it.next();
                         logger.debug("attr compl type=" + type);
                         AttributeCompletion compl = getManager().getAttributeCompletion(type);
-                        String lastWord = GrammarUtilities.extractLastWord(start);
                         Collection col = compl.getValueHints(lastWord);
                         Iterator valIt = col.iterator();
                         while (valIt.hasNext()) {
-                            toReturn.add(new TextNode((String)valIt.next(), start.substring(0, start.length() - lastWord.length())));
+                            toReturn.add(new TextNode((String)valIt.next(), initialPart));
                         }
+                    }
+                }
+                // complete maven plugin default properties..
+                if (lastWord.startsWith("maven.")) {
+                    AttributeCompletion compl = getManager().getAttributeCompletion("pluginDefaults");
+                    Collection col = compl.getValueHints(lastWord);
+                    Iterator valIt = col.iterator();
+                    while (valIt.hasNext()) {
+                        toReturn.add(new TextNode((String)valIt.next(), initialPart));
                     }
                 }
             }

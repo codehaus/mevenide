@@ -18,6 +18,7 @@ package org.mevenide.properties.resolver;
 
 import org.mevenide.context.IQueryContext;
 import org.mevenide.properties.IPropertyFinder;
+import org.mevenide.properties.IPropertyLocator;
 
 
 
@@ -50,7 +51,6 @@ final class QueryBasedFinderFactory {
         public void reload() {
             // ignored, querycontext is self-reloading..
         }
-        
     }
     
     private static final class UserPropertyFinder extends PropertyFinder {
