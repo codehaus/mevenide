@@ -1,52 +1,65 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <document>
     <properties>
-    	<author email="rhill@wanadoo.fr">Gilles Dodinet</author>
-        <title>Help Page</title>
+    	<author email="rhill2@free.fr">Gilles Dodinet</author>
+        <title>Configuring Mevenide</title>
     </properties>
     <body>
 		<section name="Mevenide Configuration">
-        	<div id="documentContent">
-        	<p>
-			    You can configure Mevenide through the 'Maven' Preferences page :
-				<i><code>Window &gt; Preferences &gt; Maven</code></i>. Java Home, Maven Home and 
-				Maven repository are required in order to successfully use Mevenide. However as for now 
-				you should not have anything to do since convenient values should be automatically filled 
-				(grabbed from environment variables, ~/build.properties, etc.)
-				<br/><br/>
-				Also a POM template can be specified that will be used when creating POM skeleton. This preference
-				will be removed later in favour of the 'Templates' preferences page.
-				<br/><br/>
-				Last, you can specify default goals which will be run when invoking the runner. Default is test:test. 
-				Default is useful to support one-click launching.
-				<br/><br/>
-				<center>
-					<img src="images/set-preferences.png" border="1px"/>
-					<br/><br/>
-					<font size="-1"><b>Screenshot 1</b> Mevenide Preferences Page</font>
-				</center>
-			    <br/><br/>
-			</p>
-			</div>
-        </section>
-            
-        <section name="Mevenide Menu">
-        	<div id="documentContent">
-			<p>	
-			    Mevenide actions can be accessed through the 'Maven' menu in either 
-			    <code>project.xml</code> or Eclipse Project contextual menu.
-			    <br/><br/>
-			    <center>
-					<img border="1px" src="images/sync_project.png"/>
-					<br/><br/>
-					<font size="-1"><b>Screenshot 2</b> Mevenide Menu</font>
-					<br/><br/>
-				</center>
-            </p>
-            </div>
+			<subsection name="Primary Options">
+        		<div id="documentContent">
+					<p>
+						You can configure Mevenide through the 'Maven' Preferences page :
+						<i><code>Window &gt; Preferences &gt; Maven</code></i>. Preferences Pages 
+						have been reorganized for better readibility.<br/>
+						<center>
+							<img src="images/screenshots/conf/set_preferences.png" border="1px"/>
+							<br/>
+							<font size="-1"><b>Screenshot 1</b> Mevenide Preferences Pages</font>
+						</center>
+						<br/>
+					</p>
+					<p>
+						Important pages are the <font color="#009900">Locations</font> and <font color="#009900">Run</font> pages. The later lets you specify
+						the <font color="#990000">size of the Heap</font> (equivalent of MAVEN_OPTS=-Xmx...M) and a <font color="#990000">default goal</font> to be run when 
+						invoking the <a href="run.html">runner</a> (thus allowing to support Eclipse one-click launching, whereas the 
+						Locations page defines <font color="#990000">program Locations</font> needed by Mevenide. <br/>
+						Those locations are automatically retrieved from relevant sources (e.g. system nvironment, build.properties, etc.)
+						at first execution, but can be then customized. Also they now can be regenerated using the 'Perform Defaults' button. 
+					</p>
+				</div>
+			</subsection>
+			<subsection name="Dependency Types">
+				<div id="documentContent">
+  				  <p>
+					This page allows to define user defined dependency types. Those can then be used while editing 
+					the POM though the <a href="edit.html">POM editor</a> or while synchronizing an Eclipse project through the <a href="sync.html">POM Synchronizer</a>.
+					<br/>
+					<center>
+					<img src="images/screenshots/conf/dep_types_prefs.png" border="1px"/><br/>
+					<font size="-1"><b>Screenshot 2</b> Pom Editor Preferences Pages</font>
+					</center>
+					<br/>
+				  </p>
+				</div>
+			</subsection>
+			<subsection name="Templates Configuration">
+			  <div id="documentContent">
+				<p>The Templates preferences page is used to manage POM templates that are available to Mevenide. Please see <a href="pom-templates.html">Pom Templates description</a> for more informations</p>
+			  </div>
+			</subsection>
+			<subsection name="Plugins Provider">
+			  <div id="documentContent">
+				<p>
+					Those preferences pages are dynamic and allow Maven plugin provider to contribute to Mevenide in a fairly simple way. 
+					Please refer to the <a href="provider-infrastructure.html">Provider page description</a> if you're interested in plugging into Mevenide. 
+				</p>
+			  </div>
+			</subsection>
         </section>
         
-       <section>
+       	
+       	<section>
 			<p>
 				<navbar toc="help.html" next="run.html"/>
 			</p>

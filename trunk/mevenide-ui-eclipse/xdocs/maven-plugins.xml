@@ -14,7 +14,7 @@
 				<li>The <a href="../maven-nbm-plugin/index.html">Maven NBM (NetBeans Module) plugin</a> will create a Netbeans module file (.nbm) </li>
 			</ul>
 			<p>
-				Those Maven plugins can be found under the in the <a href="http://dist.codehaus.org/mevenide/repository">Mevenide repository</a>. 
+				Those Maven plugins can be found in the <a href="http://dist.codehaus.org/mevenide/repository">Mevenide repository</a>. 
 			</p>
 		</section>
 

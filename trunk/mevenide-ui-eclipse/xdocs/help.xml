@@ -19,6 +19,9 @@
 							<a href="conf.html" class="documentLink">Mevenide Configuration</a>
 						</li>
 						<li>
+							<a href="templates.html" class="documentLink">POM Templates</a>
+						</li>
+						<li>
 							<a href="run.html" class="documentLink">Maven Launching</a>
 						</li>
 						<li>

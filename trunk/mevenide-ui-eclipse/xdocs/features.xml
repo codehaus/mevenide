@@ -32,7 +32,7 @@
 		  <li>Jar Override Support</li>
 		  <li>Primary output folder support</li>
 		  <li>Supports eclipse.dependency (from maven-eclipse-plugin) property</li>
-		  <li>Suport for ignored artifacts (.mvnignore)</li>
+		  <li>Support for ignored artifacts (.mvnignore)</li>
 		  <li>Possibility to not write back project.properties on a per synchronization basis</li>
 		  <li>Possibility to filter the elements to be synchronized - eventually via regular expressions</li>
 		</ul>
@@ -48,10 +48,13 @@
 		<ul>
 			<li>No conflict support (e.g. if dependencies version conflict)</li>
 			<li>Doesnot support "Output folder per Source folder" Eclipse option</li>
-			<li>Doesnot support Eclipse 3.0-M9 inclusion patterns</li>
+			<li>Doesnot support Eclipse 3.0 inclusion patterns</li>
 			<li>Link to external resources/files not tested</li>
-			<li>POM defining entities may not be accurately synchronized because we donot support entities writing yet</li>
+			<li>POM defining entities may not be accurately synchronized because we donot support entities <font color="#009900">writing</font> yet</li>
 		</ul>
+	  </p>
+	  <p>
+	  	<a href="sync.html">More details</a>
 	  </p>
 	</div>
   </section>
@@ -70,7 +73,11 @@
 		<ul>
 			<li>No debug mode (Jelly debugging, attach to a remote VM, etc.)</li>
 			<li>Cannot set JVM options</li>
+			<li>At the moment, only project.xml can be run</li>
 		</ul>
+	  </p>
+	  <p>
+	  	<a href="run.html">More details</a>
 	  </p>
 	</div>
   </section>
@@ -91,10 +98,13 @@
 	  <p>
 		<u>Known limitations</u><br/>
 		<ul>
-			<li>No support to write xml entities support yet - we need to think about some solutions to support full bidirectionnal I/O.</li>
+			<li><font color="#009900">No support to write xml entities support yet</font> - we need to think about some solutions to support full bidirectionnal I/O.</li>
 			<li>No contentassist in the soure page yet</li>
 			<li>In the current state, POM Editor wont open non-conform files</li>
 		</ul>
+	  </p>
+	  <p>
+	  	<a href="edit.html">More details</a>
 	  </p>
 	</div>
   </section>
@@ -112,7 +122,6 @@
 	  <p>
 		<u>Known issues</u><br/>
 		<ul>
-			<li>Big blocks of TEXT or COMMENT seem to make the editor lag really badly (<b>non 100% reproductible</b>)</li>
 			<li>Conflicts between custom goals and global goals when namespace is identical (e.g. 'war:some-custom-goal')</li>
 		</ul>
 	  </p>
@@ -122,10 +131,13 @@
 			<li>No code completions for prereqs attribute</li>
 			<li>Limited jelly:ant taglib support</li>
 			<li>Completion proposals (custom goals) not computed from the buffer but from the previously saved file</li>
-			<li>Offline option not functionnal yet when launching a goal from the outline page</li>
 			<li>No proposal context information yet</li>
 			<li>No namespace proposal yet</li>
+			<li>Outline page not linked to the editor</li>
 		</ul>
+	  </p>
+	  <p>
+	  	<a href="contentassist.html">More details</a>
 	  </p>
 	</div>
   </section>
@@ -133,16 +145,25 @@
 	<div id="documentContent">
 	  <p>
 		<ul>
-		  <li>Simple Maven Project Wizard based on Eclipse java project wizard</li>
-		  <li>Maven Project Wizard creates a POM according to the informations entered in the wizard</li>
-		  <li>Simple POM Wizard based on Eclipse simple file wizard</li>
+		  <!-- li>Simple Maven Project Wizard based on Eclipse java project wizard</li>
+		  <li>Maven Project Wizard creates a POM according to the informations entered in the wizard</li -->
+		  <li>Simple, template-based, POM Wizard </li>
 		</ul>
 	  </p>
-	  <p>
+	  <!-- p>
 		<u>Known limitations</u><br/>
 		<ul>
 			<li>Cannot fully customize the generated POM before the creation</li>
 		</ul>
+	  </p -->
+	  <p>
+	  	<u>In progress</u><br/>
+	  	<ul>
+	  		<li>A not fully functional Maven Project Wizard is under development</li>
+	  	</ul>
+	  </p>
+	  <p>
+	  	<a href="wizard.html">More details</a>
 	  </p>
 	</div>
   </section>
@@ -160,6 +181,9 @@
 			<li>Cannot edit templates from within Eclipse yet</li>
 		</ul>
 	  </p>
+	  <p>
+	  	<a href="templates.html">More details</a>
+	  </p>
 	</div>
   </section>
   <section name="Provider Infrasctructure">
@@ -170,10 +194,7 @@
 		</ul>
 	  </p>
 	  <p>
-		<u>Known limitations</u><br/>
-		<ul>
-			<li>Cannot edit templates from within Eclipse yet</li>
-		</ul>
+	  	<a href="provider-infrastructure.html">More details</a>
 	  </p>
 	</div>
   </section>
