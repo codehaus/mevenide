@@ -285,10 +285,10 @@ public class SynchronizeView extends ViewPart {
 				if ( selection instanceof IArtifactMappingNode ) {
 				    IArtifactMappingNode selectedNode = (IArtifactMappingNode) selection;
 					if ( (selectedNode.getChangeDirection() & ProjectContainer.OUTGOING) != 0 ) {
-						manager.add(addToClasspath);
+						manager.add(pushToPom);
 					}
 					if ( (selectedNode.getChangeDirection() & ProjectContainer.INCOMING) != 0 ) {
-						manager.add(pushToPom);
+						manager.add(addToClasspath);
 					}
 					if ( (selectedNode.getChangeDirection() & ProjectContainer.CONFLICTING) != 0 ) {
 						manager.add(markAsMerged);
