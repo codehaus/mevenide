@@ -471,4 +471,41 @@ maven.nbm.license=${dependencyModuleDir}/license.txt
       </ant:updatedist>
       
   </goal> 
+  
+  
+  <goal name="nbm:installNetbeansArtifacts"
+        description="Installs all modules from netbeans installation into maven local repository. Expects a parameter netbeans.home pointing to root directory.">
+     <j:set var="netbeanshome" value="${netbeans.home}"/>
+     <j:if  test="${empty netbeanshome}">
+       <ant:fail message="You need to define the netbeans.home property pointing to the root directory of the netbeans installation"/>
+     </j:if>
+     
+    <ant:fileset dir="${netbeanshome}" id="jar.files">
+      <ant:include name="*/modules/*.jar"/>
+      <ant:include name="*/modules/autoload/*.jar"/>
+      <ant:include name="*/modules/eager/*.jar"/>
+    </ant:fileset>
+  
+    <ant:pathconvert pathsep="," property="jarlist" refid="jar.files"/>     
+    <util:tokenize var="tokenized" delim=",">${jarlist}</util:tokenize>
+    
+    <j:forEach items="${tokenized}" var="jarpath" indexVar="index">    
+        <mevenide:examine-manifest jarFile="${jarpath}" 
+                                   isNetbeansModuleVar="nbdepIsNetbeansModule"
+                                   moduleVar="nbdepModule"
+                                   specVersionVar="nbdepSpecVersion"
+        /> 
+        <ant:echo message="${jarpath}=${nbdepIsNetbeansModule}"/>
+        <j:if test="${nbdepIsNetbeansModule == true}">
+           <util:file name="${jarpath}" var="fileVar" />
+           <j:set var="nameLong" value="${fileVar.name}"/>
+           <j:set var="name" value="${nameLong.substring(0, nameLong.indexOf('.jar'))}"/>
+<!--           <ant:basename property="name" file="${jarpath}" suffix=".jar"/> -->
+           <ant:copy file="${jarpath}" 
+                     toFile="${maven.repo.local}/netbeans/jars/${name}-${nbdepSpecVersion}.jar" />
+           <ant:echo message="Module: ${name}-${nbdepSpecVersion}.jar"/>
+        </j:if>
+     </j:forEach>
+  </goal>
+  
 </project>
