@@ -46,12 +46,6 @@
            <version>3.0.0</version>
            <url>http://eclipse.org/</url>
         </dependency>
-        <dependency>
-	       <groupId>eclipse</groupId>
-           <artifactId>eclipse-osgi</artifactId>
-           <version>3.0.0</version>
-           <url>http://eclipse.org/</url>
-        </dependency>
 	    <dependency>
 	       <groupId>eclipse</groupId>
            <artifactId>eclipse-jfacetext</artifactId>
@@ -101,12 +95,24 @@
         	<url>http://eclipse.org/</url>
         </dependency>
     	<dependency>
-        	<groupId>eclipse</groupId>	
+            <groupId>eclipse</groupId>	
         	<artifactId>eclipse-help</artifactId>
         	<version>3.0.0</version>
         	<url>http://eclipse.org/</url>
         </dependency>
-    	<dependency>
+        <dependency>
+            <groupId>eclipse</groupId>	
+        	<artifactId>eclipse-variables</artifactId>
+        	<version>3.0.0</version>
+        	<url>http://eclipse.org/</url>
+        </dependency>
+        <dependency>
+            <groupId>eclipse</groupId>	
+        	<artifactId>eclipse-osgi</artifactId>
+        	<version>3.0.0</version>
+        	<url>http://eclipse.org/</url>
+        </dependency>
+        <dependency>
         	<groupId>eclipse</groupId>	
         	<artifactId>eclipse-helpbase</artifactId>
         	<version>3.0.0</version>
@@ -115,12 +121,6 @@
     	<dependency>
         	<groupId>eclipse</groupId>	
         	<artifactId>eclipse-ide</artifactId>
-        	<version>3.0.0</version>
-        	<url>http://eclipse.org/</url>
-        </dependency>
-    	<dependency>
-        	<groupId>eclipse</groupId>	
-        	<artifactId>eclipse-variables</artifactId>
         	<version>3.0.0</version>
         	<url>http://eclipse.org/</url>
         </dependency>
