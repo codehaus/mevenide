@@ -60,7 +60,7 @@ public class DirScannerSubClassTest extends TestCase {
         boolean isCreated = tempDir.mkdirs();
         file = new File(tempDir, "hello2.txt");
         file.createNewFile();
-        rootTempFO = FileUtil.toFileObject(rootTempDir);
+        rootTempFO = FileUtil.toFileObject(FileUtil.normalizeFile(rootTempDir));
         if (rootTempFO == null) {
             throw new Exception("is null");
         }
