@@ -14,6 +14,7 @@ public class Indextable extends Hashtable {
     private static final String fs = System.getProperty("file.separator");
 
     private String pathId  = null;
+
     private String pathUrl = null;
 
     /** Constructor does nothing special */
