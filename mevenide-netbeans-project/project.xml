@@ -84,7 +84,7 @@
         <groupId>netbeans</groupId>
         <artifactId>openide</artifactId>
         <!-- include nb specification version.. that's important for compiling -->
-        <version>4.28</version>
+        <version>4.33</version>
         <type>jar</type>
         <url>http://www.netbeans.org</url>
     </dependency>
