@@ -35,6 +35,7 @@ import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.XMLMemento;
 import org.eclipse.ui.internal.dialogs.ListContentProvider;
 import org.eclipse.ui.part.ViewPart;
 import org.mevenide.sync.ISynchronizer;
@@ -66,19 +67,20 @@ public class SourceDirectoryTypePart extends ViewPart {
 	public void createPartControl(Composite parent) {
 		Composite composite = parent;
 		GridLayout layout = new GridLayout();
+		layout.marginHeight=0;
+		layout.marginWidth=0;
 		parent.setLayout(layout);
 		
 		//configure viewer layout
 		viewer = new TableViewer(parent, SWT.FULL_SELECTION);
-		
 		GridData gridData = new GridData(GridData.FILL_BOTH);
 		gridData.grabExcessVerticalSpace = true;
 		gridData.grabExcessHorizontalSpace = true;
-		
 		viewer.getTable().setLayoutData(gridData);
 		
 		configureViewer();
-		//configure table lyout
+		
+		//configure table layout
 		createTableColumns();
 
 		getSite().setSelectionProvider(viewer);
@@ -157,9 +159,7 @@ public class SourceDirectoryTypePart extends ViewPart {
 	}
 
 	private ComboBoxCellEditor createComboBoxCellEditor() {
-		ComboBoxCellEditor comboBoxCellEditor = new ComboBoxCellEditor();
-		comboBoxCellEditor.create(viewer.getTable());
-		comboBoxCellEditor.setItems(SourceDirectoryUtil.sourceTypes);
+		ComboBoxCellEditor comboBoxCellEditor = new ComboBoxCellEditor(viewer.getTable(), SourceDirectoryUtil.sourceTypes, SWT.READ_ONLY);
 		comboBoxCellEditor.activate();
 		return comboBoxCellEditor;
 	}
@@ -169,16 +169,21 @@ public class SourceDirectoryTypePart extends ViewPart {
 
 	private void addContributions() {
 		IToolBarManager tbm = getViewSite().getActionBars().getToolBarManager();
-		tbm.add(new Action() {
+		Action synchronizeAction = new Action() {
 			public void run() {
 				saveState(memento);
 				SynchronizerFactory.getSynchronizer(ISynchronizer.IDE_TO_POM).synchronize();
-			}	
-		});
+			}
+		};	
+		synchronizeAction.setImageDescriptor(MavenPlugin.getImageDescriptor("maven-run.gif"));
+		tbm.add(synchronizeAction);
 		getViewSite().getActionBars().updateActionBars();
 	}
 
 	public void init(IViewSite site, IMemento memento) throws PartInitException {
+		if ( memento == null ) {
+			memento = XMLMemento.createWriteRoot("sourceDirectory");
+		}
 		super.init(site, memento);
 	}
 	
@@ -187,7 +192,10 @@ public class SourceDirectoryTypePart extends ViewPart {
 	}
 	
 	public void saveState(IMemento memento) {
-		super.saveState(memento);
+		IMemento[] mementos = memento.getChildren("projects");
+		for (int i = 0; i < mementos.length; i++) {
+			
+		}
 	}
 
 	public static void showView() throws Exception {
