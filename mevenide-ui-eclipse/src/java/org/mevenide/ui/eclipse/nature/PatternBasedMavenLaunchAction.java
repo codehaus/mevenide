@@ -22,7 +22,6 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.IAction;
 import org.eclipse.ui.externaltools.internal.model.IExternalToolConstants;
 
 
@@ -48,14 +47,13 @@ public class PatternBasedMavenLaunchAction extends Action {
         setEnabled(definition.isEnabled(project));
     }
     
-	public void run(IAction action) {
-	    System.err.println("RUN");
+	public void run() {
 	    try  {
 	        ILaunchConfigurationWorkingCopy copy = definition.getConfiguration().getWorkingCopy();
             copy.setAttribute(IExternalToolConstants.ATTR_WORKING_DIRECTORY, project.getLocation().toOSString());
             copy.doSave(); 
             definition.getConfiguration().launch("run", null);
-            definition.setEnabled(project, false);
+            definition.projectLaunched(project);
 	    }
         catch (CoreException e) {
             String message = "Unable to obtain LaunchConfigurationWorkingCopy"; 
