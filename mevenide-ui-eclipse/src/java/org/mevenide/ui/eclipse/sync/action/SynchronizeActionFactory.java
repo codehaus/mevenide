@@ -246,7 +246,7 @@ public class SynchronizeActionFactory {
 				IProject project = container.getProject();
 				try  {
 				    List mavenProjects = new PomChooser(project).openPomChoiceDialog();
-					for (int i = 0; i < mavenProjects.size(); i++) {
+				    for (int i = 0; i < mavenProjects.size(); i++) {
                         Project mavenProject = (Project) mavenProjects.get(i); 
 						log.debug("POM choice : " + mavenProject);
 						if ( mavenProject != null ) {

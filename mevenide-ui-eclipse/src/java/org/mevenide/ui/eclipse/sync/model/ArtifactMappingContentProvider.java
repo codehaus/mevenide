@@ -48,6 +48,8 @@
  */
 package org.mevenide.ui.eclipse.sync.model;
 
+import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.resources.IProject;
@@ -67,18 +69,28 @@ public class ArtifactMappingContentProvider implements ITreeContentProvider {
     
     private int direction;
     
+    private List poms;
+    
     public Object[] getChildren(Object parentElement) {
         if ( parentElement instanceof ProjectContainer ) {
             
             IProject project = ((ProjectContainer) parentElement).getProject();
-            IArtifactMappingNodeContainer dependencyContainer = null;
-            IArtifactMappingNodeContainer directoryContainer = null;
+            List dependencyContainers = null;
+            List directoryContainers = null;
             try {
                 if ( project.hasNature(JavaCore.NATURE_ID) ) {
-                    dependencyContainer = DependencyMappingNodeContainerFactory.getFactory().getContainer(JavaCore.create(project));
-                    ((AbstractArtifactMappingNodeContainer) dependencyContainer).setParent((ProjectContainer) parentElement);
-                    directoryContainer = DirectoryMappingNodeContainerFactory.getFactory().getContainer(JavaCore.create(project));
-                    ((AbstractArtifactMappingNodeContainer) directoryContainer).setParent((ProjectContainer) parentElement);
+                    dependencyContainers = DependencyMappingNodeContainerFactory.getFactory().getContainer(JavaCore.create(project), poms);
+                    for (int i = 0; i < dependencyContainers.size(); i++) {
+                        AbstractArtifactMappingNodeContainer dependencyContainer = (AbstractArtifactMappingNodeContainer) dependencyContainers.get(i); 
+	                    dependencyContainer.setParent((ProjectContainer) parentElement);
+	                    dependencyContainer.filter(direction);
+                    }
+                    directoryContainers = DirectoryMappingNodeContainerFactory.getFactory().getContainer(JavaCore.create(project), poms);
+                    for (int i = 0; i < directoryContainers.size(); i++) {
+                        AbstractArtifactMappingNodeContainer directoryContainer = (AbstractArtifactMappingNodeContainer) directoryContainers.get(i);
+                        directoryContainer.setParent((ProjectContainer) parentElement);
+                        directoryContainer.filter(direction);
+                    }
                 }
                 else {
                     //@TODO user should know that the project has not been processed b/c it is not a java project 
@@ -88,7 +100,14 @@ public class ArtifactMappingContentProvider implements ITreeContentProvider {
                 log.error(e);
             }
             
-            return new IArtifactMappingNodeContainer[] { directoryContainer.filter(direction), dependencyContainer.filter(direction) }; 
+            IArtifactMappingNodeContainer[] containers = new IArtifactMappingNodeContainer[directoryContainers.size() + dependencyContainers.size()];
+            for (int i = 0; i < directoryContainers.size(); i++) {
+                containers[i] = (IArtifactMappingNodeContainer) directoryContainers.get(i);
+            }
+            for (int i = 0; i < dependencyContainers.size(); i++) {
+                containers[i + directoryContainers.size()] = (IArtifactMappingNodeContainer) dependencyContainers.get(i);
+            } 
+            return containers;
         }
         if ( parentElement instanceof IArtifactMappingNodeContainer ) {
             return ((IArtifactMappingNodeContainer) parentElement).getNodes();
@@ -127,6 +146,10 @@ public class ArtifactMappingContentProvider implements ITreeContentProvider {
     
     public void setDirection(int direction) {
         this.direction = direction;
+    }
+    
+    public void setPoms(List poms) {
+        this.poms = poms;
     }
 }
 

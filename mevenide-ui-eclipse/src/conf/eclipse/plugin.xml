@@ -96,7 +96,7 @@
          <action
                label="%Synchronize.Label"
                icon="icons/synced.gif"
-               class="org.mevenide.ui.eclipse.actions.SynchronizeAction"
+               class="org.mevenide.ui.eclipse.actions.SynchronizeProjectAction"
                menubarPath="maven.plugin.menu/Synchronize"
                enablesFor="1"
                id="maven-plugin.Synchronize">
@@ -114,9 +114,6 @@
             <separator
                   name="RunMaven">
             </separator>
-            <separator
-                  name="Synchronize">
-            </separator>
          </menu>
          <action
                label="%RunMaven.label"
@@ -126,10 +123,23 @@
                enablesFor="1"
                id="maven.plugin.popup.action">
          </action>
+     </objectContribution>
+     <objectContribution
+            objectClass="org.eclipse.core.resources.IFile"
+            nameFilter="*.xml"
+            id="maven.plugin.xml.contribution.ifile">
+         <menu
+               label="%MavenMenu.label"
+               path="additions"
+               id="maven.plugin.menu">
+	         <separator
+	               name="Synchronize">
+	         </separator>
+         </menu>
          <action
                label="%Synchronize.Label"
                icon="icons/synced.gif"
-               class="org.mevenide.ui.eclipse.actions.SynchronizeAction"
+               class="org.mevenide.ui.eclipse.actions.SynchronizePomAction"
                menubarPath="maven.plugin.menu/Synchronize"
                enablesFor="1"
                id="maven-plugin.Synchronize">

@@ -61,10 +61,10 @@ import org.mevenide.ui.eclipse.sync.view.SynchronizeView;
  * @version $Id$
  * 
  */
-public class SynchronizeAction extends AbstractMevenideAction {
+public class SynchronizeProjectAction extends AbstractMevenideAction {
     private static final String SYNCHRONIZE_VIEW_ID = "org.mevenide.ui.synchronize.view.SynchronizeView";
     
-    private static Log log = LogFactory.getLog(SynchronizeAction.class);
+    private static Log log = LogFactory.getLog(SynchronizeProjectAction.class);
 	
     public void run(IAction action) {
         try {

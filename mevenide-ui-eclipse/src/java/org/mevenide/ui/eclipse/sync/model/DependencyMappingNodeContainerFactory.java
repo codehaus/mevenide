@@ -56,6 +56,7 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Dependency;
+import org.apache.maven.project.Project;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRoot;
@@ -85,42 +86,49 @@ public class DependencyMappingNodeContainerFactory {
         return factory;
     }
 
-	public DependencyMappingNodeContainer getContainer(IJavaProject javaProject) {
-		DependencyMappingNodeContainer con = new DependencyMappingNodeContainer();
-
+	public List getContainer(IJavaProject javaProject, List pomFiles) {
+	    List cons = new ArrayList();
+	    
 		try {
-			List nodes = new ArrayList();
-			IClasspathEntry[] classpathEntries = javaProject.getResolvedClasspath(true);
-			IPathResolver pathResolver = new DefaultPathResolver();
-			
-			for (int i = 0; i < classpathEntries.length; i++) {
-			   if ( ((classpathEntries[i].getEntryKind() == IClasspathEntry.CPE_LIBRARY
-						&& !FileUtils.isClassFolder(classpathEntries[i].getPath().toOSString(), javaProject.getProject()) )
-						|| classpathEntries[i].getEntryKind() == IClasspathEntry.CPE_PROJECT) 
-						&& !EclipseProjectUtils.getJreEntryList(javaProject.getProject()).contains(pathResolver.getAbsolutePath(classpathEntries[i].getPath())) ) {
-
-					IClasspathEntry classpathEntry = classpathEntries[i];
-					DependencyMappingNode node = createDependencyMappingNode(javaProject, classpathEntry);
-					String ignoreLine = ((Dependency) node.getResolvedArtifact()).getGroupId() + ":" + ((Dependency) node.getResolvedArtifact()).getArtifactId();
-					if ( !FileUtils.isArtifactIgnored(ignoreLine, javaProject.getProject()) ) {
-						node.setParent(con);
-						nodes.add(node);
+		    for (int u = 0; u < pomFiles.size(); u++) {
+				DependencyMappingNodeContainer con = new DependencyMappingNodeContainer();
+                
+				Project pom = (Project) pomFiles.get(u);
+		        
+	            List nodes = new ArrayList();
+				IClasspathEntry[] classpathEntries = javaProject.getResolvedClasspath(true);
+				IPathResolver pathResolver = new DefaultPathResolver();
+				
+				for (int i = 0; i < classpathEntries.length; i++) {
+				   if ( ((classpathEntries[i].getEntryKind() == IClasspathEntry.CPE_LIBRARY
+							&& !FileUtils.isClassFolder(classpathEntries[i].getPath().toOSString(), javaProject.getProject()) )
+							|| classpathEntries[i].getEntryKind() == IClasspathEntry.CPE_PROJECT) 
+							&& !EclipseProjectUtils.getJreEntryList(javaProject.getProject()).contains(pathResolver.getAbsolutePath(classpathEntries[i].getPath())) ) {
+	
+						IClasspathEntry classpathEntry = classpathEntries[i];
+						DependencyMappingNode node = createDependencyMappingNode(javaProject, classpathEntry);
+						String ignoreLine = ((Dependency) node.getResolvedArtifact()).getGroupId() + ":" + ((Dependency) node.getResolvedArtifact()).getArtifactId();
+						if ( !FileUtils.isArtifactIgnored(ignoreLine, javaProject.getProject()) ) {
+							node.setParent(con);
+							nodes.add(node);
+						}
 					}
 				}
-			}
-			
-			IArtifactMappingNode[] artifactNodes = new IArtifactMappingNode[nodes.size()]; 
-			for (int i = 0; i < nodes.size(); i++) {
-			    artifactNodes[i] = (IArtifactMappingNode) nodes.get(i);
-            }
-			con.setNodes(artifactNodes);
-			con.attachJavaProject(javaProject);
+				
+				IArtifactMappingNode[] artifactNodes = new IArtifactMappingNode[nodes.size()]; 
+				for (int i = 0; i < nodes.size(); i++) {
+				    artifactNodes[i] = (IArtifactMappingNode) nodes.get(i);
+	            }
+				con.setNodes(artifactNodes);
+				con.attachJavaProject(javaProject, pom);
+				cons.add(con);
+		    }
 		}
 		catch (  Exception e ) {
 			e.printStackTrace();
 			log.error(e);
 		}
-		return con;
+		return cons;
 	}
 
     private DependencyMappingNode createDependencyMappingNode(IJavaProject javaProject, IClasspathEntry classpathEntry) throws Exception, CoreException {
