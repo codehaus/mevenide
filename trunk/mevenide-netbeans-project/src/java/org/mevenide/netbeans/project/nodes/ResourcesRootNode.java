@@ -29,10 +29,10 @@ import org.openide.util.Utilities;
 class ResourcesRootNode extends AbstractNode {
     private MavenProject project;
     
-    ResourcesRootNode(MavenProject mavproject) {
-        super(new ResourcesRootChildren(mavproject));
-        setName("Resources"); //NOI18N
-        setDisplayName("Resources");
+    ResourcesRootNode(MavenProject mavproject, boolean testResource) {
+        super(new ResourcesRootChildren(mavproject, testResource));
+        setName(testResource ? "TestResources" : "Resources"); //NOI18N
+        setDisplayName(testResource ? "Test Resources" : "Resources");
         // can do so, since we depend on it..
         setIconBase("org/mevenide/netbeans/project/resources/defaultFolder"); //NOI18N
         project = mavproject;

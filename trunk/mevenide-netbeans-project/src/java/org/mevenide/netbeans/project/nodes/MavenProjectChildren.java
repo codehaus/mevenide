@@ -55,6 +55,7 @@ class MavenProjectChildren extends Children.Keys {
     
     private static final String KEY_JELLY_SCRIPT = "jellyScript"; //NOI18N
     private static final String KEY_RESOURCES = "resources"; //NOI18N
+    private static final String KEY_TEST_RESOURCES = "testresources"; //NOI18N
     private static final String KEY_WEBAPP = "webapp"; //NOI18N
     private static final String KEY_EAR = "ear"; //NOI18N
     
@@ -120,6 +121,12 @@ class MavenProjectChildren extends Children.Keys {
             if (reso != null && reso.size() > 0) {
                 list.add(KEY_RESOURCES);
             }
+            if (build.getUnitTest() != null) {
+                List testlst = build.getUnitTest().getResources();
+                if (testlst != null && testlst.size() > 0) {
+                    list.add(KEY_TEST_RESOURCES);
+                }
+            }
         }
         
         FileObject fo = project.getProjectDirectory().getFileObject("plugin", "jelly");
@@ -148,7 +155,9 @@ class MavenProjectChildren extends Children.Keys {
             n = new PluginScriptNode(project.getProjectDirectory());
         }
         else if (key == KEY_RESOURCES) {
-            n = new ResourcesRootNode(project);
+            n = new ResourcesRootNode(project, false);
+        } else if (key == KEY_TEST_RESOURCES) {
+            n = new ResourcesRootNode(project, true);
         } else if (key == currentWebAppKey) {
             n = createWebAppNode();
         } else if (key == currentEarKey) {
