@@ -25,6 +25,7 @@ import org.mevenide.netbeans.project.FileUtilities;
 import org.mevenide.netbeans.project.MavenProject;
 import org.mevenide.netbeans.project.customizer.MavenPropertyChange;
 import org.mevenide.properties.Comment;
+import org.mevenide.properties.Element;
 import org.mevenide.properties.ElementFactory;
 import org.mevenide.properties.IPropertyLocator;
 import org.mevenide.properties.KeyValuePair;
@@ -72,7 +73,6 @@ public class NbProjectWriter {
                     }
                     if      (change.getNewLocation() != IPropertyLocator.LOCATION_DEFAULTS &&
                              change.getNewLocation() != IPropertyLocator.LOCATION_NOT_DEFINED) {
-                        System.out.println("new loc is" + change.getNewLocation());
                         File newLoc = FileUtilities.locationToFile(change.getNewLocation(), project);
                         PropertyModel model = (PropertyModel)locFileToModelMap.get(newLoc);
                         if (model == null) {
@@ -95,9 +95,13 @@ public class NbProjectWriter {
                         } else {
                             // ok, add it here..
                             pair = ElementFactory.getFactory().createKeyValuePair(change.getKey(), '=');
-                            // TODO - add some kind of heuristics to add to best place..
                             pair.setValue(change.getNewValue());
-                            model.addElement(pair);
+                            int index = findBestPlacement(model, change.getKey());
+                            if (index > 0) {
+                                model.insertAt(index, pair);
+                            } else {
+                                model.addElement(pair);
+                            }
                         }
                     }
                 }
@@ -151,6 +155,28 @@ public class NbProjectWriter {
         } catch (UserQuestionException exc) {
             throw new IOException("Cannot obtain lock. User interaction required.");
         }
+    }
+    
+    private int findBestPlacement(PropertyModel model, String key) {
+        if (key.startsWith("maven.")) { //NOI18N
+            int secondDot = key.indexOf(".", 6); //NOI18N
+            if (secondDot > 0) {
+                String keyGroup = key.substring(0, secondDot);
+                Iterator it = model.getList().iterator();
+                int index = -1;
+                while (it.hasNext()) {
+                    index = index + 1;
+                    Element el = (Element)it.next();
+                    if (el instanceof KeyValuePair) {
+                        KeyValuePair pair = (KeyValuePair)el;
+                        if (pair.getKey().startsWith(keyGroup)) {
+                            return index;
+                        }
+                    }
+                }
+            }
+        }
+        return -1;
     }
     
 }
