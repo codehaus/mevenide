@@ -19,30 +19,36 @@ package org.mevenide.netbeans.project.output;
 
 import java.io.File;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
+import org.mevenide.netbeans.api.output.OutputProcessorFactory;
 import org.mevenide.netbeans.project.MavenProject;
+import org.openide.util.Lookup;
 
 /**
  * factory creating different sets of processors
  * @author  Milos Kleint (ca206216@tiscali.cz)
  */
-public final class OutputProcessorFactory {
-    
-    private static OutputProcessorFactory instance;
+public final class DefaultOutputProcessorFactory implements OutputProcessorFactory {
     
     /** Creates a new instance of OutputProcessorFactory */
-    private OutputProcessorFactory() {
+    public DefaultOutputProcessorFactory() {
     }
     
-    public static OutputProcessorFactory getDefault() {
-        if (instance == null) {
-            instance = new OutputProcessorFactory();
+    public static Set getAllProcessors(MavenProject project) {
+        Lookup.Result res = Lookup.getDefault().lookup(new Lookup.Template(OutputProcessorFactory.class));
+        Iterator it = res.allInstances().iterator();
+        Set results = new HashSet();
+        while (it.hasNext()) {
+            System.out.println("factory defined..");
+            OutputProcessorFactory fact = (OutputProcessorFactory)it.next();
+            results.addAll(fact.createProcessorsSet(project));
         }
-        return instance;
+        return results;
     }
     
     
-    public Set createDetaultProcessorsSet(MavenProject project) {
+    public Set createProcessorsSet(MavenProject project) {
         HashSet processors = new HashSet();
         processors.add(new TestOutputListenerProvider(project));
         processors.add(new JavaOutputListenerProvider(project));
