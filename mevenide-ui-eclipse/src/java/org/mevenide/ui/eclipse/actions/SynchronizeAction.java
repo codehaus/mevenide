@@ -63,6 +63,7 @@ public class SynchronizeAction extends AbstractMavenAction {
 				dialog.create();
 				dialog.open();
 			}
+			//@todo extract those two actions in their own AbstractMavenAction
 			if ( action.getId().equals("maven-plugin.mapSourceDirectories") ) {
 				SourceDirectoryTypePart.prompt(currentProject);
 			}
