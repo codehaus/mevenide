@@ -25,13 +25,15 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.forms.parts.FormToolkit;
-import org.eclipse.ui.forms.parts.SectionPart;
+import org.eclipse.ui.forms.IManagedForm;
+import org.eclipse.ui.forms.SectionPart;
+import org.eclipse.ui.forms.widgets.ExpandableComposite;
+import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.model.WorkbenchContentProvider;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.mevenide.ui.eclipse.editors.IPomEditorPage;
@@ -49,273 +51,219 @@ import org.mevenide.ui.eclipse.editors.entries.TextEntry;
  */
 public abstract class PageSection extends SectionPart {
 
-	private static final Log log = LogFactory.getLog(PageSection.class);
-    
-	private Control client;
-	private IPomEditorPage page;
-	private boolean inherited;
-	private Project parentPom;
+    private static final Log log = LogFactory.getLog(PageSection.class);
 
-	class EntryChangeListenerAdaptor implements IEntryChangeListener {
-		public void entryChanged(PageEntry entry) {
-		}
-		public void entryDirty(PageEntry entry) {
-			getPage().getEditor().setModelDirty(true);
+    private IPomEditorPage page;
+    private Project parentPom;
+    private boolean inherited;
+
+    class EntryChangeListenerAdaptor implements IEntryChangeListener {
+
+        public void entryChanged(PageEntry entry) {
+        }
+
+        public void entryDirty(PageEntry entry) {
+            getPage().getPomEditor().setModelDirty(true);
             if (log.isDebugEnabled()) {
                 log.debug("entry was changed!");
             }
-		}
-	}
-	
-	abstract class OverrideAdaptor implements IOverrideAdaptor, IEntryChangeListener {
-        public void refreshUI() {
-        	redrawSection();
         }
-		public void entryChanged(PageEntry entry) {
-			if (log.isDebugEnabled()) {
-				log.debug("overridable entry change committed! " + entry.getValue());
-			}
-			overrideParent(entry.getValue());
-		}
-		public void entryDirty(PageEntry entry) {
-			getPage().getEditor().setModelDirty(true);
-			if (log.isDebugEnabled()) {
-				log.debug("overridable entry was changed!");
-			}
-		}
-	}
-
-	public PageSection(IPomEditorPage containingPage) {
-    	super(TITLE | DESCRIPTION | SEPARATOR | COLLAPSABLE);
-        this.page = containingPage;
-		
-		this.parentPom = page.getEditor().getParentPom();
-		if (parentPom != null) inherited = true;
     }
 
-    protected Composite createClient(
-    	Composite parent,
-		FormToolkit toolkit) {
-    	
-    	client = createClient(parent, (PageWidgetFactory) toolkit);
-    	return (Composite) client;
+    abstract class OverrideAdaptor implements IOverrideAdaptor, IEntryChangeListener {
+        public void refreshUI() {
+            redrawSection();
+        }
+
+        public void entryChanged(PageEntry entry) {
+            if (log.isDebugEnabled()) {
+                log.debug("overridable entry change committed! " + entry.getValue());
+            }
+            overrideParent(entry.getValue());
+        }
+
+        public void entryDirty(PageEntry entry) {
+            getPage().getPomEditor().setModelDirty(true);
+            if (log.isDebugEnabled()) {
+                log.debug("overridable entry was changed!");
+            }
+        }
+    }
+
+    public PageSection(IPomEditorPage containingPage, Composite parent, FormToolkit toolkit) {
+        super(
+                parent, 
+                toolkit, 
+                ExpandableComposite.TWISTIE | ExpandableComposite.EXPANDED | ExpandableComposite.FOCUS_TITLE
+             );
+        this.page = containingPage;
+
+        this.parentPom = page.getPomEditor().getParentPom();
+        if (parentPom != null) inherited = true;
     }
     
-    protected abstract Composite createClient(
-		Composite parent,
-		PageWidgetFactory factory);
-		
-	protected Label createSpacer(
-		Composite parent, 
-		PageWidgetFactory factory) {
+    public void setTitle(String title) {
+        getSection().setText(title);
+    }
 
-		return createSpacer(parent, factory, 1);
-	}
-	
-	protected Label createSpacer(
-		Composite parent, 
-		PageWidgetFactory factory,
-		int span) {
+    public void setDescription(String description) {
+        getSection().setDescription(description);
+    }
 
-		Label spacer = factory.createSpacer(parent);
-		GridData data = new GridData(GridData.VERTICAL_ALIGN_CENTER | GridData.HORIZONTAL_ALIGN_BEGINNING);
-		data.horizontalSpan = span;
-		data.widthHint = 5;
-		data.heightHint = 5;
-		spacer.setLayoutData(data);
-		return spacer;
-	}
-	
-	protected Label createLabel(
-		Composite parent, 
-		String label,
-		PageWidgetFactory factory) {
+    protected Label createSpacer(Composite parent, FormToolkit factory) {
+        return createSpacer(parent, factory, 1);
+    }
 
-		return createLabel(parent, label, null, factory);
-	}
-	
-	protected Label createLabel(
-		Composite parent, 
-		String label,
-		String tooltip,
-		PageWidgetFactory factory) {
+    protected Label createSpacer(Composite parent, FormToolkit factory, int span) {
+        Label spacer = factory.createLabel(parent, "");
+        GridData data = new GridData(GridData.VERTICAL_ALIGN_CENTER | GridData.HORIZONTAL_ALIGN_BEGINNING);
+        data.horizontalSpan = span;
+        data.widthHint = 5;
+        data.heightHint = 5;
+        spacer.setLayoutData(data);
+        return spacer;
+    }
 
-		Label widget = factory.createLabel(parent, label);
-		if (tooltip != null) {
-			widget.setToolTipText(tooltip);
-		}
-		return widget;
-	}
-	
-	protected Button createOverrideToggle(
-		Composite parent, 
-		PageWidgetFactory factory) {
+    protected Label createLabel(Composite parent, String label, FormToolkit factory) {
+        return createLabel(parent, label, null, factory);
+    }
 
-		return createOverrideToggle(parent, factory, 1);
-	}
-	
-	protected Button createOverrideToggle(
-		Composite parent, 
-		PageWidgetFactory factory,
-		int span) {
-		
-		return createOverrideToggle(parent, factory, span, false);			
-	}
+    protected Label createLabel(Composite parent, String label, String tooltip, FormToolkit factory) {
+        Label widget = factory.createLabel(parent, label);
+        if (tooltip != null) {
+            widget.setToolTipText(tooltip);
+        }
+        return widget;
+    }
 
-	protected Button createOverrideToggle(
-		Composite parent, 
-		PageWidgetFactory factory,
-		int span,
-		boolean alignTop) {
+    protected Button createOverrideToggle(Composite parent, FormToolkit factory) {
+        return createOverrideToggle(parent, factory, 1);
+    }
 
-		Button inheritanceToggle = null;
-		if (isInherited()) {
-			inheritanceToggle = factory.createButton(parent, " ", SWT.CHECK);
-			int vAlign = alignTop 
-				? GridData.VERTICAL_ALIGN_BEGINNING 
-				: GridData.VERTICAL_ALIGN_CENTER;
-			GridData data = new GridData(vAlign | GridData.HORIZONTAL_ALIGN_BEGINNING);
-			data.horizontalSpan = span;
-			data.widthHint = 12;
-			data.heightHint = 12;
-			inheritanceToggle.setLayoutData(data);
-			inheritanceToggle.setSize(SWT.DEFAULT, SWT.DEFAULT);
-		}
-		return inheritanceToggle;
-	}
-	
-	protected Button createBrowseButton(
-		Composite parent, 
-		PageWidgetFactory factory,
-		String label,
-		String tooltip,
-		int span) {
+    protected Button createOverrideToggle(Composite parent, FormToolkit factory, int span) {
+        return createOverrideToggle(parent, factory, span, false);
+    }
 
-		Composite buttonContainer = factory.createComposite(parent);
-		GridData data = new GridData(GridData.HORIZONTAL_ALIGN_END | GridData.VERTICAL_ALIGN_CENTER);
-		data.horizontalSpan = span;
-		buttonContainer.setLayoutData(data);
-		GridLayout layout = new GridLayout();
-		layout.marginWidth = 0;
-		layout.marginHeight = 0;
-		buttonContainer.setLayout(layout);
+    protected Button createOverrideToggle(Composite parent, FormToolkit factory, int span, boolean alignTop) {
+        Button inheritanceToggle = null;
+        if (isInherited()) {
+            inheritanceToggle = factory.createButton(parent, " ", SWT.CHECK);
+            int vAlign = alignTop ? GridData.VERTICAL_ALIGN_BEGINNING : GridData.VERTICAL_ALIGN_CENTER;
+            GridData data = new GridData(vAlign | GridData.HORIZONTAL_ALIGN_BEGINNING);
+            data.horizontalSpan = span;
+            data.widthHint = 12;
+            data.heightHint = 12;
+            inheritanceToggle.setLayoutData(data);
+            inheritanceToggle.setSize(SWT.DEFAULT, SWT.DEFAULT);
+        }
+        return inheritanceToggle;
+    }
 
-		Button browseButton = factory.createButton(buttonContainer, label, SWT.PUSH);
-		data = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING | GridData.VERTICAL_ALIGN_CENTER);
-		browseButton.setLayoutData(data);
-		browseButton.setToolTipText(tooltip);
-		
-		return browseButton;
-	}
+    protected Button createBrowseButton(Composite parent, FormToolkit factory, String label, String tooltip, int span) {
+        Composite buttonContainer = factory.createComposite(parent);
+        GridData data = new GridData(GridData.HORIZONTAL_ALIGN_END | GridData.VERTICAL_ALIGN_CENTER);
+        data.horizontalSpan = span;
+        buttonContainer.setLayoutData(data);
+        GridLayout layout = new GridLayout();
+        layout.marginWidth = 0;
+        layout.marginHeight = 0;
+        buttonContainer.setLayout(layout);
 
-	protected Text createMultilineText(
-		Composite parent,
-		PageWidgetFactory factory) {
+        Button browseButton = factory.createButton(buttonContainer, label, SWT.PUSH);
+        data = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING | GridData.VERTICAL_ALIGN_CENTER);
+        browseButton.setLayoutData(data);
+        browseButton.setToolTipText(tooltip);
 
-		Text text = factory.createText(parent, "", SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
-		GridData data = new GridData(GridData.FILL_BOTH);
-		text.setLayoutData(data);
-		return text;
-	}
-		
-	protected Text createText(
-		Composite parent,
-		PageWidgetFactory factory) {
+        return browseButton;
+    }
 
-		return createText(parent, factory, 1);
-	}
-		
-	protected Text createText(
-		Composite parent,
-		PageWidgetFactory factory,
-		int span) {
+    protected Text createMultilineText(Composite parent, FormToolkit factory) {
 
-		return createText(parent, factory, span, SWT.NONE);
-	}
-	
-	protected Text createText(
-		Composite parent,
-		PageWidgetFactory factory,
-		int span,
-		int style) {
+        Text text = factory.createText(parent, "", SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
+        GridData data = new GridData(GridData.FILL_BOTH);
+        text.setLayoutData(data);
+        return text;
+    }
 
-		Text text = factory.createText(parent, "", style);
-		int hfill = span == 1
-			? GridData.FILL_HORIZONTAL
-			: GridData.HORIZONTAL_ALIGN_FILL;
-		GridData gd = new GridData(hfill | GridData.VERTICAL_ALIGN_CENTER);
-		gd.horizontalSpan = span;
-		text.setLayoutData(gd);
-		return text;
-	}
-		
-	protected TableViewer createTableViewer(
-		Composite parent, 
-		PageWidgetFactory factory,
-		int style) {
-			
-		Table table = factory.createTable(parent, style);
-		GridData data = new GridData(GridData.FILL_BOTH);
-		table.setLayoutData(data);
+    protected Text createText(Composite parent, FormToolkit factory) {
 
-		TableViewer viewer = new TableViewer(table);
-		viewer.setContentProvider(new WorkbenchContentProvider());
-		viewer.setLabelProvider(new WorkbenchLabelProvider());
-		
-		return viewer;
-	}
+        return createText(parent, factory, 1);
+    }
 
-	protected abstract void update(Project pom);
-	
-	public void update() {
-		redrawSection();
-	}
-	
-	public void updateSection(Project pom) {
-		update(pom);
-		update();
-	}
-	
-	protected void redrawSection() {
-		Display display = getPage().getEditor().getSite().getShell().getDisplay();
-		display.asyncExec(
-			new Runnable() {
-				public void run() {
-					client.redraw();
-				}
-			}
-		);
+    protected Text createText(Composite parent, FormToolkit factory, int span) {
+
+        return createText(parent, factory, span, SWT.NONE);
+    }
+
+    protected Text createText(Composite parent, FormToolkit factory, int span, int style) {
+
+        Text text = factory.createText(parent, "", style);
+        int hfill = span == 1 ? GridData.FILL_HORIZONTAL : GridData.HORIZONTAL_ALIGN_FILL;
+        GridData gd = new GridData(hfill | GridData.VERTICAL_ALIGN_CENTER);
+        gd.horizontalSpan = span;
+        text.setLayoutData(gd);
+        return text;
+    }
+
+    protected TableViewer createTableViewer(Composite parent, FormToolkit factory, int style) {
+
+        Table table = factory.createTable(parent, style);
+        GridData data = new GridData(GridData.FILL_BOTH);
+        table.setLayoutData(data);
+
+        TableViewer viewer = new TableViewer(table);
+        viewer.setContentProvider(new WorkbenchContentProvider());
+        viewer.setLabelProvider(new WorkbenchLabelProvider());
+
+        return viewer;
+    }
+
+    protected abstract Composite createSectionContent(Composite parent, FormToolkit factory);
+
+    protected abstract void update(Project pom);
+
+    public void updateSection(Project pom) {
+        update(pom);
+        redrawSection();
+    }
+
+    protected void redrawSection() {
+        Display display = getPage().getPomEditor().getSite().getShell().getDisplay();
+        display.asyncExec(new Runnable() {
+	            public void run() {
+	                getSection().redraw();
+	            }
+	        }
+        );
 	}
 
     public IPomEditorPage getPage() {
         return page;
     }
-    
+
     protected void setIfDefined(TextEntry entry, String text) {
-    	if (text != null) {
-    		entry.setText(text, true);
-    	}
-    }
-    
-	protected void setIfDefined(OverridableTextEntry entry, String text, String parentText) {
-		if (text != null) {
-			entry.setText(text, true);
-			entry.setInherited(false);
-		}
-		else if (parentText != null) {
-			entry.setText(parentText, true);
-			entry.setInherited(true);
-		}
-		else {
-			entry.setInherited(false);
-		}
-	}
-    
-    protected boolean isDefined(String value) {
-    	return (value != null && !"".equals(value.trim()));
+        if (text != null) {
+            entry.setText(text, true);
+        }
     }
 
-	protected boolean isInherited() {
+    protected void setIfDefined(OverridableTextEntry entry, String text, String parentText) {
+        if (text != null) {
+            entry.setText(text, true);
+            entry.setInherited(false);
+        } else if (parentText != null) {
+            entry.setText(parentText, true);
+            entry.setInherited(true);
+        } else {
+            entry.setInherited(false);
+        }
+    }
+
+    protected boolean isDefined(String value) {
+        return (value != null && !"".equals(value.trim()));
+    }
+
+    protected boolean isInherited() {
         return inherited;
     }
 
@@ -327,4 +275,21 @@ public abstract class PageSection extends SectionPart {
         this.parentPom = newParentPom;
     }
 
+    /**
+     * @see org.eclipse.ui.forms.IFormPart#initialize(org.eclipse.ui.forms.IManagedForm)
+     */
+    public void initialize(IManagedForm form) {
+        if (log.isDebugEnabled()) {
+            log.debug("initializing the section and its client...");
+        }
+        super.initialize(form);
+        FormToolkit toolkit = form.getToolkit();
+        Section section = getSection();
+        toolkit.createCompositeSeparator(section);
+        
+        Composite client = createSectionContent(section, toolkit);
+
+        section.setClient(client);
+        section.setExpanded(true);
+    }
 }

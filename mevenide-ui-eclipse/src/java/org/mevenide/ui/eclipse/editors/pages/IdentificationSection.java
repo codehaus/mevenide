@@ -34,6 +34,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.dialogs.ElementTreeSelectionDialog;
+import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.model.WorkbenchContentProvider;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.eclipse.ui.views.navigator.ResourceSorter;
@@ -60,13 +61,17 @@ public class IdentificationSection extends PageSection {
 	private OverridableTextEntry gumpRepoIdText;
 	private Button extendButton;
 	
-    public IdentificationSection(OverviewPage page) {
-        super(page);
+   	public IdentificationSection(
+   			OverviewPage page, 
+   			Composite parent, 
+   			FormToolkit toolkit) 
+   	{
+        super(page, parent, toolkit);
 		setTitle(Mevenide.getResourceString("IdentificationSection.header"));
 		setDescription(Mevenide.getResourceString("IdentificationSection.description"));
     }
 
-    public Composite createClient(Composite parent, PageWidgetFactory factory) {
+    public Composite createSectionContent(Composite parent, FormToolkit factory) {
 		Composite container = factory.createComposite(parent);
 		GridLayout layout = new GridLayout();
 		layout.numColumns = isInherited() ? 4 : 3;
@@ -75,7 +80,7 @@ public class IdentificationSection extends PageSection {
 		layout.horizontalSpacing = 5;
 		container.setLayout(layout);
 		
-		final Project pom = getPage().getEditor().getPom();
+		final Project pom = getPage().getPomEditor().getPom();
 		
 		// POM name textbox
 		Button toggle = createOverrideToggle(container, factory);
@@ -220,11 +225,11 @@ public class IdentificationSection extends PageSection {
 				new SelectionAdapter() {
 					public void widgetSelected(SelectionEvent e) {
 						try { 
-							IEditorInput input = getPage().getEditor().getEditorInput();
+							IEditorInput input = getPage().getPomEditor().getEditorInput();
 							IFile pomFile = ((IFileEditorInput) input).getFile();
 							ViewerFilter filter = new PomResourceFilter(pomFile);
 							ElementTreeSelectionDialog dialog = new ElementTreeSelectionDialog(
-								getPage().getEditor().getSite().getShell(),
+								getPage().getPomEditor().getSite().getShell(),
 								new WorkbenchLabelProvider(),
 								new WorkbenchContentProvider()
 							);
@@ -270,7 +275,7 @@ public class IdentificationSection extends PageSection {
 		);
 		
 		factory.paintBordersFor(container);
-        return container;
+		return container;
     }
 
     public void update(Project pom) {
@@ -279,11 +284,11 @@ public class IdentificationSection extends PageSection {
         }
 		setIfDefined(pomNameText, pom.getName(), isInherited() ? getParentPom().getName() : null);
 		if (isInherited()) {
-			String parentVersion = getPage().getEditor().getParentPom().getPomVersion();
+			String parentVersion = getPage().getPomEditor().getParentPom().getPomVersion();
 			setIfDefined(pomVersionText, parentVersion);
 			// force local override with parent if inherited
 			// Seems that Maven defaults it to 1 if it goes un-specified
-			pom.setPomVersion(getPage().getEditor().getParentPom().getPomVersion());
+			pom.setPomVersion(getPage().getPomEditor().getParentPom().getPomVersion());
 		}
 		else {
 			setIfDefined(pomVersionText, pom.getPomVersion());

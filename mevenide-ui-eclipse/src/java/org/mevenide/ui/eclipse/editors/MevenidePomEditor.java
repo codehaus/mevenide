@@ -30,18 +30,16 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.source.IAnnotationModel;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
-import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
-import org.eclipse.ui.part.MultiPageEditorPart;
+import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.IElementStateListener;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
@@ -60,53 +58,39 @@ import org.mevenide.ui.eclipse.editors.pages.TeamPage;
 import org.mevenide.ui.eclipse.editors.pages.UnitTestsPage;
 import org.mevenide.util.DefaultProjectUnmarshaller;
 import org.mevenide.util.MevenideUtils;
-import org.mevenide.util.StringUtils;
 
 /**
- * The Mevenide multi-page POM editor.  This editor presents the user with
- * pages partitioning up the various parts of the POM, plus an XML source editor
- * and content outline, with synchronization between all parts.
+ * The Mevenide multi-page POM editor. This editor presents the user with pages
+ * partitioning up the various parts of the POM, plus an XML source editor and
+ * content outline, with synchronization between all parts.
  * 
  * @author Jeff Bonevich (jeff@bonevich.com)
  * @version $Id$
  */
-public class MevenidePomEditor extends MultiPageEditorPart { 
+public class MevenidePomEditor extends FormEditor {
 
-	private static final Log log = LogFactory.getLog(MevenidePomEditor.class);
+    private static final Log log = LogFactory.getLog(MevenidePomEditor.class);
 
-    public static final String OVERVIEW_PAGE = Mevenide.getResourceString("MevenidePomEditor.tab.label.overview");
-	public static final String ORGANIZATION_PAGE = Mevenide.getResourceString("MevenidePomEditor.tab.label.organization");
+    public static final String ORGANIZATION_PAGE = Mevenide.getResourceString("MevenidePomEditor.tab.label.organization");
     public static final String REPOSITORY_PAGE = Mevenide.getResourceString("MevenidePomEditor.tab.label.repository");
     public static final String TEAM_PAGE = Mevenide.getResourceString("MevenidePomEditor.tab.label.team");
     public static final String DEPENDENCIES_PAGE = Mevenide.getResourceString("MevenidePomEditor.tab.label.dependencies");
     public static final String BUILD_PAGE = Mevenide.getResourceString("MevenidePomEditor.tab.label.build");
-	public static final String UNITTESTS_PAGE = Mevenide.getResourceString("MevenidePomEditor.tab.label.unitTests");
+    public static final String UNITTESTS_PAGE = Mevenide.getResourceString("MevenidePomEditor.tab.label.unitTests");
     public static final String REPORTS_PAGE = Mevenide.getResourceString("MevenidePomEditor.tab.label.reports");
-    public static final String SOURCE_PAGE = Mevenide.getResourceString("MevenidePomEditor.tab.label.source");
-
-    private int overviewPageIndex;
-	private int organizationPageIndex;
-    private int repositoryPageIndex;
-    private int teamPageIndex;
-    private int dependenciesPageIndex;
-    private int buildPageIndex;
-	private int unitTestsPageIndex;
-    private int reportsPageIndex;
-    private int sourcePageIndex;
-
-    private int currentPageIndex;
 
     private Project pom;
     private Project parentPom;
     private DefaultProjectMarshaller marshaller;
     private DefaultProjectUnmarshaller unmarshaller;
     private ProjectComparator comparator;
-    
     private PomEditorSelectionProvider selectionProvider = new PomEditorSelectionProvider(this);
     private IDocumentProvider documentProvider;
     private ElementListener elementListener;
     private PomXmlSourcePage sourcePage;
+
     private boolean modelDirty;
+    private int overviewPageIndex;
 
     private PomContentOutlinePage outline;
 
@@ -116,22 +100,26 @@ public class MevenidePomEditor extends MultiPageEditorPart {
                 log.debug("elementContentAboutToBeReplaced: " + element);
             }
         }
+
         public void elementContentReplaced(Object element) {
             if (log.isDebugEnabled()) {
                 log.debug("elementContentReplaced: " + element);
             }
             updateModel();
         }
+
         public void elementDeleted(Object element) {
             if (log.isDebugEnabled()) {
                 log.debug("elementDeleted: " + element);
             }
         }
+
         public void elementDirtyStateChanged(Object element, boolean isDirty) {
             if (log.isDebugEnabled()) {
                 log.debug("elementDirtyStateChanged to " + isDirty);
             }
         }
+
         public void elementMoved(Object originalElement, Object movedElement) {
             if (log.isDebugEnabled()) {
                 log.debug("elementMoved");
@@ -145,8 +133,7 @@ public class MevenidePomEditor extends MultiPageEditorPart {
         try {
             marshaller = new DefaultProjectMarshaller();
             unmarshaller = new DefaultProjectUnmarshaller();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             log.error("Could not create a POM marshaller", e);
         }
     }
@@ -154,136 +141,159 @@ public class MevenidePomEditor extends MultiPageEditorPart {
     public Project getPom() {
         return pom;
     }
-    
-	public Project getParentPom() {
-		return parentPom;
-	}
-	
-	public IProject getProject() {
-		return ((IResource) getEditorInput().getAdapter(IResource.class)).getProject();
-	}
 
-    protected void createPages() {
-        createOverviewPage();
-		createOrganizationPage();
-        createRepositoryPage();
-        createTeamPage();
-        createDependenciesPage();
-        createBuildPage();
-		createUnitTestsPage();
-        createReportsPage();
-        createSourcePage();
+    public Project getParentPom() {
+        return parentPom;
+    }
 
-        //TODO: need to track currentPage persistent property between
-        // lifespans of editors - store last viewed page on close
-        currentPageIndex = overviewPageIndex;
-        
-        getControl(currentPageIndex).setVisible(true);
+    public IProject getProject() {
+        return ((IResource) getEditorInput().getAdapter(IResource.class)).getProject();
     }
 
     /**
-     * Creates the overview page of the Project Object Model
-     * editor, where basic information about the project is defined.
+     * @see org.eclipse.ui.forms.editor.FormEditor#addPages()
      */
-    private void createOverviewPage() {
-        OverviewPage overview = new OverviewPage(this);
-		comparator.addProjectChangeListener(ProjectComparator.PROJECT, overview);
-        overviewPageIndex = addPage(overview, OVERVIEW_PAGE);
-    }
-
-	/**
-	 * Creates the organization-specific, licensing, and site 
-	 * generation information in the project..
-	 */
-	private void createOrganizationPage() {
-		OrganizationPage org = new OrganizationPage(this);
-		comparator.addProjectChangeListener(ProjectComparator.PROJECT, org);
-		organizationPageIndex = addPage(org, ORGANIZATION_PAGE);
-	}
-
-    /**
-     * Creates the version control page of the Project Object Model
-     * editor, where properties of the project repository are defined.
-     */
-    private void createRepositoryPage() {
-        RepositoryPage repository = new RepositoryPage(this);
-		comparator.addProjectChangeListener(ProjectComparator.REPOSITORY, repository);
-        repositoryPageIndex = addPage(repository, REPOSITORY_PAGE);
+    protected void addPages() {
+        try {
+            createOverviewPage();
+//            createOrganizationPage();
+//            createRepositoryPage();
+//            createTeamPage();
+//            createDependenciesPage();
+//            createBuildPage();
+//            createUnitTestsPage();
+//            createReportsPage();
+            createSourcePage();
+        } catch (PartInitException e) {
+            log.error("Unable to create source page", e);
+        }
     }
 
     /**
-     * Creates the version control page of the Project Object Model
-     * editor, where  is defined.
+     * Creates the overview page of the Project Object Model editor, where
+     * basic information about the project is defined.
      */
-    private void createTeamPage() {
-        TeamPage team = new TeamPage(this);
-		comparator.addProjectChangeListener(ProjectComparator.CONTRIBUTORS, team);
-		comparator.addProjectChangeListener(ProjectComparator.DEVELOPERS, team);
-        teamPageIndex = addPage(team, TEAM_PAGE);
+    private void createOverviewPage() throws PartInitException {
+        OverviewPage overviewPage = new OverviewPage(this);
+        comparator.addProjectChangeListener(ProjectComparator.PROJECT, overviewPage);
+        overviewPageIndex = addPage(overviewPage);
     }
 
     /**
-     * Creates the version control page of the Project Object Model
-     * editor, where  is defined.
+     * Creates the organization-specific, licensing, and site generation
+     * information in the project..
      */
-    private void createDependenciesPage() {
-        DependenciesPage dependencies = new DependenciesPage(this);
-		comparator.addProjectChangeListener(ProjectComparator.DEPENDENCIES, dependencies);
-        dependenciesPageIndex = addPage(dependencies, DEPENDENCIES_PAGE);
+    private void createOrganizationPage() throws PartInitException {
+        OrganizationPage orgPage = new OrganizationPage(this);
+        comparator.addProjectChangeListener(ProjectComparator.PROJECT, orgPage);
+        addPage(orgPage);
     }
 
     /**
-     * Creates the version control page of the Project Object Model
-     * editor, where  is defined.
+     * Creates the version control page of the Project Object Model editor,
+     * where properties of the project repository are defined.
      */
-    private void createBuildPage() {
-        BuildPage build = new BuildPage(this);
-		comparator.addProjectChangeListener(ProjectComparator.BUILD, build);
-        buildPageIndex = addPage(build, BUILD_PAGE);
+    private void createRepositoryPage() throws PartInitException {
+        RepositoryPage repoPage = new RepositoryPage(this);
+        comparator.addProjectChangeListener(ProjectComparator.REPOSITORY, repoPage);
+        addPage(repoPage);
     }
-
-	/**
-	 * Creates the version control page of the Project Object Model
-	 * editor, where  is defined.
-	 */
-	private void createUnitTestsPage() {
-		UnitTestsPage unitTests = new UnitTestsPage(this);
-		comparator.addProjectChangeListener(ProjectComparator.UNIT_TESTS, unitTests);
-		unitTestsPageIndex = addPage(unitTests, UNITTESTS_PAGE);
-	}
 
     /**
-     * Creates the version control page of the Project Object Model
-     * editor, where  is defined.
+     * Creates the version control page of the Project Object Model editor,
+     * where is defined.
      */
-    private void createReportsPage() {
-        ReportsPage reports = new ReportsPage(this);
-		comparator.addProjectChangeListener(ProjectComparator.REPORTS, reports);
-        reportsPageIndex = addPage(reports, REPORTS_PAGE);
-    }
-    
-    /**
-     * Creates the source view page of the Project Object Model
-     * editor, where the raw XML is displayed and edited.
-     */
-    private void createSourcePage() {
-    	sourcePage = new PomXmlSourcePage(this);
-    	sourcePageIndex = addPage(sourcePage, SOURCE_PAGE);
+    private void createTeamPage() throws PartInitException {
+        TeamPage teamPage = new TeamPage(this);
+        comparator.addProjectChangeListener(ProjectComparator.CONTRIBUTORS, teamPage);
+        comparator.addProjectChangeListener(ProjectComparator.DEVELOPERS, teamPage);
+        addPage(teamPage);
     }
 
-    private int addPage(IEditorPart page, String pageText) {
-    	try {
-    		int pageIndex = addPage(page, getEditorInput());
-    		setPageText(pageIndex, pageText);
-    		if (log.isDebugEnabled()) {
-    			log.debug("added page '" + pageText + "' as page index " + pageIndex);
-    		}
-    		return pageIndex;
-    	}
-    	catch (PartInitException e) {
-    		ErrorDialog.openError(getSite().getShell(), "Error creating page", null, e.getStatus());
-    		return -1;
-    	}
+    /**
+     * Creates the version control page of the Project Object Model editor,
+     * where is defined.
+     */
+    private void createDependenciesPage() throws PartInitException {
+        DependenciesPage depsPage = new DependenciesPage(this);
+        comparator.addProjectChangeListener(ProjectComparator.DEPENDENCIES, depsPage);
+        addPage(depsPage);
+    }
+
+    /**
+     * Creates the version control page of the Project Object Model editor,
+     * where is defined.
+     */
+    private void createBuildPage() throws PartInitException {
+        BuildPage buildPage = new BuildPage(this);
+        comparator.addProjectChangeListener(ProjectComparator.BUILD, buildPage);
+        addPage(buildPage);
+    }
+
+    /**
+     * Creates the version control page of the Project Object Model editor,
+     * where is defined.
+     */
+    private void createUnitTestsPage() throws PartInitException {
+        UnitTestsPage testsPage = new UnitTestsPage(this);
+        comparator.addProjectChangeListener(ProjectComparator.UNIT_TESTS, testsPage);
+        addPage(testsPage);
+    }
+
+    /**
+     * Creates the version control page of the Project Object Model editor,
+     * where is defined.
+     */
+    private void createReportsPage() throws PartInitException {
+        ReportsPage reportsPage = new ReportsPage(this);
+        comparator.addProjectChangeListener(ProjectComparator.REPORTS, reportsPage);
+        addPage(reportsPage);
+    }
+
+    /**
+     * Creates the source view page of the Project Object Model editor, where
+     * the raw XML is displayed and edited.
+     */
+    private void createSourcePage() throws PartInitException {
+        sourcePage = new PomXmlSourcePage(this);
+        addPage(sourcePage, sourcePage.getEditorInput());
+    }
+
+    protected void pageChange(int newPageIndex) {
+        if (log.isDebugEnabled()) {
+            log.debug("changing page: " + getActivePage() + " => " + newPageIndex);
+        }
+//        IPomEditorPage oldPage = getCurrentPomEditorPage();
+//        IPomEditorPage newPage = getPomEditorPage(newPageIndex);
+//        if (oldPage != null && newPage != null) {
+//            oldPage.pageDeactivated(newPage);
+//            newPage.pageActivated(oldPage);
+//            if (newPage.isPropertySourceSupplier()) {
+//                openPropertiesSheet();
+//            }
+//        }
+
+        super.pageChange(newPageIndex);
+        log.debug("changed page");
+    }
+
+    private void openPropertiesSheet() {
+        try {
+            getSite().getPage().showView("org.eclipse.ui.views.PropertySheet");
+        } catch (PartInitException e) {
+            log.error(e);
+        }
+    }
+
+    public IPomEditorPage getCurrentPomEditorPage() {
+        return getPomEditorPage(getCurrentPage());
+    }
+
+    public IPomEditorPage getPomEditorPage(int pageIndex) {
+        if (pageIndex >= 0 && pageIndex < getPageCount()) {
+            return (IPomEditorPage) getEditor(pageIndex);
+        }
+        return null;
     }
 
     /**
@@ -298,6 +308,7 @@ public class MevenidePomEditor extends MultiPageEditorPart {
 
         final IEditorInput input = getEditorInput();
         WorkspaceModifyOperation op = new WorkspaceModifyOperation() {
+
             public void execute(final IProgressMonitor mon) throws CoreException {
 
                 if (log.isDebugEnabled()) {
@@ -312,40 +323,38 @@ public class MevenidePomEditor extends MultiPageEditorPart {
             documentProvider.aboutToChange(input);
             op.run(monitor);
             documentProvider.changed(input);
-			updateTitleAndToolTip();
-			setModelDirty(false);
-        }
-        catch (InterruptedException x) {
-        }
-        catch (InvocationTargetException x) {
+            updateTitleAndToolTip();
+            setModelDirty(false);
+        } catch (InterruptedException x) {
+        } catch (InvocationTargetException x) {
         }
         if (log.isDebugEnabled()) {
             log.debug("saved!");
-			log.debug("dirty = " + isDirty());
+            log.debug("dirty = " + isDirty());
             log.debug("modeldirty = " + isModelDirty());
         }
     }
 
     /**
-     * Saves the multi-page editor's document as another file.
-     * Also updates the text for page 0's tab, and updates this multi-page editor's input
-     * to correspond to the nested editor's.
+     * Saves the multi-page editor's document as another file. Also updates the
+     * text for page 0's tab, and updates this multi-page editor's input to
+     * correspond to the nested editor's.
      */
     public void doSaveAs() {
         sourcePage.doSaveAs();
         setPageText(overviewPageIndex, sourcePage.getTitle());
         setInput(sourcePage.getEditorInput());
-		updateTitleAndToolTip();
+        updateTitleAndToolTip();
         setModelDirty(false);
     }
 
     private void updateTitleAndToolTip() {
         if (!StringUtils.isNull(pom.getName())) {
-			setTitle(pom.getName());
-		}
-		IFile pomFile = ((IFileEditorInput) getEditorInput()).getFile();
-		setTitleToolTip(pomFile.getProject().getName() + pomFile.getProjectRelativePath());
-		fireTitleChanged();
+            setTitle(pom.getName());
+        }
+        IFile pomFile = ((IFileEditorInput) getEditorInput()).getFile();
+        setTitleToolTip(pomFile.getProject().getName() + pomFile.getProjectRelativePath());
+        fireTitleChanged();
     }
 
     public boolean isSaveAsAllowed() {
@@ -353,10 +362,8 @@ public class MevenidePomEditor extends MultiPageEditorPart {
     }
 
     public boolean isDirty() {
-    	boolean dirtiness = isModelDirty() || 
-			(documentProvider != null && 
-			 documentProvider.canSaveDocument(getEditorInput())
-			);
+        boolean dirtiness = isModelDirty()
+                || (documentProvider != null && documentProvider.canSaveDocument(getEditorInput()));
         if (log.isDebugEnabled()) {
             log.debug("modelDirty = " + isModelDirty() + " and editor dirty " + dirtiness);
         }
@@ -368,10 +375,10 @@ public class MevenidePomEditor extends MultiPageEditorPart {
     }
 
     public void setModelDirty(boolean dirty) {
-    	if (this.modelDirty != dirty) {
-			this.modelDirty = dirty;
-    		fireDirtyStateChanged();
-    	}
+        if (this.modelDirty != dirty) {
+            this.modelDirty = dirty;
+            fireDirtyStateChanged();
+        }
     }
 
     /**
@@ -379,24 +386,22 @@ public class MevenidePomEditor extends MultiPageEditorPart {
      * checks that the input is an instance of <code>IFileEditorInput</code>.
      */
     public void init(IEditorSite site, IEditorInput editorInput) throws PartInitException {
-        if (!(editorInput instanceof IFileEditorInput)) {
-            throw new PartInitException("Invalid Input: Must be IFileEditorInput");
-        }
+        if (!(editorInput instanceof IFileEditorInput)) { throw new PartInitException(
+                "Invalid Input: Must be IFileEditorInput"); }
         IFile pomFile = ((IFileEditorInput) editorInput).getFile();
 
         setInput(editorInput);
         setSite(site);
-        
+
         site.setSelectionProvider(selectionProvider);
 
         try {
             initializeModel(pomFile);
-        }
-        catch (CoreException e) {
+        } catch (CoreException e) {
             throw new PartInitException(e.getStatus());
         }
     }
-    
+
     private void initializeModel(IFile pomFile) throws CoreException {
         documentProvider = new PomXmlDocumentProvider();
         createModel(pomFile);
@@ -414,74 +419,36 @@ public class MevenidePomEditor extends MultiPageEditorPart {
 
     private void createModel(IFile pomFile) throws CoreException {
         try {
-        	File file = pomFile.getRawLocation().toFile();
+            File file = pomFile.getRawLocation().toFile();
             ProjectReader reader = ProjectReader.getReader();
             pom = reader.read(file);
-            
+
             if (pom.getExtend() != null && !"".equals(pom.getExtend().trim())) {
-            	String resolvedExtend = MevenideUtils.resolve(pom, pom.getExtend());
-            	File extendFile = new File(resolvedExtend);
-				if (log.isDebugEnabled()) {
-					log.debug("parentPom path = " + resolvedExtend + "; exists = " + extendFile.exists());
-				}
+                String resolvedExtend = MevenideUtils.resolve(pom, pom.getExtend());
+                File extendFile = new File(resolvedExtend);
+                if (log.isDebugEnabled()) {
+                    log.debug("parentPom path = " + resolvedExtend + "; exists = " + extendFile.exists());
+                }
 
-				if (!extendFile.exists() ) {
-					// not an absolute path; must've been relative
-					extendFile = new File(new File(pomFile.getLocation().toOSString()).getParentFile(), resolvedExtend);
-					if (log.isDebugEnabled()) {
-						log.debug("parentPom path = " + extendFile.getAbsolutePath() + "; exists = " + extendFile.exists());
-					}
-				}
+                if (!extendFile.exists()) {
+                    // not an absolute path; must've been relative
+                    extendFile = new File(new File(pomFile.getLocation().toOSString()).getParentFile(), resolvedExtend);
+                    if (log.isDebugEnabled()) {
+                        log.debug("parentPom path = " + extendFile.getAbsolutePath() + "; exists = "
+                                + extendFile.exists());
+                    }
+                }
 
-				if (extendFile.exists()) {
-					parentPom = reader.read(extendFile);
-				}
+                if (extendFile.exists()) {
+                    parentPom = reader.read(extendFile);
+                }
             }
-            
+
             updateTitleAndToolTip();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             log.error("could not read POM: ", e);
             throw new PartInitException("Could not obtain Project reader");
         }
-    }
-
-    protected void pageChange(int newPageIndex) {
-		if (log.isDebugEnabled()) {
-			log.debug("changing page: " + currentPageIndex + " => " + newPageIndex);
-		}
-        IPomEditorPage oldPage = getCurrentPage();
-        IPomEditorPage newPage = getPage(newPageIndex);
-        if (oldPage != null && newPage != null) {
-	        oldPage.pageDeactivated(newPage);
-	        newPage.pageActivated(oldPage);
-	        if (newPage.isPropertySourceSupplier()) {
-	        	openPropertiesSheet();
-	        }
-        }
-
-        super.pageChange(newPageIndex);
-
-        currentPageIndex = newPageIndex;
-    }
-
-    private void openPropertiesSheet() {
-		try {
-			getSite().getPage().showView("org.eclipse.ui.views.PropertySheet");
-		} catch (PartInitException e) {
-			log.error(e);
-		}
-	}
-
-	public IPomEditorPage getCurrentPage() {
-        return getPage(currentPageIndex);
-    }
-
-    public IPomEditorPage getPage(int pageIndex) {
-        if (pageIndex == sourcePageIndex) {
-            return sourcePage;
-        }
-        return (IPomEditorPage) getEditor(pageIndex);
     }
 
     public boolean updateModel() {
@@ -493,23 +460,22 @@ public class MevenidePomEditor extends MultiPageEditorPart {
         StringReader reader = new StringReader(document.get());
         Project updatedPom = null;
         try {
-			updatedPom = unmarshaller.parse(reader);
-			
+            updatedPom = unmarshaller.parse(reader);
+
             if (log.isDebugEnabled()) {
                 log.debug("old pom name = " + pom.getName() + " and new = " + updatedPom.getName());
             }
             comparator.compare(updatedPom);
 
             String pomName = pom.getName();
-            if (!StringUtils.isNull(pomName)) {
+            if (!MevenideUtils.isNull(pomName)) {
                 setTitle(pomName);
                 firePropertyChange(PROP_TITLE);
             }
-			setModelDirty(false);
+            setModelDirty(false);
 
             clean = true;
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             clean = false;
         }
         if (log.isDebugEnabled()) {
@@ -530,12 +496,11 @@ public class MevenidePomEditor extends MultiPageEditorPart {
                 marshaller.marshall(writer, pom);
                 writer.flush();
                 document.set(newDocument.toString());
-				setModelDirty(false);
+                setModelDirty(false);
                 if (log.isDebugEnabled()) {
                     log.debug("current project name = " + pom.getName() + " and extends = " + pom.getExtend());
                 }
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 log.error("Marshalling POM failed", e);
             }
         }
@@ -544,28 +509,26 @@ public class MevenidePomEditor extends MultiPageEditorPart {
         }
     }
 
-	public Object getAdapter(Class adapter) {
-		if (log.isDebugEnabled()) {
-			log.debug("getting adapter for class: " + adapter);
-		}
+    public Object getAdapter(Class adapter) {
+        if (log.isDebugEnabled()) {
+            log.debug("getting adapter for class: " + adapter);
+        }
 
-		if (IContentOutlinePage.class.equals(adapter)) {
-			return getContentOutline();
-		}
-		return super.getAdapter(adapter);
-	}
+        if (IContentOutlinePage.class.equals(adapter)) { return getContentOutline(); }
+        return super.getAdapter(adapter);
+    }
 
-	private Object getContentOutline() {
-		if (outline == null) {
-			outline = new PomContentOutlinePage(getDocumentProvider(), this);
-			if (getEditorInput() != null) {
-				outline.setInput(getEditorInput());
-			}
-		}
-		return outline;
-	}
+    private Object getContentOutline() {
+        if (outline == null) {
+            outline = new PomContentOutlinePage(getDocumentProvider(), this);
+            if (getEditorInput() != null) {
+                outline.setInput(getEditorInput());
+            }
+        }
+        return outline;
+    }
 
-	public IDocumentProvider getDocumentProvider() {
+    public IDocumentProvider getDocumentProvider() {
         return documentProvider;
     }
 
@@ -573,47 +536,38 @@ public class MevenidePomEditor extends MultiPageEditorPart {
         return (MevenidePomEditorContributor) getEditorSite().getActionBarContributor();
     }
 
-//    public void fireSaveNeeded() {
-//        firePropertyChange(PROP_DIRTY);
-//        if (log.isDebugEnabled()) {
-//            log.debug("fireSaveNeeded");
-//        }
-//        //		MevenidePomEditorContributor contributor = getContributor();
-//        //		if (contributor != null) {
-//        //			contributor.updateActions();
-//        //		}
-//    }
-    
+    //    public void fireSaveNeeded() {
+    //        firePropertyChange(PROP_DIRTY);
+    //        if (log.isDebugEnabled()) {
+    //            log.debug("fireSaveNeeded");
+    //        }
+    //        // MevenidePomEditorContributor contributor = getContributor();
+    //        // if (contributor != null) {
+    //        // contributor.updateActions();
+    //        // }
+    //    }
+
     private void fireDirtyStateChanged() {
-    	firePropertyChange(PROP_DIRTY);
+        firePropertyChange(PROP_DIRTY);
     }
 
-	private void fireTitleChanged() {
-		firePropertyChange(PROP_TITLE);
-	}
+    private void fireTitleChanged() {
+        firePropertyChange(PROP_TITLE);
+    }
 
     public void close(final boolean save) {
         Display display = getSite().getShell().getDisplay();
 
         display.asyncExec(new Runnable() {
+
             public void run() {
                 getSite().getPage().closeEditor(MevenidePomEditor.this, save);
             }
         });
     }
-	
-	public void setPropertySourceSelection(ISelection selection) {
-		selectionProvider.setSelection(selection);
-	}
-	
-	/**
-	 * @see org.eclipse.ui.part.MultiPageEditorPart#dispose()
-	 */
-	public void dispose() {
-		for (int i = 0; i < getPageCount(); i++) {
-			getPage(i).dispose();
-		}
-		super.dispose();
-	}
+
+    public void setPropertySourceSelection(ISelection selection) {
+        selectionProvider.setSelection(selection);
+    }
 
 }

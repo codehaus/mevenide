@@ -34,6 +34,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.ui.dialogs.SelectionDialog;
+import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.editors.entries.OverridableTextEntry;
 
@@ -52,13 +53,17 @@ public class DescriptionSection extends PageSection {
 	private OverridableTextEntry logoText;
 	private OverridableTextEntry packageText;
 
-    public DescriptionSection(AbstractPomEditorPage page) {
-        super(page);
+    public DescriptionSection(
+		OverviewPage page, 
+		Composite parent, 
+		FormToolkit toolkit) 
+   	{
+        super(page, parent, toolkit);
 		setTitle(Mevenide.getResourceString("DescriptionSection.header"));
 		setDescription(Mevenide.getResourceString("DescriptionSection.description"));
     }
 
-    public Composite createClient(Composite parent, PageWidgetFactory factory) {
+    public Composite createSectionContent(Composite parent, FormToolkit factory) {
 		Composite container = factory.createComposite(parent);
 		GridLayout layout = new GridLayout();
 		layout.numColumns = isInherited() ? 4 : 3;
@@ -67,7 +72,7 @@ public class DescriptionSection extends PageSection {
 		layout.horizontalSpacing = 5;
 		container.setLayout(layout);
 		
-		final Project pom = getPage().getEditor().getPom();
+		final Project pom = getPage().getPomEditor().getPom();
 		
 		// POM short description textbox
 		Button toggle = createOverrideToggle(container, factory);
@@ -180,7 +185,7 @@ public class DescriptionSection extends PageSection {
 				public void widgetSelected(SelectionEvent e) {
 					try {
 						FileDialog dialog = new FileDialog(
-							getPage().getEditor().getSite().getShell(),
+							getPage().getPomEditor().getSite().getShell(),
 							SWT.NULL
 						);
 						dialog.setText(title);
@@ -229,10 +234,10 @@ public class DescriptionSection extends PageSection {
 			new SelectionAdapter() {
 				public void widgetSelected(SelectionEvent e) {
 					try {
-						IProject project = getPage().getEditor().getProject();
+						IProject project = getPage().getPomEditor().getProject();
 						IJavaProject javaProject = JavaCore.create(project);
 						SelectionDialog dialog = JavaUI.createPackageDialog(
-							getPage().getEditor().getSite().getShell(),
+							getPage().getPomEditor().getSite().getShell(),
 							javaProject,
 							IJavaElementSearchConstants.CONSIDER_REQUIRED_PROJECTS
 						);

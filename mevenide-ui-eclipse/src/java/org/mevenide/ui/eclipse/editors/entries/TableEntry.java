@@ -40,9 +40,9 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
+import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.editors.pages.PageSection;
-import org.mevenide.ui.eclipse.editors.pages.PageWidgetFactory;
 import org.mevenide.ui.eclipse.editors.properties.IPomPropertySource;
 import org.mevenide.ui.eclipse.editors.properties.PomPropertySourceProvider;
 import org.mevenide.ui.eclipse.editors.properties.ResourcePatternProxy;
@@ -102,7 +102,7 @@ public class TableEntry extends PageEntry {
 		Button toggle, 
 		String tooltipInfo, 
 		Composite parent, 
-		PageWidgetFactory factory,
+		FormToolkit factory,
 		PageSection section) {
 			
 		this.viewer = tableViewer;
@@ -110,7 +110,7 @@ public class TableEntry extends PageEntry {
 		init(parent, factory, section, tooltipInfo);
 	}
 	
-	private void init(Composite parent, PageWidgetFactory factory, final PageSection section, String tooltipInfo) {
+	private void init(Composite parent, FormToolkit factory, final PageSection section, String tooltipInfo) {
 		Composite buttonContainer = factory.createComposite(parent);
 		GridData data = new GridData(GridData.HORIZONTAL_ALIGN_END | GridData.VERTICAL_ALIGN_BEGINNING);
 		data.horizontalSpan = 1;
@@ -215,7 +215,7 @@ public class TableEntry extends PageEntry {
 						log.debug("selection changed; empty = " + selection.isEmpty());
 					}
 					if (section.getPage().isActive()) {
-						section.getPage().getEditor().setPropertySourceSelection(selection);
+						section.getPage().getPomEditor().setPropertySourceSelection(selection);
 					}
 					IPomPropertySource source = (IPomPropertySource) selection.getFirstElement();
 					if (source != null && dependentEntries != null && !dependentEntries.isEmpty()) {

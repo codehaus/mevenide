@@ -23,6 +23,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.editors.MevenidePomEditor;
 
@@ -37,44 +38,46 @@ public class OverviewPage extends AbstractPomEditorPage {
 
     private static final Log log = LogFactory.getLog(OverviewPage.class);
     
-    public static final String HEADING = Mevenide.getResourceString("OverviewPage.heading");
-	public static final String CHILD = Mevenide.getResourceString("OverviewPage.heading.child");
-	public static final String UNNAMED = Mevenide.getResourceString("OverviewPage.heading.unnamed");
+    private static final String ID = Mevenide.getResourceString("OverviewPage.id");
+    private static final String TAB = Mevenide.getResourceString("OverviewPage.tab.label");
+    private static final String HEADING = Mevenide.getResourceString("OverviewPage.heading");
+    private static final String CHILD = Mevenide.getResourceString("OverviewPage.heading.child");
+    private static final String UNNAMED = Mevenide.getResourceString("OverviewPage.heading.unnamed");
     
 	private IdentificationSection idSection;
 	private DescriptionSection descriptionSection;
 	private FullDescriptionSection fullDesctiptionSection;
 	
     public OverviewPage(MevenidePomEditor editor) {
-        super(HEADING, editor);
-		setHeading(editor.getPom());
+        super(editor, ID, TAB);
+        setHeading(editor.getPom());
     }
 
-	protected void initializePage(Composite parent) {
+	protected void createPageContent(Composite parent) {
 		GridLayout layout = new GridLayout();
 		layout.numColumns = 1;
 		layout.marginWidth = 10;
 		layout.horizontalSpacing = 15;
 		parent.setLayout(layout);
 
-		PageWidgetFactory factory = getFactory();
+		FormToolkit factory = getEditor().getToolkit();
 
-		idSection = new IdentificationSection(this);
-		Control control = idSection.createControl(parent, factory);
+		idSection = new IdentificationSection(this, parent, factory);
+		Control control = idSection.getSection();
 		GridData gd = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING);
 		gd.horizontalSpan = 1;
 		control.setLayoutData(gd);
 		addSection(idSection);
 
-		descriptionSection = new DescriptionSection(this);
-		control = descriptionSection.createControl(parent, factory);
+		descriptionSection = new DescriptionSection(this, parent, factory);
+		control = descriptionSection.getSection();
 		gd = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING);
 		gd.horizontalSpan = 1;
 		control.setLayoutData(gd);
 		addSection(descriptionSection);
 		
-		fullDesctiptionSection = new FullDescriptionSection(this);
-		control = fullDesctiptionSection.createControl(parent, factory);
+		fullDesctiptionSection = new FullDescriptionSection(this, parent, factory);
+		control = fullDesctiptionSection.getSection();
 		gd = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING);
 		gd.horizontalSpan = 1;
 		control.setLayoutData(gd);
@@ -85,20 +88,20 @@ public class OverviewPage extends AbstractPomEditorPage {
 	    if (log.isDebugEnabled()) {
 	        log.debug("updating overview");
 	    }
-		setHeading(pom);
+	    setHeading(pom);
 		
 		super.update(pom);
 	}
 	
 	protected void setHeading(Project pom) {
 		if (pom.getName() != null && !"".equals(pom.getName())) {
-			setHeading(HEADING + pom.getName());
+		    setHeading(HEADING + pom.getName());
 		}
-		else if (getEditor().getParentPom() != null && !"".equals(getEditor().getParentPom().getName())){
-			setHeading(HEADING + getEditor().getParentPom().getName() + CHILD);
+		else if (getPomEditor().getParentPom() != null && !"".equals(getPomEditor().getParentPom().getName())){
+		    setHeading(HEADING + getPomEditor().getParentPom().getName() + CHILD);
 		}
 		else {
-			setHeading(HEADING + UNNAMED);
+		    setHeading(HEADING + UNNAMED);
 		}
 	}
 	
@@ -108,5 +111,5 @@ public class OverviewPage extends AbstractPomEditorPage {
 	public boolean isPropertySourceSupplier() {
 		return false;
 	}
-	
+
 }

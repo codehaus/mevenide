@@ -23,10 +23,15 @@ import org.eclipse.jface.text.DocumentEvent;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IDocumentListener;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.editors.text.TextEditor;
+import org.eclipse.ui.forms.IManagedForm;
+import org.eclipse.ui.forms.editor.FormEditor;
+import org.eclipse.ui.forms.editor.IFormPage;
+import org.mevenide.ui.eclipse.Mevenide;
 
 /**
  * Presents the raw POM source in a basic XML editor.
@@ -36,14 +41,18 @@ import org.eclipse.ui.editors.text.TextEditor;
  */
 public class PomXmlSourcePage
 	extends TextEditor 
-	implements IPomEditorPage {
+	implements IPomEditorPage, IFormPage {
 
 	private static final Log log = LogFactory.getLog(PomXmlSourcePage.class);
+    private static final String ID = Mevenide.getResourceString("PomXMLSourcePage.id");
+    private static final String TAB = Mevenide.getResourceString("PomXMLSourcePage.tab.label");
     
+    private Composite control;
 	private MevenidePomEditor editor;
 	private IDocumentListener documentListener;
 	private boolean modelNeedsUpdating;
 	private boolean active = false;
+	private int index;
 
 	public PomXmlSourcePage(MevenidePomEditor pomEditor) {
 		super();
@@ -61,6 +70,7 @@ public class PomXmlSourcePage
 		throws PartInitException {
 		
 		setDocumentProvider(editor.getDocumentProvider());
+		input = editor.getEditorInput();
         super.init(site, input);
     }
 
@@ -80,15 +90,6 @@ public class PomXmlSourcePage
 		};
 	}
 	
-    public boolean isActive() {
-        //return editor.getCurrentPage() == this;
-        return active;
-    }
-    
-    private void setActive(boolean activeFlag) {
-    	this.active = activeFlag;
-    }
-    
     public void pageActivated(IPomEditorPage oldPage) {
         if (log.isDebugEnabled()) {
             log.debug("PomXmlSourcePage made active!");
@@ -104,7 +105,7 @@ public class PomXmlSourcePage
 		setActive(false);
     	if (isModelNeedsUpdating())
     	{
-    		boolean cleanModel = getEditor().updateModel();
+    		boolean cleanModel = getPomEditor().updateModel();
     		if (cleanModel) {
     			setModelNeedsUpdating(false);
     		}
@@ -115,6 +116,7 @@ public class PomXmlSourcePage
 
     public void createPartControl(Composite parent) {
         super.createPartControl(parent);
+        control = parent;
         
         IDocument document = getDocumentProvider().getDocument(getEditorInput());
         document.addDocumentListener(documentListener);
@@ -130,17 +132,97 @@ public class PomXmlSourcePage
         this.modelNeedsUpdating = needsUpdating;
     }
 
-	public MevenidePomEditor getEditor() {
+	/**
+	 * @see org.mevenide.ui.eclipse.editors.IPomEditorPage#getPomEditor()
+	 */
+	public MevenidePomEditor getPomEditor() {
         return editor;
     }
     
-    public void setHeading(String heading) {}
-
 	/**
 	 * @see org.mevenide.ui.eclipse.editors.IPomEditorPage#isPropertySourceSupplier()
 	 */
 	public boolean isPropertySourceSupplier() {
 		return false;
 	}
+
+	/**
+	 * @see org.eclipse.ui.forms.editor.IFormPage#initialize(org.eclipse.ui.forms.editor.FormEditor)
+	 */
+	public void initialize(FormEditor parent) {
+		this.editor = (MevenidePomEditor) parent;
+	}
+
+	/**
+	 * @see org.eclipse.ui.forms.editor.IFormPage#getEditor()
+	 */
+	public FormEditor getEditor() {
+		return editor;
+	}
+
+	/**
+	 * @see org.eclipse.ui.forms.editor.IFormPage#getManagedForm()
+	 */
+	public IManagedForm getManagedForm() {
+		return null;
+	}
+
+	/**
+	 * @see org.eclipse.ui.forms.editor.IFormPage#setActive(boolean)
+	 */
+	public void setActive(boolean activeFlag) {
+    	this.active = activeFlag;
+	}
+
+    public boolean isActive() {
+        return active;
+    }
+    
+	/**
+	 * @see org.eclipse.ui.forms.editor.IFormPage#getPartControl()
+	 */
+	public Control getPartControl() {
+		return control;
+	}
+
+	/**
+	 * @see org.eclipse.ui.forms.editor.IFormPage#getId()
+	 */
+	public String getId() {
+		return ID;
+	}
+
+	/**
+	 * @see org.eclipse.ui.forms.editor.IFormPage#getIndex()
+	 */
+	public int getIndex() {
+		return index;
+	}
+
+	/**
+	 * @see org.eclipse.ui.forms.editor.IFormPage#setIndex(int)
+	 */
+	public void setIndex(int pageIndex) {
+		this.index = pageIndex;
+	}
+
+	/**
+	 * @see org.eclipse.ui.forms.editor.IFormPage#isSource()
+	 */
+	public boolean isSource() {
+		return true;
+	}
+
+	/**
+	 * @see org.eclipse.ui.forms.editor.IFormPage#focusOn(java.lang.Object)
+	 */
+	public void focusOn(Object object) {
+	}
 	
+    /**
+     * @see org.eclipse.ui.part.WorkbenchPart#getTitle()
+     */
+    public String getTitle() {
+        return TAB;
+    }
 }
