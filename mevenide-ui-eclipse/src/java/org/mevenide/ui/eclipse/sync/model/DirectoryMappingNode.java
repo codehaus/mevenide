@@ -70,10 +70,20 @@ public class DirectoryMappingNode extends AbstractArtifactMappingNode {
     private boolean overrideSameValue;
     
     public Object getAdapter(Class adapter) {
-        // TODO Auto-generated method stub
-		if ( adapter == IPropertySource.class ) {
+        if ( adapter == IPropertySource.class ) {
 			if ( artifact instanceof Resource ) {
 				return new ResourcePropertySource((Resource) artifact);
+			}
+			else {
+				//instanceof Directory
+				DirectoryPropertySource directoryPropertySource = null;
+				if ( artifact != null ) {
+					directoryPropertySource = new DirectoryPropertySource((Directory) artifact);
+				}
+				else {
+					directoryPropertySource = new DirectoryPropertySource((Directory) resolvedArtifact);
+				}
+				return directoryPropertySource;
 			}
 		}
         return null;

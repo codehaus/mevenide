@@ -241,7 +241,7 @@ public class FileUtils {
 					//@TODO throw new InfinitePomRecursionException(..)
 					break;
 				}
-				visitedPoms.add(extendFile.getAbsolutePath());
+				visitedPoms.add(new File(extendFile.getAbsolutePath()));
 				pom = ProjectReader.getReader().read(extendFile);
 			
 				extend = pom.getExtend();
