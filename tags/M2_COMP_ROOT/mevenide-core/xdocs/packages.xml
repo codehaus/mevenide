@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<document>
+    <properties>
+    	<author email="rhill@wanadoo.fr">Gilles Dodinet</author>
+        <title>Packages View</title>
+    </properties>
+    <body>
+        <section name="Packages Overview">
+        	
+        	<p>
+        		The diagram below describes the relationships between the various packages
+        		of the Mevenide Core module. It could be splitted mainly into three parts :
+        		<ul>
+        			<li>The <code><a href="synchronizer.html" class="documentLink">org.mevenide.sync</a></code> package provides abstract classes used to synchronize POM and IDE project configuration files.</li> 
+        			<li>The <code><a href="runner.html" class="documentLink">org.mevenide.runner</a></code> package provides an abstract runner that takes care of initializing the Environment and setting some unmutable options - like <code>-b</code>. This actually is crappy and should be refactored.</li>
+        			<li>The  <code>org.mevenide.project.*</code> packages provide various utility methods for manipulating the POM. Primary entry point should be the <code><a href="project-io-package.html" class="documentLink">org.mevenide.project.io</a></code> package.</li>
+			    </ul>
+			    <center>
+			    	<img src="images/diags/package-diagram.gif"/>
+			    </center>
+			</p>
+			
+		</section>
+    </body>
+</document>
