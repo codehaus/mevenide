@@ -51,6 +51,7 @@ package org.mevenide.ui.eclipse.editors.entries;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Vector;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -105,7 +106,7 @@ public class TableEntry extends PageEntry {
 	private PomPropertySourceProvider propertyProvider = new PomPropertySourceProvider();
 	private IPomCollectionAdaptor collectionAdaptor;
 	
-	private TableEntry dependentEntry;
+	private Vector dependentEntries = new Vector(10); // elements: TableEntry
 	private Object parentPomObject;
 
 	private final class OverridableSelectionAdapter extends SelectionAdapter {
@@ -178,6 +179,11 @@ public class TableEntry extends PageEntry {
 					Object[] itemsToRemove = selected.toArray();
 					int index = viewer.getTable().getSelectionIndices()[0];
 					viewer.remove(itemsToRemove);
+					if (index < 0) {
+						index = 0;
+					} else if (index >= viewer.getTable().getItemCount()) {
+						index = viewer.getTable().getItemCount() - 1;
+					}
 					viewer.setSelection(new StructuredSelection(viewer.getElementAt(index)));
 					for (int i = 0; i < itemsToRemove.length; i++) {
 						IPomPropertySource property = (IPomPropertySource) itemsToRemove[i];
@@ -238,9 +244,13 @@ public class TableEntry extends PageEntry {
 				public void selectionChanged(SelectionChangedEvent e) {
 					IStructuredSelection selection = (IStructuredSelection) e.getSelection();
 					section.getPage().getEditor().setPropertySourceSelection(selection);
-					if (dependentEntry != null) {
-						IPomPropertySource source = (IPomPropertySource) selection.getFirstElement();
-						dependentEntry.setParentPomObject(source.getSource());
+					IPomPropertySource source = (IPomPropertySource) selection.getFirstElement();
+					if (source != null && dependentEntries != null && !dependentEntries.isEmpty()) {
+						Iterator itr = dependentEntries.iterator();
+						while (itr.hasNext()) {
+							TableEntry dependentEntry = (TableEntry) itr.next();
+							dependentEntry.setParentPomObject(source.getSource());
+						}
 					}
 				}
 			}
@@ -252,16 +262,17 @@ public class TableEntry extends PageEntry {
 					if (log.isDebugEnabled()) {
 						log.debug("selection updated; empty = " + e.getSelection().isEmpty());
 					}
-					if (e.getSelection().isEmpty()) {
-						removeButton.setEnabled(false);
-						upButton.setEnabled(false);
-						downButton.setEnabled(false);
-					} else {
-						removeButton.setEnabled(true);
-						upButton.setEnabled(true);
-						downButton.setEnabled(true);
+					boolean isSelected = ! e.getSelection().isEmpty();
+					removeButton.setEnabled(isSelected);
+					upButton.setEnabled(isSelected);
+					downButton.setEnabled(isSelected);
+					if (dependentEntries != null && !dependentEntries.isEmpty()) {
+						Iterator itr = dependentEntries.iterator();
+						while (itr.hasNext()) {
+							TableEntry dependentEntry = (TableEntry) itr.next();
+							dependentEntry.addButton.setEnabled(isSelected);
+						}
 					}
-					
 				}
 			}
 		);
@@ -278,6 +289,7 @@ public class TableEntry extends PageEntry {
 			}
 		);
 
+		addButton.setEnabled(false);
 		removeButton.setEnabled(false);
 		upButton.setEnabled(false);
 		downButton.setEnabled(false);
@@ -293,8 +305,8 @@ public class TableEntry extends PageEntry {
 		return parentPomObject;
 	}
 	
-	public void setDependentTableEntry(TableEntry entry ) {
-		this.dependentEntry = entry;
+	public void addDependentTableEntry(TableEntry entry ) {
+		this.dependentEntries.add(entry);
 	}
 
 	public void addOverrideAdaptor(IOverrideAdaptor adaptor) {
@@ -331,6 +343,15 @@ public class TableEntry extends PageEntry {
 			removeButton.setEnabled(enable && viewer.getTable().getItemCount() > 0);
 			upButton.setEnabled(enable && viewer.getTable().getItemCount() > 0);
 			downButton.setEnabled(enable && viewer.getTable().getItemCount() > 0);
+			if (dependentEntries != null && !dependentEntries.isEmpty()) {
+				Iterator itr = dependentEntries.iterator();
+				while (itr.hasNext()) {
+					TableEntry dependentEntry = (TableEntry) itr.next();
+					dependentEntry.removeAll();
+					dependentEntry.setEnabled(enable);
+					dependentEntry.addButton.setEnabled(false);
+				}
+			}
 		}
 		if (overrideToggle != null) {
 			overrideToggle.setSelection(!enable);
@@ -360,7 +381,7 @@ public class TableEntry extends PageEntry {
 	}
 
 	public void addEntries(List entries) {
-		if (viewer != null) {
+		if (viewer != null && entries != null) {
 			Iterator itr = entries.iterator();
 			while (itr.hasNext()) {
 				addEntry(itr.next());
