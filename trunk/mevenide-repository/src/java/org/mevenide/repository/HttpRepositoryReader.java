@@ -29,8 +29,6 @@ import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
-import org.mevenide.project.dependency.DefaultDependencyResolver;
-import org.mevenide.project.dependency.IDependencyResolver;
 import org.mevenide.project.dependency.URIDependencyResolver;
 
 /**
@@ -91,13 +89,11 @@ class HttpRepositoryReader extends AbstractRepositoryReader {
             Matcher match = folderPattern.matcher(line);
             if (match.matches()) {
                 String dir = match.group(1);
-                String dir2 = match.group(2);
                 items.add(new StructureWrapper(dir, true));
             } else {
                 match = filePattern.matcher(line);
                 if (match.matches()) {
                     String file = match.group(1);
-                    String file2 = match.group(2);
                     items.add(new StructureWrapper(file, false));
                 }
             }
