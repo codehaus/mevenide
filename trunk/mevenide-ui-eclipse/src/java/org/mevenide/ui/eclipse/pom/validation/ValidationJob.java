@@ -21,7 +21,6 @@ import java.io.File;
 import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.maven.project.Project;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.runtime.CoreException;
@@ -29,8 +28,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.mevenide.project.io.ProjectReader;
-import org.mevenide.project.validation.ContentValidator;
+import org.mevenide.project.validation.IProjectValidator;
+import org.mevenide.project.validation.SchemaValidator;
 import org.mevenide.project.validation.ValidationException;
 import org.mevenide.ui.eclipse.Mevenide;
 
@@ -54,16 +53,14 @@ public class ValidationJob extends Job {
     }
     
     protected IStatus run(IProgressMonitor monitor) {
-        ContentValidator contentValidator = new ContentValidator();
+        IProjectValidator projectValidator = new SchemaValidator();
         try {
             MarkerHelper.deleteMarkers(pomFile);
             
             File file = pomFile.getRawLocation().toFile();
-            ProjectReader reader = ProjectReader.getReader();
-            Project pom = reader.read(file);
             
-            if ( pom != null ) {
-                contentValidator.validate(pom);
+            if ( file != null ) {
+                projectValidator.validate(file);
             }
             return new Status(Status.OK, "org.mevenide.ui", 0, "POM is valid", null);
         }
