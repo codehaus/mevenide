@@ -1,0 +1,233 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Schema file written by PDE -->
+<schema targetNamespace="org.mevenide.ui">
+<annotation>
+      <appInfo>
+         <meta.schema plugin="org.mevenide.ui" id="preference" name="Maven Plugins Provider Extension Point"/>
+      </appInfo>
+      <documentation>
+         This extension allows Maven plugin provider to add Preferences Page under Maven Preference Node in a strictly declarative way.
+      </documentation>
+   </annotation>
+
+   <element name="extension">
+      <complexType>
+         <sequence>
+            <element ref="plugin-provider" minOccurs="1" maxOccurs="unbounded"/>
+         </sequence>
+         <attribute name="point" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="plugin-provider">
+      <annotation>
+         <documentation>
+            aggregates specific properties used in the context of a maven plugin.
+         </documentation>
+      </annotation>
+      <complexType>
+         <sequence>
+            <element ref="description" minOccurs="0" maxOccurs="1"/>
+            <sequence>
+               <element ref="category" minOccurs="1" maxOccurs="unbounded"/>
+            </sequence>
+         </sequence>
+         <attribute name="name" type="string" use="required">
+            <annotation>
+               <documentation>
+                  name of the maven plugin, for instance if installing maven-xdoc-plugin, name should be &apos;XDoc&apos;. It must match the name of the associated preference page.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string" use="required">
+            <annotation>
+               <documentation>
+                  unique identifier of the maven plugin, for instance if installing maven-xdoc-plugin, name should be &apos;maven-xdoc-plugin&apos;.
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="description" type="string">
+      <annotation>
+         <documentation>
+            an optional description of the Maven plugin.
+         </documentation>
+      </annotation>
+   </element>
+
+   <element name="property">
+      <annotation>
+         <documentation>
+            defines a new specific property used by the maven plugin. No validator can be specified yet, but it is definitively on the TODO list.
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="name" type="string" use="required">
+            <annotation>
+               <documentation>
+                  the name of the specific property used by the plugin.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="default" type="string">
+            <annotation>
+               <documentation>
+                  default value for the specific property.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="label" type="string">
+            <annotation>
+               <documentation>
+                  Human readable label used in the preference page to refer to this property. if not specified, id will be used.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="required" type="boolean">
+            <annotation>
+               <documentation>
+                  indicates if this specific is a required one.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="description" type="string" use="required">
+            <annotation>
+               <documentation>
+                  Provides a description of the property.
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="category">
+      <annotation>
+         <documentation>
+            allows to categorize plugin properties. It is especially useful for plugins that expose quite a number of properties (as does the Maven  PDE plugin).
+         </documentation>
+      </annotation>
+      <complexType>
+         <sequence>
+            <element ref="property" minOccurs="1" maxOccurs="unbounded"/>
+         </sequence>
+         <attribute name="name" type="string" use="required">
+            <annotation>
+               <documentation>
+                  Human readable name of the category.
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="since"/>
+      </appInfo>
+      <documentation>
+         0.2.1
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="examples"/>
+      </appInfo>
+      <documentation>
+         &lt;pre&gt;
+&lt;!-- 
+  declare the preference page of type org.mevenide.ui.eclipse.preferences.dynamic.DynamicPreferencePage 
+--&gt;
+&lt;extension point=&quot;org.eclipse.ui.preferencePages&quot;&gt;
+  &lt;page category=&quot;org.mevenide.ui.eclipse.preferences.PluginsRoot&quot; 
+        name=&quot;PDE Plugin&quot;  
+        class=&quot;org.mevenide.ui.eclipse.preferences.dynamic.DynamicPreferencePage&quot; 
+        id=&quot;PDE Plugin &quot; /&gt;
+&lt;/extension&gt;       
+&lt;!-- 
+  declare maven plugin properties. name attribute must match the name attribute of the associated preference page
+--&gt;
+&lt;extension point=&quot;org.mevenide.ui.preference&quot;&gt;
+  &lt;plugin-provider id=&quot;maven-eclipse-plugin-plugin&quot; 
+                   name=&quot;PDE Plugin&quot;&gt;
+    &lt;description&gt;%Plugin.Description&lt;/description&gt;
+    &lt;category name=&quot;Build&quot;&gt;
+      &lt;property name=&quot;maven.eclipse.plugin.mode&quot; 
+                label=&quot;Build Mode&quot;
+                default=&quot;bundle&quot;
+                required=&quot;false&quot;
+                description=&quot;%BuildMode.Description&quot;/&gt;
+      &lt;property name=&quot;maven.eclipse.plugin.dist.dir&quot; 
+                label=&quot;Distribution Directory&quot;
+                default=&quot;${maven.build.dir}/eclipse/dist&quot;
+                required=&quot;true&quot;
+                description=&quot;%DistDirectory.Description&quot;/&gt;
+    &lt;/category&gt;
+  &lt;/plugin-provider&gt;
+&lt;/extension&gt;
+&lt;/pre&gt;
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="apiInfo"/>
+      </appInfo>
+      <documentation>
+         Theres no available API for now, so Providers dont have to provide any code for now. In the fututre it will be possible for them to provide validators.
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="implementation"/>
+      </appInfo>
+      <documentation>
+         
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="copyright"/>
+      </appInfo>
+      <documentation>
+         Copyright 2003-2004 Apache Software Foundation
+
+Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+      </documentation>
+   </annotation>
+
+</schema>

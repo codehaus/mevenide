@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<document>
+    <properties>
+    	<author email="rhill2@free.fr">Gilles Dodinet</author>
+        <title>Repository Browser and Search Engine</title>
+    </properties>
+    <body>
+		<section name="Repository Browser">
+			<subsection name="Overview">
+				<div id="documentContent">
+				  <p>
+				  	The repository browser allows you to inspect the content of a remote repository. 
+				  	Repository content is displayed as a tree and multiple repositories can be browsed 
+				  	at once (Screenshot 1) 
+				  	<br/>
+				    <center>
+						<img border="1px" src="../images/screenshots/repository/browse.png"/>
+						<br/>
+						<font size="-1"><b>Screenshot 1</b> Repository Browser</font>
+						<br/>
+					</center>
+				  </p>
+				  <p>
+					Altho some well known repositories are provided by default, as well as some known primary repo mirrors, 
+					you can define new repositories by clicking the 'Add Repository' button (in the ToolBar). This brings up a
+					dialog where you can specify a new repository (Screenshot 2) that will be added to the browser once defined.
+					<br/>
+				    <center>
+						<img border="1px" src="../images/screenshots/repository/add_repo.png"/>
+						<br/>
+						<font size="-1"><b>Screenshot 2</b> Repository Browser</font>
+						<br/>
+					</center>
+				  </p>
+				</div>
+			</subsection>
+		</section>
+		<section name="Repository Search">
+		  <p>
+		    Mevenide relies on Mavenzilla (0.1) to search remote repositories. Two views are provided for this : 
+		    the first one allows you to edit the query (Screenshot 3), whilst the second one displays the result (Screenshot 4).
+		    <br/>
+		    <center>
+				<img border="1px" src="../images/screenshots/repository/repo_query.png"/>
+				<br/>
+				<font size="-1"><b>Screenshot 3</b> Repository Search Query</font>
+				<br/>
+			</center>
+			<br/>
+		    <center>
+				<img border="1px" src="../images/screenshots/repository/search_results.png"/>
+				<br/>
+				<font size="-1"><b>Screenshot 4</b> Repository Search Results</font>
+				<br/>
+			</center>
+		  </p>
+		</section>
+        <section>
+			<p>
+				<navbar prev="builder.html" toc="help.html" />
+			</p>
+		</section>
+	</body>
+</document>

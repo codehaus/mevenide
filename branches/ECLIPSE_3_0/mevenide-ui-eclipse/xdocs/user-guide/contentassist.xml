@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<document>
+    <properties>
+    	<author email="rhill2@free.fr">Gilles Dodinet</author>
+        <title>Help Page</title>
+    </properties>
+    <body>
+    	<section name="Jelly Edition">
+			<subsection name="Editor">
+				<div id="documentContent">
+					<p> 
+						When editing a Jelly file, you will be offered standard tags, such as <code> goal</code> or <code> pregoal </code>, but also tags from the included
+						taglibraries (Screenshots 1 and 2). These are sorted in the following manner : Werkz tags, and then tags from included taglibraries sorted by taglib name and tag name.
+						<br/>
+						<center>
+							<img border="1px" src="../images/screenshots/contentassist/top_level_nodes.png"/>
+							<br/>
+							<font size="-1"><b>Screenshot 1</b> Completing tags</font>
+							<br/>
+						</center>
+					</p>
+					<p>
+						Please note that Werkz tags are only offered with the 'Maven Jelly Editor' : Generic Jelly editor doesnot propose them.
+						<br/>
+						<center>
+							<img border="1px" src="../images/screenshots/contentassist/goal_name.png"/>
+							<br/>
+							<font size="-1"><b>Screenshot 2</b> Completing tags from a given taglibrary</font>
+							<br/>
+						</center>
+				   </p>
+				   <p> 
+						After choosing a tag, you can easily get a list of available, known attributes defined for this element (Screenshot 3). These are sorted alphabetically. Again only those that match the already typed characters are displayed.
+						<br/>
+						<center>
+							<img border="1px" src="../images/screenshots/contentassist/attribute_name.png"/>
+							<br/>
+							<font size="-1"><b>Screenshot 3</b> Completing attributes</font>
+							<br/>
+						</center>
+					</p>
+					<p>
+						Last, you have proposals for attainGoal name attribute : proposed values are the list of global goals and custom ones. For now, the list is computed from the previously saved version (not from the buffer).
+						<br/>
+						<center>
+							<img border="1px" src="../images/screenshots/contentassist/attaingoal_attribute_value.png"/>
+							<br/>
+							<font size="-1"><b>Screenshot 4</b> Completing attributes value</font>
+							<br/><br/>
+						</center>
+				   </p>
+			  </div>
+			</subsection>
+			<subsection name="Outline page">
+				<p>
+					The 'Maven Jelly Editor' comes with an outline (Screenshot 5) that displays the list of available goals (global and custom). Double-clicking a goal launches that goal, allowing a fast preview of the current behavior. 
+					Please note that goals are not yet linked to the editor.
+					<br/>
+					<center>
+						<img border="1px" src="../images/screenshots/contentassist/outline.png"/>
+						<br/>
+						<font size="-1"><b>Screenshot 5</b> maven.xml Outline page</font>
+						<br/>
+					</center>
+				</p>
+				<p>
+					The list of goals can be filtered via the Menu Manager : it is possible to filter through regular expressions, specific names,
+					or by category - custom vs. global (Screenshot 6).
+					<br/><br/>
+					<center>
+						<img border="1px" src="../images/screenshots/contentassist/outline_filter.png"/>
+						<br/>
+						<font size="-1"><b>Screenshot 6</b> Filtering Outline page</font>
+						<br/>
+					</center>
+				</p>
+			</subsection>
+        </section>
+        <section>
+			<p>
+				<navbar prev="edit.html" toc="help.html" next="wizard.html"/>
+			</p>
+		</section>
+	</body>
+</document>
