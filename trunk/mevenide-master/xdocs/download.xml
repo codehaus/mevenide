@@ -62,7 +62,7 @@
       </div>
   	  <div id="plugin">
         <p>
-    	The <b>Maven NBM plugin</b> allows maven users to generate maven module from their projects. To install the plugin, follow instructions on the plugin's <a href="maven-nbm-plugin/index.html">page </a>.
+    	The <b>Maven NBM plugin</b> allows maven users to generate Netbeans modules from their projects. To install the plugin, follow instructions on the plugin's <a href="maven-nbm-plugin/index.html">page </a>.
         </p>
       </div>
     </section>
