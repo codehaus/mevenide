@@ -16,6 +16,8 @@
  */
 package org.mevenide.ui.eclipse.editors.pages;
 
+import java.io.File;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Project;
@@ -27,8 +29,10 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.eclipse.ui.part.FileEditorInput;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.editors.entries.OverridableTextEntry;
+import org.mevenide.util.MevenideUtils;
 
 /**
  * @author Jeffrey Bonevich (jeff@bonevich.com)
@@ -145,6 +149,8 @@ public class OrganizationSection extends PageSection {
 						String imageFile = dialog.open();
 						if (imageFile != null) {
 							logoText.setFocus();
+							String basedir = ((FileEditorInput) getPage().getPomEditor().getEditorInput()).getFile().getLocation().toOSString();
+							imageFile = MevenideUtils.makeRelativePath(new File(basedir).getParentFile(), imageFile);
 							logoText.setText(imageFile);
 						}
 					}
