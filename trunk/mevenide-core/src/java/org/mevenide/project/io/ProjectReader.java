@@ -90,6 +90,15 @@ public class ProjectReader {
 		unmarshaller = new DefaultProjectUnmarshaller(); 
 	}
 	
+	/**
+	 * return the instance of org.apache.maven.project.Project derivated from pom
+	 * 
+	 * @param pom
+	 * @return
+	 * @throws FileNotFoundException
+	 * @throws Exception
+	 * @throws IOException
+	 */
 	public Project read(File pom) throws FileNotFoundException, Exception, IOException {
 		Reader reader = new FileReader(pom);
 		Project project = unmarshaller.parse(reader);
@@ -105,7 +114,7 @@ public class ProjectReader {
 	 * @return
 	 * @throws Exception
 	 */
-	public Map getSourceDirectories(File pom) throws Exception {
+	public Map readSourceDirectories(File pom) throws Exception {
 		Map sourceDirectories = new HashMap();
 		
 		Build build = getBuild(pom);
@@ -146,13 +155,59 @@ public class ProjectReader {
 	}
 
 	/**
-	 * utility method tha allows some factorization
+	 * return the dependency of the artifact describeed by referencedPom. No assumptions is done about its type. 
 	 * 
-	 * @param pom
+	 * @param referencedPom
+	 * @return
+	 * @throws FileNotFoundException
+	 * @throws Exception
+	 * @throws IOException
+	 */
+	public Dependency extractDependency(File referencedPom) throws FileNotFoundException, Exception, IOException {
+		Project referencedProject = read(referencedPom);
+		Dependency dependency = new Dependency();
+		dependency.setGroupId(referencedProject.getGroupId());
+		dependency.setArtifactId(referencedProject.getArtifactId());
+		dependency.setVersion(referencedProject.getCurrentVersion());
+		//dependency.setArtifact(referencedPom.getParent());
+		//dependency.setJar(referencedPom.getParent());
+		return dependency;
+	}
+
+	/**
+	 * return all resources directories declared in pom. map keys can be one of :
+	 * 
+	 *   o ProjectConstants.MAVEN_RESOURCE
+	 *   o ProjectConstants.MAVEN_TEST_RESOURCE
+	 * 
+	 * @param referencedPom
 	 * @return
 	 * @throws Exception
-	 * @throws FileNotFoundException
 	 */
+	public Map readAllResources(File pom) throws Exception {
+		Map allResources = new HashMap();
+		Project project = read(pom);
+		if ( project.getBuild() != null ) {
+			List res = project.getBuild().getResources();
+			for (int i = 0; i < res.size(); i++) {
+                String directory = ((Resource) res.get(i)).getDirectory();
+                if ( !allResources.containsValue(directory) ) {
+                	allResources.put(ProjectConstants.MAVEN_RESOURCE, directory);
+                }
+            }
+			if ( project.getBuild().getUnitTest() != null ) {
+				List utRes = project.getBuild().getUnitTest().getResources();
+				for (int i = 0; i < utRes.size(); i++) {
+					String directory = ((Resource) utRes.get(i)).getDirectory();
+					if ( !allResources.containsValue(directory) ) {
+						allResources.put(ProjectConstants.MAVEN_TEST_RESOURCE, directory);
+					}
+				}
+			}
+		}
+		return allResources;
+	}
+	
 	private Build getBuild(File pom) throws Exception, FileNotFoundException {
 		Project project; 
 		if ( pom != null ) {
@@ -164,40 +219,5 @@ public class ProjectReader {
 		
 		Build build = project.getBuild();
 		return build;
-	}
-	
-	public Dependency getDependency(File referencedPom) throws FileNotFoundException, Exception, IOException {
-		Project referencedProject = read(referencedPom);
-		Dependency dependency = new Dependency();
-		dependency.setGroupId(referencedProject.getGroupId());
-		dependency.setArtifactId(referencedProject.getArtifactId());
-		dependency.setVersion(referencedProject.getCurrentVersion());
-		//dependency.setArtifact(referencedPom.getParent());
-		dependency.setJar(referencedPom.getParent());
-		return dependency;
-	}
-
-	public Map getAllResources(File referencedPom) throws Exception {
-		Map allResources = new HashMap();
-		Project referencedProject = read(referencedPom);
-		if ( referencedProject.getBuild() != null ) {
-			List res = referencedProject.getBuild().getResources();
-			for (int i = 0; i < res.size(); i++) {
-                String directory = ((Resource) res.get(i)).getDirectory();
-                if ( !allResources.containsValue(directory) ) {
-                	allResources.put(ProjectConstants.MAVEN_RESOURCE, directory);
-                }
-            }
-			if ( referencedProject.getBuild().getUnitTest() != null ) {
-				List utRes = referencedProject.getBuild().getUnitTest().getResources();
-				for (int i = 0; i < utRes.size(); i++) {
-					String directory = ((Resource) utRes.get(i)).getDirectory();
-					if ( !allResources.containsValue(directory) ) {
-						allResources.put(ProjectConstants.MAVEN_TEST_RESOURCE, directory);
-					}
-				}
-			}
-		}
-		return allResources;
 	}
 }
