@@ -48,6 +48,9 @@
     <ant:copy file="${eclipse.home}/plugins/org.eclipse.ui.editors_3.0.0/editors.jar" 
   		      tofile="${maven.repo.local}/eclipse/jars/eclipse-editors-3.0.0.jar"/> 
   		  
+    <ant:copy file="${eclipse.home}/plugins/org.eclipse.osgi_3.0.0/osgi.jar" 
+  		      tofile="${maven.repo.local}/eclipse/jars/eclipse-osgi-3.0.0.jar"/> 
+  		      
     <ant:copy file="${eclipse.home}/plugins/org.eclipse.ui.externaltools_3.0.0/externaltools.jar" 
   		      tofile="${maven.repo.local}/eclipse/jars/eclipse-externaltools-3.0.0.jar"/> 
   
