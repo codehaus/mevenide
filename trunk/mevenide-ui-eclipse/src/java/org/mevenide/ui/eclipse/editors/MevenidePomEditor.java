@@ -199,7 +199,7 @@ public class MevenidePomEditor extends MultiPageEditorPart {
      * editor, where basic information about the project is defined.
      */
     private void createOverviewPage() {
-        OverviewPage overview = new OverviewPage(this, pom.getName());
+        OverviewPage overview = new OverviewPage(this);
 		comparator.addProjectChangeListener(ProjectComparator.PROJECT, overview);
         overviewPageIndex = addPage(overview);
         setPageText(overviewPageIndex, OVERVIEW_PAGE);
