@@ -159,6 +159,14 @@ public class MavenBuildTask extends BuildTask
         command.append(' ');
         command.append(mavenMainClass);
 
+        if (MavenPropertyGroup.DEBUG_MODE.getBoolean(mavenFileNode)) {
+            command.append(" -X ");
+        }
+
+        if (MavenPropertyGroup.OFFLINE_MODE.getBoolean(mavenFileNode)) {
+            command.append(" -o ");
+        }
+
         if (goals.size() > 0) {
             command.append(' ');
         }
