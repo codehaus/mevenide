@@ -40,7 +40,7 @@ public final class PluginInfoManager {
         finder = new LocationFinderAggregator(context);
     }
     
-    private void findParser() {
+    private synchronized void findParser() {
         String cacheDir = finder.getMavenPluginsDir();
         if (oldCacheDir == null || !oldCacheDir.equals(cacheDir)) {
             oldCacheDir = cacheDir;
