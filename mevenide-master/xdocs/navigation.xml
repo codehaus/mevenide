@@ -13,6 +13,7 @@
   	
     <menu name="Home">
       <item name="About" href="/index.html" />
+      <item name="Developer infos" href="/getting-started.html" />
       <item name="Status" href="/status.html"/>
       <item name="License" href="/license.html"/>
       <item name="Source Repositories" href="/source-repos.html" />
