@@ -93,7 +93,7 @@ public class ProjectWriterTest extends AbstractMevenideTestCase {
 			projectFile,
 			ProjectConstants.MAVEN_TEST_DIRECTORY);
 		
-		Map h = ProjectReader.getReader().getSourceDirectories(projectFile);
+		Map h = ProjectReader.getReader().readSourceDirectories(projectFile);
 		
 		assertEquals(3, h.size());
 		

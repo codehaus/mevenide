@@ -207,7 +207,7 @@ public class ProjectWriter {
 	public void addProject(File referencedPom, File pom) throws Exception {
 		ProjectReader reader = ProjectReader.getReader();
 		
-		Dependency dependency = reader.getDependency(referencedPom);
+		Dependency dependency = reader.extractDependency(referencedPom);
 		
 		Project project = reader.read(pom);
 		project.addDependency(dependency);
