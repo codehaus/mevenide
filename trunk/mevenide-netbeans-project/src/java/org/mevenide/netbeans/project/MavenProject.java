@@ -41,6 +41,7 @@ import org.mevenide.netbeans.project.queries.MavenTestForSourceImpl;
 import org.mevenide.project.DefaultProjectContext;
 import org.mevenide.properties.IPropertyLocator;
 import org.mevenide.properties.IPropertyResolver;
+import org.mevenide.properties.resolver.ProjectWalker2;
 import org.mevenide.properties.resolver.PropertyLocatorFactory;
 import org.mevenide.properties.resolver.PropertyResolverFactory;
 import org.netbeans.api.project.Project;
@@ -68,6 +69,7 @@ public class MavenProject implements Project {
     private IQueryContext queryContext;
     private ILocationFinder locFinder;
     private IPropertyLocator propertyLocator;
+    private ProjectWalker2 walker;
     private Image icon;
     private Lookup lookup;
     private PropertyChangeSupport support;
@@ -90,6 +92,7 @@ public class MavenProject implements Project {
         IProjectContext prContext = new DefaultProjectContext(queryContext, properties);
         ((DefaultQueryContext)queryContext).initializeProjectContext(prContext);
         locFinder = new LocationFinderAggregator(queryContext);
+        walker = new ProjectWalker2(queryContext);
     }
     
     
@@ -138,6 +141,10 @@ public class MavenProject implements Project {
     
     public IQueryContext getContext() {
         return queryContext;
+    }
+    
+    public ProjectWalker2 getProjectWalker() {
+        return walker;
     }
     
     Updater getProjectFolderUpdater() {

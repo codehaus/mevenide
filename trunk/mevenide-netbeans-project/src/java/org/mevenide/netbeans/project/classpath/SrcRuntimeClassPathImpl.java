@@ -48,6 +48,20 @@ public class SrcRuntimeClassPathImpl extends AbstractProjectClassPathImpl {
     URI[] createPath() {
         List lst = new ArrayList();
         Project mavproj = getMavenProject().getOriginalMavenProject();
+        // add resources to runtime path..
+        Build build = mavproj.getBuild();
+        if (build != null) {
+            List resources = build.getResources();
+            Iterator it = (resources != null ? resources.iterator() : Collections.EMPTY_LIST.iterator());
+            while (it.hasNext()) {
+                Resource res = (Resource)it.next();
+                URI uri = checkOneResource(res);                    
+                if (uri != null) {
+                    System.out.println("adding resource uri=" + uri);
+                    lst.add(uri);
+                }
+            }
+        }
         List deps = mavproj.getDependencies();
         Iterator it = (deps != null ? deps.iterator() : Collections.EMPTY_LIST.iterator());
         while (it.hasNext()) {
@@ -55,19 +69,6 @@ public class SrcRuntimeClassPathImpl extends AbstractProjectClassPathImpl {
             URI ur = checkOneDependency(dep);
             if (ur != null) {
                 lst.add(ur);
-            }
-        }
-        // add resources to runtime path..
-        Build build = mavproj.getBuild();
-        if (build != null) {
-            List resources = build.getResources();
-            it = (resources != null ? resources.iterator() : Collections.EMPTY_LIST.iterator());
-            while (it.hasNext()) {
-                Resource res = (Resource)it.next();
-                URI uri = checkOneResource(res);                    
-                if (uri != null) {
-                    lst.add(uri);
-                }
             }
         }
         //        if (getMavenProject().getSrcDirectory() != null) {

@@ -14,20 +14,28 @@
  *  limitations under the License.
  * =========================================================================
  */
+
 package org.mevenide.netbeans.project.customizer;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
 
 import java.util.List;
+import javax.swing.JButton;
 
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import org.apache.maven.project.Organization;
 import org.apache.maven.project.Project;
 import org.mevenide.netbeans.project.MavenProject;
+import org.mevenide.netbeans.project.customizer.ui.LocationComboFactory;
+import org.mevenide.netbeans.project.customizer.ui.OriginChange;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.awt.HtmlBrowser;
@@ -39,18 +47,23 @@ import org.openide.util.NbBundle;
  */
 public class OrgPanel extends JPanel implements ProjectPanel {
     
-    private boolean propagate;
     private ProjectValidateObserver valObserver;
     private MavenProject project;
+    private OriginChange ocSiteAddress;
+    private OriginChange ocSiteDir;
+    private OriginChange ocDistAddress;
+    private OriginChange ocDistDir;
+    
+    private HashMap changes;
+    
     /** Creates new form BasicsPanel */
-    public OrgPanel(boolean propagateImmediately, boolean enable, MavenProject proj) {
-        initComponents();
+    public OrgPanel(MavenProject proj) {
         project = proj;
-        propagate = propagateImmediately;
+        changes = new HashMap();
+        initComponents();
         valObserver = null;
         //TODO add listeners for immediatePropagation stuff.
         setName(NbBundle.getMessage(OrgPanel.class, "OrgPanel.name"));
-        setEnableFields(enable);
         btnURL.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 String url = txtURL.getText().trim();
@@ -66,17 +79,7 @@ public class OrgPanel extends JPanel implements ProjectPanel {
                 }
             }
         });
-        
-    }
-    
-    public void setEnableFields(boolean enable) {
-        txtDistAddress.setEditable(enable);
-        txtDistDir.setEditable(enable);
-        txtLogo.setEditable(enable);
-        txtName.setEditable(enable);
-        txtSiteAddress.setEditable(enable);
-        txtSiteDir.setEditable(enable);
-        txtURL.setEditable(enable);
+        populateChangeInstances();
     }
     
     /** This method is called from within the constructor to
@@ -91,18 +94,27 @@ public class OrgPanel extends JPanel implements ProjectPanel {
         txtName = new javax.swing.JTextField();
         lblURL = new javax.swing.JLabel();
         txtURL = new javax.swing.JTextField();
+        btnURL = new javax.swing.JButton();
         lblLogo = new javax.swing.JLabel();
         txtLogo = new javax.swing.JTextField();
         jSeparator1 = new javax.swing.JSeparator();
         lblSiteAddress = new javax.swing.JLabel();
         txtSiteAddress = new javax.swing.JTextField();
+        ocSiteAddress = LocationComboFactory.createPOMChange(project, false);
+        btnSiteAddress = (JButton)ocSiteAddress.getComponent();
         lblSiteDir = new javax.swing.JLabel();
         txtSiteDir = new javax.swing.JTextField();
+        ocSiteDir = LocationComboFactory.createPOMChange(project, false);
+        btnSiteDir = (JButton)ocSiteDir.getComponent();
         lblDistAddress = new javax.swing.JLabel();
         txtDistAddress = new javax.swing.JTextField();
+        ocDistAddress = LocationComboFactory.createPOMChange(project, false);
+        btnDistAddress = (JButton)ocDistAddress.getComponent();
         lblDistDir = new javax.swing.JLabel();
         txtDistDir = new javax.swing.JTextField();
-        btnURL = new javax.swing.JButton();
+        ocDistDir = LocationComboFactory.createPOMChange(project, false);
+        btnDistDir = (JButton)ocDistDir.getComponent();
+        jPanel1 = new javax.swing.JPanel();
 
         setLayout(new java.awt.GridBagLayout());
 
@@ -137,6 +149,14 @@ public class OrgPanel extends JPanel implements ProjectPanel {
         gridBagConstraints.insets = new java.awt.Insets(6, 3, 0, 0);
         add(txtURL, gridBagConstraints);
 
+        btnURL.setText(org.openide.util.NbBundle.getMessage(OrgPanel.class, "OrgPanel.btnURL.text"));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(3, 3, 0, 0);
+        add(btnURL, gridBagConstraints);
+
         lblLogo.setLabelFor(txtLogo);
         lblLogo.setText(org.openide.util.NbBundle.getMessage(OrgPanel.class, "OrgPanel.lblLogo.text"));
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -169,7 +189,7 @@ public class OrgPanel extends JPanel implements ProjectPanel {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 4;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(6, 0, 0, 0);
         add(lblSiteAddress, gridBagConstraints);
 
@@ -177,17 +197,24 @@ public class OrgPanel extends JPanel implements ProjectPanel {
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 4;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.weightx = 0.1;
         gridBagConstraints.insets = new java.awt.Insets(6, 3, 0, 0);
         add(txtSiteAddress, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 4;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(3, 3, 0, 0);
+        add(btnSiteAddress, gridBagConstraints);
 
         lblSiteDir.setLabelFor(txtSiteDir);
         lblSiteDir.setText(org.openide.util.NbBundle.getMessage(OrgPanel.class, "OrgPanel.lblSiteDir.text"));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 5;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(6, 0, 0, 0);
         add(lblSiteDir, gridBagConstraints);
 
@@ -195,17 +222,24 @@ public class OrgPanel extends JPanel implements ProjectPanel {
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 5;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.weightx = 0.1;
         gridBagConstraints.insets = new java.awt.Insets(6, 3, 0, 0);
         add(txtSiteDir, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 5;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(3, 3, 0, 0);
+        add(btnSiteDir, gridBagConstraints);
 
         lblDistAddress.setLabelFor(txtDistAddress);
         lblDistAddress.setText(org.openide.util.NbBundle.getMessage(OrgPanel.class, "OrgPanel.lblDistAddress.text"));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 6;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(6, 0, 0, 0);
         add(lblDistAddress, gridBagConstraints);
 
@@ -213,17 +247,24 @@ public class OrgPanel extends JPanel implements ProjectPanel {
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 6;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.weightx = 0.1;
         gridBagConstraints.insets = new java.awt.Insets(6, 3, 0, 0);
         add(txtDistAddress, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 6;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(3, 3, 0, 0);
+        add(btnDistAddress, gridBagConstraints);
 
         lblDistDir.setLabelFor(txtDistDir);
         lblDistDir.setText(org.openide.util.NbBundle.getMessage(OrgPanel.class, "OrgPanel.lblSiteDist.text"));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 7;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(6, 0, 0, 0);
         add(lblDistDir, gridBagConstraints);
 
@@ -231,25 +272,37 @@ public class OrgPanel extends JPanel implements ProjectPanel {
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 7;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.weightx = 0.1;
-        gridBagConstraints.weighty = 0.1;
         gridBagConstraints.insets = new java.awt.Insets(6, 3, 0, 0);
         add(txtDistDir, gridBagConstraints);
 
-        btnURL.setText(org.openide.util.NbBundle.getMessage(OrgPanel.class, "OrgPanel.btnURL.text"));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.gridy = 7;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(3, 3, 0, 0);
-        add(btnURL, gridBagConstraints);
+        add(btnDistDir, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 8;
+        gridBagConstraints.gridwidth = 3;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.weighty = 0.1;
+        add(jPanel1, gridBagConstraints);
 
     }//GEN-END:initComponents
     
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnDistAddress;
+    private javax.swing.JButton btnDistDir;
+    private javax.swing.JButton btnSiteAddress;
+    private javax.swing.JButton btnSiteDir;
     private javax.swing.JButton btnURL;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JLabel lblDistAddress;
     private javax.swing.JLabel lblDistDir;
@@ -266,9 +319,31 @@ public class OrgPanel extends JPanel implements ProjectPanel {
     private javax.swing.JTextField txtSiteDir;
     private javax.swing.JTextField txtURL;
     // End of variables declaration//GEN-END:variables
+
+    private void populateChangeInstances() {
+        createChangeInstance("siteAddress", txtSiteAddress, ocSiteAddress);
+        createChangeInstance("siteDirectory", txtSiteDir, ocSiteDir);
+        createChangeInstance("distributionAddress", txtDistAddress, ocDistAddress);
+        createChangeInstance("distributionDirectory", txtDistDir, ocDistDir);
+   }
+   
+   private void createChangeInstance(String propName, JTextField field, OriginChange oc) {
+       String key = "pom." + propName; //NOI18N
+       String value = project.getProjectWalker().getValue(key);
+       int location = project.getProjectWalker().getLocation(key);
+       if (value == null) {
+           value = "";
+       } 
+       changes.put(key, new TextComponentPOMChange(key, value, location, field, oc));
+   }        
     
     public void setResolveValues(boolean resolve) {
 //        setEnableFields(!resolve); 
+        assignValue("siteAddress", resolve);
+        assignValue("siteDirectory", resolve);
+        assignValue("distributionAddress", resolve);
+        assignValue("distributionDirectory", resolve);
+        
         Project proj = project.getOriginalMavenProject();
         Organization org = proj.getOrganization();
         if (org == null) {
@@ -280,11 +355,18 @@ public class OrgPanel extends JPanel implements ProjectPanel {
             txtName.setText(org.getName() == null ? "" : getValue(org.getName(), resolve));
             txtLogo.setText(org.getLogo() == null ? "" : getValue(org.getLogo(), resolve));
         }
-        txtSiteAddress.setText(proj.getSiteAddress() == null ? "" : getValue(proj.getSiteAddress(), resolve));
-        txtSiteDir.setText(proj.getSiteDirectory() == null ? "" : getValue(proj.getSiteDirectory(), resolve));
-        txtDistDir.setText(proj.getDistributionDirectory() == null ? "" : getValue(proj.getDistributionDirectory(), resolve));
-        txtDistAddress.setText(proj.getDistributionSite() == null ? "" : getValue(proj.getDistributionSite(), resolve));
     }
+    
+    private void assignValue(String actionName, boolean resolve) {
+       String key = "pom." + actionName; //NOI18N
+       TextComponentPOMChange change = (TextComponentPOMChange)changes.get(key);
+       if (resolve) {
+           String value = project.getPropertyResolver().resolveString(change.getNewValue());
+           change.setResolvedValue(value);
+       } else {
+           change.resetToNonResolvedValue();
+       }
+   }   
     
    private String getValue(String value, boolean resolve) {
        if (resolve) {
@@ -294,7 +376,15 @@ public class OrgPanel extends JPanel implements ProjectPanel {
    }
    
     public List getChanges() {
-        return Collections.EMPTY_LIST;
+        List toReturn = new ArrayList();
+        Iterator it = changes.values().iterator();
+        while (it.hasNext()) {
+            MavenPOMChange change = (MavenPOMChange)it.next();
+            if (change.hasChanged()) {
+                toReturn.add(change);
+            }
+        }
+        return toReturn;
 //        project.setSiteAddress(txtSiteAddress.getText());
 //        project.setSiteDirectory(txtSiteDir.getText());
 //        project.setDistributionSite(txtDistAddress.getText());

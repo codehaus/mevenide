@@ -25,6 +25,7 @@ import javax.swing.JCheckBox;
 
 
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import org.apache.commons.logging.Log;
@@ -50,6 +51,10 @@ public class BuildPanel extends JPanel implements ProjectPanel {
     
     private OriginChange ocOffline;
     private OriginChange ocRemoteRepoEnabled;    
+    private OriginChange ocSrc;
+    private OriginChange ocTestSrc;
+    private OriginChange ocAspectSrc;
+    private OriginChange ocIntTestSrc;
     
     private HashMap changes;
 
@@ -61,15 +66,7 @@ public class BuildPanel extends JPanel implements ProjectPanel {
         valObserver = null;
         //TODO add listeners for immediatePropagation stuff.
         setName(NbBundle.getMessage(BuildPanel.class, "BuildPanel.name"));
-        setEnableFields(false);
         populateChangeInstances();
-    }
-    
-    public void setEnableFields(boolean enable) {
-        txtAspectSrc.setEditable(enable);
-        txtIntTestSrc.setEditable(enable);
-        txtSrc.setEditable(enable);
-        txtTestSrc.setEditable(enable);
     }
     
     /** This method is called from within the constructor to
@@ -82,12 +79,20 @@ public class BuildPanel extends JPanel implements ProjectPanel {
 
         lblSrc = new javax.swing.JLabel();
         txtSrc = new javax.swing.JTextField();
+        ocSrc = LocationComboFactory.createPOMChange(project, false);
+        btnSrc = (JButton)ocSrc.getComponent();
         lblTestSrc = new javax.swing.JLabel();
         txtTestSrc = new javax.swing.JTextField();
+        ocTestSrc = LocationComboFactory.createPOMChange(project, false);
+        btnTestSrc = (JButton)ocTestSrc.getComponent();
         lblAspectSrc = new javax.swing.JLabel();
         txtAspectSrc = new javax.swing.JTextField();
+        ocAspectSrc = LocationComboFactory.createPOMChange(project, false);
+        btnAspectSrc = (JButton)ocAspectSrc.getComponent();
         lblIntTestSrc = new javax.swing.JLabel();
         txtIntTestSrc = new javax.swing.JTextField();
+        ocIntTestSrc = LocationComboFactory.createPOMChange(project, false);
+        btnIntTestSrc = (JButton)ocIntTestSrc.getComponent();
         jSeparator1 = new javax.swing.JSeparator();
         cbOffline = new javax.swing.JCheckBox();
         cbRemoteRepoEnabled = new javax.swing.JCheckBox();
@@ -103,7 +108,7 @@ public class BuildPanel extends JPanel implements ProjectPanel {
         lblSrc.setText("Sources :");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridwidth = 2;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         add(lblSrc, gridBagConstraints);
 
         txtSrc.setPreferredSize(new java.awt.Dimension(60, 26));
@@ -111,10 +116,15 @@ public class BuildPanel extends JPanel implements ProjectPanel {
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.weightx = 0.1;
         gridBagConstraints.insets = new java.awt.Insets(0, 6, 0, 0);
         add(txtSrc, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(0, 4, 0, 0);
+        add(btnSrc, gridBagConstraints);
 
         lblTestSrc.setLabelFor(txtTestSrc);
         lblTestSrc.setText("Unit Test Sources :");
@@ -122,7 +132,7 @@ public class BuildPanel extends JPanel implements ProjectPanel {
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.gridwidth = 2;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(6, 0, 0, 0);
         add(lblTestSrc, gridBagConstraints);
 
@@ -131,10 +141,17 @@ public class BuildPanel extends JPanel implements ProjectPanel {
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.weightx = 0.1;
         gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
         add(txtTestSrc, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 3;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(4, 4, 0, 0);
+        add(btnTestSrc, gridBagConstraints);
 
         lblAspectSrc.setLabelFor(txtAspectSrc);
         lblAspectSrc.setText("Aspect Sources :");
@@ -142,7 +159,7 @@ public class BuildPanel extends JPanel implements ProjectPanel {
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
         gridBagConstraints.gridwidth = 2;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(6, 0, 0, 0);
         add(lblAspectSrc, gridBagConstraints);
 
@@ -151,10 +168,17 @@ public class BuildPanel extends JPanel implements ProjectPanel {
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.weightx = 0.1;
         gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
         add(txtAspectSrc, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 3;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(5, 4, 0, 0);
+        add(btnAspectSrc, gridBagConstraints);
 
         lblIntTestSrc.setLabelFor(txtIntTestSrc);
         lblIntTestSrc.setText("Integration Test Sources :");
@@ -162,7 +186,7 @@ public class BuildPanel extends JPanel implements ProjectPanel {
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 3;
         gridBagConstraints.gridwidth = 2;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(6, 0, 0, 0);
         add(lblIntTestSrc, gridBagConstraints);
 
@@ -171,15 +195,22 @@ public class BuildPanel extends JPanel implements ProjectPanel {
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.weightx = 0.4;
         gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
         add(txtIntTestSrc, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 3;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(4, 4, 0, 0);
+        add(btnIntTestSrc, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 4;
-        gridBagConstraints.gridwidth = 3;
+        gridBagConstraints.gridwidth = 4;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         gridBagConstraints.insets = new java.awt.Insets(6, 0, 0, 0);
@@ -231,6 +262,12 @@ public class BuildPanel extends JPanel implements ProjectPanel {
   private void populateChangeInstances() {
         createChangeInstance("maven.mode.online", cbOffline, ocOffline, true, true);
         createChangeInstance("maven.repo.remote.enabled", cbRemoteRepoEnabled, ocRemoteRepoEnabled, true, true);
+
+        createPOMChangeInstance("sourceDirectory", txtSrc, ocSrc);
+        createPOMChangeInstance("unitTestSourceDirectory", txtTestSrc, ocTestSrc);
+        createPOMChangeInstance("aspectSourceDirectory", txtAspectSrc, ocAspectSrc);
+        createPOMChangeInstance("integrationUnitTestSourceDirectory", txtIntTestSrc, ocIntTestSrc);
+        
    }
    
    private void createChangeInstance(String key, JCheckBox field, OriginChange oc, boolean defaultValue, boolean opposite) {
@@ -242,12 +279,23 @@ public class BuildPanel extends JPanel implements ProjectPanel {
        }
        changes.put(key, new CheckBoxPropertyChange(key, value, location, field, oc, defaultValue, opposite));
    }    
+   
+   private void createPOMChangeInstance(String propName, JTextField field, OriginChange oc) {
+       String key = "pom.build." + propName; //NOI18N
+       String value = project.getProjectWalker().getValue(key);
+       int location = project.getProjectWalker().getLocation(key);
+       if (value == null) {
+           value = "";
+       } 
+       changes.put(key, new TextComponentPOMChange(key, value, location, field, oc));
+   }        
+   
     
     public List getChanges() {
         List toReturn = new ArrayList();
         Iterator it = changes.values().iterator();
         while (it.hasNext()) {
-            MavenPropertyChange change = (MavenPropertyChange)it.next();
+            MavenChange change = (MavenChange)it.next();
             if (change.hasChanged()) {
                 toReturn.add(change);
             }
@@ -257,27 +305,22 @@ public class BuildPanel extends JPanel implements ProjectPanel {
     
      public void setResolveValues(boolean resolve) {
 //TODO        setEnableFields(!resolve);   
-         Project proj = project.getOriginalMavenProject();
-        Build build = proj.getBuild();
-        if (build == null) {
-            txtSrc.setText(resolve ? getValue("${maven.src.dir}/java", true) : ""); //NOI18N
-            txtTestSrc.setText(resolve ? getValue("${maven.src.dir}/test/java", true) : ""); //NOI18N
-            txtAspectSrc.setText(""); //NOI18N
-            txtIntTestSrc.setText(""); //NOI18N
-        } else {
-            txtSrc.setText(build.getSourceDirectory() == null ? 
-                                (resolve ? getValue("${maven.src.dir}/java", true) : "") :
-                                getValue(build.getSourceDirectory(), resolve));
-            txtTestSrc.setText(build.getUnitTestSourceDirectory() == null ? 
-                                (resolve ? getValue("${maven.src.dir}/test/java", true) : "") :
-                                getValue(build.getUnitTestSourceDirectory(), resolve));
-            txtAspectSrc.setText(build.getAspectSourceDirectory() == null ? ""
-                                    : getValue(build.getAspectSourceDirectory(), resolve));
-            txtIntTestSrc.setText(build.getIntegrationUnitTestSourceDirectory() == null ? ""
-                                    : getValue(build.getIntegrationUnitTestSourceDirectory(), resolve));
-        }
-        
+        assignValue("sourceDirectory", resolve);
+        assignValue("unitTestSourceDirectory", resolve);
+        assignValue("aspectSourceDirectory", resolve);
+        assignValue("integrationUnitTestSourceDirectory", resolve);
     }
+     
+   private void assignValue(String actionName, boolean resolve) {
+       String key = "pom.build." + actionName; //NOI18N
+       TextComponentPOMChange change = (TextComponentPOMChange)changes.get(key);
+       if (resolve) {
+           String value = project.getPropertyResolver().resolveString(change.getNewValue());
+           change.setResolvedValue(value);
+       } else {
+           change.resetToNonResolvedValue();
+       }
+   }        
     
    private String getValue(String value, boolean resolve) {
         if (resolve) {
@@ -323,8 +366,12 @@ public class BuildPanel extends JPanel implements ProjectPanel {
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAspectSrc;
+    private javax.swing.JButton btnIntTestSrc;
     private javax.swing.JButton btnOffline;
     private javax.swing.JButton btnRemoteRepoEnabled;
+    private javax.swing.JButton btnSrc;
+    private javax.swing.JButton btnTestSrc;
     private javax.swing.JCheckBox cbOffline;
     private javax.swing.JCheckBox cbRemoteRepoEnabled;
     private javax.swing.JPanel jPanel1;

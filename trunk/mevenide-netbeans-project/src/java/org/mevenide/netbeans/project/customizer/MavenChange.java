@@ -19,29 +19,14 @@ package org.mevenide.netbeans.project.customizer;
 
 /**
  *
- * Holder and resolver of changes of a property field.
+ * Holder and resolver of changes
  * @author  Milos Kleint (ca206216@tiscali.cz)
  */
-public interface MavenPropertyChange extends MavenChange {
+public interface MavenChange {
+    
     /**
-     * property's key
+     * check weather the item changed or not. either value or location.
      */
-    String getKey();
-    /**
-     * original value
-     */
-    String getOldValue();
-    /**
-     * current, maybe changed value
-     */
-    String getNewValue();
-    /**
-     * original location of the the property definition.
-     */
-    int getOldLocation();
-    /**
-     * new location of the the property definition.
-     */
-    int getNewLocation();
+    boolean hasChanged();
  
 }

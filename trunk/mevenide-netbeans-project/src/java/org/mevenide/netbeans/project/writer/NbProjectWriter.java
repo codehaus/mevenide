@@ -16,14 +16,28 @@
  */
 
 package org.mevenide.netbeans.project.writer;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import org.jdom.Document;
+import org.jdom.input.SAXBuilder;
+import org.mevenide.context.IProjectContext;
 import org.mevenide.netbeans.project.FileUtilities;
 import org.mevenide.netbeans.project.MavenProject;
+import org.mevenide.netbeans.project.customizer.MavenPOMChange;
 import org.mevenide.netbeans.project.customizer.MavenPropertyChange;
+import org.mevenide.project.io.CarefulProjectMarshaller;
+import org.mevenide.project.io.ElementContentProvider;
+import org.mevenide.project.io.IContentProvider;
 import org.mevenide.properties.Comment;
 import org.mevenide.properties.Element;
 import org.mevenide.properties.ElementFactory;
@@ -52,60 +66,21 @@ public class NbProjectWriter {
         HashMap locFileToLockMap = new HashMap();
         Iterator it = changes.iterator();
         try {
+            List pomChanges = new ArrayList();
             while (it.hasNext()) {
                 Object obj = it.next();
                 if (obj instanceof MavenPropertyChange) {
                     MavenPropertyChange change = (MavenPropertyChange)obj;
-                    if      (change.getOldLocation() != IPropertyLocator.LOCATION_DEFAULTS &&
-                             change.getOldLocation() != IPropertyLocator.LOCATION_NOT_DEFINED) {
-                        File oldLoc = FileUtilities.locationToFile(change.getOldLocation(), project);
-                        PropertyModel model = (PropertyModel)locFileToModelMap.get(oldLoc);
-                        if (model == null) {
-                            model = createPropertyModel(oldLoc, locFileToLockMap, locFileToModelMap);
-                        }
-                        if (change.getOldLocation() != change.getNewLocation()) {
-                            // remove from old..
-                            KeyValuePair oldpair = model.findByKey(change.getKey());
-                            if (oldpair != null) {
-                                model.removeElement(oldpair);
-                            }
-                        }
-                    }
-                    if      (change.getNewLocation() != IPropertyLocator.LOCATION_DEFAULTS &&
-                             change.getNewLocation() != IPropertyLocator.LOCATION_NOT_DEFINED) {
-                        File newLoc = FileUtilities.locationToFile(change.getNewLocation(), project);
-                        PropertyModel model = (PropertyModel)locFileToModelMap.get(newLoc);
-                        if (model == null) {
-                            model = createPropertyModel(newLoc, locFileToLockMap, locFileToModelMap);
-                        }
-                        KeyValuePair pair = model.findByKey(change.getKey());
-                        if (pair != null) {
-                            // oh boy, is's also herecomment
-                            if (change.getOldLocation() == change.getNewLocation()) {
-                                pair.setValue(change.getNewValue());
-                            } else {
-                                // // oh boy
-                                String commentStr = "#" + pair.getKey() + "=" + pair.getValue();
-                                int index = model.getList().indexOf(pair);
-                                Comment comment = ElementFactory.getFactory().createComment();
-                                comment.setComment(commentStr);
-                                model.insertAt(index, comment);
-                                pair.setValue(change.getNewValue());
-                            }
-                        } else {
-                            // ok, add it here..
-                            pair = ElementFactory.getFactory().createKeyValuePair(change.getKey(), '=');
-                            pair.setValue(change.getNewValue());
-                            int index = findBestPlacement(model, change.getKey());
-                            if (index > 0) {
-                                model.insertAt(index, pair);
-                            } else {
-                                model.addElement(pair);
-                            }
-                        }
-                    }
+                    processPropertyChange(change, locFileToLockMap, locFileToModelMap);
+                }
+                if (obj instanceof MavenPOMChange) {
+                    MavenPOMChange change = (MavenPOMChange)obj;
+                    pomChanges.add(change);
                 }
             }
+            // now write the POM files..
+            writePOMs(pomChanges, locFileToLockMap);
+            
         // now write the models..
             it = locFileToModelMap.keySet().iterator();
             while (it.hasNext()) {
@@ -115,7 +90,6 @@ public class NbProjectWriter {
                 FileObject fo = FileUtil.toFileObject(file);
                 model.store(fo.getOutputStream(lock));
             }
-        
         } finally {
             // release the locks
             Iterator locIt = locFileToLockMap.values().iterator();
@@ -137,7 +111,7 @@ public class NbProjectWriter {
             }
             FileObject parentFO = FileUtil.toFileObject(parent);
             if (parentFO == null) {//parent fo not exists
-                throw new IOException("Cannot create directory where to create the propety file.");
+                throw new IOException("Cannot create directory where to create the property file.");
             }
             fo = parentFO.createData(location.getName());
         } else {
@@ -179,4 +153,82 @@ public class NbProjectWriter {
         return -1;
     }
     
+    private void processPropertyChange(MavenPropertyChange change, HashMap locFileToLockMap, HashMap locFileToModelMap) throws Exception {
+        if      (change.getOldLocation() != IPropertyLocator.LOCATION_DEFAULTS &&
+                 change.getOldLocation() != IPropertyLocator.LOCATION_NOT_DEFINED) {
+            File oldLoc = FileUtilities.locationToFile(change.getOldLocation(), project);
+            PropertyModel model = (PropertyModel)locFileToModelMap.get(oldLoc);
+            if (model == null) {
+                model = createPropertyModel(oldLoc, locFileToLockMap, locFileToModelMap);
+            }
+            if (change.getOldLocation() != change.getNewLocation()) {
+                // remove from old..
+                KeyValuePair oldpair = model.findByKey(change.getKey());
+                if (oldpair != null) {
+                    model.removeElement(oldpair);
+                }
+            }
+        }
+        if      (change.getNewLocation() != IPropertyLocator.LOCATION_DEFAULTS &&
+                 change.getNewLocation() != IPropertyLocator.LOCATION_NOT_DEFINED) {
+            File newLoc = FileUtilities.locationToFile(change.getNewLocation(), project);
+            PropertyModel model = (PropertyModel)locFileToModelMap.get(newLoc);
+            if (model == null) {
+                model = createPropertyModel(newLoc, locFileToLockMap, locFileToModelMap);
+            }
+            KeyValuePair pair = model.findByKey(change.getKey());
+            if (pair != null) {
+                // oh boy, is's also herecomment
+                if (change.getOldLocation() == change.getNewLocation()) {
+                    pair.setValue(change.getNewValue());
+                } else {
+                    // // oh boy
+                    String commentStr = "#" + pair.getKey() + "=" + pair.getValue();
+                    int index = model.getList().indexOf(pair);
+                    Comment comment = ElementFactory.getFactory().createComment();
+                    comment.setComment(commentStr);
+                    model.insertAt(index, comment);
+                    pair.setValue(change.getNewValue());
+                }
+            } else {
+                // ok, add it here..
+                pair = ElementFactory.getFactory().createKeyValuePair(change.getKey(), '=');
+                pair.setValue(change.getNewValue());
+                int index = findBestPlacement(model, change.getKey());
+                if (index > 0) {
+                    model.insertAt(index, pair);
+                } else {
+                    model.addElement(pair);
+                }
+            }
+        }
+    }
+    
+    private void writePOMs(List changes, HashMap fileLockMap) throws Exception {
+        if (changes.size() > 0) {
+            IProjectContext context = project.getContext().getPOMContext();
+            org.jdom.Element[] roots = context.getRootElementLayers();
+            File[] files = context.getProjectFiles();
+            //write now
+            try {
+                for (int i = 0; i < files.length; i++) {
+                    IContentProvider provider = new ChangesContentProvider(new ElementContentProvider(roots[i]),
+                                                                           changes, "pom", i);
+                    CarefulProjectMarshaller marshall = new CarefulProjectMarshaller();
+                    FileObject fo = FileUtil.toFileObject(files[i]);
+                    FileLock lock = fo.lock();
+                    fileLockMap.put(files[i], lock);
+                    // read the current stream first..
+                    InputStream stream = fo.getInputStream();
+                    SAXBuilder builder = new SAXBuilder();
+                    Document originalDoc = builder.build(stream);
+                    stream.close();
+                    Writer writer = new OutputStreamWriter(fo.getOutputStream(lock));
+                    marshall.marshall(writer, provider, originalDoc);
+                }
+            } catch (UserQuestionException exc) {
+                throw new IOException("Cannot obtain lock. User interaction required.");
+            }
+        }
+    }
 }

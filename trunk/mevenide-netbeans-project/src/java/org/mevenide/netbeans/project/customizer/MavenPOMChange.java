@@ -19,14 +19,15 @@ package org.mevenide.netbeans.project.customizer;
 
 /**
  *
- * Holder and resolver of changes of a property field.
+ * Holder and resolver of changes of a POM field
  * @author  Milos Kleint (ca206216@tiscali.cz)
  */
-public interface MavenPropertyChange extends MavenChange {
+public interface MavenPOMChange extends MavenChange {
     /**
-     * property's key
+     * getPath in pom file, serves as ID.
+     * eg. pom.artifactId or pom.organization.name
      */
-    String getKey();
+    String getPath();
     /**
      * original value
      */

@@ -266,13 +266,13 @@ public class MavenCustomizer extends JPanel implements ProjectValidateObserver {
                 "OrgCategory", // NOI18N
                 "Organization and Site", 
                 "org/mevenide/netbeans/project/resources/Bullet", // NOI18N
-                new OrgPanel(false, false, project), 
+                new OrgPanel(project), 
                 null),
             new ConfigurationDescription(
                 "RepositoryCategory", // NOI18N
                 "Repository", 
                 "org/mevenide/netbeans/project/resources/Bullet", // NOI18N
-                new RepositoryPanel(false, false, project), 
+                new RepositoryPanel(project), 
                 null),
             new ConfigurationDescription(
                 "ListsCategory", // NOI18N
@@ -309,7 +309,7 @@ public class MavenCustomizer extends JPanel implements ProjectValidateObserver {
                 "GeneralCategory",// NOI18N
                 "General", 
                 "org/mevenide/netbeans/project/resources/Bullet", // NOI18N
-                new BasicsPanel(false, false, project),
+                new BasicsPanel(project),
                 generalChilds),
             new ConfigurationDescription(
                 "DependencyCategory", // NOI18N
