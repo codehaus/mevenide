@@ -21,6 +21,7 @@ public class FilteringClassLoader extends URLClassLoader {
     public Class findClass(String name) throws ClassNotFoundException {
         // System.out.println("Finding class " + name);
         if (name.startsWith("java.") ||
+            name.startsWith("sun.") ||
             name.startsWith("com.borland.") ||
             name.startsWith("org.apache.xerces.") ||
             name.startsWith("org.xml.sax.") ||
