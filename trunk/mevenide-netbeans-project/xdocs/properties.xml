@@ -76,6 +76,88 @@
             <p>For projects that declare the maven.multiproject.includes property, the popup action will clean the multiproject. </p>
           </td>
         </tr>
+        <tr>
+          <td>maven.netbeans.exec.run.single</td>
+          <td>-Dmaven.mevenide.run.classname=%CLASS% mevenide:run-class</td>
+          <td>
+            <p></p>
+          </td>
+        </tr>
+        <tr>
+          <td>maven.netbeans.exec.run</td>
+          <td>mevenide:run-artifact</td>
+          <td>
+            <p></p>
+          </td>
+        </tr>
+        <tr>
+          <td>maven.netbeans.exec.debug</td>
+          <td>mevenide:debug-artifact</td>
+          <td>
+            <p></p>
+          </td>
+        </tr>
+        <tr>
+          <td>maven.netbeans.exec.debug.single</td>
+          <td>-Dmaven.mevenide.run.classname=%CLASS% mevenide:debug-class</td>
+          <td>
+            <p></p>
+          </td>
+        </tr>
+        <tr>
+          <td>maven.netbeans.exec.debug.test.single</td>
+          <td>-Dtestcase=%TESTCLASS% mevenide:test-single-debug</td>
+          <td>
+            <p></p>
+          </td>
+        </tr>
+      </table>
+      </div>
+      </section>
+        
+    <section name="Debug Properties">
+    	<div id="documentContent">
+        <p>when running any of the debug goals, the IDE will attempt to attach the debugger to the
+        process started by the goal. These properties can be used to disable or customize the automatic 
+        debugger attaching. (In the future the IDE should be also able to start a listening debugger and let the plugin connect to it.)</p>
+<p> In case you create your own goals, completely avoiding the maven-mevenide-plugin, then please add a line starting with
+<code>[mevenide-debug-start]</code>  into the output of the goal. The IDE is notified that way that it should start the attaching process.
+</p>        
+      <table>
+        <tr>
+          <th>Property</th>
+          <th>Default Value</th>
+          <th>Description</th>
+        </tr>
+        <tr>
+          <td>maven.netbeans.debug.attach</td>
+          <td>true</td>
+          <td>
+            <p>Setting the value to false will cause the IDE not to initialize the debugger automatically.</p>
+          </td>
+        </tr>
+        <tr>
+          <td>maven.netbeans.debug.port</td>
+          <td>8888</td>
+          <td>
+            <p>The port that the IDE debugger will connect to.</p>
+          </td>
+        </tr>
+        <tr>
+          <td>maven.netbeans.debug.address</td>
+          <td>localhost</td>
+          <td>
+            <p>The host that the IDE connects to.</p>
+          </td>
+        </tr>
+        <tr>
+          <td>maven.netbeans.debug.delay</td>
+          <td>5000</td>
+          <td>
+            <p>The delay between the time when the IDE notices the <code>[mevenide-debug-start]</code> line in the output and the time when the 
+            debugger is starting attaching to the other VM.</p>
+          </td>
+        </tr>
       </table>
       </div>
       </section>

@@ -7,26 +7,29 @@
 
   <body>
     <release version="0.2" date="in CVS">
+      <action dev="mkleint" type="add">
+    MEVENIDE-48 Global setting of dependency download progress display. A reaonable default set to avoid too much output.
+    </action>
       <action dev="mkleint" type="fix">
-      MEVENIDE-37 fixed.
+      MEVENIDE-37 fixed. (Nervous classpath scanning - IDE too often regenerated classpath info)
       </action>
       <action dev="mkleint" type="fix">
-      MEVENIDE-65 fixed.
+      MEVENIDE-65 fixed. (a maven.xml based goal doesn't require a ':' character anymore)
       </action>
       <action dev="mkleint" type="fix">
-      MEVENIDE-49 fixed.
+      MEVENIDE-49 fixed. (JUnit integration works now)
       </action>
       <action dev="mkleint" type="add">
       Maven output error parsing. Linking failed tests and compilation errors.
       </action>
       <action dev="mkleint" type="add">
-      Add basic support for testing the project, single class and test.
+      Added basic support for testing the project, single class and test. (MEVENIDE-50)
       </action>
       <action dev="mkleint" type="add">
-      Add basic support for running the project and running single class.
+      Added basic support for running the project and running single class.
       </action>
       <action dev="mkleint" type="add">
-      Add project view support for web apps.
+      Added project view support for web apps.
       </action>
     </release>  
     <release version="0.1" date="17/07/2004">
