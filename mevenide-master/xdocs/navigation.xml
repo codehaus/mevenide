@@ -14,7 +14,7 @@
       <item name="License" href="license.html"/>
       <item name="Faq" href="/faq.html"/>
       <item name="Download" href="download.html"/>
-      <item name="SF Summary" href="http://sourceforge.net/projects/mevenide"/>
+<!--      <item name="SF Summary" href="http://sourceforge.net/projects/mevenide"/> -->
       <item name="Credits" href="credits.html"/>
     </menu>
     <menu name="Modules">
