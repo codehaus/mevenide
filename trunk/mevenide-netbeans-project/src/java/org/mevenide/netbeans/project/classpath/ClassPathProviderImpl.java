@@ -71,22 +71,23 @@ public final class ClassPathProviderImpl implements ClassPathProvider {
      * The result is used for example for GlobalPathRegistry registrations.
      */
     public ClassPath[] getProjectClassPaths(String type) {
-//        if (ClassPath.BOOT.equals(type)) {
-//            //TODO
-//            return new ClassPath[]{ getBootClassPath() };
-//        }
+        if (ClassPath.BOOT.equals(type)) {
+            //TODO
+            logger.debug("get boot path");
+            return new ClassPath[]{ getBootClassPath() };
+        }
         logger.debug("getProjectClassPaths type =" + type);
         if (ClassPath.COMPILE.equals(type)) {
             List/*<ClassPath>*/ l = new ArrayList(2);
-            logger.debug("getProjectClassPaths src");
+            logger.debug("COMPILEgetProjectClassPaths src");
             FileObject d = FileUtilities.convertURItoFileObject(project.getSrcDirectory());
             if (d != null) {
-                logger.debug("getProjectClassPaths src adding1");
+                logger.debug("COMPILEgetProjectClassPaths src adding1");
                 l.add(getCompileTimeClasspath(d));
             }
             d = FileUtilities.convertURItoFileObject(project.getTestSrcDirectory());
             if (d != null) {
-                logger.debug("getProjectClassPaths src adding2");
+                logger.debug("COMPILEgetProjectClassPaths src adding2");
                 l.add(getCompileTimeClasspath(d));
             }
             return (ClassPath[])l.toArray(new ClassPath[l.size()]);
@@ -121,9 +122,10 @@ public final class ClassPathProviderImpl implements ClassPathProvider {
 //        } else 
         else if (ClassPath.SOURCE.equals(type)) {
             return getSourcepath(file);
-//        } 
-//        else if (type.equals(ClassPath.BOOT)) {
-//            return getBootClassPath();
+        } 
+        else if (type.equals(ClassPath.BOOT)) {
+            logger.debug("get boot path2");
+            return getBootClassPath();
         } else {
             return null;
         }
@@ -201,32 +203,32 @@ public final class ClassPathProviderImpl implements ClassPathProvider {
     private ClassPath getCompileTimeClasspath(FileObject file) {
         int type = getType(file);
         logger.debug("getCompileTimeClasspath type=" + type);
-        if (type != TYPE_SRC &&  type != TYPE_TESTSRC) {
+        if (type != TYPE_CLASS &&  type != TYPE_TESTCLASS) {
             return null;
         }
         ClassPath cp = null;
         if (cache[2+type] == null || (cp = (ClassPath)cache[2+type].get()) == null) {
-            if (type == TYPE_SRC) {
-                logger.debug("getSourcepath src");
-                cp = ClassPathFactory.createClassPath(new SrcClassPathImpl(project));
+            if (type == TYPE_CLASS) {
+                logger.debug("CompileTimeClasspath src");
+                cp = ClassPathFactory.createClassPath(new SrcBuildClassPathImpl(project));
             }
             else {
-                logger.debug("getTestSourcepath src");
-                cp = ClassPathFactory.createClassPath(new TestSrcClassPathImpl(project));
+                logger.debug("CompileTimeClasspath src");
+                cp = ClassPathFactory.createClassPath(new TestSrcBuildClassPathImpl(project));
             }
             cache[2+type] = new SoftReference(cp);
         }
         return cp;
     }
     
-//    private ClassPath getBootClassPath() {
-//        ClassPath cp = null;
-//        if (cache[6] == null || (cp = (ClassPath)cache[6].get()) == null) {
-//            cp = ClassPathFactory.createClassPath(new BootClassPathImplementation(helper));
-//            cache[6] = new SoftReference(cp);
-//        }
-//        return cp;
-//    }
+    private ClassPath getBootClassPath() {
+        ClassPath cp = null;
+        if (cache[6] == null || (cp = (ClassPath)cache[6].get()) == null) {
+            cp = ClassPathFactory.createClassPath(new BootClassPathImpl(project));
+            cache[6] = new SoftReference(cp);
+        }
+        return cp;
+    }
     
     
 }

@@ -66,6 +66,7 @@ abstract class AbstractProjectClassPathImpl implements ClassPathImplementation {
         for (int i = 0; i < pieces.length; i++) {
             try {
                 URL entry;
+                
                 // if file does not exist (e.g. build/classes folder
                 // was not created yet) then corresponding File will
                 // not be ended with slash. Fix that.

@@ -27,6 +27,13 @@ import org.openide.util.Lookup;
 public class ActionProviderImpl implements ActionProvider
 {
     private MavenProject project;
+    private static String[] supported = new String[] {
+            ActionProvider.COMMAND_BUILD,
+            ActionProvider.COMMAND_CLEAN,
+            ActionProvider.COMMAND_REBUILD, 
+            "javadoc",
+            "test"
+        };
     /** Creates a new instance of ActionProviderImpl */
     public ActionProviderImpl(MavenProject proj)
     {
@@ -35,11 +42,7 @@ public class ActionProviderImpl implements ActionProvider
     
     public String[] getSupportedActions()
     {
-        return new String[] {
-            ActionProvider.COMMAND_BUILD,
-            ActionProvider.COMMAND_CLEAN,
-            ActionProvider.COMMAND_REBUILD, 
-        };
+        return supported;
     }
     
     public void invokeAction(String str, Lookup lookup) throws java.lang.IllegalArgumentException
