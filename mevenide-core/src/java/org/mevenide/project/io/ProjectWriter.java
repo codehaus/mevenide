@@ -17,7 +17,7 @@ import java.io.FileWriter;
 import java.io.Writer;
 
 import org.apache.maven.project.Project;
-import org.mevenide.project.BuildConstants;
+import org.mevenide.ProjectConstants;
 /**
  * 
  * @author Gilles Dodinet (gdodinet@wanadoo.fr)
@@ -54,13 +54,13 @@ public class ProjectWriter {
 		
 		Project project = projectReader.readProject(pom);
 		
-		if ( BuildConstants.MAVEN_ASPECT_DIRECTORY.equals(sourceType) ) {
+		if ( ProjectConstants.MAVEN_ASPECT_DIRECTORY.equals(sourceType) ) {
 			project.getBuild().setAspectSourceDirectory(path);
 		}
-		if ( BuildConstants.MAVEN_SRC_DIRECTORY.equals(sourceType) ) {
+		if ( ProjectConstants.MAVEN_SRC_DIRECTORY.equals(sourceType) ) {
 			project.getBuild().setSourceDirectory(path);
 		}
-		if ( BuildConstants.MAVEN_TEST_DIRECTORY.equals(sourceType) ) {
+		if ( ProjectConstants.MAVEN_TEST_DIRECTORY.equals(sourceType) ) {
 			project.getBuild().setUnitTestSourceDirectory(path);
 		}
 		

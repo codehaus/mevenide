@@ -31,6 +31,8 @@ import java.util.TreeMap;
  * 
  * @low use configuration (http://gdfact.fr.st/) instead of Properties  
  * 
+ * make a singleton of it ?
+ * 
  * @author Gilles Dodinet (gdodinet@wanadoo.fr)
  * @version $Id$
  * 
