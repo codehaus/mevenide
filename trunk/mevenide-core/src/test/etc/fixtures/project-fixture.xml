@@ -59,7 +59,8 @@
       <artefact>${maven.home}/repository/junit/jars/3.8.1</artefact>
       <url>http://junit.org/</url>
     </dependency>
-        
+  
+    
     <dependency>
       <groupId>mockobjects</groupId>
       <artifactId>mockobjects-core</artifactId>

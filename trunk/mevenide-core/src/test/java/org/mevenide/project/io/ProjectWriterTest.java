@@ -26,7 +26,7 @@ import org.apache.maven.project.Resource;
 import org.mevenide.AbstractMevenideTestCase;
 import org.mevenide.ProjectConstants;
 import org.mevenide.project.dependency.DependencyFactory;
-import org.mevenide.project.dependency.IDependencyResolver;
+import org.mevenide.project.dependency.DependencyUtil;
 
 /**
  * 
@@ -37,13 +37,11 @@ import org.mevenide.project.dependency.IDependencyResolver;
 public class ProjectWriterTest extends AbstractMevenideTestCase {
 	protected ProjectWriter pomWriter;
 	protected DependencyFactory dependencyFactory;
-	protected IDependencyResolver dependencyResolver;
 	
 	protected void setUp() throws Exception {
 		super.setUp();
 		pomWriter = ProjectWriter.getWriter();
 		dependencyFactory = DependencyFactory.getFactory(); 
-		dependencyResolver = dependencyFactory.getDependencyResolver();
 	}	
 
 	public void testAddSource() throws Exception {
@@ -76,8 +74,9 @@ public class ProjectWriterTest extends AbstractMevenideTestCase {
 	public void testAddDependency() throws Exception {
 		pomWriter.addDependency("E:/bleeeaaaah/testo/ploufs/testo-0.0.1.plouf", projectFile);
 		Project project = ProjectReader.getReader().read(projectFile);
+		
 		Dependency dep = dependencyFactory.getDependency("E:/bleeeaaaah/testo/ploufs/testo-0.0.1.plouf");
-		assertTrue(dependencyResolver.isDependencyPresent(project, dep));
+		assertTrue(DependencyUtil.isDependencyPresent(project, dep));
 	}
 	
 	public void testAddResource() throws Exception {
@@ -96,8 +95,9 @@ public class ProjectWriterTest extends AbstractMevenideTestCase {
 		pomWriter.addProject(referencedPom, projectFile);
 		
 		Project project = ProjectReader.getReader().read(projectFile);
+		
 		Dependency dep = dependencyFactory.getDependency("X:/bleah/mevenide/mevenide-core-1.0.jar");
-		assertTrue(dependencyResolver.isDependencyPresent(project, dep));
+		assertTrue(DependencyUtil.isDependencyPresent(project, dep));
 	}
 
 	private boolean isResourcePresent(String testDirectory, String[] includes) throws FileNotFoundException, Exception, IOException {

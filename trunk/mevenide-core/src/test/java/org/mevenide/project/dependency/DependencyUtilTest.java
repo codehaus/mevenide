@@ -13,14 +13,16 @@
  */
 package org.mevenide.project.dependency;
 
+import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.maven.project.Dependency;
+import org.apache.maven.project.Project;
+import org.apache.maven.project.builder.DefaultProjectUnmarshaller;
+import org.mevenide.AbstractMevenideTestCase;
 import org.mevenide.Environment;
 import org.mevenide.project.io.ProjectWriterTest;
-
-import junit.framework.TestCase;
 
 /**
  * 
@@ -28,11 +30,38 @@ import junit.framework.TestCase;
  * @version $Id$
  * 
  */
-public class DependencyUtilTest extends TestCase {
-
+public class DependencyUtilTest extends AbstractMevenideTestCase {
+	
+	protected DependencyFactory dependencyFactory;
+	
 	protected void setUp() throws Exception {
+		super.setUp();
 		Environment.setMavenRepository("C:\\Documents and Settings\\gdodinet.MCCAIN-1\\.maven\\repository");
+		dependencyFactory = DependencyFactory.getFactory();
+		
 	}
+		
+	public void testIsDependencyPresent()throws Exception {
+		Project project = new DefaultProjectUnmarshaller().parse(new FileReader(projectFile));
+		List dependencies = project.getDependencies();
+		
+		Dependency dep = dependencyFactory.getDependency("E:/maven/repository/junit/jars/junit-3.8.1.jar");
+		assertTrue(DependencyUtil.isDependencyPresent(project, dep));
+		 
+		dep = dependencyFactory.getDependency("E:/bleeeaaaah/junit/jars/junit-3.8.1.jar");
+		assertTrue(DependencyUtil.isDependencyPresent(project, dep));
+		 
+		dep = dependencyFactory.getDependency("E:/bleeeaaaah/plouf/jars/junit-3.8.1.jar");
+		assertTrue(DependencyUtil.isDependencyPresent(project, dep));
+		
+		dep = dependencyFactory.getDependency("E:/bleeeaaaah/plouf/junit-3.8.1.jar");
+		assertTrue(DependencyUtil.isDependencyPresent(project, dep));
+		
+	}
+	
+	
+
+	
 
 
 	public void testAreEqualsD() {

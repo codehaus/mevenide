@@ -13,12 +13,6 @@
  */
 package org.mevenide.project.dependency;
 
-import java.io.FileReader;
-import java.util.List;
-
-import org.apache.maven.project.Dependency;
-import org.apache.maven.project.Project;
-import org.apache.maven.project.builder.DefaultProjectUnmarshaller;
 import org.mevenide.AbstractMevenideTestCase;
 
 /**
@@ -29,42 +23,39 @@ import org.mevenide.AbstractMevenideTestCase;
  */
 public class DependencyResolverTest extends AbstractMevenideTestCase {
 	
-	protected DependencyFactory dependencyFactory;
-	protected IDependencyResolver dependencyResolver;
 	
 	protected void setUp() throws Exception {
 		super.setUp();
-		dependencyFactory = DependencyFactory.getFactory();
-		dependencyResolver = dependencyFactory.getDependencyResolver();
-	}
-
-	public void testIsDependencyPresent()throws Exception {
-		Project project = new DefaultProjectUnmarshaller().parse(new FileReader(projectFile));
-		List dependencies = project.getDependencies();
-		
-		Dependency dep = dependencyFactory.getDependency("E:/maven/repository/junit/jars/junit-3.8.1.jar");
-		assertTrue(dependencyResolver.isDependencyPresent(project, dep));
-		 
-		dep = dependencyFactory.getDependency("E:/bleeeaaaah/junit/jars/junit-3.8.1.jar");
-		assertTrue(dependencyResolver.isDependencyPresent(project, dep));
-		 
-		dep = dependencyFactory.getDependency("E:/bleeeaaaah/plouf/jars/junit-3.8.1.jar");
-		assertTrue(dependencyResolver.isDependencyPresent(project, dep));
-		
-		dep = dependencyFactory.getDependency("E:/bleeeaaaah/plouf/junit-3.8.1.jar");
-		assertTrue(dependencyResolver.isDependencyPresent(project, dep));
 		
 	}
 
-	public void testGuessExtension() {
-		String ext = dependencyResolver.guessExtension("foo+joe-test2.-bar-1.0.7-beta-1.txt");
+	public void testGuessExtension() throws Exception {
+		IDependencyResolver resolver = AbstractDependencyResolver.newInstance("/home/bleah/bouh/foo+joe-test2.-bar-1.0.7-beta-1.txt");
+		String ext = resolver.guessExtension();
 		assertEquals("txt", ext);
-		ext = dependencyResolver.guessExtension("junit-3.8.1.jar");
+		System.err.println(resolver.guessArtifactId());
+		System.err.println(resolver.guessGroupId());
+		System.err.println(resolver.guessVersion());
+		
+		
+		resolver = AbstractDependencyResolver.newInstance("/home/bleah/bouh/junit-3.8.1.jar");
+		ext = resolver.guessExtension();
 		assertEquals("jar", ext);
-		ext = dependencyResolver.guessExtension("rt.jar");
+		System.err.println(resolver.guessArtifactId());
+		System.err.println(resolver.guessGroupId());
+		System.err.println(resolver.guessVersion());
+
+		resolver = AbstractDependencyResolver.newInstance("/home/bleah/bouh/rt.jar");
+		ext = resolver.guessExtension();
 		assertEquals("jar", ext);
-		ext = dependencyResolver.guessExtension("rt.tar.gz");
+		System.err.println(resolver.guessArtifactId());
+		System.err.println(resolver.guessGroupId());
+		System.err.println(resolver.guessVersion());		
+			
 		//BUG-DefaultDependencyResolver_DEP_guessVersion $DEP-3 depends on $DEP-1
 		//assertEquals("tar.gz", ext);
 	}
+	
+	
+	
 }

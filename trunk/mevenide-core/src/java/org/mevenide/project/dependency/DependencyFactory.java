@@ -25,10 +25,8 @@ import org.apache.maven.project.Dependency;
  * 
  */
 public class DependencyFactory {
-	private IDependencyResolver dependencyResolver;
 	
 	private DependencyFactory() throws Exception {
-		dependencyResolver = AbstractDependencyResolver.getInstance();	
 	}
 	
 	/** singleton related */
@@ -58,24 +56,15 @@ public class DependencyFactory {
 	 * @param absoluteFileName
 	 * @return
 	 */
-	public Dependency getDependency(String absoluteFileName) throws InvalidDependencyException {
+	public Dependency getDependency(String absoluteFileName) throws Exception {
 		String fileName = new File(absoluteFileName).getName();
-		String groupId = dependencyResolver.getGroupId(fileName);
+		IDependencyResolver dependencyResolver = AbstractDependencyResolver.newInstance(absoluteFileName);
 		
-		if ( groupId == null ) {
-			groupId = dependencyResolver.guessGroupId(absoluteFileName);
-			if ( !DependencyUtil.isValidGroupId(groupId) ) {
-				groupId = null;
-			} 
-		}
-		if ( groupId == null ) {
-			//@todo use a logger
-			//System.out.println("[WARNING] groupId is null"); 
-		}
+		String groupId = dependencyResolver.guessGroupId();
 		
-		String artifactId = dependencyResolver.guessArtifactId(fileName);
-		String version = dependencyResolver.guessVersion(fileName);
-		String extension = dependencyResolver.guessExtension(fileName);
+		String artifactId = dependencyResolver.guessArtifactId();
+		String version = dependencyResolver.guessVersion();
+		String extension = dependencyResolver.guessExtension();
 		
 		Dependency dependency = new Dependency();
 		
@@ -88,8 +77,8 @@ public class DependencyFactory {
 		return dependency;
 	}
 	
-	public IDependencyResolver getDependencyResolver() {
-		return dependencyResolver;
-	}
+//	public IDependencyResolver getDependencyResolver() {
+//		return dependencyResolver;
+//	}
 
 }

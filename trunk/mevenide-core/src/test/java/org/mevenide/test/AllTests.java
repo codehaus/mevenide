@@ -31,9 +31,10 @@ public class AllTests {
         TestSuite suite = new TestSuite();
     
 		suite.addTest(org.mevenide.AllTests.suite());
-        suite.addTest(org.mevenide.core.AllTests.suite());
+		suite.addTest(org.mevenide.core.AllTests.suite());
+		suite.addTest(org.mevenide.project.dependency.AllTests.suite());
+		suite.addTest(org.mevenide.project.io.AllTests.suite());
 		suite.addTest(org.mevenide.project.source.AllTests.suite());
-        suite.addTest(org.mevenide.project.io.AllTests.suite());
  
         return suite;
     }

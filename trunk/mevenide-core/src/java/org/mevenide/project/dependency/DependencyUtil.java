@@ -21,6 +21,7 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Dependency;
+import org.apache.maven.project.Project;
 import org.mevenide.Environment;
 
 /**
@@ -95,5 +96,37 @@ public class DependencyUtil {
 			
 		} 
 		return nonResolvedDependencies;
+	}
+
+	/**
+	 * checks if a Dependency identified by its artifact path is present in the POM.
+	 * 
+	 * testing artifact doesnt seem to be a good solution since it is often omitted
+	 * we rather have to test artifactId and version.
+	 * 
+	 * @param project
+	 * @param absoluteFileName
+	 * @return
+	 */
+	public static boolean isDependencyPresent(Project project, Dependency dependency) {
+		log.debug("searched dependency : " + DependencyUtil.toString(dependency));
+		List dependencies = project.getDependencies();
+		if ( dependencies == null ) {
+			return false;
+		}
+		for (int i = 0; i < dependencies.size(); i++) {
+			Dependency declaredDependency = (Dependency) dependencies.get(i);
+	
+			String version = declaredDependency.getVersion(); 
+			String artifactId = declaredDependency.getArtifactId();
+			
+			log.debug("found dependency : " + DependencyUtil.toString(declaredDependency));
+			
+			if (  artifactId != null && artifactId.equals(dependency.getArtifactId()) 
+				  && version != null && version.equals(dependency.getVersion())) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

@@ -13,6 +13,9 @@
  */
 package org.mevenide.project.dependency;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.commons.discovery.tools.DiscoverClass;
 
 /**
@@ -22,21 +25,25 @@ import org.apache.commons.discovery.tools.DiscoverClass;
  * 
  */
 public abstract class AbstractDependencyResolver implements IDependencyResolver {
-	private static IDependencyResolver dependencyUtil;
+//	private static IDependencyResolver dependencyUtil;
 	private static Object lock = new Object();
+	
+	private static Map resolvers = new HashMap();
 	
 	protected AbstractDependencyResolver() {
 	}
 		
-	public static IDependencyResolver getInstance() throws  Exception {
-		if (dependencyUtil != null) {
-			return dependencyUtil;
+	public static IDependencyResolver newInstance(String absoluteFileName) throws  Exception {
+		if (resolvers.containsKey(absoluteFileName)) {
+			return (IDependencyResolver) resolvers.get(absoluteFileName);
 		}
 		synchronized (lock) {
-			if (dependencyUtil == null) {
-				dependencyUtil = (IDependencyResolver) new  DiscoverClass().newInstance(IDependencyResolver.class);
+			if (!resolvers.containsKey(absoluteFileName)) {
+				IDependencyResolver resolver = (IDependencyResolver) new  DiscoverClass().newInstance(IDependencyResolver.class);
+				resolver.setFileName(absoluteFileName);
+				resolvers.put(absoluteFileName, resolver);
 			}
-			return dependencyUtil;
+			return (IDependencyResolver) resolvers.get(absoluteFileName);
 		}
 	}
 	
