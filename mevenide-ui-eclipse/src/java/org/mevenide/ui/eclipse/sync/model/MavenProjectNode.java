@@ -136,8 +136,16 @@ public class MavenProjectNode extends AbstractSynchronizationNode implements ISe
 	}
 	
 	private void initializeArtifacts(Project project) {
-		project.setContext(MavenUtils.createContext(project.getFile().getParentFile()));
+	    //change user.dir to allow to build artifacts correctly
+	    String backupUserDir = System.getProperty("user.dir");
+	    System.setProperty("user.dir", project.getFile().getParentFile().getAbsolutePath());
+	    
+	    project.setContext(MavenUtils.createContext(project.getFile().getParentFile()));
 		List artifacts = ArtifactListBuilder.build(project);
+		
+		//restore user.dir
+		System.setProperty("user.dir", backupUserDir);
+		
 		originalArtifactNodes = new MavenArtifactNode[artifacts.size()];
 		List comparisonList = artifactNodes != null ? Arrays.asList(artifactNodes) : new ArrayList();
 		for (int i = 0; i < artifacts.size(); i++) {
