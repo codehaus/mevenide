@@ -19,8 +19,7 @@ import java.util.List;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.mevenide.ProjectConstants;
-import org.mevenide.ui.eclipse.*;
-import org.mevenide.ui.eclipse.sync.*;
+import org.mevenide.ui.eclipse.DefaultPathResolver;
 
 /**
  * 
