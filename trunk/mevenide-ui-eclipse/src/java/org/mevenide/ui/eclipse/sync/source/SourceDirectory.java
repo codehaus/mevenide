@@ -32,6 +32,9 @@ public class SourceDirectory {
 	}
 	
 	public String getDisplayPath() {
+		if ( directoryPath.equals("${basedir}")) {
+			return "${basedir}";
+		}
 		return "${basedir}" + File.separator +  directoryPath;
 	}
 	
