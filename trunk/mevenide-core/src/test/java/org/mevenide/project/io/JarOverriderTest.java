@@ -48,27 +48,52 @@
  */
 package org.mevenide.project.io;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import java.io.File;
 
-/**
+import org.apache.maven.project.Project;
+import org.mevenide.AbstractMevenideTestCase;
+
+
+/**  
  * 
  * @author Gilles Dodinet (gdodinet@wanadoo.fr)
- * @version $Id: AllTests.java 8 mai 2003 15:32:4913:34:35 Exp gdodinet 
+ * @version $Id: JarOverriderTest.java,v 1.1 24 sept. 2003 Exp gdodinet 
  * 
  */
-public class AllTests  {
-	private AllTests() {
-	}
-
-    public static Test suite() {
-        TestSuite suite = new TestSuite();
-        
-		suite.addTestSuite(DefaultProjectMarshallerTest.class);
-		suite.addTestSuite(ProjectReaderTest.class);
-		suite.addTestSuite(JarOverriderTest.class);
-		suite.addTestSuite(ProjectWriterTest.class);
-		
-        return suite;
+public class JarOverriderTest  extends AbstractMevenideTestCase {
+	private JarOverrider overrider ;
+	private ProjectWriter pomWriter;
+	
+    protected void setUp() throws Exception {
+        super.setUp();
+		pomWriter = ProjectWriter.getWriter();
+        overrider = new JarOverrider(pomWriter);
     }
+	
+	protected void tearDown() throws Exception {
+		super.tearDown();
+		pomWriter = null;
+		overrider = null;
+    }
+	
+	public void testJarOverride() throws Exception {
+		File propFile = new File(projectFile.getParent(), "project.properties");
+	
+		Project project = ProjectReader.getReader().read(projectFile);
+		int prev = project.getDependencies().size();
+	
+		String path = "C:\\temp\\bleah\\fake.jar";
+		String path2 = "C:\\temp\\bleah\\fake2.jar";
+		String path3 = "C:\\temp space temp\\bleah\\fake fake2.jar";
+	
+		overrider.jarOverride(path, propFile, projectFile);
+		overrider.jarOverride(path2, propFile, projectFile);
+		overrider.jarOverride(path3, propFile, projectFile);
+		overrider.jarOverride(path2, propFile, projectFile);
+	
+		project = ProjectReader.getReader().read(projectFile);
+	
+		assertEquals(prev + 3, project.getDependencies().size());
+	
+	}
 }

@@ -48,15 +48,11 @@
  */
 package org.mevenide.project.io;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Properties;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -65,7 +61,6 @@ import org.apache.maven.project.Dependency;
 import org.apache.maven.project.Project;
 import org.apache.maven.project.Resource;
 import org.apache.maven.project.UnitTest;
-import org.mevenide.project.dependency.DependencyFactory;
 import org.mevenide.project.dependency.DependencyUtil;
 import org.mevenide.project.resource.DefaultResourceResolver;
 import org.mevenide.project.resource.IResourceResolver;
@@ -79,10 +74,9 @@ import org.mevenide.project.source.SourceDirectoryUtil;
  * each addition writes the pom :
  *     <code>write(project, pom);</code>
  * thus if the process fails it doesnt affect 
- * the previously added artifacts. that is obviously not optimized, tho performance 
- * isnot a issue here. 
+ * the previously added artifacts.
  * 
- * @todo should provide a convenience method to write all artifacts in a single transaction
+ * @todo transaction-awareness 
  * 
  * @author Gilles Dodinet (gdodinet@wanadoo.fr)
  * @version $Id$
@@ -91,15 +85,18 @@ import org.mevenide.project.source.SourceDirectoryUtil;
 public class ProjectWriter {
 	private static Log log = LogFactory.getLog(ProjectWriter.class);
 	
-	private static IResourceResolver resourceResolver = new DefaultResourceResolver();
-	
 	private static ProjectWriter projectWriter = null;
-	private static Object lock = new Object();
 	
+	private IResourceResolver resourceResolver = new DefaultResourceResolver();
 	private ProjectReader projectReader ;
-	
 	private DefaultProjectMarshaller marshaller ; 
-		
+	private JarOverrider overrider = new JarOverrider(this);
+	
+	private ProjectWriter() throws Exception  {
+		marshaller = new DefaultProjectMarshaller();
+		projectReader = ProjectReader.getReader();
+	}
+	
 	public synchronized static ProjectWriter getWriter() throws Exception {
 		if (projectWriter == null) {
 			projectWriter = new ProjectWriter();
@@ -107,10 +104,6 @@ public class ProjectWriter {
 		return projectWriter;
 	}
 	
-	private ProjectWriter() throws Exception  {
-		marshaller = new DefaultProjectMarshaller();
-		projectReader = ProjectReader.getReader();
-	}
 	
 	/**
 	 * add a resource entry to the ${pom.build} 
@@ -181,16 +174,17 @@ public class ProjectWriter {
 		if ( !propertiesFile.exists() ) {
 			propertiesFile.createNewFile();
 		}
-		unsetOverriding(propertiesFile);
+		overrider.unsetOverriding(propertiesFile);
 		
 		//jaroverriding
 		for (int i = 0; i < nonResolvedDependencies.size(); i++) {
 			Dependency dependency = (Dependency) nonResolvedDependencies.get(i); 
-			jarOverride(dependency.getArtifact(), propertiesFile, pom);
-		} 
+			overrider.jarOverride(dependency.getArtifact(), propertiesFile, pom);
+		}
+		
 	}
 
-	private void write(Project project, File pom) throws IOException, Exception {
+	void write(Project project, File pom) throws IOException, Exception {
 		Writer writer = new FileWriter(pom, false);
 		marshaller.marshall(writer, project);
 		writer.close();
@@ -213,64 +207,6 @@ public class ProjectWriter {
 		project.addDependency(dependency);
 		
 		write(project, pom);
-	}
-
-	
-    
-    void jarOverride(String path, File propertiesFile, File pom) throws Exception {
-		Project project = ProjectReader.getReader().read(pom);
-		if ( project.getDependencies() == null ) {
-			project.setDependencies(new ArrayList());
-		}
-				
-		Dependency dep = DependencyFactory.getFactory().getDependency(path);
-		
-		String groupId = dep.getGroupId();
-		String artifactId = dep.getArtifactId();
-		
-		if ( groupId == null || groupId.length() == 0 ) {
-			dep.setGroupId("nonResolvedGroupId");
-		}
-		if ( artifactId == null || artifactId.length() == 0 ) {
-			String fname = new File(path).getName().substring(0, new File(path).getName().lastIndexOf('.'));
-			dep.setArtifactId(fname);
-		}
-		
-		addPropertiesOverride(path, propertiesFile, dep);
-		
-		//project.getDependencies().remove(DependencyFactory.getFactory().getDependency(path));
-		log.debug("adding unresolved dependency (" + path + ")" + DependencyUtil.toString(dep) + "to file " + pom.getAbsolutePath());
-		project.addDependency(dep);
-		
-		write(project, pom);
-
-		
-	}
-
-	private void addPropertiesOverride(String path, File propertiesFile, Dependency dep) throws Exception {
-		Properties properties = new Properties();
-		properties.load(new FileInputStream(propertiesFile));
-		
-		
-		properties.setProperty("maven.jar.override", "on");
-		
-		properties.setProperty("maven.jar." + dep.getArtifactId(), path);
-		
-		properties.store(new FileOutputStream(propertiesFile), null);
-	} 
-	
-	private void unsetOverriding(File propertiesFile) throws Exception {
-		Properties properties = new Properties();
-		properties.load(new FileInputStream(propertiesFile));
-					
-		List keys = Collections.list(properties.keys());
-	    for (int i = 0; i < keys.size(); i++) {
-		    Object key = keys.get(i);
-		    if ( key instanceof String && ((String) key).startsWith("maven.jar.") ) {
-		  	    properties.remove(key);
-		    }
-	    }
-	    properties.store(new FileOutputStream(propertiesFile), null);
 	}
 
 	public void resetSourceDirectories(File pomFile) throws Exception {
