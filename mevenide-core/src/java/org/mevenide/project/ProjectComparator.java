@@ -288,54 +288,60 @@ public class ProjectComparator {
     private void compareVersions(Project newProject) {
         List newVersions = newProject.getVersions();
         List origVersions = originalProject.getVersions();
-        try {
-            detectCollectionChange(newVersions, origVersions);
-            // just assume order is significant
-            for (int i = 0; i < origVersions.size(); i++) {
-                Version newVersion = (Version) newVersions.get(i);
-                Version origVersion = (Version) origVersions.get(i);
-                detectAttributeChange(newVersion.getId(), origVersion.getId());
-                detectAttributeChange(newVersion.getName(), origVersion.getName());
-                detectAttributeChange(newVersion.getTag(), origVersion.getTag());
-            }
-        }
-        catch (ShortCircuitException e) {
-            fireProjectChangeEvent(newProject, VERSIONS);
+        if (comparable(newVersions, origVersions)) {
+	        try {
+	            detectCollectionChange(newVersions, origVersions);
+	            // just assume order is significant
+	            for (int i = 0; i < origVersions.size(); i++) {
+	                Version newVersion = (Version) newVersions.get(i);
+	                Version origVersion = (Version) origVersions.get(i);
+	                detectAttributeChange(newVersion.getId(), origVersion.getId());
+	                detectAttributeChange(newVersion.getName(), origVersion.getName());
+	                detectAttributeChange(newVersion.getTag(), origVersion.getTag());
+	            }
+        	}
+	        catch (ShortCircuitException e) {
+	            fireProjectChangeEvent(newProject, VERSIONS);
+	        }
         }
     }
 
     private void compareMailingLists(Project newProject) {
         List newMailingLists = newProject.getMailingLists();
         List origMailingLists = originalProject.getMailingLists();
-        try {
-            detectCollectionChange(newMailingLists, origMailingLists);
-            // just assume order is significant
-            for (int i = 0; i < origMailingLists.size(); i++) {
-                MailingList newMailingList = (MailingList) newMailingLists.get(i);
-                MailingList origMailingList = (MailingList) origMailingLists.get(i);
-                detectAttributeChange(newMailingList.getName(), origMailingList.getName());
-                detectAttributeChange(newMailingList.getArchive(), origMailingList.getArchive());
-                detectAttributeChange(newMailingList.getSubscribe(), origMailingList.getSubscribe());
-                detectAttributeChange(newMailingList.getUnsubscribe(), origMailingList.getUnsubscribe());
-            }
-        }
-        catch (ShortCircuitException e) {
-            fireProjectChangeEvent(newProject, MAILINGLISTS);
+        if ( comparable(newMailingLists, origMailingLists) ) {
+	        try {
+	            detectCollectionChange(newMailingLists, origMailingLists);
+	            // just assume order is significant
+	            for (int i = 0; i < origMailingLists.size(); i++) {
+	                MailingList newMailingList = (MailingList) newMailingLists.get(i);
+	                MailingList origMailingList = (MailingList) origMailingLists.get(i);
+	                detectAttributeChange(newMailingList.getName(), origMailingList.getName());
+	                detectAttributeChange(newMailingList.getArchive(), origMailingList.getArchive());
+	                detectAttributeChange(newMailingList.getSubscribe(), origMailingList.getSubscribe());
+	                detectAttributeChange(newMailingList.getUnsubscribe(), origMailingList.getUnsubscribe());
+	            }
+	        }
+	        catch (ShortCircuitException e) {
+	            fireProjectChangeEvent(newProject, MAILINGLISTS);
+	        }
         }
     }
 
     private void compareContributors(Project newProject) {
         List newContributors = newProject.getContributors();
         List origContributors = originalProject.getContributors();
-        try {
-        	detectCollectionChange(newContributors, origContributors);
-        	// just assume order is significant
-        	for (int i = 0; i < origContributors.size(); i++) {
-        		compareContributor((Contributor) newContributors.get(i), (Contributor) origContributors.get(i));
-        	}
-        }
-        catch (ShortCircuitException e) {
-            fireProjectChangeEvent(newProject, CONTRIBUTORS);
+        if ( comparable(newContributors, origContributors) ) {
+	        try {
+	        	detectCollectionChange(newContributors, origContributors);
+	        	// just assume order is significant
+	        	for (int i = 0; i < origContributors.size(); i++) {
+	        		compareContributor((Contributor) newContributors.get(i), (Contributor) origContributors.get(i));
+	        	}
+	        }
+	        catch (ShortCircuitException e) {
+	            fireProjectChangeEvent(newProject, CONTRIBUTORS);
+	        }
         }
     }
 
@@ -361,62 +367,68 @@ public class ProjectComparator {
     private void compareDevelopers(Project newProject) {
         List newDevelopers = newProject.getDevelopers();
         List origDevelopers = originalProject.getDevelopers();
-        try {
-            detectCollectionChange(newDevelopers, origDevelopers);
-            // just assume order is significant
-            for (int i = 0; i < origDevelopers.size(); i++) {
-            	Developer newDeveloper = (Developer) newDevelopers.get(i);
-            	Developer origDeveloper = (Developer) origDevelopers.get(i);
-            	detectAttributeChange(newDeveloper.getId(), origDeveloper.getId());
-            	compareContributor(newDeveloper, origDeveloper);
-            }
-        }
-        catch (ShortCircuitException e) {
-            fireProjectChangeEvent(newProject, DEVELOPERS);
+        if ( comparable(newDevelopers, origDevelopers ) ) {
+	        try {
+	            detectCollectionChange(newDevelopers, origDevelopers);
+	            // just assume order is significant
+	            for (int i = 0; i < origDevelopers.size(); i++) {
+	            	Developer newDeveloper = (Developer) newDevelopers.get(i);
+	            	Developer origDeveloper = (Developer) origDevelopers.get(i);
+	            	detectAttributeChange(newDeveloper.getId(), origDeveloper.getId());
+	            	compareContributor(newDeveloper, origDeveloper);
+	            }
+	        }
+	        catch (ShortCircuitException e) {
+	            fireProjectChangeEvent(newProject, DEVELOPERS);
+	        }
         }
     }
 
     private void compareLicenses(Project newProject) {
         List origLicenses = originalProject.getLicenses();
         List newLicenses = newProject.getLicenses();
-        try {
-            detectCollectionChange(newLicenses, origLicenses);
-            // just assume order is significant
-            for (int i = 0; i < origLicenses.size(); i++) {
-                License newLicense = (License) newLicenses.get(i);
-                License origLicense = (License) origLicenses.get(i);
-                detectAttributeChange(newLicense.getName(), origLicense.getName());
-                detectAttributeChange(newLicense.getUrl(), origLicense.getUrl());
-                detectAttributeChange(newLicense.getDistribution(), origLicense.getDistribution());
-                detectAttributeChange(newLicense.getComments(), origLicense.getComments());
-            }
-        }
-        catch (ShortCircuitException e) {
-            fireProjectChangeEvent(newProject, LICENSES);
+        if ( comparable(newLicenses, origLicenses) ) {
+	        try {
+	            detectCollectionChange(newLicenses, origLicenses);
+	            // just assume order is significant
+	            for (int i = 0; i < origLicenses.size(); i++) {
+	                License newLicense = (License) newLicenses.get(i);
+	                License origLicense = (License) origLicenses.get(i);
+	                detectAttributeChange(newLicense.getName(), origLicense.getName());
+	                detectAttributeChange(newLicense.getUrl(), origLicense.getUrl());
+	                detectAttributeChange(newLicense.getDistribution(), origLicense.getDistribution());
+	                detectAttributeChange(newLicense.getComments(), origLicense.getComments());
+	            }
+	        }
+	        catch (ShortCircuitException e) {
+	            fireProjectChangeEvent(newProject, LICENSES);
+	        }
         }
     }
 
     private void compareDependencies(Project newProject) {
         List newDependencies = newProject.getDependencies();
         List origDependencies = originalProject.getDependencies();
-        try {
-            detectCollectionChange(newDependencies, origDependencies);
-            // just assume order is significant
-            for (int i = 0; i < origDependencies.size(); i++) {
-                Dependency newDependency = (Dependency) newDependencies.get(i);
-                Dependency origDependency = (Dependency) origDependencies.get(i);
-                detectAttributeChange(newDependency.getId(), origDependency.getId());
-                detectAttributeChange(newDependency.getName(), origDependency.getName());
-                detectAttributeChange(newDependency.getArtifactId(), origDependency.getArtifactId());
-                detectAttributeChange(newDependency.getGroupId(), origDependency.getGroupId());
-                detectAttributeChange(newDependency.getJar(), origDependency.getJar());
-                detectAttributeChange(newDependency.getType(), origDependency.getType());
-                detectAttributeChange(newDependency.getUrl(), origDependency.getUrl());
-                detectAttributeChange(newDependency.getVersion(), origDependency.getVersion());
-            }
-        }
-        catch (ShortCircuitException e) {
-            fireProjectChangeEvent(newProject, DEPENDENCIES);
+        if ( comparable(newDependencies, origDependencies) ) {
+	        try {
+	            detectCollectionChange(newDependencies, origDependencies);
+	            // just assume order is significant
+	            for (int i = 0; i < origDependencies.size(); i++) {
+	                Dependency newDependency = (Dependency) newDependencies.get(i);
+	                Dependency origDependency = (Dependency) origDependencies.get(i);
+	                detectAttributeChange(newDependency.getId(), origDependency.getId());
+	                detectAttributeChange(newDependency.getName(), origDependency.getName());
+	                detectAttributeChange(newDependency.getArtifactId(), origDependency.getArtifactId());
+	                detectAttributeChange(newDependency.getGroupId(), origDependency.getGroupId());
+	                detectAttributeChange(newDependency.getJar(), origDependency.getJar());
+	                detectAttributeChange(newDependency.getType(), origDependency.getType());
+	                detectAttributeChange(newDependency.getUrl(), origDependency.getUrl());
+	                detectAttributeChange(newDependency.getVersion(), origDependency.getVersion());
+	            }
+	        }
+	        catch (ShortCircuitException e) {
+	            fireProjectChangeEvent(newProject, DEPENDENCIES);
+	        }
         }
     }
 
@@ -446,8 +458,11 @@ public class ProjectComparator {
 		try {
 	        UnitTest origUnitTest = origBuild.getUnitTest();
 	        UnitTest newUnitTest = newBuild.getUnitTest();
-	        compareResource(newUnitTest, origUnitTest);
-	        compareResources(newUnitTest.getResources(), origUnitTest.getResources());
+	        if ( comparable(newUnitTest, origUnitTest) ) {
+		        detectObjectChange(newUnitTest, origUnitTest);
+		        compareResource(newUnitTest, origUnitTest);
+		        compareResources(newUnitTest.getResources(), origUnitTest.getResources());
+	        }
 		}
 		catch (ShortCircuitException e) {
 			fireProjectChangeEvent(newProject, UNIT_TESTS);
@@ -455,62 +470,70 @@ public class ProjectComparator {
     }
 
     private void compareResources(List newResources, List origResources) throws ShortCircuitException {
-
-        detectCollectionChange(newResources, origResources);
-        // just assume order is significant
-        for (int i = 0; i < origResources.size(); i++) {
-            Resource origResource = (Resource) origResources.get(i);
-            Resource newResource = (Resource) newResources.get(i);
-            compareResource(origResource, newResource);
-        }
+    	if ( comparable(newResources, origResources) ) {
+	    	detectObjectChange(newResources, origResources);
+	    	detectCollectionChange(newResources, origResources);
+	        // just assume order is significant
+	        for (int i = 0; i < origResources.size(); i++) {
+	            Resource origResource = (Resource) origResources.get(i);
+	            Resource newResource = (Resource) newResources.get(i);
+	            compareResource(origResource, newResource);
+	        }
+    	}
     }
 
     private void compareResource(Resource origResource, Resource newResource) throws ShortCircuitException {
-        detectAttributeChange(newResource.getDirectory(), origResource.getDirectory());
-        detectAttributeChange(newResource.getTargetPath(), origResource.getTargetPath());
-        detectAttributeChange(newResource.getFiltering(), origResource.getFiltering());
-
-        detectCollectionChange(newResource.getIncludes(), origResource.getIncludes());
-        for (int j = 0; j < origResource.getIncludes().size(); j++) {
-            detectAttributeChange(origResource.getIncludes().get(j), newResource.getIncludes().get(j));
-        }
-
-        detectCollectionChange(newResource.getExcludes(), origResource.getExcludes());
-        for (int j = 0; j < origResource.getExcludes().size(); j++) {
-            detectAttributeChange(origResource.getExcludes().get(j), newResource.getExcludes().get(j));
-        }
+    	if ( comparable(newResource, origResource) ) {
+	    	detectObjectChange(newResource, origResource);
+	        detectAttributeChange(newResource.getDirectory(), origResource.getDirectory());
+	        detectAttributeChange(newResource.getTargetPath(), origResource.getTargetPath());
+	        detectAttributeChange(newResource.getFiltering(), origResource.getFiltering());
+	
+	        detectCollectionChange(newResource.getIncludes(), origResource.getIncludes());
+	        for (int j = 0; j < origResource.getIncludes().size(); j++) {
+	            detectAttributeChange(origResource.getIncludes().get(j), newResource.getIncludes().get(j));
+	        }
+	
+	        detectCollectionChange(newResource.getExcludes(), origResource.getExcludes());
+	        for (int j = 0; j < origResource.getExcludes().size(); j++) {
+	            detectAttributeChange(origResource.getExcludes().get(j), newResource.getExcludes().get(j));
+	        }
+    	}
     }
 
     private void compareReports(Project newProject) {
         List newReports = newProject.getReports();
         List origReports = originalProject.getReports();
-        try {
-            detectCollectionChange(newReports, origReports);
-            // just assume order is significant
-            for (int i = 0; i < origReports.size(); i++) {
-                String origReport = (String) origReports.get(i);
-                String newReport = (String) newReports.get(i);
-                detectAttributeChange(newReport, origReport);
-            }
-        }
-        catch (ShortCircuitException e) {
-            fireProjectChangeEvent(newProject, REPORTS);
+        if ( comparable(newReports, origReports) ) {
+	        try {
+	            detectCollectionChange(newReports, origReports);
+	            // just assume order is significant
+	            for (int i = 0; i < origReports.size(); i++) {
+	                String origReport = (String) origReports.get(i);
+	                String newReport = (String) newReports.get(i);
+	                detectAttributeChange(newReport, origReport);
+	            }
+	        }
+	        catch (ShortCircuitException e) {
+	            fireProjectChangeEvent(newProject, REPORTS);
+	        }
         }
     }
 
     private void compareProperties(List newProps, List origProps) throws ShortCircuitException {
-
-        detectCollectionChange(newProps, origProps);
-        // just assume order is significant
-        // FIXME: ?? properties in BaseObject are stored as 'name:value',
-        // so we could parse the retrieved props apart and compare property
-        // for property.  Kinda silly that Maven does not provide a
-        // getPropertyNames() method
-        for (int i = 0; i < origProps.size(); i++) {
-            String origProp = (String) origProps.get(i);
-            String newProp = (String) newProps.get(i);
-            detectAttributeChange(newProp, origProp);
-        }
+    	if ( comparable(newProps, origProps) ) {
+	        detectCollectionChange(newProps, origProps);
+	        // just assume order is significant
+	        // FIXME: ?? properties in BaseObject are stored as 'name:value',
+	        // so we could parse the retrieved props apart and compare property
+	        // for property.  Kinda silly that Maven does not provide a
+	        // getPropertyNames() method
+	        for (int i = 0; i < origProps.size(); i++) {
+	            String origProp = (String) origProps.get(i);
+	            String newProp = (String) newProps.get(i);
+	            detectAttributeChange(newProp, origProp);
+	        }
+    	}
     }
 
 }
