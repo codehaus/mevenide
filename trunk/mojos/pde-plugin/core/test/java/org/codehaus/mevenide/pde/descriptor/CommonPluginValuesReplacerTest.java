@@ -18,12 +18,10 @@ package org.codehaus.mevenide.pde.descriptor;
 
 import java.io.File;
 import java.util.List;
-import junit.framework.TestCase;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.MavenProjectBuilder;
 import org.apache.maven.project.ProjectBuildingException;
-import org.codehaus.classworlds.ClassWorld;
-import org.codehaus.plexus.embed.Embedder;
+import org.codehaus.plexus.ArtifactEnabledPlexusTestCase;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.input.SAXBuilder;
@@ -35,7 +33,7 @@ import org.jdom.input.SAXBuilder;
  * @version $Id$
  * 
  */
-public class CommonPluginValuesReplacerTest extends TestCase {
+public class CommonPluginValuesReplacerTest extends ArtifactEnabledPlexusTestCase {
 
     private CommonPluginValuesReplacer replacer;
     private File basedirFile;
@@ -43,9 +41,9 @@ public class CommonPluginValuesReplacerTest extends TestCase {
     private MavenProjectBuilder builder;
     
     protected void setUp() throws Exception {
-        Embedder embedder = getEmbedder();
+        super.setUp();
         
-        builder = (MavenProjectBuilder) embedder.lookup(MavenProjectBuilder.ROLE);
+        builder = (MavenProjectBuilder) lookup(MavenProjectBuilder.ROLE);
         
         replacer = getReplacer("/basedir.replacer");
     }
@@ -63,13 +61,6 @@ public class CommonPluginValuesReplacerTest extends TestCase {
         basedirFile = null;
         project = null;
         builder = null;
-    }
-    
-    private Embedder getEmbedder() throws Exception {
-        Embedder embedder = new Embedder();
-        ClassWorld classWorld = new ClassWorld("core", this.getClass().getClassLoader());
-        embedder.start(classWorld);
-        return embedder;
     }
     
     public void testReplace() throws Exception {

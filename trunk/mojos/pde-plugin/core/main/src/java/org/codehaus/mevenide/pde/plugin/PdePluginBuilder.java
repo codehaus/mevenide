@@ -57,6 +57,9 @@ public class PdePluginBuilder {
 	    CommonPluginValuesReplacer replacer = new CommonPluginValuesReplacer(basedir.getAbsolutePath(), project, libFolder); 
 	    replacer.replace();
 	    
+	    DependencyCollector collector = new DependencyCollector(basedir.getAbsolutePath(), libFolder, project); 
+	    collector.collect();
+	    
 	    SimpleZipCreator zipCreator = new SimpleZipCreator(new File(basedir, classesLocation).getAbsolutePath(), new File(basedir, artifactName).getAbsolutePath());
 	    zipCreator.setExcludes(excludes);
 	    zipCreator.setIncludes(includes);

@@ -18,6 +18,7 @@ package org.codehaus.mevenide.pde.archive;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
@@ -63,64 +64,96 @@ public class SimpleZipCreator {
         
         FileOutputStream output = null;
         
+        boolean shouldDeleteDestination = false;
+        
         try {
             output = new FileOutputStream(destinationFile);
             ZipOutputStream zipStream = new ZipOutputStream(output);
+            
             addDirectory(directory, zipStream);
+            addIncludes(zipStream);
+            
             zipStream.close();
         }
-        catch ( Exception e ) {
+        catch ( IOException e ) {
             if ( destinationFile != null && destinationFile.exists() ) {
                 destinationFile.delete();
             }
             String message = Messages.get("ZipCreator.CannotCreateDestination", destinationFile);
+            shouldDeleteDestination = true;
             throw new PdeArchiveException(message, e);
         }
         finally {
             if ( output != null ) {
-                try {
-                    output.close();
-                }
-                catch ( Exception e ) {
-                }
+                try { output.close(); }
+                catch ( Exception e ) { }
             }
+        }
+        if ( shouldDeleteDestination && destinationFile.exists() ) {
+            destinationFile.delete();
         }
     }
     
     
+    private void addIncludes(ZipOutputStream zipStream) throws PdeArchiveException, IOException {
+        if ( includes != null ) {
+	        for (int i = 0; i < includes.size(); i++) {
+	            Include include = (Include) includes.get(i);
+	            String filePath = include.getAbsolutePath();
+	            if ( filePath == null ) {
+	                throw new PdeArchiveException("ZipCreator.NullIncludePath");
+	            }
+                File fileToZip = new File(filePath);
+                if ( !fileToZip.exists() ) {
+                    throw new PdeArchiveException("ZipCreator.IncludePath.DoesnotExist");
+                }
+	            String targetPath = include.getTargetPath();
+	            targetPath = targetPath != null ? targetPath : "";
+	            targetPath = !targetPath.startsWith("/") ? "/" + targetPath : targetPath; 
+	            addFile(fileToZip, targetPath + ("/".equals(targetPath) ? "" : "/") + fileToZip.getName(), zipStream);
+	        }
+        }
+    }
+
     private void addDirectory(String directory, ZipOutputStream zipStream) throws IOException {
         File[] files = new File(directory).listFiles();
         
-        byte[] buf = new byte[1024]; 
         
         for (int i = 0; i < files.length; i++) {
-            if ( files[i].isDirectory() ) {
-                addDirectory(files[i].getAbsolutePath(), zipStream);
+            File fileToZip = files[i];
+            
+            if ( fileToZip.isDirectory() ) {
+                addDirectory(fileToZip.getAbsolutePath(), zipStream);
             }
             else {
-                if ( !excludes.contains(files[i].getAbsolutePath().substring(this.directory.length() + 1)) ) {
-		            ZipEntry e = new ZipEntry(files[i].getAbsolutePath().substring(this.directory.length()));
-		            zipStream.putNextEntry(e);
-		            
-		            FileInputStream in = null;
-		            
-		            try {
-			            in = new FileInputStream(files[i]);
-			
-			            int len;
-			            while ((len = in.read(buf)) > 0) {
-			                zipStream.write(buf, 0, len);
-			            } 
-		            }
-		            finally {
-		                if ( in != null ) {
-		                    in.close();
-		                }
-		            }
-		            zipStream.closeEntry();
+                if ( !excludes.contains(fileToZip.getAbsolutePath().substring(this.directory.length() + 1)) ) {
+			        String targetPath = fileToZip.getAbsolutePath().substring(this.directory.length());
+		            addFile(fileToZip, targetPath, zipStream);
                 }
             }
         }
+    }
+
+    private void addFile(File fileToZip, String targetPath, ZipOutputStream zipStream) throws IOException, FileNotFoundException {
+        ZipEntry e = new ZipEntry(targetPath);
+        
+        zipStream.putNextEntry(e);
+        
+        FileInputStream in = null;
+        
+        byte[] buf = new byte[1024]; 
+        try {
+            in = new FileInputStream(fileToZip);
+
+            int len;
+            while ((len = in.read(buf)) > 0) {
+                zipStream.write(buf, 0, len);
+            } 
+        }
+        finally {
+            if ( in != null ) { in.close(); }
+        }
+        zipStream.closeEntry();
     }
 
     public void setExcludes(String excludes) { 

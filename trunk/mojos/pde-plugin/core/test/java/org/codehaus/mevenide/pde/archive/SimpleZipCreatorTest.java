@@ -17,6 +17,7 @@
 package org.codehaus.mevenide.pde.archive;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Iterator;
@@ -36,28 +37,51 @@ public class SimpleZipCreatorTest extends TestCase {
     
     private File directory;
     private String output;
+    private SimpleZipCreator simpleZipCreator;
     
     protected void setUp() throws Exception {
-        File temp = File.createTempFile("mevenide", "test");
+        File temp = File.createTempFile("mevenide_", "_test.zip");
         output = temp.getAbsolutePath();
         directory = new File(getClass().getResource("/zip.test").getFile());
+        
+        List includes = new ArrayList();
+
+        File includedPluginDescriptor =  new File(getClass().getResource("/basedir.common/plugin.xml").getFile());
+        Include zippedDescriptor = new Include(includedPluginDescriptor.getAbsolutePath(), null);
+        includes.add(zippedDescriptor);
+        
+        File includedLicense =  new File(getClass().getResource("/basedir.common/license/license.txt").getFile());
+        Include zippedLicense = new Include(includedLicense.getAbsolutePath(), "/META-INF");
+        includes.add(zippedLicense);
+        
+        simpleZipCreator = new SimpleZipCreator(directory.getAbsolutePath(), output, "**/*.exc");
+        simpleZipCreator.setIncludes(includes);
     }
     
     protected void tearDown() throws Exception {
         new File(output).delete();
+        simpleZipCreator = null;
     }
     
     public void testZip() throws Exception {
-        new SimpleZipCreator(directory.getAbsolutePath(), output, "**/*.exc").zip();
+        simpleZipCreator.zip();
         
         ZipFile zipFile = new ZipFile(output);
         Enumeration zipEntries = zipFile.entries();
         List list = Collections.list(zipEntries);
-        assertEquals(2, list.size());
+        assertEquals(4, list.size());
+        
+        List result = new ArrayList();
+        
         for (Iterator it = list.iterator(); it.hasNext();) {
             ZipEntry entry = (ZipEntry) it.next();
-            assertTrue("/dir/file.test".equals(entry.getName().replaceAll("\\\\","/")) || 
-                       "/file.test".equals(entry.getName().replaceAll("\\\\","/")));
+            result.add(entry.getName().replaceAll("\\\\","/"));
         }
+        
+        assertTrue(result.contains("/dir/file.test"));
+        assertTrue(result.contains("/file.test"));
+        assertTrue(result.contains("/META-INF/license.txt"));
+        assertTrue(result.contains("/plugin.xml"));
     }
 }
+
