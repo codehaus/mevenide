@@ -27,9 +27,9 @@ import junit.framework.TestCase;
  * @version $Id$
  * 
  */
-public class ClasspathResolverTest extends TestCase {
+public class PluginClasspathResolverTest extends TestCase {
     
-    private ClasspathResolver resolver;
+    private PluginClasspathResolver resolver;
     
     private File eclipseHome;
     
@@ -39,7 +39,7 @@ public class ClasspathResolverTest extends TestCase {
         super.setUp();
         basedir = new File(getClass().getResource("/basedir.usecontainer").getFile());
         eclipseHome = new File(getClass().getResource("/eclipse.home").getFile());
-        resolver = new ClasspathResolver(basedir, eclipseHome.getAbsolutePath());
+        resolver = new PluginClasspathResolver(basedir, eclipseHome.getAbsolutePath());
     }
 
     
@@ -48,8 +48,18 @@ public class ClasspathResolverTest extends TestCase {
         resolver = null;
     }
     
-    public void testUseEclipseDependenciesContainer() throws Exception {
-        assertTrue(resolver.useEclipseDependenciesContainer());
+    public void testCheckEclipseDependenciesContainer() throws Exception {
+        assertTrue(resolver.checkEclipseDependenciesContainer());
+        
+        basedir = new File(getClass().getResource("/basedir.nocontainer").getFile());
+        resolver = new PluginClasspathResolver(basedir, eclipseHome.getAbsolutePath());
+        assertFalse(resolver.checkEclipseDependenciesContainer());
+        assertEquals(1, resolver.getInfos().size());
+        
+        basedir = new File(System.getProperty("user.dir"));
+        resolver = new PluginClasspathResolver(basedir, eclipseHome.getAbsolutePath());
+        assertFalse(resolver.checkEclipseDependenciesContainer());
+        assertEquals(1, resolver.getInfos().size());
     }
     
     public void testExtractDependenciesFromDescriptor() throws Exception {

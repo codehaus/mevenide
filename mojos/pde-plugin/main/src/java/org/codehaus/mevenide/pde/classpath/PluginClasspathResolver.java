@@ -36,11 +36,14 @@ import org.jdom.input.SAXBuilder;
 
 /**  
  * 
+ * transively resolves the dependencies of an eclipse plugin 
+ * 
+ * 
  * @author <a href="mailto:rhill2@free.fr">Gilles Dodinet</a>
  * @version $Id$
  * 
  */
-public class ClasspathResolver {
+public class PluginClasspathResolver {
 
     /** folder of the project under construction */
     private File basedir;
@@ -48,34 +51,23 @@ public class ClasspathResolver {
     /** absolute path of eclipse home directory */
     private String eclipseHome;
     
-    /** jdom element representing the classpath node of the eclipse .classpath file */
-    private Element classpath;
-    
     /** used to stop dependencies extraction recursion */
     private HashSet pluginDescriptors;
+    
+    /** non blocking warnings */
+    private List infos = new ArrayList();
     
     /**
      * @param basedir folder of the project under construction
      * @param eclipseHome absolute path of eclipse home directory
      * @throws PdePluginException if unable to parse the .classpath : IOException or JDOMException wrapped
      */
-    public ClasspathResolver(File basedir, String eclipseHome) throws PdePluginException {
+    public PluginClasspathResolver(File basedir, String eclipseHome) {
         pluginDescriptors = new HashSet(); 
         
         this.eclipseHome = eclipseHome;
         this.basedir = basedir;
         
-        Document document = null; 
-            
-        try {
-            document = new SAXBuilder().build(new File(basedir, ".classpath"));
-        }
-        catch (Exception e) {
-            String message = Messages.get("BuildArtifact.CannotExtractDependencies", e.getMessage()); 
-            throw new PdePluginException(message, e);
-        }    
- 
-        classpath = document.getRootElement();
     }
     
     /**
@@ -88,36 +80,7 @@ public class ClasspathResolver {
      * @throws PdePluginException
      */
     public Collection extractEclipseDependencies() throws PdePluginException {
-            
-        boolean useDependenciesContainer = useEclipseDependenciesContainer();
-            
-        return useDependenciesContainer ? extractDependenciesFromDescriptor(basedir.getAbsolutePath()) 
-                                        : extractDependenciesFromClasspath();
-        
-    }
-
-    /**
-     * try to extract other Eclipse dependencies from explicit declaration in .classpath
-     * 
-     * here some use cases : 
-     * 
-     * 1- libraries are referenced using a Variable, e.g. : 
-     *   	MAVEN_REPO/eclipse/jars/jface-3.1.0.jar
-     *   	ECLIPSE_HOME/plugins/org.eclipse.jface_3.1.0/jface.jar
-     *     
-     * 2- libraries are referenced directly  
-     * 
-     * in the first case we should try to grab the variable value from .metadata/.plugins/org.eclipse.core.runtime/.settings/org.eclipse.jdt.core.prefs
-     * variables are referenced as this : org.eclipse.jdt.core.classpathVariable.<code>VARIABLE_NAME</code>.
-     * 
-     * thus we need to know the location of the workspace.. in most case it is expected to be the parent of basedir, we're not assured this is always 
-     * the case because project may have not been created in the 'default location'  
-     * 
-     * @return  the list of eclipse dependencies
-     * @throws PdePluginException
-     */
-    public Collection extractDependenciesFromClasspath() throws PdePluginException {
-        return null;
+        return extractDependenciesFromDescriptor(basedir.getAbsolutePath());        
     }
 
     /**
@@ -137,7 +100,7 @@ public class ClasspathResolver {
             document = new SAXBuilder().build(pluginDescriptor);
         }
         catch (Exception e) {
-            String message = Messages.get("BuildArtifact.CannotExtractDependencies", e.getMessage()); 
+            String message = Messages.get("ClasspathResolution.CannotExtractDependencies", e.getMessage()); 
             throw new PdePluginException(message, e);
         }
         
@@ -185,7 +148,7 @@ public class ClasspathResolver {
 	            document = new SAXBuilder().build(pluginDescriptor);
 	        }
 	        catch (Exception e) {
-	            String message = Messages.get("BuildArtifact.CannotExtractDependencies", e.getMessage()); 
+	            String message = Messages.get("ClasspathResolution.CannotExtractDependencies", e.getMessage()); 
 	            throw new PdePluginException(message, e);
 	        }
 	        Element plugin = document.getRootElement();
@@ -235,7 +198,7 @@ public class ClasspathResolver {
         });
         
         if ( parentNames == null ) {
-            String message = Messages.get("BuildArtifact.ComputeDependencyParent", dependency);
+            String message = Messages.get("ClasspathResolution.ComputeDependencyParent", dependency);
             throw new PdePluginException(message);
         }
         File dependencyHome = parentNames[0];
@@ -247,7 +210,22 @@ public class ClasspathResolver {
      * @param classpath toplevel &lt;classpath&gt; element 
      * @return true if .classpath uses the <code>org.eclipse.pde.core.requiredPlugins</code> container to reference other plugin libraries false otherwise
      */
-    boolean useEclipseDependenciesContainer() {
+    boolean checkEclipseDependenciesContainer() {
+        Document document = null; 
+        
+        File classpathFile = new File(basedir, ".classpath");
+        
+        try {
+            document = new SAXBuilder().build(classpathFile);
+        }
+        catch (Exception e) {
+            String message = Messages.get("ClasspathResolution.NoClasspath", e.getMessage()); 
+            addInfo(message);
+            return false;
+        }    
+ 
+        Element classpath = document.getRootElement();
+        
         Iterator elems = classpath.getDescendants(new Filter() {
             public boolean matches(Object obj) {
                 if ( obj instanceof Element ) {
@@ -260,6 +238,23 @@ public class ClasspathResolver {
             }
         });
         
-        return elems != null && elems.hasNext();
+        boolean useDependenciesContainer = elems != null && elems.hasNext();
+        
+        if ( !useDependenciesContainer ) {
+            addInfo(Messages.get("ClasspathResolution.NoContainer"));
+        }
+        
+        return useDependenciesContainer;
+    }
+    
+    private void addInfo(String info) {
+        if ( !infos.contains(info) ) {
+            infos.add(info);
+        }
+    }
+    
+    
+    public List getInfos() {
+        return infos;
     }
 }
