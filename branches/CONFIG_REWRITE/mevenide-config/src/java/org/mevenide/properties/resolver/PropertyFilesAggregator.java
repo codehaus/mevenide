@@ -231,6 +231,9 @@ public class PropertyFilesAggregator implements IPropertyResolver, IPropertyLoca
     }
 
     public String resolveString(String original) {
+        if (original ==  null) {
+            return null;
+        }
         StringBuffer buf = new StringBuffer(original);
         return resolve(buf).toString();
     }        

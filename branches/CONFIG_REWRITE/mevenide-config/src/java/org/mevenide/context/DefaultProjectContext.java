@@ -36,7 +36,7 @@ import org.mevenide.properties.IPropertyResolver;
  * @author  <a href="mailto:ca206216@tiscali.cz">Milos Kleint</a>
  *
  */
-public class DefaultProjectContext implements IProjectContext {
+class DefaultProjectContext implements IProjectContext {
     private static final Log logger = LogFactory.getLog(DefaultProjectContext.class);
     
     private Project mergedProject;

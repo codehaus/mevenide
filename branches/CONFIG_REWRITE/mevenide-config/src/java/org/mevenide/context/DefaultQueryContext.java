@@ -34,7 +34,8 @@ import org.jdom.input.DefaultJDOMFactory;
 import org.jdom.input.JDOMFactory;
 
 /**
- * interface to externalize the project files content/models to one place, and reuse
+ * default implementation of IQueryContext.
+ * to externalize the project files content/models to one place, and reuse
  * in all the queries (ILocationFinder, I PropertyResolver, etc)
  * @author  <a href="mailto:ca206216@tiscali.cz">Milos Kleint</a>
  */
@@ -85,6 +86,10 @@ public class DefaultQueryContext extends AbstractQueryContext {
         userPropertyModel = new Properties();
     }
     
+    /**
+     * create a new project context.
+     * @param projectDirectory the directory where the project.xml file is located.
+     */
     public DefaultQueryContext(File projectDirectory) {
         projectDir = projectDirectory;
         projectPropertyFile = new File(projectDir, "project.properties"); //NOI18N
