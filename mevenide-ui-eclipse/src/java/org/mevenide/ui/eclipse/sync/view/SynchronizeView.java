@@ -49,6 +49,7 @@
 package org.mevenide.ui.eclipse.sync.view;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -69,6 +70,8 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -100,7 +103,7 @@ import org.mevenide.ui.eclipse.util.FileUtils;
  * @version $Id$
  *
  */
-public class SynchronizeView extends ViewPart implements IActionListener, IResourceChangeListener {
+public class SynchronizeView extends ViewPart implements IActionListener, IResourceChangeListener, IPropertyChangeListener {
     private static final Log log = LogFactory.getLog(SynchronizeView.class);
 
     private Composite composite;
@@ -124,8 +127,11 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
     private Separator separator;
     
     private int direction;
+    private List directionListeners = new ArrayList(); 
     
-    List poms;
+	private List poms;
+
+    private IToolBarManager toolBarManager;
     
     public void createPartControl(Composite parent) {
         createArtifactViewer(parent);
@@ -149,17 +155,45 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
 		((ArtifactMappingContentProvider) artifactMappingNodeViewer.getContentProvider()).setDirection(this.direction);
         artifactMappingNodeViewer.refresh(true);
         artifactMappingNodeViewer.expandAll();
+        assertValidDirection();
     }
+    
+    private void assertValidDirection() {
+        if ( direction != ProjectContainer.INCOMING 
+                && direction != ProjectContainer.OUTGOING 
+                && direction != ProjectContainer.CONFLICTING ) {
+            setDirection(ProjectContainer.INCOMING);
+        }
+    }
+    
     
     public void setDirection(int direction) {
-        this.direction = direction;
-        if ( artifactMappingNodeViewer.getInput() != null ) {
-            ((ArtifactMappingContentProvider) artifactMappingNodeViewer.getContentProvider()).setDirection(direction);
-        }
-        artifactMappingNodeViewer.refresh(true);
-        artifactMappingNodeViewer.expandAll();
+		if ( direction != this.direction ) {
+	        this.direction = direction;
+	        if ( artifactMappingNodeViewer.getInput() != null ) {
+	            ((ArtifactMappingContentProvider) artifactMappingNodeViewer.getContentProvider()).setDirection(direction);
+	        }
+			artifactMappingNodeViewer.refresh(true);
+	        artifactMappingNodeViewer.expandAll();
+			fireDirectionChanged();
+		}
     }
+
+	private void fireDirectionChanged() {
+		for (int i = 0; i < directionListeners.size(); i++) {
+            ISynchronizationDirectionListener listener = (ISynchronizationDirectionListener) directionListeners.get(i);
+			listener.directionChanged(direction);
+        }
+	}
     
+	public void addDirectionListener(ISynchronizationDirectionListener listener) {
+		directionListeners.add(listener);
+	}
+
+	public void removeDirectionListener(ISynchronizationDirectionListener listener) {
+		directionListeners.remove(listener);
+	}
+
     private void createArtifactViewer(Composite parent) {
         artifactMappingNodeViewer = new TreeViewer(parent, SWT.FULL_SELECTION);
         
@@ -282,13 +316,20 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
 	}
 
 	private void createToolBarManager() {
-		IToolBarManager toolBarManager = getViewSite().getActionBars().getToolBarManager();
-		toolBarManager.add(refreshAll);
+		toolBarManager = getViewSite().getActionBars().getToolBarManager();
+        toolBarManager.add(refreshAll);
 		toolBarManager.add(viewIdeToPom);
 		toolBarManager.add(viewPomToIde);
 		toolBarManager.add(viewConflicts);
 	}
 
+	public void propertyChange(PropertyChangeEvent event) {
+		if ( toolBarManager != null ) {
+			log.debug("property changed. updating");
+	    	toolBarManager.update(true);
+		}
+    }
+	
 	private void createContextualMenu() {
 		MenuManager contextManager = new MenuManager();
 		contextManager.setRemoveAllWhenShown(true);
