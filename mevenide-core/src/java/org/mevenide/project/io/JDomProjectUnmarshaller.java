@@ -49,6 +49,7 @@ public class JDomProjectUnmarshaller implements IProjectUnmarshaller {
     public Project parse(Reader reader) throws Exception {
         Project mavenProject = new Project();
         SAXBuilder builder = new SAXBuilder();
+        builder.setExpandEntities(true);
         //builder.setFeature();
         //builder.setProperty();
         
@@ -221,8 +222,18 @@ public class JDomProjectUnmarshaller implements IProjectUnmarshaller {
                 for (int i = 0; i < dependencyElements.size(); i++) {
                     Element dependencyElement = (Element) dependencyElements.get(i);
                     Dependency dependency = new Dependency();
-                    dependency.setGroupId(dependencyElement.getChildText("groupId"));
-                    dependency.setArtifactId(dependencyElement.getChildText("artifactId"));
+                    String id = dependencyElement.getChildText("id");
+                    if (id != null) {
+                        dependency.setId(id);
+                    }
+                    id = dependencyElement.getChildText("groupId");
+                    if (id != null) {
+                        dependency.setGroupId(id);
+                    }
+                    id = dependencyElement.getChildText("artifactId");
+                    if (id != null) {
+                        dependency.setArtifactId(id);
+                    }
                     dependency.setVersion(dependencyElement.getChildText("version"));
                     String jar = dependencyElement.getChildText("jar");
                     if ( jar != null ) {
