@@ -74,7 +74,7 @@ public class JarOverrideWriterTest  extends AbstractMevenideTestCase {
 		overrider.jarOverride(dep3.getArtifactId(), path3, project);
 		overrider.jarOverride(dep2.getArtifactId(), path2, project);
 	
-		PropertyModel model = PropertyModelFactory.getFactory().newPropertyModel(new File(projectFile.getParentFile(), "project.properties"), false);
+		PropertyModel model = PropertyModelFactory.getFactory().newPropertyModel(new File(projectFile.getParentFile(), "project.properties"));
 		System.err.println(model.toString());
 //		assertEquals(path, model.findByKey("maven.jar." + dep.getArtifactId()).getValue());
 //		assertEquals(path2, model.findByKey("maven.jar." + dep2.getArtifactId()).getValue());

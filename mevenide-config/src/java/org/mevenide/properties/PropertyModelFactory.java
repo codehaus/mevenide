@@ -43,59 +43,25 @@ public class PropertyModelFactory {
 
     private final String whiteSpaceChars = " \t\r\n\f";
 
-    //mkleint - this is a potential memory leak. the property models are never released.
-    private Map propertyFileMap = new HashMap();
-
     private PropertyModelFactory() {
     }
 
     public static PropertyModelFactory getFactory() {
         return factory;
     }
-
-    /**
-     * if searchMap is true then the PropertyModel associated to file is looked
-     * up in the propertyFileMap cache, if not found a new one is created and
-     * put in the Map. if searchMap is false then the call is equivalent to
-     * newPropertyModel(InputStream) and newly instantiated PropertyModel is
-     * not stored in the PropertyModel cache
-     */
-    //mkleint - searchMap == true is a potential memory leak. the property models are never released.
-    // it also assumes that the file was not modified in the time between now and the time when created.
-    // --> can lead to dataloss.
-    public PropertyModel newPropertyModel(File file, boolean searchMap)
-            throws IOException {
-    	if ( !searchMap ) {
-    		if (file.exists()) {
-    		    return newPropertyModel(new FileInputStream(file)); 
-    		}
-    		else {
-    			return new PropertyModel();
-    		} 
-		}
-        if ( propertyFileMap.containsKey(file) ) { 
-			return (PropertyModel) propertyFileMap.get(file); 
-		}
-        
-        
-        PropertyModel model = null;
-        if (file.exists()) {
-            model = newPropertyModel(new FileInputStream(file)); 
-        } 
-        else {
-            model = new PropertyModel();
-        }
-        propertyFileMap.put(file, model);
-        return model;
-    }
-
+    
     /**
      * equivalent to newPropertyModel(file, false)
      * 
      * @return the newly instantiated PropertyModel
      */
     public PropertyModel newPropertyModel(File file) throws IOException {
-        return newPropertyModel(file, false);
+        if (file.exists()) {
+            return newPropertyModel(new FileInputStream(file));
+        }
+        else {
+            return new PropertyModel();
+        }
     }
 
     /**

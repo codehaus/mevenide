@@ -43,7 +43,7 @@ class JarOverrideWriter {
 	void jarOverride(String artifactId, String path, Project project) throws Exception {
 		File propertiesFile = new File(project.getFile().getParentFile(), "project.properties");
 		
-		PropertyModel model = PropertyModelFactory.getFactory().newPropertyModel(propertiesFile, false);
+		PropertyModel model = PropertyModelFactory.getFactory().newPropertyModel(propertiesFile);
 		
 		model.newKeyPair("maven.jar.override", '=', "on");
 		model.newKeyPair("maven.jar." + artifactId, '=', path.replaceAll("\\\\", "/"));

@@ -66,8 +66,8 @@ public class JarOverrideReader {
 	}
 
 	String getOverrideValue(File pom, Dependency dependency) throws Exception {
-		PropertyModel projectProperties = projectModelFactory.newPropertyModel(new File(pom.getParent(), "project.properties"), false);
-		PropertyModel buildProperties = projectModelFactory.newPropertyModel(new File(pom.getParent(), "project.properties"), false);
+		PropertyModel projectProperties = projectModelFactory.newPropertyModel(new File(pom.getParent(), "project.properties"));
+		PropertyModel buildProperties = projectModelFactory.newPropertyModel(new File(pom.getParent(), "project.properties"));
 		
 		String artifactId = dependency.getArtifactId();
 
@@ -122,8 +122,8 @@ public class JarOverrideReader {
 	
 	
 	boolean isJarOverrideOn(File pom) throws Exception {
-		PropertyModel projectPropertyModel = projectModelFactory.newPropertyModel(new File(pom.getParent(), "project.properties"), true);
-		PropertyModel buildPropertyModel = projectModelFactory.newPropertyModel(new File(pom.getParent(), "project.properties"), true);
+		PropertyModel projectPropertyModel = projectModelFactory.newPropertyModel(new File(pom.getParent(), "project.properties"));
+		PropertyModel buildPropertyModel = projectModelFactory.newPropertyModel(new File(pom.getParent(), "project.properties"));
 		
 		String overrideProperty = "maven.jar.override";
 		KeyValuePair jarOverrideKvp = userPropertyModel.findByKey(overrideProperty);
