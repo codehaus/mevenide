@@ -48,7 +48,7 @@ public class SimpleZipCreatorTest extends TestCase {
     }
     
     public void testZip() throws Exception {
-        new SimpleZipCreator(directory.getAbsolutePath(), output).zip();
+        new SimpleZipCreator(directory.getAbsolutePath(), output, "**/*.exc").zip();
         
         ZipFile zipFile = new ZipFile(output);
         Enumeration zipEntries = zipFile.entries();
