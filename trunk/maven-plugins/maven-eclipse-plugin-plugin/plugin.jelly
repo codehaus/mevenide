@@ -387,27 +387,27 @@
 	
 	<!-- find swt.plugin.dir -->
 	<ant:available property="swt.plugin.dir" 
-			 	   value="org.eclipse.swt.gtk_3.0.0/ws/gtk"
+			 	   value="org.eclipse.swt.gtk_${maven.eclipse.plugin.swt.version}/ws/gtk"
 				   file="${eclipse.home}/plugins/org.eclipse.swt.gtk_${maven.eclipse.plugin.swt.version}/ws/gtk/swt.jar"/>
 
 	<ant:available property="swt.plugin.dir" 
-			   	   value="org.eclipse.swt.gtk1x_3.0.0/ws/gtk1x"
+			   	   value="org.eclipse.swt.gtk1x_${maven.eclipse.plugin.swt.version}/ws/gtk1x"
 			       file="${eclipse.home}/plugins/org.eclipse.swt.gtk1x_${maven.eclipse.plugin.swt.version}/ws/gtk1x/swt.jar/swt.jar"/>
 		
 	<ant:available property="swt.plugin.dir" 
-			       value="org.eclipse.swt.motif_3.0.0/ws/motif"
+			       value="org.eclipse.swt.motif_${maven.eclipse.plugin.swt.version}/ws/motif"
 			       file="${eclipse.home}/plugins/org.eclipse.swt.motif_${maven.eclipse.plugin.swt.version}/ws/motif/swt.jar"/>		   
 				   		   				   
 	<ant:available property="swt.plugin.dir" 
-			       value="org.eclipse.swt.photon_3.0.0/ws/photon"
+			       value="org.eclipse.swt.photon_${maven.eclipse.plugin.swt.version}/ws/photon"
 			       file="${eclipse.home}/plugins/org.eclipse.swt.photon_${maven.eclipse.plugin.swt.version}/ws/photon/swt.jar"/>		   
 				   				   		   				   
 	<ant:available property="swt.plugin.dir" 
-			       value="org.eclipse.swt.win32_3.0.0/ws/win32"
+			       value="org.eclipse.swt.win32_${maven.eclipse.plugin.swt.version}/ws/win32"
 			       file="${eclipse.home}/plugins/org.eclipse.swt.win32_${maven.eclipse.plugin.swt.version}/ws/win32/swt.jar"/>
 		
 	<ant:available property="swt.plugin.dir" 
-			       value="org.eclipse.swt.carbon_3.0.0/ws/carbon"
+			       value="org.eclipse.swt.carbon_${maven.eclipse.plugin.swt.version}/ws/carbon"
 			       file="${eclipse.home}/plugins/org.eclipse.swt.carbon_${maven.eclipse.plugin.swt.version}/ws/carbon/swt.jar"/>
 
 	<!-- install swt library into maven.repo.local -->
