@@ -303,7 +303,7 @@
         <j:set var="__dummy">
           <j:expr value="${helpSetList.add(helpSetMenu)}" trim="false"/>
         </j:set>
-        <j:set var="helpSetMenu" encode="false" trim="false"><![CDATA[    <data engine="com.sun.java.help.search.DefaultSearchEngine">JavaHelpSearch</data>${linebreak}]]></j:set>
+        <j:set var="helpSetMenu" encode="false" trim="false"><![CDATA[    <data engine="com.sun.java.help.search.DefaultSearchEngine">JavaHelpSearch2</data>${linebreak}]]></j:set>
         <j:set var="__dummy">
           <j:expr value="${helpSetList.add(helpSetMenu)}" trim="false"/>
         </j:set>
@@ -397,7 +397,8 @@
 
           <j:set var="dummy">
             <j:new var="_emptyTable" className="org.mevenide.javahelp.Indextable"/>
-            <j:expr value="${_emptyTable.setPath(destdir, outFile, _sectionName)}"/>
+            <j:set var="_jhroot" value="${maven.javahelp.root}"/>
+            <j:expr value="${_emptyTable.setPath(_jhroot, destdir, outFile, _sectionName)}"/>
             <j:expr value="${helpIdxList.put(_sectionName, _emptyTable)}"/>
             <j:set var="helpMapMenu" encode="false" trim="false">
               <![CDATA[<mapID target="${_emptyTable.getPathId()}" url="${_emptyTable.getPathUrl()}"/>]]>

@@ -5,7 +5,7 @@
   <groupId>mevenide</groupId>
   <currentVersion>1.0</currentVersion>
   <name>Maven JavaHelp Plug-in</name>
-  <package></package>
+  <package>org.mevenide.javahelp</package>
   <logo>/images/logo.gif</logo>
   <inceptionYear>2004</inceptionYear>
 
@@ -28,6 +28,10 @@
       </includes>
     </unitTest>
   </build>
+  
+  <reports>
+    <report>maven-javadoc-plugin</report>
+  </reports>
 
   <dependencies>
     <dependency>
