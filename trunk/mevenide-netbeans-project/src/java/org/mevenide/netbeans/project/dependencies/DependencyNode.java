@@ -112,7 +112,7 @@ public class DependencyNode extends AbstractNode {
     public Component getCustomizer() {
         DependencyPanel panel = new DependencyPanel();
         panel.setDependency(dependency, project);
-        panel.setEditable(false);
+        panel.setFieldsEditable(false);
         return panel;
     }
     
@@ -120,5 +120,8 @@ public class DependencyNode extends AbstractNode {
         return false;
     }
     
+    public Dependency getDependency() {
+        return dependency;
+    }
 }
 

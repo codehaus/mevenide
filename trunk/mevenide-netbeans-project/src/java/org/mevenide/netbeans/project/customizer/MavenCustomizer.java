@@ -41,7 +41,7 @@ import org.openide.nodes.Node;
  * inspired by the j2seprojectcustomizer, mainly to have consistent UI.
  * @author  Milos Kleint (ca206216@tiscali.cz)
  */
-public class MavenCustomizer extends JPanel {
+public class MavenCustomizer extends JPanel implements ProjectValidateObserver {
     
     private Component currentCustomizer;
 
@@ -73,6 +73,7 @@ public class MavenCustomizer extends JPanel {
 
         categoryPanel = new javax.swing.JPanel();
         customizerPanel = new javax.swing.JPanel();
+        lblValidateMessage = new javax.swing.JLabel();
 
         setLayout(new java.awt.GridBagLayout());
 
@@ -80,25 +81,42 @@ public class MavenCustomizer extends JPanel {
         categoryPanel.setLayout(new java.awt.GridBagLayout());
 
         categoryPanel.setBorder(new javax.swing.border.EtchedBorder());
-        categoryPanel.setMinimumSize(new java.awt.Dimension(220, 4));
-        categoryPanel.setPreferredSize(new java.awt.Dimension(220, 4));
+        categoryPanel.setMinimumSize(new java.awt.Dimension(150, 4));
+        categoryPanel.setPreferredSize(new java.awt.Dimension(200, 4));
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridheight = java.awt.GridBagConstraints.REMAINDER;
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridheight = 4;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.insets = new java.awt.Insets(8, 8, 8, 8);
+        gridBagConstraints.insets = new java.awt.Insets(6, 6, 6, 6);
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.weightx = 0.3;
         gridBagConstraints.weighty = 1.0;
         add(categoryPanel, gridBagConstraints);
 
         customizerPanel.setLayout(new java.awt.GridBagLayout());
 
+        customizerPanel.setMinimumSize(new java.awt.Dimension(150, 5));
+        customizerPanel.setPreferredSize(new java.awt.Dimension(250, 10));
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
-        gridBagConstraints.gridheight = java.awt.GridBagConstraints.REMAINDER;
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridheight = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(6, 0, 6, 6);
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.weightx = 0.7;
         gridBagConstraints.weighty = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(8, 4, 8, 8);
         add(customizerPanel, gridBagConstraints);
+
+        lblValidateMessage.setText("jLabel1");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.insets = new java.awt.Insets(0, 0, 6, 6);
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        add(lblValidateMessage, gridBagConstraints);
 
     }//GEN-END:initComponents
     
@@ -106,6 +124,7 @@ public class MavenCustomizer extends JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel categoryPanel;
     private javax.swing.JPanel customizerPanel;
+    private javax.swing.JLabel lblValidateMessage;
     // End of variables declaration//GEN-END:variables
     
     // Private innerclasses ----------------------------------------------------
@@ -187,6 +206,13 @@ public class MavenCustomizer extends JPanel {
                     }
                     if ( node.hasCustomizer() ) {
                         currentCustomizer = node.getCustomizer();
+                        if (currentCustomizer instanceof ProjectPanel) {
+                            ProjectPanel prpanel = (ProjectPanel)currentCustomizer;
+                            //reset messages.
+                            lblValidateMessage.setText("");
+                            prpanel.setValidateObserver(MavenCustomizer.this);
+                            prpanel.setProject(project.getOriginalMavenProject());
+                        }
                         customizerPanel.add( currentCustomizer, fillConstraints );
                         customizerPanel.validate();
                         customizerPanel.repaint();
@@ -202,19 +228,71 @@ public class MavenCustomizer extends JPanel {
     }
              
     private static Node createRootNode( MavenProject project) {
-        ConfigurationDescription descriptions[] = new ConfigurationDescription[] {
+        ConfigurationDescription[] generalChilds = new ConfigurationDescription[] {
             new ConfigurationDescription(
-                "DependencyCategory", // NOI18N
-                "Dependencies", 
+                "OrgCategory", // NOI18N
+                "Organization and Site", 
                 "org/mevenide/netbeans/project/resources/Bullet", // NOI18N
-                new DependencyCustomizer(project), 
+                new OrgPanel(false, false, project), 
                 null),
+            new ConfigurationDescription(
+                "RepositoryCategory", // NOI18N
+                "Repository", 
+                "org/mevenide/netbeans/project/resources/Bullet", // NOI18N
+                createEmptyLabel("WORK IN PROGRESS..."), 
+                null),
+            new ConfigurationDescription(
+                "ListsCategory", // NOI18N
+                "Lists", 
+                "org/mevenide/netbeans/project/resources/Bullet", // NOI18N
+                new ListsPanel(false, false, project), 
+                null),
+            new ConfigurationDescription(
+                "TeamCategory", // NOI18N
+                "Team", 
+                "org/mevenide/netbeans/project/resources/Bullet", // NOI18N
+                new TeamPanel(false, false, project), 
+                null)
+        };
+        ConfigurationDescription[] dependencyChilds = new ConfigurationDescription[] {
+            new ConfigurationDescription(
+                "DependencyOverrideCategory", // NOI18N
+                "Overrides", 
+                "org/mevenide/netbeans/project/resources/Bullet", // NOI18N
+                createEmptyLabel("WORK IN PROGRESS..."),  
+                null)
+        };
+        ConfigurationDescription[] descriptions = new ConfigurationDescription[] {
             new ConfigurationDescription(
                 "GeneralCategory",// NOI18N
                 "General", 
                 "org/mevenide/netbeans/project/resources/Bullet", // NOI18N
-                createEmptyLabel( "Work in progress."),
-                null )
+                new BasicsPanel(false, false, project),
+                generalChilds),
+            new ConfigurationDescription(
+                "DependencyCategory", // NOI18N
+                "Dependencies", 
+                "org/mevenide/netbeans/project/resources/Bullet", // NOI18N
+                new DependenciesPanel(project, false), 
+                dependencyChilds),
+            new ConfigurationDescription(
+                "BuildCategory", // NOI18N
+                "Build", 
+                "org/mevenide/netbeans/project/resources/Bullet", // NOI18N
+                new BuildPanel(false, false), 
+                null),
+            new ConfigurationDescription(
+                "UnitTestsCategory", // NOI18N
+                "Unit Tests", 
+                "org/mevenide/netbeans/project/resources/Bullet", // NOI18N
+                createEmptyLabel("WORK IN PROGRESS..."),  
+                null),
+            new ConfigurationDescription(
+                "ReportsCategory", // NOI18N
+                "Reports", 
+                "org/mevenide/netbeans/project/resources/Bullet", // NOI18N
+                createEmptyLabel("WORK IN PROGRESS..."),  
+                null)
         };
         
         ConfigurationDescription rootDescription = new ConfigurationDescription(
@@ -241,6 +319,14 @@ public class MavenCustomizer extends JPanel {
         }
                 
         return label;        
+    }
+    
+    public void resetValidState(boolean valid, String errorMessage) {
+        if (valid) {
+            lblValidateMessage.setText("");
+        } else {
+            lblValidateMessage.setText(errorMessage);
+        }
     }
     
     // Private innerclasses ----------------------------------------------------
@@ -288,11 +374,11 @@ public class MavenCustomizer extends JPanel {
         }
         
         public boolean hasCustomizer() {
-            return true;
+            return customizer != null;
         }
         
         public Component getCustomizer() {
-            return customizer;
+            return (Component)customizer;
         }
         
     }
