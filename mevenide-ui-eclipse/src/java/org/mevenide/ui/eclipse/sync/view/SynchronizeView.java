@@ -50,7 +50,16 @@ package org.mevenide.ui.eclipse.sync.view;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceChangeEvent;
+import org.eclipse.core.resources.IResourceChangeListener;
+import org.eclipse.core.resources.IResourceDelta;
+import org.eclipse.core.resources.IResourceDeltaVisitor;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -87,7 +96,7 @@ import org.mevenide.ui.eclipse.sync.model.ProjectContainer;
  * @version $Id$
  *
  */
-public class SynchronizeView extends ViewPart implements IActionListener {
+public class SynchronizeView extends ViewPart implements IActionListener, IResourceChangeListener {
     private static final Log log = LogFactory.getLog(SynchronizeView.class);
 
     private Composite composite;
@@ -111,6 +120,8 @@ public class SynchronizeView extends ViewPart implements IActionListener {
     private Separator separator;
     
     private int direction;
+    
+    
     
     public void createPartControl(Composite parent) {
         createArtifactViewer(parent);
@@ -348,6 +359,56 @@ public class SynchronizeView extends ViewPart implements IActionListener {
 	
 	public int getDirection() {
 		return direction;
+	}
+
+	public SynchronizeView() {
+		super();
+		IWorkspace workspace = ResourcesPlugin.getWorkspace();
+		workspace.addResourceChangeListener(this, IResourceChangeEvent.POST_CHANGE);				
+	}
+
+	public void resourceChanged(IResourceChangeEvent event) {
+		final IProject project = (IProject) artifactMappingNodeViewer.getInput();
+		final IFile dotClasspath = project.getFile(".classpath");
+		
+		IResourceDelta d= event.getDelta();
+		if (d == null) {
+			return;
+		}
+		try {
+			d.accept(
+					new IResourceDeltaVisitor() {
+						public boolean visit(IResourceDelta delta) {
+							if (delta != null) {
+								IResource r = delta.getResource();									
+								if (r instanceof IFile) {
+									IFile file = (IFile) r;
+									if ( file.equals(dotClasspath) ) {
+										refreshAll();
+									}
+									
+								}
+								if ( r instanceof IProject ) {
+									IProject prj = (IProject) r;
+									if ( prj.getName().equals(project.getName()) ) {
+										refreshAll();
+									}
+								}
+							}
+							return true;
+						}
+
+					}
+			);
+		} 
+		catch (CoreException e) {
+			log.error("processing resource delta", e); //$NON-NLS-1$
+		}		
+	}
+
+	private void refreshAll() {
+		artifactMappingNodeViewer.refresh(true);
+		artifactMappingNodeViewer.expandAll();
 	}
 
 }
