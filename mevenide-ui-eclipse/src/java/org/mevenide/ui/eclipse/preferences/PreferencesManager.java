@@ -64,4 +64,21 @@ public class PreferencesManager {
 	public void setValue(String property, String value) {
 		preferenceStore.setValue(property, value);
 	}
+	
+	public boolean getBooleanValue(String property) {
+		return preferenceStore.getBoolean(property);
+	}
+	
+	public void setBooleanValue(String property, boolean value) {
+		preferenceStore.setValue(property, value);
+	}
+	
+	public PreferenceStore getPreferenceStore() {
+		return preferenceStore;
+	}
+
+	public void setPreferenceStore(PreferenceStore store) {
+		preferenceStore = store;
+	}
+
 }

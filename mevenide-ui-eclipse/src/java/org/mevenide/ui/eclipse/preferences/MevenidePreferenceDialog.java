@@ -13,8 +13,11 @@
  */
 package org.mevenide.ui.eclipse.preferences;
 
+import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.DirectoryFieldEditor;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 
 import org.mevenide.ui.eclipse.Mevenide;
@@ -30,22 +33,47 @@ public class MevenidePreferenceDialog {
 	private DirectoryFieldEditor mavenHomeEditor;
 	private DirectoryFieldEditor javaHomeEditor;
 	private DirectoryFieldEditor mavenRepoEditor;
-		
+	private BooleanFieldEditor checkTimestampEditor;
+	
 	private String javaHome ;
 	private String mavenHome ;
 	private String mavenRepository;
+	private boolean checkTimestamp;
 	
+	private PreferencesManager preferencesManager;
+	
+	public MevenidePreferenceDialog(PreferencesManager manager) {
+		this.preferencesManager = manager;
+	}
+
 	public Composite createContent(Composite parent) {
 		topLevelContainer = new Composite(parent, SWT.NULL);
+		GridLayout layout = new GridLayout();
+		layout.numColumns = 3;
+		
 		mavenHomeEditor = createEditor("maven.home", "Maven home", mavenHome);
 		javaHomeEditor = createEditor("java.home", "Java home", javaHome);
 		mavenRepoEditor = createEditor("maven.repo", "Maven Repository", mavenRepository);
+		
+		Composite compositeB = new Composite(parent, SWT.NULL);
+		GridLayout layoutB = new GridLayout();
+		layoutB.numColumns = 3;
+		compositeB.setLayout(layoutB);
+		compositeB.setLayoutData(new GridData(GridData.FILL_BOTH));
+		
+		checkTimestampEditor = new BooleanFieldEditor("mevenide.checktimestamp", "Check timestamp before synchronizing", compositeB);
+		checkTimestampEditor.fillIntoGrid(compositeB, 3);		
+		checkTimestampEditor.setPreferenceStore(preferencesManager.getPreferenceStore());
+		checkTimestampEditor.load();
 		return topLevelContainer;
 	}
 
+	
 	private DirectoryFieldEditor createEditor(String property, String name, String value) {
 		DirectoryFieldEditor editor = new DirectoryFieldEditor(property, name, topLevelContainer);
-		editor.getTextControl(topLevelContainer).setText(value);
+		editor.fillIntoGrid(topLevelContainer, 3);
+		editor.setPreferenceStore(preferencesManager.getPreferenceStore());
+		editor.load();
 		return editor;
 	}
 	
@@ -56,6 +84,8 @@ public class MevenidePreferenceDialog {
 		Mevenide.getPlugin().setJavaHome(javaHome);
 		mavenRepository = mavenRepoEditor.getTextControl(topLevelContainer).getText();
 		Mevenide.getPlugin().setMavenRepository(mavenRepository);
+		checkTimestamp = checkTimestampEditor.getBooleanValue();
+		Mevenide.getPlugin().setCheckTimestamp(checkTimestamp);
 	}
 	
 	
@@ -93,6 +123,15 @@ public class MevenidePreferenceDialog {
 
 	public void setMavenRepo(String string) {
 		mavenRepository = string;
+	}
+	
+	
+	public boolean getCheckTimestamp() {
+		return checkTimestamp;
+	}
+
+	public void setCheckTimestamp(boolean b) {
+		checkTimestamp = b;
 	}
 
 }

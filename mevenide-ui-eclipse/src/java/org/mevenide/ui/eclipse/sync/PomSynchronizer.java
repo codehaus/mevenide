@@ -65,9 +65,11 @@ public class PomSynchronizer extends AbstractPomSynchronizer implements ISynchro
      */
 	protected void mavenize() {
 		try {
+			log.debug("Should check timestamp = " + (Mevenide.getPlugin().getCheckTimestamp()));
 			DependencyGroup dependencyGroup = DependencyGroupMarshaller.getDependencyGroup(project, Mevenide.getPlugin().getFile("statedDependencies.xml"));
 			SourceDirectoryGroup sourceGroup = SourceDirectoryGroupMarshaller.getSourceDirectoryGroup(project, Mevenide.getPlugin().getFile("sourceTypes.xml"));
 			updatePom(sourceGroup, dependencyGroup, Mevenide.getPlugin().getPom());
+			
 		}
 		catch (Exception e) {
 			log.debug("Unable to synchronize project '" + project.getName() + "' due to : " + e);

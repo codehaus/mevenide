@@ -15,11 +15,13 @@
 package org.mevenide.ui.eclipse.preferences;
 
 import org.eclipse.jface.preference.PreferencePage;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
-
 import org.mevenide.ui.eclipse.Mevenide;
 
 /**
@@ -37,18 +39,29 @@ public class MevenidePreferencePage extends PreferencePage implements IWorkbench
     public MevenidePreferencePage() {
         super(Mevenide.getResourceString("MavenPreferencePage.title"));
         //setImageDescriptor(MavenPlugin.getImageDescriptor("sample.gif"));
-        dialog = new MevenidePreferenceDialog();
-       	manager = new PreferencesManager();
-       	manager.loadPreferences();
+		manager = new PreferencesManager();
+		manager.loadPreferences();
+        dialog = new MevenidePreferenceDialog(manager);
+       	
     }
 
 	
 
 	protected Control createContents(Composite parent) {
+		Composite composite = new Composite(parent, SWT.NULL);
+		GridLayout layout = new GridLayout();
+		layout.numColumns = 1;
+		
+		composite.setLayout(layout);
+		composite.setLayoutData(new GridData(GridData.FILL_BOTH));
+		
 		dialog.setJavaHome(manager.getValue("java.home"));
 		dialog.setMavenHome(manager.getValue("maven.home"));
 		dialog.setMavenRepo(manager.getValue("maven.repo"));
-		return dialog.createContent(parent);
+		
+		dialog.setCheckTimestamp(manager.getBooleanValue("mevenide.checktimestamp"));
+		
+		return dialog.createContent(composite);
 	}
   
   
@@ -67,6 +80,8 @@ public class MevenidePreferencePage extends PreferencePage implements IWorkbench
 		manager.setValue("maven.home", dialog.getMavenHome());
 		manager.setValue("java.home", dialog.getJavaHome());
 		manager.setValue("maven.repo", dialog.getMavenRepo());
+		manager.setBooleanValue("mevenide.checktimestamp", dialog.getCheckTimestamp());
+		
 		return manager.store();
 	}
 	
