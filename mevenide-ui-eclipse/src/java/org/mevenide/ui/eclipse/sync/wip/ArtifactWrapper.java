@@ -48,67 +48,29 @@
  */
 package org.mevenide.ui.eclipse.sync.wip;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.maven.project.Dependency;
-import org.apache.maven.project.Resource;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.jdt.core.IClasspathEntry;
+import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jdt.core.JavaModelException;
 
 /**
  * 
- * 
  * @author <a href="mailto:rhill2@free.fr">Gilles Dodinet</a>
  * @version $Id$
- *
+ * 
  */
-public class AddToClasspathAction {
-	private static Log log = LogFactory.getLog(AddToClasspathAction.class);
+public abstract class ArtifactWrapper {
+	public abstract void addTo(IProject project) throws Exception;
 	
-	private List listeners = new ArrayList();
-	
-	public void addEntry(Object item, IProject project) throws Exception {
-		ArtifactWrapper action = getArtifactWrapper(item);
-		if ( action != null ) {
-			action.addTo(project);
-			
-			fireArtifactAddedToClasspath(item, project);
-			
-		}
-	}
-	
-	public void addModelChangeListener(IModelChangeListener listener) {
-		listeners.add(listener);	
-	}
-	
-	public void removeModelChangeListener(IModelChangeListener listener) {
-		listeners.remove(listener);
-	}
-	
-	private void fireArtifactAddedToClasspath(Object item, IProject project) {
-		for (int i = 0; i < listeners.size(); i++) {
-			ArtifactEvent event = new ArtifactEvent(item, project);
-			((IModelChangeListener)listeners.get(i)).artifactAdded(event);
-		}
-	}
-	
-	//crap..
-	private ArtifactWrapper getArtifactWrapper(Object item) {
-		if ( item instanceof Dependency ) {
-			return new DependencyWrapper((Dependency) item);
-		}
-		if ( item instanceof Directory ) {
-			return new DirectoryWrapper((Directory) item);
-		}
-		if ( item instanceof Resource ) {
-			return new ResourceWrapper((Resource) item);
-		}
-		return null;
-	}
-	
-	
-	
+	protected void addClasspathEntry(IClasspathEntry newEntry, IProject project) throws JavaModelException {
+		IJavaProject javaProject = (IJavaProject) JavaCore.create(project);
+		IClasspathEntry[] cpEntries = javaProject.getRawClasspath();
+		IClasspathEntry[] newCpEntries = new IClasspathEntry[cpEntries.length + 1];
 
+		System.arraycopy(cpEntries, 0, newCpEntries, 0, cpEntries.length);
+		newCpEntries[cpEntries.length] = newEntry;
+
+		javaProject.setRawClasspath(newCpEntries, null);
+	}
 }

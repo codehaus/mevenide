@@ -48,13 +48,6 @@
  */
 package org.mevenide.ui.eclipse.sync.wip;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.maven.project.Dependency;
-import org.apache.maven.project.Resource;
 import org.eclipse.core.resources.IProject;
 
 /**
@@ -64,51 +57,21 @@ import org.eclipse.core.resources.IProject;
  * @version $Id$
  *
  */
-public class AddToClasspathAction {
-	private static Log log = LogFactory.getLog(AddToClasspathAction.class);
+public class ArtifactEvent {
+	private Object artifact;
+	private IProject project;
 	
-	private List listeners = new ArrayList();
-	
-	public void addEntry(Object item, IProject project) throws Exception {
-		ArtifactWrapper action = getArtifactWrapper(item);
-		if ( action != null ) {
-			action.addTo(project);
-			
-			fireArtifactAddedToClasspath(item, project);
-			
-		}
+	public ArtifactEvent(Object item, IProject project) {
+	    this.artifact = item;
+	    this.project = project;
 	}
 	
-	public void addModelChangeListener(IModelChangeListener listener) {
-		listeners.add(listener);	
+	public Object getArtifact() {
+		return artifact;
 	}
-	
-	public void removeModelChangeListener(IModelChangeListener listener) {
-		listeners.remove(listener);
+
+	public IProject getProject() {
+		return project;
 	}
-	
-	private void fireArtifactAddedToClasspath(Object item, IProject project) {
-		for (int i = 0; i < listeners.size(); i++) {
-			ArtifactEvent event = new ArtifactEvent(item, project);
-			((IModelChangeListener)listeners.get(i)).artifactAdded(event);
-		}
-	}
-	
-	//crap..
-	private ArtifactWrapper getArtifactWrapper(Object item) {
-		if ( item instanceof Dependency ) {
-			return new DependencyWrapper((Dependency) item);
-		}
-		if ( item instanceof Directory ) {
-			return new DirectoryWrapper((Directory) item);
-		}
-		if ( item instanceof Resource ) {
-			return new ResourceWrapper((Resource) item);
-		}
-		return null;
-	}
-	
-	
-	
 
 }
