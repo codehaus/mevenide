@@ -28,7 +28,7 @@ import org.mevenide.project.dependency.IDependencyResolver;
  *
  * @author  Milos Kleint (mkleint@codehaus.org)
  */
-class LocalRepositoryReader implements IRepositoryReader {
+class LocalRepositoryReader extends AbstractRepositoryReader {
     private File rootRepository;
     /** Creates a new instance of LocalRepositoryReader */
     public LocalRepositoryReader(File rootFile) {
@@ -51,7 +51,7 @@ class LocalRepositoryReader implements IRepositoryReader {
     
     private RepoPathElement[] getChildren(File[] files, RepoPathElement element) {
         Collection col = new ArrayList();
-        IDependencyResolver resolver = new DefaultDependencyResolver();
+        DefaultDependencyResolver resolver = new DefaultDependencyResolver();
         Collection knownArtifacts = new HashSet();
         for (int i = 0; i < files.length; i++) {
             RepoPathElement elem = null;
@@ -73,14 +73,7 @@ class LocalRepositoryReader implements IRepositoryReader {
             else if (element.getLevel() == RepoPathElement.LEVEL_TYPE) {
                 if (files[i].isFile()) {
                     resolver.setFileName(files[i].getAbsolutePath());
-                    if (element.getType().equals(resolver.guessType()) 
-                        && resolver.guessArtifactId() != null) {
-                        if (!knownArtifacts.contains(resolver.guessArtifactId())) {
-                            knownArtifacts.add(resolver.guessArtifactId());
-                            elem = copyElement(element);
-                            elem.setArtifactId(resolver.guessArtifactId());
-                        }
-                    }
+                    elem = levelTypeCheck(element, resolver, knownArtifacts);
                 }
             }
             else if (element.getLevel() == RepoPathElement.LEVEL_ARTIFACT) {
@@ -88,21 +81,7 @@ class LocalRepositoryReader implements IRepositoryReader {
                           && files[i].getName().startsWith(element.getArtifactId())) {
                     
                     resolver.setFileName(files[i].getAbsolutePath());
-                    if (element.getType().equals(resolver.guessType()) 
-                        && element.getArtifactId().equals(resolver.guessArtifactId())
-                        && resolver.guessVersion() != null) {
-                            boolean filterOut = true;
-                            if ("plugin".equals(element.getType()) && "jar".equals(resolver.guessExtension())) {
-                                filterOut = false;
-                            } else if (resolver.guessType().equals(resolver.guessExtension())) {
-                                //default behaviour, take only *.jar in jars/ etc.
-                                filterOut = false;
-                            }
-                            if (!filterOut) {
-                                elem = copyElement(element);
-                                elem.setVersion(resolver.guessVersion());
-                            }
-                    }
+                    elem = levelArtifactCheck(element, resolver);
                 }
             }
             if (elem != null) {
@@ -113,15 +92,4 @@ class LocalRepositoryReader implements IRepositoryReader {
         return (RepoPathElement[])col.toArray(elems);
         
     }
-    
-    
-    private RepoPathElement copyElement(RepoPathElement old) {
-        RepoPathElement el = new RepoPathElement(this);
-        el.setArtifactId(old.getArtifactId());
-        el.setGroupId(old.getGroupId());
-        el.setType(old.getType());
-        el.setVersion(old.getVersion());
-        return el;
-    }
-
 }

@@ -104,10 +104,9 @@ public class LocalRepositoryReaderTest extends TestCase {
         RepoPathElement pluginType = new RepoPathElement(reader);
         pluginType.setGroupId("group1");
         pluginType.setType("plugin");
-        RepoPathElement[] plugins = jarType.getChildren();
+        RepoPathElement[] plugins = pluginType.getChildren();
         assertNotNull(plugins);
         assertEquals(2, plugins.length);
-        
     }
     
 }

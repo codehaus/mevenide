@@ -16,7 +16,7 @@
             <type>jar</type>
             <url>http://www.apache.org</url>
             <properties>
-                <netbeans.module.lib>true</netbeans.module.lib>
+                <netbeans.module.ext>true</netbeans.module.ext>
             </properties>
         </dependency>
         <dependency>
@@ -24,7 +24,16 @@
             <artifactId>commons-logging</artifactId>
             <version>1.0.3</version>
             <type>jar</type>
+            <properties>
+                <netbeans.module.dep>spec=org.netbeans.libs.commons_logging/1 &gt; 1.0</netbeans.module.dep>
+            </properties>
             <url>http://www.apache.org</url>
+        </dependency>
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.8</version>
+            <type>jar</type>
         </dependency>
         <dependency>
             <groupId>mevenide</groupId>
