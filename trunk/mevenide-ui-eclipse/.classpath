@@ -41,5 +41,7 @@
 	<classpathentry sourcepath="ECLIPSE_HOME/plugins/org.eclipse.platform.source_3.0.0/src/org.eclipse.ui.forms_3.0.0/formssrc.zip" kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.ui.forms_3.0.0/forms.jar"/>
 	<classpathentry kind="src" path="/mevenide-grammar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/plexus/jars/plexus-0.6.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/dom4j/jars/dom4j-1.4-dev-8.jar"/>
+	<classpathentry kind="lib" path="deps/mavenzilla-0.1.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
