@@ -52,6 +52,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Text;
 import org.mevenide.ui.eclipse.Mevenide;
@@ -74,6 +75,7 @@ public class OverridableTextEntry extends TextEntry {
         Mevenide.getResourceString("OverridableTextEntry.toggle.tooltip.overriden");
 
     private Button overrideToggle;
+	private Button browseButton;
     private boolean inherited;
 
     private class OverridableSelectionAdapter extends SelectionAdapter {
@@ -86,21 +88,26 @@ public class OverridableTextEntry extends TextEntry {
         public void widgetSelected(SelectionEvent e) {
             toggleOverride();
             if (isInherited()) {
-                setText(adaptor.getParentProjectAttribute());
-				adaptor.updateProject(null);
+                setText(adaptor.acceptParent());
+				adaptor.overrideParent(null);
             }
             else {
                 setText(null);
-				adaptor.updateProject("");
+				adaptor.overrideParent("");
             }
 			adaptor.refreshUI();
         }
     }
 
     public OverridableTextEntry(Text text, Button overrideToggle) {
-        super(text);
-        this.overrideToggle = overrideToggle;
+        this(text, overrideToggle, null);
     }
+
+	public OverridableTextEntry(Text text, Button overrideToggle, Button browseButton) {
+		super(text);
+		this.overrideToggle = overrideToggle;
+		this.browseButton = browseButton;
+	}
 
     public void addOverrideAdaptor(IOverrideAdaptor adaptor) {
         if (overrideToggle != null) {
@@ -129,10 +136,19 @@ public class OverridableTextEntry extends TextEntry {
         if (overrideToggle != null) {
             overrideToggle.setSelection(!enable);
         }
+        if (browseButton != null) {
+        	browseButton.setEnabled(enable);
+        }
     }
 
     protected void toggleOverride() {
         setInherited(!inherited);
+    }
+
+    public void addBrowseButtonListener(SelectionListener listener) {
+    	if (browseButton != null) {
+    		browseButton.addSelectionListener(listener);
+    	}
     }
 
 }
