@@ -107,7 +107,9 @@ public class DefaultDependencyResolver implements IDependencyResolver {
 		if ( firstLevelParent != null && firstLevelParent.getParentFile() != null ) {
 			groupId = firstLevelParent.getParentFile().getName();
 		}
-		if ( !DependencyUtil.isValidGroupId(groupId) ) groupId = null;
+		if ( !DependencyUtil.isValidGroupId(groupId) ) {
+			groupId = null;
+		}
 	}
 
 	public String guessArtifactId() {

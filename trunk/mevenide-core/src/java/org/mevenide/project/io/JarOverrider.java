@@ -74,8 +74,8 @@ class JarOverrider {
 	
 	private ProjectWriter writer;
 	
-	JarOverrider(ProjectWriter writer) {
-		this.writer = writer;
+	JarOverrider(ProjectWriter projectWriter) {
+		this.writer = projectWriter;
 	}
 	
 	void jarOverride(String path, File propertiesFile, File pom) throws Exception {

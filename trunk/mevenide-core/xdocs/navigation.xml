@@ -20,8 +20,9 @@
         
         <menu name="Mevenide">
         	<item name="Mevenide" href="../index.html"/>
-            <item name="Mevenide Goals Grabber" href="../mevenide-goals-grabber/index.html"/>
+            <item name="Goals Grabber" href="../mevenide-goals-grabber/index.html"/>
         	<item name="Mevenide Eclipse" href="../mevenide-ui-eclipse/index.html"/>
+        	<item name="MEP Plugin" href="../maven-eclipse-plugin-plugin/index.html"/>
         </menu>
         
         <!-- search/ -->

@@ -62,7 +62,7 @@ import org.mevenide.Environment;
  * @version $Id: ArgumentsManager.java 8 mai 2003 17:12:5913:34:35 Exp gdodinet 
  * 
  */
-public class ArgumentsManager {
+public final class ArgumentsManager {
 
 	private ArgumentsManager() {
 	}

@@ -52,13 +52,13 @@ import java.io.File;
 
 /**
  * 
- * @todo make it non-static (f.i. abstract wrapper on subclasses defined in concrete mevenide implementations)  
+ * @todo make it non-static, non-final and abstract (f.i. abstract wrapper on subclasses defined in concrete mevenide implementations)  
  * 
  * @author Gilles Dodinet (gdodinet@wanadoo.fr)
  * @version $Id: Environment.java,v 1.1 21 avr. 2003 10:42:2213:34:35 Exp gdodinet
  * 
  */
-public class Environment {
+public final class Environment {
 
 	private Environment()  {
 	}
@@ -181,8 +181,8 @@ public class Environment {
 	/**
 	 * set maximum java heap size - passed as vm argument (Xmx) when launching maven
 	 */
-    public static void setHeapSize(int heapSize) {
-        Environment.heapSize = heapSize;
+    public static void setHeapSize(int hSize) {
+        Environment.heapSize = hSize;
     }
 
 	/**
@@ -198,8 +198,8 @@ public class Environment {
 	/**
 	 * set maven local installation directory
 	 */
-    public static void setMavenLocalHome(String mavenLocalHome) {
-        Environment.mavenLocalHome = mavenLocalHome;
+    public static void setMavenLocalHome(String mLocalHome) {
+        Environment.mavenLocalHome = mLocalHome;
     }
 	
 	

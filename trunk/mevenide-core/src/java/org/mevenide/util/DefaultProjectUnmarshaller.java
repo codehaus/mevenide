@@ -58,9 +58,7 @@ package org.mevenide.util;
 
 import java.io.IOException;
 import java.io.Reader;
-import java.util.Properties;
 
-import org.mevenide.util.DeprecationWarning;
 import org.apache.maven.project.Build;
 import org.apache.maven.project.Contributor;
 import org.apache.maven.project.Dependency;
@@ -420,9 +418,9 @@ public class DefaultProjectUnmarshaller
                                 }
                                 else if ( parser.getName().equals( "jar" ) )
                                 {
-                                   String msg = "You should be using <artifact> tag " +
-                                              "instead of <jar> for Dependency: " + 
-                                              d.getId(); 
+                                   String msg = "You should be using <artifact> tag " 
+                                   				+ "instead of <jar> for Dependency: " 
+                                   				+ d.getId(); 
                                    DeprecationWarning.warn( msg );                                   
                                    d.setJar( parser.nextText() );
                                 }
@@ -458,7 +456,6 @@ public class DefaultProjectUnmarshaller
 									//d.setProperties( properties );
 									
 									//gdodinet
-									Properties props = new Properties();
 									while ( parser.nextTag() == XmlPullParser.START_TAG) {
 										String pname = parser.getName();
 										

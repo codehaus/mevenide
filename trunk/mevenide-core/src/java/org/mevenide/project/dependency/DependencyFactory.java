@@ -49,8 +49,6 @@
 package org.mevenide.project.dependency;
 
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Dependency;
 
 /**
@@ -60,7 +58,7 @@ import org.apache.maven.project.Dependency;
  * 
  */
 public class DependencyFactory {
-	private static final Log log = LogFactory.getLog(DependencyFactory.class);
+	
 
 	private DependencyFactory() {
 	}

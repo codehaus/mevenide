@@ -56,7 +56,9 @@ import org.apache.maven.project.Resource;
  * @version $Id$
  * 
  */
-public class ResourceUtil {
+public final class ResourceUtil {
+
+	private ResourceUtil() { }
 
 	/**
 	 * construct a Resource from a given path, including ALL children

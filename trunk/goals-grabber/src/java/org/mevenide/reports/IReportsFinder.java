@@ -55,6 +55,6 @@ package org.mevenide.reports;
  * 
  */
 public interface IReportsFinder {
-    public abstract String[] findReports() throws Exception;
+    String[] findReports() throws Exception;
 }
 

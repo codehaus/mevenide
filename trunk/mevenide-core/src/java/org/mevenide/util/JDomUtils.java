@@ -61,7 +61,7 @@ import org.jdom.output.XMLOutputter;
  * @version $Id$
  * 
  */
-public class JDomUtils {
+public final class JDomUtils {
 	
 	private JDomUtils() {
 	}

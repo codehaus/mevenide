@@ -49,7 +49,6 @@
 package org.mevenide.project.io;
 import java.io.File;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
@@ -97,7 +96,7 @@ public class ProjectWriter {
 		projectReader = ProjectReader.getReader();
 	}
 	
-	public synchronized static ProjectWriter getWriter() throws Exception {
+	public static synchronized ProjectWriter getWriter() throws Exception {
 		if (projectWriter == null) {
 			projectWriter = new ProjectWriter();
 		}
@@ -184,7 +183,7 @@ public class ProjectWriter {
 		
 	}
 
-	void write(Project project, File pom) throws IOException, Exception {
+	void write(Project project, File pom) throws Exception {
 		Writer writer = new FileWriter(pom, false);
 		marshaller.marshall(writer, project);
 		writer.close();
@@ -227,8 +226,8 @@ public class ProjectWriter {
 //				project.getBuild().getUnitTest().setResources(new ArrayList());
 //			}
 			
-			IProjectMarshaller marshaller = new DefaultProjectMarshaller();
-			marshaller.marshall(new FileWriter(pomFile), project);
+			IProjectMarshaller iProjectMarshaller = new DefaultProjectMarshaller();
+			iProjectMarshaller.marshall(new FileWriter(pomFile), project);
 	
 		}
 	}
@@ -243,7 +242,7 @@ public class ProjectWriter {
 		else {
 			project.setExtend(parentPom);
 		}
-		IProjectMarshaller marshaller = new DefaultProjectMarshaller();
-		marshaller.marshall(new FileWriter(pomFile), project);
+		IProjectMarshaller iProjectMarshaller = new DefaultProjectMarshaller();
+		iProjectMarshaller.marshall(new FileWriter(pomFile), project);
 	}
 }

@@ -66,7 +66,7 @@ import org.mevenide.util.MevenideUtils;
  * @version $Id$
  * 
  */
-public class DependencyUtil {
+public final class DependencyUtil {
 	private static Log log = LogFactory.getLog(DependencyUtil.class);
 	
 	private DependencyUtil() {}
@@ -82,10 +82,8 @@ public class DependencyUtil {
 	}
 	
 	static boolean areEquals(String s1, String s2) {
-		return  (s1 == null && s2 == null) ||
-				(
-				    s1 != null && s1.equals(s2)
-				);
+		return  (s1 == null && s2 == null) 
+				|| ( s1 != null && s1.equals(s2) );
 	}
 	
 	public static boolean conflict(Dependency d1, Dependency d2) {

@@ -16,6 +16,7 @@
         <item name="Mevenide" href="../index.html"/>
         <item name="Mevenide Core" href="../mevenide-core/index.html"/>
         <item name="Mevenide Eclipse" href="../mevenide-ui-eclipse/index.html"/>
+        <item name="MEP Plugin" href="../maven-eclipse-plugin-plugin/index.html"/>
    </menu>
    
    <!-- search/ -->

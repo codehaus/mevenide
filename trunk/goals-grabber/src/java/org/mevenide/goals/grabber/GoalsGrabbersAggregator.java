@@ -52,9 +52,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 /**  
  * 
  * @author Gilles Dodinet (gdodinet@wanadoo.fr)
@@ -62,7 +59,7 @@ import org.apache.commons.logging.LogFactory;
  * 
  */
 public class GoalsGrabbersAggregator implements IGoalsGrabber {
-	private static Log log = LogFactory.getLog(GoalsGrabbersAggregator.class);
+	
 	
 	private List goalsGrabbers = new ArrayList();
 	
@@ -135,8 +132,8 @@ public class GoalsGrabbersAggregator implements IGoalsGrabber {
         return goalsGrabbers;
     }
 
-    public void setGoalsGrabbers(List goalsGrabbers) {
-        this.goalsGrabbers = goalsGrabbers;
+    public void setGoalsGrabbers(List grabbers) {
+        this.goalsGrabbers = grabbers;
     }
 
 }

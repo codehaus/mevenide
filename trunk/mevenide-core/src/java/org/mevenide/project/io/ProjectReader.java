@@ -49,9 +49,7 @@
 package org.mevenide.project.io;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.IOException;
 import java.io.Reader;
 import java.util.HashMap;
 import java.util.List;
@@ -77,9 +75,8 @@ public class ProjectReader {
 	private DefaultProjectUnmarshaller unmarshaller ; 
 	
 	private static ProjectReader projectReader = null;
-	private static Object lock = new Object();
 	
-	public synchronized static ProjectReader getReader() throws Exception {
+	public static synchronized ProjectReader getReader() throws Exception {
 		if (projectReader == null) {
 			projectReader = new ProjectReader();
 		}
@@ -93,13 +90,8 @@ public class ProjectReader {
 	/**
 	 * return the instance of org.apache.maven.project.Project derivated from pom
 	 * 
-	 * @param pom
-	 * @return
-	 * @throws FileNotFoundException
-	 * @throws Exception
-	 * @throws IOException
 	 */
-	public Project read(File pom) throws FileNotFoundException, Exception, IOException {
+	public Project read(File pom) throws Exception {
 		Reader reader = new FileReader(pom);
 		Project project = unmarshaller.parse(reader);
 		reader.close();
@@ -163,7 +155,7 @@ public class ProjectReader {
 	 * @throws Exception
 	 * @throws IOException
 	 */
-	public Dependency extractDependency(File referencedPom) throws FileNotFoundException, Exception, IOException {
+	public Dependency extractDependency(File referencedPom) throws Exception {
 		Project referencedProject = read(referencedPom);
 		Dependency dependency = new Dependency();
 		dependency.setGroupId(referencedProject.getGroupId());
@@ -208,7 +200,7 @@ public class ProjectReader {
 		return allResources;
 	}
 	
-	private Build getBuild(File pom) throws Exception, FileNotFoundException {
+	private Build getBuild(File pom) throws Exception {
 		Project project; 
 		if ( pom != null ) {
 			project = new DefaultProjectUnmarshaller().parse(new FileReader(pom));

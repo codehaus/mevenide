@@ -21,14 +21,22 @@
 	    				<li>public String getDescription(String fullyQualifiedGoalName);</li>	
 	    			</ul>
 	    		</code>	
-	    		<br/>
 	    		There are three implementations available : 
 	    		<ul>
 	    			<li>DefaultGoalsGrabber that grabs the goals cached in $${user.home}/.maven/plugins/goals.cache</li>
 	    			<li>ProjectGoalsGrabber that grabs the user defined goals declared in a maven.xml file</li>
 	    			<li>GoalsGrabberAggregator that only aggregates various IGoalsGrabber</li>
 	    		</ul>
-    		
+    		    <br/>
+    		</p>
+    		<p>
+     			This project also provides a simple Maven Reports Grabbing mechanism through the IReportsFinder interface which defines the following method :
+     			<code>
+	    			<ul>
+	    				<li>public String[] findReports();</li>	
+	    			</ul>
+	    		</code>	
+	    		A basic implementation is provided which simply greps for <code><![CDATA[ <doc:registerReport ]]></code> in the Maven plugins directory. Original code for grepping by Ute Schneider.
     		</p>
 		</section>
     </body>

@@ -59,7 +59,7 @@ import org.mevenide.project.ProjectConstants;
  * @version $Id$
  * 
  */
-public class SourceDirectoryUtil {
+public final class SourceDirectoryUtil {
 	
 	private SourceDirectoryUtil() {
 	}

@@ -56,7 +56,7 @@ package org.mevenide.project.dependency;
  * 
  */
 public interface IDependencyResolver {
-	public void setFileName(String fileName);
+	void setFileName(String fileName);
 	
 
 	/**
@@ -64,7 +64,7 @@ public interface IDependencyResolver {
 	 * 
 	 * @return guessed artifactId
 	 */
-	public abstract String guessArtifactId();
+	String guessArtifactId();
 	
 	/**
 	 * try to find the version  of the artifact, if possible
@@ -74,7 +74,7 @@ public interface IDependencyResolver {
 	 * 
 	 * @return guessed version
 	 */
-	public abstract String guessVersion();
+	String guessVersion();
 	
 	/**
 	 * get the last extension of the file. specs are not clear yet..
@@ -87,12 +87,12 @@ public interface IDependencyResolver {
 	 * 
 	 * @return the last extension of the file
 	 */
-	public abstract String guessExtension();
+	String guessExtension();
 	
 	/**
 	 * try to guess the groupId if the file isnot present in the repository
 	 * 
 	 * @return guessed groupId
 	 */
-	public abstract String guessGroupId() ;
+	String guessGroupId() ;
 }
