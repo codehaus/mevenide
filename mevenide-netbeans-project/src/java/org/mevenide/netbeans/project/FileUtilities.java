@@ -103,27 +103,27 @@ public final class FileUtilities {
     public static URI getDependencyURI(Dependency dependency, MavenProject project) {
         ILocationFinder finder = project.getLocFinder();
         File repo = new File(finder.getMavenLocalRepository());
-        return getDependencyURI(dependency, repo);
+        return getDependencyURI(dependency, repo, project.getPropertyResolver());
     }
     
-    static URI getDependencyURI(Dependency dependency, File repoFile) {
+    static URI getDependencyURI(Dependency dependency, File repoFile, IPropertyResolver res) {
         StringBuffer buff = new StringBuffer();
-        buff.append(dependency.getArtifactDirectory());
+        buff.append(res.resolveString(dependency.getArtifactDirectory()));
         buff.append(File.separator);
-        String type = dependency.getType();
+        String type = res.resolveString(dependency.getType());
         buff.append(type != null ? type : "jar"); //NOI18N
         buff.append("s"); //NOI18N
         buff.append(File.separator);
         if (dependency.getJar() == null) {
-            String id = dependency.getArtifactId();
-            buff.append(id != null ? id : dependency.getId());
+            String id = res.resolveString(dependency.getArtifactId());
+            buff.append(id != null ? id : res.resolveString(dependency.getId()));
             buff.append("-"); //NOI18N
-            buff.append(dependency.getVersion());
+            buff.append(res.resolveString(dependency.getVersion()));
             buff.append("."); //NOI18N
-            String extension = dependency.getExtension();
+            String extension = res.resolveString(dependency.getExtension());
             buff.append(extension != null ? extension : "jar"); //NOI18N
         } else {
-            buff.append(dependency.getJar());
+            buff.append(res.resolveString(dependency.getJar()));
         }
         File file = new File(repoFile, buff.toString());
         file = FileUtil.normalizeFile(file);
