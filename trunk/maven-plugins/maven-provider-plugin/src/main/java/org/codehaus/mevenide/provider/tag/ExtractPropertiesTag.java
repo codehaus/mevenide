@@ -20,11 +20,14 @@ package org.codehaus.mevenide.provider.tag;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import org.apache.commons.jelly.JellyException;
+import org.apache.commons.jelly.JellyTagException;
 import org.apache.commons.jelly.MissingAttributeException;
 import org.apache.commons.jelly.TagSupport;
 import org.apache.commons.jelly.XMLOutput;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.codehaus.mevenide.provider.GrabberException;
 import org.codehaus.mevenide.provider.PropertyGrabber;
 import org.mevenide.environment.ILocationFinder;
 import org.mevenide.environment.LocationFinderAggregator;
@@ -64,11 +67,17 @@ public class ExtractPropertiesTag extends TagSupport {
     
     private PropertyGrabber grabber;
     
-    public void doTag(XMLOutput arg0) throws Exception {
-        validate();
-        initialize();
-        grabber.grab();
-        outputDescription();
+    public void doTag(XMLOutput arg0) throws MissingAttributeException, JellyTagException {
+        try {
+            validate();
+            initialize();
+            grabber.grab();
+            outputDescription();
+        }
+        catch (Exception e) {
+            throw new JellyTagException(e);
+        }
+        
     }
 
     private void validate() throws Exception {
