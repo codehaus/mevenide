@@ -21,8 +21,8 @@
   <siteDirectory>${user.home}/.mevenide/${pom.artifactId}</siteDirectory>
   
   <repository>
-    <connection>scm:cvs:pserver:anonymous@cvs.sourceforge.net:/cvsroot/mevenide/${pom.artifactId}</connection>
-    <developerConnection>scm:cvs:ext:${maven.username}@cvs.sourceforge.net:/cvsroot/mevenide/${pom.artifactId}</developerConnection>
+    <connection>scm:cvs:pserver:anonymous@cvs.sourceforge.net:/cvsroot/mevenide:${pom.artifactId}</connection>
+    <developerConnection>scm:cvs:ext:${maven.username}@cvs.sourceforge.net:/cvsroot/mevenide:${pom.artifactId}</developerConnection>
     <url>http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/mevenide/${pom.artifactId}/</url>
   </repository>
  
