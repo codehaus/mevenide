@@ -41,20 +41,28 @@ public class DefaultResourceResolver implements IResourceResolver  {
 		
 		for (int i = 0; i < similar.size(); i++) {
 			Resource similarResource = (Resource) similar.get(i);
-			for (int j = 0; j < similarResource.getIncludes().size(); j++) {
-				if ( !resource.getIncludes().contains(similarResource.getIncludes().get(j)) ) {
-					resource.getIncludes().add(similarResource.getIncludes().get(j));
-				}
-			}
-			for (int j = 0; j < similarResource.getExcludes().size(); j++) {
-				if ( !resource.getExcludes().contains(similarResource.getExcludes().get(j)) ) {
-					resource.getExcludes().add(similarResource.getExcludes().get(j));
-				}
-			}
+			mergeIncludes(resource, similarResource);
+			mergeExcludes(resource, similarResource);
 			project.getBuild().getResources().remove(similarResource);
 		}
 		
 		project.getBuild().addResource(resource);
+	}
+
+	private void mergeExcludes(Resource resource, Resource similarResource) {
+		for (int j = 0; j < similarResource.getExcludes().size(); j++) {
+			if ( !resource.getExcludes().contains(similarResource.getExcludes().get(j)) ) {
+				resource.getExcludes().add(similarResource.getExcludes().get(j));
+			}
+		}
+	}
+
+	private void mergeIncludes(Resource resource, Resource similarResource) {
+		for (int j = 0; j < similarResource.getIncludes().size(); j++) {
+			if ( !resource.getIncludes().contains(similarResource.getIncludes().get(j)) ) {
+				resource.getIncludes().add(similarResource.getIncludes().get(j));
+			}
+		}
 	}
 
 	private List getSimilarResources(Project project, Resource resource) {
