@@ -16,11 +16,12 @@
  */
 package org.mevenide.properties.resolver;
 
-import java.lang.reflect.Field;
+import java.util.List;
 import java.util.StringTokenizer;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Project;
+import org.jdom.Element;
 import org.mevenide.context.IQueryContext;
 import org.mevenide.properties.IPropertyFinder;
 
@@ -45,50 +46,28 @@ public class ProjectWalker2 implements IPropertyFinder {
         if (!key.startsWith("pom.")) {
             return null;
         }
-        Project proj = context.getPOMContext().getFinalProject();
+        Element proj = context.getPOMContext().getRootProjectElement();
         if (proj == null) {
             return null;
         }
         StringTokenizer tok = new StringTokenizer(key, ".", false);
         // skip "pom."
         tok.nextToken();
-        Object currentReflectionObject = proj;
+        Element currentElement = proj;
         while (tok.hasMoreTokens()) {
             String next = tok.nextToken();
-//            next = "get" + Character.toUpperCase(next.charAt(0)) + next.substring(1);
-            try {
-                
-                Field f = currentReflectionObject.getClass().getDeclaredField(next);
-                f.setAccessible(true);
-                currentReflectionObject = f.get(currentReflectionObject);
-                f.setAccessible(false);
-            } catch (NoSuchFieldException exc) {
-                //try to get the field from the superclass
-                try {
-                    Field f = currentReflectionObject.getClass().getSuperclass().getDeclaredField(next);
-                    f.setAccessible(true);
-                    currentReflectionObject = f.get(currentReflectionObject);
-                    f.setAccessible(false);
-                }
-                catch (Exception e) {
-	                currentReflectionObject = null;
-                    logger.error("wrong pom definition=" + key, e);
-                }
-            } catch (Exception exc3) {
-                // illegataccess + illegalargument
-                currentReflectionObject = null;
-                logger.error("wrong pom definition=" + key, exc3);
-            }
-            if (currentReflectionObject == null) {
+            List nextEl = currentElement.getChildren(next);
+            if (nextEl != null && nextEl.size() == 1) {
+                currentElement = (Element)nextEl.iterator().next();
+            } else {
+                currentElement = null;
                 break;
             }
         }
-        if (currentReflectionObject != null && currentReflectionObject instanceof String) {
-            return currentReflectionObject.toString();
+        if (currentElement != null) {
+            return currentElement.getText();
         }
-        if (currentReflectionObject != null && (! (currentReflectionObject instanceof String))) {
-            logger.warn("not a string pom value=" + key + " class=" + currentReflectionObject.getClass());
-        }
+        logger.debug("could not find=" + key + ". Maybe it's not defined in the current POM or it's badly formed");
         return null;
     }
     
