@@ -30,6 +30,7 @@ import org.mevenide.environment.ConfigUtils;
 import org.mevenide.environment.ILocationFinder;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.MevenidePreferenceKeys;
+import org.mevenide.util.StringUtils;
 
 
 /**  
@@ -130,7 +131,7 @@ public class LocationPreferencePage extends PreferencePage implements IWorkbench
 	}
 	
 	private boolean isNull(DirectoryFieldEditor editor) {
-        return editor.getStringValue() == null || editor.getStringValue().trim().equals("");
+        return StringUtils.isNull(editor.getStringValue());
     }
 	
     public boolean performOk() {
