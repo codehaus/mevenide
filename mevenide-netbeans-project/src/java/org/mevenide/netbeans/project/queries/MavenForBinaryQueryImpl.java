@@ -111,9 +111,13 @@ public class MavenForBinaryQueryImpl implements SourceForBinaryQueryImplementati
                 if (url.equals(srcUrl)) {
                     return 0;
                 }
-                URL testsrcUrl = project.getTestBuildClassesDir().toURL();
-                if (url.equals(testsrcUrl)) {
-                    return 1;
+                URI uri = project.getTestBuildClassesDir();
+                if (uri != null) {
+                    // can be null in some obscrure cases.
+                    URL testsrcUrl = uri.toURL();
+                    if (url.equals(testsrcUrl)) {
+                        return 1;
+                    }
                 }
             } catch (MalformedURLException exc) {
                 logger.warn("exception maplformed url.", exc);
