@@ -53,13 +53,5 @@
   
    <reports>
         <report>maven-changes-plugin</report> 
-	<report>maven-pmd-plugin</report>
-   	<report>maven-checkstyle-plugin</report>
-   	<report>maven-simian-plugin</report>
-        <report>maven-jxr-plugin</report>
-        <report>maven-javadoc-plugin</report>
-        <report>maven-changelog-plugin</report>
-        <report>maven-file-activity-plugin</report>
-	<report>maven-developer-activity-plugin</report>        
    </reports>
 </project>
