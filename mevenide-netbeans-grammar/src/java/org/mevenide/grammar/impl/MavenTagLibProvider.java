@@ -33,6 +33,8 @@ import org.mevenide.environment.ILocationFinder;
 import org.mevenide.environment.LocationFinderAggregator;
 import org.mevenide.grammar.TagLib;
 import org.mevenide.grammar.TagLibProvider;
+import org.mevenide.grammar.impl.JellyDefineTagLibImpl;
+import org.mevenide.netbeans.grammar.MavenGrammarModule;
 
 /**
  * a TagLibProvider that will retrieve tagLibs from the MAVEN_LOCAL_REPO/plugins/dynatag.cache

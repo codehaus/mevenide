@@ -16,7 +16,11 @@
  */
 package org.mevenide.grammar.impl;
 
+import java.io.File;
 import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.Collection;
 
 import junit.framework.TestCase;
@@ -29,8 +33,20 @@ import org.jdom.Element;
  */
 public class JellyDefineTagLibImplTest extends TestCase {
 
+    private static ClassLoader mavenClassLoader;
     
     protected void setUp() throws Exception {
+        String maven_home = System.getProperty("user.home") + "/" + "maven";//NOI18N
+        File pluginDir = new File(maven_home, "plugin");
+        File jar = new File(pluginDir, "maven.jar");
+        try {
+            URL url = jar.toURL();
+            mavenClassLoader = new URLClassLoader(new URL[] {url});
+        } catch (MalformedURLException exc)
+        {
+            System.out.println("error" + exc);
+        }
+        
     }
 
     protected void tearDown() throws Exception {
