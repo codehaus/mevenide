@@ -70,7 +70,7 @@ public class MavenPlugin extends AbstractUIPlugin {
             
             mavenHome = preferenceStore.getString("maven.home");
             javaHome = preferenceStore.getString("java.home");
-            		
+            mavenRepository = preferenceStore.getString("maven.repo");
 		} 
 		catch (Exception x) {
 			x.printStackTrace();
