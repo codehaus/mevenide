@@ -46,8 +46,8 @@ public class ActionProviderImpl implements ActionProvider
             ActionProvider.COMMAND_BUILD,
             ActionProvider.COMMAND_CLEAN,
             ActionProvider.COMMAND_REBUILD, 
-            "javadoc",
-            "test"
+            "javadoc", //NOI18N
+            "test" //NOI18N
         };
     /** Creates a new instance of ActionProviderImpl */
     public ActionProviderImpl(MavenProject proj)
@@ -80,11 +80,11 @@ public class ActionProviderImpl implements ActionProvider
         if ("javadoc".equals(goal)) {
             task.addTaskListener(new TaskListener() {
                 public void taskFinished(Task task2) {
-                    String javadoc = project.getPropertyResolver().getResolvedValue("maven.javadoc.destdir");
+                    String javadoc = project.getPropertyResolver().getResolvedValue("maven.javadoc.destdir"); //NOI18N
                     if (javadoc == null) {
                         return;
                     }
-                    File fil = new File(javadoc, "index.html");
+                    File fil = new File(javadoc, "index.html"); //NOI18N
                     if (fil.exists()) {
                         try {
                             HtmlBrowser.URLDisplayer.getDefault().showURL(fil.toURI().toURL());
@@ -105,6 +105,9 @@ public class ActionProviderImpl implements ActionProvider
     public Action createBasicMavenAction(String name, String goals) {
         return new BasicAction(name, goals);
     }
+    public Action createMultiProjectAction(String name, String goals) {
+        return new MultiProjectAction(name, goals);
+    }
     
     private class BasicAction extends AbstractAction {
         private String nm;
@@ -120,4 +123,24 @@ public class ActionProviderImpl implements ActionProvider
             ActionProviderImpl.this.invokeAction(gls, ActionProviderImpl.this.project.getLookup());
         }
     }
+    
+    private class MultiProjectAction extends AbstractAction {
+        private String nm;
+        private String gls;
+        
+        
+        private MultiProjectAction(String name, String goals) {
+            gls = goals;
+            putValue(Action.NAME, name);
+        }
+        
+        public void actionPerformed(java.awt.event.ActionEvent e) {
+            if ("clean".equals(gls)) {
+                ActionProviderImpl.this.invokeAction("multiproject:clean", ActionProviderImpl.this.project.getLookup());
+                return;
+            }
+            ActionProviderImpl.this.invokeAction("multiproject:goal -Dgoal=" + gls, ActionProviderImpl.this.project.getLookup());
+        }
+    }
+
 }
