@@ -19,6 +19,8 @@ import java.io.File;
 
 
 
+
+
 public class AbstractGoalsManagerStub extends AbstractGoalsManager {
 	
 	public AbstractGoalsManagerStub() {
@@ -34,5 +36,6 @@ public class AbstractGoalsManagerStub extends AbstractGoalsManager {
                                     .getFile();
         return new File(xmlGoals);
     }
-    
+
+
 }

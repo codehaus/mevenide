@@ -20,7 +20,12 @@ package org.mevenide;
  * @version $Id: MevenideException.java 21 avr. 2003 16:06:1713:34:35 Exp gdodinet 
  * 
  */
-public abstract class MevenideException extends Exception {
+public class MevenideException extends Exception {
+
+	public MevenideException(Throwable cause) {
+		super(cause);
+	}
+
     public MevenideException(String arg0) {
         super(arg0);
     }

@@ -38,7 +38,7 @@ public class GoalsGrabber extends AbstractGoalsGrabber {
 
         String output = new File(effectiveDirectory, "maven-goals.xml").getAbsolutePath();
         createMavenXmlFile(effectiveDirectory, output);
-        mavenRunner.run(new String[0], new String[] {"eclipse:get-goals"});
+        mavenRunner.run(new String[] {"goals:grab"});
         goalsBean.unMarshall(output);
    }
    

@@ -14,6 +14,8 @@
  */
 package org.mevenide.core;
 
+import org.mevenide.MevenideException;
+
 
 /**
  * 
@@ -22,6 +24,10 @@ package org.mevenide.core;
  * 
  */
 public class AbstractRunnerStub extends AbstractRunner {
+
+	public AbstractRunnerStub() throws MevenideException {
+		super();
+	}
 
 	protected void initEnvironment() {
 	}

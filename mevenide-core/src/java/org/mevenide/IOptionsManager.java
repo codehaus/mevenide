@@ -21,5 +21,8 @@ package org.mevenide;
  * 
  */
 public interface IOptionsManager {
-
+    /**
+     * @return the non final options to be passed to Maven
+     */
+    public String[] getOptions();
 }

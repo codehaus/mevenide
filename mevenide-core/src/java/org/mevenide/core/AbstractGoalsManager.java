@@ -46,9 +46,6 @@ public abstract class AbstractGoalsManager implements IGoalsManager {
 
     /** bean that holds the list of all available goals */
 	private IGoalsGrabber goalsGrabber;
-	
-    /** holds the non final options to be passed to the runner */
-    private IOptionsManager optionsManager;
     
     /**
      * initalize goalsGrabber and load the previously saved runnableGoals
@@ -62,7 +59,6 @@ public abstract class AbstractGoalsManager implements IGoalsManager {
             //give subclasses a chance to do proper initialization 
             initialize();
             goalsGrabber = AbstractGoalsGrabber.getGrabber(getXmlGoals().getAbsolutePath());
-            //optionsManager = 
             load();
         }
         catch ( Exception e ) {
@@ -169,11 +165,10 @@ public abstract class AbstractGoalsManager implements IGoalsManager {
     
     /**
      * run the runnableGoals
-     * @todo FUNCTIONAL add options
      */
     public void runGoals() {
         try {
-            AbstractRunner.getRunner().run(new String[0], getGoalsToRun());
+            AbstractRunner.getRunner().run(getGoalsToRun());
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -209,12 +204,13 @@ public abstract class AbstractGoalsManager implements IGoalsManager {
      * pre-initialization 
      */
     protected abstract void initialize();
-
-	/**
+ 
+    /**
 	 * for testing purpose
 	 */
 	Set getRunnableGoals() {
 		return runnableGoals;
 	}
+    
 
 }

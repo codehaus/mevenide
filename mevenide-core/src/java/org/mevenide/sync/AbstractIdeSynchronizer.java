@@ -41,13 +41,12 @@ public abstract class AbstractIdeSynchronizer implements ISynchronizer {
 
     /**
      * template pattern
-     * @todo FUNCTIONAL add options
      * @see org.mevenide.core.sync.ISynchronizer#synchronize
      */
 	public void synchronize()  {
 		try {
 			preSynchronization();
-			runner.run(new String[0], new String[] {synchronizationGoal} );
+			runner.run( new String[] {synchronizationGoal} );
 			postSynchronization();
 		}
 		catch ( Exception e ) {
