@@ -51,6 +51,11 @@ public class DirectoryMappingNodeContainer extends AbstractArtifactMappingNodeCo
     private void attachResources(Project project) {
         if ( project.getBuild() != null ) {
             List resources = project.getBuild().getResources() == null ? new ArrayList() : project.getBuild().getResources();
+            
+            if ( project.getBuild().getUnitTest() != null && project.getBuild().getUnitTest().getResources() != null ) {
+            	resources.addAll(project.getBuild().getUnitTest().getResources());
+            }
+            
             List orphanResources = new ArrayList(resources);
             
             List ignoredResource = FileUtils.getIgnoredResources(project);
