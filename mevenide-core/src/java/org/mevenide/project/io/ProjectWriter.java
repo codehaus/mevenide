@@ -22,7 +22,8 @@ import org.apache.maven.project.Project;
 import org.apache.maven.project.Resource;
 import org.mevenide.ProjectConstants;
 import org.mevenide.project.DependencyFactory;
-import org.mevenide.project.DependencyUtil;
+import org.mevenide.project.AbstractDependencyResolver;
+import org.mevenide.project.IDependencyResolver;
 import org.mevenide.project.ResourceUtil;
 
 /**
@@ -36,6 +37,7 @@ import org.mevenide.project.ResourceUtil;
 public class ProjectWriter {
 	private ProjectReader projectReader ;
 	private DefaultProjectMarshaller marshaller ; 
+	private IDependencyResolver dependencyResolver;
 	
 	private static ProjectWriter projectWriter = null;
 	private static Object lock = new Object();
@@ -57,6 +59,7 @@ public class ProjectWriter {
 	private ProjectWriter() throws Exception  {
 		marshaller = new DefaultProjectMarshaller();
 		projectReader = ProjectReader.getReader();
+		dependencyResolver = AbstractDependencyResolver.getInstance();
 	}
 	
 	/**
@@ -115,7 +118,7 @@ public class ProjectWriter {
 		
 		Dependency dependency = DependencyFactory.getFactory().getDependency(path);
 		
-		if ( !DependencyUtil.isDependencyPresent(project, dependency) ) {
+		if ( !dependencyResolver.isDependencyPresent(project, dependency) ) {
 			
 			project.addDependency(dependency);
 			write(project, pom);

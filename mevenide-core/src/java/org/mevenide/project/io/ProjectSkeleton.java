@@ -11,7 +11,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  */
-package org.mevenide.util;
+package org.mevenide.project.io;
 
 import java.io.File;
 import java.io.FileReader;
@@ -23,7 +23,6 @@ import java.util.GregorianCalendar;
 
 import org.apache.maven.project.Project;
 import org.apache.maven.project.builder.DefaultProjectUnmarshaller;
-import org.mevenide.project.io.DefaultProjectMarshaller;
 
 /**
  * 

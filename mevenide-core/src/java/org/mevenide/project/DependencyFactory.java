@@ -15,11 +15,8 @@ package org.mevenide.project;
 
 
 import java.io.File;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.apache.maven.project.Dependency;
-import org.mevenide.Environment;
 
 /**
  * 
@@ -28,15 +25,17 @@ import org.mevenide.Environment;
  * 
  */
 public class DependencyFactory {
+	private IDependencyResolver dependencyResolver;
 	
-	private DependencyFactory() {
+	private DependencyFactory() throws Exception {
+		dependencyResolver = AbstractDependencyResolver.getInstance();	
 	}
 	
 	/** singleton related */
 	private static DependencyFactory factory = null;
 	private static Object lock = new Object();
 
-	public static DependencyFactory getFactory() {
+	public static DependencyFactory getFactory() throws Exception {
 		if (factory != null) {
 			return factory;
 		}
@@ -49,38 +48,30 @@ public class DependencyFactory {
 	}
 		
 	/**
-	 * should return the Dependency instance associated with a given path.
-	 * however this seems hard if not impossible to achieve. indeed i cannot 
-	 * imagine yet a pertinent way to extract the required information to build a coherent
-	 * Dependency. 
+	 * return the Dependency instance associated with a given path.
+	 * however this seems hard if not impossible to achieve in a 100% way.
 	 * 
-	 * so for now i'll stick with the jar overriding mechanism provided by maven  
-	 * 
-	 * in order to minimize the burden, we will check if dependencies declared 
-	 * in the project descriptor match some ide libraries, and use maven.jar.override
-	 * if no match is found for the current path.
-	 *  
-	 * Also if a file is found in local repo that match the fileName passed as parameters, 
-	 * we'll use parent.name as groupId. in either case we have to guess artifactId and version from the 
-	 * fileName.
+	 * Also if a file is found in local repo that match the fileName passed 
+	 * as parameters, we'll use ${absoluteFileName.parent.parent.name} as 
+	 * groupId. in either case we have to guess artifactId and version from the fileName.
 	 * 
 	 * @param absoluteFileName
 	 * @return
 	 */
 	public Dependency getDependency(String absoluteFileName) throws InvalidDependencyException {
 		String fileName = new File(absoluteFileName).getName();
-		String groupId = getGroupId(fileName);
+		String groupId = dependencyResolver.getGroupId(fileName);
 		
 		if ( groupId == null ) {
-			groupId = guessGroupId(absoluteFileName); 
+			groupId = dependencyResolver.guessGroupId(absoluteFileName); 
 		}
 		if ( groupId == null ) {
 			//@todo use a logger
 			System.out.println("[WARNING] groupId is null"); 
 		}
 		
-		String artifactId = guessArtifactId(fileName);
-		String version = guessVersion(fileName);
+		String artifactId = dependencyResolver.guessArtifactId(fileName);
+		String version = dependencyResolver.guessVersion(fileName);
 		
 		Dependency dependency = new Dependency();
 		
@@ -92,120 +83,8 @@ public class DependencyFactory {
 		return dependency;
 	}
 	
-	/**
-	 * assume here that local repo is under maven_home...
-	 * @todo add a mavenLocalRepo attribute to org.mevenide.Environment
-	 * 
-	 * @param fileName
-	 * @return
-	 */
-	private String getGroupId(String fileName) {
-		File mavenLocalRepo = new File(Environment.getMavenRepository());
-		return getGroupId(fileName, mavenLocalRepo);
+	public IDependencyResolver getDependencyResolver() {
+		return dependencyResolver;
 	}
-	
-	/**
-	 * assume a standard repository layout, ergo a file is under one level under group Directory
-	 * e.g. mevenide/jars/mevenide-core-0.1.jar 
-	 * 
-	 * @param fileName
-	 * @param rootDirectory
-	 * @return
-	 */
-	private String getGroupId(String fileName, File rootDirectory) {
-		File[] files = rootDirectory.listFiles();
-		File[] children = files == null ? new File[0] : files;
-		for (int i = 0; i < children.length; i++) {
-			if ( children[i].isDirectory() ) {
-				String candidate = getGroupId(fileName, children[i]);
-				if ( candidate != null ) {
-					return candidate;
-				}
-			}
-			else {
-				if ( children[i].getName().equals(fileName) ) {
-					return rootDirectory.getParentFile().getName();
-				}
-			}
-		}
-		return null;
-	}
-	
-	private String guessArtifactId(String fileName) {
-		return split(fileName)[0];
-	}
-	
-	private String guessVersion(String fileName) {
-		if ( fileName.indexOf("SNAPSHOT") > 0 ) {
-			return "SNAPSHOT";
-		}
-		return split(fileName)[1];
-	}
-	
-	/**
-	 * we assume that fileName follow that kind of pattern :
-	 * 
-	 * (.|(-\\D)+)-((\\d)+(.*))\\.(\\w+)
-	 * 
-	 * so we have $4 => version ; $7 => extension 
-	 *  
-	 * This assumes also that the file has not a multi-extension (e.g. tar.gz)
-	 * 
-	 * someone please provide with a more correct pattern ! 
-	 * 
-	 * 
-	 * @param fileName
-	 * @return {artifactId, version, extension}
-	 */
-	private String[] split(String fileName) {
-		
-		Pattern p = Pattern.compile("(.|(-\\D)+)-((\\d)+(.*))\\.(\\w+)");
-		Matcher m = p.matcher(fileName);
-		
-		String[] allGroups = new String[m.groupCount() + 1];
-		
-		int i = 0;
-		while ( i < m.groupCount() + 1 && m.find(i) ) {
-			allGroups[i] = m.group(i);
-			i++;
-		}
-		
-		String[] consistentGroups = new String[3];
-		consistentGroups[1] = allGroups[3];
-		consistentGroups[2] = allGroups[6];
-		
-		
-		if ( consistentGroups[1] != null ) {
-			consistentGroups[0] = fileName.substring(0, fileName.indexOf(consistentGroups[1]) - 1);
-		}
-		
-		return consistentGroups;
-	}
-	
-	/**
-	 * assume a layout similar to the one of the local repo 
-	 * e.g. mevenide/jars/mevenide-core-0.1.jar 
-	 * else it is quite impossible  to guess the groupÎd..
-	 * 
-	 * f.i. if the artefact is located under project_home/lib
-	 * this method returns project_home and thats not quite consistent..
-	 * 
-	 * just wondering : is it so important to have the groupId ?
-	 * 
-	 * @wonder get rid of that method ? 
-	 * 
-	 * @param absoluteFileName
-	 * @return
-	 */
-	private String guessGroupId(String absoluteFileName) throws InvalidDependencyException {
-		File fileToCompute = new File(absoluteFileName);
-		if ( fileToCompute.isDirectory() ){
-			throw new InvalidDependencyException(absoluteFileName + " is a directory");
-		}
-		File firstLevelParent = fileToCompute.getParentFile();
-		if ( firstLevelParent.getParentFile() != null ) {
-			return firstLevelParent.getParentFile().getName();
-		}
-		else return null;
-	}
+
 }

@@ -11,17 +11,13 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  */
-package org.mevenide.test;
+package org.mevenide;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 
 import junit.framework.TestCase;
-
-import org.mevenide.project.DependencyFactory;
-import org.mevenide.project.io.ProjectWriter;
-import org.mevenide.project.io.ProjectWriterTest;
 
 /**
  * 
@@ -32,17 +28,17 @@ import org.mevenide.project.io.ProjectWriterTest;
  * 
  */
 public class AbstractMevenideTestCase extends TestCase {
-	protected ProjectWriter pomWriter;
+	
 	protected File projectFile;
-	protected DependencyFactory dependencyFactory;
-
+	
+	
 	protected void setUp() throws Exception {
-		pomWriter = ProjectWriter.getWriter();
-		File src = new File(ProjectWriterTest.class.getResource("/fixtures/project-fixture.xml").getFile());
+		
+		File src = new File(AbstractMevenideTestCase.class.getResource("/fixtures/project-fixture.xml").getFile());
 		projectFile = new File(src.getParentFile().getParent(), "project-fixture.xml") ; 
 		copy(src.getAbsolutePath(), projectFile.getAbsolutePath());
-		dependencyFactory = DependencyFactory.getFactory();
-	
+		
+		
 	}
 
 	protected void tearDown() throws Exception {

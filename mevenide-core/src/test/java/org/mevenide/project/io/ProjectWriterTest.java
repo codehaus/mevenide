@@ -23,9 +23,10 @@ import java.util.Map;
 import org.apache.maven.project.Dependency;
 import org.apache.maven.project.Project;
 import org.apache.maven.project.Resource;
+import org.mevenide.AbstractMevenideTestCase;
 import org.mevenide.ProjectConstants;
-import org.mevenide.project.DependencyUtil;
-import org.mevenide.test.AbstractMevenideTestCase;
+import org.mevenide.project.DependencyFactory;
+import org.mevenide.project.IDependencyResolver;
 
 /**
  * 
@@ -34,7 +35,16 @@ import org.mevenide.test.AbstractMevenideTestCase;
  * 
  */
 public class ProjectWriterTest extends AbstractMevenideTestCase {
+	protected ProjectWriter pomWriter;
+	protected DependencyFactory dependencyFactory;
+	protected IDependencyResolver dependencyResolver;
 	
+	protected void setUp() throws Exception {
+		super.setUp();
+		pomWriter = ProjectWriter.getWriter();
+		dependencyFactory = DependencyFactory.getFactory(); 
+		dependencyResolver = dependencyFactory.getDependencyResolver();
+	}	
 
 	public void testAddSource() throws Exception {
 		pomWriter.addSource(
@@ -63,7 +73,7 @@ public class ProjectWriterTest extends AbstractMevenideTestCase {
 		pomWriter.addDependency("E:/bleeeaaaah/testo/ploufs/testo-0.0.1.plouf", projectFile);
 		Project project = ProjectReader.getReader().read(projectFile);
 		Dependency dep = dependencyFactory.getDependency("E:/bleeeaaaah/testo/ploufs/testo-0.0.1.plouf");
-		assertTrue(DependencyUtil.isDependencyPresent(project, dep));
+		assertTrue(dependencyResolver.isDependencyPresent(project, dep));
 	}
 	
 	public void testAddResource() throws Exception {
@@ -91,7 +101,7 @@ public class ProjectWriterTest extends AbstractMevenideTestCase {
 		
 		Project project = ProjectReader.getReader().read(projectFile);
 		Dependency dep = dependencyFactory.getDependency("X:/bleah/mevenide/mevenide-core-1.0.jar");
-		assertTrue(DependencyUtil.isDependencyPresent(project, dep));
+		assertTrue(dependencyResolver.isDependencyPresent(project, dep));
 	}
 
 	private boolean isResourcePresent(String testDirectory, String[] includes) throws FileNotFoundException, Exception, IOException {
