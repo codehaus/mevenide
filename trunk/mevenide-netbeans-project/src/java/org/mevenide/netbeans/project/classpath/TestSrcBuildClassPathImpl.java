@@ -17,14 +17,25 @@
 
 package org.mevenide.netbeans.project.classpath;
 
+import java.io.File;
+import java.io.FilenameFilter;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.maven.project.Dependency;
+import org.apache.maven.project.Project;
 import org.mevenide.netbeans.project.MavenProject;
+import org.mevenide.project.dependency.DefaultDependencyPathFinder;
 
 /**
  *
  * @author  Milos Kleint (ca206216@tiscali.cz)
  */
 public class TestSrcBuildClassPathImpl extends AbstractProjectClassPathImpl {
+    private static final Log logger = LogFactory.getLog(TestSrcBuildClassPathImpl.class);
     
     /** Creates a new instance of SrcClassPathImpl */
     public TestSrcBuildClassPathImpl(MavenProject proj) {
@@ -32,9 +43,67 @@ public class TestSrcBuildClassPathImpl extends AbstractProjectClassPathImpl {
         
     }
     
-    URI[] createPath() {
-        //TODO add intgeration test build dir?
-        return new URI[] { getMavenProject().getTestBuildClassesDir() };
-    }
+   URI[] createPath() {
+        List lst = new ArrayList();
+        Project mavproj = getMavenProject().getOriginalMavenProject();
+        boolean junitIncluded = false;
+        Iterator it = mavproj.getDependencies().iterator();
+        while (it.hasNext()) {
+            Dependency dep = (Dependency)it.next();
+            if (dep.getType() == null || "jar".equals(dep.getType())) {
+                DefaultDependencyPathFinder finder = new DefaultDependencyPathFinder(dep);
+                String path = finder.resolve();
+                logger.debug("dep path=" + path);
+                File file = new File(path);
+                if (file.getName().endsWith(".jar")) { //NOI18N
+                    URI uri = file.toURI();
+                    if (uri != null) {
+                        lst.add(uri);
+                        if ("junit".equals(dep.getId())) { //NOI18N
+                            junitIncluded = true;
+                        }
+                    }
+                }
+            }
+        }
+        //Now add junit and related jars for tests..
+        if (!junitIncluded) {
+            String repo = getMavenProject().getLocFinder().getMavenLocalRepository();
+            repo = ((repo.endsWith("\\") || repo.endsWith("/")) ? repo : (repo + File.separator));
+            repo = repo + "junit/jars";
+            File dir = new File(repo);
+            if (dir.exists()) {
+                String[] junitList = dir.list(new FilenameFilter() {
+                    public boolean accept(File dir, String name) {
+                        // kind of simplification, assuming all artifacts in junit group are named
+                        // junit..
+                        if (name != null && name.startsWith("junit-") && name.endsWith(".jar")) {
+                            return true;
+                        }
+                        return false;
+                    }
+                });
+                if (junitList != null && junitList.length > 0) {
+                    String latest = junitList[0];
+                    // kind of simplified way of getting the latest version of junit..
+                    if (junitList.length > 1) {
+                        for (int i = 1; i < junitList.length; i++) {
+                            if (latest.compareTo(junitList[i]) < 0) {
+                                latest = junitList[i];
+                            }
+                        }
+                    }
+                    File fil = new File(dir, latest);
+                    URI uri = fil.toURI();
+                    if (uri != null) {
+                        lst.add(uri);
+                    }
+                }
+            }
+        }
+        URI[] uris = new URI[lst.size()];
+        uris = (URI[])lst.toArray(uris);
+        return uris;
+    }    
     
 }
