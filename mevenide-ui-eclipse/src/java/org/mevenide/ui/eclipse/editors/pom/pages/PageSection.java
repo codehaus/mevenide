@@ -262,7 +262,9 @@ public abstract class PageSection extends SectionPart {
 	            entry.setText(parentText, true);
 	            entry.setInherited(true);
 	        } else {
-	            //entry.setText("");
+	            //required otherwise removal of a complex type doesnot seem to affect pages
+	            //however this causes the pom editor to be marked as dirty as soon as it is open
+	            entry.setText(null);
 	            entry.setInherited(false);
 	        }
         }
