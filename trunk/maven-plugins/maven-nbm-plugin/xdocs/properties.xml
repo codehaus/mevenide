@@ -21,12 +21,20 @@
             <p> File containing Netbeans-specific manifest entries. The plugin automatically generates some of the entries:
             <source><![CDATA[
 OpenIDE-Module-Implementation-Version: ${pom.currentVersion}
-OpenIDE-Module: ${pom.package}
+OpenIDE-Module: ${maven.nbm.modulename}
 OpenIDE-Module-Specification-Version: normalized version of ${pom.currentVersion}
             
             ]]></source> 
             etc.etc.</p>
             <p>If you define any of the entries in your manifest file, it overrides anything that gets automatically generated. </p>
+          </td>
+        </tr>
+        <tr>
+          <td>maven.nbm.modulename</td>
+          <td><p>Since 0.6</p><p>Optional. Default value is <code>${pom.package}</code>. </p></td>
+          <td>
+            <p>Module name.</p>
+            <p>Used when generating the manifest entries and module jar file names.</p>
           </td>
         </tr>
         <tr>
