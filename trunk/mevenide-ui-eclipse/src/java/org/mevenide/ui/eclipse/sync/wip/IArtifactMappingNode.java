@@ -48,6 +48,8 @@
  */
 package org.mevenide.ui.eclipse.sync.wip;
 
+import java.io.File;
+
 import org.eclipse.core.runtime.IAdaptable;
 
 
@@ -79,9 +81,15 @@ public interface IArtifactMappingNode extends IAdaptable {
     Object getArtifact();
 
     /**
+     * @return the POM which declares the Artifact - if not null
+     */
+    File getDeclaringPom();
+    
+    /**
      * 
      * @return the change direction for this Artifact. one of : 
-     * POM_TO_IDE, IDE_TO_POM, NO_CHANGE, CONFLICTING
+     * ProjectContainer.OUTGOING, ProjectContainer.INCOMING, 
+     * ProjectContainer.CONFLICTING - or ProjectContainer.NO_CHANGE
      */
     int getChangeDirection();
     
