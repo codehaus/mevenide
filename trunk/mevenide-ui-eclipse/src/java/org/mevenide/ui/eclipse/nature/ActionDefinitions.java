@@ -60,7 +60,9 @@ public class ActionDefinitions {
         perProjectEnablementMap.put(project.getLocation().toString(), Boolean.valueOf(enabled));
     }
     
-    
+    public void projectLaunched(IProject project) {
+        perProjectEnablementMap.remove(project.getLocation().toString());
+    }
     
     public ILaunchConfiguration getConfiguration() {
         return configuration;

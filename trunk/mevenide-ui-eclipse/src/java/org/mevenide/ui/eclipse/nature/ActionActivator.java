@@ -88,8 +88,11 @@ public class ActionActivator implements IResourceDeltaVisitor {
             for (int i = 0; i < files.length; i++) {
                 String file = files[i];
                 String relativePath = path.makeRelative().removeFirstSegments(1).toOSString().replaceAll("\\\\", "/");
-                return relativePath.equals(file.replaceAll("\\\\", "/"));
+                if ( relativePath.equals(file.replaceAll("\\\\", "/")) ) {
+                    return true;
+                }
             }
+            return false;
         }
         catch (Exception e) {
             String message = "Unable to match files/path"; 
