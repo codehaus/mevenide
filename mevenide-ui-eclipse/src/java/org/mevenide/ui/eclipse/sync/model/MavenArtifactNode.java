@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.maven.project.Dependency;
 import org.apache.maven.project.Project;
 import org.apache.maven.repository.Artifact;
 import org.eclipse.core.resources.IProject;
@@ -253,4 +254,16 @@ public class MavenArtifactNode extends ArtifactNode {
         return sameKind;
     }
 	
+    public void addProperty(String key, String value) {
+        Dependency dependency = ((Artifact) this.getData()).getDependency();
+		dependency.addProperty(key + ":" + value);
+		dependency.resolvedProperties().put(key, value);
+		
+		PropertyNode propertyNode = new PropertyNode(this, key, value);
+		PropertyNode[] newNodes = new PropertyNode[this.getChildren().length + 1];
+		System.arraycopy(this.getChildren(), 0, newNodes, 0, this.getChildren().length);
+		newNodes[this.getChildren().length] = propertyNode;
+		
+		this.properties = newNodes;
+    }
 }
