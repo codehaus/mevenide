@@ -50,7 +50,10 @@ public class DefaultQueryContext implements IQueryContext {
     private Properties buildPropertyModel;
     private Properties projectPropertyModel;
     
-    private IProjectContext projectContext;
+    // an empty default, fallback value.. in case it was not set.
+    // mkleint does it make sense or is it better to throw NPE? calling it is a bug anyway without initialization.
+    // it's kind of safer to have one before initializeProjectContext() is called.
+    private IProjectContext projectContext = new EmptyProjectContext();
     
     public DefaultQueryContext() {
         String home = System.getProperty("user.home"); //NOI18N
@@ -67,9 +70,11 @@ public class DefaultQueryContext implements IQueryContext {
         projectPropertyModel = new Properties();
         buildPropertyModel = new Properties();
     }
-    
-    public DefaultQueryContext(File project, IProjectContext projContext) {
-        this(project);
+    /**
+     * project context needs to be set after initialization from outside.
+     * implementation comes from mevenide-core which depends on this one..
+     */
+    public void initializeProjectContext(IProjectContext projContext) {
         projectContext = projContext;
     }
     
@@ -141,29 +146,24 @@ public class DefaultQueryContext implements IQueryContext {
     public File getUserDirectory() {
         return userDir;
     }
-    
-    public Project getFinalProject() {
-        if (projectContext != null) {
-            return projectContext.getFinalProject();
-        }
-        logger.warn("No IProjectContext instance supplied. Can result in non complete query resolution.");
-        return EMPTY_PROJECT;
+    public IProjectContext getPOMContext() {
+        return projectContext;
     }
     
-    public File[] getProjectFiles() {
-        if (projectContext != null) {
-            return projectContext.getProjectFiles();
-        }
-        logger.warn("No IProjectContext instance supplied. Can result in non complete query resolution.");
-        return new File[0];
-    }
     
-    public Project[] getProjectLayers() {
-        if (projectContext != null) {
-            return projectContext.getProjectLayers();
+    private class EmptyProjectContext implements IProjectContext {
+        private Project empty = new Project();
+        public Project getFinalProject() {
+            return empty;
         }
-        logger.warn("No IProjectContext instance supplied. Can result in non complete query resolution.");
-        return new Project[0];
+        
+        public File[] getProjectFiles() {
+            return new File[0];
+        }
+        
+        public Project[] getProjectLayers() {
+            return new Project[0];
+        }
+        
     }
-    
 }

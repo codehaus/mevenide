@@ -24,7 +24,7 @@ import java.io.File;
  * in all the queries (ILocationFinder, IPropertyResolver, etc)
  * @author  <a href="mailto:ca206216@tiscali.cz">Milos Kleint</a>
  */
-public interface IQueryContext extends IProjectContext
+public interface IQueryContext
 {
     String getPropertyValue(String key);
     
@@ -38,4 +38,5 @@ public interface IQueryContext extends IProjectContext
     
     File getUserDirectory();
     
+    IProjectContext getPOMContext();
 }

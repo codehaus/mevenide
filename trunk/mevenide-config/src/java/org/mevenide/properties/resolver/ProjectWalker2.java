@@ -47,7 +47,7 @@ public class ProjectWalker2 implements IPropertyFinder {
         if (!key.startsWith("pom.")) {
             return null;
         }
-        Project proj = context.getFinalProject();
+        Project proj = context.getPOMContext().getFinalProject();
         if (proj == null) {
             return null;
         }

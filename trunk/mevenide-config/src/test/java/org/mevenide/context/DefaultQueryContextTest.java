@@ -78,7 +78,8 @@ public class DefaultQueryContextTest extends TestCase {
     }
     
     public void testProjectBased() {
-        DefaultQueryContext query = new DefaultQueryContext(projectDir, context);
+        DefaultQueryContext query = new DefaultQueryContext(projectDir);
+        query.initializeProjectContext(context);
         assertNotNull(query.getProjectDirectory());
         assertNotNull(query.getUserDirectory());
         assertNull(query.getUserPropertyValue("maven.build.dir"));
@@ -93,10 +94,10 @@ public class DefaultQueryContextTest extends TestCase {
         assertNotNull(query.getPropertyValue("maven.conf.dir"));
         assertNotNull(query.getPropertyValue("maven.repo.remote"));
         
-        assertNotNull(query.getFinalProject());
-        assertNotNull(query.getProjectLayers());
-        assertEquals(1, query.getProjectLayers().length);
-        assertEquals(1, query.getProjectFiles().length);
+        assertNotNull(query.getPOMContext().getFinalProject());
+        assertNotNull(query.getPOMContext().getProjectLayers());
+        assertEquals(1, query.getPOMContext().getProjectLayers().length);
+        assertEquals(1, query.getPOMContext().getProjectFiles().length);
     }
     
     public void testRefresh() throws Exception {
