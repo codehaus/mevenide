@@ -256,14 +256,10 @@ public class MevenidePreferenceDialog {
 		mavenHome = mavenHomeEditor.getTextControl(topLevelContainer).getText();
 		Mevenide.getPlugin().setMavenHome(mavenHome);
 
-		mavenLocalHome = mavenLocalHomeEditor.getTextControl(topLevelContainer).getText();
-		Mevenide.getPlugin().setMavenLocalHome(mavenLocalHome);
 
 		javaHome = javaHomeEditor.getTextControl(topLevelContainer).getText();
 		Mevenide.getPlugin().setJavaHome(javaHome);
 		
-		mavenRepository = mavenRepoEditor.getTextControl(topLevelContainer).getText();
-		Mevenide.getPlugin().setMavenRepository(mavenRepository);
 		
 		pomTemplateLocation = pomTemplateLocationEditor.getTextControl(topLevelContainer).getText();
 		Mevenide.getPlugin().setPomTemplate(pomTemplateLocation);
@@ -274,6 +270,16 @@ public class MevenidePreferenceDialog {
 		defaultGoals = defaultGoalsEditor.getTextControl(topLevelContainer).getText();
 		Mevenide.getPlugin().setDefaultGoals(defaultGoals);
 
+		mavenLocalHome = mavenLocalHomeEditor.getTextControl(topLevelContainer).getText();
+		if ( mavenLocalHome != null && !mavenLocalHome.trim().equals("") ) {
+			Mevenide.getPlugin().setMavenLocalHome(mavenLocalHome);
+		}
+				
+		mavenRepository = mavenRepoEditor.getTextControl(topLevelContainer).getText();
+		if ( mavenRepository != null && !mavenRepository.trim().equals("") ) {
+			Mevenide.getPlugin().setMavenRepository(mavenRepository);
+		}
+		
 		heapSize = heapSizeEditor.getIntValue();
 		if ( heapSize != 0 ) {
 			Mevenide.getPlugin().setHeapSize(heapSize);
