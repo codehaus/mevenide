@@ -168,7 +168,7 @@ public class DependencyMappingWizardPage extends WizardPage {
 							while ( item.getParentItem() != null ) {
 								item = item.getParentItem();
 							}
-							//((DependencyGroup) viewer.getInput()).getDependencies().remove(item.getData());
+							((DependencyGroup) viewer.getInput()).getDependencies().remove((Dependency) item.getData());
 							((DependencyGroup) viewer.getInput()).excludeDependency((Dependency) item.getData());
 							viewer.refresh();
 						}

@@ -161,7 +161,7 @@ public class SourceDirectoryMappingWizardPage extends WizardPage {
 						TableItem[] items = viewer.getTable().getSelection();
 						for (int i = 0; i < items.length; i++) {
 							TableItem item = items[i];
-							//((SourceDirectoryGroup) viewer.getInput()).getSourceDirectories().remove(item.getData());
+							((SourceDirectoryGroup) viewer.getInput()).getSourceDirectories().remove(item.getData());
 							((SourceDirectoryGroup) viewer.getInput()).excludeSourceDirectory((SourceDirectory) item.getData());
 							viewer.refresh();
 						}
@@ -205,7 +205,6 @@ public class SourceDirectoryMappingWizardPage extends WizardPage {
 		List list = ((SourceDirectoryGroup)viewer.getInput()).getSourceDirectories();
 		for (int i = 0; i < list.size(); i++) {
 			SourceDirectory directory = (SourceDirectory) list.get(i);
-			System.out.println(directory.getDirectoryPath());
 			rejectedElements.add(project.getFolder(directory.getDirectoryPath()));
 		} 
 	

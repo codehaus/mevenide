@@ -64,6 +64,10 @@ public class SourceDirectoryGroup extends ArtifactGroup {
 		artifacts.remove(directory);
 		excludedArtifacts.add(directory);
 	}
+	
+	public List getExcludedSourceDirectories() {
+		return excludedArtifacts;
+	}
 
 	public void setSourceDirectories(List list) {
 		artifacts = list;

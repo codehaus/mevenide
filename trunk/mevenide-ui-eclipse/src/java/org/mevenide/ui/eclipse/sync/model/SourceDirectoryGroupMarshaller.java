@@ -84,17 +84,27 @@ public class SourceDirectoryGroupMarshaller {
 				}
 			}
 			
+			log.debug("Found " + allSourceDirectoryList.size() + " previously saved SourceDirectories - " + sourceDirectoryList.size() + " active ones");
 			
 			for (int i = 0; i < group.getSourceDirectories().size(); i++) {
 				SourceDirectory dir = (SourceDirectory) group.getSourceDirectories().get(i);
-				if ( !allSourceDirectoryList.contains(dir) ) {
-					sourceDirectoryList.add(group.getSourceDirectories().get(i));
+				boolean shouldAdd = true;
+				for (int j = 0; j < allSourceDirectoryList.size(); j++) {
+					SourceDirectory savedDir = (SourceDirectory) allSourceDirectoryList.get(j);
+					if ( dir.getDirectoryPath().equals(savedDir.getDirectoryPath())) {
+						shouldAdd = false;
+						break;
+					}
+				}
+				if ( shouldAdd ) {
+					sourceDirectoryList.add(dir);
 				}
 			}
 			
-			if ( sourceDirectoryList.size() > 0 ) {
-				group.setSourceDirectories(sourceDirectoryList);
-			}
+			
+			group.setSourceDirectories(sourceDirectoryList);
+			
+			log.debug("Finished loading SourceDirectoryGroup artifacts. Found " + sourceDirectoryList.size());
 			
 		}
 		
@@ -142,13 +152,25 @@ public class SourceDirectoryGroupMarshaller {
 			return;
 		}
 		
+		saveSourceDirectories(group.getSourceDirectories(), timestamp, sourceDirGroup);
+		saveSourceDirectories(group.getExcludedSourceDirectories(), 0, sourceDirGroup);
+		
+		document.getRootElement().addContent(sourceDirGroup);
+		
+		File saveFile = new File(file); 
+		
+		JDomOutputter.output(document, saveFile, false);
+		
+	}
+	private static void saveSourceDirectories(List sourceDirectories, long timestamp, Element sourceDirGroup) {
+		log.debug("Saving back " + sourceDirectories.size() + " SourceDirectories - timestamp=" + timestamp);
 		List previousSourceDirectories = sourceDirGroup.getChildren("sourceDirectory");
 		if ( previousSourceDirectories == null ) {
 			previousSourceDirectories = new ArrayList();
 		}
 		
-		for (int i = 0; i < group.getSourceDirectories().size(); i++) {
-			SourceDirectory dir = (SourceDirectory) group.getSourceDirectories().get(i);
+		for (int i = 0; i < sourceDirectories.size(); i++) {
+			SourceDirectory dir = (SourceDirectory) sourceDirectories.get(i);
 			Element sourceDir = new Element("sourceDirectory");
 			sourceDir.setAttribute("path", dir.getDirectoryPath()) ;
 			sourceDir.setAttribute("type", dir.getDirectoryType());
@@ -163,12 +185,5 @@ public class SourceDirectoryGroupMarshaller {
 			
 			sourceDirGroup.addContent( sourceDir );
 		}
-		
-		document.getRootElement().addContent(sourceDirGroup);
-		
-		File saveFile = new File(file); 
-		
-		JDomOutputter.output(document, saveFile, false);
-		
 	}
 }
