@@ -91,7 +91,7 @@ public class PropertyModelTest extends TestCase {
     public void testAddToComment() {
 		addEmptyComment();
 		model.addToComment(comment, "myCommentLine");
-		assertEquals("myCommentLine" + "\n", comment.getValue());
+		assertEquals("myCommentLine", comment.getValue());
     }
 
 

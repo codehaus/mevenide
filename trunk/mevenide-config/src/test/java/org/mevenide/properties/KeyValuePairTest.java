@@ -53,7 +53,7 @@ public class KeyValuePairTest extends TestCase {
     public void testAddLine() {
         keyValuePair.setValue("my value");
         keyValuePair.addLine("value addition");
-        assertEquals("initialKey=my valuevalue addition" + "\n", keyValuePair.toString());
+        assertEquals("initialKey=my valuevalue addition", keyValuePair.toString());
     }
 
     public void testEquals() {

@@ -22,6 +22,7 @@ package org.mevenide.properties;
  * just a marker class so that all have common ground.
  */
 public abstract class Element {
+    protected static final String LINE_SEP = new String(new byte[]{Character.LINE_SEPARATOR}); 
     protected Element() {
     }
     
