@@ -53,6 +53,23 @@
     </developer>
   </developers>
   
+  <dependencies>
+       <!-- 
+  	       building standalone module site 
+  	   	   without relying on mevenide-master
+  	   -->
+  	   <dependency>
+          <groupId>velocity</groupId>
+          <artifactId>velocity</artifactId>
+          <version>1.3</version>
+       </dependency>
+  	   <dependency>
+          <groupId>commons-jelly</groupId>
+          <artifactId>commons-jelly-tags-velocity</artifactId>
+          <version>SNAPSHOT</version>
+       </dependency>	
+  </dependencies>
+  
   <build>
     <sourceDirectory>src/java</sourceDirectory>
     <unitTestSourceDirectory>src/test/java</unitTestSourceDirectory>
@@ -86,21 +103,21 @@
       <resources>
       	
         <resource>
-          <directory>etc</directory>
+          <directory>${basedir}/etc</directory>
           <includes>
             <include>**/*.*</include>
           </includes>
         </resource>
         
         <resource>
-          <directory>src/test/etc</directory>
+          <directory>${basedir}/src/test/etc</directory>
           <includes>
             <include>**/*.*</include>
           </includes>
         </resource>
         
         <resource>
-          <directory>etc</directory>
+          <directory>${basedir}/etc</directory>
           <includes>
             <include>*.*</include>
             <include>META-INF/services/*.*</include>
@@ -115,13 +132,13 @@
     
     <resources>
       <resource>
-          <directory>etc</directory>
+          <directory>${basedir}/etc</directory>
           <includes>
             <include>*.*</include>
           </includes>
       </resource>
       <resource>
-      	  <directory>etc</directory>
+      	  <directory>${basedir}/etc</directory>
           <includes>
             <include>META-INF/services/*.*</include>
           </includes>
@@ -132,7 +149,8 @@
 
   <reports>
     <report>maven-jdepend-plugin</report>
-    <report>maven-checkstyle-plugin</report>
+    <!-- report>maven-checkstyle-plugin</report -->
+    <report>maven-changes-plugin</report>
     <report>maven-changelog-plugin</report>
     <report>maven-file-activity-plugin</report>
     <report>maven-developer-activity-plugin</report>
@@ -141,6 +159,9 @@
     <report>maven-junit-report-plugin</report>
     <report>maven-tasklist-plugin</report>
     <!-- report>maven-jellydoc-plugin</report -->
+    <report>maven-pmd-plugin</report>
+    <!-- report>maven-simian-plugin</report -->
+    <!-- report>maven-faq-plugin</report -->
   </reports>
 
 

@@ -1,19 +1,20 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
 
-<project name="mevenide-ui-eclipse">
+<project name="mevenide-core">
 
     <properties>
         <author email="gdodinet@wanadoo.fr">Gilles Dodinet</author>
-        <title>Mevenide Eclipse</title>
+        <title>Mevenide Core</title>
     </properties>
 
     <body>
         <links>
+        	<item name="Eclipse" href="http://eclipse.org/"/>
             <item name="Maven" href="http://www.maven.org/"/>
-            <item href="../mevenide-master/index.html" name="Mevenide"/>
+            <item href="http://mevenide.sf.net/" name="Mevenide"/>
         </links>
-        <menu name="License">
-            <item name="License" href="/license.html"/>
+        
+        <menu name="General">
+        	<item name="License" href="/license.html"/>
         </menu>
         
     </body>

@@ -5,16 +5,10 @@
 
 
   <!-- 
-  	TODO "debug" site generation !!!
+  	site generation is now all right thanks the multiproject goal !! 
   -->
  
   <preGoal name="build">
-	<!-- 
-		crappy trick to be removed when maven-new released
-	-->
-	
-	<!-- copy todir="${maven.repo.local}/maven-new/jars" file="../mevenide-core/lib/maven-core-1.0-beta-11-SNAPSHOT.jar"/ -->
-	
 	
 	<!-- set eclipse.home property -->
 	<property environment="env"/>
@@ -89,11 +83,12 @@
   </goal>
   
   
+  <!-- i didnt alter it since it works as it is now -->
   <goal name="build" description="Build each Mevenide module">
 	
-    <maven:reactor basedir=".."
-      			   includes="goals-grabber/project.xml,mevenide-core/project.xml,mevenide-ui-eclipse/project.xml"
-      			   excludes="mevenide-master/project.xml"
+    <maven:reactor basedir="."
+      			   includes="../goals-grabber/project.xml,../mevenide-core/project.xml,../mevenide-ui-eclipse/project.xml"
+      			   excludes="../mevenide-master/project.xml"
       			   goals="clean,jar:install"
       			   banner="Building"
       			   ignoreFailures="false"/>
@@ -105,30 +100,7 @@
   <!-- build the aggregated site -->
   <goal name="build-site" description="Build Mevenide Site">
   	
-  	<maven:reactor basedir=".."
-      			   includes="goals-grabber/project.xml,mevenide-core/project.xml,mevenide-ui-eclipse/project.xml,mevenide-master/project.xml"
-      			   goals="clean,site,site:fsdeploy"
-      			   excludes=""
-      			   banner="Building Site"
-      			   ignoreFailures="false"
-      			   postProcessing="true"/>
-      			   
-	<!-- fileScanner var="templates">
-      <fileset dir="${basedir}/templates">
-        <include name="*.xml"/>
-      </fileset>
-    </fileScanner>
-  	
-  	<j:forEach var="template" items="${templates.iterator()}">
-      
-      <j:set var="templateName" value="${template.name}"/>
-      <echo>Processing ${templateName} template ...</echo> 
-    
-      <velocity:merge name="${basedir}/xdocs/${templateName}"
-        			  basedir="${basedir}/templates"
-        			  template="${templateName}"/>
-
-    </j:forEach -->
+  	<multiproject/>
     
   </goal>
  

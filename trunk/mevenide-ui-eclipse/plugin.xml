@@ -42,23 +42,23 @@
          <export name="*"/>
          <packages prefixes="org.mevenide.ui.eclipse"/>
       </library>
-      <!-- 
+<!-- 
       	  following dependencies are necessary 
       	  because of DefaultProjectUnmarshaller that comes out
       	  with mevenide until maven stabilize
       	  (see Dependency.setArtifact, Dependency properties management, etc..)
       -->
       <library name="lib/ant-1.5.3-1.jar">
-      	  <packages prefixes="org.apache.tools" />
+         <packages prefixes="org.apache.tools"/>
       </library>
       <library name="lib/commons-jelly-1.0-beta-4.jar">
-      	  <packages prefixes="org.apache.commons.jelly" />
+         <packages prefixes="org.apache.commons.jelly"/>
       </library>
       <library name="lib/commons-grant-1.0-beta-4.jar">
-      	  <packages prefixes="org.apache.tools,org.apache.commons.grant" />
+         <packages prefixes="org.apache.tools,org.apache.commons.grant"/>
       </library>
       <library name="lib/commons-lang-1.0-b1.1.jar">
-      	  <packages prefixes="org.apache.commons.lang" />
+         <packages prefixes="org.apache.commons.lang"/>
       </library>
    </runtime>
    <requires>
@@ -231,6 +231,23 @@
             class="org.mevenide.ui.eclipse.preferences.MevenidePreferencePage"
             id="maven.plugin.preferences.MavenPreferencePage">
       </page>
+   </extension>
+   <extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            label="Run Maven"
+            visible="true"
+            id="org.mevenide.quickrun">
+         <action
+               label="&amp;Run Maven"
+               pulldown="true"
+               icon="icons/maven-run.gif"
+               tooltip="Run Last Launched Maven Process"
+               class="org.mevenide.ui.eclipse.actions.MevenideQuickLaunchAction"
+               toolbarPath="run.maven"
+               id="org.mevenide.ui.eclipse.actions.MevenideQuickLaunchAction">
+         </action>
+      </actionSet>
    </extension>
 
 </plugin>
