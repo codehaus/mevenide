@@ -35,5 +35,10 @@ public interface IResourceResolver {
 	public abstract void mergeSimilarResources(
 		Project project,
 		Resource resource);
+
+
+	public abstract void mergeSimilarUnitTestResources(
+		Project project,
+		Resource resource);
 	
 }

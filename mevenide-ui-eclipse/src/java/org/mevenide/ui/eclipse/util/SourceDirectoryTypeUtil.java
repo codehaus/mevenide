@@ -37,8 +37,8 @@ public class SourceDirectoryTypeUtil {
 		ProjectConstants.MAVEN_TEST_DIRECTORY,
 		ProjectConstants.MAVEN_INTEGRATION_TEST_DIRECTORY,	
 		ProjectConstants.MAVEN_RESOURCE,
-		ProjectConstants.MAVEN_TEST_RESOURCE,
-		ProjectConstants.MAVEN_INTEGRATION_TEST_RESOURCE,		
+		ProjectConstants.MAVEN_TEST_RESOURCE
+		//ProjectConstants.MAVEN_INTEGRATION_TEST_RESOURCE,		
 	};
 	
 	public static Integer getSourceTypeIndex(String sourceType) {

@@ -25,9 +25,11 @@ import java.util.Properties;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.maven.project.Build;
 import org.apache.maven.project.Dependency;
 import org.apache.maven.project.Project;
 import org.apache.maven.project.Resource;
+import org.apache.maven.project.UnitTest;
 import org.mevenide.project.dependency.DependencyFactory;
 import org.mevenide.project.dependency.DependencyUtil;
 import org.mevenide.project.resource.DefaultResourceResolver;
@@ -93,7 +95,23 @@ public class ProjectWriter {
 	public void addResource(String path, File pom) throws Exception {
 		Project project = projectReader.read(pom);
 		Resource resource = ResourceUtil.newResource(path);
+		if ( project.getBuild() == null ) {
+			project.setBuild(new Build());
+		}
 		resourceResolver.mergeSimilarResources(project, resource);
+		write(project, pom);	
+	}
+	
+	public void addUnitTestResource(String path, File pom) throws Exception {
+		Project project = projectReader.read(pom);
+		Resource resource = ResourceUtil.newResource(path);
+		if ( project.getBuild() == null ) {
+			project.setBuild(new Build());
+		}
+		if ( project.getBuild().getUnitTest() == null ) {
+			project.getBuild().setUnitTest(new UnitTest());
+		}
+		resourceResolver.mergeSimilarUnitTestResources(project, resource);
 		write(project, pom);	
 	}
 	
@@ -233,6 +251,11 @@ public class ProjectWriter {
 			project.getBuild().setIntegrationUnitTestSourceDirectory(null);
 			project.getBuild().setUnitTestSourceDirectory(null);
 			project.getBuild().setSourceDirectory(null);
+			
+			project.getBuild().setResources(new ArrayList());
+			if ( project.getBuild().getUnitTest() != null ) {
+				project.getBuild().getUnitTest().setResources(new ArrayList());
+			}
 			
 			IProjectMarshaller marshaller = new DefaultProjectMarshaller();
 			marshaller.marshall(new FileWriter(pomFile), project);
