@@ -2,4 +2,7 @@
   <preGoal name="build:start">
     <attainGoal name="pde:classpath"/>
   </preGoal>
+  <goal name="pde:test">
+    <attainGoal name="pde:plugin"/>
+  </goal>
 </project>

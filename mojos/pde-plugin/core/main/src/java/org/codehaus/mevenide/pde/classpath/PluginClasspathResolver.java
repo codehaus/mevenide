@@ -30,7 +30,6 @@ import org.codehaus.mevenide.pde.PdePluginException;
 import org.codehaus.mevenide.pde.resources.Messages;
 import org.jdom.Document;
 import org.jdom.Element;
-import org.jdom.filter.Filter;
 import org.jdom.input.SAXBuilder;
 
 
@@ -223,19 +222,17 @@ public class PluginClasspathResolver {
  
         Element classpath = document.getRootElement();
         
-        Iterator elems = classpath.getDescendants(new Filter() {
-            public boolean matches(Object obj) {
-                if ( obj instanceof Element ) {
-                    Element descendant = (Element) obj;
-                    return  "classpathentry".equals(descendant.getName()) && 
-                    		"con".equals(descendant.getAttributeValue("kind")) &&
-                    		"org.eclipse.pde.core.requiredPlugins".equals(descendant.getAttributeValue("path"));
-                }
-                return false;
+        List children = classpath.getChildren();
+        List elems = new ArrayList();
+        for (Iterator iter = children.iterator(); iter.hasNext();) {
+            Element descendant = (Element) iter.next();
+            if ( "classpathentry".equals(descendant.getName()) && 
+                 "con".equals(descendant.getAttributeValue("kind")) &&
+                 "org.eclipse.pde.core.requiredPlugins".equals(descendant.getAttributeValue("path")) ) {
+                elems.add(descendant);
             }
-        });
-        
-        boolean useDependenciesContainer = elems != null && elems.hasNext();
+        }
+        boolean useDependenciesContainer = elems.size() > 0;
         
         if ( !useDependenciesContainer ) {
             addInfo(Messages.get("ClasspathResolution.NoContainer"));
