@@ -30,9 +30,8 @@
   </goal>
   
   
-  
   <goal name="eclipse-plugin:install-artifact" prereqs="eclipse-plugin:init-filterset" 
-  		description="filter and copy the plugin.xml file to $${basedir}">
+  		description="filter and copy the plugin artifact descriptor file to $${basedir}">
   		
   	<ant:copy todir="${basedir}" overwrite="true">
   	  <ant:fileset dir="${maven.eclipse.plugin.src.dir}"/>
@@ -44,8 +43,6 @@
   	  	<ant:filter token="maven.eclipse.plugin.artifact.internal.version" value="${maven.eclipse.plugin.artifact.internal.version}"/>
   	  </ant:filterset>
   	</ant:copy>
-  	
-  	<!-- attainGoal name="eclipse-plugin:install-${type}"/ -->
   	
   </goal>
   
@@ -122,7 +119,8 @@
    	  warning : if unzipped in ${eclipse.home}, site.properties and site.xml 
    	  will mess up the ${eclipse.home} directory. 
    -->
-   <goal name="eclipse-plugin:create-site-dist" prereqs="eclipse-plugin:init,eclipse-plugin:install-artifact">
+   <goal name="eclipse-plugin:create-site-dist" prereqs="eclipse-plugin:init,eclipse-plugin:install-artifact"
+   		 description="build a single distribution file containing all required plugins and features">
    	 
    	 <j:set var="siteId" value="${maven.eclipse.plugin.artifact.id}"/>
    	 <j:set var="distVersion" value="${maven.eclipse.plugin.artifact.version}"/>
