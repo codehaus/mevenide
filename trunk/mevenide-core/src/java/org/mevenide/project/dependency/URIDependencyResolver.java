@@ -68,13 +68,15 @@ public class URIDependencyResolver implements IDependencyResolver {
                     int ind = fileName.lastIndexOf('-');
                     if (ind > 0) {
                         artifactId = fileName.substring(0, ind);
-                        version = fileName.substring(ind + 1, fileName.length() - extension.length() - 1);
+                        version = fileName.substring(ind + 1, fileName.length() - (extension != null ? (extension.length() + 1) : 0));
                     } else {
                         artifactId = fileName;
                         version = "<Unknown>";
                     }
                 } else {
-                    version = fileName.substring(artifactId.length() + 1, fileName.length() - extension.length() - 1);
+                    if (extension != null && artifactId.length() < fileName.length()) {
+                        version = fileName.substring(artifactId.length() + 1, fileName.length() - extension.length() - 1);
+                    }
                 }
 	}
 	
@@ -85,8 +87,13 @@ public class URIDependencyResolver implements IDependencyResolver {
             }
             if (type != null && fileName.endsWith(type)) {
                 extension = type;
+            } else if (type != null && fileName.endsWith("tar.gz")) { //NOI18N
+                extension = "tar.gz"; //NOI18N
             } else {
-                extension = fileName.substring(fileName.lastIndexOf('.') + 1);
+                int ind = fileName.lastIndexOf('.');
+                if (ind > -1) {
+                    extension = fileName.substring(fileName.lastIndexOf('.') + 1);
+                }
             }
             if (type == null) {
                 type = extension;

@@ -57,6 +57,11 @@ public class URIDependencyResolverTest extends TestCase {
         assertEquals("nbs-core", resolver.guessArtifactId());
         assertEquals("release40b2", resolver.guessVersion());
         
+        resolver.setURI(URI.create("http://www.ibiblio.org/maven/commons-logging/jars/commons-logging-snapshot-version"));
+        assertEquals("commons-logging-snapshot", resolver.guessArtifactId());
+        assertEquals("version", resolver.guessVersion());
+        assertEquals(null, resolver.guessExtension());
+        
     }
 
     /**
@@ -83,6 +88,15 @@ public class URIDependencyResolverTest extends TestCase {
         ext = resolver.guessExtension();
         assertEquals("jar", ext);
         assertEquals("plugin", resolver.guessType());
+        resolver.setURI(URI.create("http://www.ibiblio.org/maven/maven/distributions/foo+joe-test2.-bar-1.0.7-beta-1.zip"));
+        ext = resolver.guessExtension();
+        assertEquals("zip", ext);
+        assertEquals("distribution", resolver.guessType());
+        
+        resolver.setURI(URI.create("http://www.ibiblio.org/maven/maven/distributions/foo+joe-test2.-bar-1.0.7-beta-1.tar.gz"));
+        ext = resolver.guessExtension();
+        assertEquals("tar.gz", ext);
+        assertEquals("distribution", resolver.guessType());
     }
 
     /**
