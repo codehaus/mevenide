@@ -22,5 +22,6 @@
 	<classpathentry kind="src" path="/mevenide-config"/>
 	<classpathentry kind="var" path="MAVEN_REPO/dom4j/jars/dom4j-1.4.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/thaiopensource/jars/jing-20030619.jar"/>
+	<classpathentry kind="src" path="/goals-grabber"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
