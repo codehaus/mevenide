@@ -174,7 +174,7 @@ public class MavenLaunchShortcut implements ILaunchShortcut {
 			
 			if ( offline ) {
 				Map optionsMap = new HashMap();
-				optionsMap.put("-o", Boolean.toString(offline));
+				optionsMap.put("o", Boolean.toString(offline));
 				workingCopy.setAttribute(MavenArgumentsTab.OPTIONS_MAP, optionsMap);
 			}
 			
