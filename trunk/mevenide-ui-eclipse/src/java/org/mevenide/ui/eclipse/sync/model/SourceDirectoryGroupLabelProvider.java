@@ -57,29 +57,39 @@ import org.mevenide.ui.eclipse.Mevenide;
 
 public class SourceDirectoryGroupLabelProvider implements ITableLabelProvider {
 	
-	private final String[] sourceTypes;
+	private static final int INHERIT_IDX = 2;
+    private static final int SRC_TYPE_IDX = 1;
+    private static final int DIRECTORY_IDX = 0;
+
+    private final String[] sourceTypes;
 	
 	public SourceDirectoryGroupLabelProvider(String[] sourceTypes) {
 		this.sourceTypes = sourceTypes;
 	}
 	
 	public Image getColumnImage(Object element, int columnIndex) {
-		if ( columnIndex == 0 ) {
+		if ( columnIndex == DIRECTORY_IDX ) {
 			return Mevenide.getImageDescriptor("source-directory-16.gif").createImage();
+		}
+		if ( columnIndex == INHERIT_IDX ) {
+			if ( ((SourceDirectory) element).isInherited() ) {
+				return Mevenide.getImageDescriptor("checked-16.gif").createImage();
+			}
+			return Mevenide.getImageDescriptor("unchecked-16.gif").createImage();			
 		}
 		return null;
 	}
 	
 	public String getColumnText(Object element, int columnIndex) {
 		Assert.isTrue(element instanceof SourceDirectory);
-		if ( columnIndex == 0  ) { 
+		if ( columnIndex == DIRECTORY_IDX  ) { 
 			return ((SourceDirectory) element).getDisplayPath();
 		}
-		else {
+		if ( columnIndex == SRC_TYPE_IDX ) {
 			String directoryType = ((SourceDirectory) element).getDirectoryType();
-			//Assert.isTrue(Arrays.asList(sourceTypes).contains(directoryType));
 			return directoryType;
-		} 
+		}
+		return "";
 	}
 	
 	public void addListener(ILabelProviderListener listener) {

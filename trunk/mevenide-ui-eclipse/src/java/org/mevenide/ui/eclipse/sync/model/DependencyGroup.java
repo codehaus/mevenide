@@ -128,7 +128,7 @@ public class DependencyGroup extends ArtifactGroup {
 		
 		for (int i = 0; i < artifacts.size(); i++) {
             Dependency dependency = ((DependencyWrapper) artifacts.get(i)).getDependency();
-			if ( ((DependencyWrapper) artifacts.get(i)).isInherited() ) {
+			if ( !((DependencyWrapper) artifacts.get(i)).isInherited() ) {
 				nonInheritedDependencies.add(dependency);
             }
         }

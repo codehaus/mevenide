@@ -150,8 +150,8 @@ public class PomSynchronizer extends AbstractPomSynchronizer implements ISynchro
 		pomWriter.resetSourceDirectories(pomFile);
 		
 		//WICKED if/else -- to be removed when SourceDirectoryBatchUpdate is done - tho this will only move the problem backward
-		for (int i = 0; i < sourceGroup.getSourceDirectories().size(); i++) {
-			SourceDirectory directory = (SourceDirectory) sourceGroup.getSourceDirectories().get(i);
+		for (int i = 0; i < sourceGroup.getNonInheritedSourceDirectories().size(); i++) {
+			SourceDirectory directory = (SourceDirectory) sourceGroup.getNonInheritedSourceDirectories().get(i);
 			if ( directory.isSource() ) {
 				pomWriter.addSource(directory.getDirectoryPath(), pomFile, directory.getDirectoryType());
 			}
