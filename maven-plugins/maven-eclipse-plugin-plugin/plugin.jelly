@@ -116,10 +116,10 @@
       </ant:move>
       
       <!-- build plugin distribution file. -->
-      <ant:jar destfile="${pluginArchive}">
+      <ant:zip destfile="${pluginArchive}">
         <ant:fileset dir="${basedir}" includes="${maven.eclipse.plugin.lib.dir}/**/*"/>
         <ant:fileset dir="${basedir}" includes="${maven.eclipse.plugin.includes}"/>
-      </ant:jar>
+      </ant:zip>
   </goal>
   
   <goal name="eclipse-plugin:create-help-dist" prereqs="eclipse-plugin:init,eclipse-plugin:install-artifact"
@@ -130,10 +130,10 @@
       <j:set var="pluginArchive" value="${maven.eclipse.plugin.dist.dir}/${pluginFolder}_${distVersion}.jar"/>
     
       <!-- build plugin distribution file. -->
-      <ant:jar destfile="${pluginArchive}">
+      <ant:zip destfile="${pluginArchive}">
         <ant:fileset dir="${basedir}" includes="${maven.eclipse.plugin.help.dir}/**/*"/>
         <ant:fileset dir="${basedir}" includes="${maven.eclipse.plugin.includes}"/>
-      </ant:jar>
+      </ant:zip>
   </goal>
   
   <goal name="eclipse-plugin:create-plugin-dist" prereqs="jar:jar,eclipse-plugin:init,eclipse-plugin:install-artifact"
@@ -178,9 +178,9 @@
       </ant:copy>
 
       <!-- build plugin distribution file. -->
-      <ant:jar destfile="${pluginArchive}">
+      <ant:zip destfile="${pluginArchive}">
         <ant:fileset dir="${maven.eclipse.plugin.temp.dir}"/>
-      </ant:jar>
+      </ant:zip>
       
       <!-- ant:delete dir="${maven.eclipse.plugin.temp.dir}" quiet="true"/ -->
       
@@ -204,9 +204,9 @@
    	  	<fileset dir="${basedir}" includes="${maven.eclipse.plugin.feature.includes}"/>
    	  </ant:copy>
    	  
-   	  <ant:jar destfile="${featureArchive}">
+   	  <ant:zip destfile="${featureArchive}">
         <fileset dir="${maven.eclipse.plugin.temp.dir}/${featureFolder}_${distVersion}"/>
-      </ant:jar>
+      </ant:zip>
       
       <!-- iterate and build each plugin part of this feature and copy them to $${maven.eclipse.plugin.dist.dir}/plugins -->
       <util:tokenize var="featurePlugins" delim=",">${maven.eclipse.plugin.feature.plugins}</util:tokenize>	
