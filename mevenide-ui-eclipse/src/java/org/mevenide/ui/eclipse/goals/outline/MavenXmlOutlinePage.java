@@ -33,6 +33,7 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -45,6 +46,7 @@ import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.part.Page;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.mevenide.ui.eclipse.Mevenide;
+import org.mevenide.ui.eclipse.MevenideColors;
 import org.mevenide.ui.eclipse.goals.filter.CustomPatternFilter;
 import org.mevenide.ui.eclipse.goals.filter.GlobalGoalFilter;
 import org.mevenide.ui.eclipse.goals.filter.GoalFilterDialog;
@@ -152,8 +154,13 @@ public class MavenXmlOutlinePage extends Page implements IContentOutlinePage {
     	goalsProvider.setBasedir(basedir);
 		goalsViewer.setContentProvider(goalsProvider);
 
-		goalsLabelProvider = new GoalsLabelProvider();
+		goalsLabelProvider = new GoalsLabelProvider() {
+		    public Color getForeground(Object arg0) {
+                return MevenideColors.BLACK;
+            }
+		};
 		goalsViewer.setLabelProvider(goalsLabelProvider);
+		
 	}
 
 	private void configureViewer() throws Exception {
