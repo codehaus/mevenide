@@ -1,24 +1,41 @@
 package org.mevenide.ui.eclipse.editors.mavenxml;
 
-import org.eclipse.jface.text.*;
-import org.eclipse.jface.text.rules.*;
+import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.rules.IToken;
+import org.eclipse.jface.text.rules.ITokenScanner;
+import org.eclipse.jface.text.rules.Token;
 
-public class XMLTagScanner extends RuleBasedScanner {
+public class XMLTagScanner implements ITokenScanner {
+    private IToken token;
+    private int offset;
+    private int length;
+    private boolean returned = false;
+    
+    public XMLTagScanner(XMLConfiguration config, String type) {
+        token = config.getToken(type);
+    }
 
-	public XMLTagScanner(ColorManager manager) {
-		IToken string =
-			new Token(
-				new TextAttribute(manager.getColor(IXMLColorConstants.STRING)));
+    
+    public void setRange(IDocument document, int offset, int length) {
+        returned = false;
+        this.offset = offset;
+        this.length = length;
+    }
 
-		IRule[] rules = new IRule[3];
+    public IToken nextToken() {
+        if (!returned) {
+            returned = true;
+            return token;
+        }
+        
+        return Token.EOF;
+    }
 
-		// Add rule for double quotes
-		rules[0] = new SingleLineRule("\"", "\"", string, '\\');
-		// Add a rule for single quotes
-		rules[1] = new SingleLineRule("'", "'", string, '\\');
-		// Add generic whitespace rule.
-		rules[2] = new WhitespaceRule(new XMLWhitespaceDetector());
+    public int getTokenOffset() {
+        return offset;
+    }
 
-		setRules(rules);
-	}
+    public int getTokenLength() {
+        return length;
+    }
 }

@@ -1,5 +1,7 @@
 package org.mevenide.ui.eclipse.editors.mavenxml;
 
+import java.util.Map;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.text.source.ISourceViewer;
@@ -16,11 +18,14 @@ public class MavenXmlEditor extends TextEditor {
 	private ColorManager colorManager;
 	private MavenXmlOutlinePage outlinePage;
 	
+	private Map namespaces;
+	private XMLReconciler reconciler;
+	
 	public MavenXmlEditor() {
 		super();
 		colorManager = new ColorManager();
 		setSourceViewerConfiguration(new XMLConfiguration(colorManager, this));
-		setDocumentProvider(new XMLDocumentProvider());
+		setDocumentProvider(new XMLDocumentProvider(this));
 	}
 	
 	public void dispose() {
@@ -59,5 +64,17 @@ public class MavenXmlEditor extends TextEditor {
 		
 	}
 
-
+    public Map getNamespaces() {
+        return namespaces;
+    }
+    
+    public void setNamespaces(Map namespaces) {
+        this.namespaces = namespaces;
+    }
+    public XMLReconciler getModel() {
+        return reconciler;
+    }
+    public void setModel(XMLReconciler reconciler) {
+        this.reconciler = reconciler;
+    }
 }
