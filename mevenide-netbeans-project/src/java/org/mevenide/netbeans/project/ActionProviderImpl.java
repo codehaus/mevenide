@@ -159,7 +159,9 @@ public class ActionProviderImpl implements ActionProvider {
 //                InputOutput io = IOProvider.getDefault().getIO("Run-" + project.getDisplayName(), true);
 //                runGoal(goal, lookup, filter, filter, io);
 //            }
-            if (ActionProvider.COMMAND_DEBUG.equals(str) || ActionProvider.COMMAND_DEBUG_SINGLE.equals(str)) {
+            if (ActionProvider.COMMAND_DEBUG.equals(str) 
+                || ActionProvider.COMMAND_DEBUG_SINGLE.equals(str) 
+                || ActionProvider.COMMAND_DEBUG_TEST_SINGLE.equals(str)) {
                 String attach = project.getPropertyResolver().getResolvedValue("maven.netbeans.debug.attach");
                 if (attach == null || "true".equals(attach)) {
                     runDebuggedGoal(goal, lookup);
