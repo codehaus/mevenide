@@ -113,14 +113,14 @@ public class ArtifactMappingContentProvider implements ITreeContentProvider {
             
             List allContainers = new ArrayList(directoryContainers);
             allContainers.addAll(dependencyContainers);
-            int idx = 0;
-            while ( idx < allContainers.size() ) {
-				IArtifactMappingNodeContainer container = (IArtifactMappingNodeContainer) allContainers.get(idx);
-                if ( container.getNodes().length == 0 ) {
-                    allContainers.remove(container);
-                }
-				idx++;
-            }
+//            int idx = 0;
+//            while ( idx < allContainers.size() ) {
+//				IArtifactMappingNodeContainer container = (IArtifactMappingNodeContainer) allContainers.get(idx);
+//                if ( container.getNodes().length == 0 ) {
+//                    allContainers.remove(container);
+//                }
+//				idx++;
+//            }
 
             Object[] containers = null; 
 			try {
