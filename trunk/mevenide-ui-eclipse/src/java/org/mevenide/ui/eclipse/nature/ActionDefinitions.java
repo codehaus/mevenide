@@ -61,6 +61,13 @@ public class ActionDefinitions {
     }
     
     public boolean isEnabled(IProject project) {
+        if ( project == null ) {
+            return false;
+        }
+        if ( project != null && !project.exists() ) {
+            perProjectEnablementMap.remove(project.getLocation().toString());
+            return false;
+        }
         return project != null && 
                perProjectEnablementMap.containsKey(project.getLocation().toString()) && 
                ((Boolean) perProjectEnablementMap.get(project.getLocation().toString())).booleanValue(); 
