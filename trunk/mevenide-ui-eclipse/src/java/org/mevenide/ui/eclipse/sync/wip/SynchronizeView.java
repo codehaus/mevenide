@@ -116,6 +116,7 @@ public class SynchronizeView extends ViewPart {
         artifactMappingNodeViewer.setInput(input);
         ((ArtifactMappingContentProvider) artifactMappingNodeViewer.getContentProvider()).setDirection(this.direction);
         artifactMappingNodeViewer.refresh(true);
+        artifactMappingNodeViewer.expandAll();
     }
     
     public void setDirection(int direction) {
@@ -124,6 +125,7 @@ public class SynchronizeView extends ViewPart {
             ((ArtifactMappingContentProvider) artifactMappingNodeViewer.getContentProvider()).setDirection(direction);
         }
         artifactMappingNodeViewer.refresh(true);
+        artifactMappingNodeViewer.expandAll();
     }
     
     private void createArtifactViewer(Composite parent) {
@@ -155,6 +157,7 @@ public class SynchronizeView extends ViewPart {
         refreshAll = new Action() {
             public void run() {
                 artifactMappingNodeViewer.refresh(true);
+                artifactMappingNodeViewer.expandAll();
             }
         };
 		refreshAll.setId("REFRESH_VIEWER");

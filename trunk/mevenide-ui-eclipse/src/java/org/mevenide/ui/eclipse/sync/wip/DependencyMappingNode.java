@@ -132,6 +132,9 @@ public class DependencyMappingNode extends AbstractArtifactMappingNode implement
     public void propertyChange(PropertyChangeEvent event) {
         setDirtyDependency((Dependency)((DependencyPropertySource)event.getSource()).getSource());
     }
+    public Dependency getDirtyDependency() {
+        return this.dirtyDependency;
+    }
     public void setDirtyDependency(Dependency dirtyDependency) {
         this.dirtyDependency = dirtyDependency;
     }
