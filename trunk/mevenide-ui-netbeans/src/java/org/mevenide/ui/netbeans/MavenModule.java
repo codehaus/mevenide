@@ -65,7 +65,9 @@ import org.openide.util.Lookup;
 public class MavenModule extends ModuleInstall
 {
     private static Log log = LogFactory.getLog(MavenModule.class);
-   
+ 
+    private static final long serialVersionUID = -485754848837354747L;
+    
     public void restored()
     {
         // By default, do nothing.
@@ -79,6 +81,8 @@ public class MavenModule extends ModuleInstall
         {
             throw new IllegalStateException("Maven not installed or the MAVEN_HOME property not set.");
         }
+        
+        //DEBUG
         Lookup.Template template = new Lookup.Template(ModuleInfo.class, "Module[org.mevenide.ui.netbeans", null); //NOI18N
         Lookup.Item item = Lookup.getDefault().lookupItem(template);
         if (item != null)

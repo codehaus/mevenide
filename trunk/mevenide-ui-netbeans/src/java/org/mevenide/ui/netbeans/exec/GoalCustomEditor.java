@@ -49,6 +49,8 @@
 
 package org.mevenide.ui.netbeans.exec;
 
+import java.awt.GridBagConstraints;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
@@ -72,6 +74,7 @@ import org.mevenide.ui.netbeans.goals.GoalsRootNode;
 import org.mevenide.Environment;
 import org.mevenide.goals.grabber.IGoalsGrabber;
 import org.mevenide.goals.manager.GoalsGrabbersManager;
+import org.mevenide.ui.netbeans.GoalsGrabberProvider;
 import org.openide.ErrorManager;
 import org.openide.explorer.ExplorerManager;
 import org.openide.nodes.AbstractNode;
@@ -88,13 +91,34 @@ public class GoalCustomEditor extends javax.swing.JPanel
 {
     private PropertyEditor editor;
     private Listener listener;
+    private CustomGoalsPanel pnlAvailableGoals;
     /** Creates new form GoalCustomEditor */
     protected GoalCustomEditor()
     {
         initComponents();
+        GoalsGrabberProvider provider = new GoalsGrabberProvider()
+        {
+            public IGoalsGrabber getGoalsGrabber() throws Exception
+            {
+                return GoalsGrabbersManager.getDefaultGoalsGrabber();
+            }
+        };
+        pnlAvailableGoals = new CustomGoalsPanel(provider);
+        GridBagConstraints gridBagConstraints = new GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridheight = 7;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.weightx = 0.2;
+        gridBagConstraints.insets = new Insets(12, 12, 12, 0);
+        // add as the first one..
+        add(pnlAvailableGoals, gridBagConstraints, 0);        
+        
         lstGoals.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         enableRemoveButtons(-1);
         btnAdd.setMnemonic(NbBundle.getMessage(GoalCustomEditor.class, "GoalCustomEditor.btnAdd.mnemonic").charAt(0));
+        btnEdit.setMnemonic(NbBundle.getMessage(GoalCustomEditor.class, "GoalCustomEditor.btnEdit.mnemonic").charAt(0));
         btnRemove.setMnemonic(NbBundle.getMessage(GoalCustomEditor.class, "GoalCustomEditor.btnRemove.mnemonic").charAt(0));
         btnRemoveAll.setMnemonic(NbBundle.getMessage(GoalCustomEditor.class, "GoalCustomEditor.btnRemoveAll.mnemonic").charAt(0));
         btnMoveUp.setMnemonic(NbBundle.getMessage(GoalCustomEditor.class, "GoalCustomEditor.btnMoveUp.mnemonic").charAt(0));
@@ -116,10 +140,8 @@ public class GoalCustomEditor extends javax.swing.JPanel
     {
         java.awt.GridBagConstraints gridBagConstraints;
 
-        lblAllGoals = new javax.swing.JLabel();
-        epAllGoals = new org.openide.explorer.ExplorerPanel();
-        tvAllGoals = new org.openide.explorer.view.BeanTreeView();
         btnAdd = new javax.swing.JButton();
+        btnEdit = new javax.swing.JButton();
         btnRemove = new javax.swing.JButton();
         btnRemoveAll = new javax.swing.JButton();
         btnMoveUp = new javax.swing.JButton();
@@ -130,65 +152,52 @@ public class GoalCustomEditor extends javax.swing.JPanel
 
         setLayout(new java.awt.GridBagLayout());
 
-        lblAllGoals.setLabelFor(epAllGoals);
-        lblAllGoals.setText(org.openide.util.NbBundle.getBundle(GoalCustomEditor.class).getString("GoalCustomEditor.lblAllGoals.text"));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(12, 12, 0, 0);
-        add(lblAllGoals, gridBagConstraints);
-
-        tvAllGoals.setRootVisible(false);
-        epAllGoals.add(tvAllGoals, java.awt.BorderLayout.CENTER);
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.gridheight = 6;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.weightx = 0.2;
-        gridBagConstraints.weighty = 0.2;
-        gridBagConstraints.insets = new java.awt.Insets(6, 12, 12, 0);
-        add(epAllGoals, gridBagConstraints);
-
         btnAdd.setText(org.openide.util.NbBundle.getBundle(GoalCustomEditor.class).getString("GoalCustomEditor.btnAdd.text"));
         btnAdd.setActionCommand("Add");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(12, 6, 0, 0);
         add(btnAdd, gridBagConstraints);
+
+        btnEdit.setText(org.openide.util.NbBundle.getMessage(GoalCustomEditor.class, "GoalCustomEditor.btnEdit.text"));
+        btnEdit.setActionCommand("Edit");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        add(btnEdit, gridBagConstraints);
 
         btnRemove.setText(org.openide.util.NbBundle.getBundle(GoalCustomEditor.class).getString("GoalCustomEditor.btnRemove.text"));
         btnRemove.setActionCommand("Remove");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridy = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         add(btnRemove, gridBagConstraints);
 
         btnRemoveAll.setText(org.openide.util.NbBundle.getBundle(GoalCustomEditor.class).getString("GoalCustomEditor.btnRemoveAll.text"));
         btnRemoveAll.setActionCommand("RemoveAll");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 3;
+        gridBagConstraints.gridy = 4;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         gridBagConstraints.weighty = 0.1;
-        gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
         add(btnRemoveAll, gridBagConstraints);
 
         btnMoveUp.setText(org.openide.util.NbBundle.getBundle(GoalCustomEditor.class).getString("GoalCustomEditor.btnMoveUp.text"));
         btnMoveUp.setActionCommand("MoveUp");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 4;
+        gridBagConstraints.gridy = 5;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
         add(btnMoveUp, gridBagConstraints);
@@ -197,10 +206,10 @@ public class GoalCustomEditor extends javax.swing.JPanel
         btnMoveDown.setActionCommand("MoveDown");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 5;
+        gridBagConstraints.gridy = 6;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         gridBagConstraints.insets = new java.awt.Insets(6, 6, 12, 0);
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         add(btnMoveDown, gridBagConstraints);
 
         lblGoals.setLabelFor(lstGoals);
@@ -208,8 +217,8 @@ public class GoalCustomEditor extends javax.swing.JPanel
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 0;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         gridBagConstraints.insets = new java.awt.Insets(12, 6, 0, 12);
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         add(lblGoals, gridBagConstraints);
 
         spGoals.setMinimumSize(new java.awt.Dimension(100, 150));
@@ -221,9 +230,9 @@ public class GoalCustomEditor extends javax.swing.JPanel
         gridBagConstraints.gridy = 1;
         gridBagConstraints.gridheight = 6;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.insets = new java.awt.Insets(6, 6, 12, 12);
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         gridBagConstraints.weightx = 0.2;
-        gridBagConstraints.insets = new java.awt.Insets(6, 6, 12, 12);
         add(spGoals, gridBagConstraints);
 
     }//GEN-END:initComponents
@@ -231,58 +240,21 @@ public class GoalCustomEditor extends javax.swing.JPanel
     public void addNotify()
     {
         super.addNotify();
-        epAllGoals.getExplorerManager().setRootContext(createLoadingNode());
-        RequestProcessor.getDefault().post(new Runnable()
-        {
-            public void run()
-            {
-                //HACK need to call Environment.getMavenLocalHome() to initiliaze with defaults
-//                Environment.getMavenLocalHome();
-//                System.out.println("navenHome=" + Environment.getMavenLocalHome());
-//                System.out.println("mavenpluginhome=" + Environment.getMavenPluginsInstallDir());
-                try
-                {
-                    final IGoalsGrabber grabber = GoalsGrabbersManager.getDefaultGoalsGrabber();
-                    if (grabber == null)
-                    {
-                        throw new Exception("no grabber");
-                    }
-                    if (grabber.getPlugins() == null)
-                    {
-                        System.out.println("refreshing..");
-                        grabber.refresh();
-                        
-                    }
-                    
-                    SwingUtilities.invokeLater(new Runnable()
-                    {
-                        public void run()
-                        {
-                            epAllGoals.getExplorerManager().setRootContext(new GoalsRootNode(grabber));
-                        }
-                    });
-                } catch (Exception exc)
-                {
-                    System.out.println("exception thrown");
-                    exc.printStackTrace();
-                    ErrorManager.getDefault().notify(exc);
-                }
-            }
-        });
         if (editor != null)
         {
             DefaultListModel model = new DefaultListModel();
-            StringTokenizer tok = new StringTokenizer(editor.getAsText(), " ", false);
-            while (tok.hasMoreTokens())
+            
+            String[] vals = (String[])editor.getValue();
+            for (int i = 0; i < vals.length; i++)
             {
-                String token = tok.nextToken();
-                model.addElement(token);
+                model.addElement(vals[i]);
             }
             lstGoals.setModel(model);
             model.addListDataListener(new DataListener());
         }
         listener = new Listener();
         btnAdd.addActionListener(listener);
+        btnEdit.addActionListener(listener);
         btnRemove.addActionListener(listener);
         btnRemoveAll.addActionListener(listener);
         btnMoveUp.addActionListener(listener);
@@ -341,28 +313,16 @@ public class GoalCustomEditor extends javax.swing.JPanel
         }
     }
     
-    private Node createLoadingNode()
-    {
-        Children childs = new Children.Array();
-        Node loading = new AbstractNode(Children.LEAF);
-        loading.setName("Loading..."); //NOI18N
-        loading.setDisplayName(NbBundle.getBundle(GoalCustomEditor.class).getString("Loading"));
-        childs.add(new Node[] {loading});
-        return new AbstractNode(childs);
-    }
-    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdd;
+    private javax.swing.JButton btnEdit;
     private javax.swing.JButton btnMoveDown;
     private javax.swing.JButton btnMoveUp;
     private javax.swing.JButton btnRemove;
     private javax.swing.JButton btnRemoveAll;
-    private org.openide.explorer.ExplorerPanel epAllGoals;
-    private javax.swing.JLabel lblAllGoals;
     private javax.swing.JLabel lblGoals;
     private javax.swing.JList lstGoals;
     private javax.swing.JScrollPane spGoals;
-    private org.openide.explorer.view.BeanTreeView tvAllGoals;
     // End of variables declaration//GEN-END:variables
 
     private void enableRemoveButtons(int selectedIndex)
@@ -371,6 +331,7 @@ public class GoalCustomEditor extends javax.swing.JPanel
             btnRemove.setEnabled(false);
             btnMoveUp.setEnabled(false);
             btnMoveDown.setEnabled(false);
+            btnEdit.setEnabled(false);
         } else {
             if (selectedIndex == 0)
             {
@@ -385,26 +346,31 @@ public class GoalCustomEditor extends javax.swing.JPanel
                 btnMoveDown.setEnabled(true);
             }
             btnRemove.setEnabled(true);
+            btnEdit.setEnabled(true);
         }
     }
     
     
-    private class Listener implements ActionListener, ListSelectionListener, PropertyChangeListener
+    private class Listener implements ActionListener, ListSelectionListener
     {
         
         public void actionPerformed(ActionEvent e)
         {
             if ("Add".equals(e.getActionCommand())) //NOI18N
             {
-                Node[] nodes = epAllGoals.getExplorerManager().getSelectedNodes();
+                String goals = pnlAvailableGoals.getGoalsToExecute();
+                if (goals.trim().length() != 0) {
+                    DefaultListModel model = (DefaultListModel)lstGoals.getModel();
+                    model.addElement(goals);
+                }
+            } else if ("Edit".equals(e.getActionCommand())) //NOI18N
+            {
+                String goals = pnlAvailableGoals.getGoalsToExecute();
                 DefaultListModel model = (DefaultListModel)lstGoals.getModel();
-                for (int i = 0; i < nodes.length; i++)
+                int index = lstGoals.getSelectedIndex();
+                if (index >= 0)
                 {
-                    GoalNameCookie cook = (GoalNameCookie)nodes[i].getCookie(GoalNameCookie.class);
-                    if (cook != null)
-                    {
-                        model.addElement(cook.getGoalName());
-                    }
+                    model.set(index, goals);
                 }
             } else if ("Remove".equals(e.getActionCommand())) //NOI18N
             {
@@ -415,8 +381,11 @@ public class GoalCustomEditor extends javax.swing.JPanel
                 {
                     model.removeElement(sel[i]);
                 }
-                lstGoals.setSelectedIndex(selected);
-                lstGoals.grabFocus();
+                // only select the next one If there is a next one..
+                if (lstGoals.getModel().getSize() > selected - 1) {
+                    lstGoals.setSelectedIndex(selected);
+                    lstGoals.grabFocus();
+                }
             } else if ("RemoveAll".equals(e.getActionCommand())) //NOI18N
             {
                 DefaultListModel model = (DefaultListModel)lstGoals.getModel();
@@ -441,18 +410,11 @@ public class GoalCustomEditor extends javax.swing.JPanel
         public void valueChanged(ListSelectionEvent e)
         {
             enableRemoveButtons(lstGoals.getSelectedIndex());
-        }
-        
-        public void propertyChange(PropertyChangeEvent evt)
-        {
-            if (ExplorerManager.PROP_SELECTED_NODES.equals(evt.getPropertyName()))
-            {
-                if (epAllGoals.getExplorerManager().getSelectedNodes().length > 0)
-                {
-                    btnAdd.setEnabled(true);
-                } else {
-                    btnAdd.setEnabled(false);
-                }
+            if (lstGoals.getSelectedIndex() != -1) {
+                String goals = (String)lstGoals.getSelectedValue();
+                pnlAvailableGoals.setGoalsToExecute(goals);
+            } else {
+                pnlAvailableGoals.setGoalsToExecute("");
             }
         }
         
@@ -480,13 +442,9 @@ public class GoalCustomEditor extends javax.swing.JPanel
         {
             DefaultListModel model = (DefaultListModel)lstGoals.getModel();
             Enumeration en = model.elements();
-            StringBuffer buf = new StringBuffer(100);
-            while (en.hasMoreElements())
-            {
-                buf.append(en.nextElement());
-                buf.append(" ");
-            }
-            editor.setValue(buf.toString());
+            String[] arr = new String[model.size()];
+            model.copyInto(arr);
+            editor.setValue(arr);
         }
         
     }

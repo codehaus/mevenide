@@ -50,30 +50,24 @@
 package org.mevenide.ui.netbeans.exec;
 
 import java.awt.Component;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.beans.PropertyEditorSupport;
-import javax.swing.JPanel;
-import org.mevenide.ui.netbeans.goals.GoalUtils;
+import java.util.StringTokenizer;
 
 /**
  *
  * @author  Milos Kleint (ca206216@tiscali.cz)
  */
-public class GoalPropEditor extends PropertyEditorSupport
+public class GoalsListPropEditor extends PropertyEditorSupport
 {
     private final static String GOAL_SEPARATOR = "/"; //NOI18N
     /** Creates new Goal */
-    public GoalPropEditor()
+    public GoalsListPropEditor()
     {
     }
     
     public Component getCustomEditor()
     {
-        return createCustomEditor(this);
+        return new GoalCustomEditor(this);
     }
     
     public boolean supportsCustomEditor()
@@ -81,22 +75,33 @@ public class GoalPropEditor extends PropertyEditorSupport
         return true;
     }
     
-    private static JPanel createCustomEditor(final GoalPropEditor editor)
+    public void setAsText(String text) throws java.lang.IllegalArgumentException
     {
-        JPanel panel = new JPanel();
-        panel.setLayout(new GridBagLayout());
-        GridBagConstraints con = new GridBagConstraints();
-        con.insets = new Insets(12, 12, 12, 12);
-        final CustomGoalsPanel innerpanel = new CustomGoalsPanel(GoalUtils.createDefaultGoalsProvider());
-        innerpanel.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent event)
-            {
-                editor.setValue(innerpanel.getGoalsToExecute());
-            }
-        });
-        panel.add(innerpanel, con);
-        innerpanel.setGoalsToExecute(editor.getAsText());
-        return panel;
+        StringTokenizer tok = new StringTokenizer(text, GOAL_SEPARATOR, false);
+        String[] set = new String[tok.countTokens()];
+        int index = 0;
+        while (tok.hasMoreTokens())
+        {
+            set[index] = tok.nextToken();
+            index++;
+        }
+        setValue(set);
     }
+    
+    public String getAsText()
+    {
+        String[] str = (String[])getValue();
+        StringBuffer buf = new StringBuffer(100);
+        for (int i =0; i < str.length; i++)
+        {
+            buf.append(str[i]);
+            if (i < str.length - 1)
+            {
+                buf.append(GOAL_SEPARATOR);
+            }
+        }
+        return buf.toString();
+    }
+
     
 }

@@ -49,12 +49,15 @@
 package org.mevenide.ui.netbeans;
 
 import java.awt.Image;
-import java.beans.*;
-import java.io.File;
-import org.mevenide.ui.netbeans.exec.GoalPropEditor;
+import java.beans.BeanInfo;
+import java.beans.IntrospectionException;
+import java.beans.PropertyDescriptor;
+import java.beans.SimpleBeanInfo;
+import org.mevenide.ui.netbeans.exec.GoalsListPropEditor;
 import org.openide.ErrorManager;
 import org.openide.util.NbBundle;
 import org.openide.util.Utilities;
+
 
 public class MavenSettingsBeanInfo extends SimpleBeanInfo {
 
@@ -69,7 +72,7 @@ public class MavenSettingsBeanInfo extends SimpleBeanInfo {
             PropertyDescriptor topGoals = new PropertyDescriptor ("topGoals", MavenSettings.class); //NOI18N
             topGoals.setDisplayName (NbBundle.getMessage (MavenSettingsBeanInfo.class, "PROP_topGoals")); //NOI18N
             topGoals.setShortDescription (NbBundle.getMessage (MavenSettingsBeanInfo.class, "HINT_topGoals")); //NOI18N
-            topGoals.setPropertyEditorClass(GoalPropEditor.class);
+            topGoals.setPropertyEditorClass(GoalsListPropEditor.class);
             return new PropertyDescriptor[] { mavenHome, executor, topGoals };
         } catch (IntrospectionException ie) {
             ErrorManager.getDefault().notify(ie);

@@ -47,56 +47,20 @@
  * ====================================================================
  */
 
-package org.mevenide.ui.netbeans.exec;
 
-import java.awt.Component;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.beans.PropertyEditorSupport;
-import javax.swing.JPanel;
-import org.mevenide.ui.netbeans.goals.GoalUtils;
+package org.mevenide.ui.netbeans;
+
+import org.mevenide.goals.grabber.IGoalsGrabber;
 
 /**
  *
  * @author  Milos Kleint (ca206216@tiscali.cz)
  */
-public class GoalPropEditor extends PropertyEditorSupport
+public interface GoalsGrabberProvider
 {
-    private final static String GOAL_SEPARATOR = "/"; //NOI18N
-    /** Creates new Goal */
-    public GoalPropEditor()
-    {
-    }
-    
-    public Component getCustomEditor()
-    {
-        return createCustomEditor(this);
-    }
-    
-    public boolean supportsCustomEditor()
-    {
-        return true;
-    }
-    
-    private static JPanel createCustomEditor(final GoalPropEditor editor)
-    {
-        JPanel panel = new JPanel();
-        panel.setLayout(new GridBagLayout());
-        GridBagConstraints con = new GridBagConstraints();
-        con.insets = new Insets(12, 12, 12, 12);
-        final CustomGoalsPanel innerpanel = new CustomGoalsPanel(GoalUtils.createDefaultGoalsProvider());
-        innerpanel.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent event)
-            {
-                editor.setValue(innerpanel.getGoalsToExecute());
-            }
-        });
-        panel.add(innerpanel, con);
-        innerpanel.setGoalsToExecute(editor.getAsText());
-        return panel;
-    }
+    /**
+     * returns a goalsgrabber instance
+     */
+    IGoalsGrabber getGoalsGrabber() throws Exception;
     
 }
