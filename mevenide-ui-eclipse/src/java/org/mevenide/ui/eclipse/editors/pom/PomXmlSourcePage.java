@@ -34,6 +34,8 @@ import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.editor.IFormPage;
+import org.mevenide.project.IProjectChangeListener;
+import org.mevenide.project.ProjectChangeEvent;
 import org.mevenide.project.io.JDomProjectUnmarshaller;
 import org.mevenide.ui.eclipse.Mevenide;
 
@@ -45,7 +47,7 @@ import org.mevenide.ui.eclipse.Mevenide;
  */
 public class PomXmlSourcePage
 	extends TextEditor 
-	implements IPomEditorPage, IFormPage {
+	implements IPomEditorPage, IFormPage, IProjectChangeListener {
 
 	private static final Log log = LogFactory.getLog(PomXmlSourcePage.class);
     private static final String ID = Mevenide.getResourceString("PomXMLSourcePage.id"); //$NON-NLS-1$
@@ -102,6 +104,7 @@ public class PomXmlSourcePage
             log.debug("PomXmlSourcePage made active!"); //$NON-NLS-1$
         }
 		setModelNeedsUpdating(false);
+		getPomEditor().updateDocument();
 		setActive(true);
     }
 
@@ -267,6 +270,10 @@ public class PomXmlSourcePage
 	    	return false;
 	    }
 	}
+	
+	public void projectChanged(ProjectChangeEvent e) {
+	    getPomEditor().updateDocument();
+    }
 }
 
 

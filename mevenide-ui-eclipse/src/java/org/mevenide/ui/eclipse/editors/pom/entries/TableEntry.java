@@ -325,7 +325,7 @@ public class TableEntry extends PageEntry {
 	}
 
 	public void setEnabled(boolean enable) {
-		if (viewer != null) {
+		if (viewer != null && !viewer.getTable().isDisposed()) {
 			viewer.getTable().setEnabled(enable);
 			addButton.setEnabled(enable);
 			removeButton.setEnabled(enable && viewer.getTable().getItemCount() > 0);
@@ -394,11 +394,13 @@ public class TableEntry extends PageEntry {
 				}
 			}
 		);
-		viewer.add(source);
+		if ( !viewer.getTable().isDisposed() ) {
+		    viewer.add(source);
+		}
 	}
 	
 	public void removeAll() {
-		if (viewer != null) {
+		if (viewer != null && !viewer.getTable().isDisposed()) {
 			while (viewer.getTable().getItemCount() > 0) {
 				viewer.remove(viewer.getElementAt(0));
 			}
@@ -422,7 +424,7 @@ public class TableEntry extends PageEntry {
 	 * @see org.mevenide.ui.eclipse.editors.pages.PageEntry#setFocus()
 	 */
 	public boolean setFocus() {
-		if (viewer != null) {
+		if (viewer != null && !viewer.getTable().isDisposed()) {
 			return viewer.getTable().setFocus();
 		}
 		return false;
