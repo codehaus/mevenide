@@ -136,6 +136,7 @@ public class PomSynchronizer extends AbstractPomSynchronizer implements ISynchro
      * @see org.mevenide.core.sync.AbstractPomSynchronizer#postSynchronization()
      */
 	public void postSynchronization() {
+		
 	}
 
 	/**
