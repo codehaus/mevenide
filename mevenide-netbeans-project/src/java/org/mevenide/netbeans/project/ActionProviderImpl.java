@@ -235,8 +235,12 @@ public class ActionProviderImpl implements ActionProvider {
     
     public boolean isActionEnabled(String str, Lookup lookup) throws java.lang.IllegalArgumentException {
         if (COMMAND_TEST_SINGLE.equals(str)) {
-            FileObject[] fos = findTestSources(lookup);
-            return  fos != null && fos.length == 1;
+            FileObject[] fos = FileUtilities.extractFileObjectsfromLookup(lookup);
+            boolean found = fos != null && fos.length == 1;
+            if (found) {
+                found = FileUtilities.findTestForFile(project, fos[0]) != null;
+            }
+            return found;
         } 
         if (COMMAND_RUN_SINGLE.equals(str)) {
             FileObject[] fos = findSources(lookup);
