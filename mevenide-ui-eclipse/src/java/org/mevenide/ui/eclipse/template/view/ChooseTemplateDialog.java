@@ -17,18 +17,18 @@
 package org.mevenide.ui.eclipse.template.view;
 
 import org.eclipse.jface.dialogs.TitleAreaDialog;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.PlatformUI;
+import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.template.model.Template;
-import org.mevenide.ui.eclipse.template.model.TemplateContentProvider;
 import org.mevenide.ui.eclipse.template.model.Templates;
 
 
@@ -40,6 +40,8 @@ import org.mevenide.ui.eclipse.template.model.Templates;
  */
 public class ChooseTemplateDialog extends TitleAreaDialog {
     private Template selectedTemplate;
+    private boolean useTemplate;
+    private Combo templatesCombo;
     
     public ChooseTemplateDialog() {
 		super(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell());
@@ -59,26 +61,57 @@ public class ChooseTemplateDialog extends TitleAreaDialog {
         composite.setLayout(layout);
         composite.setLayoutData(new GridData(GridData.FILL_BOTH));
         
-        Templates templates = Templates.newTemplates();
-        
-        TreeViewer templateViewer = TemplateViewerFactory.createTemplateViewer(composite);
-        templates.addObserver((TemplateContentProvider) templateViewer.getContentProvider());
-        templateViewer.setInput(templates);
-        
-        ISelectionChangedListener selectionProvider = new ISelectionChangedListener() {
-            public void selectionChanged(SelectionChangedEvent event) {
-                IStructuredSelection selection = (IStructuredSelection) event.getSelection();
-                selectedTemplate = (Template) selection.getFirstElement();
-            }
-        };
-        templateViewer.addSelectionChangedListener(selectionProvider);
-        
+        createUseTemplateButton(composite);
+        createTemplatesCombo(composite);
+		
         return composite;
 	}
 	
 	
+    private void createTemplatesCombo(Composite composite) {
+        final Templates templates = Templates.newTemplates();
+        
+		templatesCombo = new Combo(composite, SWT.DROP_DOWN | SWT.READ_ONLY | SWT.SINGLE);
+        templatesCombo.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		templatesCombo.add(Mevenide.getResourceString("ChooseTemplateDialog.DefaultTemplate.Label"));
+		for (int i = 0; i < templates.getTemplates().length; i++) {
+			templatesCombo.add(((Template) templates.getTemplates()[i]).getTemplateName());
+		}
+		templatesCombo.select(0);
+		templatesCombo.setEnabled(false);
+        
+		SelectionListener selectionProvider = new SelectionListener() {
+            	public void widgetDefaultSelected(SelectionEvent arg0) { }
+            	public void widgetSelected(SelectionEvent event) {
+            	    int index = templatesCombo.getSelectionIndex();
+            	    if ( index > 0 ) {
+            	        selectedTemplate = (Template) templates.getTemplates()[index - 1];
+            	    }
+            	    else {
+            	        selectedTemplate = null;
+            	    }
+            	}
+        };
+		templatesCombo.addSelectionListener(selectionProvider);
+    }
+
+    private void createUseTemplateButton(Composite composite) {
+        Button useTemplateButton = new Button(composite, SWT.CHECK);
+		useTemplateButton.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		useTemplateButton.setText(Mevenide.getResourceString("CreatePomAction.template.UseTemplate.Button.Text")); //$NON-NLS-1$
+		useTemplateButton.setSelection(false);
+		useTemplateButton.addSelectionListener(
+				new SelectionListener() {
+				   public void widgetDefaultSelected(SelectionEvent arg0) { }
+			       public void widgetSelected(SelectionEvent event) {
+			           useTemplate = ((Button) event.getSource()).getSelection();
+			           templatesCombo.setEnabled(useTemplate);
+			       }
+				});
+    }
+
     public Template getTemplate() {
-        return selectedTemplate;
+        return useTemplate ? selectedTemplate : null;
     }
     
 }
