@@ -174,7 +174,17 @@ public class DirectoryNode extends ArtifactNode {
 	}
 	
 	public void removeFrom(Project project) throws Exception {
-		String type = directory.getType();
+		//String type = directory.getType();
+	}
+	
+	public boolean equivalentEntry(IClasspathEntry entry) {
+	    boolean sameType = entry.getEntryKind() == IClasspathEntry.CPE_SOURCE;
+	    
+	    String relativeEntryPath = entry.getPath().removeFirstSegments(1).toOSString().replaceAll("\\\\", "/");
+	    String artifactPath = ResolverUtils.resolve((Project) parentNode.getData(), directory.getCleanPath());
+	    boolean equivalentPath = relativeEntryPath.equals(artifactPath);
+	    
+	    return sameType && equivalentPath;
 	}
 	
 	public Object getAdapter(Class adapteeClass) {
@@ -198,4 +208,3 @@ public class DirectoryNode extends ArtifactNode {
 	}
 	
 }
- 

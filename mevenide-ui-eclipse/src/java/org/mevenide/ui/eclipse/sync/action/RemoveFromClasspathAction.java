@@ -17,6 +17,9 @@
 package org.mevenide.ui.eclipse.sync.action;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.jdt.core.IClasspathEntry;
+import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.JavaCore;
 import org.mevenide.ui.eclipse.sync.model.ArtifactNode;
 
 /**
@@ -27,21 +30,21 @@ import org.mevenide.ui.eclipse.sync.model.ArtifactNode;
  */
 public class RemoveFromClasspathAction extends ArtifactAction {
 	public void removeEntry(ArtifactNode selectedNode, IProject project) throws Exception {
-//		IClasspathEntry entry = (IClasspathEntry) selectedNode.getIdeEntry();
-//		IJavaProject javaProject = JavaCore.create(project);
-//		IClasspathEntry[] entries = javaProject.getRawClasspath();
-//		IClasspathEntry[] newEntries = new IClasspathEntry[entries.length - 1];
-//		int i = 0;
-//		while ( !entries[i].equals(entry) ) {
-//			newEntries[i] = entries[i];
-//			i++;
-//		}
-//		for (int j = i; j < newEntries.length; j++) {
-//			newEntries[j] = entries[j];
-//		}
-//		javaProject.setRawClasspath(newEntries, null);
-//		project.refreshLocal(0, null);
-//		fireArtifactRemovedFromClasspath(selectedNode, project);
+		IJavaProject javaProject = JavaCore.create(project);
+		IClasspathEntry[] entries = javaProject.getRawClasspath();
+		IClasspathEntry[] newEntries = new IClasspathEntry[entries.length - 1];
+		int idx = 0;
+		while ( true ) {
+			if ( ((ArtifactNode) selectedNode).equivalentEntry(entries[idx]) ) {
+				break;
+			}
+			idx++;
+		}
+		System.arraycopy(entries, 0, newEntries, 0, idx);
+		System.arraycopy(entries, idx + 1, newEntries, idx, entries.length - idx - 1);
+		javaProject.setRawClasspath(newEntries, null);
+		project.refreshLocal(0, null);
+		fireArtifactRemovedFromClasspath(selectedNode, project);
 	}
 	
 }

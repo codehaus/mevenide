@@ -19,6 +19,8 @@ package org.mevenide.ui.eclipse.sync.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Project;
 import org.apache.maven.repository.Artifact;
 import org.eclipse.core.resources.IProject;
@@ -42,6 +44,7 @@ import org.mevenide.util.MevenideUtils;
  * 
  */
 public class MavenArtifactNode extends ArtifactNode {
+    private static final Log log = LogFactory.getLog(MavenArtifactNode.class);
 	
 	private Artifact artifact;
 	private MavenProjectNode parent;
@@ -163,8 +166,9 @@ public class MavenArtifactNode extends ArtifactNode {
 		int idx = 0;
 		for (int i = 0; i < iteratedList.size(); i++) {
 			Artifact iteratedArtifact = (Artifact) iteratedList.get(i);
-			if ( artifact.getPath().equals(iteratedArtifact.getPath()) ) {
+			if ( DependencyUtil.areEquals(project, artifact.getDependency(), iteratedArtifact.getDependency()) ) {
 				projectArtifacts.remove(idx);
+				project.getDependencies().remove(idx);
 			}
 			else {
 				idx++;
@@ -203,5 +207,50 @@ public class MavenArtifactNode extends ArtifactNode {
 		}
 		propagateNodeChangeEvent();
 	}
+	
+	public boolean equivalentEntry(IClasspathEntry entry) {
+	    //@todo manage CPE_VARIABLE
+	    if ( entry.getEntryKind() != IClasspathEntry.CPE_PROJECT && entry.getEntryKind() != IClasspathEntry.CPE_LIBRARY ) { 	
+		    return false;
+		}
+	    
+	    Artifact a = getEntryArtifact(entry);
+        
+	    boolean equivalentDependencies = DependencyUtil.areEquals((Project) parent.getData(), artifact.getDependency(), a.getDependency());
+    
+        boolean sameKind = hasSameKind(entry);
+	   
+        return sameKind && equivalentDependencies;
+	}
+
+    private Artifact getEntryArtifact(IClasspathEntry entry) {
+	    IProject project = (IProject) parent.getParent().getData();
+        Artifact artifactEntry = null;
+	    try {
+	    	if ( entry.getEntryKind() == IClasspathEntry.CPE_PROJECT ) {
+	            artifactEntry = JavaProjectUtils.createArtifactFromProjectEntry(project, entry);
+	        }
+	        if ( entry.getEntryKind() == IClasspathEntry.CPE_LIBRARY ) {
+	        	artifactEntry = JavaProjectUtils.createArtifactFromLibraryEntry(project, entry);
+	        }
+        }
+        catch (Exception e) {
+            String message = "Unable to retrieve artifact from entry " + entry.getPath() + " in the context of project " + project.getName();
+            log.error(message, e);
+        }
+        return artifactEntry;
+    }
+
+    private boolean hasSameKind(IClasspathEntry entry) {
+        boolean sameKind = false;
+        String eclipseDependency = artifact.getDependency().getProperty("eclipse.dependency");
+        if ( eclipseDependency != null && "true".equals(eclipseDependency) ) {
+            sameKind = entry.getEntryKind() == IClasspathEntry.CPE_PROJECT;
+        }
+        else {
+           sameKind = entry.getEntryKind() == IClasspathEntry.CPE_LIBRARY;
+        }
+        return sameKind;
+    }
 	
 }
