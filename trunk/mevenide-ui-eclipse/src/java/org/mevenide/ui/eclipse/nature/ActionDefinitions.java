@@ -23,6 +23,7 @@ import java.util.Map;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
+import org.mevenide.ui.eclipse.launch.configuration.MavenArgumentsTab;
 
 
 /**  
@@ -33,6 +34,8 @@ import org.eclipse.debug.core.ILaunchConfiguration;
  */
 public class ActionDefinitions {
 
+    
+    
     private Map perProjectEnablementMap;
     
     private ILaunchConfiguration configuration;
@@ -72,9 +75,9 @@ public class ActionDefinitions {
     }
     
     public String getGoalList() {
-        String list = "";
+        String list = ""; //$NON-NLS-1$
         try {
-            String goals = configuration.getAttribute("GOALS_TO_RUN", "");
+            String goals = configuration.getAttribute(MavenArgumentsTab.GOALS_TO_RUN, ""); //$NON-NLS-1$
             return goals;
         }
         catch (CoreException e) {
@@ -86,7 +89,7 @@ public class ActionDefinitions {
     public boolean isAutoBuild() {
        boolean autoBuild = false;
        try {
-           autoBuild = configuration.getAttribute("AUTO_BUILD", false);
+           autoBuild = configuration.getAttribute(ActionDefinitionsManager.AUTO_BUILD, false);
 	   }
 	   catch (CoreException e) {
 	       e.printStackTrace();
@@ -98,7 +101,7 @@ public class ActionDefinitions {
     public List getPatterns() {
         List list = new ArrayList();
         try {
-            list = new ArrayList(configuration.getAttribute("PATTERNS_LIST", new HashMap()).keySet());
+            list = new ArrayList(configuration.getAttribute(ActionDefinitionsManager.PATTERNS_LIST, new HashMap()).keySet());
         }
         catch (CoreException e) {
             e.printStackTrace();

@@ -21,6 +21,7 @@ import org.eclipse.debug.internal.ui.DebugUIPlugin;
 import org.eclipse.debug.ui.DebugUITools;
 import org.eclipse.jface.action.Action;
 import org.eclipse.ui.PlatformUI;
+import org.mevenide.ui.eclipse.Mevenide;
 
 
 /**  
@@ -32,8 +33,8 @@ import org.eclipse.ui.PlatformUI;
 public class ManageActionDefinitionsAction extends Action {
     
     public ManageActionDefinitionsAction() {
-        setText("Manage Configuration...");
-        setToolTipText("Manage Configuration");
+        setText(Mevenide.getResourceString("ManageActionDefinitionsAction.Text")); //$NON-NLS-1$
+        setToolTipText(Mevenide.getResourceString("ManageActionDefinitionsAction.Tooltip")); //$NON-NLS-1$
     }
     
     

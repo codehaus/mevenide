@@ -41,6 +41,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
+import org.mevenide.ui.eclipse.Mevenide;
 
 
 /**  
@@ -83,7 +84,7 @@ public class PatternsTab extends AbstractLaunchConfigurationTab {
         
         autoBuildButton = new Button(composite, SWT.CHECK);
         autoBuildButton.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-        autoBuildButton.setText("Auto Build");
+        autoBuildButton.setText(Mevenide.getResourceString("PatternsTab.AutoBuildButton.Text")); //$NON-NLS-1$
         autoBuildButton.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent arg0) {
                 autoBuild = !autoBuild;
@@ -97,7 +98,7 @@ public class PatternsTab extends AbstractLaunchConfigurationTab {
 
     private void createDescriptionText(Composite composite) {
         Text descriptionText = new Text(composite, SWT.READ_ONLY);
-        descriptionText.setText("Specify the patterns that will trigger the launch activation");
+        descriptionText.setText(Mevenide.getResourceString("PatternsTab.Description")); //$NON-NLS-1$
         GridData descriptionData = new GridData(GridData.FILL_HORIZONTAL);
         descriptionText.setLayoutData(descriptionData);
     }
@@ -135,8 +136,8 @@ public class PatternsTab extends AbstractLaunchConfigurationTab {
 				TableItem item = new TableItem(table,SWT.NULL);
 				item.setText(
 					new String[] {
-						"**/*.sample",  
-						"" 
+						"**/*.sample",   //$NON-NLS-1$
+						""  //$NON-NLS-1$
 					}
 				);
 				setDirty(true);
@@ -146,7 +147,7 @@ public class PatternsTab extends AbstractLaunchConfigurationTab {
 		
 		
 		Button removeButton = new Button(buttonsArea, SWT.PUSH);
-		removeButton.setText("Remove"); 
+		removeButton.setText(Mevenide.getResourceString("PatternsTab.RemoveButton.Text"));  //$NON-NLS-1$
 		GridData data2 = new GridData(GridData.FILL_HORIZONTAL);
 		removeButton.setLayoutData(data2);
 		removeButton.addSelectionListener(new SelectionAdapter() {
@@ -239,7 +240,7 @@ public class PatternsTab extends AbstractLaunchConfigurationTab {
             autoBuild = configuration.getAttribute("AUTO_BUILD", false);
         }
         catch (CoreException e) {
-            String message = "Unable to retrieve autobuild value from configuration"; 
+            String message = "Unable to retrieve autobuild value from configuration";  //$NON-NLS-1$
             log.error(message, e);
         }
         autoBuildButton.setSelection(autoBuild);
@@ -252,7 +253,7 @@ public class PatternsTab extends AbstractLaunchConfigurationTab {
             patternList = configuration.getAttribute("PATTERNS_LIST", new HashMap());
         }
         catch (CoreException e) {
-            String message = "Unable to retrieve pattern list from configuration"; 
+            String message = "Unable to retrieve pattern list from configuration";  //$NON-NLS-1$
             log.error(message, e);
         }
         for (Iterator i = patternList.keySet().iterator(); i.hasNext(); ) {
@@ -288,7 +289,7 @@ public class PatternsTab extends AbstractLaunchConfigurationTab {
     }
 
     public String getName() {
-        return "Patterns";
+        return Mevenide.getResourceString("PatternsTab.Name"); //$NON-NLS-1$
     }
     
     

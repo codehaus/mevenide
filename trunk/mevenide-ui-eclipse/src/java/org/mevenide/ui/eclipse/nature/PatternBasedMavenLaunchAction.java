@@ -21,6 +21,7 @@ import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
+import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.jface.action.Action;
 import org.eclipse.ui.externaltools.internal.model.IExternalToolConstants;
 
@@ -52,11 +53,11 @@ public class PatternBasedMavenLaunchAction extends Action {
 	        ILaunchConfigurationWorkingCopy copy = definition.getConfiguration().getWorkingCopy();
             copy.setAttribute(IExternalToolConstants.ATTR_WORKING_DIRECTORY, project.getLocation().toOSString());
             copy.doSave(); 
-            definition.getConfiguration().launch("run", null);
+            definition.getConfiguration().launch(ILaunchManager.RUN_MODE, null);
             definition.projectLaunched(project);
 	    }
         catch (CoreException e) {
-            String message = "Unable to obtain LaunchConfigurationWorkingCopy"; 
+            String message = "Unable to obtain LaunchConfigurationWorkingCopy"; //$NON-NLS-1$
             log.error(message, e);
         }
 	    finally {
@@ -66,7 +67,7 @@ public class PatternBasedMavenLaunchAction extends Action {
                 copy.doSave();
             }
             catch (CoreException e1) {
-                String message = "Unable to restore LaunchConfiguration state"; 
+                String message = "Unable to restore LaunchConfiguration state"; //$NON-NLS-1$
                 log.error(message, e1);
             }
 	        
