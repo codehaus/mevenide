@@ -21,7 +21,6 @@ import java.io.IOException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.jface.preference.PreferenceStore;
-
 import org.mevenide.ui.eclipse.Mevenide;
 
 /**
@@ -33,7 +32,16 @@ import org.mevenide.ui.eclipse.Mevenide;
 public class PreferencesManager {
 	private static Log log = LogFactory.getLog(PreferencesManager.class);
 	
+	private static PreferencesManager manager = new PreferencesManager();
 	private PreferenceStore preferenceStore;
+	
+	
+	private PreferencesManager() {
+	}
+	
+	public static PreferencesManager getManager()  {
+		return manager;
+	}
 	
 	public void loadPreferences() {
 		preferenceStore = new PreferenceStore(getPreferenceStoreFilename());

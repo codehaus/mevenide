@@ -31,6 +31,7 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -220,7 +221,7 @@ public class MavenXmlOutlinePage extends Page implements IContentOutlinePage {
 		
 		openFilterDialogAction = new Action(null) {
 			public void run() {
-			    //openFilterDialog();
+			    openFilterDialog();
 			}
 		};
 		openFilterDialogAction.setText("Filter...");
@@ -244,6 +245,14 @@ public class MavenXmlOutlinePage extends Page implements IContentOutlinePage {
 	    if ( selection instanceof Goal ) {
 		    Goal selectedNode = (Goal) selection;
 			menuManager.add(this.runGoalAction);		
+		}
+	}
+	
+	private void openFilterDialog() {
+		GoalFilterDialog dialog = new GoalFilterDialog();
+		int dialogResult = dialog.open();
+		if ( dialogResult != Window.CANCEL ) {
+			
 		}
 	}
 	
