@@ -28,6 +28,7 @@ import java.util.List;
 public class ActionDefinitions {
 
     private List goals;
+    
     private List patterns;
     
     public List getGoals() {

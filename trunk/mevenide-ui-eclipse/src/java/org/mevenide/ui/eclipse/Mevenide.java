@@ -42,7 +42,10 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
+import org.eclipse.ui.IWindowListener;
+import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.internal.WorkbenchWindow;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.mevenide.environment.ConfigUtils;
 import org.mevenide.environment.CustomLocationFinder;
@@ -70,7 +73,10 @@ public class Mevenide extends AbstractUIPlugin {
 	 
 	private static Mevenide plugin;
 	
-	private Object lock = new Object();
+	//we need it to update the menu correctly in the builder 
+	private IWorkbenchWindow lastActiveWindow;
+	
+    private Object lock = new Object();
 	
 	public static final String NATURE_ID = "org.mevenide.ui.mavennature"; //$NON-NLS-1$
 	public static final String SYNCHRONIZE_VIEW_ID = "org.mevenide.ui.synchronize.view.SynchronizationView"; //$NON-NLS-1$
@@ -134,6 +140,16 @@ public class Mevenide extends AbstractUIPlugin {
         initEnvironment();
         initImageRegistry();
         DynamicPreferencePageFactory.getFactory().createPages();
+        PlatformUI.getWorkbench().addWindowListener(new IWindowListener() {
+	        public void windowOpened(IWorkbenchWindow window) {
+	            lastActiveWindow = window;
+	        }   
+	        public void windowActivated(IWorkbenchWindow window) {
+	            lastActiveWindow = window;
+	        } 
+	        public void windowClosed(IWorkbenchWindow window) { }
+	        public void windowDeactivated(IWorkbenchWindow window) {}
+        });
 	}
 
     private void initImageRegistry() {
@@ -143,6 +159,14 @@ public class Mevenide extends AbstractUIPlugin {
         }
     }
 
+    /**
+     * @warn we cast here because we need a WorkbenchWindow to access the MenuManager
+     *       however WorkbenchWindow is part of internal api
+     */
+    public WorkbenchWindow  getWorkbenchWindow() {
+        return (WorkbenchWindow) lastActiveWindow;
+    } 
+    
     /**
 	 * osgi shutdown : dispose resources
 	 */
@@ -454,5 +478,7 @@ public class Mevenide extends AbstractUIPlugin {
 //TODO milos: for now just ignoring.. should be sufficient to have in local var..        
 //        Environment.setHeapSize(heapSize);
     }
+    
+    
 
 }
