@@ -83,6 +83,9 @@ public class PomPropertySourceProvider implements IPropertySourceProvider {
 	}
 	
 	public IPomPropertySource getPomPropertySource(Object object) {
+		if (object instanceof IPomPropertySource) {
+			return (IPomPropertySource) object;
+		}
 		if (object instanceof License) {
 			return new LicensePropertySource((License) object);
 		}
