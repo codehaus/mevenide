@@ -5,7 +5,35 @@
    
    <part id="install">
     <title>Installing</title>
-   
+    <faq id="getting-bin">
+      <question>Where can i get Mevenide for Eclipse ? </question>
+      <answer>
+         <p>
+            You can grab the latest release as a big old jar from <a href="http://dist.codehaus.org/mevenide/release/">http://dist.codehaus.org/mevenide/release/</a>, 
+            or you can use Eclipse update manager. In the later please refer to the instructions provided <a href="update/index.html">here</a>.
+         </p>
+      </answer>
+    </faq>
+    
+    <faq id="building">
+      <question>How do i build Mevenide for Eclipse ? </question>
+      <answer>
+         <p>
+         	Please refer to the <a href="http://docs.codehaus.org/display/MEVENIDE/HowToBuildMevenide">instructions</a> provided in the wiki.
+         </p>
+      </answer> 
+    </faq>
+    
+    <faq id="how-to-install">
+      <question>How do i install Mevenide for Eclipse ? </question>
+      <answer>
+      	<p>
+        	If you got the release as a jar then you just have to unzip into your Eclipse install directory. This will add one feature and five plugins (org.mevenide.*).
+        	<br/> If you used the Eclipse update manager, then nothing else is required.
+        </p>
+      </answer>
+    </faq>
+    
     <faq id="mevenide-doesnot-work">
       <question>Mevenide doesnot work !!!</question>
       <answer>
@@ -14,15 +42,9 @@
         	f.i. by sending some log (e.g. ${workspace.dir}/.metadata/.log or looking at the error view, located under 
         	Window/Show View/Other.../Pde Runtime). Also make sure Mevenide isnot actually loaded by looking at the Plugin Registry (same path than the error log).
         </p>
-        <p>
-        	Tho often the root of the problem is that dependency requirements are not fullfilled, 
-        	f.i. you should have ajde installed. If it is not, you can download it at <a href="http://eclipse.org/ajdt">AJDT website</a>.
-        </p>
-        <p>
-	        We will in the near future provide a site.xml descriptor to make the install easier.
-	   </p>
       </answer>
     </faq>
+    
   </part>
    
 </faqs>
