@@ -24,6 +24,7 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.editors.entries.IPomCollectionAdaptor;
 import org.mevenide.ui.eclipse.editors.entries.TableEntry;
@@ -36,13 +37,17 @@ public class ContributorsSection extends PageSection {
 
 	private TableEntry contribTable;
 	
-	public ContributorsSection(TeamPage page) {
-		super(page);
+	public ContributorsSection(
+		TeamPage page,
+	    Composite parent,
+	    FormToolkit toolkit)
+	{
+		super(page, parent, toolkit);
 		setTitle(Mevenide.getResourceString("ContributorsSection.header"));
 		setDescription(Mevenide.getResourceString("ContributorsSection.description"));
 	}
 
-	public Composite createClient(Composite parent, PageWidgetFactory factory) {
+    public Composite createSectionContent(Composite parent, FormToolkit factory) {
 		Composite container = factory.createComposite(parent);
 		GridLayout layout = new GridLayout();
 		layout.numColumns = isInherited() ? 3 : 2;
@@ -51,7 +56,7 @@ public class ContributorsSection extends PageSection {
 		layout.horizontalSpacing = 5;
 		container.setLayout(layout);
 		
-		final Project pom = getPage().getEditor().getPom();
+		final Project pom = getPage().getPomEditor().getPom();
 		
 		// POM contributors table
 		Button toggle = createOverrideToggle(container, factory, 1, true);

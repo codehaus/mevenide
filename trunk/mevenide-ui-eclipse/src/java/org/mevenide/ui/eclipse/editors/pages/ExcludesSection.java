@@ -23,6 +23,7 @@ import org.apache.maven.project.Project;
 import org.apache.maven.project.UnitTest;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.editors.entries.TableEntry;
 
@@ -36,8 +37,12 @@ public class ExcludesSection extends PageSection {
 	private IExcludesAdaptor excludesAdaptor;
 	private TableEntry excludesTable;
 	
-	public ExcludesSection(UnitTestsPage page) {
-		super(page);
+	public ExcludesSection(
+	    UnitTestsPage page,
+	    Composite parent,
+	    FormToolkit toolkit)
+	{
+		super(page, parent, toolkit);
 		setTitle(Mevenide.getResourceString("UnitTestExcludesSection.header"));
 	}
 	
@@ -45,7 +50,7 @@ public class ExcludesSection extends PageSection {
 		this.excludesAdaptor = newExcludesAdaptor;
 	}
 
-	public Composite createClient(Composite parent, PageWidgetFactory factory) {
+    public Composite createSectionContent(Composite parent, FormToolkit factory) {
 		Composite container = factory.createComposite(parent);
 		GridLayout layout = new GridLayout();
 		layout.numColumns = isInherited() ? 3 : 2;
@@ -71,12 +76,12 @@ public class ExcludesSection extends PageSection {
 		List excludes = getOrCreateUnitTest(target).getExcludes();
 		excludes.removeAll(excludes);
 		excludes.addAll(newExcludes);
-		getPage().getEditor().setModelDirty(true);
+		getPage().getPomEditor().setModelDirty(true);
 	}
 	
 	public void addExclude(Object target, String exclude) {
 		getOrCreateUnitTest(target).addExclude(exclude);
-		getPage().getEditor().setModelDirty(true);
+		getPage().getPomEditor().setModelDirty(true);
 	}
 	
 	public List getExcludes(Object source) {

@@ -27,6 +27,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.DirectoryDialog;
+import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.editors.entries.OverridableTextEntry;
 
@@ -44,13 +45,17 @@ public class BuildDirectoriesSection extends PageSection {
 	private OverridableTextEntry integrationTestsText;
 	private OverridableTextEntry nagEmailText;
 
-    public BuildDirectoriesSection(BuildPage page) {
-        super(page);
+    public BuildDirectoriesSection(
+        BuildPage page,
+		Composite parent, 
+		FormToolkit toolkit) 
+   	{
+        super(page, parent, toolkit);
 		setTitle(Mevenide.getResourceString("BuildDirectoriesSection.header"));
 		setDescription(Mevenide.getResourceString("BuildDirectoriesSection.description"));
     }
 
-    public Composite createClient(Composite parent, PageWidgetFactory factory) {
+    public Composite createSectionContent(Composite parent, FormToolkit factory) {
 		Composite container = factory.createComposite(parent);
 		GridLayout layout = new GridLayout();
 		layout.numColumns = isInherited() ? 4 : 3;
@@ -59,7 +64,7 @@ public class BuildDirectoriesSection extends PageSection {
 		layout.horizontalSpacing = 5;
 		container.setLayout(layout);
 		
-		final Project pom = getPage().getEditor().getPom();
+		final Project pom = getPage().getPomEditor().getPom();
 		
 		// Build source directory textbox and browse button
 		Button toggle = createOverrideToggle(container, factory);
@@ -92,7 +97,7 @@ public class BuildDirectoriesSection extends PageSection {
 				public void widgetSelected(SelectionEvent e) {
 					try {
 						DirectoryDialog dialog = new DirectoryDialog(
-							getPage().getEditor().getSite().getShell(),
+							getPage().getPomEditor().getSite().getShell(),
 							SWT.NULL
 						);
 						dialog.setText(sourceTitle);
@@ -141,7 +146,7 @@ public class BuildDirectoriesSection extends PageSection {
 				public void widgetSelected(SelectionEvent e) {
 					try {
 						DirectoryDialog dialog = new DirectoryDialog(
-							getPage().getEditor().getSite().getShell(),
+							getPage().getPomEditor().getSite().getShell(),
 							SWT.NULL
 						);
 						dialog.setText(aspectsTitle);
@@ -190,7 +195,7 @@ public class BuildDirectoriesSection extends PageSection {
 				public void widgetSelected(SelectionEvent e) {
 					try {
 						DirectoryDialog dialog = new DirectoryDialog(
-							getPage().getEditor().getSite().getShell(),
+							getPage().getPomEditor().getSite().getShell(),
 							SWT.NULL
 						);
 						dialog.setText(unitTestsTitle);
@@ -239,7 +244,7 @@ public class BuildDirectoriesSection extends PageSection {
 				public void widgetSelected(SelectionEvent e) {
 					try {
 						DirectoryDialog dialog = new DirectoryDialog(
-							getPage().getEditor().getSite().getShell(),
+							getPage().getPomEditor().getSite().getShell(),
 							SWT.NULL
 						);
 						dialog.setText(intgrationTestsTitle);

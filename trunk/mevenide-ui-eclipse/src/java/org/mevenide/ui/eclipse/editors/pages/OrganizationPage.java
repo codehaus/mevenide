@@ -20,6 +20,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.editors.MevenidePomEditor;
 
@@ -32,45 +33,50 @@ import org.mevenide.ui.eclipse.editors.MevenidePomEditor;
  */
 public class OrganizationPage extends AbstractPomEditorPage {
 
-    public static final String HEADING = Mevenide.getResourceString("OrganizationPage.heading");
+    private static final String ID = Mevenide.getResourceString("OrganizationPage.id");
+    private static final String TAB = Mevenide.getResourceString("OrganizationPage.tab.label");
+    private static final String HEADING = Mevenide.getResourceString("OrganizationPage.heading");
     
 	private OrganizationSection orgSection;
 	private LicenseSection licenseSection;
 	private SiteGenerationSection siteGenSection;
 	
     public OrganizationPage(MevenidePomEditor editor) {
-        super(HEADING, editor);
+        super(editor, ID, TAB, HEADING);
     }
 
-	protected void initializePage(Composite parent) {
+    /**
+     * @see org.mevenide.ui.eclipse.editors.pages.AbstractPomEditorPage#createPageContent(org.eclipse.swt.widgets.Composite)
+     */
+    protected void createPageContent(Composite parent) {
 		GridLayout layout = new GridLayout();
 		layout.numColumns = 2;
 		layout.marginWidth = 10;
 		layout.horizontalSpacing = 15;
 		parent.setLayout(layout);
 
-		PageWidgetFactory factory = getFactory();
+		FormToolkit factory = getEditor().getToolkit();
 
-		orgSection = new OrganizationSection(this);
-		Control control = orgSection.createControl(parent, factory);
+		orgSection = new OrganizationSection(this, parent, factory);
+		Control control = orgSection.getSection();
 		GridData gd = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING);
 		gd.horizontalSpan = 1;
 		control.setLayoutData(gd);
 		addSection(orgSection);
 
-		licenseSection = new LicenseSection(this);
-		control = licenseSection.createControl(parent, factory);
+		licenseSection = new LicenseSection(this, parent, factory);
+		control = licenseSection.getSection();
 		gd = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING);
 		gd.horizontalSpan = 1;
 		control.setLayoutData(gd);
 		addSection(licenseSection);
 
-		siteGenSection = new SiteGenerationSection(this);
-		control = siteGenSection.createControl(parent, factory);
+		siteGenSection = new SiteGenerationSection(this, parent, factory);
+		control = siteGenSection.getSection();
 		gd = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING);
 		gd.horizontalSpan = 2;
 		control.setLayoutData(gd);
 		addSection(siteGenSection);
-	}
+    }
 
 }

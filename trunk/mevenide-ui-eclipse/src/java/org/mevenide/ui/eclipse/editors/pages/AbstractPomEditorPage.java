@@ -45,6 +45,11 @@ public abstract class AbstractPomEditorPage
 	private String heading;
 	private boolean updateNeeded;
 	
+	public AbstractPomEditorPage(MevenidePomEditor pomEditor, String pageId, String tabTitle, String pageHeading) {
+		this(pomEditor, pageId, tabTitle);
+		this.heading = pageHeading;
+	}
+	
 	public AbstractPomEditorPage(MevenidePomEditor pomEditor, String pageId, String tabTitle) {
 		super(pomEditor, pageId, tabTitle);
 	}

@@ -20,6 +20,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.editors.MevenidePomEditor;
 
@@ -32,41 +33,46 @@ import org.mevenide.ui.eclipse.editors.MevenidePomEditor;
  */
 public class RepositoryPage extends AbstractPomEditorPage {
 
-	public static final String HEADING = Mevenide.getResourceString("RepositoryPage.heading");
+    private static final String ID = Mevenide.getResourceString("RepositoryPage.id");
+    private static final String TAB = Mevenide.getResourceString("RepositoryPage.tab.label");
+    private static final String HEADING = Mevenide.getResourceString("RepositoryPage.heading");
     
 	private ScmConnectionSection scmSection;
 	private VersionsSection versionsSection;
 	private BranchesSection branchesSection;
 
 	public RepositoryPage(MevenidePomEditor editor) {
-        super(HEADING, editor);
+        super(editor, ID, TAB, HEADING);
     }
 
-	protected void initializePage(Composite parent) {
+    /**
+     * @see org.mevenide.ui.eclipse.editors.pages.AbstractPomEditorPage#createPageContent(org.eclipse.swt.widgets.Composite)
+     */
+    protected void createPageContent(Composite parent) {
 		GridLayout layout = new GridLayout();
 		layout.numColumns = 2;
 		layout.marginWidth = 10;
 		layout.horizontalSpacing = 15;
 		parent.setLayout(layout);
 
-		PageWidgetFactory factory = getFactory();
+		FormToolkit factory = getEditor().getToolkit();
 
-		scmSection = new ScmConnectionSection(this);
-		Control control = scmSection.createControl(parent, factory);
+		scmSection = new ScmConnectionSection(this, parent, factory);
+		Control control = scmSection.getSection();
 		GridData gd = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING);
 		gd.horizontalSpan = 2;
 		control.setLayoutData(gd);
 		addSection(scmSection);
 
-		versionsSection = new VersionsSection(this);
-		control = versionsSection.createControl(parent, factory);
+		versionsSection = new VersionsSection(this, parent, factory);
+		control = versionsSection.getSection();
 		gd = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING);
 		gd.horizontalSpan = 1;
 		control.setLayoutData(gd);
 		addSection(versionsSection);
 
-		branchesSection = new BranchesSection(this);
-		control = branchesSection.createControl(parent, factory);
+		branchesSection = new BranchesSection(this, parent, factory);
+		control = branchesSection.getSection();
 		gd = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING);
 		gd.horizontalSpan = 1;
 		control.setLayoutData(gd);

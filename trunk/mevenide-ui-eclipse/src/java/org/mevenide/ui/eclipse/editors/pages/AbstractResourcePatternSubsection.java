@@ -21,6 +21,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.mevenide.ui.eclipse.editors.entries.TableEntry;
 import org.mevenide.ui.eclipse.editors.properties.ResourcePatternProxy;
 
@@ -30,7 +31,7 @@ import org.mevenide.ui.eclipse.editors.properties.ResourcePatternProxy;
  */
 public abstract class AbstractResourcePatternSubsection {
 
-	public abstract TableEntry createWidget(Composite container, PageWidgetFactory factory, boolean isOverrideable);
+	public abstract TableEntry createWidget(Composite container, FormToolkit factory, boolean isOverrideable);
 
 	void updateTableEntries(
 		TableEntry table,

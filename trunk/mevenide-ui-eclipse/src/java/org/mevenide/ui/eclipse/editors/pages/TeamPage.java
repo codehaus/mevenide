@@ -20,6 +20,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.editors.MevenidePomEditor;
 
@@ -32,41 +33,46 @@ import org.mevenide.ui.eclipse.editors.MevenidePomEditor;
  */
 public class TeamPage extends AbstractPomEditorPage {
 
-	public static final String HEADING = Mevenide.getResourceString("TeamPage.heading");
+    private static final String ID = Mevenide.getResourceString("TeamPage.id");
+    private static final String TAB = Mevenide.getResourceString("TeamPage.tab.label");
+    private static final String HEADING = Mevenide.getResourceString("TeamPage.heading");
     
 	private ContributorsSection contribSection;
 	private DevelopersSection devSection;
 	private MailingListsSection mailListSection;
 	
     public TeamPage(MevenidePomEditor editor) {
-        super(HEADING, editor);
+        super(editor, ID, TAB, HEADING);
     }
 
-	protected void initializePage(Composite parent) {
+    /**
+     * @see org.mevenide.ui.eclipse.editors.pages.AbstractPomEditorPage#createPageContent(org.eclipse.swt.widgets.Composite)
+     */
+    protected void createPageContent(Composite parent) {
 		GridLayout layout = new GridLayout();
 		layout.numColumns = 2;
 		layout.marginWidth = 10;
 		layout.horizontalSpacing = 15;
 		parent.setLayout(layout);
 
-		PageWidgetFactory factory = getFactory();
+		FormToolkit factory = getEditor().getToolkit();
 
-		devSection = new DevelopersSection(this);
-		Control control = devSection.createControl(parent, factory);
+		devSection = new DevelopersSection(this, parent, factory);
+		Control control = devSection.getSection();
 		GridData gd = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING);
 		gd.horizontalSpan = 2;
 		control.setLayoutData(gd);
 		addSection(devSection);
 
-		contribSection = new ContributorsSection(this);
-		control = contribSection.createControl(parent, factory);
+		contribSection = new ContributorsSection(this, parent, factory);
+		control = contribSection.getSection();
 		gd = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING);
 		gd.horizontalSpan = 2;
 		control.setLayoutData(gd);
 		addSection(contribSection);
 
-		mailListSection = new MailingListsSection(this);
-		control = mailListSection.createControl(parent, factory);
+		mailListSection = new MailingListsSection(this, parent, factory);
+		control = mailListSection.getSection();
 		gd = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING);
 		gd.horizontalSpan = 2;
 		control.setLayoutData(gd);
