@@ -177,7 +177,7 @@ public class ProjectWriter {
 	
 	public void setDependencies(List dependencies, File pom) throws Exception {
 		Project project = projectReader.read(pom);
-		List nonResolvedDependencies = getNonResolvedDependencies(dependencies);
+		List nonResolvedDependencies = DependencyUtil.getNonResolvedDependencies(dependencies);
 		
 		log.debug("writing " + dependencies.size() + " resolved dependencies, " + nonResolvedDependencies.size() + " non resolved ones");
 		
@@ -194,26 +194,6 @@ public class ProjectWriter {
 		} 
 	}
 
-	/**
-	 * modifies the list parameter passed, removing all non resolved dependencies
-	 * 
-	 * @param dependencies
-	 * @return list of non resolved dependencies  
-	 */
-	List getNonResolvedDependencies(List dependencies) {
-		List temp = new ArrayList(dependencies);
-		List nonResolvedDependencies = new ArrayList();
-		for (int i = 0; i < temp.size(); i++) {
-			Dependency dependency = (Dependency)temp.get(i); 
-			if ( !DependencyUtil.isValid(dependency) ) {
-				dependencies.remove(dependency);
-				nonResolvedDependencies.add(dependency);
-			}
-			
-		} 
-		return nonResolvedDependencies;
-	}
-	
 	/** 
 	 * utility method that allows some factorization
 	 * 

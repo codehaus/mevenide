@@ -17,7 +17,6 @@ package org.mevenide.project.io;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -141,29 +140,6 @@ public class ProjectWriterTest extends AbstractMevenideTestCase {
 		
 	}
 	
-	public void testGetNonResolvedDependencies() throws Exception {
-		List deps = new ArrayList();
-		
-		Dependency d1 = new Dependency();
-		deps.add(d1);
-		
-		Dependency d2 = dependencyFactory.getDependency(ProjectWriterTest.class.getResource("/my-0.3.txt").getFile());
-		deps.add(d2);
-		
-		Dependency d3 = new Dependency();
-		d3.setGroupId("rtt");
-		d3.setArtifactId("rtt");
-		d3.setVersion("5.0");
-		deps.add(d3);
-		
-		Dependency d4 = new Dependency();
-		d4.setGroupId("rtt");
-		deps.add(d4);
-		
-		List ds = pomWriter.getNonResolvedDependencies(deps);
-		
-		assertEquals(1, deps.size());
-		assertEquals(3, ds.size());
-	}
+	
 	
 }

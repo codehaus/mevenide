@@ -15,6 +15,8 @@ package org.mevenide.project.dependency;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -73,5 +75,25 @@ public class DependencyUtil {
 
 	public static String toString(Dependency d) {
 		return " <groupId=" + d.getGroupId() + ">, <artifactId=" + d.getArtifactId() + ">, <version=" + d.getVersion() + ">" ;
+	}
+
+	/**
+	 * modifies the list parameter passed, removing all non resolved dependencies
+	 * 
+	 * @param dependencies
+	 * @return list of non resolved dependencies  
+	 */
+	public static List getNonResolvedDependencies(List dependencies) {
+		List temp = new ArrayList(dependencies);
+		List nonResolvedDependencies = new ArrayList();
+		for (int i = 0; i < temp.size(); i++) {
+			Dependency dependency = (Dependency)temp.get(i); 
+			if ( !DependencyUtil.isValid(dependency) ) {
+				dependencies.remove(dependency);
+				nonResolvedDependencies.add(dependency);
+			}
+			
+		} 
+		return nonResolvedDependencies;
 	}
 }
