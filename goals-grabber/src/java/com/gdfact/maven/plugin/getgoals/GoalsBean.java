@@ -182,7 +182,7 @@ public class GoalsBean {
     
     /**
      * @todo use JDOM (or any Java2Xml mapping tool) to generate the xml document  
-     * @todo use ID / IDREF in place of the <[CDATA[<prereq goal=".."/>]]> element  
+     * @todo use ID / IDREF in place of the <![CDATA[<prereq goal=".."/>]]> element  
      * @todo refactor : this method has a way too high cyclomatic complexity (>>4)
      * 
      * @return String

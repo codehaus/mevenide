@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<project name="Eclipse GetGoals">
-  <title>Eclipse GetGoals</title>
+<project name="goals-grabber">
+  <title>Mevenide Goals Grabber</title>
   <body>
     <links>
-      <item href="http://jakarta.apache.org/turbine/maven/" name="Maven">
+      <item href="http://maven.apache.org/" name="Maven">
       </item>
     </links>
     <menu name="Overview">
