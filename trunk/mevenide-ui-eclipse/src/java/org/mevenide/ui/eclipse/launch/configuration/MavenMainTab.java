@@ -61,7 +61,6 @@ public class MavenMainTab extends ExternalToolsMainTab {
 		
 		//just to avoid NPE in ExternalToolsMainTab
 		createLocationComponent(composite);		
-		
 		new Label(composite, SWT.NULL);
 		
 		createWorkDirectoryComponent(composite);
@@ -91,7 +90,7 @@ public class MavenMainTab extends ExternalToolsMainTab {
 	}
 
 	public void performApply(ILaunchConfigurationWorkingCopy configuration) {
-		String location = locationField.getText().trim();
+		String location = workDirectoryField.getText().trim();
 		if (location.length() == 0) {
 			configuration.setAttribute(IExternalToolConstants.ATTR_WORKING_DIRECTORY, (String)null);
 		} else {
