@@ -1,0 +1,111 @@
+<project default="build-all" 
+		 xmlns:maven="jelly:maven" 
+		 xmlns:j="jelly:core"
+		 xmlns:velocity="jelly:org.apache.commons.jelly.tags.velocity.VelocityTagLibrary"
+		 xmlns:multiproject="multiproject">
+
+
+  <!-- 
+  	site generation is now all right thanks the multiproject goal !! 
+  -->
+ 
+  <preGoal name="build">
+	
+	<!-- set eclipse.home property -->
+	<property environment="env"/>
+  	<property name="eclipse.home" location="${env.ECLIPSE_HOME}"/>
+	
+	<!-- find swt.plugin.dir -->
+	<available property="swt.plugin.dir" 
+			   value="org.eclipse.swt.gtk_3.0.0/ws/gtk"
+			   file="${eclipse.home}/plugins/org.eclipse.swt.gtk_3.0.0/ws/gtk/swt.jar"/>
+
+	<available property="swt.plugin.dir" 
+			   value="org.eclipse.swt.gtk1x_3.0.0/ws/gtk1x"
+			   file="${eclipse.home}/plugins/org.eclipse.swt.gtk1x_3.0.0/ws/gtk1x/swt.jar/swt.jar"/>
+		
+	<available property="swt.plugin.dir" 
+			   value="org.eclipse.swt.motif_3.0.0/ws/motif"
+			   file="${eclipse.home}/plugins/org.eclipse.swt.motif_3.0.0/ws/motif/swt.jar"/>		   
+				   		   				   
+	<available property="swt.plugin.dir" 
+			   value="org.eclipse.swt.photon_3.0.0/ws/photon"
+			   file="${eclipse.home}/plugins/org.eclipse.swt.photon_3.0.0/ws/photon/swt.jar"/>		   
+				   				   		   				   
+	<available property="swt.plugin.dir" 
+			   value="org.eclipse.swt.win32_3.0.0/ws/win32"
+			   file="${eclipse.home}/plugins/org.eclipse.swt.win32_3.0.0/ws/win32/swt.jar"/>
+	
+  	<!-- 
+  	  ensure that all dependencies are present in the repository 
+  	  by copying all needed eclipse-plugins jars
+  	-->
+  	<copy file="${eclipse.home}/plugins/org.eclipse.core.resources_3.0.0/resources.jar" 
+  	      tofile="${maven.repo.local}/eclipse/jars/eclipse-resources-3.0.0.jar"/>
+  
+  	<copy file="${eclipse.home}/plugins/org.eclipse.debug.core_3.0.0/dtcore.jar" 
+  	      tofile="${maven.repo.local}/eclipse/jars/eclipse-dtcore-3.0.0.jar"/>
+  
+  	<copy file="${eclipse.home}/plugins/org.eclipse.debug.ui_3.0.0/dtui.jar" 
+  	      tofile="${maven.repo.local}/eclipse/jars/eclipse-dtui-3.0.0.jar"/>
+  
+    <copy file="${eclipse.home}/plugins/org.eclipse.jdt.core_3.0.0/jdtcore.jar" 
+  	      tofile="${maven.repo.local}/eclipse/jars/eclipse-jdtcore-3.0.0.jar"/>
+  
+    <copy file="${eclipse.home}/plugins/org.eclipse.jdt.ui_3.0.0/jdt.jar" 
+  	      tofile="${maven.repo.local}/eclipse/jars/eclipse-jdtui-3.0.0.jar"/>
+  	      
+  	<copy file="${eclipse.home}/plugins/org.eclipse.jdt.launching_3.0.0/launching.jar" 
+  	  	  tofile="${maven.repo.local}/eclipse/jars/eclipse-launching-3.0.0.jar"/>
+  
+  	<copy file="${eclipse.home}/plugins/org.eclipse.jface_2.1.0/jface.jar" 
+  		  tofile="${maven.repo.local}/eclipse/jars/eclipse-jface-2.1.0.jar"/>  	
+  	
+  	<copy file="${eclipse.home}/plugins/org.eclipse.core.runtime_3.0.0/runtime.jar" 
+  		  tofile="${maven.repo.local}/eclipse/jars/eclipse-runtime-3.0.0.jar"/> 
+  		  
+  	<copy file="${eclipse.home}/plugins/org.eclipse.ui.workbench_2.1.0/workbench.jar" 
+  		  tofile="${maven.repo.local}/eclipse/jars/eclipse-workbench-2.1.0.jar"/> 
+    
+    <copy file="${eclipse.home}/plugins/org.eclipse.jdt.ui_3.0.0/jdt.jar" 
+  		  tofile="${maven.repo.local}/eclipse/jars/eclipse-jdt-3.0.0.jar"/> 
+  	
+    <copy file="${eclipse.home}/plugins/org.eclipse.ui.views_2.1.0/views.jar" 
+  		  tofile="${maven.repo.local}/eclipse/jars/eclipse-views-2.1.0.jar"/> 
+  		  
+    <copy file="${eclipse.home}/plugins/${swt.plugin.dir}/swt.jar" 
+  		  tofile="${maven.repo.local}/eclipse/jars/eclipse-swt-3.0.0.jar"/>  
+  		  
+    <copy file="${eclipse.home}/plugins/org.eclipse.ui.externaltools_3.0.0/externaltools.jar" 
+  		  tofile="${maven.repo.local}/eclipse/jars/eclipse-externaltools-3.0.0.jar"/> 
+  </preGoal>
+ 
+ 
+  <goal name="build-all"
+    	description="Build all Mevenide modules">
+    <attainGoal name="build"/>
+  </goal>
+  
+  
+  <!-- i didnt alter it since it works as it is now -->
+  <goal name="build" description="Build each Mevenide module">
+	
+    <!-- maven:reactor basedir="${basedir}/.."
+      			   includes="mevenide-goals-grabber/project.xml,mevenide-core/project.xml,mevenide-ui-eclipse/project.xml"
+      			   excludes="mevenide-master/project.xml"
+      			   goals="clean,jar:install"
+      			   banner="Building"
+      			   ignoreFailures="false"/ -->
+    <attainGoal name="multiproject:goal"/>
+  </goal>
+  
+  
+  
+  <!-- build the aggregated site -->
+  <goal name="build-site" description="Build Mevenide Site">
+  	
+  	<attainGoal name="multiproject:site"/>
+    
+  </goal>
+ 
+</project>

@@ -1,0 +1,45 @@
+<project name="mevenide-ic" default="build-all">
+
+	
+
+	<target name="init" description="o set properties to proper execution">
+		
+		<property environment="env"/>
+		
+		<!-- set maven.home property -->
+		<!-- property name="env.MAVEN_HOME" location="${maven.home}"/ -->
+		<property name="maven.home" location="${env.MAVEN_HOME}"/>
+		
+		<!-- set maven.script property -->
+		
+		<condition property="maven.script" value="maven.bat">
+			<and>
+				<os family="windows" />
+				<equals arg1="${maven.script}" arg2="$${maven.script}" />
+			</and>
+		</condition>
+		<condition property="maven.script" value="maven">
+			<equals arg1="${maven.script}" arg2="$${maven.script}" />
+		</condition>
+		
+		<property name="maven.command" value="${maven.home}/bin/${maven.script}"/>
+	
+	</target>
+	<target name="build-all" depends="init" description="o build all mevenide artifacts using maven:reactor ">
+		<exec executable="${maven.command}" failonerror="true">
+			<!-- arg value="-o"/ -->
+			<arg value="-X"/>
+			<arg value="build-all"/>
+		</exec>
+		<!-- should copy all jars to mevenide-ui-eclipse/lib -->
+	</target>
+	
+	<!-- BUGGY -->
+	<target name="build-site" depends="init" description="o build mevenide site using maven:reactor ">
+		<exec executable="${maven.command}" failonerror="true">
+			<!-- arg value="-o"/ -->
+			<arg value="build-site"/>
+		</exec>
+	</target>
+	
+</project>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+    <classpathentry kind="src" path="src/java"/>
+    <classpathentry kind="src" path="src/test/java"/>
+    <classpathentry kind="src" path="src/test/etc"/>
+    <classpathentry kind="src" path="etc"/>
+    <classpathentry kind="var" path="MAVEN_REPO/junit/jars/junit-3.8.1.jar"/>
+    <classpathentry kind="var" path="JRE_LIB" sourcepath="JRE_SRC"/>
+    <classpathentry kind="var" path="MAVEN_REPO/jdom/jars/jdom-1.0b8.jar"/>
+    <classpathentry kind="var" path="MAVEN_REPO/xerces/jars/xerces-2.2.1.jar"/>
+    <classpathentry kind="var" path="MAVEN_REPO/commons-discovery/jars/commons-discovery-0.1.jar"/>
+    <classpathentry kind="var" path="MAVEN_REPO/commons-logging/jars/commons-logging-1.0.1.jar"/>
+    <classpathentry kind="var" path="MAVEN_REPO/mockobjects/jars/mockobjects-core-0.07.jar"/>
+    <classpathentry kind="var" path="MAVEN_REPO/mockobjects/jars/mockobjects-jdk1.4-0.07.jar"/>
+    <classpathentry kind="var" path="MAVEN_REPO/mockcreator/jars/de.abstrakt.mock-0.2.4.jar"/>
+    <classpathentry kind="var" path="MAVEN_REPO/xpp3/jars/xpp3-1.1.2a.jar"/>
+    <classpathentry kind="var" path="MAVEN_REPO/xmlpull/jars/xmlpull-1.1.2.1.jar"/>
+    <classpathentry kind="var" path="MAVEN_REPO/log4j/jars/log4j-1.2.7.jar"/>
+    <classpathentry kind="var"
+        path="MAVEN_REPO/maven/jars/maven-1.0-beta-10.jar" sourcepath="MAVEN_SRC"/>
+    <classpathentry kind="var" path="MAVEN_REPO/ant/jars/ant-1.5.3-1.jar"/>
+    <classpathentry kind="var" path="MAVEN_REPO/commons-grant/jars/commons-grant-1.0-beta-4.jar"/>
+    <classpathentry kind="var" path="MAVEN_REPO/commons-jelly/jars/commons-jelly-1.0-beta-4.jar"/>
+    <classpathentry kind="var" path="MAVEN_REPO/commons-lang/jars/commons-lang-1.0-b1.1.jar"/>
+    <classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.aspectj.ajde_1.1.3/aspectjrt.jar"/>
+    <classpathentry exported="true" kind="var" path="LOGGING_COMMONS_LIB"/>
+    <classpathentry kind="output" path="target/classes"/>
+</classpath>

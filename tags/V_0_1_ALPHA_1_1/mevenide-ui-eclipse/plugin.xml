@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin
+   id="org.mevenide"
+   name="Mevenide"
+   version="0.1"
+   provider-name="Sourceforge"
+   class="org.mevenide.ui.eclipse.Mevenide">
+
+   <runtime>
+      <library name="lib/commons-discovery-0.1.jar">
+         <packages prefixes="org.apache.commons.discovery"/>
+      </library>
+      <library name="lib/commons-logging-1.0.1.jar">
+         <packages prefixes="org.apache.commons.logging"/>
+      </library>
+      <library name="lib/log4j-1.2.7.jar">
+         <packages prefixes="org.apache.log4j"/>
+      </library>
+      <library name="lib/forehead-1.0-beta-4.jar"/>
+      <library name="lib/jdom-1.0b8.jar">
+         <packages prefixes="org.jdom"/>
+      </library>
+      <library name="lib/xpp3-1.1.2a.jar">
+         <packages prefixes="org.xmlpull"/>
+      </library>
+      <library name="lib/maven-1.0-beta-10.jar">
+         <export name="*"/>
+         <packages prefixes="org.apache.maven"/>
+      </library>
+      <library name="lib/xerces-2.2.1.jar">
+         <packages prefixes="org.apache.xerces"/>
+      </library>
+      <library name="lib/mevenide-goals-grabber-0.1.jar">
+         <export name="*"/>
+         <packages prefixes="com.gdfact.maven.plugin.getgoals"/>
+      </library>
+      <library name="lib/mevenide-core-0.1.jar">
+         <export name="*"/>
+         <packages prefixes="org.mevenide"/>
+      </library>
+      <library name="mevenide-ui-eclipse-0.1.jar">
+         <export name="*"/>
+         <packages prefixes="org.mevenide.ui.eclipse"/>
+      </library>
+      <!-- 
+      	  following dependencies are necessary 
+      	  because of DefaultProjectUnmarshaller that comes out
+      	  with mevenide until maven stabilize
+      	  (see Dependency.setArtifact, Dependency properties management, etc..)
+      -->
+      <library name="lib/ant-1.5.3-1.jar">
+         <packages prefixes="org.apache.tools"/>
+      </library>
+      <library name="lib/commons-jelly-1.0-beta-4.jar">
+         <packages prefixes="org.apache.commons.jelly"/>
+      </library>
+      <library name="lib/commons-grant-1.0-beta-4.jar">
+         <packages prefixes="org.apache.tools,org.apache.commons.grant"/>
+      </library>
+      <library name="lib/commons-lang-1.0-b1.1.jar">
+         <packages prefixes="org.apache.commons.lang"/>
+      </library>
+   </runtime>
+   <requires>
+      <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.jdt.core"/>
+      <import plugin="org.eclipse.jface"/>
+      <import plugin="org.eclipse.swt"/>
+      <import plugin="org.eclipse.ui.workbench"/>
+      <import plugin="org.eclipse.jdt.launching"/>
+      <import plugin="org.eclipse.debug.core"/>
+      <import plugin="org.eclipse.debug.ui"/>
+      <import plugin="org.aspectj.ajde"/>
+      <import plugin="org.eclipse.ui.views"/>
+      <import plugin="org.eclipse.jdt.ui"/>
+      <import plugin="org.eclipse.ui.externaltools"/>
+   </requires>
+
+
+   <!-- Maven nature -->
+   <extension
+         id="mavennature"
+         name="maven nature"
+         point="org.eclipse.core.resources.natures">
+      <runtime>
+         <run
+               class="org.mevenide.ui.eclipse.nature.MevenideNature">
+         </run>
+      </runtime>
+   </extension>
+   <!-- Maven actions -->
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <!-- project contributions (adaptable) -->
+      <objectContribution
+            objectClass="org.eclipse.core.resources.IProject"
+            adaptable="true"
+            id="maven.plugin.project.xml.contribution">
+         <menu
+               label="Maven"
+               path="additions"
+               id="maven.plugin.menu">
+            <separator
+                  name="RunMaven">
+            </separator>
+            <separator
+                  name="Synchronize">
+            </separator>
+            <separator
+                  name="MavenNature">
+            </separator>
+         </menu>
+         <action
+               label="Run Maven..."
+               icon="icons/maven-run.gif"
+               class="org.mevenide.ui.eclipse.launch.configuration.MavenRunActionDelegate"
+               menubarPath="maven.plugin.menu/RunMaven"
+               enablesFor="1"
+               id="maven.plugin.popup.action">
+         </action>
+         <action
+               label="Create Pom"
+               icon="icons/maven-create-pom.gif"
+               class="org.mevenide.ui.eclipse.actions.CreatePomAction"
+               menubarPath="maven.plugin.menu/MavenNature"
+               enablesFor="1"
+               id="mevenide.pom.create">
+         </action>
+         <!-- action
+               label="Disable Maven Nature"
+               icon="icons/maven-disable.gif"
+               class="org.mevenide.ui.eclipse.actions.ManageNatureAction"
+               menubarPath="maven.plugin.menu/MavenNature"
+               enablesFor="1"
+               id="org.mevenide.ui.eclipse.actions.removemavennature">
+            <enablement>
+               <and>
+                  <objectState
+                        name="nature"
+                        value="mevenide.mavennature">
+                  </objectState>
+               </and>
+            </enablement>
+         </action>
+         <action
+               label="Enable Maven Nature"
+               icon="icons/maven.gif"
+               class="org.mevenide.ui.eclipse.actions.ManageNatureAction"
+               menubarPath="maven.plugin.menu/MavenNature"
+               enablesFor="1"
+               id="org.mevenide.ui.eclipse.actions.addmavennature">
+            <enablement>
+               <and>
+                  <not>
+                     <objectState
+                           name="nature"
+                           value="mevenide.mavennature">
+                     </objectState>
+                  </not>
+               </and>
+            </enablement>
+         </action -->
+         <action
+               label="Update Project"
+               icon="icons/maven-synch-project.gif"
+               class="org.mevenide.ui.eclipse.actions.SynchronizeAction"
+               menubarPath="maven.plugin.menu/Synchronize"
+               enablesFor="1"
+               id="maven-plugin.Synchronize">
+         </action>
+         <action
+               label="Update POM..."
+               icon="icons/maven-synch-pom.gif"
+               class="org.mevenide.ui.eclipse.actions.SynchronizeAction"
+               menubarPath="maven.plugin.menu/Synchronize"
+               enablesFor="1"
+               id="maven-plugin.SynchronizePom">
+         </action>
+      </objectContribution>
+      <!-- project.xml contributions -->
+      <objectContribution
+            objectClass="org.eclipse.core.resources.IFile"
+            nameFilter="project.xml"
+            id="maven.plugin.project.xml.contribution.ifile">
+         <menu
+               label="Maven"
+               path="additions"
+               id="maven.plugin.menu">
+            <separator
+                  name="RunMaven">
+            </separator>
+            <separator
+                  name="Synchronize">
+            </separator>
+         </menu>
+         <action
+               label="Run Maven..."
+               icon="icons/maven-run.gif"
+               class="org.mevenide.ui.eclipse.launch.configuration.MavenRunActionDelegate"
+               menubarPath="maven.plugin.menu/RunMaven"
+               enablesFor="1"
+               id="maven.plugin.popup.action">
+         </action>
+         <action
+               label="Update Project"
+               icon="icons/maven-synch-project.gif"
+               class="org.mevenide.ui.eclipse.actions.SynchronizeAction"
+               menubarPath="maven.plugin.menu/Synchronize"
+               enablesFor="1"
+               id="maven-plugin.Synchronize">
+         </action>
+         <action
+               label="Update POM..."
+               icon="icons/maven-synch-pom.gif"
+               tooltip="synchronize without prompting for Source Directory types"
+               class="org.mevenide.ui.eclipse.actions.SynchronizeAction"
+               menubarPath="maven.plugin.menu/Synchronize"
+               enablesFor="1"
+               id="maven-plugin.SynchronizePom">
+         </action>
+      </objectContribution>
+   </extension>
+   <!-- Maven preferences -->
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            name="Maven"
+            class="org.mevenide.ui.eclipse.preferences.MevenidePreferencePage"
+            id="maven.plugin.preferences.MavenPreferencePage">
+      </page>
+   </extension>
+   <extension
+         point="org.eclipse.debug.core.launchConfigurationTypes">
+      <launchConfigurationType
+            name="Run Maven"
+            delegate="org.mevenide.ui.eclipse.launch.configuration.MavenLaunchDelegate"
+            category="org.eclipse.ui.externaltools"
+            modes="run"
+            id="org.mevenide.launching.MavenLaunchConfigType">
+      </launchConfigurationType>
+   </extension>
+   
+   <!-- external tools integration -->
+   <extension
+         point="org.eclipse.debug.ui.launchConfigurationTabGroups">
+      <launchConfigurationTabGroup
+            type="org.mevenide.launching.MavenLaunchConfigType"
+            class="org.mevenide.ui.eclipse.launch.configuration.MavenRunnerTabGroup"
+            id="org.mevenide.launching.TabGroup">
+      </launchConfigurationTabGroup>
+   </extension>
+   <extension
+         point="org.eclipse.debug.ui.launchShortcuts">
+      <shortcut
+            label="Maven Project"
+            icon="icons/full/obj16/ant.gif"
+            category="org.eclipse.ui.externaltools"
+            modes="run"
+            class="org.mevenide.ui.eclipse.launch.configuration.MavenLaunchShortcut"
+            id="org.mevenide.mavenShortcut">
+      </shortcut>
+   </extension>
+
+</plugin>

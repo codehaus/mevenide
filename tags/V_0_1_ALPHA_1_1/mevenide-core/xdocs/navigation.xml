@@ -1,0 +1,30 @@
+
+<project name="mevenide-core">
+
+    <properties>
+        <author email="gdodinet@wanadoo.fr">Gilles Dodinet</author>
+        <title>Mevenide Core</title>
+    </properties>
+
+    <body>
+        <links>
+        	<item name="Eclipse" href="http://eclipse.org/"/>
+            <item name="Maven" href="http://www.maven.org/"/>
+            <item href="http://mevenide.sf.net/" name="Mevenide"/>
+        </links>
+        
+        <menu name="General">
+        	<item name="Overview" href="/index.html"/>
+        	<item name="License" href="/license.html"/>
+        </menu>
+        
+        <menu name="Mevenide">
+        	<item name="Mevenide" href="/../../index.html"/>
+            <item name="Mevenide Goals Grabber" href="/../../multiproject/Goals Grabber/index.html"/>
+        	<item name="Mevenide Eclipse" href="/../../multiproject/Mevenide Eclipse/index.html"/>
+        </menu>
+        
+        <!-- search/ -->
+    </body>
+
+</project>

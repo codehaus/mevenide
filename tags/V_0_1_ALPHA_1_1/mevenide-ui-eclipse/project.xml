@@ -1,0 +1,195 @@
+<?xml version="1.0"?>
+<project>
+ 
+  <extend>${basedir}/../mevenide-master/base-project.xml</extend>
+  <pomVersion>3</pomVersion>
+  <name>Mevenide Eclipse</name>
+  <!-- groupId>mevenide</groupId -->
+  <id>mevenide:mevenide-ui-eclipse</id>
+  <artifactId>mevenide-ui-eclipse</artifactId>
+  <currentVersion>0.1</currentVersion>
+  
+  <package>org.mevenide.ui.eclipse</package>
+	
+  <shortDescription>provides ide integration for Maven</shortDescription>
+
+
+  <dependencies>
+  	   
+    
+  	    <!-- maven -->
+        <dependency>
+           <groupId>forehead</groupId>
+           <artifactId>forehead</artifactId>
+           <version>1.0-beta-4</version>
+           <url>http://forehead.werken.com/</url>
+        </dependency>
+        <dependency>
+            <groupId>maven</groupId>
+            <artifactId>maven</artifactId>
+            <version>1.0-beta-10</version>
+            <type>jar</type>
+        </dependency>
+        
+        
+        <!-- mevenide dependencies -->
+        <dependency>
+           <groupId>mevenide</groupId>
+           <artifactId>mevenide-core</artifactId>
+           <version>0.1</version>
+           <url/>
+        </dependency>
+        <dependency>
+           <groupId>mevenide</groupId>
+           <artifactId>mevenide-goals-grabber</artifactId>
+           <version>0.1</version>
+           <url/>
+        </dependency>
+        
+        <!-- xml libraries -->
+        <dependency>
+           <groupId>jdom</groupId>
+           <artifactId>jdom</artifactId>
+           <version>1.0b8</version>
+           <url>http://jdom.org/</url>
+        </dependency>
+        <dependency>
+           <groupId>xerces</groupId>
+           <artifactId>xerces</artifactId>
+           <version>2.2.1</version>
+           <url>http://xml.apache.org/xerces2-j/</url>
+        </dependency>
+        
+        <!-- commons -->
+        <dependency>
+           <groupId>commons-discovery</groupId>
+           <artifactId>commons-discovery</artifactId>
+           	<version>0.1</version>
+           <url>http://jakarta.apache.org/commons/discovery</url>
+        </dependency>
+        <dependency>
+           <groupId>commons-logging</groupId>
+           <artifactId>commons-logging</artifactId>
+           <version>1.0.1</version>
+           <url>http://jakarta.apache.org/commons/logging</url>
+        </dependency>
+        
+        <dependency>
+           <groupId>commons-lang</groupId>
+           <artifactId>commons-lang</artifactId>
+           <version>1.0.1</version>
+           <url>http://jakarta.apache.org/commons/logging</url>
+        </dependency>
+        
+        <!-- logging -->
+        <dependency>
+        <groupId>log4j</groupId>
+           <artifactId>log4j</artifactId>
+           <version>1.2.7</version>
+           <url>http://jakarta.apache.org/log4j/</url>
+        </dependency>
+        
+        <!-- testing -->
+        <dependency>
+           <groupId>junit</groupId>
+           <artifactId>junit</artifactId>
+           <version>3.8.1</version>
+           <url>http://junit.org/</url>
+        </dependency>
+        <dependency>
+           <groupId>mockobjects</groupId>
+           <artifactId>mockobjects-core</artifactId>
+           <version>0.07</version>
+           <url>http://www.mockobjects.com/</url>
+        </dependency>
+        <dependency>
+           <groupId>mockobjects</groupId>
+           <artifactId>mockobjects-jdk1.4</artifactId>
+           <version>0.07</version>
+           <url>http://www.mockobjects.com/</url>
+        </dependency>
+        <dependency>
+           <groupId>mockcreator</groupId>
+           <artifactId>de.abstrakt.mock</artifactId>
+           <version>0.2.4</version>
+           <url>http://www.abstrakt.de/mockcreator.html</url>
+        </dependency>
+		
+		<!-- eclipse libraries -->
+		<dependency>
+           <groupId>eclipse</groupId>
+           <artifactId>eclipse-jdtui</artifactId>
+           <version>3.0.0</version>
+           <url>http://eclipse.org/</url>
+        </dependency>
+	    <dependency>
+           <groupId>eclipse</groupId>
+           <artifactId>eclipse-resources</artifactId>
+           <version>3.0.0</version>
+           <url>http://eclipse.org/</url>
+        </dependency>
+	    <dependency>
+  	       <groupId>eclipse</groupId>
+           <artifactId>eclipse-runtime</artifactId>
+           <version>3.0.0</version>
+           <url>http://eclipse.org/</url>
+        </dependency>
+		<dependency>
+           <groupId>eclipse</groupId>
+           <artifactId>eclipse-jdtcore</artifactId>
+           <version>3.0.0</version>
+           <url>http://eclipse.org/</url>
+        </dependency>
+        <dependency>
+           <groupId>eclipse</groupId>
+           <artifactId>eclipse-dtcore</artifactId>
+           <version>3.0.0</version>
+           <url>http://eclipse.org/</url>
+        </dependency>
+        <dependency>
+           <groupId>eclipse</groupId>
+           <artifactId>eclipse-dtui</artifactId>
+           <version>3.0.0</version>
+           <url>http://eclipse.org/</url>
+        </dependency>
+        <dependency>
+           <groupId>eclipse</groupId>
+           <artifactId>eclipse-launching</artifactId>
+           <version>3.0.0</version>
+           <url>http://eclipse.org/</url>
+        </dependency>
+	    <dependency>
+	       <groupId>eclipse</groupId>
+           <artifactId>eclipse-jface</artifactId>
+           <version>2.1.0</version>
+           <url>http://eclipse.org/</url>
+        </dependency>
+	    <dependency>
+	       <groupId>eclipse</groupId>
+           <artifactId>eclipse-swt</artifactId>
+           <version>3.0.0</version>
+           <url>http://eclipse.org/</url>
+        </dependency>
+	    <dependency>
+	       <groupId>eclipse</groupId>
+           <artifactId>eclipse-workbench</artifactId>
+           <version>2.1.0</version>
+           <url>http://eclipse.org/</url>
+        </dependency>
+        <dependency>
+	       <groupId>eclipse</groupId>
+           <artifactId>eclipse-views</artifactId>
+           <version>2.1.0</version>
+           <url>http://eclipse.org/</url>
+        </dependency>
+        <dependency>
+        	<groupId>eclipse</groupId>	
+        	<artifactId>eclipse-externaltools</artifactId>
+        	<version>3.0.0</version>
+        	<url>http://eclipse.org/</url>
+        </dependency>
+    
+  </dependencies>
+
+
+</project>

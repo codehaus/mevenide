@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<document>
+
+  	<properties>
+    	<author email="rhill@wanadoo.fr">Gilles Dodinet</author>
+    	<title>Mevenide Goals Grabber Overview</title>
+  	</properties>
+  	
+  	
+  	
+	<body>
+		<section name="Overview">
+	    	<p>
+			   	This project provides generic Goals Grabbing mechanism. It is articulated around IGoalsGrabber interface that exposes the following methods : 
+	    		<br/>
+	    		<code>
+	    			<ul>
+	    				<li>public String[] getPlugins();</li>	
+	    				<li>public String[] getGoals(String pluginName);</li>	    	    	
+	    				<li>public String[] getPrereqs(String fullyQualifiedGoalName);</li>	
+	    				<li>public String getDescription(String fullyQualifiedGoalName);</li>	
+	    			</ul>
+	    		</code>	
+	    		<br/>
+	    		There are three implementations available : 
+	    		<ul>
+	    			<li>DefaultGoalsGrabber that grabs the goals cached in $${user.home}/.maven/plugins/goals.cache</li>
+	    			<li>ProjectGoalsGrabber that grabs the user defined goals declared in a maven.xml file</li>
+	    			<li>GoalsGrabberAggregator that only aggregates various IGoalsGrabber</li>
+	    		</ul>
+    		
+    		</p>
+		</section>
+    </body>
+</document>

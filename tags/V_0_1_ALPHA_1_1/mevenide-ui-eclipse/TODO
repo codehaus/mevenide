@@ -1,0 +1,22 @@
+ 
+ + fix build-all  goals so that providers files are bundled with mevenide-ui-eclipse artifact  rather than mevenide-core one P: H
+ 
+ + factorize SourceDirectoryMappingWizardPage and DependencyWizardPage
+ 
+ + in short : need SERIOUS refactoring (some global sequence diagrams would be helpful here)
+ 
+ + externalize (eventually i18n) strings
+ 
+ + finalize external-tools integration 
+   - get rid of that popup
+   - create icons
+   - get rid of custom launcher
+   - debug MavenLaunchShortcut that doesnot launch requested but *always* default ones
+   - add a 'Default Goals' preference
+   
+ + SourceModification and Filtering support 
+ 
+ + PomInheritance
+ 
+ + add better error management (using MessageBox f.i.)
+ 

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<document>
+    <properties>
+    	<author email="rhill@wanadoo.fr">Gilles Dodinet</author>
+        <title>Overview</title>
+    </properties>
+    <body>
+        <section name="Project Overview">
+        	<p>
+			    This project is a concrete implementation of Mevenide Core for Eclipse. See the 
+			    <a href="features.html">features list</a> and the <a href="help.html">Help page</a> 
+			    to learn more about Mevenide for Eclipse.
+			</p>
+			<p>
+			    Latest release and zipped sources can be downloaded <a href="http://sourceforge.net/project/showfiles.php?group_id=54263&amp;release_id=175553">here</a>. 
+			</p>
+			<p>
+			    Mevenide alpha-1 release has been tested under WinXP Eclipse 3.0 M2 With JDK 1.4.1 and Maven 1.0-beta-10.
+			    <br/><br/>
+			    Please note that JDK 1.4+ is <b>required</b> since Java 1.4 regex Engine is used.
+			</p>
+		</section>
+
+    </body>
+
+</document>

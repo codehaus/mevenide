@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project>
+  <pomVersion>3</pomVersion>
+  <groupId>mevenide</groupId>
+  <currentVersion>0.1</currentVersion>
+  <logo>/images/mevenide-logo.jpg</logo>
+  <organization>
+    <name>Sourceforge</name>
+    <url>http://sf.net/</url>
+    <logo>http://sourceforge.net/sflogo.php?group_id=54263&amp;type=5</logo>
+  </organization>
+
+  <inceptionYear>2003</inceptionYear>
+  <package>org.mevenide</package>
+  <!-- url>http://mevenide.sf.net/${pom.artifactId}/</url -->
+  <url>file:///${user.home}/.mevenide/${pom.artifactId}/index.html</url>
+  <issueTrackingUrl/>
+  <siteAddress>shell.sourceforge.net</siteAddress>
+  <!-- siteDirectory>/home/groups/m/me/mevenide/htdocs</siteDirectory -->
+  <siteDirectory>${user.home}/.mevenide/${pom.artifactId}</siteDirectory>
+  
+  <repository>
+    <connection>scm:cvs:pserver:anonymous@cvs.sourceforge.net:/cvsroot/mevenide:${pom.artifactId}</connection>
+    <developerConnection>scm:cvs:ext:${maven.username}@cvs.sourceforge.net:/cvsroot/mevenide:${pom.artifactId}</developerConnection>
+    <url>http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/mevenide/${pom.artifactId}/</url>
+  </repository>
+ 
+  <versions>
+    <version>
+      <id>ea</id>
+      <name>0.1-ea</name>
+      <tag>V_0_1_ALPHA_1</tag>
+    </version>
+    <version>
+      <id>alpha-1</id>
+      <name>0.1-alpha-A</name>
+      <tag>V_0_1_ALPHA_1_1</tag>
+    </version>
+  </versions>
+    
+  <mailingLists>
+    <mailingList>
+      <name>Mevenide User List</name>
+      <subscribe>mevenide-user-request@lists.sourceforge.net?body=subscribe</subscribe>
+      <unsubscribe>mevenide-user-request@lists.sourceforge.net?body=unsubscribe</unsubscribe>
+      <archive>http://sourceforge.net/mailarchive/forum.php?forum_id=9925</archive>
+    </mailingList>
+    <mailingList>
+      <name>Mevenide Developer List</name>
+      <subscribe>mevenide-general-dev-request@lists.sourceforge.net?body=subscribe</subscribe>
+      <unsubscribe>mevenide-general-dev-request@lists.sourceforge.net?body=unsubscribe</unsubscribe>
+      <archive>http://sourceforge.net/mailarchive/forum.php?forum_id=10398</archive>
+    </mailingList>
+  </mailingLists>
+  
+  <developers>
+    <developer>
+      <name>Gilles Dodinet</name>
+      <id>gdodinet</id>
+      <email>rhill@wanadoo.fr</email>
+      <organization/>
+      <roles>
+      	<role>Developer Java</role>
+      </roles>
+    </developer>
+    <developer>
+      <name>Jeffrey Bonvich</name>
+      <id>jbonevic</id>
+      <email>jeff@bonevich.com</email>
+      <organization/>
+      <roles>
+      	<role>Developer Java</role>
+      </roles>
+    </developer>
+  </developers>
+  
+  <dependencies>
+       <!-- 
+  	       building standalone module site 
+  	   	   without relying on mevenide-master
+  	   -->
+  	   <dependency>
+          <groupId>velocity</groupId>
+          <artifactId>velocity</artifactId>
+          <version>1.3</version>
+       </dependency>
+  	   <dependency>
+          <groupId>commons-jelly</groupId>
+          <artifactId>commons-jelly-tags-velocity</artifactId>
+          <version>SNAPSHOT</version>
+       </dependency>	
+       
+  </dependencies>
+  
+  <build>
+    <sourceDirectory>src/java</sourceDirectory>
+    <unitTestSourceDirectory>src/test/java</unitTestSourceDirectory>
+    <aspectSourceDirectory>src/aspects</aspectSourceDirectory>
+    
+    <unitTest>
+     
+      <includes>
+        <include>**/*Test.java</include>
+      </includes>
+      
+
+      <resources>
+      	
+        <resource>
+          <directory>${basedir}/etc</directory>
+          <includes>
+            <include>**/*.*</include>
+          </includes>
+        </resource>
+        
+        <resource>
+          <directory>${basedir}/src/test/etc</directory>
+          <includes>
+            <include>**/*.*</include>
+          </includes>
+        </resource>
+        
+         <resource>
+          <directory>${basedir}/src/test/conf</directory>
+          <includes>
+            <include>**/*.*</include>
+          </includes>
+        </resource>
+        
+        <resource>
+          <directory>${basedir}/etc</directory>
+          <includes>
+            <include>*.*</include>
+            <include>META-INF/services/*.*</include>
+            <include>templates/**/*.*</include>
+          </includes>
+        </resource>
+     
+        
+      </resources>
+      
+    </unitTest>
+    
+    <resources>
+      <resource>
+          <directory>${basedir}/etc</directory>
+          <includes>
+            <include>*.*</include>
+          </includes>
+      </resource>
+      <resource>
+      	  <directory>${basedir}/etc</directory>
+          <includes>
+            <include>META-INF/services/*.*</include>
+          </includes>
+      </resource>
+    </resources>
+    
+  </build>
+
+  <reports>
+   
+    <report>maven-jdepend-plugin</report>
+    <report>maven-checkstyle-plugin</report>
+    <report>maven-changes-plugin</report>
+    <report>maven-changelog-plugin</report>
+    <!-- report>maven-findbugs-plugin</report -->
+    <report>maven-file-activity-plugin</report>
+    <report>maven-developer-activity-plugin</report>
+    <report>maven-javadoc-plugin</report>
+    <report>maven-jxr-plugin</report>
+    <report>maven-junit-report-plugin</report>
+    <report>maven-tasklist-plugin</report>
+    <!-- report>maven-jellydoc-plugin</report -->
+    <report>maven-pmd-plugin</report>
+    <!-- report>maven-simian-plugin</report -->
+    <report>maven-faq-plugin</report>
+    <!-- report>maven-multiproject-plugin</report -->
+  </reports>
+
+
+</project>
