@@ -805,10 +805,40 @@ public class SynchronizeWizardPage extends WizardPage {
 		
 		addParentDependencies(group);
 		
+		checkForConflict(group);
+		
 		return group;
 		
 	}
 	
+	
+	private void checkForConflict(DependencyGroup group) {
+		
+        List pomDependencyWrappers = group.getDependencyWrappers();
+        List parentDependencyWrappers = ((DependencyGroup) group.getParentGroup()).getDependencyWrappers();
+        
+        for (int i = 0; i < parentDependencyWrappers.size(); i++) {
+        	DependencyWrapper parentWrapper = (DependencyWrapper) parentDependencyWrappers.get(i);
+            for (int j = 0; j < pomDependencyWrappers.size(); j++) {
+        		DependencyWrapper pomWrapper = (DependencyWrapper) pomDependencyWrappers.get(j);
+                if ( DependencyUtil.conflict(parentWrapper.getDependency(), pomWrapper.getDependency()) ) {
+                	pomWrapper.setConflictDetected(true);
+                }
+            }
+        }
+        
+        for (int i = 0; i < pomDependencyWrappers.size(); i++) {
+        	DependencyWrapper pomWrapperPass1 = (DependencyWrapper) pomDependencyWrappers.get(i);
+        	for (int j = 0; j < pomDependencyWrappers.size(); j++) {
+        		DependencyWrapper pomWrapper = (DependencyWrapper) pomDependencyWrappers.get(j);
+        		if ( DependencyUtil.conflict(pomWrapperPass1.getDependency(), pomWrapper.getDependency()) ) {
+        			pomWrapper.setConflictDetected(true);
+        		}
+        	}
+        }
+       
+		
+	}
 	
 	private void addParentDependencies(DependencyGroup group) throws Exception {
 		
@@ -844,7 +874,6 @@ public class SynchronizeWizardPage extends WizardPage {
 		for (int i = 0; i < pomDependencies.size(); i++) {
 			Dependency pomDependency = (Dependency)pomDependencies.get(i);
 			
-			boolean conflictDetected = false;
 			boolean foundInEclipseProject = false;
 			
             for (int j = 0; j < group.getDependencyWrappers().size(); j++) {
@@ -854,21 +883,11 @@ public class SynchronizeWizardPage extends WizardPage {
 					wrapper.setInPom(true);
 					foundInEclipseProject = true;
 				}
-				
-				if ( DependencyUtil.conflict(pomDependency, wrapper.getDependency()) ) {
-					wrapper.setConflictDetected(true);
-					conflictDetected = true;
-				}
             }
 			if ( !foundInEclipseProject ) {
 				DependencyWrapper wrapper = new DependencyWrapper((Dependency)pomDependencies.get(i), false, group);
 				wrapper.setInPom(true);
 				group.addDependency(wrapper); 
-			}
-			if ( conflictDetected ) {
-				DependencyWrapper wrapper = new DependencyWrapper((Dependency)pomDependencies.get(i), false, group);
-				wrapper.setConflictDetected(true);
-				group.addDependency(wrapper);
 			}
         }
     }
