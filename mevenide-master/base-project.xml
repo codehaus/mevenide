@@ -57,7 +57,8 @@
     <sourceDirectory>${basedir}/src/java</sourceDirectory>
     <unitTestSourceDirectory>${basedir}/src/test/java</unitTestSourceDirectory>
     <aspectSourceDirectory>${basedir}/src/aspects</aspectSourceDirectory>
-  
+    	
+    
     <unitTest>
      
       <includes>
@@ -72,27 +73,20 @@
           </includes>
         </resource>
         <resource>
-          <directory>${basedir}/src/etc</directory>
+          <directory>${basedir}/etc</directory>
           <includes>
             <include>**/*.*</include>
           </includes>
         </resource>
       </resources>
-
     </unitTest>
     
     <resources>
-       <resource>
-          <directory>${basedir}/src/etc</directory>
+      <resource>
+          <directory>${basedir}/etc</directory>
           <includes>
             <include>**/*.*</include>
           </includes>
-      </resource>
-      <resource>
-        <directory>${basedir}/src/java</directory>
-        <excludes>
-          <exclude>**/*.java</exclude>
-        </excludes>
       </resource>
     </resources>
     
