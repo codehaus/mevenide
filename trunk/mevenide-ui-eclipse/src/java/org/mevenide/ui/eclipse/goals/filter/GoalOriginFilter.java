@@ -24,6 +24,7 @@ import org.mevenide.goals.grabber.DefaultGoalsGrabber;
 import org.mevenide.goals.grabber.IGoalsGrabber;
 import org.mevenide.ui.eclipse.goals.model.Goal;
 import org.mevenide.ui.eclipse.goals.model.Plugin;
+import org.mevenide.ui.eclipse.preferences.PreferencesManager;
 
 /** 
 * 
@@ -34,16 +35,21 @@ import org.mevenide.ui.eclipse.goals.model.Plugin;
 public class GoalOriginFilter extends ViewerFilter {
 	private static final Log log = LogFactory.getLog(GoalOriginFilter.class);
 	
-	private boolean filterOriginPlugin;
-	
-	private IGoalsGrabber defaultGoalsGrabber;
-	private IGoalsGrabber goalsGrabber;
-
 	public static final String ORIGIN_FILTER_KEY = "mevenide.goals.outline.filter.origin";
 
+	private boolean isFilteringEnable;
+	
+	private IGoalsGrabber defaultGoalsGrabber;
+	
 	public GoalOriginFilter() {
 		try {
 			defaultGoalsGrabber = new DefaultGoalsGrabber();
+			
+			PreferencesManager preferencesManager = PreferencesManager.getManager();
+			preferencesManager.loadPreferences();
+			
+			isFilteringEnable = preferencesManager.getBooleanValue(ORIGIN_FILTER_KEY);
+			
 		} 
 		catch (Exception e) {
 			log.error("Unable to create DefaultGoalsGrabber : ", e);
@@ -65,7 +71,7 @@ public class GoalOriginFilter extends ViewerFilter {
 		//donot cache it.. we will eventually provide an option to not load it each time..
 		String[] plugins = defaultGoalsGrabber.getPlugins();
 		for (int j = 0; j < plugins.length; j++) {
-			if ( filterOriginPlugin && plugins[j].equals(element.getName()) ) {
+			if ( isFilteringEnable && plugins[j].equals(element.getName()) ) {
 				return false;
 			}
 		}
@@ -73,17 +79,24 @@ public class GoalOriginFilter extends ViewerFilter {
 	}
 	
 	private boolean filterGoalOrigin(Goal element) {
-		if ( filterOriginPlugin && IGoalsGrabber.ORIGIN_PLUGIN.equals(goalsGrabber.getOrigin(element.getFullyQualifiedName()))) {
+		if ( isFilteringEnable && IGoalsGrabber.ORIGIN_PLUGIN.equals(defaultGoalsGrabber.getOrigin(element.getFullyQualifiedName()))) {
 			return false;
 		}
 		return true;
 	}
 	
-	public void setFilterOriginPlugin(boolean filterOriginPlugin) {
-		this.filterOriginPlugin = filterOriginPlugin;
+	public void setEnable(boolean enable) {
+		this.isFilteringEnable = enable;
+		
+		//should see how to save them in more optimized way : i/o access everytime we set the value..
+		PreferencesManager preferencesManager = PreferencesManager.getManager();
+		preferencesManager.setBooleanValue(ORIGIN_FILTER_KEY, enable);
+		preferencesManager.store();
+		
 	}
 	
-	public void setGoalsGrabber(IGoalsGrabber goalsGrabber) {
-		this.goalsGrabber = goalsGrabber;
+	public boolean isEnabled() {
+		return isFilteringEnable;
 	}
+	
 }
