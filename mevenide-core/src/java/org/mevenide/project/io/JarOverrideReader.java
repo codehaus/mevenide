@@ -35,7 +35,7 @@ import org.mevenide.util.StringUtils;
  * 
  */
 public class JarOverrideReader {
-	private static Log log = LogFactory.getLog(JarOverrideWriter.class);
+	private static Log log = LogFactory.getLog(JarOverrideReader.class);
 	
 	private PropertyModelFactory projectModelFactory;
 	private PropertyModel userPropertyModel;
