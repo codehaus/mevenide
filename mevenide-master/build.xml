@@ -18,7 +18,7 @@
 	
 	<target name="build-all" depends="init,install-mepp" description="o build all mevenide artifacts using maven:reactor ">
 		<exec executable="${maven.command}" failonerror="true">
-			<arg value="build-all"/>
+			<arg value="mevenide:build-all"/>
 		</exec>
 	</target>
 	
