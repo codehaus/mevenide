@@ -16,10 +16,8 @@
  */
 package org.mevenide.ui.eclipse.nature;
 
+import java.util.List;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.IAction;
-
 
 /**  
  * 
@@ -27,19 +25,7 @@ import org.eclipse.jface.action.IAction;
  * @version $Id$
  * 
  */
-public class PatternBasedMavenLaunchAction extends Action {
-    
-    private ActionDefinitions definition;
-    
-    public PatternBasedMavenLaunchAction(IProject project, ActionDefinitions definition) {
-        this.definition = definition;
-        setText(definition.toString());
-        setToolTipText(definition.getGoalList());
-        setEnabled(definition.isEnabled(project));
-    }
-    
-	public void run(IAction action) {
-	    //TODO
-	}
+public interface IActionDefinitionManager {
 
+    public abstract List getDefinitions(IProject project);
 }

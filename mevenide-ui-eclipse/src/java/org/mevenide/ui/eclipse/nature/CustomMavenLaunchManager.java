@@ -17,9 +17,13 @@
 package org.mevenide.ui.eclipse.nature;
 
 import java.util.List;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MenuAdapter;
 import org.eclipse.swt.events.MenuEvent;
@@ -42,6 +46,8 @@ public class CustomMavenLaunchManager implements IWorkbenchWindowPulldownDelegat
     private Menu menu;
     
     private ManageActionDefinitionsAction manageActionDefinitionsAction;
+    
+    private IProject lastSelectedProject;
     
     /**
 	 * Indicates whether the actino definitions have changed and
@@ -96,11 +102,11 @@ public class CustomMavenLaunchManager implements IWorkbenchWindowPulldownDelegat
     
     protected void fillMenu(Menu menu) {	
 		ActionDefinitionsManager actionDefinitionsManager = Mevenide.getInstance().getActionDefinitionsManager();
-		List definitions = actionDefinitionsManager.getDefinitions();
+		List definitions = actionDefinitionsManager.getDefinitions(lastSelectedProject);
 		if ( definitions.size() > 0 ) {
 		    for (int i = 0; i < definitions.size(); i++) {
 		        ActionDefinitions definition = (ActionDefinitions) definitions.get(i);
-		        PatternBasedMavenLaunchAction action = new PatternBasedMavenLaunchAction(definition);
+		        PatternBasedMavenLaunchAction action = new PatternBasedMavenLaunchAction(lastSelectedProject, definition);
 		        addToMenu(menu, action);    
             }
 		    addSeparator(menu);
@@ -130,5 +136,16 @@ public class CustomMavenLaunchManager implements IWorkbenchWindowPulldownDelegat
     }
     
     public void selectionChanged(IAction action, ISelection selection) {
+        IProject project = null;
+        if ( selection instanceof StructuredSelection) {
+	        Object firstElement = ((StructuredSelection) selection).getFirstElement();
+	        if ( firstElement instanceof IResource ) {
+	            project = ((IResource) firstElement).getProject();
+	    	}
+	        if ( firstElement instanceof IJavaElement )  {
+	            project = ((IJavaElement) firstElement).getJavaProject().getProject();
+	        }
+        }
+        lastSelectedProject = project;
     }
 }

@@ -16,7 +16,10 @@
  */
 package org.mevenide.ui.eclipse.nature;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import org.eclipse.core.resources.IProject;
 import org.mevenide.util.StringUtils;
 
 
@@ -32,9 +35,14 @@ public class ActionDefinitions {
     
     private List patterns;
     
-    private boolean enabled;
+    private Map perProjectEnablementMap;
     
     private String name;
+    
+    
+    public ActionDefinitions() {
+        perProjectEnablementMap = new HashMap();
+    }
     
     public List getGoals() {
         return goals;
@@ -52,12 +60,15 @@ public class ActionDefinitions {
         this.patterns = patterns;
     }
     
-    public boolean isEnabled() {
-        return enabled;
+    public boolean isEnabled(IProject project) {
+        return project != null && 
+               perProjectEnablementMap.containsKey(project.getLocation().toString()) && 
+               ((Boolean) perProjectEnablementMap.get(project.getLocation().toString())).booleanValue(); 
+         
     }
     
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
+    public void setEnabled(IProject project, boolean enabled) {
+        perProjectEnablementMap.put(project.getLocation().toString(), Boolean.valueOf(enabled));
     }
     
     public String toString() {
