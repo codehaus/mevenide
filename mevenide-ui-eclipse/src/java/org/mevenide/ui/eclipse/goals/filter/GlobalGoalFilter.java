@@ -24,31 +24,25 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
-import org.mevenide.goals.grabber.DefaultGoalsGrabber;
-import org.mevenide.goals.grabber.IGoalsGrabber;
 import org.mevenide.ui.eclipse.goals.model.Element;
 import org.mevenide.ui.eclipse.preferences.PreferencesManager;
 
 /** 
-* 
-* @author <a href="mailto:rhill2@free.fr">Gilles Dodinet</a>
-* @version $Id: GlobalGoalFilter.java,v 1.2 4 avr. 2004 Exp gdodinet 
-* 
-*/
+ * 
+ * @author <a href="mailto:rhill2@free.fr">Gilles Dodinet</a>
+ * @version $Id: GlobalGoalFilter.java,v 1.2 4 avr. 2004 Exp gdodinet 
+ * 
+ */
 public class GlobalGoalFilter extends ViewerFilter {
 	private static final Log log = LogFactory.getLog(GlobalGoalFilter.class);
 	
 	public static final String ORIGIN_FILTER_GOALS = "mevenide.goals.outline.filter.origin.goals";
 	
 	private List filteredGoals = new ArrayList(); 
-	
-	private IGoalsGrabber defaultGoalsGrabber;
-	private IGoalsGrabber goalsGrabber;
 
 	public GlobalGoalFilter() {
 		try {
-			defaultGoalsGrabber = new DefaultGoalsGrabber();
-
+		
 			PreferencesManager preferencesManager = PreferencesManager.getManager();
 			preferencesManager.loadPreferences();
 			
@@ -60,10 +54,12 @@ public class GlobalGoalFilter extends ViewerFilter {
 	}
 
 	public boolean select(Viewer viewer, Object parentElement, Object element) {
-		return !isElementFiltered((Element) element);  
+		return !filteredGoals.contains(((Element) element).getFullyQualifiedName());  
 	}
 
 	public void setFilteredGoals(String goalListAsString) {
+		filteredGoals.clear();
+		log.debug("setting up GlobalGoalFilter w/ : [" + goalListAsString + "]");
 		if ( goalListAsString == null ) {
 			return;
 		}
@@ -75,11 +71,6 @@ public class GlobalGoalFilter extends ViewerFilter {
 		}
 	}
 	
-	private boolean isElementFiltered(Element element) {
-		return filteredGoals.contains(element.getFullyQualifiedName());
-	}
 	
-	public void setGoalsGrabber(IGoalsGrabber goalsGrabber) {
-		this.goalsGrabber = goalsGrabber;
-	}
+	
 }

@@ -91,11 +91,6 @@ public class MavenXmlOutlinePage extends Page implements IContentOutlinePage {
 	public MavenXmlOutlinePage(IFileEditorInput input) {
 		this.basedir = new File(input.getFile().getLocation().toOSString()).getParent();
 		this.basedirPath = input.getFile().getParent().getFullPath();
-		goalsProvider = new GoalsProvider();
-		goalsLabelProvider = new GoalsLabelProvider();
-		patternFilter = new CustomPatternFilter();
-		globalGoalFilter = new GlobalGoalFilter();
-		goalOriginFilter = new GoalOriginFilter();
 	}
 	
 	public void createControl(Composite parent) {
@@ -106,21 +101,15 @@ public class MavenXmlOutlinePage extends Page implements IContentOutlinePage {
 			GridData gridData = new GridData(GridData.FILL_BOTH);
 			gridData.grabExcessVerticalSpace = true;
 			gridData.grabExcessHorizontalSpace = true;
-			
-        	control.setLayoutData(gridData);
-
-            goalsViewer = getViewer(control);
-            
-            GridData textGridData = new GridData(GridData.FILL_BOTH);
-			gridData.grabExcessHorizontalSpace = true;
-			gridData.grabExcessVerticalSpace = true;
-			gridData.horizontalAlignment = GridData.FILL;
+            gridData.horizontalAlignment = GridData.FILL;
 			gridData.verticalAlignment = GridData.BEGINNING;
-			
+			control.setLayoutData(gridData);
+
+            goalsViewer = createViewer(control);
+            
 			configureViewer();
 			
 			goalsViewer.setInput(Element.NULL_ROOT);
-            
         }
         catch (Exception e) {
             log.error("Unable to create goals TreeViewer host : ", e);
@@ -128,41 +117,40 @@ public class MavenXmlOutlinePage extends Page implements IContentOutlinePage {
         }
 	}
 	
-	private TreeViewer getViewer(Composite parent) throws Exception {
+	private TreeViewer createViewer(Composite parent) throws Exception {
 		
     	TreeViewer viewer = new TreeViewer(parent, SWT.V_SCROLL | SWT.H_SCROLL);
-    	
-    	goalsProvider.setBasedir(basedir);
-    	
-    	viewer.setContentProvider(goalsProvider);
-    	viewer.setLabelProvider(goalsLabelProvider);
     	
     	GridData gridData = new GridData(GridData.FILL_BOTH | SWT.V_SCROLL | SWT.H_SCROLL);
     	gridData.grabExcessVerticalSpace = true;
     	gridData.grabExcessHorizontalSpace = true;
     	gridData.heightHint = 300;
-    
     	viewer.getTree().setLayoutData(gridData);
-    	
-    	globalGoalFilter.setGoalsGrabber(goalsProvider.getGoalsGrabber());
-    	
-    	viewer.addFilter(globalGoalFilter);
-    	viewer.addFilter(patternFilter);
-    	viewer.addFilter(goalOriginFilter);
     	
         return viewer;
     }
 	
-	private void configureViewer() {
-        goalsViewer.getTree().addListener (SWT.MouseHover, 
-        	new Listener () {
-        		public void handleEvent (Event event) {
-					//display description in a tooltip
-        			//updateTooltipText(event);
-        		}
-        	}
-        );
-        
+	private void setupFilters() {
+		patternFilter = new CustomPatternFilter();
+		goalsViewer.addFilter(patternFilter);
+
+		globalGoalFilter = new GlobalGoalFilter();
+		goalsViewer.addFilter(globalGoalFilter);
+		
+		goalOriginFilter = new GoalOriginFilter();
+		goalsViewer.addFilter(goalOriginFilter);
+	}
+
+	private void setupProviders() throws Exception {
+		goalsProvider = new GoalsProvider();
+    	goalsProvider.setBasedir(basedir);
+		goalsViewer.setContentProvider(goalsProvider);
+
+		goalsLabelProvider = new GoalsLabelProvider();
+		goalsViewer.setLabelProvider(goalsLabelProvider);
+	}
+
+	private void configureViewer() throws Exception {
         goalsViewer.getTree().addListener (SWT.MouseDoubleClick, 
         	new Listener () {
         		public void handleEvent (Event event) {
@@ -172,13 +160,12 @@ public class MavenXmlOutlinePage extends Page implements IContentOutlinePage {
         	}
         );
         
+		setupProviders();
+    	setupFilters();
+    	
         createActions();
-        
         createToolBarManager();
-        
         createContextMenuManager();
-		
-		
     }
 	
 	private void createContextMenuManager() {
@@ -261,7 +248,6 @@ public class MavenXmlOutlinePage extends Page implements IContentOutlinePage {
 			patternFilter.setPatternFilters(dialog.getRegex());
 			patternFilter.apply(dialog.shouldApplyCustomFilters());
 			
-			//globalGoalFilter.setFilterOriginPlugin(dialog.isFilterOrigin());
 			globalGoalFilter.setFilteredGoals(dialog.getFilteredGoals());
 			
 			goalsViewer.refresh(false);
@@ -269,7 +255,7 @@ public class MavenXmlOutlinePage extends Page implements IContentOutlinePage {
 	}
 	
 	private void runMaven() {
-		if ( goalsViewer.getSelection() != null ) {
+		if ( goalsViewer.getSelection() != null && ((StructuredSelection) goalsViewer.getSelection()).getFirstElement() instanceof Goal) {
 			Goal goal = (Goal) ((StructuredSelection) goalsViewer.getSelection()).getFirstElement();
 			MavenLaunchShortcut shortcut = new MavenLaunchShortcut();
 			shortcut.setShowDialog(false);
