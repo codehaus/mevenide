@@ -37,6 +37,7 @@
       <import plugin="org.eclipse.ui.views"/>
       <import plugin="org.eclipse.jdt.ui"/>
       <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.team.ui"/>
       <import plugin="org.eclipse.ui.externaltools"/>
       <import plugin="org.eclipse.jface.text"/>
    </requires>
@@ -107,6 +108,16 @@
                enablesFor="1"
                id="maven-plugin.SynchronizePom">
          </action>
+         <!-- WIP/New Synchronize View -->
+         <action
+               label="wip-synchronize/new view"
+               icon="icons/maven-synch-pom.gif"
+               class="org.mevenide.ui.eclipse.sync.wip.SynchronizeAction"
+               menubarPath="maven.plugin.menu/Synchronize"
+               enablesFor="1"
+               id="maven-plugin.SynchronizePom.WIP">
+         </action>
+         <!-- END WIP -->
       </objectContribution>
       <!-- project.xml contributions -->
       <objectContribution
@@ -205,5 +216,34 @@
             id="org.mevenide.ui.mavenShortcut">
       </shortcut>
    </extension>
+   
+   <!-- Synchronize view -->
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            name="Maven"
+            id="org.mevenide.ui.synchronize.view">
+      </category>
+      <view
+            name="Pom Synchronizer"
+            icon="icons/maven.gif"
+            category="org.mevenide.ui.synchronize.view"
+            class="org.mevenide.ui.eclipse.sync.wip.SynchronizeView"
+            id="org.mevenide.ui.synchronize.view.SynchronizeView">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="org.eclipse.ui.resourcePerspective">
+         <view
+               ratio="0.5"
+               relative="org.eclipse.ui.views.TaskList"
+               id="org.mevenide.ui.synchronize.view.SynchronizeView"
+               relationship="right">
+         </view>
+      </perspectiveExtension>
+   </extension>
+   
 
 </plugin>
