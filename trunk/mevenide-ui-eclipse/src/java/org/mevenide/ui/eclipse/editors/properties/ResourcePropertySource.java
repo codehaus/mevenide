@@ -175,9 +175,11 @@ public class ResourcePropertySource extends AbstractPomPropertySource {
 			}
 		}
 		else if (RESOURCE_FILTERING.equals(id)) {
+			newValue = getBooleanForIndex(((Integer) value).intValue());
 			oldValue = Boolean.toString(resource.getFiltering());
 			if (MevenideUtils.notEquivalent(newValue, oldValue)) {
-				resource.setFiltering(Boolean.getBoolean(newValue));
+				boolean filtering = Boolean.valueOf(newValue).booleanValue();
+				resource.setFiltering(filtering);
 				changed = true;
 			}
 		}
