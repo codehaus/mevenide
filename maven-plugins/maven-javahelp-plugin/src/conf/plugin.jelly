@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<project
-  xmlns:j="jelly:core"
-  xmlns:util="jelly:util"
-  xmlns:ant="jelly:ant"
-  xmlns:x="jelly:xml"
-  xmlns:deploy="deploy">
-  
+
+
+<project xmlns:j="jelly:core"
+         xmlns:util="jelly:util"
+         xmlns:ant="jelly:ant"
+         xmlns:x="jelly:xml"
+         xmlns:deploy="deploy">
+
   <goal name="javahelp:site">
     <attainGoal name="xdoc"/>
     <j:scope>
@@ -34,10 +35,10 @@
     <j:set var="maven.xdoc.jsl" value="file:${plugin.resources}/help.jsl" scope="parent"/>
     <!-- j:set var="maven.xdoc.jsl" scope="parent" value="file:C:/Dokumente und Einstellungen/Administrator.TUCHOLA/.maven/cache/maven-javahelp-plugin-0.1/plugin-resources/help.jsl"/ -->
     <util:replace var="maven.javahelp.path" value="${maven.javahelp.root}" oldChar="." newChar="/"/>
-
+    
     <!-- Suppress generation and inclusion of generated docs -->
     <j:set var="maven.xdoc.includeProjectDocumentation" value="false" scope="parent"/>
-
+    
     <j:set var="maven.docs.dest" scope="parent" value="${maven.javahelp.gen}/${maven.javahelp.path}"/>
     <mkdir dir="${maven.docs.dest}"/>
     <j:new var="helpTocObj" className="java.util.ArrayList"/>
@@ -149,4 +150,3 @@
   <goal name="javahelp" prereqs="javahelp:javahelp" description="Build JavaHelp files"/>
   
 </project>
-
