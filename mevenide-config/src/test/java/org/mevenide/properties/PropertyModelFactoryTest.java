@@ -48,7 +48,9 @@ public class PropertyModelFactoryTest extends TestCase {
 //!comment5
 //my.prop.5 = \
 // myProp5 \
-// is defined on multiple lines  
+// is defined on multiple lines
+//    
+// my.prop.6 = trailing whitespaces and a tab   	
     
     protected void setUp() throws Exception {
         factory = PropertyModelFactory.getFactory();
@@ -78,7 +80,8 @@ public class PropertyModelFactoryTest extends TestCase {
 		assertEquals("my.prop.5", model.findByKey("my.prop.5").getKey());
 		assertEquals("myProp5 is defined on multiple lines", model.findByKey("my.prop.5").getValue());
 		
-		//@todo : crop ending whitespaces
+		assertEquals("my.prop.6", model.findByKey("my.prop.6").getKey());
+		assertEquals("trailing whitespaces and a tab", model.findByKey("my.prop.6").getValue());
     }
 
 }

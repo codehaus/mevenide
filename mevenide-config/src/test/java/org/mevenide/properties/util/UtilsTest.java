@@ -25,5 +25,21 @@ import junit.framework.TestCase;
  * 
  */
 public class UtilsTest extends TestCase {
-    //TODO
+    public void testAreEquals() {
+	    //TODO
+    }
+    
+    public void testRemoveTrailingWhitespaces() {
+        String strg = "test     ";
+        assertEquals("test", Utils.removeTrailingWhitespaces(strg));
+    }
+    
+    public void testRemoveTrailingSlash() {
+		String strg = "test \\";
+		assertEquals("test ", Utils.removeTrailingSlash(strg));
+        
+		strg = "test\\\\";
+		assertEquals("test\\", Utils.removeTrailingSlash(strg));
+    }
 }
+

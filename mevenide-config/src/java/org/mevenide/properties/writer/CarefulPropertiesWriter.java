@@ -32,7 +32,7 @@ import org.mevenide.properties.*;
 
 /**
  *
- * @author  Milos Kleint (ca206216@tiscali.cz)
+ * @author  <a href="mailto:ca206216@tiscali.cz">Milos Kleint</a> 
  */
 public class CarefulPropertiesWriter implements IPropertiesWriter
 {   

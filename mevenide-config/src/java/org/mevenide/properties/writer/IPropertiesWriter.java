@@ -24,7 +24,7 @@ import java.util.Properties;
 
 /**
  * interface for writing properties files.
- * @author  Milos Kleint (ca206216@tiscali.cz)
+ * @author  <a href="mailto:ca206216@tiscali.cz">Milos Kleint</a>
  */
 public interface IPropertiesWriter
 {

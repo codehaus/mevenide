@@ -26,7 +26,7 @@ import java.util.Properties;
 /**
  * A basic implementation of IPropertiesWriter, ignores anything that the file
  * contains and overwrites it with new values, also doesn't do any placement optimalizations.
- * @author  Milos Kleint (ca206216@tiscali.cz)
+ * @author  <a href="mailto:ca206216@tiscali.cz">Milos Kleint</a>
  */
 public class DefaultPropertiesWriter implements IPropertiesWriter
 {

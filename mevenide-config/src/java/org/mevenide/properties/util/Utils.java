@@ -23,7 +23,7 @@ package org.mevenide.properties.util;
  * 
  */
 public class Utils {
-    private static final String WS = "\t\r\n\f";
+    private static final String WS = " \t\r\n\f";
     
     private Utils() { }
     
@@ -39,8 +39,8 @@ public class Utils {
     
     public static String removeTrailingWhitespaces(String strg) {
         String localCopy = strg;
-        while ( WS.indexOf(localCopy.charAt(strg.length() - 1)) != -1 ) {
-            localCopy = localCopy.substring(0, strg.length() - 1);
+        while ( WS.indexOf(localCopy.charAt(localCopy.length() - 1)) != -1 ) {
+            localCopy = localCopy.substring(0, localCopy.length() - 1);
         }
         return localCopy;
     }
