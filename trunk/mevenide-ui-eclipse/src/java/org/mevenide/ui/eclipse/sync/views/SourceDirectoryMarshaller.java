@@ -26,7 +26,7 @@ import org.mevenide.util.JDomOutputter;
 
 /**
  * 
- * Crappy ! this is just a proto that will be rewritten.
+ * Crappy ! this is just a proto that should be rewritten.
  * 
  * 
  * @author Gilles Dodinet (gdodinet@wanadoo.fr)
@@ -58,9 +58,10 @@ public class SourceDirectoryMarshaller {
 						Element sourceDirectoryElement =  (Element) sources.get(j);
 						SourceDirectory sourceDirectory 
 							= new SourceDirectory(sourceDirectoryElement.getAttributeValue("path"));
-						sourceDirectory.setDirectoryType(sourceDirectoryElement.getAttributeValue("type"));
-						sourceDirectoryList.add(sourceDirectory);
-						
+						if ( group.getSourceDirectories().contains(sourceDirectory) ) {
+							sourceDirectory.setDirectoryType(sourceDirectoryElement.getAttributeValue("type"));
+							sourceDirectoryList.add(sourceDirectory);
+						}
 					}
 				}
 			}
@@ -68,7 +69,6 @@ public class SourceDirectoryMarshaller {
 			if ( sourceDirectoryList.size() > 0 ) {
 				group.setSourceDirectories(sourceDirectoryList);
 			}
-			
 			
 		}
 		
