@@ -10,8 +10,6 @@
     <classpathentry kind="lib" path="lib/xpp3-1.1.2a.jar"/>
     <classpathentry exported="true" kind="lib" path="lib/maven-core-1.0-beta-11-SNAPSHOT.jar"/>
     <classpathentry kind="lib" path="lib/xerces-2.2.1.jar"/>
-    <classpathentry exported="true" kind="lib" path="lib/mevenide-goals-grabber-1.0.jar"/>
-    <classpathentry exported="true" kind="lib" path="lib/mevenide-core-1.0.jar"/>
     <classpathentry kind="var"
         path="ECLIPSE_HOME/plugins/org.eclipse.core.resources_2.1.0/resources.jar" sourcepath="ORG_ECLIPSE_PLATFORM_SOURCE_SRC/org.eclipse.core.resources_2.1.0/resourcessrc.zip"/>
     <classpathentry kind="var"
@@ -42,5 +40,7 @@
     <classpathentry kind="var" path="MAVEN_REPO/junit/jars/junit-3.8.1.jar"/>
     <classpathentry kind="var"
         path="ECLIPSE_HOME/plugins/org.eclipse.ui.views_2.1.0/views.jar" sourcepath="ECLIPSE_HOME/plugins/org.eclipse.platform.source_2.1.0/src/org.eclipse.ui.views_2.1.0/viewssrc.zip"/>
+    <classpathentry kind="lib" path="E:/workspace/mevenide-ui-eclipse/lib/mevenide-core-0.1.jar"/>
+    <classpathentry kind="lib" path="E:/workspace/mevenide-ui-eclipse/lib/mevenide-goals-grabber-0.1.jar"/>
     <classpathentry kind="output" path="target/classes"/>
 </classpath>

@@ -25,15 +25,15 @@
          <packages prefixes="org.apache.maven"/>
       </library>
       <library name="lib/xerces-2.2.1.jar"/>
-      <library name="lib/mevenide-goals-grabber-1.0.jar">
+      <library name="lib/mevenide-goals-grabber-0.1.jar">
          <export name="*"/>
          <packages prefixes="com.gdfact.maven.plugin.getgoals"/>
       </library>
-      <library name="lib/mevenide-core-1.0.jar">
+      <library name="lib/mevenide-core-0.1.jar">
          <export name="*"/>
          <packages prefixes="org.mevenide"/>
       </library>
-      <library name="mevenide-ui-eclipse-1.0.jar">
+      <library name="mevenide-ui-eclipse-0.1.jar">
          <export name="*"/>
          <packages prefixes="org.mevenide.ui.eclipse"/>
       </library>

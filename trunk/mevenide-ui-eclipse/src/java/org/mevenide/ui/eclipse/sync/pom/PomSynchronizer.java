@@ -21,12 +21,12 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.JavaCore;
+import org.mevenide.project.io.ProjectSkeleton;
 import org.mevenide.sync.AbstractPomSynchronizer;
 import org.mevenide.sync.ISynchronizer;
 import org.mevenide.ui.eclipse.MavenPlugin;
-import org.mevenide.ui.eclipse.sync.source.IPathResolverDelegate;
 import org.mevenide.ui.eclipse.sync.source.DefaultPathResolverDelegate;
-import org.mevenide.project.io.ProjectSkeleton;
+import org.mevenide.ui.eclipse.sync.source.IPathResolverDelegate;
 
 /**
  * 
@@ -79,10 +79,10 @@ public class PomSynchronizer extends AbstractPomSynchronizer implements ISynchro
      */
 	public void preSynchronization() {
 		try {
-//			Environment.prepareEnv(project.getLocation().toFile().getAbsolutePath());
-//			if ( !ProjectReader.isWellFormed(pom.getFullPath().toFile()) ) {
-//				createPom();
-//			}
+			//Environment.prepareEnv(project.getLocation().toFile().getAbsolutePath());
+			if ( !pom.getFullPath().toFile().exists() ) {
+				createPom();
+			}
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -104,7 +104,7 @@ public class PomSynchronizer extends AbstractPomSynchronizer implements ISynchro
 	 */
 	private void createPom() throws Exception {
 		pom = project.getFile("project.xml");
-		if ( !pom.getLocation().toFile().exists() ) {
+		if ( !new File(pom.getLocation().toOSString()).exists() ) {
 			String skel = ProjectSkeleton.getSkeleton(project.getName());
 			pom.create(new ByteArrayInputStream(skel.getBytes()), false, null);
 		}

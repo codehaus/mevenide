@@ -28,6 +28,11 @@
   			<include name="*.*"/>
 		  </fileset>
 		</copy>
+		<copy toDir="target/classes/templates/standard">
+		  <fileset dir="etc/templates/standard">
+  			<include name="*.*"/>
+		  </fileset>
+		</copy>
 	</preGoal>
 	
 	<postGoal name="jar:install">

@@ -32,15 +32,19 @@
     <aspectSourceDirectories/>
     <!-- Unit test classes -->
 
-    <unitTestPatterns>
-      <unitTestPattern>**/*Test.java</unitTestPattern>
-    </unitTestPatterns>
     <!-- Integration unit test classes -->
 
     <integrationUnitTestPatterns/>
     <!-- J A R  R E S O U R C E S -->
     <!-- Resources that are packaged up inside the JAR file -->
-
+    
+    <!-- Unit test classes -->
+    <unitTest>
+      <includes>
+        <include>**/*Test.java</include>
+      </includes>
+    </unitTest>
+    
     <resources/>
 
     <jars/>
