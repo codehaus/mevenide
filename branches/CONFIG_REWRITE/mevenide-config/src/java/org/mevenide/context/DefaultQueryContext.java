@@ -30,8 +30,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Project;
 import org.jdom.Element;
-import org.jdom.input.DefaultJDOMFactory;
-import org.jdom.input.JDOMFactory;
+import org.jdom.DefaultJDOMFactory;
+import org.jdom.JDOMFactory;
 
 /**
  * default implementation of IQueryContext.

@@ -27,8 +27,8 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Project;
 import org.jdom.Element;
 import org.jdom.Text;
-import org.jdom.input.DefaultJDOMFactory;
-import org.jdom.input.JDOMFactory;
+import org.jdom.DefaultJDOMFactory;
+import org.jdom.JDOMFactory;
 import org.mevenide.properties.IPropertyResolver;
 
 
@@ -150,6 +150,11 @@ class DefaultProjectContext implements IProjectContext {
             try {
                 proj = unmarshaller.parseRootElement(file);
             } catch (Exception exc) {
+                JDOMFactory fact = new DefaultJDOMFactory();
+                fact.element("project");
+                jdomRootElements.add(fact);
+                projectFiles.add(file);
+                projectTimestamps.add(new Long(file.lastModified()));
                 logger.error("cannot parse file=" + file, exc);
                 return;
             }
