@@ -21,7 +21,7 @@ import org.mevenide.properties.util.Utils;
 
 /**
  * 
- * @author  <a href="ca206216@tiscali.cz">Milos Kleint</a>
+ * @author  <a href="mailto:ca206216@tiscali.cz">Milos Kleint</a>
  * @author <a href="mailto:rhill2@free.fr">Gilles Dodinet</a>
  * @version $Id$
  *

@@ -14,15 +14,23 @@
  *  limitations under the License.
  * =========================================================================
  */
-package org.mevenide.properties;
+package org.mevenide.properties.util;
 
+import junit.framework.Test;
+import junit.framework.TestSuite;
 
 /**
- * @author  <a href="mailto:ca206216@tiscali.cz">Milos Kleint</a>
- * just a marker class so that all have common ground.
+ * 
+ * @author <a href="mailto:rhill2@free.fr">Gilles Dodinet</a>
+ * @version $Id$
+ * 
  */
-public abstract class Element {
-    protected Element() {
+public class AllTests {
+    public static Test suite() {
+        TestSuite suite = new TestSuite();
+        
+        suite.addTestSuite(UtilsTest.class);
+        
+        return suite;
     }
-    
 }
