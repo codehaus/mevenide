@@ -45,7 +45,10 @@ public class PropertyModelFactoryTest extends TestCase {
 // my.prop.4: myOveriddenProp
 // my.prop.4   : myProp4
 //
-//!comment5  
+//!comment5
+//my.prop.5 = \
+// myProp5 \
+// is defined on multiple lines  
     
     protected void setUp() throws Exception {
         factory = PropertyModelFactory.getFactory();
@@ -71,6 +74,11 @@ public class PropertyModelFactoryTest extends TestCase {
 
 		assertEquals("my.prop.4", model.findByKey("my.prop.4").getKey());
 		assertEquals("myProp4", model.findByKey("my.prop.4").getValue());
+
+		assertEquals("my.prop.5", model.findByKey("my.prop.5").getKey());
+		assertEquals("myProp5 is defined on multiple lines", model.findByKey("my.prop.5").getValue());
+		
+		//@todo : crop ending whitespaces
     }
 
 }

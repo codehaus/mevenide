@@ -28,6 +28,7 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.mevenide.properties.util.Utils;
 
 /**
  * @author  <a href="ca206216@tiscali.cz">Milos Kleint</a> 
@@ -108,7 +109,8 @@ public class PropertyModelFactory {
             }
             if ( appendingMode ) {
                 currComment = null;
-                currKeyPair.addLine(line);
+				currKeyPair.setValue(Utils.removeTrailingSlash(currKeyPair.getValue()).trim());
+                currKeyPair.addToValue(Utils.removeTrailingWhitespaces(line));
                 appendingMode = continueLine(line);
                 continue;
             }
@@ -144,12 +146,12 @@ public class PropertyModelFactory {
                         continue;
                     }
                     currKeyPair = model.newKeyPair(key, line.charAt(sepIndex), value);
-                    appendingMode = continueLine(line);
+	                appendingMode = continueLine(line);
                 }
                 else {
                     log.warn("A non-comment non key-pair line encountered:'" + line + "'");
                 }
-            }
+			}
         }
         return model;
     }
