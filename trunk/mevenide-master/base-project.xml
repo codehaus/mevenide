@@ -86,14 +86,22 @@
       	<exclude>**/DependencyResolverTest.java</exclude>
       	<exclude>**/DependencyFactoryTest.java</exclude>
       	<exclude>**/SourceDirectoryUtilTest.java</exclude>
+      	<exclude>**/DependencyUtilTest.java</exclude>
       </excludes>
 
       <resources>
       	
         <resource>
+          <directory>etc</directory>
+          <includes>
+            <include>**/*.*</include>
+          </includes>
+        </resource>
+        
+        <resource>
           <directory>src/test/etc</directory>
           <includes>
-            <include>*.*</include>
+            <include>**/*.*</include>
           </includes>
         </resource>
         
