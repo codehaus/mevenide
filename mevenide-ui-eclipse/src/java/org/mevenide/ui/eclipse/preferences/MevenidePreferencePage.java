@@ -94,6 +94,7 @@ public class MevenidePreferencePage extends PreferencePage implements IWorkbench
 		dialog.setMavenHome(manager.getValue("maven.home"));
 		dialog.setMavenRepo(manager.getValue("maven.repo"));
 		dialog.setPomTemplateLocation(manager.getValue("pom.template.location"));
+		dialog.setHeapSize(manager.getIntValue("maven.heap.size"));
 		dialog.setDefaultGoals(manager.getValue("maven.launch.defaultgoals"));
 		
 		dialog.setCheckTimestamp(manager.getBooleanValue("mevenide.checktimestamp"));
@@ -118,10 +119,12 @@ public class MevenidePreferencePage extends PreferencePage implements IWorkbench
 		manager.setValue("maven.local.home", dialog.getMavenLocalHome());
 		manager.setValue("java.home", dialog.getJavaHome());
 		manager.setValue("maven.repo", dialog.getMavenRepo());
-		//manager.setValue("maven.plugins.dir", dialog.getPluginsInstallDir());
 		manager.setValue("pom.template.location", dialog.getPomTemplateLocation());
 		manager.setValue("maven.launch.defaultgoals", dialog.getDefaultGoals());
 		manager.setBooleanValue("mevenide.checktimestamp", dialog.getCheckTimestamp());
+		manager.setIntValue("maven.heap.size", dialog.getHeapSize());
+		
+		//manager.setValue("maven.plugins.dir", dialog.getPluginsInstallDir());
 		
 		Mevenide.getPlugin().initEnvironment();
 		
