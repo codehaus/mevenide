@@ -25,7 +25,6 @@
   <goal name="mevenide-site:build" description="Build Mevenide Site" prereqs="mevenide:init-site">
   	<j:set var="maven.multiproject.includes" value="${maven.multiproject.site.includes}"/>
   	<attainGoal name="multiproject:site"/>
-  	<attainGoal name="mevenide-site:build-archive"/>
   </goal>
   
   <!-- do NOT call site:deploy because we dont want to attain 'site' goal -->
