@@ -30,6 +30,7 @@ import org.mevenide.netbeans.project.exec.AttachDebuggerOutputFilter;
 import org.mevenide.netbeans.project.exec.MavenExecutor;
 import org.mevenide.netbeans.project.exec.OutputFilter;
 import org.mevenide.netbeans.project.exec.RunOutputFilter;
+import org.mevenide.properties.IPropertyLocator;
 import org.mevenide.properties.IPropertyResolver;
 import org.netbeans.spi.project.ActionProvider;
 import org.openide.awt.HtmlBrowser;
@@ -85,7 +86,8 @@ public class ActionProviderImpl implements ActionProvider {
         ActionProvider.COMMAND_RUN,
         ActionProvider.COMMAND_RUN_SINGLE,
         ActionProvider.COMMAND_DEBUG,
-        ActionProvider.COMMAND_DEBUG_SINGLE
+        ActionProvider.COMMAND_DEBUG_SINGLE,
+        ActionProvider.COMMAND_DEBUG_TEST_SINGLE
     };
     /** Creates a new instance of ActionProviderImpl */
     public ActionProviderImpl(MavenProject proj) {
@@ -96,9 +98,22 @@ public class ActionProviderImpl implements ActionProvider {
         return supported;
     }
     
-    private String getGoalDefForAction(String actionName) {
+    private String getGoalDefForAction(String actionName, Lookup lookup) {
         IPropertyResolver res = project.getPropertyResolver();
-        String key = "maven.netbeans.exec." + actionName;
+        String key = "maven.netbeans.exec.";
+        if (COMMAND_DEBUG_SINGLE.equals(actionName)) {
+            FileObject[] fos = FileUtilities.extractFileObjectsfromLookup(lookup);
+            FileObject fo =  FileUtilities.findTestForFile(project, fos[0]);
+            if (fo == fos[0]) {
+                // debugging test..
+                key = key + COMMAND_DEBUG_TEST_SINGLE;
+            } else {
+                // debugging non-test..
+                key = key + COMMAND_DEBUG_SINGLE;
+            }
+        } else {
+            key = key + actionName;
+        }
         String value = res.getResolvedValue(key);
         if (value == null) {
             value = getDefaultGoalForAction(key);
@@ -111,11 +126,12 @@ public class ActionProviderImpl implements ActionProvider {
     }
     
     public void invokeAction(String str, Lookup lookup) throws java.lang.IllegalArgumentException {
-        String goal = getGoalDefForAction(str);
+        String goal = getGoalDefForAction(str, lookup);
         if (goal != null) {
             int index = goal.indexOf("%TESTCLASS%");
             if (index != -1) {
-                String path = extractPackageName(lookup, FileUtil.toFileObject(new File(project.getTestSrcDirectory())), true);
+                FileObject testFile = FileUtilities.findTestForFile(project, FileUtilities.extractFileObjectsfromLookup(lookup)[0]);
+                String path = extractPackageName(testFile, FileUtil.toFileObject(new File(project.getTestSrcDirectory())));
                 if (path != null) {
                     goal = goal.substring(0, index) + path + goal.substring(index + "%TESTCLASS%".length()); //NOI18N
                 } else {
@@ -186,12 +202,20 @@ public class ActionProviderImpl implements ActionProvider {
     private void runGoal(String goal, Lookup lookup, 
                          OutputFilter out, OutputFilter err, 
                          InputOutput io) throws java.lang.IllegalArgumentException {
+        // setup executor first..                     
         MavenExecutor exec = new MavenExecutor(project, goal);
         exec.setNoBanner(MavenSettings.getDefault().isNoBanner());
         exec.setOffline(MavenSettings.getDefault().isOffline());
         exec.setDebug(MavenSettings.getDefault().isDebug());
         exec.setExceptions(MavenSettings.getDefault().isExceptions());
         exec.setNonverbose(MavenSettings.getDefault().isNonverbose());
+        int meterLoc = project.getPropertyLocator().getPropertyLocation("maven.download.meter"); //NOI18N
+        if (meterLoc == IPropertyLocator.LOCATION_NOT_DEFINED 
+                   ||  meterLoc == IPropertyLocator.LOCATION_DEFAULTS) {
+            exec.setDownloadMeter(MavenSettings.getDefault().getDownloader());
+        } else {
+            exec.setDownloadMeter(project.getPropertyResolver().getResolvedValue("maven.download.meter")); //NOI18N
+        }
         exec.setFilterError(err);
         exec.setFilterOutput(out);
         exec.setCustomInputOutput(io);
@@ -250,6 +274,25 @@ public class ActionProviderImpl implements ActionProvider {
             FileObject[] fos = findSources(lookup);
             return  fos != null && fos.length == 1;
         }
+        if (COMMAND_DEBUG_SINGLE.equals(str)) {
+            FileObject[] fos = findSources(lookup);
+            boolean found = fos != null && fos.length == 1;
+            if (!found) {
+                fos = findTestSources(lookup);
+                found = fos != null && fos.length == 1;
+            } 
+            return found;
+        }
+        if (COMMAND_DEBUG_TEST_SINGLE.equals(str)) {
+            System.out.println("COMMAND=" + str);
+            FileObject[] fos = FileUtilities.extractFileObjectsfromLookup(lookup);
+            boolean found = fos != null && fos.length == 1;
+            if (found) {
+                found = FileUtilities.findTestForFile(project, fos[0]) != null;
+                System.out.println("found1" + found + " for =" + fos[0]);
+            }
+            return found;
+        }
         return true;
     }
     
@@ -279,15 +322,19 @@ public class ActionProviderImpl implements ActionProvider {
     private String extractPackageName(Lookup lookup, FileObject root, boolean test) {
         FileObject[] fos = test ? findTestSources(lookup) : findSources(lookup);
         if (fos != null && fos.length == 1) {
-            String path = FileUtil.getRelativePath(root, fos[0]);
-            path = path.replace('/', '.');
-            path = path.replace('\\', '.');
-            if (path.endsWith(".java")) {
-                path = path.substring(0, path.length() - ".java".length());
-            }
-            return path;
+            return extractPackageName(fos[0], root);
         }
         return null;
+    }
+    
+    private String extractPackageName(FileObject fo, FileObject root) {
+        String path = FileUtil.getRelativePath(root, fo);
+        path = path.replace('/', '.');
+        path = path.replace('\\', '.');
+        if (path.endsWith(".java")) {
+            path = path.substring(0, path.length() - ".java".length());
+        }
+        return path;
     }
     
     public Action createBasicMavenAction(String name, String action) {

@@ -74,22 +74,22 @@ class WebAppFilterNode extends FilterNode {
     }    
 
     public java.awt.Image getIcon(int param) {
-        java.awt.Image retValue;
+        java.awt.Image retValue = super.getIcon(param);
         if (isTopLevelNode) {
-            retValue = Utilities.loadImage("org/mevenide/netbeans/project/resources/webmodule.gif");
-        } else {
-            retValue = super.getIcon(param);
-        }
+            retValue = Utilities.mergeImages(retValue, 
+                                             Utilities.loadImage("org/mevenide/netbeans/project/resources/webPagesBadge.gif"), 
+                                             8, 8);
+        } 
         return retValue;
     }
 
     public java.awt.Image getOpenedIcon(int param) {
-        java.awt.Image retValue;
+        java.awt.Image retValue = super.getOpenedIcon(param);
         if (isTopLevelNode) {
-            retValue = Utilities.loadImage("org/mevenide/netbeans/project/resources/webmodule.gif");
-        } else {
-            retValue = super.getOpenedIcon(param);
-        }
+            retValue = Utilities.mergeImages(retValue, 
+                                             Utilities.loadImage("org/mevenide/netbeans/project/resources/webPagesBadge.gif"), 
+                                             8, 8);
+        } 
         return retValue;
     }
     

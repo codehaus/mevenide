@@ -118,7 +118,9 @@ public class FileUtilities {
         return file.toURI();
     }
     
-    
+    /**
+     * find the right file for the given location and project. The returned file doesn't have to exist on disk.
+     */
     public static File locationToFile(int location, MavenProject project) {
         IQueryContext context = project.getContext();
         if (location == IPropertyLocator.LOCATION_PROJECT) {
@@ -161,6 +163,20 @@ public class FileUtilities {
         }
         return (FileObject[])files.toArray(new FileObject[files.size()]);
     }
+    
+    /**
+     * just gets the array of FOs from lookup.
+     */
+    public static FileObject[] extractFileObjectsfromLookup(Lookup lookup) {
+        List files = new ArrayList();
+        Iterator it = lookup.lookup(new Lookup.Template(DataObject.class)).allInstances().iterator();
+        while (it.hasNext()) {
+            DataObject d = (DataObject)it.next();
+            FileObject f = d.getPrimaryFile();
+            files.add(f);
+        }
+        return (FileObject[])files.toArray(new FileObject[files.size()]);
+    }
 
     /**
      * delete a file or dir, recursively.
@@ -179,5 +195,34 @@ public class FileUtilities {
             file.delete();
         }
         
+    }
+    
+    /**
+     * for source java files returns a their respective test (same name + Test) if it exists.
+     * for test sources, returns the smae fileobject.
+     *for anything else, returns null.
+     *
+     */
+    public static FileObject findTestForFile(MavenProject project, FileObject f) {
+        if (f == null || !"java".equals(f.getExt())) {
+            return null;
+        }
+        File testRootFile = new File(project.getTestSrcDirectory());
+        FileObject testroot = FileUtil.toFileObject(testRootFile);
+        boolean matches = FileUtil.toFile(f) != null;
+        if (testroot != null && FileUtil.isParentOf(testroot, f)) {
+            return f;
+        }
+        FileObject srcroot = FileUtil.toFileObject(new File(project.getSrcDirectory()));
+        if (srcroot != null && FileUtil.isParentOf(srcroot, f)) {
+            String relative = FileUtil.getRelativePath(srcroot, f);
+            relative = relative.substring(0, relative.length() - f.getNameExt().length());
+            File testFile = new File(testRootFile, relative + f.getName() + "Test.java");
+            System.out.println("testfile=" + testFile);
+            if (testFile.exists()) {
+                return FileUtil.toFileObject(testFile);
+            }
+        }
+        return null;
     }
 }

@@ -17,6 +17,7 @@
 
 package org.mevenide.netbeans.project.nodes;
 
+import java.awt.Image;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
@@ -35,6 +36,7 @@ import org.openide.loaders.DataObjectNotFoundException;
 import org.openide.nodes.FilterNode;
 import org.openide.nodes.Node;
 import org.openide.nodes.Children;
+import org.openide.util.Utilities;
 
 /**
  *
@@ -120,5 +122,22 @@ class ResourcesRootChildren extends Children.Keys {
             }
             return toReturn;
         }
+        
+        public java.awt.Image getIcon(int param) {
+            java.awt.Image retValue = super.getIcon(param);
+            retValue = Utilities.mergeImages(retValue,
+                            Utilities.loadImage("org/mevenide/netbeans/project/resources/resourceBadge.gif"),
+                            8, 8);
+            return retValue;
+        }
+        
+        public java.awt.Image getOpenedIcon(int param) {
+            java.awt.Image retValue = super.getOpenedIcon(param);
+            retValue = Utilities.mergeImages(retValue,
+                            Utilities.loadImage("org/mevenide/netbeans/project/resources/resourceBadge.gif"),
+                            8, 8);
+            return retValue;
+        }
+        
     }
 }
