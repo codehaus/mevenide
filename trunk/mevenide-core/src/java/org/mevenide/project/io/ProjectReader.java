@@ -1,5 +1,5 @@
 /* ==========================================================================
- * Copyright 2003-2004 Apache Software Foundation
+ * Copyright 2003-2004 Mevenide Team
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,8 +17,6 @@
 package org.mevenide.project.io;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
@@ -30,8 +28,11 @@ import org.apache.maven.project.Build;
 import org.apache.maven.project.Dependency;
 import org.apache.maven.project.Project;
 import org.apache.maven.project.Resource;
+import org.mevenide.context.DefaultQueryContext;
+import org.mevenide.context.IQueryContext;
 import org.mevenide.project.ProjectConstants;
 import org.mevenide.util.StringUtils;
+import org.mevenide.context.JDomProjectUnmarshaller;
 
 
 /**
@@ -48,10 +49,6 @@ public class ProjectReader {
 	
 	private static ProjectReader projectReader = null;
 
-	
-	private JarOverrideReader jarOverrideReader;
-	
-	
 	public static synchronized ProjectReader getReader() throws Exception {
 		if (projectReader == null) {
 			projectReader = new ProjectReader();
@@ -61,21 +58,25 @@ public class ProjectReader {
 	
 	private ProjectReader() throws Exception {
 		unmarshaller = new JDomProjectUnmarshaller();
-		jarOverrideReader = new JarOverrideReader();
 	}
 	
 	/**
 	 * return the instance of org.apache.maven.project.Project derivated from pom
-	 * 
+	 * @deprecated the returned Project instance doesn't include parent file's definitions.
+         *   If you want a Project instance for reading, use IQueryContext.getPOMContext().getFinalProject() 
 	 */
 	public Project read(File pom) throws Exception {
-		
-		
+            // mkleint - I assume one should pass IqueryContext to the method instead of the File
+            // but it's used at many places and I don't know if just project.xml files are passed
+            // or some general <name>.xml file can be passed (a parent of the pom comes to mind..
+            
+            // anyway.. the IqueryContext should be definitely passed so that any jar overrides get
+            // processed within the correct project context..
 		Project project = unmarshaller.parse(pom);
 		project.setFile(pom);
-		
-		jarOverrideReader.processOverride(pom, project);
-		
+                IQueryContext context = new DefaultQueryContext(pom.getParentFile());
+		JarOverrideReader2.getInstance().processOverride(project, context);
+//		throw new IllegalStateException("Not really implemented..");
 		return project;
 		
 	}

@@ -1,5 +1,5 @@
 /* ==========================================================================
- * Copyright 2003-2004 Apache Software Foundation
+ * Copyright 2003-2004 Mevenide Team
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,7 +38,8 @@ public class SysEnvLocationFinder extends AbstractLocationFinder {
     private SysEnvLocationFinder() {
     }
     
-    static SysEnvLocationFinder getInstance() {
+    // needs to be public because of the property resolver..
+    public static SysEnvLocationFinder getInstance() {
         if (locationFinder == null) {
             synchronized (LOCK) {
                 if (locationFinder == null) {
@@ -94,5 +95,9 @@ public class SysEnvLocationFinder extends AbstractLocationFinder {
     
     public String getMavenPluginsDir() {
         return null;
+    }
+    
+    public String getUserHome() {
+        return System.getProperty("user.home");
     }
 }

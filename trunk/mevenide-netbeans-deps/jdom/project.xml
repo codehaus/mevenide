@@ -5,7 +5,9 @@
   <id>jdom-nb-module</id>
   <artifactId>jdom-nb-module</artifactId>
   <groupId>mevenide</groupId>
-  <currentVersion>1.0b8</currentVersion>
+  <!-- module version 1.0 was the 10.b8, netbeans doesn't allow letters in version numbers whus the b8 was stripped, 
+       need an increased version here.-->
+  <currentVersion>1.0.1</currentVersion>
   <package>jdom</package>
   <name>jdom library for Mevenide.</name>
   <shortDescription>Library for project mevenide</shortDescription>
@@ -15,7 +17,7 @@
     <dependency>
       <groupId>jdom</groupId>
       <artifactId>jdom</artifactId>
-      <version>1.0b8</version>
+      <version>1.0</version>
       <type>jar</type>
       <properties>
         <netbeans.module.ext>true</netbeans.module.ext>

@@ -1,5 +1,5 @@
 /* ==========================================================================
- * Copyright 2003-2004 Apache Software Foundation
+ * Copyright 2003-2004 Mevenide Team
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  *  limitations under the License.
  * =========================================================================
  */
-package org.mevenide.project.io;
+package org.mevenide.util;
 
 import java.io.File;
 import java.io.FileReader;
@@ -24,6 +24,7 @@ import org.apache.maven.project.Dependency;
 import org.apache.maven.project.Project;
 
 import junit.framework.TestCase;
+import org.mevenide.context.IProjectUnmarshaller;
 
 
 /**  

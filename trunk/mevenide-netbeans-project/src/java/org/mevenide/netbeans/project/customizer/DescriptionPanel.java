@@ -28,7 +28,6 @@ import javax.swing.JButton;
 
 
 import javax.swing.JPanel;
-import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.JTextComponent;
 import org.apache.commons.logging.Log;
@@ -39,7 +38,6 @@ import org.mevenide.netbeans.project.customizer.ui.OriginChange;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.awt.HtmlBrowser;
-import org.openide.util.NbBundle;
 
 
 /**
@@ -50,7 +48,6 @@ public class DescriptionPanel extends JPanel implements ProjectPanel {
     private static Log logger = LogFactory.getLog(DescriptionPanel.class);
 
     private ProjectValidateObserver valObserver;
-    private DocumentListener listener;
     private MavenProject project;
    
     private OriginChange ocLogo;

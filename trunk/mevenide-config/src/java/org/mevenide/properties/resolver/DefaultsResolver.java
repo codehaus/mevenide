@@ -1,5 +1,5 @@
 /* ==========================================================================
- * Copyright 2004 Apache Software Foundation
+ * Copyright 2003-2004 Mevenide Team
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,13 +19,12 @@ package org.mevenide.properties.resolver;
 
 import java.io.File;
 import java.io.InputStream;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.mevenide.environment.ILocationFinder;
+import org.mevenide.context.IQueryContext;
 import org.mevenide.properties.IPropertyFinder;
 
 /**
@@ -39,11 +38,11 @@ import org.mevenide.properties.IPropertyFinder;
 public final class DefaultsResolver implements IPropertyFinder {
     private static final Log logger = LogFactory.getLog(DefaultsResolver.class);
     
-    private ILocationFinder locFinder;
-    private IPropertyFinder pluginDefaults;
+    private PluginPropertiesFinder pluginDefaults;
     private static Properties defaults;
     private File projectDir;
     private File userDir;
+    private IQueryContext context;
     //TODO lazy initialization
     static {
         try {
@@ -54,19 +53,20 @@ public final class DefaultsResolver implements IPropertyFinder {
             logger.error("Cannot load default properties.", exc);
         }
     } 
-    /** Creates a new instance of DefaultsResolver */
-    public DefaultsResolver(File projectFile, File userFile, ILocationFinder find) {
+    /** Creates a new instance of DefaultsResolver 
+     * @deprecated
+     */
+    public DefaultsResolver(File projectFile, File userFile) {
         userDir = userFile;
         projectDir = projectFile;
-        locFinder = find;
     }
     
+    public DefaultsResolver(IQueryContext cont) {
+        context = cont;
+    }
     
-    /** Creates a new instance of DefaultsResolver */
-    public DefaultsResolver(File projectFile, File userFile, ILocationFinder find, 
-                            IPropertyFinder pluginDefaultsProps) {
-        this(projectFile, userFile, find);
-        pluginDefaults = pluginDefaultsProps;
+    void initPluginPropsFinder(PluginPropertiesFinder finder) {
+        pluginDefaults = finder;
     }
     
     public String getValue(String key) {
@@ -79,16 +79,18 @@ public final class DefaultsResolver implements IPropertyFinder {
     
     private String getDefault(String key) {
         if ("basedir".equals(key)) { //NOI18N
-            return projectDir.getAbsolutePath();
+            if (context != null) {
+                File proj = context.getProjectDirectory();
+                return proj == null ? null : proj.getAbsolutePath();
+            } else {
+                return projectDir.getAbsolutePath();
+            }
         }
         if ("user.home".equals(key)) { //NOI18N
+            if (context != null) {
+                return context.getUserDirectory().getAbsolutePath();
+            }
             return userDir.getAbsolutePath();
-        }
-        if ("maven.home".equals(key)) { //NOI18N
-            return locFinder.getMavenHome();
-        }
-        if ("maven.home.local".equals(key)) { //NOI18N
-            return locFinder.getMavenLocalHome();
         }
         String toReturn = defaults.getProperty(key);
         if (toReturn == null && pluginDefaults != null) {
@@ -99,8 +101,8 @@ public final class DefaultsResolver implements IPropertyFinder {
     
     public Set getDefaultKeys() {
         HashSet set = new HashSet(defaults.keySet());
-        if (pluginDefaults != null && pluginDefaults instanceof PluginPropertiesFinder) {
-            set.addAll(((PluginPropertiesFinder)pluginDefaults).getDefaultPluginKeys());
+        if (pluginDefaults != null) {
+            set.addAll(pluginDefaults.getDefaultPluginKeys());
         }
         return set;
     }

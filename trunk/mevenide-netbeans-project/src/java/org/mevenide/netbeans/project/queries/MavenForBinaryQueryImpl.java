@@ -48,6 +48,8 @@ public class MavenForBinaryQueryImpl implements SourceForBinaryQueryImplementati
     private static final Log logger = LogFactory.getLog(MavenForBinaryQueryImpl.class);
                                                           
     private MavenProject project;
+    private BinResult srcResult;
+    private BinResult testResult;
     /** Creates a new instance of MavenSourceForBinaryQueryImpl */
     public MavenForBinaryQueryImpl(MavenProject proj) {
         project = proj;
@@ -65,11 +67,24 @@ public class MavenForBinaryQueryImpl implements SourceForBinaryQueryImplementati
     public SourceForBinaryQuery.Result findSourceRoots(URL url) {
         logger.debug("MavenSourceForBinaryQueryImpl project=" + project.getDisplayName() + "url=" + url);
         if (url.getProtocol().equals("jar")) { //NOI18N
-            return new BinResult(url);
+            if (srcResult == null) {
+                srcResult = new BinResult(url);
+            }
+            return srcResult;
         }
         if (url.getProtocol().equals("file")) { //NOI18N
-            if (checkURL(url) != -1) {
-                return new BinResult(url);
+            int result = checkURL(url);
+            if (result == 1) {
+                if (testResult == null) {
+                    testResult = new BinResult(url);
+                }
+                return testResult;
+            }
+            if (result == 0) {
+                if (srcResult == null) {
+                    srcResult = new BinResult(url);
+                }
+                return srcResult;
             }
         }
         return null;
@@ -132,7 +147,7 @@ public class MavenForBinaryQueryImpl implements SourceForBinaryQueryImplementati
             logger.debug("jar protocol file=" + file);
             try {
                 IDependencyResolver depRes = DependencyResolverFactory.getFactory().
-                newInstance(file.getAbsolutePath());
+                                                newInstance(file.getAbsolutePath());
                 boolean found =  (doCompare(depRes.guessArtifactId(), mavproj.getArtifactId()) &&
                                   doCompare(depRes.guessGroupId(), mavproj.getGroupId()) &&
                                   doCompare(depRes.guessVersion(), mavproj.getCurrentVersion()));

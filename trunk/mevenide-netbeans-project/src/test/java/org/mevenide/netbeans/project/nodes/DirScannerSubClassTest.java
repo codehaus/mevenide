@@ -46,13 +46,19 @@ public class DirScannerSubClassTest extends TestCase {
         File tempDir = new File(tempFile.getParentFile(), "DirScannerSubClassTest");
         rootTempDir = tempDir;
         tempDir.mkdirs();
+        tempDir = new File(tempDir, "CVS");
+        tempDir.mkdirs();
         File file = new File(tempDir, "hello.txt");
         file.createNewFile();
         tempDir = new File(tempDir, "templates");
         tempDir.mkdirs();
+        tempDir = new File(tempDir, "CVS");
+        tempDir.mkdirs();
         file = new File(tempDir, "hello2.txt");
         file.createNewFile();
         tempDir = new File(tempDir, "something");
+        tempDir.mkdirs();
+        tempDir = new File(tempDir, "CVS");
         tempDir.mkdirs();
         file = new File(tempDir, "hello2.txt");
         file.createNewFile();
@@ -79,6 +85,15 @@ public class DirScannerSubClassTest extends TestCase {
 //        dotestWithPattern("*/*.*", "*/hello2.txt", new boolean[] {false, false, false, false, true, true, true});
 //        dotestWithPattern("templates/*.txt", null, new boolean[] {false, true, false, false, true, false, false});
 //        dotestWithPattern("templates/something/*", null, new boolean[] {false, false, true, true, true, true, true});
+    }
+    
+    public void testCheckVisible() {
+        File cvs = new File(rootTempDir, "CVS");
+        assertFalse(DirScannerSubClass.checkVisible(cvs, rootTempDir));
+        File noncvs = new File(rootTempDir, "templates");
+        assertTrue(DirScannerSubClass.checkVisible(noncvs, rootTempDir));
+        cvs = new File(new File(rootTempDir, "templates"), "CVS");
+        assertFalse(DirScannerSubClass.checkVisible(cvs, rootTempDir));
     }
     
     private void dotestWithPattern(String include, String exclude, boolean[] success) throws Exception {

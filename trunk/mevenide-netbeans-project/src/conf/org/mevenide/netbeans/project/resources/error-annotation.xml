@@ -20,5 +20,5 @@ Microsystems, Inc. All Rights Reserved.
       visible="true"
       glyph="nbresloc:/org/mevenide/netbeans/project/resources/error-glyph.gif"
       highlight="#FF8080"
-      type="linepart"
+      type="line"
 />

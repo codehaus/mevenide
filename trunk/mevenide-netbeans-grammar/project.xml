@@ -5,7 +5,7 @@
   <id>mevenide-netbeans-grammar</id>
   <name>Mevenide XML grammar</name>
   <artifactId>mevenide-netbeans-grammar</artifactId>
-  <currentVersion>0.5.1</currentVersion>
+  <currentVersion>0.6-SNAPSHOT</currentVersion>
   <package>org.mevenide.netbeans.grammar</package>
   <description>Maven files XML grammar and code-completion for Netbeans. (project.xml, maven.xml and plugin.jelly files completion.</description>
   <shortDescription>Maven files XML grammar and code-completion for Netbeans</shortDescription>
@@ -37,10 +37,9 @@
         <version>1.0.3</version>
         <type>jar</type>
         <url>http://jakarta.apache.org/commons/logging.html</url>
-	    <properties>
-            <netbeans.module.dep>spec</netbeans.module.dep>
-            <netbeans.lib.generate>true</netbeans.lib.generate>
-	    </properties>
+        <properties>
+             <netbeans.module.dep>spec=org.netbeans.libs.commons_logging/1 &gt; 1.0</netbeans.module.dep>
+        </properties>
     </dependency>
         <dependency>
             <groupId>log4j</groupId>
@@ -58,7 +57,7 @@
     <dependency>
         <groupId>mevenide</groupId>
         <artifactId>mevenide-config</artifactId>
-        <version>0.5</version>
+        <version>0.6-SNAPSHOT</version>
         <type>jar</type>
 	    <properties>
             <netbeans.module.dep>spec</netbeans.module.dep>
@@ -67,7 +66,7 @@
     <dependency>     
         <groupId>mevenide</groupId>
         <artifactId>goals-grabber</artifactId>
-        <version>0.5</version>
+        <version>0.6-SNAPSHOT</version>
         <type>jar</type>
             <properties>
                 <netbeans.module.dep>spec</netbeans.module.dep>
@@ -77,7 +76,7 @@
         <groupId>mevenide</groupId>
         <artifactId>mevenide-grammar</artifactId>
         <type>jar</type>
-        <version>0.4</version>
+        <version>0.5-SNAPSHOT</version>
             <properties>
                 <netbeans.module.dep>spec</netbeans.module.dep>
             </properties>
@@ -85,11 +84,11 @@
       <dependency>
           <groupId>jdom</groupId>
           <artifactId>jdom</artifactId>
-          <version>1.0b8</version>
+          <version>1.0</version>
           <type>jar</type>
           <url>http://www.jdom.org</url>
           <properties>
-               <netbeans.module.dep>impl</netbeans.module.dep>
+                <netbeans.module.dep>spec=jdom &gt; 1.0.1</netbeans.module.dep>
                <netbeans.lib.generate>true</netbeans.lib.generate>
           </properties>
       </dependency>

@@ -33,10 +33,10 @@ import javax.swing.event.ChangeListener;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jdom.Element;
-import org.jdom.input.DefaultJDOMFactory;
-import org.jdom.input.JDOMFactory;
+import org.jdom.DefaultJDOMFactory;
+import org.jdom.JDOMFactory;
 import org.jdom.output.XMLOutputter;
-import org.mevenide.project.io.JDomProjectUnmarshaller;
+import org.mevenide.context.JDomProjectUnmarshaller;
 import org.netbeans.spi.project.ui.templates.support.Templates;
 import org.openide.WizardDescriptor;
 import org.openide.filesystems.FileObject;
@@ -59,7 +59,6 @@ public class MavenNewWizardIterator implements TemplateWizard.Iterator {
     private transient int index;
     private transient WizardDescriptor.Panel[] panels;
     private transient TemplateWizard wiz;
-    private transient FileObject templateRoot;
     
     
     /** Create a new wizard iterator. */

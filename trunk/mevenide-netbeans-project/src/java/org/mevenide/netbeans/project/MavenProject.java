@@ -22,6 +22,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.File;
+import java.io.IOException;
 import java.net.URI;
 import java.util.Arrays;
 import javax.swing.AbstractAction;
@@ -30,9 +31,10 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jdom.JDOMException;
 import org.mevenide.context.DefaultQueryContext;
-import org.mevenide.context.IProjectContext;
 import org.mevenide.context.IQueryContext;
+import org.mevenide.context.IQueryErrorCallback;
 import org.mevenide.environment.ILocationFinder;
 import org.mevenide.environment.LocationFinderAggregator;
 import org.mevenide.netbeans.project.classpath.ClassPathProviderImpl;
@@ -40,12 +42,10 @@ import org.mevenide.netbeans.project.queries.MavenForBinaryQueryImpl;
 
 import org.mevenide.netbeans.project.queries.MavenSharabilityQueryImpl;
 import org.mevenide.netbeans.project.queries.MavenTestForSourceImpl;
-import org.mevenide.project.DefaultProjectContext;
 import org.mevenide.properties.IPropertyLocator;
 import org.mevenide.properties.IPropertyResolver;
 import org.mevenide.properties.resolver.ProjectWalker2;
 import org.mevenide.properties.resolver.PropertyLocatorFactory;
-import org.mevenide.properties.resolver.PropertyResolverFactory;
 import org.netbeans.api.project.Project;
 import org.netbeans.api.project.ProjectInformation;
 import org.netbeans.spi.project.ui.PrivilegedTemplates;
@@ -54,6 +54,7 @@ import org.openide.filesystems.*;
 import org.openide.util.Lookup;
 import org.openide.util.Utilities;
 import org.openide.util.lookup.Lookups;
+import org.openide.util.lookup.ProxyLookup;
 
 
 /**
@@ -78,21 +79,23 @@ public class MavenProject implements Project {
     private Updater updater1;
     private Updater updater2;
     private Updater updater3;
+    private Lookup staticLookup;
+    private ProjectLookup completeLookup;
+    private Info projectInfo;
     
     /** Creates a new instance of MavenProject */
     MavenProject(FileObject projectFO, File projectFile) throws Exception {
         support = new PropertyChangeSupport(this);
         file = projectFile;
         fileObject = projectFO;
+        projectInfo = new Info();
         updater1 = new Updater(true);
         updater2 = new Updater(true, USER_DIR_FILES);
         updater3 = new Updater(false);
         File projectDir = FileUtil.toFile(fileObject.getParent());
-        queryContext = new DefaultQueryContext(projectDir);
-        properties = PropertyResolverFactory.getFactory().createContextBasedResolver(queryContext);
+        queryContext = new DefaultQueryContext(projectDir, projectInfo);
+        properties = queryContext.getResolver();
         propertyLocator = PropertyLocatorFactory.getFactory().createContextBasedLocator(queryContext);
-        IProjectContext prContext = new DefaultProjectContext(queryContext, properties);
-        ((DefaultQueryContext)queryContext).initializeProjectContext(prContext);
         locFinder = new LocationFinderAggregator(queryContext);
         walker = new ProjectWalker2(queryContext);
     }
@@ -113,16 +116,28 @@ public class MavenProject implements Project {
     
     void firePropertyChange(String property) {
         synchronized (support) {
+            projectInfo.reset();
             support.firePropertyChange(new PropertyChangeEvent(this, property, null, null));
         }
     }
     
     public String getDisplayName() {
-        String displayName = getOriginalMavenProject().getName();
+        String displayName = projectInfo.getDisplayName();
         if (displayName == null) {
             displayName = "<Maven project with no name>";
         }
         return displayName;
+    }
+    
+    public String getShortDescription() {
+        String desc = projectInfo.getErrorDescription();
+        if (desc == null) {
+            desc = getOriginalMavenProject().getShortDescription();
+        }
+        if (desc == null) {
+            desc = "A Maven based project";
+        }
+        return desc;
     }
     
     public org.apache.maven.project.Project getOriginalMavenProject() {
@@ -176,7 +191,11 @@ public class MavenProject implements Project {
     }
     
     public String getName() {
-        return getOriginalMavenProject().getId();
+        String toReturn = getOriginalMavenProject().getId();
+        if (toReturn == null) {
+            toReturn = getProjectDirectory().getName() + " <No Project ID>";
+        }
+        return toReturn;
     }
     
     public Action createRefreshAction() {
@@ -274,15 +293,7 @@ public class MavenProject implements Project {
    }
    
    private URI getDirURI(String path) {
-       File parent = FileUtil.toFile(getProjectDirectory());
-       File src = new File(parent.getAbsolutePath(), path);
-       if (!src.exists()) {
-           src = new File(path);
-           if (!src.exists()) {
-               // the ultimate fallback is the relative path..
-               src = new File(parent.getAbsolutePath(), path);
-           }
-       }
+       File src = FileUtilities.resolveFilePath(FileUtil.toFile(getProjectDirectory()), path);
        return FileUtil.normalizeFile(src).toURI();
    }
 
@@ -318,7 +329,8 @@ public class MavenProject implements Project {
     
     
     private Lookup createLookup() {
-        return Lookups.fixed(new Object[] {
+        staticLookup = Lookups.fixed(new Object[] {
+            projectInfo,
             new MavenForBinaryQueryImpl(this),
             new ActionProviderImpl(this),
             new CustomizerProviderImpl(this),
@@ -330,31 +342,66 @@ public class MavenProject implements Project {
 //            new MavenFileBuiltQueryImpl(this),
             new SubprojectProviderImpl(this),
             new MavenSourcesImpl(this), 
-            new RecommendedTemplatesImpl()
+            new RecommendedTemplatesImpl(),
+            new WebModuleProviderImpl(this)
         });
+        return staticLookup;
+//        completeLookup = new ProjectLookup(staticLookup);
+//        checkDynamicLookup();
+//        return completeLookup;
+    }
+    
+//    private void checkDynamicLookup() {
+//        FileObject fo = FileUtilities.getFileObjectForProperty("maven.war.src", getPropertyResolver());
+//        if (fo != null) {
+//            completeLookup.setDynamicLookup(Lookups.fixed(new Object[] {
+//                new WebModuleImpl(this)
+//            }));
+//        }
+//    }
+    
+    public ProjectInformation getProjectInfo() {
+        return projectInfo;
     }
     
    // Private innerclasses ----------------------------------------------------
     
-    private final class Info implements ProjectInformation {
+    private final class Info implements ProjectInformation, IQueryErrorCallback {
         
         private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
         
+        private String errorName;
+        private boolean errorIcon;
+        private String errorDescription;
+        
         Info() {}
+        
+        public void reset() {
+            firePropertyChange(ProjectInformation.PROP_DISPLAY_NAME);
+            pcs.firePropertyChange(ProjectInformation.PROP_ICON, null, getIcon());
+        }
         
         void firePropertyChange(String prop) {
             pcs.firePropertyChange(prop, null, null);
         }
         
         public String getName() {
-            return MavenProject.this.getName();
+            String toReturn = MavenProject.this.getName();
+            return toReturn;
         }
         
         public String getDisplayName() {
-            return MavenProject.this.getDisplayName();
+            String toReturn = MavenProject.this.getOriginalMavenProject().getName();
+            if (errorName != null) {
+                return errorName;
+            }
+            return toReturn;
         }
         
         public Icon getIcon() {
+            if (errorIcon) {
+                return new ImageIcon(Utilities.mergeImages(MavenProject.this.getIcon(), Utilities.loadImage("org/mevenide/netbeans/project/resources/ResourceNotIncluded.gif"), 0, 0));
+            }
             return new ImageIcon(MavenProject.this.getIcon());
         }
         
@@ -370,6 +417,35 @@ public class MavenProject implements Project {
             pcs.removePropertyChangeListener(listener);
         }
         
+        /**
+         * IQueryErrorCallback based method.
+         */
+        public void handleError(int errorNumber, Exception exception) {
+            System.out.println("handling exception" + exception.getMessage());
+            errorIcon = true;
+            if (errorNumber == IQueryErrorCallback.ERROR_UNPARSABLE_POM) {
+                errorName = "<Non-parseable POM file>";
+            } 
+            if (errorNumber == IQueryErrorCallback.ERROR_CANNOT_FIND_PARENT_POM) {
+                errorName = "<Cannot find parent POM>";
+            } 
+            if (errorNumber == IQueryErrorCallback.ERROR_CANNOT_FIND_POM) {
+                errorName = "<Cannot find POM>";
+            } 
+            if (exception != null) {
+                errorDescription = exception.getMessage();
+            }
+//            logger.error("error while reading context", exception);
+        }
+        public void discardError(int errorNumber) {
+            errorIcon = false;
+            errorName = null;
+            errorDescription = null;
+        }
+        
+        public String getErrorDescription() {
+            return errorDescription;
+        }
     }    
  
     // needs to be binary sorted;
@@ -381,6 +457,7 @@ public class MavenProject implements Project {
     private static final String[] USER_DIR_FILES = new String[] {
         "build.properties"
     };
+
     
     private class Updater implements FileChangeListener {
         
@@ -413,7 +490,6 @@ public class MavenProject implements Project {
             if (isFolder) {
                 String nameExt = fileEvent.getFile().getNameExt();
                 if (Arrays.binarySearch(filesToWatch, nameExt) != -1) {
-                    File parent = FileUtil.toFile(fileEvent.getFile().getParent());
                     fileEvent.getFile().addFileChangeListener(getFileUpdater());
                     firePropertyChange(PROP_PROJECT);
                 }
@@ -488,4 +564,17 @@ public class MavenProject implements Project {
         }
         
     }
+    
+    private class ProjectLookup extends ProxyLookup {
+        private Lookup stat;
+        public ProjectLookup(Lookup staticLookup) {
+            super(new Lookup[] {staticLookup});
+            stat = staticLookup;
+        }
+        
+        public final void setDynamicLookup(Lookup look) {
+            setLookups(new Lookup[] {stat, look});
+        }        
+    }
+    
 }

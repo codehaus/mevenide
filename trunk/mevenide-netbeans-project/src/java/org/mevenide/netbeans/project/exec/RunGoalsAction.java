@@ -125,9 +125,7 @@ public class RunGoalsAction extends AbstractAction implements Presenter.Popup {
             String mgoal = item.getGoals();
             log.debug("item=" + item.getGoals() + " of type " + item.getType()); //NOI18N
             if (item.getType() == ACTION_SHOW_CUSTOM_DIALOG) {
-                FileObject projxml = project.getProjectDirectory().getFileObject("project.xml");
-                File projxmlFile  = FileUtil.toFile(projxml);
-                GoalsGrabberProvider goalProvider = GoalUtils.createProjectGoalsProvider(projxmlFile.getAbsolutePath());
+                GoalsGrabberProvider goalProvider = GoalUtils.createProjectGoalsProvider(project.getContext(), project.getLocFinder());
                 GPanel panel = new GPanel(goalProvider);
                 DialogDescriptor desc = new DialogDescriptor(panel, NbBundle.getMessage(RunGoalsAction.class, "RunGoalsAction.dialog.title"));
                 Object[] options = new Object[] {

@@ -54,6 +54,7 @@ public class OrgPanel extends JPanel implements ProjectPanel {
     private OriginChange ocDistAddress;
     private OriginChange ocDistDir;
     private OriginChange ocOrganization;
+    private OriginChange ocIssueTracking;
     
     private HashMap changes;
     
@@ -91,6 +92,9 @@ public class OrgPanel extends JPanel implements ProjectPanel {
     private void initComponents() {//GEN-BEGIN:initComponents
         java.awt.GridBagConstraints gridBagConstraints;
 
+        lblOrganization = new javax.swing.JLabel();
+        ocOrganization = LocationComboFactory.createPOMChange(project, true);
+        btnOrganization = (JButton)ocOrganization.getComponent();
         pnlOrganization = new javax.swing.JPanel();
         lblName = new javax.swing.JLabel();
         txtName = new javax.swing.JTextField();
@@ -115,12 +119,26 @@ public class OrgPanel extends JPanel implements ProjectPanel {
         txtDistDir = new javax.swing.JTextField();
         ocDistDir = LocationComboFactory.createPOMChange(project, false);
         btnDistDir = (JButton)ocDistDir.getComponent();
+        lblIssueTracking = new javax.swing.JLabel();
+        txtIssueTracking = new javax.swing.JTextField();
+        ocIssueTracking = LocationComboFactory.createPOMChange(project, false);
+        btnIssueTracking = (JButton)ocIssueTracking.getComponent();
         jPanel1 = new javax.swing.JPanel();
-        lblOrganization = new javax.swing.JLabel();
-        ocOrganization = LocationComboFactory.createPOMChange(project, true);
-        btnOrganization = (JButton)ocOrganization.getComponent();
 
         setLayout(new java.awt.GridBagLayout());
+
+        lblOrganization.setLabelFor(btnOrganization);
+        lblOrganization.setText("Organization:");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(0, 0, 5, 0);
+        add(lblOrganization, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(0, 5, 5, 0);
+        add(btnOrganization, gridBagConstraints);
 
         pnlOrganization.setLayout(new java.awt.GridBagLayout());
 
@@ -294,27 +312,38 @@ public class OrgPanel extends JPanel implements ProjectPanel {
         gridBagConstraints.insets = new java.awt.Insets(3, 3, 0, 0);
         add(btnDistDir, gridBagConstraints);
 
+        lblIssueTracking.setLabelFor(txtIssueTracking);
+        lblIssueTracking.setText("Issue Tracking URL :");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 6;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(6, 0, 0, 0);
+        add(lblIssueTracking, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 6;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(6, 3, 0, 0);
+        add(txtIssueTracking, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 3;
+        gridBagConstraints.gridy = 6;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(3, 3, 0, 0);
+        add(btnIssueTracking, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 7;
         gridBagConstraints.gridwidth = 4;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         gridBagConstraints.weighty = 0.1;
         add(jPanel1, gridBagConstraints);
-
-        lblOrganization.setLabelFor(btnOrganization);
-        lblOrganization.setText("Organization:");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.insets = new java.awt.Insets(0, 0, 5, 0);
-        add(lblOrganization, gridBagConstraints);
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridwidth = 2;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.insets = new java.awt.Insets(0, 5, 5, 0);
-        add(btnOrganization, gridBagConstraints);
 
     }//GEN-END:initComponents
     
@@ -322,6 +351,7 @@ public class OrgPanel extends JPanel implements ProjectPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnDistAddress;
     private javax.swing.JButton btnDistDir;
+    private javax.swing.JButton btnIssueTracking;
     private javax.swing.JButton btnOrganization;
     private javax.swing.JButton btnSiteAddress;
     private javax.swing.JButton btnSiteDir;
@@ -329,6 +359,7 @@ public class OrgPanel extends JPanel implements ProjectPanel {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JLabel lblDistAddress;
     private javax.swing.JLabel lblDistDir;
+    private javax.swing.JLabel lblIssueTracking;
     private javax.swing.JLabel lblLogo;
     private javax.swing.JLabel lblName;
     private javax.swing.JLabel lblOrganization;
@@ -338,6 +369,7 @@ public class OrgPanel extends JPanel implements ProjectPanel {
     private javax.swing.JPanel pnlOrganization;
     private javax.swing.JTextField txtDistAddress;
     private javax.swing.JTextField txtDistDir;
+    private javax.swing.JTextField txtIssueTracking;
     private javax.swing.JTextField txtLogo;
     private javax.swing.JTextField txtName;
     private javax.swing.JTextField txtSiteAddress;
@@ -350,6 +382,7 @@ public class OrgPanel extends JPanel implements ProjectPanel {
         createChangeInstance("siteDirectory", txtSiteDir, ocSiteDir);
         createChangeInstance("distributionAddress", txtDistAddress, ocDistAddress);
         createChangeInstance("distributionDirectory", txtDistDir, ocDistDir);
+        createChangeInstance("issueTrackingUrl", txtIssueTracking, ocIssueTracking);
         Organization org = project.getOriginalMavenProject().getOrganization();
         String key = "pom.organization"; //NOI18N
         int location = project.getProjectWalker().getLocation(key);
@@ -388,6 +421,7 @@ public class OrgPanel extends JPanel implements ProjectPanel {
         assignValue("siteDirectory", resolve);
         assignValue("distributionAddress", resolve);
         assignValue("distributionDirectory", resolve);
+        assignValue("issueTrackingUrl", resolve);
         
         MultiTextComponentPOMChange change = (MultiTextComponentPOMChange)changes.get("pom.organization"); //NOI18N
         if (resolve) {

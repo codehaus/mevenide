@@ -58,7 +58,6 @@ class WebAppFilterNode extends FilterNode {
     public javax.swing.Action[] getActions(boolean param) {
         if (isTopLevelNode) {
             Action[] toReturn = new Action[1];
-            ActionProviderImpl provider = (ActionProviderImpl)project.getLookup().lookup(ActionProviderImpl.class);
             toReturn[0] = CommonProjectActions.newFileAction();
             return toReturn;
         } else {

@@ -24,7 +24,6 @@ import java.awt.event.FocusListener;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -43,7 +42,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Contributor;
 import org.apache.maven.project.Developer;
-import org.apache.maven.project.Project;
 import org.mevenide.netbeans.project.MavenProject;
 import org.mevenide.netbeans.project.customizer.ui.LocationComboFactory;
 import org.mevenide.netbeans.project.customizer.ui.OriginChange;
@@ -60,7 +58,6 @@ import org.openide.util.NbBundle;
 public class TeamPanel extends JPanel implements ProjectPanel {
     private static Log logger = LogFactory.getLog(TeamPanel.class);
     
-    private boolean propagate;
     private ProjectValidateObserver valObserver;
     private MultiTextComponentPOMChange currentContDev;
     private Listener listener;
@@ -503,13 +500,7 @@ public class TeamPanel extends JPanel implements ProjectPanel {
     }
     
     public String getValidityMessage() {
-        int retCode = doValidateCheck();
         String message = "";
-        //        // initially and when nothing is selected don't show message.
-        //        // when adding the currentList should be non-null
-        //        if (retCode == 1 && current != null) {
-        //            message = NbBundle.getMessage(TeamPanel.class, "ListsPanel.error1.text");
-        //        }
         return message;
     }
  

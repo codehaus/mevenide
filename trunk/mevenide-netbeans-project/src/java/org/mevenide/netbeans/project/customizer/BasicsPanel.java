@@ -16,17 +16,11 @@
  */
 package org.mevenide.netbeans.project.customizer;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import javax.swing.JButton;
-
-
 import javax.swing.JPanel;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -36,9 +30,6 @@ import org.apache.commons.logging.LogFactory;
 import org.mevenide.netbeans.project.MavenProject;
 import org.mevenide.netbeans.project.customizer.ui.LocationComboFactory;
 import org.mevenide.netbeans.project.customizer.ui.OriginChange;
-import org.openide.DialogDisplayer;
-import org.openide.NotifyDescriptor;
-import org.openide.awt.HtmlBrowser;
 import org.openide.util.NbBundle;
 
 
@@ -67,6 +58,9 @@ public class BasicsPanel extends JPanel implements ProjectPanel {
 	project = proj;
         changes = new HashMap();
         initComponents();
+        String idWarning = "The id element in the POM is deprecated. Please use artifactId and groupId elements instead.";
+        txtId.setToolTipText(idWarning);
+        lblId.setToolTipText(idWarning);
         valObserver = null;
         //TODO add listeners for immediatePropagation stuff.
         setName(NbBundle.getMessage(BasicsPanel.class, "BasicsPanel.name"));
@@ -297,7 +291,12 @@ public class BasicsPanel extends JPanel implements ProjectPanel {
     // End of variables declaration//GEN-END:variables
 
    private void populateChangeInstances() {
-        createPOMChangeInstance("id", txtId, ocID);
+        String value = project.getOriginalMavenProject().getId();
+        int location = project.getProjectWalker().getLocation("pom.id");
+        if (value == null) {
+            value = "";
+        } 
+        changes.put("pom.id", new TextComponentPOMChange("pom.id", value, location, txtId, ocID));
         createPOMChangeInstance("artifactId", txtArtifactID, ocArtifactID);
         createPOMChangeInstance("groupId", txtGroupID, ocGroupID);
         createPOMChangeInstance("currentVersion", txtCurrentVersion, ocCurrentVersion);
@@ -316,7 +315,7 @@ public class BasicsPanel extends JPanel implements ProjectPanel {
    }        
    
      public void setResolveValues(boolean resolve) {
-        assignValue("id", resolve);
+        assignValue("id", true);
         assignValue("artifactId", resolve);
         assignValue("groupId", resolve);
         assignValue("currentVersion", resolve);

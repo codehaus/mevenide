@@ -1,5 +1,5 @@
 /* ==========================================================================
- * Copyright 2003-2004 Apache Software Foundation
+ * Copyright 2003-2004 Mevenide Team
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,8 @@
  */
 package org.mevenide.goals.manager;
 
+import java.io.File;
+import org.mevenide.environment.LocationFinderAggregator;
 import org.mevenide.goals.grabber.GoalsGrabbersAggregatorTest;
 import org.mevenide.goals.grabber.IGoalsGrabber;
 
@@ -28,9 +30,11 @@ import org.mevenide.goals.grabber.IGoalsGrabber;
  */
 public class GoalsGrabbersManagerTest extends GoalsGrabbersAggregatorTest {
 	
-	protected IGoalsGrabber getGoalsGrabber() throws Exception {
-		String descriptorPath = GoalsGrabbersManagerTest.class.getResource("/project.xml").getFile();
-        return GoalsGrabbersManager.getGoalsGrabber(descriptorPath);
+    protected IGoalsGrabber getGoalsGrabber() throws Exception {
+        String descriptorPath = GoalsGrabbersManagerTest.class.getResource("/").getFile();
+//        System.out.println("grabber manager file=" + descriptorPath);
+        context.setProjectDirectory(new File(descriptorPath));
+        return GoalsGrabbersManager.getGoalsGrabber(context, new LocationFinderAggregator(context));
     }
 	
 	public void testGetGoalsGrabber() throws Exception {

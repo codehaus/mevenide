@@ -1,5 +1,5 @@
 /* ==========================================================================
- * Copyright 2003-2004 Apache Software Foundation
+ * Copyright 2003-2004 Mevenide Team
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +25,7 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.mevenide.environment.ConfigUtils;
+import org.mevenide.environment.ILocationFinder;
 
 
 /**
@@ -37,12 +38,17 @@ import org.mevenide.environment.ConfigUtils;
 public class DefaultGoalsGrabber extends AbstractGoalsGrabber {
     private static Log log = LogFactory.getLog(DefaultGoalsGrabber.class);
     
+    private ILocationFinder finder;
 	
-	
-  	public DefaultGoalsGrabber() throws Exception { 
-  		refresh();
-  	}
+    public DefaultGoalsGrabber() throws Exception {
+        this(ConfigUtils.getDefaultLocationFinder());
+    }
     
+    public DefaultGoalsGrabber(ILocationFinder find) throws Exception {
+        finder = find;
+        refresh();
+    }
+        
         public String getName() {
             return IGoalsGrabber.ORIGIN_PLUGIN;
         }
@@ -51,7 +57,7 @@ public class DefaultGoalsGrabber extends AbstractGoalsGrabber {
 		super.refresh();
 
         //File pluginsLocal = new File(Environment.getMavenHome(), "plugins");
-  		File goalsCache = new File(ConfigUtils.getDefaultLocationFinder().getMavenPluginsDir(), "goals.cache");
+  		File goalsCache = new File(finder.getMavenPluginsDir(), "goals.cache");
 		if ( goalsCache.exists() ) {
 			log.debug("Grabbing goals from : " + goalsCache.getAbsolutePath());
 	  		

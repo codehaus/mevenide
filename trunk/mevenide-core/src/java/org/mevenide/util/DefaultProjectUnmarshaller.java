@@ -65,7 +65,7 @@ import org.apache.maven.project.Resource;
 import org.apache.maven.project.SourceModification;
 import org.apache.maven.project.UnitTest;
 import org.apache.maven.project.Version;
-import org.mevenide.project.io.IProjectUnmarshaller;
+import org.mevenide.context.IProjectUnmarshaller;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;

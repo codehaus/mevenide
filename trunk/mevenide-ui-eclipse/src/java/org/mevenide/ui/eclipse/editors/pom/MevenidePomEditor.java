@@ -50,7 +50,7 @@ import org.mevenide.project.ProjectComparator;
 import org.mevenide.project.ProjectComparatorFactory;
 import org.mevenide.project.io.CarefulProjectMarshaller;
 import org.mevenide.project.io.IProjectMarshaller;
-import org.mevenide.project.io.JDomProjectUnmarshaller;
+import org.mevenide.context.JDomProjectUnmarshaller;
 import org.mevenide.project.io.ProjectReader;
 import org.mevenide.properties.resolver.ProjectWalker;
 import org.mevenide.ui.eclipse.editors.pom.pages.BuildPage;

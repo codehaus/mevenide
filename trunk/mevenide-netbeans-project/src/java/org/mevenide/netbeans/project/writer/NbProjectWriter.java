@@ -65,6 +65,10 @@ public class NbProjectWriter {
         Iterator it = changes.iterator();
         try {
             List pomChanges = new ArrayList();
+            boolean checkDependencies = false;
+            String newArtifact = null;
+            String newGroup = null;
+            String newVersion = null;
             while (it.hasNext()) {
                 Object obj = it.next();
                 if (obj instanceof MavenPropertyChange) {
@@ -73,7 +77,39 @@ public class NbProjectWriter {
                 }
                 if (obj instanceof MavenPOMChange || obj instanceof MavenPOMTreeChange) {
                     pomChanges.add(obj);
+                    if (obj instanceof MavenPOMChange) {
+                        MavenPOMChange chan = (MavenPOMChange)obj;
+                        if ("pom.artifactId".equals(chan.getPath()) &&
+                            !chan.getOldValue().equals(chan.getNewValue())) 
+                        {
+                            newArtifact = chan.getNewValue();
+                            checkDependencies = true;
+                        } 
+                        if ("pom.groupId".equals(chan.getPath()) &&
+                            !chan.getOldValue().equals(chan.getNewValue())) 
+                        {
+                            newGroup = chan.getNewValue();
+                            checkDependencies = true;
+                        } 
+                        if ("pom.currentVersion".equals(chan.getPath()) &&
+                            !chan.getOldValue().equals(chan.getNewValue())) 
+                        {
+                            newVersion = chan.getNewValue();
+                            checkDependencies = true;
+                        } 
+                    }
                 }
+            }
+            String oldArtifact = null;
+            String oldGroup = null;
+            String oldVersion = null;
+            if (checkDependencies) {
+                oldArtifact = project.getOriginalMavenProject().getArtifactId();
+                oldGroup = project.getOriginalMavenProject().getGroupId();
+                oldVersion = project.getOriginalMavenProject().getCurrentVersion();
+                newVersion = newVersion != null ? newVersion : oldVersion;
+                newGroup = newGroup != null ? newGroup : oldGroup;
+                newArtifact = newArtifact != null ? newArtifact : oldArtifact;
             }
             // now write the POM files..
             writePOMs(pomChanges, locFileToLockMap);
@@ -86,6 +122,9 @@ public class NbProjectWriter {
                 FileLock lock = (FileLock)locFileToLockMap.get(file);
                 FileObject fo = FileUtil.toFileObject(file);
                 model.store(fo.getOutputStream(lock));
+            }
+            if (checkDependencies) {
+                DependencyUpdater.checkOpenedProjects(oldArtifact, oldGroup, oldVersion, newArtifact, newGroup, newVersion);
             }
         } finally {
             // release the locks

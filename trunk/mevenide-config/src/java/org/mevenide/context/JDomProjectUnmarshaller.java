@@ -1,5 +1,5 @@
 /* ==========================================================================
- * Copyright 2003-2004 Apache Software Foundation
+ * Copyright 2003-2004 Mevenide Team
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  *  limitations under the License.
  * =========================================================================
  */
-package org.mevenide.project.io;
+package org.mevenide.context;
 
 import java.io.File;
 import java.io.FileReader;
@@ -43,7 +43,6 @@ import org.apache.maven.project.Version;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.input.SAXBuilder;
-import org.mevenide.util.MevenideUtils;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -153,7 +152,7 @@ public class JDomProjectUnmarshaller implements IProjectUnmarshaller {
     private void populateResolvedProperties(BaseObject obj, List properties) {
         if ( properties != null && properties.size() > 0 ) {
             for (int i = 0; i < properties.size(); i++) {
-                String[] prop = MevenideUtils.resolveProperty((String) properties.get(i));
+                String[] prop = resolveProperty((String) properties.get(i));
                 obj.resolvedProperties().put(prop[0], prop[1]);
             }
         }
@@ -561,7 +560,7 @@ public class JDomProjectUnmarshaller implements IProjectUnmarshaller {
                 String path = systemId.substring("file:".length());
                 logger.debug("path=" + path);
                 File file = new File(directory, path);
-                file = MevenideUtils.normalizeFile(file);
+                file = normalizeFile(file);
                 if (file.exists()) {
                     return new InputSource(new FileReader(file));
                 }
@@ -570,4 +569,57 @@ public class JDomProjectUnmarshaller implements IProjectUnmarshaller {
         }
         
     }
+    
+    
+//-------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------
+// copied from mevenideutils because I was lazy to move part of the class.
+    /**
+	 * Resolves a string in the Maven kludgy name:value format to an array
+	 * of strings, guaranteed to be exactly two items in length: [name, value].
+	 * @param property
+	 * @return
+	 */
+	private static final String PROPERTY_SEPARATOR = ":";
+    	private static final String EMPTY_STR = "";
+	private static String[] resolveProperty(String property) {
+		String[] parts = property.split(PROPERTY_SEPARATOR);
+		String name = parts[0];
+		String value;
+		if (parts.length > 1) {
+			value = parts[1];
+		} else {
+			value = EMPTY_STR;
+		}
+		return new String[] {name, value};
+	}    
+        
+/**
+ * change relative files to absolute, (especially important for the <path>/../..<path> style of file path descriptions.
+ * On windows normalized case, on unix don't follow symlinks..
+ */         
+        static File normalizeFile(File file) {
+            String osName = System.getProperty ("os.name");
+            boolean isWindows = osName.startsWith("Wind");
+            if (isWindows) {
+                // On Windows, best to canonicalize.
+                if (file.getParent() != null) {
+                    try {
+                        file = file.getCanonicalFile();
+                    } catch (IOException e) {
+                        logger.warn("getCanonicalFile() on file "+file+" failed. "+ e.toString()); // NOI18N
+                        // OK, so at least try to absolutize the path
+                        file = file.getAbsoluteFile();
+                    }
+                } else {
+                    // this is for the drive File.
+                    file = file.getAbsoluteFile();
+                }
+            } else {
+                // On Unix, do not want to traverse symlinks.
+                // what about Mac?
+                file = new File(file.toURI().normalize()).getAbsoluteFile();
+            }
+            return file;
+        }        
 }

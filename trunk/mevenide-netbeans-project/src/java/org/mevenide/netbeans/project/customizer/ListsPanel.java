@@ -28,7 +28,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import javax.swing.DefaultListCellRenderer;
 
 import javax.swing.DefaultListModel;
@@ -42,7 +41,6 @@ import javax.swing.event.ListSelectionListener;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.MailingList;
-import org.apache.maven.project.Project;
 import org.mevenide.netbeans.project.MavenProject;
 import org.mevenide.netbeans.project.customizer.ui.LocationComboFactory;
 import org.mevenide.netbeans.project.customizer.ui.OriginChange;
@@ -394,7 +392,6 @@ public class ListsPanel extends JPanel implements ProjectPanel {
     }
     
     public String getValidityMessage() {
-        int retCode = doValidateCheck();
         String message = "";
 //        // initially and when nothing is selected don't show message.
 //        // when adding the currentList should be non-null

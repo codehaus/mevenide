@@ -1,5 +1,5 @@
 /* ==========================================================================
- * Copyright 2003-2004 Apache Software Foundation
+ * Copyright 2003-2004 Mevenide Team
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 package org.mevenide.reports;
 
 import java.io.File;
+import org.mevenide.environment.LocationFinderAggregator;
 import org.mevenide.goals.test.util.TestUtils;
 
 
@@ -36,7 +37,7 @@ public class JDomReportsFinderTest extends AbstractReportsFinderTest {
     }
     
 	protected IReportsFinder getReportsFinder() {
-        return new JDomReportsFinder();
+        return new JDomReportsFinder(new LocationFinderAggregator(context));
     }
 
 	protected void tearDown() throws Exception {

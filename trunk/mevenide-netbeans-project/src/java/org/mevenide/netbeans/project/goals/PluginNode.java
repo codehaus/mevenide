@@ -28,7 +28,6 @@ import org.openide.util.NbBundle;
  * @author  Milos Kleint (ca206216@tiscali.cz)
  */
 public class PluginNode extends AbstractNode implements GoalNameCookie {
-    private GoalNameCookie cookie;
     /** Creates a new instance of PluginNode */
     public PluginNode(String plugin, IGoalsGrabber grabber) {
         super(new PluginChildren(plugin, grabber));

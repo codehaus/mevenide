@@ -1,5 +1,5 @@
 /* ==========================================================================
- * Copyright 2003-2004 Apache Software Foundation
+ * Copyright 2003-2004 Mevenide Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,10 +17,13 @@
 package org.mevenide.project.io;
 
 import java.io.File;
+import java.util.Iterator;
+import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Dependency;
+import org.apache.maven.project.Project;
 import org.mevenide.context.IQueryContext;
 import org.mevenide.environment.ILocationFinder;
 import org.mevenide.environment.LocationFinderAggregator;
@@ -47,6 +50,27 @@ public final class JarOverrideReader2 {
         }
         return instance;
     }
+
+    public final void processOverride(Project project, IPropertyResolver resolver, ILocationFinder finder) {
+        List deps = project.getDependencies();
+        if (deps != null) {
+            Iterator it = deps.iterator();
+            while (it.hasNext()) {
+                Dependency dep = (Dependency)it.next();
+                String override = processOverride(dep, resolver, finder);
+                if (override != null) {
+                    dep.setJar(override);
+                }
+            }
+        }
+    }
+    
+    public final void processOverride(Project project, IQueryContext context) {
+        IPropertyResolver resolver = PropertyResolverFactory.getFactory().createContextBasedResolver(context);
+        ILocationFinder finder = new LocationFinderAggregator(context);
+        processOverride(project, resolver, finder);
+    }
+    
     /**
      * Checks if with the given context  the dependency is overriden.
      * if so, returns the override's absolute path, otherwise null.
