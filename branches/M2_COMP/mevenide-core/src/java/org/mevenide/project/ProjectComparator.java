@@ -26,18 +26,17 @@ import java.util.Vector;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.maven.model.Branch;
 import org.apache.maven.model.Build;
 import org.apache.maven.model.Contributor;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Developer;
+import org.apache.maven.model.IssueManagement;
 import org.apache.maven.model.License;
 import org.apache.maven.model.MailingList;
 import org.apache.maven.model.Organization;
 import org.apache.maven.model.Scm;
 import org.apache.maven.model.Resource;
 import org.apache.maven.model.UnitTest;
-import org.apache.maven.model.Version;
 import org.apache.maven.project.MavenProject;
 import org.mevenide.util.MevenideUtils;
 
@@ -66,6 +65,7 @@ public class ProjectComparator {
     public static final String UNIT_TESTS = "UNIT_TESTS";
     public static final String RESOURCES = "RESOURCES";
     public static final String REPORTS = "REPORTS";
+    public static final String ISSUE_MANAGEMENT = "ISSUE_MANAGEMENT"; 
     
 	public static final MavenProject NULL_PROJECT = new MavenProject();
 
@@ -183,8 +183,6 @@ public class ProjectComparator {
 		        compareProject(newProject);
 		        compareOrganization(newProject);
 		        compareRepository(newProject);
-		        compareBranches(newProject);
-		        compareVersions(newProject);
 		        compareMailingLists(newProject);
 		        compareContributors(newProject);
 		        compareDevelopers(newProject);
@@ -192,6 +190,7 @@ public class ProjectComparator {
 		        compareDependencies(newProject);
 		        compareBuild(newProject);
 		        compareReports(newProject);
+		        compareIssueManagement(newProject);
 		        try {
 		            compareProperties(newProject.getProperties(), originalProject.getProperties());
 		        }
@@ -220,11 +219,10 @@ public class ProjectComparator {
             detectAttributeChange(newProject.getModel().getName(), originalProject.getModel().getName());
             detectAttributeChange(newProject.getModel().getArtifactId(), originalProject.getModel().getArtifactId());
             detectAttributeChange(newProject.getModel().getGroupId(), originalProject.getModel().getGroupId());
-            detectAttributeChange(newProject.getModel().getGumpRepositoryId(), originalProject.getModel().getGumpRepositoryId());
             detectAttributeChange(newProject.getModel().getExtend(), originalProject.getModel().getExtend());
-            detectAttributeChange(newProject.getModel().getPomVersion(), originalProject.getModel().getPomVersion());
-            detectAttributeChange(newProject.getModel().getCurrentVersion(), originalProject.getModel().getCurrentVersion());
-            detectAttributeChange(newProject.getModel().getCurrentVersion(), originalProject.getModel().getCurrentVersion());
+            detectAttributeChange(newProject.getModel().getModelVersion(), originalProject.getModel().getModelVersion());
+            detectAttributeChange(newProject.getModel().getVersion(), originalProject.getModel().getVersion());
+            detectAttributeChange(newProject.getModel().getVersion(), originalProject.getModel().getVersion());
             detectAttributeChange(newProject.getModel().getLogo(), originalProject.getModel().getLogo());
             detectAttributeChange(newProject.getModel().getInceptionYear(), originalProject.getModel().getInceptionYear());
             detectAttributeChange(newProject.getModel().getUrl(), originalProject.getModel().getUrl());
@@ -233,7 +231,6 @@ public class ProjectComparator {
             detectAttributeChange(newProject.getModel().getDescription(), originalProject.getModel().getDescription());
             detectAttributeChange(newProject.getModel().getDistributionDirectory(), originalProject.getModel().getDistributionDirectory());
             detectAttributeChange(newProject.getModel().getDistributionSite(), originalProject.getModel().getDistributionSite());
-            detectAttributeChange(newProject.getModel().getIssueTrackingUrl(), originalProject.getModel().getIssueTrackingUrl());
             detectAttributeChange(newProject.getModel().getSiteAddress(), originalProject.getModel().getSiteAddress());
             detectAttributeChange(newProject.getModel().getSiteDirectory(), originalProject.getModel().getSiteDirectory());
         }
@@ -258,6 +255,21 @@ public class ProjectComparator {
         }
     }
 
+    private void compareIssueManagement(MavenProject newProject) {
+    	IssueManagement newIssueManagement = newProject.getModel().getIssueManagement();
+    	IssueManagement originalIssueManagement = originalProject.getModel().getIssueManagement();
+    	if (comparable(newIssueManagement, originalIssueManagement)) {
+    		try {
+				detectObjectChange(newIssueManagement, originalIssueManagement);
+                detectAttributeChange(newIssueManagement.getSystem(), originalIssueManagement.getSystem());
+                detectAttributeChange(newIssueManagement.getUrl(), originalIssueManagement.getUrl());
+            }
+            catch (ShortCircuitException e) {
+                fireProjectChangeEvent(newProject, ISSUE_MANAGEMENT);
+            }
+    	}
+    }
+    
     private void compareRepository(MavenProject newProject) {
         Scm newRepo = newProject.getModel().getScm();
         Scm originalRepo = originalProject.getModel().getScm();
@@ -271,44 +283,6 @@ public class ProjectComparator {
             catch (ShortCircuitException e) {
                 fireProjectChangeEvent(newProject, REPOSITORY);
             }
-        }
-    }
-
-    private void compareBranches(MavenProject newProject) {
-        List newBranches = newProject.getModel().getBranches();
-        List origBranches = originalProject.getModel().getBranches();
-        try {
-            detectCollectionChange(newBranches, origBranches);
-            // just assume order is significant
-            for (int i = 0; i < origBranches.size(); i++) {
-                Branch newBranch = (Branch) newBranches.get(i);
-                Branch origBranch = (Branch) origBranches.get(i);
-                detectAttributeChange(newBranch.getTag(), origBranch.getTag());
-            }
-        }
-        catch (ShortCircuitException e) {
-            fireProjectChangeEvent(newProject, BRANCHES);
-        }
-    }
-
-    private void compareVersions(MavenProject newProject) {
-        List newVersions = newProject.getModel().getVersions();
-        List origVersions = originalProject.getModel().getVersions();
-        if (comparable(newVersions, origVersions)) {
-	        try {
-	            detectCollectionChange(newVersions, origVersions);
-	            // just assume order is significant
-	            for (int i = 0; i < origVersions.size(); i++) {
-	                Version newVersion = (Version) newVersions.get(i);
-	                Version origVersion = (Version) origVersions.get(i);
-	                detectAttributeChange(newVersion.getId(), origVersion.getId());
-	                detectAttributeChange(newVersion.getName(), origVersion.getName());
-	                detectAttributeChange(newVersion.getTag(), origVersion.getTag());
-	            }
-        	}
-	        catch (ShortCircuitException e) {
-	            fireProjectChangeEvent(newProject, VERSIONS);
-	        }
         }
     }
 
@@ -446,7 +420,6 @@ public class ProjectComparator {
 	            detectAttributeChange(newBuild.getSourceDirectory(), originalBuild.getSourceDirectory());
 	            detectAttributeChange(newBuild.getUnitTestSourceDirectory(), originalBuild.getUnitTestSourceDirectory());
 	            detectAttributeChange(newBuild.getAspectSourceDirectory(), originalBuild.getAspectSourceDirectory());
-	            detectAttributeChange(newBuild.getNagEmailAddress(), originalBuild.getNagEmailAddress());
 	            compareUnitTest(newBuild, originalBuild, newProject);
 	            compareResources(newBuild.getResources(), originalBuild.getResources());
 	        }

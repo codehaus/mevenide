@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
-<project>
+<model>
 
-  <pomVersion>3</pomVersion>
+  <modelVersion>3</modelVersion>
   <name>Mevenide Core</name>
   <groupId>mevenide</groupId>
   <artifactId>mevenide-core</artifactId>
@@ -141,5 +141,5 @@
     </resources>
     
   </build>
-</project>
+</model>
 

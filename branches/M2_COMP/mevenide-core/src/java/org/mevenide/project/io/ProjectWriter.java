@@ -24,11 +24,14 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.maven.Maven;
+import org.apache.maven.MavenCore;
 import org.apache.maven.model.Build;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Resource;
 import org.apache.maven.model.UnitTest;
 import org.apache.maven.project.MavenProject;
+import org.codehaus.classworlds.ClassWorld;
 import org.mevenide.project.dependency.DependencyUtil;
 import org.mevenide.project.resource.DefaultResourceResolver;
 import org.mevenide.project.resource.IResourceResolver;
@@ -57,11 +60,12 @@ public class ProjectWriter {
 	
 	private IResourceResolver resourceResolver = new DefaultResourceResolver();
 	private ProjectReader projectReader ;
-	private DefaultProjectMarshaller marshaller ; 
+	private IProjectMarshaller marshaller ; 
 	private JarOverrideWriter jarOverrideWriter = new JarOverrideWriter(this);
 	
 	private ProjectWriter() throws Exception  {
-		marshaller = new DefaultProjectMarshaller();
+		//marshaller = new DefaultProjectMarshaller();
+		marshaller = new CarefulProjectMarshaller();
 		projectReader = ProjectReader.getReader();
 	}
 	

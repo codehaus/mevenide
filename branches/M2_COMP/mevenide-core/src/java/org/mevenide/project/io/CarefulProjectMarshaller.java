@@ -26,7 +26,6 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.maven.model.Branch;
 import org.apache.maven.model.Build;
 import org.apache.maven.model.Contributor;
 import org.apache.maven.model.Dependency;
@@ -37,7 +36,6 @@ import org.apache.maven.model.Organization;
 import org.apache.maven.model.Scm;
 import org.apache.maven.model.Resource;
 import org.apache.maven.model.UnitTest;
-import org.apache.maven.model.Version;
 import org.apache.maven.project.MavenProject;
 import org.jdom.Document;
 import org.jdom.Element;
@@ -50,8 +48,8 @@ import org.mevenide.util.JDomUtils;
 
 /**
  * 
- * 
- * 
+ * @author  <a href="mailto:ca206216@tiscali.cz">Milos Kleint</a>
+ * @author  <a href="mailto:rhill2@free.fr">Gilles Dodinet</a>
  */
 public class CarefulProjectMarshaller implements IProjectMarshaller {
 	
@@ -109,7 +107,7 @@ public class CarefulProjectMarshaller implements IProjectMarshaller {
         }
         Counter counter = new Counter();
         findAndReplaceSimpleElement(counter, root, "extend", project.getModel().getExtend());
-        findAndReplaceSimpleElement(counter, root, "pomVersion", project.getModel().getPomVersion());
+        findAndReplaceSimpleElement(counter, root, "pomVersion", project.getModel().getModelVersion());
         //findAndReplaceSimpleElement(counter, root, "id", project.getId());
         
         //REQUIRED
@@ -119,25 +117,21 @@ public class CarefulProjectMarshaller implements IProjectMarshaller {
         
         //REQUIRED
         //findAndReplaceSimpleElement(counter, root, "currentVersion", project.getModel().getCurrentVersion());
-        findAndReplaceSimpleElement(counter, root, "currentVersion", project.getModel().getCurrentVersion());
+        findAndReplaceSimpleElement(counter, root, "version", project.getModel().getVersion());
         doUpdateOrganization(counter, root, project.getModel().getOrganization());
         findAndReplaceSimpleElement(counter, root, "inceptionYear", project.getModel().getInceptionYear());
         findAndReplaceSimpleElement(counter, root, "package", project.getModel().getPackage());
         findAndReplaceSimpleElement(counter, root, "logo", project.getModel().getLogo());
-        findAndReplaceSimpleElement(counter, root, "gumpRepositoryId", project.getModel().getGumpRepositoryId());
         findAndReplaceSimpleElement(counter, root, "description", project.getModel().getDescription());
         
         //REQUIRED
         findAndReplaceSimpleElement(counter, root, "shortDescription", project.getModel().getShortDescription());
         findAndReplaceSimpleElement(counter, root, "url", project.getModel().getUrl());
-        findAndReplaceSimpleElement(counter, root, "issueTrackingUrl", project.getModel().getIssueTrackingUrl());
         findAndReplaceSimpleElement(counter, root, "siteAddress", project.getModel().getSiteAddress());
         findAndReplaceSimpleElement(counter, root, "siteDirectory", project.getModel().getSiteDirectory());
         findAndReplaceSimpleElement(counter, root, "distributionSite", project.getModel().getDistributionSite());
         findAndReplaceSimpleElement(counter, root, "distributionDirectory", project.getModel().getDistributionDirectory());
         doUpdateRepository(counter, root, project.getModel().getScm());
-        doUpdateVersions(counter, root, project.getModel().getVersions());
-        doUpdateBranches(counter, root, project.getModel().getBranches());
         doUpdateMailingLists(counter, root, project.getModel().getMailingLists());
         doUpdateDevelopers(counter, root, project.getModel().getDevelopers());
         doUpdateContributors(counter, root, project.getModel().getContributors());
@@ -174,104 +168,7 @@ public class CarefulProjectMarshaller implements IProjectMarshaller {
     }    
 
     
-	private void doUpdateVersions(Counter counter, Element root, List versions) 
-            throws Exception 
-    {
-        boolean shouldExist = versions != null && versions.size() > 0;
-        Element versionsElem = updateElement(counter, root, "versions", shouldExist);
-        if (shouldExist) {
-//            List versElemList = versionsElem.getChildren("version");
-//            int versElemSize = versElemList == null ? 0 : versElemList.size();
-            // usedElems stores a list of Version elements that are either new or overwritten.
-            // is used later to get rid of the non-existing ones.
-            List usedElems = new ArrayList();
-            Iterator it = versions.iterator();
-            while (it.hasNext())
-            {
-                Version version = (Version)it.next();
-                String id = version.getId();
-                List list = versionsElem.getContent(new SpecificElementFilter("version", "id", id));
-                if (list != null && list.size() > 0)
-                {
-                    if (list.size() > 1)
-                    {
-                        log.info("filter returned multiple instances, the primary key is not unique - key=" + id);
-                        // what to do, we found multiple ones instead of one..
-                    } else {
-                        Element vElem = (Element)list.get(0);
-                        doUpdateSingleVersion(vElem, version);
-                        usedElems.add(vElem);
-                        log.debug("updating element " + vElem.getChildText("id"));
-                    }
-                } else {
-                    //create a new version element
-                    Element vElem = factory.element("version");
-                    doUpdateSingleVersion(vElem, version);
-                    usedElems.add(vElem);
-                    versionsElem.addContent(vElem);
-                    log.debug("creating new element " + vElem.getChildText("id"));
-                }
-            } // end iterator
-            removeNonUsedSubelements(versionsElem, "version", usedElems);
-        }
-    }    
-    
-    private void doUpdateSingleVersion(Element versionElement, Version version)
-    {
-        Counter count = new Counter();
-        findAndReplaceSimpleElement(count, versionElement, "id", version.getId());
-        findAndReplaceSimpleElement(count, versionElement, "name", version.getName());
-        findAndReplaceSimpleElement(count, versionElement, "tag", version.getTag());
-    }
-
-    
-	private void doUpdateBranches(Counter counter, Element root, List branches) 
-            throws Exception 
-    {
-        boolean shouldExist = branches != null && branches.size() > 0;
-        Element branchesElem = updateElement(counter, root, "branches", shouldExist);
-        if (shouldExist) {
-//            List elemList = branchesElem.getChildren("branch");
-//            int elemSize = elemList == null ? 0 : elemList.size();
-            // usedElems stores a list of Version elements that are either new or overwritten.
-            // is used later to get rid of the non-existing ones.
-            List usedElems = new ArrayList();
-            Iterator it = branches.iterator();
-            while (it.hasNext())
-            {
-                Branch branch = (Branch)it.next();
-                String id = branch.getTag();
-                List list = branchesElem.getContent(new SpecificElementFilter("branch", "tag", id));
-                if (list != null && list.size() > 0)
-                {
-                    if (list.size() > 1)
-                    {
-                        log.info("filter returned multiple instances, the primary key is not unique - key=" + id);
-                        // what to do, we found multiple ones instead of one..
-                    } else {
-                        Element vElem = (Element)list.get(0);
-                        doUpdateSingleBranch(vElem, branch);
-                        usedElems.add(vElem);
-                        log.debug("updating element " + vElem.getChildText("tag"));
-                    }
-                } else {
-                    //create a new version element
-                    Element vElem = factory.element("branch");
-                    doUpdateSingleBranch(vElem, branch);
-                    usedElems.add(vElem);
-                    branchesElem.addContent(vElem);
-                    log.debug("creating new element " + vElem.getChildText("tag"));
-                }
-            } // end iterator
-            removeNonUsedSubelements(branchesElem, "branch", usedElems);
-        }
-    }    
-    
-    private void doUpdateSingleBranch(Element branchElement, Branch branch)
-    {
-        findAndReplaceSimpleElement(new Counter(), branchElement, "tag", branch.getTag());
-    }
-
+	  
 	private void doUpdateMailingLists(Counter counter, Element root, List mails) 
             throws Exception 
     {
@@ -601,7 +498,6 @@ public class CarefulProjectMarshaller implements IProjectMarshaller {
         Element buildElem = updateElement(counter, root, "build", shouldExist);
         if (shouldExist) {
             Counter innerCount = new Counter();
-    		findAndReplaceSimpleElement(innerCount, buildElem, "nagEmailAddress", build.getNagEmailAddress());
     		findAndReplaceSimpleElement(innerCount, buildElem, "sourceDirectory", build.getSourceDirectory());
             //doUpdateSourceModifications(innerCount, buildElem, build.getSourceModifications());
     		findAndReplaceSimpleElement(innerCount, buildElem, "unitTestSourceDirectory", build.getUnitTestSourceDirectory());
