@@ -64,8 +64,8 @@ public class AddToClasspathAction extends ArtifactAction {
 	private static Log log = LogFactory.getLog(AddToClasspathAction.class);
 	
 	
-	public void addEntry(Object item, IProject project) throws Exception {
-		ArtifactWrapper artifactWrapper = getArtifactWrapper(item);
+	public void addEntry(IArtifactMappingNode item, IProject project) throws Exception {
+		ArtifactWrapper artifactWrapper = getArtifactWrapper(item.getArtifact());
 		if ( artifactWrapper != null ) {
 			artifactWrapper.addTo(project);
 			

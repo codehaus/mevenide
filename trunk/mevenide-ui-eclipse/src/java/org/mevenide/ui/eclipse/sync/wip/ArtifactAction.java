@@ -69,18 +69,18 @@ public class ArtifactAction {
 	
 	private List listeners = new ArrayList();
 	
-	public void addActionListener(SynchronizeActionListener listener) {
+	public void addActionListener(IActionListener listener) {
 		listeners.add(listener);	
 	}
 	
-	public void removeModelChangeListener(SynchronizeActionListener listener) {
+	public void removeActionListener(IActionListener listener) {
 		listeners.remove(listener);
 	}
 	
 	protected void fireArtifactAddedToClasspath(Object item, IProject project) {
 		for (int i = 0; i < listeners.size(); i++) {
 			ArtifactAddedToClasspathEvent event = new ArtifactAddedToClasspathEvent(item, project);
-			((SynchronizeActionListener)listeners.get(i)).artifactAddedToClasspath(event);
+			((IActionListener)listeners.get(i)).artifactAddedToClasspath(event);
 		}
 	}
 	

@@ -210,7 +210,7 @@ public class SynchronizeActionFactory {
 					log.debug("POM choice : " + mavenProject);
 					
 					if ( mavenProject != null ) {
-						action.addEntry(selectedNode.getResolvedArtifact(), mavenProject);
+						action.addEntry(selectedNode, mavenProject);
 					}
 					
 				}
@@ -285,7 +285,7 @@ public class SynchronizeActionFactory {
 				IProject project = container.getProject();
 				
 				try  {
-					action.addEntry(selectedNode.getArtifact(), project);
+					action.addEntry(selectedNode, project);
 				}
 				catch ( Exception e ) {
 					log.debug("Unable to add item " + selectedNode.getArtifact() + " to classpath ", e );

@@ -49,12 +49,15 @@
 package org.mevenide.ui.eclipse.sync.wip;
 
 import org.eclipse.jdt.internal.ui.JavaPluginImages;
+import org.eclipse.jface.viewers.IColorProvider;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
 import org.mevenide.ui.eclipse.Mevenide;
+import org.mevenide.ui.eclipse.MevenideColors;
 
 
 /**
@@ -63,7 +66,7 @@ import org.mevenide.ui.eclipse.Mevenide;
  * @version $Id$
  * 
  */
-public class ArtifactMappingLabelProvider implements ILabelProvider {
+public class ArtifactMappingLabelProvider implements ILabelProvider, IColorProvider {
     public Image decorateImage(Image image, Object element) {
         if ( !(element instanceof IArtifactMappingNode) ) {
             return image;
@@ -113,16 +116,21 @@ public class ArtifactMappingLabelProvider implements ILabelProvider {
         return null;
     }
     
-    public void addListener(ILabelProviderListener listener) {
-    }
+    public void addListener(ILabelProviderListener listener) { }
     
-    public void dispose() {
-    }
+    public void dispose() { }
     
     public boolean isLabelProperty(Object element, String property) {
         return false;
     }
     
-    public void removeListener(ILabelProviderListener listener) {
-    }
+    public void removeListener(ILabelProviderListener listener) { }
+    
+    public Color getBackground(Object element) {
+		return MevenideColors.WHITE;
+	}
+    
+    public Color getForeground(Object element) {
+    	return MevenideColors.GREY;	
+	}
 }
