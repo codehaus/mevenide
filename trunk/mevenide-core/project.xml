@@ -4,7 +4,7 @@
     <pomVersion>3</pomVersion>
     <artifactId>mevenide-core</artifactId>
     <name>Mevenide Core</name>
-    <currentVersion>0.7-SNAPSHOT</currentVersion>
+    <currentVersion>0.7</currentVersion>
     <package>org.mevenide</package>
     <description>Mevenide Core provides various utility classes for manipulating POMs, running Maven, synchronizing POMs and IDEs, etc... It is intended to used by concrete IDE plugin.</description>
     <versions>
@@ -236,7 +236,7 @@
         <dependency>
             <groupId>mevenide</groupId>
             <artifactId>goals-grabber</artifactId>
-            <version>0.8-SNAPSHOT</version>
+            <version>0.8</version>
             <properties>
                 <eclipse.plugin.bundle>false</eclipse.plugin.bundle>
                 <netbeans.module.dep>spec</netbeans.module.dep>

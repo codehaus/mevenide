@@ -4,7 +4,7 @@
     <pomVersion>3</pomVersion>
     <name>Goals Grabber</name>
     <artifactId>goals-grabber</artifactId>
-    <currentVersion>0.8-SNAPSHOT</currentVersion>
+    <currentVersion>0.8</currentVersion>
     <package>org.mevenide.goals</package>
     <shortDescription>Gets all the available goals and reports</shortDescription>
     <description>This project provides generic Goals Grabbing mechanism. It is articulated around IGoalsGrabber interface.</description>
