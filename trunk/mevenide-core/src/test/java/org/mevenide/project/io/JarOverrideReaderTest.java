@@ -53,8 +53,8 @@ public class JarOverrideReaderTest extends TestCase {
 		jarOverrideReader = new JarOverrideReader();
 		
 		PropertyModelFactory projectModelFactory = PropertyModelFactory.getFactory(); 
-		projectProperties = projectModelFactory.newPropertyModel(new File(pom.getParent(), "project.properties"), false);
-		buildProperties = projectModelFactory.newPropertyModel(new File(pom.getParent(), "build.properties"), false);
+		projectProperties = projectModelFactory.newPropertyModel(new File(pom.getParent(), "project.properties"));
+		buildProperties = projectModelFactory.newPropertyModel(new File(pom.getParent(), "build.properties"));
 
 		locationFinder = new LocationFinderAggregator();
 		
