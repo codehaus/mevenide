@@ -111,8 +111,6 @@ public class MailingListsSection extends PageSection {
 		else {
 			mailingListTable.setInherited(false);
 		}
-		
-		super.update(pom);
 	}
 
 }

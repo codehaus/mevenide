@@ -207,8 +207,6 @@ public class DependenciesSection extends PageSection {
 		else {
 			dependenciesTable.setInherited(false);
 		}
-		
-		super.update(pom);
 	}
 
 }

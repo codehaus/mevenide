@@ -63,7 +63,6 @@ public class IncludesSection extends PageSection {
 
 	public void update(Project pom) {
 		subsection.updateTableEntries(includesTable, getIncludes(pom), getInheritedIncludes(), true);
-		super.update(pom);
 	}
 
 	private List getIncludes(Project pom) {

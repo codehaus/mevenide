@@ -267,8 +267,6 @@ public class DescriptionSection extends PageSection {
 		setIfDefined(logoText, pom.getLogo(), isInherited() ? getParentPom().getLogo() : null);
 		setIfDefined(packageText, pom.getPackage(), isInherited() ? getParentPom().getPackage() : null);
 		setIfDefined(currentVersionText, pom.getCurrentVersion(), isInherited() ? getParentPom().getCurrentVersion() : null);
-
-		super.update(pom);
 	}
 	
 }

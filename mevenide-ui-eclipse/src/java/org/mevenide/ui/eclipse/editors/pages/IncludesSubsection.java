@@ -38,9 +38,9 @@ public class IncludesSubsection extends AbstractResourcePatternSubsection {
 	private PageSection section;
 	private IIncludesAdaptor includer;
 	
-	public IncludesSubsection(PageSection section, IIncludesAdaptor includer) {
-		this.section = section;
-		this.includer = includer;
+	public IncludesSubsection(PageSection parentSection, IIncludesAdaptor includeAdaptor) {
+		this.section = parentSection;
+		this.includer = includeAdaptor;
 	}
 	
 	public TableEntry createWidget(Composite container, PageWidgetFactory factory, boolean isOverrideable) {

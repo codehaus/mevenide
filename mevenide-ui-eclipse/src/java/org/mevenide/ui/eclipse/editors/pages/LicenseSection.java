@@ -111,8 +111,6 @@ public class LicenseSection extends PageSection {
 		else {
 			licenseTable.setInherited(false);
 		}
-		
-		super.update(pom);
 	}
 
 }

@@ -266,8 +266,15 @@ public abstract class PageSection extends SectionPart {
 		return viewer;
 	}
 
-	public void update(Project pom) {
+	protected abstract void update(Project pom);
+	
+	public void update() {
 		redrawSection();
+	}
+	
+	public void updateSection(Project pom) {
+		update(pom);
+		update();
 	}
 	
 	protected void redrawSection() {
@@ -317,8 +324,8 @@ public abstract class PageSection extends SectionPart {
         return parentPom;
     }
 
-    protected void setParentPom(Project parentPom) {
-        this.parentPom = parentPom;
+    protected void setParentPom(Project newParentPom) {
+        this.parentPom = newParentPom;
     }
 
 }

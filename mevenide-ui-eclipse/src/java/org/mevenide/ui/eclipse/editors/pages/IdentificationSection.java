@@ -292,8 +292,6 @@ public class IdentificationSection extends PageSection {
 		setIfDefined(artifactIdText, pom.getArtifactId(), isInherited() ? getParentPom().getArtifactId() : null);
 		setIfDefined(groupIdText, pom.getGroupId(), isInherited() ? getParentPom().getGroupId() : null);
 		setIfDefined(gumpRepoIdText, pom.getGumpRepositoryId(), isInherited() ? getParentPom().getGumpRepositoryId() : null);
-
-		super.update(pom);
     }
 
 }

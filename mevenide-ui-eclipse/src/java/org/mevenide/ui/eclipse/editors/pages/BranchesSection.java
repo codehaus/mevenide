@@ -111,8 +111,6 @@ public class BranchesSection extends PageSection {
 		else {
 			branchTable.setInherited(false);
 		}
-		
-		super.update(pom);
 	}
 
 }

@@ -111,8 +111,6 @@ public class VersionsSection extends PageSection {
 		else {
 			versionTable.setInherited(false);
 		}
-		
-		super.update(pom);
 	}
 
 }

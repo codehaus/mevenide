@@ -156,8 +156,6 @@ public class OrganizationSection extends PageSection {
 			setIfDefined(nameText, pom.getOrganization().getName(), isInherited() ? getParentPom().getOrganization().getName() : null);
 			setIfDefined(urlText, pom.getOrganization().getUrl(), isInherited() ? getParentPom().getOrganization().getUrl() : null);
 			setIfDefined(logoText, pom.getOrganization().getLogo(), isInherited() ? getParentPom().getOrganization().getLogo() : null);
-
-			super.update(pom);
 		}
 	}
 

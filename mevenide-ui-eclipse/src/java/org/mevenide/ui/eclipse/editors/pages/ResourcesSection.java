@@ -47,9 +47,9 @@ public class ResourcesSection extends PageSection {
 	
 	private String sectionName;
 	
-	public ResourcesSection(AbstractPomEditorPage page, String sectionName) {
+	public ResourcesSection(AbstractPomEditorPage page, String name) {
 		super(page);
-		this.sectionName = sectionName;
+		this.sectionName = name;
 		setTitle(Mevenide.getResourceString(sectionName + ".header"));
 		setDescription(Mevenide.getResourceString(sectionName + ".description"));
 	}
@@ -187,8 +187,6 @@ public class ResourcesSection extends PageSection {
 		else {
 			resourcesTable.setInherited(false);
 		}
-		
-		super.update(pom);
 	}
 
 	private void setResources(Project pom, List resources) {

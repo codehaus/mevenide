@@ -38,9 +38,9 @@ public class ExcludesSubsection extends AbstractResourcePatternSubsection {
 	private PageSection section;
 	private IExcludesAdaptor excluder;
 	
-	public ExcludesSubsection(PageSection section, IExcludesAdaptor excluder) {
-		this.section = section;
-		this.excluder = excluder;
+	public ExcludesSubsection(PageSection parentSection, IExcludesAdaptor excludeAdaptor) {
+		this.section = parentSection;
+		this.excluder = excludeAdaptor;
 	}
 	
 	public TableEntry createWidget(Composite container, PageWidgetFactory factory, boolean isOverrideable) {

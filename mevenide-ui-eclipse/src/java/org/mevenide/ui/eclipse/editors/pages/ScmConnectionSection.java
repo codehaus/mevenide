@@ -119,8 +119,6 @@ public class ScmConnectionSection extends PageSection {
 		setIfDefined(connectionText, getConnection(pom), getInheritedConnection());
 		setIfDefined(developerConnectionText, getDeveloperConnection(pom), getInheritedDeveloperConnection());
 		setIfDefined(webAddressText, getWebAddress(pom), getInheritedWebAddress());
-
-		super.update(pom);
 	}
 	
 	private void setConnection(Project pom, String connection) {

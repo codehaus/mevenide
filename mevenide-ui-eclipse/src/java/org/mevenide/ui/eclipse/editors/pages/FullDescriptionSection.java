@@ -68,7 +68,6 @@ public class FullDescriptionSection extends PageSection {
 
 	public void update(Project pom) {
 		setIfDefined(descriptionText, pom.getDescription(), isInherited() ? getParentPom().getDescription() : null);
-		super.update(pom);
 	}
 
 }

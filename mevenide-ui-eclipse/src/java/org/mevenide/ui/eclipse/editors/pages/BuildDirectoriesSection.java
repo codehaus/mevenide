@@ -287,8 +287,6 @@ public class BuildDirectoriesSection extends PageSection {
 		setIfDefined(unitTestsText, getUnitTestSourceDirectory(pom), getInheritedUnitTestSourceDirectory());
 		setIfDefined(integrationTestsText, getIntegrationUnitTestSourceDirectory(pom), getInheritedIntegrationUnitTestSourceDirectory());
 		setIfDefined(nagEmailText, getNagEmailAddress(pom), getInheritedNagEmailAddress());
-
-		super.update(pom);
 	}
 	
 	private void setSourceDirectory(Project pom, String sourceDir) {
