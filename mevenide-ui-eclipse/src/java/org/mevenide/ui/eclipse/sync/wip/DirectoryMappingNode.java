@@ -48,6 +48,8 @@
  */
 package org.mevenide.ui.eclipse.sync.wip;
 
+import java.io.File;
+
 /**
  * 
  * @author <a href="mailto:rhill2@free.fr">Gilles Dodinet</a>
@@ -96,5 +98,10 @@ public class DirectoryMappingNode implements IArtifactMappingNode {
     
     public void setParent(DirectoryMappingNodeContainer parent) {
         this.parent = parent;
+    }
+    
+    public File getDeclaringPom() {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

@@ -48,11 +48,15 @@
  */
 package org.mevenide.ui.eclipse.sync.wip;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Dependency;
+import org.apache.maven.project.Project;
 import org.eclipse.jdt.core.IJavaProject;
 import org.mevenide.project.io.ProjectReader;
 import org.mevenide.ui.eclipse.util.FileUtils;
@@ -65,6 +69,8 @@ import org.mevenide.ui.eclipse.util.FileUtils;
  * 
  */
 class DependencyMappingNodeContainer implements IArtifactMappingNodeContainer {
+    private static final Log log = LogFactory.getLog(DependencyMappingNodeContainer.class);
+    
     private IArtifactMappingNode[] nodes;
     
     private int direction;
@@ -81,8 +87,48 @@ class DependencyMappingNodeContainer implements IArtifactMappingNodeContainer {
         return "Libraries";
     }
     
-    public void attachPom(IJavaProject javaProject) throws Exception {
-        List dependencies = ProjectReader.getReader().read(FileUtils.getPom(javaProject.getProject())).getDependencies();
+    public void attachJavaProject(IJavaProject javaProject) throws Exception {
+        Project pom = ProjectReader.getReader().read(FileUtils.getPom(javaProject.getProject()));
+        
+        attachPom(pom);
+        
+		//dirty trick to avoid infinite loops if user has introduced one by mistake
+        List visitedPoms = new ArrayList();
+        
+		String extend = pom.getExtend();
+		
+		//recurse poms
+		while ( extend != null && !extend.trim().equals("") ) {
+			
+		    //resolve extend
+		    extend = extend.replaceAll("\\$\\{basedir\\}", pom.getFile().getParent().replaceAll("\\\\", "/"));
+			File extendFile = new File(extend);
+			if ( !extendFile.exists() ) {
+			    log.debug("extend doesnot exist");
+			    extendFile = new File(pom.getFile().getParent(), extend);
+			    if ( !extendFile.exists() ) {
+			        log.debug(extendFile.getAbsolutePath() + " doesnot exist either. break.");
+			        //@ TODO throw new ExtendDoesnotExistException(..)
+			        break;
+			    }
+			}
+			
+			//assert pom has not been visited yet
+			if ( visitedPoms.contains(extendFile.getAbsolutePath()) ) {
+			    //@TODO throw new InfinitePomRecursionException(..)
+			    break;
+			}
+			visitedPoms.add(extendFile.getAbsolutePath());
+			
+			//attach pom
+			pom = ProjectReader.getReader().read(extendFile);
+		    attachPom(pom);
+			extend = pom.getExtend();
+		}
+    }
+    
+    private void attachPom(Project pom) {
+        List dependencies = pom.getDependencies();
         List dependenciesCopy = new ArrayList(dependencies);
         
         for (int i = 0; i < nodes.length; i++) {
@@ -90,8 +136,9 @@ class DependencyMappingNodeContainer implements IArtifactMappingNodeContainer {
             Dependency resolvedDependency = (Dependency) currentNode.getResolvedArtifact();
             for (Iterator itr = dependencies.iterator(); itr.hasNext(); ) {
                 Dependency pomDependency = (Dependency) itr.next();
-                if ( lowMatch((pomDependency), resolvedDependency) ) {
+                if ( resolvedDependency != null && lowMatch(pomDependency, resolvedDependency) ) {
                     currentNode.setDependency(pomDependency);
+					currentNode.setDeclaringPom(pom.getFile());
                     dependenciesCopy.remove(pomDependency);
                 }
             }
@@ -99,7 +146,7 @@ class DependencyMappingNodeContainer implements IArtifactMappingNodeContainer {
         
         attachOrphanDependencies(dependenciesCopy);
     }
-    
+
     private void attachOrphanDependencies(List dependenciesCopy) {
         IArtifactMappingNode[] newNodes = new IArtifactMappingNode[nodes.length + dependenciesCopy.size()];
         System.arraycopy(nodes, 0, newNodes, 0, nodes.length);

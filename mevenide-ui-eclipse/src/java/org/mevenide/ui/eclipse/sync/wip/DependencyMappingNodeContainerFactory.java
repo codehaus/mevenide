@@ -111,7 +111,7 @@ public class DependencyMappingNodeContainerFactory {
 			        artifactNodes[i] = (IArtifactMappingNode) nodes.get(i);
             }
 			con.setNodes(artifactNodes);
-			con.attachPom(javaProject);
+			con.attachJavaProject(javaProject);
 		}
 		catch (  Exception e ) {
 			e.printStackTrace();

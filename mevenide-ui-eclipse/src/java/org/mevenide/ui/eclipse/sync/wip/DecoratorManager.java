@@ -54,10 +54,10 @@ package org.mevenide.ui.eclipse.sync.wip;
  * @version $Id$
  * 
  */
-public class SyncManager {
-    private static SyncManager manager = new SyncManager();
+public class DecoratorManager {
+    private static DecoratorManager manager = new DecoratorManager();
     
-    public static SyncManager getManager() {
+    public static DecoratorManager getManager() {
         return manager;
     }
     

@@ -48,6 +48,8 @@
  */
 package org.mevenide.ui.eclipse.sync.wip;
 
+import java.io.File;
+
 import org.apache.maven.project.Dependency;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
@@ -66,21 +68,9 @@ public class DependencyMappingNode implements IArtifactMappingNode, IPropertyCha
     private Object ideEntry;
     private Dependency resolvedDependency;
     private Dependency dependency;
+    private File declaringPom; 
     
     private DependencyMappingNodeContainer parent; 
-    
-    public Object getIdeEntry() {
-        return ideEntry;
-    }
-
-    
-    public Object getArtifact() {
-        return dependency;
-    }
-
-    public void setDependency(Dependency d) {
-        dependency = d;
-    }
     
     public int getChangeDirection() {
         if ( resolvedDependency == null ) {
@@ -126,28 +116,43 @@ public class DependencyMappingNode implements IArtifactMappingNode, IPropertyCha
         }
         return null;
     }
+
     
+    
+    public void setDependency(Dependency d) {
+        dependency = d;
+    }
     public void setResolvedDependency(Dependency resolvedDependency) {
         this.resolvedDependency = resolvedDependency;
     }
-   
-    public Object getResolvedArtifact() {
-        return resolvedDependency;
-    }
-    
     public void setIdeEntry(Object ideEntry) {
         this.ideEntry = ideEntry;
     }
-    
     public void propertyChange(PropertyChangeEvent event) {
         setDependency((Dependency)((DependencyPropertySource)event.getSource()).getSource());
     }
+    public void setParent(DependencyMappingNodeContainer parent) {
+        this.parent = parent;
+    }
     
+
+    //@TODO move those ones
+    public Object getIdeEntry() {
+        return ideEntry;
+    }
+    public Object getArtifact() {
+        return dependency;
+    }
+    public Object getResolvedArtifact() {
+        return resolvedDependency;
+    }
     public IArtifactMappingNodeContainer getParent() {
         return parent;
     }
-    
-    public void setParent(DependencyMappingNodeContainer parent) {
-        this.parent = parent;
+    public File getDeclaringPom() {
+        return declaringPom;
+    }
+    public void setDeclaringPom(File declaringPom) {
+        this.declaringPom = declaringPom;
     }
 }
