@@ -40,24 +40,7 @@
             <version>1.0.1</version>
             <type>jar</type>
         </dependency>
-        <dependency>
-            <groupId>mockobjects</groupId>
-            <artifactId>mockobjects-core</artifactId>
-            <version>0.07</version>
-            <type>jar</type>
-        </dependency>
-        <dependency>
-            <groupId>mockobjects</groupId>
-            <artifactId>mockobjects-jdk1.4</artifactId>
-            <version>0.07</version>
-            <type>jar</type>
-        </dependency>
-        <dependency>
-            <groupId>mockcreator</groupId>
-            <artifactId>de.abstrakt.mock</artifactId>
-            <version>0.2.4</version>
-            <type>jar</type>
-        </dependency>
+       
         <dependency>
             <groupId>xpp3</groupId>
             <artifactId>xpp3</artifactId>
@@ -70,12 +53,6 @@
             <version>1.1.2.1</version>
             <type>jar</type>
         </dependency>
-        <!-- dependency>
-            <groupId>mevenide</groupId>
-            <artifactId>mevenide-goals-grabber</artifactId>
-            <version>0.1</version>
-            <type>jar</type>
-        </dependency -->
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
@@ -118,12 +95,7 @@
             <version>1.0.1</version>
             <type>jar</type>
         </dependency>
-        <!-- dependency>
-            <groupId>aspectj</groupId>
-            <artifactId>aspectjrt</artifactId>
-            <version>1.1</version>
-            <type>jar</type>
-        </dependency -->
+
     </dependencies>
     
 </project>
