@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.mevenide.ui.eclipse.goals.viewer;
+package org.mevenide.ui.eclipse.goals.view;
 
 
 import java.util.ArrayList;

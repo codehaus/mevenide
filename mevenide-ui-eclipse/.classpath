@@ -34,7 +34,7 @@
 	<classpathentry sourcepath="ORG_ECLIPSE_PLATFORM_SOURCE_SRC/org.eclipse.osgi_3.0.0/defaultAdaptorsrc.zip" kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.osgi_3.0.0/defaultAdaptor.jar"/>
 	<classpathentry sourcepath="ORG_ECLIPSE_PLATFORM_SOURCE_SRC/org.eclipse.osgi_3.0.0/eclipseAdaptorsrc.zip" kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.osgi_3.0.0/eclipseAdaptor.jar"/>
 	<classpathentry sourcepath="ORG_ECLIPSE_PDE_SOURCE_SRC/org.eclipse.pde.ui_3.0.0/pdeuisrc.zip" kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.pde.ui_3.0.0/pdeui.jar"/>
-	<classpathentry kind="var" path="SWT_LIB"/>
+	<classpathentry sourcepath="ORG_ECLIPSE_SWT_LOCATION/ws/win32/swt.jar" kind="var" path="SWT_LIB"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="var" path="MAVEN_REPO/commons-httpclient/jars/commons-httpclient-2.0-rc1.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/forehead/jars/forehead-1.0-beta-5.jar"/>

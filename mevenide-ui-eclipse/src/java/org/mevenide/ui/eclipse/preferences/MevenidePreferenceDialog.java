@@ -16,12 +16,8 @@
  */
 package org.mevenide.ui.eclipse.preferences;
 
-import java.io.FileReader;
-import java.io.Reader;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.maven.project.Project;
 import org.eclipse.jface.preference.DirectoryFieldEditor;
 import org.eclipse.jface.preference.FileFieldEditor;
 import org.eclipse.jface.preference.IntegerFieldEditor;
@@ -40,8 +36,7 @@ import org.mevenide.environment.ConfigUtils;
 import org.mevenide.environment.ILocationFinder;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.MevenidePreferenceKeys;
-import org.mevenide.ui.eclipse.goals.viewer.GoalsPickerDialog;
-import org.mevenide.util.DefaultProjectUnmarshaller;
+import org.mevenide.ui.eclipse.goals.view.GoalsPickerDialog;
 import org.mevenide.util.StringUtils;
 
 /**
@@ -177,29 +172,10 @@ public class MevenidePreferenceDialog {
 		pomTemplateLocationEditor.fillIntoGrid(topLevelContainer, 3);
 		pomTemplateLocationEditor.setPreferenceStore(preferencesManager.getPreferenceStore());
 		pomTemplateLocationEditor.load();
-		pomTemplateLocationEditor.getTextControl(topLevelContainer).addModifyListener(
-			new ModifyListener() {
-				public void modifyText(ModifyEvent event) {
-					try {
-						if ( ((Text)event.getSource()).getText() != null && !((Text)event.getSource()).getText().trim().equals("") ) {
-							DefaultProjectUnmarshaller dpu = new DefaultProjectUnmarshaller();
-							Reader reader = new FileReader(((Text)event.getSource()).getText());
-							Project project = dpu.parse(reader);
-							invalidPomTemplate = false;
-							page.setErrorMessage(null);
-						}
-					} 
-					catch (Exception e) {
-						//e.printStackTrace();
-						invalidPomTemplate = true;
-						page.setErrorMessage(Mevenide.getResourceString("MevenidePreferenceDialog.invalid.pom.error"));
-					}
-					page.getContainer().updateButtons();
-					page.getContainer().updateMessage();
-				}
+		//just removing the widgets breaks the page layout.. 
+		//dunno why yet, so just commenting it will be enough for now  
+		pomTemplateLocationEditor.setEnabled(false, topLevelContainer);
 
-			}
-		);
 		
 		if ( StringUtils.isNull(defaultGoalsEditor.getStringValue()) ) {
 		    defaultGoalsEditor.getTextControl(topLevelContainer).setText(Mevenide.getInstance().getDefaultGoals());
@@ -265,13 +241,8 @@ public class MevenidePreferenceDialog {
 		mavenHome = mavenHomeEditor.getTextControl(topLevelContainer).getText();
 		Mevenide.getInstance().setMavenHome(mavenHome);
 
-
 		javaHome = javaHomeEditor.getTextControl(topLevelContainer).getText();
 		Mevenide.getInstance().setJavaHome(javaHome);
-		
-		
-		pomTemplateLocation = pomTemplateLocationEditor.getTextControl(topLevelContainer).getText();
-		Mevenide.getInstance().setPomTemplate(pomTemplateLocation);
 		
 		defaultGoals = defaultGoalsEditor.getTextControl(topLevelContainer).getText();
 		Mevenide.getInstance().setDefaultGoals(defaultGoals);

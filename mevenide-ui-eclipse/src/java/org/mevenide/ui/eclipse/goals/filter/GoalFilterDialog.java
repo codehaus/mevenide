@@ -46,7 +46,7 @@ import org.mevenide.ui.eclipse.goals.model.Element;
 import org.mevenide.ui.eclipse.goals.model.Goal;
 import org.mevenide.ui.eclipse.goals.model.GoalsProvider;
 import org.mevenide.ui.eclipse.goals.model.Plugin;
-import org.mevenide.ui.eclipse.goals.viewer.GoalsLabelProvider;
+import org.mevenide.ui.eclipse.goals.view.GoalsLabelProvider;
 import org.mevenide.ui.eclipse.preferences.PreferencesManager;
 import org.mevenide.util.StringUtils;
 
