@@ -11,18 +11,28 @@
            <p> It's not yet available for free download. In order to try out the module, please checkout the meveninde project from cvs and build it. </p>
         </answer>
         </faq>
+        <faq id="build">
+        <question> 
+            How do I build the Netbeans module?
+        </question> 
+        <answer>
+           <p> Once you've checked out the sources, go to mevenide-master and run <code> maven mevenide:install-maven-nbm-plugin mevenide-netbeans:build </code>
+           The first goal will create and deploy the nbm plugin for you which is able to create netbeans jars and nbm files. The second goal will do the building.</p>
+        </answer>
+        </faq>
         <faq id="how-install">
             <question>
              How do I install the built snapshot into the Netbeans IDE?
             </question>
             <answer>
-               <p> You should have the goal-grabber, mevenide-core and mevenide-ui-netbeans atrifacts built before processing. Also ensure you have Netbeans 3.5.1 and Maven1.0rc1. 
+               <p> You should have the goal-grabber, mevenide-core and mevenide-ui-netbeans atrifacts built before processing (Should be done for you by the <code> mevenide-netbeans:build </code> goal in mevenide-master). 
+                Also ensure you have Netbeans 3.5.1 and Maven1.0rc1. 
                   Later versions should be also ok. It will most probably not work with Netbeans 3.4, but 3.5 should be fine.  </p>
-               <p> Let's call your netbeans install directory NETBEANS_HOME, 
-                 and your maven install directory MAVEN_HOME. 
-                 Then your mevenide-ui-netbeans artifact goes into $NETBEANS_HOME/modules 
-                 and both goal-grabber and mevenide-core artifacts go into $NETBEANS_HOME/modules/ext.
-                 Then you will also need to copy the content of $MAVEN_HOME/lib (excluding the "endorsed: subdirectory) into $NETBEANS_HOME/lib/ext
+               <p> Let's call your netbeans install directory <code>NETBEANS_HOME</code>, 
+                 and your maven install directory <code>MAVEN_HOME</code>. 
+                 Then your mevenide-ui-netbeans artifact (found at <code>target/nbm/netbeans/modules</code> subdirectory of the project) goes into <code>$NETBEANS_HOME/modules </code>
+                 and both goal-grabber and mevenide-core artifacts (to be found at similar places in respective projects) go into <code>$NETBEANS_HOME/modules/autoload</code>.
+                 Then you will also need to copy the content of <code>$MAVEN_HOME/lib</code> (excluding the "endorsed: subdirectory) into <code>$NETBEANS_HOME/lib/ext</code>
                  And now you should be able to run the netbeans module that supports maven in the IDE. </p>
             </answer>
         </faq>
