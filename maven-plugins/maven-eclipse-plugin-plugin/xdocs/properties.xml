@@ -118,6 +118,25 @@
      </div>
    </section>
    
+   <section name="Help Specific Properties">
+   	<div id="documentContent">
+   	  <table>
+     	<tr>
+          <th>Property</th>
+          <th>Optional</th>
+          <th>Description</th>
+        </tr>
+        <tr>
+          <td>maven.eclipse.plugin.help.dir</td>
+          <td>Optional. Default value is <code>target/xdocs</code>.</td>
+          <td>
+            <p>specifies where documentation to be bundled is to be found.</p>
+          </td>
+        </tr>
+      </table>
+   </div>
+   </section>
+   
    <section name="Feature Specific Properties">
    	<div id="documentContent">
    	  <table>
@@ -177,6 +196,17 @@
           <td>Optional. Default value is <code>${maven.eclipse.plugin.dist.dir}/plugins</code>.</td>
           <td>
             <p>Controls where this update's plugins should end up</p>
+          </td>
+        </tr>
+        <tr>
+          <td>maven.eclipse.plugin.site.includeRootFiles</td>
+          <td>Optional.</td>
+          <td>
+            <p>
+            	controls wether or not site.* files should be included into bundled site archive. 
+            	if true, the content can then be used as local site, 
+            	else content can be directly unzipped into eclipse installation folder
+            </p>
           </td>
         </tr>
       </table>
