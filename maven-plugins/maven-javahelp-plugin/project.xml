@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <project>
   <pomVersion>3</pomVersion>
   <id>maven-javahelp-plugin-project</id>
@@ -27,8 +28,16 @@
         <include>**/*Test.java</include>
       </includes>
     </unitTest>
+    <resources>
+      <resource>
+        <directory>${basedir}/src/conf</directory>
+          <includes>
+             <include>**/*.*</include>
+          </includes>
+      </resource>
+    </resources>
   </build>
-  
+
   <reports>
     <report>maven-javadoc-plugin</report>
   </reports>
@@ -43,3 +52,4 @@
   </dependencies>
 
 </project>
+
