@@ -43,7 +43,7 @@ public abstract class AbstractRunner {
 	 */
 	public AbstractRunner() throws MevenideException {
        try  {
-           new DiscoverClass().newInstance(IOptionsManager.class);
+           optionsManager = (IOptionsManager) new DiscoverClass().newInstance(IOptionsManager.class);
        }
        catch ( Exception ex ) {
            throw new MevenideException(ex);

@@ -78,8 +78,6 @@ public class MavenPlugin extends AbstractUIPlugin {
 		}
 	}
 
- 
-
     /** 
      * @return MavenPlugin
      */

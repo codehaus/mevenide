@@ -42,7 +42,7 @@
 		
 		<!-- copy resources to mevenide root -->
 		<copy todir="${eclipse.home}/plugins/org.mevenide_1.0">
-			<fileset dir="etc"/>
+			<fileset dir="etc" excludes=".cvsignore"/>
 		</copy>	
 		
 	</goal>

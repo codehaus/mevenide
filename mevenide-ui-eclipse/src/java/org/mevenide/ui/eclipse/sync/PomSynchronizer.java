@@ -126,10 +126,10 @@ public class PomSynchronizer extends AbstractPomSynchronizer implements ISynchro
 			case IClasspathEntry.CPE_LIBRARY :
 					addDependency(classpathEntry);
 					return;
-			case IClasspathEntry.CPE_VARIABLE :
-					//IClasspathEntry resolved = JavaCore.getResolvedClasspathEntry(classpathEntry);
-					//updatePomDependencies(resolved);
-					return;
+//			case IClasspathEntry.CPE_VARIABLE :
+//					//IClasspathEntry resolved = JavaCore.getResolvedClasspathEntry(classpathEntry);
+//					//updatePomDependencies(resolved);
+//					return;
             default : throw new Exception("Unknown classpath entry kind (" + classpathEntry.getEntryKind() + ")");
 			//@todo FUNCTIONAL eclipse projects dependencies
 			//@todo FUNCTIONAL dependencies of type CPE_CONTAINER
