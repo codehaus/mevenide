@@ -65,12 +65,12 @@ public class LocationFinderAggregator implements ILocationFinder {
     private ProjectPropertiesLocationFinder projectPropertiesLocationFinder;
     private BuildPropertiesLocationFinder buildPropertiesLocationFinder;
     private SysEnvLocationFinder sysEnvLocationFinder;
-    private DefaultLocationFinder defaultLocationFinder;
+    
     
     
     public LocationFinderAggregator(String effectiveWorkingDirectory) {
         sysEnvLocationFinder = SysEnvLocationFinder.getInstance();
-        defaultLocationFinder = DefaultLocationFinder.getInstance();
+        
         try {
             buildPropertiesLocationFinder = BuildPropertiesLocationFinder.getInstance();
         }
