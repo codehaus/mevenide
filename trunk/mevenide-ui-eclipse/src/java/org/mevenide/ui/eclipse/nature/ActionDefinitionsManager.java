@@ -18,6 +18,7 @@ package org.mevenide.ui.eclipse.nature;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.eclipse.core.resources.IProject;
 
 
 /**  
@@ -26,10 +27,24 @@ import java.util.List;
  * @version $Id$
  * 
  */
-public class ActionDefinitionsManager {
+public class ActionDefinitionsManager implements IActionDefinitionManager {
+    private List definitions = new ArrayList();
 
-    public List getDefinitions() {
-        List definitions = new ArrayList();
+    
+    public ActionDefinitionsManager() {
+//	      Just to stub.. even if the interface was introduced for this purpose.. 
+//		  need to create a proper stub implementation        
+//        ActionDefinitions def = new ActionDefinitions();
+//        List patterns = new ArrayList();
+//        patterns.add("**/*.java");
+//        def.setPatterns(patterns);
+//        List goals = new ArrayList();
+//        goals.add("jar:install");
+//        def.setGoals(goals);
+//        definitions.add(def);
+    }
+    
+    public List getDefinitions(IProject project) {
         return definitions;
     }
     
