@@ -27,13 +27,15 @@ import java.net.URI;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Project;
+import org.mevenide.context.DefaultQueryContext;
+import org.mevenide.context.IQueryContext;
 import org.mevenide.environment.ILocationFinder;
 import org.mevenide.environment.LocationFinderAggregator;
 import org.mevenide.netbeans.project.classpath.ClassPathProviderImpl;
 import org.mevenide.netbeans.project.queries.MavenFileBuiltQueryImpl;
 import org.mevenide.netbeans.project.queries.MavenSharabilityQueryImpl;
 import org.mevenide.properties.IPropertyResolver;
-import org.mevenide.properties.ProjectPropFactory;
+import org.mevenide.properties.resolver.PropertyResolverFactory;
 import org.mevenide.util.DefaultProjectUnmarshaller;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
@@ -52,6 +54,7 @@ public class MavenProject implements org.netbeans.api.project.Project {
     private File file;
     private FileObject fileObject;
     private IPropertyResolver properties;
+    private IQueryContext queryContext;
     private ILocationFinder locFinder;
     private Image icon;
     private Lookup lookup;
@@ -67,9 +70,10 @@ public class MavenProject implements org.netbeans.api.project.Project {
         && (project.getPomVersion() == null || project.getExtend() == null)) {
             throw new IOException("Not a maven project file.");
         }
-        properties = ProjectPropFactory.getInstance().createResolver(FileUtil.toFile(fileObject.getParent()));
-        locFinder = new LocationFinderAggregator();
-        ((LocationFinderAggregator)locFinder).setEffectiveWorkingDirectory(projectFile.getParentFile().getAbsolutePath());
+        File projectDir = FileUtil.toFile(fileObject.getParent());
+        queryContext = new DefaultQueryContext(projectDir);
+        properties = PropertyResolverFactory.getFactory().createContextBasedResolver(queryContext);
+        locFinder = new LocationFinderAggregator(queryContext);
     }
     
     
