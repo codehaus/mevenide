@@ -26,7 +26,7 @@ import org.apache.maven.project.Resource;
  * @version $Id$
  * 
  */
-public class ResourceUtil {
+public class DefaultResourceResolver {
 	
 	
 	/**
@@ -50,7 +50,7 @@ public class ResourceUtil {
 		project.getBuild().addResource(resource);
 	}
 
-	public static List getSimilarResources(Project project, Resource resource) {
+	private static List getSimilarResources(Project project, Resource resource) {
 		List similar = new ArrayList();
 		
 		List resources = project.getBuild().getResources();

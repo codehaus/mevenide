@@ -20,11 +20,11 @@ import java.io.Writer;
 import org.apache.maven.project.Dependency;
 import org.apache.maven.project.Project;
 import org.apache.maven.project.Resource;
-import org.mevenide.ProjectConstants;
-import org.mevenide.project.DependencyFactory;
 import org.mevenide.project.AbstractDependencyResolver;
+import org.mevenide.project.DependencyFactory;
 import org.mevenide.project.IDependencyResolver;
-import org.mevenide.project.ResourceUtil;
+import org.mevenide.project.DefaultResourceResolver;
+import org.mevenide.project.SourceDirectoryUtil;
 
 /**
  * 
@@ -72,13 +72,15 @@ public class ProjectWriter {
 	 */
 	public void addResource(String path, File pom) throws Exception {
 		Project project = projectReader.read(pom);
-		Resource resource = ResourceUtil.newResource(path);
-		ResourceUtil.mergeSimilarResources(project, resource);
+		Resource resource = DefaultResourceResolver.newResource(path);
+		DefaultResourceResolver.mergeSimilarResources(project, resource);
 		write(project, pom);	
 	}
 	
 	/**
-	 * add a source directory to the POM *if needed* (i.e. the src directory must not null) 
+	 * add a source directory to the POM *if needed* 
+     * 
+     * @pre the src directory must not null 
 	 * 
 	 * @param path
 	 * @param pom
@@ -89,20 +91,13 @@ public class ProjectWriter {
 		
 		Project project = projectReader.read(pom);
 		
-		if ( ProjectConstants.MAVEN_ASPECT_DIRECTORY.equals(sourceType) ) {
-			project.getBuild().setAspectSourceDirectory(path);
-		}
-		if ( ProjectConstants.MAVEN_SRC_DIRECTORY.equals(sourceType) ) {
-			project.getBuild().setSourceDirectory(path);
-		}
-		if ( ProjectConstants.MAVEN_TEST_DIRECTORY.equals(sourceType) ) {
-			project.getBuild().setUnitTestSourceDirectory(path);
-		}
-		if ( ProjectConstants.MAVEN_INTEGRATION_TEST_DIRECTORY.equals(sourceType) ) {
-			project.getBuild().setIntegrationUnitTestSourceDirectory(path);
+		if ( !SourceDirectoryUtil.isSourceDirectoryPresent(project, path)) {
+			
+			SourceDirectoryUtil.addSource(project, path, sourceType);
+			write(project, pom);
+			
 		}
 		
-		write(project, pom);
 	}
 	
 	/** 
@@ -125,7 +120,7 @@ public class ProjectWriter {
 			
 		}
 		
-		//manage jar.overridding
+		//@todo manage jar.overridding
 	}
 	
 	
