@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+
+<project 
+  xmlns:j="jelly:core"
+  xmlns:util="jelly:util"
+  xmlns:ant="jelly:ant">
+
+   <goal name="mevenide:run-class" 
+          description="Runs the project's classes.">
+      <ant:path id="cp">
+        <ant:pathelement location="${maven.build.dest}"/>
+        <ant:path refid="maven.dependency.classpath"/>
+       </ant:path>
+       <j:set var="mainClass" value="${maven.mevenide.run.classname}"/>
+       <ant:java classname="${mainClass}" classpathref="cp" fork="true">
+         <ant:arg line="${maven.mevenide.run.args}"/>
+         <ant:vmarg line="${maven.mevenide.run.vmargs}"/>
+       </ant:java>
+   </goal>   
+
+   <goal name="mevenide:compile_run-class"
+         prereqs="java:compile, mevenide:run-class"
+         description="Compile and runs the project's classes.">
+   </goal>
+   
+   <goal name="mevenide:run-artifact"
+         description="Runs the project's jar artifact">
+      <ant:path id="cp">
+<!--        <ant:pathelement location="${maven.mevenide.run.jar}"/> -->
+        <ant:path refid="maven.dependency.classpath"/>
+       </ant:path>
+       <ant:echo message="jar=${maven.mevenide.run.jar}"/>
+       <ant:java jar="${maven.mevenide.run.jar}" classpathref="cp" fork="true">
+         <ant:arg line="${maven.mevenide.run.args}"/>
+         <ant:vmarg line="${maven.mevenide.run.vmargs}"/>
+       </ant:java>
+   </goal>   
+   
+   <goal name="mevenide:jar_run-artifact"
+         prereqs="jar:jar, mevenide:run-artifact"
+         description="Creates and runs the project's jar artifact">
+   </goal>
+
+   <goal name="mevenide:run-exec">
+      <ant:exec dir="${src}" executable="${maven.mevenide.run.exec}" fork="true">
+         <ant:arg line="${maven.mevenide.run.args}"/>
+      </ant:exec>
+   </goal>   
+         
+</project>
