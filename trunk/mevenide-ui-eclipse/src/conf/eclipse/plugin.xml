@@ -143,6 +143,7 @@
                path="additions"
                id="maven.plugin.menu">
             <separator name="Synchronize" />
+            <separator name="Validate" />
          </menu>
          <action
                label="%Synchronize.Label"
@@ -151,6 +152,22 @@
                menubarPath="maven.plugin.menu/Synchronize"
                enablesFor="1"
                id="maven-plugin.Synchronize">
+         </action>
+         <action
+               label="%ValidatePom.Label"
+               icon="icons/maven-button.gif"
+               class="org.mevenide.ui.eclipse.actions.ValidatePomAction"
+               menubarPath="maven.plugin.menu/Validate"
+               enablesFor="1"
+               id="maven-plugin.Validate">
+         </action>
+         <action
+               label="%ClearValidate.Label"
+               icon="icons/maven-button.gif"
+               class="org.mevenide.ui.eclipse.actions.ClearValidationMarkersAction"
+               menubarPath="maven.plugin.menu/Validate"
+               enablesFor="1"
+               id="maven-plugin.ClearValidate">
          </action>
       </objectContribution>
    </extension>
