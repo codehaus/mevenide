@@ -135,10 +135,9 @@ public class MavenArtifactNode extends ArtifactNode {
 	
 	private IClasspathEntry createNewLibraryEntry() {
 		String artifactPath = artifact.getPath();
-		System.err.println(artifactPath);
 		artifactPath = resolve(artifactPath);
-		System.err.println(artifactPath);
 		String mavenRepo = locationFinder.getMavenLocalRepository();
+		
 		if ( artifactPath.replaceAll("\\\\","/").startsWith(mavenRepo.replaceAll("\\\\","/")) ) {
 		    try {
                 artifactPath = MevenideUtils.makeRelativePath(new File(mavenRepo), artifactPath);
