@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE filesystem PUBLIC "-//NetBeans//DTD Filesystem 1.0//EN" "http://www.netbeans.org/dtds/filesystem-1_0.dtd">
+<filesystem>
+ 
+<folder name="Plugins">
+    <folder name="XML">
+        <folder name="GrammarQueryManagers">
+            <!-- register Maven project grammar -->
+            <attr name="semantics-grammar-to-generic-grammar-separator/org-mevenide-netbeans-grammar-MavenQueryProvider.instance" boolvalue="true"/>
+            <file name="org-mevenide-netbeans-grammar-MavenQueryProvider.instance"/>
+            <attr name="org-mevenide-netbeans-grammar-MavenQueryProvider.instance/generic-grammar-to-universal-grammar-separator" boolvalue="true"/>
+        </folder>
+    </folder>
+    <folder name="Mevenide-Grammar">
+         <file name="jelly-ant.xml" url="taglibs/jelly-ant.xml"/>
+         <file name="jelly-antlr.xml" url="taglibs/jelly-antlr.xml"/>
+         <file name="jelly-bean.xml" url="taglibs/jelly-bean.xml"/>
+         <file name="jelly-beanshell.xml" url="taglibs/jelly-beanshell.xml"/>
+         <file name="jelly-betwixt.xml" url="taglibs/jelly-betwixt.xml"/>
+         <file name="jelly-bsf.xml" url="taglibs/jelly-bsf.xml"/>
+         <file name="jelly-core.xml" url="taglibs/jelly-core.xml"/>
+         <file name="jelly-define.xml" url="taglibs/jelly-define.xml"/>
+         <file name="jelly-dynabean.xml" url="taglibs/jelly-dynabean.xml"/>
+         <file name="jelly-email.xml" url="taglibs/jelly-email.xml"/>
+         <file name="jelly-fmt.xml" url="taglibs/jelly-fmt.xml"/>
+         <file name="jelly-html.xml" url="taglibs/jelly-html.xml"/>
+         <file name="jelly-http.xml" url="taglibs/jelly-http.xml"/>
+         <file name="jelly-interaction.xml" url="taglibs/jelly-interaction.xml"/>
+         <file name="jelly-javascript.xml" url="taglibs/jelly-javascript.xml"/>
+         <file name="jelly-jeez.xml" url="taglibs/jelly-jeez.xml"/>
+         <file name="jelly-jetty.xml" url="taglibs/jelly-jetty.xml"/>
+         <file name="jelly-jface.xml" url="taglibs/jelly-jface.xml"/>
+         <file name="jelly-jpython.xml" url="taglibs/jelly-jpython.xml"/>
+         <file name="jelly-maven.xml" url="taglibs/jelly-maven.xml"/>
+         <file name="jelly-preferences.xml" url="taglibs/jelly-preferences.xml"/>
+         <file name="jelly-jython.xml" url="taglibs/jelly-jython.xml"/>
+         <file name="jelly-pnuts.xml" url="taglibs/jelly-pnuts.xml"/>
+         <file name="jelly-util.xml" url="taglibs/jelly-util.xml"/>
+         <file name="jelly-werkz.xml" url="taglibs/jelly-werkz.xml"/>
+         <file name="jelly-window.xml" url="taglibs/jelly-window.xml"/>
+         <file name="jelly-wizard.xml" url="taglibs/jelly-wizard.xml"/>
+    </folder>
+</folder>
+   
+</filesystem>
