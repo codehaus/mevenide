@@ -61,10 +61,13 @@ public class PomChoiceDialog extends TitleAreaDialog {
 
     private Button okButton;
 	
-	public PomChoiceDialog(PomChooser chooser) {
+    private boolean singleSelection;
+    
+	public PomChoiceDialog(PomChooser chooser, boolean singleSelection) {
 		super(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell());
 		super.setBlockOnOpen(true);
 		this.pomChooser = chooser;
+		this.singleSelection = singleSelection;
 	}
 	
 	protected Control createContents(Composite parent) {
@@ -99,7 +102,8 @@ public class PomChoiceDialog extends TitleAreaDialog {
 		table.setLayoutData(orderTextGridData);
 		
 		tableViewer = new CheckboxTableViewer(table);
-		
+		//tableViewer = CheckboxTableViewer.newCheckList(composite, SWT.BORDER | SWT.SINGLE);
+
 		tableViewer.setContentProvider(new IStructuredContentProvider() {
 			public Object[] getElements(Object inputElement) {
 				Assert.isTrue(inputElement instanceof List);
@@ -123,9 +127,18 @@ public class PomChoiceDialog extends TitleAreaDialog {
 		tableViewer.addCheckStateListener(
 			new ICheckStateListener() {
 				public void checkStateChanged(CheckStateChangedEvent event) {
-					File checkedElement = (File) event.getElement();
-					if ( event.getChecked() ) {
+					//dirty trick to enable single selection since SWT.SINGLE doesnot do what i want, nor does CheckboxTableViewer.newCheckList(SWT.SINGLE)
+				    if ( singleSelection ) {
+				        tableViewer.setCheckedElements(new Object[0]);
+				        chosenPoms.clear();
+				    }
+				    File checkedElement = (File) event.getElement();
+				    if ( event.getChecked() ) {
 					    chosenPoms.add(checkedElement);
+						//dirty trick bis repetita
+					    if ( singleSelection ) {
+					        tableViewer.setChecked(checkedElement, true);
+					    }
 					}
 					else {
 					    chosenPoms.remove(checkedElement);

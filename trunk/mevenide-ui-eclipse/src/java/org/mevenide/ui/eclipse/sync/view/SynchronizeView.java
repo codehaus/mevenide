@@ -131,7 +131,7 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
 		try {
 			this.container = input;
 			//poms = FileUtils.getPoms(input);
-		    poms = new PomChooser(input).openPomChoiceDialog();
+		    poms = new PomChooser(input).openPomChoiceDialog(false);
 		    
 		    if ( poms != null ) {
 		        synchronizeProjectWithPoms(input.getProject(), poms);
@@ -197,7 +197,7 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
 	            ((ArtifactMappingContentProvider) artifactMappingNodeViewer.getContentProvider()).setDirection(direction);
 	        }
 			artifactMappingNodeViewer.refresh(true);
-	        artifactMappingNodeViewer.expandAll();
+	        artifactMappingNodeViewer.expandToLevel(1);
 			fireDirectionChanged();
 		}
     }
@@ -405,22 +405,22 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
 		IArtifactMappingNode artifact = (IArtifactMappingNode) event.getArtifact();
 		log.debug("artifact modified : " + artifact);
 		updatePoms(event.getProject());
-		//refreshNode(artifact);
-		refreshAll();
+		refreshNode(artifact);
+		//refreshAll();
 		comparator.compare(event.getProject());
 	}
 	
 	public void artifactRemovedFromPom(PomArtifactEvent event) {
 		IArtifactMappingNode artifact = (IArtifactMappingNode) event.getArtifact();
 		updatePoms(event.getProject());
-		//refreshNode(artifact);
-		refreshAll();
+		refreshNode(artifact);
+		//refreshAll();
 		comparator.compare(event.getProject());
 	}
 	
 	//@TODO evil.. but actions read poms instead of working on pom references.. 
 	private void updatePoms(Project project) {
-        for (int i = 0; i < poms.size(); i++) {
+	    for (int i = 0; i < poms.size(); i++) {
 			if ( project.getFile().equals(project.getFile()) ) {
 				poms.remove(i);
 				poms.add(i, project);
@@ -511,7 +511,7 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
 	}
 
 	public void refreshAll() {
-		artifactMappingNodeViewer.refresh(false);
+		artifactMappingNodeViewer.refresh(true);
 		artifactMappingNodeViewer.expandAll();
 	}
 
@@ -520,8 +520,10 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
     }
 	
 	public void projectChanged(ProjectChangeEvent e) {
+	    log.debug("received project change notification. Attribute : " + e.getAttribute());
     	String attribute = e.getAttribute();
 		if ( ProjectComparator.BUILD.equals(attribute) || ProjectComparator.DEPENDENCIES.equals(attribute) ) {
+		    updatePoms(e.getPom());
 			refreshAll();
 		}     
 	}
