@@ -3,9 +3,8 @@
  
   <extend>${basedir}/../mevenide-master/base-project.xml</extend>
   <pomVersion>3</pomVersion>
+  <id>mevenide-ui-eclipse</id>
   <name>Mevenide Eclipse</name>
-  <!-- groupId>mevenide</groupId -->
-  <id>mevenide:mevenide-ui-eclipse</id>
   <artifactId>mevenide-ui-eclipse</artifactId>
   <currentVersion>0.1.1</currentVersion>
   
@@ -21,7 +20,7 @@
         <dependency>
            <groupId>forehead</groupId>
            <artifactId>forehead</artifactId>
-           <version>1.0-beta-4</version>
+           <version>1.0-beta-5</version>
            <url>http://forehead.werken.com/</url>
            <properties>
             	<eclipse.plugin.bundle>true</eclipse.plugin.bundle>
@@ -33,9 +32,6 @@
             <version>1.0-beta-10</version>
             <url>http://maven.apache.org/</url>
             <type>jar</type>
-            <properties>
-            	<mevenide.transient>true</mevenide.transient>
-            </properties>
         </dependency>
         <dependency>
             <groupId>commons-httpclient</groupId>
@@ -52,17 +48,11 @@
            <groupId>mevenide</groupId>
            <artifactId>mevenide-core</artifactId>
            <version>0.1.1</version>
-           <properties>
-            	<mevenide.transient>true</mevenide.transient>
-           </properties>
         </dependency>
         <dependency>
            <groupId>mevenide</groupId>
            <artifactId>mevenide-goals-grabber</artifactId>
            <version>0.1.1</version>
-           <properties>
-            	<mevenide.transient>true</mevenide.transient>
-           </properties>
         </dependency>
         
         <!-- xml libraries -->
@@ -71,18 +61,12 @@
            <artifactId>jdom</artifactId>
            <version>1.0b8</version>
            <url>http://jdom.org/</url>
-           <properties>
-            	<mevenide.transient>true</mevenide.transient>
-           </properties>
         </dependency>
         <dependency>
            <groupId>xerces</groupId>
            <artifactId>xerces</artifactId>
            <version>2.2.1</version>
            <url>http://xml.apache.org/xerces2-j/</url>
-           <properties>
-            	<mevenide.transient>true</mevenide.transient>
-           </properties>
         </dependency>
         
         <!-- commons -->
@@ -91,18 +75,12 @@
            <artifactId>commons-discovery</artifactId>
            	<version>0.1</version>
            <url>http://jakarta.apache.org/commons/discovery</url>
-           <properties>
-            	<mevenide.transient>true</mevenide.transient>
-           </properties>
         </dependency>
         <dependency>
            <groupId>commons-logging</groupId>
            <artifactId>commons-logging</artifactId>
            <version>1.0.1</version>
            <url>http://jakarta.apache.org/commons/logging</url>
-           <properties>
-            	<mevenide.transient>true</mevenide.transient>
-           </properties>
         </dependency>
         
         <dependency>
@@ -110,9 +88,6 @@
            <artifactId>commons-lang</artifactId>
            <version>1.0.1</version>
            <url>http://jakarta.apache.org/commons/logging</url>
-           <properties>
-            	<mevenide.transient>true</mevenide.transient>
-           </properties>
         </dependency>
         
         <!-- logging -->
@@ -121,9 +96,6 @@
            <artifactId>log4j</artifactId>
            <version>1.2.7</version>
            <url>http://jakarta.apache.org/log4j/</url>
-           <properties>
-            	<mevenide.transient>true</mevenide.transient>
-           </properties>
         </dependency>
         
         <!-- testing -->
@@ -132,9 +104,6 @@
            <artifactId>junit</artifactId>
            <version>3.8.1</version>
            <url>http://junit.org/</url>
-           <properties>
-            	<mevenide.transient>true</mevenide.transient>
-           </properties>
         </dependency>
         
 		<!-- eclipse libraries. auto-transient -->
@@ -183,7 +152,7 @@
 	    <dependency>
 	       <groupId>eclipse</groupId>
            <artifactId>eclipse-jface</artifactId>
-           <version>2.1.0</version>
+           <version>3.0.0</version>
            <url>http://eclipse.org/</url>
         </dependency>
 	    <dependency>
@@ -219,13 +188,13 @@
 	    <dependency>
 	       <groupId>eclipse</groupId>
            <artifactId>eclipse-workbench</artifactId>
-           <version>2.1.0</version>
+           <version>3.0.0</version>
            <url>http://eclipse.org/</url>
         </dependency>
         <dependency>
 	       <groupId>eclipse</groupId>
            <artifactId>eclipse-views</artifactId>
-           <version>2.1.0</version>
+           <version>3.0.0</version>
            <url>http://eclipse.org/</url>
         </dependency>
         <dependency>

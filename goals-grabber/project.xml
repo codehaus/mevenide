@@ -1,9 +1,9 @@
 <project>
     <extend>${basedir}/../mevenide-master/base-project.xml</extend>
     <pomVersion>3</pomVersion>
-    <id>mevenide:mevenide-goals-grabber</id>
-    <artifactId>mevenide-goals-grabber</artifactId>
+    <id>mevenide-goals-grabber</id>
     <name>Goals Grabber</name>
+    <artifactId>mevenide-goals-grabber</artifactId>
     <currentVersion>0.1.1</currentVersion>
     <organization/>
     <package>org.mevenide.goals.grabber</package>
@@ -14,9 +14,6 @@
            <groupId>mevenide</groupId>
            <artifactId>mevenide-core</artifactId>
            <version>0.1.1</version>
-           <properties>
-            	<mevenide.transient>true</mevenide.transient>
-            </properties>
         </dependency>
         <dependency>
             <groupId>commons-collections</groupId>
@@ -32,27 +29,18 @@
             <artifactId>commons-logging</artifactId>
             <version>1.0.1</version>
             <type>jar</type>
-            <properties>
-            	<mevenide.transient>true</mevenide.transient>
-            </properties>
         </dependency>
         <dependency>
             <groupId>commons-lang</groupId>
             <artifactId>commons-lang</artifactId>
             <version>1.0.1</version>
             <type>jar</type>
-            <properties>
-            	<mevenide.transient>true</mevenide.transient>
-            </properties>
         </dependency>
         <dependency>
             <groupId>xpp3</groupId>
             <artifactId>xpp3</artifactId>
             <version>1.1.2a</version>
             <type>jar</type>
-            <properties>
-            	<mevenide.transient>true</mevenide.transient>
-            </properties>
         </dependency>
 
         <!-- logging -->
@@ -61,9 +49,6 @@
            <artifactId>log4j</artifactId>
            <version>1.2.7</version>
            <url>http://jakarta.apache.org/log4j/</url>
-           <properties>
-            	<mevenide.transient>true</mevenide.transient>
-            </properties>
         </dependency>
     </dependencies>
     <build>
