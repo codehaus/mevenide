@@ -59,6 +59,7 @@ import org.mevenide.project.IProjectChangeListener;
 import org.mevenide.project.ProjectChangeEvent;
 import org.mevenide.project.ProjectComparator;
 import org.mevenide.project.ProjectComparatorFactory;
+import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.sync.action.ToggleViewAction;
 import org.mevenide.ui.eclipse.sync.action.ToggleWritePropertiesAction;
 import org.mevenide.ui.eclipse.sync.event.IActionListener;
@@ -90,7 +91,10 @@ public class SynchronizationView extends ViewPart implements IActionListener, IR
 
     private Composite composite;
     private TreeViewer artifactMappingNodeViewer;
-    private SynchronizationNodeFilter nodeFilter; 
+    private SynchronizationNodeFilter synchronizationNodeFilter; 
+    
+	private MavenArtifactNodeFilter artifactNodeFilter;
+	private DirectoryNodeFilter directoryNodeFilter;
 	
     private IPageSite site;
 
@@ -99,6 +103,8 @@ public class SynchronizationView extends ViewPart implements IActionListener, IR
     private Action viewIdeToPom;
     private Action viewPomToIde;
     private Action viewConflicts;
+    private Action openFilterDialogAction;  
+    
     private IContributionItem writeProperties; 
     
     //contextual actions
@@ -209,7 +215,7 @@ public class SynchronizationView extends ViewPart implements IActionListener, IR
     public void setDirection(int direction) {
 		if ( direction != this.direction ) {
 	        this.direction = direction;
-	        nodeFilter.setDirection(direction);
+	        synchronizationNodeFilter.setDirection(direction);
 	        artifactMappingNodeViewer.refresh();
 	        activateWritePropertiesAction(direction);
 			fireDirectionChanged();
@@ -264,11 +270,19 @@ public class SynchronizationView extends ViewPart implements IActionListener, IR
     private void configureViewer() {
         artifactMappingNodeViewer.setContentProvider(new SynchronizationNodeProvider());
         artifactMappingNodeViewer.setLabelProvider(new SynchronizationNodeLabelProvider());
-        nodeFilter = new SynchronizationNodeFilter();
-        assertValidDirection();
-        artifactMappingNodeViewer.addFilter(nodeFilter);
+        
+        synchronizationNodeFilter = new SynchronizationNodeFilter();
+        artifactMappingNodeViewer.addFilter(synchronizationNodeFilter);
+        
+        artifactNodeFilter = new MavenArtifactNodeFilter();
+        artifactMappingNodeViewer.addFilter(artifactNodeFilter);
+        
+        directoryNodeFilter = new DirectoryNodeFilter();
+        artifactMappingNodeViewer.addFilter(directoryNodeFilter);
+        
         ViewerSorter sorter = new SynchronizatioNodeSorter(); 
         artifactMappingNodeViewer.setSorter(sorter);
+        
         isDisposed = false;
     }
     
@@ -280,6 +294,8 @@ public class SynchronizationView extends ViewPart implements IActionListener, IR
 		viewConflicts = actionFactory.getAction(SynchronizeActionFactory.VIEW_CONFLICTS);
 		viewIdeToPom = actionFactory.getAction(SynchronizeActionFactory.VIEW_OUTGOING);
 		viewPomToIde = actionFactory.getAction(SynchronizeActionFactory.VIEW_INCOMING);
+		viewIdeToPom.setChecked(direction == ISelectableNode.OUTGOING_DIRECTION);
+		viewPomToIde.setChecked(direction == ISelectableNode.INCOMING_DIRECTION);
 		
 		writeProperties = new ActionContributionItem(actionFactory.getAction(SynchronizeActionFactory.WRITE_PROPERTIES));
 		
@@ -296,11 +312,21 @@ public class SynchronizationView extends ViewPart implements IActionListener, IR
 		
 		addDependencyProperty = actionFactory.getAction(SynchronizeActionFactory.ADD_DEPENDENCY_PROPERTIES);
 		
+		openFilterDialogAction = new Action() {
+			public void run() {
+				NodeFilterDialog dialog = new NodeFilterDialog();
+				dialog.open();
+			}
+		};
+		openFilterDialogAction.setText("Filter...");
+		openFilterDialogAction.setImageDescriptor(Mevenide.getImageDescriptor("open_filter_dialog.gif"));
+		
 		separator  = new Separator();
 		
 		disableContextualActions();
 		
 		createSelectionChangedListener();
+		
     }
    
     
@@ -379,6 +405,8 @@ public class SynchronizationView extends ViewPart implements IActionListener, IR
 
 	private void createMenuManager() {
 		IMenuManager topLevelMenuManager = getViewSite().getActionBars().getMenuManager();
+		topLevelMenuManager.add(this.openFilterDialogAction);
+		topLevelMenuManager.add(separator);
 		topLevelMenuManager.add(pushToPom);
 		topLevelMenuManager.add(removeFromProject);
 		topLevelMenuManager.add(separator);
@@ -576,8 +604,7 @@ public class SynchronizationView extends ViewPart implements IActionListener, IR
 	
     public void nodeChanged(ISynchronizationNode node) {
     	log.debug("Node changed : " + node);
-    	System.err.println("Node changed : " + node);
-    	refreshAll();
+    	artifactMappingNodeViewer.update(node, null);
 	}
     
 	public void projectChanged(ProjectChangeEvent e) {
