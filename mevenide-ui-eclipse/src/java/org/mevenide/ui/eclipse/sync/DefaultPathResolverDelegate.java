@@ -29,6 +29,7 @@ import org.mevenide.sync.NoSuchSourcePathException;
 import org.mevenide.ui.eclipse.MavenPlugin;
 
 /**
+ * will be soon deprecated
  * 
  * @author Gilles Dodinet (gdodinet@wanadoo.fr)
  * @version $Id: ResourcesUtil.java 4 mai 2003 10:17:0413:34:35 Exp gdodinet 
