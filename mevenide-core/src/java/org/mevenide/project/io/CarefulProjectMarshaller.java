@@ -476,7 +476,7 @@ public class CarefulProjectMarshaller implements IProjectMarshaller {
             while (it.hasNext()) {
                 IContentProvider dep = (IContentProvider)it.next();
                 List list = dependenciesElem.getContent(
-                        new DependencyElementFilter(dep.getValue("id"), dep.getValue("groupId"), dep.getValue("artifactId")));
+                        new DependencyElementFilter(dep.getValue("id"), dep.getValue("artifactId"), dep.getValue("groupId")));
                 if (list != null && list.size() > 0) {
                     if (list.size() > 1) {
                         log.info("filter returned multiple instances, the primary key is not unique - key=" + dep.getValue("id"));
