@@ -62,4 +62,5 @@ public interface IGoalsManager {
      */
     public abstract void reset() ;
    
+   
 }

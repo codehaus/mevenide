@@ -96,16 +96,15 @@ public class DefaultPathResolverDelegate implements IPathResolverDelegate {
 			Element cpe = (Element) classpathEntries.get(i);
 			String srcPath = cpe.getAttributeValue("path");
 		    String mavenSourceType = cpe.getAttributeValue("mavenSrcType");
-			if (path.equals(srcPath)) {
+			path = path.replace('\\','/');
+			srcPath = srcPath.replace('\\','/');
+		    if (path.equals(srcPath)) {
 				if ( mavenSourceType == null ) {
 		            //@todo FUNCTIONAL open a dialog instead
 					return BuildConstants.getResolvedSourceType(BuildConstants.MAVEN_SRC);
 				}
 				return BuildConstants.getResolvedSourceType(mavenSourceType);
 			}
-		    else {
-		        throw new NoSuchSourcePathException(path);
-		    }
 		}
 		throw new NoSuchSourcePathException(path);
 	}
