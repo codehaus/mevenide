@@ -3,6 +3,7 @@
 	<name>mevenide-ui-eclipse</name>
 	<comment></comment>
 	<projects>
+		<project>mevenide-core</project>
 		<project>org.eclipse.core.boot</project>
 		<project>org.eclipse.core.resources</project>
 		<project>org.eclipse.core.runtime</project>
