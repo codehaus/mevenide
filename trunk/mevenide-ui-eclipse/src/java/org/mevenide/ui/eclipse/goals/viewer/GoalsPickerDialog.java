@@ -48,6 +48,9 @@
  */
 package org.mevenide.ui.eclipse.goals.viewer;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
@@ -67,16 +70,23 @@ import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Cursor;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.PlatformUI;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.MevenideColors;
 import org.mevenide.ui.eclipse.goals.model.Element;
+import org.mevenide.ui.eclipse.goals.model.Goal;
 import org.mevenide.ui.eclipse.goals.model.GoalsProvider;
+import org.mevenide.ui.eclipse.goals.model.Plugin;
 
 /**
  * 
@@ -92,12 +102,15 @@ public class GoalsPickerDialog  extends Dialog {
 	/** dummy implementation of a href-like behavior */ 
 	private StyledText pluginHomeURLText;
 	
+	private List visitedUrls = new ArrayList();
+	private List notFoundUrls = new ArrayList();
+	
 	/** 
      * it could be annoying to check for every urls. 
 	 * so we should allow the user to disable the verification
-     *  
+     * verification disabled by default
      */
-	private boolean shouldTestUrls = true;
+	private boolean shouldTestUrls = false;
 
     public StyledText getTextWidget() {
         return pluginHomeURLText;
@@ -165,10 +178,12 @@ public class GoalsPickerDialog  extends Dialog {
 				}
 			);
 			
+			//update StyledWidget hyperlink
 			goalsViewer.getTree().addSelectionListener(
 				new SelectionAdapter() {
 					public void widgetSelected(SelectionEvent e) {
 						TreeItem item = (TreeItem) e.item;
+						
 						String urlPrefix = Mevenide.getResourceString("maven.plugins.url.prefix");
 						log.debug("Looked up urlPrefix = " + urlPrefix);
 						String pluginName = "";
@@ -199,6 +214,35 @@ public class GoalsPickerDialog  extends Dialog {
 				}
 			);
 			
+			//update tooltip 
+			//there should a smarter way to enable tooltip on a treeviewer 
+			final Tree tree = goalsViewer.getTree(); 
+			tree.addListener (SWT.MouseHover, 
+				new Listener () {
+					public void handleEvent (Event event) {
+			
+						Rectangle clientArea = tree.getClientArea ();
+						Point pt = new Point (event.x, event.y);
+						TreeItem item = tree.getItem(pt);
+						if ( item != null ) {
+							if ( item.getData() instanceof Plugin ) {
+								tree.setToolTipText(item.getText() + " plugin");
+							}
+							if ( item.getData() instanceof Goal ) {
+								Goal goal = (Goal) item.getData();
+								if ( "(default)".equals(goal.getName()) ) {
+									tree.setToolTipText("default " + goal.getPlugin().getName() + " goal");
+								}
+								else {
+									tree.setToolTipText("goal " + goal.getPlugin().getName() + ":" + goal.getName());
+								}
+							}
+						}
+					
+					}
+				}
+			);
+			
 			goalsViewer.setInput(Element.NULL_ROOT);
 			
             return composite;
@@ -211,15 +255,21 @@ public class GoalsPickerDialog  extends Dialog {
         }
     }
     
-	/**
-	 * @todo maintain a cache of visited urls
-     */
-    boolean isValidUrl(String url) throws Exception {
+    
+	boolean isValidUrl(String url) throws Exception {
+    	if ( visitedUrls.contains(url) ) {
+    		return !notFoundUrls.contains(url);
+    	}
 		HttpClient httpClient = new HttpClient();
 		HttpMethod method = new GetMethod(url);
 		int status = httpClient.executeMethod(method);
 		//check for 4xx and 5xx return codes
-		return !Integer.toString(status).startsWith("4") && !Integer.toString(status).startsWith("5");
+		visitedUrls.add(url);
+		boolean fileExists = !Integer.toString(status).startsWith("4") && !Integer.toString(status).startsWith("5");
+		if ( !fileExists ) {
+			notFoundUrls.add(url);
+		}
+		return fileExists;
     }
 
     private TreeViewer getViewer(Composite parent) throws Exception {
@@ -241,10 +291,9 @@ public class GoalsPickerDialog  extends Dialog {
     
     	viewer.getTree().setLayoutData(gridData);
     	
-    	//add mousetracklistener to manage tooltip
-    	//viewer.getTree().addMouseListener(new GoalsMouseListener());
+    	//manage prereqs checked and grayed state
+    	//...
     	
-    	//add "check" listener
     	return viewer;
     }
 }
