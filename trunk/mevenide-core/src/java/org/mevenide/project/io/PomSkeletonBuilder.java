@@ -18,16 +18,15 @@ package org.mevenide.project.io;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Date;
 import java.util.GregorianCalendar;
-
-import org.mevenide.util.DefaultProjectUnmarshaller;
 import org.apache.maven.project.Project;
+import org.mevenide.util.MevenideUtils;
 //import org.mevenide.util.DefaultProjectUnmarshaller;
 
 /**
@@ -80,28 +79,35 @@ public final class PomSkeletonBuilder {
 	 * @throws Exception
 	 */
 	public String getPomSkeleton(String projectName) throws Exception {
-	    InputStream is = null;
-	    if ( template != null ) {
-	        is = new FileInputStream(template);
-	    }
-	    else {
-	        is = PomSkeletonBuilder.class.getResourceAsStream(DEFAULT_TEMPLATE);
-	    }
-		Reader reader = new InputStreamReader(is);
-		Project project = new DefaultProjectUnmarshaller().parse(reader);
-		reader.close();
-		is.close();
-		
-		project.setId(projectName.toLowerCase());
-		project.setName(projectName);
-		project.setGroupId(projectName.toLowerCase());
-		project.setArtifactId(projectName.toLowerCase());
-		project.setInceptionYear(getCurrentYear());
-		
-		Writer writer = new StringWriter();
-		new DefaultProjectMarshaller().marshall(writer, project);
-		writer.close();
-		return writer.toString();
+        InputStream is = null;
+	    try {
+            if ( template != null ) {
+                is = new FileInputStream(template);
+            }
+            else {
+                is = PomSkeletonBuilder.class.getResourceAsStream(DEFAULT_TEMPLATE);
+            }
+            File file = MevenideUtils.createFile(is);
+            Project project = new JDomProjectUnmarshaller().parse(file);
+            
+            is.close();
+            
+            project.setId(projectName.toLowerCase());
+            project.setName(projectName);
+            project.setGroupId(projectName.toLowerCase());
+            project.setArtifactId(projectName.toLowerCase());
+            project.setInceptionYear(getCurrentYear());
+            
+            Writer writer = new StringWriter();
+            new DefaultProjectMarshaller().marshall(writer, project);
+            writer.close();
+            return writer.toString();
+        }
+        finally {
+            if ( is != null ) {
+                is.close();
+            }
+        }
 	}
 	
 	

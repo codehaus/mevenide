@@ -16,11 +16,12 @@
  */
 package org.mevenide.ui.eclipse.editors.pom;
 
+import java.io.InputStream;
 import java.io.StringReader;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Project;
+import org.apache.maven.util.StringInputStream;
 import org.eclipse.jface.text.DocumentEvent;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IDocumentListener;
@@ -28,14 +29,15 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
+import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.editor.IFormPage;
-import org.mevenide.project.io.IProjectUnmarshaller;
+import org.mevenide.project.io.JDomProjectUnmarshaller;
 import org.mevenide.ui.eclipse.Mevenide;
-import org.mevenide.util.DefaultProjectUnmarshaller;
+import org.mevenide.util.MevenideUtils;
 
 /**
  * Presents the raw POM source in a basic XML editor.
@@ -58,12 +60,12 @@ public class PomXmlSourcePage
 	private boolean active = false;
 	private int index;
 
-	IProjectUnmarshaller unmarshaller;
+	JDomProjectUnmarshaller unmarshaller;
 	
 	public PomXmlSourcePage(MevenidePomEditor pomEditor) {
 		super();
 		this.editor = pomEditor;
-		unmarshaller = new DefaultProjectUnmarshaller();
+		unmarshaller = new JDomProjectUnmarshaller();
 		
 		setSourceViewerConfiguration(new PomXmlConfiguration());
 		initializeDocumentListener();
@@ -251,10 +253,10 @@ public class PomXmlSourcePage
 	
 	public boolean canLeaveThePage() {
 		IDocument document = getDocumentProvider().getDocument(getEditorInput());
-	    StringReader reader = new StringReader(document.get());
+	    InputStream is = new StringInputStream(document.get());
 	    try {
 		    Project pom = null;
-	    	pom = unmarshaller.parse(reader);
+	    	pom = unmarshaller.parse(((IFileEditorInput) getEditorInput()).getFile().getRawLocation().toFile());
 	    	return true;
 		}
 	    catch ( Exception e ) {

@@ -17,14 +17,13 @@
 package org.mevenide.project.io;
 
 import java.io.File;
-import java.io.FileReader;
-import java.io.Reader;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Build;
@@ -32,7 +31,6 @@ import org.apache.maven.project.Dependency;
 import org.apache.maven.project.Project;
 import org.apache.maven.project.Resource;
 import org.mevenide.project.ProjectConstants;
-import org.mevenide.util.DefaultProjectUnmarshaller;
 import org.mevenide.util.StringUtils;
 
 
@@ -46,7 +44,7 @@ import org.mevenide.util.StringUtils;
 public class ProjectReader {
 	private static final Log log = LogFactory.getLog(ProjectReader.class);
 	
-	private DefaultProjectUnmarshaller unmarshaller ; 
+	private JDomProjectUnmarshaller unmarshaller ; 
 	
 	private static ProjectReader projectReader = null;
 
@@ -62,7 +60,7 @@ public class ProjectReader {
 	}
 	
 	private ProjectReader() throws Exception {
-		unmarshaller = new DefaultProjectUnmarshaller();
+		unmarshaller = new JDomProjectUnmarshaller();
 		jarOverrideReader = new JarOverrideReader();
 	}
 	
@@ -72,21 +70,14 @@ public class ProjectReader {
 	 */
 	public Project read(File pom) throws Exception {
 		
-		Reader reader = null;
-		try {
-			reader = new FileReader(pom);
-			Project project = unmarshaller.parse(reader);
-			project.setFile(pom);
-			
-			jarOverrideReader.processOverride(pom, project);
-			
-			return project;
-		}
-		finally {
-			if ( reader != null ) {
-				reader.close();
-			}
-		}
+		
+		Project project = unmarshaller.parse(pom);
+		project.setFile(pom);
+		
+		jarOverrideReader.processOverride(pom, project);
+		
+		return project;
+		
 	}
 	
 	/**
@@ -187,7 +178,7 @@ public class ProjectReader {
     private Build getBuild(File pom) throws Exception {
 		Project project; 
 		if ( pom != null ) {
-			project = new DefaultProjectUnmarshaller().parse(new FileReader(pom));
+			project = new JDomProjectUnmarshaller().parse(pom);
 		}		
 		else {
 			project = new Project();
