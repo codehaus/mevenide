@@ -23,6 +23,7 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IPropertyListener;
 import org.eclipse.ui.PartInitException;
+import org.mevenide.ui.eclipse.editors.pom.*;
 import org.mevenide.ui.eclipse.mocks.MockEditorInput;
 import org.mevenide.ui.eclipse.mocks.MockEditorSite;
 import org.mevenide.ui.eclipse.mocks.MockFile;
