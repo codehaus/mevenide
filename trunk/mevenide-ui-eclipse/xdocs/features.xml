@@ -17,6 +17,7 @@
 			<li><a href="#Maven oriented wizards">Maven Oriented Wizards</a></li>
 			<li><a href="#Templates">Templates</a></li>
 			<li><a href="#Provider Infrastructure">Provider Infrastructure</a></li>
+			<li><a href="#Maven Builder">Maven Builder</a></li>
 		  </ul>
 		</p>
 	  </div>
@@ -208,6 +209,25 @@
 	  </p>
 	  <p>
 	  	<a href="user-guide/provider-infrastructure.html">More details</a>
+	  </p>
+	</div>
+  </section>
+  <section name="Maven Builder">
+	<div id="documentContent">
+	  <p>
+		<ul>
+		  <li>Allows to easily keep track of goals that need to be run on projects depending on the files that have changed since goal run</li>
+		  <li>Allow to autolaunch goals (disabled by default)</li>
+		</ul>
+	  </p>
+	  <p>
+		<u>Known limitations</u><br/>
+		<ul>
+			<li>Project references are not managed yet</li>
+		</ul>
+	  </p>
+	  <p>
+	  	<a href="user-guide/builder.html">More details</a>
 	  </p>
 	</div>
   </section>
