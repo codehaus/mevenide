@@ -1,11 +1,11 @@
 <?xml version="1.0"?>
 <toc label="Mevenide Guide">
-	<topic label="Introduction">
+	<topic label="Introduction" href="target/docs/intro.html">
 		<topic label="Presentation" href="target/docs/index.html"/>
 		<topic label="License" href="target/docs/license.html"/>
 		<topic label="Faq" href="target/docs/faq.html" />
 	</topic>
-	<topic label="Reference">
+	<topic label="Reference" href="target/docs/reference.html">
 		<topic label="Features" href="target/docs/features.html"/>
 		<topic id="userGuide" label="User Guide" href="target/docs/help.html">
 			<topic label="Configuration" href="target/docs/conf.html"/>

@@ -5,7 +5,7 @@
         <title>Overview</title>
     </properties>
     <body>
-        <section name="Project Overview">
+        <section name="Overview">
         	<div id="documentContent">
 			<p>
 			     <a href="http://maven.apache.org">Maven</a> is a Java project management and project comprehension tool. Maven is based on the concept of a project object model (POM) 
