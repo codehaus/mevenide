@@ -26,8 +26,15 @@ public class TagRule implements IPredicateRule {
             return Token.EOF;
         }
         if (c == ']') {
-            c = scanTo(scanner, ">", true);
-            return END_DECLARATION;
+            //c = scanTo(scanner, ">", true);
+            if ( scanner.read() == '>') {
+                result = END_DECLARATION;
+            }
+            else {
+                scanner.unread();
+                result = TEXT;
+            }
+            
         }
         else if (c != '<') {
             while (c != -1 && c != '<' && c != ']') {
