@@ -34,6 +34,8 @@ public class MavenLibraryImpl implements LibraryImplementation {
     private String locBundle;
     private PropertyChangeSupport support;
     private List content = Collections.EMPTY_LIST;
+    private List javadocContent = Collections.EMPTY_LIST;
+    private List srcContent = Collections.EMPTY_LIST;
     private String artifactID;
     private String groupID;
     private String type;
@@ -59,6 +61,12 @@ public class MavenLibraryImpl implements LibraryImplementation {
         if ("classpath".equals(str)) {
             return content;
         }
+        if ("src".equals(str)) {
+            return srcContent;
+        }
+        if ("javadoc".equals(str)) {
+            return javadocContent;
+        }
         return Collections.EMPTY_LIST;
     }
     
@@ -82,6 +90,10 @@ public class MavenLibraryImpl implements LibraryImplementation {
     public void setContent(String str, List list) throws java.lang.IllegalArgumentException {
         if ("classpath".equals(str)) {
             content = list;
+        } else if ("src".equals(str)) {
+            srcContent = list;
+        } else if ("javadoc".equals(str)) {
+            javadocContent = list;
         } else {
             throw new IllegalArgumentException("what to do with type=" + str);
         }
