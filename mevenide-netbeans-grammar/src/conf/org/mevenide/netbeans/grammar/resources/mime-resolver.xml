@@ -44,5 +44,10 @@
 -->
         </resolver>
     </file>
+    <file>
+        <ext name="jst"/>
+        <resolver mime="text/xml">
+        </resolver>
+    </file>
     
 </MIME-resolver>
