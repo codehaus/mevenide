@@ -89,7 +89,7 @@
       </ant:jar>
   </goal>
   
-  <goal name="eclipse-plugin:create-plugin-dist" prereqs="eclipse-plugin:init,eclipse-plugin:install-artifact"
+  <goal name="eclipse-plugin:create-plugin-dist" prereqs="jar:jar,eclipse-plugin:init,eclipse-plugin:install-artifact"
   		description="create a plugin dist file containing only the plugin required files and put it in ${maven.eclipse.plugin.dist.dir}">
 
   	  <j:set var="mode" value="${maven.eclipse.plugin.build.mode}"/>
