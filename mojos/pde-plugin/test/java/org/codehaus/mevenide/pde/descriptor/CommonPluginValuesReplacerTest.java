@@ -43,8 +43,8 @@ public class CommonPluginValuesReplacerTest extends TestCase {
     private MavenProjectBuilder builder;
     
     protected void setUp() throws Exception {
-        
         Embedder embedder = getEmbedder();
+        
         builder = (MavenProjectBuilder) embedder.lookup(MavenProjectBuilder.ROLE);
         
         replacer = getReplacer("/basedir.replacer");
@@ -57,18 +57,19 @@ public class CommonPluginValuesReplacerTest extends TestCase {
         return new CommonPluginValuesReplacer(basedir, project, "lib");
     }
 
-    private Embedder getEmbedder() throws Exception {
-        Embedder embedder = new Embedder();
-        ClassWorld classWorld = new ClassWorld("core", this.getClass().getClassLoader());
-        embedder.start(classWorld);
-        return embedder;
-    }
 
     protected void tearDown() throws Exception {
         replacer = null;
         basedirFile = null;
         project = null;
         builder = null;
+    }
+    
+    private Embedder getEmbedder() throws Exception {
+        Embedder embedder = new Embedder();
+        ClassWorld classWorld = new ClassWorld("core", this.getClass().getClassLoader());
+        embedder.start(classWorld);
+        return embedder;
     }
     
     public void testReplace() throws Exception {
