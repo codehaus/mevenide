@@ -185,7 +185,10 @@ public class EclipseProjectNode extends AbstractSynchronizationNode {
                 FileUtils.createPom(referencedProject);
             }
             ProjectReader reader = ProjectReader.getReader();
-            return reader.extractDependency(referencedPom);
+            Dependency dependency = reader.extractDependency(referencedPom);
+            dependency.addProperty("eclipse.dependency:true");
+            dependency.resolvedProperties().put("eclipse.dependency", "true");
+            return dependency;
         }
 		return null;
 	}
