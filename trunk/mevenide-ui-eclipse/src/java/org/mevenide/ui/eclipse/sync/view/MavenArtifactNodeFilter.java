@@ -43,7 +43,7 @@ public class MavenArtifactNodeFilter extends ViewerFilter {
 		preferencesManager.loadPreferences();
 		
 		filterMavenArtifacts = preferencesManager.getBooleanValue(APPLY_FILTERS_KEY);
-		groupIdFilter = preferencesManager.getValue(APPLY_FILTERS_KEY);
+		groupIdFilter = preferencesManager.getValue(GROUP_ID_FILTER);
 	}
 	
 	public boolean select(Viewer viewer, Object parentElement, Object element) {
