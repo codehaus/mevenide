@@ -78,12 +78,12 @@ public class DynamicPreferencePage extends PreferencePage implements IWorkbenchP
   
 	private void createDescriptionComposite(Composite composite) {
 	    Text title = new Text(composite, SWT.READ_ONLY);
-	    title.setText(Mevenide.getResourceString("DynamicPreferencePage.Description"));
-	    title.setFont(new Font(PlatformUI.getWorkbench().getDisplay(), new FontData("bold", composite.getFont().getFontData()[0].getHeight(), SWT.BOLD)));
+	    title.setText(Mevenide.getResourceString("DynamicPreferencePage.Description")); //$NON-NLS-1$
+	    title.setFont(new Font(PlatformUI.getWorkbench().getDisplay(), new FontData("bold", composite.getFont().getFontData()[0].getHeight(), SWT.BOLD))); //$NON-NLS-1$
 	    title.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 	    
         Text textDescription = new Text(composite, SWT.READ_ONLY | SWT.MULTI);
-        textDescription.setText(pluginDescription != null ? pluginDescription : Mevenide.getResourceString("DynamicPreferencePage.nodescription"));
+        textDescription.setText(pluginDescription != null ? pluginDescription : Mevenide.getResourceString("DynamicPreferencePage.nodescription")); //$NON-NLS-1$
         GridData data = new GridData(GridData.FILL_HORIZONTAL);
         textDescription.setLayoutData(data);
         
@@ -92,8 +92,8 @@ public class DynamicPreferencePage extends PreferencePage implements IWorkbenchP
 
     private void createPropertyComposite(Composite composite) {
         Text title = new Text(composite, SWT.READ_ONLY | SWT.MULTI);
-	    title.setText(Mevenide.getResourceString("DynamicPreferencePage.Configuration"));
-	    title.setFont(new Font(PlatformUI.getWorkbench().getDisplay(), new FontData("bold", composite.getFont().getFontData()[0].getHeight(), SWT.BOLD)));
+	    title.setText(Mevenide.getResourceString("DynamicPreferencePage.Configuration")); //$NON-NLS-1$
+	    title.setFont(new Font(PlatformUI.getWorkbench().getDisplay(), new FontData("bold", composite.getFont().getFontData()[0].getHeight(), SWT.BOLD))); //$NON-NLS-1$
 	    title.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         
         Group propertiesGroup = createPropertyGroup(composite);
@@ -107,7 +107,7 @@ public class DynamicPreferencePage extends PreferencePage implements IWorkbenchP
         }
         else {
             Text noPropertyWarningText = new Text(propertiesGroup, SWT.READ_ONLY);
-            noPropertyWarningText.setText(Mevenide.getResourceString("DynamicPreferencePage.noproperty"));
+            noPropertyWarningText.setText(Mevenide.getResourceString("DynamicPreferencePage.noproperty")); //$NON-NLS-1$
             GridData warningData = new GridData(GridData.FILL_BOTH);
             noPropertyWarningText.setLayoutData(warningData);
         }
@@ -122,7 +122,7 @@ public class DynamicPreferencePage extends PreferencePage implements IWorkbenchP
         propertiesGroup.setLayout(layout);
         GridData groupData = new GridData(GridData.FILL_HORIZONTAL);
         propertiesGroup.setLayoutData(groupData);
-        propertiesGroup.setText(Mevenide.getResourceString("DynamicPreferencePage.propertygroup.text"));
+        propertiesGroup.setText(Mevenide.getResourceString("DynamicPreferencePage.propertygroup.text")); //$NON-NLS-1$
         return propertiesGroup;
     }
 
@@ -141,7 +141,7 @@ public class DynamicPreferencePage extends PreferencePage implements IWorkbenchP
         editor.load();
 
         editor.setEmptyStringAllowed(!pluginProperty.isRequired());
-        editor.setErrorMessage(Mevenide.getResourceString("DynamicPreferencePage.Empty.NotAllowed", pluginProperty.getLabel()));
+        editor.setErrorMessage(Mevenide.getResourceString("DynamicPreferencePage.Empty.NotAllowed", pluginProperty.getLabel())); //$NON-NLS-1$
         
         ModifyListener editorListener = new ModifyListener() {
             public void modifyText(ModifyEvent arg0) {
@@ -151,10 +151,10 @@ public class DynamicPreferencePage extends PreferencePage implements IWorkbenchP
             }
         };
 
-        String toolTip = propertyName + " : " + 
+        String toolTip = propertyName + " : " +  //$NON-NLS-1$
         				(!StringUtils.isNull(propertyDescription) ? 
         				        					propertyDescription : 
-        				        					Mevenide.getResourceString("DynamicPreferencePage.property.nodescription"));
+        				        					Mevenide.getResourceString("DynamicPreferencePage.property.nodescription")); //$NON-NLS-1$
         editor.getLabelControl(parent).setToolTipText(toolTip);
         
         if ( StringUtils.isNull(editor.getStringValue()) && 
@@ -183,7 +183,6 @@ public class DynamicPreferencePage extends PreferencePage implements IWorkbenchP
     }
     
     protected void performDefaults() {
-        // TODO Auto-generated method stub
         super.performDefaults();
     }
     

@@ -18,6 +18,7 @@ package org.mevenide.ui.eclipse.sync.action;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.sync.model.MavenArtifactNode;
 
 /**
@@ -30,8 +31,8 @@ public class AddPropertyAction extends ArtifactAction {
 	private static Log log = LogFactory.getLog(AddPropertyAction.class);
 	
 	public void addProperty(MavenArtifactNode node) {
-		log.debug("adding property unknown:unknown");
-		String unknown = "unknown";
+		log.debug("adding property unknown:unknown"); //$NON-NLS-1$
+		String unknown = Mevenide.getResourceString("AddPropertyAction.Unknown"); //$NON-NLS-1$
 		node.addProperty(unknown, unknown);
 		firePropertyAdded(node);
 	}

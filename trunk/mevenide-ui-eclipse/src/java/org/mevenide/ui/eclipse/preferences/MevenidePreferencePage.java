@@ -34,7 +34,7 @@ import org.mevenide.ui.eclipse.Mevenide;
 public class MevenidePreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
     
     public MevenidePreferencePage() {
-        super(Mevenide.getResourceString("MevenidePreferencePage.title"));
+        super(Mevenide.getResourceString("MevenidePreferencePage.title")); //$NON-NLS-1$
     }
 
 	protected Control createContents(Composite parent) {

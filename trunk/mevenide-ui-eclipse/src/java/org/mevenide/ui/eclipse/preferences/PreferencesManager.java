@@ -51,7 +51,7 @@ public class PreferencesManager {
 			preferenceStore.load();
 		}
 		catch ( Exception ex ) {
-			log.debug("Unable to load preferences from file '" + getPreferenceStoreFilename() + "' due to : " + ex);
+			log.debug("Unable to load preferences from file '" + getPreferenceStoreFilename(), ex); //$NON-NLS-1$
 		}
 	}
 	
@@ -61,7 +61,7 @@ public class PreferencesManager {
 			return true;
 		}
 		catch (IOException e) {
-			log.debug("Unable to save preferences to file '" + getPreferenceStoreFilename() + "' due to : " + e);
+			log.debug("Unable to save preferences to file '" + getPreferenceStoreFilename(), e); //$NON-NLS-1$
 			return false;
 		}
 	}

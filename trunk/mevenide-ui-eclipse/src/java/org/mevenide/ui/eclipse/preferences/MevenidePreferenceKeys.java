@@ -24,15 +24,15 @@ package org.mevenide.ui.eclipse.preferences;
  */
 public class MevenidePreferenceKeys {
 
-    public static final String JAVA_HOME_PREFERENCE_KEY = "java.home";
-    public static final String MEVENIDE_CHECKTIMESTAMP_PREFERENCE_KEY = "mevenide.checktimestamp";
-    public static final String JAVA_HEAP_SIZE_PREFERENCE_KEY = "maven.heap.size";
-    public static final String MAVEN_HOME_PREFERENCE_KEY = "maven.home";
-    public static final String MAVEN_LAUNCH_DEFAULTGOALS_PREFERENCE_KEY = "maven.launch.defaultgoals";
-    public static final String MAVEN_LOCAL_HOME_PREFERENCE_KEY = "maven.local.home";
-    public static final String MAVEN_REPO_PREFERENCE_KEY = "maven.repo";
-    public static final String POM_TEMPLATE_LOCATION_PREFERENCE_KEY = "pom.template.location";
-    public static final String DEFAULT_GOALS_PREFERENCE_KEY = "maven.launch.defaultgoals";
-    public static final String REGISTERED_DEPENPENCY_TYPES = "mevenide.pom.dependency.type";
+    public static final String JAVA_HOME_PREFERENCE_KEY = "java.home"; //$NON-NLS-1$
+    public static final String MEVENIDE_CHECKTIMESTAMP_PREFERENCE_KEY = "mevenide.checktimestamp"; //$NON-NLS-1$
+    public static final String JAVA_HEAP_SIZE_PREFERENCE_KEY = "maven.heap.size"; //$NON-NLS-1$
+    public static final String MAVEN_HOME_PREFERENCE_KEY = "maven.home"; //$NON-NLS-1$
+    public static final String MAVEN_LAUNCH_DEFAULTGOALS_PREFERENCE_KEY = "maven.launch.defaultgoals"; //$NON-NLS-1$
+    public static final String MAVEN_LOCAL_HOME_PREFERENCE_KEY = "maven.local.home"; //$NON-NLS-1$
+    public static final String MAVEN_REPO_PREFERENCE_KEY = "maven.repo"; //$NON-NLS-1$
+    public static final String POM_TEMPLATE_LOCATION_PREFERENCE_KEY = "pom.template.location"; //$NON-NLS-1$
+    public static final String DEFAULT_GOALS_PREFERENCE_KEY = "maven.launch.defaultgoals"; //$NON-NLS-1$
+    public static final String REGISTERED_DEPENPENCY_TYPES = "mevenide.pom.dependency.type"; //$NON-NLS-1$
 
 }

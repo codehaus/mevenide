@@ -31,7 +31,7 @@ import org.mevenide.ui.eclipse.Mevenide;
 public class DynamicPreferencesManager extends PreferencesManager {
     private static final DynamicPreferencesManager manager = new DynamicPreferencesManager();
 
-    public static final String SEPARATOR = "|";
+    public static final String SEPARATOR = "|"; //$NON-NLS-1$
     
     protected DynamicPreferencesManager() {
         super();

@@ -17,6 +17,7 @@
 package org.mevenide.ui.eclipse.sync.action;
 
 import org.eclipse.jface.action.Action;
+import org.mevenide.ui.eclipse.Mevenide;
 
 /**  
  * 
@@ -35,10 +36,10 @@ public class ToggleWritePropertiesAction extends Action {
 		if ( CHECKED.equals(propertyName) ) {
 			String tooltip;
 			if ( ((Boolean) newValue).booleanValue() ) {
-				tooltip = "Do not override project.properties";
+				tooltip = Mevenide.getResourceString("ToggleWriteProperties.NoOverride"); //$NON-NLS-1$
 			}
 			else {
-				tooltip = "Override project.properties";
+				tooltip = Mevenide.getResourceString("ToggleWriteProperties.Override"); //$NON-NLS-1$
 			}
 			setToolTipText(tooltip);
 		}

@@ -33,21 +33,23 @@ import org.mevenide.ui.eclipse.Mevenide;
  */
 public class DynamicPreferencePageFactory {
     
-	private static final String MAIN_PREFERENCE_PAGE_PATH = "org.mevenide.ui.plugin.preferences.MavenPreferencePage";
-    private static final String ROOT_PAGE_PATH = MAIN_PREFERENCE_PAGE_PATH + "/org.mevenide.ui.eclipse.preferences.PluginsRoot";
-    
-    private static final String PLUGIN_DESCRIPTION = "description";
-	private static final String PLUGIN_PROPERTY = "property";
-
-    private static final String PAGE_ID = "id";
-	private static final String PAGE_NAME = "name";
 	
-	private static final String PROPERTY_DEFAULT = "default";
-	private static final String PROPERTY_NAME = "name";
-	private static final String PROPERTY_LABEL = "label";
-	private static final String PROPERTY_TYPE = "type";
-	private static final String PROPERTY_REQUIRED = "required";
-	private static final String PROPERTY_DESCRIPTION = "description";
+    private static final String EXTENSION_ID = "org.mevenide.ui.preference"; //$NON-NLS-1$
+    private static final String MAIN_PREFERENCE_PAGE_PATH = "org.mevenide.ui.plugin.preferences.MavenPreferencePage"; //$NON-NLS-1$
+    private static final String ROOT_PAGE_PATH = MAIN_PREFERENCE_PAGE_PATH + "/org.mevenide.ui.eclipse.preferences.PluginsRoot"; //$NON-NLS-1$
+    
+    private static final String PLUGIN_DESCRIPTION = "description"; //$NON-NLS-1$
+	private static final String PLUGIN_PROPERTY = "property"; //$NON-NLS-1$
+
+    private static final String PAGE_ID = "id"; //$NON-NLS-1$
+	private static final String PAGE_NAME = "name"; //$NON-NLS-1$
+	
+	private static final String PROPERTY_DEFAULT = "default"; //$NON-NLS-1$
+	private static final String PROPERTY_NAME = "name"; //$NON-NLS-1$
+	private static final String PROPERTY_LABEL = "label"; //$NON-NLS-1$
+	private static final String PROPERTY_TYPE = "type"; //$NON-NLS-1$
+	private static final String PROPERTY_REQUIRED = "required"; //$NON-NLS-1$
+	private static final String PROPERTY_DESCRIPTION = "description"; //$NON-NLS-1$
 	
 	private static DynamicPreferencePageFactory factory = new DynamicPreferencePageFactory();	
 	
@@ -57,7 +59,7 @@ public class DynamicPreferencePageFactory {
     
     public void createPages() {
         
-        IExtensionPoint extension = Platform.getExtensionRegistry().getExtensionPoint("org.mevenide.ui.preference");
+        IExtensionPoint extension = Platform.getExtensionRegistry().getExtensionPoint(EXTENSION_ID); 
         if ( extension != null ) {
 	        IConfigurationElement[] configurationElements = extension.getConfigurationElements();
 	        for (int i = 0; i < configurationElements.length; i++) {
@@ -96,7 +98,7 @@ public class DynamicPreferencePageFactory {
                     						  propertyLabel, 
                     						  propertyDefault, 
                     						  propertyType, 
-                    						  "true".equals(propertyRequired),
+                    						  "true".equals(propertyRequired), //$NON-NLS-1$
                     						  propertyDescription));
         }
         IPreferenceNode node = new DynamicPreferenceNode(pageId, pageName, pluginDescription, properties);

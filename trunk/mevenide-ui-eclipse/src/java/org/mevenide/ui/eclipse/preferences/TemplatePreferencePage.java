@@ -129,8 +129,8 @@ public class TemplatePreferencePage extends PreferencePage implements IWorkbench
                 if (fCurrentSelection != null) {
                     if (MessageDialog.openConfirm(
                                     getShell(),
-                                    Mevenide.getResourceString("TemplatePreferencePage.del.confirm.title"), 
-                                    Mevenide.getResourceString("TemplatePreferencePage.del.confirm.message") + " " + fCurrentSelection.getTemplateName())) //$NON-NLS-1$
+                                    Mevenide.getResourceString("TemplatePreferencePage.del.confirm.title"),  //$NON-NLS-1$
+                                    Mevenide.getResourceString("TemplatePreferencePage.del.confirm.message", fCurrentSelection.getTemplateName()))) //$NON-NLS-1$ 
                     {
                         fCurrentSelection.getProject().getFile().delete();
                         fTemplates.removeTemplate(fCurrentSelection);
@@ -159,7 +159,7 @@ public class TemplatePreferencePage extends PreferencePage implements IWorkbench
 		                if (!copyTemplateToPreferences(p))
 		                    MessageDialog.openError(
 		                                    getShell(),
-		                                    Mevenide.getResourceString("TemplatePreferencePage.op_error_title"), 
+		                                    Mevenide.getResourceString("TemplatePreferencePage.op_error_title"),  //$NON-NLS-1$
 		                                    Mevenide.getResourceString("TemplatePreferencePage.op_error_create.message"));//$NON-NLS-1$
                 }
             }

@@ -63,7 +63,7 @@ public class Directory {
     }
     
     String getCleanPath() {
-        return SourceDirectoryUtil.stripBasedir(path).replaceAll("\\\\", "/");
+        return SourceDirectoryUtil.stripBasedir(path).replaceAll("\\\\", "/");  //$NON-NLS-1$//$NON-NLS-2$
     }
     
     public void setPath(String path) {

@@ -20,6 +20,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
+import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.adapters.properties.AbstractPomPropertySource;
 
 /**
@@ -31,8 +32,8 @@ public class ExcludePropertySource extends AbstractPomPropertySource {
 
 	private static final Log log = LogFactory.getLog(ExcludePropertySource.class);
 
-	public static final String DIRECTORY = "Directory";
-	public static final String EXCLUSION_PATTERN = "Exclusion pattern";
+	public static final String DIRECTORY = "Directory"; //$NON-NLS-1$
+	public static final String EXCLUSION_PATTERN = "Exclusion pattern"; //$NON-NLS-1$
 	
 	private String directory;
 	private String exclusionPattern;
@@ -85,7 +86,7 @@ public class ExcludePropertySource extends AbstractPomPropertySource {
 	}
 
 	public String getLabel(Object o) {
-		return directory != null ? directory : "[unable to resolve Exclude directory]";
+		return directory != null ? directory : Mevenide.getResourceString("ExcludePropertySource.CannotResolve.ExcludeDirectory"); //$NON-NLS-1$
 	}
 
 	/**

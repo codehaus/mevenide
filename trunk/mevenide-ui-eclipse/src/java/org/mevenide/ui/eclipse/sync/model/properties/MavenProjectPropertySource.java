@@ -21,6 +21,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Project;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
+import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.adapters.properties.AbstractPomPropertySource;
 
 /**
@@ -32,7 +33,7 @@ public class MavenProjectPropertySource extends AbstractPomPropertySource {
 
 	private static final Log log = LogFactory.getLog(MavenProjectPropertySource.class);
 
-	static final String DESCRIPTOR_FILE = "POM Descriptor";
+	static final String DESCRIPTOR_FILE = "POM Descriptor"; //$NON-NLS-1$
 	
 	private Project mavenProject;
 	
@@ -79,9 +80,9 @@ public class MavenProjectPropertySource extends AbstractPomPropertySource {
 
 	public String getLabel(Object o) {
 		if (log.isDebugEnabled()) {
-			log.debug("getLabel called for " + o);
+			log.debug("getLabel called for " + o); //$NON-NLS-1$
 		}
-		return descriptorPath != null ? descriptorPath : "[unable to resolve Descriptor path]";
+		return descriptorPath != null ? descriptorPath : Mevenide.getResourceString("MavenProjectSource.CannotResolve.DescriptorPath"); //$NON-NLS-1$
 	}
 
 	/**
