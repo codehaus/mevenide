@@ -50,7 +50,7 @@ public class ManageActionDefinitionsAction extends Action {
         DebugUITools.openLaunchConfigurationDialogOnGroup(
                 PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), 
                 null, 
-                "com.example.ExampleLaunchGroupId");
+                "org.mevenide.ui.launching.custom.LaunchGroup");
         
     }
     
