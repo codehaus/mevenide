@@ -286,7 +286,10 @@ Below are listed relevant goals in the context of the Mevenide project.
 --------------------------------
 
   o mevenide:install-maven-eclipse-plugin-plugin
-     Builds and deploys the maven-eclipse-eclipse-plugin used to build Eclipse plugin
+     (Deprecated) Builds and deploys the maven-eclipse-eclipse-plugin used to build Eclipse plugin
+     Use "maven plugin:install" in the plugin project instead.
+     End-users might prefer to install the plugin by running : 
+       "maven -DartifactId=maven-eclipse-plugin-plugin -DgroupId=mevenide -Dversion=[CURRENT_VERSION] plugin:download"
      
   o mevenide:install-maven-nbm-plugin   
      (Deprecated) Builds and deploys the maven-nbm-plugin used to build Netbeans plugin
