@@ -1,0 +1,101 @@
+<?xml version="1.0"?>
+<document>
+
+  	<properties>
+    	<author email="rhill@wanadoo.fr">Gilles Dodinet</author>
+    	<title>Mevenide Goals Grabber Overview</title>
+  	</properties>
+
+	<body>
+		<section name="JBuilder Maven OpenTool">
+			
+			<subsection name="Introduction">
+				<p>This tool enables you to integrate Maven into your JBuilder project !
+				For those unfamiliar with Maven, here is the definition of the project from
+				the <a href="http://maven.apache.org">Maven web site</a> :</p>
+				<p><i> Maven is a Java project management and project comprehension tool.
+					Maven is based on the concept of a project object model (POM) in that all
+					the artifacts produced by Maven are a result of consulting a well defined
+					model for your project. Builds, documentation, source metrics, and source
+					cross-references are all controlled by your POM</i></p>
+				<p>Maven offers tools to automatically manage your external library dependencies
+					from a central repository, offers lots of plugins that can do things as
+					various as compiling your code, verifying that the code in the project
+					complies to coding standard, generate reports and web sites, generate SQL
+					scripts from XML schema description files, etc... It is also now the tool
+					used in a lot of open source projects, as it handles all the nitty-gritty
+					of a project and leaves you more time to do the coding</p>
+				<p>This tool allows you to directly trigger Maven Goals (equivalent to Ant
+					Targets) from your JBuilder project, including even setting dependencies on
+					a Maven goal for a runtime configuration, just you can do with an Ant
+					Target. This tool is also capable of generating a JBuilder library file
+					containing all the Maven project dependencies, so that you may include the
+					library file in the project and compile using the correct dependencies.
+					Future versions of this tool might bring more features, such as
+					editing the project file with IDE Wizards.</p>
+			</subsection>
+			
+			<subsection name="Installing the Maven OpenTool">
+				<p>Installation is pretty straight forward:</p>
+				<ul>
+				  <li>Copy the maven-ui-jbuilder.jar file into the JBuilder/lib/ext directory</li>
+				  <li>Copy the maven-ui-jbuilder-dor.jar into the JBuilder/doc directory.</li>
+				</ul>
+			</subsection>
+			
+			<subsection name="Using the Maven OpenTool">
+				<p>This tool works a lot like the existing Ant integration that JBuilder
+				includes in version 7 and above.</p>
+				<ul>
+				<li>Add your <code>maven.xml</code> project file to your JBuilder project</li>
+				<li>Right click the maven.xml file and select "Properties...". In the Maven tab,
+					make sure you set the location of the Maven home directory.</li>
+				<li>The tool will then recognize all the available plugins for your project
+					and will display them as children of the Maven file.</li>
+				<li>You can right-click on any goal (you can't right click on plugins) and
+					execute the goal selected by clicking on "Make"
+				</li>
+				<li>You can also set a maven goal as a "Build Target" in the RunTime
+					configuration menu, and it will be launched just before the application
+					gets started when you run your project (useful for deployment for
+					example)
+				</li>
+				</ul>
+			</subsection>
+			
+			<subsection name="Automatic Dependency Library Generation">
+				<p>This tool also automatically updates a JBuilder library called
+				   <b>MavenAutoUpdated.library</b> that is generated in the same directory as the
+				   JBuilder project (*.jpx) file. It is generated from the Maven project
+				   descriptor file (project.xml), which is assumed to be in the same location as
+				   the maven.xml file and contains all the JAR dependencies. In
+				   order for this function to work, you must have inserted the <b>maven.xml</b>
+				   (not the project.xml file, it's just assumed it's in the same place as
+				   the maven.xml file) in your project and the JARs *must* be already present in
+				   the maven local repository, which is assumed to be located in :
+				</p>
+				<p>${user.home}/.maven/repository</p>
+				<p>You can therefore simply include all Maven dependencies as a required library
+					for the JBuilder project and you should then be able to compile the project
+					with JBuilder in sync with Maven. Note that this OpenTool does not automatically
+					insert the library into the project, since this is something that might not
+					be desired, but the library file will always be updated nonetheless (should
+					you want to add it later on).
+				</p>
+			</subsection>
+			
+			<subsection name="Credits">
+				<p>
+				  Written by Serge Huber (<a href="mailto:shuber2@jahia.com">shuber2@jahia.com</a>)
+				</p>
+			</subsection>
+			
+			<subsection name="History">
+				<p>Version 1.0<br />Initial release</p>
+			</subsection>
+			
+		</section>
+	
+	</body>
+	
+</document>

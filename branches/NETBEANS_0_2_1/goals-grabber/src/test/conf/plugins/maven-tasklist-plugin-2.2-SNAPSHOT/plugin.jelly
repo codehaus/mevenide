@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+
+<project 
+  xmlns:j="jelly:core"
+  xmlns:doc="doc"
+  xmlns:vdoclet="vdoclet">
+
+  <goal name="maven-tasklist-plugin:register" >
+    <attainGoal name="reg"/>
+  </goal>
+  <goal name="reg">
+	<j:if test="${sourcesPresent}">
+      <doc:registerReport 
+        name="Task List"
+        pluginName="maven-tasklist-plugin" 
+        link="task-list"
+        description="Report on tasks specified in the source code."/>
+    </j:if>
+  </goal>
+  
+  <goal name="maven-tasklist-plugin:deregister">
+    <j:if test="${sourcesPresent}">
+      <doc:deregisterReport name="Task List"/>
+    </j:if>
+  </goal>
+
+  <!-- ================================================================== -->
+  <!-- T A S K   C R E A T I O N                                          -->
+  <!-- ================================================================== -->
+  
+  <goal name="tasklist" prereqs="maven-tasklist-plugin:report"/>
+  
+  <goal 
+    name="maven-tasklist-plugin:report"
+    prereqs="xdoc:init"
+    description="Generate a list of tasks from @todo tags in your code">
+
+    <j:set var="genDocs"  value="${maven.gen.docs}"/>
+    <j:set var="encoding" value="${maven.docs.outputencoding}"/>
+
+    <j:set var="taskTag" value="${maven.tasklist.taskTag}"/>
+
+    <j:if test="${sourcesPresent == 'true'}">
+      
+      <echo>Generating tasklist ...</echo>
+      
+      <vdoclet:vdoclet
+        srcDir="${pom.build.sourceDirectory}"
+        destDir="${genDocs}"
+        template="plugin-resources/templates/tasklist.vm"
+        outputFile="task-list.xml"
+        encoding="${encoding}"
+      />
+     
+    </j:if>
+
+  </goal>
+
+</project>

@@ -1,0 +1,57 @@
+<?xml version="1.0" ?>
+<!-- referencing other files will fail when executing the plugin's goal from positions which cannot reach
+     the given path.. eg for me it failed in mevenide-netbeans-deps/commons-logging
+<!DOCTYPE project [
+    <!ENTITY code-reports SYSTEM "file:../mevenide-master/pom-fragments/plugin-pom-fragments/code-reports.xml">
+    <!ENTITY scm-reports SYSTEM "file:../mevenide-master/pom-fragments/plugin-pom-fragments/scm-reports.xml">
+]>  -->
+<project>
+  <extend>${basedir}/../mevenide-master/plugin-base-project.xml</extend>
+  
+  <pomVersion>3</pomVersion>
+
+  <artifactId>maven-mevenide-plugin</artifactId>
+  <name>Maven Mevenide Plugin</name>
+  
+  <currentVersion>0.1.1</currentVersion>
+  <shortDescription>Plugin to run and debug Maven projects.</shortDescription>
+  
+  <inceptionYear>2004</inceptionYear>
+  
+  <licenses>
+    <license>
+        <name>Apache Public License 2.0 - for the plugin itself</name>
+        <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <name>Milos Kleint</name>
+      <id>mkleint</id>
+      <email>ca206216@tiscali.cz</email>
+      <roles>
+        <role>Creator</role>
+        <role>Developer</role>
+      </roles>
+    </developer>
+  </developers>
+  
+  <build> 
+     <sourceDirectory>src/java</sourceDirectory>
+    <resources> 
+       <resource> 
+         <directory>${basedir}</directory> 
+         <includes> 
+           <include>plugin.jelly</include> 
+           <include>plugin.properties</include> 
+           <include>project.properties</include> 
+           <include>project.xml</include> 
+         </includes> 
+       </resource> 
+     </resources> 
+   </build>   
+  
+   <reports>
+        <report>maven-changes-plugin</report> 
+   </reports>
+</project>
