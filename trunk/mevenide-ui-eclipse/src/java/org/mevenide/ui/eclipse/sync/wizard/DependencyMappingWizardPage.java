@@ -22,6 +22,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Dependency;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableTreeViewer;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
@@ -37,8 +38,10 @@ import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.PlatformUI;
 import org.mevenide.Environment;
 import org.mevenide.project.dependency.DependencyFactory;
+import org.mevenide.project.dependency.DependencyUtil;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.sync.model.DependencyGroup;
+import org.mevenide.ui.eclipse.sync.model.DependencyGroupContentProvider;
 import org.mevenide.ui.eclipse.sync.model.DependencyGroupMarshaller;
 import org.mevenide.ui.eclipse.sync.view.DependencyMappingViewControl;
 
@@ -99,6 +102,20 @@ public class DependencyMappingWizardPage extends WizardPage {
 		viewer = DependencyMappingViewControl.getViewer(composite, SWT.BORDER);
 		setInput(((SynchronizeWizard)getWizard()).getProject());
 		
+		viewer.getTableTree().addSelectionListener(
+			new SelectionAdapter() {
+				public void widgetSelected(SelectionEvent event) {
+					if ( viewer.getTableTree().getSelection().length == 0 ) {
+						removeButton.setEnabled(false);
+						propertiesButton.setEnabled(false);
+					}
+					else {
+						removeButton.setEnabled(true);
+						propertiesButton.setEnabled(true);
+					}
+				}
+			}
+		);
 		 
 	}
 
@@ -126,7 +143,7 @@ public class DependencyMappingWizardPage extends WizardPage {
 		GridData removeButtonData = new GridData(GridData.FILL_HORIZONTAL);
 		removeButtonData.grabExcessHorizontalSpace = true;
 		removeButton.setLayoutData(removeButtonData);
-		removeButton.setEnabled(true);
+		removeButton.setEnabled(false);
 		
 		propertiesButton = new Button(composite, SWT.PUSH);
 		propertiesButton.setText("Properties");
@@ -152,16 +169,18 @@ public class DependencyMappingWizardPage extends WizardPage {
 							
 							String path = dialog.open();
 							if ( path != null ) {
-								((DependencyGroup)viewer.getInput()).addDependency(DependencyFactory.getFactory().getDependency(path));
-								log.debug("maven repo set to : " + Environment.getMavenRepository());
-								log.debug("Added Dependency : " + path);
-							}
-							viewer.refresh();
-							if ( Environment.getMavenRepository() == null || Environment.getMavenRepository().trim().equals("") ) {
-								MessageBox messageBox = new MessageBox (PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), SWT.ICON_WARNING | SWT.OK);
-								messageBox.setText ("Unset Property : Meven Local Repository");
-								messageBox.setMessage ("Maven Repository has not been, thus groupId wont be resolved. Please see Windows > Preferences > Maven");
-								messageBox.open ();
+								Dependency dependencyToAdd = DependencyFactory.getFactory().getDependency(path);
+								if ( !((DependencyGroup)viewer.getInput()).containsDependency(dependencyToAdd) ) {
+									((DependencyGroup)viewer.getInput()).addDependency(dependencyToAdd);
+									log.debug("Added Dependency : " + path);
+									viewer.refresh();
+									if ( Environment.getMavenRepository() == null || Environment.getMavenRepository().trim().equals("") ) {
+										MessageBox messageBox = new MessageBox (PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), SWT.ICON_WARNING | SWT.OK);
+										messageBox.setText ("Unset Property : Meven Local Repository");
+										messageBox.setMessage ("Maven Repository has not been, thus groupId wont be resolved. Please see Windows > Preferences > Maven");
+										messageBox.open ();
+									}
+								}
 							}
 						}
 						catch ( Exception ex ) {
@@ -201,7 +220,18 @@ public class DependencyMappingWizardPage extends WizardPage {
 								String key = (String) keys.get(i);
 								String value = (String) props.get(key);
 								log.debug(key + " = " + value);
-								
+								IStructuredSelection selection = (IStructuredSelection) viewer.getSelection();
+								Dependency affectedDependency = null;
+								Object sel = selection.getFirstElement();
+								log.debug("selected : " + sel.getClass() + " item");
+								if ( sel instanceof Dependency ) {
+									affectedDependency = (Dependency) sel;
+								}
+								else {
+									affectedDependency = ((DependencyGroupContentProvider.DependencyInfo) sel).getDependency();
+								}
+								affectedDependency.addProperty(key, value);
+								log.debug("Added property (" + key + ", " + value + ") to [" + DependencyUtil.toString(affectedDependency));
 							}
 							
 						}
