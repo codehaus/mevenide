@@ -7,7 +7,7 @@
     <body>
        <section name="Netbeans Module page">
         <div id="documentContent">
-            <p>This project allows to open and work with maven projects in the Netbeans IDE. Mevenide currently supports NetBeans _3.6_ and _4.0dev_.</p>
+            <p>This project allows to open and work with maven projects in the Netbeans IDE. Mevenide currently supports NetBeans 3.6 and 4.0dev.</p>
 	</div>
         </section>
        <section name="Netbeans 3.6">
