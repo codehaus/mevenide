@@ -58,6 +58,8 @@
   	<copy file="${eclipse.home}/plugins/org.eclipse.jdt.launching_3.0.0/launching.jar" 
   	  	  tofile="${maven.repo.local}/eclipse/jars/eclipse-launching-3.0.0.jar"/>
   
+    <copy file="${eclipse.home}/plugins/org.eclipse.help_3.0.0/help.jar" 
+  	  	  tofile="${maven.repo.local}/eclipse/jars/eclipse-help-3.0.0.jar"/>
   	<copy file="${eclipse.home}/plugins/org.eclipse.jface_2.1.0/jface.jar" 
   		  tofile="${maven.repo.local}/eclipse/jars/eclipse-jface-2.1.0.jar"/>  	
   	
