@@ -48,8 +48,8 @@ public class Runner extends AbstractRunner {
 	protected void initEnvironment() throws Exception  {
 		if ( plugin.getMavenHome() == null || plugin.getMavenHome().trim().equals("") ) { 
 			MessageBox dialog = new MessageBox (PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), SWT.ICON_WARNING | SWT.OK);
-			dialog.setText ("Mevenide");
-			dialog.setMessage ("Please set preferences before running Maven.");
+			dialog.setText ("Unset Property : Maven Home");
+			dialog.setMessage ("Cannot run Maven unless you set Maven Home. Please see Windows > Preferences > Maven");
 			dialog.open ();
 			throw new Exception("Maven Home has not been set");
 	    }

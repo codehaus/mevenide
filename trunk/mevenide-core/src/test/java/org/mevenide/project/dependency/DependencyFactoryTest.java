@@ -119,6 +119,11 @@ public class DependencyFactoryTest extends TestCase {
 		dep = dependencyFactory.getDependency(artefact.getAbsolutePath());
 		assertEquals("0.0.1", dep.getVersion());
 		assertEquals("testo", dep.getArtifactId());
+		
+		dep = dependencyFactory.getDependency(new File(Environment.getMavenRepository(), "commons-httpclient\\jars\\commons-httpclient-2.0alpha1-20020829.jar").getAbsolutePath());
+		assertEquals("2.0alpha1-20020829", dep.getVersion());
+		assertEquals("commons-httpclient", dep.getArtifactId());
+		assertEquals("commons-httpclient", dep.getGroupId());
 	}
 
 	
