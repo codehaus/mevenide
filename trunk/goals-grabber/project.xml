@@ -8,7 +8,7 @@
     <id>goals-grabber</id>
     <name>Goals Grabber</name>
     <artifactId>goals-grabber</artifactId>
-    <currentVersion>0.1.1-SNAPSHOT</currentVersion>
+    <currentVersion>0.2-SNAPSHOT</currentVersion>
     <organization/>
     <package>org.mevenide.goals</package>
     <shortDescription>Gets all the available goals and reports</shortDescription>
@@ -29,7 +29,7 @@
         <dependency>
             <groupId>mevenide</groupId>
             <artifactId>mevenide-config</artifactId>
-            <version>0.1-SNAPSHOT</version>
+            <version>0.2-SNAPSHOT</version>
             <type>jar</type>
             <properties>
                 <netbeans.module.dep>spec</netbeans.module.dep>
