@@ -44,8 +44,11 @@ public class Runner extends AbstractRunner {
 	 * @see org.mevenide.core.AbstractRunner#initEnvironment()
 	 */
 	protected void initEnvironment() {
-        Environment.setMavenHome(plugin.getMavenHome()); 
-        Environment.setJavaHome(plugin.getJavaHome());
+		if ( plugin.getMavenHome() == null || plugin.getMavenHome().trim().equals("") ) { 
+	    	//bleah ! open dialog
+	    }
+		Environment.setMavenHome(plugin.getMavenHome()); 
+		Environment.setJavaHome(plugin.getJavaHome());
 	}
 
 	/**
@@ -56,6 +59,27 @@ public class Runner extends AbstractRunner {
 	protected void launchVM(String[] options, String[] goals) throws Exception {
 	    //System.out.println("launching vm");
        
+        String[] mavenCp = ArgumentsManager.getMavenClasspath();
+        String[] vmArgs = ArgumentsManager.getVMArgs(this);
+        String[] mavenArgs = getMavenArgs(options, goals);
+        
+//        System.out.println("Classpath : ");
+//        System.out.println("\t");
+//        for (int i = 0; i < mavenCp.length; i++) {
+//			 System.out.print(mavenCp[i] + ";");
+//		}
+//		System.out.println("\nSystem properties : ");
+//		System.out.println("\t");
+//		for (int i = 0; i < vmArgs.length; i++) {
+//			 System.out.print(vmArgs[i] + " ");
+//		}
+//		System.out.println("\nMaven args : ");
+//		System.out.println("\t");
+//		for (int i = 0; i < mavenArgs.length; i++) {
+//			 System.out.print(mavenArgs[i] + " ");
+//		}
+		
+		
 	    VMLauncherUtility.runVM(
 			"com.werken.forehead.Forehead",
 			ArgumentsManager.getMavenClasspath(),
