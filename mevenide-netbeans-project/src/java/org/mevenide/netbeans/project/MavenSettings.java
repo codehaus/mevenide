@@ -43,6 +43,8 @@ public class MavenSettings extends SystemOption {
         };
         setTopGoals(defaultGoals);
         setShowAddFavouriteHint(true);
+        setOffline(false);
+        setNoBanner(false);
     }
     
     public String displayName() {
