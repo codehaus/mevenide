@@ -58,6 +58,7 @@ public class TeamPanel extends JPanel implements ProjectPanel {
     private MavenProject project;
     private DefaultListModel contribModel;
     private DefaultListModel develModel;
+    private boolean doResolve = false;
     
     /** Creates new form BasicsPanel */
     public TeamPanel(boolean propagateImmediately, boolean enable, MavenProject proj) {
@@ -90,12 +91,12 @@ public class TeamPanel extends JPanel implements ProjectPanel {
     }
     
     public void setEnableFields(boolean enable) {
-        txtEmail.setEnabled(enable);
-        txtName.setEnabled(enable);
-        txtID.setEnabled(enable);
-        txtOrganization.setEnabled(enable);
-        txtTimezone.setEnabled(enable);
-        txtURL.setEnabled(enable);
+        txtEmail.setEditable(enable);
+        txtName.setEditable(enable);
+        txtID.setEditable(enable);
+        txtOrganization.setEditable(enable);
+        txtTimezone.setEditable(enable);
+        txtURL.setEditable(enable);
         btnAdd.setEnabled(enable);
         btnEdit.setEnabled(enable);
         btnRemove.setEnabled(enable);
@@ -352,7 +353,9 @@ public class TeamPanel extends JPanel implements ProjectPanel {
     private javax.swing.JTextField txtURL;
     // End of variables declaration//GEN-END:variables
     
-    public void setProject(Project project) {
+    public void setProject(Project project, boolean resolve) {
+//TODO        setEnableFields(!resolve);                
+        doResolve = resolve;
         List contrib = project.getContributors();
         List devel = project.getDevelopers();
         comTeam.removeAllItems();
@@ -398,6 +401,13 @@ public class TeamPanel extends JPanel implements ProjectPanel {
         btnEdit.setEnabled(false);
     }
     
+    private String getValue(String value, boolean resolve) {
+        if (resolve) {
+            return project.getPropertyResolver().resolveString(value);
+        }
+        return value;
+    }    
+    
     private void fillValues(Contributor contrib) {
         if (contrib == null) {
             txtName.setText("");
@@ -407,12 +417,12 @@ public class TeamPanel extends JPanel implements ProjectPanel {
             txtTimezone.setText("");
             txtURL.setText("");
         } else {
-            txtName.setText(contrib.getName() == null ? "" : contrib.getName());
-            txtID.setText(contrib.getId() == null ? "" : contrib.getId());
-            txtEmail.setText(contrib.getEmail() == null ? "" : contrib.getEmail());
-            txtOrganization.setText(contrib.getOrganization() == null ? "" : contrib.getOrganization());
-            txtTimezone.setText(contrib.getTimezone() == null ? "" : contrib.getTimezone());
-            txtURL.setText(contrib.getUrl() == null ? "" : contrib.getUrl());
+            txtName.setText(contrib.getName() == null ? "" : getValue(contrib.getName(), doResolve));
+            txtID.setText(contrib.getId() == null ? "" : getValue(contrib.getId(), doResolve));
+            txtEmail.setText(contrib.getEmail() == null ? "" : getValue(contrib.getEmail(), doResolve));
+            txtOrganization.setText(contrib.getOrganization() == null ? "" : getValue(contrib.getOrganization(), doResolve));
+            txtTimezone.setText(contrib.getTimezone() == null ? "" : getValue(contrib.getTimezone(), doResolve));
+            txtURL.setText(contrib.getUrl() == null ? "" : getValue(contrib.getUrl(), doResolve));
         }
         
     }

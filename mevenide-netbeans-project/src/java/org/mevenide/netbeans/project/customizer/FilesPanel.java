@@ -62,12 +62,12 @@ public class FilesPanel extends JPanel implements ProjectPanel {
     }
     
     public void setEnableFields(boolean enable) {
-        txtBuild.setEnabled(enable);
-        txtPOMFile.setEnabled(enable);
-        txtProject.setEnabled(enable);
-        txtProjectDir.setEnabled(enable);
-        txtUser.setEnabled(enable);
-        txtUserDirectory.setEnabled(enable);
+        txtBuild.setEditable(enable);
+        txtPOMFile.setEditable(enable);
+        txtProject.setEditable(enable);
+        txtProjectDir.setEditable(enable);
+        txtUser.setEditable(enable);
+        txtUserDirectory.setEditable(enable);
     }
     
     /** This method is called from within the constructor to
@@ -282,7 +282,7 @@ public class FilesPanel extends JPanel implements ProjectPanel {
     private javax.swing.JTextField txtUserDirectory;
     // End of variables declaration//GEN-END:variables
     
-    public void setProject(Project proj) {
+    public void setProject(Project proj, boolean resolve) {
         txtBuild.setText("build.properties");
         txtProject.setText("project.properties");
         txtUser.setText("build.properties");

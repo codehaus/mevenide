@@ -74,16 +74,16 @@ public class BasicsPanel extends JPanel implements ProjectPanel {
     }
     
     public void setEnableFields(boolean enable) {
-        txtArtifactID.setEnabled(enable);
-        txtCurrentVersion.setEnabled(enable);
-        txtGroupID.setEnabled(enable);
-        txtInceptionYear.setEnabled(enable);
-        txtLogo.setEnabled(enable);
-        txtName.setEnabled(enable);
-        txtPackage.setEnabled(enable);
-        txtShortDescription.setEnabled(enable);
-        txtUrl.setEnabled(enable);
-        taDescription.setEnabled(enable);
+        txtArtifactID.setEditable(enable);
+        txtCurrentVersion.setEditable(enable);
+        txtGroupID.setEditable(enable);
+        txtInceptionYear.setEditable(enable);
+        txtLogo.setEditable(enable);
+        txtName.setEditable(enable);
+        txtPackage.setEditable(enable);
+        txtShortDescription.setEditable(enable);
+        txtUrl.setEditable(enable);
+        taDescription.setEditable(enable);
     }
     
     /** This method is called from within the constructor to
@@ -358,18 +358,26 @@ public class BasicsPanel extends JPanel implements ProjectPanel {
     private javax.swing.JTextField txtShortDescription;
     private javax.swing.JTextField txtUrl;
     // End of variables declaration//GEN-END:variables
+     
+    public void setProject(Project project, boolean resolve) {
+//TODO        setEnableFields(!resolve);
+        txtName.setText(project.getName() == null ? "" : getValue(project.getName(), resolve));
+        txtCurrentVersion.setText(project.getCurrentVersion() == null ? "" : getValue(project.getCurrentVersion(), resolve));
+        txtArtifactID.setText(project.getArtifactId() == null ? "" : getValue(project.getArtifactId(), resolve));
+        txtGroupID.setText(project.getGroupId() == null ? "" : getValue(project.getGroupId(), resolve));
+        txtPackage.setText(project.getPackage() == null ? "" : getValue(project.getPackage(), resolve));
+        txtInceptionYear.setText(project.getInceptionYear() == null ? "" : getValue(project.getInceptionYear(), resolve));
+        txtShortDescription.setText(project.getShortDescription() == null ? "" : getValue(project.getShortDescription(), resolve));
+        txtUrl.setText(project.getUrl() == null ? "" : getValue(project.getUrl(), resolve));
+        txtLogo.setText(project.getLogo() == null ? "" : getValue(project.getLogo(), resolve));
+        taDescription.setText(project.getDescription() == null ? "" : getValue(project.getDescription(), resolve));
+    }
     
-    public void setProject(Project project) {
-        txtName.setText(project.getName() == null ? "" : project.getName());
-        txtCurrentVersion.setText(project.getCurrentVersion() == null ? "1.0" : project.getCurrentVersion());
-        txtArtifactID.setText(project.getArtifactId() == null ? "" : project.getArtifactId());
-        txtGroupID.setText(project.getGroupId() == null ? "" : project.getGroupId());
-        txtPackage.setText(project.getPackage() == null ? "" : project.getPackage());
-        txtInceptionYear.setText(project.getInceptionYear() == null ? "" : project.getInceptionYear());
-        txtShortDescription.setText(project.getShortDescription() == null ? "" : project.getShortDescription());
-        txtUrl.setText(project.getUrl() == null ? "" : project.getUrl());
-        txtLogo.setText(project.getLogo() == null ? "" : project.getLogo());
-        taDescription.setText(project.getDescription() == null ? "" : project.getDescription());
+    private String getValue(String value, boolean resolve) {
+        if (resolve) {
+            return project.getPropertyResolver().resolveString(value);
+        }
+        return value;
     }
     
     public Project copyProject(Project project) {

@@ -57,6 +57,7 @@ public class DependenciesPanel extends JPanel implements ExplorerManager.Provide
     private ExplorerManager manager;
     private DependencyPanel currentCustomizer;
     private BeanTreeView btv;
+    private boolean doResolve;
     
     /** Creates new form CustomGoalsPanel */
     public DependenciesPanel(MavenProject proj, boolean editable) {
@@ -98,11 +99,11 @@ public class DependenciesPanel extends JPanel implements ExplorerManager.Provide
     }
     
     public void setFieldsEditable(boolean editable) {
-        txtArtifactID.setEnabled(editable);
-        txtGroupId.setEnabled(editable);
-        txtVersion.setEnabled(editable);
-        txtType.setEnabled(editable);
-        txtURL.setEnabled(editable);
+        txtArtifactID.setEditable(editable);
+        txtGroupId.setEditable(editable);
+        txtVersion.setEditable(editable);
+        txtType.setEditable(editable);
+        txtURL.setEditable(editable);
     }  
     /** This method is called from within the constructor to
      * initialize the form.
@@ -293,13 +294,19 @@ public class DependenciesPanel extends JPanel implements ExplorerManager.Provide
         root.setName("root invisible");
         return root;
     }
+    private String getValue(String value, boolean resolve) {
+        if (resolve) {
+            return project.getPropertyResolver().resolveString(value);
+        }
+        return value;
+    }        
     
     public void setDependency(Dependency dependency) {
-        txtArtifactID.setText(dependency.getArtifactId());
-        txtGroupId.setText(dependency.getGroupId());
-        txtType.setText(dependency.getType() != null ? dependency.getType() : "");
-        txtVersion.setText(dependency.getVersion() != null ? dependency.getVersion() : "");
-        txtType.setText(dependency.getType() != null ? dependency.getType() : "");
+        txtArtifactID.setText(getValue(dependency.getArtifactId(), doResolve));
+        txtGroupId.setText(getValue(dependency.getGroupId(), doResolve));
+        txtType.setText(dependency.getType() != null ? getValue(dependency.getType(), doResolve) : "");
+        txtVersion.setText(dependency.getVersion() != null ? getValue(dependency.getVersion(), doResolve) : "");
+        txtType.setText(dependency.getType() != null ? getValue(dependency.getType(), doResolve) : "");
     }    
     
     public Project copyProject(Project project) {
@@ -315,7 +322,8 @@ public class DependenciesPanel extends JPanel implements ExplorerManager.Provide
         return true;
     }
     
-    public void setProject(Project proj) {
+    public void setProject(Project proj, boolean resolve) {
+        doResolve = resolve;
         manager.setRootContext(createRootNode(proj));
         btv.expandAll();
         selectFirstNode();

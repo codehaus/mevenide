@@ -67,10 +67,10 @@ public class RepositoryPanel extends JPanel implements ProjectPanel {
     }
     
     public void setEnableFields(boolean enable) {
-        txtConnection.setEnabled(enable);
-        txtDevConnection.setEnabled(enable);
-        txtGumpRepoID.setEnabled(enable);
-        txtURL.setEnabled(enable);
+        txtConnection.setEditable(enable);
+        txtDevConnection.setEditable(enable);
+        txtGumpRepoID.setEditable(enable);
+        txtURL.setEditable(enable);
     }
     
     /** This method is called from within the constructor to
@@ -112,17 +112,17 @@ public class RepositoryPanel extends JPanel implements ProjectPanel {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
-        gridBagConstraints.insets = new java.awt.Insets(6, 0, 0, 0);
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(6, 0, 0, 0);
         add(lblURL, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.insets = new java.awt.Insets(6, 3, 0, 0);
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         gridBagConstraints.weightx = 0.1;
+        gridBagConstraints.insets = new java.awt.Insets(6, 3, 0, 0);
         add(txtURL, gridBagConstraints);
 
         lblDevConnection.setLabelFor(txtDevConnection);
@@ -130,17 +130,17 @@ public class RepositoryPanel extends JPanel implements ProjectPanel {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
-        gridBagConstraints.insets = new java.awt.Insets(6, 0, 0, 0);
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(6, 0, 0, 0);
         add(lblDevConnection, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.insets = new java.awt.Insets(6, 3, 0, 0);
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         gridBagConstraints.weightx = 0.1;
+        gridBagConstraints.insets = new java.awt.Insets(6, 3, 0, 0);
         add(txtDevConnection, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -148,8 +148,8 @@ public class RepositoryPanel extends JPanel implements ProjectPanel {
         gridBagConstraints.gridy = 3;
         gridBagConstraints.gridwidth = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.insets = new java.awt.Insets(6, 0, 0, 0);
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(6, 0, 0, 0);
         add(jSeparator1, gridBagConstraints);
 
         lblGumpRepoID.setLabelFor(txtGumpRepoID);
@@ -157,26 +157,26 @@ public class RepositoryPanel extends JPanel implements ProjectPanel {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 4;
-        gridBagConstraints.insets = new java.awt.Insets(6, 0, 0, 0);
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(6, 0, 0, 0);
         add(lblGumpRepoID, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 4;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.insets = new java.awt.Insets(6, 3, 0, 0);
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         gridBagConstraints.weightx = 0.1;
         gridBagConstraints.weighty = 0.1;
+        gridBagConstraints.insets = new java.awt.Insets(6, 3, 0, 0);
         add(txtGumpRepoID, gridBagConstraints);
 
         btnURL.setText("View...");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 2;
-        gridBagConstraints.insets = new java.awt.Insets(3, 3, 0, 0);
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(3, 3, 0, 0);
         add(btnURL, gridBagConstraints);
 
     }//GEN-END:initComponents
@@ -195,18 +195,26 @@ public class RepositoryPanel extends JPanel implements ProjectPanel {
     private javax.swing.JTextField txtURL;
     // End of variables declaration//GEN-END:variables
     
-    public void setProject(Project project) {
+    public void setProject(Project project, boolean resolve) {
+//TODO        setEnableFields(!resolve);         
         Repository repo = project.getRepository();
         if (repo == null) {
             txtURL.setText("");
             txtConnection.setText("");
             txtDevConnection.setText("");
         } else {
-            txtURL.setText(repo.getUrl() == null ? "" : repo.getUrl());
-            txtConnection.setText(repo.getConnection() == null ? "" : repo.getConnection());
-            txtDevConnection.setText(repo.getDeveloperConnection() == null ? "" : repo.getDeveloperConnection());
+            txtURL.setText(repo.getUrl() == null ? "" : getValue(repo.getUrl(), resolve));
+            txtConnection.setText(repo.getConnection() == null ? "" : getValue(repo.getConnection(), resolve));
+            txtDevConnection.setText(repo.getDeveloperConnection() == null ? "" : getValue(repo.getDeveloperConnection(), resolve));
         }
-        txtGumpRepoID.setText(project.getGumpRepositoryId() == null ? "" : project.getGumpRepositoryId());
+        txtGumpRepoID.setText(project.getGumpRepositoryId() == null ? "" : getValue(project.getGumpRepositoryId(), resolve));
+    }
+    
+    private String getValue(String value, boolean resolve) {
+        if (resolve) {
+            return project.getPropertyResolver().resolveString(value);
+        }
+        return value;
     }
     
     public Project copyProject(Project project) {
