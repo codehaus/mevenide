@@ -1,24 +1,24 @@
 	<mailingList>
       <name>Mevenide User List</name>
-      <subscribe>mailto:user-subscribe@mevenide.codehaus.org</subscribe>
-      <unsubscribe>mailto:user-unsubscribe@mevenide.codehaus.org</unsubscribe>
+      <subscribe>user-subscribe@mevenide.codehaus.org</subscribe>
+      <unsubscribe>user-unsubscribe@mevenide.codehaus.org</unsubscribe>
       <archive>http://archive.mevenide.codehaus.org/user/</archive>
     </mailingList>
     <mailingList>
       <name>Mevenide Developer List</name>
-      <subscribe>mailto:dev-subscribe@mevenide.codehaus.org</subscribe>
-      <unsubscribe>mailto:dev-unsubscribe@mevenide.codehaus.org</unsubscribe>
+      <subscribe>dev-subscribe@mevenide.codehaus.org</subscribe>
+      <unsubscribe>dev-unsubscribe@mevenide.codehaus.org</unsubscribe>
       <archive>http://archive.mevenide.codehaus.org/dev/</archive>
     </mailingList>
     <mailingList>
       <name>Mevenide Announce List</name>
-      <subscribe>mailto:announce-subscribe@mevenide.codehaus.org</subscribe>
-      <unsubscribe>mailto:announce-unsubscribe@mevenide.codehaus.org</unsubscribe>
+      <subscribe>announce-subscribe@mevenide.codehaus.org</subscribe>
+      <unsubscribe>announce-unsubscribe@mevenide.codehaus.org</unsubscribe>
       <archive>http://archive.mevenide.codehaus.org/announce/</archive>
     </mailingList>    
     <mailingList>
       <name>Mevenide SCM List</name>
-      <subscribe>mailto:scm-subscribe@mevenide.codehaus.org</subscribe>
-      <unsubscribe>mailto:scm-unsubscribe@mevenide.codehaus.org</unsubscribe>
+      <subscribe>scm-subscribe@mevenide.codehaus.org</subscribe>
+      <unsubscribe>scm-unsubscribe@mevenide.codehaus.org</unsubscribe>
       <archive>http://archive.mevenide.codehaus.org/scm/</archive>
     </mailingList>        
