@@ -6,7 +6,14 @@
   </properties>
 
   <body>
-    <release version="0.6" date="in CVS" description="Changes because of Maven RC4">
+    <release version="0.6" date="in CVS" description="">
+      <action dev="mkleint" type="update">
+      More customizations for netbeans.module.dep dependency property.
+      </action>
+      <action dev="mkleint" type="update">
+       Added maven.nbm.modulename property to allow customization of the netbeans module name.
+       Previously the pom.package value was taken automatically. That values stays the default.
+      </action>
       <action dev="mkleint" type="fix">
         Instead of selectively including items into NBM, include everything under ${maven.nbm.build.dir}/${maven.nbm.cluster.dir}
         Allows adding custom files into the nbm, in pregoals of nbm:prepare-nbm-resources.
