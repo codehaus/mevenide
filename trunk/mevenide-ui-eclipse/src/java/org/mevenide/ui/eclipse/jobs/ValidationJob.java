@@ -24,11 +24,12 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Project;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.ui.PlatformUI;
 import org.mevenide.project.io.ProjectReader;
 import org.mevenide.project.validation.ContentValidator;
 import org.mevenide.project.validation.ValidationException;
@@ -42,6 +43,12 @@ import org.mevenide.ui.eclipse.Mevenide;
  *  
  */
 public class ValidationJob extends Job {
+    
+    private static interface IPomValidationMarker {
+        String ERROR_MARKER = Mevenide.PLUGIN_ID + ".pom_validation_error";
+        String WARNING_MARKER = Mevenide.PLUGIN_ID + ".pom_validation_warning";
+    }
+    
     private static final Log log = LogFactory.getLog(ValidationJob.class);
     
     private IFile pomFile;
@@ -55,32 +62,33 @@ public class ValidationJob extends Job {
     protected IStatus run(IProgressMonitor monitor) {
         ContentValidator contentValidator = new ContentValidator();
         try {
+            pomFile.deleteMarkers(IPomValidationMarker.ERROR_MARKER, true, IResource.DEPTH_INFINITE);
+            pomFile.deleteMarkers(IPomValidationMarker.WARNING_MARKER, true, IResource.DEPTH_INFINITE);
+            
             File file = pomFile.getRawLocation().toFile();
             ProjectReader reader = ProjectReader.getReader();
-            
             Project pom = reader.read(file);
+            
             if ( pom != null ) {
                 contentValidator.validate(pom);
             }
-            return new Status(Status.OK, "org.mevenide.ui", 0, null, null);
+            return new Status(Status.OK, "org.mevenide.ui", 0, "POM is valid", null);
         }
         catch ( ValidationException e ) {
             List errors = e.getErrors();
             List warnings = e.getWarnings();
             try {
                 for (int i = 0; i < errors.size(); i++) {
-                    IMarker marker = pomFile.createMarker(IMarker.TASK);
-                    marker.setAttribute(IMarker.MESSAGE, errors.get(i));
+                    createMarker((String) errors.get(i), IPomValidationMarker.ERROR_MARKER, IMarker.SEVERITY_ERROR);
                 } 
                 for (int i = 0; i < warnings.size(); i++) {
-                    IMarker marker = pomFile.createMarker(IMarker.TASK);
-                    marker.setAttribute(IMarker.MESSAGE, warnings.get(i));
+                    createMarker((String) warnings.get(i), IPomValidationMarker.WARNING_MARKER, IMarker.SEVERITY_WARNING);
                 }
-	            PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView("org.eclipse.ui.views.TaskList");
-	            return new Status(Status.WARNING, "org.mevenide.ui", 0, null, null);
+	            //PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView("org.eclipse.ui.views.TaskList");
+	            return new Status(Status.OK, "org.mevenide.ui", 0, "POM has validation errors", null);
             }
             catch ( Exception ex ) {
-                String message = "Uanble to create markers"; 
+                String message = "Unable to create markers. resource : " + pomFile.getFullPath(); 
                 log.error(message, e);
                 return new Status(Status.WARNING, "org.mevenide.ui", 0, message, e);
             }
@@ -90,5 +98,12 @@ public class ValidationJob extends Job {
             log.error(message, e);
             return new Status(Status.INFO, "org.mevenide.ui", 0, message, e);
         }
+    }
+
+    private void createMarker(String message, String markerType, int severity) throws CoreException {
+        IMarker marker = pomFile.createMarker(markerType);
+        marker.setAttribute(IMarker.MESSAGE, message);
+        marker.setAttribute(IMarker.SEVERITY, severity);
+        //marker.setAttribute(IMarker.USER_EDITABLE, Boolean.FALSE);
     }
 }

@@ -266,11 +266,12 @@
          </view>
       </perspectiveExtension>
    </extension>
-   <!-- Maven Project Wizards -->
+   <!-- Maven Wizards -->
    <extension
          point="org.eclipse.ui.newWizards">
       <category name="%MevenideWizards.category.name"
             	id="org.mevenide.ui.eclipse.category.mevenide" />
+      <!-- New Project Wizard -->
       <wizard
             name="%ProjectWizard.name"
             icon="icons/etool16/newmprj_wiz.gif"
@@ -283,7 +284,7 @@
             %ProjectWizard.description
          </description>
       </wizard>
-      
+      <!-- New Pom Wizard -->
       <wizard
               class="org.mevenide.ui.eclipse.wizard.NewPomWizard"
               icon="icons/maven-create-pom.gif"
@@ -296,5 +297,15 @@
          </description>     
       </wizard>
    </extension>
-
+   <!-- POM Validation Error Marker -->
+   <extension id="pom_validation_error" point="org.eclipse.core.resources.markers" name="Maven Pom Validation Error">
+      <persistent value="true"/>
+      <super type="org.eclipse.core.resources.problemmarker"/>
+   </extension>
+   <!-- POM Validation Warning Marker -->
+   <extension id="pom_validation_warning" point="org.eclipse.core.resources.markers" name="Maven Pom Validation Warning">
+      <persistent value="true"/>
+      <super type="org.eclipse.core.resources.problemmarker"/>
+   </extension>
+	
 </plugin>
