@@ -53,7 +53,8 @@ public class PropertyModelFactoryTest extends TestCase {
 // my.prop.6 = trailing whitespaces and a tab   	
 //my.prop.7 = \  
 //slash then 2 ws
-    
+// my.prop.8  :  value line1 \n value line2 \n value \
+//line 3 \n value line 4   
     protected void setUp() throws Exception {
         factory = PropertyModelFactory.getFactory();
         propertyStream = PropertyModelFactoryTest.class.getResourceAsStream("/org/mevenide/properties/test_prop.properties");
@@ -87,6 +88,9 @@ public class PropertyModelFactoryTest extends TestCase {
 		
 		assertEquals("my.prop.7", model.findByKey("my.prop.7").getKey());
 		assertEquals("slash then 2 ws", model.findByKey("my.prop.7").getValue());
+		
+		assertEquals("my.prop.8", model.findByKey("my.prop.8").getKey());
+		assertEquals("value line1 " + new String(new byte[]{Character.LINE_SEPARATOR}) + " value line2 " + new String(new byte[]{Character.LINE_SEPARATOR}) + " valueline 3 " + new String(new byte[]{Character.LINE_SEPARATOR}) + " value line 4", model.findByKey("my.prop.8").getValue()); 
     }
 
 }
