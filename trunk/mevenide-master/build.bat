@@ -1,9 +1,9 @@
 @echo off
 
-rem ---------------------------------------
-rem this is an interactive script that 
-rem downloads, builds and installs mevenide
-rem ---------------------------------------
+rem ---------------------------------------------------
+rem this script downloads, builds and installs mevenide
+rem TODO manage feature deploiement
+rem ---------------------------------------------------
 
 echo ***************************************************************************
 echo *                                                                         *
@@ -15,8 +15,6 @@ echo ***************************************************************************
 pause
 
 pushd
-
-if "%ECLIPSE_HOME%" == "" goto noEclipseHome
 goto prepareFs
 
 
@@ -25,6 +23,7 @@ rem process initialization
 rem ----------------------
 
 :prepareFs
+if "%ECLIPSE_HOME%" == "" goto noEclipseHome
 set /P buildDir=enter checkout folder :
 rmdir /S /Q %buildDir%
 mkdir %buildDir%
@@ -71,7 +70,7 @@ rem ---------------------------------------------------------
 :shouldInstall
 set /P shouldInstall=install mevenide for eclipse (Y/N) ? 
 if "%shouldInstall%" == "Y" goto installMevenide
-if "%shouldInstall%" == "N" goto end
+if "%shouldInstall%" == "N" goto finalize
 goto installMevenide
 
 :installMevenide
@@ -91,6 +90,7 @@ call %JAVA_HOME%\bin\jar xvf ..\%mevenideTempInstallDir%\org.mevenide.core_0.1.1
 call %JAVA_HOME%\bin\jar xvf ..\%mevenideTempInstallDir%\org.mevenide.grabber_0.1.1.jar
 call %JAVA_HOME%\bin\jar xvf ..\%mevenideTempInstallDir%\org.mevenide.ui_0.1.1.jar
 cd ..\..
+rmdir /S /Q %expandedDirs%\META-INF
 xcopy /S /E %expandedDirs% %ECLIPSE_HOME%\plugins
 goto cleanInstallTemp
 
@@ -124,4 +124,3 @@ rem --------------------
 :finalize
 set /P shouldDropFiles=mevenide has been installed. drop installation files (Y/N) ?
 if  "%shouldDropFiles%" == "Y" rmdir /S /Q %buildDir%
-
