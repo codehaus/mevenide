@@ -210,24 +210,34 @@ public class NbProjectWriter {
             org.jdom.Element[] roots = context.getRootElementLayers();
             File[] files = context.getProjectFiles();
             //write now
+            Writer writer = null;
+            InputStream stream = null;
             try {
                 for (int i = 0; i < files.length; i++) {
                     IContentProvider provider = new ChangesContentProvider(new ElementContentProvider(roots[i]),
                                                                            changes, "pom", i);
                     CarefulProjectMarshaller marshall = new CarefulProjectMarshaller();
                     FileObject fo = FileUtil.toFileObject(files[i]);
-                    FileLock lock = fo.lock();
-                    fileLockMap.put(files[i], lock);
                     // read the current stream first..
-                    InputStream stream = fo.getInputStream();
+                    stream = fo.getInputStream();
                     SAXBuilder builder = new SAXBuilder();
                     Document originalDoc = builder.build(stream);
                     stream.close();
-                    Writer writer = new OutputStreamWriter(fo.getOutputStream(lock));
+                    FileLock lock = fo.lock();
+                    fileLockMap.put(files[i], lock);
+                    writer = new OutputStreamWriter(fo.getOutputStream(lock));
                     marshall.marshall(writer, provider, originalDoc);
                 }
             } catch (UserQuestionException exc) {
                 throw new IOException("Cannot obtain lock. User interaction required.");
+            }
+            finally {
+                if (writer != null) {
+                    writer.close();
+                }
+                if (stream != null) {
+                    stream.close();
+                }
             }
         }
     }
