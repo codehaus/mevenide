@@ -7,16 +7,23 @@
    class="org.mevenide.ui.eclipse.MavenPlugin">
 
    <runtime>
-      <library name="lib/commons-discovery.jar"/>
+      <library name="lib/commons-discovery-0.1.jar"/>
       <library name="lib/commons-logging-1.0.1.jar"/>
       <library name="lib/forehead-1.0-beta-4.jar"/>
       <library name="lib/jdom-1.0b8.jar"/>
       <library name="lib/maven-SNAPSHOT.jar"/>
-      <library name="lib/mevenide-core-1.0.jar"/>
-      <library name="lib/mevenide-goals-grabber-1.0.jar"/>
       <library name="lib/xerces-2.2.1.jar"/>
+      <library name="lib/mevenide-goals-grabber-1.0.jar">
+      	<export name="*"/>
+      	<packages prefixes="com.gdfact.maven.plugin.getgoals"/>
+      </library>
+      <library name="lib/mevenide-core-1.0.jar">
+      	  <export name="*"/>
+	      <packages prefixes="org.mevenide"/>
+	  </library>
       <library name="mevenide-ui-eclipse-1.0.jar">
          <export name="*"/>
+         <packages prefixes="org.mevenide.ui.eclipse"/>
       </library>
    </runtime>
    <requires>
