@@ -17,6 +17,7 @@
 package org.mevenide.netbeans.project.customizer.ui;
 
 import java.io.File;
+import javax.swing.DefaultCellEditor;
 import javax.swing.JComponent;
 import org.mevenide.properties.IPropertyLocator;
 
@@ -100,6 +101,8 @@ public class OriginChange {
      */
     public static final int LOCATION_POM_PARENT = 1;
     
+    public static final int LOCATION_POM_PARENT_PARENT = 2;
+    
     OriginChange(LocationComboBox combo) {
         comboBox = combo;
     }
@@ -120,10 +123,13 @@ public class OriginChange {
         return wrapper.getID();
     }
     
-    public void setSelectedLocationID(int location) {
+    public void setInitialLocationID(int location) {
         comboBox.setInitialItem(location);
     }
     
+    public void setSelectedLocationID(int location) {
+        comboBox.invokePopupAction(location);
+    }
     public File getSelectedFile() {
         LocationComboBox.LocationWrapper wrapper = (LocationComboBox.LocationWrapper)comboBox.getSelectedItem();
         return wrapper.getFile();
@@ -138,4 +144,6 @@ public class OriginChange {
     public interface ChangeObserver {
         void actionSelected(String action);
     }
+    
+
 }

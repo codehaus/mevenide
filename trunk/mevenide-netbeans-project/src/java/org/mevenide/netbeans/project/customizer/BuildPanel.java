@@ -213,6 +213,7 @@ public class BuildPanel extends JPanel implements ProjectPanel {
         add(jSeparator1, gridBagConstraints);
 
         cbOffline.setText("Work online.");
+        cbOffline.setToolTipText("Maven Property: maven.mode.online");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 5;
@@ -222,6 +223,7 @@ public class BuildPanel extends JPanel implements ProjectPanel {
         add(cbOffline, gridBagConstraints);
 
         cbRemoteRepoEnabled.setText("Check remote repository for new snapshot dependencies");
+        cbRemoteRepoEnabled.setToolTipText("Maven Property: maven.repo.remote.enabled");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 6;

@@ -324,6 +324,9 @@ public class MavenCustomizer extends JPanel implements ProjectValidateObserver {
 //                createEmptyLabel("WORK IN PROGRESS..."),
 //                null)
 //        };
+        
+
+        
         ConfigurationDescription[] descriptions = new ConfigurationDescription[] {
             new ConfigurationDescription(
                 "GeneralCategory",// NOI18N
@@ -355,12 +358,17 @@ public class MavenCustomizer extends JPanel implements ProjectValidateObserver {
                 "Goal to IDE Action Mappings", 
                 "org/mevenide/netbeans/project/resources/Bullet", // NOI18N
                 new ActionMappingPanel(project),  
-                null)
+                null),
+            new ConfigurationDescription(
+                "pluginsCategory", // NOI18N
+                "Plugins", 
+                "org/mevenide/netbeans/project/resources/Bullet", // NOI18N
+                new PluginListPanel(project, allPanels))
         };
         
         allPanels = new ArrayList();
         addPanelsToList(allPanels, descriptions);
-//        addPanelsToList(allPanels, dependencyChilds);
+//        addPanelsToList(allPanels, pluginChilds);
         addPanelsToList(allPanels, buildChilds);
         addPanelsToList(allPanels, generalChilds);
         
@@ -428,18 +436,32 @@ public class MavenCustomizer extends JPanel implements ProjectValidateObserver {
         private String iconBase;
         private Component customizer;
         private ConfigurationDescription[] children;
+        private Children childs2;
         
-        ConfigurationDescription( String name,
-                                  String displayName,
-                                  String iconBase,
-                                  Component customizer,
-                                  ConfigurationDescription[] children ) 
+        ConfigurationDescription(String name,
+                                 String displayName,
+                                 String iconBase,
+                                 Component customizer,
+                                 ConfigurationDescription[] children ) 
         {
             this.name = name;
             this.displayName = displayName;
             this.iconBase = iconBase;
             this.customizer = customizer;
             this.children = children;
+        }
+        
+        ConfigurationDescription(String name,
+                                 String displayName,
+                                 String iconBase,
+                                 PluginListPanel customizer) 
+        {
+            this.name = name;
+            this.displayName = displayName;
+            this.iconBase = iconBase;
+            this.customizer = customizer;
+            this.childs2 = customizer.getNodeChildren();
+            
         }
         
     }
@@ -452,7 +474,9 @@ public class MavenCustomizer extends JPanel implements ProjectValidateObserver {
         private Component customizer;
         
         public ConfigurationNode( ConfigurationDescription description ) {
-            super( description.children == null ? Children.LEAF : new ConfigurationChildren( description.children ) );
+            super( description.children == null ? 
+                          (description.childs2 == null ? Children.LEAF : description.childs2) : 
+                          new ConfigurationChildren( description.children ) );
             setName( description.name );
             setDisplayName( description.displayName );
             if ( description.iconBase != null ) {

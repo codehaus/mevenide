@@ -14,46 +14,51 @@
  *  limitations under the License.
  * =========================================================================
  */
-package org.mevenide.netbeans.project.customizer;
+package org.mevenide.netbeans.project.customizer.ui;
 
+import java.awt.Component;
+import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentListener;
+import org.mevenide.netbeans.project.customizer.MavenPropertyChange;
 import org.mevenide.netbeans.project.customizer.ui.OriginChange;
 import org.mevenide.properties.IPropertyLocator;
 
 
 /**
  * changes tracker for textfields with an originchange instance attached.
- * @author  Milos Kleint (ca206216@tiscali.cz)
+ * @author  Milos Kleint (mkleint@codehaus.org)
 df */
-public class TextFieldPropertyChange implements MavenPropertyChange {
+public class TableRowPropertyChange implements MavenPropertyChange {
     private String key;
     private String value;
     private int location;
     private String newValue;
     private int newLocation;
     private String defaultValue;
-    private JTextField field;
+    private JTable table;
     private OriginChange origin;
-    private DocListener listener;
     
     private boolean ignore = false;
     
-    public TextFieldPropertyChange(String keyParam, String oldValue, int oldLocation, 
-                                   JTextField textfield, OriginChange oc, String defVal) {
+    public TableRowPropertyChange(String keyParam, String oldValue, int oldLocation, 
+                                  JTable table, OriginChange oc, String defVal) {
         key = keyParam;
         value = oldValue != null ? oldValue : "";
         location = oldLocation;
         newValue= value;
         newLocation = oldLocation;
-        field = textfield;
+        this.table = table;
         origin = oc;
         defaultValue = defVal;
         origin.setInitialLocationID(oldLocation);
-        field.setText(value);
-        listener = new DocListener();
-        origin.setChangeObserver(listener);
-        field.getDocument().addDocumentListener(listener);
+//        field.setText(value);
+//        origin.setChangeObserver(listener);
+//        field.getDocument().addDocumentListener(listener);
+    }
+    
+    Component getOriginComponent() {
+        return origin.getComponent();
     }
     
     /**
@@ -68,7 +73,7 @@ public class TextFieldPropertyChange implements MavenPropertyChange {
      * assigns the textfield and loc combo with current values.
      */
     public void stopIgnoringChanges() {
-        field.setText(newValue);
+//        field.setText(newValue);
         origin.setInitialLocationID(newLocation);
         ignore = false;
     }
@@ -100,63 +105,53 @@ public class TextFieldPropertyChange implements MavenPropertyChange {
     
     public void setResolvedValue(String resvalue) {
         ignore = true;
-        field.setEditable(false);
+//        field.setEditable(false);
         origin.getComponent().setEnabled(false);
-        field.setText(resvalue);
+//        field.setText(resvalue);
         ignore = false;
     }
     
     public void resetToNonResolvedValue() {
         ignore = true;
-        field.setEditable(true);
+//        field.setEditable(true);
         origin.getComponent().setEnabled(true);
-        field.setText(newValue);
+//        field.setText(newValue);
         ignore = false;
     }
     
-    
-  private class DocListener implements DocumentListener, OriginChange.ChangeObserver {
-        private DocListener() {
-        }
-        private void update() {
-            if (ignore) {
-                return;
-            }
-            newValue = field.getText();
-            if (origin.getSelectedLocationID() == IPropertyLocator.LOCATION_NOT_DEFINED ||
+    public void setNewValue(String value) {
+        newValue = value;
+        if (origin.getSelectedLocationID() == IPropertyLocator.LOCATION_NOT_DEFINED ||
                 origin.getSelectedLocationID() == IPropertyLocator.LOCATION_DEFAULTS) {
-                // assume the default placement is build..
-                // maybe have configurable or smartish later..
-                origin.setAction(OriginChange.ACTION_DEFINE_IN_BUILD);
-            }
+            // assume the default placement is build..
+            // maybe have configurable or smartish later..
+            newLocation = IPropertyLocator.LOCATION_PROJECT_BUILD;
+            origin.setSelectedLocationID(IPropertyLocator.LOCATION_PROJECT_BUILD);
         }
-        
-        public void changedUpdate(javax.swing.event.DocumentEvent e) {
-            update();
+    }
+    
+    public void setNewLocation(int loc) {
+        newLocation = loc;
+        if (newLocation == IPropertyLocator.LOCATION_DEFAULTS || 
+            newLocation == IPropertyLocator.LOCATION_NOT_DEFINED) 
+        {
+            newValue = defaultValue;
         }
+        origin.setSelectedLocationID(loc);
+    }
 
-        public void insertUpdate(javax.swing.event.DocumentEvent e) {
-            update();
-        }
-
-        public void removeUpdate(javax.swing.event.DocumentEvent e) {
-            update();
-        }
-
-        public void actionSelected(String changeAction) {
-            if (ignore) {
-                return;
-            }
-            newLocation = origin.getSelectedLocationID();
-            if (OriginChange.ACTION_RESET_TO_DEFAULT.equals(changeAction)) {
-                // assuming the correct default value is not-override..
-                ignore = true;
-                newValue = (defaultValue == null ? "" : defaultValue);
-                field.setText(newValue);
-                ignore = false;
-            }
-        }
-        
-    }    
+//        public void actionSelected(String changeAction) {
+//            if (ignore) {
+//                return;
+//            }
+//            newLocation = origin.getSelectedLocationID();
+//            if (OriginChange.ACTION_RESET_TO_DEFAULT.equals(changeAction)) {
+//                // assuming the correct default value is not-override..
+//                ignore = true;
+//                newValue = (defaultValue == null ? "" : defaultValue);
+////                field.setText(newValue);
+//                ignore = false;
+//            }
+//        }
     
 }

@@ -68,7 +68,7 @@ public class MultiTextComponentPOMChange implements MavenPOMTreeChange {
         newLocation = oldLocation;
         fields = textfields;
         origin = oc;
-        origin.setSelectedLocationID(oldLocation);
+        origin.setInitialLocationID(oldLocation);
         orListener = new OrigListener();
         listeners = new HashMap();
         Iterator it = fields.entrySet().iterator();
@@ -130,7 +130,7 @@ public class MultiTextComponentPOMChange implements MavenPOMTreeChange {
             field.setText(val == null ? "" : val);
             field.setEditable(true);
         }
-        origin.setSelectedLocationID(newLocation);
+        origin.setInitialLocationID(newLocation);
         ignore = false;
     }
     

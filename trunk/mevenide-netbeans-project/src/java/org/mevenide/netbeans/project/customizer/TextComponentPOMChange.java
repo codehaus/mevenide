@@ -47,7 +47,7 @@ public class TextComponentPOMChange implements MavenPOMChange {
         newLocation = oldLocation;
         field = textfield;
         origin = oc;
-        origin.setSelectedLocationID(oldLocation);
+        origin.setInitialLocationID(oldLocation);
         field.setText(value);
         listener = new DocListener();
         origin.setChangeObserver(listener);
@@ -67,7 +67,7 @@ public class TextComponentPOMChange implements MavenPOMChange {
      */
     public void stopIgnoringChanges() {
         field.setText(newValue);
-        origin.setSelectedLocationID(newLocation);
+        origin.setInitialLocationID(newLocation);
         ignore = false;
     }
     

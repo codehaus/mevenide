@@ -69,7 +69,7 @@ public class ListModelPOMChange implements MavenPOMTreeChange {
         newValues = new ArrayList(values);
         newLocation = oldLocation;
         origin = oc;
-        origin.setSelectedLocationID(oldLocation);
+        origin.setInitialLocationID(oldLocation);
         model = lst;
         Iterator it = newValues.iterator();
         while (it.hasNext()) {
@@ -98,7 +98,7 @@ public class ListModelPOMChange implements MavenPOMTreeChange {
         while (it.hasNext()) {
             model.addElement(it.next());
         }
-        origin.setSelectedLocationID(newLocation);
+        origin.setInitialLocationID(newLocation);
         ignore = false;
     }
     
