@@ -24,10 +24,15 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Dependency;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IClasspathContainer;
 import org.eclipse.jdt.core.IClasspathEntry;
+import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.launching.JavaRuntime;
 import org.mevenide.project.io.ProjectReader;
 import org.mevenide.ui.eclipse.DefaultPathResolver;
@@ -89,4 +94,43 @@ public class EclipseProjectUtils {
 	}
 	
 	
+	/**
+     * @param iproject the IProject for which we want to retrieve the output folders.  
+	 * @return empty List if <code>iproject</code> doesnot have the Java nature, the output folders list otherwise
+     * the ouput folders list contains the default output folder as well as specific output folders defined on a perartifact basis
+     * if an error occurs retunrs empty List. 
+     * 
+     */
+	public static List getOutputFolders(IProject iproject) {
+	    List outputFolders = new ArrayList();
+	    
+		IJavaProject project = JavaCore.create(iproject);
+		
+		if ( project.exists() ) { 
+			log.debug("retrieving output folders for project " + iproject.getName());
+            try {
+				//add default ouput location
+				IPath defaultOuputFolder = project.getOutputLocation();
+				IResource resource = ResourcesPlugin.getWorkspace().getRoot().getFolder(defaultOuputFolder);
+				outputFolders.add(resource.getLocation().toFile());
+				log.debug("Added " + resource.getLocation() + " to output folder list");
+
+				//iterate each classpath entry and add output location
+			    IClasspathEntry[] classpathEntries = project.getRawClasspath();
+	            for (int i = 0; i < classpathEntries.length; i++) {
+		            IClasspathEntry cpEntry = classpathEntries[i];
+		            if ( cpEntry.getOutputLocation() != null ) {
+						IResource outputFolder = ResourcesPlugin.getWorkspace().getRoot().getFolder(cpEntry.getOutputLocation());
+		                outputFolders.add(outputFolder.getLocation().toFile());
+						log.debug("Added " + outputFolder + " to output folder list");
+		            }
+		        }
+            } 
+			catch (JavaModelException e) {
+                 log.error("Unable to obtain output Folders for project " + iproject.getName() );
+            }
+		}
+	    
+	    return outputFolders;
+	}
 }

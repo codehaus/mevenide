@@ -220,4 +220,15 @@ public class FileUtils {
 		return visitedPoms;
 	}
 	
+	public static IProject getParentProjectForFile(File f) {
+	    IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(f.getName());
+	    if ( project.exists() ) {
+	        return project;
+	    }
+	    return ResourcesPlugin.getWorkspace().getRoot().getFileForLocation(new Path(f.getAbsolutePath())).getProject();
+	}
+	
+	public static File getSystemFile(IPath location) {
+	    return ResourcesPlugin.getWorkspace().getRoot().getLocation().toFile();
+	}
 }
