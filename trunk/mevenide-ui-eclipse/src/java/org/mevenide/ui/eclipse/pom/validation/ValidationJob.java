@@ -69,10 +69,10 @@ public class ValidationJob extends Job {
             List warnings = e.getWarnings();
             try {
                 for (int i = 0; i < errors.size(); i++) {
-                    createMarker((String) errors.get(i), IPomValidationMarker.VALIDATION_ERROR_MARKER, IMarker.SEVERITY_ERROR);
+                    createMarker((String) errors.get(i), IMarker.SEVERITY_ERROR);
                 } 
                 for (int i = 0; i < warnings.size(); i++) {
-                    createMarker((String) warnings.get(i), IPomValidationMarker.VALIDATION_WARNING_MARKER, IMarker.SEVERITY_WARNING);
+                    createMarker((String) warnings.get(i), IMarker.SEVERITY_WARNING);
                 }
 	            //PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView("org.eclipse.ui.views.TaskList");
 	            return new Status(Status.OK, "org.mevenide.ui", 0, "POM has validation errors", null);
@@ -90,8 +90,8 @@ public class ValidationJob extends Job {
         }
     }
 
-    private void createMarker(String message, String markerType, int severity) throws CoreException {
-        IMarker marker = pomFile.createMarker(markerType);
+    private void createMarker(String message, int severity) throws CoreException {
+        IMarker marker = pomFile.createMarker(IPomValidationMarker.VALIDATION_ERROR_MARKER);
         marker.setAttribute(IMarker.MESSAGE, message);
         marker.setAttribute(IMarker.SEVERITY, severity);
         //marker.setAttribute(IMarker.USER_EDITABLE, Boolean.FALSE);
