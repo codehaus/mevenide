@@ -25,6 +25,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Dependency;
 import org.apache.maven.project.Project;
 import org.mevenide.netbeans.project.classpath.ClassPathProviderImpl;
+import org.mevenide.netbeans.project.dependencies.DependenciesExplorerPanel;
 import org.mevenide.netbeans.project.queries.MavenFileOwnerQueryImpl;
 import org.mevenide.project.dependency.DefaultDependencyPathFinder;
 import org.mevenide.project.io.JarOverrideReader2;
@@ -32,6 +33,8 @@ import org.netbeans.api.java.classpath.ClassPath;
 import org.netbeans.api.java.classpath.GlobalPathRegistry;
 import org.netbeans.api.project.ProjectManager;
 import org.netbeans.spi.project.ui.ProjectOpenedHook;
+import org.openide.DialogDescriptor;
+import org.openide.DialogDisplayer;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 
@@ -119,7 +122,7 @@ public class ProjectOpenedHookImpl extends ProjectOpenedHook {
             prop3.removeFileChangeListener(project.getUpdater());
         }
     }        
-    
+
     private void checkUnresolvedDependencies() {
         List lst = new ArrayList();
         Project mavproj = project.getOriginalMavenProject();
@@ -136,12 +139,18 @@ public class ProjectOpenedHookImpl extends ProjectOpenedHook {
         }
         
         if (lst.size() > 0) {
-            //TODO - show dialog offering to download dependencies.
+// makes no sense to show dialog.. is run also when restarting..
+// maybe have some kind of project annotation..            
+//            DependenciesExplorerPanel panel = new DependenciesExplorerPanel(lst, project);
+//            DialogDescriptor dd = new DialogDescriptor(panel, "There are some dependencies missing.");
+//            Object retValue = DialogDisplayer.getDefault().notify(dd);
+            
         }
     }
     
     private boolean dependencyExists(Dependency dep) {
-        if (dep.getType() == null || "jar".equals(dep.getType())) {
+        // only those added to classpath matter..
+        if (dep.getType() == null || dep.isAddedToClasspath()) {
             // check override first
             File file;
             String path = JarOverrideReader2.getInstance().processOverride(dep,
@@ -153,7 +162,7 @@ public class ProjectOpenedHookImpl extends ProjectOpenedHook {
                 file = new File(FileUtilities.getDependencyURI(dep, project));
             }
             logger.debug("dep path=" + path);
-            return file.getName().endsWith(".jar") && file.exists();
+            return /*file.getName().endsWith(".jar") && */ file.exists();
         }
         return false;
     }

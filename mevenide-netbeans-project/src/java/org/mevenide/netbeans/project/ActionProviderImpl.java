@@ -28,6 +28,7 @@ import org.netbeans.spi.project.ActionProvider;
 import org.openide.awt.HtmlBrowser;
 import org.openide.execution.ExecutionEngine;
 import org.openide.execution.ExecutorTask;
+import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.util.Lookup;
 import org.openide.util.RequestProcessor;
@@ -48,7 +49,8 @@ public class ActionProviderImpl implements ActionProvider
             ActionProvider.COMMAND_CLEAN,
             ActionProvider.COMMAND_REBUILD, 
             "javadoc", //NOI18N
-            "test" //NOI18N
+            ActionProvider.COMMAND_TEST,
+            ActionProvider.COMMAND_TEST_SINGLE
         };
     /** Creates a new instance of ActionProviderImpl */
     public ActionProviderImpl(MavenProject proj)
@@ -73,6 +75,28 @@ public class ActionProviderImpl implements ActionProvider
         if (ActionProvider.COMMAND_REBUILD.equals(str)) {
             goal = "clean jar";
         }
+        if (ActionProvider.COMMAND_TEST.equals(str)) {
+            goal = "test";
+        }
+        if (ActionProvider.COMMAND_TEST_SINGLE.equals(str)) {
+            FileObject[] fos = findTestSources(lookup);
+            if (fos != null && fos.length == 1) {
+                FileObject testSrcDir = FileUtil.toFileObject(new File(project.getTestSrcDirectory()));
+                String path = FileUtil.getRelativePath(testSrcDir, fos[0]);
+                path = path.replace('/', '.');
+                path = path.replace('\\', '.');
+                if (path.endsWith(".java")) {
+                    path = path.substring(0, path.length() - ".java".length());
+                }
+                goal = "-Dtestcase=" + path + " test:single";
+            } else {
+                return;
+            }
+        }
+        runGoal(goal, lookup);
+    }
+    
+    public void runGoal(String goal, Lookup lookup) throws java.lang.IllegalArgumentException {
         MavenExecutor exec = new MavenExecutor(project, goal);
         exec.setNoBanner(MavenSettings.getDefault().isNoBanner());
         exec.setOffline(MavenSettings.getDefault().isOffline());
@@ -123,9 +147,26 @@ public class ActionProviderImpl implements ActionProvider
     }
     
     public boolean isActionEnabled(String str, Lookup lookup) throws java.lang.IllegalArgumentException
-    {
+    {   
+        if (COMMAND_TEST_SINGLE.equals(str)) {
+            FileObject[] fos = findTestSources(lookup);
+            return  fos != null && fos.length == 1;
+        }
         return true;
     }
+    
+    
+   /** Find either selected tests or tests which belong to selected source files
+     */
+    private FileObject[] findTestSources(Lookup lookup) {
+        FileObject testSrcDir = FileUtil.toFileObject(new File(project.getTestSrcDirectory()));
+        if (testSrcDir != null) {
+            FileObject[] files = FileUtilities.findSelectedFiles(lookup, testSrcDir, ".java");
+            return files;
+        }
+        return null;
+    }        
+    
     
     public Action createBasicMavenAction(String name, String goals) {
         return new BasicAction(name, goals);

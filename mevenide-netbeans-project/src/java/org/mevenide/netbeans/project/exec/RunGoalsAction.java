@@ -154,7 +154,7 @@ public class RunGoalsAction extends AbstractAction implements Presenter.Popup {
             RequestProcessor.postRequest(new Runnable() {
                 public void run() {
                     ActionProviderImpl impl = (ActionProviderImpl)project.getLookup().lookup(ActionProviderImpl.class);
-                    impl.invokeAction(goal, project.getLookup());
+                    impl.runGoal(goal, project.getLookup());
                 }
             });
         }

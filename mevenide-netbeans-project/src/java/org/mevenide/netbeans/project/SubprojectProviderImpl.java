@@ -53,7 +53,7 @@ public class SubprojectProviderImpl implements SubprojectProvider {
         project = proj;
     }
     
-    public Set getSubProjects() {
+    public Set getSubprojects() {
         logger.debug("getSubProjects()");
         String includes = project.getPropertyResolver().getResolvedValue(MULTIPROJECT_INCLUDES);
         String excludes = project.getPropertyResolver().getResolvedValue(MULTIPROJECT_EXCLUDES);
