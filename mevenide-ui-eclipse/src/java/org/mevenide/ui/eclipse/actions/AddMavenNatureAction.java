@@ -13,7 +13,6 @@
  */
 package org.mevenide.ui.eclipse.actions;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.IAction;
 import org.mevenide.ui.eclipse.nature.MavenNature;
 
@@ -40,7 +39,7 @@ public class AddMavenNatureAction extends AbstractMavenAction {
 				}
 			}
 		} 
-		catch(CoreException e) {
+		catch(Exception e) {
 			e.printStackTrace();
 		}
 	}
