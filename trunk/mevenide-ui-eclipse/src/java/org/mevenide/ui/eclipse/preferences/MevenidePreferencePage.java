@@ -43,7 +43,7 @@ public class MevenidePreferencePage extends PreferencePage implements IWorkbench
     public MevenidePreferencePage() {
         super(Mevenide.getResourceString("MavenPreferencePage.title"));
         //setImageDescriptor(MavenPlugin.getImageDescriptor("sample.gif"));
-		manager = new PreferencesManager();
+		manager = PreferencesManager.getManager();
 		manager.loadPreferences();
         dialog = new MevenidePreferenceDialog(manager, this);
        	
