@@ -221,12 +221,26 @@ public abstract class MavenXmlContentAssistProcessor implements IContentAssistPr
                 
                 if (start.startsWith("/")) {
                     
-                    //@todo ERR HERE : if tag already closed
                     if (lastOpenTag != editor.getModel().getRoot() && lastOpenTag.getName().startsWith(start.substring(1))) {
                         cp = new CompletionProposal[1];
-                        cp[0] = new CompletionProposal(lastOpenTag.getName() + ">", node.getOffset() + 2, offset
-                                - node.getOffset() - 2, lastOpenTag.getName().length() + 1, null, "</"
-                                + lastOpenTag.getName() + ">", null, null);
+                        XMLNode currentNode = getNodeAt(doc, offset);
+                        char endChar = '#';
+                        try {
+                            endChar = doc.getChar(node.getOffset() + currentNode.getName().length() + 2);
+                        }
+                        catch (BadLocationException e) {
+                            String message = "Unable to get endChar"; 
+                            log.error(message, e);
+                        }
+                       
+                        cp[0] = new CompletionProposal(lastOpenTag.getName() + (endChar != '>' ? ">" : ""), 
+                                                       node.getOffset() + 2, 
+                                                       lastOpenTag.getName().startsWith(currentNode.getName()) ? currentNode.getName().length() : currentNode.getOffset() - offset + 2, 
+                                                       lastOpenTag.getName().length() + 1, 
+                                                       null, 
+                                                       "</" + lastOpenTag.getName() + ">", 
+                                                       null, 
+                                                       null);
                     }
                 }
                 else {
@@ -238,7 +252,8 @@ public abstract class MavenXmlContentAssistProcessor implements IContentAssistPr
                         //if (text.startsWith(start)) {
                         if (text.regionMatches(true, 0, start, 0, start.length())) {
                             //if (preferencesManager.getBooleanValue("InsertEndTag")) {
-                                cpL.add(new CompletionProposal(text, node.getOffset() + 1, offset - node.getOffset() - 1, text.length() + 1, null, text, null, null));
+                            
+                                cpL.add(new CompletionProposal(text, node.getOffset() + 1, node.getName().length(), text.length(), null, text, null, null));
                             //}
                             //else {
                             //    cpL.add(new CompletionProposal(text, node.getOffset() + 1, offset - node.getOffset() - 1, text .length()));
