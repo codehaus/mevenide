@@ -52,13 +52,15 @@ import org.mevenide.project.source.SourceDirectoryUtil;
 public class ProjectWriter {
 	private static Log log = LogFactory.getLog(ProjectWriter.class);
 	
-	private ProjectReader projectReader ;
-	private DefaultProjectMarshaller marshaller ; 
-	private IResourceResolver resourceResolver;
+	private static IResourceResolver resourceResolver = new DefaultResourceResolver();
 	
 	private static ProjectWriter projectWriter = null;
 	private static Object lock = new Object();
 	
+	private ProjectReader projectReader ;
+	
+	private DefaultProjectMarshaller marshaller ; 
+		
 	public static ProjectWriter getWriter() throws Exception {
 		if (projectWriter != null) {
 			return projectWriter;
@@ -76,11 +78,10 @@ public class ProjectWriter {
 	private ProjectWriter() throws Exception  {
 		marshaller = new DefaultProjectMarshaller();
 		projectReader = ProjectReader.getReader();
-		resourceResolver = new DefaultResourceResolver();
 	}
 	
 	/**
-	 * add a resource entry to the pom (more precisely to the build element). 
+	 * add a resource entry to the ${pom.build} 
 	 * the resource is expected to be a directory, however we will 
 	 * handle the case where it is a single file
 	 * 
@@ -117,60 +118,7 @@ public class ProjectWriter {
 		
 	}
 	
-	/** 
-	 * add a Dependency identified by its absoluteFileName (artifact) to the POM. 
-	 * Try to resolve the dependency using the dependency factory 
-	 * checks first that the Dependency isnot already present is the dependencies list. 
-	 * 
-	 * not optimized.. 
-	 * 
-	 * 
-	 * @wonder deprecate ? 
-	 * 
-	 * 
-	 * @param absoluteFileName
-	 * @param pom
-	 * @throws Exception
-	 */
-	public void addDependency(String path, File pom) throws Exception {
-		Project project = projectReader.read(pom);
-		
-		Dependency dependency = DependencyFactory.getFactory().getDependency(path);
-		
-		if ( !DependencyUtil.isDependencyPresent(project, dependency) 
-				&& DependencyUtil.isValid(dependency)) {
-			
-			project.addDependency(dependency);
-			write(project, pom);
-			
-		}
-		
-		jarOverride(dependency.getArtifact(), new File(pom.getParent(), "project.properties"), pom);
 
-	}
-	
-	/**
-	 * @wonder deprecate ? 
-	 * 
-	 * @param dependency
-	 * @param pom
-	 * @throws Exception
-	 */
-	public void addDependency(Dependency dependency, File pom) throws Exception {
-		Project project = projectReader.read(pom);
-
-		if ( !DependencyUtil.isDependencyPresent(project, dependency) && DependencyUtil.isValid(dependency) ) {
-			
-			project.addDependency(dependency);
-			write(project, pom);
-	
-		}
-		
-		//jaroverriding
-		if ( !DependencyUtil.isValid(dependency) ) {
-			jarOverride(dependency.getArtifact(), new File(pom.getParent(), "project.properties"), pom);
-		}
-	}
 	
 	public void setDependencies(List dependencies, File pom) throws Exception {
 		Project project = projectReader.read(pom);
@@ -191,14 +139,6 @@ public class ProjectWriter {
 		} 
 	}
 
-	/** 
-	 * utility method that allows some factorization
-	 * 
-	 * @param project
-	 * @param pom
-	 * @throws IOException
-	 * @throws Exception
-	 */
 	private void write(Project project, File pom) throws IOException, Exception {
 		Writer writer = new FileWriter(pom, false);
 		marshaller.marshall(writer, project);
