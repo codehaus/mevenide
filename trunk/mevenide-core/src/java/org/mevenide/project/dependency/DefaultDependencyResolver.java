@@ -110,7 +110,7 @@ public class DefaultDependencyResolver extends AbstractDependencyResolver {
 	private void initGroupId() {
 		File fileToCompute = new File(artifact);
 		File firstLevelParent = fileToCompute.getParentFile();
-		if ( firstLevelParent.getParentFile() != null ) {
+		if ( firstLevelParent != null && firstLevelParent.getParentFile() != null ) {
 			groupId = firstLevelParent.getParentFile().getName();
 		}
 		if ( !DependencyUtil.isValidGroupId(groupId) ) groupId = null;
