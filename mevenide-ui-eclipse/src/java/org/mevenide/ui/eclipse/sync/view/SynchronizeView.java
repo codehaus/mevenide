@@ -72,7 +72,7 @@ import org.mevenide.ui.eclipse.sync.event.PomArtifactEvent;
 import org.mevenide.ui.eclipse.sync.event.SynchronizationConstraintEvent;
 import org.mevenide.ui.eclipse.sync.model.ArtifactMappingContentProvider;
 import org.mevenide.ui.eclipse.sync.model.ArtifactNode;
-import org.mevenide.ui.eclipse.sync.model.EclipseProjectNode;
+import org.mevenide.ui.eclipse.sync.model.ISelectableNode;
 import org.mevenide.ui.eclipse.sync.model.MavenArtifactNode;
 import org.mevenide.ui.eclipse.sync.model.PropertyNode;
 import org.mevenide.util.MevenideUtils;
@@ -91,6 +91,8 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
 
     private Composite composite;
     private TreeViewer artifactMappingNodeViewer;
+    private SynchronizationNodeFilter nodeFilter; 
+	
     private IPageSite site;
 
     //global actions
@@ -196,10 +198,10 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
     }
 
     private void assertValidDirection() {
-        if ( direction != ArtifactNode.INCOMING 
-                && direction != ArtifactNode.OUTGOING 
-                && direction != ArtifactNode.CONFLICTING ) {
-            setDirection(ArtifactNode.INCOMING);
+        if ( (direction & ISelectableNode.INCOMING_DIRECTION) == 0 
+                && (direction & ISelectableNode.OUTGOING_DIRECTION) == 0 
+                && (direction & ISelectableNode.CONFLICTING_DIRECTION) == 0 ) {
+            setDirection(ISelectableNode.INCOMING_DIRECTION);
         }
     }
     
@@ -207,18 +209,15 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
     public void setDirection(int direction) {
 		if ( direction != this.direction ) {
 	        this.direction = direction;
-	        if ( artifactMappingNodeViewer.getInput() != null ) {
-	            //((ArtifactMappingContentProvider) artifactMappingNodeViewer.getContentProvider()).setDirection(direction);
-	        }
-			artifactMappingNodeViewer.refresh(true);
-	        //artifactMappingNodeViewer.expandToLevel(1);
-			activateWritePropertiesAction(direction);
+	        nodeFilter.setDirection(direction);
+	        artifactMappingNodeViewer.refresh();
+	        activateWritePropertiesAction(direction);
 			fireDirectionChanged();
 		}
     }
 
     private void activateWritePropertiesAction(int direction) {
-    	if ( direction == ArtifactNode.OUTGOING ) {
+    	if ( direction == ISelectableNode.OUTGOING_DIRECTION ) {
     		getViewSite().getActionBars().getToolBarManager().add(writeProperties);
     	}
     	else {
@@ -265,6 +264,10 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
     private void configureViewer() {
         artifactMappingNodeViewer.setContentProvider(new ArtifactMappingContentProvider());
         artifactMappingNodeViewer.setLabelProvider(new ArtifactMappingLabelProvider());
+        nodeFilter = new SynchronizationNodeFilter();
+        assertValidDirection();
+        //nodeFilter.setDirection(ISelectableNode.INCOMING_DIRECTION);
+        artifactMappingNodeViewer.addFilter(nodeFilter);
         isDisposed = false;
     }
     
@@ -331,17 +334,17 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
 						ArtifactNode selectedNode = (ArtifactNode) selection;
 						
 						//outgoing 
-						enablePushToPom = (selectedNode.getDirection() & ArtifactNode.OUTGOING) != 0;
-						enableRemoveFromProject = (selectedNode.getDirection() & ArtifactNode.OUTGOING) != 0;
-						enableAddDependencyProperty = (selectedNode.getDirection() & ArtifactNode.OUTGOING) != 0;
+						enablePushToPom = (selectedNode.getDirection() & ISelectableNode.OUTGOING_DIRECTION) != 0;
+						enableRemoveFromProject = (selectedNode.getDirection() & ISelectableNode.OUTGOING_DIRECTION) != 0;
+						enableAddDependencyProperty = (selectedNode.getDirection() & ISelectableNode.OUTGOING_DIRECTION) != 0;
+						enableAddToIgnoreList = (selectedNode.getDirection() & ISelectableNode.OUTGOING_DIRECTION) != 0;
 							
 						//incoming
-						enableAddToClasspath = (selectedNode.getDirection() & ArtifactNode.INCOMING) != 0;
-						enableRemoveFromPom = (selectedNode.getDirection() & ArtifactNode.INCOMING) != 0;
+						enableAddToClasspath = (selectedNode.getDirection() & ISelectableNode.INCOMING_DIRECTION) != 0;
+						enableRemoveFromPom = (selectedNode.getDirection() & ISelectableNode.INCOMING_DIRECTION) != 0;
 						
 						//conflicting
-						enableMarkAsMerged = (selectedNode.getDirection() & ArtifactNode.CONFLICTING) != 0;
-						enableAddToIgnoreList = (selectedNode.getDirection() & ArtifactNode.CONFLICTING) == 0;
+						enableMarkAsMerged = (selectedNode.getDirection() & ISelectableNode.CONFLICTING_DIRECTION) != 0;
 					}
 				}
 				
@@ -392,7 +395,7 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
         toolBarManager.add(refreshAll);
 		toolBarManager.add(viewIdeToPom);
 		toolBarManager.add(viewPomToIde);
-		//toolBarManager.add(viewConflicts);
+		toolBarManager.add(viewConflicts);
 	}
 
 	public void propertyChange(PropertyChangeEvent event) {
@@ -433,22 +436,20 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
 			    Object selection = ((StructuredSelection) artifactMappingNodeViewer.getSelection()).getFirstElement();
 			    if ( selection instanceof ArtifactNode ) {
 			    	ArtifactNode selectedNode = (ArtifactNode) selection;
-					if ( (selectedNode.getDirection() & ArtifactNode.OUTGOING) != 0 ) {
+					if ( (selectedNode.getDirection() & ISelectableNode.OUTGOING_DIRECTION) != 0 ) {
 						manager.add(pushToPom);
 						manager.add(removeFromProject);
 						if ( selection instanceof MavenArtifactNode ) {
 							manager.add(addDependencyProperty);
+							manager.add(addToIgnoreList);
 						}
 					}
-					if ( (selectedNode.getDirection() & ArtifactNode.INCOMING) != 0 ) {
+					if ( (selectedNode.getDirection() & ISelectableNode.INCOMING_DIRECTION) != 0 ) {
 						manager.add(addToClasspath);
 						manager.add(removeFromPom);
 					}
-					if ( (selectedNode.getDirection() & ArtifactNode.CONFLICTING) != 0 ) {
+					if ( (selectedNode.getDirection() & ISelectableNode.CONFLICTING_DIRECTION) != 0 ) {
 						//manager.add(markAsMerged);
-					}
-					else {
-						manager.add(addToIgnoreList);
 					}
 					manager.add(separator);
 					manager.add(viewProperties);		

@@ -39,11 +39,8 @@ import org.mevenide.util.StringInputStream;
  * @version $Id: ArtifactNode.java,v 1.1 12 avr. 2004 Exp gdodinet 
  * 
  */
-public abstract class ArtifactNode implements INode {
-	public static final int INCOMING = 0;
-	public static final int OUTGOING = 1;
-	public static final int CONFLICTING = 2;
-	
+public abstract class ArtifactNode implements ISynchronizationNode, ISelectableNode {
+
 	private int direction;
 	
 	public int getDirection() {
@@ -105,4 +102,8 @@ public abstract class ArtifactNode implements INode {
 
 	protected abstract String getIgnoreLine();
 	
+	public boolean select(int direction) {
+		System.err.println("selecting node [" + getData() + "-" + getDirection() + "]" + direction);
+		return this.direction == direction;
+	}
 }

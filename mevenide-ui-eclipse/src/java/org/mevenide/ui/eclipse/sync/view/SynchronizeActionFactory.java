@@ -41,6 +41,7 @@ import org.mevenide.ui.eclipse.sync.action.ToggleViewAction;
 import org.mevenide.ui.eclipse.sync.action.ToggleWritePropertiesAction;
 import org.mevenide.ui.eclipse.sync.model.ArtifactNode;
 import org.mevenide.ui.eclipse.sync.model.EclipseProjectNode;
+import org.mevenide.ui.eclipse.sync.model.ISelectableNode;
 import org.mevenide.ui.eclipse.sync.model.MavenArtifactNode;
 
 /**
@@ -129,7 +130,7 @@ public class SynchronizeActionFactory {
 						try  {
 							int direction = synchronizeView.getDirection();
 							
-							if ( direction == ArtifactNode.OUTGOING ) {
+							if ( direction == ISelectableNode.OUTGOING_DIRECTION ) {
 								IContainer container = (IContainer) ((EclipseProjectNode) selectedNode.getParent().getParent()).getData();
 								action.addEntry(selectedNode,  container);
 							}
@@ -283,7 +284,7 @@ public class SynchronizeActionFactory {
 	}
 
 	private void createViewPomToIdeAction() {
-	    ToggleViewAction viewPomToIde = new ToggleViewAction(ArtifactNode.INCOMING);
+	    ToggleViewAction viewPomToIde = new ToggleViewAction(ISelectableNode.INCOMING_DIRECTION);
 		viewPomToIde.setId(VIEW_INCOMING);
 		viewPomToIde.setToolTipText("Incoming Changes");
 		viewPomToIde.setImageDescriptor(Mevenide.getImageDescriptor("pom_to_ide_sync.gif"));
@@ -293,7 +294,7 @@ public class SynchronizeActionFactory {
 	}
 
 	private void createViewIdeToPomAction() {
-	    ToggleViewAction viewIdeToPom = new ToggleViewAction(ArtifactNode.OUTGOING);
+	    ToggleViewAction viewIdeToPom = new ToggleViewAction(ISelectableNode.OUTGOING_DIRECTION);
 		viewIdeToPom.setId(VIEW_OUTGOING);
 		viewIdeToPom.setToolTipText("Outgoing changes");
 		viewIdeToPom.setImageDescriptor(Mevenide.getImageDescriptor("ide_to_pom_sync.gif"));
@@ -303,7 +304,7 @@ public class SynchronizeActionFactory {
 	}
 
 	private void createViewConflictsAction() {
-	    ToggleViewAction viewConflicts = new ToggleViewAction(ArtifactNode.CONFLICTING);
+	    ToggleViewAction viewConflicts = new ToggleViewAction(ISelectableNode.CONFLICTING_DIRECTION);
 		viewConflicts.setId(VIEW_CONFLICTS);
 		viewConflicts.setToolTipText("Conflicts");
 		viewConflicts.setImageDescriptor(Mevenide.getImageDescriptor("conflict_synch.gif"));

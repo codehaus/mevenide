@@ -37,13 +37,13 @@ public class DirectoryNode extends ArtifactNode {
 		parent = project;
 	}
 	
-	public INode[] getChildren() {
+	public ISynchronizationNode[] getChildren() {
 		return null;
 	}
 	public Object getData() {
 		return directory;
 	}
-	public INode getParent() {
+	public ISynchronizationNode getParent() {
 		return parent;
 	}
 	public boolean hasChildren() {
