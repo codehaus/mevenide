@@ -32,7 +32,14 @@ public class Entry {
 	public void accept(LibraryVisitor visitor) {
 		visitor.visit(this);
 	}
-
+	
+	/** 
+	 * sucky but the way IClasspathEntry is designed is sucky as well.. 
+	 * perhaps that will have changed till eclipse 3 ??
+	 * 
+	 * @param entry
+	 * @return
+	 */
 	public static Entry getEntry(IClasspathEntry entry) {
 		switch ( entry.getEntryKind() ) {
 			case IClasspathEntry.CPE_SOURCE:
