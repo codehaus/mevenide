@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="org.mevenide"
-      label="Mevenide"
+      label="Mevenide, Maven plugin for Eclipse"
       version="0.1.1"
       provider-name="Sourceforge"
-      plugin="Mevenide">
+      plugin="Mevenide"
+      image="mevenide.jpg">
 
    <description url="http://mevenide.sourceforge.net/docs/mevenide-ui-eclipse/license.html">
       %description
@@ -14,6 +15,10 @@
       %license
    </license>
 
+   <url>
+      <update label="Spindle updates" url="http://spindle.sourceforge.net/updates/"/>
+   </url>
+	
    <requires>
       <import plugin="org.mevenide.grabber"/>
       <import plugin="org.eclipse.core.resources"/>
@@ -36,17 +41,17 @@
    <plugin id="org.mevenide.core"
            download-size="0"
            install-size="0"
-           version="0.1-alpha-1"/>
+           version="0.1"/>
 
    <plugin id="org.mevenide.grabber"
            download-size="0"
            install-size="0"
-           version="0.1-alpha-1"/>
+           version="0.1"/>
 
    <plugin id="org.mevenide.ui"
            download-size="0"
            install-size="0"
-           version="0.1-alpha-1"/>
+           version="0.1"/>
 
 </feature>
 
