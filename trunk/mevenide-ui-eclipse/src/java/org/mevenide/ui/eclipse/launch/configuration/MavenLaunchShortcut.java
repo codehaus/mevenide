@@ -20,10 +20,12 @@ package org.mevenide.ui.eclipse.launch.configuration;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.variables.VariablesPlugin;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
@@ -73,26 +75,32 @@ public class MavenLaunchShortcut implements ILaunchShortcut {
 				resource = (IResource)((IAdaptable)object).getAdapter(IResource.class);
 			}
 
-			IProject project = null;
-			if ( resource instanceof IProject ) {
-				project = (IProject) resource;
+			//IProject project = null;
+			IPath basedir = null;
+			if ( resource instanceof IContainer ) {
+				IContainer container = (IContainer) resource;
+				basedir = container.getFullPath();
+			}
+			if ( resource instanceof IFile ) {
+				//project = resource.getProject();
+				basedir = resource.getParent().getFullPath();
+			}
+			
+			
+			if ( basedir != null ) {
+				log.debug("launching from basedir : " + basedir);
+				launch(basedir);
 			}
 			else {
-				project = resource.getProject();
-			}
-			if ( project != null ) {
-				launch(project);
-			}
-			else {
-				log.debug("Unable to get project..");
+				log.debug("Unable to get basedir");
 			}
 		}
 
 	}
 
-	public void launch(IProject project) {
+	public void launch(IPath basedir) {
 		ILaunchConfiguration configuration= null;
-		configuration = getDefaultLaunchConfiguration(project);
+		configuration = getDefaultLaunchConfiguration(basedir);
 
 		if (configuration != null) {
 			if ( showDialog ) {
@@ -115,19 +123,26 @@ public class MavenLaunchShortcut implements ILaunchShortcut {
 				configuration = configuration.copy(newName);
 			}
 			catch (Exception e) {
-				log.debug("Unable to copy configuration due to : ", e);
+				log.error("Unable to copy configuration due to : ", e);
 			}
-			DebugUITools.launch(configuration, ILaunchManager.RUN_MODE);
+			try {
+				DebugUITools.launch(configuration, ILaunchManager.RUN_MODE);
+			}
+			catch ( Exception e ) {
+				log.error("problem occured while launching config", e);
+			}
+			
+			
 		}
 	} 
 	
 	
 	
-	private ILaunchConfiguration getDefaultLaunchConfiguration(IProject project) {
+	private ILaunchConfiguration getDefaultLaunchConfiguration(IPath basedir) {
 		ILaunchManager manager = DebugPlugin.getDefault().getLaunchManager();
 		ILaunchConfigurationType type = manager.getLaunchConfigurationType("org.mevenide.ui.launching.MavenLaunchConfigType");
 		
-		String name = "[" + project.getName() + "] ";
+		String name = "[" + basedir.lastSegment() + "] ";
 		String goals = StringUtils.replace(Mevenide.getPlugin().getDefaultGoals(), ":", "_");
 		name += goals;
 		
@@ -143,7 +158,7 @@ public class MavenLaunchShortcut implements ILaunchShortcut {
 		try {
 			ILaunchConfigurationWorkingCopy workingCopy = type.newInstance(null, name);
 			workingCopy.setAttribute(IExternalToolConstants.ATTR_WORKING_DIRECTORY,
-			        VariablesPlugin.getDefault().getStringVariableManager().generateVariableExpression("workspace_loc", project.getFullPath().toString())); 
+			        VariablesPlugin.getDefault().getStringVariableManager().generateVariableExpression("workspace_loc", basedir.toString())); 
 			workingCopy.setAttribute(MavenArgumentsTab.GOALS_TO_RUN, Mevenide.getPlugin().getDefaultGoals());
 			
 			// set default for common settings
