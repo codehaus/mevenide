@@ -65,8 +65,7 @@ public class LocationFinderAggregator implements ILocationFinder {
     private ProjectPropertiesLocationFinder projectPropertiesLocationFinder;
     private BuildPropertiesLocationFinder buildPropertiesLocationFinder;
     private SysEnvLocationFinder sysEnvLocationFinder;
-    
-    
+    private CustomLocationFinder customLocationFinder;
     
     public LocationFinderAggregator() {
         sysEnvLocationFinder = SysEnvLocationFinder.getInstance();
@@ -118,6 +117,10 @@ public class LocationFinderAggregator implements ILocationFinder {
 
     public String getJavaHome() {
 		String javaHome = null;
+		if ( customLocationFinder !=  null 
+				&& customLocationFinder.getJavaHome() != null ) {
+			javaHome = customLocationFinder.getJavaHome();
+		}
 		if ( projectPropertiesLocationFinder !=  null 
 				&& projectPropertiesLocationFinder.getJavaHome() != null ) {
 			javaHome = projectPropertiesLocationFinder.getJavaHome();
@@ -136,8 +139,13 @@ public class LocationFinderAggregator implements ILocationFinder {
 		}
 		return javaHome;
     }
+    
     public String getMavenHome() {
 		String mavenHome = null;
+		if ( customLocationFinder !=  null 
+				&& customLocationFinder.getMavenHome() != null ) {
+			mavenHome = customLocationFinder.getMavenHome();
+		}
 		if ( projectPropertiesLocationFinder !=  null 
 				&& projectPropertiesLocationFinder.getMavenHome() != null ) {
 			mavenHome = projectPropertiesLocationFinder.getMavenHome();
@@ -156,8 +164,13 @@ public class LocationFinderAggregator implements ILocationFinder {
 		}
 		return mavenHome;
     }
+    
     public String getMavenLocalHome() {
 		String mavenLocalHome = null;
+		if ( customLocationFinder !=  null 
+				&& customLocationFinder.getMavenLocalHome() != null ) {
+			mavenLocalHome = customLocationFinder.getMavenLocalHome();
+		}
 		if ( projectPropertiesLocationFinder !=  null 
 				&& projectPropertiesLocationFinder.getMavenLocalHome() != null ) {
 			mavenLocalHome = projectPropertiesLocationFinder.getMavenLocalHome();
@@ -179,6 +192,10 @@ public class LocationFinderAggregator implements ILocationFinder {
     
     public String getMavenLocalRepository() {
 		String mavenLocalRepository = null;
+		if ( customLocationFinder !=  null 
+				&& customLocationFinder.getMavenLocalRepository() != null ) {
+			mavenLocalRepository = customLocationFinder.getMavenLocalRepository();
+		}
 		if ( projectPropertiesLocationFinder !=  null 
 				&& projectPropertiesLocationFinder.getMavenLocalRepository() != null ) {
 			mavenLocalRepository = projectPropertiesLocationFinder.getMavenLocalRepository();
@@ -200,6 +217,10 @@ public class LocationFinderAggregator implements ILocationFinder {
     
     public String getMavenPluginsDir() {
 		String mavenPluginsDir = null;
+		if ( customLocationFinder !=  null 
+				&& customLocationFinder.getMavenPluginsDir() != null ) {
+			mavenPluginsDir = customLocationFinder.getMavenPluginsDir();
+		}
 		if ( projectPropertiesLocationFinder !=  null 
 				&& projectPropertiesLocationFinder.getMavenPluginsDir() != null ) {
 			mavenPluginsDir = projectPropertiesLocationFinder.getMavenPluginsDir();
@@ -220,4 +241,7 @@ public class LocationFinderAggregator implements ILocationFinder {
     }
     
   
+    public void setCustomLocationFinder(CustomLocationFinder customLocationFinder) {
+        this.customLocationFinder = customLocationFinder;
+    }
 }
