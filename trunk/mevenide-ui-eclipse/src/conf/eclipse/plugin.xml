@@ -283,6 +283,18 @@
             %ProjectWizard.description
          </description>
       </wizard>
+      
+      <wizard
+              class="org.mevenide.ui.eclipse.wizard.NewPomWizard"
+              icon="icons/maven-create-pom.gif"
+              category="org.mevenide.ui.eclipse.category.mevenide"
+              project="false"
+              name="%POM.Wizard.Name"
+              id="org.mevenide.ui.eclipse.wizard.NewPomWizard">
+         <description>
+            %POM.Wizard.description
+         </description>     
+      </wizard>
    </extension>
 
 </plugin>
