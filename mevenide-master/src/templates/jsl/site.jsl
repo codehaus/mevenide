@@ -288,11 +288,11 @@
       <td>
       <small>
       	<j:if test="${navbean.isSelected(item.get(0))}">
-      		<j:if test="${_childCount.intValue() eq 0}"><j:if test="${_parentName == 'item'}"><small><img src="${relativePath}/images/none.png" width="8" height="1"/></small></j:if><doc:itemLink name="${_name}" link="${_link}" /></j:if>
+      		<j:if test="${_childCount.intValue() eq 0}"><j:if test="${_parentName == 'item'}"><small><img src="${relativePath}/images/none.png" width="8" height="1"/><img src="${relativePath}/images/_dummy.png" width="1"/></small></j:if><doc:itemLink name="${_name}" link="${_link}" /></j:if>
       		<j:if test="${_childCount.intValue() gt 0}"><a href="${_link}">-</a><doc:itemLink name="${_name}" link="${_link}" state="_dummy"/></j:if>
       	</j:if>
       	<j:if test="${!navbean.isSelected(item.get(0))}">
-      		<j:if test="${_childCount.intValue() eq 0}"><j:if test="${_parentName == 'item'}"><small><img src="${relativePath}/images/none.png" width="8" height="1"/></small></j:if><doc:itemLink name="${_name}" link="${_link}" /></j:if>
+      		<j:if test="${_childCount.intValue() eq 0}"><j:if test="${_parentName == 'item'}"><small><img src="${relativePath}/images/none.png" width="8" height="1"/><img src="${relativePath}/images/_dummy.png" width="1"/></small></j:if><doc:itemLink name="${_name}" link="${_link}" /></j:if>
       		<j:if test="${_childCount.intValue() gt 0}"><j:if test="${navbean.isCollapsed(item.get(0))}"><a href="${_link}">+</a></j:if><j:if test="${!navbean.isCollapsed(item.get(0))}"><a href="${_link}">-</a></j:if><doc:itemLink name="${_name}" link="${_link}" state="_dummy"/></j:if>
       	</j:if>
       </small>
