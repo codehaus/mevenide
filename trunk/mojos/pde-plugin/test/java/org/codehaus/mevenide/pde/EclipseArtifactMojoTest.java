@@ -17,10 +17,9 @@
 package org.codehaus.mevenide.pde;
 
 import java.io.File;
-import java.util.List;
+import junit.framework.TestCase;
 import org.apache.maven.plugin.PluginExecutionRequest;
 import org.apache.maven.plugin.PluginExecutionResponse;
-import junit.framework.TestCase;
 
 
 /**  
@@ -29,7 +28,7 @@ import junit.framework.TestCase;
  * @version $Id$
  * 
  */
-public class EclipseArtifactMojoTest extends TestCase {
+public abstract class EclipseArtifactMojoTest extends TestCase {
     
     private EclipseArtifactMojo mojo;
     
@@ -38,80 +37,24 @@ public class EclipseArtifactMojoTest extends TestCase {
     
     protected void setUp() throws Exception {
         super.setUp();
-        mojo = new EclipseArtifactMojo() { 
-            public void execute(PluginExecutionRequest arg0, PluginExecutionResponse arg1) throws Exception { }
-        };
+        mojo = getMojo() == null ? newMojoStub() : getMojo();
         eclipseHome = new File(getClass().getResource("/eclipse.home").getFile());
         mojo.eclipseHome = eclipseHome;
     }
 
+    protected abstract EclipseArtifactMojo getMojo();
+    
+    protected EclipseArtifactMojo newMojoStub() {
+        mojo = new EclipseArtifactMojo() { 
+            public void execute(PluginExecutionRequest arg0, PluginExecutionResponse arg1) throws Exception { }
+        };
+        return mojo;
+    }
     
     protected void tearDown() throws Exception {
         super.tearDown();
         mojo = null;
     }
     
-    public void testGetBuildId() throws Exception {
-        assertEquals(200409240800l, mojo.getBuildId());
-        
-        mojo.configurationFolder = new File(eclipseHome, "configuration");
-        assertEquals(200409240800l, mojo.getBuildId());
-        
-        mojo.configurationFolder = new File(eclipseHome, "nofolder");
-        try {
-            mojo.getBuildId();
-            fail("expected ConfigurationException : configuration set to an invalid path");
-        }
-        catch (ConfigurationException e) { }
-    }
-
-    public void testCheckMaxBuildId() throws Exception {
-        mojo.checkMaxBuildId(200505061930l);
-        try {
-            mojo.checkMaxBuildId(200305061930l);
-            fail("expected ConfigurationException : buildId too high");
-        }
-        catch (ConfigurationException e) { }
-    }
-
-    public void testCheckMinBuildId() throws Exception {
-        mojo.checkMinBuildId(200305061930l);
-        try {
-            mojo.checkMinBuildId(200505061930l);
-            fail("expected ConfigurationException : buildId too low");
-        }
-        catch (ConfigurationException e) { }
-    }
-
-    public void testCheckBuildId() throws Exception {
-        mojo.checkBuildId(200305061930l, 200505061930l);
-        mojo.checkBuildId(200505061930l, 200305061930l);
-        try {
-            mojo.checkBuildId(200505061930l, 200507061930l);
-            fail("expected ConfigurationException : buildId too high");
-        }
-        catch (ConfigurationException e) { }
-    }
-    
-    public void testExtractDependenciesFromDescriptor() throws Exception {
-        mojo.basedir = new File(getClass().getResource("/basedir.usecontainer").getFile());
-        
-        List dependencies = mojo.extractDependenciesFromDescriptor();
-        assertEquals(2, dependencies.size());
-        
-        File dependency2 = new File(eclipseHome, "plugins" 
-								                 + File.separatorChar 
-								                 + "org.eclipse.core.runtime_3.1.0" 
-								                 + File.separatorChar
-								                 + "lib_1.jar");
-        File dependency1 = new File(eclipseHome, "plugins" 
-                                                 + File.separatorChar 
-                                                 + "org.eclipse.text_3.1.0" 
-                                                 + File.separatorChar
-                                                 + "lib_2.jar");
-        
-        assertTrue(dependencies.contains(dependency1.getAbsolutePath()));
-        assertTrue(dependencies.contains(dependency2.getAbsolutePath()));
-    }
 }
 

@@ -16,7 +16,6 @@
  */
 package org.codehaus.mevenide.pde.plugin;
 
-import java.util.List;
 import org.apache.maven.plugin.PluginExecutionRequest;
 import org.apache.maven.plugin.PluginExecutionResponse;
 import org.codehaus.mevenide.pde.EclipseArtifactMojo;
@@ -79,7 +78,7 @@ public class EclipsePluginMojo extends EclipseArtifactMojo {
     public void execute(PluginExecutionRequest request, PluginExecutionResponse response) throws Exception {
         initialize(request);
         
-        List eclipseDependencies = extractEclipseDependencies();
+        //List eclipseDependencies = extractEclipseDependencies();
         
     }
 }

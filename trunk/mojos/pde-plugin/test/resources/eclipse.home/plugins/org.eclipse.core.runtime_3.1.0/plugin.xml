@@ -1,0 +1,11 @@
+<plugin
+   id="mevenide test"
+   name="mevenide test"
+   version="3.1.0"
+   provider-name="Mevenide project">
+	<runtime>
+      <library name="lib_1.jar">
+        <export name="*"/>
+      </library>
+    </runtime>
+</plugin>

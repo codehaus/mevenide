@@ -21,6 +21,15 @@
      o site should be outputted as a zip as well (local site)
      o help can come as raw xdoc or ready html files
 
+	 dependency resolution can be : 
+	 1> based on plugin.xml if present
+	 2> based on .classpath if present
+	 3> based on pom
+	 
+	 choose to not support 2 - rationale : pom duplication
+	 => default is 3 (pom) can be overriden : maven.pde.classpath.resolution = pom | plugin
+	 
+
      f> feature
 
      id => pom.id.replaceAll(':', '.') by default OR maven.pde.id
