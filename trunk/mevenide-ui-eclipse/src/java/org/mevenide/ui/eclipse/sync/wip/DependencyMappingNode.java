@@ -93,10 +93,14 @@ public class DependencyMappingNode implements IArtifactMappingNode, IPropertyCha
    
     public Object getAdapter(Class adapter) {
         if ( adapter == IPropertySource.class ) {
+            DependencyPropertySource propertySource = null;
             if ( dependency == null ) {
                 dependency = new Dependency();
+				propertySource = new DependencyPropertySource(resolvedDependency);
             }
-            DependencyPropertySource propertySource = new DependencyPropertySource(dependency);
+			else {
+            	propertySource = new DependencyPropertySource(dependency);
+			}
             propertySource.addPropertyChangeListener(this);
             return propertySource;
         }

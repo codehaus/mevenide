@@ -49,13 +49,16 @@
 package org.mevenide.ui.eclipse.sync.wip;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.IPageSite;
 import org.eclipse.ui.part.ViewPart;
+import org.mevenide.ui.eclipse.Mevenide;
 
 
 
@@ -74,9 +77,21 @@ public class SynchronizeView extends ViewPart {
     private TreeViewer artifactMappingNodeViewer;
     private IPageSite site;
     
+    //global view actions
+    private Action refreshAll;
+    private Action viewIdeToPom;
+    private Action viewPomToIde;
+    private Action viewConflicts;
+    
+    //contextual actions
+    private Action pushToPom;
+    private Action addToClasspath;
+    private Action viewProperties;
     
     public void createPartControl(Composite parent) {
         createArtifactViewer(parent);
+        createActions();
+        plugActions();
     }
     
     public void setFocus() {
@@ -105,18 +120,85 @@ public class SynchronizeView extends ViewPart {
         
         configureViewer();
       
+		getSite().setSelectionProvider(artifactMappingNodeViewer);
     }
 
     private void configureViewer() {
         artifactMappingNodeViewer.setContentProvider(new ArtifactMappingContentProvider());
         artifactMappingNodeViewer.setLabelProvider(new ArtifactMappingLabelProvider());
-//        artifactMappingNodeViewer.addDoubleClickListener(
-//               
-//        );
-        getSite().setSelectionProvider(artifactMappingNodeViewer);
-        
     }
     
-   
+    private void createActions() {
+        refreshAll = new Action() {
+            public void run() {
+                artifactMappingNodeViewer.refresh(true);
+            }
+        };
+		refreshAll.setId("REFRESH_VIEWER");
+		refreshAll.setToolTipText("Refresh All");
+		refreshAll.setImageDescriptor(Mevenide.getImageDescriptor("refresh.gif"));
+       
+		viewConflicts = new Action() {
+		    public void run() {
+		        
+		    }
+		};
+		viewConflicts.setId("CONFLICTING");
+		viewConflicts.setToolTipText("Conflicts");
+		viewConflicts.setImageDescriptor(Mevenide.getImageDescriptor("conflicting.gif"));
+		
+		viewIdeToPom = new Action() {
+		    public void run() {
+		        
+		    }
+		};
+		viewIdeToPom.setId("IDE_TO_POM");
+		viewIdeToPom.setToolTipText("Outgoing changes");
+		viewIdeToPom.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(org.eclipse.ui.ISharedImages.IMG_TOOL_FORWARD_HOVER));
+
+		viewPomToIde = new Action() {
+		    public void run() {
+		        
+		    }
+		};
+		viewPomToIde.setId("POM_TO_IDE");
+		viewPomToIde.setToolTipText("Incoming Changes");
+		viewPomToIde.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(org.eclipse.ui.ISharedImages.IMG_TOOL_BACK_HOVER));
+
+		pushToPom = new Action() {
+		    public void run() {
+		        
+		    }
+		};
+		pushToPom.setId("PUSH_TO_POM");
+		pushToPom.setText("Update Pom");
+
+		addToClasspath = new Action() {
+		    public void run() {
+		        
+		    }
+		};
+		addToClasspath.setId("POP_POM");
+		addToClasspath.setText("Add to .classpath");
+
+		viewProperties = new Action() {
+		    public void run() {
+		        
+		    }
+		};
+		viewProperties.setId("PROPERTIES");
+		viewProperties.setText("Properties");
+    }
     
+    private void plugActions() {
+        getViewSite().getActionBars().getMenuManager().add(pushToPom);
+		getViewSite().getActionBars().getMenuManager().add(addToClasspath);
+		getViewSite().getActionBars().getMenuManager().add(viewProperties);
+
+		getViewSite().getActionBars().getToolBarManager().add(refreshAll);
+		getViewSite().getActionBars().getToolBarManager().add(viewIdeToPom);
+		getViewSite().getActionBars().getToolBarManager().add(viewPomToIde);
+		getViewSite().getActionBars().getToolBarManager().add(viewConflicts);
+
+    }
 }

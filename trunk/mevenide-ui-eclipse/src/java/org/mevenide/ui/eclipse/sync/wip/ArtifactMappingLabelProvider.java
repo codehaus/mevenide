@@ -71,13 +71,13 @@ public class ArtifactMappingLabelProvider implements ILabelProvider {
         IArtifactMappingNode node = (IArtifactMappingNode) element;
         int flags = 0x0;
         if ( !SyncManager.getManager().isMappingComplete(node) ) {
-            flags |= ArtifactMappingImageDecorator.INCOMPLETE;
+            flags |= IArtifactMappingNode.INCOMPLETE;
         }
         if ( SyncManager.getManager().isConflicting(node) ) {
-            flags |= ArtifactMappingImageDecorator.CONFLICTING;
+            flags |= IArtifactMappingNode.CONFLICTING;
         }
         if ( SyncManager.getManager().isInherited(node) ) {
-            flags |= ArtifactMappingImageDecorator.INHERITED;
+            flags |= IArtifactMappingNode.INHERITED;
         }
         ArtifactMappingImageDecorator decoratedImage = new ArtifactMappingImageDecorator(image, flags);
         return decoratedImage.createImage(); 

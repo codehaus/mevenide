@@ -104,9 +104,10 @@ public class DependencyMappingNodeContainerFactory {
 					nodes.add(node);
 				}
 			}
+			
 			IArtifactMappingNode[] artifactNodes = new IArtifactMappingNode[nodes.size()]; 
 			for (int i = 0; i < nodes.size(); i++) {
-                artifactNodes[i] = (IArtifactMappingNode) nodes.get(i);
+			        artifactNodes[i] = (IArtifactMappingNode) nodes.get(i);
             }
 			con.setNodes(artifactNodes);
 			con.attachPom(javaProject);
