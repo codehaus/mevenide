@@ -15,44 +15,23 @@
  * =========================================================================
  */
 
+
 package org.mevenide.plugins;
 
-import java.util.Set;
-
 /**
- * information about the plugin.
+ *
  * @author  <a href="mailto:mkleint@codehaus.org">Milos Kleint</a>
  */
-public interface IPluginInfo {
+public interface ICustomPluginLoader {
     
     /**
-     * name of the plugin.
+     * loads the enhanced properties for the given plugin.
+     * @param plugin name of the plugin
+     * @param version version of the plugin
+     * @param exactMatch if true, shall return anything only if the Loader has the exact version available. 
+     *                        else it's free to attempt a best match.
+     * @returns null if such info doesn't exist, or an array of property descriptions
      */
-    String getName();
-    
-    /**
-     * the current version of the plugin installed.
-     */
-    String getVersion();
-    
-    /**
-     * equals <name>-<version>
-     */
-    String getArtifactId();
-    
-    
-    String getLongName();
-    
-    String getDescription();
-    
-    /**
-     * Set of <code>String</code>, property keys of the plugin.
-     */
-    Set getPropertyKeys();
-    
-    /**
-     * Set of <code>PluginProperty></code> instances
-     */
-    Set getEnhancedPropertyInfo();
+    PluginProperty[] loadProperties(String plugin, String version, boolean exactMatch);
     
 }
