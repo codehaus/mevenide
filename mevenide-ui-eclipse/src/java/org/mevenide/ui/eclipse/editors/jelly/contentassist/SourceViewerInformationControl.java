@@ -131,7 +131,7 @@ public class SourceViewerInformationControl implements IInformationControl, IInf
 		}		
 
 		// Source viewer
-		fViewer= new JavaSourceViewer(composite, null, null, false, style, null);
+		//fViewer= new JavaSourceViewer(composite, null, null, false, style, null);
 		fViewer.configure(new JavaSourceViewerConfiguration(null, null, null, null));    //@TODO just to remove deprecation warning. TDB
 		fViewer.setEditable(false);
 		

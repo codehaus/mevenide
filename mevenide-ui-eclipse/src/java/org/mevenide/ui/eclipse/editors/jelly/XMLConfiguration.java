@@ -159,7 +159,8 @@ public class XMLConfiguration extends SourceViewerConfiguration {
 	public IInformationControlCreator getInformationControlCreator(ISourceViewer sourceViewer) {
 		return new IInformationControlCreator() {
 			public IInformationControl createInformationControl(Shell parent) {
-				return  new SourceViewerInformationControl(parent);
+				//return  new SourceViewerInformationControl(parent);
+				return null;
 			}
 		};
 	}
