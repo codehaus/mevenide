@@ -5,7 +5,7 @@
     <artifactId>mevenide-config</artifactId>
     <name>Mevenide Config</name>
     <currentVersion>0.1-SNAPSHOT</currentVersion>
-    <package>org.mevenide</package>
+    <package>org.mevenide.config</package>
     <description>
     	Mevenide Config allows to manipulate Maven config, e.g. system environment variables, project config (project.properties), user-defined config (build.propertie, ...).
     </description>
@@ -25,6 +25,7 @@
             <version>1.0.1</version>
             <type>jar</type>
             <properties>
+                <netbeans.module.dep>spec</netbeans.module.dep>
             	<eclipse.plugin.bundle>false</eclipse.plugin.bundle>
             </properties>
         </dependency>
@@ -51,5 +52,6 @@
             <artifactId>mevenide-core-test</artifactId>
             <version>0.1.1-SNAPSHOT</version>
         </dependency>
+
     </dependencies>
 </project>
