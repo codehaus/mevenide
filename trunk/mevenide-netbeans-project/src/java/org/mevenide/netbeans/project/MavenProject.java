@@ -43,6 +43,8 @@ import org.mevenide.properties.resolver.PropertyLocatorFactory;
 import org.mevenide.properties.resolver.PropertyResolverFactory;
 import org.netbeans.api.project.Project;
 import org.netbeans.api.project.ProjectInformation;
+import org.netbeans.spi.project.ui.PrivilegedTemplates;
+import org.netbeans.spi.project.ui.RecommendedTemplates;
 import org.openide.filesystems.*;
 import org.openide.util.Lookup;
 import org.openide.util.Utilities;
@@ -161,7 +163,7 @@ public class MavenProject implements Project {
         if (getOriginalMavenProject().getBuild() != null) {
             String path = getOriginalMavenProject().getBuild().getSourceDirectory();
             if (path != null) {
-                return getDirURI(path);
+                return getDirURI(getPropertyResolver().resolveString(path));
             }
         }
         // this one should not fail
@@ -178,7 +180,7 @@ public class MavenProject implements Project {
         if (getOriginalMavenProject().getBuild() != null) {
             String path = getOriginalMavenProject().getBuild().getUnitTestSourceDirectory();
             if (path != null) {
-                return getDirURI(path);
+                return getDirURI(getPropertyResolver().resolveString(path));
             }
         }
         // this one should not fail
@@ -195,7 +197,7 @@ public class MavenProject implements Project {
         if (getOriginalMavenProject().getBuild() != null) {
             String path = getOriginalMavenProject().getBuild().getAspectSourceDirectory();
             if (path != null) {
-                return getDirURI(path);
+                return getDirURI(getPropertyResolver().resolveString(path));
             }
         }
         // this one should not fail
@@ -213,7 +215,7 @@ public class MavenProject implements Project {
         if (getOriginalMavenProject().getBuild() != null) {
             String path = getOriginalMavenProject().getBuild().getIntegrationUnitTestSourceDirectory();
             if (path != null) {
-                return getDirURI(path);
+                return getDirURI(getPropertyResolver().resolveString(path));
             }
         }
         // this one should not fail
@@ -230,6 +232,13 @@ public class MavenProject implements Project {
    private URI getDirURI(String path) {
        File parent = FileUtil.toFile(getProjectDirectory());
        File src = new File(parent.getAbsolutePath(), path);
+       if (!src.exists()) {
+           src = new File(path);
+           if (!src.exists()) {
+               // the ultimate fallback is the relative path..
+               src = new File(parent.getAbsolutePath(), path);
+           }
+       }
        return FileUtil.normalizeFile(src).toURI();
    }
    
@@ -265,7 +274,8 @@ public class MavenProject implements Project {
             new MavenSharabilityQueryImpl(this),
 //            new MavenFileBuiltQueryImpl(this),
             new SubprojectProviderImpl(this),
-            new MavenSourcesImpl(this)
+            new MavenSourcesImpl(this), 
+            new RecommendedTemplatesImpl()
         });
     }
     
@@ -352,4 +362,45 @@ public class MavenProject implements Project {
         }
         
     }
+    
+    private static final class RecommendedTemplatesImpl 
+                        implements RecommendedTemplates, PrivilegedTemplates {
+                            
+        private static final String[] APPLICATION_TYPES = new String[] { 
+            "java-classes",         // NOI18N
+            "java-main-class",      // NOI18N
+            "java-forms",           // NOI18N
+            "gui-java-application", // NOI18N
+            "java-beans",           // NOI18N
+            "oasis-XML-catalogs",   // NOI18N
+            "XML",                  // NOI18N
+            //"ant-script",           // NOI18N
+            //"ant-task",             // NOI18N
+            "servlet-types",     // NOI18N
+            "web-types",         // NOI18N
+            "junit",                // NOI18N
+            "MIDP",              // NOI18N
+            "simple-files"          // NOI18N
+        };
+        
+        private static final String[] PRIVILEGED_NAMES = new String[] {
+            "Templates/Classes/Class.java", // NOI18N
+            "Templates/Classes/Package", // NOI18N
+            "Templates/Classes/Interface.java", // NOI18N
+            "Templates/GUIForms/JPanel.java", // NOI18N
+            "Templates/GUIForms/JFrame.java", // NOI18N
+        };
+        
+        RecommendedTemplatesImpl() {
+        }
+        
+        public String[] getRecommendedTypes() {
+            return APPLICATION_TYPES;
+        }
+        
+        public String[] getPrivilegedTemplates() {
+            return PRIVILEGED_NAMES;
+        }
+        
+    }    
 }
