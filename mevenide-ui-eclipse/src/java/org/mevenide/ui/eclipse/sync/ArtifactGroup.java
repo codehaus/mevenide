@@ -14,6 +14,8 @@
  */
 package org.mevenide.ui.eclipse.sync;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
@@ -25,6 +27,8 @@ import org.eclipse.jdt.core.JavaCore;
  * 
  */
 public abstract class ArtifactGroup {
+	private static Log log = LogFactory.getLog(ArtifactGroup.class);
+	
 	protected IJavaProject project;
 	
 	
@@ -36,7 +40,7 @@ public abstract class ArtifactGroup {
 			}
 		}
 		catch ( Exception ex ) {
-			ex.printStackTrace();
+			log.debug("Error in ArtifactGroup initializer. reason : " + ex);
 		}
 	}
 	

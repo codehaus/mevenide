@@ -15,6 +15,8 @@ package org.mevenide.ui.eclipse.sync;
 
 import java.io.InputStream;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.mevenide.sync.AbstractPomSynchronizer;
@@ -31,6 +33,8 @@ import org.mevenide.ui.eclipse.util.ProjectUtil;
  *
  */
 public class PomSynchronizer extends AbstractPomSynchronizer implements ISynchronizer {
+	private static Log log = LogFactory.getLog(PomSynchronizer.class);
+	
 	/** the project under control */
 	private IProject project;
     
@@ -62,7 +66,7 @@ public class PomSynchronizer extends AbstractPomSynchronizer implements ISynchro
 				inputStream.close();
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.debug("Unable to check if POM already exists due to : " + e);
 		}
 	}
 
@@ -77,7 +81,7 @@ public class PomSynchronizer extends AbstractPomSynchronizer implements ISynchro
 			
 		}
 		catch (Exception e) {
-			e.printStackTrace();
+			log.debug("Unable to synchronize project '" + project.getName() + "' due to : " + e);
 		}
 	}
 
@@ -89,7 +93,7 @@ public class PomSynchronizer extends AbstractPomSynchronizer implements ISynchro
 			Mevenide.getPlugin().createPom();
 		}
 		catch (Exception e) {
-			e.printStackTrace();
+			log.debug("Unable to create POM due to : " + e);
 		}
 	}
 	

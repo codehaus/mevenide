@@ -14,6 +14,8 @@
  */
 package org.mevenide.ui.eclipse.sync.wizard;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.wizard.WizardPage;
@@ -31,6 +33,8 @@ import org.mevenide.ui.eclipse.sync.source.SourceDirectoryViewUtil;
  * 
  */
 public class SourceDirectorySynchronizeWizardPage extends WizardPage {
+	
+	private static Log log = LogFactory.getLog(SourceDirectorySynchronizeWizardPage.class);
 	
 	private TableViewer viewer;
 	
@@ -63,7 +67,7 @@ public class SourceDirectorySynchronizeWizardPage extends WizardPage {
 				newInput = getSavedInput(project);
 			}
 			catch (Exception e) {
-				e.printStackTrace();
+				log.info("Error occured while restoring previously saved SourceDirectoryGroup for project '" + project.getName() + "'. Reason : " + e); 
 	
 			}
 			if ( newInput == null ) {

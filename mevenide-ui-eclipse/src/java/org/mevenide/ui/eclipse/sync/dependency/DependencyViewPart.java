@@ -15,6 +15,8 @@ package org.mevenide.ui.eclipse.sync.dependency;
 
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.JavaCore;
@@ -40,7 +42,8 @@ import org.mevenide.ui.eclipse.sync.source.SourceDirectoryMarshaller;
  * 
  */
 public class DependencyViewPart extends ViewPart {
-
+	private static Log log = LogFactory.getLog(DependencyViewPart.class);
+	
 	private TableTreeViewer viewer;
 	
 	private IProject project;
@@ -77,7 +80,7 @@ public class DependencyViewPart extends ViewPart {
 				newInput = getSavedInput(project);
 			}
 			catch (Exception e) {
-				e.printStackTrace();
+				log.info("Error occured while restoring previously saved DependencyGroup for project '" + project.getName() + "'. Reason : " + e);
 		
 			}
 			if ( newInput == null ) {
@@ -111,7 +114,7 @@ public class DependencyViewPart extends ViewPart {
 						SynchronizerFactory.getSynchronizer(ISynchronizer.IDE_TO_POM).synchronize();
 					}
 				} catch (Exception e) {
-					e.printStackTrace();
+					log.debug("Unable to synchronize POM due to : " + e);
 				}
 				
 				
@@ -128,7 +131,7 @@ public class DependencyViewPart extends ViewPart {
 						setInput(project);
 					}
 				} catch (Exception e) {
-					e.printStackTrace();
+					log.debug("Unable to refreash Dependency Mapping View due to : " + e);
 				}
 	
 			}

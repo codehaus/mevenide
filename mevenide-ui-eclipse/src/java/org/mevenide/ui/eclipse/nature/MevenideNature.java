@@ -17,6 +17,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IProjectNature;
@@ -39,12 +41,15 @@ import org.mevenide.ui.eclipse.sync.source.SourceDirectoryViewPart;
  */
 public class MevenideNature implements IProjectNature {
 	
+	private static Log log = LogFactory.getLog(MevenideNature.class);
+	
 	private IProject project;
 
 	public void configure() throws CoreException {
 		try {
 			configureProject(project);
 		} catch (Exception e) {
+			log.debug("Unable to add MevenideNature to project '" + project.getName() + "' due to : " + e);
 			throw new CoreException(new Status(IStatus.ERROR, "mevenide", 1, e.getMessage(), e));
 		}
 	}
@@ -87,7 +92,7 @@ public class MevenideNature implements IProjectNature {
 			project.setDescription(projectDescription, null);
 		} 
 		catch (Throwable e) {
-			e.printStackTrace();
+			log.debug("Unable to set project description due to : " + e);
 		}
 	}
 	
@@ -110,17 +115,7 @@ public class MevenideNature implements IProjectNature {
 
 	
 	private static void synchronizeProject(IProject project) {
-		try {
-			//AbstractSynchronizer cpSync = AbstractSynchronizer.getSynchronizer(AbstractSynchronizer.POM_TO_IDE);
-			//cpSync.synchronize(getSrcTypes());
 		
-			//AbstractSynchronizer pomSync = AbstractSynchronizer.getSynchronizer(AbstractSynchronizer.IDE_TO_POM);
-			//pomSync.createPomFile();
-			//pomSync.synchronize();
-		}
-		catch (Throwable e) {
-			e.printStackTrace();
-		}
 	}
 
 	

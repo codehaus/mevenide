@@ -16,6 +16,8 @@ package org.mevenide.ui.eclipse.sync.wizard;
 
 import java.io.File;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.Path;
@@ -32,6 +34,7 @@ import org.mevenide.ui.eclipse.IPathResolver;
  * 
  */
 public class SynchronizeWizard extends Wizard {
+	private static Log log = LogFactory.getLog(SynchronizeWizard.class);
 	
 	private SourceDirectorySynchronizeWizardPage sourcePage;
 	private DependencySynchronizeWizardPage dependencyPage;
@@ -59,7 +62,7 @@ public class SynchronizeWizard extends Wizard {
 			SynchronizerFactory.getSynchronizer(ISynchronizer.IDE_TO_POM).synchronize();
 		}
 		catch ( Exception ex ) {
-			ex.printStackTrace();
+			log.debug("Unable to synchronize POM due to : " + ex);
 		}
 		
 		return true;

@@ -15,6 +15,8 @@ package org.mevenide.ui.eclipse.preferences;
 
 import java.io.IOException;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.eclipse.jface.preference.PreferenceStore;
 
 import org.mevenide.ui.eclipse.Mevenide;
@@ -26,6 +28,8 @@ import org.mevenide.ui.eclipse.Mevenide;
  * 
  */
 public class PreferencesManager {
+	private static Log log = LogFactory.getLog(PreferencesManager.class);
+	
 	private PreferenceStore preferenceStore;
 	
 	public void loadPreferences() {
@@ -34,7 +38,7 @@ public class PreferencesManager {
 			preferenceStore.load();
 		}
 		catch ( Exception ex ) {
-			ex.printStackTrace();
+			log.debug("Unable to load preferences from file '" + getPreferenceStoreFilename() + "' due to : " + ex);
 		}
 	}
 	
@@ -44,7 +48,7 @@ public class PreferencesManager {
 			return true;
 		}
 		catch (IOException e) {
-			e.printStackTrace();
+			log.debug("Unable to save preferences to file '" + getPreferenceStoreFilename() + "' due to : " + e);
 			return false;
 		}
 	}
