@@ -251,7 +251,7 @@
 		</ul>
 	  </p>
 	  <p>
-	     <u>Notes: This feature is in an alpha state. It depends on deprecated <a href="http://jface.sourceforge.net/mavenzilla">Mavenzilla</a> 0.1 API.</u>
+	     <i>Notes: This feature is in an alpha state. It depends on deprecated <a href="http://jface.sourceforge.net/mavenzilla">Mavenzilla</a> 0.1 API. - 0.2+ will be integrated in the next release</i>
 	  </p>
 	  <p>
 	  	<a href="user-guide/repo_browsing.html">More details</a>

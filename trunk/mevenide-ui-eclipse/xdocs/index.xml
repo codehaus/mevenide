@@ -23,7 +23,7 @@
 						work you will need at least the 3.0 M9 build. Recommended version is however the 3.0 final release. Also the goals-grabbing mechanism wont work with Maven version lower than rc4.
 					</p>
 					<p>
-						Current Mevenide release has been tested under WinXP with Eclipse 3.0, JDK 1.4.1 and Maven 1.0. Please note that JDK 1.4+ is <b>required</b> since Java 1.4 regex engine is used.
+						Current Mevenide release has been tested under WinXP with Eclipse 3.1 M1 and M2, JDK 1.4.2_05 and Maven 1.0. Please note that JDK 1.4+ is <b>required</b> since Java 1.4 regex engine is used.
 					</p>
 					<p>
 						<div style="border: 1px #990000 dashed; padding-left:15px; padding-top:10px;">
@@ -39,7 +39,7 @@
 						<div style="padding-left:15px; padding-top:10px;">
 							Recommended Versions for <b>0.2.0</b> release : 
 							<ul>
-								<li>Eclipse 3.0 final</li>
+								<li>Eclipse 3.0 final / 3.1 M1 and M2</li>
 								<li>Maven 1.0-rc3</li>
 								<li>JS2E 1.4.2</li>
 							</ul>
