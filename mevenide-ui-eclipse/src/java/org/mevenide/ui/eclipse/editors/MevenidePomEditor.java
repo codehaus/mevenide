@@ -58,6 +58,7 @@ import org.mevenide.ui.eclipse.editors.pages.TeamPage;
 import org.mevenide.ui.eclipse.editors.pages.UnitTestsPage;
 import org.mevenide.util.DefaultProjectUnmarshaller;
 import org.mevenide.util.MevenideUtils;
+import org.mevenide.util.StringUtils;
 
 /**
  * The Mevenide multi-page POM editor. This editor presents the user with pages
@@ -468,7 +469,7 @@ public class MevenidePomEditor extends FormEditor {
             comparator.compare(updatedPom);
 
             String pomName = pom.getName();
-            if (!MevenideUtils.isNull(pomName)) {
+            if (!StringUtils.isNull(pomName)) {
                 setTitle(pomName);
                 firePropertyChange(PROP_TITLE);
             }
