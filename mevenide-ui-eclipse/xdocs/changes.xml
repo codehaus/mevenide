@@ -7,35 +7,29 @@
 
   <body>
   	<release version="0.2.3" date="in CVS">
-  	  <action dev="gdodinet" type="fix" issue="MEVENIDE-71">
-
-      </action>
       <action dev="gdodinet" type="fix" issue="MEVENIDE-73">
-
+		Update site generation now uses zip task instead of jar
+      </action>
+  	  <action dev="gdodinet" type="fix" issue="MEVENIDE-71">
+		Missing ~/build.properties does not cause synchronization to fail anymore 
       </action>
       <action dev="gdodinet" type="fix" issue="MEVENIDE-66">
-
-      </action>
-      <action dev="gdodinet" type="fix" issue="MEVENIDE-59">
-
-      </action>
-      <action dev="gdodinet" type="fix" issue="MEVENIDE-60">
-
+		Fix odd focus behavior in the Maven Project Wizard
       </action>
       <action dev="gdodinet" type="fix" issue="MEVENIDE-57">
-
+		Corrected synchronization behaviour for dependencies specifying &gt;jar/&lt; element
       </action>
   	  <action dev="gdodinet" type="fix" issue="MEVENIDE-56">
-
+		Closing square bracket doesnot break anymore jelly syntax highlighting 
       </action>
       <action dev="gdodinet" type="fix" issue="MEVENIDE-55">
-
+		Fix NPE if jar override is on but no dependencies are present in POM (typically in a multiproject context )
       </action>
-      <action dev="gdodinet" type="fix" issue="MEVENIDE-23">
-
+      <action dev="gdodinet" type="fix" issue="MEVENIDE-23, MEVENIDE-60">
+		POM editor pages are now correctly updated
       </action>
       <action dev="gdodinet" type="add">
-		Add Maven Nature and Builder
+		Add Maven Nature and Builder 
       </action>
     </release>
 	<release version="0.2.2" date="2004-07-25">
