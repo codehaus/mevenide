@@ -136,7 +136,7 @@ public class ResourcesSection extends PageSection {
 			resourcesTable.setInherited(false);
 		}
 		else if (parentResources != null) {
-			resourcesTable.addEntries(resources, true);
+			resourcesTable.addEntries(parentResources, true);
 			resourcesTable.setInherited(true);
 		}
 		else {

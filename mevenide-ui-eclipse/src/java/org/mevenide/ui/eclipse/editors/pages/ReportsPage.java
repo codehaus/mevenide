@@ -77,7 +77,7 @@ public class ReportsPage extends AbstractPomEditorPage {
 
 	protected void initializePage(Composite parent) {
 		GridLayout layout = new GridLayout();
-		layout.numColumns = 2;
+		layout.numColumns = 1;
 		layout.marginWidth = 10;
 		layout.horizontalSpacing = 15;
 		parent.setLayout(layout);
@@ -87,8 +87,7 @@ public class ReportsPage extends AbstractPomEditorPage {
 
 		reportsSection = new ReportsSection(this);
 		Control control = reportsSection.createControl(parent, factory);
-		GridData gd = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING);
-		gd.horizontalSpan = 2;
+		GridData gd = new GridData(GridData.FILL_BOTH);
 		control.setLayoutData(gd);
 	}
 
