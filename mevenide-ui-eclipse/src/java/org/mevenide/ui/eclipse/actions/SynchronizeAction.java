@@ -17,9 +17,11 @@ package org.mevenide.ui.eclipse.actions;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.ui.PlatformUI;
@@ -71,6 +73,22 @@ public class SynchronizeAction extends AbstractMevenideAction {
 			log.debug("Unable to synchronize " + (pom ? "POM" : "project") + " due to : " + e);
 		}
 	}
+
+	public void selectionChanged(IAction action, ISelection selection) {
+		super.selectionChanged(action, selection);
+		try {
+			if ( !currentProject.hasNature(JavaCore.NATURE_ID) ) {
+				action.setEnabled(false);
+			}
+			else {
+				action.setEnabled(true);
+			}
+		} 
+		catch (CoreException e) {
+			log.debug("Unable to disable action '" + action.getText() + "' due to : " + e);
+		}
+	}
+
 
     private boolean isNull(String strg) {
 		return strg == null || strg.trim().equals("");

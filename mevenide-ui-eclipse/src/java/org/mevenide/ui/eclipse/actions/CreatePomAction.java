@@ -44,10 +44,13 @@ public class CreatePomAction extends AbstractMevenideAction {
 	public void selectionChanged(IAction action, ISelection selection) {
 		super.selectionChanged(action, selection);
 		
-		//i still have to figure out how to disable the ui associated to the action
-		//if ( Mevenide.getPlugin().getPom().exists() ) {
-		//    action.setEnabled(false);
-		//}
+//      i still have to figure out how to disable the ui associated to the action
+//		if ( Mevenide.getPlugin().getPom().exists() ) {
+//		    action.setEnabled(false); 
+//		}
+//		else {
+//			action.setEnabled(true);
+//		}
 
 	}
 
