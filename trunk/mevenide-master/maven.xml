@@ -27,7 +27,6 @@
       <j:set var="maven.multiproject.includes" value="${maven.multiproject.jbuilder.includes}"/>
       <j:set var="maven.multiproject.excludes" value="mevenide-master/project.xml"/>
       <attainGoal name="multiproject:goal"/>
-      <attainGoal name="mevenide-jbuilder:create-doc-bundle"/>
   </goal>
 
   <goal name="mevenide-netbeans:autoupdate">
@@ -139,22 +138,6 @@
       <ant:delete dir="${maven.repo.local}/mevenide/jars" quiet="true"/>
       <ant:delete dir="${maven.repo.local}/mevenide/nbms" quiet="true"/>
   </goal>
-
-    
-  <!-- ==================================== -->
-  <!--           jbuilder section           -->
-  <!-- ==================================== -->    
-  <goal name="mevenide-jbuilder:create-doc-bundle">
-  	<j:set var="maven.multiproject.includes" value="${mevenide.ui.jbuilder.project.name}/project.xml"/>
-  	<j:set var="goal" value="xdoc"/>
-  	<attainGoal name="multiproject:goal"/>
-  	<ant:jar destfile="${mevenide.ui.jbuilder.project.location}/mevenide-ui-jbuilder-doc.jar">
-  		<fileset dir="${mevenide.ui.jbuilder.project.location}/target/docs">
-  	  	  <include name="JBMavenOpenTool.html"/>
-		</fileset>
-  	</ant:jar> 
-  </goal>
-
   
   <!-- ==================================== -->
   <!--     individual sites generation      -->
@@ -212,6 +195,17 @@ Below are listed relevant goals in the context of the Mevenide project.
      All required dependencies should be retrieved from the remote repository.
      For a complete build, run maven "mevenide-netbeans:build mevenide-netbeans:autoupdate"
      All built NBMs will be then placed under mevenide-master/target/nbm_release directory. 
+
+  o mevenide-jbuilder:build
+	 Builds JBuilder OpenTool. 
+	 In order to build the project successfully, you must define a jbuilder.home variable in
+	 ${user.home}/build.properties file that points to your JBuilder installation.
+	 Also it requires that maven-jbuilder-opentool-plugin is installed. You can grab it here : 
+	 http://mevenide.codehaus.org/repository/mevenide/plugins/
+     Or by running "maven -DartifactId=maven-jbuilder-opentool-plugin -DgroupId=mevenide -Dversion=[CURRENT_VERSION] plugin:download"
+     All required dependencies should be retrieved from the remote repository.
+     Make sure the IDE is installed before running maven because the build process will 
+     grab libraries from the install directory.
 	 
   
 [Building Mevenide site]
