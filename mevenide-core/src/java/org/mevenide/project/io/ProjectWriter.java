@@ -16,6 +16,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
+import java.util.List;
 
 import org.apache.maven.project.Dependency;
 import org.apache.maven.project.Project;
@@ -148,6 +149,14 @@ public class ProjectWriter {
 		//@todo jaroverriding 
 	}
 	
+	public void setDependencies(List dependencies, File pom) throws Exception {
+		Project project = projectReader.read(pom);
+
+		project.setDependencies(dependencies);
+		write(project, pom);
+	
+		//@todo jaroverriding 
+	}
 	
 	/** 
 	 * utility method that allows some factorization
