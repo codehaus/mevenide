@@ -6,10 +6,6 @@
    provider-name="Sourceforge">
 
    <runtime>
-      <library name="lib/commons-collections-2.1.jar">
-         <export name="*"/>
-         <packages prefixes="org.apache.commons.collections"/>
-      </library>
       <library name="@maven.eclipse.plugin.artifact.internal.id@-@maven.eclipse.plugin.artifact.internal.version@.jar">
          <export name="*"/>
          <packages prefixes="org.mevenide.goals,org.mevenide.reports"/>
