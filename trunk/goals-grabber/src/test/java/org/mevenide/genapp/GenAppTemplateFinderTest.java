@@ -70,8 +70,8 @@ public class GenAppTemplateFinderTest extends TestCase {
         TemplateInfo[] infos = finder.getTemplates(GenAppTemplateFinder.LOCATION_USER);
         assertNotNull(infos);
         assertEquals(2, infos.length);
-        assertEquals(infos[0].getName(), "default");
-        assertEquals(infos[1].getName(), "ejb");
+        assertEquals(infos[1].getName(), "default");
+        assertEquals(infos[0].getName(), "ejb");
     }
     
     
