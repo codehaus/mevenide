@@ -16,6 +16,7 @@
  */
 package org.mevenide.ui.eclipse.preferences;
 
+import java.util.Map;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
@@ -31,10 +32,21 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
  * 
  */
 public class DynamicPreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
+    
+    private Map properties;
+    
     protected Control createContents(Composite parent) {
 	    return new Composite(parent, SWT.NULL);
 	}
   
 	public void init(IWorkbench workbench) {
+    }
+	
+    public Map getProperties() {
+        return properties;
+    }
+    
+    public void setProperties(Map properties) {
+        this.properties = properties;
     }
 }

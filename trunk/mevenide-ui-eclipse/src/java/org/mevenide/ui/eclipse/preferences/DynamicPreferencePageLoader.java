@@ -16,6 +16,8 @@
  */
 package org.mevenide.ui.eclipse.preferences;
 
+import java.util.HashMap;
+import java.util.Map;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IRegistryChangeEvent;
@@ -33,31 +35,44 @@ import org.mevenide.ui.eclipse.Mevenide;
  * 
  */
 public class DynamicPreferencePageLoader implements IRegistryChangeListener  {
-    private static final String MAIN_PREFERENCE_PAGE_PATH = "org.mevenide.ui.plugin.preferences.MavenPreferencePage";
     
-    private void initDynamicPreferencePages() {
+    private static final String MAIN_PREFERENCE_PAGE_PATH = "org.mevenide.ui.plugin.preferences.MavenPreferencePage";
+
+    private static final String PAGE_ID = "id";
+	private static final String PAGE_NAME = "name";
+	
+	private static final String PROPERTY_DEFAULT = "default";
+	private static final String PROPERTY_NAME = "name";
+	
+	
+    public void registryChanged(IRegistryChangeEvent event) {
         IExtension extension = Platform.getExtensionRegistry().getExtension("org.mevenide.ui.preference");
-        System.err.println(extension == null);
         if ( extension != null ) {
 	        IConfigurationElement[] configurationElements = extension.getConfigurationElements();
-	        System.err.println(configurationElements.length);
 	        for (int i = 0; i < configurationElements.length; i++) {
-	            IPreferenceNode node = new PreferenceNode("org.toto", "Toto", null, DynamicPreferencePage.class.getName());
+	            IConfigurationElement configurationElement = configurationElements[i]; 
+	            IPreferenceNode node = createPreferencePage(configurationElement);
 	            Mevenide.getInstance().getWorkbench().getPreferenceManager().addTo(MAIN_PREFERENCE_PAGE_PATH, node);
-	            System.err.println(configurationElements[i].getAttribute("name"));
-	            System.err.println(configurationElements[i].getAttribute("default"));
 	        }
         }
     }
 
-    public void registryChanged(IRegistryChangeEvent event) {
-        System.err.println("reg changed : ");
-        for (int i = 0; i < event.getExtensionDeltas().length; i++) {
-            System.err.println("\t" + event.getExtensionDeltas()[i].getExtension() + "\t" + event.getExtensionDeltas()[i].getExtensionPoint());
+    private IPreferenceNode createPreferencePage(IConfigurationElement configurationElement) {
+        String pageName = configurationElement.getAttribute(PAGE_NAME);
+        String pageId = configurationElement.getAttribute(PAGE_ID);
+        IConfigurationElement[] childrenElements = configurationElement.getChildren("property");
+        Map properties = new HashMap(childrenElements.length);
+        for (int i = 0; i < childrenElements.length; i++) {
+            IConfigurationElement childElement = childrenElements[i];
+            String propertyName = childElement.getAttribute(PROPERTY_NAME);
+            String propertyDefault = childElement.getAttribute(PROPERTY_DEFAULT);
+            properties.put(propertyName, propertyDefault);
         }
-	    //IPreferenceNode node = new PreferenceNode("org.toto", "Toto", null, DynamicPreferencePage.class.getName());
-        //getWorkbench().getPreferenceManager().addTo(MAIN_PREFERENCE_PAGE_PATH, node);
-        initDynamicPreferencePages();
+        DynamicPreferencePage page = new DynamicPreferencePage();
+        page.setTitle(pageName);
+        page.setProperties(properties);
+        IPreferenceNode node = new PreferenceNode(pageId, page);
+        return node;
     }
     
 }
