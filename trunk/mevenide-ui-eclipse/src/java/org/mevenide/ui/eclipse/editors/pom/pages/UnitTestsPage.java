@@ -16,6 +16,7 @@
  */
 package org.mevenide.ui.eclipse.editors.pom.pages;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.maven.project.Build;
@@ -135,7 +136,11 @@ public class UnitTestsPage extends AbstractPomEditorPage {
 		
 			public void addResource(Object target, Resource resource) {
 				Project pom = (Project) target;
-				getOrCreateUnitTest(pom).addResource(resource);
+				UnitTest unitTest = getOrCreateUnitTest(pom);
+				if ( unitTest.getResources() == null ) {
+				    unitTest.setResources(new ArrayList());
+				}
+				unitTest.addResource(resource);
 				getPomEditor().setModelDirty(true);
 			}
 		
