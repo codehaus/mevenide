@@ -7,14 +7,14 @@
   <artifactId>maven-mevenide-plugin</artifactId>
   <name>Maven Mevenide Plugin</name>
   
-  <currentVersion>0.1.2</currentVersion>
+  <currentVersion>0.2</currentVersion>
   <shortDescription>Plugin to run and debug Maven projects.</shortDescription>
   
   <inceptionYear>2004</inceptionYear>
   
   <licenses>
     <license>
-        <name>Apache Public License 2.0 - for the plugin itself</name>
+        <name>Apache Public License 2.0</name>
         <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
     </license>
   </licenses>
@@ -22,7 +22,7 @@
     <developer>
       <name>Milos Kleint</name>
       <id>mkleint</id>
-      <email>ca206216@tiscali.cz</email>
+      <email>mkleint@codehaus.org</email>
       <roles>
         <role>Creator</role>
         <role>Developer</role>

@@ -6,6 +6,11 @@
   xmlns:ant="jelly:ant"
   xmlns:maven="jelly:maven">
 
+  
+  <goal name="mevenide:noop" 
+        description="A noop goal, useful to rebuild the local caches etc.">
+  </goal>
+  
    <goal name="mevenide:run-class" 
           description="Run the project's classes.">
       <ant:path id="cp">
