@@ -27,12 +27,14 @@ import org.mevenide.context.IQueryContext;
  *
  * @author  <a href="mailto:mkleint@codehaus.org">Milos Kleint</a>
  */
-public class PluginInfoFactory {
+public final class PluginInfoFactory {
     
     private static PluginInfoFactory instance;
+    private ICustomPluginLoader loader;
     private HashSet set = new HashSet(); 
     /** Creates a new instance of PluginInfoFactory */
-    PluginInfoFactory() {
+    private PluginInfoFactory() {
+        loader = null;
     }
     
     public static PluginInfoFactory getInstance() {
@@ -42,6 +44,18 @@ public class PluginInfoFactory {
             }
         }
         return instance;
+    }
+    
+    /**
+     * by implementing <code>ICustomPluginLoader</code> and setting it, one
+     * can provide additional locations for the definition of plugin and it's properties
+     */
+    public void setCustomLoader(ICustomPluginLoader ldr) {
+        loader = ldr;
+    }
+    
+    ICustomPluginLoader getCustomLoader() {
+        return loader;
     }
     
     public PluginInfoManager createManager(IQueryContext context) {

@@ -33,13 +33,15 @@ public final class PluginInfoManager {
     private IQueryContext context;
     private PluginInfoParser parser;
     private String oldCacheDir = null;
+    private LocationFinderAggregator finder;
     /** Creates a new instance of PluginInfoManager */
     PluginInfoManager(IQueryContext queryContext) {
         context = queryContext;
+        finder = new LocationFinderAggregator(context);
     }
     
     private void findParser() {
-        String cacheDir = new LocationFinderAggregator(context).getMavenPluginsDir();
+        String cacheDir = finder.getMavenPluginsDir();
         if (oldCacheDir == null || !oldCacheDir.equals(cacheDir)) {
             oldCacheDir = cacheDir;
             parser = PluginInfoFactory.getInstance().getParser(new File(cacheDir));
