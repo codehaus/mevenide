@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<project name="Mevenide Project" 
+	     href="http://mevenide.sf.net/" 
+		 xmlns:j="jelly:core">
+
+  <title>Mevenide</title>
+
+  <body>
+    <menu name="Home">
+      <item name="Source Repositories"     href="/source-repos.html" />
+    </menu>
+
+    <menu name="Sub Projects">
+          <j:if test="${!reactorProject.name.equals('Mevenide Master')}">
+        <item name="Goals Grabber" href="http://mevenide.sf.net/goals-grabber/"/>
+      </j:if>
+          <j:if test="${!reactorProject.name.equals('Mevenide Master')}">
+        <item name="Mevenide Core" href="http://mevenide.sf.net/mevenide-core/"/>
+      </j:if>
+          <j:if test="${!reactorProject.name.equals('Mevenide Master')}">
+        <item name="Mevenide Eclipse" href="http://mevenide.sf.net/mevenide-ui-eclipse/"/>
+      </j:if>
+        </menu>
+
+  </body>
+</project>
+

@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<document>
+
+  <properties>
+    <author email="rhill@wanadoo.fr">Gilles Dodinet</author>
+    <title>Source Repositories</title>
+  </properties>
+
+  <body>
+    
+        <section name="Goals Grabber Source Repository Info">
+      <p>
+        <a href="http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/mevenide/goals-grabber/">Web View</a>
+      </p>
+    </section>
+        <section name="Mevenide Core Source Repository Info">
+      <p>
+        <a href="http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/mevenide/mevenide-core/">Web View</a>
+      </p>
+    </section>
+        <section name="Mevenide Eclipse Source Repository Info">
+      <p>
+        <a href="http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/mevenide/mevenide-ui-eclipse/">Web View</a>
+      </p>
+    </section>
+        
+  </body>
+</document>

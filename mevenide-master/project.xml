@@ -5,9 +5,21 @@
   <pomVersion>3</pomVersion>
   <name>Mevenide Master</name>
   <id>mevenide:master</id>
-  <artifactId>master</artifactId>
+  <artifactId>mevenide-master</artifactId>
   
-  <dependencies/>
+  <dependencies>
+    <dependency>
+      <id>commons-jelly+tags-velocity</id>
+      <version>SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <id>velocity</id>
+      <version>1.3</version>
+    </dependency>
+
+  </dependencies>
   
+  <reports/>
 </project>
 

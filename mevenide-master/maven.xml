@@ -1,4 +1,11 @@
-<project default="build-all" xmlns:maven="jelly:maven">
+<project default="build-all" 
+		 xmlns:maven="jelly:maven" 
+		 xmlns:j="jelly:core"
+		 xmlns:velocity="jelly:org.apache.commons.jelly.tags.velocity.VelocityTagLibrary">
+
+  <!-- 
+  	TODO debug site generation 
+  -->
 
   <preGoal name="build">
   	<!-- simulate project.properties inheritance -->
@@ -24,13 +31,13 @@
   		  tofile="${maven.home}/repository/eclipse/jars/eclipse-swt-2.1.0.jar"/>  	
   </preGoal>
 
+
   <goal name="build-all"
     	description="Build all Mevenide modules">
     <attainGoal name="build"/>
   </goal>
   
-  <goal name="build"
-    	description="Build each Mevenide module">
+  <goal name="build" description="Build each Mevenide module">
 	
 	<echo>
 		+-------------------------------------
@@ -39,17 +46,46 @@
 		+-------------------------------------
 	</echo>
 	
-    <maven:reactor
-      basedir=".."
-      includes="goals-grabber/project.xml,mevenide-core/project.xml,mevenide-ui-eclipse/project.xml"
-      excludes=""
-      goals="clean,jar:install"
-      banner="Building"
-      ignoreFailures="false"
-    />
+    <maven:reactor basedir=".."
+      			   includes="goals-grabber/project.xml,mevenide-core/project.xml,mevenide-ui-eclipse/project.xml"
+      			   excludes=""
+      			   goals="clean,jar:install"
+      			   banner="Building"
+      			   ignoreFailures="false"/>
     
   </goal>
+  
+  <!-- build the aggregated site -->
+  <goal name="build-site" description="Build Mevenide Site">
+  	
+  	<maven:reactor basedir=".."
+      			   includes="goals-grabber/project.xml,mevenide-core/project.xml,mevenide-ui-eclipse/project.xml,mevenide-master/project.xml"
+      			   goals="site"
+      			   excludes="mevenide-master/**"
+      			   banner="Building Site"
+      			   ignoreFailures="false"
+      			   postProcessing="true"/>
+    
+  </goal>
+  
+  <postGoal name="build-site">
+  	
+  	<fileScanner var="templates">
+      <fileset dir="${basedir}/templates">
+        <include name="*.xml"/>
+      </fileset>
+    </fileScanner>
+  	
+  	<j:forEach var="template" items="${templates.iterator()}">
+      
+      <j:set var="templateName" value="${template.name}"/>
+      <echo>Processing ${templateName} template ...</echo> 
+    
+      <velocity:merge name="${basedir}/xdocs/${templateName}"
+        			  basedir="${basedir}/templates"
+        			  template="${templateName}"/>
 
-
+    </j:forEach>
+  </postGoal>
   
 </project>

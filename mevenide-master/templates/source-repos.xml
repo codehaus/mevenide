@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<document>
+
+  <properties>
+    <author email="rhill@wanadoo.fr">Gilles Dodinet</author>
+    <title>Source Repositories</title>
+  </properties>
+
+  <body>
+    
+    #foreach ($reactorProject in $reactorProjects)
+    <section name="$reactorProject.name Source Repository Info">
+      <p>
+        <a href="$reactorProject.repository.url">Web View</a>
+      </p>
+    </section>
+    #end
+    
+  </body>
+</document>
