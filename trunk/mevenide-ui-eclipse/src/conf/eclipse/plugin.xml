@@ -235,7 +235,7 @@
             contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
             class="org.mevenide.ui.eclipse.editors.jelly.BasicJellyEditor"
             icon="icons/obj16/jellyfile_obj.gif"
-            extensions="xml,jelly"
+            extensions="xml,jelly,jsl"
             id="org.mevenide.ui.eclipse.editors.jelly.BasicJellyEditor"
             name="Generic Jelly Editor">
       </editor>
