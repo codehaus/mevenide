@@ -84,7 +84,6 @@
                   <jsl:applyTemplates select="$doc/document/body/changelog" />
                   <jsl:applyTemplates select="$doc/document/body/taskList" />
                   <jsl:applyTemplates select="$doc/document/body/goals" />
-                  <jsl:applyTemplates select="$nav/body/search" />
                 </div>
               </div>
             </td>
