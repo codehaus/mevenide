@@ -34,8 +34,8 @@
 					<p>
 						After having added elements (i.e. dependencies, license, resources, or whatever) in the editor pages, you 
 						can edit their properties in the <i>Properties</i> view (Screenshot 3). <br/>
-						At the moment the view must be manually opened (<code><i>Window > Show View > Other... > Basic > Properties</i></code>),
-						later we will provide a way to make it more user-friendly. 
+						Double clicking on a Table entry will bring up the property sheet. Alternatively the view can be manually opened 
+						(<code><i>Window > Show View > Other... > Basic > Properties</i></code>).
 						<br/>
 						<center>
 							<img border="1px" src="../images/screenshots/edit/pom_elem_props.png"/>
