@@ -1,7 +1,7 @@
 /* ====================================================================
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 2003 Gilles Dodinet (rhill@wanadoo.fr).  All rights
+ * Copyright (c) 2003 Jeffrey Bonevich.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -57,6 +57,7 @@ import junit.framework.TestCase;
 
 /**
  * @author jbonevic
+ * $Id$
  */
 public class ProjectComparatorTest extends TestCase {
 
@@ -149,6 +150,20 @@ public class ProjectComparatorTest extends TestCase {
 		p1.setGroupId("group1");
 		Project p2 = new Project();
 		p2.setArtifactId("test2");
+		p2.setGroupId("group1");
+		ProjectComparator comparator = new ProjectComparator(p1);
+		comparator.addProjectChangeListener(LISTENER);
+		comparator.compare(p2);
+		assertTrue(changed);
+	}
+
+	public void testCompare_newHasNull() {
+		changed = false;
+		Project p1 = new Project();
+		p1.setArtifactId("test1");
+		p1.setGroupId("group1");
+		Project p2 = new Project();
+		p2.setArtifactId(null);
 		p2.setGroupId("group1");
 		ProjectComparator comparator = new ProjectComparator(p1);
 		comparator.addProjectChangeListener(LISTENER);
