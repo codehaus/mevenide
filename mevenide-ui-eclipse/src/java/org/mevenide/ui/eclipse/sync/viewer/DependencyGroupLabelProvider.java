@@ -81,9 +81,17 @@ public class DependencyGroupLabelProvider implements ITableLabelProvider, IColor
 				&& ((DependencyWrapper) element).isReadOnly() ) {
 			return MevenideColors.GREY;
 		}
+		if ( element instanceof DependencyWrapper 
+				&& ((DependencyWrapper) element).isReadOnly() ) {
+			return MevenideColors.GREEN;
+		}
 		if ( element instanceof DependencyWrapper
 				&& ((DependencyWrapper) element).getDependencyGroup().isDuplicated(element) ) {
 			return MevenideColors.ORANGE;
+		}
+		if ( element instanceof DependencyInfo
+				&& ((DependencyInfo) element).isInPom() ) {
+			return MevenideColors.GREEN;
 		}
 		if ( element instanceof DependencyInfo
 				&& ((DependencyInfo) element).isReadOnly() ) {

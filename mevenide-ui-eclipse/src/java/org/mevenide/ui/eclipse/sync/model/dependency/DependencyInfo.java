@@ -64,6 +64,7 @@ public abstract class DependencyInfo {
 	protected DependencyWrapper wrapper;
 		
 	private boolean isReadOnly;
+	private boolean isInPom;
 	
 	DependencyInfo(DependencyWrapper d) {
 		this.dependency = d.getDependency();
@@ -99,7 +100,13 @@ public abstract class DependencyInfo {
     public void setReadOnly(boolean isReadOnly) {
         this.isReadOnly = isReadOnly;
     }
+	public boolean isInPom() {
+		return isInPom;
+	}
 
+	public void setInPom(boolean inPom) {
+		this.isInPom = inPom;
+	}
 }
 	
 class GroupId extends DependencyInfo {

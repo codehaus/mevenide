@@ -67,7 +67,7 @@ public class SourceDirectory {
 	private SourceDirectoryGroup group;
 	
 	private boolean isReadOnly;
-	
+	protected boolean isInPom;
 	
 	public SourceDirectory(String path, SourceDirectoryGroup group) {
 		//directoryPath = "${basedir}" + File.separator + path;
@@ -128,4 +128,11 @@ public class SourceDirectory {
         this.isReadOnly = isReadOnly;
     }
 	
+	public boolean isInPom() {
+		return isInPom;
+	}
+
+	public void setInPom(boolean isInPom) {
+		this.isInPom = isInPom;
+	}
 }
