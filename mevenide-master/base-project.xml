@@ -161,7 +161,7 @@
     <!-- report>maven-jellydoc-plugin</report -->
     <report>maven-pmd-plugin</report>
     <!-- report>maven-simian-plugin</report -->
-    <!-- report>maven-faq-plugin</report -->
+    
   </reports>
 
 
