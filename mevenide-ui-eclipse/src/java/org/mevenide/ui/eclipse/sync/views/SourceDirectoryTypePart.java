@@ -52,8 +52,7 @@ public class SourceDirectoryTypePart extends ViewPart {
 	/** 2 columns table viewer [source dir, source type] where source type is displayed in a CCombo */
 	private TableViewer viewer;
 	
-	
-	
+	private IProject project;
 	
 	private static SourceDirectoryTypePart partInstance; 
 	
@@ -94,6 +93,7 @@ public class SourceDirectoryTypePart extends ViewPart {
 	}
 
 	public void setInput(IProject project) {
+		this.project = project;
 		//@todo manage project swapping via the memento
 		if ( viewer.getContentProvider() != null ) {
 			SourceDirectoryGroup newInput = null ;
@@ -201,6 +201,7 @@ public class SourceDirectoryTypePart extends ViewPart {
 
 	private void addContributions() {
 		IToolBarManager tbm = getViewSite().getActionBars().getToolBarManager();
+		
 		Action synchronizeAction = new Action() {
 			public void run() {
 				
@@ -214,7 +215,25 @@ public class SourceDirectoryTypePart extends ViewPart {
 			}
 		};	
 		synchronizeAction.setImageDescriptor(MavenPlugin.getImageDescriptor("maven-run.gif"));
+		synchronizeAction.setToolTipText("Synchronize");
+		
+		Action refreshAction = new Action() {
+			public void run() {
+				
+				try {
+					setInput(project);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+	
+			}
+		};
+		refreshAction.setImageDescriptor(MavenPlugin.getImageDescriptor("refresh.gif"));
+		refreshAction.setToolTipText("Refresh View");
+		
+		tbm.add(refreshAction);
 		tbm.add(synchronizeAction);
+		
 		getViewSite().getActionBars().updateActionBars();
 	}
 
