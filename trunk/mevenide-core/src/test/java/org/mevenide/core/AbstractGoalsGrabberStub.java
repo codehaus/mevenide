@@ -12,7 +12,7 @@
  * Lesser General Public License for more details.
  * 
  */
-package org.mevenide.core.stub;
+package org.mevenide.core;
 
 import org.mevenide.core.AbstractGoalsGrabber;
 

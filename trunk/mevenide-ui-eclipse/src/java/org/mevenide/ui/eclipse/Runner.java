@@ -15,6 +15,7 @@
 package org.mevenide.ui.eclipse;
 
 import org.mevenide.core.AbstractRunner;
+import org.mevenide.core.ArgumentsManager;
 import org.mevenide.core.Environment;
 import org.mevenide.ui.eclipse.jdt.launching.VMLauncherUtility;
 
@@ -52,8 +53,8 @@ public class Runner extends AbstractRunner {
        
 	    VMLauncherUtility.runVM(
 			"com.werken.forehead.Forehead",
-			Environment.getMavenClasspath(),
-		    Environment.getVMArgs(this),
+			ArgumentsManager.getMavenClasspath(),
+		    ArgumentsManager.getVMArgs(this),
 	        getMavenArgs(options, goals));
 	}
 

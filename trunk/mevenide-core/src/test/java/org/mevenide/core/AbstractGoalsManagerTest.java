@@ -20,7 +20,6 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
-import org.mevenide.core.stub.AbstractGoalsManagerStub;
 
 /**
  * 

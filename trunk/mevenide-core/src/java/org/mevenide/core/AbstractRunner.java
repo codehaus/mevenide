@@ -65,7 +65,6 @@ public abstract class AbstractRunner {
      * with the given environment
 	 * 
      * @todo FUNCTIONAL add Maven options management
-     * @refactor GETRID get rid of now unnecessary methods in Environment
      *  
 	 * @param goals String[] the goals to run
 	 */
@@ -76,8 +75,6 @@ public abstract class AbstractRunner {
             userDir = System.getProperty("user.dir");
 
 			initEnvironment();
-
-			Environment.prepareEnv(getBasedir());
 
 			launchVM(options, goals);
 

@@ -112,7 +112,6 @@ public abstract class AbstractGoalsManager implements IGoalsManager {
 	}
 	
     /**
-     * @todo IMPLEMENTME
      * 
      * @param plugin
      * @return String[] the selected goals under <code>plugin</code> control 

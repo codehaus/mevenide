@@ -31,7 +31,6 @@ import java.util.TreeMap;
  * @author Gilles Dodinet (gdodinet@wanadoo.fr)
  * @version $Id$
  * 
- * @todo EXTERNALIZE options and descriptions
  */
 public class OptionsRegistry {
     
