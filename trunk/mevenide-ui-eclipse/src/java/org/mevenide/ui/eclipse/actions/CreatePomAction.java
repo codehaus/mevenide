@@ -61,7 +61,7 @@ import org.mevenide.ui.eclipse.util.FileUtil;
  * 
  */
 public class CreatePomAction extends AbstractMevenideAction {
-	private static Log log = LogFactory.getLog(AbstractMevenideAction.class);
+	private static Log log = LogFactory.getLog(CreatePomAction.class);
 	
 	public void run(IAction action) {
 		try {
@@ -71,6 +71,7 @@ public class CreatePomAction extends AbstractMevenideAction {
 //				SourceDirectoryViewPart.getInstance().setInput(currentProject);
 			}
 		} catch (Exception e) {
+			e.printStackTrace();
 			log.debug("Unable to create POM due to : " + e);
 		}
 	}

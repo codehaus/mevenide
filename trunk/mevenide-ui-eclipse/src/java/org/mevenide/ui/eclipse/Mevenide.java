@@ -104,6 +104,7 @@ public class Mevenide extends AbstractUIPlugin {
 	private String mavenHome;
     private String javaHome;
     private String mavenRepository;
+    private String pomTemplate;
     private boolean checkTimestamp;
     
     private String currentDir;
@@ -126,6 +127,7 @@ public class Mevenide extends AbstractUIPlugin {
             setMavenHome(preferenceStore.getString("maven.home"));
             setJavaHome(preferenceStore.getString("java.home"));
             setMavenRepository(preferenceStore.getString("maven.repo"));
+            setPomTemplate(preferenceStore.getString("pom.template.location"));
             setCheckTimestamp(preferenceStore.getBoolean("mevenide.checktimestamp"));
             
             
@@ -355,6 +357,20 @@ public class Mevenide extends AbstractUIPlugin {
 
 	public void setCheckTimestamp(boolean b) {
 		checkTimestamp = b;
+	}
+
+	/**
+	 * @return
+	 */
+	public String getPomTemplate() {
+		return pomTemplate;
+	}
+
+	/**
+	 * @param string
+	 */
+	public void setPomTemplate(String string) {
+		pomTemplate = string;
 	}
 
 }

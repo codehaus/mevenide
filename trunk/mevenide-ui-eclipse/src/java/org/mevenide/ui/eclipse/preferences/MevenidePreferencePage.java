@@ -75,7 +75,7 @@ public class MevenidePreferencePage extends PreferencePage implements IWorkbench
         //setImageDescriptor(MavenPlugin.getImageDescriptor("sample.gif"));
 		manager = new PreferencesManager();
 		manager.loadPreferences();
-        dialog = new MevenidePreferenceDialog(manager);
+        dialog = new MevenidePreferenceDialog(manager, this);
        	
     }
 
@@ -92,6 +92,7 @@ public class MevenidePreferencePage extends PreferencePage implements IWorkbench
 		dialog.setJavaHome(manager.getValue("java.home"));
 		dialog.setMavenHome(manager.getValue("maven.home"));
 		dialog.setMavenRepo(manager.getValue("maven.repo"));
+		dialog.setPomTemplateLocation(manager.getValue("pom.template.location"));
 		
 		dialog.setCheckTimestamp(manager.getBooleanValue("mevenide.checktimestamp"));
 		
@@ -114,6 +115,7 @@ public class MevenidePreferencePage extends PreferencePage implements IWorkbench
 		manager.setValue("maven.home", dialog.getMavenHome());
 		manager.setValue("java.home", dialog.getJavaHome());
 		manager.setValue("maven.repo", dialog.getMavenRepo());
+		manager.setValue("pom.template.location", dialog.getPomTemplateLocation());
 		manager.setBooleanValue("mevenide.checktimestamp", dialog.getCheckTimestamp());
 		
 		return manager.store();
