@@ -41,14 +41,14 @@
   	<section name="NetBeans Support">
       <div id="projects">
       <p>
-        The <b>Mevenide support for the upcoming Netbeans 4.0 release</b> recognizes the Maven project type in the IDE, 
+        The <b>Mevenide support for the Netbeans 4.x IDE</b> recognizes the Maven project type in the IDE, 
         tightly integrating Maven into the IDE, allows to run arbitrary goals, edit project properties etc. 
         The complete list of features can be found <a href="mevenide-netbeans-project/features.html">here</a> and 
         You might also want to check the <a href="mevenide-netbeans-project/user-guide/index.html">User guide</a>
         which describes the features in more details and is accompanied with screenshots.
         </p>
         <p>
-        The latest release 0.5 can be downloaded in <a href="download/mevenide-netbeans-0.5.zip">zip format</a>. 
+        The <b>latest release 0.6</b> can be downloaded in <a href="download/mevenide-netbeans-0.6.zip">zip format</a>. 
         </p>
         <p>Or it can be downloaded using the Netbeans
         Autoupdate feature. Download and install this small <a href="download/mevenide-netbeans-autoupdate-1.0.nbm">autoupdate module</a> or create a new Autoupdate server in the Tools/Options dialog with the following URL: 
@@ -58,10 +58,17 @@
         <p>
         	Requirements : </p>
         	<ul>
-        		<li>Netbeans 4.0 final and 4.1 dev builds.</li>
+        		<li>Netbeans 4.0 final or 4.1 beta1. <b>For 4.1 beta installation see note below.</b></li>
         		<li>JDK 1.4+</li>
         		<li>Maven 1.0.2</li>
         	</ul>
+                
+        <p>
+        <b>Note: </b>
+        The grammar module 
+        (editor completion for maven xml files) in 0.6 release zip will work
+            with Netbeans 4.0. To get it working with 4.1 beta you need the <a href="../download/mevenide-netbeans-grammar-0.6.1.nbm">updated 4.1 nbm </a>.
+        </p>        
       </div>
       <div id="plugin">
         <p>
