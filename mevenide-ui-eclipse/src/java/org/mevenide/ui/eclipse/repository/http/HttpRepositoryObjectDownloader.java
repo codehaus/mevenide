@@ -29,6 +29,7 @@ import org.apache.maven.wagon.authentication.AuthenticationException;
 import org.apache.maven.wagon.authorization.AuthorizationException;
 import org.apache.maven.wagon.providers.http.LightweightHttpWagon;
 import org.apache.maven.wagon.repository.Repository;
+import org.mevenide.environment.ConfigUtils;
 import org.mevenide.environment.LocationFinderAggregator;
 import org.mevenide.ui.eclipse.repository.DownloadException;
 import org.mevenide.ui.eclipse.repository.RepositoryObjectDownloader;
@@ -56,9 +57,9 @@ public class HttpRepositoryObjectDownloader implements RepositoryObjectDownloade
     }
     
     public HttpRepositoryObjectDownloader(String localRepositoryPath) {
-        this.localRepositoryPath = org.mevenide.util.StringUtils.isNull(localRepositoryPath) ? 
-                											new LocationFinderAggregator().getMavenLocalRepository() : 
-                							    			localRepositoryPath;
+        this.localRepositoryPath = org.mevenide.util.StringUtils.isNull(localRepositoryPath) ?
+            ConfigUtils.getDefaultLocationFinder().getMavenLocalRepository() :
+            localRepositoryPath;
         this.localRepositoryPath = StringUtils.stripEnd(this.localRepositoryPath, "/");
         wagon = new LightweightHttpWagon();
     }
