@@ -22,6 +22,7 @@ import java.util.Iterator;
 import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.mevenide.netbeans.project.customizer.DependencyPOMChange;
 import org.mevenide.netbeans.project.customizer.MavenPOMChange;
 import org.mevenide.netbeans.project.customizer.MavenPOMTreeChange;
 import org.mevenide.project.io.IContentProvider;
@@ -80,26 +81,30 @@ public class ChangesContentProvider implements IContentProvider {
     }
 
     public List getSubContentProviderList(String parentKey, String childKey) {
-        MavenPOMTreeChange change = findSubTreeChange(path + "." + parentKey);
-        if (change != null) {
-            if (change.getOldLocation() == location && change.getNewLocation() != location) {
-                return null;
+        if ("dependencies".equals(parentKey) && "dependency".equals(childKey)) {
+            return getDependenciesProviderList();
+        } else {
+            MavenPOMTreeChange change = findSubTreeChange(path + "." + parentKey);
+            if (change != null) {
+                if (change.getOldLocation() == location && change.getNewLocation() != location) {
+                    return null;
+                }
+                if (change.getNewLocation() == location) {
+                    return change.getChangedContent().getSubContentProviderList(parentKey, childKey);
+                }
             }
-            if (change.getNewLocation() == location) {
-                return change.getChangedContent().getSubContentProviderList(parentKey, childKey);
+            List orig = provider.getSubContentProviderList(parentKey, childKey);
+            if (orig != null) {
+                Iterator it = orig.iterator();
+                List toReturn = new ArrayList();
+                while (it.hasNext()) {
+                    IContentProvider obj = (IContentProvider)it.next();
+                    toReturn.add(createChildContentProvider(obj, path + "." + parentKey + "." + childKey));
+                }
+                return toReturn;
             }
+            return null;
         }
-        List orig = provider.getSubContentProviderList(parentKey, childKey);
-        if (orig != null) {
-            Iterator it = orig.iterator();
-            List toReturn = new ArrayList();
-            while (it.hasNext()) {
-                IContentProvider obj = (IContentProvider)it.next();
-                toReturn.add(createChildContentProvider(obj, path + "." + parentKey + "." + childKey));
-            }
-            return toReturn;
-        }
-        return null;
     }
  
     public List getValueList(String parentKey, String childKey) {
@@ -145,6 +150,26 @@ public class ChangesContentProvider implements IContentProvider {
             }
         }
         return null;
+    }
+    
+    private List getDependenciesProviderList() {
+        List lst = new ArrayList();
+        // iterate new changed ones..
+        Iterator it = changes.iterator();
+        while (it.hasNext()) {
+            Object obj = it.next();
+            if (obj instanceof DependencyPOMChange) {
+                DependencyPOMChange change = (DependencyPOMChange)obj;
+                if (change.getOldLocation() == location && change.getNewLocation() != location) {
+                    // was there but moved or deleted, remove from old list
+                    continue;
+                }
+                if (change.getNewLocation() == location) {
+                    lst.add(change.getChangedContent());
+                }
+            }
+        }
+        return lst;
     }
     
 }

@@ -18,11 +18,7 @@
 package org.mevenide.netbeans.project.dependencies;
 
 import org.openide.util.HelpCtx;
-import org.openide.util.NbBundle;
 import org.openide.util.actions.CallableSystemAction;
-import org.openide.windows.Mode;
-import org.openide.windows.TopComponent;
-import org.openide.windows.WindowManager;
 
 /** The action which shows maven repository browser.
 *

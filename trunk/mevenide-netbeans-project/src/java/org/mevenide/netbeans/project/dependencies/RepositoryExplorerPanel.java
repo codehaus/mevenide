@@ -216,6 +216,14 @@ public class RepositoryExplorerPanel extends JPanel implements ExplorerManager.P
         
     }//GEN-LAST:event_btnMergeActionPerformed
     
+    public RepoPathElement getSelectedRepoPathElement() {
+        Node[] nds = getExplorerManager().getSelectedNodes();
+        if (nds.length > 0) {
+            return (RepoPathElement)nds[0].getLookup().lookup(RepoPathElement.class);
+        }
+        return null;
+    }
+    
     public ExplorerManager getExplorerManager() {
         return manager;
     }
