@@ -93,6 +93,7 @@ public class SourceDirectoryMappingViewer {
 		gridData.grabExcessVerticalSpace = true;
 		gridData.grabExcessHorizontalSpace = true;
 		tableViewer.getTable().setLayoutData(gridData);
+		gridData.heightHint = 450;
 		
 		configureViewer(tableViewer);
 		
