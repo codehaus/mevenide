@@ -4,7 +4,7 @@
 		Mevenide update Site blah blah
 	</description>
 
-	<feature url="http://osdn.dl.sourceforge.net/sourceforge/mevenide/org.mevenide.eclipse.feature_0.1.jar" id="org.mevenide" version="0.1-alpha-1">
+	<feature url="http://osdn.dl.sourceforge.net/sourceforge/mevenide/org.mevenide.eclipse.feature_0.1.jar" id="org.mevenide" version="0.1">
 		<category name="Mevenide"/>
 	</feature>
 
