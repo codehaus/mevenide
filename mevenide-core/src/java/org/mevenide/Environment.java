@@ -60,6 +60,7 @@ import java.io.File;
  * 
  */
 public class Environment {
+
 	private Environment()  {
 	}
 	
@@ -74,6 +75,14 @@ public class Environment {
     
     /** classworlds.conf file location */
     private static String configurationFile;
+
+	/** 
+	 * maven plugins installation directory
+	 * 
+	 * default to ${user.home}/.maven/plugins
+	 * 
+	 */
+	private static String mavenPluginsInstallDir;
 
 	/**
      * set the jdk home directory
@@ -134,4 +143,15 @@ public class Environment {
 		mavenRepository = repo;
 	}
 
+    public static String getMavenPluginsInstallDir() {
+    	if ( mavenPluginsInstallDir == null && mavenRepository != null ) {
+    		File mavenLocal = new File(mavenRepository).getParentFile();
+    		mavenPluginsInstallDir = new File(mavenLocal, "plugins").getAbsolutePath(); 
+    	}
+        return mavenPluginsInstallDir;
+    }
+
+    public static void setMavenPluginsInstallDir(String pluginsInstallDir) {
+        mavenPluginsInstallDir = pluginsInstallDir;
+    }
 }
