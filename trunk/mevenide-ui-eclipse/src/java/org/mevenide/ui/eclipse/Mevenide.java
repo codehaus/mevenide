@@ -99,6 +99,8 @@ public class Mevenide extends AbstractUIPlugin {
 	
 	public static String SYNCH_VIEW_ID = "org.mevenide.sync.view"; 
 	
+	public static String PLUGIN_ID = "org.mevenide";
+	
 	private ResourceBundle resourceBundle;
 	
 	private String mavenHome;
@@ -371,6 +373,10 @@ public class Mevenide extends AbstractUIPlugin {
 	 */
 	public void setPomTemplate(String string) {
 		pomTemplate = string;
+	}
+	
+	public String getDefaultGoals() {
+		return "java:compile";
 	}
 
 }
