@@ -94,7 +94,7 @@
                id="mevenide.pom.create">
          </action>
          <action
-               label="%Synchronize"
+               label="%Synchronize.Label"
                icon="icons/synced.gif"
                class="org.mevenide.ui.eclipse.actions.SynchronizeAction"
                menubarPath="maven.plugin.menu/Synchronize"
@@ -127,7 +127,7 @@
                id="maven.plugin.popup.action">
          </action>
          <action
-               label="%Synchronize"
+               label="%Synchronize.Label"
                icon="icons/synced.gif"
                class="org.mevenide.ui.eclipse.actions.SynchronizeAction"
                menubarPath="maven.plugin.menu/Synchronize"
