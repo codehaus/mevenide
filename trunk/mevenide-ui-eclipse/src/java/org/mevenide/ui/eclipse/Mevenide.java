@@ -71,6 +71,7 @@ public class Mevenide extends AbstractUIPlugin {
 	private String mavenHome;
     private String javaHome;
     private String mavenRepository;
+    private boolean checkTimestamp;
     
     private String currentDir;
     private IProject project;
@@ -311,6 +312,15 @@ public class Mevenide extends AbstractUIPlugin {
 		String buildPath = resolver.getRelativePath(project, javaProject.getOutputLocation()); 
 		properties.setProperty("maven.build.dest", buildPath);
 		properties.store(new FileOutputStream(f), null);
+	}
+
+	
+	public boolean getCheckTimestamp() {
+		return checkTimestamp;
+	}
+
+	public void setCheckTimestamp(boolean b) {
+		checkTimestamp = b;
 	}
 
 }
