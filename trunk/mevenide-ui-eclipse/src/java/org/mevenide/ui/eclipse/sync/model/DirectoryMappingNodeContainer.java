@@ -29,6 +29,7 @@ import org.apache.maven.project.Project;
 import org.apache.maven.project.Resource;
 import org.mevenide.project.ProjectConstants;
 import org.mevenide.ui.eclipse.util.FileUtils;
+import org.mevenide.ui.eclipse.util.SourceDirectoryTypeUtil;
 
 /**
  * 
@@ -70,7 +71,6 @@ public class DirectoryMappingNodeContainer extends AbstractArtifactMappingNodeCo
 				        DirectoryMappingNode currentNode = (DirectoryMappingNode) nodes[i];
 				        Directory resolvedDirectory = (Directory) currentNode.getResolvedArtifact();
 				        if ( currentNode.getArtifact() == null ) {
-				        	System.err.println(pomResource);
 				        	if ( lowMatch(pomResource, resolvedDirectory) ) {
 				        		orphanResources.remove(pomResource);
 				        	}
@@ -92,21 +92,14 @@ public class DirectoryMappingNodeContainer extends AbstractArtifactMappingNodeCo
         	return false;
         }
         
-        String resourcePath = stripBasedir(resource.getDirectory());
-        String directoryPath = stripBasedir(directory.getPath());
+        String resourcePath = SourceDirectoryTypeUtil.stripBasedir(resource.getDirectory());
+        String directoryPath = SourceDirectoryTypeUtil.stripBasedir(directory.getPath());
         
         log.debug("resource dir : " + resourcePath + ", directory path : " + directoryPath + " match ? " + (resource.getDirectory() != null && resource.getDirectory().replaceAll("\\\\", "/").equals(directory.getPath().replaceAll("\\\\", "/"))));
         return resourcePath.replaceAll("\\\\", "/").equals(directoryPath.replaceAll("\\\\", "/"));
     }
     
    
-	private String stripBasedir(String strg) {
-		if ( strg.startsWith("${basedir}") ) {
-        	strg = strg.substring("${basedir}".length());
-        }
-		return strg;
-	}
-
 	private void attachOrphanArtifacts(List orphanArtifacts, Project project) {
 		
 		removeDuplicate(orphanArtifacts);		
