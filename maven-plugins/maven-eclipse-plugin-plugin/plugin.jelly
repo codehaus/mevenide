@@ -1,11 +1,11 @@
-<project xmlns:j="jelly:core" 
-		 xmlns:ant="jelly:ant"
-		 xmlns:maven="jelly:maven"
-		 xmlns:util="jelly:util"
+<project xmlns:ant="jelly:ant"
 		 xmlns:define="jelly:define"
 		 xmlns:eclipse-plugin="eclipse-plugin"
-		 xmlns:x="jelly:xml"
-		 xmlns:mevenide="jelly:org.mevenide.tags.eclipse.MevenideTagLibrary">
+         xmlns:j="jelly:core" 
+		 xmlns:maven="jelly:maven"
+		 xmlns:mevenide="jelly:org.mevenide.tags.eclipse.MevenideTagLibrary"
+		 xmlns:util="jelly:util"
+		 xmlns:x="jelly:xml">
 
   <define:taglib uri="eclipse-plugin">
   	
@@ -48,7 +48,7 @@
   </goal>
   
   
-  <goal name="eclipse-plugin:create-plugin-dist" prereqs="eclipse-plugin:install-artifact"
+  <goal name="eclipse-plugin:create-plugin-dist" prereqs="eclipse-plugin:init,eclipse-plugin:install-artifact"
   		description="create a plugin dist file containing only the plugin required files and put it in ${maven.eclipse.plugin.dist.dir}">
 
   	  <j:set var="mode" value="${maven.eclipse.plugin.build.mode}"/>
@@ -65,7 +65,7 @@
       <j:set var="pluginArchive" value="${maven.eclipse.plugin.dist.dir}/${pluginFolder}_${distVersion}.jar"/>
 	  
 	  <!-- create temporary folder to store plugin files before archiving them -->
-  	  <ant:mkdir dir="${maven.eclipse.plugin.temp.dir}/${pluginFolder}_${distVersion}"/>
+	  <ant:mkdir dir="${maven.eclipse.plugin.temp.dir}/${pluginFolder}_${distVersion}"/>
        
       <!-- copy required dependencies and generated artifact to $${maven.eclipse.plugin.temp.dir} -->
       <ant:copy todir="${maven.eclipse.plugin.temp.dir}/${pluginFolder}_${distVersion}">
@@ -211,6 +211,7 @@
   	<j:if test="${type == 'plugin'}">
 	  <ant:delete dir="${maven.eclipse.plugin.lib.dir}" quiet="true"/>
 	  <ant:mkdir dir="${maven.eclipse.plugin.lib.dir}"/>
+	  <ant:delete dir="${maven.eclipse.plugin.lib.dir}" quiet="true"/>
 	</j:if>
     
     <ant:delete dir="${maven.eclipse.plugin.dist.dir}" quiet="true"/>	
@@ -219,6 +220,11 @@
     <ant:delete dir="${maven.eclipse.plugin.temp.dir}" quiet="true"/>
     <ant:mkdir dir="${maven.eclipse.plugin.temp.dir}" />
     
+    <j:set var="buildMpde" value="${maven.eclipse.plugin.build.mode}"/>
+    <j:if test="${ buildMode == 'dist' }">
+      <ant:delete dir="${maven.eclipse.plugin.ext.dir}" quiet="true" />
+      <ant:mkdir dir="${maven.eclipse.plugin.ext.dir}" />
+    </j:if>
   </goal>
 
 
@@ -286,14 +292,14 @@
   
   <goal name="eclipse-plugin:create-library-artifacts" 
   		prereqs="eclipse-plugin:init" 
-  		description="foreach pom dependency, create eclipse plugin that exports the given dependenvy. generated plugins are outpoutted to ${maven.build.dir}/eclipse/ext">
+  		description="foreach pom dependency, create eclipse plugin that exports the given dependenvy. generated plugins are outpoutted to ${maven.eclipse.plugin.ext.dir}">
     <j:forEach var="artifact" items="${pom.artifacts}">
       <j:set var="dependency" value="${artifact.dependency}"/>
       <j:if test="${!(dependency.groupId.equals('eclipse')) and dependency.getProperty('eclipse.plugin.bundle') == 'true'}">
  
  		<!-- init variables -->
  		<mevenide:adapt-version var="depVersion" version="${dependency.version}"/>
- 		<j:set var="dependencyPluginDir" value="${maven.build.dir}/eclipse/ext/${dependency.groupId}_${depVersion}"/>
+ 		<j:set var="dependencyPluginDir" value="${maven.eclipse.plugin.ext.dir}/${dependency.groupId}_${depVersion}"/>
 		<ant:mkdir dir="${dependencyPluginDir}"/>
         
         <util:file name="${artifact.path}" var="artifactJar"/>
@@ -321,7 +327,7 @@
         
         <!-- copy plugin files to output folder -->
         <ant:copy file="${artifact.path}" todir="${dependencyPluginDir}"/>
-        <j:set var="licenseFile" value="${basedir}/licenses/${dependency.groupId}/licenses/${dependency.artifactId}.lic"/>
+        <j:set var="licenseFile" value="${maven.eclipse.plugin.licenses.dir}/${dependency.groupId}/licenses/${dependency.artifactId}.lic"/>
         <ant:available property="isLicensePresent" file="${licenseFile}"/>
         <j:if test="${isLicensePresent}">
           <ant:copy file="${licenseFile}" todir="${dependencyPluginDir}"/>
