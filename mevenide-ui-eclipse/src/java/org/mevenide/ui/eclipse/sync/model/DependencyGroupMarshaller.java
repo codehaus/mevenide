@@ -116,7 +116,8 @@ public class DependencyGroupMarshaller {
 		long timeStamp = new Date().getTime();
 
 		Document document = null;
-	
+		
+		log.debug("DependencyGroup is " + (group == null ? "" : "not") + " null");
 	
 		if ( new File(file).exists() ) {
 	
@@ -130,8 +131,10 @@ public class DependencyGroupMarshaller {
 		}
 	
 		Element dependencyGroup = new Element("dependencyGroup");
+		dependencyGroup.setAttribute("projectName", group.getProject().getProject().getName());
 		
 		List candidates = document.getRootElement().getChildren("dependencyGroup");
+		
 		for (int i = 0; i < candidates.size(); i++) {
 			Element elem = (Element) candidates.get(i);
 			if ( elem.getAttributeValue("projectName").equals(group.getProject().getProject().getName()) )  {
@@ -140,10 +143,16 @@ public class DependencyGroupMarshaller {
 			}
 		}
 		
+		if ( group.getDependencies().size() == 0 ) {
+			document.getRootElement().addContent(dependencyGroup);
+			return;
+		}
+		
 		List previousDependencies = dependencyGroup.getChildren("dependency");
 		if ( previousDependencies == null ) {
 			previousDependencies = new ArrayList();
 		}
+		
 		dependencyGroup.setAttribute("timestamp", Long.toString(timeStamp));
 		for (int i = 0; i < group.getDependencies().size(); i++) {
 			Dependency dependency = (Dependency) group.getDependencies().get(i);

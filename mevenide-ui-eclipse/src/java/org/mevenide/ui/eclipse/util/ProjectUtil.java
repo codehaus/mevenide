@@ -17,6 +17,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Dependency;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.Path;
@@ -36,6 +38,8 @@ import org.mevenide.ui.eclipse.Mevenide;
  * 
  */
 public class ProjectUtil {
+	private static Log log = LogFactory.getLog(ProjectUtil.class);
+	
 	private ProjectUtil() {
 	}
 
@@ -70,6 +74,7 @@ public class ProjectUtil {
 			}
 			ProjectReader reader = ProjectReader.getReader();
 			Dependency projectDependency = reader.getDependency(referencedPom);
+			log.debug("dependency artifact : " + projectDependency.getArtifact());
 			deps.add(projectDependency);
 		}
 		return deps;

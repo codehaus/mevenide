@@ -43,6 +43,7 @@ import org.eclipse.ui.PlatformUI;
  * 
  */
 public class DependencyPropertiesDialog extends Dialog {
+	//private static Log log = LogFactory.getLog(DependencyPropertiesDialog.class);
 	
 	public DependencyPropertiesDialog() {
 		super(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell());
@@ -143,7 +144,13 @@ public class DependencyPropertiesDialog extends Dialog {
 												case SWT.TRAVERSE_ESCAPE:
 													text.dispose ();
 													e.doit = false;
+												default: 
+													//do nothing
+													break;
 											}
+											break;
+										default: 
+											//do nothing
 											break;
 									}
 								}

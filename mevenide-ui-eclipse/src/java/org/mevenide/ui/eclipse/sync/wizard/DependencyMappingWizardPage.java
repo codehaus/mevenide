@@ -90,7 +90,7 @@ public class DependencyMappingWizardPage extends WizardPage {
 		data.grabExcessHorizontalSpace = true;
 		composite.setLayoutData(data);
 		
-		viewer = DependencyMappingViewControl.getViewer(composite, SWT.BORDER | SWT.MULTI);
+		viewer = DependencyMappingViewControl.getViewer(composite, SWT.BORDER);
 		setInput(((SynchronizeWizard)getWizard()).getProject());
 		
 		 

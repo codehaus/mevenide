@@ -52,6 +52,7 @@ import org.mevenide.ui.eclipse.Mevenide;
  * 
  */
 public class LaunchWizardPage extends WizardPage {
+	//private static Log log = LogFactory.getLog(LaunchWizardPage.class);
 	
 	private final char[] options = new char[] { 'E', 'X', 'e', 'o' };
 	
@@ -321,7 +322,13 @@ public class LaunchWizardPage extends WizardPage {
 												case SWT.TRAVERSE_ESCAPE:
 													text.dispose ();
 													e.doit = false;
+												default:
+													//do nothing
+													break;
 											}
+											break;
+										default: 
+											//do nothing
 											break;
 									}
 								}

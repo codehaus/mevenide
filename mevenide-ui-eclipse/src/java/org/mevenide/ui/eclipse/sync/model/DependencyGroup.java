@@ -60,11 +60,8 @@ public class DependencyGroup extends ArtifactGroup {
 				addDependency(dependency);
 				
 			}
-			
-			if ( classpathEntries[i].getEntryKind() == IClasspathEntry.CPE_PROJECT ) {
-				
-			}
 		}
+		dependencies.addAll(ProjectUtil.getCrossProjectDependencies());
 		
 	}
 	
