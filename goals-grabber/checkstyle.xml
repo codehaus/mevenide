@@ -28,10 +28,10 @@
         <!-- ************************************************************** -->
         <!-- Checks that are different from the sun coding conventions ones -->
         <!-- ************************************************************** -->
-        <!-- module name="Header">
-            <property name="headerFile" value="${basedir}/LICENSE.txt"/>
-            <property name="ignoreLines" value="1,2,3,4,5,6"/>
-        </module -->
+        <module name="Header">
+            <property name="headerFile" value="${basedir}/../mevenide-parent/checkstyle-license.txt"/>
+            <property name="ignoreLines" value="3"/>            
+        </module>
         <!-- property name="tabWidth" value="4"/ -->
         <!-- module name="LeftCurly">
           <property name="option" value="nl"/>
