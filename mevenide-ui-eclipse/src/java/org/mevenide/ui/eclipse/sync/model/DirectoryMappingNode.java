@@ -24,6 +24,7 @@ import org.eclipse.ui.views.properties.IPropertySource;
 import org.mevenide.project.source.SourceDirectoryUtil;
 import org.mevenide.ui.eclipse.editors.properties.ResourcePropertySource;
 import org.mevenide.util.MevenideUtils;
+import org.mevenide.util.StringUtils;
 
 
 /**
@@ -60,16 +61,24 @@ public class DirectoryMappingNode extends AbstractArtifactMappingNode {
     
    
     public String getLabel() {
+    	String label = null;
     	if ( resolvedArtifact != null ) {
-            return SourceDirectoryUtil.stripBasedir(((Directory) resolvedArtifact).getDisplayPath());
+            label = SourceDirectoryUtil.stripBasedir(((Directory) resolvedArtifact).getDisplayPath());
         }
         if ( artifact instanceof Resource ) {
-            return SourceDirectoryUtil.stripBasedir(((Resource) artifact).getDirectory());
+        	label = SourceDirectoryUtil.stripBasedir(((Resource) artifact).getDirectory());
         }
         if ( artifact instanceof Directory ) {
-            return SourceDirectoryUtil.stripBasedir(((Directory) artifact).getDisplayPath());   
+        	label = SourceDirectoryUtil.stripBasedir(((Directory) artifact).getDisplayPath());   
         }
-        return "Unresolved";
+        
+        label = StringUtils.removeEndingSlash(label);
+        
+        if ( label == null ) {
+        	label = "Unresolved";
+        }
+ 
+        return label.replaceAll("\\\\", "/");
     }
     
     public void setResolvedDirectory(Directory directory) {
@@ -128,4 +137,7 @@ public class DirectoryMappingNode extends AbstractArtifactMappingNode {
 		this.overrideSameValue = overrideSameValue;
 	}
 
+	public boolean equals(Object obj) {
+		return obj instanceof DirectoryMappingNode && ((DirectoryMappingNode) obj).getLabel().equals(getLabel());
+	}
 }

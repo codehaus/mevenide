@@ -10,6 +10,7 @@ edit dependency properties
 exclusion filter / excludes
 output folder / target path
 define and manage conflicts
+SourceModification and Filtering support 
 add junit if tests are defined + tests output folder 
 
 
