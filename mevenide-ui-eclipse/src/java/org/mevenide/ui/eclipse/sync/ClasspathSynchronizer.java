@@ -51,9 +51,12 @@ package org.mevenide.ui.eclipse.sync;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.resources.IProject;
+import org.mevenide.MevenideException;
+import org.mevenide.core.AbstractRunner;
 import org.mevenide.sync.AbstractIdeSynchronizer;
 import org.mevenide.sync.ISynchronizer;
 import org.mevenide.ui.eclipse.Mevenide;
+import org.mevenide.ui.eclipse.Runner;
 
 
 /**
@@ -80,6 +83,7 @@ public class ClasspathSynchronizer extends AbstractIdeSynchronizer implements IS
 	}
 	
 	protected void process() {
+		log.debug("SynchronizerUtil.shouldSynchronizeProject(project) = " +  (SynchronizerUtil.shouldSynchronizeProject(project)));
 		if ( SynchronizerUtil.shouldSynchronizeProject(project) ) {
 			super.process();
 		}
@@ -110,4 +114,15 @@ public class ClasspathSynchronizer extends AbstractIdeSynchronizer implements IS
 	public void setProject(IProject project) {
 		this.project = project;
 	}
+	
+    protected AbstractRunner createRunner() {
+        try {
+            return new Runner();
+        }
+        catch (MevenideException e) {
+        	log.error("Unable to obtain AbstractIdeRunner due to : " + e);
+           	return null;
+        }
+    }
+
 }

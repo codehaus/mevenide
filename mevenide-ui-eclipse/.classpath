@@ -4,15 +4,9 @@
     <classpathentry kind="src" path="etc"/>
     <classpathentry kind="src" path="/mevenide-core"/>
     <classpathentry kind="src" path="/mevenide-goals-grabber"/>
-    <classpathentry kind="lib" path="lib/commons-discovery-0.1.jar"/>
-    <classpathentry kind="lib" path="lib/commons-logging-1.0.1.jar"/>
     <classpathentry kind="lib" path="lib/forehead-1.0-beta-4.jar"/>
-    <classpathentry kind="lib" path="lib/jdom-1.0b8.jar"/>
-    <classpathentry kind="lib" path="lib/xpp3-1.1.2a.jar"/>
     <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
     <classpathentry kind="var" path="MAVEN_REPO/junit/jars/junit-3.8.1.jar"/>
-    <classpathentry kind="lib" path="lib/xerces-2.2.1.jar"/>
-    <classpathentry kind="lib" path="lib/maven-1.0-beta-10.jar"/>
     <classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.core.boot_3.0.0/boot.jar"/>
     <classpathentry kind="var"
         path="ECLIPSE_HOME/plugins/org.eclipse.core.resources_3.0.0/resources.jar" sourcepath="ORG_ECLIPSE_CORE_RESOURCES_SRC"/>
