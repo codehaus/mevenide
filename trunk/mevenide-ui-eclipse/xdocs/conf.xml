@@ -8,17 +8,17 @@
 		<section name="Mevenide Configuration">
         	<div id="documentContent">
         	<p>
-			    Before using Mevenide, you will have to configure it. That is done through Maven Preferences page :
+			    You can configure Mevenide through the 'Maven' Preferences page :
 				<i><code>Window &gt; Preferences &gt; Maven</code></i>. Java Home, Maven Home and 
-				Maven repository are required in order to successfully use Mevenide. 
+				Maven repository are required in order to successfully use Mevenide. However as for now 
+				you should not have anything to do since convenient values should be automatically filled 
+				(grabbed from environment variables, ~/build.properties, etc.)
 				<br/><br/>
-				Also a POM template can be specified that will be used when creating POM skeleton.
+				Also a POM template can be specified that will be used when creating POM skeleton. This preference
+				will be removed later in favour of the 'Templates' preferences page.
 				<br/><br/>
-				if you want Mevenide to check the timestamp of project.xml or .classpath before synchronize them, 
-				set the 'Chek Timestamp' button. This can prevent you to inadvertently override your configuration files.
-				If it is checked and synchronization isnot necessary, Mevenide exits quietly.
-				<br/><br/>
-				Last, you can can specify default goals which will be run when invoking the runner.
+				Last, you can specify default goals which will be run when invoking the runner. Default is test:test. 
+				Default is useful to support one-click launching.
 				<br/><br/>
 				<center>
 					<img src="images/set-preferences.png" border="1px"/>

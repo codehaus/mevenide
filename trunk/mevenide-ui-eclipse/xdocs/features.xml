@@ -23,12 +23,14 @@
   	      <p>Synchronize Eclipse Project and Maven Project through a view ala Team Synchronization view</p>
 	      <p>
 	      	<ul>
-			  <li>Resources and UnitTest resources rynchronization, supporting excludes</li>
 			  <li>Source directories synchronization</li>
 			  <li>Dependencies synchronization</li>
-			  <li>Suport for ignored artifacts (.mvnignore)</li>
+			  <li>Resources and UnitTest resources rynchronization, supporting excludes</li>
+			  <li>Jar Override Support</li>
 			  <li>Primary output folder support</li>
 			  <li>Supports eclipse.dependency (from maven-eclipse-plugin) property</li>
+			  <li>Suport for ignored artifacts (.mvnignore)</li>
+			  <li>Possibility to not write back project.properties on a per synchronization base</li>
 			  <li>Possibility to filter the elements to be synchronized - eventually via regular expressions</li>
 		    </ul>
 		  </p>
@@ -38,6 +40,7 @@
 		  		<li>No conflict support (e.g. if dependencies version conflict)</li>
 		  		<li>Doesnot support "Output folder per Source folder" Eclipse option</li>
 		  		<li>Link to external resources/files not tested</li>
+		  		<li>POM defining entities may not be accurately synchronized</li>
 		  	</ul>
 		  </p>
 		</div>
