@@ -83,7 +83,7 @@ public class PomIdentificationSection extends PageSection {
     
 	private boolean isInherited;
 	private OverridableTextEntry pomNameText;
-	private OverridableTextEntry pomVersionText;
+	private TextEntry pomVersionText;
 	private TextEntry extendsText;
 	private OverridableTextEntry artifactIdText;
 	private OverridableTextEntry groupIdText;
@@ -137,29 +137,23 @@ public class PomIdentificationSection extends PageSection {
 				public String getParentProjectAttribute() {
 					return parentPom.getName();
 				}
+				public void refreshUI() {
+					PomIdentificationSection.this.redrawSection();
+				}
 			}
 		);
 		
-		// POM version textbox
+		// POM version textbox 
+		// @fixme is this always overriden??  Seems that Maven defaults it to 1 if it goes un-specified
 		labelName = Mevenide.getResourceString("PomIdentificationSection.pomVersionText.label");
-		pomVersionText = new OverridableTextEntry(
-			createText(container, labelName, factory), 
-			createOverrideToggle(container, factory, isInherited)
+		pomVersionText = new TextEntry(
+			createText(container, labelName, factory)
 		);
+		factory.createSpacer(container);
 		pomVersionText.addEntryChangeListener(
 			new EntryChangeListenerAdaptor() {
 				public void entryChanged(PageEntry entry) {
 					pom.setPomVersion(pomVersionText.getText());
-				}
-			}
-		);
-		pomVersionText.addSelectionListener(
-			pomVersionText.new OverridableSelectionAdapter() {
-				public void updateProject(String value) {
-					pom.setPomVersion(value);
-				}
-				public String getParentProjectAttribute() {
-					return parentPom.getPomVersion();
 				}
 			}
 		);
@@ -270,6 +264,9 @@ public class PomIdentificationSection extends PageSection {
 				public String getParentProjectAttribute() {
 					return parentPom.getArtifactId();
 				}
+				public void refreshUI() {
+					PomIdentificationSection.this.redrawSection();
+				}
 			}
 		);
 		
@@ -294,6 +291,9 @@ public class PomIdentificationSection extends PageSection {
 				public String getParentProjectAttribute() {
 					return parentPom.getGroupId();
 				}
+				public void refreshUI() {
+					PomIdentificationSection.this.redrawSection();
+				}
 			}
 		);
 		
@@ -306,7 +306,7 @@ public class PomIdentificationSection extends PageSection {
             log.debug("updating id section content");
         }
 		setIfDefined(pomNameText, pom.getName(), isInherited ? parentPom.getName() : null);
-		setIfDefined(pomVersionText, pom.getPomVersion(), isInherited ? parentPom.getPomVersion() : null);
+		setIfDefined(pomVersionText, pom.getPomVersion());
 		setIfDefined(extendsText, pom.getExtend());
 		setIfDefined(artifactIdText, pom.getArtifactId(), isInherited ? parentPom.getArtifactId() : null);
 		setIfDefined(groupIdText, pom.getGroupId(), isInherited ? parentPom.getGroupId() : null);
