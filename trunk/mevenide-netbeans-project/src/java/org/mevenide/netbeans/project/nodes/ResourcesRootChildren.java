@@ -19,8 +19,10 @@ package org.mevenide.netbeans.project.nodes;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import javax.swing.Action;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.mevenide.netbeans.project.MavenProject;
@@ -38,7 +40,7 @@ import org.openide.util.Utilities;
 
 /**
  *
- * @author  Milos Kleint (ca206216@tiscali.cz)
+ * @author  Milos Kleint (mkleint@codehaus.org)
  */
 class ResourcesRootChildren extends Children.Keys {
     private static Log logger = LogFactory.getLog(ResourcesRootChildren.class);
@@ -137,6 +139,17 @@ class ResourcesRootChildren extends Children.Keys {
             retValue = Utilities.mergeImages(retValue,
                             Utilities.loadImage("org/mevenide/netbeans/project/resources/resourceBadge.gif"),
                             8, 8);
+            return retValue;
+        }
+
+        public Action[] getActions(boolean context) {
+            List supers = Arrays.asList(super.getActions(context));
+            List lst = new ArrayList(supers.size() + 5);
+            lst.add(ShowAllResourcesAction.getInstance());
+            lst.add(null);
+            lst.addAll(supers);
+            Action[] retValue = new Action[lst.size()];
+            retValue = (Action[])lst.toArray(retValue);
             return retValue;
         }
         

@@ -17,6 +17,9 @@
 
 package org.mevenide.netbeans.project.nodes;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import javax.swing.Action;
 import org.mevenide.netbeans.project.MavenProject;
 import org.openide.nodes.AbstractNode;
@@ -24,7 +27,7 @@ import org.openide.util.Utilities;
 
 /**
  *
- * @author  Milos Kleint (ca206216@tiscali.cz)
+ * @author  Milos Kleint (mkleint@codehaus.org)
  */
 class ResourcesRootNode extends AbstractNode {
     private MavenProject project;
@@ -38,8 +41,16 @@ class ResourcesRootNode extends AbstractNode {
         project = mavproject;
     }
     
-    public Action[] getActions( boolean context ) {
-        return super.getActions(context);
+    public Action[] getActions(boolean context) {
+            List supers = Arrays.asList(super.getActions(context));
+            List lst = new ArrayList(supers.size() + 5);
+            lst.add(ShowAllResourcesAction.getInstance());
+            lst.add(null);
+            lst.addAll(supers);
+            Action[] retValue = new Action[lst.size()];
+            retValue = (Action[])lst.toArray(retValue);
+            return retValue;
+
     }
     
     public java.awt.Image getIcon(int param) {
