@@ -22,6 +22,14 @@
 		</copy>
 	</preGoal>
 	
+	<preGoal name="jar:jar">
+		<copy toDir="target/classes/META-INF/services">
+		  <fileset dir="etc/META-INF/services">
+  			<include name="*.*"/>
+		  </fileset>
+		</copy>
+	</preGoal>
+	
 	<postGoal name="jar:install">
 		<copy file="etc/mevenide.properties" todir="../mevenide-ui-eclipse/etc"/> 
 	</postGoal>
