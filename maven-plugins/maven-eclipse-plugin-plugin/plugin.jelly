@@ -43,8 +43,7 @@
   		
     <j:forEach var="artifact" items="${pom.artifacts}">
       <j:set var="dependency" value="${artifact.dependency}"/>
-      <!-- still have to find out how to correctly write a AND condition with jelly -->
-      <j:if test="${!(dependency.groupId.equals('eclipse')) &amp;&amp; dependency.getProperty('eclipse.plugin.bundle') == 'true'}">
+      <j:if test="${!(dependency.groupId.equals('eclipse')) and dependency.getProperty('eclipse.plugin.bundle') == 'true'}">
         <ant:copy todir="${maven.eclipse.plugin.lib.dir}" file="${artifact.path}"/>
       </j:if>
     </j:forEach>
