@@ -21,12 +21,17 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.maven.project.Project;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorSite;
+import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.part.EditorPart;
 import org.mevenide.project.IProjectChangeListener;
 import org.mevenide.project.ProjectChangeEvent;
 import org.mevenide.ui.eclipse.MevenideColors;
@@ -42,7 +47,7 @@ import org.mevenide.ui.eclipse.editors.PomXmlSourcePage;
  * @version $Id$
  */
 public abstract class AbstractPomEditorPage 
-	extends Composite 
+	extends EditorPart
 	implements IPomEditorPage, IProjectChangeListener {
 
 	private PageWidgetFactory factory;
@@ -52,13 +57,12 @@ public abstract class AbstractPomEditorPage
 	private List sections = new ArrayList(5);
 
 	private boolean updateNeeded;
+	private boolean active;
     
     public AbstractPomEditorPage(String mainHeading, MevenidePomEditor pomEditor) {
-        super(pomEditor.getParentContainer(), SWT.NONE);
         this.editor = pomEditor;
         this.heading = mainHeading;
         this.factory = new PageWidgetFactory();
-        init();
     }
 
     public String getHeading() {
@@ -80,25 +84,31 @@ public abstract class AbstractPomEditorPage
     	sections.add(section);
     }
 
-    private void init() {
+    /**
+     * @see org.eclipse.ui.part.WorkbenchPart#createPartControl(org.eclipse.swt.widgets.Composite)
+     */
+    public void createPartControl(Composite parent)
+	{
+    	Composite control = new Composite(parent, SWT.NONE);
+    	
 		GridLayout layout = new GridLayout();
 		layout.numColumns = 1;
 		layout.marginHeight = 0;
 		layout.marginWidth = 0;
-		setLayout(layout);
-		setBackground(MevenideColors.WHITE);
+		control.setLayout(layout);
+		control.setBackground(MevenideColors.WHITE);
 
         // heading
 		GridData data = new GridData(GridData.FILL_HORIZONTAL);
 		data.horizontalSpan = 1;
-        headingLabel = new Label(this, SWT.NONE);
+        headingLabel = new Label(control, SWT.NONE);
         headingLabel.setFont(MevenideFonts.EDITOR_HEADER);
         headingLabel.setBackground(MevenideColors.WHITE);
 		headingLabel.setText(getHeading());
 		headingLabel.setLayoutData(data);
         
         // create parent for pages
-		ScrolledComposite scroller = new ScrolledComposite(this, SWT.H_SCROLL | SWT.V_SCROLL);
+		ScrolledComposite scroller = new ScrolledComposite(control, SWT.H_SCROLL | SWT.V_SCROLL);
 		scroller.setExpandHorizontal(true);
 		scroller.setExpandVertical(true);
 		scroller.setBackground(MevenideColors.WHITE);
@@ -107,14 +117,14 @@ public abstract class AbstractPomEditorPage
 		data.horizontalSpan = 1;
 		scroller.setLayoutData(data);
 
-        Composite parent = new Composite(scroller, SWT.NONE);
-        parent.setBackground(MevenideColors.WHITE);
+        Composite container = new Composite(scroller, SWT.NONE);
+        container.setBackground(MevenideColors.WHITE);
 
         // now the rest of the page
-        initializePage(parent);
+        initializePage(container);
         
-		scroller.setContent(parent);
-        scroller.setMinSize(parent.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+		scroller.setContent(container);
+        scroller.setMinSize(container.computeSize(SWT.DEFAULT, SWT.DEFAULT));
         
         update(getEditor().getPom());
     }
@@ -124,9 +134,11 @@ public abstract class AbstractPomEditorPage
 	public void pageActivated(IPomEditorPage oldPage) {
 		update();
 		setFocus();
+		setActive(true);
 	}
 
 	public void pageDeactivated(IPomEditorPage newPage) {
+		setActive(false);
 		if (newPage instanceof PomXmlSourcePage) {
 			getEditor().updateDocument();
 		}
@@ -176,4 +188,62 @@ public abstract class AbstractPomEditorPage
     	return true;
     }
     
+    /**
+     * @see org.eclipse.ui.part.EditorPart#doSave(org.eclipse.core.runtime.IProgressMonitor)
+     */
+    public void doSave(IProgressMonitor monitor)
+	{
+    	// no-op
+    }
+
+    /**
+     * @see org.eclipse.ui.part.EditorPart#doSaveAs()
+     */
+    public void doSaveAs()
+	{
+    	// no-op
+    }
+
+    /**
+     * @see org.eclipse.ui.part.EditorPart#init(org.eclipse.ui.IEditorSite, org.eclipse.ui.IEditorInput)
+     */
+    public void init(IEditorSite site, IEditorInput input) throws PartInitException
+	{
+    	setSite(site);
+    	setInput(input);
+    }
+
+    /**
+     * @see org.eclipse.ui.part.EditorPart#isDirty()
+     */
+    public boolean isDirty()
+	{
+    	return false;
+    }
+
+    /**
+     * @see org.eclipse.ui.part.EditorPart#isSaveAsAllowed()
+     */
+    public boolean isSaveAsAllowed()
+	{
+    	return false;
+    }
+
+    /**
+     * @see org.eclipse.ui.part.WorkbenchPart#setFocus()
+     */
+    public void setFocus()
+	{
+    }
+    
+	public boolean isActive()
+	{
+		return active;
+	}
+
+	private void setActive(boolean activeFlag)
+	{
+		this.active = activeFlag;
+	}
+
 }
