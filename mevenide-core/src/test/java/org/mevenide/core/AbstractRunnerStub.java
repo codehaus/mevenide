@@ -14,7 +14,6 @@
  */
 package org.mevenide.core;
 
-import org.mevenide.core.AbstractRunner;
 
 /**
  * 

@@ -16,7 +16,7 @@ package org.mevenide.core;
 
 import java.io.File;
 
-import org.mevenide.core.AbstractGoalsManager;
+
 
 
 public class AbstractGoalsManagerStub extends AbstractGoalsManager {

@@ -63,10 +63,10 @@ public class PomWriter {
 		JDomOutputter.output(doc, pom);
 	}
 	
-	public void addDependency(String dependencyName, File pom)
+	public void addDependency(String depName, File pom)
 		throws JDOMException, IOException {
 		Document doc = new SAXBuilder().build(pom);
-		dependencyName = new File(dependencyName).getName();
+		String dependencyName = new File(depName).getName();
 		Element project = doc.getRootElement();
 		Element dependenciesElement = project.getChild("dependencies");
 		List dependencies = dependenciesElement.getChildren("dependency");

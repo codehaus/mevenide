@@ -34,9 +34,7 @@ import org.jdom.input.SAXBuilder;
 public class PostGoal {
 	
     public static void create(File mavenXml) {
-		String goalsOutputFile = mavenXml.getAbsolutePath();
-
-		Document doc = new Document();
+				Document doc = new Document();
 		Namespace gdfact =
 			Namespace.getNamespace(
 				"g",
@@ -93,11 +91,10 @@ public class PostGoal {
 			List postGoals = projectRoot.getChildren("postGoal");
 			for (int i = 0; i < postGoals.size(); i++) {
 				Element postGoal = ((Element) postGoals.get(i));
-				Namespace jellyCore = Namespace.getNamespace("j", "jelly:core");
-				Element setChild = postGoal.getChild("set", jellyCore);
-				if (postGoal
+				//@todo EXTERNALIZE postGoal name (goals:grab)
+                if (postGoal
 					.getAttribute("name")
-					.equals("eclipse:get-goals")) {
+					.equals("goals:grab")) {
 					return postGoal.getText().equals(output);
 				}
 			}

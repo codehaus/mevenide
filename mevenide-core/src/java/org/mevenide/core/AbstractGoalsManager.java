@@ -194,8 +194,6 @@ public abstract class AbstractGoalsManager implements IGoalsManager {
      * pre-initialization 
      */
     protected abstract void initialize();
-   
-
 
 	/**
 	 * for testing purpose
