@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeSet;
 
 import org.apache.commons.logging.Log;
@@ -317,8 +318,11 @@ public abstract class MavenXmlContentAssistProcessor implements IContentAssistPr
         }
         
         ICompletionProposal[] cp = null;
-        Map namespaces = editor.getNamespaces();
         List words = new ArrayList();
+        Set collectedWords = new TreeSet();
+        
+        Map namespaces = editor.getNamespaces();
+        
         String start = getAttributeStart(node, offset);
         if (namespaces != null) {
             for (Iterator it = namespaces.keySet().iterator(); it.hasNext();) {
@@ -327,11 +331,14 @@ public abstract class MavenXmlContentAssistProcessor implements IContentAssistPr
                 Map attributeMap = ns.getAttributes();
                 List candidates = (List) attributeMap.get(node.getName());
                 if (candidates != null) {
-                    words.addAll(candidates);
+                    collectedWords.addAll(candidates);
                 }
             }
         }
-        words.removeAll(nodeAttributes);
+        
+        collectedWords.removeAll(nodeAttributes);
+        words.addAll(collectedWords);
+        
         Collections.sort(words);
         for (Iterator it = words.iterator(); it.hasNext();) {
             String s = (String) it.next();
