@@ -168,6 +168,9 @@ OpenIDE-Module-Specification-Version: normalized version of ${pom.currentVersion
           <p>Optional. Since 0.2. Default value is <code>?</code>.</p>
           </td>
           <td>
+          <p>
+          Shall contain path the keystore file.
+          </p>
           </td>
         </tr>
         <tr>
@@ -187,8 +190,9 @@ OpenIDE-Module-Specification-Version: normalized version of ${pom.currentVersion
           <td>
           <p>Optional. Since 0.2. Default value is <code>?</code>.</p>
           </td>
-          <td>
-          
+          <td><p>
+          Alias in the keystore for signing the nbm.
+          </p>
           </td>
         </tr>
         
@@ -225,14 +229,18 @@ OpenIDE-Module-Specification-Version: normalized version of ${pom.currentVersion
         </tr>
         <tr>
           <td>maven.nbm.build.release.dir</td>
-          <td>Since 0.2</td>
+          <td><p>Since 0.2</p>
+          <p> Optional. Default value is ${maven.build.dir}/nbm_release </p></td>
           <td>
           </td>
         </tr>
         <tr>
           <td>maven.nbm.autoupdate.name</td>
-          <td>Since 0.2</td>
-          <td>
+          <td><p>Since 0.2</p>
+          <p>Required for nbm:autoupdate goal. </p></td>
+          <td><p>
+          Name for the xml file describing the autoupdate server information.
+          </p>
           </td>
         </tr>
         <tr>
