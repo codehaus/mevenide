@@ -31,7 +31,6 @@
             <type>jar</type>
         </dependency>
         
-        
         <!-- mevenide dependencies -->
         <dependency>
            <groupId>mevenide</groupId>
@@ -166,7 +165,31 @@
         </dependency>
 	    <dependency>
 	       <groupId>eclipse</groupId>
+           <artifactId>eclipse-jfacetext</artifactId>
+           <version>3.0.0</version>
+           <url>http://eclipse.org/</url>
+        </dependency>
+	    <dependency>
+	       <groupId>eclipse</groupId>
+           <artifactId>eclipse-text</artifactId>
+           <version>3.0.0</version>
+           <url>http://eclipse.org/</url>
+        </dependency>
+	    <dependency>
+	       <groupId>eclipse</groupId>
+           <artifactId>eclipse-editors</artifactId>
+           <version>3.0.0</version>
+           <url>http://eclipse.org/</url>
+        </dependency>
+	    <dependency>
+	       <groupId>eclipse</groupId>
            <artifactId>eclipse-swt</artifactId>
+           <version>3.0.0</version>
+           <url>http://eclipse.org/</url>
+        </dependency>
+	    <dependency>
+	       <groupId>eclipse</groupId>
+           <artifactId>eclipse-texteditor</artifactId>
            <version>3.0.0</version>
            <url>http://eclipse.org/</url>
         </dependency>
@@ -188,8 +211,13 @@
         	<version>3.0.0</version>
         	<url>http://eclipse.org/</url>
         </dependency>
+        <dependency>
+        	<groupId>eclipse</groupId>	
+        	<artifactId>eclipse-jdt</artifactId>
+        	<version>2.1.0</version>
+        	<url>http://eclipse.org/</url>
+        </dependency>
     
   </dependencies>
-
 
 </project>
