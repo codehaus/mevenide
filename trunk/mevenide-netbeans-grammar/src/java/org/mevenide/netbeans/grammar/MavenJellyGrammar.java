@@ -59,7 +59,9 @@ public class MavenJellyGrammar implements GrammarQuery
                 if (manager == null)
                 {
                     manager = new TagLibManager();
-                    manager.setProvider(new NbTagLibProvider());
+                    NbTagLibProvider prov = new NbTagLibProvider();
+                    manager.setProvider(prov);
+                    manager.setAttrCompletionProvider(prov);
                 }
             }
         }
@@ -401,14 +403,13 @@ public class MavenJellyGrammar implements GrammarQuery
      */
     public Enumeration queryValues(HintContext virtualTextCtx)
     {
-        logger.debug("query values..");
         Node parent = virtualTextCtx;
         String start = virtualTextCtx.getCurrentPrefix();
         Set toReturn = new TreeSet(new SimpleComparator());
-        logger.debug("parent node=" + parent);
-        logger.debug("document=" + parent.getOwnerDocument());
-        logger.debug("parent's parent=" + parent.getParentNode());
-        logger.debug("document element=" + parent.getOwnerDocument().getDocumentElement());
+//        logger.debug("parent node=" + parent);
+//        logger.debug("document=" + parent.getOwnerDocument());
+//        logger.debug("parent's parent=" + parent.getParentNode());
+//        logger.debug("document element=" + parent.getOwnerDocument().getDocumentElement());
         if (parent != null && parent.getNodeType() == Node.ATTRIBUTE_NODE)
         {
             // completion for the namespaces..
@@ -421,30 +422,42 @@ public class MavenJellyGrammar implements GrammarQuery
                     logger.debug("lib=" + libs[i]);
                     if (libs[i].startsWith(start))
                     {
-                        logger.debug("adding lib");
                         toReturn.add(new TextNode(libs[i]));
                     }
                 }
             } else {
-// NOT WORKING, IMHO a bug in xml-core..                
-//                // do attribute cc now..
-//                Node elementParent = parent.getParentNode();
-//                System.out.println("parent=" + elementParent);
-//                System.out.println("parent name=" + elementParent.getNodeName());
-//                int nsint = elementParent.getNodeName().indexOf(":");
-//                String namespace = (nsint > -1 ? elementParent.getNodeName().substring(0, nsint) : null);
-//                System.out.println("namespace=" + namespace);
-//                System.out.println("nodename=" + elementParent.getNodeName());
-//                TagLib lib = findTagLib(namespace, elementParent);
-//                if (lib != null) {
-//                    Collection types = lib.getAttrCompletionTypes(parent.getNodeName(), virtualTextCtx.getNodeName());
-//                    Iterator it = types.iterator();
-//                    while (it.hasNext()) {
-//                        String type = (String)it.next();
-//                        AttributeCompletion compl = getManager().getAttributeCompletion(type);
-//                        toReturn.addAll(compl.getValueHints(GrammarUtilities.extractLastWord(start)));
-//                    }
-//                }
+                // do attribute cc now..
+                Attr attrParent  = (Attr)parent;
+                Node elementParent = (Node)attrParent.getOwnerElement();
+                int nsint = elementParent.getNodeName().indexOf(":");
+                String namespace = (nsint > -1 ? elementParent.getNodeName().substring(0, nsint) : null);
+                String tagName;
+                if (nsint > -1 && nsint < elementParent.getNodeName().length() - 1) {
+                    tagName = elementParent.getNodeName().substring(nsint + 1);
+                } else {
+                    tagName = elementParent.getNodeName();
+                }
+                TagLib lib;
+                if (namespace == null) {
+                    lib = getDefaultTagLib();
+                } else {
+                    lib = findTagLib(namespace, elementParent);
+                }
+                if (lib != null) {
+                    logger.debug("found taglib" + lib.getName());
+                    Collection types = lib.getAttrCompletionTypes(tagName, virtualTextCtx.getNodeName());
+                    Iterator it = types.iterator();
+                    while (it.hasNext()) {
+                        String type = (String)it.next();
+                        logger.debug("attr compl type=" + type);
+                        AttributeCompletion compl = getManager().getAttributeCompletion(type);
+                        Collection col = compl.getValueHints(GrammarUtilities.extractLastWord(start));
+                        Iterator valIt = col.iterator();
+                        while (valIt.hasNext()) {
+                            toReturn.add(new TextNode((String)valIt.next()));
+                        }
+                    }
+                }
             }
         }
         return Collections.enumeration(toReturn);
@@ -618,7 +631,6 @@ public class MavenJellyGrammar implements GrammarQuery
         {
             return name;
         }
-        
     }
     
     private static class SimpleComparator implements Comparator
