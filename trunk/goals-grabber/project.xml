@@ -5,7 +5,7 @@
 <project>
     <extend>${basedir}/../mevenide-master/base-project.xml</extend>
     <pomVersion>3</pomVersion>
-    <id>mevenide-goals-grabber</id>
+    <id>goals-grabber</id>
     <name>Goals Grabber</name>
     <artifactId>mevenide-goals-grabber</artifactId>
     <currentVersion>0.1.1-SNAPSHOT</currentVersion>

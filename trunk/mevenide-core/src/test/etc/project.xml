@@ -33,7 +33,7 @@
         
     <dependency>
       <groupId>mevenide</groupId>
-      <artifactId>mevenide-goals-grabber</artifactId>
+      <artifactId>goals-grabber</artifactId>
       <version>1.0</version>
       <url>http://sf.net/projects/mevenide</url>
     </dependency>
