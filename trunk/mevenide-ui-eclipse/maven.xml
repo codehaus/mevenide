@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns:j="jelly:core">
-	
 	<postGoal name="jar:install">
 		<attainGoal name="mevenide:deploy"/>
 	</postGoal>
@@ -24,10 +23,24 @@
         	<fileset dir="${maven.repo.local}/mevenide/jars" includes="mevenide-ui-eclipse-${pom.currentVersion}.jar"/>
         </copy>
         
-        <!-- copy icons dir to mevenide root -->
+        <!-- copy icons directory to mevenide root -->
         <copy todir="${eclipse.home}/plugins/org.mevenide_1.0/icons">
         	<fileset dir="${basedir}/icons"/>
         </copy>
+        
+        <!-- 
+        	copy META-INF to mevenide root. 
+        	TODO use jarResources instead 
+        -->
+        <copy todir="${eclipse.home}/plugins/org.mevenide_1.0/META-INF/services">
+			<fileset dir="${basedir}/../mevenide-core/etc/META-INF/services"/>
+		</copy>	
+		
+		<!-- copy resources to mevenide root -->
+		<copy todir="${eclipse.home}/plugins/org.mevenide_1.0">
+			<fileset dir="etc"/>
+		</copy>	
+		
 	</goal>
 	
 </project>

@@ -43,7 +43,7 @@
       basedir=".."
       includes="goals-grabber/project.xml,mevenide-core/project.xml,mevenide-ui-eclipse/project.xml"
       excludes=""
-      goals="clean,java:compile,jar:jar,jar:install"
+      goals="clean,jar:install"
       banner="Building"
       ignoreFailures="false"
     />
