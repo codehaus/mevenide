@@ -118,7 +118,7 @@ public class TextEntry extends PageEntry {
 		this.disableNotification = false;
 	}
 
-    public String getValue() {
+    public Object getValue() {
         return value;
     }
 

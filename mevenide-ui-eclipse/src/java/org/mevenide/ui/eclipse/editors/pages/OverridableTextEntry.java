@@ -88,7 +88,7 @@ public class OverridableTextEntry extends TextEntry {
         public void widgetSelected(SelectionEvent e) {
             toggleOverride();
             if (isInherited()) {
-                setText(adaptor.acceptParent());
+                setText((String) adaptor.acceptParent());
 				adaptor.overrideParent(null);
             }
             else {
