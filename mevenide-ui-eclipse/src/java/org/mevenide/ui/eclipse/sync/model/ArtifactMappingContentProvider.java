@@ -82,9 +82,9 @@ public class ArtifactMappingContentProvider implements ITreeContentProvider {
 			return ((PomContainer) parentElement).getNodes();
 		}
 
-        if ( parentElement instanceof ProjectContainer ) {
+        if ( parentElement instanceof EclipseContainerContainer ) {
             //@TODO move to ProjectContainer
-            IProject project = ((ProjectContainer) parentElement).getProject().getProject();
+            IProject project = ((EclipseContainerContainer) parentElement).getProject().getProject();
             List dependencyContainers = null;
             List directoryContainers = null;
             try {
@@ -92,13 +92,13 @@ public class ArtifactMappingContentProvider implements ITreeContentProvider {
                     dependencyContainers = DependencyMappingNodeContainerFactory.getFactory().getContainer(JavaCore.create(project), poms);
                     for (int i = 0; i < dependencyContainers.size(); i++) {
                         AbstractArtifactMappingNodeContainer dependencyContainer = (AbstractArtifactMappingNodeContainer) dependencyContainers.get(i);
-                        dependencyContainer.setParent((ProjectContainer) parentElement);
+                        dependencyContainer.setParent((EclipseContainerContainer) parentElement);
 	                    dependencyContainer.filter(direction);
                     }
                     directoryContainers = DirectoryMappingNodeContainerFactory.getFactory().getContainer(JavaCore.create(project), poms);
                     for (int i = 0; i < directoryContainers.size(); i++) {
                         AbstractArtifactMappingNodeContainer directoryContainer = (AbstractArtifactMappingNodeContainer) directoryContainers.get(i);
-                        directoryContainer.setParent((ProjectContainer) parentElement);
+                        directoryContainer.setParent((EclipseContainerContainer) parentElement);
                         directoryContainer.filter(direction);
                     }
                 }
@@ -124,12 +124,12 @@ public class ArtifactMappingContentProvider implements ITreeContentProvider {
 
             Object[] containers = null; 
 			try {
-				containers = getPomContainers(allContainers, (ProjectContainer) parentElement); 
+				containers = getPomContainers(allContainers, (EclipseContainerContainer) parentElement); 
 			}
           	catch ( Exception e ) {
 				log.error("Unable to retrieve pom containers", e);
 			}
-			((ProjectContainer) parentElement).setPomContainers(containers);
+			((EclipseContainerContainer) parentElement).setPomContainers(containers);
             return containers;
         }
         if ( parentElement instanceof IArtifactMappingNodeContainer ) {
@@ -138,7 +138,7 @@ public class ArtifactMappingContentProvider implements ITreeContentProvider {
         return null;
     }
     
-	private Object[] getPomContainers(List containers, ProjectContainer projectContainer) throws Exception {
+	private Object[] getPomContainers(List containers, EclipseContainerContainer projectContainer) throws Exception {
 		Map hashMap = new HashMap();
 		for (int i = 0; i < containers.size(); i++) {
             IArtifactMappingNodeContainer container = (IArtifactMappingNodeContainer) containers.get(i);
@@ -180,8 +180,8 @@ public class ArtifactMappingContentProvider implements ITreeContentProvider {
     }
     
     public boolean hasChildren(Object element) {
-        if ( element instanceof ProjectContainer )  {
-			return ((ProjectContainer) element).getPomContainers() != null && ((ProjectContainer) element).getPomContainers().length > 0;
+        if ( element instanceof EclipseContainerContainer )  {
+			return ((EclipseContainerContainer) element).getPomContainers() != null && ((EclipseContainerContainer) element).getPomContainers().length > 0;
 		}
 		if ( element instanceof PomContainer )  {
 			return ((PomContainer) element).getNodes() != null && ((PomContainer) element).getNodes().length > 0;
@@ -202,7 +202,7 @@ public class ArtifactMappingContentProvider implements ITreeContentProvider {
     }
     
     public Object[] getElements(Object inputElement) {
-        return new Object[] { new ProjectContainer((IProject) inputElement) };
+        return new Object[] { new EclipseContainerContainer((IProject) inputElement) };
     }
     
     public int getDirection() {

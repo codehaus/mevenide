@@ -56,7 +56,7 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.ui.PlatformUI;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.sync.model.IArtifactMappingNode;
-import org.mevenide.ui.eclipse.sync.model.ProjectContainer;
+import org.mevenide.ui.eclipse.sync.model.EclipseContainerContainer;
 
 /**
  * 
@@ -94,7 +94,7 @@ public class ArtifactMappingImageDecorator extends CompositeImageDescriptor
 		    //top left
 			drawImage(inheritedImageData, 0, 0);
         }
-		if ( (flags & ProjectContainer.CONFLICTING) != 0 ) {
+		if ( (flags & EclipseContainerContainer.CONFLICTING) != 0 ) {
 			ImageData conflictImageData = Mevenide.getImageDescriptor("conflicting.gif").getImageData(); 
 			//bottom right
 			drawImage(conflictImageData, sizeOfImage.x - conflictImageData.width, sizeOfImage.y - conflictImageData.height);

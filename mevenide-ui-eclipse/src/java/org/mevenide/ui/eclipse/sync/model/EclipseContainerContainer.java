@@ -56,7 +56,7 @@ import org.eclipse.core.resources.IContainer;
  * @version $Id$
  * 
  */
-public class ProjectContainer {
+public class EclipseContainerContainer {
     public static final int INCOMING = 8;
     public static final int OUTGOING = 16;
     public static final int CONFLICTING = 4;
@@ -66,7 +66,7 @@ public class ProjectContainer {
    
     private Object[] pomContainers;
     
-    public ProjectContainer(IContainer project) {
+    public EclipseContainerContainer(IContainer project) {
         this.project = project;
     }
     

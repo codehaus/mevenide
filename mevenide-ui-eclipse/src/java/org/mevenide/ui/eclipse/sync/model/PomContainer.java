@@ -63,7 +63,7 @@ public class PomContainer {
     private Object[] nodes;
     
     private Project project;
-    private ProjectContainer parent;
+    private EclipseContainerContainer parent;
     private File pomFile;
     
     public PomContainer(File projectFile) throws Exception {
@@ -88,11 +88,11 @@ public class PomContainer {
         this.nodes = nodes;
     }
 
-	public ProjectContainer getParent() {
+	public EclipseContainerContainer getParent() {
 	    return parent;
 	}
 	
-	public void setParent(ProjectContainer parent) {
+	public void setParent(EclipseContainerContainer parent) {
 	    this.parent = parent;
 	}
 

@@ -71,7 +71,7 @@ public abstract class AbstractArtifactMappingNodeContainer implements IArtifactM
     
     protected int direction;
     
-    private ProjectContainer parent;
+    private EclipseContainerContainer parent;
     
     private Project primaryPom;
     
@@ -130,11 +130,11 @@ public abstract class AbstractArtifactMappingNodeContainer implements IArtifactM
         this.nodes = nodes;
     }
 
-    public ProjectContainer getParent() {
+    public EclipseContainerContainer getParent() {
         return parent;
     }
     
-    public void setParent(ProjectContainer parent) {
+    public void setParent(EclipseContainerContainer parent) {
         this.parent = parent;
     }
 

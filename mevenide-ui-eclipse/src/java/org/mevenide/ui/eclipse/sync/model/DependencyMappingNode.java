@@ -65,7 +65,7 @@ public class DependencyMappingNode extends AbstractArtifactMappingNode implement
     private Dependency dirtyDependency;
     
     public String getLabel() {
-        if ( (parent.getDirection() & ProjectContainer.OUTGOING) != 0 ) {
+        if ( (parent.getDirection() & EclipseContainerContainer.OUTGOING) != 0 ) {
             Dependency displayDependency = null;
             if ( dirtyDependency != null ) {
                 displayDependency = dirtyDependency ;
@@ -75,7 +75,7 @@ public class DependencyMappingNode extends AbstractArtifactMappingNode implement
             }
             return displayDependency.getArtifactId() + "-" + displayDependency.getVersion();
 		}
-        if ( (parent.getDirection() & ProjectContainer.INCOMING) != 0 ) {
+        if ( (parent.getDirection() & EclipseContainerContainer.INCOMING) != 0 ) {
             return ((Dependency) artifact).getGroupId() + ":" + ((Dependency) artifact).getArtifactId(); 
         }
 		//NO_CHANGE or CONFLICTING
@@ -107,17 +107,17 @@ public class DependencyMappingNode extends AbstractArtifactMappingNode implement
 
     public int getChangeDirection() {
         if ( resolvedArtifact == null ) {
-            return ProjectContainer.INCOMING;
+            return EclipseContainerContainer.INCOMING;
         }
         if ( artifact == null ) {
-            return ProjectContainer.OUTGOING;
+            return EclipseContainerContainer.OUTGOING;
         }
         if ( !((Dependency) artifact).getVersion().equals(((Dependency) resolvedArtifact).getVersion()))  {
             //donot compare groupId b/c in most case it may not be resolved
             //|| !dependency.getGroupId().equals(resolvedDependency.getGroupId())
-            return ProjectContainer.CONFLICTING;
+            return EclipseContainerContainer.CONFLICTING;
         }
-        return ProjectContainer.NO_CHANGE;
+        return EclipseContainerContainer.NO_CHANGE;
     }
     
     public void setDependency(Dependency d) {

@@ -64,7 +64,7 @@ import org.eclipse.ui.PlatformUI;
 import org.mevenide.project.io.ProjectReader;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.sync.model.IArtifactMappingNode;
-import org.mevenide.ui.eclipse.sync.model.ProjectContainer;
+import org.mevenide.ui.eclipse.sync.model.EclipseContainerContainer;
 import org.mevenide.ui.eclipse.sync.view.PomChooser;
 import org.mevenide.ui.eclipse.sync.view.SynchronizeView;
 
@@ -146,8 +146,8 @@ public class SynchronizeActionFactory {
 				try  {
 					int direction = synchronizeView.getDirection();
 					
-					if ( direction == ProjectContainer.OUTGOING ) {
-						ProjectContainer container = (ProjectContainer) synchronizeView.getArtifactMappingNodeViewer().getTree().getItems()[0].getData();
+					if ( direction == EclipseContainerContainer.OUTGOING ) {
+						EclipseContainerContainer container = (EclipseContainerContainer) synchronizeView.getArtifactMappingNodeViewer().getTree().getItems()[0].getData();
 						IContainer project = container.getProject();
 						action.addEntry(selectedNode,  project);
 					}
@@ -222,7 +222,7 @@ public class SynchronizeActionFactory {
 		Action removeFromProject = new Action() {
 			public void run() {
 				IArtifactMappingNode selectedNode = (IArtifactMappingNode) ((IStructuredSelection) synchronizeView.getArtifactMappingNodeViewer().getSelection()).getFirstElement();
-				ProjectContainer container = (ProjectContainer) synchronizeView.getArtifactMappingNodeViewer().getTree().getItems()[0].getData();
+				EclipseContainerContainer container = (EclipseContainerContainer) synchronizeView.getArtifactMappingNodeViewer().getTree().getItems()[0].getData();
 				IProject project = container.getProject().getProject();
 				try  {
 					action.removeEntry(selectedNode, project);
@@ -243,7 +243,7 @@ public class SynchronizeActionFactory {
 		Action pushToPom = new Action() {
 			public void run() {
 				IArtifactMappingNode selectedNode = (IArtifactMappingNode) ((IStructuredSelection) synchronizeView.getArtifactMappingNodeViewer().getSelection()).getFirstElement();
-				ProjectContainer container = (ProjectContainer) synchronizeView.getArtifactMappingNodeViewer().getTree().getItems()[0].getData();
+				EclipseContainerContainer container = (EclipseContainerContainer) synchronizeView.getArtifactMappingNodeViewer().getTree().getItems()[0].getData();
 				IContainer project = container.getProject();
 				try  {
 				    //IContainer f = ResourcesPlugin.getWorkspace().getRoot().getContainerForLocation(project.getLocation());
@@ -269,7 +269,7 @@ public class SynchronizeActionFactory {
 	}
 
 	private void createViewPomToIdeAction() {
-	    Action viewPomToIde = new ToggleViewAction(synchronizeView, ProjectContainer.INCOMING);
+	    Action viewPomToIde = new ToggleViewAction(synchronizeView, EclipseContainerContainer.INCOMING);
 		viewPomToIde.setId(VIEW_INCOMING);
 		viewPomToIde.setToolTipText("Incoming Changes");
 		viewPomToIde.setImageDescriptor(Mevenide.getImageDescriptor("pom_to_ide_sync.gif"));
@@ -277,7 +277,7 @@ public class SynchronizeActionFactory {
 	}
 
 	private void createViewIdeToPomAction() {
-	    Action viewIdeToPom = new ToggleViewAction(synchronizeView, ProjectContainer.OUTGOING);
+	    Action viewIdeToPom = new ToggleViewAction(synchronizeView, EclipseContainerContainer.OUTGOING);
 		viewIdeToPom.setId(VIEW_OUTGOING);
 		viewIdeToPom.setToolTipText("Outgoing changes");
 		viewIdeToPom.setImageDescriptor(Mevenide.getImageDescriptor("ide_to_pom_sync.gif"));
@@ -285,7 +285,7 @@ public class SynchronizeActionFactory {
 	}
 
 	private void createViewConflictsAction() {
-	    Action viewConflicts = new ToggleViewAction(synchronizeView, ProjectContainer.CONFLICTING);
+	    Action viewConflicts = new ToggleViewAction(synchronizeView, EclipseContainerContainer.CONFLICTING);
 		viewConflicts.setId(VIEW_CONFLICTS);
 		viewConflicts.setToolTipText("Conflicts");
 		viewConflicts.setImageDescriptor(Mevenide.getImageDescriptor("conflict_synch.gif"));
@@ -309,7 +309,7 @@ public class SynchronizeActionFactory {
 		Action addToClasspath = new Action() {
 			public void run() {
 				IArtifactMappingNode selectedNode = (IArtifactMappingNode) ((IStructuredSelection) synchronizeView.getArtifactMappingNodeViewer().getSelection()).getFirstElement();
-				ProjectContainer container = (ProjectContainer) synchronizeView.getArtifactMappingNodeViewer().getTree().getItems()[0].getData();
+				EclipseContainerContainer container = (EclipseContainerContainer) synchronizeView.getArtifactMappingNodeViewer().getTree().getItems()[0].getData();
 				IProject project = container.getProject().getProject();
 				try  {
 					action.addEntry(selectedNode, project);

@@ -94,7 +94,7 @@ import org.mevenide.ui.eclipse.sync.event.PomArtifactEvent;
 import org.mevenide.ui.eclipse.sync.model.ArtifactMappingContentProvider;
 import org.mevenide.ui.eclipse.sync.model.IArtifactMappingNode;
 import org.mevenide.ui.eclipse.sync.model.IArtifactMappingNodeContainer;
-import org.mevenide.ui.eclipse.sync.model.ProjectContainer;
+import org.mevenide.ui.eclipse.sync.model.EclipseContainerContainer;
 
 
 
@@ -195,10 +195,10 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
     }
 
     private void assertValidDirection() {
-        if ( direction != ProjectContainer.INCOMING 
-                && direction != ProjectContainer.OUTGOING 
-                && direction != ProjectContainer.CONFLICTING ) {
-            setDirection(ProjectContainer.INCOMING);
+        if ( direction != EclipseContainerContainer.INCOMING 
+                && direction != EclipseContainerContainer.OUTGOING 
+                && direction != EclipseContainerContainer.CONFLICTING ) {
+            setDirection(EclipseContainerContainer.INCOMING);
         }
     }
     
@@ -313,16 +313,16 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
 				IArtifactMappingNode selectedNode = (IArtifactMappingNode) selection;
 				
 				//outgoing 
-				pushToPom.setEnabled((selectedNode.getChangeDirection() & ProjectContainer.OUTGOING) != 0);
-				removeFromProject.setEnabled((selectedNode.getChangeDirection() & ProjectContainer.OUTGOING) != 0);
+				pushToPom.setEnabled((selectedNode.getChangeDirection() & EclipseContainerContainer.OUTGOING) != 0);
+				removeFromProject.setEnabled((selectedNode.getChangeDirection() & EclipseContainerContainer.OUTGOING) != 0);
 					
 				//incoming
-				addToClasspath.setEnabled((selectedNode.getChangeDirection() & ProjectContainer.INCOMING) != 0);
-				removeFromPom.setEnabled((selectedNode.getChangeDirection() & ProjectContainer.INCOMING) != 0);
+				addToClasspath.setEnabled((selectedNode.getChangeDirection() & EclipseContainerContainer.INCOMING) != 0);
+				removeFromPom.setEnabled((selectedNode.getChangeDirection() & EclipseContainerContainer.INCOMING) != 0);
 				
 				//conflicting
-				markAsMerged.setEnabled((selectedNode.getChangeDirection() & ProjectContainer.CONFLICTING) != 0);
-				addToIgnoreList.setEnabled((selectedNode.getChangeDirection() & ProjectContainer.CONFLICTING) == 0);
+				markAsMerged.setEnabled((selectedNode.getChangeDirection() & EclipseContainerContainer.CONFLICTING) != 0);
+				addToIgnoreList.setEnabled((selectedNode.getChangeDirection() & EclipseContainerContainer.CONFLICTING) == 0);
 					
             }
 		});
@@ -376,15 +376,15 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
 			    Object selection = ((StructuredSelection) artifactMappingNodeViewer.getSelection()).getFirstElement();
 			    if ( selection instanceof IArtifactMappingNode ) {
 				    IArtifactMappingNode selectedNode = (IArtifactMappingNode) selection;
-					if ( (selectedNode.getChangeDirection() & ProjectContainer.OUTGOING) != 0 ) {
+					if ( (selectedNode.getChangeDirection() & EclipseContainerContainer.OUTGOING) != 0 ) {
 						manager.add(pushToPom);
 						manager.add(removeFromProject);
 					}
-					if ( (selectedNode.getChangeDirection() & ProjectContainer.INCOMING) != 0 ) {
+					if ( (selectedNode.getChangeDirection() & EclipseContainerContainer.INCOMING) != 0 ) {
 						manager.add(addToClasspath);
 						manager.add(removeFromPom);
 					}
-					if ( (selectedNode.getChangeDirection() & ProjectContainer.CONFLICTING) != 0 ) {
+					if ( (selectedNode.getChangeDirection() & EclipseContainerContainer.CONFLICTING) != 0 ) {
 						manager.add(markAsMerged);
 					}
 					else {
