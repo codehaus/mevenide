@@ -200,7 +200,7 @@ public class MavenArgumentsTab extends AbstractLaunchConfigurationTab  {
 			optionButton.setLayoutData(buttonDataLayout);
 			
 			
-			optionButton.setText(OptionsRegistry.getDescription(option));
+			optionButton.setText(OptionsRegistry.getRegistry().getDescription(option));
 			optionButton.setToolTipText(new StringBuffer(" -").append(option).toString());
 			//optionButton.setSelection(((Boolean)optionsMap.get(new Character(option))).booleanValue());
 			optionsButtons.put(new Character(option), optionButton);			
