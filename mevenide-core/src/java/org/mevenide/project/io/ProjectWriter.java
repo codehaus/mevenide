@@ -17,7 +17,6 @@
 package org.mevenide.project.io;
 import java.io.File;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -25,12 +24,15 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.maven.MavenUtils;
 import org.apache.maven.project.Build;
 import org.apache.maven.project.Dependency;
 import org.apache.maven.project.Project;
 import org.apache.maven.project.Resource;
 import org.apache.maven.project.UnitTest;
 import org.apache.maven.repository.Artifact;
+import org.mevenide.environment.ILocationFinder;
+import org.mevenide.environment.LocationFinderAggregator;
 import org.mevenide.project.ProjectConstants;
 import org.mevenide.project.dependency.DependencyUtil;
 import org.mevenide.project.resource.DefaultResourceResolver;
@@ -62,10 +64,12 @@ public class ProjectWriter {
 	private ProjectReader projectReader ;
 	private IProjectMarshaller marshaller ; 
 	private JarOverrideWriter jarOverrideWriter = new JarOverrideWriter(this);
+	private ILocationFinder locationFinder;
 	
 	private ProjectWriter() throws Exception  {
 		marshaller = new DefaultProjectMarshaller();
 		projectReader = ProjectReader.getReader();
+		locationFinder = new LocationFinderAggregator();
 	}
 	
 	public static synchronized ProjectWriter getWriter() throws Exception {
@@ -132,44 +136,41 @@ public class ProjectWriter {
 		
 	}
 	
-	public void setDependencies(List dependencies, File pom) throws Exception {
-		setDependencies(dependencies, pom, true);
+	public void setArtifacts(List artifacts, Project project) throws Exception {
+		setArtifacts(artifacts, project, true);
 	}
 	
-	public void setDependencies(List dependencies, File pom, boolean shouldWriteProperties) throws Exception {
-		Project project = projectReader.read(pom);
-		List nonResolvedDependencies = DependencyUtil.getNonResolvedDependencies(dependencies);
+	public void setArtifacts(List artifacts, Project project, boolean shouldWriteProperties) throws Exception {
+		List dependencies = project.getDependencies();
 		
-		log.debug("writing " + dependencies.size() + " resolved dependencies, " + nonResolvedDependencies.size() + " non resolved ones");
-		
+	    for (int i = 0; i < artifacts.size(); i++) {
+	        Artifact artifact = (Artifact) artifacts.get(i);
+	        Dependency dependency = artifact.getDependency();
+            
+	        if ( !contains(dependencies, dependency) ) {
+	            dependencies.add(dependency);
+	            String path = artifact.getPath();
+	            path = MavenUtils.makeRelativePath(project.getFile().getParentFile(), path);
+                if ( shouldWriteProperties && !artifact.getPath().startsWith(locationFinder.getMavenLocalRepository()) ) {
+	                jarOverrideWriter.jarOverride(dependency.getArtifactId(), path, project);
+	            }
+	        }
+        }
+	    
 		project.setDependencies(dependencies);
-		write(project, pom);
-		
-		if ( shouldWriteProperties ) {
-			overrideUnresolvedDependencies(pom, nonResolvedDependencies);
-		}
-		else {
-			//@todo this is pretty cheap.. just a temp soltuion 
-			dependencies.addAll(nonResolvedDependencies);
-			project.setDependencies(dependencies);
-			write(project, pom);
-		}
+		write(project);
+
 	}
 
-	private void overrideUnresolvedDependencies(File pom, List nonResolvedDependencies) throws IOException, Exception {
-		File propertiesFile = new File(pom.getParent(), "project.properties");
-		if ( !propertiesFile.exists() ) {
-			propertiesFile.createNewFile();
-		}
-		//jarOverrideWriter.unsetOverriding(propertiesFile);
-		
-		//jaroverriding
-		for (int i = 0; i < nonResolvedDependencies.size(); i++) {
-			Dependency dependency = (Dependency) nonResolvedDependencies.get(i); 
-			jarOverrideWriter.jarOverride(dependency, propertiesFile, pom);
-		}
+	private boolean contains(List dependencies, Dependency dependency) {
+	    for (int i = 0; i < dependencies.size(); i++) {
+	        Dependency d = (Dependency) dependencies.get(i);
+            if ( DependencyUtil.areEquals(d, dependency) ) {
+                return true;
+            }
+        }
+	    return false;
 	}
-
 	void write(Project project, File pom) throws Exception {
 		Writer writer = new FileWriter(pom, false);
 		marshaller.marshall(writer, project);

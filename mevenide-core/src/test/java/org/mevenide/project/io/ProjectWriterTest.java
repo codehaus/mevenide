@@ -26,6 +26,8 @@ import java.util.Map;
 import org.apache.maven.project.Dependency;
 import org.apache.maven.project.Project;
 import org.apache.maven.project.Resource;
+import org.apache.maven.repository.Artifact;
+import org.apache.maven.repository.GenericArtifact;
 import org.mevenide.AbstractMevenideTestCase;
 import org.mevenide.project.ProjectConstants;
 import org.mevenide.project.dependency.DependencyFactory;
@@ -74,13 +76,14 @@ public class ProjectWriterTest extends AbstractMevenideTestCase {
 		assertEquals("src/pyo/aspect", h.get(ProjectConstants.MAVEN_ASPECT_DIRECTORY));
 	}
 
-	public void testSetDependencies() throws Exception {
+	public void testSetArtifacts() throws Exception {
 		Dependency dep = dependencyFactory.getDependency("E:/bleeeaaaah/testo/ploufs/testo-0.0.1.plouf");
+		Artifact art = new GenericArtifact(dep);
 		
 		List l = new ArrayList();
-		l.add(dep);
+		l.add(art);
 		
-		pomWriter.setDependencies(l, projectFile);
+		pomWriter.setArtifacts(l, ProjectReader.getReader().read(projectFile));
 		Project project = ProjectReader.getReader().read(projectFile);
 		
 		assertTrue(DependencyUtil.isDependencyPresent(project, dep));

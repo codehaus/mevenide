@@ -21,6 +21,8 @@ import java.io.File;
 import org.apache.maven.project.Dependency;
 import org.apache.maven.project.Project;
 import org.mevenide.AbstractMevenideTestCase;
+import org.mevenide.properties.PropertyModel;
+import org.mevenide.properties.PropertyModelFactory;
 
 
 /**  
@@ -57,19 +59,26 @@ public class JarOverrideWriterTest  extends AbstractMevenideTestCase {
 	
 		Dependency dep = new Dependency();
 		dep.setJar(path);
+		dep.setArtifactId("fake");
+		
 		Dependency dep2 = new Dependency();
 		dep2.setJar(path2);
+		dep.setArtifactId("fake2");
+		
 		Dependency dep3 = new Dependency();
 		dep3.setJar(path3);
+		dep3.setArtifactId("fake fake2");
 		
-		overrider.jarOverride(dep, propFile, projectFile);
-		overrider.jarOverride(dep2, propFile, projectFile);
-		overrider.jarOverride(dep3, propFile, projectFile);
-		overrider.jarOverride(dep2, propFile, projectFile);
+		overrider.jarOverride(dep.getArtifactId(), path, project);
+		overrider.jarOverride(dep2.getArtifactId(), path2, project);
+		overrider.jarOverride(dep3.getArtifactId(), path3, project);
+		overrider.jarOverride(dep2.getArtifactId(), path2, project);
 	
-		project = ProjectReader.getReader().read(projectFile);
+		PropertyModel model = PropertyModelFactory.getFactory().newPropertyModel(new File(projectFile.getParentFile(), "project.properties"), false);
 		
-		assertEquals(prev + 3, project.getDependencies().size());
+		assertEquals(path, model.findByKey("maven.jar." + dep.getArtifactId()).getValue());
+		assertEquals(path2, model.findByKey("maven.jar." + dep2.getArtifactId()).getValue());
+		assertEquals(path3, model.findByKey("maven.jar." + dep3.getArtifactId()).getValue());
 	
 	}
 }
