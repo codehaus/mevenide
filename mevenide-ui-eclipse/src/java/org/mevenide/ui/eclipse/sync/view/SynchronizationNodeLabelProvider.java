@@ -45,7 +45,7 @@ public class SynchronizationNodeLabelProvider implements ILabelProvider, IColorP
     
     public Image getImage(Object element) {
     	if ( element instanceof MavenArtifactNode ) {
-    		return Mevenide.getImageDescriptor("maven_dep_tree.gif").createImage();
+    		return Mevenide.getImageDescriptor("obj16/mdep_obj.gif").createImage();
     	}
     	if ( element instanceof DirectoryNode ) {
     		Directory directory = (Directory) ((DirectoryNode) element).getData();
@@ -59,7 +59,7 @@ public class SynchronizationNodeLabelProvider implements ILabelProvider, IColorP
     		return Mevenide.getImageDescriptor("obj16/mfile_obj.gif").createImage();
     	}
     	if ( element instanceof PropertyNode ) {
-    		return Mevenide.getImageDescriptor("property.gif").createImage();
+    		return Mevenide.getImageDescriptor("obj16/mprop_attr.gif").createImage();
     	}
     	if ( element instanceof ExcludeNode ) {
     		return Mevenide.getImageDescriptor("obj16/mdir_excl_attr.gif").createImage();

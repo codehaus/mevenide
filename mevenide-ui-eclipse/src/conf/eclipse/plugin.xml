@@ -155,7 +155,7 @@
          </action>
          <action
                label="%ValidatePom.Label"
-               icon="icons/maven-button.gif"
+               icon="icons/etool16/validate_pom.gif"
                class="org.mevenide.ui.eclipse.actions.ValidatePomAction"
                menubarPath="maven.plugin.menu/Validate"
                enablesFor="1"
@@ -163,7 +163,7 @@
          </action>
          <action
                label="%ClearValidate.Label"
-               icon="icons/maven-button.gif"
+               icon="icons/etool16/clr_validate.gif"
                class="org.mevenide.ui.eclipse.actions.ClearValidationMarkersAction"
                menubarPath="maven.plugin.menu/Validate"
                enablesFor="1"
