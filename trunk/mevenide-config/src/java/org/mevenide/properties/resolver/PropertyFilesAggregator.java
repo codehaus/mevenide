@@ -110,7 +110,9 @@ public final class PropertyFilesAggregator implements IPropertyResolver, IProper
         if (key.startsWith("pom.") && projectWalker != null) {
             toReturn = projectWalker.getValue(key);
         } else {
-            toReturn = userBuild.getValue(key);
+            if (userBuild != null) {
+                toReturn = userBuild.getValue(key);
+            }
             if (toReturn == null && projectBuild != null ) {
                 toReturn = projectBuild.getValue(key);
             }
