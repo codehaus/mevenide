@@ -80,18 +80,24 @@ public class DefaultGoalsGrabber extends AbstractGoalsGrabber {
 
         //File pluginsLocal = new File(Environment.getMavenHome(), "plugins");
   		File goalsCache = new File(Environment.getMavenPluginsInstallDir(), "goals.cache");
-
-  		Properties props = new Properties();
-  		props.load(new FileInputStream(goalsCache));
-
-  		Set fullyQualifiedGoalNames = props.keySet();
-		Iterator iterator = fullyQualifiedGoalNames.iterator();
-
-		while ( iterator.hasNext() ) {
-			String goalName = (String) iterator.next();
-			registerGoal(goalName, props.getProperty(goalName));
-		}  
+		if ( goalsCache.exists() ) {
+			log.debug("Grabbing goals from : " + goalsCache.getAbsolutePath());
+	  		
+			Properties props = new Properties();
+	  		props.load(new FileInputStream(goalsCache));
+	
+	  		Set fullyQualifiedGoalNames = props.keySet();
+			Iterator iterator = fullyQualifiedGoalNames.iterator();
+	
+			while ( iterator.hasNext() ) {
+				String goalName = (String) iterator.next();
+				registerGoal(goalName, props.getProperty(goalName));
+			}  
 		
+		}	
+		else {
+			log.debug("No goals.cache file found in : " + Environment.getMavenPluginsInstallDir());
+		}	
     }
 
 }
