@@ -55,6 +55,8 @@
   <goal name="nbm:jar"
       prereqs="jar:jar, nbm:init" 
       description="Build the Netbeans jar.">
+      <!-- need to delete if exists, otherwise we get the weirdo multiplied Class-Path manifest attribute. -->
+    <ant:delete file="${maven.nbm.build.dir}/${maven.final.name}.jar" quiet="true"/>  
     <!-- copy the original jar made by jar:jar goal to target/nbm -->
     <ant:copy toDir="${maven.nbm.build.dir}" file="${maven.build.dir}/${maven.final.name}.jar"/>
     <!--

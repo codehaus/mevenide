@@ -11,6 +11,9 @@
       <action dev="mkleint" type="add">
         Added property maven.nbm.license.name to use when building the nbm.
       </action>
+      <action dev="mkleint" type="fix">
+        Under certain conditions, Class-Path manifest attribute appeared multiple times in the jar. Fixed.
+      </action>
     </release>
 
     <release version="0.2" date="20040414">
