@@ -58,4 +58,7 @@ public abstract class AbstractArtifactMappingNode implements IArtifactMappingNod
         this.declaringPom = declaringPom;
     }
     
+    public Object getWrappedObject() {
+    	return getArtifact() != null ? getArtifact() : getResolvedArtifact();
+    }
 }
