@@ -116,7 +116,7 @@
         <groupId>netbeans</groupId>
         <artifactId>org-netbeans-modules-projectapi</artifactId>
         <!-- include nb specification version.. that's important for compiling -->
-        <version>1.0</version>
+        <version>1.0-SNAPSHOT</version>
         <type>jar</type>
         <url>http://www.netbeans.org</url>
         <properties>
@@ -127,7 +127,7 @@
         <groupId>netbeans</groupId>
         <artifactId>org-netbeans-api-java</artifactId>
         <!-- include nb specification version.. that's important for compiling -->
-        <version>1.5</version>
+        <version>1.5-SNAPSHOT</version>
         <type>jar</type>
         <url>http://www.netbeans.org</url>
         <properties>
@@ -137,7 +137,7 @@
     <dependency>     
         <groupId>netbeans</groupId>
         <artifactId>org-netbeans-modules-projectuiapi</artifactId>
-        <version>1.0</version>
+        <version>1.0-SNAPSHOT</version>
         <type>jar</type>
         <url>http://www.netbeans.org</url>
         <properties>
@@ -147,7 +147,7 @@
     <dependency>     
         <groupId>netbeans</groupId>
         <artifactId>org-netbeans-modules-project-libraries</artifactId>
-        <version>1.7</version>
+        <version>1.7-SNAPSHOT</version>
         <type>jar</type>
         <url>http://www.netbeans.org</url>
         <properties>
@@ -157,7 +157,7 @@
     <dependency>     
         <groupId>netbeans</groupId>
         <artifactId>org-netbeans-modules-java-project</artifactId>
-        <version>1.0</version>
+        <version>1.0-SNAPSHOT</version>
         <type>jar</type>
         <url>http://www.netbeans.org</url>
         <properties>
@@ -167,7 +167,7 @@
     <dependency>     
         <groupId>netbeans</groupId>
         <artifactId>org-netbeans-modules-java-platform</artifactId>
-        <version>1.0</version>
+        <version>1.0-SNAPSHOT</version>
         <type>jar</type>
         <url>http://www.netbeans.org</url>
         <properties>
@@ -179,7 +179,7 @@
         <artifactId>org-netbeans-modules-queries</artifactId>
         <!-- include nb specification version.. that's important for compiling -->
         <type>jar</type>
-        <version>1.0</version>
+        <version>1.0-SNAPSHOT</version>
         <url>http://www.netbeans.org</url>
         <properties>
             <netbeans.module.dep>spec</netbeans.module.dep>
