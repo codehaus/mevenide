@@ -5,7 +5,7 @@
     <id>goals-grabber</id>
     <name>Goals Grabber</name>
     <artifactId>goals-grabber</artifactId>
-    <currentVersion>0.7-SNAPSHOT</currentVersion>
+    <currentVersion>0.7</currentVersion>
     <package>org.mevenide.goals</package>
     <shortDescription>Gets all the available goals and reports</shortDescription>
     <description>This project provides generic Goals Grabbing mechanism. It is articulated around IGoalsGrabber interface.</description>
@@ -40,7 +40,7 @@
         <dependency>
             <groupId>mevenide</groupId>
             <artifactId>mevenide-config</artifactId>
-            <version>0.7-SNAPSHOT</version>
+            <version>0.7</version>
             <type>jar</type>
             <properties>
                 <netbeans.module.dep>spec</netbeans.module.dep>
