@@ -20,6 +20,8 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.StringTokenizer;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.eclipse.jface.preference.PreferenceStore;
 import org.mevenide.core.AbstractGoalsManager;
 
@@ -32,6 +34,8 @@ import org.mevenide.core.AbstractGoalsManager;
  *
  */
 public class GoalsManager extends AbstractGoalsManager{
+	private static Log log = LogFactory.getLog(AbstractGoalsManager.class);
+	
 	/** the eclipse plugin */
     private Mevenide plugin = Mevenide.getPlugin();
     
@@ -111,7 +115,7 @@ public class GoalsManager extends AbstractGoalsManager{
 			preferenceStore.load();
 		} 
 		catch (IOException e) {
-			e.printStackTrace();
+			log.debug("Unable to load goals preference PreferenceStore due to : " + e);
 		}
         xmlGoals = new File(plugin.getXmlGoalsFile());
 	}

@@ -23,6 +23,8 @@ import java.net.URL;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspace;
@@ -48,7 +50,8 @@ import org.mevenide.project.io.ProjectSkeleton;
  *  
  */
 public class Mevenide extends AbstractUIPlugin {
-	
+	private static Log log = LogFactory.getLog(Mevenide.class);
+	 
 	private static Mevenide plugin;
 	
 	private Object lock = new Object();
@@ -89,7 +92,7 @@ public class Mevenide extends AbstractUIPlugin {
             
 		} 
 		catch (Exception x) {
-			x.printStackTrace();
+			log.debug("Mevenide couldnot initialize due to : " + x);
 			throw x;
 		}
 	}
@@ -115,7 +118,7 @@ public class Mevenide extends AbstractUIPlugin {
 			return bundle.getString(key);
 		} 
 		catch (MissingResourceException e) {
-			e.printStackTrace();
+			log.debug("Cannot find Bundle Key '" + key + "' due to : " + e);
 			return key;
 		}
 	}
@@ -145,6 +148,7 @@ public class Mevenide extends AbstractUIPlugin {
         } 
         catch (MalformedURLException e) {
             // should not happen
+            log.debug("Cannot find ImageDescriptor for '" + relativePath + "' due to : " + relativePath);
             return ImageDescriptor.getMissingImageDescriptor();
         }
     }
@@ -186,10 +190,10 @@ public class Mevenide extends AbstractUIPlugin {
 	}
 	
 	public String getFile(String fname) {
-			File baseDir = Mevenide.getPlugin().getStateLocation().toFile();
-			
-			File f = new File(baseDir, fname);
-			return f.getAbsolutePath();
+		File baseDir = Mevenide.getPlugin().getStateLocation().toFile();
+		
+		File f = new File(baseDir, fname);
+		return f.getAbsolutePath();
 
 	}
 	
@@ -203,7 +207,7 @@ public class Mevenide extends AbstractUIPlugin {
         	return new File(new File(Platform.resolve(installBase).getFile()).getAbsolutePath()).toString();
         }
         catch (IOException e) {
-            e.printStackTrace();
+            log.debug("Unable to locate local repository due to " + e);
             return "";
         }   
         
@@ -216,7 +220,7 @@ public class Mevenide extends AbstractUIPlugin {
             return f.getAbsolutePath();
         }
         catch (IOException e) {
-            e.printStackTrace();
+            log.debug("Unable to locate forehead.conf due to : " + e);
             return "";
         }
     }
