@@ -32,14 +32,24 @@
             <type>jar</type>
             <properties>
                 <netbeans.module.dep>spec</netbeans.module.dep>
+                <eclipse.plugin.bundle>false</eclipse.plugin.bundle>
             </properties>
+        </dependency>
+        <dependency>
+            <groupId>jdom</groupId>
+            <artifactId>jdom</artifactId>
+            <version>b9</version>
+            <type>jar</type>
+            <properties/>
         </dependency>
         <dependency>     
             <groupId>mevenide</groupId>
             <artifactId>mevenide-core</artifactId>
             <version>0.2-SNAPSHOT</version>
+        	<properties>
+                <eclipse.plugin.bundle>false</eclipse.plugin.bundle>
+         	</properties>
         </dependency>
-        
         <dependency>
             <groupId>mevenide</groupId>
             <artifactId>mevenide-core-test</artifactId>
@@ -49,6 +59,7 @@
                 <eclipse.plugin.bundle>false</eclipse.plugin.bundle>
             </properties>
         </dependency>
+
         &inherited-dependencies;
     </dependencies>
 </project>

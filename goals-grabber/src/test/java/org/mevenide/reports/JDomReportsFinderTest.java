@@ -16,22 +16,30 @@
  */
 package org.mevenide.reports;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import java.io.File;
+import org.mevenide.goals.test.util.TestUtils;
+
 
 /**  
- *
- * @author Gilles Dodinet (gdodinet@wanadoo.fr)
- * @version $Id: AllTests.java 5 sept. 2003 Exp gdodinet 
+ * 
+ * @author <a href="mailto:rhill2@free.fr">Gilles Dodinet</a>
+ * @version $Id$
  * 
  */
-public class AllTests {
-	public static Test suite() {
-		
-		TestSuite suite = new TestSuite();
+public class JDomReportsFinderTest extends AbstractReportsFinderTest {
 	
-		suite.addTestSuite(JDomReportsFinderTest.class);
-		
-		return suite; 
-	} 
+    protected void setUp() throws Exception {
+        super.setUp();
+        File src = new File(JDomReportsFinderTest.class.getResource("/plugins/plugins.cache").getFile());
+		File destFile = new File(pluginsLocal, "plugins.cache");
+		TestUtils.copy(src.getAbsolutePath(), destFile.getAbsolutePath());            
+    }
+    
+	protected IReportsFinder getReportsFinder() {
+        return new JDomReportsFinder();
+    }
+
+	protected void tearDown() throws Exception {
+        super.tearDown();
+    }
 }
