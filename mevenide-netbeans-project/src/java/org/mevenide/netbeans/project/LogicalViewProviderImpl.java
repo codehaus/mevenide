@@ -18,11 +18,17 @@
 package org.mevenide.netbeans.project;
 
 import org.mevenide.netbeans.project.nodes.MavenProjectNode;
+import org.netbeans.api.project.FileOwnerQuery;
+import org.netbeans.api.project.Project;
 import org.netbeans.spi.project.ui.LogicalViewProvider;
 import org.netbeans.spi.project.ui.support.LogicalViews;
+import org.openide.filesystems.FileObject;
+import org.openide.loaders.DataFolder;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
+import org.openide.util.Lookup;
+import org.openide.util.lookup.Lookups;
 
 /**
  *
@@ -39,9 +45,61 @@ public class LogicalViewProviderImpl implements LogicalViewProvider
     
     public Node createLogicalView()
     {
-        LogicalViewProvider genericPhysicalView = LogicalViews.physicalView( project );
-        Node node = genericPhysicalView.createLogicalView();
-        return new MavenProjectNode(node, project);
+        return new MavenProjectNode(createLookup(project), project);
+    }
+
+    private static Lookup createLookup( MavenProject project ) {
+        DataFolder rootFolder = DataFolder.findFolder( project.getProjectDirectory() );
+        // XXX Remove root folder after FindAction rewrite
+        return Lookups.fixed( new Object[] { project, rootFolder } );
+    }
+    
+    public Node findPath(Node node, Object target) {
+        MavenProject proj = (MavenProject)node.getLookup().lookup( MavenProject.class );
+        if ( proj == null ) {
+            return null;
+        }
+        
+        if ( target instanceof FileObject ) {
+            FileObject fo = (FileObject)target;
+
+            Project owner = FileOwnerQuery.getOwner( fo );
+            if ( !proj.equals( owner ) ) {
+                return null; // Don't waste time if project does not own the fo
+            }
+
+//            Sources sources = ProjectUtils.getSources( project );
+//            SourceGroup[] groups = sources.getSourceGroups( JavaProjectConstants.SOURCES_TYPE_JAVA );
+//            for( int i = 0; i < groups.length; i++ ) {
+//                FileObject groupRoot = groups[i].getRootFolder();
+//                if ( FileUtil.isParentOf( groupRoot, fo ) && groups[i].contains( fo ) ) {
+//                    // The group contains the object
+//
+//                    String relPath = FileUtil.getRelativePath( groupRoot, fo );
+//                    int lastSlashIndex = relPath.lastIndexOf( '/' ); // NOI18N
+//                    
+//                    String[] path = null;
+//                    if ( lastSlashIndex == -1 ) {
+//                        path = new String[] { groups[i].getRootFolder().getNameExt(),
+//                                              fo.getName() };
+//                    }
+//                    else {
+//                        String packageName = relPath.substring( 0, lastSlashIndex ).replace( '/', '.' ); // NOI18N
+//                        path = new String[] { groups[i].getRootFolder().getNameExt(),
+//                                              packageName, 
+//                                              fo.getName() };			
+//                    } 
+//                    try {
+//                        return NodeOp.findPath( root, path );
+//                    }
+//                    catch ( NodeNotFoundException e ) {
+//                        return null;
+//                    }
+//                }
+//            }                
+        }
+
+        return null;
     }
     
 }

@@ -35,6 +35,7 @@ import java.net.URL;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Dependency;
+import org.apache.maven.project.Resource;
 import org.mevenide.netbeans.project.FileUtilities;
 import org.mevenide.netbeans.project.MavenProject;
 import org.mevenide.project.io.JarOverrideReader2;
@@ -135,4 +136,19 @@ abstract class AbstractProjectClassPathImpl implements ClassPathImplementation {
         }
         return null;
     }    
+    
+    protected URI checkOneResource(Resource res) {
+        String dir = res.getDirectory();
+        File file = new File(dir);
+        // is the relative path check necessary?
+        if (!file.exists()) {
+            File basedir = FileUtil.toFile(getMavenProject().getProjectDirectory());
+            file = new File(basedir, dir);
+        }
+        if (file.exists()) {
+            file = FileUtil.normalizeFile(file);
+            return file.toURI();
+        }
+        return null;
+    }        
 }
