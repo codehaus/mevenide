@@ -37,7 +37,8 @@ public class MavenSettings extends SystemOption {
     protected void initialize() {
         super.initialize();
         String[] defaultGoals = new String[] {
-            "site:generate",
+            "pmd:report",
+            "checkstyle:report",
             "dist"
         };
         setTopGoals(defaultGoals);
