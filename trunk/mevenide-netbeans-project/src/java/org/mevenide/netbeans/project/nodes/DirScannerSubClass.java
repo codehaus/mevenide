@@ -18,7 +18,6 @@
 package org.mevenide.netbeans.project.nodes;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -27,7 +26,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Resource;
 import org.apache.tools.ant.DirectoryScanner;
-import org.mevenide.util.MevenideUtils;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 
