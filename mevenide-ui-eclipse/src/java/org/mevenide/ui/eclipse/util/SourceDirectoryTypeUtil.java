@@ -79,8 +79,6 @@ public class SourceDirectoryTypeUtil {
 
 	private static String stripHeadingString(String strg, String headingString) {
 		if ( strg.startsWith(headingString) ) {
-			System.err.print(strg + " / " + headingString);
-			System.err.println(" > removing");
 			strg = strg.substring(headingString.length());
 	    }
 		return strg;
