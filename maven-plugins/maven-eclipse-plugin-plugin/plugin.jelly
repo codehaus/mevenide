@@ -9,7 +9,7 @@
 		 xmlns:artifact="artifact">
   
   <!-- 
-    @warn this plugin will be refactored as soon as soon i find some time to do it, and all 
+    @warn this plugin will be refactored as soon i find some time to do it, and all 
           this jelly crap will be removed in favor of pojos ready to be integrated into m2
    -->
   
@@ -83,13 +83,24 @@
   <!-- copied from eclipse-plugin:create-help-dist -->
   <goal name="eclipse-plugin:create-lib-dist" prereqs="eclipse-plugin:init,eclipse-plugin:install-artifact"
   		description="create an lib only plugin dist file and put it in ${maven.eclipse.plugin.dist.dir}">
+  	  
+  	  <j:set var="mode" value="${maven.eclipse.plugin.build.mode}"/>
+  	  <j:if test="${mode == 'bundle'}">
+		<attainGoal name="eclipse-plugin:prepare-plugin-dist"/>
+  	  </j:if>
+  	  <j:if test="${mode != 'bundle'}">
+  	  	<attainGoal name="eclipse-plugin:create-library-artifacts"/>
+  	  </j:if>
+  	  
   	  <j:set var="distVersion" value="${maven.eclipse.plugin.artifact.version}"/>
 	  <j:set var="pluginId" value="${maven.eclipse.plugin.artifact.id}"/>
   	  <j:set var="pluginFolder">${pluginId.replaceAll('-', '.')}</j:set> 
       <j:set var="pluginArchive" value="${maven.eclipse.plugin.dist.dir}/${pluginFolder}_${distVersion}.jar"/>
-    
+      
+      <ant:mkdir dir="${maven.eclipse.plugin.temp.dir}/${pluginFolder}_${distVersion}"/>
+      
       <!-- @todo update plugin descriptor -->
-  	  <mevenide:update-plugin-libraries pom="${pom}"/>
+      <mevenide:update-plugin-libraries pom="${pom}"/>
   	  
   	  <ant:move todir="${basedir}" filtering="true">
         <fileset dir="${maven.eclipse.plugin.temp.dir}">
@@ -323,7 +334,7 @@
   <goal name="eclipse-plugin:init" description="initialize eclipse plugin distribution aware folders">
   	<j:set var="type" value="${maven.eclipse.plugin.type}"/>
   	
-  	<j:if test="${type == 'plugin'}">
+  	<j:if test="${type == 'plugin' or type == 'lib'}">
 	  <ant:delete dir="${maven.eclipse.plugin.lib.dir}" quiet="true"/>
 	  <ant:mkdir dir="${maven.eclipse.plugin.lib.dir}"/>
 	</j:if>
