@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns:ant="jelly:ant"
 		 xmlns:util="jelly:util"
 		 xmlns:j="jelly:core">
@@ -27,8 +28,7 @@
 <preGoal name="xdoc:init">
   <j:set var="o" value="${os.name}"/>
   <j:set var="u" value="${maven.xdoc.jsl}"/>
-
-  <j:if test='${o.startsWith("Windows") && !empty(u) && !u.startsWith("file:///") && u.startsWith("file://")}'>
+  <j:if test="${o.startsWith('Windows') and !empty(u) and !u.startsWith('file:///') and u.startsWith('file://')}">
     <util:replace var="maven.xdoc.jsl" value="file:///${u.substring(7)}" oldChar="\" newChar="/"/>
     <ant:echo level="verbose" message="maven.xdoc.jsl old: ${u}"/>
     <ant:echo level="verbose" message="maven.xdoc.jsl new: ${maven.xdoc.jsl}"/>
