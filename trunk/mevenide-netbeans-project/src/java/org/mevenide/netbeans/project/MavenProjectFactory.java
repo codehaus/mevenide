@@ -50,12 +50,15 @@ public class MavenProjectFactory implements ProjectFactory
             return false;
         }
         File project = new File(projectDir, "project.xml"); // NOI18N
-        return project.isFile() &&  !"nbproject".equals(projectDir.getName()); //NOI18N
+        return project.isFile() &&  !"nbproject".equalsIgnoreCase(projectDir.getName()); //NOI18N
     }
     
     public Project loadProject(FileObject fileObject, ProjectState projectState) throws IOException
     {
         if (FileUtil.toFile(fileObject) == null) {
+            return null;
+        }
+        if ("nbproject".equalsIgnoreCase(fileObject.getName())) {
             return null;
         }
         FileObject projectFile = fileObject.getFileObject("project.xml"); //NOI18N
