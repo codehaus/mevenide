@@ -17,6 +17,7 @@
 package org.codehaus.mevenide.pde;
 
 import java.io.File;
+import java.util.List;
 import org.apache.maven.plugin.PluginExecutionRequest;
 import org.apache.maven.plugin.PluginExecutionResponse;
 import junit.framework.TestCase;
@@ -31,7 +32,9 @@ import junit.framework.TestCase;
 public class EclipseArtifactMojoTest extends TestCase {
     
     private EclipseArtifactMojo mojo;
+    
     private File eclipseHome;
+    
     
     protected void setUp() throws Exception {
         super.setUp();
@@ -89,4 +92,26 @@ public class EclipseArtifactMojoTest extends TestCase {
         }
         catch (ConfigurationException e) { }
     }
+    
+    public void testExtractDependenciesFromDescriptor() throws Exception {
+        mojo.basedir = new File(getClass().getResource("/basedir.usecontainer").getFile());
+        
+        List dependencies = mojo.extractDependenciesFromDescriptor();
+        assertEquals(2, dependencies.size());
+        
+        File dependency2 = new File(eclipseHome, "plugins" 
+								                 + File.separatorChar 
+								                 + "org.eclipse.core.runtime_3.1.0" 
+								                 + File.separatorChar
+								                 + "lib_1.jar");
+        File dependency1 = new File(eclipseHome, "plugins" 
+                                                 + File.separatorChar 
+                                                 + "org.eclipse.text_3.1.0" 
+                                                 + File.separatorChar
+                                                 + "lib_2.jar");
+        
+        assertTrue(dependencies.contains(dependency1.getAbsolutePath()));
+        assertTrue(dependencies.contains(dependency2.getAbsolutePath()));
+    }
 }
+
