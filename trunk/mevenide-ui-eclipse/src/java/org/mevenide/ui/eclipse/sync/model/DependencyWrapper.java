@@ -46,84 +46,46 @@
  * SUCH DAMAGE.
  * ====================================================================
  */
-package org.mevenide.ui.eclipse.actions;
+package org.mevenide.ui.eclipse.sync.model;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.eclipse.core.runtime.Path;
-import org.eclipse.jdt.core.JavaCore;
-import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.wizard.Wizard;
-import org.eclipse.jface.wizard.WizardDialog;
-import org.eclipse.ui.PlatformUI;
-import org.mevenide.sync.ISynchronizer;
-import org.mevenide.sync.SynchronizerFactory;
-import org.mevenide.ui.eclipse.Mevenide;
-import org.mevenide.ui.eclipse.sync.wizard.SynchronizeWizard;
+import org.apache.maven.project.Dependency;
 
-/**
- * either synchronize pom add .classpath 
+/**  
  * 
  * @author Gilles Dodinet (gdodinet@wanadoo.fr)
- * @version $Id$
+ * @version $Id: DependencyWrapper.java 26 août 2003 Exp gdodinet 
  * 
  */
-public class SynchronizeAction extends AbstractMevenideAction {
-	private static Log log = LogFactory.getLog(SynchronizeAction.class);
+public class DependencyWrapper {
+	private static Log log = LogFactory.getLog(DependencyWrapper.class);
 	
-    public void run(IAction action) {
-    	boolean pom = true;
-		try {
-            if ( action.getId().equals("maven-plugin.Synchronize") ) {
-            	pom = false;
-            	String mavenHome = Mevenide.getPlugin().getMavenHome();
-            	String mavenRepository = Mevenide.getPlugin().getMavenRepository();
-            	if ( isNull(mavenHome) || isNull(mavenRepository) ) {
-					Mevenide.popUp("Mevenide", "Please set maven preferences before synchronizing");
-				}
-				else {
-					if ( JavaCore.getClasspathVariable("MAVEN_REPO") == null ) {
-						JavaCore.setClasspathVariable("MAVEN_REPO", new Path(Mevenide.getPlugin().getMavenRepository()), null);
-					}
-					SynchronizerFactory.getSynchronizer(ISynchronizer.POM_TO_IDE).synchronize();
-				}
-			}
-			if ( action.getId().equals("maven-plugin.SynchronizePom") ) {
-				//show synch wizard
-				Wizard wizard = new SynchronizeWizard(currentProject);
-				WizardDialog dialog 
-					= new WizardDialog(
-						PlatformUI.getWorkbench()
-								  .getActiveWorkbenchWindow()
-								  .getShell(), wizard);
-				dialog.create();
-				dialog.open();
-			}
+	private Dependency dependency;
+	private boolean isInherited;
+	private DependencyGroup dependencyGroup;
+	
+	public DependencyWrapper(Dependency dependency, boolean isInherited, DependencyGroup group) {
+		if ( dependency == null ) {
+			throw new RuntimeException("Trying to initialize a DependencyWrapper with a null Exception");
 		}
-		catch (Exception e) {
-			e.printStackTrace();
-			log.debug("Unable to synchronize " + (pom ? "POM" : "project") + " due to : " + e);
-		}
+		this.dependency = dependency;
+		this.isInherited = isInherited;
+		this.dependencyGroup = group;
 	}
-
-	public void selectionChanged(IAction action, ISelection selection) {
-		super.selectionChanged(action, selection);
-//		try {
-//			if ( !currentProject.hasNature(JavaCore.NATURE_ID) ) {
-//				action.setEnabled(false);
-//			}
-//			else {
-//				action.setEnabled(true);
-//			}
-//		} 
-//		catch (Exception e) {
-//			log.debug("Unable to disable action '" + action.getText() + "' due to : " + e);
-//		}
-	}
-
-
-    private boolean isNull(String strg) {
-		return strg == null || strg.trim().equals("");
+	
+    public Dependency getDependency() {
+        return dependency;
     }
+
+        public boolean isInherited() {
+        return isInherited;
+    }
+
+    public void setInherited(boolean isInherited) {
+    	log.debug("setting isInherited to " + (isInherited));
+        this.isInherited = isInherited;
+        this.dependencyGroup.setDependencyInheritance(this.dependency, isInherited);
+    }
+
 }

@@ -50,7 +50,6 @@ package org.mevenide.ui.eclipse.sync.model;
 
 import java.io.File;
 
-import org.apache.maven.project.Dependency;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.swt.graphics.Image;
@@ -59,8 +58,13 @@ import org.mevenide.ui.eclipse.Mevenide;
 
 public class DependencyGroupLabelProvider implements ITableLabelProvider {
 	
-	public DependencyGroupLabelProvider() {
-		
+    private static final int DESCRIPTION_IDX = 0;
+	private static final int VALUE_IDX = 1;
+	private static final int CHECK_IDX = 2;
+	
+	
+    public DependencyGroupLabelProvider() {
+
 	}
 	public void addListener(ILabelProviderListener listener) {
 	
@@ -69,19 +73,29 @@ public class DependencyGroupLabelProvider implements ITableLabelProvider {
 	
 	}
 	public Image getColumnImage(Object element, int columnIndex) {
-		if ( element instanceof Dependency && columnIndex == 0 ) {
+		if ( element instanceof DependencyWrapper && columnIndex == DESCRIPTION_IDX ) {
 			return Mevenide.getImageDescriptor("dependency-16.gif").createImage();
+		}
+
+		if ( columnIndex == CHECK_IDX && element instanceof DependencyWrapper ) {
+			if ( ((DependencyWrapper) element).isInherited() ) {
+				return Mevenide.getImageDescriptor("checked-16.gif").createImage();
+			}
+			return Mevenide.getImageDescriptor("unchecked-16.gif").createImage();
 		}
 		return null;
 	}
 	
 	//@refactor if/else are scary !
 	public String getColumnText(Object element, int columnIndex) {
-		if ( columnIndex == 0 ) {
-			if ( element instanceof Dependency ) {
-				return new File(((Dependency) element).getArtifact()).getName();
+		if ( columnIndex == CHECK_IDX ) {
+			return "";
+		}
+		if ( columnIndex == DESCRIPTION_IDX ) {
+			if ( element instanceof DependencyWrapper ) {
+				return new File((((DependencyWrapper) element).getDependency()).getArtifact()).getName();
 			}
-			if ( element instanceof DependencyGroup && columnIndex == 0 ) {
+			if ( element instanceof DependencyGroup ) {
 				return "Dependencies";
 			}
 		}
@@ -91,7 +105,7 @@ public class DependencyGroupLabelProvider implements ITableLabelProvider {
 			String inf = 
 				info.getInfo() == null || info.getInfo().trim().equals("") ? 
 					"<unresolved>" : info.getInfo();
-			return columnIndex == 0 ? info.getTitle() : inf;
+			return columnIndex == DESCRIPTION_IDX ? info.getTitle() : inf;
 		}
 		return "";
 	}
@@ -100,4 +114,5 @@ public class DependencyGroupLabelProvider implements ITableLabelProvider {
 	}
 	public void removeListener(ILabelProviderListener listener) {
 	}
+	
 }

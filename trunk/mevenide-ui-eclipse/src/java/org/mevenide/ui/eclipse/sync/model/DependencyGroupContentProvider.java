@@ -63,11 +63,14 @@ import org.eclipse.jface.viewers.Viewer;
 public class DependencyGroupContentProvider implements ITreeContentProvider {
 	
 	public abstract class DependencyInfo {
+		
 		protected Dependency dependency;
 		protected String title;
 		protected String info;
-		DependencyInfo(Dependency d) {
-			this.dependency = d;
+		protected DependencyWrapper wrapper;
+		
+		DependencyInfo(DependencyWrapper d) {
+			this.dependency = d.getDependency();
 		}
 		
 		public Dependency getDependency() {
@@ -88,10 +91,10 @@ public class DependencyGroupContentProvider implements ITreeContentProvider {
 	}
 	
 	class GroupId extends DependencyInfo {
-		public GroupId(Dependency d) {
+		public GroupId(DependencyWrapper d) {
 			super(d);
 			title = "groupId";
-			info = d.getGroupId();
+			info = dependency.getGroupId();
 		}
 		protected void updateDependency() {
 			dependency.setGroupId(info);
@@ -99,10 +102,10 @@ public class DependencyGroupContentProvider implements ITreeContentProvider {
 	}
 	
 	class ArtifactId extends DependencyInfo {
-		public ArtifactId(Dependency d) {
+		public ArtifactId(DependencyWrapper d) {
 			super(d);
 			title = "artifactId";
-			info = d.getArtifactId();
+			info = dependency.getArtifactId();
 		}
 		protected void updateDependency() {
 			dependency.setArtifactId(info);
@@ -110,10 +113,10 @@ public class DependencyGroupContentProvider implements ITreeContentProvider {
 	}
 	
 	class Version extends DependencyInfo {
-		public Version(Dependency d) {
+		public Version(DependencyWrapper d) {
 			super(d);
 			title = "version";
-			info = d.getVersion();
+			info = dependency.getVersion();
 		}	
 		protected void updateDependency() {
 			dependency.setVersion(info);
@@ -121,10 +124,10 @@ public class DependencyGroupContentProvider implements ITreeContentProvider {
 	}
 	
 	class Type extends DependencyInfo {
-		public Type(Dependency d) {
+		public Type(DependencyWrapper d) {
 			super(d);
 			title = "type";
-			info = d.getType();
+			info = dependency.getType();
 		}	
 		protected void updateDependency() {
 			dependency.setType(info);
@@ -133,6 +136,7 @@ public class DependencyGroupContentProvider implements ITreeContentProvider {
 	
 	
 	public Object[] getChildren(Object parentElement) {
+		
 		if ( parentElement instanceof DependencyGroup ) {
 			DependencyGroup group = (DependencyGroup) parentElement;
 		
@@ -145,13 +149,13 @@ public class DependencyGroupContentProvider implements ITreeContentProvider {
 				return elements;
 			}
 		}
-		if ( parentElement instanceof Dependency ) {
-			Dependency dep = (Dependency) parentElement;
+		if ( parentElement instanceof DependencyWrapper ) {
+			DependencyWrapper wrapper = (DependencyWrapper) parentElement;
 			DependencyInfo[] children = new DependencyInfo[4];
-			children[0] = new GroupId(dep);
-			children[1] = new ArtifactId(dep);
-			children[2] = new Version(dep);
-			children[3] = new Type(dep);
+			children[0] = new GroupId(wrapper);
+			children[1] = new ArtifactId(wrapper);
+			children[2] = new Version(wrapper);
+			children[3] = new Type(wrapper);
 			return children;
 		}
 		return null;
@@ -165,7 +169,7 @@ public class DependencyGroupContentProvider implements ITreeContentProvider {
 	}
 
 	public boolean hasChildren(Object element) {
-		boolean hasChildren = element instanceof Dependency 
+		boolean hasChildren = element instanceof DependencyWrapper 
 				|| element instanceof DependencyGroup  ;
 		return hasChildren;
 	}

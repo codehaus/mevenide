@@ -75,6 +75,7 @@ import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.sync.model.DependencyGroup;
 import org.mevenide.ui.eclipse.sync.model.DependencyGroupContentProvider;
 import org.mevenide.ui.eclipse.sync.model.DependencyGroupMarshaller;
+import org.mevenide.ui.eclipse.sync.model.DependencyWrapper;
 import org.mevenide.ui.eclipse.sync.view.DependencyMappingViewControl;
 
 /**
@@ -203,7 +204,7 @@ public class DependencyMappingWizardPage extends WizardPage {
 							if ( path != null ) {
 								Dependency dependencyToAdd = DependencyFactory.getFactory().getDependency(path);
 								if ( !((DependencyGroup)viewer.getInput()).containsDependency(dependencyToAdd) ) {
-									((DependencyGroup)viewer.getInput()).addDependency(dependencyToAdd);
+									((DependencyGroup)viewer.getInput()).addDependency(new DependencyWrapper(dependencyToAdd, false, (DependencyGroup)viewer.getInput()));
 									log.debug("Added Dependency : " + path);
 									viewer.refresh();
 									if ( Environment.getMavenRepository() == null || Environment.getMavenRepository().trim().equals("") ) {
@@ -232,8 +233,7 @@ public class DependencyMappingWizardPage extends WizardPage {
 							while ( item.getParentItem() != null ) {
 								item = item.getParentItem();
 							}
-							((DependencyGroup) viewer.getInput()).getDependencies().remove((Dependency) item.getData());
-							((DependencyGroup) viewer.getInput()).excludeDependency((Dependency) item.getData());
+							((DependencyGroup) viewer.getInput()).excludeDependency((DependencyWrapper) item.getData());
 							viewer.refresh();
 						}
 						removeButton.setEnabled(false);
@@ -271,8 +271,8 @@ public class DependencyMappingWizardPage extends WizardPage {
 						Dependency affectedDependency = null;
 						Object sel = selection.getFirstElement();
 						log.debug("selected : " + sel.getClass() + " item");
-						if ( sel instanceof Dependency ) {
-							affectedDependency = (Dependency) sel;
+						if ( sel instanceof DependencyWrapper ) {
+							affectedDependency = ((DependencyWrapper) sel).getDependency();
 						}
 						else {
 							affectedDependency = ((DependencyGroupContentProvider.DependencyInfo) sel).getDependency();

@@ -49,7 +49,10 @@
 package org.mevenide.ui.eclipse.sync.model;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -72,12 +75,27 @@ import org.mevenide.ui.eclipse.util.ProjectUtil;
 public class DependencyGroup extends ArtifactGroup {
 	private static Log log = LogFactory.getLog(DependencyGroup.class);
 	
+	private Map dependencies = new HashMap();
 	
 	public DependencyGroup(IProject project) {
 		super(project);
+		//initializeDependenciesInheritanceMap();
 	}
 
+
+	private void initializeDependenciesInheritanceMap() {
+		for (int i = 0; i < artifacts.size(); i++) {
+			DependencyWrapper dependency = (DependencyWrapper) artifacts.get(i);
+			setDependencyInheritance(dependency.getDependency(), dependency.isInherited());
+			log.debug("Updated Inheritance for Dependency : " + dependency + " (" + (dependency.isInherited()) + ")");   
+        }	
+	}
+	
+
 	protected void initialize() throws Exception {
+		if ( dependencies == null ) {
+			dependencies = new HashMap();
+		}
 		
 		IClasspathEntry[] classpathEntries = javaProject.getResolvedClasspath(true);
 		
@@ -93,15 +111,30 @@ public class DependencyGroup extends ArtifactGroup {
 					path = javaProject.getProject().getLocation().append(classpathEntries[i].getPath().removeFirstSegments(1)).toOSString();
 				}
 				Dependency dependency = DependencyFactory.getFactory().getDependency(path);
-				addDependency(dependency);
+				addDependency(new DependencyWrapper(dependency, false, this));
 				
 			}
 			
 		}
-		artifacts.addAll(ProjectUtil.getCrossProjectDependencies());
+		for (int i = 0; i < ProjectUtil.getCrossProjectDependencies().size(); i++) {
+        	addDependency(new DependencyWrapper((Dependency) ProjectUtil.getCrossProjectDependencies().get(i), false, this));   
+        }
+		
 		
 	}
 	
+	public List getNonInheritedDependencies() {
+		List nonInheritedDependencies = new ArrayList();
+		
+		for (int i = 0; i < artifacts.size(); i++) {
+            Dependency dependency = ((DependencyWrapper) artifacts.get(i)).getDependency();
+			if ( ((DependencyWrapper) artifacts.get(i)).isInherited() ) {
+				nonInheritedDependencies.add(dependency);
+            }
+        }
+		
+		return nonInheritedDependencies;
+	}
 	
 	public List getDependencies() {
 		return artifacts;
@@ -111,7 +144,8 @@ public class DependencyGroup extends ArtifactGroup {
 		artifacts = list;
 	}
 	
-	public void addDependency(Dependency dependency) {
+	public void addDependency(DependencyWrapper wrapper) {
+		Dependency dependency = wrapper.getDependency();
 		if ( dependency.getArtifactId() == null ) {
 			dependency.setArtifactId("");
 		}
@@ -127,25 +161,34 @@ public class DependencyGroup extends ArtifactGroup {
 			dependency.setType("");
 		}
 		if ( dependency.getJar() == null ) {
-		//if ( dependency.getArtifact() == null ) {
+			//if ( dependency.getArtifact() == null ) {
 			//dependency.setArtifact("");
 			dependency.setJar("");
 		}
 		
 		log.debug("Adding [" + DependencyUtil.toString(dependency));
-		artifacts.add(dependency);
-	
+		artifacts.add(wrapper);
+		
+	    
 		for (int i = 0; i < excludedArtifacts.size(); i++) {
 			Dependency excluded = (Dependency) excludedArtifacts.get(i);
 			if ( excluded.getArtifact().equals(dependency.getArtifact())) {
 			 	 excludedArtifacts.remove(excluded);
 			 }
 		}
+		
+		setDependencyInheritance(dependency, wrapper.isInherited());
 	}
 	
-	public void excludeDependency(Dependency dependency) {
-		artifacts.remove(dependency);
-		excludedArtifacts.add(dependency);
+	public void setDependencyInheritance(Dependency dependency, boolean inheritance) {
+		dependencies.remove(dependency);
+		dependencies.put(dependency, new Boolean(inheritance));
+	}
+	
+	public void excludeDependency(DependencyWrapper wrapper) {
+		artifacts.remove(wrapper);
+		dependencies.remove(wrapper.getDependency());
+		excludedArtifacts.add(wrapper);
 	}
 	
 	public List getExcludedDependencies() {
@@ -155,8 +198,8 @@ public class DependencyGroup extends ArtifactGroup {
 	public boolean containsDependency(Dependency dependency) {
 		boolean contains = false;
 		for (int i = 0; i < artifacts.size(); i++) {
-			log.debug("Testing equality between " + DependencyUtil.toString((Dependency) artifacts.get(i)) + " and " + DependencyUtil.toString(dependency));
-			if ( DependencyUtil.areEquals((Dependency) artifacts.get(i), dependency)) {
+			log.debug("Testing equality between " + DependencyUtil.toString(((DependencyWrapper) artifacts.get(i)).getDependency()) + " and " + DependencyUtil.toString(dependency));
+			if ( DependencyUtil.areEquals(((DependencyWrapper) artifacts.get(i)).getDependency(), dependency)) {
 				contains = true;
 				break;
 			}

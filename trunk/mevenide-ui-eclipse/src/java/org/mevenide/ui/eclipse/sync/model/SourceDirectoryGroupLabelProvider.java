@@ -86,7 +86,7 @@ public class SourceDirectoryGroupLabelProvider implements ITableLabelProvider {
 	}
 	
 	public boolean isLabelProperty(Object element, String property) {
-		return true;
+		return false;
 	}
 	
 	public void removeListener(ILabelProviderListener listener) {

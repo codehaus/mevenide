@@ -78,6 +78,8 @@ public abstract class ArtifactGroup {
 		try {
 			if ( project != null && project.hasNature(JavaCore.NATURE_ID) ) {
 				this.javaProject = JavaCore.create(project);
+				this.projectName = project.getName();
+				log.debug("Initializing ArtifactGroup for project " + projectName);
 				initialize();
 			}
 			setProject(project);
