@@ -33,11 +33,8 @@ import org.apache.maven.project.UnitTest;
 import org.apache.maven.repository.Artifact;
 import org.mevenide.environment.ConfigUtils;
 import org.mevenide.environment.ILocationFinder;
-import org.mevenide.environment.LocationFinderAggregator;
 import org.mevenide.project.ProjectConstants;
 import org.mevenide.project.dependency.DependencyUtil;
-import org.mevenide.project.resource.DefaultResourceResolver;
-import org.mevenide.project.resource.IResourceResolver;
 import org.mevenide.project.resource.ResourceUtil;
 import org.mevenide.project.source.SourceDirectoryUtil;
 
@@ -61,7 +58,6 @@ public class ProjectWriter {
 	
 	private static ProjectWriter projectWriter = null;
 	
-	private IResourceResolver resourceResolver = new DefaultResourceResolver();
 	private ProjectReader projectReader ;
 	private IProjectMarshaller marshaller ; 
 	private JarOverrideWriter jarOverrideWriter = new JarOverrideWriter(this);

@@ -16,8 +16,6 @@
  */
 package org.mevenide.project.dependency;
 
-import org.apache.maven.project.Dependency;
-import org.mevenide.context.IQueryContext;
 import org.mevenide.project.io.IContentProvider;
 
 /**  
