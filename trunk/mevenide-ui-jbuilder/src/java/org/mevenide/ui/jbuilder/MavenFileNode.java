@@ -36,11 +36,11 @@ import com.borland.primetime.node.Project;
 import com.borland.primetime.vfs.Url;
 
 /**
- * <p>Title: maven.xml Project view file node</p>
+ * <p>Title: project.xml Project view file node</p>
  * <p>Description: This class represents the project view file node that
- * contains the maven.xml file. It derives from XMLFileNode to override the
+ * contains the project.xml file. It derives from XMLFileNode to override the
  * default behavior for XML files, but basically only interceps calls if the
- * XML file is *not* named "maven.xml".</p>
+ * XML file is *not* named "project.xml".</p>
  * <p>It seems that JBuilder has an undocumented mechanism to avoid having to
  * revert to tricks like this one, using a setXmlHandler method on XMLFileNode,
  * but as it is not documented I prefer not to use it.</p>
@@ -58,7 +58,7 @@ public class MavenFileNode extends XMLFileNode {
         throws DuplicateNodeException {
         super(project, parent, url);
 
-        if ("maven.xml".equalsIgnoreCase(url.getName())) {
+        if ("project.xml".equalsIgnoreCase(url.getName())) {
             mavenFile = true;
             refreshGoals();
             refreshDependencies();
