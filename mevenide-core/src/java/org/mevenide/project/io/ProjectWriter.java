@@ -256,6 +256,9 @@ public class ProjectWriter {
 			
 			Project project = ProjectReader.getReader().read(pom);
 			
+			if ( project.getDependencies() == null ) {
+				project.setDependencies(new ArrayList());
+			}
 			project.getDependencies().remove(DependencyFactory.getFactory().getDependency(path));
 			project.addDependency(dep);
 			
