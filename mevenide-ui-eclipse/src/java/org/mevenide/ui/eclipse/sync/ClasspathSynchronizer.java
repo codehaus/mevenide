@@ -36,7 +36,7 @@ public class ClasspathSynchronizer extends AbstractIdeSynchronizer implements IS
 	private IProject project ;
 	
     /**
-     * 
+     * @todo pullup synchronizationGoal initialization
      * @see org.mevenide.core.sync.ISynchronizer#initialize()
      */
 	public void initialize() {
@@ -45,8 +45,6 @@ public class ClasspathSynchronizer extends AbstractIdeSynchronizer implements IS
 	}
     
     /**
-     * not needed anymore since eclipse plugin has been refactored to 
-     * keep .project and .classpath generation separated
      * @see org.mevenide.core.sync.ISynchronizer#postSynchronization() 
      */
 	public void postSynchronization() {
