@@ -16,9 +16,17 @@
  */
 package org.mevenide.netbeans.project;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.maven.project.Dependency;
+import org.apache.maven.project.Project;
 import org.mevenide.netbeans.project.classpath.ClassPathProviderImpl;
+import org.mevenide.project.dependency.DefaultDependencyPathFinder;
+import org.mevenide.project.io.JarOverrideReader2;
 import org.netbeans.api.java.classpath.ClassPath;
 import org.netbeans.api.java.classpath.GlobalPathRegistry;
 import org.netbeans.api.project.ProjectManager;
@@ -43,6 +51,7 @@ public class ProjectOpenedHookImpl extends ProjectOpenedHook {
         GlobalPathRegistry.getDefault().register(ClassPath.BOOT, cpProvider.getProjectClassPaths(ClassPath.BOOT));
         GlobalPathRegistry.getDefault().register(ClassPath.SOURCE, cpProvider.getProjectClassPaths(ClassPath.SOURCE));
         GlobalPathRegistry.getDefault().register(ClassPath.COMPILE, cpProvider.getProjectClassPaths(ClassPath.COMPILE));
+        checkUnresolvedDependencies();
     }
     
     protected void projectClosed() {
@@ -54,4 +63,40 @@ public class ProjectOpenedHookImpl extends ProjectOpenedHook {
         GlobalPathRegistry.getDefault().unregister(ClassPath.COMPILE, cpProvider.getProjectClassPaths(ClassPath.COMPILE));
     }
     
+    private void checkUnresolvedDependencies() {
+        List lst = new ArrayList();
+        Project mavproj = project.getOriginalMavenProject();
+        if (mavproj.getDependencies() == null) {
+            return;
+        }
+        Iterator it = mavproj.getDependencies().iterator();
+        
+        while (it.hasNext()) {
+            Dependency dep = (Dependency)it.next();
+            if (!dependencyExists(dep)) {
+                lst.add(dep);
+            }
+        }
+        
+        if (lst.size() > 0) {
+            //TODO - show dialog offering to download dependencies.
+        }
+    }
+    
+    private boolean dependencyExists(Dependency dep) {
+        if (dep.getType() == null || "jar".equals(dep.getType())) {
+            // check override first
+            String path = JarOverrideReader2.getInstance().processOverride(dep,
+	            project.getPropertyResolver(),
+	            project.getLocFinder());
+            if (path == null) {
+                DefaultDependencyPathFinder finder = new DefaultDependencyPathFinder(dep);
+                path = finder.resolve();
+            }
+            logger.debug("dep path=" + path);
+            File file = new File(path);
+            return file.getName().endsWith(".jar") && file.exists();
+        }
+        return false;
+    }
 }
