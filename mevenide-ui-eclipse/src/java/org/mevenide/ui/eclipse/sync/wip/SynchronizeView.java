@@ -55,6 +55,9 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -93,8 +96,9 @@ public class SynchronizeView extends ViewPart {
     //contextual actions
     private Action pushToPom;
     private Action addToClasspath;
+    private Action markAsMerged;
     private Action viewProperties;
-    
+
     private int direction;
     
     public void createPartControl(Composite parent) {
@@ -200,6 +204,14 @@ public class SynchronizeView extends ViewPart {
 		addToClasspath.setId("POP_POM");
 		addToClasspath.setText("Add to .classpath");
 
+		markAsMerged = new Action() {
+		    public void run() {
+		        
+		    }
+		};
+		markAsMerged.setId("MERGE");
+		markAsMerged.setText("Mark as Merged");
+
 		viewProperties = new Action() {
 		    public void run() {
 				try {
@@ -212,28 +224,74 @@ public class SynchronizeView extends ViewPart {
 		};
 		viewProperties.setId("PROPERTIES");
 		viewProperties.setText("Properties");
+
+		artifactMappingNodeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+            public void selectionChanged(SelectionChangedEvent event) {
+				Object selection = ((StructuredSelection) event.getSelection()).getFirstElement();
+				if ( !(selection instanceof IArtifactMappingNode) ) {
+					addToClasspath.setEnabled(false);
+					pushToPom.setEnabled(false);
+					markAsMerged.setEnabled(false);
+					viewProperties.setEnabled(false);
+					return;
+				}
+				viewProperties.setEnabled(true);
+				IArtifactMappingNode selectedNode = (IArtifactMappingNode) selection;
+				if ( (selectedNode.getChangeDirection() & ProjectContainer.OUTGOING) != 0 ) {
+					pushToPom.setEnabled(true);
+				}
+				else {
+				    pushToPom.setEnabled(false);
+				}
+				if ( (selectedNode.getChangeDirection() & ProjectContainer.INCOMING) != 0 ) {
+					addToClasspath.setEnabled(true);
+				}
+				else {
+					addToClasspath.setEnabled(false);
+				}
+				if ( (selectedNode.getChangeDirection() & ProjectContainer.CONFLICTING) != 0 ) {
+					markAsMerged.setEnabled(true);
+				}
+				else {
+				    markAsMerged.setEnabled(false);
+				}
+            }
+		});
     }
     
     private void plugActions() {
-        getViewSite().getActionBars().getMenuManager().add(pushToPom);
-		getViewSite().getActionBars().getMenuManager().add(addToClasspath);
-		getViewSite().getActionBars().getMenuManager().add(viewProperties);
+		IMenuManager topLevelMenuManager = getViewSite().getActionBars().getMenuManager();
+		topLevelMenuManager.add(pushToPom);
+		topLevelMenuManager.add(addToClasspath);
+		topLevelMenuManager.add(markAsMerged);
+		topLevelMenuManager.add(viewProperties);
 
 		getViewSite().getActionBars().getToolBarManager().add(refreshAll);
 		getViewSite().getActionBars().getToolBarManager().add(viewIdeToPom);
 		getViewSite().getActionBars().getToolBarManager().add(viewPomToIde);
 		getViewSite().getActionBars().getToolBarManager().add(viewConflicts);
 
-		MenuManager manager = new MenuManager();
-		manager.setRemoveAllWhenShown(true);
-		Menu menu = manager.createContextMenu(artifactMappingNodeViewer.getControl());
+		MenuManager contextManager = new MenuManager();
+		contextManager.setRemoveAllWhenShown(true);
+		Menu menu = contextManager.createContextMenu(artifactMappingNodeViewer.getControl());
 		artifactMappingNodeViewer.getControl().setMenu(menu);
 
-		manager.addMenuListener(new IMenuListener() {
+		contextManager.addMenuListener(new IMenuListener() {
 			public void menuAboutToShow(IMenuManager manager) {
-				manager.add(addToClasspath);
-				manager.add(pushToPom);
-				manager.add(viewProperties);
+			    Object selection = ((StructuredSelection) artifactMappingNodeViewer.getSelection()).getFirstElement();
+				if ( selection instanceof IArtifactMappingNode ) {
+				    IArtifactMappingNode selectedNode = (IArtifactMappingNode) selection;
+					if ( (selectedNode.getChangeDirection() & ProjectContainer.OUTGOING) != 0 ) {
+						manager.add(addToClasspath);
+					}
+					if ( (selectedNode.getChangeDirection() & ProjectContainer.INCOMING) != 0 ) {
+						manager.add(pushToPom);
+					}
+					if ( (selectedNode.getChangeDirection() & ProjectContainer.CONFLICTING) != 0 ) {
+						manager.add(markAsMerged);
+					}
+					manager.add(viewProperties);
+				}
 			}
 		});
 
