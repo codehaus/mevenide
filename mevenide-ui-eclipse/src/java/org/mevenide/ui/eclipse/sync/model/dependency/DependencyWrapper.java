@@ -67,7 +67,16 @@ public class DependencyWrapper {
 	
 	private boolean isReadOnly;
 	private boolean isInPom;
+	private boolean conflictDetected;
 	
+    public boolean isConflictDetected() {
+        return conflictDetected;
+    }
+
+    public void setConflictDetected(boolean conflictDetected) {
+        this.conflictDetected = conflictDetected;
+    }
+
 	public DependencyWrapper(Dependency dependency, boolean isInherited, DependencyGroup group) {
 		if ( dependency == null ) {
 			throw new RuntimeException("Trying to initialize a DependencyWrapper with a null Exception");
@@ -81,7 +90,7 @@ public class DependencyWrapper {
         return dependency;
     }
 
-        public boolean isInherited() {
+    public boolean isInherited() {
         return isInherited;
     }
 
@@ -91,14 +100,21 @@ public class DependencyWrapper {
         this.dependencyGroup.setDependencyInheritance(this.dependency, isInherited);
     }
     
-    public boolean equals(Object obj) {
-    	if ( obj == null || !(obj instanceof DependencyWrapper) ) {
-    		return false;
-    	}
-    	DependencyWrapper wrapper = (DependencyWrapper) obj;
-    	return this.dependency.equals(wrapper.getDependency())
-    			&& this.isInherited == wrapper.isInherited
-    			&& this.dependencyGroup.equals(wrapper.dependencyGroup);
+    public static boolean areEquals(DependencyWrapper wrapper1, DependencyWrapper wrapper2) {
+//    	if ( obj == null || !(obj instanceof DependencyWrapper) ) {
+//    		return false;
+//    	}
+//    	DependencyWrapper wrapper = (DependencyWrapper) obj;
+		if( wrapper1 == null && wrapper2 != null ) {
+			return true;
+		}
+		if ( wrapper1 == null && wrapper2 != null || wrapper1 != null && wrapper2 == null ) {
+			return false;
+		}
+
+    	return wrapper1.dependency.equals(wrapper2.getDependency())
+    			&& wrapper1.isInherited == wrapper2.isInherited
+    			&& wrapper1.dependencyGroup.equals(wrapper2.dependencyGroup);
     }
 
     public DependencyGroup getDependencyGroup() {

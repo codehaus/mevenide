@@ -83,5 +83,6 @@ public abstract class MevenideColors {
 	public static final Color BLUE = new Color(null, 0, 0, 255);
 	public static final Color DARK_BLUE = new Color(null, 0, 0, 127);
 	public static final Color DARK_RED = new Color(null, 127, 0, 0);
+	public static final Color RED = new Color(null, 255, 0, 0);
 }
 
