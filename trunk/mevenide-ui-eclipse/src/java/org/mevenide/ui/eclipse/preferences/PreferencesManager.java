@@ -75,6 +75,9 @@ public class PreferencesManager {
 	}
 	
 	public void setValue(String property, String value) {
+	    if ( preferenceStore == null ) {
+	        loadPreferences();
+	    }
 		preferenceStore.setValue(property, value);
 	}
 	
@@ -104,12 +107,21 @@ public class PreferencesManager {
 
 	public Map getPreferences() {
 	    Map preferences = new HashMap();
-	    String[] names = preferenceStore.preferenceNames();
-	    if ( names != null ) {
-	        for (int i = 0; i < names.length; i++) {
-                preferences.put(names[i], getValue(names[i]));
+	    
+	    try {
+            String[] names = preferenceStore.preferenceNames();
+            if ( names != null ) {
+                for (int i = 0; i < names.length; i++) {
+                    preferences.put(names[i], getValue(names[i]));
+                }
             }
-	    }
+        }
+        catch (NullPointerException e) {
+            //catch NPE thrown if theres no preferences defined
+            String message = "No preferences found"; 
+            log.info(message, e);
+        }
+	    
 	    return preferences;
 	}
 	
