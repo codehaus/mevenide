@@ -520,7 +520,7 @@ public class CarefulProjectMarshaller implements IProjectMarshaller {
                 String prop = (String)it.next();
                 int index = prop.indexOf(':');
                 if (index > 0) {
-                    toReturn.put(prop.substring(0, index - 1), prop.substring(index + 1));
+                    toReturn.put(prop.substring(0, index), prop.substring(index + 1));
                 } else {
                     toReturn.put(prop, null);
                 }

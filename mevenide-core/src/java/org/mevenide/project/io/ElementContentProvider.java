@@ -85,7 +85,7 @@ public final class ElementContentProvider implements IContentProvider {
     }
 
     public List getProperties() {
-        Element props = element.getChild("properties");
+        Element props = element.getChild("properties"); //NOI18N
         if (props != null) {
             List toReturn = new ArrayList();
             List childs = props.getChildren();
@@ -93,7 +93,8 @@ public final class ElementContentProvider implements IContentProvider {
             while (it.hasNext()) {
                 Element el = (Element)it.next();
                 String value = el.getText();
-                toReturn.add(el.getName() + ":" + value);
+                String str = el.getName() + ":" + value; //NOI18N
+                toReturn.add(str);
             }
             return toReturn;
         }
