@@ -52,7 +52,7 @@ public class PomChooser {
 	 * display a Dialog to allow the user to choose a pom. 
 	 * if theres only zero or one available pom, it directly returned  
 	 */
-	public List openPomChoiceDialog() throws Exception {
+	public List openPomChoiceDialog(boolean singleSelection) throws Exception {
 		
 		List projects = new ArrayList();
 		
@@ -70,7 +70,7 @@ public class PomChooser {
 			return projects;
 		}
 		
-		PomChoiceDialog dialog = new PomChoiceDialog(this);
+		PomChoiceDialog dialog = new PomChoiceDialog(this, singleSelection);
 		
 		int result = dialog.open();
 		

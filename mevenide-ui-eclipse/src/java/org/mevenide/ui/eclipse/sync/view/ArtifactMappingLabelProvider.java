@@ -16,9 +16,11 @@
  */
 package org.mevenide.ui.eclipse.sync.view;
 
+import org.apache.maven.project.Project;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.viewers.IColorProvider;
+import org.eclipse.jface.viewers.ILabelDecorator;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.swt.graphics.Color;
@@ -31,6 +33,7 @@ import org.mevenide.ui.eclipse.sync.model.DirectoryMappingNode;
 import org.mevenide.ui.eclipse.sync.model.DirectoryMappingNodeContainer;
 import org.mevenide.ui.eclipse.sync.model.EclipseContainerContainer;
 import org.mevenide.ui.eclipse.sync.model.IArtifactMappingNode;
+import org.mevenide.ui.eclipse.sync.model.IArtifactMappingNodeContainer;
 import org.mevenide.ui.eclipse.sync.model.PomContainer;
 
 
@@ -40,9 +43,9 @@ import org.mevenide.ui.eclipse.sync.model.PomContainer;
  * @version $Id$
  * 
  */
-public class ArtifactMappingLabelProvider implements ILabelProvider, IColorProvider {
+public class ArtifactMappingLabelProvider implements ILabelProvider, IColorProvider, ILabelDecorator {
     
-    private Image decorateImage(Image image, Object element) {
+    public Image decorateImage(Image image, Object element) {
         if ( !(element instanceof IArtifactMappingNode) ) {
             return image;
         }
@@ -81,7 +84,21 @@ public class ArtifactMappingLabelProvider implements ILabelProvider, IColorProvi
         if ( element instanceof DirectoryMappingNode ) {
            baseImage = Mevenide.getImageDescriptor("sourcefolder_obj.gif").createImage();
         }
+        //return baseImage;
         return decorateImage(baseImage, element);
+    }
+    
+    public String decorateText(String text, Object element) {
+        if ( element instanceof IArtifactMappingNode ) {
+            IArtifactMappingNode node = (IArtifactMappingNode) element;
+            if ( (node.getChangeDirection() & EclipseContainerContainer.INCOMING) != 0 ) {
+                text = "< " + text;
+            }
+            if ( (node.getChangeDirection() & EclipseContainerContainer.OUTGOING) != 0 ) {
+                text = "> " + text;
+            }
+        }
+        return text;
     }
     
     public String getText(Object element) {
@@ -92,15 +109,16 @@ public class ArtifactMappingLabelProvider implements ILabelProvider, IColorProvi
             return ((EclipseContainerContainer) element).getProject().getName();
         }
         if ( element instanceof DependencyMappingNodeContainer ) {
-//            Project pom = ((IArtifactMappingNodeContainer) element).getPrimaryPom();
+            Project pom = ((IArtifactMappingNodeContainer) element).getPrimaryPom();
 //            return ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(pom.getFile().getAbsolutePath())).getProjectRelativePath().removeFirstSegments(1).toOSString();
-            return "[Dependencies]";
+            return "/Dependencies";
         }
         if ( element instanceof DirectoryMappingNodeContainer ) {   
-            return "[Directories]";
+            Project pom = ((IArtifactMappingNodeContainer) element).getPrimaryPom();
+            return "/Directories";
         }
         if ( element instanceof IArtifactMappingNode ) {
-            return ((IArtifactMappingNode) element).getLabel();
+            return decorateText(((IArtifactMappingNode) element).getLabel(), element);
         }
         return null;
     }
