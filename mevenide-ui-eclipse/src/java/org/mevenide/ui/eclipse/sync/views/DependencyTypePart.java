@@ -106,7 +106,7 @@ public class DependencyTypePart extends ViewPart {
 	private void addContributions() {
 		IToolBarManager tbm = getViewSite().getActionBars().getToolBarManager();
 		
-		Action synchronizeAction = new Action() {
+		Action saveAction = new Action() {
 			public void run() {
 				
 				try {
@@ -118,8 +118,8 @@ public class DependencyTypePart extends ViewPart {
 				//SynchronizerFactory.getSynchronizer(ISynchronizer.IDE_TO_POM).synchronize();
 			}
 		};	
-		synchronizeAction.setImageDescriptor(MavenPlugin.getImageDescriptor("save-16.gif"));
-		synchronizeAction.setToolTipText("Save");
+		saveAction.setImageDescriptor(MavenPlugin.getImageDescriptor("save-16.gif"));
+		saveAction.setToolTipText("Save");
 		
 		Action refreshAction = new Action() {
 			public void run() {
@@ -136,7 +136,7 @@ public class DependencyTypePart extends ViewPart {
 		refreshAction.setToolTipText("Refresh View");
 		
 		tbm.add(refreshAction);
-		tbm.add(synchronizeAction);
+		tbm.add(saveAction);
 		
 		getViewSite().getActionBars().updateActionBars();
 	}

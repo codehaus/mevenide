@@ -43,6 +43,7 @@ public class DependencyContentProvider implements ITreeContentProvider {
 		
 		public void setInfo(String string) {
 			info = string;
+			updateDependency();
 		}
 		public String getInfo() {
 			return info;
@@ -50,7 +51,7 @@ public class DependencyContentProvider implements ITreeContentProvider {
 		public String getTitle() {
 			return title;
 		}
-
+		protected abstract void updateDependency();
 	}
 	
 	class GroupId extends DependencyInfo {
@@ -58,6 +59,9 @@ public class DependencyContentProvider implements ITreeContentProvider {
 			super(d);
 			title = "groupId";
 			info = d.getGroupId();
+		}
+		protected void updateDependency() {
+			dependency.setGroupId(info);
 		}
 	}
 	
@@ -67,6 +71,9 @@ public class DependencyContentProvider implements ITreeContentProvider {
 			title = "artifactId";
 			info = d.getArtifactId();
 		}
+		protected void updateDependency() {
+			dependency.setArtifactId(info);
+		}
 	}
 	
 	class Version extends DependencyInfo {
@@ -74,7 +81,10 @@ public class DependencyContentProvider implements ITreeContentProvider {
 			super(d);
 			title = "version";
 			info = d.getVersion();
-		}		
+		}	
+		protected void updateDependency() {
+			dependency.setVersion(info);
+		}	
 	}
 	
 	class Type extends DependencyInfo {
@@ -83,6 +93,9 @@ public class DependencyContentProvider implements ITreeContentProvider {
 			title = "type";
 			info = d.getType();
 		}	
+		protected void updateDependency() {
+			dependency.setType(info);
+		}
 	}
 	
 	
