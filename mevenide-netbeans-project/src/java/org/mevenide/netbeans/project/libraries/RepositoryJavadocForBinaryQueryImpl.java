@@ -81,21 +81,21 @@ public class RepositoryJavadocForBinaryQueryImpl implements JavadocForBinaryQuer
                     // maybe refine the condition??
                     if (version != null && artifactid != null && groupid != null && ext != null && "jar".equals(ext)) {
                         File groupDir = jarFile.getParentFile().getParentFile();
-                        // old way, files have extension javadoc.
-                        File javadocsDir = new File(groupDir, "javadocs"); //NOI18N
+                        // new way.. type is javadoc.jar
+                        File javadocsDir = new File(groupDir, "javadoc.jars"); //NOI18N
                         File javadocFile = new File(javadocsDir,
                                 jarFile.getName().substring(0,  
                                    jarFile.getName().length() - ext.length()) 
-                                + "javadoc");
+                                + "javadoc.jar");
                         if (javadocFile.exists()) {
                             return new DocResult(javadocFile);
                         }
-                        // new way.. type is javadoc.jar
-                        javadocsDir = new File(groupDir, "javadoc.jars"); //NOI18N
+                        // old way, files have extension javadoc.
+                        javadocsDir = new File(groupDir, "javadocs"); //NOI18N
                         javadocFile = new File(javadocsDir,
                                 jarFile.getName().substring(0,  
                                    jarFile.getName().length() - ext.length()) 
-                                + "javadoc.jar");
+                                + "javadoc");
                         if (javadocFile.exists()) {
                             return new DocResult(javadocFile);
                         }
