@@ -32,7 +32,7 @@
   	<dependency>
   	  <groupId>mevenide</groupId>
       <artifactId>maven-nbm-plugin</artifactId>
-  	  <version>0.4</version>
+  	  <version>0.5</version>
   	  <type>plugin</type>
   	</dependency>
    
