@@ -33,6 +33,7 @@ import org.openide.windows.InputOutput;
 import org.openide.windows.OutputEvent;
 import org.openide.windows.OutputListener;
 import org.openide.windows.OutputWriter;
+import org.mevenide.reports.CheckstyleResult;
 
 
 /**

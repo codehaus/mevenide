@@ -15,7 +15,7 @@
  * =========================================================================
  */
 
-package org.mevenide.netbeans.project.output;
+package org.mevenide.reports;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -30,19 +30,19 @@ import org.jdom.input.SAXBuilder;
 import org.mevenide.context.IQueryContext;
 
 /**
- * Class encapsulating the result of pmd report. Reads the raw pmd report and makes it accessible from code.
- * Assumes the report file is present.
- * @author  Milos Kleint (ca206216@tiscali.cz)
+ * Class encapsulating the result of checkstyle report. Reads the raw checkstyle report and makes it accessible from code.
+ * Assumes the report file is present. Was done against 3.4 version of checkstyle report
+ * @author  Milos Kleint (mkleint@codehaus.org)
  */
-public final class PmdResult {
-    private static final Log logger = LogFactory.getLog(PmdResult.class);
+public final class CheckstyleResult {
+    private static final Log logger = LogFactory.getLog(CheckstyleResult.class);
     
     private IQueryContext context;
     private boolean loaded;
     private Object LOCK = new Object();
     private HashMap violations;
-    /** Creates a new instance of PmdResult */
-    public PmdResult(IQueryContext con) {
+    /** Creates a new instance of CheckstyleResult */
+    public CheckstyleResult(IQueryContext con) {
         context = con;
     }
     
@@ -68,12 +68,13 @@ public final class PmdResult {
     }
     
     private void loadReport() {
-        File reportFile = new File(context.getResolver().getResolvedValue("maven.build.dir"), "pmd-raw-report.xml");
+        File reportFile = new File(context.getResolver().getResolvedValue("maven.build.dir"), "checkstyle-raw-report.xml");
         violations = new HashMap();
         if (reportFile.exists()) {
             try {
                 SAXBuilder builder = new SAXBuilder();
                 Document document = builder.build(reportFile);
+                //TODO - checkstyle allows to check the version of the report format..
                 List files = document.getRootElement().getChildren("file");
                 if (files != null && files.size() > 0) {
                     Iterator it = files.iterator();
@@ -83,8 +84,7 @@ public final class PmdResult {
                         if (name != null) {
                             List viols = new ArrayList();
                             File file = new File(name);
-                            violations.put(file, viols);
-                            List vs = el.getChildren("violation");
+                            List vs = el.getChildren("error");
                             if (vs != null) {
                                 Iterator vsIter = vs.iterator();
                                 while (vsIter.hasNext()) {
@@ -92,9 +92,14 @@ public final class PmdResult {
                                     Violation v = new Violation();
                                     v.setFile(file);
                                     v.setLine(vsElem.getAttributeValue("line"));
-                                    v.setViolationId(vsElem.getAttributeValue("rule"));
-                                    v.setViolationText(vsElem.getText());
+                                    v.setColumn(vsElem.getAttributeValue("column"));
+                                    v.setSeverity(vsElem.getAttributeValue("severity"));
+                                    v.setSource(vsElem.getAttributeValue("source"));
+                                    v.setMessage(vsElem.getAttributeValue("message"));
                                     viols.add(v);
+                                }
+                                if (viols.size() > 0) {
+                                    violations.put(file, viols);
                                 }
                             }
                         }
@@ -108,9 +113,11 @@ public final class PmdResult {
     
     public static class Violation {
         private String line;
-        private String violationId;
+        private String column;
         private File file;
-        private String violationText;
+        private String message;
+        private String severity;
+        private String source;
 
         Violation() {
             
@@ -124,14 +131,6 @@ public final class PmdResult {
             this.line = line;
         }
 
-        public String getViolationId() {
-            return violationId;
-        }
-
-        void setViolationId(String viloationId) {
-            this.violationId = viloationId;
-        }
-
         public File getFile() {
             return file;
         }
@@ -140,13 +139,39 @@ public final class PmdResult {
             this.file = file;
         }
 
-        public String getViolationText() {
-            return violationText;
+        public String getColumn() {
+            return column;
         }
 
-        void setViolationText(String violationText) {
-            this.violationText = violationText;
+        void setColumn(String column) {
+            this.column = column;
         }
+
+        public String getMessage() {
+            return message;
+        }
+
+        void setMessage(String message) {
+            this.message = message;
+        }
+
+        public String getSeverity() {
+            return severity;
+        }
+
+        void setSeverity(String severity) {
+            this.severity = severity;
+        }
+
+        public String getSource() {
+            return source;
+        }
+
+        void setSource(String source) {
+            this.source = source;
+        }
+
+ 
         
     }
 }
