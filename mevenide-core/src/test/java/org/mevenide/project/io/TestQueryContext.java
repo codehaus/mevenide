@@ -18,7 +18,7 @@ package org.mevenide.project.io;
 
 import java.io.File;
 import java.util.HashMap;
-
+import org.apache.maven.project.Project;
 import org.mevenide.context.IQueryContext;
 
 /**
@@ -31,6 +31,8 @@ public class TestQueryContext implements IQueryContext {
     private HashMap userProps;
     private HashMap projectProps;
     private HashMap buildProps;
+    private Project[] projects;
+    private File[] projectFiles;
     
     TestQueryContext(File project, File user) {
         projectDir = project;
@@ -45,6 +47,14 @@ public class TestQueryContext implements IQueryContext {
     }
     public void setBuildProps(HashMap keyvalues) {
         buildProps = keyvalues;
+    }
+    
+    public void setProjects(Project[] projs) {
+        projects = projs;
+    }
+    
+    public void setProjectFiles(File[] projs) {
+        projectFiles = projs;
     }
     
     private String getValue(HashMap map, String key) {
@@ -84,5 +94,26 @@ public class TestQueryContext implements IQueryContext {
     public String getUserPropertyValue(String str) {
         return getValue(userProps, str);
     }
+    
+   public Project getFinalProject() {
+        if (projects != null) {
+            return projects[0];
+        }
+        return null;
+    }
+    
+    public File[] getProjectFiles() {
+        if (projectFiles != null) {
+            return projectFiles;
+        }
+	return new File[0];
+    }
+    
+    public Project[] getProjectLayers() {
+        if (projects != null) {
+            return projects;
+        }
+        return new Project[0];
+    }    
     
 }
