@@ -50,12 +50,24 @@ public abstract class AbstractIdeSynchronizer implements ISynchronizer {
 	public void synchronize()  {
 		try {
 			preSynchronization();
-			runner.run( new String[0], new String[] {synchronizationGoal} );
+			process();
 			postSynchronization();
 		}
 		catch ( Exception e ) {
 			log.debug("Unable to synchronize project due to : " + e);
 		}
+	}
+
+	/**
+	 * 
+	 * this method runs the maven-%IDE%-plugin synchronization goal. 
+	 * It is provided as default mean to synchronize IDE with POM. 
+	 * however subclasses should override it to make take advantage 
+	 * of the various IDEs plugin API facilities.
+	 *
+	 */
+	protected void process() {
+		runner.run( new String[0], new String[] {synchronizationGoal} );
 	}
 	
     /**
