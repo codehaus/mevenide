@@ -165,6 +165,7 @@ public class MevenidePomEditorContributor extends MultiPageEditorActionBarContri
     public void contributeToToolBar(IToolBarManager manager) {
         manager.add(new Separator());
         manager.add(validatePomAction);
+        manager.add(clearMarkersAction);
     }
 
     public void updateActions() {
