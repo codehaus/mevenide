@@ -10,14 +10,16 @@
   </preGoal>
   
   <!-- copy teh log4j dependency into nbm's netbeans/lib/ext directory to include it on the general netbeans classpath-->
-  <postGoal name="nbm:prepare-nbm-resources">
+  <!-- Update: log4j not necessary, I can add it to classpath manually when debugging-->
+<!--  <postGoal name="nbm:prepare-nbm-resources">
     <j:forEach var="artifact" items="${pom.artifacts}">
       <j:set var="dependency" value="${artifact.dependency}"/>
       <j:set var="builddir" value="${pom.getPluginContext('maven-nbm-plugin').getVariable('maven.nbm.build.dir')}" />
       <ant:echo message="DEP NAME IS=${dependency.id}"/>
       <j:if test="${dependency.id == 'log4j:log4j'}">
-        <ant:copy todir="${builddir}/netbeans/lib/ext" file="${artifact.path}"/>
+        <ant:copy todir="${builddir}/netbeans/mevenide/core" file="${artifact.path}"/>
       </j:if>
     </j:forEach>
   </postGoal>
+  -->
 </project>
