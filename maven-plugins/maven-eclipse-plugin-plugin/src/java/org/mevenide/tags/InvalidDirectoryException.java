@@ -16,13 +16,15 @@
  */
 package org.mevenide.tags;
 
+import org.apache.commons.jelly.JellyTagException;
+
 /**
  * 
  * @author <a href="mailto:rhill2@free.fr">Gilles Dodinet</a>
  * @version $Id$
  * 
  */
-public class InvalidDirectoryException extends Exception {
+public class InvalidDirectoryException extends JellyTagException {
     private String directory;
     private boolean doesExist;
     private String property;

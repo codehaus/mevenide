@@ -18,11 +18,14 @@ package org.mevenide.tags;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Enumeration;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import org.apache.commons.jelly.JellyTagException;
+import org.apache.commons.jelly.MissingAttributeException;
 
 import org.apache.commons.jelly.XMLOutput;
 
@@ -52,7 +55,7 @@ public class FindLicenseTag extends AbstractMevenideTag {
     };
 
     
-    public void doTag(XMLOutput arg0) throws Exception {
+    public void doTag(XMLOutput arg0) throws MissingAttributeException, JellyTagException {
         
         checkAttribute(jarFile, "jarFile");
         checkAttribute(var, "var");
@@ -62,7 +65,7 @@ public class FindLicenseTag extends AbstractMevenideTag {
     }
     
     
-    public String readLicense() throws Exception {
+    public String readLicense() throws JellyTagException {
         StringBuffer toReturn = new StringBuffer();
         JarFile jar = null;
         try {
@@ -89,9 +92,15 @@ public class FindLicenseTag extends AbstractMevenideTag {
                 }
                 read.close();
             }
+        } catch (Exception exc) {
+            throw new JellyTagException(exc);
         } finally {
             if (jar != null) {
-                jar.close();
+                try {
+                    jar.close();
+                } catch (IOException io) {
+                    throw new JellyTagException(io);
+                }
             }
         }
         if (toReturn.length() == 0) {

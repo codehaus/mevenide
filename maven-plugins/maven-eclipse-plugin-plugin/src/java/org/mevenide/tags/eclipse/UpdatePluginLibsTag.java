@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
+import org.apache.commons.jelly.JellyTagException;
 
 import org.apache.commons.jelly.MissingAttributeException;
 import org.apache.commons.jelly.XMLOutput;
@@ -90,18 +91,21 @@ public class UpdatePluginLibsTag extends AbstractMevenideTag {
      * (non-Javadoc)
      * @see org.apache.commons.jelly.Tag#doTag(org.apache.commons.jelly.XMLOutput)
      */
-    public void doTag(XMLOutput arg0) throws Exception {
+    public void doTag(XMLOutput arg0) throws MissingAttributeException, JellyTagException {
+        try {
+    		setUpDescriptor();
         
-		setUpDescriptor();
-        
-		List artifacts = pom.getArtifacts();
+    		List artifacts = pom.getArtifacts();
 
-        for (int i = 0; i < artifacts.size(); i++) {
-            Artifact artifact = (Artifact) artifacts.get(i);
-            updateDescriptor(artifact);
-        }
+            for (int i = 0; i < artifacts.size(); i++) {
+                Artifact artifact = (Artifact) artifacts.get(i);
+                updateDescriptor(artifact);
+            }
         
-        outputDescriptor();
+            outputDescriptor();
+        } catch (Exception exc) {
+            throw new JellyTagException(exc);
+        }
         
     }
     
