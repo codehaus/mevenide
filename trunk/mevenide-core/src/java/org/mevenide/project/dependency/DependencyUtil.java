@@ -81,11 +81,20 @@ public class DependencyUtil {
 				);
 	}
 	
-	private static boolean areEquals(String s1, String s2) {
+	static boolean areEquals(String s1, String s2) {
 		return  (s1 == null && s2 == null) ||
 				(
 				    s1 != null && s1.equals(s2)
 				);
+	}
+	
+	public static boolean conflict(Dependency d1, Dependency d2) {
+		if ( d1 == null || d2 == null) {
+			return false;
+		}
+		return 	areEquals(d1.getArtifactId(), d2.getArtifactId())
+				&& areEquals(d1.getGroupId(), d2.getGroupId())
+				&& !areEquals(d1.getVersion(), d2.getVersion());
 	}
 	
 	public static boolean isValidGroupId(final String groupId) {
