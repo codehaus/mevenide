@@ -43,7 +43,7 @@
 		The <b>mevenide-ui-eclipse</b> is the concrete Eclipse plugin. We will see later its layout.<br/>
 		</p>
 		<p>
-		The picture below depicts the relationships between those modules.<br/><br/>
+		The picture below (Figure 1) depicts the relationships between those modules.<br/><br/>
 		</p>
 		<p>
 		<img alt="modules relationships" src="images/uml/module-relationships.gif"/>
@@ -136,10 +136,63 @@
 	</section>
 	
 	<section name="Before launching the Runtime-workbench">
-	  
+	  <p>
+	  	At this point you should have been able to build the project thanks Maven (and, as a corollary, to configure your Eclipse project thnaks Maven).
+	  </p>
+	  <p>
+	  Before launching the runtime-workbench, please make sure that mevenide-ui-eclipse directory layout is correct 
+	  regarding the meta-informations contained in the <code>plugin.xml</code> plugin descriptor. However it should have been 
+	  prepared during the Maven build process thanks the <code>mevenide:prepare-lib</code> goal. If not, you can either 
+	  manually execute the required steps or run that goal <source>maven mevenide:prepare-lib</source>	  
+	  </p>
+	  <p>
+	  So, what's then the expected layout ? 
+	  </p>
+	  <p>this plugin uses a quite high number of libraries, so we group them under the /lib directory.
+	  We also declare the /etc directory to be a runtime-dependencies containing only resources. Icons are stored in the /icons directory 
+	  and, last, our ResourceBundles are for now in the top-level directory (TODO : put them in /etc/i18n directory). Your project layout 
+	  should be like described below :
+	  <source>
+${eclipse.plugins.dir}/org.mevenide_0.1/
+    +- etc/
+	|   +- META-INF/
+	|   |   |
+	|   |   +- services
+	|   |       |
+	|   |       +- org.mevenide.core.AbstractGoalsGrabber
+	|   |       +- org.mevenide.core.AbstractGoalsManager
+	|   |       +- org.mevenide.core.AbstractRunner
+	|   |       +- org.mevenide.sync.ISynchronizer
+	|   |       +- org.xmlpull.v1.XmlPullParserFactory
+	|   |
+	|   +- commons-logging.properties
+	|   |
+	|   +- mevenide.properties
+	|
+	+- icons/
+	|   |
+	|   +- *.gif
+	|
+	+- lib
+	|   |
+	|   +- *.jar
+	|   
+	+- plugin.xml
+	|
+	+- MavenPluginResources.properties
+	  </source>
+	  </p>
+	  <p>
+	  <br/>
+	  The picture (Figure 2) below summarizes in a more graphical way what we said about the plugin required layout.<br/>
+	  </p>
+	  <p>
+	  <img alt="plugin deploiement" src="images/uml/plugin-deploiement.gif"/>
+	  <br/><center><font size="-1">Figure 2. mevenide-ui-eclipse - Deploiement Diagram</font></center>
+	  </p>
 	</section>
 	
-	<section name="Runtime testing">
+	<section name="Runtime testing : unresolved issues">
 	</section>
 	
   </body>
