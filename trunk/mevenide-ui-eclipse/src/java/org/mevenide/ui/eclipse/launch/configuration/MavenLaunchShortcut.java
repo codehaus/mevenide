@@ -30,7 +30,6 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.variables.VariablesPlugin;
 import org.eclipse.debug.core.DebugPlugin;
-import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
@@ -123,17 +122,17 @@ public class MavenLaunchShortcut implements ILaunchShortcut {
 		String goals = goalsToRun == null ? Mevenide.getInstance().getDefaultGoals() : goalsToRun;
 		name += StringUtils.replace(goals, Goal.SEPARATOR, "_"); //$NON-NLS-1$
 		
-		ILaunch[] launches = manager.getLaunches();
-		if ( launches != null ) {
-		    //do we still want that behaviour ? is it not better to always return a new configuration ? 
-			for (int i = 0; i < launches.length; i++) {
-				if ( name != null && 
-				        launches[i].getLaunchConfiguration() != null && 
-				        (name).equals(launches[i].getLaunchConfiguration().getName()) ) {
-					return launches[i].getLaunchConfiguration();
-				}	
-			}
-		}
+//		ILaunch[] launches = manager.getLaunches();
+//		if ( launches != null ) {
+//		    //do we still want that behaviour ? is it not better to always return a new configuration ? 
+//			for (int i = 0; i < launches.length; i++) {
+//				if ( name != null && 
+//				        launches[i].getLaunchConfiguration() != null && 
+//				        (name).equals(launches[i].getLaunchConfiguration().getName()) ) {
+//					return launches[i].getLaunchConfiguration();
+//				}	
+//			}
+//		}
 		
 		name = manager.generateUniqueLaunchConfigurationNameFrom(name);
 		

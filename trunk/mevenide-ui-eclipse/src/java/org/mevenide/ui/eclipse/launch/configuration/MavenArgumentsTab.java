@@ -385,13 +385,9 @@ public class MavenArgumentsTab extends AbstractLaunchConfigurationTab  {
 
 
 	public void initializeFrom(ILaunchConfiguration configuration) {
-	    if ( configuration != null && 
-	         configuration.getFile() != null && 
-	         configuration.getFile().exists() ) {
-	        initOptionsMap(configuration);
-	        initGoals(configuration);
-	        initSysProperties(configuration);
-	    }
+        initOptionsMap(configuration);
+        initGoals(configuration);
+        initSysProperties(configuration);
 	}
 
 	public void performApply(ILaunchConfigurationWorkingCopy configuration) {

@@ -18,7 +18,6 @@ package org.mevenide.ui.eclipse.nature;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.internal.core.LaunchConfiguration;
 import org.eclipse.debug.ui.ILaunchConfigurationTab;
 import org.eclipse.debug.ui.RefreshTab;
@@ -120,15 +119,8 @@ class CustomLaunchConfigurationDialog extends TitleAreaDialog {
         MavenArgumentsTab argumentsTab = new MavenArgumentsTab();
         createTabItem(launchConfigurationTabFolder, argumentsTab, "Arguments", launchConfiguration);
         
-        RefreshTab refreshTab = new RefreshTab() {
-            public void initializeFrom(ILaunchConfiguration configuration) {
-                if ( configuration != null &&
-           	         configuration.getFile() != null && 
-        	         configuration.getFile().exists() ) {
-                    super.initializeFrom(configuration);
-                }
-	        }  
-        };
+        RefreshTab refreshTab = new RefreshTab();
+        
         createTabItem(launchConfigurationTabFolder, refreshTab, "Refresh", launchConfiguration);
     }
 
