@@ -25,7 +25,7 @@
          <export name="*"/>
          <packages prefixes="org.xmlpull"/>
       </library>
-      <library name="lib/maven-SNAPSHOT.jar">
+      <library name="lib/maven-core-1.0-beta-11-SNAPSHOT.jar">
          <export name="*"/>
          <packages prefixes="org.apache.maven"/>
       </library>
@@ -42,8 +42,7 @@
          <export name="*"/>
          <packages prefixes="org.mevenide.ui.eclipse"/>
       </library>
-      <library name="etc" type="resource">
-         <export name="*"/>
+      <library name="lib/etc.jar" type="resource">
       </library>
    </runtime>
    <requires>
