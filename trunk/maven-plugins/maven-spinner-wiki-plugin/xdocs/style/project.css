@@ -1,10 +1,6 @@
 #leftColumn {
-  width: 200;
+  width: 190px;
   border-bottom: none;
-}
-
-#navBox {
-  width: 200;
 }
 
 .sectionTitle {
@@ -21,17 +17,26 @@
   border-bottom: 1px solid #999999;
   color: #990000;
   background-color: #ffffff;
-  text-size: normal;
+  margin-top: 7px;
+  margin-bottom: 7px;
+  text-size: 10pt;
+}
+
+div.subsectionTitle a {
+  text-size: 4pt;
 }
 
 #breadcrumbs {
-  font-size: small;
+  font-size: 8pt;
   margin: 0pt;
   background-color: #ffffff;
   color: #999999;
+  border-top: none;
 }
 
 #footer {
   text-align: center; 
   border-top: 1px solid #999999;
+  color: #999999;
 }
+
