@@ -17,12 +17,12 @@
 package org.mevenide.ui.eclipse.preferences.dynamic;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.jface.preference.IPreferenceNode;
-import org.mevenide.ui.eclipse.Mevenide;
 
 
 /**  
@@ -33,8 +33,9 @@ import org.mevenide.ui.eclipse.Mevenide;
  */
 public class DynamicPreferencePageFactory {
     
-	
+	private boolean isInitialized;
     
+	private Map propertiesHolders = new HashMap();
 
     private static final String EXTENSION_ID = "org.mevenide.ui.preference"; //$NON-NLS-1$
     private static final String MAIN_PREFERENCE_PAGE_PATH = "org.mevenide.ui.plugin.preferences.MavenPreferencePage"; //$NON-NLS-1$
@@ -59,23 +60,28 @@ public class DynamicPreferencePageFactory {
 	private static DynamicPreferencePageFactory factory = new DynamicPreferencePageFactory();	
 	
 	public static DynamicPreferencePageFactory getFactory() {
+	    if ( !factory.isInitialized ) {
+	        factory.createDynamicPagePropertiesHolder();
+	        factory.isInitialized = true;
+	    }
         return factory;
     }
     
-    public void createPages() {
-        
+	
+	
+    public void createDynamicPagePropertiesHolder() {
         IExtensionPoint extension = Platform.getExtensionRegistry().getExtensionPoint(EXTENSION_ID); 
         if ( extension != null ) {
 	        IConfigurationElement[] configurationElements = extension.getConfigurationElements();
 	        for (int i = 0; i < configurationElements.length; i++) {
 	            IConfigurationElement configurationElement = configurationElements[i]; 
-	            IPreferenceNode node = createPreferenceNode(configurationElement);
-	            Mevenide.getInstance().getWorkbench().getPreferenceManager().addTo(ROOT_PAGE_PATH, node);
+	            DynamicPagePropertiesHolder holder = createDynamicPagePropertiesHolder(configurationElement);
+	            propertiesHolders.put(holder.getId(), holder);
 	        }
         }
     }
 
-    private IPreferenceNode createPreferenceNode(IConfigurationElement configurationElement) {
+    private DynamicPagePropertiesHolder createDynamicPagePropertiesHolder(IConfigurationElement configurationElement) {
         //plugin-provider name and id
         String pageName = configurationElement.getAttribute(PAGE_NAME);
         String pageId = configurationElement.getAttribute(PAGE_ID);
@@ -87,7 +93,7 @@ public class DynamicPreferencePageFactory {
             pluginDescription = descriptionElements[0].getValue();
         }
         
-        //plugin-provier categories
+        //plugin-provider categories
         IConfigurationElement[] categoryElements = configurationElement.getChildren(PLUGIN_CATEGORY);
         List categories = new ArrayList(categoryElements.length);
         for (int i = 0; i < categoryElements.length; i++) {
@@ -98,8 +104,8 @@ public class DynamicPreferencePageFactory {
             categories.add(new PluginCategory(categoryName, properties));
         }
         
-        IPreferenceNode node = new DynamicPreferenceNode(pageId, pageName, pluginDescription, categories);
-        return node;
+        DynamicPagePropertiesHolder holder = new DynamicPagePropertiesHolder(pageId, pageName, pluginDescription, categories);
+        return holder;
     }
 
     private List getCategoryProperties(String pageId, IConfigurationElement categoryElement) {
@@ -122,6 +128,15 @@ public class DynamicPreferencePageFactory {
                     						  propertyDescription));
         }
         return properties;
+    }
+
+
+
+    public void initialize(DynamicPreferencePage page) {
+        DynamicPagePropertiesHolder holder = (DynamicPagePropertiesHolder) propertiesHolders.get(page.getTitle());
+        if ( holder != null ) {
+            holder.initialize(page);
+        }
     }
     
 }
