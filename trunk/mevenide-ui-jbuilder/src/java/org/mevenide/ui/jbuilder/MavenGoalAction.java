@@ -14,7 +14,7 @@
  *  limitations under the License.
  * =========================================================================
  */
-package com.jahia.opentools.maven;
+package org.mevenide.ui.jbuilder;
 
 import com.borland.primetime.build.BuildAction;
 import com.borland.primetime.build.BuildProcess;

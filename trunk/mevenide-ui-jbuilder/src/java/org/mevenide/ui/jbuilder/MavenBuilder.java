@@ -14,7 +14,7 @@
  *  limitations under the License.
  * =========================================================================
  */
-package com.jahia.opentools.maven;
+package org.mevenide.ui.jbuilder;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -205,8 +205,7 @@ public class MavenBuilder extends CodeGenerator {
             // no build task existing for the current Maven file node, let's
             // create one
             MavenBuildTask mavenBuildTask = (MavenBuildTask) buildProcess.
-                createTask(com.jahia.
-                           opentools.maven.MavenBuildTask.class,
+                createTask(org.mevenide.ui.jbuilder.MavenBuildTask.class,
                            MAVEN_BUILD_TARGET);
             mavenBuildTask.setMavenFileNode(mavenFileNode);
 
