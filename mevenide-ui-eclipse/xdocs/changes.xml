@@ -6,7 +6,7 @@
   </properties>
 
   <body>
-	<release version="0.2.2" date="in CVS">
+	<release version="0.2.2" date="2004-07-25">
   	  <action dev="gdodinet" type="fix" issue="MEVENIDE-53,MEVENIDE-54">
         Revert runner configuration dialog
       </action>
