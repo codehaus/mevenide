@@ -24,6 +24,7 @@ import java.util.Properties;
 import java.util.Set;
 import org.apache.maven.ArtifactListBuilder;
 import org.apache.maven.MavenUtils;
+import org.apache.maven.jelly.MavenJellyContext;
 import org.apache.maven.model.Build;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Model;
@@ -57,14 +58,17 @@ public class MavenProjectConverter {
 
     private Project m1Project;
     private IPropertyResolver propertyResolver;
- 
-    public MavenProjectConverter() {
+    private MavenJellyContext context;
+    
+    public MavenProjectConverter(MavenJellyContext context) {
         propertyResolver = getPropertyResolver();
+        this.context = context;
     }
     
-    public MavenProjectConverter(Project project) {
+    public MavenProjectConverter(Project project, MavenJellyContext context) {
         this.m1Project = project;
         propertyResolver = getPropertyResolver();
+        this.context = context;
     }
     
     public MavenProject convert() throws ConverterException {
@@ -120,7 +124,8 @@ public class MavenProjectConverter {
 	    //needed for rc3 to correctly setRelativePaths
 	    System.setProperty("maven.home", propertyResolver.getResolvedValue("maven.home")); //$NON-NLS-1$
 	    
-	    m1Project.setContext(MavenUtils.createContext(m1Project.getFile().getParentFile()));
+	    //m1Project.setContext(MavenUtils.createContext(m1Project.getFile().getParentFile()));
+	    m1Project.setContext(context);
 	    
 	    if ( project.getDependencies() == null ) {
 	        project.setDependencies(new ArrayList());
