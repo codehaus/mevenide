@@ -4,6 +4,7 @@ package org.mevenide.ui.eclipse.launch.configuration;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.resources.IProject;
@@ -12,6 +13,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.debug.core.DebugPlugin;
+import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
@@ -78,23 +80,24 @@ public class MavenLaunchShortcut implements ILaunchShortcut {
 
 	public void launch(IProject project) {
 		ILaunchConfiguration configuration= null;
-		List configurations = findExistingLaunchConfigurations(project);
-		if (configurations.isEmpty()) {
-			configuration = createDefaultLaunchConfiguration(project);
-			//return;
-		} 
-		else {
-			if (configurations.size() == 1) {
-				configuration= (ILaunchConfiguration)configurations.get(0);
-			} 
-			else {
-				configuration= chooseConfig(configurations);
-				if (configuration == null) {
-					// User cancelled selection
-					return;
-				}
-			}
-		}
+		configuration = getDefaultLaunchConfiguration(project);
+//		List configurations = findExistingLaunchConfigurations(project);
+//		if (configurations.isEmpty()) {
+//			configuration = createDefaultLaunchConfiguration(project);
+//			//return;
+//		} 
+//		else {
+//			if (configurations.size() == 1) {
+//				configuration= (ILaunchConfiguration)configurations.get(0);
+//			} 
+//			else {
+//				configuration= chooseConfig(configurations);
+//				if (configuration == null) {
+//					// User cancelled selection
+//					return;
+//				}
+//			}
+//		}
 		
 		
 		
@@ -147,11 +150,22 @@ public class MavenLaunchShortcut implements ILaunchShortcut {
 	}
 	
 
-	public static ILaunchConfiguration createDefaultLaunchConfiguration(IProject project) {
+	public static ILaunchConfiguration getDefaultLaunchConfiguration(IProject project) {
 		ILaunchManager manager = DebugPlugin.getDefault().getLaunchManager();
 		ILaunchConfigurationType type = manager.getLaunchConfigurationType("org.mevenide.launching.MavenLaunchConfigType");
-		String name = project.getName();
-		name = manager.generateUniqueLaunchConfigurationNameFrom(name);
+		
+		String name = "[" + project.getName() + "] ";
+		String goals = StringUtils.replace(Mevenide.getPlugin().getDefaultGoals(), ":", "_");
+		
+		ILaunch[] launches = manager.getLaunches();
+		for (int i = 0; i < launches.length; i++) {
+			if ( (name + goals).equals(launches[i].getLaunchConfiguration().getName()) ) {
+				return launches[i].getLaunchConfiguration();
+			}	
+		}
+		
+		name = manager.generateUniqueLaunchConfigurationNameFrom(name + goals);
+		
 		try {
 			ILaunchConfigurationWorkingCopy workingCopy = type.newInstance(null, name);
 			workingCopy.setAttribute(IExternalToolConstants.ATTR_WORKING_DIRECTORY,
@@ -163,7 +177,12 @@ public class MavenLaunchShortcut implements ILaunchShortcut {
 			tab.setDefaults(workingCopy);
 			tab.dispose();
 			
-			return workingCopy.doSave();
+			ILaunchConfiguration cfg = workingCopy.doSave();
+
+			log.debug("returning default config : " + cfg) ;
+
+			return cfg;
+
 		} 
 		catch (CoreException e) {
 			log.debug("Unable to createDefaultLaunchConfig due to : " + e);

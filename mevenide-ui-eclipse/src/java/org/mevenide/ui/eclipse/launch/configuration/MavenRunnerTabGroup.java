@@ -1,6 +1,5 @@
 package org.mevenide.ui.eclipse.launch.configuration;
 
-import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.ui.AbstractLaunchConfigurationTabGroup;
 import org.eclipse.debug.ui.ILaunchConfigurationDialog;
 import org.eclipse.debug.ui.ILaunchConfigurationTab;
@@ -24,7 +23,4 @@ public class MavenRunnerTabGroup extends AbstractLaunchConfigurationTabGroup {
 	}
 
 
-	public void performApply(ILaunchConfigurationWorkingCopy configuration) {
-		optionsTab.performApply(configuration);
-	}
 }
