@@ -68,6 +68,7 @@ public class MavenArtifactNode extends ArtifactNode implements IAdaptable {
 	public ISynchronizationNode[] getChildren() {
 		return properties;
 	}
+	
 	public Object getData() {
 		return artifact;
 	}

@@ -39,13 +39,27 @@ public class Directory {
         return path;
     }
     
+    /** 
+     * we dont want here to compare the type of Directory since this is method 
+     * is heavily used in the synchronizer. 
+     * If you want the type to be taken into account use equalsStrict instead   
+     */
     public boolean equals(Object obj) {
     	if ( !(obj instanceof Directory) ) {
     		return false;
     	}
     	Directory dir = (Directory) obj;
-    	return path.equals(dir.path) && type.equals(dir.path); 
+    	return path.equals(dir.path); 
 	}
+    
+    public boolean equalsStrict(Object obj) {
+    	if ( !(obj instanceof Directory) ) {
+    		return false;
+    	}
+    	Directory dir = (Directory) obj;
+    	return equals(obj) && type.equals(dir.path); 
+	}
+    
     public String getPath() {
         return path;
     }
