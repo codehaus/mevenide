@@ -25,6 +25,11 @@
         <name>VERSION_0_1</name> 
      </version>
   </versions>
+  <branches>
+    <branch>
+        <tag>NETBEANS_40</tag>
+    </branch>
+  </branches>
   <licenses>
     <license>
         <name>Apache Public License 2.0 - for the plugin itself</name>
