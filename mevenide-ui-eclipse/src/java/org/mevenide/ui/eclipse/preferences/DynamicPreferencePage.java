@@ -73,7 +73,7 @@ public class DynamicPreferencePage extends PreferencePage implements IWorkbenchP
   
 	private void createDescriptionComposite(Composite composite) {
 	    Text title = new Text(composite, SWT.READ_ONLY);
-	    title.setText("Description");
+	    title.setText(Mevenide.getResourceString("DynamicPreferencePage.Description"));
 	    title.setFont(new Font(PlatformUI.getWorkbench().getDisplay(), new FontData("bold", composite.getFont().getFontData()[0].getHeight(), SWT.BOLD)));
 	    title.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 	    
@@ -87,7 +87,7 @@ public class DynamicPreferencePage extends PreferencePage implements IWorkbenchP
 
     private void createPropertyComposite(Composite composite) {
         Text title = new Text(composite, SWT.READ_ONLY | SWT.MULTI);
-	    title.setText("Configuration");
+	    title.setText(Mevenide.getResourceString("DynamicPreferencePage.Configuration"));
 	    title.setFont(new Font(PlatformUI.getWorkbench().getDisplay(), new FontData("bold", composite.getFont().getFontData()[0].getHeight(), SWT.BOLD)));
 	    title.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         
