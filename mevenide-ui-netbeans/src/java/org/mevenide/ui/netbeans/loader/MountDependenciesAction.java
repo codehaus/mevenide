@@ -17,21 +17,16 @@
 package org.mevenide.ui.netbeans.loader;
 
 import java.beans.PropertyVetoException;
-import java.io.File;
 import java.io.IOException;
-import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 import org.apache.maven.repository.Artifact;
 import org.mevenide.ui.netbeans.ArtifactCookie;
+import org.mevenide.ui.netbeans.project.FileSystemUtil;
 import org.openide.DialogDisplayer;
 import org.openide.ErrorManager;
 import org.openide.NotifyDescriptor;
 import org.openide.NotifyDescriptor.Message;
-import org.openide.awt.StatusDisplayer;
-import org.openide.filesystems.FileSystem;
-import org.openide.filesystems.JarFileSystem;
-import org.openide.filesystems.Repository;
 import org.openide.nodes.Node;
 import org.openide.util.HelpCtx;
 import org.openide.util.NbBundle;
@@ -45,7 +40,6 @@ import org.openide.util.actions.CookieAction;
  */
 public class MountDependenciesAction extends CookieAction
 {
-    
     protected Class[] cookieClasses()
     {
         return new Class[]
@@ -90,26 +84,19 @@ public class MountDependenciesAction extends CookieAction
             Artifact art = (Artifact)it.next();
             if (art.exists())
             {
-                //                StatusDisplayer.getDefault().setStatusText("Attempting to mount " + art.getName());
-                if (alreadyMounted(art.getFile()))
+                try
                 {
-                    StatusDisplayer.getDefault().setStatusText(art.getName() + " already mounted.");
-                } else
+                    FileSystemUtil.mountDependency(art);
+                } catch (IOException io)
                 {
-                    try
-                    {
-                        JarFileSystem fs = new JarFileSystem();
-                        fs.setJarFile(art.getFile());
-                        Repository.getDefault().addFileSystem(fs);
-                    } catch (IOException io)
-                    {
-                        //TODO
-                        ErrorManager.getDefault().annotate(io, "Cannot mount");
-                    } catch (PropertyVetoException ex)
-                    {
-                        //TODO
-                        ErrorManager.getDefault().annotate(ex, "Cannot mount2");
-                    }
+                    //TODO
+                    ErrorManager.getDefault().annotate(io, "Cannot mount");
+                    allMounted = false;
+                } catch (PropertyVetoException pve)
+                {
+                    //TODO
+                    ErrorManager.getDefault().annotate(pve, "Cannot mount");
+                    allMounted = false;
                 }
             } else
             {
@@ -123,20 +110,9 @@ public class MountDependenciesAction extends CookieAction
         }
     }
     
+ 
     
-    private boolean alreadyMounted(File jarFile)
-    {
-        Enumeration en = Repository.getDefault().getFileSystems();
-        while (en.hasMoreElements())
-        {
-            FileSystem fs = (FileSystem)en.nextElement();
-            if (fs.getSystemName().indexOf(jarFile.getName()) >= 0)
-            {
-                return true;
-            }
-        }
-        return false;
-    }
+
     
     public String getName()
     {
