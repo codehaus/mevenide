@@ -20,7 +20,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import javax.swing.JTextField;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.JTextComponent;
 import org.mevenide.netbeans.project.customizer.ui.OriginChange;

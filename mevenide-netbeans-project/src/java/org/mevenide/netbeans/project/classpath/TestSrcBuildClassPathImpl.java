@@ -23,8 +23,6 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Dependency;
 import org.apache.maven.project.Project;
 import org.mevenide.netbeans.project.MavenProject;
@@ -34,7 +32,6 @@ import org.mevenide.netbeans.project.MavenProject;
  * @author  Milos Kleint (ca206216@tiscali.cz)
  */
 public class TestSrcBuildClassPathImpl extends AbstractProjectClassPathImpl {
-    private static final Log logger = LogFactory.getLog(TestSrcBuildClassPathImpl.class);
     
     /** Creates a new instance of SrcClassPathImpl */
     public TestSrcBuildClassPathImpl(MavenProject proj) {

@@ -16,42 +16,53 @@
  */
 package org.mevenide.netbeans.project.customizer;
 
-import javax.swing.event.DocumentListener;
-import javax.swing.text.JTextComponent;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.List;
+import javax.swing.DefaultListModel;
+import javax.swing.event.ListDataEvent;
+import javax.swing.event.ListDataListener;
 import org.mevenide.netbeans.project.customizer.ui.OriginChange;
+import org.mevenide.project.io.IContentProvider;
 import org.mevenide.properties.IPropertyLocator;
 
 
 /**
- * changes tracker for textfields with an originchange instance attached.
+ * changes tracker for lists with an originchange instance attached.
  * @author  Milos Kleint (ca206216@tiscali.cz)
 df */
-public class TextComponentPOMChange implements MavenPOMChange {
+public class ListModelPOMChange implements MavenPOMTreeChange {
+    
     private String key;
-    private String value;
+    private List values;
     private int location;
-    private String newValue;
+    private List newValues;
     private int newLocation;
-    private JTextComponent field;
+    private DefaultListModel model;
     private OriginChange origin;
     private DocListener listener;
     
     private boolean ignore = false;
     
-    public TextComponentPOMChange(String keyParam, String oldValue, int oldLocation, 
-                                   JTextComponent textfield, OriginChange oc) {
+    public ListModelPOMChange(String keyParam, List oldValues, int oldLocation, 
+                              DefaultListModel lst, OriginChange oc) {
         key = keyParam;
-        value = oldValue != null ? oldValue : "";
+        values = oldValues;
         location = oldLocation;
-        newValue= value;
+        newValues = new ArrayList(values);
         newLocation = oldLocation;
-        field = textfield;
         origin = oc;
         origin.setSelectedLocationID(oldLocation);
-        field.setText(value);
+        model = lst;
+        Iterator it = newValues.iterator();
+        while (it.hasNext()) {
+            model.addElement(it.next());
+        }
         listener = new DocListener();
         origin.setChangeObserver(listener);
-        field.getDocument().addDocumentListener(listener);
+        model.addListDataListener(listener);
     }
     
     /**
@@ -66,7 +77,11 @@ public class TextComponentPOMChange implements MavenPOMChange {
      * assigns the textfield and loc combo with current values.
      */
     public void stopIgnoringChanges() {
-        field.setText(newValue);
+        model.removeAllElements();
+        Iterator it = newValues.iterator();
+        while (it.hasNext()) {
+            model.addElement(it.next());
+        }
         origin.setSelectedLocationID(newLocation);
         ignore = false;
     }
@@ -75,72 +90,65 @@ public class TextComponentPOMChange implements MavenPOMChange {
         return newLocation;
     }
     
-    public String getNewValue() {
-        return newValue;
-    }
-
     public int getOldLocation() {
         return location;
     }
 
-    public String getOldValue() {
-        return value;
-    }
-    
     public boolean hasChanged() {
-        return newLocation != location || !getOldValue().equals(getNewValue());
+        return newLocation != location || !values.equals(newValues);
     }
     
-    
-    public void setResolvedValue(String resvalue) {
+    public void setResolvedValues(List resvalues) {
         ignore = true;
-        field.setEditable(false);
         origin.getComponent().setEnabled(false);
-        field.setText(resvalue);
+        model.removeAllElements();
+        Iterator it = resvalues.iterator();
+        while (it.hasNext()) {
+            model.addElement(it.next());
+        }
         ignore = false;
     }
     
     public void resetToNonResolvedValue() {
         ignore = true;
-        field.setEditable(true);
         origin.getComponent().setEnabled(true);
-        field.setText(newValue);
+        model.removeAllElements();
+        Iterator it = newValues.iterator();
+        while (it.hasNext()) {
+            model.addElement(it.next());
+        }
         ignore = false;
     }
 
     public String getPath() {
         return key;
     }
+
+    public IContentProvider getChangedContent() {
+        return new ValueListContentProvider(newValues);
+    }
     
     
-  private class DocListener implements DocumentListener, OriginChange.ChangeObserver {
+  private class DocListener implements ListDataListener, OriginChange.ChangeObserver {
         private DocListener() {
         }
         private void update() {
             if (ignore) {
                 return;
             }
-            newValue = field.getText();
+            Enumeration en = model.elements();
+            newValues.clear();
+            while (en.hasMoreElements()) {
+                newValues.add(en.nextElement());
+            }
             if (origin.getSelectedLocationID() == IPropertyLocator.LOCATION_NOT_DEFINED ||
                 origin.getSelectedLocationID() == IPropertyLocator.LOCATION_DEFAULTS) {
-                // assume the default placement is build..
+                // assume the default placement is pom file..
                 // maybe have configurable or smartish later..
                 origin.setAction(OriginChange.ACTION_POM_MOVE_TO_CHILD);
             }
         }
         
-        public void changedUpdate(javax.swing.event.DocumentEvent e) {
-            update();
-        }
-
-        public void insertUpdate(javax.swing.event.DocumentEvent e) {
-            update();
-        }
-
-        public void removeUpdate(javax.swing.event.DocumentEvent e) {
-            update();
-        }
-
         public void actionSelected(String changeAction) {
             if (ignore) {
                 return;
@@ -149,12 +157,51 @@ public class TextComponentPOMChange implements MavenPOMChange {
             if (OriginChange.ACTION_REMOVE_ENTRY.equals(changeAction)) {
                 // assuming the correct default value is not-override..
                 ignore = true;
-                newValue = "";
-                field.setText(newValue);
+                newValues.clear();
+                model.removeAllElements();
                 ignore = false;
             }
         }
+
+      public void contentsChanged(ListDataEvent listDataEvent) {
+          update();
+      }
+
+      public void intervalAdded(ListDataEvent listDataEvent) {
+          update();
+      }
+
+      public void intervalRemoved(ListDataEvent listDataEvent) {
+          update();
+      }
         
     }    
     
+    protected static class ValueListContentProvider implements IContentProvider {
+        private List vals;
+        public ValueListContentProvider(List values) {
+            vals = values;
+        }
+        
+        public List getProperties() {
+            return Collections.EMPTY_LIST;
+        }
+
+        public IContentProvider getSubContentProvider(String key) {
+            return null;
+        }
+
+        public List getSubContentProviderList(String parentKey, String childKey) {
+            return null;
+        }
+
+        public String getValue(String key) {
+            return null;
+        }
+
+        public List getValueList(String parentKey, String childKey) {
+            return vals;
+        }
+        
+    }  
 }

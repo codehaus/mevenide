@@ -31,7 +31,6 @@ import org.mevenide.netbeans.project.customizer.ui.OriginChange;
 import org.mevenide.properties.IPropertyLocator;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
-import org.openide.filesystems.Repository;
 import org.openide.loaders.DataObject;
 import org.openide.util.Lookup;
 

@@ -17,7 +17,6 @@
 
 package org.mevenide.netbeans.project.nodes;
 
-import java.awt.Image;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;

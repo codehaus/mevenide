@@ -55,7 +55,7 @@ abstract class AbstractProjectClassPathImpl implements ClassPathImplementation {
             public void propertyChange(PropertyChangeEvent evt) {
                 List newValues = getPath();
                 if (hasChanged(resources, newValues)) {
-                    logger.warn("fire PROP_RSOURCES-" + AbstractProjectClassPathImpl.this.getClass());
+                    logger.debug("fire PROP_RSOURCES-" + AbstractProjectClassPathImpl.this.getClass());
                     List oldvalue = resources;
                     resources = newValues;
                     support.firePropertyChange(ClassPathImplementation.PROP_RESOURCES, oldvalue, resources);

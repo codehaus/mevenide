@@ -16,8 +16,6 @@
  */
 package org.mevenide.netbeans.project.output;
 
-import java.util.Arrays;
-
 /**
  * abstract implementation of OutputProcessor that has support to focus the processor on certain subsections of the output only.
  * @author  Milos Kleint (ca206216@tiscali.cz)

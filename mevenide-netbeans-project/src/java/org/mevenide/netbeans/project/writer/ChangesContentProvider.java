@@ -18,12 +18,10 @@
 package org.mevenide.netbeans.project.writer;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.jdom.Element;
 import org.mevenide.netbeans.project.customizer.MavenPOMChange;
 import org.mevenide.netbeans.project.customizer.MavenPOMTreeChange;
 import org.mevenide.project.io.IContentProvider;
@@ -96,6 +94,15 @@ public class ChangesContentProvider implements IContentProvider {
     }
  
     public List getValueList(String parentKey, String childKey) {
+        MavenPOMTreeChange change = findSubTreeChange(path + "." + parentKey);
+        if (change != null) {
+            if (change.getOldLocation() == location && change.getNewLocation() != location) {
+                return null;
+            }
+            if (change.getNewLocation() == location) {
+                return change.getChangedContent().getValueList(parentKey, childKey);
+            }
+        }
         return provider.getValueList(parentKey, childKey);
     }
 

@@ -41,12 +41,9 @@ import org.openide.util.Task;
 import org.openide.util.Utilities;
 import org.openide.windows.IOProvider;
 import org.openide.windows.InputOutput;
-import org.openide.windows.OutputListener;
 import org.openide.windows.OutputWriter;
 import org.openide.execution.NbProcessDescriptor;
-import org.mevenide.netbeans.project.output.JavaOutputListenerProvider;
-import org.mevenide.netbeans.project.output.TestOutputListenerProvider;
-import org.mevenide.netbeans.project.output.AnnouncementOutputListenerProvider;
+
 
 /**
  *

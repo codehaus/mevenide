@@ -19,18 +19,11 @@ package org.mevenide.netbeans.project.nodes;
 
 import java.io.File;
 import javax.swing.Action;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import org.mevenide.netbeans.project.ActionProviderImpl;
 import org.mevenide.netbeans.project.MavenProject;
-import org.netbeans.api.queries.VisibilityQuery;
 import org.netbeans.spi.project.ui.support.LogicalViews;
-import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
-import org.openide.loaders.ChangeableDataFilter;
-import org.openide.loaders.DataFolder;
 import org.openide.loaders.DataObject;
-import org.openide.nodes.Children;
 import org.openide.nodes.FilterNode;
 import org.openide.nodes.Node;
 import org.openide.util.Utilities;

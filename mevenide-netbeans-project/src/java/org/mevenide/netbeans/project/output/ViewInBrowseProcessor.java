@@ -20,7 +20,6 @@ package org.mevenide.netbeans.project.output;
 import java.io.File;
 import java.net.MalformedURLException;
 import javax.swing.AbstractAction;
-import javax.swing.Action;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openide.awt.HtmlBrowser;
