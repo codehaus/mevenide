@@ -14,7 +14,10 @@
  */
 package org.mevenide.core.util;
 
+import java.io.FileInputStream;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Properties;
 import java.util.TreeMap;
 
 
@@ -35,12 +38,19 @@ public class OptionsRegistry {
     private static Map options = new TreeMap();
     
     static {
-        options.put(new Character('D'), "Define a system property");
-        options.put(new Character('E'), "Produce logging information without adornments");
-        options.put(new Character('X'), "Produce execution debug output");
-        options.put(new Character('e'), "Produce exception stack traces");
-        options.put(new Character('o'), "Build is happening offline");
-        options.put(new Character('v'), "Display version information");
+        try {
+			Properties props = new Properties();
+			String src = OptionsRegistry.class.getResource("/mevenide.properties").getFile();
+			props.load(new FileInputStream(src));
+			Iterator keys = props.keySet().iterator();
+			while ( keys.hasNext() ) {
+			    String key = (String) keys.next();
+			    Character optionChar = new Character(key.charAt(key.length() - 1));
+			    options.put(optionChar, props.get(key));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+        }
     }
     
    /** 

@@ -48,8 +48,7 @@ public abstract class SynchronizerFactory  {
 		}
 		catch (Exception e) {
 			e.printStackTrace();
-			//@todo FUNCTIONAL add correct exception handling
-			return null;
+			throw new RuntimeException(e);
 		}
 	}
 }
