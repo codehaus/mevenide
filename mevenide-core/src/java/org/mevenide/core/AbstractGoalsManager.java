@@ -61,7 +61,7 @@ public abstract class AbstractGoalsManager implements IGoalsManager {
      * add the plugin:goal to the list of runnable goals
      * if goal is null just add plugin
      * 
-	 * @param category
+	 * @param plugin
 	 * @param goal 
 	 */
 	public void addGoal(String plugin, String goal) throws GoalNotFoundException {
@@ -72,13 +72,29 @@ public abstract class AbstractGoalsManager implements IGoalsManager {
 
     /**
 	 * remove plugin:goal from the list of runnable goals
-     * if goal is null just add plugin
-	 * @param category
-	 * @param goals   
+     * if goal is null, remove all goals declared by the plugin 
+     * 
+	 * @param plugin
+	 * @param goal  
 	 */
 	public void removeGoal(String plugin, String goal) {
-        String runnableGoal = goal == null ? plugin : plugin + ":" + goal;
-		runnableGoals.remove(runnableGoal);
+        if ( goal != null ) {
+            String runnableGoal = plugin + ":" + goal;
+            runnableGoals.remove(runnableGoal);
+        }
+        else {
+            Set goalsCopy = new TreeSet();
+            goalsCopy.addAll(runnableGoals);
+            Iterator iterator = goalsCopy.iterator();
+            while (iterator.hasNext()) {
+				String nextGoal = (String) iterator.next();
+				if ( nextGoal.startsWith(plugin) ) {
+                    runnableGoals.remove(nextGoal);
+				}
+			}
+        }
+         
+		
 	}
 	
     /**
@@ -149,6 +165,13 @@ public abstract class AbstractGoalsManager implements IGoalsManager {
         }
     }
     
+    /**
+     * @see org.mevenide.core.IGoalsManager#reset()
+     */
+    public void reset() {
+       runnableGoals.clear();
+    }
+    
 	/**
      * initialize runnableGoals from a previous saved state
      * it is the subclass responsability to determine the format of the saved state
@@ -172,4 +195,13 @@ public abstract class AbstractGoalsManager implements IGoalsManager {
      */
     protected abstract void initialize();
    
+
+
+	/**
+	 * for testing purpose
+	 */
+	Set getRunnableGoals() {
+		return runnableGoals;
+	}
+
 }

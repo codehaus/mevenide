@@ -61,4 +61,11 @@ public interface IGoalsManager {
 	 * @throws IOException
 	 */
 	public abstract void save() throws IOException;
+    
+    /**
+     * remove all previously selected goals
+     *
+     */
+    public abstract void reset() ;
+    
 }

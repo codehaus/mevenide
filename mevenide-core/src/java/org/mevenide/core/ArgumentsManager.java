@@ -55,7 +55,7 @@ public class ArgumentsManager {
 
 	/**
 	 * @pre Environment has been configured
-	 * @refactor EXTRACTME
+     *
 	 * @return String[] the args passed to the VM during the Maven execution
 	 */
 	public static String[] getVMArgs(AbstractRunner runner) {
