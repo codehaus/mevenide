@@ -4,11 +4,13 @@ import java.net.URL;
 import java.net.URLClassLoader;
 
 /**
- * <p>Title: </p>
- * <p>Description: </p>
- * <p>Copyright: Copyright (c) 2004 Jahia Ltd</p>
- * <p>Company: Jahia Ltd</p>
- * @author not attributable
+ * URL class loader that prefers our local classes to the ones in the parent
+ * class loaders, so that we may use more recent versions of the libraries.
+ *
+ * This implementation also allows us to still go to the system class loader
+ * for the JDK classes and certain JBuilder classes.
+ *
+ * @author Serge Huber
  * @version 1.0
  */
 
@@ -21,6 +23,7 @@ public class FilteringClassLoader extends URLClassLoader {
     public Class findClass(String name) throws ClassNotFoundException {
         // System.out.println("Finding class " + name);
         if (name.startsWith("java.") ||
+            name.startsWith("javax.swing.") ||
             name.startsWith("sun.") ||
             name.startsWith("com.borland.") ||
             name.startsWith("org.apache.xerces.") ||
