@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<document>
+  <properties>
+    <title>Changes</title>
+    <author email="rhill2@free.fr">Gilles Dodinet</author>
+  </properties>
+
+  <body>
+	
+    <release version="0.2.1" date="20040620" date="in CVS">
+   	  <action dev="gdodinet" type="fix" issue="MEVENIDE-11">
+        Pages correctly refreshed if they have already been opened (see also MEVENIDE-23)
+      </action>
+      <action dev="gdodinet" type="fix" issue="MEVENIDE-18">
+        Also fix issue causing two launch configurations to be created.
+      </action>
+      <action dev="gdodinet" type="fix" issue="MEVENIDE-20">
+        Refresh behaviour now implemented through the use of ILaunchesListener2. 
+      </action>
+      <action dev="gdodinet" type="fix" issue="MEVENIDE-24">
+		Now correctly use MAVEN_REPO Classpath Variable when synchronizing .classpath.
+      </action>
+      <action dev="gdodinet" type="fix" issue="MEVENIDE-26">
+        Now lookup reports registrar goal name instead of plugin directory name.
+      </action>
+      <action dev="gdodinet" type="fix" issue="MEVENIDE-28">
+        Tags now allowed within POMs, but still need to be protected with CDATA blocks.
+      </action>
+      <action dev="gdodinet" type="fix" issue="MEVENIDE-29">
+        Fix NPE when no launch configurations exist.
+      </action>
+      <action dev="gdodinet" type="add">
+        Maven Plugin Provider Infrastructure allows plugin providers to statically contribute to Mevenide preference pages.
+      </action>
+      <action dev="gdodinet" type="update">
+        preference pages reorg for better readibility.
+      </action>
+      <action dev="jens" type="add">
+        Add POM Template management through a preference pages.
+      </action>
+      <action dev="gdodinet" type="add">
+        Pom Creation Action can now use templates. 
+      </action>
+      <action dev="gdodinet" type="add">
+        Pom Creation Action now works on any IContainer.
+      </action>
+      <action dev="gdodinet" type="update">
+        Required location preferences can now be regenrate automatically.
+      </action>
+      <action dev="gdodinet" type="update">
+        Use JDomProjectUnmarshaller instead of DefaultProjectUnmarshaller to support entities. No entities writing yet.
+      </action>
+    </release>
+  </body>
+</document>
+
