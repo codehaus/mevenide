@@ -10,7 +10,7 @@
     			<a href="#Configure Mevenide">Configure Mevenide</a><br/>
     			<a href="#Mevenide Menu">Mevenide Menu</a><br/>
     			<a href="#Run Maven">Run Maven</a><br/>
-    			<a href="#Synchronize POM">Synchronize</a><br/>
+    			<a href="#Synchronize">Synchronize</a><br/>
 	    		<a href="#Maven Console">Maven Console</a>
     		</blockquote>
     	</section>
@@ -28,9 +28,11 @@
 				<br/><br/>
 				Last, you can can specify default goals which will be run when invoking the runner.
 				<br/><br/>
-				<img src="images/set-preferences.png"/><br/>
-				<br/><br/>
-				<font size="-1"><b>Screenshot 1</b>Mevenide Preferences Page</font>
+				<center>
+					<img src="images/set-preferences.png" border="1px"/>
+					<br/><br/>
+					<font size="-1"><b>Screenshot 1</b>Mevenide Preferences Page</font>
+				</center>
 			    <br/><br/>
 			</p>
         </section>
@@ -40,15 +42,17 @@
 			    Mevenide actions can be accessed through the 'Maven' menu in either 
 			    <code>project.xml</code> or Eclipse Project contextual menu.
 			    <br/><br/>
-				<img src="images/mevenide-menu.png"/>
-				<br/><br/>
-				<font size="-1"><b>Screenshot 3</b>Mevenide Menu</font>
-				<br/><br/>
+			    <center>
+					<img border="1px" src="images/mevenide-menu.png"/>
+					<br/><br/>
+					<font size="-1"><b>Screenshot 2</b>Mevenide Menu</font>
+					<br/><br/>
+				</center>
             </p>
         </section>
         <section name="Run Maven">
 			<p>
-				<b><font size="+1">Launch Wizard</font></b><br/><br/>
+				<br/><b><font size="+1">Launch Wizard</font></b><br/><br/>
 				Mevenide is now integrated into Eclipse External Tools.
 				<br/><br/>
 				When selecting '<code>Run Maven...</code>' from 'Maven' menu, a wizard appears that allows you
@@ -58,16 +62,20 @@
 				The Text widget at the bottom of the wizard page is writable and goals to run are to be passed in there for now. 
 				A goals grabbing mechanism is in progress and should be released soon. The table is used to pass System Properties to Maven.
 				<br/><br/>
-				<img src="images/run-maven.png"/><br/>
-				<br/><br/>
-				<font size="-1"><b>Screenshot 4</b>Run Maven Dialog</font>
-				<br/><br/>
-				<b><font size="+1">Launch Shortcut</font></b><br/><br/>
+				<center>
+					<img border="1px" src="images/run-maven.png"/>
+					<br/><br/>
+					<font size="-1"><b>Screenshot 3</b>Run Maven Dialog</font>
+					<br/><br/>
+				</center>
+				<b><br/><font size="+1">Launch Shortcut</font></b><br/><br/>
 				The "Run As> Maven Project" command silently invokes the default Maven goals specified in the preference page.
 				<br/><br/>
-				<img src="images/mevenide-quicklaunch.png"/>
-				<br/><br/>
-				<font size="-1"><b>Screenshot 5</b>QuickLaunch Button</font>
+				<center>
+					<img border="1px" src="images/mevenide-quicklaunch.png"/>
+					<br/><br/>
+					<font size="-1"><b>Screenshot 4</b>QuickLaunch Button</font>
+				</center>
             </p>
         </section>
         <section name="Synchronize">
@@ -77,31 +85,41 @@
 					<li>a TabFolder from which user should specify which artifact is to put back in to the POM</li>
 					<li>a simple composite allowing the user to specify the inheritance status of the POM</li>
 				</ul>
-				<b><font size="+1">SourceDirectory Synchronization</font></b><br/><br/>
+			</p>
+			<p>	
+				<br/><b><font size="+1">SourceDirectory Synchronization</font></b><br/><br/>
 				Since POM contains much more information than Eclipse .classpath, when synchronizing POM,
 				user have to provide additional informations. For every Eclipse SourceFolder, the type of Maven Source Directory has to be specified
 				through the SourceDirectory Mapping wizard page. Also user should declare if it is inherited or not. If the POM itself isnot 
 				inherited then the checkbox (third column) isnot enabled.
 				<br/><br/>
-				<img src="images/sourcedirectory-mapping.png"/>
-				<br/><br/>
-				<font size="-1"><b>Screenshot 6</b>Source Directory Mapping Wizard Page</font>
-				<br/><br/>
-				<b><font size="+1">Dependency Synchronization</font></b><br/><br/>
+				<center>
+					<img border="1px" src="images/sourcedirectory-mapping.png"/>
+					<br/><br/>
+					<font size="-1"><b>Screenshot 5</b>Source Directory Mapping Wizard Page</font>
+					<br/><br/>
+				</center>
+			</p>
+			<p>
+				<br/><b><font size="+1">Dependency Synchronization</font></b><br/><br/>
 				Mevenide provides an automatic Dependency resolving mechanism that can determine in a rather accurate way the groupId, artifactId and version of a given Dependency.
 				Tho it can fail, then the user can help it using the Dependency Mapping wizard page.
 				Also please note that if the library is not installed in the local repo, groupId will NOT be resolved, but will be assigned to <code>nonResolvedGroupId</code> and a key 
 				will be added to project.properties to make use of Maven jar overriding facility.
 				<br/><br/>
-				<img src="images/dependency-mapping.png"/>
-				<br/><br/>
-				<font size="-1"><b>Screenshot 7</b>Dependency Mapping Wizard Page</font>
+				<center>
+					<img border="1px" src="images/dependency-mapping.png"/>
+					<br/><br/>
+					<font size="-1"><b>Screenshot 6</b>Dependency Mapping Wizard Page</font>
+				</center>
 				<br/><br/>
 				Mevenide provides support for Dependency properties through the Dependency Property dialog that can be attained by pressing the 'Properties' button.
 				<br/><br/>
-				<img src="images/dependency-properties.png"/>
-				<br/><br/>
-				<font size="-1"><b>Screenshot 8</b>Dependency Properties Dialog</font>	
+				<center>
+					<img border="1px" src="images/dependency-properties.png"/>
+					<br/><br/>
+					<font size="-1"><b>Screenshot 7</b>Dependency Properties Dialog</font>	
+				</center>
 				<br/><br/>		
 				We use colors to help the user to manage inheritance. The legend should be self-explanatory.
 					<ul>
@@ -112,7 +130,7 @@
 					</ul>
             </p>
         	<p>
-        		<b><font size="+1">Eclipse Project Synchronization</font></b><br/><br/>
+        		<br/><b><font size="+1">Eclipse Project Synchronization</font></b><br/><br/>
         		Eclipse Project Synchronization relies on maven-eclipse-plugin for now, so there are some known limitations (see MAVEN-525).
         		<br/><br/>
         		However it is planned to provide really integrated support, that will use the JDT API.
@@ -122,9 +140,12 @@
         	<p>
         		Mevenide doesnot provide yet an integrated Maven Console, tho Maven Console can still be used thanks the Eclipse Debug Console.
         		<br/><br/>
-        		<img src="images/maven-console.png"/>
+        		<center>
+	        		<img border="1px" src="images/maven-console.png"/>
+    	    		<br/><br/>
+        			<font size="-1"><b>Screenshot 8</b>Running Maven Console</font>				
+        		</center>
         		<br/><br/>
-        		<font size="-1"><b>Screenshot 9</b>Running Maven Console</font>				
         	</p>
         </section>
    </body>
