@@ -19,11 +19,11 @@ package org.mevenide.project.dependency;
 
 import java.io.File;
 
-import org.apache.maven.project.Dependency;
+import org.apache.maven.model.Dependency;
 
 /**
  * 
- * @author Gilles Dodinet (gdodinet@wanadoo.fr)
+ * @author Gilles Dodinet (rhill2@free.fr)
  * @version $Id$
  * 
  */
@@ -62,15 +62,10 @@ public class DependencyFactory {
 		
 		Dependency dependency = new Dependency();
 		
-        if (groupId == null) {
-            dependency.setId(artifactId);
-        } else {
-    		dependency.setGroupId(groupId); 
-        	dependency.setArtifactId(artifactId);
-        }
-		dependency.setVersion(version);
-		//dependency.setArtifact(absoluteFileName);
-		dependency.setJar(new File(absoluteFileName).getName());
+    	dependency.setGroupId(groupId == null ? artifactId : groupId); 
+        dependency.setArtifactId(artifactId);
+        dependency.setVersion(version);
+		dependency.setArtifact(new File(absoluteFileName).getName());
 		dependency.setType(extension);
 		
 		return dependency;

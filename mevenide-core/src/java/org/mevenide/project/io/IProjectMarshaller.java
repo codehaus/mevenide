@@ -18,7 +18,7 @@ package org.mevenide.project.io;
 
 import java.io.Writer;
 
-import org.apache.maven.project.Project;
+import org.apache.maven.project.MavenProject;
 
 /**
  * 
@@ -27,6 +27,6 @@ import org.apache.maven.project.Project;
  * 
  */
 public interface IProjectMarshaller {
-	void marshall(Writer pom, Project project)
+	void marshall(Writer pom, MavenProject project)
 		throws Exception;
 }

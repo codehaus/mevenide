@@ -16,9 +16,9 @@
  */
 package org.mevenide.util;
 
-import org.apache.maven.project.Build;
-import org.apache.maven.project.Project;
-import org.apache.maven.project.Repository;
+import org.apache.maven.model.Build;
+import org.apache.maven.project.MavenProject;
+import org.apache.maven.model.Repository;
 
 import junit.framework.TestCase;
 
@@ -29,10 +29,10 @@ import junit.framework.TestCase;
  * 
  */
 public class MevenideUtilsTest extends TestCase {
-	private Project project ; 
+	private MavenProject project ; 
 	
     protected void setUp() throws Exception {
-        project = new Project();
+        project = new MavenProject();
         
         Build build = new Build(); 
         build.setSourceDirectory("mySourceDir");

@@ -31,6 +31,8 @@ import org.jdom.output.XMLOutputter;
  */
 public final class JDomUtils {
 	
+	public static final String INDENT_STRING = "    ";
+	
 	private JDomUtils() {
 	}
 
@@ -50,8 +52,7 @@ public final class JDomUtils {
 
 	public static XMLOutputter newXmlOutputter(boolean expandEmptyElements) {
 		XMLOutputter outputter = new XMLOutputter();
-		outputter.setIndentSize(4);
-		outputter.setIndent(true);
+		outputter.setIndent(INDENT_STRING);
 		outputter.setExpandEmptyElements(expandEmptyElements);
 		outputter.setNewlines(true);
 		return outputter;

@@ -21,7 +21,7 @@ import java.io.IOException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.maven.project.Dependency;
+import org.apache.maven.model.Dependency;
 import org.mevenide.environment.ConfigUtils;
 import org.mevenide.properties.KeyValuePair;
 import org.mevenide.properties.PropertyModel;

@@ -25,26 +25,27 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.maven.project.Build;
-import org.apache.maven.project.Dependency;
-import org.apache.maven.project.Project;
-import org.apache.maven.project.Resource;
+import org.apache.maven.model.Build;
+import org.apache.maven.model.Dependency;
+import org.apache.maven.model.Model;
+import org.apache.maven.model.Resource;
+import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
+import org.apache.maven.project.MavenProject;
 import org.mevenide.project.ProjectConstants;
-import org.mevenide.util.DefaultProjectUnmarshaller;
 import org.mevenide.util.StringUtils;
 
 
 /**
  * 
  *
- * @author Gilles Dodinet (gdodinet@wanadoo.fr)
+ * @author Gilles Dodinet (rhill2@free.fr)
  * @version $Id$
  * 
  */
 public class ProjectReader {
 	private static final Log log = LogFactory.getLog(ProjectReader.class);
 	
-	private DefaultProjectUnmarshaller unmarshaller ; 
+	private MavenXpp3Reader unmarshaller ; 
 	
 	private static ProjectReader projectReader = null;
 
@@ -60,20 +61,22 @@ public class ProjectReader {
 	}
 	
 	private ProjectReader() throws Exception {
-		unmarshaller = new DefaultProjectUnmarshaller();
+		unmarshaller = new MavenXpp3Reader();
 		jarOverrideReader = new JarOverrideReader();
 	}
 	
 	/**
-	 * return the instance of org.apache.maven.project.Project derivated from pom
+	 * return the instance of org.apache.maven.project.MavenProject derivated from pom
 	 * 
 	 */
-	public Project read(File pom) throws Exception {
+	public MavenProject read(File pom) throws Exception {
 		
 		Reader reader = null;
 		try {
 			reader = new FileReader(pom);
-			Project project = unmarshaller.parse(reader);
+			MavenProject project = new MavenProject();
+			Model model = unmarshaller.read(reader);
+			project.setModel(model);
 			project.setFile(pom);
 			
 			jarOverrideReader.processOverride(pom, project);
@@ -124,14 +127,6 @@ public class ProjectReader {
 			);
 		}
 		
-		String integrationUnitTestSourceDirectory = build.getIntegrationUnitTestSourceDirectory();
-		if ( !StringUtils.isNull(integrationUnitTestSourceDirectory) ) {
-			sourceDirectories.put(
-				ProjectConstants.MAVEN_INTEGRATION_TEST_DIRECTORY,
-				integrationUnitTestSourceDirectory
-			);	
-		}
-		
 		return sourceDirectories;
 	}
 
@@ -145,11 +140,11 @@ public class ProjectReader {
 	 * @throws IOException
 	 */
 	public Dependency extractDependency(File referencedPom) throws Exception {
-		Project referencedProject = read(referencedPom);
+		MavenProject referencedProject = read(referencedPom);
 		Dependency dependency = new Dependency();
-		dependency.setGroupId(referencedProject.getGroupId());
-		dependency.setArtifactId(referencedProject.getArtifactId());
-		dependency.setVersion(referencedProject.getCurrentVersion());
+		dependency.setGroupId(referencedProject.getModel().getGroupId());
+		dependency.setArtifactId(referencedProject.getModel().getArtifactId());
+		dependency.setVersion(referencedProject.getModel().getCurrentVersion());
 		//dependency.setArtifact(referencedPom.getParent());
 		//dependency.setJar(referencedPom.getParent());
 		return dependency;
@@ -167,17 +162,17 @@ public class ProjectReader {
 	 */
 	public Map readAllResources(File pom) throws Exception {
 		Map allResources = new HashMap();
-		Project project = read(pom);
-		if ( project.getBuild() != null ) {
-			List res = project.getBuild().getResources();
+		MavenProject project = read(pom);
+		if ( project.getModel().getBuild() != null ) {
+			List res = project.getModel().getBuild().getResources();
 			for (int i = 0; i < res.size(); i++) {
                 String directory = ((Resource) res.get(i)).getDirectory();
                 if ( !allResources.containsValue(directory) ) {
                 	allResources.put(ProjectConstants.MAVEN_RESOURCE, directory);
                 }
             }
-			if ( project.getBuild().getUnitTest() != null ) {
-				List utRes = project.getBuild().getUnitTest().getResources();
+			if ( project.getModel().getBuild().getUnitTest() != null ) {
+				List utRes = project.getModel().getBuild().getUnitTest().getResources();
 				for (int i = 0; i < utRes.size(); i++) {
 					String directory = ((Resource) utRes.get(i)).getDirectory();
 					if ( !allResources.containsValue(directory) ) {
@@ -190,15 +185,15 @@ public class ProjectReader {
 	}
 	
 	private Build getBuild(File pom) throws Exception {
-		Project project; 
+		Model model; 
 		if ( pom != null ) {
-			project = new DefaultProjectUnmarshaller().parse(new FileReader(pom));
+			model = unmarshaller.read(new FileReader(pom));
 		}		
 		else {
-			project = new Project();
+			model = new Model();
 		}
 		
-		Build build = project.getBuild();
+		Build build = model.getBuild();
 		return build;
 	}
 }

@@ -20,8 +20,8 @@ import java.io.File;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.maven.project.Dependency;
-import org.apache.maven.project.Project;
+import org.apache.maven.model.Dependency;
+import org.apache.maven.project.MavenProject;
 import org.mevenide.environment.LocationFinderAggregator;
 import org.mevenide.properties.KeyValuePair;
 import org.mevenide.properties.PropertyModel;
@@ -46,20 +46,22 @@ public class JarOverrideReader {
 		userPropertyModel = projectModelFactory.newPropertyModel(new File(System.getProperty("user.home"), "build.properties"));
 	}
 	
-	void processOverride(File pom, Project project) throws Exception {
-		boolean isJarOverrideOn = isJarOverrideOn(pom);
-		
-		log.debug("jar override " + (isJarOverrideOn ? " on " : " off"));
-		
-		if ( isJarOverrideOn ) {	
-			for (int i = 0; i < project.getDependencies().size(); i++) {
-				Dependency dependency = (Dependency) project.getDependencies().get(i);
-				String dependencyOverrideValue = getOverrideValue(pom, dependency);
-				
-				log.debug("overriding jar for dep : " + dependency.getId() + " : " + dependencyOverrideValue);
-				
-				if ( !StringUtils.isNull(dependencyOverrideValue) ) {
-					dependency.setJar(dependencyOverrideValue);
+	void processOverride(File pom, MavenProject project) throws Exception {
+		if ( new File(pom.getParent(), "project.properties").exists() ) {
+			boolean isJarOverrideOn = isJarOverrideOn(pom);
+			
+			log.debug("jar override " + (isJarOverrideOn ? " on " : " off"));
+			
+			if ( isJarOverrideOn ) {	
+				for (int i = 0; i < project.getDependencies().size(); i++) {
+					Dependency dependency = (Dependency) project.getDependencies().get(i);
+					String dependencyOverrideValue = getOverrideValue(pom, dependency);
+					
+					log.debug("overriding jar for dep : " + dependency.getId() + " : " + dependencyOverrideValue);
+					
+					if ( !StringUtils.isNull(dependencyOverrideValue) ) {
+						dependency.setArtifact(dependencyOverrideValue);
+					}
 				}
 			}
 		}

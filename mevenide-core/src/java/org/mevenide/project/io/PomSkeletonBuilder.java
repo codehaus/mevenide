@@ -26,9 +26,9 @@ import java.io.Writer;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
-import org.mevenide.util.DefaultProjectUnmarshaller;
-import org.apache.maven.project.Project;
-//import org.mevenide.util.DefaultProjectUnmarshaller;
+import org.apache.maven.model.Model;
+import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
+import org.apache.maven.project.MavenProject;
 
 /**
  * 
@@ -88,11 +88,12 @@ public final class PomSkeletonBuilder {
 	        is = PomSkeletonBuilder.class.getResourceAsStream(DEFAULT_TEMPLATE);
 	    }
 		Reader reader = new InputStreamReader(is);
-		Project project = new DefaultProjectUnmarshaller().parse(reader);
+		MavenProject project = new MavenProject();
+		Model model = new MavenXpp3Reader().read(reader);
+		project.setModel(model);
 		reader.close();
 		is.close();
 		
-		project.setId(projectName.toLowerCase());
 		project.setName(projectName);
 		project.setGroupId(projectName.toLowerCase());
 		project.setArtifactId(projectName.toLowerCase());

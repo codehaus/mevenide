@@ -16,12 +16,12 @@
  */
 package org.mevenide.project.resource;
 
-import org.apache.maven.project.Project;
-import org.apache.maven.project.Resource;
+import org.apache.maven.project.MavenProject;
+import org.apache.maven.model.Resource;
 
 /**
  * 
- * @author <a href="mailto:gdodinet@wanadoo.fr">Gilles Dodinet</a>
+ * @author <a href="mailto:rhill2@free.fr">Gilles Dodinet</a>
  * @version $Id$
  * 
  */
@@ -35,7 +35,7 @@ public interface IResourceResolver {
 	 * @return boolean
 	 */
 	void mergeSimilarResources(
-		Project project,
+		MavenProject project,
 		Resource resource);
 
 	/**
@@ -47,7 +47,7 @@ public interface IResourceResolver {
 	 * @return boolean
 	 */
 	void mergeSimilarUnitTestResources(
-		Project project,
+		MavenProject project,
 		Resource resource);
 	
 }

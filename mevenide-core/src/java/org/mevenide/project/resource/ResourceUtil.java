@@ -20,8 +20,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.maven.project.Project;
-import org.apache.maven.project.Resource;
+import org.apache.maven.project.MavenProject;
+import org.apache.maven.model.Resource;
 import org.mevenide.util.StringUtils;
 
 /**
@@ -52,18 +52,18 @@ public final class ResourceUtil {
 	 * scans project.build and project.build.unitTest for resources which directory matches the directory parameter
 	 * @return true if a resource denoted by the directory passed as parameter is found 
 	 */
-	public static boolean isResourcePresent(Project project, String directory) {
+	public static boolean isResourcePresent(MavenProject project, String directory) {
 	    //if directory is null return
 	    if ( directory == null ) {
 	        return false;
 	    }
 	    
-	    if ( project.getBuild() == null ) {
+	    if ( project.getModel().getBuild() == null ) {
 	        return false;
 	    }
 	    
 	    //scan build.resources
-	    List buildResources = project.getBuild().getResources();
+	    List buildResources = project.getModel().getBuild().getResources();
 	    for ( Iterator itr = buildResources.iterator(); itr.hasNext(); ) {
 	        Resource resource = (Resource) itr.next();
 	        if ( resource.getDirectory() != null && resource.getDirectory().equals(directory) ) {
@@ -71,12 +71,12 @@ public final class ResourceUtil {
 	        }
 	    }
 	    
-	    if ( project.getBuild().getUnitTest() == null ) {
+	    if ( project.getModel().getBuild().getUnitTest() == null ) {
 	        return false;
 	    }
 	    
 	    //scan build.unitTest.resources
-	    List unitTestResources = project.getBuild().getUnitTest().getResources();
+	    List unitTestResources = project.getModel().getBuild().getUnitTest().getResources();
 	    for ( Iterator itr = unitTestResources.iterator(); itr.hasNext(); ) {
 	        Resource resource = (Resource) itr.next();
 	        if ( resource.getDirectory() != null && resource.getDirectory().equals(directory) ) {

@@ -18,11 +18,12 @@ package org.mevenide.project;
 
 import java.util.EventObject;
 
-import org.apache.maven.project.Project;
+import org.apache.maven.project.MavenProject;
 
 /**
  * 
  * @author Jeffrey Bonevich 
+ * @author <a href="mailto:rhill2@free.fr">Gilles Dodinet</a>
  * @version $Id$
  * 
  */
@@ -39,8 +40,8 @@ public class ProjectChangeEvent extends EventObject {
         return attribute;
     }
 
-    public Project getPom() {
-        return (Project) getSource();
+    public MavenProject getPom() {
+        return (MavenProject) getSource();
     }
 
 }

@@ -23,24 +23,22 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.SortedSet;
-import java.util.TreeMap;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.maven.project.Branch;
-import org.apache.maven.project.Build;
-import org.apache.maven.project.Contributor;
-import org.apache.maven.project.Dependency;
-import org.apache.maven.project.Developer;
-import org.apache.maven.project.License;
-import org.apache.maven.project.MailingList;
-import org.apache.maven.project.Organization;
-import org.apache.maven.project.Project;
-import org.apache.maven.project.Repository;
-import org.apache.maven.project.Resource;
-import org.apache.maven.project.UnitTest;
-import org.apache.maven.project.Version;
+import org.apache.maven.model.Branch;
+import org.apache.maven.model.Build;
+import org.apache.maven.model.Contributor;
+import org.apache.maven.model.Dependency;
+import org.apache.maven.model.Developer;
+import org.apache.maven.model.License;
+import org.apache.maven.model.MailingList;
+import org.apache.maven.model.Organization;
+import org.apache.maven.model.Repository;
+import org.apache.maven.model.Resource;
+import org.apache.maven.model.UnitTest;
+import org.apache.maven.model.Version;
+import org.apache.maven.project.MavenProject;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.filter.Filter;
@@ -48,6 +46,7 @@ import org.jdom.input.DefaultJDOMFactory;
 import org.jdom.input.JDOMFactory;
 import org.jdom.input.SAXBuilder;
 import org.jdom.output.XMLOutputter;
+import org.mevenide.util.JDomUtils;
 
 /**
  * 
@@ -68,13 +67,13 @@ public class CarefulProjectMarshaller implements IProjectMarshaller {
         builder = new SAXBuilder();
         factory = new DefaultJDOMFactory();
         outputter = new XMLOutputter();
-        outputter.setIndentSize(4);
-        outputter.setIndent(true);
+        outputter.setIndent(JDomUtils.INDENT_STRING);
         outputter.setNewlines(true);
-//in beta10 only.        outputter.setFormat(Format.getPrettyFormat());
+        //in beta10 only        
+        //outputter.setFormat(Format.getPrettyFormat());
 	}
 
-    public void marshall(Writer pom, Project project) throws Exception
+    public void marshall(Writer pom, MavenProject project) throws Exception
     {
         log.debug("do Marshall()");
         Document originalDoc = factory.document(factory.element("project"));
@@ -84,7 +83,7 @@ public class CarefulProjectMarshaller implements IProjectMarshaller {
         saveDocument(pom, originalDoc);
     }
     
-    public void marshall(Writer pom, Project project, InputStream source) throws Exception
+    public void marshall(Writer pom, MavenProject project, InputStream source) throws Exception
     {
         log.debug("do Marshall2()");
         Document originalDoc = builder.build(source);
@@ -101,7 +100,7 @@ public class CarefulProjectMarshaller implements IProjectMarshaller {
         outputter.output(doc, pom);
     }
     
-    private void doUpdateDocument(Document document, Project project) throws Exception
+    private void doUpdateDocument(Document document, MavenProject project) throws Exception
     {
         Element root = document.getRootElement();
         if (!"project".equals(root.getName()))
@@ -109,39 +108,43 @@ public class CarefulProjectMarshaller implements IProjectMarshaller {
             throw new IOException("not a maven project xml");
         }
         Counter counter = new Counter();
-        findAndReplaceSimpleElement(counter, root, "extend", project.getExtend());
-        findAndReplaceSimpleElement(counter, root, "pomVersion", project.getPomVersion());
-//        findAndReplaceSimpleElement(counter, root, "id", project.getId());
+        findAndReplaceSimpleElement(counter, root, "extend", project.getModel().getExtend());
+        findAndReplaceSimpleElement(counter, root, "pomVersion", project.getModel().getPomVersion());
+        //findAndReplaceSimpleElement(counter, root, "id", project.getId());
+        
         //REQUIRED
-        findAndReplaceSimpleElement(counter, root, "name", project.getName());
-        findAndReplaceSimpleElement(counter, root, "artifactId", project.getArtifactId());
-        findAndReplaceSimpleElement(counter, root, "groupId", project.getGroupId());
+        findAndReplaceSimpleElement(counter, root, "name", project.getModel().getName());
+        findAndReplaceSimpleElement(counter, root, "artifactId", project.getModel().getArtifactId());
+        findAndReplaceSimpleElement(counter, root, "groupId", project.getModel().getGroupId());
+        
         //REQUIRED
-        findAndReplaceSimpleElement(counter, root, "currentVersion", project.getCurrentVersion());
-        doUpdateOrganization(counter, root, project.getOrganization());
-        findAndReplaceSimpleElement(counter, root, "inceptionYear", project.getInceptionYear());
-        findAndReplaceSimpleElement(counter, root, "package", project.getPackage());
-        findAndReplaceSimpleElement(counter, root, "logo", project.getLogo());
-        findAndReplaceSimpleElement(counter, root, "gumpRepositoryId", project.getGumpRepositoryId());
-        findAndReplaceSimpleElement(counter, root, "description", project.getDescription());
+        //findAndReplaceSimpleElement(counter, root, "currentVersion", project.getModel().getCurrentVersion());
+        findAndReplaceSimpleElement(counter, root, "currentVersion", project.getModel().getCurrentVersion());
+        doUpdateOrganization(counter, root, project.getModel().getOrganization());
+        findAndReplaceSimpleElement(counter, root, "inceptionYear", project.getModel().getInceptionYear());
+        findAndReplaceSimpleElement(counter, root, "package", project.getModel().getPackage());
+        findAndReplaceSimpleElement(counter, root, "logo", project.getModel().getLogo());
+        findAndReplaceSimpleElement(counter, root, "gumpRepositoryId", project.getModel().getGumpRepositoryId());
+        findAndReplaceSimpleElement(counter, root, "description", project.getModel().getDescription());
+        
         //REQUIRED
-        findAndReplaceSimpleElement(counter, root, "shortDescription", project.getShortDescription());
-        findAndReplaceSimpleElement(counter, root, "url", project.getUrl());
-        findAndReplaceSimpleElement(counter, root, "issueTrackingUrl", project.getIssueTrackingUrl());
-        findAndReplaceSimpleElement(counter, root, "siteAddress", project.getSiteAddress());
-        findAndReplaceSimpleElement(counter, root, "siteDirectory", project.getSiteDirectory());
-        findAndReplaceSimpleElement(counter, root, "distributionSite", project.getDistributionSite());
-        findAndReplaceSimpleElement(counter, root, "distributionDirectory", project.getDistributionDirectory());
-        doUpdateRepository(counter, root, project.getRepository());
-        doUpdateVersions(counter, root, project.getVersions());
-        doUpdateBranches(counter, root, project.getBranches());
-        doUpdateMailingLists(counter, root, project.getMailingLists());
-        doUpdateDevelopers(counter, root, project.getDevelopers());
-        doUpdateContributors(counter, root, project.getContributors());
-        doUpdateLicenses(counter, root, project.getLicenses());
-        doUpdateDependencies(counter, root, project.getDependencies());
-        doUpdateBuild(counter, root, project.getBuild());
-        doUpdateReports(counter, root, project.getReports());
+        findAndReplaceSimpleElement(counter, root, "shortDescription", project.getModel().getShortDescription());
+        findAndReplaceSimpleElement(counter, root, "url", project.getModel().getUrl());
+        findAndReplaceSimpleElement(counter, root, "issueTrackingUrl", project.getModel().getIssueTrackingUrl());
+        findAndReplaceSimpleElement(counter, root, "siteAddress", project.getModel().getSiteAddress());
+        findAndReplaceSimpleElement(counter, root, "siteDirectory", project.getModel().getSiteDirectory());
+        findAndReplaceSimpleElement(counter, root, "distributionSite", project.getModel().getDistributionSite());
+        findAndReplaceSimpleElement(counter, root, "distributionDirectory", project.getModel().getDistributionDirectory());
+        doUpdateRepository(counter, root, project.getModel().getRepository());
+        doUpdateVersions(counter, root, project.getModel().getVersions());
+        doUpdateBranches(counter, root, project.getModel().getBranches());
+        doUpdateMailingLists(counter, root, project.getModel().getMailingLists());
+        doUpdateDevelopers(counter, root, project.getModel().getDevelopers());
+        doUpdateContributors(counter, root, project.getModel().getContributors());
+        doUpdateLicenses(counter, root, project.getModel().getLicenses());
+        doUpdateDependencies(counter, root, project.getModel().getDependencies());
+        doUpdateBuild(counter, root, project.getModel().getBuild());
+        doUpdateReports(counter, root, project.getModel().getReports());
     }
     
 	private void doUpdateOrganization(Counter counter, Element root, Organization org) 
@@ -427,7 +430,7 @@ public class CarefulProjectMarshaller implements IProjectMarshaller {
         findAndReplaceSimpleElement(count, conElement, "timezone", contributor.getTimezone());
     }
 
-    private void doUpdateRoles(Counter counter, Element root, SortedSet roles) 
+    private void doUpdateRoles(Counter counter, Element root, List roles) 
             throws Exception 
     {
         boolean shouldExist = roles != null && roles.size() > 0;
@@ -544,32 +547,11 @@ public class CarefulProjectMarshaller implements IProjectMarshaller {
         findAndReplaceSimpleElement(count, depElement, "artifactId", dependency.getArtifactId());
         findAndReplaceSimpleElement(count, depElement, "groupId", dependency.getGroupId());
         findAndReplaceSimpleElement(count, depElement, "version", dependency.getVersion());
-        findAndReplaceSimpleElement(count, depElement, "jar", dependency.getJar());
+        findAndReplaceSimpleElement(count, depElement, "jar", dependency.getArtifact());
         findAndReplaceSimpleElement(count, depElement, "type", dependency.getType());
         findAndReplaceSimpleElement(count, depElement, "url", dependency.getUrl());
-        doUpdateProperties(count, depElement, myResolveProperties(dependency.getProperties()));
+        doUpdateProperties(count, depElement, dependency.getProperties());
     }    
-    
-    private Map myResolveProperties(List propList)
-    {
-        Map toReturn = new TreeMap();
-        if (propList != null) 
-        {
-            Iterator it = propList.iterator();
-            while (it.hasNext())
-            {
-                String prop = (String)it.next();
-                int index = prop.indexOf(':');
-                if (index > 0)
-                {
-                    toReturn.put(prop.substring(0, index - 1), prop.substring(index + 1));
-                } else {
-                    toReturn.put(prop, null);
-                }
-            }
-        }
-        return toReturn;
-    }
     
     private void doUpdateProperties(Counter counter, Element parent, Map props)
     {
@@ -623,7 +605,6 @@ public class CarefulProjectMarshaller implements IProjectMarshaller {
     		findAndReplaceSimpleElement(innerCount, buildElem, "sourceDirectory", build.getSourceDirectory());
             //doUpdateSourceModifications(innerCount, buildElem, build.getSourceModifications());
     		findAndReplaceSimpleElement(innerCount, buildElem, "unitTestSourceDirectory", build.getUnitTestSourceDirectory());
-    		findAndReplaceSimpleElement(innerCount, buildElem, "integrationUnitTestSourceDirectory", build.getIntegrationUnitTestSourceDirectory());
     		findAndReplaceSimpleElement(innerCount, buildElem, "aspectSourceDirectory", build.getAspectSourceDirectory());
             doUpdateUnitTest(innerCount, buildElem, build.getUnitTest());
             doUpdateResources(innerCount, buildElem, build.getResources());

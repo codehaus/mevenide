@@ -24,11 +24,11 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.maven.project.Build;
-import org.apache.maven.project.Dependency;
-import org.apache.maven.project.Project;
-import org.apache.maven.project.Resource;
-import org.apache.maven.project.UnitTest;
+import org.apache.maven.model.Build;
+import org.apache.maven.model.Dependency;
+import org.apache.maven.model.Resource;
+import org.apache.maven.model.UnitTest;
+import org.apache.maven.project.MavenProject;
 import org.mevenide.project.dependency.DependencyUtil;
 import org.mevenide.project.resource.DefaultResourceResolver;
 import org.mevenide.project.resource.IResourceResolver;
@@ -46,7 +46,7 @@ import org.mevenide.project.source.SourceDirectoryUtil;
  * 
  * @todo transaction-awareness 
  * 
- * @author Gilles Dodinet (gdodinet@wanadoo.fr)
+ * @author Gilles Dodinet (rhill2@free.fr)
  * @version $Id$
  * 
  */
@@ -82,23 +82,23 @@ public class ProjectWriter {
 	 * @param pom
 	 */
 	public void addResource(String path, File pom) throws Exception {
-		Project project = projectReader.read(pom);
+		MavenProject project = projectReader.read(pom);
 		Resource resource = ResourceUtil.newResource(path);
-		if ( project.getBuild() == null ) {
-			project.setBuild(new Build());
+		if ( project.getModel().getBuild() == null ) {
+			project.getModel().setBuild(new Build());
 		}
 		resourceResolver.mergeSimilarResources(project, resource);
 		write(project, pom);	
 	}
 	
 	public void addUnitTestResource(String path, File pom) throws Exception {
-		Project project = projectReader.read(pom);
+		MavenProject project = projectReader.read(pom);
 		Resource resource = ResourceUtil.newResource(path);
-		if ( project.getBuild() == null ) {
-			project.setBuild(new Build());
+		if ( project.getModel().getBuild() == null ) {
+			project.getModel().setBuild(new Build());
 		}
-		if ( project.getBuild().getUnitTest() == null ) {
-			project.getBuild().setUnitTest(new UnitTest());
+		if ( project.getModel().getBuild().getUnitTest() == null ) {
+			project.getModel().getBuild().setUnitTest(new UnitTest());
 		}
 		resourceResolver.mergeSimilarUnitTestResources(project, resource);
 		write(project, pom);	
@@ -116,7 +116,7 @@ public class ProjectWriter {
 	 */
 	public void addSource(String path, File pom, String sourceType) throws Exception {
 		
-		Project project = projectReader.read(pom);
+		MavenProject project = projectReader.read(pom);
 		
 		if ( !SourceDirectoryUtil.isSourceDirectoryPresent(project, path)) {
 			
@@ -132,7 +132,7 @@ public class ProjectWriter {
 	}
 	
 	public void setDependencies(List dependencies, File pom, boolean shouldWriteProperties) throws Exception {
-		Project project = projectReader.read(pom);
+		MavenProject project = projectReader.read(pom);
 		List nonResolvedDependencies = DependencyUtil.getNonResolvedDependencies(dependencies);
 		
 		log.debug("writing " + dependencies.size() + " resolved dependencies, " + nonResolvedDependencies.size() + " non resolved ones");
@@ -165,7 +165,7 @@ public class ProjectWriter {
 		}
 	}
 
-	void write(Project project, File pom) throws Exception {
+	void write(MavenProject project, File pom) throws Exception {
 		Writer writer = new FileWriter(pom, false);
 		marshaller.marshall(writer, project);
 		writer.close();
@@ -184,28 +184,28 @@ public class ProjectWriter {
 		
 		Dependency dependency = reader.extractDependency(referencedPom);
 		
-		Project project = reader.read(pom);
-		project.addDependency(dependency);
-		
+		MavenProject project = reader.read(pom);
+		if ( !DependencyUtil.isDependencyPresent(project, dependency) ) {
+			project.getModel().addDependency(dependency);
+		}
 		write(project, pom);
 	}
 
 	public void resetSourceDirectories(File pomFile) throws Exception {
 					
 		ProjectReader reader = ProjectReader.getReader();
-		Project project = reader.read(pomFile);
-		if ( project.getBuild() != null ) {
-			project.getBuild().setAspectSourceDirectory(null);
-			project.getBuild().setIntegrationUnitTestSourceDirectory(null);
+		MavenProject project = reader.read(pomFile);
+		if ( project.getModel().getBuild() != null ) {
+			project.getModel().getBuild().setAspectSourceDirectory(null);
 			
-			project.getBuild().setUnitTestSourceDirectory(null);
-			project.getBuild().setUnitTest(null);
+			project.getModel().getBuild().setUnitTestSourceDirectory(null);
+			project.getModel().getBuild().setUnitTest(null);
 			
-			project.getBuild().setSourceDirectory(null);
+			project.getModel().getBuild().setSourceDirectory(null);
 			
 			project.getBuild().setResources(new ArrayList());
 //			if ( project.getBuild().getUnitTest() != null ) {
-//				project.getBuild().getUnitTest().setResources(new ArrayList());
+//				project.getModel().getBuild().getUnitTest().setResources(new ArrayList());
 //			}
 			
 			IProjectMarshaller iProjectMarshaller = new DefaultProjectMarshaller();
@@ -217,18 +217,18 @@ public class ProjectWriter {
 	public void updateExtend(File pomFile, boolean isInherited, String parentPom) throws Exception {
 		log.debug("isInherited = " + (isInherited) + " ; parentPom = " + parentPom);
 		ProjectReader reader = ProjectReader.getReader();
-		Project project = reader.read(pomFile);
+		MavenProject project = reader.read(pomFile);
 		if ( !isInherited ) {
-			project.setExtend(null);
+			project.getModel().setExtend(null);
 		}
 		else {
-			project.setExtend(parentPom);
+			project.getModel().setExtend(parentPom);
 		}
 		IProjectMarshaller iProjectMarshaller = new DefaultProjectMarshaller();
 		iProjectMarshaller.marshall(new FileWriter(pomFile), project);
 	}
 	
-	public void write(Project project) throws Exception {
+	public void write(MavenProject project) throws Exception {
 		if ( project.getFile() != null ) {
 			Writer writer = new FileWriter(project.getFile());
 			

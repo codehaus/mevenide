@@ -17,33 +17,34 @@
 package org.mevenide.project;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Hashtable;
 import java.util.Iterator;
-import java.util.SortedSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.Vector;
-
-import org.apache.maven.project.Branch;
-import org.apache.maven.project.Build;
-import org.apache.maven.project.Contributor;
-import org.apache.maven.project.Dependency;
-import org.apache.maven.project.Developer;
-import org.apache.maven.project.License;
-import org.apache.maven.project.MailingList;
-import org.apache.maven.project.Organization;
-import org.apache.maven.project.Project;
-import org.apache.maven.project.Repository;
-import org.apache.maven.project.Resource;
-import org.apache.maven.project.UnitTest;
-import org.apache.maven.project.Version;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.maven.model.Branch;
+import org.apache.maven.model.Build;
+import org.apache.maven.model.Contributor;
+import org.apache.maven.model.Dependency;
+import org.apache.maven.model.Developer;
+import org.apache.maven.model.License;
+import org.apache.maven.model.MailingList;
+import org.apache.maven.model.Organization;
+import org.apache.maven.model.Repository;
+import org.apache.maven.model.Resource;
+import org.apache.maven.model.UnitTest;
+import org.apache.maven.model.Version;
+import org.apache.maven.project.MavenProject;
 import org.mevenide.util.MevenideUtils;
 
 /**
  * 
  * @author Jeffrey Bonevich 
+ * @author <a href="mailto:rhill2@free.fr">Gilles Dodinet</a>
  * @version $Id$
  * 
  */
@@ -66,9 +67,9 @@ public class ProjectComparator {
     public static final String RESOURCES = "RESOURCES";
     public static final String REPORTS = "REPORTS";
     
-	public static final Project NULL_PROJECT = new Project();
+	public static final MavenProject NULL_PROJECT = new MavenProject();
 
-    private Project originalProject;
+    private MavenProject originalProject;
     private Hashtable subModelListenerTable = new Hashtable();
     private Vector generalListeners = new Vector(5);
     private volatile boolean projectChanged = false;
@@ -76,7 +77,7 @@ public class ProjectComparator {
     class ShortCircuitException extends Exception {
     }
 
-    protected ProjectComparator(Project project) {
+    protected ProjectComparator(MavenProject project) {
         this.originalProject = project;
     }
 
@@ -103,7 +104,7 @@ public class ProjectComparator {
         }
     }
 
-    private void fireProjectChangeEvent(Project newProject, String subModel) {
+    private void fireProjectChangeEvent(MavenProject newProject, String subModel) {
     	if (log.isDebugEnabled()) {
     		log.debug("Firing ProjectChangeEvent with change in " + subModel);
     	}
@@ -162,7 +163,13 @@ public class ProjectComparator {
         }
     }
 
-    public void compare(Project newProject) {
+    private void detectMapChange(Map newValue, Map oldValue) throws ShortCircuitException {
+    	if ( oldValue.size() != newValue.size() ) {
+    		throw new ShortCircuitException();
+    	}
+    }
+    
+    public void compare(MavenProject newProject) {
         if (log.isDebugEnabled()) {
             log.debug("Computing project difference...");
         }
@@ -196,7 +203,7 @@ public class ProjectComparator {
         }
     }
 
-    private void updateProject(Project newProject)
+    private void updateProject(MavenProject newProject)
 	{
     	if (projectChanged) {
     		if (log.isDebugEnabled()) {
@@ -208,35 +215,36 @@ public class ProjectComparator {
     	}
 	}
 
-	private void compareProject(Project newProject) {
+	private void compareProject(MavenProject newProject) {
         try {
-            detectAttributeChange(newProject.getName(), originalProject.getName());
-            detectAttributeChange(newProject.getArtifactId(), originalProject.getArtifactId());
-            detectAttributeChange(newProject.getGroupId(), originalProject.getGroupId());
-            detectAttributeChange(newProject.getGumpRepositoryId(), originalProject.getGumpRepositoryId());
-            detectAttributeChange(newProject.getExtend(), originalProject.getExtend());
-            detectAttributeChange(newProject.getPomVersion(), originalProject.getPomVersion());
-            detectAttributeChange(newProject.getCurrentVersion(), originalProject.getCurrentVersion());
-            detectAttributeChange(newProject.getLogo(), originalProject.getLogo());
-            detectAttributeChange(newProject.getInceptionYear(), originalProject.getInceptionYear());
-            detectAttributeChange(newProject.getUrl(), originalProject.getUrl());
-            detectAttributeChange(newProject.getPackage(), originalProject.getPackage());
-            detectAttributeChange(newProject.getShortDescription(), originalProject.getShortDescription());
-            detectAttributeChange(newProject.getDescription(), originalProject.getDescription());
-            detectAttributeChange(newProject.getDistributionDirectory(), originalProject.getDistributionDirectory());
-            detectAttributeChange(newProject.getDistributionSite(), originalProject.getDistributionSite());
-            detectAttributeChange(newProject.getIssueTrackingUrl(), originalProject.getIssueTrackingUrl());
-            detectAttributeChange(newProject.getSiteAddress(), originalProject.getSiteAddress());
-            detectAttributeChange(newProject.getSiteDirectory(), originalProject.getSiteDirectory());
+            detectAttributeChange(newProject.getModel().getName(), originalProject.getModel().getName());
+            detectAttributeChange(newProject.getModel().getArtifactId(), originalProject.getModel().getArtifactId());
+            detectAttributeChange(newProject.getModel().getGroupId(), originalProject.getModel().getGroupId());
+            detectAttributeChange(newProject.getModel().getGumpRepositoryId(), originalProject.getModel().getGumpRepositoryId());
+            detectAttributeChange(newProject.getModel().getExtend(), originalProject.getModel().getExtend());
+            detectAttributeChange(newProject.getModel().getPomVersion(), originalProject.getModel().getPomVersion());
+            detectAttributeChange(newProject.getModel().getCurrentVersion(), originalProject.getModel().getCurrentVersion());
+            detectAttributeChange(newProject.getModel().getCurrentVersion(), originalProject.getModel().getCurrentVersion());
+            detectAttributeChange(newProject.getModel().getLogo(), originalProject.getModel().getLogo());
+            detectAttributeChange(newProject.getModel().getInceptionYear(), originalProject.getModel().getInceptionYear());
+            detectAttributeChange(newProject.getModel().getUrl(), originalProject.getModel().getUrl());
+            detectAttributeChange(newProject.getModel().getPackage(), originalProject.getModel().getPackage());
+            detectAttributeChange(newProject.getModel().getShortDescription(), originalProject.getModel().getShortDescription());
+            detectAttributeChange(newProject.getModel().getDescription(), originalProject.getModel().getDescription());
+            detectAttributeChange(newProject.getModel().getDistributionDirectory(), originalProject.getModel().getDistributionDirectory());
+            detectAttributeChange(newProject.getModel().getDistributionSite(), originalProject.getModel().getDistributionSite());
+            detectAttributeChange(newProject.getModel().getIssueTrackingUrl(), originalProject.getModel().getIssueTrackingUrl());
+            detectAttributeChange(newProject.getModel().getSiteAddress(), originalProject.getModel().getSiteAddress());
+            detectAttributeChange(newProject.getModel().getSiteDirectory(), originalProject.getModel().getSiteDirectory());
         }
         catch (ShortCircuitException e) {
             fireProjectChangeEvent(newProject, PROJECT);
         }
     }
 
-    private void compareOrganization(Project newProject) {
-        Organization newOrg = newProject.getOrganization();
-        Organization originalOrg = originalProject.getOrganization();
+    private void compareOrganization(MavenProject newProject) {
+        Organization newOrg = newProject.getModel().getOrganization();
+        Organization originalOrg = originalProject.getModel().getOrganization();
         if (comparable(newOrg, originalOrg)) {
             try {
                 detectObjectChange(newOrg, originalOrg);
@@ -250,13 +258,12 @@ public class ProjectComparator {
         }
     }
 
-    private void compareRepository(Project newProject) {
-        Repository newRepo = newProject.getRepository();
-        Repository originalRepo = originalProject.getRepository();
+    private void compareRepository(MavenProject newProject) {
+        Repository newRepo = newProject.getModel().getRepository();
+        Repository originalRepo = originalProject.getModel().getRepository();
         if (comparable(newRepo, originalRepo)) {
             try {
 				detectObjectChange(newRepo, originalRepo);
-                detectAttributeChange(newRepo.getName(), originalRepo.getName());
                 detectAttributeChange(newRepo.getConnection(), originalRepo.getConnection());
                 detectAttributeChange(newRepo.getConnection(), originalRepo.getConnection());
                 detectAttributeChange(newRepo.getUrl(), originalRepo.getUrl());
@@ -267,16 +274,15 @@ public class ProjectComparator {
         }
     }
 
-    private void compareBranches(Project newProject) {
-        List newBranches = newProject.getBranches();
-        List origBranches = originalProject.getBranches();
+    private void compareBranches(MavenProject newProject) {
+        List newBranches = newProject.getModel().getBranches();
+        List origBranches = originalProject.getModel().getBranches();
         try {
             detectCollectionChange(newBranches, origBranches);
             // just assume order is significant
             for (int i = 0; i < origBranches.size(); i++) {
                 Branch newBranch = (Branch) newBranches.get(i);
                 Branch origBranch = (Branch) origBranches.get(i);
-                detectAttributeChange(newBranch.getName(), origBranch.getName());
                 detectAttributeChange(newBranch.getTag(), origBranch.getTag());
             }
         }
@@ -285,9 +291,9 @@ public class ProjectComparator {
         }
     }
 
-    private void compareVersions(Project newProject) {
-        List newVersions = newProject.getVersions();
-        List origVersions = originalProject.getVersions();
+    private void compareVersions(MavenProject newProject) {
+        List newVersions = newProject.getModel().getVersions();
+        List origVersions = originalProject.getModel().getVersions();
         if (comparable(newVersions, origVersions)) {
 	        try {
 	            detectCollectionChange(newVersions, origVersions);
@@ -306,9 +312,9 @@ public class ProjectComparator {
         }
     }
 
-    private void compareMailingLists(Project newProject) {
-        List newMailingLists = newProject.getMailingLists();
-        List origMailingLists = originalProject.getMailingLists();
+    private void compareMailingLists(MavenProject newProject) {
+        List newMailingLists = newProject.getModel().getMailingLists();
+        List origMailingLists = originalProject.getModel().getMailingLists();
         if ( comparable(newMailingLists, origMailingLists) ) {
 	        try {
 	            detectCollectionChange(newMailingLists, origMailingLists);
@@ -328,9 +334,9 @@ public class ProjectComparator {
         }
     }
 
-    private void compareContributors(Project newProject) {
-        List newContributors = newProject.getContributors();
-        List origContributors = originalProject.getContributors();
+    private void compareContributors(MavenProject newProject) {
+        List newContributors = newProject.getModel().getContributors();
+        List origContributors = originalProject.getModel().getContributors();
         if ( comparable(newContributors, origContributors) ) {
 	        try {
 	        	detectCollectionChange(newContributors, origContributors);
@@ -354,8 +360,8 @@ public class ProjectComparator {
             detectAttributeChange(newContributor.getTimezone(), origContributor.getTimezone());
             detectAttributeChange(newContributor.getUrl(), origContributor.getUrl());
 
-            SortedSet origRoles = origContributor.getRoles();
-            SortedSet newRoles = newContributor.getRoles();
+            List origRoles = origContributor.getRoles();
+            List newRoles = newContributor.getRoles();
             detectCollectionChange(newRoles, origRoles);
             Iterator itrOrig = origRoles.iterator();
             Iterator itrNew = newRoles.iterator();
@@ -364,9 +370,9 @@ public class ProjectComparator {
             }
     }
 
-    private void compareDevelopers(Project newProject) {
-        List newDevelopers = newProject.getDevelopers();
-        List origDevelopers = originalProject.getDevelopers();
+    private void compareDevelopers(MavenProject newProject) {
+        List newDevelopers = newProject.getModel().getDevelopers();
+        List origDevelopers = originalProject.getModel().getDevelopers();
         if ( comparable(newDevelopers, origDevelopers ) ) {
 	        try {
 	            detectCollectionChange(newDevelopers, origDevelopers);
@@ -384,9 +390,9 @@ public class ProjectComparator {
         }
     }
 
-    private void compareLicenses(Project newProject) {
-        List origLicenses = originalProject.getLicenses();
-        List newLicenses = newProject.getLicenses();
+    private void compareLicenses(MavenProject newProject) {
+        List origLicenses = originalProject.getModel().getLicenses();
+        List newLicenses = newProject.getModel().getLicenses();
         if ( comparable(newLicenses, origLicenses) ) {
 	        try {
 	            detectCollectionChange(newLicenses, origLicenses);
@@ -406,9 +412,9 @@ public class ProjectComparator {
         }
     }
 
-    private void compareDependencies(Project newProject) {
-        List newDependencies = newProject.getDependencies();
-        List origDependencies = originalProject.getDependencies();
+    private void compareDependencies(MavenProject newProject) {
+        List newDependencies = newProject.getModel().getDependencies();
+        List origDependencies = originalProject.getModel().getDependencies();
         if ( comparable(newDependencies, origDependencies) ) {
 	        try {
 	            detectCollectionChange(newDependencies, origDependencies);
@@ -417,10 +423,9 @@ public class ProjectComparator {
 	                Dependency newDependency = (Dependency) newDependencies.get(i);
 	                Dependency origDependency = (Dependency) origDependencies.get(i);
 	                detectAttributeChange(newDependency.getId(), origDependency.getId());
-	                detectAttributeChange(newDependency.getName(), origDependency.getName());
 	                detectAttributeChange(newDependency.getArtifactId(), origDependency.getArtifactId());
 	                detectAttributeChange(newDependency.getGroupId(), origDependency.getGroupId());
-	                detectAttributeChange(newDependency.getJar(), origDependency.getJar());
+	                detectAttributeChange(newDependency.getArtifact(), origDependency.getArtifact());
 	                detectAttributeChange(newDependency.getType(), origDependency.getType());
 	                detectAttributeChange(newDependency.getUrl(), origDependency.getUrl());
 	                detectAttributeChange(newDependency.getVersion(), origDependency.getVersion());
@@ -432,18 +437,15 @@ public class ProjectComparator {
         }
     }
 
-    private void compareBuild(Project newProject) {
-        Build newBuild = newProject.getBuild();
-        Build originalBuild = originalProject.getBuild();
+    private void compareBuild(MavenProject newProject) {
+        Build newBuild = newProject.getModel().getBuild();
+        Build originalBuild = originalProject.getModel().getBuild();
         if (comparable(newBuild, originalBuild)) {
 	        try {
 	        	detectObjectChange(newBuild, originalBuild);
 	            detectAttributeChange(newBuild.getSourceDirectory(), originalBuild.getSourceDirectory());
 	            detectAttributeChange(newBuild.getUnitTestSourceDirectory(), originalBuild.getUnitTestSourceDirectory());
 	            detectAttributeChange(newBuild.getAspectSourceDirectory(), originalBuild.getAspectSourceDirectory());
-	            detectAttributeChange(
-	                newBuild.getIntegrationUnitTestSourceDirectory(),
-	                originalBuild.getIntegrationUnitTestSourceDirectory());
 	            detectAttributeChange(newBuild.getNagEmailAddress(), originalBuild.getNagEmailAddress());
 	            compareUnitTest(newBuild, originalBuild, newProject);
 	            compareResources(newBuild.getResources(), originalBuild.getResources());
@@ -454,15 +456,13 @@ public class ProjectComparator {
         }
     }
 
-    private void compareUnitTest(Build newBuild, Build origBuild, Project newProject) {
+    private void compareUnitTest(Build newBuild, Build origBuild, MavenProject newProject) {
 		try {
 	        UnitTest origUnitTest = origBuild.getUnitTest();
 	        UnitTest newUnitTest = newBuild.getUnitTest();
 	        if ( comparable(newUnitTest, origUnitTest) ) {
 		        detectObjectChange(newUnitTest, origUnitTest);
-//mkleint - in rc2 Unittest doens't extend Resource anymore, but just baseObject, what to do?
-//                compareResource(newUnitTest, origUnitTest);
-		        compareResources(newUnitTest.getResources(), origUnitTest.getResources());
+  	            compareResources(newUnitTest.getResources(), origUnitTest.getResources());
 	        }
 		}
 		catch (ShortCircuitException e) {
@@ -502,9 +502,9 @@ public class ProjectComparator {
     	}
     }
 
-    private void compareReports(Project newProject) {
-        List newReports = newProject.getReports();
-        List origReports = originalProject.getReports();
+    private void compareReports(MavenProject newProject) {
+        List newReports = newProject.getModel().getReports();
+        List origReports = originalProject.getModel().getReports();
         if ( comparable(newReports, origReports) ) {
 	        try {
 	            detectCollectionChange(newReports, origReports);
@@ -521,19 +521,21 @@ public class ProjectComparator {
         }
     }
 
-    private void compareProperties(List newProps, List origProps) throws ShortCircuitException {
+    private void compareProperties(Map newProps, Map origProps) throws ShortCircuitException {
     	if ( comparable(newProps, origProps) ) {
-	        detectCollectionChange(newProps, origProps);
-	        // just assume order is significant
-	        // FIXME: ?? properties in BaseObject are stored as 'name:value',
-	        // so we could parse the retrieved props apart and compare property
-	        // for property.  Kinda silly that Maven does not provide a
-	        // getPropertyNames() method
-	        for (int i = 0; i < origProps.size(); i++) {
-	            String origProp = (String) origProps.get(i);
-	            String newProp = (String) newProps.get(i);
-	            detectAttributeChange(newProp, origProp);
+	        detectMapChange(newProps, origProps);
+	        Set origKeySet = origProps.keySet();
+	        Iterator origkeyIterator = origKeySet.iterator();
+	        while ( origkeyIterator.hasNext() ) {
+	        	Object nextOrigKey = origkeyIterator.next();
+	        	if ( newProps.containsKey(nextOrigKey) ) {
+	        		detectObjectChange(origProps.get(nextOrigKey), newProps.get(nextOrigKey));
+	        	}
+	        	else {
+	        	    throw new ShortCircuitException();
+	        	}
 	        }
+	        
     	}
     }
 

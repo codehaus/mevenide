@@ -20,7 +20,7 @@ import java.io.File;
 
 import junit.framework.TestCase;
 
-import org.apache.maven.project.Dependency;
+import org.apache.maven.model.Dependency;
 import org.mevenide.environment.ConfigUtils;
 
 /**  
