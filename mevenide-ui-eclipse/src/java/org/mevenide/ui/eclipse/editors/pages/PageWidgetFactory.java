@@ -248,6 +248,10 @@ public class PageWidgetFactory {
 		composite.setBackground(getColor(COLOR_COMPOSITE_SEPARATOR));
 		return composite;
 	}
+	
+	public Label createSpacer(Composite parent) {
+		return createLabel(parent, " ");
+	}
 
 	public Label createHeadingLabel(Composite parent, String text) {
 		return createHeadingLabel(parent, text, null, SWT.NONE);
