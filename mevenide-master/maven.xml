@@ -17,8 +17,9 @@
     <attainGoal name="mevenide-eclipse:create-update-dist"/>
   </goal>
   
-  <goal name="mevenide-netbeans:build" description="Build all Mevenide modules" prereqs="mevenide-netbeans:init, mevenide-netbeans:build-deps">
+  <goal name="mevenide-netbeans:build" description="Build all Mevenide modules" prereqs="mevenide-netbeans:init">
       <j:set var="maven.multiproject.includes" value="${maven.multiproject.netbeans.includes}"/>
+      <j:set var="maven.multiproject.excludes" value="mevenide-master/project.xml"/>
       <j:set var="maven.nbm.cluster.name" value="mevenide"/>
       <j:set var="goal" value="nbm:install"/> 
       <attainGoal name="multiproject:goal"/>
@@ -169,20 +170,15 @@
       <ant:delete dir="${maven.repo.local}/mevenide" quiet="true"/>
   </goal>
 
-  <goal name="mevenide-netbeans:build-deps" description="Create nbms for the Mevenide dependencies" prereqs="mevenide-netbeans:init">
-	<!-- j:scope> -->
+<!--  <goal name="mevenide-netbeans:build-deps" description="Create nbms for the Mevenide dependencies" prereqs="mevenide-netbeans:init">
         <j:set var="backupincludes" value="${maven.multiproject.includes}"/>
         <j:set var="maven.nbm.cluster.name" value="mevenide"/>
-		<!-- j:set var="backupbasedir" value="${maven.multiproject.basedir}"/ -->
-		<!--  j:set var="maven.multiproject.basedir" value="${basedir}/../mevenide-netbeans-deps"/ -->
         <j:set var="maven.multiproject.includes" value="mevenide-netbeans-deps/*/project.xml"/>
         <j:set var="goal" value="nbm:install"/> 
         <attainGoal name="multiproject:goal"/>
-        <!-- how to execute without influencing the original -->
         <j:set var="maven.multiproject.includes" value="${backupincludes}"/>
-		<!--  j:set var="maven.multiproject.basedir" value="${backupbasedir}"/ -->
-	<!-- /j:scope -->
   </goal>  
+        -->
     
   <!-- ==================================== -->
   <!--           jbuilder section           -->
