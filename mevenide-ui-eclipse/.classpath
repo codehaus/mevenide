@@ -31,7 +31,6 @@
     <classpathentry kind="var"
         path="ECLIPSE_HOME/plugins/org.eclipse.debug.ui_2.1.0/dtui.jar" sourcepath="ORG_ECLIPSE_PLATFORM_SOURCE_SRC/org.eclipse.debug.ui_2.1.0/dtuisrc.zip"/>
     <classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.aspectj.ajde_1.1.2/ajde.jar"/>
-    <classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.aspectj.ajde_1.1.2/aspectjrt.jar"/>
     <classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.aspectj.ajde_1.1.2/aspectjtools.jar"/>
     <classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.aspectj.ajde_1.1.2/bcel.jar"/>
     <classpathentry kind="var"
