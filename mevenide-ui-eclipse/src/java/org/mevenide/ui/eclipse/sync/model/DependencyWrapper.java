@@ -79,21 +79,12 @@ public class DependencyWrapper extends ArtifactWrapper {
 	
 	private IClasspathEntry newLibraryEntry(Dependency dependency) {
 		IClasspathEntry newEntry = null;
-		//crap ! we should use project.artifacts. for that we have to instantiate a jelly context and create a project instance with MavenUtils
-		//if possible refactor *all* code that way (MavenUtils) 
+		
 		if ( dependency.getType() == null || dependency.isAddedToClasspath() ) { 
 			
 			String path = new DefaultDependencyPathFinder(dependency, getDeclaringPom()).resolve();
 			
-			IPath mavenRepoPath = JavaCore.getClasspathVariable("MAVEN_REPO");
-			String mavenRepo = Mevenide.getPlugin().getMavenRepository();
-			if ( mavenRepoPath == null ) {
-				try {
-					JavaCore.setClasspathVariable("MAVEN_REPO", new Path(mavenRepo), null);
-				} catch (JavaModelException e) {
-					log.error("cannot add MAVEN_REPO variable", e);
-				}
-			}
+			String mavenRepo = getMavenRepo();
 			
 			if ( path.indexOf(mavenRepo) > -1 ) {
 				path = "MAVEN_REPO/" + path.substring(mavenRepo.length() + 1, path.length());
@@ -108,7 +99,19 @@ public class DependencyWrapper extends ArtifactWrapper {
 		return newEntry;
 	}
 
-	
+	private String getMavenRepo() {
+		IPath mavenRepoPath = JavaCore.getClasspathVariable("MAVEN_REPO");
+		String mavenRepo = Mevenide.getPlugin().getMavenRepository();
+		if ( mavenRepoPath == null ) {
+			try {
+				JavaCore.setClasspathVariable("MAVEN_REPO", new Path(mavenRepo), null);
+			} 
+			catch (JavaModelException e) {
+				log.error("cannot add MAVEN_REPO variable", e);
+			}
+		}
+		return mavenRepo;
+	}
 
 	private IClasspathEntry newProjectEntry(Dependency dependency) throws CoreException {
 		IClasspathEntry newEntry;
