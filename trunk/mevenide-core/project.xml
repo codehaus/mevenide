@@ -4,7 +4,8 @@
   <extend>${basedir}/../mevenide-master/base-project.xml</extend>
   <pomVersion>3</pomVersion>
   <name>Mevenide Core</name>
-  <groupId>mevenide</groupId>
+  <!-- groupId>mevenide</groupId -->
+  <id>mevenide:mevenide-core</id>
   <artifactId>mevenide-core</artifactId>
   <currentVersion>1.0</currentVersion>
   
