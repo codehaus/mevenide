@@ -21,10 +21,10 @@
   	<ant:copy file="${eclipse.home}/plugins/org.eclipse.jdt.launching_3.1.0/launching.jar" 
   	  	     tofile="${maven.repo.local}/eclipse/jars/eclipse-launching-3.1.0.jar"/>
   
-    <ant:copy file="${eclipse.home}/plugins/org.eclipse.help_3.0.0/help.jar" 
+    <ant:copy file="${eclipse.home}/plugins/org.eclipse.help_3.1.0.jar" 
   	  	      tofile="${maven.repo.local}/eclipse/jars/eclipse-help-3.0.0.jar"/>
   	  	      
-  	<ant:copy file="${eclipse.home}/plugins/org.eclipse.jface_3.1.0/jface.jar" 
+  	<ant:copy file="${eclipse.home}/plugins/org.eclipse.jface_3.1.0.jar" 
   		      tofile="${maven.repo.local}/eclipse/jars/eclipse-jface-3.1.0.jar"/>  	
   	
   	<ant:copy file="${eclipse.home}/plugins/org.eclipse.jface.text_3.1.0/jfacetext.jar" 
@@ -33,38 +33,44 @@
   	<ant:copy file="${eclipse.home}/plugins/org.eclipse.text_3.1.0/text.jar" 
   		      tofile="${maven.repo.local}/eclipse/jars/eclipse-text-3.1.0.jar"/>  	
   	
-  	<ant:copy file="${eclipse.home}/plugins/org.eclipse.core.runtime_3.1.0/runtime.jar" 
+  	<ant:copy file="${eclipse.home}/plugins/org.eclipse.core.runtime_3.1.0.jar" 
   		      tofile="${maven.repo.local}/eclipse/jars/eclipse-runtime-3.1.0.jar"/> 
   		  
-  	<ant:copy file="${eclipse.home}/plugins/org.eclipse.ui.workbench_3.1.0/workbench.jar" 
+  	<ant:copy file="${eclipse.home}/plugins/org.eclipse.ui.workbench_3.1.0.jar" 
   		      tofile="${maven.repo.local}/eclipse/jars/eclipse-workbench-3.1.0.jar"/> 
     
   	<ant:copy file="${eclipse.home}/plugins/org.eclipse.ui.workbench.texteditor_3.1.0/texteditor.jar" 
   		      tofile="${maven.repo.local}/eclipse/jars/eclipse-texteditor-3.1.0.jar"/>  	
   	
-    <ant:copy file="${eclipse.home}/plugins/org.eclipse.ui.views_3.1.0/views.jar" 
+    <ant:copy file="${eclipse.home}/plugins/org.eclipse.ui.views_3.1.0.jar" 
   		      tofile="${maven.repo.local}/eclipse/jars/eclipse-views-3.1.0.jar"/> 
   		  
     <ant:copy file="${eclipse.home}/plugins/org.eclipse.ui.editors_3.1.0/editors.jar" 
   		      tofile="${maven.repo.local}/eclipse/jars/eclipse-editors-3.1.0.jar"/> 
   		  
-    <ant:copy file="${eclipse.home}/plugins/org.eclipse.osgi_3.1.0/osgi.jar" 
+    <ant:copy file="${eclipse.home}/plugins/org.eclipse.osgi_3.1.0.jar" 
   		      tofile="${maven.repo.local}/eclipse/jars/eclipse-osgi-3.1.0.jar"/> 
+  		      
+  	<!-- ant:copy file="${eclipse.home}/plugins/org.eclipse.osgi_3.1.0/eclipseAdaptor.jar" 
+  		      tofile="${maven.repo.local}/eclipse/jars/osgi-adaptor-3.1.0.jar"/ --> 	      
+
+	<ant:copy file="${eclipse.home}/plugins/org.eclipse.osgi.util_3.0.0/util.jar" 
+  		      tofile="${maven.repo.local}/eclipse/jars/osgi-util-3.1.0.jar"/> 	        		      
   		      
     <ant:copy file="${eclipse.home}/plugins/org.eclipse.ui.externaltools_3.1.0/externaltools.jar" 
   		      tofile="${maven.repo.local}/eclipse/jars/eclipse-externaltools-3.1.0.jar"/> 
   
-    <ant:copy file="${eclipse.home}/plugins/org.eclipse.help.base_3.0.0/helpbase.jar" 
-  	  	      tofile="${maven.repo.local}/eclipse/jars/eclipse-helpbase-3.0.0.jar"/>
+    <ant:copy file="${eclipse.home}/plugins/org.eclipse.help.base_3.1.0.jar" 
+  	  	      tofile="${maven.repo.local}/eclipse/jars/eclipse-helpbase-3.1.0.jar"/>
   	  	      
-    <ant:copy file="${eclipse.home}/plugins/org.eclipse.ui.ide_3.1.0/ide.jar" 
+    <ant:copy file="${eclipse.home}/plugins/org.eclipse.ui.ide_3.1.0.jar" 
   	  	      tofile="${maven.repo.local}/eclipse/jars/eclipse-ide-3.1.0.jar"/>
   	  	      
-    <ant:copy file="${eclipse.home}/plugins/org.eclipse.ui.forms_3.0.0/forms.jar" 
-  	  	      tofile="${maven.repo.local}/eclipse/jars/eclipse-forms-3.0.0.jar"/>
+    <ant:copy file="${eclipse.home}/plugins/org.eclipse.ui.forms_3.1.0.jar" 
+  	  	      tofile="${maven.repo.local}/eclipse/jars/eclipse-forms-3.1.0.jar"/>
   	  	      
-    <ant:copy file="${eclipse.home}/plugins/org.eclipse.core.variables_3.0.0/variables.jar" 
-  	  	      tofile="${maven.repo.local}/eclipse/jars/eclipse-variables-3.0.0.jar"/>
+    <ant:copy file="${eclipse.home}/plugins/org.eclipse.core.variables_3.1.0/variables.jar" 
+  	  	      tofile="${maven.repo.local}/eclipse/jars/eclipse-variables-3.1.0.jar"/>
   	  	      
   	<ant:copy file="${eclipse.home}/plugins/org.eclipse.team.ui_3.1.0/teamui.jar" 
   	  	      tofile="${maven.repo.local}/eclipse/jars/eclipse-team-ui-3.1.0.jar"/>

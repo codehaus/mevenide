@@ -5,7 +5,7 @@
   <artifactId>mevenide-ui-eclipse</artifactId>
   <name>Mevenide Eclipse</name>
   <groupId>mevenide-ui-eclipse</groupId>
-  <currentVersion>0.3.0</currentVersion>
+  <currentVersion>0.3.1</currentVersion>
   <package>org.mevenide.ui.eclipse</package>
   <shortDescription>provides ide integration for Maven</shortDescription>
   <versions>
@@ -315,7 +315,7 @@
     <dependency>
       <groupId>eclipse</groupId>
       <artifactId>eclipse-variables</artifactId>
-      <version>3.0.0</version>
+      <version>3.1.0</version>
       <type>jar</type>
       <url>http://eclipse.org/</url>
     </dependency>
@@ -326,10 +326,24 @@
       <type>jar</type>
       <url>http://eclipse.org/</url>
     </dependency>
+    <!-- dependency>
+      <groupId>eclipse</groupId>
+      <artifactId>osgi-adaptor</artifactId>
+      <version>3.1.0</version>
+      <type>jar</type>
+      <url>http://eclipse.org/</url>
+    </dependency -->
+    <dependency>
+      <groupId>eclipse</groupId>
+      <artifactId>osgi-util</artifactId>
+      <version>3.1.0</version>
+      <type>jar</type>
+      <url>http://eclipse.org/</url>
+    </dependency>
     <dependency>
       <groupId>eclipse</groupId>
       <artifactId>eclipse-helpbase</artifactId>
-      <version>3.0.0</version>
+      <version>3.1.0</version>
       <type>jar</type>
       <url>http://eclipse.org/</url>
     </dependency>
@@ -343,7 +357,7 @@
     <dependency>
       <groupId>eclipse</groupId>
       <artifactId>eclipse-forms</artifactId>
-      <version>3.0.0</version>
+      <version>3.1.0</version>
       <type>jar</type>
       <url>http://eclipse.org/</url>
     </dependency>

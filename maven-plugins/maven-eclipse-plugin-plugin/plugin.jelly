@@ -381,6 +381,7 @@
    
    
   <goal name="eclipse-plugin:install-swt" description="install platform-dependent swt library into maven local repository">
+    
     <!-- set eclipse.home property -->
 	<ant:property environment="env"/>
   	<ant:property name="eclipse.home" location="${env.ECLIPSE_HOME}"/>
@@ -410,8 +411,41 @@
 			       value="org.eclipse.swt.carbon_${maven.eclipse.plugin.swt.version}/ws/carbon"
 			       file="${eclipse.home}/plugins/org.eclipse.swt.carbon_${maven.eclipse.plugin.swt.version}/ws/carbon/swt.jar"/>
 
+    <j:set var="swtDir" value="${swt.plugin.dir}"/>
+    <j:if test="${!(empty swtDir)}">
+      <j:set var="swtJar" value="${eclipse.home}/plugins/${swt.plugin.dir}/swt.jar"/>
+    </j:if>
+    
+    <!-- File not found. try to lookup the unexpanded jar-->
+    <j:if test="${empty swtDir}">
+
+      <ant:available property="swtJar" 
+			 	   value="${eclipse.home}/plugins/org.eclipse.swt.gtk_${maven.eclipse.plugin.swt.version}.jar"
+				   file="${eclipse.home}/plugins/org.eclipse.swt.gtk_${maven.eclipse.plugin.swt.version}.jar"/>
+
+	<ant:available property="swtJar" 
+			   	   value="${eclipse.home}/plugins/org.eclipse.swt.gtk1x_${maven.eclipse.plugin.swt.version}.jar"
+			       file="${eclipse.home}/plugins/org.eclipse.swt.gtk1x_${maven.eclipse.plugin.swt.version}.jar"/>
+		
+	<ant:available property="swtJar" 
+			       value="${eclipse.home}/plugins/org.eclipse.swt.motif_${maven.eclipse.plugin.swt.version}.jar"
+			       file="${eclipse.home}/plugins/org.eclipse.swt.motif_${maven.eclipse.plugin.swt.version}.jar"/>		   
+				   		   				   
+	<ant:available property="swtJar" 
+			       value="${eclipse.home}/plugins/org.eclipse.swt.photon_${maven.eclipse.plugin.swt.version}.jar"
+			       file="${eclipse.home}/plugins/org.eclipse.swt.photon_${maven.eclipse.plugin.swt.version}.jar"/>		   
+				   				   		   				   
+	<ant:available property="swtJar" 
+			       value="${eclipse.home}/plugins/org.eclipse.swt.win32_${maven.eclipse.plugin.swt.version}.jar"
+			       file="${eclipse.home}/plugins/org.eclipse.swt.win32_${maven.eclipse.plugin.swt.version}.jar"/>
+		
+	<ant:available property="swtJar" 
+			       value="${eclipse.home}/plugins/org.eclipse.swt.carbon_${maven.eclipse.plugin.swt.version}.jar"
+			       file="${eclipse.home}/plugins/org.eclipse.swt.carbon_${maven.eclipse.plugin.swt.version}.jar"/>
+    </j:if>
+    
 	<!-- install swt library into maven.repo.local -->
-	<ant:copy file="${eclipse.home}/plugins/${swt.plugin.dir}/swt.jar" 
+	<ant:copy file="${swtJar}" 
   		      tofile="${maven.repo.local}/${maven.eclipse.plugin.swt.groupId}/jars/${maven.eclipse.plugin.swt.artifactId}-${maven.eclipse.plugin.swt.version}.jar"/>  
   		      
   </goal>

@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.Set;
 import org.mevenide.environment.ConfigUtils;
 import org.mevenide.environment.ILocationFinder;
+import org.mevenide.util.StringUtils;
 
 
 /**
@@ -97,8 +98,10 @@ public final class ArgumentsManager {
 	    props.put("javax.xml.parsers.SAXParserFactory", "org.apache.xerces.jaxp.SAXParserFactoryImpl");
 	    ILocationFinder config = ConfigUtils.getDefaultLocationFinder();
 	    
-	    props.put("maven.home", config.getMavenHome());
-		props.put("maven.repo.local", config.getMavenLocalRepository());
+	    props.put("maven.home", StringUtils.isNull(runner.getMavenHome()) ? config.getMavenHome() : runner.getMavenHome());
+		props.put("maven.home.local", StringUtils.isNull(runner.getMavenLocalHome()) ? config.getMavenLocalHome() : runner.getMavenLocalHome());
+		props.put("java.home", StringUtils.isNull(runner.getJavaHome()) ? config.getMavenLocalHome() : runner.getJavaHome());
+		props.put("maven.repo.local", StringUtils.isNull(runner.getMavenLocalRepository()) ? config.getMavenLocalRepository() : runner.getMavenLocalRepository());
 	    props.put("forehead.conf.file", ConfigUtils.getConfigurationFile());
 	    props.put("java.endorsed.dirs", ConfigUtils.getEndorsedDirs());
 	    props.put("basedir", runner.getBasedir());

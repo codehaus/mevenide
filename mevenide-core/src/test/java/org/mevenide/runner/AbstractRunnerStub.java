@@ -31,6 +31,10 @@ public class AbstractRunnerStub extends AbstractRunner {
 		super();
 	}
 
+	public String getToolsJar() {
+		return null;
+	}
+
 	protected void initEnvironment() {
 	}
 

@@ -67,7 +67,7 @@ public class MavenArtifactNode extends ArtifactNode {
 	public MavenArtifactNode(Artifact artifact, MavenProjectNode project) {
 		this.artifact = artifact;
 		parent = project;
-		locationFinder = new LocationFinderAggregator(new DefaultQueryContext(((Project) project.getData()).getFile()));
+		locationFinder = new LocationFinderAggregator(new DefaultQueryContext(((Project) project.getData()).getFile().getParentFile()));
 		initialize();
 	}
 	

@@ -19,6 +19,7 @@ package org.mevenide.runner;
 import java.io.File;
 import org.mevenide.environment.ConfigUtils;
 import org.mevenide.environment.ILocationFinder;
+import org.mevenide.util.StringUtils;
 
 
 /**  
@@ -36,7 +37,14 @@ public class RunnerUtils {
 	    return getToolsJar(config.getJavaHome());
     }
 
-    public static String getToolsJar(String javaHome) {
+	public static String getToolsJar(AbstractRunner runner) {
+		if ( StringUtils.isNull(runner.getToolsJar()) ) {
+			return getToolsJar(runner.getJavaHome());
+		}
+		return runner.getToolsJar();
+	}
+	
+    private static String getToolsJar(String javaHome) {
         String toolsJar = javaHome + File.separator + "lib" + File.separator + "tools.jar";
 	    if ( !new File(toolsJar).exists() ) {
 	    	//mac os x..  

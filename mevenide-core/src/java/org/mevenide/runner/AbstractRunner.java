@@ -20,6 +20,7 @@ import java.io.File;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.mevenide.environment.CustomLocationFinder;
 
 
 /**
@@ -28,7 +29,7 @@ import org.apache.commons.logging.LogFactory;
  * @version $Id$
  * 
  */
-public abstract class AbstractRunner {
+public abstract class AbstractRunner extends CustomLocationFinder {
 	private static final Log log =  LogFactory.getLog(AbstractRunner.class);
 	
 	
@@ -43,7 +44,8 @@ public abstract class AbstractRunner {
         if ( finalOptions == null ) {
             String basedir = getBasedir();
             finalOptions = new String[3];
-            finalOptions[0] = "-b";
+            //finalOptions[0] = "-b";
+			finalOptions[0] = " ";
             finalOptions[1] = "-f";
             String tmpFile = basedir != null ? basedir + File.separator + "project.xml" : "project.xml" ;
 			finalOptions[2] = new File(tmpFile).getAbsolutePath();
@@ -98,6 +100,7 @@ public abstract class AbstractRunner {
 	 */
 	protected abstract String getBasedir();
     
+	public abstract String getToolsJar();
     /**
      * run the specified goals with the specified Maven options in a new VM
      * 

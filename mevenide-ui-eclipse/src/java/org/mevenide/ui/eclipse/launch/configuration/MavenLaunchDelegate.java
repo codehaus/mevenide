@@ -107,8 +107,8 @@ public class MavenLaunchDelegate extends AbstractRunner implements ILaunchConfig
 		System.arraycopy(vmArgs, 0, allVmArgs, 0, vmArgs.length);
 		System.arraycopy(customVmArgs, 0, allVmArgs, vmArgs.length, customVmArgs.length);
 		
-		String toolsJarArg = !org.mevenide.util.StringUtils.isNull(RunnerUtils.getToolsJar()) ? 
-		        				RunnerUtils.getToolsJar() : PreferencesManager.getManager().getValue("tools.jar"); //$NON-NLS-1$
+		String toolsJarArg = org.mevenide.util.StringUtils.isNull(RunnerUtils.getToolsJar(this)) ? 
+		        				RunnerUtils.getToolsJar() : RunnerUtils.getToolsJar(this); //$NON-NLS-1$
 		if ( !org.mevenide.util.StringUtils.isNull(toolsJarArg) ) {
 			allVmArgs[allVmArgs.length - 1] = "-Dtools.jar=" + toolsJarArg; //$NON-NLS-1$
 		}
@@ -149,14 +149,14 @@ public class MavenLaunchDelegate extends AbstractRunner implements ILaunchConfig
 				
         ILocationFinder finder = ConfigUtils.getDefaultLocationFinder();
 
-        String javaHome = PreferencesManager.getManager().getValue(MevenidePreferenceKeys.MAVEN_HOME_PREFERENCE_KEY);
+        String javaHome = PreferencesManager.getManager().getValue(MevenidePreferenceKeys.JAVA_HOME_PREFERENCE_KEY);
         javaHome = org.mevenide.util.StringUtils.isNull(javaHome) ? finder.getJavaHome() : javaHome;
         
         String mavenHome = PreferencesManager.getManager().getValue(MevenidePreferenceKeys.MAVEN_HOME_PREFERENCE_KEY);
         mavenHome = org.mevenide.util.StringUtils.isNull(mavenHome) ? finder.getMavenHome() : mavenHome;
         
         String toolsJarArg = !org.mevenide.util.StringUtils.isNull(RunnerUtils.getToolsJar()) ? 
-							 RunnerUtils.getToolsJar(javaHome) : PreferencesManager.getManager().getValue("tools.jar"); //$NON-NLS-1$
+							 RunnerUtils.getToolsJar(this) : PreferencesManager.getManager().getValue("tools.jar"); //$NON-NLS-1$
         
         
         boolean mavenHomeDefined = !org.mevenide.util.StringUtils.isNull(mavenHome); 
@@ -300,6 +300,26 @@ public class MavenLaunchDelegate extends AbstractRunner implements ILaunchConfig
 
 	protected void launchVM(String[] options, String[] goals) throws Exception {
 		throw new RuntimeException("Altho this class uses facilities offered by AbstractRunner. It is not meant to be run like that. TODO : refactor me."); //$NON-NLS-1$
+	}
+
+	public String getJavaHome() {
+		return PreferencesManager.getManager().getValue(MevenidePreferenceKeys.JAVA_HOME_PREFERENCE_KEY);
+	}
+
+	public String getMavenHome() {
+		return PreferencesManager.getManager().getValue(MevenidePreferenceKeys.MAVEN_HOME_PREFERENCE_KEY);
+	}
+
+	public String getMavenLocalHome() {
+		return PreferencesManager.getManager().getValue(MevenidePreferenceKeys.MAVEN_LOCAL_HOME_PREFERENCE_KEY);
+	}
+
+	public String getMavenLocalRepository() {
+		return PreferencesManager.getManager().getValue(MevenidePreferenceKeys.MAVEN_REPO_PREFERENCE_KEY);
+	}
+
+	public String getToolsJar() {
+		return PreferencesManager.getManager().getValue(MevenidePreferenceKeys.TOOLS_JAR_PREFERENCE_KEY);
 	}
 
 }

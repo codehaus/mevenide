@@ -129,9 +129,12 @@ public class TableEntry extends PageEntry {
 		addButton.addSelectionListener(
 			new SelectionAdapter() {
 				public void widgetSelected(SelectionEvent e) {
-					addEntry(collectionAdaptor.addNewObject(parentPomObject));
-					setDirty(true);
-					fireEntryDirtyEvent();
+					Object entry = collectionAdaptor.addNewObject(parentPomObject);
+					if (entry != null) {
+					    addEntry(entry);
+					    setDirty(true);
+					    fireEntryDirtyEvent();
+					} 
 				}
 			}
 		);
