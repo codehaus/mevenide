@@ -26,7 +26,7 @@
 				
 				also shouldnot copy xmlpull.
 			-->
-			<j:if test="${!(dependency.groupId.equals('eclipse') || dependency.artifactId.startsWith('mock') || dependency.artifactId.endsWith('mock') || dependency.groupId.startsWith('junit'))}">
+			<j:if test="${!(dependency.groupId.equals('eclipse') || dependency.groupId.startsWith('mock') || dependency.groupId.startsWith('junit'))}">
             	<copy file="${maven.repo.local}/${dependency.groupId}/${dependency.type}s/${dependency.artifactId}-${dependency.version}.${dependency.type}" 
             		  todir="lib"/>
             </j:if>
