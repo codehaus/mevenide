@@ -29,6 +29,6 @@ public class MevenideNbTagLibrary extends TagLibrary {
     public MevenideNbTagLibrary() {
         registerTag("adapt-version", AdaptNbVersionTag.class);
         registerTag("examine-manifest", ExamineManifestTag.class);
-        registerTag("find-licence", FindLicenseTag.class);
+        registerTag("find-license", FindLicenseTag.class);
     }
 }
