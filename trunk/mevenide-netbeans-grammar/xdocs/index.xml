@@ -32,11 +32,60 @@
             Then extract it, and install the nbm files using your IDE's "Tools/Update Center" wizard.
    	  </p>
       <p> <b>Known Issue: </b>Before you will be able to use the module, you will have to put log4j jar into your netbeans installation directory
-      into te subfolder lib/ext. It's best done before running the IDE.
+      into the subfolder lib/ext. It's best done before running the IDE.
       </p>
    	  </div>
     </section>
     
-    </body>
+    <section name="How It Works">
+        <div id="documentContent">
+           <p>
+           The module provides code completion in various places of the edited file. The default keyboard shortcut to 
+           invoke the code completion is <code>Ctrl-Space</code>. Then you can navigate in the provided list or
+           type more characters which results in updated, narrowed completion offering.
+           </p>
+           <p>
+           Firstly you can get a list of available namespaces. They are sorted alphabetically and include default jelly taglibraries,
+           maven specific jelly taglibraries and also dynamic taglibraries originating from the maven plugins.
+				<center>
+					<img border="1px" src="images/cc_namespace.png"/>
+					<br/><br/>
+					<font size="-1"><b>Screenshot 1</b>Completing namespaces.</font>
+					<br/><br/>
+				</center>
+           </p>
+           <p> Later when writing the content, you will be offered standard tags, such as <code> goal</code> or <code> pregoal </code>, but also tags from the included
+            taglibraries. These are sorted in the following manner. Namespaces only first, standard tags, and then tags from included taglibraries sorted by taglib name and tag name.
+				<center>
+					<img border="1px" src="images/cc_tag.png"/>
+					<br/><br/>
+					<font size="-1"><b>Screenshot 2</b>Completing tags.</font>
+					<br/><br/>
+				</center>
+				<center>
+					<img border="1px" src="images/cc_dynamic_tag.png"/>
+					<br/><br/>
+					<font size="-1"><b>Screenshot 3</b>Completing tags from a given taglibrary.</font>
+					<br/><br/>
+				</center>
+           </p>
+           <p> 
+                After choosing a tag, you can easily get a list of available, known attributes defined for this element. These are sorted alphabetically. Again only those that match the already typed characters are displayed.
+				<center>
+					<img border="1px" src="images/cc_attribute.png"/>
+					<br/><br/>
+					<font size="-1"><b>Screenshot 4</b>Completing attributes.</font>
+					<br/><br/>
+				</center>
+				<center>
+					<img border="1px" src="images/cc_dynamic_attribute.png"/>
+					<br/><br/>
+					<font size="-1"><b>Screenshot 5</b>Completing dynamic attributes.</font>
+					<br/><br/>
+				</center>
+           </p>
+          </div>
+    </section>
+  </body>
 
 </document>
