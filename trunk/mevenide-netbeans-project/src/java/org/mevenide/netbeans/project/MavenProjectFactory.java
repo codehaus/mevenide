@@ -48,7 +48,7 @@ public class MavenProjectFactory implements ProjectFactory
             return false;
         }
         File project = new File(projectDir, "project.xml"); // NOI18N
-        return project.isFile();
+        return project.isFile() &&  !"nbproject".equals(projectDir.getName()); //NOI18N
     }
     
     public Project loadProject(FileObject fileObject, ProjectState projectState) throws IOException
@@ -56,7 +56,7 @@ public class MavenProjectFactory implements ProjectFactory
         if (FileUtil.toFile(fileObject) == null) {
             return null;
         }
-        FileObject projectFile = fileObject.getFileObject("project.xml");
+        FileObject projectFile = fileObject.getFileObject("project.xml"); //NOI18N
         if (projectFile == null || !projectFile.isData()) {
             return null;
         }
