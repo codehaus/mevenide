@@ -19,10 +19,10 @@ package org.mevenide.ui.eclipse.sync.action;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.jface.action.Action;
-import org.mevenide.ui.eclipse.sync.view.ISynchronizationDirectionListener;
-import org.mevenide.ui.eclipse.sync.view.SynchronizeView;
+import org.mevenide.ui.eclipse.sync.event.ISynchronizationDirectionListener;
 
 /**
+ * 
  * 
  * @author <a href="mailto:rhill2@free.fr">Gilles Dodinet</a>
  * @version $Id$
@@ -31,19 +31,11 @@ import org.mevenide.ui.eclipse.sync.view.SynchronizeView;
 public class ToggleViewAction extends Action implements ISynchronizationDirectionListener {
     private static final Log log = LogFactory.getLog(ToggleViewAction.class);
 
-    private SynchronizeView synchronizeView;
     private int direction;
     
-    public ToggleViewAction(SynchronizeView view, int direction) {
+    public ToggleViewAction(int direction) {
         super(null, AS_RADIO_BUTTON);
-        this.synchronizeView = view;
-		this.direction = direction;			
-        synchronizeView.addDirectionListener(this);
-        addPropertyChangeListener(synchronizeView);
-    }
-    
-    public void run() {
-        synchronizeView.setDirection(direction);
+		this.direction = direction;
     }
     
     public void directionChanged(int direction) {
@@ -51,6 +43,12 @@ public class ToggleViewAction extends Action implements ISynchronizationDirectio
         boolean oldValue = isChecked();
         log.debug("directionChanged - oldValue = " + isChecked() + "newValue = " + masked);
         setChecked(masked);
-        firePropertyChange(CHECKED, new Boolean(oldValue), new Boolean(masked));
+        if ( oldValue != masked ) {
+        	firePropertyChange(CHECKED, new Boolean(oldValue), new Boolean(masked));
+        }
     }
+
+	public int getDirection() {
+		return direction;
+	}
 }
