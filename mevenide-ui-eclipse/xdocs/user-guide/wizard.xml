@@ -2,7 +2,7 @@
 <document>
     <properties>
     	<author email="rhill2@free.fr">Gilles Dodinet</author>
-        <title>Help Page</title>
+        <title>Maven Oriented Wizards</title>
     </properties>
     <body>
 		<section name="Maven Oriented Wizards">
@@ -11,14 +11,14 @@
 				  <p>
 				  	Mevenide provides simple wizards to help creating ready-to-be used maven projects and poms. You can
 				  	access it through the standard "<code>File &gt; New &gt; Other...</code>" and "<code>File &gt; New &gt; Project...</code>" 
-				  	(Screenshot 1).
+				  	(Screenshot 1). 
 				  	<br/>
-						<center>
-							<img border="1px" src="../images/screenshots/wizards/maven_wizards.png"/>
-							<br/>
-							<font size="-1"><b>Screenshot 1</b> Maven oriented wizards</font>
-							<br/>
-						</center>
+				      <center>
+						<img border="1px" src="../images/screenshots/wizards/maven_wizards.png"/>
+						<br/>
+						<font size="-1"><b>Screenshot 1</b> Maven oriented wizards</font>
+						<br/>
+					  </center>
 				  </p>
 				</div>
 			</subsection>
@@ -46,9 +46,8 @@
 				<div id="documentContent">
 					<p>
 						Mevenide provides simple wizard (Screenshot 3) based on java project wizards for creating Maven-based projects. Convenient source and output folders are already filled in, and upon commit, a POM skeleton will be created.
-						in the future the wizard will be more flexible allowing to specify the POM more precisely. 
-						<br/>
-						Note that this one suffers from some issues with Eclipse versions greater than 3.0 RC2 so you might not be able to use accurately. We're working on fixing it.
+						in the future the wizard will be more flexible allowing to specify the POM more precisely.  POM skeleton can be customized either by filing out overview fields (name, artifactId, groupId, inceptionYear, etc.) or by picking 
+						up a template. Both methods are of course allowed to be mixed.
 						<br/>
 						<center>
 							<img border="1px" src="../images/screenshots/wizards/project_wizard.png"/>

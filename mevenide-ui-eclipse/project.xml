@@ -4,10 +4,15 @@
     <artifactId>mevenide-ui-eclipse</artifactId>
     <name>Mevenide Eclipse</name>
     <groupId>mevenide-ui-eclipse</groupId>
-    <currentVersion>0.2.2-SNAPHOT</currentVersion>
+    <currentVersion>0.2.2</currentVersion>
     <package>org.mevenide.ui.eclipse</package>
     <shortDescription>provides ide integration for Maven</shortDescription>
     <versions>
+        <version>
+          <id>0.2.2</id>
+          <name>0.2.2</name>
+          <tag>V_0_2_2</tag>
+          </version>
         <version>
             <id>0.2.1</id>
             <name>0.2.1</name>

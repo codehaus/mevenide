@@ -4,8 +4,13 @@
     <id>mevenide:mevenide-update</id>
     <artifactId>mevenide-update</artifactId>
     <name>Mevenide Update Site Project</name>
-    <currentVersion>0.3-SNAPSHOT</currentVersion>
+    <currentVersion>0.2.2</currentVersion>
     <versions>
+      <version>
+        <id>0.2.2</id>
+        <name>0.2.2</name>
+        <tag>V_0_2_2</tag>
+      </version>
       <version>
         <id>0.2.1</id>
         <name>0.2.1</name>
