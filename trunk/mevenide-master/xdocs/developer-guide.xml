@@ -1,6 +1,10 @@
 <?xml version="1.0"?>
 <!DOCTYPE document [
-	<!ENTITY developer-guide-description SYSTEM "developer/description.txt">
+	<!ENTITY description SYSTEM "developer/description.xml">
+	<!ENTITY module-deps SYSTEM "developer/module-dependencies.xml">
+	<!ENTITY artifacts SYSTEM "developer/eclipse-artifacts.xml">
+	<!ENTITY building SYSTEM "developer/building.xml">
+	<!ENTITY cvs-layout SYSTEM "developer/cvs-layout.xml">
 ]>
 
 <document>
@@ -13,17 +17,49 @@
   <body>
 
     <section name="Developer Guide">
-      <p>
-      	&developer-guide-description;
-      </p>
+      <subsection name="Intended audience">
+      	<div id="documentContent">
+      	  <p>This guide is targeted to developers who actually want to take part into Mevenide development and/or users who want to build against CVS.</p>
+	    </div>
+      </subsection>
+      
+      <subsection name="Content">
+      	<div id="documentContent">
+      	  &description;
+        </div>
+      </subsection>
     </section>
-
-	<section name="Relationships">
-	  <p>To be done.</p>
+    
+	<section name="Module Relationships">
+	  	<subsection name="Module Dependencies">
+	  	  <div id="documentContent">
+	  	    &module-deps;
+	      </div>
+	    </subsection>
+	    <subsection name="Eclipse Artifacts">
+	      <div id="documentContent">
+	      	&artifacts;	    		
+	      </div>
+	    </subsection>
+	  
+	</section>
+	
+	<section name="Building Mevenide">
+		<subsection name="CVS Directory Layout">
+		  &cvs-layout;
+		</subsection>
+	
+	  <subsection name="Running the Build">
+	  	<div id="documentContent">
+	      &building;
+	    </div>
+	  </subsection>
 	</section>
 	
 	<section name="Guidelines">
-	  <p>To be done.</p>
+	  <div id="documentContent">
+	    <p>To be done.</p>
+	  </div>
 	</section>
 
   </body>

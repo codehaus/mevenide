@@ -49,6 +49,12 @@ div#banner {
  border-bottom: 1px solid #003;
  }
 
+#documentContent a {
+ color: #3366AA;
+ text-decoration:none;
+ 
+ }
+
 #banner, #banner td { 
  background: #FFFFFF;
  color: #fff;

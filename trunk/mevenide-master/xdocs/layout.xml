@@ -9,11 +9,14 @@
   <body>
 
     <section name="Rationale">
+    	<div id="documentContent">
       <p>
         See <a href="http://maven.apache.org/reference/dirlayout.html">this document</a> for a description of the rationale.
       </p>
+      </div>
     </section>
     <section name="Directory Layout">
+    	<div id="documentContent">
       <table>
         <tr>
           <th>Directory or file name</th>
@@ -56,13 +59,17 @@
           <td>Specific project properties</td>
         </tr>
       </table>
+      </div>
     </section>
     <section name="Maven-Generated Layout">
+    	<div id="documentContent">
       <p>
       	Default Maven layout is used.      
       </p>
+      </div>
     </section>
     <section name="Default maven-eclipse-plugin-plugin Generated Layout">  
+    	<div id="documentContent">
       <table>
       	 <tr>
           <th>Directory or file name</th>
@@ -97,6 +104,7 @@
           <td>Eclipse features - if current project is of type 'site'</td>
         </tr>
       </table>
+      </div>
     </section>
   </body>
 </document>

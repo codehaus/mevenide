@@ -9,12 +9,16 @@
 
 
   <section name="Download">
-    <p>
-    	Mevenide is only available for Eclipse for now. Mevenide for Eclipse distribution is composed of three different 
-    	plugins : Core, Grabber and UI. They can be found <a href="http://sourceforge.net/project/showfiles.php?group_id=54263">here</a>.
-    	Also Mevenide for Eclipse now supports Eclipse Update feature. To learn how to install Mevenide thanks the EclipseUpdate Manager,
-    	please refer to <a href="updates/index.html">this document</a>.
-    </p>
+  	<subsection name="Eclipse Support">
+  	  <div id="documentContent">
+        <p>
+    	  Mevenide is only available for Eclipse for now. Mevenide for Eclipse distribution is composed of three different 
+    	  plugins : Core, Grabber and UI. They can be found <a href="http://sourceforge.net/project/showfiles.php?group_id=54263">here</a>.
+    	  Also Mevenide for Eclipse now supports Eclipse Update feature. To learn how to install Mevenide thanks the EclipseUpdate Manager,
+    	  please refer to <a href="mevenide-ui-eclipse/updates/index.html">this document</a>.
+        </p>
+      </div>
+    </subsection>
   </section>
 </body>
 </document>
