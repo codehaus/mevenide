@@ -285,7 +285,7 @@ ${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.x
     <ant:loadproperties srcfile="${plugin.resources}/directories.properties"/>
     <ant:property name="cluster.dir" value="${cluster.dirXXX}"/>
     <ant:property name="module.name" value="${maven.nbm.final.name}"/>
-    <ant:echo message="moduleName=${module.name}"/>
+<!--    <ant:echo message="moduleName=${module.name}"/> -->
     <ant:patternset id="module.files">
         <ant:include name="**"/>
     </ant:patternset>
@@ -322,10 +322,10 @@ ${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.x
     <ant:echo message="url=${pom.url}" />
     <ant:echo message="license=${maven.nbm.license}" />
              topdir="${maven.nbm.build.dir}"
-    -->
     <ant:echo message="file=${maven.nbm.build.dir}/${maven.nbm.final.name}.nbm" />
     <ant:echo message="productdir=${maven.nbm.build.dir}/${netbeansDir}" />
     <ant:echo message="module=${maven.nbm.cluster.name}/${maven.nbm.module.location}/${maven.nbm.final.name}.jar" />
+    -->
     
     <ant:makenbm file="${maven.nbm.build.dir}/${maven.final.name}.nbm"
              topdir="${maven.nbm.build.dir}"
