@@ -44,7 +44,7 @@ public class DirectoryNode extends ArtifactNode {
 			return false;
 		}
 		DirectoryNode node = (DirectoryNode) obj;
-		return directory.equals(node.directory) && parentNode.equals(node.parentNode);
+		return directory.equals(node.directory);
 	}
 	public ISynchronizationNode[] getChildren() {
 		return null;

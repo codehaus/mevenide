@@ -129,17 +129,49 @@ public class MavenProjectNode extends AbstractSynchronizationNode implements ISe
 		try {
 			ProjectReader projectReader = ProjectReader.getReader();
 			Map sourceDirectoryMap = projectReader.readSourceDirectories(project.getFile());
+			Map resourceDirectoryMap = projectReader.readAllResources(project.getFile());
+			sourceDirectoryMap.putAll(resourceDirectoryMap);
 			if ( sourceDirectoryMap == null || sourceDirectoryMap.size() == 0 ) {
 				directoryNodes = new DirectoryNode[0];
 				return;
 			}
 			createDirectoryNodes(sourceDirectoryMap);
+			joinEclipseSourceFolders();
 		} 
 		catch (Exception e) {
-			log.error("Cannot read source directories for pom " + project.getFile());
+			log.error("Cannot read source directories for pom " + project.getFile(), e);
 		}
 	}
 	
+	private void joinEclipseSourceFolders() {
+		List tempNodes = new ArrayList(Arrays.asList(directoryNodes));
+	    List eclipseSourceFolders = createSourceFolderNodes(parentNode.getEclipseSourceFolders());
+	    for (int i = 0; i < eclipseSourceFolders.size(); i++) {
+	    	System.err.println(((DirectoryNode) eclipseSourceFolders.get(i)));
+	    	DirectoryNode eclipseSourceFolderNode = (DirectoryNode) eclipseSourceFolders.get(i);
+	    	if ( !tempNodes.contains(eclipseSourceFolderNode)  ) {
+				eclipseSourceFolderNode.setDirection(ISelectableNode.OUTGOING_DIRECTION);
+				tempNodes.add(eclipseSourceFolderNode);
+			}
+	    	else {
+				tempNodes.remove(eclipseSourceFolderNode); 	
+	    	}
+		}
+		directoryNodes = (DirectoryNode[]) tempNodes.toArray(new DirectoryNode[0]);
+	}
+	
+	private List createSourceFolderNodes(List eclipseSourceDirectories) {
+		List nodeList = new ArrayList();
+		for (int i = 0; i < eclipseSourceDirectories.size(); i++) {
+		    String directoryPath = (String) eclipseSourceDirectories.get(i);
+	    	Directory eclipseDirectory = new Directory();
+	    	eclipseDirectory.setPath(directoryPath);
+	    	DirectoryNode node = new DirectoryNode(eclipseDirectory, this);
+	    	nodeList.add(node);
+	    }
+	    return nodeList;
+	}
+
 	private void createDirectoryNodes(Map sourceDirectoryMap) {
 		originalDirectoryNodes = new DirectoryNode[sourceDirectoryMap.size()];
 		Iterator iterator = sourceDirectoryMap.keySet().iterator();
@@ -163,23 +195,6 @@ public class MavenProjectNode extends AbstractSynchronizationNode implements ISe
 		return node;
 	}
 
-	/**
-	 * @see #initializeArtifacts()
-	 */
-	private void initializeResources() {
-		initializeDirectories(mavenProject);
-	}
-	
-	private void initializeResources(Project project) {
-		try {
-			ProjectReader projectReader = ProjectReader.getReader();
-			Map resourceDirectoryMap = projectReader.readAllResources(project.getFile());
-		} 
-		catch (Exception e) {
-			log.error("Cannot Read resource for pom " + project.getFile());
-		}
-	}
-	
 	//@todo include resourceNodes as well
 	public ISynchronizationNode[] getChildren() {
 	    ISynchronizationNode[] children = new ISynchronizationNode[directoryNodes.length + artifactNodes.length];
@@ -210,6 +225,11 @@ public class MavenProjectNode extends AbstractSynchronizationNode implements ISe
 	public boolean select(int direction) {
 		for (int i = 0; i < this.artifactNodes.length; i++) {
 			if ( artifactNodes[i].getDirection() == direction ) {
+				return true;
+			}
+		}
+		for (int i = 0; i < this.directoryNodes.length; i++) {
+			if ( directoryNodes[i].getDirection() == direction ) {
 				return true;
 			}
 		}
