@@ -360,6 +360,10 @@
 			       value="org.eclipse.swt.win32_3.0.0/ws/win32"
 			       file="${eclipse.home}/plugins/org.eclipse.swt.win32_${maven.eclipse.plugin.swt.version}/ws/win32/swt.jar"/>
 		
+	<ant:available property="swt.plugin.dir" 
+			       value="org.eclipse.swt.carbon_3.0.0/ws/carbon"
+			       file="${eclipse.home}/plugins/org.eclipse.swt.carbon_${maven.eclipse.plugin.swt.version}/ws/carbon/swt.jar"/>
+
 	<!-- install swt library into maven.repo.local -->
 	<ant:copy file="${eclipse.home}/plugins/${swt.plugin.dir}/swt.jar" 
   		      tofile="${maven.repo.local}/${maven.eclipse.plugin.swt.groupId}/jars/${maven.eclipse.plugin.swt.artifactId}-${maven.eclipse.plugin.swt.version}.jar"/>  
