@@ -3,23 +3,43 @@ package org.mevenide.ui.eclipse.editors.mavenxml;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IDocumentPartitioner;
-import org.eclipse.jface.text.rules.DefaultPartitioner;
+import org.eclipse.jface.text.rules.IPredicateRule;
+import org.eclipse.jface.text.rules.RuleBasedPartitionScanner;
 import org.eclipse.ui.editors.text.FileDocumentProvider;
+import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
+import org.mevenide.ui.eclipse.goals.outline.MavenXmlOutlinePage;
 
 public class XMLDocumentProvider extends FileDocumentProvider {
 
+    private MavenXmlEditor editor;
+	private IDocument document;
+	private static RuleBasedPartitionScanner scanner;
+
+	
+	public XMLDocumentProvider(MavenXmlEditor editor) {
+        super();
+        this.editor = editor;
+    }
+	
 	protected IDocument createDocument(Object element) throws CoreException {
-		IDocument document = super.createDocument(element);
-		if (document != null) {
-			IDocumentPartitioner partitioner =
-				new DefaultPartitioner(
-					new XMLPartitionScanner(),
-					new String[] {
-						XMLPartitionScanner.XML_TAG,
-						XMLPartitionScanner.XML_COMMENT });
-			partitioner.connect(document);
-			document.setDocumentPartitioner(partitioner);
-		}
-		return document;
+		document = super.createDocument(element);
+        if (document != null) {
+            if (scanner == null) {
+                scanner = new RuleBasedPartitionScanner();
+                scanner.setPredicateRules(new IPredicateRule[]{new TagRule()});
+            }
+            IDocumentPartitioner partitioner = new XMLDocumentPartitioner(scanner, ITypeConstants.TYPES);
+            if (partitioner != null) {
+                partitioner.connect(document);
+                document.setDocumentPartitioner(partitioner);
+            }
+            XMLReconciler rec = new XMLReconciler(editor, (MavenXmlOutlinePage) editor.getAdapter(IContentOutlinePage.class));
+            editor.setModel(rec);
+            rec.createTree(document);
+            document.addDocumentListener(rec);
+        }
+        return document;
+	
 	}
+    
 }
