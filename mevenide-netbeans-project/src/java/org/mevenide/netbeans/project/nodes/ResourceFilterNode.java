@@ -118,7 +118,7 @@ class ResourceFilterNode extends FilterNode
             return retValue;
         } else {
             return Utilities.mergeImages(retValue, 
-                        Utilities.loadImage("org/mevenide/netbeans/projects/resources/ResourceNotIncluded.gif"),
+                        Utilities.loadImage("org/mevenide/netbeans/project/resources/ResourceNotIncluded.gif"),
                         0,0);
         }
     }
@@ -130,7 +130,7 @@ class ResourceFilterNode extends FilterNode
             return retValue;
         } else {
             return Utilities.mergeImages(retValue, 
-                        Utilities.loadImage("org/mevenide/netbeans/projects/resources/ResourceNotIncluded.gif"),
+                        Utilities.loadImage("org/mevenide/netbeans/project/resources/ResourceNotIncluded.gif"),
                         0,0);
         }
     }

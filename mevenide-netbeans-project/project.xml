@@ -99,6 +99,17 @@
             <netbeans.module.dep>spec</netbeans.module.dep>
         </properties>
     </dependency>
+    <dependency>     
+        <groupId>netbeans</groupId>
+        <artifactId>org-openide-execution</artifactId>
+        <!-- include nb specification version.. that's important for compiling -->
+        <version>1.3</version>
+        <url>http://www.netbeans.org</url>
+        <properties>
+             <netbeans.module.dep>spec</netbeans.module.dep>
+        </properties>
+    </dependency>
+    
 
     <!-- PROJECT DEPS -->
     <dependency>     

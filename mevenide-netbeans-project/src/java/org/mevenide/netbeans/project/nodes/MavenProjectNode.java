@@ -51,7 +51,7 @@ public class MavenProjectNode extends FilterNode {
     public Image getIcon(int param)
     {
         if (icon == null) {
-            icon = Utilities.loadImage("org/mevenide/netbeans/projects/resources/MavenIcon.gif");
+            icon = Utilities.loadImage("org/mevenide/netbeans/project/resources/MavenIcon.gif");
         }
         return icon;
     }
@@ -59,7 +59,7 @@ public class MavenProjectNode extends FilterNode {
     public Image getOpenedIcon(int param)
     {
         if (icon == null) {
-            icon = Utilities.loadImage("org/mevenide/netbeans/projects/resources/MavenIcon.gif");
+            icon = Utilities.loadImage("org/mevenide/netbeans/project/resources/MavenIcon.gif");
         }
         return icon;
     }
