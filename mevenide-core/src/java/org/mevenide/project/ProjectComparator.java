@@ -480,8 +480,16 @@ public class ProjectComparator {
 	        UnitTest newUnitTest = newBuild.getUnitTest();
 	        if ( comparable(newUnitTest, origUnitTest) ) {
 		        detectObjectChange(newUnitTest, origUnitTest);
-//mkleint - in rc2 Unittest doens't extend Resource anymore, but just baseObject, what to do?
-//                compareResource(newUnitTest, origUnitTest);
+		        
+		        detectCollectionChange(newUnitTest.getIncludes(), origUnitTest.getIncludes());
+		        for (int j = 0; j < newUnitTest.getIncludes().size(); j++) {
+		            detectAttributeChange(origUnitTest.getIncludes().get(j), newUnitTest.getIncludes().get(j));
+		        }
+		
+		        detectCollectionChange(newUnitTest.getExcludes(), origUnitTest.getExcludes());
+		        for (int j = 0; j < origUnitTest.getExcludes().size(); j++) {
+		            detectAttributeChange(origUnitTest.getExcludes().get(j), newUnitTest.getExcludes().get(j));
+		        }
 		        compareResources(newUnitTest.getResources(), origUnitTest.getResources());
 	        }
 		}
@@ -503,6 +511,7 @@ public class ProjectComparator {
     	}
     }
 
+    
     private void compareResource(Resource origResource, Resource newResource) throws ShortCircuitException {
     	if ( comparable(newResource, origResource) ) {
 	    	detectObjectChange(newResource, origResource);
