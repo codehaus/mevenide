@@ -39,7 +39,7 @@ public class TemplateInfo {
     
     /** Creates a new instance of TemplateInfo */
     TemplateInfo(File dir, IQueryContext cont) {
-        assert directory != null;
+        assert dir != null;
         directory = dir;
         context = cont;
     }
