@@ -19,3 +19,13 @@
       <url>http://www.bonevich.com/index.php</url>
       <timezone>-4</timezone>
     </developer>
+    <developer>
+      <name>Milos Kleint</name>
+      <id>mkleint</id>
+      <email>ca206216@tiscali.cz</email>
+      <organization/>
+      <roles>
+      	<role>Developer Java</role>
+      </roles>
+      <timezone>+1</timezone>
+    </developer>
