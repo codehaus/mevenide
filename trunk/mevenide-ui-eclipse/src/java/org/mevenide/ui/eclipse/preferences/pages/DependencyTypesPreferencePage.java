@@ -19,7 +19,6 @@ package org.mevenide.ui.eclipse.preferences.pages;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.StringTokenizer;
 import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.preference.PreferencePage;
@@ -44,7 +43,7 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.PlatformUI;
 import org.mevenide.ui.eclipse.Mevenide;
-import org.mevenide.ui.eclipse.preferences.MevenidePreferenceKeys;
+import org.mevenide.ui.eclipse.preferences.DependencyTypeRegistry;
 import org.mevenide.ui.eclipse.preferences.PreferencesManager;
 import org.mevenide.util.StringUtils;
 
@@ -139,7 +138,7 @@ public class DependencyTypesPreferencePage extends PreferencePage implements IWo
     }
     
 	private void unserializeTypes() {
-        String[] registeredTypes = getUserRegisteredTypes();
+        String[] registeredTypes = DependencyTypeRegistry.getUserRegisteredTypes();
         
         for (int i = 0; i < registeredTypes.length; i++) {
             types.add(registeredTypes[i]);
@@ -150,48 +149,15 @@ public class DependencyTypesPreferencePage extends PreferencePage implements IWo
         }
     }
 
-	public static String[] getUserRegisteredTypes() {
-	    List prefTypes = new ArrayList();
-	    String registeredTypes = preferencesManager.getValue(MevenidePreferenceKeys.REGISTERED_DEPENPENCY_TYPES);
-        if ( !StringUtils.isNull(registeredTypes) ) {
-            StringTokenizer tokenizer = new StringTokenizer(registeredTypes, ","); //$NON-NLS-1$
-            while ( tokenizer.hasMoreTokens() ) {
-                String type = tokenizer.nextToken();
-                if ( !StringUtils.isNull(type) ) {
-                    prefTypes.add(type);
-                }
-            }
-        }
-        return (String[]) prefTypes.toArray(new String[prefTypes.size()]);
-	}
-	
-    public void init(IWorkbench workbench) { }
+	public void init(IWorkbench workbench) { }
 	
 	private boolean finish() {
-	    String registeredTypes = serializeTypes();
-	    if ( !StringUtils.isNull(registeredTypes) ) {
-			preferencesManager.setValue(
-				MevenidePreferenceKeys.REGISTERED_DEPENPENCY_TYPES, 
-				registeredTypes
-			);
-		    
-			return preferencesManager.store();
-	    }
 	    
-	    return true;
+		return DependencyTypeRegistry.storeTypes(types);
+	    
 	}
 	
-	private String serializeTypes() {
-	    String serializedTypes = ""; //$NON-NLS-1$
-	    for (int i = 0; i < types.size(); i++) {
-	        if ( !Arrays.asList(Mevenide.KNOWN_DEPENDENCY_TYPES).contains(types.get(i)) ) {
-	            serializedTypes += (String) types.get(i) + ","; //$NON-NLS-1$
-	        }
-	    }
-        return serializedTypes;
-    }
-
-    private void createAddTypeButton(Composite parent) {
+	private void createAddTypeButton(Composite parent) {
         addTypeButton = new Button(parent, SWT.PUSH);
         addTypeButton.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         addTypeButton.setAlignment(SWT.LEFT);
