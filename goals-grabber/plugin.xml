@@ -10,7 +10,7 @@
          	<export name="*"/>
          	<packages prefixes="org.apache.commons.collections"/>
          </library>
-         <library name="mevenide-goals-grabber-0.1.1-SNAPSHOT.jar">
+         <library name="goals-grabber-0.1.1-SNAPSHOT.jar">
          	<export name="*"/>
          	<packages prefixes="org.mevenide.goals"/>
          </library>
