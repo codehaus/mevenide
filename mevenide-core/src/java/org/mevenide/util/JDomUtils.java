@@ -61,9 +61,9 @@ import org.jdom.output.XMLOutputter;
  * @version $Id$
  * 
  */
-public class JDomOutputter {
+public class JDomUtils {
 	
-	private JDomOutputter() {
+	private JDomUtils() {
 	}
 
 	public static String convertToString(Document doc) {
