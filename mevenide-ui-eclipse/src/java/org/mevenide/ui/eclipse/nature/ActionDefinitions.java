@@ -83,6 +83,18 @@ public class ActionDefinitions {
         return list;
     }
     
+    public boolean isAutoBuild() {
+       boolean autoBuild = false;
+       try {
+           autoBuild = configuration.getAttribute("AUTO_BUILD", false);
+	   }
+	   catch (CoreException e) {
+	       e.printStackTrace();
+	   }
+       
+       return autoBuild;
+    }
+    
     public List getPatterns() {
         List list = new ArrayList();
         try {

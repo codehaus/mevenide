@@ -25,6 +25,7 @@ import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.jface.action.IAction;
 import org.mevenide.ui.eclipse.Mevenide;
 
 
@@ -66,7 +67,11 @@ public class ActionActivator implements IResourceDeltaVisitor {
 		            definition.setEnabled(project, match(path, files));
 			        if ( match(path, files) ) {
 			            shouldSkipDefinitions[i] = true;
-			            definition.setEnabled(project, true);
+			            if ( definition.isAutoBuild() ) {
+			                IAction action = new PatternBasedMavenLaunchAction(project, definition);
+			                action.run();
+			                definition.setEnabled(project, false);
+			            }
 			            return false;
 			        }
 	            }

@@ -54,7 +54,7 @@ public class MavenBuilder extends IncrementalProjectBuilder {
         }
         IResourceDelta d = getDelta(getProject());
         if ( d != null ) {
-	        List actionDefinitions = Mevenide.getInstance().getActionDefinitionsManager().getDefinitions(getProject());
+	        List actionDefinitions = Mevenide.getInstance().getActionDefinitionsManager().getDefinitions();
 	        ActionActivator activator = new ActionActivator(actionDefinitions, getProject());
 	        d.accept(activator);
         }

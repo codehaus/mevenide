@@ -17,7 +17,6 @@
 package org.mevenide.ui.eclipse.nature;
 
 import java.util.List;
-import org.eclipse.core.resources.IProject;
 
 /**  
  * 
@@ -27,5 +26,5 @@ import org.eclipse.core.resources.IProject;
  */
 public interface IActionDefinitionManager {
 
-    public abstract List getDefinitions(IProject project);
+    public abstract List getDefinitions();
 }
