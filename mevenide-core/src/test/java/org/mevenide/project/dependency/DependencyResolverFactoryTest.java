@@ -58,7 +58,7 @@ import org.mevenide.AbstractMevenideTestCase;
  * @version $Id$
  * 
  */
-public class AbstractDependencyResolverTest extends AbstractMevenideTestCase {
+public class DependencyResolverFactoryTest extends AbstractMevenideTestCase {
 
 	public void testNewInstance() throws Exception {
 		
@@ -66,7 +66,7 @@ public class AbstractDependencyResolverTest extends AbstractMevenideTestCase {
 		tmp.mkdirs();
 		File f = new File(tmp, "pyo.jar");
 		f.createNewFile();
-		assertNotNull(AbstractDependencyResolver.newInstance(f.getAbsolutePath()));
+		assertNotNull(DependencyResolverFactory.newInstance(f.getAbsolutePath()));
 		delete(new File(System.getProperty("user.home"), ".mevenide"));
 	}
 

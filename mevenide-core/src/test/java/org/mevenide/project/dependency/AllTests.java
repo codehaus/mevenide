@@ -66,7 +66,7 @@ public class AllTests  {
     public static Test suite() {
         TestSuite suite = new TestSuite();
         
-		suite.addTestSuite(AbstractDependencyResolverTest.class);
+		suite.addTestSuite(DependencyResolverFactoryTest.class);
 		suite.addTestSuite(DependencyFactoryTest.class);
 		suite.addTestSuite(DependencyResolverTest.class);
 		suite.addTestSuite(DependencyUtilTest.class);
