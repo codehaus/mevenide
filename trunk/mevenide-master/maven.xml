@@ -57,6 +57,9 @@
     <copy file="${eclipse.home}/plugins/org.eclipse.jdt.core_2.1.0/jdtcore.jar" 
   	      tofile="${maven.repo.local}/eclipse/jars/eclipse-jdtcore-2.1.0.jar"/>
   
+    <copy file="${eclipse.home}/plugins/org.eclipse.jdt.ui_2.1.0/jdt.jar" 
+  	      tofile="${maven.repo.local}/eclipse/jars/eclipse-jdtui-2.1.0.jar"/>
+  	      
   	<copy file="${eclipse.home}/plugins/org.eclipse.jdt.launching_2.1.0/launching.jar" 
   	  	  tofile="${maven.repo.local}/eclipse/jars/eclipse-launching-2.1.0.jar"/>
   
