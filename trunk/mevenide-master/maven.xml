@@ -11,7 +11,7 @@
      <ant:delete quiet="true" dir="${basedir}/dist"/>
   </preGoal>
  
-  <goal name="init">
+  <goal name="init" description="Copy eclipse dependencies to maven.repo.local if necessary">
     <util:file var="installScript" name="${basedir}/install-dependencies.xml"/>
     <j:include file="${installScript}"/>
   </goal>
@@ -38,6 +38,15 @@
   <postGoal name="jar:install">
 	<attainGoal name="mevenide:create-dist"/>
   </postGoal>
+  
+  
+  <!-- 
+  	**************************************************************************
+  	*                                                                        *
+  	* all goals below should be abstracted and extracted into a maven plugin *
+  	*                                                                        *
+  	**************************************************************************
+  -->   
   
   <!-- 
   	iterate subproject dependencies and copy dependencies required by eclipse plugin into the ${basedir}/lib/ directory.
