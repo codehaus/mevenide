@@ -37,6 +37,7 @@
             <version>2.1</version>
             <type>jar</type>
             <properties>
+                <eclipse.plugin.packages>org.apache.commons.collections</eclipse.plugin.packages>
             	<eclipse.plugin.bundle>true</eclipse.plugin.bundle>
             </properties>
         </dependency>
