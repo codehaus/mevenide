@@ -31,7 +31,6 @@ import org.apache.maven.model.Build;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Resource;
 import org.apache.maven.project.MavenProject;
-import org.codehaus.classworlds.ClassWorld;
 import org.mevenide.environment.LocationFinderAggregator;
 import org.mevenide.project.ProjectConstants;
 import org.mevenide.util.StringUtils;
@@ -59,9 +58,7 @@ public class ProjectReader {
 	}
 	
 	private ProjectReader() throws Exception {
-		ClassWorld classWorld = new ClassWorld();
-		classWorld.newRealm("root");
-		unmarshaller = new Maven(new LocationFinderAggregator().getMavenHome(), classWorld);
+        unmarshaller = new Maven(new LocationFinderAggregator().getMavenHome());
 	}
 	
 	/**

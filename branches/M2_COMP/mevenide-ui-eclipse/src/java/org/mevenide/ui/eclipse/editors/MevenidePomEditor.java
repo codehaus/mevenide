@@ -23,9 +23,9 @@ import java.lang.reflect.InvocationTargetException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.maven.Maven;
 import org.apache.maven.MavenCore;
 import org.apache.maven.project.MavenProject;
-import org.codehaus.plexus.embed.Embedder;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -45,6 +45,7 @@ import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.IElementStateListener;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
+import org.mevenide.environment.LocationFinderAggregator;
 import org.mevenide.project.ProjectComparator;
 import org.mevenide.project.ProjectComparatorFactory;
 import org.mevenide.project.io.DefaultProjectMarshaller;
@@ -125,9 +126,7 @@ public class MevenidePomEditor extends FormEditor {
         super();
         try {
             marshaller = new DefaultProjectMarshaller();
-            Embedder embedder = new Embedder();
-            embedder.start();
-    		unmarshaller = (MavenCore) embedder.lookup( MavenCore.ROLE );
+            unmarshaller = new Maven(new LocationFinderAggregator().getMavenHome());
         } catch (Exception e) {
             log.error("Could not create a POM marshaller", e);
         }
