@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE filesystem PUBLIC "-//NetBeans//DTD Filesystem 1.0//EN" "http://www.netbeans.org/dtds/filesystem-1_0.dtd">
+<filesystem>
+  <folder name="Templates">
+    <folder name="Services">
+        <folder name="Executor">
+            <file name="org-mevenide-ui-netbeans-exec-MavenExecutor.settings" 
+                  url="MavenExecutor.settings">
+                <attr boolvalue="true" name="template"/>
+                <attr name="SystemFileSystem.localizingBundle" stringvalue="org-mevenide-ui-netbeans.Bundle"/>
+                <attr name="SystemFileSystem.icon" urlvalue="nbresloc:/org/mevenide/ui/netbeans/resources/MavenIcon.gif"/>
+            </file>
+        </folder>
+    </folder>
+
+  </folder>
+
+  <folder name="Services">
+
+    <folder name="Executor">
+        <file name="org-mevenide-ui-netbeans-exec-MavenExecutor.settings" 
+              url="MavenExecutor.settings">
+            <attr name="SystemFileSystem.localizingBundle" stringvalue="org.mevenide.ui.netbeans.Bundle"/>
+            <attr name="SystemFileSystem.icon" urlvalue="nbresloc:/org/mevenide/ui/netbeans/resources/MavenIcon.gif"/>
+            <attr name="SystemFileSystem.layer" stringvalue="project"/>
+        </file>
+    </folder>
+
+    <file name="org-mevenide-ui-netbeans-MavenSettings.settings" 
+          url="MavenSettings.settings">
+        <attr name="SystemFileSystem.localizingBundle" stringvalue="org.mevenide.ui.netbeans.Bundle"/>
+        <attr name="SystemFileSystem.icon" urlvalue="nbresloc:/org/mevenide/ui/netbeans/resources/MavenIcon.gif"/>
+    </file>
+
+    <!-- Recognize text/x-+xml: -->
+    <folder name="MIMEResolver">
+      <file name="org-mevenide-ui-netbeans-mime-resolver.xml" url="mime-resolver.xml">
+        <attr name="SystemFileSystem.localizingBundle" stringvalue="org.mevenide.ui.netbeans.Bundle"/>
+        <attr name="SystemFileSystem.icon" urlvalue="nbresloc:/org/mevenide/ui/netbeans/resources/MavenIcon.gif"/>
+      </file>
+    </folder>
+
+    <folder name="Hidden">
+      <!-- To make the module nicer to debug, list the cookies it provides. -->
+<!--TODO      <file name="org-mevenide-ui-netbeans-cookies.xml" url="cookies.xml"/> -->
+    </folder>
+  </folder>
+
+  <folder name="UI">
+    <folder name="Services">
+      <folder name="Building">
+        <file name="org-mevenide-ui-netbeans-MavenSettings.shadow">
+          <attr name="originalFile" stringvalue="Services/org-mevenide-ui-netbeans-MavenSettings.settings"/>
+        </file>
+      </folder> <!-- Building -->
+    </folder> <!-- Services -->
+
+  </folder> <!-- UI -->
+
+</filesystem>
