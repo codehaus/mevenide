@@ -46,17 +46,77 @@
  * SUCH DAMAGE.
  * ====================================================================
  */
-package org.mevenide.ui.eclipse.editors;
+package org.mevenide.ui.eclipse.editors.properties;
 
+import java.util.Iterator;
+import java.util.Vector;
+
+import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
+import org.eclipse.ui.model.IWorkbenchAdapter;
 import org.eclipse.ui.views.properties.IPropertySource;
 
 /**
  * @author Jeff Bonevich (jeff@bonevich.com)
  * @version $Id$
  */
-public interface IPomPropertySource extends IPropertySource {
-	public Object getSource();
-	public void addPropertyChangeListener(IPropertyChangeListener listener);
-	public void removePropertyChangeListener(IPropertyChangeListener listener);
+public abstract class AbstractPomPropertySource 
+	implements IPomPropertySource, IAdaptable, 
+	IWorkbenchAdapter {
+
+	protected static final String EMPTY_STR = "";
+	
+	private Vector propertyListeners = new Vector();
+	
+	public AbstractPomPropertySource() {
+	}
+
+	protected String valueOrEmptyString(String value) {
+		return value != null ? value : EMPTY_STR;
+	}
+
+	protected boolean isEmpty(String value) {
+		return value == null || EMPTY_STR.equals(value);
+	}
+
+	public Object getAdapter(Class adapter) {
+		if (IPropertySource.class.equals(adapter)) {
+			return this;
+		}
+		if (IWorkbenchAdapter.class.equals(adapter)) {
+			return this;
+		}
+		return null;
+	}
+
+	public Object[] getChildren(Object o) {
+		return null;
+	}
+
+	public ImageDescriptor getImageDescriptor(Object object) {
+		return null;
+	}
+
+	public Object getParent(Object o) {
+		return null;
+	}
+	
+	public void addPropertyChangeListener(IPropertyChangeListener listener) {
+		propertyListeners.add(listener);
+	}
+	
+	public void removePropertyChangeListener(IPropertyChangeListener listener) {
+		propertyListeners.remove(listener);
+	}
+	
+	protected void firePropertyChangeEvent(String property, Object oldValue, Object newValue) {
+		Iterator itr = propertyListeners.iterator();
+		while (itr.hasNext()) {
+			IPropertyChangeListener listener = (IPropertyChangeListener) itr.next();
+			listener.propertyChange(new PropertyChangeEvent(this, property, oldValue, newValue));
+		}
+	}
+	
 }
