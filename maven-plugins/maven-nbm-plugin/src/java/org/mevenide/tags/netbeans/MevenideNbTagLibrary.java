@@ -21,7 +21,7 @@ import org.mevenide.tags.*;
 
 /**
  * 
- * @author <a href="mailto:rhill2@free.fr">Gilles Dodinet</a>
+ * @author <a href="mailto:ca206216@tiscali.cz">Milos Kleint</a>
  * @version $Id$
  * 
  */
