@@ -15,10 +15,8 @@ package org.mevenide.project.dependency;
 
 import java.io.File;
 
-import org.mevenide.Environment;
-
 /**
- * @todo still some refactoring to be done (init-phase)
+ * @todo still some refactoring to be done (group init)
  * 
  * @author Gilles Dodinet (gdodinet@wanadoo.fr)
  * @version $Id$
@@ -28,6 +26,10 @@ public class DefaultDependencyResolver extends AbstractDependencyResolver {
 	private String absoluteFileName;
 	
 	private String fileName;
+	
+	private String artifactId;
+	private String version;
+	private String extension;
 	
 	/**
 	 * 
@@ -42,68 +44,47 @@ public class DefaultDependencyResolver extends AbstractDependencyResolver {
 		this.absoluteFileName = fName;
 		this.fileName = new File(fName).getName();
 		decomposition = new DependencySplitter(fileName).split();
+		init();
+	}
+
+	private void init() {
+		initArtifactId();
+		initVersion();
+		initExtension();
 	}
 	
-	/**
-	 *
-	 * @param fileName
-	 * @return
-	 */
-	public String getGroupId() {
-		File mavenLocalRepo = new File(Environment.getMavenRepository());
-		return getGroupId(mavenLocalRepo);
-	}
-
-	/**
-	 * assume a standard repository layout, ergo a file is under one level under group Directory
-	 * e.g. mevenide/jars/mevenide-core-0.1.jar 
-	 * 
-	 * @param fileName the short file Name (e.g. mevenide-core-0.1.jar) 
-	 * @param rootDirectory
-	 * @return
-	 */
-	private String getGroupId(File rootDirectory) {
-		File[] files = rootDirectory.listFiles();
-		File[] children = files == null ? new File[0] : files;
-		for (int i = 0; i < children.length; i++) {
-			if ( children[i].isDirectory() ) {
-				String candidate = getGroupId(children[i]);
-				if ( candidate != null ) {
-					return candidate;
-				}
-			}
-			else {
-				if ( children[i].getName().equals(fileName) ) {
-					return rootDirectory.getParentFile().getName();
-				}
-			}
-		}
-		return null;
-	}
-
-	/**
-	 * @param fileName the short file name
-	 */
-	public String guessArtifactId() {
-		
-		String artifactId = decomposition[0];
+	private void initArtifactId() {
+		artifactId = decomposition[0];
 		if ( artifactId == null && fileName.indexOf("SNAPSHOT") > 0 ) {
-			return fileName.substring(0, fileName.indexOf("SNAPSHOT") - 1);
+			artifactId = fileName.substring(0, fileName.indexOf("SNAPSHOT") - 1);
 		}
+	}
+	
+	private void initVersion() {
+		version = decomposition[1];
+		if ( version == null && fileName.indexOf("SNAPSHOT") > 0 ) {
+			version = "SNAPSHOT";
+		}
+	}
+	
+	private void initExtension() {
+		extension = fileName.substring(fileName.lastIndexOf('.') + 1);
+	}
+	
+	
+
+	public String guessArtifactId() {
 		return artifactId;
-		
 	}
 
 	public String guessVersion() {
-		/*if ( fileName.indexOf("SNAPSHOT") > 0 ) {
-			return "SNAPSHOT";
-		}*/
-		String version = decomposition[1];
-		if ( version == null && fileName.indexOf("SNAPSHOT") > 0 ) {
-			return "SNAPSHOT";
-		}
 		return version;
 	}
+
+	public String guessExtension() {
+		return extension;
+	}
+
 
 	/**
 	 * assume a layout similar to the one of the local repo 
@@ -123,18 +104,16 @@ public class DefaultDependencyResolver extends AbstractDependencyResolver {
 	 */
 	public String guessGroupId()  {
 		File fileToCompute = new File(absoluteFileName);
-		
 		File firstLevelParent = fileToCompute.getParentFile();
+		String candidate = null;
 		if ( firstLevelParent.getParentFile() != null ) {
-			return firstLevelParent.getParentFile().getName();
+			candidate = firstLevelParent.getParentFile().getName();
 		}
-		else return null;
-//		return "Not Found";
+		if ( !DependencyUtil.isValidGroupId(candidate) ) candidate = null;
+		return candidate;
 	}
 	
-	public String guessExtension() {
-		return fileName.substring(fileName.lastIndexOf('.') + 1);
-	}
+	
 	
 	
 
