@@ -57,7 +57,7 @@ public final class ArgumentsManager {
 	public static String[] getVMArgs(AbstractRunner runner) {
 	    String[] properties = ArgumentsManager.getRawProperties(runner);
 	    String[] vmArgs = new String[properties.length + 1];
-	    vmArgs[0] = "-Xmx" + ConfigUtils.getHeapSize() +"m";
+	    vmArgs[0] = "-Xmx" + ConfigUtils.getHeapSize() +"M";
 	    
 	    for (int i = 1; i < properties.length + 1; i++) {
 			vmArgs[i] = properties[i - 1];
