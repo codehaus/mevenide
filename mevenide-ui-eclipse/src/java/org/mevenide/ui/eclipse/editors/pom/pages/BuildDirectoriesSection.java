@@ -104,6 +104,7 @@ public class BuildDirectoriesSection extends PageSection {
 						String directory = dialog.open();
 						if (directory != null) {
 							sourceText.setFocus();
+							directory = getRelativePath(directory);
 							sourceText.setText(directory);
 						}
 					}
@@ -111,8 +112,10 @@ public class BuildDirectoriesSection extends PageSection {
 						log.error("Unable to browse for source directory", ex);
 					}
 				}
+
 			}
 		);
+		
 		
 		// Build aspect source directory textbox and browse button
 		toggle = createOverrideToggle(container, factory);
@@ -153,6 +156,7 @@ public class BuildDirectoriesSection extends PageSection {
 						String directory = dialog.open();
 						if (directory != null) {
 							aspectsText.setFocus();
+							directory = getRelativePath(directory);
 							aspectsText.setText(directory);
 						}
 					}
@@ -202,6 +206,7 @@ public class BuildDirectoriesSection extends PageSection {
 						String directory = dialog.open();
 						if (directory != null) {
 							unitTestsText.setFocus();
+							directory = getRelativePath(directory);
 							unitTestsText.setText(directory);
 						}
 					}
@@ -236,7 +241,7 @@ public class BuildDirectoriesSection extends PageSection {
 		return container;
 	}
 
-	public void update(Project pom) {
+    public void update(Project pom) {
 		setIfDefined(sourceText, getSourceDirectory(pom), getInheritedSourceDirectory());
 		setIfDefined(aspectsText, getAspectSourceDirectory(pom), getInheritedAspectSourceDirectory());
 		setIfDefined(unitTestsText, getUnitTestSourceDirectory(pom), getInheritedUnitTestSourceDirectory());
