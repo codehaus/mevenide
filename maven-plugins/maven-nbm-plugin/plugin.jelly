@@ -63,13 +63,13 @@ The maven.nbm.manifest.bundle.basedir and  maven.nbm.manifest.bundle.include hav
     </ant:tstamp>
     <j:set var="man" value="${maven.nbm.manifest}"/>
     <j:choose>
-        <j:when test="${!empty(man)}">
+        <j:when test="${!empty man}">
             <ant:available property="maven.nbm.manifest.available" 
                        file="${man}"/>
         </j:when>
     </j:choose>
     <j:set var="bundle" value="${maven.nbm.manifest.bundle.basedir}"/>
-    <j:if test="${!empty(bundle)}">
+    <j:if test="${!empty bundle}">
         <ant:available property="maven.nbm.bundle.available" 
                    file="${bundle}"/>
     </j:if> 
@@ -113,14 +113,59 @@ The maven.nbm.manifest.bundle.basedir and  maven.nbm.manifest.bundle.include hav
           
           <!-- generate Class-Path manifest entry -->
 <!--          <j:set var="extDependencies" value=""/> -->
+         <!-- process dependencies -->
+          <j:set var="nbdep.separator" value=" " />
           <j:forEach var="artifact" items="${pom.artifacts}">
             <j:set var="dependency" value="${artifact.dependency}"/>
+            <!-- netbeans library that is part of the module, added to Class-Path attribute -->
             <j:if test="${dependency.getProperty('netbeans.module.ext') == 'true'}">
                   <j:set var="extDependencies" value="${extDependencies} ext/${artifact.name}"/>
             </j:if>
+            <!-- netbeans dependency -instead of adding to classpath, add to Openide-Module-Dependencies attribute 
+            -->
+            <j:set var="moduleDep" value="${dependency.getProperty('netbeans.module.dep')}" />
+            <j:if test="${!empty moduleDep}">
+                <ant:echo message="${dependency.artifactId} is a module dependency - jar is ${artifact.path}" />
+                <mevenide:examine-manifest jarFile="${artifact.path}" 
+                                           isLocalizedVar="nbdepIsLocalized"
+                                           isNetbeansModuleVar="nbdepIsNetbeansModule"
+                                           moduleVar="nbdepModule"
+                                           implVersionVar="nbdepImplVersion"
+                                           specVersionVar="nbdepSpecVersion"
+                /> 
+                <ant:echo message="nbdep.module=${nbdep.module}=${empty nbdep.module}=${empty(nbdep.moduleVar)}" />
+                <j:if test="${empty(nbdepModule)}">
+                    <ant:echo message="nbdep.moduleVar=${nbdepModule}= is empty." />
+                    <j:set var="nbdepModule" value="${dependency.artifactId}" />
+                </j:if>
+                <ant:echo message="nbdep.module2=${nbdepModule}=" />
+                <j:choose>
+                    <j:when test="${moduleDep == 'loose'}">
+                        <j:set var="moduleDependencies" value="${moduleDependencies}${nbdep.separator} ${nbdep.module}"/>
+                    </j:when>
+                    <j:when test="${moduleDep == 'impl'}">
+                        <mevenide:adapt-version var="nbdepImplVersion" version="${dependency.version}" type="impl"/>
+                        <j:set var="moduleDependencies" value="${moduleDependencies}${nbdep.separator} ${nbdepModule} = ${nbdepImplVersion}"/>
+                    </j:when>
+                    <j:when test="${moduleDep == 'spec'}">
+                        <mevenide:adapt-version var="nbdepSpecVersion" version="${dependency.version}" type="spec"/>
+                        <j:set var="moduleDependencies" value="${moduleDependencies}${nbdep.separator} ${nbdepModule} > ${nbdepSpecVersion}"/>
+                    </j:when>
+                    <j:otherwise>
+                	  	<ant:fail message="Unrecognized netbeans module dependecy type : ${moduleDep}. Should be one of {'spec', 'impl', 'loose'}"/>
+                    </j:otherwise>
+                </j:choose>
+                <j:set var="nbdep.separator" value="," />
+            </j:if>
           </j:forEach>
-          <j:if test="${!empty(extDependencies)}">
+          <!-- generate Class-Path manifest entry -->
+          <j:if test="${!empty extDependencies}">
                 <ant:attribute name="Class-Path" value="${extDependencies}" />
+          </j:if>
+          <!-- generate OpenIDE-Module-Module-Dependencies manifest entry -->
+          <j:if test="${!empty moduleDependencies}">
+                <ant:echo message="module deps= ${moduleDependencies}" />
+                <ant:attribute name="OpenIDE-Module-Module-Dependencies" value="${moduleDependencies}" />
           </j:if>
           <j:choose>
               <j:when test="${maven.nbm.isLocalized}">
@@ -194,15 +239,4 @@ The maven.nbm.manifest.bundle.basedir and  maven.nbm.manifest.bundle.include hav
 -->    
   </goal>
   
-  <!-- will do the same as nbm:nbm but if OpenIDE-SpecificationVersion is not defined in manifest,
-   will attempt to generate a snapshot-enhanced version refined from pom.currentVersion
-  -->
-  <goal name="nbm:nbm-snapshot"
-      prereqs="nbm:init" 
-      description="Build the Netbeans nbm snapshot.">
-    <util:file var="thisPom" name="${basedir}/project.xml"/>  
-<!--    <ant:echo message="manifest=${maven.jar.manifest}" /> -->
-    <j:set var="maven.nbm.snapshot" value="true" />
-    <attainGoal name="nbm:nbm"/> 
-  </goal>
 </project>
