@@ -1,3 +1,4 @@
+
 <project name="mevenide-core">
 
     <properties>
@@ -13,9 +14,14 @@
         </links>
         
         <menu name="General">
+        	<item name="Overview" href="/index.html"/>
         	<item name="License" href="/license.html"/>
         </menu>
         
+        <menu name="Mevenide">
+        	<item name="Mevenide" href="/../../index.html"/>
+        	<item name="Mevenide Eclipse" href="/../../multiproject/Mevenide Eclipse/index.html"/>
+        </menu>
     </body>
 
 </project>
