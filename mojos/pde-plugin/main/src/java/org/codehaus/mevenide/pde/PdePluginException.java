@@ -23,20 +23,20 @@ package org.codehaus.mevenide.pde;
  * @version $Id$
  * 
  */
-public abstract class PdeException extends Exception {
+public class PdePluginException extends Exception {
 
-    public PdeException() {
+    public PdePluginException() {
         super();
     }
-    public PdeException(String message) {
+    public PdePluginException(String message) {
         super(message);
     }
 
-    public PdeException(Throwable cause) {
+    public PdePluginException(Throwable cause) {
         super(cause);
     }
 
-    public PdeException(String message, Throwable cause) {
+    public PdePluginException(String message, Throwable cause) {
         super(message, cause);
     }
 }

@@ -16,7 +16,7 @@
  */
 package org.codehaus.mevenide.pde.plugin;
 
-import java.io.File;
+import java.util.List;
 import org.apache.maven.plugin.PluginExecutionRequest;
 import org.apache.maven.plugin.PluginExecutionResponse;
 import org.codehaus.mevenide.pde.EclipseArtifactMojo;
@@ -57,7 +57,19 @@ import org.codehaus.mevenide.pde.EclipseArtifactMojo;
  *            validator="" 
  *            expression="#maven.build.dir/eclipse" 
  *            description="Directory where the generated artifact will be outputted"
- *            
+ * @parameter name="basedir" 
+ *            type="String" 
+ *            required="true" 
+ *            validator="" 
+ *            expression="#basedir" 
+ *            description="Base directory"
+ * @parameter name="workspace" 
+ *            type="String" 
+ *            required="false" 
+ *            validator="" 
+ *            expression="#maven.pde.workspace" 
+ *            description="Eclispe workspace Location"
+ *                       
  * @author <a href="mailto:rhill2@free.fr">Gilles Dodinet</a>
  * @version $Id$
  * 
@@ -65,17 +77,9 @@ import org.codehaus.mevenide.pde.EclipseArtifactMojo;
 public class EclipsePluginMojo extends EclipseArtifactMojo {
     
     public void execute(PluginExecutionRequest request, PluginExecutionResponse response) throws Exception {
-        String eclipseHomeLocation = (String) request.getParameter("eclipseHome");
-        setEclipseHome(new File(eclipseHomeLocation));
+        initialize(request);
         
-        String eclipseConfigurationFolder = (String) request.getParameter("eclipseConfigurationFolder");
-        setConfigurationFolder(new File(eclipseConfigurationFolder));
+        List eclipseDependencies = extractEclipseDependencies(basedir);
         
-        long maxBuildId = ((Long) request.getParameter("maxBuildId")).longValue();
-        long minBuildId = ((Long) request.getParameter("minBuildId")).longValue();
-        
-        checkBuildId(minBuildId, maxBuildId);
-        
-        String outputDirectory = (String) request.getParameter("outputDirectory");
     }
 }

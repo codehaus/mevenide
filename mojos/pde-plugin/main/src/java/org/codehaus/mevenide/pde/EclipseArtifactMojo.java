@@ -20,9 +20,16 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Properties;
 import org.apache.maven.plugin.Plugin;
+import org.apache.maven.plugin.PluginExecutionRequest;
 import org.codehaus.mevenide.pde.resources.Messages;
+import org.jdom.Document;
+import org.jdom.Element;
+import org.jdom.filter.Filter;
+import org.jdom.input.SAXBuilder;
 
 
 /**  
@@ -38,11 +45,17 @@ public abstract class EclipseArtifactMojo implements Plugin {
     /** eclipse home directory */
     protected File eclipseHome;  
     
-    /** 
-     * Eclipse configuration Folder. 
-     * It is exposed as a property because it is user configurable through the <code>-configuration</code> flag 
-     */
-    private File configurationFolder;
+    /** Eclipse configuration Folder. It is exposed as a property because it is user configurable through the <code>-configuration</code> flag */
+    protected File configurationFolder;
+    
+    /** The workspace un which Eclipse project exists. Required if project has not been created in the 'default location' */
+    protected File workspace;
+    
+    /** directory where generated artifacts are outputted */
+    protected File outputDirectory;
+    
+    /** base working directory */
+    protected File basedir;
     
     /**
      * Because we build against a specific Eclipse platform version,
@@ -140,9 +153,108 @@ public abstract class EclipseArtifactMojo implements Plugin {
         }
     }
     
-    public File getConfigurationFolder() { return configurationFolder; }
-    public void setConfigurationFolder(File configurationFolder) { this.configurationFolder = configurationFolder; }
-    
-    public File getEclipseHome() { return eclipseHome; }
-    public void setEclipseHome(File eclipseHome) { this.eclipseHome = eclipseHome; }
+    /**
+     * extract the eclipse dependencies from the .classpath. 
+     * 
+     * if "org.eclipse.pde.core.requiredPlugins" container is found  then dependencies will be extracted from the plugin descriptor 
+     * else dependencies will be grabbed directly from .classpath   
+     * 
+     * @return  the list of eclipse dependencies
+     */
+    protected List extractEclipseDependencies(File basedir) throws PdePluginException {
+        try {
+            SAXBuilder builder = new SAXBuilder();
+            
+            Document document = builder.build(new File(basedir, ".classpath"));
+            
+            Element classpath = document.getRootElement();
+            
+            boolean useDependenciesContainer = useEclipseDependenciesContainer(classpath);
+            
+            return useDependenciesContainer ? extractDependenciesFromDescriptor() 
+                                            : extractDependenciesFromClasspath(classpath);
+        }
+        catch (Exception e) {
+            String message = Messages.get("BuildArtifact.CannotExtractDependencies", e.getMessage()); 
+            throw new PdePluginException(message, e);
+        }
+        
+    }
+
+    /**
+     * try to extract other Eclipse dependencies from explicit declaration in .classpath
+     * 
+     * here some use cases : 
+     * 
+     * 1- libraries are referenced using a Variable, e.g. : 
+     *   	MAVEN_REPO/eclipse/jars/jface-3.1.0.jar
+     *   	ECLIPSE_HOME/plugins/org.eclipse.jface_3.1.0/jface.jar
+     *     
+     * 2- libraries are referenced directly  
+     * 
+     * in the first case we should try to grab the variable value from .metadata/.plugins/org.eclipse.core.runtime/.settings/org.eclipse.jdt.core.prefs
+     * variables are referenced as this : org.eclipse.jdt.core.classpathVariable.<code>VARIABLE_NAME</code>.
+     * 
+     * thus we need to know the location of the workspace.. in most case it is expected to be the parent of basedir, we're not assured this is always 
+     * the case because project may have not been created in the 'default location'  
+     * 
+     * @return  the list of eclipse dependencies
+     */
+    private List extractDependenciesFromClasspath(Element classpath) {
+        return null;
+    }
+
+    /**
+     * extract the dependencies using the requires/import elements in plugin.xml file.
+     * 
+     * @return  the list of eclipse dependencies
+     */
+    private List extractDependenciesFromDescriptor() {
+        return null;
+    }
+
+    /**
+     * @param classpath toplevel &lt;classpath&gt; element 
+     * @return true if .classpath uses the <code>org.eclipse.pde.core.requiredPlugins</code> container to reference other plugin libraries false otherwise
+     */
+    boolean useEclipseDependenciesContainer(Element classpath) {
+        Iterator elems = classpath.getDescendants(new Filter() {
+            public boolean matches(Object obj) {
+                if ( obj instanceof Element ) {
+                    Element descendant = (Element) obj;
+                    return  "classpathentry".equals(descendant.getName()) && 
+                    		"con".equals(descendant.getAttributeValue("kind")) &&
+                    		"org.eclipse.pde.core.requiredPlugins".equals(descendant.getAttributeValue("path"));
+                }
+                return false;
+            }
+        });
+        
+        return elems != null && elems.hasNext();
+    }
+
+    /**
+     * extract common parameters from request
+     * @param request 
+     */
+    protected void initialize(PluginExecutionRequest request) throws ConfigurationException {
+        String eclipseHomeLocation = (String) request.getParameter("eclipseHome");
+        eclipseHome = new File(eclipseHomeLocation);
+        
+        String eclipseConfigurationFolder = (String) request.getParameter("eclipseConfigurationFolder");
+        configurationFolder = new File(eclipseConfigurationFolder);
+        
+        long maxBuildId = ((Long) request.getParameter("maxBuildId")).longValue();
+        long minBuildId = ((Long) request.getParameter("minBuildId")).longValue();
+        checkBuildId(minBuildId, maxBuildId);
+        
+        String outputDirectoryLocation = (String) request.getParameter("outputDirectory");
+        outputDirectory = new File(outputDirectoryLocation);
+        
+        String basedirLocation = (String) request.getParameter("basedir");
+        basedir = new File(basedirLocation);
+        
+        String workspaceLocation = (String) request.getParameter("outputDirectory");
+        workspace = new File(workspaceLocation);
+    }
 }
