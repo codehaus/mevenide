@@ -6,3 +6,4 @@ lib
 plugin.xml
 velocity.log
 *.jar
+.mvnignore
