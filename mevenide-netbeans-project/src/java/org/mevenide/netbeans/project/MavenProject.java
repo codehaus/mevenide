@@ -184,12 +184,12 @@ public class MavenProject implements Project {
             }
         }
         // this one should not fail
-        String path = properties.getResolvedValue("maven.src.dir");
+        String path = properties.getResolvedValue("maven.src.dir"); //NOI18N
         if (path == null) {
             logger.warn("Strange thing here. testsrc dir not found.");
             return null;
         }
-        File fl = new File(path, "test/java");
+        File fl = new File(path, "test/java"); //NOI18N
         return FileUtil.normalizeFile(fl).toURI();
     }
     
@@ -201,13 +201,13 @@ public class MavenProject implements Project {
             }
         }
         // this one should not fail
-        String path = properties.getResolvedValue("maven.src.dir");
+        String path = properties.getResolvedValue("maven.src.dir"); //NOI18N
         if (path == null) {
             logger.warn("Strange thing here. src dir not found.");
             return null;
         }
         // TODO - huh? what is the default location of the aspects? is there any?
-        File fl = new File(path, "aspects");
+        File fl = new File(path, "aspects"); //NOI18N
         return  FileUtil.normalizeFile(fl).toURI();
     }    
    
@@ -219,15 +219,20 @@ public class MavenProject implements Project {
             }
         }
         // this one should not fail
-        String path = properties.getResolvedValue("maven.src.dir");
+        String path = properties.getResolvedValue("maven.src.dir"); //NOI18N
         if (path == null) {
             logger.warn("Strange thing here. src dir not found.");
             return null;
         }
         // TODO - huh? what is the default location of the integration tests? is there any?
-        File fl = new File(path, "test/integration");
+        File fl = new File(path, "test/integration"); //NOI18N
         return  FileUtil.normalizeFile(fl).toURI();
-    }       
+    }    
+  
+  public URI getWebAppDirectory() {
+      String path = getPropertyResolver().getResolvedValue("maven.war.src"); //NOI18N
+      return path == null ? null : getDirURI(path);
+  }
     
    private URI getDirURI(String path) {
        File parent = FileUtil.toFile(getProjectDirectory());

@@ -5,7 +5,7 @@
   <id>mevenide-netbeans-project</id>
   <name>Mevenide Netbeans project support</name>
   <artifactId>mevenide-netbeans-project</artifactId>
-  <currentVersion>0.1</currentVersion>
+  <currentVersion>0.2-SNAPSHOT</currentVersion>
   <package>org.mevenide.netbeans.project</package>
   <description>Netbeans Maven integration, recognition of maven projects, running maven goals etc. 
   For a complete list of features, see http://mevenide.codehaus.org/mevenide-netbeans-project/features.html</description>

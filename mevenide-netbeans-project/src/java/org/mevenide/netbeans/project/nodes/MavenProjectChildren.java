@@ -19,6 +19,7 @@ package org.mevenide.netbeans.project.nodes;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.util.ArrayList;
@@ -40,6 +41,7 @@ import org.netbeans.spi.java.project.support.ui.PackageView;
 
 
 import org.openide.filesystems.FileObject;
+import org.openide.filesystems.FileUtil;
 import org.openide.filesystems.URLMapper;
 import org.openide.loaders.DataFolder;
 import org.openide.nodes.Node;
@@ -52,11 +54,13 @@ import org.openide.nodes.Children;
 class MavenProjectChildren extends Children.Keys {
     private static final Log logger = LogFactory.getLog(MavenProjectChildren.class);
     
-    private static final Object KEY_JELLY_SCRIPT = "jellyScript"; //NOI18N
-    private static final Object KEY_RESOURCES = "resources"; //NOI18N
+    private static final String KEY_JELLY_SCRIPT = "jellyScript"; //NOI18N
+    private static final String KEY_RESOURCES = "resources"; //NOI18N
+    private static final String KEY_WEBAPP = "webapp"; //NOI18N
     
     private MavenProject project;
     private PropertyChangeListener changeListener;
+    private String currentWebAppKey;
     
     public MavenProjectChildren(MavenProject project) {
         this.project = project;
@@ -94,6 +98,11 @@ class MavenProjectChildren extends Children.Keys {
         for (int i = 0; i < javagroup.length; i++) {
             list.add(javagroup[i]);
         }
+        URI webapp = project.getWebAppDirectory();
+        if (webapp != null) {
+            currentWebAppKey = KEY_WEBAPP + webapp;
+            list.add(currentWebAppKey);
+        }
         Project proj = project.getOriginalMavenProject();
         Build build = proj.getBuild();
         if (build != null) {
@@ -102,6 +111,7 @@ class MavenProjectChildren extends Children.Keys {
                 list.add(KEY_RESOURCES);
             }
         }
+        
         FileObject fo = project.getProjectDirectory().getFileObject("plugin", "jelly");
         if (fo != null) {
             list.add(KEY_JELLY_SCRIPT);
@@ -129,6 +139,8 @@ class MavenProjectChildren extends Children.Keys {
         }
         else if (key == KEY_RESOURCES) {
             n = new ResourcesRootNode(project);
+        } else if (key == currentWebAppKey) {
+            n = createWebAppNode();
         }
         return n == null ? new Node[0] : new Node[] {n};
     }
@@ -154,7 +166,24 @@ class MavenProjectChildren extends Children.Keys {
         //TODO - create the folder if it doesn't exist? and do it here? I'd rather do it when opening project..
         return null;
     }
-    
+
+    private Node createWebAppNode() {
+        Node n =  null;
+        try {
+            FileObject fo = URLMapper.findFileObject(project.getWebAppDirectory().toURL());
+            if (fo != null) {
+                DataFolder fold = DataFolder.findFolder(fo);
+                File fil = FileUtil.toFile(fo);
+                if (fold != null) {
+                    n = new WebAppFilterNode(project, fold.getNodeDelegate().cloneNode(), fil);
+                }
+            }
+        } catch (MalformedURLException exc) {
+            logger.debug("malformed webapp rootfile url", exc);
+            n = null;
+        }
+        return n;
+    }
     
  
     
