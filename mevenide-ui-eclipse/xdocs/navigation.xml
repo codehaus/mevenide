@@ -10,7 +10,7 @@
     <body>
         <links>
             <item name="Maven" href="http://www.maven.org/"/>
-            <item href="${pom.siteDirectory}/../index.html" name="Mevenide"/>
+            <item href="../mevenide-master/index.html" name="Mevenide"/>
         </links>
         <menu name="License">
             <item name="License" href="/license.html"/>

@@ -8,7 +8,7 @@
   <body>
   	<links>
       <item href="http://maven.apache.org/" name="Maven"/>
-      <item href="${pom.siteDirectory}/index.html" name="Mevenide"/>
+      <item href="../mevenide-master/index.html" name="Mevenide"/>
     </links>
   	
     <menu name="Home">

@@ -17,7 +17,7 @@
         					Synchronizing Maven project.xml 
         				</td>
         				<td>
-        					<img src="images/ok.gif" alt="done"/>
+        					<font color="RED"><b>In progress..</b></font>
         				</td>
         			</tr>
         			<tr>
@@ -25,7 +25,7 @@
         					Synchronizing IDE project settings
         				</td>
         				<td>
-        					<img src="images/ko.gif" alt="to be done"/>
+        					<font color="ORANGE"><b>Relies on Maven launcher</b>, since it uses the standard maven-eclipse-plugin.</font>
         				</td>
         			</tr>
         		</table>
@@ -37,7 +37,7 @@
         				Plugging Mevenide as <i>external-tools</i>
         			</td>
         			<td>
-        				<img src="images/ko.gif" alt="to be done"/>
+        				<font color="RED"><b>TO BE DONE</b></font>
         			</td>
         		</tr>
         		<tr>
@@ -45,7 +45,7 @@
 						Abstract (non GUI) Maven Runner 
         			</td>
         			<td>
-        				<img src="images/ok.gif" alt="done"/>
+        				<font color="ORANGE"><b>Update <code>org.mevenide.core.AbstractRunner</code> so that it uses Classworlds instead Forehead</b>. <br/> Forehead implementation broken.</font>
         			</td>
         		</tr>
         		<tr>
@@ -53,7 +53,7 @@
 						Maven projects enablement 
         			</td>
         			<td>
-        				<img src="images/ok.gif" alt="done"/>
+        				<font color="ORANGE"><b>TO BE TESTED</b></font>
         			</td>        		
        	 		</tr>
         		<tr>
@@ -61,7 +61,7 @@
 						Maven goals launching dialog 
         			</td>
         			<td>
-        				<img src="images/ok.gif" alt="done"/>
+        				<font color="ORANGE">Crappy UI Dialog that could be used as a starter. We should switch to an ANT-like UI to launch Maven.</font>
         			</td>        		
         		</tr>
       	  		<tr>	
@@ -69,7 +69,7 @@
 						Maven launching behavior 
        	 			</td>
        		 		<td>
-        				<img src="images/ko.gif" alt="to be done"/>
+        				<font color="ORANGE"><b>Relies on AbstractRunner and goals-grabber</b></font>
         			</td>        		
         		</tr>
         	</table>
@@ -81,7 +81,7 @@
         				AutoSynchronization through a <i>MavenBuilder</i> (eclipse only ?)
         			</td>
         			<td>
-        				<img src="images/ko.gif" alt="to be done"/>
+        				<font color="RED"><b>TO BE DONE</b></font>
         			</td>
         		</tr>
         		<tr>
@@ -89,7 +89,7 @@
         				Providing templates layouts for different project kind (e.g. java, j2ee, etc..)
         			</td>
         			<td>
-        				<img src="images/ko.gif" alt="to be done"/>
+        				<font color="RED"><b>TO BE DONE</b></font>
         			</td>
         		</tr>       
         	</table> 	

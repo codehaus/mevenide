@@ -10,11 +10,13 @@
     <body>
         <links>
             <item name="Maven" href="http://www.maven.org/"/>
-            <item href="${pom.siteDirectory}/../index.html" name="Mevenide"/>
+            <item href="../mevenide-master/index.html" name="Mevenide"/>
         </links>
         
         <menu name="General">
+        	<item name="Model" href="/model.html"/>
             <item name="License" href="/license.html"/>
+            
         </menu>
         
     </body>
