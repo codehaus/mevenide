@@ -28,24 +28,31 @@ public class DefaultDependencyResolver implements IDependencyResolver {
 	private String artifact;
 	
 	private String fileName;
-	
+	private File file;
 	private String artifactId;
 	private String version;
 	private String extension;
 	private String groupId;
+        private String type;
 	
 
 	private IDependencySplitter.DependencyParts dependencyParts ;
 	
 	public void setFileName(String fName) {
-		this.artifact = fName;
-		this.fileName = new File(fName).getName();
+		artifact = fName;
+                file = new File(fName);
+		fileName = file.getName();
 		dependencyParts = new DependencySplitter(fileName).split();
 		init();
 		//set id if groupId == null ?
 	}
 
 	private void init() {
+                artifactId = null;
+                version = null;
+                extension = null;
+                groupId = null;
+                type = null;
 		initArtifactId();
 		initVersion();
 		initExtension();
@@ -67,18 +74,32 @@ public class DefaultDependencyResolver implements IDependencyResolver {
 	}
 	
 	private void initExtension() {
-		extension = fileName.substring(fileName.lastIndexOf('.') + 1);
+            File firstLevelParent = file.getParentFile();
+            if (firstLevelParent.getName().endsWith("s")) {
+                type = firstLevelParent.getName().substring(0, firstLevelParent.getName().length() - 1);
+            }
+            if (type != null && fileName.endsWith(type)) {
+                extension = type;
+            } else {
+                extension = fileName.substring(fileName.lastIndexOf('.') + 1);
+            }
+            if (type == null) {
+                type = extension;
+            }
 	}
 	
 	private void initGroupId() {
-		File fileToCompute = new File(artifact);
-		File firstLevelParent = fileToCompute.getParentFile();
-		if ( firstLevelParent != null && firstLevelParent.getParentFile() != null ) {
+		File firstLevelParent = file.getParentFile();
+		if ( firstLevelParent != null  
+                      && firstLevelParent.getName().equalsIgnoreCase(guessExtension() + "s")
+                      && firstLevelParent.getParentFile() != null ) {
 			groupId = firstLevelParent.getParentFile().getName();
 		}
-		if ( !DependencyUtil.isValidGroupId(groupId) ) {
-			groupId = null;
-		}
+// mkleint - DependencyUtil.isValidGroupId() is evil - consults the default 
+//                local repository. what if there's more local repos?
+//		if ( !DependencyUtil.isValidGroupId(groupId) ) {
+//			groupId = null;
+//		}
 	}
 
 	public String guessArtifactId() {
@@ -96,7 +117,10 @@ public class DefaultDependencyResolver implements IDependencyResolver {
 	public String guessGroupId()  {
 		return groupId;
 	}
-
+        
+        public String guessType() {
+            return type;
+        }
 	
 	private String getShortName() {
 		String shortFileName = new File(fileName).getName();
