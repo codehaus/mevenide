@@ -33,6 +33,7 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
+import org.mevenide.properties.IPropertyLocator;
 import org.mevenide.properties.IPropertyResolver;
 
 /**
@@ -137,7 +138,8 @@ public class PropertyTableModel implements TableModel, TableCellRenderer {
             return false;
         }
         if (column == COLUMN_VALUE || column == COLUMN_ORIGIN) {
-            return true;
+            TableRowPropertyChange change = (TableRowPropertyChange)lst.get(row);
+            return (change.getNewLocation() != IPropertyLocator.LOCATION_SYSENV);
         }
         return false;
     }
@@ -181,7 +183,8 @@ public class PropertyTableModel implements TableModel, TableCellRenderer {
         if (column == COLUMN_VALUE) {
             //value
             String val = resolve ? resolver.resolveString(change.getNewValue()) : change.getNewValue();
-            TableCellRenderer render = resolve ? keyDelegate : valueDelegate;
+            TableCellRenderer render = resolve || change.getNewLocation() == IPropertyLocator.LOCATION_SYSENV
+                                          ? keyDelegate : valueDelegate;
             Component com = render.getTableCellRendererComponent(jTable,  val, isSelected, hasFocus, row, column);
             if (com instanceof JLabel) {
                 JLabel lbl = (JLabel)com;
