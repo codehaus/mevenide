@@ -54,7 +54,7 @@ package org.mevenide.ui.eclipse.editors.pages;
  * @version $Id$
  */
 public interface IOverrideAdaptor {
-	public void overrideParent(String value);
-	public String acceptParent();
+	public void overrideParent(Object value);
+	public Object acceptParent();
 	public void refreshUI();
 }

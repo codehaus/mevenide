@@ -110,10 +110,10 @@ public class DescriptionSection extends PageSection {
 		);
 		shortDescText = new OverridableTextEntry(createText(container, factory, 2), toggle);
 		OverrideAdaptor adaptor = new OverrideAdaptor() {
-			public void overrideParent(String value) {
-				pom.setShortDescription(value);
+			public void overrideParent(Object value) {
+				pom.setShortDescription((String) value);
 			}
-			public String acceptParent() {
+			public Object acceptParent() {
 				return getParentPom().getShortDescription();
 			}
 		};
@@ -130,10 +130,10 @@ public class DescriptionSection extends PageSection {
 		);
 		inceptionYearText = new OverridableTextEntry(createText(container, factory, 2), toggle);
 		adaptor = new OverrideAdaptor() {
-			public void overrideParent(String value) {
-				pom.setInceptionYear(value);
+			public void overrideParent(Object value) {
+				pom.setInceptionYear((String) value);
 			}
-			public String acceptParent() {
+			public Object acceptParent() {
 				return getParentPom().getInceptionYear();
 			}
 		};
@@ -150,10 +150,10 @@ public class DescriptionSection extends PageSection {
 		);
 		urlText = new OverridableTextEntry(createText(container, factory, 2), toggle);
 		adaptor = new OverrideAdaptor() {
-			public void overrideParent(String value) {
-				pom.setUrl(value);
+			public void overrideParent(Object value) {
+				pom.setUrl((String) value);
 			}
-			public String acceptParent() {
+			public Object acceptParent() {
 				return getParentPom().getUrl();
 			}
 		};
@@ -170,10 +170,10 @@ public class DescriptionSection extends PageSection {
 		);
 		currentVersionText = new OverridableTextEntry(createText(container, factory, 2), toggle);
 		adaptor = new OverrideAdaptor() {
-			public void overrideParent(String value) {
-				pom.setCurrentVersion(value);
+			public void overrideParent(Object value) {
+				pom.setCurrentVersion((String) value);
 			}
-			public String acceptParent() {
+			public Object acceptParent() {
 				return getParentPom().getCurrentVersion();
 			}
 		};
@@ -197,10 +197,10 @@ public class DescriptionSection extends PageSection {
 			createBrowseButton(container, factory, labelName, toolTip, 1)
 		);
 		adaptor = new OverrideAdaptor() {
-			public void overrideParent(String value) {
-				pom.setLogo(value);
+			public void overrideParent(Object value) {
+				pom.setLogo((String) value);
 			}
-			public String acceptParent() {
+			public Object acceptParent() {
 				return getParentPom().getLogo();
 			}
 		};
@@ -247,10 +247,10 @@ public class DescriptionSection extends PageSection {
 			createBrowseButton(container, factory, labelName, toolTip, 1)
 		);
 		adaptor = new OverrideAdaptor() {
-			public void overrideParent(String value) {
-				pom.setPackage(value);
+			public void overrideParent(Object value) {
+				pom.setPackage((String) value);
 			}
-			public String acceptParent() {
+			public Object acceptParent() {
 				return getParentPom().getPackage();
 			}
 		};

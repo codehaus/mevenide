@@ -99,10 +99,10 @@ public class OrganizationSection extends PageSection {
 		);
 		nameText = new OverridableTextEntry(createText(container, factory, 2), toggle);
 		OverrideAdaptor adaptor = new OverrideAdaptor() {
-			public void overrideParent(String value) {
-				pom.getOrganization().setName(value);
+			public void overrideParent(Object value) {
+				pom.getOrganization().setName((String) value);
 			}
-			public String acceptParent() {
+			public Object acceptParent() {
 				return getParentPom().getOrganization().getName();
 			}
 		};
@@ -119,10 +119,10 @@ public class OrganizationSection extends PageSection {
 		);
 		urlText = new OverridableTextEntry(createText(container, factory, 2), toggle);
 		adaptor = new OverrideAdaptor() {
-			public void overrideParent(String value) {
-				pom.getOrganization().setUrl(value);
+			public void overrideParent(Object value) {
+				pom.getOrganization().setUrl((String) value);
 			}
-			public String acceptParent() {
+			public Object acceptParent() {
 				return getParentPom().getOrganization().getUrl();
 			}
 		};
@@ -146,10 +146,10 @@ public class OrganizationSection extends PageSection {
 			createBrowseButton(container, factory, labelName, toolTip, 1)
 		);
 		adaptor = new OverrideAdaptor() {
-			public void overrideParent(String value) {
-				pom.getOrganization().setLogo(value);
+			public void overrideParent(Object value) {
+				pom.getOrganization().setLogo((String) value);
 			}
-			public String acceptParent() {
+			public Object acceptParent() {
 				return getParentPom().getOrganization().getLogo();
 			}
 		};

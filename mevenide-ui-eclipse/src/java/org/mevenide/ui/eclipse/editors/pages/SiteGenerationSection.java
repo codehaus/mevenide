@@ -101,10 +101,10 @@ public class SiteGenerationSection extends PageSection {
 		);
 		siteAddressText = new OverridableTextEntry(createText(container, factory, 2), toggle);
 		OverrideAdaptor adaptor = new OverrideAdaptor() {
-			public void overrideParent(String value) {
-				pom.setSiteAddress(value);
+			public void overrideParent(Object value) {
+				pom.setSiteAddress((String) value);
 			}
-			public String acceptParent() {
+			public Object acceptParent() {
 				return getParentPom().getSiteAddress();
 			}
 		};
@@ -121,10 +121,10 @@ public class SiteGenerationSection extends PageSection {
 		);
 		distSiteText = new OverridableTextEntry(createText(container, factory, 2), toggle);
 		adaptor = new OverrideAdaptor() {
-			public void overrideParent(String value) {
-				pom.setDistributionSite(value);
+			public void overrideParent(Object value) {
+				pom.setDistributionSite((String) value);
 			}
-			public String acceptParent() {
+			public Object acceptParent() {
 				return getParentPom().getDistributionSite();
 			}
 		};
@@ -141,10 +141,10 @@ public class SiteGenerationSection extends PageSection {
 		);
 		issueTrackingText = new OverridableTextEntry(createText(container, factory, 2), toggle);
 		adaptor = new OverrideAdaptor() {
-			public void overrideParent(String value) {
-				pom.setIssueTrackingUrl(value);
+			public void overrideParent(Object value) {
+				pom.setIssueTrackingUrl((String) value);
 			}
-			public String acceptParent() {
+			public Object acceptParent() {
 				return getParentPom().getIssueTrackingUrl();
 			}
 		};
@@ -168,10 +168,10 @@ public class SiteGenerationSection extends PageSection {
 			createBrowseButton(container, factory, labelName, toolTip, 1)
 		);
 		adaptor = new OverrideAdaptor() {
-			public void overrideParent(String value) {
-				pom.setSiteDirectory(value);
+			public void overrideParent(Object value) {
+				pom.setSiteDirectory((String) value);
 			}
-			public String acceptParent() {
+			public Object acceptParent() {
 				return getParentPom().getSiteDirectory();
 			}
 		};
@@ -218,10 +218,10 @@ public class SiteGenerationSection extends PageSection {
 			createBrowseButton(container, factory, labelName, toolTip, 1)
 		);
 		adaptor = new OverrideAdaptor() {
-			public void overrideParent(String value) {
-				pom.setDistributionDirectory(value);
+			public void overrideParent(Object value) {
+				pom.setDistributionDirectory((String) value);
 			}
-			public String acceptParent() {
+			public Object acceptParent() {
 				return getParentPom().getDistributionDirectory();
 			}
 		};
