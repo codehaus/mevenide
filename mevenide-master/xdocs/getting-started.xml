@@ -11,7 +11,7 @@
 		or you want to build Mevenide from the sources, and/or want to understand some of the internals. 
 		<br/>
 		This document presents the Mevenide structure  and explains how to build and test it using the Eclipse runtime-workbench. 
-		It focuses on Eclipse integration. <br/>
+		It focuses on Eclipse integration. This is a draft subject to change.<br/>
 		To begin with you should chek out a fresh version of the various Mevenide modules. There are atm four modules you need :
 		<ul>
 			<li>
@@ -62,12 +62,13 @@
 		There are also other tests that have been excluded cuz they're expected to fail if not launched from within Eclipse through the 
 		<code>org.eclipse.pde.junit</code> plugin ; that plugin (expected to be provided with Eclipse 3) extends the junit Eclipse plugin 
 		allows us to test plugins (altho i have not managed to use it successfully for now - it keeps on throwing NoClassDefFoundError). 
-		I think its a better (smarter, easier, &lt;whatever you want ot insert here&gt;)  way to test plugins than mocking the Eclipse API.
+		I think its a better (smarter, easier, &lt;whatever you want to insert here&gt;)  way to test plugins than mocking the Eclipse API.
 	</section>
 	
 	<section name="Configuring the build process">
 		If there should be no problem to build the goals-grabber and the mevenide-core subprojects, the mevenide-ui-eclipse project is a little bit 
 		trickier to configure since most of the Eclipse libraries are not present at ibiblio (perhaps should we ask to upload them ? im not sure here).
+		So i can see two ways of solving that : copy all required missing dependencies to the repository, or use the maven jar overriding feature.
 		
 		<code>
 		<![CDATA[
