@@ -12,7 +12,18 @@ body {
 	border-left: none #003366;
 
  }
+img.handle {
+ border: 0;
+ padding-right: 2px;
+}
+#navcolumn div div  {
+ background-image: none;
+ background-repeat: no-repeat;
+}
 
+#navcolumn div div {
+  padding-left: 10px;
+}
 .app h4 {
  color: #fff;
  background-color: #888;

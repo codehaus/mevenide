@@ -26,9 +26,9 @@
         </menu>
         
         <menu name="Mevenide">
-        	<item name="Mevenide" href="/../../index.html"/>
-        	<item name="Mevenide Goals Grabber" href="/../../multiproject/Goals Grabber/index.html"/>
-        	<item name="Mevenide Core" href="/../../multiproject/Mevenide Core/index.html"/>
+        	<item name="Mevenide" href="../index.html"/>
+        	<item name="Mevenide Goals Grabber" href="../mevenide-goals-grabber/index.html"/>
+        	<item name="Mevenide Core" href="../mevenide-core/index.html"/>
         </menu>
         
         <!-- search/ -->
