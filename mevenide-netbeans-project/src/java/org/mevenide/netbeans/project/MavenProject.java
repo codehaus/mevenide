@@ -23,6 +23,7 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.File;
 import java.net.URI;
+import java.util.Arrays;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import org.apache.commons.logging.Log;
@@ -70,13 +71,18 @@ public class MavenProject implements Project {
     private Image icon;
     private Lookup lookup;
     private PropertyChangeSupport support;
-    private Updater updater;
+    private Updater updater1;
+    private Updater updater2;
+    private Updater updater3;
+    
     /** Creates a new instance of MavenProject */
     MavenProject(FileObject projectFO, File projectFile) throws Exception {
         support = new PropertyChangeSupport(this);
         file = projectFile;
         fileObject = projectFO;
-        updater = new Updater();
+        updater1 = new Updater(true);
+        updater2 = new Updater(true, USER_DIR_FILES);
+        updater3 = new Updater(false);
         File projectDir = FileUtil.toFile(fileObject.getParent());
         queryContext = new DefaultQueryContext(projectDir);
         properties = PropertyResolverFactory.getFactory().createContextBasedResolver(queryContext);
@@ -134,8 +140,16 @@ public class MavenProject implements Project {
         return queryContext;
     }
     
-    Updater getUpdater() {
-        return updater;
+    Updater getProjectFolderUpdater() {
+        return updater1;
+    }
+    
+    Updater getUserFolderUpdater() {
+        return updater2;
+    }
+    
+    Updater getFileUpdater() {
+        return updater3;
     }
     
     public Image getIcon() {
@@ -324,50 +338,66 @@ public class MavenProject implements Project {
         
     }    
  
+    // needs to be binary sorted;
+    private static final String[] DEFAULT_FILES = new String[] {
+        "build.properties",
+        "project.properties",
+        "project.xml"
+    };
+    private static final String[] USER_DIR_FILES = new String[] {
+        "build.properties"
+    };
     
     private class Updater implements FileChangeListener {
         
 //        private FileObject fileObject;
+        private boolean isFolder;
+        private String[] filesToWatch;
+        Updater(boolean folder) {
+            this(folder, DEFAULT_FILES);
+        }
         
-        Updater() {
+        Updater(boolean folder, String[] toWatch) {
+            isFolder = folder;
+            filesToWatch = toWatch;
         }
         
         public void fileAttributeChanged(FileAttributeEvent fileAttributeEvent) {
         }
         
         public void fileChanged(FileEvent fileEvent) {
-            String nameExt = fileEvent.getFile().getNameExt();
-            if (nameExt.equals("project.xml") ||
-                nameExt.equals("project.properties") ||
-                nameExt.equals("build.properties")) 
-            {
+            if (!isFolder) {
+                String nameExt = fileEvent.getFile().getNameExt();
+                if (Arrays.binarySearch(filesToWatch, nameExt) != -1)  {
+                    System.out.println("file changed=" + fileEvent);
                     firePropertyChange(PROP_PROJECT);
+                }
             }
         }
         
         public void fileDataCreated(FileEvent fileEvent) {
             //TODO shall also include the parent of the pom if available..
-            String nameExt = fileEvent.getFile().getNameExt();
-            if (nameExt.equals("project.xml") ||
-                nameExt.equals("project.properties") ||
-                nameExt.equals("build.properties")) {
+            if (isFolder) {
+                String nameExt = fileEvent.getFile().getNameExt();
+                if (Arrays.binarySearch(filesToWatch, nameExt) != -1) {
                     File parent = FileUtil.toFile(fileEvent.getFile().getParent());
-                    if (parent.equals(queryContext.getUserDirectory()) && nameExt.equals("build.properties")) {
-                        fileEvent.getFile().addFileChangeListener(this);
-                    }
-                    if (parent.equals(queryContext.getProjectDirectory())) {
-                        fileEvent.getFile().addFileChangeListener(this);
-                    }
+                    fileEvent.getFile().addFileChangeListener(getFileUpdater());
+                    System.out.println("file created=" + fileEvent);
                     firePropertyChange(PROP_PROJECT);
+                }
             }
         }
         
         public void fileDeleted(FileEvent fileEvent) {
-            fileEvent.getFile().removeFileChangeListener(this);
-            firePropertyChange(PROP_PROJECT);
+            if (!isFolder) {
+                System.out.println("fileDeleted=" + fileEvent);
+                fileEvent.getFile().removeFileChangeListener(getFileUpdater());
+                firePropertyChange(PROP_PROJECT);
+            }
         }
         
         public void fileFolderCreated(FileEvent fileEvent) {
+            System.out.println("folder created=" + fileEvent);
             firePropertyChange(PROP_PROJECT);
         }
         

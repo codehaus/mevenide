@@ -161,4 +161,23 @@ public class FileUtilities {
         }
         return (FileObject[])files.toArray(new FileObject[files.size()]);
     }
+
+    /**
+     * delete a file or dir, recursively.
+     */
+    public static void delete(File file) {
+        if ( file.isFile() ) {
+            file.delete();
+        }
+        else {
+            File[] files = file.listFiles();
+            if ( files != null ) {
+                for (int i = 0; i < files.length; i++) {
+                    delete(files[i]);
+                }
+            }
+            file.delete();
+        }
+        
+    }
 }

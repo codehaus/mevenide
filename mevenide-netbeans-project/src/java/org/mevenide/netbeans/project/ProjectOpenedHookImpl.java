@@ -81,46 +81,46 @@ public class ProjectOpenedHookImpl extends ProjectOpenedHook {
     private void attachUpdater() {
         FileObject fo = FileUtil.toFileObject(project.getContext().getProjectDirectory());
         FileObject userFo = FileUtil.toFileObject(project.getContext().getUserDirectory());
-        fo.addFileChangeListener(project.getUpdater());
-        userFo.addFileChangeListener(project.getUpdater());
+        fo.addFileChangeListener(project.getProjectFolderUpdater());
+        userFo.addFileChangeListener(project.getUserFolderUpdater());
         FileObject xml = fo.getFileObject("project.xml");
         FileObject prop = fo.getFileObject("project.properties");
         FileObject prop2 = fo.getFileObject("build.properties");
         FileObject prop3 = userFo.getFileObject("build.properties");
         if (xml != null) {
-            xml.addFileChangeListener(project.getUpdater());
+            xml.addFileChangeListener(project.getFileUpdater());
         }
         if (prop != null) {
-            prop.addFileChangeListener(project.getUpdater());
+            prop.addFileChangeListener(project.getFileUpdater());
         }
         if (prop2 != null) {
-            prop2.addFileChangeListener(project.getUpdater());
+            prop2.addFileChangeListener(project.getFileUpdater());
         }
         if (prop3 != null) {
-            prop3.addFileChangeListener(project.getUpdater());
+            prop3.addFileChangeListener(project.getFileUpdater());
         }
     }    
     
    private void detachUpdater() {
         FileObject fo = FileUtil.toFileObject(project.getContext().getProjectDirectory());
         FileObject userFo = FileUtil.toFileObject(project.getContext().getUserDirectory());
-        fo.removeFileChangeListener(project.getUpdater());
-        userFo.removeFileChangeListener(project.getUpdater());
+        fo.removeFileChangeListener(project.getProjectFolderUpdater());
+        userFo.removeFileChangeListener(project.getUserFolderUpdater());
         FileObject xml = fo.getFileObject("project.xml");
         FileObject prop = fo.getFileObject("project.properties");
         FileObject prop2 = fo.getFileObject("build.properties");
         FileObject prop3 = userFo.getFileObject("build.properties");
         if (xml != null) {
-            xml.removeFileChangeListener(project.getUpdater());
+            xml.removeFileChangeListener(project.getFileUpdater());
         }
         if (prop != null) {
-            prop.removeFileChangeListener(project.getUpdater());
+            prop.removeFileChangeListener(project.getFileUpdater());
         }
         if (prop2 != null) {
-            prop2.removeFileChangeListener(project.getUpdater());
+            prop2.removeFileChangeListener(project.getFileUpdater());
         }
         if (prop3 != null) {
-            prop3.removeFileChangeListener(project.getUpdater());
+            prop3.removeFileChangeListener(project.getFileUpdater());
         }
     }        
 

@@ -22,6 +22,9 @@ import java.io.IOException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.tools.ant.util.FileUtils;
+import org.mevenide.context.DefaultQueryContext;
+import org.mevenide.environment.ILocationFinder;
+import org.mevenide.environment.LocationFinderAggregator;
 import org.mevenide.environment.SysEnvLocationFinder;
 import org.openide.modules.InstalledFileLocator;
 import org.openide.modules.ModuleInstall;
@@ -50,10 +53,10 @@ public class MavenModule extends ModuleInstall {
         if (maven_home == null) {
             throw new IllegalStateException("Maven not installed or the MAVEN_HOME property not set.");
         }
-        copymMevenidePlugin(new File(maven_home));
+        copyMevenidePlugin(new File(maven_home));
     }
     
-    private void copymMevenidePlugin(File home) {
+    private void copyMevenidePlugin(File home) {
         if (home.exists()) {
             File plugins = new File(home, "plugins"); //NOI18N
             File[] files = plugins.listFiles(new FilenameFilter() {
@@ -66,49 +69,36 @@ public class MavenModule extends ModuleInstall {
             });
             File current = InstalledFileLocator.getDefault().locate("maven-plugins/" + CURRENT_VERSION, null, false);
             // TODO refine here, to not overwrite everytime but only when changed.
+            ILocationFinder finder = new LocationFinderAggregator(DefaultQueryContext.getNonProjectContextInstance());
+            File cache = new File(finder.getMavenPluginsDir());
+            boolean deleteCache = false;
             if (files != null && files.length > 0) {
                 for (int i = 0; i < files.length; i++) {
-                    files[i].delete();
+                    String name = files[i].getName();
+                    if (!name.equals(CURRENT_VERSION)) {
+                        deleteCache = true;
+                        name = name.substring(0, name.length() - ".jar".length());
+                        File cached = new File(cache, name);
+                        if (cached.exists()) {
+                            FileUtilities.delete(cached);
+                        }
+                        files[i].delete();
+                    }
                 }
             }
             File newFile = new File(plugins, CURRENT_VERSION);
             try {
                 FileUtils.newFileUtils().copyFile(current, newFile, null, true);
+                if (deleteCache) {
+                    File cFile = new File(cache, "plugins.cache");
+                    if (cFile.exists()) {
+                        FileUtilities.delete(cFile);
+                    }
+                }
             } catch (IOException exc) {
                 log.error("cannot copy maven-mevenide-plugin", exc);
             }
+            
         }
     }
-    
-    // Less commonly needed:
-    /*
-    public boolean closing() {
-        // return false if cannot close now
-        return true;
-    }
-    public void close() {
-        // shut down stuff
-    }
-     */
-    
-    // Generally the methods below should be avoided in favor of restored():
-    /*
-    // By default, do nothing but call restored().
-    public void installed() {
-        restored();
-    }
-     
-    // By default, do nothing.
-    public void uninstalled() {
-    }
-     
-    // By default, call restored().
-    public void updated(int release, String specVersion) {
-    }
-     */
-    
-    // It is no longer recommended to override Externalizable methods
-    // (readExternal and writeExternal). See the Modules API section on
-    // "installation-clean" modules for an explanation.
-    
 }

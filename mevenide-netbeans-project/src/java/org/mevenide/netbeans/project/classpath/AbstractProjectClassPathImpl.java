@@ -32,6 +32,7 @@ import java.net.MalformedURLException;
 import java.io.File;
 import java.net.URI;
 import java.net.URL;
+import java.util.Iterator;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Dependency;
@@ -39,6 +40,7 @@ import org.apache.maven.project.Resource;
 import org.mevenide.netbeans.project.FileUtilities;
 import org.mevenide.netbeans.project.MavenProject;
 import org.mevenide.project.io.JarOverrideReader2;
+import org.netbeans.spi.java.classpath.PathResourceImplementation;
 
 
 abstract class AbstractProjectClassPathImpl implements ClassPathImplementation {
@@ -51,13 +53,47 @@ abstract class AbstractProjectClassPathImpl implements ClassPathImplementation {
         project = proj;
         project.addPropertyChangeListener(new PropertyChangeListener() {
             public void propertyChange(PropertyChangeEvent evt) {
-                logger.warn("fire PROP_RSOURCES");
-                resources = null;
-                support.firePropertyChange(ClassPathImplementation.PROP_RESOURCES, null, null);
+                List newValues = getPath();
+                if (hasChanged(resources, newValues)) {
+                    logger.warn("fire PROP_RSOURCES-" + AbstractProjectClassPathImpl.this.getClass());
+                    List oldvalue = resources;
+                    resources = newValues;
+                    support.firePropertyChange(ClassPathImplementation.PROP_RESOURCES, oldvalue, resources);
+                }
             }
         });
-        
     }
+    
+    private boolean hasChanged(List oldValues, List newValues) {
+        Iterator it = oldValues.iterator();
+        ArrayList nl = new ArrayList(newValues);
+        while (it.hasNext()) {
+            PathResourceImplementation res = (PathResourceImplementation)it.next();
+            URL oldUrl = res.getRoots()[0];
+            Iterator inner = nl.iterator();
+            boolean found = false;
+            if (nl.size() == 0) {
+                return true;
+            }
+            while (inner.hasNext()) {
+                PathResourceImplementation res2 = (PathResourceImplementation)inner.next();
+                URL newUrl = res2.getRoots()[0];
+                if (newUrl.equals(oldUrl)) {
+                    inner.remove();
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                return true;
+            }
+        }
+        if (nl.size() != 0) {
+            return true;
+        }
+        return false;
+    }
+    
     protected final MavenProject getMavenProject() {
         return project;
     }

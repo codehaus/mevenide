@@ -7,6 +7,21 @@
 
   <body>
     <release version="0.2" date="in CVS">
+      <action dev="mkleint" type="fix">
+      MEVENIDE-37 fixed.
+      </action>
+      <action dev="mkleint" type="fix">
+      MEVENIDE-65 fixed.
+      </action>
+      <action dev="mkleint" type="fix">
+      MEVENIDE-49 fixed.
+      </action>
+      <action dev="mkleint" type="add">
+      Maven output error parsing. Linking failed tests and compilation errors.
+      </action>
+      <action dev="mkleint" type="add">
+      Add basic support for testing the project, single class and test.
+      </action>
       <action dev="mkleint" type="add">
       Add basic support for running the project and running single class.
       </action>
