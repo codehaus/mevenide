@@ -53,7 +53,7 @@
    </requires>
 
 
-<!-- Maven nature -->
+   <!-- Maven nature -->
    <extension
          id="mavennature"
          name="maven nature"
@@ -64,10 +64,10 @@
          </run>
       </runtime>
    </extension>
-<!-- Maven actions -->
+   <!-- Maven actions -->
    <extension
          point="org.eclipse.ui.popupMenus">
-<!-- project contributions (adaptable) -->
+   <!-- project contributions (adaptable) -->
       <objectContribution
             objectClass="org.eclipse.jdt.core.IJavaProject"
             adaptable="true"
@@ -190,11 +190,11 @@
                id="mevenide.pom.create">
          </action>
       </objectContribution>
-<!-- project.xml contributions -->
+      <!-- project.xml contributions -->
       <objectContribution
-            objectClass="org.eclipse.core.resources.IFile"
-            nameFilter="project.xml"
-            id="maven.plugin.project.xml.contribution.ifile">
+               objectClass="org.eclipse.core.resources.IFile"
+               nameFilter="project.xml"
+               id="maven.plugin.project.xml.contribution.ifile">
          <menu
                label="Maven"
                path="additions"
@@ -254,7 +254,8 @@
          </action -->
       </objectContribution>
    </extension>
-<!-- Maven preferences -->
+   
+   <!-- Maven preferences -->
    <extension
          point="org.eclipse.ui.preferencePages">
       <page
@@ -263,8 +264,9 @@
             id="maven.plugin.preferences.MavenPreferencePage">
       </page>
    </extension>
-<!-- Synchronization View -->
-   <extension
+   
+   <!-- Synchronization View -->
+   <!-- extension
          point="org.eclipse.ui.views">
       <view
             name="Mevenide Source Folders"
@@ -273,13 +275,13 @@
             class="org.mevenide.ui.eclipse.sync.view.SourceDirectoryMappingViewPart"
             id="org.mevenide.sync.view">
       </view>
-      <!-- view
+      <view
             name="Mevenide Dependencies"
             icon="icons/maven.gif"
             category="Mevenide"
             class="org.mevenide.ui.eclipse.sync.view.DependencyMappingViewPart"
             id="org.mevenide.sync.view.dep">
-      </view -->
-   </extension>
+      </view>
+   </extension -->
 
 </plugin>
