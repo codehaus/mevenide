@@ -6,7 +6,18 @@
   </properties>
 
   <body>
+    <section name="Table of content">
+    	<blockquote>
+	    <a href="#Preambule">Preambule</a><br/>
+		<a href="#Building">Building the various artifacts</a><br/>
+		<a href="#Configuring">Configuring the build process</a><br/>
+		<a href="#Launching">Before launching the Runtime-workbench</a><br/>
+		<a href="#Runtime">Unresolved issues</a><br/>
+		<a href="#Conventions">Coding conventions</a>
+		</blockquote>
+	</section>
     <section name="Preambule">
+	    <a name="Preambule"/>
 		<p>
 		If you read this, i guess you're a developper that want to/do participate in the Mevenide project, 
 		or you want to build Mevenide from the sources, and/or want to understand some of the internals. 
@@ -52,6 +63,7 @@
 	</section>
 	
 	<section name="Building the various artifacts">
+	    <a name="Building"/>
 		<p>
 		The <code>build-all</code> custom goal defined in mevenide-master/maven.xml allows us to <i>reactor</i> the project.
 		There's an ANT buildfile (build.xml) present near maven.xml that wraps maven call by defining 
@@ -77,6 +89,7 @@
 	</section>
 	
 	<section name="Configuring the build process">
+	    <a name="Configuring"/>
 		<p>
 		If there should be no problem to build the goals-grabber and the mevenide-core subprojects, the mevenide-ui-eclipse project is a little bit 
 		trickier to configure since most of the Eclipse libraries are not present at ibiblio (perhaps should we ask to upload them ? im not sure here).
@@ -136,6 +149,7 @@
 	</section>
 	
 	<section name="Before launching the Runtime-workbench">
+	  <a name="Launching"/>
 	  <p>
 	  	At this point you should have been able to build the project thanks Maven (and, as a corollary, to configure your Eclipse project thnaks Maven).
 	  </p>
@@ -193,6 +207,31 @@ ${eclipse.plugins.dir}/org.mevenide_0.1/
 	</section>
 	
 	<section name="Runtime testing : unresolved issues">
+	  <a name="Runtime"/>
+	  <p>
+	      Those are identified, yet not solved, issues
+	      <ul>
+		     <li>
+			 XmlPullParserFactory cannot find resource 
+			 <code>/META-INF/services/org.xmlpull.v1.XmlPullParserFactory </code> altho present. 
+			 Obviously there's a classloading problem.. however we dont encounter the same issues with <code>commons-discovery</code>. 
+			 </li>
+			 <li>
+			 AbstractRunner has not been ported to use <code>Classworlds</code> instead of <code>Forehead</code> so even the 
+			 POM2IDE synchronization doesnt work yet.
+			 </li>
+	      </ul>
+	  </p>
+	  <p>
+	  Those two issues above are top-priority..
+	  </p>
+	</section>
+	
+	<section name="Coding Conventions">
+	   <a name="Conventions"/>
+	   <p>
+	   To be done ...
+	   </p>
 	</section>
 	
   </body>
