@@ -24,7 +24,6 @@ import org.apache.maven.project.Dependency;
 import org.apache.maven.project.Project;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.JavaCore;
 import org.mevenide.project.DependencyFactory;
@@ -134,8 +133,7 @@ public class PomSynchronizer extends AbstractPomSynchronizer implements ISynchro
 	private boolean matchReferencedProjects(IProject[] referencedProjects, Dependency declaredDependency) throws Exception {
 		for (int i = 0; i < referencedProjects.length; i++) {
 			IProject referencedProject = referencedProjects[i];
-			IPath referencedProjectLocation = referencedProject.getLocation(); 
-			File referencedPom = new File(pathResolver.getAbsolutePath(referencedProjectLocation.append("project.xml")) );
+			File referencedPom = ProjectUtil.getPom(referencedProject);
 			//check if referencedPom exists, tho it should since we just have created it
 			if ( !referencedPom.exists() ) {
 				ProjectUtil.createPom(referencedProject);

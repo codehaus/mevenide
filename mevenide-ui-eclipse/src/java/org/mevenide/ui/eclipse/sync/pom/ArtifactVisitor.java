@@ -28,7 +28,6 @@ import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.launching.JavaRuntime;
 import org.mevenide.ProjectConstants;
 import org.mevenide.project.io.ProjectWriter;
-import org.mevenide.ui.eclipse.sync.source.DefaultPathResolverDelegate;
 import org.mevenide.ui.eclipse.sync.source.IPathResolverDelegate;
 import org.mevenide.ui.eclipse.util.ProjectUtil;
 
@@ -115,14 +114,13 @@ public class ArtifactVisitor {
 		IClasspathEntry classpathEntry = entry.getClasspathEntry();
 		IPath projectPath = classpathEntry.getPath();
 		
-		IPathResolverDelegate pathResolver = new DefaultPathResolverDelegate(); 
+		//IPathResolverDelegate pathResolver = new DefaultPathResolverDelegate(); 
 		
 		IProject[] referencedProjects = pomSynchronizer.getProject().getReferencedProjects();
 		for (int i = 0; i < referencedProjects.length; i++) {
 			
 			if ( referencedProjects[i].getFullPath().equals(projectPath) ) {
-				IPath referencedProjectLocation = referencedProjects[i].getLocation();
-				File referencedPom = new File(pathResolver.getAbsolutePath(referencedProjectLocation.append("project.xml")) );
+				File referencedPom = ProjectUtil.getPom(referencedProjects[i]);
 				if ( !referencedPom.exists() ) {
 					/* 
 					 * project isnot mavenized, mavenize it as well
