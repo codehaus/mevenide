@@ -55,13 +55,13 @@ import org.mevenide.ui.eclipse.preferences.PreferencesManager;
 public class GoalFilterDialog extends Dialog {
 	
 	private static final String ORIGIN_FILTER_KEY = "mevenide.goals.outline.filter.origin";
-	private static final String CUSTOM_FILTERS_KEY = "mevenide.goals.outline.filter.custom";
 	private static final String GOAL_FILTER_MESSAGE = "...";
 	private static final String GOAL_FILTER_TITLE = "Goal Filter";
 	
 	private PreferencesManager preferencesManager;
 	
 	private Text patternText;
+	private boolean shouldApplyCustomFilters;
 	private String regex;
 	
 	private CheckboxTreeViewer goalsViewer; 
@@ -69,7 +69,8 @@ public class GoalFilterDialog extends Dialog {
 	
 	//if all goals selected : needed to support main view shortcut
 	private boolean filterOrigin;
-	private GoalsProvider goalsProvider; 
+	private GoalsProvider goalsProvider;
+	private Button applyCustomFiltersButton; 
 	
 	public GoalFilterDialog() {
 		super(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell());
@@ -127,7 +128,7 @@ public class GoalFilterDialog extends Dialog {
 		selectAllButton.addMouseListener(
 			new MouseAdapter() {
 				public void mouseDown(MouseEvent e) {
-					//goalsViewer.setSubtreeChecked(goalsViewer.getInput(), true);
+					goalsViewer.getTree().setSelection(goalsViewer.getTree().getItems());
 				}
 			}
 		);
@@ -139,7 +140,7 @@ public class GoalFilterDialog extends Dialog {
 		deSelectAllButton.addMouseListener(
 			new MouseAdapter() {
 				public void mouseDown(MouseEvent e) {
-					//goalsViewer.setSubtreeChecked(goalsViewer.getInput(), false);
+					//goalsViewer.setCheckedElements(new Object[0]);
 				}
 			}
 		);
@@ -152,28 +153,29 @@ public class GoalFilterDialog extends Dialog {
 		gridData.grabExcessHorizontalSpace = true;
 		composite.setLayoutData(gridData);
 		
-		final Button checkbox = new Button(composite, SWT.CHECK);
+		applyCustomFiltersButton = new Button(composite, SWT.CHECK);
 		GridData checkboxData = new GridData();
 		checkboxData.grabExcessHorizontalSpace = false;
-		checkbox.setLayoutData(checkboxData);
-		checkbox.setText("Custom filter regular expressions (matching names will be hidden) :");
+		applyCustomFiltersButton.setLayoutData(checkboxData);
+		applyCustomFiltersButton.setSelection(preferencesManager.getBooleanValue(CustomPatternFilter.APPLY_CUSTOM_FILTERS_KEY));
+		applyCustomFiltersButton.setText("Custom filter regular expressions (matching names will be hidden) :");
 		
 		patternText = new Text(composite, SWT.BORDER );
 		GridData textData = new GridData(GridData.FILL_HORIZONTAL);
 		textData.grabExcessHorizontalSpace = true;
 		patternText.setLayoutData(textData);
-		patternText.setText(preferencesManager.getValue(CUSTOM_FILTERS_KEY));
-		patternText.setEnabled(checkbox.getSelection());
+		patternText.setText(preferencesManager.getValue(CustomPatternFilter.CUSTOM_FILTERS_KEY));
+		patternText.setEnabled(applyCustomFiltersButton.getSelection());
 		
 		final Label label = new Label(composite, SWT.NULL);
 		label.setText("Patterns are separated by comma");
-		label.setEnabled(checkbox.getSelection());
+		label.setEnabled(applyCustomFiltersButton.getSelection());
 		
-		checkbox.addSelectionListener(
+		applyCustomFiltersButton.addSelectionListener(
 			new SelectionAdapter() {
 				public void widgetSelected(SelectionEvent e) {
-					label.setEnabled(checkbox.getSelection());
-					patternText.setEnabled(checkbox.getSelection());
+					label.setEnabled(applyCustomFiltersButton.getSelection());
+					patternText.setEnabled(applyCustomFiltersButton.getSelection());
 				}
 			}
 		);
@@ -272,12 +274,15 @@ public class GoalFilterDialog extends Dialog {
 	}
 	
 	protected void okPressed() {
-	    super.okPressed();
-	    
+		shouldApplyCustomFilters = applyCustomFiltersButton.getSelection();
+		preferencesManager.setBooleanValue(CustomPatternFilter.APPLY_CUSTOM_FILTERS_KEY, shouldApplyCustomFilters);
+		
 	    regex = patternText.getText();
-	    preferencesManager.setValue(CUSTOM_FILTERS_KEY, regex);
+	    preferencesManager.setValue(CustomPatternFilter.CUSTOM_FILTERS_KEY, regex);
 	    
 	    preferencesManager.store();
+	    
+	    super.okPressed();
 	}
 	
 	public boolean isFilterOrigin() {
@@ -286,5 +291,9 @@ public class GoalFilterDialog extends Dialog {
 	
 	public String getRegex() {
 		return regex;
+	}
+	
+	public boolean shouldApplyCustomFilters() {
+		return shouldApplyCustomFilters;
 	}
 }

@@ -45,7 +45,9 @@ import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.part.Page;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.mevenide.ui.eclipse.Mevenide;
-import org.mevenide.ui.eclipse.goals.filter.*;
+import org.mevenide.ui.eclipse.goals.filter.CustomPatternFilter;
+import org.mevenide.ui.eclipse.goals.filter.GoalFilterDialog;
+import org.mevenide.ui.eclipse.goals.filter.GoalOriginFilter;
 import org.mevenide.ui.eclipse.goals.model.Element;
 import org.mevenide.ui.eclipse.goals.model.Goal;
 import org.mevenide.ui.eclipse.goals.model.GoalsProvider;
@@ -251,8 +253,15 @@ public class MavenXmlOutlinePage extends Page implements IContentOutlinePage {
 	private void openFilterDialog() {
 		GoalFilterDialog dialog = new GoalFilterDialog();
 		int dialogResult = dialog.open();
-		if ( dialogResult != Window.CANCEL ) {
+		
+		if ( dialogResult == Window.OK ) {
+			String customRegexFilters = dialog.getRegex();
+			boolean shouldApply = dialog.shouldApplyCustomFilters();
 			
+			patternFilter.setPatternFilters(customRegexFilters);
+			patternFilter.apply(shouldApply);
+			
+			goalsViewer.refresh(false);
 		}
 	}
 	

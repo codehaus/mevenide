@@ -37,8 +37,7 @@ public class Goal extends Element {
 
 	public boolean equals(Object obj) {
 		return (obj instanceof Goal) 
-				&& ((Goal) obj).getName().equals(getName())
-				&& ((Goal) obj).getPlugin().getName().equals(plugin.getName()); 
+				&& ((Goal) obj).getFullyQualifiedName().equals(getFullyQualifiedName());
 	}
 	
 	public String getFullyQualifiedName() {
