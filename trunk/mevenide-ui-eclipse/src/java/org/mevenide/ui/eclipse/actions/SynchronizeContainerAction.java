@@ -65,10 +65,10 @@ import org.mevenide.ui.eclipse.sync.view.SynchronizeView;
  * @version $Id$
  * 
  */
-public class SynchronizeProjectAction extends AbstractMevenideAction {
+public class SynchronizeContainerAction extends AbstractMevenideAction {
     private static final String SYNCHRONIZE_VIEW_ID = "org.mevenide.ui.synchronize.view.SynchronizeView";
     
-    private static Log log = LogFactory.getLog(SynchronizeProjectAction.class);
+    private static Log log = LogFactory.getLog(SynchronizeContainerAction.class);
 	
 	private IContainer container;
 

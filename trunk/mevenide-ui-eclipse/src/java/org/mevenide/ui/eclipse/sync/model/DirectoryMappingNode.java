@@ -124,22 +124,22 @@ public class DirectoryMappingNode extends AbstractArtifactMappingNode {
 
 	public int getChangeDirection() {
 		if ( conflicting || overrideSameValue ) {
-			return ProjectContainer.CONFLICTING;
+			return EclipseContainerContainer.CONFLICTING;
 		}
 		
         if ( artifact == null ) {
-        	return ProjectContainer.OUTGOING;
+        	return EclipseContainerContainer.OUTGOING;
 		}
         
         if ( resolvedArtifact == null ) {
-			return ProjectContainer.INCOMING;
+			return EclipseContainerContainer.INCOMING;
 		}
 		
 		if ( artifact instanceof Directory 
 				&& MevenideUtils.notEquivalent(((Directory) artifact).getType(), ((Directory) resolvedArtifact).getType()) ) {
-			return ProjectContainer.CONFLICTING;
+			return EclipseContainerContainer.CONFLICTING;
 		} 
-        return ProjectContainer.NO_CHANGE;
+        return EclipseContainerContainer.NO_CHANGE;
 		
     }
 
