@@ -9,8 +9,11 @@
 <project>
   &base-identification;
   <issueTrackingUrl>http://sourceforge.net/tracker/?group_id=54263&amp;atid=473195</issueTrackingUrl>
-  <siteAddress>shell.sourceforge.net</siteAddress>
-  <siteDirectory>/home/groups/m/me/mevenide/htdocs/${pom.artifactId}</siteDirectory>
+
+  <siteAddress>mevenide.sourceforge.net</siteAddress>
+  <siteDirectory>/home/groups/m/me/mevenide/htdocs/</siteDirectory>
+  <!-- distributionDirectory>/home/groups/m/me/mevenide/htdocs/distributions/</distributionDirectory -->
+  
   <repository>
     <connection>scm:cvs:pserver:anonymous@cvs.sourceforge.net:/cvsroot/mevenide:${pom.artifactId}</connection>
     <developerConnection>scm:cvs:ext:${maven.username}@cvs.sourceforge.net:/cvsroot/mevenide:${pom.artifactId}</developerConnection>
