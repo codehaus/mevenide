@@ -53,12 +53,12 @@
   </goal>
   
   <goal name="mevenide-eclipse:init" description="Copy eclipse dependencies to maven.repo.local if necessary">
-    <util:file var="installScript" name="${basedir}/../${mevenide.master.project.name}/install-eclipse-dependencies.xml"/>
+    <util:file var="installScript" name="${basedir}/../${mevenide.master.project.name}/scripts/init/install-eclipse-dependencies.xml"/>
     <j:include file="${installScript}"/>
   </goal>  
   
   <goal name="mevenide-netbeans:init" description="Copy eclipse dependencies to maven.repo.local if necessary">
-    <util:file var="installScript" name="${basedir}/../${mevenide.master.project.name}/install-netbeans-dependencies.xml"/>
+    <util:file var="installScript" name="${basedir}/../${mevenide.master.project.name}/scripts/init/install-netbeans-dependencies.xml"/>
     <j:include file="${installScript}"/>
   </goal>  
   
@@ -84,7 +84,7 @@
   </goal>
   
   <preGoal name="eclipse-plugin:install-artifact">
-  	<util:file var="filters" name="${mevenide.master.project.location}/init-filtersets.xml"/>
+  	<util:file var="filters" name="${mevenide.master.project.location}/scripts/init/init-filtersets.xml"/>
   	<j:include file="${filters}"/>
   </preGoal>
 
