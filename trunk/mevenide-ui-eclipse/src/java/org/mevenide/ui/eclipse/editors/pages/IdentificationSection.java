@@ -77,9 +77,9 @@ import org.mevenide.ui.eclipse.Mevenide;
  * @author Jeff Bonevich (jeff@bonevich.com)
  * @version $Id$
  */
-public class PomIdentificationSection extends PageSection {
+public class IdentificationSection extends PageSection {
 	
-	private static final Log log = LogFactory.getLog(PomIdentificationSection.class);
+	private static final Log log = LogFactory.getLog(IdentificationSection.class);
     
 	private boolean isInherited;
 	private OverridableTextEntry pomNameText;
@@ -91,7 +91,7 @@ public class PomIdentificationSection extends PageSection {
 	
 	private Project parentPom;
 
-    public PomIdentificationSection(OverviewPage page) {
+    public IdentificationSection(OverviewPage page) {
         super(page);
 		setHeaderText(Mevenide.getResourceString("PomIdentificationSection.header"));
 		setDescription(Mevenide.getResourceString("PomIdentificationSection.description"));

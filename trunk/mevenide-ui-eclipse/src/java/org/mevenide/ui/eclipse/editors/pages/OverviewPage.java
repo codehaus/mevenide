@@ -74,7 +74,7 @@ public class OverviewPage extends AbstractPomEditorPage {
 	public static final String CHILD = Mevenide.getResourceString("OverviewPage.heading.child");
 	public static final String UNNAMED = Mevenide.getResourceString("OverviewPage.heading.unnamed");
     
-	private PomIdentificationSection idSection;
+	private IdentificationSection idSection;
 	
     public OverviewPage(MevenidePomEditor editor) {
         super(HEADING, editor);
@@ -90,7 +90,7 @@ public class OverviewPage extends AbstractPomEditorPage {
 
 		PageWidgetFactory factory = getFactory();
 
-		idSection = new PomIdentificationSection(this);
+		idSection = new IdentificationSection(this);
 		Control control = idSection.createControl(parent, factory);
 		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
 		gd.horizontalSpan = 1;
