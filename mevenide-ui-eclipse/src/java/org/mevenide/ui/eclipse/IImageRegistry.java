@@ -27,6 +27,7 @@ public interface IImageRegistry {
     public static final String CLEAR_VALIDATE_TOOL = "etool16/clr_validate.gif"; //$NON-NLS-1$
     public static final String VALIDATE_TOOL = "etool16/validate_pom.gif"; //$NON-NLS-1$
     public static final String REFRESH_TOOL = "etool16/refresh.gif"; //$NON-NLS-1$
+    public static final String COPY_TOOL = "etool16/copy.gif"; //$NON-NLS-1$
     
     public static final String SYNC_CONFLICT = "elcl16/synch_conflicting.gif"; //$NON-NLS-1$
     public static final String SYNC_OUTGOING = "elcl16/synch_outgoing.gif"; //$NON-NLS-1$
@@ -95,5 +96,6 @@ public interface IImageRegistry {
             FOLDER_OUTPUT_OBJ,
             FOLDER_RESOURCE_OBJ,
             EXCLUSION_OBJ,
+            COPY_TOOL,
     };
 }
