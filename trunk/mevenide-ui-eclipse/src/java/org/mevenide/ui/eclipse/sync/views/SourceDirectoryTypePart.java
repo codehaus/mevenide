@@ -276,7 +276,6 @@ public class SourceDirectoryTypePart extends ViewPart {
 	 * @throws Exception
 	 */
 	public static void synchronizeWithoutPrompting(IProject currentProject) throws Exception {
-		//@todo show view if and only if previous sourceDirs donot match
 		String savedState = MavenPlugin.getPlugin().getFile("sourceTypes.xml");
 		List lastSourceList = SourceDirectoryMarshaller.getLastStoredSourceDirectories(currentProject, savedState);
 		

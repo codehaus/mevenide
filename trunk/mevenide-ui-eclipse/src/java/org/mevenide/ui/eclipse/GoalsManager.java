@@ -52,7 +52,6 @@ public class GoalsManager extends AbstractGoalsManager{
 	 * @see org.mevenide.core.AbstractGoalsManager#load()
 	 */
 	protected void load() throws IOException {
-		//@todo TESTME
 		String storedPlugins = this.preferenceStore.getString("mevenide.goals.plugins");
 		StringTokenizer pluginsTokenizer = new StringTokenizer(storedPlugins, ";");
 		while ( pluginsTokenizer.hasMoreTokens() ) {
@@ -73,7 +72,6 @@ public class GoalsManager extends AbstractGoalsManager{
 	 * @see org.mevenide.core.AbstractGoalsManager#save()
 	 */
 	public void save() throws IOException {
-		//@todo TESTME
 		storePlugins();
 		preferenceStore.save();
 	}
