@@ -14,11 +14,11 @@
  *  limitations under the License.
  * =========================================================================
  */
-package org.mevenide.ui.eclipse.launch.configuration;
+package org.mevenide.ui.eclipse.actions;
 
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
-import org.mevenide.ui.eclipse.actions.AbstractMevenideAction;
+import org.mevenide.ui.eclipse.launch.configuration.MavenLaunchShortcut;
 
 /**
  * 
@@ -26,7 +26,7 @@ import org.mevenide.ui.eclipse.actions.AbstractMevenideAction;
  * @version $Id$
  * 
  */
-public class MavenRunActionDelegate extends AbstractMevenideAction {
+public class RunMavenAction extends AbstractMevenideAction {
 	private ISelection selection;
 	
 	public void run(IAction action) {

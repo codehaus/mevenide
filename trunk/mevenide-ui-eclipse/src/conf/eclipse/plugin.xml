@@ -57,31 +57,10 @@
    <extension
          point="org.eclipse.ui.popupMenus">
       <!-- folder contributions (adaptable) -->
-      <objectContribution
-            adaptable="true"
-            objectClass="org.eclipse.core.resources.IFolder"
-            id="maven.plugin.folder.xml.contribution">
-         <menu
-               label="%MavenMenu.label"
-               path="additions"
-               id="maven.plugin.menu">
-            <separator
-                  name="Synchronize">
-            </separator>
-         </menu>
-         <action
-               label="%Synchronize.Label"
-               icon="icons/synced.gif"
-               class="org.mevenide.ui.eclipse.actions.SynchronizeContainerAction"
-               menubarPath="maven.plugin.menu/Synchronize"
-               enablesFor="1"
-               id="maven-plugin.Synchronize">
-         </action>
-      </objectContribution>
       <!-- project contributions (adaptable) -->
       <objectContribution
             adaptable="true"
-            objectClass="org.eclipse.core.resources.IProject"
+            objectClass="org.eclipse.core.resources.IContainer"
             id="maven.plugin.project.xml.contribution">
          <menu
                label="%MavenMenu.label"
@@ -98,27 +77,30 @@
             </separator>
          </menu>
          <action
-               label="%RunMaven.label"
-               icon="icons/maven-button.gif"
-               class="org.mevenide.ui.eclipse.launch.configuration.MavenRunActionDelegate"
-               menubarPath="maven.plugin.menu/RunMaven"
                enablesFor="1"
+               label="%RunMaven.label"
+               tooltip="%RunMaven.tooltip"
+               class="org.mevenide.ui.eclipse.actions.RunMavenAction"
+               icon="icons/maven-button.gif"
+               menubarPath="maven.plugin.menu/RunMaven"
                id="maven.plugin.popup.action">
          </action>
          <action
-               label="%CreatePom.label"
-               icon="icons/maven-create-pom.gif"
-               class="org.mevenide.ui.eclipse.actions.CreatePomAction"
-               menubarPath="maven.plugin.menu/MavenNature"
                enablesFor="1"
+               label="%CreatePom.label"
+               tooltip="%CreatePom.tooltip"
+               class="org.mevenide.ui.eclipse.actions.CreatePomAction"
+               icon="icons/maven-create-pom.gif"
+               menubarPath="maven.plugin.menu/MavenNature"
                id="mevenide.pom.create">
          </action>
          <action
-               label="%Synchronize.Label"
-               icon="icons/synced.gif"
-               class="org.mevenide.ui.eclipse.actions.SynchronizeContainerAction"
-               menubarPath="maven.plugin.menu/Synchronize"
                enablesFor="1"
+               label="%Synchronize.Label"
+               tooltip="%SynchronizePom.tooltip"
+               class="org.mevenide.ui.eclipse.actions.SynchronizeContainerAction"
+               icon="icons/synced.gif"
+               menubarPath="maven.plugin.menu/Synchronize"
                id="maven-plugin.Synchronize">
          </action>
       </objectContribution>
@@ -136,11 +118,12 @@
             </separator>
          </menu>
          <action
-               label="%RunMaven.label"
-               icon="icons/maven-button.gif"
-               class="org.mevenide.ui.eclipse.launch.configuration.MavenRunActionDelegate"
-               menubarPath="maven.plugin.menu/RunMaven"
                enablesFor="1"
+               label="%RunMaven.label"
+               tooltip="%RunMaven.file.tooltip"
+               class="org.mevenide.ui.eclipse.actions.RunMavenAction"
+               icon="icons/maven-button.gif"
+               menubarPath="maven.plugin.menu/RunMaven"
                id="maven.plugin.popup.action">
          </action>
       </objectContribution>

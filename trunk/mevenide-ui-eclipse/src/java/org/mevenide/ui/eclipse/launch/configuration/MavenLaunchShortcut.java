@@ -125,9 +125,11 @@ public class MavenLaunchShortcut implements ILaunchShortcut {
 			
 			String newName= DebugPlugin.getDefault().getLaunchManager().generateUniqueLaunchConfigurationNameFrom(configuration.getName());
 			try {
-				configuration = configuration.copy(newName);
+			    if ( configuration.exists() ) {
+			        configuration = configuration.copy(newName);
+			    }
 				if (showDialog) {
-					configuration = ((ILaunchConfigurationWorkingCopy) configuration).doSave();
+					configuration = configuration.getWorkingCopy().doSave();
 				}
 				//caused config to be launched twice (see MavenLaunchDelegate)
 				//DebugUITools.launch(configuration, ILaunchManager.RUN_MODE);
@@ -152,7 +154,9 @@ public class MavenLaunchShortcut implements ILaunchShortcut {
 		if ( launches != null ) {
 		    //do we still want that behaviour ? is it not better to always return a new configuration ? 
 			for (int i = 0; i < launches.length; i++) {
-				if ( (name).equals(launches[i].getLaunchConfiguration().getName()) ) {
+				if ( name != null && 
+				        launches[i].getLaunchConfiguration() != null && 
+				        (name).equals(launches[i].getLaunchConfiguration().getName()) ) {
 					return launches[i].getLaunchConfiguration();
 				}	
 			}
