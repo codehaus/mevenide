@@ -174,6 +174,12 @@
             class="org.mevenide.ui.eclipse.preferences.MevenidePreferencePage"
             id="org.mevenide.ui.plugin.preferences.MavenPreferencePage">
       </page>
+      <page
+            name="%TemplatePreferencePage.label"
+            category="org.mevenide.ui.plugin.preferences.MavenPreferencePage"
+            class="org.mevenide.ui.eclipse.preferences.TemplatePreferencePage"
+            id="org.mevenide.ui.eclipse.preferences.TemplatePreferencePage">
+      </page>
    </extension>
 <!-- Maven POM editor -->
    <extension
