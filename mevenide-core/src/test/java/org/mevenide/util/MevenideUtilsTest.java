@@ -60,7 +60,7 @@ import junit.framework.TestCase;
  * @version $Id: MevenideUtilTest.java 30 août 2003 Exp gdodinet 
  * 
  */
-public class MevenideUtilTest extends TestCase {
+public class MevenideUtilsTest extends TestCase {
 	private Project project ; 
 	
     protected void setUp() throws Exception {
