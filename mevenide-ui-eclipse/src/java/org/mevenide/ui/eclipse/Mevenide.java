@@ -55,6 +55,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.MessageFormat;
 import java.util.MissingResourceException;
 import java.util.Properties;
 import java.util.ResourceBundle;
@@ -185,16 +186,15 @@ public class Mevenide extends AbstractUIPlugin {
 	 */
     private String loadMavenLocalHome(PreferenceStore preferenceStore) {
         //preferences that are defaulted
-        String mavenLocalHome = preferenceStore.getString(MevenidePreferenceKeys.MAVEN_LOCAL_HOME_PREFERENCE_KEY);
+        String localHome = preferenceStore.getString(MevenidePreferenceKeys.MAVEN_LOCAL_HOME_PREFERENCE_KEY);
         //maven.local.home has not been initialized - defaults to ${user.home}/.maven
-        if ( mavenLocalHome == null || mavenLocalHome.trim().equals("") ) {
-        	mavenLocalHome = new File(System.getProperty("user.home"), ".maven").getAbsolutePath();
+        if ( localHome == null || localHome.trim().equals("") ) {
+			localHome = new File(System.getProperty("user.home"), ".maven").getAbsolutePath();
         }
-        setMavenLocalHome(mavenLocalHome);
+        setMavenLocalHome(localHome);
         
-        return mavenLocalHome;
+        return localHome;
     }
-
 
 	/// usual Plugin methods ---  
     public static Mevenide getPlugin() {
@@ -214,6 +214,14 @@ public class Mevenide extends AbstractUIPlugin {
 			log.debug("Cannot find Bundle Key '" + key + "' due to : " + e);
 			return key;
 		}
+	}
+
+	public static String getResourceString(String key, String param) {
+		return getResourceString(key, new String[] {param});
+	}
+
+	public static String getResourceString(String key, String[] params) {
+		return MessageFormat.format(getResourceString(key), params);
 	}
 
 	public ResourceBundle getResourceBundle() {
