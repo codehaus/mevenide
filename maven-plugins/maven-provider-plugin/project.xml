@@ -56,6 +56,13 @@
             <type>jar</type>
             <properties/>
         </dependency>
+        <dependency>
+            <groupId>xmlunit</groupId>
+            <artifactId>xmlunit</artifactId>
+            <version>1.0</version>
+            <type>jar</type>
+            <properties/>
+        </dependency>
     </dependencies>
     <build>
         <sourceDirectory>src/main/java</sourceDirectory>

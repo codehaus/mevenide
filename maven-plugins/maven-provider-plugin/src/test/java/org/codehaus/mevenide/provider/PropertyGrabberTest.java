@@ -17,7 +17,11 @@
 package org.codehaus.mevenide.provider;
 
 import java.io.File;
-import junit.framework.TestCase;
+import java.io.FileReader;
+import java.io.StringReader;
+import org.custommonkey.xmlunit.Diff;
+import org.custommonkey.xmlunit.ElementNameAndAttributeQualifier;
+import org.custommonkey.xmlunit.XMLTestCase;
 
 
 /**  
@@ -26,7 +30,7 @@ import junit.framework.TestCase;
  * @version $Id$
  * 
  */
-public class PropertyGrabberTest extends TestCase {
+public class PropertyGrabberTest extends XMLTestCase {
 
     private PropertyGrabber grabber;
     private File pluginProperties;
@@ -39,7 +43,9 @@ public class PropertyGrabberTest extends TestCase {
     
     public void testGrab() throws Exception {
         grabber.grab();
-        //@todo assert
-        //System.err.println(grabber.getPropertyDescription());
+        File expectedResult = new File(getClass().getResource("/expected.xml").getFile());
+        Diff diff = new Diff(new FileReader(expectedResult), new StringReader(grabber.getPropertyDescription()));
+        diff.overrideElementQualifier(new ElementNameAndAttributeQualifier());
+        assertTrue(diff.similar());
     }
 }
