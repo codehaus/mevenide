@@ -21,8 +21,10 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IProjectNature;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.ui.WorkbenchException;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.mevenide.ui.eclipse.MavenPlugin;
+import org.mevenide.ui.eclipse.sync.views.SourceDirectoryTypePart;
 
 /**
  * 
@@ -36,7 +38,11 @@ public class MavenNature implements IProjectNature {
 	private IProject project;
 
 	public void configure() throws CoreException {
-		configureProject(project);
+		try {
+			configureProject(project);
+		} catch (Exception e) {
+			throw new CoreException(new Status(IStatus.ERROR, "mevenide", 1, e.getMessage(), e));
+		}
 
 	}
 
@@ -45,9 +51,11 @@ public class MavenNature implements IProjectNature {
 		
 	}
 	
-	public static void configureProject(IProject project) throws CoreException, WorkbenchException {
+	public static void configureProject(IProject project) throws Exception {
 
 		addPomNature(project);
+		MavenPlugin.getPlugin().createPom();
+		SourceDirectoryTypePart.showView();
 		synchronizeProject(project);
 	}
 	
@@ -73,7 +81,11 @@ public class MavenNature implements IProjectNature {
 			List newNatures = new ArrayList(Arrays.asList(prevNatures));
 			if ( newNatures.contains(MavenPlugin.NATURE_ID) ) {
 				newNatures.remove(MavenPlugin.NATURE_ID);
-				description.setNatureIds((String[])newNatures.toArray(new String[newNatures.size()]));
+				String[] setNatures = new String[newNatures.size()];
+				for (int i = 0; i < setNatures.length; i++) {
+					setNatures[i] = (String) newNatures.get(i);
+				}
+				description.setNatureIds(setNatures);
 				project.setDescription(description, null);
 			}
 		}
