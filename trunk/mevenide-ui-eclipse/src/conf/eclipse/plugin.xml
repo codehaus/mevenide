@@ -52,7 +52,7 @@
           			label="Build Mode"
                     default="bundle"
                     required="false"
-                    description="Experimental. Specifies the plugin behaviour : if not set to 'bundle' then an Eclipse plugin will be created for each POM dependencies."/>
+                    description="Experimental. Specifies the plugin behaviour : if not set to 'bundle' then an Eclipse plugin will be created for each POM dependency."/>
           <property name="maven.eclipse.plugin.dist.dir" 
           			label="Distribution Directory"
                     default="${maven.build.dir}/eclipse/dist"

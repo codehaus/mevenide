@@ -23,6 +23,8 @@ import java.util.Map;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.layout.GridData;
@@ -136,9 +138,18 @@ public class DynamicPreferencePage extends PreferencePage implements IWorkbenchP
         editor.load();
 
         editor.setEmptyStringAllowed(!pluginProperty.isRequired());
+        editor.setErrorMessage(Mevenide.getResourceString("DynamicPreferencePage.Empty.NotAllowed", pluginProperty.getLabel()));
+        
+        ModifyListener editorListener = new ModifyListener() {
+            public void modifyText(ModifyEvent arg0) {
+                getContainer().updateButtons();
+                updateApplyButton();
+            }
+        };
+        editor.getTextControl(parent).addModifyListener(editorListener);
         
         String toolTip = propertyName + " : " + 
-        				(!StringUtils.isNull(propertyDescription) ? propertyDescription : "No available description");
+        				(!StringUtils.isNull(propertyDescription) ? propertyDescription : Mevenide.getResourceString("DynamicPreferencePage.property.nodescription"));
         editor.getLabelControl(parent).setToolTipText(toolTip);
         
         if ( StringUtils.isNull(editor.getStringValue()) && 
@@ -169,7 +180,20 @@ public class DynamicPreferencePage extends PreferencePage implements IWorkbenchP
         super.performDefaults();
     }
     
-    
+    public boolean isValid() {
+        boolean valid = true;
+        setErrorMessage(null);
+        for (Iterator it = editors.keySet().iterator(); it.hasNext(); ) {
+            PluginProperty pluginProperty = (PluginProperty) it.next();
+            StringFieldEditor editor = (StringFieldEditor) editors.get(pluginProperty);
+            if ( StringUtils.isNull(editor.getStringValue()) && pluginProperty.isRequired() ) {
+                setErrorMessage(editor.getErrorMessage());
+                valid = false;
+                break;
+            }
+        }
+        return valid;
+    }
     public boolean performOk() {
         for (Iterator it = editors.keySet().iterator(); it.hasNext(); ) {
             PluginProperty pluginProperty = (PluginProperty) it.next();
