@@ -32,6 +32,7 @@ import org.mevenide.project.dependency.DependencyFactory;
 import org.mevenide.project.dependency.DependencyUtil;
 import org.mevenide.project.resource.DefaultResourceResolver;
 import org.mevenide.project.resource.IResourceResolver;
+import org.mevenide.project.resource.ResourceUtil;
 import org.mevenide.project.source.SourceDirectoryUtil;
 
 /**
@@ -88,7 +89,7 @@ public class ProjectWriter {
 	 */
 	public void addResource(String path, File pom) throws Exception {
 		Project project = projectReader.read(pom);
-		Resource resource = resourceResolver.newResource(path);
+		Resource resource = ResourceUtil.newResource(path);
 		resourceResolver.mergeSimilarResources(project, resource);
 		write(project, pom);	
 	}

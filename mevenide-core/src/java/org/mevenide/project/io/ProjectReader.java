@@ -25,12 +25,13 @@ import org.apache.maven.project.Build;
 import org.apache.maven.project.Dependency;
 import org.apache.maven.project.Project;
 import org.apache.maven.project.builder.DefaultProjectUnmarshaller;
-import org.jdom.input.SAXBuilder;
 import org.mevenide.ProjectConstants;
+import org.mevenide.util.MevenideUtil;
 
 
 /**
  * 
+ *
  * @author Gilles Dodinet (gdodinet@wanadoo.fr)
  * @version $Id$
  * 
@@ -80,7 +81,7 @@ public class ProjectReader {
 		Build build = getBuild(pom);
 		
 		String aspectSourceDirectory = build.getAspectSourceDirectory();
-		if ( !isNull(aspectSourceDirectory)) {
+		if ( !MevenideUtil.isNull(aspectSourceDirectory)) {
 			sourceDirectories.put(
 				ProjectConstants.MAVEN_ASPECT_DIRECTORY,
 				aspectSourceDirectory
@@ -88,7 +89,7 @@ public class ProjectReader {
 		}
 		
 		String sourceDirectory = build.getSourceDirectory();
-		if ( !isNull(sourceDirectory) ) {
+		if ( !MevenideUtil.isNull(sourceDirectory) ) {
 			sourceDirectories.put(
 				ProjectConstants.MAVEN_SRC_DIRECTORY,
 				sourceDirectory
@@ -96,7 +97,7 @@ public class ProjectReader {
 		}
 		
 		String unitTestSourceDirectory = build.getUnitTestSourceDirectory();
-		if ( !isNull(unitTestSourceDirectory) ) {
+		if ( !MevenideUtil.isNull(unitTestSourceDirectory) ) {
 			sourceDirectories.put(
 				ProjectConstants.MAVEN_TEST_DIRECTORY,
 				unitTestSourceDirectory
@@ -104,7 +105,7 @@ public class ProjectReader {
 		}
 		
 		String integrationUnitTestSourceDirectory = build.getIntegrationUnitTestSourceDirectory();
-		if ( !isNull(integrationUnitTestSourceDirectory) ) {
+		if ( !MevenideUtil.isNull(integrationUnitTestSourceDirectory) ) {
 			sourceDirectories.put(
 				ProjectConstants.MAVEN_INTEGRATION_TEST_DIRECTORY,
 				integrationUnitTestSourceDirectory
@@ -112,17 +113,6 @@ public class ProjectReader {
 		}
 		
 		return sourceDirectories;
-	}
-
-	/** 
-	 * checks if a given path is a valid directory 
-	 * 
-	 * @param sourceDirectory
-	 * @return
-	 */
-	private boolean isNull(String sourceDirectory) {
-		return sourceDirectory == null 
-		 		|| sourceDirectory.trim().equals("");
 	}
 
 	/**
@@ -133,8 +123,7 @@ public class ProjectReader {
 	 * @throws Exception
 	 * @throws FileNotFoundException
 	 */
-	private static Build getBuild(File pom)
-		throws Exception, FileNotFoundException {
+	private static Build getBuild(File pom) throws Exception, FileNotFoundException {
 		Project project; 
 		if ( pom != null ) {
 			project = new DefaultProjectUnmarshaller().parse(new FileReader(pom));
@@ -156,22 +145,6 @@ public class ProjectReader {
 		dependency.setArtifact(referencedPom.getParent());
 		return dependency;
 	}
-	/**
-	 * @deprecated no replacement 
-	 * 
-	 * still used in org.mevenide.ui.eclipse.sync.pom.PomSynchronizer
-	 * 
-	 * @param pom
-	 * @return
-	 */
-	public static boolean isWellFormed(File pom) {
-		try {
-			new SAXBuilder().build(pom);
-			return true;
-		}
-		catch (Exception e) {
-			return false;
-		}
-	}
+
 	
 }
