@@ -26,6 +26,7 @@ import java.util.List;
 import org.apache.maven.project.Dependency;
 import org.apache.maven.project.Project;
 import org.mevenide.netbeans.project.MavenProject;
+import org.openide.filesystems.FileUtil;
 
 /**
  *
@@ -90,6 +91,7 @@ public class TestSrcBuildClassPathImpl extends AbstractProjectClassPathImpl {
                         }
                     }
                     File fil = new File(dir, latest);
+                    fil = FileUtil.normalizeFile(fil);
                     URI uri = fil.toURI();
                     if (uri != null) {
                         lst.add(uri);

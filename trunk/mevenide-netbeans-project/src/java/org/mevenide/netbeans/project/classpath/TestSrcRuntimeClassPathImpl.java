@@ -30,6 +30,7 @@ import org.apache.maven.project.Project;
 import org.apache.maven.project.Resource;
 import org.apache.maven.project.UnitTest;
 import org.mevenide.netbeans.project.MavenProject;
+import org.openide.filesystems.FileUtil;
 
 
 /**
@@ -94,6 +95,7 @@ public class TestSrcRuntimeClassPathImpl extends AbstractProjectClassPathImpl {
                         }
                     }
                     File fil = new File(dir, latest);
+                    fil = FileUtil.normalizeFile(fil);
                     URI uri = fil.toURI();
                     if (uri != null) {
                         lst.add(uri);
