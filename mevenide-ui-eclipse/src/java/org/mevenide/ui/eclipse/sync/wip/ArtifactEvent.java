@@ -48,30 +48,17 @@
  */
 package org.mevenide.ui.eclipse.sync.wip;
 
-import org.eclipse.core.resources.IProject;
-
 /**
- * 
  * 
  * @author <a href="mailto:rhill2@free.fr">Gilles Dodinet</a>
  * @version $Id$
- *
+ * 
  */
-public class ArtifactEvent {
-	private Object artifact;
-	private IProject project;
-	
-	public ArtifactEvent(Object item, IProject project) {
-	    this.artifact = item;
-	    this.project = project;
-	}
+public abstract class ArtifactEvent {
+	protected Object artifact;
 	
 	public Object getArtifact() {
 		return artifact;
-	}
-
-	public IProject getProject() {
-		return project;
 	}
 
 }

@@ -79,10 +79,9 @@ public class PomChooser {
 	 * display a Dialog to allow the user to choose a pom  
 	 */
 	public Project openPomChoiceDialog() throws Exception {
-		File projectRoot = new File(project.getLocation().toString());
-		List allPoms = findPoms(projectRoot);
 		
-		PomChoiceDialog dialog = new PomChoiceDialog();
+		
+		PomChoiceDialog dialog = new PomChoiceDialog(this);
 		
 		int result = dialog.open();
 		
@@ -96,6 +95,13 @@ public class PomChooser {
 	}
 	
 	
+	public List getPoms() {
+		File projectRoot = new File(project.getLocation().toString());
+		List allPoms = findPoms(projectRoot);
+		log.debug("Found " + allPoms.size() + " POM file");
+		return allPoms;
+	}
+	
 	private List findPoms(File rootDirectory) {
 		List allPoms = new ArrayList(); 
 		
@@ -104,7 +110,8 @@ public class PomChooser {
 		File[] f = rootDirectory.listFiles();
 		for (int i = 0; i < f.length; i++) {
 			if ( f[i].isDirectory() ) {
-				allPoms.add(findPoms(f[i]));
+				//@todo exclude ${maven.build.dest}, ${maven.test.dest}, etc. => shoudl be customizable thanks a properties file
+				allPoms.addAll(findPoms(f[i]));
 			}
 			else {
 				if ( f[i].getName().equals(fileName) ) {
@@ -113,7 +120,6 @@ public class PomChooser {
 				}
 			}
 		}
-		log.debug("Found " + allPoms.size() + " POM file");
 		return allPoms;
 	}
 	
@@ -124,11 +130,11 @@ public class PomChooser {
 		
 			Project project = ProjectReader.getReader().read(pom);
 			String parent = project.getExtend();
+			log.debug(parent);
 			if ( parent != null ) {
-				String resolvedParent = MevenideUtils.resolve(project, parent);
-				File parentPomFile = new File(resolvedParent);
+				File parentPomFile = resolveFile(pom, project, parent);
 				if ( parentPomFile.exists() ) {
-					ancestors.add(resolvedParent);
+					ancestors.add(parentPomFile);
 					ancestors.addAll(findAncestors(parentPomFile));
 				}
 			}
@@ -138,5 +144,18 @@ public class PomChooser {
 		}
 		
 		return ancestors;
+	}
+
+	private File resolveFile(File pom, Project project, String parent) throws Exception{
+		String resolvedParent = MevenideUtils.resolve(project, parent, true);
+		resolvedParent = resolvedParent.replaceAll("\\$\\{basedir\\}", pom.getParent().replaceAll("\\\\", "/"));
+		log.debug(resolvedParent);
+		File parentPomFile = new File(resolvedParent).getCanonicalFile();
+		if ( !parentPomFile.exists() ) {
+			//most probably extend isnot prefixed by^${basedir}
+			//what are the other other use cases ?
+			parentPomFile = new File(pom.getParent(), resolvedParent).getCanonicalFile(); 
+		}
+		return parentPomFile;
 	}
 }

@@ -219,7 +219,7 @@ public class SynchronizeActionFactory {
 				}
 			}
 		};
-		action.addModelChangeListener(synchronizeView);
+		action.addActionListener(synchronizeView);
 		pushToPom.setId(ADD_TO_POM);
 		pushToPom.setText("Update Pom...");
 		actionIds.put(ADD_TO_POM, pushToPom);
@@ -292,7 +292,7 @@ public class SynchronizeActionFactory {
 				}
 			}
 		};
-		action.addModelChangeListener(synchronizeView);
+		action.addActionListener(synchronizeView);
 		addToClasspath.setId(ADD_TO_CLASSPATH);
 		addToClasspath.setText("Add to .classpath");
 		actionIds.put(ADD_TO_CLASSPATH, addToClasspath);

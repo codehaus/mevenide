@@ -52,10 +52,13 @@ import java.io.File;
 import java.util.List;
 
 import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.util.Assert;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.CheckboxTableViewer;
 import org.eclipse.jface.viewers.ICheckStateListener;
+import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -71,14 +74,16 @@ import org.eclipse.ui.PlatformUI;
  * 
  */
 public class PomChoiceDialog extends Dialog {
+	private PomChooser pomChooser;
 	
 	private CheckboxTableViewer tableViewer;
 	
 	private File chosenPom;
 	
-	public PomChoiceDialog() {
+	public PomChoiceDialog(PomChooser chooser) {
 		super(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell());
 		super.setBlockOnOpen(true);
+		this.pomChooser = chooser;
 	}
 	
 	protected Control createDialogArea(Composite parent) {
@@ -91,7 +96,8 @@ public class PomChoiceDialog extends Dialog {
 		
 		composite.setLayoutData(gridData);
 		
-		Table table = new Table(composite, SWT.NULL);
+		Table table = new Table(composite, SWT.CHECK);
+		table.setLayout(new GridLayout());
 		GridData orderTextGridData = new GridData(GridData.FILL_BOTH);
 		orderTextGridData.grabExcessVerticalSpace = true;
 		orderTextGridData.grabExcessHorizontalSpace = true;
@@ -99,13 +105,22 @@ public class PomChoiceDialog extends Dialog {
 		
 		tableViewer = new CheckboxTableViewer(table);
 		
+		tableViewer.setContentProvider(new IStructuredContentProvider() {
+			public Object[] getElements(Object inputElement) {
+				Assert.isTrue(inputElement instanceof List);
+				return ((List) inputElement).toArray();
+			}
+			public void dispose() { }
+			public void inputChanged(Viewer viewer, Object oldInput, Object newInput) { }
+		});
+
 		tableViewer.setLabelProvider(
 			new LabelProvider() {
 				public String getText(Object element) {
 					if ( element instanceof File ) {
 						return ((File) element).getAbsolutePath();
 					}
-					return "NOT A FILE : " + element.getClass();
+					return "unexpected child... please fill a bug report.";
 				}
 			}
 		);
@@ -114,17 +129,21 @@ public class PomChoiceDialog extends Dialog {
 			new ICheckStateListener() {
 				public void checkStateChanged(CheckStateChangedEvent event) {
 					File checkedElement = (File) event.getElement();
-					tableViewer.setCheckedElements(null);
+					System.err.println(checkedElement);
+					tableViewer.setCheckedElements(new Object[0]);
 					tableViewer.setChecked(checkedElement, true);
 					chosenPom = checkedElement;
 				}
 			}
 		);
 		
+		List allPoms = pomChooser.getPoms();
+		setInput(allPoms);	
+
 		return composite;
 	}
 	
-	public void setInput(List pomFiles) {
+	private void setInput(List pomFiles) {
 		tableViewer.setInput(pomFiles);
 	}
 	

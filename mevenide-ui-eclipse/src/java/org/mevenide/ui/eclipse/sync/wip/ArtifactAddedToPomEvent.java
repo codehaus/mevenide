@@ -48,57 +48,26 @@
  */
 package org.mevenide.ui.eclipse.sync.wip;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.maven.project.Dependency;
 import org.apache.maven.project.Project;
-import org.apache.maven.project.Resource;
-import org.eclipse.core.resources.IProject;
 
 /**
  * 
+ * 
  * @author <a href="mailto:rhill2@free.fr">Gilles Dodinet</a>
  * @version $Id$
- * 
+ *
  */
-public class ArtifactAction {
-	private static Log log = LogFactory.getLog(ArtifactAction.class);
+public class ArtifactAddedToPomEvent extends ArtifactEvent {
+	private Project project;
 	
-	private List listeners = new ArrayList();
-	
-	public void addActionListener(SynchronizeActionListener listener) {
-		listeners.add(listener);	
+	public ArtifactAddedToPomEvent(Object item, Project project) {
+	    this.artifact = item;
+	    this.project = project;
 	}
 	
-	public void removeModelChangeListener(SynchronizeActionListener listener) {
-		listeners.remove(listener);
-	}
 	
-	protected void fireArtifactAddedToClasspath(Object item, IProject project) {
-		for (int i = 0; i < listeners.size(); i++) {
-			ArtifactAddedToClasspathEvent event = new ArtifactAddedToClasspathEvent(item, project);
-			((SynchronizeActionListener)listeners.get(i)).artifactAddedToClasspath(event);
-		}
+	public Project getProject() {
+		return project;
 	}
-	
-	protected void fireArtifactAddedToPom(Object item, Project project) {
-		log.debug("Artifact (" + item + ") added to POM : " + project.getFile());
-	}
-	
-	//crap..
-	protected ArtifactWrapper getArtifactWrapper(Object item) {
-		if ( item instanceof Dependency ) {
-			return new DependencyWrapper((Dependency) item);
-		}
-		if ( item instanceof Directory ) {
-			return new DirectoryWrapper((Directory) item);
-		}
-		if ( item instanceof Resource ) {
-			return new ResourceWrapper((Resource) item);
-		}
-		return null;
-	}
+
 }
