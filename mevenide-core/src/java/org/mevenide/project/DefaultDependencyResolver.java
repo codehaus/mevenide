@@ -15,12 +15,11 @@ package org.mevenide.project;
 
 import java.io.File;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.apache.maven.project.Dependency;
 import org.apache.maven.project.Project;
 import org.mevenide.Environment;
+import org.mevenide.project.dependency.DependencySplitter;
 
 /**
  * 
@@ -96,54 +95,14 @@ public class DefaultDependencyResolver extends AbstractDependencyResolver {
 	}
 
 	public String guessArtifactId(String fileName) {
-		return split(fileName)[0];
+		return new DependencySplitter(fileName).split()[0];
 	}
 
 	public String guessVersion(String fileName) {
 		if ( fileName.indexOf("SNAPSHOT") > 0 ) {
 			return "SNAPSHOT";
 		}
-		return split(fileName)[1];
-	}
-
-	/**
-	 * we assume that fileName follow that kind of pattern :
-	 * 
-	 * (.|(-\\D)+)-((\\d)+(.*))\\.(\\w+)
-	 * 
-	 * so we have $4 => version ; $7 => extension 
-	 *  
-	 * This assumes also that the file has not a multi-extension (e.g. tar.gz)
-	 * 
-	 * someone please provide with a more correct pattern ! 
-	 * 
-	 * 
-	 * @param fileName
-	 * @return {artifactId, version, extension}
-	 */
-	private String[] split(String fileName) {
-	
-		Pattern p = Pattern.compile("(.|(-\\D)+)-((\\d)+(.*))\\.(\\w+)");
-		Matcher m = p.matcher(fileName);
-	
-		String[] allGroups = new String[m.groupCount() + 1];
-	
-		int i = 0;
-		while ( i < m.groupCount() + 1 && m.find(i) ) {
-			allGroups[i] = m.group(i);
-			i++;
-		}
-	
-		String[] consistentGroups = new String[3];
-		consistentGroups[1] = allGroups[3];
-		consistentGroups[2] = allGroups[6];
-	
-	
-		if ( consistentGroups[1] != null ) {
-			consistentGroups[0] = fileName.substring(0, fileName.indexOf(consistentGroups[1]) - 1);
-		}
-	
-		return consistentGroups;
+		return new DependencySplitter(fileName).split()[1];
 	}
 
 	/**

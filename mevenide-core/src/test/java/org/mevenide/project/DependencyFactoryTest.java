@@ -84,15 +84,25 @@ public class DependencyFactoryTest extends TestCase {
 		
 		artefact = new File(testTypeDirectory, "foo+joe-test2.-bar-1.0.7-beta-1.txt");
 		dep = dependencyFactory.getDependency(artefact.getAbsolutePath());
-		//BUG-DependencyResolver_split-DEP_PATTERN $DEP-1
+		//BUG-DependencySplitter_split-DEP_PATTERN $DEP-1
 		assertEquals("1.0.7-beta-1", dep.getVersion());
 		assertEquals("foo+joe-test2.-bar", dep.getArtifactId());
+		
+		artefact = new File(testTypeDirectory, "junit-1.0.rc3.pyo");
+		dep = dependencyFactory.getDependency(artefact.getAbsolutePath());
+		assertEquals("1.0.rc3", dep.getVersion());
+		assertEquals("junit", dep.getArtifactId());
 		
 		artefact = new File("c:/jdk1.4.1/jre/lib/rt.jar");
 		dep = dependencyFactory.getDependency(artefact.getAbsolutePath());
 		//BUG-DependencyResolver_getDependency-NOT_RECOGNIZED_PATTERN $DEP-2
 		assertNull(dep.getVersion());	
 		assertNull(dep.getArtifactId());
+		
+		artefact = new File(testTypeDirectory, "ojb-1.0.rc3.pyo");
+		dep = dependencyFactory.getDependency(artefact.getAbsolutePath());
+		assertEquals("1.0.rc3", dep.getVersion());
+		assertEquals("ojb", dep.getArtifactId());
 	}
 
 	
