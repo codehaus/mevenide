@@ -57,6 +57,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -122,7 +123,7 @@ public abstract class PageSection {
 			if (log.isDebugEnabled()) {
 				log.debug("overridable entry change committed! " + entry.getValue());
 			}
-			updateProject(entry.getValue());
+			overrideParent(entry.getValue());
 		}
 		public void entryDirty(PageEntry entry) {
 			getPage().getEditor().setModelDirty(true);
@@ -449,6 +450,30 @@ public abstract class PageSection {
 			inheritanceToggle.setSize(SWT.DEFAULT, SWT.DEFAULT);
 		}
 		return inheritanceToggle;
+	}
+	
+	protected Button createBrowseButton(
+		Composite parent, 
+		PageWidgetFactory factory,
+		String label,
+		String tooltip,
+		int span) {
+
+		Composite buttonContainer = factory.createComposite(parent);
+		GridData data = new GridData(GridData.HORIZONTAL_ALIGN_END | GridData.VERTICAL_ALIGN_CENTER);
+		data.horizontalSpan = span;
+		buttonContainer.setLayoutData(data);
+		GridLayout layout = new GridLayout();
+		layout.marginWidth = 0;
+		layout.marginHeight = 0;
+		buttonContainer.setLayout(layout);
+
+		Button browseButton = factory.createButton(buttonContainer, label, SWT.PUSH);
+		data = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING | GridData.VERTICAL_ALIGN_CENTER);
+		browseButton.setLayoutData(data);
+		browseButton.setToolTipText(tooltip);
+		
+		return browseButton;
 	}
 
 	protected Text createMultilineText(

@@ -114,13 +114,13 @@ public class IdentificationSection extends PageSection {
 			Mevenide.getResourceString("IdentificationSection.pomNameText.tooltip"),
 			factory
 		);
-		pomNameText = new OverridableTextEntry(createText(container, factory, 2), toggle);
+		pomNameText = new OverridableTextEntry(createText(container, factory, 2), toggle, null);
 		OverrideAdaptor adaptor = new OverrideAdaptor() {
-			public void updateProject(String value) {
+			public void overrideParent(String value) {
 				pom.setName(value);
 				((OverviewPage) getPage()).setHeading(pom);
 			}
-			public String getParentProjectAttribute() {
+			public String acceptParent() {
 				return getParentPom().getName();
 			}
 		};
@@ -135,12 +135,12 @@ public class IdentificationSection extends PageSection {
 			Mevenide.getResourceString("IdentificationSection.artifactIdText.tooltip"),
 			factory
 		);
-		artifactIdText = new OverridableTextEntry(createText(container, factory, 2), toggle);
+		artifactIdText = new OverridableTextEntry(createText(container, factory, 2), toggle, null);
 		adaptor = new OverrideAdaptor() {
-			public void updateProject(String value) {
+			public void overrideParent(String value) {
 				pom.setArtifactId(value);
 			}
-			public String getParentProjectAttribute() {
+			public String acceptParent() {
 				return getParentPom().getArtifactId();
 			}
 		};
@@ -155,12 +155,12 @@ public class IdentificationSection extends PageSection {
 			Mevenide.getResourceString("IdentificationSection.groupIdText.tooltip"), 
 			factory
 		);
-		groupIdText = new OverridableTextEntry(createText(container, factory, 2), toggle);
+		groupIdText = new OverridableTextEntry(createText(container, factory, 2), toggle, null);
 		adaptor = new OverrideAdaptor() {
-			public void updateProject(String value) {
+			public void overrideParent(String value) {
 				pom.setGroupId(value);
 			}
-			public String getParentProjectAttribute() {
+			public String acceptParent() {
 				return getParentPom().getGroupId();
 			}
 		};
@@ -175,12 +175,12 @@ public class IdentificationSection extends PageSection {
 			Mevenide.getResourceString("IdentificationSection.gumpRepoIdText.tooltip"), 
 			factory
 		);
-		gumpRepoIdText = new OverridableTextEntry(createText(container, factory, 2), toggle);
+		gumpRepoIdText = new OverridableTextEntry(createText(container, factory, 2), toggle, null);
 		adaptor = new OverrideAdaptor() {
-			public void updateProject(String value) {
+			public void overrideParent(String value) {
 				pom.setGumpRepositoryId(value);
 			}
-			public String getParentProjectAttribute() {
+			public String acceptParent() {
 				return getParentPom().getGumpRepositoryId();
 			}
 		};

@@ -61,7 +61,6 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
@@ -83,8 +82,6 @@ public class DescriptionSection extends PageSection {
 	private OverridableTextEntry currentVersionText;
 	private OverridableTextEntry logoText;
 	private OverridableTextEntry packageText;
-	private Button logoButton;
-	private Button packageButton;
 
     public DescriptionSection(AbstractPomEditorPage page) {
         super(page);
@@ -113,10 +110,10 @@ public class DescriptionSection extends PageSection {
 		);
 		shortDescText = new OverridableTextEntry(createText(container, factory, 2), toggle);
 		OverrideAdaptor adaptor = new OverrideAdaptor() {
-			public void updateProject(String value) {
+			public void overrideParent(String value) {
 				pom.setShortDescription(value);
 			}
-			public String getParentProjectAttribute() {
+			public String acceptParent() {
 				return getParentPom().getShortDescription();
 			}
 		};
@@ -133,10 +130,10 @@ public class DescriptionSection extends PageSection {
 		);
 		inceptionYearText = new OverridableTextEntry(createText(container, factory, 2), toggle);
 		adaptor = new OverrideAdaptor() {
-			public void updateProject(String value) {
+			public void overrideParent(String value) {
 				pom.setInceptionYear(value);
 			}
-			public String getParentProjectAttribute() {
+			public String acceptParent() {
 				return getParentPom().getInceptionYear();
 			}
 		};
@@ -153,10 +150,10 @@ public class DescriptionSection extends PageSection {
 		);
 		urlText = new OverridableTextEntry(createText(container, factory, 2), toggle);
 		adaptor = new OverrideAdaptor() {
-			public void updateProject(String value) {
+			public void overrideParent(String value) {
 				pom.setUrl(value);
 			}
-			public String getParentProjectAttribute() {
+			public String acceptParent() {
 				return getParentPom().getUrl();
 			}
 		};
@@ -173,10 +170,10 @@ public class DescriptionSection extends PageSection {
 		);
 		currentVersionText = new OverridableTextEntry(createText(container, factory, 2), toggle);
 		adaptor = new OverrideAdaptor() {
-			public void updateProject(String value) {
+			public void overrideParent(String value) {
 				pom.setCurrentVersion(value);
 			}
-			public String getParentProjectAttribute() {
+			public String acceptParent() {
 				return getParentPom().getCurrentVersion();
 			}
 		};
@@ -191,36 +188,25 @@ public class DescriptionSection extends PageSection {
 			Mevenide.getResourceString("DescriptionSection.logoText.tooltip"), 
 			factory
 		);
-		logoText = new OverridableTextEntry(createText(container, factory), toggle);
+		String labelName = Mevenide.getResourceString("DescriptionSection.logoButton.label");
+		String toolTip = Mevenide.getResourceString("DescriptionSection.logoButton.tooltip");
+		final String title = Mevenide.getResourceString("DescriptionSection.logoButton.dialog.title");
+		logoText = new OverridableTextEntry(
+			createText(container, factory), 
+			toggle,
+			createBrowseButton(container, factory, labelName, toolTip, 1)
+		);
 		adaptor = new OverrideAdaptor() {
-			public void updateProject(String value) {
+			public void overrideParent(String value) {
 				pom.setLogo(value);
 			}
-			public String getParentProjectAttribute() {
+			public String acceptParent() {
 				return getParentPom().getLogo();
 			}
 		};
 		logoText.addEntryChangeListener(adaptor);
 		logoText.addOverrideAdaptor(adaptor);
-		
-		Composite buttonContainer = factory.createComposite(container);
-		GridData data = new GridData(GridData.HORIZONTAL_ALIGN_END | GridData.VERTICAL_ALIGN_CENTER);
-		data.horizontalSpan = 1;
-		buttonContainer.setLayoutData(data);
-		layout = new GridLayout();
-		layout.marginWidth = 0;
-		layout.marginHeight = 0;
-		buttonContainer.setLayout(layout);
-
-		String labelName = Mevenide.getResourceString("DescriptionSection.logoButton.label");
-		String toolTip = Mevenide.getResourceString("DescriptionSection.logoButton.tooltip");
-		logoButton = factory.createButton(buttonContainer, labelName, SWT.PUSH);
-		data = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING | GridData.VERTICAL_ALIGN_CENTER);
-		logoButton.setLayoutData(data);
-		logoButton.setToolTipText(toolTip);
-
-		final String title = Mevenide.getResourceString("DescriptionSection.logoButton.dialog.title");
-		logoButton.addSelectionListener(
+		logoText.addBrowseButtonListener(
 			new SelectionAdapter() {
 				public void widgetSelected(SelectionEvent e) {
 					try {
@@ -251,37 +237,26 @@ public class DescriptionSection extends PageSection {
 			Mevenide.getResourceString("DescriptionSection.packageText.tooltip"), 
 			factory
 		);
-		packageText = new OverridableTextEntry(createText(container, factory), toggle);
+		labelName = Mevenide.getResourceString("DescriptionSection.packageButton.label");
+		toolTip = Mevenide.getResourceString("DescriptionSection.packageButton.tooltip");
+		final String title1 = Mevenide.getResourceString("DescriptionSection.packageButton.dialog.title");
+		final String message1 = Mevenide.getResourceString("DescriptionSection.packageButton.dialog.message");
+		packageText = new OverridableTextEntry(
+			createText(container, factory), 
+			toggle,
+			createBrowseButton(container, factory, labelName, toolTip, 1)
+		);
 		adaptor = new OverrideAdaptor() {
-			public void updateProject(String value) {
+			public void overrideParent(String value) {
 				pom.setPackage(value);
 			}
-			public String getParentProjectAttribute() {
+			public String acceptParent() {
 				return getParentPom().getPackage();
 			}
 		};
 		packageText.addEntryChangeListener(adaptor);
 		packageText.addOverrideAdaptor(adaptor);
-		
-		buttonContainer = factory.createComposite(container);
-		data = new GridData(GridData.HORIZONTAL_ALIGN_END | GridData.VERTICAL_ALIGN_CENTER);
-		data.horizontalSpan = 1;
-		buttonContainer.setLayoutData(data);
-		layout = new GridLayout();
-		layout.marginWidth = 0;
-		layout.marginHeight = 0;
-		buttonContainer.setLayout(layout);
-
-		labelName = Mevenide.getResourceString("DescriptionSection.packageButton.label");
-		toolTip = Mevenide.getResourceString("DescriptionSection.packageButton.tooltip");
-		packageButton = factory.createButton(buttonContainer, labelName, SWT.PUSH);
-		data = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING | GridData.VERTICAL_ALIGN_CENTER);
-		packageButton.setLayoutData(data);
-		packageButton.setToolTipText(toolTip);
-
-		final String title1 = Mevenide.getResourceString("DescriptionSection.packageButton.dialog.title");
-		final String message1 = Mevenide.getResourceString("DescriptionSection.packageButton.dialog.message");
-		packageButton.addSelectionListener(
+		packageText.addBrowseButtonListener(
 			new SelectionAdapter() {
 				public void widgetSelected(SelectionEvent e) {
 					try {
@@ -297,8 +272,8 @@ public class DescriptionSection extends PageSection {
 						
 						if (dialog.open() == Window.OK) {
 							IResource packageResource = (IResource) dialog.getResult()[0];
-							packageButton.setFocus();
-							packageButton.setText(packageResource.toString());
+							packageText.setFocus();
+							packageText.setText(packageResource.toString());
 						}
 					}
 					catch ( Exception ex ) {
