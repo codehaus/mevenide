@@ -23,6 +23,7 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.mevenide.environment.SysEnvLocationFinder;
 import org.openide.modules.ModuleInfo;
 import org.openide.modules.ModuleInstall;
 import org.openide.util.Lookup;
@@ -43,6 +44,7 @@ public class MavenGrammarModule extends ModuleInstall
     {
         // By default, do nothing.
         // Put your startup code here.
+        SysEnvLocationFinder.setDefaultSysEnvProvider(new NbSysEnvProvider());
     }
     
     public void validate() throws java.lang.IllegalStateException
