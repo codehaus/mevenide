@@ -51,7 +51,7 @@ public class JarOverrideReader {
 		
 		log.debug("jar override " + (isJarOverrideOn ? " on " : " off"));
 		
-		if ( isJarOverrideOn ) {	
+		if ( isJarOverrideOn && project.getDependencies() != null ) {	
 			for (int i = 0; i < project.getDependencies().size(); i++) {
 				Dependency dependency = (Dependency) project.getDependencies().get(i);
 				String dependencyOverrideValue = getOverrideValue(pom, dependency);
