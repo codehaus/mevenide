@@ -29,6 +29,8 @@ import java.util.TreeMap;
  * some options have been intentionally left out since they dont seem 
  * to make in the current context.
  * 
+ * @todo use configuration (http://gdfact.fr.st/) instead of Properties  
+ * 
  * @author Gilles Dodinet (gdodinet@wanadoo.fr)
  * @version $Id$
  * 
@@ -53,15 +55,10 @@ public class OptionsRegistry {
         }
     }
     
-   /** 
-    * -D,--define arg   Define a system property
-    * -E,--emacs        Produce logging information without adornments
-    * -X,--debug        Produce execution debug output
-    * -e,--exception    Produce exception stack traces
-    * -o,--offline      Build is happening offline
-    * -v,--version      Display version information
+   /**
+    * @return the description associated with the given option passed as a single character
     */
-	public static String getOptionDescription(char option) throws InvalidOptionException {
+	public static String getDescription(char option) throws InvalidOptionException {
 	   String description = (String) options.get(new Character(option));
        if ( description == null ) {
            throw new InvalidOptionException(option);

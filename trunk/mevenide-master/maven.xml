@@ -1,5 +1,4 @@
-<project default="build-all"
-  xmlns:maven="jelly:maven">
+<project default="build-all" xmlns:maven="jelly:maven">
 
   <preGoal name="build">
   	<!-- simulate project.properties inheritance -->
@@ -35,7 +34,7 @@
 	
 	<echo>
 		+-------------------------------------
-		|  maven.home = ${maven.home}              
+		|  maven.home = ${maven.home}        
 		|  maven.repo = ${maven.repo.local}   
 		+-------------------------------------
 	</echo>

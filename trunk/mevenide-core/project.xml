@@ -80,6 +80,13 @@
       <version>0.2.4</version>
       <url>http://www.abstrakt.de/mockcreator.html</url>
     </dependency>
+    
+    <!-- dependency>
+    	<groupId>configuration</groupId>	
+    	<artifactId>configuration</artifactId>
+    	<version>1.0</version>
+    	<url>http://gdfact.fr.st/</url>
+    </dependency -->
 		
   </dependencies>
 
