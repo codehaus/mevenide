@@ -377,26 +377,29 @@ public class DefaultProjectMarshaller implements IProjectMarshaller {
 	
 	private  void marshallBuild(Project project) throws Exception {
 		Build build = project.getBuild();
-		serializer.startTag(NAMESPACE, "build");
+		if ( build != null ) {
 		
-		marshallString(build.getNagEmailAddress(), "nagEmailAddress");
-		marshallString(build.getSourceDirectory(), "sourceDirectory");
-		marshallString(build.getUnitTestSourceDirectory(), "unitTestSourceDirectory");
-		
-		if ( build.getUnitTest() != null ) {
-			serializer.startTag(NAMESPACE, "unitTest");
-			marshallIncludes(build.getUnitTest().getIncludes());
-			marshallExcludes(build.getUnitTest().getExcludes());
-			marshallResources(build.getUnitTest().getResources());
-			serializer.endTag(NAMESPACE, "unitTest");
+			serializer.startTag(NAMESPACE, "build");
+			
+			marshallString(build.getNagEmailAddress(), "nagEmailAddress");
+			marshallString(build.getSourceDirectory(), "sourceDirectory");
+			marshallString(build.getUnitTestSourceDirectory(), "unitTestSourceDirectory");
+			
+			if ( build.getUnitTest() != null ) {
+				serializer.startTag(NAMESPACE, "unitTest");
+				marshallIncludes(build.getUnitTest().getIncludes());
+				marshallExcludes(build.getUnitTest().getExcludes());
+				marshallResources(build.getUnitTest().getResources());
+				serializer.endTag(NAMESPACE, "unitTest");
+			}
+			
+			marshallString(build.getAspectSourceDirectory(), "aspectSourceDirectory");
+			marshallString(build.getIntegrationUnitTestSourceDirectory(), "integrationUnitTestSourceDirectory");
+			 
+			marshallResources(build.getResources());
+			
+			serializer.endTag(NAMESPACE, "build");
 		}
-		
-		marshallString(build.getAspectSourceDirectory(), "aspectSourceDirectory");
-		marshallString(build.getIntegrationUnitTestSourceDirectory(), "integrationUnitTestSourceDirectory");
-		 
-		marshallResources(build.getResources());
-		
-		serializer.endTag(NAMESPACE, "build");
 	}
 
 	private  void marshallResources(List resources)
