@@ -5,7 +5,6 @@
 		 xmlns:define="jelly:define"
 		 xmlns:eclipse-plugin="eclipse-plugin">
 
-  
   <define:taglib uri="eclipse-plugin">
   	
   	<define:tag name="check-type">
@@ -14,7 +13,11 @@
 	  	<ant:fail message="Unrecognized Eclipse plugin type : ${maven.eclipse.plugin.type}. Should be one of {'plugin', 'feature', 'site'}"/>
 	  </j:if>
 	  
-  	</define:tag>	
+  	</define:tag>
+  	
+  	<define:tag name="export-property">
+		<j:set var="${property}" value="${pom.getPluginContext(context).getVariable(property)}" scope="parent"/>
+  	</define:tag>
   	
   </define:taglib>
   
