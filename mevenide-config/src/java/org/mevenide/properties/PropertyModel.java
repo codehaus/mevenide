@@ -16,6 +16,9 @@
  */
 package org.mevenide.properties;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -111,12 +114,34 @@ public class PropertyModel
 	    //trim key and values for usability issues - why was there a newLine ?
 	    //@warn removal of the newLine might impact CarefulProjectWriter 
 	    //@todo should we remove that newLine from comment too ? 
-        KeyValuePair pair = new KeyValuePair(key.trim(), separator);
-        pair.addToValue(value.trim());
-        addElement(pair);
-        return pair;
+		KeyValuePair pair = findByKey(key.trim());
+		if ( pair == null ) {
+	        pair = new KeyValuePair(key.trim(), separator);
+	        pair.addToValue(value.trim());
+	        addElement(pair);
+		}
+		else {
+			pair.setValue(value.trim());
+		}
+		return pair;
     }
 
+	public void store(OutputStream stream) throws IOException {
+		OutputStreamWriter writer = null;
+		try {
+			writer = new OutputStreamWriter(stream);
+		    Iterator it = getList().iterator();
+		    while (it.hasNext()) {
+		        writer.write(it.next().toString());
+		    }
+		}
+		finally {
+			if ( writer != null ) {
+			    writer.close();
+			}
+		}
+	}
+	
 	public void addToComment(Comment comment, String line) {
         if (comment == null)
         {
