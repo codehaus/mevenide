@@ -170,6 +170,9 @@ public class MavenPlugin extends AbstractUIPlugin {
 		try {
 			URL installBase = MavenPlugin.getPlugin().getDescriptor().getInstallURL();
 			File f = new File(new File(Platform.resolve(installBase).getFile()).getAbsolutePath(), fname);
+			if ( !f.exists() ) {
+				f.createNewFile();
+			}
 			return f.getAbsolutePath();
 		}
 		catch (IOException e) {
