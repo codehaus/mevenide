@@ -610,6 +610,12 @@ public class MevenidePomEditor extends FormEditor implements IProjectChangeListe
         pom.setLicenses(p.getLicenses());
         pom.setInceptionYear(p.getInceptionYear());
         pom.setId(p.getId());
+        if ( p.getId().indexOf(':') == -1 ) {
+            pom.setArtifactId(p.getId());
+        }
+        else {
+            pom.setArtifactId(p.getId().substring(p.getId().indexOf(':') + 1, p.getId().length()));
+        }
         pom.setGumpRepositoryId(p.getGumpRepositoryId());
         pom.setGroupId(p.getGroupId());
         pom.setExtend(p.getExtend());
