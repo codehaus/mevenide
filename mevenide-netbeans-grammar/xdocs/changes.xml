@@ -7,6 +7,16 @@
 
   <body>
 
+    <release version="0.4" date="in CVS">
+      <action dev="mkleint" type="fix">
+        Upgraded to later version of Netbeans xml module, allowing better support for 
+        completing and constructing lists. eg. goal's tag prereqs attribute.
+      </action>
+    </release>
+  
+    <release version="0.3" date="17072004">
+    </release>
+  
     <release version="0.2" date="15042004">
       <action dev="mkleint" type="add">
         Dynamic tag libraries from maven plugins also supported.

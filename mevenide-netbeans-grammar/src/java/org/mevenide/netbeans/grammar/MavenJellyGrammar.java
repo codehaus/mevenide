@@ -53,26 +53,20 @@ import org.w3c.dom.Text;
 
 /**
  */
-public class MavenJellyGrammar implements GrammarQuery
-{
+public class MavenJellyGrammar implements GrammarQuery {
     
     private static Log logger = LogFactory.getLog(MavenJellyGrammar.class);
     
     private static TagLibManager manager;
     
-    public MavenJellyGrammar()
-    {
+    public MavenJellyGrammar() {
     }
     
     
-    private static TagLibManager getManager()
-    {
-        if (manager == null)
-        {
-            synchronized (MavenJellyGrammar.class)
-            {
-                if (manager == null)
-                {
+    private static TagLibManager getManager() {
+        if (manager == null) {
+            synchronized (MavenJellyGrammar.class) {
+                if (manager == null) {
                     manager = new TagLibManager();
                     NbTagLibProvider prov = new NbTagLibProvider();
                     manager.setProvider(prov);
@@ -84,19 +78,15 @@ public class MavenJellyGrammar implements GrammarQuery
     }
     
     
-    private TagLib getDefaultTagLib()
-    {
+    private TagLib getDefaultTagLib() {
         //TODO define default taglib
         return getManager().getTagLibrary("default-maven");
     }
     
-    private Node findRootNode(Node virtualElementCtx)
-    {
+    private Node findRootNode(Node virtualElementCtx) {
         Node current = virtualElementCtx;
-        while (current != null)
-        {
-            if (current.getNodeName() != null && current.getNodeName().equals("project"))
-            {
+        while (current != null) {
+            if (current.getNodeName() != null && current.getNodeName().equals("project")) {
                 break;
             }
             logger.debug("findRootNode:curr rootNode is=" + current.getNodeName());
@@ -108,18 +98,14 @@ public class MavenJellyGrammar implements GrammarQuery
     /**
      * will create a mapping table for
      */
-    private Map getNameSpaceMappings(Node projectNode)
-    {
+    private Map getNameSpaceMappings(Node projectNode) {
         HashMap toReturn = new HashMap();
         NamedNodeMap map = projectNode.getAttributes();
-        if (map != null)
-        {
-            for (int i = 0; i < map.getLength(); i++)
-            {
+        if (map != null) {
+            for (int i = 0; i < map.getLength(); i++) {
                 Node attrNode = map.item(i);
                 String attrName = attrNode.getNodeName();
-                if (attrName.startsWith("xmlns:"))
-                {
+                if (attrName.startsWith("xmlns:")) {
                     toReturn.put(attrName.substring("xmlns:".length()), attrNode.getNodeValue());
                     logger.debug("namespace name=" + attrName.substring("xmlns:".length()) + " value=" + attrNode.getNodeValue());
                 }
@@ -129,8 +115,7 @@ public class MavenJellyGrammar implements GrammarQuery
     }
     
     
-    public Component getCustomizer(HintContext nodeCtx)
-    {
+    public Component getCustomizer(HintContext nodeCtx) {
         return null;
     }
     /**
@@ -138,13 +123,11 @@ public class MavenJellyGrammar implements GrammarQuery
      * @param ctx the hint context node
      * @return an array of properties for this context
      */
-    public Property[] getProperties(HintContext nodeCtx)
-    {
+    public Property[] getProperties(HintContext nodeCtx) {
         return new Property[0];
     }
     
-    public boolean hasCustomizer(HintContext nodeCtx)
-    {
+    public boolean hasCustomizer(HintContext nodeCtx) {
         return false;
     }
     /**
@@ -152,8 +135,7 @@ public class MavenJellyGrammar implements GrammarQuery
      * @return <code>true</code> there is no known result
      *         <code>false</code> grammar does not allow here a result
      */
-    public boolean isAllowed(Enumeration en)
-    {
+    public boolean isAllowed(Enumeration en) {
         return true;
     }
     
@@ -167,8 +149,7 @@ public class MavenJellyGrammar implements GrammarQuery
      * @return enumeration of <code>GrammarResult</code>s (ATTRIBUTE_NODEs) that can be queried on name, and attributes.
      *         Every list member represents one possibility.
      */
-    public Enumeration queryAttributes(HintContext ownerElementCtx)
-    {
+    public Enumeration queryAttributes(HintContext ownerElementCtx) {
         String start = ownerElementCtx.getCurrentPrefix();
         logger.debug("start=" + start);
         Set toReturn = new TreeSet(new SimpleComparator());
@@ -176,25 +157,20 @@ public class MavenJellyGrammar implements GrammarQuery
         int separ = elName.indexOf(':');
         TagLib lib = null;
         String tag = elName;
-        if (separ > 0)
-        {
+        if (separ > 0) {
             //it's a namespace element..
             String ns = elName.substring(0, separ);
             tag = (separ == elName.length() ? "" : elName.substring(separ + 1));
             lib = findTagLib(ns, ownerElementCtx);
-        } else
-        {
+        } else {
             //TODO what now? default namespace
             lib = getDefaultTagLib();
         }
-        if (lib != null)
-        {
+        if (lib != null) {
             Iterator it = lib.getTagAttrs(tag).iterator();
-            while (it.hasNext())
-            {
+            while (it.hasNext()) {
                 String attr = (String)it.next();
-                if (attr.startsWith(start))
-                {
+                if (attr.startsWith(start)) {
                     toReturn.add(new Attribute(attr));
                 }
             }
@@ -207,21 +183,17 @@ public class MavenJellyGrammar implements GrammarQuery
      * @param parentNodeCtx context for which default is queried
      * @return default value or <code>null</code>
      */
-    public GrammarResult queryDefault(HintContext parentNodeCtx)
-    {
+    public GrammarResult queryDefault(HintContext parentNodeCtx) {
         logger.debug("query default");
         return null;
     }
     
-    private TagLib findTagLib(String ns, Node context)
-    {
+    private TagLib findTagLib(String ns, Node context) {
         Node rootNode = findRootNode(context);
-        if (rootNode != null)
-        {
+        if (rootNode != null) {
             Map mapping = getNameSpaceMappings(rootNode);
             String jellyTag = (String)mapping.get(ns);
-            if (jellyTag != null)
-            {
+            if (jellyTag != null) {
                 return  (TagLib)getManager().getTagLibrary(jellyTag);
             }
         }
@@ -230,32 +202,25 @@ public class MavenJellyGrammar implements GrammarQuery
     
     /**
      * iterates up the document hierarchy and returns the first parent node that has the same
-     * namespace. 
+     * namespace.
      * @param ns namespace to look for, if null, default namespace is searched.
      */
-    private Node findParentInSameNamespace(String ns, Node el)
-    {
+    private Node findParentInSameNamespace(String ns, Node el) {
         Node parent = el.getParentNode();
         
-        while (parent != null)
-        {
+        while (parent != null) {
             String name = parent.getNodeName();
-            if (name != null)
-            {
+            if (name != null) {
                 int separ = name.indexOf(':');
-                if (separ > 0)
-                {
+                if (separ > 0) {
                     String nameSpace = name.substring(0, separ);
                     logger.debug("findParentInSameNamespace-" + nameSpace );
-                    if (nameSpace.equals(ns))
-                    {
+                    if (nameSpace.equals(ns)) {
                         return parent;
                     }
-                } else
-                {
+                } else {
                     // no namespace here,
-                    if (ns == null)
-                    {
+                    if (ns == null) {
                         return parent;
                     }
                 }
@@ -269,22 +234,17 @@ public class MavenJellyGrammar implements GrammarQuery
      * code could be probably reused with findTagLib?
      * @returns a map - key is namespace name, value -it's taglib instance
      */
-    private Map findTagLibs(String nsStart, HintContext context)
-    {
+    private Map findTagLibs(String nsStart, HintContext context) {
         Node rootNode = findRootNode(context);
         Map toReturn = new HashMap(10);
-        if (rootNode != null)
-        {
+        if (rootNode != null) {
             Map mapping = getNameSpaceMappings(rootNode);
             Iterator it = mapping.keySet().iterator();
-            while (it.hasNext())
-            {
+            while (it.hasNext()) {
                 String ns = (String)it.next();
-                if (nsStart == null || nsStart.length() == 0 || ns.startsWith(nsStart))
-                {
+                if (nsStart == null || nsStart.length() == 0 || ns.startsWith(nsStart)) {
                     String jellyTag = (String)mapping.get(ns);
-                    if (jellyTag != null)
-                    {
+                    if (jellyTag != null) {
                         toReturn.put(ns, getManager().getTagLibrary(jellyTag));
                     }
                 }
@@ -302,14 +262,12 @@ public class MavenJellyGrammar implements GrammarQuery
      * @return enumeration of <code>GrammarResult</code>s (ELEMENT_NODEs) that can be queried on name, and attributes.
      *         Every list member represents one possibility.
      */
-    public Enumeration queryElements(HintContext virtualElementCtx)
-    {
+    public Enumeration queryElements(HintContext virtualElementCtx) {
         String start = virtualElementCtx.getCurrentPrefix();
         logger.debug("start=" + start);
         Collection toReturn = new TreeSet(new ElementComparator());
         int separ = start.indexOf(':');
-        if (separ > 0)
-        {
+        if (separ > 0) {
             //it's a namespace element..
             String ns = start.substring(0, separ);
             String tag = (separ == start.length() ? "" : start.substring(separ + 1));
@@ -317,17 +275,14 @@ public class MavenJellyGrammar implements GrammarQuery
             TagLib lib = findTagLib(ns, virtualElementCtx);
             createSubTagsElements(ns, virtualElementCtx, toReturn, lib, tag);
             createTagElements(lib.getRootTags(), toReturn, ns, tag);
-        } else
-        {
+        } else {
             logger.debug("no namespace yet");
             Map libs = findTagLibs(start, virtualElementCtx);
             Collection singleTags = new ArrayList();
-            if (libs.size() > 0)
-            {
+            if (libs.size() > 0) {
                 Set sortedLibs = new TreeSet(libs.keySet());
                 Iterator it = sortedLibs.iterator();
-                while (it.hasNext())
-                {
+                while (it.hasNext()) {
                     String ns = (String)it.next();
                     TagLib lb = (TagLib)libs.get(ns);
                     logger.debug("adding namespace=" + ns);
@@ -336,8 +291,8 @@ public class MavenJellyGrammar implements GrammarQuery
                     logger.debug("adding lib=" + lb);
                     // add all elements for given namespace.. that's why the last parameter is null.
                     createTagElements(lb.getRootTags(), singleTags, ns, null);
-		            createSubTagsElements(ns, virtualElementCtx, singleTags, lb, null);
-		        }
+                    createSubTagsElements(ns, virtualElementCtx, singleTags, lb, null);
+                }
             }
             // add default tags now..
             createTagElements(getDefaultTagLib().getRootTags(), toReturn, null, start);
@@ -354,33 +309,27 @@ public class MavenJellyGrammar implements GrammarQuery
      * only those starting with value in parameter start. If that one is null, will add all.
      *
      */
-    private void createTagElements(Collection col, Collection elemList, String namespace, String start)
-    {
+    private void createTagElements(Collection col, Collection elemList, String namespace, String start) {
         Iterator it = col.iterator();
-        while (it.hasNext())
-        {
+        while (it.hasNext()) {
             String name = (String)it.next();
-            if (start == null || name.startsWith(start))
-            {
+            if (start == null || name.startsWith(start)) {
                 elemList.add(new MyElement(namespace, name));
             }
         }
     }
     
-    private void createSubTagsElements(String ns, Node virtualElementCtx, Collection ccList, TagLib lib, String start)
-    {
+    private void createSubTagsElements(String ns, Node virtualElementCtx, Collection ccList, TagLib lib, String start) {
         Node parent = findParentInSameNamespace(ns, virtualElementCtx);
-        if (parent != null)
-        {
+        if (parent != null) {
             String parentTag = parent.getNodeName();
             int separ = parentTag.indexOf(':');
             if (separ > -1) {
                 parentTag = parentTag.substring(separ + 1);
-            } 
+            }
             logger.debug("parenttag=" + parentTag);
             Collection col = lib.getSubTags(parentTag);
-            if (col != null)
-            {
+            if (col != null) {
                 createTagElements(col, ccList, ns, start);
             }
         }
@@ -390,8 +339,7 @@ public class MavenJellyGrammar implements GrammarQuery
      * @param prefix prefix filter
      * @return enumeration of <code>GrammarResult</code>s (ENTITY_REFERENCE_NODEs)
      */
-    public Enumeration queryEntities(String prefix)
-    {
+    public Enumeration queryEntities(String prefix) {
         logger.debug("query entities");
         return EmptyEnumeration.EMPTY;
     }
@@ -400,8 +348,7 @@ public class MavenJellyGrammar implements GrammarQuery
      * @param prefix prefix filter
      * @return enumeration of <code>GrammarResult</code>s (NOTATION_NODEs)
      */
-    public Enumeration queryNotations(String prefix)
-    {
+    public Enumeration queryNotations(String prefix) {
         logger.debug("query notation");
         return EmptyEnumeration.EMPTY;
     }
@@ -416,27 +363,22 @@ public class MavenJellyGrammar implements GrammarQuery
      * @return enumeration of <code>GrammarResult</code>s (TEXT_NODEs) that can be queried on name, and attributes.
      *         Every list member represents one possibility.
      */
-    public Enumeration queryValues(HintContext virtualTextCtx)
-    {
+    public Enumeration queryValues(HintContext virtualTextCtx) {
         Node parent = virtualTextCtx;
         String start = virtualTextCtx.getCurrentPrefix();
         Set toReturn = new TreeSet(new SimpleComparator());
-//        logger.debug("parent node=" + parent);
-//        logger.debug("document=" + parent.getOwnerDocument());
-//        logger.debug("parent's parent=" + parent.getParentNode());
-//        logger.debug("document element=" + parent.getOwnerDocument().getDocumentElement());
-        if (parent != null && parent.getNodeType() == Node.ATTRIBUTE_NODE)
-        {
+        //        logger.debug("parent node=" + parent);
+        //        logger.debug("document=" + parent.getOwnerDocument());
+        //        logger.debug("parent's parent=" + parent.getParentNode());
+        //        logger.debug("document element=" + parent.getOwnerDocument().getDocumentElement());
+        if (parent != null && parent.getNodeType() == Node.ATTRIBUTE_NODE) {
             // completion for the namespaces..
-            if (parent.getNodeName().startsWith("xmlns:"))
-            {
+            if (parent.getNodeName().startsWith("xmlns:")) {
                 // now we offer jelly taglibs
                 String[] libs = getManager().getAvailableTagLibs();
-                for (int i = 0; i < libs.length; i++)
-                {
+                for (int i = 0; i < libs.length; i++) {
                     logger.debug("lib=" + libs[i]);
-                    if (libs[i].startsWith(start))
-                    {
+                    if (libs[i].startsWith(start)) {
                         toReturn.add(new TextNode(libs[i]));
                     }
                 }
@@ -466,10 +408,11 @@ public class MavenJellyGrammar implements GrammarQuery
                         String type = (String)it.next();
                         logger.debug("attr compl type=" + type);
                         AttributeCompletion compl = getManager().getAttributeCompletion(type);
-                        Collection col = compl.getValueHints(GrammarUtilities.extractLastWord(start));
+                        String lastWord = GrammarUtilities.extractLastWord(start);
+                        Collection col = compl.getValueHints(lastWord);
                         Iterator valIt = col.iterator();
                         while (valIt.hasNext()) {
-                            toReturn.add(new TextNode((String)valIt.next()));
+                            toReturn.add(new TextNode((String)valIt.next(), start.substring(0, start.length() - lastWord.length())));
                         }
                     }
                 }
@@ -481,19 +424,16 @@ public class MavenJellyGrammar implements GrammarQuery
     /**
      * a superclass for my node impls.
      */
-    private static abstract class AbstractResultNode extends AbstractNode implements GrammarResult
-    {
+    private static abstract class AbstractResultNode extends AbstractNode implements GrammarResult {
         
-        public Icon getIcon(int kind)
-        {
+        public Icon getIcon(int kind) {
             return null;
         }
         
         /**
          * @output provide additional information simplifiing decision
          */
-        public String getDescription()
-        {
+        public String getDescription() {
             return getNodeName() + " desc";
         }
         
@@ -501,19 +441,17 @@ public class MavenJellyGrammar implements GrammarQuery
          * @output text representing name of suitable entity
          * //??? is it really needed
          */
-        public String getText()
-        {
+        public String getText() {
             return getNodeName();
         }
         
         /**
          * @output name that is presented to user
          */
-        public String getDisplayName()
-        {
-            return getNodeName() + " disp";
+        public String getDisplayName() {
+            return getNodeName();
         }
-
+        
         /**
          * For elements provide hint whether element has empty content model.
          * @return true element has empty content model (no childs) and can
@@ -522,82 +460,68 @@ public class MavenJellyGrammar implements GrammarQuery
          */
         public boolean isEmptyElement() {
             return false;
-       }
+        }
         
         
-        public boolean equals(Object obj)
-        {
-            if (obj == null || !(obj instanceof AbstractResultNode))
-            {
+        public boolean equals(Object obj) {
+            if (obj == null || !(obj instanceof AbstractResultNode)) {
                 return false;
             }
             AbstractResultNode res = (AbstractResultNode)obj;
             int index1 = getNodeName().indexOf(':');
             int index2 = res.getNodeName().indexOf(':');
-            if ( (index1 >= 0 && index2 < 0) || (index2 >= 0 && index1 < 0))
-            {
+            if ( (index1 >= 0 && index2 < 0) || (index2 >= 0 && index1 < 0)) {
                 return false;
             }
             return getNodeName().equals(res.getNodeName());
         }
     }
     
-    private static class MyElement extends AbstractResultNode implements Element
-    {
+    private static class MyElement extends AbstractResultNode implements Element {
         
         private String name;
         private String namespace;
         
-        MyElement(String ns, String name)
-        {
+        MyElement(String ns, String name) {
             this.name = name;
             namespace = ns;
         }
         
-        public short getNodeType()
-        {
+        public short getNodeType() {
             return Node.ELEMENT_NODE;
         }
         
-        public String getNodeName()
-        {
+        public String getNodeName() {
             return (namespace == null ? name : namespace + ":" + name);
         }
         
-        public String getTagName()
-        {
+        public String getTagName() {
             return name;
         }
         
     }
     
-    private static class TagLibElement extends AbstractResultNode implements Element
-    {
+    private static class TagLibElement extends AbstractResultNode implements Element {
         
         private String namespace;
         
-        TagLibElement(String ns)
-        {
+        TagLibElement(String ns) {
             namespace = ns;
         }
         
-        public short getNodeType()
-        {
+        public short getNodeType() {
             return Node.ELEMENT_NODE;
         }
         
-        public String getNodeName()
-        {
+        public String getNodeName() {
             return namespace + ":";
         }
         
-        public String getTagName()
-        {
+        public String getTagName() {
             return namespace;
         }
         
-        public Icon getIcon(int kind)
-        {
+        public Icon getIcon(int kind) {
             return new ImageIcon(Utilities.loadImage("org/mevenide/netbeans/grammar/resources/NamespaceIcon.gif", true));
         }
         /**
@@ -608,73 +532,66 @@ public class MavenJellyGrammar implements GrammarQuery
          */
         public boolean isEmptyElement() {
             return false;
-       }
+        }
         
     }
     
-    private static class Attribute extends AbstractResultNode implements Attr
-    {
+    private static class Attribute extends AbstractResultNode implements Attr {
         
         private String name;
         
-        Attribute(String name)
-        {
+        Attribute(String name) {
             this.name = name;
         }
         
-        public short getNodeType()
-        {
+        public short getNodeType() {
             return Node.ATTRIBUTE_NODE;
         }
         
-        public String getNodeName()
-        {
+        public String getNodeName() {
             return name;
         }
         
-        public String getTagName()
-        {
+        public String getTagName() {
             return name;
         }
         
     }
     
-    private static class TextNode extends AbstractResultNode implements Text
-    {
+    private static class TextNode extends AbstractResultNode implements Text {
         
         private String name;
+        private String start = "";
         
-        TextNode(String name)
-        {
+        TextNode(String name) {
             this.name = name;
         }
         
-        public short getNodeType()
-        {
+        TextNode(String name, String start) {
+            this(name);
+            this.start = start;
+        }
+        
+        public short getNodeType() {
             return Node.TEXT_NODE;
         }
         
-        public String getNodeName()
-        {
+        public String getNodeName() {
             return name;
         }
         
-        public String getNodeValue()
-        {
-            return name;
+        public String getNodeValue() {
+            return start + name;
         }
         
-        public String getTagName()
-        {
+        public String getTagName() {
             return name;
         }
     }
     
-    private static class SimpleComparator implements Comparator
-    {
+    private static class SimpleComparator implements Comparator {
         
-        public int compare(Object o1, Object o2)
-        {
+        public int compare(Object o1, Object o2) {
             AbstractResultNode nd1 = (AbstractResultNode)o1;
             AbstractResultNode nd2 = (AbstractResultNode)o2;
             return nd1.getTagName().compareTo(nd2.getTagName());
@@ -682,31 +599,25 @@ public class MavenJellyGrammar implements GrammarQuery
         
     }
     
-    private static class ElementComparator implements Comparator
-    {
+    private static class ElementComparator implements Comparator {
         
-        public int compare(Object o1, Object o2)
-        {
+        public int compare(Object o1, Object o2) {
             AbstractResultNode nd1 = (AbstractResultNode)o1;
             AbstractResultNode nd2 = (AbstractResultNode)o2;
-            if ((nd1 instanceof TagLibElement) && !(nd2 instanceof TagLibElement))
-            {
+            if ((nd1 instanceof TagLibElement) && !(nd2 instanceof TagLibElement)) {
                 return -1;
             }
-            if (!(nd1 instanceof TagLibElement) && (nd2 instanceof TagLibElement))
-            {
+            if (!(nd1 instanceof TagLibElement) && (nd2 instanceof TagLibElement)) {
                 return 1;
             }
             String name1 = nd1.getNodeName();
             String name2 = nd2.getNodeName();
             int index1 = name1.indexOf(':');
             int index2 = name2.indexOf(':');
-            if ( index1 >= 0 && index2 < 0)
-            {
+            if ( index1 >= 0 && index2 < 0) {
                 return 1;
             }
-            if ( index2 >= 0 && index1 < 0)
-            {
+            if ( index2 >= 0 && index1 < 0) {
                 return -1;
             }
             return name1.compareTo(name2);
