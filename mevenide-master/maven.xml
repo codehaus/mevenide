@@ -65,6 +65,8 @@
   </goal>  
   
   <goal name="mevenide-site:init" description="Try to install eclipse and netbeans dependencies. Used to initialize repository before building site.">
+      <j:set var="maven.jar.override" value="on"/>
+      <j:set var="maven.clover.jar" value="${mevenide.master.project.location}/lib/clover/jars/clover-1.2.4.jar"/>
       <ant:property environment="env"/>
       <ant:property name="eclipse_home" location="env.ECLIPSE_HOME"/>
       <ant:property name="netbeans_home" location="env.NETBEANS_HOME"/>
