@@ -232,4 +232,36 @@
     
   </goal> 
    
+   
+  <goal name="eclipse-plugin:install-swt" description="install platofrm-dependent swt library into maven local repository">
+    <!-- set eclipse.home property -->
+	<ant:property environment="environment"/>
+  	<ant:property name="eclipse.home" location="${environment.ECLIPSE_HOME}"/>
+	
+	<!-- find swt.plugin.dir -->
+	<ant:available property="swt.plugin.dir" 
+			 	   value="org.eclipse.swt.gtk_3.0.0/ws/gtk"
+				   file="${eclipse.home}/plugins/org.eclipse.swt.gtk_${maven.eclipse.plugin.swt.version}/ws/gtk/swt.jar"/>
+
+	<ant:available property="swt.plugin.dir" 
+			   	   value="org.eclipse.swt.gtk1x_3.0.0/ws/gtk1x"
+			       file="${eclipse.home}/plugins/org.eclipse.swt.gtk1x_${maven.eclipse.plugin.swt.version}/ws/gtk1x/swt.jar/swt.jar"/>
+		
+	<ant:available property="swt.plugin.dir" 
+			       value="org.eclipse.swt.motif_3.0.0/ws/motif"
+			       file="${eclipse.home}/plugins/org.eclipse.swt.motif_${maven.eclipse.plugin.swt.version}/ws/motif/swt.jar"/>		   
+				   		   				   
+	<ant:available property="swt.plugin.dir" 
+			       value="org.eclipse.swt.photon_3.0.0/ws/photon"
+			       file="${eclipse.home}/plugins/org.eclipse.swt.photon_${maven.eclipse.plugin.swt.version}/ws/photon/swt.jar"/>		   
+				   				   		   				   
+	<ant:available property="swt.plugin.dir" 
+			       value="org.eclipse.swt.win32_3.0.0/ws/win32"
+			       file="${eclipse.home}/plugins/org.eclipse.swt.win32_${maven.eclipse.plugin.swt.version}/ws/win32/swt.jar"/>
+		
+	<!-- install swt library into maven.repo.local -->
+	<ant:copy file="${eclipse.home}/plugins/${swt.plugin.dir}/swt.jar" 
+  		      tofile="${maven.repo.local}/${maven.eclipse.plugin.swt.groupId}/jars/${maven.eclipse.plugin.swt.artifactId}-${maven.eclipse.plugin.swt.version}.jar"/>  
+  		      
+  </goal>
 </project>

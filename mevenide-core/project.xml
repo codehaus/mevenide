@@ -5,12 +5,22 @@
     <artifactId>mevenide-core</artifactId>
     <name>Mevenide Core</name>
     <currentVersion>0.1.1-SNAPSHOT</currentVersion>
-    
     <package>org.mevenide</package>
     <description>
     	Mevenide Core provides various utility classes for manipulating POMs, running Maven, synchronizing POMs and IDEs, etc... It is intended to used by concrete IDE plugin.
     </description>
-    
+    <versions>
+      <version>
+        <id>ea</id>
+        <name>0.1-ea</name>
+        <tag>V_0_1_ALPHA_1</tag>
+      </version>
+      <version>
+        <id>alpha-1</id>
+        <name>0.1-alpha-A</name>
+        <tag>V_0_1_ALPHA_1_1</tag>
+      </version>
+    </versions>    
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
@@ -57,7 +67,6 @@
             	<eclipse.plugin.bundle>true</eclipse.plugin.bundle>
             </properties>
         </dependency>
-       
         <dependency>
             <groupId>xpp3</groupId>
             <artifactId>xpp3</artifactId>
@@ -94,7 +103,6 @@
             	<eclipse.plugin.bundle>true</eclipse.plugin.bundle>
             </properties>
         </dependency>
-        
         <!-- 
         	following dependencies are required since we have copied 
         	DefaultProjectUnmarshaller into org.mevenide.util
@@ -136,7 +144,5 @@
             	<eclipse.plugin.bundle>true</eclipse.plugin.bundle>
             </properties>
         </dependency>
-
     </dependencies>
-    
 </project>

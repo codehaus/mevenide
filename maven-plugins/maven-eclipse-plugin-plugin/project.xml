@@ -59,4 +59,7 @@
 	    </resource>	
       </resources>
 	</build>
+	<reports>
+		<!-- to be done -->
+	</reports>
 </project>
