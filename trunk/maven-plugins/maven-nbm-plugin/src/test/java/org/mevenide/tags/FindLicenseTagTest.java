@@ -45,7 +45,6 @@ public class FindLicenseTagTest extends TestCase {
         tag.setJarFile(fl);
         String lic = tag.readLicense();
         assertNotNull(lic);
-        System.out.println(lic);
     }
     
     public void testJar2() throws Exception {
@@ -53,13 +52,11 @@ public class FindLicenseTagTest extends TestCase {
         tag.setJarFile(fl);
         String lic = tag.readLicense();
         assertNotNull(lic);
-        System.out.println(lic);
     }
     public void testJar3() throws Exception {
         File fl= new File("target/test-classes/org/mevenide/tags/nolicense1.jar");
         tag.setJarFile(fl);
         String lic = tag.readLicense();
-        System.out.println(lic);
         assertNull(lic);
     }
     
