@@ -19,6 +19,8 @@ import java.io.File;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jdt.core.IClasspathEntry;
+import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jdt.launching.JavaRuntime;
 import org.mevenide.project.io.ProjectWriter;
 import org.mevenide.ui.eclipse.sync.IPathResolverDelegate;
 
@@ -54,20 +56,24 @@ public class ArtifactVisitor {
 	}
 	
 	public void add(DependencyEntry entry) throws Exception {
-//		IClasspathEntry[] cpe = PreferenceConstants.getDefaultJRELibrary();
-//		for (int i = 0; i < cpe.length; i++) {
-//			System.out.println(cpe[i].getPath());
-//		}
-
-		IClasspathEntry classpathEntry = entry.getClasspathEntry();
-		
 		ProjectWriter writer = ProjectWriter.getWriter();
 		IPathResolverDelegate pathResolver = pomSynchronizer.getPathResolver();
 		
-		writer.addDependency(
-			pathResolver.getAbsolutePath(classpathEntry.getPath()), 
-			pomSynchronizer.getPom()
-		);
+		IClasspathEntry jreEntry = JavaRuntime.getJREVariableEntry();
+		IClasspathEntry resolvedJreEntry = JavaCore.getResolvedClasspathEntry(jreEntry);
+		String jrePath = pathResolver.getAbsolutePath(resolvedJreEntry.getPath());
+		
+		IClasspathEntry classpathEntry = entry.getClasspathEntry();
+		String entryPath = pathResolver.getAbsolutePath(classpathEntry.getPath());
+		
+		if ( !jrePath.equals(entryPath) ) {
+			writer.addDependency(
+				entryPath, 
+				pomSynchronizer.getPom()
+			);
+ 		}
+		
+		
 	}
 	
 	public void add(ProjectEntry entry) throws Exception {
