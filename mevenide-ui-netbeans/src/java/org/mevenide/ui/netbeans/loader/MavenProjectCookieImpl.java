@@ -20,7 +20,6 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
 import org.apache.commons.logging.Log;
@@ -28,7 +27,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.maven.artifact.factory.DefaultMavenArtifactFactory;
 import org.apache.maven.project.MavenProject;
 import org.mevenide.environment.LocationFinderAggregator;
-import org.mevenide.project.io.DefaultProjectUnmarshaller;
+import org.mevenide.project.io.ProjectReader;
 import org.mevenide.ui.netbeans.ArtifactCookie;
 import org.mevenide.ui.netbeans.MavenProjectCookie;
 import org.openide.ErrorManager;
@@ -115,8 +114,8 @@ public class MavenProjectCookieImpl implements MavenProjectCookie, ArtifactCooki
                 try
                 {
                     log.debug("timestamp - reading project");
-                    DefaultProjectUnmarshaller unmars = new DefaultProjectUnmarshaller();
-                    project = unmars.unmarshall(new FileReader(projectFile));
+                    ProjectReader unmars = ProjectReader.getReader();
+                    project = unmars.read(projectFile);
                    // project.setContext(MavenUtils.createContext(projectFile.getParentFile()));
 //                    project = MavenUtils.getProject(projectFile);
                     log.debug("timestamp - reading project finished.");
@@ -166,7 +165,7 @@ public class MavenProjectCookieImpl implements MavenProjectCookie, ArtifactCooki
     {
         if (loaded && !loadFailed && project != null)
         {
-            return project.getArtifactId() + ":" + project.getModel().getCurrentVersion();
+            return project.getArtifactId() + ":" + project.getModel().getVersion();
         }
         if (name == null)
         {
