@@ -48,9 +48,14 @@
  */
 package org.mevenide.ui.eclipse.editors.pages;
 
+import org.apache.maven.project.Project;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.mevenide.project.ProjectChangeEvent;
 import org.mevenide.ui.eclipse.Mevenide;
-import org.mevenide.ui.eclipse.editors.IPomEditorPage;
+import org.mevenide.ui.eclipse.MevenideColors;
 import org.mevenide.ui.eclipse.editors.MevenidePomEditor;
 
 /**
@@ -63,17 +68,38 @@ import org.mevenide.ui.eclipse.editors.MevenidePomEditor;
 public class DependenciesPage extends AbstractPomEditorPage {
 
 	public static final String HEADING = Mevenide.getResourceString("DependenciesPage.heading");
+
+	private DependenciesSection depsSection;
     
     public DependenciesPage(MevenidePomEditor editor) {
         super(HEADING, editor);
     }
-
+	
 	protected void initializePage(Composite parent) {
+		GridLayout layout = new GridLayout();
+		layout.numColumns = 2;
+		layout.marginWidth = 10;
+		layout.horizontalSpacing = 15;
+		parent.setLayout(layout);
+
+		PageWidgetFactory factory = getFactory();
+		factory.setBackgroundColor(MevenideColors.WHITE);
+
+		depsSection = new DependenciesSection(this);
+		Control control = depsSection.createControl(parent, factory);
+		GridData gd = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING);
+		gd.horizontalSpan = 2;
+		control.setLayoutData(gd);
 	}
 
-    public void pageActivated(IPomEditorPage oldPage) {
-    }
+	public void projectChanged(ProjectChangeEvent e) {
+		update(e.getPom());
+	}
+	
+	public void update(Project pom) {
+		depsSection.update(pom);
+		
+		setUpdateNeeded(false);
+	}
 
-    public void pageDeactivated(IPomEditorPage newPage) {
-    }
 }

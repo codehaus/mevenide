@@ -89,6 +89,7 @@ import org.mevenide.ui.eclipse.editors.pages.OverviewPage;
 import org.mevenide.ui.eclipse.editors.pages.ReportsPage;
 import org.mevenide.ui.eclipse.editors.pages.RepositoryPage;
 import org.mevenide.ui.eclipse.editors.pages.TeamPage;
+import org.mevenide.ui.eclipse.editors.pages.UnitTestsPage;
 import org.mevenide.util.DefaultProjectUnmarshaller;
 import org.mevenide.util.MevenideUtils;
 
@@ -110,6 +111,7 @@ public class MevenidePomEditor extends MultiPageEditorPart {
     public static final String TEAM_PAGE = Mevenide.getResourceString("MevenidePomEditor.tab.label.team");
     public static final String DEPENDENCIES_PAGE = Mevenide.getResourceString("MevenidePomEditor.tab.label.dependencies");
     public static final String BUILD_PAGE = Mevenide.getResourceString("MevenidePomEditor.tab.label.build");
+	public static final String UNITTESTS_PAGE = Mevenide.getResourceString("MevenidePomEditor.tab.label.unitTests");
     public static final String REPORTS_PAGE = Mevenide.getResourceString("MevenidePomEditor.tab.label.reports");
     public static final String SOURCE_PAGE = Mevenide.getResourceString("MevenidePomEditor.tab.label.source");
 
@@ -119,6 +121,7 @@ public class MevenidePomEditor extends MultiPageEditorPart {
     private int teamPageIndex;
     private int dependenciesPageIndex;
     private int buildPageIndex;
+	private int unitTestsPageIndex;
     private int reportsPageIndex;
     private int sourcePageIndex;
 
@@ -202,6 +205,7 @@ public class MevenidePomEditor extends MultiPageEditorPart {
         createTeamPage();
         createDependenciesPage();
         createBuildPage();
+		createUnitTestsPage();
         createReportsPage();
         createSourcePage();
 
@@ -276,6 +280,17 @@ public class MevenidePomEditor extends MultiPageEditorPart {
         buildPageIndex = addPage(build);
         setPageText(buildPageIndex, BUILD_PAGE);
     }
+
+	/**
+	 * Creates the version control page of the Project Object Model
+	 * editor, where  is defined.
+	 */
+	private void createUnitTestsPage() {
+		UnitTestsPage unitTests = new UnitTestsPage(this);
+		comparator.addProjectChangeListener(ProjectComparator.UNIT_TESTS, unitTests);
+		unitTestsPageIndex = addPage(unitTests);
+		setPageText(unitTestsPageIndex, UNITTESTS_PAGE);
+	}
 
     /**
      * Creates the version control page of the Project Object Model

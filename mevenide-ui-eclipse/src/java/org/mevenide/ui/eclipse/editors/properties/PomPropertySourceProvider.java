@@ -52,9 +52,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Branch;
 import org.apache.maven.project.Contributor;
+import org.apache.maven.project.Dependency;
 import org.apache.maven.project.Developer;
 import org.apache.maven.project.License;
 import org.apache.maven.project.MailingList;
+import org.apache.maven.project.Resource;
 import org.apache.maven.project.Version;
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.eclipse.ui.views.properties.IPropertySourceProvider;
@@ -98,6 +100,12 @@ public class PomPropertySourceProvider implements IPropertySourceProvider {
 		}
 		if (object instanceof Branch) {
 			return new BranchPropertySource((Branch) object);
+		}
+		if (object instanceof Dependency) {
+			return new DependencyPropertySource((Dependency) object);
+		}
+		if (object instanceof Resource) {
+			return new ResourcePropertySource((Resource) object);
 		}
 		log.error("Unable to create a PropertySource for " + object);
 		return null;
