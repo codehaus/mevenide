@@ -67,7 +67,7 @@ public class LaunchHistory {
 	 * @param goals
 	 */
 	public void save(IProject project, String[] options, String[] goals) {
-		LaunchedAction action = new LaunchedAction(this, project, options, goals);
+		LaunchedAction action = new LaunchedAction(project, options, goals);
 		try {
 			
 			if ( launchedActions.contains(action) ) {
@@ -110,7 +110,13 @@ public class LaunchHistory {
 	 *
 	 */
 	private void load() {
-		launchedActions = LaunchMarshaller.getSavedConfigs();
+		try {
+			launchedActions = LaunchMarshaller.getSavedConfigs();
+		} 
+		catch (Exception e) {
+			e.printStackTrace();
+			log.error("Unable to load previously saved configs due to : " + e);
+		}
 	}
 	
 	public LaunchedAction getLastlaunched() {
