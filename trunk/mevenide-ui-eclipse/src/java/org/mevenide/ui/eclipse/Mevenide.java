@@ -93,7 +93,7 @@ public class Mevenide extends AbstractUIPlugin {
             setMavenHome(preferenceStore.getString("maven.home"));
             setJavaHome(preferenceStore.getString("java.home"));
             setMavenRepository(preferenceStore.getString("maven.repo"));
-            
+            setCheckTimestamp(preferenceStore.getBoolean("mevenide.checktimestamp"));
             
             
             

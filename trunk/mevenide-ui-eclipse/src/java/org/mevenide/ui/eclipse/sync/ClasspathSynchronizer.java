@@ -43,6 +43,13 @@ public class ClasspathSynchronizer extends AbstractIdeSynchronizer implements IS
 		setProject(Mevenide.getPlugin().getProject());
 		synchronizationGoal = Mevenide.getResourceString("eclipse.synch.project.goal");
 	}
+	
+	protected void process() {
+		if ( SynchronizerUtil.shouldSynchronizeProject(project) ) {
+			super.process();
+		}
+	}
+
     
     /**
      * @see org.mevenide.core.sync.ISynchronizer#postSynchronization() 
