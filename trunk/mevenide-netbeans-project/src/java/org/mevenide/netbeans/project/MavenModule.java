@@ -29,6 +29,7 @@ import org.mevenide.environment.LocationFinderAggregator;
 import org.mevenide.environment.SysEnvLocationFinder;
 import org.mevenide.netbeans.project.output.CompileAnnotation;
 import org.mevenide.netbeans.project.output.PmdAnnotation;
+import org.mevenide.plugins.PluginInfoFactory;
 import org.openide.modules.InstalledFileLocator;
 import org.openide.modules.ModuleInstall;
 
@@ -43,12 +44,13 @@ public class MavenModule extends ModuleInstall {
     
     private static final long serialVersionUID = -485754848837354747L;
     
-    public static final String CURRENT_VERSION = "maven-mevenide-plugin-0.1.2.jar"; //NOI18N
+    public static final String CURRENT_VERSION = "maven-mevenide-plugin-0.2.jar"; //NOI18N
     
     public void restored() {
         // kind of duplicates the same call in mevenide-netbeans-grammar but these
         // can be used independently.
         SysEnvLocationFinder.setDefaultSysEnvProvider(new NbSysEnvProvider());
+        PluginInfoFactory.getInstance().setCustomLoader(new NbCustomPluginLoaderImpl());
     }
     
    public void uninstalled () {
