@@ -24,16 +24,14 @@
       <j:set var="maven.nbm.build.release.dir" value="${basedir}/../mevenide-master/target/nbm_release"/>
       <j:set var="maven.nbm.build.dir" value="${basedir}/.."/>
       <attainGoal name="nbm:collect-nbms"/>
-<!--      <j:set var="maven.nbm.autoupdate.distbase" value="nb_autoupdate"/> -->
+      <!-- j:set var="maven.nbm.autoupdate.distbase" value="nb_autoupdate"/ -->
       <attainGoal name="nbm:autoupdate"/>
-<!--  don't copy to webpage.. upload separately somehow..
-    <ant:copy toDir="${maven.docs.dest}">
+	  <!--  don't copy to webpage.. upload separately somehow.. -->
+      <!-- ant:copy toDir="${maven.docs.dest}">
           <ant:fileset dir="${basedir}/../mevenide-master/target"
                      includes="nbm_release/*"
           />       
-      </ant:copy>
-      -->
-      
+      </ant:copy -->
   </goal>  
 
     
@@ -44,6 +42,11 @@
   	<j:set var="maven.multiproject.includes" value="${maven.multiproject.site.includes}"/>
   	<attainGoal name="multiproject:site"/>
   	<attainGoal name="mevenide-site:generate-wiki-templates"/>
+  </goal>
+  
+  <goal name="mevenide-site:eclipse" description="Build Mevenide Site" prereqs="mevenide-site:init">
+  	<j:set var="maven.multiproject.includes" value="${maven.multiproject.eclipse.includes}"/>
+  	<attainGoal name="multiproject:site"/>
   </goal>
   
   <goal name="mevenide-plugins:site">
@@ -87,28 +90,26 @@
   </goal>  
   
   <goal name="mevenide-netbeans:init" description="Copy netbeans dependencies to maven.repo.local if necessary">
-<!--    <j:set var="maven.repo.remote" value="${maven.repo.remote},http://mevenide.codehaus.org/repository"/>
+	<!-- j:set var="maven.repo.remote" value="${maven.repo.remote},http://mevenide.codehaus.org/repository"/>
     <j:set var="artifactId" value="maven-nbm-plugin"/>
     <j:set var="groupId" value="mevenide"/>
     <j:set var="version" value="0.2"/>
-    <attainGoal name="plugin:download"/>
-    -->
-<!--    <util:file var="installScript" name="${basedir}/../${mevenide.master.project.name}/scripts/init/install-netbeans-dependencies.xml"/>
-    <j:include file="${installScript}"/>
-    -->
+    <attainGoal name="plugin:download"/ -->
+    
+	<!-- util:file var="installScript" name="${basedir}/../${mevenide.master.project.name}/scripts/init/install-netbeans-dependencies.xml"/>
+    <j:include file="${installScript}"/ -->
   </goal>  
 
   <goal name="mevenide-ide:init-all" description="Try to install eclipse and netbeans dependencies. Used to initialize repository before building site.">
       <ant:property environment="env"/>
       <ant:property name="eclipse_home" location="env.ECLIPSE_HOME"/>
-<!--      <ant:property name="netbeans_home" location="env.NETBEANS_HOME"/> -->
+	  <!-- ant:property name="netbeans_home" location="env.NETBEANS_HOME"/ -->
       <j:if test="${!empty(eclipse_home)}">
         <attainGoal name="mevenide-eclipse:init"/>
       </j:if>
-<!--      <j:if test="${!empty(netbeans_home)}">
+	 <!-- j:if test="${!empty(netbeans_home)}">
         <attainGoal name="mevenide-netbeans:init"/>  
-      </j:if>
-      -->
+      </j:if -->
   </goal>
   
   
@@ -158,17 +159,17 @@
   </goal>
 
   <goal name="mevenide-netbeans:build-deps" description="Create nbms for the Mevenide dependencies">
-<!--    <j:scope> -->
+	<!-- j:scope> -->
         <j:set var="backupincludes" value="${maven.multiproject.includes}"/>
-<!--        <j:set var="backupbasedir" value="${maven.multiproject.basedir}"/> -->
-<!--        <j:set var="maven.multiproject.basedir" value="${basedir}/../mevenide-netbeans-deps"/> -->
+		<!-- j:set var="backupbasedir" value="${maven.multiproject.basedir}"/ -->
+		<!--  j:set var="maven.multiproject.basedir" value="${basedir}/../mevenide-netbeans-deps"/ -->
         <j:set var="maven.multiproject.includes" value="mevenide-netbeans-deps/*/project.xml"/>
         <j:set var="goal" value="nbm:install"/> 
         <attainGoal name="multiproject:goal"/>
         <!-- how to execute without influencing the original -->
         <j:set var="maven.multiproject.includes" value="${backupincludes}"/>
-<!--        <j:set var="maven.multiproject.basedir" value="${backupbasedir}"/> -->
-<!--     </j:scope> -->
+		<!--  j:set var="maven.multiproject.basedir" value="${backupbasedir}"/ -->
+	<!-- /j:scope -->
   </goal>  
     
 
