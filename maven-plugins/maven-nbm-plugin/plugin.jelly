@@ -60,41 +60,81 @@ The maven.nbm.manifest.bundle.basedir and  maven.nbm.manifest.bundle.include hav
     -->
     <ant:tstamp>
       <ant:format property="maven.nbm.timestamp" pattern="yyyyMMddhhmm" />
-    </ant:tstamp>  
+    </ant:tstamp>
+    <j:set var="man" value="${maven.nbm.manifest}"/>
+    <j:choose>
+        <j:when test="${!empty(man)}">
+            <ant:available property="maven.nbm.manifest.available" 
+                       file="${man}"/>
+        </j:when>
+    </j:choose>
+    <j:set var="bundle" value="${maven.nbm.manifest.bundle.basedir}"/>
+    <j:if test="${!empty(bundle)}">
+        <ant:available property="maven.nbm.bundle.available" 
+                   file="${bundle}"/>
+    </j:if> 
+                       
+<!-- if a netbeans specific manifest is defined, examine this one, otherwise the already included one.
+ ignoring the case when some of the netbeans attributes are already defined in the jar and more is included.
+-->                   
+    <j:choose>
+      <j:when test="${maven.nbm.manifest.available}">
+        <mevenide:examine-manifest manifestFile="${maven.nbm.manifest}" 
+                                   isLocalizedVar="maven.nbm.isLocalized"/> 
+      </j:when>
+      <j:otherwise>
+        <mevenide:examine-manifest jarFile="${maven.nbm.build.dir}/${maven.final.name}.jar" 
+                                   isLocalizedVar="maven.nbm.isLocalized"/> 
+      </j:otherwise>
+     </j:choose>
+      
+    <ant:echo message="NBM updates jar. localized=${maven.nbm.isLocalized}" />
     <ant:jar destfile="${maven.nbm.build.dir}/${maven.final.name}.jar"
-        manifest="${maven.nbm.manifest}" update="true">
-        <!-- include the bundle file, if defined -->
-        <ant:echo message="basedir=${maven.nbm.manifest.bundle.basedir}" /> 
-        <ant:echo message="include=${maven.nbm.manifest.bundle.include}" /> 
-        <j:choose>
-           <j:when test="empty(${maven.nbm.manifest.bundle.basedir}) or empty(${maven.nbm.manifest.bundle.include})">
-            </j:when>
-            <j:otherwise>
-                <ant:fileset dir="${maven.nbm.manifest.bundle.basedir}"
-                         includes="${maven.nbm.manifest.bundle.include}"
-                />       
-            </j:otherwise>
-        </j:choose>
+             update="true">
+      <j:if test="${maven.nbm.manifest.available}">
+          <ant:echo message="NBM merging manifest.." />
+        <ant:setProperty name="manifest" value="${maven.nbm.manifest}" />
+      </j:if>
+      <j:if test="${maven.nbm.bundle.available}">
+          <ant:echo message="NBM adding manifest resources.." />
+          <ant:fileset dir="${maven.nbm.manifest.bundle.basedir}"
+                       includes="${maven.nbm.manifest.bundle.include}"
+          />       
+      </j:if>
+      
        <ant:manifest>
        <!-- these attributes get defined this way only if not present in the manifest file -->
           <mevenide:adapt-version var="maven.nbm.version.spec" version="${pom.currentVersion}" type="spec"/>
           <ant:attribute name="OpenIDE-Module-Specification-Version" value="${maven.nbm.version.spec}"/>
-          
           <mevenide:adapt-version var="maven.nbm.version.impl" version="${pom.currentVersion}" type="impl"/>
           <ant:attribute name="OpenIDE-Module-Implementation-Version" value="${maven.nbm.version.impl}"/>
           <ant:attribute name="OpenIDE-Module-Build-Version" value="${maven.nbm.timestamp}"/>
           <ant:attribute name="OpenIDE-Module" value="${pom.package}/1"/>
-
+          
+          <!-- generate Class-Path manifest entry -->
+<!--          <j:set var="extDependencies" value=""/> -->
+          <j:forEach var="artifact" items="${pom.artifacts}">
+            <j:set var="dependency" value="${artifact.dependency}"/>
+            <j:if test="${dependency.getProperty('netbeans.module.ext') == 'true'}">
+                  <j:set var="extDependencies" value="${extDependencies} ext/${artifact.name}"/>
+            </j:if>
+          </j:forEach>
+          <j:if test="${!empty(extDependencies)}">
+                <ant:attribute name="Class-Path" value="${extDependencies}" />
+          </j:if>
           <j:choose>
-              <j:when test="${maven.nbm.nonlocalized}">
+              <j:when test="${maven.nbm.isLocalized}">
+              </j:when>
+              <j:otherwise>
+                <ant:echo message="NBM: Now generating the user-visible module properties. Please note that these should be actually localized. See Netbeans.org API docs for information how to localize your module's manifest."/>
                 <ant:attribute name="OpenIDE-Module-Display-Category" value="${pom.groupId}" />
                 <ant:attribute name="OpenIDE-Module-Name" value="${pom.name}" />
-                <ant:attribute name="OpenIDE-Module-Long-Description" value="${pom.description}" />
                 <ant:attribute name="OpenIDE-Module-Short-Description" value="${pom.shortDescription}" />
-              </j:when>
+                <ant:attribute name="OpenIDE-Module-Long-Description" value="${pom.description}" />
+              </j:otherwise>
           </j:choose>
        </ant:manifest>
-     </ant:jar>
+    </ant:jar>
    </goal>
 
   <!--==================================================================-->
@@ -108,8 +148,8 @@ The maven.nbm.manifest.bundle.basedir and  maven.nbm.manifest.bundle.include hav
     prereqs="nbm:jar"
     description="Build the NBM">
   <ant:taskdef name="makenbm" classname="org.netbeans.nbbuild.MakeNBM" >
-       <ant:classpath>
-         <ant:pathelement path="${plugin.getDependencyPath('nbantext')}"/>
+        <ant:classpath>
+            <ant:pathelement path="${plugin.getDependencyPath('nbantext')}"/>
         </ant:classpath>
   </ant:taskdef>
 
@@ -120,7 +160,7 @@ The maven.nbm.manifest.bundle.basedir and  maven.nbm.manifest.bundle.include hav
       <j:set var="dependency" value="${artifact.dependency}"/>
       <j:if test="${dependency.getProperty('netbeans.module.ext') == 'true'}">
         <ant:copy todir="${maven.nbm.build.dir}/${maven.nbm.jar.location}/ext" file="${artifact.path}"/>
-        <!--todo add to classpath attribute in manifest as well-->
+        <!--classpath attribute added in the previous step (jar update)-->
       </j:if>
     </j:forEach>
 
