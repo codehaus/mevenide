@@ -131,8 +131,17 @@ public class MavenArtifactNode extends ArtifactNode {
 	}
 	
 	public void addTo(Project project) throws Exception {
-		project.getArtifacts().add(artifact);
-		ProjectWriter.getWriter().write(project);
+	    if ( project.getArtifacts() == null ) {
+	        project.setArtifacts(new ArrayList());
+	    }
+	    if ( project.getDependencies() == null ) {
+	        project.setDependencies(new ArrayList());
+	    }
+	    
+	    project.getArtifacts().add(artifact);
+	    project.getDependencies().add(artifact.getDependency());
+
+	    ProjectWriter.getWriter().write(project);
 	}
 	
 	protected String getIgnoreLine() {
