@@ -6,7 +6,13 @@
   </properties>
 
   <body>
-    <release version="0.5" date="in CVS" description="Changes because of Maven RC4">
+    <release version="0.6" date="in CVS" description="Changes because of Maven RC4">
+      <action dev="mkleint" type="fix">
+        Instead of selectively including items into NBM, include everything under ${maven.nbm.build.dir}/${maven.nbm.cluster.dir}
+        Allows adding custom files into the nbm, in pregoals of nbm:prepare-nbm-resources.
+      </action>
+    </release>
+    <release version="0.5" date="released" description="Changes because of Maven RC4">
       <action dev="mkleint" type="fix">
         Upgraded to latest artifact plugin dependency, to make it work with Maven RC4.
       </action>
