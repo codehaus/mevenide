@@ -52,12 +52,12 @@
   		description="create a plugin dist file containing only the plugin required files and put it in ${maven.eclipse.plugin.dist.dir}">
 
   	  <j:set var="mode" value="${maven.eclipse.plugin.build.mode}"/>
-  	  <!-- j:if test="${mode == 'bundle'}" -->
-	  <attainGoal name="eclipse-plugin:prepare-plugin-dist"/>
-  	  <!-- /j:if -->
-  	  <!-- j:if test="${mode != 'dist'}">
+  	  <j:if test="${mode == 'bundle'}">
+		<attainGoal name="eclipse-plugin:prepare-plugin-dist"/>
+  	  </j:if>
+  	  <j:if test="${mode != 'bundle'}">
   	  	<attainGoal name="eclipse-plugin:create-library-artifacts"/>
-  	  </j:if -->
+  	  </j:if>
   	  
 	  <j:set var="distVersion" value="${maven.eclipse.plugin.artifact.version}"/>
 	  <j:set var="pluginId" value="${maven.eclipse.plugin.artifact.id}"/>
@@ -67,23 +67,36 @@
 	  <!-- create temporary folder to store plugin files before archiving them -->
 	  <ant:mkdir dir="${maven.eclipse.plugin.temp.dir}/${pluginFolder}_${distVersion}"/>
        
+      <!-- @todo update plugin descriptor -->
+  	  <mevenide:update-plugin-libraries pom="${pom}"/>
+  	  
+  	  <ant:move todir="${basedir}" filtering="true">
+        <fileset dir="${maven.eclipse.plugin.temp.dir}">
+          <include name="plugin.xml"/>
+        </fileset>
+        <ant:filterset>
+  	  	  <ant:filterset refid="${maven.eclipse.plugin.filterset.id}"/>
+  	  	  <ant:filter token="maven.eclipse.plugin.artifact.id" value="${maven.eclipse.plugin.artifact.id}"/>
+  	  	  <ant:filter token="maven.eclipse.plugin.artifact.version" value="${maven.eclipse.plugin.artifact.version}"/>
+  	      <ant:filter token="maven.eclipse.plugin.artifact.internal.id" value="${maven.eclipse.plugin.artifact.internal.id}"/>
+  	  	  <ant:filter token="maven.eclipse.plugin.artifact.internal.version" value="${maven.eclipse.plugin.artifact.internal.version}"/>
+  	    </ant:filterset>
+      </ant:move>
+      
       <!-- copy required dependencies and generated artifact to $${maven.eclipse.plugin.temp.dir} -->
       <ant:copy todir="${maven.eclipse.plugin.temp.dir}/${pluginFolder}_${distVersion}">
        	<ant:fileset dir="${basedir}" includes="${maven.eclipse.plugin.includes}"/>
        	<ant:fileset dir="${maven.build.dir}" includes="${pom.artifactId}-${pom.currentVersion}.jar"/>
       </ant:copy>
-       
-      <!-- @todo update plugin descriptor -->
-  	  <!-- mevenide:update-plugin-libraries pom="${pom}"/ -->
-  	  
+
       <!-- build plugin distribution file. -->
       <ant:jar destfile="${pluginArchive}">
         <fileset dir="${maven.eclipse.plugin.temp.dir}"/>
       </ant:jar>
       			
-      <ant:delete dir="${maven.eclipse.plugin.temp.dir}"/>
+      <ant:delete dir="${maven.eclipse.plugin.temp.dir}" quiet="true"/>
       
-      <!-- @todo customize me -->
+      <!-- @todo customize me, for runtime testing ? -->
       <ant:copy todir="${basedir}" file="${maven.build.dir}/${maven.final.name}.jar"/>
    </goal>
    
@@ -102,6 +115,7 @@
    	  <ant:copy todir="${maven.eclipse.plugin.temp.dir}/${featureFolder}_${distVersion}">
    	  	<fileset dir="${basedir}" includes="${maven.eclipse.plugin.feature.includes}"/>
    	  </ant:copy>
+   	  
    	  <ant:jar destfile="${featureArchive}">
         <fileset dir="${maven.eclipse.plugin.temp.dir}"/>
       </ant:jar>
