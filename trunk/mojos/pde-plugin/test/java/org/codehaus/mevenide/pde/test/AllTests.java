@@ -34,6 +34,7 @@ public class AllTests {
         
         suite.addTestSuite(PluginClasspathResolverTest.class);
         suite.addTestSuite(CompatibilityCheckerTest.class);
+        suite.addTestSuite(PluginClasspathResolverTest.class);
         
         return suite;
     }
