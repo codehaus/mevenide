@@ -26,12 +26,17 @@ import org.apache.maven.project.Build;
 import org.apache.maven.project.Project;
 import org.apache.maven.project.Resource;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.jdt.core.IClasspathEntry;
+import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.mevenide.project.ProjectConstants;
 import org.mevenide.project.io.ProjectReader;
 import org.mevenide.project.io.ProjectWriter;
 import org.mevenide.project.source.SourceDirectoryUtil;
+import org.mevenide.ui.eclipse.util.JavaProjectUtils;
 
 
 /**  
@@ -131,10 +136,26 @@ public class DirectoryNode extends ArtifactNode {
 	
 	
 	public void addTo(IProject project) throws Exception {
-		// TODO Auto-generated method stub
+	    IClasspathEntry entry = createSourceEntry(project);
+	    if ( !project.getFolder(directory.getCleanPath()).exists() ) {
+	        project.getFolder(directory.getCleanPath()).create(true, true, null);
+	    }
+	    JavaProjectUtils.addClasspathEntry(JavaCore.create(project), entry);
 	}
 	
-	public void addTo(Project project) throws Exception {
+	private IClasspathEntry createSourceEntry(IProject project) {
+        String path = "/" + project.getName() + "/" + directory.getCleanPath();
+        IPath[] excludePatterns = null;
+        if ( excludeNodes != null ) {
+            excludePatterns = new Path[excludeNodes.length];
+	        for (int i = 0; i < excludeNodes.length; i++) {
+	            excludePatterns[i] = new Path((String) excludeNodes[i].getData());
+	        }
+        }
+        return JavaCore.newSourceEntry(new Path(path), excludePatterns);
+    }
+
+    public void addTo(Project project) throws Exception {
 		if ( ProjectConstants.MAVEN_RESOURCE.equals(directory.getType()) ) {
 			ProjectWriter.getWriter().addResource(directory.getCleanPath(), project.getFile());
 		}
