@@ -70,26 +70,30 @@ import org.mevenide.ui.eclipse.sync.wizard.SynchronizeWizard;
  * 
  */
 public class SynchronizeAction extends AbstractMevenideAction {
-	private static Log log = LogFactory.getLog(SynchronizeAction.class);
+	private static final String SYNCHRONIZE_PROJECT_ACTION_ID = "maven-plugin.Synchronize";
+    private static final String MAVEN_REPO_CLASSPATH_VARIABLE = "MAVEN_REPO";
+    private static final String SYNCHRONIZE_POM_ACTION_ID = "maven-plugin.SynchronizePom";
+    
+    private static Log log = LogFactory.getLog(SynchronizeAction.class);
 	
     public void run(IAction action) {
     	boolean pom = true;
 		try {
-            if ( action.getId().equals("maven-plugin.Synchronize") ) {
+            if ( action.getId().equals(SYNCHRONIZE_PROJECT_ACTION_ID) ) {
             	pom = false;
             	String mavenHome = Mevenide.getPlugin().getMavenHome();
             	String mavenRepository = Mevenide.getPlugin().getMavenRepository();
             	if ( isNull(mavenHome) || isNull(mavenRepository) ) {
-					Mevenide.popUp("Mevenide", "Please set maven preferences before synchronizing");
+					Mevenide.popUp(Mevenide.PLUGIN_NAME, Mevenide.getResourceString("SynchronizeAction.maven.preferences.not.set"));
 				}
 				else {
-					if ( JavaCore.getClasspathVariable("MAVEN_REPO") == null ) {
-						JavaCore.setClasspathVariable("MAVEN_REPO", new Path(Mevenide.getPlugin().getMavenRepository()), null);
+					if ( JavaCore.getClasspathVariable(MAVEN_REPO_CLASSPATH_VARIABLE) == null ) {
+						JavaCore.setClasspathVariable(MAVEN_REPO_CLASSPATH_VARIABLE, new Path(Mevenide.getPlugin().getMavenRepository()), null);
 					}
 					SynchronizerFactory.getSynchronizer(ISynchronizer.POM_TO_IDE).synchronize();
 				}
 			}
-			if ( action.getId().equals("maven-plugin.SynchronizePom") ) {
+			if ( action.getId().equals(SYNCHRONIZE_POM_ACTION_ID) ) {
 				//show synch wizard
 				Wizard wizard = new SynchronizeWizard(currentProject);
 				WizardDialog dialog 

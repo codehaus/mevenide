@@ -66,7 +66,8 @@ import org.mevenide.project.ProjectConstants;
  */
 public class DefaultPathResolver implements IPathResolver {
 
-	private static final String UNKNOWN_SRC_TYPE = "UNKNOWN";
+	private static final String SOURCE_TYPES_XML_FILE = "sourceTypes.xml";
+    private static final String UNKNOWN_SRC_TYPE = "UNKNOWN";
     /**
 	 * extract the source path to add to the pom from the given classpathentry
 	 * 
@@ -105,7 +106,7 @@ public class DefaultPathResolver implements IPathResolver {
 		if ( project == null ) {
 			throw new Exception("project should not be null");
 		}
-		Document doc = new SAXBuilder().build(Mevenide.getPlugin().getFile("sourceTypes.xml"));
+		Document doc = new SAXBuilder().build(Mevenide.getPlugin().getFile(SOURCE_TYPES_XML_FILE));
 		Element root = doc.getRootElement();
 		List sdGroupElements = root.getChildren(XmlSerializationConstants.SOURCE_DIRECTORY_GROUP_ELEM);
 		

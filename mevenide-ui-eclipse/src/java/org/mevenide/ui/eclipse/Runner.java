@@ -63,7 +63,11 @@ import org.mevenide.ui.eclipse.launch.jdt.VMLauncherUtility;
  * @version $Id$
  */
 public class Runner extends AbstractRunner {
-	Mevenide plugin = Mevenide.getPlugin();
+	private static final String FOREHEAD_MAIN = "com.werken.forehead.Forehead";
+    private static final String MAVEN_HOME_NOT_SET_MESSAGE = "Runner.mavenHome.NotSet.message";
+    private static final String MAVEN_HOME_NOT_SET_TITLE = "Runner.mavenHome.NotSet.title";
+    
+    Mevenide plugin = Mevenide.getPlugin();
 
 	public Runner() throws MevenideException {
 		super();
@@ -82,8 +86,8 @@ public class Runner extends AbstractRunner {
 	protected void initEnvironment() throws Exception  {
 		if ( plugin.getMavenHome() == null || plugin.getMavenHome().trim().equals("") ) { 
 			MessageBox dialog = new MessageBox (PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), SWT.ICON_WARNING | SWT.OK);
-			dialog.setText (Mevenide.getResourceString("Runner.mavenHome.NotSet.title"));
-			dialog.setMessage (Mevenide.getResourceString("Runner.mavenHome.NotSet.message"));
+			dialog.setText (Mevenide.getResourceString(MAVEN_HOME_NOT_SET_TITLE));
+			dialog.setMessage (Mevenide.getResourceString(MAVEN_HOME_NOT_SET_MESSAGE));
 			dialog.open ();
 			throw new Exception("Maven Home has not been set");
 	    }
@@ -100,7 +104,7 @@ public class Runner extends AbstractRunner {
 	protected void launchVM(String[] options, String[] goals) throws Exception {
 	
 	    VMLauncherUtility.runVM(
-			"com.werken.forehead.Forehead",
+			FOREHEAD_MAIN,
 			ArgumentsManager.getMavenClasspath(),
 		    ArgumentsManager.getVMArgs(this),
 	        getMavenArgs(options, goals));
