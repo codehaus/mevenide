@@ -24,7 +24,7 @@
   <goal name="nbm:init">
   <!-- maven.final.name is a fallback, should be module name (pom.packageName) (-->
     <j:set var="maven.nbm.final.name"  value="${maven.final.name}"/> 
-    <j:set var="maven.nbm.build.dir" value="${maven.build.dir}/nbm" />
+<!--    <j:set var="maven.nbm.build.dir" value="${maven.build.dir}/nbm" /> -->
     <j:set var="netbeansDir" value="netbeans" /> 
     <j:set var="clusterVar" value="${maven.nbm.cluster.name}"/> 
     <j:choose>
@@ -310,7 +310,7 @@ ${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.x
              moduleauthor="${pom.organization.name}">
       <j:if test="${! empty(pom.url)}">
         <ant:setProperty name="homepage" value="${pom.url}" />
-        <ant:setProperty name="distribution" value="${pom.url}/${maven.final.name}.nbm" />
+        <ant:setProperty name="distribution" value="${maven.nbm.distributionURL}" />
       </j:if>
       <j:set var="licensename" value="${maven.nbm.license.name}" />
       <j:if test="${empty(licensename)}">
