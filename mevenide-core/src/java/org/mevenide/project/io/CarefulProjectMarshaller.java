@@ -537,29 +537,24 @@ public class CarefulProjectMarshaller implements IProjectMarshaller {
             // is used later to get rid of the non-existing ones.
             List usedElems = new ArrayList();
             Iterator it = props.keySet().iterator();
-            System.out.println("--------------------- properties.. --------------------");
             while (it.hasNext()) {
                 String key = (String)it.next();
-                System.out.println("key=" + key);
                 Element propEl = propsElem.getChild(key);
                 if (propEl != null) {
                     propEl.setText((String)props.get(key));
                     usedElems.add(propEl);
-                    System.out.println("updating property element " + key);
                 } else {
                     //create a new version element
                     propEl = factory.element(key);
                     propEl.setText((String)props.get(key));
                     usedElems.add(propEl);
                     propsElem.addContent(propEl);
-                    System.out.println("creating new property element " + key);
                 }
             } // end iterator
             it = propsElem.getChildren().iterator();
             while (it.hasNext()) {
                 Element el = (Element)it.next();
                 if (!usedElems.contains(el)) {
-                    System.out.println("removing element=" + el);
                     it.remove();
                 }
             }
