@@ -48,26 +48,16 @@
  */
 package org.mevenide.ui.eclipse.editors.pages;
 
-import java.util.Iterator;
+import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.License;
 import org.apache.maven.project.Project;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Table;
-import org.eclipse.ui.model.WorkbenchContentProvider;
-import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.mevenide.ui.eclipse.Mevenide;
 
 /**
@@ -78,9 +68,7 @@ public class LicenseSection extends PageSection {
 	
 	private static final Log log = LogFactory.getLog(LicenseSection.class);
 
-	private Table table;
-	private TableViewer licenseViewer;
-	private Button addButton, removeButton, upButton, downButton;
+	private TableEntry licenseTable;
 	
     public LicenseSection(OrganizationPage page) {
         super(page);
@@ -101,118 +89,38 @@ public class LicenseSection extends PageSection {
 		
 		// POM license table
 		Button toggle = createOverrideToggle(container, factory, 1, true);
-		table = new Table(container, SWT.SINGLE);
-		GridData data = new GridData(GridData.FILL_BOTH);
-		table.setLayoutData(data);
-		
-		licenseViewer = new TableViewer(table);
-		licenseViewer.setContentProvider(new WorkbenchContentProvider());
-		licenseViewer.setLabelProvider(new WorkbenchLabelProvider());
-		
-		Composite buttonContainer = factory.createComposite(container);
-		data = new GridData(GridData.HORIZONTAL_ALIGN_END | GridData.VERTICAL_ALIGN_BEGINNING);
-		data.horizontalSpan = 1;
-		buttonContainer.setLayoutData(data);
-		layout = new GridLayout();
-		layout.marginWidth = 0;
-		layout.marginHeight = 0;
-		buttonContainer.setLayout(layout);
-		
-		addButton = factory.createButton(buttonContainer, "Add", SWT.PUSH);
-		data = new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_BEGINNING);
-		data.horizontalSpan = 1;
-		addButton.setLayoutData(data);
-		addButton.addSelectionListener(
-			new SelectionAdapter() {
-				public void widgetSelected(SelectionEvent e) {
-					log.debug("adding");
+		TableViewer viewer = createTableViewer(container, factory, 1);
+		licenseTable = new TableEntry(viewer, toggle, container, factory, this);
+		OverrideAdaptor adaptor = new OverrideAdaptor() {
+			public void overrideParent(Object value) {
+				List licenses = (List) value;
+				pom.setLicenses(licenses);
+			}
+			public Object acceptParent() {
+				return getParentPom().getLicenses();
+			}
+		};
+		licenseTable.addEntryChangeListener(adaptor);
+		licenseTable.addOverrideAdaptor(adaptor);
+		licenseTable.addPomCollectionAdaptor(
+			new IPomCollectionAdaptor() {
+				public Object addNewObject() {
 					License license = new License();
 					pom.addLicense(license);
-					LicensePropertySource source = new LicensePropertySource(license);
-					licenseViewer.add(source);
+					return license;
 				}
-			}
-		);
-
-		removeButton = factory.createButton(buttonContainer, "Remove", SWT.PUSH);
-		data = new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_BEGINNING);
-		data.horizontalSpan = 1;
-		removeButton.setLayoutData(data);
-		removeButton.addSelectionListener(
-			new SelectionAdapter() {
-				public void widgetSelected(SelectionEvent e) {
-					log.debug("removing");
-					IStructuredSelection selected = (IStructuredSelection) licenseViewer.getSelection();
-					licenseViewer.remove(selected.toArray());
-				}
-			}
-		);
-
-		upButton = factory.createButton(buttonContainer, "Up", SWT.PUSH);
-		data = new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_BEGINNING);
-		data.horizontalSpan = 1;
-		upButton.setLayoutData(data);
-		upButton.addSelectionListener(
-			new SelectionAdapter() {
-				public void widgetSelected(SelectionEvent e) {
-					log.debug("moving up");
-					IStructuredSelection selected = (IStructuredSelection) licenseViewer.getSelection();
-					int index = licenseViewer.getTable().getSelectionIndex();
-					if (index > 0) {
-						Object item = licenseViewer.getElementAt(index);
-						licenseViewer.remove(item);
-						licenseViewer.insert(item,--index);
-						licenseViewer.getTable().select(index);
+				public void moveObjectTo(int index, Object object) {
+					List licenses = pom.getLicenses();
+					if (licenses != null) {
+						licenses.remove(object);
+						licenses.add(index, object);
 					}
 				}
-			}
-		);
-
-		downButton = factory.createButton(buttonContainer, "Down", SWT.PUSH);
-		data = new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_BEGINNING);
-		data.horizontalSpan = 1;
-		downButton.setLayoutData(data);
-		downButton.addSelectionListener(
-			new SelectionAdapter() {
-				public void widgetSelected(SelectionEvent e) {
-					log.debug("moving down");
-					IStructuredSelection selected = (IStructuredSelection) licenseViewer.getSelection();
-					int index = licenseViewer.getTable().getSelectionIndex();
-					if (index >= 0 && index < licenseViewer.getTable().getItemCount() - 1) {
-						Object item = licenseViewer.getElementAt(index);
-						licenseViewer.remove(item);
-						licenseViewer.insert(item, ++index);
-						licenseViewer.getTable().select(index);
+				public void removeObject(Object object) {
+					List licenses = pom.getLicenses();
+					if (licenses != null) {
+						licenses.remove(object);
 					}
-				}
-			}
-		);
-
-		removeButton.setEnabled(false);
-		upButton.setEnabled(false);
-		downButton.setEnabled(false);
-
-		licenseViewer.addSelectionChangedListener(
-		new ISelectionChangedListener() {
-			public void selectionChanged(SelectionChangedEvent e) {
-				getPage().getEditor().setPropertySourceSelection(e.getSelection());
-			}
-		}
-		);
-		
-		licenseViewer.addPostSelectionChangedListener(
-			new ISelectionChangedListener() {
-				public void selectionChanged(SelectionChangedEvent e) {
-					if (e.getSelection().isEmpty()) {
-						removeButton.setEnabled(false);
-						upButton.setEnabled(false);
-						downButton.setEnabled(false);
-					} else {
-						removeButton.setEnabled(true);
-						upButton.setEnabled(true);
-						downButton.setEnabled(true);
-					}
-					
 				}
 			}
 		);
@@ -222,9 +130,22 @@ public class LicenseSection extends PageSection {
     }
 	
 	public void update(Project pom) {
-		Iterator itr = pom.getLicenses().iterator();
-		while (itr.hasNext()) {
-			licenseViewer.add(new LicensePropertySource((License) itr.next()));
+		if (log.isDebugEnabled()) {
+			log.debug("update called");
+		}
+		licenseTable.removeAll();
+		List licenses = pom.getLicenses();
+		List parentLicenses = isInherited() ? getParentPom().getLicenses() : null;
+		if (licenses != null && !licenses.isEmpty()) {
+			licenseTable.addEntries(licenses);
+			licenseTable.setInherited(false);
+		}
+		else if (parentLicenses != null) {
+			licenseTable.addEntries(licenses, true);
+			licenseTable.setInherited(true);
+		}
+		else {
+			licenseTable.setInherited(false);
 		}
 		
 		super.update(pom);
