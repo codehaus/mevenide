@@ -16,7 +16,6 @@ import org.eclipse.jface.text.presentation.IPresentationReconciler;
 import org.eclipse.jface.text.presentation.PresentationReconciler;
 import org.eclipse.jface.text.rules.DefaultDamagerRepairer;
 import org.eclipse.jface.text.rules.IToken;
-import org.eclipse.jface.text.rules.ITokenScanner;
 import org.eclipse.jface.text.rules.RuleBasedPartitionScanner;
 import org.eclipse.jface.text.rules.Token;
 import org.eclipse.jface.text.source.ISourceViewer;
@@ -93,61 +92,44 @@ public class XMLConfiguration extends SourceViewerConfiguration {
 	public IPresentationReconciler getPresentationReconciler(ISourceViewer sourceViewer) {
         PresentationReconciler reconciler = new PresentationReconciler();
 		DefaultDamagerRepairer dr;
-        ITokenScanner scanner = new RuleBasedPartitionScanner();
 
-		dr = new DefaultDamagerRepairer(scanner);
+		dr = new DefaultDamagerRepairer(new RuleBasedPartitionScanner());
 		reconciler.setDamager(dr, IDocument.DEFAULT_CONTENT_TYPE);
 		reconciler.setRepairer(dr, IDocument.DEFAULT_CONTENT_TYPE);
 
-        scanner = new XMLTagScanner(this, IPreferenceConstants.SOURCE_EDITOR_TEXT_COLOR);
-        dr = new DefaultDamagerRepairer(scanner);
+        dr = new DefaultDamagerRepairer(getXMLTagScanner());
         reconciler.setDamager(dr, ITypeConstants.TEXT);
         reconciler.setRepairer(dr, ITypeConstants.TEXT);
-
-        scanner = new TagScanner(this, getToken(IPreferenceConstants.SOURCE_EDITOR_TAG_COLOR));
-        dr = new DefaultDamagerRepairer(scanner);
-        reconciler.setDamager(dr, ITypeConstants.TAG);
-        reconciler.setRepairer(dr, ITypeConstants.TAG);
-
-        scanner = new TagScanner(this, getToken(IPreferenceConstants.SOURCE_EDITOR_TAG_COLOR));
-        dr = new DefaultDamagerRepairer(scanner);
-        reconciler.setDamager(dr, ITypeConstants.ENDTAG);
-        reconciler.setRepairer(dr, ITypeConstants.ENDTAG);
-
-        scanner = new TagScanner(this, getToken(IPreferenceConstants.SOURCE_EDITOR_TAG_COLOR));
-        dr = new DefaultDamagerRepairer(scanner);
-        reconciler.setDamager(dr, ITypeConstants.EMPTYTAG);
-        reconciler.setRepairer(dr, ITypeConstants.EMPTYTAG);
-
-        scanner = new TagScanner(this, getToken(IPreferenceConstants.SOURCE_EDITOR_PI_COLOR));
-        dr = new DefaultDamagerRepairer(scanner);
-        reconciler.setDamager(dr, ITypeConstants.PI);
-        reconciler.setRepairer(dr, ITypeConstants.PI);
-
-        scanner = new XMLTagScanner(this, IPreferenceConstants.SOURCE_EDITOR_DEFINITION_COLOR);
-        dr = new DefaultDamagerRepairer(scanner);
         reconciler.setDamager(dr, ITypeConstants.DECL);
         reconciler.setRepairer(dr, ITypeConstants.DECL);
-
-		scanner = new XMLTagScanner(this, IPreferenceConstants.SOURCE_EDITOR_DEFINITION_COLOR);
-		dr = new DefaultDamagerRepairer(scanner);
 		reconciler.setDamager(dr, ITypeConstants.START_DECL);
 		reconciler.setRepairer(dr, ITypeConstants.START_DECL);
-
-		scanner = new XMLTagScanner(this, IPreferenceConstants.SOURCE_EDITOR_DEFINITION_COLOR);
-		dr = new DefaultDamagerRepairer(scanner);
 		reconciler.setDamager(dr, ITypeConstants.END_DECL);
 		reconciler.setRepairer(dr, ITypeConstants.END_DECL);
-
-        scanner = new XMLTagScanner(this, IPreferenceConstants.SOURCE_EDITOR_COMMENT_COLOR);
-        dr = new DefaultDamagerRepairer(scanner);
         reconciler.setDamager(dr, ITypeConstants.COMMENT);
         reconciler.setRepairer(dr, ITypeConstants.COMMENT);
         
+		dr = new DefaultDamagerRepairer(getTagScanner());
+        reconciler.setDamager(dr, ITypeConstants.TAG);
+        reconciler.setRepairer(dr, ITypeConstants.TAG);
+        reconciler.setDamager(dr, ITypeConstants.ENDTAG);
+        reconciler.setRepairer(dr, ITypeConstants.ENDTAG);
+        reconciler.setDamager(dr, ITypeConstants.EMPTYTAG);
+        reconciler.setRepairer(dr, ITypeConstants.EMPTYTAG);
+        reconciler.setDamager(dr, ITypeConstants.PI);
+        reconciler.setRepairer(dr, ITypeConstants.PI);
+
 		return reconciler;
 	}
 
-	public IContentAssistant getContentAssistant(ISourceViewer viewer) {
+	private TagScanner getTagScanner() {
+	    if ( scanner == null ) {
+	        scanner = new TagScanner(this, getToken(IPreferenceConstants.SOURCE_EDITOR_TAG_COLOR));
+	    }
+	    return scanner;
+    }
+
+    public IContentAssistant getContentAssistant(ISourceViewer viewer) {
 		ContentAssistant assistant = new ContentAssistant();
 		try {
 		    ContentAssistant assi = new ContentAssistant();
