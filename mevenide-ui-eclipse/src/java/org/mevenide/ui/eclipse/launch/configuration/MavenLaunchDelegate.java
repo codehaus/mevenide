@@ -117,6 +117,34 @@ public class MavenLaunchDelegate extends AbstractRunner implements ILaunchConfig
 
 	}
 	
+	//this is quicky and should be refactor.. however it could be considered  
+	//as a kind of base for the per-project arguments management (or something like that) 
+	private String[] getDynamicProperties(List vmArgs) {
+	    List loadedProperties = new ArrayList();
+        for (int i = 0; i < vmArgs.size(); i++) {
+            String property = (String) vmArgs.get(i); 
+            if ( property.indexOf('=') >= 2 ) {
+	            property = property.substring(2, property.indexOf('='));
+	            loadedProperties.add(property);
+            }
+        }
+        
+        //dynamic preferences -- should they instead be merged with customVmArgs ? 
+        DynamicPreferencesManager preferencesManager = DynamicPreferencesManager.getDynamicManager();
+        preferencesManager.loadPreferences();
+        Map dynamicPreferencesMap = preferencesManager.getPreferences();
+        List dynamicPreferencesList = new ArrayList();
+        for (Iterator it = dynamicPreferencesMap.keySet().iterator(); it.hasNext(); ) {
+            String key = (String) it.next();
+            String value = (String) dynamicPreferencesMap.get(key);
+            if ( !loadedProperties.contains(key) ) {
+                dynamicPreferencesList.add("-D" + key + "=" + value);
+            }
+        }
+        String[] dynamicPreferences = (String[]) dynamicPreferencesList.toArray(new String[dynamicPreferencesList.size()]);
+        return dynamicPreferences;
+    }
+	
 	public static boolean isMavenLaunch(ILaunch launch) {
 	    return "true".equals(launch.getAttribute(MavenLaunchDelegate.MAVEN_LAUNCH));
 	}
@@ -142,39 +170,26 @@ public class MavenLaunchDelegate extends AbstractRunner implements ILaunchConfig
 		    //static options
 			Map map = (Map) configuration.getAttribute(MavenArgumentsTab.OPTIONS_MAP, new HashMap());
 			log.debug("Found " + map.size() + " options in configuration : ");
-			String[] options = new String[map.size()];
+			List options = new ArrayList();
 			Iterator iterator = map.keySet().iterator();
 			int idx = 0;
 			while (iterator.hasNext()) {
 				String strg = (String)iterator.next();
 				Character element = new Character(strg.charAt(0));
 				if ( Boolean.valueOf((String)map.get(strg)).booleanValue() )  {
-					options[idx] = "-" + element;
+					options.add("-" + element);
 					idx++;
 					log.debug(strg + " => " + map.get(strg));
 				}
 			}
-			String[] result = new String[idx];
-			System.arraycopy(options, 0, result, 0, idx);
+			String[] result = (String[]) options.toArray(new String[options.size()]);
 			
-			//dynamic preferences
-			DynamicPreferencesManager preferencesManager = DynamicPreferencesManager.getDynamicManager();
-			preferencesManager.loadPreferences();
-			Map dynamicPreferencesMap = preferencesManager.getPreferences();
-			List dynamicPreferencesList = new ArrayList();
-			for (Iterator it = dynamicPreferencesMap.keySet().iterator(); it.hasNext(); ) {
-                String key = (String) it.next();
-                if ( !vmArgs.contains(key) ) {
-                    String value = (String) dynamicPreferencesMap.get(key);
-                    dynamicPreferencesList.add("-D" + key + "=" + value);
-                }
-            }
-			String[] dynamicPreferences = (String[]) dynamicPreferencesList.toArray(new String[dynamicPreferencesList.size()]); 
+			String[] dynamicPreferences = getDynamicProperties(vmArgs); 
                     
 			//merge various sources
-			String[] mergedOptions = new String[options.length + dynamicPreferences.length];
+			String[] mergedOptions = new String[result.length + dynamicPreferences.length];
 			System.arraycopy(dynamicPreferences, 0, mergedOptions, 0, dynamicPreferences.length);
-			System.arraycopy(options, 0, mergedOptions, dynamicPreferences.length, options.length);
+			System.arraycopy(result, 0, mergedOptions, dynamicPreferences.length, result.length);
 			
 			if ( log.isDebugEnabled() ) {
 				log.debug("options passed to Maven " + mergedOptions.length);
@@ -192,7 +207,8 @@ public class MavenLaunchDelegate extends AbstractRunner implements ILaunchConfig
 	}
 	
 
-	protected String getBasedir() {
+
+    protected String getBasedir() {
         try {
 			//return Mevenide.getPlugin().getCurrentDir();
 			log.debug("basedir = " + ExternalToolsUtil.getWorkingDirectory(config).toOSString());
