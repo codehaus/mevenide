@@ -70,6 +70,7 @@ import org.apache.maven.project.Organization;
 import org.apache.maven.project.Project;
 import org.apache.maven.project.Repository;
 import org.apache.maven.project.Resource;
+import org.apache.maven.project.SourceModification;
 import org.apache.maven.project.UnitTest;
 import org.apache.maven.project.Version;
 import org.xmlpull.v1.XmlPullParser;
@@ -528,6 +529,58 @@ public class DefaultProjectUnmarshaller
                         else if ( parser.getName().equals( "sourceDirectory" ) )
                         {
                             b.setSourceDirectory( parser.nextText() );
+                        }
+                        else if ( parser.getName().equals( "sourceModifications") ) {
+                            while ( parser.nextTag() == XmlPullParser.START_TAG )
+                            {
+                                if ( parser.getName().equals( "sourceModification" ) )
+                                {
+                                    SourceModification sourceModification = new SourceModification();
+                                    b.addSourceModification(sourceModification);
+                                    while ( parser.nextTag() == XmlPullParser.START_TAG )
+                                    {
+                                        if ( parser.getName().equals( "className" ) )
+                                        {
+                                            sourceModification.setClassName( parser.nextText() );
+                                        }
+                                        else if ( parser.getName().equals( "includes" ) )
+                                        {
+                                            while ( parser.nextTag() == XmlPullParser.START_TAG )
+                                            {
+                                                if ( parser.getName().equals( "include" ) )
+                                                {
+                                                    sourceModification.addInclude( parser.nextText() );
+                                                }
+                                                else
+                                                {
+                                                    parser.nextText();
+                                                }
+                                            }
+
+                                        }
+                                        else if ( parser.getName().equals( "excludes" ) )
+                                        {
+                                            while ( parser.nextTag() == XmlPullParser.START_TAG )
+                                            {
+                                                if ( parser.getName().equals( "exclude" ) )
+                                                {
+                                                    sourceModification.addExclude( parser.nextText() );
+                                                }
+                                                else
+                                                {
+                                                    parser.nextText();
+                                                }
+                                            }
+                                        }
+                                        else {
+                                            parser.nextText();
+                                        }
+                                    }
+                                }
+                                else {
+                                    parser.nextText();
+                                }
+                            }
                         }
 						else if ( parser.getName().equals( "aspectSourceDirectory" ) )
 						{
