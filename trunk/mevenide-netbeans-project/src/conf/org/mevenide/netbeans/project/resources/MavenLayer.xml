@@ -11,13 +11,19 @@
                 <attr name="SystemFileSystem.localizingBundle" stringvalue="org.mevenide.netbeans.project.resources.Bundle"/>
                 <attr name="instantiatingWizardURL" urlvalue="nbresloc:/org/mevenide/netbeans/resources/maven_projects.html"/>
 
-                <file name="emptyMaven.xml">
+                <file name="empty.zip" url="empty.zip">
                     <attr name="template" boolvalue="true"/>
                     <attr name="instantiatingIterator" newvalue="org.mevenide.netbeans.project.wizards.MavenNewWizardIterator"/>
                     <attr name="SystemFileSystem.localizingBundle" stringvalue="org.mevenide.netbeans.project.resources.Bundle"/>
                     <attr name="SystemFileSystem.icon" urlvalue="nbresloc:/org/mevenide/netbeans/project/resources/MavenIcon.gif"/>
                     <attr name="instantiatingWizardURL" urlvalue="nbresloc:/org/mevenide/netbeans/project/resources/emptyProject.html"/>
-                    <attr name="MavenTemplateLocation" stringvalue="Plugins/Maven/Templates/Empty"/>
+                </file>
+                <file name="nbmodule.zip" url="nbmodule.zip">
+                    <attr name="template" boolvalue="true"/>
+                    <attr name="instantiatingIterator" newvalue="org.mevenide.netbeans.project.wizards.MavenNewWizardIterator"/>
+                    <attr name="SystemFileSystem.localizingBundle" stringvalue="org.mevenide.netbeans.project.resources.Bundle"/>
+                    <attr name="SystemFileSystem.icon" urlvalue="nbresloc:/org/mevenide/netbeans/project/resources/MavenIcon.gif"/>
+                    <attr name="instantiatingWizardURL" urlvalue="nbresloc:/org/mevenide/netbeans/project/resources/nbmoduleProject.html"/>
                 </file>
             </folder>
         </folder>
@@ -56,17 +62,6 @@
         <folder name="Maven">
             <folder name="Properties">
                 <file name="defaults.properties" url="maven_defaults.properties"/>
-            </folder>
-            
-            <folder name="Templates">
-               <folder name="Empty">
-                   <folder name="src"/>
-                   <folder name="test"/>
-                   <folder name="conf"/>
-                   <file name="project.xml" url="nbresloc:/org/mevenide/netbeans/project/resources/empty/project.xml"/>
-                   <file name="project.properties" url="nbresloc:/org/mevenide/netbeans/project/resources/empty/project.properties"/>
-                   <file name="maven.xml" url="nbresloc:/org/mevenide/netbeans/project/resources/empty/maven.xml"/>
-               </folder>
             </folder>
         </folder>
     </folder>

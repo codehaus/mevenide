@@ -6,6 +6,12 @@
   </properties>
 
   <body>
+    <release version="0.2.1" date="17/06/2004" description="hotfix release">
+      <action dev="mkleint" type="fix">    
+      hotfix MEVENIDE-76 - run project fixed.
+      </action>
+    </release>
+  
     <release version="0.2" date="14/08/2004">
       <action dev="mkleint" type="add">
     MEVENIDE-48 Global setting of dependency download progress display. A reaonable default set to avoid too much output.

@@ -5,20 +5,21 @@
   <id>mevenide-netbeans-project</id>
   <name>Mevenide Netbeans project support</name>
   <artifactId>mevenide-netbeans-project</artifactId>
-  <currentVersion>0.2</currentVersion>
+  <currentVersion>0.2.1</currentVersion>
   <package>org.mevenide.netbeans.project</package>
   <shortDescription>Netbeans Maven project type support module</shortDescription>
   <description>
    The project's aim to to provide Maven project type support for the Netbeans IDE 4.0. 
    The features include recognition of Maven projects, setup of the project in the IDE, running Maven, editor support for configuration files etc. 
   </description>
-  
+  <distributionSite>beaver.codehaus.org</distributionSite>
+  <distributionDirectory>/home/projects/mevenide/dist</distributionDirectory>
   <dependencies>
     <dependency>     
         <groupId>mevenide</groupId>
         <artifactId>maven-mevenide-plugin</artifactId>
-        <version>0.1</version>
-        <type>plugin</type>
+        <version>0.1.1</version>
+        <type>plugin</type> 
     </dependency>
     <dependency>     
         <groupId>mevenide</groupId>
@@ -268,6 +269,13 @@
           <exclude>**/.nbattrs</exclude>
           <exclude>manifest.mf</exclude>
         </excludes>
+      </resource>
+      <resource>
+         <directory>${maven.build.dir}/project_templates</directory>
+         <targetPath>org/mevenide/netbeans/project/resources</targetPath>
+         <includes>
+           <include>*.zip</include>
+         </includes>
       </resource>
     </resources>
   </build>
