@@ -66,9 +66,6 @@ import org.eclipse.jdt.launching.IVMInstall;
 import org.eclipse.jdt.launching.IVMRunner;
 import org.eclipse.jdt.launching.JavaRuntime;
 import org.eclipse.jdt.launching.VMRunnerConfiguration;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.MessageBox;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.externaltools.internal.launchConfigurations.ExternalToolsUtil;
 import org.mevenide.runner.AbstractRunner;
 import org.mevenide.runner.ArgumentsManager;
@@ -197,23 +194,17 @@ public class MavenLaunchDelegate extends AbstractRunner implements ILaunchConfig
 
 
 	protected void initEnvironment() throws Exception  {
-		if ( Mevenide.getPlugin().getMavenHome() == null 
-		     || Mevenide.getPlugin().getMavenHome().trim().equals("") ) { 
-			noMavenHome();
-			throw new Exception("Maven Home has not been set");
+		if ( Mevenide.getPlugin().getMavenHome() == null || Mevenide.getPlugin().getMavenHome().trim().equals("") ) { 
+			//noMavenHome();
+			//throw new Exception("Maven Home has not been set");
 	    }
 	    else {
-			//just a test
-			System.getProperty("user.dir");
-		    Mevenide.getPlugin().initEnvironment();
+			Mevenide.getPlugin().initEnvironment();
 	    }
 	}
 
 	private void noMavenHome() {
-		MessageBox dialog = new MessageBox (PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), SWT.ICON_WARNING | SWT.OK);
-		dialog.setText (Mevenide.getResourceString("Runner.mavenHome.NotSet.title"));
-		dialog.setMessage (Mevenide.getResourceString("Runner.mavenHome.NotSet.message"));
-		dialog.open ();
+	    //EnvironmentUtil.loadEnvironment();
    }
 
 	protected void launchVM(String[] options, String[] goals) throws Exception {
