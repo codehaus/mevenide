@@ -62,7 +62,7 @@ public class MavenForBinaryQueryImpl implements SourceForBinaryQueryImplementati
      * @return a list of source roots; may be empty but not null
      */   
     public SourceForBinaryQuery.Result findSourceRoots(URL url) {
-        logger.warn("MavenSourceForBinaryQueryImpl project=" + project.getDisplayName() + "url=" + url);
+        logger.debug("MavenSourceForBinaryQueryImpl project=" + project.getDisplayName() + "url=" + url);
         return new BinResult(url);
     }
     
@@ -79,7 +79,7 @@ public class MavenForBinaryQueryImpl implements SourceForBinaryQueryImplementati
      *         be listened to, or null if the binary root is not recognized
      */    
     public JavadocForBinaryQuery.Result findJavadoc(URL url) {
-        logger.warn("JavadocForBinaryQueryImplementation project=" + project.getDisplayName() + "url=" + url);
+        logger.debug("JavadocForBinaryQueryImplementation project=" + project.getDisplayName() + "url=" + url);
         return new DocResult(url);
     }
     

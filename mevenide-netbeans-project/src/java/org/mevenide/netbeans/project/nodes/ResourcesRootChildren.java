@@ -1,6 +1,6 @@
 /* ==========================================================================
  * Copyright 2004 Apache Software Foundation
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -32,6 +32,14 @@ import org.apache.maven.project.Resource;
 import org.apache.tools.ant.DirectoryScanner;
 import org.mevenide.netbeans.project.FileUtilities;
 import org.mevenide.netbeans.project.MavenProject;
+import org.mevenide.netbeans.project.MavenSourcesImpl;
+
+import org.netbeans.api.project.SourceGroup;
+
+import org.netbeans.api.project.Sources;
+import org.netbeans.spi.java.project.support.ui.PackageView;
+
+
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.loaders.DataFolder;
@@ -42,14 +50,12 @@ import org.openide.nodes.Children;
  *
  * @author  Milos Kleint (ca206216@tiscali.cz)
  */
-class ResourcesRootChildren extends Children.Keys
-{
+class ResourcesRootChildren extends Children.Keys {
     private static Log logger = LogFactory.getLog(ResourcesRootChildren.class);
     
     private MavenProject project;
     private PropertyChangeListener changeListener;
-    public ResourcesRootChildren(MavenProject project)
-    {
+    public ResourcesRootChildren(MavenProject project) {
         this.project = project;
         changeListener  = new PropertyChangeListener() {
             public void propertyChange(PropertyChangeEvent evt) {
@@ -61,62 +67,37 @@ class ResourcesRootChildren extends Children.Keys
         };
     }
     
-    protected void addNotify()
-    {
+    protected void addNotify() {
         super.addNotify();
         project.addPropertyChangeListener(changeListener);
         regenerateKeys();
     }
     
-    protected void removeNotify()
-    {
+    protected void removeNotify() {
         setKeys(Collections.EMPTY_SET);
         project.removePropertyChangeListener(changeListener);
         super.removeNotify();
-
+        
     }
     
     private void regenerateKeys() {
         List list = new ArrayList();
-        Project proj = project.getOriginalMavenProject();
-        Build build = proj.getBuild();
-        if (build != null) {
-            List reso = build.getResources();
-            if (reso != null) {
-                Iterator it = reso.iterator();
-                while (it.hasNext()) {
-                    list.add(it.next());
-                }
-            }
+        Sources srcs = (Sources)project.getLookup().lookup(Sources.class);
+        if (srcs == null) {
+            throw new IllegalStateException("need Sources instance in lookup");
+        }
+        SourceGroup[] resgroup = srcs.getSourceGroups(MavenSourcesImpl.TYPE_RESOURCES);
+        for (int i = 0; i < resgroup.length; i++) {
+            list.add(resgroup[i]);
         }
         setKeys(list);
     }
-
     
-    protected Node[] createNodes(Object key)
-    {
-        Resource res = (Resource)key;
-        Node n = null;
-        logger.debug("createNodes() dir=" + FileUtil.toFile(project.getProjectDirectory()));
-        if (res.getDirectory() != null) {
-            logger.debug("rootdir=" + res.getDirectory());
-            String resDir = project.getPropertyResolver().resolveString(res.getDirectory());
-            FileObject folder = FileUtilities.findFolder(project.getProjectDirectory(), 
-                                    resDir);
-            if (folder == null) {
-                // maybe we got a absolutepath in the basedir definition.
-                File fl = FileUtil.normalizeFile(new File(resDir));
-                FileObject[] fos = FileUtil.fromFile(fl);
-                folder = (fos.length > 0 ? fos[0] : null);
-            }
-            if (folder != null) {
-                DataFolder dofolder = DataFolder.findFolder(folder);
-                File rootPath = FileUtil.toFile(folder);
-                n = new PackageRootNode( dofolder, res.getDirectory(), res.getDirectory() ); // NOI18N
-                n = new ResourceFilterNode(n, rootPath, res);
-                n.setDisplayName(res.getDirectory());
-            }
-        }
-        return n == null ? new Node[0] : new Node[] {n};
+    
+    protected Node[] createNodes(Object key) {
+        SourceGroup grp = (SourceGroup)key;
+        Node[] toReturn = new Node[1];
+        toReturn[0] = PackageView.createPackageView(grp);
+        return toReturn;
     }
 }

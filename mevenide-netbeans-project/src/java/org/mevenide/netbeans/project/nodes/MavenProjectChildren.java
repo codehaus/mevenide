@@ -1,6 +1,6 @@
 /* ==========================================================================
  * Copyright 2004 Apache Software Foundation
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -30,6 +30,14 @@ import org.apache.maven.project.Build;
 import org.apache.maven.project.Project;
 import org.mevenide.netbeans.project.FileUtilities;
 import org.mevenide.netbeans.project.MavenProject;
+import org.netbeans.api.java.project.JavaProjectConstants;
+
+import org.netbeans.api.project.SourceGroup;
+
+import org.netbeans.api.project.Sources;
+import org.netbeans.spi.java.project.support.ui.PackageView;
+
+
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.URLMapper;
 import org.openide.loaders.DataFolder;
@@ -43,17 +51,13 @@ import org.openide.nodes.Children;
 class MavenProjectChildren extends Children.Keys {
     private static final Log logger = LogFactory.getLog(MavenProjectChildren.class);
     
-    private static final Object KEY_SOURCE_DIR = "srcDir"; // NOI18N
-    private static final Object KEY_TEST_SOURCE_DIR = "testSrcDir"; // NOI18N
-    private static final Object KEY_ASPECT_SOURCE_DIR = "aspectSrcDir"; // NOI18N
-    private static final Object KEY_INTEG_TEST_SOURCE_DIR = "integrationTestSrcDir"; // NOI18N
     private static final Object KEY_JELLY_SCRIPT = "jellyScript"; //NOI18N
     private static final Object KEY_RESOURCES = "resources"; //NOI18N
     
     private MavenProject project;
     private PropertyChangeListener changeListener;
-    public MavenProjectChildren(MavenProject project)
-    {
+    
+    public MavenProjectChildren(MavenProject project) {
         this.project = project;
         changeListener  = new PropertyChangeListener() {
             public void propertyChange(PropertyChangeEvent evt) {
@@ -66,38 +70,32 @@ class MavenProjectChildren extends Children.Keys {
         };
     }
     
-    protected void addNotify()
-    {
+    protected void addNotify() {
         super.addNotify();
         project.addPropertyChangeListener(changeListener);
         regenerateKeys();
     }
     
-    protected void removeNotify()
-    {
+    protected void removeNotify() {
         setKeys(Collections.EMPTY_SET);
         project.removePropertyChangeListener(changeListener);
         super.removeNotify();
-
+        
     }
     
     private void regenerateKeys() {
         List list = new ArrayList();
-        if (project.getSrcDirectory() != null) {
-            list.add(KEY_SOURCE_DIR);
+        Sources srcs = (Sources)project.getLookup().lookup(Sources.class);
+        if (srcs == null) {
+            throw new IllegalStateException("need Sources instance in lookup");
         }
-        if (project.getTestSrcDirectory() != null) {
-            list.add(KEY_TEST_SOURCE_DIR);
+        SourceGroup[] javagroup = srcs.getSourceGroups(JavaProjectConstants.SOURCES_TYPE_JAVA);
+        for (int i = 0; i < javagroup.length; i++) {
+            list.add(javagroup[i]);
         }
         Project proj = project.getOriginalMavenProject();
         Build build = proj.getBuild();
         if (build != null) {
-            if (build.getAspectSourceDirectory() != null) {
-                list.add(KEY_ASPECT_SOURCE_DIR);
-            }
-            if (build.getIntegrationUnitTestSourceDirectory() != null) {
-                list.add(KEY_INTEG_TEST_SOURCE_DIR);
-            }
             List reso = build.getResources();
             if (reso != null && reso.size() > 0) {
                 list.add(KEY_RESOURCES);
@@ -109,63 +107,14 @@ class MavenProjectChildren extends Children.Keys {
         }
         setKeys(list);
     }
-
     
-    protected Node[] createNodes(Object key)
-    {
+    
+    protected Node[] createNodes(Object key) {
         //TODO replace all project stuff with the resolved paths..
         Node n = null;
         Project proj = project.getOriginalMavenProject();
-        if (key == KEY_SOURCE_DIR)
-        {
-            URI path = project.getSrcDirectory();
-            if (path == null) {
-                //TODO better visual representation for the sources when not defined..
-                n = null;
-            } else {
-                
-                DataFolder def = getFolder(path);
-                if (def != null) {
-                    n = new PackageRootNode( def, "srcDir", "Sources" ); // NOI18N
-                }
-            }
-        } 
-        else if (key == KEY_TEST_SOURCE_DIR)
-        {
-            URI path= project.getTestSrcDirectory();
-            if (path == null) {
-                //TODO better visual representation for the sources when not defined..
-                n = null;
-            } else {
-                DataFolder def = getFolder(path);
-                if (def != null) {
-                    n = new PackageRootNode( def, "testSrcDir", "Test Sources" ); // NOI18N
-                }
-            }
-        }
-        else if (key == KEY_ASPECT_SOURCE_DIR)
-        {
-            String relPath = proj.getBuild().getAspectSourceDirectory();
-            if (relPath == null) {
-                n = null;
-            } else {
-                DataFolder def = getFolder(relPath);
-                if (def != null) {
-                    n = new PackageRootNode( def, "aspectSrcDir", "Aspect Sources" ); // NOI18N
-                }
-            }
-        }
-        else if (key == KEY_ASPECT_SOURCE_DIR)
-        {
-            String relPath = proj.getBuild().getIntegrationUnitTestSourceDirectory();
-            if (relPath == null) {
-                n = null;
-            } else {
-                DataFolder def = getFolder(relPath);
-                if (def != null) {
-                    n = new PackageRootNode( def, "integrationSrcDir", "Integration Test Sources" ); // NOI18N
-                }
-            }
+        if (key instanceof SourceGroup) {
+            n = PackageView.createPackageView((SourceGroup)key);
         }
         else if (key == KEY_JELLY_SCRIPT) {
             n = new PluginScriptNode(project.getProjectDirectory());
@@ -180,7 +129,7 @@ class MavenProjectChildren extends Children.Keys {
         FileObject folder = FileUtilities.findFolder(project.getProjectDirectory(), relPath);
         if (folder != null) {
             return DataFolder.findFolder(folder);
-        } 
+        }
         //TODO - create the folder if it doesn't exist? and do it here? I'd rather do it when opening project..
         return null;
     }
@@ -197,6 +146,6 @@ class MavenProjectChildren extends Children.Keys {
         //TODO - create the folder if it doesn't exist? and do it here? I'd rather do it when opening project..
         return null;
     }
-                
-
+    
+    
 }
