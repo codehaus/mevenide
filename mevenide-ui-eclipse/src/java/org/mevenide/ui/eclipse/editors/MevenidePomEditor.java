@@ -74,6 +74,7 @@ import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.eclipse.ui.part.MultiPageEditorPart;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.IElementStateListener;
+import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.mevenide.project.ProjectComparator;
 import org.mevenide.project.io.DefaultProjectMarshaller;
 import org.mevenide.project.io.ProjectReader;
@@ -126,6 +127,8 @@ public class MevenidePomEditor extends MultiPageEditorPart {
     private ElementListener elementListener;
     private PomXmlSourcePage sourcePage;
     private boolean modelDirty;
+
+    private PomContentOutlinePage outline;
 
     class ElementListener implements IElementStateListener {
         public void elementContentAboutToBeReplaced(Object element) {
@@ -530,7 +533,20 @@ public class MevenidePomEditor extends MultiPageEditorPart {
         }
     }
 
-    public IDocumentProvider getDocumentProvider() {
+	public Object getAdapter(Class required) {
+		if (IContentOutlinePage.class.equals(required)) {
+			if (outline == null) {
+				outline = new PomContentOutlinePage(getDocumentProvider(), this);
+				if (getEditorInput() != null) {
+					outline.setInput(getEditorInput());
+				}
+			}
+			return outline;
+		}
+		return super.getAdapter(required);
+	}
+
+	public IDocumentProvider getDocumentProvider() {
         return documentProvider;
     }
 
