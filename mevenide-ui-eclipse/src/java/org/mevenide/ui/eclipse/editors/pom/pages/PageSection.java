@@ -105,6 +105,7 @@ public abstract class PageSection extends SectionPart {
 
         this.parentPom = page.getPomEditor().getParentPom();
         if (parentPom != null) inherited = true;
+        
     }
     
     public void setTitle(String title) {
@@ -253,14 +254,17 @@ public abstract class PageSection extends SectionPart {
     }
 
     protected void setIfDefined(OverridableTextEntry entry, String text, String parentText) {
-        if (text != null) {
-            entry.setText(text, true);
-            entry.setInherited(false);
-        } else if (parentText != null) {
-            entry.setText(parentText, true);
-            entry.setInherited(true);
-        } else {
-            entry.setInherited(false);
+        if ( entry != null ) {
+	        if (text != null) {
+	            entry.setText(text, true);
+	            entry.setInherited(false);
+	        } else if (parentText != null) {
+	            entry.setText(parentText, true);
+	            entry.setInherited(true);
+	        } else {
+	            //entry.setText("");
+	            entry.setInherited(false);
+	        }
         }
     }
 
