@@ -1,5 +1,6 @@
 <project xmlns:ant="jelly:ant">
     <postGoal name="jar:jar">
-    	<ant:copy file="${basedir}/src/conf/classes.opentools" tofile="${basedir}/classes.opentools"/>
+        <ant:copy file="${basedir}/src/conf/classes.opentools" tofile="${basedir}/classes.opentools"/>
     </postGoal>
+
 </project>
