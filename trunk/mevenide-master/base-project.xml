@@ -67,12 +67,16 @@
       	<!--
       		TODO tests from mevenide-core and mevenide-ui-eclipse are mixed here. bad !
       	-->
-      	<!-- those ones fail with maven.. dont know why yet -->
+      	<!-- 
+      		those ones fail with maven.. dont know why yet. perhaps classloading ? 
+      		TODO solve thosse issues..
+      	-->
       	<exclude>**/DefaultProjectMarshallerTest.java</exclude>
       	<exclude>**/ProjectReaderTest.java</exclude>
       	<exclude>**/ProjectWriterTest.java</exclude>
-      	<!-- this one requires org.eclipse.pde.junit plugin -->
+      	<!-- those one will require org.eclipse.pde.junit plugin -->
       	<exclude>**/GoalsManagerTest.java</exclude>
+      	<exclude>**/DefaultPathResolverDelegateTest.java</exclude>
       </excludes>
 
       <resources>
@@ -91,13 +95,7 @@
             <include>META-INF/services/*.*</include>
           </includes>
         </resource>
-        
-        <resource>
-      	  <directory>etc</directory>
-          <includes>
-            <include>META-INF/services/*.*</include>
-          </includes>
-        </resource>
+     
         
       </resources>
       

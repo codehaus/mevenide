@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<editmodel:DeploymentDiagramEditModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:editmodel="editmodel.xmi" metadata="nsuml-1.4" initialized="true">
+  <children xsi:type="editmodel:NodeEditModel" location="514,56" size="257,342" itemName="/lib" type="librairies" instanceLevel="true" stereotypeValue="directory">
+    <children xsi:type="editmodel:ComponentEditModel" location="27,68" size="190,45" targetConnections="//@children.1/@sourceConnections.0" itemName="mevenide-core-1.0.jar" stereotypeValue="framework"/>
+    <children xsi:type="editmodel:ComponentEditModel" location="25,135" size="190,45" targetConnections="//@children.1/@sourceConnections.1" itemName="goals-grabber-1.0.jar" stereotypeValue="library"/>
+    <children xsi:type="editmodel:ComponentEditModel" location="30,203" size="185,45" targetConnections="//@children.1/@sourceConnections.2" itemName="maven-core-1.0.beta-11.jar" stereotypeValue="library"/>
+    <children xsi:type="editmodel:NotepadEditModel" location="34,272" size="177,41" note="other dependencies stated in &#xD;&#xA;mevenide-ui-eclipse/project.xml,&#xD;&#xA;excluding eclipse ones"/>
+  </children>
+  <children xsi:type="editmodel:ComponentEditModel" location="75,200" size="160,45" itemName="mevenide-ui-eclipse-1.0.jar" stereotypeValue="executable">
+    <sourceConnections xsi:type="editmodel:DependencyEditModel" connectionRouterKind="Manual" source="//@children.1" target="//@children.0/@children.0" targetEnd="//@children.1/@sourceConnections.0/@children.1" sourceEnd="//@children.1/@sourceConnections.0/@children.0">
+      <children xsi:type="editmodel:ComponentEndEditModel" location="160,5" attachSource="true"/>
+      <children xsi:type="editmodel:ComponentEndEditModel" location="0,42"/>
+    </sourceConnections>
+    <sourceConnections xsi:type="editmodel:DependencyEditModel" connectionRouterKind="Manual" source="//@children.1" target="//@children.0/@children.1" targetEnd="//@children.1/@sourceConnections.1/@children.1" sourceEnd="//@children.1/@sourceConnections.1/@children.0">
+      <children xsi:type="editmodel:ComponentEndEditModel" location="160,12" attachSource="true"/>
+      <children xsi:type="editmodel:ComponentEndEditModel" location="0,32"/>
+    </sourceConnections>
+    <sourceConnections xsi:type="editmodel:DependencyEditModel" connectionRouterKind="Manual" source="//@children.1" target="//@children.0/@children.2" targetEnd="//@children.1/@sourceConnections.2/@children.1" sourceEnd="//@children.1/@sourceConnections.2/@children.0">
+      <children xsi:type="editmodel:ComponentEndEditModel" location="160,39" attachSource="true"/>
+      <children xsi:type="editmodel:ComponentEndEditModel" location="0,2"/>
+    </sourceConnections>
+    <sourceConnections xsi:type="editmodel:DependencyEditModel" connectionRouterKind="Manual" source="//@children.1" target="//@children.3" targetEnd="//@children.1/@sourceConnections.3/@children.1" sourceEnd="//@children.1/@sourceConnections.3/@children.0">
+      <children xsi:type="editmodel:ComponentEndEditModel" location="78,0" attachSource="true"/>
+      <children xsi:type="editmodel:ComponentEndEditModel" location="70,45"/>
+    </sourceConnections>
+    <sourceConnections xsi:type="editmodel:DependencyEditModel" connectionRouterKind="Manual" source="//@children.1" target="//@children.4/@children.0" targetEnd="//@children.1/@sourceConnections.4/@children.1" sourceEnd="//@children.1/@sourceConnections.4/@children.0">
+      <children xsi:type="editmodel:ComponentEndEditModel" location="106,0" attachSource="true"/>
+      <children xsi:type="editmodel:ComponentEndEditModel" location="24,15"/>
+    </sourceConnections>
+    <sourceConnections xsi:type="editmodel:DependencyEditModel" connectionRouterKind="Manual" source="//@children.1" target="//@children.2/@children.0" targetEnd="//@children.1/@sourceConnections.5/@children.1" sourceEnd="//@children.1/@sourceConnections.5/@children.0">
+      <children xsi:type="editmodel:ComponentEndEditModel" location="38,0" attachSource="true"/>
+      <children xsi:type="editmodel:ComponentEndEditModel" location="43,15"/>
+    </sourceConnections>
+    <sourceConnections xsi:type="editmodel:DependencyEditModel" connectionRouterKind="Manual" source="//@children.1" target="//@children.2" targetEnd="//@children.1/@sourceConnections.6/@children.1" sourceEnd="//@children.1/@sourceConnections.6/@children.0">
+      <children xsi:type="editmodel:ComponentEndEditModel" location="106,45" attachSource="true"/>
+      <children xsi:type="editmodel:ComponentEndEditModel" location="136,89"/>
+    </sourceConnections>
+  </children>
+  <children xsi:type="editmodel:NodeEditModel" location="336,418" size="273,179" targetConnections="//@children.1/@sourceConnections.6" itemName="/etc" type="resources" instanceLevel="true" stereotypeValue="directory">
+    <children xsi:type="editmodel:ComponentEditModel" location="24,133" size="86,31" targetConnections="//@children.1/@sourceConnections.5" itemName="*.properties" stereotypeValue=""/>
+    <children xsi:type="editmodel:NodeEditModel" location="69,65" size="175,57" itemName="META-INF/services" type="providers" instanceLevel="true" stereotypeValue=""/>
+  </children>
+  <children xsi:type="editmodel:ComponentEditModel" location="128,453" size="136,45" targetConnections="//@children.1/@sourceConnections.3" itemName="*.properties" stereotypeValue="top-level resources"/>
+  <children xsi:type="editmodel:NodeEditModel" location="310,25" size="160,101" itemName="/icons" type="images" instanceLevel="true" stereotypeValue="directory">
+    <children xsi:type="editmodel:ComponentEditModel" location="52,56" size="49,31" targetConnections="//@children.1/@sourceConnections.4" itemName="*.gif" stereotypeValue=""/>
+  </children>
+</editmodel:DeploymentDiagramEditModel>
