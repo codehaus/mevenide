@@ -16,17 +16,11 @@
   	<attainGoal name="multiproject:site"/>
   </goal>
   
-  <goal name="mevenide:build-xdoc" description="Build Mevenide Site">
-  	<j:set var="maven.multiproject.includes" value="${maven.multiproject.includes},${mevenide.eclipse.plugin.project.name}/project.xml"/>
-  	<j:set var="goal" value="xdoc"/>
-  	<attainGoal name="multiproject:goal"/>
-  </goal>
-
 
   <!-- ==================================== -->
   <!--             init section             -->
   <!-- ==================================== -->
-  <goal name="mevenide:clean">
+  <goal name="mevenide:clean" prereqs="clean:clean">
   	<ant:delete dir="${maven.repo.local}/eclipse" quiet="true"/>
   	<ant:delete dir="${maven.repo.local}/mevenide" quiet="true"/>
   </goal>
@@ -63,6 +57,12 @@
   <goal name="mevenide:build-core" description="Build Mevenide-core module">
   	 <util:file var="mevenideCoreProjectdescriptor" name="${mevenide.core.project.location}/project.xml"/>
 	 <maven:maven descriptor="${mevenideCoreProjectdescriptor}" goals="clean,jar:install"/> 	 
+  </goal>
+  
+  <goal name="mevenide:build-xdoc" description="Build each module doco, without aggregating them. Provided for convenience, since building the whole can take a long time.">
+  	<j:set var="maven.multiproject.includes" value="${maven.multiproject.includes},${mevenide.eclipse.plugin.project.name}/project.xml"/>
+  	<j:set var="goal" value="xdoc"/>
+  	<attainGoal name="multiproject:goal"/>
   </goal>
   
 </project>
