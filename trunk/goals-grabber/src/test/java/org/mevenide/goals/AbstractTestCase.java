@@ -41,7 +41,7 @@ public class AbstractTestCase extends TestCase {
 			mavenHomeLocal.mkdirs();
 		}
         CustomLocationFinder custFinder = new CustomLocationFinder();
-        custFinder.setMavenHome(mavenHomeLocal.getAbsolutePath());
+        custFinder.setMavenLocalHome(mavenHomeLocal.getAbsolutePath());
 		pluginsLocal = new File(mavenHomeLocal, "plugins");
 		custFinder.setMavenPluginsDir(pluginsLocal.getAbsolutePath());
 		((LocationFinderAggregator)ConfigUtils.getDefaultLocationFinder()).setCustomLocationFinder(custFinder);

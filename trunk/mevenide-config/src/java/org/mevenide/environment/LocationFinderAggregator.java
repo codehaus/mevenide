@@ -16,6 +16,7 @@
  */
 package org.mevenide.environment;
 
+import java.io.File;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -84,7 +85,7 @@ public class LocationFinderAggregator implements ILocationFinder {
     }
 
     public String getJavaHome() {
-		String javaHome = null;
+		String javaHome = System.getProperty("java.home");;
 		if ( customLocationFinder !=  null 
 				&& customLocationFinder.getJavaHome() != null ) {
 			javaHome = customLocationFinder.getJavaHome();
@@ -134,7 +135,8 @@ public class LocationFinderAggregator implements ILocationFinder {
     }
     
     public String getMavenLocalHome() {
-		String mavenLocalHome = null;
+        String userHome = System.getProperty("user.home");
+		String mavenLocalHome = new File(userHome, ".maven").getAbsolutePath();;
 		if ( customLocationFinder !=  null 
 				&& customLocationFinder.getMavenLocalHome() != null ) {
 			mavenLocalHome = customLocationFinder.getMavenLocalHome();
@@ -159,7 +161,7 @@ public class LocationFinderAggregator implements ILocationFinder {
     }
     
     public String getMavenLocalRepository() {
-		String mavenLocalRepository = null;
+		String mavenLocalRepository =  new File(getMavenLocalHome(), "repository").getAbsolutePath();;
 		if ( customLocationFinder !=  null 
 				&& customLocationFinder.getMavenLocalRepository() != null ) {
 			mavenLocalRepository = customLocationFinder.getMavenLocalRepository();
@@ -184,7 +186,7 @@ public class LocationFinderAggregator implements ILocationFinder {
     }
     
     public String getMavenPluginsDir() {
-		String mavenPluginsDir = null;
+		String mavenPluginsDir = new File(getMavenLocalHome(), "plugins").getAbsolutePath();
 		if ( customLocationFinder !=  null 
 				&& customLocationFinder.getMavenPluginsDir() != null ) {
 			mavenPluginsDir = customLocationFinder.getMavenPluginsDir();
