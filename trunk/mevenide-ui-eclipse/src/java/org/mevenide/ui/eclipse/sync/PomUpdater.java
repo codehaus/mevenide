@@ -69,7 +69,7 @@ import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.sync.model.dependency.DependencyGroup;
 import org.mevenide.ui.eclipse.sync.model.dependency.DependencyWrapper;
 import org.mevenide.ui.eclipse.sync.model.source.SourceDirectoryGroup;
-import org.mevenide.util.MevenideUtil;
+import org.mevenide.util.MevenideUtils;
 
 /**  
  * 
@@ -104,7 +104,7 @@ public class PomUpdater {
 		PreferenceStore store = new PreferenceStore(Mevenide.getPlugin().getPreferencesFilename());
 		store.load();
 	
-		String resolvedExtend = MevenideUtil.resolve(ProjectReader.getReader().read(pomFile), store.getString("pom." + sourceGroup.getProjectName() + ".parent"));
+		String resolvedExtend = MevenideUtils.resolve(ProjectReader.getReader().read(pomFile), store.getString("pom." + sourceGroup.getProjectName() + ".parent"));
 		if ( !new File(resolvedExtend).exists() ) {
 			resolvedExtend = new File(new File(project.getFile("project.xml").getLocation().toOSString()).getParentFile(), resolvedExtend).getAbsolutePath();
 		}			

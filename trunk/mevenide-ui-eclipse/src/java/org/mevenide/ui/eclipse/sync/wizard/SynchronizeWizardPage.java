@@ -118,7 +118,7 @@ import org.mevenide.ui.eclipse.sync.model.source.SourceDirectoryGroupMarshaller;
 import org.mevenide.ui.eclipse.sync.viewer.DependencyMappingViewer;
 import org.mevenide.ui.eclipse.sync.viewer.SourceDirectoryMappingViewer;
 import org.mevenide.ui.eclipse.util.ResourceSorter;
-import org.mevenide.util.MevenideUtil;
+import org.mevenide.util.MevenideUtils;
 
 /**  
  * 
@@ -296,7 +296,7 @@ public class SynchronizeWizardPage extends WizardPage {
 			//check mavenProject nullity, just in case.. should not be necessary
 			if ( mavenProject != null && mavenProject.getExtend() != null && mavenProject.getExtend().trim() != "" ) {
 				//isInheritedEditor.setEnabled(false, bottomControls);
-				String resolvedExtend = MevenideUtil.resolve(mavenProject, mavenProject.getExtend(), true);
+				String resolvedExtend = MevenideUtils.resolve(mavenProject, mavenProject.getExtend(), true);
 				parentPomEditor.getTextControl(bottomControls).setText(resolvedExtend);
 			}
 		}
@@ -525,7 +525,7 @@ public class SynchronizeWizardPage extends WizardPage {
 		String extend = mavenProject.getExtend();
 
 		if ( extend != null && !extend.trim().equals("") ) {
-			String resolvedExtend = MevenideUtil.resolve(mavenProject, extend);
+			String resolvedExtend = MevenideUtils.resolve(mavenProject, extend);
 	
 			if ( !new File(resolvedExtend).exists() ) {
 				resolvedExtend = new File(new File(project.getFile("project.xml").getLocation().toOSString()).getParentFile(), resolvedExtend).getAbsolutePath();
@@ -903,7 +903,7 @@ public class SynchronizeWizardPage extends WizardPage {
         String extend = mavenProject.getExtend();
 		
 		if ( extend != null && !extend.trim().equals("") ) {
-			String resolvedExtend = MevenideUtil.resolve(mavenProject, extend);
+			String resolvedExtend = MevenideUtils.resolve(mavenProject, extend);
 
 			if ( !new File(resolvedExtend).exists() ) {
 				resolvedExtend = new File(new File(project.getFile("project.xml").getLocation().toOSString()).getParentFile(), resolvedExtend).getAbsolutePath();

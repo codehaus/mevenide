@@ -52,7 +52,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
-import org.mevenide.ui.eclipse.util.FileUtil;
+import org.mevenide.ui.eclipse.util.FileUtils;
 
 /**
  * 
@@ -65,8 +65,8 @@ public class CreatePomAction extends AbstractMevenideAction {
 	
 	public void run(IAction action) {
 		try {
-			if ( FileUtil.getPom(currentProject) != null && !FileUtil.getPom(currentProject).exists() ) {
-				FileUtil.createPom(currentProject);
+			if ( FileUtils.getPom(currentProject) != null && !FileUtils.getPom(currentProject).exists() ) {
+				FileUtils.createPom(currentProject);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

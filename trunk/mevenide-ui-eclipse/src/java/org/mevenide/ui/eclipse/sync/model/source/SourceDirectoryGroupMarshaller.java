@@ -60,7 +60,7 @@ import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.input.SAXBuilder;
 import org.mevenide.ui.eclipse.XmlSerializationConstants;
-import org.mevenide.util.JDomOutputter;
+import org.mevenide.util.JDomUtils;
 
 /**
  * 
@@ -199,7 +199,7 @@ public class SourceDirectoryGroupMarshaller {
 		
 		File saveFile = new File(file); 
 		
-		JDomOutputter.output(document, saveFile, false);
+		JDomUtils.output(document, saveFile, false);
 		
 	}
 	private static void saveSourceDirectories(List sourceDirectories, long timestamp, Element sourceDirGroup) {

@@ -48,23 +48,24 @@
  */
 package org.mevenide.ui.eclipse.util;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.InputStream;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.maven.project.Dependency;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.jdt.core.IClasspathContainer;
-import org.eclipse.jdt.core.IClasspathEntry;
-import org.eclipse.jdt.core.JavaCore;
-import org.eclipse.jdt.launching.JavaRuntime;
-import org.mevenide.project.io.ProjectReader;
+import org.mevenide.project.io.PomSkeletonBuilder;
 import org.mevenide.ui.eclipse.DefaultPathResolver;
 import org.mevenide.ui.eclipse.IPathResolver;
 import org.mevenide.ui.eclipse.Mevenide;
+import org.mevenide.ui.eclipse.sync.PomSynchronizer;
+import org.mevenide.util.MevenideUtils;
 
 /**
  * 
@@ -72,53 +73,67 @@ import org.mevenide.ui.eclipse.Mevenide;
  * @version $Id$
  * 
  */
-public class ProjectUtil {
-	private static Log log = LogFactory.getLog(ProjectUtil.class);
+public class FileUtils {
 	
-	private ProjectUtil() {
+	private static Log log = LogFactory.getLog(FileUtils.class);
+	
+	private FileUtils() {
+	}
+	
+	
+
+	public static boolean inLocalRepository(String entryPath) {
+		File localRepo = new File(Mevenide.getPlugin().getMavenRepository());
+		return MevenideUtils.findFile(localRepo, entryPath);
 	}
 
-	public static List getJreEntryList(IProject project) throws Exception {
-		IPathResolver pathResolver = new DefaultPathResolver();
-		
-		IClasspathEntry jreEntry = JavaRuntime.getJREVariableEntry();
-		IClasspathEntry resolvedJreEntry = JavaCore.getResolvedClasspathEntry(jreEntry);
-		String jrePath = pathResolver.getAbsolutePath(resolvedJreEntry.getPath());
-		
-		IClasspathContainer container = JavaCore.getClasspathContainer(new Path(Mevenide.getResourceString("ProjectUtil.eclipse.jre.container")), JavaCore.create(project));
-		IClasspathEntry[] jreEntries = container.getClasspathEntries();
-		
-		List jreEntryList = new ArrayList();
-		
-		for (int i = 0; i < jreEntries.length; i++) {
-			jreEntryList.add(pathResolver.getAbsolutePath(jreEntries[i].getPath()));
-		}    
-		jreEntryList.add(jrePath);
-		return jreEntryList;
+	public static boolean isClassFolder(String entryPath, IProject project) {
+		return new File(project.getLocation().append(new Path(entryPath).removeFirstSegments(1)).toOSString()).isDirectory();
 	}
 
-	public static List getCrossProjectDependencies() throws Exception {
-		List deps = new ArrayList();
-		IProject[] referencedProjects = Mevenide.getPlugin().getProject().getReferencedProjects();		
-		for (int i = 0; i < referencedProjects.length; i++) {
-			IProject referencedProject = referencedProjects[i];
-			
-			if ( referencedProject.exists() && !referencedProject.getName().equals(Mevenide.getPlugin().getProject().getName()) )  {
-						
-				File referencedPom = FileUtil.getPom(referencedProject);
-				//check if referencedPom exists, tho it should since we just have created it
+	public static void createPom(IProject project) throws Exception, CoreException {
+		 log.debug("Creating pom skeleton using template : " + Mevenide.getPlugin().getPomTemplate());
+		 PomSkeletonBuilder pomSkeletonBuilder = PomSkeletonBuilder.getSkeletonBuilder( Mevenide.getPlugin().getPomTemplate() ); 
+		 String referencedPomSkeleton = pomSkeletonBuilder.getPomSkeleton(project.getName());
+		 IFile referencedProjectFile = project.getFile("project.xml"); 
+		 referencedProjectFile.create(new ByteArrayInputStream(referencedPomSkeleton.getBytes()), false, null);
+	}
 
-				if ( !referencedPom.exists() ) {
-					FileUtil.createPom(referencedProject);
-				}
-				ProjectReader reader = ProjectReader.getReader();
-				Dependency projectDependency = reader.extractDependency(referencedPom);
-				log.debug("dependency artifact : " + projectDependency.getArtifact());
-				deps.add(projectDependency);
-			}
+	public static File getPom(IProject project) {
+		//weird trick to fix a NPE. dont know yet why we got that NPE
+		if ( project.exists() ) {
+			IPathResolver pathResolver = new DefaultPathResolver();
+			IPath referencedProjectLocation = project.getLocation();
+			return new File(pathResolver.getAbsolutePath(referencedProjectLocation.append("project.xml")) );
 		}
-		return deps;
+		return null;
+	}
+
+	public static void refresh(IProject project) throws Exception {
+		IFile projectFile = project.getFile("project.xml");
+		projectFile.refreshLocal(IResource.DEPTH_ZERO, null);
+		IFile propertiesFile = project.getFile("project.properties");
+		if ( propertiesFile.exists() ) {
+			propertiesFile.refreshLocal(IResource.DEPTH_ZERO, null);
+		}
+	}
+
+	public static void assertPomNotEmpty(IFile pom) {
+		try {
+			if ( pom.exists() ) {
+				InputStream inputStream = pom.getContents(true);
+			
+				if ( inputStream.read() == -1 ) {
+					InputStream stream = PomSynchronizer.class.getResourceAsStream("/templates/standard/project.xml"); 
+					pom.setContents(stream, true, true, null);
+					stream.close();
+				}
+				inputStream.close();
+			}
+		} catch (Exception e) {
+			log.debug("Unable to check if POM already exists due to : " + e);
+		}
 	}
 	
-
+	
 }
