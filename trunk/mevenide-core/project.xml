@@ -16,7 +16,7 @@
   </organization>
   
   	<inceptionYear>2003</inceptionYear>
-  <package>org.mevenide.core</package>
+  <package>org.mevenide</package>
 	
   <shortDescription>provides ide integration for Maven</shortDescription>
 

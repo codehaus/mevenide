@@ -12,9 +12,9 @@
       <library name="maven.jar"/>
       <library name="goals-grabber-1.0.jar"/>
       <library name="mevenide-core-0.1.jar"/>
-      <library name="mevenide-ui-eclipse-0.1.jar">
+      <!-- library name="mevenide-ui-eclipse-0.1.jar">
          <export name="*"/>
-      </library>
+      </library -->
       <library name="forehead-1.0-beta-4.jar"/>
       <library name="commons-discovery.jar"/>
       <library name="commons-logging-1.0.1.jar"/>

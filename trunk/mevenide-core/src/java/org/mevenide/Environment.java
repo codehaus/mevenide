@@ -12,7 +12,7 @@
  * Lesser General Public License for more details.
  * 
  */
-package org.mevenide.core;
+package org.mevenide;
 
 import java.io.File;
 
@@ -76,7 +76,7 @@ public class Environment {
      * constructs the endorsedDirs property needed for Maven execution
      * @return "JAVA_HOME/lib/endorsed:MAVEN_HOME/lib/endorsed"
      */
-	static String getEndorsedDirs() {
+	public static String getEndorsedDirs() {
 		return Environment.getJavaHome() + File.separatorChar 
 		          + "lib" + File.separatorChar + "endorsed"
 		          + File.pathSeparator + Environment.getMavenHome()

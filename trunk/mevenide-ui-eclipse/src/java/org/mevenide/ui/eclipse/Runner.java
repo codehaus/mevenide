@@ -14,9 +14,9 @@
  */
 package org.mevenide.ui.eclipse;
 
+import org.mevenide.Environment;
 import org.mevenide.core.AbstractRunner;
 import org.mevenide.core.ArgumentsManager;
-import org.mevenide.core.Environment;
 import org.mevenide.ui.eclipse.jdt.launching.VMLauncherUtility;
 
 //import com.werken.forehead.Forehead;

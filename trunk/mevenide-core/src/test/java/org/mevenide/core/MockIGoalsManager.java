@@ -22,7 +22,7 @@ package org.mevenide.core;
  * @version $Id: MockIGoalsGrabber.java 20 avr. 2003 21:03:4513:34:35 Exp gdodinet 
  * 
  */
-public class MockIGoalsManager extends de.abstrakt.mock.MockObject implements org.mevenide.core.IGoalsManager
+public class MockIGoalsManager extends de.abstrakt.mock.MockObject implements org.mevenide.IGoalsManager
 {
 	private java.lang.Object	_addGoalDummyValue;
 	private java.lang.Boolean	_addGoalExpectFlag;
@@ -81,7 +81,7 @@ public class MockIGoalsManager extends de.abstrakt.mock.MockObject implements or
 		return (java.lang.String[])returnValue;
 	}
 
-	public void addGoal( java.lang.String plugin, java.lang.String goal ) throws org.mevenide.core.GoalNotFoundException
+	public void addGoal( java.lang.String plugin, java.lang.String goal ) throws org.mevenide.GoalNotFoundException
 	{
 		Object returnValue = null;
 		if( _addGoalExpectFlag != null && _addGoalExpectFlag.booleanValue() )
@@ -92,9 +92,9 @@ public class MockIGoalsManager extends de.abstrakt.mock.MockObject implements or
 		{
 			returnValue = _addGoalDummyValue;
 		}
-		if( returnValue instanceof org.mevenide.core.GoalNotFoundException )
+		if( returnValue instanceof org.mevenide.GoalNotFoundException )
 		{
-			throw (org.mevenide.core.GoalNotFoundException)returnValue;
+			throw (org.mevenide.GoalNotFoundException)returnValue;
 		}
 		if( returnValue instanceof RuntimeException )
 		{

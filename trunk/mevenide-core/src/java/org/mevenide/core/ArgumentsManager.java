@@ -21,6 +21,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import org.mevenide.*;
+
 /**
  * 
  * @author Gilles Dodinet (gdodinet@wanadoo.fr)

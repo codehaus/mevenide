@@ -18,7 +18,8 @@ import java.io.File;
 import java.util.Collection;
 
 import org.apache.commons.discovery.tools.DiscoverClass;
-import org.mevenide.core.util.PostGoal;
+import org.mevenide.*;
+import org.mevenide.util.PostGoal;
 
 import com.gdfact.maven.plugin.getgoals.GoalsBean;
 

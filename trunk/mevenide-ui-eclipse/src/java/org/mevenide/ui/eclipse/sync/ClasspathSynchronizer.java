@@ -14,8 +14,8 @@
 package org.mevenide.ui.eclipse.sync;
 
 import org.eclipse.core.resources.IProject;
-import org.mevenide.core.sync.AbstractIdeSynchronizer;
-import org.mevenide.core.sync.ISynchronizer;
+import org.mevenide.sync.AbstractIdeSynchronizer;
+import org.mevenide.sync.ISynchronizer;
 import org.mevenide.ui.eclipse.MavenPlugin;
 
 

@@ -11,7 +11,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  */
-package org.mevenide.core.pom;
+package org.mevenide.pom;
 
 import java.io.File;
 import java.util.Date;
@@ -20,7 +20,7 @@ import java.util.GregorianCalendar;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.input.SAXBuilder;
-import org.mevenide.core.util.JDomOutputter;
+import org.mevenide.util.JDomOutputter;
 
 /**
  * 

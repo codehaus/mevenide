@@ -11,41 +11,40 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  */
-package org.mevenide.core.sync;
+package org.mevenide.pom;
+
+
 
 
 /**
+ * @refactor GETRID get rid of the <code>getResolvedSourceType(String)</code>
  * 
  * @author Gilles Dodinet (gdodinet@wanadoo.fr)
  * @version $Id$
  * 
  */
-public abstract class AbstractPomSynchronizer implements ISynchronizer {
+public abstract class BuildConstants {
+	public static final String MAVEN_TEST = "test";
 	
-    /**
-     * template pattern
-     * @see org.mevenide.core.sync.ISynchronizer#synchronize
-     */
-    public void synchronize()  {
-		try {
-			preSynchronization();
-			mavenize();
-			postSynchronization();
+	public static final String MAVEN_SRC = "source";
+	
+	public static final String MAVEN_ASPECT = "aspects";
+
+	
+	public static String getResolvedSourceType(String type) throws InvalidSourceTypeException {
+		if ( MAVEN_SRC.equals(type) ) {
+			return "sourceDirectory";
 		}
-		catch ( Exception e ) {
-			e.printStackTrace();
+		if ( MAVEN_TEST.equals(type) ) {
+			return "unitTestSourceDirectory";
+		}
+		if ( MAVEN_ASPECT.equals(type) ) {
+			return "aspectSourceDirectory";
+		}
+		else {
+			throw new InvalidSourceTypeException(type);
 		}
 	}
-    
-    /**
-     * @see org.mevenide.core.sync.ISynchronizer#canHandle
-     */
-	public boolean canHandle(int direction) {
-		return direction == ISynchronizer.IDE_TO_POM;
-	}
+
 	
-    /**
-     * synchronize the POM with the current project properties
-     */
-	protected abstract void mavenize();
 }
