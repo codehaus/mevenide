@@ -131,9 +131,13 @@ public class DependencyWrapper extends ArtifactWrapper {
 	}
 	
 	public void addTo(Project project) throws Exception {
+		addTo(project, true);
+	}
+	
+	public void addTo(Project project, boolean shouldWriteProperties) throws Exception {
 		List dependencies = project.getDependencies();
 		dependencies.add(dependency);
-		ProjectWriter.getWriter().setDependencies(dependencies, project.getFile());
+		ProjectWriter.getWriter().setDependencies(dependencies, project.getFile(), shouldWriteProperties);
 	}
 	
 	public void removeFrom(Project project) throws Exception {

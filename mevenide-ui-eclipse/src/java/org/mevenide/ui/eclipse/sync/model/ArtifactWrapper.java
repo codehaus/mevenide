@@ -45,6 +45,15 @@ public abstract class ArtifactWrapper {
 	
 	public abstract void addTo(Project project) throws Exception;
 	
+	/**
+	 * default implementation just delegates to addTo(Project) 
+	 * subclasses that need to know if project.properties should be overriden 
+	 * must override this method
+	 */
+	public void addTo(Project project, boolean shouldWriteProperties) throws Exception {
+		addTo(project);
+	}
+	
 	public abstract void removeFrom(Project project) throws Exception;
 	
 	private File declaringPom;

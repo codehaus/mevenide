@@ -280,6 +280,7 @@ public class SynchronizeActionFactory {
 				}
 			}
 		};
+		synchronizeView.addSynchronizationConstraintListener(action);
 		action.addActionListener(synchronizeView);
 		pushToPom.setId(ADD_TO_POM);
 		pushToPom.setText("Update Pom...");
