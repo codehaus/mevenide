@@ -52,8 +52,7 @@ import java.io.File;
 
 /**
  * 
- * @todo use a n-singleton instead - singleton PER launchConfig 
- * Q: how to identify launch configuration ? whats a launch configuration ?
+ * @todo use a n-singleton instead - singleton PER launchConfig ? 
  * 
  * @author Gilles Dodinet (gdodinet@wanadoo.fr)
  * @version $Id: Environment.java,v 1.1 21 avr. 2003 10:42:2213:34:35 Exp gdodinet
@@ -140,33 +139,55 @@ public class Environment {
 		          + File.pathSeparator + Environment.getMavenHome()
 		          + File.separator + "lib" + File.separator + "endorsed";
 	}
-
+	
+	/**
+	 * @return maven local repository location
+	 */
 	public static String getMavenRepository() {
 		return mavenRepository;
 	}
-
+	
+	/**
+	 * set maven local repository location
+	 */
 	public static void setMavenRepository(String repo) {
 		mavenRepository = repo;
 	}
 
+	/** 
+	 * @return maven plugins installation directory. default to mavenLocalHome/plugins if not set
+	 */
     public static String getMavenPluginsInstallDir() {
     	if ( mavenPluginsInstallDir == null && mavenLocalHome != null ) {
     		mavenPluginsInstallDir = new File(getMavenLocalHome(), "plugins").getAbsolutePath(); 
     	}
         return mavenPluginsInstallDir;
     }
-
+    
+	/** 
+	 * set maven plugins installation directory
+	 * 
+	 */
     public static void setMavenPluginsInstallDir(String pluginsInstallDir) {
         mavenPluginsInstallDir = pluginsInstallDir;
     }
+    
+    /**
+     * @return maximum java heap size - passed as vm argument (Xmx) when launching maven
+     */
     public static int getHeapSize() {
         return heapSize;
     }
-
+	/**
+	 * set maximum java heap size - passed as vm argument (Xmx) when launching maven
+	 */
     public static void setHeapSize(int heapSize) {
         Environment.heapSize = heapSize;
     }
 
+	/**
+	 * @return maven local installation directory. default to ${user.home}/maven if not set
+	 */
     public static String getMavenLocalHome() {
     	if ( mavenLocalHome == null ) {
     		mavenLocalHome = new File(System.getProperty("user.home"), ".maven").getAbsolutePath();
@@ -174,6 +195,9 @@ public class Environment {
         return mavenLocalHome;
     }
 
+	/**
+	 * set maven local installation directory
+	 */
     public static void setMavenLocalHome(String mavenLocalHome) {
         Environment.mavenLocalHome = mavenLocalHome;
     }
