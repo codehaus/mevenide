@@ -14,7 +14,7 @@
  *  limitations under the License.
  * =========================================================================
  */
-package org.mevenide.tags.eclipse;
+package org.mevenide.tags;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

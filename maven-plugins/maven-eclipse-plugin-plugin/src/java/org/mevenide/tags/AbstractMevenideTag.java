@@ -14,10 +14,10 @@
  *  limitations under the License.
  * =========================================================================
  */
-package org.mevenide.tags.eclipse;
+package org.mevenide.tags;
 
-import org.apache.commons.jelly.TagLibrary;
-import org.mevenide.tags.*;
+import org.apache.commons.jelly.MissingAttributeException;
+import org.apache.commons.jelly.TagSupport;
 
 /**
  * 
@@ -25,9 +25,17 @@ import org.mevenide.tags.*;
  * @version $Id$
  * 
  */
-public class MevenideTagLibrary extends TagLibrary {
-    public MevenideTagLibrary() {
-        registerTag("adapt-version", AdaptVersionTag.class);
-        registerTag("update-plugin-libraries", UpdatePluginLibsTag.class);
+public abstract class AbstractMevenideTag extends TagSupport {
+    protected void checkAttribute(Object attribute, String attributeName) throws MissingAttributeException {
+        if (attribute == null ) {
+            throw new MissingAttributeException(attributeName + " should be defined.");
+        }
+    }
+
+    protected void checkAttribute(String attribute, String attributeName) throws MissingAttributeException {
+        checkAttribute((Object) attribute, attributeName);
+        if (attribute.trim().equals("") ) {
+            throw new MissingAttributeException(attributeName + " should not be empty.");
+        }
     }
 }

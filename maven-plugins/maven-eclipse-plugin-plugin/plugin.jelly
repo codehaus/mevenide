@@ -73,10 +73,11 @@
        	<ant:fileset dir="${maven.build.dir}" includes="${pom.artifactId}-${pom.currentVersion}.jar"/>
       </ant:copy>
        
-      <!-- update plugin descriptor -->
-      <!-- j:if test="${mode != 'bundle'}">
-  	  	<attainGoal name="eclipse-plugin:update-plugin-libraries"/>
-  	  </j:if -->
+      <!-- @todo update plugin descriptor -->
+      <!-- j:if test="${mode == 'bundle'}" -->
+      <ant:echo>MODE = ${mode}</ant:echo>
+  	  <mevenide:update-plugin-libraries pom="${pom}"/>
+  	  <!-- /j:if -->
   	  
       <!-- build plugin distribution file. -->
       <ant:jar destfile="${pluginArchive}">
@@ -88,7 +89,6 @@
       <!-- @todo customize me -->
       <ant:copy todir="${basedir}" file="${maven.build.dir}/${maven.final.name}.jar"/>
    </goal>
-   
    
    <!--
    	 do not use feature POM for looking up resources to have a consistent behavior between plugin and feature creation goals.
@@ -124,7 +124,7 @@
 		
 	  </j:forEach>
    		
-   	  <!-- update plugin descriptor -->
+   	  <!-- @todo update feature descriptor -->
       <!-- j:if test="${mode != 'bundle'}">
   	  	<attainGoal name="eclipse-plugin:update-feature-includes"/>
   	  </j:if -->	
@@ -296,8 +296,7 @@
  
  		<!-- init variables -->
  		<mevenide:adapt-version var="depVersion" version="${dependency.version}"/>
- 		<ant:echo>dv = ${depVersion}</ant:echo>
-        <j:set var="dependencyPluginDir" value="${maven.build.dir}/eclipse/ext/${dependency.groupId}_${depVersion}"/>
+ 		<j:set var="dependencyPluginDir" value="${maven.build.dir}/eclipse/ext/${dependency.groupId}_${depVersion}"/>
 		<ant:mkdir dir="${dependencyPluginDir}"/>
         
         <util:file name="${artifact.path}" var="artifactJar"/>

@@ -29,6 +29,26 @@
     
     <dependencies>
         <dependency>
+    		<groupId>maven</groupId>	
+    		<artifactId>maven</artifactId>
+    		<version>1.0-rc1</version>
+    	</dependency>
+    	<dependency>
+    		<groupId>jdom</groupId>	
+    		<artifactId>jdom</artifactId>
+    		<version>b9</version>
+    	</dependency>
+    	<dependency>
+    		<groupId>commons-logging</groupId>	
+    		<artifactId>commons-logging</artifactId>
+    		<version>1.0.3</version>
+    	</dependency>
+    	<dependency>
+    		<groupId>log4j</groupId>	
+    		<artifactId>log4j</artifactId>
+    		<version>1.2.8</version>
+    	</dependency>
+        <dependency>
     		<groupId>commons-jelly</groupId>	
     		<artifactId>commons-jelly</artifactId>
     		<version>1.0-beta-4</version>
