@@ -20,7 +20,7 @@ import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
-import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.TableTreeViewer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IViewPart;
@@ -30,10 +30,11 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 import org.mevenide.sync.ISynchronizer;
 import org.mevenide.sync.SynchronizerFactory;
-import org.mevenide.ui.eclipse.MavenPlugin;
+import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.sync.DefaultPathResolverDelegate;
-import org.mevenide.ui.eclipse.sync.source.*;
-import org.mevenide.ui.eclipse.sync.source.SourceDirectoryGroup;
+import org.mevenide.ui.eclipse.sync.dependency.DependencyGroup;
+import org.mevenide.ui.eclipse.sync.dependency.DependencyMarshaller;
+import org.mevenide.ui.eclipse.sync.source.SourceDirectoryMarshaller;
 
 /**
  * 
@@ -41,26 +42,26 @@ import org.mevenide.ui.eclipse.sync.source.SourceDirectoryGroup;
  * @version $Id$
  * 
  */
-public class SourceDirectoryTypePart extends ViewPart {
-	/** 2 columns table viewer [source dir, source type] where source type is displayed in a CCombo */
-	private TableViewer viewer;
+public class DependencyViewPart extends ViewPart {
+
+	private TableTreeViewer viewer;
 	
 	private IProject project;
 	
-	private static SourceDirectoryTypePart partInstance; 
+	private static DependencyViewPart partInstance; 
 	
 	//public constructor : it should be instantiated by Eclipse 
-	public SourceDirectoryTypePart() {
+	public DependencyViewPart() {
 		partInstance = this;
 	}
 	
-	public static SourceDirectoryTypePart getInstance() {
+	public static DependencyViewPart getInstance() {
 		return partInstance;
 	}
 	
 	public void createPartControl(Composite parent) {
 		
-		viewer = SourceDirectoryViewUtil.getViewer(parent);
+		viewer = DependencyViewUtil.getViewer(parent);
 
 		getSite().setSelectionProvider(viewer);
 		
@@ -73,7 +74,7 @@ public class SourceDirectoryTypePart extends ViewPart {
 	public void setInput(IProject project) {
 		this.project = project;
 		if ( viewer.getContentProvider() != null ) {
-			SourceDirectoryGroup newInput = null ;
+			DependencyGroup newInput = null ;
 			try {
 				
 				newInput = getSavedInput(project);
@@ -83,18 +84,18 @@ public class SourceDirectoryTypePart extends ViewPart {
 		
 			}
 			if ( newInput == null ) {
-				newInput = new SourceDirectoryGroup(project);
+				newInput = new DependencyGroup(project);
 			}
 			
 			viewer.setInput(newInput);
 		}
 	}
 
-	private SourceDirectoryGroup getSavedInput(IProject project) throws Exception {
+	private DependencyGroup getSavedInput(IProject project) throws Exception {
 		
-		String savedStates = MavenPlugin.getPlugin().getFile("sourceTypes.xml");
+		String savedStates = Mevenide.getPlugin().getFile("statedDependencies.xml");
 		
-		return SourceDirectoryMarshaller.getSourceDirectoryGroup(project, savedStates);
+		return DependencyMarshaller.getDependencyGroup(project, savedStates);
 		
 	}
 
@@ -104,7 +105,7 @@ public class SourceDirectoryTypePart extends ViewPart {
 	private void addContributions() {
 		IToolBarManager tbm = getViewSite().getActionBars().getToolBarManager();
 		
-		Action synchronizeAction = new Action() {
+		Action saveAction = new Action() {
 			public void run() {
 				
 				try {
@@ -119,8 +120,8 @@ public class SourceDirectoryTypePart extends ViewPart {
 				
 			}
 		};	
-		synchronizeAction.setImageDescriptor(MavenPlugin.getImageDescriptor("save-16.gif"));
-		synchronizeAction.setToolTipText("Save");
+		saveAction.setImageDescriptor(Mevenide.getImageDescriptor("save-16.gif"));
+		saveAction.setToolTipText("Save");
 		
 		Action refreshAction = new Action() {
 			public void run() {
@@ -135,11 +136,11 @@ public class SourceDirectoryTypePart extends ViewPart {
 	
 			}
 		};
-		refreshAction.setImageDescriptor(MavenPlugin.getImageDescriptor("refresh.gif"));
+		refreshAction.setImageDescriptor(Mevenide.getImageDescriptor("refresh.gif"));
 		refreshAction.setToolTipText("Refresh View");
 		
 		tbm.add(refreshAction);
-		tbm.add(synchronizeAction);
+		tbm.add(saveAction);
 		
 		getViewSite().getActionBars().updateActionBars();
 	}
@@ -162,12 +163,12 @@ public class SourceDirectoryTypePart extends ViewPart {
 	}
 
 	public void saveState() throws Exception {
-		SourceDirectoryMarshaller.saveSourceDirectoryGroup((SourceDirectoryGroup)viewer.getInput(), MavenPlugin.getPlugin().getFile("sourceTypes.xml"));
+		DependencyMarshaller.saveDependencyGroup((DependencyGroup)viewer.getInput(), Mevenide.getPlugin().getFile("statedDependencies.xml"));
 	}
 	
 	public static void showView() throws Exception {
 		IViewPart consoleView =
-			PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(MavenPlugin.SYNCH_VIEW_ID); 
+			PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView("org.mevenide.sync.view.dep"); 
 	}
 
 	/**
@@ -179,7 +180,7 @@ public class SourceDirectoryTypePart extends ViewPart {
 	 * @throws Exception
 	 */
 	public static void synchronizeWithoutPrompting(IProject currentProject) throws Exception {
-		String savedState = MavenPlugin.getPlugin().getFile("sourceTypes.xml");
+		String savedState = Mevenide.getPlugin().getFile("statedDependencies.xml");
 		List lastSourceList = SourceDirectoryMarshaller.getLastStoredSourceDirectories(currentProject, savedState);
 		
 		boolean newSourceFolder = false;

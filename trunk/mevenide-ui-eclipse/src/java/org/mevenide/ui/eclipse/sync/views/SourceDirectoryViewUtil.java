@@ -29,7 +29,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.internal.dialogs.ListContentProvider;
-import org.mevenide.ui.eclipse.MavenPlugin;
+import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.sync.source.SourceDirectory;
 import org.mevenide.ui.eclipse.sync.source.SourceDirectoryGroup;
 import org.mevenide.ui.eclipse.sync.source.SourceDirectoryUtil;
@@ -129,7 +129,7 @@ public class SourceDirectoryViewUtil {
 //			
 //		});
 
-		tableViewer.setInput(new SourceDirectoryGroup(MavenPlugin.getPlugin().getProject()));
+		tableViewer.setInput(new SourceDirectoryGroup(Mevenide.getPlugin().getProject()));
 	}
 	
 	

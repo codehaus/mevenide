@@ -19,7 +19,7 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
-import org.mevenide.ui.eclipse.MavenPlugin;
+import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.sync.source.SourceDirectoryGroup;
 import org.mevenide.ui.eclipse.sync.source.SourceDirectoryMarshaller;
 import org.mevenide.ui.eclipse.sync.views.SourceDirectoryViewUtil;
@@ -40,7 +40,7 @@ public class SourceDirectorySynchronizeWizardPage extends WizardPage {
 		super("Source Directories Synchronization");
 		setTitle("Source Directory Synchronization");
 		setDescription("Please enter source directory types.");
-		setImageDescriptor(MavenPlugin.getImageDescriptor("source-synch-64.gif"));
+		setImageDescriptor(Mevenide.getImageDescriptor("source-synch-64.gif"));
 		
 	}
 
@@ -81,7 +81,7 @@ public class SourceDirectorySynchronizeWizardPage extends WizardPage {
 	
 	private SourceDirectoryGroup getSavedInput(IProject project) throws Exception {
 		
-		String savedStates = MavenPlugin.getPlugin().getFile("sourceTypes.xml");
+		String savedStates = Mevenide.getPlugin().getFile("sourceTypes.xml");
 		
 		return SourceDirectoryMarshaller.getSourceDirectoryGroup(project, savedStates);
 		
@@ -90,7 +90,7 @@ public class SourceDirectorySynchronizeWizardPage extends WizardPage {
 
 
 	public void saveState() throws Exception {
-		SourceDirectoryMarshaller.saveSourceDirectoryGroup((SourceDirectoryGroup)viewer.getInput(), MavenPlugin.getPlugin().getFile("sourceTypes.xml"));
+		SourceDirectoryMarshaller.saveSourceDirectoryGroup((SourceDirectoryGroup)viewer.getInput(), Mevenide.getPlugin().getFile("sourceTypes.xml"));
 	}
 	
 

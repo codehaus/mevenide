@@ -23,11 +23,13 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.wizard.Wizard;
 import org.mevenide.ProjectConstants;
 import org.mevenide.project.io.ProjectWriter;
+import org.mevenide.project.source.SourceDirectoryUtil;
 import org.mevenide.ui.eclipse.sync.DefaultPathResolverDelegate;
 import org.mevenide.ui.eclipse.sync.IPathResolverDelegate;
 import org.mevenide.ui.eclipse.sync.dependency.DependencyGroup;
 import org.mevenide.ui.eclipse.sync.source.SourceDirectory;
 import org.mevenide.ui.eclipse.sync.source.SourceDirectoryGroup;
+import org.mevenide.ui.eclipse.util.ProjectUtil;
 
 /**
  * 
@@ -63,6 +65,8 @@ public class SynchronizeWizard extends Wizard {
 			
 			File pomFile = new File(pathResolver.getAbsolutePath(pom.getLocation())); 
 			
+			SourceDirectoryUtil.resetSourceDirectories(pomFile);
+			
 			//WICKED if/else
 			for (int i = 0; i < sourceGroup.getSourceDirectories().size(); i++) {
 				SourceDirectory directory = (SourceDirectory) sourceGroup.getSourceDirectories().get(i);
@@ -86,6 +90,7 @@ public class SynchronizeWizard extends Wizard {
 			sourcePage.saveState();
 			dependencyPage.saveState();
 			
+			ProjectUtil.setBuildPath();
 		}
 		catch ( Exception ex ) {
 			ex.printStackTrace();

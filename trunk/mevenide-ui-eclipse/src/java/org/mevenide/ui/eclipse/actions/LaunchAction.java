@@ -30,7 +30,7 @@ import org.mevenide.ui.eclipse.launch.LaunchWizard;
  * @version $Id$
  * 
  */
-public class LaunchAction extends AbstractMavenAction {
+public class LaunchAction extends AbstractMevenideAction {
 	
     public void run(IAction action) {
 		

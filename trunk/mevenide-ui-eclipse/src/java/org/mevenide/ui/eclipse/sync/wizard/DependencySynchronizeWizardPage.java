@@ -19,7 +19,7 @@ import org.eclipse.jface.viewers.TableTreeViewer;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
-import org.mevenide.ui.eclipse.MavenPlugin;
+import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.sync.dependency.DependencyGroup;
 import org.mevenide.ui.eclipse.sync.dependency.DependencyMarshaller;
 import org.mevenide.ui.eclipse.sync.views.DependencyViewUtil;
@@ -40,7 +40,7 @@ public class DependencySynchronizeWizardPage extends WizardPage {
 		super("Dependencies Synchronization");
 		setTitle("Dependency Synchronization");
 		setDescription("Please check the dependencies' groupId, artifactId and version");
-		setImageDescriptor(MavenPlugin.getImageDescriptor("dep-synch-64.gif"));
+		setImageDescriptor(Mevenide.getImageDescriptor("dep-synch-64.gif"));
 		
 		
 	}
@@ -82,7 +82,7 @@ public class DependencySynchronizeWizardPage extends WizardPage {
 	
 	private DependencyGroup getSavedInput(IProject project) throws Exception {
 		
-		String savedStates = MavenPlugin.getPlugin().getFile("statedDependencies.xml");
+		String savedStates = Mevenide.getPlugin().getFile("statedDependencies.xml");
 			
 		return DependencyMarshaller.getDependencyGroup(project, savedStates);
 			
@@ -90,7 +90,7 @@ public class DependencySynchronizeWizardPage extends WizardPage {
 	
 	
 	public void saveState() throws Exception {
-		DependencyMarshaller.saveDependencyGroup((DependencyGroup)viewer.getInput(), MavenPlugin.getPlugin().getFile("statedDependencies.xml"));
+		DependencyMarshaller.saveDependencyGroup((DependencyGroup)viewer.getInput(), Mevenide.getPlugin().getFile("statedDependencies.xml"));
 	}
 	
 

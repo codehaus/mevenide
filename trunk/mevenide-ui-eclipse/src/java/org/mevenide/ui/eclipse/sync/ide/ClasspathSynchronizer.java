@@ -16,7 +16,7 @@ package org.mevenide.ui.eclipse.sync.ide;
 import org.eclipse.core.resources.IProject;
 import org.mevenide.sync.AbstractIdeSynchronizer;
 import org.mevenide.sync.ISynchronizer;
-import org.mevenide.ui.eclipse.MavenPlugin;
+import org.mevenide.ui.eclipse.Mevenide;
 
 
 /**
@@ -38,7 +38,7 @@ public class ClasspathSynchronizer extends AbstractIdeSynchronizer implements IS
      * @see org.mevenide.core.sync.ISynchronizer#initialize()
      */
 	public void initialize() {
-		setProject(MavenPlugin.getPlugin().getProject());
+		setProject(Mevenide.getPlugin().getProject());
 		synchronizationGoal = "eclipse:generate-classpath";
 	}
     

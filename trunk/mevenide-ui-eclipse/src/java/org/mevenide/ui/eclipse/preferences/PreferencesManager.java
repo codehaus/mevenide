@@ -17,7 +17,7 @@ import java.io.IOException;
 
 import org.eclipse.jface.preference.PreferenceStore;
 
-import org.mevenide.ui.eclipse.MavenPlugin;
+import org.mevenide.ui.eclipse.Mevenide;
 
 /**
  * 
@@ -50,7 +50,7 @@ public class PreferencesManager {
 	}
 	
 	private String getPreferenceStoreFilename() {
-		return MavenPlugin.getPlugin().getPreferencesFilename() ; 
+		return Mevenide.getPlugin().getPreferencesFilename() ; 
 	}
 	
 	public String getValue(String property) {

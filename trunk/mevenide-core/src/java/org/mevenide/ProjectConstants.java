@@ -31,4 +31,6 @@ public abstract class ProjectConstants {
 	public static final String MAVEN_RESOURCE = "resources";
 	public static final String MAVEN_TEST_RESOURCE = "unitTestResources";
 	public static final String MAVEN_INTEGRATION_TEST_RESOURCE = "integrationUnitTestResources";
+	
+	public static final String MAVEN_DEFAULT_OUTPUT_LOCATION = "target/classes";
 }

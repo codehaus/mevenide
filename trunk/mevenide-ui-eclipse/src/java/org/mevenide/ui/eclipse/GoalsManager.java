@@ -33,7 +33,7 @@ import org.mevenide.core.AbstractGoalsManager;
  */
 public class GoalsManager extends AbstractGoalsManager{
 	/** the eclipse plugin */
-    private MavenPlugin plugin = MavenPlugin.getPlugin();
+    private Mevenide plugin = Mevenide.getPlugin();
     
     /** the preference store used to save/load the runnableGoals */
     private PreferenceStore preferenceStore;
@@ -100,7 +100,7 @@ public class GoalsManager extends AbstractGoalsManager{
 	 */
 	protected void initialize() throws Exception {
         if ( plugin == null ) {
-            plugin = MavenPlugin.getPlugin();
+            plugin = Mevenide.getPlugin();
         }
         String prefs = plugin.getGoalsPreferencesFilename();
         if ( !new File(prefs).exists() ) {

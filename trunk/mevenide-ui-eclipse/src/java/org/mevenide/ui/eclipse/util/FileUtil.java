@@ -18,7 +18,7 @@ import java.io.File;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.Path;
-import org.mevenide.ui.eclipse.MavenPlugin;
+import org.mevenide.ui.eclipse.Mevenide;
 
 /**
  * 
@@ -46,7 +46,7 @@ public class FileUtil {
 	}
 
 	public static boolean inLocalRepository(String entryPath) {
-		File localRepo = new File(MavenPlugin.getPlugin().getMavenRepository());
+		File localRepo = new File(Mevenide.getPlugin().getMavenRepository());
 		return FileUtil.findFile(localRepo, entryPath);
 	}
 

@@ -29,7 +29,7 @@ public class GoalsGrabber extends AbstractGoalsGrabber {
      * @see org.mevenide.core.AbstractGoalsGrabber#load()
      */
 	public void load() throws Exception {
-		MavenPlugin plugin = MavenPlugin.getPlugin();
+		Mevenide plugin = Mevenide.getPlugin();
         
 //        String foreHeadConfFile = plugin.getForeheadConf();
 //        String mavenHome = plugin.getMavenHome();

@@ -18,7 +18,7 @@ import org.apache.maven.project.Dependency;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.swt.graphics.Image;
-import org.mevenide.ui.eclipse.MavenPlugin;
+import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.sync.dependency.DependencyGroup;
 
 
@@ -35,7 +35,7 @@ public class DependencyLabelProvider implements ITableLabelProvider {
 	}
 	public Image getColumnImage(Object element, int columnIndex) {
 		if ( element instanceof Dependency && columnIndex == 0 ) {
-			return MavenPlugin.getImageDescriptor("dependency-16.gif").createImage();
+			return Mevenide.getImageDescriptor("dependency-16.gif").createImage();
 		}
 		return null;
 	}

@@ -47,9 +47,9 @@ import org.mevenide.project.io.ProjectSkeleton;
  * @refactor EXTRACTME lots of non related utility methods
  *  
  */
-public class MavenPlugin extends AbstractUIPlugin {
+public class Mevenide extends AbstractUIPlugin {
 	
-	private static MavenPlugin plugin;
+	private static Mevenide plugin;
 	
 	private Object lock = new Object();
 	
@@ -66,12 +66,12 @@ public class MavenPlugin extends AbstractUIPlugin {
     private String currentDir;
     private IProject project;
     
-    public MavenPlugin(IPluginDescriptor descriptor) throws Exception {
+    public Mevenide(IPluginDescriptor descriptor) throws Exception {
 		super(descriptor);
 		try {
 			plugin = this;
 			
-			NATURE_ID = MavenPlugin.getResourceString("maven.nature.id");
+			NATURE_ID = Mevenide.getResourceString("maven.nature.id");
             
 			if ( !new File(getPreferencesFilename()).exists() ) {
             	new File(getPreferencesFilename()).createNewFile();
@@ -97,7 +97,7 @@ public class MavenPlugin extends AbstractUIPlugin {
     /** 
      * @return MavenPlugin
      */
-	public static MavenPlugin getPlugin() {
+	public static Mevenide getPlugin() {
         return plugin;
 	}
 
@@ -110,7 +110,7 @@ public class MavenPlugin extends AbstractUIPlugin {
 	 * or 'key' if not found.
 	 */
 	public static String getResourceString(String key) {
-		ResourceBundle bundle = MavenPlugin.getPlugin().getResourceBundle();
+		ResourceBundle bundle = Mevenide.getPlugin().getResourceBundle();
 		try {
 			return bundle.getString(key);
 		} 
@@ -137,9 +137,9 @@ public class MavenPlugin extends AbstractUIPlugin {
 	}
 	
     public static ImageDescriptor getImageDescriptor(String relativePath) {
-        String iconPath = MavenPlugin.getResourceString("IconsPath");
+        String iconPath = Mevenide.getResourceString("IconsPath");
         try {
-            URL installURL = MavenPlugin.getPlugin().getDescriptor().getInstallURL();
+            URL installURL = Mevenide.getPlugin().getDescriptor().getInstallURL();
             URL url = new URL(installURL, iconPath + "/" + relativePath);
             return ImageDescriptor.createFromURL(url);
         } 
@@ -186,7 +186,7 @@ public class MavenPlugin extends AbstractUIPlugin {
 	}
 	
 	public String getFile(String fname) {
-			File baseDir = MavenPlugin.getPlugin().getStateLocation().toFile();
+			File baseDir = Mevenide.getPlugin().getStateLocation().toFile();
 			
 			File f = new File(baseDir, fname);
 			return f.getAbsolutePath();
@@ -199,7 +199,7 @@ public class MavenPlugin extends AbstractUIPlugin {
     
     public String getEffectiveDirectory() {
         try {
-        	URL installBase = MavenPlugin.getPlugin().getDescriptor().getInstallURL();
+        	URL installBase = Mevenide.getPlugin().getDescriptor().getInstallURL();
         	return new File(new File(Platform.resolve(installBase).getFile()).getAbsolutePath()).toString();
         }
         catch (IOException e) {
@@ -211,7 +211,7 @@ public class MavenPlugin extends AbstractUIPlugin {
     
     public String getForeheadConf() {
         try {
-            URL installBase = MavenPlugin.getPlugin().getDescriptor().getInstallURL();
+            URL installBase = Mevenide.getPlugin().getDescriptor().getInstallURL();
             File f = new File(new File(Platform.resolve(installBase).getFile()).getAbsolutePath(), "conf.file");
             return f.getAbsolutePath();
         }
@@ -251,7 +251,18 @@ public class MavenPlugin extends AbstractUIPlugin {
 			pom.create(new ByteArrayInputStream(skel.getBytes()), false, null);
 		}
 	}
-
+	
+	public void createProjectProperties() throws Exception {
+		IFile props = project.getFile("project.properties");
+		if ( !new File(props.getLocation().toOSString()).exists() ) {
+			props.create(new ByteArrayInputStream(new byte[0]), false, null);
+		}
+	}
+	
+	
+	
+	
+	
 	public static void popUp(String text, String message) {
 		MessageBox dialog = new MessageBox (PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), SWT.ICON_WARNING | SWT.OK);
 		dialog.setText (text);

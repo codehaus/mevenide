@@ -32,7 +32,9 @@ public interface IPathResolverDelegate {
 	 * @return
 	 */
 	public abstract String getRelativeSourceDirectoryPath(IClasspathEntry classpathEntry, IProject project);
-        
+       
+	public String getRelativePath(IProject project, IPath path);
+	
 	/**
 	 * utility method
 	 * compute the absolute file location of the given ipath 

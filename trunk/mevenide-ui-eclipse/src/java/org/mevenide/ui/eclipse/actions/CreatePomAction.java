@@ -16,7 +16,7 @@ package org.mevenide.ui.eclipse.actions;
 
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
-import org.mevenide.ui.eclipse.sync.views.SourceDirectoryTypePart;
+import org.mevenide.ui.eclipse.sync.views.SourceDirectoryViewPart;
 import org.mevenide.ui.eclipse.util.ProjectUtil;
 
 /**
@@ -25,14 +25,14 @@ import org.mevenide.ui.eclipse.util.ProjectUtil;
  * @version $Id$
  * 
  */
-public class CreatePomAction extends AbstractMavenAction {
+public class CreatePomAction extends AbstractMevenideAction {
 
 	public void run(IAction action) {
 		try {
 			if ( !ProjectUtil.getPom(currentProject).exists() ) {
 				ProjectUtil.createPom(currentProject);
-				SourceDirectoryTypePart.showView();
-				SourceDirectoryTypePart.getInstance().setInput(currentProject);
+				SourceDirectoryViewPart.showView();
+				SourceDirectoryViewPart.getInstance().setInput(currentProject);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

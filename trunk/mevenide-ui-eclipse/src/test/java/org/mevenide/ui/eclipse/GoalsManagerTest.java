@@ -73,7 +73,7 @@ public class GoalsManagerTest extends TestCase {
 	
 	private File createTestFile(String fname) {
 		try {
-			URL installBase = MavenPlugin.getPlugin().getDescriptor().getInstallURL();
+			URL installBase = Mevenide.getPlugin().getDescriptor().getInstallURL();
 			return new File(new File(Platform.resolve(installBase).getFile()).getAbsolutePath(), fname);
 		}
 		catch (IOException e) {
