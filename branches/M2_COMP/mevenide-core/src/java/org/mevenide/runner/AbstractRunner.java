@@ -110,6 +110,9 @@ public abstract class AbstractRunner {
      */
     protected abstract void launchVM(String[] options, String[] goals) throws Exception ;
 
+    protected void testMavenNG() {
+    	
+    }
 
 
 }
