@@ -103,7 +103,7 @@ public class DependencyViewUtil {
 						element = ((Item) element).getData();
 					}
 					((DependencyContentProvider.DependencyInfo) element).setInfo((String)value);
-					tableTreeViewer.update(element, new String[] {"value"});
+					tableTreeViewer.update(element, null);
 				}
 			}
 			
