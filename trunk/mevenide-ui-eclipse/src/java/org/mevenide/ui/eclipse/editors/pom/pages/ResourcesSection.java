@@ -216,7 +216,7 @@ public class ResourcesSection extends PageSection {
 	private Resource getSelectedResource() {
 		IStructuredSelection selected = (IStructuredSelection) resourcesViewer.getSelection();
 		ResourcePropertySource source = (ResourcePropertySource) selected.getFirstElement();
-		return (Resource) source.getSource();
+		return source != null ? (Resource) source.getSource() : null;
 	}
 
 }

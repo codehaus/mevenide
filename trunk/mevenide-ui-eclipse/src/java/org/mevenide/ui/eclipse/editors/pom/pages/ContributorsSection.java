@@ -16,6 +16,7 @@
  */
 package org.mevenide.ui.eclipse.editors.pom.pages;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.maven.project.Contributor;
@@ -77,6 +78,9 @@ public class ContributorsSection extends PageSection {
 			new IPomCollectionAdaptor() {
 				public Object addNewObject(Object parentObject) {
 					Contributor contributor = new Contributor();
+					if ( pom.getContributors() == null ) {
+					    pom.setContributors(new ArrayList());
+					}
 					pom.addContributor(contributor);
 					return contributor;
 				}

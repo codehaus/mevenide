@@ -16,6 +16,7 @@
  */
 package org.mevenide.ui.eclipse.editors.pom.pages;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.maven.project.Branch;
@@ -77,6 +78,9 @@ public class BranchesSection extends PageSection {
 			new IPomCollectionAdaptor() {
 				public Object addNewObject(Object parentObject) {
 					Branch branch = new Branch();
+					if ( pom.getBranches() == null ) {
+					    pom.setBranches(new ArrayList());
+					}
 					pom.addBranch(branch);
 					return branch;
 				}

@@ -16,6 +16,7 @@
  */
 package org.mevenide.ui.eclipse.editors.pom.pages;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.maven.project.License;
@@ -80,6 +81,9 @@ public class LicenseSection extends PageSection {
 			new IPomCollectionAdaptor() {
 				public Object addNewObject(Object parentObject) {
 					License license = new License();
+					if ( pom.getLicenses() == null ) {
+					    pom.setLicenses(new ArrayList());
+					}
 					pom.addLicense(license);
 					return license;
 				}

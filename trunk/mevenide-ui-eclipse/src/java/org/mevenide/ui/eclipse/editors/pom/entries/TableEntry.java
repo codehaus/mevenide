@@ -25,6 +25,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
+import org.eclipse.jface.viewers.DoubleClickEvent;
+import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -40,6 +42,8 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
+import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.adapters.properties.IPomPropertySource;
@@ -54,17 +58,13 @@ import org.mevenide.ui.eclipse.editors.pom.pages.PageSection;
 public class TableEntry extends PageEntry {
 	private static final Log log = LogFactory.getLog(TableEntry.class);
 
-	private static final String ADD_BUTTON_LABEL =
-		Mevenide.getResourceString("TableEntry.addButton.label"); //$NON-NLS-1$
+	private static final String ADD_BUTTON_LABEL = Mevenide.getResourceString("TableEntry.addButton.label"); //$NON-NLS-1$
 	private static final String ADD_BUTTON_TOOLTIP_KEY = "TableEntry.addButton.tooltip"; //$NON-NLS-1$
-	private static final String REMOVE_BUTTON_LABEL =
-		Mevenide.getResourceString("TableEntry.removeButton.label"); //$NON-NLS-1$
+	private static final String REMOVE_BUTTON_LABEL = Mevenide.getResourceString("TableEntry.removeButton.label"); //$NON-NLS-1$
 	private static final String REMOVE_BUTTON_TOOLTIP_KEY = "TableEntry.removeButton.tooltip"; //$NON-NLS-1$
-	private static final String UP_BUTTON_LABEL =
-		Mevenide.getResourceString("TableEntry.upButton.label"); //$NON-NLS-1$
+	private static final String UP_BUTTON_LABEL = Mevenide.getResourceString("TableEntry.upButton.label"); //$NON-NLS-1$
 	private static final String UP_BUTTON_TOOLTIP_KEY = "TableEntry.upButton.tooltip"; //$NON-NLS-1$
-	private static final String DOWN_BUTTON_LABEL =
-		Mevenide.getResourceString("TableEntry.downButton.label"); //$NON-NLS-1$
+	private static final String DOWN_BUTTON_LABEL = Mevenide.getResourceString("TableEntry.downButton.label"); //$NON-NLS-1$
 	private static final String DOWN_BUTTON_TOOLTIP_KEY = "TableEntry.downButton.tooltip"; //$NON-NLS-1$
 
 	private TableViewer viewer;
@@ -266,6 +266,17 @@ public class TableEntry extends PageEntry {
 			}
 		);
 
+		viewer.addDoubleClickListener(new IDoubleClickListener() {
+		    public void doubleClick(DoubleClickEvent event) {
+		        try {
+					PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView("org.eclipse.ui.views.PropertySheet"); //$NON-NLS-1$
+				}
+				catch ( PartInitException e ) {
+					log.debug(e, e);
+				}
+		    } 
+		});
+		
 		addButton.setEnabled(false);
 		removeButton.setEnabled(false);
 		upButton.setEnabled(false);

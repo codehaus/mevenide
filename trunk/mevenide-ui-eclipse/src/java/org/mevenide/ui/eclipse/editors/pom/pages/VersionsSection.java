@@ -16,6 +16,7 @@
  */
 package org.mevenide.ui.eclipse.editors.pom.pages;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.maven.project.Project;
@@ -77,6 +78,9 @@ public class VersionsSection extends PageSection {
 			new IPomCollectionAdaptor() {
 				public Object addNewObject(Object parentObject) {
 					Version version = new Version();
+					if ( pom.getVersions() == null ) {
+					    pom.setVersions(new ArrayList());
+					}
 					pom.addVersion(version);
 					return version;
 				}
