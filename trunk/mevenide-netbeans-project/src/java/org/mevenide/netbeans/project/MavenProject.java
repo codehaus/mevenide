@@ -161,9 +161,7 @@ public class MavenProject implements Project {
         if (getOriginalMavenProject().getBuild() != null) {
             String path = getOriginalMavenProject().getBuild().getSourceDirectory();
             if (path != null) {
-                File parent = FileUtil.toFile(getProjectDirectory());
-                File src = new File(parent.getAbsolutePath(), path);
-                return FileUtil.normalizeFile(src).toURI();
+                return getDirURI(path);
             }
         }
         // this one should not fail
@@ -180,9 +178,7 @@ public class MavenProject implements Project {
         if (getOriginalMavenProject().getBuild() != null) {
             String path = getOriginalMavenProject().getBuild().getUnitTestSourceDirectory();
             if (path != null) {
-                File parent = FileUtil.toFile(getProjectDirectory());
-                File src = new File(parent.getAbsolutePath(), path);
-                return FileUtil.normalizeFile(src).toURI();
+                return getDirURI(path);
             }
         }
         // this one should not fail
@@ -195,6 +191,48 @@ public class MavenProject implements Project {
         return FileUtil.normalizeFile(fl).toURI();
     }
     
+   public URI getAspectsDirectory() {
+        if (getOriginalMavenProject().getBuild() != null) {
+            String path = getOriginalMavenProject().getBuild().getAspectSourceDirectory();
+            if (path != null) {
+                return getDirURI(path);
+            }
+        }
+        // this one should not fail
+        String path = properties.getResolvedValue("maven.src.dir");
+        if (path == null) {
+            logger.warn("Strange thing here. src dir not found.");
+            return null;
+        }
+        // TODO - huh? what is the default location of the aspects? is there any?
+        File fl = new File(path, "aspects");
+        return  FileUtil.normalizeFile(fl).toURI();
+    }    
+   
+  public URI getIntegrationTestsDirectory() {
+        if (getOriginalMavenProject().getBuild() != null) {
+            String path = getOriginalMavenProject().getBuild().getIntegrationUnitTestSourceDirectory();
+            if (path != null) {
+                return getDirURI(path);
+            }
+        }
+        // this one should not fail
+        String path = properties.getResolvedValue("maven.src.dir");
+        if (path == null) {
+            logger.warn("Strange thing here. src dir not found.");
+            return null;
+        }
+        // TODO - huh? what is the default location of the integration tests? is there any?
+        File fl = new File(path, "test/integration");
+        return  FileUtil.normalizeFile(fl).toURI();
+    }       
+    
+   private URI getDirURI(String path) {
+       File parent = FileUtil.toFile(getProjectDirectory());
+       File src = new File(parent.getAbsolutePath(), path);
+       return FileUtil.normalizeFile(src).toURI();
+   }
+   
     public URI getBuildClassesDir() {
         String path = properties.getResolvedValue("maven.build.dest");
         if (path != null) {
@@ -226,7 +264,8 @@ public class MavenProject implements Project {
             new ClassPathProviderImpl(this),
             new MavenSharabilityQueryImpl(this),
 //            new MavenFileBuiltQueryImpl(this),
-            new SubprojectProviderImpl(this)
+            new SubprojectProviderImpl(this),
+            new MavenSourcesImpl(this)
         });
     }
     
