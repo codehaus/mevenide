@@ -42,6 +42,7 @@ public class MavenGrammarModule extends ModuleInstall
     private static transient ClassLoader mavenClassLoader;
     public void restored()
     {
+        System.out.println("#########################################restored");
         // By default, do nothing.
         // Put your startup code here.
         SysEnvLocationFinder.setDefaultSysEnvProvider(new NbSysEnvProvider());
@@ -49,6 +50,7 @@ public class MavenGrammarModule extends ModuleInstall
     
     public void validate() throws java.lang.IllegalStateException
     {
+        System.out.println("#########################################validating");
         String maven_home = System.getProperty("Env-MAVEN_HOME");//NOI18N
         if (maven_home == null)
         {

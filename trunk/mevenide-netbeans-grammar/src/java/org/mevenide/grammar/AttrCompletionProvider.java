@@ -19,19 +19,13 @@
 package org.mevenide.grammar;
 
 /**
- * Environment (netbeans/eclipse) specific provider of TagLib instances.
+ * Environment (netbeans/eclipse) specific provider of AttributeCompletion instances.
  * @author  Milos Kleint (ca206216@tiscali.cz)
  */
 
-public interface TagLibProvider {
-    
+public interface AttrCompletionProvider {
     /**
-     * lists available taglibs that can be created by this provider.
+     * factory method creating an instance of AttributeCompletion by the given name.
      */
-    String[] getAvailableTags();
-    
-    /**
-     * Factory method creates a taglib instance, based on the name.
-     */
-    TagLib  retrieveTagLib(String name);
+    AttributeCompletion retrieveAttributeCompletion(String name);
 }

@@ -4,17 +4,17 @@
 
 <taglib name="default:maven">
     <tag name="goal"> 
-      <attr name="name"/>
+      <attr name="name" cctypes="goal"/>
       <attr name="description"/>
-      <attr name="prereqs"/>
+      <attr name="prereqs" cctypes="goal"/>
     </tag>
     <tag name="preGoal"> 
-      <attr name="name"/>
+      <attr name="name" cctypes="goal"/>
     </tag>
     <tag name="postGoal"> 
-      <attr name="name"/>
+      <attr name="name" cctypes="goal"/>
     </tag>
     <tag name="attainGoal"> 
-      <attr name="name"/>
+      <attr name="name" cctypes="goal"/>
     </tag>
 </taglib>

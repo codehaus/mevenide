@@ -27,10 +27,14 @@ import org.mevenide.environment.ConfigUtils;
 import org.mevenide.environment.CustomLocationFinder;
 import org.mevenide.environment.ILocationFinder;
 import org.mevenide.environment.LocationFinderAggregator;
+import org.mevenide.grammar.AttrCompletionProvider;
+import org.mevenide.grammar.AttributeCompletion;
 import org.mevenide.grammar.impl.MavenTagLibProvider;
 import org.mevenide.grammar.impl.StaticTagLibImpl;
 import org.mevenide.grammar.TagLib;
 import org.mevenide.grammar.TagLibProvider;
+import org.mevenide.grammar.impl.EmptyAttributeCompletionImpl;
+import org.mevenide.grammar.impl.GoalsAttributeCompletionImpl;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.Repository;
 
@@ -39,7 +43,7 @@ import org.openide.filesystems.Repository;
  * @author  Milos Kleint (ca206216@tiscali.cz)
  */
 
-public class NbTagLibProvider implements TagLibProvider {
+public class NbTagLibProvider implements TagLibProvider, AttrCompletionProvider {
     
     private static Log logger = LogFactory.getLog(NbTagLibProvider.class);
     
@@ -99,4 +103,23 @@ public class NbTagLibProvider implements TagLibProvider {
         return toReturn;
         
     }
+    
+    public AttributeCompletion retrieveAttributeCompletion(String name)
+    {
+        AttributeCompletion completion = null;
+        if ("goal".equals(name)) {
+            try {
+                completion = new GoalsAttributeCompletionImpl();
+            } catch (Exception exc) {
+                logger.error("Cannot create new instance of GoalsAttributeCompletionImpl", exc);
+            }
+        }
+        if (completion == null) {
+            // fallback implementation.
+            logger.warn("AttributeCompletion: using a fallback implementation, no impl for type=" + name);
+            completion = new EmptyAttributeCompletionImpl(name);
+        }
+        return completion;
+    }
+    
 }

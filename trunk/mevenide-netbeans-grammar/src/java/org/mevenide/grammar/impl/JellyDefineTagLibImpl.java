@@ -267,4 +267,11 @@ public class JellyDefineTagLibImpl implements TagLib
         first = first.toLowerCase();
         return first + input.substring(1);
     }
+    
+    // empty implementation, hard to guess what values can go into the dynamic tag's attribute..
+    public Collection getAttrCompletionTypes(String tag, String attribute)
+    {
+        return Collections.EMPTY_LIST;
+    }
+    
 }

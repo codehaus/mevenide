@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.mevenide.grammar.impl.EmptyAttributeCompletionImpl;
 import org.mevenide.grammar.impl.EmptyTagLibImpl;
 
 /**
@@ -34,12 +35,15 @@ public final class TagLibManager {
     private static Log logger = LogFactory.getLog(TagLibManager.class);
     
     private TagLibProvider provider;
+    private AttrCompletionProvider attrComplProvider;
     private Map libcache;
+    private Map attrCompletionCache;
     
     
     /** Creates a new instance of TagLibManager */
     public TagLibManager() {
         libcache = new HashMap();
+        attrCompletionCache = new HashMap();
     }
     
     /**
@@ -47,6 +51,13 @@ public final class TagLibManager {
      */
     public void setProvider(TagLibProvider prov) {
         provider = prov;
+    }
+    
+    /**
+     * sets the AttrCompletionProvider instance that will populate the cache.
+     */
+    public void setAttrCompletionProvider(AttrCompletionProvider provider) {
+        attrComplProvider = provider;
     }
     
     /**
@@ -77,7 +88,21 @@ public final class TagLibManager {
         }
         return lib;
     }
-    
+
+    public AttributeCompletion getAttributeCompletion(String name) {
+        assertHasProvider();
+        AttributeCompletion compl = (AttributeCompletion)attrCompletionCache.get(name);
+        if (compl == null) {
+            compl = attrComplProvider.retrieveAttributeCompletion(name);
+            if (compl == null) {
+                logger.error("No such attribute completion defined by provider:" + name);
+                // create empty impl
+                compl = new EmptyAttributeCompletionImpl(name);
+            } 
+            attrCompletionCache.put(name, compl);
+        }
+        return compl;
+    }
     
     private void assertHasProvider() {
         if (provider == null) {

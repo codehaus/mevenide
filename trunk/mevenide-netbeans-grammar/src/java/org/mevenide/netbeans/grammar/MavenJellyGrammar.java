@@ -23,6 +23,8 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.mevenide.grammar.AttributeCompletion;
+import org.mevenide.grammar.GrammarUtilities;
 import org.mevenide.grammar.TagLib;
 import org.mevenide.grammar.TagLibManager;
 import org.netbeans.modules.xml.api.model.GrammarQuery;
@@ -71,7 +73,7 @@ public class MavenJellyGrammar implements GrammarQuery
         return getManager().getTagLibrary("default-maven");
     }
     
-    private Node findRootNode(HintContext virtualElementCtx)
+    private Node findRootNode(Node virtualElementCtx)
     {
         Node current = virtualElementCtx;
         while (current != null)
@@ -194,7 +196,7 @@ public class MavenJellyGrammar implements GrammarQuery
         return null;
     }
     
-    private TagLib findTagLib(String ns, HintContext context)
+    private TagLib findTagLib(String ns, Node context)
     {
         Node rootNode = findRootNode(context);
         if (rootNode != null)
@@ -404,15 +406,14 @@ public class MavenJellyGrammar implements GrammarQuery
         String start = virtualTextCtx.getCurrentPrefix();
         Set toReturn = new TreeSet(new SimpleComparator());
         logger.debug("parent node=" + parent);
-        logger.debug("context prefix= " + virtualTextCtx.getCurrentPrefix());
-        logger.debug("context name=" + virtualTextCtx.getNodeName());
-        logger.debug("context type=" + virtualTextCtx.getNodeType());
+        logger.debug("document=" + parent.getOwnerDocument());
+        logger.debug("parent's parent=" + parent.getParentNode());
+        logger.debug("document element=" + parent.getOwnerDocument().getDocumentElement());
         if (parent != null && parent.getNodeType() == Node.ATTRIBUTE_NODE)
         {
             // completion for the namespaces..
             if (parent.getNodeName().startsWith("xmlns:"))
             {
-                logger.debug(".. is the one");
                 // now we offer jelly taglibs
                 String[] libs = getManager().getAvailableTagLibs();
                 for (int i = 0; i < libs.length; i++)
@@ -424,6 +425,26 @@ public class MavenJellyGrammar implements GrammarQuery
                         toReturn.add(new TextNode(libs[i]));
                     }
                 }
+            } else {
+// NOT WORKING, IMHO a bug in xml-core..                
+//                // do attribute cc now..
+//                Node elementParent = parent.getParentNode();
+//                System.out.println("parent=" + elementParent);
+//                System.out.println("parent name=" + elementParent.getNodeName());
+//                int nsint = elementParent.getNodeName().indexOf(":");
+//                String namespace = (nsint > -1 ? elementParent.getNodeName().substring(0, nsint) : null);
+//                System.out.println("namespace=" + namespace);
+//                System.out.println("nodename=" + elementParent.getNodeName());
+//                TagLib lib = findTagLib(namespace, elementParent);
+//                if (lib != null) {
+//                    Collection types = lib.getAttrCompletionTypes(parent.getNodeName(), virtualTextCtx.getNodeName());
+//                    Iterator it = types.iterator();
+//                    while (it.hasNext()) {
+//                        String type = (String)it.next();
+//                        AttributeCompletion compl = getManager().getAttributeCompletion(type);
+//                        toReturn.addAll(compl.getValueHints(GrammarUtilities.extractLastWord(start)));
+//                    }
+//                }
             }
         }
         return Collections.enumeration(toReturn);

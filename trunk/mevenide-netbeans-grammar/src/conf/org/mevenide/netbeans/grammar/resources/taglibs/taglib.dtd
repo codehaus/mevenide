@@ -21,6 +21,7 @@
 <!ELEMENT attr EMPTY>
 <!ATTLIST attr
     name CDATA #IMPLIED
+    cctypes CDATA #IMPLIED
   >
 
 <!--- Put your DTDDoc comment here. -->
