@@ -56,6 +56,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Dependency;
 import org.apache.maven.project.Project;
+import org.mevenide.ui.eclipse.util.FileUtils;
 
 
 /**
@@ -94,6 +95,20 @@ public class DependencyMappingNodeContainer extends AbstractArtifactMappingNodeC
     }
 
     private void attachOrphanDependencies(List dependenciesCopy, Project project) {
+    	
+    	//remove ignored depencency from dependencuesCopy
+    	List ignoredResources = FileUtils.getIgnoredResources(project);
+    	List deps = new ArrayList(dependenciesCopy);
+    	for (int i = 0; i < deps.size(); i++) {
+    		for (int j = 0; j < ignoredResources.size(); j++) {
+    			String ignoredResource = (String) ignoredResources.get(j);
+				Dependency dependency = (Dependency) deps.get(i);
+				if ( ignoredResource.equals(dependency.getGroupId() + ":" + dependency.getArtifactId()) ) {
+					dependenciesCopy.remove(dependency);
+				}
+    		}
+		}
+    	
         IArtifactMappingNode[] newNodes = new IArtifactMappingNode[nodes.length + dependenciesCopy.size()];
         System.arraycopy(nodes, 0, newNodes, 0, nodes.length);
         for (int i = nodes.length; i < newNodes.length; i++) {
