@@ -23,6 +23,10 @@ import org.eclipse.core.resources.IProjectNature;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.jdt.core.ElementChangedEvent;
+import org.eclipse.jdt.core.IElementChangedListener;
+import org.eclipse.jdt.core.IJavaElementDelta;
+import org.eclipse.jdt.core.JavaCore;
 import org.mevenide.ui.eclipse.MavenPlugin;
 import org.mevenide.ui.eclipse.sync.views.SourceDirectoryTypePart;
 
@@ -43,7 +47,6 @@ public class MavenNature implements IProjectNature {
 		} catch (Exception e) {
 			throw new CoreException(new Status(IStatus.ERROR, "mevenide", 1, e.getMessage(), e));
 		}
-
 	}
 
 	public void deconfigure() throws CoreException {
@@ -56,7 +59,21 @@ public class MavenNature implements IProjectNature {
 		addPomNature(project);
 		MavenPlugin.getPlugin().createPom();
 		SourceDirectoryTypePart.showView();
+		
+		//listen to .classpath changes
+		JavaCore.addElementChangedListener(
+			new IElementChangedListener() {
+				public void elementChanged(ElementChangedEvent e) {
+					IJavaElementDelta delta = e.getDelta();
+					//System.out.println(delta.getElement().getClass());
+					//visitDelta(delta);
+				}
+			}
+		);
+		
 		synchronizeProject(project);
+		
+		
 	}
 	
 	private static void addPomNature(IProject project) {
