@@ -192,7 +192,7 @@ public class BasicsPanel extends JPanel implements ProjectPanel
     public void setProject(MavenProject project)
     {
         txtName.setText(project.getName() == null ? "" : project.getName());
-        txtCurrentVersion.setText(project.getModel().getCurrentVersion() == null ? "1.0" : project.getModel().getCurrentVersion());
+        txtCurrentVersion.setText(project.getModel().getVersion() == null ? "1.0" : project.getModel().getVersion());
         txtArtifactID.setText(project.getModel().getArtifactId() == null ? "" : project.getModel().getArtifactId());
         txtGroupID.setText(project.getModel().getGroupId() == null ? "" : project.getModel().getGroupId());
         txtPackage.setText(project.getModel().getPackage() == null ? "" : project.getModel().getPackage());
@@ -203,7 +203,7 @@ public class BasicsPanel extends JPanel implements ProjectPanel
         project.getModel().setName(txtName.getText());
         project.getModel().setArtifactId(txtArtifactID.getText());
         project.getModel().setGroupId(txtGroupID.getText());
-        project.getModel().setCurrentVersion(txtCurrentVersion.getText());
+        project.getModel().setVersion(txtCurrentVersion.getText());
         project.getModel().setPackage(txtPackage.getText());
         return project;
     }
