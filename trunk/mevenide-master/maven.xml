@@ -19,8 +19,7 @@
 	<!-- set eclipse.home property -->
 	<property environment="env"/>
   	<property name="eclipse.home" location="${env.ECLIPSE_HOME}"/>
-	
-  	 	  
+		   
   	<!-- 
   	  ensure that all dependencies are present in the repository 
   	  by copying all needed eclipse-plugins jars
