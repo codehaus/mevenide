@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<j:jelly xmlns:ant="jelly:ant" xmlns:j="jelly:core">
+
+    <ant:property environment="env"/>
+    
+	<ant:property name="jbuilder.home" value="${env.JBUILDER_HOME}"/>
+
+  	<ant:copy file="${jbuilder.home}/lib/jbuilder.jar" 
+  	          tofile="${maven.repo.local}/jbuilder/jars/jbuilder-X.jar"/>
+  
+  	<ant:copy file="${jbuilder.home}/lib/primetime.jar" 
+  	          tofile="${maven.repo.local}/jbuilder/jars/primetime-X.jar"/>
+  
+    <ant:copy file="${jbuilder.home}/lib/help.jar" 
+  	          tofile="${maven.repo.local}/jbuilder/jars/help-X.jar"/>
+  
+  	  	      
+</j:jelly>

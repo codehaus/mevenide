@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+  <extend>${basedir}/../mevenide-parent/project.xml</extend>
+  <pomVersion>3</pomVersion>
+  <id>mevenide-netbeans-autoupdate</id>
+  <name>Mevenide Autoupdate Server</name>
+  <artifactId>mevenide-netbeans-autoupdate</artifactId>
+  <currentVersion>1.0</currentVersion>
+  <package>org.mevenide.netbeans.update</package>
+  <description>Autoupdate server for Netbeans IDE at mevenide.codehaus.org</description>
+  <shortDescription>Autoupdate server for Netbeans IDE at mevenide.codehaus.org</shortDescription>
+  <dependencies>
+    <dependency>
+      <groupId>netbeans</groupId>
+      <artifactId>openide</artifactId>
+      <version>4.41</version>
+      <type>jar</type>
+      <url>http://www.netbeans.org</url>
+    </dependency>
+    <dependency>
+      <groupId>netbeans</groupId>
+      <artifactId>org-netbeans-modules-autoupdate</artifactId>
+      <version>2.11</version>
+      <type>jar</type>
+      <url>http://www.netbeans.org</url>
+      <properties>
+        <netbeans.module.dep>loose</netbeans.module.dep>
+      </properties>
+    </dependency>
+  </dependencies>
+  <build>
+    <resources>
+      <resource>
+        <directory>src/conf</directory>
+        <includes>
+          <include>**</include>
+        </includes>
+        <excludes>
+          <exclude>**/.nbattrs</exclude>
+          <exclude>manifest.mf</exclude>
+        </excludes>
+      </resource>
+    </resources>
+  </build>
+</project>
+

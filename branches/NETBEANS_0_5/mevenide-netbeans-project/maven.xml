@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:j="jelly:core"
+         xmlns:ant="jelly:ant"
+         xmlns:util="jelly:util">
+	
+  <postGoal name="xdoc:register-reports">
+  	<!-- deregister test related plugins since there are none -->
+    <attainGoal name="maven-jcoverage-plugin:deregister"/>  
+    <attainGoal name="maven-junit-report-plugin:deregister"/>  
+  </postGoal>
+  
+  <preGoal name="java:jar-resources">
+  	<!-- do something after jar goal -->
+    <j:set var="targetDir" value="${maven.build.dir}/project_templates"/>
+    <ant:mkdir dir="${targetDir}"/>
+    <util:available file="${targetDir}/nbmodule.zip">
+       <j:set var="moduleExists" value="true"/>
+    </util:available>
+    <j:if test="${empty moduleExists}"> 
+        <ant:zip basedir="${basedir}/templates/nbmodule"
+                 destfile="${targetDir}/nbmodule.zip"
+                 excludes="CVS"
+                 >
+        </ant:zip>
+    </j:if>
+    <util:available file="${targetDir}/empty.zip">
+       <j:set var="emptyExists" value="true"/>
+    </util:available>
+    <j:if test="${empty emptyExists}"> 
+        <ant:zip basedir="${basedir}/templates/empty"
+                 destfile="${targetDir}/empty.zip"
+                 excludes="CVS"
+                 >
+        </ant:zip>
+     </j:if>
+    <util:available file="${targetDir}/mavenplugin.zip">
+       <j:set var="emptyExists" value="true"/>
+    </util:available>
+    <j:if test="${empty emptyExists}"> 
+        <ant:zip basedir="${basedir}/templates/mavenplugin"
+                 destfile="${targetDir}/mavenplugin.zip"
+                 excludes="CVS"
+                 >
+        </ant:zip>
+     </j:if>
+  </preGoal>
+	
+  <preGoal name="nbm:prepare-nbm-resources">
+     <!-- copy the maven-mevenide-plugin jar to the right location -->
+      <ant:mkdir dir="${maven.nbm.build.dir}/netbeans/mevenide/maven-plugins"/>
+      <ant:copy toDir="${maven.nbm.build.dir}/netbeans/mevenide/maven-plugins" 
+                 file="${pom.getDependencyPath('mevenide:maven-mevenide-plugin')}"/>
+  </preGoal>  
+
+</project>
+

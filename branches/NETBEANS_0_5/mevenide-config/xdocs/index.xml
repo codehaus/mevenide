@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<document>
+    <properties>
+    	<author email="rhill2@free.fr">Gilles Dodinet</author>
+        <title>Overview</title>
+    </properties>
+    <body>
+        <section name="Project Overview">
+        	
+        	<p>
+			    This project provides an API to help resolving environment 
+			    related properties/variables, by looking in various sources :
+			    <br/>
+				<ul>
+					<li><code>org.mevenide.context</code> allows to avoid unnecessary I/O operations by providing a single entry point, subjacent models are shared by the clients</li>
+					<li><code>org.mevenide.environment</code> package contains implementations of <code>ILocationFinder</code> used to find relevant properties (such as MAVEN_HOME) </li>	
+					<li><code>org.mevenide.properties</code> package contains model for property files that keeps trace of comments and elements order</li>	    	    	
+					<li><code>org.mevenide.resolver</code> contains helper classes used to resolve properties, e.g. ${some.property} or $ {pom.build.sourceDirectory}</li>	
+				</ul>
+			</p>
+			<p>
+				Please refer to the javadoc and source xref for more informations.
+			</p>
+			
+		</section>
+    </body>
+</document>

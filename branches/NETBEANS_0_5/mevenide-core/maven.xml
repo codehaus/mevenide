@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:j="jelly:core" xmlns:artifact="artifact" xmlns:ant="jelly:ant" xmlns:test="test">
+	
+	<!-- crap -->
+	<preGoal name="test:test">
+	  <attainGoal name="mevenide:prepare-fs"/>
+	</preGoal>
+	
+	<preGoal name="jar:jar">
+	  <copy toDir="${maven.build.dest}/META-INF/services">
+	    <fileset dir="etc/META-INF/services">
+  	   	  <include name="*.*"/>
+	    </fileset>
+	  </copy>
+	  <copy toDir="${maven.build.dest}/templates/standard">
+	    <fileset dir="etc/templates/standard">
+  	  	  <include name="*.*"/>
+		</fileset>
+	  </copy>
+	  <copy toDir="${maven.build.dest}">
+	    <fileset dir="etc">
+  	  	  <include name="*.*"/>
+		</fileset>
+	  </copy>
+	</preGoal>
+	
+	<postGoal name="jar:jar">
+		<j:set var="oldArtifactId" value="${pom.artifactId}"/>
+		<j:set var="artifactTestId" value="${pom.artifactId}-test"/>
+		
+		<j:jelly>${pom.setArtifactId(artifactTestId)}</j:jelly>
+		
+		<ant:jar basedir="${pom.getPluginContext('maven-test-plugin').getVariable('maven.test.dest')}"
+				 includes="org/mevenide/*.class,fixtures/**/*.*,META-INF/**/*.*"
+				 destfile="${maven.build.dir}/${pom.artifactId}-${pom.currentVersion}.jar">
+		</ant:jar>	
+		
+		<artifact:install artifact="${maven.build.dir}/${pom.artifactId}-${pom.currentVersion}.jar"
+						  type="jar"
+						  project="${pom}"/>
+						  
+		<j:jelly>${pom.setArtifactId(oldArtifactId)}</j:jelly>
+	</postGoal>
+		
+	
+
+	
+	<goal name="mevenide:finalize">
+	  <copy file="etc/mevenide.properties" todir="${mevenide.ui.eclipse.project.name}/etc"/> 
+	</goal>
+	
+	<goal name="mevenide:prepare-fs">
+		<j:set var="maven.test.dest" value="${pom.getPluginContext('maven-test-plugin').getVariable('maven.test.dest')}"/>
+	  <copy toDir="${maven.test.dest}">
+		  <fileset dir="src/test/etc">
+  			<include name="*.properties"/>
+  			<include name="*.xml"/>
+		  </fileset>
+		</copy>
+		<copy toDir="${maven.test.dest}">
+		  <fileset dir="etc">
+  			<include name="*.properties"/>
+  			<include name="*.xml"/>
+		  </fileset>
+		</copy>
+		<copy toDir="${maven.test.dest}/META-INF/services">
+		  <fileset dir="etc/META-INF/services">
+  			<include name="*.*"/>
+		  </fileset>
+		</copy>
+   </goal>
+   
+  <preGoal name="nbm:jar">
+     <ant:jar destfile="${maven.build.dir}/${maven.final.name}.jar"
+              update="true"
+              basedir="${basedir}/src/conf/netbeans"
+              includes="**/Bundle.properties"/>
+  </preGoal>   
+</project>

@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project>
+    <extend>${basedir}/../mevenide-parent/project.xml</extend>
+    <pomVersion>3</pomVersion>
+    <id>mevenide-grammar</id>
+    <artifactId>mevenide-grammar</artifactId>
+    <name>Mevenide Grammar</name>
+    <currentVersion>0.6</currentVersion>
+    <package>org.mevenide.grammar</package>
+    <description>
+    	Maven files XML grammar and code-completion hints provider
+    </description>
+    <versions>
+      <version>
+        <id>0.2</id>
+        <name>0.2</name>
+        <tag>V_0_2</tag>
+      </version>
+      <version>
+        <id>0.1</id>
+        <name>0.1</name>
+        <tag>V_0_1</tag>
+      </version>
+    </versions>
+    <dependencies>
+        <!-- for tests-->
+        <dependency>
+            <groupId>maven</groupId>
+            <artifactId>maven</artifactId>
+            <version>1.0.1</version>
+            <type>jar</type>
+        </dependency>
+    
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>3.8.1</version>
+            <type>jar</type>
+            <properties>
+            	<eclipse.plugin.bundle>false</eclipse.plugin.bundle>
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <version>1.0.3</version>
+            <type>jar</type>
+            <properties>
+                <netbeans.module.dep>spec=org.netbeans.libs.commons_logging/1 &gt; 1.0</netbeans.module.dep>
+            	<eclipse.plugin.bundle>false</eclipse.plugin.bundle>
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>jdom</groupId>
+            <artifactId>jdom</artifactId>
+            <version>1.0</version>
+            <type>jar</type>
+            <properties>
+                <netbeans.module.dep>spec=jdom &gt; 1.0.1</netbeans.module.dep>
+            	<eclipse.plugin.bundle>false</eclipse.plugin.bundle>
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.8</version>
+            <type>jar</type>
+            <properties>
+            	<eclipse.plugin.bundle>false</eclipse.plugin.bundle>
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>mevenide</groupId>
+            <artifactId>mevenide-config</artifactId>
+            <version>0.7</version>
+            <type>jar</type>
+            <properties>
+                <netbeans.module.dep>spec</netbeans.module.dep>
+                <eclipse.plugin.bundle>false</eclipse.plugin.bundle>
+            </properties>
+        </dependency>
+        <dependency>     
+            <groupId>mevenide</groupId>
+            <artifactId>goals-grabber</artifactId>
+            <version>0.7</version>
+            <type>jar</type>
+                <properties>
+                    <netbeans.module.dep>spec</netbeans.module.dep>
+                    <eclipse.plugin.bundle>false</eclipse.plugin.bundle>
+                </properties>
+        </dependency>
+    </dependencies>
+    <build>
+    	<resources>
+    		<resource>
+    			<directory>src/conf/taglibs</directory>
+    			<includes>
+    				<include>org/mevenide/grammar/resources/taglibs/*.xml</include>
+    				<include>org/mevenide/grammar/resources/taglibs/*.dtd</include>
+    			</includes>
+    		</resource>
+    	</resources>
+    </build>
+</project>

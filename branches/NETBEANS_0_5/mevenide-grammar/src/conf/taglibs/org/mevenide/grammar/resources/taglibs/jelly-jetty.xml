@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- code completion definition for the jelly-tag library -->
+
+<taglib name="jelly:jetty">
+    <tag name="deleteRequest">
+        <attr name="trim"/>
+    </tag>
+    <tag name="getRequest">
+        <attr name="trim"/>
+    </tag>
+    <tag name="httpContext">
+        <attr name="authenticator"/>
+        <attr name="contextPath"/>
+        <attr name="realmName"/>
+        <attr name="resourceBase"/>
+        <attr name="trim"/>
+    </tag>
+    <tag name="jellyResourceHandler">
+        <attr name="trim"/>
+    </tag>
+    <tag name="jettyHttpServer">
+        <attr name="logFileName"/>
+        <attr name="var"/>
+        <attr name="trim"/>
+    </tag>
+    <tag name="notFoundHandler">
+        <attr name="trim"/>
+    </tag>
+    <tag name="postRequest">
+        <attr name="trim"/>
+    </tag>
+    <tag name="putRequest">
+        <attr name="trim"/>
+    </tag>
+    <tag name="realm">
+        <attr name="config"/>
+        <attr name="name"/>
+        <attr name="trim"/>
+    </tag>
+    <tag name="resourceHandler">
+        <attr name="allowedMethods"/>
+        <attr name="trim"/>
+    </tag>
+    <tag name="responseBody">
+        <attr name="trim"/>
+    </tag>
+    <tag name="responseCode">
+        <attr name="value"/>
+        <attr name="trim"/>
+    </tag>
+    <tag name="responseHeader">
+        <attr name="name"/>
+        <attr name="value"/>
+        <attr name="trim"/>
+    </tag>
+    <tag name="securityHandler">
+        <attr name="authenticationMethod"/>
+        <attr name="trim"/>
+    </tag>
+    <tag name="socketListener">
+        <attr name="host"/>
+        <attr name="port"/>
+        <attr name="trim"/>
+    </tag>
+    
+</taglib>

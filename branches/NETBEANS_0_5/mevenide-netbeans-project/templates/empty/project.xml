@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<project>
+  <pomVersion>3</pomVersion>
+  <artifactId/>
+  <groupId/>
+  <currentVersion>1.0</currentVersion>
+  <name/>
+  <package/>
+  <logo>/images/logo.gif</logo>
+  <inceptionYear>2004</inceptionYear>
+
+  <mailingLists>
+    <mailingList>
+      <name>${pom.name} Dev List</name>
+    </mailingList>
+    <mailingList>
+      <name>${pom.name} User List</name>
+    </mailingList>
+  </mailingLists>
+
+  <build>
+    <sourceDirectory>src</sourceDirectory>
+    <unitTestSourceDirectory>test</unitTestSourceDirectory>
+    <!-- Unit test classes -->
+    <unitTest>
+      <includes>
+        <include>**/*Test.java</include>
+      </includes>
+    </unitTest>
+  </build>
+
+</project>
