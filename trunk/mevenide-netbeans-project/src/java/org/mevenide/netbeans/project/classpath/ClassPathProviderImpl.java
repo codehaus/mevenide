@@ -64,11 +64,11 @@ public final class ClassPathProviderImpl implements ClassPathProvider {
      
     public ClassPathProviderImpl(MavenProject proj) {
         project = proj;
-        project.addPropertyChangeListener(new PropertyChangeListener() {
-            public void propertyChange(PropertyChangeEvent evt) {
-                cache = new SoftReference[7];
-            }
-        });
+//        project.addPropertyChangeListener(new PropertyChangeListener() {
+//            public void propertyChange(PropertyChangeEvent evt) {
+//                cache = new SoftReference[7];
+//            }
+//        });
     }
     
     /**

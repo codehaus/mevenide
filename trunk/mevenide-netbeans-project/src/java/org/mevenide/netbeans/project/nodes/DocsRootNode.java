@@ -25,6 +25,8 @@ import org.mevenide.netbeans.project.ActionProviderImpl;
 import org.mevenide.netbeans.project.MavenProject;
 import org.netbeans.api.project.SourceGroup;
 import org.netbeans.api.queries.VisibilityQuery;
+import org.netbeans.spi.project.ui.PrivilegedTemplates;
+import org.netbeans.spi.project.ui.RecommendedTemplates;
 import org.netbeans.spi.project.ui.support.LogicalViews;
 import org.openide.filesystems.FileObject;
 import org.openide.loaders.ChangeableDataFilter;
@@ -44,7 +46,8 @@ class DocsRootNode extends AbstractNode {
     private MavenProject project;
     
     DocsRootNode(SourceGroup grp, MavenProject proj) {
-        super(Children.LEAF, Lookups.fixed( new Object[] {DataFolder.findFolder(grp.getRootFolder()), proj}));
+        super(Children.LEAF, Lookups.fixed( new Object[] {DataFolder.findFolder(grp.getRootFolder()), 
+                                                          proj}));
         project = proj;
         setName("XDocumentation"); //NOI18N
         setDisplayName("Documentation");
@@ -69,11 +72,19 @@ class DocsRootNode extends AbstractNode {
     }
     
     public javax.swing.Action[] getActions(boolean param) {
-        Action[] toReturn = new Action[3];
+        Action[] toReturn = new Action[4];
         ActionProviderImpl provider = (ActionProviderImpl)project.getLookup().lookup(ActionProviderImpl.class);
         toReturn[0] = LogicalViews.newFileAction();
         toReturn[1] = null;
         toReturn[2] = provider.createCustomMavenAction("Generate Site", "site:generate");
+        String method = project.getPropertyResolver().getResolvedValue("maven.site.deploy.method"); //NOI18N
+        String deployName = "Deploy site using ";
+        if (method != null && method.equalsIgnoreCase("fs")) {
+            deployName = deployName + "filesystem";
+        } else {
+            deployName = deployName + "ssh";
+        }
+        toReturn[3] = provider.createCustomMavenAction(deployName, "site:deploy"); //NOI18N
         return toReturn;
     }    
     

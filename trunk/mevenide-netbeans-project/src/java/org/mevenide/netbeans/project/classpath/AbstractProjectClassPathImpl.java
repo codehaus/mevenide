@@ -87,12 +87,17 @@ abstract class AbstractProjectClassPathImpl implements ClassPathImplementation {
                     entry = FileUtil.getArchiveRoot(pieces[i].toURL());
                 } else {
                     entry = pieces[i].toURL();
-                    if  (entry.toExternalForm().endsWith("/")) {
+                    if  (!entry.toExternalForm().endsWith("/")) {
                         entry = new URL(entry.toExternalForm() + "/");
                     }
                 }
                 if (entry != null) {
-                    result.add(ClassPathSupport.createResource(entry));
+                    File checkFile = new File(pieces[i]);
+                    if (checkFile.exists()) {
+                        result.add(ClassPathSupport.createResource(entry));
+                    } else {
+                        logger.debug("pointing to non-existing resource=" + checkFile);
+                    }
                 }
             } catch (MalformedURLException mue) {
                 ErrorManager.getDefault().notify(mue);

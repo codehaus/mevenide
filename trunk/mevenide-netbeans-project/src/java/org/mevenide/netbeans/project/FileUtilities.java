@@ -1,6 +1,6 @@
 /* ==========================================================================
  * Copyright 2004 Apache Software Foundation
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -38,36 +38,32 @@ import org.openide.util.Lookup;
  *
  * @author  Milos Kleint (ca206216@tiscali.cz)
  */
-public class FileUtilities
-{
+public class FileUtilities {
     
     /** Creates a new instance of FileUtilities */
-    public FileUtilities()
-    {
+    public FileUtilities() {
     }
     
-    public static FileObject findFolder(FileObject rootFolder, String relPath)
-    {
-        StringTokenizer tok = new StringTokenizer(relPath, "/", false);
-        FileObject folder = rootFolder;
-        while (tok.hasMoreTokens() && folder != null)
-        {
-            folder = folder.getFileObject(tok.nextToken(), null);
+    public static FileObject findFolder(FileObject rootFolder, String relPath) {
+        if (rootFolder != null) {
+            File fl = FileUtil.toFile(rootFolder);
+            if (fl != null) {
+                File result = new File(fl, relPath);
+                result = FileUtil.normalizeFile(result);
+                return FileUtil.toFileObject(result);
+            }
         }
-        return folder;
+        return null;
     }
     
-    public static FileObject findOrCreate(FileObject rootFolder, String relPath) throws IOException
-    {
+    public static FileObject findOrCreate(FileObject rootFolder, String relPath) throws IOException {
         FileObject parentFolder = rootFolder;
         FileObject folder = rootFolder;
         StringTokenizer tok = new StringTokenizer(relPath, "/", false);
-        while (tok.hasMoreTokens())
-        {
+        while (tok.hasMoreTokens()) {
             String name = tok.nextToken();
             folder = parentFolder.getFileObject(name, null);
-            if (folder == null)
-            {
+            if (folder == null) {
                 parentFolder.createFolder(name);
             }
             parentFolder = folder;
@@ -161,7 +157,7 @@ public class FileUtilities
             }
             if (matches) {
                 files.add(f);
-            } 
+            }
         }
         return (FileObject[])files.toArray(new FileObject[files.size()]);
     }

@@ -28,6 +28,9 @@ public class MavenSettings extends SystemOption {
     
     public static final String PROP_OFFLINE = "offline"; //NOI18N
     public static final String PROP_NOBANNER = "nobanner"; //NOI18N
+    public static final String PROP_DEBUG = "debug"; //NOI18N
+    public static final String PROP_EXCEPTIONS = "exceptions"; //NOI18N
+    public static final String PROP_NONVERBOSE = "nonverbose"; //NOI18N
     
     
     private static final long serialVersionUID = -4857548488373547L;
@@ -43,6 +46,9 @@ public class MavenSettings extends SystemOption {
         setShowAddFavouriteHint(true);
         setOffline(false);
         setNoBanner(false);
+        setNonverbose(false);
+        setExceptions(false);
+        setDebug(false);
     }
     
     public String displayName() {
@@ -112,5 +118,33 @@ public class MavenSettings extends SystemOption {
     public void setNoBanner(boolean nb) {
         putProperty(PROP_NOBANNER, Boolean.valueOf(nb), true);
     }
+    
+    public boolean isDebug() {
+        Boolean obj = (Boolean)getProperty(PROP_DEBUG);
+        return obj == null ? true : obj.booleanValue();
+    }
+    
+    public void setDebug(boolean debug) {
+        putProperty(PROP_DEBUG, Boolean.valueOf(debug), true);
+    }
+    
+    public boolean isExceptions() {
+        Boolean obj = (Boolean)getProperty(PROP_EXCEPTIONS);
+        return obj == null ? true : obj.booleanValue();
+    }
+    
+    public void setExceptions(boolean exc) {
+        putProperty(PROP_EXCEPTIONS, Boolean.valueOf(exc), true);
+    }
+    
+    public boolean isNonverbose() {
+        Boolean obj = (Boolean)getProperty(PROP_NONVERBOSE);
+        return obj == null ? true : obj.booleanValue();
+    }
+    
+    public void setNonverbose(boolean nonverbose) {
+        putProperty(PROP_NONVERBOSE, Boolean.valueOf(nonverbose), true);
+    }
+    
     
 }
