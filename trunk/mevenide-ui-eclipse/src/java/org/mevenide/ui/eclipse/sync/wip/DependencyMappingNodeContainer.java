@@ -48,6 +48,7 @@
  */
 package org.mevenide.ui.eclipse.sync.wip;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -55,6 +56,7 @@ import org.apache.maven.project.Dependency;
 import org.eclipse.jdt.core.IJavaProject;
 import org.mevenide.project.io.ProjectReader;
 import org.mevenide.ui.eclipse.util.FileUtils;
+
 
 /**
  * 
@@ -64,6 +66,8 @@ import org.mevenide.ui.eclipse.util.FileUtils;
  */
 class DependencyMappingNodeContainer implements IArtifactMappingNodeContainer {
     private IArtifactMappingNode[] nodes;
+    
+    private int direction;
     
     public IArtifactMappingNode[] getNodes() {
         return nodes;
@@ -79,6 +83,8 @@ class DependencyMappingNodeContainer implements IArtifactMappingNodeContainer {
     
     public void attachPom(IJavaProject javaProject) throws Exception {
         List dependencies = ProjectReader.getReader().read(FileUtils.getPom(javaProject.getProject())).getDependencies();
+        List dependenciesCopy = new ArrayList(dependencies);
+        
         for (int i = 0; i < nodes.length; i++) {
             DependencyMappingNode currentNode = (DependencyMappingNode) nodes[i];
             Dependency resolvedDependency = (Dependency) currentNode.getResolvedArtifact();
@@ -86,12 +92,57 @@ class DependencyMappingNodeContainer implements IArtifactMappingNodeContainer {
                 Dependency pomDependency = (Dependency) itr.next();
                 if ( lowMatch((pomDependency), resolvedDependency) ) {
                     currentNode.setDependency(pomDependency);
+                    dependenciesCopy.remove(pomDependency);
                 }
             }
         }
+        
+        attachOrphanDependencies(dependenciesCopy);
+    }
+    
+    private void attachOrphanDependencies(List dependenciesCopy) {
+        IArtifactMappingNode[] newNodes = new IArtifactMappingNode[nodes.length + dependenciesCopy.size()];
+        System.arraycopy(nodes, 0, newNodes, 0, nodes.length);
+        for (int i = nodes.length; i < newNodes.length; i++) {
+            DependencyMappingNode node = new DependencyMappingNode();
+            node.setDependency((Dependency) dependenciesCopy.get(i - nodes.length));
+			node.setParent(this);
+			newNodes[i] = node;
+        }
+        this.nodes = newNodes;
     }
     
     private boolean lowMatch(Dependency d1, Dependency d2) {
         return d1.getArtifactId().equals(d2.getArtifactId());
+    }
+    
+    public IArtifactMappingNodeContainer filter(int direction) {
+        DependencyMappingNodeContainer newContainer = new DependencyMappingNodeContainer();
+		newContainer.setDirection(direction);
+
+		List newNodeList = new ArrayList(); 
+		for (int i = 0; i < nodes.length; i++) {
+            if ( (nodes[i].getChangeDirection() & direction) != 0) {
+				newNodeList.add(nodes[i]);
+			}
+        }
+
+		DependencyMappingNode[] newNodeArray = new DependencyMappingNode[newNodeList.size()]; 
+		for (int i = 0; i < newNodeArray.length; i++) {
+			DependencyMappingNode newNode = (DependencyMappingNode) newNodeList.get(i);
+			newNode.setParent(newContainer);
+            newNodeArray[i] = newNode;
+        }
+		newContainer.setNodes(newNodeArray);
+
+        return newContainer;
+    }
+    
+    public int getDirection() {
+        return direction;
+    }
+    
+    public void setDirection(int direction) {
+        this.direction = direction;
     }
 }

@@ -57,9 +57,13 @@ import org.eclipse.core.resources.IProject;
  * 
  */
 public class ProjectContainer {
+    public static final int INCOMING = 0x8;
+    public static final int OUTGOING = 0x16;
+    public static final int CONFLICTING = 0x4;
+    public static final int NO_CHANGE = 0x8;
+    
     private IProject project;
    
-    
     public ProjectContainer(IProject project) {
         this.project = project;
     }
@@ -71,5 +75,6 @@ public class ProjectContainer {
     public void setProject(IProject project) {
         this.project = project;
     }
+
     
 }

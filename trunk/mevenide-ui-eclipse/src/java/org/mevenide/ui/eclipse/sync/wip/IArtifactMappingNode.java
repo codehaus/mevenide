@@ -60,10 +60,9 @@ import org.eclipse.core.runtime.IAdaptable;
 public interface IArtifactMappingNode extends IAdaptable {
     
     
-    public static final int CONFLICTING = 0x4;
     public static final int INHERITED = 0x1;
     public static final int INCOMPLETE = 0x2;
-
+    
     /** 
      * @return the encapsulated Ide Entry 
      */
@@ -90,4 +89,9 @@ public interface IArtifactMappingNode extends IAdaptable {
      * @return presentation Label
      */
     String getLabel();
+    
+    /**
+     * @return parent container
+     */
+    IArtifactMappingNodeContainer getParent();
 }

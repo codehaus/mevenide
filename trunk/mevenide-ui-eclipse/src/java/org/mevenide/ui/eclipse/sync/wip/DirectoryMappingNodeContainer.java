@@ -68,4 +68,8 @@ class DirectoryMappingNodeContainer implements IArtifactMappingNodeContainer {
     public String getLabel() {
         return "Source Folders";
     }
+    
+    public IArtifactMappingNodeContainer filter(int direction) {
+        return this;
+    }
 }

@@ -57,6 +57,8 @@ package org.mevenide.ui.eclipse.sync.wip;
 public class DirectoryMappingNode implements IArtifactMappingNode {
     private Directory directory;
     
+    private DirectoryMappingNodeContainer parent;
+    
     public Object getAdapter(Class adapter) {
         // TODO Auto-generated method stub
         return null;
@@ -86,5 +88,13 @@ public class DirectoryMappingNode implements IArtifactMappingNode {
     public Object getResolvedArtifact() {
         // TODO Auto-generated method stub
         return null;
+    }
+    
+    public IArtifactMappingNodeContainer getParent() {
+        return parent;
+    }
+    
+    public void setParent(DirectoryMappingNodeContainer parent) {
+        this.parent = parent;
     }
 }

@@ -65,6 +65,8 @@ import org.eclipse.jface.viewers.Viewer;
 public class ArtifactMappingContentProvider implements ITreeContentProvider {
     private static Log log = LogFactory.getLog(ArtifactMappingContentProvider.class); 
     
+    private int direction;
+    
     public Object[] getChildren(Object parentElement) {
         if ( parentElement instanceof ProjectContainer ) {
             IArtifactMappingNodeContainer directoryContainer = new DirectoryMappingNodeContainer();
@@ -93,7 +95,7 @@ public class ArtifactMappingContentProvider implements ITreeContentProvider {
 //            d.setDependency(dep);
 //            dependencyContainer.setNodes(new IArtifactMappingNode[] { d });
             
-            return new IArtifactMappingNodeContainer[] { directoryContainer, dependencyContainer }; 
+            return new IArtifactMappingNodeContainer[] { directoryContainer.filter(direction), dependencyContainer.filter(direction) }; 
         }
         if ( parentElement instanceof IArtifactMappingNodeContainer ) {
             return ((IArtifactMappingNodeContainer) parentElement).getNodes();
@@ -119,6 +121,14 @@ public class ArtifactMappingContentProvider implements ITreeContentProvider {
     
     public Object[] getElements(Object inputElement) {
         return new Object[] { new ProjectContainer((IProject) inputElement) };
+    }
+    
+    public int getDirection() {
+        return direction;
+    }
+    
+    public void setDirection(int direction) {
+        this.direction = direction;
     }
 }
 

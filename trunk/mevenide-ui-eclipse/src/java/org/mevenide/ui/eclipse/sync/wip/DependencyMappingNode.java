@@ -54,6 +54,7 @@ import org.apache.maven.project.Dependency;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.ui.views.properties.IPropertySource;
+import org.mevenide.project.dependency.DependencyUtil;
 import org.mevenide.ui.eclipse.editors.properties.DependencyPropertySource;
 
 /**
@@ -69,6 +70,8 @@ public class DependencyMappingNode implements IArtifactMappingNode, IPropertyCha
     private Dependency resolvedDependency;
     private Dependency dependency;
     
+    private DependencyMappingNodeContainer parent; 
+    
     public Object getIdeEntry() {
         return ideEntry;
     }
@@ -83,12 +86,30 @@ public class DependencyMappingNode implements IArtifactMappingNode, IPropertyCha
     }
     
     public int getChangeDirection() {
-        // TODO Auto-generated method stub
-        return 0;
+        if ( resolvedDependency == null ) {
+			return ProjectContainer.INCOMING;
+		}
+		if ( dependency == null ) {
+			return ProjectContainer.OUTGOING;
+		}
+		if ( !DependencyUtil.areEquals(dependency, resolvedDependency) ) {
+			return ProjectContainer.CONFLICTING;
+		}
+        return ProjectContainer.NO_CHANGE;
     }
     
     public String getLabel() {
-        return new File(resolvedDependency.getArtifact()).getName();
+        if ( (parent.getDirection() & ProjectContainer.OUTGOING) != 0 ) {
+            return new File(resolvedDependency.getArtifact()).getName();
+		}
+        if ( (parent.getDirection() & ProjectContainer.INCOMING) != 0 ) {
+            return dependency.getGroupId() + ":" + dependency.getArtifactId(); 
+        }
+		//NO_CHANGE or CONFLICTING
+		if ( dependency != null ) {
+			return dependency.getGroupId() + ":" + dependency.getArtifactId();
+		}
+		return "Unresolved";
     }
    
     public Object getAdapter(Class adapter) {
@@ -121,5 +142,13 @@ public class DependencyMappingNode implements IArtifactMappingNode, IPropertyCha
     
     public void propertyChange(PropertyChangeEvent event) {
         setDependency((Dependency)((DependencyPropertySource)event.getSource()).getSource());
+    }
+    
+    public IArtifactMappingNodeContainer getParent() {
+        return parent;
+    }
+    
+    public void setParent(DependencyMappingNodeContainer parent) {
+        this.parent = parent;
     }
 }
