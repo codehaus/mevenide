@@ -113,16 +113,16 @@ public class PomSynchronizer extends AbstractPomSynchronizer implements ISynchro
 		
 	}
 
-	public static void synchronize(IProject project) throws Exception {
+	public void synchronize(IProject project) throws Exception {
 		SourceDirectoryUtil.resetSourceDirectories(Mevenide.getPlugin().getPom());
 	
 		DependencyGroup dependencyGroup = DependencyGroupMarshaller.getDependencyGroup(project, Mevenide.getPlugin().getFile("statedDependencies.xml"));
 		SourceDirectoryGroup sourceGroup = SourceDirectoryGroupMarshaller.getSourceDirectoryGroup(project, Mevenide.getPlugin().getFile("sourceTypes.xml"));
 	
-		PomSynchronizer.updatePom(sourceGroup, dependencyGroup, Mevenide.getPlugin().getPom());
+		updatePom(sourceGroup, dependencyGroup, Mevenide.getPlugin().getPom());
 	}
 
-	public static void updatePom(SourceDirectoryGroup sourceGroup, DependencyGroup dependencyGoup, File pomFile) throws Exception {
+	public void updatePom(SourceDirectoryGroup sourceGroup, DependencyGroup dependencyGoup, File pomFile) throws Exception {
 		Mevenide.getPlugin().createProjectProperties();
 		
 		SourceDirectoryUtil.resetSourceDirectories(pomFile);

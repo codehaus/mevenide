@@ -14,6 +14,8 @@
  */
 package org.mevenide.ui.eclipse.sync.wizard;
 
+import java.util.Properties;
+
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.viewers.ICellEditorValidator;
 import org.eclipse.jface.viewers.TextCellEditor;
@@ -45,6 +47,12 @@ import org.eclipse.ui.PlatformUI;
 public class DependencyPropertiesDialog extends Dialog {
 	//private static Log log = LogFactory.getLog(DependencyPropertiesDialog.class);
 	
+	private Table table;
+	private Properties properties;
+	
+	 
+	
+
 	public DependencyPropertiesDialog() {
 		super(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell());
 	}
@@ -57,7 +65,7 @@ public class DependencyPropertiesDialog extends Dialog {
 		
 		
 		GridData gridData = new GridData(GridData.FILL_BOTH);
-		final Table table = new Table(composite, SWT.BORDER | SWT.FULL_SELECTION | SWT.MULTI);
+		table = new Table(composite, SWT.BORDER | SWT.FULL_SELECTION | SWT.MULTI);
 		table.setLayoutData(gridData);
 		
 		table.setLinesVisible(true);
@@ -100,11 +108,21 @@ public class DependencyPropertiesDialog extends Dialog {
 		removeButton.setLayoutData(data2);
 		removeButton.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
-				table.remove(table.getSelectionIndices());
+				table.remove(table.getSelectionIndices()[0]);
 			}
 		});
 		
 		return composite;
+	}
+	
+	
+	
+	private void updateProperties() {
+		properties = new Properties();
+		for (int i = 0; i < table.getItems().length; i++) {
+			TableItem item = table.getItems()[i];
+			properties.put(item.getText(0), item.getText(1));
+		}
 	}
 
 	//from eclipse snippets :
@@ -200,10 +218,13 @@ public class DependencyPropertiesDialog extends Dialog {
 		});
 	}
 	
+	public Properties getProperties() {
+		return properties;
+	}
 
+	protected void okPressed() {
+		updateProperties();
+		super.okPressed();
+	}
 
-
-
-
-		
 }

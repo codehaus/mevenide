@@ -14,11 +14,14 @@
  */
 package org.mevenide.ui.eclipse.sync.wizard;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Properties;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Dependency;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.viewers.TableTreeViewer;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
@@ -179,8 +182,17 @@ public class DependencyMappingWizardPage extends WizardPage {
 		propertiesButton.addSelectionListener(
 				new SelectionAdapter() {
 					public void widgetSelected(SelectionEvent e) {
-						Dialog dialog = new DependencyPropertiesDialog();
+						DependencyPropertiesDialog dialog = new DependencyPropertiesDialog();
 						dialog.open();
+						Properties props = dialog.getProperties();
+						if ( props != null && props.keys() != null ) {
+							List keys = Collections.list(props.keys()); 
+							for (int i = 0; i < keys.size(); i++) {
+								String key = (String) keys.get(i);
+								String value = (String) props.get(key);
+								System.err.println(key + " = " + value);
+							}
+						}
 					}
 				}
 		);
@@ -192,6 +204,7 @@ public class DependencyMappingWizardPage extends WizardPage {
 					}
 				}
 		);
+		
 	}
 	
 	private void initInput(IProject project) {
