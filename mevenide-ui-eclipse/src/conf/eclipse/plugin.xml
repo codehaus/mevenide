@@ -320,38 +320,38 @@
    <extension point="org.eclipse.ui.preferencePages">
       <!-- Blank page used as Mevenide Preference Pages holder -->
       <page name="%MavenMenu.label"
-            class="org.mevenide.ui.eclipse.preferences.MevenidePreferencePage"
+            class="org.mevenide.ui.eclipse.preferences.pages.MevenidePreferencePage"
             id="org.mevenide.ui.plugin.preferences.MavenPreferencePage">
       </page>
       <!-- Mandatory locations -->
       <page name="%LocationPreferencePage.label" 
       	 	category="org.mevenide.ui.plugin.preferences.MavenPreferencePage" 
-      	 	class="org.mevenide.ui.eclipse.preferences.LocationPreferencePage" 
-      	 	id="org.mevenide.ui.eclipse.preferences.LocationPreferencePage">
+      	 	class="org.mevenide.ui.eclipse.preferences.pages.LocationPreferencePage" 
+      	 	id="org.mevenide.ui.eclipse.preferences.pages.LocationPreferencePage">
       </page>
       <!-- Launch related preferences -->
       <page name="%RunMavenPreferencePage.label" 
       	 	category="org.mevenide.ui.plugin.preferences.MavenPreferencePage" 
-      	 	class="org.mevenide.ui.eclipse.preferences.RunMavenPreferencePage" 
-      	 	id="org.mevenide.ui.eclipse.preferences.RunMavenPreferencePage">
+      	 	class="org.mevenide.ui.eclipse.preferences.pages.RunMavenPreferencePage" 
+      	 	id="org.mevenide.ui.eclipse.preferences.pages.RunMavenPreferencePage">
       </page>
       <!-- POM Template management -->
       <page name="%TemplatePreferencePage.label"
             category="org.mevenide.ui.plugin.preferences.MavenPreferencePage"
-            class="org.mevenide.ui.eclipse.preferences.TemplatePreferencePage"
-            id="org.mevenide.ui.eclipse.preferences.TemplatePreferencePage">
+            class="org.mevenide.ui.eclipse.preferences.pages.TemplatePreferencePage"
+            id="org.mevenide.ui.eclipse.preferences.pages.TemplatePreferencePage">
       </page>
       <!-- Plugin Provider Root Holder -->
       <page name="%PluginsRoot.label"
             category="org.mevenide.ui.plugin.preferences.MavenPreferencePage"
-            class="org.mevenide.ui.eclipse.preferences.MevenidePreferencePage"
+            class="org.mevenide.ui.eclipse.preferences.pages.PluginsRootPreferencePage"
             id="org.mevenide.ui.eclipse.preferences.PluginsRoot">
       </page>
       <!-- Pom Editor Preference Page -->
-      <page class="org.mevenide.ui.eclipse.preferences.DependencyTypesPreferencePage"
+      <page class="org.mevenide.ui.eclipse.preferences.pages.DependencyTypesPreferencePage"
             category="org.mevenide.ui.plugin.preferences.MavenPreferencePage"
             name="%DependencyTypesPreferencePage.Label"
-            id="org.mevenide.ui.eclipse.preferences.DependencyTypesPreferencePage">
+            id="org.mevenide.ui.eclipse.preferences.pages.DependencyTypesPreferencePage">
        </page>
    </extension>
    <extension point="org.eclipse.ui.editors">

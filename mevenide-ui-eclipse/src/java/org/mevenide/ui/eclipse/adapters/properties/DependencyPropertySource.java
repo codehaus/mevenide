@@ -23,7 +23,7 @@ import org.eclipse.ui.views.properties.ComboBoxPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.TextPropertyDescriptor;
 import org.mevenide.ui.eclipse.Mevenide;
-import org.mevenide.ui.eclipse.preferences.DependencyTypesPreferencePage;
+import org.mevenide.ui.eclipse.preferences.pages.DependencyTypesPreferencePage;
 import org.mevenide.util.MevenideUtils;
 
 /**
