@@ -14,21 +14,16 @@
 package org.mevenide.ui.eclipse.util;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.maven.project.Dependency;
-import org.apache.maven.project.Project;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IClasspathContainer;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.launching.JavaRuntime;
-import org.mevenide.project.dependency.DependencyFactory;
-import org.mevenide.project.dependency.DependencyUtil;
-import org.mevenide.project.io.DefaultProjectMarshaller;
 import org.mevenide.project.io.ProjectReader;
 import org.mevenide.ui.eclipse.DefaultPathResolver;
 import org.mevenide.ui.eclipse.IPathResolver;
@@ -62,43 +57,10 @@ public class ProjectUtil {
 		jreEntryList.add(jrePath);
 		return jreEntryList;
 	}
-	
-	/**
-	 * 
-	 * @wonder should we deprecate it ?
-	 * 
-	 * @param cpEntries
-	 * @throws Exception
-	 */
-	public static void removeUnusedDependencies(IClasspathEntry[] cpEntries) throws Exception {
-		Project mavenProject = ProjectReader.getReader().read(Mevenide.getPlugin().getPom());
-		List dependencies = mavenProject.getDependencies();
-		List declaredDependencies = getDeclaredDependencies(cpEntries);
-		List newDependencies = new ArrayList();
-	
-		if ( dependencies != null ) {
-			for (int i = 0; i < dependencies.size(); i++) {
-				for (int j = 0; j < declaredDependencies.size(); j++) {
-					if( DependencyUtil.areEquals(
-							(Dependency)declaredDependencies.get(j), 
-							(Dependency)dependencies.get(i)) ) {
-						newDependencies.add(declaredDependencies.get(j));
-					}
-				}
-				//O(n*n)
-				if ( matchReferencedProjects(
-					Mevenide.getPlugin().getProject().getReferencedProjects(), 
-					(Dependency)dependencies.get(i)) ) {
-					newDependencies.add((Dependency)dependencies.get(i));
-				}
-			}
-		}
-		mavenProject.setDependencies(newDependencies);
-		FileWriter writer = new FileWriter(Mevenide.getPlugin().getPom());
-		new DefaultProjectMarshaller().marshall(writer, mavenProject);
-	}
 
-	private static boolean matchReferencedProjects(IProject[] referencedProjects, Dependency declaredDependency) throws Exception {
+	public static List getCrossProjectDependencies() throws Exception {
+		List deps = new ArrayList();
+		IProject[] referencedProjects = Mevenide.getPlugin().getProject().getReferencedProjects();		
 		for (int i = 0; i < referencedProjects.length; i++) {
 			IProject referencedProject = referencedProjects[i];
 			File referencedPom = FileUtil.getPom(referencedProject);
@@ -108,24 +70,12 @@ public class ProjectUtil {
 			}
 			ProjectReader reader = ProjectReader.getReader();
 			Dependency projectDependency = reader.getDependency(referencedPom);
-			if ( DependencyUtil.areEquals(projectDependency, declaredDependency) ) {
-				return true;
-			}
+			deps.add(projectDependency);
 		}
-		return false;
+		return deps;
 	}
-
-	private static List getDeclaredDependencies(IClasspathEntry[] cpEntries) throws Exception {
-		DependencyFactory dependencyFactory = DependencyFactory.getFactory(); 
-		List declaredDependencies = new ArrayList();
-		IPathResolver pathResolver = new DefaultPathResolver(); 
-		for (int i = 0; i < cpEntries.length; i++) {
-			if ( cpEntries[i].getEntryKind() == IClasspathEntry.CPE_LIBRARY ) {
-				String path = pathResolver.getAbsolutePath(cpEntries[i].getPath());
-				declaredDependencies.add(dependencyFactory.getDependency(path));
-			}
-		}
-		return declaredDependencies;
-	}
+	
+	
+	
 
 }

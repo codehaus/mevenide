@@ -34,6 +34,7 @@ import org.mevenide.ui.eclipse.sync.model.DependencyGroupMarshaller;
 import org.mevenide.ui.eclipse.sync.model.SourceDirectory;
 import org.mevenide.ui.eclipse.sync.model.SourceDirectoryGroup;
 import org.mevenide.ui.eclipse.sync.model.SourceDirectoryGroupMarshaller;
+import org.mevenide.ui.eclipse.util.ProjectUtil;
 
 /**
  * 
@@ -86,7 +87,7 @@ public class PomSynchronizer extends AbstractPomSynchronizer implements ISynchro
 		try {
 			assertPomNotEmpty();
 			
-			PomSynchronizer.synchronize(project);
+			synchronize(project);
 			
 		}
 		catch (Exception e) {
@@ -143,12 +144,11 @@ public class PomSynchronizer extends AbstractPomSynchronizer implements ISynchro
 		}
 		
 		List dependencies = dependencyGoup.getDependencies();
+		dependencies.addAll(ProjectUtil.getCrossProjectDependencies());
 		
 		pomWriter.setDependencies(dependencies, pomFile);
 		
 		Mevenide.getPlugin().setBuildPath();
 	}
- 
 
-	
 }
