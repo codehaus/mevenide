@@ -64,7 +64,7 @@ public class Directory {
     }
     
     public String getDisplayPath() {
-        if ( path.equals(ProjectConstants.BASEDIR) || path.equals("") ) {
+    	if ( path.equals(ProjectConstants.BASEDIR) || path.equals("") ) {
             return ProjectConstants.BASEDIR;
         }
         return path;
