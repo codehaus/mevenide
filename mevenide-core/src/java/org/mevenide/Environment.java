@@ -67,6 +67,9 @@ public class Environment {
     /** maven home directory */
     private static String mavenHome;
     
+	/** maven home directory */
+	private static String mavenLocalHome;
+		
 	/** maven repository */
 	private static String mavenRepository;
     
@@ -75,6 +78,9 @@ public class Environment {
     
     /** classworlds.conf file location */
     private static String configurationFile;
+
+	/** heap size */
+	private static int heapSize = 160;
 
 	/** 
 	 * maven plugins installation directory
@@ -154,4 +160,20 @@ public class Environment {
     public static void setMavenPluginsInstallDir(String pluginsInstallDir) {
         mavenPluginsInstallDir = pluginsInstallDir;
     }
+    public static int getHeapSize() {
+        return heapSize;
+    }
+
+    public static void setHeapSize(int heapSize) {
+        Environment.heapSize = heapSize;
+    }
+
+    public static String getMavenLocalHome() {
+        return mavenLocalHome;
+    }
+
+    public static void setMavenLocalHome(String mavenLocalHome) {
+        Environment.mavenLocalHome = mavenLocalHome;
+    }
+
 }
