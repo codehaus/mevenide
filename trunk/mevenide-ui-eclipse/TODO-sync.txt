@@ -1,7 +1,7 @@
 
 BUGS
 ====
-sync directory / resource : refreshment issue (comparator ? order of operations ?)
+sync directory / resource : refreshment issue when updating pom resources
 
 
 TODO
