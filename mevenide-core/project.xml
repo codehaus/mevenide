@@ -43,7 +43,7 @@
         <dependency>
             <groupId>xerces</groupId>
             <artifactId>xerces</artifactId>
-            <version>2.2.1</version>
+            <version>2.4.0</version>
             <type>jar</type>
             <properties>
             	<eclipse.plugin.bundle>true</eclipse.plugin.bundle>
