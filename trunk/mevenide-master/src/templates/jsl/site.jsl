@@ -265,6 +265,7 @@
 	<x:set var="_childCount" select="count(./item)"/>
 	<j:set var="_isCollapsed" value="${navbean.isCollapsed(item.get(0))}"/>
 	<j:set var="_state" value="none"/>
+	<j:set var="_target" value="string(@target)"/>
 	
 	<j:if test="${_childCount.intValue() gt 0}">
 		<j:if test="${!_isCollapsed}">
