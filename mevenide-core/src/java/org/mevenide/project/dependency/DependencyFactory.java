@@ -49,6 +49,8 @@
 package org.mevenide.project.dependency;
 
 
+import java.io.File;
+
 import org.apache.maven.project.Dependency;
 
 /**
@@ -95,7 +97,7 @@ public class DependencyFactory {
 		dependency.setArtifactId(artifactId);
 		dependency.setVersion(version);
 		//dependency.setArtifact(absoluteFileName);
-		dependency.setJar(absoluteFileName);
+		dependency.setJar(new File(absoluteFileName).getName());
 		dependency.setType(extension);
 		
 		return dependency;
