@@ -575,6 +575,7 @@ public class CarefulProjectMarshaller implements IProjectMarshaller {
             findAndReplaceSimpleElement(innerCount, buildElem, "aspectSourceDirectory", build.getValue("aspectSourceDirectory"));
             doUpdateUnitTest(innerCount, buildElem, build.getSubContentProvider("unitTest"));
             doUpdateResources(innerCount, buildElem, build.getSubContentProviderList("resources", "resource"));
+            doUpdateSourceModifications(innerCount, buildElem, build.getSubContentProviderList("sourceModifications", "sourceModification"));
         }
     }
     
@@ -622,14 +623,51 @@ public class CarefulProjectMarshaller implements IProjectMarshaller {
         }
     }    
 
-    private void doUpdateSingleResource(Element resElem, IContentProvider resource)
+    /**
+     * updates resources, however the replacement algorithm here is not ideal,
+     * no real primary id of simgle elements available..
+     */
+    private void doUpdateSourceModifications(Counter counter, Element root, List sourceModifications) 
             throws Exception {
+        boolean shouldExist = sourceModifications != null && sourceModifications.size() > 0;
+        Element sourcesModificationsElem = updateElement(counter, root, "sourceModifications", shouldExist);
+        if (shouldExist) {
+            List newElems = new ArrayList(sourceModifications);
+            Iterator it = sourcesModificationsElem.getChildren("sourceModification").iterator();
+            Iterator it2 = newElems.iterator();
+            while (it.hasNext() && it2.hasNext()) {
+                Element el = (Element)it.next();
+                IContentProvider res = (IContentProvider)it2.next();
+                doUpdateSingleSourceModification(el, res);
+            } // end iterator
+            while (it.hasNext()) {
+                // when some resources are obsolete, remove them..
+                it.next();
+                it.remove();
+            }
+            while (it2.hasNext()) {
+                IContentProvider res = (IContentProvider)it2.next();
+                Element newEl = factory.element("sourceModification");
+                doUpdateSingleSourceModification(newEl, res);
+                sourcesModificationsElem.addContent(newEl);
+            }
+        }
+    }    
+    
+    private void doUpdateSingleResource(Element resElem, IContentProvider resource) throws Exception {
         Counter innerCount = new Counter();
         findAndReplaceSimpleElement(innerCount, resElem, "directory", resource.getValue("directory"));
-  	findAndReplaceSimpleElement(innerCount, resElem, "targetPath", resource.getValue("targetPath"));
+        findAndReplaceSimpleElement(innerCount, resElem, "targetPath", resource.getValue("targetPath"));
         doUpdateExIncludes(innerCount, resElem, resource.getValueList("includes", "include"), "includes", "include");
         doUpdateExIncludes(innerCount, resElem, resource.getValueList("excludes", "exclude"), "excludes", "exclude");
-  	findAndReplaceSimpleElement(innerCount, resElem, "filtering", resource.getValue("filtering"));
+        findAndReplaceSimpleElement(innerCount, resElem, "filtering", resource.getValue("filtering"));
+    }
+    
+    private void doUpdateSingleSourceModification(Element resElem, IContentProvider resource) throws Exception {
+        Counter innerCount = new Counter();
+        findAndReplaceSimpleElement(innerCount, resElem, "className", resource.getValue("className"));
+        doUpdateExIncludes(innerCount, resElem, resource.getValueList("includes", "include"), "includes", "include");
+        doUpdateExIncludes(innerCount, resElem, resource.getValueList("excludes", "exclude"), "excludes", "exclude");
     }
     
     
