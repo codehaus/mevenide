@@ -125,17 +125,12 @@ public final class DirScannerSubClass extends DirectoryScanner {
     }
     
     public static boolean checkVisible(File file, File rootFile) {
-        String relPath = "";
-        try {
-            relPath = MevenideUtils.makeRelativePath(rootFile, file.getAbsolutePath());
-        } catch (IOException exc) {
-            logger.info(exc);
-            return false;
-        }
+
+        String relPath = file.getAbsolutePath().replace('\\', '/');
         String[] defaults = DirScannerSubClass.getDefaultExcludesHack();
         if (defaults != null) {
             for (int i =0; i < defaults.length; i++) {
-                if (DirectoryScanner.match(defaults[i], file.getAbsolutePath())) {
+                if (DirectoryScanner.match(defaults[i], relPath)) {
                     return false;
                 }
             }
