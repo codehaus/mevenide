@@ -48,6 +48,8 @@
  */
 package org.mevenide.ui.eclipse.sync.wip;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Resource;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.ui.views.properties.IPropertySource;
@@ -62,6 +64,7 @@ import org.mevenide.util.MevenideUtils;
  * 
  */
 public class DirectoryMappingNode extends AbstractArtifactMappingNode {
+    private static Log log = LogFactory.getLog(DirectoryMappingNode.class);
     
     public Object getAdapter(Class adapter) {
         // TODO Auto-generated method stub
@@ -109,11 +112,13 @@ public class DirectoryMappingNode extends AbstractArtifactMappingNode {
 
 	public int getChangeDirection() {
         if ( artifact == null ) {
-			return ProjectContainer.OUTGOING;
+        	return ProjectContainer.OUTGOING;
 		}
-		if ( resolvedArtifact == null ) {
+        
+        if ( resolvedArtifact == null ) {
 			return ProjectContainer.INCOMING;
 		}
+		
 		if ( artifact instanceof Directory 
 				&& MevenideUtils.notEquivalent(((Directory) artifact).getType(), ((Directory) resolvedArtifact).getType()) ) {
 			return ProjectContainer.CONFLICTING;

@@ -52,7 +52,9 @@ import java.io.File;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.maven.MavenUtils;
 import org.apache.maven.project.Dependency;
+import org.apache.maven.project.Resource;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -90,16 +92,19 @@ public class AddToClasspathAction extends Action {
 	public void run() {
 		try {
 			IArtifactMappingNode selectedNode = (IArtifactMappingNode) ((IStructuredSelection) artifactMappingNodeViewer.getSelection()).getFirstElement();
-			
+			log.debug("selectedNode.artifact.class = " + selectedNode.getArtifact().getClass());
 			if ( selectedNode.getArtifact() instanceof Dependency ) {
 				Dependency dependency = (Dependency) selectedNode.getArtifact();
 				addEntry(dependency);
 			}
 			if ( selectedNode.getArtifact() instanceof Directory ) {
 				Directory directory = (Directory) selectedNode.getArtifact();
-				//addEntry(directory);
+				addEntry(directory);
 			}
-
+			if ( selectedNode.getArtifact() instanceof Resource ) {
+				Resource resource = (Resource) selectedNode.getArtifact();
+				addEntry(resource);
+			}
 			artifactMappingNodeViewer.refresh();
 			artifactMappingNodeViewer.expandAll();
 		} 
@@ -109,11 +114,6 @@ public class AddToClasspathAction extends Action {
 		}		
 	}
 	
-	/**
-	 * @param dependency
-	 * @throws Exception
-	 * @throws JavaModelException
-	 */
 	private void addEntry(Dependency dependency) throws Exception, JavaModelException {
 		IClasspathEntry newEntry = newClasspathEntry(dependency);
 
@@ -121,15 +121,19 @@ public class AddToClasspathAction extends Action {
 			ProjectContainer container = (ProjectContainer) artifactMappingNodeViewer.getTree().getItems()[0].getData();
 			IProject project = container.getProject();
 
-			IJavaProject javaProject = (IJavaProject) JavaCore.create(project);
-			IClasspathEntry[] cpEntries = javaProject.getRawClasspath();
-			IClasspathEntry[] newCpEntries = new IClasspathEntry[cpEntries.length + 1];
-
-			System.arraycopy(cpEntries, 0, newCpEntries, 0, cpEntries.length);
-			newCpEntries[cpEntries.length] = newEntry;
-
-			javaProject.setRawClasspath(newCpEntries, null);
+			addClasspathEntry(newEntry, project);
 		}
+	}
+
+	private void addClasspathEntry(IClasspathEntry newEntry, IProject project) throws JavaModelException {
+		IJavaProject javaProject = (IJavaProject) JavaCore.create(project);
+		IClasspathEntry[] cpEntries = javaProject.getRawClasspath();
+		IClasspathEntry[] newCpEntries = new IClasspathEntry[cpEntries.length + 1];
+
+		System.arraycopy(cpEntries, 0, newCpEntries, 0, cpEntries.length);
+		newCpEntries[cpEntries.length] = newEntry;
+
+		javaProject.setRawClasspath(newCpEntries, null);
 	}
 
 	private IClasspathEntry newClasspathEntry(Dependency dependency) throws Exception {
@@ -171,7 +175,7 @@ public class AddToClasspathAction extends Action {
 		//respecting maven-eclipse-plugin
 		newEntry = JavaCore.newProjectEntry(new Path("/" + dependency.getArtifactId()));
 
-		//attachJavaNature
+		//attachJavaNature - there should a lower-level way to do that
 		IProject project = (IProject) ResourcesPlugin.getWorkspace().getRoot().getProject("/" + dependency.getArtifactId());
 		if ( !project.hasNature(JavaCore.NATURE_ID) ) {
 			IProjectDescription description = project.getDescription();
@@ -189,4 +193,44 @@ public class AddToClasspathAction extends Action {
 		return newEntry;
 	}
 
+	private void addEntry(Directory directory) throws Exception {
+		String type = directory.getType();
+		String path = directory.getPath();
+		log.debug("adding src entry to .classpath : "  + path + "(" + type + ")");
+		
+		ProjectContainer container = (ProjectContainer) artifactMappingNodeViewer.getTree().getItems()[0].getData();
+		IProject project = container.getProject();
+		IClasspathEntry srcEntry = newSourceEntry(path, project);
+		
+		addClasspathEntry(srcEntry, project);
+	}
+ 
+	private IClasspathEntry newSourceEntry(String path, IProject project) throws Exception {
+	
+		String basedir = project.getLocation().toOSString();
+		log.debug("basedir = " + basedir);
+		
+		if ( new File(path).exists() ) {
+			path = MavenUtils.makeRelativePath(new File(basedir), path);
+		}
+
+		if ( !project.getFolder(path).exists() ) {
+			project.getFolder(path).create(true, true, null);
+		} 
+		IClasspathEntry srcEntry = JavaCore.newSourceEntry(new Path("/" + project.getName() + "/" + path));
+		return srcEntry;
+	}
+
+	private void addEntry(Resource resource) throws Exception {
+		String path = resource.getDirectory();
+	
+		log.debug("adding src entry to .classpath : "  + path + "(resource)");
+
+		ProjectContainer container = (ProjectContainer) artifactMappingNodeViewer.getTree().getItems()[0].getData();
+		IProject project = container.getProject();
+		
+		IClasspathEntry srcEntry = newSourceEntry(path, project);		
+
+		addClasspathEntry(srcEntry, project);
+	}
 }

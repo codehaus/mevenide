@@ -48,8 +48,6 @@
  */
 package org.mevenide.ui.eclipse.sync.wip;
 
-import java.io.File;
-
 import org.mevenide.project.ProjectConstants;
 
 /**
@@ -66,13 +64,10 @@ public class Directory {
     }
     
     public String getDisplayPath() {
-        if ( path.equals(ProjectConstants.BASEDIR)) {
+        if ( path.equals(ProjectConstants.BASEDIR) || path.equals("") ) {
             return ProjectConstants.BASEDIR;
         }
-        if ( path.startsWith(ProjectConstants.BASEDIR) ) {
-            return path;
-        }
-        return ProjectConstants.BASEDIR + File.separator +  path;
+        return path;
     }
     
     public String getPath() {
