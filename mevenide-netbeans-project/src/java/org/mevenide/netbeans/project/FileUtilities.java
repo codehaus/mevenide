@@ -22,7 +22,9 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.StringTokenizer;
 import org.apache.maven.project.Dependency;
+import org.mevenide.context.IQueryContext;
 import org.mevenide.environment.ILocationFinder;
+import org.mevenide.properties.IPropertyLocator;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.filesystems.Repository;
@@ -113,5 +115,20 @@ public class FileUtilities
         File file = new File(repo, buff.toString());
         file = FileUtil.normalizeFile(file);
         return file.toURI();
+    }
+    
+    
+    public static File locationToFile(int location, MavenProject project) {
+        IQueryContext context = project.getContext();
+        if (location == IPropertyLocator.LOCATION_PROJECT) {
+            return new File(context.getProjectDirectory(), "project.properties");
+        }
+        if (location == IPropertyLocator.LOCATION_PROJECT_BUILD) {
+            return new File(context.getProjectDirectory(), "build.properties");
+        }
+        if (location == IPropertyLocator.LOCATION_USER_BUILD) {
+            return new File(context.getUserDirectory(), "build.properties");
+        }
+        throw new IllegalArgumentException("Wrong argument.");
     }
 }
