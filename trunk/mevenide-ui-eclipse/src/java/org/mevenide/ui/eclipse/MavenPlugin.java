@@ -73,7 +73,6 @@ public class MavenPlugin extends AbstractUIPlugin {
             		
 		} 
 		catch (Exception x) {
-			//resourceBundle = null;
 			x.printStackTrace();
 			throw x;
 		}
