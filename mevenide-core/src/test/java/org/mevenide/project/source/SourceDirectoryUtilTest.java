@@ -51,8 +51,8 @@ package org.mevenide.project.source;
 import org.apache.maven.project.Build;
 import org.apache.maven.project.Project;
 import org.mevenide.AbstractMevenideTestCase;
-import org.mevenide.ProjectConstants;
 //causes a cycle
+import org.mevenide.project.ProjectConstants;
 import org.mevenide.project.io.ProjectReader;
 
 

@@ -61,7 +61,7 @@ import org.apache.maven.project.Build;
 import org.apache.maven.project.Dependency;
 import org.apache.maven.project.Project;
 import org.apache.maven.project.Resource;
-import org.mevenide.ProjectConstants;
+import org.mevenide.project.ProjectConstants;
 import org.mevenide.util.DefaultProjectUnmarshaller;
 import org.mevenide.util.MevenideUtil;
 

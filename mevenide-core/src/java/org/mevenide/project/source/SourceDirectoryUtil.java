@@ -51,7 +51,7 @@ package org.mevenide.project.source;
 import org.apache.maven.project.Build;
 import org.apache.maven.project.Project;
 import org.apache.maven.project.UnitTest;
-import org.mevenide.ProjectConstants;
+import org.mevenide.project.ProjectConstants;
 
 /**
  * 
