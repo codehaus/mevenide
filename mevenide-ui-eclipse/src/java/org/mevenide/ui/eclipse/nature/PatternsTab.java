@@ -29,6 +29,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.TableEditor;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
@@ -41,6 +42,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
+import org.mevenide.ui.eclipse.IImageRegistry;
 import org.mevenide.ui.eclipse.Mevenide;
 
 
@@ -292,6 +294,10 @@ public class PatternsTab extends AbstractLaunchConfigurationTab {
         return Mevenide.getResourceString("PatternsTab.Name"); //$NON-NLS-1$
     }
     
+    
+    public Image getImage() {
+        return Mevenide.getInstance().getImageRegistry().get(IImageRegistry.PATTERN_SEARCH_ICON);
+    }
     
     /**
      * disallow user to run the config

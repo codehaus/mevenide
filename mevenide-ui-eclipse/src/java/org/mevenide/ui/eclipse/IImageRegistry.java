@@ -40,6 +40,7 @@ public interface IImageRegistry {
     public static final String RUN_GOAL_ENABLED = "elcl16/run_goal.gif"; //$NON-NLS-1$
     public static final String RUN_GOAL_DISABLED = "dlcl16/run_goal.gif"; //$NON-NLS-1$
     public static final String ARGUMENTS_TAB_ICON = "eview16/variable_tab.gif"; //$NON-NLS-1$
+    public static final String PATTERN_SEARCH_ICON = "eview16/patterns_srch.gif"; //$NON-NLS-1$
     
     public static final String MAVEN_PROJECT_WIZ = "wizban/newmprj_wiz.gif"; //$NON-NLS-1$
     public static final String MAVEN_POM_WIZ = "wizban/newmfile_wiz.gif"; //$NON-NLS-1$
@@ -99,5 +100,6 @@ public interface IImageRegistry {
             EXCLUSION_OBJ,
             COPY_TOOL,
             EXT_TOOLS_WIZ,
+            PATTERN_SEARCH_ICON,
     };
 }
