@@ -21,7 +21,6 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.mevenide.ui.eclipse.Mevenide;
-import org.mevenide.ui.eclipse.MevenideColors;
 import org.mevenide.ui.eclipse.editors.MevenidePomEditor;
 
 /**
@@ -51,7 +50,6 @@ public class TeamPage extends AbstractPomEditorPage {
 		parent.setLayout(layout);
 
 		PageWidgetFactory factory = getFactory();
-		factory.setBackgroundColor(MevenideColors.WHITE);
 
 		devSection = new DevelopersSection(this);
 		Control control = devSection.createControl(parent, factory);
