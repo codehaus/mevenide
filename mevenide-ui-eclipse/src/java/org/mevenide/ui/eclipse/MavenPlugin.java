@@ -30,6 +30,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.preference.PreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.mevenide.Environment;
 
 /**
  * Created on 01 feb. 03	
@@ -68,9 +69,13 @@ public class MavenPlugin extends AbstractUIPlugin {
             PreferenceStore preferenceStore = new PreferenceStore(getPreferencesFilename());
             preferenceStore.load();
             
-            mavenHome = preferenceStore.getString("maven.home");
-            javaHome = preferenceStore.getString("java.home");
-            mavenRepository = preferenceStore.getString("maven.repo");
+            setMavenHome(preferenceStore.getString("maven.home"));
+            setJavaHome(preferenceStore.getString("java.home"));
+            setMavenRepository(preferenceStore.getString("maven.repo"));
+            
+            
+            
+            
 		} 
 		catch (Exception x) {
 			x.printStackTrace();
@@ -148,14 +153,17 @@ public class MavenPlugin extends AbstractUIPlugin {
 		
     public void setJavaHome(String javaHome) {
         this.javaHome = javaHome;
+		Environment.setJavaHome(javaHome);
     }
 
     public void setMavenHome(String mavenHome) {
         this.mavenHome = mavenHome;
+		Environment.setMavenHome(mavenHome);
     }
     
 	public void setMavenRepository(String mavenRepository) {
 		this.mavenRepository = mavenRepository;
+		Environment.setMavenRepository(mavenRepository);
 	}
 	
     public String getPreferencesFilename() {
