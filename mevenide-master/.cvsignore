@@ -7,3 +7,4 @@ build.properties
 build
 text
 .mvnignore
+*.1
