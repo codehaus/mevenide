@@ -3,7 +3,9 @@
 		 xmlns:maven="jelly:maven"
 		 xmlns:util="jelly:util"
 		 xmlns:define="jelly:define"
-		 xmlns:eclipse-plugin="eclipse-plugin">
+		 xmlns:eclipse-plugin="eclipse-plugin"
+		 xmlns:x="jelly:xml"
+		 xmlns:mevenide="jelly:org.mevenide.tags.eclipse.MevenideTagLibrary">
 
   <define:taglib uri="eclipse-plugin">
   	
@@ -46,9 +48,17 @@
   </goal>
   
   
-  <goal name="eclipse-plugin:create-plugin-dist" prereqs="eclipse-plugin:prepare-plugin-dist,eclipse-plugin:install-artifact"
+  <goal name="eclipse-plugin:create-plugin-dist" prereqs="eclipse-plugin:install-artifact"
   		description="create a plugin dist file containing only the plugin required files and put it in ${maven.eclipse.plugin.dist.dir}">
-  		
+
+  	  <j:set var="mode" value="${maven.eclipse.plugin.build.mode}"/>
+  	  <j:if test="${mode == 'bundle'}">
+  	  	<attainGoal name="eclipse-plugin:prepare-plugin-dist"/>
+  	  </j:if>
+  	  <j:if test="${mode != 'dist'}">
+  	  	<attainGoal name="eclipse-plugin:create-library-artifacts"/>
+  	  </j:if>
+  	  
 	  <j:set var="distVersion" value="${maven.eclipse.plugin.artifact.version}"/>
 	  <j:set var="pluginId" value="${maven.eclipse.plugin.artifact.id}"/>
   	  <j:set var="pluginFolder">${pluginId.replaceAll('-', '.')}</j:set> 
@@ -63,6 +73,11 @@
        	<ant:fileset dir="${maven.build.dir}" includes="${pom.artifactId}-${pom.currentVersion}.jar"/>
       </ant:copy>
        
+      <!-- update plugin descriptor -->
+      <!-- j:if test="${mode != 'bundle'}">
+  	  	<attainGoal name="eclipse-plugin:update-plugin-libraries"/>
+  	  </j:if -->
+  	  
       <!-- build plugin distribution file. -->
       <ant:jar destfile="${pluginArchive}">
         <fileset dir="${maven.eclipse.plugin.temp.dir}"/>
@@ -109,6 +124,11 @@
 		
 	  </j:forEach>
    		
+   	  <!-- update plugin descriptor -->
+      <!-- j:if test="${mode != 'bundle'}">
+  	  	<attainGoal name="eclipse-plugin:update-feature-includes"/>
+  	  </j:if -->	
+   	
    	  <ant:delete dir="${maven.eclipse.plugin.temp.dir}"/>
    	  
    </goal>
@@ -117,8 +137,8 @@
    <!-- 
    	  build a single artifact containing all plugins and feature, ready to be 
    	  unzipped into ${eclipse.home} or either to be used in update manager. 
-   	  warning : if unzipped in ${eclipse.home}, site.properties and site.xml 
-   	  will mess up the ${eclipse.home} directory. 
+   	  warning : if unzipped in ${eclipse.home}, site.properties and site.xml,
+   	  as well as META-INF folder will mess up the ${eclipse.home} directory. 
    -->
    <goal name="eclipse-plugin:create-site-dist" prereqs="eclipse-plugin:init,eclipse-plugin:install-artifact"
    		 description="build a single distribution file containing all required plugins and features">
@@ -234,7 +254,7 @@
   </goal> 
    
    
-  <goal name="eclipse-plugin:install-swt" description="install platofrm-dependent swt library into maven local repository">
+  <goal name="eclipse-plugin:install-swt" description="install platform-dependent swt library into maven local repository">
     <!-- set eclipse.home property -->
 	<ant:property environment="env"/>
   	<ant:property name="eclipse.home" location="${env.ECLIPSE_HOME}"/>
@@ -264,5 +284,54 @@
 	<ant:copy file="${eclipse.home}/plugins/${swt.plugin.dir}/swt.jar" 
   		      tofile="${maven.repo.local}/${maven.eclipse.plugin.swt.groupId}/jars/${maven.eclipse.plugin.swt.artifactId}-${maven.eclipse.plugin.swt.version}.jar"/>  
   		      
+  </goal>
+  
+  
+  <goal name="eclipse-plugin:create-library-artifacts" 
+  		prereqs="eclipse-plugin:init" 
+  		description="foreach pom dependency, create eclipse plugin that exports the given dependenvy. generated plugins are outpoutted to ${maven.build.dir}/eclipse/ext">
+    <j:forEach var="artifact" items="${pom.artifacts}">
+      <j:set var="dependency" value="${artifact.dependency}"/>
+      <j:if test="${!(dependency.groupId.equals('eclipse')) and dependency.getProperty('eclipse.plugin.bundle') == 'true'}">
+ 
+ 		<!-- init variables -->
+ 		<mevenide:adapt-version var="depVersion" version="${dependency.version}"/>
+ 		<ant:echo>dv = ${depVersion}</ant:echo>
+        <j:set var="dependencyPluginDir" value="${maven.build.dir}/eclipse/ext/${dependency.groupId}_${depVersion}"/>
+		<ant:mkdir dir="${dependencyPluginDir}"/>
+        
+        <util:file name="${artifact.path}" var="artifactJar"/>
+      
+        <!-- create plugin descriptor -->
+        <j:file name="${dependencyPluginDir}/plugin.xml" prettyPrint="true">
+          <x:element name="plugin">
+            <x:attribute name="id">${dependency.groupId}</x:attribute>
+            <x:attribute name="name">${dependency.artifactId} Library</x:attribute>
+            <x:attribute name="version">${dependency.version}</x:attribute>
+            <!-- xml:attribute name="provider-name">...</x:attribute -->
+            <x:element name="runtime">
+              <x:element name="library">
+                <x:attribute name="name">${artifactJar.getName()}</x:attribute>
+                <x:element name="export">
+                  <x:attribute name="name">*</x:attribute>
+                </x:element>
+                <!-- x:element name="packages">
+                  <x:attribute name="prefixes">*</x:attribute>
+                </x:element -->
+              </x:element>
+            </x:element>
+          </x:element>
+        </j:file>
+        
+        <!-- copy plugin files to output folder -->
+        <ant:copy file="${artifact.path}" todir="${dependencyPluginDir}"/>
+        <j:set var="licenseFile" value="${basedir}/licenses/${dependency.groupId}/licenses/${dependency.artifactId}.lic"/>
+        <ant:available property="isLicensePresent" file="${licenseFile}"/>
+        <j:if test="${isLicensePresent}">
+          <ant:copy file="${licenseFile}" todir="${dependencyPluginDir}"/>
+        </j:if>
+        
+      </j:if>
+    </j:forEach>
   </goal>
 </project>
