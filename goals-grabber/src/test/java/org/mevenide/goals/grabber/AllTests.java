@@ -48,59 +48,23 @@
  */
 package org.mevenide.goals.grabber;
 
-import java.io.FileReader;
-
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserFactory;
+import junit.framework.Test;
+import junit.framework.TestSuite;
 
 /**  
- * read custom goals declared in maven.xml
+ * @todo create AbstractGoalsGrabberTestCase 
  * 
  * @author Gilles Dodinet (gdodinet@wanadoo.fr)
- * @version $Id: ProjectGoalsGrabber.java 4 sept. 2003 Exp gdodinet 
+ * @version $Id: AllTests.java 5 sept. 2003 Exp gdodinet 
  * 
  */
-public class ProjectGoalsGrabber extends AbstractGoalsGrabber {
-	private String mavenXmlFile;
-	
-	public ProjectGoalsGrabber() { }
-	
-    public void refresh() throws Exception {
-		super.refresh();
-    	if ( mavenXmlFile == null ) {
-    		throw new Exception("maven.xml file hasnot been set. Unable to refresh goals.");
-    	}
-    	parseMavenXml();
-    }
-
-	private void parseMavenXml() throws Exception {
-		XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
-		XmlPullParser parser = factory.newPullParser();
-		parser.setInput( new FileReader(mavenXmlFile) );
-
-		int eventType = parser.getEventType();
-
-		while ( eventType != XmlPullParser.END_DOCUMENT )
-		{
-			if ( eventType == XmlPullParser.START_TAG )
-			{
-				if ( parser.getName().equals("goal")) {
-					String fullyQualifiedName = parser.getAttributeValue(null, "name");
-					String prereqs = parser.getAttributeValue(null, "prereqs");
-					String description = parser.getAttributeValue(null, "description");
-					registerGoal(fullyQualifiedName, description+">"+prereqs);
-				}
-			}
-			eventType = parser.next();
-		}
-	}
-
-    public String getMavenXmlFile() {
-        return mavenXmlFile;
-    }
-
-    public void setMavenXmlFile(String mavenXmlFile) {
-        this.mavenXmlFile = mavenXmlFile;
-    }
-
+public class AllTests {
+	public static Test suite() {
+		
+		TestSuite suite = new TestSuite();
+		
+		suite.addTestSuite(DefaultGoalsGrabberTest.class);
+		suite.addTestSuite(ProjectGoalsGrabberTest.class);
+		return suite; 
+	} 
 }

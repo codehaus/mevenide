@@ -48,59 +48,91 @@
  */
 package org.mevenide.goals.grabber;
 
-import java.io.FileReader;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserFactory;
+import org.apache.commons.lang.StringUtils;
 
 /**  
- * read custom goals declared in maven.xml
  * 
  * @author Gilles Dodinet (gdodinet@wanadoo.fr)
- * @version $Id: ProjectGoalsGrabber.java 4 sept. 2003 Exp gdodinet 
+ * @version $Id: AbsractGoalsGrabber.java 5 sept. 2003 Exp gdodinet 
  * 
  */
-public class ProjectGoalsGrabber extends AbstractGoalsGrabber {
-	private String mavenXmlFile;
+public abstract class AbstractGoalsGrabber implements IGoalsGrabber {
+	protected Map plugins, prereqs, descriptions = new HashMap();
 	
-	public ProjectGoalsGrabber() { }
-	
-    public void refresh() throws Exception {
-		super.refresh();
-    	if ( mavenXmlFile == null ) {
-    		throw new Exception("maven.xml file hasnot been set. Unable to refresh goals.");
+	public void refresh() throws Exception {
+		plugins = new HashMap();
+		prereqs  = new HashMap();
+		descriptions  = new HashMap();
+    }
+
+    protected void registerGoal(String fullyQualifiedGoalName, String properties) {
+    	registerGoalName(fullyQualifiedGoalName);
+    	registerGoalProperties(fullyQualifiedGoalName, properties);
+    }
+
+    protected void registerGoalName(String fullyQualifiedGoalName) {
+        String[] splittedGoal = StringUtils.split(fullyQualifiedGoalName, ":");
+    	String plugin = splittedGoal[0];
+    
+    	String goalName = "(default)";
+    	if ( splittedGoal.length > 1 ) {
+    		goalName = splittedGoal[1];
     	}
-    	parseMavenXml();
+    
+    	List goals = (List) plugins.get(plugin);
+    	if ( goals == null ) { 
+    		goals = new ArrayList();
+    	}
+    	if ( !goals.contains(goalName) ) {
+    		goals.add(goalName);
+    	}
+    	plugins.remove(plugin);
+    	plugins.put(plugin, goals);
     }
 
-	private void parseMavenXml() throws Exception {
-		XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
-		XmlPullParser parser = factory.newPullParser();
-		parser.setInput( new FileReader(mavenXmlFile) );
-
-		int eventType = parser.getEventType();
-
-		while ( eventType != XmlPullParser.END_DOCUMENT )
-		{
-			if ( eventType == XmlPullParser.START_TAG )
-			{
-				if ( parser.getName().equals("goal")) {
-					String fullyQualifiedName = parser.getAttributeValue(null, "name");
-					String prereqs = parser.getAttributeValue(null, "prereqs");
-					String description = parser.getAttributeValue(null, "description");
-					registerGoal(fullyQualifiedName, description+">"+prereqs);
-				}
-			}
-			eventType = parser.next();
-		}
-	}
-
-    public String getMavenXmlFile() {
-        return mavenXmlFile;
+    protected void registerGoalProperties(String fullyQualifiedGoalName, String properties) {
+        String[] splittedProperties = StringUtils.split(properties, ">");
+    	if ( splittedProperties.length > 0 ) {
+    		String description = splittedProperties[0];
+    		descriptions.put(fullyQualifiedGoalName, description);
+    	}
+    	if ( splittedProperties.length > 1 ) {
+    		String[] commaSeparatedPrereqs = StringUtils.split(splittedProperties[1], ",");
+    		prereqs.put(fullyQualifiedGoalName, commaSeparatedPrereqs);
+    	}
     }
 
-    public void setMavenXmlFile(String mavenXmlFile) {
-        this.mavenXmlFile = mavenXmlFile;
+    public String[] getPlugins() {
+        return toStringArray(plugins.keySet());
     }
 
+    public String[] getGoals(String plugin) {
+    	if ( plugin == null ) {
+    		return new String[0];
+    	}
+    	return toStringArray((Collection)plugins.get(plugin));
+    }
+
+    public String getDescription(String fullyQualifiedGoalName) {
+        return (String) descriptions.get(fullyQualifiedGoalName);
+    }
+
+    public String[] getPrereqs(String fullyQualifiedGoalName) {
+        return (String[]) prereqs.get(fullyQualifiedGoalName);
+    }
+
+    protected String[] toStringArray(Collection stringCollection) {
+    	Object[] obj = stringCollection.toArray();
+    	String[] strg = new String[obj.length];
+    	for (int i = 0; i < strg.length; i++) {
+    		strg[i] = (String) obj[i];
+        } 
+    	return strg;
+    }
 }
