@@ -24,6 +24,8 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Project;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -189,6 +191,14 @@ public abstract class PageSection extends SectionPart {
         Text text = factory.createText(parent, "", SWT.WRAP | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL); //$NON-NLS-1$
         GridData data = new GridData(GridData.FILL_BOTH);
         text.setLayoutData(data);
+        GC gc = new GC(text);
+		try {
+			Point extent = gc.textExtent("X");//$NON-NLS-1$
+			data.widthHint = 30 * extent.x;
+		} 
+		finally {
+			gc.dispose();
+		}
         return text;
     }
 
