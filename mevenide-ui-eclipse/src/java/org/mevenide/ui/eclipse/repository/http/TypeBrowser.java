@@ -22,7 +22,6 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import org.apache.commons.lang.StringUtils;
-import org.apache.maven.project.Dependency;
 import org.jface.mavenzilla.GroupSearch;
 import org.jface.mavenzilla.Search;
 import org.jface.mavenzilla.SearchResult;
@@ -75,9 +74,4 @@ public class TypeBrowser implements RepositoryObjectCollector {
         }
     }
     
-    
-    public Dependency download(BaseRepositoryObject object) {
-        
-        return null;
-    }
 }
