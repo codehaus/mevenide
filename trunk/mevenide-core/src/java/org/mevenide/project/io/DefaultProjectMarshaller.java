@@ -318,8 +318,6 @@ public class DefaultProjectMarshaller implements IProjectMarshaller {
 		marshallString(build.getNagEmailAddress(), "nagEmailAddress");
 		marshallString(build.getSourceDirectory(), "sourceDirectory");
 		marshallString(build.getUnitTestSourceDirectory(), "unitTestSourceDirectory");
-		marshallString(build.getIntegrationUnitTestSourceDirectory(), "integrationUnitTestSourceDirectory");
-		marshallString(build.getAspectSourceDirectory(), "aspectSourceDirectory");
 		
 		if ( build.getUnitTest() != null ) {
 			serializer.startTag(NAMESPACE, "unitTest");
@@ -329,8 +327,9 @@ public class DefaultProjectMarshaller implements IProjectMarshaller {
 			serializer.endTag(NAMESPACE, "unitTest");
 		}
 		
- 
-		marshallString(build.getIntegrationUnitTestSourceDirectory(), "ntegrationUnitTestSourceDirectory"); 
+		marshallString(build.getAspectSourceDirectory(), "aspectSourceDirectory");
+		marshallString(build.getIntegrationUnitTestSourceDirectory(), "integrationUnitTestSourceDirectory");
+		 
 		marshallResources(build.getResources());
 		
 		serializer.endTag(NAMESPACE, "build");
