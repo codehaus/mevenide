@@ -97,13 +97,15 @@ public class Mevenide extends AbstractUIPlugin {
 		try {
 			plugin = this;
 			NATURE_ID = Mevenide.getResourceString("maven.nature.id");
-            
+			
+			customLocationFinder = new CustomLocationFinder();
+			
 			loadPreferences();
             
 			initEnvironment();
 		} 
 		catch (Exception x) {
-			log.debug("Mevenide couldnot initialize due to : " + x);
+			log.debug("Mevenide couldnot initialize due to : ", x);
 			throw x;
 		}
 	}
@@ -286,14 +288,13 @@ public class Mevenide extends AbstractUIPlugin {
 	 * should not be necessary since the setters already take care of configuring the environment.
 	 */
 	public void initEnvironment() {
-        customLocationFinder = new CustomLocationFinder();
         customLocationFinder.setJavaHome(getJavaHome());
         customLocationFinder.setMavenHome(getMavenHome());
         customLocationFinder.setMavenLocalRepository(getMavenRepository());
         customLocationFinder.setMavenPluginsDir(getPluginsInstallDir());
 		customLocationFinder.setMavenLocalHome(getMavenLocalHome());
         ((LocationFinderAggregator)ConfigUtils.getDefaultLocationFinder()).setCustomLocationFinder(customLocationFinder);
-//TODO Milos: what to do with HeapSize, not in ILocationFinder..
+//		TODO Milos: what to do with HeapSize, not in ILocationFinder..
 //		Environment.setHeapSize(getHeapSize());
 		RunnerHelper.setHelper(
 			new RunnerHelper() {
