@@ -23,7 +23,10 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.File;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Iterator;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.Icon;
@@ -64,7 +67,6 @@ public class MavenProject implements Project {
     
     public static final String PROP_PROJECT = "MavenProject"; //NOI18N
     
-    private File file;
     private FileObject fileObject;
     private IPropertyResolver properties;
     private IQueryContext queryContext;
@@ -77,14 +79,12 @@ public class MavenProject implements Project {
     private Updater updater1;
     private Updater updater2;
     private Updater updater3;
-    private Lookup staticLookup;
-    private ProjectLookup completeLookup;
+
     private Info projectInfo;
     
     /** Creates a new instance of MavenProject */
     MavenProject(FileObject projectFO, File projectFile) throws Exception {
         support = new PropertyChangeSupport(this);
-        file = projectFile;
         fileObject = projectFO;
         projectInfo = new Info();
         updater1 = new Updater(true);
@@ -337,7 +337,8 @@ public class MavenProject implements Project {
     
     
     private Lookup createLookup() {
-        staticLookup = Lookups.fixed(new Object[] {
+        Collection toReturn = new ArrayList();
+        Lookup staticLookup = Lookups.fixed(new Object[] {
             projectInfo,
             new MavenForBinaryQueryImpl(this),
             new ActionProviderImpl(this),
@@ -353,20 +354,22 @@ public class MavenProject implements Project {
             new RecommendedTemplatesImpl(),
             new WebModuleProviderImpl(this)
         });
-        return staticLookup;
-//        completeLookup = new ProjectLookup(staticLookup);
-//        checkDynamicLookup();
-//        return completeLookup;
+        toReturn.add(staticLookup);
+        
+        Lookup.Template template = new Lookup.Template(AdditionalMavenLookupProvider.class);
+        Lookup.Result result = Lookup.getDefault().lookup(template);
+        Collection col = result.allInstances();
+        Iterator it = col.iterator();
+        while (it.hasNext()) {
+            AdditionalMavenLookupProvider prov = (AdditionalMavenLookupProvider)it.next();
+            toReturn.add(prov.createMavenLookup(this));
+        }
+        Lookup[] lookups = new Lookup[toReturn.size()];
+        lookups = (Lookup[])toReturn.toArray(lookups);
+        ProxyLookup look = new ProxyLookup(lookups);
+        return look;
     }
     
-//    private void checkDynamicLookup() {
-//        FileObject fo = FileUtilities.getFileObjectForProperty("maven.war.src", getPropertyResolver());
-//        if (fo != null) {
-//            completeLookup.setDynamicLookup(Lookups.fixed(new Object[] {
-//                new WebModuleImpl(this)
-//            }));
-//        }
-//    }
     
     public ProjectInformation getProjectInfo() {
         return projectInfo;
@@ -571,18 +574,6 @@ public class MavenProject implements Project {
             MavenProject.this.firePropertyChange(PROP_PROJECT);
         }
         
-    }
-    
-    private class ProjectLookup extends ProxyLookup {
-        private Lookup stat;
-        public ProjectLookup(Lookup staticLookup) {
-            super(new Lookup[] {staticLookup});
-            stat = staticLookup;
-        }
-        
-        public final void setDynamicLookup(Lookup look) {
-            setLookups(new Lookup[] {stat, look});
-        }        
     }
     
 }
