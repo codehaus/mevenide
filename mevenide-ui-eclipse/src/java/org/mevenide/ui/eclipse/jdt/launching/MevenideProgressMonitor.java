@@ -18,7 +18,6 @@ package org.mevenide.ui.eclipse.jdt.launching;
 import org.eclipse.core.runtime.NullProgressMonitor;
 
 /**
- * @todo IMPLEMENTME
  * @author Gilles Dodinet (gdodinet@wanadoo.fr)
  * @version $Id: MevenideProgressMonitor.java 27 avr. 2003 14:12:1913:34:35 Exp gdodinet 
  * 
