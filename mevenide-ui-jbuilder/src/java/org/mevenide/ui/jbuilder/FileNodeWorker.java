@@ -51,11 +51,13 @@ public class FileNodeWorker
 
                 while (dependencyIter.hasNext()) {
                     Dependency curDependency = (Dependency) dependencyIter.next();
-                    File jarFile = findDependencyJar(repositoryPath,
-                        curDependency);
-                    if (jarFile != null) {
-                        Url jarUrl = new Url(jarFile);
-                        mavenDependencyUrls.add(jarUrl);
+                    if (!"false".equals(curDependency.getProperty("jbuilder.plugin.autoupdate"))) {
+                        File jarFile = findDependencyJar(repositoryPath,
+                            curDependency);
+                        if (jarFile != null) {
+                            Url jarUrl = new Url(jarFile);
+                            mavenDependencyUrls.add(jarUrl);
+                        }
                     }
                 }
             } catch (Exception e) {
