@@ -71,10 +71,15 @@ import org.mevenide.project.dependency.DependencySplitter;
  * 
  */
 public class DefaultReportsFinder implements IReportsFinder {
+	/**
+	 * implementation of GRepInputStream found @ http://www.heise.de/ix/artikel/E/1996/06/142/05.shtml
+	 * 
+	 * @author Ute Schneider
+	 */
 	private class GrepInputStream extends FilterInputStream {
 		private String substring;
 		private BufferedReader bufferedReader;
-
+		
 		public GrepInputStream(DataInputStream inputStream, String substring) {
 			super(inputStream);
 			this.bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
