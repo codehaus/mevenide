@@ -375,9 +375,9 @@ public abstract class JellyContentAssistProcessor implements IContentAssistProce
         cp = new ICompletionProposal[words.size()];
         for (int i = 0; i < cp.length; i++) {
             String displayText = (String) words.get(i) ;
-            String text = displayText + "=\"\"";
+            String text = displayText ;//+ "=\"\"";
             //IContextInformation contextInformation = createAttributeContextInformation(node.getName(), displayText);
-            cp[i] = new CompletionProposal(text, offset - start.length(), start.length(), text.length() - 1, Mevenide.getImageDescriptor("xml-attr.gif").createImage(), displayText, null, null);
+            cp[i] = new CompletionProposal(text, offset - start.length(), start.length(), text.length(), Mevenide.getImageDescriptor("xml-attr.gif").createImage(), displayText, null, null);
         }
         return cp;
     }
