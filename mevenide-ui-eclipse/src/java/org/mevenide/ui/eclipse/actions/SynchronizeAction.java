@@ -15,6 +15,8 @@
 
 package org.mevenide.ui.eclipse.actions;
 
+import org.eclipse.core.runtime.Path;
+import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
@@ -39,13 +41,17 @@ public class SynchronizeAction extends AbstractMavenAction {
 		try {
             if ( action.getId().equals("maven-plugin.Synchronize") ) {
             	String mavenHome = MavenPlugin.getPlugin().getMavenHome();
-				if ( mavenHome == null || mavenHome.trim().equals("") ) {
+            	String mavenRepository = MavenPlugin.getPlugin().getMavenRepository();
+            	if ( isNull(mavenHome) || isNull(mavenRepository) ) {
 					MessageBox dialog = new MessageBox (PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), SWT.ICON_WARNING | SWT.OK);
 					dialog.setText ("Mevenide");
-					dialog.setMessage ("Cannot synchronize : Maven Home has not been set.");
+					dialog.setMessage ("Please set maven preferences before synchronizing");
 					dialog.open ();
 				}
 				else {
+					if ( JavaCore.getClasspathVariable("MAVEN_REPO") == null ) {
+						JavaCore.setClasspathVariable("MAVEN_REPO", new Path(MavenPlugin.getPlugin().getMavenRepository()), null);
+					}
 					SynchronizerFactory.getSynchronizer(ISynchronizer.POM_TO_IDE).synchronize();
 				}
 			}
@@ -61,4 +67,7 @@ public class SynchronizeAction extends AbstractMavenAction {
 		}
 	}
     
+    private boolean isNull(String strg) {
+		return strg == null || strg.trim().equals("");
+    }
 }

@@ -168,10 +168,7 @@ public class PomSynchronizer extends AbstractPomSynchronizer implements ISynchro
      */
 	public void preSynchronization() {
 		try {
-			//Environment.prepareEnv(project.getLocation().toFile().getAbsolutePath());
-			//if ( !pom.getFullPath().toFile().exists() ) {
 			MavenPlugin.getPlugin().createPom();
-			//
 		}
 		catch (Exception e) {
 			e.printStackTrace();
