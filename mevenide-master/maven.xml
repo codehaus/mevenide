@@ -12,7 +12,6 @@
   </goal>
   
   <goal name="mevenide:build-site" description="Build Mevenide Site">
-  	<j:set var="maven.multiproject.excludes" value="${maven.multiproject.excludes}"/>
   	<j:set var="maven.multiproject.includes" value="${maven.multiproject.includes},${mevenide.eclipse.plugin.project.location}/project.xml"/>
   	<attainGoal name="multiproject:site"/>
   </goal>
@@ -47,10 +46,9 @@
 
 
   <!-- ==================================== -->
-  <!--            utils section             -->
+  <!--           optional section           -->
   <!-- ==================================== -->
-  <goal name="mevenide:install-maven-eclipse-plugin-plugin" 
-  	    description="Checkout maven-eclipse-plugin-plugin from cvs and install it">
+  <goal name="mevenide:install-maven-eclipse-plugin-plugin" description="Checkout maven-eclipse-plugin-plugin from cvs and install it">
   	 <attainGoal name="scm:checkout-project"/>
   	 <util:file var="mavenEclipsePluginPluginPom" name="${maven.scm.checkout.dir}/maven-plugins/maven-eclipse-plugin-plugin/project.xml"/>
 	 <maven:maven descriptor="${mavenEclipsePluginPluginPom}" goals=" plugin:install,plugin:deploy"/>
