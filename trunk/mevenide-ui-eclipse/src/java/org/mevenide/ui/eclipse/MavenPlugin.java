@@ -45,6 +45,8 @@ public class MavenPlugin extends AbstractUIPlugin {
 	
 	private static MavenPlugin plugin;
 	
+	private Object lock = new Object();
+	
 	public static String NATURE_ID ;
 	
 	private ResourceBundle resourceBundle;
@@ -56,22 +58,24 @@ public class MavenPlugin extends AbstractUIPlugin {
     private String currentDir;
     private IProject project;
     
-    public MavenPlugin(IPluginDescriptor descriptor) {
+    public MavenPlugin(IPluginDescriptor descriptor) throws Exception {
 		super(descriptor);
 		try {
-            plugin = this;
-            resourceBundle = ResourceBundle.getBundle("MavenPluginResources");
-            NATURE_ID = MavenPlugin.getResourceString("maven.nature.id");
+			plugin = this;
+			
+			NATURE_ID = MavenPlugin.getResourceString("maven.nature.id");
             
             PreferenceStore preferenceStore = new PreferenceStore(getPreferencesFilename());
             preferenceStore.load();
             
             mavenHome = preferenceStore.getString("maven.home");
-            javaHome = preferenceStore.getString("java.home");		
+            javaHome = preferenceStore.getString("java.home");
+            		
 		} 
 		catch (Exception x) {
+			//resourceBundle = null;
 			x.printStackTrace();
-			resourceBundle = null;
+			throw x;
 		}
 	}
 
@@ -104,7 +108,18 @@ public class MavenPlugin extends AbstractUIPlugin {
 	}
 
 	public ResourceBundle getResourceBundle() {
-		return resourceBundle;
+		if ( resourceBundle != null) {
+			return resourceBundle;
+		}
+		else {
+			synchronized (lock) {
+				if ( resourceBundle == null ) {
+					resourceBundle = ResourceBundle.getBundle("MavenPluginResources");
+				}
+				return resourceBundle;
+			}
+		}
+		
 		
 	}
 	
