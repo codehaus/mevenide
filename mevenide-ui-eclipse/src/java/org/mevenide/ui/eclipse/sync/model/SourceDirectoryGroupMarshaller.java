@@ -70,7 +70,8 @@ public class SourceDirectoryGroupMarshaller {
 						SourceDirectory sourceDirectory 
 							= new SourceDirectory(sourceDirectoryElement.getAttributeValue("path"));
 						long sdTimestamp = Long.parseLong(sourceDirectoryElement.getAttributeValue("timestamp"));
-						if ( group.getSourceDirectories().contains(sourceDirectory) ) {
+						//if ( group.getSourceDirectories().contains(sourceDirectory) ) {
+						if ( sdTimestamp == timestamp ){
 							sourceDirectory.setDirectoryType(sourceDirectoryElement.getAttributeValue("type"));
 							sourceDirectoryList.add(sourceDirectory);
 						}
