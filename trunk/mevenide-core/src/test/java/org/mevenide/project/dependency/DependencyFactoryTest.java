@@ -151,6 +151,11 @@ public class DependencyFactoryTest extends AbstractMevenideTestCase{
 		assertEquals("2.0alpha1-20020829", dep.getVersion());
 		assertEquals("commons-httpclient", dep.getArtifactId());
 		assertEquals("commons-httpclient", dep.getGroupId());
+		
+		dep = dependencyFactory.getDependency("/home/my-fake-0.1.zip");
+		assertEquals("0.1", dep.getVersion());
+		assertEquals("my-fake", dep.getArtifactId());
+		assertEquals("", dep.getGroupId());
 	}
 
 	

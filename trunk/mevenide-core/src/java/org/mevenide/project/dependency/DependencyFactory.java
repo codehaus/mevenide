@@ -81,7 +81,7 @@ public class DependencyFactory {
 	 * @return
 	 */
 	public Dependency getDependency(String absoluteFileName) throws Exception {
-		IDependencyResolver dependencyResolver = DependencyResolverFactory.newInstance(absoluteFileName);
+		IDependencyResolver dependencyResolver = DependencyResolverFactory.getFactory().newInstance(absoluteFileName);
 		
 		String groupId = dependencyResolver.guessGroupId();
 		
