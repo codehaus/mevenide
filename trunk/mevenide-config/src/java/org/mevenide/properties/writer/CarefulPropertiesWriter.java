@@ -14,13 +14,10 @@
  *  limitations under the License.
  * =========================================================================
  */
-package org.mevenide.environment.writer;
+package org.mevenide.properties.writer;
 
-import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
@@ -28,19 +25,18 @@ import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.mevenide.properties.*;
 
 /**
  *
  * @author  Milos Kleint (ca206216@tiscali.cz)
  */
 public class CarefulPropertiesWriter implements IPropertiesWriter
-{
-    
+{   
     private static Log logger = LogFactory.getLog(CarefulPropertiesWriter.class);
-    
-    private static final String whiteSpaceChars = " \t\r\n\f";
     
     /** Creates a new instance of CarefulPropertiesWriter */
     public CarefulPropertiesWriter()
@@ -49,7 +45,7 @@ public class CarefulPropertiesWriter implements IPropertiesWriter
     
     public void marshall(OutputStream output, Properties props, InputStream currentContent) throws IOException
     {
-        PropModel model = createModel(currentContent);
+        PropertyModel model = PropertyModelFactory.getFactory().newPropertyModel(currentContent);
         List newOnes = new ArrayList();
         List replacedOnes = new ArrayList();
         
@@ -57,13 +53,13 @@ public class CarefulPropertiesWriter implements IPropertiesWriter
         while (enum.hasMoreElements()) 
         {
             String key = (String)enum.nextElement();
-            PropModel.KeyValuePair kp = model.findByKey(key);
+            KeyValuePair kp = model.findByKey(key);
             if (kp != null)
             {
                 kp.setValue(saveConvert(props.getProperty(key), false));
                 replacedOnes.add(kp);
             } else {
-                kp = model.createKeyValuePair(key, '=');
+                kp = ElementFactory.getFactory().createKeyValuePair(key, '=');
                 kp.setValue(saveConvert(props.getProperty(key), false));
                 newOnes.add(kp);
                 //TODO for now append to the model, later have some better positioning heuristics
@@ -75,8 +71,8 @@ public class CarefulPropertiesWriter implements IPropertiesWriter
         Iterator it = modelList.iterator();
         while (it.hasNext())
         {
-            PropModel.Element obj = (PropModel.Element)it.next();
-            if (obj instanceof PropModel.KeyValuePair)
+            Element obj = (Element)it.next();
+            if (obj instanceof KeyValuePair)
             {
                 if (!newOnes.contains(obj) && !replacedOnes.contains(obj))
                 {
@@ -87,7 +83,7 @@ public class CarefulPropertiesWriter implements IPropertiesWriter
         marshallModel(model, output);
     }
     
-    private void marshallModel(PropModel model, OutputStream stream) throws IOException
+    private void marshallModel(PropertyModel model, OutputStream stream) throws IOException
     {
         OutputStreamWriter writer = new OutputStreamWriter(stream);
         Iterator it = model.getList().iterator();
@@ -97,111 +93,6 @@ public class CarefulPropertiesWriter implements IPropertiesWriter
         }
         writer.close();
     }
-    
-    
-    private PropModel createModel(InputStream stream) throws IOException
-    {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(stream, "8859_1"));
-        // according to Properties.java comment, it has to be 8859_1
-        String line;
-        PropModel model = new PropModel();
-        PropModel.Comment currComment = null;
-        PropModel.KeyValuePair currKeyPair = null;
-        boolean appendingMode = false;
-        while ((line = reader.readLine()) != null)
-        {
-            // Find start of key first..
-            // apparently doens't have to be the first in line..
-            int len = line.length();
-            int keyStart;
-            for (keyStart=0; keyStart<len; keyStart++)
-            {
-                if (whiteSpaceChars.indexOf(line.charAt(keyStart)) == -1)
-                    break;
-            }
-            if (appendingMode)
-            {
-                currComment = null;
-                addToKeyPair(currKeyPair, line);
-                appendingMode = continueLine(line);
-                continue;
-            }
-            
-            // Blank lines are added to comment (unless it's being added to the previous value??
-            if (keyStart == len)
-            {
-                currKeyPair = null;
-                addToComment(model, currComment, line);
-                continue;
-            }
-            
-            // Continue lines that end in slashes if they are not comments
-            char firstChar = line.charAt(keyStart);
-            if ((firstChar == '#') || (firstChar == '!'))
-            {
-                currKeyPair = null;
-                addToComment(model, currComment, line);
-                continue;
-            }
-            else
-            {
-                int sepIndex = Math.min(line.indexOf('='), line.indexOf(':'));
-                if (sepIndex > 0)
-                {
-                    String key = line.substring(0, sepIndex - 1);
-                    String value = line.substring(sepIndex + 1);
-                    currComment = null;
-                    if (key.trim().length() == 0)
-                    {
-                        logger.warn("strange line - key is whitespace");
-                        continue;
-                    }
-                    currKeyPair = createKeyPair(model, key, line.charAt(sepIndex), value);
-                    appendingMode = continueLine(line);
-                } else
-                {
-                    logger.warn("A non-comment non key-pair line encountered:'" + line + "'");
-                }
-            }
-        }
-        return model;
-    }
-    
-    
-    private void addToComment(PropModel model, PropModel.Comment comment, String line)
-    {
-        if (comment == null)
-        {
-            comment = model.createComment();
-            model.addElement(comment);
-        }
-        comment.addToComment(line + "\n");
-    }
-
-    private void addToKeyPair(PropModel.KeyValuePair pair, String line)
-    {
-        pair.addToValue(line + "\n");
-    }
-    
-    private PropModel.KeyValuePair createKeyPair(PropModel model, String key, char separator, String value)
-    {
-        PropModel.KeyValuePair pair = model.createKeyValuePair(key, separator);
-        pair.addToValue(value + "\n");
-        model.addElement(pair);
-        return pair;
-    }
-        
-    
-    /*
-     * Returns true if the next line should be appended to this one..
-     */
-    private boolean continueLine(String line) {
-        int slashCount = 0;
-        int index = line.length() - 1;
-        while ((index >= 0) && (line.charAt(index--) == '\\'))
-            slashCount++;
-        return (slashCount % 2 == 1);
-    }    
     
     /*
      * Converts unicodes to encoded &#92;uxxxx

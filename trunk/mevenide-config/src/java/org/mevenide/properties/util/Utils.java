@@ -1,5 +1,5 @@
 /* ==========================================================================
- * Copyright 2003-2004 Apache Software Foundation
+ * Copyright 2004 Apache Software Foundation
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,25 +14,25 @@
  *  limitations under the License.
  * =========================================================================
  */
-
-package org.mevenide.environment.writer;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.Properties;
+package org.mevenide.properties.util;
 
 /**
- * interface for writing properties files.
- * @author  Milos Kleint (ca206216@tiscali.cz)
+ * 
+ * @author <a href="mailto:rhill2@free.fr">Gilles Dodinet</a>
+ * @version $Id$
+ * 
  */
-public interface IPropertiesWriter
-{
-    /**
-     * writes the properties to outputstream, considering the currentcontent if not null andthe implementation
-     * is capable.
-     * @param props properties to write.
-     * @throws IOException if anything goes wrong.
-     */
-    void marshall(OutputStream output, Properties props, InputStream currentContent) throws IOException;
+public class Utils {
+    private Utils() { }
+    
+    public static boolean areEqual(Object o1, Object o2) {
+        if ( o1 == null && o2 == null ) {
+            return true;
+        }
+        if ( o1 == null ) {
+            return false;
+        }
+        return o1.equals(o2);
+    }
+    
 }
