@@ -1,7 +1,7 @@
 <project>
     <pomVersion>3</pomVersion>
     <groupId>mevenide</groupId>
-    <id>mevenide:maven-eclipse-plugin-plugin</id>
+    <id>maven-eclipse-plugin-plugin</id>
     <artifactId>maven-eclipse-plugin-plugin</artifactId>
     <name>maven-eclipse-plugin-plugin</name>
     <currentVersion>0.1.1-SNAPSHOT</currentVersion>
