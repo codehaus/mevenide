@@ -52,8 +52,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Project;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.ui.IJavaElementSearchConstants;
 import org.eclipse.jdt.ui.JavaUI;
@@ -271,9 +271,13 @@ public class DescriptionSection extends PageSection {
 						dialog.setMessage(message1);
 						
 						if (dialog.open() == Window.OK) {
-							IResource packageResource = (IResource) dialog.getResult()[0];
+							Object resource = dialog.getResult()[0];
+							if (log.isDebugEnabled()) {
+								log.debug("package selected = " + resource.getClass().getName());
+							}
+							IPackageFragment packageResource = (IPackageFragment) resource;
 							packageText.setFocus();
-							packageText.setText(packageResource.toString());
+							packageText.setText(packageResource.getElementName());
 						}
 					}
 					catch ( Exception ex ) {
