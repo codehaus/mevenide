@@ -24,10 +24,9 @@
   	<attainGoal name="mevenide-site:build-archive"/>
   </goal>
   
-  <goal name="mevenide-site:build-archive">
-    <j:set var="siteArchive" value="${maven.build.dir}/mevenide-site-${pom.currentVersion}.zip"/>
-    <ant:delete file="${siteArchive}"/>
-    <ant:zip destfile="${siteArchive}" basedir="${maven.build.dir}/docs"/>
+  <!-- do NOT call site:deploy because we dont want to attain 'site' goal -->
+  <goal name="mevenide-site:ssh-deploy" description="Deploy Site" prereqs="mevenide-site:build">
+    <attainGoal name="site:sshdeploy"/>
   </goal>
   
   
