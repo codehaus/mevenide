@@ -16,13 +16,8 @@
  */
 
 package org.mevenide.repository;
-
-import java.io.File;
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
-import org.mevenide.project.dependency.DefaultDependencyResolver;
 import org.mevenide.project.dependency.IDependencyResolver;
 
 /**

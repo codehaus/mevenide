@@ -19,10 +19,7 @@
 package org.mevenide.repository;
 
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Iterator;
+
 
 /**
  * Data placeholder for local and remote repository information.
