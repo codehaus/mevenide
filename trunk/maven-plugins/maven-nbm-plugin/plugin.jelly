@@ -152,7 +152,7 @@
                 </j:if>
                 <j:choose>
                     <j:when test="${moduleDep == 'loose'}">
-                        <j:set var="moduleDependencies" value="${moduleDependencies}${nbdep.separator} ${nbdep.module}"/>
+                        <j:set var="moduleDependencies" value="${moduleDependencies}${nbdep.separator} ${nbdepModule}"/>
                     </j:when>
                     <j:when test="${moduleDep == 'impl'}">
                         <j:if test="${nbdepIsNetbeansModule != true}">
