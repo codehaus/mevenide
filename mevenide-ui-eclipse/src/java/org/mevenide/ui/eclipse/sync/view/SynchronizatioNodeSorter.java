@@ -54,7 +54,7 @@ public class SynchronizatioNodeSorter extends ViewerSorter {
 			if ( ProjectConstants.MAVEN_TEST_DIRECTORY.equals(directory.getType()) ) {
 				return UNIT_TEST_DIRECTORY_CATEGORY;
 			}
-			if ( ProjectConstants.MAVEN_DEFAULT_OUTPUT_LOCATION.equals(directory.getType()) ) {
+			if ( ProjectConstants.MAVEN_OUTPUT_DIRECTORY.equals(directory.getType()) ) {
 				return OUTPUT_DIRECTORY_CATEGORY;
 			}
 			if ( ProjectConstants.MAVEN_RESOURCE.equals(directory.getType()) 

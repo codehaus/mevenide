@@ -50,6 +50,7 @@ public class NodeFilterDialog extends Dialog {
 	private Button aspectButton;
 	private Button testButton;
 	private Button sourceButton;
+	private Button outputButton;
 
 	private Group directoryTypeChoiceGroup;
 
@@ -61,6 +62,7 @@ public class NodeFilterDialog extends Dialog {
 	private boolean filterTest;
 	private boolean filterAspect;
 	private boolean filterResource;
+	private boolean filterOutput;
 	
 	NodeFilterDialog() {
 		super(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell());
@@ -161,6 +163,10 @@ public class NodeFilterDialog extends Dialog {
 		resourceButton = createDirectoryTypeButton(directoryTypeChoiceGroup, buttonText);
 		resourceButton.setSelection(preferencesManager.getBooleanValue(DirectoryNodeFilter.APPLY_RESOURCE_FILTERS_KEY));
 		
+		buttonText = "Filter Output directories";
+		outputButton = createDirectoryTypeButton(directoryTypeChoiceGroup, buttonText);
+		outputButton.setSelection(preferencesManager.getBooleanValue(DirectoryNodeFilter.APPLY_OUTPUT_FILTERS_KEY));
+		
 		enableDirectoryFilteringButton.addSelectionListener(
 			new SelectionAdapter() {
 				public void widgetSelected(SelectionEvent e) {
@@ -178,6 +184,7 @@ public class NodeFilterDialog extends Dialog {
 		testButton.setEnabled(enableDirectoryFilteringButton.getSelection());
 		aspectButton.setEnabled(enableDirectoryFilteringButton.getSelection());
 		resourceButton.setEnabled(enableDirectoryFilteringButton.getSelection());
+		outputButton.setEnabled(enableDirectoryFilteringButton.getSelection());
 	}
 
 	private Button createDirectoryTypeButton(Composite composite, String buttonText) {
@@ -204,6 +211,7 @@ public class NodeFilterDialog extends Dialog {
 		preferencesManager.setBooleanValue(DirectoryNodeFilter.APPLY_TEST_FILTERS_KEY, filterTest);
 		preferencesManager.setBooleanValue(DirectoryNodeFilter.APPLY_ASPECT_FILTERS_KEY, filterAspect);
 		preferencesManager.setBooleanValue(DirectoryNodeFilter.APPLY_RESOURCE_FILTERS_KEY, filterResource);
+		preferencesManager.setBooleanValue(DirectoryNodeFilter.APPLY_OUTPUT_FILTERS_KEY, filterOutput);
 		
 		preferencesManager.setBooleanValue(MavenArtifactNodeFilter.APPLY_FILTERS_KEY, enableArtifactFiltering);
 		preferencesManager.setValue(MavenArtifactNodeFilter.GROUP_ID_FILTER, groupIdFilter);
@@ -230,6 +238,9 @@ public class NodeFilterDialog extends Dialog {
 	}
 	public boolean shouldFilterTest() {
 		return filterTest;
+	}
+	public boolean shouldFilterOutput() {
+		return filterOutput;
 	}
 	public String getGroupIdFilter() {
 		return groupIdFilter;

@@ -19,6 +19,7 @@ package org.mevenide.ui.eclipse.sync.view;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.mevenide.project.ProjectConstants;
+import org.mevenide.ui.eclipse.preferences.PreferencesManager;
 import org.mevenide.ui.eclipse.sync.model.Directory;
 import org.mevenide.ui.eclipse.sync.model.DirectoryNode;
 
@@ -35,6 +36,7 @@ public class DirectoryNodeFilter extends ViewerFilter {
 	static final String APPLY_TEST_FILTERS_KEY = "DirectoryNodeFilter.APPLY_TEST_FILTERS_KEY";
 	static final String APPLY_ASPECT_FILTERS_KEY = "DirectoryNodeFilter.APPLY_ASPECT_FILTERS_KEY";
 	static final String APPLY_RESOURCE_FILTERS_KEY = "DirectoryNodeFilter.APPLY_RESOURCE_FILTERS_KEY";
+	static final String APPLY_OUTPUT_FILTERS_KEY = "DirectoryNodeFilter.APPLY_OUTPUT_FILTERS_KEY";
 	
 	private boolean filterDirectoryNodes; 
 	
@@ -42,6 +44,19 @@ public class DirectoryNodeFilter extends ViewerFilter {
 	private boolean filterTestDirectories;
 	private boolean filterAspectDirectories;
 	private boolean filterResourceDirectories;
+	private boolean filterOutputDirectories;
+	
+	DirectoryNodeFilter() {
+		PreferencesManager preferencesManager = PreferencesManager.getManager();
+		preferencesManager.loadPreferences();
+		
+		filterDirectoryNodes = preferencesManager.getBooleanValue(APPLY_FILTERS_KEY);
+		filterSourceDirectories = preferencesManager.getBooleanValue(APPLY_SOURCE_FILTERS_KEY);
+		filterTestDirectories = preferencesManager.getBooleanValue(APPLY_TEST_FILTERS_KEY);
+		filterAspectDirectories = preferencesManager.getBooleanValue(APPLY_ASPECT_FILTERS_KEY);
+		filterResourceDirectories = preferencesManager.getBooleanValue(APPLY_RESOURCE_FILTERS_KEY);
+		filterOutputDirectories = preferencesManager.getBooleanValue(APPLY_OUTPUT_FILTERS_KEY);
+	}
 	
 	public boolean select(Viewer viewer, Object parentElement, Object element) {
 		if ( !(element instanceof DirectoryNode) ) {
@@ -55,6 +70,9 @@ public class DirectoryNodeFilter extends ViewerFilter {
 	        return false;
 		}
 		if ( filterDirectoryNodes && filterAspectDirectories && ProjectConstants.MAVEN_ASPECT_DIRECTORY.equals(directory.getType()) ) {
+	        return false;
+		}
+		if ( filterDirectoryNodes && filterOutputDirectories && ProjectConstants.MAVEN_OUTPUT_DIRECTORY.equals(directory.getType()) ) {
 	        return false;
 		}
 		if ( filterDirectoryNodes && filterResourceDirectories 
@@ -79,5 +97,8 @@ public class DirectoryNodeFilter extends ViewerFilter {
 	}
 	public void setFilterTestDirectories(boolean filterTestDirectories) {
 		this.filterTestDirectories = filterTestDirectories;
+	}
+	public void setFilterOutputDirectories(boolean filterOutputDirectories) {
+		this.filterOutputDirectories = filterOutputDirectories;
 	}
 }

@@ -81,7 +81,7 @@ public class SynchronizationNodeLabelProvider implements ILabelProvider, IColorP
 		else if ( directory.getType().equals(ProjectConstants.MAVEN_ASPECT_DIRECTORY) ) {
 			imageName = "sourcefolder_aspect_obj.gif";
 		}
-		else if ( directory.getType().equals(ProjectConstants.MAVEN_DEFAULT_OUTPUT_LOCATION) ) {
+		else if ( directory.getType().equals(ProjectConstants.MAVEN_OUTPUT_DIRECTORY) ) {
 			imageName = "sourcefolder_output_obj.gif";
 		}
 		else if ( directory.getType().equals(ProjectConstants.MAVEN_RESOURCE) 

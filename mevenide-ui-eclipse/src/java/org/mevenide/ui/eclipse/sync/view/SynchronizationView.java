@@ -213,9 +213,9 @@ public class SynchronizationView extends ViewPart implements IActionListener, IR
         this.poms = poms;
         this.project = project;
         
-        refreshAll();
-        
         assertValidDirection();
+        
+        refreshAll();
     }
 
     private void assertValidDirection() {
@@ -348,6 +348,7 @@ public class SynchronizationView extends ViewPart implements IActionListener, IR
 					directoryNodeFilter.setFilterTestDirectories(dialog.shouldFilterTest());
 					directoryNodeFilter.setFilterAspectDirectories(dialog.shouldFilterAspect());
 					directoryNodeFilter.setFilterResourceDirectories(dialog.shouldFilterResource());
+					directoryNodeFilter.setFilterOutputDirectories(dialog.shouldFilterOutput());
 					
 					//problem : we lose informations entered in property sheet..
 					refreshAll();

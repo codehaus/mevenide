@@ -118,7 +118,7 @@ public class MavenProjectNode extends AbstractSynchronizationNode implements ISe
 	private DirectoryNode createOutputFolderDirectoryNode(String defaultEclipseOutputFolder) throws IOException {
 		Directory eclipseOutputDirectory = new Directory();
 		eclipseOutputDirectory.setPath(MevenideUtils.makeRelativePath(eclipseProject.getLocation().toFile(), defaultEclipseOutputFolder));
-		eclipseOutputDirectory.setType(ProjectConstants.MAVEN_DEFAULT_OUTPUT_LOCATION);
+		eclipseOutputDirectory.setType(ProjectConstants.MAVEN_OUTPUT_DIRECTORY);
 		DirectoryNode eclipseOutputFolderNode = new DirectoryNode(eclipseOutputDirectory, this);
 		return eclipseOutputFolderNode;
 	}
