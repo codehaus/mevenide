@@ -44,7 +44,7 @@ public class AdaptNbVersionTag extends AbstractNbMevenideTag {
         
         checkAttribute(version, "version");
         checkAttribute(var, "var");
-        checkAttribute(type, "type", new String[] { TYPE_SPECIFICATION, TYPE_SPECIFICATION});
+        checkAttribute(type, "type", new String[] { TYPE_SPECIFICATION, TYPE_IMPLEMENTATION});
         
         String newVersion = adapt();
         context.setVariable(var, newVersion);
