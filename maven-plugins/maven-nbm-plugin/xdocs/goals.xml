@@ -90,6 +90,16 @@
   		  	<th>Description</th>
   		  </tr>	
   		  <tr>
+            <td>nbm:fill-repository</td>
+            <td>
+            <p>
+            This goal extracts Netbeans module jars from the Netbeans IDE/Platform installation and puts them
+            into the local maven repository. It will figure out the correct version information 
+            by examining the module jar's manifest.
+            </p>
+            </td>
+            </tr>
+  		  <tr>
             <td>nbm:prepare-nbm-resources</td>
             <td>
 <p>            This goal is a prerequisite of nbm:nbm, it copies all the required resources into

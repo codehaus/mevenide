@@ -6,6 +6,12 @@
   </properties>
 
   <body>
+    <release version="1.1" date="20050310" description="Minor additions.">
+      <action dev="mkleint" type="add">
+      Added goal <code> nbm:fill-repository </code> which populates the local
+      Maven repository with Netbeans modules from Netbeans installation directory. 
+      </action>
+    </release>
     <release version="1.0" date="20050122" description="First stable release.">
       <action dev="mkleint" type="update">
       General cleanup, removed non-straightforward goals and properties. 
