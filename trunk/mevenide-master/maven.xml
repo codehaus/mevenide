@@ -25,9 +25,6 @@
   <!-- ==================================== -->
   <goal name="mevenide-site:build" description="Build Mevenide Site" prereqs="mevenide-site:init">
   	<j:set var="maven.multiproject.includes" value="${maven.multiproject.site.includes}"/>
-  	<echo>"${maven.multiproject.basedir}</echo>
-    <echo>${maven.multiproject.includes}</echo>
-    <echo>excludes="${maven.multiproject.excludes}</echo>
   	<attainGoal name="multiproject:site"/>
   	<attainGoal name="mevenide-site:generate-wiki-templates"/>
   </goal>
