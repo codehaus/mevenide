@@ -132,6 +132,12 @@ public class MavenLaunchShortcut implements ILaunchShortcut {
 				//IStatus status = new Status(IStatus.INFO, Mevenide.PLUGIN_ID, 0, "", null); //$NON-NLS-1$
 				int val = DebugUITools.openLaunchConfigurationDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), configuration, IExternalToolConstants.ID_EXTERNAL_TOOLS_LAUNCH_GROUP, null);
 				if ( val == Window.CANCEL ) {
+					try {
+						configuration.delete();
+					}
+					catch ( Exception e ) {
+						log.debug("Exception while cancelling launch : " + e );
+					}
 					return;
 				}
 				
