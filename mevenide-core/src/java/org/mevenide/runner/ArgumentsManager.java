@@ -119,8 +119,6 @@ public class ArgumentsManager {
 	 * in order to ensure that the basedir is correct we have to set 
 	 * the user.dir property to the project home. bug in maven ? 
 	 * 
-	 * @todo get rid of xerces. use a lighter dom/sax implementation instead 
-	 * 
 	 * @param runner
 	 * @return
 	 */
