@@ -11,7 +11,7 @@
     <attainGoal name="mevenide:create-update-dist"/>
   </goal>
   
-  <goal name="mevenide:build-site" description="Build Mevenide Site" >
+  <goal name="mevenide:build-site" description="Build Mevenide Site" prereqs="mevenide:prepare-site-resources">
   	<j:set var="maven.multiproject.includes" value="${maven.multiproject.includes},${mevenide.eclipse.plugin.project.name}/project.xml,${mevenide.spinner.wiki.project.name}/project.xml"/>
   	<attainGoal name="multiproject:site"/>
   </goal>
@@ -41,7 +41,7 @@
   <goal name="mevenide:prepare-site-resources" description="Copy the site resources into xdocs directories">
   	<j:forEach var="project" items="${maven.multiproject.includes}">
   	  <ant:copy todir="${project}/xdocs/images">
-  	  	<fileset dir="${mevenide.master.project.location}/xdocs/location" includes="*.*"/>
+  	  	<fileset dir="${mevenide.master.project.location}/xdocs/images" includes="*.*"/>
   	  </ant:copy>
   	</j:forEach>
   </goal>
