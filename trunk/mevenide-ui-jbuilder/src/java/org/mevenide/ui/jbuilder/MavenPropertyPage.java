@@ -34,9 +34,11 @@ public class MavenPropertyPage extends PropertyPage {
     private GridBagLayout gridBagLayout1 = new GridBagLayout();
     private JCheckBox debugModeCheckBox = new JCheckBox();
     private JCheckBox offLineModeCheckBox = new JCheckBox();
+    private JCheckBox quietModeCheckBox = new JCheckBox();
     private XMLFileNode archiveNode;
     private JLabel debugLabel = new JLabel();
     private JLabel offlineLabel = new JLabel();
+    private JLabel quietLabel = new JLabel();
 
     public MavenPropertyPage (XMLFileNode xmlFileNode) {
         try {
@@ -52,6 +54,8 @@ public class MavenPropertyPage extends PropertyPage {
                                                  debugModeCheckBox.isSelected());
         MavenPropertyGroup.OFFLINE_MODE.setBoolean(archiveNode,
                                                    offLineModeCheckBox.isSelected());
+        MavenPropertyGroup.QUIET_MODE.setBoolean(archiveNode,
+                                                   quietModeCheckBox.isSelected());
     }
 
     public HelpTopic getHelpTopic () {
@@ -63,6 +67,8 @@ public class MavenPropertyPage extends PropertyPage {
                                       getBoolean(archiveNode));
         offLineModeCheckBox.setSelected(MavenPropertyGroup.OFFLINE_MODE.
                                       getBoolean(archiveNode));
+        quietModeCheckBox.setSelected(MavenPropertyGroup.QUIET_MODE.
+                                    getBoolean(archiveNode));
     }
 
     private void jbInit ()
@@ -71,9 +77,12 @@ public class MavenPropertyPage extends PropertyPage {
         debugModeCheckBox.setMnemonic('d');
         offLineModeCheckBox.setText("Offline mode");
         offLineModeCheckBox.setMnemonic('o');
+        quietModeCheckBox.setText("Quiet mode");
+        quietModeCheckBox.setMnemonic('q');
         debugLabel.setText(
             "Select the checkbox to start Maven in debug mode");
         offlineLabel.setText("Select the checkbox to start Maven in offline mode");
+        quietLabel.setText("Select the checkbox to start Maven in quiet mode");
         this.setLayout(gridBagLayout1);
         add(debugLabel,   new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0
             ,GridBagConstraints.NORTHWEST, GridBagConstraints.NONE, new Insets(0, 6, 6, 0), 0, 0));
@@ -82,6 +91,10 @@ public class MavenPropertyPage extends PropertyPage {
         add(offlineLabel,    new GridBagConstraints(0, 3, 1, 1, 0.0, 0.0
             ,GridBagConstraints.NORTHWEST, GridBagConstraints.NONE, new Insets(12, 6, 6, 0), 0, 0));
         add(offLineModeCheckBox,   new GridBagConstraints(0, 4, 1, 1, 0.0, 0.0
+            ,GridBagConstraints.NORTHWEST, GridBagConstraints.NONE, new Insets(0, 32, 0, 0), 0, 0));
+        add(quietLabel,    new GridBagConstraints(0, 6, 1, 1, 0.0, 0.0
+            ,GridBagConstraints.NORTHWEST, GridBagConstraints.NONE, new Insets(12, 6, 6, 0), 0, 0));
+        add(quietModeCheckBox,   new GridBagConstraints(0, 7, 1, 1, 0.0, 0.0
             ,GridBagConstraints.NORTHWEST, GridBagConstraints.NONE, new Insets(0, 32, 0, 0), 0, 0));
     }
 }

@@ -37,6 +37,10 @@ public class MavenPropertyGroup
         NodeBooleanProperty(
         CATEGORY, "mavenOffLineMode", false);
 
+    public static final NodeBooleanProperty QUIET_MODE = new
+        NodeBooleanProperty(
+        CATEGORY, "mavenQuietMode", false);
+
     public static void initOpenTool (byte majorVersion, byte minorVersion) {
 
         PropertyManager.registerPropertyGroup(new MavenPropertyGroup());
