@@ -37,12 +37,12 @@ import org.mevenide.project.dependency.DependencyUtil;
  * @version $Id: Overrider.java,v 1.1 24 sept. 2003 Exp gdodinet 
  * 
  */
-class JarOverrider {
-	private static Log log = LogFactory.getLog(JarOverrider.class);
+class JarOverrideWriter {
+	private static Log log = LogFactory.getLog(JarOverrideWriter.class);
 	
 	private ProjectWriter writer;
 	
-	JarOverrider(ProjectWriter projectWriter) {
+	JarOverrideWriter(ProjectWriter projectWriter) {
 		this.writer = projectWriter;
 	}
 	

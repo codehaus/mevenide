@@ -57,7 +57,7 @@ public class ProjectWriter {
 	private IResourceResolver resourceResolver = new DefaultResourceResolver();
 	private ProjectReader projectReader ;
 	private DefaultProjectMarshaller marshaller ; 
-	private JarOverrider overrider = new JarOverrider(this);
+	private JarOverrideWriter overrider = new JarOverrideWriter(this);
 	
 	private ProjectWriter() throws Exception  {
 		marshaller = new DefaultProjectMarshaller();

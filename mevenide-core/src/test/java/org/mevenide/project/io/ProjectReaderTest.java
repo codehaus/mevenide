@@ -22,9 +22,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.mevenide.project.ProjectConstants;
-
 import junit.framework.TestCase;
+
+import org.mevenide.project.ProjectConstants;
 
 /**
  * 
@@ -86,5 +86,4 @@ public class ProjectReaderTest extends TestCase {
 		assertEquals("src/test/java", sourceDirectories.get(ProjectConstants.MAVEN_TEST_DIRECTORY));
 		
 	}	
-
 }

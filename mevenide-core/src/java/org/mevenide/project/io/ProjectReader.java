@@ -23,6 +23,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Build;
 import org.apache.maven.project.Dependency;
 import org.apache.maven.project.Project;
@@ -40,9 +42,15 @@ import org.mevenide.util.StringUtils;
  * 
  */
 public class ProjectReader {
+	private static final Log log = LogFactory.getLog(ProjectReader.class);
+	
 	private DefaultProjectUnmarshaller unmarshaller ; 
 	
 	private static ProjectReader projectReader = null;
+
+	
+	private JarOverrideReader jarOverrideReader;
+	
 	
 	public static synchronized ProjectReader getReader() throws Exception {
 		if (projectReader == null) {
@@ -51,8 +59,9 @@ public class ProjectReader {
 		return projectReader;
 	}
 	
-	private ProjectReader() {
-		unmarshaller = new DefaultProjectUnmarshaller(); 
+	private ProjectReader() throws Exception {
+		unmarshaller = new DefaultProjectUnmarshaller();
+		jarOverrideReader = new JarOverrideReader();
 	}
 	
 	/**
@@ -60,11 +69,15 @@ public class ProjectReader {
 	 * 
 	 */
 	public Project read(File pom) throws Exception {
+		
 		Reader reader = null;
 		try {
 			reader = new FileReader(pom);
 			Project project = unmarshaller.parse(reader);
 			project.setFile(pom);
+			
+			jarOverrideReader.processOverride(pom, project);
+			
 			return project;
 		}
 		finally {
