@@ -48,26 +48,13 @@ public class ClasspathSynchronizer extends AbstractIdeSynchronizer implements IS
      * @see org.mevenide.core.sync.ISynchronizer#postSynchronization() 
      */
 	public void postSynchronization() {
-		try {
-			project.getFile(".project").delete(true, true, null);
-			project.getFile(".project.mevenide.bak").copy(project.getFile(".project").getFullPath(), true, null);
-			project.getFile(".project.mevenide.bak").delete(true, true, null);
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-		}
 	}
     
     /**
      * @see org.mevenide.core.sync.ISynchronizer#preSynchronization()
      */
 	public void preSynchronization() {
-		try {
-			project.getFile(".project").copy(project.getFile(".project.mevenide.bak").getFullPath(), true, null);
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-		}
+		
 	}
     /**
      * @param IProject project
