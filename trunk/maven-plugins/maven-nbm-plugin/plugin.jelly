@@ -25,6 +25,7 @@
   xmlns:maven="jelly:maven"
   xmlns:define="jelly:define"
   xmlns:mevenide="jelly:org.mevenide.tags.netbeans.MevenideNbTagLibrary"
+  xmlns:netbeans="netbeans"
   xmlns:x="jelly:xml"
   xmlns:artifact="artifact">
 
@@ -38,19 +39,24 @@
 
  <!--
  copies the netbeans modules form an istallation inot the local repository
- 
+ assumes 2 attributes:
+ netbeanshome
+ netbeansgroupid
  -->
   <define:taglib uri="netbeans">
       <define:tag name="installartifacts">
 <!--         <j:set var="netbeanshome" value="${netbeans.home}"/> -->
          <j:if  test="${empty netbeanshome}">
-           <ant:fail message="You need to define the netbeanshome tag attribute pointing to the root directory of the netbeans installation"/>
+             <ant:fail message="You need to define the netbeanshome tag attribute pointing to the root directory of the netbeans installation"/> 
          </j:if>
-
+         <j:if test="${empty netbeansgroupid}">
+            <j:set var="netbeansgroupid" value="netbeans"/>
+         </j:if>
+        <ant:echo message="The netbeans installation directory is: ${netbeanshome}"/>
         <ant:fileset dir="${netbeanshome}" id="jar.files">
-          <ant:include name="*/modules/*.jar"/>
-          <ant:include name="*/modules/autoload/*.jar"/>
-          <ant:include name="*/modules/eager/*.jar"/>
+          <ant:include name="**/modules/*.jar"/>
+          <ant:include name="**/modules/autoload/*.jar"/>
+          <ant:include name="**/modules/eager/*.jar"/>
         </ant:fileset>
 
         <ant:pathconvert pathsep="," property="jarlist" refid="jar.files"/>     
@@ -68,13 +74,20 @@
                <j:set var="name" value="${nameLong.substring(0, nameLong.indexOf('.jar'))}"/>
     <!--           <ant:basename property="name" file="${jarpath}" suffix=".jar"/> -->
                <ant:copy file="${jarpath}" 
-                         toFile="${maven.repo.local}/netbeans/jars/${name}-${nbdepSpecVersion}.jar" />
+                         toFile="${maven.repo.local}/${netbeansgroupid}/jars/${name}-${nbdepSpecVersion}.jar" />
                <ant:echo message="Module: ${name}-${nbdepSpecVersion}.jar"/>
             </j:if>
          </j:forEach>
      </define:tag>
   </define:taglib>
     
+  <goal name="nbm:fill-repository"
+        description="goal to extract all Netbeans modules from a given directory structure and copy them to local repository. Makes depending on Netbeans modules easier.">
+        <ant:input message="Please enter Netbeans installation Directory:" 
+                   addproperty="nbhomeprop"/>
+        <netbeans:installartifacts netbeanshome="${nbhomeprop}"/>
+  </goal>
+  
   <!--==================================================================-->
   <!-- Initializations                                                  -->
   <!--==================================================================-->    
