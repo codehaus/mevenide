@@ -1,0 +1,7 @@
+<project xmlns:ant="jelly:ant">
+  <goal name="mevenide:clean-lib">
+     <ant:delete>
+        <ant:fileset dir="${basedir}" includes="lib/*.jar"/>
+     </ant:delete> 
+  </goal>
+</project>
