@@ -2,7 +2,6 @@
 <project>
     <extend>${basedir}/../mevenide-parent/project.xml</extend>
     <pomVersion>3</pomVersion>
-    <id>mevenide-netbeans-project</id>
     <name>Mevenide Netbeans project support</name>
     <artifactId>mevenide-netbeans-project</artifactId>
     <currentVersion>0.6-SNAPSHOT</currentVersion>
@@ -23,6 +22,15 @@
             <groupId>mevenide</groupId>
             <artifactId>goals-grabber</artifactId>
             <version>0.8-SNAPSHOT</version>
+            <type>jar</type>
+            <properties>
+                <netbeans.module.dep>spec</netbeans.module.dep>
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>mevenide</groupId>
+            <artifactId>mevenide-repository</artifactId>
+            <version>0.1-SNAPSHOT</version>
             <type>jar</type>
             <properties>
                 <netbeans.module.dep>spec</netbeans.module.dep>

@@ -2,6 +2,13 @@
 
 <!DOCTYPE filesystem PUBLIC "-//NetBeans//DTD Filesystem 1.0//EN" "http://www.netbeans.org/dtds/filesystem-1_0.dtd">
 <filesystem>
+    <folder name="Menu">
+        <folder name="Window">
+            <attr boolvalue="true" name="org-netbeans-core-output2-OutputWindowAction.instance/org-mevenide-netbeans-project-dependencies-RepoBrowserWindowAction.instance"/>
+            <attr boolvalue="true" name="org-mevenide-netbeans-project-dependencies-RepoBrowserWindowAction.instance/ViewRuntimeTabAction.shadow"/>
+            <file name="org-mevenide-netbeans-project-dependencies-RepoBrowserWindowAction.instance"/>
+        </folder>
+    </folder>
     <folder name="Templates">
         <folder name="Project">
             <!-- XXX why are these here? should be moved elsewhere -->
@@ -126,5 +133,18 @@
           </file>
       </folder>
     </folder>
-  </folder>    
+  </folder>  
+  
+      <folder name="Windows2">
+        <folder name="Modes">
+            <folder name="explorer">
+                <file name="mavenrepobrowser.wstcref" url="repobrowser.wstcref.xml"/>
+            </folder>
+        </folder>
+        
+        <folder name="Components">
+            <file name="mavenrepobrowser.settings" url="repobrowser.settings.xml"/>
+        </folder>
+        
+    </folder>  
 </filesystem>

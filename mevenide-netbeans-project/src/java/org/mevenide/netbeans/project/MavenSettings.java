@@ -23,6 +23,7 @@ import org.openide.util.NbBundle;
 
 public class MavenSettings extends SystemOption {
     public static final String PROP_TOP_GOALS = "topGoals"; // NOI18N
+    public static final String PROP_REPOSITORIES = "repositories"; // NOI18N
     public static final String PROP_SHOW_FAVOURITE_HINT = "showAddFavouriteHint"; //NOI18N
     
     public static final String PROP_OFFLINE = "offline"; //NOI18N
@@ -49,6 +50,15 @@ public class MavenSettings extends SystemOption {
         setExceptions(false);
         setDebug(false);
         setDownloader("silent");
+        setRepositories(new String[] {
+            "http://www.ibiblio.org/maven/",
+            "http://cvs.apache.org/repository/",
+            "http://maven-plugins.sourceforge.net/maven/",
+            "http://seasar.sourceforge.jp/maven/",
+            "http://spring-ext.sourceforge.jp/maven/",
+            "http://ibiblio.org/geotools",
+            "http://www.codeczar.com/maven/"
+        });
     }
     
     public String displayName() {
@@ -152,6 +162,14 @@ public class MavenSettings extends SystemOption {
     
     public void setDownloader(String downloader) {
         putProperty(PROP_DOWNLOADER, downloader, true);
+    }    
+    
+    public String[] getRepositories() {
+        return (String[])getProperty(PROP_REPOSITORIES);
+    }
+    
+    public void setRepositories(String[] repos) {
+        putProperty(PROP_REPOSITORIES, repos, true);
     }    
     
 }
