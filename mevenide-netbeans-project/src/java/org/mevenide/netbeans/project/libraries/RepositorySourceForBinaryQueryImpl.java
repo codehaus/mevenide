@@ -23,44 +23,29 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.event.ChangeListener;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.mevenide.project.dependency.DependencyResolverFactory;
 import org.mevenide.project.dependency.IDependencyResolver;
-import org.netbeans.api.java.queries.JavadocForBinaryQuery;
-import org.netbeans.spi.java.queries.JavadocForBinaryQueryImplementation;
+import org.netbeans.api.java.queries.SourceForBinaryQuery;
+import org.netbeans.spi.java.queries.SourceForBinaryQueryImplementation;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.filesystems.URLMapper;
 
-
 /**
  *
- * JavadocForBinaryQueryImplementation implementation
- * for items in the maven repository.It checks the artifact and
- * looks for the same artifact but of type "javadoc.jar" or "javadoc"
- * @author  Milos Kleint (ca206216@tiscali.cz)
+ * SourceForBinaryQueryImplementation implementation
+ * for items in the maven repository. It checks the artifact and
+ * looks for the same artifact but of type "src.jar".
+ * 
+ * @author  Milos Kleint (mkleint@codehaus.org)
  */
-public class RepositoryJavadocForBinaryQueryImpl implements JavadocForBinaryQueryImplementation {
-    private static final Log logger = LogFactory.getLog(RepositoryJavadocForBinaryQueryImpl.class);
+public class RepositorySourceForBinaryQueryImpl implements SourceForBinaryQueryImplementation {
     
-    public RepositoryJavadocForBinaryQueryImpl() {
+    /** Creates a new instance of RepositorySourceForBinaryQueryImpl */
+    public RepositorySourceForBinaryQueryImpl() {
     }
-    
-    /**
-     * Find any Javadoc corresponding to the given classpath root containing
-     * Java classes.
-     * <p>
-     * Any absolute URL may be used but typically it will use the <code>file</code>
-     * protocol for directory entries and <code>jar</code> protocol for JAR entries
-     * (e.g. <samp>jar:file:/tmp/foo.jar!/</samp>).
-     * </p>
-     * @param binaryRoot the class path root of Java class files
-     * @return a result object encapsulating the roots and permitting changes to
-     *         be listened to, or null if the binary root is not recognized
-     */
-    public JavadocForBinaryQuery.Result findJavadoc(URL url) {
-        logger.debug("checkurl=" + url);
+
+    public SourceForBinaryQuery.Result findSourceRoots(URL url) {
         URL binRoot = url;
         if ("jar".equals(url.getProtocol())) {
             binRoot = FileUtil.getArchiveFile(url);
@@ -80,43 +65,34 @@ public class RepositoryJavadocForBinaryQueryImpl implements JavadocForBinaryQuer
                     String groupid = resolver.guessGroupId();
                     String ext = resolver.guessExtension();
                     // maybe refine the condition??
-                    if (version != null && artifactid != null && groupid != null && ext != null && "jar".equals(ext)) {
+                    if (version != null && artifactid != null && groupid != null 
+                        && ext != null && "jar".equals(ext)) {
                         File groupDir = jarFile.getParentFile().getParentFile();
                         // new way.. type is javadoc.jar
-                        File javadocsDir = new File(groupDir, "javadoc.jars"); //NOI18N
-                        File javadocFile = new File(javadocsDir,
+                        File srcsDir = new File(groupDir, "src.jars"); //NOI18N
+                        File srcFile = new File(srcsDir,
                                 jarFile.getName().substring(0,  
                                    jarFile.getName().length() - ext.length()) 
-                                + "javadoc.jar");
-                        if (javadocFile.exists()) {
-                            return new DocResult(javadocFile);
+                                + "src.jar");
+                        if (srcFile.exists()) {
+                            return new SrcResult(srcFile);
                         }
-                        // old way, files have extension javadoc.
-                        javadocsDir = new File(groupDir, "javadocs"); //NOI18N
-                        javadocFile = new File(javadocsDir,
-                                jarFile.getName().substring(0,  
-                                   jarFile.getName().length() - ext.length()) 
-                                + "javadoc");
-                        if (javadocFile.exists()) {
-                            return new DocResult(javadocFile);
-                        }
-                        
                     }
                 } catch (Exception exc) {
-                    logger.debug("exception", exc);
+                    
                 }
             }
         }
         return null;
-        
+                
     }
     
-    private class DocResult implements JavadocForBinaryQuery.Result  {
+    private class SrcResult implements SourceForBinaryQuery.Result  {
         private File file;
         private List listeners;
         
-        public DocResult(File javadoc) {
-            file = javadoc;
+        public SrcResult(File src) {
+            file = src;
             listeners = new ArrayList();
         }
         public void addChangeListener(ChangeListener changeListener) {
@@ -131,19 +107,15 @@ public class RepositoryJavadocForBinaryQueryImpl implements JavadocForBinaryQuer
             }
         }
         
-        public java.net.URL[] getRoots() {
+        public FileObject[] getRoots() {
             if (file.exists()) {
-                try {
-                    URL[] url = new URL[1];
-                    url[0] = FileUtil.getArchiveRoot(file.toURI().toURL());
-                    return url;
-                } catch (MalformedURLException exc) {
-                    logger.debug("exception", exc);
-                }
+                FileObject[] fos = new FileObject[1];
+                fos[0] = FileUtil.getArchiveRoot(FileUtil.toFileObject(file));
+                return fos;
             }
-            return new URL[0];
+            return new FileObject[0];
         }
         
-    }
+    }    
     
 }
