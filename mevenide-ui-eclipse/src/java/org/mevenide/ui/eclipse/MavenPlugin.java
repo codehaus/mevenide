@@ -15,6 +15,7 @@
 
 package org.mevenide.ui.eclipse;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -22,6 +23,7 @@ import java.net.URL;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -31,6 +33,7 @@ import org.eclipse.jface.preference.PreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.mevenide.Environment;
+import org.mevenide.project.io.ProjectSkeleton;
 
 /**
  * Created on 01 feb. 03	
@@ -233,5 +236,19 @@ public class MavenPlugin extends AbstractUIPlugin {
 		this.project = project;
 	}
 
+	/**
+	 * create a new POM skeleton if no project.xml currently exists
+	 * 
+	 * @todo GENERALIZE add a POM_FILE_NAME property somewhere
+	 * @todo EXTERNALIZE POM_FILE_NAME
+	 * @throws Exception
+	 */
+	public void createPom() throws Exception {
+		IFile pom = project.getFile("project.xml");
+		if ( !new File(pom.getLocation().toOSString()).exists() ) {
+			String skel = ProjectSkeleton.getSkeleton(project.getName());
+			pom.create(new ByteArrayInputStream(skel.getBytes()), false, null);
+		}
+	}
     
 }
