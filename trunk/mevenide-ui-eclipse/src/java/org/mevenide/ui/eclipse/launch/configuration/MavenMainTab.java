@@ -104,7 +104,7 @@ public class MavenMainTab extends ExternalToolsMainTab {
 	
 	public boolean isValid(ILaunchConfiguration launchConfig) {
 	    if ( StringUtils.isNull(workDirectoryField.getText()) ) {
-	        setErrorMessage("MavenMainTab.working.directory.null");
+	        setErrorMessage(Mevenide.getResourceString("MavenMainTab.working.directory.null"));
 	    }
 	    else {
 	       setErrorMessage(null);

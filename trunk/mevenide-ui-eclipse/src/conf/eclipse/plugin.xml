@@ -250,6 +250,13 @@
             id="org.mevenide.ui.launching.MavenLaunchConfigType">
       </launchConfigurationType>
    </extension>
+   <!-- Maven launcher configuration type image -->
+   <extension point="org.eclipse.debug.ui.launchConfigurationTypeImages">
+       <launchConfigurationTypeImage
+             icon="icons/etool16/maven_exc.gif"
+             configTypeID="org.mevenide.ui.launching.MavenLaunchConfigType"
+             id="org.mevenide.ui.launching.MavenLaunchConfigTypeImage"/>
+    </extension>
    <!-- Maven Launcher TabGroup -->
    <extension point="org.eclipse.debug.ui.launchConfigurationTabGroups">
       <launchConfigurationTabGroup
