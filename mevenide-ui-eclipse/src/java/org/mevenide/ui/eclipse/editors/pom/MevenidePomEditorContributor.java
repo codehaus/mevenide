@@ -36,7 +36,8 @@ import org.eclipse.ui.part.MultiPageEditorActionBarContributor;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 import org.mevenide.ui.eclipse.Mevenide;
-import org.mevenide.ui.eclipse.jobs.ValidationJob;
+import org.mevenide.ui.eclipse.pom.validation.MarkerHelper;
+import org.mevenide.ui.eclipse.pom.validation.ValidationJob;
 
 /**
  * Manages the installation/deinstallation of global actions for the Mevenide
@@ -50,8 +51,8 @@ public class MevenidePomEditorContributor extends MultiPageEditorActionBarContri
     private static final Log log = LogFactory.getLog(MevenidePomEditorContributor.class);
     
     private IEditorPart activeEditorPart;
-    private Action validateAction;
-    
+    private Action validatePomAction;
+    private Action clearMarkersAction;
     private IFile pomFile;
     
     public MevenidePomEditorContributor() {
@@ -121,29 +122,58 @@ public class MevenidePomEditorContributor extends MultiPageEditorActionBarContri
     }
     
     private void createActions() {
-        validateAction = new Action() {
+        createValidatePomAction();
+        createClearMarkersAction();
+    }
+    
+    private void createClearMarkersAction() {
+        clearMarkersAction = new Action() {
             public void run() {
-                new ValidationJob(pomFile).schedule();
+                try {
+                    MarkerHelper.deleteMarkers(pomFile);
+                }
+                catch (Exception e) {
+                    String message = "unable to delete markers"; 
+                    log.error(message, e);
+                }
             }
         };
-        validateAction.setText(Mevenide.getResourceString("MevenidePomEditorContributor.Action.Text"));
-        validateAction.setToolTipText("MevenidePomEditorContributor.Action.ToolTip");
-        validateAction.setImageDescriptor(
+        clearMarkersAction.setText(Mevenide.getResourceString("MevenidePomEditorContributor.ClearMarkers.Action.Text"));
+        clearMarkersAction.setToolTipText("MevenidePomEditorContributor.ClearMarkers.Action.ToolTip");
+        clearMarkersAction.setImageDescriptor(
             PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(
                     IDE.SharedImages.IMG_OBJS_TASK_TSK
             )
         );
     }
-    
+
+
+    private void createValidatePomAction() {
+        validatePomAction = new Action() {
+            public void run() {
+                new ValidationJob(pomFile).schedule();
+            }
+        };
+        validatePomAction.setText(Mevenide.getResourceString("MevenidePomEditorContributor.Validate.Action.Text"));
+        validatePomAction.setToolTipText("MevenidePomEditorContributor.Validate.Action.ToolTip");
+        validatePomAction.setImageDescriptor(
+            PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(
+                    IDE.SharedImages.IMG_OBJS_TASK_TSK
+            )
+        );
+    }
+
+
     public void contributeToMenu(IMenuManager manager) {
         IMenuManager menu = new MenuManager(Mevenide.getResourceString("MevenidePomEditorContributor.Menu.Text"));
         manager.prependToGroup(IWorkbenchActionConstants.MB_ADDITIONS, menu);
-        menu.add(validateAction);
+        menu.add(validatePomAction);
+        menu.add(clearMarkersAction);
     }
     
     public void contributeToToolBar(IToolBarManager manager) {
         manager.add(new Separator());
-        manager.add(validateAction);
+        manager.add(validatePomAction);
     }
 
     public void updateActions() {
