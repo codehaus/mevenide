@@ -161,7 +161,8 @@ public class SourceDirectoryMappingWizardPage extends WizardPage {
 						TableItem[] items = viewer.getTable().getSelection();
 						for (int i = 0; i < items.length; i++) {
 							TableItem item = items[i];
-							((SourceDirectoryGroup) viewer.getInput()).getSourceDirectories().remove(item.getData());
+							//((SourceDirectoryGroup) viewer.getInput()).getSourceDirectories().remove(item.getData());
+							((SourceDirectoryGroup) viewer.getInput()).excludeSourceDirectory((SourceDirectory) item.getData());
 							viewer.refresh();
 						}
 					}
