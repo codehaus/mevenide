@@ -35,12 +35,12 @@ import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.XMLMemento;
 import org.eclipse.ui.internal.dialogs.ListContentProvider;
 import org.eclipse.ui.part.ViewPart;
 import org.mevenide.sync.ISynchronizer;
 import org.mevenide.sync.SynchronizerFactory;
 import org.mevenide.ui.eclipse.MavenPlugin;
+import org.mevenide.ui.eclipse.sync.source.*;
 
 /**
  * 
@@ -49,9 +49,11 @@ import org.mevenide.ui.eclipse.MavenPlugin;
  * 
  */
 public class SourceDirectoryTypePart extends ViewPart {
-
+	/** 2 columns table viewer [source dir, source type] where source type is displayed in a CCombo */
 	private TableViewer viewer;
-	private IMemento memento;
+	
+	
+	
 	
 	private static SourceDirectoryTypePart partInstance; 
 	
@@ -93,7 +95,30 @@ public class SourceDirectoryTypePart extends ViewPart {
 
 	public void setInput(IProject project) {
 		//@todo manage project swapping via the memento
-		 viewer.setInput(new SourceDirectoryGroup(project));
+		if ( viewer.getContentProvider() != null ) {
+			SourceDirectoryGroup newInput = null ;
+			try {
+				
+				newInput = getSavedInput(project);
+			}
+			catch (Exception e) {
+				e.printStackTrace();
+		
+			}
+			if ( newInput == null ) {
+				newInput = new SourceDirectoryGroup(project);
+			}
+			
+			viewer.setInput(newInput);
+		}
+	}
+
+	private SourceDirectoryGroup getSavedInput(IProject project) throws Exception {
+		
+		String savedStates = MavenPlugin.getPlugin().getFile("sourceTypes.xml");
+		
+		return SourceDirectoryMarshaller.getSourceDirectoryGroup(project, savedStates);
+		
 	}
 
 	private void createTableColumns() {
@@ -135,7 +160,7 @@ public class SourceDirectoryTypePart extends ViewPart {
 			
 			public Object getValue(Object element, String property) {
 				if ( "source.directory".equals(property) ) {
-					return ((SourceDirectory) element).getDirectoryPath();
+					return ((SourceDirectory) element).getDisplayPath();
 				}
 				else {
 					return SourceDirectoryUtil.getSourceTypeIndex(((SourceDirectory) element).getDirectoryType());
@@ -147,7 +172,12 @@ public class SourceDirectoryTypePart extends ViewPart {
 			public Object[] getElements(Object input) {
 				Assert.isTrue(input instanceof SourceDirectoryGroup);
 				List directoriesList = ((SourceDirectoryGroup) input).getSourceDirectories();
-				return directoriesList.toArray();
+				if (directoriesList != null ) {
+					return directoriesList.toArray();
+				}
+				else {
+					return new Object[0]; 
+				}
 			}
 		});
 		
@@ -156,6 +186,8 @@ public class SourceDirectoryTypePart extends ViewPart {
 //		viewer.setSorter(new ViewerSorter() {
 //			
 //		});
+
+		viewer.setInput(new SourceDirectoryGroup(MavenPlugin.getPlugin().getProject()));
 	}
 
 	private ComboBoxCellEditor createComboBoxCellEditor() {
@@ -171,7 +203,13 @@ public class SourceDirectoryTypePart extends ViewPart {
 		IToolBarManager tbm = getViewSite().getActionBars().getToolBarManager();
 		Action synchronizeAction = new Action() {
 			public void run() {
-				saveState(memento);
+				
+				try {
+					saveState();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				
 				SynchronizerFactory.getSynchronizer(ISynchronizer.IDE_TO_POM).synchronize();
 			}
 		};	
@@ -181,23 +219,24 @@ public class SourceDirectoryTypePart extends ViewPart {
 	}
 
 	public void init(IViewSite site, IMemento memento) throws PartInitException {
-		if ( memento == null ) {
-			memento = XMLMemento.createWriteRoot("sourceDirectory");
-		}
-		super.init(site, memento);
+		init(site);
 	}
 	
 	public void init(IViewSite site) throws PartInitException {
 		setSite(site);
 	}
 	
+	/**
+	 * doesnt use the memento for now. have to configure how it works.
+	 */
 	public void saveState(IMemento memento) {
-		IMemento[] mementos = memento.getChildren("projects");
-		for (int i = 0; i < mementos.length; i++) {
-			
-		}
 	}
 
+	public void saveState() throws Exception {
+		SourceDirectoryMarshaller.saveSourceDirectoryGroup((SourceDirectoryGroup)viewer.getInput(), MavenPlugin.getPlugin().getFile("sourceTypes.xml"));
+	}
+
+ 	
 	public static void showView() throws Exception {
 		IViewPart consoleView =
 			PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(MavenPlugin.SYNCH_VIEW_ID); 

@@ -38,7 +38,6 @@ import org.mevenide.Environment;
  * @author Gilles Dodinet (gdodinet@wanadoo.fr)
  * @version $Id$
  * 
- * @refactor ECLIPSEAPI get rid of all get&lt;file&gt; method so that they use <code>getStateLocation()</code> when needed
  * @refactor EXTRACTME lots of non related utility methods
  *  
  */
@@ -68,7 +67,11 @@ public class MavenPlugin extends AbstractUIPlugin {
 			
 			NATURE_ID = MavenPlugin.getResourceString("maven.nature.id");
             
+			if ( !new File(getPreferencesFilename()).exists() ) {
+            	new File(getPreferencesFilename()).createNewFile();
+			}
             PreferenceStore preferenceStore = new PreferenceStore(getPreferencesFilename());
+            
             preferenceStore.load();
             
             setMavenHome(preferenceStore.getString("maven.home"));
@@ -176,19 +179,12 @@ public class MavenPlugin extends AbstractUIPlugin {
 		return getFile("goals_prefs.ini");
 	}
 	
-	private String getFile(String fname) {
-		try {
-			URL installBase = MavenPlugin.getPlugin().getDescriptor().getInstallURL();
-			File f = new File(new File(Platform.resolve(installBase).getFile()).getAbsolutePath(), fname);
-			if ( !f.exists() ) {
-				f.createNewFile();
-			}
+	public String getFile(String fname) {
+			File baseDir = MavenPlugin.getPlugin().getStateLocation().toFile();
+			
+			File f = new File(baseDir, fname);
 			return f.getAbsolutePath();
-		}
-		catch (IOException e) {
-			e.printStackTrace();
-			return "";
-		}
+
 	}
 	
     public String getXmlGoalsFile() {

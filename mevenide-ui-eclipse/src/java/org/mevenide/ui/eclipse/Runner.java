@@ -14,6 +14,9 @@
  */
 package org.mevenide.ui.eclipse;
 
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.MessageBox;
+import org.eclipse.ui.PlatformUI;
 import org.mevenide.Environment;
 import org.mevenide.MevenideException;
 import org.mevenide.core.AbstractRunner;
@@ -43,13 +46,19 @@ public class Runner extends AbstractRunner {
 	/**
 	 * @see org.mevenide.core.AbstractRunner#initEnvironment()
 	 */
-	protected void initEnvironment() {
+	protected void initEnvironment() throws Exception  {
 		if ( plugin.getMavenHome() == null || plugin.getMavenHome().trim().equals("") ) { 
-	    	//bleah ! open dialog
+			MessageBox dialog = new MessageBox (PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), SWT.ICON_WARNING | SWT.OK);
+			dialog.setText ("Mevenide");
+			dialog.setMessage ("Please set preferences before running Maven.");
+			dialog.open ();
+			throw new Exception("Maven Home has not been set");
 	    }
-		Environment.setMavenHome(plugin.getMavenHome()); 
-		Environment.setJavaHome(plugin.getJavaHome());
-		Environment.setMavenRepository(plugin.getMavenRepository());
+	    else {
+		    Environment.setMavenHome(plugin.getMavenHome()); 
+			Environment.setJavaHome(plugin.getJavaHome());
+			Environment.setMavenRepository(plugin.getMavenRepository());
+	    }
 	}
 
 	/**
@@ -64,28 +73,18 @@ public class Runner extends AbstractRunner {
         String[] vmArgs = ArgumentsManager.getVMArgs(this);
         String[] mavenArgs = getMavenArgs(options, goals);
         
-        System.out.println("Classpath : ");
-        System.out.println("\t");
-        for (int i = 0; i < mavenCp.length; i++) {
-			 System.out.println("\t" + mavenCp[i] + ";");
-		}
-//		System.out.println("\nSystem properties : ");
-//		System.out.println("\t");
-//		for (int i = 0; i < vmArgs.length; i++) {
-//			 System.out.print(vmArgs[i] + " ");
+//        System.out.println("Classpath : ");
+//        System.out.println("\t");
+//        for (int i = 0; i < mavenCp.length; i++) {
+//			 System.out.println("\t" + mavenCp[i] + ";");
 //		}
-//		System.out.println("\nMaven args : ");
-//		System.out.println("\t");
-//		for (int i = 0; i < mavenArgs.length; i++) {
-//			 System.out.print(mavenArgs[i] + " ");
-//		}
-		
 		
 	    VMLauncherUtility.runVM(
 			"com.werken.forehead.Forehead",
 			ArgumentsManager.getMavenClasspath(),
 		    ArgumentsManager.getVMArgs(this),
 	        getMavenArgs(options, goals));
+	
 	}
 
 }

@@ -100,11 +100,14 @@ public class GoalsManager extends AbstractGoalsManager{
 	/**
 	 * @see org.mevenide.core.AbstractGoalsManager#initialize()
 	 */
-	protected void initialize() {
+	protected void initialize() throws Exception {
         if ( plugin == null ) {
             plugin = MavenPlugin.getPlugin();
         }
         String prefs = plugin.getGoalsPreferencesFilename();
+        if ( !new File(prefs).exists() ) {
+        	new File(prefs).createNewFile();
+        }
         preferenceStore = new PreferenceStore(prefs);
         try {
 			preferenceStore.load();

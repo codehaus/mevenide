@@ -11,7 +11,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  */
-package org.mevenide.ui.eclipse.sync.views;
+package org.mevenide.ui.eclipse.sync.source;
 
 import java.io.File;
 
@@ -27,7 +27,12 @@ public class SourceDirectory {
 	private String directoryType = "source";
 	
 	public SourceDirectory(String path) {
-		directoryPath = "${basedir}" + File.separator + path;
+		//directoryPath = "${basedir}" + File.separator + path;
+		directoryPath = path;
+	}
+	
+	public String getDisplayPath() {
+		return "${basedir}" + File.separator +  directoryPath;
 	}
 	
 	public String getDirectoryPath() {

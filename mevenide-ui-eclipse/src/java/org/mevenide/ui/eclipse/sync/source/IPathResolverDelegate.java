@@ -12,7 +12,7 @@
  * Lesser General Public License for more details.
  * 
  */
-package org.mevenide.ui.eclipse.sync;
+package org.mevenide.ui.eclipse.sync.source;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;

@@ -12,20 +12,16 @@
  * Lesser General Public License for more details.
  * 
  */
-package org.mevenide.ui.eclipse.sync;
+package org.mevenide.ui.eclipse.sync.source;
 
 import java.util.List;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jdt.core.IClasspathEntry;
-
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.input.SAXBuilder;
-import org.mevenide.ProjectConstants;
-import org.mevenide.project.InvalidSourceTypeException;
-import org.mevenide.sync.NoSuchSourcePathException;
 import org.mevenide.ui.eclipse.MavenPlugin;
 
 /**
@@ -76,43 +72,32 @@ public class DefaultPathResolverDelegate implements IPathResolverDelegate {
 	    return path.toFile().getAbsoluteFile().toString();
 	}
 
-	/**
-	 * @refactor JDOM (again !!!)
-	 */
-    public String getMavenSourceType(String sourceDirectoryPath, IProject project) throws Exception {
+	public String getMavenSourceType(String sourceDirectoryPath, IProject project) throws Exception {
+		if ( project == null ) {
+			throw new Exception("project should not be null");
+		}
+		Document doc = new SAXBuilder().build(MavenPlugin.getPlugin().getFile("sourceTypes.xml"));
+		Element root = doc.getRootElement();
+		List sdGroupElements = root.getChildren("sourceDirectoryGroup");
 		
-//		String entryKind = "src";
-		Document doc = new SAXBuilder().build(project.getFile(".classpath").getLocation().toFile().getAbsoluteFile());
-		Element classpath = doc.getRootElement();
-		List classpathEntries = classpath.getChildren("classpathentry");
-	
-		return searchSourceType(sourceDirectoryPath, classpathEntries);
-	}
-
-	/**
-	 * CRAP !!
-	 * 
-	 * @param path
-	 * @param classpathEntries
-	 * @return
-	 * @throws InvalidSourceTypeException
-	 * @throws NoSuchSourcePathException
-	 */
-	private String searchSourceType(String path, List classpathEntries) throws InvalidSourceTypeException, NoSuchSourcePathException {
-		for (int i = 0; i < classpathEntries.size(); i++) {
-			Element cpe = (Element) classpathEntries.get(i);
-			String srcPath = cpe.getAttributeValue("path");
-		    String mavenSourceType = cpe.getAttributeValue("mavenSrcType");
-			path = path.replace('\\','/');
-			srcPath = srcPath.replace('\\','/');
-		    if (path.equals(srcPath)) {
-				if ( mavenSourceType == null ) {
-		            //@todo FUNCTIONAL open a dialog instead
-					return ProjectConstants.MAVEN_SRC_DIRECTORY;
-				}
-				return mavenSourceType;
+		for (int i = 0; i < sdGroupElements.size(); i++) {
+			Element group = (Element) sdGroupElements.get(i); 
+			if ( project.getName().equals(group.getAttributeValue("projectName")) ) {
+				return getType(sourceDirectoryPath, group);
 			}
 		}
-		throw new NoSuchSourcePathException(path);
+		
+		return "UNKNOWN";
+	}
+
+	private String getType(String path, Element group) {
+		List sourceDirectories = group.getChildren("sourceDirectory");
+		for (int i = 0; i < sourceDirectories.size(); i++) {
+			Element sourceDirectory = (Element) sourceDirectories.get(i);
+			if ( sourceDirectory.getAttributeValue("path").equals(path) ) {
+				return sourceDirectory.getAttributeValue("type");
+			}
+		}
+		return "UNKNOWN";
 	}
 }
