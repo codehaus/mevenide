@@ -15,7 +15,6 @@
   			is on the same line as the if statement, then you should write all your code to have that convention.
   		</p>
   		<p>
-  			To Be Done : -rationale-
   			<br/>
 			Below is a list of coding conventions that are specific to Mevenide.
   		</p>
@@ -27,21 +26,20 @@
   	</section>
   	<section name="Coding Rules">
 	  <p>
-		To Be Done :
+		<!-- To Be Done -->
 		<ol>
 			<li>Remove unused Imports</li>
-			<li>Use FQ Imports</li>
+			<li>Use fully qualified Imports</li>
 			<li>Brackets on the same line</li>
 			<li>Always use brackets</li>
 			<li>Use explicit naming</li>
 			<li>Methods should kept very short</li>
 			<li>Remove unneeded javadoc</li>
 			<li>Always provide class javadoc</li>
+			<li>Use 4 spaces for tabs</li>
 		</ol>
       </p>
-      <p>
-      	To do : provide convenient preference for Eclipse
-      </p>
+      <!-- To do : provide convenient preference for Eclipse -->
     </section>
   </body>
 </document>
