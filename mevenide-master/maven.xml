@@ -1,15 +1,13 @@
 <project default="build-all" 
 		 xmlns:maven="jelly:maven" 
 		 xmlns:j="jelly:core"
-		 xmlns:multiproject="multiproject"
-		 xmlns:ant="jelly:ant"
-		 xmlns:define="jelly:define"
-		 xmlns:util="jelly:util"
-		 xmlns:mevenide="mevenide">
+		 xmlns:util="jelly:util">
   
   <goal name="mevenide:install-maven-eclipse-plugin-plugin" 
   	    description="Checkout maven-eclipse-plugin-plugin from cvs and install it">
-  	    
+  	 <attainGoal name="scm:checkout-project"/>
+  	 <util:file var="mavenEclipsePluginPluginPom" name="${maven.scm.checkout.dir}/maven-plugins/maven-eclipse-plugin-plugin/project.xml"/>
+	 <maven:maven descriptor="${mavenEclipsePluginPluginPom}" goals=" plugin:install,plugin:deploy"/>
   </goal>
   
   <goal name="mevenide:init" description="Copy eclipse dependencies to maven.repo.local if necessary">
