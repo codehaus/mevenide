@@ -34,15 +34,20 @@ import org.mevenide.ui.eclipse.Mevenide;
 public class DynamicPreferencePageFactory {
     
 	
+    
+
     private static final String EXTENSION_ID = "org.mevenide.ui.preference"; //$NON-NLS-1$
     private static final String MAIN_PREFERENCE_PAGE_PATH = "org.mevenide.ui.plugin.preferences.MavenPreferencePage"; //$NON-NLS-1$
     private static final String ROOT_PAGE_PATH = MAIN_PREFERENCE_PAGE_PATH + "/org.mevenide.ui.eclipse.preferences.PluginsRoot"; //$NON-NLS-1$
     
     private static final String PLUGIN_DESCRIPTION = "description"; //$NON-NLS-1$
 	private static final String PLUGIN_PROPERTY = "property"; //$NON-NLS-1$
+	private static final String PLUGIN_CATEGORY = "category"; //$NON-NLS-1$
 
     private static final String PAGE_ID = "id"; //$NON-NLS-1$
 	private static final String PAGE_NAME = "name"; //$NON-NLS-1$
+
+	private static final String CATEGORY_NAME = "name"; //$NON-NLS-1$
 	
 	private static final String PROPERTY_DEFAULT = "default"; //$NON-NLS-1$
 	private static final String PROPERTY_NAME = "name"; //$NON-NLS-1$
@@ -82,11 +87,26 @@ public class DynamicPreferencePageFactory {
             pluginDescription = descriptionElements[0].getValue();
         }
         
-        //plugin-provider properties
-        IConfigurationElement[] propertyElements = configurationElement.getChildren(PLUGIN_PROPERTY);
+        //plugin-provier categories
+        IConfigurationElement[] categoryElements = configurationElement.getChildren(PLUGIN_CATEGORY);
+        List categories = new ArrayList(categoryElements.length);
+        for (int i = 0; i < categoryElements.length; i++) {
+            IConfigurationElement categoryElement = categoryElements[i];
+            String categoryName = categoryElement.getAttribute(CATEGORY_NAME);
+	        //plugin-provider properties
+            List properties = getCategoryProperties(pageId, categoryElement);
+            categories.add(new PluginCategory(categoryName, properties));
+        }
+        
+        IPreferenceNode node = new DynamicPreferenceNode(pageId, pageName, pluginDescription, categories);
+        return node;
+    }
+
+    private List getCategoryProperties(String pageId, IConfigurationElement categoryElement) {
+        IConfigurationElement[] propertyElements = categoryElement.getChildren(PLUGIN_PROPERTY);
         List properties = new ArrayList(propertyElements.length);
-        for (int i = 0; i < propertyElements.length; i++) {
-            IConfigurationElement childElement = propertyElements[i];
+        for (int j = 0; j < propertyElements.length; j++) {
+            IConfigurationElement childElement = propertyElements[j];
             String propertyName = childElement.getAttribute(PROPERTY_NAME);
             String propertyDefault = childElement.getAttribute(PROPERTY_DEFAULT);
             String propertyType = childElement.getAttribute(PROPERTY_TYPE);
@@ -101,8 +121,7 @@ public class DynamicPreferencePageFactory {
                     						  "true".equals(propertyRequired), //$NON-NLS-1$
                     						  propertyDescription));
         }
-        IPreferenceNode node = new DynamicPreferenceNode(pageId, pageName, pluginDescription, properties);
-        return node;
+        return properties;
     }
     
 }

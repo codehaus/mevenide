@@ -26,18 +26,16 @@ import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
-import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.TabFolder;
+import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
-import org.eclipse.ui.PlatformUI;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.util.StringUtils;
 
@@ -50,8 +48,9 @@ import org.mevenide.util.StringUtils;
  */
 public class DynamicPreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
     
-    private List properties;
+    private List categories;
     private String pluginDescription;
+    private String pluginName;
     
     private Map editors = new HashMap();
     
@@ -69,39 +68,64 @@ public class DynamicPreferencePage extends PreferencePage implements IWorkbenchP
         Composite composite = new Composite(parent, SWT.NULL);
         composite.setLayout(new GridLayout());
         
-        createDescriptionComposite(composite);
+        TabFolder tabFolder = new TabFolder(composite, SWT.TOP);
+        tabFolder.setLayoutData(new GridData(GridData.FILL_BOTH));
         
-        createPropertyComposite(composite);
+        createDescriptionComposite(tabFolder);
+        
+        for (int i = 0; i < categories.size(); i++) {
+	        createCategoryComposite(tabFolder, (PluginCategory) categories.get(i));
+        }
         
         return composite; 
 	}
   
-	private void createDescriptionComposite(Composite composite) {
-	    Text title = new Text(composite, SWT.READ_ONLY);
-	    title.setText(Mevenide.getResourceString("DynamicPreferencePage.Description")); //$NON-NLS-1$
-	    title.setFont(new Font(PlatformUI.getWorkbench().getDisplay(), new FontData("bold", composite.getFont().getFontData()[0].getHeight(), SWT.BOLD))); //$NON-NLS-1$
-	    title.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+	private void createDescriptionComposite(TabFolder tabFolder) {
+	    TabItem tabItem = new TabItem(tabFolder, SWT.NULL); 
+	    tabItem.setText(Mevenide.getResourceString("DynamicPreferencePage.Description")); //$NON-NLS-1$
 	    
-        Text textDescription = new Text(composite, SWT.READ_ONLY | SWT.MULTI);
+	    Composite area = new Composite(tabFolder, SWT.NULL);
+        GridLayout layout = new GridLayout();
+        layout.marginHeight = 10;
+        layout.marginWidth = 10;
+        area.setLayout(layout);
+        
+        Group descriptionGroup = new Group(area, SWT.NULL);
+        descriptionGroup.setText(pluginName + " " + Mevenide.getResourceString("DynamicPreferencePage.Description"));
+        descriptionGroup.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        descriptionGroup.setLayout(new GridLayout());
+
+        Text textDescription = new Text(descriptionGroup, SWT.READ_ONLY | SWT.MULTI);
         textDescription.setText(pluginDescription != null ? pluginDescription : Mevenide.getResourceString("DynamicPreferencePage.nodescription")); //$NON-NLS-1$
         GridData data = new GridData(GridData.FILL_HORIZONTAL);
         textDescription.setLayoutData(data);
         
-        new Label(composite, SWT.NULL);
+        tabItem.setControl(area);
     }
 
-    private void createPropertyComposite(Composite composite) {
-        Text title = new Text(composite, SWT.READ_ONLY | SWT.MULTI);
-	    title.setText(Mevenide.getResourceString("DynamicPreferencePage.Configuration")); //$NON-NLS-1$
-	    title.setFont(new Font(PlatformUI.getWorkbench().getDisplay(), new FontData("bold", composite.getFont().getFontData()[0].getHeight(), SWT.BOLD))); //$NON-NLS-1$
-	    title.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+    private void createCategoryComposite(TabFolder tabFolder, PluginCategory category) {
+        TabItem tabItem = new TabItem(tabFolder, SWT.NULL);
+        tabItem.setText(category.getName());
         
-        Group propertiesGroup = createPropertyGroup(composite);
+
+        Composite area = new Composite(tabFolder, SWT.NULL);
+        GridLayout layout = new GridLayout();
+        layout.marginHeight = 10;
+        layout.marginWidth = 10;
+        area.setLayout(layout);
+        
+        Group propertiesGroup = createPropertyGroup(area, category.getName());
+        Composite groupIndirectionComposite = new Composite(propertiesGroup, SWT.NULL);
+        GridLayout groupIndirectionLayout = new GridLayout();
+        GridData groupIndirectionData = new GridData(GridData.FILL_BOTH);
+        groupIndirectionComposite.setLayoutData(groupIndirectionData);
+        
+        List properties = category.getProperties();
         
         if( properties != null && properties.size() > 0 ) {
             for ( Iterator it = properties.iterator(); it.hasNext(); ) {
 		        PluginProperty pluginProperty = (PluginProperty) it.next();
-                StringFieldEditor editor = createPluginPropertyEditor(propertiesGroup, pluginProperty);
+                StringFieldEditor editor = createPluginPropertyEditor(groupIndirectionComposite, pluginProperty);
                 editors.put(pluginProperty, editor);
             }
         }
@@ -111,22 +135,25 @@ public class DynamicPreferencePage extends PreferencePage implements IWorkbenchP
             GridData warningData = new GridData(GridData.FILL_BOTH);
             noPropertyWarningText.setLayoutData(warningData);
         }
+        
+        tabItem.setControl(area);
     }
 
-    private Group createPropertyGroup(Composite composite) {
+    private Group createPropertyGroup(Composite composite, String categoryName) {
         Group propertiesGroup = new Group(composite, SWT.NULL);
         GridLayout layout = new GridLayout();
-        layout.numColumns = 2;
-        layout.verticalSpacing = 30;
-        layout.horizontalSpacing = 30;
+        layout.numColumns = 1;
+        layout.marginHeight = 10;
+        layout.marginWidth = 10;
         propertiesGroup.setLayout(layout);
         GridData groupData = new GridData(GridData.FILL_HORIZONTAL);
         propertiesGroup.setLayoutData(groupData);
-        propertiesGroup.setText(Mevenide.getResourceString("DynamicPreferencePage.propertygroup.text")); //$NON-NLS-1$
+        propertiesGroup.setText(Mevenide.getResourceString("DynamicPreferencePage.Configuration", categoryName)); //$NON-NLS-1$
         return propertiesGroup;
     }
 
-    private StringFieldEditor createPluginPropertyEditor(Composite parent, final PluginProperty pluginProperty) {
+    private StringFieldEditor createPluginPropertyEditor(Composite composite, final PluginProperty pluginProperty) {
+        
         String propertyName = pluginProperty.getName(); 
         String propertyDefault = pluginProperty.getDefault();
         String propertyLabel = pluginProperty.getLabel();
@@ -134,8 +161,8 @@ public class DynamicPreferencePage extends PreferencePage implements IWorkbenchP
         String propertyType = pluginProperty.getType();
         String pageId = pluginProperty.getPageId();
         
-        StringFieldEditor editor = new StringFieldEditor(pageId + DynamicPreferencesManager.SEPARATOR + propertyName, propertyLabel, parent);
-        editor.fillIntoGrid(parent, 2);
+        StringFieldEditor editor = new StringFieldEditor(pageId + DynamicPreferencesManager.SEPARATOR + propertyName, propertyLabel, composite);
+        editor.fillIntoGrid(composite, 2);
         
         editor.setPreferenceStore(preferencesManager.getPreferenceStore());
         editor.load();
@@ -155,14 +182,14 @@ public class DynamicPreferencePage extends PreferencePage implements IWorkbenchP
         				(!StringUtils.isNull(propertyDescription) ? 
         				        					propertyDescription : 
         				        					Mevenide.getResourceString("DynamicPreferencePage.property.nodescription")); //$NON-NLS-1$
-        editor.getLabelControl(parent).setToolTipText(toolTip);
+        editor.getLabelControl(composite).setToolTipText(toolTip);
         
         if ( StringUtils.isNull(editor.getStringValue()) && 
                 !StringUtils.isNull(propertyDefault) ) {
             editor.setStringValue(propertyDefault);
         }
         
-        editor.getTextControl(parent).addModifyListener(editorListener);
+        editor.getTextControl(composite).addModifyListener(editorListener);
         
         return editor;
     }
@@ -170,12 +197,12 @@ public class DynamicPreferencePage extends PreferencePage implements IWorkbenchP
     public void init(IWorkbench workbench) {
     }
 	
-    public List getProperties() {
-        return properties;
+    public List getCategories() {
+        return categories;
     }
     
-    public void setProperties(List properties) {
-        this.properties = properties;
+    public void setCategories(List properties) {
+        this.categories = properties;
     }
     
     protected void performApply() {
@@ -225,5 +252,13 @@ public class DynamicPreferencePage extends PreferencePage implements IWorkbenchP
     
     public void setPluginDescription(String pluginDescription) {
         this.pluginDescription = pluginDescription;
+    }
+    
+    public String getPluginName() {
+        return pluginName;
+    }
+    
+    public void setPluginName(String pageName) {
+        this.pluginName = pageName;
     }
 }
