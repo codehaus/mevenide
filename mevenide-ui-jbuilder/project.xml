@@ -9,7 +9,7 @@
     <name>JBuilder Maven OpenTool</name>
     <id>mevenide-ui-jbuilder</id>
     <artifactId>mevenide-ui-jbuilder</artifactId>
-    <currentVersion>0.1</currentVersion>
+    <currentVersion>0.2-SNAPSHOT</currentVersion>
     <inceptionYear>2004</inceptionYear>
     <package>org.mevenide</package>
     <shortDescription>OpenTool JBuilder Maven IDE Plugin</shortDescription>
