@@ -32,14 +32,17 @@
       <action dev="gdodinet" type="fix" issue="MEVENIDE-31">
         AutoBuild is now set to false prior to adding artifacts to .classpath and is restored after that.
       </action>
+      <action dev="gdodinet" type="fix" issue="MEVENIDE-39">
+        Now allow to specify user defined types
+      </action>
       <action dev="gdodinet" type="update">
-        Preference pages reorganization for better readibility.
+        Preference pages reorganized for better readibility.
       </action>
       <action dev="gdodinet" type="update">
         Required location preferences can now be regenerate automatically.
       </action>
       <action dev="gdodinet" type="update">
-        Use JDomProjectUnmarshaller instead of DefaultProjectUnmarshaller to support entities. No entities writing yet.
+        Use Jdom-based unmarshaller to support entities reading. No entities writing yet.
       </action>
       <action dev="gdodinet" type="update">
       	Icons now follow new 3.0 LnF.
@@ -53,11 +56,17 @@
       <action dev="gdodinet" type="update">
         Pom Creation Action can now use templates. 
       </action>
+      <action dev="gdodinet" type="update">
+        Mevenide Launch Config Type now has an associated image
+      </action>
       <action dev="jens" type="add">
         Add POM Template management through a preference pages.
       </action>
       <action dev="gdodinet" type="add">
         Maven Plugin Provider Infrastructure allows plugin providers to statically contribute to Mevenide preference pages.
+      </action>
+      <action dev="gdodinet" type="add">
+      	Add new preferences page to manage user defined dependency types.
       </action>
       <action dev="gdodinet" type="add">
       	Add simple POM wizard that can use templates. 

@@ -2,8 +2,8 @@
 <project name="mevenide-core">
 
     <properties>
-        <author email="gdodinet@wanadoo.fr">Gilles Dodinet</author>
-        <title>Mevenide UI Eclipse</title>
+        <author email="rhill2@free.fr">Gilles Dodinet</author>
+        <title>Mevenide for Eclipse Navigation</title>
     </properties>
 
     <body>
@@ -17,9 +17,10 @@
         	<item name="Overview" href="/index.html"/>
         	<item name="License" href="/license.html"/>
         	<item name="Faq" href="/faq.html"/>
-        	<item name="Provider Infrastructure" href="/provider-infrastructure.html" collapse="true">
-        		<item name="Extension point" href="/extension-point.html" />
+        	<item name="Providers" href="/provider-infrastructure.html" collapse="true">
+        		<item name="Extension point" href="/extension-point.html" target="_blank"/>
         	</item>
+        	<item name="Report a bug" href="../bug-report.html"/>
         </menu>
         
         <menu name="Documentation">
@@ -31,9 +32,8 @@
         		<item name="Pom Editor" href="/edit.html"/>
         		<item name="Jelly Editor" href="/contentassist.html"/>
         		<item name="Maven Wizards" href="/wizard.html"/>
-        		<item name="Provider Infrastructure" href="/provider-infrastructure.html" collapse="true">
-        			<item name="Extension point" href="/extension-point.html" />
-        		</item>
+        		<item name="Providers" href="/provider-infrastructure.html" />
+        		<item name="POM Validation" href="/validate.html"/>
        		</item>
         	<item name="Eclipse Update Site" href="/update/index.html"/>
         </menu>

@@ -18,6 +18,8 @@
                 <li>Provide contentassist for xdoc documents</li>
                 <li>Provide a tool to visualize inter project dependencies</li>
                 <li>Polish contentassist</li>
+                <li>Allow to open non well-formed poms</li>
+                <li>Support full bidirectional xml entities suport</li>
                 <li>...</li>
             </ul>
         </p>
