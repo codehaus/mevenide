@@ -14,6 +14,7 @@
  */
 package org.mevenide.ui.eclipse.sync.model;
 
+import java.io.File;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -52,12 +53,16 @@ public class DependencyGroup extends ArtifactGroup {
 			if ( classpathEntries[i].getEntryKind() == IClasspathEntry.CPE_LIBRARY
 					&& !FileUtil.isClassFolder(classpathEntries[i].getPath().toOSString(), javaProject.getProject()) 
 					&& !ProjectUtil.getJreEntryList(javaProject.getProject()).contains(pathResolver.getAbsolutePath(classpathEntries[i].getPath())) ) {
-				
-				String path = classpathEntries[i].getPath().toOSString(); 
+				//not the best way to get the absoluteFile ... 
+				String path = classpathEntries[i].getPath().toOSString();
+				if ( !new File(path).exists() ) {
+					path = javaProject.getProject().getLocation().append(classpathEntries[i].getPath().removeFirstSegments(1)).toOSString();
+				}
 				Dependency dependency = DependencyFactory.getFactory().getDependency(path);
 				addDependency(dependency);
 				
 			}
+			
 		}
 		artifacts.addAll(ProjectUtil.getCrossProjectDependencies());
 		
