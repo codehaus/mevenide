@@ -42,6 +42,7 @@ public class DefaultDependencyResolver implements IDependencyResolver {
 		this.fileName = new File(fName).getName();
 		dependencyParts = new DependencySplitter(fileName).split();
 		init();
+		//set id if groupId == null ?
 	}
 
 	private void init() {
@@ -81,7 +82,7 @@ public class DefaultDependencyResolver implements IDependencyResolver {
 	}
 
 	public String guessArtifactId() {
-		return artifactId;
+		return artifactId != null ? artifactId : getShortName();
 	}
 
 	public String guessVersion() {
@@ -97,7 +98,13 @@ public class DefaultDependencyResolver implements IDependencyResolver {
 	}
 
 	
-	
+	private String getShortName() {
+		String shortFileName = new File(fileName).getName();
+		if ( shortFileName.lastIndexOf('.') >= 0 ) { 	
+			return shortFileName.substring(0, shortFileName.lastIndexOf('.'));
+		}
+		return shortFileName;
+	}
 	
 	
 	

@@ -143,6 +143,11 @@ public class ProjectWriter {
 		if ( shouldWriteProperties ) {
 			overrideUnresolvedDependencies(pom, nonResolvedDependencies);
 		}
+		else {
+			//@todo this is pretty cheap.. just a temp soltuion 
+			dependencies.addAll(nonResolvedDependencies);
+			project.setDependencies(dependencies);
+		}
 	}
 
 	private void overrideUnresolvedDependencies(File pom, List nonResolvedDependencies) throws IOException, Exception {
@@ -155,7 +160,7 @@ public class ProjectWriter {
 		//jaroverriding
 		for (int i = 0; i < nonResolvedDependencies.size(); i++) {
 			Dependency dependency = (Dependency) nonResolvedDependencies.get(i); 
-			jarOverrideWriter.jarOverride(dependency.getArtifact(), propertiesFile, pom);
+			jarOverrideWriter.jarOverride(dependency, propertiesFile, pom);
 		}
 	}
 

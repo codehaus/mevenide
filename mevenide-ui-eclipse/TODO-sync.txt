@@ -1,0 +1,30 @@
+
+BUGS
+====
+use MAVEN_REPO whenever possible 
+write jar override : 1. do nothing if !write project.properties  2. totally ovrride properties instead of appending
+write project : lose jelly scripting in dependency and update project.properties !!!
+add to pom [when synch  only one pom] still asks for the pom to update
+add to pom doesnot only lookup poms in hierarchy when adding to pom
+
+
+TODO
+====
+edit dependency properties
+exclusion filter / excludes
+output folder / target path
+define and manage conflicts
+add junit if tests are defined
+
+
+FIXED
+=====
+add dependency properties
+${basedir} added to .cp
+declared package in plugin descriptor of org.mevenide.config incorrect (remove .environment) 
+declared library in plugin descriptor of mevenide.config (replace core by config) 
+read jar override
+fix dependency synch resolving (in synch diplay) 
+java.lang.NullPointerException at org.mevenide.ui.eclipse.sync.view.SynchronizeView.resourceChanged
+override pom -> ide : (NPE : getOverridePath return null)
+mvnignore stream not properly closed

@@ -24,6 +24,7 @@ import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.mevenide.ui.eclipse.editors.properties.DependencyPropertySource;
 import org.mevenide.ui.eclipse.sync.event.IDependencyPropertyListener;
+import org.mevenide.util.StringUtils;
 
 /**
  * 
@@ -45,19 +46,32 @@ public class DependencyMappingNode extends AbstractArtifactMappingNode implement
             else {
                 displayDependency = ((Dependency) resolvedArtifact); 
             }
-            return displayDependency.getArtifactId() + "-" + displayDependency.getVersion();
+            String version = getVersionPostfix(displayDependency);
+            return displayDependency.getArtifactId() + version ;
 		}
         if ( (parent.getDirection() & EclipseContainerContainer.INCOMING) != 0 ) {
-            return ((Dependency) artifact).getGroupId() + ":" + ((Dependency) artifact).getArtifactId(); 
+        	String groupId = getGroupIdPrefix();
+            return groupId + ((Dependency) artifact).getArtifactId(); 
         }
 		//NO_CHANGE or CONFLICTING
 		if ( artifact != null ) {
-			return ((Dependency) artifact).getGroupId() + ":" + ((Dependency) artifact).getArtifactId();
+			String groupId = getGroupIdPrefix();
+			return groupId + ((Dependency) artifact).getArtifactId();
 		}
 		return "Unresolved";
     }
    
-    public Object getAdapter(Class adapter) {
+    private String getVersionPostfix(Dependency displayDependency) {
+		String version = displayDependency.getVersion();
+		return version = !StringUtils.isNull(version) ? "-" + version : "";
+	}
+
+	private String getGroupIdPrefix() {
+		String groupId = ((Dependency) artifact).getGroupId();
+		return !StringUtils.isNull(groupId) ? groupId + ":" : "";
+	}
+
+	public Object getAdapter(Class adapter) {
         if ( adapter == IPropertySource.class ) {
             DependencyPropertySource propertySource = null;
             if ( artifact == null ) {
@@ -84,11 +98,12 @@ public class DependencyMappingNode extends AbstractArtifactMappingNode implement
         if ( artifact == null ) {
             return EclipseContainerContainer.OUTGOING;
         }
-        if ( !((Dependency) artifact).getVersion().equals(((Dependency) resolvedArtifact).getVersion()))  {
-            //donot compare groupId b/c in most case it may not be resolved
-            //|| !dependency.getGroupId().equals(resolvedDependency.getGroupId())
-            return EclipseContainerContainer.CONFLICTING;
-        }
+        //completly comment that block for now b/c altho conflicts are managed yet it may cause some npe  
+        //if ( !((Dependency) artifact).getVersion().equals(((Dependency) resolvedArtifact).getVersion()))  {
+        //  donot compare groupId b/c in most case it may not be resolved
+        //  || !dependency.getGroupId().equals(resolvedDependency.getGroupId())
+        //  return EclipseContainerContainer.CONFLICTING;
+        //}
         return EclipseContainerContainer.NO_CHANGE;
     }
     

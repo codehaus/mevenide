@@ -18,6 +18,7 @@ package org.mevenide.project.io;
 
 import java.io.File;
 
+import org.apache.maven.project.Dependency;
 import org.apache.maven.project.Project;
 import org.mevenide.AbstractMevenideTestCase;
 
@@ -54,13 +55,20 @@ public class JarOverrideWriterTest  extends AbstractMevenideTestCase {
 		String path2 = "C:\\temp\\bleah\\fake2.jar";
 		String path3 = "C:\\temp space temp\\bleah\\fake fake2.jar";
 	
-		overrider.jarOverride(path, propFile, projectFile);
-		overrider.jarOverride(path2, propFile, projectFile);
-		overrider.jarOverride(path3, propFile, projectFile);
-		overrider.jarOverride(path2, propFile, projectFile);
+		Dependency dep = new Dependency();
+		dep.setJar(path);
+		Dependency dep2 = new Dependency();
+		dep2.setJar(path2);
+		Dependency dep3 = new Dependency();
+		dep3.setJar(path3);
+		
+		overrider.jarOverride(dep, propFile, projectFile);
+		overrider.jarOverride(dep2, propFile, projectFile);
+		overrider.jarOverride(dep3, propFile, projectFile);
+		overrider.jarOverride(dep2, propFile, projectFile);
 	
 		project = ProjectReader.getReader().read(projectFile);
-	
+		
 		assertEquals(prev + 3, project.getDependencies().size());
 	
 	}

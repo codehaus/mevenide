@@ -156,12 +156,20 @@ public class FileUtils {
 	}
 	
 	private static List getIgnoredResources(IFile ignoredResourceFile) throws Exception {
+		RandomAccessFile raf = null;
 		List ignoredLines = new ArrayList();
-	
-		RandomAccessFile raf = new RandomAccessFile(ignoredResourceFile.getLocation().toOSString(), "r");
-		String line = null;
-		while ( (line = raf.readLine()) != null && !line.trim().equals("")) {
-			ignoredLines.add(line);
+		
+		try {
+			raf = new RandomAccessFile(ignoredResourceFile.getLocation().toOSString(), "r");
+			String line = null;
+			while ( (line = raf.readLine()) != null && !line.trim().equals("")) {
+				ignoredLines.add(line);
+			}
+		}
+		finally {
+			if ( raf != null ) {
+				raf.close();
+			}
 		}
 		
 		return ignoredLines;

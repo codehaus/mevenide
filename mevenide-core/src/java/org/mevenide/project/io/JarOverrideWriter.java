@@ -47,7 +47,8 @@ class JarOverrideWriter {
 		this.writer = projectWriter;
 	}
 	
-	void jarOverride(String path, File propertiesFile, File pom) throws Exception {
+	void jarOverride(Dependency dependency, File propertiesFile, File pom) throws Exception {
+		String path = dependency.getArtifact();
 		Project project = ProjectReader.getReader().read(pom);
 		if ( project.getDependencies() == null ) {
 			project.setDependencies(new ArrayList());
@@ -59,13 +60,11 @@ class JarOverrideWriter {
 		String artifactId = dep.getArtifactId();
 	
 		if ( groupId == null || groupId.length() == 0 ) {
-			dep.setGroupId("nonResolvedGroupId");
+			dep.setGroupId(null);
+			//set id explicitly so that dependencies w/o groupId still are comparable are added to dep list if needed
+			dep.setId(artifactId);
 		}
-		if ( artifactId == null || artifactId.length() == 0 ) {
-			String fname = new File(path).getName().substring(0, new File(path).getName().lastIndexOf('.'));
-			dep.setArtifactId(fname);
-		}
-	
+
 		addPropertiesOverride(path, propertiesFile, dep);
 	
 		//project.getDependencies().remove(DependencyFactory.getFactory().getDependency(path));
@@ -77,7 +76,7 @@ class JarOverrideWriter {
 	}
 
 	private void addPropertiesOverride(String path, File propertiesFile, Dependency dep) throws Exception {
-		PropertyModel model = PropertyModelFactory.getFactory().newPropertyModel(propertiesFile);
+		PropertyModel model = PropertyModelFactory.getFactory().newPropertyModel(propertiesFile, true);
 		
 		model.newKeyPair("maven.jar.override", '=', "on");
 		
@@ -90,8 +89,8 @@ class JarOverrideWriter {
 		FileInputStream fis = null;
 		FileOutputStream fos = null;
 		try {
-			fis = new FileInputStream(propertiesFile);
-			PropertyModel model = PropertyModelFactory.getFactory().newPropertyModel(fis);
+			//fis = new FileInputStream(propertiesFile);
+			PropertyModel model = PropertyModelFactory.getFactory().newPropertyModel(propertiesFile, true);
 			
 			List elements = model.getList();
 			for (int i = 0; i < elements.size(); i++) {

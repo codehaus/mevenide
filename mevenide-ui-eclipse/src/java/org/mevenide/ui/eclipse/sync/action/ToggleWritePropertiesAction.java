@@ -30,5 +30,17 @@ public class ToggleWritePropertiesAction extends Action {
         super(null, AS_CHECK_BOX);
 	}
 	
-	
+	protected void firePropertyChange(String propertyName, Object oldValue, Object newValue) {
+		super.firePropertyChange(propertyName, oldValue, newValue);
+		if ( CHECKED.equals(propertyName) ) {
+			String tooltip;
+			if ( ((Boolean) newValue).booleanValue() ) {
+				tooltip = "Do not override project.properties";
+			}
+			else {
+				tooltip = "Override project.properties";
+			}
+			setToolTipText(tooltip);
+		}
+	}
 }

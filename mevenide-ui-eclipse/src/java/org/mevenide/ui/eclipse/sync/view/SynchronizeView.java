@@ -398,7 +398,7 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
 		if ( event.getSource() instanceof ToggleViewAction ) {
 			setDirection(((ToggleViewAction) event.getSource()).getDirection());
 		}
-		if ( event.getSource() instanceof ToggleWritePropertiesAction ) {
+		if ( event.getSource() instanceof ToggleWritePropertiesAction && Action.CHECKED.equals(event.getProperty())) {
 			fireSynchronizationConstraintEvent(new SynchronizationConstraintEvent(SynchronizationConstraintEvent.WRITE_PROPERTIES, ((Boolean) event.getNewValue()).booleanValue()));
 		}
 		if ( toolBarManager != null ) {
@@ -547,7 +547,7 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
 	public void resourceChanged(IResourceChangeEvent event) {
 		try {
 			final IProject project = (IProject) artifactMappingNodeViewer.getInput();
-			final IFile dotClasspath = project.getFile(".classpath");
+			final IFile dotClasspath = project != null ? project.getFile(".classpath") : null;
 			
 			IResourceDelta d= event.getDelta();
 			if (d == null) {
@@ -579,8 +579,13 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
 								}
 								if ( r instanceof IProject ) {
 									IProject prj = (IProject) r;
-									if ( prj.getName().equals(project.getName()) ) {
-										refreshAll(false);
+									if ( project != null && prj.getName().equals(project.getName()) ) {
+										artifactMappingNodeViewer.getControl().getDisplay().asyncExec(
+												new Runnable() {
+													public void run () {
+														refreshAll(false);
+													}
+												});
 									}
 								}
 							}
