@@ -9,6 +9,11 @@
   			<include name="*.properties"/>
 		  </fileset>
 		</copy>
+		<copy toDir="target/classes">
+		  <fileset dir="etc">
+  			<include name="META-INF/services/*"/>
+		  </fileset>
+		</copy>
 	</preGoal>
   	
 	<postGoal name="jar:install">

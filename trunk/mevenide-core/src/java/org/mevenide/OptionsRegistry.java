@@ -54,6 +54,7 @@ public class OptionsRegistry {
 			while ( keys.hasNext() ) {
 			    String key = (String) keys.next();
 			    Character optionChar = new Character(key.charAt(key.length() - 1));
+			    log.debug("Found optionChar " + optionChar);
 			    options.put(optionChar, props.get(key));
 			}
 		} catch (Exception e) {

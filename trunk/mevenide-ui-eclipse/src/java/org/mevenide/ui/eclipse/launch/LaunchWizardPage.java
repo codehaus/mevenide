@@ -20,6 +20,8 @@ import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.TreeMap;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.eclipse.jface.preference.PreferenceStore;
 import org.eclipse.jface.viewers.ICellEditorValidator;
 import org.eclipse.jface.viewers.TextCellEditor;
@@ -34,7 +36,6 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
@@ -52,7 +53,7 @@ import org.mevenide.ui.eclipse.Mevenide;
  * 
  */
 public class LaunchWizardPage extends WizardPage {
-	//private static Log log = LogFactory.getLog(LaunchWizardPage.class);
+	private static Log log = LogFactory.getLog(LaunchWizardPage.class);
 	
 	private final char[] options = new char[] { 'E', 'X', 'e', 'o' };
 	
@@ -87,30 +88,30 @@ public class LaunchWizardPage extends WizardPage {
 	
 	public void createControl(Composite parent) {
     	try {
-            setControl(getInternalControl(parent));
+    		
+			GridLayout layout = new GridLayout();
+			layout.numColumns = 2;
+			layout.makeColumnsEqualWidth = false;
+
+			Composite composite = new Composite(parent, SWT.NULL);
+			composite.setLayout(layout);
+
+
+			createCheckBoxes(composite);
+			createSysPropertiesTable(composite);
+			createGoalsText(composite);
+			//createMavenVersionLabel(composite);
+	
+            setControl(composite);
         }
         catch (Exception e) {
-        	e.printStackTrace();
+
+			//e.printStackTrace();
+			log.debug("Unable to LaunchWizardPage control due to : " + e);
         }
     }
 	
-	private Control getInternalControl(Composite parent) throws Exception {
-		
-		GridLayout layout = new GridLayout();
-		layout.numColumns = 2;
-		layout.makeColumnsEqualWidth = false;
 	
-		Composite composite = new Composite(parent, SWT.NULL);
-		composite.setLayout(layout);
-	
-		
-		createCheckBoxes(composite);
-		createSysPropertiesTable(composite);
-		createGoalsText(composite);
-		//createMavenVersionLabel(composite);
-		
-		return composite;
-	}
 
 	private void createMavenVersionLabel(Composite composite) {
 		GridData data = new GridData(GridData.FILL_HORIZONTAL);
@@ -146,7 +147,12 @@ public class LaunchWizardPage extends WizardPage {
 			buttonDataLayout.grabExcessHorizontalSpace = true;
 			final Button optionButton = new Button(comp, SWT.CHECK);
 			optionButton.setLayoutData(buttonDataLayout);
-			optionButton.setText(OptionsRegistry.getDescription(option));
+			try {
+				optionButton.setText(OptionsRegistry.getDescription(option));
+			}
+			catch ( Throwable t ) {
+				optionButton.setText("Unavailable description : Classpath problem to be fixed.. ");
+			}
 			optionButton.setToolTipText(new StringBuffer(" -").append(option).toString());
 			optionButton.setSelection(((Boolean)optionsMap.get(new Character(option))).booleanValue());
 			
