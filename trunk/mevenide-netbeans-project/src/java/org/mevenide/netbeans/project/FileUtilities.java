@@ -134,6 +134,14 @@ public final class FileUtilities {
      */
     public static File locationToFile(int location, MavenProject project) {
         IQueryContext context = project.getContext();
+        // 9 is the limit because the POM locations start at 0 and at 10 properties start
+        if (location >= 0 && location < 9) {
+            File[] fls = context.getPOMContext().getProjectFiles();
+            if (fls.length > location) {
+                return fls[location];
+            }
+            return null;
+        }
         if (location == IPropertyLocator.LOCATION_PROJECT) {
             return new File(context.getProjectDirectory(), "project.properties"); //NOI18N
         }
@@ -142,17 +150,6 @@ public final class FileUtilities {
         }
         if (location == IPropertyLocator.LOCATION_USER_BUILD) {
             return new File(context.getUserDirectory(), "build.properties"); //NOI18N
-        }
-        if (location == OriginChange.LOCATION_POM) {
-            File[] fls = context.getPOMContext().getProjectFiles();
-            return fls[0];
-        }
-        if (location == OriginChange.LOCATION_POM_PARENT) {
-            File[] fls = context.getPOMContext().getProjectFiles();
-            if (fls.length > 1) {
-                return fls[1];
-            }
-            return null;
         }
         if (location == IPropertyLocator.LOCATION_PARENT_PROJECT) {
             File[] fls = context.getPOMContext().getProjectFiles();
