@@ -18,7 +18,7 @@
         <answer>
            <p> Once you've checked out the sources, go to mevenide-master and run <code> maven mevenide:install-maven-nbm-plugin mevenide-netbeans:build </code>
            The first goal will create and deploy the nbm plugin for you which is able to create netbeans jars and nbm files. The second goal will do the building.</p>
-           <p> The created nbm files will be located in your local maven repository under mevenide/nbms. 
+           <p> The created nbm files will be located in your local maven repository under mevenide/nbms. </p>
         </answer>
         </faq>
         <faq id="how-install">
