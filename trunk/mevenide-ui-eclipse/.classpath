@@ -3,7 +3,6 @@
 	<classpathentry excluding="org/mevenide/ui/eclipse/editors/entries/|org/mevenide/ui/eclipse/editors/pages/|org/mevenide/ui/eclipse/editors/IPomEditorPage.java|org/mevenide/ui/eclipse/editors/MevenidePomEditor.java|org/mevenide/ui/eclipse/editors/MevenidePomEditorContributor.java|org/mevenide/ui/eclipse/editors/NonRuleBasedDamagerRepairer.java|org/mevenide/ui/eclipse/editors/PomContentOutlinePage.java|org/mevenide/ui/eclipse/editors/PomEditorSelectionProvider.java|org/mevenide/ui/eclipse/editors/PomXmlConfiguration.java|org/mevenide/ui/eclipse/editors/PomXmlDocumentProvider.java|org/mevenide/ui/eclipse/editors/PomXmlDoubleClickStrategy.java|org/mevenide/ui/eclipse/editors/PomXmlElementRule.java|org/mevenide/ui/eclipse/editors/PomXmlElementScanner.java|org/mevenide/ui/eclipse/editors/PomXmlPartitionScanner.java|org/mevenide/ui/eclipse/editors/PomXmlScanner.java|org/mevenide/ui/eclipse/editors/PomXmlSourcePage.java|org/mevenide/ui/eclipse/editors/PomXmlWhitespaceDetector.java" kind="src" path="src/java"/>
 	<classpathentry kind="src" path="etc"/>
 	<classpathentry kind="src" path="src/conf/eclipse"/>
-	<classpathentry kind="src" path="src/test/etc"/>
 	<classpathentry kind="src" path="/mevenide-core"/>
 	<classpathentry kind="src" path="/goals-grabber"/>
 	<classpathentry kind="src" path="/mevenide-config"/>
