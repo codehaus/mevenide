@@ -39,6 +39,13 @@
             <netbeans.lib.generate>true</netbeans.lib.generate>
 	    </properties>
     </dependency>
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.8</version>
+            <type>jar</type>
+        </dependency>
+    
     <dependency>
         <groupId>xml-apis</groupId>
         <artifactId>xml-apis</artifactId>
