@@ -52,59 +52,63 @@ public class DirectoryMappingNodeContainer extends AbstractArtifactMappingNodeCo
     }
     
     private void attachResources(Project project) {
-        if ( project.getBuild() != null ) {
-            List resources = project.getBuild().getResources() == null ? new ArrayList() : project.getBuild().getResources();
+        List resources = getProjectResources(project);
+        if ( resources != null ) {
             
-            if ( project.getBuild().getUnitTest() != null && project.getBuild().getUnitTest().getResources() != null ) {
-            	resources.addAll(project.getBuild().getUnitTest().getResources());
-            }
-            
-            List orphanResources = new ArrayList(resources);
-            
-            List ignoredResources = FileUtils.getIgnoredResources(project);
-            
-	        for (Iterator itr = resources.iterator(); itr.hasNext(); ) {
-	            Resource pomResource = (Resource) itr.next();
-	            if ( ignoredResources.contains(pomResource.getDirectory().replaceAll("\\\\", "/")) ) {
-	            	ResourceUtil.remove(orphanResources, pomResource); 
-	            }
-	            else {
-		            for (int i = 0; i < nodes.length; i++) {
-				        DirectoryMappingNode currentNode = (DirectoryMappingNode) nodes[i];
-				        
-				        
-				        if ( currentNode.getArtifact() == null ) {
-			                Directory resolvedDirectory = (Directory) currentNode.getResolvedArtifact();
-			                if ( resolvedDirectory != null ) {
-			                	if ( lowMatch(pomResource, resolvedDirectory) ) {
-			                		currentNode.setArtifact(pomResource);
-					                currentNode.setDeclaringPom(project.getFile());
-					                ResourceUtil.remove(orphanResources, pomResource);
-			                    }
-			                }
+            List orphanResources = removeIgnoredResources(project, resources);
+	        
+            for (Iterator itr = resources.iterator(); itr.hasNext(); ) {
+                Resource resource = (Resource) itr.next();
+                
+                for (int i = 0; i < nodes.length; i++) {
+	                DirectoryMappingNode currentNode = (DirectoryMappingNode) nodes[i];
+	                if ( currentNode.getArtifact() == null ) {
+		                Directory resolvedDirectory = (Directory) currentNode.getResolvedArtifact();
+		                if ( resolvedDirectory != null ) {
+		                    if ( lowMatch(resource, resolvedDirectory) ) {
+			                    Directory pomDirectory = new Directory();
+			                    pomDirectory.setPath(resource.getDirectory());
+			                    pomDirectory.setType(ProjectConstants.MAVEN_RESOURCE);
+		                        currentNode.setArtifact(pomDirectory);
+		                        currentNode.setDeclaringPom(project.getFile());
+		                        //ResourceUtil.remove(orphanResources, resource);
+		                    }
 		                }
-				        
-//				        Directory resolvedDirectory = (Directory) currentNode.getResolvedArtifact();
-//				        if ( currentNode.getArtifact() == null ) {
-//				        	if ( lowMatch(pomResource, resolvedDirectory) ) {
-//				        		//orphanResources.remove(pomResource);
-//				        		ResourceUtil.remove(orphanResources, pomResource);
-//				        	}
-//				            else if ( resolvedDirectory == null ) {
-//				                currentNode.setArtifact(pomResource);
-//				                currentNode.setDeclaringPom(project.getFile());
-//				                //orphanResources.remove(pomResource);
-//				                ResourceUtil.remove(orphanResources, pomResource);
-//				            }
-//				        }
-			        }
-	            }
-	    	}
+	                }
+                }
+            }
+		    
 	        attachOrphanArtifacts(orphanResources, project);
         }
     }
     
-    /**
+    private List getProjectResources(Project project) {
+    	if ( project.getBuild() != null ) {
+			List resources = project.getBuild().getResources() == null ? new ArrayList() : project.getBuild().getResources();
+			if ( project.getBuild().getUnitTest() != null && project.getBuild().getUnitTest().getResources() != null ) {
+				resources.addAll(project.getBuild().getUnitTest().getResources());
+			}
+			return resources;
+    	}
+    	return null;
+	}
+
+	private List removeIgnoredResources(Project project, List resources) {
+		List orphanResources = new ArrayList(resources);
+		
+		List ignoredResources = FileUtils.getIgnoredResources(project);
+		
+		for (Iterator itr = resources.iterator(); itr.hasNext(); ) {
+		    Resource pomResource = (Resource) itr.next();
+		    if ( ignoredResources.contains(pomResource.getDirectory().replaceAll("\\\\", "/")) ) {
+		    	ResourceUtil.remove(orphanResources, pomResource); 
+		    }
+		
+		}
+		return orphanResources;
+	}
+
+	/**
      * @todo extract-me
      */
     boolean lowMatch(Resource resource, Directory directory) {
@@ -118,13 +122,16 @@ public class DirectoryMappingNodeContainer extends AbstractArtifactMappingNodeCo
         resourcePath = StringUtils.removeEndingSlash(resourcePath);
         directoryPath = StringUtils.removeEndingSlash(directoryPath);
         
-        log.debug("resource dir : " + resourcePath + ", directory path : " + directoryPath + " match ? " + (resource.getDirectory() != null && resource.getDirectory().replaceAll("\\\\", "/").equals(directory.getPath().replaceAll("\\\\", "/"))));
+        //log.debug("resource dir : " + resourcePath + ", directory path : " + directoryPath + " match ? " + (resource.getDirectory() != null && resource.getDirectory().replaceAll("\\\\", "/").equals(directory.getPath().replaceAll("\\\\", "/"))));
         return resourcePath.replaceAll("\\\\", "/").equals(directoryPath.replaceAll("\\\\", "/"));
     }
     
 	private void attachOrphanArtifacts(List orphanArtifacts, Project project) {
+		debugOrphans(orphanArtifacts);
 		
 		removeDuplicate(orphanArtifacts);		
+		
+		debugOrphans(orphanArtifacts);
 		
     	IArtifactMappingNode[] newNodes = new IArtifactMappingNode[nodes.length + orphanArtifacts.size()];
         System.arraycopy(nodes, 0, newNodes, 0, nodes.length);
@@ -140,6 +147,16 @@ public class DirectoryMappingNodeContainer extends AbstractArtifactMappingNodeCo
         this.nodes = newNodes;
         
     }
+
+	private void debugOrphans(List orphanArtifacts) {
+		if ( log.isDebugEnabled() ) {
+			String logLine = "";
+			for (int i = 0; i < orphanArtifacts.size(); i++) {
+				logLine += orphanArtifacts.get(i) + ((i != orphanArtifacts.size() - 1) ? ", " : ""); 
+			}
+			log.debug("orphans : " + logLine);
+		}
+	}
 
 	void removeDuplicate(List orphanArtifacts) {
 		removeEquivalentItems(orphanArtifacts);
