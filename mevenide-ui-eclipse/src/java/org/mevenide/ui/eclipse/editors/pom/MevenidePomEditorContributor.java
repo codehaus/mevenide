@@ -21,11 +21,14 @@ import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.ide.IDEActionFactory;
 import org.eclipse.ui.part.MultiPageEditorActionBarContributor;
 import org.eclipse.ui.texteditor.ITextEditor;
@@ -151,12 +154,12 @@ public class MevenidePomEditorContributor extends MultiPageEditorActionBarContri
         validatePomAction.setImageDescriptor(Mevenide.getInstance().getImageRegistry().getDescriptor(IImageRegistry.VALIDATE_TOOL));
     }
 
-//    public void contributeToMenu(IMenuManager manager) {
-//        IMenuManager menu = new MenuManager(Mevenide.getResourceString("MevenidePomEditorContributor.Menu.Text"), Mevenide.MAVEN_MENU_ID); //$NON-NLS-1$
-//        manager.prependToGroup(IWorkbenchActionConstants.MB_ADDITIONS, menu);
-//        menu.add(validatePomAction);
-//        menu.add(clearMarkersAction);
-//    }
+    public void contributeToMenu(IMenuManager manager) {
+        IMenuManager menu = new MenuManager(Mevenide.getResourceString("MevenidePomEditorContributor.Menu.Text"), Mevenide.MAVEN_MENU_ID); //$NON-NLS-1$
+        manager.prependToGroup(IWorkbenchActionConstants.MB_ADDITIONS, menu);
+        menu.add(validatePomAction);
+        menu.add(clearMarkersAction);
+    }
     
     public void contributeToToolBar(IToolBarManager manager) {
         manager.add(new Separator());
