@@ -136,23 +136,21 @@ public class MavenLaunchShortcut implements ILaunchShortcut {
 						configuration.delete();
 					}
 					catch ( Exception e ) {
-						log.debug("Exception while cancelling launch : " + e );
+						log.debug("Exception while cancelling launch : ", e );
 					}
 					return;
 				}
 				
 			}
 			
+			String newName= DebugPlugin.getDefault().getLaunchManager().generateUniqueLaunchConfigurationNameFrom(configuration.getName());
 			try {
-				String newName= DebugPlugin.getDefault().getLaunchManager().generateUniqueLaunchConfigurationNameFrom(configuration.getName());
 				configuration = configuration.copy(newName);
-				DebugUITools.launch(configuration, ILaunchManager.RUN_MODE);
 			}
 			catch (Exception e) {
-				log.debug("Unable to launch configuration due to : ", e);
+				log.debug("Unable to copy configuration due to : ", e);
 			}
-			
-			
+			DebugUITools.launch(configuration, ILaunchManager.RUN_MODE);
 		}
 	} 
 	

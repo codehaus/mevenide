@@ -52,7 +52,7 @@ import java.io.File;
 
 /**
  * 
- * @todo use a n-singleton instead - singleton PER launchConfig ? 
+ * @todo make it non-static (f.i. abstract wrapper on subclasses defined in concrete mevenide implementations)  
  * 
  * @author Gilles Dodinet (gdodinet@wanadoo.fr)
  * @version $Id: Environment.java,v 1.1 21 avr. 2003 10:42:2213:34:35 Exp gdodinet
