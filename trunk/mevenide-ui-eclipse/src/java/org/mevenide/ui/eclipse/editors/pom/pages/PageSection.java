@@ -16,6 +16,9 @@
  */
 package org.mevenide.ui.eclipse.editors.pom.pages;
 
+import java.io.File;
+import java.io.IOException;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Project;
@@ -36,12 +39,14 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.model.WorkbenchContentProvider;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
+import org.eclipse.ui.part.FileEditorInput;
 import org.mevenide.ui.eclipse.editors.pom.IPomEditorPage;
 import org.mevenide.ui.eclipse.editors.pom.entries.IEntryChangeListener;
 import org.mevenide.ui.eclipse.editors.pom.entries.IOverrideAdaptor;
 import org.mevenide.ui.eclipse.editors.pom.entries.OverridableTextEntry;
 import org.mevenide.ui.eclipse.editors.pom.entries.PageEntry;
 import org.mevenide.ui.eclipse.editors.pom.entries.TextEntry;
+import org.mevenide.util.MevenideUtils;
 
 /**
  * Abstract base class for a section of a page in the POM Editor ui.
@@ -291,5 +296,10 @@ public abstract class PageSection extends SectionPart {
 
         section.setClient(client);
         section.setExpanded(true);
+    }
+
+    protected String getRelativePath(final String directory) throws IOException {
+        String basedir = ((FileEditorInput) getPage().getPomEditor().getEditorInput()).getFile().getLocation().toOSString();
+        return MevenideUtils.makeRelativePath(new File(basedir).getParentFile(), directory).replaceAll("\\\\", "/");
     }
 }
