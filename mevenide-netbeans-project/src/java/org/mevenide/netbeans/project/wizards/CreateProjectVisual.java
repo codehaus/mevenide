@@ -88,49 +88,52 @@ public class CreateProjectVisual extends JPanel implements DocumentListener {
         optionsContainer = new javax.swing.JPanel();
         lblGroupId = new javax.swing.JLabel();
         txtGroupId = new javax.swing.JTextField();
-        lblPackageName = new javax.swing.JLabel();
-        txtPackageName = new javax.swing.JTextField();
         lblVersion = new javax.swing.JLabel();
         txtVersion = new javax.swing.JTextField();
+        lblPackageName = new javax.swing.JLabel();
+        txtPackageName = new javax.swing.JTextField();
 
         setLayout(new java.awt.GridBagLayout());
 
         locationContainer.setLayout(new java.awt.GridBagLayout());
 
+        lblProjectName.setLabelFor(txtProjectName);
         lblProjectName.setText("Project Name (Artifact ID):");
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.insets = new java.awt.Insets(0, 0, 6, 0);
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(0, 0, 6, 0);
         locationContainer.add(lblProjectName, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.insets = new java.awt.Insets(0, 6, 6, 0);
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(0, 6, 6, 0);
         locationContainer.add(txtProjectName, gridBagConstraints);
 
+        lblProjectDir.setLabelFor(txtProjectDir);
         lblProjectDir.setText("Project Location:");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
-        gridBagConstraints.insets = new java.awt.Insets(0, 0, 5, 0);
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(0, 0, 5, 0);
         locationContainer.add(lblProjectDir, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.insets = new java.awt.Insets(0, 6, 6, 0);
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(0, 6, 6, 0);
         locationContainer.add(txtProjectDir, gridBagConstraints);
 
+        lblFolder.setLabelFor(txtFolder);
         lblFolder.setText("Project Folder:");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
-        gridBagConstraints.insets = new java.awt.Insets(0, 0, 5, 0);
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(0, 0, 5, 0);
         locationContainer.add(lblFolder, gridBagConstraints);
 
         txtFolder.setEditable(false);
@@ -138,10 +141,10 @@ public class CreateProjectVisual extends JPanel implements DocumentListener {
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.insets = new java.awt.Insets(0, 6, 6, 0);
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         gridBagConstraints.weightx = 0.1;
         gridBagConstraints.weighty = 0.1;
+        gridBagConstraints.insets = new java.awt.Insets(0, 6, 6, 0);
         locationContainer.add(txtFolder, gridBagConstraints);
 
         btnBrowse.setText("Browse...");
@@ -155,8 +158,8 @@ public class CreateProjectVisual extends JPanel implements DocumentListener {
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
-        gridBagConstraints.insets = new java.awt.Insets(0, 6, 5, 0);
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(0, 6, 5, 0);
         locationContainer.add(btnBrowse, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -174,25 +177,46 @@ public class CreateProjectVisual extends JPanel implements DocumentListener {
 
         optionsContainer.setLayout(new java.awt.GridBagLayout());
 
+        lblGroupId.setLabelFor(txtGroupId);
         lblGroupId.setText("Project Group ID :");
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.insets = new java.awt.Insets(6, 6, 6, 6);
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(6, 6, 6, 6);
         optionsContainer.add(lblGroupId, gridBagConstraints);
 
         txtGroupId.setMinimumSize(new java.awt.Dimension(100, 28));
         txtGroupId.setPreferredSize(new java.awt.Dimension(150, 28));
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.insets = new java.awt.Insets(6, 6, 6, 6);
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(6, 6, 6, 6);
         optionsContainer.add(txtGroupId, gridBagConstraints);
 
+        lblVersion.setLabelFor(txtVersion);
+        lblVersion.setText("Version :");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(0, 6, 6, 6);
+        optionsContainer.add(lblVersion, gridBagConstraints);
+
+        txtVersion.setMinimumSize(new java.awt.Dimension(100, 28));
+        txtVersion.setPreferredSize(new java.awt.Dimension(150, 28));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.weightx = 0.1;
+        gridBagConstraints.insets = new java.awt.Insets(0, 6, 6, 6);
+        optionsContainer.add(txtVersion, gridBagConstraints);
+
+        lblPackageName.setLabelFor(txtPackageName);
         lblPackageName.setText("Package Name :");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
-        gridBagConstraints.insets = new java.awt.Insets(0, 6, 6, 6);
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(0, 6, 6, 6);
         optionsContainer.add(lblPackageName, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -200,30 +224,11 @@ public class CreateProjectVisual extends JPanel implements DocumentListener {
         gridBagConstraints.gridy = 2;
         gridBagConstraints.gridwidth = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.insets = new java.awt.Insets(0, 6, 6, 6);
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         gridBagConstraints.weightx = 0.5;
         gridBagConstraints.weighty = 0.1;
+        gridBagConstraints.insets = new java.awt.Insets(0, 6, 6, 6);
         optionsContainer.add(txtPackageName, gridBagConstraints);
-
-        lblVersion.setText("Version :");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.insets = new java.awt.Insets(0, 6, 6, 6);
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        optionsContainer.add(lblVersion, gridBagConstraints);
-
-        txtVersion.setMinimumSize(new java.awt.Dimension(100, 28));
-        txtVersion.setPreferredSize(new java.awt.Dimension(150, 28));
-        txtVersion.setRequestFocusEnabled(false);
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.insets = new java.awt.Insets(0, 6, 6, 6);
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.weightx = 0.1;
-        optionsContainer.add(txtVersion, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
