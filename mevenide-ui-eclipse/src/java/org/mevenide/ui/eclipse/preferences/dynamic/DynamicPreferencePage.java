@@ -128,7 +128,7 @@ public class DynamicPreferencePage extends PreferencePage implements IWorkbenchP
     }
     
     public void setVisible(boolean visible) {
-        for (Iterator it = editors.keySet().iterator(); it.hasNext();) {
+		for (Iterator it = editors.keySet().iterator(); it.hasNext();) {
             PluginProperty pluginProperty = (PluginProperty) it.next();
             StringFieldEditor editor = (StringFieldEditor) editors.get(pluginProperty);
             String[] keyParts = org.apache.commons.lang.StringUtils.split(editor.getPreferenceName(), "|");
@@ -151,6 +151,7 @@ public class DynamicPreferencePage extends PreferencePage implements IWorkbenchP
 	}
   
 	private Control getContentsControl(Composite parent) {
+	    DynamicPreferencePageFactory.getFactory().initialize(this);
         Composite composite = new Composite(parent, SWT.NULL);
         composite.setLayout(new GridLayout());
         

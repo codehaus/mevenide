@@ -50,6 +50,7 @@ import org.mevenide.environment.LocationFinderAggregator;
 import org.mevenide.project.io.CarefulProjectMarshaller;
 import org.mevenide.project.io.ProjectReader;
 import org.mevenide.ui.eclipse.Mevenide;
+import org.mevenide.ui.eclipse.nature.MevenideNature;
 import org.mevenide.ui.eclipse.preferences.MevenidePreferenceKeys;
 import org.mevenide.ui.eclipse.preferences.PreferencesManager;
 import org.mevenide.ui.eclipse.util.FileUtils;
@@ -289,6 +290,8 @@ public class MavenProjectWizardSecondPage extends JavaCapabilityConfigurationPag
 
 			Project pom = ProjectReader.getReader().read(FileUtils.getPom(fCurrProject));
 
+			//add maven nature
+			MevenideNature.configureProject(fCurrProject);
 			
 			monitor.worked(1);
 		}

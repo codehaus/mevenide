@@ -47,7 +47,7 @@
 
 	<!-- sample extension -->
 	<extension point="org.mevenide.ui.preference">
-       <plugin-provider id="maven-eclipse-plugin-plugin" name="PDE Plugin">
+       <plugin-provider id="PDE Plugin" name="PDE Plugin">
           <description>%PDEPlugin.Description</description>
           <category name="Common">
 	          <property name="maven.eclipse.plugin.artifact.type" 
@@ -368,6 +368,12 @@
             name="%DependencyTypesPreferencePage.Label"
             id="org.mevenide.ui.eclipse.preferences.pages.DependencyTypesPreferencePage">
        </page>
+       
+       <!-- Sample page to demonstrate the use of org.mevenide.ui.preferences extension point -->
+       <page category="org.mevenide.ui.eclipse.preferences.PluginsRoot" 
+             name="PDE Plugin" 
+             class="org.mevenide.ui.eclipse.preferences.dynamic.DynamicPreferencePage" 
+             id="PDE Plugin "/>
    </extension>
    <extension point="org.eclipse.ui.editors">
    	  <!-- Maven POM editor -->
