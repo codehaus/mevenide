@@ -38,9 +38,9 @@ import org.mevenide.ui.eclipse.Mevenide;
  *
  */
 public class GoalsOrderDialog extends Dialog implements ISelectionChangedListener {
-	private static final String BUTTON_MOVE_DOWN = "GoalsOrderDialog.MoveDown";
-    private static final String BUTTON_MOVE_UP = "GoalsOrderDialog.MoveUp";
-    private static final String DIALOG_TITLE = "GoalsOrderDialog.title";
+	private static final String BUTTON_MOVE_DOWN = "GoalsOrderDialog.MoveDown"; //$NON-NLS-1$
+    private static final String BUTTON_MOVE_UP = "GoalsOrderDialog.MoveUp"; //$NON-NLS-1$
+    private static final String DIALOG_TITLE = "GoalsOrderDialog.title"; //$NON-NLS-1$
 	
     private static Log log = LogFactory.getLog(GoalsOrderDialog.class);
 	
