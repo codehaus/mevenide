@@ -131,6 +131,11 @@ public class TestOutputListenerProvider extends AbstractOutputProcessor {
         }
         
         private void openLog(FileObject fo, String title, FileObject testFile) {
+            try {
+                IOProvider.getDefault().getIO(title, false).getOut().reset();
+            } catch (Exception exc) {
+                logger.error("Exception while resetting output", exc);
+            }
             InputOutput io = IOProvider.getDefault().getIO(title, false);
             io.select();
             BufferedReader reader = null;
