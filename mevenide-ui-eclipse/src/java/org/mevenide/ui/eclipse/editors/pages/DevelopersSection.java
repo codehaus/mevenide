@@ -86,7 +86,7 @@ public class DevelopersSection extends PageSection {
 		// POM developers table
 		Button toggle = createOverrideToggle(container, factory, 1, true);
 		TableViewer viewer = createTableViewer(container, factory, 1);
-		devTable = new TableEntry(viewer, toggle, container, factory, this);
+		devTable = new TableEntry(viewer, toggle, "Developer", container, factory, this);
 		OverrideAdaptor adaptor = new OverrideAdaptor() {
 			public void overrideParent(Object value) {
 				List developers = (List) value;
@@ -100,24 +100,25 @@ public class DevelopersSection extends PageSection {
 		devTable.addOverrideAdaptor(adaptor);
 		devTable.addPomCollectionAdaptor(
 			new IPomCollectionAdaptor() {
-				public Object addNewObject() {
+				public Object addNewObject(Object parentObject) {
 					Developer developer = new Developer();
 					pom.addDeveloper(developer);
 					return developer;
 				}
-				public void moveObjectTo(int index, Object object) {
+				public void moveObjectTo(int index, Object object, Object parentObject) {
 					List developers = pom.getDevelopers();
 					if (developers != null) {
 						developers.remove(object);
 						developers.add(index, object);
 					}
 				}
-				public void removeObject(Object object) {
+				public void removeObject(Object object, Object parentObject) {
 					List developers = pom.getDevelopers();
 					if (developers != null) {
 						developers.remove(object);
 					}
 				}
+				public List getDependents(Object parentObject) { return null; }
 			}
 		);
 		

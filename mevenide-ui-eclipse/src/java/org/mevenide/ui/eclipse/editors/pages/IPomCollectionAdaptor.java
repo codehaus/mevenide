@@ -48,12 +48,15 @@
  */
 package org.mevenide.ui.eclipse.editors.pages;
 
+import java.util.List;
+
 /**
  * @author Jeff Bonevich (jeff@bonevich.com)
  * @version $Id$
  */
 public interface IPomCollectionAdaptor {
-	public Object addNewObject();
-	public void moveObjectTo(int index, Object object);
-	public void removeObject(Object object);
+	public Object addNewObject(Object parentObject);
+	public void moveObjectTo(int index, Object object, Object parentObject);
+	public void removeObject(Object object, Object parentObject);
+	public List getDependents(Object parentObject);
 }

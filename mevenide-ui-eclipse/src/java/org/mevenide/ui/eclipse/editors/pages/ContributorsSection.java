@@ -86,7 +86,7 @@ public class ContributorsSection extends PageSection {
 		// POM contributors table
 		Button toggle = createOverrideToggle(container, factory, 1, true);
 		TableViewer viewer = createTableViewer(container, factory, 1);
-		contribTable = new TableEntry(viewer, toggle, container, factory, this);
+		contribTable = new TableEntry(viewer, toggle, "Contributor", container, factory, this);
 		OverrideAdaptor adaptor = new OverrideAdaptor() {
 			public void overrideParent(Object value) {
 				List contributors = (List) value;
@@ -100,24 +100,25 @@ public class ContributorsSection extends PageSection {
 		contribTable.addOverrideAdaptor(adaptor);
 		contribTable.addPomCollectionAdaptor(
 			new IPomCollectionAdaptor() {
-				public Object addNewObject() {
+				public Object addNewObject(Object parentObject) {
 					Contributor contributor = new Contributor();
 					pom.addContributor(contributor);
 					return contributor;
 				}
-				public void moveObjectTo(int index, Object object) {
+				public void moveObjectTo(int index, Object object, Object parentObject) {
 					List contributors = pom.getContributors();
 					if (contributors != null) {
 						contributors.remove(object);
 						contributors.add(index, object);
 					}
 				}
-				public void removeObject(Object object) {
+				public void removeObject(Object object, Object parentObject) {
 					List contributors = pom.getContributors();
 					if (contributors != null) {
 						contributors.remove(object);
 					}
 				}
+				public List getDependents(Object parentObject) { return null; }
 			}
 		);
 		

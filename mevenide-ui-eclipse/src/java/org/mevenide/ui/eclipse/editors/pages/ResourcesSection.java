@@ -87,7 +87,7 @@ public class ResourcesSection extends PageSection {
 		// Build resources table
 		Button toggle = createOverrideToggle(container, factory, 1, true);
 		TableViewer viewer = createTableViewer(container, factory, 1);
-		resourcesTable = new TableEntry(viewer, toggle, container, factory, this);
+		resourcesTable = new TableEntry(viewer, toggle, "Resource", container, factory, this);
 		OverrideAdaptor adaptor = new OverrideAdaptor() {
 			public void overrideParent(Object value) {
 				List resources = (List) value;
@@ -101,24 +101,25 @@ public class ResourcesSection extends PageSection {
 		resourcesTable.addOverrideAdaptor(adaptor);
 		resourcesTable.addPomCollectionAdaptor(
 			new IPomCollectionAdaptor() {
-				public Object addNewObject() {
+				public Object addNewObject(Object parentObject) {
 					Resource resource = new Resource();
 					addResource(pom, resource);
 					return resource;
 				}
-				public void moveObjectTo(int index, Object object) {
+				public void moveObjectTo(int index, Object object, Object parentObject) {
 					List resources = getResources(pom);
 					if (resources != null) {
 						resources.remove(object);
 						resources.add(index, object);
 					}
 				}
-				public void removeObject(Object object) {
+				public void removeObject(Object object, Object parentObject) {
 					List resources = getResources(pom);
 					if (resources != null) {
 						resources.remove(object);
 					}
 				}
+				public List getDependents(Object parentObject) { return null; }
 			}
 		);
 		
