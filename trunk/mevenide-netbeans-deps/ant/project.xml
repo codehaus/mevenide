@@ -10,7 +10,7 @@
   <name>apache ant library for Mevenide.</name>
   <shortDescription>Library for project mevenide</shortDescription>
   <description>Library for project mevenide</description>
-  <url>http://mevenide.sf.net</url>
+  <url>http://mevenide.codehaus.org</url>
   <dependencies>
     <dependency>
       <id>ant</id>

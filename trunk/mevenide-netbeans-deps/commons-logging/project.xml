@@ -10,7 +10,7 @@
   <name>commons-logging library for Mevenide</name>
   <shortDescription>Library for project Mevenide</shortDescription>
   <description>Library for project Mevenide</description>
-  <url>http://mevenide.codehaus.org/mevenide-netbeans-project</url>
+  <url>http://mevenide.codehaus.org</url>
   <dependencies>
     <dependency>
       <groupId>commons-logging</groupId>
