@@ -107,9 +107,9 @@ public class CheckstyleOutputListenerProvider extends AbstractOutputProcessor {
                 File srcRoot = new File(project.getSrcDirectory());
                 FileObject rootFo = FileUtil.toFileObject(srcRoot);
                 if (files.length == 0) {
-                    writer.println("No files matched the defined pmd rules.");
+                    writer.println("No files violating the defined checkstyle rules.");
                 } else {
-                    writer.println("Number of matched files: " + files.length);
+                    writer.println("Number of violating files: " + files.length);
                     writer.println(" ");
                 }
                 for (int i = 0; i < files.length; i++) {
