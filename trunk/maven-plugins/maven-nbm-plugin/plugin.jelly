@@ -308,7 +308,8 @@ ${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.x
              topdir="${maven.nbm.build.dir}"
              productdir="${maven.nbm.build.dir}/${maven.nbm.cluster.dir}"
              module="${maven.nbm.module.location}/${maven.nbm.final.name}.jar"
-             needsrestart="${maven.nbm.requiresrestart}">
+             needsrestart="${maven.nbm.requiresrestart}"
+             moduleauthor="${pom.organization.name}">
       <j:if test="${! empty(pom.url)}">
         <ant:setProperty name="homepage" value="${pom.url}" />
         <ant:setProperty name="distribution" value="${pom.url}/${maven.final.name}.nbm" />
