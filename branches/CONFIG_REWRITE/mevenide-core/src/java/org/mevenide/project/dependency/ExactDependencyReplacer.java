@@ -16,11 +16,8 @@
  */
 package org.mevenide.project.dependency;
 
-import org.apache.maven.project.Dependency;
-import org.mevenide.context.IQueryContext;
 import org.mevenide.project.io.IContentProvider;
 import org.mevenide.project.io.ProxyContentProvider;
-import org.mevenide.properties.IPropertyResolver;
 
 /**  
  * implementation of IDependencyReplacer and IDependencyPattern that requires a complete match

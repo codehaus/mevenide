@@ -17,8 +17,6 @@
 package org.mevenide.project.io;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;

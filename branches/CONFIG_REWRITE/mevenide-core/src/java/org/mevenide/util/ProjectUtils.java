@@ -21,11 +21,6 @@ import org.apache.maven.project.Project;
 import org.mevenide.context.DefaultQueryContext;
 import org.mevenide.context.IProjectContext;
 import org.mevenide.context.IQueryContext;
-import org.mevenide.properties.IPropertyLocator;
-import org.mevenide.properties.IPropertyResolver;
-import org.mevenide.properties.resolver.PropertyLocatorFactory;
-import org.mevenide.properties.resolver.PropertyResolverFactory;
-
 
 /**  
  * 

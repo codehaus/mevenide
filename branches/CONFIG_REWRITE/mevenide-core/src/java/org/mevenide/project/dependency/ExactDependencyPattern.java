@@ -18,8 +18,6 @@ package org.mevenide.project.dependency;
 
 import org.apache.maven.project.Dependency;
 import org.mevenide.context.IQueryContext;
-import org.mevenide.project.io.IContentProvider;
-import org.mevenide.project.io.ProxyContentProvider;
 import org.mevenide.properties.IPropertyResolver;
 
 /**  
@@ -43,7 +41,6 @@ public class ExactDependencyPattern implements IDependencyPattern {
     
     public boolean matches(Dependency dependency, IQueryContext context) {
         boolean matches = true;
-        IPropertyResolver res = context.getResolver();
         matches = matches && matchOne(artifact, dependency.getArtifactId());
         matches = matches && matchOne(group, dependency.getGroupId());
         matches  = matches && matchOne(version, dependency.getVersion());
