@@ -37,9 +37,16 @@
 
   <xsd:complexType name="TargetType">
     <xsd:sequence minOccurs="1" maxOccurs="unbounded">
-      <xsd:element name="include" type="IncludeType"/>
+      <xsd:element name="directory" type="DirectoryType"/>
     </xsd:sequence>
     <xsd:attribute name="name" type="xsd:string" default="default"/>
+  </xsd:complexType>
+
+  <xsd:complexType name="DirectoryType">
+    <xsd:sequence minOccurs="1" maxOccurs="unbounded">
+      <xsd:element name="include" type="IncludeType"/>
+    </xsd:sequence>
+    <xsd:attribute name="path" type="xsd:string" use="required"/>
   </xsd:complexType>
 
   <xsd:complexType name="IncludeType">
