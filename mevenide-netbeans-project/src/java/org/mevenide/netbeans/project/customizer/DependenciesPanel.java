@@ -309,9 +309,8 @@ public class DependenciesPanel extends JPanel implements ExplorerManager.Provide
         txtType.setText(dependency.getType() != null ? getValue(dependency.getType(), doResolve) : "");
     }    
     
-    public Project copyProject(Project project) {
-        //TODO
-        return null;
+    public List getChanges() {
+        return Collections.EMPTY_LIST;
     }
     
     public String getValidityMessage() {
@@ -322,9 +321,9 @@ public class DependenciesPanel extends JPanel implements ExplorerManager.Provide
         return true;
     }
     
-    public void setProject(Project proj, boolean resolve) {
+     public void setResolveValues(boolean resolve) {
         doResolve = resolve;
-        manager.setRootContext(createRootNode(proj));
+        manager.setRootContext(createRootNode(project.getOriginalMavenProject()));
         btv.expandAll();
         selectFirstNode();
         

@@ -20,6 +20,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Collections;
+
+import java.util.List;
+
 import javax.swing.JPanel;
 import org.apache.maven.project.Organization;
 import org.apache.maven.project.Project;
@@ -263,9 +267,10 @@ public class OrgPanel extends JPanel implements ProjectPanel {
     private javax.swing.JTextField txtURL;
     // End of variables declaration//GEN-END:variables
     
-   public void setProject(Project project, boolean resolve) {
-//TODO        setEnableFields(!resolve); 
-        Organization org = project.getOrganization();
+    public void setResolveValues(boolean resolve) {
+//        setEnableFields(!resolve); 
+        Project proj = project.getOriginalMavenProject();
+        Organization org = proj.getOrganization();
         if (org == null) {
             txtURL.setText("");
             txtName.setText("");
@@ -275,10 +280,10 @@ public class OrgPanel extends JPanel implements ProjectPanel {
             txtName.setText(org.getName() == null ? "" : getValue(org.getName(), resolve));
             txtLogo.setText(org.getLogo() == null ? "" : getValue(org.getLogo(), resolve));
         }
-        txtSiteAddress.setText(project.getSiteAddress() == null ? "" : getValue(project.getSiteAddress(), resolve));
-        txtSiteDir.setText(project.getSiteDirectory() == null ? "" : getValue(project.getSiteDirectory(), resolve));
-        txtDistDir.setText(project.getDistributionDirectory() == null ? "" : getValue(project.getDistributionDirectory(), resolve));
-        txtDistAddress.setText(project.getDistributionSite() == null ? "" : getValue(project.getDistributionSite(), resolve));
+        txtSiteAddress.setText(proj.getSiteAddress() == null ? "" : getValue(proj.getSiteAddress(), resolve));
+        txtSiteDir.setText(proj.getSiteDirectory() == null ? "" : getValue(proj.getSiteDirectory(), resolve));
+        txtDistDir.setText(proj.getDistributionDirectory() == null ? "" : getValue(proj.getDistributionDirectory(), resolve));
+        txtDistAddress.setText(proj.getDistributionSite() == null ? "" : getValue(proj.getDistributionSite(), resolve));
     }
     
    private String getValue(String value, boolean resolve) {
@@ -288,31 +293,32 @@ public class OrgPanel extends JPanel implements ProjectPanel {
        return value;
    }
    
-    public Project copyProject(Project project) {
-        project.setSiteAddress(txtSiteAddress.getText());
-        project.setSiteDirectory(txtSiteDir.getText());
-        project.setDistributionSite(txtDistAddress.getText());
-        project.setDistributionDirectory(txtDistDir.getText());
-        // see if one of the org fields is defined ..
-        int length = Math.max(
-        Math.max(txtLogo.getText().length(), txtURL.getText().length()),
-        txtName.getText().length());
-        Organization org = null;
-        if (length > 0) {
-            if (project.getOrganization() == null) {
-                org = new Organization();
-                project.setOrganization(org);
-            } else {
-                org = project.getOrganization();
-            }
-            org.setLogo(txtLogo.getText());
-            org.setName(txtName.getText());
-            org.setUrl(txtURL.getText());
-        } else {
-            // no field defined..
-            project.setOrganization(null);
-        }
-        return project;
+    public List getChanges() {
+        return Collections.EMPTY_LIST;
+//        project.setSiteAddress(txtSiteAddress.getText());
+//        project.setSiteDirectory(txtSiteDir.getText());
+//        project.setDistributionSite(txtDistAddress.getText());
+//        project.setDistributionDirectory(txtDistDir.getText());
+//        // see if one of the org fields is defined ..
+//        int length = Math.max(
+//        Math.max(txtLogo.getText().length(), txtURL.getText().length()),
+//        txtName.getText().length());
+//        Organization org = null;
+//        if (length > 0) {
+//            if (project.getOrganization() == null) {
+//                org = new Organization();
+//                project.setOrganization(org);
+//            } else {
+//                org = project.getOrganization();
+//            }
+//            org.setLogo(txtLogo.getText());
+//            org.setName(txtName.getText());
+//            org.setUrl(txtURL.getText());
+//        } else {
+//            // no field defined..
+//            project.setOrganization(null);
+//        }
+//        return project;
     }
     
     public boolean isInValidState() {

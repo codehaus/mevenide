@@ -21,6 +21,8 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 
+import org.mevenide.properties.IPropertyLocator;
+
 /**
  *
  * @author  Milos Kleint (ca206216@tiscali.cz)
@@ -45,16 +47,15 @@ public class OriginChange {
         return comboBox;
     }
     
-    public boolean hasChangedValue() {
-        return comboBox.hasChangedSelection();
-    }
-    
     public void setAction(String  action) {
         comboBox.invokePopupAction(action);
     }
     
     public int getSelectedLocationID() {
         LocationComboBox.LocationWrapper wrapper = (LocationComboBox.LocationWrapper)comboBox.getSelectedItem();
+        if (wrapper == null) {
+            return IPropertyLocator.LOCATION_NOT_DEFINED;
+        }
         return wrapper.getID();
     }
     

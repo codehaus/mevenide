@@ -22,6 +22,10 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Calendar;
+import java.util.Collections;
+
+import java.util.List;
+
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.event.DocumentEvent;
@@ -282,7 +286,7 @@ public class FilesPanel extends JPanel implements ProjectPanel {
     private javax.swing.JTextField txtUserDirectory;
     // End of variables declaration//GEN-END:variables
     
-    public void setProject(Project proj, boolean resolve) {
+     public void setResolveValues(boolean resolve) {
         txtBuild.setText("build.properties");
         txtProject.setText("project.properties");
         txtUser.setText("build.properties");
@@ -315,9 +319,10 @@ public class FilesPanel extends JPanel implements ProjectPanel {
         }
     }
     
-    public Project copyProject(Project project) {
-        return project;
+    public List getChanges() {
+        return Collections.EMPTY_LIST;
     }
+
     
     public void setValidateObserver(ProjectValidateObserver observer) {
         valObserver = observer;

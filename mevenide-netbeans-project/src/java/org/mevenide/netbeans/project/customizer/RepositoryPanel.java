@@ -20,6 +20,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Collections;
+
+import java.util.List;
+
 import javax.swing.JPanel;
 import org.apache.maven.project.Organization;
 import org.apache.maven.project.Project;
@@ -195,9 +199,10 @@ public class RepositoryPanel extends JPanel implements ProjectPanel {
     private javax.swing.JTextField txtURL;
     // End of variables declaration//GEN-END:variables
     
-    public void setProject(Project project, boolean resolve) {
-//TODO        setEnableFields(!resolve);         
-        Repository repo = project.getRepository();
+     public void setResolveValues(boolean resolve) {
+//TODO        setEnableFields(!resolve);  
+        Project proj = project.getOriginalMavenProject();
+        Repository repo = proj.getRepository();
         if (repo == null) {
             txtURL.setText("");
             txtConnection.setText("");
@@ -207,7 +212,7 @@ public class RepositoryPanel extends JPanel implements ProjectPanel {
             txtConnection.setText(repo.getConnection() == null ? "" : getValue(repo.getConnection(), resolve));
             txtDevConnection.setText(repo.getDeveloperConnection() == null ? "" : getValue(repo.getDeveloperConnection(), resolve));
         }
-        txtGumpRepoID.setText(project.getGumpRepositoryId() == null ? "" : getValue(project.getGumpRepositoryId(), resolve));
+        txtGumpRepoID.setText(proj.getGumpRepositoryId() == null ? "" : getValue(proj.getGumpRepositoryId(), resolve));
     }
     
     private String getValue(String value, boolean resolve) {
@@ -217,8 +222,8 @@ public class RepositoryPanel extends JPanel implements ProjectPanel {
         return value;
     }
     
-    public Project copyProject(Project project) {
-        return project;
+    public List getChanges() {
+        return Collections.EMPTY_LIST;
     }
     
     public boolean isInValidState() {

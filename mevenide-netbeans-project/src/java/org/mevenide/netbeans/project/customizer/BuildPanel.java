@@ -15,6 +15,10 @@
  * =========================================================================
  */
 package org.mevenide.netbeans.project.customizer;
+import java.util.Collections;
+
+import java.util.List;
+
 
 import javax.swing.JPanel;
 import javax.swing.event.DocumentEvent;
@@ -151,17 +155,19 @@ public class BuildPanel extends JPanel implements ProjectPanel {
 
     }//GEN-END:initComponents
     
-    public Project copyProject(Project project) {
-        SourceDirectoryUtil.addSource(project, txtSrc.getText().trim(), ProjectConstants.MAVEN_SRC_DIRECTORY);
-        SourceDirectoryUtil.addSource(project, txtTestSrc.getText().trim(), ProjectConstants.MAVEN_TEST_DIRECTORY);
-        //        SourceDirectoryUtil.addSource(project, txtIntTestSrc.getText().trim(), ProjectConstants.MAVEN_INTEGRATION_TEST_DIRECTORY);
-        SourceDirectoryUtil.addSource(project, txtAspectSrc.getText().trim(), ProjectConstants.MAVEN_ASPECT_DIRECTORY);
-        return project;
+    public List getChanges() {
+        return Collections.EMPTY_LIST;
+//        SourceDirectoryUtil.addSource(project, txtSrc.getText().trim(), ProjectConstants.MAVEN_SRC_DIRECTORY);
+//        SourceDirectoryUtil.addSource(project, txtTestSrc.getText().trim(), ProjectConstants.MAVEN_TEST_DIRECTORY);
+//        //        SourceDirectoryUtil.addSource(project, txtIntTestSrc.getText().trim(), ProjectConstants.MAVEN_INTEGRATION_TEST_DIRECTORY);
+//        SourceDirectoryUtil.addSource(project, txtAspectSrc.getText().trim(), ProjectConstants.MAVEN_ASPECT_DIRECTORY);
+//        return project;
     }
     
-    public void setProject(Project project, boolean resolve) {
-//TODO        setEnableFields(!resolve);        
-        Build build = project.getBuild();
+     public void setResolveValues(boolean resolve) {
+//TODO        setEnableFields(!resolve);   
+         Project proj = project.getOriginalMavenProject();
+        Build build = proj.getBuild();
         if (build == null) {
             txtSrc.setText(resolve ? getValue("${maven.src.dir}/java", true) : ""); //NOI18N
             txtTestSrc.setText(resolve ? getValue("${maven.src.dir}/test/java", true) : ""); //NOI18N

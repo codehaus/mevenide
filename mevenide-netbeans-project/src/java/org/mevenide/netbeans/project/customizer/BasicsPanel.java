@@ -21,6 +21,10 @@ import java.awt.event.ActionListener;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.List;
+
+
 import javax.swing.JPanel;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -359,18 +363,19 @@ public class BasicsPanel extends JPanel implements ProjectPanel {
     private javax.swing.JTextField txtUrl;
     // End of variables declaration//GEN-END:variables
      
-    public void setProject(Project project, boolean resolve) {
+     public void setResolveValues(boolean resolve) {
 //TODO        setEnableFields(!resolve);
-        txtName.setText(project.getName() == null ? "" : getValue(project.getName(), resolve));
-        txtCurrentVersion.setText(project.getCurrentVersion() == null ? "" : getValue(project.getCurrentVersion(), resolve));
-        txtArtifactID.setText(project.getArtifactId() == null ? "" : getValue(project.getArtifactId(), resolve));
-        txtGroupID.setText(project.getGroupId() == null ? "" : getValue(project.getGroupId(), resolve));
-        txtPackage.setText(project.getPackage() == null ? "" : getValue(project.getPackage(), resolve));
-        txtInceptionYear.setText(project.getInceptionYear() == null ? "" : getValue(project.getInceptionYear(), resolve));
-        txtShortDescription.setText(project.getShortDescription() == null ? "" : getValue(project.getShortDescription(), resolve));
-        txtUrl.setText(project.getUrl() == null ? "" : getValue(project.getUrl(), resolve));
-        txtLogo.setText(project.getLogo() == null ? "" : getValue(project.getLogo(), resolve));
-        taDescription.setText(project.getDescription() == null ? "" : getValue(project.getDescription(), resolve));
+        Project proj = project.getOriginalMavenProject();
+        txtName.setText(proj.getName() == null ? "" : getValue(proj.getName(), resolve));
+        txtCurrentVersion.setText(proj.getCurrentVersion() == null ? "" : getValue(proj.getCurrentVersion(), resolve));
+        txtArtifactID.setText(proj.getArtifactId() == null ? "" : getValue(proj.getArtifactId(), resolve));
+        txtGroupID.setText(proj.getGroupId() == null ? "" : getValue(proj.getGroupId(), resolve));
+        txtPackage.setText(proj.getPackage() == null ? "" : getValue(proj.getPackage(), resolve));
+        txtInceptionYear.setText(proj.getInceptionYear() == null ? "" : getValue(proj.getInceptionYear(), resolve));
+        txtShortDescription.setText(proj.getShortDescription() == null ? "" : getValue(proj.getShortDescription(), resolve));
+        txtUrl.setText(proj.getUrl() == null ? "" : getValue(proj.getUrl(), resolve));
+        txtLogo.setText(proj.getLogo() == null ? "" : getValue(proj.getLogo(), resolve));
+        taDescription.setText(proj.getDescription() == null ? "" : getValue(proj.getDescription(), resolve));
     }
     
     private String getValue(String value, boolean resolve) {
@@ -380,18 +385,19 @@ public class BasicsPanel extends JPanel implements ProjectPanel {
         return value;
     }
     
-    public Project copyProject(Project project) {
-        project.setName(txtName.getText());
-        project.setArtifactId(txtArtifactID.getText());
-        project.setGroupId(txtGroupID.getText());
-        project.setCurrentVersion(txtCurrentVersion.getText());
-        project.setPackage(txtPackage.getText());
-        project.setDescription(taDescription.getText());
-        project.setShortDescription(txtShortDescription.getText());
-        project.setInceptionYear(txtInceptionYear.getText());
-        project.setUrl(txtUrl.getText());
-        project.setLogo(txtLogo.getText());
-        return project;
+    public List getChanges() {
+        return Collections.EMPTY_LIST;
+//        project.setName(txtName.getText());
+//        project.setArtifactId(txtArtifactID.getText());
+//        project.setGroupId(txtGroupID.getText());
+//        project.setCurrentVersion(txtCurrentVersion.getText());
+//        project.setPackage(txtPackage.getText());
+//        project.setDescription(taDescription.getText());
+//        project.setShortDescription(txtShortDescription.getText());
+//        project.setInceptionYear(txtInceptionYear.getText());
+//        project.setUrl(txtUrl.getText());
+//        project.setLogo(txtLogo.getText());
+//        return project;
     }
     
     public void setValidateObserver(ProjectValidateObserver observer) {

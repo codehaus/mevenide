@@ -94,9 +94,13 @@ public class ActionProviderImpl implements ActionProvider
         String key = "maven.netbeans.exec." + actionName;
         String value = res.getResolvedValue(key);
         if (value == null) {
-            value = defaultIDEGoals.getProperty(key);
+            value = getDefaultGoalForAction(key);
         }
         return value;
+    }
+    
+    public static String getDefaultGoalForAction(String key) {
+        return defaultIDEGoals.getProperty(key);
     }
     
     public void invokeAction(String str, Lookup lookup) throws java.lang.IllegalArgumentException

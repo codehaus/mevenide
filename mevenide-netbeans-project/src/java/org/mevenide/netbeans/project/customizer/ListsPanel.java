@@ -21,6 +21,8 @@ import java.awt.event.ActionListener;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
+
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
@@ -287,10 +289,11 @@ public class ListsPanel extends JPanel implements ProjectPanel {
     private javax.swing.JTextField txtUnsubscribe;
     // End of variables declaration//GEN-END:variables
     
-    public void setProject(Project project, boolean resolve) {
+     public void setResolveValues(boolean resolve) {
 //TODO        setEnableFields(!resolve);                
         doResolve = resolve;
-        List list = project.getMailingLists();
+        Project proj = project.getOriginalMavenProject();
+        List list = proj.getMailingLists();
         DefaultListModel model = new DefaultListModel();
         if (list != null) {
             Iterator it = list.iterator();
@@ -334,18 +337,19 @@ public class ListsPanel extends JPanel implements ProjectPanel {
         
     }
     
-    public Project copyProject(Project project) {
-        // when copying over, we will discard the current instances in the project with our local fresh ones.
-        // I hope that is ok, and the mailing lists don't have custom properties.
-        DefaultListModel model = (DefaultListModel)lstLists.getModel();
-        ArrayList list = new ArrayList(model.size() + 5);
-        Enumeration en = model.elements();
-        while (en.hasMoreElements()) {
-            Object obj = en.nextElement();
-            list.add(obj);
-        }
-        project.setMailingLists(list);
-        return project;
+    public List getChanges() {
+        return Collections.EMPTY_LIST;
+//        // when copying over, we will discard the current instances in the project with our local fresh ones.
+//        // I hope that is ok, and the mailing lists don't have custom properties.
+//        DefaultListModel model = (DefaultListModel)lstLists.getModel();
+//        ArrayList list = new ArrayList(model.size() + 5);
+//        Enumeration en = model.elements();
+//        while (en.hasMoreElements()) {
+//            Object obj = en.nextElement();
+//            list.add(obj);
+//        }
+//        project.setMailingLists(list);
+//        return project;
     }
     
     public void setValidateObserver(ProjectValidateObserver observer) {
