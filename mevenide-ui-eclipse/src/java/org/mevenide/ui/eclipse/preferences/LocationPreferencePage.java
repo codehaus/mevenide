@@ -120,6 +120,10 @@ public class LocationPreferencePage extends PreferencePage implements IWorkbench
 			    public void widgetDefaultSelected(SelectionEvent event) {
 		        }
 			    public void widgetSelected(SelectionEvent event) {
+			        reloadMavenRepository();
+			        reloadMavenLocalHome();
+			        reloadMavenHome();
+			        reloadJavaHome();
 		        }
 	    	}
 	    );
@@ -133,9 +137,13 @@ public class LocationPreferencePage extends PreferencePage implements IWorkbench
 			Mevenide.getResourceString("LocationPreferencePage.maven.repo.label"), 
 			mavenRepository
 		);
-		if ( mavenRepositoryEditor.getStringValue() == null || mavenRepositoryEditor.getStringValue().trim().equals("") ) {
-		    mavenRepositoryEditor.setStringValue(getDefaultLocationFinder().getMavenLocalRepository());
+		if ( StringUtils.isNull(mavenRepositoryEditor.getStringValue()) ) {
+		    reloadMavenRepository();
 		}
+    }
+
+    private void reloadMavenRepository() {
+        mavenRepositoryEditor.setStringValue(getDefaultLocationFinder().getMavenLocalRepository());
     }
 
     private void createMavenLocalHomeEditor() {
@@ -144,9 +152,13 @@ public class LocationPreferencePage extends PreferencePage implements IWorkbench
 			Mevenide.getResourceString("LocationPreferencePage.maven.local.home.label"), 
 			mavenLocalHome
 		);
-		if ( mavenLocalHomeEditor.getStringValue() == null || mavenLocalHomeEditor.getStringValue().trim().equals("") ) {
-		    mavenLocalHomeEditor.setStringValue(getDefaultLocationFinder().getMavenLocalHome());
+		if ( StringUtils.isNull(mavenLocalHomeEditor.getStringValue()) ) {
+		    reloadMavenLocalHome();
 		}
+    }
+
+    private void reloadMavenLocalHome() {
+        mavenLocalHomeEditor.setStringValue(getDefaultLocationFinder().getMavenLocalHome());
     }
 
     private void createMavenHomeEditor() {
@@ -156,9 +168,14 @@ public class LocationPreferencePage extends PreferencePage implements IWorkbench
 			mavenHome
 		);
 		if ( isNull(mavenHomeEditor) ) {
-			log.debug("mavenHomeEditor is null, loading from env : " + getDefaultLocationFinder().getMavenHome());
-		    mavenHomeEditor.setStringValue(getDefaultLocationFinder().getMavenHome());
+			log.debug("mavenHomeEditor is null, loading from env : " + 
+			          getDefaultLocationFinder().getMavenHome());
+		    reloadMavenHome();
 		}
+    }
+
+    private void reloadMavenHome() {
+        mavenHomeEditor.setStringValue(getDefaultLocationFinder().getMavenHome());
     }
 
     private void createJavaHomeEditor() {
@@ -168,9 +185,14 @@ public class LocationPreferencePage extends PreferencePage implements IWorkbench
 			javaHome
 		);
 		if ( isNull(javaHomeEditor) ) {
-			log.debug("javaHomeEditor is null, loading from env : " + getDefaultLocationFinder().getJavaHome());
-		    javaHomeEditor.setStringValue(getDefaultLocationFinder().getJavaHome());
+			log.debug("javaHomeEditor is null, loading from env : " + 
+			          getDefaultLocationFinder().getJavaHome());
+		    reloadJavaHome();
 		}
+    }
+
+    private void reloadJavaHome() {
+        javaHomeEditor.setStringValue(getDefaultLocationFinder().getJavaHome());
     }
 
     private DirectoryFieldEditor createEditor(String property, String name, String value) {
@@ -221,12 +243,12 @@ public class LocationPreferencePage extends PreferencePage implements IWorkbench
 		Mevenide.getInstance().setJavaHome(javaHome);
 	
 		mavenLocalHome = mavenLocalHomeEditor.getTextControl(topLevelContainer).getText();
-		if ( mavenLocalHome != null && !mavenLocalHome.trim().equals("") ) {
+		if ( !StringUtils.isNull(mavenLocalHome) ) {
 			Mevenide.getInstance().setMavenLocalHome(mavenLocalHome);
 		}
 				
 		mavenRepository = mavenRepositoryEditor.getTextControl(topLevelContainer).getText();
-		if ( mavenRepository != null && !mavenRepository.trim().equals("") ) {
+		if ( !StringUtils.isNull(mavenRepository) ) {
 			Mevenide.getInstance().setMavenRepository(mavenRepository);
 		}
 	}
