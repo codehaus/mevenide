@@ -49,9 +49,27 @@ public class RepositoryBrowser extends ViewPart implements RepositoryEventListen
     
     
     private static final String MAVEN_REPOSITORIES = "MAVEN_REPOSITORIES";
-    private static List DEFAULT_REPOSITORIES = new ArrayList();
+    private static final List DEFAULT_REPOSITORIES = new ArrayList();
+    private static final List MIRRORS = new ArrayList();
+    
     static {
         DEFAULT_REPOSITORIES.add("http://www.ibiblio.org/maven/");
+        DEFAULT_REPOSITORIES.add("http://cvs.apache.org/repository/");
+        DEFAULT_REPOSITORIES.add("http://maven-plugins.sourceforge.net/maven/");
+        DEFAULT_REPOSITORIES.add("http://seasar.sourceforge.jp/maven/");
+        DEFAULT_REPOSITORIES.add("http://spring-ext.sourceforge.jp/maven/");
+        DEFAULT_REPOSITORIES.add("http://ibiblio.org/geotools");
+        DEFAULT_REPOSITORIES.add("http://www.codeczar.com/maven/");
+        
+        MIRRORS.add("http://mirrors.sunsite.dk/maven/");
+        MIRRORS.add("http://ftp.up.ac.za/pub/linux/maven/");
+        MIRRORS.add("http://download.au.kde.org/pub/maven/");
+        MIRRORS.add("http://public.planetmirror.com/pub/maven/");
+        MIRRORS.add("http://public.www.planetmirror.com/pub/maven/");
+        MIRRORS.add("http://smokeping.planetmirror.com/pub/maven/");
+        MIRRORS.add("http://horde.planetmirror.com/pub/maven/");
+        MIRRORS.add("http://curl.planetmirror.com/pub/maven/");
+        MIRRORS.add("http://python.planetmirror.com/pub/maven/");
     }
     
     private TreeViewer repositoryViewer;

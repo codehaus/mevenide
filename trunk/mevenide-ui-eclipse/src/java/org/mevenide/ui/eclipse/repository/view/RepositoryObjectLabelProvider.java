@@ -24,6 +24,7 @@ import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.repository.model.Artifact;
 import org.mevenide.ui.eclipse.repository.model.BaseRepositoryObject;
 import org.mevenide.ui.eclipse.repository.model.Repository;
+import org.mevenide.util.StringUtils;
 
 
 /**  
@@ -47,7 +48,8 @@ public class RepositoryObjectLabelProvider implements ILabelProvider {
     public String getText(Object element) {
         if ( element instanceof Artifact ) {
             Artifact artifact = (Artifact) element;
-            return artifact.getName() + " v. " + artifact.getVersion();
+            String artifactVersion = artifact.getVersion();
+            return artifact.getName() + (!StringUtils.isNull(artifactVersion) ?  " v. " + artifactVersion : "");
         }
         if ( element instanceof BaseRepositoryObject ) {
             return ((BaseRepositoryObject) element).getName();
