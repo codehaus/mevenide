@@ -79,7 +79,8 @@ public class SchemaValidator implements IProjectValidator {
 	        driver.validate(new InputSource(new StringInputStream(stringWriter.toString())));
         }
         catch (Exception e) {
-            throw new ValidationException("Unable to validate pom against schema", e);
+            warnings.add("Unable to validate pom against schema due to : " + e);
+            throw new ValidationException(errors, warnings);
         }
 	    if ( !errors.isEmpty() || !warnings.isEmpty() ) {
 	        throw new ValidationException(errors, warnings);
