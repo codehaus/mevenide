@@ -150,9 +150,8 @@ public class Environment {
 	}
 
     public static String getMavenPluginsInstallDir() {
-    	if ( mavenPluginsInstallDir == null && mavenRepository != null ) {
-    		File mavenLocal = new File(mavenRepository).getParentFile();
-    		mavenPluginsInstallDir = new File(mavenLocal, "plugins").getAbsolutePath(); 
+    	if ( mavenPluginsInstallDir == null && mavenLocalHome != null ) {
+    		mavenPluginsInstallDir = new File(mavenLocalHome, "plugins").getAbsolutePath(); 
     	}
         return mavenPluginsInstallDir;
     }
