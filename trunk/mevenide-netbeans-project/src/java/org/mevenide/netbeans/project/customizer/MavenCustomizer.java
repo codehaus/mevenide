@@ -292,9 +292,9 @@ public class MavenCustomizer extends JPanel implements ProjectValidateObserver {
                 "DependencyOverrideCategory", // NOI18N
                 "Overrides", 
                 "org/mevenide/netbeans/project/resources/Bullet", // NOI18N
-                new OverridePanel(project, true),  
+//                new OverridePanel(project, true),  
                 // disable for the release, not ready yet.
-//                createEmptyLabel("WORK IN PROGRESS..."),
+                createEmptyLabel("WORK IN PROGRESS..."),
                 null)
         };
         ConfigurationDescription[] descriptions = new ConfigurationDescription[] {
@@ -314,7 +314,7 @@ public class MavenCustomizer extends JPanel implements ProjectValidateObserver {
                 "BuildCategory", // NOI18N
                 "Build", 
                 "org/mevenide/netbeans/project/resources/Bullet", // NOI18N
-                new BuildPanel(false, false, project), 
+                new BuildPanel(project), 
                 null),
             new ConfigurationDescription(
                 "UnitTestsCategory", // NOI18N

@@ -101,7 +101,7 @@ public class OverridePanel extends JPanel implements ExplorerManager.Provider, P
        String key = "maven.jar.override"; //NOI18N
        String value = project.getPropertyResolver().getResolvedValue(key);
        int location = project.getPropertyLocator().getPropertyLocation(key);
-       overrideChange = new CheckBoxPropertyChange(key, value, location, cbOverride, originChange, "false");
+       overrideChange = new CheckBoxPropertyChange(key, value, location, cbOverride, originChange, false, false);
         manager.setRootContext(createRootNode(project.getOriginalMavenProject()));
         btv.expandAll();
         selectFirstNode();
