@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?eclipse version="3.0"?>
 <plugin
    id="@maven.eclipse.plugin.artifact.id@"
    name="Mevenide Goals Grabber"
    version="@maven.eclipse.plugin.artifact.version@"
-   provider-name="The Codehaus">
+   provider-name="Sourceforge">
 
    <runtime>
+      <library name="lib/commons-collections-2.1.jar">
+         <export name="*"/>
+         <packages prefixes="org.apache.commons.collections"/>
+      </library>
       <library name="@maven.eclipse.plugin.artifact.internal.id@-@maven.eclipse.plugin.artifact.internal.version@.jar">
          <export name="*"/>
          <packages prefixes="org.mevenide.goals,org.mevenide.reports"/>

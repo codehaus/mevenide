@@ -5,5 +5,3 @@ dist
 lib
 plugin.xml
 .clover
-*.jar
-META-INF

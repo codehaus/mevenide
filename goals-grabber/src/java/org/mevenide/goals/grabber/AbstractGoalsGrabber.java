@@ -1,27 +1,61 @@
-/* ==========================================================================
- * Copyright 2003-2004 Apache Software Foundation
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+/* ====================================================================
+ * The Apache Software License, Version 1.1
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (c) 2003 The Apache Software Foundation.  All rights
+ * reserved.
  *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- * =========================================================================
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in
+ *    the documentation and/or other materials provided with the
+ *    distribution.
+ *
+ * 3. The end-user documentation included with the redistribution,
+ *    if any, must include the following acknowledgment:
+ *       "This product includes software licensed under 
+ *        Apache Software License (http://www.apache.org/)."
+ *    Alternately, this acknowledgment may appear in the software itself,
+ *    if and wherever such third-party acknowledgments normally appear.
+ *
+ * 4. The names "Apache" and "Apache Software Foundation" and
+ *    "Mevenide" must not be used to endorse or promote products
+ *    derived from this software without prior written permission. For
+ *    written permission, please contact mevenide-general-dev@lists.sourceforge.net.
+ *
+ * 5. Products derived from this software may not be called "Apache",
+ *    "Mevenide", nor may "Apache" or "Mevenide" appear in their name, without
+ *    prior written permission of the Mevenide Team and the ASF.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
+ * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+ * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED.  IN NO EVENT SHALL THE APACHE SOFTWARE FOUNDATION OR
+ * ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
+ * USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
+ * OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+ * SUCH DAMAGE.
+ * ====================================================================
  */
 package org.mevenide.goals.grabber;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.StringTokenizer;
 import java.util.TreeSet;
+
+import org.apache.commons.lang.StringUtils;
 
 /**  
  * 
@@ -52,41 +86,35 @@ public abstract class AbstractGoalsGrabber implements IGoalsGrabber {
     }
 
     protected void registerGoalName(String fullyQualifiedGoalName) {
-        StringTokenizer splittedGoal = new StringTokenizer(fullyQualifiedGoalName, ":", false);
-    	String plugin = splittedGoal.nextToken();
+        String[] splittedGoal = StringUtils.split(fullyQualifiedGoalName, ":");
+    	String plugin = splittedGoal[0];
     
     	String goalName = "(default)";
-    	if (splittedGoal.hasMoreTokens()) {
-    		goalName = splittedGoal.nextToken();
+    	if ( splittedGoal.length > 1 ) {
+    		goalName = splittedGoal[1];
     	}
-    	Set goals = (Set) plugins.get(plugin);
+    
+    	List goals = (List) plugins.get(plugin);
     	if ( goals == null ) { 
-    		goals = new TreeSet();
-        	plugins.put(plugin, goals);
+    		goals = new ArrayList();
     	}
-  		goals.add(goalName);
+    	if ( !goals.contains(goalName) ) {
+    		goals.add(goalName);
+    	}
+    	plugins.remove(plugin);
+    	plugins.put(plugin, goals);
     }
 
     protected void registerGoalProperties(String fullyQualifiedGoalName, String properties) {
-        int index1 = (properties == null ? -1 : properties.indexOf('>'));
-        if (properties != null) {
-            String description = "";
-        	if ( index1 > 0) {
-        		description = properties.substring(0, index1);
-        		descriptions.put(fullyQualifiedGoalName, description);
-        	}
-        	if ( index1 > -1  && index1 < properties.length() - 1) {
-                String prereqsString = properties.substring(index1 + 1);
-                StringTokenizer tok = new StringTokenizer(prereqsString, ",", false);
-                String[] commaSeparatedPrereqs = new String[tok.countTokens()];
-                int count = 0;
-                while (tok.hasMoreTokens()) {
-                    commaSeparatedPrereqs[count] = tok.nextToken();
-                    count = count + 1;
-                }
-        		prereqs.put(fullyQualifiedGoalName, commaSeparatedPrereqs);
-        	}
-        }
+        String[] splittedProperties = StringUtils.split(properties, ">");
+    	if ( splittedProperties.length > 0 ) {
+    		String description = splittedProperties[0];
+    		descriptions.put(fullyQualifiedGoalName, description);
+    	}
+    	if ( splittedProperties.length > 1 ) {
+    		String[] commaSeparatedPrereqs = StringUtils.split(splittedProperties[1], ",");
+    		prereqs.put(fullyQualifiedGoalName, commaSeparatedPrereqs);
+    	}
     }
 
     public String[] getPlugins() {
@@ -101,18 +129,19 @@ public abstract class AbstractGoalsGrabber implements IGoalsGrabber {
     }
 
      protected  boolean containsGoal(String fullyQualifiedGoalName) {
-        StringTokenizer splittedGoal = new StringTokenizer(fullyQualifiedGoalName, ":", false);
-    	String plugin = splittedGoal.nextToken();
-      
-    	String goalName = "(default)";
-    	if (splittedGoal.hasMoreTokens()) {
-    		goalName = splittedGoal.nextToken();
+        String[] splittedGoal = StringUtils.split(fullyQualifiedGoalName, ":");
+    	String plugin = splittedGoal[0];
+    
+    	String goalName = null;
+    	if ( splittedGoal.length > 1 ) {
+    		goalName = splittedGoal[1];
     	}
-    	Collection goals = (Collection) plugins.get(plugin);
+    
+    	List goals = (List) plugins.get(plugin);
     	if ( goals == null) {
     		return false;
     	}
-        if (goalName != null && !goals.contains(goalName)) {
+        if (goalName != null && !goals.contains(goalName)) { 
             return false;
         }
         return true;
