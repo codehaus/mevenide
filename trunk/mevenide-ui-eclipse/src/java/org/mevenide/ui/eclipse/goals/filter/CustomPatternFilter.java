@@ -27,7 +27,6 @@ import org.apache.commons.logging.LogFactory;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.mevenide.ui.eclipse.goals.model.Element;
-import org.mevenide.ui.eclipse.goals.model.Goal;
 import org.mevenide.ui.eclipse.preferences.PreferencesManager;
 import org.mevenide.util.StringUtils;
 
