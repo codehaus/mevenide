@@ -22,6 +22,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -168,7 +170,7 @@ class DefaultProjectContext implements IProjectContext {
                 String extend = proj.getChildText("extend");
                 callback.discardError(IQueryErrorCallback.ERROR_UNPARSABLE_POM);
                 if (extend != null) {
-                    extend = propResolver.resolveString(extend);
+                    extend = doReplaceExtend(file.getParentFile(), propResolver, extend);
                     File absolute = new File(extend);
                     absolute = JDomProjectUnmarshaller.normalizeFile(absolute);
                     if (absolute.exists() && (!absolute.equals(file))) {
@@ -192,6 +194,31 @@ class DefaultProjectContext implements IProjectContext {
             callback.handleError(IQueryErrorCallback.ERROR_CANNOT_FIND_POM, 
                        new FileNotFoundException("Cannot find project.xml file:" + file.getAbsolutePath()));
         }
+    }
+
+    private static Pattern pattern = Pattern.compile(".*\\$\\{([a-zA-Z0-9_\\-\\.]*)\\}.*"); //NOI18N
+    
+    static String doReplaceExtend(File basedir, IPropertyResolver resolver, String extend) {
+        if (extend.indexOf("${") > -1) { //NOI18N
+            int index = extend.indexOf("${basedir}"); //NOI18N
+            if (index > -1) {
+                extend = extend.substring(0, index) + basedir.getAbsolutePath() + extend.substring(index + "${basedir}".length());  //NOI18N
+            }
+            Matcher match = pattern.matcher(extend);
+            if (match.matches()) {
+                String gr1 = match.group(1);
+                String replace = resolver.getValue(gr1);
+                if (replace != null) {
+                    index = extend.indexOf(gr1);
+                    extend = extend.substring(0, index - 2) + replace + extend.substring(index + gr1.length() + 1);
+                } else {
+                    // cannot resolve, just exit..
+                    return extend;
+                }
+            }
+            extend = doReplaceExtend(basedir, resolver, extend);
+        }
+        return extend;
     }
     
     //##########################################################################
