@@ -59,6 +59,8 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Project;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.ErrorDialog;
@@ -184,6 +186,10 @@ public class MevenidePomEditor extends MultiPageEditorPart {
     
 	public Project getParentPom() {
 		return parentPom;
+	}
+	
+	public IProject getProject() {
+		return ((IResource) getEditorInput().getAdapter(IResource.class)).getProject();
 	}
 
     protected void createPages() {
