@@ -48,6 +48,10 @@
  */
 package org.mevenide.ui.netbeans.loader;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.mevenide.ui.netbeans.ArtifactCookie;
 import org.mevenide.ui.netbeans.MavenProjectCookie;
 import org.openide.actions.PropertiesAction;
@@ -63,6 +67,9 @@ import org.openide.util.actions.SystemAction;
  * @author cenda
  */
 public class MavenProjectNode extends DataNode {
+     private static Log log = LogFactory.getLog(MavenProjectNode.class);
+   
+    private boolean sheetCreated = false;
     
     public MavenProjectNode(MavenProjectDataObject obj) {
         this(obj, new Children.Array());
@@ -77,10 +84,22 @@ public class MavenProjectNode extends DataNode {
     public MavenProjectNode(MavenProjectDataObject obj, Children ch) {
         super(obj, ch);
         setIconBase("org/mevenide/ui/netbeans/resources/MyDataIcon");
-    }
-    
-    protected MavenProjectDataObject getMyDataObject() {
-        return (MavenProjectDataObject)getDataObject();
+        final MavenProjectCookie cook = (MavenProjectCookie)obj.getCookie(MavenProjectCookie.class);
+        cook.addPropertyChangeListener(new PropertyChangeListener()
+        {
+            public void propertyChange(PropertyChangeEvent event)
+            {
+                log.debug("property changed " + event.getPropertyName());
+                fireDisplayNameChange(null, getDisplayName());
+                if (sheetCreated)
+                {
+                    log.debug("Updating sheet");
+                    Sheet.Set props = getSheet().get(Sheet.PROPERTIES);
+                    props.put(cook.getProperties());
+                    firePropertySetsChange(null, getSheet().toArray());
+                }
+            }
+        });
     }
     
     public String getDisplayName()
@@ -101,10 +120,8 @@ public class MavenProjectNode extends DataNode {
             set = sheet.createPropertiesSet();
         }
         MavenProjectCookie cook = (MavenProjectCookie)this.getCookie(MavenProjectCookie.class);
-        if (cook != null)
-        {
-            set.put(cook.getProperties());
-        }
+        sheetCreated = true;
+        set.put(cook.getProperties());
         return sheet;
     }
     
