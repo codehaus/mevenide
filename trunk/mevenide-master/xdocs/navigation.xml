@@ -34,7 +34,7 @@
         </item>
         <item name="Directory Layout" href="layout.html"/>
         <item name="Task List" href="todos.html"/>
-        <item name="Mevenide Wiki" href="http://mevenide.sourceforge.net/cgi-bin/view.pl/FrontPage"/>
+        <item name="Mevenide Wiki" href="/cgi-bin/view.pl/FrontPage"/>
     </menu>
     <search/>
   </body>
