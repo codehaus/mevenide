@@ -65,10 +65,20 @@ public class PomSynchronizer extends AbstractPomSynchronizer implements ISynchro
      */
 	protected void mavenize() {
 		try {
-			log.debug("Should check timestamp = " + (Mevenide.getPlugin().getCheckTimestamp()));
-			DependencyGroup dependencyGroup = DependencyGroupMarshaller.getDependencyGroup(project, Mevenide.getPlugin().getFile("statedDependencies.xml"));
-			SourceDirectoryGroup sourceGroup = SourceDirectoryGroupMarshaller.getSourceDirectoryGroup(project, Mevenide.getPlugin().getFile("sourceTypes.xml"));
-			updatePom(sourceGroup, dependencyGroup, Mevenide.getPlugin().getPom());
+			boolean shouldCheckTimeStamp = Mevenide.getPlugin().getCheckTimestamp();
+			
+			long pomTimestamp = pom.getLocation().toFile().lastModified();
+			long dotClasspathTimestamp = project.getFile(".classpath").getLocation().toFile().lastModified();
+			boolean disSynchro = pomTimestamp < dotClasspathTimestamp;
+			
+			boolean shouldSynchronize = (shouldCheckTimeStamp && disSynchro) || !shouldCheckTimeStamp;
+			
+			if ( shouldSynchronize ) {
+				log.debug("About to update pom");
+				DependencyGroup dependencyGroup = DependencyGroupMarshaller.getDependencyGroup(project, Mevenide.getPlugin().getFile("statedDependencies.xml"));
+				SourceDirectoryGroup sourceGroup = SourceDirectoryGroupMarshaller.getSourceDirectoryGroup(project, Mevenide.getPlugin().getFile("sourceTypes.xml"));
+				updatePom(sourceGroup, dependencyGroup, Mevenide.getPlugin().getPom());
+			}
 			
 		}
 		catch (Exception e) {
