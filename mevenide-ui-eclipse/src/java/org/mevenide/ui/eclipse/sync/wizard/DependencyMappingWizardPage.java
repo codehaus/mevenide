@@ -14,6 +14,7 @@
  */
 package org.mevenide.ui.eclipse.sync.wizard;
 
+import java.util.Iterator;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -216,7 +217,19 @@ public class DependencyMappingWizardPage extends WizardPage {
 						Map props = dialog.getProperties();
 						if ( props != null ) {
 							Dependency affectedDependency = getSelectedDependency();
-							affectedDependency.setProperties(props);
+							
+							//crap... still that _not really_ deprecated stuff (dependency.properties is a list !) 
+							Iterator it = props.keySet().iterator();
+							while ( it.hasNext() ) {
+								String propName = (String) it.next();
+								String propValue = (String) props.get(propName);
+								affectedDependency.addProperty(propName + ":" + propValue);
+								affectedDependency.resolvedProperties().put(propName, propValue);
+								
+							}
+							
+							
+							//affectedDependency.setProperties(props);
 						}
 					}
 					private Dependency getSelectedDependency() {

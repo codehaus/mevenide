@@ -92,8 +92,10 @@ public class DependencyGroup extends ArtifactGroup {
 		if ( dependency.getType() == null ) {
 			dependency.setType("");
 		}
-		if ( dependency.getArtifact() == null ) {
-			dependency.setArtifact("");
+		if ( dependency.getJar() == null ) {
+		//if ( dependency.getArtifact() == null ) {
+			//dependency.setArtifact("");
+			dependency.setJar("");
 		}
 		
 		log.debug("Adding [" + DependencyUtil.toString(dependency));

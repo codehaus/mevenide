@@ -24,10 +24,10 @@
            <url>http://forehead.werken.com/</url>
         </dependency>
         <dependency>
-           <groupId>maven-new</groupId>
-           <artifactId>maven-core</artifactId>
-           <version>1.0-beta-11-SNAPSHOT</version>
-           <url>http://maven.org/</url>
+            <groupId>maven</groupId>
+            <artifactId>maven</artifactId>
+            <version>1.0-beta-10</version>
+            <type>jar</type>
         </dependency>
         
         <!-- mevenide dependencies -->

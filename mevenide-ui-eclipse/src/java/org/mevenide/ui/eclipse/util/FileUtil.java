@@ -59,7 +59,7 @@ public class FileUtil {
 
 	public static void createPom(IProject project) throws Exception, CoreException {
 		
-		 String referencedPomSkeleton = ProjectSkeleton.getSkeleton( project.getName() );
+		 String referencedPomSkeleton = ProjectSkeleton.getSkeleton( project.getName());
 		 IFile referencedProjectFile = project.getFile("project.xml"); 
 		 referencedProjectFile.create(new ByteArrayInputStream(referencedPomSkeleton.getBytes()), false, null);
 	}
