@@ -22,7 +22,7 @@
         <div id="documentContent">
             <p>Mevenide for the upcoming 4.0 version contains these <a href="features.html" class="documentLink"> features </a>.</p>
             <p> There is not any downloadable version ready. You can build it yourself according to the instructions on the wiki pages. Reasonable effort is made to have it always working with the latest development builds of Netbeans 4.0.
-            At the time of the writing it was 20040529xxxx and later. To get the Netbeans builds, go to the <a href="http://www.netbeans.org/downloads/ide/archive/builds_archive_dev.html"> download page </a> </p>
+            At the time of the writing it was 200406241800 and later. To get the Netbeans builds, go to the <a href="http://www.netbeans.org/downloads/ide/archive/builds_archive_dev.html"> download page </a> </p>
             <p>NOTE: The initial version will be released right at the beginning of the stabilization phase of Netbeans 4.0. Please check the <a href="http://docs.codehaus.org/display/MEVENIDE/Home"> wiki pages </a> for updates or
             subscribe to the announce mailing list and get notified once it's released.</p>
 	</div>
