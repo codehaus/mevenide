@@ -39,12 +39,20 @@ public class SourceDirectoryGroup extends ArtifactGroup {
 				String path = new DefaultPathResolver().getRelativeSourceDirectoryPath(classpathEntries[i], javaProject.getProject());
 				SourceDirectory sourceDirectory = new SourceDirectory(path);
 				sourceDirectory.setDirectoryType(ProjectConstants.MAVEN_SRC_DIRECTORY); 
-				artifacts.add(sourceDirectory);
+				addSourceDirectory(sourceDirectory);
+				
 			}
 		}
 	}
 	
 	public void addSourceDirectory(SourceDirectory sourceDirectory) {
+		for (int j = 0; j < excludedArtifacts.size(); j++) {
+			SourceDirectory excluded = (SourceDirectory) excludedArtifacts.get(j);
+			if ( sourceDirectory.getDirectoryPath().equals(excluded.getDirectoryPath()) ) {
+				excludedArtifacts.remove(excluded);
+				sourceDirectory.setDirectoryType(excluded.getDirectoryType());
+			}
+		}
 		artifacts.add(sourceDirectory);
 	}
 	
@@ -52,7 +60,10 @@ public class SourceDirectoryGroup extends ArtifactGroup {
 		return artifacts;
 	}
 	
-	
+	public void excludeSourceDirectory(SourceDirectory directory) {
+		artifacts.remove(directory);
+		excludedArtifacts.add(directory);
+	}
 
 	public void setSourceDirectories(List list) {
 		artifacts = list;

@@ -95,6 +95,7 @@ public class DependencyGroup extends ArtifactGroup {
 	}
 	
 	public void excludeDependency(Dependency dependency) {
+		artifacts.remove(dependency);
 		excludedArtifacts.add(dependency);
 	}
 	
