@@ -33,25 +33,35 @@ public class CheckBoxPropertyChange implements MavenPropertyChange {
     private String value;
     private int location;
     private String newValue;
-    private String defaultValue;
+    private boolean defaultValue;
     private int newLocation;
     private JCheckBox check;
     private OriginChange origin;
     private DocListener listener;
+    private boolean opposite;
     
     private boolean ignore = false;
     
     public CheckBoxPropertyChange(String keyParam, String oldValue, int oldLocation, 
-                                   JCheckBox box, OriginChange oc, String defVal) {
+                                   JCheckBox box, OriginChange oc, boolean defVal, boolean opposite) {
+        this.opposite = opposite;
         key = keyParam;
-        setCheckBoxValue(oldValue);
-        origin.setSelectedLocationID(oldLocation);
-        value = newValue;
+        check = box;
         location = oldLocation;
         newLocation = oldLocation;
         defaultValue = defVal;
-        check = box;
         origin = oc;
+        value = oldValue;
+        
+        boolean boolValue = false;
+        if (value != null) {
+            boolValue = Boolean.valueOf(value).booleanValue();
+        } else {
+            boolValue = defaultValue;
+        }
+        setCheckBoxValue(boolValue, opposite);
+        System.out.println("key = " + key + " initial value=" + boolValue);
+        origin.setSelectedLocationID(oldLocation);
         listener = new DocListener();
         origin.setChangeObserver(listener);
         check.addActionListener(listener);
@@ -81,13 +91,13 @@ public class CheckBoxPropertyChange implements MavenPropertyChange {
         return newLocation != location || !getOldValue().equals(getNewValue());
     }
     
-    private void setCheckBoxValue(String val) {
-        boolean boolValue = false;
-        if (val != null) {
-            boolValue = Boolean.valueOf(val).booleanValue();
-        }
+    private void setCheckBoxValue(boolean boolValue, boolean opposite) {
         newValue = boolValue ? "true" : "false";
-        check.setSelected(boolValue);
+        if (opposite) {
+            check.setSelected(!boolValue);
+        } else {
+            check.setSelected(boolValue);
+        }
     }
     
     
@@ -99,7 +109,13 @@ public class CheckBoxPropertyChange implements MavenPropertyChange {
             if (ignore) {
                 return;
             }
-            newValue = check.isSelected() ? "true" : "false";
+            if (opposite) {
+                newValue = check.isSelected() ? "false" : "true";
+            }
+            else {
+                newValue = check.isSelected() ? "true" : "false";
+            }
+            
             if (origin.getSelectedLocationID() == IPropertyLocator.LOCATION_NOT_DEFINED ||
                 origin.getSelectedLocationID() == IPropertyLocator.LOCATION_DEFAULTS) {
                 // assume the default placement is build..
@@ -115,7 +131,7 @@ public class CheckBoxPropertyChange implements MavenPropertyChange {
             newLocation = origin.getSelectedLocationID();
             if (OriginChange.ACTION_RESET_TO_DEFAULT.equals(changeAction)) {
                 ignore = true;
-                setCheckBoxValue(defaultValue);
+                setCheckBoxValue(defaultValue, opposite);
                 ignore = false;
             }
         }
