@@ -470,7 +470,7 @@ public class MevenidePomEditor extends FormEditor {
                 firePropertyChange(PROP_TITLE);
             }
             setModelDirty(false);
-
+            pom = updatedPom;
             clean = true;
         } catch (Exception e) {
             log.error("Unable to update model", e);
