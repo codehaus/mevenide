@@ -78,7 +78,7 @@ public final class PomSkeletonBuilder {
 	 * @throws Exception
 	 */
 	public String getPomSkeleton(String projectName) throws Exception {
-        return getPomSkeleton(projectName, projectName, projectName);
+        return getPomSkeleton(projectName, projectName, projectName, null, null);
 	}
 	
 	/**
@@ -89,7 +89,7 @@ public final class PomSkeletonBuilder {
 	 * @return a new project skeleton 
 	 * @throws Exception 
 	 */ 
-	public String getPomSkeleton(String projectName, String groupId, String artifactId) throws Exception {
+	public String getPomSkeleton(String projectName, String groupId, String artifactId, String version, String shortDescription) throws Exception {
 	    if ( StringUtils.isNull(projectName) ) {
 	        throw new Exception("Project name should be defined");
 	    }
@@ -104,11 +104,10 @@ public final class PomSkeletonBuilder {
             File file = MevenideUtils.createFile(is);
             Project project = new JDomProjectUnmarshaller().parse(file);
             
-            is.close();
-            if ( artifactId == null ) {
+            if ( StringUtils.isNull(artifactId) ) {
                 artifactId = projectName;
             }
-            if ( groupId == null ) {
+            if ( StringUtils.isNull(groupId) ) {
                 groupId = projectName;
             }
             project.setId(artifactId.toLowerCase());
@@ -117,6 +116,12 @@ public final class PomSkeletonBuilder {
             project.setArtifactId(artifactId.toLowerCase());
             project.setInceptionYear(getCurrentYear());
             
+            if ( !StringUtils.isNull(version) ) {
+                project.setCurrentVersion(version);
+            }
+            if ( !StringUtils.isNull(shortDescription) ) {
+                project.setShortDescription(shortDescription);
+            }
             Writer writer = new StringWriter();
             new DefaultProjectMarshaller().marshall(writer, project);
             writer.close();
