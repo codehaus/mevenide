@@ -101,14 +101,13 @@ class DirectoryMappingNodeContainer extends AbstractArtifactMappingNodeContainer
     }
     
     private boolean lowMatch(Resource resource, Directory directory) {
-        log.debug("resource dir : " + resource.getDirectory());
-        log.debug("directory path : " + directory.getPath());
+        log.debug("resource dir : " + resource.getDirectory() + ", directory path : " + directory.getPath() + " match ? " + (resource.getDirectory() != null && resource.getDirectory().replaceAll("\\\\", "/").equals(directory.getPath().replaceAll("\\\\", "/"))));
         if ( resource.getDirectory() == null ) return false;
         return resource.getDirectory().replaceAll("\\\\", "/").equals(directory.getPath().replaceAll("\\\\", "/"));
     }
     
     private void attachOrphanResources(List resourcesCopy) {
-        IArtifactMappingNode[] newNodes = new IArtifactMappingNode[nodes.length + resourcesCopy.size()];
+    	IArtifactMappingNode[] newNodes = new IArtifactMappingNode[nodes.length + resourcesCopy.size()];
         System.arraycopy(nodes, 0, newNodes, 0, nodes.length);
         for (int i = nodes.length; i < newNodes.length; i++) {
             DirectoryMappingNode node = new DirectoryMappingNode();
@@ -127,17 +126,19 @@ class DirectoryMappingNodeContainer extends AbstractArtifactMappingNodeContainer
             for (int i = 0; i < nodes.length; i++) {
                 DirectoryMappingNode currentNode = (DirectoryMappingNode) nodes[i];
                 Directory resolvedDirectory = (Directory) currentNode.getResolvedArtifact();
-                for (Iterator itr = directories.keySet().iterator(); itr.hasNext(); ) {
-                    String directoryType = (String) itr.next();
-                    String directory = (String) directories.get(directoryType);
-                    if ( directory.replaceAll("\\\\", "/").equals(resolvedDirectory.getPath().replaceAll("\\\\", "/")) ) {
-	                    Directory pomDirectory = new Directory();
-	                    pomDirectory.setPath(directory);
-	                    pomDirectory.setType(directoryType);
-                        currentNode.setArtifact(pomDirectory);
-                        currentNode.setDeclaringPom(project.getFile());
-                        directoriesCopy.remove(directoryType);
-                    }
+                if ( resolvedDirectory != null ) {
+	                for (Iterator itr = directories.keySet().iterator(); itr.hasNext(); ) {
+	                    String directoryType = (String) itr.next();
+	                    String directory = (String) directories.get(directoryType);
+	                    if ( directory.replaceAll("\\\\", "/").equals(resolvedDirectory.getPath().replaceAll("\\\\", "/")) ) {
+		                    Directory pomDirectory = new Directory();
+		                    pomDirectory.setPath(directory);
+		                    pomDirectory.setType(directoryType);
+	                        currentNode.setArtifact(pomDirectory);
+	                        currentNode.setDeclaringPom(project.getFile());
+	                        directoriesCopy.remove(directoryType);
+	                    }
+	                }
                 }
             }
             //attachOrphanDirectories(directoriesCopy);

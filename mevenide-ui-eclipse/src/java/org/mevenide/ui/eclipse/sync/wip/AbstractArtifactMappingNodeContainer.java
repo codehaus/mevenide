@@ -148,9 +148,11 @@ public abstract class AbstractArtifactMappingNodeContainer implements IArtifactM
     	newContainer.setDirection(direction);
     
     	List newNodeList = new ArrayList(); 
-    	for (int i = 0; i < nodes.length; i++) {
-    	    if ( (nodes[i].getChangeDirection() & direction) != 0) {
-    			newNodeList.add(nodes[i]);
+    	if ( nodes != null ) {
+    		for (int i = 0; i < nodes.length; i++) {
+    			if ( (nodes[i].getChangeDirection() & direction) != 0) {
+    				newNodeList.add(nodes[i]);
+    			}
     		}
         }
     
