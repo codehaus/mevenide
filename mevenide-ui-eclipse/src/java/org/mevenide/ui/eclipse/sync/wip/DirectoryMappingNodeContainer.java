@@ -49,7 +49,6 @@
 package org.mevenide.ui.eclipse.sync.wip;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -76,8 +75,8 @@ class DirectoryMappingNodeContainer extends AbstractArtifactMappingNodeContainer
     }
     
     public void attachPom(Project project) {
-        attachDirectories(project);
         attachResources(project);
+        attachDirectories(project);
     }
     
     private void attachResources(Project project) {
@@ -85,12 +84,12 @@ class DirectoryMappingNodeContainer extends AbstractArtifactMappingNodeContainer
             List resources = project.getBuild().getResources() == null ? new ArrayList() : project.getBuild().getResources();
             List orphanResources = new ArrayList(resources);
             
-		    for (int i = 0; i < nodes.length; i++) {
-		        DirectoryMappingNode currentNode = (DirectoryMappingNode) nodes[i];
-		        Directory resolvedDirectory = (Directory) currentNode.getResolvedArtifact();
-		        if ( currentNode.getArtifact() == null ) {
-			        for (Iterator itr = resources.iterator(); itr.hasNext(); ) {
-			            Resource pomResource = (Resource) itr.next();
+	        for (Iterator itr = resources.iterator(); itr.hasNext(); ) {
+	            Resource pomResource = (Resource) itr.next();
+			    for (int i = 0; i < nodes.length; i++) {
+			        DirectoryMappingNode currentNode = (DirectoryMappingNode) nodes[i];
+			        Directory resolvedDirectory = (Directory) currentNode.getResolvedArtifact();
+			        if ( currentNode.getArtifact() == null ) {
 			            if ( resolvedDirectory == null || lowMatch(pomResource, resolvedDirectory) ) {
 			                currentNode.setArtifact(pomResource);
 			                currentNode.setDeclaringPom(project.getFile());
@@ -98,7 +97,7 @@ class DirectoryMappingNodeContainer extends AbstractArtifactMappingNodeContainer
 			            }
 			        }
 		        }
-		    }
+	    	}
 	        attachOrphanArtifacts(orphanResources);
         }
     }
@@ -109,31 +108,62 @@ class DirectoryMappingNodeContainer extends AbstractArtifactMappingNodeContainer
         return resource.getDirectory().replaceAll("\\\\", "/").equals(directory.getPath().replaceAll("\\\\", "/"));
     }
     
-    private void attachOrphanArtifacts(List resourcesCopy) {
-    	IArtifactMappingNode[] newNodes = new IArtifactMappingNode[nodes.length + resourcesCopy.size()];
+    private void attachOrphanArtifacts(List orphanArtifacts) {
+		
+		removeDuplicate(orphanArtifacts);		
+
+    	IArtifactMappingNode[] newNodes = new IArtifactMappingNode[nodes.length + orphanArtifacts.size()];
         System.arraycopy(nodes, 0, newNodes, 0, nodes.length);
+
         for (int i = nodes.length; i < newNodes.length; i++) {
             DirectoryMappingNode node = new DirectoryMappingNode();
-            node.setArtifact(resourcesCopy.get(i - nodes.length));
+			node.setArtifact(orphanArtifacts.get(i - nodes.length));
             node.setParent(this);
             newNodes[i] = node;
         }
+
         this.nodes = newNodes;
     }
+
+	private void removeDuplicate(List orphanArtifacts) {
+		List modifiedOrphanList = new ArrayList(orphanArtifacts);
+		for (int j = 0; j < modifiedOrphanList.size(); j++) {
+			for (int i = 0; i < nodes.length; i++) {
+				DirectoryMappingNode currentNode = (DirectoryMappingNode) nodes[i];
+				DirectoryMappingNode orphanNode = new DirectoryMappingNode();
+				orphanNode.setArtifact(modifiedOrphanList.get(j));
+				if ( haveSamePath(orphanNode, currentNode) ) {
+					setConflicting(orphanNode, currentNode);
+					orphanArtifacts.remove(modifiedOrphanList.get(j));
+				}
+			}
+		}
+
+	}
+
+	private boolean haveSamePath(DirectoryMappingNode node1, DirectoryMappingNode node2) {
+		return node1.getLabel().equals(node2.getLabel());
+	}
+
+	private void setConflicting(DirectoryMappingNode orphanNode, DirectoryMappingNode currentNode) {
+		//TODO which one is conflicting : orphan ? current ? 
+ 		//also since both have the same label howto differentiate them ?
+		//do we even want to mark them as conflictual, does it make sense ?
+	}
     
     private void attachDirectories(Project project) {
         if ( project.getBuild() != null ) {
             Map directories = getPomSourceDirectories(project);
             Map orphanDirectories = new HashMap(directories);
             
-            for (int i = 0; i < nodes.length; i++) {
-                DirectoryMappingNode currentNode = (DirectoryMappingNode) nodes[i];
-                if ( currentNode.getArtifact() == null ) {
-	                Directory resolvedDirectory = (Directory) currentNode.getResolvedArtifact();
-	                if ( resolvedDirectory != null ) {
-		                for (Iterator itr = directories.keySet().iterator(); itr.hasNext(); ) {
-		                    String directoryType = (String) itr.next();
-		                    String directory = (String) directories.get(directoryType);
+		    for (Iterator itr = directories.keySet().iterator(); itr.hasNext(); ) {
+                String directoryType = (String) itr.next();
+                String directory = (String) directories.get(directoryType);
+	            for (int i = 0; i < nodes.length; i++) {
+	                DirectoryMappingNode currentNode = (DirectoryMappingNode) nodes[i];
+	                if ( currentNode.getArtifact() == null ) {
+		                Directory resolvedDirectory = (Directory) currentNode.getResolvedArtifact();
+		                if ( resolvedDirectory != null ) {
 		                    if ( directory.replaceAll("\\\\", "/").equals(resolvedDirectory.getPath().replaceAll("\\\\", "/")) ) {
 			                    Directory pomDirectory = new Directory();
 			                    pomDirectory.setPath(directory);
@@ -182,3 +212,4 @@ class DirectoryMappingNodeContainer extends AbstractArtifactMappingNodeContainer
         return directories;
     }
 }
+
