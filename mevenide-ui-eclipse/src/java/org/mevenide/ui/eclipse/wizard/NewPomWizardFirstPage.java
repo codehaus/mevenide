@@ -207,6 +207,8 @@ public class NewPomWizardFirstPage extends WizardPage implements Listener {
         IPath newFilePath = containerPath.append(resourceGroup.getResource());
         final IFile newFileHandle = createFileHandle(newFilePath);
         
+        ((NewPomWizard) getWizard()).setContainerName(newFilePath.toFile().getParentFile().getName());
+        
         WorkspaceModifyOperation op = new WorkspaceModifyOperation(null) {
             protected void execute(IProgressMonitor monitor) throws CoreException, InterruptedException {
                 try {
