@@ -13,6 +13,7 @@
  */
 package org.mevenide.project;
 
+import org.apache.maven.project.Build;
 import org.apache.maven.project.Project;
 import org.mevenide.ProjectConstants;
 
@@ -28,6 +29,10 @@ public class SourceDirectoryUtil {
 	}
 	
 	public static void addSource(Project project, String path, String sourceType) {
+		if ( project.getBuild() == null ) {
+			project.setBuild(new Build());
+		}
+		
 		if ( ProjectConstants.MAVEN_ASPECT_DIRECTORY.equals(sourceType) ) {
 			project.getBuild().setAspectSourceDirectory(path);
 		}
@@ -43,6 +48,10 @@ public class SourceDirectoryUtil {
 	}
 	
 	public static boolean isSourceDirectoryPresent(Project project, String path) {
+		if ( project.getBuild() == null ) {
+			return false;
+		}
+		
 		String srcDirectory = project.getBuild().getSourceDirectory();
 		String aspectSrcDirectory = project.getBuild().getSourceDirectory();
 		String unitTestSourceDirectory = project.getBuild().getSourceDirectory();
