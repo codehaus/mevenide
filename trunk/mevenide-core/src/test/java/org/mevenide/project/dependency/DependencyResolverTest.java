@@ -67,11 +67,11 @@ public class DependencyResolverTest extends AbstractMevenideTestCase {
 	}
 
 	public void testGuessExtension() throws Exception {
-		IDependencyResolver resolver = AbstractDependencyResolver.newInstance("/home/bleah/bouh/foo+joe-test2.-bar-1.0.7-beta-1.txt");
+		IDependencyResolver resolver = DependencyResolverFactory.newInstance("/home/bleah/bouh/foo+joe-test2.-bar-1.0.7-beta-1.txt");
 		String ext = resolver.guessExtension();
 		assertEquals("txt", ext);
 		
-		resolver = AbstractDependencyResolver.newInstance("/home/bleah/bouh/rt.jar");
+		resolver = DependencyResolverFactory.newInstance("/home/bleah/bouh/rt.jar");
 		ext = resolver.guessExtension();
 		assertEquals("jar", ext);
 		
@@ -85,7 +85,7 @@ public class DependencyResolverTest extends AbstractMevenideTestCase {
 		jarDir.mkdirs();
 		File jar = new File(jarDir, "commons-httpclient-2.0alpha1-20020829.jar");
 		jar.createNewFile();
-		IDependencyResolver resolver = AbstractDependencyResolver.newInstance(jar.getAbsolutePath());
+		IDependencyResolver resolver = DependencyResolverFactory.newInstance(jar.getAbsolutePath());
 		assertEquals("2.0alpha1-20020829", resolver.guessVersion());
 		assertEquals("commons-httpclient", resolver.guessArtifactId());
 		assertEquals("commons-httpclient", resolver.guessGroupId());
