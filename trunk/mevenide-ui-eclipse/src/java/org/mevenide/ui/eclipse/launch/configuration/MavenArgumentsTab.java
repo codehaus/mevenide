@@ -38,6 +38,7 @@ import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
@@ -86,7 +87,9 @@ public class MavenArgumentsTab extends AbstractLaunchConfigurationTab  {
 		setDirty(false);
 	}
 	
-	
+	public Image getImage() {
+        return Mevenide.getImageDescriptor("eview16/variable_tab.gif").createImage();
+    }
 	
 	public String getName() {
 		return Mevenide.getResourceString("MavenArgumentsTab.name");
