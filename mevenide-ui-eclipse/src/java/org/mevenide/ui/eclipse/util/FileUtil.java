@@ -60,7 +60,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.mevenide.project.io.ProjectSkeleton;
+import org.mevenide.project.io.PomSkeletonBuilder;
 import org.mevenide.ui.eclipse.DefaultPathResolver;
 import org.mevenide.ui.eclipse.IPathResolver;
 import org.mevenide.ui.eclipse.Mevenide;
@@ -93,7 +93,8 @@ public class FileUtil {
 
 	public static void createPom(IProject project) throws Exception, CoreException {
 		 log.debug("Creating pom skeleton using template : " + Mevenide.getPlugin().getPomTemplate());
-		 String referencedPomSkeleton = ProjectSkeleton.getSkeleton( project.getName(), Mevenide.getPlugin().getPomTemplate() );
+		 PomSkeletonBuilder pomSkeletonBuilder = PomSkeletonBuilder.getSkeletonBuilder( Mevenide.getPlugin().getPomTemplate() ); 
+		 String referencedPomSkeleton = pomSkeletonBuilder.getPomSkeleton(project.getName());
 		 IFile referencedProjectFile = project.getFile("project.xml"); 
 		 referencedProjectFile.create(new ByteArrayInputStream(referencedPomSkeleton.getBytes()), false, null);
 	}
