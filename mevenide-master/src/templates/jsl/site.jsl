@@ -163,20 +163,22 @@
                 <x:if select="$nav">
                   <jsl:applyTemplates select="$nav/body/menu[not(@type) | @type='header']"/>
                 </x:if>
-
-				<jsl:applyTemplates select="$projectNav/body/menu"/>
+				
+			    <jsl:applyTemplates select="$projectNav/body/menu"/>
                 
                 <!-- Standard Maven Navigation -->
                 <j:set var="fileName">${file}</j:set>
 
-                <j:set var="poweredbyimage">${maven.xdoc.poweredby.image}</j:set>
+                <!-- j:set var="poweredbyimage">${maven.xdoc.poweredby.image}</j:set>
                 <j:set var="poweredbytitle">${maven.xdoc.poweredby.title}</j:set>
                 <j:set var="poweredbyurl">${maven.xdoc.poweredby.url}</j:set>
                 <j:if test="${!empty(poweredbyimage)}">
                 	<div style="margin-top: 20px; width: 100%; text-align: center;">
                 		<a href="${poweredbyurl}" title="${poweredbytitle}"><img id="poweredBy" alt="${maven.xdoc.poweredby.title}" src="${relativePath}/images/logos/${poweredbyimage}"/></a>
                 	</div>
-                </j:if>
+                </j:if -->
+                
+                <div id="poweredBy">Powered By <a href="http://maven.apache.org/">Maven</a></div>
               
                 <j:if test="${date == 'navigation-bottom'}">
                   <div id="lastPublished">
