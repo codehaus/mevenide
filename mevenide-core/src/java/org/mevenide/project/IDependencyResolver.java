@@ -61,16 +61,6 @@ public interface IDependencyResolver {
 	public abstract String guessVersion(String fileName);
 	
 	/**
-	 * 
-	 * convert the fileName into an array String as described here :
-	 * {artifactId, version, extension} 
-	 * 
-	 * @param fileName
-	 * @return {artifactId, version, extension} 
-	 */
-	public abstract String[] split(String fileName);
-	
-	/**
 	 * try to guess the groupId if the file isnot present in the repository
 	 * 
 	 * @param fileName

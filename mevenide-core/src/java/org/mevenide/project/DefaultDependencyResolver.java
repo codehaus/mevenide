@@ -121,7 +121,7 @@ public class DefaultDependencyResolver extends AbstractDependencyResolver {
 	 * @param fileName
 	 * @return {artifactId, version, extension}
 	 */
-	public String[] split(String fileName) {
+	private String[] split(String fileName) {
 	
 		Pattern p = Pattern.compile("(.|(-\\D)+)-((\\d)+(.*))\\.(\\w+)");
 		Matcher m = p.matcher(fileName);
