@@ -159,7 +159,9 @@ abstract class AbstractProjectClassPathImpl implements ClassPathImplementation {
     
     protected URI checkOneDependency(Dependency dep) {
         logger.debug("dependency " + dep.getArtifactId() + " is added to classpath? " + dep.isAddedToClasspath());
-        if (dep.isAddedToClasspath()) {
+        // for some reason non-typed dependencies are also added to classpath even though they don't match the 
+        // isAddedToClassPath() check.
+        if (dep.isAddedToClasspath() || dep.getType() == null) {
             // check override first
             URI uri;
             String path = JarOverrideReader2.getInstance().processOverride(dep,
