@@ -64,7 +64,7 @@
         </zip>
         
         <j:if test="${deploiement}">
-        	<copy file="dist/org.mevenide-0.1-ea.zip"
+        	<copy file="dist/org.mevenide-${dist.version}.zip"
         		  todir="${eclipse.home}/plugins/org.mevenide_0.1"/>
         </j:if>
         <delete dir="temp"/>
