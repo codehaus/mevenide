@@ -129,16 +129,13 @@ public class PomIdentificationSection extends PageSection {
 				}
 			}
 		);
-		pomNameText.addSelectionListener(
-			pomNameText.new OverridableSelectionAdapter() {
+		pomNameText.addOverrideAdaptor(
+			new OverrideAdaptor() {
 				public void updateProject(String value) {
 					pom.setName(value);
 				}
 				public String getParentProjectAttribute() {
 					return parentPom.getName();
-				}
-				public void refreshUI() {
-					PomIdentificationSection.this.redrawSection();
 				}
 			}
 		);
@@ -256,16 +253,13 @@ public class PomIdentificationSection extends PageSection {
 				}
 			}
 		);
-		artifactIdText.addSelectionListener(
-			artifactIdText.new OverridableSelectionAdapter() {
+		artifactIdText.addOverrideAdaptor(
+			new OverrideAdaptor() {
 				public void updateProject(String value) {
 					pom.setArtifactId(value);
 				}
 				public String getParentProjectAttribute() {
 					return parentPom.getArtifactId();
-				}
-				public void refreshUI() {
-					PomIdentificationSection.this.redrawSection();
 				}
 			}
 		);
@@ -283,16 +277,13 @@ public class PomIdentificationSection extends PageSection {
 				}
 			}
 		);
-		groupIdText.addSelectionListener(
-			groupIdText.new OverridableSelectionAdapter() {
+		groupIdText.addOverrideAdaptor(
+			new OverrideAdaptor() {
 				public void updateProject(String value) {
 					pom.setGroupId(value);
 				}
 				public String getParentProjectAttribute() {
 					return parentPom.getGroupId();
-				}
-				public void refreshUI() {
-					PomIdentificationSection.this.redrawSection();
 				}
 			}
 		);

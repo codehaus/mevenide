@@ -52,7 +52,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Text;
 import org.mevenide.ui.eclipse.Mevenide;
@@ -77,25 +76,25 @@ public class OverridableTextEntry extends TextEntry {
     private Button overrideToggle;
     private boolean inherited;
 
-    public abstract class OverridableSelectionAdapter extends SelectionAdapter {
+    private class OverridableSelectionAdapter extends SelectionAdapter {
+    	private IOverrideAdaptor adaptor;
+    	
+    	private OverridableSelectionAdapter(IOverrideAdaptor adaptor) {
+    		this.adaptor = adaptor;
+    	}
+    	
         public void widgetSelected(SelectionEvent e) {
             toggleOverride();
             if (isInherited()) {
-                setText(getParentProjectAttribute());
-                updateProject(null);
+                setText(adaptor.getParentProjectAttribute());
+				adaptor.updateProject(null);
             }
             else {
                 setText(null);
-                updateProject("");
+				adaptor.updateProject("");
             }
-            refreshUI();
+			adaptor.refreshUI();
         }
-
-        public abstract void updateProject(String value);
-
-        public abstract String getParentProjectAttribute();
-
-		public abstract void refreshUI();
     }
 
     public OverridableTextEntry(Text text, Button overrideToggle) {
@@ -103,9 +102,9 @@ public class OverridableTextEntry extends TextEntry {
         this.overrideToggle = overrideToggle;
     }
 
-    public void addSelectionListener(SelectionListener listener) {
+    public void addOverrideAdaptor(IOverrideAdaptor adaptor) {
         if (overrideToggle != null) {
-            overrideToggle.addSelectionListener(listener);
+            overrideToggle.addSelectionListener(new OverridableSelectionAdapter(adaptor));
         }
     }
 
