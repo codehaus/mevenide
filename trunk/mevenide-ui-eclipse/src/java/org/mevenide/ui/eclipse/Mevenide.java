@@ -47,7 +47,7 @@ import org.mevenide.environment.ConfigUtils;
 import org.mevenide.environment.CustomLocationFinder;
 import org.mevenide.environment.LocationFinderAggregator;
 import org.mevenide.runner.RunnerHelper;
-import org.mevenide.ui.eclipse.preferences.DynamicPreferencePageLoader;
+import org.mevenide.ui.eclipse.preferences.DynamicPreferencePageFactory;
 import org.mevenide.ui.eclipse.util.FileUtils;
 import org.osgi.framework.BundleContext;
 
@@ -109,7 +109,7 @@ public class Mevenide extends AbstractUIPlugin {
 		customLocationFinder = new CustomLocationFinder();
 		loadPreferences();
         initEnvironment();
-        Platform.getExtensionRegistry().addRegistryChangeListener(new DynamicPreferencePageLoader());
+        DynamicPreferencePageFactory.getFactory().createPages();
 	}
 
     /**

@@ -16,13 +16,17 @@
  */
 package org.mevenide.ui.eclipse.preferences;
 
-import java.util.Map;
+import java.util.Iterator;
+import java.util.List;
 import org.eclipse.jface.preference.PreferencePage;
+import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
+import org.mevenide.util.StringUtils;
 
 
 /**  
@@ -33,20 +37,54 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
  */
 public class DynamicPreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
     
-    private Map properties;
+    private List properties;
+    
+    private PreferencesManager preferencesManager;
+    
+    public DynamicPreferencePage() {
+        super();
+        preferencesManager = PreferencesManager.getManager();
+		preferencesManager.loadPreferences();
+    }
     
     protected Control createContents(Composite parent) {
-	    return new Composite(parent, SWT.NULL);
+        Composite composite = new Composite(parent, SWT.NULL);
+        if( properties != null ) {
+            GridLayout layout = new GridLayout();
+            layout.numColumns = 2;
+            for ( Iterator it = properties.iterator(); it.hasNext(); ) {
+                PluginProperty pluginProperty = (PluginProperty) it.next();
+                createPluginPropertyEditor(composite, pluginProperty);
+            }
+        }
+        return composite; 
 	}
   
-	public void init(IWorkbench workbench) {
+	private void createPluginPropertyEditor(Composite parent, PluginProperty pluginProperty) {
+        String propertyName = pluginProperty.getName(); 
+        String propertyDefault = pluginProperty.getDefault();
+        String propertyType = pluginProperty.getType();
+        String propertyLabel = pluginProperty.getLabel();
+        String propertyDescription = pluginProperty.getDescription();
+        String pageId = pluginProperty.getPageId();
+        StringFieldEditor editor = new StringFieldEditor(pageId + "." + propertyName, propertyLabel, parent);
+        editor.fillIntoGrid(parent, 2);
+        editor.setPreferenceStore(preferencesManager.getPreferenceStore());
+        editor.setEmptyStringAllowed(!pluginProperty.isRequired());
+        editor.load();
+        String toolTip = propertyName + " : " + 
+        				(!StringUtils.isNull(propertyDescription) ? propertyDescription : "No available description");
+        editor.getLabelControl(parent).setToolTipText(toolTip);
+    }
+
+    public void init(IWorkbench workbench) {
     }
 	
-    public Map getProperties() {
+    public List getProperties() {
         return properties;
     }
     
-    public void setProperties(Map properties) {
+    public void setProperties(List properties) {
         this.properties = properties;
     }
 }

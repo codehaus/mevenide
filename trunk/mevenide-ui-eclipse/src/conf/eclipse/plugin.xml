@@ -44,6 +44,25 @@
    <!-- extension used by Maven plugin providers to declaratively add pages to Maven preference menu -->
    <extension-point id="preference" name="Mevenide Preference Extension Point" schema="extensions-schemas/org.mevenide.ui.preference.exsd"/>
 
+	<!-- sample extension -->
+	<extension point="org.mevenide.ui.preference">
+       <plugin-provider id="maven-eclipse-plugin-plugin" name="PDE Plugin">
+          <description>
+            Sample Dynamic Page which demonstates the use of the org.mevenide.ui.preference extension point.
+          </description>
+          <property name="maven.eclipse.plugin.mode" 
+          			label="Build Mode"
+                    default="bundle"
+                    required="false"
+                    description="Experimental. Specifies the plugin behaviour : if not set to 'bundle' then an EClipse plugin will be created for each POM dependencies."/>
+          <property name="maven.eclipse.plugin.dist.dir" 
+          			label="Build Mode"
+                    default="bundle"
+                    required="true"
+                    description="Specifies distribution directory where files will be generated."/>          
+       </plugin-provider>
+    </extension>
+
    <!-- Maven nature -->
    <extension
          id="mavennature"
@@ -179,6 +198,13 @@
             category="org.mevenide.ui.plugin.preferences.MavenPreferencePage"
             class="org.mevenide.ui.eclipse.preferences.TemplatePreferencePage"
             id="org.mevenide.ui.eclipse.preferences.TemplatePreferencePage">
+      </page>
+      <!-- Plugin Provider Root Holder -->
+      <page
+            name="%PluginsRoot.label"
+            category="org.mevenide.ui.plugin.preferences.MavenPreferencePage"
+            class="org.mevenide.ui.eclipse.preferences.MevenidePreferencePage"
+            id="org.mevenide.ui.eclipse.preferences.PluginsRoot">
       </page>
    </extension>
    <extension point="org.eclipse.ui.editors">
