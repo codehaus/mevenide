@@ -43,7 +43,7 @@ public class DependencyUtilTest extends TestCase {
  		File testTypeDirectory = new File(testArtifactDirectory, "txts");
  		testTypeDirectory.mkdirs();
  		
- 		artefact = new File(testTypeDirectory, "mevenide-test.txt");
+ 		artefact = new File(testTypeDirectory, "foo+joe-test2.-bar-1.0.7.dev.txt");
 		artefact.createNewFile();
 		
 	}
@@ -52,15 +52,20 @@ public class DependencyUtilTest extends TestCase {
 		rootDirectory.delete();
 	}
 	
-	public void testGetGroupId() {
+	public void testGetDependency() {
 		Environment.setMavenHome(mevenideHome.getAbsolutePath());
 		Dependency dep = DependencyUtil.getDependency(artefact.getAbsolutePath());
 		assertEquals("mevenide", dep.getGroupId());
+		
+		Environment.setMavenHome(System.getProperty("user.home"));
+		dep = DependencyUtil.getDependency(artefact.getAbsolutePath());
+		
+		assertEquals("mevenide", dep.getGroupId());
+		assertEquals("1.0.7.dev", dep.getVersion());
+		assertEquals("foo+joe-test2.-bar", dep.getArtifactId());
+		
 	}
 
-	public void testGuessGroupiD() {
-		Environment.setMavenHome(System.getProperty("user.home"));
-		Dependency dep = DependencyUtil.getDependency(artefact.getAbsolutePath());
-		assertEquals("mevenide", dep.getGroupId());
-	}
+	
+	
 }

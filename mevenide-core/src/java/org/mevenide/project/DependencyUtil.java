@@ -15,6 +15,8 @@ package org.mevenide.project;
 
 
 import java.io.File;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.maven.project.Dependency;
 import org.mevenide.Environment;
@@ -107,10 +109,39 @@ class DependencyUtil {
 	}
 	
 	private static String guessArtifactId(String fileName) {
-		return null;
+		//crappy trick cuz i really suck at regex
+		return fileName.substring(0,1) + split(fileName)[1];
 	}
+	
 	private static String guessVersion(String fileName) {
-		return null;
+		if ( fileName.indexOf("SNAPSHOT") > 0 ) {
+			return "SNAPSHOT";
+		}
+		return split(fileName)[2];
+	}
+	
+	/**
+	 * we assume that fileName follow that kind of pattern :
+	 * 
+	 * (.*)-(\\d+(.*))*\\.(\\w*)
+	 * 
+	 * so we have $1 => artifactId ; $2 => version ; $4 => extension 
+	 *  
+	 * @param fileName
+	 * @return
+	 */
+	private static String[] split(String fileName) {
+		String[] groups ;
+		
+		Pattern p = Pattern.compile("(.*)-(\\d+(.*))*\\.(\\w*)");
+		Matcher m = p.matcher(fileName);
+		groups = new String[m.groupCount() + 1];
+		int i = 0;
+		while ( i < m.groupCount() + 1 && m.find(i) ) {
+			groups[i] = m.group(i);
+			i++;
+		}
+		return groups;
 	}
 	
 	/**
