@@ -26,6 +26,8 @@
 					<font size="-1"><b>Screenshot 1</b> synchronization Contextual Menu</font>
 					<br/><br/>
 				</center>
+            </p>
+			<p>
 				When triggered from the Eclipse project contextual menu, if multiple project.xml files are found in the selected project
 				user will be asked to choose which POMs are to be included in the synchronization process. Also if any project.xml 
 				inherits from another POM, this POM can be synchronized as well (Screenshot 2).
