@@ -63,14 +63,14 @@ public class CheckstyleOutputListenerProvider extends AbstractOutputProcessor {
         if (isInWatchedGoals(line)) {
             Matcher match = failPattern.matcher(line);
             if (match.matches()) {
-                visitor.setOutputListener(new PmdOutputListener(project));
+                visitor.setOutputListener(new CheckStyleOutputListener(project));
             }
         }
     }
     
-    private static class PmdOutputListener implements OutputListener {
+    private static class CheckStyleOutputListener implements OutputListener {
         private MavenProject project;
-        public PmdOutputListener(MavenProject proj) {
+        public CheckStyleOutputListener(MavenProject proj) {
             project = proj;
         }
         /** Called when a line is selected.
