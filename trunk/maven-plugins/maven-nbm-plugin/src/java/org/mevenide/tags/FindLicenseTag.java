@@ -31,7 +31,7 @@ import org.apache.commons.jelly.XMLOutput;
 
 /**
  * A tag trying to find the license for the specified jar.
- * A few known places in the jar are checked,
+ * A few known places in the jar are checked, like META-INF/license, license, or copying
  * @author <a href="mailto:ca206216@tiscali.cz">Milos Kleint</a>
  *
  */
@@ -51,7 +51,6 @@ public class FindLicenseTag extends AbstractNbMevenideTag {
         "COPYING"
     };
 
-    
     public void doTag(XMLOutput arg0) throws MissingAttributeException, JellyTagException {
          
         checkAttribute(jarFile, "jarFile");
@@ -121,24 +120,27 @@ public class FindLicenseTag extends AbstractNbMevenideTag {
     public String getVar() {
         return var;
     }
-    
-    public void setVar(String var) {
-        this.var = var;
+
+    /**
+     * Variable name that will be passed the found license, if any.
+     */
+    public void setVar(String variable) {
+        this.var = variable;
     }
     
     /**
      * Getter for property jarFile.
      * @return Value of property jarFile.
      */
-    public java.io.File getJarFile() {
-        return this.jarFile;
+    public File getJarFile() {
+        return jarFile;
     }
     
     /**
-     * Setter for property jarFile.
+     * Variable contains the location of the jar file to check for license.
      * @param jarFile New value of property jarFile.
      */
-    public void setJarFile(java.io.File jarFile) {
-        this.jarFile = jarFile;
+    public void setJarFile(File jarFileLoc) {
+        jarFile = jarFileLoc;
     }    
 }

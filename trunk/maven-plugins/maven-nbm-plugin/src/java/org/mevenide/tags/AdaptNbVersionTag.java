@@ -25,7 +25,7 @@ import org.apache.commons.jelly.MissingAttributeException;
 import org.apache.commons.jelly.XMLOutput;
 
 /**
- *
+ * A tag that will try to conver the maven version number to a Netbeans friendly version number.
  * @author <a href="mailto:ca206216@tiscali.cz">Milos Kleint</a>
  *
  */
@@ -53,7 +53,7 @@ public class AdaptNbVersionTag extends AbstractNbMevenideTag {
     }
     
     
-    public String adapt() {
+    String adapt() {
         StringTokenizer tok = new StringTokenizer(version,".");
         if (SNAPSHOT.equals(version) && TYPE_IMPLEMENTATION.equals(type)) {
             return "0.0.0." + generateSnapshotValue();
@@ -109,25 +109,35 @@ public class AdaptNbVersionTag extends AbstractNbMevenideTag {
     public String getVersion() {
         return version;
     }
-    
-    public void setVersion(String version) {
-        this.version = version;
+
+    /**
+     * The version to convert to Netbeans versioning.
+     */
+    public void setVersion(String versionParam) {
+        version = versionParam;
     }
     
     public String getVar() {
         return var;
     }
-    
-    public void setVar(String var) {
-        this.var = var;
+
+    /**
+     * Name of variable which will be passed the resulting converted version number.
+     */
+    public void setVar(String variable) {
+        var = variable;
     }
     
     public String getType() {
         return type;
     }
-    
-    public void setType(String type) {
-        this.type = type;
+    /**
+     * Type of the Netbeans version to generate. 2 possible values, 
+     * 'spec' for Specification number which doens't allow any non digit characters.
+     * or 'impl' for Implementation number which is more freeform.
+     */
+    public void setType(String typeParam) {
+        type = typeParam;
     }
     
 }
