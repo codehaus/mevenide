@@ -111,7 +111,7 @@ public class CarefulProjectMarshaller implements IProjectMarshaller {
         Counter counter = new Counter();
         findAndReplaceSimpleElement(counter, root, "extend", project.getValue("extend"));
         findAndReplaceSimpleElement(counter, root, "pomVersion", project.getValue("pomVersion"));
-//        findAndReplaceSimpleElement(counter, root, "id", project.getId());
+        findAndReplaceSimpleElement(counter, root, "id", project.getValue("id"));
         //REQUIRED
         findAndReplaceSimpleElement(counter, root, "artifactId", project.getValue("artifactId"));
         findAndReplaceSimpleElement(counter, root, "name", project.getValue("name"));
