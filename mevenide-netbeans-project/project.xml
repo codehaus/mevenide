@@ -127,7 +127,7 @@
         <groupId>netbeans</groupId>
         <artifactId>org-netbeans-api-java</artifactId>
         <!-- include nb specification version.. that's important for compiling -->
-        <version>1.4</version>
+        <version>1.5</version>
         <type>jar</type>
         <url>http://www.netbeans.org</url>
         <properties>
