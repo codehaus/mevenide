@@ -22,7 +22,7 @@ package org.mevenide.properties;
  * @version $Id$
  * 
  */
-public class ElementFactory {
+public final class ElementFactory {
     private static final ElementFactory factory = new ElementFactory();
     
     private ElementFactory() { } 
