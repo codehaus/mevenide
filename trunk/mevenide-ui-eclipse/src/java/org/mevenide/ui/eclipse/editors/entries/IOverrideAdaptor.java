@@ -46,16 +46,15 @@
  * SUCH DAMAGE.
  * ====================================================================
  */
-package org.mevenide.ui.eclipse.editors.pages;
-
+package org.mevenide.ui.eclipse.editors.entries;
 
 /**
- * Implemented to listen for changes to a page entry.
  * 
- * @author Jeff Bonevich (jeff@bonevich.com)
+ * @author Jeffrey Bonevich (jeff@bonevich.com)
  * @version $Id$
  */
-public interface IEntryChangeListener {
-	public void entryDirty(PageEntry entry);
-	public void entryChanged(PageEntry entry);
+public interface IOverrideAdaptor {
+	public void overrideParent(Object value);
+	public Object acceptParent();
+	public void refreshUI();
 }

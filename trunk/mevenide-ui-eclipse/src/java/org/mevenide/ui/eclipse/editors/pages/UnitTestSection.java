@@ -62,6 +62,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.mevenide.ui.eclipse.Mevenide;
+import org.mevenide.ui.eclipse.editors.entries.*;
 import org.mevenide.ui.eclipse.editors.properties.ResourcePatternProxy;
 
 /**

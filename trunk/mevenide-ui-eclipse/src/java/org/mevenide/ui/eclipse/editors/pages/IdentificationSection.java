@@ -70,6 +70,7 @@ import org.eclipse.ui.model.WorkbenchContentProvider;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.eclipse.ui.views.navigator.ResourceSorter;
 import org.mevenide.ui.eclipse.Mevenide;
+import org.mevenide.ui.eclipse.editors.entries.*;
 
 /**
  * Section for identification info of the POM (i.e. name, ids, extended POM, etc.)

@@ -68,6 +68,7 @@ import org.eclipse.ui.model.WorkbenchContentProvider;
 import org.mevenide.reports.DefaultReportsFinder;
 import org.mevenide.reports.IReportsFinder;
 import org.mevenide.ui.eclipse.Mevenide;
+import org.mevenide.ui.eclipse.editors.entries.*;
 
 /**
  * @author Jeffrey Bonevich (jeff@bonevich.com)

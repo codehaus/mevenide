@@ -46,7 +46,7 @@
  * SUCH DAMAGE.
  * ====================================================================
  */
-package org.mevenide.ui.eclipse.editors.pages;
+package org.mevenide.ui.eclipse.editors.entries;
 
 import java.util.ArrayList;
 import java.util.List;
