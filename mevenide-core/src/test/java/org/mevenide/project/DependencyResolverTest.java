@@ -54,7 +54,17 @@ public class DependencyResolverTest extends AbstractMevenideTestCase {
 		dep = dependencyFactory.getDependency("E:/bleeeaaaah/plouf/junit-3.8.1.jar");
 		assertTrue(dependencyResolver.isDependencyPresent(project, dep));
 		
-		
 	}
 
+	public void testGuessExtension() {
+		String ext = dependencyResolver.guessExtension("foo+joe-test2.-bar-1.0.7-beta-1.txt");
+		assertEquals("txt", ext);
+		ext = dependencyResolver.guessExtension("junit-3.8.1.jar");
+		assertEquals("jar", ext);
+		ext = dependencyResolver.guessExtension("rt.jar");
+		assertEquals("jar", ext);
+		ext = dependencyResolver.guessExtension("rt.tar.gz");
+		//BUG-DefaultDependencyResolver_DEP_guessVersion $DEP-3 depends on $DEP-1
+		//assertEquals("tar.gz", ext);
+	}
 }

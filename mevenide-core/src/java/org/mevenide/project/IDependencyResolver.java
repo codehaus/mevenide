@@ -30,9 +30,7 @@ public interface IDependencyResolver {
 	 * @param absoluteFileName
 	 * @return wether the dependency is present in th pom
 	 */
-	public abstract boolean isDependencyPresent(
-		Project project,
-		Dependency dependency);
+	public abstract boolean isDependencyPresent(Project project, Dependency dependency);
 	
 	/**
 	 * return the groupId if the file is present in the local repository
@@ -59,6 +57,22 @@ public interface IDependencyResolver {
 	 * @return guessed version
 	 */
 	public abstract String guessVersion(String fileName);
+	
+	/**
+	 * get the last extension of the file. specs are not clear yet..
+	 * 
+	 * absolutely if fileName = xxx.tar.gz it should return tar.gz
+	 * altho is not gz enough already ? indeed it could become really 
+	 * tricky to get that multi-extension. 
+	 * 
+	 * if someone has a clue, please share..
+	 * 
+	 * @see org.mevenide.project.DefaultDependencyResolver#split()
+	 * 
+	 * @param fileName
+	 * @return the last extension of the file
+	 */
+	public abstract String guessExtension(String fileName);
 	
 	/**
 	 * try to guess the groupId if the file isnot present in the repository
