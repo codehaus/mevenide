@@ -92,8 +92,7 @@ public class PomSynchronizer extends AbstractPomSynchronizer implements ISynchro
 			assertPomNotEmpty();
 			IClasspathEntry[] cpEntries = JavaCore.create(project).getResolvedClasspath(true);
 			for (int i = 0; i < cpEntries.length; i++) {
-            	System.out.println(cpEntries[i].getEntryKind() == IClasspathEntry.CPE_CONTAINER);
-				updatePom(cpEntries[i]);
+            	updatePom(cpEntries[i]);
 			}
 			removeUnusedDependencies(cpEntries);
 		}
