@@ -48,9 +48,14 @@
  */
 package org.mevenide.ui.eclipse.editors.pages;
 
+import org.apache.maven.project.Project;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.mevenide.project.ProjectChangeEvent;
 import org.mevenide.ui.eclipse.Mevenide;
-import org.mevenide.ui.eclipse.editors.IPomEditorPage;
+import org.mevenide.ui.eclipse.MevenideColors;
 import org.mevenide.ui.eclipse.editors.MevenidePomEditor;
 
 /**
@@ -64,16 +69,37 @@ public class ReportsPage extends AbstractPomEditorPage {
 
 	public static final String HEADING = Mevenide.getResourceString("ReportsPage.heading");
     
-    public ReportsPage(MevenidePomEditor editor) {
+	private ReportsSection reportsSection;
+
+	public ReportsPage(MevenidePomEditor editor) {
         super(HEADING, editor);
     }
 
 	protected void initializePage(Composite parent) {
+		GridLayout layout = new GridLayout();
+		layout.numColumns = 2;
+		layout.marginWidth = 10;
+		layout.horizontalSpacing = 15;
+		parent.setLayout(layout);
+
+		PageWidgetFactory factory = getFactory();
+		factory.setBackgroundColor(MevenideColors.WHITE);
+
+		reportsSection = new ReportsSection(this);
+		Control control = reportsSection.createControl(parent, factory);
+		GridData gd = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING);
+		gd.horizontalSpan = 2;
+		control.setLayoutData(gd);
 	}
 
-    public void pageActivated(IPomEditorPage oldPage) {
-    }
+	public void projectChanged(ProjectChangeEvent e) {
+		update(e.getPom());
+	}
+	
+	public void update(Project pom) {
+		reportsSection.update(pom);
+		
+		setUpdateNeeded(false);
+	}
 
-    public void pageDeactivated(IPomEditorPage newPage) {
-    }
 }
