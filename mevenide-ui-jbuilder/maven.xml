@@ -1,4 +1,11 @@
 <project xmlns:ant="jelly:ant"
          default="opentool:opentool">
 
+  <postGoal name="xdoc:register-reports">
+  	<!-- deregister test related plugins since there are none -->
+    <attainGoal name="maven-jcoverage-plugin:deregister"/>  
+    <attainGoal name="maven-junit-report-plugin:deregister"/>  
+    <attainGoal name="maven-clover-plugin:deregister"/>
+  </postGoal>
+
 </project>
