@@ -444,6 +444,10 @@ public class SynchronizeWizardPage extends WizardPage {
 
 		if ( extend != null && !extend.trim().equals("") ) {
 			String resolvedExtend = MevenideUtil.resolve(mavenProject, extend);
+	
+			if ( !new File(resolvedExtend).exists() ) {
+				resolvedExtend = new File(new File(project.getFile("project.xml").getLocation().toOSString()).getParentFile(), resolvedExtend).getAbsolutePath();
+			}			
 			
 			if ( new File(resolvedExtend).exists() ) {
 				SourceDirectoryGroup parentGroup = new SourceDirectoryGroup();
@@ -701,6 +705,10 @@ public class SynchronizeWizardPage extends WizardPage {
 		
 		if ( extend != null && !extend.trim().equals("") ) {
 			String resolvedExtend = MevenideUtil.resolve(mavenProject, extend);
+
+			if ( !new File(resolvedExtend).exists() ) {
+				resolvedExtend = new File(new File(project.getFile("project.xml").getLocation().toOSString()).getParentFile(), resolvedExtend).getAbsolutePath();
+			}			
 			
 			if ( new File(resolvedExtend).exists() ) {
 				DependencyGroup parentGroup = new DependencyGroup();

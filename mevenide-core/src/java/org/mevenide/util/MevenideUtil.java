@@ -109,19 +109,25 @@ public class MevenideUtil {
 			}
 			if ( unresolvedString.charAt(i) == '}' ) {
 				tempVariable = tempVariable.substring(1, tempVariable.length()); 
-				if ( !tempVariable.startsWith("pom") ) {
+				if ( !tempVariable.startsWith("pom") && !tempVariable.startsWith("basedir") ) {
 					//return the string as is since we wont be able to resolve it
 					return unresolvedString;
 				}
 				else {
-					String[] splittedVar = StringUtils.split(tempVariable, ".");
-					Object evaluation = project;
-					for (int j = 1; j < splittedVar.length; j++) {
-						Field f = evaluation.getClass().getDeclaredField(splittedVar[j]);
-						f.setAccessible(true);
-	                    evaluation = f.get(evaluation);
-	                    f.setAccessible(false);
-	                }
+					Object evaluation = null;
+					if ( tempVariable.startsWith("basedir") ) {
+						evaluation = ".";
+					}
+					else {
+						String[] splittedVar = StringUtils.split(tempVariable, ".");
+						evaluation = project;
+						for (int j = 1; j < splittedVar.length; j++) {
+							Field f = evaluation.getClass().getDeclaredField(splittedVar[j]);
+							f.setAccessible(true);
+	                	    evaluation = f.get(evaluation);
+	                    	f.setAccessible(false);
+	                	}
+					}
 	                resolvedString += evaluation;
 	                tempVariable = "";
 				}
