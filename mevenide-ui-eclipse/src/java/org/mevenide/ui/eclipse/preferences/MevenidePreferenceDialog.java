@@ -71,6 +71,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.mevenide.ui.eclipse.Mevenide;
+import org.mevenide.ui.eclipse.MevenidePreferenceKeys;
 import org.mevenide.ui.eclipse.goals.viewer.GoalsPickerDialog;
 
 /**
@@ -80,14 +81,7 @@ import org.mevenide.ui.eclipse.goals.viewer.GoalsPickerDialog;
  * 
  */
 public class MevenidePreferenceDialog {
-	private static final String MAVEN_HEAP_SIZE_PREFERENCE = "maven.heap.size";
-    public static final String MAVEN_LAUNCH_DEFAULTGOALS_PREFERENCE = "maven.launch.defaultgoals";
-    public static final String MEVENIDE_CHECKTIMESTAMP_PREFERENCE = "mevenide.checktimestamp";
-    private static final String POM_TEMPLATE_LOCATION_PREFERENCE = "pom.template.location";
-    public static final String MAVEN_REPO_PREFERENCE = "maven.repo";
-    public static final String MAVEN_LOCAL_HOME_PREFERENCE = "maven.local.home";
-    public static final String MAVEN_HOME_PREFERENCE = "maven.home";
-    public static final String JAVA_HOME_PREFERENCE = "java.home";
+	
 
     private static Log log = LogFactory.getLog(MevenidePreferenceDialog.class);
 
@@ -141,13 +135,13 @@ public class MevenidePreferenceDialog {
 		GridLayout layout = new GridLayout();
 		layout.numColumns = 3;
 		
-		javaHomeEditor = createEditor(MevenidePreferenceDialog.JAVA_HOME_PREFERENCE, "Java home", javaHome);
-		mavenHomeEditor = createEditor(MevenidePreferenceDialog.MAVEN_HOME_PREFERENCE, "Maven home", mavenHome);
-		mavenLocalHomeEditor = createEditor(MAVEN_LOCAL_HOME_PREFERENCE, "Maven local home", mavenLocalHome);
-		mavenRepoEditor = createEditor(MevenidePreferenceDialog.MAVEN_REPO_PREFERENCE, "Maven Repository", mavenRepository);
+		javaHomeEditor = createEditor(MevenidePreferenceKeys.JAVA_HOME_PREFERENCE_KEY, "Java home", javaHome);
+		mavenHomeEditor = createEditor(MevenidePreferenceKeys.MAVEN_HOME_PREFERENCE_KEY, "Maven home", mavenHome);
+		mavenLocalHomeEditor = createEditor(MevenidePreferenceKeys.MAVEN_LOCAL_HOME_PREFERENCE_KEY, "Maven local home", mavenLocalHome);
+		mavenRepoEditor = createEditor(MevenidePreferenceKeys.MAVEN_REPO_PREFERENCE_KEY, "Maven Repository", mavenRepository);
 		//pluginsInstallDirEditor = createEditor("maven.plugins.dir", "Plugins Directory", mavenRepository);
 		
-		heapSizeEditor = new IntegerFieldEditor(MAVEN_HEAP_SIZE_PREFERENCE, "Heap Size", topLevelContainer);
+		heapSizeEditor = new IntegerFieldEditor(MevenidePreferenceKeys.MAVEN_HEAP_SIZE_PREFERENCE_KEY, "Heap Size", topLevelContainer);
 		heapSizeEditor.fillIntoGrid(topLevelContainer, 2);
 		heapSizeEditor.setPreferenceStore(preferencesManager.getPreferenceStore());
 		heapSizeEditor.load();
@@ -155,7 +149,7 @@ public class MevenidePreferenceDialog {
 		Label label = new Label(topLevelContainer, SWT.NONE);
 		label.setLayoutData(new GridData());
 		
-		pomTemplateLocationEditor = new FileFieldEditor(POM_TEMPLATE_LOCATION_PREFERENCE, "POM Template", true, topLevelContainer);
+		pomTemplateLocationEditor = new FileFieldEditor(MevenidePreferenceKeys.POM_TEMPLATE_LOCATION_PREFERENCE_KEY, "POM Template", true, topLevelContainer);
 		pomTemplateLocationEditor.fillIntoGrid(topLevelContainer, 3);
 		pomTemplateLocationEditor.setPreferenceStore(preferencesManager.getPreferenceStore());
 		pomTemplateLocationEditor.load();
@@ -202,7 +196,7 @@ public class MevenidePreferenceDialog {
 		compositeB.setLayoutData(new GridData(GridData.FILL_BOTH));
 		
 		
-		checkTimestampEditor = new BooleanFieldEditor(MevenidePreferenceDialog.MEVENIDE_CHECKTIMESTAMP_PREFERENCE, "Check timestamp before synchronizing", compositeB);
+		checkTimestampEditor = new BooleanFieldEditor(MevenidePreferenceKeys.MEVENIDE_CHECKTIMESTAMP_PREFERENCE_KEY, "Check timestamp before synchronizing", compositeB);
 		checkTimestampEditor.fillIntoGrid(compositeB, 3);		
 		checkTimestampEditor.setPreferenceStore(preferencesManager.getPreferenceStore());
 		checkTimestampEditor.load();
@@ -231,7 +225,7 @@ public class MevenidePreferenceDialog {
 			}
 		};
 		
-		defaultGoalsEditor.setPreferenceName(MevenidePreferenceDialog.MAVEN_LAUNCH_DEFAULTGOALS_PREFERENCE);
+		defaultGoalsEditor.setPreferenceName(MevenidePreferenceKeys.MAVEN_LAUNCH_DEFAULTGOALS_PREFERENCE_KEY);
 		defaultGoalsEditor.setLabelText("Default Goals");
 		defaultGoalsEditor.setPreferencePage(page);
 		defaultGoalsEditor.fillIntoGrid(topLevelContainer, 3);

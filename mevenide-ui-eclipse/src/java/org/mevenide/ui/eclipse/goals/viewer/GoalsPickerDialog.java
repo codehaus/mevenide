@@ -107,7 +107,9 @@ import org.mevenide.ui.eclipse.goals.model.Plugin;
  * 
  */
 public class GoalsPickerDialog  extends Dialog {
-	private static Log log = LogFactory.getLog(GoalsPickerDialog.class);
+	private static final String HTTP_SERVER_ERROR = "5";
+    private static final String HTTP_CLIENT_ERROR = "4";
+    private static Log log = LogFactory.getLog(GoalsPickerDialog.class);
 	
 	private CheckboxTreeViewer goalsViewer;
 
@@ -249,7 +251,7 @@ public class GoalsPickerDialog  extends Dialog {
 		goalsOrderText.setLayoutData(orderTextGridData);
 		
 		final Button goalsOrderButton = new Button(composite, SWT.PUSH);
-		goalsOrderButton.setText("Order...");
+		goalsOrderButton.setText(Mevenide.getResourceString("GoalsPickerDialog.goals.order"));
 		String text = goalsOrderText.getText();
 		boolean orderButtonEnabled = text != null && !text.trim().equals("");
         goalsOrderButton.setEnabled(orderButtonEnabled);
@@ -333,7 +335,7 @@ public class GoalsPickerDialog  extends Dialog {
 
 	private void updateCheckedGoal(boolean isSelectionChecked, Goal goal) {
         String fullyQualifiedGoalName = goal.getPlugin().getName();
-        if ( !goal.getName().equals("(default)") ) {
+        if ( !goal.getName().equals(Goal.DEFAULT_GOAL) ) {
         	fullyQualifiedGoalName += ":" + goal.getName();
         }
         if ( isSelectionChecked ) {
@@ -348,7 +350,7 @@ public class GoalsPickerDialog  extends Dialog {
         String pluginName = plugin.getName();
         String[] goals = goalsProvider.getGoalsGrabber().getGoals(pluginName);
         if ( goals != null && goals.length > 0 ) {
-        	if ( !Arrays.asList(goals).contains("(default)") ) {
+        	if ( !Arrays.asList(goals).contains(Goal.DEFAULT_GOAL) ) {
         		goalsViewer.setChecked(pluginName, false);
         	}
         	else {
@@ -383,11 +385,11 @@ public class GoalsPickerDialog  extends Dialog {
                 	pluginHomeURLText.setText(urlPrefix + pluginName);
                 }
                 else {
-                	pluginHomeURLText.setText(pluginName + "  (unable to find plugin home)");
+                	pluginHomeURLText.setText(pluginName + " " + Mevenide.getResourceString("GoalsPickerDialog.plugin.home.notfound"));
                 }
             }
             catch (Exception e1) {
-                pluginHomeURLText.setText(pluginName + "  (unable to find plugin home)");
+                pluginHomeURLText.setText(pluginName + " " + Mevenide.getResourceString("GoalsPickerDialog.plugin.home.notfound"));
             }
 		}
 	}
@@ -406,15 +408,15 @@ public class GoalsPickerDialog  extends Dialog {
 				Plugin plugin = (Plugin) item.getData();
 				String[] goals = goalsProvider.getGoalsGrabber().getGoals(plugin.getName());
 				if ( goals != null && goals.length > 0 ) {
-					if ( !Arrays.asList(goals).contains("(default)") ) {
-						tooltip += "(no default goal)";
+					if ( !Arrays.asList(goals).contains(Goal.DEFAULT_GOAL) ) {
+						tooltip += Mevenide.getResourceString("GoalsPickerDialog.no.default.goal");
 					}
 				}
 				tree.setToolTipText(tooltip);
 			}
 			if ( item.getData() instanceof Goal ) {
 				Goal goal = (Goal) item.getData();
-				if ( "(default)".equals(goal.getName()) ) {
+				if ( Goal.DEFAULT_GOAL.equals(goal.getName()) ) {
 					tree.setToolTipText("default " + goal.getPlugin().getName() + " goal");
 				}
 				else {
@@ -459,7 +461,7 @@ public class GoalsPickerDialog  extends Dialog {
 		int status = httpClient.executeMethod(method);
 		//check for 4xx and 5xx return codes
 		visitedUrls.add(url);
-		boolean fileExists = !Integer.toString(status).startsWith("4") && !Integer.toString(status).startsWith("5");
+		boolean fileExists = !Integer.toString(status).startsWith(HTTP_CLIENT_ERROR) && !Integer.toString(status).startsWith(HTTP_SERVER_ERROR);
 		if ( !fileExists ) {
 			notFoundUrls.add(url);
 		}
@@ -533,7 +535,7 @@ class HyperLinkMouseListener extends MouseAdapter {
         BrowserDescriptor[] browserDecriptors = BrowserManager.getInstance().getBrowserDescriptors();
         for (int i = 0; i < browserDecriptors.length; i++) {
         	
-            if ( browserDecriptors[i].getID().equals("org.eclipse.help.ui.systembrowser") ) {
+            if ( browserDecriptors[i].getID().equals(Mevenide.getResourceString("GoalsPickerDialog.browser.id")) ) {
         		IBrowser browser = browserDecriptors[i].getFactory().createBrowser();
         		browser.displayURL(url);
             }

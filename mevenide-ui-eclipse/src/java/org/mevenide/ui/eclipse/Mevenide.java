@@ -89,6 +89,7 @@ import org.mevenide.project.io.ProjectSkeleton;
  *  
  */
 public class Mevenide extends AbstractUIPlugin {
+	
 	private static Log log = LogFactory.getLog(Mevenide.class);
 	 
 	private static Mevenide plugin;
@@ -96,30 +97,26 @@ public class Mevenide extends AbstractUIPlugin {
 	private Object lock = new Object();
 	
 	public static String NATURE_ID ;
-	
 	public static String SYNCH_VIEW_ID = "org.mevenide.sync.view"; 
-	
 	public static String PLUGIN_ID = "org.mevenide";
 	
 	private ResourceBundle resourceBundle;
 	
+    private String currentDir;
+    private IProject project;
+
+	//should be extracted   
 	private String mavenHome;
 	private String mavenLocalHome;
     private String javaHome;
     private String mavenRepository;
-    private String pluginsInstallDir;
-    
     private int heapSize;
-    
     private String pomTemplate;
     private boolean checkTimestamp;
-    
-    private String defaultGoals;
-    
-    private String currentDir;
-    private IProject project;
-    
-	
+	private String defaultGoals;
+
+
+    /// initialization methods ---
 	public Mevenide(IPluginDescriptor descriptor) throws Exception {
 		super(descriptor);
 		try {
@@ -127,45 +124,7 @@ public class Mevenide extends AbstractUIPlugin {
 			
 			NATURE_ID = Mevenide.getResourceString("maven.nature.id");
             
-			if ( !new File(getPreferencesFilename()).exists() ) {
-            	new File(getPreferencesFilename()).createNewFile();
-			}
-            PreferenceStore preferenceStore = new PreferenceStore(getPreferencesFilename());
-            
-            preferenceStore.load();
-            
-            //required preferences
-            setMavenHome(preferenceStore.getString("maven.home"));
-            setJavaHome(preferenceStore.getString("java.home"));
-            
-            //preferences that are defaulted
-			String mavenLocalHome = preferenceStore.getString("maven.local.home");
-			//maven.local.home has not been initialized - defaults to ${user.home}/.maven
-			if ( mavenLocalHome == null || mavenLocalHome.trim().equals("") ) {
-				mavenLocalHome = new File(System.getProperty("user.home"), ".maven").getAbsolutePath();
-			}
-			setMavenLocalHome(mavenLocalHome);
-            
-            String mavenRepo = preferenceStore.getString("maven.repo");
-            //maven.repo has not been initialized - defaults to ${maven.local.home}/repository
-            if ( mavenRepo == null || mavenRepo.trim().equals("") ) { 	
-            	mavenRepo = new File(mavenLocalHome, "repository").getAbsolutePath();
-            }
-			setMavenRepository(mavenRepo);
-			
-            int hSize = preferenceStore.getInt("maven.heap.size");
-            //heap has been initialized yet. set it to default (160)
-            if ( hSize == 0 ) {
-	            hSize = 160;
-            }
-			setHeapSize(hSize);
-			
-			//optional preferences
-            setPomTemplate(preferenceStore.getString("pom.template.location"));
-            setCheckTimestamp(preferenceStore.getBoolean("mevenide.checktimestamp"));
-            setDefaultGoals(preferenceStore.getString("maven.launch.defaultgoals"));
-            
-			
+			loadPreferences();
             
 		} 
 		catch (Exception x) {
@@ -174,10 +133,68 @@ public class Mevenide extends AbstractUIPlugin {
 		}
 	}
 
-    /** 
-     * @return MavenPlugin
-     */
-	public static Mevenide getPlugin() {
+    private void loadPreferences() throws IOException {
+        if ( !new File(getPreferencesFilename()).exists() ) {
+        	new File(getPreferencesFilename()).createNewFile();
+        }
+        PreferenceStore preferenceStore = new PreferenceStore(getPreferencesFilename());
+        
+        preferenceStore.load();
+        
+        //required preferences
+        setMavenHome(preferenceStore.getString(MevenidePreferenceKeys.MAVEN_HOME_PREFERENCE_KEY));
+        setJavaHome(preferenceStore.getString(MevenidePreferenceKeys.JAVA_HOME_PREFERENCE_KEY));
+        
+		//defaulted preferences
+        loadMavenLocalHome(preferenceStore);
+        loadMavenRepo(preferenceStore);
+        loadHeapSize(preferenceStore);
+        
+        //optional preferences
+        setPomTemplate(preferenceStore.getString(MevenidePreferenceKeys.POM_TEMPLATE_LOCATION_PREFERENCE_KEY));
+        setCheckTimestamp(preferenceStore.getBoolean(MevenidePreferenceKeys.MEVENIDE_CHECKTIMESTAMP_PREFERENCE_KEY));
+        setDefaultGoals(preferenceStore.getString(MevenidePreferenceKeys.MAVEN_LAUNCH_DEFAULTGOALS_PREFERENCE_KEY));
+    }
+
+    private void loadHeapSize(PreferenceStore preferenceStore) {
+        int hSize = preferenceStore.getInt(MevenidePreferenceKeys.MAVEN_HEAP_SIZE_PREFERENCE_KEY);
+        //heap has been initialized yet. set it to default (160)
+        if ( hSize == 0 ) {
+            hSize = 160;
+        }
+        setHeapSize(hSize);
+    }
+
+    private void loadMavenRepo(PreferenceStore preferenceStore) {
+        String mavenRepo = preferenceStore.getString(MevenidePreferenceKeys.MAVEN_REPO_PREFERENCE_KEY);
+        //maven.repo has not been initialized - defaults to ${maven.local.home}/repository
+        if ( mavenRepo == null || mavenRepo.trim().equals("") ) { 	
+        	mavenRepo = new File(mavenLocalHome, "repository").getAbsolutePath();
+        }
+        setMavenRepository(mavenRepo);
+    }
+
+	/**
+	 * mavenRepo defaults to ${maven.local.home}/repository 
+     * so mavenLocalHome should have been loaded before 
+     *
+	 * @param preferenceStore
+	 * @return
+	 */
+    private String loadMavenLocalHome(PreferenceStore preferenceStore) {
+        //preferences that are defaulted
+        String mavenLocalHome = preferenceStore.getString(MevenidePreferenceKeys.MAVEN_LOCAL_HOME_PREFERENCE_KEY);
+        //maven.local.home has not been initialized - defaults to ${user.home}/.maven
+        if ( mavenLocalHome == null || mavenLocalHome.trim().equals("") ) {
+        	mavenLocalHome = new File(System.getProperty("user.home"), ".maven").getAbsolutePath();
+        }
+        setMavenLocalHome(mavenLocalHome);
+        return mavenLocalHome;
+    }
+
+
+	/// usual Plugin methods ---  
+    public static Mevenide getPlugin() {
         return plugin;
 	}
 
@@ -185,10 +202,6 @@ public class Mevenide extends AbstractUIPlugin {
 		return ResourcesPlugin.getWorkspace();
 	}
 
-	/**
-	 * Returns the string from the plugin's resource bundle,
-	 * or 'key' if not found.
-	 */
 	public static String getResourceString(String key) {
 		ResourceBundle bundle = Mevenide.getPlugin().getResourceBundle();
 		try {
@@ -212,8 +225,6 @@ public class Mevenide extends AbstractUIPlugin {
 				return resourceBundle;
 			}
 		}
-		
-		
 	}
 	
     public static ImageDescriptor getImageDescriptor(String relativePath) {
@@ -231,96 +242,17 @@ public class Mevenide extends AbstractUIPlugin {
     }
     
     
-    public String getJavaHome() {
-        return javaHome;
-    }
-
-    public String getMavenHome() {
-        return mavenHome;
-    }
-
-	public String getMavenRepository() {
-		return mavenRepository;
-	}
-		
-    public void setJavaHome(String javaHome) {
-        this.javaHome = javaHome;
-		Environment.setJavaHome(javaHome);
-    }
-
-    public void setMavenHome(String mavenHome) {
-        this.mavenHome = mavenHome;
-		Environment.setMavenHome(mavenHome);
-    }
-    
-	public void setMavenRepository(String mavenRepository) {
-		this.mavenRepository = mavenRepository;
-		Environment.setMavenRepository(mavenRepository);
-	}
-	
+    /// utililty methods ---
     public String getPreferencesFilename() {
 		return getFile("prefs.ini");   
     }
 	
-	public String getGoalsPreferencesFilename() {
-		return getFile("goals_prefs.ini");
-	}
-	
 	public String getFile(String fname) {
 		File baseDir = Mevenide.getPlugin().getStateLocation().toFile();
-		
 		File f = new File(baseDir, fname);
 		return f.getAbsolutePath();
-
-	}
-	
-    public String getXmlGoalsFile() {
-        return getFile("maven-goals.xml");
-    }
-    
-    public String getEffectiveDirectory() {
-        try {
-        	URL installBase = Mevenide.getPlugin().getDescriptor().getInstallURL();
-        	return new File(new File(Platform.resolve(installBase).getFile()).getAbsolutePath()).toString();
-        }
-        catch (IOException e) {
-            log.debug("Unable to locate local repository due to " + e);
-            return "";
-        }   
-        
-    }
-    
-    public String getForeheadConf() {
-        try {
-            URL installBase = Mevenide.getPlugin().getDescriptor().getInstallURL();
-            File f = new File(new File(Platform.resolve(installBase).getFile()).getAbsolutePath(), "conf.file");
-            return f.getAbsolutePath();
-        }
-        catch (IOException e) {
-            log.debug("Unable to locate forehead.conf due to : " + e);
-            return "";
-        }
-    }
-    
-
-	
-	public String getCurrentDir() {
-		return currentDir;
 	}
     
-    public void setCurrentDir(String currentDir) {
-		this.currentDir = currentDir;
-	}
-
-	public IProject getProject() {
-		return project;
-	}
-
-	public void setProject(IProject project) {
-		this.project = project;
-		this.currentDir = project.getLocation().toOSString();
-	}
-
 	/**
 	 * create a new POM skeleton if no project.xml currently exists
 	 * 
@@ -341,24 +273,35 @@ public class Mevenide extends AbstractUIPlugin {
 		}
 	}
 	
-	
-	
-	
-	
 	public static void popUp(String text, String message) {
 		MessageBox dialog = new MessageBox (PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), SWT.ICON_WARNING | SWT.OK);
 		dialog.setText (text);
 		dialog.setMessage (message);
 		dialog.open ();
 	}
+    public String getEffectiveDirectory() {
+        try {
+        	URL installBase = Mevenide.getPlugin().getDescriptor().getInstallURL();
+        	return new File(new File(Platform.resolve(installBase).getFile()).getAbsolutePath()).toString();
+        }
+        catch (IOException e) {
+            log.debug("Unable to locate local repository due to " + e);
+            return "";
+        }
+    }
     
-	/**
-	 * @return the maven Project Object Model
-	 */
-	public File getPom() {
-		return new File(new DefaultPathResolver().getAbsolutePath(project.getFile("project.xml").getLocation()));
-	}
-	
+    public String getForeheadConf() {
+        try {
+            URL installBase = Mevenide.getPlugin().getDescriptor().getInstallURL();
+            File f = new File(new File(Platform.resolve(installBase).getFile()).getAbsolutePath(), "conf.file");
+            return f.getAbsolutePath();
+        }
+        catch (IOException e) {
+            log.debug("Unable to locate forehead.conf due to : " + e);
+            return "";
+        }
+    }
+
 	public void initEnvironment() {
 		Environment.setMavenHome(getMavenHome()); 
 		Environment.setJavaHome(getJavaHome());
@@ -388,46 +331,75 @@ public class Mevenide extends AbstractUIPlugin {
 		properties.store(new FileOutputStream(f), null);
 	}
 
-	
+
+    /// setter/getter methods ---
+    public String getJavaHome() {
+        return javaHome;
+    }
+    public void setJavaHome(String javaHome) {
+        this.javaHome = javaHome;
+		Environment.setJavaHome(javaHome);
+    }
+    public String getMavenHome() {
+        return mavenHome;
+    }
+    public void setMavenHome(String mavenHome) {
+        this.mavenHome = mavenHome;
+		Environment.setMavenHome(mavenHome);
+    }
+	public String getMavenRepository() {
+		return mavenRepository;
+	}
+	public void setMavenRepository(String mavenRepository) {
+		this.mavenRepository = mavenRepository;
+		Environment.setMavenRepository(mavenRepository);
+	}
+	public String getCurrentDir() {
+		return currentDir;
+	}
+    public void setCurrentDir(String currentDir) {
+		this.currentDir = currentDir;
+	}
+	public IProject getProject() {
+		return project;
+	}
+	public void setProject(IProject project) {
+		this.project = project;
+		this.currentDir = project.getLocation().toOSString();
+	}
+	public File getPom() {
+		return new File(new DefaultPathResolver().getAbsolutePath(project.getFile("project.xml").getLocation()));
+	}
 	public boolean getCheckTimestamp() {
 		return checkTimestamp;
 	}
-
 	public void setCheckTimestamp(boolean b) {
 		checkTimestamp = b;
 	}
-
 	public String getPomTemplate() {
 		return pomTemplate;
 	}
-
 	public void setPomTemplate(String string) {
 		pomTemplate = string;
 	}
-	
 	public String getDefaultGoals() {
-		return defaultGoals != null ? defaultGoals : "java:compile";
+		return defaultGoals != null  && !defaultGoals.trim().equals("") ? defaultGoals : "test";
 	}
-	
 	public void setDefaultGoals(String defaultGoals) {
 		this.defaultGoals = defaultGoals;
 	}
     public String getPluginsInstallDir() {
         return new File(mavenLocalHome, "plugins").getAbsolutePath();
     }
-
     public String getMavenLocalHome() {
         return mavenLocalHome;
     }
-
     public void setMavenLocalHome(String mavenLocalHome) {
         this.mavenLocalHome = mavenLocalHome;
     }
-
     public int getHeapSize() {
         return heapSize;
     }
-
     public void setHeapSize(int heapSize) {
         this.heapSize = heapSize;
     }

@@ -59,6 +59,7 @@ import org.eclipse.core.resources.IProject;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.input.SAXBuilder;
+import org.mevenide.ui.eclipse.XmlSerializationConstants;
 import org.mevenide.util.JDomOutputter;
 
 /**
@@ -71,14 +72,7 @@ import org.mevenide.util.JDomOutputter;
  * 
  */
 public class SourceDirectoryGroupMarshaller {
-	private static final String INHERIT_ATTR = "isInherited";
-    private static final String TYPE_ATTR = "type";
-    private static final String PATH_ATTR = "path";
-    private static final String SOURCE_DIRECTORY_ELEM = "sourceDirectory";
-    private static final String TIMESTAMP_ATTR = "timestamp";
-    private static final String PROJECT_NAME_ATTR = "projectName";
-    private static final String SOURCE_DIRECTORY_GROUP_ELEM = "sourceDirectoryGroup";
-    private static Log log = LogFactory.getLog(SourceDirectoryGroupMarshaller.class);
+	public static Log log = LogFactory.getLog(SourceDirectoryGroupMarshaller.class);
 	
 	private SourceDirectoryGroupMarshaller() { 
 	}
@@ -99,29 +93,29 @@ public class SourceDirectoryGroupMarshaller {
 			Document document = builder.build(file);
 		
 			Element projects = document.getRootElement();
-			List sourceDirectories = projects.getChildren(SOURCE_DIRECTORY_GROUP_ELEM);
+			List sourceDirectories = projects.getChildren(XmlSerializationConstants.SOURCE_DIRECTORY_GROUP_ELEM);
 			for (int i = 0; i < sourceDirectories.size(); i++) {
 				Element sourceDirectoryGroupElement = 
 					(Element) sourceDirectories.get(i);
 			
-				if ( sourceDirectoryGroupElement.getAttributeValue(PROJECT_NAME_ATTR).equals(project.getName()) ) {
-					long timestamp = Long.parseLong(sourceDirectoryGroupElement.getAttributeValue(TIMESTAMP_ATTR));
-					boolean isGroupInherited = new Boolean(sourceDirectoryGroupElement.getAttributeValue(INHERIT_ATTR)).booleanValue();
+				if ( sourceDirectoryGroupElement.getAttributeValue(XmlSerializationConstants.PROJECT_NAME_ATTR).equals(project.getName()) ) {
+					long timestamp = Long.parseLong(sourceDirectoryGroupElement.getAttributeValue(XmlSerializationConstants.TIMESTAMP_ATTR));
+					boolean isGroupInherited = new Boolean(sourceDirectoryGroupElement.getAttributeValue(XmlSerializationConstants.INHERIT_ATTR)).booleanValue();
 				    group.setInherited(isGroupInherited);
 				    
-					List sources = sourceDirectoryGroupElement.getChildren(SOURCE_DIRECTORY_ELEM);
+					List sources = sourceDirectoryGroupElement.getChildren(XmlSerializationConstants.SOURCE_DIRECTORY_ELEM);
 					for (int j = 0; j < sources.size(); j++) {
 						Element sourceDirectoryElement =  (Element) sources.get(j);
 					
 						SourceDirectory sourceDirectory 
-							= new SourceDirectory(sourceDirectoryElement.getAttributeValue(PATH_ATTR), group);
+							= new SourceDirectory(sourceDirectoryElement.getAttributeValue(XmlSerializationConstants.PATH_ATTR), group);
 					
-						boolean isInherited = Boolean.valueOf(sourceDirectoryElement.getAttributeValue(INHERIT_ATTR)).booleanValue() ;
+						boolean isInherited = Boolean.valueOf(sourceDirectoryElement.getAttributeValue(XmlSerializationConstants.INHERIT_ATTR)).booleanValue() ;
 						sourceDirectory.setInherited(isInherited);
 											
-						long sdTimestamp = Long.parseLong(sourceDirectoryElement.getAttributeValue(TIMESTAMP_ATTR));
+						long sdTimestamp = Long.parseLong(sourceDirectoryElement.getAttributeValue(XmlSerializationConstants.TIMESTAMP_ATTR));
 						if ( sdTimestamp == timestamp ){
-							sourceDirectory.setDirectoryType(sourceDirectoryElement.getAttributeValue(TYPE_ATTR));
+							sourceDirectory.setDirectoryType(sourceDirectoryElement.getAttributeValue(XmlSerializationConstants.TYPE_ATTR));
 							sourceDirectoryList.add(sourceDirectory);
 						}
 						allSourceDirectoryList.add(sourceDirectory);
@@ -174,25 +168,25 @@ public class SourceDirectoryGroupMarshaller {
 		}
 		else {
 			document = new Document();
-			Element root = new Element("sourceDirectoryGroups");
+			Element root = new Element(XmlSerializationConstants.SOURCE_DIRECTORY_GROUPS_ELEM);
 			document.setRootElement(root);
 		}
 		
-		Element sourceDirGroup = new Element(SOURCE_DIRECTORY_GROUP_ELEM);
-		sourceDirGroup.setAttribute(PROJECT_NAME_ATTR, group.getProjectName());
+		Element sourceDirGroup = new Element(XmlSerializationConstants.SOURCE_DIRECTORY_GROUP_ELEM);
+		sourceDirGroup.setAttribute(XmlSerializationConstants.PROJECT_NAME_ATTR, group.getProjectName());
 		
-		List candidates = document.getRootElement().getChildren(SOURCE_DIRECTORY_GROUP_ELEM);
+		List candidates = document.getRootElement().getChildren(XmlSerializationConstants.SOURCE_DIRECTORY_GROUP_ELEM);
 		for (int i = 0; i < candidates.size(); i++) {
 			Element elem = (Element) candidates.get(i);
-			String projectName = elem.getAttributeValue(PROJECT_NAME_ATTR);
+			String projectName = elem.getAttributeValue(XmlSerializationConstants.PROJECT_NAME_ATTR);
 			if ( projectName != null && projectName.equals(group.getProjectName()) )  {
 				sourceDirGroup = elem;
 				document.getRootElement().removeContent(elem);
 			}
 		}
 		
-		sourceDirGroup.setAttribute(TIMESTAMP_ATTR, Long.toString(timestamp));
-		sourceDirGroup.setAttribute(INHERIT_ATTR, Boolean.toString(group.isInherited()));
+		sourceDirGroup.setAttribute(XmlSerializationConstants.TIMESTAMP_ATTR, Long.toString(timestamp));
+		sourceDirGroup.setAttribute(XmlSerializationConstants.INHERIT_ATTR, Boolean.toString(group.isInherited()));
 		if ( group.getSourceDirectories().size() == 0 ) {
 			document.getRootElement().addContent(sourceDirGroup);
 			return;
@@ -210,23 +204,23 @@ public class SourceDirectoryGroupMarshaller {
 	}
 	private static void saveSourceDirectories(List sourceDirectories, long timestamp, Element sourceDirGroup) {
 		log.debug("Saving back " + sourceDirectories.size() + " SourceDirectories - timestamp=" + timestamp);
-		List previousSourceDirectories = sourceDirGroup.getChildren(SOURCE_DIRECTORY_ELEM);
+		List previousSourceDirectories = sourceDirGroup.getChildren(XmlSerializationConstants.SOURCE_DIRECTORY_ELEM);
 		if ( previousSourceDirectories == null ) {
 			previousSourceDirectories = new ArrayList();
 		}
 		
 		for (int i = 0; i < sourceDirectories.size(); i++) {
 			SourceDirectory dir = (SourceDirectory) sourceDirectories.get(i);
-			Element sourceDir = new Element(SOURCE_DIRECTORY_ELEM);
+			Element sourceDir = new Element(XmlSerializationConstants.SOURCE_DIRECTORY_ELEM);
 			
-			sourceDir.setAttribute(PATH_ATTR, dir.getDirectoryPath()) ;
-			sourceDir.setAttribute(TYPE_ATTR, dir.getDirectoryType());
-			sourceDir.setAttribute(TIMESTAMP_ATTR, Long.toString(timestamp));
-			sourceDir.setAttribute(INHERIT_ATTR, Boolean.toString(dir.isInherited()));
+			sourceDir.setAttribute(XmlSerializationConstants.PATH_ATTR, dir.getDirectoryPath()) ;
+			sourceDir.setAttribute(XmlSerializationConstants.TYPE_ATTR, dir.getDirectoryType());
+			sourceDir.setAttribute(XmlSerializationConstants.TIMESTAMP_ATTR, Long.toString(timestamp));
+			sourceDir.setAttribute(XmlSerializationConstants.INHERIT_ATTR, Boolean.toString(dir.isInherited()));
 			
 			for (int j = 0; j < previousSourceDirectories.size(); j++) {
 				Element dirElem = (Element) previousSourceDirectories.get(j);
-				if ( dirElem.getAttributeValue(PATH_ATTR).equals(dir.getDirectoryPath()) ) {
+				if ( dirElem.getAttributeValue(XmlSerializationConstants.PATH_ATTR).equals(dir.getDirectoryPath()) ) {
 					sourceDirGroup.removeContent(dirElem);
 				}
 			}

@@ -30,6 +30,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
+import org.mevenide.ui.eclipse.Mevenide;
 
 /**
  * derived work from org.eclipse.ant.ui.internal.launchConfiguration.TargetOrderDialog   
@@ -39,7 +40,11 @@ import org.eclipse.swt.widgets.Table;
  *
  */
 public class GoalsOrderDialog extends Dialog implements ISelectionChangedListener {
-	private static Log log = LogFactory.getLog(GoalsOrderDialog.class);
+	private static final String BUTTON_MOVE_DOWN = "GoalsOrderDialog.MoveDown";
+    private static final String BUTTON_MOVE_UP = "GoalsOrderDialog.MoveUp";
+    private static final String DIALOG_TITLE = "GoalsOrderDialog.title";
+	
+    private static Log log = LogFactory.getLog(GoalsOrderDialog.class);
 	
 	
 	private Button fUp;
@@ -62,16 +67,17 @@ public class GoalsOrderDialog extends Dialog implements ISelectionChangedListene
 	 * @see org.eclipse.jface.dialogs.Dialog#createDialogArea(org.eclipse.swt.widgets.Composite)
 	 */
 	protected Control createDialogArea(Composite parent) {
-		getShell().setText("Goals Execution Order");
+		getShell().setText(Mevenide.getResourceString(DIALOG_TITLE));
 		
 		Composite comp = new Composite(parent, SWT.NONE);
+		comp.setFont(parent.getFont());
 		GridLayout layout = new GridLayout(2, false);
 		comp.setLayout(layout);
 		GridData gd = new GridData(GridData.FILL_BOTH);
 		comp.setLayoutData(gd);
 		
 		Label label = new Label(comp, SWT.NONE);
-		label.setText("Goals Execution Order");
+		label.setText(Mevenide.getResourceString(DIALOG_TITLE));
 		label.setFont(comp.getFont());
 		gd = new GridData(GridData.FILL_HORIZONTAL);
 		gd.horizontalSpan = 2;
@@ -101,7 +107,7 @@ public class GoalsOrderDialog extends Dialog implements ISelectionChangedListene
 		
 		fUp = new Button(comp, SWT.PUSH);
 		fUp.setFont(parent.getFont());
-		fUp.setText("Move Up");
+		fUp.setText(Mevenide.getResourceString(BUTTON_MOVE_UP));
 		setButtonLayoutData(fUp);
 		fUp.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
@@ -111,7 +117,7 @@ public class GoalsOrderDialog extends Dialog implements ISelectionChangedListene
 		
 		fDown = new Button(comp, SWT.PUSH);
 		fDown.setFont(parent.getFont());
-		fDown.setText("Move Down");
+		fDown.setText(Mevenide.getResourceString(BUTTON_MOVE_DOWN));
 		setButtonLayoutData(fDown);
 		fDown.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {

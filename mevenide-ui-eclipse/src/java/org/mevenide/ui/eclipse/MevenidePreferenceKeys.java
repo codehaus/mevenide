@@ -48,63 +48,21 @@
  */
 package org.mevenide.ui.eclipse;
 
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.MessageBox;
-import org.eclipse.ui.PlatformUI;
-import org.mevenide.MevenideException;
-import org.mevenide.core.AbstractRunner;
-import org.mevenide.core.ArgumentsManager;
-import org.mevenide.ui.eclipse.launch.jdt.VMLauncherUtility;
-
-//import com.werken.forehead.Forehead;
-
-/**
- * @author Gilles Dodinet  
- * @version $Id$
+/**  
+ * 
+ * @author Gilles Dodinet (gdodinet@wanadoo.fr)
+ * @version $Id: MevenidePreferenceKeys.java,v 1.1 15 sept. 2003 Exp gdodinet 
+ * 
  */
-public class Runner extends AbstractRunner {
-	Mevenide plugin = Mevenide.getPlugin();
+public class MevenidePreferenceKeys {
 
-	public Runner() throws MevenideException {
-		super();
-	}
-
-    /**
-	 * @see org.mevenide.core.AbstractRunner#getEffectiveDirectory()
-	 */
-	protected String getBasedir() {
-        return plugin.getCurrentDir();
-	}
-
-	/**
-	 * @see org.mevenide.core.AbstractRunner#initEnvironment()
-	 */
-	protected void initEnvironment() throws Exception  {
-		if ( plugin.getMavenHome() == null || plugin.getMavenHome().trim().equals("") ) { 
-			MessageBox dialog = new MessageBox (PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), SWT.ICON_WARNING | SWT.OK);
-			dialog.setText (Mevenide.getResourceString("Runner.mavenHome.NotSet.title"));
-			dialog.setMessage (Mevenide.getResourceString("Runner.mavenHome.NotSet.message"));
-			dialog.open ();
-			throw new Exception("Maven Home has not been set");
-	    }
-	    else {
-		    plugin.initEnvironment();
-	    }
-	}
-
-	/**
-     * @param options
-	 * @param goals
-	 * @throws Exception
-	 */
-	protected void launchVM(String[] options, String[] goals) throws Exception {
-	
-	    VMLauncherUtility.runVM(
-			"com.werken.forehead.Forehead",
-			ArgumentsManager.getMavenClasspath(),
-		    ArgumentsManager.getVMArgs(this),
-	        getMavenArgs(options, goals));
-		
-	}
+    public static final String JAVA_HOME_PREFERENCE_KEY = "java.home";
+    public static final String MEVENIDE_CHECKTIMESTAMP_PREFERENCE_KEY = "mevenide.checktimestamp";
+    public static final String MAVEN_HEAP_SIZE_PREFERENCE_KEY = "maven.heap.size";
+    public static final String MAVEN_HOME_PREFERENCE_KEY = "maven.home";
+    public static final String MAVEN_LAUNCH_DEFAULTGOALS_PREFERENCE_KEY = "maven.launch.defaultgoals";
+    public static final String MAVEN_LOCAL_HOME_PREFERENCE_KEY = "maven.local.home";
+    public static final String MAVEN_REPO_PREFERENCE_KEY = "maven.repo";
+    public static final String POM_TEMPLATE_LOCATION_PREFERENCE_KEY = "pom.template.location";
 
 }
