@@ -30,7 +30,7 @@ public class LibraryVisitor {
 	
 	public void visit(SourceEntry entry) {
 		
-		IClasspathEntry classpathEntry = entry.getClasspathEntry();
+//		IClasspathEntry classpathEntry = entry.getClasspathEntry();
 		
 //		String pathToAdd = pathResolver.computePathToAdd(classpathEntry, project);
 //
@@ -42,7 +42,7 @@ public class LibraryVisitor {
 	}
 	
 	public void visit(DependencyEntry entry) {
-		IClasspathEntry classpathEntry = entry.getClasspathEntry();
+//		IClasspathEntry classpathEntry = entry.getClasspathEntry();
 //		ProjectWriter.getWriter().addDependency(
 //				pathResolver.getAbsolutePath(classpathEntry.getPath()), 
 //				getPom()
