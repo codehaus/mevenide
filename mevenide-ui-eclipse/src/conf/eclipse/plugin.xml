@@ -181,6 +181,7 @@
       <editor
             name="%PomEditor.name"
             icon="icons/pom_file.gif"
+            filenames="project.xml"
             extensions="xml"
             class="org.mevenide.ui.eclipse.editors.MevenidePomEditor"
             contributorClass="org.mevenide.ui.eclipse.editors.MevenidePomEditorContributor"
@@ -191,9 +192,11 @@
       	will provide completion thingie and outline to launch goals from
       -->
       <editor
-            name="Maven XML Editor"
+            name="Maven Jelly Editor"
             icon="icons/pom_file.gif"
-            filenames="maven.xml"
+            filenames="maven.xml,plugin.jelly"
+            extensions="jelly"
+            default="true"
             class="org.mevenide.ui.eclipse.editors.mavenxml.MavenXmlEditor"
             contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
             id="org.mevenide.ui.eclipse.editors.mavenxml.MavenXmlEditor">
@@ -206,9 +209,9 @@
             contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
             class="org.mevenide.ui.eclipse.editors.mavenxml.BasicJellyEditor"
             icon="icons/pom_file.gif"
-            extensions="jelly"
+            extensions="xml,jelly"
             id="org.mevenide.ui.eclipse.editors.mavenxml.BasicJellyEditor"
-            name="Jelly Editor">
+            name="Generic Jelly Editor">
       </editor>
    </extension>
    <extension
