@@ -26,6 +26,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.editors.MevenidePomEditor;
 
@@ -38,39 +39,44 @@ import org.mevenide.ui.eclipse.editors.MevenidePomEditor;
  */
 public class UnitTestsPage extends AbstractPomEditorPage {
 
-	public static final String HEADING = Mevenide.getResourceString("UnitTestsPage.heading");
+    private static final String ID = Mevenide.getResourceString("UnitTestsPage.id");
+    private static final String TAB = Mevenide.getResourceString("UnitTestsPage.tab.label");
+    private static final String HEADING = Mevenide.getResourceString("UnitTestsPage.heading");
     
 	private IncludesSection includesSection;
 	private ExcludesSection excludesSection;
 	private ResourcesSection resourcesSection;
 
     public UnitTestsPage(MevenidePomEditor editor) {
-        super(HEADING, editor);
+        super(editor, ID, TAB, HEADING);
     }
 
-	protected void initializePage(Composite parent) {
+    /**
+     * @see org.mevenide.ui.eclipse.editors.pages.AbstractPomEditorPage#createPageContent(org.eclipse.swt.widgets.Composite)
+     */
+    protected void createPageContent(Composite parent) {
 		GridLayout layout = new GridLayout();
 		layout.numColumns = 1;
 		layout.marginWidth = 10;
 		layout.horizontalSpacing = 15;
 		parent.setLayout(layout);
 
-		PageWidgetFactory factory = getFactory();
+		FormToolkit factory = getEditor().getToolkit();
 
-		includesSection = new IncludesSection(this);
+		includesSection = new IncludesSection(this, parent, factory);
 		IIncludesAdaptor includesAdaptor = new IIncludesAdaptor() {
 			public void setIncludes(Object target, List newIncludes) {
 				Project pom = (Project) target;
 				List includes = getOrCreateUnitTest(pom).getIncludes();
 				includes.removeAll(includes);
 				includes.addAll(newIncludes);
-				getEditor().setModelDirty(true);
+				getPomEditor().setModelDirty(true);
 			}
 	
 			public void addInclude(Object target, String include) {
 				Project pom = (Project) target;
 				getOrCreateUnitTest(pom).addInclude(include);
-				getEditor().setModelDirty(true);
+				getPomEditor().setModelDirty(true);
 			}
 	
 			public List getIncludes(Object source) {
@@ -83,25 +89,25 @@ public class UnitTestsPage extends AbstractPomEditorPage {
 			}
 		};
 		includesSection.setIncludesAdaptor(includesAdaptor);
-		Control control = includesSection.createControl(parent, factory);
+		Control control = includesSection.getSection();
 		GridData gd = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING);
 		control.setLayoutData(gd);
 		addSection(includesSection);
 		
-		excludesSection = new ExcludesSection(this);
+		excludesSection = new ExcludesSection(this, parent, factory);
 		IExcludesAdaptor excludesAdaptor = new IExcludesAdaptor() {
 			public void setExcludes(Object target, List newExcludes) {
 				Project pom = (Project) target;
 				List excludes = getOrCreateUnitTest(pom).getExcludes();
 				excludes.removeAll(excludes);
 				excludes.addAll(newExcludes);
-				getEditor().setModelDirty(true);
+				getPomEditor().setModelDirty(true);
 			}
 	
 			public void addExclude(Object target, String exclude) {
 				Project pom = (Project) target;
 				getOrCreateUnitTest(pom).addExclude(exclude);
-				getEditor().setModelDirty(true);
+				getPomEditor().setModelDirty(true);
 			}
 	
 			public List getExcludes(Object source) {
@@ -114,23 +120,23 @@ public class UnitTestsPage extends AbstractPomEditorPage {
 			}
 		};
 		excludesSection.setExcludesAdaptor(excludesAdaptor);
-		control = excludesSection.createControl(parent, factory);
+		control = excludesSection.getSection();
 		gd = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING);
 		control.setLayoutData(gd);
 		addSection(excludesSection);
 		
-		resourcesSection = new ResourcesSection(this, "UnitTestResourcesSection");
+		resourcesSection = new ResourcesSection(this, parent, factory, "UnitTestResourcesSection");
 		IResourceAdaptor adaptor = new IResourceAdaptor() {
 			public void setResources(Object target, List resources) {
 				Project pom = (Project) target;
 				getOrCreateUnitTest(pom).setResources(resources);
-				getEditor().setModelDirty(true);
+				getPomEditor().setModelDirty(true);
 			}
 		
 			public void addResource(Object target, Resource resource) {
 				Project pom = (Project) target;
 				getOrCreateUnitTest(pom).addResource(resource);
-				getEditor().setModelDirty(true);
+				getPomEditor().setModelDirty(true);
 			}
 		
 			public List getResources(Object source) {
@@ -147,7 +153,7 @@ public class UnitTestsPage extends AbstractPomEditorPage {
 		};
 		resourcesSection.setResourceAdaptor(adaptor);
 
-		control = resourcesSection.createControl(parent, factory);
+		control = resourcesSection.getSection();
 		gd = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING);
 		control.setLayoutData(gd);
 		addSection(resourcesSection);

@@ -21,6 +21,7 @@ import java.util.List;
 import org.apache.maven.project.Project;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.editors.entries.TableEntry;
 
@@ -34,8 +35,12 @@ public class IncludesSection extends PageSection {
 	private IIncludesAdaptor includesAdaptor;
 	private TableEntry includesTable;
 	
-	public IncludesSection(UnitTestsPage page) {
-		super(page);
+	public IncludesSection(
+	    UnitTestsPage page,
+	    Composite parent,
+	    FormToolkit toolkit)
+	{
+		super(page, parent, toolkit);
 		setTitle(Mevenide.getResourceString("UnitTestIncludesSection.header"));
 	}
 	
@@ -43,7 +48,7 @@ public class IncludesSection extends PageSection {
 		this.includesAdaptor = adaptor;
 	}
 
-	public Composite createClient(Composite parent, PageWidgetFactory factory) {
+    public Composite createSectionContent(Composite parent, FormToolkit factory) {
 		Composite container = factory.createComposite(parent);
 		GridLayout layout = new GridLayout();
 		layout.numColumns = isInherited() ? 3 : 2;

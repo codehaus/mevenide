@@ -20,6 +20,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.editors.MevenidePomEditor;
 
@@ -32,25 +33,30 @@ import org.mevenide.ui.eclipse.editors.MevenidePomEditor;
  */
 public class ReportsPage extends AbstractPomEditorPage {
 
-	public static final String HEADING = Mevenide.getResourceString("ReportsPage.heading");
+    private static final String ID = Mevenide.getResourceString("ReportsPage.id");
+    private static final String TAB = Mevenide.getResourceString("ReportsPage.tab.label");
+    private static final String HEADING = Mevenide.getResourceString("ReportsPage.heading");
     
 	private ReportsSection reportsSection;
 
 	public ReportsPage(MevenidePomEditor editor) {
-        super(HEADING, editor);
+        super(editor, ID, TAB, HEADING);
     }
 
-	protected void initializePage(Composite parent) {
+    /**
+     * @see org.mevenide.ui.eclipse.editors.pages.AbstractPomEditorPage#createPageContent(org.eclipse.swt.widgets.Composite)
+     */
+    protected void createPageContent(Composite parent) {
 		GridLayout layout = new GridLayout();
 		layout.numColumns = 1;
 		layout.marginWidth = 10;
 		layout.horizontalSpacing = 15;
 		parent.setLayout(layout);
 
-		PageWidgetFactory factory = getFactory();
+		FormToolkit factory = getEditor().getToolkit();
 
-		reportsSection = new ReportsSection(this);
-		Control control = reportsSection.createControl(parent, factory);
+		reportsSection = new ReportsSection(this, parent, factory);
+		Control control = reportsSection.getSection();
 		GridData gd = new GridData(GridData.FILL_BOTH);
 		control.setLayoutData(gd);
 		addSection(reportsSection);

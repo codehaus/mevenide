@@ -26,6 +26,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FileDialog;
+import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.editors.entries.OverridableTextEntry;
 
@@ -41,13 +42,20 @@ public class OrganizationSection extends PageSection {
 	private OverridableTextEntry urlText;
 	private OverridableTextEntry logoText;
 
-    public OrganizationSection(OrganizationPage page) {
-        super(page);
+    public OrganizationSection(
+        OrganizationPage page, 
+        Composite parent, 
+        FormToolkit toolkit)
+    {
+        super(page, parent, toolkit);
 		setTitle(Mevenide.getResourceString("OrganizationSection.header"));
 		setDescription(Mevenide.getResourceString("OrganizationSection.description"));
     }
 
-    public Composite createClient(Composite parent, PageWidgetFactory factory) {
+    /**
+     * @see org.mevenide.ui.eclipse.editors.pages.PageSection#createSectionContent(org.eclipse.swt.widgets.Composite, org.eclipse.ui.forms.widgets.FormToolkit)
+     */
+    protected Composite createSectionContent(Composite parent, FormToolkit factory) {
 		Composite container = factory.createComposite(parent);
 		GridLayout layout = new GridLayout();
 		layout.numColumns = isInherited() ? 4 : 3;
@@ -56,7 +64,7 @@ public class OrganizationSection extends PageSection {
 		layout.horizontalSpacing = 5;
 		container.setLayout(layout);
 		
-		final Project pom = getPage().getEditor().getPom();
+		final Project pom = getPage().getPomEditor().getPom();
 		
 		// POM short description textbox
 		Button toggle = createOverrideToggle(container, factory);
@@ -129,7 +137,7 @@ public class OrganizationSection extends PageSection {
 				public void widgetSelected(SelectionEvent e) {
 					try {
 						FileDialog dialog = new FileDialog(
-							getPage().getEditor().getSite().getShell(),
+							getPage().getPomEditor().getSite().getShell(),
 							SWT.NULL
 						);
 						dialog.setText(title);

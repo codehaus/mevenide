@@ -25,6 +25,7 @@ import org.apache.maven.project.Resource;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.mevenide.ui.eclipse.editors.entries.IPomCollectionAdaptor;
 import org.mevenide.ui.eclipse.editors.entries.TableEntry;
 import org.mevenide.ui.eclipse.editors.properties.ResourcePatternProxy;
@@ -43,8 +44,8 @@ public class IncludesSubsection extends AbstractResourcePatternSubsection {
 		this.includer = includeAdaptor;
 	}
 	
-	public TableEntry createWidget(Composite container, PageWidgetFactory factory, boolean isOverrideable) {
-		final Project pom = section.getPage().getEditor().getPom();
+	public TableEntry createWidget(Composite container, FormToolkit factory, boolean isOverrideable) {
+		final Project pom = section.getPage().getPomEditor().getPom();
 
 		// Include table
 		Button toggle = null;

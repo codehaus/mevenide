@@ -26,6 +26,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.DirectoryDialog;
+import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.editors.entries.OverridableTextEntry;
 
@@ -43,13 +44,20 @@ public class SiteGenerationSection extends PageSection {
 	private OverridableTextEntry siteDirectoryText;
 	private OverridableTextEntry distDirectoryText;
 
-    public SiteGenerationSection(OrganizationPage page) {
-        super(page);
+    public SiteGenerationSection(
+        OrganizationPage page, 
+   		Composite parent, 
+   		FormToolkit toolkit)
+   	{
+        super(page, parent, toolkit);
 		setTitle(Mevenide.getResourceString("SiteGenerationSection.header"));
 		setDescription(Mevenide.getResourceString("SiteGenerationSection.description"));
     }
 
-    public Composite createClient(Composite parent, PageWidgetFactory factory) {
+    /**
+     * @see org.mevenide.ui.eclipse.editors.pages.PageSection#createSectionContent(org.eclipse.swt.widgets.Composite, org.eclipse.ui.forms.widgets.FormToolkit)
+     */
+    protected Composite createSectionContent(Composite parent, FormToolkit factory) {
 		Composite container = factory.createComposite(parent);
 		GridLayout layout = new GridLayout();
 		layout.numColumns = isInherited() ? 4 : 3;
@@ -58,7 +66,7 @@ public class SiteGenerationSection extends PageSection {
 		layout.horizontalSpacing = 5;
 		container.setLayout(layout);
 		
-		final Project pom = getPage().getEditor().getPom();
+		final Project pom = getPage().getPomEditor().getPom();
 		
 		// Site address textbox
 		Button toggle = createOverrideToggle(container, factory);
@@ -152,7 +160,7 @@ public class SiteGenerationSection extends PageSection {
 				public void widgetSelected(SelectionEvent e) {
 					try {
 						DirectoryDialog dialog = new DirectoryDialog(
-							getPage().getEditor().getSite().getShell(),
+							getPage().getPomEditor().getSite().getShell(),
 							SWT.NULL
 						);
 						dialog.setText(title);
@@ -201,7 +209,7 @@ public class SiteGenerationSection extends PageSection {
 				public void widgetSelected(SelectionEvent e) {
 					try {
 						DirectoryDialog dialog = new DirectoryDialog(
-							getPage().getEditor().getSite().getShell(),
+							getPage().getPomEditor().getSite().getShell(),
 							SWT.NULL
 						);
 						dialog.setText(title1);

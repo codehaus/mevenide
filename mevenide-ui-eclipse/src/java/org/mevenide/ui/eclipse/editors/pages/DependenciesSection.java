@@ -29,6 +29,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.editors.entries.IPomCollectionAdaptor;
 import org.mevenide.ui.eclipse.editors.entries.PageEntry;
@@ -47,13 +48,17 @@ public class DependenciesSection extends PageSection {
 	private TableEntry dependenciesTable;
 	private TableEntry propertiesTable;
 	
-	public DependenciesSection(DependenciesPage page) {
-		super(page);
+	public DependenciesSection(
+		DependenciesPage page,
+	    Composite parent,
+	    FormToolkit toolkit)
+	{
+		super(page, parent, toolkit);
 		setTitle(Mevenide.getResourceString("DependenciesSection.header"));
 		setDescription(Mevenide.getResourceString("DependenciesSection.description"));
 	}
 
-	public Composite createClient(Composite parent, PageWidgetFactory factory) {
+    public Composite createSectionContent(Composite parent, FormToolkit factory) {
 		Composite container = factory.createComposite(parent);
 		GridLayout layout = new GridLayout();
 		layout.numColumns = isInherited() ? 3 : 2;
@@ -62,7 +67,7 @@ public class DependenciesSection extends PageSection {
 		layout.horizontalSpacing = 5;
 		container.setLayout(layout);
 		
-		final Project pom = getPage().getEditor().getPom();
+		final Project pom = getPage().getPomEditor().getPom();
 		
 		// POM dependencies table
 		Button toggle = createOverrideToggle(container, factory, 1, true);

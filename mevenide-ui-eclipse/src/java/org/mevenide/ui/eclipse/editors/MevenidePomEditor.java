@@ -72,14 +72,6 @@ public class MevenidePomEditor extends FormEditor {
 
     private static final Log log = LogFactory.getLog(MevenidePomEditor.class);
 
-    public static final String ORGANIZATION_PAGE = Mevenide.getResourceString("MevenidePomEditor.tab.label.organization");
-    public static final String REPOSITORY_PAGE = Mevenide.getResourceString("MevenidePomEditor.tab.label.repository");
-    public static final String TEAM_PAGE = Mevenide.getResourceString("MevenidePomEditor.tab.label.team");
-    public static final String DEPENDENCIES_PAGE = Mevenide.getResourceString("MevenidePomEditor.tab.label.dependencies");
-    public static final String BUILD_PAGE = Mevenide.getResourceString("MevenidePomEditor.tab.label.build");
-    public static final String UNITTESTS_PAGE = Mevenide.getResourceString("MevenidePomEditor.tab.label.unitTests");
-    public static final String REPORTS_PAGE = Mevenide.getResourceString("MevenidePomEditor.tab.label.reports");
-
     private Project pom;
     private Project parentPom;
     private DefaultProjectMarshaller marshaller;
@@ -157,13 +149,13 @@ public class MevenidePomEditor extends FormEditor {
     protected void addPages() {
         try {
             createOverviewPage();
-//            createOrganizationPage();
-//            createRepositoryPage();
-//            createTeamPage();
-//            createDependenciesPage();
-//            createBuildPage();
-//            createUnitTestsPage();
-//            createReportsPage();
+            createOrganizationPage();
+            createRepositoryPage();
+            createTeamPage();
+            createDependenciesPage();
+            createBuildPage();
+            createUnitTestsPage();
+            createReportsPage();
             createSourcePage();
         } catch (PartInitException e) {
             log.error("Unable to create source page", e);

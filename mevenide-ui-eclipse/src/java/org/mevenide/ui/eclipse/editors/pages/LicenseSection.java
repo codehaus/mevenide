@@ -24,6 +24,7 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.editors.entries.IPomCollectionAdaptor;
 import org.mevenide.ui.eclipse.editors.entries.TableEntry;
@@ -36,13 +37,20 @@ public class LicenseSection extends PageSection {
 	
 	private TableEntry licenseTable;
 	
-    public LicenseSection(OrganizationPage page) {
-        super(page);
+    public LicenseSection(
+        OrganizationPage page, 
+       	Composite parent, 
+       	FormToolkit toolkit)
+    {
+        super(page, parent, toolkit);
 		setTitle(Mevenide.getResourceString("LicenseSection.header"));
 		setDescription(Mevenide.getResourceString("LicenseSection.description"));
     }
 
-    public Composite createClient(Composite parent, PageWidgetFactory factory) {
+    /**
+     * @see org.mevenide.ui.eclipse.editors.pages.PageSection#createSectionContent(org.eclipse.swt.widgets.Composite, org.eclipse.ui.forms.widgets.FormToolkit)
+     */
+    protected Composite createSectionContent(Composite parent, FormToolkit factory) {
 		Composite container = factory.createComposite(parent);
 		GridLayout layout = new GridLayout();
 		layout.numColumns = isInherited() ? 3 : 2;
@@ -51,7 +59,7 @@ public class LicenseSection extends PageSection {
 		layout.horizontalSpacing = 5;
 		container.setLayout(layout);
 		
-		final Project pom = getPage().getEditor().getPom();
+		final Project pom = getPage().getPomEditor().getPom();
 		
 		// POM license table
 		Button toggle = createOverrideToggle(container, factory, 1, true);

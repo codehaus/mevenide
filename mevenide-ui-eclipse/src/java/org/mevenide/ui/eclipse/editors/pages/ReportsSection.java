@@ -32,6 +32,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.model.WorkbenchContentProvider;
 import org.mevenide.reports.DefaultReportsFinder;
 import org.mevenide.reports.IReportsFinder;
@@ -52,13 +53,17 @@ public class ReportsSection extends PageSection {
 	private DraggableTableEntry reportsEntry;
 	private TreeSet availableReports = new TreeSet();
     
-	public ReportsSection(ReportsPage page) {
-		super(page);
+	public ReportsSection(
+		ReportsPage page, 
+		Composite parent, 
+		FormToolkit toolkit) 
+   	{
+        super(page, parent, toolkit);
 		setTitle(Mevenide.getResourceString("ReportsSection.header"));
 		setDescription(Mevenide.getResourceString("ReportsSection.description"));
 	}
 
-	public Composite createClient(Composite parent, PageWidgetFactory factory) {
+    public Composite createSectionContent(Composite parent, FormToolkit factory) {
 		Composite container = factory.createComposite(parent);
 		FillLayout layout = new FillLayout();
 		layout.marginWidth = 2;
@@ -94,7 +99,7 @@ public class ReportsSection extends PageSection {
 		return container;
 	}
 
-	private TableViewer createAvailableReportsViewer(Composite container, PageWidgetFactory factory) {
+	private TableViewer createAvailableReportsViewer(Composite container, FormToolkit factory) {
 		Composite availableContainer = factory.createComposite(container);
 		GridLayout layout = new GridLayout();
 		layout.numColumns = isInherited() ? 2 : 1;
@@ -104,7 +109,11 @@ public class ReportsSection extends PageSection {
 		availableContainer.setLayout(layout);
 		
 		if (isInherited()) createSpacer(availableContainer, factory);
-		factory.createHeadingLabel(availableContainer, Mevenide.getResourceString("ReportsSection.available.reports.label"));
+		factory.createLabel(
+		    availableContainer, 
+		    Mevenide.getResourceString("ReportsSection.available.reports.label"),
+		    SWT.BOLD
+		);
 
 		overrideToggle = createOverrideToggle(availableContainer, factory, 1, true);
 
@@ -118,7 +127,7 @@ public class ReportsSection extends PageSection {
 		return viewer;
 	}
 
-	private TableViewer createIncludedReportsViewer(Composite container, PageWidgetFactory factory) {
+	private TableViewer createIncludedReportsViewer(Composite container, FormToolkit factory) {
 		Composite includedContainer = factory.createComposite(container);
 		GridLayout layout = new GridLayout();
 		layout.numColumns = 1;
@@ -127,7 +136,7 @@ public class ReportsSection extends PageSection {
 		layout.horizontalSpacing = 5;
 		includedContainer.setLayout(layout);
 		
-		factory.createHeadingLabel(includedContainer, Mevenide.getResourceString("ReportsSection.included.reports.label"));
+		factory.createLabel(includedContainer, Mevenide.getResourceString("ReportsSection.included.reports.label"));
 
 		TableViewer viewer = new TableViewer(includedContainer, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
 		viewer.setContentProvider(new WorkbenchContentProvider());
@@ -142,8 +151,8 @@ public class ReportsSection extends PageSection {
 		if (log.isDebugEnabled()) {
 			log.debug("setting reports on pom: " + reports);
 		}
-		getPage().getEditor().getPom().setReports(reports);
-		getPage().getEditor().setModelDirty(true);
+		getPage().getPomEditor().getPom().setReports(reports);
+		getPage().getPomEditor().setModelDirty(true);
 	}
 
 	public void update(Project pom) {

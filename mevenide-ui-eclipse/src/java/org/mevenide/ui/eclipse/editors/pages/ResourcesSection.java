@@ -25,6 +25,7 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.editors.entries.IPomCollectionAdaptor;
 import org.mevenide.ui.eclipse.editors.entries.TableEntry;
@@ -47,8 +48,13 @@ public class ResourcesSection extends PageSection {
 	
 	private String sectionName;
 	
-	public ResourcesSection(AbstractPomEditorPage page, String name) {
-		super(page);
+	public ResourcesSection(
+	    AbstractPomEditorPage page, 
+		Composite parent, 
+		FormToolkit toolkit,
+		String name) 
+   	{
+        super(page, parent, toolkit);
 		this.sectionName = name;
 		setTitle(Mevenide.getResourceString(sectionName + ".header"));
 		setDescription(Mevenide.getResourceString(sectionName + ".description"));
@@ -58,7 +64,7 @@ public class ResourcesSection extends PageSection {
 		this.resourceAdaptor = adaptor;
 	}
 
-	public Composite createClient(Composite parent, PageWidgetFactory factory) {
+    public Composite createSectionContent(Composite parent, FormToolkit factory) {
 		Composite container = factory.createComposite(parent);
 		GridLayout layout = new GridLayout();
 		layout.numColumns = isInherited() ? 3 : 2;
@@ -67,7 +73,7 @@ public class ResourcesSection extends PageSection {
 		layout.horizontalSpacing = 5;
 		container.setLayout(layout);
 		
-		final Project pom = getPage().getEditor().getPom();
+		final Project pom = getPage().getPomEditor().getPom();
 		
 		// Build resources table
 		Button toggle = createOverrideToggle(container, factory, 1, true);
@@ -122,12 +128,12 @@ public class ResourcesSection extends PageSection {
 				List includes = resource.getIncludes();
 				includes.removeAll(includes);
 				includes.addAll(newIncludes);
-				getPage().getEditor().setModelDirty(true);
+				getPage().getPomEditor().setModelDirty(true);
 			}
 			public void addInclude(Object target, String include) {
 				Resource resource = getSelectedResource();
 				resource.addInclude(include);
-				getPage().getEditor().setModelDirty(true);
+				getPage().getPomEditor().setModelDirty(true);
 			}
 			public List getIncludes(Object source) {
 				Resource resource = getSelectedResource();
@@ -152,12 +158,12 @@ public class ResourcesSection extends PageSection {
 				List excludes = resource.getExcludes();
 				excludes.removeAll(excludes);
 				excludes.addAll(newExcludes);
-				getPage().getEditor().setModelDirty(true);
+				getPage().getPomEditor().setModelDirty(true);
 			}
 			public void addExclude(Object target, String exclude) {
 				Resource resource = getSelectedResource();
 				resource.addExclude(exclude);
-				getPage().getEditor().setModelDirty(true);
+				getPage().getPomEditor().setModelDirty(true);
 			}
 			public List getExcludes(Object source) {
 				Resource resource = getSelectedResource();

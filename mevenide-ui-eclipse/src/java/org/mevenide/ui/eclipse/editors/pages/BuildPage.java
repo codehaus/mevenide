@@ -25,6 +25,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.editors.MevenidePomEditor;
 
@@ -37,43 +38,48 @@ import org.mevenide.ui.eclipse.editors.MevenidePomEditor;
  */
 public class BuildPage extends AbstractPomEditorPage {
 
-	public static final String HEADING = Mevenide.getResourceString("BuildPage.heading");
+    private static final String ID = Mevenide.getResourceString("BuildPage.id");
+    private static final String TAB = Mevenide.getResourceString("BuildPage.tab.label");
+    private static final String HEADING = Mevenide.getResourceString("BuildPage.heading");
     
 	private BuildDirectoriesSection directoriesSection;
 	private ResourcesSection resourcesSection;
 
 	public BuildPage(MevenidePomEditor editor) {
-        super(HEADING, editor);
+        super(editor, ID, TAB, HEADING);
     }
 
-	protected void initializePage(Composite parent) {
+    /**
+     * @see org.mevenide.ui.eclipse.editors.pages.AbstractPomEditorPage#createPageContent(org.eclipse.swt.widgets.Composite)
+     */
+    protected void createPageContent(Composite parent) {
 		GridLayout layout = new GridLayout();
 		layout.numColumns = 2;
 		layout.marginWidth = 10;
 		layout.horizontalSpacing = 15;
 		parent.setLayout(layout);
 
-		PageWidgetFactory factory = getFactory();
+		FormToolkit factory = getEditor().getToolkit();
 
-		directoriesSection = new BuildDirectoriesSection(this);
-		Control control = directoriesSection.createControl(parent, factory);
+		directoriesSection = new BuildDirectoriesSection(this, parent, factory);
+		Control control = directoriesSection.getSection();
 		GridData gd = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING);
 		gd.horizontalSpan = 2;
 		control.setLayoutData(gd);
 		addSection(directoriesSection);
 
-		resourcesSection = new ResourcesSection(this, "BuildResourcesSection");
+		resourcesSection = new ResourcesSection(this, parent, factory, "BuildResourcesSection");
 		IResourceAdaptor adaptor = new IResourceAdaptor() {
 			public void setResources(Object target, List resources) {
 				Project pom = (Project) target;
 				getOrCreateBuild(pom).setResources(resources);
-				getEditor().setModelDirty(true);
+				getPomEditor().setModelDirty(true);
 			}
 		
 			public void addResource(Object target, Resource resource) {
 				Project pom = (Project) target;
 				getOrCreateBuild(pom).addResource(resource);
-				getEditor().setModelDirty(true);
+				getPomEditor().setModelDirty(true);
 			}
 		
 			public List getResources(Object source) {
@@ -92,7 +98,7 @@ public class BuildPage extends AbstractPomEditorPage {
 		};
 		resourcesSection.setResourceAdaptor(adaptor);
 		
-		control = resourcesSection.createControl(parent, factory);
+		control = resourcesSection.getSection();
 		gd = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING);
 		gd.horizontalSpan = 2;
 		control.setLayoutData(gd);
