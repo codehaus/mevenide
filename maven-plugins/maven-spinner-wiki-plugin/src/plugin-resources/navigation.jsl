@@ -1,0 +1,52 @@
+	<j:jelly xmlns:j="jelly:core" xmlns:jsl="jelly:jsl" xmlns:x="jelly:xml">
+        <jsl:stylesheet var="spinnerWikiNavigationShhet" select="$navFile">
+            <jsl:template match="project" trim="false">
+                <x:element name="project">
+                    <jsl:applyTemplates select="body"/>
+                </x:element>
+            </jsl:template>
+            
+            <jsl:template match="body">
+                <x:element name="body">
+                    <jsl:applyTemplates select="$navFile/project/body/title"/>
+                    <jsl:applyTemplates select="$navFile/project/body/links"/>
+                    <jsl:applyTemplates select="$navFile/project/body/menu"/>
+                </x:element>
+            </jsl:template>
+            
+            <jsl:template match="title">
+                <x:copyOf select="."/>
+            </jsl:template>
+            
+            <jsl:template match="links">
+                <x:copyOf select="."/>
+            </jsl:template>
+                        
+            <jsl:template match="menu">
+                <x:set var="menuName" select="string(./@name)"/>
+                <x:element name="menu">
+                    <x:attribute name="name">${menuName}</x:attribute>
+                    <jsl:applyTemplates select="item"/>
+                </x:element>
+            </jsl:template>
+            
+            <jsl:template match="item">
+                
+                <x:set var="oldItemLink" select="string(./@href)"/>
+                <x:set var="oldName" select="string(./@name)"/>
+                <x:element name="item">
+                    <x:attribute name="name">${oldName}</x:attribute>
+                    <j:choose>
+                        <j:when test="${!oldItemLink.startsWith('http') and !oldItemLink.startsWith('/')}">
+                            <x:attribute name="href">${maven.spinner.wiki.relativePath}/${oldItemLink}</x:attribute>
+                        </j:when>
+                        <j:otherwise>
+                            <x:attribute name="href">${oldItemLink}</x:attribute>
+                        </j:otherwise>
+                    </j:choose>
+                    <jsl:applyTemplates select="item"/>
+                </x:element>
+                
+            </jsl:template>
+        </jsl:stylesheet>
+    </j:jelly>
