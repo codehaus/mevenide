@@ -144,7 +144,7 @@ public class MavenLaunchShortcut implements ILaunchShortcut {
 			}
 			catch (Exception e) {
 				// @todo Auto-generated catch block
-				e.printStackTrace();
+				//e.printStackTrace();
 			}
 			
 			

@@ -77,9 +77,12 @@ public class SourceDirectoryUtil {
 		}
 		if ( ProjectConstants.MAVEN_TEST_DIRECTORY.equals(sourceType) ) {
 			project.getBuild().setUnitTestSourceDirectory(path);
-			UnitTest unitTest = new UnitTest();
-			unitTest.addInclude("**/*Test.java");
-			project.getBuild().setUnitTest(unitTest);
+			UnitTest unitTest = project.getBuild().getUnitTest();
+			if ( unitTest == null || unitTest.getIncludes() == null || unitTest.getIncludes().size() == 0) {
+				unitTest = new UnitTest();
+				unitTest.addInclude("**/*Test.java");
+				project.getBuild().setUnitTest(unitTest);
+			}
 		}
 		if ( ProjectConstants.MAVEN_INTEGRATION_TEST_DIRECTORY.equals(sourceType) ) {
 			project.getBuild().setIntegrationUnitTestSourceDirectory(path);

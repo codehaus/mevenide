@@ -185,6 +185,9 @@ public class ProjectWriter {
 		write(project, pom);
 		
 		File propertiesFile = new File(pom.getParent(), "project.properties");
+		if ( !propertiesFile.exists() ) {
+			propertiesFile.createNewFile();
+		}
 		unsetOverriding(propertiesFile);
 		
 		//jaroverriding
@@ -290,7 +293,7 @@ public class ProjectWriter {
 			
 			project.getBuild().setSourceDirectory(null);
 			
-//			project.getBuild().setResources(new ArrayList());
+			project.getBuild().setResources(new ArrayList());
 //			if ( project.getBuild().getUnitTest() != null ) {
 //				project.getBuild().getUnitTest().setResources(new ArrayList());
 //			}

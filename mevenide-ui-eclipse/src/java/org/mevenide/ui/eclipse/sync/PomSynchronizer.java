@@ -54,10 +54,13 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.maven.project.Dependency;
+import org.apache.maven.project.Project;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.preference.PreferenceStore;
 import org.mevenide.ProjectConstants;
+import org.mevenide.project.dependency.DependencyUtil;
 import org.mevenide.project.io.ProjectReader;
 import org.mevenide.project.io.ProjectWriter;
 import org.mevenide.sync.AbstractPomSynchronizer;
@@ -192,7 +195,48 @@ public class PomSynchronizer extends AbstractPomSynchronizer implements ISynchro
 		
 		//update parent pom if necessary ?
 		String resolvedExtend = MevenideUtil.resolve(ProjectReader.getReader().read(pomFile), store.getString("pom." + sourceGroup.getProjectName() + ".parent"));
-		
+		if ( !new File(resolvedExtend).exists() ) {
+			resolvedExtend = new File(new File(project.getFile("project.xml").getLocation().toOSString()).getParentFile(), resolvedExtend).getAbsolutePath();
+		}			
+
+		if ( new File(resolvedExtend).exists() ) {
+			List inheritedDependencies = new ArrayList();
+			List inheritedDependencyWrappers = dependencyGoup.getInheritedDependencyWrappers();
+			for (int i = 0; i < inheritedDependencyWrappers.size(); i++) {
+				DependencyWrapper wrapper = (DependencyWrapper) inheritedDependencyWrappers.get(i); 
+            	inheritedDependencies.add(wrapper.getDependency());   
+            }
+			if ( inheritedDependencies.size() > 0 ) {
+				Project parentProject = ProjectReader.getReader().read(new File(resolvedExtend));
+				List parentDependencies = parentProject.getDependencies();
+				for (int i = 0; i < parentDependencies.size(); i++) {
+                    for (int j = 0; j < inheritedDependencies.size(); j++) {
+						if ( !DependencyUtil.areEquals((Dependency) inheritedDependencies.get(j), (Dependency) parentDependencies.get(i)) ) {
+	                        inheritedDependencies.add(parentDependencies.get(i));
+						}
+                    }
+                }
+				ProjectWriter.getWriter().setDependencies(inheritedDependencies, new File(resolvedExtend));
+			}
+	
+			List inheritedSourceDirectories = sourceGroup.getInheritedSourceDirectories();
+			for (int i = 0; i < inheritedSourceDirectories.size(); i++) {
+		        SourceDirectory directory = (SourceDirectory) inheritedSourceDirectories.get(i);
+				if ( directory.isSource() ) {
+					ProjectWriter.getWriter().addSource(directory.getDirectoryPath(), new File(resolvedExtend), directory.getDirectoryType());
+				}
+				if ( directory.getDirectoryType().equals(ProjectConstants.MAVEN_RESOURCE ) ) {
+					ProjectWriter.getWriter().addResource(directory.getDirectoryPath(), new File(resolvedExtend));
+				}
+				if ( directory.getDirectoryType().equals(ProjectConstants.MAVEN_TEST_RESOURCE ) ) {
+					ProjectWriter.getWriter().addUnitTestResource(directory.getDirectoryPath(), new File(resolvedExtend));
+				}   
+            }
+			
+
+			//donot refresh parent pom since we're not sure if it is present in workspace
+			
+		}
 	}
 	
 }
