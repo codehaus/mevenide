@@ -77,10 +77,13 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.PlatformUI;
@@ -102,11 +105,11 @@ public class GoalsPickerDialog  extends Dialog {
 	
 	private CheckboxTreeViewer goalsViewer;
 
-	private List checkedItems = new ArrayList();
-
 	/** dummy implementation of a href-like behavior */ 
 	private StyledText pluginHomeURLText;
 	
+	private List checkedItems = new ArrayList();
+
 	private List visitedUrls = new ArrayList();
 	private List notFoundUrls = new ArrayList();
 	
@@ -118,6 +121,8 @@ public class GoalsPickerDialog  extends Dialog {
 	private boolean shouldTestUrls = false;
 
     private GoalsProvider goalsProvider;
+
+	private Text goalsOrderText; 
 
     public StyledText getTextWidget() {
         return pluginHomeURLText;
@@ -145,7 +150,6 @@ public class GoalsPickerDialog  extends Dialog {
 
             goalsViewer = getViewer(composite);
             
-           
             GridData textGridData = new GridData(GridData.FILL_BOTH);
 			gridData.grabExcessHorizontalSpace = true;
 			gridData.grabExcessVerticalSpace = true;
@@ -188,7 +192,11 @@ public class GoalsPickerDialog  extends Dialog {
 			
 			configureViewer();
 			
-			goalsViewer.setInput(Element.NULL_ROOT);
+			setInput(Element.NULL_ROOT);
+			
+			new Label(composite, SWT.SEPARATOR | SWT.HORIZONTAL).setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+
+			createGoalsOrderingComposite(composite);
 			
             return composite;
             
@@ -200,31 +208,101 @@ public class GoalsPickerDialog  extends Dialog {
         }
     }
     
+    private void setInput(Object obj) {
+		goalsViewer.setInput(Element.NULL_ROOT);
+		goalsViewer.setGrayed(goalsProvider.getChildren(Element.NULL_ROOT), true);
+    }
     
-	private void updateCheckedItems(CheckStateChangedEvent e) {
+	private void createGoalsOrderingComposite(Composite parent) {
+        Composite composite = new Composite(parent, SWT.NONE);
+        GridLayout orderLayout = new GridLayout();
+        orderLayout.numColumns = 2;
+        composite.setLayout(orderLayout);
+
+        GridData orderGridData = new GridData(GridData.FILL_BOTH);
+        orderGridData.grabExcessVerticalSpace = true;
+        orderGridData.grabExcessHorizontalSpace = true;
+        composite.setLayoutData(orderGridData);
+
+        goalsOrderText = 
+			new Text(
+				composite, 
+				SWT.READ_ONLY | SWT.BORDER | SWT.WRAP | SWT.MULTI
+			);
+        GridData orderTextGridData = new GridData(GridData.FILL_BOTH);
+        orderTextGridData.grabExcessVerticalSpace = true;
+        orderTextGridData.grabExcessHorizontalSpace = true;
+		orderTextGridData.verticalSpan = 2;
+		goalsOrderText.setLayoutData(orderTextGridData);
+		
+        Button goalsOrderButton = new Button(composite, SWT.PUSH);
+		goalsOrderButton.setText("Order...");
+       
+        goalsOrderButton.addSelectionListener(
+    		new SelectionAdapter() {
+    		}
+        );
+    }
+
+    private void updateCheckedItems(CheckStateChangedEvent e) {
 		  
 		boolean isSelectionChecked = ((CheckboxTreeViewer) e.getSource()).getChecked(e.getElement());
-		if ( isSelectionChecked ) {
-			if ( e.getElement() instanceof Goal ) {
-				checkedItems.add(e.getElement());
-			}
-			else {
-				Plugin plugin = (Plugin) e.getElement();
-				String[] goals = goalsProvider.getGoalsGrabber().getGoals(plugin.getName());
-				if ( goals != null && goals.length > 0 ) {
-					if ( !Arrays.asList(goals).contains("(default)") ) {
-						goalsViewer.setChecked(e.getElement(), false);
-					}
-					else {
-						checkedItems.add(e.getElement());
-					}
-				}	
-			}
+	
+		if ( e.getElement() instanceof Goal ) {
+			Goal goal = (Goal) e.getElement();
+			updateCheckedGoal(isSelectionChecked, goal);
 		}
 		else {
-			checkedItems.remove(e.getElement());
+			Plugin plugin = (Plugin) e.getElement();
+			//it is way too confusing when plugins are checkable. indeed when 
+			//theres a default goal, both the default and the plugin should be 
+			//checkable, thus we got the goal multiple times. I think its best
+ 			//to just disable plugins.
+  
+			//updateCheckedPlugin(isSelectionChecked, plugin);
+			
+			//prevent user to check a plugin	
+			goalsViewer.setChecked(plugin, false);
 		}
+		
+		String newOrder = "";
+		for (int i = 0; i < checkedItems.size(); i++) {
+            newOrder += " " + checkedItems.get(i); 
+        }
+		goalsOrderText.setText(newOrder);
 	}
+
+	private void updateCheckedGoal(boolean isSelectionChecked, Goal goal) {
+        String fullyQualifiedGoalName = goal.getPlugin().getName();
+        if ( !goal.getName().equals("(default)") ) {
+        	fullyQualifiedGoalName += ":" + goal.getName();
+        }
+
+        if ( isSelectionChecked ) {
+        	checkedItems.add(fullyQualifiedGoalName);
+        }
+        else {
+        	checkedItems.remove(fullyQualifiedGoalName);
+        }
+    }
+
+    private void updateCheckedPlugin(boolean isSelectionChecked, Plugin plugin) {
+        String pluginName = plugin.getName();
+        String[] goals = goalsProvider.getGoalsGrabber().getGoals(pluginName);
+        if ( goals != null && goals.length > 0 ) {
+        	if ( !Arrays.asList(goals).contains("(default)") ) {
+        		goalsViewer.setChecked(pluginName, false);
+        	}
+        	else {
+        		if ( isSelectionChecked ) {
+        			checkedItems.add(pluginName);
+        		}
+        		else {
+        			checkedItems.remove(pluginName);
+        		}
+        	}
+        }
+    }
 
     private void updateStyledTextWidgetHyperlink(SelectionEvent e) {
 		TreeItem item = (TreeItem) e.item;
@@ -355,10 +433,7 @@ public class GoalsPickerDialog  extends Dialog {
 	public int open() {
  	   return super.open();
 	}	
-    
-    public List getCheckedItems() {
-        return checkedItems;
-    }
+
 
 }
 

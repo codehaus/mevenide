@@ -48,9 +48,12 @@
  */
 package org.mevenide.ui.eclipse.goals.viewer;
 
+import org.eclipse.jface.viewers.IColorProvider;
 import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.mevenide.ui.eclipse.Mevenide;
+import org.mevenide.ui.eclipse.MevenideColors;
 import org.mevenide.ui.eclipse.goals.model.Goal;
 import org.mevenide.ui.eclipse.goals.model.Plugin;
 
@@ -62,7 +65,7 @@ import org.mevenide.ui.eclipse.goals.model.Plugin;
  * @version $Id: GoalsLabelProvider.java,v 1.1 7 sept. 2003 Exp gdodinet 
  * 
  */
-public class GoalsLabelProvider extends LabelProvider {
+public class GoalsLabelProvider extends LabelProvider implements IColorProvider {
 	
     public Image getImage(Object arg0) {
     	if ( arg0 instanceof Plugin )
@@ -70,6 +73,18 @@ public class GoalsLabelProvider extends LabelProvider {
         if ( arg0 instanceof Goal )
 			return Mevenide.getImageDescriptor("goal-16.gif").createImage();
         return null;
+    }
+    
+    public Color getForeground(Object arg0) {
+    	if ( arg0 instanceof Plugin ) {
+    		//make explicit that plugins are not checkable
+    		return MevenideColors.GREY;
+    	}
+        return MevenideColors.BLACK;
+    }
+    
+    public Color getBackground(Object arg0) {
+        return MevenideColors.WHITE;
     }
 
 }
