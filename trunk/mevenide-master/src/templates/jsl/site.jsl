@@ -74,7 +74,7 @@
           <table border="0" cellspacing="0" cellpadding="8" width="100%">
             <tr>
               <!-- project logo and link -->
-              <td align="left" >
+              <td align="left" width="150">
                
                   <j:set var="logo" value="${pom.logo}"/>
                   <j:if test="${logo != null and logo != ''}">
@@ -89,14 +89,15 @@
                     </a>
                     
                   </j:if>
-                  
-                  <div style="color: #777777; margin-left: 20px; font-size: 8pt;">
-                   <p valign="bottom"><img src="images/none.png"/> .. Integrating Maven into IDEs ..</p>
-               	  </div>
               </td>
               
+              <td align="center">
+                  <div style="color: #777777; font-size: 12pt;">
+                   <p valign="bottom"><img src="images/none.png"/> ${mevenide.title} </p>
+               	  </div>
+              </td>
               <!-- organization logo -->
-              <td align="right">
+              <td align="right" width="150">
                 <j:set var="logo" value="${pom.organization.logo}"/>
                 <j:if test="${!empty(logo)}">
                   <!-- set url to org or project url -->
