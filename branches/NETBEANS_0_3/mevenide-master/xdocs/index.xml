@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<document>
+
+  <properties>
+    <author email="rhill@wanadoo.fr">Gilles Dodinet</author>
+    <title>Mevenide - Integrating Maven into IDEs</title>
+  </properties>
+<body>
+
+
+  <section name="Overview">
+  	<div id="documentContent">
+  	<p>
+  		<a href="http://maven.apache.org" class="documentLink">Maven</a> aims to make the developer's life easier by providing a well defined  project  structure, 
+  		well defined development processes to follow, and a coherent body of documentation that keeps 
+  		developers and clients apprised of what's happening with your project. 
+  	</p>
+  	<p>
+  		Maven alleviates a lot of what most developers consider drudgery and lets them get 
+  		on with the task at hand. To attain that goal Maven is centred around the notion of Project Object Model (POM), 
+  		an XML file describing, among other things, the layout of the project. On the other hand every single 
+  		IDE has its own way of representing the settings needed to build a project. Thus there is a discrepancy that makes both sides 
+  		harder to maintain and kept in synch.
+  	</p>
+    <p>
+    	Mevenide aims to integrate Maven into standard IDEs. There are a number of areas that 
+    	can be worked on such as POM editing, IDE and POM synchronization, launching Maven from within the IDE, 
+    	providing wizards for mavenized projects, managing Maven runtime properties, etc. Right now Mevenide provides support for 
+    	<a href="http://eclipse.org/">Eclipse</a>, <a href="http://netbeans.org/">NetBeans</a> and <a href="http://www.borland.com/jbuilder">JBuilder</a>. Support for IntelliJ is also planned.
+    	you might refer to those documents for a list of implemented features : 
+            <ul>
+    	      <li><a href="mevenide-ui-eclipse/features.html" class="documentLink">Eclipse plugin</a></li>
+              <li><a href="mevenide-netbeans-project/features.html" class="documentLink">NetBeans plugin</a></li>
+              <li><a href="mevenide-ui-jbuilder/features.html" class="documentLink">JBuilder plugin</a></li>
+            </ul>
+    </p>
+    </div>
+    </section>
+    </body>
+</document>

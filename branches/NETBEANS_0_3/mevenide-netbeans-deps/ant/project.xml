@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project>
+  <pomVersion>3</pomVersion>
+  <id>ant-nb-module</id>
+  <artifactId>ant-nb-module</artifactId>
+  <groupId>mevenide</groupId>
+  <currentVersion>1.5.3-1</currentVersion>
+  <package>org.apache.ant</package>
+  <name>apache ant library for Mevenide.</name>
+  <shortDescription>Library for project mevenide</shortDescription>
+  <description>Library for project mevenide</description>
+  <url>http://mevenide.codehaus.org</url>
+  <dependencies>
+    <dependency>
+      <id>ant</id>
+      <version>1.5.3-1</version>
+      <url>http://ant.apache.org/</url>
+      <properties>
+            <!-- don't include with netbeans, ant ships with netbeans already.. -->
+            <netbeans.module.ext>true</netbeans.module.ext>
+      </properties>
+    </dependency>
+    <dependency>
+      <groupId>ant</groupId>
+      <artifactId>ant-optional</artifactId>
+      <version>1.5.3-1</version>
+      <url>http://jakarta.apache.org/ant/</url>
+      <properties>
+            <!-- don't include with netbeans, ant ships with netbeans already.. -->
+            <netbeans.module.ext>true</netbeans.module.ext>
+      </properties>
+    </dependency>
+  </dependencies>
+  <build>
+    <resources>
+      <resource>
+        <directory>src/conf</directory>
+        <includes>
+          <include>**</include>
+        </includes>
+        <excludes>
+          <exclude>**/.nbattrs</exclude>
+          <exclude>manifest.mf</exclude>
+        </excludes>
+      </resource>
+    </resources>
+  </build>  
+</project>
