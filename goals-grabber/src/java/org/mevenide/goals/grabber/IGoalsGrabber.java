@@ -53,14 +53,14 @@ public interface IGoalsGrabber {
 	
 	void refresh() throws Exception;
 	
-        String ORIGIN_PROJECT = "Project";
-        String ORIGIN_PLUGIN = "Plugin";
-        
-        /**
-         * will return where the goal is defined. 
-         * @return ORIGIN_PLUGIN or ORIGIN_PROJECT
-         */
-        String getOrigin(String fullyQualifiedGoalName);
-        
-        String getName();
+    String ORIGIN_PROJECT = "Project";
+    String ORIGIN_PLUGIN = "Plugin";
+    
+    /**
+     * will return where the goal is defined. 
+     * @return ORIGIN_PLUGIN or ORIGIN_PROJECT
+     */
+    String getOrigin(String fullyQualifiedGoalName);
+    
+    String getName();
 }
