@@ -46,7 +46,7 @@
  * SUCH DAMAGE.
  * ====================================================================
  */
-package org.mevenide.ui.eclipse.editors;
+package org.mevenide.ui.eclipse.editors.properties;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
