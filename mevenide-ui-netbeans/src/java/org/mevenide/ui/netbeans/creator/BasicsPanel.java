@@ -215,6 +215,7 @@ public class BasicsPanel extends JPanel implements ProjectPanel
             listener = new ValidateListener();
             txtArtifactID.getDocument().addDocumentListener(listener);
             txtGroupID.getDocument().addDocumentListener(listener);
+            txtPackage.getDocument().addDocumentListener(listener);
         }
     }
     
@@ -234,9 +235,21 @@ public class BasicsPanel extends JPanel implements ProjectPanel
     private int doValidateCheck()
     {
         if (Math.min(txtArtifactID.getText().trim().length(),
-        txtGroupID.getText().trim().length()) == 0)
+                     txtGroupID.getText().trim().length()) == 0)
         {
             return 1;
+        }
+        if (txtPackage.getText().trim().length() > 0)
+        {
+            boolean matches = txtPackage.getText().matches("[a-zA-Z0-9\\.]*"); //NOI18N
+            if (!matches) {
+                return 2;
+            } else {
+                if (txtPackage.getText().startsWith(".") || txtPackage.getText().endsWith("."))
+                {
+                    return 2;
+                }
+            }
         }
         return  0;
     }
@@ -253,6 +266,10 @@ public class BasicsPanel extends JPanel implements ProjectPanel
         if (retCode == 1)
         {
             message = NbBundle.getMessage(BasicsPanel.class, "BasicsPanel.error1.text");
+        }
+        if (retCode == 2)
+        {
+            message = "Badly formed package name";
         }
         return message;
     }
