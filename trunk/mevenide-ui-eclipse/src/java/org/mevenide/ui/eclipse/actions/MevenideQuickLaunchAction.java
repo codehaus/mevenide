@@ -85,7 +85,9 @@ public class MevenideQuickLaunchAction implements IWorkbenchWindowPulldownDelega
 	 */
 	public void run(IAction action) {
 		LaunchedAction lastLaunched = LaunchHistory.getHistory().getLastlaunched();
-		lastLaunched.run();
+		if ( lastLaunched != null ) {
+			lastLaunched.run();
+		}
 	}
 	
 	public void dispose() {
