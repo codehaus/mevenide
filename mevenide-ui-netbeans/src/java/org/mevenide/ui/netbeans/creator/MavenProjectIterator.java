@@ -49,6 +49,8 @@
 
 package org.mevenide.ui.netbeans.creator;
 
+import java.io.File;
+
 import org.apache.maven.project.Build;
 
 import org.mevenide.project.io.DefaultProjectMarshaller;
@@ -74,9 +76,11 @@ import javax.swing.event.ChangeListener;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Project;
+import org.mevenide.project.io.CarefulProjectMarshaller;
 import org.mevenide.ui.netbeans.MavenProjectCookie;
 import org.openide.WizardDescriptor.Panel;
 import org.openide.cookies.OpenCookie;
+import org.openide.filesystems.FileLock;
 import org.openide.filesystems.FileUtil;
 
 import org.openide.loaders.DataFolder;
@@ -123,7 +127,8 @@ public class MavenProjectIterator implements TemplateWizard.Iterator
             new BasicsWizardStep(),
             new BuildWizardStep(),
             new DescWizardStep(), 
-            new OrgWizardStep()
+            new OrgWizardStep(),
+            new ListsWizardStep()
             // Or you can supply your own replacement or additions.
             /* --> EDIT ME <--
             new MyPanel1 (),
@@ -139,6 +144,7 @@ public class MavenProjectIterator implements TemplateWizard.Iterator
         return new String[]
         {
             null, // for targetChooser(); take name from panel
+            null,
             null,
             null,
             null
@@ -161,17 +167,26 @@ public class MavenProjectIterator implements TemplateWizard.Iterator
         Project proj = (Project)wiz.getProperty(PROP_PROJECT);
         if (cook != null)
         {
+            FileLock lock = null;
             try {
-                OutputStream stream = projObj.getPrimaryFile().getOutputStream(projObj.getPrimaryFile().lock());
+                lock = projObj.getPrimaryFile().lock();
+                OutputStream stream = projObj.getPrimaryFile().getOutputStream(lock);
                 Writer writer = new OutputStreamWriter(stream);
-                DefaultProjectMarshaller marshaller = new DefaultProjectMarshaller();
-                marshaller.marshall(writer, proj);
+                CarefulProjectMarshaller marshaller = new CarefulProjectMarshaller();
+                InputStream original = template.getPrimaryFile().getInputStream();
+                marshaller.marshall(writer, proj, original);
             } catch (IOException exc)
             {
                 logger.error("cannot write project", exc);
             } catch (Exception e2)
             {
                 logger.error("cannot write project2", e2);
+            } finally
+            {
+                if (lock != null) 
+                {
+                    lock.releaseLock();
+                }
             }
         }
         logger.debug("dataObject=" + projObj.getClass());
