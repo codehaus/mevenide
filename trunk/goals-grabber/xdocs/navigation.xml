@@ -5,7 +5,7 @@
   <body>
     <links>
       <item href="http://maven.apache.org/" name="Maven"/>
-      <item href="${pom.siteDirectory}/../index.hml" name="Mevenide"/>
+      <item href="../mevenide-master/index.hml" name="Mevenide"/>
     </links>
     <menu name="Overview">
       <item href="/goals.html" name="Goals">
