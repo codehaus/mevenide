@@ -17,7 +17,8 @@
 package org.mevenide.tags.netbeans;
 
 import org.apache.commons.jelly.TagLibrary;
-import org.mevenide.tags.*;
+import org.mevenide.tags.AdaptNbVersionTag;
+import org.mevenide.tags.FindLicenseTag;
 
 /**
  * 

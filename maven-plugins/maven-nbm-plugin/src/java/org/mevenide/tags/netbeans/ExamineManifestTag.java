@@ -30,7 +30,7 @@ import org.apache.commons.jelly.XMLOutput;
 import org.mevenide.tags.AbstractNbMevenideTag;
 
 /**
- *
+ * Tag examines the manifest of a jar file and retrieves netbeans specific information.
  * @author <a href="mailto:ca206216@tiscali.cz">Milos Kleint</a>
  *
  */
@@ -172,15 +172,15 @@ public class ExamineManifestTag extends AbstractNbMevenideTag {
      * @return Value of property netbeansModule.
      */
     public String getIsNetbeansModuleVar() {
-        return this.isNetbeansModuleVar;
+        return isNetbeansModuleVar;
     }    
     
     /**
-     * Setter for property netbeansModule.
-     * @param netbeansModule New value of property netbeansModule.
+     * Variable which will hold information wheather the examined manifest is 
+     * Netbeans-enhanced or not.
      */
-    public void setIsNetbeansModuleVar(String isNetbeansModuleVar) {
-        this.isNetbeansModuleVar = isNetbeansModuleVar;
+    public void setIsNetbeansModuleVar(String isNetbeansModuleVariable) {
+        isNetbeansModuleVar = isNetbeansModuleVariable;
     }    
     
     /**
@@ -188,15 +188,15 @@ public class ExamineManifestTag extends AbstractNbMevenideTag {
      * @return Value of property localized.
      */
     public String getIsLocalizedVar() {
-        return this.isLocalizedVar;
+        return isLocalizedVar;
     }
     
     /**
-     * Setter for property localized.
-     * @param localized New value of property localized.
+     * Variable holding information about wheather the Netbeans manifest is
+     * localized or not. (Some UI related entries can be defined in properties file.)
      */
-    public void setIsLocalizedVar(String isLocalizedVar) {
-        this.isLocalizedVar = isLocalizedVar;
+    public void setIsLocalizedVar(String isLocalizedVariable) {
+        isLocalizedVar = isLocalizedVariable;
     }
     
     /**
@@ -204,47 +204,48 @@ public class ExamineManifestTag extends AbstractNbMevenideTag {
      * @return Value of property jarFile.
      */
     public java.io.File getJarFile() {
-        return this.jarFile;
+        return jarFile;
     }
-    
+
     /**
-     * Setter for property jarFile.
-     * @param jarFile New value of property jarFile.
+     * The jar file to examine. It is exclusing with manifestFile.
      */
-    public void setJarFile(java.io.File jarFile) {
-        this.jarFile = jarFile;
+    public void setJarFile(java.io.File jarFileLoc) {
+        jarFile = jarFileLoc;
     }
-    
+
     /**
      * Getter for property specVersionVar.
      * @return Value of property specVersionVar.
      */
     public String getSpecVersionVar() {
-        return this.specVersionVar;
+        return specVersionVar;
     }
-    
+
     /**
-     * Setter for property specVersionVar.
-     * @param specVersionVar New value of property specVersionVar.
+     * Variable holds the found specification version, either from 
+     * OpenIDE-Module-Specification-Version for nb modules or from
+     * Specification-Version attribute for other jars.
      */
-    public void setSpecVersionVar(String specVersionVar) {
-        this.specVersionVar = specVersionVar;
+    public void setSpecVersionVar(String specVersionVariable) {
+        specVersionVar = specVersionVariable;
     }
-    
+
     /**
      * Getter for property implVersionVar.
      * @return Value of property implVersionVar.
      */
     public String getImplVersionVar() {
-        return this.implVersionVar;
+        return implVersionVar;
     }
-    
+
     /**
-     * Setter for property implVersionVar.
-     * @param implVersionVar New value of property implVersionVar.
+     * Variable holds the found implementation version., either from
+     * OpenIDE-Module-Implementation-Version for nb modules or from
+     * Implementation-Version attribute for other jars.
      */
-    public void setImplVersionVar(String implVersionVar) {
-        this.implVersionVar = implVersionVar;
+    public void setImplVersionVar(String implVersionVariable) {
+        implVersionVar = implVersionVariable;
     }
     
     /**
@@ -252,15 +253,16 @@ public class ExamineManifestTag extends AbstractNbMevenideTag {
      * @return Value of property dependVar.
      */
     public String getDependVar() {
-        return this.dependVar;
+        return dependVar;
     }
     
     /**
-     * Setter for property dependVar.
+     * For Netbeans modules, this variable holds the module's dependencies 
+     * (OpenIDE-Module-Module-Dependencies).
      * @param dependVar New value of property dependVar.
      */
-    public void setDependVar(String dependVar) {
-        this.dependVar = dependVar;
+    public void setDependVar(String dependVariable) {
+        dependVar = dependVariable;
     }
     
     /**
@@ -268,15 +270,17 @@ public class ExamineManifestTag extends AbstractNbMevenideTag {
      * @return Value of property moduleVar.
      */
     public String getModuleVar() {
-        return this.moduleVar;
+        return moduleVar;
     }
     
     /**
-     * Setter for property moduleVar.
+     * Variable holds the Netbeans module value, for
+     * Netbeans enhanced manifest it's the OpenIDE-Module attribute value,
+     * for others, it's guessed.
      * @param moduleVar New value of property moduleVar.
      */
-    public void setModuleVar(String moduleVar) {
-        this.moduleVar = moduleVar;
+    public void setModuleVar(String moduleVariable) {
+        moduleVar = moduleVariable;
     }
     
     /**
@@ -284,15 +288,16 @@ public class ExamineManifestTag extends AbstractNbMevenideTag {
      * @return Value of property locBundleVar.
      */
     public String getLocBundleVar() {
-        return this.locBundleVar;
+        return locBundleVar;
     }
     
     /**
-     * Setter for property locBundleVar.
+     * Content of the OpenIDE-Module-Localizing-Bundle attribute, holds link
+     * to the bundle file with localized information for the module.
      * @param locBundleVar New value of property locBundleVar.
      */
-    public void setLocBundleVar(String locBundleVar) {
-        this.locBundleVar = locBundleVar;
+    public void setLocBundleVar(String localBundleVar) {
+        locBundleVar = localBundleVar;
     }
     
     /** Getter for property manifestFile.
@@ -301,16 +306,15 @@ public class ExamineManifestTag extends AbstractNbMevenideTag {
      */
     public File getManifestFile()
     {
-        return this.manifestFile;
+        return manifestFile;
     }    
     
-    /** Setter for property manifestFile.
-     * @param manifestFile New value of property manifestFile.
-     *
+    /** 
+     * Manifest file to be examined. It is exclusing with jarFile.
      */
-    public void setManifestFile(File manifestFile)
+    public void setManifestFile(File manifestFileLoc)
     {
-        this.manifestFile = manifestFile;
+        manifestFile = manifestFileLoc;
     }
     
 }
