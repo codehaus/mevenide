@@ -33,11 +33,15 @@ public class RunnerUtils {
     
     public static String getToolsJar() {
         ILocationFinder config = ConfigUtils.getDefaultLocationFinder();
-	    String toolsJar = config.getJavaHome() + File.separator + "lib" + File.separator + "tools.jar";
+	    return getToolsJar(config.getJavaHome());
+    }
+
+    public static String getToolsJar(String javaHome) {
+        String toolsJar = javaHome + File.separator + "lib" + File.separator + "tools.jar";
 	    if ( !new File(toolsJar).exists() ) {
 	    	//mac os x..  
 	        //convenient default for MacOSX 10.3.4 where classes.jar is JAVA_HOME/../Classes/classes.jar 
-	    	toolsJar = new File(config.getJavaHome()).getParent();
+	    	toolsJar = new File(javaHome).getParent();
 	    	String classesJarPart = "Classes/classes.jar";
 	    	if ( toolsJar.endsWith("/") ) {
 	    		toolsJar += classesJarPart;
