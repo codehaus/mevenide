@@ -31,6 +31,8 @@ import javax.swing.tree.TreeSelectionModel;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.mevenide.goals.grabber.IGoalsGrabber;
+import org.mevenide.netbeans.project.MavenProject;
+import org.mevenide.netbeans.project.MavenSettings;
 import org.mevenide.netbeans.project.goals.GoalsGrabberProvider;
 import org.mevenide.netbeans.project.goals.GoalNameCookie;
 import org.mevenide.netbeans.project.goals.GoalsRootNode;
@@ -45,22 +47,24 @@ import org.openide.util.RequestProcessor;
 
 /**
  *
- * @author  Milos Kleint (ca206216@tiscali.cz)
+ * @author  Milos Kleint (mkleint@codehaus.org)
  */
-public class CustomGoalsPanel extends JPanel {
-    private static final Log logger = LogFactory.getLog(CustomGoalsPanel.class);
+public class RunGoalsPanel extends JPanel {
+    private static final Log logger = LogFactory.getLog(RunGoalsPanel.class);
     /**
      * Action name, fired when the text in the goals textfield changes.
      */
     public static final String ACTION_GOALS_CHANGED = "GoalsChanged"; //NOI18N
     
     private GoalsGrabberProvider provider;
+    private MavenProject project;
     private List actionListeners = new ArrayList();
     
     /** Creates new form CustomGoalsPanel */
-    public CustomGoalsPanel(GoalsGrabberProvider goalsProvider) {
+    public RunGoalsPanel(MavenProject proj, GoalsGrabberProvider goalsProvider) {
         initComponents();
         provider = goalsProvider;
+        project = proj;
         tvGoals.setSelectionMode(TreeSelectionModel.DISCONTIGUOUS_TREE_SELECTION);
         tvGoals.setRootVisible(false);
         txtEnter.setText("");
@@ -104,6 +108,29 @@ public class CustomGoalsPanel extends JPanel {
         txtEnter.setSelectionEnd(goals.length());
     }
     
+    public boolean isOffline() {
+        return cbOffline.isSelected();
+    }
+    
+    public boolean isDebug() {
+        return cbDebugMessages.isSelected();
+    }
+    public boolean isExceptions() {
+        return cbExceptions.isSelected();
+    }
+    public boolean isNoBanner() {
+        return cbNoBanner.isSelected();
+    }
+    public boolean isNonverbose() {
+        return cbReduceOutput.isSelected();
+    }
+    public String getMavenHome() {
+        return txtMavenHome.getText();
+    }
+    public String getMavenLocalHome() {
+        return txtMavenLocalHome.getText();
+    }
+    
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -114,11 +141,24 @@ public class CustomGoalsPanel extends JPanel {
 
         lblEnter = new javax.swing.JLabel();
         txtEnter = new javax.swing.JTextField();
+        jTabbedPane1 = new javax.swing.JTabbedPane();
+        pnlBrowser = new javax.swing.JPanel();
         lblGoals = new javax.swing.JLabel();
         epGoals = new org.openide.explorer.ExplorerPanel();
         tvGoals = new org.openide.explorer.view.BeanTreeView();
         lblDescription = new javax.swing.JLabel();
         taDescription = new javax.swing.JTextArea();
+        pnlOptions = new javax.swing.JPanel();
+        cbOffline = new javax.swing.JCheckBox();
+        cbNoBanner = new javax.swing.JCheckBox();
+        cbReduceOutput = new javax.swing.JCheckBox();
+        cbDebugMessages = new javax.swing.JCheckBox();
+        cbExceptions = new javax.swing.JCheckBox();
+        lblMavenHome = new javax.swing.JLabel();
+        txtMavenHome = new javax.swing.JTextField();
+        lblMavenLocalHome = new javax.swing.JLabel();
+        txtMavenLocalHome = new javax.swing.JTextField();
+        jSeparator1 = new javax.swing.JSeparator();
 
         setLayout(new java.awt.GridBagLayout());
 
@@ -136,6 +176,10 @@ public class CustomGoalsPanel extends JPanel {
         gridBagConstraints.insets = new java.awt.Insets(0, 6, 0, 0);
         add(txtEnter, gridBagConstraints);
 
+        jTabbedPane1.setTabLayoutPolicy(javax.swing.JTabbedPane.SCROLL_TAB_LAYOUT);
+        jTabbedPane1.setTabPlacement(javax.swing.JTabbedPane.BOTTOM);
+        pnlBrowser.setLayout(new java.awt.GridBagLayout());
+
         lblGoals.setLabelFor(epGoals);
         lblGoals.setText("Available Goals:");
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -143,8 +187,8 @@ public class CustomGoalsPanel extends JPanel {
         gridBagConstraints.gridy = 1;
         gridBagConstraints.gridwidth = 2;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(6, 0, 0, 0);
-        add(lblGoals, gridBagConstraints);
+        gridBagConstraints.insets = new java.awt.Insets(6, 5, 0, 0);
+        pnlBrowser.add(lblGoals, gridBagConstraints);
 
         epGoals.setMinimumSize(new java.awt.Dimension(150, 100));
         tvGoals.setPreferredSize(new java.awt.Dimension(400, 323));
@@ -157,9 +201,9 @@ public class CustomGoalsPanel extends JPanel {
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         gridBagConstraints.weightx = 0.1;
-        gridBagConstraints.weighty = 0.1;
-        gridBagConstraints.insets = new java.awt.Insets(6, 0, 0, 0);
-        add(epGoals, gridBagConstraints);
+        gridBagConstraints.weighty = 0.5;
+        gridBagConstraints.insets = new java.awt.Insets(6, 5, 0, 6);
+        pnlBrowser.add(epGoals, gridBagConstraints);
 
         lblDescription.setText("Description:");
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -167,8 +211,8 @@ public class CustomGoalsPanel extends JPanel {
         gridBagConstraints.gridy = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(6, 0, 0, 0);
-        add(lblDescription, gridBagConstraints);
+        gridBagConstraints.insets = new java.awt.Insets(6, 5, 0, 0);
+        pnlBrowser.add(lblDescription, gridBagConstraints);
 
         taDescription.setEditable(false);
         taDescription.setLineWrap(true);
@@ -183,8 +227,114 @@ public class CustomGoalsPanel extends JPanel {
         gridBagConstraints.gridheight = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.weighty = 0.2;
+        gridBagConstraints.insets = new java.awt.Insets(6, 6, 6, 6);
+        pnlBrowser.add(taDescription, gridBagConstraints);
+
+        jTabbedPane1.addTab("Browser", pnlBrowser);
+
+        pnlOptions.setLayout(new java.awt.GridBagLayout());
+
+        cbOffline.setText("Build Offline");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
-        add(taDescription, gridBagConstraints);
+        pnlOptions.add(cbOffline, gridBagConstraints);
+
+        cbNoBanner.setText("Hide Maven Banner");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(0, 6, 0, 0);
+        pnlOptions.add(cbNoBanner, gridBagConstraints);
+
+        cbReduceOutput.setText("Reduce execution output");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(0, 6, 0, 0);
+        pnlOptions.add(cbReduceOutput, gridBagConstraints);
+
+        cbDebugMessages.setText("Show debug  messages");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 4;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(0, 6, 0, 0);
+        pnlOptions.add(cbDebugMessages, gridBagConstraints);
+
+        cbExceptions.setText("Print exception traces");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 5;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(0, 6, 0, 0);
+        pnlOptions.add(cbExceptions, gridBagConstraints);
+
+        lblMavenHome.setText("Maven Home :");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 7;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(0, 6, 6, 0);
+        pnlOptions.add(lblMavenHome, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 7;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.weightx = 0.1;
+        gridBagConstraints.insets = new java.awt.Insets(0, 6, 6, 6);
+        pnlOptions.add(txtMavenHome, gridBagConstraints);
+
+        lblMavenLocalHome.setText("Maven Local Home :");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 8;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(0, 6, 6, 0);
+        pnlOptions.add(lblMavenLocalHome, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 8;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.weightx = 0.1;
+        gridBagConstraints.insets = new java.awt.Insets(0, 6, 6, 6);
+        pnlOptions.add(txtMavenLocalHome, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 6;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(3, 0, 6, 0);
+        pnlOptions.add(jSeparator1, gridBagConstraints);
+
+        jTabbedPane1.addTab("Options", pnlOptions);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.weightx = 0.1;
+        gridBagConstraints.weighty = 0.1;
+        gridBagConstraints.insets = new java.awt.Insets(6, 0, 0, 0);
+        add(jTabbedPane1, gridBagConstraints);
 
     }//GEN-END:initComponents
     
@@ -218,6 +368,13 @@ public class CustomGoalsPanel extends JPanel {
             }
         });
         epGoals.getExplorerManager().addPropertyChangeListener(new PropListener());
+        cbOffline.setSelected(MavenSettings.getDefault().isOffline());
+        cbDebugMessages.setSelected(MavenSettings.getDefault().isDebug());
+        cbExceptions.setSelected(MavenSettings.getDefault().isExceptions());
+        cbNoBanner.setSelected(MavenSettings.getDefault().isNoBanner());
+        cbReduceOutput.setSelected(MavenSettings.getDefault().isNonverbose());
+        txtMavenHome.setText(project.getLocFinder().getMavenHome());
+        txtMavenLocalHome.setText(project.getLocFinder().getMavenLocalHome());
     }
     
     private Node createLoadingNode() {
@@ -240,13 +397,26 @@ public class CustomGoalsPanel extends JPanel {
     
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JCheckBox cbDebugMessages;
+    private javax.swing.JCheckBox cbExceptions;
+    private javax.swing.JCheckBox cbNoBanner;
+    private javax.swing.JCheckBox cbOffline;
+    private javax.swing.JCheckBox cbReduceOutput;
     private org.openide.explorer.ExplorerPanel epGoals;
+    private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JLabel lblDescription;
     private javax.swing.JLabel lblEnter;
     private javax.swing.JLabel lblGoals;
+    private javax.swing.JLabel lblMavenHome;
+    private javax.swing.JLabel lblMavenLocalHome;
+    private javax.swing.JPanel pnlBrowser;
+    private javax.swing.JPanel pnlOptions;
     private javax.swing.JTextArea taDescription;
     private org.openide.explorer.view.BeanTreeView tvGoals;
     private javax.swing.JTextField txtEnter;
+    private javax.swing.JTextField txtMavenHome;
+    private javax.swing.JTextField txtMavenLocalHome;
     // End of variables declaration//GEN-END:variables
     
     
@@ -309,7 +479,7 @@ public class CustomGoalsPanel extends JPanel {
         }
         
         private void generateActionEvent() {
-            ActionEvent newEvent = new ActionEvent(CustomGoalsPanel.this, ActionEvent.ACTION_PERFORMED, ACTION_GOALS_CHANGED);
+            ActionEvent newEvent = new ActionEvent(RunGoalsPanel.this, ActionEvent.ACTION_PERFORMED, ACTION_GOALS_CHANGED);
             fireActionEvent(newEvent);
         }
     }

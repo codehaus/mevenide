@@ -27,6 +27,8 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.mevenide.netbeans.project.exec.DefaultRunConfig;
+import org.mevenide.netbeans.project.exec.RunConfig;
 import org.mevenide.netbeans.project.output.AttachDebuggerOutputHook;
 import org.mevenide.netbeans.project.exec.MavenExecutor;
 import org.mevenide.netbeans.project.output.OutputProcessor;
@@ -191,28 +193,27 @@ public class ActionProviderImpl implements ActionProvider {
             OutputProcessor filter = new AttachDebuggerOutputHook(delay, host, port);
             Set procs = OutputProcessorFactory.getDefault().createDetaultProcessorsSet(project);
             procs.add(filter);
-            runGoal(goal, lookup, procs, null);
+            runGoal(goal, lookup, procs, null, new DefaultRunConfig());
         } catch (NumberFormatException exc) {
             logger.error("Cannot parse", exc);
         }
     }
-    
+
     public void runGoal(String goal, Lookup lookup) throws java.lang.IllegalArgumentException {
-        runGoal(goal, lookup, OutputProcessorFactory.getDefault().createDetaultProcessorsSet(project), null);
+        runGoal(goal, lookup, new DefaultRunConfig());
+    }
+    
+    public void runGoal(String goal, Lookup lookup, RunConfig config) throws java.lang.IllegalArgumentException {
+        runGoal(goal, lookup, OutputProcessorFactory.getDefault().createDetaultProcessorsSet(project), null, config);
     }
     
     private void runGoal(String goal, Lookup lookup, 
                          Set processors, 
-                         InputOutput io) throws java.lang.IllegalArgumentException {
+                         InputOutput io, RunConfig config) throws java.lang.IllegalArgumentException {
         // save all edited files.. maybe finetune for project's files only, however that would fail for multiprojects..
         LifecycleManager.getDefault().saveAll();                             
         // setup executor first..                     
-        MavenExecutor exec = new MavenExecutor(project, goal, processors);
-        exec.setNoBanner(MavenSettings.getDefault().isNoBanner());
-        exec.setOffline(MavenSettings.getDefault().isOffline());
-        exec.setDebug(MavenSettings.getDefault().isDebug());
-        exec.setExceptions(MavenSettings.getDefault().isExceptions());
-        exec.setNonverbose(MavenSettings.getDefault().isNonverbose());
+        MavenExecutor exec = new MavenExecutor(project, goal, processors, config);
         int meterLoc = project.getPropertyLocator().getPropertyLocation("maven.download.meter"); //NOI18N
         if (    meterLoc == IPropertyLocator.LOCATION_NOT_DEFINED 
             ||  meterLoc == IPropertyLocator.LOCATION_DEFAULTS) {
