@@ -31,6 +31,9 @@ import org.eclipse.core.runtime.IPluginDescriptor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.preference.PreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.MessageBox;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.mevenide.Environment;
 import org.mevenide.project.io.ProjectSkeleton;
@@ -249,6 +252,13 @@ public class MavenPlugin extends AbstractUIPlugin {
 			String skel = ProjectSkeleton.getSkeleton(project.getName());
 			pom.create(new ByteArrayInputStream(skel.getBytes()), false, null);
 		}
+	}
+
+	public static void popUp(String text, String message) {
+		MessageBox dialog = new MessageBox (PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), SWT.ICON_WARNING | SWT.OK);
+		dialog.setText (text);
+		dialog.setMessage (message);
+		dialog.open ();
 	}
     
 }

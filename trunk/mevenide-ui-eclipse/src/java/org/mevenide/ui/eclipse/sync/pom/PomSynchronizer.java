@@ -60,6 +60,9 @@ public class PomSynchronizer extends AbstractPomSynchronizer implements ISynchro
     /** helper instance */
     private IPathResolverDelegate pathResolver;
     
+    
+    private List unresolvedDependencies = new ArrayList();
+    
     /**
      * @todo GENERALIZE add a POM_FILE_NAME project property
 	 */
@@ -99,6 +102,14 @@ public class PomSynchronizer extends AbstractPomSynchronizer implements ISynchro
             	updatePom(cpEntries[i]);
 			}
 			removeUnusedDependencies(cpEntries);
+			if ( unresolvedDependencies.size() > 0 ) {
+				String message = "there may be non resolved dependencies : ";
+				for (int i = 0; i < unresolvedDependencies.size(); i++) {
+					message += "\n  o " + unresolvedDependencies.get(i);
+				}
+				 
+				MavenPlugin.popUp("Pom Synchronization Warning", message);
+			}
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -169,10 +180,15 @@ public class PomSynchronizer extends AbstractPomSynchronizer implements ISynchro
 	public void preSynchronization() {
 		try {
 			MavenPlugin.getPlugin().createPom();
+			unresolvedDependencies = new ArrayList();
 		}
 		catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public void addUnresolvedDependency(String entryPath) {
+		unresolvedDependencies.add(entryPath);
 	}
 	
     /**
