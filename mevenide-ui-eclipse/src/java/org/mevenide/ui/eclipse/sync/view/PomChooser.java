@@ -86,7 +86,7 @@ public class PomChooser {
 		int result = dialog.open();
 		
 		if ( result == Dialog.CANCEL ) {
-			return null;
+			return projects;
 		}
 		
 		List chosenPoms = dialog.getPoms();
