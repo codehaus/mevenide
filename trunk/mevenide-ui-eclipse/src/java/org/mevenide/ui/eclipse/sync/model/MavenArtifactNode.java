@@ -257,7 +257,7 @@ public class MavenArtifactNode extends ArtifactNode {
 	
 	public boolean equivalentEntry(IClasspathEntry entry) {
 	    //@todo manage CPE_VARIABLE
-	    if ( entry.getEntryKind() != IClasspathEntry.CPE_PROJECT && entry.getEntryKind() != IClasspathEntry.CPE_LIBRARY ) { 	
+	    if ( entry.getEntryKind() != IClasspathEntry.CPE_PROJECT && entry.getEntryKind() != IClasspathEntry.CPE_LIBRARY && entry.getEntryKind() != IClasspathEntry.CPE_VARIABLE ) { 	
 		    return false;
 		}
 	    
@@ -277,7 +277,8 @@ public class MavenArtifactNode extends ArtifactNode {
 	    	if ( entry.getEntryKind() == IClasspathEntry.CPE_PROJECT ) {
 	            artifactEntry = JavaProjectUtils.createArtifactFromProjectEntry(project, entry);
 	        }
-	        if ( entry.getEntryKind() == IClasspathEntry.CPE_LIBRARY ) {
+	    	if ( entry.getEntryKind() == IClasspathEntry.CPE_LIBRARY || 
+	    	        entry.getEntryKind() == IClasspathEntry.CPE_VARIABLE ) {
 	        	artifactEntry = JavaProjectUtils.createArtifactFromLibraryEntry(project, entry);
 	        }
         }
@@ -295,7 +296,8 @@ public class MavenArtifactNode extends ArtifactNode {
             sameKind = entry.getEntryKind() == IClasspathEntry.CPE_PROJECT;
         }
         else {
-           sameKind = entry.getEntryKind() == IClasspathEntry.CPE_LIBRARY;
+           sameKind = entry.getEntryKind() == IClasspathEntry.CPE_LIBRARY || 
+           				entry.getEntryKind() == IClasspathEntry.CPE_VARIABLE;
         }
         return sameKind;
     }
