@@ -72,4 +72,6 @@ public interface IArtifactMappingNode extends IAdaptable {
     IArtifactMappingNodeContainer getParent();
     
     void setParent(IArtifactMappingNodeContainer parent);
+    
+    public Object getWrappedObject() ;
 }

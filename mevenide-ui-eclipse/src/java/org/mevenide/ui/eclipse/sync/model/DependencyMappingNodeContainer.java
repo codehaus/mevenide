@@ -24,6 +24,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Dependency;
 import org.apache.maven.project.Project;
+import org.mevenide.project.dependency.DependencyUtil;
 import org.mevenide.ui.eclipse.util.FileUtils;
 
 
@@ -63,8 +64,36 @@ public class DependencyMappingNodeContainer extends AbstractArtifactMappingNodeC
     }
 
     private void attachOrphanDependencies(List dependenciesCopy, Project project) {
+    	removeIgnoredDependencies(dependenciesCopy, project);
     	
-    	//remove ignored depencency from dependencuesCopy
+        attachDependencies(dependenciesCopy, project);
+        
+        removeDuplicateNodes();
+    }
+    
+    /**
+     * add all items of dependenciesCopy to the nodes List
+     */
+    private void attachDependencies(List dependenciesCopy, Project project) {
+		IArtifactMappingNode[] newNodes = new IArtifactMappingNode[nodes.length + dependenciesCopy.size()];
+        System.arraycopy(nodes, 0, newNodes, 0, nodes.length);
+        for (int i = nodes.length; i < newNodes.length; i++) {
+            DependencyMappingNode node = new DependencyMappingNode();
+            node.setDependency((Dependency) dependenciesCopy.get(i - nodes.length));
+			node.setParent(this);
+			node.setDeclaringPom(project.getFile());
+			newNodes[i] = node;
+        }
+        this.nodes = newNodes;
+	}
+
+	/**
+	 * remove ignored depencency from dependenciesCopy
+	 * dependenciesCopy is altered
+	 * 
+	 */
+	private void removeIgnoredDependencies(List dependenciesCopy, Project project) {
+		
     	List ignoredResources = FileUtils.getIgnoredResources(project);
     	List deps = new ArrayList(dependenciesCopy);
     	for (int i = 0; i < deps.size(); i++) {
@@ -76,20 +105,60 @@ public class DependencyMappingNodeContainer extends AbstractArtifactMappingNodeC
 				}
     		}
 		}
-    	
-        IArtifactMappingNode[] newNodes = new IArtifactMappingNode[nodes.length + dependenciesCopy.size()];
-        System.arraycopy(nodes, 0, newNodes, 0, nodes.length);
-        for (int i = nodes.length; i < newNodes.length; i++) {
-            DependencyMappingNode node = new DependencyMappingNode();
-            node.setDependency((Dependency) dependenciesCopy.get(i - nodes.length));
-			node.setParent(this);
-			node.setDeclaringPom(project.getFile());
-			newNodes[i] = node;
-        }
-        this.nodes = newNodes;
+	}
+
+	class InternalDependency {
+		private DependencyMappingNode node;
+		InternalDependency(DependencyMappingNode node) {
+			this.node = node;
+		}
+		public boolean equals(Object obj) {
+			if ( !(obj instanceof InternalDependency) ) { 
+				return false;
+			}
+			InternalDependency internalDependency = (InternalDependency) obj;
+			return DependencyUtil.areEquals((Dependency) internalDependency.node.getWrappedObject(), (Dependency) node.getWrappedObject());
+		}
+	}
+	
+	private void removeDuplicateNodes() {
+		List internalDependencyNodes = new ArrayList();
+		for (int i = 0; i < nodes.length; i++) {
+			InternalDependency dep = new InternalDependency(((DependencyMappingNode) nodes[i]));
+			InternalDependency currentDep;
+			boolean isPresent = isInternalDependencyPresent(internalDependencyNodes, dep);
+			if ( !isPresent ) {
+				internalDependencyNodes.add(dep);
+			}	
+		}
+		setNodes(internalDependencyNodes);
     }
     
-    private boolean lowMatch(Dependency d1, Dependency d2) {
+    private boolean isInternalDependencyPresent(List internalDependencyNodes, InternalDependency dep) {
+		boolean isPresent = false;
+		for (int j = 0; j < internalDependencyNodes.size(); j++) {
+			InternalDependency currentDep = (InternalDependency) internalDependencyNodes.get(j);  
+			if ( currentDep.equals(dep) ) {
+				isPresent = true;
+				break;
+			}
+		}
+		return isPresent;
+	}
+
+	private void setNodes(List internalDependencyNodes) {
+		IArtifactMappingNode[] newNodes = new IArtifactMappingNode[internalDependencyNodes.size()];
+		Iterator itr = internalDependencyNodes.iterator();
+		int o = 0;
+		while (itr.hasNext()) {
+			InternalDependency element = (InternalDependency) itr.next();
+			newNodes[o] = element.node;
+			o++;	
+		}	
+		this.nodes = newNodes;
+	}
+
+	private boolean lowMatch(Dependency d1, Dependency d2) {
         return d1.getArtifactId().equals(d2.getArtifactId());
     }
     
