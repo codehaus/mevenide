@@ -33,7 +33,9 @@
 			<item name="POM Validation" href="/user-guide/validate.html"/>
         	<item name="Providers" href="/user-guide/provider-infrastructure.html" collapse="true">
         		<item name="Extension point" href="/user-guide/extension-point.html" target="_blank"/>
-        	</item>       		
+        	</item> 
+        	<topic name="Manage Templates" href="/user-guide/pom-templates.html"/>
+        	<item name="Mevenide Nature" href="/user-guide/builder.xml"/>
         </menu>
         
         <menu name="Modules">
