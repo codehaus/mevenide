@@ -333,16 +333,16 @@ public class TableEntry extends PageEntry {
 		viewer.add(source);
 	}
 	
-	public void addEntries(List entries, boolean disableNotification) {
-		this.disableNotification = disableNotification;
+	public void addEntries(List entries, boolean shouldDisableNotification) {
+		this.disableNotification = shouldDisableNotification;
 		addEntries(entries);
 		this.disableNotification = false;
 	}
 
 	public void removeAll() {
 		if (viewer != null) {
-			for (int i = 0; i < viewer.getTable().getItemCount(); i++) {
-				viewer.remove(viewer.getElementAt(i));
+			while (viewer.getTable().getItemCount() > 0) {
+				viewer.remove(viewer.getElementAt(0));
 			}
 		}
 	}
