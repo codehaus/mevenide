@@ -17,7 +17,7 @@
     <j:include file="${installScript}"/>
   </goal>
   
-  <goal name="mevenide:build-all" description="Build all Mevenide modules" prereqs="init">
+  <goal name="mevenide:build-all" description="Build all Mevenide modules" prereqs="mevenide:init">
     <attainGoal name="multiproject:goal"/>
     <attainGoal name="mevenide:create-update"/>
   </goal>
