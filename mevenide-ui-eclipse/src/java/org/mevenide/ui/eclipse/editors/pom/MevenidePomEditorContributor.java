@@ -16,23 +16,27 @@
  */
 package org.mevenide.ui.eclipse.editors.pom;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IWorkbenchActionConstants;
-import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.ide.IDEActionFactory;
 import org.eclipse.ui.part.MultiPageEditorActionBarContributor;
 import org.eclipse.ui.texteditor.ITextEditor;
+import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 import org.mevenide.ui.eclipse.Mevenide;
+import org.mevenide.ui.eclipse.jobs.ValidationJob;
 
 /**
  * Manages the installation/deinstallation of global actions for the Mevenide
@@ -43,12 +47,27 @@ import org.mevenide.ui.eclipse.Mevenide;
  * @version $Id$
  */
 public class MevenidePomEditorContributor extends MultiPageEditorActionBarContributor {
+    private static final Log log = LogFactory.getLog(MevenidePomEditorContributor.class);
+    
     private IEditorPart activeEditorPart;
     private Action validateAction;
+    
+    private IFile pomFile;
     
     public MevenidePomEditorContributor() {
         super();
         createActions();
+    }
+    
+    
+    public void setActiveEditor(IEditorPart part) {
+        try {
+            pomFile = ((IFileEditorInput) part.getEditorInput()).getFile();
+        }
+        catch (Exception e) {
+            String message = "Unable to initialize pom"; 
+            log.error(message, e);
+        }
     }
     
     /**
@@ -64,12 +83,12 @@ public class MevenidePomEditorContributor extends MultiPageEditorActionBarContri
             return;
 
         activeEditorPart = part;
-
+        
         IActionBars actionBars = getActionBars();
         if (actionBars != null) {
 
             ITextEditor editor = (part instanceof ITextEditor) ? (ITextEditor) part : null;
-
+            
             actionBars.setGlobalActionHandler(
                 ITextEditorActionConstants.DELETE,
                 getAction(editor, ITextEditorActionConstants.DELETE));
@@ -104,7 +123,7 @@ public class MevenidePomEditorContributor extends MultiPageEditorActionBarContri
     private void createActions() {
         validateAction = new Action() {
             public void run() {
-                MessageDialog.openInformation(null, "Mevenide", "Not implemented yet");
+                new ValidationJob(pomFile).schedule();
             }
         };
         validateAction.setText(Mevenide.getResourceString("MevenidePomEditorContributor.Action.Text"));
