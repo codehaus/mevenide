@@ -16,7 +16,6 @@
  */
 package org.mevenide.ui.eclipse.launch.configuration;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
