@@ -25,6 +25,7 @@ import javax.swing.Action;
 import org.apache.maven.project.Dependency;
 import org.mevenide.netbeans.project.FileUtilities;
 import org.mevenide.netbeans.project.MavenProject;
+import org.mevenide.project.io.JarOverrideReader2;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.util.Utilities;
@@ -53,8 +54,21 @@ public class DependencyNode extends AbstractNode {
         } else {
             setIconBase("org/mevenide/netbeans/project/resources/DependencyIcon"); //NOI18N
         }
-        setDisplayName(dep.getArtifactId() + "-" + dep.getVersion());
+        setDisplayName(createName());
         checkOverride();
+    }
+    
+    private String createName() {
+        String title = "";
+        if (dependency.getJar() != null) {
+            title = dependency.getJar();
+        } else {
+            title = dependency.getArtifactId();
+            if (dependency.getVersion() != null) {
+                title = title + "-" + dependency.getVersion();
+            }
+        }
+        return title;
     }
     
     private void checkOverride() {
@@ -95,10 +109,18 @@ public class DependencyNode extends AbstractNode {
     }
     
     private boolean checkLocal() {
-        URI uri = FileUtilities.getDependencyURI(dependency, project);
-        if (uri != null) {
-            File file = new File(uri);
-            return file.exists();
+        if (!isOverriden) {
+            URI uri = FileUtilities.getDependencyURI(dependency, project);
+            if (uri != null) {
+                File file = new File(uri);
+                return file.exists();
+            }
+        } else {
+            String path = JarOverrideReader2.getInstance().processOverride(dependency, project.getContext());
+            if (path != null) {
+                File file = new File(path);
+                return file.exists();
+            }
         }
         return false;
     }
