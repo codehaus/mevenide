@@ -73,4 +73,9 @@
          install-size="0"
          version="@org.mevenide.ui.eclipse.version@"/>
 
+  <plugin
+         id="@org.mevenide.help.id@"
+         download-size="0"
+         install-size="0"
+         version="@org.mevenide.help.version@"/>
 </feature>

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.0"?>
 <plugin
-   id="mevenide_eclipse_help"
-   name="Mevenide_eclipse_help Plug-in"
+   id="mevenide.eclipse.help"
+   name="Mevenide Eclipse Help Plugin"
    version="0.2.0"
    provider-name="The Codehaus">
   
@@ -14,5 +14,4 @@
        <toc file="toc_Tasks.xml" />
        <toc file="toc_Reference.xml" />
    </extension>
-   
 </plugin>
