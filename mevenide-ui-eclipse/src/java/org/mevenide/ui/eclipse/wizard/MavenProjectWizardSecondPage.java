@@ -21,7 +21,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 import org.apache.maven.project.Project;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -55,7 +54,7 @@ import org.mevenide.ui.eclipse.util.FileUtils;
  * @version $Id$
  */
 public class MavenProjectWizardSecondPage extends JavaCapabilityConfigurationPage{
-	private final MavenProjectWizardFirstPage fFirstPage;
+	private final MavenProjectWizardBasicSettingsPage fFirstPage;
 
 	protected IPath fCurrProjectLocation;
 	protected IProject fCurrProject;
@@ -66,7 +65,7 @@ public class MavenProjectWizardSecondPage extends JavaCapabilityConfigurationPag
 	 * 
 	 * @param fFirstPage
 	 */
-	public MavenProjectWizardSecondPage (MavenProjectWizardFirstPage fFirstPage)
+	public MavenProjectWizardSecondPage (MavenProjectWizardBasicSettingsPage fFirstPage)
 	{
 		this.fFirstPage = fFirstPage;
 	}
