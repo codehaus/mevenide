@@ -6,7 +6,7 @@
   <artifactId>maven-nbm-plugin</artifactId>
   <name>Maven NBM Plugin</name>
   
-  <currentVersion>0.6-SNAPSHOT</currentVersion>
+  <currentVersion>0.6</currentVersion>
   <package>org.mevenide.tags</package>
   
   <!-- shortDescription>The NBM plugin will create a Netbeans module file (.nbm) </shortDescription -->
@@ -29,6 +29,9 @@
      <version>
         <name>NBM_PLUGIN_VERSION_0_5</name> 
      </version>
+     <version>
+        <name>NBM_PLUGIN_VERSION_0_6</name> 
+     </version>
   </versions>
   <branches>
     <branch>
@@ -47,7 +50,7 @@
       <id>mkleint</id>
       <email>ca206216@tiscali.cz</email>
       <roles>
-        <role>Creator </role>
+        <role>Creator</role>
         <role>Developer</role>
       </roles>
     </developer>

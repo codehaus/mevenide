@@ -80,7 +80,7 @@ OpenIDE-Module-Specification-Version: normalized version of ${pom.currentVersion
           <td>maven.nbm.cluster.name</td>
           <td><p>Since 0.3</p><p>Optional. Default value is <code>${pom.groupId}</code>.</p></td>
           <td>
-            <p></p>
+            <p>The name of the cluster that the module belongs to.</p>
           </td>
         </tr>
         <tr>
@@ -138,7 +138,7 @@ OpenIDE-Module-Specification-Version: normalized version of ${pom.currentVersion
         </tr>
          <tr>
           <td>netbeans.module.dep</td>
-          <td><p>OPTIONAL. Allowed values <code>loose, spec, impl</code> </p></td>
+          <td><p>OPTIONAL. Allowed types are <code>loose, spec, impl</code> </p></td>
           <td>
             <p> If the property is set on the dependency, it is expected to be a Netbeans module dependency.
                 When the project is built using the nbm:jar goal, it will build a <code>OpenIDE-Module-Module-Dependencies</code> manifest attribute. 
@@ -152,21 +152,35 @@ OpenIDE-Module-Specification-Version: normalized version of ${pom.currentVersion
            <groupId>forehead</groupId>
            <artifactId>forehead</artifactId>
            <version>1.0-beta-5</version>
-           <url>http://forehead.werken.com/</url>
            <properties>
-            	<netbeans.module.dep>spec</netbeans.module.dep>
+            	<netbeans.module.dep>impl</netbeans.module.dep>
             </properties>
         </dependency>
+        
+        <dependency>     
+           <groupId>netbeans</groupId>
+           <artifactId>org-netbeans-modules-projectuiapi</artifactId>
+           <version>1.0-SNAPSHOT</version>
+           <type>jar</type>
+           <properties>
+                <netbeans.module.dep>spec=org.netbeans.modules.projectuiapi/0 &gt; 1.0</netbeans.module.dep>
+           </properties>
+        </dependency>
+        
                         ]]></source>
                 </p>
-                <p>There are 3 allowed values: </p>
+                <p>There are 3 types of allowed values: </p>
                 <p> <b>loose</b> creates a dependency in the format <code>org.openide.execution</code> It's very loosely coupled and it just expects some version of the dependency module to be present and enabled.
                 </p>
-                <p> <b>spec</b> creates a dependency based on the specification number. It looks like this: <code>org.openide.execution > 1.0.1</code>
-                The module will work with any subsequent version of the dependency module (unless that one breaks backward compatibility)
+                <p> <b>spec</b> creates a dependency based on the specification number. In the module's manifest it looks like this: <code>org.openide.execution > 1.0.1</code>
+                The module will work with any subsequent version of the dependency module (unless that one breaks backward compatibility).
+                The version number to can be explicitly specified as is shown in the example above or the plugin will try to guess it.
+                The dependency jar is examined and if it is a netbeans module, its specification number and module name are used. The dependency version from the pom is used as fallback.
                 </p>
                 <p> <b>impl</b> creates a dependency based on the implementation number. It looks like this: <code>org.openide.execution = 1.0.1</code>
                 It will require a specific version of the dependency module. Use only when you depend on a non-public feature or code that was changed in later versions or could be changed.
+                The version number to can be explicitly specified or the plugin will try to guess it.
+                The dependency jar is examined and if it is a netbeans module, its implementation version and module name are used. The dependency version from the pom is used as fallback.
                 </p>
                 
           </td>
