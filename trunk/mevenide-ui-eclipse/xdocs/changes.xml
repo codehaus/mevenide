@@ -6,7 +6,17 @@
   </properties>
 
   <body>
-	
+	<release version="0.3.0" date="in CVS">
+   	  <action dev="gdodinet" type="fix" issue="MEVENIDE-42">
+        Comments including quotes donot pollute the rendering anymore
+      </action>
+      <action dev="gdodinet" type="fix" issue="MEVENIDE-44">
+        Full Description adapt to the page size
+      </action>
+      <action dev="gdodinet" type="add">
+        Provide ability to import/export maven plugin properties.
+      </action>
+    </release>
     <release version="0.2.1" date="2004-07-13">
    	  <action dev="gdodinet" type="fix" issue="MEVENIDE-11">
         Pages correctly refreshed if they have already been opened (see also MEVENIDE-23)
