@@ -277,7 +277,7 @@ public class MavenXmlOutlinePage extends Page implements IContentOutlinePage {
 		filterOriginShortcutAction.setChecked(goalOriginFilter.isEnabled());
 		filterOriginShortcutAction.setToolTipText(filterOriginShortcutAction.isChecked() ? Mevenide.getResourceString("MavenXmlOutlinePage.GlobalGoals.Show") : Mevenide.getResourceString("MavenXmlOutlinePage.GlobalGoals.Hide"));
 		filterOriginShortcutAction.setId(TOGGLE_FILTER_ORIGIN_ID);
-		filterOriginShortcutAction.setImageDescriptor(Mevenide.getImageDescriptor("filter_global_goals.gif"));
+		filterOriginShortcutAction.setImageDescriptor(Mevenide.getImageDescriptor("elcl16/goals_filter.gif"));
 		
 		toggleCustomFilteringAction = new Action(null, Action.AS_CHECK_BOX) {
 			public void run() {
@@ -291,7 +291,7 @@ public class MavenXmlOutlinePage extends Page implements IContentOutlinePage {
 		toggleCustomFilteringAction.setChecked(goalOriginFilter.isEnabled());
 		toggleCustomFilteringAction.setToolTipText(toggleCustomFilteringAction.isChecked() ? Mevenide.getResourceString("MavenXmlOutlinePage.RegexFilters.Disable") : Mevenide.getResourceString("MavenXmlOutlinePage.RegexFilters.Enable"));
 		toggleCustomFilteringAction.setId(TOGGLE_CUSTOM_FILTER_ID);
-		toggleCustomFilteringAction.setImageDescriptor(Mevenide.getImageDescriptor("toggle_regex_filter.gif"));
+		toggleCustomFilteringAction.setImageDescriptor(Mevenide.getImageDescriptor("elcl16/regex_filter.gif"));
 
 		openFilterDialogAction = new Action(null) {
 			public void run() {
