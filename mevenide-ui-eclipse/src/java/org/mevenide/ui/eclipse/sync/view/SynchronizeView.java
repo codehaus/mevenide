@@ -331,7 +331,7 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
 		topLevelMenuManager.add(addToClasspath);
 		topLevelMenuManager.add(removeFromPom);
 		topLevelMenuManager.add(separator);
-		topLevelMenuManager.add(markAsMerged);
+		//topLevelMenuManager.add(markAsMerged);
 		topLevelMenuManager.add(separator);
 		topLevelMenuManager.add(addToIgnoreList);
 		topLevelMenuManager.add(separator);
@@ -343,7 +343,7 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
         toolBarManager.add(refreshAll);
 		toolBarManager.add(viewIdeToPom);
 		toolBarManager.add(viewPomToIde);
-		toolBarManager.add(viewConflicts);
+		//toolBarManager.add(viewConflicts);
 	}
 
 	public void propertyChange(PropertyChangeEvent event) {
@@ -372,7 +372,7 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
 						manager.add(removeFromPom);
 					}
 					if ( (selectedNode.getChangeDirection() & EclipseContainerContainer.CONFLICTING) != 0 ) {
-						manager.add(markAsMerged);
+						//manager.add(markAsMerged);
 					}
 					else {
 						manager.add(addToIgnoreList);
