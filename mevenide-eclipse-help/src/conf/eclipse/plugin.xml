@@ -1,17 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.0"?>
 <plugin
-   id="mevenide.eclipse.help"
+   id="@org.mevenide.help.id@"
    name="Mevenide Eclipse Help Plugin"
-   version="0.2.0"
+   version="@org.mevenide.help.version@"
    provider-name="The Codehaus">
   
    <extension point="org.eclipse.help.toc">
       <toc file="toc.xml" primary="true" />
    </extension>
-   <extension point="org.eclipse.help.toc">
-       <toc file="toc_Concepts.xml" />
-       <toc file="toc_Tasks.xml" />
-       <toc file="toc_Reference.xml" />
-   </extension>
+   
 </plugin>
