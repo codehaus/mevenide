@@ -6,11 +6,11 @@
    provider-name="Sourceforge">
 
    <runtime>
-	   <library name="lib/commons-collection/2.1.jar">
+	   <library name="lib/commons-collections-2.1.jar">
          	<export name="*"/>
-         	<packages prefixes="org.apache.commons.collection"/>
+         	<packages prefixes="org.apache.commons.collections"/>
          </library>
-         <library name="mevenide-goals-grabber-0.1.jar">
+         <library name="mevenide-goals-grabber-0.1.1.jar">
          	<export name="*"/>
          	<packages prefixes="org.mevenide.goals"/>
          </library>
