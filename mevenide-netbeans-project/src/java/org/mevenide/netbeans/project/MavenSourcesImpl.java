@@ -21,6 +21,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -63,9 +64,10 @@ public class MavenSourcesImpl implements Sources {
     public static final String NAME_XDOCS = "XDocs"; //NOI18N
     public static final String NAME_SOURCE = "1SourceRoot"; //NOI18N
     public static final String NAME_TESTSOURCE = "2TestSourceRoot"; //NOI18N
-    public static final String NAME_INTEGRATIONSOURCE = "4IntegrationSourceRoot"; //NOI18N
-    public static final String NAME_ASPECTSOURCE = "3AspectSourceRoot"; //NOI18N
-    public static final String NAME_GENERATED_SOURCE = "5GeneratedSourceRoot"; //NOI18N
+    public static final String NAME_INTEGRATIONSOURCE = "5IntegrationSourceRoot"; //NOI18N
+    public static final String NAME_CACTUS_SOURCE = "3CactusSourceRoot"; //NOI18N
+    public static final String NAME_ASPECTSOURCE = "4AspectSourceRoot"; //NOI18N
+    public static final String NAME_GENERATED_SOURCE = "6GeneratedSourceRoot"; //NOI18N
     
     private MavenProject project;
     private List listeners;
@@ -103,6 +105,9 @@ public class MavenSourcesImpl implements Sources {
                 changed = changed | checkJavaGroupCache(folder, NAME_ASPECTSOURCE, "Aspect Sources");
                 folder = URLMapper.findFileObject(project.getIntegrationTestsDirectory().toURL());
                 changed = changed | checkJavaGroupCache(folder, NAME_INTEGRATIONSOURCE, "Integration Test Sources");
+                URI cactus = project.getCactusDirectory();
+                folder = cactus == null ? null : URLMapper.findFileObject(cactus.toURL());
+                changed = changed | checkJavaGroupCache(folder, NAME_CACTUS_SOURCE, "Cactus Test Sources");
                 folder = URLMapper.findFileObject(project.getGeneratedSourcesDir().toURL());
                 changed = changed | checkGeneratedGroupCache(folder);
             } catch (MalformedURLException exc) {
