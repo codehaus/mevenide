@@ -24,6 +24,11 @@
         	<item name="Wiki" href="http://mevenide.sourceforge.net/cgi-bin/view.pl/FrontPage"/>	
         	<item name="Help" href="/help.html"/>
         </menu>
+        
+        <menu name="Mevenide">
+        	<item name="Mevenide" href="/../../index.html"/>
+        	<item name="Mevenide Core" href="/../../multiproject/Mevenide Core/index.html"/>
+        </menu>
     </body>
 
 </project>
