@@ -150,8 +150,8 @@
     <dependency>
       <groupId>jface</groupId>
       <artifactId>mavenzilla</artifactId>
-      <version>0.1</version>
-      <jar>${basedir}/deps/mavenzilla-0.1.jar</jar>
+      <version>0.2</version>
+      <jar>${basedir}/deps/mavenzilla-0.2.jar</jar>
       <type>jar</type>
       <properties>
         <eclipse.plugin.bundle>true</eclipse.plugin.bundle>

@@ -42,8 +42,8 @@
 	<classpathentry kind="src" path="/mevenide-grammar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/plexus/jars/plexus-0.6.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/dom4j/jars/dom4j-1.4-dev-8.jar"/>
-	<classpathentry sourcepath="/mavenzilla" kind="lib" path="deps/mavenzilla-0.1.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/maven/jars/wagon-api-1.0-alpha-1.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/maven/jars/wagon-http-lightweight-20040714.210443.jar"/>
+	<classpathentry kind="lib" path="deps/mavenzilla-0.2.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

@@ -25,6 +25,7 @@ import org.mevenide.ui.eclipse.repository.model.Artifact;
 import org.mevenide.ui.eclipse.repository.model.BaseRepositoryObject;
 import org.mevenide.ui.eclipse.repository.model.Group;
 import org.mevenide.ui.eclipse.repository.model.Repository;
+import org.mevenide.ui.eclipse.repository.model.Type;
 import org.mevenide.util.StringUtils;
 
 
@@ -46,6 +47,25 @@ public class RepositoryObjectLabelProvider implements ILabelProvider {
         if ( element instanceof Group ) {
             return Mevenide.getInstance().getImageRegistry().getDescriptor(IImageRegistry.MAVEN_REPO_GROUP).createImage();
         }
+        if ( element instanceof Type ) {
+            return Mevenide.getInstance().getImageRegistry().getDescriptor(IImageRegistry.MAVEN_REPO_TYPE).createImage();
+        }
+        if ( element instanceof Artifact ) {
+            Artifact artifact = (Artifact) element;
+            String type = org.apache.commons.lang.StringUtils.stripEnd(artifact.getParent().getName(), "s");
+            if ( "pom".equals(type) ) {
+                return Mevenide.getInstance().getImageRegistry().getDescriptor(IImageRegistry.MAVEN_POM_OBJ).createImage();
+            }
+            if ( "jar".equals(type) ) {
+                return Mevenide.getInstance().getImageRegistry().getDescriptor(IImageRegistry.DEPENDENCY_OBJ).createImage();
+            }
+            if ( "plugin".equals(type)) {
+                return Mevenide.getInstance().getImageRegistry().getDescriptor(IImageRegistry.PLUGIN_OBJ).createImage();
+            }
+            else {
+                return Mevenide.getInstance().getImageRegistry().getDescriptor(IImageRegistry.FILE_OBJ).createImage();
+            }
+        }
         return null;
     }
     
@@ -53,7 +73,7 @@ public class RepositoryObjectLabelProvider implements ILabelProvider {
         if ( element instanceof Artifact ) {
             Artifact artifact = (Artifact) element;
             String artifactVersion = artifact.getVersion();
-            return artifact.getName() + (!StringUtils.isNull(artifactVersion) ?  " v. " + artifactVersion : "");
+            return artifact.getName() + (!StringUtils.isNull(artifactVersion) && !artifactVersion.equals(".") ?  " : " + artifactVersion : "");
         }
         if ( element instanceof BaseRepositoryObject ) {
             return ((BaseRepositoryObject) element).getName();

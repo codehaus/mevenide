@@ -79,7 +79,7 @@ public class RepositoryContentProvider implements ITreeContentProvider {
     }
     
     public boolean hasChildren(Object element) {
-        return !(element instanceof Artifact);
+        return element instanceof BaseRepositoryObject && !(element instanceof Artifact);
     }
     
     public Object[] getElements(Object inputElement) {
