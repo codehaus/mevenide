@@ -125,7 +125,7 @@ public class PmdOutputListenerProvider extends AbstractOutputProcessor {
                     Iterator it = viols.iterator();
                     while (it.hasNext()) {
                         PmdResult.Violation v = (PmdResult.Violation)it.next();
-                        ViolationOutputListener list = new ViolationOutputListener(v);
+                        PmdAnnotation list = new PmdAnnotation(v);
                         writer.println("   Line:" + v.getLine() + " " + v.getViolationText().trim(), list);
                     }
                     writer.println(" ");
@@ -137,43 +137,5 @@ public class PmdOutputListenerProvider extends AbstractOutputProcessor {
             }
         }
     }
-    
-    private static class ViolationOutputListener implements OutputListener {
-        
-        private PmdResult.Violation violation;
-        
-        public ViolationOutputListener(PmdResult.Violation viol) {
-            violation = viol;
-        }
-        
-       public void outputLineSelected(OutputEvent ev) {
-//           cookie.getLineSet().getCurrent(line).show(Line.SHOW_SHOW);
-        }
-        
-        /** Called when some sort of action is performed on a line.
-         * @param ev the event describing the line
-         */
-        public void outputLineAction(OutputEvent ev) {
-            FileObject fo = FileUtil.toFileObject(violation.getFile());
-            try {
-                DataObject dobj = DataObject.find(fo);
-                EditorCookie cook = (EditorCookie)dobj.getCookie(EditorCookie.class);
-                if (cook != null) {
-                    int lineInt = Integer.parseInt(violation.getLine());
-                    cook.getLineSet().getCurrent(lineInt).show(Line.SHOW_GOTO);
-                }
-            } catch (DataObjectNotFoundException exc) {
-                
-            }
-        }
-        
-        /** Called when a line is cleared from the buffer of known lines.
-         * @param ev the event describing the line
-         */
-        public void outputLineCleared(OutputEvent ev) {
-        }        
-        
-    }
-    
     
 }
