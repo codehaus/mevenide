@@ -20,6 +20,7 @@ import java.io.File;
 import java.util.Observable;
 import java.util.Observer;
 
+import org.apache.maven.project.Project;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
@@ -29,25 +30,28 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jdt.internal.ui.JavaPlugin;
+import org.eclipse.jdt.internal.ui.wizards.NewWizardMessages;
+import org.eclipse.jdt.internal.ui.wizards.dialogfields.ComboDialogField;
+import org.eclipse.jdt.internal.ui.wizards.dialogfields.DialogField;
+import org.eclipse.jdt.internal.ui.wizards.dialogfields.IDialogFieldListener;
+import org.eclipse.jdt.internal.ui.wizards.dialogfields.IStringButtonAdapter;
+import org.eclipse.jdt.internal.ui.wizards.dialogfields.LayoutUtil;
+import org.eclipse.jdt.internal.ui.wizards.dialogfields.SelectionButtonDialogField;
+import org.eclipse.jdt.internal.ui.wizards.dialogfields.StringButtonDialogField;
+import org.eclipse.jdt.internal.ui.wizards.dialogfields.StringDialogField;
 import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.FocusAdapter;
-import org.eclipse.swt.events.FocusEvent;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
-import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.mevenide.project.io.PomSkeletonBuilder;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.template.model.Template;
 import org.mevenide.ui.eclipse.template.model.Templates;
@@ -63,38 +67,27 @@ public class MavenProjectWizardBasicSettingsPage extends WizardPage {
 	 * Request a project name. Fires an event whenever the text field is
 	 * changed, regardless of its content.
 	 */
-	private final class NameGroup extends Observable {
+	private final class NameGroup extends Observable implements IDialogFieldListener {
 
-		protected final Text fNameField;
-
-		public NameGroup(Composite composite) {
-			final Composite nameComposite = new Composite(composite, SWT.NONE);
+		protected final StringDialogField fNameField;
+		
+		public NameGroup(Composite composite, String initialName) {
+			final int numColumns= 2;
+			
+			final Composite nameComposite= new Composite(composite, SWT.NONE);
 			nameComposite.setFont(composite.getFont());
 			nameComposite.setLayout(initGridLayout(new GridLayout(2, false), false));
 			nameComposite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-			// label "Project name:"
-			final Label nameLabel = new Label(nameComposite, SWT.NONE);
-			nameLabel.setText(Mevenide.getResourceString("MavenProjectWizardBasicSettingsPage.NameGroup.label.text")); //$NON-NLS-1$
-			nameLabel.setFont(composite.getFont());
-
 			// text field for project name
-			fNameField = new Text(nameComposite, SWT.BORDER);
-			fNameField.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-			fNameField.setFont(composite.getFont());
+			fNameField= new StringDialogField();
+			fNameField.setLabelText(Mevenide.getResourceString("MavenProjectWizardBasicSettingsPage.NameGroup.label.text")); //$NON-NLS-1$
+			fNameField.setDialogFieldListener(this);
 
-			fNameField.addFocusListener(new FocusAdapter() {
-				public void focusGained(FocusEvent e) {
-					fNameField.setSelection(0, fNameField.getText().length());
-				}
-			});
+			setName(initialName);
 
-			fNameField.addModifyListener(new ModifyListener() {
-				public void modifyText(ModifyEvent e) {
-					fireEvent();
-				}
-			});
-			setChanged();
+			fNameField.doFillIntoGrid(nameComposite, numColumns);
+			LayoutUtil.setHorizontalGrabbing(fNameField.getTextControl(null));
 		}
 
 		protected void fireEvent() {
@@ -106,131 +99,91 @@ public class MavenProjectWizardBasicSettingsPage extends WizardPage {
 			return fNameField.getText().trim();
 		}
 
-		public void setFocus() {
-			fNameField.setFocus();
+		public void postSetFocus() {
+			fNameField.postSetFocusOnDialogField(getShell().getDisplay());
+		}
+		
+		public void setName(String name) {
+			fNameField.setText(name);
+		}
+
+		/* (non-Javadoc)
+		 * @see org.eclipse.jdt.internal.ui.wizards.dialogfields.IDialogFieldListener#dialogFieldChanged(org.eclipse.jdt.internal.ui.wizards.dialogfields.DialogField)
+		 */
+		public void dialogFieldChanged(DialogField field) {
+			fireEvent();
 		}
 	}
 
+	
 	/**
 	 * Request a location. Fires an event whenever the checkbox or the location
 	 * field is changed, regardless of whether the change originates from the
 	 * user or has been invoked programmatically.
 	 */
-	private final class LocationGroup extends Observable implements Observer {
+	private final class LocationGroup extends Observable implements Observer, IStringButtonAdapter, IDialogFieldListener {
 
-		protected final Button fWorkspaceRadio;
-		protected final Button fExternalRadio;
-		protected final Label fLocationLabel;
-		protected final Text fLocationField;
-		protected final Button fLocationButton;
-		protected String fExternalLocation;
+		protected final SelectionButtonDialogField fWorkspaceRadio;
+		protected final SelectionButtonDialogField fExternalRadio;
+		protected final StringButtonDialogField fLocation;
+		
+		private String fPreviousExternalLocation;
+		
+		private static final String DIALOGSTORE_LAST_EXTERNAL_LOC= Mevenide.PLUGIN_ID + ".last.external.project"; //$NON-NLS-1$
 
 		public LocationGroup(Composite composite) {
 
-			final int numColumns = 3;
+			final int numColumns= 3;
 
-			fExternalLocation = ""; //$NON-NLS-1$
-
-			final Group group = new Group(composite, SWT.NONE);
+			final Group group= new Group(composite, SWT.NONE);
 			group.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 			group.setLayout(initGridLayout(new GridLayout(numColumns, false), true));
 			group.setText(Mevenide.getResourceString("MavenProjectWizardBasicSettingsPage.LocationGroup.title")); //$NON-NLS-1$
 
-			fWorkspaceRadio = new Button(group, SWT.RADIO | SWT.RIGHT);
-			fWorkspaceRadio.setText(Mevenide.getResourceString("MavenProjectWizardBasicSettingsPage.LocationGroup.workspace.desc")); //$NON-NLS-1$
+			fWorkspaceRadio= new SelectionButtonDialogField(SWT.RADIO);
+			fWorkspaceRadio.setDialogFieldListener(this);
+			fWorkspaceRadio.setLabelText(Mevenide.getResourceString("MavenProjectWizardBasicSettingsPage.LocationGroup.workspace.desc")); //$NON-NLS-1$
+
+			fExternalRadio= new SelectionButtonDialogField(SWT.RADIO);
+			fExternalRadio.setLabelText(Mevenide.getResourceString("MavenProjectWizardBasicSettingsPage.LocationGroup.external.desc")); //$NON-NLS-1$
+
+			fLocation= new StringButtonDialogField(this);
+			fLocation.setDialogFieldListener(this);
+			fLocation.setLabelText(Mevenide.getResourceString("MavenProjectWizardBasicSettingsPage.LocationGroup.locationLabel.desc")); //$NON-NLS-1$
+			fLocation.setButtonLabel(Mevenide.getResourceString("MavenProjectWizardBasicSettingsPage.LocationGroup.browseButton.desc")); //$NON-NLS-1$
+
+			fExternalRadio.attachDialogField(fLocation);
+			
 			fWorkspaceRadio.setSelection(true);
-
-			final GridData gd = new GridData();
-			gd.horizontalSpan = numColumns;
-			fWorkspaceRadio.setLayoutData(gd);
-
-			fExternalRadio = new Button(group, SWT.RADIO | SWT.RIGHT);
-			fExternalRadio.setText(Mevenide.getResourceString("MavenProjectWizardBasicSettingsPage.LocationGroup.external.desc")); //$NON-NLS-1$
 			fExternalRadio.setSelection(false);
+			
+			fPreviousExternalLocation= ""; //$NON-NLS-1$
 
-			final GridData gd2 = new GridData();
-			gd2.horizontalSpan = numColumns;
-			fExternalRadio.setLayoutData(gd2);
-
-			fLocationLabel = new Label(group, SWT.NONE);
-			fLocationLabel.setText(Mevenide.getResourceString("MavenProjectWizardBasicSettingsPage.LocationGroup.locationLabel.desc")); //$NON-NLS-1$
-			fLocationLabel.setEnabled(false);
-			fLocationLabel.setLayoutData(new GridData());
-
-			fLocationField = new Text(group, SWT.BORDER);
-			fLocationField.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-			fLocationField.setEnabled(false);
-			fLocationField.addModifyListener(new ModifyListener() {
-				public void modifyText(ModifyEvent e) {
-					if (fLocationField.getEnabled()) {
-						fExternalLocation = fLocationField.getText();
-						fireEvent();
-					}
-				}
-			});
-			fLocationField.addFocusListener(new FocusAdapter() {
-				public void focusGained(FocusEvent e) {
-					fLocationField.setSelection(0, fLocationField.getText().length());
-				}
-			});
-
-			fLocationButton = new Button(group, SWT.PUSH);
-			setButtonLayoutData(fLocationButton);
-			fLocationButton.setText(Mevenide.getResourceString("MavenProjectWizardBasicSettingsPage.LocationGroup.browseButton.desc")); //$NON-NLS-1$
-			fLocationButton.setEnabled(false);
-			fLocationButton.addSelectionListener(new SelectionAdapter() {
-				public void widgetSelected(SelectionEvent e) {
-					final DirectoryDialog dialog = new DirectoryDialog(
-							fLocationField.getShell());
-					dialog.setMessage(Mevenide.getResourceString("MavenProjectWizardBasicSettingsPage.directory.message")); //$NON-NLS-1$
-					final String directoryName = fLocationField.getText().trim();
-					if (directoryName.length() > 0) {
-						final File path = new File(directoryName);
-						if (path.exists())
-							dialog.setFilterPath(new Path(directoryName).toOSString());
-					}
-					final String selectedDirectory = dialog.open();
-					if (selectedDirectory != null) {
-						fExternalLocation = selectedDirectory;
-						fLocationField.setText(fExternalLocation);
-						fireEvent();
-					}
-				}
-			});
-			fWorkspaceRadio.addSelectionListener(new SelectionAdapter() {
-				public void widgetSelected(SelectionEvent e) {
-					final boolean checked = fWorkspaceRadio.getSelection();
-					fLocationLabel.setEnabled(!checked);
-					fLocationField.setEnabled(!checked);
-					fLocationButton.setEnabled(!checked);
-					if (checked) {
-						fLocationField.setText(getDefaultPath(fNameGroup.getName()));
-					} else {
-						fLocationField.setText(fExternalLocation);
-					}
-					fireEvent();
-				}
-			});
+			fWorkspaceRadio.doFillIntoGrid(group, numColumns);
+			fExternalRadio.doFillIntoGrid(group, numColumns);
+			fLocation.doFillIntoGrid(group, numColumns);
+			LayoutUtil.setHorizontalGrabbing(fLocation.getTextControl(null));
 		}
-
+				
 		protected void fireEvent() {
 			setChanged();
 			notifyObservers();
 		}
 
 		protected String getDefaultPath(String name) {
-			final IPath path = Platform.getLocation().append(name);
+			final IPath path= Platform.getLocation().append(name);
 			return path.toOSString();
 		}
 
 		/*
 		 * (non-Javadoc)
 		 * 
-		 * @see java.util.Observer#update(java.util.Observable, java.lang.Object)
+		 * @see java.util.Observer#update(java.util.Observable,
+		 *      java.lang.Object)
 		 */
 		public void update(Observable o, Object arg) {
-			if (fWorkspaceRadio.getSelection()) {
-				fLocationField.setText(getDefaultPath(fNameGroup.getName()));
+			if (isInWorkspace()) {
+				fLocation.setText(getDefaultPath(fNameGroup.getName()));
 			}
 			fireEvent();
 		}
@@ -239,46 +192,95 @@ public class MavenProjectWizardBasicSettingsPage extends WizardPage {
 			if (isInWorkspace()) {
 				return Platform.getLocation();
 			}
-			return new Path(fLocationField.getText().trim());
+			return new Path(fLocation.getText().trim());
 		}
 
 		public boolean isInWorkspace() {
-			return fWorkspaceRadio.getSelection();
+			return fWorkspaceRadio.isSelected();
+		}
+
+		/* (non-Javadoc)
+		 * @see org.eclipse.jdt.internal.ui.wizards.dialogfields.IStringButtonAdapter#changeControlPressed(org.eclipse.jdt.internal.ui.wizards.dialogfields.DialogField)
+		 */
+		public void changeControlPressed(DialogField field) {
+			final DirectoryDialog dialog= new DirectoryDialog(getShell());
+			dialog.setMessage(NewWizardMessages.getString("JavaProjectWizardFirstPage.directory.message")); //$NON-NLS-1$
+			String directoryName = fLocation.getText().trim();
+			if (directoryName.length() == 0) {
+				String prevLocation= JavaPlugin.getDefault().getDialogSettings().get(DIALOGSTORE_LAST_EXTERNAL_LOC);
+				if (prevLocation != null) {
+					directoryName= prevLocation;
+				}
+			}
+		
+			if (directoryName.length() > 0) {
+				final File path = new File(directoryName);
+				if (path.exists())
+					dialog.setFilterPath(new Path(directoryName).toOSString());
+			}
+			final String selectedDirectory = dialog.open();
+			if (selectedDirectory != null) {
+				fLocation.setText(selectedDirectory);
+				JavaPlugin.getDefault().getDialogSettings().put(DIALOGSTORE_LAST_EXTERNAL_LOC, selectedDirectory);
+			}
+		}
+
+		/* (non-Javadoc)
+		 * @see org.eclipse.jdt.internal.ui.wizards.dialogfields.IDialogFieldListener#dialogFieldChanged(org.eclipse.jdt.internal.ui.wizards.dialogfields.DialogField)
+		 */
+		public void dialogFieldChanged(DialogField field) {
+			if (field == fWorkspaceRadio) {
+				final boolean checked= fWorkspaceRadio.isSelected();
+				if (checked) {
+					fPreviousExternalLocation= fLocation.getText();
+					fLocation.setText(getDefaultPath(fNameGroup.getName()));
+				} else {
+					fLocation.setText(fPreviousExternalLocation);
+				}
+			}
+			fireEvent();
 		}
 	}
-
 	/**
 	 * Request a project template. Fires an event whenever the checkbox or the location
 	 * field is changed, regardless of whether the change originates from the
 	 * user or has been invoked programmatically.
 	 */
-	private final class TemplateGroup extends Observable implements SelectionListener {
+	private final class TemplateGroup extends Observable implements IDialogFieldListener  {
 
-		protected final Button fStdTemplates;
-		protected final Combo fTComboTemplates;
+		protected final SelectionButtonDialogField fStdTemplates;
+		protected final ComboDialogField fTComboTemplates;
 		protected final Group fGroup;
 		protected final Templates fTemplates;
 
 		public TemplateGroup(Composite composite) {
+			final int numColumns= 2;
+			
 			fTemplates = Templates.newTemplates();
 			fGroup = new Group(composite, SWT.NONE);
 			fGroup.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-			fGroup.setLayout(initGridLayout(new GridLayout(), true));
+			fGroup.setLayout(initGridLayout(new GridLayout(numColumns, false), true));
 			fGroup.setText(Mevenide.getResourceString("MavenProjectWizardBasicSettingsPage.TemplateGroup.title")); //$NON-NLS-1$
-
-			fStdTemplates = new Button(fGroup, SWT.CHECK);
-			fStdTemplates.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-			fStdTemplates.setText(Mevenide.getResourceString("MavenProjectWizardBasicSettingsPage.TemplateGroup.option.useTemplate")); //$NON-NLS-1$
+			
+			fStdTemplates = new SelectionButtonDialogField(SWT.CHECK);
+			//fStdTemplates.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+			fStdTemplates.setLabelText(Mevenide.getResourceString("MavenProjectWizardBasicSettingsPage.TemplateGroup.option.useTemplate")); //$NON-NLS-1$
 			fStdTemplates.setSelection(false);
-			fStdTemplates.addSelectionListener(this);
+			fStdTemplates.setDialogFieldListener(this);
+			//fStdTemplates.addSelectionListener(this);
 
-			fTComboTemplates = new Combo(fGroup, SWT.DROP_DOWN | SWT.READ_ONLY);
-			fTComboTemplates.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+			fTComboTemplates = new ComboDialogField(SWT.DROP_DOWN | SWT.READ_ONLY);
+			String[] tmp = new String[fTemplates.getTemplates().length];
 			for (int i = 0; i < fTemplates.getTemplates().length; i++) {
-				fTComboTemplates.add(((Template) fTemplates.getTemplates()[i]).getTemplateName());
+				tmp[i]=(((Template) fTemplates.getTemplates()[i]).getTemplateName());
 			}
-			fTComboTemplates.select(0);
+			fTComboTemplates.setItems(tmp);
+			fTComboTemplates.selectItem(0);
 			fTComboTemplates.setEnabled(false);
+			
+			fStdTemplates.doFillIntoGrid(fGroup, numColumns);
+			fTComboTemplates.doFillIntoGrid(fGroup, numColumns);
+			LayoutUtil.setHorizontalGrabbing(fTComboTemplates.getComboControl(null));
 		}
 
 		protected void fireEvent() {
@@ -287,7 +289,7 @@ public class MavenProjectWizardBasicSettingsPage extends WizardPage {
 		}
 		
 		public boolean useTemplates() {
-			return fStdTemplates.getSelection();
+			return fStdTemplates.isSelected();
 		}
 
 		public Template getSelectedTemplate(){
@@ -296,10 +298,10 @@ public class MavenProjectWizardBasicSettingsPage extends WizardPage {
 			return null;
 		}
 		
-		public void widgetSelected(SelectionEvent e) {
-			if (e.widget == fStdTemplates)
+		public void dialogFieldChanged(DialogField field) {
+			if (field == fStdTemplates)
 			{
-				fTComboTemplates.setEnabled(fStdTemplates.getSelection());
+				fTComboTemplates.setEnabled(fStdTemplates.isSelected());
 				fireEvent();
 			}
 		}
@@ -445,14 +447,21 @@ public class MavenProjectWizardBasicSettingsPage extends WizardPage {
 
 	private static final String PAGE_NAME = Mevenide.getResourceString("MavenProjectWizardBasicSettingsPage.page.pageName"); //$NON-NLS-1$
 
+	private String fInitialName;
+	
+	private Project fProject;
+	
 	/**
 	 *  
 	 */
-	public MavenProjectWizardBasicSettingsPage() {
+	public MavenProjectWizardBasicSettingsPage()
+	{
 		super(PAGE_NAME);
 		setPageComplete(false);
 		setTitle(Mevenide.getResourceString("MavenProjectWizardBasicSettingsPage.page.title")); //$NON-NLS-1$
 		setDescription(Mevenide.getResourceString("MavenProjectWizardBasicSettingsPage.page.description")); //$NON-NLS-1$
+		fInitialName= ""; //$NON-NLS-1$
+		fProject = new Project();
 	}
 
 	public void createControl(Composite parent) {
@@ -464,7 +473,7 @@ public class MavenProjectWizardBasicSettingsPage extends WizardPage {
 		composite.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL));
 
 		// create UI elements
-		fNameGroup = new NameGroup(composite);
+		fNameGroup = new NameGroup(composite, fInitialName);
 		fLocationGroup = new LocationGroup(composite);
 		fTemplateGroup = new TemplateGroup(composite);
 		fDetectGroup = new DetectGroup(composite);
@@ -495,7 +504,23 @@ public class MavenProjectWizardBasicSettingsPage extends WizardPage {
 	public IPath getLocationPath() {
 		return fLocationGroup.getLocation();
 	}
-
+	/**
+	 * Set the project name
+	 * @param project
+	 */
+	public void setProjectName(String name) {
+		fInitialName= name;
+		if (fNameGroup != null) {
+			fNameGroup.setName(name);
+		}
+	}
+	/**
+	 * Get the name of the project to create
+	 * @return
+	 */
+	public String getProjectName() {
+		return fNameGroup.getName();
+	}
 	/**
 	 * Creates a project resource handle for the current project name field
 	 * value.
@@ -510,6 +535,7 @@ public class MavenProjectWizardBasicSettingsPage extends WizardPage {
 	public IProject getProjectHandle() {
 		return ResourcesPlugin.getWorkspace().getRoot().getProject(fNameGroup.getName());
 	}
+
 	/**
 	 * Return <code>true</code> if the project is created within the workspace else <code>false</code>
 	 * @return true if the project is created within the current workspace
@@ -517,46 +543,45 @@ public class MavenProjectWizardBasicSettingsPage extends WizardPage {
 	public boolean isInWorkspace() {
 		return fLocationGroup.isInWorkspace();
 	}
-	/**
-	 * Get the name of the project to create
-	 * @return
+
+	/*
+	 * Returns the next page. Saves the values from this page in the pom model associated 
+	 * with the wizard. Initializes the widgets on the next page.
+	 * @see org.eclipse.jface.wizard.WizardPage#getNextPage()
 	 */
-	public String getProjectName() {
-		return fNameGroup.getName();
+	public IWizardPage getNextPage() {
+		MavenProjectWizard wizard = (MavenProjectWizard)getWizard();
+
+		wizard.setTemplateUsage(fTemplateGroup.useTemplates());
+
+		if(wizard.useTemplate())
+		{
+			wizard.setProjectObjectModel(fTemplateGroup.getSelectedTemplate().getProject());
+		}
+		else
+		{
+			wizard.setProjectObjectModel(new Project());
+		}
+		wizard.getProjectObjectModel().setName(getProjectName());
+		
+		MavenProjectWizardBasicSettingsPOMPage p = (MavenProjectWizardBasicSettingsPOMPage)wizard.getPage(MavenProjectWizardBasicSettingsPOMPage.PAGE_NAME);
+		p.onEnterPage();
+		return p;
 	}
-	/**
-	 * Get information about the templates selection
-	 * @return true if the user have selected a template
-	 */
-	public boolean useTemplates() {
-		return fTemplateGroup.useTemplates();
-	}
-	/**
-	 * Get the selected template and <code>null</code> if the
-	 * user haven't selected any template
-	 * @return the selected template 
-	 */
-	public Template getSelectedTemplate(){
-		return fTemplateGroup.getSelectedTemplate();
-	}
+
 	
 	public boolean getDetect() {
 		return fDetectGroup.mustDetect();
 	}
-
-	/*
-	 * public boolean isSrcBin() { return fLayoutGroup.isSrcBin(); }
-	 */
-
-	/*
+	/**
 	 * see @DialogPage.setVisible(boolean)
 	 */
 	public void setVisible(boolean visible) {
 		super.setVisible(visible);
-		if (visible)
-			fNameGroup.setFocus();
+		if (visible) {
+			fNameGroup.postSetFocus();
+		}
 	}
-
 	/**
 	 * Initialize a grid layout with the default Dialog settings.
 	 */

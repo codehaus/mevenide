@@ -17,10 +17,12 @@
 package org.mevenide.ui.eclipse.wizard;
 
 import java.io.ByteArrayInputStream;
+import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Project;
@@ -32,6 +34,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.SubProgressMonitor;
@@ -39,11 +42,13 @@ import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.internal.ui.util.CoreUtility;
 import org.eclipse.jdt.internal.ui.util.ExceptionHandler;
+import org.eclipse.jdt.internal.ui.wizards.NewWizardMessages;
 import org.eclipse.jdt.ui.PreferenceConstants;
 import org.eclipse.jdt.ui.wizards.JavaCapabilityConfigurationPage;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.ui.actions.WorkspaceModifyDelegatingOperation;
 import org.mevenide.environment.LocationFinderAggregator;
+import org.mevenide.project.io.DefaultProjectMarshaller;
 import org.mevenide.project.io.PomSkeletonBuilder;
 import org.mevenide.project.io.ProjectReader;
 import org.mevenide.ui.eclipse.Mevenide;
@@ -71,6 +76,10 @@ public class MavenProjectWizardSecondPage extends JavaCapabilityConfigurationPag
 	 */
 	public MavenProjectWizardSecondPage (MavenProjectWizardBasicSettingsPage fFirstPage)
 	{
+		super();
+		fCurrProjectLocation= null;
+		fCurrProject= null;
+		fKeepContent= true;
 		this.fFirstPage = fFirstPage;
 	}
 
@@ -81,42 +90,50 @@ public class MavenProjectWizardSecondPage extends JavaCapabilityConfigurationPag
 		if (visible) {
 			changeToNewProject();
 		} else {
-			performCancel();
+			removeProject();
 		}
 		super.setVisible(visible);
 	}
-	/*
-	 * 
-	 */
+	
 	private void changeToNewProject() {
 		final IProject newProjectHandle= fFirstPage.getProjectHandle();
 		final IPath newProjectLocation= fFirstPage.getLocationPath();
 		
 		fKeepContent= fFirstPage.getDetect();
 		
-		final boolean initialize= !(newProjectHandle.equals(fCurrProject) && newProjectLocation.equals(fCurrProjectLocation));
+			
+			final boolean initialize= !(newProjectHandle.equals(fCurrProject) && newProjectLocation.equals(fCurrProjectLocation));
+			
+			final IRunnableWithProgress op= new IRunnableWithProgress() {
+				public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+					try {
+						updateProject(initialize, monitor);
+					} catch (CoreException e) {
+						throw new InvocationTargetException(e);
+					} catch (OperationCanceledException e) {
+						throw new InterruptedException();
+					}
+				}
+			};
 		
-		final IRunnableWithProgress op= new IRunnableWithProgress() {
-			public void run(IProgressMonitor monitor) throws InvocationTargetException {
-				updateProject(initialize, monitor);
+			try {
+				getContainer().run(true, false, new WorkspaceModifyDelegatingOperation(op));
+			} catch (InvocationTargetException e) {
+				final String title= NewWizardMessages.getString("JavaProjectWizardSecondPage.error.title"); //$NON-NLS-1$
+				final String message= NewWizardMessages.getString("JavaProjectWizardSecondPage.error.message"); //$NON-NLS-1$
+				ExceptionHandler.handle(e, getShell(), title, message);
+			} catch  (InterruptedException e) {
+				// cancel pressed
 			}
-		};
-	
-		try {
-			getContainer().run(false, true, new WorkspaceModifyDelegatingOperation(op, newProjectHandle));
-		} catch (InvocationTargetException e) {
-			final String title= Mevenide.getResourceString("MavenProjectWizardSecondPage.error.title"); //$NON-NLS-1$
-			final String message= Mevenide.getResourceString("MavenProjectWizardSecondPage.error.message"); //$NON-NLS-1$
-			ExceptionHandler.handle(e, getShell(), title, message);
-		} catch  (InterruptedException e) {
-			// cancel pressed
-		}
 	}
 	/**
 	 * This method is called from the wizard on finish.
 	 * @param monitor
 	 * @throws CoreException
 	 * @throws InterruptedException
+	 */
+	/**
+	 * Called from the wizard on finish.
 	 */
 	public void performFinish(IProgressMonitor monitor) throws CoreException, InterruptedException {
 		try {
@@ -130,13 +147,55 @@ public class MavenProjectWizardSecondPage extends JavaCapabilityConfigurationPag
 			fCurrProject= null;
 		}
 	}
+	
+	private void removeProject() {
+		if (fCurrProject == null || !fCurrProject.exists()) {
+			return;
+		}
+		
+		IRunnableWithProgress op= new IRunnableWithProgress() {
+			public void run(IProgressMonitor monitor) throws InvocationTargetException {
+
+				final boolean noProgressMonitor= Platform.getLocation().equals(fCurrProjectLocation);
+
+				if (monitor == null || noProgressMonitor) {
+					monitor= new NullProgressMonitor();
+				}
+
+				monitor.beginTask(Mevenide.getResourceString("MavenProjectWizardSecondPage.operation.remove"), 3); //$NON-NLS-1$
+
+				try {
+					boolean removeContent= !fKeepContent && fCurrProject.isSynchronized(IResource.DEPTH_INFINITE);
+					fCurrProject.delete(removeContent, false, monitor);
+				} catch (CoreException e) {
+					throw new InvocationTargetException(e);
+				} finally {
+					monitor.done();
+					fCurrProject= null;
+					fKeepContent= false;
+				}
+			}
+		};
+	
+		try {
+			getContainer().run(true, true, new WorkspaceModifyDelegatingOperation(op));
+		} catch (InvocationTargetException e) {
+			final String title= Mevenide.getResourceString("MavenProjectWizardSecondPage.error.remove.title"); //$NON-NLS-1$
+			final String message= Mevenide.getResourceString("MavenProjectWizardSecondPage.error.remove.message"); //$NON-NLS-1$
+			ExceptionHandler.handle(e, getShell(), title, message);		
+		} catch  (InterruptedException e) {
+			// cancel pressed
+		}
+	}		
+			
 	/**
-	 * 
-	 * @param initialize
-	 * @param monitor
-	 * @throws CoreException
+	 * Called from the wizard on cancel.
 	 */
-	protected void updateProject(boolean initialize, IProgressMonitor monitor){
+	public void performCancel() {
+		removeProject();
+	}
+
+	protected void updateProject(boolean initialize, IProgressMonitor monitor)  throws CoreException {
 		fCurrProject= fFirstPage.getProjectHandle();
 		fCurrProjectLocation= fFirstPage.getLocationPath();
 		
@@ -223,11 +282,25 @@ public class MavenProjectWizardSecondPage extends JavaCapabilityConfigurationPag
 			IFile propertiesFile = fCurrProject.getFile("project.properties"); //$NON-NLS-1$
 			propertiesFile.create(new ByteArrayInputStream((Mevenide.getResourceString("MavenProjectWizardSecondPage.PropertyHeader", fCurrProject.getName())).getBytes()), false, null); //$NON-NLS-1$
 
-			String referencedPomSkeleton =  PomSkeletonBuilder.getSkeletonBuilder().getPomSkeleton(fCurrProject.getName());
-			IFile referencedProjectFile = fCurrProject.getFile("project.xml"); //$NON-NLS-1$
+			String referencedPomSkeleton;
 			
+			MavenProjectWizard wizard = (MavenProjectWizard)getWizard();
+			
+			if(wizard.useTemplate())
+			{
+				StringWriter w = new StringWriter();
+				new DefaultProjectMarshaller().marshall(w, wizard.getProjectObjectModel());
+				referencedPomSkeleton = w.toString();
+			}
+			else
+			{
+				referencedPomSkeleton =  PomSkeletonBuilder.getSkeletonBuilder().getPomSkeleton(fCurrProject.getName());
+			}
+			IFile referencedProjectFile = fCurrProject.getFile("project.xml"); //$NON-NLS-1$
 			referencedProjectFile.create(new ByteArrayInputStream(referencedPomSkeleton.getBytes()), false, null);
+
 			Project pom = ProjectReader.getReader().read(FileUtils.getPom(fCurrProject));
+
 			
 			monitor.worked(1);
 		}
@@ -239,47 +312,4 @@ public class MavenProjectWizardSecondPage extends JavaCapabilityConfigurationPag
 			monitor.done();
 		}		
 	}
-
-	/**
-	 * This method is called from the wizard on cancel.
-	 */
-	public void performCancel() {
-		if (fCurrProject == null || !fCurrProject.exists()) {
-			return;
-		}
-		
-		IRunnableWithProgress op= new IRunnableWithProgress() {
-			public void run(IProgressMonitor monitor) throws InvocationTargetException {
-
-				final boolean noProgressMonitor= Platform.getLocation().equals(fCurrProjectLocation);
-
-				if (monitor == null || noProgressMonitor) {
-					monitor= new NullProgressMonitor();
-				}
-
-				monitor.beginTask(Mevenide.getResourceString("MavenProjectWizardSecondPage.operation.remove"), 3); //$NON-NLS-1$
-
-				try {
-					boolean removeContent= !fKeepContent && fCurrProject.isSynchronized(IResource.DEPTH_INFINITE);
-					fCurrProject.delete(removeContent, false, monitor);
-				} catch (CoreException e) {
-					throw new InvocationTargetException(e);
-				} finally {
-					monitor.done();
-					fCurrProject= null;
-					fKeepContent= false;
-				}
-			}
-		};
-	
-		try {
-			getContainer().run(false, true, new WorkspaceModifyDelegatingOperation(op, fCurrProject));
-		} catch (InvocationTargetException e) {
-			final String title= Mevenide.getResourceString("MavenProjectWizardSecondPage.error.remove.title"); //$NON-NLS-1$
-			final String message= Mevenide.getResourceString("MavenProjectWizardSecondPage.error.remove.message"); //$NON-NLS-1$
-			ExceptionHandler.handle(e, getShell(), title, message);		
-		} catch  (InterruptedException e) {
-			// cancel pressed
-		}
-	}		
 }
