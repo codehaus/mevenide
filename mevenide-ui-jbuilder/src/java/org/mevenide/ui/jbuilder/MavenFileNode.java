@@ -17,27 +17,19 @@
 package org.mevenide.ui.jbuilder;
 
 import java.io.File;
+import java.lang.reflect.Method;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.StringTokenizer;
 
-import org.apache.maven.project.Dependency;
-import org.mevenide.goals.grabber.IGoalsGrabber;
-import org.mevenide.goals.manager.GoalsGrabbersManager;
-import org.mevenide.project.io.ProjectReader;
-import com.borland.jbuilder.node.JBProject;
 import com.borland.jbuilder.node.XMLFileNode;
-import com.borland.jbuilder.paths.PathSet;
-import com.borland.jbuilder.paths.ProjectPathSet;
 import com.borland.primetime.PrimeTime;
 import com.borland.primetime.node.DuplicateNodeException;
 import com.borland.primetime.node.FileNode;
 import com.borland.primetime.node.Node;
 import com.borland.primetime.node.Project;
 import com.borland.primetime.vfs.Url;
-import org.mevenide.context.IQueryContext;
-import org.mevenide.properties.resolver.PropertyResolverFactory;
-import org.mevenide.context.DefaultQueryContext;
-import org.mevenide.properties.IPropertyResolver;
 
 /**
  * <p>Title: project.xml Project view file node</p>
@@ -57,94 +49,75 @@ public class MavenFileNode extends XMLFileNode {
     private ArrayList goalNodes = new ArrayList();
     private ArrayList childNodes = new ArrayList();
     private long lastModifTime = Long.MAX_VALUE;
+    Object fileNodeWorker = null;
+    Class fileNodeWorkerClass = null;
+    private static FilteringClassLoader filteringClassLoader = null;
 
     public MavenFileNode (Project project, Node parent, Url url)
         throws DuplicateNodeException {
         super(project, parent, url);
+        ArrayList urls = new ArrayList();
+
+        String sysClassPath = System.getProperty("java.class.path");
+        StringTokenizer tokens = new StringTokenizer(sysClassPath, File.pathSeparator);
+        while (tokens.hasMoreTokens()) {
+            String curPath = tokens.nextToken();
+            File pathFile = new File(curPath);
+            try {
+                if ((pathFile.toString().indexOf("maven") == -1) &&
+                    (pathFile.toString().indexOf("mevenide") == -1)) {
+                    System.out.println("Skipping JAR : " + pathFile.toURL());
+                    continue;
+                }
+                System.out.println("Adding path : " + pathFile.toURL());
+                urls.add(pathFile.toURL());
+            } catch (MalformedURLException mue) {
+                mue.printStackTrace();
+            }
+        }
+        System.out.println("Parent to our class loader is : " + getParent());
+        if (filteringClassLoader == null) {
+            filteringClassLoader = new FilteringClassLoader((URL[]) urls.toArray(new URL[urls.size()]));
+        }
+        try {
+            fileNodeWorkerClass = filteringClassLoader.loadClass(
+                "org.mevenide.ui.jbuilder.FileNodeWorker");
+            fileNodeWorker = fileNodeWorkerClass.newInstance();
+        } catch (ClassNotFoundException cnfe) {
+            cnfe.printStackTrace();
+        } catch (InstantiationException ie) {
+            ie.printStackTrace();
+        } catch (IllegalAccessException iae) {
+            iae.printStackTrace();
+        }
 
         if ("project.xml".equalsIgnoreCase(url.getName())) {
             mavenFile = true;
             refreshGoals();
-            refreshDependencies();
+            refreshDependencies(getUrl(), getProject());
         }
 
     }
 
-    private void refreshDependencies () {
-        File parentFile = getUrl().getFileObject().getParentFile();
-        File projectFile = new File(parentFile, "project.xml");
-        if (projectFile.exists()) {
-            ArrayList mavenDependencyUrls = new ArrayList();
-            try {
-                ProjectReader projReader = ProjectReader.getReader();
-                org.apache.maven.project.Project projectPOM = projReader.read(
-                    projectFile);
-                Iterator dependencyIter = projectPOM.getDependencies().iterator();
-                IQueryContext defaultQueryContext = DefaultQueryContext.getNonProjectContextInstance();
-                PropertyResolverFactory propertyResolverFactory = PropertyResolverFactory.getFactory();
-                IPropertyResolver iPropertyResolver = propertyResolverFactory.createContextBasedResolver(defaultQueryContext);
-                String repositoryPath = iPropertyResolver.getResolvedValue("maven.repo.local");
-
-                while (dependencyIter.hasNext()) {
-                    Dependency curDependency = (Dependency) dependencyIter.next();
-                    File jarFile = findDependencyJar(repositoryPath,
-                        curDependency);
-                    if (jarFile != null) {
-                        Url jarUrl = new Url(jarFile);
-                        mavenDependencyUrls.add(jarUrl);
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            // now let's update the library file with the dependencies extracted
-            // from the Maven project descriptor. We do not update the project,
-            // only the library file, so it's the user's choice to insert the
-            // library or not.
-            JBProject jbProject = (JBProject) getProject();
-            File jbProjectFile = jbProject.getUrl().getFileObject();
-            File jbParentFile = jbProjectFile.getParentFile();
-            File mavenLibraryFile = new File(jbParentFile,
-                                             "MavenAutoUpdated.library");
-            ProjectPathSet projectPathSet = jbProject.getPaths();
-            // PathSet[] requiredLibs = projectPathSet.getRequired();
-            PathSet mavenLibrary = projectPathSet.getLibrary("MavenAutoUpdated");
-            Url[] mavenDependencies = (Url[]) mavenDependencyUrls.toArray(new
-                Url[mavenDependencyUrls.size()]);
-            mavenLibrary.setClassPath(mavenDependencies);
-            mavenLibrary.setUrl(new Url(mavenLibraryFile));
-            mavenLibrary.save();
-
-            projectPathSet.reloadLibraries();
+    private void refreshDependencies(Url url, Project project) {
+        ClassLoader curContextClassLoader = Thread.currentThread().getContextClassLoader();
+        Thread.currentThread().setContextClassLoader(filteringClassLoader);
+        try {
+            Class[] parameterTypes = new Class[2];
+            parameterTypes[0] = Url.class;
+            parameterTypes[1] = Project.class;
+            Method refreshDepsMethod = fileNodeWorkerClass.getMethod("refreshDependencies", parameterTypes);
+            Object[] args = new Object[2];
+            args[0] = url;
+            args[1] = project;
+            refreshDepsMethod.invoke(fileNodeWorker, args);
+        } catch (Throwable t) {
+            t.printStackTrace();
+        } finally {
+            Thread.currentThread().setContextClassLoader(curContextClassLoader);
         }
     }
 
-    private File findDependencyJar (String repositoryPath,
-                                    Dependency curDependency) {
-        String type = curDependency.getType();
-        if (type == null) {
-            type = "jar";
-        }
-        String groupId = curDependency.getGroupId();
-        if (groupId == null) {
-            groupId = curDependency.getArtifactId();
-        }
-        String jar = curDependency.getJar();
-        if (jar == null) {
-            jar = curDependency.getArtifactId() + "-" +
-                curDependency.getVersion() + "." + type;
-        }
-        String pathToJar = repositoryPath + File.separator +
-            curDependency.getGroupId() + File.separator + type + "s" +
-            File.separator + jar;
-        File jarFile = new File(pathToJar);
-        if (jarFile.exists()) {
-            return jarFile;
-        } else {
-            return null;
-        }
-    }
 
     private void refreshGoals () {
         System.out.println("Building goals list...");
@@ -152,15 +125,40 @@ public class MavenFileNode extends XMLFileNode {
         lastModifTime = mavenFile.lastModified();
         goalNodes.clear();
         childNodes.clear();
-        initMavenFileNode(getProject(), getUrl());
+        initMavenFileNode(this, getProject(), getUrl(), goalNodes, childNodes);
         System.out.println("Goals list completed.");
+    }
+
+    private void initMavenFileNode(MavenFileNode mavenFileNode, Project project, Url url, ArrayList goalNodes, ArrayList childNodes) {
+        ClassLoader curContextClassLoader = Thread.currentThread().getContextClassLoader();
+        Thread.currentThread().setContextClassLoader(filteringClassLoader);
+        try {
+            Class[] parameterTypes = new Class[5];
+            parameterTypes[0] = MavenFileNode.class;
+            parameterTypes[1] = Project.class;
+            parameterTypes[2] = Url.class;
+            parameterTypes[3] = ArrayList.class;
+            parameterTypes[4] = ArrayList.class;
+            Method refreshDepsMethod = fileNodeWorkerClass.getMethod("initMavenFileNode", parameterTypes);
+            Object[] args = new Object[5];
+            args[0] = mavenFileNode;
+            args[1] = project;
+            args[2] = url;
+            args[3] = goalNodes;
+            args[4] = childNodes;
+            refreshDepsMethod.invoke(fileNodeWorker, args);
+        } catch (Throwable t) {
+            t.printStackTrace();
+        } finally {
+            Thread.currentThread().setContextClassLoader(curContextClassLoader);
+        }
     }
 
     private void refreshIfChanged () {
         long curModifTime = getUrl().getFileObject().lastModified();
         if (curModifTime > lastModifTime) {
             refreshGoals();
-            refreshDependencies();
+            refreshDependencies(getUrl(), getProject());
         }
     }
 
@@ -168,48 +166,6 @@ public class MavenFileNode extends XMLFileNode {
         return mavenFile;
     }
 
-    private void initMavenFileNode (Project project, Url url) {
-        try {
-            IGoalsGrabber projectGoalGrabber = GoalsGrabbersManager.
-                getGoalsGrabber(url.getFileObject().toString());
-
-            buildGoalNodes(project, projectGoalGrabber);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void buildGoalNodes (Project project,
-                                 IGoalsGrabber goalsGrabber) {
-        String[] plugins = goalsGrabber.getPlugins();
-        for (int i = 0; i < plugins.length; i++) {
-            System.out.println("plugin=" + plugins[i]);
-            MavenCollectionNode pluginNode = new MavenCollectionNode(project, this,
-                plugins[i]);
-            childNodes.add(pluginNode);
-            String[] goals = goalsGrabber.getGoals(plugins[i]);
-            for (int j = 0; j < goals.length; j++) {
-                System.out.println("  goal=" + goals[j]);
-                MavenGoalNode newNode = null;
-                if (goals[j].equalsIgnoreCase("(default)")) {
-                    // in the case of the default goal, the full goal name
-                    // is actually the plugin name
-                    newNode = new MavenGoalNode(project, this, goals[j],
-                                                "", plugins[i]);
-                } else {
-                    newNode = new MavenGoalNode(project, this, goals[j],
-                                                "", plugins[i] + ":" + goals[j]);
-                }
-                if (newNode != null) {
-                    pluginNode.addChild(newNode);
-                    goalNodes.add(newNode);
-                } else {
-                    System.out.println("WARNING, NULL MAVENNODE !");
-                }
-            }
-        }
-    }
 
     public boolean hasDisplayChildren () {
         if (!mavenFile) {
