@@ -48,10 +48,7 @@
  */
 package org.mevenide.goals.grabber;
 
-import java.util.Arrays;
-import java.util.Collection;
 
-import junit.framework.TestCase;
 
 /**  
  * 
@@ -59,52 +56,43 @@ import junit.framework.TestCase;
  * @version $Id: DefaultGoalsGrabberTest.java 4 sept. 2003 Exp gdodinet 
  * 
  */
-public class DefaultGoalsGrabberTest extends TestCase {
-	private IGoalsGrabber goalsGrabber;
+public class DefaultGoalsGrabberTest extends AbstractGoalsGrabberTestCase {
 	
-    protected void setUp() throws Exception {
-        goalsGrabber = new DefaultGoalsGrabber();
-    }
+	
+   	protected IGoalsGrabber getGoalsGrabber() throws Exception {
+		return new DefaultGoalsGrabber();
+	}
 
-    protected void tearDown() throws Exception {
-        goalsGrabber = null;
-    }
+	protected String[] getGetPluginsResults() {
+		return new String[] { "java", "jar", "test", "war" };
+	}
+	
+	protected String[] getGetGoalsParameters() {
+		return new String[] { "java" };
+	}
+	
+	protected String[][] getGetGoalsResults() {
+		return new String[][] { 
+			{"jar", "compile", "prepare-filesystem", "jar-resources"} 
+		};
+	}
+	
+	protected String[] getGetDescriptionParameters() {
+		return new String[] { "java:compile", "java:jar"} ;
+	}
 
-    public void testGetPlugins() {
-		Collection plugins = Arrays.asList(goalsGrabber.getPlugins());
-    	assertTrue(plugins.contains("jar"));
-		assertTrue(plugins.contains("java"));
-		assertTrue(plugins.contains("test"));
-		assertTrue(plugins.contains("war"));
-    }
+	protected String[] getGetDescriptionResults() {
+		return new String[] { "Compile the project", "Create the deliverable jar file." };  
+	}
 
-    public void testGetGoals() {
-		String[] goals = goalsGrabber.getGoals("java");
-    	Collection goalsCollection = Arrays.asList(goals);
-    	assertEquals("expected 4 java goals (including java:jar)", 4, goals.length); //including java:jar
-    	assertTrue(goalsCollection.contains("jar"));
-		assertTrue(goalsCollection.contains("compile"));
-		assertTrue(goalsCollection.contains("prepare-filesystem"));
-		assertTrue(goalsCollection.contains("jar-resources"));
-		
-		goals = goalsGrabber.getGoals(null);
-    }
-
-    public void testGetDescription() {
-    	assertEquals("Compile the project", goalsGrabber.getDescription("java:compile"));
-		assertEquals("Create the deliverable jar file.", goalsGrabber.getDescription("java:jar"));
-    }
-
-    public void testGetPrereqs() {
-		String[] prereqs = goalsGrabber.getPrereqs("java:jar");
-		Collection prereqsCollection = Arrays.asList(prereqs);
-		assertEquals(1, prereqs.length);
-		assertTrue(prereqsCollection.contains("jar:jar"));
-		
-		prereqs = goalsGrabber.getPrereqs("java:compile");
-		prereqsCollection = Arrays.asList(prereqs);
-		assertEquals(1, prereqs.length);
-		assertTrue(prereqsCollection.contains("java:prepare-filesystem"));
-    }
+	protected String[] getGetPrereqsParameters() {
+		return new String[] { "java:jar", "java:compile" };
+	}
+	
+	protected String[][] getGetPrereqsResults() {
+		return new String[][] { {"jar:jar"}, {"java:prepare-filesystem"} };
+	}
+	
+ 	
 
 }

@@ -48,59 +48,51 @@
  */
 package org.mevenide.goals.grabber;
 
-import java.io.FileReader;
 
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserFactory;
 
 /**  
- * read custom goals declared in maven.xml
  * 
  * @author Gilles Dodinet (gdodinet@wanadoo.fr)
- * @version $Id: ProjectGoalsGrabber.java 4 sept. 2003 Exp gdodinet 
+ * @version $Id: ProjectGoalsGrabberTest.java 5 sept. 2003 Exp gdodinet 
  * 
  */
-public class ProjectGoalsGrabber extends AbstractGoalsGrabber {
-	private String mavenXmlFile;
+public class ProjectGoalsGrabberTest extends AbstractGoalsGrabberTestCase {
 	
-	public ProjectGoalsGrabber() { }
-	
-    public void refresh() throws Exception {
-		super.refresh();
-    	if ( mavenXmlFile == null ) {
-    		throw new Exception("maven.xml file hasnot been set. Unable to refresh goals.");
-    	}
-    	parseMavenXml();
-    }
-
-	private void parseMavenXml() throws Exception {
-		XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
-		XmlPullParser parser = factory.newPullParser();
-		parser.setInput( new FileReader(mavenXmlFile) );
-
-		int eventType = parser.getEventType();
-
-		while ( eventType != XmlPullParser.END_DOCUMENT )
-		{
-			if ( eventType == XmlPullParser.START_TAG )
-			{
-				if ( parser.getName().equals("goal")) {
-					String fullyQualifiedName = parser.getAttributeValue(null, "name");
-					String prereqs = parser.getAttributeValue(null, "prereqs");
-					String description = parser.getAttributeValue(null, "description");
-					registerGoal(fullyQualifiedName, description+">"+prereqs);
-				}
-			}
-			eventType = parser.next();
-		}
+	protected IGoalsGrabber getGoalsGrabber() throws Exception {
+		IGoalsGrabber goalsGrabber = new ProjectGoalsGrabber();
+		((ProjectGoalsGrabber)goalsGrabber).setMavenXmlFile(this.getClass().getResource("/maven.xml").getFile());
+		return goalsGrabber;	
 	}
 
-    public String getMavenXmlFile() {
-        return mavenXmlFile;
+	protected String[] getGetPluginsResults() {
+		return new String[] { "build", "build-all", "build-site" };
+	}
+    
+	protected String[] getGetGoalsParameters() {
+		return new String[] { "build-all" };
+	}
+	
+	protected String[][] getGetGoalsResults() {
+		return new String[][] { {"(default)"} }; 
+	} 
+	
+	protected String[] getGetDescriptionParameters() {
+		return new String[] { "build", "build-all", "build-site" } ; 
+	}
+    
+    protected String[] getGetDescriptionResults() {
+    	return new String[] { "Build each Mevenide module", "Build all Mevenide modules", "Build Mevenide Site" };
     }
 
-    public void setMavenXmlFile(String mavenXmlFile) {
-        this.mavenXmlFile = mavenXmlFile;
-    }
+	protected String[] getGetPrereqsParameters() {
+		return new String[] { "build-all" };
+	}
+
+	protected String[][] getGetPrereqsResults() {
+		return new String[][] { 
+			{ "prereqs:prereq1", "prereqs:prereq2","prereq3" }
+		};
+	}
+     
 
 }

@@ -50,16 +50,10 @@ package org.mevenide.goals.grabber;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -71,19 +65,17 @@ import org.apache.commons.logging.LogFactory;
  * @version $Id$
  * 
  */
-public class DefaultGoalsGrabber implements IGoalsGrabber{
+public class DefaultGoalsGrabber extends AbstractGoalsGrabber {
     private static Log log = LogFactory.getLog(DefaultGoalsGrabber.class);
     
-	private Map plugins, prereqs, descriptions ;
+	
 	
   	public DefaultGoalsGrabber() throws Exception { 
   		refresh();
   	}
     
  	public void refresh() throws Exception {
-		plugins = new HashMap();
-		prereqs  = new HashMap();
- 		descriptions  = new HashMap();
+		super.refresh();
 
         File pluginsLocal = new File(new File(System.getProperty("user.home"), ".maven"), "plugins");
   		File goalsCache = new File(pluginsLocal, "goals.cache");
@@ -100,71 +92,6 @@ public class DefaultGoalsGrabber implements IGoalsGrabber{
 		}  
 		
     }
-
-	private void registerGoal(String fullyQualifiedGoalName, String properties) {
-		registerGoalName(fullyQualifiedGoalName);
-		registerGoalProperties(fullyQualifiedGoalName, properties);
-	}
-
-    private void registerGoalName(String fullyQualifiedGoalName) {
-        String[] splittedGoal = StringUtils.split(fullyQualifiedGoalName, ":");
-		String plugin = splittedGoal[0];
-
-		String goalName = "(default)";
-		if ( splittedGoal.length > 1 ) {
-			goalName = splittedGoal[1];
-		}
-
-		List goals = (List) plugins.get(plugin);
-		if ( goals == null ) { 
-			goals = new ArrayList();
-		}
-		if ( !goals.contains(goalName) ) {
-			goals.add(goalName);
-		}
-		plugins.remove(plugin);
-		plugins.put(plugin, goals);
-    }
-
-    private void registerGoalProperties(String fullyQualifiedGoalName, String properties) {
-        String[] splittedProperties = StringUtils.split(properties, ">");
-		if ( splittedProperties.length > 0 ) {
-			String description = splittedProperties[0];
-			descriptions.put(fullyQualifiedGoalName, description);
-		}
-		if ( splittedProperties.length > 1 ) {
-			String[] commaSeparatedPrereqs = StringUtils.split(splittedProperties[1], ",");
-			prereqs.put(fullyQualifiedGoalName, commaSeparatedPrereqs);
-		}
-    }
-
-    public String[] getPlugins() {
-        return toStringArray(plugins.keySet());
-    }
-    
-	public String[] getGoals(String plugin) {
-		if ( plugin == null ) {
-			return new String[0];
-		}
-		return toStringArray((Collection)plugins.get(plugin));
-	}
-    
-  	public String getDescription(String fullyQualifiedGoalName) {
-        return (String) descriptions.get(fullyQualifiedGoalName);
-    }
-     
-    public String[] getPrereqs(String fullyQualifiedGoalName) {
-        return (String[]) prereqs.get(fullyQualifiedGoalName);
-    } 
-    
-    private String[] toStringArray(Collection stringCollection) {
-		Object[] obj = stringCollection.toArray();
-		String[] strg = new String[obj.length];
-		for (int i = 0; i < strg.length; i++) {
-			strg[i] = (String) obj[i];
-        } 
-		return strg;
-	}
 
 }
 

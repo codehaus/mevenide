@@ -48,59 +48,76 @@
  */
 package org.mevenide.goals.grabber;
 
-import java.io.FileReader;
+import java.util.Arrays;
+import java.util.Collection;
 
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserFactory;
+import junit.framework.TestCase;
 
 /**  
- * read custom goals declared in maven.xml
  * 
  * @author Gilles Dodinet (gdodinet@wanadoo.fr)
- * @version $Id: ProjectGoalsGrabber.java 4 sept. 2003 Exp gdodinet 
+ * @version $Id: AbstractGoalsGrabberTestCase.java 5 sept. 2003 Exp gdodinet 
  * 
  */
-public class ProjectGoalsGrabber extends AbstractGoalsGrabber {
-	private String mavenXmlFile;
+public abstract class AbstractGoalsGrabberTestCase extends TestCase {
+	protected IGoalsGrabber goalsGrabber;
 	
-	public ProjectGoalsGrabber() { }
-	
-    public void refresh() throws Exception {
-		super.refresh();
-    	if ( mavenXmlFile == null ) {
-    		throw new Exception("maven.xml file hasnot been set. Unable to refresh goals.");
-    	}
-    	parseMavenXml();
-    }
-
-	private void parseMavenXml() throws Exception {
-		XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
-		XmlPullParser parser = factory.newPullParser();
-		parser.setInput( new FileReader(mavenXmlFile) );
-
-		int eventType = parser.getEventType();
-
-		while ( eventType != XmlPullParser.END_DOCUMENT )
-		{
-			if ( eventType == XmlPullParser.START_TAG )
-			{
-				if ( parser.getName().equals("goal")) {
-					String fullyQualifiedName = parser.getAttributeValue(null, "name");
-					String prereqs = parser.getAttributeValue(null, "prereqs");
-					String description = parser.getAttributeValue(null, "description");
-					registerGoal(fullyQualifiedName, description+">"+prereqs);
-				}
-			}
-			eventType = parser.next();
-		}
+	protected void setUp() throws Exception {
+		goalsGrabber = getGoalsGrabber();
+		goalsGrabber.refresh();
 	}
 
-    public String getMavenXmlFile() {
-        return mavenXmlFile;
+	protected void tearDown() throws Exception {
+        goalsGrabber = null;
     }
+    
+	public void testGetPlugins() {
+		Collection plugins = Arrays.asList(goalsGrabber.getPlugins());
+		for (int i = 0; i < getGetPluginsResults().length; i++) {
+			assertTrue(plugins.contains(getGetPluginsResults()[i]));    
+        }
+	}
 
-    public void setMavenXmlFile(String mavenXmlFile) {
-        this.mavenXmlFile = mavenXmlFile;
-    }
+	public void testGetGoals() {
+		for (int i = 0; i < getGetGoalsParameters().length; i++) {
+			String[] goals = goalsGrabber.getGoals(getGetGoalsParameters()[i]);
+			Collection goalsCollection = Arrays.asList(goals);
+			assertEquals(getGetGoalsResults()[i].length, goals.length);
+			for (int j = 0; j < getGetGoalsResults()[i].length; j++) {
+				assertTrue(goalsCollection.contains(getGetGoalsResults()[i][j]));
+            }
+        }
+		goalsGrabber.getGoals(null);
+	}
 
+	public void testGetDescription() {
+		for (int i = 0; i < getGetDescriptionParameters().length; i++) {
+			assertEquals(getGetDescriptionResults()[i], goalsGrabber.getDescription(getGetDescriptionParameters()[i]));
+        }
+	}
+
+	public void testGetPrereqs() {
+		for (int i = 0; i < getGetPrereqsParameters().length; i++) {
+			String[] prereqs = goalsGrabber.getPrereqs(getGetPrereqsParameters()[i]);
+			Collection prereqsCollection = Arrays.asList(prereqs);
+			assertEquals(getGetPrereqsResults()[i].length, prereqs.length);
+			for (int j = 0; j < getGetPrereqsResults()[i].length; j++) {
+                assertTrue(prereqsCollection.contains(getGetPrereqsResults()[i][j]));
+            }
+        }
+	}
+	
+	
+	protected abstract IGoalsGrabber getGoalsGrabber() throws Exception  ;
+
+	protected abstract String[] getGetPluginsResults() ;
+
+	protected abstract String[] getGetGoalsParameters() ;
+	protected abstract String[][] getGetGoalsResults() ;
+
+	protected abstract String[] getGetDescriptionParameters() ;
+	protected abstract String[] getGetDescriptionResults() ;
+
+	protected abstract String[] getGetPrereqsParameters() ;
+	protected abstract String[][] getGetPrereqsResults() ;
 }
