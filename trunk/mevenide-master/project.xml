@@ -7,7 +7,7 @@
   <id>mevenide-master</id>
   <artifactId>mevenide-master</artifactId>
   <currentVersion>0.2-SNAPSHOT</currentVersion>
-  <url>http://mevenide.sf.net/</url>
+  <url>http://mevenide.codehaus.org/</url>
   
   <siteDirectory>/home/projects/mevenide/public_html</siteDirectory>
   
