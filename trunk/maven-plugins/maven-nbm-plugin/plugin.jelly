@@ -38,7 +38,7 @@
   </goal>
 
   <goal name="nbm:jar"
-      prereqs="nbm:init" 
+      prereqs="jar:jar, nbm:init" 
       description="Build the Netbeans jar.">
 <!--    <j:set var="maven.jar.manifest" value="${maven.nbm.manifest}"/> -->
 <!--    <j:set var="bundle" value="${maven.nbm.manifest.bundle.basedir}"/>
@@ -49,9 +49,9 @@ The maven.nbm.manifest.bundle.basedir and  maven.nbm.manifest.bundle.include hav
       </fail>
     </j:if>
 -->
-    <util:file var="thisPom" name="${basedir}/project.xml"/>  
+<!--    <util:file var="thisPom" name="${basedir}/project.xml"/>  -->
 <!--    <ant:echo message="manifest=${maven.jar.manifest}" /> -->
-    <maven:maven descriptor="${thisPom}" goals="jar:install"/> 
+<!--    <maven:maven descriptor="${thisPom}" goals="jar:install"/> -->
     <!-- copy the original jar made by jar:jar goal to target/nbm -->
     <ant:copy toDir="${maven.nbm.build.dir}" file="${maven.build.dir}/${maven.final.name}.jar"/>
     <!--
