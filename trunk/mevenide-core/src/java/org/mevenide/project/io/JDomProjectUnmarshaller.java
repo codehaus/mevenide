@@ -147,9 +147,9 @@ public class JDomProjectUnmarshaller implements IProjectUnmarshaller {
         Element elem = projectElement.getChild("organization");
         if ( elem != null ) {
             organization = new Organization();
-            elem.getChildText("name");
-            elem.getChildText("url");
-            elem.getChildText("logo");
+            organization.setName(elem.getChildText("name"));
+            organization.setUrl(elem.getChildText("url"));
+            organization.setLogo(elem.getChildText("logo"));
         }
         return organization;
     }
