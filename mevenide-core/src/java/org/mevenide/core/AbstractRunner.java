@@ -80,7 +80,7 @@ public abstract class AbstractRunner {
 
 		} 
         catch (Exception ex) {
-			ex.printStackTrace();
+			//ex.printStackTrace();
 		} 
         finally {
 			//restore user.dir
@@ -116,7 +116,7 @@ public abstract class AbstractRunner {
 	 * 
 	 * @see org.mevenide.core.Environment
 	 */
-	protected abstract void initEnvironment();
+	protected abstract void initEnvironment() throws Exception ;
 
 	/**
 	 * @return String the working Directory
