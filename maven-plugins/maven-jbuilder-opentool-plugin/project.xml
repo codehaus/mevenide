@@ -9,6 +9,13 @@
     <inceptionYear>2004</inceptionYear>
     <package>org.mevenide.tags</package>
     <shortDescription>This plugin generates JBuilder OpenTool extension packages</shortDescription>
+    <versions>
+    	<version>
+    		<id>0.1</id>
+    		<name>0.1</name>
+    		<tag>V_0_1_0</tag>
+    	</version>
+	</versions>    	    	
     <developers>
         <developer>
             <name>Serge Huber</name>
