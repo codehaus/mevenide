@@ -65,8 +65,16 @@ import org.apache.commons.lang.StringUtils;
 public abstract class AbstractGoalsGrabber implements IGoalsGrabber {
 	protected Map plugins, prereqs, descriptions = new HashMap();
 	
+	protected AbstractGoalsGrabber() {
+		initMaps();
+	}
+	
 	public void refresh() throws Exception {
-		plugins = new HashMap();
+		initMaps();
+    }
+
+    private void initMaps() {
+        plugins = new HashMap();
 		prereqs  = new HashMap();
 		descriptions  = new HashMap();
     }
@@ -113,14 +121,14 @@ public abstract class AbstractGoalsGrabber implements IGoalsGrabber {
     }
 
     public String[] getGoals(String plugin) {
-    	if ( plugin == null ) {
-    		return new String[0];
+    	if ( plugin == null || (Collection)plugins.get(plugin) == null ) {
+    		return null;
     	}
     	return toStringArray((Collection)plugins.get(plugin));
     }
 
     public String getDescription(String fullyQualifiedGoalName) {
-        return (String) descriptions.get(fullyQualifiedGoalName);
+    	return (String) descriptions.get(fullyQualifiedGoalName);
     }
 
     public String[] getPrereqs(String fullyQualifiedGoalName) {
