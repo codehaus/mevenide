@@ -72,7 +72,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IFileEditorInput;
-import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.eclipse.ui.part.MultiPageEditorPart;
@@ -619,7 +618,8 @@ public class MevenidePomEditor extends MultiPageEditorPart {
 	public void setPropertySourceSelection(ISelection selection) {
 		try {
 			selectionProvider.setSelection(selection);
-			IViewPart part = getSite().getPage().showView("org.eclipse.ui.views.PropertySheet");
+			//open the properties view
+			getSite().getPage().showView("org.eclipse.ui.views.PropertySheet");
 		} catch (PartInitException e) {
 			log.error(e);
 		}
