@@ -130,7 +130,7 @@ public class MavenProject implements org.netbeans.api.project.Project {
             if (path != null) {
                 File parent = FileUtil.toFile(getProjectDirectory());
                 File src = new File(parent.getAbsolutePath() + "/" + path);
-                return src.toURI();
+                return FileUtil.normalizeFile(src).toURI();
             }
         }
         // this one should not fail
@@ -149,7 +149,7 @@ public class MavenProject implements org.netbeans.api.project.Project {
             if (path != null) {
                 File parent = FileUtil.toFile(getProjectDirectory());
                 File src = new File(parent.getAbsolutePath() + "/" + path);
-                return src.toURI();
+                return FileUtil.normalizeFile(src).toURI();
             }
         }
         // this one should not fail

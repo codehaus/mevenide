@@ -98,7 +98,15 @@ class ResourcesRootChildren extends Children.Keys
         logger.debug("createNodes() dir=" + FileUtil.toFile(project.getProjectDirectory()));
         if (res.getDirectory() != null) {
             logger.debug("rootdir=" + res.getDirectory());
-            FileObject folder = FileUtilities.findFolder(project.getProjectDirectory(), res.getDirectory());
+            String resDir = project.getPropertyResolver().resolveString(res.getDirectory());
+            FileObject folder = FileUtilities.findFolder(project.getProjectDirectory(), 
+                                    resDir);
+            if (folder == null) {
+                // maybe we got a absolutepath in the basedir definition.
+                File fl = FileUtil.normalizeFile(new File(resDir));
+                FileObject[] fos = FileUtil.fromFile(fl);
+                folder = (fos.length > 0 ? fos[0] : null);
+            }
             if (folder != null) {
                 DataFolder dofolder = DataFolder.findFolder(folder);
                 File rootPath = FileUtil.toFile(folder);

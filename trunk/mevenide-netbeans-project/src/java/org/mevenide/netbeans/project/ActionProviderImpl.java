@@ -73,7 +73,7 @@ public class ActionProviderImpl implements ActionProvider
         MavenExecutor exec = new MavenExecutor(project, goal);
         exec.setNoBanner(MavenSettings.getDefault().isNoBanner());
         exec.setOffline(MavenSettings.getDefault().isOffline());
-        ExecutorTask task = ExecutionEngine.getDefault().execute("maven", exec, exec.getInputOutput());
+        ExecutorTask task = ExecutionEngine.getDefault().execute("Maven", exec, exec.getInputOutput());
 //        RequestProcessor.getDefault().post();
         if ("javadoc".equals(goal)) {
             task.addTaskListener(new TaskListener() {
