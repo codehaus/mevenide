@@ -30,6 +30,7 @@ public class OriginChangeCellEditor extends DefaultCellEditor {
     /** Creates a new instance of OriginChangeCellEditor */
     public OriginChangeCellEditor(final OriginChange change) {
         super(new JTextField());
+        setClickCountToStart(1);
         super.editorComponent = change.getComponent();
         super.delegate = new EditorDelegate() {
             public void setValue(Object value) { 

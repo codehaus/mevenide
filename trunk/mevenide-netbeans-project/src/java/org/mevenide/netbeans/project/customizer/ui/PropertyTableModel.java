@@ -117,7 +117,7 @@ public class PropertyTableModel implements TableModel, TableCellRenderer {
     
     public String getColumnName(int column) {
         if (column == COLUMN_KEY) {
-            return "Property key";
+            return "Property Key";
         }
         if (column == COLUMN_VALUE) {
             return "Property Value";
@@ -151,8 +151,10 @@ public class PropertyTableModel implements TableModel, TableCellRenderer {
     public void setValueAt(Object obj, int row, int column) {
         if (column == COLUMN_VALUE) {
             TableRowPropertyChange change = (TableRowPropertyChange)lst.get(row);
-            change.setNewValue(obj.toString());
-            fireTableModelChange();
+            if (!obj.toString().equals(change.getNewValue())) {
+                change.setNewValue(obj.toString());
+                fireTableModelChange();
+            }
         }
         if (column == COLUMN_ORIGIN) {
             TableRowPropertyChange change = (TableRowPropertyChange)lst.get(row);
