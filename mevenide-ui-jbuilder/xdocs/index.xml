@@ -2,11 +2,9 @@
 <document>
 
   	<properties>
-    	<author email="rhill@wanadoo.fr">Gilles Dodinet</author>
-    	<title>Mevenide Goals Grabber Overview</title>
+    	<author email="shuber2@jahia.com">Serge Huber</author>
+    	<title>Maven JBuilder OpenTool</title>
   	</properties>
-  	
-  	
   	
 	<body>
 		<section name="Overview">
