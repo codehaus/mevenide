@@ -97,7 +97,7 @@
         </tr> 
         <tr>
         	<td>maven.eclipse.plugin.build.mode</td>
-        	<td>Optional. No default value.</td>
+        	<td>Optional. DEfault value is <code>bundle</code></td>
         	<td>
         		<p>build mode. if value != 'dist' then dependencies will be handled as runtime libraries, else dependencies will be handled as require imports</p>
         	</td>
@@ -108,6 +108,11 @@
             <td>
                 <p>defines the default value for $plugin/runtime/library/export elements. if empty no export element is added.</p>
             </td>
+        </tr>
+        <tr>
+            <td>maven.eclipse.plugin.licenses.dir</td>
+            <td>Optional. default value is <code>${basedir}/licenses</code></td>
+            <td><p>directory where 3rd party dependency licenses can be found</p></td>
         </tr>
      </table>
      </div>
