@@ -18,12 +18,16 @@
 package org.mevenide.netbeans.project;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
+import java.util.Properties;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.mevenide.netbeans.project.exec.MavenExecutor;
+import org.mevenide.properties.IPropertyResolver;
 import org.netbeans.spi.project.ActionProvider;
 import org.openide.awt.HtmlBrowser;
 import org.openide.execution.ExecutionEngine;
@@ -42,6 +46,28 @@ import org.openide.util.TaskListener;
 public class ActionProviderImpl implements ActionProvider
 {
     private static final Log logger = LogFactory.getLog(ActionProviderImpl.class);
+    private static final Properties defaultIDEGoals;
+    
+    public static final String COMMAND_MULTIPROJECTBUILD = "multiprojectbuild"; //NOI18N
+    public static final String COMMAND_MULTIPROJECTCLEAN = "multiprojectclean"; //NOI18N
+    static {
+        defaultIDEGoals = new Properties();
+        InputStream str = Thread.currentThread().getContextClassLoader().getResourceAsStream("org/mevenide/netbeans/project/exec/execdefaults.properties");
+        if (str != null) {
+            try {
+                defaultIDEGoals.load(str);
+            } catch (IOException exc) {
+                logger.error("cannot read the default props file", exc);
+            } finally {
+                try {
+                    str.close();
+                } catch (IOException exc) {
+                }
+            }
+        } else {
+            logger.error("cannot read the default props file");
+        }
+    }
     
     private MavenProject project;
     private static String[] supported = new String[] {
@@ -63,37 +89,42 @@ public class ActionProviderImpl implements ActionProvider
         return supported;
     }
     
+    private String getGoalDefForAction(String actionName) {
+        IPropertyResolver res = project.getPropertyResolver();
+        String key = "maven.netbeans.exec." + actionName;
+        String value = res.getResolvedValue(key);
+        if (value == null) {
+            value = defaultIDEGoals.getProperty(key);
+        }
+        return value;
+    }
+    
     public void invokeAction(String str, Lookup lookup) throws java.lang.IllegalArgumentException
     {
-        String goal = str;
-        if (ActionProvider.COMMAND_BUILD.equals(str)) {
-            goal = "jar";
-        }
-        if (ActionProvider.COMMAND_CLEAN.equals(str)) {
-            goal = "clean";
-        }
-        if (ActionProvider.COMMAND_REBUILD.equals(str)) {
-            goal = "clean jar";
-        }
-        if (ActionProvider.COMMAND_TEST.equals(str)) {
-            goal = "test";
-        }
-        if (ActionProvider.COMMAND_TEST_SINGLE.equals(str)) {
-            FileObject[] fos = findTestSources(lookup);
-            if (fos != null && fos.length == 1) {
-                FileObject testSrcDir = FileUtil.toFileObject(new File(project.getTestSrcDirectory()));
-                String path = FileUtil.getRelativePath(testSrcDir, fos[0]);
-                path = path.replace('/', '.');
-                path = path.replace('\\', '.');
-                if (path.endsWith(".java")) {
-                    path = path.substring(0, path.length() - ".java".length());
+        String goal = getGoalDefForAction(str);
+        if (goal != null) {
+            int index = goal.indexOf("%TESTCLASS%");
+            if (index != -1) {
+                FileObject[] fos = findTestSources(lookup);
+                if (fos != null && fos.length == 1) {
+                    FileObject testSrcDir = FileUtil.toFileObject(new File(project.getTestSrcDirectory()));
+                    String path = FileUtil.getRelativePath(testSrcDir, fos[0]);
+                    path = path.replace('/', '.');
+                    path = path.replace('\\', '.');
+                    if (path.endsWith(".java")) {
+                        path = path.substring(0, path.length() - ".java".length());
+                    }
+                    goal = goal.substring(0, index) + path + goal.substring(index + "%TESTCLASS%".length());
+                    System.out.println("goal=" + goal);
+                } else {
+                    logger.debug("cannot execute:" + goal);
+                    return;
                 }
-                goal = "-Dtestcase=" + path + " test:single";
-            } else {
-                return;
             }
+            runGoal(goal, lookup);
+        } else {
+            logger.error("cannot find the action=" + str);
         }
-        runGoal(goal, lookup);
     }
     
     public void runGoal(String goal, Lookup lookup) throws java.lang.IllegalArgumentException {
@@ -168,12 +199,12 @@ public class ActionProviderImpl implements ActionProvider
     }        
     
     
-    public Action createBasicMavenAction(String name, String goals) {
-        return new BasicAction(name, goals);
+    public Action createBasicMavenAction(String name, String action) {
+        return new BasicAction(name, action);
     }
-    public Action createMultiProjectAction(String name, String goals) {
-        return new MultiProjectAction(name, goals);
-    }
+//    public Action createMultiProjectAction(String name, String goals) {
+//        return new MultiProjectAction(name, goals);
+//    }
     
     private class BasicAction extends AbstractAction {
         private String nm;
@@ -190,23 +221,23 @@ public class ActionProviderImpl implements ActionProvider
         }
     }
     
-    private class MultiProjectAction extends AbstractAction {
-        private String nm;
-        private String gls;
-        
-        
-        private MultiProjectAction(String name, String goals) {
-            gls = goals;
-            putValue(Action.NAME, name);
-        }
-        
-        public void actionPerformed(java.awt.event.ActionEvent e) {
-            if ("clean".equals(gls)) {
-                ActionProviderImpl.this.invokeAction("multiproject:clean", ActionProviderImpl.this.project.getLookup());
-                return;
-            }
-            ActionProviderImpl.this.invokeAction("multiproject:goal -Dgoal=" + gls, ActionProviderImpl.this.project.getLookup());
-        }
-    }
+//    private class MultiProjectAction extends AbstractAction {
+//        private String nm;
+//        private String gls;
+//        
+//        
+//        private MultiProjectAction(String name, String goals) {
+//            gls = goals;
+//            putValue(Action.NAME, name);
+//        }
+//        
+//        public void actionPerformed(java.awt.event.ActionEvent e) {
+//            if ("clean".equals(gls)) {
+//                ActionProviderImpl.this.runGoal("multiproject:clean", ActionProviderImpl.this.project.getLookup());
+//                return;
+//            }
+//            ActionProviderImpl.this.runGoal("multiproject:goal -Dgoal=" + gls, ActionProviderImpl.this.project.getLookup());
+//        }
+//    }
 
 }
