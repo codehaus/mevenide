@@ -110,5 +110,17 @@ public class DependencyGroup extends ArtifactGroup {
 	public List getExcludedDependencies() {
 		return excludedArtifacts;
 	}
+	
+	public boolean containsDependency(Dependency dependency) {
+		boolean contains = false;
+		for (int i = 0; i < artifacts.size(); i++) {
+			log.debug("Testing equality between " + DependencyUtil.toString((Dependency) artifacts.get(i)) + " and " + DependencyUtil.toString(dependency));
+			if ( DependencyUtil.areEquals((Dependency) artifacts.get(i), dependency)) {
+				contains = true;
+				break;
+			}
+		}
+		return contains;
+	}
 }
 
