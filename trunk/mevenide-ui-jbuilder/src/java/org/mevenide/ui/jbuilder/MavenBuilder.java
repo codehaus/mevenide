@@ -160,6 +160,10 @@ public class MavenBuilder extends CodeGenerator {
     }
 
     public PropertyPageFactory getPageFactory (Object topic) {
+        return null;
+    }
+    /*
+    public PropertyPageFactory getPageFactory (Object topic) {
         if (topic instanceof MavenFileNode) {
             final MavenFileNode mavenFileNode = (MavenFileNode) topic;
             if (mavenFileNode.isMavenFile()) {
@@ -174,6 +178,7 @@ public class MavenBuilder extends CodeGenerator {
         }
         return null;
     }
+    */
 
     static private boolean isMavenNode (Node node) {
         if (node instanceof MavenFileNode) {

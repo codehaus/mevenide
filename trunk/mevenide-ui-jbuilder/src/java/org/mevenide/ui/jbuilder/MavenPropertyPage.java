@@ -21,8 +21,6 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
 
 import com.borland.jbuilder.node.XMLFileNode;
 import com.borland.primetime.help.HelpTopic;
@@ -34,9 +32,11 @@ import com.borland.primetime.properties.PropertyPage;
  */
 public class MavenPropertyPage extends PropertyPage {
     private GridBagLayout gridBagLayout1 = new GridBagLayout();
-    private JCheckBox obfuscateCheckBox = new JCheckBox();
+    private JCheckBox debugModeCheckBox = new JCheckBox();
+    private JCheckBox offLineModeCheckBox = new JCheckBox();
     private XMLFileNode archiveNode;
-    private JLabel label = new JLabel();
+    private JLabel debugLabel = new JLabel();
+    private JLabel offlineLabel = new JLabel();
 
     public MavenPropertyPage (XMLFileNode xmlFileNode) {
         try {
@@ -49,7 +49,9 @@ public class MavenPropertyPage extends PropertyPage {
 
     public void writeProperties () {
         MavenPropertyGroup.DEBUG_MODE.setBoolean(archiveNode,
-                                                 obfuscateCheckBox.isSelected());
+                                                 debugModeCheckBox.isSelected());
+        MavenPropertyGroup.OFFLINE_MODE.setBoolean(archiveNode,
+                                                   offLineModeCheckBox.isSelected());
     }
 
     public HelpTopic getHelpTopic () {
@@ -57,27 +59,29 @@ public class MavenPropertyPage extends PropertyPage {
     }
 
     public void readProperties () {
-        obfuscateCheckBox.setSelected(MavenPropertyGroup.DEBUG_MODE.
+        debugModeCheckBox.setSelected(MavenPropertyGroup.DEBUG_MODE.
+                                      getBoolean(archiveNode));
+        offLineModeCheckBox.setSelected(MavenPropertyGroup.OFFLINE_MODE.
                                       getBoolean(archiveNode));
     }
 
     private void jbInit ()
         throws Exception {
-        obfuscateCheckBox.setText("Maven");
-        obfuscateCheckBox.setMnemonic('m');
-        label.setText(
-            "Select the checkbox if you want to start Maven in debug mode");
+        debugModeCheckBox.setText("Debug mode");
+        debugModeCheckBox.setMnemonic('d');
+        offLineModeCheckBox.setText("Offline mode");
+        offLineModeCheckBox.setMnemonic('o');
+        debugLabel.setText(
+            "Select the checkbox to start Maven in debug mode");
+        offlineLabel.setText("Select the checkbox to start Maven in offline mode");
         this.setLayout(gridBagLayout1);
-        add(label, new GridBagConstraints(0, 0, 2, 1, 1.0, 0.0,
-                                          GridBagConstraints.CENTER,
-                                          GridBagConstraints.HORIZONTAL,
-                                          new Insets(0, 0, 6, 0), 0, 0));
-        add(obfuscateCheckBox, new GridBagConstraints(0, 1, 2, 1, 0.0, 0.0,
-            GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
-            new Insets(0, 0, 0, 0), 0, 0));
-        add(new JPanel(), new GridBagConstraints(1, 5, 1, 1, 0.0, 1.0,
-                                                 GridBagConstraints.CENTER,
-                                                 GridBagConstraints.VERTICAL,
-                                                 new Insets(0, 0, 0, 0), 0, 0));
+        add(debugLabel,   new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0
+            ,GridBagConstraints.NORTHWEST, GridBagConstraints.NONE, new Insets(0, 6, 6, 0), 0, 0));
+        add(debugModeCheckBox,     new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0
+            ,GridBagConstraints.NORTHWEST, GridBagConstraints.NONE, new Insets(0, 32, 0, 0), 0, 0));
+        add(offlineLabel,    new GridBagConstraints(0, 3, 1, 1, 0.0, 0.0
+            ,GridBagConstraints.NORTHWEST, GridBagConstraints.NONE, new Insets(12, 6, 6, 0), 0, 0));
+        add(offLineModeCheckBox,   new GridBagConstraints(0, 4, 1, 1, 0.0, 0.0
+            ,GridBagConstraints.NORTHWEST, GridBagConstraints.NONE, new Insets(0, 32, 0, 0), 0, 0));
     }
 }

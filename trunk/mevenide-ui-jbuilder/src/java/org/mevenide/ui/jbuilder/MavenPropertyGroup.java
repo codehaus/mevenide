@@ -17,7 +17,6 @@
 package org.mevenide.ui.jbuilder;
 
 import com.borland.primetime.properties.NodeBooleanProperty;
-import com.borland.primetime.properties.NodeProperty;
 import com.borland.primetime.properties.PropertyGroup;
 import com.borland.primetime.properties.PropertyManager;
 import com.borland.primetime.properties.PropertyPage;
@@ -33,7 +32,10 @@ public class MavenPropertyGroup
     private static final String CATEGORY = "maven";
     public static final NodeBooleanProperty DEBUG_MODE = new
         NodeBooleanProperty(
-        CATEGORY, "maven", true);
+        CATEGORY, "mavenDebugMode", false);
+    public static final NodeBooleanProperty OFFLINE_MODE = new
+        NodeBooleanProperty(
+        CATEGORY, "mavenOffLineMode", false);
 
     public static void initOpenTool (byte majorVersion, byte minorVersion) {
 
