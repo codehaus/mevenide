@@ -47,6 +47,9 @@
          <file name="jelly-sql.xml" url="taglibs/jelly-sql.xml"/>
          <file name="jelly-swing.xml" url="taglibs/jelly-swing.xml"/>
          <file name="jelly-util.xml" url="taglibs/jelly-util.xml"/>
+         <file name="jelly-validate.xml" url="taglibs/jelly-validate.xml"/>
+         <file name="jelly-xml.xml" url="taglibs/jelly-xml.xml"/>
+         <file name="jelly-xmlunit.xml" url="taglibs/jelly-xmlunit.xml"/>
          <file name="jelly-werkz.xml" url="taglibs/jelly-werkz.xml"/>
          <file name="jelly-window.xml" url="taglibs/jelly-window.xml"/>
          <file name="jelly-wizard.xml" url="taglibs/jelly-wizard.xml"/>
