@@ -70,6 +70,8 @@
       			
       <ant:delete dir="${maven.eclipse.plugin.temp.dir}"/>
       
+      <!-- @todo customize me -->
+      <ant:copy todir="${basedir}" file="${maven.build.dir}/${maven.final.name}.jar"/>
    </goal>
    
    
