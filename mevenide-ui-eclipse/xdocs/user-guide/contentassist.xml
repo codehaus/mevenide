@@ -62,9 +62,11 @@
 						<font size="-1"><b>Screenshot 5</b> maven.xml Outline page</font>
 						<br/>
 					</center>
+				</p>
+				<p>
 					The list of goals can be filtered via the Menu Manager : it is possible to filter through regular expressions, specific names,
 					or by category - custom vs. global (Screenshot 6).
-					<br/>
+					<br/><br/>
 					<center>
 						<img border="1px" src="../images/screenshots/contentassist/outline_filter.png"/>
 						<br/>
