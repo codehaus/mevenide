@@ -55,7 +55,10 @@ public class TypeBrowser implements RepositoryObjectCollector {
         Group group = (Group) type.getParent();
         try {
             
-            GroupSearch search = new GroupSearch(((Repository) group.getParent()).getRepositoryUrl(), StringUtils.stripEnd(type.getName(), "s"), group.getName());
+            String url = ((Repository) group.getParent()).getRepositoryUrl();
+            url = url.endsWith("/") ? url : url + "/";
+            
+            GroupSearch search = new GroupSearch(url, StringUtils.stripEnd(type.getName(), "s"), group.getName());
             
             Collection searchResults = search.search();
             
