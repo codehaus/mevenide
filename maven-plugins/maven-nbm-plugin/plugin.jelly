@@ -306,7 +306,11 @@ ${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.x
         <ant:setProperty name="homepage" value="${pom.url}" />
         <ant:setProperty name="distribution" value="${pom.url}/${maven.final.name}.nbm" />
       </j:if>
-     <ant:license file="${maven.nbm.license}" name="Licence for ${pom.name}"/>
+      <j:set var="licensename" value="${maven.nbm.license.name}" />
+      <j:if test="${empty(licensename)}">
+          <j:set var="licensename" value="Licence for ${pom.name}" />
+      </j:if>
+     <ant:license file="${maven.nbm.license}" name="${licensename}"/>
      <ant:signature keystore="${maven.nbm.sign.keystore}" 
                     storepass="${maven.nbm.sign.storepass}" 
                     alias="${maven.nbm.sign.alias}"/> -->

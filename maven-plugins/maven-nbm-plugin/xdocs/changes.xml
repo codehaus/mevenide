@@ -8,6 +8,9 @@
   <body>
 
     <release version="0.3" date="in CVS">
+      <action dev="mkleint" type="add">
+        Added property maven.nbm.license.name to use when building the nbm.
+      </action>
     </release>
 
     <release version="0.2" date="20040414">
