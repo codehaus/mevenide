@@ -30,6 +30,14 @@
     <cvs cvsRoot=":pserver:anonymous@cvs.sourceforge.net:/cvsroot/mevenide"
   		 dest="${co.dir}"
   		 package="mevenide-ui-eclipse"/>
+  	<cvs cvsRoot=":pserver:anonymous@cvs.sourceforge.net:/cvsroot/mevenide"
+  		 dest="${co.dir}"
+  		 package="update/mevenide-feature"/>
+  	<cvs cvsRoot=":pserver:anonymous@cvs.sourceforge.net:/cvsroot/mevenide"
+  		 dest="${co.dir}"
+  		 package="update/mevenide-update"/>
+  	<cvs cvsRoot=":pserver:anonymous@cvs.sourceforge.net:/cvsroot/mevenide"
+  		 dest="${co.dir}"
+  		 package="maven-plugins/maven-eclipse-plugin-plugin"/>
   </target>
-  
 </project>
