@@ -13,8 +13,12 @@
  */
 package org.mevenide.project.dependency;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.maven.project.Dependency;
 import org.mevenide.Environment;
+import org.mevenide.project.io.ProjectWriterTest;
 
 import junit.framework.TestCase;
 
@@ -61,4 +65,28 @@ public class DependencyUtilTest extends TestCase {
 		assertTrue(DependencyUtil.isValid(d));
 	}
 	
+	public void testGetNonResolvedDependencies() throws Exception {
+		List deps = new ArrayList();
+	
+		Dependency d1 = new Dependency();
+		deps.add(d1);
+	
+		Dependency d2 = DependencyFactory.getFactory().getDependency(ProjectWriterTest.class.getResource("/my-0.3.txt").getFile());
+		deps.add(d2);
+	
+		Dependency d3 = new Dependency();
+		d3.setGroupId("rtt");
+		d3.setArtifactId("rtt");
+		d3.setVersion("5.0");
+		deps.add(d3);
+	
+		Dependency d4 = new Dependency();
+		d4.setGroupId("rtt");
+		deps.add(d4);
+	
+		List ds = DependencyUtil.getNonResolvedDependencies(deps);
+	
+		assertEquals(1, deps.size());
+		assertEquals(3, ds.size());
+	}
 }
