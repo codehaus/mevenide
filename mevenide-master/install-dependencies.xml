@@ -63,4 +63,7 @@
     <ant:copy file="${eclipse.home}/plugins/org.eclipse.core.variables_3.0.0/variables.jar" 
   	  	      tofile="${maven.repo.local}/eclipse/jars/eclipse-variables-3.0.0.jar"/>
   	  	      
+  	<ant:copy file="${eclipse.home}/plugins/org.eclipse.team.ui_3.0.0/teamui.jar" 
+  	  	      tofile="${maven.repo.local}/eclipse/jars/eclipse-team-ui-3.0.0.jar"/>
+  	  	      
 </j:jelly>
