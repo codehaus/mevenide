@@ -190,7 +190,6 @@ public class DefaultProjectMarshaller implements IProjectMarshaller {
 				marshallRequiredString(developer.getName(), "name");
 				marshallRequiredString(developer.getId(), "id");
 				
-				marshallRoles(developer);
 				marshallContactDetails(developer);
 				
 				serializer.endTag(NAMESPACE, "developer");
@@ -239,6 +238,8 @@ public class DefaultProjectMarshaller implements IProjectMarshaller {
 					serializer.startTag(NAMESPACE, "contributor");
 					
 					marshallRequiredString(contributor.getName(), "name");
+					//marshallRequiredString(contributor.getEmail(), "email");
+					
 					marshallContactDetails(contributor);
 					
 					serializer.endTag(NAMESPACE, "contributor");
