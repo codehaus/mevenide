@@ -82,7 +82,7 @@ public class DependencyGroupLabelProvider implements ITableLabelProvider, IColor
 			return MevenideColors.GREY;
 		}
 		if ( element instanceof DependencyWrapper 
-				&& ((DependencyWrapper) element).isReadOnly() ) {
+				&& ((DependencyWrapper) element).isInPom() ) {
 			return MevenideColors.GREEN;
 		}
 		if ( element instanceof DependencyWrapper
@@ -140,7 +140,7 @@ public class DependencyGroupLabelProvider implements ITableLabelProvider, IColor
 				
 				String artifact =  new File((((DependencyWrapper) element).getDependency()).getArtifact()).getName();
 			
-				//CRAP -- just a workaround
+				//CRAP -- just a workaround.. i dont know yet why it is necessary..
 				if ( artifact.endsWith(".") ) {
 					if ( ((DependencyWrapper) element).getDependency().getType() == null 
 						|| ((DependencyWrapper) element).getDependency().getType().trim().equals("") ) {
