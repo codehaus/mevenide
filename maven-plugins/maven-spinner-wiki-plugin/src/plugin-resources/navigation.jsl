@@ -1,5 +1,10 @@
 	<j:jelly xmlns:j="jelly:core" xmlns:ant="jelly:ant" xmlns:jsl="jelly:jsl" xmlns:x="jelly:xml">
         <jsl:stylesheet var="spinnerWikiNavigationSheet" select="$navFile">
+        	
+        	<jsl:template match="@">
+        		<!-- do nothing. this template is here just to ensure that attribute values wont be outputted as text -->
+        	</jsl:template>
+        
             <jsl:template match="/" trim="false">
                 <jsl:applyTemplates select="project"/>
             </jsl:template>
@@ -26,7 +31,7 @@
                             <x:attribute name="${attrName}">${attrValue}</x:attribute>
                         </x:if>
                     </x:forEach>
-                    <jsl:applyTemplates select="* | text()"/>
+                    <jsl:applyTemplates />
                 </x:element>
                 
             </jsl:template>
@@ -38,7 +43,7 @@
             
             <jsl:template match="*">
                 <x:copy>
-                    <jsl:applyTemplates select="* | text()"/>
+                    <jsl:applyTemplates />
                 </x:copy>
             </jsl:template>
         </jsl:stylesheet>
