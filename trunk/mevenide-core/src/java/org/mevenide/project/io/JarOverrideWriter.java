@@ -46,7 +46,7 @@ class JarOverrideWriter {
 		PropertyModel model = PropertyModelFactory.getFactory().newPropertyModel(propertiesFile, false);
 		
 		model.newKeyPair("maven.jar.override", '=', "on");
-		model.newKeyPair("maven.jar." + artifactId, '=', path);
+		model.newKeyPair("maven.jar." + artifactId, '=', path.replaceAll("\\\\", "/"));
 		model.store(new FileOutputStream(propertiesFile));
 	}
 
