@@ -4,3 +4,4 @@ target
 maven.out
 checkouts
 build.properties
+build
