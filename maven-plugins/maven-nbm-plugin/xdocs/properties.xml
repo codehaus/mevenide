@@ -161,7 +161,7 @@ OpenIDE-Module-Specification-Version: normalized version of ${pom.currentVersion
         <tr>
           <td>maven.nbm.sign.keystore</td>
           <td>
-          <p>Optional. Default value is <code>?</code>.</p>
+          <p>Optional. Since 0.2. Default value is <code>?</code>.</p>
           </td>
           <td>
           </td>
@@ -169,7 +169,7 @@ OpenIDE-Module-Specification-Version: normalized version of ${pom.currentVersion
         <tr>
           <td>maven.nbm.sign.storepass</td>
           <td>
-          <p>Optional. Default value is <code>?</code>.</p>
+          <p>Optional. Since 0.2. Default value is <code>?</code>.</p>
           </td>
           <td>
           </td>
@@ -177,7 +177,7 @@ OpenIDE-Module-Specification-Version: normalized version of ${pom.currentVersion
         <tr>
           <td>maven.nbm.sign.alias</td>
           <td>
-          <p>Optional. Default value is <code>?</code>.</p>
+          <p>Optional. Since 0.2. Default value is <code>?</code>.</p>
           </td>
           <td>
           </td>
@@ -216,13 +216,13 @@ OpenIDE-Module-Specification-Version: normalized version of ${pom.currentVersion
         </tr>
         <tr>
           <td>maven.nbm.build.release.dir</td>
-          <td></td>
+          <td>Since 0.2</td>
           <td>
           </td>
         </tr>
         <tr>
           <td>maven.nbm.autoupdate.name</td>
-          <td></td>
+          <td>Since 0.2</td>
           <td>
           </td>
         </tr>
