@@ -15,6 +15,7 @@ package org.mevenide.ui.eclipse.sync.pom;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
@@ -62,9 +63,25 @@ public class PomSynchronizer extends AbstractPomSynchronizer implements ISynchro
      * @todo GENERALIZE add a POM_FILE_NAME project property
 	 */
 	public void initialize() {
+		
 		this.project = MavenPlugin.getPlugin().getProject();
 		this.pom = project.getFile("project.xml");
-        pathResolver = new DefaultPathResolverDelegate(); 
+		assertPomNotEmpty();
+		pathResolver = new DefaultPathResolverDelegate(); 
+	}
+
+	private void assertPomNotEmpty() {
+		try {
+			InputStream inputStream = pom.getContents(true);
+			if ( inputStream.read() == -1 ) {
+				InputStream stream = PomSynchronizer.class.getResourceAsStream("/templates/standard/project.xml"); 
+				pom.setContents(stream, true, true, null);
+				stream.close();
+			}
+			inputStream.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
     /**
@@ -72,6 +89,7 @@ public class PomSynchronizer extends AbstractPomSynchronizer implements ISynchro
      */
 	protected void mavenize() {
 		try {
+			assertPomNotEmpty();
 			IClasspathEntry[] cpEntries = JavaCore.create(project).getResolvedClasspath(true);
             for (int i = 0; i < cpEntries.length; i++) {
 				updatePom(cpEntries[i]);
