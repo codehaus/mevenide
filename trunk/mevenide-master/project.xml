@@ -9,7 +9,11 @@
   <currentVersion>0.2-SNAPSHOT</currentVersion>
   <url>http://mevenide.sf.net/</url>
   
- 
+  <reports>
+    <report>maven-changes-plugin</report>
+    <report>maven-faq-plugin</report>
+    <report>maven-multiproject-plugin</report>
+  </reports>
  
 </project>
 
