@@ -12,7 +12,7 @@
  * Lesser General Public License for more details.
  * 
  */
-package org.mevenide.core.mock;
+package org.mevenide.core;
 
 /**
  * 

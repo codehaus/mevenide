@@ -10,8 +10,9 @@
       <library name="jdom-1.0b8.jar"/>
       <library name="junit.jar"/>
       <library name="maven.jar"/>
-      <library name="maven-eclipse-get-goals-1.0.jar"/>
-      <library name="maven-plugin.jar">
+      <library name="goals-grabber-1.0.jar"/>
+      <library name="mevenide-core-0.1.jar"/>
+      <library name="mevenide-ui-eclipse-0.1.jar">
          <export name="*"/>
       </library>
       <library name="forehead-1.0-beta-4.jar"/>

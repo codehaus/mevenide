@@ -12,12 +12,11 @@
  * Lesser General Public License for more details.
  * 
  */
-package org.mevenide.core.stub;
+package org.mevenide.core;
 
 import java.io.File;
 
 import org.mevenide.core.AbstractGoalsManager;
-import org.mevenide.core.AbstractGoalsManagerTest;
 
 
 public class AbstractGoalsManagerStub extends AbstractGoalsManager {
