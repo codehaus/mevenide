@@ -1,0 +1,3 @@
+OpenTools-Node: org.mevenide.ui.jbuilder.MavenFileNode
+OpenTools-UI: org.mevenide.ui.jbuilder.MavenPropertyGroup
+OpenTools-Build: org.mevenide.ui.jbuilder.MavenBuilder

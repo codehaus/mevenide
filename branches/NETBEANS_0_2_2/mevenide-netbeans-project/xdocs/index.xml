@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<document>
+    <properties>
+    	<author email="ca206216@tiscali.cz">Milos Kleint</author>
+        <title>Overview</title>
+    </properties>
+    <body>
+       <section name="Netbeans Module page">
+        <div id="documentContent">
+            <p>This project allows to open and work with maven projects in the Netbeans IDE. Mevenide currently supports NetBeans 3.6 and 4.0dev.</p>
+	</div>
+        </section>
+       <section name="Netbeans 3.6">
+        <div id="documentContent">
+            <p>Mevenide for 3.6 contains these <a href="../mevenide-ui-netbeans/features.html" class="documentLink"> features </a>.</p>
+            <p>You can download the <a href="../download/mevenide-ui-netbeans-0-1-SNAPSHOT.zip" class="documentLink"> snapshot release</a> of Mevenide for Netbeans 3.x. </p>
+            <p>NOTE: Development of Mevenide for NetBeans 3.6 has been stoppped and the downloaded codebase is not production ready. Further development is going on for NB 4.0.</p>
+	</div>
+        </section>
+
+       <section name="Netbeans 4.0 Dev">
+        <div id="documentContent">
+            <p>Mevenide for the upcoming 4.0 version contains these <a href="features.html" class="documentLink"> features </a>.</p>
+            <p> You can download the <a href="../download/mevenide-netbeans-0.2.zip"> 0.2 release</a>. It was tested with Maven 1.0 and Netbeans <a href="http://www.netbeans.info/downloads/download.php?a=n&amp;p=1&amp;step=2&amp;os=7&amp;lang=1&amp;rv=4.0&amp;bt=5&amp;buildnr=200408121535">Q-build from 12/08/2004 </a>.
+            Reasonable effort is made to have it always working with the latest development builds of Netbeans 4.0.
+            To get the latest Netbeans dev builds, go to the <a href="http://www.netbeans.org/downloads/ide/archive/builds_archive_dev.html"> download page </a> </p>
+	</div>
+        </section>
+    </body>
+
+</document>
