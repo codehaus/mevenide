@@ -260,7 +260,7 @@ public class DescriptionSection extends PageSection {
 			new SelectionAdapter() {
 				public void widgetSelected(SelectionEvent e) {
 					try {
-						IProject project = Mevenide.getWorkspace().getRoot().getProject();
+						IProject project = getPage().getEditor().getProject();
 						IJavaProject javaProject = JavaCore.create(project);
 						SelectionDialog dialog = JavaUI.createPackageDialog(
 							getPage().getEditor().getSite().getShell(),
