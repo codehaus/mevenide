@@ -21,10 +21,11 @@
         
         <menu name="Documentation">
         	<item name="Features" href="/features.html"/>
-        	<item name="Getting Started" href="/help.html"/>
+        	<item name="How-To" href="/help.html"/>
+        	<item name="Eclispe Update Site" href="/update/index.html"/>
         </menu>
         
-        <menu name="Mevenide">
+        <menu name="Modules">
         	<item name="Mevenide" href="../index.html"/>
         	<item name="Goals Grabber" href="../goals-grabber/index.html"/>
         	<item name="Mevenide Core" href="../mevenide-core/index.html"/>

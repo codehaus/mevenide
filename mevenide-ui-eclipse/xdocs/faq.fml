@@ -11,7 +11,7 @@
       <answer>
       	<p>
         	If you're experimenting such kind of problems, <i>please</i> provide relevant informations,
-        	f.i. by sending some log (e.g. $${workspace.dir}/.metadata/.log or looking at the error view, located under 
+        	f.i. by sending some log (e.g. ${workspace.dir}/.metadata/.log or looking at the error view, located under 
         	Window/Show View/Other.../Pde Runtime). Also make sure Mevenide isnot actually loaded by looking at the Plugin Registry (same path than the error log).
         </p>
         <p>
