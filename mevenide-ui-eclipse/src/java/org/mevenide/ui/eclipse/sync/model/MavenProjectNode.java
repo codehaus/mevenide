@@ -185,10 +185,7 @@ public class MavenProjectNode implements ISynchronizationNode, ISelectableNode {
 	    ISynchronizationNode[] children = new ISynchronizationNode[directoryNodes.length + artifactNodes.length];
 	    System.arraycopy(directoryNodes, 0, children, 0, directoryNodes.length);
 	    System.arraycopy(artifactNodes, 0, children, directoryNodes.length, artifactNodes.length);
-	    for (int i = 0; i < children.length; i++) {
-			System.err.println(children[i]);
-		}
-		return children;
+	    return children;
 	}
 	
 	public Object getData() {
