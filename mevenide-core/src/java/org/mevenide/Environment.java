@@ -18,8 +18,11 @@ import java.io.File;
 
 /**
  * 
+ * @todo use a n-singleton instead - singleton PER launchConfig 
+ * Q: how to identify launch configuration ? whats a launch configuration ?
+ * 
  * @author Gilles Dodinet (gdodinet@wanadoo.fr)
- * @version $Id: Environment.java 21 avr. 2003 10:42:2213:34:35 Exp gdodinet 
+ * @version $Id: Environment.java,v 1.1 21 avr. 2003 10:42:2213:34:35 Exp gdodinet
  * 
  */
 public class Environment {
