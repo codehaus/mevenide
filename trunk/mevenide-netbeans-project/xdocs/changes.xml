@@ -9,6 +9,9 @@
   
     <release version="0.3" date="in CVS" description="">
       <action dev="mkleint" type="fix">    
+        MEVENIDE-92 fix.
+      </action>
+      <action dev="mkleint" type="fix">    
         MEVENIDE-83 - fix classpath dependencies resolution.
       </action>
       <action dev="mkleint" type="add">
