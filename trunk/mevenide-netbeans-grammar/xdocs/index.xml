@@ -7,9 +7,9 @@
     <body>
         <section name="Project Overview">
         <div id="documentContent">
-        <p> This project is a simple XML grammar code completion netbeans module which gives the user access to 
+        <p> This project is a simple XML grammar code completion Netbeans module which gives the user access to 
         basic maven/jelly-taglib elements and attributes.
-        It works currently with Netbeans 3.5.
+        It currently works with Netbeans 3.5.
         </p>
 	</div>
         </section>

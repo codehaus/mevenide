@@ -18,7 +18,7 @@
           <td>maven.nbm.manifest</td>
           <td><p>Optional.</p></td>
           <td>
-            <p> File containing Netbeans-specific manifest entries. The plugin will automatically generate some of the entries:
+            <p> File containing Netbeans-specific manifest entries. The plugin automatically generates some of the entries:
             <source><![CDATA[
 OpenIDE-Module-Implementation-Version: ${pom.currentVersion}
 OpenIDE-Module: ${pom.package}
@@ -26,7 +26,7 @@ OpenIDE-Module-Specification-Version: normalized version of ${pom.currentVersion
             
             ]]></source> 
             etc.etc.</p>
-            <p>If you define any of the entries in your manifest file, it will override anything that gets automatically generated. </p>
+            <p>If you define any of the entries in your manifest file, it overrides anything that gets automatically generated. </p>
           </td>
         </tr>
         <tr>
@@ -49,7 +49,7 @@ OpenIDE-Module-Specification-Version: normalized version of ${pom.currentVersion
           <td>maven.nbm.requiresrestart</td>
           <td><p>Optional. Default value is <code>true</code>.</p></td>
           <td>
-            <p>If true, the application will restart after installation of the module.</p>
+            <p>If true, the application restarts after installation of the module.</p>
           </td>
         </tr>
         <tr>
@@ -76,9 +76,9 @@ OpenIDE-Module-Specification-Version: normalized version of ${pom.currentVersion
           <td><p>OPTIONAL. Allowed value <code>true</code></p> </td>
           <td>
             <p> A property of dependency in the POM, if set to <code>true</code>, the plugin
-                will include the dependency jar in the <code>ext</code> subdirectory. Such a dependency will
-                become part of the Netbeans module. Please note that if 2+ interdependant modules reference the same library, only one of them is allowed to add it to the Class-Path, 
-                usually it's the module that the others depend on. So the property should be set only in one of the project files.</p>
+                includes the dependency jar in the <code>ext</code> subdirectory. Such a dependency will
+                become part of the Netbeans module. Please note that if 2+ interdependant modules reference the same library, only one of them is allowed to add it to the Class-Path.
+                Usually it's the module that the others depend on. So the property should be set only in one of the projects.</p>
                 <p> For example:
                 <source><![CDATA[
        <dependency>
@@ -100,9 +100,10 @@ OpenIDE-Module-Specification-Version: normalized version of ${pom.currentVersion
           <td><p>OPTIONAL. Allowed values <code>loose, spec, impl</code> </p></td>
           <td>
             <p> If the property is set on the dependency, it is expected to be a Netbeans module dependency.
-                When the project is built using the nbm:jar goal, it will build a <code>OpenIDE-Module-Module-Dependencies</code> manifest attribute. (again it will only be included in the jar, unless you define your own custom manifest attribute in the manifest file.
-                containing dependecies with this property. These are expected to be present in the IDE when deploying.
-                All of them should be Netbeans modules (not necessarily at build time, but definitely at runtime (installation).
+                When the project is built using the nbm:jar goal, it will build a <code>OpenIDE-Module-Module-Dependencies</code> manifest attribute. 
+                Again it will only be included in the jar, unless you define your own custom manifest attribute in the manifest file.
+                These dependencies are expected to be present in the IDE when deploying.
+                All of them should be Netbeans modules, not necessarily at build time, but definitely at runtime (installation).
                 </p> 
              <p>For example:
                 <source><![CDATA[
@@ -118,12 +119,12 @@ OpenIDE-Module-Specification-Version: normalized version of ${pom.currentVersion
                         ]]></source>
                 </p>
                 <p>There are 3 allowed values: </p>
-                <p> <code>loose</code> will create a dependency in the format <code>org.openide.execution</code> It's very loosely coupled and it just expects some version of the dependency module to be present and enabled.
+                <p> <b>loose</b> creates a dependency in the format <code>org.openide.execution</code> It's very loosely coupled and it just expects some version of the dependency module to be present and enabled.
                 </p>
-                <p> <code>spec</code> creates a dependency based on the specification number. It looks like this: <code>org.openide.execution > 1.0.1</code>
+                <p> <b>spec</b> creates a dependency based on the specification number. It looks like this: <code>org.openide.execution > 1.0.1</code>
                 The module will work with any subsequent version of the dependency module (unless that one breaks backward compatibility)
                 </p>
-                <p> <code>impl</code> creates a dependency based on the implementation number. It looks like this: <code>org.openide.execution = 1.0.1</code>
+                <p> <b>impl</b> creates a dependency based on the implementation number. It looks like this: <code>org.openide.execution = 1.0.1</code>
                 It will require a specific version of the dependency module. Use only when you depend on a non-public feature or code that was changed in later versions or could be changed.
                 </p>
                 
@@ -134,10 +135,10 @@ OpenIDE-Module-Specification-Version: normalized version of ${pom.currentVersion
           <td><p>OPTIONAL. Allowed value <code>true</code> Actually makes sense only together with <code>netbeans.module.dep</code> on non-netbeans dependencies.</p></td>
           <td>
                <p> If the dependency is not a netbeans module and the <code>netbeans.module.dep</code> property is defined on it, 
-               you might want teh plugin to generate a netbeans module for you. That is done by running the <code>nbm:create-library-artifacts</code> goal.
+               you might want the plugin to generate a Netbeans module for you. That is done by running the <code>nbm:create-library-artifacts</code> goal.
                The goal will attempt to guess all the important properties of the dependency and create an appropriate Netbeans module for it. 
                </p>
-               <p> Gory details: That is done using the nbm plugin itself. We generate the projects files and put them in target/nbm/{name-of-dependency} folder.
+               <p> Gory details: That is done using the nbm plugin itself. We generate the project files and put them in target/nbm/{name-of-dependency} folder.
                That's where you should be looking for the generated nbm as well.
                In case there are any problems with the generated stuff, or you want a more complicated module structure, you can customize it manually and copy to your source structures.
                </p>
@@ -162,7 +163,7 @@ OpenIDE-Module-Specification-Version: normalized version of ${pom.currentVersion
           </td>
           <td>
             <p>Base folder where the nbm specific resources are expected. 
-             Currently is only used for including the Bundle.properties file 
+             Currently it is only usedto include the Bundle.properties file 
              into that jar that contains localized manifest entries.</p>
           </td>
         </tr>
