@@ -1,0 +1,7 @@
+maven.log
+target
+jcoverage.ser
+dist
+lib
+plugin.xml
+.clover

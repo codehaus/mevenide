@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="goals-grabber">
+  <title>Mevenide Goals Grabber</title>
+  <body>
+    <links>
+      <item name="Eclipse" href="http://eclipse.org/"/>
+      <item href="http://maven.apache.org/" name="Maven"/>
+      <item href="http://mevenide.sf.net/" name="Mevenide"/>
+    </links>
+    <menu name="General">
+      <item href="/index.html" name="Overview"/>
+      <item href="/license.html" name="License"/>
+    </menu>
+    
+    <menu name="Modules">
+        <item name="Mevenide" href="../index.html"/>
+        <item name="Mevenide Config" href="../mevenide-config/index.html"/>
+        <item name="Mevenide Core" href="../mevenide-core/index.html"/>
+        <item name="Eclipse Plugin" href="../mevenide-ui-eclipse/index.html"/>
+        <item name="Netbeans Plugin" href="../mevenide-ui-netbeans/index.html"/>
+        <item name="Maven Plugins" href="/maven-plugins.html" collapse="true">
+	        <item name="Eclipse Plugin Plugin" href="../maven-eclipse-plugin-plugin/index.html"/>
+    	    <item name="NBM Plugin" href="../maven-nbm-plugin/index.html"/>
+    	    <item name="Spinner Wiki Plugin" href="../maven-spinner-wiki-plugin/index.html"/>
+    	</item>
+   </menu>
+   
+    <menu name="Developers">
+      <item href="/classes.html" name="Class Diagram"/>	
+    </menu>
+   <search/>
+   
+  </body>
+</project>

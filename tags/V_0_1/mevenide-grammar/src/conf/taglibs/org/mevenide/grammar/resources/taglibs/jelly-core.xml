@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- code completion definition for the jelly-tag library -->
+
+<taglib name="jelly:core">
+    <tag name="arg" within="new,invoke">
+        <attr name="classLoader"/>
+        <attr name="type"/>
+        <attr name="useContextClassLoader"/>
+        <attr name="value"/>
+        <attr name="trim"/>
+    </tag>
+    <tag name="break" within="forEach,while">
+        <attr name="test"/>
+        <attr name="trim"/>
+    </tag>
+    <tag name="case" within="switch">
+        <attr name="fallThru"/>
+        <attr name="value"/>
+        <attr name="trim"/>
+    </tag>
+    <tag name="catch">
+        <attr name="var"/>
+        <attr name="trim"/>
+    </tag>
+    <tag name="choose">
+        <attr name="trim"/>
+    </tag>
+    <tag name="default" within="switch">
+        <attr name="fallThru"/>
+        <attr name="trim"/>
+    </tag>
+     <tag name="expr">
+        <attr name="value"/>
+        <attr name="trim"/>
+    </tag>   
+    <tag name="file">
+        <attr name="encoding"/>
+        <attr name="escapeText"/>
+        <attr name="name"/>
+        <attr name="omitXmlDeclaration"/>
+        <attr name="outputMode"/>
+        <attr name="prettyPrint"/>
+        <attr name="var"/>
+        <attr name="trim"/>        
+    </tag>
+    <tag name="forEach">
+        <attr name="begin"/>
+        <attr name="end"/>
+        <attr name="indexVar"/>
+        <attr name="items"/>
+        <attr name="step"/>
+        <attr name="var"/>
+        <attr name="varStatus"/>
+        <attr name="trim"/>        
+    </tag>
+    <tag name="if">
+        <attr name="test"/>
+        <attr name="trim"/>        
+    </tag>
+    <tag name="import">
+        <attr name="file"/>
+        <attr name="inherit"/>
+        <attr name="uri"/>
+        <attr name="trim"/>            
+    </tag>   
+     <tag name="include">
+        <attr name="export"/>
+        <attr name="file"/>
+        <attr name="inherit"/>
+        <attr name="uri"/>
+        <attr name="trim"/>            
+    </tag>  
+    <tag name="invoke">
+        <attr name="method"/>
+        <attr name="on"/>
+        <attr name="var"/>
+        <attr name="trim"/>
+    </tag>
+    <tag name="invokeStatic">
+        <attr name="className"/>
+        <attr name="method"/>
+        <attr name="var"/>
+        <attr name="trim"/>
+    </tag>   
+    <tag name="jelly">   
+        <attr name="trim"/>
+    </tag>
+     <tag name="new">
+        <attr name="classLoader"/>
+        <attr name="className"/>
+        <attr name="useContextClassLoader"/>
+        <attr name="var"/>
+        <attr name="trim"/>
+    </tag>   
+     <tag name="otherwise" within="choose">
+        <attr name="trim"/>
+     </tag>
+    <tag name="parse">
+        <attr name="XMLReader"/>
+        <attr name="jellyParser"/>
+        <attr name="text"/>
+        <attr name="var"/>
+        <attr name="xmlReader"/>
+        <attr name="trim"/>
+    </tag>  
+     <tag name="remove">
+        <attr name="var"/>
+        <attr name="trim"/>
+    </tag>         
+    <tag name="scope">
+        <attr name="trim"/>
+    </tag>    
+    <tag name="set">
+        <attr name="defaultValue"/>
+        <attr name="encode"/>
+        <attr name="property"/>
+        <attr name="scope"/>
+        <attr name="target"/>
+        <attr name="value"/>
+        <attr name="var"/>
+        <attr name="trim"/>
+    </tag>
+    <tag name="setProperties">
+    <!-- there is more but no completion for that -->
+        <attr name="trim"/>
+     </tag>
+    <tag name="switch">
+        <attr name="on"/>
+        <attr name="trim"/>
+    </tag>
+     <tag name="thread">
+        <attr name="file"/>
+        <attr name="name"/>
+        <attr name="xmlOutput"/>
+        <attr name="trim"/>
+     </tag>
+    <tag name="useBean">
+    <!-- not sure about the var and class attrs -->
+        <attr name="var"/>
+        <attr name="class"/>
+        <attr name="trim"/>
+    </tag>
+     <tag name="useList">
+        <attr name="trim"/>
+    <!-- no idea how to represent children/attributes -->
+    </tag>   
+    <tag name="when" within="choose">
+        <attr name="test"/>
+        <attr name="trim"/>
+    </tag>    
+    <tag name="while">
+        <attr name="test"/>
+        <attr name="trim"/>
+    </tag>
+    <tag name="whitespace">
+        <attr name="trim"/>
+    </tag>
+</taglib>
