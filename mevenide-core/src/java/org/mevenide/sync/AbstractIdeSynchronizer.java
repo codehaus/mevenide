@@ -61,8 +61,8 @@ public abstract class AbstractIdeSynchronizer implements ISynchronizer {
 	/**
 	 * 
 	 * this method runs the maven-%IDE%-plugin synchronization goal. 
-	 * It is provided as default mean to synchronize IDE with POM. 
-	 * however subclasses should override it to make take advantage 
+	 * It is provided as a default mean to synchronize IDE with POM. 
+	 * however subclasses should override it to take advantage 
 	 * of the various IDEs plugin API facilities.
 	 *
 	 */
