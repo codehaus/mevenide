@@ -1,84 +1,9 @@
-<project xmlns:j="jelly:core"
-		 xmlns:maven="jelly:maven"
-		 xmlns:ant="jelly:ant"
-		 xmlns:util="jelly:util">
+<project xmlns:j="jelly:core" xmlns:ant="jelly:ant">
 
-		 
+  <j:include file="${plugin.resources}/plugin-initialization.jelly"/>
+  <j:include file="${plugin.resources}/artifact-installation.jelly"/>		 
+  
 
-  
-  <goal name="eclipse-plugin:init" description="initialize eclipse plugin distribution aware folders">
-  	<j:set var="type" value="${maven.eclipse.plugin.type}"/>
-  	
-  	<j:if test="${type == 'plugin'}">
-	  <ant:delete dir="${maven.eclipse.plugin.lib.dir}" quiet="true"/>
-	  <ant:mkdir dir="${maven.eclipse.plugin.lib.dir}"/>
-	</j:if>
-    
-    <ant:delete dir="${maven.eclipse.plugin.dist.dir}" quiet="true"/>	
-    <ant:mkdir dir="${maven.eclipse.plugin.dist.dir}"/>    
-    
-    <ant:delete dir="${maven.eclipse.plugin.temp.dir}" quiet="true"/>
-    <ant:mkdir dir="${maven.eclipse.plugin.temp.dir}" />
-    
-  </goal>
-  
-  <!-- 
-  	iterate project artifacts and copy dependencies required by eclipse plugin into ${maven.eclipse.plugin.lib.dir} directory.
-  	required eclipse artifacts are expected to be declared in plugin.xml/plugin/import/libraries. they are marked as required 
-  	by setting the &lt;eclipse.plugin.bundle&gt; property to 'true' as described below :
-  	<[CDATA[
-  		<dependency>
-  			<groupId>blah</groupId>
-  			<artifactId>blah</artifactId>
-  			<version>1.1-mod</version>
-  			<properties>
-  				<eclipse.plugin.bundle>true</eclipse.plugin.bundle>
-  			</properties>
-  		</dependency>
-  	]]>
-  	Also dependencies whose groupId is 'eclipse' are ignored as they should be referenced using plugin.xml/requires/import. 
-  -->
-  <goal name="eclipse-plugin:prepare-plugin-dist" prereqs="eclipse-plugin:init" 
-  		description="iterate over $${pom.artifacts} and copy required dependencies in $${maven.eclipse.plugin.dist.lib}">
-  		
-    <j:forEach var="artifact" items="${pom.artifacts}">
-      <j:set var="dependency" value="${artifact.dependency}"/>
-      <j:if test="${!(dependency.groupId.equals('eclipse')) and dependency.getProperty('eclipse.plugin.bundle') == 'true'}">
-        <ant:copy todir="${maven.eclipse.plugin.lib.dir}" file="${artifact.path}"/>
-      </j:if>
-    </j:forEach>
-    
-    <!-- commented for now until it stabilizes -->
-    <!-- attainGoal name="eclipse-plugin:install-artifact"/ -->
-    
-  </goal>
-   
-  <goal name="eclipse-plugin:init-filterset" 
-  		description="create an empty filterset if $${maven.eclipse.plugin.filterset.id} hasnot been specified">
-  		
-  	<j:set var="filterRefid" value="${maven.eclipse.plugin.filterset.id}"/>
-  	<j:if test="${empty filterRefid}">
-  	  <j:set var="maven.eclipse.plugin.filterset.id" value="filterSetId"/>
-  	  <ant:filterset id="${maven.eclipse.plugin.filterset.id}"/>
-  	</j:if>
-  	
-  </goal>
-   
-  <goal name="eclipse-plugin:install-artifact" prereqs="eclipse-plugin:init-filterset" 
-  		description="filter and copy the plugin.xml file to $${basedir}">
-  		
-  	<ant:copy todir="${basedir}" overwrite="true">
-  	  <ant:fileset dir="${maven.eclipse.plugin.src.dir}"/>
-  	  <ant:filterset>
-  	  	<ant:filterset refid="${maven.eclipse.plugin.filterset.id}"/>
-  	  	<ant:filter token="maven.eclipse.plugin.artifact.id" value="${maven.eclipse.plugin.artifact.id}"/>
-  	  	<ant:filter token="maven.eclipse.plugin.artifact.version" value="${maven.eclipse.plugin.artifact.version}"/>
-  	  </ant:filterset>
-  	</ant:copy>
-  	
-  </goal>
-   
-   
   <goal name="eclipse-plugin:create-artifact-dist" 
   		description="dispatch to the correct goal, based on the specified eclipse plugin type (plugin, site or feature)">
   	
@@ -96,129 +21,22 @@
   </goal>
   
   
-  <goal name="eclipse-plugin:create-plugin-dist" prereqs="eclipse-plugin:prepare-plugin-dist"
-  		description="create a plugin dist file containing only the plugin required files and put it in $${maven.eclipse.plugin.dist.dir}">
+  <goal name="eclipse-plugin:install-artifact" prereqs="eclipse-plugin:init-filterset" 
+  		description="filter and copy the plugin.xml file to $${basedir}">
   		
-	  <j:set var="distVersion" value="${maven.eclipse.plugin.artifact.version}"/>
-	  <j:set var="pluginId" value="${maven.eclipse.plugin.artifact.id}"/>
-  	  <j:set var="pluginFolder">${pluginId.replaceAll('-', '.')}</j:set> 
-      <j:set var="pluginArchive" value="${maven.eclipse.plugin.dist.dir}/${pluginFolder}_${distVersion}.jar"/>
-	  
-	  <!-- create temporary folder to store plugin files before archiving them -->
-  	  <ant:mkdir dir="${maven.eclipse.plugin.temp.dir}/${pluginFolder}_${distVersion}"/>
-       
-      <!-- copy required dependencies and generated artifact to $${maven.eclipse.plugin.temp.dir} -->
-      <ant:copy todir="${maven.eclipse.plugin.temp.dir}/${pluginFolder}_${distVersion}">
-       	<ant:fileset dir="${basedir}" includes="${maven.eclipse.plugin.includes}"/>
-       	<ant:fileset dir="${maven.build.dir}" includes="${pom.artifactId}-${distVersion}.jar"/>
-      </ant:copy>
-       
-      <!-- build plugin distribution file. -->
-      <ant:jar destfile="${pluginArchive}">
-        <fileset dir="${maven.eclipse.plugin.temp.dir}"/>
-      </ant:jar>
-      			
-      <ant:delete dir="${maven.eclipse.plugin.temp.dir}"/>
-      
-   </goal>
-   
-   <!--
-   	 do not use feature POM for looking up resources to have a consistent behavior between plugin and feature creation goals.
-   -->
-   <goal name="eclipse-plugin:create-feature-dist" prereqs="eclipse-plugin:init"
-   		 description="create a feature dist file containing only the feature required files and put it in $${maven.eclipse.plugin.dist.dir}">
-	     
-   	  <j:set var="featureId" value="${maven.eclipse.plugin.artifact.id}"/>
-   	  <j:set var="distVersion" value="${maven.eclipse.plugin.artifact.version}"/>
-   	  <j:set var="featureFolder">${featureId.replaceAll('-', '.')}</j:set> 
-   	  <j:set var="featureArchive" value="${maven.eclipse.plugin.dist.dir}/${featureFolder}_${distVersion}.jar"/>
-   	  
-   	  <!-- create feature distribution file -->
-   	  <ant:copy todir="${maven.eclipse.plugin.temp.dir}/${featureFolder}_${distVersion}">
-   	  	<fileset dir="${basedir}" includes="${maven.eclipse.plugin.feature.includes}"/>
-   	  </ant:copy>
-   	  <ant:jar destfile="${featureArchive}">
-        <fileset dir="${maven.eclipse.plugin.temp.dir}"/>
-      </ant:jar>
-      
-      <!-- iterate and build each plugin part of this feature and copy them to $${maven.eclipse.plugin.dist.dir}/plugins -->
-      <util:tokenize var="featurePlugins" delim=",">${maven.eclipse.plugin.feature.plugins}</util:tokenize>	
-	  <j:forEach var="plugin" items="${featurePlugins}">
-	  	
-	  	<!-- create plugin archive -->
-		<maven:pom var="pluginPom" projectDescriptor="${plugin}"/>
-		<maven:maven goals="eclipse-plugin:create-plugin-dist" descriptor="${plugin}"/>
-		
-		<!-- copy plugin archive -->
-		<ant:copy todir="${maven.eclipse.plugin.dist.dir}/plugins">
-		  <fileset dir="${pluginPom.getContext().getVariable('maven.eclipse.plugin.dist.dir')}" includes="*.jar"/>
-		</ant:copy>
-		
-	  </j:forEach>
-   		
-   	  <ant:delete dir="${maven.eclipse.plugin.temp.dir}"/>
-   	  
-   </goal>
-
-
-   <!-- 
-   	  build a single artifact containing all plugins and feature, ready to be 
-   	  unzipped into ${eclipse.home} or either to be used in update manager. 
-   	  warning : if unzipped in ${eclipse.home}, site.properties and site.xml 
-   	  will mess up the ${eclipse.home} directory. 
-   -->
-   <goal name="eclipse-plugin:create-site-dist" prereqs="eclipse-plugin:init">
-   	 
-   	 <j:set var="siteId" value="${maven.eclipse.plugin.artifact.id}"/>
-   	 <j:set var="distVersion" value="${maven.eclipse.plugin.artifact.version}"/>
-   	 <j:set var="siteFolder">${siteId.replaceAll('-', '.')}</j:set> 
-  	 <j:set var="siteArchive" value="${maven.eclipse.plugin.dist.dir}/${siteFolder}_${distVersion}.jar"/>
-   	 
-   	 <util:tokenize var="includedFeatures" delim=",">${maven.eclipse.plugin.site.features}</util:tokenize>
-   	 
-   	 <j:forEach var="feature" items="${includedFeatures}">
-   	 	
-   	 	<maven:pom var="featurePom" projectDescriptor="${feature}"/>
-   	 	<maven:maven goals="eclipse-plugin:create-feature-dist" descriptor="${feature}"/>
-   	 	
-   	 	<ant:copy todir="${maven.eclipse.plugin.site.feature.dest.dir}">
-   	 	  <ant:fileset dir="${featurePom.getContext().getVariable('maven.eclipse.plugin.dist.dir')}" includes="*.jar"/>
-   	 	</ant:copy>
-   	 	
-   	 	<ant:copy todir="${maven.eclipse.plugin.site.plugin.dest.dir}">
-   	 	  <ant:fileset dir="${featurePom.getContext().getVariable('maven.eclipse.plugin.dist.dir')}/plugins" includes="*.jar"/>
-   	 	</ant:copy>
-
-   	 </j:forEach>
-   	 
-   	 <!-- creature single distribution file -->
-   	 <ant:fileScanner var="featureJars">
-	   <ant:fileset dir="${maven.eclipse.plugin.site.feature.dest.dir}" includes="*.jar"/>
-	 </ant:fileScanner>
-	 
-	 <j:forEach var="featureJar" items="${featureJars.iterator()}">
-	   <ant:unjar src="${featureJar}" dest="${maven.eclipse.plugin.temp.dir}/features"/>
-	   <ant:delete dir="${maven.eclipse.plugin.temp.dir}/features/META-INF"/>
-	 </j:forEach>
-   	 
-   	 <ant:fileScanner var="pluginJars">
-       <ant:fileset dir="${maven.eclipse.plugin.site.plugin.dest.dir}" includes="*.jar"/>
-     </ant:fileScanner>
-     	
-     <j:forEach var="pluginJar" items="${pluginJars.iterator()}">
-   	   <ant:unjar src="${pluginJar}" dest="${maven.eclipse.plugin.temp.dir}/plugins"/>
-   	   <ant:delete dir="${maven.eclipse.plugin.temp.dir}/plugins/META-INF"/>
-	 </j:forEach>
-   	 
-   	 <ant:jar destfile="${siteArchive}">
-   	 	<ant:fileset dir="${maven.eclipse.plugin.temp.dir}"/>
-   	 	<ant:fileset dir="${basedir}" includes="site.properties,site.xml"/>
-   	 </ant:jar>
-   	 
-   	 <!-- clean up resources -->
-   	 <ant:delete dir="${maven.eclipse.plugin.temp.dir}"/>
-   	 
-   </goal>
+  	<ant:copy todir="${basedir}" overwrite="true">
+  	  <ant:fileset dir="${maven.eclipse.plugin.src.dir}"/>
+  	  <ant:filterset>
+  	  	<ant:filterset refid="${maven.eclipse.plugin.filterset.id}"/>
+  	  	<ant:filter token="maven.eclipse.plugin.artifact.id" value="${maven.eclipse.plugin.artifact.id}"/>
+  	  	<ant:filter token="maven.eclipse.plugin.artifact.version" value="${maven.eclipse.plugin.artifact.version}"/>
+  	  	<ant:filter token="maven.eclipse.plugin.artifact.internal.id" value="${maven.eclipse.plugin.artifact.internal.id}"/>
+  	  	<ant:filter token="maven.eclipse.plugin.artifact.internal.version" value="${maven.eclipse.plugin.artifact.internal.version}"/>
+  	  </ant:filterset>
+  	</ant:copy>
+  	
+  	<attainGoal name="eclipse-plugin:install-artifact"/>
+    
+  </goal>
   
-   
 </project>
