@@ -18,9 +18,9 @@
   <property category="javaFormatting" name="whileOnNewLine" value="0"/>
   <property category="javadoc" name="custom.tags.1" value="todo;a;To Do:"/>
   <property category="optimize.0" name="OptimizableType" value="intuitive.ide.borland.jb10.ProfilerBootstrap"/>
-  <property category="optimize.0" name="oicc.FilterFile" value="D:\java\technologies\jakarta-cvs\mevenide\mevenide-ui-jbuilder\mevenide-ui-jbuilder.oif"/>
+  <property category="optimize.0" name="oicc.FilterFile" value="mevenide-ui-jbuilder.oif"/>
   <property category="optimize.0" name="oipr.DisableMemoryProfiler" value="1"/>
-  <property category="optimize.0" name="oipr.FilterFile" value="D:\java\technologies\jakarta-cvs\mevenide\mevenide-ui-jbuilder\mevenide-ui-jbuilder.oif"/>
+  <property category="optimize.0" name="oipr.FilterFile" value="mevenide-ui-jbuilder.oif"/>
   <property category="runtime" name="ConfigurationCount" value="1"/>
   <property category="runtime" name="DefaultConfiguration" value="-1"/>
   <property category="runtime.0" name="BuildTargetOnRun" value="com.borland.jbuilder.build.ProjectBuilder$ProjectBuildAction;make"/>
@@ -66,11 +66,8 @@
   <property category="sys" name="enable.auto.packages" value="false"/>
   <node name="org.mevenide.ui.jbuilder" type="Package"/>
   <node name="Documentation" type="Archive">
-    <property category="archiving" name="contentRules.1" value="F:JBMavenOpenTool.html;JBMavenOpenTool.html"/>
-    <property category="archiving" name="extraDeployRoots.1" value="F:wood/keith/opentools/otrunner/OTRunner.html"/>
-    <property category="archiving" name="includeDeps" value="1"/>
+    <property category="archiving" name="contentRules.1" value="F:xdocs/JBMavenOpenTool.html;JBMavenOpenTool.html"/>
     <property category="archiving" name="includeManifest" value="0"/>
-    <property category="archiving" name="outPathState" value="1"/>
     <property category="archiving" name="targetPath" value="mevenide-ui-jbuilder-doc.jar"/>
     <property category="archiving" name="usingRules" value="1"/>
   </node>
