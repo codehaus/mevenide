@@ -17,7 +17,6 @@ package org.mevenide.project;
 
 
 /**
- * @refactor GETRID get rid of the <code>getResolvedSourceType(String)</code>
  * 
  * @author Gilles Dodinet (gdodinet@wanadoo.fr)
  * @version $Id$
