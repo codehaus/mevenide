@@ -63,7 +63,7 @@ public class DefaultGoalsGrabberTest extends AbstractGoalsGrabberTestCase {
 	
     protected String[] getGetOriginParameters()
     {
-       return new String[] { "java:compile", "java:jar", "java"};        
+       return new String[] { "java:compile", "java:jar", "jar" };        
     }    
  	 
     protected String[] getGetOriginResults()

@@ -8,12 +8,6 @@
             </properties>
         </dependency>
         <dependency>
-            <groupId>commons-lang</groupId>
-            <artifactId>commons-lang</artifactId>
-            <version>1.0.1</version>
-            <type>jar</type>
-        </dependency>
-        <dependency>
             <groupId>xpp3</groupId>
             <artifactId>xpp3</artifactId>
             <version>1.1.2a</version>
