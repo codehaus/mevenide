@@ -45,7 +45,7 @@
 		  <li><p>List of all available goals - plugin-defined ones as well as custom ones for project.</p></li>
 		  <li><p>Possibility to define your own goal-launching popup menu.</p></li>
 		  <li><p>Output to the output window. For compilation and tests hyperlinking to errors.</p></li>
-                  <li><p>Pmd and announcement reports also accessible from the output window.</p></li>
+                  <li><p>Pmd, checkstyle and announcement reports also accessible from the output window.</p></li>
 		</ul>
 	  </p>
 	  <p>
@@ -64,6 +64,7 @@
 		  <li><p>Locating the definitions is easy without searching multiple files, 
                    possible to move between location easily.</p></li>
                    <li><p>Creation of new Maven projects from templates.</p></li>
+                   <li><p>Lists all current plugins and their properties.</p></li>                   
 		</ul>
 	  </p>
 	  <p>

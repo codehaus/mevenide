@@ -6,7 +6,7 @@
   </properties>
 
   <body>
-    <release version="0.4" date="25/11/2004" description="Release for 4.0 RC1">
+    <release version="0.4" date="25/11/2004" description="Works with netbeans 4.0 final">
       <action dev="mkleint" type="fix">
       MEVENIDE-115 - improved support for webapps. (JSTL)
       </action>
