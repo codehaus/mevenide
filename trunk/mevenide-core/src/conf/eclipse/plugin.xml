@@ -22,7 +22,7 @@
          <export name="*"/>
          <packages prefixes="org.xmlpull"/>
       </library>
-      <library name="lib/maven-1.0-beta-10.jar">
+      <library name="lib/maven-1.0-rc1.jar">
          <export name="*"/>
          <packages prefixes="org.apache.maven"/>
       </library>
