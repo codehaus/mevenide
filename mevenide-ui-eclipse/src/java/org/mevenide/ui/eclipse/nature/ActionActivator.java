@@ -17,6 +17,7 @@
 package org.mevenide.ui.eclipse.nature;
 
 import java.util.List;
+import org.apache.plexus.util.DirectoryScanner;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.runtime.CoreException;
@@ -33,8 +34,11 @@ public class ActionActivator implements IResourceDeltaVisitor {
 
     private List definitionCandidates;
     
-    public ActionActivator(List actionDefinitions) {
+    private String basedir;
+    
+    public ActionActivator(List actionDefinitions, String basedir) {
         this.definitionCandidates = actionDefinitions;
+        this.basedir = basedir;
     }
     
     public boolean visit(IResourceDelta delta) throws CoreException {
@@ -42,15 +46,31 @@ public class ActionActivator implements IResourceDeltaVisitor {
             ActionDefinitions definition = (ActionDefinitions) definitionCandidates.get(i);
 	        IPath path = delta.getFullPath();
 	        List patterns = definition.getPatterns();
-	        if ( match(path, patterns) ) {
+	        DirectoryScanner scanner;
+            String[] files = scan(patterns);
+	        if ( match(path, files) ) {
 	            definition.setEnabled(true);
 	        }
         }
         return true;
     }
 
-    private boolean match(IPath path, List patterns) {
-        return false; //TODO
+    private String[] scan(List patterns) {
+        DirectoryScanner scanner = new DirectoryScanner();
+        scanner.setBasedir(basedir);
+        scanner.setIncludes((String[]) patterns.toArray(new String[patterns.size()]));
+        scanner.scan();
+        return scanner.getIncludedFiles();
+    }
+
+    private boolean match(IPath path, String[] files) {
+	    for (int i = 0; i < files.length; i++) {
+	        String file = files[i];
+            if ( files[i].equals(path.toOSString()) ) {
+                return true;
+            }
+        }
+        return false; 
     }
 
 }

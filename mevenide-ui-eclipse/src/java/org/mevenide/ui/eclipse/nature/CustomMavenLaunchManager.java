@@ -16,6 +16,7 @@
  */
 package org.mevenide.ui.eclipse.nature;
 
+import java.util.List;
 import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
@@ -27,6 +28,7 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowPulldownDelegate2;
+import org.mevenide.ui.eclipse.Mevenide;
 
 
 /**  
@@ -44,8 +46,9 @@ public class CustomMavenLaunchManager implements IWorkbenchWindowPulldownDelegat
     /**
 	 * Indicates whether the actino definitions have changed and
 	 * the sub menu needs to be recreated.
+	 * @todo always return true for now. will add event-based strategy later on
 	 */
-	protected boolean recreateMenu = false;
+	protected boolean recreateMenu = true;
 	
 	
     public CustomMavenLaunchManager() {
@@ -92,11 +95,17 @@ public class CustomMavenLaunchManager implements IWorkbenchWindowPulldownDelegat
 	}
     
     protected void fillMenu(Menu menu) {	
+		ActionDefinitionsManager actionDefinitionsManager = Mevenide.getInstance().getActionDefinitionsManager();
+		List definitions = actionDefinitionsManager.getDefinitions();
+		if ( definitions.size() > 0 ) {
+		    for (int i = 0; i < definitions.size(); i++) {
+		        ActionDefinitions definition = (ActionDefinitions) definitions.get(i);
+		        PatternBasedMavenLaunchAction action = new PatternBasedMavenLaunchAction(definition);
+		        addToMenu(menu, action);    
+            }
+		    addSeparator(menu);
+		}
 		addToMenu(menu, manageActionDefinitionsAction);
-		//addSeparator(menu);
-		//#forEach patternBasedMavenLaunchAction 
-		//    addToMenu(menu, action);
-		//#
 	}
     
 	protected void addSeparator(Menu menu) {
@@ -117,9 +126,8 @@ public class CustomMavenLaunchManager implements IWorkbenchWindowPulldownDelegat
 	}
 	
 	public void dispose() {
-	    //setMenu(null);
+	    setMenu(null);
     }
-    
     
     public void selectionChanged(IAction action, ISelection selection) {
     }

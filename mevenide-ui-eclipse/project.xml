@@ -74,6 +74,15 @@
             <properties/>
         </dependency>
         <dependency>
+            <groupId>plexus</groupId>
+            <artifactId>plexus</artifactId>
+            <version>0.6</version>
+            <type>jar</type>
+            <properties>
+                <eclipse.plugin.bundle>false</eclipse.plugin.bundle>
+            </properties>
+        </dependency>
+        <dependency>
             <groupId>maven</groupId>
             <artifactId>maven</artifactId>
             <version>1.0</version>
