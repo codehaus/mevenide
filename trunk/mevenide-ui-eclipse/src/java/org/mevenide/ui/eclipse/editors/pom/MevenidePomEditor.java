@@ -305,6 +305,7 @@ public class MevenidePomEditor extends FormEditor {
         if (log.isDebugEnabled()) {
             log.debug("attempting save..."); //$NON-NLS-1$
         }
+
         updateDocument();
 
         final IEditorInput input = getEditorInput();
@@ -320,9 +321,9 @@ public class MevenidePomEditor extends FormEditor {
         };
 
         try {
+            op.run(monitor);
             updateModel();
             documentProvider.aboutToChange(input);
-            op.run(monitor);
             documentProvider.changed(input);
             updateTitleAndToolTip();
             setModelDirty(false);
@@ -485,6 +486,7 @@ public class MevenidePomEditor extends FormEditor {
         if (log.isDebugEnabled()) {
             log.debug("updateModel exiting"); //$NON-NLS-1$
         }
+        
         return clean;
     }
 
