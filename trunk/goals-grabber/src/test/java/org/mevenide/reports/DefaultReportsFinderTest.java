@@ -46,11 +46,10 @@
  * SUCH DAMAGE.
  * ====================================================================
  */
-package org.mevenide.goals.grabber;
+package org.mevenide.reports;
 
 import java.io.File;
 import java.util.Arrays;
-import java.util.Collection;
 
 import org.mevenide.goals.AbstractTestCase;
 import org.mevenide.goals.test.util.TestUtils;
@@ -58,76 +57,44 @@ import org.mevenide.goals.test.util.TestUtils;
 /**  
  * 
  * @author Gilles Dodinet (gdodinet@wanadoo.fr)
- * @version $Id: AbstractGoalsGrabberTestCase.java 5 sept. 2003 Exp gdodinet 
+ * @version $Id: DefaultReportsFinderTest.java,v 1.1 21 sept. 2003 Exp gdodinet 
  * 
  */
-public abstract class AbstractGoalsGrabberTestCase extends AbstractTestCase {
-	protected IGoalsGrabber goalsGrabber;
-
-	protected File goalsFile;
+public class DefaultReportsFinderTest extends AbstractTestCase {
+	private File mavenLocalHome;
 	
-	protected void setUp() throws Exception {
-		super.setUp();
-		File src = new File(AbstractGoalsGrabberTestCase.class.getResource("/goals.cache").getFile());
-		goalsFile = new File(pluginsLocal, "goals.cache") ; 
-		TestUtils.copy(src.getAbsolutePath(), goalsFile.getAbsolutePath());
-
-		goalsGrabber = getGoalsGrabber();
-		goalsGrabber.refresh();
-	}
-
-	protected void tearDown() throws Exception {
-        goalsGrabber = null;
-        super.tearDown();
+	private String[] testPluginDirs = 
+		{
+			"maven-faq-plugin-1.1-SNAPSHOT",
+			"maven-findbugs-plugin-1.0-SNAPSHOT",
+			"maven-tasklist-plugin-2.2-SNAPSHOT",
+			"maven-test-plugin-1.4-SNAPSHOT",
+		};
+		
+    protected void setUp() throws Exception {
+    	super.setUp();
+    	for (int i = 0; i < testPluginDirs.length; i++) {
+    		File src = new File(DefaultReportsFinderTest.class.getResource("/plugins/" + testPluginDirs[i] + "/plugin.jelly").getFile());
+			File pluginDir = new File(pluginsLocal, testPluginDirs[i]);
+			if ( !pluginDir.exists() ) {
+				pluginDir.mkdirs();
+			}
+			File destJellyFile = new File(pluginDir, "plugin.jelly");
+			TestUtils.copy(src.getAbsolutePath(), destJellyFile.getAbsolutePath());            
+        }
+    	
     }
 
-	public void testGetPlugins() {
-		Collection plugins = Arrays.asList(goalsGrabber.getPlugins());
-		for (int i = 0; i < getGetPluginsResults().length; i++) {
-			assertTrue(plugins.contains(getGetPluginsResults()[i]));    
-        }
-	}
+    protected void tearDown() throws Exception {
+    	super.tearDown();
+    }
 
-	public void testGetGoals() {
-		for (int i = 0; i < getGetGoalsParameters().length; i++) {
-			String[] goals = goalsGrabber.getGoals(getGetGoalsParameters()[i]);
-			Collection goalsCollection = Arrays.asList(goals);
-			assertEquals(getGetGoalsResults()[i].length, goals.length);
-			for (int j = 0; j < getGetGoalsResults()[i].length; j++) {
-				assertTrue(goalsCollection.contains(getGetGoalsResults()[i][j]));
-            }
-        }
-		goalsGrabber.getGoals(null);
-	}
+    public void testFindReports() throws Exception {
+    	String[] reports = new DefaultReportsFinder().findReports();
+    	assertEquals(3, reports.length);
+    	assertTrue(Arrays.asList(reports).contains("maven-faq-plugin"));
+		assertTrue(Arrays.asList(reports).contains("maven-findbugs-plugin"));
+		assertTrue(Arrays.asList(reports).contains("maven-tasklist-plugin"));
+    }
 
-	public void testGetDescription() {
-		for (int i = 0; i < getGetDescriptionParameters().length; i++) {
-			assertEquals(getGetDescriptionResults()[i], goalsGrabber.getDescription(getGetDescriptionParameters()[i]));
-        }
-	}
-
-	public void testGetPrereqs() {
-		for (int i = 0; i < getGetPrereqsParameters().length; i++) {
-			String[] prereqs = goalsGrabber.getPrereqs(getGetPrereqsParameters()[i]);
-			Collection prereqsCollection = Arrays.asList(prereqs);
-			assertEquals(getGetPrereqsResults()[i].length, prereqs.length);
-			for (int j = 0; j < getGetPrereqsResults()[i].length; j++) {
-                assertTrue(prereqsCollection.contains(getGetPrereqsResults()[i][j]));
-            }
-        }
-	}
-	
-	
-	protected abstract IGoalsGrabber getGoalsGrabber() throws Exception  ;
-
-	protected abstract String[] getGetPluginsResults() ;
-
-	protected abstract String[] getGetGoalsParameters() ;
-	protected abstract String[][] getGetGoalsResults() ;
-
-	protected abstract String[] getGetDescriptionParameters() ;
-	protected abstract String[] getGetDescriptionResults() ;
-
-	protected abstract String[] getGetPrereqsParameters() ;
-	protected abstract String[][] getGetPrereqsResults() ;
 }
