@@ -54,18 +54,19 @@ abstract class AbstractRepositoryReader implements IRepositoryReader {
         if (parent.getType().equals(resolver.guessType())
                   && parent.getArtifactId().equals(resolver.guessArtifactId())
                   && resolver.guessVersion() != null) {
-            boolean filterOut = true;
+            boolean keep = false;
             if ("plugin".equals(parent.getType()) && "jar".equals(resolver.guessExtension())) {
-                filterOut = false;
+                keep = true;
             } else if ("distribution".equals(parent.getType()) && "zip".equals(resolver.guessExtension())) {
-                filterOut = false;
+                keep = true;
             } else if (resolver.guessType().equals(resolver.guessExtension())) {
                 //default behaviour, take only *.jar in jars/ etc.
-                filterOut = false;
+                keep = true;
             }
-            if (!filterOut) {
+            if (keep) {
                 RepoPathElement elem = copyElement(parent);
                 elem.setVersion(resolver.guessVersion());
+                elem.setExtension(resolver.guessExtension());
                 return elem;
             }
         }
@@ -78,17 +79,17 @@ abstract class AbstractRepositoryReader implements IRepositoryReader {
         if (parent.getType().equals(resolver.guessType())
                     && resolver.guessArtifactId() != null) {
             if (!knownArtifacts.contains(resolver.guessArtifactId())) {
-                boolean filterOut = true;
+                boolean keep = false;
                 if ("plugin".equals(parent.getType()) && "jar".equals(resolver.guessExtension())) {
-                    filterOut = false;
+                    keep = true;
                 } else if ("distribution".equals(parent.getType()) 
                     && ("zip".equals(resolver.guessExtension()) || "tar.gz".equals(resolver.guessExtension()))) {
-                    filterOut = false;
+                    keep = true;
                 } else if (resolver.guessType().equals(resolver.guessExtension())) {
                     //default behaviour, take only *.jar in jars/ etc.
-                    filterOut = false;
+                    keep = true;
                 }
-                if (!filterOut) {
+                if (keep) {
                     knownArtifacts.add(resolver.guessArtifactId());
                     RepoPathElement elem = copyElement(parent);
                     elem.setArtifactId(resolver.guessArtifactId());

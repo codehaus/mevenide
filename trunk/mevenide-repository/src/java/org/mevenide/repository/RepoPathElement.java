@@ -18,6 +18,12 @@
 
 package org.mevenide.repository;
 
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Iterator;
+
 /**
  * Data placeholder for local and remote repository information.
  * Can contain incomplete values, the means of getting more complete data
@@ -55,12 +61,27 @@ public final class RepoPathElement {
     private String artifactId;
     private String version;
     private String type;
+    private String extension;
     private IRepositoryReader reader;
     private RepoPathElement[] children;
     
     /** Creates a new instance of RepoPathElement */
     public RepoPathElement(IRepositoryReader read) {
         reader = read;
+    }
+    
+    public RepoPathElement(IRepositoryReader read, 
+                           String groupId, 
+                           String type, 
+                           String version, 
+                           String artifactId, 
+                           String ext) {
+        this(read);
+        setGroupId(groupId);
+        setType(type);
+        setVersion(version);
+        setArtifactId(artifactId);
+        setExtension(ext);
     }
 
     public String getGroupId() {
@@ -94,6 +115,14 @@ public final class RepoPathElement {
     void setType(String type) {
         this.type = type;
     }
+    
+    public String getExtension() {
+        return extension;
+    }
+
+    void setExtension(String extension) {
+        this.extension = extension;
+    }    
     
     /**
      * returns true if all it's fields are filled out, identifying the
@@ -140,6 +169,47 @@ public final class RepoPathElement {
        }
        return buf.toString();
     }
+    
+    /**
+     * get path to relative to the root of repository.
+     * really makes sense just for leaf elements.
+     */
+    public String getRelativeURIPath() {
+        StringBuffer buf = new StringBuffer();
+        if (groupId != null) {
+            buf.append(groupId);
+            if (type != null) {
+                buf.append("/");
+                buf.append(type);
+                buf.append("s");
+                if (artifactId != null) {
+                    buf.append("/");
+                    buf.append(artifactId);
+                    if (version != null) {
+                        buf.append("-");
+                        buf.append(version);
+                    }
+                    if (extension != null) {
+                        buf.append(".");
+                        buf.append(extension);
+                    }
+                }
+            }
+        }
+        return buf.toString();
+    }
+    
+    /**
+     * get uri to the path element. makes most sense for leaf elements.
+     *
+     */
+    public URI getURI() {
+        String root = reader.getRootURI().toString();
+        if (!root.endsWith("/")) {
+            root = root + "/";
+        }
+        return URI.create(root + getRelativeURIPath());
+    }
  
     /**
      * Get an array of RepoPathElements that share the fields
@@ -151,7 +221,7 @@ public final class RepoPathElement {
         // have some refreshing here?
         if (children == null) {
             children = reader.readElements(this);
-        }
+        } 
         return children;
     }
     
@@ -161,6 +231,10 @@ public final class RepoPathElement {
 
     public boolean isRemote() {
         return reader.getRootURI().toString().startsWith("http://");
+    }
+    
+    public IRepositoryReader getReader() {
+        return reader;
     }
     
 }
