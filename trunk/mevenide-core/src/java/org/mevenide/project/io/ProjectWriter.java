@@ -21,9 +21,9 @@ import org.apache.maven.project.Dependency;
 import org.apache.maven.project.Project;
 import org.apache.maven.project.Resource;
 import org.mevenide.project.AbstractDependencyResolver;
+import org.mevenide.project.DefaultResourceResolver;
 import org.mevenide.project.DependencyFactory;
 import org.mevenide.project.IDependencyResolver;
-import org.mevenide.project.DefaultResourceResolver;
 import org.mevenide.project.SourceDirectoryUtil;
 
 /**
@@ -156,16 +156,14 @@ public class ProjectWriter {
 	public void addProject(File referencedPom, File pom) throws Exception {
 		ProjectReader reader = ProjectReader.getReader();
 		
-		Project referencedProject = reader.read(referencedPom);
-		Dependency dependency = new Dependency();
-		dependency.setGroupId(referencedProject.getGroupId());
-		dependency.setArtifactId(referencedProject.getArtifactId());
-		dependency.setVersion(referencedProject.getCurrentVersion());
+		Dependency dependency = reader.getDependency(referencedPom);
 		
 		Project project = reader.read(pom);
 		project.addDependency(dependency);
 		
 		write(project, pom);
 	}
+
+	
 
 }
