@@ -2,7 +2,7 @@
 <plugin
    id="org.mevenide.grabber"
    name="Mevenide Goals Grabber"
-   version="0.1-alpha-1"
+   version="0.1"
    provider-name="Sourceforge">
 
    <runtime>
