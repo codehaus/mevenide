@@ -187,8 +187,8 @@ public class SynchronizeWizardPage extends WizardPage {
 		tabFolder.setSelection(0);
 		GridData tabFolderData = new GridData(GridData.FILL_BOTH);
 		tabFolderData.grabExcessHorizontalSpace = true;
-		tabFolderData.heightHint = 300;
-		tabFolderData.heightHint = 420;
+		tabFolderData.heightHint = 240;
+		//tabFolderData.widthHint = 420;
 		tabFolder.setLayoutData(tabFolderData);
 		
 		createLegend(topLevelContainer);
@@ -220,7 +220,7 @@ public class SynchronizeWizardPage extends WizardPage {
 		new TableColumn(table, SWT.NULL );
 	
 		for (int i = 0; i < table.getColumns().length; i++) {
-            table.getColumns()[i].setWidth(156);
+            table.getColumns()[i].setWidth(180);
         }
 		
 		TableItem item1 = new TableItem(table, SWT.NULL);
@@ -957,7 +957,7 @@ public class SynchronizeWizardPage extends WizardPage {
             }
 			if ( !foundInEclipseProject ) {
 				DependencyWrapper wrapper = new DependencyWrapper((Dependency)pomDependencies.get(i), false, group);
-				wrapper.setInPom(true);
+				wrapper.setInPom(false);
 				group.addDependency(wrapper); 
 			}
         }
