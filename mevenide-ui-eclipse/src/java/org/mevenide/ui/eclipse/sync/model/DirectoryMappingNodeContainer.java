@@ -45,7 +45,7 @@ public class DirectoryMappingNodeContainer extends AbstractArtifactMappingNodeCo
     
     public void attachPom(Project project) {
         attachResources(project);
-        attachDirectories(project);
+        attachDirectories(project);   
     }
     
     private void attachResources(Project project) {
@@ -58,11 +58,11 @@ public class DirectoryMappingNodeContainer extends AbstractArtifactMappingNodeCo
             
             List orphanResources = new ArrayList(resources);
             
-            List ignoredResource = FileUtils.getIgnoredResources(project);
+            List ignoredResources = FileUtils.getIgnoredResources(project);
             
 	        for (Iterator itr = resources.iterator(); itr.hasNext(); ) {
 	            Resource pomResource = (Resource) itr.next();
-	            if ( ignoredResource.contains(pomResource.getDirectory().replaceAll("\\\\", "/")) ) {
+	            if ( ignoredResources.contains(pomResource.getDirectory().replaceAll("\\\\", "/")) ) {
 	            	orphanResources.remove(pomResource);
 	            }
 	            else {
@@ -70,7 +70,11 @@ public class DirectoryMappingNodeContainer extends AbstractArtifactMappingNodeCo
 				        DirectoryMappingNode currentNode = (DirectoryMappingNode) nodes[i];
 				        Directory resolvedDirectory = (Directory) currentNode.getResolvedArtifact();
 				        if ( currentNode.getArtifact() == null ) {
-				            if ( resolvedDirectory == null || lowMatch(pomResource, resolvedDirectory) ) {
+				        	System.err.println(pomResource);
+				        	if ( lowMatch(pomResource, resolvedDirectory) ) {
+				        		orphanResources.remove(pomResource);
+				        	}
+				            else if ( resolvedDirectory == null ) {
 				                currentNode.setArtifact(pomResource);
 				                currentNode.setDeclaringPom(project.getFile());
 				                orphanResources.remove(pomResource);
@@ -84,12 +88,26 @@ public class DirectoryMappingNodeContainer extends AbstractArtifactMappingNodeCo
     }
     
     private boolean lowMatch(Resource resource, Directory directory) {
-        log.debug("resource dir : " + resource.getDirectory() + ", directory path : " + directory.getPath() + " match ? " + (resource.getDirectory() != null && resource.getDirectory().replaceAll("\\\\", "/").equals(directory.getPath().replaceAll("\\\\", "/"))));
-        if ( resource.getDirectory() == null ) return false;
-        return resource.getDirectory().replaceAll("\\\\", "/").equals(directory.getPath().replaceAll("\\\\", "/"));
+        if ( resource.getDirectory() == null ) {
+        	return false;
+        }
+        
+        String resourcePath = stripBasedir(resource.getDirectory());
+        String directoryPath = stripBasedir(directory.getPath());
+        
+        log.debug("resource dir : " + resourcePath + ", directory path : " + directoryPath + " match ? " + (resource.getDirectory() != null && resource.getDirectory().replaceAll("\\\\", "/").equals(directory.getPath().replaceAll("\\\\", "/"))));
+        return resourcePath.replaceAll("\\\\", "/").equals(directoryPath.replaceAll("\\\\", "/"));
     }
     
-    private void attachOrphanArtifacts(List orphanArtifacts, Project project) {
+   
+	private String stripBasedir(String strg) {
+		if ( strg.startsWith("${basedir}") ) {
+        	strg = strg.substring("${basedir}".length());
+        }
+		return strg;
+	}
+
+	private void attachOrphanArtifacts(List orphanArtifacts, Project project) {
 		
 		removeDuplicate(orphanArtifacts);		
 		
@@ -105,9 +123,26 @@ public class DirectoryMappingNodeContainer extends AbstractArtifactMappingNodeCo
         }
 
         this.nodes = newNodes;
+        
     }
 
 	private void removeDuplicate(List orphanArtifacts) {
+		List listCopy = new ArrayList(orphanArtifacts);
+		List tempList = new ArrayList();
+		int u = 0;
+		Iterator itr = listCopy.iterator();
+		while ( itr.hasNext() ) {
+			DirectoryMappingNode orphanNode = new DirectoryMappingNode();
+			orphanNode.setArtifact(itr.next());
+			if ( !tempList.contains(orphanNode.getLabel()) ) {
+				tempList.add(orphanNode.getLabel());
+				u++;
+			}
+			else {
+				orphanArtifacts.remove(u);
+			}
+		}
+		
 		List modifiedOrphanList = new ArrayList(orphanArtifacts);
 		for (int j = 0; j < modifiedOrphanList.size(); j++) {
 			for (int i = 0; i < nodes.length; i++) {

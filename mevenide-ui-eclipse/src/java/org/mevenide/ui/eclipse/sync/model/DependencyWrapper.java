@@ -162,14 +162,19 @@ public class DependencyWrapper extends ArtifactWrapper {
 		PropertyModel model = null;
 		
 		File projectProperties = new File(getDeclaringPom().getParentFile(), "project.properties");
-		PropertyModelFactory factory = PropertyModelFactory.getFactory();
 		
-		try {
-			model = factory.newPropertyModel(projectProperties);
-		} 
-		catch (IOException e) {
-			log.error("Unable to mount project PropertyModel", e);
+		if ( projectProperties.exists() ) {
+		
+			PropertyModelFactory factory = PropertyModelFactory.getFactory();
+			
+			try {
+				model = factory.newPropertyModel(projectProperties);
+			} 
+			catch (IOException e) {
+				log.error("Unable to mount project PropertyModel", e);
+			}
 		}
+		
 		return model;
 	}
 

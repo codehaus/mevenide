@@ -60,7 +60,7 @@ public class DirectoryMappingNodeContainerFactory {
 		                IClasspathEntry classpathEntry = classpathEntries[i];
 		                DirectoryMappingNode node = createDirectoryMappingNode(javaProject, classpathEntry);
 		                String ignoreLine = ((Directory) node.getResolvedArtifact()).getPath();
-		                if ( !FileUtils.isArtifactIgnored(ignoreLine, javaProject.getProject()) ) {
+		                if ( !FileUtils.isArtifactIgnored(ignoreLine, javaProject.getProject())) { 
 		                	node.setParent(con);
 		                	nodes.add(node);
 		                }
@@ -82,7 +82,6 @@ public class DirectoryMappingNodeContainerFactory {
         }
         return cons;
     }
-
    
     private DirectoryMappingNode createDirectoryMappingNode(IJavaProject javaProject, IClasspathEntry classpathEntry) {
         String path = new DefaultPathResolver().getRelativeSourceDirectoryPath(classpathEntry, javaProject.getProject());

@@ -218,7 +218,7 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
 	}
 
     private void createArtifactViewer(Composite parent) {
-        artifactMappingNodeViewer = new TreeViewer(parent, SWT.FULL_SELECTION);
+        artifactMappingNodeViewer = new TreeViewer(parent, SWT.MULTI | SWT.FULL_SELECTION);
         
         GridLayout gridLayout= new GridLayout();
         gridLayout.makeColumnsEqualWidth= false;
@@ -284,33 +284,49 @@ public class SynchronizeView extends ViewPart implements IActionListener, IResou
 	private void createSelectionChangedListener() {
 		artifactMappingNodeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
             public void selectionChanged(SelectionChangedEvent event) {
-				Object selection = ((StructuredSelection) event.getSelection()).getFirstElement();
+				List selections = ((StructuredSelection) event.getSelection()).toList();
 				
-				//temp
-				if ( !(selection instanceof IArtifactMappingNode) ) {
-					addToClasspath.setEnabled(false);
-					pushToPom.setEnabled(false);
-					markAsMerged.setEnabled(false);
-					viewProperties.setEnabled(false);
-					return;
+				boolean enablePushToPom = false, 
+						enableRemoveFromProject = false, 
+						enableAddToClasspath = false, 
+						enableFromFromPom = false, 
+						enableMarkAsMerged = false, 
+						enableAddToIgnoreList = false;
+				
+				for (int i = 0; i < selections.size(); i++) {
+					Object selection = selections.get(i);
+					
+					if ( selection instanceof IArtifactMappingNode ) {
+
+						IArtifactMappingNode selectedNode = (IArtifactMappingNode) selection;
+						
+						//outgoing 
+						enablePushToPom = (selectedNode.getChangeDirection() & EclipseContainerContainer.OUTGOING) != 0;
+						enableRemoveFromProject = (selectedNode.getChangeDirection() & EclipseContainerContainer.OUTGOING) != 0;
+							
+						//incoming
+						enableAddToClasspath = (selectedNode.getChangeDirection() & EclipseContainerContainer.INCOMING) != 0;
+						enableFromFromPom = (selectedNode.getChangeDirection() & EclipseContainerContainer.INCOMING) != 0;
+						
+						//conflicting
+						enableMarkAsMerged = (selectedNode.getChangeDirection() & EclipseContainerContainer.CONFLICTING) != 0;
+						enableAddToIgnoreList = (selectedNode.getChangeDirection() & EclipseContainerContainer.CONFLICTING) == 0;
+					}
 				}
 				
-				viewProperties.setEnabled(true);
+				pushToPom.setEnabled(enablePushToPom);
+				removeFromProject.setEnabled(enableRemoveFromProject);
+				addToClasspath.setEnabled(enableAddToClasspath);
+				removeFromPom.setEnabled(enableFromFromPom);
+				markAsMerged.setEnabled(enableMarkAsMerged);
+				addToIgnoreList.setEnabled(enableAddToIgnoreList);
 				
-				IArtifactMappingNode selectedNode = (IArtifactMappingNode) selection;
-				
-				//outgoing 
-				pushToPom.setEnabled((selectedNode.getChangeDirection() & EclipseContainerContainer.OUTGOING) != 0);
-				removeFromProject.setEnabled((selectedNode.getChangeDirection() & EclipseContainerContainer.OUTGOING) != 0);
-					
-				//incoming
-				addToClasspath.setEnabled((selectedNode.getChangeDirection() & EclipseContainerContainer.INCOMING) != 0);
-				removeFromPom.setEnabled((selectedNode.getChangeDirection() & EclipseContainerContainer.INCOMING) != 0);
-				
-				//conflicting
-				markAsMerged.setEnabled((selectedNode.getChangeDirection() & EclipseContainerContainer.CONFLICTING) != 0);
-				addToIgnoreList.setEnabled((selectedNode.getChangeDirection() & EclipseContainerContainer.CONFLICTING) == 0);
-					
+				if ( selections.size() == 1 ) {
+					viewProperties.setEnabled(true);
+				}
+				else {
+					viewProperties.setEnabled(false);
+				}
             }
 		});
 	}

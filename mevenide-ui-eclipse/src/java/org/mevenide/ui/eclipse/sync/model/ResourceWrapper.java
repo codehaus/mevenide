@@ -52,6 +52,9 @@ public class ResourceWrapper extends SourceFolder {
 		
 		log.debug("adding src entry to .classpath : "  + path + "(resource)");
 
+		if ( path.startsWith("${basedir}") ) {
+			path = path.substring("${basedir}".length());
+		}
 		IClasspathEntry srcEntry = newSourceEntry(path, project);		
 
 		addClasspathEntry(srcEntry, project);
