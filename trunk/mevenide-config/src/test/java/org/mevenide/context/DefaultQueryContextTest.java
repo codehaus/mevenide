@@ -69,8 +69,8 @@ public class DefaultQueryContextTest extends TestCase {
     }
     
     
-    public void testNonProjectBased() {
-        DefaultQueryContext query = new DefaultQueryContext();
+    public void testAAANonProjectBased() {
+        IQueryContext query = DefaultQueryContext.getNonProjectContextInstance();
         assertNull(query.getProjectDirectory());
         assertNotNull(query.getUserDirectory());
         assertNotNull(query.getUserPropertyValue("maven.repo.remote"));
@@ -101,7 +101,7 @@ public class DefaultQueryContextTest extends TestCase {
     }
     
     public void testRefresh() throws Exception {
-        DefaultQueryContext query = new DefaultQueryContext();
+        IQueryContext query = DefaultQueryContext.getNonProjectContextInstance();
         assertNull(query.getProjectDirectory());
         assertNotNull(query.getUserDirectory());
         assertNotNull(query.getUserPropertyValue("maven.repo.remote"));
