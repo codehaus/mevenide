@@ -29,3 +29,12 @@
       </roles>
       <timezone>+1</timezone>
     </developer>
+    <developer>
+      <name>Jens Andersen</name>
+      <id>jens</id>
+      <email>jens@iostream.net</email>
+      <organization/>
+      <roles>
+      	<role>Developer Java</role>
+      </roles>
+    </developer>
