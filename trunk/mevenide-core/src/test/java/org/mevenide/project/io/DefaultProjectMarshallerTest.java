@@ -16,7 +16,6 @@ package org.mevenide.project.io;
 
 import java.io.FileReader;
 import java.io.Reader;
-import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
 
@@ -51,11 +50,18 @@ public class DefaultProjectMarshallerTest extends TestCase {
 
 	public void testMarshall() throws Exception {
 		marshaller.marshall(writer, project);
-		Reader reader = new StringReader(writer.toString());
+		
+		//commented for now cuz theres a little mismatch between ProjectMarshaller and ProjectUnmarshaller
+		//indeed the Marshaller is based on the xsd, whereas the UnMarshaller is not
+		//i dont know yet what is the correct way
+		
+		//Reader reader = new StringReader(writer.toString());
 		//assertEquals(project, new DefaultProjectUnmarshaller().parse(reader));
+		
 		System.out.print(writer.toString());
 	}
 	
 	
 
 }
+ 

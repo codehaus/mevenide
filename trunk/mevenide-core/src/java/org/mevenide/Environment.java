@@ -23,6 +23,9 @@ import java.io.File;
  * 
  */
 public class Environment {
+	private Environment()  {
+	}
+	
     /** maven home directory */
     private static String mavenHome;
     

@@ -57,6 +57,9 @@ public class OptionsRegistry {
         }
     }
     
+	private OptionsRegistry() {
+	}
+
    /**
     * @return the description associated with the given option passed as a single character
     */

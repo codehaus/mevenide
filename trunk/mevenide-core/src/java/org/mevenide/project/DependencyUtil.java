@@ -14,7 +14,10 @@
 package org.mevenide.project;
 
 
+import java.io.File;
+
 import org.apache.maven.project.Dependency;
+import org.mevenide.Environment;
 
 /**
  * 
@@ -24,30 +27,108 @@ import org.apache.maven.project.Dependency;
  */
 class DependencyUtil {
 	
+	private DependencyUtil() {
+	}
+	
 	/**
 	 * should return the Dependency instance associated with a given path.
 	 * however this seems hard if not impossible to achieve. indeed i cannot 
-	 * imagine yet a way to extract the required information to build a coherent
+	 * imagine yet a pertinent way to extract the required information to build a coherent
 	 * Dependency. 
 	 * 
 	 * so for now i'll stick with the jar overriding mechanism provided by maven  
 	 * 
-	 * in order to minimize the trouble, we will check if dependencies declared 
+	 * in order to minimize the burden, we will check if dependencies declared 
 	 * in the project descriptor match some ide libraries, and use maven.jar.override
 	 * if no match is found for the current path.
 	 *  
+	 * Also if a file is found in local repo that match the fileName passed as parameters, 
+	 * we'll use parent.name as groupId. in either case we have to guess artifactId and version from the 
+	 * fileName.
 	 * 
 	 * @param absoluteFileName
 	 * @return
 	 */
 	static Dependency getDependency(String absoluteFileName) {
-		//File f = findInRepo(fileName)
-		//if f != null 
-		//extract groupId from dirName
-		//guess artifactId and version
-		//else
-		//guess groupId, artifactId, version
+		String fileName = new File(absoluteFileName).getName();
+		String groupId = getGroupId(fileName);
+		
+		if ( groupId == null ) {
+			groupId = guessGroupId(absoluteFileName); 
+		}
+		String artifactId = guessArtifactId(fileName);
+		String version = guessVersion(fileName);
+		
+		Dependency dependency = new Dependency();
+		dependency.setGroupId(groupId);
+		dependency.setArtifactId(artifactId);
+		dependency.setVersion(version);
+		
+		return dependency;
+	}
+	
+	/**
+	 * assume here that local repo is under maven_home...
+	 * @todo add a mavenLocalRepo attribute to org.mevenide.Environment
+	 * 
+	 * @param fileName
+	 * @return
+	 */
+	private static String getGroupId(String fileName) {
+		File mavenLocalRepo = new File(Environment.getMavenHome(), "repository");
+		return getGroupId(fileName, mavenLocalRepo);
+	}
+	
+	/**
+	 * assume a standard repository layout, ergo a file is under one level under group Directory
+	 * e.g. mevenide/jars/mevenide-core-0.1.jar 
+	 * 
+	 * @param fileName
+	 * @param rootDirectory
+	 * @return
+	 */
+	private static String getGroupId(String fileName, File rootDirectory) {
+		File[] files = rootDirectory.listFiles();
+		File[] children = files == null ? new File[0] : files;
+		for (int i = 0; i < children.length; i++) {
+			if ( children[i].isDirectory() ) {
+				String candidate = getGroupId(fileName, children[i]);
+				if ( candidate != null ) {
+					return candidate;
+				}
+			}
+			else {
+				if ( children[i].getName().equals(fileName) ) {
+					return rootDirectory.getParentFile().getName();
+				}
+			}
+		}
 		return null;
 	}
 	
+	private static String guessArtifactId(String fileName) {
+		return null;
+	}
+	private static String guessVersion(String fileName) {
+		return null;
+	}
+	
+	/**
+	 * assume a layout similar to the one of the local repo 
+	 * e.g. mevenide/jars/mevenide-core-0.1.jar 
+	 * else it is quite impossible  to guess the groupÎd..
+	 * 
+	 * f.i. if the artefact is located under project_home/lib
+	 * this method returns project_home and thats not quite consistent..
+	 * 
+	 * just wondering : is it so important to have the groupId ?
+	 * 
+	 * @wonder get rid of that method ? 
+	 * 
+	 * @param absoluteFileName
+	 * @return
+	 */
+	private static String guessGroupId(String absoluteFileName) {
+		return new File(absoluteFileName).getParentFile().getParentFile().getName();
+	}
 }
