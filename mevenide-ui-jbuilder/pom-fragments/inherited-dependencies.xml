@@ -64,7 +64,7 @@
         <dependency>
             <groupId>jdom</groupId>
             <artifactId>jdom</artifactId>
-            <version>1.0b8</version>
+            <version>1.0</version>
             <type>jar</type>
             <properties>
                 <jbuilder.opentool.bundle>true</jbuilder.opentool.bundle>
