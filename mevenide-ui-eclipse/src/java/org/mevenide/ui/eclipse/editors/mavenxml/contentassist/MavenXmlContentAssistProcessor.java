@@ -18,6 +18,7 @@
 package org.mevenide.ui.eclipse.editors.mavenxml.contentassist;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -43,17 +44,21 @@ import org.mevenide.ui.eclipse.preferences.PreferencesManager;
 
 /**
  * @author <a href="mailto:rhill2@free.fr">Gilles Dodinet </a>
- * @version $Id: MavenXmlContentAssistProcessor.java,v 1.1 18 avr. 2004 Exp
- *          gdodinet
+ * @version $Id: MavenXmlContentAssistProcessor.java,v 1.1 18 avr. 2004 Exp gdodinet
  *  
  */
 public abstract class MavenXmlContentAssistProcessor implements IContentAssistProcessor {
 
-    private MavenXmlEditor editor;
     private static final  Log log = LogFactory.getLog(MavenXmlContentAssistProcessor.class);
+    
+    private MavenXmlEditor editor;
+
+    private PreferencesManager preferencesManager;
 
     public MavenXmlContentAssistProcessor(MavenXmlEditor editor) {
         this.editor = editor;
+        preferencesManager = PreferencesManager.getManager();
+        preferencesManager.loadPreferences();
     }
 
     protected XMLNode getNodeAt(IDocument doc, int offset) {
@@ -130,35 +135,23 @@ public abstract class MavenXmlContentAssistProcessor implements IContentAssistPr
             for (Iterator it = namespaces.keySet().iterator(); it.hasNext();) {
                 String key = (String) it.next();
                 
-                log.debug(key);
-                log.debug(outerTag);
-                
                 Namespace ns = (Namespace) namespaces.get(key);
-                Map inc = ns.getIncludes();
-                List tags = (List) inc.get(outerTag);
                 
-                if ( log.isDebugEnabled() ) {
-                    if ( tags != null ) {
-		                for (Iterator iter = tags.iterator(); iter.hasNext();) {
-		                    log.debug((String) iter.next());
-		                }
-                    }
-                    else {
-                        log.debug("tags = null");
-                    }
-                }
+                Collection tags = ns.getSubTags(outerTag);
                 
                 if (tags != null) {
                     words.addAll(tags);
                 }
             }
         }
+        
         Collections.sort(words);
+        
         if (node != null && node.getType() != null && "TEXT".equals(node.getType())) {
             cp = new ICompletionProposal[words.size()];
             for (int i = 0; i < cp.length; i++) {
                 String text = (String) words.get(i);
-                if (PreferencesManager.getManager().getBooleanValue("InsertEndTag")) {
+                if (preferencesManager.getBooleanValue("InsertEndTag")) {
                     cp[i] = new CompletionProposal("<" + text + "></" + text + ">", offset, 0, text.length() + 2, null, text,
                             null, null);
                 }
@@ -180,7 +173,7 @@ public abstract class MavenXmlContentAssistProcessor implements IContentAssistPr
                 }
                 for (int i = 0; i < cp.length; i++) {
                     String text = (String) words.get(i);
-                    if (PreferencesManager.getManager().getBooleanValue("InsertEndTag")) {
+                    if (preferencesManager.getBooleanValue("InsertEndTag")) {
                         if (isAfterLesserThan) {
                             cp[i] = new CompletionProposal(text + "></" + text + ">", offset, 0, text.length() + 1, null, text,
                                     null, null);
@@ -209,14 +202,12 @@ public abstract class MavenXmlContentAssistProcessor implements IContentAssistPr
                     for (int i = 0; i < words.size(); i++) {
                         String text = (String) words.get(i);
                         if (text.startsWith(start)) {
-                            if (PreferencesManager.getManager().getBooleanValue("InsertEndTag")) {
-                                cpL.add(new CompletionProposal(text + "></" + text + ">", node.getOffset() + 1, offset
-                                        - node.getOffset() - 1, text.length() + 1, null, text, null, null));
-                            }
-                            else {
-                                cpL.add(new CompletionProposal(text, node.getOffset() + 1, offset - node.getOffset() - 1, text
-                                        .length()));
-                            }
+                            //if (preferencesManager.getBooleanValue("InsertEndTag")) {
+                                cpL.add(new CompletionProposal(text + "></" + text + ">", node.getOffset() + 1, offset - node.getOffset() - 1, text.length() + 1, null, text, null, null));
+                            //}
+                            //else {
+                            //    cpL.add(new CompletionProposal(text, node.getOffset() + 1, offset - node.getOffset() - 1, text .length()));
+                            //}
                         }
                     }
                     cp = new ICompletionProposal[cpL.size()];

@@ -2,6 +2,8 @@ package org.mevenide.ui.eclipse.editors.mavenxml;
 
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.text.source.ISourceViewer;
@@ -14,7 +16,8 @@ import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.goals.outline.MavenXmlOutlinePage;
 
 public class MavenXmlEditor extends TextEditor {
-
+    private static final Log log = LogFactory.getLog(MavenXmlEditor.class);
+    
 	private ColorManager colorManager;
 	private MavenXmlOutlinePage outlinePage;
 	
@@ -45,7 +48,13 @@ public class MavenXmlEditor extends TextEditor {
 	
 	protected void performSave(boolean overwrite, IProgressMonitor progressMonitor) {
 		super.performSave(overwrite, progressMonitor);
-		outlinePage.forceRefresh();
+		try {
+            outlinePage.forceRefresh();
+        }
+        catch (Throwable e) {
+            String message = "Prblem occured while refreshing outline"; 
+            log.error(message, e);
+        }
 	}
 	
 	public static final String CONTENTASSIST_PROPOSAL_ID = "org.mevenide.ui.eclipse.editors.mavenxml.ContentAssistProposal";
