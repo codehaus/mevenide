@@ -22,7 +22,10 @@ import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyVetoException;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -30,6 +33,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.StringTokenizer;
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -37,28 +41,37 @@ import javax.swing.JPanel;
 import javax.swing.tree.TreeSelectionModel;
 import org.apache.maven.project.Dependency;
 import org.apache.maven.project.Project;
+import org.mevenide.environment.ILocationFinder;
 import org.mevenide.netbeans.project.MavenProject;
+import org.mevenide.netbeans.project.ProxyUtilities;
 import org.mevenide.netbeans.project.customizer.ui.LocationComboFactory;
 import org.mevenide.netbeans.project.customizer.ui.OriginChange;
 import org.mevenide.netbeans.project.dependencies.DependencyEditor;
 import org.mevenide.netbeans.project.dependencies.DependencyNode;
+import org.mevenide.netbeans.project.dependencies.RepositoryUtilities;
 import org.mevenide.project.io.IContentProvider;
+import org.mevenide.properties.IPropertyLocator;
+import org.mevenide.repository.IRepositoryReader;
+import org.mevenide.repository.RepoPathElement;
+import org.mevenide.repository.RepositoryReaderFactory;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.awt.HtmlBrowser;
+import org.openide.awt.StatusDisplayer;
 import org.openide.explorer.ExplorerManager;
 import org.openide.explorer.view.BeanTreeView;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
 import org.openide.util.Lookup;
+import org.openide.util.RequestProcessor;
 import org.openide.util.lookup.Lookups;
 
 
 /**
  *
- * @author  Milos Kleint (ca206216@tiscali.cz)
+ * @author  Milos Kleint (mkleint@codehaus.org)
  */
 public class DependenciesPanel extends JPanel implements ExplorerManager.Provider, ProjectPanel {
     
@@ -68,14 +81,21 @@ public class DependenciesPanel extends JPanel implements ExplorerManager.Provide
     private boolean initialized = false;
     private boolean isResolvingValues = false;
     private OriginChange ocDummyDependency;
+    private OriginChange ocDummyOverride;
     private List values = new ArrayList();
     private DependencyPOMChange currentDep;
+    private DependencyPOMChange emptyDep;
+    private List overrideValues = new ArrayList();
     
     /** Creates new form CustomGoalsPanel */
     public DependenciesPanel(MavenProject proj, boolean editable) {
         project = proj;
         ocDummyDependency = LocationComboFactory.createPOMChange(project, false);
+        ocDummyOverride = LocationComboFactory.createPropertiesChange(project);
         initComponents();
+        //TODO - just temporary, in future have some override support
+        tbDep.setVisible(false);
+        
         ButtonGroup grp = new ButtonGroup();
         grp.add(rbVersion);
         grp.add(rbPath);
@@ -111,6 +131,9 @@ public class DependenciesPanel extends JPanel implements ExplorerManager.Provide
                 }
             }
         });
+        emptyDep = new DependencyPOMChange("", new HashMap(), 
+                IPropertyLocator.LOCATION_NOT_DEFINED, createFieldMap(), 
+                ocDummyOverride, new HashMap(), false);
         
     }
     
@@ -134,6 +157,17 @@ public class DependenciesPanel extends JPanel implements ExplorerManager.Provide
 
         pnlDeps = new javax.swing.JPanel();
         tbDep = new javax.swing.JTabbedPane();
+        pnlOverrides = new javax.swing.JPanel();
+        rbVersion = new javax.swing.JRadioButton();
+        rbPath = new javax.swing.JRadioButton();
+        jTextField1 = new javax.swing.JTextField();
+        jTextField2 = new javax.swing.JTextField();
+        jButton1 = new javax.swing.JButton();
+        btnOverride = new javax.swing.JButton();
+        btnAdd = new javax.swing.JButton();
+        btnEdit = new javax.swing.JButton();
+        btnRemove = new javax.swing.JButton();
+        btnCheck = new javax.swing.JButton();
         pnlSingleDep = new javax.swing.JPanel();
         ocDummyDependency = LocationComboFactory.createPOMChange(project, true);
         btnLoc = (JButton)ocDummyDependency.getComponent();
@@ -152,16 +186,7 @@ public class DependenciesPanel extends JPanel implements ExplorerManager.Provide
         btnView = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         lstProperties = new javax.swing.JList();
-        pnlOverrides = new javax.swing.JPanel();
-        rbVersion = new javax.swing.JRadioButton();
-        rbPath = new javax.swing.JRadioButton();
-        jTextField1 = new javax.swing.JTextField();
-        jTextField2 = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
-        btnOverride = new javax.swing.JButton();
-        btnAdd = new javax.swing.JButton();
-        btnRemove = new javax.swing.JButton();
-        btnEdit = new javax.swing.JButton();
+        lblJavadocSrc = new javax.swing.JLabel();
 
         setLayout(new java.awt.GridBagLayout());
 
@@ -171,7 +196,7 @@ public class DependenciesPanel extends JPanel implements ExplorerManager.Provide
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.gridwidth = 3;
-        gridBagConstraints.gridheight = 3;
+        gridBagConstraints.gridheight = 4;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         gridBagConstraints.weightx = 0.1;
@@ -181,6 +206,129 @@ public class DependenciesPanel extends JPanel implements ExplorerManager.Provide
 
         tbDep.setTabLayoutPolicy(javax.swing.JTabbedPane.SCROLL_TAB_LAYOUT);
         tbDep.setTabPlacement(javax.swing.JTabbedPane.BOTTOM);
+        pnlOverrides.setLayout(new java.awt.GridBagLayout());
+
+        rbVersion.setText("Version");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(3, 3, 0, 0);
+        pnlOverrides.add(rbVersion, gridBagConstraints);
+
+        rbPath.setText("Artifact Path");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(3, 3, 0, 0);
+        pnlOverrides.add(rbPath, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.weightx = 0.1;
+        gridBagConstraints.insets = new java.awt.Insets(3, 3, 0, 0);
+        pnlOverrides.add(jTextField1, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.weightx = 0.1;
+        gridBagConstraints.insets = new java.awt.Insets(3, 3, 0, 0);
+        pnlOverrides.add(jTextField2, gridBagConstraints);
+
+        jButton1.setText("Select");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(2, 3, 0, 0);
+        pnlOverrides.add(jButton1, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        pnlOverrides.add(btnOverride, gridBagConstraints);
+
+        tbDep.addTab("Overrides", pnlOverrides);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 4;
+        gridBagConstraints.gridwidth = 4;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 6);
+        add(tbDep, gridBagConstraints);
+
+        btnAdd.setText("Add...");
+        btnAdd.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddActionPerformed(evt);
+            }
+        });
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 3;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
+        add(btnAdd, gridBagConstraints);
+
+        btnEdit.setText("Edit...");
+        btnEdit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditActionPerformed(evt);
+            }
+        });
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 3;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
+        add(btnEdit, gridBagConstraints);
+
+        btnRemove.setText("Remove");
+        btnRemove.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRemoveActionPerformed(evt);
+            }
+        });
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 3;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
+        add(btnRemove, gridBagConstraints);
+
+        btnCheck.setText("Doc&Src check");
+        btnCheck.setToolTipText("Contacts remote repositories requesting download of javadoc and source jars for the dependency.");
+        btnCheck.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCheckActionPerformed(evt);
+            }
+        });
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 3;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.SOUTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
+        add(btnCheck, gridBagConstraints);
+
         pnlSingleDep.setLayout(new java.awt.GridBagLayout());
 
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -314,119 +462,81 @@ public class DependenciesPanel extends JPanel implements ExplorerManager.Provide
         gridBagConstraints.insets = new java.awt.Insets(3, 3, 6, 3);
         pnlSingleDep.add(jScrollPane1, gridBagConstraints);
 
-        tbDep.addTab("Basic", pnlSingleDep);
-
-        pnlOverrides.setLayout(new java.awt.GridBagLayout());
-
-        rbVersion.setText("Version");
+        lblJavadocSrc.setText("jLabel1");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(3, 3, 0, 0);
-        pnlOverrides.add(rbVersion, gridBagConstraints);
-
-        rbPath.setText("Artifact Path");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(3, 3, 0, 0);
-        pnlOverrides.add(rbPath, gridBagConstraints);
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.weightx = 0.1;
-        gridBagConstraints.insets = new java.awt.Insets(3, 3, 0, 0);
-        pnlOverrides.add(jTextField1, gridBagConstraints);
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.weightx = 0.1;
-        gridBagConstraints.insets = new java.awt.Insets(3, 3, 0, 0);
-        pnlOverrides.add(jTextField2, gridBagConstraints);
-
-        jButton1.setText("Select");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(2, 3, 0, 0);
-        pnlOverrides.add(jButton1, gridBagConstraints);
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
-        gridBagConstraints.gridwidth = 2;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        pnlOverrides.add(btnOverride, gridBagConstraints);
-
-        tbDep.addTab("Overrides", pnlOverrides);
+        gridBagConstraints.gridwidth = 6;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHEAST;
+        gridBagConstraints.insets = new java.awt.Insets(3, 0, 0, 6);
+        pnlSingleDep.add(lblJavadocSrc, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 3;
+        gridBagConstraints.gridy = 5;
         gridBagConstraints.gridwidth = 4;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         gridBagConstraints.weightx = 0.1;
         gridBagConstraints.weighty = 0.2;
         gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 6);
-        add(tbDep, gridBagConstraints);
-
-        btnAdd.setText("Add...");
-        btnAdd.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAddActionPerformed(evt);
-            }
-        });
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 3;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
-        add(btnAdd, gridBagConstraints);
-
-        btnRemove.setText("Remove");
-        btnRemove.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnRemoveActionPerformed(evt);
-            }
-        });
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 3;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
-        add(btnRemove, gridBagConstraints);
-
-        btnEdit.setText("Edit...");
-        btnEdit.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnEditActionPerformed(evt);
-            }
-        });
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 3;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
-        add(btnEdit, gridBagConstraints);
+        add(pnlSingleDep, gridBagConstraints);
 
     }
     // </editor-fold>//GEN-END:initComponents
+
+    private void btnCheckActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCheckActionPerformed
+        if (currentDep != null) {
+            final IContentProvider prov = currentDep.getChangedContent();
+            RequestProcessor.getDefault().post(new Runnable() {
+                public void run() {
+                    IRepositoryReader[] readers = RepositoryUtilities.createRemoteReaders(project.getPropertyResolver());
+                    for (int i = 0; i < readers.length; i++) {
+                        final RepoPathElement docEl = new RepoPathElement(readers[i],
+                                prov.getValue("groupId"),
+                                "javadoc.jar",
+                                prov.getValue("version"),
+                                prov.getValue("artifactId"),
+                                "javadoc.jar");
+                        final RepoPathElement srcEl = new RepoPathElement(readers[i],
+                                prov.getValue("groupId"),
+                                "src.jar",
+                                prov.getValue("version"),
+                                prov.getValue("artifactId"),
+                                "src.jar");
+                        File localRepo = new File(project.getLocFinder().getMavenLocalRepository());
+                        File destinationFile = new File(URI.create(localRepo.toURI().toString() + srcEl.getRelativeURIPath()));
+                        if (!destinationFile.exists() || destinationFile.getName().indexOf("SNAPSHOT") >= 0) {
+                            try {
+                                RepositoryUtilities.downloadArtifact(project.getLocFinder(),
+                                        project.getPropertyResolver(),
+                                        srcEl);
+                            } catch (FileNotFoundException exc) {
+                                // well can happen, definitely if having multiple repositories
+                            } catch (Exception exc) {
+                                StatusDisplayer.getDefault().setStatusText("Error downloading " + destinationFile.getName() + " : " + exc.getLocalizedMessage());
+                            }
+                        }
+                        localRepo = new File(project.getLocFinder().getMavenLocalRepository());
+                        destinationFile = new File(URI.create(localRepo.toURI().toString() + docEl.getRelativeURIPath()));
+                        if (!destinationFile.exists() || destinationFile.getName().indexOf("SNAPSHOT") >= 0) {
+                            try {
+                                RepositoryUtilities.downloadArtifact(project.getLocFinder(),
+                                        project.getPropertyResolver(),
+                                        docEl);
+                            } catch (FileNotFoundException exc) {
+                                // well can happen, definitely if having multiple repositories
+                            } catch (Exception exc) {
+                                StatusDisplayer.getDefault().setStatusText("Error downloading " + destinationFile.getName() + " : " + exc.getLocalizedMessage());
+                            }
+                        }
+                        ((DepRootChildren)manager.getRootContext().getChildren()).doRefresh();
+                    }
+                    
+                }
+            });
+        }
+    }//GEN-LAST:event_btnCheckActionPerformed
 
     private void btnRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveActionPerformed
         if (currentDep != null) {
@@ -521,6 +631,7 @@ public class DependenciesPanel extends JPanel implements ExplorerManager.Provide
                                         ocDummyDependency, 
                                         props, false);
                     values.add(change);
+                    String overrideProp = "maven.jar." + dep.getArtifactId();
                 }
             }
         }
@@ -549,6 +660,7 @@ public class DependenciesPanel extends JPanel implements ExplorerManager.Provide
         btnRemove.setEnabled(!resolve);
         btnAdd.setEnabled(!resolve);
         btnEdit.setEnabled(!resolve);
+        
     }
    
      private void resolveDependency(boolean resolve, DependencyPOMChange chng) {
@@ -644,17 +756,25 @@ public class DependenciesPanel extends JPanel implements ExplorerManager.Provide
     }        
     
     public void setDependency(Node[] nodes) {
+        boolean javadoc = false;
+        boolean source = false;
+        lblJavadocSrc.setText("");
         if (currentDep != null) {
             currentDep.detachListeners();
         }
         if ( nodes == null || nodes.length <= 0 ) {
+            currentDep = null;
+            DefaultListModel model = new DefaultListModel();
+            lstProperties.setModel(model);
+            emptyDep.resetToNonResolvedValue();
+            
+            btnRemove.setEnabled(false);
+            btnAdd.setEnabled(false);
+            btnEdit.setEnabled(false);
+            btnCheck.setEnabled(false);
             return;
         }
         Node node = nodes[0];
-        if (node == null) {
-            currentDep = null;
-            return;
-        }
         DependencyPOMChange chan = (DependencyPOMChange)node.getLookup().lookup(DependencyPOMChange.class);
         if (chan != null) {
             chan.resetToNonResolvedValue();
@@ -672,10 +792,26 @@ public class DependenciesPanel extends JPanel implements ExplorerManager.Provide
                 }
             }
             lstProperties.setModel(model);
+            if (node instanceof DependencyNode) {
+                DependencyNode depNode = (DependencyNode)node;
+                javadoc = depNode.hasJavadocInRepository();
+                source = depNode.hasSourceInRepository();
+            }
             currentDep = chan;
+            btnRemove.setEnabled(!isResolvingValues);
+            btnAdd.setEnabled(!isResolvingValues);
+            btnEdit.setEnabled(!isResolvingValues);
+            btnCheck.setEnabled(javadoc == false || source == false);
         } else {
             currentDep = null;
         }
+        if (javadoc && source) {
+            lblJavadocSrc.setText("Javadoc and Sources are available.");
+        } else if (javadoc) {
+            lblJavadocSrc.setText("Javadoc for dependency available.");
+        } else if (source) {
+            lblJavadocSrc.setText("Sources for dependency available.");
+        } 
     }
     
     
@@ -733,6 +869,7 @@ public class DependenciesPanel extends JPanel implements ExplorerManager.Provide
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdd;
+    private javax.swing.JButton btnCheck;
     private javax.swing.JButton btnEdit;
     private javax.swing.JButton btnLoc;
     private javax.swing.JButton btnOverride;
@@ -745,6 +882,7 @@ public class DependenciesPanel extends JPanel implements ExplorerManager.Provide
     private javax.swing.JLabel lblArtifactId;
     private javax.swing.JLabel lblGroupId;
     private javax.swing.JLabel lblJar;
+    private javax.swing.JLabel lblJavadocSrc;
     private javax.swing.JLabel lblType;
     private javax.swing.JLabel lblURL;
     private javax.swing.JLabel lblVersion;

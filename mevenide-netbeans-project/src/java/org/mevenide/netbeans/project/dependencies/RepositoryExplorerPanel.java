@@ -230,33 +230,19 @@ public class RepositoryExplorerPanel extends JPanel implements ExplorerManager.P
     
     private void createRoots() {
         File fil = new File(finder.getMavenLocalRepository());
-        localReader = RepositoryReaderFactory.createLocalRepositoryReader(fil);
+        localReader = RepositoryUtilities.createLocalReader(finder);
         RepoPathElement root = new RepoPathElement(localReader);
         Collection cols = new ArrayList();
         Collection cols2 = new ArrayList();
         cols.add(root);
         cols2.add(fil.toURI());
-        String proxyhost = ProxyUtilities.getProxyHost();
-        String proxyport = ProxyUtilities.getProxyPort();
-        String repos = resolver.getResolvedValue("maven.repo.remote"); //NOI18N
-        IRepositoryReader reader;
-        if (repos != null) {
-            StringTokenizer tokens = new StringTokenizer(repos, ",");
-            while (tokens.hasMoreTokens()) {
-                URI uri = URI.create(tokens.nextToken());
-                if (proxyport != null && proxyhost != null 
-                        && proxyhost.trim().length() > 0 
-                        && proxyport.trim().length() > 0 ) {
-                    reader = RepositoryReaderFactory.createRemoteRepositoryReader(uri, proxyhost, proxyport);
-                } else {
-                    reader = RepositoryReaderFactory.createRemoteRepositoryReader(uri);
-                }
-                RepoPathElement remoteRoot = new RepoPathElement(reader);
-                cols.add(remoteRoot);
-                cols2.add(uri);
-            }
+        IRepositoryReader[] remotes = RepositoryUtilities.createRemoteReaders(resolver);
+        URI[] uris = RepositoryUtilities.createRemoteRepositoryURIs(resolver);
+        for (int i = 0; i < remotes.length; i++) {
+            RepoPathElement remoteRoot = new RepoPathElement(remotes[i]);
+            cols.add(remoteRoot);
+            cols2.add(uris[i]);
         }
-        
         roots = (RepoPathElement[])cols.toArray(new RepoPathElement[cols.size()]);
         rootUris = (URI[])cols2.toArray(new URI[cols2.size()]);
     }
@@ -300,7 +286,7 @@ public class RepositoryExplorerPanel extends JPanel implements ExplorerManager.P
                 while (it.hasNext() && !done) {
                     element = (RepoPathElement)it.next();
                     try {
-                        done = ProxyUtilities.downloadArtifact(finder, resolver, element);
+                        done = RepositoryUtilities.downloadArtifact(finder, resolver, element);
                     } catch (Exception exc) {
                         exc.printStackTrace();
                         done = false;

@@ -15,7 +15,7 @@
  * =========================================================================
  */
 
-package org.mevenide.netbeans.project;
+package org.mevenide.netbeans.project.dependencies;
 
 import org.apache.maven.util.DownloadMeter;
 import org.openide.awt.StatusDisplayer;

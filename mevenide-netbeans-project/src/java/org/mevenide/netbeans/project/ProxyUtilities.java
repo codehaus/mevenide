@@ -88,49 +88,5 @@ public class ProxyUtilities {
     }
     
     
-    public static boolean downloadArtifact(ILocationFinder finder, 
-                                        IPropertyResolver resolver,
-                                        RepoPathElement repoElement) throws Exception {
-        if (!repoElement.isRemote()) {
-            return false;
-        }
-        if (!repoElement.isLeaf()) {
-            RepoPathElement[] elements = repoElement.getChildren();
-            for (int i = 0; i < elements.length; i++) {
-                downloadArtifact(finder, resolver, elements[i]);
-            }
-            return true;
-        }
-        URI uri = repoElement.getURI();
-        String relPath = repoElement.getRelativeURIPath();
-        File localRepo = new File(finder.getMavenLocalRepository());
-        File destinationFile = new File(URI.create(localRepo.toURI().toString() + relPath));
-        destinationFile.getParentFile().mkdirs();
-        String host = resolver.getResolvedValue("maven.proxy.host");
-        String port = resolver.getResolvedValue("maven.proxy.port");
-        String user = resolver.getResolvedValue("maven.proxy.username");
-        String passwd = resolver.getResolvedValue("maven.proxy.password");
-        if (host == null) {
-            host = ProxyUtilities.getProxyHost();
-        }
-        if (port == null) {
-            port = ProxyUtilities.getProxyPort();
-        }
-        if (host != null && host.length() == 0) {
-            host = null;
-        } 
-        if (port != null && port.length() == 0) {
-            port = null;
-        } 
-        if (user != null && user.length() == 0) {
-            user = null;
-        } 
-        if (passwd != null && passwd.length() == 0) {
-            passwd = null;
-        } 
-        DownloadMeter meter = new StatusBarDownloadMeter(repoElement.getRelativeURIPath());
-        HttpUtils.getFile(uri.toURL().toString(), destinationFile, 
-                          false, true, host, port, user, passwd, null, null, meter);
-        return true;
-    }    
+
 }
