@@ -23,9 +23,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.maven.project.Dependency;
-import org.apache.maven.project.Project;
-import org.apache.maven.project.Resource;
+import org.apache.maven.model.Dependency;
+import org.apache.maven.model.Resource;
+import org.apache.maven.project.MavenProject;
 import org.mevenide.AbstractMevenideTestCase;
 import org.mevenide.project.ProjectConstants;
 import org.mevenide.project.dependency.DependencyFactory;
@@ -81,7 +81,7 @@ public class ProjectWriterTest extends AbstractMevenideTestCase {
 		l.add(dep);
 		
 		pomWriter.setDependencies(l, projectFile);
-		Project project = ProjectReader.getReader().read(projectFile);
+		MavenProject project = ProjectReader.getReader().read(projectFile);
 		
 		assertTrue(DependencyUtil.isDependencyPresent(project, dep));
 	}
@@ -101,15 +101,15 @@ public class ProjectWriterTest extends AbstractMevenideTestCase {
 		
 		pomWriter.addProject(referencedPom, projectFile);
 		
-		Project project = ProjectReader.getReader().read(projectFile);
+		MavenProject project = ProjectReader.getReader().read(projectFile);
 		
 		Dependency dep = dependencyFactory.getDependency("X:/bleah/mevenide/mevenide-core-1.0.jar");
 		assertTrue(DependencyUtil.isDependencyPresent(project, dep));
 	}
 
 	private boolean isResourcePresent(String testDirectory, String[] includes) throws FileNotFoundException, Exception, IOException {
-		Project project = ProjectReader.getReader().read(projectFile);
-		List resources = project.getBuild().getResources();
+		MavenProject project = ProjectReader.getReader().read(projectFile);
+		List resources = project.getModel().getBuild().getResources();
 		boolean found = false;
 		for (int i = 0; i < resources.size(); i++) {
 			Resource resource = (Resource) resources.get(i);

@@ -16,7 +16,7 @@
  */
 package org.mevenide.project;
 
-import org.apache.maven.project.Project;
+import org.apache.maven.project.MavenProject;
 
 import junit.framework.TestCase;
 
@@ -29,24 +29,26 @@ public class ProjectComparatorFactoryTest extends TestCase
 
 	public void testGetComparator()
 	{
-		Project p1 = new Project();
+		MavenProject p1 = new MavenProject();
 		ProjectComparator comparator = ProjectComparatorFactory.getComparator(p1);
 		assertNotNull(comparator);
 	}
 
 	public void testGetComparator_nullProject()
 	{
-		Project p1 = null;
+		MavenProject p1 = null;
 		ProjectComparator comparator = ProjectComparatorFactory.getComparator(p1);
 		assertNull(comparator);
 	}
 
 	public void testGetComparator_equivalentProjects()
 	{
-		Project p1 = new Project();
-		p1.setId("test");
-		Project p2 = new Project();
-		p2.setId("test");
+		MavenProject p1 = new MavenProject();
+		p1.setGroupId("test");
+		p1.setArtifactId("test");
+		MavenProject p2 = new MavenProject();
+		p2.setGroupId("test");
+		p2.setArtifactId("test");
 		
 		ProjectComparator comparator1 = ProjectComparatorFactory.getComparator(p1);
 		ProjectComparator comparator2 = ProjectComparatorFactory.getComparator(p2);
@@ -55,10 +57,12 @@ public class ProjectComparatorFactoryTest extends TestCase
 
 	public void testGetComparator_nonEquivalentProjects()
 	{
-		Project p1 = new Project();
-		p1.setId("test");
-		Project p2 = new Project();
-		p2.setId("NOTtest");
+		MavenProject p1 = new MavenProject();
+		p1.setGroupId("test");
+		p1.setArtifactId("test");
+		MavenProject p2 = new MavenProject();
+		p2.setGroupId("NOTtest");
+		p2.setArtifactId("NOTtest");
 		
 		ProjectComparator comparator1 = ProjectComparatorFactory.getComparator(p1);
 		ProjectComparator comparator2 = ProjectComparatorFactory.getComparator(p2);
@@ -67,10 +71,12 @@ public class ProjectComparatorFactoryTest extends TestCase
 
 	public void testUpdateComparator()
 	{
-		Project p1 = new Project();
-		p1.setId("test");
-		Project p2 = new Project();
-		p2.setId("NOTtest");
+		MavenProject p1 = new MavenProject();
+		p1.setGroupId("test");
+		p1.setArtifactId("test");
+		MavenProject p2 = new MavenProject();
+		p2.setGroupId("NOTtest");
+		p2.setArtifactId("NOTtest");
 		
 		ProjectComparator comparator1 = ProjectComparatorFactory.getComparator(p1);
 
@@ -83,3 +89,4 @@ public class ProjectComparatorFactoryTest extends TestCase
 	}
 
 }
+

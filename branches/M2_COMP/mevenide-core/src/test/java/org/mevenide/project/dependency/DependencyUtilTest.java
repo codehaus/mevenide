@@ -20,10 +20,11 @@ import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.maven.project.Dependency;
-import org.apache.maven.project.Project;
+import org.apache.maven.model.Dependency;
+import org.apache.maven.model.Model;
+import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
+import org.apache.maven.project.MavenProject;
 import org.mevenide.AbstractMevenideTestCase;
-import org.mevenide.util.DefaultProjectUnmarshaller;
 
 /**
  * 
@@ -61,7 +62,9 @@ public class DependencyUtilTest extends AbstractMevenideTestCase {
 
 
 	public void testIsDependencyPresent()throws Exception {
-		Project project = new DefaultProjectUnmarshaller().parse(new FileReader(projectFile));
+		MavenProject project = new MavenProject();
+		Model model = new MavenXpp3Reader().read(new FileReader(projectFile));
+		project.setModel(model);
 		List dependencies = project.getDependencies();
 		
 		Dependency dep = dependencyFactory.getDependency("E:/maven/repository/junit/jars/junit-3.8.1.jar");

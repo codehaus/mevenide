@@ -16,9 +16,9 @@
  */
 package org.mevenide.project.source;
 
-import org.apache.maven.project.Build;
-import org.apache.maven.project.Project;
-import org.apache.maven.project.UnitTest;
+import org.apache.maven.model.Build;
+import org.apache.maven.model.UnitTest;
+import org.apache.maven.project.MavenProject;
 import org.mevenide.project.ProjectConstants;
 
 /**
@@ -32,45 +32,40 @@ public final class SourceDirectoryUtil {
 	private SourceDirectoryUtil() {
 	}
 	
-	public static void addSource(Project project, String path, String sourceType) {
-		if ( project.getBuild() == null ) {
-			project.setBuild(new Build());
+	public static void addSource(MavenProject project, String path, String sourceType) {
+		if ( project.getModel().getBuild() == null ) {
+			project.getModel().setBuild(new Build());
 		}
 		
 		if ( ProjectConstants.MAVEN_ASPECT_DIRECTORY.equals(sourceType) ) {
-			project.getBuild().setAspectSourceDirectory(path);
+			project.getModel().getBuild().setAspectSourceDirectory(path);
 		}
 		if ( ProjectConstants.MAVEN_SRC_DIRECTORY.equals(sourceType) ) {
-			project.getBuild().setSourceDirectory(path);
+			project.getModel().getBuild().setSourceDirectory(path);
 		}
 		if ( ProjectConstants.MAVEN_TEST_DIRECTORY.equals(sourceType) ) {
-			project.getBuild().setUnitTestSourceDirectory(path);
-			UnitTest unitTest = project.getBuild().getUnitTest();
+			project.getModel().getBuild().setUnitTestSourceDirectory(path);
+			UnitTest unitTest = project.getModel().getBuild().getUnitTest();
 			if ( unitTest == null || unitTest.getIncludes() == null || unitTest.getIncludes().size() == 0) {
 				unitTest = new UnitTest();
 				unitTest.addInclude("**/*Test.java");
-				project.getBuild().setUnitTest(unitTest);
+				project.getModel().getBuild().setUnitTest(unitTest);
 			}
-		}
-		if ( ProjectConstants.MAVEN_INTEGRATION_TEST_DIRECTORY.equals(sourceType) ) {
-			project.getBuild().setIntegrationUnitTestSourceDirectory(path);
 		}
 	}
 	
-	public static boolean isSourceDirectoryPresent(Project project, String path) {
-		if ( project.getBuild() == null || path == null ) {
+	public static boolean isSourceDirectoryPresent(MavenProject project, String path) {
+		if ( project.getModel().getBuild() == null || path == null ) {
 			return false;
 		}
 			
-		String srcDirectory = project.getBuild().getSourceDirectory();
-		String aspectSrcDirectory = project.getBuild().getAspectSourceDirectory();
-		String unitTestSourceDirectory = project.getBuild().getUnitTestSourceDirectory();
-		String integrationUnitTestSourceDirectory = project.getBuild().getIntegrationUnitTestSourceDirectory();
+		String srcDirectory = project.getModel().getBuild().getSourceDirectory();
+		String aspectSrcDirectory = project.getModel().getBuild().getAspectSourceDirectory();
+		String unitTestSourceDirectory = project.getModel().getBuild().getUnitTestSourceDirectory();
 			
 		return path.equals(srcDirectory)
 			   || path.equals(aspectSrcDirectory)
-		       || path.equals(unitTestSourceDirectory)
-			   || path.equals(integrationUnitTestSourceDirectory);
+		       || path.equals(unitTestSourceDirectory);
 		
 	}
 	

@@ -19,8 +19,8 @@ package org.mevenide.project.resource;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.maven.project.Project;
-import org.apache.maven.project.Resource;
+import org.apache.maven.project.MavenProject;
+import org.apache.maven.model.Resource;
 
 /**
  * 
@@ -30,20 +30,20 @@ import org.apache.maven.project.Resource;
  */
 public class DefaultResourceResolver implements IResourceResolver  {
 	
-	public void mergeSimilarResources(Project project, Resource resource) {
-		List resources = project.getBuild().getResources();
+	public void mergeSimilarResources(MavenProject project, Resource resource) {
+		List resources = project.getModel().getBuild().getResources();
 		
 		prepareResource(resource, resources);
 		
-		project.getBuild().addResource(resource);
+		project.getModel().getBuild().addResource(resource);
 	}
 	
-	public void mergeSimilarUnitTestResources(Project project, Resource resource) {
-		List resources = project.getBuild().getUnitTest().getResources();
+	public void mergeSimilarUnitTestResources(MavenProject project, Resource resource) {
+		List resources = project.getModel().getBuild().getUnitTest().getResources();
 	
 		prepareResource(resource, resources);
 		
-		project.getBuild().getUnitTest().addResource(resource);
+		project.getModel().getBuild().getUnitTest().addResource(resource);
 	}
 
 	private void prepareResource(Resource resource, List resources) {

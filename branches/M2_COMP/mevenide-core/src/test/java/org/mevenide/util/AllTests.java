@@ -32,7 +32,6 @@ public class AllTests  {
     public static Test suite() {
         TestSuite suite = new TestSuite();
         
-		suite.addTestSuite(DefaultProjectUnmarshallerTest.class);
 		suite.addTestSuite(MevenideUtilsTest.class);
 		
         return suite;

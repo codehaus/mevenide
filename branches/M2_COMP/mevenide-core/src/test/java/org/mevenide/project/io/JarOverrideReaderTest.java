@@ -19,7 +19,7 @@ package org.mevenide.project.io;
 import java.io.File;
 import java.io.FileOutputStream;
 
-import org.apache.maven.project.Dependency;
+import org.apache.maven.model.Dependency;
 import org.mevenide.environment.ILocationFinder;
 import org.mevenide.environment.LocationFinderAggregator;
 import org.mevenide.properties.PropertyModel;

@@ -16,8 +16,8 @@
  */
 package org.mevenide.project.source;
 
-import org.apache.maven.project.Build;
-import org.apache.maven.project.Project;
+import org.apache.maven.model.Build;
+import org.apache.maven.project.MavenProject;
 import org.mevenide.AbstractMevenideTestCase;
 //causes a cycle
 import org.mevenide.project.ProjectConstants;
@@ -36,7 +36,7 @@ public class SourceDirectoryUtilTest extends AbstractMevenideTestCase {
 
 	
 	private ProjectReader reader; 
-	protected Project project; 
+	protected MavenProject project; 
 	
 	protected void setUp() throws Exception {
 		super.setUp();
@@ -48,12 +48,11 @@ public class SourceDirectoryUtilTest extends AbstractMevenideTestCase {
 		SourceDirectoryUtil.addSource(project, "src/pyo/javaa", ProjectConstants.MAVEN_SRC_DIRECTORY);
 		SourceDirectoryUtil.addSource(project, "src/pyo/teest/javaa", ProjectConstants.MAVEN_TEST_DIRECTORY);
 		SourceDirectoryUtil.addSource(project, "src/pyo/aspeect", ProjectConstants.MAVEN_ASPECT_DIRECTORY);
-		SourceDirectoryUtil.addSource(project, "src/pyo/iut/javaa", ProjectConstants.MAVEN_INTEGRATION_TEST_DIRECTORY);
 		
-		assertEquals("src/pyo/javaa", project.getBuild().getSourceDirectory());
-		assertEquals("src/pyo/teest/javaa", project.getBuild().getUnitTestSourceDirectory());
-		assertEquals("src/pyo/aspeect", project.getBuild().getAspectSourceDirectory());
-		assertEquals("src/pyo/iut/javaa", project.getBuild().getIntegrationUnitTestSourceDirectory());
+		assertEquals("src/pyo/javaa", project.getModel().getBuild().getSourceDirectory());
+		assertEquals("src/pyo/teest/javaa", project.getModel().getBuild().getUnitTestSourceDirectory());
+		assertEquals("src/pyo/aspeect", project.getModel().getBuild().getAspectSourceDirectory());
+		
 	}
 	
 	public void testIsDirectoryPresent() {
@@ -71,8 +70,6 @@ public class SourceDirectoryUtilTest extends AbstractMevenideTestCase {
 		SourceDirectoryUtil.addSource(project, "src/pyo/aspeect", ProjectConstants.MAVEN_ASPECT_DIRECTORY);
 		assertTrue(SourceDirectoryUtil.isSourceDirectoryPresent(project, "src/pyo/aspeect"));
 		
-		SourceDirectoryUtil.addSource(project, "src/pyo/iut", ProjectConstants.MAVEN_INTEGRATION_TEST_DIRECTORY);
-		assertTrue(SourceDirectoryUtil.isSourceDirectoryPresent(project, "src/pyo/iut"));
 	}
 
 }

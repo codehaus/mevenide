@@ -18,7 +18,7 @@ package org.mevenide.project;
 
 import java.io.File;
 
-import org.apache.maven.project.Project;
+import org.apache.maven.project.MavenProject;
 import org.mevenide.project.io.ProjectReader;
 
 import junit.framework.TestCase;
@@ -50,7 +50,7 @@ public class ProjectComparatorTest extends TestCase {
 
     public void testCompare_sameProject() {
 		changed = false;
-    	Project p1 = new Project();
+		MavenProject p1 = new MavenProject();
 		ProjectComparator comparator = new ProjectComparator(p1);
 		comparator.addProjectChangeListener(LISTENER);
 		comparator.compare(p1);
@@ -59,8 +59,8 @@ public class ProjectComparatorTest extends TestCase {
 
 	public void testCompare_nullProjects() {
 		changed = false;
-		Project p1 = null;
-		Project p2 = null;
+		MavenProject p1 = null;
+		MavenProject p2 = null;
 		ProjectComparator comparator = new ProjectComparator(p1);
 		comparator.addProjectChangeListener(LISTENER);
 		comparator.compare(p2);
@@ -69,8 +69,8 @@ public class ProjectComparatorTest extends TestCase {
 
 	public void testCompare_newProjectIsNull() {
 		changed = false;
-		Project p1 = new Project();
-		Project p2 = null;
+		MavenProject p1 = new MavenProject();
+		MavenProject p2 = null;
 		ProjectComparator comparator = new ProjectComparator(p1);
 		comparator.addProjectChangeListener(LISTENER);
 		comparator.compare(p2);
@@ -79,8 +79,8 @@ public class ProjectComparatorTest extends TestCase {
 
 	public void testCompare_originalProjectIsNull() {
 		changed = false;
-		Project p1 = null;
-		Project p2 = new Project();
+		MavenProject p1 = null;
+		MavenProject p2 = new MavenProject();
 		ProjectComparator comparator = new ProjectComparator(p1);
 		comparator.addProjectChangeListener(LISTENER);
 		comparator.compare(p2);
@@ -89,8 +89,8 @@ public class ProjectComparatorTest extends TestCase {
 
     public void testCompare_emptyProjects() {
 		changed = false;
-    	Project p1 = new Project();
-    	Project p2 = new Project();
+		MavenProject p1 = new MavenProject();
+    	MavenProject p2 = new MavenProject();
 		ProjectComparator comparator = new ProjectComparator(p1);
 		comparator.addProjectChangeListener(LISTENER);
 		comparator.compare(p2);
@@ -99,10 +99,10 @@ public class ProjectComparatorTest extends TestCase {
 
 	public void testCompare_nonNullEquivalentProjects() {
 		changed = false;
-		Project p1 = new Project();
+		MavenProject p1 = new MavenProject();
 		p1.setArtifactId("test1");
 		p1.setGroupId("group1");
-		Project p2 = new Project();
+		MavenProject p2 = new MavenProject();
 		p2.setArtifactId("test1");
 		p2.setGroupId("group1");
 		ProjectComparator comparator = new ProjectComparator(p1);
@@ -113,10 +113,10 @@ public class ProjectComparatorTest extends TestCase {
 
 	public void testCompare_nonNullNonEquivalentProjects() {
 		changed = false;
-		Project p1 = new Project();
+		MavenProject p1 = new MavenProject();
 		p1.setArtifactId("test1");
 		p1.setGroupId("group1");
-		Project p2 = new Project();
+		MavenProject p2 = new MavenProject();
 		p2.setArtifactId("test2");
 		p2.setGroupId("group1");
 		ProjectComparator comparator = new ProjectComparator(p1);
@@ -127,10 +127,10 @@ public class ProjectComparatorTest extends TestCase {
 
 	public void testCompare_newHasNull() {
 		changed = false;
-		Project p1 = new Project();
+		MavenProject p1 = new MavenProject();
 		p1.setArtifactId("test1");
 		p1.setGroupId("group1");
-		Project p2 = new Project();
+		MavenProject p2 = new MavenProject();
 		p2.setArtifactId(null);
 		p2.setGroupId("group1");
 		ProjectComparator comparator = new ProjectComparator(p1);
@@ -144,8 +144,8 @@ public class ProjectComparatorTest extends TestCase {
 			changed = false;
 			File pom = new File(ProjectComparatorTest.class.getResource("/project.xml").getFile());
 			ProjectReader reader = ProjectReader.getReader();
-			Project p1 = reader.read(pom);
-			Project p2 = reader.read(pom);
+			MavenProject p1 = reader.read(pom);
+			MavenProject p2 = reader.read(pom);
 			ProjectComparator comparator = new ProjectComparator(p1);
 			comparator.addProjectChangeListener(LISTENER);
 			comparator.compare(p2);
@@ -161,8 +161,8 @@ public class ProjectComparatorTest extends TestCase {
 			changed = false;
 			File pom = new File(ProjectComparatorTest.class.getResource("/project.xml").getFile());
 			ProjectReader reader = ProjectReader.getReader();
-			Project p1 = reader.read(pom);
-			Project p2 = reader.read(pom);
+			MavenProject p1 = reader.read(pom);
+			MavenProject p2 = reader.read(pom);
 			p2.getBuild().setNagEmailAddress("bob@nospam.com");
 			ProjectComparator comparator = new ProjectComparator(p1);
 			comparator.addProjectChangeListener(LISTENER);

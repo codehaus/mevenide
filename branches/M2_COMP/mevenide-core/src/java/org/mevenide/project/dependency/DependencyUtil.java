@@ -23,8 +23,8 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.maven.project.Dependency;
-import org.apache.maven.project.Project;
+import org.apache.maven.model.Dependency;
+import org.apache.maven.project.MavenProject;
 import org.mevenide.environment.ConfigUtils;
 import org.mevenide.util.StringUtils;
 
@@ -78,11 +78,8 @@ public final class DependencyUtil {
 			log.debug("null dependency found");
 			return false;
 		} 
-		boolean valid = /*!StringUtils.isNull(d.getId())
-							||*/ (!StringUtils.isNull(d.getGroupId()) 
-								&& !StringUtils.isNull(d.getArtifactId())); 
-//							&& !StringUtils.isNull(d.getVersion());
-//		log.debug("Dependency " + d.getArtifact() + " valid=" + valid + toString(d));
+		boolean valid = (!StringUtils.isNull(d.getGroupId()) 
+							&& !StringUtils.isNull(d.getArtifactId())); 
 		return  valid;
 	}
 
@@ -122,7 +119,7 @@ public final class DependencyUtil {
 	 * @param absoluteFileName
 	 * @return
 	 */
-	public static boolean isDependencyPresent(Project project, Dependency dependency) {
+	public static boolean isDependencyPresent(MavenProject project, Dependency dependency) {
 		log.debug("searched dependency : " + DependencyUtil.toString(dependency));
 		List dependencies = project.getDependencies();
 		if ( dependencies == null ) {
@@ -136,9 +133,8 @@ public final class DependencyUtil {
 			
 			log.debug("found dependency : " + DependencyUtil.toString(declaredDependency));
 			
-			if (  artifactId != null && artifactId.equals(dependency.getArtifactId()) 
-				  && version != null && version.equals(dependency.getVersion())) {
-				return true;
+			if (  artifactId != null && artifactId.equals(dependency.getArtifactId()) ) { 
+				  return version == null || version.equals(dependency.getVersion()) ;
 			}
 		}
 		return false;

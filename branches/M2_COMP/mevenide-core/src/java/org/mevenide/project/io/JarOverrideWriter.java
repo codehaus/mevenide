@@ -24,8 +24,8 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.maven.project.Dependency;
-import org.apache.maven.project.Project;
+import org.apache.maven.model.Dependency;
+import org.apache.maven.project.MavenProject;
 import org.mevenide.project.dependency.DependencyFactory;
 import org.mevenide.project.dependency.DependencyUtil;
 import org.mevenide.properties.KeyValuePair;
@@ -49,9 +49,9 @@ class JarOverrideWriter {
 	
 	void jarOverride(Dependency dependency, File propertiesFile, File pom) throws Exception {
 		String path = dependency.getArtifact();
-		Project project = ProjectReader.getReader().read(pom);
-		if ( project.getDependencies() == null ) {
-			project.setDependencies(new ArrayList());
+		MavenProject project = ProjectReader.getReader().read(pom);
+		if ( project.getModel().getDependencies() == null ) {
+			project.getModel().setDependencies(new ArrayList());
 		}
 			
 		Dependency dep = DependencyFactory.getFactory().getDependency(path);
@@ -60,19 +60,17 @@ class JarOverrideWriter {
 		String artifactId = dep.getArtifactId();
 	
 		if ( groupId == null || groupId.length() == 0 ) {
-			//dep.setGroupId(null);
-			//set id explicitly so that dependencies w/o groupId still are comparable are added to dep list if needed
-			//dep.setId(artifactId);
-			//set groupId = artifactId
 			dep.setGroupId(artifactId);
-			dep.setArtifactId(artifactId);
 		}
 
 		addPropertiesOverride(path, propertiesFile, dep);
 	
 		//project.getDependencies().remove(DependencyFactory.getFactory().getDependency(path));
 		log.debug("adding unresolved dependency (" + path + ")" + DependencyUtil.toString(dep) + "to file " + pom.getAbsolutePath());
-		project.addDependency(dep);
+		
+		if ( !DependencyUtil.isDependencyPresent(project, dep) ) {
+			project.getModel().addDependency(dep);
+		}
 		
 		writer.write(project, pom);
 	

@@ -18,7 +18,7 @@ package org.mevenide.project.dependency;
 
 import java.io.File;
 
-import org.apache.maven.project.Dependency;
+import org.apache.maven.model.Dependency;
 import org.mevenide.AbstractMevenideTestCase;
 import org.mevenide.environment.ConfigUtils;
 
@@ -68,7 +68,7 @@ public class DependencyFactoryTest extends AbstractMevenideTestCase{
 		artefact = new File(testTypeDirectory, "foo+joe-test2.-bar-1.0.7-beta1.txt");
 		dep = dependencyFactory.getDependency(artefact.getAbsolutePath());
 		assertEquals("1.0.7-beta1", dep.getVersion());
-		assertEquals("foo+joe-test2.-bar-1.0.7-beta1.txt", dep.getJar());
+		assertEquals("foo+joe-test2.-bar-1.0.7-beta1.txt", dep.getArtifact());
 		
 		artefact = new File(testTypeDirectory, "junit-3.8.1.jar");
 		dep = dependencyFactory.getDependency(artefact.getAbsolutePath());
@@ -93,7 +93,7 @@ public class DependencyFactoryTest extends AbstractMevenideTestCase{
 		assertEquals("rt", dep.getArtifactId());
 		//groupId is null => setting it to artifactId
 		assertEquals("rt", dep.getGroupId());
-		assertEquals("rt.jar", dep.getJar());
+		assertEquals("rt.jar", dep.getArtifact());
 		
 		artefact = new File(testTypeDirectory, "ojb-1.0.rc3.pyo");
 		dep = dependencyFactory.getDependency(artefact.getAbsolutePath());
@@ -109,7 +109,7 @@ public class DependencyFactoryTest extends AbstractMevenideTestCase{
 		dep = dependencyFactory.getDependency(artefact.getAbsolutePath());
 		assertEquals("SNAPSHOT", dep.getVersion());
 		assertEquals("ojb", dep.getArtifactId());
-		assertEquals("ojb-SNAPSHOT.pyo", dep.getJar());
+		assertEquals("ojb-SNAPSHOT.pyo", dep.getArtifact());
 		
 		artefact = new File(testTypeDirectory, "testo-0.0.1.plouf");
 		dep = dependencyFactory.getDependency(artefact.getAbsolutePath());
@@ -130,7 +130,7 @@ public class DependencyFactoryTest extends AbstractMevenideTestCase{
 		assertEquals("my-fake", dep.getArtifactId());
 		//groupId is null => setting it to artifactId
 		assertEquals("my-fake", dep.getGroupId());
-		assertEquals("my-fake-0.1.zip", dep.getJar());
+		assertEquals("my-fake-0.1.zip", dep.getArtifact());
 	}
 
 	
