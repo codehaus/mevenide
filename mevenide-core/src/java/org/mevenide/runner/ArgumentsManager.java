@@ -91,28 +91,12 @@ public final class ArgumentsManager {
 	 * @param runner
 	 * @return
 	 */
-	static Map getSystemProperties(AbstractRunner runner) {
+	public static Map getSystemProperties(AbstractRunner runner) {
 	    Map props = new HashMap();
 	
 	    props.put("javax.xml.parsers.DocumentBuilderFactory", "org.apache.xerces.jaxp.DocumentBuilderFactoryImpl");
 	    props.put("javax.xml.parsers.SAXParserFactory", "org.apache.xerces.jaxp.SAXParserFactoryImpl");
 	    ILocationFinder config = ConfigUtils.getDefaultLocationFinder();
-	    String toolsJar = config.getJavaHome() + File.separator + "lib" + File.separator + "tools.jar";
-	    if ( !new File(toolsJar).exists() ) {
-	    	//mac os x..  
-	    	//TOOLS_JAR=/System/Library/Frameworks/JavaVM.framework/Versions/CurrentJDK/Classes/classes.jar
-	    	//JAVA_HOME=/System/Library/Frameworks/JavaVM.framework/Home
-	    	toolsJar = new File(config.getJavaHome()).getParent();
-	    	String classesJarPart = "Versions/CurrentJDK/Classes/classes.jar";
-	    	if ( toolsJar.endsWith("/") ) {
-	    		toolsJar += classesJarPart;
-	    	}
-	    	else {
-	    		toolsJar += "/" + classesJarPart;
-	    	}
-	    }
-	    props.put("tools.jar", toolsJar);
-	    
 	    
 	    props.put("maven.home", config.getMavenHome());
 		props.put("maven.repo.local", config.getMavenLocalRepository());
