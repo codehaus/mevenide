@@ -48,7 +48,12 @@
  */
 package org.mevenide.ui.eclipse.editors.pages;
 
+import java.util.List;
+
+import org.apache.maven.project.Build;
 import org.apache.maven.project.Project;
+import org.apache.maven.project.Resource;
+import org.apache.maven.project.UnitTest;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -87,16 +92,93 @@ public class UnitTestsPage extends AbstractPomEditorPage {
 		factory.setBackgroundColor(MevenideColors.WHITE);
 
 		includesSection = new IncludesSection(this);
+		IIncludesAdaptor includesAdaptor = new IIncludesAdaptor() {
+			public void setIncludes(Object target, List newIncludes) {
+				Project pom = (Project) target;
+				List includes = getOrCreateUnitTest(pom).getIncludes();
+				includes.removeAll(includes);
+				includes.addAll(newIncludes);
+				getEditor().setModelDirty(true);
+			}
+	
+			public void addInclude(Object target, String include) {
+				Project pom = (Project) target;
+				getOrCreateUnitTest(pom).addInclude(include);
+				getEditor().setModelDirty(true);
+			}
+	
+			public List getIncludes(Object source) {
+				Project pom = (Project) source;
+				return pom.getBuild() != null 
+					? pom.getBuild().getUnitTest() != null
+						? pom.getBuild().getUnitTest().getIncludes()
+						: null
+					: null;
+			}
+		};
+		includesSection.setIncludesAdaptor(includesAdaptor);
 		Control control = includesSection.createControl(parent, factory);
 		GridData gd = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING);
 		control.setLayoutData(gd);
 		
 		excludesSection = new ExcludesSection(this);
+		IExcludesAdaptor excludesAdaptor = new IExcludesAdaptor() {
+			public void setExcludes(Object target, List newExcludes) {
+				Project pom = (Project) target;
+				List excludes = getOrCreateUnitTest(pom).getExcludes();
+				excludes.removeAll(excludes);
+				excludes.addAll(newExcludes);
+				getEditor().setModelDirty(true);
+			}
+	
+			public void addExclude(Object target, String exclude) {
+				Project pom = (Project) target;
+				getOrCreateUnitTest(pom).addExclude(exclude);
+				getEditor().setModelDirty(true);
+			}
+	
+			public List getExcludes(Object source) {
+				Project pom = (Project) source;
+				return pom.getBuild() != null 
+					? pom.getBuild().getUnitTest() != null
+						? pom.getBuild().getUnitTest().getExcludes()
+						: null
+					: null;
+			}
+		};
+		excludesSection.setExcludesAdaptor(excludesAdaptor);
 		control = excludesSection.createControl(parent, factory);
 		gd = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING);
 		control.setLayoutData(gd);
 		
-		resourcesSection = new ResourcesSection(this);
+		resourcesSection = new ResourcesSection(this, "UnitTestResourcesSection");
+		IResourceAdaptor adaptor = new IResourceAdaptor() {
+			public void setResources(Object target, List resources) {
+				Project pom = (Project) target;
+				getOrCreateUnitTest(pom).setResources(resources);
+				getEditor().setModelDirty(true);
+			}
+		
+			public void addResource(Object target, Resource resource) {
+				Project pom = (Project) target;
+				getOrCreateUnitTest(pom).addResource(resource);
+				getEditor().setModelDirty(true);
+			}
+		
+			public List getResources(Object source) {
+				Project pom = (Project) source;
+				Build build = pom.getBuild();
+				if (build != null) {
+					UnitTest unitTest = build.getUnitTest();
+					if (unitTest != null) {
+						return unitTest.getResources();
+					}
+				}
+				return null;
+			}
+		};
+		resourcesSection.setResourceAdaptor(adaptor);
+
 		control = resourcesSection.createControl(parent, factory);
 		gd = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING);
 		control.setLayoutData(gd);
@@ -108,6 +190,20 @@ public class UnitTestsPage extends AbstractPomEditorPage {
 		resourcesSection.update(pom);
 		
 		setUpdateNeeded(false);
+	}
+		
+	private UnitTest getOrCreateUnitTest(Project pom) {
+		Build build = pom.getBuild();
+		if (build == null) {
+			build = new Build();
+			pom.setBuild(build);
+		}
+		UnitTest unitTest = build.getUnitTest();
+		if (unitTest == null) {
+			unitTest = new UnitTest();
+			build.setUnitTest(unitTest);
+		}
+		return unitTest;
 	}
 
 }
