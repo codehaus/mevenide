@@ -291,9 +291,22 @@ public class GoalsPickerDialog  extends Dialog {
     
     	viewer.getTree().setLayoutData(gridData);
     	
-    	//manage prereqs checked and grayed state
-    	//...
-    	
+        /////////////////////////////////////////////////////////////////////////////////////////////////////
+        //                                                                                                 // 
+        // manage prereqs checked and grayed state                                                         //
+        //                                                                                                 //
+        // rules are :                                                                                     //
+        //                                                                                                 //
+        // o  when user checks a non-grayed item, all prereqs items are grayed and checked                 //
+        // o  when user checks a grayed item, all prereqs items are grayed and checked                     //
+        // o  when a user unchecks a non-grayed items, all grayed prereqs items are ungrayed and unchecked //
+        // o  a user isnot allowed to uncheck a grayed item                                                //
+        //                                                                                                 // 
+        // when dialog is closed the returned goals are the checked ones                                   //
+        //                                                                                                 // 
+        /////////////////////////////////////////////////////////////////////////////////////////////////////
+        
+        
     	return viewer;
     }
 }

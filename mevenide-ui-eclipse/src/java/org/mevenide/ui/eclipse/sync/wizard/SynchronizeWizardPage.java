@@ -502,7 +502,22 @@ public class SynchronizeWizardPage extends WizardPage {
 	
 	
 	}
-		
+	
+    /*
+	 * {non-javadoc}  
+	 * 
+	 * if pom is inherited, merge source directories declared in the parent pom (refered here 
+     * as pom source directories) with source directories declared in eclipse project (refered here 
+     * as eclipse source directories)
+	 * 
+	 * rules are :
+	 *   o if a parent pom source directory is equal to an eclipse source directory then the later is 
+     *     flagged as 'already in parent' (thus read-only) and its type to the type of the pom source 
+     *     directory. two source directory are considered as equal when s1.type = s2.type and s1.path = s2.path.  
+	 *   o if a pom source directory is not equal to an eclipse source directory then it is added to 
+     *     the group of source directories to be displayed and flagged as 'already in pom' (thus read-only)    
+	 *
+	 */
 	private void addParentSourceDirectories(SourceDirectoryGroup group) throws FileNotFoundException, Exception, IOException {
         Project mavenProject = ProjectReader.getReader().read(new File(project.getFile("project.xml").getLocation().toOSString()));
 		String extend = mavenProject.getExtend();
@@ -537,7 +552,21 @@ public class SynchronizeWizardPage extends WizardPage {
 			}
 		}
     }
-
+    
+    /*
+	 * {non-javadoc}  
+	 * 
+	 * merge source directories declared in the pom (refered here as pom source directories) with 
+	 * source directories declared in eclipse project (refered here as eclipse source directories)
+	 * 
+	 * rules are :
+	 *   o if a pom source directory is equal to an eclipse source directory (that is s1.type = s2.type 
+     *     and s1.path = s2.path) then the later is flagged as 'already in pom' and its type is set to 
+     *     the type of the pom source directory 
+	 *   o if a pom source directory is not equal to an eclipse source directory then it is added 
+     *     to the group of source directories to be displayed and flagged as 'already in pom'    
+	 *
+	 */
     private void addInPomSourceDirectories(SourceDirectoryGroup group) throws Exception {
         Map pomSourceDirectories = 
 			ProjectReader.getReader().getSourceDirectories(new File(project.getFile("project.xml").getLocation().toOSString()));
@@ -812,7 +841,18 @@ public class SynchronizeWizardPage extends WizardPage {
 		
 	}
 	
-	
+	/*
+     * [non-javadoc}
+     *  
+     * iterate over the list of dependencies to be displayed to check if there is some 
+     * version conflict.
+     *  
+     * rule is :
+     *   o if two dependencies with same groupId and artifactId but different version 
+     *     are present in GroupDependency then the two are flagged as conflictual 
+     * 
+     * @see  org.mevenide.project.dependency.DependencyUtil#conflict(Dependency, Dependency)
+     */
 	private void checkForConflict(DependencyGroup group) {
 		
         List pomDependencyWrappers = group.getDependencyWrappers();
@@ -840,7 +880,22 @@ public class SynchronizeWizardPage extends WizardPage {
        
 		
 	}
-	
+
+	/*
+	 * {non-javadoc}  
+	 * 
+	 * if pom is inherited, merge dependencies declared in the parent pom (refered here 
+     * as pom dependencies) with dependencies declared in eclipse project (refered here 
+     * as eclipse dependencies)
+	 * 
+	 * rules are :
+	 *   o if a parent pom dependency is equal to an eclipse dependency then the later is 
+     *     flagged as 'already in parent' (thus read-only) 
+	 *   o if a pom dependency is not equal to an eclipse dependency then it is added to 
+     *     the group of dependencies to be displayed and flagged as 'already in pom' (thus read-only)    
+	 *
+     * @see org.mevenide.project.dependency.DependencyUtil#areEquals(Dependency, Dependency)
+	 */
 	private void addParentDependencies(DependencyGroup group) throws Exception {
 		
 		Project mavenProject = ProjectReader.getReader().read(new File(project.getFile("project.xml").getLocation().toOSString()));
@@ -867,6 +922,20 @@ public class SynchronizeWizardPage extends WizardPage {
 		}
     }
 
+	/*
+	 * {non-javadoc}  
+	 * 
+	 * merge dependencies declared in the pom (refered here as pom dependencies) with 
+	 * dependencies declared in eclipse project (refered here as eclipse dependencies)
+	 * 
+	 * rules are :
+	 *   o if a pom dependency is equal to an eclipse dependency then the later is 
+     *     flagged as 'already in pom' 
+	 *   o if a pom dependency is not equal to an eclipse dependency then it is added 
+     *     to the group of dependencies to be displayed and flagged as 'already in pom'    
+	 *
+     * @see org.mevenide.project.dependency.DependencyUtil#areEquals(Dependency, Dependency)
+	 */
     private void addInPomDependencies(DependencyGroup group) throws Exception  {
     	
 		Project mavenProject = ProjectReader.getReader().read(new File(project.getFile("project.xml").getLocation().toOSString()));
