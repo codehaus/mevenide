@@ -147,8 +147,11 @@ public class FileUtils {
 	
 	public static List getIgnoredResources(IProject project) {
 		try {
-			IFile file = assertIgnoreFileExists(project);
-			return getIgnoredResources(file);
+			IFile file = project.getFile(new Path(".mvnignore"));
+			if ( !file.exists() ) {
+				return getIgnoredResources(file);
+			}
+			return new ArrayList();
 		} 
 		catch (Exception e) {
 			log.error("Cannot read ignored resources", e);

@@ -164,13 +164,48 @@ public class JavaProjectUtils {
 	
 	public static void addClasspathEntry(IJavaProject project, IClasspathEntry entry) throws Exception {
 		IClasspathEntry[] oldEntries = project.getRawClasspath();
+		if ( entry.getEntryKind() == IClasspathEntry.CPE_SOURCE ) {
+			boolean exclusionAdded = excludePath(entry, oldEntries);
+			//should warn user ? would it be better to let him choose wether he wants to : 
+			//1. cancel operation, 2. add the exclusion pattern 3. remove conflicting entry ?
+		}
 		IClasspathEntry[] newEntries = new IClasspathEntry[oldEntries.length + 1];
 		System.arraycopy(oldEntries, 0, newEntries, 0, oldEntries.length);
 		newEntries[oldEntries.length] = entry;
+		//checkOutputConflict(project, entry);
 		project.setRawClasspath(newEntries, null);
 	}
+	
+	private static void checkOutputConflict(IJavaProject project, IClasspathEntry entry) throws Exception {
+		IPath projectOutputLocation = project.getOutputLocation();
+		if ( entry.getPath().toString().startsWith(projectOutputLocation.toString()) ) {
+			//project.setOutputLocation(new Path("/"  + project.getProject().getName() + outputFolder), null);
+		}
+	}
+	
+	/**
+	 * iterate through <code>oldEntries</code> and foreach entry exclude <code>entry.path</code> if necessary
+	 * 
+	 * @return true if <code>entry.path</code> has been excluded from one entry, false otherwise
+	 */
+    private static boolean excludePath(IClasspathEntry entry, IClasspathEntry[] oldEntries) {
+		boolean exclusionAdded = false;
+    	for (int i = 0; i < oldEntries.length; i++) {
+			IClasspathEntry oldEntry = oldEntries[i];
+			IPath newEntryPath = entry.getPath();
+			if ( newEntryPath.toString().startsWith(oldEntry.getPath().toString()) ) {
+				IPath[] exclusionPaths = oldEntry.getExclusionPatterns();
+				IPath[] newExclusionPaths = new IPath[exclusionPaths.length + 1];
+				System.arraycopy(exclusionPaths, 0, newExclusionPaths, 0, exclusionPaths.length);
+				newExclusionPaths[exclusionPaths.length] = newEntryPath.removeFirstSegments(oldEntry.getPath().segmentCount()).addTrailingSeparator();
+				oldEntries[i] = JavaCore.newSourceEntry(oldEntry.getPath(), newExclusionPaths);
+				exclusionAdded = true;
+			}
+		}
+    	return exclusionAdded;
+	}
 
-    public static String[] findExclusionPatterns(String eclipseSourceFolder, IProject eclipseProject) {
+	public static String[] findExclusionPatterns(String eclipseSourceFolder, IProject eclipseProject) {
     	try {
     		String[] exclusionPatterns = null;
     		IJavaProject javaProject = JavaCore.create(eclipseProject);
