@@ -9,7 +9,7 @@
   <artifactId>maven-nbm-plugin</artifactId>
   <name>Maven NBM Plugin</name>
   
-  <currentVersion>0.1-SNAPSHOT</currentVersion>
+  <currentVersion>0.2-SNAPSHOT</currentVersion>
   
   <!-- shortDescription>The NBM plugin will create a Netbeans module file (.nbm) </shortDescription -->
   <shortDescription>This plugin helps creating ready to use Netbeans module distribution</shortDescription>
