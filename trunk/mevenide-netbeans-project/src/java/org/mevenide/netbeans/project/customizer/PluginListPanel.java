@@ -16,6 +16,9 @@
  */
 package org.mevenide.netbeans.project.customizer;
 import java.awt.Component;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.beans.PropertyVetoException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -38,6 +41,7 @@ import org.mevenide.netbeans.project.MavenProject;
 import org.mevenide.plugins.IPluginInfo;
 import org.mevenide.plugins.PluginInfoFactory;
 import org.mevenide.plugins.PluginInfoManager;
+import org.openide.explorer.ExplorerManager;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
@@ -58,11 +62,13 @@ public class PluginListPanel extends JPanel implements ProjectPanel {
     private List globalPanelList;
     private ConfigurationChildren childNodes;
     private List subPanelList;
+    private ExplorerManager manager;
     
     /** Creates new form BuildPanel */
-    public PluginListPanel(MavenProject proj, List panelsList) {
+    public PluginListPanel(MavenProject proj, List panelsList, ExplorerManager man) {
         project = proj;
         globalPanelList = panelsList;
+        manager = man;
         subPanelList = new ArrayList();
         childNodes = new ConfigurationChildren();
         initComponents();
@@ -105,7 +111,7 @@ public class PluginListPanel extends JPanel implements ProjectPanel {
     private void populateTable() {
         PluginInfoManager man = PluginInfoFactory.getInstance().createManager(project.getContext());
         IPluginInfo[] infos = man.getCurrentPlugins();
-        List vals = new ArrayList(10 + (infos != null ? infos.length : 0));
+        final List vals = new ArrayList(10 + (infos != null ? infos.length : 0));
         vals.add(new UsedPropsWrapper());
         vals.add(new DefaultPropsWrapper());
         subPanelList.addAll(vals);
@@ -130,6 +136,26 @@ public class PluginListPanel extends JPanel implements ProjectPanel {
         setupColumn(2);
         col = tblPlugins.getTableHeader().getColumnModel().getColumn(3);
         col.setCellRenderer(mod);
+        tblPlugins.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() > 1) {
+                    tblPlugins.getModel().setValueAt(Boolean.TRUE, tblPlugins.getSelectedRow(), 0);
+                    Node[] nds = childNodes.getNodes();
+                    for (int i = 0; i < nds.length; i++) {
+                        ConfigurationNode nd = (ConfigurationNode)nds[i];
+                        if (nd.getRow() == vals.get(tblPlugins.getSelectedRow())) {
+                            try {
+                                manager.setSelectedNodes(new Node[] {nd});
+                            } catch (PropertyVetoException exc) {
+                                // well what can we do..
+                            }
+                        }
+                    }
+                }
+                
+            }
+            
+        });
         
     }
     
@@ -453,6 +479,10 @@ public class PluginListPanel extends JPanel implements ProjectPanel {
         
         public Component getCustomizer() {
             return row.getCustomizer();
+        }
+        
+        public WrapperRow getRow() {
+            return row;
         }
         
     }    
