@@ -90,8 +90,8 @@ public class TextEntry extends PageEntry {
 			new FocusAdapter() {
 				public void focusLost(FocusEvent e) {
 					if (isDirty()) {
-						fireEntryChangeEvent();
 						value = textbox.getText();
+						fireEntryChangeEvent();
 					}
 				}
 			}

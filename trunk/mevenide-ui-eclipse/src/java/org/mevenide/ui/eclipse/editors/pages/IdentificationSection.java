@@ -112,43 +112,51 @@ public class IdentificationSection extends PageSection {
 			createText(container, labelName, factory), 
 			createOverrideToggle(container, factory, isInherited())
 		);
-		pomNameText.addEntryChangeListener(
-			new EntryChangeListenerAdaptor() {
-				public void entryChanged(PageEntry entry) {
-					if (log.isDebugEnabled()) {
-						log.debug("pom updated from changed entry; name = " + pomNameText.getText());
-					}
-					String pomName = pomNameText.getText();
-					pom.setName(pomName);
-					((OverviewPage) getPage()).setHeading(pom);
-				}
+		OverrideAdaptor adaptor = new OverrideAdaptor() {
+			public void updateProject(String value) {
+				pom.setName(value);
+				((OverviewPage) getPage()).setHeading(pom);
 			}
-		);
-		pomNameText.addOverrideAdaptor(
-			new OverrideAdaptor() {
-				public void updateProject(String value) {
-					pom.setName(value);
-				}
-				public String getParentProjectAttribute() {
-					return getParentPom().getName();
-				}
+			public String getParentProjectAttribute() {
+				return getParentPom().getName();
 			}
-		);
+		};
+		pomNameText.addEntryChangeListener(adaptor);
+		pomNameText.addOverrideAdaptor(adaptor);
 		
-		// POM version textbox 
-		labelName = Mevenide.getResourceString("IdentificationSection.pomVersionText.label");
-		pomVersionText = new TextEntry(createText(container, labelName, factory));
-		factory.createSpacer(container);
-		pomVersionText.addEntryChangeListener(
-			new EntryChangeListenerAdaptor() {
-				public void entryChanged(PageEntry entry) {
-					pom.setPomVersion(pomVersionText.getText());
-				}
-			}
+		// POM artifactId textbox
+		labelName = Mevenide.getResourceString("IdentificationSection.artifactIdText.label");
+		artifactIdText = new OverridableTextEntry(
+			createText(container, labelName, factory), 
+			createOverrideToggle(container, factory, isInherited())
 		);
-		if (isInherited()) {
-			pomVersionText.setEnabled(false);
-		}
+		adaptor = new OverrideAdaptor() {
+			public void updateProject(String value) {
+				pom.setArtifactId(value);
+			}
+			public String getParentProjectAttribute() {
+				return getParentPom().getArtifactId();
+			}
+		};
+		artifactIdText.addEntryChangeListener(adaptor);
+		artifactIdText.addOverrideAdaptor(adaptor);
+		
+		// POM groupId textbox
+		labelName = Mevenide.getResourceString("IdentificationSection.groupIdText.label");
+		groupIdText = new OverridableTextEntry(
+			createText(container, labelName, factory), 
+			createOverrideToggle(container, factory, isInherited())
+		);
+		adaptor = new OverrideAdaptor() {
+			public void updateProject(String value) {
+				pom.setGroupId(value);
+			}
+			public String getParentProjectAttribute() {
+				return getParentPom().getGroupId();
+			}
+		};
+		groupIdText.addEntryChangeListener(adaptor);
+		groupIdText.addOverrideAdaptor(adaptor);
 		
 		// POM extend textbox and file browse button
 		labelName = Mevenide.getResourceString("IdentificationSection.extendsText.label");
@@ -235,53 +243,20 @@ public class IdentificationSection extends PageSection {
 				}
 		);
 		
-		// POM artifactId textbox
-		labelName = Mevenide.getResourceString("IdentificationSection.artifactIdText.label");
-		artifactIdText = new OverridableTextEntry(
-			createText(container, labelName, factory), 
-			createOverrideToggle(container, factory, isInherited())
-		);
-		artifactIdText.addEntryChangeListener(
+		// POM version textbox 
+		labelName = Mevenide.getResourceString("IdentificationSection.pomVersionText.label");
+		pomVersionText = new TextEntry(createText(container, labelName, factory));
+		factory.createSpacer(container);
+		pomVersionText.addEntryChangeListener(
 			new EntryChangeListenerAdaptor() {
 				public void entryChanged(PageEntry entry) {
-					pom.setArtifactId(artifactIdText.getText());
+					pom.setPomVersion(pomVersionText.getText());
 				}
 			}
 		);
-		artifactIdText.addOverrideAdaptor(
-			new OverrideAdaptor() {
-				public void updateProject(String value) {
-					pom.setArtifactId(value);
-				}
-				public String getParentProjectAttribute() {
-					return getParentPom().getArtifactId();
-				}
-			}
-		);
-		
-		// POM groupId textbox
-		labelName = Mevenide.getResourceString("IdentificationSection.groupIdText.label");
-		groupIdText = new OverridableTextEntry(
-			createText(container, labelName, factory), 
-			createOverrideToggle(container, factory, isInherited())
-		);
-		groupIdText.addEntryChangeListener(
-			new EntryChangeListenerAdaptor() {
-				public void entryChanged(PageEntry entry) {
-					pom.setGroupId(groupIdText.getText());
-				}
-			}
-		);
-		groupIdText.addOverrideAdaptor(
-			new OverrideAdaptor() {
-				public void updateProject(String value) {
-					pom.setGroupId(value);
-				}
-				public String getParentProjectAttribute() {
-					return getParentPom().getGroupId();
-				}
-			}
-		);
+		if (isInherited()) {
+			pomVersionText.setEnabled(false);
+		}
 		
 		// POM gumpRepositoryId textbox
 		labelName = Mevenide.getResourceString("IdentificationSection.gumpRepoIdText.label");
@@ -289,23 +264,16 @@ public class IdentificationSection extends PageSection {
 			createText(container, labelName, factory), 
 			createOverrideToggle(container, factory, isInherited())
 		);
-		gumpRepoIdText.addEntryChangeListener(
-			new EntryChangeListenerAdaptor() {
-				public void entryChanged(PageEntry entry) {
-					pom.setGumpRepositoryId(gumpRepoIdText.getText());
-				}
+		adaptor = new OverrideAdaptor() {
+			public void updateProject(String value) {
+				pom.setGumpRepositoryId(value);
 			}
-		);
-		gumpRepoIdText.addOverrideAdaptor(
-			new OverrideAdaptor() {
-				public void updateProject(String value) {
-					pom.setGumpRepositoryId(value);
-				}
-				public String getParentProjectAttribute() {
-					return getParentPom().getGumpRepositoryId();
-				}
+			public String getParentProjectAttribute() {
+				return getParentPom().getGumpRepositoryId();
 			}
-		);
+		};
+		gumpRepoIdText.addEntryChangeListener(adaptor);
+		gumpRepoIdText.addOverrideAdaptor(adaptor);
 		
 		factory.paintBordersFor(container);
         return container;

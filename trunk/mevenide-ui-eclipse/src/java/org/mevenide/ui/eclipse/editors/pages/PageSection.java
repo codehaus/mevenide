@@ -115,10 +115,22 @@ public abstract class PageSection {
 		}
 	}
 	
-	abstract class OverrideAdaptor implements IOverrideAdaptor {
+	abstract class OverrideAdaptor implements IOverrideAdaptor, IEntryChangeListener {
         public void refreshUI() {
         	redrawSection();
         }
+		public void entryChanged(PageEntry entry) {
+			if (log.isDebugEnabled()) {
+				log.debug("overridable entry change committed! " + entry.getValue());
+			}
+			updateProject(entry.getValue());
+		}
+		public void entryDirty(PageEntry entry) {
+			getPage().getEditor().setModelDirty(true);
+			if (log.isDebugEnabled()) {
+				log.debug("overridable entry was changed!");
+			}
+		}
 	}
 
 	class SectionLayout extends Layout { //implements ILayoutExtension {
