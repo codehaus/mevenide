@@ -53,7 +53,7 @@ import org.mevenide.util.StringUtils;
  * @version $Id$
  * 
  */
-public class PomEditorPreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
+public class DependencyTypesPreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
     
 	
 private static final String ROOT = "ROOT";
@@ -71,8 +71,8 @@ private static final String ROOT = "ROOT";
         preferencesManager.loadPreferences();        
     }
     
-	public PomEditorPreferencePage() {
-        super(Mevenide.getResourceString("PomEditorPreferencePage.title"));
+	public DependencyTypesPreferencePage() {
+        super(Mevenide.getResourceString("DependencyTypesPreferencePage.title"));
         //setImageDescriptor(MavenPlugin.getImageDescriptor("sample.gif"));
     }
 	
@@ -193,7 +193,7 @@ private static final String ROOT = "ROOT";
         addTypeButton = new Button(parent, SWT.PUSH);
         addTypeButton.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         addTypeButton.setAlignment(SWT.LEFT);
-        addTypeButton.setText(Mevenide.getResourceString("PomEditorPreferencePage.type.add"));//$NON-NLS-1$
+        addTypeButton.setText(Mevenide.getResourceString("DependencyTypesPreferencePage.type.add"));//$NON-NLS-1$
         addTypeButton.addSelectionListener(new SelectionListener() {
             public void widgetDefaultSelected(SelectionEvent e) {
                 //do nothing
@@ -209,8 +209,8 @@ private static final String ROOT = "ROOT";
     
     private String openNewTypeDialog() {
         Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
-        String dialogTitle = Mevenide.getResourceString("PomEditorPreferencePage.NewType.Dialog.Title");
-        String dialogMessage = Mevenide.getResourceString("PomEditorPreferencePage.NewType.Dialog.Message");
+        String dialogTitle = Mevenide.getResourceString("DependencyTypesPreferencePage.NewType.Dialog.Title");
+        String dialogMessage = Mevenide.getResourceString("DependencyTypesPreferencePage.NewType.Dialog.Message");
         IInputValidator validator = new IInputValidator() {
             public String isValid(String newText) {
                 if ( types.contains(newText) ) {
@@ -231,7 +231,7 @@ private static final String ROOT = "ROOT";
         removeTypeButton = new Button(parent, SWT.PUSH);
         removeTypeButton.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         removeTypeButton.setAlignment(SWT.LEFT);
-        removeTypeButton.setText(Mevenide.getResourceString("PomEditorPreferencePage.type.remove"));//$NON-NLS-1$
+        removeTypeButton.setText(Mevenide.getResourceString("DependencyTypesPreferencePage.type.remove"));//$NON-NLS-1$
         removeTypeButton.addSelectionListener(new SelectionListener() {
             public void widgetDefaultSelected(SelectionEvent e) {
                 //do nothing
