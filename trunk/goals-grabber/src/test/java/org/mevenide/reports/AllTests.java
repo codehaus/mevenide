@@ -46,28 +46,25 @@
  * SUCH DAMAGE.
  * ====================================================================
  */
-package org.mevenide.goals.test;
+package org.mevenide.reports;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
 /**  
+ * @todo create AbstractGoalsGrabberTestCase 
  * 
  * @author Gilles Dodinet (gdodinet@wanadoo.fr)
- * @version $Id: AllTests.java,v 1.1 7 sept. 2003 Exp gdodinet 
+ * @version $Id: AllTests.java 5 sept. 2003 Exp gdodinet 
  * 
  */
 public class AllTests {
-	private AllTests() {
-	}
-
 	public static Test suite() {
-		TestSuite suite = new TestSuite();
-
-		suite.addTest(org.mevenide.goals.grabber.AllTests.suite());
-		suite.addTest(org.mevenide.goals.manager.AllTests.suite());
-		suite.addTest(org.mevenide.reports.AllTests.suite());
 		
-		return suite;
-	}
+		TestSuite suite = new TestSuite();
+	
+		suite.addTestSuite(DefaultReportsFinderTest.class);
+		
+		return suite; 
+	} 
 }
