@@ -53,6 +53,16 @@
   
   <dependencies>
     <dependency>
+        <groupId>xalan</groupId>
+        <artifactId>xalan</artifactId>
+        <version>2.4.1</version>
+        <type>jar</type>
+      <properties>
+        <classloader>root</classloader>
+      </properties>
+    </dependency>
+  
+    <dependency>
       <id>ant</id>
       <version>1.5.3-1</version>
       <properties>
