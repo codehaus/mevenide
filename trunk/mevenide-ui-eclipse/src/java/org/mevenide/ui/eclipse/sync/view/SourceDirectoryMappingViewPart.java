@@ -13,6 +13,7 @@
  */
 package org.mevenide.ui.eclipse.sync.view;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -195,7 +196,15 @@ public class SourceDirectoryMappingViewPart extends ViewPart {
 	 */
 	public static void synchronizeWithoutPrompting(IProject currentProject) throws Exception {
 		String savedState = Mevenide.getPlugin().getFile("sourceTypes.xml");
-		List lastSourceList = SourceDirectoryGroupMarshaller.getLastStoredSourceDirectories(currentProject, savedState);
+		SourceDirectoryGroup sourceDirectoryGroup = SourceDirectoryGroupMarshaller.getSourceDirectoryGroup(currentProject, savedState);
+		
+		List sourceDirectories = sourceDirectoryGroup.getSourceDirectories();
+		List sources = new ArrayList();
+		
+		for (int i = 0; i < sourceDirectories.size(); i++) {
+			SourceDirectory directory = (SourceDirectory) sourceDirectories.get(i);
+			sources.add(directory.getDirectoryPath());
+		}
 		
 		boolean newSourceFolder = false;
 		boolean newDependency = false;
@@ -207,7 +216,7 @@ public class SourceDirectoryMappingViewPart extends ViewPart {
 		for (int i = 0; i < entries.length; i++) {
 			if ( entries[i].getEntryKind() == IClasspathEntry.CPE_SOURCE ) {
 				String entryPath = pathResolver.getRelativeSourceDirectoryPath(entries[i], currentProject);
-				if ( !lastSourceList.contains(entryPath) ) {
+				if ( !sources.contains(entryPath) ) {
 					newSourceFolder = true;
 					break;
 				}
