@@ -46,17 +46,19 @@ public class JDomReportsFinder implements IReportsFinder {
     
     private static final Log log = LogFactory.getLog(JDomReportsFinder.class);
     
+    private ILocationFinder finder;
     private File pluginsDir;
     
     public JDomReportsFinder() {
         this(ConfigUtils.getDefaultLocationFinder());
     }
     
-    public JDomReportsFinder(ILocationFinder finder) {
-        pluginsDir = new File(finder.getMavenPluginsDir());
+    public JDomReportsFinder(ILocationFinder find) {
+        this.finder = find;
     }
 
     public String[] findReports() throws Exception {
+        pluginsDir = new File(finder.getMavenPluginsDir());
         File pluginsCache = new File(pluginsDir, "plugins.cache");
         
         Properties properties = new Properties();
@@ -135,9 +137,11 @@ public class JDomReportsFinder implements IReportsFinder {
                 return isRegistar(e.getAttributeValue("name"), pluginHome);
             }
             //else visit node
-            return visit(e, pluginHome, document);
+            boolean found = visit(e, pluginHome, document);
+            if (found) {
+                return found;
+            }
         }
-        
         //goal is not a registrar. try any prereqs
         String prereqs = goal.getAttributeValue("prereqs");
         if ( prereqs != null ) {
