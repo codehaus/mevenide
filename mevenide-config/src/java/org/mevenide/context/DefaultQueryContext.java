@@ -42,7 +42,8 @@ import org.jdom.JDOMFactory;
 public class DefaultQueryContext extends AbstractQueryContext {
     private static final Log logger = LogFactory.getLog(DefaultQueryContext.class);
     private static final Project EMPTY_PROJECT = new Project();
-    
+
+    private IQueryErrorCallback callback;
     private File projectDir;
     private File userDir;
     private File userPropertyFile;
@@ -80,17 +81,28 @@ public class DefaultQueryContext extends AbstractQueryContext {
      * -> user.home/build.properties file is read just once for all created contexts..
      */
     private DefaultQueryContext() {
+        callback = new LoggerErrorHandlerCallback();
         String home = System.getProperty("user.home"); //NOI18N
         userDir = new File(home);
         userPropertyFile = new File(userDir, "build.properties"); //NOI18N
         userPropertyModel = new Properties();
     }
-    
+   
     /**
      * create a new project context.
      * @param projectDirectory the directory where the project.xml file is located.
      */
     public DefaultQueryContext(File projectDirectory) {
+        this(projectDirectory, new LoggerErrorHandlerCallback());
+    }   
+    
+    /**
+     * create a new project context.
+     * @param projectDirectory the directory where the project.xml file is located.
+     * @param errorCallback callback which gets notified when reading/parsing errors occur 
+     */
+    public DefaultQueryContext(File projectDirectory, IQueryErrorCallback errorCallback) {
+        callback = errorCallback;
         projectDir = projectDirectory;
         projectPropertyFile = new File(projectDir, "project.properties"); //NOI18N
         buildPropertyFile = new File(projectDir, "build.properties"); //NOI18N
@@ -98,7 +110,7 @@ public class DefaultQueryContext extends AbstractQueryContext {
         buildPropertyModel = new Properties();
         parentProjectPropertyModel = new Properties();
         parentBuildPropertyModel = new Properties();
-        projectContext = new DefaultProjectContext(this, this.getResolver());
+        projectContext = new DefaultProjectContext(this, this.getResolver(), callback);
     }
     
     /**
@@ -215,7 +227,7 @@ public class DefaultQueryContext extends AbstractQueryContext {
             try {
                 propModel.load(new BufferedInputStream(new FileInputStream(propFile)));
             } catch (IOException exc) {
-                logger.error("Error Reading a file that's supposed to exist. How come?", exc);
+                callback.handleError(IQueryErrorCallback.ERROR_UNREADABLE_PROP_FILE, exc);
             }
                 
         }
@@ -245,7 +257,7 @@ public class DefaultQueryContext extends AbstractQueryContext {
             try {
                 propModel.load(new BufferedInputStream(new FileInputStream(propFile)));
             } catch (IOException exc) {
-                logger.error("Error Reading a file that's supposed to exist. How come?", exc);
+                callback.handleError(IQueryErrorCallback.ERROR_UNREADABLE_PROP_FILE, exc);
             }
                 
         }
