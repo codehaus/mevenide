@@ -138,4 +138,8 @@ public class PomSynchronizer extends AbstractPomSynchronizer implements ISynchro
 		return pathResolver;
 	}
 
+	public IProject getProject() {
+		return project;
+	}
+
 }

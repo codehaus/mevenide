@@ -31,6 +31,8 @@ import org.mevenide.ui.eclipse.MavenPlugin;
 /**
  * will be soon deprecated
  * 
+ * @refactor crappy !!!  
+ * 
  * @author Gilles Dodinet (gdodinet@wanadoo.fr)
  * @version $Id: ResourcesUtil.java 4 mai 2003 10:17:0413:34:35 Exp gdodinet 
  * 
@@ -44,7 +46,7 @@ public class DefaultPathResolverDelegate implements IPathResolverDelegate {
 	 * @param classpathEntry
 	 * @return
 	 */
-	public String computePathToAdd(IClasspathEntry classpathEntry, IProject project) {
+	public String computePath(IClasspathEntry classpathEntry, IProject project) {
 		IPath rootLocation = 
 		        MavenPlugin.getWorkspace().getRoot().getLocation();
 		
@@ -75,7 +77,7 @@ public class DefaultPathResolverDelegate implements IPathResolverDelegate {
 	}
 
 	/**
-	 * @refactor JDOM (again >.<)
+	 * @refactor JDOM (again !!!)
 	 */
     public String getMavenSourceType(IClasspathEntry entry, IProject project) throws Exception {
 		String path = "";
@@ -92,6 +94,15 @@ public class DefaultPathResolverDelegate implements IPathResolverDelegate {
 		return searchSourceType(path, classpathEntries);
 	}
 
+	/**
+	 * CRAP !!
+	 * 
+	 * @param path
+	 * @param classpathEntries
+	 * @return
+	 * @throws InvalidSourceTypeException
+	 * @throws NoSuchSourcePathException
+	 */
 	private String searchSourceType(String path, List classpathEntries) throws InvalidSourceTypeException, NoSuchSourcePathException {
 		for (int i = 0; i < classpathEntries.size(); i++) {
 			Element cpe = (Element) classpathEntries.get(i);
