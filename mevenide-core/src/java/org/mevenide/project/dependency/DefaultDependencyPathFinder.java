@@ -121,7 +121,7 @@ public class DefaultDependencyPathFinder implements IDependencyPathFinder {
 			else {
 			    //assume value is a version
 			    String path = buildArtifactPath(value);
-			    System.err.println(path);
+			    //System.err.println(path);
 			    if ( new File(path).exists() ) {
 			    	result = path;
 			    }
