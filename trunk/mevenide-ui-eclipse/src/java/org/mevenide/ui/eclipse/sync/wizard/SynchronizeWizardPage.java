@@ -708,7 +708,7 @@ public class SynchronizeWizardPage extends WizardPage {
 									((DependencyGroup)dependenciesViewer.getInput()).addDependency(new DependencyWrapper(dependencyToAdd, false, (DependencyGroup)dependenciesViewer.getInput()));
 									log.debug("Added Dependency : " + path);
 									dependenciesViewer.refresh(true);
-									if ( Environment.getMavenRepository() == null || Environment.getMavenRepository().trim().equals("") ) {
+									if ( Environment.getMavenLocalRepository() == null || Environment.getMavenLocalRepository().trim().equals("") ) {
 										MessageBox messageBox = new MessageBox (PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), SWT.ICON_WARNING | SWT.OK);
 										messageBox.setText (Mevenide.getResourceString("SynchronizeWizardPage.mavenRepo.NotSet.title"));
 										messageBox.setMessage (Mevenide.getResourceString("SynchronizeWizardPage.mavenRepo.NotSet.message"));

@@ -308,7 +308,7 @@ public class Mevenide extends AbstractUIPlugin {
 	public void initEnvironment() {
 		Environment.setMavenHome(getMavenHome()); 
 		Environment.setJavaHome(getJavaHome());
-		Environment.setMavenRepository(getMavenRepository());
+		Environment.setMavenLocalRepository(getMavenRepository());
 		Environment.setMavenPluginsInstallDir(getPluginsInstallDir());
 		Environment.setMavenLocalHome(getMavenLocalHome());
 		Environment.setHeapSize(getHeapSize());
@@ -375,7 +375,7 @@ public class Mevenide extends AbstractUIPlugin {
 	}
 	public void setMavenRepository(String mavenRepository) {
 		this.mavenRepository = mavenRepository;
-		Environment.setMavenRepository(mavenRepository);
+		Environment.setMavenLocalRepository(mavenRepository);
 	}
 	public String getCurrentDir() {
 		return currentDir;

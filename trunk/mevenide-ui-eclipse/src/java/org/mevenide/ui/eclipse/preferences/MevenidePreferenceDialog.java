@@ -70,6 +70,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.mevenide.Environment;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.MevenidePreferenceKeys;
 import org.mevenide.ui.eclipse.goals.viewer.GoalsPickerDialog;
@@ -140,22 +141,35 @@ public class MevenidePreferenceDialog {
 			Mevenide.getResourceString("MevenidePreferenceDialog.java.home.label"), 
 			javaHome
 		);
+		if ( isNull(javaHomeEditor) ) {
+			log.debug("javaHomeEditor is null, loading from env : " + Environment.getJavaHome());
+		    javaHomeEditor.setStringValue(Environment.getJavaHome());
+		}
 		mavenHomeEditor = createEditor(
 			MevenidePreferenceKeys.MAVEN_HOME_PREFERENCE_KEY, 
 			Mevenide.getResourceString("MevenidePreferenceDialog.maven.home.label"), 
 			mavenHome
 		);
+		if ( isNull(mavenHomeEditor) ) {
+			log.debug("mavenHomeEditor is null, loading from env : " + Environment.getMavenHome());
+		    mavenHomeEditor.setStringValue(Environment.getMavenHome());
+		}
 		mavenLocalHomeEditor = createEditor(
 			MevenidePreferenceKeys.MAVEN_LOCAL_HOME_PREFERENCE_KEY, 
 			Mevenide.getResourceString("MevenidePreferenceDialog.maven.local.home.label"), 
 			mavenLocalHome
 		);
+		if ( mavenLocalHomeEditor.getStringValue() == null || mavenLocalHomeEditor.getStringValue().trim().equals("") ) {
+		    mavenLocalHomeEditor.setStringValue(Environment.getMavenLocalHome());
+		}
 		mavenRepoEditor = createEditor(
 			MevenidePreferenceKeys.MAVEN_REPO_PREFERENCE_KEY, 
 			Mevenide.getResourceString("MevenidePreferenceDialog.maven.repo.label"), 
 			mavenRepository
 		);
-		
+		if ( mavenRepoEditor.getStringValue() == null || mavenRepoEditor.getStringValue().trim().equals("") ) {
+		    mavenRepoEditor.setStringValue(Environment.getMavenLocalRepository());
+		}
 		heapSizeEditor = new IntegerFieldEditor(
 			MevenidePreferenceKeys.JAVA_HEAP_SIZE_PREFERENCE_KEY, 
 			Mevenide.getResourceString("MevenidePreferenceDialog.heap.size.label"), 
@@ -164,6 +178,9 @@ public class MevenidePreferenceDialog {
 		heapSizeEditor.fillIntoGrid(topLevelContainer, 2);
 		heapSizeEditor.setPreferenceStore(preferencesManager.getPreferenceStore());
 		heapSizeEditor.load();
+		if ( heapSizeEditor.getIntValue() <= 0 ) {
+			heapSizeEditor.setStringValue("160");
+		}		
 
 		Label label = new Label(topLevelContainer, SWT.NONE);
 		label.setLayoutData(new GridData());
@@ -232,7 +249,11 @@ public class MevenidePreferenceDialog {
 	}
 
 	
-	private void createDefaultGoalsComposite(final Composite parent) {
+	private boolean isNull(DirectoryFieldEditor editor) {
+        return editor.getStringValue() == null || editor.getStringValue().trim().equals("");
+    }
+
+    private void createDefaultGoalsComposite(final Composite parent) {
 		defaultGoalsEditor = new StringButtonFieldEditor() {
 			protected Button getChangeControl(Composite parent) {
 				Button b = super.getChangeControl(parent);
