@@ -31,6 +31,7 @@ import org.apache.maven.MavenUtils;
 import org.apache.maven.project.Resource;
 import org.apache.tools.ant.DirectoryScanner;
 import org.mevenide.netbeans.project.MavenProject;
+import org.netbeans.api.queries.SharabilityQuery;
 import org.openide.filesystems.FileUtil;
 import org.openide.loaders.DataObject;
 import org.openide.nodes.FilterNode;
@@ -62,66 +63,15 @@ class ResourceFilterNode extends FilterNode
         isIncluded = true;
         if (dobj != null) {
             File file = FileUtil.toFile(dobj.getPrimaryFile());
-            if (file != null && !file.isDirectory()) {
-                isIncluded = checkIncluded(file);
-            }
+//            if (file != null && !file.isDirectory()) {
+                isIncluded = DirScannerSubClass.checkIncluded(file, root, resource);
+//            }
         }
     }
     
     public Action[] getActions( boolean context )
     {
         return super.getActions(context);
-    }
-    
-    private boolean checkIncluded(File file) {
-        logger.debug("chceckIncluded");
-        String relPath = "";
-        try {
-            relPath = MavenUtils.makeRelativePath(root, file.getAbsolutePath());
-        } catch (IOException exc) {
-            logger.info(exc);
-            return false;
-        }
-        logger.debug("chceckIncluded relpath=" + relPath);
-        List includes = resource.getIncludes();
-        if (includes != null) {
-            boolean doInclude = false;
-            Iterator it = includes.iterator();
-            while (it.hasNext()) {
-                String pattern = (String)it.next();
-                logger.debug("include=" + pattern);
-                // exact match or pattern match
-                if (pattern.equals(relPath) || DirectoryScanner.match(pattern, relPath)) {
-                    doInclude = true;
-                    break;
-                }
-            }
-            if (!doInclude) {
-                logger.debug("do not include");
-                return false;
-            }
-        }
-        
-        List excludes = resource.getExcludes();
-        if (excludes != null) {
-            Iterator it = excludes.iterator();
-            while (it.hasNext()) {
-                String pattern = (String)it.next();
-                logger.debug("exclude=" + pattern);
-                if (pattern.equals(relPath) || DirectoryScanner.match(pattern, relPath)) {
-                    return false;
-                }
-            }
-        }
-        String[] defaults = DirScannerSubClass.getDefaultExcludesHack();
-        if (defaults != null) {
-            for (int i =0; i < defaults.length; i++) {
-                if (DirectoryScanner.match(defaults[i], relPath)) {
-                    return false;
-                }
-            }
-        }
-        return true;
     }
     
     public java.awt.Image getIcon(int param) {
@@ -151,19 +101,28 @@ class ResourceFilterNode extends FilterNode
     public String getDisplayName() {
         String retValue;
         retValue = super.getDisplayName();
+        return retValue;
+    }
+
+    public java.lang.String getHtmlDisplayName() {
+
+        java.lang.String retValue;
         if (!isIncluded) {
             // try use html, need to escape all the unallowed characters..
             // how to do? is XmlUtil the answer?
+            retValue = getDisplayName();
             try {
-                retValue = "<HTML><S>" + XMLUtil.toAttributeValue(retValue) + "</S></HTML>";
+                retValue = "<I>" + XMLUtil.toAttributeValue(retValue) + "</I>";
             } catch (CharConversionException exc) {
                 logger.debug("conversion failed for =" + retValue, exc);
             }
+        } else {
+            retValue = super.getHtmlDisplayName();
         }
         return retValue;
     }
     
-    private static class ResFilterChildren extends Children {
+    static class ResFilterChildren extends FilterNode.Children {
         private Resource resource;
         private File root;
         ResFilterChildren(Node original, File rootpath, Resource res) {
@@ -173,6 +132,15 @@ class ResourceFilterNode extends FilterNode
         }
         
         protected Node[] createNodes(Object obj) {
+            DataObject dobj = (DataObject)((Node)obj).getLookup().lookup(DataObject.class);
+        
+            if (dobj != null) {
+                File file = FileUtil.toFile(dobj.getPrimaryFile());
+                if (/*SharabilityQuery.getSharability(file) == SharabilityQuery.NOT_SHARABLE || */
+                    !DirScannerSubClass.checkVisible(file, root)) {
+                    return new Node[0];
+                }
+            }
             Node n = new ResourceFilterNode((Node)obj, root, resource);
             return new Node[] {n};
         }        
