@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -45,11 +46,16 @@ public class Namespace {
 	
     private static final String[] WERKZ_TAGS = new String[] {"goal", "preGoal", "postGoal",};
 
-
+    static {
+        for (int i = 0; i < WERKZ_TAGS.length; i++) {
+        	WERKZ_LIST.add(WERKZ_TAGS[i]);
+        }   
+    }
+    
     public Namespace(String prefix, String uri) {
     	this.prefix = prefix;
         this.uri = uri;
-        initializeWerkzLists();
+        
         loadTagLib();
         if ( taglib == null ) {
             taglib = new EmptyTagLibImpl(prefix + ":" + uri);
@@ -61,11 +67,6 @@ public class Namespace {
         Collections.sort(rootTags);
     }
 
-    private void initializeWerkzLists() {
-    	for (int i = 0; i < WERKZ_TAGS.length; i++) {
-        	WERKZ_LIST.add(WERKZ_TAGS[i]);
-        }
-    }
 
     public Map getAttributes() {
         return attributes;
@@ -134,7 +135,10 @@ public class Namespace {
             return WERKZ_LIST;
         } 
         else if ( !generic && WERKZ_LIST.contains(outerTag) ) {
-            return rootTags;
+            Collection coll = new TreeSet();
+            coll.add("attainGoal");
+            coll.addAll(rootTags);
+            return coll;
         }
         else {
 	        if ( outerTag.indexOf(":") != -1 ) {
@@ -160,11 +164,11 @@ public class Namespace {
         	//Collections.sort((List) collectedTags);
         	candidates = collectedTags;
         	subTags.put(outerTag, collectedTags);
+        	
+        	if ( !candidates.contains("attainGoal") && !generic ) {
+        	    candidates.add("attainGoal");
+        	}
         }
-        
-        if ( !generic && !rootTags.contains("attainGoal") ) {
-	        rootTags.add("attainGoal");
-	    }
         
         return candidates;
     }
@@ -180,7 +184,7 @@ public class Namespace {
     public void setGeneric(boolean generic) {
         this.generic = generic;
     }
-    public List getWerkzList() {
+    public static List getWerkzList() {
         return WERKZ_LIST;
     }
 }
