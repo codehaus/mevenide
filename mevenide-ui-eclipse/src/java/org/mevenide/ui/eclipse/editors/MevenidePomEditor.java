@@ -47,7 +47,6 @@ import org.mevenide.project.ProjectComparator;
 import org.mevenide.project.ProjectComparatorFactory;
 import org.mevenide.project.io.DefaultProjectMarshaller;
 import org.mevenide.project.io.ProjectReader;
-import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.editors.pages.BuildPage;
 import org.mevenide.ui.eclipse.editors.pages.DependenciesPage;
 import org.mevenide.ui.eclipse.editors.pages.OrganizationPage;

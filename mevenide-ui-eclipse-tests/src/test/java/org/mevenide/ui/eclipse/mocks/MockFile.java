@@ -420,4 +420,13 @@ public class MockFile
 	public void setupWorkspace(IWorkspace ws) {
 		this.workspace = ws;
 	}
+	
+	
+	public String getCharset() throws CoreException {
+		return null;
+	}
+	
+	public void setCharset(String arg0) throws CoreException {
+		
+	}
 }

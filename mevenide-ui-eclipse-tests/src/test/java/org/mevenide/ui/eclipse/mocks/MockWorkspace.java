@@ -26,6 +26,7 @@ import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IProjectNatureDescriptor;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeListener;
+import org.eclipse.core.resources.IResourceRuleFactory;
 import org.eclipse.core.resources.ISaveParticipant;
 import org.eclipse.core.resources.ISavedState;
 import org.eclipse.core.resources.ISynchronizer;
@@ -34,7 +35,6 @@ import org.eclipse.core.resources.IWorkspaceDescription;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.WorkspaceLock;
-import org.eclipse.core.resources.IWorkspace.ProjectOrder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -262,4 +262,7 @@ public class MockWorkspace
 		return null;
 	}
 
+	public IResourceRuleFactory getRuleFactory() {
+		return null;
+	}
 }
