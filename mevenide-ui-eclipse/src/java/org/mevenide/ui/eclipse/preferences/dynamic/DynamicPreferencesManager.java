@@ -19,6 +19,7 @@ package org.mevenide.ui.eclipse.preferences.dynamic;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Properties;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.preferences.PreferencesManager;
 
@@ -55,5 +56,35 @@ public class DynamicPreferencesManager extends PreferencesManager {
             dynamicPreferences.put(key.indexOf(SEPARATOR) != -1 ? key.substring(key.indexOf(SEPARATOR) + 1, key.length()) : key, value);
         }
 	    return dynamicPreferences;
+	}
+	
+	private Map getPluginsPreferences() {
+	    Map preferences = super.getPreferences();
+	    Map dynamicPreferences = new HashMap();
+	    for (Iterator it = preferences.keySet().iterator(); it.hasNext();) {
+            String key = (String) it.next();
+            String value = (String) preferences.get(key);
+            dynamicPreferences.put(key.indexOf(SEPARATOR) != -1 ? key.substring(key.indexOf(SEPARATOR) + 1, key.length()) : key,
+                                   key.indexOf(SEPARATOR) != -1 ? key.substring(0, key.indexOf(SEPARATOR)) : null);
+        }
+	    return dynamicPreferences;
+	}
+	
+	public void importProperties(Properties properties) {
+	    Map dynamicPreferences = getPluginsPreferences();
+	    for (Iterator it = properties.keySet().iterator(); it.hasNext(); ) {
+            String key = (String) it.next();
+            String value = properties.getProperty(key);
+            if ( dynamicPreferences.containsKey(key) ) {
+                String plugin = (String) dynamicPreferences.get(key);
+                setValue( plugin != null ? plugin + SEPARATOR + key : key, value);
+            }
+            else {
+                setValue(key, value);
+            }
+        }
+	    if ( properties.size() > 0 ) {
+	        store();
+	    }
 	}
 }

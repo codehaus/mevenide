@@ -17,6 +17,10 @@
 package org.mevenide.ui.eclipse.preferences.pages;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.util.Properties;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
@@ -32,6 +36,7 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.PlatformUI;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.preferences.PreferencesManager;
+import org.mevenide.ui.eclipse.preferences.dynamic.DynamicPreferencesManager;
 import org.mevenide.util.StringUtils;
 
 /**
@@ -42,7 +47,7 @@ import org.mevenide.util.StringUtils;
  *
  */
 public class PluginsRootPreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
-    
+    private static final Log log = LogFactory.getLog(PluginsRootPreferencePage.class);
     
     private static final String LAST_IMPORT_FOLDER = "PluginsRoot.Import.LastOpenFolder"; //$NON-NLS-1$
     private static final String LAST_EXPORT_FOLDER = "PluginsRoot.Export.LastOpenFolder"; //$NON-NLS-1$
@@ -53,21 +58,45 @@ public class PluginsRootPreferencePage extends PreferencePage implements IWorkbe
         super(Mevenide.getResourceString("PluginsRootPreferencePage.title")); //$NON-NLS-1$
         preferencesManager = PreferencesManager.getManager();
 		preferencesManager.loadPreferences();
+		noDefaultAndApplyButton();
     }
 
 	protected Control createContents(Composite parent) {
 	    Composite composite = new Composite(parent, SWT.NULL);
 	    GridLayout layout = new GridLayout();
-	    layout.numColumns = 2;
+	    layout.numColumns = 1;
 	    composite.setLayout(layout);
-	    composite.setLayoutData(new GridData());
+	    GridData data = new GridData(GridData.FILL_BOTH);
+	    data.grabExcessVerticalSpace = true;
+	    composite.setLayoutData(data);
 	  
-	    createImportButton(composite);
-	    createExportButton(composite);
+	    Composite buttonsIndirectionComposite = createButtonsIndirectionComposite(composite);
+	    
+	    createImportButton(buttonsIndirectionComposite);
+	    createExportButton(buttonsIndirectionComposite);
 	    
 	    return composite;
 	}
   
+
+    private Composite createButtonsIndirectionComposite(Composite composite) {
+        Composite buttonsArea = new Composite(composite, SWT.NULL);
+	    GridData buttonsAreaData = new GridData(GridData.VERTICAL_ALIGN_END | GridData.FILL_BOTH);
+	    buttonsAreaData.grabExcessHorizontalSpace = true;
+	    buttonsArea.setLayoutData(buttonsAreaData);
+	    GridLayout buttonsAreaLayout = new GridLayout();
+	    buttonsAreaLayout.numColumns = 1;
+	    buttonsArea.setLayout(buttonsAreaLayout);
+	    
+	    Composite buttonsIndirection = new Composite(composite, SWT.NULL);
+	    GridData buttonsIndirectionData = new GridData(GridData.VERTICAL_ALIGN_END | GridData.HORIZONTAL_ALIGN_END | GridData.FILL_BOTH);
+	    buttonsIndirectionData.grabExcessHorizontalSpace = true;
+	    buttonsIndirection.setLayoutData(buttonsIndirectionData);
+	    GridLayout buttonsIndirectionLayout = new GridLayout();
+	    buttonsIndirectionLayout.numColumns = 2;
+	    buttonsIndirection.setLayout(buttonsIndirectionLayout);
+        return buttonsIndirection;
+    }
 
     private void createExportButton(Composite composite) {
         Button exportProperties = createButton(composite, "PluginsRoot.ExportButton.Text", "PluginsRoot.ExportButton.Tooltip"); //$NON-NLS-1$ //$NON-NLS-1$
@@ -91,8 +120,15 @@ public class PluginsRootPreferencePage extends PreferencePage implements IWorkbe
 	        public void widgetSelected(SelectionEvent arg0) {
                 String choice = openFileChoiceDialog(LAST_IMPORT_FOLDER);
                 if ( !StringUtils.isNull(choice) ) {
-                    //effectively import the file
-                    System.err.println(choice);
+                    Properties properties = new Properties();
+                    try {
+                        properties.load(new FileInputStream(choice));
+                        DynamicPreferencesManager.getDynamicManager().importProperties(properties);
+                    }
+                    catch (Exception e) {
+                        String message = "Unable to load properties file"; 
+                        log.error(message, e);
+                    }
                 }
             }
 	    });
@@ -102,9 +138,7 @@ public class PluginsRootPreferencePage extends PreferencePage implements IWorkbe
         Button exportProperties = new Button(composite, SWT.PUSH);
 	    exportProperties.setText(Mevenide.getResourceString(buttonText)); 
 	    exportProperties.setToolTipText(Mevenide.getResourceString(buttonTooltip)); 
-	    GridData exportButtonData = new GridData();
-	    exportButtonData.grabExcessHorizontalSpace = false;
-	    exportProperties.setLayoutData(exportButtonData);
+	    exportProperties.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_END));
         return exportProperties;
     }
 
