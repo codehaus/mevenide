@@ -60,7 +60,7 @@ public class DependencyUtil {
 				return pathname.isDirectory() && pathname.getName().equals(groupId);
 			}
 		});
-		return children.length != 0;
+		return children != null && children.length != 0;
 	}
 	
 	public static boolean isValid(Dependency d) {
