@@ -107,13 +107,17 @@ class WebAppFilterNode extends FilterNode {
         
             if (dobj != null) {
                 File file = FileUtil.toFile(dobj.getPrimaryFile());
-                if (/*SharabilityQuery.getSharability(file) == SharabilityQuery.NOT_SHARABLE || */
-                    !DirScannerSubClass.checkVisible(file, root)) {
-                    return new Node[0];
+                if (file != null) {
+                    if (/*SharabilityQuery.getSharability(file) == SharabilityQuery.NOT_SHARABLE || */
+                        !DirScannerSubClass.checkVisible(file, root)) {
+                        return new Node[0];
+                    }
                 }
+                Node n = new WebAppFilterNode(project, (Node)obj, root, false);
+                return new Node[] {n};
             }
-            Node n = new WebAppFilterNode(project, (Node)obj, root, false);
-            return new Node[] {n};
+            Node origos = (Node)obj;
+            return new Node[] { origos.cloneNode() };
         }        
     }    
 }
