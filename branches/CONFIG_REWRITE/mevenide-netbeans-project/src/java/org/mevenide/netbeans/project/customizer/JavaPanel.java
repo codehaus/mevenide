@@ -293,7 +293,6 @@ public class JavaPanel extends JPanel implements ProjectPanel {
                 toReturn.add(change);
             }
         }
-        System.out.println("returning=" + toReturn.size());
         return toReturn;
     }
     
