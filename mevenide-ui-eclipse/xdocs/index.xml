@@ -27,7 +27,7 @@
 					</p>
 					<p>
 						<div style="border: 1px #990000 dashed; padding-left:15px; padding-top:10px;">
-							<font color="#009900">Recommended Versions for <b>0.2.1</b> release : </font>
+							<font color="#009900">Recommended Versions for <b>0.2.1 and greater</b> releases : </font>
 							<ul>
 								<li>Eclipse 3.0</li>
 								<li>Maven 1.0</li>
