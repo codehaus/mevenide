@@ -66,6 +66,23 @@ public class PropertyFilesAggregatorTest extends AbstractResolverTestCase {
         assertEquals(correct.getAbsolutePath().replaceAll("\\\\", "/"), build.replaceAll("\\\\", "/"));
     }
     
+    public void testResolveString() throws Exception {
+        String home = def.resolveString("${maven.home.local}");
+        File right = new File(projectDir, ".maven");
+        assertNotNull(home);
+        assertEquals(right.getAbsolutePath().replaceAll("\\\\", "/"), home.replaceAll("\\\\", "/"));
+
+        // value comes from locationfinder
+        String home2 = def.resolveString("${maven.home}");
+        assertNotNull(home2);
+        assertEquals(finder.getMavenHome().replaceAll("\\\\", "/"), home2.replaceAll("\\\\", "/"));
+        
+        // complex replacements from multiple properties files.
+        String build = def.resolveString("${maven.build.src}");
+        assertNotNull(build);
+        File correct = new File(projectDir.getAbsolutePath() + "/target_yyy/src2");
+        assertEquals(correct.getAbsolutePath().replaceAll("\\\\", "/"), build.replaceAll("\\\\", "/"));
+    }
     
     protected void tearDown() throws Exception {
         super.tearDown();
