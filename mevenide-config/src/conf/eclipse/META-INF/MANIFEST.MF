@@ -4,7 +4,7 @@ Bundle-SymbolicName: org.mevenide.config; singleton=true
 Bundle-Vendor: The Codehaus
 Bundle-Name: Mevenide Config
 Bundle-ClassPath: mevenide-config-0.1-SNAPSHOT.jar
-Bundle-Version: 0.1.1
+Bundle-Version: 0.1
 Eclipse-AutoStart : true
 Eclipse-AutoStop : true
     
