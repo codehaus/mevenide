@@ -141,7 +141,8 @@ public class DirectoryNode extends ArtifactNode {
 		return excludeNodes != null && excludeNodes.length > 0;
 	}
 	public String toString() {
-		return resolve(directory.getCleanPath());
+		boolean isRoot = "${basedir}".equals(directory.getCleanPath()) || ".".equals(directory.getCleanPath());
+		return  isRoot ? "${basedir}" : resolve(directory.getCleanPath());
 	}
 	
 	

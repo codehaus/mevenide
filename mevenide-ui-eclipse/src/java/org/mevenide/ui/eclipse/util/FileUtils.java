@@ -154,7 +154,7 @@ public class FileUtils {
 			return new ArrayList();
 		} 
 		catch (Exception e) {
-			log.error("Cannot read ignored resources", e);
+			log.debug("Cannot read ignored resources", e);
 			return new ArrayList();
 		} 
 	}

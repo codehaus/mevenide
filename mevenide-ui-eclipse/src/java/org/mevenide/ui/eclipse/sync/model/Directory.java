@@ -55,7 +55,7 @@ public class Directory {
     		return false;
     	}
     	Directory dir = (Directory) obj;
-    	return equals(obj) && type.equals(dir.path); 
+    	return equals(obj) && type.equals(dir.type); 
 	}
     
     public String getPath() {
