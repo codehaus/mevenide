@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<document>
+  <properties>
+    <title>Maven JBuilder Opentool Plugin Goals</title>
+  </properties>
+  <body>
+    <goals>
+      <goal>
+        <name>opentool</name>
+        <description>Package project as an OpenTool</description>
+      </goal>
+      <goal>
+        <name>opentool:dist</name>
+        <description>Package this OpenTool project for distribution</description>
+      </goal>
+      <goal>
+        <name>opentool:install</name>
+        <description>Install this OpenTool into a local JBuilder installation</description>
+      </goal>
+      <goal>
+        <name>opentool:opentool</name>
+        <description>Package project as an OpenTool</description>
+      </goal>
+      <goal>
+        <name>opentool:uninstall</name>
+        <description>Uninstall this OpenTool from a local JBuilder installation</description>
+      </goal>
+    </goals>
+  </body>
+</document>
