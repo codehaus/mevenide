@@ -144,14 +144,14 @@ public class DraggableTableEntry extends PageEntry {
 	private void init() {
 		// Drag-n-Drop support
 		int operations = DND.DROP_MOVE;
-		Transfer[] transfers = new Transfer[] { TextTransfer.getInstance()};
+		Transfer[] transfers = new Transfer[] { TextTransfer.getInstance() };
 		sourceViewer.addDragSupport(
 			operations,
 			transfers,
 			new TableViewerDragAdapter(sourceViewer)
 		);
 		
-		transfers = new Transfer[] { TextTransfer.getInstance()};
+		transfers = new Transfer[] { TextTransfer.getInstance() };
 		sourceViewer.addDropSupport(
 			operations,
 			transfers,
@@ -169,14 +169,14 @@ public class DraggableTableEntry extends PageEntry {
 			}
 		);
 		
-		transfers = new Transfer[] { TextTransfer.getInstance()};
+		transfers = new Transfer[] { TextTransfer.getInstance() };
 		targetViewer.addDragSupport(
 			operations,
 			transfers,
 			new TableViewerDragAdapter(targetViewer)
 		);
 
-		transfers = new Transfer[] { TextTransfer.getInstance()};
+		transfers = new Transfer[] { TextTransfer.getInstance() };
 		targetViewer.addDropSupport(
 			operations,
 			transfers,
