@@ -33,7 +33,10 @@ import org.mevenide.goals.manager.GoalsGrabbersManager;
  * 
  */
 public class GoalsProvider implements ITreeContentProvider {
-	private static final Log log = LogFactory.getLog(GoalsProvider.class);
+	
+    private static final Log log = LogFactory.getLog(GoalsProvider.class);
+
+    private static final String POM_NAME = "project.xml"; //$NON-NLS-1$
 	
 	private String basedir;
 	
@@ -57,11 +60,11 @@ public class GoalsProvider implements ITreeContentProvider {
     public void setBasedir(String basedir) throws Exception {
         this.basedir = basedir;
 		try {
-            goalsGrabber = GoalsGrabbersManager.getGoalsGrabber(new File(basedir, "project.xml").getAbsolutePath());
+            goalsGrabber = GoalsGrabbersManager.getGoalsGrabber(new File(basedir, POM_NAME).getAbsolutePath());
         }
         catch (Exception e) {
             goalsGrabber = defaultGrabber;
-            log.error("Unable to set basedir. It is highly probable that maven.xml is badly formed.");
+            log.error("Unable to set basedir. It is highly probable that maven.xml is badly formed."); //$NON-NLS-1$
         }
     }
 

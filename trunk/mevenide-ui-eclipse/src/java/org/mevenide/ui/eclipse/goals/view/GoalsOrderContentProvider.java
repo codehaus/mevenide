@@ -101,10 +101,12 @@ public class GoalsOrderContentProvider implements IStructuredContentProvider {
 		}
 		targets.set(index, targets.get(index - 1));
 		targets.set(index - 1, target);
-		log.debug("New ordering");
-		for (int i = 0; i < targets.size(); i++) {
-            log.debug("\t" + i + targets.get(i));
-        }
+		if ( log.isDebugEnabled() ) {
+			log.debug("New ordering"); //$NON-NLS-1$
+			for (int i = 0; i < targets.size(); i++) {
+	            log.debug("\t" + i + targets.get(i)); //$NON-NLS-1$
+	        }
+		}
 	}
 	
 	/**

@@ -75,8 +75,8 @@ import org.mevenide.ui.eclipse.goals.model.Plugin;
 public class GoalsPickerDialog  extends TitleAreaDialog {
     private static Log log = LogFactory.getLog(GoalsPickerDialog.class);
 
-    private static final String HTTP_SERVER_ERROR = "5";
-    private static final String HTTP_CLIENT_ERROR = "4";
+    private static final String HTTP_SERVER_ERROR = "5"; //$NON-NLS-1$
+    private static final String HTTP_CLIENT_ERROR = "4"; //$NON-NLS-1$
 	
 	private CheckboxTreeViewer goalsViewer;
 
@@ -121,19 +121,19 @@ public class GoalsPickerDialog  extends TitleAreaDialog {
 	}
 	
 	protected Control createDialogArea(Composite parent) {
-	    getShell().setText(Mevenide.getResourceString("GoalsPickerDialog.Shell.Text"));
+	    getShell().setText(Mevenide.getResourceString("GoalsPickerDialog.Shell.Text")); //$NON-NLS-1$
 	    setShellStyle(SWT.RESIZE | SWT.APPLICATION_MODAL);
 	    if ( overrideTitle != null ) {
 	        setTitle(overrideTitle);
 	    }
 	    else {
-	        setTitle(Mevenide.getResourceString("GoalsPickerDialog.Title"));
+	        setTitle(Mevenide.getResourceString("GoalsPickerDialog.Title")); //$NON-NLS-1$
 	    }
 		if ( overrideMessage != null ) {
 		    setMessage(overrideMessage);
 		}
 		else {
-		    setMessage(Mevenide.getResourceString("GoalsPickerDialog.Message"));
+		    setMessage(Mevenide.getResourceString("GoalsPickerDialog.Message")); //$NON-NLS-1$
 		}
         try {
         	Composite composite = new Composite(parent, SWT.NONE);
@@ -202,7 +202,7 @@ public class GoalsPickerDialog  extends TitleAreaDialog {
         }
         catch (Exception e) {
             //e.printStackTrace();
-            log.error("Unable to instantiate GoalsPickerDialog due to : " + e);
+            log.error("Unable to instantiate GoalsPickerDialog due to : " + e); //$NON-NLS-1$
             throw new RuntimeException(e);
         }
     }
@@ -239,16 +239,16 @@ public class GoalsPickerDialog  extends TitleAreaDialog {
 		goalsOrderText.setLayoutData(orderTextGridData);
 		
 		final Button goalsOrderButton = new Button(composite, SWT.PUSH);
-		goalsOrderButton.setText(Mevenide.getResourceString("GoalsPickerDialog.goals.order"));
+		goalsOrderButton.setText(Mevenide.getResourceString("GoalsPickerDialog.goals.order")); //$NON-NLS-1$
 		String text = goalsOrderText.getText();
-		boolean orderButtonEnabled = text != null && !text.trim().equals("");
+		boolean orderButtonEnabled = text != null && !text.trim().equals(""); //$NON-NLS-1$
         goalsOrderButton.setEnabled(orderButtonEnabled);
 
         goalsOrderText.addModifyListener(
         	new ModifyListener() {
         		public void modifyText(ModifyEvent e) {
                 	String text = goalsOrderText.getText();
-					boolean orderButtonEnabled = text != null && !text.trim().equals("");
+					boolean orderButtonEnabled = text != null && !text.trim().equals(""); //$NON-NLS-1$
 	        		goalsOrderButton.setEnabled(orderButtonEnabled);
         		}
         	}
@@ -264,14 +264,14 @@ public class GoalsPickerDialog  extends TitleAreaDialog {
 					
 					if (ok == Window.OK) {
 						Object[] targets = dialog.getTargets();
-						String newOrder = "";
+						String newOrder = ""; //$NON-NLS-1$
 						for (int i = 0; i < targets.length -1; i++) {
-							newOrder += targets[i] + " ";
+							newOrder += targets[i] + " "; //$NON-NLS-1$
 						}
 						newOrder += targets[targets.length-1];
 						goalsOrderText.setText(newOrder);
 						goalsOrder = goalsOrderText.getText();
-						log.debug("New order : " + goalsOrder); 
+						log.debug("New order : " + goalsOrder);  //$NON-NLS-1$
 					}
     			}
 		    }
@@ -312,9 +312,9 @@ public class GoalsPickerDialog  extends TitleAreaDialog {
 			goalsViewer.setChecked(plugin, false);
 		}
 		
-		String newOrder = "";
+		String newOrder = ""; //$NON-NLS-1$
 		for (int i = 0; i < checkedItems.size(); i++) {
-            newOrder += " " + checkedItems.get(i); 
+            newOrder += " " + checkedItems.get(i);  //$NON-NLS-1$
         }
 		goalsOrderText.setText(newOrder);
 		
@@ -324,7 +324,7 @@ public class GoalsPickerDialog  extends TitleAreaDialog {
 	private void updateCheckedGoal(boolean isSelectionChecked, Goal goal) {
         String fullyQualifiedGoalName = goal.getPlugin().getName();
         if ( !goal.getName().equals(Goal.DEFAULT_GOAL) ) {
-        	fullyQualifiedGoalName += ":" + goal.getName();
+        	fullyQualifiedGoalName += Goal.SEPARATOR + goal.getName();
         }
         if ( isSelectionChecked ) {
         	checkedItems.add(fullyQualifiedGoalName);
@@ -355,9 +355,9 @@ public class GoalsPickerDialog  extends TitleAreaDialog {
     private void updateStyledTextWidgetHyperlink(SelectionEvent e) {
 		TreeItem item = (TreeItem) e.item;
 		
-		String urlPrefix = "http://maven.apache.org/reference/plugins/";
+		String urlPrefix = "http://maven.apache.org/reference/plugins/"; //$NON-NLS-1$
 		
-		String pluginName = "";
+		String pluginName = ""; //$NON-NLS-1$
 		if ( item.getParentItem() == null ) {
 			pluginName = item.getText();
 		}
@@ -373,11 +373,11 @@ public class GoalsPickerDialog  extends TitleAreaDialog {
                 	pluginHomeURLText.setText(urlPrefix + pluginName);
                 }
                 else {
-                	pluginHomeURLText.setText(pluginName + " " + Mevenide.getResourceString("GoalsPickerDialog.plugin.home.notfound"));
+                	pluginHomeURLText.setText(pluginName + " " + Mevenide.getResourceString("GoalsPickerDialog.plugin.home.notfound"));  //$NON-NLS-1$//$NON-NLS-2$
                 }
             }
             catch (Exception e1) {
-                pluginHomeURLText.setText(pluginName + " " + Mevenide.getResourceString("GoalsPickerDialog.plugin.home.notfound"));
+                pluginHomeURLText.setText(pluginName + " " + Mevenide.getResourceString("GoalsPickerDialog.plugin.home.notfound")); //$NON-NLS-1$ //$NON-NLS-2$
             }
 		}
 	}
@@ -392,12 +392,12 @@ public class GoalsPickerDialog  extends TitleAreaDialog {
 		TreeItem item = tree.getItem(pt);
 		if ( item != null ) {
 			if ( item.getData() instanceof Plugin ) {
-				String tooltip = item.getText() + " plugin";
+				String tooltip = item.getText() + " plugin"; //$NON-NLS-1$
 				Plugin plugin = (Plugin) item.getData();
 				String[] goals = goalsProvider.getGoalsGrabber().getGoals(plugin.getName());
 				if ( goals != null && goals.length > 0 ) {
 					if ( !Arrays.asList(goals).contains(Goal.DEFAULT_GOAL) ) {
-						tooltip += Mevenide.getResourceString("GoalsPickerDialog.no.default.goal");
+						tooltip += Mevenide.getResourceString("GoalsPickerDialog.no.default.goal"); //$NON-NLS-1$
 					}
 				}
 				tree.setToolTipText(tooltip);
@@ -405,10 +405,10 @@ public class GoalsPickerDialog  extends TitleAreaDialog {
 			if ( item.getData() instanceof Goal ) {
 				Goal goal = (Goal) item.getData();
 				if ( Goal.DEFAULT_GOAL.equals(goal.getName()) ) {
-					tree.setToolTipText("default " + goal.getPlugin().getName() + " goal");
+					tree.setToolTipText(Mevenide.getResourceString("GoalsPickerDialog.DefaultGoal.Tooltip", goal.getPlugin().getName()));  //$NON-NLS-1$
 				}
 				else {
-					tree.setToolTipText("goal " + goal.getPlugin().getName() + ":" + goal.getName());
+					tree.setToolTipText("goal " + goal.getPlugin().getName() + Goal.SEPARATOR + goal.getName()); //$NON-NLS-1$
 				}
 			}
 		}
@@ -509,9 +509,11 @@ public class GoalsPickerDialog  extends TitleAreaDialog {
 
 class HyperLinkMouseListener extends MouseAdapter {
 	
-private static final String SYSTEM_BROWSER_ID = "org.eclipse.help.ui.systembrowser";
     private static Log log = LogFactory.getLog(HyperLinkMouseListener.class); 
-	private StyledText text;
+    
+    private static final String SYSTEM_BROWSER_ID = "org.eclipse.help.ui.systembrowser"; //$NON-NLS-1$
+
+    private StyledText text;
 	private GoalsPickerDialog goalsPickerDialog;
 	HyperLinkMouseListener(GoalsPickerDialog goalsPickerDialog) {
 		this.text = goalsPickerDialog.getTextWidget();
@@ -535,7 +537,7 @@ private static final String SYSTEM_BROWSER_ID = "org.eclipse.help.ui.systembrows
 
         }
         catch (Exception e1) {
-            log.error("Unable to launch browser due to : " + e);
+            log.error("Unable to launch browser due to : " + e); //$NON-NLS-1$
         }		
     }
 

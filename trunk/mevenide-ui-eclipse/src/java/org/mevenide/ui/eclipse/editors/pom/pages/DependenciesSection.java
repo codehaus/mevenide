@@ -74,7 +74,7 @@ public class DependenciesSection extends PageSection {
 		// POM dependencies table
 		Button toggle = createOverrideToggle(container, factory, 1, true);
 		TableViewer viewer = createTableViewer(container, factory, 1);
-		dependenciesTable = new TableEntry(viewer, toggle, Mevenide.getResourceString("DependenciesSeection.TableEntry.Tooltip"), container, factory, this); //$NON-NLS-1$
+		dependenciesTable = new TableEntry(viewer, toggle, Mevenide.getResourceString("DependenciesSection.TableEntry.Tooltip"), container, factory, this); //$NON-NLS-1$
 		OverrideAdaptor adaptor = new OverrideAdaptor() {
 			public void overrideParent(Object value) {
 				List dependencies = (List) value;
