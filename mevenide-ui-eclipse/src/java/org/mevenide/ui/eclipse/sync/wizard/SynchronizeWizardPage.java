@@ -353,24 +353,24 @@ public class SynchronizeWizardPage extends WizardPage {
 		composite.setLayoutData(data);
 	
 		Button addButton = new Button(composite, SWT.PUSH);
-		addButton.setText("Add...");
-		addButton.setToolTipText("Add a SourceDirectory");
+		addButton.setText(Mevenide.getResourceString("SynchronizeWizardPage.tab.add.button.text"));
+		addButton.setToolTipText(Mevenide.getResourceString("SynchronizeWizardPage.tab.source.dir.add.button.tooltip"));
 		GridData addButtonData = new GridData(GridData.FILL_HORIZONTAL);
 		addButtonData.grabExcessHorizontalSpace = true;
 		addButton.setLayoutData(addButtonData);
 		addButton.setEnabled(true);
 	
 		Button removeButton = new Button(composite, SWT.PUSH);
-		removeButton.setText("Remove");
-		removeButton.setToolTipText("Remove SourceDirectory");
+		removeButton.setText(Mevenide.getResourceString("SynchronizeWizardPage.tab.remove.button.text"));
+		removeButton.setToolTipText(Mevenide.getResourceString("SynchronizeWizardPage.tab.source.dir.remove.button.tooltip"));
 		GridData removeButtonData = new GridData(GridData.FILL_HORIZONTAL);
 		removeButtonData.grabExcessHorizontalSpace = true;
 		removeButton.setLayoutData(removeButtonData);
 		removeButton.setEnabled(true);
 	
 		Button refreshButton = new Button(composite, SWT.PUSH);
-		refreshButton.setText("Refresh");
-		refreshButton.setToolTipText("Refresh project SourceDirectories");
+		refreshButton.setText(Mevenide.getResourceString("SynchronizeWizardPage.tab.refresh.button.text"));
+		refreshButton.setToolTipText(Mevenide.getResourceString("SynchronizeWizardPage.tab.remove.button.tooltip"));
 		GridData refreshButtonData = new GridData(GridData.FILL_HORIZONTAL);
 		refreshButtonData.grabExcessHorizontalSpace = true;
 		refreshButton.setLayoutData(refreshButtonData);
@@ -662,32 +662,32 @@ public class SynchronizeWizardPage extends WizardPage {
 		composite.setLayoutData(data);
 
 		addDependencyButton = new Button(composite, SWT.PUSH);
-		addDependencyButton.setText("Add...");
-		addDependencyButton.setToolTipText("Add a dependency");
+		addDependencyButton.setText(Mevenide.getResourceString("SynchronizeWizardPage.tab.add.button.text"));
+		addDependencyButton.setToolTipText(Mevenide.getResourceString("SynchronizeWizardPage.tab.dependency.add.button.tooltip"));
 		GridData addButtonData = new GridData(GridData.FILL_HORIZONTAL);
 		addButtonData.grabExcessHorizontalSpace = true;
 		addDependencyButton.setLayoutData(addButtonData);
 		addDependencyButton.setEnabled(true);	
 
 		removeDependencyButton = new Button(composite, SWT.PUSH);
-		removeDependencyButton.setText("Remove");
-		removeDependencyButton.setToolTipText("Remove dependency");
+		removeDependencyButton.setText(Mevenide.getResourceString("SynchronizeWizardPage.tab.remove.button.text"));
+		removeDependencyButton.setToolTipText(Mevenide.getResourceString("SynchronizeWizardPage.tab.dependency.remove.button.tooltip"));
 		GridData removeButtonData = new GridData(GridData.FILL_HORIZONTAL);
 		removeButtonData.grabExcessHorizontalSpace = true;
 		removeDependencyButton.setLayoutData(removeButtonData);
 		removeDependencyButton.setEnabled(false);
 	
 		dependencyPropertiesButton = new Button(composite, SWT.PUSH);
-		dependencyPropertiesButton.setText("Properties");
-		dependencyPropertiesButton.setToolTipText("Set depedencency properties");
+		dependencyPropertiesButton.setText(Mevenide.getResourceString("SynchronizeWizardPage.tab.dependency.properties.button.text"));
+		dependencyPropertiesButton.setToolTipText(Mevenide.getResourceString("SynchronizeWizardPage.tab.dependency.properties.button.tooltip"));
 		GridData propertiesButtonData = new GridData(GridData.FILL_HORIZONTAL);
 		propertiesButtonData.grabExcessHorizontalSpace = true;
 		dependencyPropertiesButton.setLayoutData(propertiesButtonData);
 		dependencyPropertiesButton.setEnabled(false);
 	
 		refreshDependenciesButton = new Button(composite, SWT.PUSH);
-		refreshDependenciesButton.setText("Refresh");
-		refreshDependenciesButton.setToolTipText("Refresh from .classpath");
+		refreshDependenciesButton.setText(Mevenide.getResourceString("SynchronizeWizardPage.tab.refresh.button.text"));
+		refreshDependenciesButton.setToolTipText(Mevenide.getResourceString("SynchronizeWizardPage.tab.remove.button.tooltip"));
 		GridData refreshButtonData = new GridData(GridData.FILL_HORIZONTAL);
 		refreshButtonData.grabExcessHorizontalSpace = true;
 		refreshDependenciesButton.setLayoutData(refreshButtonData);
@@ -708,8 +708,8 @@ public class SynchronizeWizardPage extends WizardPage {
 									dependenciesViewer.refresh(true);
 									if ( Environment.getMavenRepository() == null || Environment.getMavenRepository().trim().equals("") ) {
 										MessageBox messageBox = new MessageBox (PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), SWT.ICON_WARNING | SWT.OK);
-										messageBox.setText ("Unset Property : Meven Local Repository");
-										messageBox.setMessage ("Maven Repository has not been, thus groupId wont be resolved. Please see Windows > Preferences > Maven");
+										messageBox.setText (Mevenide.getResourceString("SynchronizeWizardPage.mavenRepo.NotSet.title"));
+										messageBox.setMessage (Mevenide.getResourceString("SynchronizeWizardPage.mavenRepo.NotSet.message"));
 										messageBox.open ();
 									}
 								}
