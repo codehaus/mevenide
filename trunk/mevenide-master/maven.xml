@@ -68,7 +68,7 @@
       			   ignoreFailures="false"
       			   postProcessing="true"/>
       			   
-	<fileScanner var="templates">
+	<!-- fileScanner var="templates">
       <fileset dir="${basedir}/templates">
         <include name="*.xml"/>
       </fileset>
@@ -83,7 +83,7 @@
         			  basedir="${basedir}/templates"
         			  template="${templateName}"/>
 
-    </j:forEach>
+    </j:forEach -->
      
      
     <copy file="${basedir}/xdocs/images/mevenide-logo.jpg" todir="${basedir}/../goals-grabber/target/docs/images/"/>		
@@ -93,8 +93,8 @@
     
   </goal>
   
-  <postGoal name="build-site">
-     
-  </postGoal>
+  <preGoal name="build-site">
+     <delete dir="E:/workspace/mevenide-site"/>
+  </preGoal>
   
 </project>
