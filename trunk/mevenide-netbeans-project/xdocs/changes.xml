@@ -14,6 +14,10 @@
       <action dev="mkleint" type="add">
       Test Resources and Castus Test Sources added to project view.
       </action>
+      <action dev="mkleint" type="add">
+      In project view allow to filter the resource directory structure. Either show all files or
+      just the included ones. Showing only included resources is the default now.
+      </action>
       <action dev="mkleint" type="fix">
       MEVENIDE-117 - set compilation using different JDK than maven+IDE uses,
       provide correct completion.
