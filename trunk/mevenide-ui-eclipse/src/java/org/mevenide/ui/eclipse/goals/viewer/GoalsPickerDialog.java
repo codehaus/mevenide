@@ -76,6 +76,7 @@ import org.eclipse.ui.PlatformUI;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.MevenideColors;
 import org.mevenide.ui.eclipse.goals.model.Element;
+import org.mevenide.ui.eclipse.goals.model.GoalsProvider;
 
 /**
  * 
@@ -121,7 +122,7 @@ public class GoalsPickerDialog  extends Dialog {
 			
         	composite.setLayoutData(gridData);
 
-            goalsViewer = GoalsViewer.getViewer(composite);
+            goalsViewer = getViewer(composite);
             
            
             GridData textGridData = new GridData(GridData.FILL_BOTH);
@@ -219,6 +220,32 @@ public class GoalsPickerDialog  extends Dialog {
 		int status = httpClient.executeMethod(method);
 		//check for 4xx and 5xx return codes
 		return !Integer.toString(status).startsWith("4") && !Integer.toString(status).startsWith("5");
+    }
+
+    private TreeViewer getViewer(Composite parent) throws Exception {
+    	String basedir = Mevenide.getPlugin().getCurrentDir();
+    	
+    	TreeViewer viewer = new TreeViewer(parent, SWT.CHECK | SWT.V_SCROLL | SWT.H_SCROLL);
+    	
+    	GoalsProvider goalsProvider = new GoalsProvider();
+    	GoalsLabelProvider goalsLabelProvider = new GoalsLabelProvider();
+    	goalsProvider.setBasedir(basedir);
+    	
+    	viewer.setContentProvider(goalsProvider);
+    	viewer.setLabelProvider(goalsLabelProvider);
+    	
+    	GridData gridData = new GridData(GridData.FILL_BOTH | SWT.V_SCROLL | SWT.H_SCROLL);
+    	gridData.grabExcessVerticalSpace = true;
+    	gridData.grabExcessHorizontalSpace = true;
+    	gridData.heightHint = 300;
+    
+    	viewer.getTree().setLayoutData(gridData);
+    	
+    	//add mousetracklistener to manage tooltip
+    	//viewer.getTree().addMouseListener(new GoalsMouseListener());
+    	
+    	//add "check" listener
+    	return viewer;
     }
 }
 
