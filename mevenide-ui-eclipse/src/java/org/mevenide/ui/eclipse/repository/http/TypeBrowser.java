@@ -60,17 +60,19 @@ public class TypeBrowser implements RepositoryObjectCollector {
             GroupSearch search = new GroupSearch(url, StringUtils.stripEnd(type.getName(), "s"), group.getName());
             
             Collection searchResults = search.search();
-            
-            List artifacts = new ArrayList();
-            for ( Iterator it = searchResults.iterator(); it.hasNext(); ) {
-                SearchResult searchResult = (SearchResult) it.next();
-                String artifactName = searchResult.getName();
-                if ( !org.mevenide.util.StringUtils.isNull(artifactName) ) {
-                    Artifact artifact = new Artifact(artifactName, searchResult.getVersion(), type);
-                    artifacts.add(artifact);
-                }
+            if( searchResults != null ) {
+	            List artifacts = new ArrayList();
+	            for ( Iterator it = searchResults.iterator(); it.hasNext(); ) {
+	                SearchResult searchResult = (SearchResult) it.next();
+	                String artifactName = searchResult.getName();
+	                if ( !org.mevenide.util.StringUtils.isNull(artifactName) ) {
+	                    Artifact artifact = new Artifact(artifactName, searchResult.getVersion(), type);
+	                    artifacts.add(artifact);
+	                }
+	            }
+	            return (Artifact[]) artifacts.toArray(new Artifact[artifacts.size()]);
             }
-            return (Artifact[]) artifacts.toArray(new Artifact[artifacts.size()]);
+            return null;
         }
         catch ( IOException e ) {
             throw new RepositoryBrowsingException("Unable to browse type " + type.getName() + " for group " + group.getName(), e);

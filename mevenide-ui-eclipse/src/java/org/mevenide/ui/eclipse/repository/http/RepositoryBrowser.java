@@ -80,16 +80,18 @@ public class RepositoryBrowser implements RepositoryObjectCollector {
             Collection groupNames = search.search();
             
             List groups = new ArrayList(); 
-            
-            for ( Iterator it = groupNames.iterator(); it.hasNext(); ) {
-                String groupName = (String) it.next();
-                if ( !org.mevenide.util.StringUtils.isNull(groupName) ) {
-                    Group group = new Group(groupName, repository);
-                	groups.add(group);
-                }
+            if ( groupNames != null ) {
+	            for ( Iterator it = groupNames.iterator(); it.hasNext(); ) {
+	                String groupName = (String) it.next();
+	                if ( !org.mevenide.util.StringUtils.isNull(groupName) ) {
+	                    Group group = new Group(groupName, repository);
+	                	groups.add(group);
+	                }
+	            }
+	            
+	            return (Group[]) groups.toArray(new Group[groups.size()]);
             }
-            
-            return (Group[]) groups.toArray(new Group[groups.size()]);
+            return null;
         }
         catch ( IOException e ) {
             throw new RepositoryBrowsingException("Unable to browse repository " + repository.getRepositoryUrl(), e);
