@@ -59,7 +59,7 @@ public class CheckBoxPropertyChange implements MavenPropertyChange {
             boolValue = defaultValue;
         }
         setCheckBoxValue(boolValue, opposite);
-        origin.setSelectedLocationID(oldLocation);
+        origin.setInitialLocationID(oldLocation);
         listener = new DocListener();
         origin.setChangeObserver(listener);
         check.addActionListener(listener);

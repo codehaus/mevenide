@@ -5,7 +5,7 @@
   <id>mevenide-netbeans-project</id>
   <name>Mevenide Netbeans project support</name>
   <artifactId>mevenide-netbeans-project</artifactId>
-  <currentVersion>0.4</currentVersion>
+  <currentVersion>0.5-SNAPSHOT</currentVersion>
   <package>org.mevenide.netbeans.project</package>
   <shortDescription>Netbeans Maven project type support module</shortDescription>
   <description>
@@ -24,7 +24,7 @@
     <dependency>     
         <groupId>mevenide</groupId>
         <artifactId>goals-grabber</artifactId>
-        <version>0.6</version>
+        <version>0.7-SNAPSHOT</version>
         <type>jar</type>
             <properties>
                 <netbeans.module.dep>spec</netbeans.module.dep>
@@ -33,7 +33,7 @@
     <dependency>     
         <groupId>mevenide</groupId>
         <artifactId>mevenide-core</artifactId>
-        <version>0.5</version>
+        <version>0.6-SNAPSHOT</version>
         <type>jar</type>
             <properties>
                 <netbeans.module.dep>spec</netbeans.module.dep>
@@ -42,7 +42,7 @@
     <dependency>
         <groupId>mevenide</groupId>
         <artifactId>mevenide-config</artifactId>
-        <version>0.6</version>
+        <version>0.7-SNAPSHOT</version>
         <type>jar</type>
             <properties>
                 <netbeans.module.dep>spec</netbeans.module.dep>

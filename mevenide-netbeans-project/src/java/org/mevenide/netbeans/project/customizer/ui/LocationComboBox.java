@@ -33,6 +33,8 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.UIManager;
 import javax.swing.border.Border;
+import javax.swing.table.TableCellEditor;
+import javax.swing.table.TableCellRenderer;
 import org.mevenide.properties.IPropertyLocator;
 import org.openide.util.Utilities;
 
@@ -112,10 +114,14 @@ class LocationComboBox extends JButton {
         return all;
     }
     
+    public void invokePopupAction(int location) {
+        setSelectedItem(findWrapper(location));
+    }
+    
     public void invokePopupAction(String action) {
         Integer loc = (Integer)actionToLoc.get(action);
         if (loc != null) {
-            setSelectedItem(findWrapper(loc.intValue()));
+            invokePopupAction(loc.intValue());
             if (observer != null) {
                 observer.actionSelected(action);
             }
