@@ -200,7 +200,6 @@
       <!-- iterate and build each plugin part of this feature and copy them to $${maven.eclipse.plugin.dist.dir}/plugins -->
       <util:tokenize var="featurePlugins" delim=",">${maven.eclipse.plugin.feature.plugins}</util:tokenize>	
 	  <j:forEach var="plugin" items="${featurePlugins}">
-	  	<ant:echo>HEEEERE</ant:echo>
 	  	<!-- create plugin archive -->
 		<maven:pom var="pluginPom" projectDescriptor="${plugin}"/>
 		<maven:maven goals="eclipse-plugin:create-artifact-dist" descriptor="${plugin}"/>
