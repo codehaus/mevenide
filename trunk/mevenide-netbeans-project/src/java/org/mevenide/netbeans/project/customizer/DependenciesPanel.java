@@ -43,6 +43,7 @@ import org.apache.maven.project.Dependency;
 import org.apache.maven.project.Project;
 import org.mevenide.environment.ILocationFinder;
 import org.mevenide.netbeans.project.MavenProject;
+import org.mevenide.netbeans.project.MavenSettings;
 import org.mevenide.netbeans.project.ProxyUtilities;
 import org.mevenide.netbeans.project.customizer.ui.LocationComboFactory;
 import org.mevenide.netbeans.project.customizer.ui.OriginChange;
@@ -555,9 +556,11 @@ public class DependenciesPanel extends JPanel implements ExplorerManager.Provide
         DialogDescriptor dd = new DialogDescriptor(ed, "title");
         Object ret = DialogDisplayer.getDefault().notify(dd);
         if (ret == NotifyDescriptor.OK_OPTION) {
-            currentDep.setNewValues(ed.getValues(), ed.getProperties());
+            HashMap props = ed.getProperties();
+            currentDep.setNewValues(ed.getValues(), props);
             ((DepRootChildren)manager.getRootContext().getChildren()).doRefresh();
             setDependency(manager.getSelectedNodes());
+            MavenSettings.getDefault().checkDependencyProperties(props.keySet());
         }
 
     }//GEN-LAST:event_btnEditActionPerformed
@@ -573,12 +576,14 @@ public class DependenciesPanel extends JPanel implements ExplorerManager.Provide
         DialogDescriptor dd = new DialogDescriptor(ed, "title");
         Object ret = DialogDisplayer.getDefault().notify(dd);
         if (ret == NotifyDescriptor.OK_OPTION) {
-            change.setNewValues(ed.getValues(), ed.getProperties());
+            HashMap props = ed.getProperties();
+            change.setNewValues(ed.getValues(), props);
             values.add(change);
             if (values.size() == 1) {
                 btnLoc.setVisible(true);
             }
             ((DepRootChildren)manager.getRootContext().getChildren()).doRefresh();
+            MavenSettings.getDefault().checkDependencyProperties(props.keySet());
 //            setDependency(manager.getSelectedNodes());
         }
         
