@@ -1,3 +1,0 @@
-OpenTools-Node: com.jahia.opentools.maven.MavenFileNode
-OpenTools-UI: com.jahia.opentools.maven.MavenPropertyGroup
-OpenTools-Build: com.jahia.opentools.maven.MavenBuilder
