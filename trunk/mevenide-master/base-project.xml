@@ -75,11 +75,14 @@
       		
       		note that they do NOT fail when launched from within Eclipse.
       		We exclude them for now cuz the integration has more weigth than tests here
+      		
+      		Please run the tests from your favorite IDE (aka Eclipse ?)
       	-->
       	<exclude>**/DefaultProjectMarshallerTest.java</exclude>
       	<exclude>**/ProjectReaderTest.java</exclude>
       	<exclude>**/ProjectWriterTest.java</exclude>
       	<exclude>**/DependencyResolverTest.java</exclude>
+      	<exclude>**/DependencyFactoryTest.java</exclude>
       	
       	<!-- 
       		those ones will require org.eclipse.pde.junit plugin 
