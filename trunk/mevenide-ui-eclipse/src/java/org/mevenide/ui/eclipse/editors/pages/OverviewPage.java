@@ -136,4 +136,12 @@ public class OverviewPage extends AbstractPomEditorPage {
 			setHeading(HEADING + UNNAMED);
 		}
 	}
+	
+	/**
+	 * @see org.mevenide.ui.eclipse.editors.IPomEditorPage#isPropertySourceSupplier()
+	 */
+	public boolean isPropertySourceSupplier() {
+		return false;
+	}
+	
 }

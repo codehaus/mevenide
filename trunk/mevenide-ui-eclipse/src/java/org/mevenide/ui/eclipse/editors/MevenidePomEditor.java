@@ -211,6 +211,8 @@ public class MevenidePomEditor extends MultiPageEditorPart {
         //TODO: need to track currentPage persistent property between
         // lifespans of editors - store last viewed page on close
         currentPageIndex = overviewPageIndex;
+        
+        getControl(currentPageIndex).setVisible(true);
     }
 
     /**
@@ -386,7 +388,8 @@ public class MevenidePomEditor extends MultiPageEditorPart {
     public boolean isDirty() {
     	boolean dirtiness = isModelDirty() || 
 			(documentProvider != null && 
-			 documentProvider.canSaveDocument(getEditorInput()));
+			 documentProvider.canSaveDocument(getEditorInput())
+			);
         if (log.isDebugEnabled()) {
             log.debug("modelDirty = " + isModelDirty() + " and editor dirty " + dirtiness);
         }
@@ -485,13 +488,25 @@ public class MevenidePomEditor extends MultiPageEditorPart {
         if (oldPage != null && newPage != null) {
 	        oldPage.pageDeactivated(newPage);
 	        newPage.pageActivated(oldPage);
+	        if (newPage.isPropertySourceSupplier()) {
+	        	openPropertiesSheet();
+	        }
         }
+
         super.pageChange(newPageIndex);
 
         currentPageIndex = newPageIndex;
     }
 
-    public IPomEditorPage getCurrentPage() {
+    private void openPropertiesSheet() {
+		try {
+			getSite().getPage().showView("org.eclipse.ui.views.PropertySheet");
+		} catch (PartInitException e) {
+			log.error(e);
+		}
+	}
+
+	public IPomEditorPage getCurrentPage() {
         return getPage(currentPageIndex);
     }
 
@@ -622,13 +637,17 @@ public class MevenidePomEditor extends MultiPageEditorPart {
     }
 	
 	public void setPropertySourceSelection(ISelection selection) {
-		try {
-			selectionProvider.setSelection(selection);
-			//open the properties view
-			getSite().getPage().showView("org.eclipse.ui.views.PropertySheet");
-		} catch (PartInitException e) {
-			log.error(e);
+		selectionProvider.setSelection(selection);
+	}
+	
+	/**
+	 * @see org.eclipse.ui.part.MultiPageEditorPart#dispose()
+	 */
+	public void dispose() {
+		for (int i = 0; i < getPageCount(); i++) {
+			((IPomEditorPage) getPage(i)).dispose();
 		}
+		super.dispose();
 	}
 
 }
