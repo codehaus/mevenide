@@ -45,7 +45,7 @@ public class MavenPlugin extends AbstractUIPlugin {
 	
 	private static MavenPlugin plugin;
 	
-	public static final String NATURE_ID = "mavenplugin.mavennature";
+	public static final String NATURE_ID = MavenPlugin.getResourceString("maven.nature.id");
 	
 	private ResourceBundle resourceBundle;
 	
@@ -65,11 +65,7 @@ public class MavenPlugin extends AbstractUIPlugin {
             
             mavenHome = preferenceStore.getString("maven.home");
             javaHome = preferenceStore.getString("java.home");
-            resourceBundle = ResourceBundle.getBundle("MavenPluginResources");
-            
-//			IResourceChangeListener listener = AutoSynchronizer.getSynchronizer();
-//			ResourcesPlugin.getWorkspace().addResourceChangeListener(listener, IResourceChangeEvent.POST_CHANGE);
-			
+            resourceBundle = ResourceBundle.getBundle("MavenPluginResources");		
 		} 
 		catch (Exception x) {
 			x.printStackTrace();
