@@ -1,34 +1,9 @@
-	<j:jelly xmlns:j="jelly:core" xmlns:jsl="jelly:jsl" xmlns:x="jelly:xml">
-        <jsl:stylesheet var="spinnerWikiNavigationShhet" select="$navFile">
-            <jsl:template match="project" trim="false">
-                <x:element name="project">
-                    <jsl:applyTemplates select="body"/>
-                </x:element>
+	<j:jelly xmlns:j="jelly:core" xmlns:ant="jelly:ant" xmlns:jsl="jelly:jsl" xmlns:x="jelly:xml">
+        <jsl:stylesheet var="spinnerWikiNavigationSheet" select="$navFile">
+            <jsl:template match="/" trim="false">
+                <jsl:applyTemplates select="project"/>
             </jsl:template>
             
-            <jsl:template match="body">
-                <x:element name="body">
-                    <jsl:applyTemplates select="$navFile/project/body/title"/>
-                    <jsl:applyTemplates select="$navFile/project/body/links"/>
-                    <jsl:applyTemplates select="$navFile/project/body/menu"/>
-                </x:element>
-            </jsl:template>
-            
-            <jsl:template match="title">
-                <x:copyOf select="."/>
-            </jsl:template>
-            
-            <jsl:template match="links">
-                <x:copyOf select="."/>
-            </jsl:template>
-                        
-            <jsl:template match="menu">
-                <x:set var="menuName" select="string(./@name)"/>
-                <x:element name="menu">
-                    <x:attribute name="name">${menuName}</x:attribute>
-                    <jsl:applyTemplates select="item"/>
-                </x:element>
-            </jsl:template>
             
             <jsl:template match="item">
                 
@@ -44,9 +19,27 @@
                             <x:attribute name="href">${oldItemLink}</x:attribute>
                         </j:otherwise>
                     </j:choose>
-                    <jsl:applyTemplates select="item"/>
+                    <x:forEach var="attr" select="">
+                        <x:if select="name() != 'name'">
+                            <x:set var="${attrName}" select="name()"/>
+                            <x:set var="${attrValue}" select="string()"/>
+                            <x:attribute name="${attrName}">${attrValue}</x:attribute>
+                        </x:if>
+                    </x:forEach>
+                    <jsl:applyTemplates select="* | text()"/>
                 </x:element>
                 
+            </jsl:template>
+            
+            <jsl:template match="text()">
+                <x:set var="p" select="."/>
+                ${p.get(0).getText()}
+            </jsl:template>
+            
+            <jsl:template match="*">
+                <x:copy>
+                    <jsl:applyTemplates select="* | text()"/>
+                </x:copy>
             </jsl:template>
         </jsl:stylesheet>
     </j:jelly>
