@@ -58,6 +58,7 @@ import org.openide.execution.ProcessExecutor;
 import org.openide.loaders.DataObject;
 import org.openide.util.HelpCtx;
 import org.openide.util.MapFormat;
+import org.openide.util.Utilities;
 
 public class MavenExecutor extends ProcessExecutor
 {
@@ -76,10 +77,14 @@ public class MavenExecutor extends ProcessExecutor
     public MavenExecutor()
     {
         super();
+        String mavenExe = "bin/maven"; //NOI18N
+        if (Utilities.isWindows()) {
+            mavenExe = "bin/maven.bat"; //NOI18N
+        }
         setExternalExecutor(new NbProcessDescriptor(
-                    "{" + FORMAT_MAVEN_HOME + "}/bin/maven", //NOI18N
-                    "{" + FORMAT_NOBANNER + "} {" + FORMAT_OFFLINE + "} {" + FORMAT_GOAL + "}", //NOI18N
-                    "info"));
+                        "{" + FORMAT_MAVEN_HOME + "}/" + mavenExe, //NOI18N
+                        "{" + FORMAT_NOBANNER + "} {" + FORMAT_OFFLINE + "} {" + FORMAT_GOAL + "}", //NOI18N
+                        "info"));
     }
     
     public HelpCtx getHelpCtx()
