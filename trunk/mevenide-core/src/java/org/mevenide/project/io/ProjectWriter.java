@@ -16,8 +16,10 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.Writer;
 
+import org.apache.maven.project.Dependency;
 import org.apache.maven.project.Project;
 import org.mevenide.ProjectConstants;
+import org.mevenide.project.DependencyUtil;
 /**
  * 
  * @author Gilles Dodinet (gdodinet@wanadoo.fr)
@@ -63,6 +65,9 @@ public class ProjectWriter {
 		if ( ProjectConstants.MAVEN_TEST_DIRECTORY.equals(sourceType) ) {
 			project.getBuild().setUnitTestSourceDirectory(path);
 		}
+		if ( ProjectConstants.MAVEN_INTEGRATION_TEST_DIRECTORY.equals(sourceType) ) {
+			project.getBuild().setIntegrationUnitTestSourceDirectory(path);
+		}
 		
 		Writer writer = new FileWriter(pom, false);
 		marshaller.marshall(writer, project);
@@ -72,6 +77,13 @@ public class ProjectWriter {
 	
 	
 	public void addDependency(String absoluteFileName, File pom) throws Exception {
+		Project project = projectReader.read(pom);
+//		project.
+//		if ( !isDependencyPresent(project, absoluteFileName) ) {
+//			
+//		}
+		Dependency dependency = DependencyUtil.getDependency(absoluteFileName);
+		
 		
 	}
 	

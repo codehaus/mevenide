@@ -1,5 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project>
+	
+	<!-- crap -->
+	<preGoal name="test:test">
+		<copy toDir="target/test-classes">
+		  <fileset dir="src/test/etc">
+  			<include name="*.properties"/>
+  			<include name="*.xml"/>
+		  </fileset>
+		</copy>
+		<copy toDir="target/test-classes">
+		  <fileset dir="etc">
+  			<include name="*.properties"/>
+  			<include name="*.xml"/>
+		  </fileset>
+		</copy>
+		<copy toDir="target/test-classes/META-INF/services">
+		  <fileset dir="etc/META-INF/services">
+  			<include name="*.*"/>
+		  </fileset>
+		</copy>
+	</preGoal>
+	
 	<postGoal name="jar:install">
 		<copy file="etc/mevenide.properties" todir="../mevenide-ui-eclipse/etc"/> 
 	</postGoal>
