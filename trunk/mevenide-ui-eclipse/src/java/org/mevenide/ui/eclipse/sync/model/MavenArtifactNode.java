@@ -31,7 +31,6 @@ import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.ui.views.properties.IPropertySource;
-import org.mevenide.project.dependency.DefaultDependencyPathFinder;
 import org.mevenide.project.dependency.DependencyUtil;
 import org.mevenide.project.io.ProjectWriter;
 import org.mevenide.ui.eclipse.editors.properties.DependencyPropertySource;
@@ -125,7 +124,7 @@ public class MavenArtifactNode extends ArtifactNode {
 	}
 	
 	private IClasspathEntry createNewLibraryEntry() {
-		String artifactPath = new DefaultDependencyPathFinder(artifact.getDependency()).resolve();
+		String artifactPath = artifact.getPath();
 		return JavaCore.newLibraryEntry(new Path(artifactPath), null, null);
 	}
 	
