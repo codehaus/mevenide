@@ -59,6 +59,7 @@ package org.mevenide.util;
 import java.io.IOException;
 import java.io.Reader;
 
+import org.apache.maven.project.Branch;
 import org.apache.maven.project.Build;
 import org.apache.maven.project.Contributor;
 import org.apache.maven.project.Dependency;
@@ -203,7 +204,7 @@ public class DefaultProjectUnmarshaller
                         }
                         else if ( parser.getName().equals( "developerConnection" ) )
                         {
-                            project.getRepository().setConnection( parser.nextText() );
+                            project.getRepository().setDeveloperConnection( parser.nextText() );
                         }
                         else if ( parser.getName().equals( "url" ) )
                         {
@@ -251,6 +252,33 @@ public class DefaultProjectUnmarshaller
                         }
                     }
                 }
+				else if ( parser.getName().equals( "branches" ) )
+				{
+					while ( parser.nextTag() == XmlPullParser.START_TAG )
+					{
+						if ( parser.getName().equals( "branch" ) )
+						{
+							Branch b = new Branch();
+							project.addBranch( b );
+
+							while ( parser.nextTag() == XmlPullParser.START_TAG )
+							{
+								if ( parser.getName().equals( "tag" ) )
+								{
+									b.setTag( parser.nextText() );
+								}
+								else
+								{
+									parser.nextText();
+								}
+							}
+						}
+						else
+						{
+							parser.nextText();
+						}
+					}
+				}
 				else if ( parser.getName().equals( "licenses" ) )
 				{
 					while ( parser.nextTag() == XmlPullParser.START_TAG )
@@ -344,36 +372,8 @@ public class DefaultProjectUnmarshaller
                                 if ( parser.getName().equals( "id" ) )
                                 {
                                     d.setId( parser.nextText() );
-                                }
-                                else if ( parser.getName().equals( "name" ) )
-                                {
-                                    d.setName( parser.nextText() );
-                                }
-                                else if ( parser.getName().equals( "email" ) )
-                                {
-                                    d.setEmail( parser.nextText() );
-                                }
-                                else if ( parser.getName().equals( "organization" ) )
-                                {
-                                    d.setOrganization( parser.nextText() );
-                                }
-                                else if ( parser.getName().equals( "roles" ) )
-                                {
-                                    while ( parser.nextTag() == XmlPullParser.START_TAG )
-                                    {
-                                        if ( parser.getName().equals( "role" ) )
-                                        {
-                                            d.addRole( parser.nextText() );
-                                        }
-                                        else
-                                        {
-                                            parser.nextText();
-                                        }
-                                    }
-                                }
-                                else
-                                {
-                                    parser.nextText();
+                                } else {
+									unmarshallContributorDetails(parser, d);
                                 }
                             }
                         }
@@ -394,18 +394,7 @@ public class DefaultProjectUnmarshaller
 
                             while ( parser.nextTag() == XmlPullParser.START_TAG )
                             {
-                                if ( parser.getName().equals( "name" ) )
-                                {
-                                    c.setName( parser.nextText() );
-                                }
-                                else if ( parser.getName().equals( "email" ) )
-                                {
-                                    c.setEmail( parser.nextText() );
-                                }
-                                else
-                                {
-                                    parser.nextText();
-                                }
+                            	unmarshallContributorDetails(parser, c);
                             }
                         }
                         else
@@ -651,7 +640,48 @@ public class DefaultProjectUnmarshaller
         return project;
     }
 
-    protected Resource unmarshalResource( XmlPullParser parser ) throws XmlPullParserException, IOException
+    private void unmarshallContributorDetails(XmlPullParser parser, Contributor c) throws XmlPullParserException, IOException {
+		if ( parser.getName().equals( "name" ) )
+		{
+		    c.setName( parser.nextText() );
+		}
+		else if ( parser.getName().equals( "email" ) )
+		{
+		    c.setEmail( parser.nextText() );
+		}
+		else if ( parser.getName().equals( "organization" ) )
+		{
+		    c.setOrganization( parser.nextText() );
+		}
+		else if ( parser.getName().equals( "url" ) )
+		{
+			c.setUrl( parser.nextText() );
+		}
+		else if ( parser.getName().equals( "timezone" ) )
+		{
+			c.setTimezone( parser.nextText() );
+		}
+		else if ( parser.getName().equals( "roles" ) )
+		{
+		    while ( parser.nextTag() == XmlPullParser.START_TAG )
+		    {
+		        if ( parser.getName().equals( "role" ) )
+		        {
+		            c.addRole( parser.nextText() );
+		        }
+		        else
+		        {
+		            parser.nextText();
+		        }
+		    }
+		}
+		else
+		{
+		    parser.nextText();
+		}
+	}
+
+	protected Resource unmarshalResource( XmlPullParser parser ) throws XmlPullParserException, IOException
     {
         Resource r = new Resource();
 

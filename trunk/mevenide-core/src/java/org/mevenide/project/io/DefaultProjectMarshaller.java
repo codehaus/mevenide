@@ -57,6 +57,7 @@ import java.util.SortedSet;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.maven.project.Branch;
 import org.apache.maven.project.Build;
 import org.apache.maven.project.Contributor;
 import org.apache.maven.project.Dependency;
@@ -140,8 +141,7 @@ public class DefaultProjectMarshaller implements IProjectMarshaller {
 		
 		marshallRepository(project);
 		marshallVersions(project);
-		
-//		marshallBranches(serializer, project);
+		marshallBranches(project);
 		
 		marshallMailingLists(project);
 		marshallDevelopers(project);
@@ -176,7 +176,7 @@ public class DefaultProjectMarshaller implements IProjectMarshaller {
 			serializer.startTag(NAMESPACE, "repository");
 			
 			marshallRequiredString(project.getRepository().getConnection(), "connection");
-			//marshallString(project.getRepository().getDeveloperConnection(), "developerConnection");
+			marshallString(project.getRepository().getDeveloperConnection(), "developerConnection");
 			marshallString(project.getRepository().getUrl(), "url");
 			
 			serializer.endTag(NAMESPACE, "repository");
@@ -201,6 +201,25 @@ public class DefaultProjectMarshaller implements IProjectMarshaller {
 				}
 			}
 			serializer.endTag(NAMESPACE, "versions");
+		}
+	}
+	
+	private  void marshallBranches(Project project) throws Exception {
+		List branches = project.getBranches();
+		if ( branches != null ) {
+			serializer.startTag(NAMESPACE, "branches");
+			Branch branch;
+			for (int i = 0; i < branches.size(); i++) {
+				branch = (Branch) branches.get(i);
+				if ( branch != null) {
+					serializer.startTag(NAMESPACE, "branch");
+					
+					marshallString(branch.getTag(), "tag");
+							  
+					serializer.endTag(NAMESPACE, "branch");
+				}
+			}
+			serializer.endTag(NAMESPACE, "branches");
 		}
 	}
 	
@@ -237,10 +256,7 @@ public class DefaultProjectMarshaller implements IProjectMarshaller {
 					serializer.startTag(NAMESPACE, "developer");
 					
 					marshallRequiredString(developer.getId(), "id");
-					marshallRequiredString(developer.getName(), "name");
-					marshallRequiredString(developer.getEmail(), "email");
-					marshallString(developer.getOrganization(), "organization");
-					marshallRoles(developer);
+					marshallContactDetails(developer);
 					
 					serializer.endTag(NAMESPACE, "developer");
 				}
@@ -249,6 +265,33 @@ public class DefaultProjectMarshaller implements IProjectMarshaller {
 		serializer.endTag(NAMESPACE, "developers");
 	}
 
+	private  void marshallContributors(Project project) throws Exception {
+		List contributors = project.getContributors();
+		if ( contributors != null && contributors.size() > 0 ) {
+			serializer.startTag(NAMESPACE, "contributors");
+			Contributor contributor;
+			for (int i = 0; i < contributors.size(); i++) {
+				contributor = (Contributor) contributors.get(i);
+				if ( contributor != null ) {
+					serializer.startTag(NAMESPACE, "contributor");
+					
+					marshallContactDetails(contributor);
+					
+					serializer.endTag(NAMESPACE, "contributor");
+				}
+			}
+			serializer.endTag(NAMESPACE, "contributors");
+		}
+	}
+	
+	private void marshallContactDetails(Contributor contributor) throws Exception  {
+		marshallRequiredString(contributor.getName(), "name");
+		marshallRequiredString(contributor.getEmail(), "email");
+		marshallString(contributor.getOrganization(), "organization");
+		marshallString(contributor.getTimezone(), "timezone");
+		marshallString(contributor.getUrl(), "url");
+		marshallRoles(contributor);
+	}
 	
 	private  void marshallRoles(Contributor contributor) throws IOException {
 		SortedSet roles = contributor.getRoles();
@@ -261,28 +304,6 @@ public class DefaultProjectMarshaller implements IProjectMarshaller {
 			}
 			
 			serializer.endTag(NAMESPACE, "roles");
-		}
-	}
-	
-	private  void marshallContributors(Project project) throws Exception {
-		List contributors = project.getContributors();
-		if ( contributors != null && contributors.size() > 0 ) {
-			serializer.startTag(NAMESPACE, "contributors");
-			Contributor contributor;
-			for (int i = 0; i < contributors.size(); i++) {
-				contributor = (Contributor) contributors.get(i);
-				if ( contributor != null ) {
-					serializer.startTag(NAMESPACE, "contributor");
-					
-					marshallRequiredString(contributor.getName(), "name");
-					marshallRequiredString(contributor.getEmail(), "email");
-					
-					//marshallContactDetails(contributor);
-					
-					serializer.endTag(NAMESPACE, "contributor");
-				}
-			}
-			serializer.endTag(NAMESPACE, "contributors");
 		}
 	}
 	
