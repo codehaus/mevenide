@@ -186,7 +186,7 @@ public abstract class PageSection extends SectionPart {
 
     protected Text createMultilineText(Composite parent, FormToolkit factory) {
 
-        Text text = factory.createText(parent, "", SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL); //$NON-NLS-1$
+        Text text = factory.createText(parent, "", SWT.WRAP | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL); //$NON-NLS-1$
         GridData data = new GridData(GridData.FILL_BOTH);
         text.setLayoutData(data);
         return text;
