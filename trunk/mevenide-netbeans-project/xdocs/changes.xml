@@ -6,6 +6,11 @@
   </properties>
 
   <body>
+    <release version="0.2" date="in CVS">
+      <action dev="mkleint" type="add">
+      Add project view support for web apps.
+      </action>
+    </release>  
     <release version="0.1" date="17/07/2004">
       <action dev="mkleint" type="add">
         Initial release, allows to open maven projects within Netbeans IDE 4.0.

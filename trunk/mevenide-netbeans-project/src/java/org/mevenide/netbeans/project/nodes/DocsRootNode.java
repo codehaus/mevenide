@@ -87,44 +87,5 @@ class DocsRootNode extends AbstractNode {
         toReturn[3] = provider.createCustomMavenAction(deployName, "site:deploy"); //NOI18N
         return toReturn;
     }    
-    
-    /**
-     * filter for xdocs folder.. this one is not package oriented but rather simple folder structure
-     * need to filter out the unimportant files, just like the Files tab does.
-     */
-    static final class VisibilityQueryDataFilter implements ChangeListener, ChangeableDataFilter {
-        
-        EventListenerList ell = new EventListenerList();
-        
-        public VisibilityQueryDataFilter() {
-            VisibilityQuery.getDefault().addChangeListener( this );
-        }
-        
-        public void addChangeListener( ChangeListener listener ) {
-            ell.add( ChangeListener.class, listener );
-        }
-        
-        public void removeChangeListener( ChangeListener listener ) {
-            ell.remove( ChangeListener.class, listener );
-        }
-        
-        public boolean acceptDataObject(DataObject obj) {
-            FileObject fo = obj.getPrimaryFile();
-            return VisibilityQuery.getDefault().isVisible( fo );
-        }
-        
-        public void stateChanged( ChangeEvent e) {
-            Object[] listeners = ell.getListenerList();
-            ChangeEvent event = null;
-            for (int i = listeners.length-2; i>=0; i-=2) {
-                if (listeners[i] == ChangeListener.class) {
-                    if ( event == null) {
-                        event = new ChangeEvent( this );
-                    }
-                    ((ChangeListener)listeners[i+1]).stateChanged( event );
-                }
-            }
-        }
-    }
 }
 

@@ -19,8 +19,10 @@ package org.mevenide.netbeans.project.nodes;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.StringTokenizer;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.MavenUtils;
@@ -43,10 +45,30 @@ public final class DirScannerSubClass extends DirectoryScanner {
         return DEFAULTEXCLUDES;
     }
     
-    
+    public static boolean checkIncluded(File file, File rootFile, String includes, String excludes) {
+        List includeList = new ArrayList();
+        if (includes != null) {
+            StringTokenizer tok = new StringTokenizer(includes, " ,", false);
+            while (tok.hasMoreTokens()) {
+                includeList.add(tok.nextToken());
+            }
+        }
+        List excludeList = new ArrayList();
+        if (excludes != null) {
+            StringTokenizer tok = new StringTokenizer(excludes, " ,", false);
+            while (tok.hasMoreTokens()) {
+                excludeList.add(tok.nextToken());
+            }
+        }
+        return checkIncludedImpl(file, rootFile, includeList, excludeList);
+    }
     
     public static boolean checkIncluded(File file, File rootFile, Resource resource) {
         logger.debug("chceckIncluded");
+        return checkIncludedImpl(file, rootFile, resource.getIncludes(), resource.getExcludes());
+    }
+    
+    private static boolean checkIncludedImpl(File file, File rootFile, List includes, List excludes) {
         String relPath = "";
         try {
             relPath = MavenUtils.makeRelativePath(rootFile, file.getAbsolutePath());
@@ -55,7 +77,6 @@ public final class DirScannerSubClass extends DirectoryScanner {
             return false;
         }
         logger.debug("chceckIncluded relpath=" + relPath);
-        List includes = resource.getIncludes();
         boolean doInclude = false;
         if (includes != null && includes.size() != 0) {
             Iterator it = includes.iterator();
@@ -84,7 +105,6 @@ public final class DirScannerSubClass extends DirectoryScanner {
             return false;
         }
         
-        List excludes = resource.getExcludes();
         if (excludes != null) {
             Iterator it = excludes.iterator();
             while (it.hasNext()) {
@@ -95,14 +115,6 @@ public final class DirScannerSubClass extends DirectoryScanner {
                 }
             }
         }
-        //        String[] defaults = DirScannerSubClass.getDefaultExcludesHack();
-        //        if (defaults != null) {
-        //            for (int i =0; i < defaults.length; i++) {
-        //                if (DirectoryScanner.match(defaults[i], relPath)) {
-        //                    return false;
-        //                }
-        //            }
-        //        }
         return true;
     }
     
