@@ -1,13 +1,18 @@
 <project>
     <pomVersion>3</pomVersion>
     <artifactId>maven-dependencies</artifactId>
-    <name>Maven 1.0-rc4 library for Mevenide</name>
+    <name>Maven 1.0 library for Mevenide</name>
     <groupId>mevenide</groupId>
-    <currentVersion>1.0-rc4</currentVersion>
+    <currentVersion>1.0</currentVersion>
     <package>org.apache.maven</package>
     <description>Library for project mevenide, contains most of the jars needed for maven to run.</description>
     <shortDescription>Library for project mevenide,</shortDescription>
     <url>http://mevenide.codehaus.org</url>
+    <version>
+        <id>0.2.1</id>
+        <name>0.2.1</name>
+        <tag>V_0_2_1</tag>
+      </version>
     <dependencies>
         <dependency>
             <groupId>dom4j</groupId>
@@ -129,7 +134,7 @@
         <dependency>
             <groupId>commons-logging</groupId>
             <artifactId>commons-logging</artifactId>
-            <version>1.0.1</version>
+            <version>1.0.3</version>
             <url>http://jakarta.apache.org/commons/logging.html</url>
             <properties>
                 <eclipse.plugin.bundle>true</eclipse.plugin.bundle>
@@ -291,7 +296,7 @@
         <dependency>
             <groupId>maven</groupId>
             <artifactId>maven</artifactId>
-            <version>1.0-rc4</version>
+            <version>1.0</version>
             <type>jar</type>
             <properties>
                 <netbeans.module.ext>true</netbeans.module.ext>

@@ -13,7 +13,7 @@
 	</feature>
 
 	<feature url="features/org.apache.maven_1.0.0.jar" id="org.apache.maven" version="1.0.0">
-		<category name="Mevenide"/>
+		<category name="Maven"/>
 	</feature>
 
 	<category-def label="Mevenide" name="Mevenide">
