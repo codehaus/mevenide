@@ -1,8 +1,7 @@
 <project default="bootstrap">
   
   <target name="init" description="o set the properties needed bby the build process">   
-    <input message="Enter the root directory where to put the modules"
-    	   addproperty="co.dir"/>	   	
+    <input message="Enter the root directory where to put the modules" addproperty="co.dir"/>	   	
    	<condition property="quiet">
    	  <not>
         <available file="${co.dir}" type="dir" property="co.dir.present"/>
@@ -40,4 +39,5 @@
   		 dest="${co.dir}"
   		 package="maven-plugins/maven-eclipse-plugin-plugin"/>
   </target>
+  
 </project>
