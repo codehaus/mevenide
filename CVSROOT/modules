@@ -37,4 +37,4 @@ all -a goals-grabber mevenide-core mevenide-config mevenide-ui-eclipse mevenide-
 eclipse -a goals-grabber mevenide-core mevenide-config mevenide-grammar mevenide-ui-eclipse mevenide-ui-eclipse-tests mevenide-master maven-eclipse-plugin-plugin mevenide-update mevenide-feature mevenide-eclipse-help mevenide-maven-deps
 jbuilder -a goals-grabber mevenide-core mevenide-config mevenide-grammar mevenide-ui-jbuilder
 netbeans -a goals-grabber mevenide-core mevenide-config mevenide-grammar mevenide-ui-netbeans mevenide-netbeans-grammar maven-nbm-plugin mevenide-netbeans-deps mevenide-netbeans-project mevenide-master
-maven-plugins -a maven-nbm-plugin maven-spinner-wiki-plugin maven-eclipse-plugin-plugin maven-provider-plugin
+maven-plugins -a maven-nbm-plugin maven-spinner-wiki-plugin maven-eclipse-plugin-plugin maven-provider-plugin maven-mevenide-plugin
