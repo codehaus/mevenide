@@ -48,6 +48,7 @@ import org.mevenide.project.ProjectComparatorFactory;
 import org.mevenide.project.io.CarefulProjectMarshaller;
 import org.mevenide.project.io.IProjectMarshaller;
 import org.mevenide.project.io.ProjectReader;
+import org.mevenide.properties.resolver.ProjectWalker;
 import org.mevenide.ui.eclipse.editors.pages.BuildPage;
 import org.mevenide.ui.eclipse.editors.pages.DependenciesPage;
 import org.mevenide.ui.eclipse.editors.pages.OrganizationPage;
@@ -57,7 +58,6 @@ import org.mevenide.ui.eclipse.editors.pages.RepositoryPage;
 import org.mevenide.ui.eclipse.editors.pages.TeamPage;
 import org.mevenide.ui.eclipse.editors.pages.UnitTestsPage;
 import org.mevenide.util.DefaultProjectUnmarshaller;
-import org.mevenide.util.MevenideUtils;
 import org.mevenide.util.StringUtils;
 
 /**
@@ -417,7 +417,7 @@ public class MevenidePomEditor extends FormEditor {
             pom = reader.read(file);
 
             if (pom.getExtend() != null && !"".equals(pom.getExtend().trim())) {
-                String resolvedExtend = MevenideUtils.resolve(pom, pom.getExtend());
+                String resolvedExtend = new ProjectWalker(pom).resolve(pom.getExtend());
                 File extendFile = new File(resolvedExtend);
                 if (log.isDebugEnabled()) {
                     log.debug("parentPom path = " + resolvedExtend + "; exists = " + extendFile.exists());

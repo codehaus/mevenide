@@ -27,9 +27,9 @@ import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.dialogs.Dialog;
 import org.mevenide.project.io.ProjectReader;
-import org.mevenide.ui.eclipse.util.JavaProjectUtils;
+import org.mevenide.properties.resolver.ProjectWalker;
 import org.mevenide.ui.eclipse.util.FileUtils;
-import org.mevenide.util.MevenideUtils;
+import org.mevenide.ui.eclipse.util.JavaProjectUtils;
 
 /**
  * 
@@ -174,7 +174,7 @@ public class PomChooser {
 	}
 
 	private File resolveFile(File pom, Project project, String parent) throws Exception{
-		String resolvedParent = MevenideUtils.resolve(project, parent, true);
+		String resolvedParent = new ProjectWalker(project).resolve(parent, true);
 		resolvedParent = resolvedParent.replaceAll("\\$\\{basedir\\}", pom.getParent().replaceAll("\\\\", "/"));
 		log.debug(resolvedParent);
 		File parentPomFile = new File(resolvedParent).getCanonicalFile();

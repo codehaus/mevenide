@@ -18,15 +18,11 @@ package org.mevenide.util;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-
-import org.apache.commons.lang.StringUtils;
-import org.apache.maven.project.Project;
 
 /**
  * 
@@ -73,88 +69,6 @@ public final class MevenideUtils {
 		return (!newValue.equals(oldValue));
 	}
 
-	/**
-	 * retrieve a string containing jelly scripting variable by navigating pom object
-	 * so until a jelly variable is a descendant of pom it wont be resolved and the 
-	 * returnde string will still contains the reference.
-	 * 
-	 * this is equivalent to resolve(project, unresolvedString, false) 
-	 * 
-	 * @param project
-	 * @param unresolvedString
-	 * @return
-	 * @throws Exception
-	 * @see #resolve(Project project, String unresolvedString, boolean preserveBasedir)
-	 */
-	public static String resolve(Project project, String unresolvedString) throws Exception {
-		return resolve(project, unresolvedString, false);
-	}
-	
-	/**
-	 *  retrieve a string containing jelly scripting variable by navigating pom object
-	 * so until a jelly variable is a descendant of pom it wont be resolved and the 
-	 * returnde string will still contains the reference. if preserveBasedir is true, 
-	 * then ${basedir} wont be evaluated, else it will be replaced by "."
-	 * 
-	 * @param project
-	 * @param unresolvedString
-	 * @return
-	 * @throws Exception
-	 * @see #resolve(Project project, String unresolvedString, boolean preserveBasedir)
-	 */
-	public static String resolve(Project project, String unresolvedString, boolean preserveBasedir) throws Exception {
-		String resolvedString = EMPTY_STR;
-		
-		String tempVariable = EMPTY_STR;
-		
-		for (int i = 0; i < unresolvedString.length(); i++) {
-			if ( unresolvedString.charAt(i) == '$' ) {
-				tempVariable += unresolvedString.charAt(i);
-			}
-            if ( unresolvedString.charAt(i) != '$'
-            		&& unresolvedString.charAt(i) != '{'
-					&& unresolvedString.charAt(i) != '}' ) {
-				if ( !tempVariable.equals(EMPTY_STR) ) {
-					tempVariable += unresolvedString.charAt(i);
-				}		
-				else {
-					resolvedString += unresolvedString.charAt(i);
-				}
-			}
-			if ( unresolvedString.charAt(i) == '}' ) {
-				tempVariable = tempVariable.substring(1, tempVariable.length()); 
-				if ( !tempVariable.startsWith("pom") && !tempVariable.startsWith("basedir") ) {
-					//return the string as is since we wont be able to resolve it
-					return unresolvedString;
-				}
-				else {
-					Object evaluation = null;
-					if ( tempVariable.startsWith("basedir") ) {
-						if ( preserveBasedir  ) {
-							evaluation = "${basedir}";
-						}
-						else {
-							evaluation = ".";
-						}
-					}
-					else {
-						String[] splittedVar = StringUtils.split(tempVariable, ".");
-						evaluation = project;
-						for (int j = 1; j < splittedVar.length; j++) {
-							Field f = evaluation.getClass().getDeclaredField(splittedVar[j]);
-							f.setAccessible(true);
-	                	    evaluation = f.get(evaluation);
-	                    	f.setAccessible(false);
-	                	}
-					}
-	                resolvedString += evaluation;
-	                tempVariable = EMPTY_STR;
-				}
-			}
-		}
-		return resolvedString;
-	}
-	
 	/**
 	 * Resolves a string in the Maven kludgy name:value format to an array
 	 * of strings, guaranteed to be exactly two items in length: [name, value].

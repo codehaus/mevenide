@@ -20,7 +20,7 @@ package org.mevenide.properties;
 import java.io.File;
 import org.mevenide.environment.LocationFinderAggregator;
 import org.mevenide.properties.resolver.DefaultsResolver;
-import org.mevenide.properties.resolver.PropFilesAggregator;
+import org.mevenide.properties.resolver.PropertyFilesAggregator;
 
 /**
  *
@@ -47,7 +47,7 @@ public final class ProjectPropFactory {
         File userFile = new File(userHome);
         LocationFinderAggregator finder = new LocationFinderAggregator();
         finder.setEffectiveWorkingDirectory(projectDir.getAbsolutePath());
-        return new PropFilesAggregator(projectDir, userFile, new DefaultsResolver(projectDir, userFile, finder));
+        return new PropertyFilesAggregator(projectDir, userFile, new DefaultsResolver(projectDir, userFile, finder));
     }
     
 }

@@ -24,16 +24,16 @@ import org.mevenide.properties.IPropertyResolver;
  *
  * @author  Milos Kleint (ca206216@tiscali.cz)
  */
-public class PropFilesAggregatorTest extends AbstractResolverTestCase {
+public class PropertyFilesAggregatorTest extends AbstractResolverTestCase {
     
     protected IPropertyResolver def;
     /** Creates a new instance of DefaultsResolverTest */
-    public PropFilesAggregatorTest() {
+    public PropertyFilesAggregatorTest() {
     }
     
     protected void setUp() throws Exception {
         super.setUp();
-        def = new PropFilesAggregator(projectDir, userHomeDir, new DefaultsResolver(projectDir, userHomeDir, finder));
+        def = new PropertyFilesAggregator(projectDir, userHomeDir, new DefaultsResolver(projectDir, userHomeDir, finder));
     }
     
     public void testGetValue() throws Exception {

@@ -14,7 +14,7 @@
  *  limitations under the License.
  * =========================================================================
  */
-package org.mevenide.util;
+package org.mevenide.properties.resolver;
 
 import org.apache.maven.project.Build;
 import org.apache.maven.project.Project;
@@ -28,8 +28,9 @@ import junit.framework.TestCase;
  * @version $Id: MevenideUtilTest.java 30 août 2003 Exp gdodinet 
  * 
  */
-public class MevenideUtilsTest extends TestCase {
+public class ProjectWalkerTest extends TestCase {
 	private Project project ; 
+	private ProjectWalker walker ; 
 	
     protected void setUp() throws Exception {
         project = new Project();
@@ -42,6 +43,7 @@ public class MevenideUtilsTest extends TestCase {
         repository.setConnection("myCvsConnection");
         project.setRepository(repository);
         
+        walker = new ProjectWalker(project);
     }
 
     protected void tearDown() throws Exception {
@@ -49,8 +51,8 @@ public class MevenideUtilsTest extends TestCase {
     }
 
     public void testResolve() throws Exception {
-    	assertEquals("mySourceDir", MevenideUtils.resolve(project, "${pom.build.sourceDirectory}"));
-		assertEquals("this is myCvsConnection test", MevenideUtils.resolve(project, "this is ${pom.repository.connection} test"));
+    	assertEquals("mySourceDir", walker.resolve("${pom.build.sourceDirectory}"));
+		assertEquals("this is myCvsConnection test", walker.resolve("this is ${pom.repository.connection} test"));
     	
     }
 

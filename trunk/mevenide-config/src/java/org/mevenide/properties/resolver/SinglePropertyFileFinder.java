@@ -32,15 +32,15 @@ import org.mevenide.properties.PropertyModelFactory;
  * The cache is based on PropertyModel.
  * @author  <a href="mailto:ca206216@tiscali.cz">Milos Kleint</a>
  */
-final class SinglePropFileFinder implements IPropertyFinder {
-    private static final Log logger = LogFactory.getLog(SinglePropFileFinder.class);
+final class SinglePropertyFileFinder implements IPropertyFinder {
+    private static final Log logger = LogFactory.getLog(SinglePropertyFileFinder.class);
     
     private File propFile = null;
     private PropertyModel propModel = null;
     private boolean regenerate;
     private boolean skip = false;
     /** Creates a new instance of SinglePropFile */
-    SinglePropFileFinder (File file) {
+    SinglePropertyFileFinder (File file) {
         propFile = file;
         regenerate = true;
         skip = false;
