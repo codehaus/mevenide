@@ -81,6 +81,7 @@ import org.mevenide.project.io.ProjectReader;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.editors.pages.BuildPage;
 import org.mevenide.ui.eclipse.editors.pages.DependenciesPage;
+import org.mevenide.ui.eclipse.editors.pages.OrganizationPage;
 import org.mevenide.ui.eclipse.editors.pages.OverviewPage;
 import org.mevenide.ui.eclipse.editors.pages.ReportsPage;
 import org.mevenide.ui.eclipse.editors.pages.RepositoryPage;
@@ -101,6 +102,7 @@ public class MevenidePomEditor extends MultiPageEditorPart {
 	private static final Log log = LogFactory.getLog(MevenidePomEditor.class);
 
     public static final String OVERVIEW_PAGE = Mevenide.getResourceString("MevenidePomEditor.tab.label.overview");
+	public static final String ORGANIZATION_PAGE = Mevenide.getResourceString("MevenidePomEditor.tab.label.organization");
     public static final String REPOSITORY_PAGE = Mevenide.getResourceString("MevenidePomEditor.tab.label.repository");
     public static final String TEAM_PAGE = Mevenide.getResourceString("MevenidePomEditor.tab.label.team");
     public static final String DEPENDENCIES_PAGE = Mevenide.getResourceString("MevenidePomEditor.tab.label.dependencies");
@@ -109,6 +111,7 @@ public class MevenidePomEditor extends MultiPageEditorPart {
     public static final String SOURCE_PAGE = Mevenide.getResourceString("MevenidePomEditor.tab.label.source");
 
     private int overviewPageIndex;
+	private int organizationPageIndex;
     private int repositoryPageIndex;
     private int teamPageIndex;
     private int dependenciesPageIndex;
@@ -185,6 +188,7 @@ public class MevenidePomEditor extends MultiPageEditorPart {
 
     protected void createPages() {
         createOverviewPage();
+		createOrganizationPage();
         createRepositoryPage();
         createTeamPage();
         createDependenciesPage();
@@ -207,6 +211,17 @@ public class MevenidePomEditor extends MultiPageEditorPart {
         overviewPageIndex = addPage(overview);
         setPageText(overviewPageIndex, OVERVIEW_PAGE);
     }
+
+	/**
+	 * Creates the organization-specific, licensing, and site 
+	 * generation information in the project..
+	 */
+	private void createOrganizationPage() {
+		OrganizationPage org = new OrganizationPage(this);
+		comparator.addProjectChangeListener(ProjectComparator.PROJECT, org);
+		organizationPageIndex = addPage(org);
+		setPageText(organizationPageIndex, ORGANIZATION_PAGE);
+	}
 
     /**
      * Creates the version control page of the Project Object Model
