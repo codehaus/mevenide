@@ -10,11 +10,11 @@
          <export name="*"/>
          <packages prefixes="org.apache.commons.discovery"/>
       </library>
-      <library name="lib/commons-logging-1.0.3.jar">
+      <library name="lib/commons-logging-1.0.1.jar">
          <export name="*"/>
          <packages prefixes="org.apache.commons.logging"/>
       </library>
-      <library name="lib/log4j-1.2.8.jar">
+      <library name="lib/log4j-1.2.7.jar">
          <export name="*"/>
          <packages prefixes="org.apache.log4j"/>
       </library>
@@ -22,7 +22,7 @@
          <export name="*"/>
          <packages prefixes="org.xmlpull"/>
       </library>
-      <library name="lib/maven-1.0-beta-10.jar">
+      <library name="lib/maven-1.0-rc1.jar">
          <export name="*"/>
          <packages prefixes="org.apache.maven"/>
       </library>
