@@ -38,7 +38,7 @@ import org.xmlpull.v1.XmlSerializer;
  * @version $Id$
  * 
  */
-public class DefaultProjectMarshaller implements IPomMarshaller {
+public class DefaultProjectMarshaller implements IProjectMarshaller {
 	private static final String NAMESPACE = null;
 	private static final String ENCODING = null;
 	private static final Boolean STANDALONE = null;
@@ -376,20 +376,20 @@ public class DefaultProjectMarshaller implements IPomMarshaller {
 	}
 	
 	private  void marshallString(String line, String tag) throws IOException {
-		if ( notNull(line) ) {
+		if ( !isNull(line) ) {
 			serializer.startTag(NAMESPACE, tag).text(line).endTag(NAMESPACE, tag);
 		}
 	}
 	
 	private  void marshallRequiredString(String line, String tag) throws IOException {
-		if ( !notNull(line) ) {
+		if ( isNull(line) ) {
 			System.out.println("WARNING : " + tag + " should not be null");
 		}
 		marshallString(line, tag);
 	}
 	
 	
-	private  boolean notNull(String property) {
-		return property != null && !property.trim().equals("");
+	private  boolean isNull(String property) {
+		return property == null || property.trim().equals("");
 	}
 }
