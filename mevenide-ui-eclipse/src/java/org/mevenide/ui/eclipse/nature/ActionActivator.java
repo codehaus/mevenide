@@ -66,6 +66,7 @@ public class ActionActivator implements IResourceDeltaVisitor {
 		            definition.setEnabled(project, match(path, files));
 			        if ( match(path, files) ) {
 			            shouldSkipDefinitions[i] = true;
+			            definition.setEnabled(project, true);
 			            return false;
 			        }
 	            }
