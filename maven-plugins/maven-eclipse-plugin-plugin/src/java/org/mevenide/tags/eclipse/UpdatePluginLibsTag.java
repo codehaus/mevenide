@@ -22,22 +22,20 @@ import java.util.List;
 
 import org.apache.commons.jelly.MissingAttributeException;
 import org.apache.commons.jelly.XMLOutput;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.apache.maven.project.Project;
 import org.apache.maven.repository.Artifact;
-
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
-
 import org.mevenide.tags.AbstractMevenideTag;
 import org.mevenide.tags.InvalidDirectoryException;
 
 /**
+ * @todo this tag should surely take an Artifact as attribute. 
+ * Artifacts iteration would then be performed within plugin.jelly  
  * 
  * @author <a href="mailto:rhill2@free.fr">Gilles Dodinet</a>
  * @version $Id$
@@ -47,12 +45,15 @@ public class UpdatePluginLibsTag extends AbstractMevenideTag {
     private static final Log log = LogFactory.getLog(UpdatePluginLibsTag.class);
 
     private static final String RUNTIME_ELEM = "runtime";
+    private static final String REQUIRES_ELEM = "requires";
     private static final String LIBRARY_ELEM = "library";
     private static final String EXPORT_ELEM = "export";
+    private static final String IMPORT_ELEM = "import";
     private static final String PACKAGES_ELEM = "packages";
     private static final String NAME_ATTR = "name";
     private static final String PREFIXES_ATTR = "prefixes";
-
+    private static final String PLUGIN_ATTR = "plugin";
+    
     private static final String DESCRIPTOR_DIR_PROPERTY = "maven.eclipse.plugin.src.dir";
     private static final String BUNDLE_DEPENDENCY_PROPERTY = "eclipse.plugin.bundle";
     private static final String PLUGIN_FILENAME = "plugin.xml";
@@ -69,7 +70,10 @@ public class UpdatePluginLibsTag extends AbstractMevenideTag {
 
     private String bundledLibraryDir; 
 
-    
+    /*
+     * (non-Javadoc)
+     * @see org.apache.commons.jelly.Tag#doTag(org.apache.commons.jelly.XMLOutput)
+     */
     public void doTag(XMLOutput arg0) throws Exception {
         
 		setUpDescriptor();
@@ -85,8 +89,11 @@ public class UpdatePluginLibsTag extends AbstractMevenideTag {
         
     }
     
+    /**
+     * update descriptor with artifact if necessary. dependeing on the mode the plugin is run 
+     * the artifact can be pushed aither as runtime library or required plugin. 
+     */ 
     private void updateDescriptor(Artifact artifact) throws InvalidDirectoryException {
-        //@TODO
         boolean shouldBundleDependency = TRUE.equals(artifact.getDependency().getProperty(BUNDLE_DEPENDENCY_PROPERTY));
         log.debug(artifact.getDependency() + " > ${eclipse.plugin.bundle} = " + shouldBundleDependency);
         
@@ -102,14 +109,20 @@ public class UpdatePluginLibsTag extends AbstractMevenideTag {
     }
 
 	 /**
-	 * update $plugin/requires with artifact if necessary
+	 * update $plugin/requires with artifact if needed
      */    
 	private void updateRequires(Artifact artifact) {
-		//@TODO
+	    Element pluginElem = descriptor.getRootElement();
+	    
+	    assertRequiresPresent();
+	    
+	    if ( !isRequiredPluginDeclared(artifact) ) {
+	        updateRequires(artifact);
+	    }
 	}
 
     /**
-	 * update $plugin/runtime with artifact if necessary
+	 * update $plugin/runtime with artifact if needed
      */    
 	private void updateRuntime(Artifact artifact) throws InvalidDirectoryException {
 		Element pluginElem = descriptor.getRootElement();
@@ -125,7 +138,24 @@ public class UpdatePluginLibsTag extends AbstractMevenideTag {
         }
 
     }
-
+	
+	/**
+	 * effectively add plugin derived from artifact to required plugins
+	 *
+   	 * @pre requires element is present in plugin descriptor
+     */  
+	private void addRequiresPlugin(Artifact artifact) {
+	    Element importPluginElem = new Element(IMPORT_ELEM);
+	    importPluginElem.setAttribute(PLUGIN_ATTR, getPluginName(artifact));
+	}
+	
+	/**
+	 * generated plugin resides in ECLIPSE_HOME/plugins/${dependency.groupId}
+	 */
+	private String getPluginName(Artifact artifact) {
+	    return artifact.getDependency().getGroupId();
+	}
+	
 	/**
 	 * effectively add library derived from artifact to runtime element
 	 *
@@ -156,9 +186,40 @@ public class UpdatePluginLibsTag extends AbstractMevenideTag {
             pluginElem.addContent(runtimeElem);
         }
     }
-
+	
 	/**
-	 * check wether artifact.dependency is already declared in plugin descriptor
+	 * assert requires element is present. add it if necessary
+	 */
+	private void assertRequiresPresent() {
+	    Element pluginElem = descriptor.getRootElement();
+	    
+	    Element requiresElem = pluginElem.getChild(REQUIRES_ELEM);
+	    if ( requiresElem == null ) {
+	        requiresElem = new Element(REQUIRES_ELEM);
+	        pluginElem.addContent(requiresElem);
+	    }
+	}
+	
+	/**
+	 * check wether artifact.dependency is already declared in plugin descriptor as a plugin required dependency
+	 */
+	private boolean isRequiredPluginDeclared(Artifact artifact) {
+	    Element requiresElem = descriptor.getRootElement().getChild(REQUIRES_ELEM);
+	    List importElems = requiresElem.getChildren(IMPORT_ELEM);
+	    boolean isRequiredPluginPresent = false;
+	    for (int i = 0; i < importElems.size(); i++) {
+	        Element theImport = (Element) importElems.get(i);
+	        String pluginName = theImport.getAttributeValue(PLUGIN_ATTR);
+	        if ( pluginName != null && pluginName.equals(artifact.getDependency().getGroupId()) ) {
+	            isRequiredPluginPresent = true;
+	            break;
+	        }
+	    }
+	    return isRequiredPluginPresent;
+	}
+	
+	/**
+	 * check wether artifact.dependency is already declared in plugin descriptor as plugin runtime library
 	 */
     private boolean isLibraryDeclared(Artifact artifact) {
 		Element runtimeElem = descriptor.getRootElement().getChild(RUNTIME_ELEM);
@@ -184,6 +245,7 @@ public class UpdatePluginLibsTag extends AbstractMevenideTag {
 	 * @todo not sure about the format : dependency property ? csv project property ?
 	 */
 	private boolean shouldExport(Artifact artifact) {
+	    //@TODO
 		return true;
 	}
 
@@ -191,6 +253,7 @@ public class UpdatePluginLibsTag extends AbstractMevenideTag {
 	 * @todo not sure about the format : dependency property ? project property ?
 	 */
 	private String getPackagesPrefixes(Artifact artifact) {
+	    //@TODO
 		return null;
 	}
 
