@@ -46,7 +46,7 @@
         <dependency>
             <groupId>maven</groupId>
             <artifactId>maven</artifactId>
-            <version>1.0-rc2</version>
+            <version>1.0</version>
             <type>jar</type>
             <properties>
             	<jbuilder.plugin.bundle>true</jbuilder.plugin.bundle>
