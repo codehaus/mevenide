@@ -29,7 +29,7 @@ public abstract class AbstractPomSynchronizer implements ISynchronizer {
      * template pattern
      * @see org.mevenide.core.sync.ISynchronizer#synchronize
      */
-    public void synchronize()  {
+    public synchronized void synchronize()  {
 		try {
 			preSynchronization();
 			mavenize();
