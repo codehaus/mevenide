@@ -31,7 +31,7 @@
   
   
   <goal name="eclipse-plugin:install-artifact" prereqs="eclipse-plugin:init-filterset" 
-  		description="filter and copy the plugin artifact descriptor file to $${basedir}">
+  		description="filter and copy the plugin artifact descriptor file to ${basedir}">
   		
   	<ant:copy todir="${basedir}" overwrite="true">
   	  <ant:fileset dir="${maven.eclipse.plugin.src.dir}"/>
@@ -48,7 +48,7 @@
   
   
   <goal name="eclipse-plugin:create-plugin-dist" prereqs="eclipse-plugin:prepare-plugin-dist,eclipse-plugin:install-artifact"
-  		description="create a plugin dist file containing only the plugin required files and put it in $${maven.eclipse.plugin.dist.dir}">
+  		description="create a plugin dist file containing only the plugin required files and put it in ${maven.eclipse.plugin.dist.dir}">
   		
 	  <j:set var="distVersion" value="${maven.eclipse.plugin.artifact.version}"/>
 	  <j:set var="pluginId" value="${maven.eclipse.plugin.artifact.id}"/>
@@ -78,7 +78,7 @@
    	 do not use feature POM for looking up resources to have a consistent behavior between plugin and feature creation goals.
    -->
    <goal name="eclipse-plugin:create-feature-dist" prereqs="eclipse-plugin:init,eclipse-plugin:install-artifact"
-   		 description="create a feature dist file containing only the feature required files and put it in $${maven.eclipse.plugin.dist.dir}">
+   		 description="create a feature dist file containing only the feature required files and put it in ${maven.eclipse.plugin.dist.dir}">
 	     
    	  <j:set var="featureId" value="${maven.eclipse.plugin.artifact.id}"/>
    	  <j:set var="distVersion" value="${maven.eclipse.plugin.artifact.version}"/>
@@ -176,7 +176,7 @@
    	
   
   <goal name="eclipse-plugin:init-filterset" 
-  		description="create an empty filterset if $${maven.eclipse.plugin.filterset.id} hasnot been specified">
+  		description="create an empty filterset if ${maven.eclipse.plugin.filterset.id} hasnot been specified">
   		
   	<j:set var="filterRefid" value="${maven.eclipse.plugin.filterset.id}"/>
   	<j:if test="${empty filterRefid}">
@@ -221,7 +221,7 @@
   	Also dependencies whose groupId is 'eclipse' are ignored as they should be referenced using plugin.xml/requires/import. 
   -->
   <goal name="eclipse-plugin:prepare-plugin-dist" prereqs="eclipse-plugin:init" 
-  		description="iterate over $${pom.artifacts} and copy required dependencies in $${maven.eclipse.plugin.dist.lib}">
+  		description="iterate over ${pom.artifacts} and copy required dependencies in ${maven.eclipse.plugin.dist.lib}">
   		
     <j:forEach var="artifact" items="${pom.artifacts}">
       <j:set var="dependency" value="${artifact.dependency}"/>
@@ -235,8 +235,8 @@
    
   <goal name="eclipse-plugin:install-swt" description="install platofrm-dependent swt library into maven local repository">
     <!-- set eclipse.home property -->
-	<ant:property environment="environment"/>
-  	<ant:property name="eclipse.home" location="${environment.ECLIPSE_HOME}"/>
+	<ant:property environment="env"/>
+  	<ant:property name="eclipse.home" location="${env.ECLIPSE_HOME}"/>
 	
 	<!-- find swt.plugin.dir -->
 	<ant:available property="swt.plugin.dir" 

@@ -3,7 +3,33 @@
 	
 	<!-- crap -->
 	<preGoal name="test:test">
-		<copy toDir="${maven.test.dest}">
+	  <attainGoal name="mevenide:prepare-fs"/>
+	</preGoal>
+	
+	<preGoal name="jar:jar">
+	  <copy toDir="${maven.build.dest}/META-INF/services">
+	    <fileset dir="etc/META-INF/services">
+  	   	  <include name="*.*"/>
+	    </fileset>
+	  </copy>
+	  <copy toDir="${maven.build.dest}/templates/standard">
+	    <fileset dir="etc/templates/standard">
+  	  	  <include name="*.*"/>
+		</fileset>
+	  </copy>
+	  <copy toDir="${maven.build.dest}">
+	    <fileset dir="etc">
+  	  	  <include name="*.*"/>
+		</fileset>
+	  </copy>
+	</preGoal>
+	
+	<goal name="mevenide:finalize">
+	  <copy file="etc/mevenide.properties" todir="${mevenide.ui.eclipse.project.name}/etc"/> 
+	</goal>
+	
+	<goal name="mevenide:prepare-fs">
+	  <copy toDir="${maven.test.dest}">
 		  <fileset dir="src/test/etc">
   			<include name="*.properties"/>
   			<include name="*.xml"/>
@@ -20,29 +46,5 @@
   			<include name="*.*"/>
 		  </fileset>
 		</copy>
-	</preGoal>
-	
-	<preGoal name="jar:jar">
-		<copy toDir="${maven.build.dest}/META-INF/services">
-		  <fileset dir="etc/META-INF/services">
-  			<include name="*.*"/>
-		  </fileset>
-		</copy>
-		<copy toDir="${maven.build.dest}/templates/standard">
-		  <fileset dir="etc/templates/standard">
-  			<include name="*.*"/>
-		  </fileset>
-		</copy>
-		<copy toDir="${maven.build.dest}">
-		  <fileset dir="etc">
-  			<include name="*.*"/>
-		  </fileset>
-		</copy>
-	</preGoal>
-	
-	<goal name="mevenide:finalize">
-		<copy file="etc/mevenide.properties" todir="${mevenide.ui.eclipse.project.name}/etc"/> 
-	</goal>
-	
-
+   </goal>
 </project>

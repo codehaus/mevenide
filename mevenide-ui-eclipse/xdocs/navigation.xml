@@ -21,7 +21,6 @@
         
         <menu name="Documentation">
         	<item name="Features" href="/features.html"/>
-        	<item name="Wiki" href="http://mevenide.sourceforge.net/cgi-bin/view.pl/FrontPage"/>	
         	<item name="Getting Started" href="/help.html"/>
         </menu>
         
