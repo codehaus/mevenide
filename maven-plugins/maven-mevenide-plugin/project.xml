@@ -14,9 +14,7 @@
   <name>Maven Mevenide Plugin</name>
   
   <currentVersion>0.1-SNAPSHOT</currentVersion>
-  
-  <!-- shortDescription>The NBM plugin will create a Netbeans module file (.nbm) </shortDescription -->
-  <shortDescription>ddd</shortDescription>
+  <shortDescription>Plugin to run and debug Maven projects.</shortDescription>
   
   <inceptionYear>2004</inceptionYear>
   
@@ -37,14 +35,6 @@
       </roles>
     </developer>
   </developers>
-  
-  <dependencies>
-        <dependency>
-    		<groupId>commons-jelly</groupId>	
-    		<artifactId>commons-jelly-tags-xml</artifactId>
-    		<version>20030211.142705</version>
-    	</dependency>    
-  </dependencies>
   
   <build> 
      <sourceDirectory>src/java</sourceDirectory>
