@@ -1,4 +1,0 @@
-<project xmlns:ant="jelly:ant"
-         default="opentool:opentool">
-
-</project>
