@@ -21,6 +21,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 
 import junit.framework.TestCase;
+import org.apache.maven.project.Project;
 
 
 /**
@@ -32,6 +33,7 @@ public class DefaultQueryContextTest extends TestCase {
     protected File userHomeDir;
     protected File projectDir;
     protected String originalUserHome;
+    private ProjectContext context;
     /** Creates a new instance of DefaultsResolverTest */
     public DefaultQueryContextTest() {
         originalUserHome = System.getProperty("user.home"); //NOI18N
@@ -57,7 +59,8 @@ public class DefaultQueryContextTest extends TestCase {
         File projectprop = new File(DefaultQueryContextTest.class.getResource("/org/mevenide/properties/project.properties").getFile());
         copyTo = new File(projectDir, "project.properties");
         copy(projectprop.getAbsolutePath(), copyTo.getAbsolutePath());
-        
+        Project project = new Project();
+        context = new ProjectContext(project, new File("test"));
     }
 
     protected void tearDown() throws Exception {
@@ -75,7 +78,7 @@ public class DefaultQueryContextTest extends TestCase {
     }
     
     public void testProjectBased() {
-        DefaultQueryContext query = new DefaultQueryContext(projectDir);
+        DefaultQueryContext query = new DefaultQueryContext(projectDir, context);
         assertNotNull(query.getProjectDirectory());
         assertNotNull(query.getUserDirectory());
         assertNull(query.getUserPropertyValue("maven.build.dir"));
@@ -90,6 +93,10 @@ public class DefaultQueryContextTest extends TestCase {
         assertNotNull(query.getPropertyValue("maven.conf.dir"));
         assertNotNull(query.getPropertyValue("maven.repo.remote"));
         
+        assertNotNull(query.getFinalProject());
+        assertNotNull(query.getProjectLayers());
+        assertEquals(1, query.getProjectLayers().length);
+        assertEquals(1, query.getProjectFiles().length);
     }
     
     public void testRefresh() throws Exception {
@@ -151,4 +158,26 @@ public class DefaultQueryContextTest extends TestCase {
 		}
 
 	}    
+        
+        private class ProjectContext implements IProjectContext {
+            private Project project;
+            private File prFile;
+            public ProjectContext(Project proj, File file) {
+                project = proj;
+                prFile = file;
+            }
+            
+            public Project getFinalProject() {
+                return project;
+            }
+            
+            public File[] getProjectFiles() {
+                return new File[] {prFile};
+            }
+            
+            public Project[] getProjectLayers() {
+                return new Project[] { project };
+            }
+            
+        }
 }
