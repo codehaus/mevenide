@@ -22,7 +22,11 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.mevenide.*;
+import org.mevenide.GoalNotFoundException;
+import org.mevenide.IGoalsGrabber;
+import org.mevenide.IGoalsManager;
+
+
 
 
 /**
@@ -161,18 +165,6 @@ public abstract class AbstractGoalsManager implements IGoalsManager {
 			goals[i] = (String) selectedGoals.get(i);
 		}
         return goals;
-    }
-    
-    /**
-     * run the runnableGoals
-     */
-    public void runGoals() {
-        try {
-            AbstractRunner.getRunner().run(getGoalsToRun());
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
     }
     
     /**

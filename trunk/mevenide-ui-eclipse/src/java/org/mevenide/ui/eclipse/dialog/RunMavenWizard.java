@@ -16,11 +16,13 @@ package org.mevenide.ui.eclipse.dialog;
 
 
 import org.eclipse.jface.wizard.Wizard;
-
+import org.mevenide.IOptionsManager;
 import org.mevenide.core.AbstractGoalsManager;
 import org.mevenide.ui.eclipse.GoalsManager;
-import org.mevenide.ui.eclipse.dialog.goals.*;
-import org.mevenide.ui.eclipse.dialog.options.*;
+import org.mevenide.ui.eclipse.OptionsManager;
+import org.mevenide.ui.eclipse.Runner;
+import org.mevenide.ui.eclipse.dialog.goals.MavenGoalsPage;
+import org.mevenide.ui.eclipse.dialog.options.MavenOptionsPage;
 
 
 /**
@@ -33,7 +35,9 @@ public class RunMavenWizard extends Wizard {
 
 	private MavenGoalsPage goalsPage ;
     private MavenOptionsPage optionsPage; 
+    
     private AbstractGoalsManager goalsManager ;
+    private IOptionsManager optionsManager;
     
     public RunMavenWizard() {
         super();
@@ -41,8 +45,10 @@ public class RunMavenWizard extends Wizard {
         setWindowTitle("Run Maven");
         
         goalsManager = new GoalsManager();
+        optionsManager = new OptionsManager();
         
         optionsPage = new MavenOptionsPage();
+        optionsPage.setOptionsManager(optionsManager);
         addPage(optionsPage);
         
         goalsPage = new MavenGoalsPage();
@@ -54,7 +60,11 @@ public class RunMavenWizard extends Wizard {
        	try {
 	       
             goalsManager.save();
-			goalsManager.runGoals();
+
+			String[] goals = goalsManager.getGoalsToRun();
+			String[] options = optionsManager.getOptions();
+			
+			new Runner().run(options, goals);
 
 			return true;
        	}

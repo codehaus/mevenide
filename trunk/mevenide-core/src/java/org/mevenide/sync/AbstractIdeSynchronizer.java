@@ -46,7 +46,7 @@ public abstract class AbstractIdeSynchronizer implements ISynchronizer {
 	public void synchronize()  {
 		try {
 			preSynchronization();
-			runner.run( new String[] {synchronizationGoal} );
+			runner.run( new String[0], new String[] {synchronizationGoal} );
 			postSynchronization();
 		}
 		catch ( Exception e ) {

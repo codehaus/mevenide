@@ -17,6 +17,7 @@ package org.mevenide.ui.eclipse.dialog.options;
 
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.widgets.Composite;
+import org.mevenide.IOptionsManager;
 import org.mevenide.InvalidOptionException;
 import org.mevenide.ui.eclipse.MavenPlugin;
 
@@ -48,6 +49,9 @@ public class MavenOptionsPage extends WizardPage {
         }
     }
    
+	public void setOptionsManager(IOptionsManager manager) {
+		
+	}
 
   
 }

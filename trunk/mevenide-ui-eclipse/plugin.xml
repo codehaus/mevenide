@@ -8,25 +8,25 @@
 
    <runtime>
       <library name="lib/commons-discovery-0.1.jar">
-      	<packages prefixes="org.apache.commons.discovery"/>
+         <packages prefixes="org.apache.commons.discovery"/>
       </library>
       <library name="lib/commons-logging-1.0.1.jar">
-      	<packages prefixes="org.apache.commons.logging"/>
+         <packages prefixes="org.apache.commons.logging"/>
       </library>
       <library name="lib/forehead-1.0-beta-4.jar"/>
       <library name="lib/jdom-1.0b8.jar">
-      	<packages prefixes="org.jdom"/>
+         <packages prefixes="org.jdom"/>
       </library>
       <library name="lib/maven-SNAPSHOT.jar"/>
       <library name="lib/xerces-2.2.1.jar"/>
       <library name="lib/mevenide-goals-grabber-1.0.jar">
-      	<export name="*"/>
-      	<packages prefixes="com.gdfact.maven.plugin.getgoals"/>
+         <export name="*"/>
+         <packages prefixes="com.gdfact.maven.plugin.getgoals"/>
       </library>
       <library name="lib/mevenide-core-1.0.jar">
-      	  <export name="*"/>
-	      <packages prefixes="org.mevenide"/>
-	  </library>
+         <export name="*"/>
+         <packages prefixes="org.mevenide"/>
+      </library>
       <library name="mevenide-ui-eclipse-1.0.jar">
          <export name="*"/>
          <packages prefixes="org.mevenide.ui.eclipse"/>
@@ -56,12 +56,10 @@
          </run>
       </runtime>
    </extension>
-   
 <!-- Maven actions -->
    <extension
          point="org.eclipse.ui.popupMenus">
-         
-      <!-- project contributions (adaptable) -->
+<!-- project contributions (adaptable) -->
       <objectContribution
             objectClass="org.eclipse.core.resources.IProject"
             adaptable="true"
@@ -87,11 +85,14 @@
                menubarPath="maven.plugin.menu/RunMaven"
                enablesFor="1"
                id="maven.plugin.popup.action">
-               <enablement>
-                 <and>
-                     <objectState name="nature" value="mavenplugin.mavennature"/>
-                 </and>
-               </enablement> 
+            <enablement>
+               <and>
+                  <objectState
+                        name="nature"
+                        value="mavenplugin.mavennature">
+                  </objectState>
+               </and>
+            </enablement>
          </action>
          <action
                label="Synchronize Project"
@@ -100,11 +101,14 @@
                menubarPath="maven.plugin.menu/Synchronize"
                enablesFor="1"
                id="maven-plugin.Synchronize">
-               <enablement>
-                 <and>
-                     <objectState name="nature" value="mavenplugin.mavennature"/>
-                 </and>
-               </enablement>
+            <enablement>
+               <and>
+                  <objectState
+                        name="nature"
+                        value="mavenplugin.mavennature">
+                  </objectState>
+               </and>
+            </enablement>
          </action>
          <action
                label="Disable Maven Nature"
@@ -113,11 +117,14 @@
                menubarPath="maven.plugin.menu/MavenNature"
                enablesFor="1"
                id="org.mevenide.ui.eclipse.actions.removemavennature">
-               <enablement>
-                 <and>
-                     <objectState name="nature" value="mavenplugin.mavennature"/>
-                  </and>
-               </enablement>
+            <enablement>
+               <and>
+                  <objectState
+                        name="nature"
+                        value="mavenplugin.mavennature">
+                  </objectState>
+               </and>
+            </enablement>
          </action>
          <action
                label="Enable Maven Nature"
@@ -126,13 +133,16 @@
                menubarPath="maven.plugin.menu/MavenNature"
                enablesFor="1"
                id="org.mevenide.ui.eclipse.actions.addmavennature">
-               <enablement>
-                 <and>
-                 	<not>
-                     <objectState name="nature" value="mavenplugin.mavennature"/>
-                    </not>
-                 </and>
-               </enablement>
+            <enablement>
+               <and>
+                  <not>
+                     <objectState
+                           name="nature"
+                           value="mavenplugin.mavennature">
+                     </objectState>
+                  </not>
+               </and>
+            </enablement>
          </action>
          <action
                label="Synchronize POM"
@@ -141,15 +151,17 @@
                menubarPath="maven.plugin.menu/Synchronize"
                enablesFor="1"
                id="maven-plugin.SynchronizePom">
-               <enablement>
-                 <and>
-                     <objectState name="nature" value="mavenplugin.mavennature"/>
-                 </and>
-               </enablement>
+            <enablement>
+               <and>
+                  <objectState
+                        name="nature"
+                        value="mavenplugin.mavennature">
+                  </objectState>
+               </and>
+            </enablement>
          </action>
       </objectContribution>
-      
-      <!-- project.xml contributions -->
+<!-- project.xml contributions -->
       <objectContribution
             objectClass="org.eclipse.core.resources.IFile"
             nameFilter="project.xml"
@@ -191,8 +203,7 @@
          </action>
       </objectContribution>
    </extension>
-
-   <!-- Maven preferences -->
+<!-- Maven preferences -->
    <extension
          point="org.eclipse.ui.preferencePages">
       <page
