@@ -3,14 +3,14 @@
 
     <properties>
         <author email="gdodinet@wanadoo.fr">Gilles Dodinet</author>
-        <title>Mevenide Core</title>
+        <title>Mevenide UI Eclipse</title>
     </properties>
 
     <body>
         <links>
         	<item name="Eclipse" href="http://eclipse.org/"/>
             <item name="Maven" href="http://www.maven.org/"/>
-            <item href="http://mevenide.sf.net/" name="Mevenide"/>
+            <item href="http://mevenide.codehaus.org/" name="Mevenide"/>
         </links>
         
         <menu name="General">

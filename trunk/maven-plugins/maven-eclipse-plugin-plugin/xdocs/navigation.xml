@@ -6,7 +6,7 @@
     <links>
       <item href="http://maven.apache.org/" name="Maven"/>
       <item href="http://eclipse.org/" name="Eclipse"/>
-      <item href="http://mevenide.sf.net/" name="Mevenide"/>
+      <item href="http://mevenide.codehaus.org/" name="Mevenide"/>
     </links>
     <menu name="General">
       <item href="/index.html" name="Overview"/>
