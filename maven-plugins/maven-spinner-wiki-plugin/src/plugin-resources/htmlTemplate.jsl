@@ -1,0 +1,50 @@
+	<j:jelly xmlns:j="jelly:core" xmlns:ant="jelly:ant"  xmlns:jsl="jelly:jsl" xmlns:x="jelly:xml">
+        <jsl:stylesheet var="htmlTransformationSheet" select="$myHtmlFile">
+        
+            <jsl:template match="/" trim="false">
+ 	            <jsl:applyTemplates select="html"/>
+            </jsl:template>
+            
+            <jsl:template match="style">
+            	<x:set var="importLine" select="string(.)"/>
+            	<j:set var="cssFile">${importLine.substring(importLine.lastIndexOf('/'), importLine.lastIndexOf('"'))}</j:set>
+            	<j:set var="cssFile">${cssFile.substring(1, cssFile.length())}</j:set>
+            	<j:set var="absoluteLocation" value="${maven.spinner.wiki.absolute.css.directory.location}"/>
+            	<j:set var="newImport">@import("${absoluteLocation}/${cssFile}");</j:set>
+            	<x:element name="style">
+            	     <x:attribute name="type">text/css</x:attribute>
+            	     ${newImport.replaceAll(" ", "")}
+            	</x:element>
+            </jsl:template>
+            
+            <jsl:template match="img">
+                <x:element name="img">
+					<x:forEach select="@*">
+					    <x:set var="oldName" select="name(.)"/>
+					    <x:set var="oldValue" select="string(.)"/>
+					    <j:choose>
+						    <j:when test="${oldName == 'src' and !oldValue.startsWith('http://') and !oldValue.startsWith('/')}">
+						        <x:attribute name="${oldName}">${maven.spinner.wiki.relativePath}/${oldValue}</x:attribute>
+						    </j:when>
+						    <j:otherwise>
+							    <x:attribute name="${oldName}">${oldValue}</x:attribute>
+						    </j:otherwise>
+					    </j:choose>    
+					</x:forEach>
+                </x:element>
+            </jsl:template>
+            
+             <jsl:template match="text()">
+                <x:set var="p" select="."/>
+                ${p.get(0).getText()}
+            </jsl:template>
+            
+            <jsl:template match="*">
+                <x:copy>
+					<jsl:applyTemplates select="* | text()"/>
+			    </x:copy>
+            </jsl:template>
+           
+            
+        </jsl:stylesheet>
+    </j:jelly>

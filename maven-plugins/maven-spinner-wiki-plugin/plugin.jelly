@@ -4,10 +4,11 @@
 		 xmlns:doc="doc"
 		 xmlns:log="jelly:log"
 		 xmlns:x="jelly:xml"
-		 xmlns:jsl="jelly:jsl">
+		 xmlns:jsl="jelly:jsl"
+		 xmlns:html="jelly:html">
 		 
   <!-- 
-      @todo split this goal into smaller ones
+      @refactor split this goal into smaller ones
   -->
   <goal name="spinner-wiki:generate-templates" prereqs="spinner-wiki:clean">
   	
@@ -41,7 +42,7 @@
   	<x:parse var="navFile" xml="${siteNavFile}"/>
     <j:include file="${plugin.resources}/navigation.jsl"/>
   	<j:file name="${maven.docs.src}/navigation.xml" prettyPrint="true">
-  	  	<jsl:style select="$navFile" stylesheet="${spinnerWikiNavigationShhet}"/>
+  	  	<jsl:style select="$navFile" stylesheet="${spinnerWikiNavigationSheet}"/>
     </j:file>
 	
 	<!-- perform jsl transformation -->
@@ -71,15 +72,30 @@
   	<j:forEach items="${generatedTemplates.iterator()}" var="template">
   		<log:info>creating template : ${template}</log:info>
   		
+  		<!-- get the final file name - i.e. path -->
 	    <util:file var="templateFile" name="${template}"/>
   		<j:set var="fileName">${templateFile.getName()}</j:set>
   		<j:if test="${fileName != 'wchanges.html'}">
-  			<j:set var="newFileName" value="${fileName.substring(0, fileName.indexOf('.'))}.htm"/>
-	  		<ant:copy file="${wikiDestTempDir}/${fileName}" tofile="${wikiDestDir}/${newFileName}"/>
-	  	</j:if>
-	  	<j:if test="${fileName == 'wchanges.html'}">
-	  		<ant:copy file="${wikiDestTempDir}/${fileName}" tofile="${wikiDestDir}/changes.htm"/>
-	  	</j:if>
+  		    <j:set var="newFileName" value="${wikiDestDir}/${fileName.substring(0, fileName.indexOf('.'))}.htm"/>
+  		</j:if>
+  		<j:if test="${fileName == 'wchanges.html'}">
+	  		<j:set var="newFileName" value="${wikiDestDir}/changes.htm"/>
+  		</j:if>
+  		
+  		<!-- update 'src' and 'style' elements of the html templates -->
+		<ant:delete file="${newFileName}" quiet="true"/>
+		
+		<html:parse html="${template}" var="myHtmlFile"/>
+		
+		<j:include file="${plugin.resources}/htmlTemplate.jsl"/>
+		
+		<!-- ensure dest directory exists -->
+		<ant:mkdir dir="${wikiDestDir}"/>
+		
+	  	<j:file name="${newFileName}" prettyPrint="true">
+	  	    <jsl:style select="$myHtmlFile" stylesheet="${htmlTransformationSheet}"/>
+	    </j:file>
+
   	</j:forEach>
   	
   	<!-- grab css sheets -->

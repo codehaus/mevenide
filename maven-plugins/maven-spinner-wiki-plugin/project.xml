@@ -34,6 +34,57 @@
     		<timezone>+1</timezone>
     	</developer>
     </developers>
+    <dependencies>
+        <dependency>
+            <groupId>commons-jelly</groupId>
+            <artifactId>commons-jelly-tags-log</artifactId>
+            <version>SNAPSHOT</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>commons-jelly</groupId>
+            <artifactId>commons-jelly-tags-util</artifactId>
+            <version>SNAPSHOT</version>
+        </dependency>	
+            
+        <dependency>
+            <groupId>commons-jelly</groupId>
+            <artifactId>commons-jelly-tags-xml</artifactId>
+            <version>SNAPSHOT</version>
+        </dependency>	
+            
+        <dependency>
+            <groupId>commons-jelly</groupId>
+            <artifactId>commons-jelly-tags-junit</artifactId>
+            <version>SNAPSHOT</version>
+        </dependency>	
+        
+        <dependency>
+            <groupId>commons-jelly</groupId>
+            <artifactId>commons-jelly-tags-jsl</artifactId>
+            <version>SNAPSHOT</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <version>1.0</version>
+        </dependency>
+            
+        <dependency>
+            <groupId>commons-jelly</groupId>
+            <artifactId>commons-jelly-tags-html</artifactId>
+            <version>SNAPSHOT</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>nekohtml</groupId>
+            <artifactId>nekohtml</artifactId>
+            <version>0.8.1</version>
+        </dependency>   
+         
+    </dependencies>
+    
     <build>
       <resources>
         <resource>
