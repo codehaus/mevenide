@@ -25,7 +25,6 @@
 	<classpathentry sourcepath="ORG_ECLIPSE_PLATFORM_SOURCE_SRC/org.eclipse.ui.externaltools_3.0.0/externaltoolssrc.zip" kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.ui.externaltools_3.0.0/externaltools.jar"/>
 	<classpathentry sourcepath="ORG_ECLIPSE_PLATFORM_SOURCE_SRC/org.eclipse.jface.text_3.0.0/jfacetextsrc.zip" kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.jface.text_3.0.0/jfacetext.jar"/>
 	<classpathentry sourcepath="ORG_ECLIPSE_PLATFORM_SOURCE_SRC/org.eclipse.text_3.0.0/textsrc.zip" kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.text_3.0.0/text.jar"/>
-	<classpathentry sourcepath="ORG_ECLIPSE_PLATFORM_SOURCE_SRC/org.eclipse.update.ui.forms_3.0.0/formssrc.zip" kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.update.ui.forms_3.0.0/forms.jar"/>
 	<classpathentry sourcepath="ORG_ECLIPSE_PLATFORM_SOURCE_SRC/org.eclipse.ui.workbench.texteditor_3.0.0/texteditorsrc.zip" kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.ui.workbench.texteditor_3.0.0/texteditor.jar"/>
 	<classpathentry sourcepath="ORG_ECLIPSE_PLATFORM_SOURCE_SRC/org.eclipse.ui.editors_3.0.0/editorssrc.zip" kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.ui.editors_3.0.0/editors.jar"/>
 	<classpathentry sourcepath="ORG_ECLIPSE_PLATFORM_SOURCE_SRC/org.eclipse.core.runtime.compatibility_3.0.0/compatibilitysrc.zip" kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.core.runtime.compatibility_3.0.0/compatibility.jar"/>

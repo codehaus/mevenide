@@ -16,6 +16,8 @@
  */
 package org.mevenide.ui.eclipse.editors.pom;
 
+import java.io.StringReader;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Project;
@@ -31,7 +33,9 @@ import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.editor.IFormPage;
+import org.mevenide.project.io.IProjectUnmarshaller;
 import org.mevenide.ui.eclipse.Mevenide;
+import org.mevenide.util.DefaultProjectUnmarshaller;
 
 /**
  * Presents the raw POM source in a basic XML editor.
@@ -54,9 +58,12 @@ public class PomXmlSourcePage
 	private boolean active = false;
 	private int index;
 
+	IProjectUnmarshaller unmarshaller;
+	
 	public PomXmlSourcePage(MevenidePomEditor pomEditor) {
 		super();
 		this.editor = pomEditor;
+		unmarshaller = new DefaultProjectUnmarshaller();
 		
 		setSourceViewerConfiguration(new PomXmlConfiguration());
 		initializeDocumentListener();
@@ -241,4 +248,20 @@ public class PomXmlSourcePage
 		// TODO Auto-generated method stub
 		return false;
 	}
+	
+	public boolean canLeaveThePage() {
+		IDocument document = getDocumentProvider().getDocument(getEditorInput());
+	    StringReader reader = new StringReader(document.get());
+	    try {
+		    Project pom = null;
+	    	pom = unmarshaller.parse(reader);
+	    	return true;
+		}
+	    catch ( Exception e ) {
+	    	log.info("Cannot Leave Page due to parsing errors. reason : ", e);
+	    	return false;
+	    }
+	}
 }
+
+

@@ -34,7 +34,6 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.IPluginDescriptor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jdt.core.IJavaProject;
@@ -59,6 +58,7 @@ import org.osgi.framework.BundleContext;
  * @version $Id$
  * 
  * @todo move preferences related fields outside of Mevenide class 
+ * @todo get rid of the static method and make use of new bundle capabilities
  *  
  */
 public class Mevenide extends AbstractUIPlugin {
@@ -92,9 +92,9 @@ public class Mevenide extends AbstractUIPlugin {
 
 
     /// initialization methods ---
-	public Mevenide(IPluginDescriptor descriptor) throws Exception {
+	public Mevenide() throws Exception {
 		
-		super(descriptor);
+		super();
 		try {
 			plugin = this;
 			NATURE_ID = Mevenide.getResourceString("maven.nature.id");
@@ -227,7 +227,7 @@ public class Mevenide extends AbstractUIPlugin {
     public static ImageDescriptor getImageDescriptor(String relativePath) {
         String iconPath = Mevenide.getResourceString("IconsPath");
         try {
-            URL installURL = Mevenide.getPlugin().getDescriptor().getInstallURL();
+            URL installURL = plugin.getBundle().getEntry("/");
             URL url = new URL(installURL, iconPath + "/" + relativePath);
             return ImageDescriptor.createFromURL(url);
         } 
@@ -274,7 +274,7 @@ public class Mevenide extends AbstractUIPlugin {
 	}
     public String getEffectiveDirectory() {
         try {
-        	URL installBase = Mevenide.getPlugin().getDescriptor().getInstallURL();
+        	URL installBase = getBundle().getEntry("/");
         	return new File(new File(Platform.resolve(installBase).getFile()).getAbsolutePath()).toString();
         }
         catch (IOException e) {
@@ -285,7 +285,7 @@ public class Mevenide extends AbstractUIPlugin {
     
     public String getForeheadConf() {
         try {
-            URL installBase = Mevenide.getPlugin().getDescriptor().getInstallURL();
+            URL installBase = getBundle().getEntry("/");
             File f = new File(new File(Platform.resolve(installBase).getFile()).getAbsolutePath(), "conf.file");
             return f.getAbsolutePath();
         }
@@ -314,7 +314,7 @@ public class Mevenide extends AbstractUIPlugin {
 				public String getForeheadLibrary() {
 					if ( foreHead == null ) {
 						try {
-							URL foreHeadURL = new URL(Platform.resolve(Mevenide.getPlugin().getDescriptor().getInstallURL()), "lib/" + Mevenide.getResourceString("forehead.library"));
+							URL foreHeadURL = new URL(Platform.resolve(getBundle().getEntry("/")), "lib/" + Mevenide.getResourceString("forehead.library"));
                           	//@todo could cause bug if plugin isnot installed locally. URLs should be resolved in other way
                           	foreHead = foreHeadURL.getFile();
                             log.debug("ForeHead library : " + foreHeadURL);
