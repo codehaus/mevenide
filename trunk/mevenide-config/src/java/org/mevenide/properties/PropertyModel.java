@@ -137,7 +137,7 @@ public class PropertyModel
 		    Iterator it = getList().iterator();
 		    while (it.hasNext()) {
 		        writer.write(it.next().toString());
-		        writer.write(Character.LINE_SEPARATOR);
+		        writer.write('\n');
 		    }
 		}
 		finally {
