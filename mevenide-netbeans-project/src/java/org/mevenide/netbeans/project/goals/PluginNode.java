@@ -1,6 +1,6 @@
 /* ==========================================================================
  * Copyright 2003-2004 Apache Software Foundation
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -27,71 +27,58 @@ import org.openide.util.NbBundle;
  *
  * @author  Milos Kleint (ca206216@tiscali.cz)
  */
-public class PluginNode extends AbstractNode implements GoalNameCookie
-{
-    private IGoalsGrabber grabber;
+public class PluginNode extends AbstractNode implements GoalNameCookie {
     private GoalNameCookie cookie;
     /** Creates a new instance of PluginNode */
-    public PluginNode(String plugin, IGoalsGrabber grabber)
-    {
+    public PluginNode(String plugin, IGoalsGrabber grabber) {
         super(new PluginChildren(plugin, grabber));
         setName(plugin);
         String displayName = plugin;
-        if (IGoalsGrabber.ORIGIN_PROJECT.equals(grabber.getOrigin(plugin)))
-        {
-            displayName = displayName + NbBundle.getMessage(PluginNode.class, "PluginNode.projectSpecific"); 
+        if (IGoalsGrabber.ORIGIN_PROJECT.equals(grabber.getOrigin(plugin))) {
+            displayName = displayName + NbBundle.getMessage(PluginNode.class, "PluginNode.projectSpecific");
         }
         setDisplayName(displayName);
         setShortDescription(grabber.getDescription(plugin));
-        this.grabber = grabber;
         setIconBase("org/mevenide/netbeans/project/goals/PluginIcon");
     }
     
-    public Node.Cookie getCookie(Class clazz)
-    {
+    public Node.Cookie getCookie(Class clazz) {
         Node.Cookie retValue;
-        if (GoalNameCookie.class.isAssignableFrom(clazz))
-        {
+        if (GoalNameCookie.class.isAssignableFrom(clazz)) {
             return this;
         }
         retValue = super.getCookie(clazz);
         return retValue;
-    }    
+    }
     
-/**
- * goalNameCookie method
- */    
-    public String getGoalName()
-    {
+    /**
+     * goalNameCookie method
+     */
+    public String getGoalName() {
         return getName();
     }
     
-    private static class PluginChildren extends Children.Keys
-    {
+    private static class PluginChildren extends Children.Keys {
         private IGoalsGrabber grabber;
         private String plugin;
-
-        public PluginChildren(String plugin, IGoalsGrabber grabber)
-        {
-            this.plugin = plugin;
-            this.grabber = grabber;
+        
+        public PluginChildren(String plug, IGoalsGrabber grab) {
+            plugin = plug;
+            grabber = grab;
         }
         
-        public void addNotify()
-        {
+        public void addNotify() {
             super.addNotify();
             setKeys(grabber.getGoals(plugin));
         }
         
-        protected Node[] createNodes(Object obj)
-        {
+        protected Node[] createNodes(Object obj) {
             String goal = (String)obj;
-            return new Node[] { new GoalNode(plugin, grabber, goal) 
+            return new Node[] { new GoalNode(plugin, grabber, goal)
             };
         }
-
-        public void removeNotify()
-        {
+        
+        public void removeNotify() {
             setKeys(Collections.EMPTY_LIST);
             super.removeNotify();
         }
