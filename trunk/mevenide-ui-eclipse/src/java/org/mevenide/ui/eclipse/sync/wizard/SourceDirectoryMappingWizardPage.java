@@ -14,10 +14,24 @@
  */
 package org.mevenide.ui.eclipse.sync.wizard;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.jdt.internal.ui.wizards.NewWizardMessages;
+import org.eclipse.jdt.internal.ui.wizards.TypedElementSelectionValidator;
+import org.eclipse.jdt.internal.ui.wizards.TypedViewerFilter;
+import org.eclipse.jdt.internal.ui.wizards.buildpaths.FolderSelectionDialog;
+import org.eclipse.jface.viewers.ILabelProvider;
+import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -27,10 +41,16 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.TableItem;
+import org.eclipse.ui.dialogs.ElementTreeSelectionDialog;
+import org.eclipse.ui.dialogs.ISelectionStatusValidator;
+import org.eclipse.ui.model.WorkbenchContentProvider;
+import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.mevenide.ui.eclipse.Mevenide;
+import org.mevenide.ui.eclipse.sync.model.SourceDirectory;
 import org.mevenide.ui.eclipse.sync.model.SourceDirectoryGroup;
 import org.mevenide.ui.eclipse.sync.model.SourceDirectoryGroupMarshaller;
 import org.mevenide.ui.eclipse.sync.view.SourceDirectoryMappingViewControl;
+import org.mevenide.ui.eclipse.util.ResourceSorter;
 
 /**
  * 
@@ -104,7 +124,7 @@ public class SourceDirectoryMappingWizardPage extends WizardPage {
 		GridData addButtonData = new GridData(GridData.FILL_HORIZONTAL);
 		addButtonData.grabExcessHorizontalSpace = true;
 		addButton.setLayoutData(addButtonData);
-		addButton.setEnabled(false);
+		addButton.setEnabled(true);
 		
 		Button removeButton = new Button(composite, SWT.PUSH);
 		removeButton.setText("Remove");
@@ -120,6 +140,21 @@ public class SourceDirectoryMappingWizardPage extends WizardPage {
 		GridData refreshButtonData = new GridData(GridData.FILL_HORIZONTAL);
 		refreshButtonData.grabExcessHorizontalSpace = true;
 		refreshButton.setLayoutData(refreshButtonData);
+		
+		addButton.addSelectionListener(
+				new SelectionAdapter() {
+					public void widgetSelected(SelectionEvent e) {
+						//ProjectDirectoryBrowser browser = new ProjectDirectoryBrowser(Mevenide.getPlugin().getProject());
+						IContainer container = openSourceDirectoryDialog();
+						if ( container != null ) {
+							SourceDirectory directory = new SourceDirectory(container.getFullPath().removeFirstSegments(1).toOSString());
+							((SourceDirectoryGroup) viewer.getInput()).addSourceDirectory(directory);
+							viewer.refresh();
+						}
+						
+					}
+				}
+		);
 		
 		removeButton.addSelectionListener(
 				new SelectionAdapter() {
@@ -137,12 +172,64 @@ public class SourceDirectoryMappingWizardPage extends WizardPage {
 		refreshButton.addSelectionListener(
 				new SelectionAdapter() {
 					public void widgetSelected(SelectionEvent e) {
-						setInput(project);
+						initInput(project);
 					}
 				}
 		);
 	}
 	
+	private void initInput(IProject project) {
+		viewer.setInput(new SourceDirectoryGroup(project));
+	}
+	
+	/**
+	 * method extracted from org.eclipse.jdt.internal.ui.wizards.buildpaths.OtuputLocationDialog
+	 * 
+	 * @return
+	 */
+	private IContainer openSourceDirectoryDialog() {
+		IWorkspaceRoot root= project.getWorkspace().getRoot();
+		Class[] acceptedClasses= new Class[] { IProject.class, IFolder.class };
+		ISelectionStatusValidator validator= new TypedElementSelectionValidator(acceptedClasses, false);
+		IProject[] allProjects= root.getProjects();
+		
+		//modified ArrayList rejectedElements= new ArrayList(allProjects.length);
+		ArrayList rejectedElements= new ArrayList();
+		for (int i= 0; i < allProjects.length; i++) {
+			if (!allProjects[i].equals(project)) {
+				rejectedElements.add(allProjects[i]);
+			}
+		}
+		
+		//added
+		List list = ((SourceDirectoryGroup)viewer.getInput()).getSourceDirectories();
+		for (int i = 0; i < list.size(); i++) {
+			SourceDirectory directory = (SourceDirectory) list.get(i);
+			System.out.println(directory.getDirectoryPath());
+			rejectedElements.add(project.getFolder(directory.getDirectoryPath()));
+		} 
+	
+		ViewerFilter filter= new TypedViewerFilter(acceptedClasses, rejectedElements.toArray());
+
+		ILabelProvider lp= new WorkbenchLabelProvider();
+		ITreeContentProvider cp= new WorkbenchContentProvider();
+
+		IResource initSelection= null;
+		
+		FolderSelectionDialog dialog= new FolderSelectionDialog(getShell(), lp, cp);
+		dialog.setTitle(NewWizardMessages.getString("OutputLocationDialog.ChooseOutputFolder.title")); //$NON-NLS-1$
+		dialog.setValidator(validator);
+		dialog.setMessage(NewWizardMessages.getString("OutputLocationDialog.ChooseOutputFolder.description")); //$NON-NLS-1$
+		dialog.addFilter(filter);
+		dialog.setInput(root);
+		dialog.setInitialSelection(initSelection);
+		dialog.setSorter(new ResourceSorter(ResourceSorter.NAME));
+
+		if (dialog.open() == ElementTreeSelectionDialog.OK) {
+			return (IContainer)dialog.getFirstResult();
+		}
+		return null;
+	}
 	
 	public void setInput(IProject project) {
 		this.project = project;
