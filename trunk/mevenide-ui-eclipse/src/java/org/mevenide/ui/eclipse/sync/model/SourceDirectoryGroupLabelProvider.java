@@ -73,19 +73,17 @@ public class SourceDirectoryGroupLabelProvider implements ITableLabelProvider {
 		}
 		if ( columnIndex == INHERIT_IDX ) {
 			if ( ((SourceDirectory) element).isInherited() ) {
-				if ( ((SourceDirectory) element).getGroup().isInherited() ) {
+				if ( !((SourceDirectory) element).getGroup().isInherited() ) {
 					return Mevenide.getImageDescriptor("checked-grayed-16.gif").createImage();
 				}
-				else {
-					return Mevenide.getImageDescriptor("checked-16.gif").createImage();
-				}
+				return Mevenide.getImageDescriptor("checked-16.gif").createImage();
 			}
-			if ( ((SourceDirectory) element).getGroup().isInherited() ) {
+			
+			if ( !((SourceDirectory) element).getGroup().isInherited() ) {
 				return Mevenide.getImageDescriptor("unchecked-grayed-16.gif").createImage();
 			}
-			else {
-				return Mevenide.getImageDescriptor("unchecked-16.gif").createImage();
-			}			
+			return Mevenide.getImageDescriptor("unchecked-16.gif").createImage();
+						
 			
 		}
 		return null;

@@ -121,7 +121,12 @@ public abstract class DependencyGroupMarshaller {
 		
 				if ( dependencyGroupElement.getAttributeValue(PROJECT_NAME_ATTR).equals(project.getName()) ) {
 					long timeStamp = Long.parseLong(dependencyGroupElement.getAttributeValue(TIMESTAMP_ATTR));
+					boolean isGroupInherited = Boolean.valueOf(dependencyGroupElement.getAttributeValue(INHERIT_ATTR)).booleanValue();
+					group.setInherited(isGroupInherited);
+					log.debug("Group.isInherited = " + (isGroupInherited));
+					
 					List sources = dependencyGroupElement.getChildren(DEPENDENCY_ELEM);
+					
 					for (int j = 0; j < sources.size(); j++) {
 						Element dependencyElement =  (Element) sources.get(j);
 						
@@ -142,6 +147,7 @@ public abstract class DependencyGroupMarshaller {
 						
 						String savedType = dependencyElement.getAttributeValue(TYPE_ATTR);
 						dependency.setType(savedType == null ? "" : savedType);
+						
 						
 						//dependency.setProperties(getProperties(dependencyElement, timeStamp));
 						Map ps = getProperties(dependencyElement, timeStamp);
@@ -172,7 +178,7 @@ public abstract class DependencyGroupMarshaller {
 			
 //          dont check project again. all required pom dependencies should have been saved to file
  
-			List projectDependencies = group.getDependencies();
+			List projectDependencies = group.getDependencyWrappers();
 			for (int i = 0; i < projectDependencies.size(); i++) {
 				boolean alreadyAddedDependency = false;
 				DependencyWrapper projectDependency = (DependencyWrapper) projectDependencies.get(i);
@@ -189,7 +195,11 @@ public abstract class DependencyGroupMarshaller {
 			}
 		
 			group.setDependencies(dependenciesList);
-			
+//			group.setDependencies(new ArrayList());
+//			for (int i = 0; i < dependenciesList.size(); i++) {
+//                DependencyWrapper wrapper = (DependencyWrapper) dependenciesList.get(i);
+//                group.addDependency(wrapper); 
+//            }
 	
 		}
 
@@ -239,6 +249,9 @@ public abstract class DependencyGroupMarshaller {
 		Element dependencyGroup = new Element(DEPENDENCY_GROUP_ELEM);
 		dependencyGroup.setAttribute(PROJECT_NAME_ATTR, group.getProjectName());
 		
+		log.debug("Saving DependencyGroup - isInherited = " + (group.isInherited()));
+		//dependencyGroup.setAttribute(INHERIT_ATTR, Boolean.toString(group.isInherited()));
+		
 		List candidates = document.getRootElement().getChildren(DEPENDENCY_GROUP_ELEM);
 		
 		for (int i = 0; i < candidates.size(); i++) {
@@ -250,14 +263,17 @@ public abstract class DependencyGroupMarshaller {
 		}
 		
 		dependencyGroup.setAttribute(TIMESTAMP_ATTR, Long.toString(timeStamp));
+		dependencyGroup.setAttribute(INHERIT_ATTR, Boolean.toString(group.isInherited()));
+		log.debug("Saving DependencyGroup - jdomElem.isInherited = " + (dependencyGroup.getAttributeValue(INHERIT_ATTR)));
+		
 		
 //		if ( group.getDependencies().size() == 0 ) {
 //			document.getRootElement().addContent(dependencyGroup);
 //			return;
 //		}
 		
-		saveDependencies(group.getDependencies(), timeStamp, dependencyGroup);
-		saveDependencies(group.getExcludedDependencies(), 0, dependencyGroup);
+		saveDependencies(group.getDependencyWrappers(), timeStamp, dependencyGroup);
+		saveDependencies(group.getExcludedDependencyWrappers(), 0, dependencyGroup);
 		
 		log.debug("Saving " + dependencyGroup.getChildren(DEPENDENCY_ELEM).size() + " dependencies");
 		

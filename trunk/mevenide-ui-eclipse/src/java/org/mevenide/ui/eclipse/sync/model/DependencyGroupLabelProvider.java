@@ -60,7 +60,7 @@ public class DependencyGroupLabelProvider implements ITableLabelProvider {
 	
     private static final int DESCRIPTION_IDX = 0;
 	private static final int VALUE_IDX = 1;
-	private static final int CHECK_IDX = 2;
+	private static final int INHERIT_IDX = 2;
 	
 	
     public DependencyGroupLabelProvider() {
@@ -77,16 +77,16 @@ public class DependencyGroupLabelProvider implements ITableLabelProvider {
 			return Mevenide.getImageDescriptor("dependency-16.gif").createImage();
 		}
 
-		if ( columnIndex == CHECK_IDX && element instanceof DependencyWrapper ) {
+		if ( columnIndex == INHERIT_IDX && element instanceof DependencyWrapper ) {
 			if ( ((DependencyWrapper) element).isInherited() ) {
-				if ( ((DependencyWrapper) element).getDependencyGroup().isInherited() ) {
+				if ( !((DependencyWrapper) element).getDependencyGroup().isInherited() ) {
 					return Mevenide.getImageDescriptor("checked-grayed-16.gif").createImage();
 				}
 				else {
 					return Mevenide.getImageDescriptor("checked-16.gif").createImage();
 				}
 			}
-			if ( ((DependencyWrapper) element).getDependencyGroup().isInherited() ) {
+			if ( !((DependencyWrapper) element).getDependencyGroup().isInherited() ) {
 				return Mevenide.getImageDescriptor("unchecked-grayed-16.gif").createImage();
 			}
 			else {
@@ -98,7 +98,7 @@ public class DependencyGroupLabelProvider implements ITableLabelProvider {
 	
 	//@refactor if/else are scary !
 	public String getColumnText(Object element, int columnIndex) {
-		if ( columnIndex == CHECK_IDX ) {
+		if ( columnIndex == INHERIT_IDX ) {
 			return "";
 		}
 		if ( columnIndex == DESCRIPTION_IDX ) {

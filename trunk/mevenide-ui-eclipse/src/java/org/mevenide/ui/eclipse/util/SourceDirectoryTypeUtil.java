@@ -86,5 +86,21 @@ public class SourceDirectoryTypeUtil {
 		return (Integer) sourceIndexMap.get(sourceType); 
 	}
 
+    public static String guessSourceType(String path) {
+        if ( path.indexOf("aspect") != -1 ) {
+ 			return ProjectConstants.MAVEN_ASPECT_DIRECTORY;
+        }
+        if ( path.indexOf("test") != -1 ) {
+			if ( path.indexOf("conf") != -1 ) {
+        		return ProjectConstants.MAVEN_TEST_RESOURCE;
+        	}
+			return  ProjectConstants.MAVEN_TEST_DIRECTORY; 
+        } 
+        if ( path.indexOf("conf") != -1 ) {
+        	return ProjectConstants.MAVEN_RESOURCE;
+        } 
+        return ProjectConstants.MAVEN_SRC_DIRECTORY;
+    }
+
 	
 }

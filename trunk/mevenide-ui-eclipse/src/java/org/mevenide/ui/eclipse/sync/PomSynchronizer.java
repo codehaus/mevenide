@@ -49,6 +49,7 @@
 package org.mevenide.ui.eclipse.sync;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -64,6 +65,7 @@ import org.mevenide.ui.eclipse.IPathResolver;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.sync.model.DependencyGroup;
 import org.mevenide.ui.eclipse.sync.model.DependencyGroupMarshaller;
+import org.mevenide.ui.eclipse.sync.model.DependencyWrapper;
 import org.mevenide.ui.eclipse.sync.model.SourceDirectory;
 import org.mevenide.ui.eclipse.sync.model.SourceDirectoryGroup;
 import org.mevenide.ui.eclipse.sync.model.SourceDirectoryGroupMarshaller;
@@ -104,13 +106,13 @@ public class PomSynchronizer extends AbstractPomSynchronizer implements ISynchro
 			if ( SynchronizerUtil.shouldSynchronizePom(project) ) {
 				log.debug("About to update pom");
 				DependencyGroup dependencyGroup = DependencyGroupMarshaller.getDependencyGroup(project, Mevenide.getPlugin().getFile("statedDependencies.xml"));
-				SourceDirectoryGroup sourceGroup = SourceDirectoryGroupMarshaller.getSourceDirectoryGroup(project, Mevenide.getPlugin().getFile("sourceTypes.xml"));
+				SourceDirectoryGroup sourceGroup = SourceDirectoryGroupMarshaller.getSourceDirectoryGroup(project, Mevenide.getPlugin().getFile("sourceTypes.xml"), 0);
 				updatePom(sourceGroup, dependencyGroup, Mevenide.getPlugin().getPom());
 			}
 			
 		}
 		catch (Exception e) {
-			//e.printStackTrace();
+			e.printStackTrace();
 			log.debug("Unable to synchronize project '" + project.getName() + "' due to : " + e);
 		}
 	}
@@ -150,6 +152,8 @@ public class PomSynchronizer extends AbstractPomSynchronizer implements ISynchro
 		pomWriter.resetSourceDirectories(pomFile);
 		
 		//WICKED if/else -- to be removed when SourceDirectoryBatchUpdate is done - tho this will only move the problem backward
+		log.debug("Writing back " + sourceGroup.getNonInheritedSourceDirectories().size());
+		
 		for (int i = 0; i < sourceGroup.getNonInheritedSourceDirectories().size(); i++) {
 			SourceDirectory directory = (SourceDirectory) sourceGroup.getNonInheritedSourceDirectories().get(i);
 			if ( directory.isSource() ) {
@@ -160,15 +164,20 @@ public class PomSynchronizer extends AbstractPomSynchronizer implements ISynchro
 			}
 			if ( directory.getDirectoryType().equals(ProjectConstants.MAVEN_TEST_RESOURCE ) ) {
 				pomWriter.addUnitTestResource(directory.getDirectoryPath(), pomFile);
-			}				
+			}
+					
 		}
 		
 		//List dependencies = dependencyGoup.getDependencies();
-		List dependencies = dependencyGoup.getNonInheritedDependencies();
+		List dependencies = dependencyGoup.getNonInheritedDependencyWrappers();
 		log.debug("Writing back " + dependencies.size() + " dependencies to file '" + pomFile.getName() +"'");
 		//dependencies.addAll(ProjectUtil.getCrossProjectDependencies());
 		
-		pomWriter.setDependencies(dependencies, pomFile);
+		List nonInheritedDependencies = new ArrayList();
+		for (int i = 0; i < dependencies.size(); i++) {
+			nonInheritedDependencies.add(((DependencyWrapper) dependencies.get(i)).getDependency());
+		}
+		pomWriter.setDependencies(nonInheritedDependencies, pomFile);
 		
 		Mevenide.getPlugin().setBuildPath();
 	}
