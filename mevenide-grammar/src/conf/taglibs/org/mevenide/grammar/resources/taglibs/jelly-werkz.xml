@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- code completion definition for the jelly-tag library -->
+
+<taglib name="jelly:werkz">
+    <tag name="attainGoal">
+        <attr name="name" cctypes="goal"/>
+        <attr name="session"/>
+        <attr name="trim"/>
+    </tag>
+    <tag name="mavenGoal">
+        <attr name="description"/>
+        <attr name="name" cctypes="goal"/>
+        <attr name="prereqs" cctypes="goal"/>
+        <attr name="trim"/>
+    </tag>
+</taglib>
