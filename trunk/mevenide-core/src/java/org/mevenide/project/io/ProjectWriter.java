@@ -247,7 +247,7 @@ public class ProjectWriter {
 
 	
     
-    private void jarOverride(String path, File propertiesFile, File pom) throws Exception {
+    void jarOverride(String path, File propertiesFile, File pom) throws Exception {
 		Project project = ProjectReader.getReader().read(pom);
 		if ( project.getDependencies() == null ) {
 			project.setDependencies(new ArrayList());
@@ -269,6 +269,7 @@ public class ProjectWriter {
 		addPropertiesOverride(path, propertiesFile, dep);
 		
 		//project.getDependencies().remove(DependencyFactory.getFactory().getDependency(path));
+		log.debug("adding unresolved dependency (" + path + ")" + DependencyUtil.toString(dep) + "to file " + pom.getAbsolutePath());
 		project.addDependency(dep);
 		
 		write(project, pom);
