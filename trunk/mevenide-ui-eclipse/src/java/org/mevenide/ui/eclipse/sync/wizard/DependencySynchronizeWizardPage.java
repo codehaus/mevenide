@@ -14,6 +14,8 @@
  */
 package org.mevenide.ui.eclipse.sync.wizard;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.viewers.TableTreeViewer;
 import org.eclipse.jface.wizard.WizardPage;
@@ -31,6 +33,7 @@ import org.mevenide.ui.eclipse.sync.dependency.DependencyViewUtil;
  * 
  */
 public class DependencySynchronizeWizardPage extends WizardPage {
+	private static Log log = LogFactory.getLog(DependencySynchronizeWizardPage.class);
 	
 	private TableTreeViewer viewer;
 	
@@ -64,7 +67,7 @@ public class DependencySynchronizeWizardPage extends WizardPage {
 				newInput = getSavedInput(project);
 			}
 			catch (Exception e) {
-				e.printStackTrace();
+				log.info("Error occured while restoring previously saved DependencyGroup for project '" + project.getName() + "'. Reason : " + e);
 	
 			}
 			if ( newInput == null ) {

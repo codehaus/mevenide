@@ -20,6 +20,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.eclipse.jface.wizard.Wizard;
 import org.mevenide.core.AbstractRunner;
 
@@ -30,7 +32,8 @@ import org.mevenide.core.AbstractRunner;
  * 
  */
 public class LaunchWizard extends Wizard {
-	
+	private static Log log = LogFactory.getLog(LaunchWizard.class); 
+	 
 	private LaunchWizardPage launchPage;
 	
 	public LaunchWizard() {
@@ -47,7 +50,7 @@ public class LaunchWizard extends Wizard {
 			
 		}
 		catch (Exception e) {
-			e.printStackTrace();
+			log.debug("Unable to launch MavenRunner due to : " + e);
 		}
 		
 		return true;

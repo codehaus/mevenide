@@ -15,6 +15,8 @@ package org.mevenide.ui.eclipse.sync.source;
 
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.JavaCore;
@@ -39,6 +41,8 @@ import org.mevenide.ui.eclipse.Mevenide;
  * 
  */
 public class SourceDirectoryViewPart extends ViewPart {
+	private static Log log = LogFactory.getLog(SourceDirectoryViewPart.class);
+	
 	/** 2 columns table viewer [source dir, source type] where source type is displayed in a CCombo */
 	private TableViewer viewer;
 	
@@ -76,7 +80,7 @@ public class SourceDirectoryViewPart extends ViewPart {
 				newInput = getSavedInput(project);
 			}
 			catch (Exception e) {
-				e.printStackTrace();
+				log.info("Error occured while retrieving previously saved SourceDirectoryGroup for project '" + project.getName() + "'. Reason : " + e);
 		
 			}
 			if ( newInput == null ) {
@@ -110,7 +114,7 @@ public class SourceDirectoryViewPart extends ViewPart {
 						SynchronizerFactory.getSynchronizer(ISynchronizer.IDE_TO_POM).synchronize();
 					}
 				} catch (Exception e) {
-					e.printStackTrace();
+					log.debug("Unable to synchronize POM due to : " + e);
 				}
 				
 				
@@ -127,7 +131,7 @@ public class SourceDirectoryViewPart extends ViewPart {
 						setInput(project);
 					}
 				} catch (Exception e) {
-					e.printStackTrace();
+					log.debug("Unable to refreash Dependency Mapping View due to : " + e);
 				}
 	
 			}
