@@ -108,7 +108,7 @@ public class MavenLaunchDelegate extends AbstractRunner implements ILaunchConfig
 			allVmArgs[allVmArgs.length - 1] = "-Dtools.jar=" + toolsJarArg; //$NON-NLS-1$
 		}
 		else {
-		    IStatus status = new Status(IStatus.ERROR, "mevenide", 1, "File tools.jar (classes.jar) cannot be found. Please set it in the preference pages.", null);
+		    IStatus status = new Status(IStatus.ERROR, "mevenide", 1, "File tools.jar (classes.jar) cannot be found. Please set it in the preference pages.", null); //$NON-NLS-1$ //$NON-NLS-2$
 		    throw new CoreException(status);
 		}
 		

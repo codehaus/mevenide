@@ -113,7 +113,7 @@ public class MavenArtifactNode extends ArtifactNode {
 	    String version = artifact.getDependency().getVersion();
 	    version = version != null ? resolve(version) : null;
 	    
-		return groupId + artifactId + (version != null ? SEPARATOR + version : "") ; //$NON-NLS-2$ //$NON-NLS-1$
+		return groupId + artifactId + (version != null ? SEPARATOR + version : "") ; //$NON-NLS-1$
 	}
 	
 	

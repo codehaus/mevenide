@@ -44,14 +44,12 @@ public class ManageActionDefinitionsAction extends Action {
     
     
     private void openDialog() {
-        //Dialog d = new CustomLaunchConfigurationDialog(Mevenide.getInstance().getWorkbenchWindow().getShell());
-        //d.open();
-        ILaunchConfiguration conf = DebugUIPlugin.getDefault().getLaunchConfigurationManager().getLastLaunch("org.mevenide.ui.launching.ActionDefinitionTabGroup");
+        ILaunchConfiguration conf = DebugUIPlugin.getDefault().getLaunchConfigurationManager().getLastLaunch(ActionDefinitionsManager.CUSTOM_CONFIG_TABGROUP_ID);
         
         DebugUITools.openLaunchConfigurationDialogOnGroup(
                 PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), 
                 null, 
-                "org.mevenide.ui.launching.custom.LaunchGroup");
+                ActionDefinitionsManager.CUSTOM_CONFIG_LAUNCHGROUP_ID); 
         
     }
     
