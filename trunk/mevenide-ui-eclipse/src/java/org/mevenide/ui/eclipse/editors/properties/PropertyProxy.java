@@ -30,8 +30,8 @@ public class PropertyProxy extends AbstractPomPropertySource {
 
 	private static final Log log = LogFactory.getLog(PropertyProxy.class);
 	
-	private static final String PROPERTY_NAME = "name";
-	private static final String PROPERTY_VALUE = "value";
+	public static final String PROPERTY_NAME = "name";
+	public static final String PROPERTY_VALUE = "value";
 
 	private String name;
 	private String value;
