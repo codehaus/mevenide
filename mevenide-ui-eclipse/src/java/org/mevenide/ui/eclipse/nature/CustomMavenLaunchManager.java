@@ -49,14 +49,6 @@ public class CustomMavenLaunchManager implements IWorkbenchWindowPulldownDelegat
     
     private IProject lastSelectedProject;
     
-    /**
-	 * Indicates whether the actino definitions have changed and
-	 * the sub menu needs to be recreated.
-	 * @todo always return true for now. will add event-based strategy later on
-	 */
-	protected boolean recreateMenu = true;
-	
-	
     public CustomMavenLaunchManager() {
         manageActionDefinitionsAction = new ManageActionDefinitionsAction();
     }
@@ -87,15 +79,12 @@ public class CustomMavenLaunchManager implements IWorkbenchWindowPulldownDelegat
 		// it is shown because of dynamic nature
 		menu.addMenuListener(new MenuAdapter() {
 			public void menuShown(MenuEvent e) {
-				if (recreateMenu) {
-					Menu m = (Menu)e.widget;
-					MenuItem[] items = m.getItems();
-					for (int i=0; i < items.length; i++) {
-						items[i].dispose();
-					}
-					fillMenu(m);
-					//recreateMenu = false;
+				Menu m = (Menu)e.widget;
+				MenuItem[] items = m.getItems();
+				for (int i=0; i < items.length; i++) {
+					items[i].dispose();
 				}
+				fillMenu(m);
 			}            
 		});
 	}
