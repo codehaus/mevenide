@@ -47,7 +47,7 @@ public class DynamicPreferencesManager extends PreferencesManager {
 	
 	public Map getPreferences() {
 	    Map preferences = super.getPreferences();
-	    Map dynamicPreferences = new HashMap(preferences.size());
+	    Map dynamicPreferences = new HashMap();
 	    for (Iterator it = preferences.keySet().iterator(); it.hasNext();) {
             String key = (String) it.next();
             String value = (String) preferences.get(key);
