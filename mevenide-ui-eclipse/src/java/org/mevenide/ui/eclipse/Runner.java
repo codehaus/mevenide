@@ -49,6 +49,7 @@ public class Runner extends AbstractRunner {
 	    }
 		Environment.setMavenHome(plugin.getMavenHome()); 
 		Environment.setJavaHome(plugin.getJavaHome());
+		Environment.setMavenRepository(plugin.getMavenRepository());
 	}
 
 	/**
@@ -63,11 +64,11 @@ public class Runner extends AbstractRunner {
         String[] vmArgs = ArgumentsManager.getVMArgs(this);
         String[] mavenArgs = getMavenArgs(options, goals);
         
-//        System.out.println("Classpath : ");
-//        System.out.println("\t");
-//        for (int i = 0; i < mavenCp.length; i++) {
-//			 System.out.print(mavenCp[i] + ";");
-//		}
+        System.out.println("Classpath : ");
+        System.out.println("\t");
+        for (int i = 0; i < mavenCp.length; i++) {
+			 System.out.println("\t" + mavenCp[i] + ";");
+		}
 //		System.out.println("\nSystem properties : ");
 //		System.out.println("\t");
 //		for (int i = 0; i < vmArgs.length; i++) {

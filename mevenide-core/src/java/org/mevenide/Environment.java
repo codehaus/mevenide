@@ -32,6 +32,9 @@ public class Environment {
     /** maven home directory */
     private static String mavenHome;
     
+	/** maven repository */
+	private static String mavenRepository;
+    
     /** java home directory */
     private static String javaHome;
     
@@ -87,6 +90,14 @@ public class Environment {
 		          + "lib" + File.separatorChar + "endorsed"
 		          + File.pathSeparator + Environment.getMavenHome()
 		          + File.separator + "lib" + File.separator + "endorsed";
+	}
+
+	public static String getMavenRepository() {
+		return mavenRepository;
+	}
+
+	public static void setMavenRepository(String repo) {
+		mavenRepository = repo;
 	}
 
 }
