@@ -163,7 +163,7 @@ public class DefaultPluginPanel extends JPanel implements ProjectPanel {
         OriginChange chng = LocationComboFactory.createPropertiesChange(project);
         String def = props.getProperty(key) ;
         def = def == null ? "" : def;
-        changes.put(key, new TableRowPropertyChange(key, value, location, tblProperties, LocationComboFactory.createPropertiesChange(project), def));
+        changes.put(key, new TableRowPropertyChange(key, value, location, LocationComboFactory.createPropertiesChange(project), def));
     }
     
     
