@@ -110,7 +110,6 @@ class DependencyUtil {
 	}
 	
 	private static String guessArtifactId(String fileName) {
-		//crappy trick cuz i really suck at regex
 		return fileName.substring(0,1) + split(fileName)[1];
 	}
 	
@@ -128,6 +127,11 @@ class DependencyUtil {
 	 * 
 	 * so we have $1 => artifactId ; $2 => version ; $4 => extension 
 	 *  
+	 * @bug for some artefacts such as jexl (jexl-1.0-beta-1.jar) this pattern donesnt work. 
+	 * 
+	 * someone please provide with a more correct pattern ! 
+	 * 
+	 * 
 	 * @param fileName
 	 * @return
 	 */
