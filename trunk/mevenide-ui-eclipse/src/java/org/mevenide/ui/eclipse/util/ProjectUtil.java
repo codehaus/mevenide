@@ -31,6 +31,8 @@ import org.mevenide.ui.eclipse.sync.source.IPathResolverDelegate;
  * 
  */
 public class ProjectUtil {
+	private ProjectUtil() {
+	}
 
 	public static void createPom(IProject project) throws Exception, CoreException {
 		
