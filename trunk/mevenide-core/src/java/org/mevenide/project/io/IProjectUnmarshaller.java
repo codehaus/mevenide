@@ -14,21 +14,20 @@
  *  limitations under the License.
  * =========================================================================
  */
-package org.mevenide.util;
+package org.mevenide.project.io;
 
-import org.mevenide.project.io.AbstractUnmarshallerTestCase;
-import org.mevenide.project.io.IProjectUnmarshaller;
+import java.io.Reader;
 
-/**
+import org.apache.maven.project.Project;
+
+
+/**  
  * 
- * @author Gilles Dodinet (gdodinet@wanadoo.fr)
- * @version $Id: DefaultProjectUnmarshallerTest.java 8 mai 2003 15:32:4913:34:35 Exp gdodinet 
+ * @author <a href="mailto:rhill2@free.fr">Gilles Dodinet</a>
+ * @version $Id$
  * 
  */
-public class DefaultProjectUnmarshallerTest extends AbstractUnmarshallerTestCase {
-
-	protected IProjectUnmarshaller getUnmarshaller() {
-        return new DefaultProjectUnmarshaller();
-    }
-	
+public interface IProjectUnmarshaller {
+    Project parse(Reader reader) throws Exception ;
+    
 }
