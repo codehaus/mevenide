@@ -73,7 +73,6 @@ public class MavenModule extends ModuleInstall {
             }
             File newFile = new File(plugins, CURRENT_VERSION);
             try {
-                System.out.println("copy file");
                 FileUtils.newFileUtils().copyFile(current, newFile, null, true);
             } catch (IOException exc) {
                 log.error("cannot copy maven-mevenide-plugin", exc);

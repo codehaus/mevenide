@@ -14,5 +14,6 @@
       <ant:copy toDir="${maven.build.dir}/nbm/netbeans/mevenide/maven-plugins" 
                  file="${pom.getDependencyPath('mevenide:maven-mevenide-plugin')}"/>
   </preGoal>  
+
 </project>
 

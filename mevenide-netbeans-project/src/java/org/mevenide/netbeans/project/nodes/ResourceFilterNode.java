@@ -24,6 +24,7 @@ import javax.swing.Action;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Resource;
+import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.loaders.DataObject;
 import org.openide.nodes.FilterNode;
@@ -44,8 +45,7 @@ class ResourceFilterNode extends FilterNode
     private boolean isIncluded;
     private boolean isFile;
     
-    ResourceFilterNode(Node original, File resPath, Resource res)
-    {
+    ResourceFilterNode(Node original, File resPath, Resource res) {
         super(original, new ResFilterChildren(original, resPath, res));
         resource = res;
         root = resPath;
@@ -53,9 +53,9 @@ class ResourceFilterNode extends FilterNode
         
         isIncluded = true;
         if (dobj != null) {
-            File file = FileUtil.toFile(dobj.getPrimaryFile());
+            FileObject rootFO = FileUtil.toFileObject(root);
 //            if (file != null && !file.isDirectory()) {
-                isIncluded = DirScannerSubClass.checkIncluded(file, root, resource);
+                isIncluded = DirScannerSubClass.checkIncluded(dobj.getPrimaryFile(), rootFO, resource);
 //            }
         }
     }

@@ -303,7 +303,7 @@ public class MavenSourcesImpl implements Sources {
             if (f != null) {
                 // MIXED, UNKNOWN, and SHARABLE -> include it
                 return (SharabilityQuery.getSharability(f) != SharabilityQuery.NOT_SHARABLE && 
-                        DirScannerSubClass.checkIncluded(f, rootFile, resource));
+                        DirScannerSubClass.checkIncluded(file, rootFolder, resource));
             } else {
                 // Not on disk, include it.
                 return true;

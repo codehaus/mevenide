@@ -28,6 +28,8 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.maven.MavenUtils;
 import org.apache.maven.project.Resource;
 import org.apache.tools.ant.DirectoryScanner;
+import org.openide.filesystems.FileObject;
+import org.openide.filesystems.FileUtil;
 
 /**
  * a directory scanner subclass which only purposes is to return the default excludes..
@@ -45,7 +47,7 @@ public final class DirScannerSubClass extends DirectoryScanner {
         return DEFAULTEXCLUDES;
     }
     
-    public static boolean checkIncluded(File file, File rootFile, String includes, String excludes) {
+    public static boolean checkIncluded(FileObject file, FileObject rootFile, String includes, String excludes) {
         List includeList = new ArrayList();
         if (includes != null) {
             StringTokenizer tok = new StringTokenizer(includes, " ,", false);
@@ -63,20 +65,17 @@ public final class DirScannerSubClass extends DirectoryScanner {
         return checkIncludedImpl(file, rootFile, includeList, excludeList);
     }
     
-    public static boolean checkIncluded(File file, File rootFile, Resource resource) {
+    public static boolean checkIncluded(FileObject file, FileObject rootFile, Resource resource) {
         logger.debug("chceckIncluded");
         return checkIncludedImpl(file, rootFile, resource.getIncludes(), resource.getExcludes());
     }
     
-    private static boolean checkIncludedImpl(File file, File rootFile, List includes, List excludes) {
+    /**
+     * package private because of tests.
+     */
+    static boolean checkIncludedImpl(FileObject file, FileObject rootFile, List includes, List excludes) {
         String relPath = "";
-        try {
-            relPath = MavenUtils.makeRelativePath(rootFile, file.getAbsolutePath());
-        } catch (IOException exc) {
-            logger.info(exc);
-            return false;
-        }
-        logger.debug("chceckIncluded relpath=" + relPath);
+        relPath = FileUtil.getRelativePath(rootFile, file);
         boolean doInclude = false;
         if (includes != null && includes.size() != 0) {
             Iterator it = includes.iterator();
@@ -84,18 +83,25 @@ public final class DirScannerSubClass extends DirectoryScanner {
                 String pattern = (String)it.next();
                 logger.debug("include=" + pattern);
                 // exact match or pattern match
-                if (pattern.equals(relPath) || DirectoryScanner.match(pattern, file.getAbsolutePath())) {
+                if (pattern.equals(relPath) || DirectoryScanner.match(pattern, relPath)) {
                     doInclude = true;
                     break;
                 }
-                //                if (file.isDirectory() && pattern.startsWith(relPath)) {
-                //                    doInclude = true;
-                //                    break;
-                //                }
+                if (file.isFolder()) {
+                    int lastSlash = pattern.lastIndexOf("/");
+                    if (lastSlash > -1) {
+                        String dirPath = pattern.substring(0, lastSlash);
+                        // needs to match something like templates/**/*.*
+                        if (dirPath.startsWith(relPath) || DirectoryScanner.match(dirPath, relPath)) {
+                           doInclude = true;
+                           break;
+                        }
+                    }
+                }
             }
         } else {
             String pattern = "**";
-            if (pattern.equals(relPath) || DirectoryScanner.match(pattern, file.getAbsolutePath())) {
+            if (pattern.equals(relPath) || DirectoryScanner.match(pattern, relPath)) {
                 doInclude = true;
             }
         }

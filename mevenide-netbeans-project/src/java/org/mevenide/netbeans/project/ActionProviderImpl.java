@@ -26,6 +26,7 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.mevenide.netbeans.project.exec.AttachDebuggerOutputFilter;
 import org.mevenide.netbeans.project.exec.MavenExecutor;
 import org.mevenide.netbeans.project.exec.OutputFilter;
 import org.mevenide.netbeans.project.exec.RunOutputFilter;
@@ -82,7 +83,9 @@ public class ActionProviderImpl implements ActionProvider {
         ActionProvider.COMMAND_TEST,
         ActionProvider.COMMAND_TEST_SINGLE,
         ActionProvider.COMMAND_RUN,
-        ActionProvider.COMMAND_RUN_SINGLE
+        ActionProvider.COMMAND_RUN_SINGLE,
+        ActionProvider.COMMAND_DEBUG,
+        ActionProvider.COMMAND_DEBUG_SINGLE
     };
     /** Creates a new instance of ActionProviderImpl */
     public ActionProviderImpl(MavenProject proj) {
@@ -136,13 +139,46 @@ public class ActionProviderImpl implements ActionProvider {
 //                OutputFilter filter = new RunOutputFilter();
 //                InputOutput io = IOProvider.getDefault().getIO("Run-" + project.getDisplayName(), true);
 //                runGoal(goal, lookup, filter, filter, io);
-//            } else {
-                runGoal(goal, lookup);
 //            }
+            if (ActionProvider.COMMAND_DEBUG.equals(str) || ActionProvider.COMMAND_DEBUG_SINGLE.equals(str)) {
+                String attach = project.getPropertyResolver().getResolvedValue("maven.netbeans.debug.attach");
+                if (attach == null || "true".equals(attach)) {
+                    runDebuggedGoal(goal, lookup);
+                } else {
+                    runGoal(goal, lookup);
+                }
+            } else {
+                runGoal(goal, lookup);
+            }
         } else {
             logger.error("cannot find the action=" + str);
         }
     }
+    
+    private void runDebuggedGoal(String goal, Lookup lookup) {
+        IPropertyResolver resolv = project.getPropertyResolver();
+        String host = resolv.getResolvedValue("maven.netbeans.debug.address");
+        if (host == null) {
+            host = "localhost";
+        }
+        String portStr = resolv.getResolvedValue("maven.netbeans.debug.port");
+        if (portStr == null) {
+            portStr = "8888";
+        }
+        String delStr = resolv.getResolvedValue("maven.netbeans.debug.delay");
+        if (delStr == null) {
+            delStr = "5000";
+        }
+        try {
+            int port = Integer.parseInt(portStr);
+            int delay = Integer.parseInt(delStr);
+            OutputFilter filter = new AttachDebuggerOutputFilter(delay, host, port);
+            runGoal(goal, lookup, filter, filter, null);
+        } catch (NumberFormatException exc) {
+            logger.error("Cannot parse", exc);
+        }
+    }
+    
     public void runGoal(String goal, Lookup lookup) throws java.lang.IllegalArgumentException {
         runGoal(goal, lookup, null, null, null);
     }
