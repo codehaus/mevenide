@@ -87,13 +87,15 @@ class DirectoryMappingNodeContainer extends AbstractArtifactMappingNodeContainer
 		    for (int i = 0; i < nodes.length; i++) {
 		        DirectoryMappingNode currentNode = (DirectoryMappingNode) nodes[i];
 		        Directory resolvedDirectory = (Directory) currentNode.getResolvedArtifact();
-		        for (Iterator itr = resources.iterator(); itr.hasNext(); ) {
-		            Resource pomResource = (Resource) itr.next();
-		            if ( resolvedDirectory == null || lowMatch(pomResource, resolvedDirectory) ) {
-		                currentNode.setArtifact(pomResource);
-		                currentNode.setDeclaringPom(project.getFile());
-		                resourcesCopy.remove(pomResource);
-		            }
+		        if ( currentNode.getArtifact() == null ) {
+			        for (Iterator itr = resources.iterator(); itr.hasNext(); ) {
+			            Resource pomResource = (Resource) itr.next();
+			            if ( resolvedDirectory == null || lowMatch(pomResource, resolvedDirectory) ) {
+			                currentNode.setArtifact(pomResource);
+			                currentNode.setDeclaringPom(project.getFile());
+			                resourcesCopy.remove(pomResource);
+			            }
+			        }
 		        }
 		    }
 	        attachOrphanResources(resourcesCopy);

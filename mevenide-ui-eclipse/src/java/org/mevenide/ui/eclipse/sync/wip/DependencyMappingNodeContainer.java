@@ -78,13 +78,15 @@ class DependencyMappingNodeContainer extends AbstractArtifactMappingNodeContaine
         for (int i = 0; i < nodes.length; i++) {
             DependencyMappingNode currentNode = (DependencyMappingNode) nodes[i];
             Dependency resolvedDependency = (Dependency) currentNode.getResolvedArtifact();
-            for (Iterator itr = dependencies.iterator(); itr.hasNext(); ) {
-                Dependency pomDependency = (Dependency) itr.next();
-                if ( resolvedDependency != null && lowMatch(pomDependency, resolvedDependency) ) {
-                    currentNode.setDependency(pomDependency);
-					currentNode.setDeclaringPom(pom.getFile());
-                    dependenciesCopy.remove(pomDependency);
-                }
+            if ( currentNode.getArtifact() == null ) {
+	            for (Iterator itr = dependencies.iterator(); itr.hasNext(); ) {
+	                Dependency pomDependency = (Dependency) itr.next();
+	                if ( resolvedDependency != null && lowMatch(pomDependency, resolvedDependency) ) {
+	                    currentNode.setDependency(pomDependency);
+						currentNode.setDeclaringPom(pom.getFile());
+	                    dependenciesCopy.remove(pomDependency);
+	                }
+	            }
             }
         }
         
