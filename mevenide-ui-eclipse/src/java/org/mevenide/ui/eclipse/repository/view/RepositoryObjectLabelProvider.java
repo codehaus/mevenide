@@ -46,6 +46,9 @@ public class RepositoryObjectLabelProvider implements ILabelProvider {
         if ( element instanceof BaseRepositoryObject ) {
             return ((BaseRepositoryObject) element).getName();
         }
+        if ( element instanceof String ) {
+            return (String) element;
+        }
         return null;
     }
     

@@ -16,13 +16,14 @@
  */
 package org.mevenide.ui.eclipse.repository.view;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.repository.Artifact;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.mevenide.ui.eclipse.repository.RepositoryObjectCollector;
-import org.mevenide.ui.eclipse.repository.factory.RepositoryObjectCollectorFactory;
 import org.mevenide.ui.eclipse.repository.model.BaseRepositoryObject;
 import org.mevenide.ui.eclipse.repository.model.Repository;
 
@@ -37,20 +38,36 @@ public class RepositoryContentProvider implements ITreeContentProvider {
 
     private static final Log log = LogFactory.getLog(RepositoryContentProvider.class);
     
-    public RepositoryContentProvider() {
-        super();
+    private List repositoryEventListeners = new ArrayList();
+    
+    private String baseUrl;
+    
+    public void addRepositoryEventListener(RepositoryEventListener listener) {
+        repositoryEventListeners.add(listener);
+    }
+    
+    public void removeRepositoryEventListener(RepositoryEventListener listener) {
+        repositoryEventListeners.remove(listener);
     }
     
     public Object[] getChildren(Object element) {
-        RepositoryObjectCollector collector = RepositoryObjectCollectorFactory.getRepositoryObjectCollector(element);
-        try {
-            return collector.collect();
+        if ( element instanceof Artifact )  {
+            return null;
         }
-        catch ( Exception e ) {
-            String message = "Unable to collect repository object " + element + "(" + element.getClass() + ")";
-            log.error(message, e);
-	        return null;
+        
+        if ( element instanceof BaseRepositoryObject ) {
+            BaseRepositoryObject currentNodeObject = (BaseRepositoryObject) element;
+            if ( currentNodeObject.isChildrenLoaded() ) {
+                return currentNodeObject.getChildren();
+            }
+            else {
+                RepositoryObjectCollectorJob job = new RepositoryObjectCollectorJob(currentNodeObject, baseUrl);
+	            job.setListeners(this.repositoryEventListeners);
+	            job.schedule(Job.LONG);
+                return new String[]{"Pending..."};
+            }
         }
+        return null;
     }
     
     public Object getParent(Object element) {
@@ -66,6 +83,7 @@ public class RepositoryContentProvider implements ITreeContentProvider {
     
     public Object[] getElements(Object inputElement) {
         if ( inputElement instanceof String ) {
+            this.baseUrl = (String) inputElement;
             return new Object[] {new Repository((String) inputElement)};
         }
         return null;

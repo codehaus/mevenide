@@ -14,8 +14,9 @@
  *  limitations under the License.
  * =========================================================================
  */
-package org.mevenide.ui.eclipse.repository.model;
+package org.mevenide.ui.eclipse.repository.view;
 
+import org.mevenide.ui.eclipse.repository.model.BaseRepositoryObject;
 
 
 /**  
@@ -24,29 +25,21 @@ package org.mevenide.ui.eclipse.repository.model;
  * @version $Id$
  * 
  */
-public class Artifact extends BaseRepositoryObject {
+public class RepositoryEvent {
+
+    private String repositoryUrl;
+    private BaseRepositoryObject element;
     
-    private String name;
-    
-    private Type parent;
-    
-    private String version ;
-    
-    public Artifact(String name, String version, Type parent) {
-        this.name = name; 
-        this.version = version;
-        this.parent = parent;
+    public RepositoryEvent(String repositoryUrl, BaseRepositoryObject element) {
+        this.repositoryUrl = repositoryUrl;
+        this.element = element;
     }
     
-    public String getName() {
-        return name;
+    public String getRepositoryUrl() {
+        return repositoryUrl;
     }
     
-    public String getVersion() {
-        return version;
-    }
-    
-    public BaseRepositoryObject getParent() {
-        return parent;
+    public BaseRepositoryObject getElement() {
+        return element;
     }
 }

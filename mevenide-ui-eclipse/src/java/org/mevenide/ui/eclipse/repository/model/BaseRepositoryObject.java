@@ -26,12 +26,33 @@ package org.mevenide.ui.eclipse.repository.model;
  */
 public abstract class BaseRepositoryObject {
 
+    public BaseRepositoryObject[] children;
+
+    private boolean childrenLoaded = false;
+    
     public abstract String getName();
     
     public abstract BaseRepositoryObject getParent();
     
     public String toString() {
         return getName();
+    }
+    
+    public BaseRepositoryObject[] getChildren() {
+        return children;
+    }
+    
+    public void setChildren(BaseRepositoryObject[] children) {
+        this.children = children;
+        setChildrenLoaded(true);
+    }
+    
+    public boolean isChildrenLoaded() {
+        return childrenLoaded;
+    }
+    
+    public void setChildrenLoaded(boolean childrenLoaded) {
+        this.childrenLoaded = childrenLoaded;
     }
     
 }
