@@ -32,28 +32,44 @@
 	  	<div id="documentContent">
 		  <p>
 			To provide their own page Maven plugin providers can declaratively 
-			plug into Mevenide preference pages. Screenshot 1 below is an 
-			example of that interaction (just a sample so not all properties 
-			are displayed in the preferences page) : 
+			plug into Mevenide preference pages. Screenshot 1 and 2 below is an 
+			example of that interaction : 
 			<br/>
 			<center>
-				<img border="1px" src="../images/screenshots/providers/plugins-providers.png"/>
+				<img border="1px" src="../images/screenshots/providers/plugins_providers.png"/>
 				<br/>
 				<font size="-1"><b>Screenshot 1</b> PDE plugin provider</font>
 				<br/>
 			</center>
+			First Tab presents a short description of the plugin. The other Tabs display the various properties 
+			that the plugin exposes, each Tab representing a different categories. We introduced categories to 
+			allow better organization of the properties - it is helpful for plugins exposing quite a number of properties,
+			as the Maven PDE Plugin example demonstrates it.
+			<br/>
+			<center>
+				<img border="1px" src="../images/screenshots/providers/plugins_providers_properties.png"/>
+				<br/>
+				<font size="-1"><b>Screenshot 1</b> PDE plugin provider</font>
+				<br/>
+			</center>
+		</p>
+		<p>
 			To add a new page, plugins provider have to contribute a new 
 			Eclipse plugin that uses the org.mevenide.ui.preference extension 
-			point. Please refer to the <a href="extension-point.html" target="_blank" class="newWindow">extension point documentation</a>
-			for more details.
+			point. Please refer to the <a href="extension-point.html" target="_blank" class="newWindow">extension point documentation</a> for 
+			more details.
 			<br/>
 			A template  for the <a href="http://maven.apache.org/reference/plugins/genapp/">Genapp plugin</a> 
 			is available in <a href="http://cvs.mevenide.codehaus.org/mevenide-plugin-provider-genapp/">Mevenide CVS Head</a> 
 			for quicker startup.
 			<br/>
-			However we are aware that all needed informations are already available in the goals.xml and 
+			However we are aware that almost all needed informations are already available in the goals.xml and 
 			properties.xml documents. So in the near future we will provide a Maven plugin to automatically generate 
-			the Eclipse plugin.
+			the most part of the Eclipse plugin.
+		  </p>
+		  <p>
+		  	The Provider infrastucture is still in the early stages, so we welcome any feedback about it, either through 
+	  		<a href="http://jira.codehaus.org/MEVENIDE">Jira</a> or the mevenide user-list.
 		  </p>
 	    </div>
 	  </subsection>

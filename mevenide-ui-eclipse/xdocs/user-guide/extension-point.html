@@ -1,9 +1,9 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <html><head><meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"><!-- temporary documentation stylesheets -->
 
-<style>@import url("../style/extension-point-1.css");</style><!-- temporary documentation stylesheets -->
+<style>@import url("../style/extension_point_1.css");</style><!-- temporary documentation stylesheets -->
 
-<style>@import url("../style/extension-point-2.css");</style></head>
+<style>@import url("../style/extension_point_2.css");</style></head>
 
 <body>
 <h1><center>Maven Plugins Provider Extension Point</center></h1>
@@ -21,7 +21,7 @@
 <p></p>
 <ul class="ConfigMarkup" id="attlistDesc">
 </ul>
-<br><p class="code" id="dtd">&lt;!ELEMENT <a name="e.plugin-provider">plugin-provider</a> (<a href="#e.description">description</a>? , (<a href="#e.property">property</a>))&gt;</p>
+<br><p class="code" id="dtd">&lt;!ELEMENT <a name="e.plugin-provider">plugin-provider</a> (<a href="#e.description">description</a>? , (<a href="#e.category">category</a>+))&gt;</p>
 <p class="code" id="dtd">&lt;!ATTLIST plugin-provider</p>
 <p class="code" id="dtdAttlist">name&nbsp;CDATA #REQUIRED</p><p class="code" id="dtdAttlist">id&nbsp;&nbsp;&nbsp;CDATA #REQUIRED&gt;</p>
 <p></p>
@@ -48,14 +48,27 @@ can be specified yet, but it is definitively on the TODO list.</p>
 <ul class="ConfigMarkup" id="attlistDesc">
 <li><b>name</b> - the name of the specific property used by the plugin.</li>
 <li><b>default</b> - default value for the specific property.</li>
-<li><b>label</b> - the label used in the preference page to refer to this property. if not specified, id will be used.</li>
+<li><b>label</b> - Human readable label used in the preference page to refer to this property. if not specified, id will be used.</li>
 <li><b>required</b> - indicates if this specific is a required one.</li>
 <li><b>description</b> - Provides a description of the property.</li>
+</ul>
+<br><p class="code" id="dtd">&lt;!ELEMENT <a name="e.category">category</a> (<a href="#e.property">property</a>+)&gt;</p>
+<p class="code" id="dtd">&lt;!ATTLIST category</p>
+<p class="code" id="dtdAttlist">name&nbsp;CDATA #REQUIRED&gt;</p>
+<p></p>
+<p class="ConfigMarkup" id="elementDesc">
+allow to categorize plugin properties. It is especially useful for
+plugins that expose quite a number of properties (as does the Maven PDE
+plugin).</p>
+<br>
+<ul class="ConfigMarkup" id="attlistDesc">
+<li><b>name</b> - Human readable name of the category.</li>
 </ul>
 <br><h6 class="CaptionFigColumn" id="header">Examples: </h6><pre><p class="code" id="tag">&lt;extension point=</p><p class="code" id="cstring">"org.mevenide.ui.preference"</p><p class="code" id="tag">&gt;</p>
   <p class="code" id="tag">&lt;plugin-provider id=</p><p class="code" id="cstring">"maven-eclipse-plugin-plugin"</p><p class="code" id="tag"> 
                    name=</p><p class="code" id="cstring">"PDE Plugin"</p><p class="code" id="tag">&gt;</p>
-      <p class="code" id="tag">&lt;description&gt;</p>%Plugin.Description<p class="code" id="tag">&lt;/description&gt;</p>
+    <p class="code" id="tag">&lt;description&gt;</p>%Plugin.Description<p class="code" id="tag">&lt;/description&gt;</p>
+    <p class="code" id="tag">&lt;category name=</p><p class="code" id="cstring">"Build"</p><p class="code" id="tag">&gt;</p>
       <p class="code" id="tag">&lt;property name=</p><p class="code" id="cstring">"maven.eclipse.plugin.mode"</p><p class="code" id="tag"> 
                 label=</p><p class="code" id="cstring">"Build Mode"</p><p class="code" id="tag">
                 default=</p><p class="code" id="cstring">"bundle"</p><p class="code" id="tag">
@@ -66,6 +79,7 @@ can be specified yet, but it is definitively on the TODO list.</p>
                 default=</p><p class="code" id="cstring">"${maven.build.dir}/eclipse/dist"</p><p class="code" id="tag">
                 required=</p><p class="code" id="cstring">"true"</p><p class="code" id="tag">
                 description=</p><p class="code" id="cstring">"%DistDirectory.Description"</p><p class="code" id="tag">/&gt;</p>
+    <p class="code" id="tag">&lt;/category&gt;</p>
   <p class="code" id="tag">&lt;/plugin-provider&gt;</p>
 <p class="code" id="tag">&lt;/extension&gt;</p>
 </pre>
