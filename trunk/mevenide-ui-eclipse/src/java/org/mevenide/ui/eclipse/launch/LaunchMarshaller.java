@@ -18,6 +18,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
@@ -130,8 +132,68 @@ public abstract class LaunchMarshaller {
 		JDomOutputter.output(document, new File(ACTIONS_FILE), false);
 	}
 	
-	public static List getSavedConfigs() {
+	public static List getSavedConfigs() throws Exception {
+		List previous = new ArrayList();
 		
-		return new ArrayList();
+		Document document = getDocument();
+		
+		List previouslyLaunched = document.getRootElement().getChildren();
+		
+		for (int i = 0; i < previouslyLaunched.size(); i++) {
+			Element elem = (Element) previouslyLaunched.get(i);
+			
+			String projectName = elem.getAttributeValue(PROJECT_ATTR);
+			
+			IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(projectName);
+			String[] actionOptions = extractOptions(elem);
+			String[] actionGoals = extractGoals(elem);
+			
+			LaunchedAction action = new LaunchedAction(project, actionOptions, actionGoals);
+			previous.add(action);
+			
+			if ( Boolean.getBoolean(elem.getAttributeValue(LAST_LAUNCHED_ATTR)) ) {
+				LaunchHistory.getHistory().setLastlaunched(action);
+			}
+			
+			elem.getAttributeValue(LAST_LAUNCHED_ATTR);
+		}
+		
+		return previous;
+	}
+
+	private static String[] extractGoals(Element elem) {
+		List declaredGoals = new ArrayList(); 
+		
+		Element goals = elem.getChild(GOALS_ELEM);
+		List allGoals = goals.getChildren(GOAL_ELEM);
+		for (int k = 0; k < allGoals.size(); k++) {
+			Element goal = (Element) allGoals.get(k);
+			declaredGoals.add(goal.getAttributeValue(GOAL_NAME_ATTR));
+		}
+		
+		String[] actionGoals = new String[declaredGoals.size()];
+		for (int j = 0; j < actionGoals.length; j++) {
+			actionGoals[j] = (String) declaredGoals.get(j);
+		}
+		
+		return actionGoals;
+	}
+	
+	private static String[] extractOptions(Element elem) {
+		List declaredGoals = new ArrayList(); 
+	
+		Element goals = elem.getChild(OPTIONS_ELEM);
+		List allGoals = goals.getChildren(OPTION_ELEM);
+		for (int k = 0; k < allGoals.size(); k++) {
+			Element goal = (Element) allGoals.get(k);
+			declaredGoals.add(goal.getAttributeValue(OPTION_NAME_ATTR));
+		}
+	
+		String[] actionOptions = new String[declaredGoals.size()];
+		for (int j = 0; j < actionOptions.length; j++) {
+			actionOptions[j] = (String) declaredGoals.get(j);
+		}
+	
+		return actionOptions;
 	}
 }

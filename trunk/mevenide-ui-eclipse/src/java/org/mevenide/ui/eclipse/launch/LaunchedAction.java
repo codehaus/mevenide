@@ -37,7 +37,7 @@ public class LaunchedAction extends Action {
 	
 	private String text;
 	
-	public LaunchedAction(LaunchHistory history, IProject project, String[] options, String[] goals) {
+	public LaunchedAction(IProject project, String[] options, String[] goals) {
 		this.project = project;
 		this.options = options;
 		this.goals = goals;
