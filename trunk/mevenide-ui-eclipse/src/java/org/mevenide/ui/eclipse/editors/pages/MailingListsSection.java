@@ -48,74 +48,100 @@
  */
 package org.mevenide.ui.eclipse.editors.pages;
 
+import java.util.List;
+
+import org.apache.maven.project.MailingList;
 import org.apache.maven.project.Project;
-import org.eclipse.swt.layout.GridData;
+import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
-import org.mevenide.project.ProjectChangeEvent;
 import org.mevenide.ui.eclipse.Mevenide;
-import org.mevenide.ui.eclipse.MevenideColors;
-import org.mevenide.ui.eclipse.editors.MevenidePomEditor;
 
 /**
- * Presents a client control for editing information on the source 
- * configuration management system used by this project.
- * 
- * @author Jeff Bonevich (jeff@bonevich.com)
+ * @author Jeffrey Bonevich (jeff@bonevich.com)
  * @version $Id$
  */
-public class RepositoryPage extends AbstractPomEditorPage {
+public class MailingListsSection extends PageSection {
 
-	public static final String HEADING = Mevenide.getResourceString("RepositoryPage.heading");
-    
-	private ScmConnectionSection scmSection;
-	private VersionsSection versionsSection;
-	private BranchesSection branchesSection;
-
-	public RepositoryPage(MevenidePomEditor editor) {
-        super(HEADING, editor);
-    }
-
-	protected void initializePage(Composite parent) {
-		GridLayout layout = new GridLayout();
-		layout.numColumns = 2;
-		layout.marginWidth = 10;
-		layout.horizontalSpacing = 15;
-		parent.setLayout(layout);
-
-		PageWidgetFactory factory = getFactory();
-		factory.setBackgroundColor(MevenideColors.WHITE);
-
-		scmSection = new ScmConnectionSection(this);
-		Control control = scmSection.createControl(parent, factory);
-		GridData gd = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING);
-		gd.horizontalSpan = 2;
-		control.setLayoutData(gd);
-
-		versionsSection = new VersionsSection(this);
-		control = versionsSection.createControl(parent, factory);
-		gd = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING);
-		gd.horizontalSpan = 1;
-		control.setLayoutData(gd);
-
-		branchesSection = new BranchesSection(this);
-		control = branchesSection.createControl(parent, factory);
-		gd = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING);
-		gd.horizontalSpan = 1;
-		control.setLayoutData(gd);
-	}
-
-	public void projectChanged(ProjectChangeEvent e) {
-		update(e.getPom());
-	}
+	private TableEntry mailingListTable;
 	
-	public void update(Project pom) {
-		scmSection.update(pom);
-		versionsSection.update(pom);
-		branchesSection.update(pom);
+	public MailingListsSection(TeamPage page) {
+		super(page);
+		setHeaderText(Mevenide.getResourceString("MailingListsSection.header"));
+		setDescription(Mevenide.getResourceString("MailingListsSection.description"));
+	}
+
+	public Composite createClient(Composite parent, PageWidgetFactory factory) {
+		Composite container = factory.createComposite(parent);
+		GridLayout layout = new GridLayout();
+		layout.numColumns = isInherited() ? 3 : 2;
+		layout.marginWidth = 2;
+		layout.verticalSpacing = 7;
+		layout.horizontalSpacing = 5;
+		container.setLayout(layout);
 		
-		setUpdateNeeded(false);
+		final Project pom = getPage().getEditor().getPom();
+		
+		// POM mailingLists table
+		Button toggle = createOverrideToggle(container, factory, 1, true);
+		TableViewer viewer = createTableViewer(container, factory, 1);
+		mailingListTable = new TableEntry(viewer, toggle, container, factory, this);
+		OverrideAdaptor adaptor = new OverrideAdaptor() {
+			public void overrideParent(Object value) {
+				List mailingLists = (List) value;
+				pom.setMailingLists(mailingLists);
+			}
+			public Object acceptParent() {
+				return getParentPom().getMailingLists();
+			}
+		};
+		mailingListTable.addEntryChangeListener(adaptor);
+		mailingListTable.addOverrideAdaptor(adaptor);
+		mailingListTable.addPomCollectionAdaptor(
+			new IPomCollectionAdaptor() {
+				public Object addNewObject() {
+					MailingList mailingList = new MailingList();
+					pom.addMailingList(mailingList);
+					return mailingList;
+				}
+				public void moveObjectTo(int index, Object object) {
+					List mailingLists = pom.getMailingLists();
+					if (mailingLists != null) {
+						mailingLists.remove(object);
+						mailingLists.add(index, object);
+					}
+				}
+				public void removeObject(Object object) {
+					List mailingLists = pom.getMailingLists();
+					if (mailingLists != null) {
+						mailingLists.remove(object);
+					}
+				}
+			}
+		);
+		
+		factory.paintBordersFor(container);
+		return container;
+	}
+
+	public void update(Project pom) {
+		mailingListTable.removeAll();
+		List mailingLists = pom.getMailingLists();
+		List parentMailingLists = isInherited() ? getParentPom().getMailingLists() : null;
+		if (mailingLists != null && !mailingLists.isEmpty()) {
+			mailingListTable.addEntries(mailingLists);
+			mailingListTable.setInherited(false);
+		}
+		else if (parentMailingLists != null) {
+			mailingListTable.addEntries(mailingLists, true);
+			mailingListTable.setInherited(true);
+		}
+		else {
+			mailingListTable.setInherited(false);
+		}
+		
+		super.update(pom);
 	}
 
 }

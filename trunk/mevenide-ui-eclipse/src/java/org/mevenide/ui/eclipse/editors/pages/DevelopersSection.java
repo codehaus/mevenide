@@ -48,74 +48,100 @@
  */
 package org.mevenide.ui.eclipse.editors.pages;
 
+import java.util.List;
+
+import org.apache.maven.project.Developer;
 import org.apache.maven.project.Project;
-import org.eclipse.swt.layout.GridData;
+import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
-import org.mevenide.project.ProjectChangeEvent;
 import org.mevenide.ui.eclipse.Mevenide;
-import org.mevenide.ui.eclipse.MevenideColors;
-import org.mevenide.ui.eclipse.editors.MevenidePomEditor;
 
 /**
- * Presents a client control for editing information on the source 
- * configuration management system used by this project.
- * 
- * @author Jeff Bonevich (jeff@bonevich.com)
+ * @author Jeffrey Bonevich (jeff@bonevich.com)
  * @version $Id$
  */
-public class RepositoryPage extends AbstractPomEditorPage {
+public class DevelopersSection extends PageSection {
 
-	public static final String HEADING = Mevenide.getResourceString("RepositoryPage.heading");
-    
-	private ScmConnectionSection scmSection;
-	private VersionsSection versionsSection;
-	private BranchesSection branchesSection;
-
-	public RepositoryPage(MevenidePomEditor editor) {
-        super(HEADING, editor);
-    }
-
-	protected void initializePage(Composite parent) {
-		GridLayout layout = new GridLayout();
-		layout.numColumns = 2;
-		layout.marginWidth = 10;
-		layout.horizontalSpacing = 15;
-		parent.setLayout(layout);
-
-		PageWidgetFactory factory = getFactory();
-		factory.setBackgroundColor(MevenideColors.WHITE);
-
-		scmSection = new ScmConnectionSection(this);
-		Control control = scmSection.createControl(parent, factory);
-		GridData gd = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING);
-		gd.horizontalSpan = 2;
-		control.setLayoutData(gd);
-
-		versionsSection = new VersionsSection(this);
-		control = versionsSection.createControl(parent, factory);
-		gd = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING);
-		gd.horizontalSpan = 1;
-		control.setLayoutData(gd);
-
-		branchesSection = new BranchesSection(this);
-		control = branchesSection.createControl(parent, factory);
-		gd = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING);
-		gd.horizontalSpan = 1;
-		control.setLayoutData(gd);
-	}
-
-	public void projectChanged(ProjectChangeEvent e) {
-		update(e.getPom());
-	}
+	private TableEntry devTable;
 	
-	public void update(Project pom) {
-		scmSection.update(pom);
-		versionsSection.update(pom);
-		branchesSection.update(pom);
+	public DevelopersSection(TeamPage page) {
+		super(page);
+		setHeaderText(Mevenide.getResourceString("DevelopersSection.header"));
+		setDescription(Mevenide.getResourceString("DevelopersSection.description"));
+	}
+
+	public Composite createClient(Composite parent, PageWidgetFactory factory) {
+		Composite container = factory.createComposite(parent);
+		GridLayout layout = new GridLayout();
+		layout.numColumns = isInherited() ? 3 : 2;
+		layout.marginWidth = 2;
+		layout.verticalSpacing = 7;
+		layout.horizontalSpacing = 5;
+		container.setLayout(layout);
 		
-		setUpdateNeeded(false);
+		final Project pom = getPage().getEditor().getPom();
+		
+		// POM developers table
+		Button toggle = createOverrideToggle(container, factory, 1, true);
+		TableViewer viewer = createTableViewer(container, factory, 1);
+		devTable = new TableEntry(viewer, toggle, container, factory, this);
+		OverrideAdaptor adaptor = new OverrideAdaptor() {
+			public void overrideParent(Object value) {
+				List developers = (List) value;
+				pom.setDevelopers(developers);
+			}
+			public Object acceptParent() {
+				return getParentPom().getDevelopers();
+			}
+		};
+		devTable.addEntryChangeListener(adaptor);
+		devTable.addOverrideAdaptor(adaptor);
+		devTable.addPomCollectionAdaptor(
+			new IPomCollectionAdaptor() {
+				public Object addNewObject() {
+					Developer developer = new Developer();
+					pom.addDeveloper(developer);
+					return developer;
+				}
+				public void moveObjectTo(int index, Object object) {
+					List developers = pom.getDevelopers();
+					if (developers != null) {
+						developers.remove(object);
+						developers.add(index, object);
+					}
+				}
+				public void removeObject(Object object) {
+					List developers = pom.getDevelopers();
+					if (developers != null) {
+						developers.remove(object);
+					}
+				}
+			}
+		);
+		
+		factory.paintBordersFor(container);
+		return container;
+	}
+
+	public void update(Project pom) {
+		devTable.removeAll();
+		List developers = pom.getDevelopers();
+		List parentDevelopers = isInherited() ? getParentPom().getDevelopers() : null;
+		if (developers != null && !developers.isEmpty()) {
+			devTable.addEntries(developers);
+			devTable.setInherited(false);
+		}
+		else if (parentDevelopers != null) {
+			devTable.addEntries(developers, true);
+			devTable.setInherited(true);
+		}
+		else {
+			devTable.setInherited(false);
+		}
+		
+		super.update(pom);
 	}
 
 }
