@@ -6,6 +6,8 @@
  */
 package org.mevenide.ui.eclipse.launch;
 
+import java.util.Arrays;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.resources.IProject;
@@ -31,6 +33,7 @@ public class LaunchedAction extends Action {
 		this.options = options;
 		this.goals = goals;
 	}
+	
 	public void run() {
 		try {
 			Mevenide.getPlugin().setProject(project);
@@ -38,5 +41,22 @@ public class LaunchedAction extends Action {
 		} catch (Exception e) {
 			log.error("Unable to run LaunchedAction due to : " + e);
 		}
+	}
+	
+	public boolean equals(Object o) {
+		
+		if( !(o instanceof LaunchedAction)
+		    || !project.equals(((LaunchedAction) o).project) ) {
+		   return false;
+		} 	
+		
+		boolean b = Arrays.equals(goals, ((LaunchedAction) o).goals);
+		
+		log.debug(this.toString() + " .equals( " + goals.toString() +" ) = " + (b));
+		return b;
+	}
+	
+	public String toString() {
+		return "[LaunchedAction {project= + " + project.getName() + ", goals = " + goals + "} ]";	
 	}
 }

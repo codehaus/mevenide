@@ -64,7 +64,10 @@ public class LaunchHistory {
 	 */
 	public void save(IProject project, String[] options, String[] goals) {
 		LaunchedAction action = new LaunchedAction(this, project, options, goals);
-		launchedActions.add(action);
+		if ( launchedActions.contains(action) ) {
+			launchedActions.remove(action);
+		}
+		launchedActions.add(0, action);
 		lastlaunched = action;
 		
 	}
