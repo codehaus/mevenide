@@ -15,5 +15,5 @@
     <report>maven-tasklist-plugin</report>
     <report>maven-javadoc-plugin</report>
     <report>maven-faq-plugin</report>
-    <report>maven-linkcheck-plugin</report>
+    <!-- report>maven-linkcheck-plugin</report -->
     
