@@ -18,7 +18,6 @@ package org.mevenide.project.io;
 
 import java.io.File;
 import java.util.HashMap;
-import org.apache.maven.project.Project;
 import org.mevenide.context.IProjectContext;
 import org.mevenide.context.IQueryContext;
 
