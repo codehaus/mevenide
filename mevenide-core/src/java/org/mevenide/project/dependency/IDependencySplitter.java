@@ -48,88 +48,29 @@
  */
 package org.mevenide.project.dependency;
 
-import java.io.File;
-
-/**
+/**  
  * 
  * @author Gilles Dodinet (gdodinet@wanadoo.fr)
- * @version $Id$
+ * @version $Id: IDependencySplitter.java,v 1.1 24 sept. 2003 Exp gdodinet 
  * 
  */
-public class DefaultDependencyResolver implements IDependencyResolver {
-	private String artifact;
+public interface IDependencySplitter {
 	
-	private String fileName;
-	
-	private String artifactId;
-	private String version;
-	private String extension;
-	private String groupId;
-	
-
-	private IDependencySplitter.DependencyParts dependencyParts ;
-	
-	public void setFileName(String fName) {
-		this.artifact = fName;
-		this.fileName = new File(fName).getName();
-		dependencyParts = new DependencySplitter(fileName).split();
-		init();
-	}
-
-	private void init() {
-		initArtifactId();
-		initVersion();
-		initExtension();
-		initGroupId();
+	/**
+	 * representation of a splitted dependency, excluding groupId  
+	 * 
+	 */
+	public class DependencyParts {
+		public String artifactId;
+		public String version;
+		public String extension;
 	}
 	
-	private void initArtifactId() {
-		artifactId = dependencyParts.artifactId;
-		if ( artifactId == null && fileName.indexOf("SNAPSHOT") > 0 ) {
-			artifactId = fileName.substring(0, fileName.indexOf("SNAPSHOT") - 1);
-		}
-	}
-	
-	private void initVersion() {
-		version = dependencyParts.version;
-		if ( version == null && fileName.indexOf("SNAPSHOT") > 0 ) {
-			version = "SNAPSHOT";
-		}
-	}
-	
-	private void initExtension() {
-		extension = fileName.substring(fileName.lastIndexOf('.') + 1);
-	}
-	
-	private void initGroupId() {
-		File fileToCompute = new File(artifact);
-		File firstLevelParent = fileToCompute.getParentFile();
-		if ( firstLevelParent != null && firstLevelParent.getParentFile() != null ) {
-			groupId = firstLevelParent.getParentFile().getName();
-		}
-		if ( !DependencyUtil.isValidGroupId(groupId) ) groupId = null;
-	}
-
-	public String guessArtifactId() {
-		return artifactId;
-	}
-
-	public String guessVersion() {
-		return version;
-	}
-
-	public String guessExtension() {
-		return extension;
-	}
-
-	public String guessGroupId()  {
-		return groupId;
-	}
-
-	
-	
-	
-	
-	
-
+    /**
+     * split a filename into three parts   
+     * 
+     * @param fileName
+     * @return DependencyParts
+     */
+    public abstract DependencyParts split();
 }
