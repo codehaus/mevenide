@@ -68,6 +68,7 @@ public interface IImageRegistry {
     public static final String REMOVE_REPO_DEFINITION = "etool16/delmrepo.gif"; //$NON-NLS-1$
     public static final String MAVEN_REPO = "obj16/maven_repo.gif"; //$NON-NLS-1$
     public static final String MAVEN_REPO_GROUP = "obj16/mrepo_group.gif"; //$NON-NLS-1$
+    public static final String SEARCH_BUTTON_ICON = "etool16/search_8x8.gif"; //$NON-NLS-1$
     
     static final String[] IMAGE_KEYS = new String[] {
             CLEAR_VALIDATE_TOOL,
@@ -110,5 +111,6 @@ public interface IImageRegistry {
             PATTERN_SEARCH_ICON,
             MAVEN_REPO,
             MAVEN_REPO_GROUP,
+            SEARCH_BUTTON_ICON,
     };
 }

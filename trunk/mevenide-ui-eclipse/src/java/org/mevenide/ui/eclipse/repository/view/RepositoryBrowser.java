@@ -26,7 +26,9 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.window.Window;
@@ -60,6 +62,7 @@ public class RepositoryBrowser extends ViewPart implements RepositoryEventListen
     private Action addRepositoryAction;
     private Action removeRepositoryAction;
     private Action downloadArtifactAction;
+    private Action refreshAction;
     
     private PreferencesManager preferenceManager;
     
@@ -151,6 +154,28 @@ public class RepositoryBrowser extends ViewPart implements RepositoryEventListen
         removeRepositoryAction.setImageDescriptor(Mevenide.getInstance().getImageRegistry().getDescriptor(IImageRegistry.REMOVE_REPO_DEFINITION));
         removeRepositoryAction.setToolTipText("Remove repository");
         
+        refreshAction = new Action(){
+            public void run() { 
+                StructuredSelection selection = (StructuredSelection) repositoryViewer.getSelection();
+                final Object[] obj = ((StructuredSelection) repositoryViewer.getSelection()).toArray();
+                for ( int i = 0; i < obj.length; i++ ) {
+                    BaseRepositoryObject selectedObject = (BaseRepositoryObject) obj[i];
+                    selectedObject.setChildren(null);
+                    selectedObject.setChildrenLoaded(false);
+                }
+                repositoryViewer.getControl().getDisplay().asyncExec(
+        				new Runnable() {
+        					public void run () {
+        					    repositoryViewer.refresh(obj);
+        					}
+        				}
+                );
+            }
+        };
+        refreshAction.setImageDescriptor(Mevenide.getInstance().getImageRegistry().getDescriptor(IImageRegistry.REFRESH_TOOL));
+        refreshAction.setToolTipText("Refresh");
+        refreshAction.setText("Refresh");
+        
         createToolBarManager();
         createContextualMenu();
     }
@@ -163,18 +188,7 @@ public class RepositoryBrowser extends ViewPart implements RepositoryEventListen
 		contextManager.addMenuListener(new IMenuListener() {
 			public void menuAboutToShow(IMenuManager manager) {
 				manager.add(downloadArtifactAction);
-			    
-			    List selection = ((StructuredSelection) repositoryViewer.getSelection()).toList();
-			    
-			    boolean enableDownload = false;
-			    
-			    for (int i = 0; i < selection.size(); i++) {
-			        if ( selection.get(i) instanceof Artifact ) {
-			            enableDownload = true;
-			            break;
-			        }
-                }
-			    downloadArtifactAction.setEnabled(enableDownload);
+				manager.add(refreshAction);
 			}
 		});
 	}
@@ -201,6 +215,7 @@ public class RepositoryBrowser extends ViewPart implements RepositoryEventListen
 		IToolBarManager toolBarManager = getViewSite().getActionBars().getToolBarManager();
         toolBarManager.add(addRepositoryAction);
         toolBarManager.add(removeRepositoryAction);
+        toolBarManager.add(refreshAction);
 	}
     
     private void createRepositoryBrowsingArea(Composite container) {
@@ -218,6 +233,26 @@ public class RepositoryBrowser extends ViewPart implements RepositoryEventListen
         
         loadRepositories();
         repositoryViewer.setInput(repositories);
+        
+        repositoryViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+            public void selectionChanged(SelectionChangedEvent event) {
+	            List selection = ((StructuredSelection) repositoryViewer.getSelection()).toList();
+			    
+			    boolean enableDownload = false;
+			    int refreshableItems = 0;
+			    
+			    for (int i = 0; i < selection.size(); i++) {
+			        if ( selection.get(i) instanceof Artifact ) {
+			            enableDownload = true;
+			        }
+			        else {
+			            refreshableItems++;
+			        }
+	            }
+			    downloadArtifactAction.setEnabled(enableDownload);
+			    refreshAction.setEnabled(refreshableItems > 0);
+            }
+        });
     }
     
     
