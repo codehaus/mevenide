@@ -14,18 +14,10 @@
 		It focuses on Eclipse integration. This is a draft subject to change.<br/>
 		To begin with you should chek out a fresh version of the various Mevenide modules. There are atm four modules you need :
 		<ul>
-			<li>
-				goals-grabber
-			</li>
-			<li>
-				mevenide-core
-			</li>
-			<li>
-				mevenide-master
-			</li>
-			<li>
-				mevenide-ui-eclipse
-			</li>
+			<li>goals-grabber</li>
+			<li>mevenide-core</li>
+			<li>mevenide-master</li>
+			<li>mevenide-ui-eclipse</li>
 		</ul>
 		Those are the various artifacts of Mevenide. 
 		<br/>
@@ -68,8 +60,18 @@
 	<section name="Configuring the build process">
 		If there should be no problem to build the goals-grabber and the mevenide-core subprojects, the mevenide-ui-eclipse project is a little bit 
 		trickier to configure since most of the Eclipse libraries are not present at ibiblio (perhaps should we ask to upload them ? im not sure here).
-		So i can see two ways of solving that : copy all required missing dependencies to the repository, or use the maven jar overriding feature.
-		
+		So i can see two ways of solving that issue : 
+			<ol>
+				<li>copy all required missing dependencies to the repository</li>
+				<li>use the maven jar overriding feature</li>
+			</ol>
+		I choose the first solution because 1. it uses then the common mechanism and 2. it doesnt pollute the project.properties file.
+		However in either case we need to set properties :
+		  	<ul>
+				<li>$${eclipse.home} because it is config dependent</li>
+				<li>$${swt.plugin.dir} because it is system dependent</li>
+			</ul> 
+		We take care of the jars copy by adding a preGoal for <code>build</code> in which, among other things we find those lines below :
 		<code>
 		<![CDATA[
 			<copy file="${eclipse.home}/plugins/org.eclipse.core.resources_2.1.0/resources.jar" 
@@ -79,12 +81,26 @@
 			  tofile="${maven.home}/repository/eclipse/jars/eclipse-swt-2.1.0.jar"/>  	
 		 ]]>
 		 </code>
+		 Concerning the site generation, i chose to use a property to identify the siteDirectory <code>mevenide.local.siteDirectory</code> and, 
+		 in order for the links to be correct urls, ive added another property that identifies the protocol used : <code>mevenide.site.prefix</code>
+		 
+		 So, in brief, you need to set those properties :  
+		 <ul>
+		 	<li>eclipse.home</li>
+			<li>swt.plugin.dir</li>
+			<li>mevenide.local.siteDirectory (optional, for site generation only)</li>
+			<li>mevenide.site.prefix (optional, for site generation only)</li>
+		 </ul>
+		 
+		 and then invoke <code>maven build</code>. This process isnot as simple as it should. We need to think about make it easier and more straightforward.
 	</section>
 	
 	<section name="Before launching the Runtime-workbench">
 	  
 	</section>
+	
 	<section name="Runtime testing">
 	</section>
+	
   </body>
  </document>
