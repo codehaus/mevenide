@@ -50,6 +50,10 @@ public class PropertyFilesAggregatorTest extends AbstractResolverTestCase {
         assertEquals("${maven.build.dir}/src2", build);
         assertEquals(IPropertyLocator.LOCATION_PROJECT, def.getPropertyLocation("maven.build.src"));
         
+        String test = def.getValue("maven.test.dest");
+        assertNotNull(test);
+        assertEquals("${maven.build.dir}/test-classes", test);
+        
     }
 
     public void testGetResolvedValue() throws Exception {
@@ -70,6 +74,12 @@ public class PropertyFilesAggregatorTest extends AbstractResolverTestCase {
         File correct = new File(projectDir.getAbsolutePath() + "/target_yyy/src2");
         assertEquals(correct.getAbsolutePath().replaceAll("\\\\", "/"), build.replaceAll("\\\\", "/"));
         assertEquals(IPropertyLocator.LOCATION_PROJECT, def.getPropertyLocation("maven.build.src"));
+
+        String test = def.getResolvedValue("maven.test.dest");
+        assertNotNull(test);
+        correct = new File(projectDir.getAbsolutePath() + "/target_yyy/test-classes");
+        assertEquals(correct.getAbsolutePath().replaceAll("\\\\", "/"), test.replaceAll("\\\\", "/"));
+        
     }
     
     public void testResolveString() throws Exception {
@@ -98,6 +108,9 @@ public class PropertyFilesAggregatorTest extends AbstractResolverTestCase {
     private class DummyPropFilesFinder implements IPropertyFinder {
         
         public String getValue(String key) {
+            if (key.equals("maven.test.dest")) {
+                return "${maven.build.dir}/test-classes";
+            }
             return null;
         }
         
