@@ -62,7 +62,6 @@
                                        moduleVar="nbdepModule"
                                        specVersionVar="nbdepSpecVersion"
             /> 
-            <ant:echo message="${jarpath}=${nbdepIsNetbeansModule}"/>
             <j:if test="${nbdepIsNetbeansModule == true}">
                <util:file name="${jarpath}" var="fileVar" />
                <j:set var="nameLong" value="${fileVar.name}"/>
