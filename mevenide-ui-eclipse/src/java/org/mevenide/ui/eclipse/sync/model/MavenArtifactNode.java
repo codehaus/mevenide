@@ -138,9 +138,20 @@ public class MavenArtifactNode extends ArtifactNode {
 	}
 	
 	private IClasspathEntry createNewLibraryEntry() {
-		String artifactPath = artifact.getPath();
-		artifactPath = resolve(artifactPath);
 		String mavenRepo = locationFinder.getMavenLocalRepository();
+		Dependency dep = artifact.getDependency();
+		String artifactPath = artifact.getPath();
+		
+		if ( "version".equals(artifact.getOverrideType()) ) {
+			//not sure if this is correct but i experiment strange behaviour with version override
+			//jar is set to MAVEN_REPO/MAVEN_REPO/<repo relative path>
+			dep.setJar(new File(artifactPath).getName());
+		}
+		if ( dep.getJar() != null && !dep.getJar().replaceAll("\\\\","/").startsWith(mavenRepo.replaceAll("\\\\","/")) ) { //$NON-NLS-1$ //$NON-NLS-2$//$NON-NLS-3$ //$NON-NLS-4$
+			artifactPath = new File(mavenRepo, dep.getGroupId() + "/" + dep.getType() + "s/" + dep.getJar()).getAbsolutePath();
+		}
+		
+		artifactPath = resolve(artifactPath);
 		
 		if ( artifactPath.replaceAll("\\\\","/").startsWith(mavenRepo.replaceAll("\\\\","/")) ) {  //$NON-NLS-1$ //$NON-NLS-2$//$NON-NLS-3$ //$NON-NLS-4$
 		    try {

@@ -231,6 +231,7 @@ public class MavenProjectNode extends AbstractSynchronizationNode implements ISe
 	        project.setDependencies(new ArrayList());
 	    }
 		List artifacts = ArtifactListBuilder.build(project);
+		
 		//restore user.dir
 		System.setProperty("user.dir", backupUserDir); //$NON-NLS-1$
 		return artifacts;
