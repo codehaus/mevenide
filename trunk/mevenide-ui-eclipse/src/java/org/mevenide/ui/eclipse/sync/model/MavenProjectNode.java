@@ -18,6 +18,7 @@ package org.mevenide.ui.eclipse.sync.model;
 
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,18 +26,24 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.jelly.JellyContext;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.ArtifactListBuilder;
 import org.apache.maven.MavenUtils;
+import org.apache.maven.jelly.MavenJellyContext;
+import org.apache.maven.project.Dependency;
 import org.apache.maven.project.Project;
 import org.apache.maven.repository.Artifact;
+import org.apache.maven.repository.GenericArtifact;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.mevenide.MevenideRuntimeException;
 import org.mevenide.context.DefaultQueryContext;
 import org.mevenide.context.IQueryContext;
+import org.mevenide.context.JDomProjectUnmarshaller;
 import org.mevenide.environment.LocationFinderAggregator;
 import org.mevenide.project.ProjectConstants;
 import org.mevenide.project.io.ProjectReader;
@@ -49,6 +56,7 @@ import org.mevenide.ui.eclipse.util.FileUtils;
 import org.mevenide.ui.eclipse.util.JavaProjectUtils;
 import org.mevenide.ui.eclipse.util.SourceDirectoryTypeUtil;
 import org.mevenide.util.MevenideUtils;
+import org.mevenide.util.StringUtils;
 
 /**  
  * 
@@ -145,22 +153,63 @@ public class MavenProjectNode extends AbstractSynchronizationNode implements ISe
 	}
 	
 	private void initializeArtifacts(Project project) {
-	    //change user.dir to allow to build artifacts correctly
-	    String backupUserDir = System.getProperty("user.dir"); //$NON-NLS-1$
-	    System.setProperty("user.dir", project.getFile().getParentFile().getAbsolutePath()); //$NON-NLS-1$
-	    
-	    //needed for rc3 to correctly setRelativePaths
-	    System.setProperty("maven.home", Mevenide.getInstance().getMavenHome()); //$NON-NLS-1$
-	    
-	    project.setContext(MavenUtils.createContext(project.getFile().getParentFile()));
-	    
-	    if ( project.getDependencies() == null ) {
-	        project.setDependencies(new ArrayList());
-	    }
-		List artifacts = ArtifactListBuilder.build(project);
-		
-		//restore user.dir
-		System.setProperty("user.dir", backupUserDir); //$NON-NLS-1$
+	    List artifacts = buildArtifactList(project);
+
+		//special junit treatment
+		if ( project.getBuild() != null && !StringUtils.isNull(project.getBuild().getUnitTestSourceDirectory()) ) {
+			boolean foundJunit = false;
+			for ( int u = 0; u < artifacts.size(); u++ ) {
+				Artifact currentArtifact = (Artifact) artifacts.get(u);
+				Dependency d = currentArtifact.getDependency();
+				if ( d != null ) { 
+					if ( "junit".equals(d.getGroupId()) &&
+						 "junit".equals(d.getArtifactId()) 	) {
+						foundJunit = true;
+						break;
+					}
+				}
+			}
+			if ( !foundJunit ) {
+				try {
+					File cacheDir = new File(Mevenide.getInstance().getMavenLocalHome(), "cache");
+					if ( cacheDir.exists() ) {
+						File[] list = cacheDir.listFiles(new FileFilter() {
+							public boolean accept(File pathname) { 
+								if  ( pathname.isDirectory() && pathname.getName().indexOf("maven-test-plugin") >= 0 ) {
+									return true;
+								}
+								return false;
+							}
+						});
+						//@todo get newest test plugin - or one that is in use
+						if ( list.length > 0 ) {
+							JDomProjectUnmarshaller unmarshaller = new JDomProjectUnmarshaller();
+							File testPluginProjectFile = new File(list[0], "project.xml");
+							Project testPluginDescriptor = unmarshaller.parse(testPluginProjectFile);
+							testPluginDescriptor.setFile(testPluginProjectFile);
+							List testPluginDependencies = buildArtifactList(testPluginDescriptor);
+							for ( int u = 0; u < testPluginDependencies.size(); u++ ) {
+								Artifact artifact = (Artifact) testPluginDependencies.get(u);
+								Dependency d = artifact.getDependency();
+								if ( d != null ) { 
+									if ( "junit".equals(d.getGroupId()) &&
+										 "junit".equals(d.getArtifactId()) 	) {
+										artifacts.add(artifact);
+										break;
+									}
+								}
+							}
+						}
+					}
+				} 
+				catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				//Artifact artifact = new GenericArtifact(dependency);
+				
+			}
+		}
 		
 		originalArtifactNodes = new MavenArtifactNode[artifacts.size()];
 		List comparisonList = artifactNodes != null ? Arrays.asList(artifactNodes) : new ArrayList();
@@ -175,6 +224,22 @@ public class MavenProjectNode extends AbstractSynchronizationNode implements ISe
 		}
 		artifactNodes = (MavenArtifactNode[]) comparisonList.toArray(new MavenArtifactNode[0]);
 		joinEclipseProjectArtifacts();
+	}
+
+	private List buildArtifactList(Project project) {
+		//change user.dir to allow to build artifacts correctly
+	    String backupUserDir = System.getProperty("user.dir"); //$NON-NLS-1$
+		System.setProperty("user.dir", project.getFile().getParentFile().getAbsolutePath()); //$NON-NLS-1$
+		//needed for rc3 to correctly setRelativePaths
+	    System.setProperty("maven.home", Mevenide.getInstance().getMavenHome()); //$NON-NLS-1$
+		project.setContext(MavenUtils.createContext(project.getFile().getParentFile()));
+		if ( project.getDependencies() == null ) {
+	        project.setDependencies(new ArrayList());
+	    }
+		List artifacts = ArtifactListBuilder.build(project);
+		//restore user.dir
+		System.setProperty("user.dir", backupUserDir); //$NON-NLS-1$
+		return artifacts;
 	}
 
 	private void joinEclipseProjectArtifacts() {
