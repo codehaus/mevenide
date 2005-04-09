@@ -2,12 +2,14 @@
 <project>
     <extend>${basedir}/../mevenide-parent/project.xml</extend>
     <pomVersion>3</pomVersion>
-    <name>Mevenide Goals Grabber</name>
+    <id>goals-grabber:goals-grabber</id>
     <artifactId>goals-grabber</artifactId>
+    <name>Mevenide Goals Grabber</name>
+    <groupId>goals-grabber</groupId>
     <currentVersion>0.8</currentVersion>
     <package>org.mevenide.goals</package>
-    <shortDescription>Gets all the available goals and reports</shortDescription>
     <description>This project provides generic Goals Grabbing mechanism. It is articulated around IGoalsGrabber interface.</description>
+    <shortDescription>Gets all the available goals and reports</shortDescription>
     <versions>
         <version>
             <id>0.3</id>
@@ -42,11 +44,10 @@
             <version>0.7</version>
             <type>jar</type>
             <properties>
-                <netbeans.module.dep>spec</netbeans.module.dep>
                 <eclipse.plugin.bundle>false</eclipse.plugin.bundle>
+                <netbeans.module.dep>spec</netbeans.module.dep>
             </properties>
         </dependency>
-        <!-- for tests-->
         <dependency>
             <groupId>maven</groupId>
             <artifactId>maven</artifactId>
@@ -78,8 +79,8 @@
             <version>1.1.2a</version>
             <type>jar</type>
             <properties>
-                <netbeans.module.ext>true</netbeans.module.ext>
                 <eclipse.plugin.bundle>false</eclipse.plugin.bundle>
+                <netbeans.module.ext>true</netbeans.module.ext>
             </properties>
         </dependency>
         <dependency>
@@ -87,6 +88,13 @@
             <artifactId>log4j</artifactId>
             <version>1.2.8</version>
             <url>http://jakarta.apache.org/log4j/</url>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>3.8.1</version>
+            <jar>junit-3.8.1.jar</jar>
+            <type>jar</type>
         </dependency>
     </dependencies>
 </project>
