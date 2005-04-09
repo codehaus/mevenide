@@ -11,11 +11,13 @@
 					This project provides the UI part for Eclipse. See the 
 					<a href="features.html" class="documentLink">features list</a> and the <a href="help.html" class="documentLink">Help page</a> 
 					to learn more about Mevenide for Eclipse. Latest release and zipped sources can be 
-					downloaded <a href="http://dist.codehaus.org/mevenide/release" class="documentLink">here</a>. 
+					downloaded <a href="http://mevenide.codehaus.org/release/eclipse/" class="documentLink">here</a>. 
 					However the preferred way to install Mevenide for Eclipse is through the Eclipse Update Manager ; please refer to 
 					<a href="update/index.html">this document</a> for instructions on using it. 
 					<br/>
-					3.1 M2 has brought some API change. So if you're using eclipse 3.0.x or 3.1 M2 you need to grab Mevenide <a href="update/3.0/site.xml">here</a> - the big'ol'jar can be found <a href="http://dist.codehaus.org/mevenide/release" class="documentLink">here</a>.
+					3.1 M2 has brought some API change. So if you're using eclipse 3.0.x or 3.1 M1 you need to grab Mevenide <a href="http://mevenide.codehaus.org/release/eclipse/update/3.0/site.xml">here</a> - 
+					the big'ol'jar can also be found <a href="http://mevenide.codehaus.org/release/eclipse/" class="documentLink">here</a>. Please be aware that versions greater than 0.3.0 don't support eclipse 
+					3.0 and 3.1M1 yet.
 				</p>
 			</div>
 			<subsection name="Requirements">
