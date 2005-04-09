@@ -142,9 +142,12 @@ public class MavenArtifactNode extends ArtifactNode {
 		Dependency dep = artifact.getDependency();
 		String artifactPath = artifact.getPath();
 		
-		if ( "version".equals(artifact.getOverrideType()) ) {
+		if ( "version".equals(artifact.getOverrideType()) && 
+				artifactPath.replaceAll("\\\\","/").startsWith(mavenRepo.replaceAll("\\\\","/")) ) {
 			//not sure if this is correct but i experiment strange behaviour with version override
 			//jar is set to MAVEN_REPO/MAVEN_REPO/<repo relative path>
+			//so extract name if jar startsWith MAVEN_REPO
+			//if no repeating path will be corrected afterwards
 			dep.setJar(new File(artifactPath).getName());
 		}
 		if ( dep.getJar() != null && !dep.getJar().replaceAll("\\\\","/").startsWith(mavenRepo.replaceAll("\\\\","/")) ) { //$NON-NLS-1$ //$NON-NLS-2$//$NON-NLS-3$ //$NON-NLS-4$
