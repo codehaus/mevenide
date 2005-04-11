@@ -69,6 +69,9 @@ public class MavenSourcesImpl implements Sources {
     public static final String NAME_ASPECTSOURCE = "4AspectSourceRoot"; //NOI18N
     public static final String NAME_GENERATED_SOURCE = "6GeneratedSourceRoot"; //NOI18N
     
+    public static final String TYPE_DOC_ROOT="doc_root"; //NOI18N
+    public static final String TYPE_WEB_INF="web_inf"; //NOI18N    
+    
     private MavenProject project;
     private List listeners;
     
@@ -76,6 +79,7 @@ public class MavenSourcesImpl implements Sources {
     private HashMap resGroup;
     private SourceGroup xdocsGroup;
     private SourceGroup genSrcGroup;
+    private SourceGroup webDocSrcGroup;
     
     private Object LOCK = new Object();
     
@@ -190,6 +194,10 @@ public class MavenSourcesImpl implements Sources {
                 return new SourceGroup[0];
             }
         }
+        if (TYPE_DOC_ROOT.equals(str)) {
+            System.out.println("create doc root..");
+            return createWebDocRoot();
+        }
         if (TYPE_RESOURCES.equals(str) || TYPE_TEST_RESOURCES.equals(str)) {
             List toReturn = new ArrayList();
             Build build = project.getOriginalMavenProject().getBuild();
@@ -257,6 +265,47 @@ public class MavenSourcesImpl implements Sources {
         return changed;
     }
     
+    private SourceGroup[] createWebDocRoot() {
+        try {
+            FileObject folder = URLMapper.findFileObject(project.getWebAppDirectory().toURL());
+            SourceGroup grp = null;
+            synchronized (LOCK) {
+                checkWebDocGroupCache(folder);
+                grp = webDocSrcGroup;
+            }
+            if (grp != null) {
+                System.out.println("exists");
+                return new SourceGroup[] {grp};
+            } else {
+                return new SourceGroup[0];
+            }
+        } catch (MalformedURLException exc) {
+            logger.error("Malformed URL", exc);
+            return new SourceGroup[0];
+        }
+    }
+    
+    
+
+    /**
+     * consult the SourceGroup cache, return true if anything changed..
+     */
+    private boolean checkWebDocGroupCache(FileObject root) {
+        if (root == null && webDocSrcGroup != null) {
+            webDocSrcGroup = null;
+            return true;
+        }
+        if (root == null) {
+            return false;
+        }
+        boolean changed = false;
+        if (webDocSrcGroup == null || !webDocSrcGroup.getRootFolder().equals(root)) {
+            webDocSrcGroup = GenericSources.group(project, root, TYPE_DOC_ROOT, "Web Document Sources", null, null);
+            changed = true;
+        } 
+        return changed;
+    }   
+    
    /**
      * consult the SourceGroup cache, return true if anything changed..
      */
@@ -274,7 +323,9 @@ public class MavenSourcesImpl implements Sources {
             changed = true;
         } 
         return changed;
-    }    
+    }
+    
+    
     
     private SourceGroup[] createXDocs() {
         String path = project.getPropertyResolver().getResolvedValue("maven.docs.src");

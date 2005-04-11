@@ -39,9 +39,11 @@ public class WebModuleProviderImpl implements WebModuleProvider {
     }
 
     public WebModule findWebModule(FileObject fileObject) {
+        System.out.println("web provider called");
         // assuming here that we get asked only if the 
         WebModuleImplementation impl = (WebModuleImplementation)project.getLookup().lookup(WebModuleImplementation.class);
         if (impl != null) {
+            System.out.println("impl found..");
             return WebModuleFactory.createWebModule(impl);
         }
         return null;
