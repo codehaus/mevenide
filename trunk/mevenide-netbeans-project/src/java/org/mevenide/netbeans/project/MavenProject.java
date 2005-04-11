@@ -403,9 +403,12 @@ public final class MavenProject implements Project {
         }
         
         public String getDisplayName() {
-            String toReturn = MavenProject.this.getOriginalMavenProject().getName();
             if (errorName != null) {
                 return errorName;
+            }
+            String toReturn = MavenProject.this.getOriginalMavenProject().getName();
+            if (toReturn == null) {
+                toReturn = "<No name defined>";
             }
             return toReturn;
         }
