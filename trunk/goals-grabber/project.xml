@@ -2,10 +2,8 @@
 <project>
     <extend>${basedir}/../mevenide-parent/project.xml</extend>
     <pomVersion>3</pomVersion>
-    <id>goals-grabber:goals-grabber</id>
     <artifactId>goals-grabber</artifactId>
     <name>Mevenide Goals Grabber</name>
-    <groupId>goals-grabber</groupId>
     <currentVersion>0.8</currentVersion>
     <package>org.mevenide.goals</package>
     <description>This project provides generic Goals Grabbing mechanism. It is articulated around IGoalsGrabber interface.</description>
