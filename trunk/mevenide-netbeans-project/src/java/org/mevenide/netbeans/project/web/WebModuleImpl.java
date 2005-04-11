@@ -15,16 +15,17 @@
  * =========================================================================
  */
 
-package org.mevenide.netbeans.project;
+package org.mevenide.netbeans.project.web;
 
 import org.netbeans.modules.web.api.webmodule.WebModule;
 import org.netbeans.modules.web.spi.webmodule.WebModuleImplementation;
 import org.openide.filesystems.FileObject;
+import org.mevenide.netbeans.project.*;
 
 
 /**
  *
- * @author  Milos Kleint (ca206216@tiscali.cz)
+ * @author  Milos Kleint (mkleint@codehaus.org)
  */
 public class WebModuleImpl implements WebModuleImplementation {
     private MavenProject project;
@@ -46,7 +47,9 @@ public class WebModuleImpl implements WebModuleImplementation {
     }
 
     public FileObject getDocumentBase() {
-        return FileUtilities.getFileObjectForProperty("maven.war.src", project.getPropertyResolver()); //NOI18N
+        FileObject docbase = FileUtilities.getFileObjectForProperty("maven.war.src", project.getPropertyResolver()); //NOI18N
+        System.out.println("doc base=" + docbase);
+        return docbase;
     }
 
     public FileObject getDeploymentDescriptor() {
@@ -57,5 +60,8 @@ public class WebModuleImpl implements WebModuleImplementation {
         return project.getName();
     }
     
+    boolean isValid() {
+        return null != FileUtilities.getFileObjectForProperty("maven.war.src", project.getPropertyResolver()); //NOI18N        
+    }
 
 }
