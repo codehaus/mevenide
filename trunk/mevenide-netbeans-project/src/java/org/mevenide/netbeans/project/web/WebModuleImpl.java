@@ -48,7 +48,6 @@ public class WebModuleImpl implements WebModuleImplementation {
 
     public FileObject getDocumentBase() {
         FileObject docbase = FileUtilities.getFileObjectForProperty("maven.war.src", project.getPropertyResolver()); //NOI18N
-        System.out.println("doc base=" + docbase);
         return docbase;
     }
 

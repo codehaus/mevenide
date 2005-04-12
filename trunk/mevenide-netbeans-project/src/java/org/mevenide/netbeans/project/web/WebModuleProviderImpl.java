@@ -15,7 +15,7 @@
  * =========================================================================
  */
 
-package org.mevenide.netbeans.project;
+package org.mevenide.netbeans.project.web;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -24,6 +24,7 @@ import org.netbeans.modules.web.spi.webmodule.WebModuleFactory;
 import org.netbeans.modules.web.spi.webmodule.WebModuleImplementation;
 import org.netbeans.modules.web.spi.webmodule.WebModuleProvider;
 import org.openide.filesystems.FileObject;
+import org.mevenide.netbeans.project.*;
 
 
 /**
@@ -39,11 +40,9 @@ public class WebModuleProviderImpl implements WebModuleProvider {
     }
 
     public WebModule findWebModule(FileObject fileObject) {
-        System.out.println("web provider called");
         // assuming here that we get asked only if the 
         WebModuleImplementation impl = (WebModuleImplementation)project.getLookup().lookup(WebModuleImplementation.class);
         if (impl != null) {
-            System.out.println("impl found..");
             return WebModuleFactory.createWebModule(impl);
         }
         return null;
