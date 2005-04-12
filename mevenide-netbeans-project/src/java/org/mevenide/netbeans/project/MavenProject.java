@@ -57,6 +57,7 @@ import org.openide.util.Utilities;
 import org.openide.util.lookup.Lookups;
 import org.openide.util.lookup.ProxyLookup;
 import org.mevenide.netbeans.api.project.AdditionalMavenLookupProvider;
+import org.mevenide.netbeans.project.web.WebModuleProviderImpl;
 
 
 /**
