@@ -31,6 +31,7 @@ import org.apache.maven.project.Project;
 import org.mevenide.netbeans.project.MavenProject;
 import org.mevenide.project.dependency.DependencyResolverFactory;
 import org.mevenide.project.dependency.IDependencyResolver;
+import org.mevenide.properties.IPropertyResolver;
 import org.netbeans.api.java.queries.JavadocForBinaryQuery;
 import org.netbeans.api.java.queries.SourceForBinaryQuery;
 import org.netbeans.spi.java.queries.JavadocForBinaryQueryImplementation;
@@ -148,9 +149,10 @@ public class MavenForBinaryQueryImpl implements SourceForBinaryQueryImplementati
             try {
                 IDependencyResolver depRes = DependencyResolverFactory.getFactory().
                                                 newInstance(file.getAbsolutePath());
-                boolean found =  (doCompare(depRes.guessArtifactId(), mavproj.getArtifactId()) &&
-                                  doCompare(depRes.guessGroupId(), mavproj.getGroupId()) &&
-                                  doCompare(depRes.guessVersion(), mavproj.getCurrentVersion()));
+                IPropertyResolver res = project.getPropertyResolver();
+                boolean found =  (doCompare(depRes.guessArtifactId(), res.resolveString(mavproj.getArtifactId())) &&
+                                  doCompare(depRes.guessGroupId(), res.resolveString(mavproj.getGroupId())) &&
+                                  doCompare(depRes.guessVersion(), res.resolveString(mavproj.getCurrentVersion())));
                 return found ? 0 : -1;
             } catch (Exception exc) {
                 logger.error("exception", exc);
@@ -231,7 +233,7 @@ public class MavenForBinaryQueryImpl implements SourceForBinaryQueryImplementati
         if (one == null || two == null) {
             return false;
         }
-        return one.equals(two);
+        return one.trim().equals(two.trim());
     }
     
     

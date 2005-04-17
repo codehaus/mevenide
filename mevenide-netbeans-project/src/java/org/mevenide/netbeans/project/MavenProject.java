@@ -49,6 +49,7 @@ import org.mevenide.properties.resolver.ProjectWalker2;
 import org.mevenide.properties.resolver.PropertyLocatorFactory;
 import org.netbeans.api.project.Project;
 import org.netbeans.api.project.ProjectInformation;
+import org.netbeans.api.project.Sources;
 import org.netbeans.spi.project.ui.PrivilegedTemplates;
 import org.netbeans.spi.project.ui.RecommendedTemplates;
 import org.openide.filesystems.*;
@@ -81,6 +82,7 @@ public final class MavenProject implements Project {
     private Updater updater1;
     private Updater updater2;
     private Updater updater3;
+    private Sources sources;
 
     private Info projectInfo;
     
@@ -291,6 +293,14 @@ public final class MavenProject implements Project {
        String path = getPropertyResolver().getResolvedValue("maven.ear.src"); //NOI18N
        return path == null ? null : getDirURI(path);
    }
+   
+   /**
+    * URI denoted by the maven.ejb.src property in the project context.
+    */
+   public URI getEjbDirectory() {
+       String path = getPropertyResolver().getResolvedValue("maven.ejb.src"); //NOI18N
+       return path == null ? null : getDirURI(path);
+   }   
 
    /**
     * URI denoted by the cactus.src.dir property in the project context. Relates to the maven-cactus-plugin.
@@ -337,6 +347,12 @@ public final class MavenProject implements Project {
         return null;
     }
     
+    public synchronized Sources getSources() {
+        if (sources == null) {
+            sources = new MavenSourcesImpl(this);
+        }
+        return sources;
+    }
     
     private Lookup createLookup() {
         Collection toReturn = new ArrayList();
@@ -352,9 +368,8 @@ public final class MavenProject implements Project {
             new MavenTestForSourceImpl(this),
 //            new MavenFileBuiltQueryImpl(this),
             new SubprojectProviderImpl(this),
-            new MavenSourcesImpl(this), 
-            new RecommendedTemplatesImpl(),
-            new WebModuleProviderImpl(this)
+            getSources(), 
+            new RecommendedTemplatesImpl()
         });
         toReturn.add(staticLookup);
         

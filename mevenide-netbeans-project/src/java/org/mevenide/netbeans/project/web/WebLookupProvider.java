@@ -53,6 +53,7 @@ public class WebLookupProvider implements AdditionalMavenLookupProvider {
             content = cont;
             impl = new WebModuleImpl(project);
             isAdded = false;
+            content.add(new WebModuleProviderImpl(project));
             checkWebApp();
         }
 
