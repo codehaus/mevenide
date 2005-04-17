@@ -1,0 +1,150 @@
+package org.mevenide.idea.runner.console;
+
+import com.intellij.execution.DefaultExecutionResult;
+import com.intellij.execution.filters.ExceptionFilter;
+import com.intellij.execution.filters.RegexpFilter;
+import com.intellij.execution.filters.TextConsoleBuidlerFactory;
+import com.intellij.execution.filters.TextConsoleBuilder;
+import com.intellij.execution.process.ProcessHandler;
+import com.intellij.execution.ui.ConsoleView;
+import com.intellij.openapi.actionSystem.*;
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.ui.Messages;
+import com.intellij.openapi.wm.ToolWindow;
+import com.intellij.openapi.wm.ToolWindowManager;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.mevenide.idea.support.ui.UIConstants;
+import org.mevenide.idea.util.Res;
+import org.mevenide.idea.util.images.Images;
+
+import javax.swing.*;
+import java.awt.BorderLayout;
+import java.awt.Container;
+
+/**
+ * @author Arik
+ */
+public class ExecutionConsole extends JPanel {
+    private static final Res RES = Res.getInstance(ExecutionConsole.class);
+    private static final Log LOG = LogFactory.getLog(ExecutionConsole.class);
+
+    private static final String COMPILE_REGEXP =
+        RegexpFilter.FILE_PATH_MACROS + ":" + RegexpFilter.LINE_MACROS;
+
+    private final Project project;
+    private final ProcessHandler runner;
+    private       ConsoleView    console;
+
+    public ExecutionConsole(final Project pProject,
+                            final ProcessHandler pRunner) {
+        project = pProject;
+        runner = pRunner;
+        init();
+    }
+
+    public ExecutionConsole(final Project pProject,
+                            final ProcessHandler pRunner,
+                            final boolean pDoubleBuffered) {
+        super(pDoubleBuffered);
+        project = pProject;
+        runner = pRunner;
+        init();
+    }
+
+    protected void init() {
+        removeAll();
+        setLayout(new BorderLayout());
+
+        //
+        //create a console view
+        //
+        final TextConsoleBuidlerFactory factory = TextConsoleBuidlerFactory.getInstance();
+        final TextConsoleBuilder builder = factory.createBuilder(project);
+        console = builder.getConsole();
+        console.attachToProcess(runner);
+        console.addMessageFilter(new ExceptionFilter(project));
+        console.addMessageFilter(new RegexpFilter(project, COMPILE_REGEXP));
+
+        //
+        //tell the process handler to start sending notification for UI updates
+        //to the console
+        //
+        runner.startNotify();
+
+        //
+        //add the console view to the panel
+        //
+        add(console.getComponent(), BorderLayout.CENTER);
+
+        //
+        //create the toolbar
+        //
+        DefaultActionGroup actionGroup = new DefaultActionGroup();
+        actionGroup.add(new DefaultExecutionResult.StopAction(runner));
+        actionGroup.add(new PauseAction());
+        actionGroup.add(new CloseAction());
+
+        //
+        //add the toolbar to the panel
+        //
+        ActionToolbar toolbar = ActionManager.getInstance().createActionToolbar(
+                        ExecutionConsole.class.getName(),
+                        actionGroup,
+                        false);
+        add(toolbar.getComponent(), BorderLayout.LINE_START);
+    }
+
+    private class CloseAction extends AnAction {
+        public CloseAction() {
+            super(RES.get("close.action.text"),
+                  RES.get("close.action.desc"),
+                  new ImageIcon(Images.CLOSE));
+        }
+
+        public void actionPerformed(AnActionEvent pEvent) {
+            try {
+                //
+                //stop the process first
+                //
+                runner.destroyProcess();
+
+                //
+                //remove the console
+                //
+                final Container parent = ExecutionConsole.this.getParent();
+                parent.remove(ExecutionConsole.this);
+
+                //
+                //if this is the last console, hide execution panel container
+                //
+                if (parent.getComponentCount() == 0) {
+                    final ToolWindowManager toolWinMgr = ToolWindowManager.getInstance(project);
+                    final ToolWindow toolWindow =
+                            toolWinMgr.getToolWindow(ExecutionToolWindow.NAME);
+                    toolWindow.setAvailable(false, null);
+                }
+            }
+            catch (Exception e) {
+                Messages.showErrorDialog(project, e.getMessage(), UIConstants.ERROR_TITLE);
+                LOG.error(e.getMessage(), e);
+            }
+        }
+    }
+
+    private class PauseAction extends ToggleAction {
+        public PauseAction() {
+            super(RES.get("pause.action.text"),
+                  RES.get("pause.action.desc"),
+                  new ImageIcon(Images.PAUSE));
+        }
+
+        public boolean isSelected(AnActionEvent e) {
+            return console.isOutputPaused();
+        }
+
+        public void setSelected(AnActionEvent e, boolean state) {
+            console.setOutputPaused(state);
+        }
+    }
+}
