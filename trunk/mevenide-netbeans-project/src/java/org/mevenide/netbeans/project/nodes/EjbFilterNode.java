@@ -29,26 +29,26 @@ import org.openide.util.Utilities;
 
 
 /**
- * node for displaying maven.ear.src directory's content.
- * @author  Milos Kleint (ca206216@tiscali.cz)
+ * node for displaying maven.ejb.src directory's content.
+ * @author  Milos Kleint (mkleint@codehaus.org)
  */
-class EarFilterNode extends FilterNode {
+class EjbFilterNode extends FilterNode {
     private MavenProject project;
     private boolean isTopLevelNode = false;
     
-    EarFilterNode(MavenProject proj, Node orig, File root) {
+    EjbFilterNode(MavenProject proj, Node orig, File root) {
         this(proj, orig, root, true);
     }
     
-    private EarFilterNode(MavenProject proj, Node orig, File root, boolean isTopLevel) {
-        super(orig, new EarFilterChildren(proj, orig, root));
+    private EjbFilterNode(MavenProject proj, Node orig, File root, boolean isTopLevel) {
+        super(orig, new EjbFilterChildren(proj, orig, root));
         isTopLevelNode = isTopLevel;
         project = proj;
     }
     
     public String getDisplayName() {
         if (isTopLevelNode) {
-            return "Ear Resources";
+            return "Ejb Resources";
         }
         return super.getDisplayName();
         
@@ -84,10 +84,10 @@ class EarFilterNode extends FilterNode {
         return retValue;
     }
     
-    static class EarFilterChildren extends FilterNode.Children {
+    static class EjbFilterChildren extends FilterNode.Children {
         private File root;
         private MavenProject project;
-        EarFilterChildren(MavenProject proj, Node original, File rootpath) {
+        EjbFilterChildren(MavenProject proj, Node original, File rootpath) {
             super(original);
             root = rootpath;
             project = proj;
@@ -104,7 +104,7 @@ class EarFilterNode extends FilterNode {
                         return new Node[0];
                     }
                 }
-                Node n = new EarFilterNode(project, (Node)obj, root, false);
+                Node n = new EjbFilterNode(project, (Node)obj, root, false);
                 return new Node[] {n};
             }
             Node origos = (Node)obj;

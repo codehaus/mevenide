@@ -20,11 +20,14 @@ import java.awt.Image;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.mevenide.netbeans.api.project.AdditionalActionsProvider;
 import org.mevenide.properties.IPropertyLocator;
 import org.mevenide.netbeans.project.ActionProviderImpl;
 import org.mevenide.netbeans.project.MavenProject;
@@ -89,6 +92,13 @@ public class MavenProjectNode extends AbstractNode {
         if (isMultiproject) {
             lst.add(provider.createBasicMavenAction("Build (multiproject)", ActionProviderImpl.COMMAND_MULTIPROJECTBUILD));
             lst.add(provider.createBasicMavenAction("Clean (multiproject)", ActionProviderImpl.COMMAND_MULTIPROJECTCLEAN));
+        }
+        Lookup.Result res = Lookup.getDefault().lookup(new Lookup.Template(AdditionalActionsProvider.class));
+        Iterator it = res.allInstances().iterator();
+        while (it.hasNext()) {
+            AdditionalActionsProvider act = (AdditionalActionsProvider)it.next();
+            Action[] acts = act.createPopupActions(project);
+            lst.addAll(Arrays.asList(acts));
         }
         lst.add(new RunGoalsAction(project));
         // separator

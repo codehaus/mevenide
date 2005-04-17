@@ -58,11 +58,14 @@ class MavenProjectChildren extends Children.Keys {
     private static final String KEY_TEST_RESOURCES = "testresources"; //NOI18N
     private static final String KEY_WEBAPP = "webapp"; //NOI18N
     private static final String KEY_EAR = "ear"; //NOI18N
+    private static final String KEY_EJB = "ejb"; //NOI18N
+    
     
     private MavenProject project;
     private PropertyChangeListener changeListener;
     private String currentWebAppKey;
     private String currentEarKey;
+    private String currentEjbKey;
     
     public MavenProjectChildren(MavenProject project) {
         this.project = project;
@@ -114,6 +117,11 @@ class MavenProjectChildren extends Children.Keys {
             currentEarKey = KEY_EAR + ear;
             list.add(currentEarKey);
         }
+        URI ejb = project.getEjbDirectory();
+        if (ejb != null) {
+            currentEjbKey = KEY_EJB + ejb;
+            list.add(currentEjbKey);
+        }
         Project proj = project.getOriginalMavenProject();
         Build build = proj.getBuild();
         if (build != null) {
@@ -162,6 +170,8 @@ class MavenProjectChildren extends Children.Keys {
             n = createWebAppNode();
         } else if (key == currentEarKey) {
             n = createEarNode();
+        } else if (key == currentEjbKey) {
+            n = createEjbNode();
         }
         return n == null ? new Node[0] : new Node[] {n};
     }
@@ -218,11 +228,29 @@ class MavenProjectChildren extends Children.Keys {
                 }
             }
         } catch (MalformedURLException exc) {
-            logger.debug("malformed webapp rootfile url", exc);
+            logger.debug("malformed ear rootfile url", exc);
             n = null;
         }
         return n;
     }
+    
+    private Node createEjbNode() {
+        Node n =  null;
+        try {
+            FileObject fo = URLMapper.findFileObject(project.getEjbDirectory().toURL());
+            if (fo != null) {
+                DataFolder fold = DataFolder.findFolder(fo);
+                File fil = FileUtil.toFile(fo);
+                if (fold != null) {
+                    n = new EjbFilterNode(project, fold.getNodeDelegate().cloneNode(), fil);
+                }
+            }
+        } catch (MalformedURLException exc) {
+            logger.debug("malformed ejb rootfile url", exc);
+            n = null;
+        }
+        return n;
+    }    
  
     
     

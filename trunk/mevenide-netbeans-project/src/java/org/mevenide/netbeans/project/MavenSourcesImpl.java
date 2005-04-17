@@ -195,7 +195,6 @@ public class MavenSourcesImpl implements Sources {
             }
         }
         if (TYPE_DOC_ROOT.equals(str)) {
-            System.out.println("create doc root..");
             return createWebDocRoot();
         }
         if (TYPE_RESOURCES.equals(str) || TYPE_TEST_RESOURCES.equals(str)) {
