@@ -1,6 +1,6 @@
 *.ai -k 'b'
 *.gif -k 'b'
-*.jpeg -k 'b
+*.jpeg -k 'b'
 *.jpg -k 'b'
 *.png -k 'b'
 *.ico -k 'b'
