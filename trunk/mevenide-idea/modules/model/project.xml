@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project>
+    <extend>../master/project.xml</extend>
+    <artifactId>mevenide-idea-model</artifactId>
+    <name>MevenIDE IDEA Integration Model</name>
+    <package>org.mevenide.idea.model</package>
+    <description>Main logic for the Maven IDEA Integration plugin.</description>
+    <shortDescription>Main logic for the Maven IDEA Integration plugin.</shortDescription>
+    <dependencies>
+        <dependency>
+            <groupId>mevenide</groupId>
+            <artifactId>mevenide-idea-common</artifactId>
+            <version>0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>mevenide</groupId>
+            <artifactId>mevenide-idea-main</artifactId>
+            <version>0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>jdom</groupId>
+            <artifactId>jdom</artifactId>
+            <version>1.0</version>
+            <properties>
+                <idea.plugin.bundle>true</idea.plugin.bundle>
+                <idea.plugin.target.path>resources</idea.plugin.target.path>
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>mevenide</groupId>
+            <artifactId>goals-grabber</artifactId>
+            <version>0.8</version>
+            <properties>
+                <idea.plugin.bundle>true</idea.plugin.bundle>
+                <idea.plugin.target.path>resources</idea.plugin.target.path>
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>mevenide</groupId>
+            <artifactId>mevenide-config</artifactId>
+            <version>0.7</version>
+            <properties>
+                <idea.plugin.bundle>true</idea.plugin.bundle>
+                <idea.plugin.target.path>resources</idea.plugin.target.path>
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>mevenide</groupId>
+            <artifactId>mevenide-core</artifactId>
+            <version>0.7</version>
+            <properties>
+                <idea.plugin.bundle>true</idea.plugin.bundle>
+                <idea.plugin.target.path>resources</idea.plugin.target.path>
+            </properties>
+        </dependency>
+    </dependencies>
+</project>

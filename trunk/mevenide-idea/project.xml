@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project>
+    <pomVersion>3</pomVersion>
+    <artifactId>mevenide-idea</artifactId>
+    <name>MevenIDE IDEA Integration</name>
+    <groupId>org.mevenide</groupId>
+    <currentVersion>0.1-SNAPSHOT</currentVersion>
+    <inceptionYear>2005</inceptionYear>
+    <package>org.mevenide.idea</package>
+    <description>
+        This project provides Maven integration into the popular IntelliJ IDEA IDE.
+    </description>
+    <shortDescription>Maven integration into the popular IntelliJ IDEA IDE.</shortDescription>
+</project>
