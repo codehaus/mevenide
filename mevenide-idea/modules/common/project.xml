@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project>
+    <extend>../master/project.xml</extend>
+    <artifactId>mevenide-idea-common</artifactId>
+    <name>MevenIDE IDEA Integration Common component</name>
+    <package>org.mevenide.idea.common</package>
+    <description>Common components for IDEA Integration modules.</description>
+    <shortDescription>Common components for IDEA Integration modules.</shortDescription>
+</project>
