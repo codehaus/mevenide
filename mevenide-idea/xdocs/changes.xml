@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+
+<document>
+
+    <properties>
+        <title>Changes</title>
+        <author email="arikkfir@gmail.com">Arik Kfir</author>
+    </properties>
+
+    <body>
+
+        <release version="0.1" date="unreleased"
+                 description="The initial version. Focuses on integration with Mevenide, and catching up on missing features.">
+            <action dev="arikkfir" type="update">
+                Split project into subprojects:
+                <ul>
+                    <li>mevenide-idea-master: a template parent project for the other modules</li>
+                    <li>
+                        mevenide-idea-main: the main project - provides the UI and plugin wrapper.
+                    </li>
+                    <li>
+                        mevenide-idea-model: interacts with mevenide and exposes project information
+                        for the mevenide-idea-main module.
+                    </li>
+                </ul>
+            </action>
+            <action dev="arikkfir" type="update">
+                Modified code base to use Mevenide libraries instead of custom code
+                that does the same.
+            </action>
+            <action dev="arikkfir" type="add">
+                Created initial code base of the plugin.
+            </action>
+        </release>
+
+    </body>
+</document>
+

@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+
+<document>
+
+    <properties>
+        <title>Changes</title>
+        <author email="arikkfir@gmail.com">Arik Kfir</author>
+    </properties>
+
+    <body>
+
+        <release version="0.1" date="unreleased" description="The initial version.">
+            <action dev="arikkfir" type="update">
+                Modified code base to use Mevenide libraries instead of custom code
+                that does the same.
+            </action>
+            <action dev="arikkfir" type="add">
+                Created initial code base of the plugin.
+            </action>
+        </release>
+
+    </body>
+</document>
+
