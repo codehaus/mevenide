@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project>
+    <extend>../mevenide-idea-master/project.xml</extend>
+    <artifactId>mevenide-idea-model</artifactId>
+    <name>MevenIDE IDEA Model</name>
+    <package>org.mevenide.idea.model</package>
+    <description>
+        This module contains the core of the IDEA plugin. It interacts with the Mevenide
+        libraries to provide input about the POM, as well as expose some of the POM's
+        charactaristics back to the main module.
+    </description>
+    <shortDescription>Core logic of the IDEA plugin.</shortDescription>
+    <dependencies>
+        <dependency>
+            <groupId>maven</groupId>
+            <artifactId>maven</artifactId>
+            <version>1.0.2</version>
+            <properties>
+                <idea.plugin.bundle>true</idea.plugin.bundle>
+                <idea.plugin.target.path>resources</idea.plugin.target.path>
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>xpp3</groupId>
+            <artifactId>xpp3</artifactId>
+            <version>1.1.2a</version>
+            <properties>
+                <idea.plugin.bundle>true</idea.plugin.bundle>
+                <idea.plugin.target.path>resources</idea.plugin.target.path>
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>mevenide</groupId>
+            <artifactId>mevenide-idea-main</artifactId>
+            <version>0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>jdom</groupId>
+            <artifactId>jdom</artifactId>
+            <version>1.0</version>
+            <properties>
+                <idea.plugin.bundle>true</idea.plugin.bundle>
+                <idea.plugin.target.path>resources</idea.plugin.target.path>
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>mevenide</groupId>
+            <artifactId>goals-grabber</artifactId>
+            <version>0.8</version>
+            <properties>
+                <idea.plugin.bundle>true</idea.plugin.bundle>
+                <idea.plugin.target.path>resources</idea.plugin.target.path>
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>mevenide</groupId>
+            <artifactId>mevenide-config</artifactId>
+            <version>0.7</version>
+            <properties>
+                <idea.plugin.bundle>true</idea.plugin.bundle>
+                <idea.plugin.target.path>resources</idea.plugin.target.path>
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>mevenide</groupId>
+            <artifactId>mevenide-core</artifactId>
+            <version>0.7</version>
+            <properties>
+                <idea.plugin.bundle>true</idea.plugin.bundle>
+                <idea.plugin.target.path>resources</idea.plugin.target.path>
+            </properties>
+        </dependency>
+    </dependencies>
+</project>
