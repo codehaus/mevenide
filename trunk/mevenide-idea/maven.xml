@@ -129,9 +129,66 @@
         </j:forEach>
     </goal>
 
-    <!--
-        TODO: create a goal that creates the IDEA plugin dir, and include it in the dist
-              this goal can be used by the idea:deploy goal (same code..)
-    -->
+    <postGoal name="dist:prepare-bin-filesystem">
+
+        <!-- this is the directory containing the plugin, and should be copied into
+             the IDEA directory. -->
+        <j:set var="plugin.root" value="${maven.dist.bin.assembly.dir}/plugins/mevenide-idea"/>
+
+        <!-- deploy modules to sandbox -->
+        <maven:reactor
+            basedir="${maven.multiproject.basedir}"
+            includes="${maven.multiproject.includes}"
+            excludes="${maven.multiproject.excludes}"
+            collectOnly="true"
+            goals="jar"
+            collectionVar="modules"
+            ignoreFailures="false"/>
+
+        <j:forEach var="module" items="${modules}">
+
+            <!-- copy project dependencies to sandbox -->
+            <j:forEach var="artifact" items="${module.artifacts}">
+                <j:set var="dep" value="${artifact.dependency}"/>
+                <j:if test="${dep.getProperty('idea.plugin.bundle')=='true'}">
+
+                    <!-- find the dependency file -->
+                    <u:file var="f" name="${artifact.file.parent}/${artifact.file.name}"/>
+
+                    <!-- find where we should put the dependency in the sandbox -->
+                    <j:set var="targetPath" value="${dep.getProperty('idea.plugin.target.path')}"/>
+                    <j:set var="fullTargetPath" value="${plugin.root}/${targetPath}"/>
+
+                    <!-- make sure target path exists for dependency and copy the file -->
+                    <ant:mkdir dir="${fullTargetPath}"/>
+                    <ant:copy file="${f}" todir="${fullTargetPath}"/>
+
+                </j:if>
+            </j:forEach>
+
+            <!-- copy project artifact to sandbox -->
+            <j:set var="module.build.dir"
+                   value="${module.getContext().getVariable('maven.build.dir')}"/>
+            <j:set var="module.final.name"
+                   value="${module.getContext().getVariable('maven.final.name')}"/>
+            <j:set var="module.target.path"
+                   value="${module.getContext().getVariable('idea.plugin.target.path')}"/>
+            <j:set var="module.fulltarget.path" value="${plugin.root}/${module.target.path}"/>
+            <ant:mkdir dir="${module.fulltarget.path}"/>
+            <ant:copy file="${module.build.dir}/${module.final.name}.jar"
+                      todir="${module.fulltarget.path}"/>
+
+        </j:forEach>
+
+        <!-- delete the JAR file, which contains nothing anyway -->
+        <delete>
+            <ant:fileset dir="${maven.dist.bin.assembly.dir}" includes="*.jar"/>
+        </delete>
+
+    </postGoal>
+
+    <goal name="site:generate">
+        <attainGoal name="multiproject:site"/>
+    </goal>
 
 </project>
