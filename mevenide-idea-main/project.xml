@@ -5,6 +5,8 @@
     <artifactId>mevenide-idea-main</artifactId>
     <name>MevenIDE IDEA Main Module</name>
     <package>org.mevenide.idea</package>
+    <currentVersion>0.1-SNAPSHOT</currentVersion>
+    <url>http://mevenide.codehaus.org/mevenide-idea/mevenide-idea-main/</url>
     <description>
         This module is basically an extraction of non-maven related code in the plugin.
         This separation from the core module (see the Model module) is required due to
@@ -13,10 +15,6 @@
         mevenide-idea-model module.
     </description>
     <shortDescription>Main module for the Mevenide IDEA plugin.</shortDescription>
-<!--
-    <description>This project provides Maven integration into the popular IntelliJ IDEA IDE.</description>
-    <shortDescription>Maven integration into the popular IntelliJ IDEA IDE.</shortDescription>
--->
     <dependencies>
         <dependency>
             <groupId>jdom</groupId>

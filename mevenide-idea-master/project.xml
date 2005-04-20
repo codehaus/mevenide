@@ -4,8 +4,10 @@
     <extend>../mevenide-parent/project.xml</extend>
     <pomVersion>3</pomVersion>
     <artifactId>mevenide-idea-master</artifactId>
-    <currentVersion>0.1-SNAPSHOT</currentVersion>
     <inceptionYear>2005</inceptionYear>
+    <distributionSite>beaver.codehaus.org</distributionSite>
+    <distributionDirectory>/home/projects/mevenide/dist/distributions/</distributionDirectory>
+    <logo>/images/mevenide-idea-logo.png</logo>
     <dependencies>
         <dependency>
             <groupId>commons-collections</groupId>
