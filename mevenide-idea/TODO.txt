@@ -19,3 +19,5 @@
 - Finish "Mavenize" this plugin project
     - Set appropriate dependencies (IDEA mainly)
     - Create custom branches of mevenide modules with JDOM 0.8 support
+
+- Create a logo for the IDEA pluging (and for the sub modules as well)

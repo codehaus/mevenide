@@ -129,6 +129,9 @@
         </j:forEach>
     </goal>
 
-    <goal name="site" prereqs="multiproject:site"/>
+    <!--
+        TODO: create a goal that creates the IDEA plugin dir, and include it in the dist
+              this goal can be used by the idea:deploy goal (same code..)
+    -->
 
 </project>
