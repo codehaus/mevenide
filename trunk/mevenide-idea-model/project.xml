@@ -10,6 +10,8 @@
         libraries to provide input about the POM, as well as expose some of the POM's
         charactaristics back to the main module.
     </description>
+    <url>http://mevenide.codehaus.org/mevenide-idea/mevenide-idea-model/</url>
+    <currentVersion>0.1-SNAPSHOT</currentVersion>
     <shortDescription>Core logic of the IDEA plugin.</shortDescription>
     <dependencies>
         <dependency>
