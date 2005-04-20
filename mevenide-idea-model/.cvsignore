@@ -1,1 +1,6 @@
 *.iml
+*.iws
+*.ipr
+classes
+target
+build.properties
