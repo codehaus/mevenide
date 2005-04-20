@@ -129,4 +129,6 @@
         </j:forEach>
     </goal>
 
+    <goal name="site" prereqs="multiproject:site"/>
+
 </project>
