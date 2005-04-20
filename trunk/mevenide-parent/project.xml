@@ -101,6 +101,16 @@
                 <role>Developer Java</role>
             </roles>
         </developer>
+        <developer>
+            <name>Arik Kfir</name>
+            <id>arik</id>
+            <email>arikkfir@gmail.com</email>
+            <roles>
+                <role>Developer Java</role>
+            </roles>
+            <url>http://www.codehaus.org/~arik/</url>
+            <timezone>2</timezone>
+        </developer>
     </developers>
     <contributors>
         <contributor>
