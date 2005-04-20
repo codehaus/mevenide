@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+
+<document>
+
+    <properties>
+        <author email="arikkfir@gmail.com">Arik Kfir</author>
+        <title>Mevenide IDEA Model module</title>
+    </properties>
+
+    <body>
+
+        <section name="Overview">
+            <p>
+                The
+                <i>model</i>module performs the actual integration with
+                <a href="http://maven.apache.org">maven</a>via
+                <a href="http://mevenide.codehaus.org">Mevenide</a>modules.
+                This module exposes generic interfaces to the
+                <i>Main</i>module that
+                provide necessary POM related data for the user interface, as well as
+                an API to work with Maven.
+            </p>
+        </section>
+
+    </body>
+</document>
