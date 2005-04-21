@@ -11,6 +11,9 @@
 
         <release version="0.1" date="unreleased"
                  description="The initial version. Focuses on integration with Mevenide, and catching up on missing features.">
+            <action dev="arikkfir" type="add">
+                Added a short installation guide.
+            </action>
             <action dev="arikkfir" type="update">
                 Split project into subprojects:
                 <ul>
