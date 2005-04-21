@@ -10,7 +10,7 @@
       <item name="Netbeans" href="http://www.netbeans.org"/>
       <item name="JBuilder" href="http://www.borland.com/jbuilder"/>
     </links>
-    
+
     <menu name="General">
       <item name="Overview" href="index.html"/>
       <item name="License" href="license.html"/>
@@ -18,7 +18,7 @@
       <item name="Download" href="download.html"/>
       <item name="Credits" href="credits.html"/>
     </menu>
-    
+
     <menu name="Modules">
     	<item name="Master Project" href="index.html"/>
     	<item name="Common Modules" collapse="true" href="/common-modules.html">
@@ -32,6 +32,7 @@
 			<item name="Netbeans Module" href="mevenide-netbeans-project/index.html"/>
 			<item name="Netbeans Grammar Module" href="mevenide-netbeans-grammar/index.html"/>
 			<item name="JBuilder Module" href="mevenide-ui-jbuilder/index.html"/>
+			<item name="IntelliJ IDEA Module" href="mevenide-idea/index.html"/>
 		</item>
 		<item name="Maven Helper Plugins" collapse="true" href="/maven-plugins.html">
 			<item name="PDE Plugin" href="maven-eclipse-plugin-plugin/index.html"/>
@@ -41,21 +42,22 @@
 			<item name="Spinner Wiki Plugin" href="maven-spinner-wiki-plugin/index.html"/>
 		</item>
 	</menu>
-	
+
     <menu name="Developers">
         <item name="Building Mevenide" href="/building.html"/>
         <item name="Directory Layout" href="layout.html"/>
-        <item name="Task List" collapse="true">
+        <item name="Task List" collapse="true" href="/todos.html">
             <item name="Eclipse plugin todos" href="/mevenide-ui-eclipse/todos.html"/>
             <item name="Netbeans module todos" href="/mevenide-netbeans-project/todos.html"/>
             <item name="Netbeans grammar module todos" href="/mevenide-netbeans-grammar/todos.html"/>
+            <item name="IntelliJ IDEA todos" href="/mevenide-idea/todos.html"/>
         </item>
         <item name="Coding Rules" href="guidelines.html"/>
         <item name="Mevenide Wiki" href="http://docs.codehaus.org/display/MEVENIDE/Home"/>
     </menu>
-    
+
     <search/>
-    
+
   </body>
-  
+
 </project>
