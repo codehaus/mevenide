@@ -11,7 +11,27 @@
 
         <section name="Installing the plugin into IntelliJ IDEA">
             <p>
-                More to come here soon...
+                Installing the Mevenide IDEA integration plugin is quite a snap:
+                <ol>
+                    <li>Download the plugin - it is available <a href="downloads.html">here</a>.</li>
+                    <li>Open the archive to a directory of your choice.</li>
+                    <li>Close any running instances of IDEA.</li>
+                    <li>
+                        Inside the directory you will find a sub directory called
+                        <i>plugins</i>- copy it into either:
+                        <ul>
+                            <li>Your &lt;IDEA_HOME&gt;</li>
+                            <li>
+                                The <i>config</i> directory located where you instructed IDEA to store your
+                                personal settings. This is usually a directory called <i>.IntelliJIdea</i>
+                                under your home directory. On Windows this would be
+                                <i>C:\Documents and Settings\Joe\.IntelliJIdea</i>, while on Linux or
+                                UNIX it would be <i>~/joe/.IntelliJIdea</i>.
+                            </li>
+                        </ul>
+                    </li>
+                    <li>You can now start IDEA and use the plugin!</li>
+                </ol>
             </p>
         </section>
 
