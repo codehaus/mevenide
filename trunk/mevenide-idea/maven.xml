@@ -134,25 +134,47 @@
 
     <postGoal name="dist:prepare-bin-filesystem">
 
-<!-- this is the directory containing the plugin, and should be copied into
-             the IDEA directory. -->
+        <ant:echo>
+
+            +-------------------------------------------------------------------------+
+            | Adding required Maven and modules dependencies to binary distribution. |
+            +-------------------------------------------------------------------------+
+
+        </ant:echo>
+
+        <!-- this is the directory containing the plugin, and should be copied into the IDEA -->
         <j:set var="plugin.root" value="${maven.dist.bin.assembly.dir}/plugins/mevenide-idea"/>
+        <ant:echo message="Plugin root dir is: ${plugin.root}"/>
+
+        <!-- build and install modules -->
+        <maven:reactor
+            basedir="${maven.multiproject.basedir}"
+            includes="${maven.multiproject.includes}"
+            excludes="${maven.multiproject.excludes}"
+            goals="jar:install"
+            ignoreFailures="false"/>
 
         <!-- deploy modules to sandbox -->
         <maven:reactor
             basedir="${maven.multiproject.basedir}"
             includes="${maven.multiproject.includes}"
             excludes="${maven.multiproject.excludes}"
-            collectOnly="false"
-            goals="jar"
+            collectOnly="true"
             collectionVar="modules"
             ignoreFailures="false"/>
 
         <j:forEach var="module" items="${modules}">
 
+            <ant:echo message="Copying module ${module.name} dependencies to distribution"/>
+
             <!-- copy project dependencies to sandbox -->
             <j:forEach var="artifact" items="${module.artifacts}">
                 <j:set var="dep" value="${artifact.dependency}"/>
+
+                <j:if test="${!dep.getProperty('idea.plugin.bundle')=='true'}">
+                    <ant:echo message="Dependency ${dep.groupId}.${dep.artifactId} will not be copied."/>
+                </j:if>
+
                 <j:if test="${dep.getProperty('idea.plugin.bundle')=='true'}">
 
                     <!-- find the dependency file -->
@@ -161,6 +183,7 @@
                     <!-- find where we should put the dependency in the sandbox -->
                     <j:set var="targetPath" value="${dep.getProperty('idea.plugin.target.path')}"/>
                     <j:set var="fullTargetPath" value="${plugin.root}/${targetPath}"/>
+                    <ant:echo message="Dependency ${dep.groupId}.${dep.artifactId} will be copied to ${fullTargetPath}."/>
 
                     <!-- make sure target path exists for dependency and copy the file -->
                     <ant:mkdir dir="${fullTargetPath}"/>
@@ -177,6 +200,7 @@
             <j:set var="module.target.path"
                    value="${module.getContext().getVariable('idea.plugin.target.path')}"/>
             <j:set var="module.fulltarget.path" value="${plugin.root}/${module.target.path}"/>
+            <ant:echo message="Module ${module.groupId}.${module.artifactId} will be copied to ${module.fulltarget.path}."/>
             <ant:mkdir dir="${module.fulltarget.path}"/>
             <ant:copy file="${module.build.dir}/${module.final.name}.jar"
                       todir="${module.fulltarget.path}"/>
@@ -185,7 +209,7 @@
 
         <!-- delete the JAR file, which contains nothing anyway -->
         <delete>
-            <ant:fileset dir="${maven.dist.bin.assembly.dir}" includes="*.jar"/>
+            <ant:fileset dir="${maven.dist.bin.assembly.dir}" includes="${maven.final.name}.jar"/>
         </delete>
 
     </postGoal>
