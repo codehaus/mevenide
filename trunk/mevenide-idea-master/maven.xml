@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns:j="jelly:core">
+
+    <postGoal name="xdoc:register-reports">
+        <!-- deregister test related plugins since there are none -->
+        <attainGoal name="maven-jcoverage-plugin:deregister"/>
+        <attainGoal name="maven-junit-report-plugin:deregister"/>
+    </postGoal>
+
+</project>
