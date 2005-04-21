@@ -9,14 +9,15 @@
   <body>
   	<section name="Directions">
 	<p>
-		Mevenide is a work in progress and thus there are a lot 
-		of items that need to be worked out. For those who want 
-		to help, here are non exhaustive lists of such items for 
+		Mevenide is a work in progress and thus there are a lot
+		of items that need to be worked out. For those who want
+		to help, here are non exhaustive lists of such items for
 		both Eclipse and Netbeans plugins :
 	</p>
 	<ul>
-		<li><a href="mevenide-ui-eclipse/todos.html">Eclipse plugin</a></li>	
+		<li><a href="mevenide-ui-eclipse/todos.html">Eclipse plugin</a></li>
 		<li><a href="mevenide-netbeans-project/todos.html">Netbeans plugin</a></li>
+		<li><a href="mevenide-idea/todos.html">IntelliJ IDEA plugin</a></li>
 		<li>JBuilder plugin</li>
 	</ul>
 	<p>
