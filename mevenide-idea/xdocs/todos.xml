@@ -176,6 +176,14 @@
                     <th>Planned release</th>
                 </tr>
                 <tr>
+                    <td>Allow automatic execution console close if no errors occured</td>
+                    <td>
+                        Allow the user to specify that the execution console will be
+                        automatically closed if no errors occur during the execution.
+                    </td>
+                    <td>Unscheduled</td>
+                </tr>
+                <tr>
                     <td>Placing goals on toolbar and menus</td>
                     <td>
                         Allow adding goals to the IDEA toolbar and menus.
