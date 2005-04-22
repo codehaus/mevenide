@@ -163,6 +163,7 @@ public class ModuleSettingsModelImpl implements ModuleSettingsModel {
                 queryContext = null;
                 projectContext = null;
                 goalsGrabber = null;
+                locationFinder = null;
             }
             firePomFileChangedEvent(oldPomFile, pomFile);
         }
@@ -242,7 +243,12 @@ public class ModuleSettingsModelImpl implements ModuleSettingsModel {
 
     public SortedMap getPluginsMap() {
         try {
-            final IGoalsGrabber grabber = new DefaultGoalsGrabber(locationFinder);
+            final IGoalsGrabber grabber;
+            if(locationFinder == null)
+                grabber = new DefaultGoalsGrabber();
+            else
+                grabber = new DefaultGoalsGrabber(locationFinder);
+
             grabber.refresh();
 
             final String[] plugins = grabber.getPlugins();
