@@ -238,6 +238,13 @@
                     </td>
                     <td>Unscheduled</td>
                 </tr>
+                <tr>
+                    <td>Add Maven plugin tips to IDEA startup tips</td>
+                    <td>
+                        Integrate into IDEA's startup tips mechanism and displays
+                        various Maven-plugin related feature tips.
+                    </td>
+                </tr>
             </table>
         </section>
 
