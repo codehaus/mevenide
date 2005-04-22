@@ -81,10 +81,12 @@
 
     </goal>
 
-    <goal name="idea:deploy" prereqs="multiproject:install">
-
-        <!-- make sure sandbox has a license -->
+    <goal name="idea:copy-license">
+        <ant:mkdir dir="${idea.sandbox}\config"/>
         <ant:copy file="${idea.license.file}" todir="${idea.sandbox}\config"/>
+    </goal>
+
+    <goal name="idea:deploy" prereqs="idea:copy-license,multiproject:install">
 
         <!-- deploy modules to sandbox -->
         <maven:reactor
