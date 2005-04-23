@@ -11,6 +11,7 @@ import org.mevenide.idea.common.settings.module.FavoriteGoalsChangedEvent;
 import org.mevenide.idea.common.settings.module.ModuleSettingsListener;
 import org.mevenide.idea.common.settings.module.PomFileChangedEvent;
 import org.mevenide.idea.common.ui.UI;
+import org.mevenide.idea.common.util.GoalsHelper;
 import org.mevenide.idea.main.settings.module.ModuleSettings;
 
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -154,7 +155,9 @@ public class GoalsTreeModel extends DefaultTreeModel {
                 final String[] goals = moduleSettings.getGoals(plugin);
                 for (int j = 0; j < goals.length; j++) {
                     final String goal = goals[j];
-                    final MutableTreeNode goalNode = new GoalTreeNode(goal);
+                    final String fqGoalName = GoalsHelper.buildFullyQualifiedName(plugin, goal);
+                    final String description = moduleSettings.getDescription(fqGoalName);
+                    final MutableTreeNode goalNode = new GoalTreeNode(goal, description);
                     pluginNode.insert(goalNode, pluginNode.getChildCount());
                 }
 

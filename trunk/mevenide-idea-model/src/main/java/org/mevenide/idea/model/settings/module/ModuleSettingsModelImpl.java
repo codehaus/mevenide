@@ -28,7 +28,7 @@ import java.util.*;
 /**
  * @author Arik
  */
-public class ModuleSettingsModelImpl implements ModuleSettingsModel {
+public class ModuleSettingsModelImpl implements ModuleSettingsModel, IGoalsGrabber {
     private static final Log LOG = LogFactory.getLog(ModuleSettingsModelImpl.class);
     private static final Res RES = Res.getInstance(ModuleSettingsModelImpl.class);
 
@@ -78,6 +78,7 @@ public class ModuleSettingsModelImpl implements ModuleSettingsModel {
      */
     private IGoalsGrabber goalsGrabber;
     private boolean refreshGoalsGrabber = true;
+    private static final String DESC_NOT_AVAIL = "description not available";
 
     public void addModuleSettingsListener(ModuleSettingsListener pListener) {
         synchronized (LOCK) {
@@ -156,7 +157,43 @@ public class ModuleSettingsModelImpl implements ModuleSettingsModel {
                 projectContext = queryContext.getPOMContext();
                 projectContext.getFinalProject().setFile(pomFile);
                 locationFinder = new ModuleLocationFinder(queryContext, module);
-                goalsGrabber = new ModuleGoalsGrabber(this);
+                try {
+                    goalsGrabber = new ModuleGoalsGrabber(this, queryContext);
+                }
+                catch (Exception e) {
+                    Messages.showErrorDialog(module.getProject(),
+                                             e.getMessage(),
+                                             UI.ERR_TITLE);
+                    LOG.error(e.getMessage(), e);
+                    goalsGrabber = new IGoalsGrabber() {
+                        public String getDescription(String fullyQualifiedGoalName) {
+                            return null;
+                        }
+
+                        public String[] getGoals(String plugin) {
+                            return new String[0];
+                        }
+
+                        public String getName() {
+                            return null;
+                        }
+
+                        public String getOrigin(String fullyQualifiedGoalName) {
+                            return null;
+                        }
+
+                        public String[] getPlugins() {
+                            return new String[0];
+                        }
+
+                        public String[] getPrereqs(String fullyQualifiedGoalName) {
+                            return new String[0];
+                        }
+
+                        public void refresh() throws Exception {
+                        }
+                    };
+                }
                 refreshGoalsGrabber = true;
             }
             else {
@@ -211,15 +248,7 @@ public class ModuleSettingsModelImpl implements ModuleSettingsModel {
         if (goalsGrabber == null)
             return new String[0];
 
-        if(refreshGoalsGrabber)
-            try {
-                refreshGoalsGrabber = false;
-                goalsGrabber.refresh();
-            }
-            catch (Exception e) {
-                Messages.showErrorDialog(module.getProject(), e.getMessage(), UI.ERR_TITLE);
-                LOG.error(e.getMessage(), e);
-            }
+        ensureGrabberRefreshed();
 
         return goalsGrabber.getPlugins();
     }
@@ -228,15 +257,7 @@ public class ModuleSettingsModelImpl implements ModuleSettingsModel {
         if (goalsGrabber == null)
             return new String[0];
 
-        if (refreshGoalsGrabber)
-            try {
-                refreshGoalsGrabber = false;
-                goalsGrabber.refresh();
-            }
-            catch (Exception e) {
-                Messages.showErrorDialog(module.getProject(), e.getMessage(), UI.ERR_TITLE);
-                LOG.error(e.getMessage(), e);
-            }
+        ensureGrabberRefreshed();
 
         return goalsGrabber.getGoals(pPlugin);
     }
@@ -265,6 +286,59 @@ public class ModuleSettingsModelImpl implements ModuleSettingsModel {
             Messages.showErrorDialog(module.getProject(), e.getMessage(), UI.ERR_TITLE);
             LOG.error(e.getMessage(), e);
             return new TreeMap();
+        }
+    }
+
+    public String getDescription(String fullyQualifiedGoalName) {
+        if (goalsGrabber == null)
+            return DESC_NOT_AVAIL;
+
+        ensureGrabberRefreshed();
+
+        return goalsGrabber.getDescription(fullyQualifiedGoalName);
+    }
+
+    public String getName() {
+        if (goalsGrabber == null)
+            return "Name not available";
+
+        ensureGrabberRefreshed();
+
+        return goalsGrabber.getName();
+    }
+
+    public String getOrigin(String fullyQualifiedGoalName) {
+        if (goalsGrabber == null)
+            return "Origin not available";
+
+        ensureGrabberRefreshed();
+
+        return goalsGrabber.getOrigin(fullyQualifiedGoalName);
+    }
+
+    public String[] getPrereqs(String fullyQualifiedGoalName) {
+        if (goalsGrabber == null)
+            return new String[0];
+
+        ensureGrabberRefreshed();
+
+        return goalsGrabber.getPrereqs(fullyQualifiedGoalName);
+    }
+
+    public void refresh() throws Exception {
+        ensureGrabberRefreshed();
+    }
+    
+    private void ensureGrabberRefreshed() {
+        if(goalsGrabber != null && refreshGoalsGrabber) {
+            try {
+                refreshGoalsGrabber = false;
+                goalsGrabber.refresh();
+            }
+            catch (Exception e) {
+                Messages.showErrorDialog(module.getProject(), e.getMessage(), UI.ERR_TITLE);
+                LOG.error(e.getMessage(), e);
+            }
         }
     }
 }
