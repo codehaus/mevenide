@@ -32,9 +32,15 @@ public interface ModuleSettingsModel extends ModelObject {
 
     void removeModuleSettingsListener(final ModuleSettingsListener pListener);
 
+    SortedMap getPluginsMap();
+
     String[] getPlugins();
 
     String[] getGoals(String pPlugin);
 
-    SortedMap getPluginsMap();
+    String getDescription(String fullyQualifiedGoalName);
+
+    String getOrigin(String fullyQualifiedGoalName);
+
+    String[] getPrereqs(String fullyQualifiedGoalName);
 }

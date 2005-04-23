@@ -166,4 +166,16 @@ public class ModuleSettings extends ModelDelegatingComponent implements ModuleCo
     public SortedMap getPluginsMap() {
         return model.getPluginsMap();
     }
+
+    public String getDescription(String fullyQualifiedGoalName) {
+        return model.getDescription(fullyQualifiedGoalName);
+    }
+
+    public String getOrigin(String fullyQualifiedGoalName) {
+        return model.getOrigin(fullyQualifiedGoalName);
+    }
+
+    public String[] getPrereqs(String fullyQualifiedGoalName) {
+        return model.getPrereqs(fullyQualifiedGoalName);
+    }
 }
