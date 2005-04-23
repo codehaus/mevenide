@@ -201,8 +201,8 @@
                 <tr>
                     <td>Show goal descriptions</td>
                     <td>
-                        We should show goal descriptions in both the goals tool window
-                        and the favorite goals selection settings dialog.
+                        (Done) We should show goal descriptions in both the goals tool
+                        window and the favorite goals selection settings dialog.
                     </td>
                     <td>Unscheduled</td>
                 </tr>
