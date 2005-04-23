@@ -40,7 +40,7 @@
             </p>
 
             <p>
-                The following is a list of features we intend to be implementing over
+                The following is a (partial) list of features we intend to be implementing over
                 the coming months:
                 <ul>
                     <li>Bidirectional update between IDEA project and POM</li>
@@ -63,6 +63,28 @@
                 </ul>
                 For a full list - please see our <a href="todos.html">tasks</a> page.
             </p>
+            <subsection name="Compatibility">
+                <p>
+                    Currently the plugin is only supported on the IntelliJ IDEA Early
+                    Access Program (EAP) dubbed "Irida". It cannot be run on the
+                    4.5 version.
+                </p>
+                <p>
+                    There is, however, a port of the plugin for the 4.5 version
+                    with provides the basic features such as per-module POM
+                    attachment, favorite goals, running goals and jumping to
+                    source code from Maven error messages. It is available
+                    <a href="http://www.codehaus.org/~arik/dist/mevenide-idea-4.5.4.zip">here</a>.
+                    <br/>
+                    NOTE: This is a source code distribution, and you will have to build it from
+                    source code. If you do, make sure you compile the classes using IDEA, since
+                    the plugin utilizes the IDEA UI designer, which injects bytecode into the
+                    classes. There is an Ant script inside, but it does not perform the code
+                    injection, and you will get exceptions. The Ant script DOES, however, provide
+                    an Ant task for it, but does not activate it.
+                </p>
+            </subsection>
         </section>
+
     </body>
 </document>
