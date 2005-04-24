@@ -184,6 +184,11 @@ public class DefaultQueryContextTest extends TestCase {
                 parent = par;
             }
             
+            public int getProjectDepth() {
+                return 2;
+            }
+
+            
             public Project getFinalProject() {
                 return project;
             }

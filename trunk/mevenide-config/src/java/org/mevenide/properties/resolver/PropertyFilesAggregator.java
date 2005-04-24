@@ -18,7 +18,6 @@
 package org.mevenide.properties.resolver;
 
 import java.io.File;
-import java.util.Collections;
 import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -117,14 +116,29 @@ public class PropertyFilesAggregator implements IPropertyResolver, IPropertyLoca
         }
         else if (context.getProjectPropertyValue(key) != null) {
             toReturn = IPropertyLocator.LOCATION_PROJECT;
-        } 
-        else if (context.getParentBuildPropertyValue(key) != null) {
-            toReturn = IPropertyLocator.LOCATION_PARENT_PROJECT_BUILD;
+        } else { 
+            int depth = context.getPOMContext().getProjectDepth();
+            if (depth > 1) {
+                // start at 1, we already checked that before, no need to do again..
+                // for performance reasons we did it without checking the pomcontext
+                int current = 1;
+                String val;
+                while (current <= depth && toReturn == IPropertyLocator.LOCATION_NOT_DEFINED) {
+                    current = current + 1;
+                    val = context.getPropertyValueAt(key, current * 10 + IQueryContext.BUILD_PROPS_OFFSET);
+                    if (val != null) {
+                        toReturn = current * 10 + IQueryContext.BUILD_PROPS_OFFSET;
+                    } else {
+                        val = context.getPropertyValueAt(key, current * 10 + IQueryContext.PROJECT_PROPS_OFFSET);
+                        if (val != null) {
+                            toReturn = current * 10 + IQueryContext.PROJECT_PROPS_OFFSET;
+                        }
+                    }
+                }
+            }
         }
-        else if (context.getParentProjectPropertyValue(key) != null) {
-            toReturn = IPropertyLocator.LOCATION_PARENT_PROJECT;
-        }
-        else if (defaults.getValue(key) != null) {
+        if (toReturn == IPropertyLocator.LOCATION_NOT_DEFINED 
+                && defaults.getValue(key) != null) {
             toReturn = IPropertyLocator.LOCATION_DEFAULTS;
         }
         return toReturn;
@@ -169,74 +183,29 @@ public class PropertyFilesAggregator implements IPropertyResolver, IPropertyLoca
     }        
     
     public boolean isDefinedInLocation(String key, int location) {
-        if (location == IPropertyLocator.LOCATION_USER_BUILD) {
-            return context.getUserPropertyValue(key) != null;
-        }
-        else if (location == IPropertyLocator.LOCATION_PROJECT_BUILD) {
-            return context.getBuildPropertyValue(key) != null;
-        }
-        else if (location == IPropertyLocator.LOCATION_PROJECT) {
-           return context.getProjectPropertyValue(key) != null;
-        }
-        else if (location == IPropertyLocator.LOCATION_DEFAULTS) {
+        if (location == IPropertyLocator.LOCATION_DEFAULTS) {
             return defaults.getValue(key) != null;
         } 
-        else if (location == IPropertyLocator.LOCATION_PARENT_PROJECT) {
-            return context.getParentProjectPropertyValue(key) != null;
-        }
-        else if (location == IPropertyLocator.LOCATION_PARENT_PROJECT_BUILD) {
-            return context.getParentBuildPropertyValue(key) != null;
-        }
-        return false;        
+        return context.getPropertyValueAt(key, location) != null;
     } 
     
     public String getValueAtLocation(String key, int location) {
-        if (location == IPropertyLocator.LOCATION_USER_BUILD) {
-            return context.getUserPropertyValue(key);
-        }
-        else if (location == IPropertyLocator.LOCATION_PROJECT_BUILD) {
-            return context.getBuildPropertyValue(key);
-        }
-        else if (location == IPropertyLocator.LOCATION_PROJECT) {
-           return context.getProjectPropertyValue(key);
-        }
-        else if (location == IPropertyLocator.LOCATION_DEFAULTS) {
+        if (location == IPropertyLocator.LOCATION_DEFAULTS) {
             return defaults.getValue(key);
         } 
-        else if (location == IPropertyLocator.LOCATION_PARENT_PROJECT) {
-            return context.getParentProjectPropertyValue(key);
-        }
-        else if (location == IPropertyLocator.LOCATION_PARENT_PROJECT_BUILD) {
-            return context.getParentBuildPropertyValue(key);
-        }
-        return null;
+        return context.getPropertyValueAt(key, location);
     }
     
     /**
      * returns all the keys at the given location.
      */
     public Set getKeysAtLocation(int location) {
-        if (location == IPropertyLocator.LOCATION_USER_BUILD) {
-            return context.getUserPropertyKeys();
-        }
-        else if (location == IPropertyLocator.LOCATION_PROJECT_BUILD) {
-            return context.getBuildPropertyKeys();
-        }
-        else if (location == IPropertyLocator.LOCATION_PROJECT) {
-           return context.getProjectPropertyKeys();
-        } 
-        else if (location == IPropertyLocator.LOCATION_PARENT_PROJECT) {
-            return context.getParentProjectPropertyKeys();
-        } 
-        else if (location == IPropertyLocator.LOCATION_PARENT_PROJECT_BUILD) {
-            return context.getParentBuildPropertyKeys();
-        }
-        else if (location == IPropertyLocator.LOCATION_DEFAULTS) {
+        if (location == IPropertyLocator.LOCATION_DEFAULTS) {
             if (defaults != null && defaults instanceof DefaultsResolver) {
                 return ((DefaultsResolver)defaults).getDefaultKeys();
             }
         }
-        return Collections.EMPTY_SET;        
+        return context.getPropertyKeysAt(location);
     }
     
 }

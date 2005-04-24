@@ -16,15 +16,7 @@
  */
 
 package org.mevenide.netbeans.project;
-
-import java.io.File;
 import java.lang.reflect.Method;
-import java.net.URI;
-import org.apache.maven.util.DownloadMeter;
-import org.apache.maven.util.HttpUtils;
-import org.mevenide.environment.ILocationFinder;
-import org.mevenide.properties.IPropertyResolver;
-import org.mevenide.repository.RepoPathElement;
 import org.openide.util.Lookup;
 import org.openide.util.SharedClassObject;
 

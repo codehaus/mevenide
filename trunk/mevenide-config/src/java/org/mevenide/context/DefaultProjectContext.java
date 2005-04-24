@@ -53,9 +53,9 @@ class DefaultProjectContext implements IProjectContext {
     private Object LOCK = new Object();
     private JDomProjectUnmarshaller unmarshaller;
     private IPropertyResolver propResolver;
-    private IQueryContext queryContext;
+    private DefaultQueryContext queryContext;
     
-    public DefaultProjectContext(IQueryContext context, IPropertyResolver resolver, IQueryErrorCallback errorCallback) {
+    public DefaultProjectContext(DefaultQueryContext context, IPropertyResolver resolver, IQueryErrorCallback errorCallback) {
         callback = errorCallback;
         unmarshaller = new JDomProjectUnmarshaller();
         propResolver = resolver;
@@ -79,7 +79,7 @@ class DefaultProjectContext implements IProjectContext {
         projects.clear();
         jdomRootElements.clear();
         mergedProject = new Project();
-        readProject(new File(queryContext.getProjectDirectory(), "project.xml"));
+        readProject(new File(queryContext.getProjectDirectory(), "project.xml"), 1);
         Iterator it = jdomRootElements.iterator();
         mergedJDomRoot = factory.element("project"); // blank initial root
         while (it.hasNext()) {
@@ -105,6 +105,11 @@ class DefaultProjectContext implements IProjectContext {
             fls = (File[])projectFiles.toArray(fls);
         }
         return fls;
+    }
+    
+    public int getProjectDepth() {
+        File[] fls = getProjectFiles();
+        return fls.length;
     }
     
     public Project[] getProjectLayers() {
@@ -148,9 +153,10 @@ class DefaultProjectContext implements IProjectContext {
     }
     
     // shall be run in synchronized lock.
-    private void readProject(File file) {
+    private void readProject(File file, int level) {
         logger.debug("readproject=" + file);
         if (file.exists()) {
+            queryContext.initLevel(level, file.getParentFile());
             callback.discardError(IQueryErrorCallback.ERROR_CANNOT_FIND_POM);
             Element proj;
             try {
@@ -175,13 +181,13 @@ class DefaultProjectContext implements IProjectContext {
                     absolute = JDomProjectUnmarshaller.normalizeFile(absolute);
                     if (absolute.exists() && (!absolute.equals(file))) {
                         callback.discardError(IQueryErrorCallback.ERROR_CANNOT_FIND_PARENT_POM);
-                        readProject(absolute);
+                        readProject(absolute, level + 1);
                     } else {
                         File relative = new File(queryContext.getProjectDirectory(), extend);
                         relative = JDomProjectUnmarshaller.normalizeFile(relative);
                         if (relative.exists() && (!relative.equals(file))) {
                             callback.discardError(IQueryErrorCallback.ERROR_CANNOT_FIND_PARENT_POM);
-                            readProject(relative);
+                            readProject(relative, level + 1);
                         } else {
                                 //throw new IllegalStateException("Cannot read parent.(" + extend + ")" );
                             callback.handleError(IQueryErrorCallback.ERROR_CANNOT_FIND_PARENT_POM, 

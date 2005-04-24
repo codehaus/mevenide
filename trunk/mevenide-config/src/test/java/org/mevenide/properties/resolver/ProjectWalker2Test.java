@@ -106,6 +106,11 @@ public class ProjectWalker2Test extends TestCase {
             return null;
         }
         
+        public int getProjectDepth() {
+            return 0;
+        }
+        
+        
         public Project[] getProjectLayers() {
             return null;
         }
@@ -144,6 +149,14 @@ public class ProjectWalker2Test extends TestCase {
 
         public java.util.Set getParentBuildPropertyKeys() {
             return Collections.EMPTY_SET;
+        }
+
+        public java.util.Set getPropertyKeysAt(int location) {
+            return Collections.EMPTY_SET;
+        }
+
+        public String getPropertyValueAt(String key, int location) {
+            return null;
         }
         
     }

@@ -47,7 +47,7 @@ public class OriginChangeCellEditor extends DefaultCellEditor {
         };
         super.clickCountToStart = 1;
         change.setChangeObserver(new OriginChange.ChangeObserver() {
-             public void actionSelected(String action) {
+             public void locationChanged() {
                  OriginChangeCellEditor.this.stopCellEditing();
              }
         });

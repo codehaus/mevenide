@@ -15,36 +15,15 @@
  * =========================================================================
  */
 package org.mevenide.netbeans.project.wizards;
-
-import java.awt.Component;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.text.MessageFormat;
-import java.util.HashSet;
-import java.util.NoSuchElementException;
-import java.util.Set;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
-import javax.swing.JComponent;
-import javax.swing.event.ChangeListener;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.jdom.Element;
-import org.jdom.DefaultJDOMFactory;
-import org.jdom.JDOMFactory;
-import org.jdom.output.XMLOutputter;
 import org.mevenide.context.DefaultQueryContext;
-import org.mevenide.context.JDomProjectUnmarshaller;
 import org.mevenide.genapp.GenAppTemplateFinder;
 import org.mevenide.genapp.TemplateInfo;
 import org.netbeans.spi.project.ui.templates.support.Templates;
 import org.openide.WizardDescriptor;
 import org.openide.filesystems.FileObject;
-import org.openide.filesystems.FileUtil;
-import org.openide.loaders.DataObject;
 import org.openide.loaders.TemplateWizard;
 import org.openide.modules.InstalledFileLocator;
 

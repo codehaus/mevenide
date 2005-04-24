@@ -42,6 +42,12 @@ public interface IProjectContext
     Project[] getProjectLayers();
     
     /**
+     * counts project.xml files in the pom extension chain. So for a project.xml without
+     * a <extends> tag returns 1, and so on.
+     */
+    int getProjectDepth();
+    
+    /**
      * Separated File locations of all the POM files in the succession row. The current POM file is first,
      *it's parent is next and the parent of all is last.
      */

@@ -44,8 +44,6 @@ import org.openide.DialogDisplayer;
 import org.openide.ErrorManager;
 import org.openide.NotifyDescriptor;
 import org.openide.awt.Actions;
-import org.openide.filesystems.FileObject;
-import org.openide.filesystems.FileUtil;
 import org.openide.util.HelpCtx;
 import org.openide.util.NbBundle;
 import org.openide.util.RequestProcessor;
@@ -200,31 +198,33 @@ public class RunGoalsAction extends AbstractAction implements Presenter.Popup {
             targets = Collections.EMPTY_LIST;
             if (project.getOriginalMavenProject() == null) return;
             targets = new ArrayList(15);
-            File dir = FileUtil.toFile(project.getProjectDirectory());
-            File mavenxml = new File(dir, "maven.xml");
-            if (mavenxml.exists()) {
-                try {
-                    ProjectGoalsGrabber grabber = new ProjectGoalsGrabber();
-                    grabber.setMavenXmlFile(mavenxml.getAbsolutePath());
-                    grabber.refresh();
-                    String[] plugins = grabber.getPlugins();
-                    if (plugins != null) {
-                        for (int i =0; i < plugins.length; i++) {
-                            String[] goals = grabber.getGoals(plugins[i]);
-                            if (goals != null) {
-                                for (int j =0; j < goals.length; j++) {
-                                    if ("(default)".equals(goals[j])) {
-                                        targets.add(new ItemWrapper(plugins[i]));
-                                    } else {
-                                        targets.add(new ItemWrapper(plugins[i] + ":" + goals[j]));
+            File[] fls = project.getContext().getPOMContext().getProjectFiles();
+            for (int x = 0; x < fls.length; x++) {
+                File mavenxml = new File(fls[x].getParentFile(), "maven.xml");
+                if (mavenxml.exists()) {
+                    try {
+                        ProjectGoalsGrabber grabber = new ProjectGoalsGrabber();
+                        grabber.setMavenXmlFile(mavenxml.getAbsolutePath());
+                        grabber.refresh();
+                        String[] plugins = grabber.getPlugins();
+                        if (plugins != null) {
+                            for (int i =0; i < plugins.length; i++) {
+                                String[] goals = grabber.getGoals(plugins[i]);
+                                if (goals != null) {
+                                    for (int j =0; j < goals.length; j++) {
+                                        if ("(default)".equals(goals[j])) {
+                                            targets.add(new ItemWrapper(plugins[i]));
+                                        } else {
+                                            targets.add(new ItemWrapper(plugins[i] + ":" + goals[j]));
+                                        }
                                     }
                                 }
                             }
+                            targets.add(null);
                         }
-                        targets.add(null);
+                    } catch (Exception ioe) {
+                        log.error("Error loading project-specific goals",ioe);
                     }
-                } catch (Exception ioe) {
-                    log.error("Error loading project-specific goals",ioe);
                 }
             }
             String[] str = MavenSettings.getDefault().getTopGoals();

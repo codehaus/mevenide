@@ -15,6 +15,7 @@
  * =========================================================================
  */
 package org.mevenide.netbeans.project.customizer;
+import java.awt.Component;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -194,18 +195,26 @@ public class PluginPanel extends JPanel implements ProjectPanel {
     // End of variables declaration//GEN-END:variables
     
     
-    public static PluginPanel createUsedPanel(MavenProject proj) {
+    /**
+     * is expected to be instance of Component and ProjectPanel
+     */
+    public static Component createUsedPanel(MavenProject proj) {
         IQueryContext context = proj.getContext();
         Set used = new HashSet();
-        used.addAll(context.getParentBuildPropertyKeys());
-        used.addAll(context.getParentProjectPropertyKeys());
-        used.addAll(context.getBuildPropertyKeys());
-        used.addAll(context.getProjectPropertyKeys());
         used.addAll(context.getUserPropertyKeys());
+        int depth = context.getPOMContext().getProjectDepth();
+        for (int i = 1; i <= depth; i++) {
+            used.addAll(context.getPropertyKeysAt(i * 10 + IQueryContext.BUILD_PROPS_OFFSET));
+            used.addAll(context.getPropertyKeysAt(i * 10 + IQueryContext.PROJECT_PROPS_OFFSET));
+        }
         return new PluginPanel(proj, used);
     }
 
-    public static PluginPanel createPluginPanel(MavenProject proj, IPluginInfo info) {
+    /**
+     * is expected to be instance of Component and ProjectPanel
+     */
+    public static Component createPluginPanel(MavenProject proj, IPluginInfo info) {
+        //TODO have the pluggable visual components
         IQueryContext context = proj.getContext();
         Set used = new HashSet();
         used.addAll(info.getPropertyKeys());

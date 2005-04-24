@@ -122,5 +122,26 @@ public class TestQueryContext extends AbstractQueryContext {
     public Set getParentBuildPropertyKeys() {
         return parentBuildProps.keySet();
     }
+
+    public Set getPropertyKeysAt(int location) {
+        return getMapForLocation(location).keySet();
+    }
+
+    public String getPropertyValueAt(String key, int location) {
+        return (String)getMapForLocation(location).get(key);
+    }
+    
+    private HashMap getMapForLocation(int loc) {
+        HashMap toRet;
+        switch (loc) {
+            case 10 : toRet = projectProps; break;
+            case 11 : toRet = buildProps; break;
+            case 12 : toRet = userProps; break;
+            case 20 : toRet = parentProjectProps; break;
+            case 21 : toRet = parentBuildProps; break;
+            default : toRet = new HashMap();
+        }
+        return toRet;
+    }
     
 }

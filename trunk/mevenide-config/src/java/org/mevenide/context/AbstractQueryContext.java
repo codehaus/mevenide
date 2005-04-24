@@ -41,7 +41,7 @@ public abstract class AbstractQueryContext implements IQueryContext {
         return resolver;
     } 
     
-   public final String getPropertyValue(String key) {
+   public String getPropertyValue(String key) {
         String toReturn = getUserPropertyValue(key);
         if (toReturn == null) {
             toReturn = getBuildPropertyValue(key);

@@ -25,7 +25,8 @@ import java.util.List;
 public interface ProjectPanel
 {
     /**
-     * 
+     * list of MavenChange instances for this panel. will be applied to the project files.
+     *
      */
     List getChanges();
     

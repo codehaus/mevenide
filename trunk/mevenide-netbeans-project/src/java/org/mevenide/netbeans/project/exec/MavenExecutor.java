@@ -29,13 +29,11 @@ import java.util.Set;
 import javax.swing.Action;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.mevenide.netbeans.project.MavenProject;
 import org.mevenide.netbeans.api.output.OutputProcessor;
 import org.mevenide.netbeans.api.output.OutputVisitor;
 import org.openide.DialogDisplayer;
 import org.openide.ErrorManager;
 import org.openide.NotifyDescriptor;
-import org.openide.filesystems.FileUtil;
 
 import org.openide.util.MapFormat;
 import org.openide.util.RequestProcessor;

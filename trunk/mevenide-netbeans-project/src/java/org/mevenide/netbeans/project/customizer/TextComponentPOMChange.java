@@ -125,7 +125,7 @@ public class TextComponentPOMChange implements MavenPOMChange {
                 origin.getSelectedLocationID() == IPropertyLocator.LOCATION_DEFAULTS) {
                 // assume the default placement is build..
                 // maybe have configurable or smartish later..
-                origin.setAction(OriginChange.ACTION_POM_MOVE_TO_CHILD);
+                origin.setAction(OriginChange.LOCATION_POM);
             }
         }
         
@@ -141,12 +141,12 @@ public class TextComponentPOMChange implements MavenPOMChange {
             update();
         }
 
-        public void actionSelected(String changeAction) {
+        public void locationChanged() {
             if (ignore) {
                 return;
             }
             newLocation = origin.getSelectedLocationID();
-            if (OriginChange.ACTION_REMOVE_ENTRY.equals(changeAction)) {
+            if (newLocation < 0) {
                 // assuming the correct default value is not-override..
                 ignore = true;
                 newValue = "";
