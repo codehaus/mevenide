@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE filesystem PUBLIC "-//NetBeans//DTD Filesystem 1.0//EN" "http://www.netbeans.org/dtds/filesystem-1_0.dtd">
+<filesystem>
+    <folder name="Templates">
+        <folder name="Project">
+            <folder name="Maven">
+                <folder name="ModuleDevelopment">
+                <attr name="SystemFileSystem.localizingBundle" stringvalue="org.mevenide.netbeans.devel.Bundle"/>
+                <attr name="instantiatingWizardURL" urlvalue="nbresloc:/org/mevenide/netbeans/devel/nb_projects.html"/>
+
+                <file name="mevenidemodule.zip" url="mevenidemodule.zip">
+                    <attr name="template" boolvalue="true"/>
+                    <attr name="templatename" stringvalue="mevenidemodule"/>
+                    <attr name="instantiatingIterator" newvalue="org.mevenide.netbeans.project.wizards.MavenNewWizardIterator"/>
+                    <attr name="SystemFileSystem.localizingBundle" stringvalue="org.mevenide.netbeans.devel.Bundle"/>
+                    <attr name="SystemFileSystem.icon" urlvalue="nbresloc:/org/mevenide/netbeans/project/resources/MavenIcon.gif"/>
+                    <attr name="instantiatingWizardURL" urlvalue="nbresloc:/org/mevenide/netbeans/devel/mevenidemoduleProject.html"/>
+                </file>
+                </folder>
+            </folder>
+         </folder>
+    </folder>         
+</filesystem>
