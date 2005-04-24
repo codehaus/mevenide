@@ -141,12 +141,12 @@ public class URIDependencyResolver implements IDependencyResolver {
 	}
 	
 	private static String getParent(URI uri) {
-            int index = uri.getPath().lastIndexOf('/');
+            int index = uri.getRawPath().lastIndexOf('/');
             if (index > 0) {
-                String subPath = uri.getPath().substring(0, index);
+                String subPath = uri.getRawPath().substring(0, index);
                 StringBuffer buf = new StringBuffer(uri.toString());
-                int ind = uri.toString().indexOf(uri.getPath());
-                buf.replace(ind, ind + uri.getPath().length(), subPath);
+                int ind = uri.toString().indexOf(uri.getRawPath());
+                buf.replace(ind, ind + uri.getRawPath().length(), subPath);
                 return buf.toString();
             }
             return null;
