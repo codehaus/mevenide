@@ -62,7 +62,7 @@
             <artifactId>org.mortbay.jetty</artifactId>
             <version>4.2.20</version>
         </dependency>
-        <dependency>
+        <!--dependency>
             <groupId>netbeans</groupId>
             <artifactId>org-openide-execution</artifactId>
             <version>1.6</version>
@@ -70,7 +70,7 @@
             <properties>
                 <netbeans.module.dep>spec</netbeans.module.dep>
             </properties>
-        </dependency>
+        </dependency-->
         <dependency>
             <groupId>cargo</groupId>
             <artifactId>cargo</artifactId>
