@@ -165,16 +165,16 @@ public class ListModelPOMChange implements MavenPOMTreeChange {
                 origin.getSelectedLocationID() == IPropertyLocator.LOCATION_DEFAULTS) {
                 // assume the default placement is pom file..
                 // maybe have configurable or smartish later..
-                origin.setAction(OriginChange.ACTION_POM_MOVE_TO_CHILD);
+                origin.setAction(OriginChange.LOCATION_POM);
             }
         }
         
-        public void actionSelected(String changeAction) {
+        public void locationChanged() {
             if (ignore) {
                 return;
             }
             newLocation = origin.getSelectedLocationID();
-            if (OriginChange.ACTION_REMOVE_ENTRY.equals(changeAction)) {
+            if (newLocation < 0) {
                 // assuming the correct default value is not-override..
                 ignore = true;
                 newValues.clear();

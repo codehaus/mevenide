@@ -224,8 +224,13 @@ public class RepositoryNode extends AbstractNode implements LocalRepoRefresher {
                         setKeys(col);
                     } catch (Exception exc) {
                         //TODO
-                        exc.printStackTrace();
-                        setKeys(Collections.singleton(exc.getLocalizedMessage()));
+                        exc.printStackTrace(System.err);
+                        String loc = exc.getLocalizedMessage();
+                        if (loc != null) {
+                            setKeys(Collections.singleton(loc));
+                        } else {
+                            setKeys(Collections.EMPTY_SET);
+                        }
                     }
                 }
             });

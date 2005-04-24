@@ -16,9 +16,12 @@
  */
 package org.mevenide.netbeans.project.customizer.ui;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import org.mevenide.context.IProjectContext;
+import org.mevenide.context.IQueryContext;
 import org.mevenide.netbeans.project.FileUtilities;
 import org.mevenide.netbeans.project.MavenProject;
 import org.mevenide.properties.IPropertyLocator;
@@ -38,133 +41,97 @@ public final class LocationComboFactory {
     public static OriginChange createPropertiesChange(MavenProject project) {
         LocationComboBox box = new LocationComboBox(false);
         boolean justSingle = true;
+        int level = 1;
         IProjectContext pom = project.getContext().getPOMContext();
         if (pom != null) {
-            justSingle = pom.getProjectFiles().length == 1;
+            justSingle = pom.getProjectDepth() == 1;
+            level = pom.getProjectDepth();
         }
-        LocationComboBox.LocationWrapper[] wraps;
-        if (justSingle) {
-            wraps = new LocationComboBox.LocationWrapper[6];
-        } else {
-            wraps = new LocationComboBox.LocationWrapper[8];
-        }
-        // project.properties file
-        String[] actions = (justSingle ? 
-            new String[] {
-                OriginChange.ACTION_MOVE_TO_BUILD,
-                OriginChange.ACTION_MOVE_TO_USER,
-                OriginChange.ACTION_RESET_TO_DEFAULT
-            } :
-            new String[] {
-                OriginChange.ACTION_MOVE_TO_BUILD,
-                OriginChange.ACTION_MOVE_TO_USER,
-                OriginChange.ACTION_MOVE_TO_PARENT_PROJECT,
-                OriginChange.ACTION_MOVE_TO_PARENTBUILD,
-                OriginChange.ACTION_RESET_TO_DEFAULT
-            });            
-        Icon icon = new ImageIcon(Utilities.loadImage("org/mevenide/netbeans/project/resources/LocProject.png"));
-        wraps[0] = new LocationComboBox.LocationWrapper("Defined in project.properties", icon,
-                             FileUtilities.locationToFile(IPropertyLocator.LOCATION_PROJECT, project), 
-                             IPropertyLocator.LOCATION_PROJECT,
-                             actions);
-        // build.properties file
-        actions = (justSingle ? 
-            new String[] {
-                OriginChange.ACTION_MOVE_TO_PROJECT,
-                OriginChange.ACTION_MOVE_TO_USER,
-                OriginChange.ACTION_RESET_TO_DEFAULT
-            } :
-            new String[] {
-                OriginChange.ACTION_MOVE_TO_PROJECT,
-                OriginChange.ACTION_MOVE_TO_USER,
-                OriginChange.ACTION_MOVE_TO_PARENT_PROJECT,
-                OriginChange.ACTION_MOVE_TO_PARENTBUILD,
-                OriginChange.ACTION_RESET_TO_DEFAULT
-            });            
-        icon = new ImageIcon(Utilities.loadImage("org/mevenide/netbeans/project/resources/LocBuild.png"));
-        wraps[1] = new LocationComboBox.LocationWrapper("Defined in build.properties", icon,
-                             FileUtilities.locationToFile(IPropertyLocator.LOCATION_PROJECT_BUILD, project), 
-                             IPropertyLocator.LOCATION_PROJECT_BUILD,
-                             actions);
+        Collection col = new ArrayList();
         
-        // user home build.properties
-        actions = (justSingle ? 
-            new String[] {
-                OriginChange.ACTION_MOVE_TO_PROJECT,
-                OriginChange.ACTION_MOVE_TO_BUILD,
-                OriginChange.ACTION_RESET_TO_DEFAULT
-            } :
-            new String[] {
-                OriginChange.ACTION_MOVE_TO_PROJECT,
-                OriginChange.ACTION_MOVE_TO_BUILD,
-                OriginChange.ACTION_MOVE_TO_PARENT_PROJECT,
-                OriginChange.ACTION_MOVE_TO_PARENTBUILD,
-                OriginChange.ACTION_RESET_TO_DEFAULT
-            });
-            
-        icon = new ImageIcon(Utilities.loadImage("org/mevenide/netbeans/project/resources/LocUser.png"));
-        wraps[2] = new LocationComboBox.LocationWrapper("Defined in user's build.properties", icon,
-                             FileUtilities.locationToFile(IPropertyLocator.LOCATION_USER_BUILD, project), 
-                             IPropertyLocator.LOCATION_USER_BUILD,
-                             actions);
-        // default value
-        actions = (justSingle ? 
-            new String[] {
-                OriginChange.ACTION_DEFINE_IN_PROJECT,
-                OriginChange.ACTION_DEFINE_IN_BUILD,
-                OriginChange.ACTION_DEFINE_IN_USER
-            } :
-            new String[] {
-                OriginChange.ACTION_DEFINE_IN_PROJECT,
-                OriginChange.ACTION_DEFINE_IN_BUILD,
-                OriginChange.ACTION_MOVE_TO_PARENT_PROJECT,
-                OriginChange.ACTION_MOVE_TO_PARENTBUILD,
-                OriginChange.ACTION_DEFINE_IN_USER
-            });
-        icon = new ImageIcon(Utilities.loadImage("org/mevenide/netbeans/project/resources/LocDefault.png"));
-        wraps[3] = new LocationComboBox.LocationWrapper("Default value", icon,
-                             null, 
-                             IPropertyLocator.LOCATION_DEFAULTS,
-                             actions);
+        Icon icon = new ImageIcon(Utilities.loadImage("org/mevenide/netbeans/project/resources/LocDefault.png"));
+        Icon mvIcon = new ImageIcon(Utilities.loadImage("org/mevenide/netbeans/project/resources/ToDefault.png"));
+        col.add(new LocationComboBox.LocationWrapper(
+                    "Default value", icon,
+                     "Reset to Default", mvIcon,
+                     null, 
+                     IPropertyLocator.LOCATION_DEFAULTS));
         // no defined value
-//        icon = new ImageIcon(Utilities.loadImage("org/mevenide/netbeans/project/resources/LocNotDefined.png"));
-        wraps[4] = new LocationComboBox.LocationWrapper("Default value", icon,
-                             null, 
-                             IPropertyLocator.LOCATION_NOT_DEFINED,
-                             actions);
+        col.add(new LocationComboBox.LocationWrapper(
+                     "Default value", icon,
+                     null, null,
+                     null, 
+                     IPropertyLocator.LOCATION_NOT_DEFINED));
         icon = new ImageIcon(Utilities.loadImage("org/mevenide/netbeans/project/resources/LocNotDefined.png"));
-        wraps[5] = new LocationComboBox.LocationWrapper("Defined in System Environment Variable", icon,
-                             null, 
-                             IPropertyLocator.LOCATION_SYSENV,
-                             new String[0]);
-        if (!justSingle) {
-            // parent project.properties file
-            actions = new String[] {
-                OriginChange.ACTION_MOVE_TO_PROJECT,
-                OriginChange.ACTION_MOVE_TO_BUILD,
-                OriginChange.ACTION_MOVE_TO_PARENTBUILD,
-                OriginChange.ACTION_MOVE_TO_USER,
-                OriginChange.ACTION_RESET_TO_DEFAULT
-            };
-            icon = new ImageIcon(Utilities.loadImage("org/mevenide/netbeans/project/resources/LocParentProject.png"));
-            wraps[6] = new LocationComboBox.LocationWrapper("Defined in parent project.properties", icon,
-                            FileUtilities.locationToFile(IPropertyLocator.LOCATION_PARENT_PROJECT, project),
-                            IPropertyLocator.LOCATION_PARENT_PROJECT,
-                            actions);
-            // parent build.properties file
-            actions = new String[] {
-                OriginChange.ACTION_MOVE_TO_PROJECT,
-                OriginChange.ACTION_MOVE_TO_BUILD,
-                OriginChange.ACTION_MOVE_TO_PARENT_PROJECT,
-                OriginChange.ACTION_MOVE_TO_USER,
-                OriginChange.ACTION_RESET_TO_DEFAULT
-            };
-            icon = new ImageIcon(Utilities.loadImage("org/mevenide/netbeans/project/resources/LocParentBuild.png"));
-            wraps[7] = new LocationComboBox.LocationWrapper("Defined in parent build.properties", icon,
-                            FileUtilities.locationToFile(IPropertyLocator.LOCATION_PARENT_PROJECT_BUILD, project),
-                            IPropertyLocator.LOCATION_PARENT_PROJECT_BUILD,
-                            actions);
+        col.add(new LocationComboBox.LocationWrapper(
+                     "Defined in System Environment Variable", icon,
+                     null, null, 
+                     null, 
+                     IPropertyLocator.LOCATION_SYSENV));
+        
+        icon = new ImageIcon(Utilities.loadImage("org/mevenide/netbeans/project/resources/LocUser.png"));
+        mvIcon = new ImageIcon(Utilities.loadImage("org/mevenide/netbeans/project/resources/ToUser.png"));
+        col.add(new LocationComboBox.LocationWrapper(
+                        "Defined in user's build.properties", icon,
+                        "Move to User", mvIcon, 
+                        FileUtilities.locationToFile(IPropertyLocator.LOCATION_USER_BUILD, project), 
+                        IPropertyLocator.LOCATION_USER_BUILD));
+        
+        // let's add project pom wrappers
+        if (level > 0) {
+            icon = new ImageIcon(Utilities.loadImage("org/mevenide/netbeans/project/resources/LocProject.png"));
+            mvIcon = new ImageIcon(Utilities.loadImage("org/mevenide/netbeans/project/resources/ToProject.png"));
+            col.add(new LocationComboBox.LocationWrapper(
+                           "Defined in project.properties", icon,
+                           "Move to Project", mvIcon,
+                           FileUtilities.locationToFile(IPropertyLocator.LOCATION_PROJECT, project), 
+                           IPropertyLocator.LOCATION_PROJECT));
+            icon = new ImageIcon(Utilities.loadImage("org/mevenide/netbeans/project/resources/LocBuild.png"));
+            mvIcon = new ImageIcon(Utilities.loadImage("org/mevenide/netbeans/project/resources/ToBuild.png"));
+            col.add(new LocationComboBox.LocationWrapper(
+                           "Defined in build.properties", icon,
+                           "Move to Build", mvIcon, 
+                           FileUtilities.locationToFile(IPropertyLocator.LOCATION_PROJECT_BUILD, project), 
+                           IPropertyLocator.LOCATION_PROJECT_BUILD));
         }
+        // parent pom wrappers..
+        if (level > 1) {
+            icon = new ImageIcon(Utilities.loadImage("org/mevenide/netbeans/project/resources/LocParentProject.png"));
+            mvIcon = new ImageIcon(Utilities.loadImage("org/mevenide/netbeans/project/resources/ToParentProject.png"));
+            col.add(new LocationComboBox.LocationWrapper(
+                            "Defined in parent project.properties", icon,
+                            "Move to Parent Project",  mvIcon, 
+                            FileUtilities.locationToFile(IPropertyLocator.LOCATION_PARENT_PROJECT, project),
+                            IPropertyLocator.LOCATION_PARENT_PROJECT));
+            icon = new ImageIcon(Utilities.loadImage("org/mevenide/netbeans/project/resources/LocParentBuild.png"));
+            mvIcon = new ImageIcon(Utilities.loadImage("org/mevenide/netbeans/project/resources/ToParentBuild.png"));
+            col.add(new LocationComboBox.LocationWrapper(
+                            "Defined in parent build.properties", icon,
+                            "Move to Parent Build", mvIcon, 
+                            FileUtilities.locationToFile(IPropertyLocator.LOCATION_PARENT_PROJECT_BUILD, project),
+                            IPropertyLocator.LOCATION_PARENT_PROJECT_BUILD));
+        }
+        // now let's handle the other levels in indefinite manner.
+        if (level > 2) {
+            for (int i = 3; i <= level; i++) {
+                icon = new ImageIcon(Utilities.loadImage("org/mevenide/netbeans/project/resources/LocXthParentProject.png"));
+                mvIcon = new ImageIcon(Utilities.loadImage("org/mevenide/netbeans/project/resources/ToXthParentProject.png"));
+                col.add(new LocationComboBox.LocationWrapper(
+                        "Defined in " + (i - 1) + ". parent project.properties", icon,
+                        "Move to " + (i - 1) + "Parent Project",  mvIcon,
+                        FileUtilities.locationToFile(i * 10 + IQueryContext.PROJECT_PROPS_OFFSET, project),
+                        i * 10 + IQueryContext.PROJECT_PROPS_OFFSET));
+                icon = new ImageIcon(Utilities.loadImage("org/mevenide/netbeans/project/resources/LocXthParentBuild.png"));
+                mvIcon = new ImageIcon(Utilities.loadImage("org/mevenide/netbeans/project/resources/ToXthParentBuild.png"));
+                col.add(new LocationComboBox.LocationWrapper(
+                        "Defined in " + (i - 1) + ". parent build.properties", icon,
+                        "Move to " + (i - 1) + ". Parent Build", mvIcon,
+                        FileUtilities.locationToFile(i * 10 + IQueryContext.BUILD_PROPS_OFFSET, project),
+                        i * 10 + IQueryContext.BUILD_PROPS_OFFSET));
+            }
+        }
+        LocationComboBox.LocationWrapper[] wraps = new LocationComboBox.LocationWrapper[col.size()];
+        wraps = (LocationComboBox.LocationWrapper[])col.toArray(wraps);
         box.setItems(wraps);
         return new OriginChange(box);
     }
@@ -175,117 +142,43 @@ public final class LocationComboFactory {
      */
     public static OriginChange createPOMChange(MavenProject project, boolean showText) {
         LocationComboBox box = new LocationComboBox(showText);
-        int poms = project.getContext().getPOMContext().getProjectFiles().length;
-        int size = poms + 1;
-        LocationComboBox.LocationWrapper[] wraps = new LocationComboBox.LocationWrapper[size];
-        String[] actions;
-        switch (poms) {
-            case 1 : 
-                actions = new String[] {
-                  OriginChange.ACTION_REMOVE_ENTRY
-                };
-                break;
-            case 2 : 
-                actions = new String[] {
-                  OriginChange.ACTION_POM_MOVE_TO_PARENT,
-                  OriginChange.ACTION_REMOVE_ENTRY
-                };
-                break;
-            case 3 : 
-                actions = new String[] {
-                  OriginChange.ACTION_POM_MOVE_TO_PP,
-                  OriginChange.ACTION_POM_MOVE_TO_PARENT,
-                  OriginChange.ACTION_REMOVE_ENTRY
-                };
-                break;
-            default : 
-                actions = new String[] {
-                  OriginChange.ACTION_POM_MOVE_TO_PP,
-                  OriginChange.ACTION_POM_MOVE_TO_PARENT,
-                  OriginChange.ACTION_REMOVE_ENTRY
-                };
-                break;
-        } 
+        int poms = project.getContext().getPOMContext().getProjectDepth();
+        Collection col = new ArrayList();
                 
         Icon icon = new ImageIcon(Utilities.loadImage("org/mevenide/netbeans/project/resources/LocPomFile.png"));
-        wraps[0] = new LocationComboBox.LocationWrapper("Defined in project's POM file", icon,
-                             FileUtilities.locationToFile(OriginChange.LOCATION_POM, project), 
-                             OriginChange.LOCATION_POM,
-                             actions);
-        
-        switch (poms) {
-            case 1 : 
-                actions = new String[] {
-                    OriginChange.ACTION_POM_MOVE_TO_CHILD
-                };
-                break;
-            case 2 : 
-                actions = new String[] {
-                    OriginChange.ACTION_POM_MOVE_TO_CHILD,
-                    OriginChange.ACTION_POM_MOVE_TO_PARENT
-                };
-                break;
-            case 3 : 
-                actions = new String[] {
-                  OriginChange.ACTION_POM_MOVE_TO_CHILD,
-                  OriginChange.ACTION_POM_MOVE_TO_PARENT,
-                  OriginChange.ACTION_POM_MOVE_TO_PP
-                };
-                break;
-            default : 
-                actions = new String[] {
-                  OriginChange.ACTION_POM_MOVE_TO_CHILD,
-                  OriginChange.ACTION_POM_MOVE_TO_PARENT,
-                  OriginChange.ACTION_POM_MOVE_TO_PP
-                };
-                break;
-        }
+        Icon mvIcon = new ImageIcon(Utilities.loadImage("org/mevenide/netbeans/project/resources/ToDefault.png"));
+        col.add(new LocationComboBox.LocationWrapper(
+                    "Defined in project's POM file", icon,
+                    "Move to POM", mvIcon, 
+                    FileUtilities.locationToFile(OriginChange.LOCATION_POM, project), 
+                    OriginChange.LOCATION_POM));
         icon = new ImageIcon(Utilities.loadImage("org/mevenide/netbeans/project/resources/LocDefault.png"));
-        wraps[1] = new LocationComboBox.LocationWrapper("No defined value", icon,
-                             null, 
-                             IPropertyLocator.LOCATION_NOT_DEFINED,
-                             actions);
+        col.add(new LocationComboBox.LocationWrapper(
+                    "No defined value", icon,
+                    "Remove Definition", mvIcon,
+                    null, 
+                    IPropertyLocator.LOCATION_NOT_DEFINED));
         if (poms > 1) {
-            switch (poms) {
-                case 2 : 
-                    actions = new String[] {
-                        OriginChange.ACTION_POM_MOVE_TO_CHILD,
-                        OriginChange.ACTION_REMOVE_ENTRY
-                    };
-                    break;
-                case 3 : 
-                    actions = new String[] {
-                        OriginChange.ACTION_POM_MOVE_TO_CHILD,
-                        OriginChange.ACTION_POM_MOVE_TO_PP,
-                        OriginChange.ACTION_REMOVE_ENTRY
-                    };
-                    break;
-                default : 
-                    actions = new String[] {
-                        OriginChange.ACTION_POM_MOVE_TO_CHILD,
-                        OriginChange.ACTION_POM_MOVE_TO_PP,
-                        OriginChange.ACTION_REMOVE_ENTRY
-                    };
-                    break;
-            }
             icon = new ImageIcon(Utilities.loadImage("org/mevenide/netbeans/project/resources/LocParentPOM.png"));
-            wraps[2] = new LocationComboBox.LocationWrapper("Defined in POM's parent definition", icon,
-                                 FileUtilities.locationToFile(OriginChange.LOCATION_POM_PARENT, project), 
-                                 OriginChange.LOCATION_POM_PARENT,
-                                 actions);
-            if (poms > 2) {
-                actions = new String[] {
-                    OriginChange.ACTION_POM_MOVE_TO_CHILD,
-                    OriginChange.ACTION_POM_MOVE_TO_PARENT,
-                    OriginChange.ACTION_REMOVE_ENTRY
-                };
+            col.add(new LocationComboBox.LocationWrapper(
+                        "Defined in POM's parent definition", icon,
+                        "Move to Parent", mvIcon, 
+                        FileUtilities.locationToFile(OriginChange.LOCATION_POM_PARENT, project), 
+                        OriginChange.LOCATION_POM_PARENT));
+        }
+        if (poms > 2) {
+            for (int i = 3; i <= poms; i++) {
+                System.err.println("creating pom wrapper for" + (i-1));
                 icon = new ImageIcon(Utilities.loadImage("org/mevenide/netbeans/project/resources/LocParParPOM.png"));
-                wraps[3] = new LocationComboBox.LocationWrapper("Defined in POM's grand parent definition", icon,
-                                 FileUtilities.locationToFile(OriginChange.LOCATION_POM_PARENT_PARENT, project), 
-                                 OriginChange.LOCATION_POM_PARENT_PARENT,
-                                 actions);
+                col.add(new LocationComboBox.LocationWrapper(
+                            "Defined in POM's " + (i - 1) + ". parent definition", icon,
+                            "Move to " + (i - 1) + ". Parent", mvIcon, 
+                            FileUtilities.locationToFile(i - 1, project), 
+                            i - 1));
             }
         }
+        LocationComboBox.LocationWrapper[] wraps = new LocationComboBox.LocationWrapper[col.size()];
+        wraps = (LocationComboBox.LocationWrapper[])col.toArray(wraps);
         box.setItems(wraps);
         return new OriginChange(box);
     }

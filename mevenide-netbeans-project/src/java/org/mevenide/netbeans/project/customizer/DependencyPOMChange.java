@@ -42,10 +42,10 @@ public class DependencyPOMChange implements MavenPOMTreeChange {
     private Map newPropValues;
     private int newLocation;
     private Map fields;
-    private JComboBox box;
-    private JTextComponent propField;
+//    private JComboBox box;
+//    private JTextComponent propField;
     private OriginChange origin;
-    private Map listeners;
+//    private Map listeners;
     private OrigListener orListener;
     private DependencyContentProvider contentProvider;
     
@@ -192,12 +192,12 @@ public class DependencyPOMChange implements MavenPOMTreeChange {
         private OrigListener() {
         }
 
-        public void actionSelected(String changeAction) {
+        public void locationChanged() {
             if (ignore) {
                 return;
             }
             newLocation = origin.getSelectedLocationID();
-            if (OriginChange.ACTION_REMOVE_ENTRY.equals(changeAction)) {
+            if (newLocation  < 0) {
                 // assuming the correct default value is not-override..
                 ignore = true;
                 newValues.clear();

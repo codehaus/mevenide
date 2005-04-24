@@ -127,7 +127,7 @@ public class TextFieldPropertyChange implements MavenPropertyChange {
                 origin.getSelectedLocationID() == IPropertyLocator.LOCATION_DEFAULTS) {
                 // assume the default placement is build..
                 // maybe have configurable or smartish later..
-                origin.setAction(OriginChange.ACTION_DEFINE_IN_BUILD);
+                origin.setAction(OriginChange.LOCATION_POM);
             }
         }
         
@@ -143,12 +143,12 @@ public class TextFieldPropertyChange implements MavenPropertyChange {
             update();
         }
 
-        public void actionSelected(String changeAction) {
+        public void locationChanged() {
             if (ignore) {
                 return;
             }
             newLocation = origin.getSelectedLocationID();
-            if (OriginChange.ACTION_RESET_TO_DEFAULT.equals(changeAction)) {
+            if (newLocation < 0) {
                 // assuming the correct default value is not-override..
                 ignore = true;
                 newValue = (defaultValue == null ? "" : defaultValue);

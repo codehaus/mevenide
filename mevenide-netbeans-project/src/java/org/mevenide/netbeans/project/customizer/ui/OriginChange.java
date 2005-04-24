@@ -28,71 +28,6 @@ public class OriginChange {
     private LocationComboBox comboBox;
     private ChangeObserver observer;
 
-    //# properties files actions..
-    /*
-     * property file action
-     */
-    public static final String ACTION_MOVE_TO_PROJECT = "MvProject";
-    /*
-     * property file action
-     */
-    public static final String ACTION_MOVE_TO_USER = "MvUser";
-    /*
-     * property file action
-     */
-    public static final String ACTION_MOVE_TO_BUILD = "MvBuild";
-    /*
-     * property file action
-     */
-    public static final String ACTION_DEFINE_IN_PROJECT = "DefProject";
-    /*
-     * property file action
-     */
-    public static final String ACTION_DEFINE_IN_USER = "DefUser";
-    /*
-     * property file action
-     */
-    public static final String ACTION_DEFINE_IN_BUILD = "DefBuild";
-    /*
-     * property file action
-     */
-    public static final String ACTION_RESET_TO_DEFAULT = "DefaultReset";
-    /*
-     * parent property file action
-     */
-    public static final String ACTION_MOVE_TO_PARENT_PROJECT = "MvParentProject";
-    /*
-     * property file action
-     */
-    public static final String ACTION_MOVE_TO_PARENTBUILD = "MvParentBuild";
-    /*
-     * parent build property file action
-     */
-    public static final String ACTION_DEFINE_IN_PARENT_BUILD = "DefParentBuild";    
-    /*
-     * parent property file action
-     */
-    public static final String ACTION_DEFINE_IN_PARENT_PROJECT = "DefParentProject";    
-    
-    
-// pom files actions.
-    /*
-     * pom file action
-     */
-    public static final String ACTION_REMOVE_ENTRY = "RemoveEntry";
-    /*
-     * pom file action
-     */
-    public static final String ACTION_POM_MOVE_TO_PARENT = "MoveToParent";
-    /*
-     * pom file action
-     */
-    public static final String ACTION_POM_MOVE_TO_PP = "MoveToPP";
-    /*
-     * pom file action
-     */
-    public static final String ACTION_POM_MOVE_TO_CHILD = "MoveToChild";
-    
     /**
      * The item is located in the project's POM file. 
      * similar to constants in IPropertyLocator, but not belonging there.
@@ -115,8 +50,8 @@ public class OriginChange {
         return comboBox;
     }
     
-    public void setAction(String  action) {
-        comboBox.invokePopupAction(action);
+    public void setAction(int location) {
+        comboBox.invokePopupAction(location);
     }
     
     public int getSelectedLocationID() {
@@ -146,7 +81,7 @@ public class OriginChange {
     /** callback to get notified when user selects an action from the popup.
      */
     public interface ChangeObserver {
-        void actionSelected(String action);
+        void locationChanged();
     }
     
 

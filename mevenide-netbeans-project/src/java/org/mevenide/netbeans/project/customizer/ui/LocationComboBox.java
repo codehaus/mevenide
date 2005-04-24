@@ -33,7 +33,6 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.UIManager;
 import javax.swing.border.Border;
-import org.mevenide.properties.IPropertyLocator;
 import org.openide.util.Utilities;
 
 /**
@@ -44,7 +43,6 @@ class LocationComboBox extends JButton {
     private LocationWrapper current;
     private LocationWrapper[] all;
     private JPopupMenu currentLoc;
-    private HashMap actionToLoc;
     private OriginChange.ChangeObserver observer;
     private boolean showText;
     
@@ -60,23 +58,6 @@ class LocationComboBox extends JButton {
                 currentLoc.show(LocationComboBox.this, 0, LocationComboBox.this.getSize().height);
             }
         });
-        actionToLoc = new HashMap();
-        actionToLoc.put(OriginChange.ACTION_DEFINE_IN_BUILD, new Integer(IPropertyLocator.LOCATION_PROJECT_BUILD));
-        actionToLoc.put(OriginChange.ACTION_MOVE_TO_BUILD, new Integer(IPropertyLocator.LOCATION_PROJECT_BUILD));
-        actionToLoc.put(OriginChange.ACTION_DEFINE_IN_PROJECT, new Integer(IPropertyLocator.LOCATION_PROJECT));
-        actionToLoc.put(OriginChange.ACTION_MOVE_TO_PROJECT, new Integer(IPropertyLocator.LOCATION_PROJECT));
-        actionToLoc.put(OriginChange.ACTION_DEFINE_IN_USER, new Integer(IPropertyLocator.LOCATION_USER_BUILD));
-        actionToLoc.put(OriginChange.ACTION_MOVE_TO_USER, new Integer(IPropertyLocator.LOCATION_USER_BUILD));
-        actionToLoc.put(OriginChange.ACTION_RESET_TO_DEFAULT, new Integer(IPropertyLocator.LOCATION_DEFAULTS));
-        actionToLoc.put(OriginChange.ACTION_MOVE_TO_PARENT_PROJECT, new Integer(IPropertyLocator.LOCATION_PARENT_PROJECT));
-        actionToLoc.put(OriginChange.ACTION_DEFINE_IN_PARENT_PROJECT, new Integer(IPropertyLocator.LOCATION_PARENT_PROJECT));
-        actionToLoc.put(OriginChange.ACTION_MOVE_TO_PARENTBUILD, new Integer(IPropertyLocator.LOCATION_PARENT_PROJECT_BUILD));
-        actionToLoc.put(OriginChange.ACTION_DEFINE_IN_PARENT_BUILD, new Integer(IPropertyLocator.LOCATION_PARENT_PROJECT_BUILD));
-
-        actionToLoc.put(OriginChange.ACTION_POM_MOVE_TO_CHILD, new Integer(OriginChange.LOCATION_POM));
-        actionToLoc.put(OriginChange.ACTION_POM_MOVE_TO_PARENT, new Integer(OriginChange.LOCATION_POM_PARENT));
-        actionToLoc.put(OriginChange.ACTION_POM_MOVE_TO_PP, new Integer(OriginChange.LOCATION_POM_PARENT_PARENT));
-        actionToLoc.put(OriginChange.ACTION_REMOVE_ENTRY, new Integer(IPropertyLocator.LOCATION_NOT_DEFINED));
         
 //        add(currentLoc);
         setIcon(new ImageIcon(Utilities.loadImage("org/openide/resources/actions/empty.gif")));
@@ -89,6 +70,7 @@ class LocationComboBox extends JButton {
     
     public void setInitialItem(int location) {
         LocationWrapper selected = findWrapper(location);
+        System.err.println("selected fro location=" + location +"   is="+ selected);
         setSelectedItem(selected);
     }
     
@@ -100,7 +82,7 @@ class LocationComboBox extends JButton {
             setText(selected.getName());
         }
         currentLoc.removeAll();
-        initStatePopup(selected.getActions());
+        initStatePopup(selected);
         current = selected;
     }
     
@@ -112,20 +94,18 @@ class LocationComboBox extends JButton {
         return all;
     }
     
-    public void invokePopupAction(int location) {
-        setSelectedItem(findWrapper(location));
+    public void invokePopupAction(LocationWrapper wrap) {
+        setSelectedItem(wrap);
     }
     
-    public void invokePopupAction(String action) {
-        Integer loc = (Integer)actionToLoc.get(action);
-        if (loc != null) {
-            invokePopupAction(loc.intValue());
+    public void invokePopupAction(int location) {
+        LocationWrapper wrap = findWrapper(location);
+        if (wrap != null) {
+            invokePopupAction(wrap);
             if (observer != null) {
-                observer.actionSelected(action);
+                observer.locationChanged();
             }
-        } else {
-            throw new IllegalArgumentException("Unknown action=" + action);
-        }
+        } 
     }
     
     private LocationWrapper findWrapper(int location) {
@@ -134,68 +114,25 @@ class LocationComboBox extends JButton {
                 return all[i];
             }
         }
-        throw new IllegalStateException("Wrong location of prop file=" + location);
+        return null;
     }
     
     public void setChangeObserver(OriginChange.ChangeObserver obs) {
         observer = obs;
     }
     
-    private void initStatePopup(String[] actions) {
-        String name = "";
-        Icon icon = null;
-        if (actions == null) {
+    private void initStatePopup(LocationWrapper selItem) {
+        if (selItem == null) {
             return;
         }
-        for (int i = 0; i < actions.length; i++) {
-            if (OriginChange.ACTION_DEFINE_IN_USER.equals(actions[i])) {
-                name = "Define in User";
-                icon = new ImageIcon(Utilities.loadImage("org/mevenide/netbeans/project/resources/ToUser.png"));
-            } else if (OriginChange.ACTION_DEFINE_IN_PROJECT.equals(actions[i])) {
-                name = "Define in Project";
-                icon = new ImageIcon(Utilities.loadImage("org/mevenide/netbeans/project/resources/ToProject.png"));
-            } else if (OriginChange.ACTION_DEFINE_IN_BUILD.equals(actions[i])) {
-                name = "Define in Build";
-                icon = new ImageIcon(Utilities.loadImage("org/mevenide/netbeans/project/resources/ToBuild.png"));
-            } else if (OriginChange.ACTION_MOVE_TO_BUILD.equals(actions[i])) {
-                name = "Move to Build";
-                icon = new ImageIcon(Utilities.loadImage("org/mevenide/netbeans/project/resources/ToBuild.png"));
-            } else if (OriginChange.ACTION_MOVE_TO_PROJECT.equals(actions[i])) {
-                name = "Move to Project";
-                icon = new ImageIcon(Utilities.loadImage("org/mevenide/netbeans/project/resources/ToProject.png"));
-            } else if (OriginChange.ACTION_MOVE_TO_USER.equals(actions[i])) {
-                name = "Move to User";
-                icon = new ImageIcon(Utilities.loadImage("org/mevenide/netbeans/project/resources/ToUser.png"));
-            } else if (OriginChange.ACTION_RESET_TO_DEFAULT.equals(actions[i])) {
-                name = "Reset to Default";
-                icon = new ImageIcon(Utilities.loadImage("org/mevenide/netbeans/project/resources/ToDefault.png"));
-            } else if (OriginChange.ACTION_POM_MOVE_TO_CHILD.equals(actions[i])) {
-                name = "Move to POM";
-                icon = new ImageIcon(Utilities.loadImage("org/mevenide/netbeans/project/resources/ToDefault.png"));
-            } else if (OriginChange.ACTION_POM_MOVE_TO_PARENT.equals(actions[i])) {
-                name = "Move to Parent";
-                icon = new ImageIcon(Utilities.loadImage("org/mevenide/netbeans/project/resources/ToDefault.png"));
-            } else if (OriginChange.ACTION_POM_MOVE_TO_PP.equals(actions[i])) {
-                name = "Move to Grand Parent";
-                icon = new ImageIcon(Utilities.loadImage("org/mevenide/netbeans/project/resources/ToDefault.png"));
-            } else if (OriginChange.ACTION_REMOVE_ENTRY.equals(actions[i])) {
-                name = "Remove Definition";
-                icon = new ImageIcon(Utilities.loadImage("org/mevenide/netbeans/project/resources/ToDefault.png"));
-            } else if (OriginChange.ACTION_DEFINE_IN_PARENT_PROJECT.equals(actions[i])) {
-                name = "Define in Parent Project";
-                icon = new ImageIcon(Utilities.loadImage("org/mevenide/netbeans/project/resources/ToParentProject.png"));
-            } else if (OriginChange.ACTION_DEFINE_IN_PARENT_BUILD.equals(actions[i])) {
-                name = "Define in Parent Build";
-                icon = new ImageIcon(Utilities.loadImage("org/mevenide/netbeans/project/resources/ToParentBuild.png"));
-            } else if (OriginChange.ACTION_MOVE_TO_PARENTBUILD.equals(actions[i])) {
-                name = "Move to Parent Build";
-                icon = new ImageIcon(Utilities.loadImage("org/mevenide/netbeans/project/resources/ToParentBuild.png"));
-            } else if (OriginChange.ACTION_MOVE_TO_PARENT_PROJECT.equals(actions[i])) {
-                name = "Move to Parent Project";
-                icon = new ImageIcon(Utilities.loadImage("org/mevenide/netbeans/project/resources/ToParentProject.png"));
+        for (int i = 0; i < all.length; i++) {
+            if (all[i] == selItem || !all[i].includeInPopup()) {
+                continue;
             }
+            String name = all[i].getMoveName();
+            Icon icon = all[i].getIcon();
             JMenuItem item = currentLoc.add(name);
-            item.setAction(new MyAction(actions[i], name, icon));
+            item.setAction(new MyAction(all[i], name, icon));
         }
     }
     
@@ -203,23 +140,41 @@ class LocationComboBox extends JButton {
         private String name;
         private Icon icon;
         private File file;
-        private int ID;
-        private String[] actions;
+        private int loc;
+        private String moveName;
+        private Icon moveIcon;
         
-        public LocationWrapper(String name, Icon icon, File file, int id, String[] actions) {
+        public LocationWrapper(String name, Icon icon,
+                               String mvName, Icon mvIcon,
+                               File file, int id) {
             this.name = name;
             this.icon = icon;
             this.file = file;
-            this.actions = actions;
-            ID = id;
-            
+            loc = id;
+            moveName = mvName;
+            moveIcon = mvIcon;
         }
+        
         public Icon getIcon() {
             return icon;
         }
         public String getName() {
             return name;
         }
+        
+        public Icon getMoveIcon() {
+            return moveIcon;
+        }
+        
+        public String getMoveName() {
+            return moveName;
+        }
+        
+        public boolean includeInPopup() {
+            // maybe refine?
+            return moveName != null;
+        }
+        
         public File getFile() {
             return file;
         }
@@ -229,24 +184,20 @@ class LocationComboBox extends JButton {
         }
         
         public int getID() {
-            return ID;
-        }
-        
-        public String[] getActions() {
-            return actions;
+            return loc;
         }
     }
     
     private class MyAction extends AbstractAction {
-        private String id;
-        public MyAction(String i, String name, Icon icon) {
-            id = i;
+        private LocationWrapper wrapper;
+        public MyAction(LocationWrapper wrap, String name, Icon icon) {
+            wrapper = wrap;
             putValue(Action.NAME, name);
             putValue(Action.SMALL_ICON, icon);
         }
         
         public void actionPerformed(ActionEvent e) {
-            invokePopupAction(id);
+            invokePopupAction(wrapper);
         }
         
     }

@@ -28,6 +28,35 @@ import org.mevenide.properties.IPropertyResolver;
  */
 public interface IQueryContext {
     
+    /**
+     * Location constant, the given key is in project.properties file.
+     */
+    public static final int LOCATION_PROJECT = 10;
+    /**
+     * Location constant, the given key is in ${basedir}/build.properties file.
+     */
+    public static final int LOCATION_PROJECT_BUILD = 11;
+    /**
+     * Location constant, the given key is in ${user.home}/build.properties file.
+     */
+    public static final int LOCATION_USER_BUILD = 12;
+
+    /**
+     * Location constant, the given key is in parent's directory project.properties file.
+     * Parent is the file denoted by the extend tag in the pom file.
+     */
+    public static final int LOCATION_PARENT_PROJECT = 20;
+    /**
+     * Location constant, the given key is in parent's directory build.properties file.
+     * Parent is the file denoted by the extend tag in the pom file.
+     */
+    public static final int LOCATION_PARENT_PROJECT_BUILD = 21;
+    
+    public static final int PROJECT_PROPS_OFFSET = 0;
+    public static final int BUILD_PROPS_OFFSET = 1;
+    
+
+    
     String getPropertyValue(String key);
     
     String getUserPropertyValue(String key);
@@ -39,6 +68,20 @@ public interface IQueryContext {
     String getParentBuildPropertyValue(String key);
     
     String getParentProjectPropertyValue(String key);
+    
+    /**
+     *
+     * @param location   PomContext.getProjectDepth() * 10 + x, 
+     *   where x is 0 for project.properties file and 1 for build.properties file.
+     */
+    String getPropertyValueAt(String key, int location);
+    
+    /**
+     * all property keys defined at given location..
+     * @param location   PomContext.getProjectDepth() * 10 + x, 
+     *   where x is PROJECT_PROPS_OFFSET for project.properties file and BUILD_PROPS_OFFSET for build.properties file.
+     */
+    Set getPropertyKeysAt(int location);
     
     /**
      * all property keys defined in userdir/build.properties

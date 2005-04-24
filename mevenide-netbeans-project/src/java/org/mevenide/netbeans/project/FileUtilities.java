@@ -146,19 +146,11 @@ public final class FileUtilities {
         if (location == IPropertyLocator.LOCATION_USER_BUILD) {
             return new File(context.getUserDirectory(), "build.properties"); //NOI18N
         }
-        if (location == IPropertyLocator.LOCATION_PARENT_PROJECT) {
-            File[] fls = context.getPOMContext().getProjectFiles();
-            if (fls.length > 1) {
-                return new File(fls[1].getParentFile(), "project.properties");
-            }
-            return null;
-        }
-        if (location == IPropertyLocator.LOCATION_PARENT_PROJECT_BUILD) {
-            File[] fls = context.getPOMContext().getProjectFiles();
-            if (fls.length > 1) {
-                return new File(fls[1].getParentFile(), "build.properties");
-            }
-            return null;
+        int loc = location / 10;
+        int offset = location % 10;
+        File[] fls = context.getPOMContext().getProjectFiles();
+        if (fls.length >= loc) {
+            return new File(fls[loc - 1].getParentFile(), offset == IQueryContext.BUILD_PROPS_OFFSET ? "build.properties" : "project.properties");
         }
         throw new IllegalArgumentException("Wrong argument. is=" + location);
     }

@@ -139,6 +139,27 @@ public class TestQueryContext extends AbstractQueryContext {
         parentBuildMap.put(key, value);
     }
     
+    public Set getPropertyKeysAt(int location) {
+        return getMapForLocation(location).keySet();
+    }
+
+    public String getPropertyValueAt(String key, int location) {
+        return (String)getMapForLocation(location).get(key);
+    }
+    
+    private HashMap getMapForLocation(int loc) {
+        HashMap toRet;
+        switch (loc) {
+            case 10 : toRet = projectMap; break;
+            case 11 : toRet = buildMap; break;
+            case 12 : toRet = userMap; break;
+            case 20 : toRet = parentProjectMap; break;
+            case 21 : toRet = parentBuildMap; break;
+            default : toRet = new HashMap();
+        }
+        return toRet;
+    }
+    
     private class EmptyProjectContext implements IProjectContext {
         private Project empty = new Project();
         private Element rootEl = factory.element("project");
@@ -161,6 +182,11 @@ public class TestQueryContext extends AbstractQueryContext {
         public org.jdom.Element getRootProjectElement() {
             return rootEl;
         }
+        
+        public int getProjectDepth() {
+            return 0;
+        }
+        
         
     }
 

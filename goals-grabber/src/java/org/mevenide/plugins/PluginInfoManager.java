@@ -54,14 +54,16 @@ public final class PluginInfoManager {
     }
     
     /**
-     * is possibly somewhat slow.
+     * is somewhat slow.
      */
     public boolean isUsedByProject(IPluginInfo info) {
-        Set keys = new HashSet(context.getBuildPropertyKeys());
-        keys.addAll(context.getParentBuildPropertyKeys());
-        keys.addAll(context.getParentProjectPropertyKeys());
-        keys.addAll(context.getProjectPropertyKeys());
+        Set keys = new HashSet();
         keys.addAll(context.getUserPropertyKeys());
+        int depth = context.getPOMContext().getProjectDepth();
+        for (int i = 1; i <= depth; i++) {
+            keys.addAll(context.getPropertyKeysAt(i * 10 + IQueryContext.BUILD_PROPS_OFFSET));
+            keys.addAll(context.getPropertyKeysAt(i * 10 + IQueryContext.PROJECT_PROPS_OFFSET));
+        }
         Iterator it = info.getPropertyKeys().iterator();
         while (it.hasNext()) {
             String key = (String)it.next();

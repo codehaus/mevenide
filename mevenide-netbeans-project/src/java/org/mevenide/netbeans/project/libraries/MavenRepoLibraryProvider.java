@@ -31,8 +31,6 @@ import org.mevenide.environment.ILocationFinder;
 import org.mevenide.environment.LocationFinderAggregator;
 import org.mevenide.environment.SysEnvLocationFinder;
 import org.mevenide.netbeans.project.NbSysEnvProvider;
-import org.mevenide.project.dependency.DependencyResolverFactory;
-import org.mevenide.project.dependency.IDependencyResolver;
 import org.netbeans.spi.project.libraries.LibraryImplementation;
 import org.netbeans.spi.project.libraries.LibraryProvider;
 import org.openide.filesystems.FileObject;
