@@ -43,4 +43,6 @@ public interface ModuleSettingsModel extends ModelObject {
     String getOrigin(String fullyQualifiedGoalName);
 
     String[] getPrereqs(String fullyQualifiedGoalName);
+
+    void refresh() throws Exception;
 }

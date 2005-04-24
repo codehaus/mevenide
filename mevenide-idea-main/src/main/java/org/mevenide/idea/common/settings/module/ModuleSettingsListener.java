@@ -7,5 +7,5 @@ import java.util.EventListener;
  */
 public interface ModuleSettingsListener extends EventListener {
     void pomFileChanged(PomFileChangedEvent pEvent);
-    void favoriteGoalsChanged(FavoriteGoalsChangedEvent pEvent);
+    void moduleGoalsChanged(ModuleGoalsChangedEvent pEvent);
 }

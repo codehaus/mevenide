@@ -178,4 +178,8 @@ public class ModuleSettings extends ModelDelegatingComponent implements ModuleCo
     public String[] getPrereqs(String fullyQualifiedGoalName) {
         return model.getPrereqs(fullyQualifiedGoalName);
     }
+
+    public void refresh() throws Exception {
+        model.refresh();
+    }
 }

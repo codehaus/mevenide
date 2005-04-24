@@ -5,20 +5,20 @@ import com.intellij.openapi.projectRoots.ProjectJdk;
 import com.intellij.openapi.roots.ModuleRootManager;
 import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.openapi.ui.Messages;
-import org.mevenide.context.IProjectContext;
-import org.mevenide.context.IQueryContext;
-import org.mevenide.context.DefaultQueryContext;
-import org.mevenide.environment.ILocationFinder;
-import org.mevenide.idea.common.settings.module.ModuleSettingsModel;
-import org.mevenide.idea.common.settings.module.ModuleSettingsListener;
-import org.mevenide.idea.common.settings.module.PomFileChangedEvent;
-import org.mevenide.idea.common.settings.module.FavoriteGoalsChangedEvent;
-import org.mevenide.idea.common.util.Res;
-import org.mevenide.idea.common.ui.UI;
-import org.mevenide.goals.grabber.IGoalsGrabber;
-import org.mevenide.goals.grabber.DefaultGoalsGrabber;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.mevenide.context.DefaultQueryContext;
+import org.mevenide.context.IProjectContext;
+import org.mevenide.context.IQueryContext;
+import org.mevenide.environment.ILocationFinder;
+import org.mevenide.goals.grabber.DefaultGoalsGrabber;
+import org.mevenide.goals.grabber.IGoalsGrabber;
+import org.mevenide.idea.common.settings.module.ModuleGoalsChangedEvent;
+import org.mevenide.idea.common.settings.module.ModuleSettingsListener;
+import org.mevenide.idea.common.settings.module.ModuleSettingsModel;
+import org.mevenide.idea.common.settings.module.PomFileChangedEvent;
+import org.mevenide.idea.common.ui.UI;
+import org.mevenide.idea.common.util.Res;
 
 import javax.swing.event.EventListenerList;
 import java.io.File;
@@ -126,7 +126,7 @@ public class ModuleSettingsModelImpl implements ModuleSettingsModel, IGoalsGrabb
             favoriteGoals.clear();
             favoriteGoals.addAll(pFavoriteGoals);
             refreshGoalsGrabber = true;
-            fireFavoriteGoalsChangedEvent(oldFavorites);
+            fireModuleGoalsChangedEvent();
         }
     }
 
@@ -227,16 +227,14 @@ public class ModuleSettingsModelImpl implements ModuleSettingsModel, IGoalsGrabb
         }
     }
 
-    protected void fireFavoriteGoalsChangedEvent(final Collection pOldFavorites) {
+    protected void fireModuleGoalsChangedEvent() {
         synchronized (LOCK) {
-            final FavoriteGoalsChangedEvent event = new FavoriteGoalsChangedEvent(this,
-                                                                                  favoriteGoals,
-                                                                                  pOldFavorites);
+            final ModuleGoalsChangedEvent event = new ModuleGoalsChangedEvent(this);
             final EventListener[] listeners =
                     listenerList.getListeners(ModuleSettingsListener.class);
             for (int i = 0; i < listeners.length; i++) {
                 ModuleSettingsListener listener = (ModuleSettingsListener) listeners[i];
-                listener.favoriteGoalsChanged(event);
+                listener.moduleGoalsChanged(event);
             }
         }
     }
@@ -326,14 +324,19 @@ public class ModuleSettingsModelImpl implements ModuleSettingsModel, IGoalsGrabb
     }
 
     public void refresh() throws Exception {
-        ensureGrabberRefreshed();
+        ensureGrabberRefreshed(true);
     }
-    
+
     private void ensureGrabberRefreshed() {
-        if(goalsGrabber != null && refreshGoalsGrabber) {
+        ensureGrabberRefreshed(false);
+    }
+
+    private void ensureGrabberRefreshed(final boolean pForceRefresh) {
+        if(pForceRefresh || (goalsGrabber != null && refreshGoalsGrabber)) {
             try {
                 refreshGoalsGrabber = false;
                 goalsGrabber.refresh();
+                fireModuleGoalsChangedEvent();
             }
             catch (Exception e) {
                 Messages.showErrorDialog(module.getProject(), e.getMessage(), UI.ERR_TITLE);

@@ -28,6 +28,9 @@
         <component>
             <implementation-class>org.mevenide.idea.main.settings.module.ModuleSettingsConfigurable</implementation-class>
         </component>
+        <component>
+            <implementation-class>org.mevenide.idea.main.settings.module.ModuleSynchronizer</implementation-class>
+        </component>
     </module-components>
 
 </idea-plugin>
