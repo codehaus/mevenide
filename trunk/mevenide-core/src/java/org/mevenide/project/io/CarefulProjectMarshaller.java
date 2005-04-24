@@ -112,7 +112,6 @@ public class CarefulProjectMarshaller implements IProjectMarshaller {
         Counter counter = new Counter();
         findAndReplaceSimpleElement(counter, root, "extend", project.getValue("extend"));
         findAndReplaceSimpleElement(counter, root, "pomVersion", project.getValue("pomVersion"));
-        findAndReplaceDeprecatedElement(counter, root, "id", project.getValue("id"));
         //REQUIRED
         findAndReplaceSimpleElement(counter, root, "artifactId", project.getValue("artifactId"));
         findAndReplaceSimpleElement(counter, root, "name", project.getValue("name"));
@@ -758,18 +757,6 @@ public class CarefulProjectMarshaller implements IProjectMarshaller {
             element.setText(text);
         }
         return element;
-    }
-
-    /**
-     * Attempts to find the element with "name" in the model, if it exists, will update it, 
-     * otherwise it is ignored.
-     */
-    private void findAndReplaceDeprecatedElement(Counter counter, Element parent, String name, String text)
-    {
-        if (parent.getChild(name) != null)
-        {
-            findAndReplaceSimpleElement(counter, parent, name, text);
-        }
     }
 
     /**
