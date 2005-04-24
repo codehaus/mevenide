@@ -43,6 +43,7 @@
                     <th>Feature</th>
                     <th>Description</th>
                     <th>Planned version</th>
+                    <th>Assigned to</th>
                 </tr>
                 <tr>
                     <td>Bidirectional update between IDEA project and POM</td>
@@ -56,6 +57,7 @@
                         </ul>
                     </td>
                     <td>0.1</td>
+                    <td>Unassigned</td>
                 </tr>
                 <tr>
                     <td>POM Graphical User Interface editor</td>
@@ -65,6 +67,7 @@
                         versions, and build settings.
                     </td>
                     <td>0.2</td>
+                    <td>Unassigned</td>
                 </tr>
                 <tr>
                     <td>Jelly Text editor</td>
@@ -73,6 +76,7 @@
                         the POM. It should be a simple text editor, with Jelly namespace
                         recognition as schemas, as well as smart goal autocomplete.
                     </td>
+                    <td>Unassigned</td>
                 </tr>
                 <tr>
                     <td>New IDEA project from POM file</td>
@@ -81,6 +85,7 @@
                         IDEA plugin to generate the IDEA files - if so, it needs improvements).
                     </td>
                     <td>0.2</td>
+                    <td>Unassigned</td>
                 </tr>
                 <tr>
                     <td>Autolaunch Maven goals on predefined IDEA events</td>
@@ -93,6 +98,7 @@
                         wrong).
                     </td>
                     <td>Unscheduled</td>
+                    <td>Unassigned</td>
                 </tr>
                 <tr>
                     <td>Automatic artifact download on need</td>
@@ -104,6 +110,7 @@
                         in the IDE to the correct classpath.
                     </td>
                     <td>Unscheduled</td>
+                    <td>Unassigned</td>
                 </tr>
                 <tr>
                     <td>Repository Browsing</td>
@@ -113,6 +120,7 @@
                         repositories (if remote).
                     </td>
                     <td>Unscheduled</td>
+                    <td>Unassigned</td>
                 </tr>
                 <tr>
                     <td>Create POM file from project</td>
@@ -121,6 +129,7 @@
                         from an existing IDEA project.
                     </td>
                     <td>Unscheduled</td>
+                    <td>Unassigned</td>
                 </tr>
                 <tr>
                     <td>Show help for goal</td>
@@ -131,6 +140,7 @@
                         as the standard goal description (just in case).
                     </td>
                     <td>Unscheduled</td>
+                    <td>Unassigned</td>
                 </tr>
                 <tr>
                     <td>Show project help</td>
@@ -138,6 +148,7 @@
                         Allow showing the project help screen (like "maven -u").
                     </td>
                     <td>Unscheduled</td>
+                    <td>Unassigned</td>
                 </tr>
                 <tr>
                     <td>Maven Plugin Project type</td>
@@ -149,6 +160,7 @@
                         "plugin:install" before, run or debug, and other thinkable gadgets.
                     </td>
                     <td>Unscheduled</td>
+                    <td>Unassigned</td>
                 </tr>
                 <tr>
                     <td>WYSIWYG XDoc editor</td>
@@ -160,6 +172,7 @@
                         properties, document title, etc.
                     </td>
                     <td>Unscheduled</td>
+                    <td>Unassigned</td>
                 </tr>
             </table>
         </section>
@@ -174,6 +187,7 @@
                     <th>Feature/Task</th>
                     <th>Description</th>
                     <th>Planned release</th>
+                    <th>Assigned to</th>
                 </tr>
                 <tr>
                     <td>Allow automatic execution console close if no errors occured</td>
@@ -182,6 +196,7 @@
                         automatically closed if no errors occur during the execution.
                     </td>
                     <td>Unscheduled</td>
+                    <td>Unassigned</td>
                 </tr>
                 <tr>
                     <td>Placing goals on toolbar and menus</td>
@@ -189,6 +204,7 @@
                         Allow adding goals to the IDEA toolbar and menus.
                     </td>
                     <td>Unscheduled</td>
+                    <td>Unassigned</td>
                 </tr>
                 <tr>
                     <td>Support goal searching in goals tool window</td>
@@ -197,6 +213,7 @@
                         user could search the goals list.
                     </td>
                     <td>Unscheduled</td>
+                    <td>Unassigned</td>
                 </tr>
                 <tr>
                     <td>Show goal descriptions</td>
@@ -205,6 +222,7 @@
                         window and the favorite goals selection settings dialog.
                     </td>
                     <td>Unscheduled</td>
+                    <td>Unassigned</td>
                 </tr>
                 <tr>
                     <td>Ask user to attach a POM on project open, if no POM is attached</td>
@@ -216,6 +234,7 @@
                         "Never ask me again" checkbox, if this gets annoying ;-)
                     </td>
                     <td>Unscheduled</td>
+                    <td>Unassigned</td>
                 </tr>
                 <tr>
                     <td>Show favorite goals on relevant context menus</td>
@@ -224,6 +243,7 @@
                         favorite goals of the module to which the file clicked belongs to.
                     </td>
                     <td>Unscheduled</td>
+                    <td>Unassigned</td>
                 </tr>
                 <tr>
                     <td>Show maven.xml structure in structure pane</td>
@@ -234,6 +254,7 @@
                         automatically when double clicked.
                     </td>
                     <td>Unscheduled</td>
+                    <td>Unassigned</td>
                 </tr>
                 <tr>
                     <td>Automatic license download on project creation/open</td>
@@ -245,6 +266,7 @@
                         "Never ask me again" checkbox if this gets annoying ;-)
                     </td>
                     <td>Unscheduled</td>
+                    <td>Unassigned</td>
                 </tr>
                 <tr>
                     <td>Add Maven plugin tips to IDEA startup tips</td>
@@ -252,6 +274,8 @@
                         Integrate into IDEA's startup tips mechanism and displays
                         various Maven-plugin related feature tips.
                     </td>
+                    <td>Unscheduled</td>
+                    <td>Unassigned</td>
                 </tr>
             </table>
         </section>
@@ -264,12 +288,14 @@
                 <tr>
                     <th>Task</th>
                     <th>Description</th>
+                    <th>Assigned to</th>
                 </tr>
                 <tr>
                     <td>Add a JIRA report to the site</td>
                     <td>
                         Automatically generate a JIRA report for the site.
                     </td>
+                    <td>Unassigned</td>
                 </tr>
                 <tr>
                     <td>Allow downloading SNAPSHOTs.</td>
@@ -282,6 +308,7 @@
                             http://dist.codehaus.org/mevenide/distributions</a>in the
                         index page.
                     </td>
+                    <td>Unassigned</td>
                 </tr>
                 <tr>
                     <td>Add screenshots to site</td>
@@ -289,6 +316,7 @@
                         Create and add some screenshots of the plugin to the site (either
                         index page or a special "Screenshots" link).
                     </td>
+                    <td>Unassigned</td>
                 </tr>
             </table>
         </section>
