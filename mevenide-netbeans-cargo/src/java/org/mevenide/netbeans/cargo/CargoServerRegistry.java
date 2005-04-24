@@ -53,8 +53,6 @@ import org.codehaus.cargo.util.monitor.NullMonitor;
 import org.openide.DialogDisplayer;
 import org.openide.ErrorManager;
 import org.openide.NotifyDescriptor;
-import org.openide.execution.ExecutionEngine;
-import org.openide.execution.ExecutorTask;
 import org.openide.util.RequestProcessor;
 
 /**
