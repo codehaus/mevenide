@@ -221,4 +221,9 @@
         <attainGoal name="multiproject:site"/>
     </goal>
 
+    <goal name="idea:create-plugin-descriptor-jar">
+        <ant:jar destfile="${idea.sandbox}/plugins/mevenide-idea/lib/plugin.jar">
+            <ant:zipfileset dir="../mevenide-idea-main/src/main/etc" includes="*.xml" prefix="META-INF/"/>
+        </ant:jar>
+    </goal>
 </project>
