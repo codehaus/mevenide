@@ -7,7 +7,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.mevenide.idea.common.settings.module.FavoriteGoalsChangedEvent;
+import org.mevenide.idea.common.settings.module.ModuleGoalsChangedEvent;
 import org.mevenide.idea.common.settings.module.ModuleSettingsListener;
 import org.mevenide.idea.common.settings.module.PomFileChangedEvent;
 import org.mevenide.idea.common.ui.UI;
@@ -174,7 +174,7 @@ public class GoalsTreeModel extends DefaultTreeModel {
     }
 
     private class TreeModuleSettingsListener implements ModuleSettingsListener {
-        public void favoriteGoalsChanged(FavoriteGoalsChangedEvent pEvent) {
+        public void moduleGoalsChanged(ModuleGoalsChangedEvent pEvent) {
             final Module module = pEvent.getModuleSettings().getModule();
             refreshModuleTreeNode(module, true);
         }
