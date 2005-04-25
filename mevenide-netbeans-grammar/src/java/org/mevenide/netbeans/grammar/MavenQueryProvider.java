@@ -58,6 +58,9 @@ public final class MavenQueryProvider extends GrammarQueryManager {
         if (env.getFileObject().getNameExt().equals("plugin.jelly")) {
             return new MavenJellyGrammar();
         }
+        if (env.getFileObject().getNameExt().equals("template.jelly")) {
+            return new MavenJellyGrammar();
+        }
         if (env.getFileObject().getNameExt().equals("maven.xml")) {
             return new MavenJellyGrammar();
         }
