@@ -25,7 +25,9 @@ package org.codehaus.mevenide.pde;
  */
 public class PdePluginException extends Exception {
 
-    public PdePluginException() {
+	private static final long serialVersionUID = 3256727260277977397L;
+
+	public PdePluginException() {
         super();
     }
     public PdePluginException(String message) {

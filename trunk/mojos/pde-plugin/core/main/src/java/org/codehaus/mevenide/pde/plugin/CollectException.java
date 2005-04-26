@@ -26,7 +26,10 @@ import org.codehaus.mevenide.pde.PdePluginException;
  * 
  */
 public class CollectException extends PdePluginException {
-    public CollectException(String message) {
+   
+	private static final long serialVersionUID = 3257854276893226293L;
+
+	public CollectException(String message) {
         super(message);
     }
 

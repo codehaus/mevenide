@@ -56,26 +56,20 @@ public class PdePluginBuilder {
     /** comma separated list of files to include in the generated zip */
     private List /** <org.codehaus.mevenide.pde.archive.Include> */ includes;
     
-	/** indicates if the primary artifact should marked as exported in the plugin descriptor */
+	/** indicates if the primary artifact should be marked as exported in the plugin descriptor */
 	private boolean shouldExportArtifact;
 	
 	/** artifactName referencing the primary artifact */
 	private String artifactName;
 	
     public void build() throws PdePluginException {
-	    CommonPluginValuesReplacer replacer = new CommonPluginValuesReplacer(basedir.getAbsolutePath(), project, libFolder);
-		replacer.shouldExportArtifact(shouldExportArtifact);
-		replacer.setArtifactName(artifactName);
+	    CommonPluginValuesReplacer replacer = new CommonPluginValuesReplacer(basedir.getAbsolutePath(), project, libFolder); 
 	    replacer.replace();
-		
+	    
 	    DependencyCollector collector = new DependencyCollector(basedir.getAbsolutePath(), libFolder, project); 
 	    collector.collect();
 	    
-		includeClasses();
-		
-		includeLibraries();
-		
-		SimpleZipCreator zipCreator = new SimpleZipCreator(null, new File(artifact).getAbsolutePath());
+	    SimpleZipCreator zipCreator = new SimpleZipCreator(new File(classesLocation).getAbsolutePath(), new File(artifact).getAbsolutePath());
 	    zipCreator.setExcludes(excludes);
 	    zipCreator.setIncludes(includes);
 	    zipCreator.zip();
@@ -99,6 +93,7 @@ public class PdePluginBuilder {
 		if ( artifactName == null || artifactName.trim().length() == 0 ){
 			classesJarName = project.getArtifactId() + "-" + project.getVersion();
 		}
+		
 		File classesJarDest = new File(tempFolder, classesJarName + ".jar");
 		SimpleZipCreator classesZipper = new SimpleZipCreator(new File(classesLocation).getAbsolutePath(), classesJarDest.getAbsolutePath());
 		classesZipper.zip();
@@ -122,7 +117,7 @@ public class PdePluginBuilder {
     
     public String getLibFolder() { return libFolder; }
     public void setLibFolder(String libFolder) { 
-		this.libFolder = libFolder != null ? libFolder : "lib";; 
+		this.libFolder = libFolder != null ? libFolder : "lib"; 
 	}
  
 	public boolean shouldExportArtifact() { return shouldExportArtifact; }

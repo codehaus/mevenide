@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project>
   <pomVersion>3</pomVersion>
-  <artifactId>maven-pde-plugin</artifactId>
-  <name>maven pde plugin</name>
+  <artifactId>maven-pde-plugin-test</artifactId>
+  <name>maven pde plugin test</name>
   <groupId>mevenide</groupId>
   <currentVersion>0.1</currentVersion>
   <organization>
@@ -74,5 +74,8 @@
   	<sourceDirectory>main/src/java</sourceDirectory>
   	
   </build>
+  <properties>
+  	<pde.enabled>true</pde.enabled>
+  </properties>
 </project>
 

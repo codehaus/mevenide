@@ -27,7 +27,9 @@ import org.codehaus.mevenide.pde.resources.Messages;
  */
 public class ParameterException extends ConfigurationException {
 
-    public ParameterException(String parameterName, String constraintViolationKey) {
+	private static final long serialVersionUID = 3977861782662755633L;
+
+	public ParameterException(String parameterName, String constraintViolationKey) {
         super(Messages.get("Configuration.InvalidParameter", 
                            parameterName, 
                            Messages.get(constraintViolationKey)));

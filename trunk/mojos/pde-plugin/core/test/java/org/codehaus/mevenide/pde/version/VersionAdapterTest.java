@@ -16,9 +16,6 @@
  */
 package org.codehaus.mevenide.pde.version;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import junit.framework.TestCase;
 
 /**
@@ -42,13 +39,14 @@ public class VersionAdapterTest extends TestCase {
         assertEquals("1.0.0", adapter.adapt("1.0.0"));
         assertEquals("1.0.0", adapter.adapt("1.00"));
         assertEquals("1.0.0", adapter.adapt("1..0"));
-        assertEquals("1.0.1", adapter.adapt("1.0-rc1"));
-        assertEquals("1.0.5", adapter.adapt("1.0.beta5"));
-        assertEquals("0.0.0", adapter.adapt("SNAPSHOT"));
-        assertEquals("1.0." + new SimpleDateFormat("yyyyMMdd").format(new Date()), adapter.adapt("1.0-SNAPSHOT"));
+        assertEquals("1.0.0", adapter.adapt("1.0-rc1"));
+        assertEquals("1.0.0", adapter.adapt("1.0.beta5"));
+        assertEquals("0.0.1", adapter.adapt("SNAPSHOT"));
+        assertEquals("1.0.0", adapter.adapt("1.0-SNAPSHOT"));
         assertEquals("1.0.0", adapter.adapt("1.0."));
         assertEquals("1.2.0", adapter.adapt("1.2"));
         assertEquals("1.0.0", adapter.adapt("1"));
+		assertEquals("1.0.2", adapter.adapt("1.0.2-b1"));
     }
 
 }

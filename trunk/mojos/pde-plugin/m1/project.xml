@@ -123,6 +123,12 @@
     </dependency>
     <dependency>
       <groupId>maven</groupId>
+      <artifactId>maven</artifactId>
+      <version>1.0.2</version>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>maven</groupId>
       <artifactId>maven-plugin</artifactId>
       <version>2.0-SNAPSHOT</version>
       <type>jar</type>
@@ -171,10 +177,13 @@
         <filtering>false</filtering>
         <includes>
           <include>plugin.jelly</include>
+          <include>plugin.properties</include>
+          <include>project.properties</include>
           <include>project.xml</include>
         </includes>
       </resource>
     </resources>
   </build>
 </project>
+
 
