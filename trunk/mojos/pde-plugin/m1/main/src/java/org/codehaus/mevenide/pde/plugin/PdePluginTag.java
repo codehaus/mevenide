@@ -49,7 +49,7 @@ public class PdePluginTag extends PdeTag {
 			builder.setArtifactName(artifactName);
 			
             String destinationFolder = (String) context.getVariable("maven.build.dir");
-            builder.setArtifact(destinationFolder + "/" + artifactName + ".zip");
+            builder.setArtifact(destinationFolder + "/" + artifactName + ".jar");
             
             File basedir = new File((String) context.getVariable("basedir"));
             builder.setBasedir(basedir);
