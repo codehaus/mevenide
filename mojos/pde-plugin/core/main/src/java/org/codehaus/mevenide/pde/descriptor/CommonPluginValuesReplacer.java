@@ -157,7 +157,8 @@ public class CommonPluginValuesReplacer {
     }
 	
 	private boolean addThisDependency(Element runtime) {
-		String thisDependencyName = getArtifactName();
+		//String thisDependencyName = getArtifactName();
+		String thisDependencyName = ".";
 		boolean shouldUpdate = true;
 		List libraries = runtime.getChildren("library");
 		for ( int u = 0; u < libraries.size(); u++ ) {
@@ -227,27 +228,15 @@ public class CommonPluginValuesReplacer {
     
 
     private void replacePluginAttributes(Element pluginElement) {
-        //@todo : how to most accurately compute id ?
-        pluginElement.setAttribute("id", (project.getPackage() != null ? project.getPackage() : project.getGroupId() + "." + project.getArtifactId()).replaceAll("-", ".")); //id="org.mevenide.ui" 
-        pluginElement.setAttribute("name", project.getName()); //name="Mevenide UI"
-        pluginElement.setAttribute("version", new VersionAdapter().adapt(project.getVersion())); //version="0.3.0" 
-        pluginElement.setAttribute("provider-name", project.getOrganization().getName()); //provider-name="The Codehaus"
+        pluginElement.setAttribute("id", artifactName.substring(0, artifactName.lastIndexOf('_')));  
+        pluginElement.setAttribute("name", project.getName()); 
+        pluginElement.setAttribute("version", new VersionAdapter().adapt(project.getVersion()));  
+        pluginElement.setAttribute("provider-name", project.getOrganization().getName()); 
         //no replacement for class attribute
     }
 	
 	public void shouldExportArtifact(boolean export) { shouldExportArtifact = export; }
 	public void setArtifactName(String name) { this.artifactName = name; }
     
-	private String getArtifactName() {
-		if ( artifactName == null || artifactName.trim().length() == 0 ){
-			String artifactId = project.getArtifactId();
-			String version = project.getVersion();
-			String thisDependencyName = artifactId + "-" + version + ".jar";
-			return thisDependencyName;
-		}
-		else {
-			return artifactName + ".jar";
-		}
-	}
 }
  

@@ -67,7 +67,8 @@ public class PdePluginTag extends PdeTag {
             //@todo custom includes
             builder.setIncludes(includes);
             
-			builder.setExportArtifact((String) context.getVariable("maven.pde.export"));
+			boolean export = BooleanUtils.toBoolean((String) context.getVariable("maven.pde.export"));
+			builder.setExportArtifact(export);
 			
             builder.build();
            

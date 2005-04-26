@@ -27,8 +27,9 @@ import org.codehaus.mevenide.pde.PdePluginException;
  */
 public class LicenseException extends PdePluginException {
 
-    
-    public LicenseException(String message) {
+	private static final long serialVersionUID = 3257848787840938551L;
+
+	public LicenseException(String message) {
         super(message);
     }
 

@@ -27,7 +27,9 @@ import org.codehaus.mevenide.pde.PdePluginException;
  */
 public class ConverterException extends PdePluginException {
 
-    public ConverterException(String message) {
+	private static final long serialVersionUID = 3762810493802459959L;
+
+	public ConverterException(String message) {
         super(message);
     }
 
