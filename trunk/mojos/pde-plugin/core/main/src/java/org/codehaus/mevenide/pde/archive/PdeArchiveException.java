@@ -27,7 +27,9 @@ import org.codehaus.mevenide.pde.PdePluginException;
  */
 public class PdeArchiveException extends PdePluginException {
     
-    public PdeArchiveException(String message) {
+	private static final long serialVersionUID = 3257853198806233397L;
+	
+	public PdeArchiveException(String message) {
         super(message);
     }
     public PdeArchiveException(String message, Throwable cause) {

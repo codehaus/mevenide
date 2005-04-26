@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.0"?>
-<plugin id="org.codehaus.mevenide.pde" name="maven pde plugin" version="0.1.0" provider-name="the codehaus">
+<plugin provider-name="the codehaus" id="org.mevenide.maven.pde.plugin.test" name="maven pde plugin test" version="0.1.0">
   <runtime>
     <library name="lib/jdom-1.0.jar">
       <export name="*" />
@@ -11,7 +11,7 @@
     <library name="lib/junit-3.8.1.jar">
       <export name="*" />
     </library>
-    <library name="maven-pde-plugin-0.1-DUHHU.jar">
+    <library name=".">
       <export name="*" />
     </library>
   </runtime>

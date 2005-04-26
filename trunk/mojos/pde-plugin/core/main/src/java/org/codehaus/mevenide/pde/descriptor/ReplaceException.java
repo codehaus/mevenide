@@ -26,7 +26,10 @@ import org.codehaus.mevenide.pde.PdePluginException;
  * 
  */
 public class ReplaceException extends PdePluginException {
-    public ReplaceException(String message) {
+    
+	private static final long serialVersionUID = 3258413932488962359L;
+	
+	public ReplaceException(String message) {
         super(message);
     }
     public ReplaceException(String message, Throwable cause) {

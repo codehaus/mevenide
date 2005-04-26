@@ -18,11 +18,10 @@ package org.codehaus.mevenide.pde.plugin;
 
 import java.io.File;
 import java.util.List;
-//import org.apache.maven.jelly.MavenJellyContext;
+
 import org.apache.maven.project.MavenProject;
 import org.codehaus.mevenide.pde.PdePluginException;
 import org.codehaus.mevenide.pde.archive.Include;
-import org.codehaus.mevenide.pde.archive.PdeArchiveException;
 import org.codehaus.mevenide.pde.archive.SimpleZipCreator;
 import org.codehaus.mevenide.pde.descriptor.CommonPluginValuesReplacer;
 
@@ -63,7 +62,9 @@ public class PdePluginBuilder {
 	private String artifactName;
 	
     public void build() throws PdePluginException {
-	    CommonPluginValuesReplacer replacer = new CommonPluginValuesReplacer(basedir.getAbsolutePath(), project, libFolder); 
+	    CommonPluginValuesReplacer replacer = new CommonPluginValuesReplacer(basedir.getAbsolutePath(), project, libFolder);
+		replacer.setArtifactName(artifactName);
+		replacer.shouldExportArtifact(shouldExportArtifact);
 	    replacer.replace();
 	    
 	    DependencyCollector collector = new DependencyCollector(basedir.getAbsolutePath(), libFolder, project); 
@@ -71,7 +72,8 @@ public class PdePluginBuilder {
 	    
 	    SimpleZipCreator zipCreator = new SimpleZipCreator(new File(classesLocation).getAbsolutePath(), new File(artifact).getAbsolutePath());
 	    zipCreator.setExcludes(excludes);
-	    zipCreator.setIncludes(includes);
+	    includeLibraries();
+		zipCreator.setIncludes(includes);
 	    zipCreator.zip();
     }
 
@@ -84,22 +86,7 @@ public class PdePluginBuilder {
 			}
 		}
 	}
-
-	private void includeClasses() throws PdeArchiveException {
-		File tempFolder = new File(System.getProperty("user.home"), "Mevenide");
-		tempFolder = new File(tempFolder, project.getVersion());
-		tempFolder.mkdirs();
-		String classesJarName = artifactName;
-		if ( artifactName == null || artifactName.trim().length() == 0 ){
-			classesJarName = project.getArtifactId() + "-" + project.getVersion();
-		}
-		
-		File classesJarDest = new File(tempFolder, classesJarName + ".jar");
-		SimpleZipCreator classesZipper = new SimpleZipCreator(new File(classesLocation).getAbsolutePath(), classesJarDest.getAbsolutePath());
-		classesZipper.zip();
-		includes.add(new Include(classesJarDest.getAbsolutePath(), classesJarDest.getName()));
-	}
-    
+	
     public String getArtifact() { return artifact; }
     public void setArtifact(String artifact) { this.artifact = artifact; }
     
@@ -121,7 +108,7 @@ public class PdePluginBuilder {
 	}
  
 	public boolean shouldExportArtifact() { return shouldExportArtifact; }
-	public void setExportArtifact(String export) { shouldExportArtifact = Boolean.valueOf(export).booleanValue(); }
+	public void setExportArtifact(boolean export) { shouldExportArtifact = export; }
 	
     public MavenProject getProject() { return project; }
     public void setProject(MavenProject project) { this.project = project; }
