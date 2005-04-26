@@ -3,17 +3,11 @@
          xmlns:maven="jelly:maven"
          xmlns:ant="jelly:ant">
 	
-	<goal name="pde:plugin">
+	<goal name="pde:plugin" prereqs="jar:install">
 		<pde:enabled project="${pom}" var="pdeEnabled" />
-		<j:choose> 
-			<j:when test="${pdeEnabled}">
-			  <attainGoal name="test:test"/>
-		      <pde:plugin project="${pom}" />
-		    </j:when>
-		    <j:otherwise>
-		      <attainGoal name="jar:install"/>
-		    </j:otherwise>
-		</j:choose>
+		<j:if test="${pdeEnabled}">
+			<pde:plugin project="${pom}" />
+		</j:if>
 	</goal>
 	
 	<goal name="pde:classpath">
