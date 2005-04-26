@@ -1,0 +1,7 @@
+<project xmlns:j="jelly:core">
+  
+  <goal name="trap">
+     <attainGoal name="plugin:install"/>
+  </goal>
+
+</project>

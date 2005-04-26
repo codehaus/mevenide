@@ -1,0 +1,10 @@
+<project xmlns:j="jelly:core">
+  
+  <goal name="pde-plugin:build">
+  	<j:set var="goal" value="clean,trap"/>
+ 	<attainGoal name="multiproject:goal"/>  	
+  </goal>
+
+  <goal name="trap" />
+
+</project>

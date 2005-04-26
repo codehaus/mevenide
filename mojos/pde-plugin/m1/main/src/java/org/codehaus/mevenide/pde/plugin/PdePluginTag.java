@@ -19,14 +19,15 @@ package org.codehaus.mevenide.pde.plugin;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.apache.commons.jelly.JellyTagException;
 import org.apache.commons.jelly.XMLOutput;
-import org.apache.commons.jelly.tags.core.JellyTag;
+import org.apache.commons.lang.BooleanUtils;
 import org.apache.maven.jelly.MavenJellyContext;
-import org.apache.maven.project.Project;
 import org.codehaus.mevenide.pde.PdePluginException;
 import org.codehaus.mevenide.pde.archive.Include;
 import org.codehaus.mevenide.pde.converter.MavenProjectConverter;
+import org.codehaus.mevenide.pde.taglib.PdeTag;
 import org.codehaus.mevenide.pde.version.VersionAdapter;
 import org.codehaus.plexus.util.StringUtils;
 
@@ -37,21 +38,14 @@ import org.codehaus.plexus.util.StringUtils;
  * @version $Id$
  * 
  */
-public class PdePluginTag extends JellyTag {
+public class PdePluginTag extends PdeTag {
     
     public void doTag(XMLOutput arg0) throws JellyTagException {
         try {
-            
-            Project m1Project = (Project) context.getVariable("pom");
-            
-            PdePluginBuilder builder = new PdePluginBuilder();
-            
-            String artifactName = (String) context.getVariable("maven.pde.name");
-            if ( StringUtils.isEmpty(artifactName) ) {
-                artifactName = m1Project.getArtifactId() + "-" + 
-                               new VersionAdapter().adapt(m1Project.getCurrentVersion());
-            }
-            
+            String artifactName = getArtifactName();
+			
+			PdePluginBuilder builder = new PdePluginBuilder();
+			
 			builder.setArtifactName(artifactName);
 			
             String destinationFolder = (String) context.getVariable("maven.build.dir");
@@ -82,6 +76,33 @@ public class PdePluginTag extends JellyTag {
             throw new JellyTagException("Unable to build plugin", e);
         }
     }
+
+	private String getArtifactName() {
+		
+		String pdeArtifactName = (String) context.getVariable("maven.pde.name");
+		if ( StringUtils.isEmpty(pdeArtifactName) ) {
+			pdeArtifactName = m1Project.getArtifactId();
+		}
+		boolean normalize = BooleanUtils.toBoolean((String) context.getVariable("maven.pde.normalizeName"));
+		if ( normalize ) {
+			pdeArtifactName = pdeArtifactName.replaceAll("-", ".");
+		}
+		
+		String pdeArtifactVersion = (String) context.getVariable("maven.pde.version");
+		if ( StringUtils.isEmpty(pdeArtifactVersion) ) {
+			pdeArtifactVersion = m1Project.getCurrentVersion();
+		}
+		boolean adaptVersion = BooleanUtils.toBoolean((String) context.getVariable("maven.pde.adaptVersion"));
+		if ( adaptVersion ) {
+			pdeArtifactVersion = new VersionAdapter().adapt(pdeArtifactVersion);
+		}
+		
+		String pdeArtifactPrefix = (String) context.getVariable("maven.pde.prefix");
+		pdeArtifactPrefix = StringUtils.isEmpty(pdeArtifactPrefix) ? "" : pdeArtifactPrefix + ".";
+		
+		String artifactName = pdeArtifactPrefix + pdeArtifactName + "_" + pdeArtifactVersion;
+		return artifactName;
+	}
 
     private List getCommonIncludes(File basedir) {
         Include descriptor = new Include();

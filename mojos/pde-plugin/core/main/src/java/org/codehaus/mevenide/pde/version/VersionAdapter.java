@@ -16,8 +16,6 @@
  */
 package org.codehaus.mevenide.pde.version;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 
 /**  
@@ -35,6 +33,9 @@ public class VersionAdapter {
         char lastConcatenatedChar = '-';
         
         for (int i = 0; i < version.length(); i++) {
+			if ( newVersion.length() == 5 ) {
+				break;
+			}
 			if ( validValues.indexOf(version.charAt(i)) >= 0 )  {
 				if ( Character.isDigit(lastConcatenatedChar) ) {
 					if ( Character.isDigit(version.charAt(i)) ) {
@@ -50,6 +51,9 @@ public class VersionAdapter {
 					}
 				}
 			}
+			else {
+				break;
+			}
         }
         
         if ( newVersion.endsWith(".") ) {
@@ -57,11 +61,11 @@ public class VersionAdapter {
         }
         
 		if ( newVersion.trim().equals("") ) {
-			newVersion = "0.0.0";
+			newVersion = "0.0.1";
 		}
 		else {
 		    if ( !version.equals("SNAPSHOT") && version.indexOf("SNAPSHOT") >= 0 ) {
-		        newVersion += "." + new SimpleDateFormat("yyyyMMdd").format(new Date()); 
+		        //newVersion += "." + new SimpleDateFormat("yyyyMMdd").format(new Date()); 
 		    }
 		}
 		int digitNumber = countNumbers(newVersion);

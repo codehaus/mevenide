@@ -3,8 +3,17 @@
          xmlns:maven="jelly:maven"
          xmlns:ant="jelly:ant">
 	
-	<goal name="pde:plugin" prereqs="test:test">
-	    <pde:plugin />
+	<goal name="pde:plugin">
+		<pde:enabled project="${pom}" var="pdeEnabled" />
+		<j:choose> 
+			<j:when test="${pdeEnabled}">
+			  <attainGoal name="test:test"/>
+		      <pde:plugin project="${pom}" />
+		    </j:when>
+		    <j:otherwise>
+		      <attainGoal name="jar:install"/>
+		    </j:otherwise>
+		</j:choose>
 	</goal>
 	
 	<goal name="pde:classpath">
@@ -14,7 +23,6 @@
 		   <ant:pathelement location="${artifact}"/>	   
 	     </j:forEach>
 	   </ant:path>
-       
        <maven:addPath id="maven.dependency.classpath" refid="eclipse.dependency.classpath" />
 	</goal>
 	
