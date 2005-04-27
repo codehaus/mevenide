@@ -1,60 +1,74 @@
 
+1. declare an artifact as "pde-enabled"
+  
+   an artifact is declared as an eclispe artifact by the way of a _pom_ 
+   property :
+   
+   <project>
+     ...
+     <properties>
+       <pde.enabled>true</pde.enabled>
+     </properties>
+   </project>
+   
+2. dependencies duplication issue
+   
+   to solve the dependencies duplication issue (plugin.xml vs. project.xml)
+   pde:classpath goal has to run as a preGoal of build:start
+   
+   <preGoal name="build:start">
+     <pde:classpath />
+   </preGal>
+   
+   it parses plugin.xml and extracts <requires> information and add required 
+   plugin to classpath, making them available to compilation process
+   
+   on the other hand non eclipse dependencies are still declared in the pom
+   
+   todo: manage single jar'd plugins 
+   
+3. plugin.xml update
+   
+   pde:plugin goal has a prereqs on jar:install	 
+   
+   if an artifact is declared as pde-enabled, pde:plugin goal extracts 
+   -relevant- information from the pom and update plugin.xml:
+   by default dependencies declared in the pom are added as runtime/library 
+   element and are copied into default lib folder
+     
+     * they may be excluded thanks the maven.pde.exclude property
+     * lib folder can be parametrized through the maven.pde.targetPath 
+       property
+     * they may be rendered as requires/plugin entry by setting the 
+       maven.pde.requires property (todo)
+     
+     <dependency>
+       ...
+       <properties>
+	     <maven.pde.targetPath>antoherLibFolder</maven.pde.targetPath>
+         <maven.pde.exclude>true|false</maven.pde.exclude>
+         <maven.pde.requires>true</maven.pde.requires>
+       </properties>
+     </dependency>
+     
+     pde:plugin then builds a single jar'd plugin and install it in the 
+     local repository 
 
-1. check buildId (configuration/config.ini)
-   => property : configuration folder path
+4. features
 
-2. after build:start refine classpath with eclipse dependencies
-   => use requires/import to grab eclipse dependencies
+5. sites
 
-3. build an artifact :
-     a> help-only
-     b> lib-only
-     c> util
-     d> help + code (util or plugin)
-     e> plugin
-     f> feature
-     g> site
+6. deploy
 
-     constraints :
-     o need to override maven.final.name ?
-     o need to provide jar with no manifest => Zip
-     o site should be outputted as a zip as well (local site)
-     o help can come as raw xdoc or ready html files 
-	     => by default maven.pde.help.generation = false
-	     			   maven.pde.help.targetPath = ???
-
-	 dependency resolution can be : 
-	 1> based on plugin.xml if present
-	 2> based on .classpath if present
-	 3> based on pom
-	 
-	 choose to not support 2 - rationale : pom duplication
-	 => default is 3 (pom) can be overriden : maven.pde.classpath.resolution = pom | plugin
-	 if 1 (plugin) then no plugin.xml generation should occur (what about version update ?)
-
-     f> feature
-
-     id => pom.id.replaceAll(':', '.') by default OR maven.pde.id
-     label => pom.shortDescription
-     version => grabbed version by default OR maven.pde.version
-     provider-name => pom.organization.name
-     plugin => pom.name OR maven.pde.name
-     image => pom.logo OR maven.pde.image
-
-     description => pom.description
-     license => license.txt OR none
-     url => maven.pde.url.label AND maven.pde.url.location
-     requires => check children ===> need to keep track of them (HOW ?)
-     plugin => multiproject projects + download-size can be computed
-
-
-     g> site
-
-     description => maven.pde.description.location AND pom.description
-     feature => current =====> check children (see above)
-     problem : keep track of previous features ===> Solution: donot overwrite
-               but merge instead
-     category-def ?
-
-4. upload artifacts
-
+7. other artifact types
+    
+   no more  differenciation for other artifact types (help | lib-only):
+     - lib-only plugins now are a subset of the previous artifacts set
+     - help will be when refined includes will be managed
+   
+8. convenient archive & other utility goals
+   
+   - provide a goal to zip a pde artifact ready to be unpacked 
+     into eclipse.home
+   - provide a goal to directly install a plugin into eclipse.home
+      
