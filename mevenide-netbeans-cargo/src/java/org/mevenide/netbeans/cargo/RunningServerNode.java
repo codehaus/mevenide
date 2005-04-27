@@ -18,6 +18,7 @@
 package org.mevenide.netbeans.cargo;
 
 import java.awt.event.ActionEvent;
+import java.io.File;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import org.codehaus.cargo.container.Container;
@@ -26,6 +27,9 @@ import org.codehaus.cargo.container.property.ServletPropertySet;
 import org.openide.actions.PropertiesAction;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
+import org.openide.nodes.Node;
+import org.openide.nodes.PropertySupport;
+import org.openide.nodes.Sheet;
 import org.openide.util.lookup.Lookups;
 
 /**
@@ -36,7 +40,9 @@ final class RunningServerNode extends AbstractNode implements RegistryListener {
 
     private Container container;
     private State lastState;
-
+    private Sheet.Set basicProps;
+    private Sheet.Set configProps;
+    private Action viewLog;
     RunningServerNode(Container cont) {
         super(Children.LEAF, Lookups.fixed(new Object[] {cont}));
         container = cont;
@@ -45,6 +51,8 @@ final class RunningServerNode extends AbstractNode implements RegistryListener {
         setDisplayName(getName() + " at port " + port);
         updateName(container.getState());
         CargoServerRegistry.getInstance().addRegistryListener(this);
+        viewLog = new ViewLogAction(container.getOutput(), 
+                                       "View Log", "Log " + getName());
     }
 
 
@@ -64,6 +72,7 @@ final class RunningServerNode extends AbstractNode implements RegistryListener {
         if (event.getContainer() == container) {
             lastState = event.getFutureState() != null ? event.getFutureState() : container.getState();
             updateName(lastState);
+            firePropertyChange(null, null, null);
         }
     }
     
@@ -114,11 +123,70 @@ final class RunningServerNode extends AbstractNode implements RegistryListener {
         retValue[0] = new StartStop();
         retValue[1] = null;
         retValue[2] = new Remove();
-        retValue[3] = new ViewLogAction(container.getOutput(), 
-                                       "View Log", "Log " + getName());
+        retValue[3] = viewLog;
         retValue[4] = ((PropertiesAction)PropertiesAction.get(PropertiesAction.class)).createContextAwareInstance(this.getLookup());
         return retValue;
     }
+
+ 
+    protected Sheet createSheet() {
+        Sheet sheet = Sheet.createDefault();
+        basicProps = sheet.get(Sheet.PROPERTIES);
+        try {
+            ContainerReflection home = new ContainerReflection(container, File.class, "homeDir");
+            home.setName("home");
+            home.setDisplayName("Home Directory");
+            home.setShortDescription("The directory where the container is installed.");
+            ContainerReflection id = new ContainerReflection(container, String.class, "getId", null);
+            id.setName("id");
+            id.setDisplayName("Container Type ID");
+            ContainerReflection name = new ContainerReflection(container, String.class, "getName", null);
+            name.setName("name");
+            name.setDisplayName("Container Type Name");
+            ContainerReflection timeout = new ContainerReflection(container, Long.TYPE, "timeout");
+            timeout.setDisplayName("Timeout");
+            timeout.setShortDescription("Timeout (in ms) after which we consider the container cannot be started or stopped.");
+            timeout.setName("timeout");
+            ContainerReflection war = new ContainerReflection(container.getCapability(), Boolean.TYPE, "supportsWar", null);
+            war.setDisplayName("Support WARs");
+            war.setName("war");
+            ContainerReflection ear = new ContainerReflection(container.getCapability(), Boolean.TYPE, "supportsEar", null);
+            ear.setDisplayName("Support EARs");
+            ear.setName("ear");
+            ContainerReflection output = new ContainerReflection(container, File.class, "getOutput", "setOutput");
+            output.setDisplayName("Output File");
+            output.setShortDescription("The file to which the container's output will be logged to");
+            output.setName("output");
+            ContainerReflection append = new ContainerReflection(container, Boolean.TYPE, "isAppend", "setAppend");
+            append.setDisplayName("Append to Output File");
+            append.setShortDescription("Sets whether output of the container should be appended to an existing file, or the existing file should be truncated.");
+            append.setName("append");
+            
+            basicProps.put(new Node.Property[] {
+                 id, name, war, ear, home, output, append, timeout,
+            });
+        } catch (NoSuchMethodException exc) {
+            exc.printStackTrace();
+        }
+        configProps = new Sheet.Set();
+        configProps.setName("configuration");
+        configProps.setDisplayName("Configuration");
+        try {
+            ContainerReflection dir = new ContainerReflection(container.getConfiguration(), File.class, "getDir", null);
+            dir.setName("dir");
+            dir.setDisplayName("Directory");
+            dir.setShortDescription("Configuration Directory");
+            configProps.put(new Node.Property[] {
+                dir
+            });
+        } catch (NoSuchMethodException exc) {
+            exc.printStackTrace();
+        }
+        
+        sheet.put(configProps);
+        return sheet;
+    }
+    
 
 
     //-- ACTIONS
@@ -147,6 +215,26 @@ final class RunningServerNode extends AbstractNode implements RegistryListener {
         public void actionPerformed(ActionEvent actionEvent) {
             CargoServerRegistry.getInstance().removeContainer(container);
         }
+    }
+    
+    private class ContainerReflection extends PropertySupport.Reflection {
+        
+        ContainerReflection(Object inst, Class clazz, String prop) throws NoSuchMethodException {
+            super(inst, clazz, prop);
+        }
+        
+        ContainerReflection(Object inst, Class clazz, String getter, String setter) throws NoSuchMethodException {
+            super(inst, clazz, getter, setter);
+        }
+        
+        
+        public boolean canWrite() {
+            if (container.getState() == State.STOPPED) {
+                return super.canWrite();
+            }
+            return false;
+        }
+        
     }
 
 }
