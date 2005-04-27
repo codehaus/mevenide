@@ -25,12 +25,6 @@
             <item name="Team" href="/team-list.html"/>
         </menu>
 
-        <menu name="Modules">
-            <item name="Overview" href="projects-overview.html"/>
-            <item name="Main" href="/mevenide-idea-main/index.html"/>
-            <item name="Model" href="/mevenide-idea-model/index.html"/>
-        </menu>
-
         <search/>
     </body>
 
