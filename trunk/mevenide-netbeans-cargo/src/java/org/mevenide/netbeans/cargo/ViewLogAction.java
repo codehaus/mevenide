@@ -1,6 +1,6 @@
 /* ==========================================================================
  * Copyright 2003-2004 Mevenide Team
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -26,6 +26,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.ImageIcon;
+import org.openide.util.Utilities;
 import org.openide.windows.IOProvider;
 import org.openide.windows.InputOutput;
 
@@ -37,22 +39,26 @@ import org.openide.windows.InputOutput;
 public class ViewLogAction extends AbstractAction {
     private File file;
     private String tabName;
+    private InputOutput io;
     /** Creates a new instance of AddContainerAction */
     public ViewLogAction(File logFile, String name, String tabName) {
         putValue(Action.NAME, name);
+        putValue(Action.SMALL_ICON, new ImageIcon(Utilities.loadImage("org/mevenide/netbeans/cargo/resources/RefreshIcon.gif")));
+        putValue(Action.SHORT_DESCRIPTION, "Refresh Log View");
         file = logFile;
         this.tabName = tabName;
     }
     
     public void actionPerformed(ActionEvent actionEvent) {
+        if (io == null) {
+            io = IOProvider.getDefault().getIO(tabName, new Action[] {this});
+        }
         BufferedReader reader = null;
-        InputOutput io = null;
         try {
-            reader = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
-            String line = reader.readLine();
-            io = IOProvider.getDefault().getIO(tabName, false);
             io.getOut().reset();
             io.select();
+            reader = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
+            String line = reader.readLine();
             while (line != null) {
                 io.getOut().println(line);
                 line = reader.readLine();
