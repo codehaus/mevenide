@@ -74,7 +74,7 @@ public class DependencyCollector {
             String artifact = getArtifact(dependency);
             
             try {
-                IOUtil.copy(new FileInputStream(artifact), new FileOutputStream(new File(targetPath, new File(artifact).getName())));
+                IOUtil.copy(new FileInputStream(artifact), new FileOutputStream(new File(path, new File(artifact).getName())));
             }
             catch (IOException e) {
                 throw new CollectException("Collector.CannotCollect", e);

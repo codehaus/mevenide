@@ -47,7 +47,7 @@ public class CommonPluginValuesReplacer {
     /** pom from which the replacement values will be extracted */
     private MavenProject project;
     
-    /** libraryFolder library destination folder - f.i. lib */
+    /** default library destination folder - f.i. lib */
     private String libraryFolder;
     
 	/** list of already added dependencies - used to avoid duplicate libs in plugin descriptor */
@@ -192,7 +192,9 @@ public class CommonPluginValuesReplacer {
         String libraryName = dependency.getArtifact();
         
         if ( !addedLibraries.contains(libraryName) ) {
-	        library.setAttribute("name", libraryFolder + "/" + libraryName);
+			String targetPath = properties.getProperty("maven.pde.targetPath");
+			String folder = org.codehaus.plexus.util.StringUtils.isEmpty(targetPath) ? libraryFolder : targetPath;
+	        library.setAttribute("name", folder + "/" + libraryName);
 	        if ( !"false".equals(properties.getProperty("maven.pde.export")) ) {
 				exportLibrary(library);
 	        }

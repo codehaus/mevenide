@@ -28,6 +28,7 @@
       <type>jar</type>
       <properties>
         <maven.pde.export>false</maven.pde.export>
+        <maven.pde.targetPath>nonDefaultTarget</maven.pde.targetPath>
       </properties>
     </dependency>
     <!-- duplicated dependency -->
@@ -38,7 +39,6 @@
       <type>jar</type>
       <properties>
         <maven.pde.export>false</maven.pde.export>
-        <maven.pde.targetPath>nonDefaultTarget</maven.pde.targetPath>
       </properties>
     </dependency>
     <dependency>

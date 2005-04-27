@@ -4,13 +4,9 @@
   <runtime>
     <library name="lib/jdom-1.0.jar">
       <export name="*" />
+      <package prefixes="org.jdom" />
     </library>
-    <library name="lib/commons-lang-2.0.jar">
-      <export name="*" />
-    </library>
-    <library name="lib/junit-3.8.1.jar">
-      <export name="*" />
-    </library>
+    <library name="nonDefaultTarget/commons-lang-2.0.jar" />
     <library name=".">
       <export name="*" />
     </library>

@@ -7,6 +7,7 @@
 		<pde:enabled project="${pom}" var="pdeEnabled" />
 		<j:if test="${pdeEnabled}">
 			<pde:plugin project="${pom}" />
+			<!-- artifact:install -->
 		</j:if>
 	</goal>
 	
