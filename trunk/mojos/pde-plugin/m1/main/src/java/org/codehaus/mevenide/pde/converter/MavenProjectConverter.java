@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.maven.ArtifactListBuilder;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.DefaultArtifact;
@@ -172,8 +173,9 @@ public class MavenProjectConverter {
             properties = new Properties(); 
             for (Iterator it = m1Dependency.getProperties().iterator(); it.hasNext();) {
                 String prop = (String) it.next();
-                String key = prop.substring(0, prop.indexOf(':') + 1);
-                String value = prop.substring(prop.indexOf(':') + 1, prop.length() - 1);
+				String[] parts = StringUtils.split(prop, ':'); //["property", key, value]
+                String key = parts[1];
+                String value = parts[2];
                 properties.put(key, value);
             }
         }
