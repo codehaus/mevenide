@@ -1,0 +1,36 @@
+<!DOCTYPE idea-plugin PUBLIC "Plugin/DTD" "http://plugins.intellij.net/plugin.dtd">
+<idea-plugin>
+    <name>Mevenide IDEA integration</name>
+    <description>This plugin provides strong integration of Maven with IntelliJ IDEA.</description>
+    <version>0.1-SNAPSHOT</version>
+    <vendor>Mevenide</vendor>
+    <idea-version since-build="3290"/>
+
+    <application-components>
+        <component>
+            <implementation-class>org.mevenide.idea.global.MavenManager</implementation-class>
+        </component>
+        <component>
+            <implementation-class>org.mevenide.idea.global.MavenManagerConfigurable</implementation-class>
+        </component>
+    </application-components>
+
+    <project-components>
+        <component>
+            <implementation-class>org.mevenide.idea.project.ProjectInitializer</implementation-class>
+        </component>
+    </project-components>
+
+    <module-components>
+        <component>
+            <implementation-class>org.mevenide.idea.module.ModuleSettings</implementation-class>
+        </component>
+        <component>
+            <implementation-class>org.mevenide.idea.module.ModuleSettingsConfigurable</implementation-class>
+        </component>
+        <component>
+            <implementation-class>org.mevenide.idea.module.ModuleGoalsProvider</implementation-class>
+        </component>
+    </module-components>
+
+</idea-plugin>

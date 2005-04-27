@@ -33,6 +33,7 @@
                 </li>
             </ol>
         </section>
+
         <section name="Most wanted">
             <p>
                 Features we want to (eventually) support in the IDEA plugin (note: some
@@ -44,6 +45,26 @@
                     <th>Description</th>
                     <th>Planned version</th>
                     <th>Assigned to</th>
+                </tr>
+                <tr>
+                    <td>Reorganize mevenide-idea* modules</td>
+                    <td>
+                        Create a new mevenide-idea-ui project, which will contain the
+                        bulk of the plugin (the UI and most logic). This module uses
+                        the mevenide-idea-model (via reflection) during runtime. There
+                        is <br>NO</br> compile-time dependency between them (well, there
+                        are contracts though, via interfaces).
+                        <br/>
+                        Turn mevenide-idea to a supermodule, which builds the other
+                        two modules - mevenide-idea-ui and mevenide-idea-model. This
+                        module will also contain all documentation which regards to
+                        the plugin as a whole.
+                        <br/>
+                        This will be the final constellation of the plugin and will
+                        allow it to evolve with a strong foundation.
+                    </td>
+                    <td>Done</td>
+                    <td>Unassigned</td>
                 </tr>
                 <tr>
                     <td>Bidirectional update between IDEA project and POM</td>
@@ -236,7 +257,7 @@
                         (Done) We should show goal descriptions in both the goals tool
                         window and the favorite goals selection settings dialog.
                     </td>
-                    <td>Unscheduled</td>
+                    <td>Done</td>
                     <td>Unassigned</td>
                 </tr>
                 <tr>

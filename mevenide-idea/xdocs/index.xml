@@ -12,10 +12,9 @@
         <section name="Overview">
             <p>
                 The Mevenide IDEA integration project aims to integrate
-                <a href="http://maven.apache.org" class="documentLink">Maven</a>in every possible
-                way into
+                <a href="http://maven.apache.org">Maven</a> in every possible way into
                 <a href="http://www.jetbrains.com">JetBrain</a>'s IntelliJ IDEA integrated
-                development environment.
+                development environment (IDE).
             </p>
             <p>
                 Current integration features include:
