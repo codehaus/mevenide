@@ -2,7 +2,7 @@
     <extend>${basedir}/../mevenide-plugin-parent/project.xml</extend>
     <name>MEP Plugin</name>
     <artifactId>maven-eclipse-plugin-plugin</artifactId>
-    <currentVersion>0.3.2</currentVersion>
+    <currentVersion>0.3.3</currentVersion>
     <package>org.mevenide.tags</package>
     <inceptionYear>2003</inceptionYear>
     <shortDescription>This plugin helps creating ready to use eclipse plugins and features distribution</shortDescription>
@@ -52,7 +52,7 @@
         <dependency>
             <groupId>jdom</groupId>
             <artifactId>jdom</artifactId>
-            <version>b9</version>
+            <version>1.0</version>
             <properties/>
         </dependency>
         <dependency>

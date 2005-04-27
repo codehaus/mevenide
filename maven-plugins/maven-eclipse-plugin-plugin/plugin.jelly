@@ -23,14 +23,14 @@
 	  
   	</define:tag>
   	
-  	<!-- 
+  	<!--
   	   @param artifact the artifact for which we lookup a license
   	   @param dest the destination where the license file should be copied to
   	-->
   	<define:tag name="handle-licensing">
-  	    
+
   	  <mevenide:find-license var="liblicense" jarFile="${artifact.path}" />
-    
+
       <j:if test="${ empty(liblicense) }" >
         <j:set var="licenseFile" value="${maven.eclipse.plugin.licenses.dir}/${artifact.dependency.groupId}/${artifact.dependency.artifactId}.lic"/>
         <ant:available property="isLicensePresent" file="${licenseFile}"/>
@@ -51,16 +51,16 @@
   	</define:tag>
   	
   </define:taglib>
-  
-  
+
+
   <goal name="eclipse-plugin:create-artifact-dist"
   		description="dispatch to the correct goal, based on the specified eclipse plugin type (plugin, site or feature)">
-  	
+
   	<j:set var= "type" value="${maven.eclipse.plugin.artifact.type}"/>
   	<eclipse-plugin:check-type type="${type}"/>
-  	
+
   	<attainGoal name="eclipse-plugin:create-${type}-dist"/>
-  	  
+
   </goal>
   
   
@@ -69,6 +69,8 @@
   		
   	<ant:copy todir="${basedir}" overwrite="true">
   	  <ant:fileset dir="${maven.eclipse.plugin.src.dir}"/>
+          <mevenide:adapt-version version="${pom.currentVersion}" var="maven.eclipse.plugin.artifact.version"/>
+          <!-- mevenide:adapt-version version="${pom.currentVersion}" var="maven.eclipse.plugin.artifact.internal.version"/ -->
   	  <ant:filterset>
   	  	<ant:filterset refid="${maven.eclipse.plugin.filterset.id}"/>
   	  	<ant:filter token="maven.eclipse.plugin.artifact.id" value="${maven.eclipse.plugin.artifact.id}"/>
@@ -94,9 +96,9 @@
   	  
   	  <j:set var="distVersion" value="${maven.eclipse.plugin.artifact.version}"/>
 	  <j:set var="pluginId" value="${maven.eclipse.plugin.artifact.id}"/>
-  	  <j:set var="pluginFolder">${pluginId.replaceAll('-', '.')}</j:set> 
+  	  <j:set var="pluginFolder">${pluginId.replaceAll('-', '.')}</j:set>
       <j:set var="pluginArchive" value="${maven.eclipse.plugin.dist.dir}/${pluginFolder}_${distVersion}.jar"/>
-      
+
       <ant:mkdir dir="${maven.eclipse.plugin.temp.dir}/${pluginFolder}_${distVersion}"/>
       
       <!-- @todo update plugin descriptor -->
@@ -106,6 +108,8 @@
         <fileset dir="${maven.eclipse.plugin.temp.dir}">
           <include name="plugin.xml"/>
         </fileset>
+        <mevenide:adapt-version version="${pom.currentVersion}" var="maven.eclipse.plugin.artifact.version"/>
+          <!-- mevenide:adapt-version version="${pom.currentVersion}" var="maven.eclipse.plugin.artifact.internal.version"/ -->
         <ant:filterset>
   	  	  <ant:filterset refid="${maven.eclipse.plugin.filterset.id}"/>
   	  	  <ant:filter token="maven.eclipse.plugin.artifact.id" value="${maven.eclipse.plugin.artifact.id}"/>
@@ -151,17 +155,19 @@
 	  <j:set var="pluginId" value="${maven.eclipse.plugin.artifact.id}"/>
   	  <j:set var="pluginFolder">${pluginId.replaceAll('-', '.')}</j:set> 
       <j:set var="pluginArchive" value="${maven.eclipse.plugin.dist.dir}/${pluginFolder}_${distVersion}.jar"/>
-	  
+
 	  <!-- create temporary folder to store plugin files before archiving them -->
 	  <ant:mkdir dir="${maven.eclipse.plugin.temp.dir}/${pluginFolder}_${distVersion}"/>
        
       <!-- @todo update plugin descriptor -->
   	  <mevenide:update-plugin-libraries pom="${pom}"/>
-  	  
+
   	  <ant:move todir="${basedir}" filtering="true">
         <fileset dir="${maven.eclipse.plugin.temp.dir}">
           <include name="plugin.xml"/>
         </fileset>
+        <mevenide:adapt-version version="${pom.currentVersion}" var="maven.eclipse.plugin.artifact.version"/>
+          <!-- mevenide:adapt-version version="${pom.currentVersion}" var="maven.eclipse.plugin.artifact.internal.version"/ -->
         <ant:filterset>
   	  	  <ant:filterset refid="${maven.eclipse.plugin.filterset.id}"/>
   	  	  <ant:filter token="maven.eclipse.plugin.artifact.id" value="${maven.eclipse.plugin.artifact.id}"/>
@@ -170,22 +176,23 @@
   	  	  <ant:filter token="maven.eclipse.plugin.artifact.internal.version" value="${maven.eclipse.plugin.artifact.internal.version}"/>
   	    </ant:filterset>
       </ant:move>
-      
+
       <!-- copy required dependencies and generated artifact to $${maven.eclipse.plugin.temp.dir} -->
       <ant:copy todir="${maven.eclipse.plugin.temp.dir}"><!-- /${pluginFolder}_${distVersion} -->
+       	<ant:fileset dir="${maven.build.dir}" includes="${maven.final.name}.jar"/>
        	<ant:fileset dir="${basedir}" includes="${maven.eclipse.plugin.includes}"/>
-       	<ant:fileset dir="${maven.build.dir}" includes="${pom.artifactId}-${pom.currentVersion}.jar"/>
+       	<!-- ant:fileset dir="${maven.build.dir}" includes="${pom.artifactId}-${pom.currentVersion}.jar"/ -->
       </ant:copy>
 
       <!-- build plugin distribution file. -->
       <ant:zip destfile="${pluginArchive}">
         <ant:fileset dir="${maven.eclipse.plugin.temp.dir}"/>
       </ant:zip>
-      
+
       <!-- ant:delete dir="${maven.eclipse.plugin.temp.dir}" quiet="true"/ -->
-      
+
       <!-- @todo customize me, for runtime testing ? -->
-      <ant:copy todir="${basedir}" file="${maven.build.dir}/${maven.final.name}.jar"/>
+      <!-- ant:copy todir="${basedir}" file="${maven.build.dir}/${maven.final.name}.jar"/ -->
    </goal>
    
    <!--
@@ -214,7 +221,7 @@
 	  	<!-- create plugin archive -->
 		<maven:pom var="pluginPom" projectDescriptor="${plugin}"/>
 		<maven:maven goals="eclipse-plugin:create-artifact-dist" descriptor="${plugin}"/>
-		
+
 		<!-- copy plugin archives -->
 		<ant:copy todir="${maven.eclipse.plugin.dist.dir}/plugins">
 		  <fileset dir="${pluginPom.getContext().getVariable('maven.eclipse.plugin.dist.dir')}" includes="*.jar"/>
@@ -333,7 +340,7 @@
   
   <goal name="eclipse-plugin:init" description="initialize eclipse plugin distribution aware folders">
   	<j:set var="type" value="${maven.eclipse.plugin.type}"/>
-  	
+
   	<j:if test="${type == 'plugin' or type == 'lib'}">
 	  <ant:delete dir="${maven.eclipse.plugin.lib.dir}" quiet="true"/>
 	  <ant:mkdir dir="${maven.eclipse.plugin.lib.dir}"/>
@@ -344,14 +351,14 @@
     
     <ant:delete dir="${maven.eclipse.plugin.temp.dir}" quiet="true"/>
     <ant:mkdir dir="${maven.eclipse.plugin.temp.dir}" />
-    
+
     <ant:delete dir="${maven.eclipse.plugin.ext.dir}" quiet="true" />
     <ant:mkdir dir="${maven.eclipse.plugin.ext.dir}" />
-    
+
   </goal>
 
 
-  <!-- 
+  <!--
   	iterate project artifacts and copy dependencies required by eclipse plugin into ${maven.eclipse.plugin.lib.dir} directory.
   	required eclipse artifacts are expected to be declared in plugin.xml/plugin/import/libraries. they are marked as required 
   	by setting the &lt;eclipse.plugin.bundle&gt; property to 'true' as described below :
@@ -381,7 +388,7 @@
    
    
   <goal name="eclipse-plugin:install-swt" description="install platform-dependent swt library into maven local repository">
-    
+
     <!-- set eclipse.home property -->
 	<ant:property environment="env"/>
   	<ant:property name="eclipse.home" location="${env.ECLIPSE_HOME}"/>
@@ -438,7 +445,7 @@
 	<ant:available property="swtJar" 
 			       value="${eclipse.home}/plugins/org.eclipse.swt.win32_${maven.eclipse.plugin.swt.version}.jar"
 			       file="${eclipse.home}/plugins/org.eclipse.swt.win32_${maven.eclipse.plugin.swt.version}.jar"/>
-		
+
 	<ant:available property="swtJar" 
 			       value="${eclipse.home}/plugins/org.eclipse.swt.carbon_${maven.eclipse.plugin.swt.version}.jar"
 			       file="${eclipse.home}/plugins/org.eclipse.swt.carbon_${maven.eclipse.plugin.swt.version}.jar"/>
@@ -446,11 +453,11 @@
     
 	<!-- install swt library into maven.repo.local -->
 	<ant:copy file="${swtJar}" 
-  		      tofile="${maven.repo.local}/${maven.eclipse.plugin.swt.groupId}/jars/${maven.eclipse.plugin.swt.artifactId}-${maven.eclipse.plugin.swt.version}.jar"/>  
+  		      tofile="${maven.repo.local}/${maven.eclipse.plugin.swt.groupId}/jars/${maven.eclipse.plugin.swt.artifactId}-${maven.eclipse.plugin.swt.version}.jar"/>
   		      
   </goal>
   
-  
+
   <goal name="eclipse-plugin:create-library-artifacts" 
   		prereqs="eclipse-plugin:init" 
   		description="foreach pom dependency, create eclipse plugin that exports the given dependenvy. generated plugins are outpoutted to ${maven.eclipse.plugin.ext.dir}">
@@ -462,7 +469,7 @@
  		<mevenide:adapt-version var="depVersion" version="${dependency.version}"/>
  		<j:set var="dependencyPluginDir" value="${maven.eclipse.plugin.ext.dir}/${dependency.groupId}_${depVersion}"/>
 		<ant:mkdir dir="${dependencyPluginDir}"/>
-        
+
         <util:file name="${artifact.path}" var="artifactJar"/>
       
         <!-- create plugin descriptor -->

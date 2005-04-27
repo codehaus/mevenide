@@ -32,6 +32,7 @@ import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
+import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
 import org.mevenide.tags.AbstractMevenideTag;
 import org.mevenide.tags.InvalidDirectoryException;
@@ -295,9 +296,7 @@ public class UpdatePluginLibsTag extends AbstractMevenideTag {
      */
      void outputDescriptor() throws Exception {
      	XMLOutputter outputter = new XMLOutputter();
-		outputter.setIndent(XML_INDENT);
-		outputter.setExpandEmptyElements(false);
-		outputter.setNewlines(true);
+		outputter.setFormat(Format.getPrettyFormat());
 		
 		String tempDir = (String) context.getVariable(TEMP_DIR_PROPERTY);
 		
