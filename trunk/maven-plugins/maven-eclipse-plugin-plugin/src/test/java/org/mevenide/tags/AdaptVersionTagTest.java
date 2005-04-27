@@ -16,9 +16,6 @@
  */
 package org.mevenide.tags;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import junit.framework.TestCase;
 
 /**
@@ -47,18 +44,18 @@ public class AdaptVersionTagTest extends TestCase {
         
         tag.setVersion("1..0");
         assertEquals("1.0.0", tag.adapt());
-        
+
         tag.setVersion("1.0-rc1");
         assertEquals("1.0.1", tag.adapt());
-        
+
         tag.setVersion("1.0.beta5");
         assertEquals("1.0.5", tag.adapt());
-        
+
         tag.setVersion("SNAPSHOT");
-        assertEquals("0.0.0", tag.adapt());
-        
+        assertEquals("0.0.1", tag.adapt());
+
         tag.setVersion("1.0-SNAPSHOT");
-        assertEquals("1.0." + new SimpleDateFormat("yyyyMMdd").format(new Date()), tag.adapt());
+        assertEquals("1.0." + /* new SimpleDateFormat("yyyyMMdd").format(new Date()) */ "0", tag.adapt());
         
         tag.setVersion("1.0.");
         assertEquals("1.0.0", tag.adapt());

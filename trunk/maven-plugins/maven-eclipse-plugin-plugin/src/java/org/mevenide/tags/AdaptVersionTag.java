@@ -16,11 +16,8 @@
  */
 package org.mevenide.tags;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import org.apache.commons.jelly.JellyTagException;
 import org.apache.commons.jelly.MissingAttributeException;
-
 import org.apache.commons.jelly.XMLOutput;
 
 /**
@@ -50,20 +47,22 @@ public class AdaptVersionTag extends AbstractMevenideTag {
     private String var;
     
     public void doTag(XMLOutput arg0) throws MissingAttributeException, JellyTagException {
-		
+
 		checkAttribute(version, "version");
 		checkAttribute(var, "var");
 
         String newVersion = adapt();
         context.setVariable(var, newVersion);
     }
-    
+
     public String adapt() {
+
+
         String validValues = "0123456789.";
         String newVersion = "";
-        
+
         char lastConcatenatedChar = '-';
-        
+
         for (int i = 0; i < version.length(); i++) {
 			if ( validValues.indexOf(version.charAt(i)) >= 0 )  {
 				if ( Character.isDigit(lastConcatenatedChar) ) {
@@ -81,17 +80,18 @@ public class AdaptVersionTag extends AbstractMevenideTag {
 				}
 			}
         }
-        
+
         if ( newVersion.endsWith(".") ) {
             newVersion = newVersion.substring(0, newVersion.length() - 1);
         }
-        
+
 		if ( newVersion.trim().equals("") ) {
-			newVersion = "0.0.0";
+			newVersion = "0.0.1";
 		}
 		else {
 		    if ( !version.equals("SNAPSHOT") && version.indexOf("SNAPSHOT") >= 0 ) {
-		        newVersion += "." + new SimpleDateFormat("yyyyMMdd").format(new Date()); 
+		        //newVersion += "." + new SimpleDateFormat("yyyyMMdd").format(new Date());
+		        //newVersion += ".0";
 		    }
 		}
 		int digitNumber = countNumbers(newVersion);
