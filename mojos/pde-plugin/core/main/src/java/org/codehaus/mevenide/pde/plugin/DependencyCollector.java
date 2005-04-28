@@ -27,6 +27,7 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.model.Dependency;
@@ -72,24 +73,31 @@ public class DependencyCollector {
             Dependency dependency = (Dependency) it.next();
             
             Properties props = dependency.getProperties();
+			
+			boolean excluded = false; 
+			
             String overridenTargetPath = null;
             if ( props != null ) {
+				excluded = BooleanUtils.toBoolean(props.getProperty("maven.pde.exclude"));
                 overridenTargetPath = props.getProperty("maven.pde.targetPath");
             }
-            String path = !StringUtils.isEmpty(overridenTargetPath) ? overridenTargetPath : targetPath;
-            File targetDir = new File(basedir, path);
-            if ( !targetDir.exists() ) {
-                targetDir.mkdirs();
-            }
+			
+			if ( !excluded ) {
+				String path = !StringUtils.isEmpty(overridenTargetPath) ? overridenTargetPath : targetPath;
+				File targetDir = new File(basedir, path);
+				if ( !targetDir.exists() ) {
+					targetDir.mkdirs();
+				}
             
-            String artifact = getArtifact(dependency);
+				String artifact = getArtifact(dependency);
             
-            try {
-                IOUtil.copy(new FileInputStream(artifact), new FileOutputStream(new File(path, new File(artifact).getName())));
-            }
-            catch (IOException e) {
-                throw new CollectException("Collector.CannotCollect", e);
-            }
+				try {
+					IOUtil.copy(new FileInputStream(artifact), new FileOutputStream(new File(path, new File(artifact).getName())));
+				}
+				catch (IOException e) {
+					throw new CollectException("Collector.CannotCollect", e);
+				}
+			}
         }
     }
 

@@ -9,10 +9,6 @@
 		<j:if test="${pdeEnabled}">
 			<pde:plugin project="${pom}" />
 			<pde:name var="artifactName" project="${pom}" />
-			<!-- 
-			  typing as jar to workaround current limitation in artifact:install 
-			  where type and file extension should be identical
-			 -->
 			<artifact:install artifact="${maven.build.dir}/${artifactName}.jar" type="jar" project="${pom}" />
 		</j:if>
 	</goal>

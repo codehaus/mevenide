@@ -41,7 +41,8 @@
        property
      * package element can be  specified through the maven.pde.package property
      * they may be rendered as requires/plugin entry by setting the 
-       maven.pde.requires property (todo)
+       maven.pde.requires property 
+     * in such a case maven.pde.name is required  
      
      <dependency>
        ...
@@ -49,6 +50,7 @@
 	     <maven.pde.targetPath>anotherLibFolder</maven.pde.targetPath>
          <maven.pde.exclude>(true)|false</maven.pde.exclude>
          <maven.pde.requires>(true)|false</maven.pde.requires>
+         <maven.pde.name>com.mycompany.myplugin</maven.pde.name>
          <maven.pde.package>org.jdom</maven.pde.package>
        </properties>
      </dependency>

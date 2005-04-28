@@ -211,17 +211,25 @@ public class CommonPluginValuesReplacer {
     private boolean updateRequires(Element requires, final Dependency dependency) {
         boolean updated = false;
         List children = requires.getChildren();
-        List imports = new ArrayList();
+        boolean alreadyPresent = false;
+		Properties props = dependency.getProperties();
+		String pluginName = props.getProperty("maven.pde.name");
+		
+		if ( org.codehaus.plexus.util.StringUtils.isEmpty(pluginName) ) {
+			//todo: warn user
+			return false;
+		}
+		
         for (Iterator iter = children.iterator(); iter.hasNext();) {
             Element element = (Element) iter.next();
-            String dependencyId = dependency.getId().replaceAll(":", ".");
-            if ( dependencyId.equals(element.getAttributeValue("plugin")) ) {
-                imports.add(element);
+            if ( pluginName.equals(element.getAttributeValue("plugin")) ) {
+				alreadyPresent = true;
+				break;
             }
         }
-        if ( imports.size() == 0 ) {
+        if ( !alreadyPresent ) {
             Element importElement = new Element("import");
-            importElement.setAttribute("plugin", dependency.getId().replaceAll(":", "."));
+            importElement.setAttribute("plugin", pluginName);
             requires.addContent(importElement);
             updated = true;
         }
