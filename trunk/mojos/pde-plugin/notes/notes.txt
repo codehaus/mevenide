@@ -39,21 +39,25 @@
      * they may be excluded thanks the maven.pde.exclude property
      * lib folder can be parametrized through the maven.pde.targetPath 
        property
+     * package element can be  specified through the maven.pde.package property
      * they may be rendered as requires/plugin entry by setting the 
        maven.pde.requires property (todo)
      
      <dependency>
        ...
        <properties>
-	     <maven.pde.targetPath>antoherLibFolder</maven.pde.targetPath>
-         <maven.pde.exclude>true|false</maven.pde.exclude>
-         <maven.pde.requires>true</maven.pde.requires>
+	     <maven.pde.targetPath>anotherLibFolder</maven.pde.targetPath>
+         <maven.pde.exclude>(true)|false</maven.pde.exclude>
+         <maven.pde.requires>(true)|false</maven.pde.requires>
+         <maven.pde.package>org.jdom</maven.pde.package>
        </properties>
      </dependency>
      
      pde:plugin then builds a single jar'd plugin and install it in the 
      local repository 
 
+     todo: name resolution when maven.pde.requires=true
+     
 4. features
 
 5. sites

@@ -17,6 +17,7 @@
 package org.codehaus.mevenide.pde.taglib;
 
 import org.apache.commons.jelly.TagLibrary;
+import org.codehaus.mevenide.pde.artifact.PdeArtifactNameTag;
 import org.codehaus.mevenide.pde.artifact.PdeEnabledTag;
 import org.codehaus.mevenide.pde.classpath.PdeClasspathTag;
 import org.codehaus.mevenide.pde.plugin.PdePluginTag;
@@ -33,5 +34,7 @@ public class PdeTaglib extends TagLibrary {
 		registerTag("enabled", PdeEnabledTag.class);
         registerTag("plugin", PdePluginTag.class);
         registerTag("classpath", PdeClasspathTag.class);
+		registerTag("name", PdeArtifactNameTag.class);
     }
 }
+

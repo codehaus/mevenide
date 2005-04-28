@@ -61,13 +61,17 @@ public class PdePluginBuilder {
 	/** artifactName referencing the primary artifact */
 	private String artifactName;
 	
+	/** indicates wether lib folder should be cleaned */
+	private boolean cleanLib; 
+	
     public void build() throws PdePluginException {
 	    CommonPluginValuesReplacer replacer = new CommonPluginValuesReplacer(basedir.getAbsolutePath(), project, libFolder);
 		replacer.setArtifactName(artifactName);
 		replacer.shouldExportArtifact(shouldExportArtifact);
 	    replacer.replace();
 	    
-	    DependencyCollector collector = new DependencyCollector(basedir.getAbsolutePath(), libFolder, project); 
+	    DependencyCollector collector = new DependencyCollector(basedir.getAbsolutePath(), libFolder, project);
+		collector.setCleanLib(cleanLib);
 	    collector.collect();
 	    
 	    SimpleZipCreator zipCreator = new SimpleZipCreator(new File(classesLocation).getAbsolutePath(), new File(artifact).getAbsolutePath());
@@ -114,5 +118,8 @@ public class PdePluginBuilder {
     public void setProject(MavenProject project) { this.project = project; }
 	
 	public void setArtifactName(String name) { this.artifactName = name; }
+
+	public void setCleanLib(boolean cleanLib) { this.cleanLib = cleanLib; }
+	
     
 }

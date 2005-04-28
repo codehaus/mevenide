@@ -1,4 +1,5 @@
 <project xmlns:pde="jelly:org.codehaus.mevenide.pde.taglib.PdeTaglib" 
+         xmlns:artifact="artifact"
          xmlns:j="jelly:core"
          xmlns:maven="jelly:maven"
          xmlns:ant="jelly:ant">
@@ -7,7 +8,12 @@
 		<pde:enabled project="${pom}" var="pdeEnabled" />
 		<j:if test="${pdeEnabled}">
 			<pde:plugin project="${pom}" />
-			<!-- artifact:install -->
+			<pde:name var="artifactName" project="${pom}" />
+			<!-- 
+			  typing as jar to workaround current limitation in artifact:install 
+			  where type and file extension should be identical
+			 -->
+			<artifact:install artifact="${maven.build.dir}/${artifactName}.jar" type="jar" project="${pom}" />
 		</j:if>
 	</goal>
 	
