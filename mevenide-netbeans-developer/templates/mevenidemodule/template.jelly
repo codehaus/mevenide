@@ -6,6 +6,47 @@
         <!-- Turn the specified package into a path -->
    <util:replace var="packagepath" oldChar="." newChar="/" value="${maven.genapp.template.package}"/>
    <ant:filter token="PACKAGEPATH" value="${packagepath}"/>
+   <j:set var="test" value="${maven.genapp.template.genproject}"/>
+   <j:choose>
+       <j:when test="${test == 'true'}">
+           <ant:copy tofile="${basedir}/etc/layer_project.xml_temp"
+                     file="${basedir}/etc/layer_project.xml" 
+                     filtering="true"/>
+           <util:loadText var="temp.project" file="${basedir}/etc/layer_project.xml_temp"/>
+           <ant:copy todir="${basedir}/src/conf/${packagepath}/resources"
+                     file="${basedir}/etc/customProject.html" 
+                     filtering="true"/>
+           <ant:mkdir dir="${basedir}/templates/${maven.genapp.template.artifactid}template"/>
+           <ant:copy todir="${basedir}/templates/${maven.genapp.template.artifactid}template"
+                     filtering="false">
+                <ant:fileset dir="${basedir}/etc/project_template"/>
+           </ant:copy>
+           <util:loadText var="temp.project.mavenxml" file="${basedir}/etc/mavenxml_project.xml"/>
+       </j:when>
+   </j:choose>
+   <ant:filter token="GENPROJECTLAYER" value="${temp.project}"/>
+   <ant:filter token="GENPROJECTMAVENXML" value="${temp.project.mavenxml}"/>
+   <j:set var="test" value="${maven.genapp.template.genprops}"/>
+   <j:choose>
+       <j:when test="${test == 'true'}">
+           <util:loadText var="temp.props" file="${basedir}/etc/layer_props.xml"/>
+           <ant:copy todir="${basedir}/src/conf/${packagepath}/resources"
+                     file="${basedir}/etc/mycustom-plugin.xml" 
+                     filtering="true"/>
+       </j:when>
+   </j:choose>
+   <ant:filter token="GENPROPSLAYER" value="${temp.props}"/>
+   <j:set var="test" value="${maven.genapp.template.gengrammar}"/>
+   <j:choose>
+       <j:when test="${test == 'true'}">
+           <util:loadText var="temp.gram" file="${basedir}/etc/layer_grammar.xml"/>
+           <ant:copy todir="${basedir}/src/conf/${packagepath}/resources"
+                     file="${basedir}/etc/jelly-custom.xml" 
+                     filtering="true"/>
+       </j:when>
+   </j:choose>
+   <ant:filter token="GENGRAMMARLAYER" value="${temp.gram}"/>
+   
    <ant:copy todir="${basedir}/src/conf/${packagepath}/resources"
              file="${basedir}/etc/MavenLayer.xml" 
              filtering="true"/>
@@ -18,9 +59,12 @@
    <ant:copy todir="${basedir}"
              file="${basedir}/etc/project.xml" 
              filtering="true"/>
+   <ant:copy todir="${basedir}"
+             file="${basedir}/etc/maven.xml" 
+             filtering="true"/>
              
    <ant:delete dir="${basedir}/etc"/>
    <ant:delete>
-      <ant:fileset dir="${basedir}" includes="**/empty.txt"/>
+      <ant:fileset dir="${basedir}/src" includes="**/empty.txt"/>
    </ant:delete>
 </project>
