@@ -8,6 +8,7 @@ import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.openapi.util.InvalidDataException;
 import com.intellij.openapi.util.JDOMExternalizable;
 import com.intellij.openapi.util.WriteExternalException;
+import com.intellij.openapi.vfs.VirtualFile;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jdom.Element;
@@ -57,7 +58,7 @@ public class ModuleSettings implements ModuleComponent, JDOMExternalizable {
     /**
      * The list of favorite goals attached to this module.
      */
-    private CustomGoalsGrabber favoriteGoalsGrabber = new CustomGoalsGrabber();
+    private CustomGoalsGrabber favoriteGoalsGrabber = new CustomGoalsGrabber("Favorites");
 
     /**
      * Creates a module settings manager for the specified module.
@@ -142,7 +143,7 @@ public class ModuleSettings implements ModuleComponent, JDOMExternalizable {
     }
 
     public void setFavoriteGoals(final IGoalsGrabber pGoalsGrabber) {
-        favoriteGoalsGrabber = new CustomGoalsGrabber(pGoalsGrabber);
+        favoriteGoalsGrabber = new CustomGoalsGrabber("Favorites", pGoalsGrabber);
         fireFavoriteGoalsChangedEvent();
     }
 
@@ -205,7 +206,11 @@ public class ModuleSettings implements ModuleComponent, JDOMExternalizable {
             LOG.trace(NAME + " initialized.");
 
         if(pomFile == null) {
-            final File dir = new File(module.getModuleFile().getParent().getPath());
+            final VirtualFile moduleFile = module.getModuleFile();
+            if(moduleFile == null)
+                return;
+
+            final File dir = new File(moduleFile.getParent().getPath());
             final File pom = new File(dir, "project.xml");
             if(pom.isFile())
                 try {

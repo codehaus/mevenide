@@ -59,7 +59,7 @@ public class MavenManagerConfigurable implements ApplicationComponent, Configura
     }
 
     public Icon getIcon() {
-        return Icons.MAVEN;
+        return Icons.MAVEN_SETTINGS;
     }
 
     public String getHelpTopic() {
