@@ -139,40 +139,42 @@ public class PluginClasspathResolver {
 	        
 	        File pluginDescriptor = findDependencyDescriptor(dependency);
 	        
-	        Document document = null;
-	        try {
-	            document = new SAXBuilder().build(pluginDescriptor);
-	        }
-	        catch (Exception e) {
-	            String message = Messages.get("ClasspathResolution.CannotExtractDependencies", e.getMessage()); 
-	            throw new PdePluginException(message, e);
-	        }
-	        Element plugin = document.getRootElement();
-	        
-	        Element runtimeElement = plugin.getChild("runtime");
-	        if ( runtimeElement != null ) {
-	            List libraryElements = runtimeElement.getChildren("library");
-	            for (int i = 0; i < libraryElements.size(); i++) {
-	                Element libraryElement = (Element) libraryElements.get(i);
-	                if ( libraryElement.getChild("export") != null ) {
-		                String library = libraryElement.getAttributeValue("name");
-		                libraries.add(new File(pluginDescriptor.getParent(), library).getAbsolutePath());
-		            }
-	            }
-	        }
-	        
-	        Element requireElement = plugin.getChild("requires");
-	        if ( requireElement != null ) {
-		        List importElements = requireElement.getChildren("import");
-		        if ( importElements != null ) {
-		            for (int i = 0; i < importElements.size(); i++) {
-	                    Element importElement = (Element) importElements.get(i);
-	                    libraries.addAll(Arrays.asList(findDependencyLibraries(importElement.getAttributeValue("plugin"))));
-	                }
+			if ( pluginDescriptor != null ) { 
+		        Document document = null;
+		        try {
+		            document = new SAXBuilder().build(pluginDescriptor);
 		        }
-	        }
-	        
-	        return (String[]) libraries.toArray(new String[libraries.size()]);
+		        catch (Exception e) {
+		            String message = Messages.get("ClasspathResolution.CannotExtractDependencies", e.getMessage()); 
+		            throw new PdePluginException(message, e);
+		        }
+		        Element plugin = document.getRootElement();
+		        
+		        Element runtimeElement = plugin.getChild("runtime");
+		        if ( runtimeElement != null ) {
+		            List libraryElements = runtimeElement.getChildren("library");
+		            for (int i = 0; i < libraryElements.size(); i++) {
+		                Element libraryElement = (Element) libraryElements.get(i);
+		                if ( libraryElement.getChild("export") != null ) {
+			                String library = libraryElement.getAttributeValue("name");
+			                libraries.add(new File(pluginDescriptor.getParent(), library).getAbsolutePath());
+			            }
+		            }
+		        }
+		        
+		        Element requireElement = plugin.getChild("requires");
+		        if ( requireElement != null ) {
+			        List importElements = requireElement.getChildren("import");
+			        if ( importElements != null ) {
+			            for (int i = 0; i < importElements.size(); i++) {
+		                    Element importElement = (Element) importElements.get(i);
+		                    libraries.addAll(Arrays.asList(findDependencyLibraries(importElement.getAttributeValue("plugin"))));
+		                }
+			        }
+		        }
+		        
+		        return (String[]) libraries.toArray(new String[libraries.size()]);
+			}
         }
         
         return new String[0];
@@ -197,9 +199,14 @@ public class PluginClasspathResolver {
             String message = Messages.get("ClasspathResolution.ComputeDependencyParent", dependency);
             throw new PdePluginException(message);
         }
-        File dependencyHome = parentNames[0];
-        
-        return new File(dependencyHome, "plugin.xml");
+		
+		if ( parentNames.length > 0 ) {
+			//some plugins may be missing
+			File dependencyHome = parentNames[0];
+			return new File(dependencyHome, "plugin.xml");
+		}
+		
+		return null;
     }
 
     /**
