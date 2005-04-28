@@ -19,10 +19,13 @@ package org.mevenide.netbeans.cargo;
 
 import java.awt.event.ActionEvent;
 import java.io.File;
+import java.util.Iterator;
+import java.util.Map;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import org.codehaus.cargo.container.Container;
 import org.codehaus.cargo.container.State;
+import org.codehaus.cargo.container.configuration.Configuration;
 import org.codehaus.cargo.container.property.ServletPropertySet;
 import org.openide.actions.PropertiesAction;
 import org.openide.nodes.AbstractNode;
@@ -161,9 +164,13 @@ final class RunningServerNode extends AbstractNode implements RegistryListener {
             append.setDisplayName("Append to Output File");
             append.setShortDescription("Sets whether output of the container should be appended to an existing file, or the existing file should be truncated.");
             append.setName("append");
+            ContainerReflection classpath = new ContainerReflection(container, String[].class, "extraClasspath");
+            classpath.setDisplayName("Extra Classpath");
+            classpath.setShortDescription("Additional Container Classpath.");
+            classpath.setName("classpath");
             
             basicProps.put(new Node.Property[] {
-                 id, name, war, ear, home, output, append, timeout,
+                 id, name, war, ear, home, output, append, timeout, classpath
             });
         } catch (NoSuchMethodException exc) {
             exc.printStackTrace();
@@ -172,13 +179,22 @@ final class RunningServerNode extends AbstractNode implements RegistryListener {
         configProps.setName("configuration");
         configProps.setDisplayName("Configuration");
         try {
-            ContainerReflection dir = new ContainerReflection(container.getConfiguration(), File.class, "getDir", null);
+            Configuration config = container.getConfiguration();
+            ContainerReflection dir = new ContainerReflection(config, File.class, "getDir", null);
             dir.setName("dir");
             dir.setDisplayName("Directory");
             dir.setShortDescription("Configuration Directory");
-            configProps.put(new Node.Property[] {
-                dir
-            });
+            Map map = config.getProperties();
+            Iterator it = map.entrySet().iterator();
+            Node.Property[] prps = new Node.Property[map.entrySet().size() + 1];
+            prps[0] = dir;
+            int index = 1;
+            while (it.hasNext()) {
+                Map.Entry entry = (Map.Entry)it.next();
+                prps[index] = new ConfigProperty((String)entry.getKey());
+                index = index + 1;
+            }
+            configProps.put(prps);
         } catch (NoSuchMethodException exc) {
             exc.printStackTrace();
         }
@@ -234,6 +250,30 @@ final class RunningServerNode extends AbstractNode implements RegistryListener {
             }
             return false;
         }
+    }
+    
+    private class ConfigProperty extends PropertySupport {
+        private String key;
+        ConfigProperty(String propkey) {
+            super(propkey, String.class, propkey, propkey, true, true);
+            key = propkey;
+        }
+        
+        public void setValue(Object obj) throws IllegalAccessException, IllegalArgumentException, java.lang.reflect.InvocationTargetException {
+            container.getConfiguration().setProperty(key, (String)obj);
+        }
+
+        public Object getValue() throws IllegalAccessException, java.lang.reflect.InvocationTargetException {
+            return container.getConfiguration().getPropertyValue(key);
+        }
+
+         public boolean canWrite() {
+            if (container.getState() == State.STOPPED) {
+                return super.canWrite();
+            }
+            return false;
+        }
+        
         
     }
 
