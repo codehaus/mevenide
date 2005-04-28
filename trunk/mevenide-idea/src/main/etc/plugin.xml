@@ -8,8 +8,7 @@
         The Codehaus
     </vendor>
     <change-notes>
-        See http://mevenide.codehaus.org/mevenide-idea/announcements/announcement-0.1.txt for
-        release notes.
+        See http://mevenide.codehaus.org/mevenide-idea/changes-report.html for details.
     </change-notes>
     <idea-version since-build="3316"/>
 
