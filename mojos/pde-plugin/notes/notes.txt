@@ -11,6 +11,10 @@
      </properties>
    </project>
    
+   20050428: rationale ? although it semantically make sense [*] to put it there,
+             why not use a simple property ? if we keep this property then we should 
+             add maven.pde.type (see below) there as well.
+   
 2. dependencies duplication issue
    
    to solve the dependencies duplication issue (plugin.xml vs. project.xml)
@@ -25,7 +29,7 @@
    
    on the other hand non eclipse dependencies are still declared in the pom
    
-   todo: manage single jar'd plugins 
+   TODO: manage single jar'd plugins 
    
 3. plugin.xml update
    
@@ -57,22 +61,34 @@
      
      pde:plugin then builds a single jar'd plugin and install it in the 
      local repository 
-
-     todo: name resolution when maven.pde.requires=true
      
-4. features
+     TODO: add maven.pde.single property to indicate if single jar'd plugin should 
+           generated instead of the way (folder + zip/jar)
 
-5. sites
+     TODO: integrate CompatibilityChecker in m1 version
 
-6. deploy
+4. feature
+   
+   pde:feature 
+   
+5. site
 
-7. other artifact types
+   pde:site
+
+6. multiproject-friendly
+   
+   pde:artifact disptaches either to pde:plugin, pde:feature or pde:site dependending
+   on the value of maven.pde.type property
+
+7. deploy
+
+8. other artifact types
     
    no more  differenciation for other artifact types (help | lib-only):
      - lib-only plugins now are a subset of the previous artifacts set
      - help will be when refined includes will be managed
    
-8. convenient archive & other utility goals
+9. convenient archive & other utility goals
    
    - provide a goal to zip a pde artifact ready to be unpacked 
      into eclipse.home
