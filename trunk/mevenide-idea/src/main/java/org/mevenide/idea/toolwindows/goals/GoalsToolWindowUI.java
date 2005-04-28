@@ -33,6 +33,7 @@ import org.mevenide.idea.util.ui.tree.GoalTreeNode;
 import org.mevenide.idea.util.ui.tree.ModuleTreeNode;
 import org.mevenide.idea.util.ui.tree.PluginTreeNode;
 import org.mevenide.idea.util.ConfigurableWrapper;
+import org.mevenide.idea.util.goals.GoalsHelper;
 import org.mevenide.idea.util.ui.UIUtils;
 
 import javax.swing.*;
@@ -120,7 +121,7 @@ public class GoalsToolWindowUI extends JPanel {
                         final PluginTreeNode pluginNode = (PluginTreeNode) node.getParent();
                         final String plugin = pluginNode.getPlugin();
                         final String goal = ((GoalTreeNode) node).getGoal();
-                        runGoals(new String[]{plugin + ":" + goal});
+                        runGoals(new String[]{GoalsHelper.buildFullyQualifiedName(plugin, goal)});
                     }
                 }
             }
@@ -182,7 +183,7 @@ public class GoalsToolWindowUI extends JPanel {
                 final PluginTreeNode pluginNode = (PluginTreeNode) node.getParent();
                 final String plugin = pluginNode.getPlugin();
                 final String goal = ((GoalTreeNode) node).getGoal();
-                goalList.add(plugin + ":" + goal);
+                goalList.add(GoalsHelper.buildFullyQualifiedName(plugin, goal));
             }
         }
 
@@ -200,15 +201,15 @@ public class GoalsToolWindowUI extends JPanel {
         }
         catch (JdkNotDefinedException e) {
             UIUtils.showError(project, e);
-            LOG.error(e.getMessage(), e);
+            LOG.trace(e.getMessage(), e);
         }
         catch (PomNotDefinedException e) {
             UIUtils.showError(project, e);
-            LOG.error(e.getMessage(), e);
+            LOG.trace(e.getMessage(), e);
         }
         catch (MavenHomeNotDefinedException e) {
             UIUtils.showError(project, e);
-            LOG.error(e.getMessage(), e);
+            LOG.trace(e.getMessage(), e);
         }
         catch (ExecutionException e) {
             UIUtils.showError(project, e);

@@ -13,8 +13,12 @@ public class ModuleTreeNode extends DefaultMutableTreeNode {
         super(pModule);
     }
 
+    public Module getUserObject() {
+        return (Module) super.getUserObject();
+    }
+
     public Module getModule() {
-        return (Module) userObject;
+        return getUserObject();
     }
 
     public boolean isLeaf() {

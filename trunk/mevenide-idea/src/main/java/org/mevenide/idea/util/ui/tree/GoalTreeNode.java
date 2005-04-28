@@ -39,8 +39,12 @@ public class GoalTreeNode extends DefaultMutableTreeNode {
             prereqs = pPrereqs;
     }
 
+    public String getUserObject() {
+        return (String) super.getUserObject();
+    }
+
     public String getGoal() {
-        return (String) userObject;
+        return getUserObject();
     }
 
     public String getDescription() {
@@ -50,6 +54,7 @@ public class GoalTreeNode extends DefaultMutableTreeNode {
     public String[] getPrereqs() {
         return prereqs;
     }
+
     public String toString() {
         if (description == null || description.trim().length() == 0)
             return super.toString();

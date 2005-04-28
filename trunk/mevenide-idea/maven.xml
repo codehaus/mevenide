@@ -83,7 +83,7 @@
     </goal>
 
     <goal name="idea:install"
-          prereqs="jar,idea:copy-license"
+          prereqs="jar:install,idea:copy-license"
           description="Installs the plugin in the IDEA sandbox directory.">
 
         <!-- make sure target path exists -->

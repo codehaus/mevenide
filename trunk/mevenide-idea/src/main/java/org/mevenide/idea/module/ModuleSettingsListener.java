@@ -9,4 +9,5 @@ public interface ModuleSettingsListener extends EventListener {
 
     void modulePomSelectionChanged(PomSelectionChangedEvent pEvent);
 
+    void moduleFavoriteGoalsChanged(ModuleFavoriteGoalsChangedEvent pEvent);
 }

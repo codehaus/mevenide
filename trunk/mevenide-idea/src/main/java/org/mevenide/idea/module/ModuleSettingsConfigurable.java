@@ -6,15 +6,18 @@ import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.options.ConfigurationException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.mevenide.context.DefaultQueryContext;
+import org.mevenide.context.IQueryContext;
+import org.mevenide.environment.ILocationFinder;
+import org.mevenide.goals.grabber.DefaultGoalsGrabber;
+import org.mevenide.goals.grabber.IGoalsGrabber;
 import org.mevenide.idea.Res;
-import org.mevenide.idea.GoalGrabbingException;
-import org.mevenide.idea.util.ui.images.Icons;
 import org.mevenide.idea.util.ui.UIUtils;
+import org.mevenide.idea.util.ui.images.Icons;
 
 import javax.swing.*;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.Collection;
 
 /**
  * A module component that handles user interface for the module. Acquires data
@@ -83,17 +86,10 @@ public class ModuleSettingsConfigurable implements ModuleComponent,
         try {
             final ModuleSettings moduleSettings = ModuleSettings.getInstance(module);
             moduleSettings.setPomFile(ui.getPomFile());
-
-            final ModuleGoalsProvider provider = ModuleGoalsProvider.getInstance(module);
-            provider.setFavoriteGoals(ui.getFavoriteGoals());
+            moduleSettings.setFavoriteGoals(ui.getFavoriteGoals());
         }
         catch (FileNotFoundException e) {
             final ConfigurationException confEx = new ConfigurationException(e.getMessage(), UIUtils.ERROR_TITLE);
-            throw (ConfigurationException) confEx.initCause(e);
-        }
-        catch (GoalGrabbingException e) {
-            final ConfigurationException confEx =
-                    new ConfigurationException(e.getMessage(), UIUtils.ERROR_TITLE);
             throw (ConfigurationException) confEx.initCause(e);
         }
     }
@@ -106,6 +102,18 @@ public class ModuleSettingsConfigurable implements ModuleComponent,
     }
 
     public boolean isModified() {
+        return isPomFileModified() || areFavoriteGoalsModified();
+    }
+
+    protected boolean areFavoriteGoalsModified() {
+        final ModuleSettings moduleSettings = ModuleSettings.getInstance(module);
+        final IGoalsGrabber currentFavorites = moduleSettings.getFavoriteGoals();
+        final IGoalsGrabber favorites = ui.getFavoriteGoals();
+
+        return !currentFavorites.equals(favorites);
+    }
+
+    protected boolean isPomFileModified() {
         final ModuleSettings moduleSettings = ModuleSettings.getInstance(module);
 
         final File selectedPomFile = ui.getPomFile();
@@ -117,30 +125,25 @@ public class ModuleSettingsConfigurable implements ModuleComponent,
         if (selectedPomFile == null || pomFile == null)
             return true;
 
-        if (!selectedPomFile.equals(pomFile))
-            return true;
-
-        final ModuleGoalsProvider provider = ModuleGoalsProvider.getInstance(module);
-        final Collection currentFavorites = provider.getFavoriteGoals();
-        final Collection favorites = ui.getFavoriteGoals();
-
-        return !currentFavorites.equals(favorites);
+        return !selectedPomFile.equals(pomFile);
     }
 
     public void reset() {
+        final ModuleSettings moduleSettings = ModuleSettings.getInstance(module);
+        final File pomFile = moduleSettings.getPomFile();
+        final File pomDir = pomFile.getParentFile();
+        final IQueryContext queryContext = new DefaultQueryContext(pomDir);
+        final ILocationFinder locationFinder = new ModuleLocationFinder(queryContext,
+                                                                        module);
         try {
-            final ModuleGoalsProvider provider = ModuleGoalsProvider.getInstance(module);
-            ui.loadMavenGoals(provider.getFullGoalsProvider());
+            ui.setMavenGoals(new DefaultGoalsGrabber(locationFinder));
         }
         catch (Exception e) {
-            UIUtils.showError(module, e);
+            UIUtils.showError(module, "Error grabbing global goals.", e);
             LOG.error(e.getMessage(), e);
         }
 
-        final ModuleGoalsProvider provider = ModuleGoalsProvider.getInstance(module);
-        ui.setFavoriteGoals(provider.getFavoriteGoals());
-
-        final ModuleSettings moduleSettings = ModuleSettings.getInstance(module);
+        ui.setFavoriteGoals(moduleSettings.getFavoriteGoals());
         ui.setPomFile(moduleSettings.getPomFile());
     }
 

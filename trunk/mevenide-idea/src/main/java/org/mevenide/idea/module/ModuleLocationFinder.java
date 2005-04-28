@@ -5,7 +5,6 @@ import com.intellij.openapi.projectRoots.ProjectJdk;
 import org.mevenide.context.IQueryContext;
 import org.mevenide.environment.LocationFinderAggregator;
 import org.mevenide.idea.global.MavenManager;
-import org.mevenide.idea.module.ModuleSettings;
 
 import java.io.File;
 

@@ -16,7 +16,13 @@ public abstract class UIUtils {
     }
 
     public static void showError(final Module pModule, final String pMessage) {
-        showError(pModule.getProject(), pMessage);
+
+    }
+
+    public static void showError(final Module pModule,
+                                 final String pMessage,
+                                 final Throwable pCause) {
+        showError(pModule.getProject(), pMessage, pCause);
     }
 
     public static void showError(final Project pProject, final String pMessage) {
@@ -33,5 +39,22 @@ public abstract class UIUtils {
 
     public static void showError(final Project pProject, final Throwable pCause) {
         Messages.showErrorDialog(pProject, pCause.getMessage(), ERROR_TITLE);
+    }
+
+    public static void showError(final Project pProject,
+                                 final String pMessage,
+                                 final Throwable pCause) {
+        Messages.showErrorDialog(pProject, pMessage + " (" + pCause.getMessage() + ")", ERROR_TITLE);
+    }
+
+    public static String buildMessage(final Throwable pCause, final String pDefault) {
+        if (pCause == null)
+            return pDefault;
+
+        final String msg = pCause.getMessage();
+        if (msg == null || msg.trim().length() == 0)
+            return pDefault;
+
+        return msg;
     }
 }
