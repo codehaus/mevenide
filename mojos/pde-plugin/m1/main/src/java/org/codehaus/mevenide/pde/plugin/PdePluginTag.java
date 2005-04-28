@@ -26,9 +26,9 @@ import org.apache.commons.lang.BooleanUtils;
 import org.apache.maven.jelly.MavenJellyContext;
 import org.codehaus.mevenide.pde.PdePluginException;
 import org.codehaus.mevenide.pde.archive.Include;
+import org.codehaus.mevenide.pde.artifact.PdeArtifactNameTag;
 import org.codehaus.mevenide.pde.converter.MavenProjectConverter;
 import org.codehaus.mevenide.pde.taglib.PdeTag;
-import org.codehaus.mevenide.pde.version.VersionAdapter;
 import org.codehaus.plexus.util.StringUtils;
 
 
@@ -59,7 +59,8 @@ public class PdePluginTag extends PdeTag {
             
             builder.setLibFolder((String) context.getVariable("maven.pde.libTargetPath"));
             builder.setClassesLocation((String) context.getVariable("maven.build.dest"));
-
+			builder.setCleanLib(BooleanUtils.toBoolean((String) context.getVariable("maven.pde.cleanLib")));
+			
             builder.setProject(new MavenProjectConverter(m1Project, (MavenJellyContext) context).convert());
             
             List includes = getCommonIncludes(basedir);
@@ -78,31 +79,17 @@ public class PdePluginTag extends PdeTag {
         }
     }
 
-	private String getArtifactName() {
-		
-		String pdeArtifactName = (String) context.getVariable("maven.pde.name");
-		if ( StringUtils.isEmpty(pdeArtifactName) ) {
-			pdeArtifactName = m1Project.getArtifactId();
+	private String getArtifactName() throws PdePluginException {
+		try {
+			PdeArtifactNameTag tag = new PdeArtifactNameTag();
+			tag.setProject(m1Project);
+			tag.setContext(context);
+			return tag.getArtifactName();
+		} 
+		catch (JellyTagException e) {
+			//shouldnot happen. 
+			throw new PdePluginException("Unable to construct artifact name", e);
 		}
-		boolean normalize = BooleanUtils.toBoolean((String) context.getVariable("maven.pde.normalizeName"));
-		if ( normalize ) {
-			pdeArtifactName = pdeArtifactName.replaceAll("-", ".");
-		}
-		
-		String pdeArtifactVersion = (String) context.getVariable("maven.pde.version");
-		if ( StringUtils.isEmpty(pdeArtifactVersion) ) {
-			pdeArtifactVersion = m1Project.getCurrentVersion();
-		}
-		boolean adaptVersion = BooleanUtils.toBoolean((String) context.getVariable("maven.pde.adaptVersion"));
-		if ( adaptVersion ) {
-			pdeArtifactVersion = new VersionAdapter().adapt(pdeArtifactVersion);
-		}
-		
-		String pdeArtifactPrefix = (String) context.getVariable("maven.pde.prefix");
-		pdeArtifactPrefix = StringUtils.isEmpty(pdeArtifactPrefix) ? "" : pdeArtifactPrefix + ".";
-		
-		String artifactName = pdeArtifactPrefix + pdeArtifactName + "_" + pdeArtifactVersion;
-		return artifactName;
 	}
 
     private List getCommonIncludes(File basedir) {

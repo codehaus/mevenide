@@ -17,6 +17,7 @@
 package org.codehaus.mevenide.pde.plugin;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -24,10 +25,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
+import java.util.TreeSet;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.project.MavenProject;
+import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.IOUtil;
 
 
@@ -48,6 +52,9 @@ public class DependencyCollector {
     /** default directory where collected deps will be placed. relative to <code>basedir</code> */
     private String targetPath;
     
+	/** indicates wether lib folder should be cleaned */
+	private boolean cleanLib; 
+	
     public DependencyCollector(String basedir, String targetPath, MavenProject project) {
         this.basedir = basedir;
         this.project = project;
@@ -55,8 +62,12 @@ public class DependencyCollector {
     }
     
     public void collect() throws CollectException {
-        List dependencies = project.getDependencies();
+		
+		List dependencies = project.getDependencies();
         
+		//requires a two-pass iteration
+		clean(dependencies);
+		
         for (Iterator it = dependencies.iterator(); it.hasNext();) {
             Dependency dependency = (Dependency) it.next();
             
@@ -82,7 +93,46 @@ public class DependencyCollector {
         }
     }
 
-    //@todo optimize - even better : drop it when correct method found in m2 
+    private void clean(List dependencies) {
+		Set folderList = new TreeSet();
+		if ( cleanLib ) {
+			for (Iterator it = dependencies.iterator(); it.hasNext();) {
+	            Dependency dependency = (Dependency) it.next();
+	            Properties props = dependency.getProperties();
+	            if ( props != null ) {
+	                String overridenTargetPath = props.getProperty("maven.pde.targetPath");
+					if ( overridenTargetPath != null ) {
+						folderList.add(overridenTargetPath);
+					}
+	            }
+			}
+			folderList.add(targetPath);
+			Iterator it;
+			for ( it = folderList.iterator(); it.hasNext(); ) {
+				String path = (String) it.next();
+				File folder = new File(basedir, path);
+				if ( folder.exists() ) {
+					// delete if contains only jar files 
+					File[] children = folder.listFiles(new FileFilter() {
+						public boolean accept(File pathname) {
+							return pathname.isDirectory() || !pathname.getName().endsWith(".jar");
+						}
+					});
+					if ( children.length == 0 ) {
+						try {
+							FileUtils.deleteDirectory(folder);
+						} 
+						catch (IOException e) {
+							//do nothing
+						}
+					}
+				}
+			}
+			
+		}
+	}
+
+	//@todo optimize - even better : drop it when correct method found in m2 
     private String getArtifact(Dependency dependency) {
         
         Set artifacts = project.getArtifacts();
@@ -102,4 +152,5 @@ public class DependencyCollector {
         return fullArtifactPath;
     }
     
+	public void setCleanLib(boolean cleanLib) { this.cleanLib = cleanLib; }
 }
