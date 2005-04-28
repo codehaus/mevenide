@@ -12,7 +12,7 @@
                 <file name="mevenidemodule.zip" url="mevenidemodule.zip">
                     <attr name="template" boolvalue="true"/>
                     <attr name="templatename" stringvalue="mevenidemodule"/>
-                    <attr name="instantiatingIterator" newvalue="org.mevenide.netbeans.project.wizards.MavenNewWizardIterator"/>
+                    <attr name="instantiatingIterator" newvalue="org.mevenide.netbeans.devel.DevProjectWizardIterator"/>
                     <attr name="SystemFileSystem.localizingBundle" stringvalue="org.mevenide.netbeans.devel.Bundle"/>
                     <attr name="SystemFileSystem.icon" urlvalue="nbresloc:/org/mevenide/netbeans/project/resources/MavenIcon.gif"/>
                     <attr name="instantiatingWizardURL" urlvalue="nbresloc:/org/mevenide/netbeans/devel/mevenidemoduleProject.html"/>

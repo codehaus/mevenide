@@ -17,6 +17,17 @@
             <url>http://www.netbeans.org</url>
         </dependency>
         <dependency>
+            <groupId>netbeans</groupId>
+            <artifactId>openide-loaders</artifactId>
+            <!-- include nb specification version.. that's important for compiling -->
+            <version>4.16</version>
+            <url>http://www.netbeans.org</url>
+            <type>jar</type>
+            <properties>
+                <netbeans.module.dep>spec</netbeans.module.dep>
+            </properties>
+        </dependency>
+        <dependency>
             <groupId>mevenide</groupId>
             <artifactId>mevenide-netbeans-project</artifactId>
             <version>0.7-SNAPSHOT</version>
@@ -29,6 +40,15 @@
             <groupId>mevenide</groupId>
             <artifactId>mevenide-config</artifactId>
             <version>0.7</version>
+            <type>jar</type>
+            <properties>
+                <netbeans.module.dep>spec</netbeans.module.dep>
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>mevenide</groupId>
+            <artifactId>goals-grabber</artifactId>
+            <version>0.8</version>
             <type>jar</type>
             <properties>
                 <netbeans.module.dep>spec</netbeans.module.dep>

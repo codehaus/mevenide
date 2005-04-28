@@ -2,42 +2,10 @@
 
 <!DOCTYPE filesystem PUBLIC "-//NetBeans//DTD Filesystem 1.0//EN" "http://www.netbeans.org/dtds/filesystem-1_0.dtd">
 <filesystem>
-  <!-- 
-  register a maven project template.
-  the mytemplaname.zip file is created
-  -->
-   <folder name="Templates">
-        <folder name="Project">
-            <folder name="Maven">
-                <!--file name="mytemplatename.zip" url="mytemplatename.zip">
-                    <attr name="template" boolvalue="true"/>
-                    <attr name="instantiatingIterator" newvalue="org.mevenide.netbeans.project.wizards.MavenNewWizardIterator"/>
-                    <attr name="SystemFileSystem.localizingBundle" stringvalue="@PACKAGE@.resources.Bundle"/>
-                    <attr name="SystemFileSystem.icon" urlvalue="nbresloc:/org/mevenide/netbeans/project/resources/MavenIcon.gif"/>
-                    <attr name="instantiatingWizardURL" urlvalue="nbresloc:/@PACKAGEPATH@/resources/emptyProject.html"/>
-                </file-->
-            </folder>
-        </folder>
-   </folder>
-   
+@GENPROJECTLAYER@ 
   <folder name="Plugins">
-  
-  <!-- register a xml file describing maven plugin's properties 
-  -->
-        <folder name="Maven">
-            <folder name="PluginProperties">
-                <file name="mycustom-plugin-1.5.xml" url="mycustom-plugin.xml"/>
-            </folder>
-        </folder>
-        
-  <!-- register a xml file describing maven plugin's properties 
-  -->
-        <folder name="XML">
-            <folder name="Mevenide-Grammar">
-                <file name="jelly-custom.xml" url="nbresloc:/@PACKAGEPATH@/resources/jelly-custom.xml"/>
-            </folder>
-        </folder>    
-        
+@GENPROPSLAYER@
+@GENGRAMMARLAYER@        
   </folder>   
   
 </filesystem>
