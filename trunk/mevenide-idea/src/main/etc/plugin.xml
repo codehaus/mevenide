@@ -28,9 +28,6 @@
         <component>
             <implementation-class>org.mevenide.idea.module.ModuleSettingsConfigurable</implementation-class>
         </component>
-        <component>
-            <implementation-class>org.mevenide.idea.module.ModuleGoalsProvider</implementation-class>
-        </component>
     </module-components>
 
 </idea-plugin>
