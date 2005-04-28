@@ -9,7 +9,7 @@
 
     <body>
 
-        <release version="0.1" date="unreleased"
+        <release version="0.1" date="28/04/2005"
                  description="The initial version. Focuses on integration with Mevenide, and catching up on missing features.">
             <action dev="arikkfir" type="update">
                 Upgraded plugin to JDK 1.5 - required by IDEA since build 3311.
