@@ -25,14 +25,16 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Project;
+import org.jdom.DefaultJDOMFactory;
 import org.jdom.Document;
 import org.jdom.Element;
-import org.jdom.filter.Filter;
-import org.jdom.DefaultJDOMFactory;
 import org.jdom.JDOMFactory;
+import org.jdom.filter.ElementFilter;
+import org.jdom.filter.Filter;
 import org.jdom.input.SAXBuilder;
 import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
@@ -46,8 +48,6 @@ import org.jdom.output.XMLOutputter;
 public class CarefulProjectMarshaller implements IProjectMarshaller {
     
     private static final Log log = LogFactory.getLog(CarefulProjectMarshaller.class);
-	//private static final String ENCODING = null;
-	//private static final Boolean STANDALONE = null;
 
     private XMLOutputter outputter;
     private JDOMFactory factory;
@@ -133,15 +133,15 @@ public class CarefulProjectMarshaller implements IProjectMarshaller {
         findAndReplaceSimpleElement(counter, root, "distributionSite", project.getValue("distributionSite"));
         findAndReplaceSimpleElement(counter, root, "distributionDirectory", project.getValue("distributionDirectory"));
         doUpdateRepository(counter, root, project.getSubContentProvider("repository"));
-        doUpdateVersions(counter, root, project.getSubContentProviderList("versions", "version"));
-        doUpdateBranches(counter, root, project.getSubContentProviderList("branches", "branch"));
-        doUpdateMailingLists(counter, root, project.getSubContentProviderList("mailingLists", "mailingList"));
-        doUpdateDevelopers(counter, root, project.getSubContentProviderList("developers", "developer"));
-        doUpdateContributors(counter, root, project.getSubContentProviderList("contributors", "contributor"));
-        doUpdateLicenses(counter, root, project.getSubContentProviderList("licenses", "license"));
+        doUpdateChildren(counter, root, project.getSubContentProviderList("versions", "version"), "versions", "version", "id");
+        doUpdateChildren(counter, root, project.getSubContentProviderList("branches", "branch"), "branches", "branch", "tag");
+        doUpdateChildren(counter, root, project.getSubContentProviderList("mailingLists", "mailingList"), "mailingLists", "mailingList", "name");
+        doUpdateChildren(counter, root, project.getSubContentProviderList("developers", "developer"), "developers", "developer", "name");
+        doUpdateChildren(counter, root, project.getSubContentProviderList("contributors", "contributor"), "contributors", "contributor", "name");
+        doUpdateChildren(counter, root, project.getSubContentProviderList("licenses", "license"), "licenses", "license", "name");
         doUpdateDependencies(counter, root, project.getSubContentProviderList("dependencies", "dependency"));
         doUpdateBuild(counter, root, project.getSubContentProvider("build"));
-        doUpdateReports(counter, root, project.getValueList("reports", "report"));
+        doUpdateSimpleChildren(counter, root, project.getValueList("reports", "report"), "reports", "report");
     }
     
     private void doUpdateOrganization(Counter counter, Element root, IContentProvider org) 
@@ -168,45 +168,64 @@ public class CarefulProjectMarshaller implements IProjectMarshaller {
         }
     }    
 
-    
-    private void doUpdateVersions(Counter counter, Element root, List versions) 
-            throws Exception {
-        boolean shouldExist = versions != null && versions.size() > 0;
-        Element versionsElem = updateElement(counter, root, "versions", shouldExist);
+    private void doUpdateChildren(Counter counter, Element root, List newValues, String parentName, String childName, String childKey) throws Exception {
+        boolean shouldExist = newValues != null && !newValues.isEmpty();
+        Element parentElement = updateElement(counter, root, parentName, shouldExist);
         if (shouldExist) {
-//            List versElemList = versionsElem.getChildren("version");
-//            int versElemSize = versElemList == null ? 0 : versElemList.size();
+            // currentChildren provides a filtered view into the actual data.
+            // JDOM automatically adjusts the insertion point to account for
+            // white space, comments, and elements that do not match the filter.
+            List currentChildren = parentElement.getContent(new ElementFilter(childName));
+
             // usedElems stores a list of Version elements that are either new or overwritten.
             // is used later to get rid of the non-existing ones.
             List usedElems = new ArrayList();
-            Iterator it = versions.iterator();
-            while (it.hasNext()) {
-                IContentProvider version = (IContentProvider)it.next();
-                String id = version.getValue("id");
-                List list = versionsElem.getContent(new SpecificElementFilter("version", "id", id));
-                if (list != null && list.size() > 0) {
+
+            for (int i = 0; i < newValues.size(); ++i) {
+                IContentProvider newValue = (IContentProvider)newValues.get(i);
+
+                String id = newValue.getValue(childKey);
+                List list = parentElement.getContent(new SpecificElementFilter(childName, childKey, id));
+                if (list != null && !list.isEmpty()) {
                     if (list.size() > 1) {
                         log.info("filter returned multiple instances, the primary key is not unique - key=" + id);
                         // what to do, we found multiple ones instead of one..
                     } else {
-                        Element vElem = (Element)list.get(0);
-                        doUpdateSingleVersion(vElem, version);
-                        usedElems.add(vElem);
-                        log.debug("updating element " + vElem.getChildText("id"));
+                        Element child = (Element)list.get(0);
+
+                        // move to new position
+                        int pos = currentChildren.indexOf(child);
+                        if (pos != i) {
+                           currentChildren.remove(pos);
+                           currentChildren.add(i, child);
+                        }
+
+                        doUpdateChild(child, newValue);
+                        usedElems.add(child);
+                        log.debug("updating element " + child.getChildText(childKey));
                     }
                 } else {
                     //create a new version element
-                    Element vElem = factory.element("version");
-                    doUpdateSingleVersion(vElem, version);
-                    usedElems.add(vElem);
-                    versionsElem.addContent(vElem);
-                    log.debug("creating new element " + vElem.getChildText("id"));
+                    Element child = factory.element(childName);
+                    doUpdateChild(child, newValue);
+                    usedElems.add(child);
+                    currentChildren.add(i, child);
+                    log.debug("creating new element " + child.getChildText(childKey));
                 }
             } // end iterator
-            removeNonUsedSubelements(versionsElem, "version", usedElems);
+            removeNonUsedSubelements(parentElement, childName, usedElems);
         }
+    }
+
+    private void doUpdateChild(Element child, IContentProvider newValue) throws Exception {
+        if ("version".equals(child.getName())) { doUpdateSingleVersion(child, newValue); }
+        else if ("branch".equals(child.getName())) { doUpdateSingleBranch(child, newValue); }
+        else if ("mailingList".equals(child.getName())) { doUpdateSingleMailingList(child, newValue); }
+        else if ("developer".equals(child.getName())) { doUpdateSingleDeveloper(child, newValue); }
+        else if ("contributor".equals(child.getName())) { doUpdateSingleContributor(child, newValue); }
+        else if ("license".equals(child.getName())) { doUpdateSingleLicense(child, newValue); }
     }    
-    
+
     private void doUpdateSingleVersion(Element versionElement, IContentProvider version) {
         Counter count = new Counter();
         findAndReplaceSimpleElement(count, versionElement, "id", version.getValue("id"));
@@ -215,87 +234,10 @@ public class CarefulProjectMarshaller implements IProjectMarshaller {
     }
 
     
-    private void doUpdateBranches(Counter counter, Element root, List branches) 
-            throws Exception {
-        boolean shouldExist = branches != null && branches.size() > 0;
-        Element branchesElem = updateElement(counter, root, "branches", shouldExist);
-        if (shouldExist) {
-//            List elemList = branchesElem.getChildren("branch");
-//            int elemSize = elemList == null ? 0 : elemList.size();
-            // usedElems stores a list of Version elements that are either new or overwritten.
-            // is used later to get rid of the non-existing ones.
-            List usedElems = new ArrayList();
-            Iterator it = branches.iterator();
-            while (it.hasNext()) {
-                IContentProvider branch = (IContentProvider)it.next();
-                String id = branch.getValue("tag");
-                List list = branchesElem.getContent(new SpecificElementFilter("branch", "tag", id));
-                if (list != null && list.size() > 0) {
-                    if (list.size() > 1) {
-                        log.info("filter returned multiple instances, the primary key is not unique - key=" + id);
-                        // what to do, we found multiple ones instead of one..
-                    } else {
-                        Element vElem = (Element)list.get(0);
-                        doUpdateSingleBranch(vElem, branch);
-                        usedElems.add(vElem);
-                        log.debug("updating element " + vElem.getChildText("tag"));
-                    }
-                } else {
-                    //create a new version element
-                    Element vElem = factory.element("branch");
-                    doUpdateSingleBranch(vElem, branch);
-                    usedElems.add(vElem);
-                    branchesElem.addContent(vElem);
-                    log.debug("creating new element " + vElem.getChildText("tag"));
-                }
-            } // end iterator
-            removeNonUsedSubelements(branchesElem, "branch", usedElems);
-        }
-    }    
-    
     private void doUpdateSingleBranch(Element branchElement, IContentProvider branch) {
         findAndReplaceSimpleElement(new Counter(), branchElement, "tag", branch.getValue("tag"));
     }
 
-    private void doUpdateMailingLists(Counter counter, Element root, List mails) 
-            throws Exception 
-    {
-        boolean shouldExist = mails != null && mails.size() > 0;
-        Element mailsElem = updateElement(counter, root, "mailingLists", shouldExist);
-        if (shouldExist) {
-//            List elemList = mailsElem.getChildren("mailingList");
-//            int elemSize = elemList == null ? 0 : elemList.size();
-            // usedElems stores a list of Version elements that are either new or overwritten.
-            // is used later to get rid of the non-existing ones.
-            List usedElems = new ArrayList();
-            Iterator it = mails.iterator();
-            while (it.hasNext()) {
-                IContentProvider mail = (IContentProvider)it.next();
-                String id = mail.getValue("name");
-                List list = mailsElem.getContent(new SpecificElementFilter("mailingList", "name", id));
-                if (list != null && list.size() > 0) {
-                    if (list.size() > 1) {
-                        log.info("filter returned multiple instances, the primary key is not unique - key=" + id);
-                        // what to do, we found multiple ones instead of one..
-                    } else {
-                        Element vElem = (Element)list.get(0);
-                        doUpdateSingleMailingList(vElem, mail);
-                        usedElems.add(vElem);
-                        log.debug("updating element " + vElem.getChildText("name"));
-                    }
-                } else {
-                    //create a new version element
-                    Element vElem = factory.element("mailingList");
-                    doUpdateSingleMailingList(vElem, mail);
-                    usedElems.add(vElem);
-                    mailsElem.addContent(vElem);
-                    log.debug("creating new element " + vElem.getChildText("name"));
-                }
-            } // end iterator
-            removeNonUsedSubelements(mailsElem, "mailingList", usedElems);
-        }
-    }    
-    
     private void doUpdateSingleMailingList(Element mailElement, IContentProvider mail) {
         Counter count = new Counter();
         findAndReplaceSimpleElement(count, mailElement, "name", mail.getValue("name"));
@@ -304,42 +246,6 @@ public class CarefulProjectMarshaller implements IProjectMarshaller {
         findAndReplaceSimpleElement(count, mailElement, "archive", mail.getValue("archive"));
     }
 
-    private void doUpdateDevelopers(Counter counter, Element root, List developers) 
-            throws Exception {
-        boolean shouldExist = developers != null && developers.size() > 0;
-        Element developersElem = updateElement(counter, root, "developers", shouldExist);
-        if (shouldExist) {
-            // usedElems stores a list of Developer elements that are either new or overwritten.
-            // is used later to get rid of the non-existing ones.
-            List usedElems = new ArrayList();
-            Iterator it = developers.iterator();
-            while (it.hasNext()) {
-                IContentProvider dev = (IContentProvider)it.next();
-                String id = dev.getValue("name");
-                List list = developersElem.getContent(new SpecificElementFilter("developer", "name", id));
-                if (list != null && list.size() > 0) {
-                    if (list.size() > 1) {
-                        log.info("filter returned multiple instances, the primary key is not unique - key=" + id);
-                        // what to do, we found multiple ones instead of one..
-                    } else {
-                        Element vElem = (Element)list.get(0);
-                        doUpdateSingleDeveloper(vElem, dev);
-                        usedElems.add(vElem);
-                        log.debug("updating element " + vElem.getChildText("name"));
-                    }
-                } else {
-                    //create a new version element
-                    Element vElem = factory.element("developer");
-                    doUpdateSingleDeveloper(vElem, dev);
-                    usedElems.add(vElem);
-                    developersElem.addContent(vElem);
-                    log.debug("creating new element " + vElem.getChildText("name"));
-                }
-            } // end iterator
-            removeNonUsedSubelements(developersElem, "developer", usedElems);
-        }
-    }    
-    
     private void doUpdateSingleDeveloper(Element devElement, IContentProvider developer)
         throws Exception {
         Counter count = new Counter();
@@ -348,47 +254,12 @@ public class CarefulProjectMarshaller implements IProjectMarshaller {
         findAndReplaceSimpleElement(count, devElement, "email", developer.getValue("email"));
         findAndReplaceSimpleElement(count, devElement, "organization", developer.getValue("organization"));
         // roles
-        doUpdateRoles(count, devElement, developer.getValueList("roles", "role"));
+        // FIXME: cannot call this until IContentProvider supports Set
+//        doUpdateRoles(count, devElement, developer.getValueList("roles", "role"));
         findAndReplaceSimpleElement(count, devElement, "url", developer.getValue("url"));
         findAndReplaceSimpleElement(count, devElement, "timezone", developer.getValue("timezone"));
     }
 
-    private void doUpdateContributors(Counter counter, Element root, List contributors) 
-            throws Exception {
-        boolean shouldExist = contributors != null && contributors.size() > 0;
-        Element contributorsElem = updateElement(counter, root, "contributors", shouldExist);
-        if (shouldExist) {
-            // usedElems stores a list of Developer elements that are either new or overwritten.
-            // is used later to get rid of the non-existing ones.
-            List usedElems = new ArrayList();
-            Iterator it = contributors.iterator();
-            while (it.hasNext()) {
-                IContentProvider cont = (IContentProvider)it.next();
-                String id = cont.getValue("name");
-                List list = contributorsElem.getContent(new SpecificElementFilter("contributor", "name", id));
-                if (list != null && list.size() > 0) {
-                    if (list.size() > 1) {
-                        log.info("filter returned multiple instances, the primary key is not unique - key=" + id);
-                        // what to do, we found multiple ones instead of one..
-                    } else {
-                        Element vElem = (Element)list.get(0);
-                        doUpdateSingleContributor(vElem, cont);
-                        usedElems.add(vElem);
-                        log.debug("updating element " + vElem.getChildText("name"));
-                    }
-                } else {
-                    //create a new version element
-                    Element vElem = factory.element("contributor");
-                    doUpdateSingleContributor(vElem, cont);
-                    usedElems.add(vElem);
-                    contributorsElem.addContent(vElem);
-                    log.debug("creating new element " + vElem.getChildText("name"));
-                }
-            } // end iterator
-            removeNonUsedSubelements(contributorsElem, "contributor", usedElems);
-        }
-    }    
-    
     private void doUpdateSingleContributor(Element conElement, IContentProvider contributor)
         throws Exception {
         Counter count = new Counter();
@@ -401,9 +272,8 @@ public class CarefulProjectMarshaller implements IProjectMarshaller {
         findAndReplaceSimpleElement(count, conElement, "timezone", contributor.getValue("timezone"));
     }
 
-    private void doUpdateRoles(Counter counter, Element root, Collection roles) 
-            throws Exception {
-        boolean shouldExist = roles != null && roles.size() > 0;
+    private void doUpdateRoles(Counter counter, Element root, Collection roles) throws Exception {
+        boolean shouldExist = roles != null && !roles.isEmpty();
         Element rolesElem = updateElement(counter, root, "roles", shouldExist);
         if (shouldExist) {
             // don't do funky stuff here now now..
@@ -419,42 +289,6 @@ public class CarefulProjectMarshaller implements IProjectMarshaller {
         } 
     }    
     
-    private void doUpdateLicenses(Counter counter, Element root, List licenses) 
-            throws Exception {
-        boolean shouldExist = licenses != null && licenses.size() > 0;
-        Element licensesElem = updateElement(counter, root, "licenses", shouldExist);
-        if (shouldExist) {
-            // usedElems stores a list of Licence elements that are either new or overwritten.
-            // is used later to get rid of the non-existing ones.
-            List usedElems = new ArrayList();
-            Iterator it = licenses.iterator();
-            while (it.hasNext()) {
-                IContentProvider license = (IContentProvider)it.next();
-                String id = license.getValue("name");
-                List list = licensesElem.getContent(new SpecificElementFilter("license", "name", id));
-                if (list != null && list.size() > 0) {
-                    if (list.size() > 1) {
-                        log.info("filter returned multiple instances, the primary key is not unique - key=" + id);
-                        // what to do, we found multiple ones instead of one..
-                    } else {
-                        Element vElem = (Element)list.get(0);
-                        doUpdateSingleLicense(vElem, license);
-                        usedElems.add(vElem);
-                        log.debug("updating element " + vElem.getChildText("name"));
-                    }
-                } else {
-                    //create a new version element
-                    Element vElem = factory.element("license");
-                    doUpdateSingleLicense(vElem, license);
-                    usedElems.add(vElem);
-                    licensesElem.addContent(vElem);
-                    log.debug("creating new element " + vElem.getChildText("name"));
-                }
-            } // end iterator
-            removeNonUsedSubelements(licensesElem, "license", usedElems);
-        }
-    }    
-    
     private void doUpdateSingleLicense(Element licElement, IContentProvider license) {
         Counter count = new Counter();
         findAndReplaceSimpleElement(count, licElement, "name", license.getValue("name"));
@@ -465,23 +299,37 @@ public class CarefulProjectMarshaller implements IProjectMarshaller {
     
     private void doUpdateDependencies(Counter counter, Element root, List dependencies) 
             throws Exception {
-        boolean shouldExist = dependencies != null && dependencies.size() > 0;
+        boolean shouldExist = dependencies != null && !dependencies.isEmpty();
         Element dependenciesElem = updateElement(counter, root, "dependencies", shouldExist);
         if (shouldExist) {
+           // currentChildren provides a filtered view into the actual data.
+           // JDOM automatically adjusts the insertion point to account for
+           // white space, comments, and elements that do not match the filter.
+           List currentChildren = dependenciesElem.getContent(new ElementFilter("dependency"));
+
             // usedElems stores a list of Dependency elements that are either new or overwritten.
             // is used later to get rid of the non-existing ones.
             List usedElems = new ArrayList();
-            Iterator it = dependencies.iterator();
-            while (it.hasNext()) {
-                IContentProvider dep = (IContentProvider)it.next();
+
+            for (int i = 0; i < dependencies.size(); ++i) {
+                IContentProvider dep = (IContentProvider)dependencies.get(i);
+
                 List list = dependenciesElem.getContent(
                         new DependencyElementFilter(dep.getValue("id"), dep.getValue("artifactId"), dep.getValue("groupId")));
-                if (list != null && list.size() > 0) {
+                if (list != null && !list.isEmpty()) {
                     if (list.size() > 1) {
                         log.info("filter returned multiple instances, the primary key is not unique - key=" + dep.getValue("id"));
                         // what to do, we found multiple ones instead of one..
                     } else {
                         Element vElem = (Element)list.get(0);
+
+                        // move to new position
+                        int pos = currentChildren.indexOf(vElem);
+                        if (pos != i) {
+                           currentChildren.remove(pos);
+                           currentChildren.add(i, vElem);
+                        }
+
                         doUpdateSingleDependency(vElem, dep);
                         usedElems.add(vElem);
                         log.debug("updating element " + vElem.getChildText("artifactId"));
@@ -491,7 +339,7 @@ public class CarefulProjectMarshaller implements IProjectMarshaller {
                     Element vElem = factory.element("dependency");
                     doUpdateSingleDependency(vElem, dep);
                     usedElems.add(vElem);
-                    dependenciesElem.addContent(vElem);
+                    currentChildren.add(i, vElem);
                     log.debug("creating new element " + vElem.getChildText("artifactId"));
                 }
             } // end iterator
@@ -530,15 +378,17 @@ public class CarefulProjectMarshaller implements IProjectMarshaller {
     }
     
     private void doUpdateProperties(Counter counter, Element parent, Map props) {
-        boolean shouldExist = props != null && props.size() > 0;
+        boolean shouldExist = props != null && !props.isEmpty();
         Element propsElem = updateElement(counter, parent, "properties", shouldExist);
         if (shouldExist) {
             // usedElems stores a list of Properties elements that are either new or overwritten.
             // is used later to get rid of the non-existing ones.
             List usedElems = new ArrayList();
+
             Iterator it = props.keySet().iterator();
             while (it.hasNext()) {
                 String key = (String)it.next();
+
                 Element propEl = propsElem.getChild(key);
                 if (propEl != null) {
                     propEl.setText((String)props.get(key));
@@ -585,157 +435,130 @@ public class CarefulProjectMarshaller implements IProjectMarshaller {
         Element testElem = updateElement(counter, parent, "unitTest", shouldExist);
         if (shouldExist) {
             Counter innerCount = new Counter();
-            doUpdateExIncludes(innerCount, testElem, test.getValueList("includes", "include"), "includes", "include");
-            doUpdateExIncludes(innerCount, testElem, test.getValueList("excludes", "exclude"), "excludes", "exclude");
+            doUpdateSimpleChildren(innerCount, testElem, test.getValueList("includes", "include"), "includes", "include");
+            doUpdateSimpleChildren(innerCount, testElem, test.getValueList("excludes", "exclude"), "excludes", "exclude");
             doUpdateResources(innerCount, testElem, test.getSubContentProviderList("resources", "resource"));
         }
     }
 
     /**
      * updates resources, however the replacement algorithm here is not ideal,
-     * no real primary id of simgle elements available..
+     * no real primary id of single elements available..
      */
-    private void doUpdateResources(Counter counter, Element root, List resources) 
-            throws Exception {
-        boolean shouldExist = resources != null && resources.size() > 0;
+    private void doUpdateResources(Counter counter, Element root, List resources) throws Exception {
+        boolean shouldExist = resources != null && !resources.isEmpty();
         Element resourcesElem = updateElement(counter, root, "resources", shouldExist);
         if (shouldExist) {
-            List newElems = new ArrayList(resources);
-            Iterator it = resourcesElem.getChildren("resource").iterator();
-            Iterator it2 = newElems.iterator();
-            while (it.hasNext() && it2.hasNext()) {
-                Element el = (Element)it.next();
-                IContentProvider res = (IContentProvider)it2.next();
+            // children provides a filtered view into the actual data.
+            // JDOM automatically adjusts the insertion point to account for
+            // white space, comments, and elements that do not match the filter.
+            List children = resourcesElem.getContent(new ElementFilter("resource"));
+
+            Iterator tgtIterator = children.iterator();
+            Iterator srcIterator = resources.iterator();
+
+            while (tgtIterator.hasNext() && srcIterator.hasNext()) {
+                Element el = (Element)tgtIterator.next();
+                IContentProvider res = (IContentProvider)srcIterator.next();
                 doUpdateSingleResource(el, res);
                 log.debug("updating element " + el.getChildText("directory"));
             } // end iterator
-            while (it.hasNext()) {
-                // when some resources are obsolete, remove them..
-                it.next();
-                it.remove();
+
+            while (tgtIterator.hasNext()) {
+                // when some items are obsolete, remove them..
+                tgtIterator.next();
+                tgtIterator.remove();
             }
-            while (it2.hasNext()) {
-                IContentProvider res = (IContentProvider)it2.next();
+
+            while (srcIterator.hasNext()) {
+                IContentProvider res = (IContentProvider)srcIterator.next();
                 Element newEl = factory.element("resource");
                 doUpdateSingleResource(newEl, res);
-                resourcesElem.addContent(newEl);
+                children.add(newEl);
             }
         }
     }    
 
     /**
      * updates resources, however the replacement algorithm here is not ideal,
-     * no real primary id of simgle elements available..
+     * no real primary id of single elements available..
      */
-    private void doUpdateSourceModifications(Counter counter, Element root, List sourceModifications) 
-            throws Exception {
-        boolean shouldExist = sourceModifications != null && sourceModifications.size() > 0;
+    private void doUpdateSourceModifications(Counter counter, Element root, List sourceModifications) throws Exception {
+        boolean shouldExist = sourceModifications != null && !sourceModifications.isEmpty();
         Element sourcesModificationsElem = updateElement(counter, root, "sourceModifications", shouldExist);
         if (shouldExist) {
-            List newElems = new ArrayList(sourceModifications);
-            Iterator it = sourcesModificationsElem.getChildren("sourceModification").iterator();
-            Iterator it2 = newElems.iterator();
-            while (it.hasNext() && it2.hasNext()) {
-                Element el = (Element)it.next();
-                IContentProvider res = (IContentProvider)it2.next();
+            // children provides a filtered view into the actual data.
+            // JDOM automatically adjusts the insertion point to account for
+            // white space, comments, and elements that do not match the filter.
+            List children = sourcesModificationsElem.getContent(new ElementFilter("sourceModification"));
+
+            Iterator tgtIterator = children.iterator();
+            Iterator srcIterator = sourceModifications.iterator();
+
+            while (tgtIterator.hasNext() && srcIterator.hasNext()) {
+                Element el = (Element)tgtIterator.next();
+                IContentProvider res = (IContentProvider)srcIterator.next();
                 doUpdateSingleSourceModification(el, res);
-            } // end iterator
-            while (it.hasNext()) {
-                // when some resources are obsolete, remove them..
-                it.next();
-                it.remove();
             }
-            while (it2.hasNext()) {
-                IContentProvider res = (IContentProvider)it2.next();
+
+            while (tgtIterator.hasNext()) {
+                // when some items are obsolete, remove them..
+                tgtIterator.next();
+                tgtIterator.remove();
+            }
+
+            while (srcIterator.hasNext()) {
+                IContentProvider res = (IContentProvider)srcIterator.next();
                 Element newEl = factory.element("sourceModification");
                 doUpdateSingleSourceModification(newEl, res);
-                sourcesModificationsElem.addContent(newEl);
+                children.add(newEl);
             }
         }
-    }    
+    }
     
     private void doUpdateSingleResource(Element resElem, IContentProvider resource) throws Exception {
         Counter innerCount = new Counter();
         findAndReplaceSimpleElement(innerCount, resElem, "directory", resource.getValue("directory"));
         findAndReplaceSimpleElement(innerCount, resElem, "targetPath", resource.getValue("targetPath"));
-        doUpdateExIncludes(innerCount, resElem, resource.getValueList("includes", "include"), "includes", "include");
-        doUpdateExIncludes(innerCount, resElem, resource.getValueList("excludes", "exclude"), "excludes", "exclude");
+        doUpdateSimpleChildren(innerCount, resElem, resource.getValueList("includes", "include"), "includes", "include");
+        doUpdateSimpleChildren(innerCount, resElem, resource.getValueList("excludes", "exclude"), "excludes", "exclude");
         findAndReplaceSimpleElement(innerCount, resElem, "filtering", resource.getValue("filtering"));
     }
     
     private void doUpdateSingleSourceModification(Element resElem, IContentProvider resource) throws Exception {
         Counter innerCount = new Counter();
         findAndReplaceSimpleElement(innerCount, resElem, "className", resource.getValue("className"));
-        doUpdateExIncludes(innerCount, resElem, resource.getValueList("includes", "include"), "includes", "include");
-        doUpdateExIncludes(innerCount, resElem, resource.getValueList("excludes", "exclude"), "excludes", "exclude");
+        doUpdateSimpleChildren(innerCount, resElem, resource.getValueList("includes", "include"), "includes", "include");
+        doUpdateSimpleChildren(innerCount, resElem, resource.getValueList("excludes", "exclude"), "excludes", "exclude");
     }
     
-    
-    private void doUpdateReports(Counter counter, Element parent, List reports) {
-        boolean shouldExist = reports != null && reports.size() > 0;
-        Element reportsElem = updateElement(counter, parent, "reports", shouldExist);
+    private void doUpdateSimpleChildren(Counter counter, Element root, List newValues, String parentName, String childName) {
+        boolean shouldExist = newValues != null && !newValues.isEmpty();
+        Element cludeElem = updateElement(counter, root, parentName, shouldExist);
         if (shouldExist) {
-            List newList = new ArrayList(reports);
-            List liveList = reportsElem.getChildren("report");
-            Iterator it = liveList.iterator();
-            // first remove the old ones that are not in the new list..
-            while (it.hasNext())
-            {
-                Element el = (Element)it.next();
-                String report = el.getText();
-                int index = newList.indexOf(report);
-                if (index < 0)
-                {
-                    it.remove();
-                } else {
-                    newList.remove(index);
-                }
-            }
-            // now add everything that is not included.
-            if (newList.size() > 0) 
-            {
-                Iterator it2 = newList.iterator();
-                while (it2.hasNext())
-                {
-                    String rep = (String)it2.next();
-                    Element newReport = factory.element("report");
-                    newReport.setText(rep);
-                    reportsElem.addContent(newReport);
-                }
-            }
-        }
-    }
+            // children provides a filtered view into the actual data.
+            // JDOM automatically adjusts the insertion point to account for
+            // white space, comments, and elements that do not match the filter.
+            List children = cludeElem.getContent(new ElementFilter(childName));
 
-    private void doUpdateExIncludes(Counter counter, Element parent, List cludes, 
-                                    String motherElementName, String childElementName) 
-            throws Exception {
-        boolean shouldExist = cludes != null && cludes.size() > 0;
-        Element cludeElem = updateElement(counter, parent, motherElementName, shouldExist);
-        if (shouldExist) {
-            // usedElems stores a list of Properties elements that are either new or overwritten.
-            // is used later to get rid of the non-existing ones.
-            List usedElems = new ArrayList();
-            List newOnes = new ArrayList(cludes);
-            Iterator it = cludeElem.getChildren(childElementName).iterator();
-            while (it.hasNext()) {
-                Element el = (Element)it.next();
-                int index = newOnes.indexOf(el.getText());
-                if (index < 0) {
-                    // not there anymore
-                    it.remove();
-                } else {
-                    newOnes.remove(index);
-                }
-            } // end iterator
-            if (newOnes.size() > 0) {
-                // now add the new ones to the end..
-                it = newOnes.iterator();
-                while (it.hasNext()) {
-                    String ns = (String)it.next();
-                    Element newEl = factory.element(childElementName);
-                    newEl.setText(ns);
-                    cludeElem.addContent(newEl);
-                }
+            Iterator tgtIterator = children.iterator();
+            Iterator srcIterator = newValues.iterator();
+
+            while (tgtIterator.hasNext() && srcIterator.hasNext()) {
+                Element child = (Element)tgtIterator.next();
+                child.setText((String)srcIterator.next());
+            }
+
+            while (tgtIterator.hasNext()) {
+                // when some items are obsolete, remove them..
+                tgtIterator.next();
+                tgtIterator.remove();
+            }
+
+            while (srcIterator.hasNext()) {
+                Element child = factory.element(childName);
+                child.setText((String)srcIterator.next());
+                children.add(child);
             }
         }
     }
@@ -778,15 +601,13 @@ public class CarefulProjectMarshaller implements IProjectMarshaller {
         if (element == null && shouldExist)
         {
             element = factory.element(name);
-//            log.debug("creating non-existing element " + name);
             insertAtPrefferedLocation(parent, element, counter);
             counter.increaseCount();
         } 
         if (!shouldExist && element != null)
         {
             //remove existing element that is no longer defined.
-            boolean removed = parent.removeChild(name);
-//            log.debug("removed element " + name + " " + removed);
+            parent.removeChild(name);
         } 
         return element;
     }
@@ -803,12 +624,12 @@ public class CarefulProjectMarshaller implements IProjectMarshaller {
         } else
         {
             // find the element at the preffered location for this one, and add my element right after it.
-            Element currElement = (Element)children.get(counter.getCurrentIndex());
+//            Element currElement = (Element)children.get(counter.getCurrentIndex());
 //            List content = parent.getContent();
 //            int index = content.indexOf(currElement);
             log.debug("inserting " + child.getName() + " with pref loc=" + counter.getCurrentIndex());
-            //                content.add(index, element);
-            //                parent.setContent(content);
+//            content.add(index, element);
+//            parent.setContent(content);
 //            parent.addContent(child);
             children.add(counter.getCurrentIndex(), child);
         }
