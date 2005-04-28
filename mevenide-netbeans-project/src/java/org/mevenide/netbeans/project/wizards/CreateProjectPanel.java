@@ -36,8 +36,15 @@ public class CreateProjectPanel implements WizardDescriptor.FinishablePanel, Wiz
 
     private CreateProjectVisual component;
     
+    private boolean isFinished;
+    
     /** Create the wizard panel descriptor. */
     public CreateProjectPanel() {
+        isFinished = true;
+    }
+    
+    public CreateProjectPanel(boolean finishPanel) {
+        isFinished = finishPanel;
     }
     
     public Component getComponent() {
@@ -89,7 +96,7 @@ public class CreateProjectPanel implements WizardDescriptor.FinishablePanel, Wiz
     }
 
     public boolean isFinishPanel() {
-        return true;
+        return isFinished;
     }
 
 }
