@@ -110,10 +110,6 @@
       <resource>
         <directory>src/main/resources</directory>
       </resource>
-      <resource>
-        <directory>src/main/etc</directory>
-        <targetPath>META-INF</targetPath>
-      </resource>
     </resources>
   </build>
   <versions>
