@@ -1,6 +1,12 @@
 package org.mevenide.idea.util.goals;
 
 import org.mevenide.idea.Res;
+import org.mevenide.goals.grabber.IGoalsGrabber;
+
+import java.util.Map;
+import java.util.HashMap;
+import java.util.Set;
+import java.util.HashSet;
 
 /**
  * @author Arik
@@ -12,6 +18,9 @@ public abstract class GoalsHelper {
 
     public static String buildFullyQualifiedName(final String pPluginName,
                                                  final String pGoalName) {
+        if(pPluginName == null || pPluginName.trim().length() == 0)
+            return pGoalName;
+
         final StringBuffer sb = new StringBuffer(pPluginName);
         if(pGoalName != null && pGoalName.trim().length() > 0 && !pGoalName.equalsIgnoreCase("(Default)")) {
             sb.append(':');
@@ -45,4 +54,26 @@ public abstract class GoalsHelper {
 
     }
 */
+    public static Map asMap(final IGoalsGrabber pGrabber) {
+        final String[] plugins = pGrabber.getPlugins();
+        if(plugins == null || plugins.length == 0)
+            return new HashMap();
+
+        final Map<String, Set> pluginsMap = new HashMap<String, Set>(plugins.length);
+        for(final String plugin : plugins) {
+            final String[] goals = pGrabber.getGoals(plugin);
+            final Set<String> goalsSet;
+            if(goals == null)
+                goalsSet = new HashSet<String>();
+            else
+                goalsSet = new HashSet<String>(goals.length);
+
+            pluginsMap.put(plugin, goalsSet);
+
+            for(final String goal : goals)
+                goalsSet.add(goal);
+        }
+
+        return pluginsMap;
+    }
 }

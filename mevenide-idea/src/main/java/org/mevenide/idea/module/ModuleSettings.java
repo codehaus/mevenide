@@ -11,8 +11,9 @@ import com.intellij.openapi.util.WriteExternalException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jdom.Element;
+import org.mevenide.goals.grabber.IGoalsGrabber;
 import org.mevenide.idea.Res;
-import org.mevenide.idea.util.ui.UIUtils;
+import org.mevenide.idea.util.goals.grabber.CustomGoalsGrabber;
 
 import javax.swing.event.EventListenerList;
 import java.io.File;
@@ -52,6 +53,11 @@ public class ModuleSettings implements ModuleComponent, JDOMExternalizable {
      * The POM file attached to this module.
      */
     private File pomFile;
+
+    /**
+     * The list of favorite goals attached to this module.
+     */
+    private CustomGoalsGrabber favoriteGoalsGrabber = new CustomGoalsGrabber();
 
     /**
      * Creates a module settings manager for the specified module.
@@ -111,7 +117,7 @@ public class ModuleSettings implements ModuleComponent, JDOMExternalizable {
         if (pPomFile != null && !pPomFile.isFile())
             throw new FileNotFoundException(RES.get("pom.file.error"));
 
-        if (!pPomFile.getName().equalsIgnoreCase("project.xml"))
+        if (pPomFile != null && !pPomFile.getName().equalsIgnoreCase("project.xml"))
             throw new FileNotFoundException(RES.get("pom.file.name.error"));
 
         if(pomFile == pPomFile)
@@ -119,11 +125,25 @@ public class ModuleSettings implements ModuleComponent, JDOMExternalizable {
 
         if(pomFile != null && pomFile.equals(pPomFile))
             return;
-        else if(pPomFile.equals(pomFile))
+        else if(pPomFile != null && pPomFile.equals(pomFile))
             return;
 
         pomFile = pPomFile;
         firePomFileChangedEvent();
+    }
+
+    /**
+     * Returns the favorite goals collection for this module.
+     *
+     * @return an unmodifiable collection
+     */
+    public IGoalsGrabber getFavoriteGoals() {
+        return favoriteGoalsGrabber;
+    }
+
+    public void setFavoriteGoals(final IGoalsGrabber pGoalsGrabber) {
+        favoriteGoalsGrabber = new CustomGoalsGrabber(pGoalsGrabber);
+        fireFavoriteGoalsChangedEvent();
     }
 
     /**
@@ -150,9 +170,19 @@ public class ModuleSettings implements ModuleComponent, JDOMExternalizable {
     protected void firePomFileChangedEvent() {
         final PomSelectionChangedEvent event = new PomSelectionChangedEvent(this);
         final EventListener[] listeners = listenerList.getListeners(ModuleSettingsListener.class);
-        for (int i = 0; i < listeners.length; i++) {
-            ModuleSettingsListener listener = (ModuleSettingsListener) listeners[i];
-            listener.modulePomSelectionChanged(event);
+        for (final EventListener listener : listeners) {
+            ((ModuleSettingsListener) listener).modulePomSelectionChanged(event);
+        }
+    }
+
+    /**
+     * Fires the POM file-selection-changed event to all registered listeners.
+     */
+    protected void fireFavoriteGoalsChangedEvent() {
+        final ModuleFavoriteGoalsChangedEvent event = new ModuleFavoriteGoalsChangedEvent(this);
+        final EventListener[] listeners = listenerList.getListeners(ModuleSettingsListener.class);
+        for (final EventListener listener : listeners) {
+            ((ModuleSettingsListener) listener).moduleFavoriteGoalsChanged(event);
         }
     }
 
@@ -203,9 +233,19 @@ public class ModuleSettings implements ModuleComponent, JDOMExternalizable {
                 setPomFile(new File(pomFilename));
             }
             catch (FileNotFoundException e) {
-                UIUtils.showError(e);
-                LOG.error(e.getMessage(), e);
+                //
+                //ignore error, and keep pomFile as null
+                //we should, however, check pomFile for null in
+                //initComponent, and display a message to the user, asking
+                //for a valid pom file
+                //
+                LOG.trace(e.getMessage(), e);
             }
+
+        //
+        //load favorite goals list
+        //
+        favoriteGoalsGrabber.readExternal(pElement);
 
         if (LOG.isTraceEnabled())
             LOG.trace("Finished loading " + NAME);
@@ -219,6 +259,11 @@ public class ModuleSettings implements ModuleComponent, JDOMExternalizable {
         if (pomFile != null && pomFile.isFile())
             pElement.setAttribute("pomFile", pomFile.getAbsolutePath());
 
+        //
+        //save favorite goals list
+        //
+        favoriteGoalsGrabber.writeExternal(pElement);
+
         if (LOG.isTraceEnabled())
             LOG.trace("Finished saving " + NAME);
     }
@@ -230,6 +275,6 @@ public class ModuleSettings implements ModuleComponent, JDOMExternalizable {
      * @return a ModuleSettings instance
      */
     public static ModuleSettings getInstance(final Module pModule) {
-        return (ModuleSettings) pModule.getComponent(ModuleSettings.class);
+        return pModule.getComponent(ModuleSettings.class);
     }
 }

@@ -11,7 +11,11 @@ public class PluginTreeNode extends DefaultMutableTreeNode {
         super(pPlugin);
     }
 
+    public String getUserObject() {
+        return (String) super.getUserObject();
+    }
+
     public String getPlugin() {
-        return (String) userObject;
+        return getUserObject();
     }
 }

@@ -41,6 +41,9 @@ public class MavenManagerConfigurable implements ApplicationComponent, Configura
      */
     private static final Res RES = Res.getInstance(MavenManagerConfigurable.class);
 
+    /**
+     * The user interface component to display to the user.
+     */
     private MavenManagerPanel ui;
 
     public String getComponentName() {
@@ -73,7 +76,7 @@ public class MavenManagerConfigurable implements ApplicationComponent, Configura
         }
         catch (FileNotFoundException e) {
             UIUtils.showError(e);
-            LOG.error(e.getMessage(), e);
+            LOG.trace(e.getMessage(), e);
         }
     }
 

@@ -9,7 +9,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jdom.Element;
 import org.mevenide.idea.Res;
-import org.mevenide.idea.util.ui.UIUtils;
 
 import javax.swing.event.EventListenerList;
 import java.io.File;
@@ -92,7 +91,8 @@ public class MavenManager implements ApplicationComponent, JDOMExternalizable {
             LOG.trace(NAME + " initialized.");
 
         if(mavenHome == null) {
-
+            //TODO: guess maven home using a SysEnvLocationFinder
+            //TODO: if not found, ask user to define it (with a 'never-ask-again' option)
         }
     }
 
@@ -114,8 +114,12 @@ public class MavenManager implements ApplicationComponent, JDOMExternalizable {
                 setMavenHome(new File(mavenHomeValue));
             }
             catch (FileNotFoundException e) {
-                UIUtils.showError(e);
-                LOG.error(e.getMessage(), e);
+                //
+                //ignoring exception - in 'initComponent', if the maven home is
+                //still null, and MAVEN_HOME is not defined in the environment,
+                //we ask the user to supply one
+                //
+                LOG.trace(e.getMessage(), e);
             }
 
         if (LOG.isTraceEnabled())
@@ -158,10 +162,8 @@ public class MavenManager implements ApplicationComponent, JDOMExternalizable {
     protected void fireMavenHomeChangedEvent() {
         final MavenHomeChangedEvent event = new MavenHomeChangedEvent(this);
         final EventListener[] listeners = listenerList.getListeners(MavenManagerListener.class);
-        for (int i = 0; i < listeners.length; i++) {
-            MavenManagerListener listener = (MavenManagerListener) listeners[i];
-            listener.mavenHomeChanged(event);
-        }
+        for (final EventListener listener : listeners)
+            ((MavenManagerListener) listener).mavenHomeChanged(event);
     }
 
     /**
@@ -170,6 +172,6 @@ public class MavenManager implements ApplicationComponent, JDOMExternalizable {
      * @return Maven manager instance
      */
     public static MavenManager getInstance() {
-        return (MavenManager) ApplicationManager.getApplication().getComponent(MavenManager.class);
+        return ApplicationManager.getApplication().getComponent(MavenManager.class);
     }
 }

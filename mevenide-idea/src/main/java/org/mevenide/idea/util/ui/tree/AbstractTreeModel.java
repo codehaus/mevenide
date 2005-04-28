@@ -23,13 +23,13 @@ public abstract class AbstractTreeModel extends DefaultTreeModel {
         super(pRoot, pAsksAllowsChildren);
     }
 
-    protected MutableTreeNode getMutableRoot() {
+    public MutableTreeNode getMutableRoot() {
         return (MutableTreeNode) root;
     }
 
     protected static TreeNode findNode(final TreeNode pNode,
                                        final NodeVisitor pVisitor) {
-        return findNode(pNode, pVisitor, 0);
+        return findNode(pNode, pVisitor, Integer.MAX_VALUE);
     }
 
     protected static TreeNode findNode(final TreeNode pNode,
@@ -42,6 +42,8 @@ public abstract class AbstractTreeModel extends DefaultTreeModel {
                                      final NodeVisitor pVisitor,
                                      final int pLevel,
                                      final int pCurrentLevel) {
+        if(pVisitor.accept((pNode)))
+            return pNode;
 
         final int childCount = pNode.getChildCount();
         for(int i = 0; i < childCount; i++) {

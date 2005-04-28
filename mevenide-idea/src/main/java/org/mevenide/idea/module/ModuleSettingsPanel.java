@@ -3,12 +3,15 @@ package org.mevenide.idea.module;
 import com.intellij.openapi.fileChooser.FileChooserDescriptor;
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
 import com.intellij.util.ui.Tree;
-import org.mevenide.idea.GoalsProvider;
+import org.mevenide.goals.grabber.IGoalsGrabber;
 import org.mevenide.idea.Res;
 import org.mevenide.idea.util.ui.images.Icons;
 import org.mevenide.idea.util.ui.tree.GoalTreeNode;
 import org.mevenide.idea.util.ui.tree.PluginTreeNode;
 import org.mevenide.idea.util.ui.tree.SimpleGoalsTreeModel;
+import org.mevenide.idea.util.goals.GoalsHelper;
+import org.mevenide.idea.util.goals.grabber.CustomGoalsGrabber;
+import org.apache.commons.lang.StringUtils;
 
 import javax.swing.*;
 import javax.swing.tree.TreeNode;
@@ -20,9 +23,6 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
 
 /**
  * A user interface component for displaying module Maven settings to the user.
@@ -48,16 +48,13 @@ public class ModuleSettingsPanel extends JPanel {
      */
     private final Tree mavenGoalsTree = new Tree();
 
+    private CustomGoalsGrabber favoriteGoalsGrabber;
+
     /**
      * The favorite goals list.
      */
-    private final JList favoriteGoalsList = new JList();
-
-    /**
-     * The favorite goals list model - used when the "Add" or "Remove" buttons are pressed to add/remove
-     * goals.
-     */
-    private final DefaultListModel favoriteGoalsModel = new DefaultListModel();
+    private final JTree favoriteGoalsTree = new JTree();
+    private SimpleGoalsTreeModel favoriteGoalsModel;
 
     /**
      * Creates an instance.
@@ -109,7 +106,7 @@ public class ModuleSettingsPanel extends JPanel {
         c = new GridBagConstraints();
         c.gridy = 1;
         c.fill = GridBagConstraints.BOTH;
-        c.weightx = 0.5;
+        c.weightx = 1;
         c.weighty = 1;
         c.insets = new Insets(5, 5, 5, 5);
         add(new JScrollPane(mavenGoalsTree), c);
@@ -146,14 +143,15 @@ public class ModuleSettingsPanel extends JPanel {
         //
         //create favorite goals list
         //
+        favoriteGoalsTree.setShowsRootHandles(true);
+        favoriteGoalsTree.setRootVisible(false);
         c = new GridBagConstraints();
         c.gridx = 2;
         c.gridy = 1;
         c.fill = GridBagConstraints.BOTH;
-        c.weightx = 0.5;
+        c.weightx = 1;
         c.insets = new Insets(5, 5, 5, 5);
-        favoriteGoalsList.setModel(favoriteGoalsModel);
-        add(new JScrollPane(favoriteGoalsList), c);
+        add(new JScrollPane(favoriteGoalsTree), c);
     }
 
     public void setPomFile(final File pPomFile) {
@@ -170,27 +168,39 @@ public class ModuleSettingsPanel extends JPanel {
             return new File(text).getAbsoluteFile();
     }
 
-    public void loadMavenGoals(final GoalsProvider pGoalsProvider) {
+    public void setMavenGoals(final IGoalsGrabber pGoalsProvider) {
         if (pGoalsProvider == null)
             mavenGoalsTree.setModel(null);
         else
             mavenGoalsTree.setModel(new SimpleGoalsTreeModel(pGoalsProvider));
     }
 
-    public void setFavoriteGoals(final Collection pFavoriteGoals) {
-        favoriteGoalsModel.clear();
-        final Iterator goalIterator = pFavoriteGoals.iterator();
-        while (goalIterator.hasNext())
-            favoriteGoalsModel.addElement(goalIterator.next());
+    public void setFavoriteGoals(final IGoalsGrabber pGoalsProvider) {
+        favoriteGoalsGrabber = new CustomGoalsGrabber(pGoalsProvider);
+        favoriteGoalsModel = new SimpleGoalsTreeModel(pGoalsProvider);
+        favoriteGoalsTree.setModel(favoriteGoalsModel);
     }
 
-    public Collection getFavoriteGoals() {
-        final Collection favoriteSet = new HashSet(favoriteGoalsModel.getSize());
-        final Object[] favorites = favoriteGoalsModel.toArray();
-        for (int i = 0; i < favorites.length; i++)
-            favoriteSet.add(favorites[i]);
+    public IGoalsGrabber getFavoriteGoals() {
+        return favoriteGoalsGrabber;
+    }
 
-        return favoriteSet;
+    protected void addGoalSelection(final GoalTreeNode pGoalNode) {
+        final PluginTreeNode pluginNode = (PluginTreeNode) pGoalNode.getParent();
+        final String plugin = pluginNode.getPlugin();
+        final String goal = pGoalNode.getGoal();
+        final String fqName = GoalsHelper.buildFullyQualifiedName(plugin, goal);
+
+        final String props =
+                StringUtils.defaultString(pGoalNode.getDescription()) +
+                ">" +
+                StringUtils.join(pGoalNode.getPrereqs(), ',');
+        favoriteGoalsGrabber.registerGoal(fqName, props);
+
+        favoriteGoalsModel.addGoal(plugin,
+                                   goal,
+                                   pGoalNode.getDescription(),
+                                   pGoalNode.getPrereqs());
     }
 
     protected void addSelection() {
@@ -198,49 +208,70 @@ public class ModuleSettingsPanel extends JPanel {
         if (selections == null || selections.length == 0)
             return;
 
-        for (int i = 0; i < selections.length; i++) {
-            final TreePath path = selections[i];
+        for(final TreePath path : selections) {
             final Object lastPathComponent = path.getLastPathComponent();
             if (lastPathComponent instanceof TreeNode) {
                 final TreeNode node = (TreeNode) lastPathComponent;
-                final TreeNode parent = node.getParent();
 
-                if (node instanceof GoalTreeNode) {
-                    final String plugin;
-                    if (parent instanceof PluginTreeNode)
-                        plugin = ((PluginTreeNode) parent).getPlugin() + ":";
-                    else
-                        plugin = "";
-
-                    String goalName = plugin + ((GoalTreeNode) node).getGoal();
-
-                    if (!favoriteGoalsModel.contains(goalName))
-                        favoriteGoalsModel.addElement(goalName);
-                }
+                if (node instanceof GoalTreeNode)
+                    addGoalSelection((GoalTreeNode) node);
                 else if (node instanceof PluginTreeNode) {
-                    final String plugin = ((PluginTreeNode) node).getPlugin() + ":";
                     final int childCount = node.getChildCount();
-                    for (int j = 0; j < childCount; j++) {
-                        final TreeNode goalNode = node.getChildAt(j);
-                        if (goalNode instanceof GoalTreeNode) {
-                            String goalName = plugin + ((GoalTreeNode) goalNode).getGoal();
-                            if (!favoriteGoalsModel.contains(goalName))
-                                favoriteGoalsModel.addElement(goalName);
-                        }
+                    for (int i = 0; i < childCount; i++) {
+                        final TreeNode goalNode = node.getChildAt(i);
+                        addGoalSelection((GoalTreeNode) goalNode);
                     }
                 }
             }
         }
     }
 
-    protected void removeSelection() {
-        final int[] selections = favoriteGoalsList.getSelectedIndices();
-        final Object[] data = new Object[selections.length];
-        for (int i = 0; i < selections.length; i++)
-            data[i] = favoriteGoalsModel.get(selections[i]);
+    protected void removeGoalSelection(final GoalTreeNode pGoalNode) {
+        if(pGoalNode == null)
+            return;
 
-        for (int i = 0; i < data.length; i++)
-            favoriteGoalsModel.removeElement(data[i]);
+        final PluginTreeNode pluginNode = (PluginTreeNode) pGoalNode.getParent();
+        final String plugin = pluginNode.getPlugin();
+        final String goal = pGoalNode.getGoal();
+
+        final String fqName = GoalsHelper.buildFullyQualifiedName(plugin, goal);
+        favoriteGoalsGrabber.unregisterGoal(fqName);
+
+        if (pluginNode.getChildCount() == 1) {
+            final TreeNode pluginParentNode = pluginNode.getParent();
+            final int index = pluginParentNode.getIndex(pluginNode);
+            pluginNode.removeFromParent();
+            favoriteGoalsModel.nodesWereRemoved(pluginParentNode,
+                                                new int[]{index},
+                                                new Object[]{pluginNode});
+        }
+        else {
+            final int index = pluginNode.getIndex(pGoalNode);
+            pGoalNode.removeFromParent();
+            favoriteGoalsModel.nodesWereRemoved(pluginNode,
+                                                new int[]{index},
+                                                new Object[]{pGoalNode});
+        }
+    }
+
+    protected void removeSelection() {
+        final TreePath[] selections = favoriteGoalsTree.getSelectionPaths();
+        for(final TreePath path : selections) {
+            final TreeNode node = (TreeNode) path.getLastPathComponent();
+            if(node instanceof GoalTreeNode) {
+                final GoalTreeNode goalNode = (GoalTreeNode) node;
+                removeGoalSelection(goalNode);
+            }
+            else if(node instanceof PluginTreeNode) {
+                final PluginTreeNode pluginNode = (PluginTreeNode) node.getParent();
+                final int childCount = pluginNode.getChildCount();
+                for (int i = 0; i < childCount; i++) {
+                    final TreeNode tempNode = pluginNode.getChildAt(i);
+                    final GoalTreeNode goalNode = (GoalTreeNode) tempNode;
+                    removeGoalSelection(goalNode);
+                }
+            }
+        }
     }
 
     private class PomFileChooser extends FileChooserDescriptor {
