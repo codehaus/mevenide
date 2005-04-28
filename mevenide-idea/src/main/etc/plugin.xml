@@ -2,9 +2,9 @@
 <idea-plugin>
     <name>Mevenide IDEA integration</name>
     <description>This plugin provides strong integration of Maven with IntelliJ IDEA.</description>
-    <version>0.1-SNAPSHOT</version>
+    <version>0.1</version>
     <vendor>Mevenide</vendor>
-    <idea-version since-build="3290"/>
+    <idea-version since-build="3311"/>
 
     <application-components>
         <component>
