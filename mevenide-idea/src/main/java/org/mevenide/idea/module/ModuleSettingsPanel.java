@@ -9,6 +9,7 @@ import org.mevenide.idea.util.ui.images.Icons;
 import org.mevenide.idea.util.ui.tree.GoalTreeNode;
 import org.mevenide.idea.util.ui.tree.PluginTreeNode;
 import org.mevenide.idea.util.ui.tree.SimpleGoalsTreeModel;
+import org.mevenide.idea.util.ui.tree.GoalsTreeCellRenderer;
 import org.mevenide.idea.util.goals.GoalsHelper;
 import org.mevenide.idea.util.goals.grabber.CustomGoalsGrabber;
 import org.apache.commons.lang.StringUtils;
@@ -48,12 +49,19 @@ public class ModuleSettingsPanel extends JPanel {
      */
     private final Tree mavenGoalsTree = new Tree();
 
+    /**
+     * The goals grabber used for storing the selected favorite goals.
+     */
     private CustomGoalsGrabber favoriteGoalsGrabber;
 
     /**
      * The favorite goals list.
      */
-    private final JTree favoriteGoalsTree = new JTree();
+    private final Tree favoriteGoalsTree = new Tree();
+
+    /**
+     * The model for the selected goals.
+     */
     private SimpleGoalsTreeModel favoriteGoalsModel;
 
     /**
@@ -101,6 +109,7 @@ public class ModuleSettingsPanel extends JPanel {
         //
         //create maven global goals tree
         //
+        mavenGoalsTree.setCellRenderer(new GoalsTreeCellRenderer());
         mavenGoalsTree.setShowsRootHandles(true);
         mavenGoalsTree.setRootVisible(false);
         c = new GridBagConstraints();
@@ -143,6 +152,7 @@ public class ModuleSettingsPanel extends JPanel {
         //
         //create favorite goals list
         //
+        favoriteGoalsTree.setCellRenderer(new GoalsTreeCellRenderer());
         favoriteGoalsTree.setShowsRootHandles(true);
         favoriteGoalsTree.setRootVisible(false);
         c = new GridBagConstraints();
@@ -176,7 +186,8 @@ public class ModuleSettingsPanel extends JPanel {
     }
 
     public void setFavoriteGoals(final IGoalsGrabber pGoalsProvider) {
-        favoriteGoalsGrabber = new CustomGoalsGrabber(pGoalsProvider);
+        favoriteGoalsGrabber = new CustomGoalsGrabber(pGoalsProvider.getName(),
+                                                      pGoalsProvider);
         favoriteGoalsModel = new SimpleGoalsTreeModel(pGoalsProvider);
         favoriteGoalsTree.setModel(favoriteGoalsModel);
     }

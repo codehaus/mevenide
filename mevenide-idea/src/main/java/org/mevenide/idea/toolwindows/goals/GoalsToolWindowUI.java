@@ -32,6 +32,7 @@ import org.mevenide.idea.toolwindows.execution.ExecutionToolWindowUI;
 import org.mevenide.idea.util.ui.tree.GoalTreeNode;
 import org.mevenide.idea.util.ui.tree.ModuleTreeNode;
 import org.mevenide.idea.util.ui.tree.PluginTreeNode;
+import org.mevenide.idea.util.ui.tree.GoalsTreeCellRenderer;
 import org.mevenide.idea.util.ConfigurableWrapper;
 import org.mevenide.idea.util.goals.GoalsHelper;
 import org.mevenide.idea.util.ui.UIUtils;
@@ -105,6 +106,7 @@ public class GoalsToolWindowUI extends JPanel {
         goalsTree.setModel(model);
         goalsTree.setRootVisible(false);
         goalsTree.setShowsRootHandles(true);
+        goalsTree.setCellRenderer(new GoalsTreeCellRenderer());
         goalsTree.addMouseListener(new MouseAdapter() {
             public void mouseClicked(final MouseEvent pEvent) {
                 if (pEvent.getClickCount() == 2) {
@@ -174,10 +176,9 @@ public class GoalsToolWindowUI extends JPanel {
         if (selections == null || selections.length == 0)
             return new String[0];
 
-        final List goalList = new ArrayList(selections.length);
+        final List<String> goalList = new ArrayList<String>(selections.length);
 
-        for (int i = 0; i < selections.length; i++) {
-            final TreePath selection = selections[i];
+        for (final TreePath selection : selections) {
             final TreeNode node = (TreeNode) selection.getLastPathComponent();
             if (node instanceof GoalTreeNode) {
                 final PluginTreeNode pluginNode = (PluginTreeNode) node.getParent();
@@ -187,7 +188,7 @@ public class GoalsToolWindowUI extends JPanel {
             }
         }
 
-        return (String[]) goalList.toArray(new String[goalList.size()]);
+        return goalList.toArray(new String[goalList.size()]);
     }
 
     public void runSelectedGoals() {
@@ -317,7 +318,7 @@ public class GoalsToolWindowUI extends JPanel {
         public ShowModuleSettingsAction() {
             super(RES.get("show.settings.action.text"),
                   RES.get("show.settings.action.desc"),
-                  Icons.PROPERTIES);
+                  Icons.MAVEN_SETTINGS_SMALL);
         }
 
         public boolean displayTextInToolbar() {

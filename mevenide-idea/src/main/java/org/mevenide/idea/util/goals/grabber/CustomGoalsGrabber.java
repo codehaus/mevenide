@@ -19,12 +19,29 @@ import java.util.*;
  */
 public class CustomGoalsGrabber extends AbstractGoalsGrabber implements JDOMExternalizable
 {
+    private static final String DEFAULT_NAME = "Goals";
+
+    private String name;
     private String externalName;
 
     public CustomGoalsGrabber() {
+        this(DEFAULT_NAME);
+    }
+
+    public CustomGoalsGrabber(final String pName) {
+        this(pName, null);
     }
 
     public CustomGoalsGrabber(final IGoalsGrabber pGoalsGrabber) {
+        this(DEFAULT_NAME, pGoalsGrabber);
+    }
+
+    public CustomGoalsGrabber(final String pName, final IGoalsGrabber pGoalsGrabber) {
+        if(pName == null)
+            throw new IllegalArgumentException("Name cannot be null.");
+        
+        name = pName;
+
         if(pGoalsGrabber == null)
             return;
 
@@ -50,7 +67,7 @@ public class CustomGoalsGrabber extends AbstractGoalsGrabber implements JDOMExte
     }
 
     public String getName() {
-        return "Favorites";
+        return name;
     }
 
     public void readExternal(Element element) throws InvalidDataException {

@@ -14,6 +14,7 @@ import org.mevenide.goals.grabber.IGoalsGrabber;
 import org.mevenide.idea.Res;
 import org.mevenide.idea.util.ui.UIUtils;
 import org.mevenide.idea.util.ui.images.Icons;
+import org.mevenide.idea.util.goals.grabber.CustomGoalsGrabber;
 
 import javax.swing.*;
 import java.io.File;
@@ -129,20 +130,30 @@ public class ModuleSettingsConfigurable implements ModuleComponent,
     }
 
     public void reset() {
+        IGoalsGrabber grabber;
+
         final ModuleSettings moduleSettings = ModuleSettings.getInstance(module);
         final File pomFile = moduleSettings.getPomFile();
-        final File pomDir = pomFile.getParentFile();
-        final IQueryContext queryContext = new DefaultQueryContext(pomDir);
-        final ILocationFinder locationFinder = new ModuleLocationFinder(queryContext,
-                                                                        module);
-        try {
-            ui.setMavenGoals(new DefaultGoalsGrabber(locationFinder));
+
+        if(pomFile == null) {
+            grabber = new CustomGoalsGrabber("Goals");
         }
-        catch (Exception e) {
-            UIUtils.showError(module, "Error grabbing global goals.", e);
-            LOG.error(e.getMessage(), e);
+        else {
+            final File pomDir = pomFile.getParentFile();
+            final IQueryContext queryContext = new DefaultQueryContext(pomDir);
+            final ILocationFinder locationFinder = new ModuleLocationFinder(queryContext,
+                                                                            module);
+            try {
+                grabber = new DefaultGoalsGrabber(locationFinder);
+            }
+            catch (Exception e) {
+                grabber = new CustomGoalsGrabber("Goals");
+                UIUtils.showError(module, "Error grabbing global goals.", e);
+                LOG.error(e.getMessage(), e);
+            }
         }
 
+        ui.setMavenGoals(grabber);
         ui.setFavoriteGoals(moduleSettings.getFavoriteGoals());
         ui.setPomFile(moduleSettings.getPomFile());
     }
