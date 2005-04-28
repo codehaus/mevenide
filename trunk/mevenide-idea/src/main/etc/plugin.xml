@@ -1,9 +1,16 @@
 <!DOCTYPE idea-plugin PUBLIC "Plugin/DTD" "http://plugins.intellij.net/plugin.dtd">
 <idea-plugin>
     <name>Mevenide IDEA integration</name>
+    <id>mevenide-idea</id>
     <description>This plugin provides strong integration of Maven with IntelliJ IDEA.</description>
     <version>0.1</version>
-    <vendor>Mevenide</vendor>
+    <vendor url="http://www.codehaus.org" email="arikkfir@gmail.com">
+        The Codehaus
+    </vendor>
+    <change-notes>
+        See http://mevenide.codehaus.org/mevenide-idea/announcements/announcement-0.1.txt for
+        release notes.
+    </change-notes>
     <idea-version since-build="3311"/>
 
     <application-components>
