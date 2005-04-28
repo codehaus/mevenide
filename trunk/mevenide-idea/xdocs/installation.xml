@@ -11,26 +11,23 @@
 
         <section name="Installing the plugin into IntelliJ IDEA">
             <p>
-                Installing the Mevenide IDEA integration plugin is quite a snap:
+                Installing Mevenide IDEA is done via the IDEA plugins manager:
                 <ol>
-                    <li>Download the plugin - it is available <a href="downloads.html">here</a>.</li>
-                    <li>Open the archive to a directory of your choice.</li>
-                    <li>Close any running instances of IDEA.</li>
+                    <li>Open the <i>Settings</i> window (from the toolbar, or press CTRL+ALT+S)</li>
                     <li>
-                        Inside the directory you will find a sub directory called
-                        <i>plugins</i>- copy it into either:
-                        <ul>
-                            <li>Your &lt;IDEA_HOME&gt;</li>
-                            <li>
-                                The <i>config</i> directory located where you instructed IDEA to store your
-                                personal settings. This is usually a directory called <i>.IntelliJIdea</i>
-                                under your home directory. On Windows this would be
-                                <i>C:\Documents and Settings\Joe\.IntelliJIdea</i>, while on Linux or
-                                UNIX it would be <i>~/joe/.IntelliJIdea</i>.
-                            </li>
-                        </ul>
+                        Click the <i>Plugins</i> icon to open the plugin manager:
+                        <p><img src="images/installing/settings.png"/></p>
                     </li>
-                    <li>You can now start IDEA and use the plugin!</li>
+                    <li>
+                        Click the <i>Available</i> tag, to download the list of available plugins,
+                        then, search for the Mevenide IDEA Integration plugin in the list. Once you've found
+                        it - right click it and select <i>Download and install plugin</i>.
+                        <p><img src="images/installing/plugins-manager.png"/></p>
+                    </li>
+                    <li>
+                        IDEA will notify you that you have to restart it in order to activate the plugin
+                        (answering Yes will close IDEA for you, but you need to start IDEA manually).
+                    </li>
                 </ol>
             </p>
         </section>
