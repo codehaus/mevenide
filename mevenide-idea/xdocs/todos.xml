@@ -235,6 +235,15 @@
                     <td>Unassigned</td>
                 </tr>
                 <tr>
+                    <td>Use custom images for goals &amp; plugins in goals tree.</td>
+                    <td>
+                        When IDEA is set to use the Windows look &amp; feel, the default
+                        icons do not look too good - custom icons would fit in nicely.
+                    </td>
+                    <td>0.2</td>
+                    <td>Unassigned</td>
+                </tr>
+                <tr>
                     <td>Placing goals on toolbar and menus</td>
                     <td>
                         Allow adding goals to the IDEA toolbar and menus.
