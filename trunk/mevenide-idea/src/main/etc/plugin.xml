@@ -11,7 +11,7 @@
         See http://mevenide.codehaus.org/mevenide-idea/announcements/announcement-0.1.txt for
         release notes.
     </change-notes>
-    <idea-version since-build="3311"/>
+    <idea-version since-build="3316"/>
 
     <application-components>
         <component>
