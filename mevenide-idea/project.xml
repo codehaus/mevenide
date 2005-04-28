@@ -42,6 +42,10 @@
       <groupId>commons-logging</groupId>
       <artifactId>commons-logging</artifactId>
       <version>1.0.4</version>
+      <properties>
+        <idea.plugin.bundle>true</idea.plugin.bundle>
+        <idea.plugin.target.path>lib</idea.plugin.target.path>
+      </properties>
     </dependency>
     <dependency>
       <groupId>com.intellij</groupId>
