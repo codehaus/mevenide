@@ -96,7 +96,7 @@
   	<!-- 
   		indicates to pde:plugin treat the project as a pde-enabled artifact 
   	-->
-  	<pde.enabled>true</pde.enabled>
+  	<maven.pde.enabled>true</maven.pde.enabled>
   </properties>
 </project>
 

@@ -4,23 +4,44 @@
          xmlns:maven="jelly:maven"
          xmlns:ant="jelly:ant">
 	
-	<goal name="pde:plugin" prereqs="jar:install">
-		<pde:enabled project="${pom}" var="pdeEnabled" />
-		<j:if test="${pdeEnabled}">
-			<pde:plugin project="${pom}" />
+	<goal name="pde:artifact">
+		<pde:type var="type" project="${pom}" /> 
+		<attainGoal name="pde:${type}" />
+	</goal>
+
+	<goal name="pde:plugin" prereqs="jar:jar">
+		<pde:plugin project="${pom}" />
+	</goal>
+
+	<goal name="pde:feature">
+		<pde:feature project="${pom}" />
+	</goal>				
+				
+	<goal name="pde:site">
+		<pde:site project="${pom}" />
+	</goal>				
+	
+	<goal name="pde:install" prereqs="pde:artifact">
+    	<pde:enabled project="${pom}" var="pdeEnabled" />
+	   	<j:if test="${pdeEnabled}">
 			<pde:name var="artifactName" project="${pom}" />
-			<artifact:install artifact="${maven.build.dir}/${artifactName}.jar" type="jar" project="${pom}" />
+			<artifact:install artifact="${maven.build.dir}/${artifactName}.jar" type="pde" project="${pom}" />
+		</j:if>
+		<j:if test="${!pdeEnabled}">
+			<artifact:install artifact="${maven.build.dir}/${maven.final.name}.jar" type="jar" project="${pom}" />
 		</j:if>
 	</goal>
 	
 	<goal name="pde:classpath">
-	   <pde:classpath var="eclipseArtifacts" />
-	   <ant:path id="eclipse.dependency.classpath">
-	     <j:forEach var="artifact" items="${eclipseArtifacts}">
-		   <ant:pathelement location="${artifact}"/>	   
-	     </j:forEach>
-	   </ant:path>
-       <maven:addPath id="maven.dependency.classpath" refid="eclipse.dependency.classpath" />
+		<pde:classpath var="eclipseArtifacts" />
+		<ant:path id="eclipse.dependency.classpath">
+	    	<j:forEach var="artifact" items="${eclipseArtifacts}">
+				<ant:pathelement location="${artifact}"/>	   
+	    	</j:forEach>
+	   	</ant:path>
+		<maven:addPath id="maven.dependency.classpath" refid="eclipse.dependency.classpath" />
 	</goal>
+	
+	<goal name="pde:check" />
 	
 </project>
