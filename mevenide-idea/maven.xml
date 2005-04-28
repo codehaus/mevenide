@@ -104,29 +104,41 @@
         <!-- copy project artifact to sandbox -->
         <ant:copy file="${maven.build.dir}/${maven.final.name}.jar" todir="${idea.sandbox.plugin.lib.dir}"/>
 
+        <!-- copy plugin descriptor to sandbox -->
+        <ant:mkdir dir="${idea.sandbox.plugin.metainf.dir}"/>
+        <ant:copy file="${basedir}/src/main/etc/plugin.xml" todir="${idea.sandbox.plugin.metainf.dir}"/>
+
     </goal>
 
     <postGoal name="dist:prepare-bin-filesystem">
 
-        <!-- this is the directory containing the plugin, and should be copied into the IDEA -->
-        <j:set var="plugin.root" value="${maven.dist.bin.assembly.dir}/plugins/mevenide-idea/lib"/>
-        <ant:mkdir dir="${plugin.root}"/>
+        <!-- plugin directory structure -->
+        <j:set var="plugin.lib" value="${maven.dist.bin.assembly.dir}/lib"/>
+        <j:set var="plugin.metainf" value="${maven.dist.bin.assembly.dir}/META-INF"/>
 
-        <!-- copy project dependencies to sandbox -->
+        <!-- ensure dirs exist -->
+        <ant:mkdir dir="${plugin.lib}"/>
+        <ant:mkdir dir="${plugin.metainf}"/>
+
+        <!-- copy project artifact -->
+        <ant:copy file="${maven.build.dir}/${maven.final.name}.jar" todir="${plugin.lib}"/>
+        <ant:copy file="${basedir}/src/main/etc/plugin.xml" todir="${plugin.metainf}"/>
+
+        <!-- copy project dependencies -->
         <j:forEach var="artifact" items="${pom.artifacts}">
             <j:set var="dep" value="${artifact.dependency}"/>
             <j:if test="${dep.getProperty('idea.plugin.bundle')=='true'}">
 
                 <!-- find the dependency file -->
                 <u:file var="f" name="${artifact.file.parent}/${artifact.file.name}"/>
-                <ant:copy file="${f}" todir="${plugin.root}"/>
+                <ant:copy file="${f}" todir="${plugin.lib}"/>
 
             </j:if>
         </j:forEach>
 
-        <!-- copy project artifact to sandbox -->
-        <ant:copy file="${maven.build.dir}/${maven.final.name}.jar"
-                  todir="${plugin.root}"/>
+        <!-- delete documentation and jar not needed in plugin dist -->
+        <ant:delete dir="${maven.dist.bin.assembly.dir}/docs"/>
+        <ant:delete file="${maven.dist.bin.assembly.dir}/${maven.final.name}.jar"/>
 
     </postGoal>
 
