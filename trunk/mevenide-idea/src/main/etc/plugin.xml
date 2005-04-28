@@ -1,5 +1,5 @@
 <!DOCTYPE idea-plugin PUBLIC "Plugin/DTD" "http://plugins.intellij.net/plugin.dtd">
-<idea-plugin>
+<idea-plugin url="http://mevenide.codehaus.org/mevenide-idea">
     <name>Mevenide IDEA integration</name>
     <id>mevenide-idea</id>
     <description>This plugin provides strong integration of Maven with IntelliJ IDEA.</description>
