@@ -12,10 +12,18 @@
         <release version="0.1" date="unreleased"
                  description="The initial version. Focuses on integration with Mevenide, and catching up on missing features.">
             <action dev="arikkfir" type="update">
+                Upgraded plugin to JDK 1.5 - required by IDEA since build 3311.
+            </action>
+            <action dev="arikkfir" type="remove">
+                Removed the GoalsProvider interface in favor of direct use of
+                IGoalsGrabber. This is now possible since the UI elements can
+                interact with mevenide objects (see next jdom issue for details).
+            </action>
+            <action dev="arikkfir" type="update">
                 JetBrains has upgraded the JDOM version they use in the IDE from 0.8 to 1.0,
                 which enables us now to restore the original plugin architecture to a single
                 Maven project and remove the custom class loader implementation since it is
-                no longer needed. Therefor, reintegrate <i>mevenide-idea-main</i>,
+                no longer needed. Therefor, reintegrated <i>mevenide-idea-main</i>,
                 <i>mevenide-idea-model</i> and <i>mevenide-idea-master</i> back into a single
                 project called <i>mevenide-idea</i>.
             </action>
