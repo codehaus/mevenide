@@ -27,6 +27,7 @@ import org.apache.maven.jelly.MavenJellyContext;
 import org.codehaus.mevenide.pde.PdePluginException;
 import org.codehaus.mevenide.pde.archive.Include;
 import org.codehaus.mevenide.pde.artifact.PdeArtifactNameTag;
+import org.codehaus.mevenide.pde.converter.ConverterException;
 import org.codehaus.mevenide.pde.converter.MavenProjectConverter;
 import org.codehaus.mevenide.pde.taglib.PdeTag;
 import org.codehaus.plexus.util.StringUtils;
@@ -42,42 +43,45 @@ public class PdePluginTag extends PdeTag {
     
     public void doTag(XMLOutput arg0) throws JellyTagException {
         try {
-            String artifactName = getArtifactName();
-			
-			PdePluginBuilder builder = new PdePluginBuilder();
-			
-			builder.setArtifactName(artifactName);
-			
-            String destinationFolder = (String) context.getVariable("maven.build.dir");
-            builder.setArtifact(destinationFolder + "/" + artifactName + ".jar");
-            
-            File basedir = new File((String) context.getVariable("basedir"));
-            builder.setBasedir(basedir);
-           
-            String excludes = StringUtils.stripEnd((String) context.getVariable("maven.pde.excludes"), ",");
-            builder.setExcludes(excludes);
-            
-            builder.setLibFolder((String) context.getVariable("maven.pde.libTargetPath"));
-            builder.setClassesLocation((String) context.getVariable("maven.build.dest"));
-			builder.setCleanLib(BooleanUtils.toBoolean((String) context.getVariable("maven.pde.cleanLib")));
-			
-            builder.setProject(new MavenProjectConverter(m1Project, (MavenJellyContext) context).convert());
-            
-            List includes = getCommonIncludes(basedir);
-                
-            //@todo custom includes
-            builder.setIncludes(includes);
-            
-			boolean export = BooleanUtils.toBoolean((String) context.getVariable("maven.pde.export"));
-			builder.setExportArtifact(export);
-			
-            builder.build();
-           
+			boolean pdeEnabled = BooleanUtils.toBoolean(m1Project.getProperty("maven.pde.enabled"));
+			if ( pdeEnabled ) {
+				createPlugin();
+			}
         }
         catch (PdePluginException e) {
             throw new JellyTagException("Unable to build plugin", e);
         }
     }
+	
+	private void createPlugin() throws PdePluginException, ConverterException {
+		String artifactName = getArtifactName();
+		
+		PdePluginBuilder builder = new PdePluginBuilder();
+		builder.setArtifactName(artifactName);
+		
+		String destinationFolder = (String) context.getVariable("maven.build.dir");
+		builder.setArtifact(destinationFolder + "/" + artifactName + ".jar");
+		
+		File basedir = new File((String) context.getVariable("basedir"));
+		builder.setBasedir(basedir);
+		
+		String excludes = StringUtils.stripEnd((String) context.getVariable("maven.pde.excludes"), ",");
+		builder.setExcludes(excludes);
+		
+		builder.setLibFolder((String) context.getVariable("maven.pde.libTargetPath"));
+		builder.setClassesLocation((String) context.getVariable("maven.build.dest"));
+		builder.setCleanLib(BooleanUtils.toBoolean((String) context.getVariable("maven.pde.cleanLib")));
+		builder.setProject(new MavenProjectConverter(m1Project, (MavenJellyContext) context).convert());
+		
+		List includes = getCommonIncludes(basedir);
+		//@todo custom includes
+		builder.setIncludes(includes);
+		
+		boolean export = BooleanUtils.toBoolean((String) context.getVariable("maven.pde.export"));
+		builder.setExportArtifact(export);
+		
+		builder.build();
+	}
 
 	private String getArtifactName() throws PdePluginException {
 		try {
