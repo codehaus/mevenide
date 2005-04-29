@@ -69,9 +69,12 @@ public final class DependencyFactory {
         	dependency.setArtifactId(artifactId);
         }
 		dependency.setVersion(version);
-		//dependency.setArtifact(absoluteFileName);
-		dependency.setJar(new File(absoluteFileName).getName());
 		dependency.setType(extension);
+
+        String filename = new File(absoluteFileName).getName();
+        if (!dependency.getArtifact().equals(filename)) {
+            dependency.setJar(filename);
+        }
 		
 		return dependency;
 	}
