@@ -18,6 +18,7 @@
 package org.mevenide.netbeans.j2ee;
 
 import java.awt.event.ActionEvent;
+import java.util.WeakHashMap;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import org.mevenide.netbeans.api.project.AdditionalActionsProvider;
@@ -31,12 +32,18 @@ import org.mevenide.netbeans.project.MavenProject;
 
 public class J2eeActions implements AdditionalActionsProvider {
     
+    private WeakHashMap cache = new WeakHashMap();
     /** Creates a new instance of J2EEActions */
     public J2eeActions() {
     }
 
     public Action[] createPopupActions(MavenProject project) {
-        return new Action[] {new DeployAction(project)};
+        Action deploy = (Action)cache.get(project);
+        if (deploy == null) {
+            deploy = new DeployAction(project);
+            cache.put(project, deploy);
+        }
+        return new Action[] {deploy};
     }
     
 
