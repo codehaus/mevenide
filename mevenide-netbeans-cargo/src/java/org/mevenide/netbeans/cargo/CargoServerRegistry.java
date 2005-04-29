@@ -161,7 +161,7 @@ public class CargoServerRegistry {
     }
     
     public synchronized void startContainer(final Container cont) {
-        startContainer(cont);
+        startContainer(cont, true);
     }
     
     public synchronized void startContainer(final Container cont, boolean post) {
