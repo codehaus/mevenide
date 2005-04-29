@@ -119,9 +119,16 @@ public class MavenProjectConverter {
 	    //needed for rc3 to correctly setRelativePaths
 	    System.setProperty("maven.home", propertyResolver.getResolvedValue("maven.home")); //$NON-NLS-1$
 	    
+//		for ( m1Project.getContext().getVariables().keySet().iterator(); i.) {
+//			
+//		}
+//		m1Project.getContext().removeVariable(v);
+		
 	    //m1Project.setContext(MavenUtils.createContext(m1Project.getFile().getParentFile()));
-	    m1Project.setContext(context);
+		m1Project.setContext(context);
 	    
+		
+		
 	    if ( project.getDependencies() == null ) {
 	        project.setDependencies(new ArrayList());
 	    }

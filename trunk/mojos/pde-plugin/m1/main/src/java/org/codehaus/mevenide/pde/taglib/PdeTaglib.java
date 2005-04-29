@@ -20,6 +20,7 @@ import org.apache.commons.jelly.TagLibrary;
 import org.codehaus.mevenide.pde.artifact.PdeArtifactNameTag;
 import org.codehaus.mevenide.pde.artifact.PdeEnabledTag;
 import org.codehaus.mevenide.pde.artifact.PdeFeatureTag;
+import org.codehaus.mevenide.pde.artifact.PdeInstallParametersTag;
 import org.codehaus.mevenide.pde.artifact.PdeSiteTag;
 import org.codehaus.mevenide.pde.artifact.PdeTypeTag;
 import org.codehaus.mevenide.pde.classpath.PdeClasspathTag;
@@ -38,6 +39,9 @@ public class PdeTaglib extends TagLibrary {
 		registerTag("enabled", PdeEnabledTag.class);
 		registerTag("name", PdeArtifactNameTag.class);
 		registerTag("type", PdeTypeTag.class);
+		
+		//artifact:install parameters
+		registerTag("install-parameters", PdeInstallParametersTag.class);
 		
 		//core tags
 		registerTag("plugin", PdePluginTag.class);
