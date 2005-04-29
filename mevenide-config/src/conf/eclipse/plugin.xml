@@ -10,7 +10,6 @@
    <runtime>
       <library name="@maven.eclipse.plugin.artifact.internal.id@-@maven.eclipse.plugin.artifact.internal.version@.jar">
          <export name="*"/>
-         <packages prefixes="org.mevenide.environment,org.mevenide.properties"/>
       </library>
    </runtime>
    
