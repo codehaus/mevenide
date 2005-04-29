@@ -19,14 +19,8 @@ package org.mevenide.environment;
 
 import junit.framework.*;
 import java.io.File;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.mevenide.TestQueryContext;
-import org.mevenide.context.DefaultQueryContext;
-import org.mevenide.context.IQueryContext;
 import org.mevenide.environment.sysenv.SysEnvProvider;
-import org.mevenide.properties.IPropertyResolver;
-import org.mevenide.properties.resolver.PropertyResolverFactory;
 
 /**
  *

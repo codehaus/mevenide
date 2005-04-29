@@ -21,8 +21,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 
 import junit.framework.TestCase;
-import org.mevenide.environment.ConfigUtils;
-import org.mevenide.environment.LocationFinderAggregator;
 
 /**
  * 

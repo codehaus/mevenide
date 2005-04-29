@@ -21,8 +21,6 @@ import java.io.File;
 import org.mevenide.goals.test.util.TestUtils;
 
 import junit.framework.TestCase;
-import org.mevenide.environment.ConfigUtils;
-import org.mevenide.environment.LocationFinderAggregator;
 
 /**  
  * 

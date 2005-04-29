@@ -26,7 +26,6 @@ import org.jdom.DefaultJDOMFactory;
 import org.jdom.JDOMFactory;
 import org.mevenide.context.AbstractQueryContext;
 import org.mevenide.context.IProjectContext;
-import org.mevenide.context.IQueryContext;
 
 /**
  * interface to externalize the project files content/models to one place, and reuse

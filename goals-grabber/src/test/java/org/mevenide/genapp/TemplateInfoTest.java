@@ -16,16 +16,8 @@
  */
 package org.mevenide.genapp;
 
-import java.net.URL;
 import junit.framework.*;
-import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
-import java.util.StringTokenizer;
-import org.mevenide.context.IQueryContext;
 import org.mevenide.goals.TestQueryContext;
 
 /**

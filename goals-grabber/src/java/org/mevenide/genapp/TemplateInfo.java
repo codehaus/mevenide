@@ -39,7 +39,7 @@ public class TemplateInfo {
     
     /** Creates a new instance of TemplateInfo */
     TemplateInfo(File dir, IQueryContext cont) {
-        assert dir != null;
+//        assert dir != null;
         directory = dir;
         context = cont;
     }
@@ -71,9 +71,8 @@ public class TemplateInfo {
                 toRet[i] = new File(directory, tok.nextToken());
             }
             return toRet;
-        } else {
-            return new File[0];
         }
+        return new File[0];
     }
     
     /**
