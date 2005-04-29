@@ -18,19 +18,9 @@ package org.mevenide.genapp;
 
 import junit.framework.*;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import org.mevenide.context.IQueryContext;
-import org.mevenide.environment.ILocationFinder;
-import org.mevenide.environment.LocationFinderAggregator;
 import org.mevenide.goals.TestQueryContext;
-import org.mevenide.properties.IPropertyFinder;
 import java.io.File;
-import java.io.FilenameFilter;
-import java.io.IOException;
-import java.util.Hashtable;
-import org.mevenide.properties.IPropertyResolver;
 
 /**
  * @author Milos Kleint (mkleint@codehaus.org)

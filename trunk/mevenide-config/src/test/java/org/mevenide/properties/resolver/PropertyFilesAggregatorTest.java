@@ -19,7 +19,6 @@ package org.mevenide.properties.resolver;
 import java.io.File;
 import org.mevenide.environment.ILocationFinder;
 import org.mevenide.environment.LocationFinderAggregator;
-import org.mevenide.properties.IPropertyFinder;
 import org.mevenide.properties.IPropertyLocator;
 
 /**

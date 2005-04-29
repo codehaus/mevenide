@@ -23,8 +23,6 @@ import java.io.FileOutputStream;
 import junit.framework.TestCase;
 import org.mevenide.TestQueryContext;
 
-import org.mevenide.environment.LocationFinderAggregator;
-
 /**
  *
  * @author  Milos Kleint (ca206216@tiscali.cz)

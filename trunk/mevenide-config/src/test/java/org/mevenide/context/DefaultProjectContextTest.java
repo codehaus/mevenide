@@ -19,20 +19,6 @@ package org.mevenide.context;
 
 import junit.framework.*;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.maven.project.Project;
-import org.jdom.Element;
-import org.jdom.Text;
-import org.jdom.DefaultJDOMFactory;
-import org.jdom.JDOMFactory;
 import org.mevenide.properties.IPropertyResolver;
 
 /**

@@ -30,7 +30,6 @@ import org.apache.maven.wagon.authorization.AuthorizationException;
 import org.apache.maven.wagon.providers.http.LightweightHttpWagon;
 import org.apache.maven.wagon.repository.Repository;
 import org.mevenide.environment.ConfigUtils;
-import org.mevenide.environment.LocationFinderAggregator;
 import org.mevenide.ui.eclipse.repository.DownloadException;
 import org.mevenide.ui.eclipse.repository.RepositoryObjectDownloader;
 import org.mevenide.ui.eclipse.repository.model.Artifact;
