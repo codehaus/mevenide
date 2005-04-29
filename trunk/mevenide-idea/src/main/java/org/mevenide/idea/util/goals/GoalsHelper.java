@@ -1,20 +1,17 @@
 package org.mevenide.idea.util.goals;
 
-import org.mevenide.idea.Res;
 import org.mevenide.goals.grabber.IGoalsGrabber;
 
-import java.util.Map;
 import java.util.HashMap;
-import java.util.Set;
 import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Arik
  */
 public abstract class GoalsHelper {
-    public static final String DEFAULT_GOAL_NAME = "(Default)";
-
-    private static final Res RES = Res.getInstance(GoalsHelper.class);
+    public static final String DEFAULT_GOAL_NAME = "(default)";
 
     public static String buildFullyQualifiedName(final String pPluginName,
                                                  final String pGoalName) {
@@ -45,15 +42,7 @@ public abstract class GoalsHelper {
         else
             return pFullyQualifiedGoalName.substring(colonIndex + 1);
     }
-/*
-    public static String getPluginName(final String pFullyQualifiedGoalName) {
-        if(pFullyQualifiedGoalName == null || pFullyQualifiedGoalName.trim().length() == 0)
-            throw new IllegalArgumentException(RES.get("empty.arg",
-                                                       new Object[]{"fullyQualifiedGoalName"}));
 
-
-    }
-*/
     public static Map asMap(final IGoalsGrabber pGrabber) {
         final String[] plugins = pGrabber.getPlugins();
         if(plugins == null || plugins.length == 0)
