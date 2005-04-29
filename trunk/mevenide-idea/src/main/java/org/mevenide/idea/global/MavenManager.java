@@ -21,10 +21,14 @@ import com.intellij.openapi.components.ApplicationComponent;
 import com.intellij.openapi.util.InvalidDataException;
 import com.intellij.openapi.util.JDOMExternalizable;
 import com.intellij.openapi.util.WriteExternalException;
+import com.intellij.openapi.ui.Messages;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jdom.Element;
 import org.mevenide.idea.Res;
+import org.mevenide.idea.util.ui.UIUtils;
+import org.mevenide.environment.ILocationFinder;
+import org.mevenide.environment.SysEnvLocationFinder;
 
 import javax.swing.event.EventListenerList;
 import java.io.File;
@@ -107,8 +111,18 @@ public class MavenManager implements ApplicationComponent, JDOMExternalizable {
             LOG.trace(NAME + " initialized.");
 
         if(mavenHome == null) {
-            //TODO: guess maven home using a SysEnvLocationFinder
-            //TODO: if not found, ask user to define it (with a 'never-ask-again' option)
+            final ILocationFinder finder = SysEnvLocationFinder.getInstance();
+            final String mavenHomePath = finder.getMavenHome();
+            if(mavenHomePath != null && mavenHomePath.trim().length() > 0)
+                try {
+                    setMavenHome(new File(mavenHomePath).getAbsoluteFile());
+                }
+                catch (FileNotFoundException e) {
+                    UIUtils.showError(e);
+                }
+            else
+                //TODO: we should allow the user to specify not to bother him/her again
+                Messages.showInfoMessage(RES.get("maven.home.undefined"), "Maven");
         }
     }
 
