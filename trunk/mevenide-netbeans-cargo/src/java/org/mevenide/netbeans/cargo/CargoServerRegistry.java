@@ -21,6 +21,7 @@ package org.mevenide.netbeans.cargo;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -86,10 +87,18 @@ public class CargoServerRegistry {
     private ConfigurationFactory configFactory;
     private DeployableFactory deployableFactory;
     private DeployerFactory deployerFactory;
+    private Collection dynamicContainers;
     
     private static CargoServerRegistry instance;
     /** Creates a new instance of CargoServerRegistry */
     private CargoServerRegistry() {
+        dynamicContainers = new ArrayList();
+        dynamicContainers.add(Resin2xContainer.ID);
+        dynamicContainers.add(Resin3xContainer.ID);
+        dynamicContainers.add(Jo1xContainer.ID);
+        dynamicContainers.add(Orion1xContainer.ID);
+        dynamicContainers.add(Orion2xContainer.ID);
+        
         installUrls = new HashMap();
         installUrls.put(Resin2xContainer.ID, "http://www.caucho.com/download/resin-2.1.14.zip");
         installUrls.put(Resin3xContainer.ID, "http://www.caucho.com/download/resin-3.0.9.zip");
@@ -141,20 +150,37 @@ public class CargoServerRegistry {
         return monitorFile;
     }
     
+    public boolean supportsDynamicDeployment(Container cont) {
+        return dynamicContainers.contains(cont.getId());
+    }
+    
     public synchronized void addContainer(Container cont) {
         running.add(cont);
         cont.setMonitor(monitor);
         fireAdded(cont);
-        
     }
     
     public synchronized void startContainer(final Container cont) {
+        startContainer(cont);
+    }
+    
+    public synchronized void startContainer(final Container cont, boolean post) {
         if (!running.contains(cont)) {
             throw new IllegalStateException();
         }
-        // replace processor with engine?
-        processor.post(new Runnable() {
-            public void run() {
+        if (post) {
+            // replace processor with engine?
+            processor.post(new Runnable() {
+                public void run() {
+                    doStart(cont);
+                }
+            });
+        } else {
+            doStart(cont);
+        }
+    }
+    
+    private void doStart(Container cont) {
                 fireChange(cont, new RegistryEvent(cont, State.STARTING));
                 try {
                     cont.start();
@@ -165,8 +191,6 @@ public class CargoServerRegistry {
                 } finally {
                     fireChange(cont);
                 }
-            }
-        });
     }
     
     public synchronized void stopContainer(final Container cont) {

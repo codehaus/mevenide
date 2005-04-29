@@ -122,12 +122,14 @@ final class RunningServerNode extends AbstractNode implements RegistryListener {
     
     public Action[] getActions(boolean context) {
 
-        Action[] retValue = new Action[5];
+        Action[] retValue = new Action[7];
         retValue[0] = new StartStop();
         retValue[1] = null;
         retValue[2] = new Remove();
-        retValue[3] = viewLog;
-        retValue[4] = ((PropertiesAction)PropertiesAction.get(PropertiesAction.class)).createContextAwareInstance(this.getLookup());
+        retValue[3] = null;
+        retValue[4] = viewLog;
+        retValue[5] = null;
+        retValue[6] = ((PropertiesAction)PropertiesAction.get(PropertiesAction.class)).createContextAwareInstance(Lookups.singleton(this));
         return retValue;
     }
 
