@@ -2,7 +2,7 @@
 <project>
   <pomVersion>3</pomVersion>
   <name>Maven PDE Plugin</name>
-  <groupId>maven</groupId>
+  <groupId>mevenide</groupId>
   <artifactId>maven-pde-plugin</artifactId>
   <version>0.1</version>
   <type>plugin</type>

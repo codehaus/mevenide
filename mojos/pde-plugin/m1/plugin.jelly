@@ -2,7 +2,8 @@
          xmlns:artifact="artifact"
          xmlns:j="jelly:core"
          xmlns:maven="jelly:maven"
-         xmlns:ant="jelly:ant">
+         xmlns:ant="jelly:ant"
+         xmlns:u="jelly:util">
 	
 	<goal name="pde:artifact">
 		<pde:type var="type" project="${pom}" /> 
@@ -21,16 +22,16 @@
 		<pde:site project="${pom}" />
 	</goal>				
 	
-	<goal name="pde:install" prereqs="pde:artifact">
+	<goal name="pde:install" prereqs="pde:artifact">    
+		<artifact:install artifact="${maven.build.dir}/${maven.final.name}.jar" type="jar" project="${pom}"/>           
     	<pde:enabled project="${pom}" var="pdeEnabled" />
 	   	<j:if test="${pdeEnabled}">
-			<pde:name var="artifactName" project="${pom}" />
-			<artifact:install artifact="${maven.build.dir}/${artifactName}.jar" type="pde" project="${pom}" />
-		</j:if>
-		<j:if test="${!pdeEnabled}">
-			<artifact:install artifact="${maven.build.dir}/${maven.final.name}.jar" type="jar" project="${pom}" />
+			<pde:install-parameters artifact="artifact" type="installType" typeHandler="typeHandler" project="${pom}" />
+		    <artifact:install artifact="${artifact}" type="${installType}" project="${pom}" typeHandler="${typeHandler}"/>
 		</j:if>
 	</goal>
+	
+	<goal name="pde:deploy" prereqs="pde:artifact" />
 	
 	<goal name="pde:classpath">
 		<pde:classpath var="eclipseArtifacts" />

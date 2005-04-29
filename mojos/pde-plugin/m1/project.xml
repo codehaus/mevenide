@@ -3,7 +3,7 @@
   <extend>../project.xml</extend>
   <pomVersion>3</pomVersion>
   <name>Maven PDE Plugin (M1)</name>
-  <groupId>maven-pde-m1-plugin</groupId>
+  <groupId>mevenide</groupId>
   <artifactId>maven-pde-m1-plugin</artifactId>
   <currentVersion>0.1-SNAPSHOT</currentVersion>
   <dependencies>
