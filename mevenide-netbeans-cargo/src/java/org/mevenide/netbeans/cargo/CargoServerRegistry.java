@@ -26,6 +26,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 import org.codehaus.cargo.container.Container;
 import org.codehaus.cargo.container.ContainerException;
@@ -33,8 +34,10 @@ import org.codehaus.cargo.container.ContainerFactory;
 import org.codehaus.cargo.container.State;
 import org.codehaus.cargo.container.configuration.ConfigurationFactory;
 import org.codehaus.cargo.container.configuration.DefaultConfigurationFactory;
+import org.codehaus.cargo.container.deployable.Deployable;
 import org.codehaus.cargo.container.deployable.DeployableFactory;
 import org.codehaus.cargo.container.deployer.DefaultDeployerFactory;
+import org.codehaus.cargo.container.deployer.Deployer;
 import org.codehaus.cargo.container.deployer.DeployerFactory;
 import org.codehaus.cargo.container.jetty.Jetty4xEmbeddedContainer;
 import org.codehaus.cargo.container.jo.Jo1xContainer;
@@ -79,6 +82,12 @@ public class CargoServerRegistry {
     
     private HashMap installUrls;
     private HashSet running;
+    
+    // key= container, value collection of deployables.
+    private HashMap deployables;
+    //key= container, value Deployer
+    private HashMap deployers;
+    
     private ArrayList listeners;
     private Monitor monitor;
     private File monitorFile;
@@ -120,6 +129,8 @@ public class CargoServerRegistry {
             monitor = new NullMonitor();
         }
         running = new HashSet();
+        deployers = new HashMap();
+        deployables = new HashMap();
         listeners = new ArrayList();
     }
     
@@ -142,8 +153,63 @@ public class CargoServerRegistry {
         return deployableFactory;
     }
     
-    public DeployerFactory getDeployerFactory() {
-        return deployerFactory;
+    public synchronized Deployer getDeployer(Container container) {
+        Deployer toRet = (Deployer)deployers.get(container);
+        if (toRet == null) {
+            toRet = deployerFactory.createDeployer(container, DeployerFactory.DEFAULT);
+            deployers.put(container, toRet);
+        }
+        return toRet;
+    }
+    
+    public synchronized void registerDeployable(Container container, Deployable deploy) {
+        Collection col = (Collection)deployables.get(container);
+        if (col == null) {
+            col = new HashSet();
+            deployables.put(container, col);
+        }
+        col.add(deploy);
+        fireDeployablesChanged(container);
+    }
+    
+    public synchronized Deployable[] findDeployables(String path) {
+         Iterator it = deployables.values().iterator();
+         File fil = new File(path);
+         Collection toRet = new ArrayList();
+         while (it.hasNext()) {
+             Collection col = (Collection)it.next();
+             Iterator it2 = col.iterator();
+             while (it2.hasNext()) {
+                 Deployable dep = (Deployable)it2.next();
+                 if (dep.getFile().equals(fil)) {
+                     toRet.add(dep);
+                 }
+             }
+         }
+         Deployable[] arr = (Deployable[])toRet.toArray(new Deployable[toRet.size()]);
+         return arr;
+    }
+    
+    public synchronized Container findContainerForDeployable(Deployable deployable) {
+        Iterator it = deployables.entrySet().iterator(); 
+        Container container = null;
+         while (it.hasNext()) {
+            Map.Entry entry = (Map.Entry)it.next();
+             Collection col = (Collection)entry.getValue();
+             if (col.contains(deployable)) {
+                 container = (Container)entry.getKey();
+                 break;
+             }
+         }
+        return container;
+    }
+    
+    public synchronized Collection getDeployables(Container container) {
+        Collection col = (Collection)deployables.get(container);
+        if (col != null) {
+            return new ArrayList(col);
+        }
+        return Collections.EMPTY_LIST;
     }
     
     public File getMonitorFile() {
@@ -181,16 +247,16 @@ public class CargoServerRegistry {
     }
     
     private void doStart(Container cont) {
-                fireChange(cont, new RegistryEvent(cont, State.STARTING));
-                try {
-                    cont.start();
-                } catch (ContainerException exc) {
-                    ErrorManager.getDefault().notify(ErrorManager.INFORMATIONAL, exc);
-                    NotifyDescriptor nd = new NotifyDescriptor.Message(exc.getLocalizedMessage(), NotifyDescriptor.ERROR_MESSAGE);
-                    DialogDisplayer.getDefault().notify(nd);
-                } finally {
-                    fireChange(cont);
-                }
+        fireChange(cont, new RegistryEvent(cont, State.STARTING));
+        try {
+            cont.start();
+        } catch (ContainerException exc) {
+            ErrorManager.getDefault().notify(ErrorManager.INFORMATIONAL, exc);
+            NotifyDescriptor nd = new NotifyDescriptor.Message(exc.getLocalizedMessage(), NotifyDescriptor.ERROR_MESSAGE);
+            DialogDisplayer.getDefault().notify(nd);
+        } finally {
+            fireChange(cont);
+        }
     }
     
     public synchronized void stopContainer(final Container cont) {
@@ -279,5 +345,18 @@ public class CargoServerRegistry {
         RegistryEvent evnt = new RegistryEvent(cont);
         fireChange(cont, evnt);
     }
+    
+    private void fireDeployablesChanged(Container cont) {
+        ArrayList lst = null;
+        synchronized (listeners) {
+            lst = new ArrayList(listeners);
+        }
+        RegistryEvent evnt = new RegistryEvent(cont);
+        Iterator it = lst.iterator();
+        while (it.hasNext()) {
+            RegistryListener listener = (RegistryListener)it.next();
+            listener.containerDeployablesChanged(evnt);
+        }
+    }    
     
 }

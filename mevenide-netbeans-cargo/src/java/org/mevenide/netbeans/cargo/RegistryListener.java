@@ -29,4 +29,6 @@ public interface RegistryListener {
     void containerAdded(RegistryEvent event);
     
     void containerRemoved(RegistryEvent event);
+    
+    void containerDeployablesChanged(RegistryEvent event);
 }

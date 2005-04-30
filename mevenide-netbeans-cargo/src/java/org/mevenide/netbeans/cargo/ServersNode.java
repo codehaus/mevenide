@@ -41,7 +41,6 @@ public final class ServersNode extends AbstractNode {
      */
     private ServersNode () {
         super(new ServChildren());
-        System.out.println("server node..");
 //        setIconBase("org/mevenide/netbeans/cargo/"); // NOI18N
         setName("Cargo Containers");
         setShortDescription("Cargo Containers");
@@ -61,7 +60,6 @@ public final class ServersNode extends AbstractNode {
      * @return 
      */
     public static Node getRootNode() {
-        System.out.println("root node getting !!!!!");
         if (processNode == null) {
             processNode = new ServersNode();
         }
@@ -125,6 +123,8 @@ public final class ServersNode extends AbstractNode {
         public void stateChanged(RegistryEvent event) {
         }
         
+        public void containerDeployablesChanged(RegistryEvent event) {
+        }
 
         
     }

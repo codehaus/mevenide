@@ -19,6 +19,8 @@ package org.mevenide.netbeans.cargo;
 
 import java.awt.event.ActionEvent;
 import java.io.File;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
 import javax.swing.AbstractAction;
@@ -26,6 +28,8 @@ import javax.swing.Action;
 import org.codehaus.cargo.container.Container;
 import org.codehaus.cargo.container.State;
 import org.codehaus.cargo.container.configuration.Configuration;
+import org.codehaus.cargo.container.deployable.Deployable;
+import org.codehaus.cargo.container.deployable.WAR;
 import org.codehaus.cargo.container.property.ServletPropertySet;
 import org.openide.actions.PropertiesAction;
 import org.openide.nodes.AbstractNode;
@@ -47,7 +51,7 @@ final class RunningServerNode extends AbstractNode implements RegistryListener {
     private Sheet.Set configProps;
     private Action viewLog;
     RunningServerNode(Container cont) {
-        super(Children.LEAF, Lookups.fixed(new Object[] {cont}));
+        super(new ServChildren(cont), Lookups.fixed(new Object[] {cont}));
         container = cont;
         setName(container.getName());
         String port = container.getConfiguration().getPropertyValue(ServletPropertySet.PORT);
@@ -78,6 +82,10 @@ final class RunningServerNode extends AbstractNode implements RegistryListener {
             firePropertyChange(null, null, null);
         }
     }
+    
+    public void containerDeployablesChanged(RegistryEvent event) {
+    }
+    
     
     private void updateName(State state) {
         String port = container.getConfiguration().getPropertyValue(ServletPropertySet.PORT);
@@ -275,8 +283,55 @@ final class RunningServerNode extends AbstractNode implements RegistryListener {
             }
             return false;
         }
+    }
+    
+    private static final class ServChildren extends Children.Keys 
+                                            implements RegistryListener {
+        private Container container;
+        public ServChildren(Container cont ) {
+            container = cont;
+        }
         
+        private void updateKeys() {
+            Collection col = CargoServerRegistry.getInstance().getDeployables(container);
+            setKeys(col);
+        }
+        
+        protected void addNotify() {
+            super.addNotify();
+            updateKeys();
+            CargoServerRegistry.getInstance().addRegistryListener(this);
+        }
+        
+        protected void removeNotify() {
+            CargoServerRegistry.getInstance().removeRegistryListener(this);
+            setKeys(Collections.EMPTY_SET);
+            super.removeNotify();
+        }
+
+        protected Node[] createNodes(Object key) {
+            Deployable dep = (Deployable)key;
+            AbstractNode n = new AbstractNode(Children.LEAF);
+            if (dep instanceof WAR) {
+                n.setName(((WAR)dep).getContext());
+                n.setShortDescription("WAR Context: " + n.getName());
+            }
+            return new Node[] {n};
+        }
+
+        public void containerAdded(RegistryEvent event) {
+        }
+
+        public void containerRemoved(RegistryEvent event) {
+        }
+
+        public void stateChanged(RegistryEvent event) {
+        }
+        
+        public void containerDeployablesChanged(RegistryEvent event) {
+            updateKeys();
+        }
+
         
     }
-
 }
