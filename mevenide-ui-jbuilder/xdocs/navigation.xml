@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 
 <project name="mevenide-ui-jbuilder">
   <title>Maven JBuilder OpenTool</title>
@@ -30,6 +30,7 @@
 			<item name="Netbeans Module" href="../mevenide-netbeans-project/index.html"/>
 			<item name="Netbeans Grammar Module" href="../mevenide-netbeans-grammar/index.html"/>
 			<item name="JBuilder Module" href="../mevenide-ui-jbuilder/index.html"/>
+			<item name="IntelliJ IDEA Module" href="../mevenide-idea/index.html"/>
 		</item>
 		<item name="Maven Helper Plugins" collapse="true" href="/maven-plugins.html">
 			<item name="PDE Plugin" href="../maven-eclipse-plugin-plugin/index.html"/>
