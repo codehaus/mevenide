@@ -90,6 +90,8 @@ public class PdePluginTag extends PdeTag {
 			builder.setClassesJarLocation(classeJarLocation);	
 		}
 		
+		builder.setSourcesPresent(BooleanUtils.toBoolean((String) context.getVariable("sourcesPresent")));
+		
 		builder.build();
 	}
 

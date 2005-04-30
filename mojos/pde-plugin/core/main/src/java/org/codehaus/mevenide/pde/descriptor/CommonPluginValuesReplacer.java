@@ -65,6 +65,9 @@ public class CommonPluginValuesReplacer {
 	/** name of jar containing artifact classes */
 	private String classesJarName;
 	
+	/** true if project has sources */
+	private boolean sourcesPresent;
+	
     /**
      * @param basedir plugin.xml parent directory
      * @param project maven project on which to operate
@@ -152,7 +155,9 @@ public class CommonPluginValuesReplacer {
         	}
         }
         
-		runtimeUpdated |= addThisDependency(runtime); 
+		if ( sourcesPresent ) {
+			runtimeUpdated |= addThisDependency(runtime);
+		}
 			
         if ( runtimeUpdated ) {
             pluginElement.addContent(runtime);
@@ -261,6 +266,9 @@ public class CommonPluginValuesReplacer {
 
 	public void setSingleJar(boolean singleJar) { this.singleJar = singleJar; }
 	public void setClassesJarName(String classesJarName) { this.classesJarName = classesJarName; }
+
+	public void setSourcesPresent(boolean sourcesPresent) { this.sourcesPresent = sourcesPresent; }
+	
 	
     
 }
