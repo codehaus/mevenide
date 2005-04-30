@@ -87,15 +87,18 @@ public class MavenFileOwnerQueryImpl implements FileOwnerQueryImplementation {
     }
     
     public Project getOwner(URI uri) {
-        logger.debug("getOwner of uri=" + uri);
+        //logger.debug("getOwner of uri=" + uri);
         File file = new File(uri);
         return getOwner(file);
     }
     
     public Project getOwner(FileObject fileObject) {
         File file = FileUtil.toFile(fileObject);
-        logger.debug("getOwner of fileobject=" + fileObject.getNameExt());
-        return getOwner(file);
+        if (file != null) {
+            //logger.fatal("getOwner of fileobject=" + fileObject.getNameExt());
+            return getOwner(file);
+        } 
+        return null;
     }
     
     
