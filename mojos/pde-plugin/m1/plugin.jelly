@@ -5,7 +5,7 @@
          xmlns:ant="jelly:ant"
          xmlns:u="jelly:util">
 	
-	<goal name="pde:artifact">
+	<goal name="pde:artifact" prereqs="pde:check">
 		<pde:type var="type" project="${pom}" /> 
 		<attainGoal name="pde:${type}" />
 	</goal>
@@ -43,6 +43,11 @@
 		<maven:addPath id="maven.dependency.classpath" refid="eclipse.dependency.classpath" />
 	</goal>
 	
-	<goal name="pde:check" />
+	<goal name="pde:check">
+	   <pde:check-version result="compatible"/>
+	   <j:if test="${!compatible}">
+	       <ant:fail message="Incompatible eclipse version."/>
+	   </j:if>
+	</goal>
 	
 </project>

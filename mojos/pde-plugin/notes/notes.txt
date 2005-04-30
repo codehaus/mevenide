@@ -31,7 +31,7 @@
    
 3. plugin.xml update
    
-   pde:plugin goal has a prereqs on jar:install	 
+   pde:plugin goal has a prereqs on jar:jar
    
    if an artifact is declared as pde-enabled, pde:plugin goal extracts 
    -relevant- information from the pom and update plugin.xml:
@@ -62,8 +62,6 @@
      TODO: add maven.pde.single property to indicate if single jar'd plugin should 
            generated instead of the way (folder + zip/jar)
 
-     TODO: integrate CompatibilityChecker in m1 version
-
 4. feature
    
    pde:feature (todo)
@@ -75,7 +73,10 @@
 6. multiproject-friendly
    
    pde:artifact disptaches either to pde:plugin, pde:feature or pde:site dependending
-   on the value of maven.pde.type property
+   on the value of maven.pde.type property.
+
+   pde:artifact has a prereq on pde:check which does some compabilities checks.
+   for now, only buildId is checked. 	
 
    TODO: test in a multiproject context
 
@@ -83,8 +84,7 @@
   
    pde:install has a prereqs on pde:artifact
    
-   TODO: try finding a solution to workaround the odd behaviour of artifact:install 
-         (which picks up all infos from the pom and doesnot respect file name) 
+   primary artifact is _always_ installed through artifact:install. 
 
 8. deploy
 
