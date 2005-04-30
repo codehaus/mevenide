@@ -58,6 +58,12 @@ public class CommonPluginValuesReplacer {
 	
 	/** artifactName referencing the primary artifact */
 	private String artifactName;
+
+	/** indicates if single jar'd should be generated */
+	private boolean singleJar;
+	
+	/** name of jar containing artifact classes */
+	private String classesJarName;
 	
     /**
      * @param basedir plugin.xml parent directory
@@ -157,8 +163,13 @@ public class CommonPluginValuesReplacer {
     }
 	
 	private boolean addThisDependency(Element runtime) {
-		//String thisDependencyName = getArtifactName();
-		String thisDependencyName = ".";
+		String thisDependencyName;
+		if ( !singleJar ) {
+			thisDependencyName = classesJarName;
+		}
+		else {
+			thisDependencyName = ".";
+		}
 		boolean shouldUpdate = true;
 		List libraries = runtime.getChildren("library");
 		for ( int u = 0; u < libraries.size(); u++ ) {
@@ -247,6 +258,10 @@ public class CommonPluginValuesReplacer {
 	
 	public void shouldExportArtifact(boolean export) { shouldExportArtifact = export; }
 	public void setArtifactName(String name) { this.artifactName = name; }
+
+	public void setSingleJar(boolean singleJar) { this.singleJar = singleJar; }
+	public void setClassesJarName(String classesJarName) { this.classesJarName = classesJarName; }
+	
     
 }
  

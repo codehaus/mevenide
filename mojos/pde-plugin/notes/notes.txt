@@ -60,13 +60,14 @@
        </properties>
      </dependency>
      
-     pde:plugin then builds a single jar'd plugin 
+     pde:plugin then builds a single jar'd plugin if maven.pde.single is true, 
+	 else classes are bundled into a jar file
      
-     TODO: * add maven.pde.single property to indicate if single jar'd plugin should 
-             generated instead of the old dist artifact type (folder + zip/jar)
-           * allow using a MANIFEST file
+     TODO: * allow using a MANIFEST file
            * allow customizing classes path
            * manage custom includes
+           * allow to use a template instead of directly modify root plugin 
+           descriptor - collaborative perspective (maven.pde.manifest=true|false)
            
 4. feature
    
@@ -93,18 +94,19 @@
    primary artifact is _always_ installed through artifact:install to allow dependencies resolution. 
    pde artifact is installed as a 'pde' artifact. will be grabbed when collecting deps for feature or site
    
-   
 8. deploy
 
 9. other artifact types
     
    no more  differenciation for other artifact types (help | lib-only):
-     - lib-only plugins now are a subset of the previous artifacts set
+     - lib-only plugins now are a subset of the previous artifacts set (TODO: test-me)
      - help will be when refined includes will be managed
    
 10. convenient archive & other utility goals
    
-   - provide a goal to zip a pde artifact ready to be unpacked 
+   - provide a goal to provide a zip ready to be unpacked 
      into eclipse.home
    - provide a goal to directly install a plugin into eclipse.home
+
+   - implement pde:check-arguments
       

@@ -53,7 +53,7 @@ public class DependencyCollector {
     /** default directory where collected deps will be placed. relative to <code>basedir</code> */
     private String targetPath;
     
-	/** indicates wether lib folder should be cleaned */
+	/** indicates if lib folder should be cleaned */
 	private boolean cleanLib; 
 	
     public DependencyCollector(String basedir, String targetPath, MavenProject project) {
@@ -136,7 +136,6 @@ public class DependencyCollector {
 					}
 				}
 			}
-			
 		}
 	}
 

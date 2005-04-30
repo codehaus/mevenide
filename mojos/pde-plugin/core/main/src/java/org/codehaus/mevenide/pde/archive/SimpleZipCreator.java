@@ -47,7 +47,7 @@ public class SimpleZipCreator {
     /** list of excluded files */
     private List excludes = new ArrayList();
     
-    /** list of files ot include */
+    /** list of files to include */
     private List includes = new ArrayList();
     
     public SimpleZipCreator(String directory, String destinationFile) {
