@@ -63,17 +63,18 @@
      pde:plugin then builds a single jar'd plugin 
      
      TODO: * add maven.pde.single property to indicate if single jar'd plugin should 
-             generated instead of the way (folder + zip/jar)
-           * allow use of MANIFEST
-           * allow to customize classes path
+             generated instead of the old dist artifact type (folder + zip/jar)
+           * allow using a MANIFEST file
+           * allow customizing classes path
+           * manage custom includes
            
 4. feature
    
-   pde:feature (todo)
+   pde:feature (TODO)
    
 5. site
 
-   pde:site (todo)
+   pde:site (TODO)
 
 6. multiproject-friendly
    
