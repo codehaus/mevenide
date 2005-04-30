@@ -6,6 +6,17 @@
     <author email="arikkfir@gmail.com">Arik Kfir</author>
   </properties>
   <body>
+    <release version="0.2" date="unreleased" description="">
+        <action dev="arikkfir" type="add">
+            Try to guess Maven home on startup, if not set by the user.
+        </action>
+        <action dev="arikkfir" type="fix">
+            Fixed exception that occured when adding new modules with no POM attached.
+        </action>
+        <action dev="arikkfir" type="add">
+            Added custom icons for goals and plugins in trees.
+        </action>
+    </release>
     <release version="0.1" date="2005-04-28" description="The initial version. Focuses on integration with Mevenide, and catching up on missing features.">
       <action dev="arikkfir" type="update">Upgraded plugin to JDK 1.5 - required by IDEA since build 3311.</action>
       <action dev="arikkfir" type="remove">Removed the GoalsProvider interface in favor of direct use of IGoalsGrabber. This is now possible since the UI elements can interact with mevenide objects (see next jdom issue for details).</action>
