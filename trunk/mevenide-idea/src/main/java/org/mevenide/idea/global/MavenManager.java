@@ -118,7 +118,7 @@ public class MavenManager implements ApplicationComponent, JDOMExternalizable {
                     setMavenHome(new File(mavenHomePath).getAbsoluteFile());
                 }
                 catch (FileNotFoundException e) {
-                    UIUtils.showError(e);
+                    UIUtils.showError(RES.get("maven.home.misconfigured", mavenHomePath));
                 }
             else
                 //TODO: we should allow the user to specify not to bother him/her again
