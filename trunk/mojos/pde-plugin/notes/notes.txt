@@ -12,6 +12,8 @@
      </properties>
    </project>
    
+   additionally, if running multiproject maven.multiproject.type 
+   must be set to 'pde' to allow effective callbacks.
    
 2. dependencies duplication issue
    
@@ -67,7 +69,7 @@
            * allow customizing classes path
            * manage custom includes
            * allow to use a template instead of directly modify root plugin 
-           descriptor - collaborative perspective (maven.pde.manifest=true|false)
+             descriptor - collaborative perspective (maven.pde.manifest=true|false)
            
 4. feature
    
@@ -79,10 +81,10 @@
 
 6. multiproject-friendly
    
-   pde:artifact disptaches either to pde:plugin, pde:feature or pde:site dependending
+   pde:pde disptaches either to pde:plugin, pde:feature or pde:site dependending
    on the value of maven.pde.type property.
 
-   pde:artifact has a prereq on pde:check which does some compabilities checks.
+   pde:pde has a prereq on pde:check which does some compabilities checks.
    for now, only buildId is checked. 	
 
    TODO: * test in multiproject context
