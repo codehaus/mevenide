@@ -22,8 +22,10 @@ import java.util.List;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.mevenide.pde.PdePluginException;
 import org.codehaus.mevenide.pde.archive.Include;
+import org.codehaus.mevenide.pde.archive.PdeArchiveException;
 import org.codehaus.mevenide.pde.archive.SimpleZipCreator;
 import org.codehaus.mevenide.pde.descriptor.CommonPluginValuesReplacer;
+import org.codehaus.mevenide.pde.descriptor.ReplaceException;
 
 
 /**  
@@ -61,25 +63,54 @@ public class PdePluginBuilder {
 	/** artifactName referencing the primary artifact */
 	private String artifactName;
 	
-	/** indicates wether lib folder should be cleaned */
+	/** indicates if lib folder should be cleaned */
 	private boolean cleanLib; 
 	
-    public void build() throws PdePluginException {
-	    CommonPluginValuesReplacer replacer = new CommonPluginValuesReplacer(basedir.getAbsolutePath(), project, libFolder);
+	/** indicates if single jar'd plugin should be generated */
+	private boolean singleJar;
+	
+	/** name of classes jar when single jar flag is not set */
+	private String classesJarLocation;
+	
+	public void build() throws PdePluginException {
+	    updateDescriptor();
+	    collectDependencies();
+		createArchive();
+    }
+
+	private void createArchive() throws PdeArchiveException {
+		String primaryDirectory = new File(classesLocation).getAbsolutePath();
+		if ( !singleJar ) {
+			primaryDirectory = null;
+			SimpleZipCreator classesZipper = new SimpleZipCreator(new File(classesLocation).getAbsolutePath(), classesJarLocation);
+			classesZipper.zip();
+			Include classesJarInclude = new Include();
+			classesJarInclude.setAbsolutePath(classesJarLocation);
+			includes.add(classesJarInclude);
+		}
+		SimpleZipCreator zipCreator = new SimpleZipCreator(primaryDirectory, new File(artifact).getAbsolutePath());
+		zipCreator.setExcludes(excludes);
+		includeLibraries();
+		zipCreator.setIncludes(includes);
+		zipCreator.zip();
+	}
+
+	private void collectDependencies() throws CollectException {
+		DependencyCollector collector = new DependencyCollector(basedir.getAbsolutePath(), libFolder, project);
+		collector.setCleanLib(cleanLib);
+		collector.collect();
+	}
+
+	private void updateDescriptor() throws ReplaceException {
+		CommonPluginValuesReplacer replacer = new CommonPluginValuesReplacer(basedir.getAbsolutePath(), project, libFolder);
 		replacer.setArtifactName(artifactName);
 		replacer.shouldExportArtifact(shouldExportArtifact);
-	    replacer.replace();
-	    
-	    DependencyCollector collector = new DependencyCollector(basedir.getAbsolutePath(), libFolder, project);
-		collector.setCleanLib(cleanLib);
-	    collector.collect();
-	    
-	    SimpleZipCreator zipCreator = new SimpleZipCreator(new File(classesLocation).getAbsolutePath(), new File(artifact).getAbsolutePath());
-	    zipCreator.setExcludes(excludes);
-	    includeLibraries();
-		zipCreator.setIncludes(includes);
-	    zipCreator.zip();
-    }
+		replacer.setSingleJar(singleJar);
+		if ( !singleJar ) {
+			replacer.setClassesJarName(new File(classesJarLocation).getName());
+		}
+		replacer.replace();
+	}
 
 	private void includeLibraries() {
 		File libFolderPath = new File(basedir, this.libFolder);
@@ -113,13 +144,15 @@ public class PdePluginBuilder {
  
 	public boolean shouldExportArtifact() { return shouldExportArtifact; }
 	public void setExportArtifact(boolean export) { shouldExportArtifact = export; }
-	
-    public MavenProject getProject() { return project; }
+    
+	public MavenProject getProject() { return project; }
     public void setProject(MavenProject project) { this.project = project; }
 	
 	public void setArtifactName(String name) { this.artifactName = name; }
-
 	public void setCleanLib(boolean cleanLib) { this.cleanLib = cleanLib; }
+	public void setClassesJarLocation(String classesJarName) { this.classesJarLocation = classesJarName; }
+	public void setSingleJar(boolean singleJar) { this.singleJar = singleJar; }
+	
 	
     
 }

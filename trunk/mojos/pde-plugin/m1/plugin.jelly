@@ -10,15 +10,15 @@
 		<attainGoal name="pde:${type}" />
 	</goal>
 
-	<goal name="pde:plugin" prereqs="jar:jar">
+	<goal name="pde:plugin" prereqs="pde:check,jar:jar">
 		<pde:plugin project="${pom}" />
 	</goal>
 
-	<goal name="pde:feature">
+	<goal name="pde:feature" prereqs="pde:check">
 		<pde:feature project="${pom}" />
 	</goal>				
 				
-	<goal name="pde:site">
+	<goal name="pde:site" prereqs="pde:check">
 		<pde:site project="${pom}" />
 	</goal>				
 	
@@ -44,10 +44,14 @@
 	</goal>
 	
 	<goal name="pde:check">
-	   <pde:check-version result="compatible"/>
-	   <j:if test="${!compatible}">
-	       <ant:fail message="Incompatible eclipse version."/>
-	   </j:if>
+	    <j:if test="${!checked}">
+	   	    <pde:check-arguments />
+	    	<pde:check-version result="compatible"/>
+	    	<j:if test="${!compatible}">
+	        	<ant:fail message="Incompatible eclipse version."/>
+	    	</j:if>
+	    	<j:set var="checked" value="true" />
+	    </j:if>
 	</goal>
 	
 </project>

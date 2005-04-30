@@ -80,6 +80,16 @@ public class PdePluginTag extends PdeTag {
 		boolean export = BooleanUtils.toBoolean((String) context.getVariable("maven.pde.export"));
 		builder.setExportArtifact(export);
 		
+		boolean singleJar = BooleanUtils.toBoolean((String) context.getVariable("maven.pde.single"));
+		String classesJarName = (String) context.getVariable("maven.final.name") + ".jar";
+		
+		String classeJarLocation = new File(destinationFolder, classesJarName).getAbsolutePath();
+		
+		builder.setSingleJar(singleJar);
+		if ( !singleJar ) {
+			builder.setClassesJarLocation(classeJarLocation);	
+		}
+		
 		builder.build();
 	}
 
