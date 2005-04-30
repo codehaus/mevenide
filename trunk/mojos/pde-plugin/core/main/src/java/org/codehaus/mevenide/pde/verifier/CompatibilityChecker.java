@@ -24,6 +24,7 @@ import java.util.Properties;
 import org.codehaus.mevenide.pde.ConfigurationException;
 import org.codehaus.mevenide.pde.ParameterException;
 import org.codehaus.mevenide.pde.resources.Messages;
+import org.codehaus.plexus.util.StringUtils;
 
 
 /**  
@@ -45,6 +46,21 @@ public class CompatibilityChecker {
         this.configurationFolder = configurationFolder;
     }
     
+	public void checkBuildId(String minBuildIdParameter, String maxBuildIdParameter) throws ConfigurationException {
+		long maxBuildId = 0;
+	    long minBuildId = 0;
+
+		if ( !StringUtils.isEmpty(maxBuildIdParameter) ) {
+	    	maxBuildId = Long.parseLong(maxBuildIdParameter);
+	    }
+		if ( !StringUtils.isEmpty(minBuildIdParameter) ) {
+	        minBuildId = Long.parseLong(minBuildIdParameter);
+	    }
+	        
+	    if ( maxBuildId != 0 || minBuildId != 0 ) {
+	        checkBuildId(minBuildId, maxBuildId);
+	    }        
+	}
     
     /**
      * Because we build against a specific Eclipse platform version,
@@ -100,20 +116,21 @@ public class CompatibilityChecker {
             throw new ParameterException("buildId", "Configuration.Constraints.MinBuildId");
         }
     }
-
+	
     /**
      * extract the buildId of the platform we're building against from the config.ini file and parse it to long 
      * 
      * @throws ConfigurationException if unable to read config file or to parse the buildId
      */
     public long getBuildId() throws ConfigurationException {
-        Properties eclipseConfig = new Properties();
-        if ( configurationFolder == null )  {
+		
+		Properties eclipseConfig = new Properties();
+		if ( configurationFolder == null )  {
             configurationFolder = new File(eclipseHome, "configuration");
         }
-        File eclipseConfigFile = new File(configurationFolder, "config.ini");
-        FileInputStream configStream = null;
-        try {
+		File eclipseConfigFile = new File(configurationFolder, "config.ini");
+		FileInputStream configStream = null;
+		try {
             configStream = new FileInputStream(eclipseConfigFile);
             eclipseConfig.load(configStream);
         }
@@ -131,16 +148,16 @@ public class CompatibilityChecker {
                 catch (IOException e) { } //silently ignore
             }
         }
-        String buildId = (String) eclipseConfig.get("eclipse.buildId");
-        try {
-            long id = Long.parseLong(buildId.substring(1));
+		String buildId = (String) eclipseConfig.get("eclipse.buildId");
+		try {
+            long id = Long.parseLong(buildId.substring(1).replaceAll("-", ""));
             return id;
         }
         catch (NumberFormatException e) {
             String message = Messages.get("Configuration.BuildId.Invalid", buildId != null ? buildId : "null", eclipseConfigFile);
             throw new ConfigurationException(message, e);
         }
-    }
+	}
     
     public File getConfigurationFolder() {
         return configurationFolder;

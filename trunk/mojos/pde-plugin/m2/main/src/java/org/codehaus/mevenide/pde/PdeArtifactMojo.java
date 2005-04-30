@@ -17,6 +17,7 @@
 package org.codehaus.mevenide.pde;
 
 import java.io.File;
+
 import org.apache.maven.plugin.Plugin;
 import org.apache.maven.plugin.PluginExecutionRequest;
 import org.apache.maven.project.MavenProject;
@@ -83,22 +84,9 @@ public abstract class PdeArtifactMojo implements Plugin {
 
     private void checkBuildId(PluginExecutionRequest request) throws ConfigurationException {
         String eclipseConfigurationFolder = (String) request.getParameter("eclipseConfigurationFolder");
-        if ( eclipseConfigurationFolder != null ) {
-	        configurationFolder = new File(eclipseConfigurationFolder);
-	        
-	        long maxBuildId = 0;
-	        long minBuildId = 0;
-	        
-	        if ( request.getParameter("maxBuildId") != null ) {
-	            maxBuildId = ((Long) request.getParameter("maxBuildId")).longValue();
-	        }
-	        if ( request.getParameter("minBuildId") != null ) {
-	            minBuildId = ((Long) request.getParameter("minBuildId")).longValue();
-	        }
-	        
-	        if ( maxBuildId != 0 || minBuildId != 0 ) {
-	            new CompatibilityChecker(eclipseHome, configurationFolder).checkBuildId(minBuildId, maxBuildId);
-	        }
-        }
+        String maxBuildIdParameter = (String) request.getParameter("maxBuildId");
+        String minBuildIdParameter = (String) request.getParameter("minBuildId");
+		new CompatibilityChecker(eclipseHome, configurationFolder).checkBuildId(maxBuildIdParameter, minBuildIdParameter);
     }
+
 }

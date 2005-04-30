@@ -112,23 +112,16 @@ public class MavenProjectConverter {
 
     //copied from mevenide-ui-eclipse
     private void setArtifacts(MavenProject project) {
-        //change user.dir to allow to build artifacts correctly
+        //change user.dir to allow building artifacts correctly
 	    String backupUserDir = System.getProperty("user.dir"); //$NON-NLS-1$
 	    System.setProperty("user.dir", project.getFile().getParentFile().getAbsolutePath()); //$NON-NLS-1$
 	    
 	    //needed for rc3 to correctly setRelativePaths
 	    System.setProperty("maven.home", propertyResolver.getResolvedValue("maven.home")); //$NON-NLS-1$
 	    
-//		for ( m1Project.getContext().getVariables().keySet().iterator(); i.) {
-//			
-//		}
-//		m1Project.getContext().removeVariable(v);
-		
-	    //m1Project.setContext(MavenUtils.createContext(m1Project.getFile().getParentFile()));
+		//m1Project.setContext(MavenUtils.createContext(m1Project.getFile().getParentFile()));
 		m1Project.setContext(context);
 	    
-		
-		
 	    if ( project.getDependencies() == null ) {
 	        project.setDependencies(new ArrayList());
 	    }

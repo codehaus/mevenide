@@ -25,6 +25,7 @@ import org.codehaus.mevenide.pde.artifact.PdeSiteTag;
 import org.codehaus.mevenide.pde.artifact.PdeTypeTag;
 import org.codehaus.mevenide.pde.classpath.PdeClasspathTag;
 import org.codehaus.mevenide.pde.plugin.PdePluginTag;
+import org.codehaus.mevenide.pde.verifier.EclipseVersionVerifierTag;
 
 
 /**  
@@ -50,6 +51,9 @@ public class PdeTaglib extends TagLibrary {
 		
 		//classpath resolver 
         registerTag("classpath", PdeClasspathTag.class);
+		
+		//verifiers
+		registerTag("check-version", EclipseVersionVerifierTag.class);
     }
 }
 
