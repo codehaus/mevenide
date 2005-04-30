@@ -133,7 +133,7 @@
         <dependency>
             <groupId>cargo</groupId>
             <artifactId>cargo-netbeans</artifactId>
-            <version>0.5-SNAPSHOT</version>
+            <version>0.6-SNAPSHOT</version>
             <type>jar</type>
             <properties>
                 <netbeans.module.dep>spec</netbeans.module.dep>
@@ -166,7 +166,7 @@
         <dependency>
             <groupId>cargo</groupId>
             <artifactId>cargo</artifactId>
-            <version>0.5-SNAPSHOT</version>
+            <version>0.6-SNAPSHOT</version>
             <type>jar</type>
         </dependency>
     </dependencies>
