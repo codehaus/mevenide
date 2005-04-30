@@ -27,9 +27,11 @@ import org.apache.commons.logging.LogFactory;
 import org.mevenide.netbeans.project.MavenProject;
 import org.mevenide.project.dependency.DependencyResolverFactory;
 import org.mevenide.project.dependency.IDependencyResolver;
+import org.mevenide.properties.IPropertyResolver;
 import org.netbeans.api.project.Project;
 import org.netbeans.spi.project.FileOwnerQueryImplementation;
 import org.openide.filesystems.FileObject;
+import org.openide.filesystems.FileUtil;
 import org.openide.util.Lookup;
 
 
@@ -86,11 +88,22 @@ public class MavenFileOwnerQueryImpl implements FileOwnerQueryImplementation {
     
     public Project getOwner(URI uri) {
         logger.debug("getOwner of uri=" + uri);
+        File file = new File(uri);
+        return getOwner(file);
+    }
+    
+    public Project getOwner(FileObject fileObject) {
+        File file = FileUtil.toFile(fileObject);
+        logger.debug("getOwner of fileobject=" + fileObject.getNameExt());
+        return getOwner(file);
+    }
+    
+    
+    private Project getOwner(File file) {
         Set currentProjects;
         synchronized (LOCK) {
             currentProjects = new HashSet(set);
         }
-        File file = new File(uri);
         try {
             IDependencyResolver resolver = DependencyResolverFactory.getFactory().newInstance(file.getAbsolutePath());
             String version = resolver.guessVersion();
@@ -101,10 +114,14 @@ public class MavenFileOwnerQueryImpl implements FileOwnerQueryImplementation {
             while (it.hasNext()) {
                 MavenProject project = (MavenProject)it.next();
                 org.apache.maven.project.Project proj = project.getOriginalMavenProject();
+                IPropertyResolver res = project.getPropertyResolver();
 //                logger.debug("project=" + project.getDisplayName() + "  artif=" + proj.getArtifactId() + "  group=" + proj.getGroupId() + "  version=" + proj.getCurrentVersion() +  "  id=" + proj.getId());
-                if (version != null && version.equals(proj.getCurrentVersion()) &&
-                    artifactid != null && (artifactid.equals(proj.getArtifactId()) || artifactid.equals(proj.getId())) &&
-                    groupid != null && (groupid.equals(proj.getGroupId()) || groupid.equals(artifactid))) {
+                if (version != null && 
+                    doCompare(version, res.resolveString(proj.getCurrentVersion())) &&
+                    artifactid != null && 
+                    (doCompare(artifactid, res.resolveString(proj.getArtifactId())) || doCompare(artifactid, res.resolveString(proj.getId()))) &&
+                    groupid != null && 
+                    (doCompare(groupid, res.resolveString(proj.getGroupId())) || groupid.equals(artifactid))) {
                         logger.debug("found project=" + project.getDisplayName());
                         return project;
                 }
@@ -113,11 +130,14 @@ public class MavenFileOwnerQueryImpl implements FileOwnerQueryImplementation {
             logger.error("Something wrong with resolver.", exc);
         }
         return null;
+        
     }
     
-    public Project getOwner(FileObject fileObject) {
-        logger.debug("getOwner of fileobject=" + fileObject.getNameExt());
-        return null;
-    }
+    private boolean doCompare(String one, String two) {
+        if (one == null || two == null) {
+            return false;
+        }
+        return one.trim().equals(two.trim());
+    }    
     
 }
