@@ -286,6 +286,19 @@ public final class MavenProject implements Project {
    }
    
    /**
+    * returns the location of the war file. can return null or a file instance that doesn't exist.
+    */
+   public File getWar() {
+        String buildDir = getPropertyResolver().getResolvedValue("maven.war.build.dir");
+        String name = getPropertyResolver().getResolvedValue("maven.war.final.name");
+        if (name != null && buildDir != null) {
+            File fil = new File(buildDir, name + ".war");
+            return fil;
+        }
+        return null;
+   }
+   
+   /**
     * URI denoted by the maven.ear.src property in the project context.
     */
    public URI getEarDirectory() {
