@@ -8,7 +8,7 @@ public class PdeEnabledTag extends PdeTag {
 	private String var;
 
 	public void doTag(XMLOutput arg0) throws JellyTagException {
-		String enabled = m1Project.getProperty("maven.pde.enabled");
+		String enabled = project.getProperty("maven.pde.enabled");
 		context.setVariable(var, Boolean.valueOf(enabled));
 	}
 	

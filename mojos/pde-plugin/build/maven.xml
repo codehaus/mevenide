@@ -5,6 +5,4 @@
  	<attainGoal name="multiproject:goal"/>  	
   </goal>
 
-  <goal name="trap" />
-
 </project>

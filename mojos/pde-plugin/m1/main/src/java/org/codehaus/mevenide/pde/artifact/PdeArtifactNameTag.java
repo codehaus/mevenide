@@ -22,8 +22,8 @@ public class PdeArtifactNameTag extends PdeTag {
 		boolean normalize = BooleanUtils.toBoolean((String) context.getVariable("maven.pde.normalizeName"));
 		boolean adaptVersion = BooleanUtils.toBoolean((String) context.getVariable("maven.pde.adaptVersion"));
 		
-		String artifactId = m1Project.getArtifactId();
-		String version = m1Project.getCurrentVersion();
+		String artifactId = project.getArtifactId();
+		String version = project.getCurrentVersion();
 		
 		PdeArtifactNameBuilder artifactNameBuilder = new PdeArtifactNameBuilder();
 		artifactNameBuilder.setAdaptVersion(adaptVersion);

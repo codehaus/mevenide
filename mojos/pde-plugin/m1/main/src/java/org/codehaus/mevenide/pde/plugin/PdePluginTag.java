@@ -43,7 +43,7 @@ public class PdePluginTag extends PdeTag {
     
     public void doTag(XMLOutput arg0) throws JellyTagException {
         try {
-			boolean pdeEnabled = BooleanUtils.toBoolean(m1Project.getProperty("maven.pde.enabled"));
+			boolean pdeEnabled = BooleanUtils.toBoolean(project.getProperty("maven.pde.enabled"));
 			if ( pdeEnabled ) {
 				createPlugin();
 			}
@@ -71,7 +71,7 @@ public class PdePluginTag extends PdeTag {
 		builder.setLibFolder((String) context.getVariable("maven.pde.libTargetPath"));
 		builder.setClassesLocation((String) context.getVariable("maven.build.dest"));
 		builder.setCleanLib(BooleanUtils.toBoolean((String) context.getVariable("maven.pde.cleanLib")));
-		builder.setProject(new MavenProjectConverter(m1Project, (MavenJellyContext) context).convert());
+		builder.setProject(new MavenProjectConverter(project, (MavenJellyContext) context).convert());
 		
 		List includes = getCommonIncludes(basedir);
 		//@todo custom includes
@@ -86,7 +86,7 @@ public class PdePluginTag extends PdeTag {
 	private String getArtifactName() throws PdePluginException {
 		try {
 			PdeArtifactNameTag tag = new PdeArtifactNameTag();
-			tag.setProject(m1Project);
+			tag.setProject(project);
 			tag.setContext(context);
 			return tag.getArtifactName();
 		} 
