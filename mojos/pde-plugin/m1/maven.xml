@@ -6,7 +6,7 @@
   </goal>
 
   <goal name="m1:it">
-     <maven:maven descriptor="${basedir}/m1-it-v3/project.xml" goals="clean,pde:install"/>
+     <maven:maven descriptor="${basedir}/m1-it-v3/project.xml" goals="pde:it"/>
   </goal>
 
 </project>

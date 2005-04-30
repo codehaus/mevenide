@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="feature-id"
+      label="short-description"
+      version="version"
+      provider-name="provider"
+      plugin="Mevenide"
+      image="mevenide.png">
+
+   <description>
+      %description
+   </description>
+
+   <license url="http://mevenide.codehaus.org/license.html">
+      %license
+   </license>
+
+   <url>
+      <update label="myLabel" url="myUrl"/>
+   </url>
+
+</feature>

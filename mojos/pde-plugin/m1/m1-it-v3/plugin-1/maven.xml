@@ -1,0 +1,7 @@
+<project>
+  
+  <preGoal name="build:start">
+    <attainGoal name="pde:classpath"/>
+  </preGoal>
+  
+</project>

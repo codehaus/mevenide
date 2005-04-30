@@ -1,7 +1,5 @@
-<project>
-  
-  <preGoal name="build:start">
-    <attainGoal name="pde:classpath"/>
-  </preGoal>
-  
+<project xmlns:j="jelly:core">
+    <goal name="pde:it">
+        <attainGoal name="multiproject:install" />
+    </goal>
 </project>

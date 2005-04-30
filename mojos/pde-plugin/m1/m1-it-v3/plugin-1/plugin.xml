@@ -7,7 +7,7 @@
       <package prefixes="org.jdom" />
     </library>
     <library name="nonDefaultTarget/commons-lang-2.0.jar" />
-    <library name="maven-pde-plugin-test-0.1.jar">
+    <library name=".">
       <export name="*" />
     </library>
   </runtime>
