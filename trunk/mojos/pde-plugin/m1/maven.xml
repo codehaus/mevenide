@@ -1,7 +1,12 @@
-<project xmlns:j="jelly:core">
+<project xmlns:j="jelly:core" xmlns:maven="jelly:maven">
   
   <goal name="trap">
-     <attainGoal name="plugin:install"/>
+     <attainGoal name="plugin:install-now"/>
+     <attainGoal name="m1:it"/>
+  </goal>
+
+  <goal name="m1:it">
+     <maven:maven descriptor="${basedir}/m1-it-v3/project.xml" goals="clean,pde:install"/>
   </goal>
 
 </project>

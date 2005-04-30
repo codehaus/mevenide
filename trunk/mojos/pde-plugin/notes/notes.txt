@@ -29,7 +29,9 @@
    
    TODO: * manage single jar'd plugins
          * manage MANIFEST if present
-   
+         * collect non existent declared plugins & compare them to 
+           dependencies-as-requires, to emit a warning if intersection not empty  
+           
 3. plugin.xml update
    
    pde:plugin goal has a prereqs on jar:jar

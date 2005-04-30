@@ -9,7 +9,7 @@ public class PdeTypeTag extends PdeTag {
 	private String var;
 
 	public void doTag(XMLOutput arg0) throws JellyTagException {
-		String type = m1Project.getProperty("maven.pde.type");
+		String type = project.getProperty("maven.pde.type");
 		if ( StringUtils.isEmpty(type) ) {
 			type = "plugin";
 		}

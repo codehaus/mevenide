@@ -16,14 +16,14 @@ public class PdeInstallParametersTag extends PdeTag {
 		String typeVar = null;
 		String artifactVar = null;
 		
-		if ( BooleanUtils.toBoolean(m1Project.getProperty("maven.pde.enabled")) ) {
+		if ( BooleanUtils.toBoolean(project.getProperty("maven.pde.enabled")) ) {
 			handlerVar = new PdeArtifactTypeHandler();
 			((PdeArtifactTypeHandler) handlerVar).setContext(context);
 			typeVar = "pde";
 			
 			PdeArtifactNameTag tag = new PdeArtifactNameTag();
 			tag.setContext(context);
-			tag.setProject(m1Project);
+			tag.setProject(project);
 			artifactVar = tag.getArtifactName() + ".jar";
 		}
 		else {
