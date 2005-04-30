@@ -4,6 +4,4 @@
     <attainGoal name="pde:classpath"/>
   </preGoal>
   
-  <goal name="pde:test" prereqs="pde:plugin"/>
-  
 </project>
