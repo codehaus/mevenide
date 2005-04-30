@@ -16,13 +16,16 @@
  */
 
 package org.mevenide.netbeans.j2ee;
-
-import java.awt.event.ActionEvent;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.WeakHashMap;
-import javax.swing.AbstractAction;
 import javax.swing.Action;
+import org.codehaus.cargo.container.deployable.Deployable;
 import org.mevenide.netbeans.api.project.AdditionalActionsProvider;
+import org.mevenide.netbeans.cargo.CargoServerRegistry;
 import org.mevenide.netbeans.j2ee.deploy.DeployAction;
+import org.mevenide.netbeans.j2ee.deploy.RedeployAction;
 import org.mevenide.netbeans.project.MavenProject;
 
 /**
@@ -38,12 +41,19 @@ public class J2eeActions implements AdditionalActionsProvider {
     }
 
     public Action[] createPopupActions(MavenProject project) {
+        Collection toRet = new ArrayList();
         Action deploy = (Action)cache.get(project);
         if (deploy == null) {
             deploy = new DeployAction(project);
             cache.put(project, deploy);
         }
-        return new Action[] {deploy};
+        toRet.add(deploy);
+        File war = project.getWar();
+        Deployable[] depls = CargoServerRegistry.getInstance().findDeployables(war.toString());
+        if (depls.length > 0) {
+            toRet.add(new RedeployAction(project));
+        }
+        return (Action[])toRet.toArray(new Action[toRet.size()]);
     }
     
 

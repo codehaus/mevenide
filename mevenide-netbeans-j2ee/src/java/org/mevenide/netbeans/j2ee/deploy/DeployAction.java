@@ -64,15 +64,16 @@ public class DeployAction extends AbstractAction {
             final Container container = panel.getSelectedContainer();
             RequestProcessor.getDefault().post(new Runnable() {
                 public void run() {
+                    CargoServerRegistry reg = CargoServerRegistry.getInstance();
                     if (container.getState() == State.STOPPED) {
                         StatusDisplayer.getDefault().setStatusText("Starting Container " + container.getName());
-                        CargoServerRegistry.getInstance().startContainer(container, false);
+                        reg.startContainer(container, false);
                     }
                     if (container.getState() == State.STARTED) {
                         StatusDisplayer.getDefault().setStatusText("Dynamically deploying " + panel.getDeployable());
-                        WAR war = CargoServerRegistry.getInstance().getDeployableFactory().createWAR(panel.getDeployable());
+                        WAR war = reg.getDeployableFactory().createWAR(panel.getDeployable());
                         war.setContext(panel.getContext());
-                        Deployer deployer = CargoServerRegistry.getInstance().getDeployerFactory().createDeployer(container, DeployerFactory.DEFAULT);
+                        Deployer deployer = reg.getDeployer(container);
                         URL url = null;
                         try {
                             url = new URL(panel.getBaseUrl());
@@ -85,13 +86,13 @@ public class DeployAction extends AbstractAction {
                             DeployableMonitor mon = new URLDeployableMonitor(url);
                             mon.registerListener(new DeployableMonitorListener() {
                                 public void deployed() {
-                                    System.out.println("monitored deplloyed");
                                     StatusDisplayer.getDefault().setStatusText("Deployed " + panel.getDeployable());
                                     HtmlBrowser.URLDisplayer.getDefault().showURL(fUrl);
                                 }
                             });
                             try {
                                 deployer.deploy(war, mon);
+                                reg.registerDeployable(container, war);
                             } catch (ContainerException exc) {
                                 ErrorManager.getDefault().notify(ErrorManager.INFORMATIONAL, exc);
                                 NotifyDescriptor nd = new NotifyDescriptor.Message(exc.getLocalizedMessage(), NotifyDescriptor.ERROR_MESSAGE);
@@ -100,6 +101,7 @@ public class DeployAction extends AbstractAction {
                         } else {
                             try {
                                 deployer.deploy(war);
+                                reg.registerDeployable(container, war);
                             } catch (ContainerException exc) {
                                 ErrorManager.getDefault().notify(ErrorManager.INFORMATIONAL, exc);
                                 NotifyDescriptor nd = new NotifyDescriptor.Message(exc.getLocalizedMessage(), NotifyDescriptor.ERROR_MESSAGE);
@@ -112,6 +114,4 @@ public class DeployAction extends AbstractAction {
             });
         }
     }
-    
-    
 }

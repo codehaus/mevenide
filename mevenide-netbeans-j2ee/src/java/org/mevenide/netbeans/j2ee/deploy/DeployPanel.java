@@ -58,11 +58,9 @@ public class DeployPanel extends JPanel {
     }
     
     private void refreshFields() {
-        String buildDir = project.getPropertyResolver().getResolvedValue("maven.war.build.dir");
-        String name = project.getPropertyResolver().getResolvedValue("maven.war.final.name");
-        if (name != null && buildDir != null) {
-            File fil = new File(buildDir, name + ".war");
-            txtFile.setText(fil.toString());
+        File war = project.getWar();
+        if (war != null) {
+            txtFile.setText(war.toString());
             String context = project.getContext().getPOMContext().getFinalProject().getArtifactId();
             if (context == null) {
                 context = project.getContext().getPOMContext().getFinalProject().getId();
