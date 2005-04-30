@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+  <pomVersion>3</pomVersion>
+  <artifactId>maven-pde-plugin-test</artifactId>
+  <name>maven pde plugin test</name>
+  <groupId>mevenide</groupId>
+  <currentVersion>0.1</currentVersion>
+  <organization>
+    <name>the codehaus</name>
+    <url>http://mevenide.codehaus.org/maven-pde-plugin</url>
+  </organization>
+  <inceptionYear>2004</inceptionYear>
+  <package>org.codehaus.mevenide.pde</package>
+  <dependencies>
+  	<!-- 
+  		maven.pde.package - should render the root package of the library in plugin.xml 
+  	-->
+    <dependency>
+      <groupId>jdom</groupId>
+      <artifactId>jdom</artifactId>
+      <version>1.0</version>
+      <type>jar</type>
+      <properties>
+        <maven.pde.package>org.jdom</maven.pde.package>
+      </properties>
+    </dependency>
+    <!-- 
+    	maven.pde.targetPath - should be rendered as non exported in plugin.xml and library copied to alternateFolder 
+    -->
+    <dependency>
+      <groupId>commons-lang</groupId>
+      <artifactId>commons-lang</artifactId>
+      <version>2.0</version>
+      <type>jar</type>
+      <properties>
+        <maven.pde.export>false</maven.pde.export>
+        <maven.pde.targetPath>nonDefaultTarget</maven.pde.targetPath>
+      </properties>
+    </dependency>
+    <!-- 
+    	maven.pde.requires - should be rendered as requires/plugin 
+    -->
+    <dependency>
+      <groupId>commons-logging</groupId>
+      <artifactId>commons-logging</artifactId>
+      <version>1.0.3</version>
+      <type>jar</type>
+      <properties>
+        <maven.pde.requires>true</maven.pde.requires>
+        <!-- 
+        	name should rather be searched in the dependency project, which brings up some issues
+        	In hte mean time this is an acceptable workaround.
+        -->
+        <maven.pde.name>org.mevenide.requires.test</maven.pde.name>
+      </properties>
+    </dependency>
+    <!-- 
+    	excluded dependency - shouldnot be rendered in plugin.xml and shouldnot be copied to lib folder 
+    -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <type>jar</type>
+      <properties>
+        <maven.pde.exclude>true</maven.pde.exclude>
+      </properties>
+    </dependency>
+    <!-- 
+    	duplicated dependencies - shouldnot be rendered in plugin.xml 
+    -->
+    <dependency>
+      <groupId>commons-logging</groupId>
+      <artifactId>commons-logging</artifactId>
+      <version>1.0.3</version>
+      <type>jar</type>
+      <properties>
+        <maven.pde.requires>true</maven.pde.requires>
+        <maven.pde.name>org.mevenide.requires.test</maven.pde.name>
+      </properties>
+    </dependency>
+    <dependency>
+      <groupId>commons-lang</groupId>
+      <artifactId>commons-lang</artifactId>
+      <version>2.0</version>
+      <type>jar</type>
+      <properties>
+        <maven.pde.export>false</maven.pde.export>
+      </properties>
+    </dependency>
+  </dependencies>
+  <build>
+  	<sourceDirectory>main/src/java</sourceDirectory>
+  </build>
+  <properties>
+  	<!-- 
+  		indicates to pde:plugin treat the project as a pde-enabled artifact 
+  	-->
+  	<maven.pde.enabled>true</maven.pde.enabled>
+  </properties>
+</project>
+

@@ -1,4 +1,4 @@
 target
 lib
-maven-pde-plugin-0.1.jar
+*.jar
 nonDefaultTarget

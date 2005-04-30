@@ -26,8 +26,8 @@
 		<artifact:install artifact="${maven.build.dir}/${maven.final.name}.jar" type="jar" project="${pom}"/>           
     	<pde:enabled project="${pom}" var="pdeEnabled" />
 	   	<j:if test="${pdeEnabled}">
-			<pde:install-parameters artifact="artifact" type="installType" typeHandler="typeHandler" project="${pom}" />
-		    <artifact:install artifact="${artifact}" type="${installType}" project="${pom}" typeHandler="${typeHandler}"/>
+			<pde:install-parameters artifact="artifactName" type="installType" typeHandler="typeHandler" project="${pom}" />
+		    <artifact:install artifact="${maven.build.dir}/${artifactName}" type="${installType}" project="${pom}" typeHandler="${typeHandler}"/>
 		</j:if>
 	</goal>
 	

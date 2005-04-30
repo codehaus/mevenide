@@ -3,7 +3,6 @@ package org.codehaus.mevenide.pde.artifact;
 import org.apache.commons.jelly.JellyTagException;
 import org.apache.commons.jelly.XMLOutput;
 import org.apache.commons.lang.BooleanUtils;
-import org.codehaus.mevenide.pde.PdeArtifactNameBuilder;
 import org.codehaus.mevenide.pde.taglib.PdeTag;
 
 public class PdeArtifactNameTag extends PdeTag {

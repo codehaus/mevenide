@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.0"?>
-<plugin provider-name="the codehaus" id="org.mevenide.maven.pde.plugin.test" name="maven pde plugin test" version="0.1.0">
+<plugin provider-name="the codehaus" id="maven.pde.plugin.test" name="maven pde plugin test" version="0.1.0">
   <runtime>
     <library name="lib/jdom-1.0.jar">
       <export name="*" />
