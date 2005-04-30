@@ -27,7 +27,8 @@
    
    on the other hand non eclipse dependencies are still declared in the pom
    
-   TODO: manage single jar'd plugins 
+   TODO: * manage single jar'd plugins
+         * manage MANIFEST if present
    
 3. plugin.xml update
    
@@ -59,9 +60,11 @@
      
      pde:plugin then builds a single jar'd plugin 
      
-     TODO: add maven.pde.single property to indicate if single jar'd plugin should 
-           generated instead of the way (folder + zip/jar)
-
+     TODO: * add maven.pde.single property to indicate if single jar'd plugin should 
+             generated instead of the way (folder + zip/jar)
+           * allow use of MANIFEST
+           * allow to customize classes path
+           
 4. feature
    
    pde:feature (todo)
@@ -78,14 +81,16 @@
    pde:artifact has a prereq on pde:check which does some compabilities checks.
    for now, only buildId is checked. 	
 
-   TODO: test in a multiproject context
+   TODO: * test in multiproject context
 
 7. pde:install
   
    pde:install has a prereqs on pde:artifact
    
-   primary artifact is _always_ installed through artifact:install. 
-
+   primary artifact is _always_ installed through artifact:install to allow dependencies resolution. 
+   pde artifact is installed as a 'pde' artifact. will be grabbed when collecting deps for feature or site
+   
+   
 8. deploy
 
 9. other artifact types

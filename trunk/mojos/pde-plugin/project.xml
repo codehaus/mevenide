@@ -150,7 +150,7 @@
   </dependencies>
   <build>
     <sourceDirectory>main/src/java</sourceDirectory>
-    <unitTestSourceDirectory>test/java</unitTestSourceDirectory>
+    <unitTestSourceDirectory>main/test/java</unitTestSourceDirectory>
     <unitTest>
       <excludes>
         <exclude>**/AllTests.java</exclude>
@@ -162,7 +162,7 @@
       </excludes>
       <resources>
         <resource>
-          <directory>test/resources</directory>
+          <directory>main/test/resources</directory>
           <filtering>false</filtering>
         </resource>
       </resources>

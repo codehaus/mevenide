@@ -1,4 +1,4 @@
-package org.codehaus.mevenide.pde;
+package org.codehaus.mevenide.pde.artifact;
 
 import org.codehaus.mevenide.pde.version.VersionAdapter;
 import org.codehaus.plexus.util.StringUtils;
@@ -33,6 +33,7 @@ public class PdeArtifactNameBuilder {
 	 * @return artifact name
 	 */
 	public String getArtifactName() {
+		boolean skipPrefix = !StringUtils.isEmpty(pdeArtifactName);
 		if ( StringUtils.isEmpty(pdeArtifactName) ) {
 			pdeArtifactName = artifactId; 
 		}
@@ -46,7 +47,7 @@ public class PdeArtifactNameBuilder {
 			pdeArtifactVersion = new VersionAdapter().adapt(pdeArtifactVersion);
 		}
 		
-		pdeArtifactPrefix = StringUtils.isEmpty(pdeArtifactPrefix) ? "" : pdeArtifactPrefix + ".";
+		pdeArtifactPrefix = skipPrefix || StringUtils.isEmpty(pdeArtifactPrefix) ? "" : pdeArtifactPrefix + ".";
 		String artifactName = pdeArtifactPrefix + pdeArtifactName + "_" + pdeArtifactVersion;
 		
 		return artifactName;

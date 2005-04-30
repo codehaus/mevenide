@@ -47,7 +47,7 @@ public class MavenProjectConverterTest extends TestCase {
         UnitTest unitTest = new UnitTest();
         unitTest.addResource(r);
         project.getBuild().setUnitTest(unitTest);
-        project.setFile(new File(getClass().getResource("/it.v3/project.xml").getFile()));
+        project.setFile(new File(getClass().getResource("/project.xml").getFile()));
         converter = new MavenProjectConverter(project, new MavenJellyContext());
     }
 
