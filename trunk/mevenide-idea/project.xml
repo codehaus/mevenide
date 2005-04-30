@@ -7,9 +7,9 @@
   <name>MevenIDE IDEA Integration</name>
   <package>org.mevenide.idea</package>
   <description>This project provides Maven integration into the popular IntelliJ IDEA IDE.</description>
-  <shortDescription>Maven integration into the popular IntelliJ IDEA IDE.</shortDescription>
+  <shortDescription>Maven integration for IntelliJ IDEA IDE.</shortDescription>
   <url>http://mevenide.codehaus.org/mevenide-idea/</url>
-  <currentVersion>0.2-SNAPSHOT</currentVersion>
+  <currentVersion>0.1-SNAPSHOT</currentVersion>
   <distributionSite>beaver.codehaus.org</distributionSite>
   <distributionDirectory>/home/projects/mevenide/dist/distributions/</distributionDirectory>
   <logo>/images/mevenide-idea-logo.png</logo>
