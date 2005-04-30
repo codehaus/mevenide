@@ -5,7 +5,7 @@
          xmlns:ant="jelly:ant"
          xmlns:u="jelly:util">
 	
-	<goal name="pde:artifact" prereqs="pde:check">
+	<goal name="pde:pde">
 		<pde:type var="type" project="${pom}" /> 
 		<attainGoal name="pde:${type}" />
 	</goal>
@@ -22,8 +22,10 @@
 		<pde:site project="${pom}" />
 	</goal>				
 	
-	<goal name="pde:install" prereqs="pde:artifact">    
-		<artifact:install artifact="${maven.build.dir}/${maven.final.name}.jar" type="jar" project="${pom}"/>           
+	<goal name="pde:install" prereqs="pde:pde">    
+	    <j:if test="${sourcesPresent}">
+		    <artifact:install artifact="${maven.build.dir}/${maven.final.name}.jar" type="jar" project="${pom}"/>           
+		</j:if>
     	<pde:enabled project="${pom}" var="pdeEnabled" />
 	   	<j:if test="${pdeEnabled}">
 			<pde:install-parameters artifact="artifactName" type="installType" typeHandler="typeHandler" project="${pom}" />
@@ -31,7 +33,7 @@
 		</j:if>
 	</goal>
 	
-	<goal name="pde:deploy" prereqs="pde:artifact" />
+	<goal name="pde:deploy" prereqs="pde:pde" />
 	
 	<goal name="pde:classpath">
 		<pde:classpath var="eclipseArtifacts" />
@@ -44,14 +46,11 @@
 	</goal>
 	
 	<goal name="pde:check">
-	    <j:if test="${!checked}">
-	   	    <pde:check-arguments />
-	    	<pde:check-version result="compatible"/>
-	    	<j:if test="${!compatible}">
-	        	<ant:fail message="Incompatible eclipse version."/>
-	    	</j:if>
-	    	<j:set var="checked" value="true" />
-	    </j:if>
+   	    <pde:check-arguments />
+    	<pde:check-version result="compatible"/>
+    	<j:if test="${!compatible}">
+        	<ant:fail message="Incompatible eclipse version."/>
+    	</j:if>
 	</goal>
 	
 </project>

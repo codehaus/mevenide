@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+  <extend>../project.xml</extend>	
+  <pomVersion>3</pomVersion>
+  <artifactId>maven-pde-feature-test</artifactId>
+  <name>maven pde feature test</name>
+  <groupId>mevenide</groupId>
+  <currentVersion>0.1</currentVersion>
+  <organization>
+    <name>the codehaus</name>
+    <url>http://mevenide.codehaus.org/maven-pde-plugin</url>
+  </organization>
+  <inceptionYear>2004</inceptionYear>
+  <package>org.codehaus.mevenide.pde</package>
+  <!-- dependencies>
+  	
+  </dependencies -->
+  
+  <properties>
+  	<maven.pde.enabled>true</maven.pde.enabled>
+  	<maven.pde.type>feature</maven.pde.type>
+  </properties>
+</project>
+
