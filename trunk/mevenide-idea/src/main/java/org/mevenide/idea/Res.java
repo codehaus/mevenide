@@ -27,6 +27,12 @@ import java.text.MessageFormat;
 import java.util.*;
 
 /**
+ * Loads UTF-8 resources from resource bundles.
+ *
+ * <p>This is an enhancement over the standard java.util.ResourceBundle class which
+ * allows providing additional properties to the message (for inline place holders)
+ * as well as supporting hierarchical bundles.</p>
+ * 
  * @author Arik
  */
 public final class Res {
@@ -34,7 +40,7 @@ public final class Res {
     private static final Log LOG = LogFactory.getLog(Res.class);
     private static final String UNKNOWN_KEY = "(unknown resource key)";
 
-    private static final Map cache = Collections.synchronizedMap(new HashMap(10));
+    private static final Map<String,Res> cache = Collections.synchronizedMap(new HashMap<String, Res>(10));
 
     private final String packageName;
     private final String bundleName;
@@ -101,11 +107,7 @@ public final class Res {
         }
     }
 
-    public String get(final String pKey) {
-        return get(pKey, null);
-    }
-
-    public String get(final String pKey, final Object[] pArguments) {
+    public String get(final String pKey, final Object... pArguments) {
         if (pKey == null) {
             LOG.warn("null key has been passed for bundle '" + bundleName + "'");
             return UNKNOWN_KEY;
@@ -129,12 +131,11 @@ public final class Res {
     }
 
     public Map getAll() {
-        final Enumeration keys = bundle.getKeys();
-        final List keyList = Collections.list(keys);
-        final Map all = new HashMap(keyList.size());
+        final Enumeration<String> keys = bundle.getKeys();
+        final Map<String,String> all = new HashMap<String, String>();
 
-        for(int i = 0; i < keyList.size(); i++) {
-            final String key = (String) keyList.get(i);
+        while(keys.hasMoreElements()) {
+            final String key = keys.nextElement();
             all.put(key, get(key));
         }
 
@@ -142,7 +143,6 @@ public final class Res {
     }
 
     public static Res getInstance(final Class pClass) {
-        final ClassLoader cl = pClass.getClassLoader();
         return getInstance(pClass, DEFAULT_BUNDLE_NAME);
     }
 
@@ -172,7 +172,7 @@ public final class Res {
         baseName = buildBundleName(packageName, pBundleName);
 
         //if we have already searched for this res, return the cached instance
-        final Res cachedRes = (Res) cache.get(baseName);
+        final Res cachedRes = cache.get(baseName);
         if (cachedRes != null)
             return cachedRes;
 
