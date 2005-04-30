@@ -72,6 +72,9 @@ public class PdePluginBuilder {
 	/** name of classes jar when single jar flag is not set */
 	private String classesJarLocation;
 	
+	/** true if project has sources */
+	private boolean sourcesPresent;
+	
 	public void build() throws PdePluginException {
 	    updateDescriptor();
 	    collectDependencies();
@@ -104,6 +107,7 @@ public class PdePluginBuilder {
 	private void updateDescriptor() throws ReplaceException {
 		CommonPluginValuesReplacer replacer = new CommonPluginValuesReplacer(basedir.getAbsolutePath(), project, libFolder);
 		replacer.setArtifactName(artifactName);
+		replacer.setSourcesPresent(sourcesPresent);
 		replacer.shouldExportArtifact(shouldExportArtifact);
 		replacer.setSingleJar(singleJar);
 		if ( !singleJar ) {
@@ -153,6 +157,6 @@ public class PdePluginBuilder {
 	public void setClassesJarLocation(String classesJarName) { this.classesJarLocation = classesJarName; }
 	public void setSingleJar(boolean singleJar) { this.singleJar = singleJar; }
 	
-	
+	public void setSourcesPresent(boolean sourcesPresent) { this.sourcesPresent = sourcesPresent; }
     
 }
