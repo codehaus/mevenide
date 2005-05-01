@@ -21,9 +21,9 @@
       <artifactId>maven-pde-plugin-test</artifactId>
       <version>0.1</version>
       <type>jar</type>
+      <jar>org.mevenide.maven.pde.plugin.test_0.1.0.jar</jar>
       <properties>
       	<maven.pde.requires>true</maven.pde.requires>
-        <maven.pde.name>org.mevenide.maven.pde.plugin.test</maven.pde.name>
       </properties>
     </dependency>
   </dependencies>
