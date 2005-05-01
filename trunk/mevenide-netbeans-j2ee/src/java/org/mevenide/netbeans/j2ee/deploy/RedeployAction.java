@@ -61,23 +61,19 @@ public class RedeployAction extends AbstractAction {
         if (war != null) {
             if (!war.exists()) {
                 //TODO rebuild??
+                NotifyDescriptor desc = new NotifyDescriptor.Message("War file not built. Please build first.");
+                DialogDisplayer.getDefault().notify(desc);
             } else {
-                RequestProcessor.getDefault().post(new Runnable() {
-                    public void run() {
-                        CargoServerRegistry reg = CargoServerRegistry.getInstance();
-                        Deployable[] depls = reg.findDeployables(war.getAbsolutePath());
-                        if (depls != null && depls.length > 0) {
-                            for (int i = 0; i < depls.length; i++) {
-                                Container cont = reg.findContainerForDeployable(depls[i]);
-                                Deployer deployer = reg.getDeployer(cont);
-                                StatusDisplayer.getDefault().setStatusText("Redeploying at " + cont.getName() + " ...");
-                                deployer.deploy(depls[i]);
-                                StatusDisplayer.getDefault().setStatusText("Redeployed " + cont.getName() +" ...");
-                            }
-                        }
-                        
+                CargoServerRegistry reg = CargoServerRegistry.getInstance();
+                Deployable[] depls = reg.findDeployables(war.getAbsolutePath());
+                if (depls != null && depls.length > 0) {
+                    for (int i = 0; i < depls.length; i++) {
+                        Container cont = reg.findContainerForDeployable(depls[i]);
+                        DeployerRunner runner = new DeployerRunner(cont, (WAR)depls[i]);
+                        RequestProcessor.getDefault().post(runner);
                     }
-                });
+                }
+                
             }
         } 
     }

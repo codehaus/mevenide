@@ -83,9 +83,9 @@ public class DeployPanel extends JPanel {
             Iterator it = containers.iterator();
             while (it.hasNext()) {
                 Container cont = (Container)it.next();
-                if (CargoServerRegistry.getInstance().supportsDynamicDeployment(cont)) {
+//                if (CargoServerRegistry.getInstance().supportsDynamicDeployment(cont)) {
                     model.addElement(new ContainerWrapper(cont));
-                }
+//                }
             }
             comContainer.setModel(model);
         }
