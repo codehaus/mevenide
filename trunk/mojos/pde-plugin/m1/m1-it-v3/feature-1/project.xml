@@ -22,6 +22,13 @@
     </dependency>
     <dependency>
       <groupId>mevenide</groupId>
+      <artifactId>maven-pde-plugin-test-2</artifactId>
+      <version>0.1</version>
+      <type>jar</type>
+      <jar>org.mevenide.maven.pde.plugin.test.2_0.1.0.jar</jar>
+    </dependency>
+    <dependency>
+      <groupId>mevenide</groupId>
       <artifactId>maven-pde-lib-test</artifactId>
       <version>0.1</version>
       <type>jar</type>
