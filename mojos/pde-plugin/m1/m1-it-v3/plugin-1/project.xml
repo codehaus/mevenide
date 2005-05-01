@@ -43,9 +43,9 @@
     	maven.pde.requires - rendered as a requires/plugin element
     -->
     <dependency>
-      <groupId>commons-logging</groupId>
-      <artifactId>commons-logging</artifactId>
-      <version>1.0.3</version>
+      <groupId>mevenide</groupId>
+      <artifactId>maven-pde-lib-test</artifactId>
+      <version>0.1</version>
       <type>jar</type>
       <properties>
         <maven.pde.requires>true</maven.pde.requires>
@@ -53,7 +53,7 @@
         	name should rather be searched in the dependency project - if dependency 
         	pom not found this property will be used to reference the plugin
         -->
-        <maven.pde.name>org.mevenide.requires.test</maven.pde.name>
+        <maven.pde.name>org.mevenide.lib.test</maven.pde.name>
       </properties>
     </dependency>
     <!-- 
