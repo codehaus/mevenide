@@ -115,7 +115,7 @@ public class SimpleZipCreator {
                 else {
 		            String targetPath = include.getTargetPath();
 		            targetPath = targetPath != null ? targetPath : "";
-		            targetPath = !targetPath.startsWith("/") ? "/" + targetPath : targetPath; 
+		            targetPath = !targetPath.startsWith("/") ? "/" + targetPath : targetPath;
 		            addFile(fileToZip, targetPath + ("/".equals(targetPath) ? "" : "/") + fileToZip.getName(), zipStream);
                 }
 	        }

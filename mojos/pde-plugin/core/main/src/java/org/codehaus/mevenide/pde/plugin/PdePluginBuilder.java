@@ -17,15 +17,19 @@
 package org.codehaus.mevenide.pde.plugin;
 
 import java.io.File;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Properties;
 
-import org.apache.maven.project.MavenProject;
+import org.apache.commons.lang.BooleanUtils;
+import org.apache.maven.model.Dependency;
 import org.codehaus.mevenide.pde.CollectException;
 import org.codehaus.mevenide.pde.archive.Include;
 import org.codehaus.mevenide.pde.archive.PdeArchiveException;
 import org.codehaus.mevenide.pde.archive.SimpleZipCreator;
 import org.codehaus.mevenide.pde.artifact.AbstractPdeArtifactBuilder;
 import org.codehaus.mevenide.pde.descriptor.ReplaceException;
+import org.codehaus.plexus.util.StringUtils;
 
 
 /**  
@@ -36,20 +40,13 @@ import org.codehaus.mevenide.pde.descriptor.ReplaceException;
  */
 public class PdePluginBuilder extends AbstractPdeArtifactBuilder {
     
-    /** base directory */    
-    private File basedir;
     
-    /** project under construction */
-    private MavenProject project;
     
     /** location of bundled libraries */
     private String libFolder;
     
     /** location of compiled classes */
     private String classesLocation;
-    
-    /** name of generated zip file */
-    private String artifact;
     
     /** comma separated list of files to exclude from the generated zip */
     private String excludes;
@@ -59,9 +56,6 @@ public class PdePluginBuilder extends AbstractPdeArtifactBuilder {
     
 	/** indicates if the primary artifact should be marked as exported in the plugin descriptor */
 	private boolean shouldExportArtifact;
-	
-	/** artifactName referencing the primary artifact */
-	private String artifactName;
 	
 	/** indicates if lib folder should be cleaned */
 	private boolean cleanLib; 
@@ -95,6 +89,7 @@ public class PdePluginBuilder extends AbstractPdeArtifactBuilder {
 	public void collectDependencies() throws CollectException {
 		PluginDependencyCollector collector = new PluginDependencyCollector(basedir.getAbsolutePath(), libFolder, project);
 		collector.setCleanLib(cleanLib);
+		collector.setHelper(helper);
 		collector.collect();
 	}
 
@@ -113,20 +108,48 @@ public class PdePluginBuilder extends AbstractPdeArtifactBuilder {
 	private void includeLibraries() {
 		File libFolderPath = new File(basedir, this.libFolder);
 		File[] libs = libFolderPath.listFiles();
-		for ( int u = 0; u < libs.length; u++ ) {
-			if ( libs[u].isFile() ) {
-				includes.add(new Include(libs[u].getAbsolutePath(), libFolderPath.getName() + "/" + libs[u].getName()));
+		if ( libs != null ) {
+			for ( int u = 0; u < libs.length; u++ ) {
+				if ( libs[u].isFile() ) {
+					includes.add(new Include(libs[u].getAbsolutePath(), libFolderPath.getName() + "/" + libs[u].getName()));
+				}
 			}
 		}
+		
+		includeNonDefaultFolderLibraries();
 	}
-	
-    public String getArtifact() { return artifact; }
-    public void setArtifact(String artifact) { this.artifact = artifact; }
     
-    public File getBasedir() { return basedir; }
-    public void setBasedir(File basedir) { this.basedir = basedir; }
-    
-    public String getClassesLocation() { return classesLocation; }
+    private void includeNonDefaultFolderLibraries() {
+		List dependencies = project.getDependencies();
+		
+		for (Iterator it = dependencies.iterator(); it.hasNext();) {
+            Dependency dependency = (Dependency) it.next();
+            
+            Properties props = dependency.getProperties();
+			
+			boolean excluded = false; 
+			boolean require = false;
+			
+            String overridenTargetPath = null;
+            if ( props != null ) {
+				excluded = BooleanUtils.toBoolean(props.getProperty("maven.pde.exclude"));
+                overridenTargetPath = props.getProperty("maven.pde.targetPath");
+				require = BooleanUtils.toBoolean(props.getProperty("maven.pde.requires"));
+            }
+			if ( !excluded && !require && !StringUtils.isEmpty(overridenTargetPath) &&!libFolder.equals(overridenTargetPath) ) {
+				File targetDir = new File(basedir, overridenTargetPath);
+				
+				String artifact = helper.getArtifact(dependency);
+				
+				File folder = new File(basedir, overridenTargetPath);
+				String fileName = new File(artifact).getName();
+				String path = overridenTargetPath.startsWith("/") ? overridenTargetPath : "/" + overridenTargetPath;
+				includes.add(new Include(new File(folder, fileName).getAbsolutePath(), path + "/" + fileName));
+			}
+        }
+	}
+
+	public String getClassesLocation() { return classesLocation; }
     public void setClassesLocation(String classesLocation) { this.classesLocation = classesLocation; }
     
     public String getExcludes() { return excludes; }
@@ -143,10 +166,6 @@ public class PdePluginBuilder extends AbstractPdeArtifactBuilder {
 	public boolean shouldExportArtifact() { return shouldExportArtifact; }
 	public void setExportArtifact(boolean export) { shouldExportArtifact = export; }
     
-	public MavenProject getProject() { return project; }
-    public void setProject(MavenProject project) { this.project = project; }
-	
-	public void setArtifactName(String name) { this.artifactName = name; }
 	public void setCleanLib(boolean cleanLib) { this.cleanLib = cleanLib; }
 	public void setClassesJarLocation(String classesJarName) { this.classesJarLocation = classesJarName; }
 	public void setSingleJar(boolean singleJar) { this.singleJar = singleJar; }

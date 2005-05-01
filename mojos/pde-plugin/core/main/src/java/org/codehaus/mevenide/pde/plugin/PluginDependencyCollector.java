@@ -29,10 +29,10 @@ import java.util.TreeSet;
 
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.maven.artifact.Artifact;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.mevenide.pde.CollectException;
+import org.codehaus.mevenide.pde.artifact.PdeBuilderHelper;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.IOUtil;
 
@@ -57,6 +57,9 @@ public class PluginDependencyCollector {
 	/** indicates if lib folder should be cleaned */
 	private boolean cleanLib; 
 	
+	/** helper */
+	private PdeBuilderHelper helper;
+	
     public PluginDependencyCollector(String basedir, String targetPath, MavenProject project) {
         this.basedir = basedir;
         this.project = project;
@@ -76,21 +79,22 @@ public class PluginDependencyCollector {
             Properties props = dependency.getProperties();
 			
 			boolean excluded = false; 
+			boolean require = false;
 			
             String overridenTargetPath = null;
             if ( props != null ) {
 				excluded = BooleanUtils.toBoolean(props.getProperty("maven.pde.exclude"));
                 overridenTargetPath = props.getProperty("maven.pde.targetPath");
+				require = BooleanUtils.toBoolean(props.getProperty("maven.pde.requires"));
             }
-			
-			if ( !excluded ) {
+			if ( !excluded && !require ) {
 				String path = !StringUtils.isEmpty(overridenTargetPath) ? overridenTargetPath : targetPath;
 				File targetDir = new File(basedir, path);
 				if ( !targetDir.exists() ) {
 					targetDir.mkdirs();
 				}
             
-				String artifact = getArtifact(dependency);
+				String artifact = helper.getArtifact(dependency);
             
 				try {
 					IOUtil.copy(new FileInputStream(artifact), new FileOutputStream(new File(targetDir, new File(artifact).getName())));
@@ -140,25 +144,10 @@ public class PluginDependencyCollector {
 		}
 	}
 
-	//@todo optimize - even better : drop it when correct method found in m2 
-    private String getArtifact(Dependency dependency) {
-        
-        Set artifacts = project.getArtifacts();
-        
-        String dependencyArtifact = dependency.getArtifact();
-        String fullArtifactPath = null;
-        
-        for (Iterator iter = artifacts.iterator(); iter.hasNext();) {
-            Artifact artifact = (Artifact) iter.next();
-            File artifactFile = artifact.getFile();
-            if ( dependencyArtifact.equals(artifact.getFile().getName()) ) {
-                fullArtifactPath = artifactFile.getAbsolutePath();
-                break;
-            }
-        }
-        
-        return fullArtifactPath;
-    }
+	
     
 	public void setCleanLib(boolean cleanLib) { this.cleanLib = cleanLib; }
+
+	public void setHelper(PdeBuilderHelper helper) { this.helper = helper; }
+	
 }

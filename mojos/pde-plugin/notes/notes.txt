@@ -93,7 +93,7 @@
   
    pde:install has a prereq on pde:pde
    
-   if sourcesPresent primary artifact is always installed through artifact:install to allow dependencies resolution. 
+   primary artifact is _always_ (even if no sources) installed through artifact:install to allow dependencies resolution. 
    pde artifact is installed as a 'pde' artifact. will be grabbed when collecting deps for feature or site
    
 8. deploy

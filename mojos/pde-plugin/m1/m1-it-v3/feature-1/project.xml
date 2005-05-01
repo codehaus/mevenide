@@ -12,9 +12,26 @@
   </organization>
   <inceptionYear>2004</inceptionYear>
   <package>org.codehaus.mevenide.pde</package>
-  <!-- dependencies>
-  	
-  </dependencies -->
+  <dependencies>
+  	<dependency>
+      <groupId>mevenide</groupId>
+      <artifactId>maven-pde-lib-test</artifactId>
+      <version>0.1</version>
+      <type>jar</type>
+      <properties>
+        <maven.pde.name>org.mevenide.lib.test</maven.pde.name>
+      </properties>
+    </dependency>
+    <dependency>
+      <groupId>mevenide</groupId>
+      <artifactId>maven-pde-lib-test</artifactId>
+      <version>0.1</version>
+      <type>jar</type>
+      <properties>
+        <maven.pde.name>org.mevenide.plugin.test</maven.pde.name>
+      </properties>
+    </dependency>
+  </dependencies>
   
   <properties>
   	<maven.pde.enabled>true</maven.pde.enabled>
