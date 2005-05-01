@@ -62,56 +62,8 @@ public class DeployAction extends AbstractAction {
         Object ret = DialogDisplayer.getDefault().notify(dd);
         if (ret == NotifyDescriptor.OK_OPTION) {
             final Container container = panel.getSelectedContainer();
-            RequestProcessor.getDefault().post(new Runnable() {
-                public void run() {
-                    CargoServerRegistry reg = CargoServerRegistry.getInstance();
-                    if (container.getState() == State.STOPPED) {
-                        StatusDisplayer.getDefault().setStatusText("Starting Container " + container.getName());
-                        reg.startContainer(container, false);
-                    }
-                    if (container.getState() == State.STARTED) {
-                        StatusDisplayer.getDefault().setStatusText("Dynamically deploying " + panel.getDeployable());
-                        WAR war = reg.getDeployableFactory().createWAR(panel.getDeployable());
-                        war.setContext(panel.getContext());
-                        Deployer deployer = reg.getDeployer(container);
-                        URL url = null;
-                        try {
-                            url = new URL(panel.getBaseUrl());
-                        } catch (MalformedURLException exc) {
-                            NotifyDescriptor error = new NotifyDescriptor.Message("Is not a valid URL.", NotifyDescriptor.WARNING_MESSAGE);
-                            DialogDisplayer.getDefault().notify(error);
-                        }
-                        if (url != null) {
-                            final URL fUrl = url;
-                            DeployableMonitor mon = new URLDeployableMonitor(url);
-                            mon.registerListener(new DeployableMonitorListener() {
-                                public void deployed() {
-                                    StatusDisplayer.getDefault().setStatusText("Deployed " + panel.getDeployable());
-                                    HtmlBrowser.URLDisplayer.getDefault().showURL(fUrl);
-                                }
-                            });
-                            try {
-                                deployer.deploy(war, mon);
-                                reg.registerDeployable(container, war);
-                            } catch (ContainerException exc) {
-                                ErrorManager.getDefault().notify(ErrorManager.INFORMATIONAL, exc);
-                                NotifyDescriptor nd = new NotifyDescriptor.Message(exc.getLocalizedMessage(), NotifyDescriptor.ERROR_MESSAGE);
-                                DialogDisplayer.getDefault().notify(nd);
-                            }                            
-                        } else {
-                            try {
-                                deployer.deploy(war);
-                                reg.registerDeployable(container, war);
-                            } catch (ContainerException exc) {
-                                ErrorManager.getDefault().notify(ErrorManager.INFORMATIONAL, exc);
-                                NotifyDescriptor nd = new NotifyDescriptor.Message(exc.getLocalizedMessage(), NotifyDescriptor.ERROR_MESSAGE);
-                                DialogDisplayer.getDefault().notify(nd);
-                            }
-                        }
-                    }
-                    
-                }
-            });
+            DeployerRunner runner = new DeployerRunner(container, panel.getDeployable(), panel.getBaseUrl(), panel.getContext());
+            RequestProcessor.getDefault().post(runner);
         }
     }
 }

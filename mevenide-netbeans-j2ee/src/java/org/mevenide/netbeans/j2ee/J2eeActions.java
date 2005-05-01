@@ -49,9 +49,11 @@ public class J2eeActions implements AdditionalActionsProvider {
         }
         toRet.add(deploy);
         File war = project.getWar();
-        Deployable[] depls = CargoServerRegistry.getInstance().findDeployables(war.toString());
-        if (depls.length > 0) {
-            toRet.add(new RedeployAction(project));
+        if (war != null) {
+            Deployable[] depls = CargoServerRegistry.getInstance().findDeployables(war.toString());
+            if (depls.length > 0) {
+                toRet.add(new RedeployAction(project));
+            }
         }
         return (Action[])toRet.toArray(new Action[toRet.size()]);
     }
