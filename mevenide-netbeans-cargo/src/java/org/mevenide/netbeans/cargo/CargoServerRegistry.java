@@ -34,6 +34,7 @@ import org.codehaus.cargo.container.ContainerFactory;
 import org.codehaus.cargo.container.State;
 import org.codehaus.cargo.container.configuration.ConfigurationFactory;
 import org.codehaus.cargo.container.configuration.DefaultConfigurationFactory;
+import org.codehaus.cargo.container.configuration.StandaloneConfiguration;
 import org.codehaus.cargo.container.deployable.Deployable;
 import org.codehaus.cargo.container.deployable.DeployableFactory;
 import org.codehaus.cargo.container.deployer.DefaultDeployerFactory;
@@ -105,8 +106,8 @@ public class CargoServerRegistry {
         dynamicContainers.add(Resin2xContainer.ID);
         dynamicContainers.add(Resin3xContainer.ID);
         dynamicContainers.add(Jo1xContainer.ID);
-        dynamicContainers.add(Orion1xContainer.ID);
-        dynamicContainers.add(Orion2xContainer.ID);
+//        dynamicContainers.add(Orion1xContainer.ID);
+//        dynamicContainers.add(Orion2xContainer.ID);
         
         installUrls = new HashMap();
         installUrls.put(Resin2xContainer.ID, "http://www.caucho.com/download/resin-2.1.14.zip");
@@ -173,43 +174,49 @@ public class CargoServerRegistry {
     }
     
     public synchronized Deployable[] findDeployables(String path) {
-         Iterator it = deployables.values().iterator();
-         File fil = new File(path);
-         Collection toRet = new ArrayList();
-         while (it.hasNext()) {
-             Collection col = (Collection)it.next();
-             Iterator it2 = col.iterator();
-             while (it2.hasNext()) {
-                 Deployable dep = (Deployable)it2.next();
-                 if (dep.getFile().equals(fil)) {
-                     toRet.add(dep);
-                 }
-             }
-         }
-         Deployable[] arr = (Deployable[])toRet.toArray(new Deployable[toRet.size()]);
-         return arr;
+        Iterator it = running.iterator();
+        File fil = new File(path);
+        Collection toRet = new ArrayList();
+        while (it.hasNext()) {
+            Container cont = (Container)it.next();
+            Iterator it2 = getDeployables(cont).iterator();
+            while (it2.hasNext()) {
+                Deployable dep = (Deployable)it2.next();
+                if (dep.getFile() != null && fil.equals(dep.getFile())) {
+                    toRet.add(dep);
+                }
+            }
+        }
+        Deployable[] arr = (Deployable[])toRet.toArray(new Deployable[toRet.size()]);
+        return arr;
     }
     
     public synchronized Container findContainerForDeployable(Deployable deployable) {
-        Iterator it = deployables.entrySet().iterator(); 
-        Container container = null;
-         while (it.hasNext()) {
-            Map.Entry entry = (Map.Entry)it.next();
-             Collection col = (Collection)entry.getValue();
-             if (col.contains(deployable)) {
-                 container = (Container)entry.getKey();
-                 break;
-             }
-         }
-        return container;
-    }
-    
-    public synchronized Collection getDeployables(Container container) {
-        Collection col = (Collection)deployables.get(container);
-        if (col != null) {
-            return new ArrayList(col);
+        Iterator it = running.iterator();
+        while (it.hasNext()) {
+            Container cont = (Container)it.next();
+            Collection col = getDeployables(cont);
+            if (col.contains(deployable)) {
+                return cont;
+            }
         }
-        return Collections.EMPTY_LIST;
+        return null;
+   }
+    
+    public Collection getDeployables(Container container) {
+        Collection col = new ArrayList();
+        if (container.getConfiguration() instanceof StandaloneConfiguration) {
+            StandaloneConfiguration conf = (StandaloneConfiguration)container.getConfiguration();
+            Collection stat = conf.getDeployables();
+            if (stat != null) {
+                col.addAll(stat);
+            }
+        }
+        Collection dynam = (Collection)deployables.get(container);
+        if (dynam != null) {
+            col.addAll(dynam);
+        }
+        return col;
     }
     
     public File getMonitorFile() {
@@ -226,12 +233,12 @@ public class CargoServerRegistry {
         fireAdded(cont);
     }
     
-    public synchronized void startContainer(final Container cont) {
+    public void startContainer(final Container cont) {
         startContainer(cont, true);
     }
     
-    public synchronized void startContainer(final Container cont, boolean post) {
-        if (!running.contains(cont)) {
+    public void startContainer(final Container cont, boolean post) {
+        if (!getContainers().contains(cont)) {
             throw new IllegalStateException();
         }
         if (post) {
@@ -259,21 +266,36 @@ public class CargoServerRegistry {
         }
     }
     
-    public synchronized void stopContainer(final Container cont) {
-        processor.post(new Runnable() {
-            public void run() {
-                fireChange(cont, new RegistryEvent(cont, State.STOPPING));
-                try {
-                    cont.stop();
-                } catch (ContainerException exc) {
-                    ErrorManager.getDefault().notify(ErrorManager.INFORMATIONAL, exc);
-                    NotifyDescriptor nd = new NotifyDescriptor.Message(exc.getLocalizedMessage(), NotifyDescriptor.ERROR_MESSAGE);
-                    DialogDisplayer.getDefault().notify(nd);
-                } finally {
-                    fireChange(cont);
+    public void stopContainer(Container cont) {
+        stopContainer(cont, true);
+    }
+    public void stopContainer(final Container cont, boolean post) {
+        if (!getContainers().contains(cont)) {
+            throw new IllegalStateException();
+        }
+        if (post) {
+            // replace processor with engine?
+            processor.post(new Runnable() {
+                public void run() {
+                    doStop(cont);
                 }
-            }
-        });
+            });
+        } else {
+            doStop(cont);
+        }
+    }
+    
+    public void doStop(final Container cont) {
+        fireChange(cont, new RegistryEvent(cont, State.STOPPING));
+        try {
+            cont.stop();
+        } catch (ContainerException exc) {
+            ErrorManager.getDefault().notify(ErrorManager.INFORMATIONAL, exc);
+            NotifyDescriptor nd = new NotifyDescriptor.Message(exc.getLocalizedMessage(), NotifyDescriptor.ERROR_MESSAGE);
+            DialogDisplayer.getDefault().notify(nd);
+        } finally {
+            fireChange(cont);
+        }
     }
     
     public synchronized void removeContainer(Container cont) {

@@ -17,6 +17,7 @@
 
 package org.mevenide.netbeans.cargo;
 
+import java.awt.Dimension;
 import java.io.File;
 import java.io.IOException;
 import javax.swing.DefaultComboBoxModel;
@@ -36,6 +37,7 @@ public class ContainerPanel extends javax.swing.JPanel {
     public ContainerPanel() {
         initComponents();
         comType.setModel(new DefaultComboBoxModel(CargoServerRegistry.CONTAINER_TYPES));
+        setPreferredSize(new Dimension(500, 150));
     }
     
     /** This method is called from within the constructor to
@@ -97,7 +99,7 @@ public class ContainerPanel extends javax.swing.JPanel {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 1;
-        gridBagConstraints.insets = new java.awt.Insets(0, 6, 0, 0);
+        gridBagConstraints.insets = new java.awt.Insets(3, 6, 0, 6);
         add(btnInstallDir, gridBagConstraints);
 
         cbStart.setText("Start Immediately");
@@ -105,7 +107,7 @@ public class ContainerPanel extends javax.swing.JPanel {
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 5;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
+        gridBagConstraints.insets = new java.awt.Insets(6, 6, 6, 0);
         add(cbStart, gridBagConstraints);
 
         lblPort.setText("Port");
