@@ -45,6 +45,7 @@ public class ContainerPersistance {
     
     private static final String CONTAINER_TYPE = "ContainerType"; //NOI18N
     private static final String HOME_DIR = "HomeDir"; //NOI18N
+    private static final String CONFIG_HOME_DIR = "ConfigHomeDir"; //NOI18N
     private static final String PORT = ServletPropertySet.PORT;
     private static final String USERS = ServletPropertySet.USERS;
     private static final String HOSTNAME = GeneralPropertySet.HOSTNAME;
@@ -74,6 +75,7 @@ public class ContainerPersistance {
                 Properties props = new Properties();
                 putProperty(props, CONTAINER_TYPE, cont.getId());
                 putProperty(props, HOME_DIR, cont.getHomeDir().getAbsolutePath());
+                putProperty(props, CONFIG_HOME_DIR, cont.getConfiguration().getDir().getAbsolutePath());
                 putProperty(props, PORT, cont.getConfiguration().getPropertyValue(ServletPropertySet.PORT));
                 putProperty(props, USERS, cont.getConfiguration().getPropertyValue(ServletPropertySet.USERS));
                 putProperty(props, HOSTNAME, cont.getConfiguration().getPropertyValue(GeneralPropertySet.HOSTNAME));
@@ -128,8 +130,14 @@ public class ContainerPersistance {
                     Container cont = reg.getFactory().createContainer(type);
                     cont.setHomeDir(prop.getProperty(HOME_DIR));
                     cont.setOutput(File.createTempFile(cont.getId(), "log"));
+//                    File configDir = new File(prop.getProperty(CONFIG_HOME_DIR));
                     cont.setConfiguration(reg.getConfigFactory().createConfiguration(cont, ConfigurationFactory.STANDALONE));
                     cont.getConfiguration().setProperty(ServletPropertySet.PORT, prop.getProperty(PORT));
+                    cont.getConfiguration().setProperty(ServletPropertySet.USERS, prop.getProperty(USERS));
+                    cont.getConfiguration().setProperty(GeneralPropertySet.HOSTNAME, prop.getProperty(HOSTNAME));
+                    cont.getConfiguration().setProperty(GeneralPropertySet.LOGGING, prop.getProperty(LOGGING));
+                    cont.getConfiguration().setProperty(GeneralPropertySet.JVMARGS, prop.getProperty(JVMARGS));
+                    
                     reg.addContainer(cont);
                 } catch (IOException exc) {
                     ErrorManager.getDefault().notify(ErrorManager.INFORMATIONAL, exc);
