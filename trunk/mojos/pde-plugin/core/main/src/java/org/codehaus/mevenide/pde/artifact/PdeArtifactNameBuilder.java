@@ -53,6 +53,15 @@ public class PdeArtifactNameBuilder {
 		return artifactName;
 	}
 
+	public String getFinalVersion() {
+		return pdeArtifactVersion;
+	}
+	
+	public String getFinalName() {
+		return pdeArtifactName;
+	}
+	
+	
 	public void setAdaptVersion(boolean adaptVersion) { this.adaptVersion = adaptVersion; }
 	public void setArtifactId(String artifactId) { this.artifactId = artifactId; }
 	public void setNormalizeName(boolean normalize) { this.normalizeName = normalize; }

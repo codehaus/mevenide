@@ -25,7 +25,7 @@ public class PdeArtifactTypeHandler implements ArtifactTypeHandler {
 	}
 
 	public String constructRepositoryDirectoryPath(String type, Project project) throws MavenException {
-		return (project.getArtifactDirectory() + "/pdes/").toString();
+		return (project.getArtifactDirectory() + "/jars/").toString();
 	}
 
 	public void setContext(JellyContext context) {

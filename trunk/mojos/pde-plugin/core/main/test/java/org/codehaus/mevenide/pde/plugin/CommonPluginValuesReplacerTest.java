@@ -37,7 +37,7 @@ import org.jdom.input.SAXBuilder;
  */
 public class CommonPluginValuesReplacerTest extends ArtifactEnabledPlexusTestCase {
 
-    private PdePluginValuesReplacer replacer;
+    private PdePluginDescriptorReplacer replacer;
     private File basedirFile;
     private MavenProject project;
     private MavenProjectBuilder builder;
@@ -50,11 +50,11 @@ public class CommonPluginValuesReplacerTest extends ArtifactEnabledPlexusTestCas
         replacer = getReplacer("/basedir.replacer");
     }
 
-    private PdePluginValuesReplacer getReplacer(String basedirName) throws ProjectBuildingException, ReplaceException {
+    private PdePluginDescriptorReplacer getReplacer(String basedirName) throws ProjectBuildingException, ReplaceException {
         basedirFile = new File(getClass().getResource(basedirName).getFile());
         String basedir = basedirFile.getAbsolutePath();
         project = builder.build(new File(basedirFile, "project.xml"));
-        return new PdePluginValuesReplacer(basedir, project, "lib");
+        return new PdePluginDescriptorReplacer(basedir, project, "lib");
     }
 
 

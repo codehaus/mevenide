@@ -14,7 +14,7 @@ import org.jdom.output.XMLOutputter;
 public abstract class AbstractPdeDescriptorValuesReplacer implements IPdeDescriptorValuesReplacer {
 	 
 	/** plugin.xml File */
-    protected File pluginDescriptor;
+    protected File descriptor;
     
     /** pom from which the replacement values will be extracted */
 	protected MavenProject project;
@@ -28,52 +28,60 @@ public abstract class AbstractPdeDescriptorValuesReplacer implements IPdeDescrip
      * @param libraryFolder library destination folder - f.i. lib
      */
     public AbstractPdeDescriptorValuesReplacer(String basedir, MavenProject project) throws ReplaceException {
-        this.pluginDescriptor = new File(basedir, "plugin.xml");
-        if ( !pluginDescriptor.exists() ) {
+        this.descriptor = new File(basedir, getDescriptorName());
+        if ( !descriptor.exists() ) {
             throw new ReplaceException(Messages.get("ValuesReplacer.CannotFindDescriptor", basedir));
         }
         this.project = project;
         
     }
 	
+	protected abstract String getDescriptorName() ;
+
 	protected AbstractPdeDescriptorValuesReplacer() {
 	
 	}
 	
+	protected void detach(Element kid) {
+		if (kid.getParent() != null) {
+			kid.getParent().removeContent(kid);
+		}
+	}
+	
 	public void replace() throws ReplaceException {
-        Element pluginElement = null;
+        Element rootElement = null;
         Document doc = null;
         
         try {
-            doc = new SAXBuilder().build(pluginDescriptor);
-            pluginElement = doc.getRootElement();
+            doc = new SAXBuilder().build(descriptor);
+            rootElement = doc.getRootElement();
         }
         catch (Exception e) {
             throw new ReplaceException(Messages.get("ValuesReplacer.CannotReplaceValues"), e);
         }
         
-		replaceCommonElements(pluginElement);
+		replaceCommonElements(rootElement);
         
-		replace(pluginElement);
+		replace(rootElement);
         
         try {
             XMLOutputter outputter = new XMLOutputter();
 			outputter.setFormat(org.jdom.output.Format.getPrettyFormat());
-            outputter.output(doc, new FileWriter(pluginDescriptor));
+            outputter.output(doc, new FileWriter(descriptor));
         }
         catch (Exception e) {
             throw new ReplaceException(Messages.get("ValuesReplacer.CannotReplaceValues"), e);
         }
     }
 	
-	private void replaceCommonElements(Element pluginElement) throws ReplaceException {
-		pluginElement.setAttribute("id", artifactName.substring(0, artifactName.lastIndexOf('_')));  
-        pluginElement.setAttribute("name", project.getName()); 
-        pluginElement.setAttribute("version", new VersionAdapter().adapt(project.getVersion()));  
-        pluginElement.setAttribute("provider-name", project.getOrganization().getName());
+	protected void replaceCommonElements(Element rootElement) throws ReplaceException {
+		rootElement.setAttribute("id", artifactName.substring(0, artifactName.lastIndexOf('_')));  
+        rootElement.setAttribute("name", project.getName()); 
+        rootElement.setAttribute("version", new VersionAdapter().adapt(project.getVersion()));  
+        rootElement.setAttribute("provider-name", project.getOrganization().getName());
 	}
 
-	protected abstract void replace(Element pluginElement) throws ReplaceException;
+	protected abstract void replace(Element rootElement) throws ReplaceException;
 	
 	public void setArtifactName(String name) { this.artifactName = name; }
 

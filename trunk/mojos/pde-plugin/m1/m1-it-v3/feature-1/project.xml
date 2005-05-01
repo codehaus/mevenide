@@ -15,21 +15,17 @@
   <dependencies>
   	<dependency>
       <groupId>mevenide</groupId>
-      <artifactId>maven-pde-lib-test</artifactId>
+      <artifactId>maven-pde-plugin-test</artifactId>
       <version>0.1</version>
       <type>jar</type>
-      <properties>
-        <maven.pde.name>org.mevenide.lib.test</maven.pde.name>
-      </properties>
+      <jar>org.mevenide.maven.pde.plugin.test_0.1.0.jar</jar>
     </dependency>
     <dependency>
       <groupId>mevenide</groupId>
       <artifactId>maven-pde-lib-test</artifactId>
       <version>0.1</version>
       <type>jar</type>
-      <properties>
-        <maven.pde.name>org.mevenide.plugin.test</maven.pde.name>
-      </properties>
+      <jar>org.mevenide.maven.pde.lib.test_0.1.0.jar</jar>
     </dependency>
   </dependencies>
   

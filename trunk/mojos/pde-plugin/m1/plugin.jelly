@@ -10,7 +10,10 @@
 		<attainGoal name="pde:${type}" />
 	</goal>
 
-	<goal name="pde:plugin" prereqs="pde:check,jar:jar">
+	<goal name="pde:plugin" prereqs="pde:check">
+		<j:if test="${sourcesPresent}">
+		    <attainGoal name="jar:jar"/>           
+		</j:if>
 		<pde:plugin project="${pom}" />
 	</goal>
 
@@ -23,9 +26,9 @@
 	</goal>				
 	
 	<goal name="pde:install" prereqs="pde:pde">    
-	    <!-- j:if test="${sourcesPresent}" -->
-		<artifact:install artifact="${maven.build.dir}/${maven.final.name}.jar" type="jar" project="${pom}"/>           
-		<!-- /j:if -->
+		<j:if test="${sourcesPresent}">
+		    <artifact:install artifact="${maven.build.dir}/${maven.final.name}.jar" type="jar" project="${pom}"/>           
+		</j:if>
     	<pde:enabled project="${pom}" var="pdeEnabled" />
 	   	<j:if test="${pdeEnabled}">
 			<pde:install-parameters artifact="artifactName" type="installType" typeHandler="typeHandler" project="${pom}" />

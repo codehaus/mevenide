@@ -40,21 +40,13 @@ import org.codehaus.plexus.util.StringUtils;
  */
 public class PdePluginBuilder extends AbstractPdeArtifactBuilder {
     
-    
-    
     /** location of bundled libraries */
     private String libFolder;
     
     /** location of compiled classes */
     private String classesLocation;
     
-    /** comma separated list of files to exclude from the generated zip */
-    private String excludes;
-    
-    /** comma separated list of files to include in the generated zip */
-    private List /** <org.codehaus.mevenide.pde.archive.Include> */ includes;
-    
-	/** indicates if the primary artifact should be marked as exported in the plugin descriptor */
+    /** indicates if the primary artifact should be marked as exported in the plugin descriptor */
 	private boolean shouldExportArtifact;
 	
 	/** indicates if lib folder should be cleaned */
@@ -81,6 +73,7 @@ public class PdePluginBuilder extends AbstractPdeArtifactBuilder {
 		}
 		SimpleZipCreator zipCreator = new SimpleZipCreator(primaryDirectory, new File(artifact).getAbsolutePath());
 		zipCreator.setExcludes(excludes);
+		includeResources();
 		includeLibraries();
 		zipCreator.setIncludes(includes);
 		zipCreator.zip();
@@ -94,7 +87,7 @@ public class PdePluginBuilder extends AbstractPdeArtifactBuilder {
 	}
 
 	public void updateDescriptor() throws ReplaceException {
-		PdePluginValuesReplacer replacer = new PdePluginValuesReplacer(basedir.getAbsolutePath(), project, libFolder);
+		PdePluginDescriptorReplacer replacer = new PdePluginDescriptorReplacer(basedir.getAbsolutePath(), project, libFolder);
 		replacer.setArtifactName(artifactName);
 		replacer.setSourcesPresent(sourcesPresent);
 		replacer.shouldExportArtifact(shouldExportArtifact);
@@ -149,14 +142,12 @@ public class PdePluginBuilder extends AbstractPdeArtifactBuilder {
         }
 	}
 
+	protected String[] getCommonIncludes() {
+		return new String[] { "plugin.xml", "plugin.properties", "license.txt" };
+	}
+
 	public String getClassesLocation() { return classesLocation; }
     public void setClassesLocation(String classesLocation) { this.classesLocation = classesLocation; }
-    
-    public String getExcludes() { return excludes; }
-    public void setExcludes(String excludes) { this.excludes = excludes; }
-    
-    public List getIncludes() { return includes; }
-    public void setIncludes(List includes) { this.includes = includes; }
     
     public String getLibFolder() { return libFolder; }
     public void setLibFolder(String libFolder) { 

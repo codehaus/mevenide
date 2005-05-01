@@ -18,7 +18,7 @@
 2. dependencies duplication issue
    
    to solve the dependencies duplication issue (plugin.xml vs. project.xml)
-   pde:classpath goal has to run as a preGoal of build:start
+   pde:classpath goal has to run as a preGoal of java:compile
    
    <preGoal name="build:start">
      <pde:classpath />
@@ -33,7 +33,8 @@
          * manage MANIFEST if present
          * collect non existent declared plugins & compare them to 
            dependencies-as-requires, to emit a warning if intersection not empty  
-           
+         * refine classpath with bundled classes (dependencies which define maven.pde.requires=true)  
+         
 3. plugin.xml update
    
    pde:plugin goal has a prereqs on jar:jar
@@ -49,7 +50,7 @@
      * package element can be  specified through the maven.pde.package property
      * they may be rendered as requires/plugin entry by setting the 
        maven.pde.requires property 
-     * in such a case maven.pde.name is required  
+     * in such a case <jar> must be used.   
      
      <dependency>
        ...
@@ -57,7 +58,6 @@
 	     <maven.pde.targetPath>anotherLibFolder</maven.pde.targetPath>
          <maven.pde.exclude>(true)|false</maven.pde.exclude>
          <maven.pde.requires>(true)|false</maven.pde.requires>
-         <maven.pde.name>com.mycompany.myplugin</maven.pde.name>
          <maven.pde.package>org.jdom</maven.pde.package>
        </properties>
      </dependency>
@@ -71,11 +71,11 @@
            * allow to use a template instead of directly modify root plugin 
              descriptor - collaborative perspective (maven.pde.manifest=true|false)
            * provide an option to allow cleaning up runtime & requires 
-             elements (see 1. - non existent required plugins)
+             elements (see 1. - non existent required plugins)  
              
 4. feature
    
-   pde:feature (TODO)
+   pde:feature 
    
 5. site
 
@@ -93,8 +93,8 @@
   
    pde:install has a prereq on pde:pde
    
-   primary artifact is _always_ (even if no sources) installed through artifact:install to allow dependencies resolution. 
-   pde artifact is installed as a 'pde' artifact. will be grabbed when collecting deps for feature or site
+   primary artifact is always installed through artifact:install if sourcesPresent to allow dependencies resolution. 
+   
    
 8. deploy
 
@@ -111,4 +111,7 @@
    - provide a goal to directly install a plugin into eclipse.home
 
    - implement pde:check-arguments (TODO)
-      
+   
+TODO: * simplify name resolution mechanism from a user point of view - and see if not too specific 
+      * generate descirptor if doesn't exist
+      * extract constants

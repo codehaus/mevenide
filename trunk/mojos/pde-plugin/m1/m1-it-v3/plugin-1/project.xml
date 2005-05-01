@@ -47,13 +47,9 @@
       <artifactId>maven-pde-lib-test</artifactId>
       <version>0.1</version>
       <type>jar</type>
+      <jar>org.mevenide.maven.pde.lib.test_0.1.0.jar</jar>
       <properties>
         <maven.pde.requires>true</maven.pde.requires>
-        <!-- 
-        	name should rather be searched in the dependency project - if dependency 
-        	pom not found this property will be used to reference the plugin
-        -->
-        <maven.pde.name>org.mevenide.lib.test</maven.pde.name>
       </properties>
     </dependency>
     <!-- 
@@ -77,8 +73,7 @@
       <version>1.0.3</version>
       <type>jar</type>
       <properties>
-        <maven.pde.requires>true</maven.pde.requires>
-        <maven.pde.name>org.mevenide.requires.test</maven.pde.name>
+        <maven.pde.requires>false</maven.pde.requires>
       </properties>
     </dependency>
     <dependency>
