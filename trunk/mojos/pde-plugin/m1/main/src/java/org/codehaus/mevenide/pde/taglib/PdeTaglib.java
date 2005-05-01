@@ -26,6 +26,7 @@ import org.codehaus.mevenide.pde.feature.PdeFeatureTag;
 import org.codehaus.mevenide.pde.plugin.PdePluginTag;
 import org.codehaus.mevenide.pde.site.PdeSiteTag;
 import org.codehaus.mevenide.pde.verifier.EclipseVersionVerifierTag;
+import org.codehaus.mevenide.pde.verifier.PdeArgumentsVerifierTag;
 
 
 /**  
@@ -54,6 +55,7 @@ public class PdeTaglib extends TagLibrary {
 		
 		//verifiers
 		registerTag("check-version", EclipseVersionVerifierTag.class);
+		registerTag("check-arguments", PdeArgumentsVerifierTag.class);
     }
 }
 

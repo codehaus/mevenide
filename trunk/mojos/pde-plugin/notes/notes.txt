@@ -1,7 +1,7 @@
 
 1. declare an artifact as "pde-enabled"
   
-   an artifact is declared as an eclispe artifact by the way of a _pom_ 
+   an artifact is declared as an eclipse artifact by the way of a _pom_ 
    property :
    
    <project>
@@ -70,7 +70,9 @@
            * manage custom includes
            * allow to use a template instead of directly modify root plugin 
              descriptor - collaborative perspective (maven.pde.manifest=true|false)
-           
+           * provide an option to allow cleaning up runtime & requires 
+             elements (see 1. - non existent required plugins)
+             
 4. feature
    
    pde:feature (TODO)
@@ -91,7 +93,7 @@
   
    pde:install has a prereq on pde:pde
    
-   primary artifact is _always_ installed through artifact:install to allow dependencies resolution. 
+   if sourcesPresent primary artifact is always installed through artifact:install to allow dependencies resolution. 
    pde artifact is installed as a 'pde' artifact. will be grabbed when collecting deps for feature or site
    
 8. deploy
