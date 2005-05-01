@@ -1,117 +1,45 @@
-/* ==========================================================================
- * Copyright 2003-2004 Mevenide Team
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- * =========================================================================
- */
-package org.codehaus.mevenide.pde.descriptor;
+package org.codehaus.mevenide.pde.plugin;
 
-import java.io.File;
-import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.project.MavenProject;
-import org.codehaus.mevenide.pde.resources.Messages;
-import org.codehaus.mevenide.pde.version.VersionAdapter;
-import org.jdom.Document;
+import org.codehaus.mevenide.pde.descriptor.AbstractPdeDescriptorValuesReplacer;
+import org.codehaus.mevenide.pde.descriptor.ReplaceException;
 import org.jdom.Element;
-import org.jdom.input.SAXBuilder;
-import org.jdom.output.XMLOutputter;
 
-
-/**  
- * 
- * @author <a href="mailto:rhill2@free.fr">Gilles Dodinet</a>
- * @version $Id$
- * 
- */
-public class CommonPluginValuesReplacer {
-    
-    /** plugin.xml File */
-    private File pluginDescriptor;
-    
-    /** pom from which the replacement values will be extracted */
-    private MavenProject project;
-    
+public class PdePluginValuesReplacer extends AbstractPdeDescriptorValuesReplacer {
+	
+	/** indicates if the primary artifact should marked as exported in the plugin descriptor */
+	protected boolean shouldExportArtifact; 
+	
     /** default library destination folder - f.i. lib */
-    private String libraryFolder;
+	protected String libraryFolder;
     
 	/** list of already added dependencies - used to avoid duplicate libs in plugin descriptor */
-    private List addedLibraries = new ArrayList();
-    
-	/** indicates if the primary artifact should marked as exported in the plugin descriptor */
-	private boolean shouldExportArtifact; 
-	
-	/** artifactName referencing the primary artifact */
-	private String artifactName;
-
-	/** indicates if single jar'd should be generated */
-	private boolean singleJar;
-	
-	/** name of jar containing artifact classes */
-	private String classesJarName;
+	protected List addedLibraries = new ArrayList();
 	
 	/** true if project has sources */
-	private boolean sourcesPresent;
+	protected boolean sourcesPresent;
 	
-    /**
-     * @param basedir plugin.xml parent directory
-     * @param project maven project on which to operate
-     * @param libraryFolder library destination folder - f.i. lib
-     */
-    public CommonPluginValuesReplacer(String basedir, MavenProject project, String libraryFolder) throws ReplaceException {
-        this.pluginDescriptor = new File(basedir, "plugin.xml");
-        if ( !pluginDescriptor.exists() ) {
-            throw new ReplaceException(Messages.get("ValuesReplacer.CannotFindDescriptor", basedir));
-        }
-        this.project = project;
-        if ( libraryFolder == null ) {
+	/** indicates if single jar'd should be generated */
+	protected boolean singleJar;
+	
+	/** name of jar containing artifact classes */
+	protected String classesJarName;
+	
+	
+	public PdePluginValuesReplacer(String basedir, MavenProject project, String libraryFolder) throws ReplaceException {
+		super(basedir, project);
+		if ( libraryFolder == null ) {
             libraryFolder = "lib"; 
         }
         this.libraryFolder = StringUtils.stripEnd(libraryFolder.replaceAll("\\\\", "/"), "/");
-    }
-    
-    /**
-     * try to replace common values 
-     */
-    public void replace() throws ReplaceException {
-        Element pluginElement = null;
-        Document doc = null;
-        
-        try {
-            doc = new SAXBuilder().build(pluginDescriptor);
-            pluginElement = doc.getRootElement();
-        }
-        catch (Exception e) {
-            throw new ReplaceException(Messages.get("ValuesReplacer.CannotReplaceValues"), e);
-        }
-        
-        replacePluginAttributes(pluginElement);
-        updateDependencies(pluginElement);
-        
-        try {
-            XMLOutputter outputter = new XMLOutputter();
-			outputter.setFormat(org.jdom.output.Format.getPrettyFormat());
-            outputter.output(doc, new FileWriter(pluginDescriptor));
-        }
-        catch (Exception e) {
-            throw new ReplaceException(Messages.get("ValuesReplacer.CannotReplaceValues"), e);
-        }
-    }
+	}
 
 	private void detach(Element kid) {
 		if (kid.getParent() != null) {
@@ -119,7 +47,7 @@ public class CommonPluginValuesReplacer {
 		}
 	}
 	
-    private void updateDependencies(Element pluginElement) throws ReplaceException {
+    protected void replace(Element pluginElement) throws ReplaceException {
         Element runtime = pluginElement.getChild("runtime");
         
         if ( runtime != null ) {
@@ -251,25 +179,11 @@ public class CommonPluginValuesReplacer {
         }
         return updated;
     }
-    
-
-    private void replacePluginAttributes(Element pluginElement) {
-        pluginElement.setAttribute("id", artifactName.substring(0, artifactName.lastIndexOf('_')));  
-        pluginElement.setAttribute("name", project.getName()); 
-        pluginElement.setAttribute("version", new VersionAdapter().adapt(project.getVersion()));  
-        pluginElement.setAttribute("provider-name", project.getOrganization().getName()); 
-        //no replacement for class attribute
-    }
 	
 	public void shouldExportArtifact(boolean export) { shouldExportArtifact = export; }
-	public void setArtifactName(String name) { this.artifactName = name; }
 
 	public void setSingleJar(boolean singleJar) { this.singleJar = singleJar; }
 	public void setClassesJarName(String classesJarName) { this.classesJarName = classesJarName; }
 
 	public void setSourcesPresent(boolean sourcesPresent) { this.sourcesPresent = sourcesPresent; }
-	
-	
-    
 }
- 

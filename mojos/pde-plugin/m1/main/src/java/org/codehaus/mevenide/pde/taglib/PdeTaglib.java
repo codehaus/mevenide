@@ -19,12 +19,12 @@ package org.codehaus.mevenide.pde.taglib;
 import org.apache.commons.jelly.TagLibrary;
 import org.codehaus.mevenide.pde.artifact.PdeArtifactNameTag;
 import org.codehaus.mevenide.pde.artifact.PdeEnabledTag;
-import org.codehaus.mevenide.pde.artifact.PdeFeatureTag;
 import org.codehaus.mevenide.pde.artifact.PdeInstallParametersTag;
-import org.codehaus.mevenide.pde.artifact.PdeSiteTag;
 import org.codehaus.mevenide.pde.artifact.PdeTypeTag;
 import org.codehaus.mevenide.pde.classpath.PdeClasspathTag;
+import org.codehaus.mevenide.pde.feature.PdeFeatureTag;
 import org.codehaus.mevenide.pde.plugin.PdePluginTag;
+import org.codehaus.mevenide.pde.site.PdeSiteTag;
 import org.codehaus.mevenide.pde.verifier.EclipseVersionVerifierTag;
 
 

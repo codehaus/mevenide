@@ -20,11 +20,11 @@ import java.io.File;
 import java.util.List;
 
 import org.apache.maven.project.MavenProject;
-import org.codehaus.mevenide.pde.PdePluginException;
+import org.codehaus.mevenide.pde.CollectException;
 import org.codehaus.mevenide.pde.archive.Include;
 import org.codehaus.mevenide.pde.archive.PdeArchiveException;
 import org.codehaus.mevenide.pde.archive.SimpleZipCreator;
-import org.codehaus.mevenide.pde.descriptor.CommonPluginValuesReplacer;
+import org.codehaus.mevenide.pde.artifact.AbstractPdeArtifactBuilder;
 import org.codehaus.mevenide.pde.descriptor.ReplaceException;
 
 
@@ -34,7 +34,7 @@ import org.codehaus.mevenide.pde.descriptor.ReplaceException;
  * @version $Id$
  * 
  */
-public class PdePluginBuilder {
+public class PdePluginBuilder extends AbstractPdeArtifactBuilder {
     
     /** base directory */    
     private File basedir;
@@ -75,13 +75,7 @@ public class PdePluginBuilder {
 	/** true if project has sources */
 	private boolean sourcesPresent;
 	
-	public void build() throws PdePluginException {
-	    updateDescriptor();
-	    collectDependencies();
-		createArchive();
-    }
-
-	private void createArchive() throws PdeArchiveException {
+	public void createArchive() throws PdeArchiveException {
 		String primaryDirectory = new File(classesLocation).getAbsolutePath();
 		if ( !singleJar ) {
 			primaryDirectory = null;
@@ -98,14 +92,14 @@ public class PdePluginBuilder {
 		zipCreator.zip();
 	}
 
-	private void collectDependencies() throws CollectException {
-		DependencyCollector collector = new DependencyCollector(basedir.getAbsolutePath(), libFolder, project);
+	public void collectDependencies() throws CollectException {
+		PluginDependencyCollector collector = new PluginDependencyCollector(basedir.getAbsolutePath(), libFolder, project);
 		collector.setCleanLib(cleanLib);
 		collector.collect();
 	}
 
-	private void updateDescriptor() throws ReplaceException {
-		CommonPluginValuesReplacer replacer = new CommonPluginValuesReplacer(basedir.getAbsolutePath(), project, libFolder);
+	public void updateDescriptor() throws ReplaceException {
+		PdePluginValuesReplacer replacer = new PdePluginValuesReplacer(basedir.getAbsolutePath(), project, libFolder);
 		replacer.setArtifactName(artifactName);
 		replacer.setSourcesPresent(sourcesPresent);
 		replacer.shouldExportArtifact(shouldExportArtifact);

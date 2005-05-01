@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.0"?>
-<plugin provider-name="the codehaus" id="org.mevenide.maven.pde.plugin.test" name="maven pde plugin test" version="0.1.0">
+<plugin id="org.mevenide.maven.pde.plugin.test" name="maven pde plugin test" version="0.1.0" provider-name="the codehaus">
   <runtime>
     <library name="lib/jdom-1.0.jar">
       <export name="*" />
@@ -12,8 +12,6 @@
     </library>
   </runtime>
   <requires>
-    <import plugin="org.eclipse.text" />
-    <import plugin="org.eclipse.core.runtime" />
     <import plugin="org.mevenide.requires.test" />
   </requires>
 </plugin>
