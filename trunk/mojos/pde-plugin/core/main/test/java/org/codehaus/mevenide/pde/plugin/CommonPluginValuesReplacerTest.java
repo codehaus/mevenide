@@ -14,13 +14,14 @@
  *  limitations under the License.
  * =========================================================================
  */
-package org.codehaus.mevenide.pde.descriptor;
+package org.codehaus.mevenide.pde.plugin;
 
 import java.io.File;
 import java.util.List;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.MavenProjectBuilder;
 import org.apache.maven.project.ProjectBuildingException;
+import org.codehaus.mevenide.pde.descriptor.ReplaceException;
 import org.codehaus.plexus.ArtifactEnabledPlexusTestCase;
 import org.jdom.Document;
 import org.jdom.Element;
@@ -36,7 +37,7 @@ import org.jdom.input.SAXBuilder;
  */
 public class CommonPluginValuesReplacerTest extends ArtifactEnabledPlexusTestCase {
 
-    private CommonPluginValuesReplacer replacer;
+    private PdePluginValuesReplacer replacer;
     private File basedirFile;
     private MavenProject project;
     private MavenProjectBuilder builder;
@@ -49,11 +50,11 @@ public class CommonPluginValuesReplacerTest extends ArtifactEnabledPlexusTestCas
         replacer = getReplacer("/basedir.replacer");
     }
 
-    private CommonPluginValuesReplacer getReplacer(String basedirName) throws ProjectBuildingException, ReplaceException {
+    private PdePluginValuesReplacer getReplacer(String basedirName) throws ProjectBuildingException, ReplaceException {
         basedirFile = new File(getClass().getResource(basedirName).getFile());
         String basedir = basedirFile.getAbsolutePath();
         project = builder.build(new File(basedirFile, "project.xml"));
-        return new CommonPluginValuesReplacer(basedir, project, "lib");
+        return new PdePluginValuesReplacer(basedir, project, "lib");
     }
 
 

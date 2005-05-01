@@ -32,6 +32,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.project.MavenProject;
+import org.codehaus.mevenide.pde.CollectException;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.IOUtil;
 
@@ -42,7 +43,7 @@ import org.codehaus.plexus.util.IOUtil;
  * @version $Id$
  * 
  */
-public class DependencyCollector {
+public class PluginDependencyCollector {
 
     /** absolute path of base directory */
     private String basedir;
@@ -56,7 +57,7 @@ public class DependencyCollector {
 	/** indicates if lib folder should be cleaned */
 	private boolean cleanLib; 
 	
-    public DependencyCollector(String basedir, String targetPath, MavenProject project) {
+    public PluginDependencyCollector(String basedir, String targetPath, MavenProject project) {
         this.basedir = basedir;
         this.project = project;
         this.targetPath = targetPath;

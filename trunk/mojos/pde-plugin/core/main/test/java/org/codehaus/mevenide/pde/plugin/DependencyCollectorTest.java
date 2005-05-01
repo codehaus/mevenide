@@ -30,7 +30,7 @@ import org.codehaus.plexus.ArtifactEnabledPlexusTestCase;
  */
 public class DependencyCollectorTest extends ArtifactEnabledPlexusTestCase {
 
-    private DependencyCollector collector;
+    private PluginDependencyCollector collector;
     private MavenProject project;
     private MavenProjectBuilder builder;
     
@@ -41,7 +41,7 @@ public class DependencyCollectorTest extends ArtifactEnabledPlexusTestCase {
         
         builder = (MavenProjectBuilder) lookup( MavenProjectBuilder.ROLE );
         project = builder.build(new File(basedirFile, "project.xml"));
-        collector = new DependencyCollector(basedirFile.getAbsolutePath(), "lib", project);
+        collector = new PluginDependencyCollector(basedirFile.getAbsolutePath(), "lib", project);
         
     }
 

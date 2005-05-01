@@ -14,9 +14,8 @@
  *  limitations under the License.
  * =========================================================================
  */
-package org.codehaus.mevenide.pde.plugin;
+package org.codehaus.mevenide.pde;
 
-import org.codehaus.mevenide.pde.PdePluginException;
 
 
 /**  
