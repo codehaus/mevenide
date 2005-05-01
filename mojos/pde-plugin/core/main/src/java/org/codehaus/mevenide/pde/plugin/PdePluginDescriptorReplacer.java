@@ -5,14 +5,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.mevenide.pde.descriptor.AbstractPdeDescriptorValuesReplacer;
 import org.codehaus.mevenide.pde.descriptor.ReplaceException;
+import org.codehaus.plexus.util.StringUtils;
 import org.jdom.Element;
 
-public class PdePluginValuesReplacer extends AbstractPdeDescriptorValuesReplacer {
+public class PdePluginDescriptorReplacer extends AbstractPdeDescriptorValuesReplacer {
 	
 	/** indicates if the primary artifact should marked as exported in the plugin descriptor */
 	protected boolean shouldExportArtifact; 
@@ -33,7 +33,7 @@ public class PdePluginValuesReplacer extends AbstractPdeDescriptorValuesReplacer
 	protected String classesJarName;
 	
 	
-	public PdePluginValuesReplacer(String basedir, MavenProject project, String libraryFolder) throws ReplaceException {
+	public PdePluginDescriptorReplacer(String basedir, MavenProject project, String libraryFolder) throws ReplaceException {
 		super(basedir, project);
 		if ( libraryFolder == null ) {
             libraryFolder = "lib"; 
@@ -41,14 +41,12 @@ public class PdePluginValuesReplacer extends AbstractPdeDescriptorValuesReplacer
         this.libraryFolder = StringUtils.stripEnd(libraryFolder.replaceAll("\\\\", "/"), "/");
 	}
 
-	private void detach(Element kid) {
-		if (kid.getParent() != null) {
-			kid.getParent().removeContent(kid);
-		}
+	protected String getDescriptorName() {
+		return "plugin.xml";
 	}
 	
-    protected void replace(Element pluginElement) throws ReplaceException {
-        Element runtime = pluginElement.getChild("runtime");
+    protected void replace(Element rootElement) throws ReplaceException {
+        Element runtime = rootElement.getChild("runtime");
         
         if ( runtime != null ) {
             runtime.detach();
@@ -56,7 +54,7 @@ public class PdePluginValuesReplacer extends AbstractPdeDescriptorValuesReplacer
         }
         runtime = new Element("runtime");
 
-        Element requires = pluginElement.getChild("requires");
+        Element requires = rootElement.getChild("requires");
         if ( requires == null ) {
             requires = new Element("requires");
         }
@@ -88,10 +86,10 @@ public class PdePluginValuesReplacer extends AbstractPdeDescriptorValuesReplacer
 		}
 			
         if ( runtimeUpdated ) {
-            pluginElement.addContent(runtime);
+            rootElement.addContent(runtime);
         }
         
-        pluginElement.addContent(requires);
+        rootElement.addContent(requires);
     	
     }
 	
@@ -157,11 +155,17 @@ public class PdePluginValuesReplacer extends AbstractPdeDescriptorValuesReplacer
         List children = requires.getChildren();
         boolean alreadyPresent = false;
 		Properties props = dependency.getProperties();
-		String pluginName = props.getProperty("maven.pde.name");
 		
-		if ( org.codehaus.plexus.util.StringUtils.isEmpty(pluginName) ) {
-			//todo: warn user
-			return false;
+		String pluginName = null;
+		
+		if ( !StringUtils.isEmpty(dependency.getArtifact()) ) {
+			pluginName = StringUtils.split(dependency.getArtifact(), "_")[0];
+		}
+		else {
+			pluginName = dependency.getArtifactId();
+		}
+		if ( props != null && !StringUtils.isEmpty((String) props.getProperty("maven.pde.name")) ) {
+			pluginName = (String) props.getProperty("maven.pde.name");
 		}
 		
         for (Iterator iter = children.iterator(); iter.hasNext();) {
