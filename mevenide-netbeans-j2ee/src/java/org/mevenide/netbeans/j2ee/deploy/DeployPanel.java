@@ -21,6 +21,7 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Set;
 import javax.swing.DefaultComboBoxModel;
@@ -77,7 +78,7 @@ public class DeployPanel extends JPanel {
     }
     
     private void reloadAvailableContainers() {
-        Set containers = CargoServerRegistry.getInstance().getContainers();
+        Collection containers = CargoServerRegistry.getInstance().getContainers();
         if (containers != null) {
             DefaultComboBoxModel model = new DefaultComboBoxModel();
             Iterator it = containers.iterator();
