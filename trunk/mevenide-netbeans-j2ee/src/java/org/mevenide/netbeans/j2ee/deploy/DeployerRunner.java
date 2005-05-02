@@ -79,10 +79,22 @@ public class DeployerRunner implements Runnable {
         if (container.getConfiguration() instanceof StandaloneConfiguration) {
             StandaloneConfiguration config = (StandaloneConfiguration)container.getConfiguration();
             if (war == null) {
-                war = reg.getDeployableFactory().createWAR(deployable);
-                war.setContext(context);
+                // try to search for it anyway..
+                Collection col = reg.getDeployables(container);
+                Iterator it = col.iterator();
+                File fil = new File(deployable);
+                while (it.hasNext()) {
+                    Deployable depl = (Deployable)it.next();
+                    if (fil.equals(depl.getFile())) {
+                        war = (WAR)depl;
+                    }
+                }
+                if (war == null) {
+                    war = reg.getDeployableFactory().createWAR(deployable);
+                    war.setContext(context);
+                    config.addDeployable(war);
+                }
             }
-            config.addDeployable(war);
         } else {
             throw new IllegalStateException("Can only deploy with standalone configuration");
         }
@@ -97,7 +109,7 @@ public class DeployerRunner implements Runnable {
                 DialogDisplayer.getDefault().notify(error);
             }
         }
-        StatusDisplayer.getDefault().setStatusText("Statically Deployed " + deployable);
+        StatusDisplayer.getDefault().setStatusText("Statically Deployed " + (war == null ? deployable : war.getFile().toString()));
     }
     
     private void doDynamicDeployment() {
