@@ -1,21 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project>
-    <pomVersion>3</pomVersion>
+    <extend>${basedir}/../mevenide-parent/project.xml</extend>
     <artifactId>mevenide-netbeans-j2ee</artifactId>
-    <groupId>mevenide</groupId>
     <currentVersion>1.0</currentVersion>
     <name>Mevenide J2EE support</name>
     <package>org.mevenide.netbeans.j2ee</package>
-    <logo>/images/logo.gif</logo>
-    <inceptionYear>2004</inceptionYear>
-    <mailingLists>
-        <mailingList>
-            <name>${pom.name} Dev List</name>
-        </mailingList>
-        <mailingList>
-            <name>${pom.name} User List</name>
-        </mailingList>
-    </mailingLists>
     <dependencies>
         <!-- included the latest nbm plugin as dependency to get the plugin for compilation, 
        either update here when new version is released, or remove the dependency and use the new one -->
@@ -157,7 +146,7 @@
         <dependency>
             <groupId>mevenide</groupId>
             <artifactId>mevenide-netbeans-cargo</artifactId>
-            <version>1.0</version>
+            <version>0.6-SNAPSHOT</version>
             <type>jar</type>
             <properties>
                 <netbeans.module.dep>spec</netbeans.module.dep>
