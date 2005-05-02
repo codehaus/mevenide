@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Properties;
 import java.util.Set;
@@ -61,13 +62,17 @@ public class ContainerPersistance {
         try {
             if (obj == null) {
                 obj = FileUtil.createFolder(Repository.getDefault().getDefaultFileSystem().getRoot(), CARGO_ROOT);
+            } else {
+                obj.delete();
+                obj = FileUtil.createFolder(Repository.getDefault().getDefaultFileSystem().getRoot(), CARGO_ROOT);
             }
             FileObject[] fos = obj.getChildren();
             for (int i = 0; i < fos.length; i++) {
                 fos[i].delete();
             }
-            Set containers = CargoServerRegistry.getInstance().getContainers();
+            Collection containers = CargoServerRegistry.getInstance().getContainers();
             Iterator it = containers.iterator();
+            String lastName = null;
             while (it.hasNext()) {
                 Container cont = (Container)it.next();
                 String name = FileUtil.findFreeFileName(obj, cont.getId(), "properties");
@@ -97,10 +102,13 @@ public class ContainerPersistance {
                         }
                     }
                     if (lock != null) {
-                        System.out.println("releasing lock");
                         lock.releaseLock();
                     }
                 }
+                if (lastName != null) {
+                    obj.setAttribute(lastName + "/" + name, Boolean.TRUE);
+                }
+                lastName = name;
             }
             
         } catch (IOException exc) {
