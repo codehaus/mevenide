@@ -26,8 +26,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
+import java.util.List;
+import java.util.TreeSet;
 import org.codehaus.cargo.container.Container;
 import org.codehaus.cargo.container.ContainerException;
 import org.codehaus.cargo.container.ContainerFactory;
@@ -40,7 +40,6 @@ import org.codehaus.cargo.container.deployable.DeployableFactory;
 import org.codehaus.cargo.container.deployer.DefaultDeployerFactory;
 import org.codehaus.cargo.container.deployer.Deployer;
 import org.codehaus.cargo.container.deployer.DeployerFactory;
-import org.codehaus.cargo.container.jetty.Jetty4xEmbeddedContainer;
 import org.codehaus.cargo.container.jo.Jo1xContainer;
 import org.codehaus.cargo.container.orion.Oc4j9xContainer;
 import org.codehaus.cargo.container.orion.Orion1xContainer;
@@ -82,7 +81,7 @@ public class CargoServerRegistry {
     };
     
     private HashMap installUrls;
-    private HashSet running;
+    private Collection running;
     
     // key= container, value collection of deployables.
     private HashMap deployables;
@@ -129,7 +128,7 @@ public class CargoServerRegistry {
             //TODO.. message?
             monitor = new NullMonitor();
         }
-        running = new HashSet();
+        running = new ArrayList();
         deployers = new HashMap();
         deployables = new HashMap();
         listeners = new ArrayList();
@@ -228,6 +227,9 @@ public class CargoServerRegistry {
     }
     
     public synchronized void addContainer(Container cont) {
+        if (running.contains(cont)) {
+            return;
+        }
         running.add(cont);
         cont.setMonitor(monitor);
         fireAdded(cont);
@@ -309,8 +311,8 @@ public class CargoServerRegistry {
         fireRemoved(cont);
     }
     
-    public synchronized Set getContainers() {
-        return Collections.unmodifiableSet(running);
+    public synchronized Collection getContainers() {
+        return Collections.unmodifiableCollection(running);
     }
     
     public void addRegistryListener(RegistryListener listener) {
