@@ -18,6 +18,7 @@ package org.mevenide.idea.module;
 
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleComponent;
+import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.projectRoots.ProjectJdk;
 import com.intellij.openapi.roots.ModuleRootManager;
 import com.intellij.openapi.roots.ProjectRootManager;
@@ -25,6 +26,7 @@ import com.intellij.openapi.util.InvalidDataException;
 import com.intellij.openapi.util.JDOMExternalizable;
 import com.intellij.openapi.util.WriteExternalException;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.openapi.project.Project;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jdom.Element;
@@ -297,5 +299,28 @@ public class ModuleSettings implements ModuleComponent, JDOMExternalizable {
      */
     public static ModuleSettings getInstance(final Module pModule) {
         return pModule.getComponent(ModuleSettings.class);
+    }
+
+    public static ModuleSettings getInstance(final Project pProject, final File pFile) {
+        final Module[] modules = ModuleManager.getInstance(pProject).getModules();
+        for(final Module module : modules) {
+            final ModuleSettings settings = getInstance(module);
+            if(settings == null)
+                continue;
+
+            final File pomFile = settings.getPomFile();
+            if(pomFile == null)
+                continue;
+
+            if(pomFile.equals(pFile))
+                return settings;
+        }
+
+        return null;
+    }
+
+    public static ModuleSettings getInstance(final Project pProject, final VirtualFile pFile) {
+        final File file = new File(pFile.getPath());
+        return getInstance(pProject, file);
     }
 }
