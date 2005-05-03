@@ -32,7 +32,7 @@ import java.util.*;
  * <p>This is an enhancement over the standard java.util.ResourceBundle class which
  * allows providing additional properties to the message (for inline place holders)
  * as well as supporting hierarchical bundles.</p>
- * 
+ *
  * @author Arik
  */
 public final class Res {
@@ -75,6 +75,10 @@ public final class Res {
 
     public Res getParent() {
         return parent;
+    }
+
+    public ResourceBundle getBundle() {
+        return bundle;
     }
 
     public String getResource(final String pResourceName) {
