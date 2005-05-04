@@ -61,6 +61,8 @@ public class ModuleActionsManager extends AbstractModuleComponent implements Pro
         }
 
         final ModuleSettings settings = ModuleSettings.getInstance(module);
+        if(settings == null)
+            return;
 
         final IGoalsGrabber projectGrabber = settings.getProjectGoalsGrabber();
         final AnAction[] projectActions = createActionsFromGrabber(projectGrabber);
@@ -74,6 +76,9 @@ public class ModuleActionsManager extends AbstractModuleComponent implements Pro
     }
 
     private AnAction[] createActionsFromGrabber(final IGoalsGrabber pGrabber) {
+        if(pGrabber == null)
+            return new AnAction[0];
+        
         final ActionManager mgr = ActionManager.getInstance();
         final List<AnAction> actions = new ArrayList<AnAction>(30);
 
