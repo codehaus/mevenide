@@ -63,7 +63,7 @@ public class GoalsToolWindowTreeModel extends AbstractTreeModel implements Modul
         //register as a listener for module and goal changes
         //
         ModuleSettings.getInstance(pModule).addPropertyChangeListener(
-                "favoriteGoals", this);
+                "queryContext", this);
 
         //
         //create module node
@@ -96,7 +96,7 @@ public class GoalsToolWindowTreeModel extends AbstractTreeModel implements Modul
         //unregister ourselfs as listeners for module and goal changes
         //
         ModuleSettings.getInstance(pModule).removePropertyChangeListener(
-                "favoriteGoals", this);
+                "queryContext", this);
 
         //
         //remove the node
@@ -205,7 +205,7 @@ public class GoalsToolWindowTreeModel extends AbstractTreeModel implements Modul
         final String propertyName = pEvent.getPropertyName();
         final boolean moduleEvent = pEvent.getSource() instanceof ModuleSettings;
 
-        if(moduleEvent && propertyName.equalsIgnoreCase("favoriteGoals")) {
+        if(moduleEvent && propertyName.equalsIgnoreCase("queryContext")) {
             final ModuleSettings settings = (ModuleSettings) pEvent.getSource();
             final Module module = settings.getModule();
 

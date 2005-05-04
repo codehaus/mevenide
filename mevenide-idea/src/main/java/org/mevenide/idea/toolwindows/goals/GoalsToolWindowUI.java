@@ -212,9 +212,13 @@ public class GoalsToolWindowUI extends JPanel {
     }
 
     public void runGoals(final String[] pGoals) {
+        runGoals(getSelectedModule(), pGoals);
+    }
+
+    public void runGoals(final Module pModule, final String[] pGoals) {
         try {
             final ExecutionToolWindowUI execTw = ExecutionToolWindowUI.getInstance(project);
-            execTw.runMaven(getSelectedModule(), pGoals);
+            execTw.runMaven(pModule, pGoals);
         }
         catch (JdkNotDefinedException e) {
             UIUtils.showError(project, e);
@@ -245,6 +249,12 @@ public class GoalsToolWindowUI extends JPanel {
     public static void unregister(final Project project) {
         final ToolWindowManager toolMgr = ToolWindowManager.getInstance(project);
         toolMgr.unregisterToolWindow(NAME);
+    }
+
+    public static GoalsToolWindowUI getInstance(final Project pProject) {
+        final ToolWindowManager mgr = ToolWindowManager.getInstance(pProject);
+        final ToolWindow tw = mgr.getToolWindow(NAME);
+        return (GoalsToolWindowUI) tw.getComponent();
     }
 
     private class GoalsTreeExpanded implements TreeExpander {

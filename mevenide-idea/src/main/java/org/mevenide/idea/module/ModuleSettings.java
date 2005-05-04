@@ -127,6 +127,8 @@ public class ModuleSettings extends AbstractModuleComponent implements JDOMExter
      */
     protected void refreshQueryContext() {
         synchronized (LOCK) {
+            final IQueryContext oldQueryContext = queryContext;
+
             final VirtualFile moduleDir = getModuleDir();
             if(moduleDir == null) {
                 queryContext = null;
@@ -151,6 +153,12 @@ public class ModuleSettings extends AbstractModuleComponent implements JDOMExter
             //create the favorite goals grabber
             //
             createFavoriteGoalsGrabber();
+
+            //
+            //fire a property change event to notify listeners that the context
+            //has changed
+            //
+            changeSupport.firePropertyChange("queryContext", oldQueryContext, queryContext);
         }
     }
 
@@ -226,14 +234,12 @@ public class ModuleSettings extends AbstractModuleComponent implements JDOMExter
      */
     public void setFavoriteGoals(final String[] pGoals) {
         synchronized(LOCK) {
-            final String[] oldGoals = getFavoriteGoals();
-
             favoriteGoals.clear();
             if(pGoals != null)
                 for(String goal : pGoals)
                     favoriteGoals.add(goal);
 
-            changeSupport.firePropertyChange("favoriteGoals", oldGoals, getFavoriteGoals());
+            refreshQueryContext();
         }
     }
 
@@ -258,7 +264,9 @@ public class ModuleSettings extends AbstractModuleComponent implements JDOMExter
             if(favGoalsElt != null) {
                 final JDOMExternalizableStringList goals = new JDOMExternalizableStringList();
                 goals.readExternal(favGoalsElt);
-                setFavoriteGoals(goals.toArray(new String[goals.size()]));
+                for(String goal : goals) {
+                    favoriteGoals.add(goal);
+                }
             }
         }
     }
