@@ -14,22 +14,20 @@
  *  limitations under the License.
  * =========================================================================
  */
-package org.mevenide.idea.global;
+package org.mevenide.idea.util.ui.tree;
 
-import java.util.EventListener;
+import javax.swing.*;
 
 /**
- * An event listener for the Maven manager component.
- *
  * @author Arik
  */
-public interface MavenManagerListener extends EventListener {
-
-    /**
-     * Invoked when the user changes the Maven home.
-     *
-     * @param pEvent the event information object
-     */
-    void mavenHomeChanged(MavenHomeChangedEvent pEvent);
+public interface ConfigurableTreeComponent {
+    void configure(JTree pTree,
+                   Object pValue,
+                   boolean pSelected,
+                   boolean pExpanded,
+                   boolean pLeaf,
+                   int pRow,
+                   boolean pHasFocus);
 
 }

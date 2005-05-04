@@ -16,16 +16,13 @@
  */
 package org.mevenide.idea.global;
 
-import com.intellij.openapi.components.ApplicationComponent;
 import com.intellij.openapi.fileChooser.FileChooserDescriptor;
 import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.mevenide.idea.Res;
-import org.mevenide.idea.util.ui.images.Icons;
+import org.mevenide.idea.support.AbstractApplicationComponent;
 import org.mevenide.idea.util.ui.UIUtils;
+import org.mevenide.idea.util.ui.images.Icons;
 
 import javax.swing.*;
 import java.awt.GridBagConstraints;
@@ -41,30 +38,12 @@ import java.io.FileNotFoundException;
  *
  * @author Arik
  */
-public class MavenManagerConfigurable implements ApplicationComponent, Configurable {
-    /**
-     * Component name.
-     */
-    private static final String NAME = MavenManagerConfigurable.class.getName();
-
-    /**
-     * Logging.
-     */
-    private static final Log LOG = LogFactory.getLog(MavenManagerConfigurable.class);
-
-    /**
-     * Resources.
-     */
-    private static final Res RES = Res.getInstance(MavenManagerConfigurable.class);
+public class MavenManagerConfigurable extends AbstractApplicationComponent implements Configurable {
 
     /**
      * The user interface component to display to the user.
      */
     private MavenManagerPanel ui;
-
-    public String getComponentName() {
-        return NAME;
-    }
 
     public void initComponent() {
         ui = new MavenManagerPanel(true);

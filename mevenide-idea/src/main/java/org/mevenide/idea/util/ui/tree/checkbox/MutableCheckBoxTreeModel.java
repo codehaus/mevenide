@@ -14,20 +14,17 @@
  *  limitations under the License.
  * =========================================================================
  */
-package org.mevenide.idea.module;
+package org.mevenide.idea.util.ui.tree.checkbox;
 
-import java.util.EventObject;
+import javax.swing.tree.TreeNode;
 
 /**
  * @author Arik
  */
-public class PomSelectionChangedEvent extends EventObject {
+public interface MutableCheckBoxTreeModel extends CheckBoxTreeModel {
 
-    public PomSelectionChangedEvent(final ModuleSettings pModuleSettings) {
-        super(pModuleSettings);
-    }
+    boolean isCheckable(TreeNode pNode);
 
-    public ModuleSettings getModuleSettings() {
-        return (ModuleSettings) source;
-    }
+    void setChecked(TreeNode pNode, boolean pChecked);
+
 }
