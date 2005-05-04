@@ -26,8 +26,8 @@ import javax.swing.tree.TreeNode;
 /**
  * @author Arik
  */
-public class SimpleGoalsTreeModel extends AbstractTreeModel
-{
+public class SimpleGoalsTreeModel extends AbstractTreeModel {
+
     public SimpleGoalsTreeModel(final IGoalsGrabber pProvider) {
         super(new DefaultMutableTreeNode());
 

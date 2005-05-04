@@ -22,13 +22,13 @@ import com.intellij.openapi.project.ModuleListener;
 import com.intellij.openapi.project.Project;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.mevenide.goals.grabber.DefaultGoalsGrabber;
 import org.mevenide.goals.grabber.IGoalsGrabber;
 import org.mevenide.goals.grabber.ProjectGoalsGrabber;
-import org.mevenide.idea.module.ModuleFavoriteGoalsChangedEvent;
+import org.mevenide.idea.module.ModuleLocationFinder;
 import org.mevenide.idea.module.ModuleSettings;
-import org.mevenide.idea.module.ModuleSettingsListener;
-import org.mevenide.idea.module.PomSelectionChangedEvent;
 import org.mevenide.idea.util.goals.GoalsHelper;
+import org.mevenide.idea.util.goals.grabber.FilteredGoalsGrabber;
 import org.mevenide.idea.util.ui.tree.AbstractTreeModel;
 import org.mevenide.idea.util.ui.tree.GoalTreeNode;
 import org.mevenide.idea.util.ui.tree.ModuleTreeNode;
@@ -37,15 +37,15 @@ import org.mevenide.idea.util.ui.tree.PluginTreeNode;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreeNode;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.util.List;
 
 /**
  * @author Arik
  */
-public class GoalsToolWindowTreeModel extends AbstractTreeModel implements ModuleListener,
-                                                                           ModuleSettingsListener
-{
+public class GoalsToolWindowTreeModel extends AbstractTreeModel implements ModuleListener, PropertyChangeListener {
     /**
      * Logging.
      */
@@ -73,7 +73,8 @@ public class GoalsToolWindowTreeModel extends AbstractTreeModel implements Modul
         //
         //register as a listener for module and goal changes
         //
-        ModuleSettings.getInstance(pModule).addModuleSettingsListener(this);
+        ModuleSettings.getInstance(pModule).addPropertyChangeListener(
+                "favoriteGoals", this);
 
         //
         //create module node
@@ -105,7 +106,8 @@ public class GoalsToolWindowTreeModel extends AbstractTreeModel implements Modul
         //
         //unregister ourselfs as listeners for module and goal changes
         //
-        ModuleSettings.getInstance(pModule).removeModuleSettingsListener(this);
+        ModuleSettings.getInstance(pModule).removePropertyChangeListener(
+                "favoriteGoals", this);
 
         //
         //remove the node
@@ -145,13 +147,17 @@ public class GoalsToolWindowTreeModel extends AbstractTreeModel implements Modul
         //
         final File pomFile = moduleSettings.getPomFile();
         if (pomFile != null) {
+
+            //
+            //create the project-specific goals grabber
+            //
             final File mavenXmlFile = new File(pomFile.getParentFile(), "maven.xml");
             if (mavenXmlFile.isFile()) {
-                final ProjectGoalsGrabber moduleGrabber = new ProjectGoalsGrabber();
-                moduleGrabber.setMavenXmlFile(mavenXmlFile.getAbsolutePath());
                 try {
-                    moduleGrabber.refresh();
-                    pModuleNode.insert(createGoalsGrabberNode(moduleGrabber),
+                    final ProjectGoalsGrabber projectGrabber = new ProjectGoalsGrabber();
+                    projectGrabber.setMavenXmlFile(mavenXmlFile.getAbsolutePath());
+                    projectGrabber.refresh();
+                    pModuleNode.insert(createGoalsGrabberNode(projectGrabber),
                                        pModuleNode.getChildCount());
                 }
                 catch (Exception e) {
@@ -160,14 +166,25 @@ public class GoalsToolWindowTreeModel extends AbstractTreeModel implements Modul
                     LOG.error(e.getMessage(), e);
                 }
             }
-        }
 
-        //
-        //create the Favorites node
-        //
-        final IGoalsGrabber favoritesGrabber = moduleSettings.getFavoriteGoals();
-        pModuleNode.insert(createGoalsGrabberNode(favoritesGrabber),
-                           pModuleNode.getChildCount());
+            //
+            //add the favorites goals grabber. This is done by creating the
+            //global goals grabber, and applying a filter to it
+            //
+            try {
+                final ModuleLocationFinder finder = new ModuleLocationFinder(module);
+                final DefaultGoalsGrabber globalGoals = new DefaultGoalsGrabber(finder);
+                final IGoalsGrabber filter = new FilteredGoalsGrabber(
+                        "Favorites",
+                        globalGoals,
+                        moduleSettings.getFavoriteGoals());
+                pModuleNode.insert(createGoalsGrabberNode(filter),
+                                   pModuleNode.getChildCount());
+            }
+            catch (Exception e) {
+                LOG.error(e.getMessage(), e);
+            }
+        }
 
         //
         //notify model listeners that nodes changed, if requested to
@@ -225,40 +242,29 @@ public class GoalsToolWindowTreeModel extends AbstractTreeModel implements Modul
         }
     }
 
-    public void modulePomSelectionChanged(final PomSelectionChangedEvent pEvent) {
-        //
-        //find changed module
-        //
-        final ModuleSettings moduleSettings = pEvent.getModuleSettings();
-        final Module module = moduleSettings.getModule();
+    public void propertyChange(final PropertyChangeEvent pEvent) {
+        final String propertyName = pEvent.getPropertyName();
+        final boolean moduleEvent = pEvent.getSource() instanceof ModuleSettings;
 
-        //
-        //find that module in the tree model
-        //
-        final NodeVisitor visitor = new ModuleNodeVisitor(module);
-        final TreeNode node = findNode(root, visitor, 1);
-        if (node != null)
-            refreshModuleTreeNode((ModuleTreeNode) node, true);
+        if(moduleEvent && propertyName.equalsIgnoreCase("favoriteGoals")) {
+            final ModuleSettings settings = (ModuleSettings) pEvent.getSource();
+            final Module module = settings.getModule();
+
+            //
+            //find that module in the tree model
+            //
+            final NodeVisitor visitor = new ModuleNodeVisitor(module);
+            final TreeNode node = findNode(root, visitor);
+
+            //
+            //if found, refresh the module
+            //
+            if (node != null)
+                refreshModuleTreeNode((ModuleTreeNode) node, true);
+        }
     }
 
-    public void moduleFavoriteGoalsChanged(final ModuleFavoriteGoalsChangedEvent pEvent) {
-
-        //
-        //find changed module
-        //
-        final Module module = pEvent.getSource().getModule();
-
-        //
-        //find that module in the tree model
-        //
-        final NodeVisitor visitor = new ModuleNodeVisitor(module);
-        final TreeNode node = findNode(root, visitor);
-        if (node != null)
-            refreshModuleTreeNode((ModuleTreeNode) node, true);
-    }
-
-    private class ModuleNodeVisitor implements NodeVisitor
-    {
+    private class ModuleNodeVisitor implements NodeVisitor {
         private final Module module;
 
         public ModuleNodeVisitor(final Module pModule) {

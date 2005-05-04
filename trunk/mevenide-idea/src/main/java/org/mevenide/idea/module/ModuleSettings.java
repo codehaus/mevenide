@@ -17,66 +17,42 @@
 package org.mevenide.idea.module;
 
 import com.intellij.openapi.module.Module;
-import com.intellij.openapi.module.ModuleComponent;
-import com.intellij.openapi.module.ModuleManager;
-import com.intellij.openapi.projectRoots.ProjectJdk;
-import com.intellij.openapi.roots.ModuleRootManager;
-import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.openapi.util.InvalidDataException;
 import com.intellij.openapi.util.JDOMExternalizable;
+import com.intellij.openapi.util.JDOMExternalizableStringList;
 import com.intellij.openapi.util.WriteExternalException;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.openapi.project.Project;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import com.intellij.openapi.vfs.*;
+import com.intellij.util.containers.HashSet;
 import org.jdom.Element;
-import org.mevenide.goals.grabber.IGoalsGrabber;
-import org.mevenide.idea.Res;
-import org.mevenide.idea.util.goals.grabber.CustomGoalsGrabber;
+import org.mevenide.context.DefaultQueryContext;
+import org.mevenide.context.IQueryContext;
+import org.mevenide.context.IQueryErrorCallback;
+import org.mevenide.idea.support.AbstractModuleComponent;
+import org.mevenide.idea.util.ui.UIUtils;
 
-import javax.swing.event.EventListenerList;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.EventListener;
+import java.util.Set;
 
 /**
  * @author Arik
  */
-public class ModuleSettings implements ModuleComponent, JDOMExternalizable {
+public class ModuleSettings extends AbstractModuleComponent implements JDOMExternalizable {
     /**
-     * Component name.
+     * The module's query context. If <code>null</code>, it means that the module
+     * has no POM, or that an error has occured while reading it.
      */
-    private static final String NAME = ModuleSettings.class.getName();
+    private IQueryContext queryContext = null;
 
     /**
-     * Logging.
+     * The module's favorite goals.
      */
-    private static final Log LOG = LogFactory.getLog(ModuleSettings.class);
+    private Set<String> favoriteGoals = new HashSet<String>(10);
 
     /**
-     * Resources.
+     * This is a file system listener that synchronizes the module's query
+     * context if maven files change in the module directory.
      */
-    private static final Res RES = Res.getInstance(ModuleSettings.class);
-
-    /**
-     * The IDEA module.
-     */
-    private final Module module;
-
-    /**
-     * Event listener support.
-     */
-    private final EventListenerList listenerList = new EventListenerList();
-
-    /**
-     * The POM file attached to this module.
-     */
-    private File pomFile;
-
-    /**
-     * The list of favorite goals attached to this module.
-     */
-    private CustomGoalsGrabber favoriteGoalsGrabber = new CustomGoalsGrabber("Favorites");
+    private final FSListener fileSystemListener = new FSListener();
 
     /**
      * Creates a module settings manager for the specified module.
@@ -84,211 +60,147 @@ public class ModuleSettings implements ModuleComponent, JDOMExternalizable {
      * @param pModule
      */
     public ModuleSettings(final Module pModule) {
-        module = pModule;
+        super(pModule);
     }
 
-    public String getComponentName() {
-        return NAME;
-    }
-
-    /**
-     * Returns the module associated with this manager.
-     *
-     * @return
-     */
-    public Module getModule() {
-        return module;
-    }
-
-    /**
-     * Returns the JDK associated with this module. If the module uses the project-designated JDK, that JDK is
-     * returned. If the JDK is invalid, <code>null</code> is returned.
-     *
-     * @return the JDK, or <code>null</code> if not defined/invalid
-     */
-    public ProjectJdk getJdk() {
-        final ProjectJdk jdk = ModuleRootManager.getInstance(module).getJdk();
-        if (jdk == null)
-            return ProjectRootManager.getInstance(module.getProject()).getProjectJdk();
-        else
-            return jdk;
-    }
-
-    /**
-     * Returns the POM file attached to this module.
-     *
-     * @return the POM file, or <code>null</code> if no pom is attached
-     */
     public File getPomFile() {
+        final VirtualFile moduleDir = getModuleDir();
+        if(moduleDir == null)
+            return null;
+
+        final File moduleDirFile = new File(moduleDir.getPath());
+        if(!moduleDirFile.isDirectory())
+            return null;
+
+        final File pomFile = new File(moduleDirFile, "project.xml");
+        if(!pomFile.isFile())
+            return null;
+
         return pomFile;
     }
 
     /**
-     * Sets the POM file for this module. The file must point to an existing file called "project.xml", or to
-     * be <code>null</code>.
+     * Initializes the manager.
      *
-     * @param pPomFile the POM file, can be <code>null</code>
-     *
-     * @throws FileNotFoundException if the file does not exist, points to a directory, or not named
-     *                               "project.xml"
-     */
-    public void setPomFile(final File pPomFile) throws FileNotFoundException {
-        if (pPomFile != null && !pPomFile.isFile())
-            throw new FileNotFoundException(RES.get("pom.file.error"));
-
-        if (pPomFile != null && !pPomFile.getName().equalsIgnoreCase("project.xml"))
-            throw new FileNotFoundException(RES.get("pom.file.name.error"));
-
-        if(pomFile == pPomFile)
-            return;
-
-        if(pomFile != null && pomFile.equals(pPomFile))
-            return;
-        else if(pPomFile != null && pPomFile.equals(pomFile))
-            return;
-
-        pomFile = pPomFile;
-        firePomFileChangedEvent();
-    }
-
-    /**
-     * Returns the favorite goals collection for this module.
-     *
-     * @return an unmodifiable collection
-     */
-    public IGoalsGrabber getFavoriteGoals() {
-        return favoriteGoalsGrabber;
-    }
-
-    public void setFavoriteGoals(final IGoalsGrabber pGoalsGrabber) {
-        favoriteGoalsGrabber = new CustomGoalsGrabber("Favorites", pGoalsGrabber);
-        fireFavoriteGoalsChangedEvent();
-    }
-
-    /**
-     * Adds a module settings listener.
-     *
-     * @param pListener the listener to notify on settings changes
-     */
-    public void addModuleSettingsListener(final ModuleSettingsListener pListener) {
-        listenerList.add(ModuleSettingsListener.class, pListener);
-    }
-
-    /**
-     * Removes the specified listeners from the listener list.
-     *
-     * @param pListener the listener to remove
-     */
-    public void removeModuleSettingsListener(final ModuleSettingsListener pListener) {
-        listenerList.remove(ModuleSettingsListener.class, pListener);
-    }
-
-    /**
-     * Fires the POM file-selection-changed event to all registered listeners.
-     */
-    protected void firePomFileChangedEvent() {
-        final PomSelectionChangedEvent event = new PomSelectionChangedEvent(this);
-        final EventListener[] listeners = listenerList.getListeners(ModuleSettingsListener.class);
-        for (final EventListener listener : listeners) {
-            ((ModuleSettingsListener) listener).modulePomSelectionChanged(event);
-        }
-    }
-
-    /**
-     * Fires the POM file-selection-changed event to all registered listeners.
-     */
-    protected void fireFavoriteGoalsChangedEvent() {
-        final ModuleFavoriteGoalsChangedEvent event = new ModuleFavoriteGoalsChangedEvent(this);
-        final EventListener[] listeners = listenerList.getListeners(ModuleSettingsListener.class);
-        for (final EventListener listener : listeners) {
-            ((ModuleSettingsListener) listener).moduleFavoriteGoalsChanged(event);
-        }
-    }
-
-    public void projectOpened() {
-    }
-
-    public void moduleAdded() {
-    }
-
-    public void projectClosed() {
-    }
-
-    /**
-     * Initializes the manager. Specifically, if no POM is defined for this
-     * module, this method tries to guess by searching for a POM file in the
-     * module's directory named "project.xml", if uses it.
+     * <p>Registers a file system listener to be notified if maven files change
+     * in the module directory.</p>
      */
     public void initComponent() {
-        if(LOG.isTraceEnabled())
-            LOG.trace(NAME + " initialized.");
+        module.getModuleFile().getFileSystem().addVirtualFileListener(fileSystemListener);
+        refreshQueryContext();
+    }
 
-        if(pomFile == null) {
-            final VirtualFile moduleFile = module.getModuleFile();
-            if(moduleFile == null)
+    /**
+     * Disposes of the manager.
+     *
+     * <p>Unregisters the file system listener.</p>
+     */
+    @Override public void disposeComponent() {
+        module.getModuleFile().getFileSystem().removeVirtualFileListener(fileSystemListener);
+    }
+
+    private VirtualFile getModuleDir() {
+        final VirtualFile moduleFile = module.getModuleFile();
+        if (moduleFile == null)
+            return null;
+
+        return moduleFile.getParent();
+    }
+
+    /**
+     * Refreshes the query context by recreating it.
+     *
+     * <p>This method is called both by the {@link #initComponent()} method and
+     * when a pom file (e.g. a file named <i>project.xml</i>) is created, deleted,
+     * changed or moved in the module directory.</p>
+     */
+    protected void refreshQueryContext() {
+        synchronized (LOCK) {
+            final VirtualFile moduleDir = getModuleDir();
+            if(moduleDir == null) {
+                queryContext = null;
                 return;
+            }
 
-            final File dir = new File(moduleFile.getParent().getPath());
-            final File pom = new File(dir, "project.xml");
-            if(pom.isFile())
-                try {
-                    setPomFile(pom);
-                }
-                catch (FileNotFoundException e) {
-                    //IGNORE - this is just a fallback, and if it fails, continue doing nothing
-                    LOG.trace(e.getMessage(), e);
-                }
+            final File moduleDirFile = new File(moduleDir.getPath());
+            queryContext = new DefaultQueryContext(moduleDirFile,
+                                                   new UIQueryErrorCallback());
         }
     }
 
-    public void disposeComponent() {
-        if (LOG.isTraceEnabled())
-            LOG.trace(NAME + " disposed.");
+    /**
+     * Returns the module's Maven query context.
+     *
+     * <p>This method might return <code>null</code>, which means that the module
+     * is not associated with a Maven context.</p>
+     *
+     * @return a query context, or <code>null</code>
+     */
+    public IQueryContext getQueryContext() {
+        synchronized (LOCK) {
+            return queryContext;
+        }
+    }
+
+    /**
+     * Returns the module's favorite goals.
+     *
+     * <p>If no favorite goals have been selected, this method will return an empty
+     * array, but never <code>null</code>.</p>
+     *
+     * @return array of fully-qualified goal names.
+     */
+    public String[] getFavoriteGoals() {
+        synchronized (LOCK) {
+            return favoriteGoals.toArray(new String[favoriteGoals.size()]);
+        }
+    }
+
+    /**
+     * Sets the module's favorite goals.
+     *
+     * <p>This method will fire a property change event for "favoriteGoals" property.</p>
+     *
+     * @param pGoals the favorite goals - fully qualified goal names (may be <code>null</code> or an empty array)
+     */
+    public void setFavoriteGoals(final String[] pGoals) {
+        synchronized(LOCK) {
+            final String[] oldGoals = getFavoriteGoals();
+
+            favoriteGoals.clear();
+            if(pGoals != null)
+                for(String goal : pGoals)
+                    favoriteGoals.add(goal);
+
+            changeSupport.firePropertyChange("favoriteGoals", oldGoals, getFavoriteGoals());
+        }
     }
 
     public void readExternal(final Element pElement) throws InvalidDataException {
-        if(LOG.isTraceEnabled())
-            LOG.trace("Loading " + NAME + " from XML configuration");
-
-        final String pomFilename = pElement.getAttributeValue("pomFile");
-        if (pomFilename != null && pomFilename.trim().length() > 0)
-            try {
-                setPomFile(new File(pomFilename));
+        synchronized(LOCK) {
+            //
+            //load favorite goals
+            //
+            final Element favGoalsElt = pElement.getChild("favoriteGoals");
+            if(favGoalsElt != null) {
+                final JDOMExternalizableStringList goals = new JDOMExternalizableStringList();
+                goals.readExternal(favGoalsElt);
+                setFavoriteGoals(goals.toArray(new String[goals.size()]));
             }
-            catch (FileNotFoundException e) {
-                //
-                //ignore error, and keep pomFile as null
-                //we should, however, check pomFile for null in
-                //initComponent, and display a message to the user, asking
-                //for a valid pom file
-                //
-                LOG.trace(e.getMessage(), e);
-            }
-
-        //
-        //load favorite goals list
-        //
-        favoriteGoalsGrabber.readExternal(pElement);
-
-        if (LOG.isTraceEnabled())
-            LOG.trace("Finished loading " + NAME);
+        }
     }
 
     public void writeExternal(final Element pElement) throws WriteExternalException {
-        if (LOG.isTraceEnabled())
-            LOG.trace("Saving " + NAME + " from XML configuration");
-
-        final File pomFile = getPomFile();
-        if (pomFile != null && pomFile.isFile())
-            pElement.setAttribute("pomFile", pomFile.getAbsolutePath());
-
-        //
-        //save favorite goals list
-        //
-        favoriteGoalsGrabber.writeExternal(pElement);
-
-        if (LOG.isTraceEnabled())
-            LOG.trace("Finished saving " + NAME);
+        synchronized (LOCK) {
+            //
+            //save favorite goals
+            //
+            final JDOMExternalizableStringList goals = new JDOMExternalizableStringList();
+            goals.addAll(favoriteGoals);
+            final Element favoriteGoalsElt = new Element("favoriteGoals");
+            goals.writeExternal(favoriteGoalsElt);
+            pElement.addContent(favoriteGoalsElt);
+        }
     }
 
     /**
@@ -301,26 +213,51 @@ public class ModuleSettings implements ModuleComponent, JDOMExternalizable {
         return pModule.getComponent(ModuleSettings.class);
     }
 
-    public static ModuleSettings getInstance(final Project pProject, final File pFile) {
-        final Module[] modules = ModuleManager.getInstance(pProject).getModules();
-        for(final Module module : modules) {
-            final ModuleSettings settings = getInstance(module);
-            if(settings == null)
-                continue;
-
-            final File pomFile = settings.getPomFile();
-            if(pomFile == null)
-                continue;
-
-            if(pomFile.equals(pFile))
-                return settings;
+    /**
+     * A {@link IQueryErrorCallback} implementation which displays the error
+     * to the user in a message box.
+     */
+    private class UIQueryErrorCallback implements IQueryErrorCallback {
+        public void handleError(int errorNumber, Exception exception) {
+            UIUtils.showError(module, exception.getMessage(), exception);
         }
 
-        return null;
+        public void discardError(int errorNumber) {
+        }
     }
 
-    public static ModuleSettings getInstance(final Project pProject, final VirtualFile pFile) {
-        final File file = new File(pFile.getPath());
-        return getInstance(pProject, file);
+    /**
+     * A virtual file system listener that refreshes the module's query
+     * context if a Maven file (e.g. <i>project.xml</i>, <i>maven.xml</i>,
+     * <i>project.properties</i> or <i>build.properties</i> change in the
+     * module's directory.
+     */
+    private class FSListener extends VirtualFileAdapter {
+        protected boolean shouldRefresh(final String pFileName) {
+            return pFileName.equalsIgnoreCase("project.xml") ||
+                    pFileName.equalsIgnoreCase("maven.xml") ||
+                    pFileName.equalsIgnoreCase("project.properties") ||
+                    pFileName.equalsIgnoreCase("build.properties");
+        }
+
+        @Override public void fileCreated(VirtualFileEvent event) {
+            if(shouldRefresh(event.getFileName()))
+                refreshQueryContext();
+        }
+
+        @Override public void fileDeleted(VirtualFileEvent event) {
+            if (shouldRefresh(event.getFileName()))
+                refreshQueryContext();
+        }
+
+        @Override public void fileMoved(VirtualFileMoveEvent event) {
+            if (shouldRefresh(event.getFileName()))
+                refreshQueryContext();
+        }
+
+        @Override public void contentsChanged(VirtualFileEvent event) {
+            if (shouldRefresh(event.getFileName()))
+                refreshQueryContext();
+        }
     }
 }

@@ -17,23 +17,19 @@
 package org.mevenide.idea.global;
 
 import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.components.ApplicationComponent;
+import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.util.InvalidDataException;
 import com.intellij.openapi.util.JDOMExternalizable;
+import com.intellij.openapi.util.JDOMExternalizer;
 import com.intellij.openapi.util.WriteExternalException;
-import com.intellij.openapi.ui.Messages;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jdom.Element;
-import org.mevenide.idea.Res;
-import org.mevenide.idea.util.ui.UIUtils;
 import org.mevenide.environment.ILocationFinder;
 import org.mevenide.environment.SysEnvLocationFinder;
+import org.mevenide.idea.support.AbstractApplicationComponent;
+import org.mevenide.idea.util.ui.UIUtils;
 
-import javax.swing.event.EventListenerList;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.EventListener;
 
 /**
  * This application component manages global Maven settings for IDEA.
@@ -43,31 +39,17 @@ import java.util.EventListener;
  *
  * @author Arik
  */
-public class MavenManager implements ApplicationComponent, JDOMExternalizable {
-    /**
-     * The component name.
-     */
-    private static final String NAME = MavenManager.class.getName();
-
-    /**
-     * Resources.
-     */
-    private static final Res RES = Res.getInstance(MavenManager.class);
-
-    /**
-     * The logger to use.
-     */
-    private static final Log LOG = LogFactory.getLog(MavenManager.class);
-
-    /**
-     * Event listener support.
-     */
-    private final EventListenerList listenerList = new EventListenerList();
+public class MavenManager extends AbstractApplicationComponent implements JDOMExternalizable {
 
     /**
      * The selected Maven home.
      */
     private File mavenHome;
+
+    /**
+     * Extra command line options to send to the Maven process.
+     */
+    private String mavenOptions;
 
     /**
      * Returns the selected Maven home, or <code>null</code> if not set.
@@ -82,6 +64,8 @@ public class MavenManager implements ApplicationComponent, JDOMExternalizable {
      * Sets the Maven home to the specified directory. Throws a {@link FileNotFoundException} if the specified
      * home points to a file or does not exist.
      *
+     * <p>Invoking this method will cause a property-change event.</p>
+     *
      * @param pMavenHome the new Maven home - may be <code>null</code>
      *
      * @throws FileNotFoundException if the the specified home does not point to an existing directory
@@ -90,26 +74,53 @@ public class MavenManager implements ApplicationComponent, JDOMExternalizable {
         if (pMavenHome != null && !pMavenHome.isDirectory())
             throw new FileNotFoundException(RES.get("maven.home.error"));
 
+        final File oldMavenHome = mavenHome;
         mavenHome = pMavenHome;
-        fireMavenHomeChangedEvent();
+        changeSupport.firePropertyChange("mavenHome", oldMavenHome, mavenHome);
     }
 
     /**
-     * Returns the ManagerManager class name as the component name.
+     * Returns the command line options to send to the Maven process when invoked.
      *
-     * @return this class name
+     * <p>This is the equivalent of <code>MAVEN_OPTS</code> environment variable.</p>
+     *
+     * @return string
      */
-    public String getComponentName() {
-        return NAME;
+    public String getMavenOptions() {
+        return mavenOptions;
     }
 
     /**
-     * Does nothing.
+     * Sets the command line options to send to the Maven process invocations.
+     *
+     * <p>Invoking this method will cause a property-change event.</p>
+     *
+     * @param pMavenOptions the new maven command line options
+     */
+    public void setMavenOptions(final String pMavenOptions) {
+        final String oldOptions = mavenOptions;
+
+        if(pMavenOptions != null && pMavenOptions.trim().length() == 0)
+            mavenOptions = null;
+        else
+            mavenOptions = pMavenOptions;
+
+        changeSupport.firePropertyChange("mavenOptions", oldOptions, mavenOptions);
+    }
+
+    /**
+     * This method is called after the {@link #readExternal(org.jdom.Element)} method
+     * is called. If the {@link #mavenHome} field is still <code>null</code>, then
+     * this method tries to guess it by invoking the {@link SysEnvLocationFinder}'s
+     * default instance's {@link org.mevenide.environment.SysEnvLocationFinder#getMavenHome()}
+     * method.
+     *
+     * <p>If it still cannot find the Maven home, or if it finds it invalid, an
+     * error message is shown.</p>
+     *
+     * @todo Allow the user to specify never to both him/her again with the error message
      */
     public void initComponent() {
-        if (LOG.isTraceEnabled())
-            LOG.trace(NAME + " initialized.");
-
         if(mavenHome == null) {
             final ILocationFinder finder = SysEnvLocationFinder.getInstance();
             final String mavenHomePath = finder.getMavenHome();
@@ -121,24 +132,15 @@ public class MavenManager implements ApplicationComponent, JDOMExternalizable {
                     UIUtils.showError(RES.get("maven.home.misconfigured", mavenHomePath));
                 }
             else
-                //TODO: we should allow the user to specify not to bother him/her again
                 Messages.showInfoMessage(RES.get("maven.home.undefined"), "Maven");
         }
     }
 
-    /**
-     * Does nothing.
-     */
-    public void disposeComponent() {
-        if (LOG.isTraceEnabled())
-            LOG.trace(NAME + " disposed.");
-    }
-
     public void readExternal(final Element pElement) throws InvalidDataException {
-        if (LOG.isTraceEnabled())
-            LOG.trace("Loading " + NAME + " from XML configuration.");
-
-        final String mavenHomeValue = pElement.getAttributeValue("mavenHome");
+        //
+        //read maven home
+        //
+        final String mavenHomeValue = JDOMExternalizer.readString(pElement, "mavenHome");
         if (mavenHomeValue != null && mavenHomeValue.trim().length() > 0)
             try {
                 setMavenHome(new File(mavenHomeValue));
@@ -152,48 +154,25 @@ public class MavenManager implements ApplicationComponent, JDOMExternalizable {
                 LOG.trace(e.getMessage(), e);
             }
 
-        if (LOG.isTraceEnabled())
-            LOG.trace("Finished loading " + NAME);
+        //
+        //read maven options
+        //
+        final String mavenOptionsValue = JDOMExternalizer.readString(pElement, "mavenOptions");
+        setMavenOptions(mavenOptionsValue);
     }
 
     public void writeExternal(final Element pElement) throws WriteExternalException {
-        if (LOG.isTraceEnabled())
-            LOG.trace("Saving " + NAME + " to XML configuration.");
-
+        //
+        //write maven home
+        //
         final File mavenHome = getMavenHome();
         if (mavenHome != null)
-            pElement.setAttribute("mavenHome", mavenHome.getAbsolutePath());
+            JDOMExternalizer.write(pElement, "mavenHome", mavenHome.getAbsolutePath());
 
-        if (LOG.isTraceEnabled())
-            LOG.trace("Finished saving " + NAME);
-    }
-
-    /**
-     * Adds a Maven manager listener.
-     *
-     * @param pListener the listener to notify on manager events
-     */
-    public void addGlobalSettingsListener(final MavenManagerListener pListener) {
-        listenerList.add(MavenManagerListener.class, pListener);
-    }
-
-    /**
-     * Remove the specified listener from the manager listeners list.
-     *
-     * @param pListener the listener to remove
-     */
-    public void removeGlobalSettingsListener(MavenManagerListener pListener) {
-        listenerList.remove(MavenManagerListener.class, pListener);
-    }
-
-    /**
-     * Fire the MavenHomeChanged event by notifiying all listeners.
-     */
-    protected void fireMavenHomeChangedEvent() {
-        final MavenHomeChangedEvent event = new MavenHomeChangedEvent(this);
-        final EventListener[] listeners = listenerList.getListeners(MavenManagerListener.class);
-        for (final EventListener listener : listeners)
-            ((MavenManagerListener) listener).mavenHomeChanged(event);
+        //
+        //write maven options
+        //
+        JDOMExternalizer.write(pElement, "mavenOptions", mavenOptions);
     }
 
     /**

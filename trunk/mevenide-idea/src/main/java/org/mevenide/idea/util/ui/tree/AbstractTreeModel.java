@@ -26,12 +26,12 @@ import javax.swing.tree.TreeNode;
 public abstract class AbstractTreeModel extends DefaultTreeModel {
 
     protected AbstractTreeModel() {
-        super(null);
+        super(null, true);
 
     }
 
     protected AbstractTreeModel(final TreeNode pRoot) {
-        super(pRoot);
+        super(pRoot, true);
     }
 
     protected AbstractTreeModel(final TreeNode pRoot,

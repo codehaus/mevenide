@@ -40,8 +40,8 @@ public class ModuleLocationFinder extends LocationFinderAggregator {
          * @param queryContext the query context to use
          * @param pModule
          */
-    public ModuleLocationFinder(final IQueryContext queryContext, final Module pModule) {
-        super(queryContext);
+    public ModuleLocationFinder(final Module pModule) {
+        super(ModuleSettings.getInstance(pModule).getQueryContext());
         module = pModule;
     }
 

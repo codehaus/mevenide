@@ -31,10 +31,6 @@ public class PluginTreeNode extends DefaultMutableTreeNode {
         return (String) super.getUserObject();
     }
 
-    @Override public boolean isLeaf() {
-        return false;
-    }
-
     public String getPlugin() {
         return getUserObject();
     }

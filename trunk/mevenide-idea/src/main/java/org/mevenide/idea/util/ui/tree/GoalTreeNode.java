@@ -77,4 +77,8 @@ public class GoalTreeNode extends DefaultMutableTreeNode {
         else
             return super.toString() + " - " + description;
     }
+
+    @Override public boolean getAllowsChildren() {
+        return false;
+    }
 }

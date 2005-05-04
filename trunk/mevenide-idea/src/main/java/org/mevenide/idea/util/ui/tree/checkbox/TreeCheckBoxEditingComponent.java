@@ -14,20 +14,16 @@
  *  limitations under the License.
  * =========================================================================
  */
-package org.mevenide.idea.global;
+package org.mevenide.idea.util.ui.tree.checkbox;
 
-import java.util.EventObject;
+import javax.swing.*;
 
 /**
  * @author Arik
  */
-public class MavenHomeChangedEvent extends EventObject {
+public class TreeCheckBoxEditingComponent extends AbstractTreeCheckBoxComponent {
 
-    public MavenHomeChangedEvent(final MavenManager pMavenManager) {
-        super(pMavenManager);
-    }
-
-    public MavenManager getMavenManager() {
-        return (MavenManager) source;
+    public TreeCheckBoxEditingComponent() {
+        super(new JCheckBox(), new JLabel());
     }
 }

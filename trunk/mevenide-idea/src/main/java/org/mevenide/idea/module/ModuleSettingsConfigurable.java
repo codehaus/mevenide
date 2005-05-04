@@ -17,24 +17,16 @@
 package org.mevenide.idea.module;
 
 import com.intellij.openapi.module.Module;
-import com.intellij.openapi.module.ModuleComponent;
 import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.options.ConfigurationException;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.mevenide.context.DefaultQueryContext;
-import org.mevenide.context.IQueryContext;
-import org.mevenide.environment.ILocationFinder;
-import org.mevenide.goals.grabber.DefaultGoalsGrabber;
-import org.mevenide.goals.grabber.IGoalsGrabber;
-import org.mevenide.idea.Res;
+import org.mevenide.idea.module.ui.ModuleSettingsPanel;
+import org.mevenide.idea.support.AbstractModuleComponent;
 import org.mevenide.idea.util.ui.UIUtils;
 import org.mevenide.idea.util.ui.images.Icons;
-import org.mevenide.idea.util.goals.grabber.CustomGoalsGrabber;
 
 import javax.swing.*;
-import java.io.File;
-import java.io.FileNotFoundException;
+import java.util.Arrays;
+import java.util.Collection;
 
 /**
  * A module component that handles user interface for the module. Acquires data
@@ -43,27 +35,12 @@ import java.io.FileNotFoundException;
  *
  * @author Arik
  */
-public class ModuleSettingsConfigurable implements ModuleComponent,
-                                                   Configurable {
-    /**
-     * Logging.
-     */
-    private static final Log LOG = LogFactory.getLog(ModuleSettingsConfigurable.class);
-
-    /**
-     * Resources.
-     */
-    private static final Res RES = Res.getInstance(ModuleSettingsConfigurable.class);
-
-    /**
-     * The module this configurable manages.
-     */
-    private final Module module;
+public class ModuleSettingsConfigurable extends AbstractModuleComponent implements Configurable {
 
     /**
      * The user interface component.
      */
-    private final ModuleSettingsPanel ui = new ModuleSettingsPanel();
+    private final ModuleSettingsPanel ui;
 
     /**
      * Creates an instance that manages the given module.
@@ -71,11 +48,8 @@ public class ModuleSettingsConfigurable implements ModuleComponent,
      * @param pModule the module
      */
     public ModuleSettingsConfigurable(final Module pModule) {
-        module = pModule;
-    }
-
-    public String getComponentName() {
-        return ModuleSettingsConfigurable.class.getName();
+        super(pModule);
+        ui = new ModuleSettingsPanel(module);
     }
 
     public String getDisplayName() {
@@ -90,25 +64,12 @@ public class ModuleSettingsConfigurable implements ModuleComponent,
         return Icons.MAVEN;
     }
 
-    public void initComponent() {
-    }
-
-    public void projectOpened() {
-    }
-
-    public void moduleAdded() {
-    }
-
     public void apply() throws ConfigurationException {
-        try {
-            final ModuleSettings moduleSettings = ModuleSettings.getInstance(module);
-            moduleSettings.setPomFile(ui.getPomFile());
-            moduleSettings.setFavoriteGoals(ui.getFavoriteGoals());
-        }
-        catch (FileNotFoundException e) {
-            final ConfigurationException confEx = new ConfigurationException(e.getMessage(), UIUtils.ERROR_TITLE);
-            throw (ConfigurationException) confEx.initCause(e);
-        }
+        final ModuleSettings moduleSettings = ModuleSettings.getInstance(module);
+        final Collection<String> selectedGoals = ui.getSelectedGoals();
+        final int goalCount = selectedGoals.size();
+        final String[] goals = selectedGoals.toArray(new String[goalCount]);
+        moduleSettings.setFavoriteGoals(goals);
     }
 
     public JComponent createComponent() {
@@ -119,64 +80,27 @@ public class ModuleSettingsConfigurable implements ModuleComponent,
     }
 
     public boolean isModified() {
-        return isPomFileModified() || areFavoriteGoalsModified();
-    }
+        final ModuleSettings settings = ModuleSettings.getInstance(module);
+        final String[] moduleGoalsArr = settings.getFavoriteGoals();
+        final Collection<String> moduleGoals = Arrays.asList(moduleGoalsArr);
 
-    protected boolean areFavoriteGoalsModified() {
-        final ModuleSettings moduleSettings = ModuleSettings.getInstance(module);
-        final IGoalsGrabber currentFavorites = moduleSettings.getFavoriteGoals();
-        final IGoalsGrabber favorites = ui.getFavoriteGoals();
+        final Collection<String> uiGoals = ui.getSelectedGoals();
 
-        return !currentFavorites.equals(favorites);
-    }
-
-    protected boolean isPomFileModified() {
-        final ModuleSettings moduleSettings = ModuleSettings.getInstance(module);
-
-        final File selectedPomFile = ui.getPomFile();
-        final File pomFile = moduleSettings.getPomFile();
-
-        if (selectedPomFile == pomFile)
-            return false;
-
-        if (selectedPomFile == null || pomFile == null)
-            return true;
-
-        return !selectedPomFile.equals(pomFile);
+        return !uiGoals.equals(moduleGoals);
     }
 
     public void reset() {
-        IGoalsGrabber grabber;
+        try {
+            ui.refreshGoals();
 
-        final ModuleSettings moduleSettings = ModuleSettings.getInstance(module);
-        final File pomFile = moduleSettings.getPomFile();
-
-        if(pomFile == null) {
-            grabber = new CustomGoalsGrabber("Goals");
+            final ModuleSettings settings = ModuleSettings.getInstance(module);
+            final String[] moduleGoalsArr = settings.getFavoriteGoals();
+            final Collection<String> moduleGoals = Arrays.asList(moduleGoalsArr);
+            ui.setSelectedGoals(moduleGoals);
         }
-        else {
-            final File pomDir = pomFile.getParentFile();
-            final IQueryContext queryContext = new DefaultQueryContext(pomDir);
-            final ILocationFinder locationFinder = new ModuleLocationFinder(queryContext,
-                                                                            module);
-            try {
-                grabber = new DefaultGoalsGrabber(locationFinder);
-            }
-            catch (Exception e) {
-                grabber = new CustomGoalsGrabber("Goals");
-                UIUtils.showError(module, "Error grabbing global goals.", e);
-                LOG.error(e.getMessage(), e);
-            }
+        catch (Exception e) {
+            UIUtils.showError(module, "Error grabbing global goals.", e);
+            LOG.error(e.getMessage(), e);
         }
-
-        ui.setMavenGoals(grabber);
-        ui.setFavoriteGoals(moduleSettings.getFavoriteGoals());
-        ui.setPomFile(moduleSettings.getPomFile());
-    }
-
-    public void projectClosed() {
-    }
-
-    public void disposeComponent() {
     }
 }

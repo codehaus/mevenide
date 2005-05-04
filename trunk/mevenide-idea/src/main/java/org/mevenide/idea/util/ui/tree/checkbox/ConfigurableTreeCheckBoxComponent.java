@@ -14,20 +14,17 @@
  *  limitations under the License.
  * =========================================================================
  */
-package org.mevenide.idea.module;
+package org.mevenide.idea.util.ui.tree.checkbox;
 
-import java.util.EventObject;
+import org.mevenide.idea.util.ui.tree.ConfigurableTreeComponent;
+
+import javax.swing.*;
 
 /**
  * @author Arik
  */
-public class ModuleFavoriteGoalsChangedEvent extends EventObject {
+public interface ConfigurableTreeCheckBoxComponent extends ConfigurableTreeComponent {
+    JCheckBox getCheckBox();
 
-    public ModuleFavoriteGoalsChangedEvent(final ModuleSettings pSource) {
-        super(pSource);
-    }
-
-    @Override public ModuleSettings getSource() {
-        return (ModuleSettings) super.getSource();
-    }
+    JLabel getLabel();
 }
