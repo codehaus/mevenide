@@ -20,15 +20,9 @@ import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.ModuleListener;
 import com.intellij.openapi.project.Project;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.mevenide.goals.grabber.DefaultGoalsGrabber;
 import org.mevenide.goals.grabber.IGoalsGrabber;
-import org.mevenide.goals.grabber.ProjectGoalsGrabber;
-import org.mevenide.idea.module.ModuleLocationFinder;
 import org.mevenide.idea.module.ModuleSettings;
 import org.mevenide.idea.util.goals.GoalsHelper;
-import org.mevenide.idea.util.goals.grabber.FilteredGoalsGrabber;
 import org.mevenide.idea.util.ui.tree.AbstractTreeModel;
 import org.mevenide.idea.util.ui.tree.GoalTreeNode;
 import org.mevenide.idea.util.ui.tree.ModuleTreeNode;
@@ -39,17 +33,12 @@ import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreeNode;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.File;
 import java.util.List;
 
 /**
  * @author Arik
  */
 public class GoalsToolWindowTreeModel extends AbstractTreeModel implements ModuleListener, PropertyChangeListener {
-    /**
-     * Logging.
-     */
-    private static final Log LOG = LogFactory.getLog(GoalsToolWindowTreeModel.class);
 
     /**
      * Creates an instance.
@@ -135,7 +124,7 @@ public class GoalsToolWindowTreeModel extends AbstractTreeModel implements Modul
             return;
 
         final Module module = pModuleNode.getModule();
-        final ModuleSettings moduleSettings = ModuleSettings.getInstance(module);
+        final ModuleSettings settings = ModuleSettings.getInstance(module);
 
         //
         //clear existing children
@@ -143,48 +132,18 @@ public class GoalsToolWindowTreeModel extends AbstractTreeModel implements Modul
         pModuleNode.removeAllChildren();
 
         //
-        //add module-specific goals (e.g. maven.xml)
+        //add project-specific goals (e.g. maven.xml)
         //
-        final File pomFile = moduleSettings.getPomFile();
-        if (pomFile != null) {
+        final IGoalsGrabber projectGoalsGrabber = settings.getProjectGoalsGrabber();
+        final MutableTreeNode projectGoalsNode = createGoalsGrabberNode(projectGoalsGrabber);
+        pModuleNode.insert(projectGoalsNode, pModuleNode.getChildCount());
 
-            //
-            //create the project-specific goals grabber
-            //
-            final File mavenXmlFile = new File(pomFile.getParentFile(), "maven.xml");
-            if (mavenXmlFile.isFile()) {
-                try {
-                    final ProjectGoalsGrabber projectGrabber = new ProjectGoalsGrabber();
-                    projectGrabber.setMavenXmlFile(mavenXmlFile.getAbsolutePath());
-                    projectGrabber.refresh();
-                    pModuleNode.insert(createGoalsGrabberNode(projectGrabber),
-                                       pModuleNode.getChildCount());
-                }
-                catch (Exception e) {
-                    pModuleNode.insert(new DefaultMutableTreeNode(e.getMessage()),
-                                       pModuleNode.getChildCount());
-                    LOG.error(e.getMessage(), e);
-                }
-            }
-
-            //
-            //add the favorites goals grabber. This is done by creating the
-            //global goals grabber, and applying a filter to it
-            //
-            try {
-                final ModuleLocationFinder finder = new ModuleLocationFinder(module);
-                final DefaultGoalsGrabber globalGoals = new DefaultGoalsGrabber(finder);
-                final IGoalsGrabber filter = new FilteredGoalsGrabber(
-                        "Favorites",
-                        globalGoals,
-                        moduleSettings.getFavoriteGoals());
-                pModuleNode.insert(createGoalsGrabberNode(filter),
-                                   pModuleNode.getChildCount());
-            }
-            catch (Exception e) {
-                LOG.error(e.getMessage(), e);
-            }
-        }
+        //
+        //add favorite goals
+        //
+        final IGoalsGrabber favoriteGoalsGrabber = settings.getFavoriteGoalsGrabber();
+        final MutableTreeNode favoriteGoalsNode = createGoalsGrabberNode(favoriteGoalsGrabber);
+        pModuleNode.insert(favoriteGoalsNode, pModuleNode.getChildCount());
 
         //
         //notify model listeners that nodes changed, if requested to

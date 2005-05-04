@@ -21,13 +21,21 @@ import com.intellij.openapi.util.InvalidDataException;
 import com.intellij.openapi.util.JDOMExternalizable;
 import com.intellij.openapi.util.JDOMExternalizableStringList;
 import com.intellij.openapi.util.WriteExternalException;
-import com.intellij.openapi.vfs.*;
+import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.openapi.vfs.VirtualFileAdapter;
+import com.intellij.openapi.vfs.VirtualFileEvent;
+import com.intellij.openapi.vfs.VirtualFileMoveEvent;
 import com.intellij.util.containers.HashSet;
 import org.jdom.Element;
 import org.mevenide.context.DefaultQueryContext;
 import org.mevenide.context.IQueryContext;
 import org.mevenide.context.IQueryErrorCallback;
+import org.mevenide.goals.grabber.DefaultGoalsGrabber;
+import org.mevenide.goals.grabber.IGoalsGrabber;
+import org.mevenide.goals.grabber.ProjectGoalsGrabber;
 import org.mevenide.idea.support.AbstractModuleComponent;
+import org.mevenide.idea.util.goals.grabber.CustomGoalsGrabber;
+import org.mevenide.idea.util.goals.grabber.FilteredGoalsGrabber;
 import org.mevenide.idea.util.ui.UIUtils;
 
 import java.io.File;
@@ -53,6 +61,9 @@ public class ModuleSettings extends AbstractModuleComponent implements JDOMExter
      * context if maven files change in the module directory.
      */
     private final FSListener fileSystemListener = new FSListener();
+    private IGoalsGrabber projectGoalsGrabber;
+    private IGoalsGrabber globalGoalsGrabber;
+    private IGoalsGrabber favoriteGoalsGrabber;
 
     /**
      * Creates a module settings manager for the specified module.
@@ -85,7 +96,7 @@ public class ModuleSettings extends AbstractModuleComponent implements JDOMExter
      * <p>Registers a file system listener to be notified if maven files change
      * in the module directory.</p>
      */
-    public void initComponent() {
+    public void moduleAdded() {
         module.getModuleFile().getFileSystem().addVirtualFileListener(fileSystemListener);
         refreshQueryContext();
     }
@@ -125,7 +136,57 @@ public class ModuleSettings extends AbstractModuleComponent implements JDOMExter
             final File moduleDirFile = new File(moduleDir.getPath());
             queryContext = new DefaultQueryContext(moduleDirFile,
                                                    new UIQueryErrorCallback());
+
+            //
+            //create the project-specific goals grabber
+            //
+            createProjectGoalsGrabber();
+
+            //
+            //create the global goals grabber
+            //
+            createGlobalGoalsGrabber();
+
+            //
+            //create the favorite goals grabber
+            //
+            createFavoriteGoalsGrabber();
         }
+    }
+
+    private void createGlobalGoalsGrabber() {
+        try {
+            final ModuleLocationFinder finder = new ModuleLocationFinder(module);
+            globalGoalsGrabber = new DefaultGoalsGrabber(finder);
+        }
+        catch (Exception e) {
+            globalGoalsGrabber = new CustomGoalsGrabber("Maven");
+            LOG.error(e.getMessage(), e);
+        }
+    }
+
+    private void createProjectGoalsGrabber() {
+        final File pomFile = getPomFile();
+        if(pomFile != null) {
+            final File mavenXmlFile = new File(pomFile.getParentFile(), "maven.xml");
+            try {
+                final ProjectGoalsGrabber grabber = new ProjectGoalsGrabber();
+                grabber.setMavenXmlFile(mavenXmlFile.getAbsolutePath());
+                grabber.refresh();
+                projectGoalsGrabber = grabber;
+            }
+            catch (Exception e) {
+                projectGoalsGrabber = new CustomGoalsGrabber("Project");
+                LOG.error(e.getMessage(), e);
+            }
+        }
+    }
+
+    private void createFavoriteGoalsGrabber() {
+        favoriteGoalsGrabber = new FilteredGoalsGrabber(
+                "Favorites",
+                globalGoalsGrabber,
+                getFavoriteGoals());
     }
 
     /**
@@ -174,6 +235,18 @@ public class ModuleSettings extends AbstractModuleComponent implements JDOMExter
 
             changeSupport.firePropertyChange("favoriteGoals", oldGoals, getFavoriteGoals());
         }
+    }
+
+    public IGoalsGrabber getFavoriteGoalsGrabber() {
+        return favoriteGoalsGrabber;
+    }
+
+    public IGoalsGrabber getGlobalGoalsGrabber() {
+        return globalGoalsGrabber;
+    }
+
+    public IGoalsGrabber getProjectGoalsGrabber() {
+        return projectGoalsGrabber;
     }
 
     public void readExternal(final Element pElement) throws InvalidDataException {

@@ -18,7 +18,6 @@ package org.mevenide.idea.module;
 
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.projectRoots.ProjectJdk;
-import org.mevenide.context.IQueryContext;
 import org.mevenide.environment.LocationFinderAggregator;
 import org.mevenide.idea.global.MavenManager;
 
@@ -34,12 +33,11 @@ public class ModuleLocationFinder extends LocationFinderAggregator {
     private final Module module;
 
     /**
-         * Creates an instance using the given query context and module. The given module will be used to locate
-         * the appropriate Java home. The Maven home will be taken from the settings defined by the user.
-         *
-         * @param queryContext the query context to use
-         * @param pModule
-         */
+     * Creates an instance using the given module. The given module will be used to locate
+     * the appropriate Java home. The Maven home will be taken from the settings defined by the user.
+     *
+     * @param pModule the module to use
+     */
     public ModuleLocationFinder(final Module pModule) {
         super(ModuleSettings.getInstance(pModule).getQueryContext());
         module = pModule;
