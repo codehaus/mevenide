@@ -136,14 +136,16 @@ public class GoalsToolWindowTreeModel extends AbstractTreeModel implements Modul
         //
         final IGoalsGrabber projectGoalsGrabber = settings.getProjectGoalsGrabber();
         final MutableTreeNode projectGoalsNode = createGoalsGrabberNode(projectGoalsGrabber);
-        pModuleNode.insert(projectGoalsNode, pModuleNode.getChildCount());
+        if(projectGoalsNode != null)
+            pModuleNode.insert(projectGoalsNode, pModuleNode.getChildCount());
 
         //
         //add favorite goals
         //
         final IGoalsGrabber favoriteGoalsGrabber = settings.getFavoriteGoalsGrabber();
         final MutableTreeNode favoriteGoalsNode = createGoalsGrabberNode(favoriteGoalsGrabber);
-        pModuleNode.insert(favoriteGoalsNode, pModuleNode.getChildCount());
+        if (favoriteGoalsNode != null)
+            pModuleNode.insert(favoriteGoalsNode, pModuleNode.getChildCount());
 
         //
         //notify model listeners that nodes changed, if requested to
@@ -161,6 +163,9 @@ public class GoalsToolWindowTreeModel extends AbstractTreeModel implements Modul
      * @return a mutable tree node
      */
     protected MutableTreeNode createGoalsGrabberNode(final IGoalsGrabber pGoalsGrabber) {
+        if(pGoalsGrabber == null)
+            return null;
+
         final MutableTreeNode grabberNode = new DefaultMutableTreeNode(pGoalsGrabber.getName());
         final String[] plugins = pGoalsGrabber.getPlugins();
         for (final String plugin : plugins) {
