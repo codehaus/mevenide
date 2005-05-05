@@ -3,6 +3,10 @@
     <extend>${basedir}/../mevenide-parent/project.xml</extend>
     <artifactId>mevenide-netbeans-j2ee</artifactId>
     <currentVersion>1.0</currentVersion>
+    <inceptionYear>2005</inceptionYear>
+    <description>The module provides J2EE related functionality to the Maven project type.</description>
+    <shortDescription>J2EE support for Maven project type.</shortDescription>
+    <url>http://mevenide.codehaus.org/mevenide-netbeans-project</url>
     <name>Mevenide J2EE support</name>
     <package>org.mevenide.netbeans.j2ee</package>
     <dependencies>
