@@ -70,7 +70,6 @@ class LocationComboBox extends JButton {
     
     public void setInitialItem(int location) {
         LocationWrapper selected = findWrapper(location);
-        System.err.println("selected fro location=" + location +"   is="+ selected);
         setSelectedItem(selected);
     }
     
@@ -96,16 +95,18 @@ class LocationComboBox extends JButton {
     
     public void invokePopupAction(LocationWrapper wrap) {
         setSelectedItem(wrap);
+        if (observer != null) {
+            observer.locationChanged();
+        }
     }
     
     public void invokePopupAction(int location) {
         LocationWrapper wrap = findWrapper(location);
         if (wrap != null) {
             invokePopupAction(wrap);
-            if (observer != null) {
-                observer.locationChanged();
-            }
-        } 
+        } else {
+            System.out.println("how come, no wrapper for " + location);
+        }
     }
     
     private LocationWrapper findWrapper(int location) {
