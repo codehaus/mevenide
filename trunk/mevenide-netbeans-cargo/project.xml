@@ -4,6 +4,11 @@
     <artifactId>mevenide-netbeans-cargo</artifactId>
     <!-- make the version equal the cargo's version to have a clear link -->
     <currentVersion>0.6-SNAPSHOT</currentVersion>
+    <inceptionYear>2005</inceptionYear>
+    <description>This module integrates Cargo into the IDE.
+Cargo is a thin wrapper around existing J2EE containers. 
+It provides different APIs to easily manipulate containers.</description>
+    <url>http://mevenide.codehaus.org/mevenide-netbeans-project</url>
     <name>Netbeans Cargo integration</name>
     <shortDescription>Integration Cargo (http://cargo.codehaus.org).</shortDescription>
     <package>org.mevenide.netbeans.cargo</package>
