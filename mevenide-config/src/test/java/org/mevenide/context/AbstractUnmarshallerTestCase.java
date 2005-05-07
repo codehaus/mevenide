@@ -55,7 +55,7 @@ public abstract class AbstractUnmarshallerTestCase extends TestCase {
 		for (int i = 0; i < deps.size(); i++) {
 			Dependency d = (Dependency) deps.get(i);
 			if ( "maven".equals(d.getGroupId()) && "maven".equals(d.getArtifactId() ) ) {
-				assertEquals(2, d.getProperties().size());
+				assertEquals(3, d.getProperties().size());
 				assertEquals("true", d.getProperty("test.prop"));
 				assertEquals("it worked", d.getProperty("anotherProp"));
 			}

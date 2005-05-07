@@ -27,6 +27,7 @@
       <properties>
 	      <test.prop>true</test.prop>
 	      <anotherProp>it worked</anotherProp>
+          <emptyProp/>
       </properties>
       <url>http://maven.org/</url>
     </dependency>
