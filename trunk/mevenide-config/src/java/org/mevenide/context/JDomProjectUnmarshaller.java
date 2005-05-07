@@ -296,7 +296,7 @@ public class JDomProjectUnmarshaller implements IProjectUnmarshaller {
                     dependency.setUrl(dependencyElement.getChildText("url"));
                     List properties = parseProperties(dependencyElement);
                     if ( properties != null && properties.size() > 0 ) {
-	                    dependency.setProperties(parseProperties(dependencyElement));
+	                    dependency.setProperties(properties);
 	                    populateResolvedProperties(dependency, properties);
 	                } 	
                     dependencies.add(dependency);
@@ -391,7 +391,10 @@ public class JDomProjectUnmarshaller implements IProjectUnmarshaller {
                 properties = new ArrayList();
                 for (int i = 0; i < propertiesElements.size(); i++) {
                     Element propertyElement = (Element) propertiesElements.get(i);
-                    String property = propertyElement.getName() + ":" + propertyElement.getText();
+                    String property = propertyElement.getName() + ":" +
+                            (propertyElement.getText() == null || propertyElement.getText().length() == 0 
+                                  ? " " //HACK it seems empty string won't do..mkleint 
+                                  : propertyElement.getText());
                     properties.add(property);
                 }                
             }
