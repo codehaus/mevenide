@@ -38,6 +38,7 @@ public class GenerateCodePanelVisual extends JPanel {
         
         setName("Generate Code snippets");
         putClientProperty("NewProjectWizard_Title", "Generate Code");
+        cbOutput.setVisible(false);
     }
     
     boolean valid(WizardDescriptor wizardDescriptor) {
@@ -85,24 +86,29 @@ public class GenerateCodePanelVisual extends JPanel {
         setLayout(new java.awt.GridBagLayout());
 
         cbProjectTemplate.setText("Generate New Project Template");
-        add(cbProjectTemplate, new java.awt.GridBagConstraints());
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        add(cbProjectTemplate, gridBagConstraints);
 
         cbOutput.setText("Generate Output Parsing/Editor Annotation suppoort");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         add(cbOutput, gridBagConstraints);
 
         cbGrammar.setText("Generate Jelly TagLibrary completion");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         add(cbGrammar, gridBagConstraints);
 
         cbPluginProps.setText("Generate Maven Plugin Properties Definition");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 3;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         add(cbPluginProps, gridBagConstraints);
 
     }
