@@ -51,7 +51,6 @@ public class J2eeLookupProvider implements AdditionalMavenLookupProvider {
         private boolean isAdded2;
         public Provider(MavenProject proj, InstanceContent cont) {
             super(cont);
-            System.out.println("creating j2ee provider...");
             project = proj;
             content = cont;
             content.add(new MavenEarEjbProvider());

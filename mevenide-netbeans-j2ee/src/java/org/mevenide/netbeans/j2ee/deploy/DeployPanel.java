@@ -154,16 +154,21 @@ public class DeployPanel extends JPanel {
         lblUrl = new javax.swing.JLabel();
         txtUrl = new javax.swing.JTextField();
         lblWebpage = new javax.swing.JLabel();
+        lblInfo = new javax.swing.JLabel();
 
         setLayout(new java.awt.GridBagLayout());
 
         lblContainer.setText("Select Container :");
         gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
         add(lblContainer, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
         gridBagConstraints.gridwidth = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
@@ -236,6 +241,8 @@ public class DeployPanel extends JPanel {
 
         btnAddContainer.setText("Add Container...");
         gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 3;
+        gridBagConstraints.gridy = 1;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 6);
         add(btnAddContainer, gridBagConstraints);
@@ -266,6 +273,13 @@ public class DeployPanel extends JPanel {
         gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
         add(lblWebpage, gridBagConstraints);
 
+        lblInfo.setText("<html>Maven projects use Cargo APIs (http://cargo.codehaus.org) for deployment. Please refer to Cargo's website for detailed information about supported J2EE containers and features supported for given container. </html>");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridwidth = 4;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        add(lblInfo, gridBagConstraints);
+
     }
     // </editor-fold>//GEN-END:initComponents
 //GEN-FIRST:event_comContainerActionPerformed
@@ -278,6 +292,7 @@ public class DeployPanel extends JPanel {
     private javax.swing.JLabel lblContainer;
     private javax.swing.JLabel lblContext;
     private javax.swing.JLabel lblFile;
+    private javax.swing.JLabel lblInfo;
     private javax.swing.JLabel lblUrl;
     private javax.swing.JLabel lblWebpage;
     private javax.swing.JTextField txtContext;
