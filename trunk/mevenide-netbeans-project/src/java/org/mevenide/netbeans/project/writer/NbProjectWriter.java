@@ -25,8 +25,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import org.jdom.Content;
 import org.jdom.Document;
+import org.jdom.Text;
 import org.jdom.input.SAXBuilder;
+import org.jdom.output.Format;
 import org.mevenide.context.IProjectContext;
 import org.mevenide.netbeans.project.FileUtilities;
 import org.mevenide.netbeans.project.MavenProject;
@@ -273,7 +276,7 @@ public class NbProjectWriter implements FileSystem.AtomicAction {
                 for (int i = 0; i < files.length; i++) {
                     IContentProvider provider = new ChangesContentProvider(new ElementContentProvider(roots[i]),
                                                                            changes, "pom", i);
-                    CarefulProjectMarshaller marshall = new CarefulProjectMarshaller();
+                    CarefulProjectMarshaller marshall = new CarefulProjectMarshaller(figureOutFormat(roots[i]));
                     FileObject fo = FileUtil.toFileObject(files[i]);
                     // read the current stream first..
                     stream = fo.getInputStream();
@@ -297,5 +300,32 @@ public class NbProjectWriter implements FileSystem.AtomicAction {
                 }
             }
         }
+    }
+    
+    private Format  figureOutFormat(org.jdom.Element root) {
+        Format toRet = Format.getPrettyFormat();
+        List content = root.getContent();
+        String lineSep = System.getProperty("line.separator");
+        String indent = "    ";
+        if (content.size() > 2) {
+            Content cont1 = (Content)content.get(0);
+            Content cont2 = (Content)content.get(1);
+            if (cont1 instanceof Text && cont2 instanceof org.jdom.Element) {
+                String line = cont1.getValue();
+                if (line.indexOf("\r\n") > -1) {
+                    lineSep = "\r\n";
+                }
+                int index = line.indexOf(lineSep);
+                if (index > -1 && line.length()  + 1 > index) {
+                    String newLine = line.substring(index + 1);
+                    if (newLine.matches("[ ]{" + newLine.length() + "}")) {
+                        indent = newLine;
+                    }
+                }
+            }
+        }
+        toRet.setIndent(indent);
+        toRet.setLineSeparator(lineSep);
+        return toRet;
     }
 }
