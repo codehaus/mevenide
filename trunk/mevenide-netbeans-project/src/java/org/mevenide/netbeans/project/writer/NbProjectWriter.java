@@ -43,23 +43,32 @@ import org.mevenide.properties.IPropertyLocator;
 import org.mevenide.properties.KeyValuePair;
 import org.mevenide.properties.PropertyModel;
 import org.mevenide.properties.PropertyModelFactory;
+import org.openide.ErrorManager;
 import org.openide.filesystems.FileLock;
 import org.openide.filesystems.FileObject;
+import org.openide.filesystems.FileSystem;
 import org.openide.filesystems.FileUtil;
 import org.openide.util.UserQuestionException;
 
 /**
  * utility class to write project (POM + properties files).
- * @author  Milos Kleint (ca206216@tiscali.cz)
+ * @author  Milos Kleint (mkleint@codehaus.org)
  */
-public class NbProjectWriter {
+public class NbProjectWriter implements FileSystem.AtomicAction {
     private MavenProject project;
+    private List changes;
     /** Creates a new instance of NbProjectWriter */
     public NbProjectWriter(MavenProject proj) {
         project = proj;
     }
 
     public void applyChanges(List changes) throws Exception {
+        FileSystem fs = project.getProjectDirectory().getFileSystem();
+        this.changes = changes;
+        fs.runAtomicAction(this);
+    }
+    
+    public void run () throws IOException {
         HashMap locFileToModelMap = new HashMap();
         HashMap locFileToLockMap = new HashMap();
         Iterator it = changes.iterator();
@@ -123,22 +132,34 @@ public class NbProjectWriter {
                 FileObject fo = FileUtil.toFileObject(file);
                 model.store(fo.getOutputStream(lock));
             }
+        } catch (IOException exc) {
+            throw exc;
+        } catch (Exception exc2) {
+            IOException newone = new IOException("Error while writing project files.");
+            ErrorManager.getDefault().annotate(newone, exc2);
+            throw newone;
         } finally {
             // release the locks
             Iterator locIt = locFileToLockMap.values().iterator();
             while (locIt.hasNext()) {
                 FileLock lock = (FileLock)locIt.next();
-                if (lock.isValid()) {
-                    lock.releaseLock();
-                }
+                lock.releaseLock();
             }
             if (checkDependencies) {
-                DependencyUpdater.checkOpenedProjects(oldArtifact, oldGroup, oldVersion, newArtifact, newGroup, newVersion);
+                try {
+                    DependencyUpdater.checkOpenedProjects(oldArtifact, oldGroup, oldVersion, newArtifact, newGroup, newVersion);
+                } catch (IOException io) {
+                    throw io;
+                } catch (Exception exc2) {
+                    IOException newone = new IOException("Error while writing project files.");
+                    ErrorManager.getDefault().annotate(newone, exc2);
+                    throw newone;
+                }
             }
         }
     }
     
-    private PropertyModel createPropertyModel(File location, HashMap locks, HashMap models) throws Exception {
+    private PropertyModel createPropertyModel(File location, HashMap locks, HashMap models) throws IOException {
         FileObject fo = null;
         if (!location.exists()) {
             File parent = location.getParentFile();
@@ -189,7 +210,7 @@ public class NbProjectWriter {
         return -1;
     }
     
-    private void processPropertyChange(MavenPropertyChange change, HashMap locFileToLockMap, HashMap locFileToModelMap) throws Exception {
+    private void processPropertyChange(MavenPropertyChange change, HashMap locFileToLockMap, HashMap locFileToModelMap) throws IOException {
         if      (change.getOldLocation() != IPropertyLocator.LOCATION_DEFAULTS &&
                  change.getOldLocation() != IPropertyLocator.LOCATION_NOT_DEFINED) {
             File oldLoc = FileUtilities.locationToFile(change.getOldLocation(), project);
