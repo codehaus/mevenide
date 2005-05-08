@@ -302,7 +302,7 @@ public class NbProjectWriter implements FileSystem.AtomicAction {
         }
     }
     
-    private Format  figureOutFormat(org.jdom.Element root) {
+    static Format figureOutFormat(org.jdom.Element root) {
         Format toRet = Format.getPrettyFormat();
         List content = root.getContent();
         String lineSep = System.getProperty("line.separator");
@@ -316,8 +316,8 @@ public class NbProjectWriter implements FileSystem.AtomicAction {
                     lineSep = "\r\n";
                 }
                 int index = line.indexOf(lineSep);
-                if (index > -1 && line.length()  + 1 > index) {
-                    String newLine = line.substring(index + 1);
+                if (index > -1 && line.length()  + lineSep.length() > index) {
+                    String newLine = line.substring(index + lineSep.length());
                     if (newLine.matches("[ ]{" + newLine.length() + "}")) {
                         indent = newLine;
                     }
