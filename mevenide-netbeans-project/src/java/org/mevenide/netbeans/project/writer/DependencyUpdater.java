@@ -125,13 +125,14 @@ public final class DependencyUpdater {
                 for (int i = 0; i < files.length; i++) {
                     IContentProvider provider = new ElementContentProvider(roots[i]);
                     provider = DependencyMatcher.replace(replacer, provider);
-                    CarefulProjectMarshaller marshall = new CarefulProjectMarshaller();
+                    CarefulProjectMarshaller marshall = new CarefulProjectMarshaller(NbProjectWriter.figureOutFormat(roots[i]));
                     FileObject fo = FileUtil.toFileObject(files[i]);
                     // read the current stream first..
                     stream = fo.getInputStream();
                     SAXBuilder builder = new SAXBuilder();
                     Document originalDoc = builder.build(stream);
                     stream.close();
+					stream = null;
                     lock = fo.lock();
                     writer = new OutputStreamWriter(fo.getOutputStream(lock));
                     marshall.marshall(writer, provider, originalDoc);
@@ -140,14 +141,14 @@ public final class DependencyUpdater {
                 throw new IOException("Cannot obtain lock. User interaction required.");
             }
             finally {
-                if (lock != null) {
-                    lock.releaseLock();
+                if (stream != null) {
+                    stream.close();
                 }
                 if (writer != null) {
                     writer.close();
                 }
-                if (stream != null) {
-                    stream.close();
+                if (lock != null) {
+                    lock.releaseLock();
                 }
             }
         }
