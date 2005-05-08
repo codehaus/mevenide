@@ -53,13 +53,16 @@ public class CarefulProjectMarshaller implements IProjectMarshaller {
     private JDOMFactory factory;
     private SAXBuilder builder;
 	
-    public CarefulProjectMarshaller() throws Exception {
+    public CarefulProjectMarshaller() /*throws Exception */{
+        this(Format.getPrettyFormat()
+                .setIndent("    ")
+                .setLineSeparator(System.getProperty("line.separator")));
+    }
+    
+    public CarefulProjectMarshaller(Format format) {
         builder = new SAXBuilder();
         factory = new DefaultJDOMFactory();
         outputter = new XMLOutputter();
-        Format format = Format.getPrettyFormat();
-        format.setIndent("    ");
-        format.setLineSeparator(System.getProperty("line.separator"));
         outputter.setFormat(format);
     }
 
