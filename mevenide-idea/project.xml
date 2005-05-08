@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <project>
   <extend>../mevenide-parent/project.xml</extend>
   <pomVersion>3</pomVersion>
@@ -83,7 +82,7 @@
     <dependency>
       <groupId>mevenide</groupId>
       <artifactId>goals-grabber</artifactId>
-      <version>0.8</version>
+      <version>0.9-SNAPSHOT</version>
       <properties>
         <idea.plugin.bundle>true</idea.plugin.bundle>
         <idea.plugin.target.path>resources</idea.plugin.target.path>
@@ -92,7 +91,7 @@
     <dependency>
       <groupId>mevenide</groupId>
       <artifactId>mevenide-config</artifactId>
-      <version>0.7</version>
+      <version>0.8-SNAPSHOT</version>
       <properties>
         <idea.plugin.bundle>true</idea.plugin.bundle>
         <idea.plugin.target.path>resources</idea.plugin.target.path>
@@ -101,7 +100,7 @@
     <dependency>
       <groupId>mevenide</groupId>
       <artifactId>mevenide-core</artifactId>
-      <version>0.7</version>
+      <version>0.8-SNAPSHOT</version>
       <properties>
         <idea.plugin.bundle>true</idea.plugin.bundle>
         <idea.plugin.target.path>resources</idea.plugin.target.path>
