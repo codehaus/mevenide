@@ -140,7 +140,7 @@ public final class DependencyUpdater {
                 throw new IOException("Cannot obtain lock. User interaction required.");
             }
             finally {
-                if (lock != null && lock.isValid()) {
+                if (lock != null) {
                     lock.releaseLock();
                 }
                 if (writer != null) {
@@ -163,9 +163,7 @@ public final class DependencyUpdater {
         toReturn.setLayout(new java.awt.GridBagLayout());
 
         jLabel1.setText("<html><p>These projects contain the edited project as dependency.</p><p>\nYou can update their dependency definitions automatically.</p></html>");
-        jLabel1.setMaximumSize(new java.awt.Dimension(743, 35));
-        jLabel1.setMinimumSize(new java.awt.Dimension(743, 35));
-        jLabel1.setPreferredSize(new java.awt.Dimension(743, 35));
+        jLabel1.setPreferredSize(new java.awt.Dimension(500, 35));
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
