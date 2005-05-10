@@ -67,20 +67,6 @@ public class PomGeneralInfoPanel extends AbstractPomLayerPanel {
         initComponents();
         layoutComponents();
         initBindings();
-
-/*      pomVersionField.setSelectedItem(pom.getPomVersion());
-        extendField.setText(pom.getExtend());
-        nameField.setText(pom.getName());
-        versionField.setText(pom.getCurrentVersion());
-        artifactIdField.setText(pom.getArtifactId());
-        groupIdField.setText(pom.getGroupId());
-        inceptionYearField.setText(pom.getInceptionYear());
-        urlField.setText(pom.getUrl());
-        logoUrlField.setText(pom.getLogo());
-        shortDescField.setText(pom.getShortDescription());
-        descField.setText(pom.getDescription());
-        packageField.setText(pom.getPackage());
-        issueTrackingUrlField.setText(pom.getIssueTrackingUrl()); */
     }
 
     private void initComponents() {

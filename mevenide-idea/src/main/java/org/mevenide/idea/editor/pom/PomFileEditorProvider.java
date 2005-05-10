@@ -16,7 +16,6 @@
  */
 package org.mevenide.idea.editor.pom;
 
-import com.intellij.openapi.components.ApplicationComponent;
 import com.intellij.openapi.fileEditor.FileEditor;
 import com.intellij.openapi.fileEditor.FileEditorPolicy;
 import com.intellij.openapi.fileEditor.FileEditorProvider;
@@ -26,16 +25,15 @@ import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import org.jdom.Element;
-import org.mevenide.idea.Res;
 import org.mevenide.idea.module.ModuleSettings;
+import org.mevenide.idea.support.AbstractApplicationComponent;
 
 import java.io.File;
 
 /**
  * @author Arik
  */
-public class PomFileEditorProvider implements FileEditorProvider, ApplicationComponent {
-    private static final Res RES = Res.getInstance(PomFileEditorProvider.class);
+public class PomFileEditorProvider extends AbstractApplicationComponent implements FileEditorProvider {
 
     public boolean accept(final Project pProject, final VirtualFile pFile) {
         final String extension = pFile.getExtension();
@@ -82,15 +80,5 @@ public class PomFileEditorProvider implements FileEditorProvider, ApplicationCom
     public void writeState(final FileEditorState pState,
                            final Project pProject,
                            final Element pTargetElement) {
-    }
-
-    public void disposeComponent() {
-    }
-
-    public String getComponentName() {
-        return PomFileEditorProvider.class.getName();
-    }
-
-    public void initComponent() {
     }
 }
