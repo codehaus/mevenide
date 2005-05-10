@@ -11,7 +11,8 @@
 
         <section name="Overview">
             <p>
-                The Mevenide IDEA integration project aims to integrate
+                Welcome to the MevenIDE IDEA Integration project! This project
+                aims to integrate
                 <a href="http://maven.apache.org">Maven</a> in every possible way into
                 <a href="http://www.jetbrains.com">JetBrain</a>'s IntelliJ IDEA integrated
                 development environment (IDE).
@@ -83,6 +84,15 @@
                     an Ant task for it, but does not activate it.
                 </p>
             </subsection>
+        </section>
+
+        <section name="Availability">
+            <p>
+                Currently, no version has been released yet. The 0.1 release is well
+                underway and should be released in the coming weeks. Until then, you
+                are more than welcome to try the snapshot build located <a href="http://dist.codehaus.org/mevenide/distributions/mevenide-idea-0.1-SNAPSHOT.zip">here</a>. To
+                install it - simply unzip it into your IDEA <i>plugins</i> directory.
+            </p>
         </section>
 
     </body>
