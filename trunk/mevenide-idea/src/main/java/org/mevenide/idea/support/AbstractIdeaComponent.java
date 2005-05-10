@@ -16,17 +16,18 @@
  */
 package org.mevenide.idea.support;
 
-import org.mevenide.idea.Res;
+import com.intellij.openapi.util.UserDataHolderBase;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.mevenide.idea.Res;
 
-import java.beans.PropertyChangeSupport;
 import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 
 /**
  * @author Arik
  */
-public abstract class AbstractIdeaComponent {
+public abstract class AbstractIdeaComponent extends UserDataHolderBase {
     /**
      * A lock object, which can be used by implementors to synchronize operations.
      * <p>This does not mean that implementors MUST use it - use at your own discretion

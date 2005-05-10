@@ -19,35 +19,28 @@ package org.mevenide.idea.editor.pom;
 import com.intellij.codeHighlighting.BackgroundEditorHighlighter;
 import com.intellij.ide.structureView.StructureViewBuilder;
 import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.command.CommandProcessor;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.fileEditor.*;
-import com.intellij.openapi.util.UserDataHolderBase;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.openapi.command.CommandProcessor;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Project;
 import org.mevenide.context.DefaultQueryContext;
 import org.mevenide.context.IQueryContext;
 import org.mevenide.idea.editor.pom.ui.PomPanel;
+import org.mevenide.idea.support.AbstractIdeaComponent;
 import org.mevenide.idea.util.io.IdeaDocumentWriter;
 import org.mevenide.idea.util.ui.UIUtils;
 import org.mevenide.project.io.DefaultProjectMarshaller;
 
 import javax.swing.*;
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
 import java.io.BufferedWriter;
 import java.io.File;
 
 /**
  * @author Arik
  */
-public class PomFileEditor extends UserDataHolderBase implements FileEditor {
+public class PomFileEditor extends AbstractIdeaComponent implements FileEditor {
     static final String NAME = "POM Editor";
-    private static final Log LOG = LogFactory.getLog(PomFileEditor.class);
-
-    private final PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
 
     private final com.intellij.openapi.project.Project project;
     private final VirtualFile file;
@@ -75,10 +68,6 @@ public class PomFileEditor extends UserDataHolderBase implements FileEditor {
                 flush();
             }
         });
-    }
-
-    public void addPropertyChangeListener(PropertyChangeListener listener) {
-        propertyChangeSupport.addPropertyChangeListener(listener);
     }
 
     public void deselectNotify() {
@@ -159,10 +148,6 @@ public class PomFileEditor extends UserDataHolderBase implements FileEditor {
 
     public boolean isValid() {
         return true;
-    }
-
-    public void removePropertyChangeListener(PropertyChangeListener listener) {
-        propertyChangeSupport.removePropertyChangeListener(listener);
     }
 
     public void selectNotify() {
