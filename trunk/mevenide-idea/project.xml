@@ -147,11 +147,4 @@
             </resource>
         </resources>
     </build>
-    <versions>
-        <version>
-            <id>0.1</id>
-            <name>0.1</name>
-            <tag>RELEASE_0_1</tag>
-        </version>
-    </versions>
 </project>
