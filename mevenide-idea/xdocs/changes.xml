@@ -1,60 +1,68 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <document>
-  <properties>
-    <title>Changes</title>
-    <author email="arikkfir@gmail.com">Arik Kfir</author>
-  </properties>
-  <body>
-    <release version="0.2" date="unreleased" description="">
-        <action dev="arikkfir" type="add">
-            Try to guess Maven home on startup, if not set by the user.
-        </action>
-        <action dev="arikkfir" type="fix">
-            Fixed exception that occured when adding new modules with no POM attached.
-        </action>
-        <action dev="arikkfir" type="add">
-            Added custom icons for goals and plugins in trees.
-        </action>
-    </release>
-    <release version="0.1" date="2005-04-28" description="The initial version. Focuses on integration with Mevenide, and catching up on missing features.">
-      <action dev="arikkfir" type="update">Upgraded plugin to JDK 1.5 - required by IDEA since build 3311.</action>
-      <action dev="arikkfir" type="remove">Removed the GoalsProvider interface in favor of direct use of IGoalsGrabber. This is now possible since the UI elements can interact with mevenide objects (see next jdom issue for details).</action>
-      <action dev="arikkfir" type="update">JetBrains has upgraded the JDOM version they use in the IDE from 0.8 to 1.0, which enables us now to restore the original plugin architecture to a single Maven project and remove the custom class loader implementation since it is no longer needed. Therefor, reintegrated
-        <i>mevenide-idea-main</i>,
-        <i>mevenide-idea-model</i>and
-        <i>mevenide-idea-master</i>back into a single project called
-        <i>mevenide-idea</i>.
-      </action>
-      <action dev="arikkfir" type="add">Automatically update goals tree if either the
-        <i>maven.xml</i>or
-        <i>project.xml</i>files are changed. Synchronization will occur whether the change came from inside the IDE (e.g. the user has edited the files) or from outside the IDE (e.g. opening notepad and manually modifying the files).
-      </action>
-      <action dev="arikkfir" type="add">Showing goal descriptions in Goals tool window/pane.</action>
-      <action dev="arikkfir" type="add">Added a short installation guide.</action>
-      <action dev="arikkfir" type="update">Split project into subprojects:
-        <ul>
-          <li>mevenide-idea-master: a template parent project for the other modules</li>
-          <li>mevenide-idea-main: the main project - provides the UI and plugin wrapper.</li>
-          <li>mevenide-idea-model: interacts with mevenide and exposes project information for the mevenide-idea-main module.</li>
-        </ul>
-      </action>
-      <action dev="arikkfir" type="update">Modified code base to use Mevenide libraries instead of custom code that does the same.</action>
-      <action dev="arikkfir" type="add">Created initial code base of the plugin. Current code supports:
-        <ul>
-          <li>Specifying a POM file on a per-module basis.</li>
-          <li>Specifying "favorite" goals for each module, for easy access.</li>
-          <li>An Ant-like tool window displaying each IDEA module's available goals, as defined in
-            <i>maven.xml</i>.
-          </li>
-          <li>Execution of selected goal(s) in a dedicated execution console, much like the standard
-            <i>Run</i>console of IDEA. Each execution can be stopped, or paused.
-          </li>
-          <li>Specifying a different Maven home than the one defined in your
-            <i>MAVEN_HOME</i>environment variable and PATH.
-          </li>
-        </ul>
-      </action>
-    </release>
-  </body>
+    <properties>
+        <title>Changes</title>
+        <author email="arikkfir@gmail.com">Arik Kfir</author>
+    </properties>
+    <body>
+        <release version="0.1" date="unreleased" description="">
+            <action dev="arikkfir" type="add">
+                Try to guess Maven home on startup, if not set by the user.
+            </action>
+            <action dev="arikkfir" type="fix">
+                Fixed exception that occured when adding new modules with no POM attached.
+            </action>
+            <action dev="arikkfir" type="add">
+                Added custom icons for goals and plugins in trees.
+            </action>
+            <action dev="arikkfir" type="update">Upgraded plugin to JDK 1.5 - required by IDEA since build
+                3311.</action>
+            <action dev="arikkfir" type="remove">Removed the GoalsProvider interface in favor of direct use of
+                IGoalsGrabber. This is now possible since the UI elements can interact with mevenide objects
+                (see next jdom issue for details).</action>
+            <action dev="arikkfir" type="update">JetBrains has upgraded the JDOM version they use in the IDE
+                from 0.8 to 1.0, which enables us now to restore the original plugin architecture to a single
+                Maven project and remove the custom class loader implementation since it is no longer needed.
+                Therefor, reintegrated
+                <i>mevenide-idea-main</i>,
+                <i>mevenide-idea-model</i>and
+                <i>mevenide-idea-master</i>back into a single project called
+                <i>mevenide-idea</i>.
+            </action>
+            <action dev="arikkfir" type="add">Automatically update goals tree if either the
+                <i>maven.xml</i>or
+                <i>project.xml</i>files are changed. Synchronization will occur whether the change came from
+                inside the IDE (e.g. the user has edited the files) or from outside the IDE (e.g. opening
+                notepad and manually modifying the files).
+            </action>
+            <action dev="arikkfir" type="add">Showing goal descriptions in Goals tool window/pane.</action>
+            <action dev="arikkfir" type="add">Added a short installation guide.</action>
+            <action dev="arikkfir" type="update">Split project into subprojects:
+                <ul>
+                    <li>mevenide-idea-master: a template parent project for the other modules</li>
+                    <li>mevenide-idea-main: the main project - provides the UI and plugin wrapper.</li>
+                    <li>mevenide-idea-model: interacts with mevenide and exposes project information for the
+                        mevenide-idea-main module.</li>
+                </ul>
+            </action>
+            <action dev="arikkfir" type="update">Modified code base to use Mevenide libraries instead of
+                custom code that does the same.</action>
+            <action dev="arikkfir" type="add">Created initial code base of the plugin. Current code supports:
+                <ul>
+                    <li>Specifying a POM file on a per-module basis.</li>
+                    <li>Specifying "favorite" goals for each module, for easy access.</li>
+                    <li>An Ant-like tool window displaying each IDEA module's available goals, as defined in
+                        <i>maven.xml</i>.
+                    </li>
+                    <li>Execution of selected goal(s) in a dedicated execution console, much like the standard
+                        <i>Run</i>console of IDEA. Each execution can be stopped, or paused.
+                    </li>
+                    <li>Specifying a different Maven home than the one defined in your
+                        <i>MAVEN_HOME</i>environment variable and PATH.
+                    </li>
+                </ul>
+            </action>
+        </release>
+    </body>
 </document>

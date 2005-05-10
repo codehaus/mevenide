@@ -11,6 +11,11 @@
 
         <section name="Installing the plugin into IntelliJ IDEA">
             <p>
+                <b>NOTE: Installing the Mevenide IDEA integration is not yet possible,
+                as no version has been released yet. Once versions start rolling out,
+                they will also be added to IDEA's plugin repository.</b>
+            </p>
+            <p>
                 Installing Mevenide IDEA is done via the IDEA plugins manager:
                 <ol>
                     <li>Open the <i>Settings</i> window (from the toolbar, or press CTRL+ALT+S)</li>
