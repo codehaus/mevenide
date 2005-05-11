@@ -42,7 +42,12 @@ public class ModuleActionsManager extends AbstractModuleComponent implements Pro
 
     @Override public void moduleAdded() {
         ModuleSettings.getInstance(module).addPropertyChangeListener("queryContext", this);
+        unregisterModuleActions();
         refreshActions();
+    }
+
+    @Override public void projectClosed() {
+        unregisterModuleActions();
     }
 
     public void propertyChange(final PropertyChangeEvent pEvent) {
@@ -52,14 +57,6 @@ public class ModuleActionsManager extends AbstractModuleComponent implements Pro
     }
 
     private void refreshActions() {
-        final ActionManager mgr = ActionManager.getInstance();
-
-        for(AnAction action : registeredActions) {
-            final String id = mgr.getId(action);
-            if(id != null)
-                mgr.unregisterAction(id);
-        }
-
         final ModuleSettings settings = ModuleSettings.getInstance(module);
         if(settings == null)
             return;
@@ -75,10 +72,20 @@ public class ModuleActionsManager extends AbstractModuleComponent implements Pro
         System.arraycopy(favoriteActions, 0, registeredActions, projectActions.length, favoriteActions.length);
     }
 
+    private void unregisterModuleActions() {
+        final ActionManager mgr = ActionManager.getInstance();
+
+        for(AnAction action : registeredActions) {
+            final String id = mgr.getId(action);
+            if(id != null)
+                mgr.unregisterAction(id);
+        }
+    }
+
     private AnAction[] createActionsFromGrabber(final IGoalsGrabber pGrabber) {
         if(pGrabber == null)
             return new AnAction[0];
-        
+
         final ActionManager mgr = ActionManager.getInstance();
         final List<AnAction> actions = new ArrayList<AnAction>(30);
 
