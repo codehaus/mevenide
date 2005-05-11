@@ -128,31 +128,40 @@ public class ModuleSettings extends AbstractModuleComponent implements JDOMExter
     protected void refreshQueryContext() {
         synchronized (LOCK) {
             final IQueryContext oldQueryContext = queryContext;
-
             final VirtualFile moduleDir = getModuleDir();
-            if(moduleDir == null) {
+
+            //
+            //if the module has no pom, nullify the query context and grabbers
+            //
+            if(moduleDir == null || moduleDir.findChild("project.xml") == null) {
                 queryContext = null;
-                return;
+                projectGoalsGrabber = null;
+                globalGoalsGrabber = null;
+                favoriteGoalsGrabber = null;
             }
+            else {
+                //
+                //create the query context using the module's directory
+                //
+                queryContext = new DefaultQueryContext(
+                        new File(moduleDir.getPath()),
+                        new UIQueryErrorCallback());
 
-            final File moduleDirFile = new File(moduleDir.getPath());
-            queryContext = new DefaultQueryContext(moduleDirFile,
-                                                   new UIQueryErrorCallback());
+                //
+                //create the project-specific goals grabber
+                //
+                createProjectGoalsGrabber();
 
-            //
-            //create the project-specific goals grabber
-            //
-            createProjectGoalsGrabber();
+                //
+                //create the global goals grabber
+                //
+                createGlobalGoalsGrabber();
 
-            //
-            //create the global goals grabber
-            //
-            createGlobalGoalsGrabber();
-
-            //
-            //create the favorite goals grabber
-            //
-            createFavoriteGoalsGrabber();
+                //
+                //create the favorite goals grabber
+                //
+                createFavoriteGoalsGrabber();
+            }
 
             //
             //fire a property change event to notify listeners that the context
