@@ -18,6 +18,7 @@ package org.mevenide.idea.execute;
 
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.actionSystem.DataContext;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.execution.filters.Filter;
 import com.intellij.execution.filters.ExceptionFilter;
 import com.intellij.execution.filters.RegexpFilter;
@@ -62,6 +63,11 @@ public final class MavenRunner {
     public static void execute(final Module pModule,
                                final String[] pGoals,
                                final DataContext pContext) {
+        //
+        //always save all modified files before invoking maven
+        //
+        ApplicationManager.getApplication().saveAll();
+
         try {
             //
             //create the process descriptor
