@@ -16,13 +16,10 @@
  */
 package org.mevenide.idea.toolwindows.goals;
 
-import com.intellij.execution.ExecutionException;
 import com.intellij.ide.CommonActionsManager;
+import com.intellij.ide.DataManager;
 import com.intellij.ide.TreeExpander;
-import com.intellij.openapi.actionSystem.ActionManager;
-import com.intellij.openapi.actionSystem.ActionToolbar;
-import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.actionSystem.DefaultActionGroup;
+import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.module.ModuleType;
@@ -35,27 +32,22 @@ import com.intellij.openapi.wm.ToolWindowAnchor;
 import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.util.ui.Tree;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.mevenide.idea.JdkNotDefinedException;
-import org.mevenide.idea.MavenHomeNotDefinedException;
-import org.mevenide.idea.PomNotDefinedException;
 import org.mevenide.idea.Res;
 import org.mevenide.idea.actions.AbstractAnAction;
-import org.mevenide.idea.util.ui.images.Icons;
+import org.mevenide.idea.execute.MavenRunner;
 import org.mevenide.idea.module.ModuleSettingsConfigurable;
-import org.mevenide.idea.toolwindows.execution.ExecutionToolWindowUI;
-import org.mevenide.idea.util.ui.tree.GoalTreeNode;
-import org.mevenide.idea.util.ui.tree.ModuleTreeNode;
-import org.mevenide.idea.util.ui.tree.PluginTreeNode;
-import org.mevenide.idea.util.ui.tree.GoalsTreeCellRenderer;
 import org.mevenide.idea.util.ConfigurableWrapper;
 import org.mevenide.idea.util.goals.GoalsHelper;
-import org.mevenide.idea.util.ui.UIUtils;
+import org.mevenide.idea.util.ui.images.Icons;
+import org.mevenide.idea.util.ui.tree.GoalTreeNode;
+import org.mevenide.idea.util.ui.tree.GoalsTreeCellRenderer;
+import org.mevenide.idea.util.ui.tree.ModuleTreeNode;
+import org.mevenide.idea.util.ui.tree.PluginTreeNode;
 
 import javax.swing.*;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
+import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.MouseAdapter;
@@ -67,10 +59,6 @@ import java.util.List;
  * @author Arik
  */
 public class GoalsToolWindowUI extends JPanel {
-    /**
-     * Logging.
-     */
-    private static final Log LOG = LogFactory.getLog(GoalsToolWindowUI.class);
 
     /**
      * Resources.
@@ -81,11 +69,6 @@ public class GoalsToolWindowUI extends JPanel {
      * The tool window title.
      */
     public static final String NAME = RES.get("title");
-
-    /**
-     * The project this tool window belongs to.
-     */
-    private final Project project;
 
     /**
      * The goals tree. Used by {@link #getSelectedModule()} to find out to which module the selected goal(s)
@@ -100,15 +83,13 @@ public class GoalsToolWindowUI extends JPanel {
 
 
     public GoalsToolWindowUI(final Project pProject) {
-        project = pProject;
-        model = new GoalsToolWindowTreeModel(project);
+        model = new GoalsToolWindowTreeModel(pProject);
         init();
     }
 
     public GoalsToolWindowUI(final Project pProject, boolean isDoubleBuffered) {
         super(isDoubleBuffered);
-        project = pProject;
-        model = new GoalsToolWindowTreeModel(project);
+        model = new GoalsToolWindowTreeModel(pProject);
         init();
     }
 
@@ -139,7 +120,14 @@ public class GoalsToolWindowUI extends JPanel {
                         final PluginTreeNode pluginNode = (PluginTreeNode) node.getParent();
                         final String plugin = pluginNode.getPlugin();
                         final String goal = ((GoalTreeNode) node).getGoal();
-                        runGoals(new String[]{GoalsHelper.buildFullyQualifiedName(plugin, goal)});
+                        final String fqGoalName = GoalsHelper.buildFullyQualifiedName(plugin, goal);
+                        final Component component = (Component) pEvent.getSource();
+                        final DataContext dataContext = DataManager.getInstance().getDataContext(component,
+                                                                                                 pEvent.getX(),
+                                                                                                 pEvent.getY());
+                        MavenRunner.execute(getSelectedModule(),
+                                            new String[]{fqGoalName},
+                                            dataContext);
                     }
                 }
             }
@@ -150,7 +138,7 @@ public class GoalsToolWindowUI extends JPanel {
         //
         final GoalsTreeExpanded expander = new GoalsTreeExpanded();
         final DefaultActionGroup actionGroup = new DefaultActionGroup();
-        actionGroup.add(new AttainGoalAction());
+        actionGroup.add(new AttainSelectedGoalsAction());
         actionGroup.add(new ShowModuleSettingsAction());
         actionGroup.addSeparator();
         actionGroup.add(CommonActionsManager.getInstance().createCollapseAllAction(expander));
@@ -205,37 +193,6 @@ public class GoalsToolWindowUI extends JPanel {
         }
 
         return goalList.toArray(new String[goalList.size()]);
-    }
-
-    public void runSelectedGoals() {
-        runGoals(getSelectedGoals());
-    }
-
-    public void runGoals(final String[] pGoals) {
-        runGoals(getSelectedModule(), pGoals);
-    }
-
-    public void runGoals(final Module pModule, final String[] pGoals) {
-        try {
-            final ExecutionToolWindowUI execTw = ExecutionToolWindowUI.getInstance(project);
-            execTw.runMaven(pModule, pGoals);
-        }
-        catch (JdkNotDefinedException e) {
-            UIUtils.showError(project, e);
-            LOG.trace(e.getMessage(), e);
-        }
-        catch (PomNotDefinedException e) {
-            UIUtils.showError(project, e);
-            LOG.trace(e.getMessage(), e);
-        }
-        catch (MavenHomeNotDefinedException e) {
-            UIUtils.showError(project, e);
-            LOG.trace(e.getMessage(), e);
-        }
-        catch (ExecutionException e) {
-            UIUtils.showError(project, e);
-            LOG.error(e.getMessage(), e);
-        }
     }
 
     public static void register(final Project pProject) {
@@ -319,8 +276,8 @@ public class GoalsToolWindowUI extends JPanel {
         }
     }
 
-    private class AttainGoalAction extends AbstractAnAction {
-        public AttainGoalAction() {
+    private class AttainSelectedGoalsAction extends AbstractAnAction {
+        public AttainSelectedGoalsAction() {
             super(RES.get("attain.goal.action.text"),
                   RES.get("attain.goal.action.desc"),
                   Icons.EXECUTE);
@@ -336,7 +293,9 @@ public class GoalsToolWindowUI extends JPanel {
         }
 
         public void actionPerformed(final AnActionEvent pEvent) {
-            runSelectedGoals();
+            MavenRunner.execute(getSelectedModule(),
+                                getSelectedGoals(),
+                                pEvent.getDataContext());
         }
     }
 
