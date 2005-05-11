@@ -17,6 +17,7 @@
 package org.mevenide.idea.execute;
 
 import com.intellij.execution.CantRunException;
+import com.intellij.execution.filters.RegexpFilter;
 import com.intellij.execution.configurations.JavaParameters;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.projectRoots.ProjectJdk;
@@ -37,6 +38,8 @@ public class MavenJavaParameters extends JavaParameters
     private static final String FOREHEAD_MAIN_CLASS = "com.werken.forehead.Forehead";
     private static final String FOREHEAD_CONF_FILE = "bin/forehead.conf";
     private static final String FOREHEAD_JAR_FILE = "lib/forehead-1.0-beta-5.jar";
+    public static final String COMPILE_REGEXP =
+    RegexpFilter.FILE_PATH_MACROS + ":" + RegexpFilter.LINE_MACROS;
 
     public MavenJavaParameters(final Module pModule, final String[] pGoals)
             throws MavenHomeNotDefinedException, PomNotDefinedException, CantRunException {
