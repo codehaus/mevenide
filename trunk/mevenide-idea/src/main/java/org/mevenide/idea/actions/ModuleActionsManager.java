@@ -52,6 +52,7 @@ public class ModuleActionsManager extends AbstractModuleComponent implements Pro
 
     public void propertyChange(final PropertyChangeEvent pEvent) {
         if(pEvent.getPropertyName().equals("queryContext")) {
+            unregisterModuleActions();
             refreshActions();
         }
     }
