@@ -19,7 +19,6 @@ package org.mevenide.idea.project;
 import com.intellij.openapi.components.ProjectComponent;
 import com.intellij.openapi.project.Project;
 import org.mevenide.idea.toolwindows.goals.GoalsToolWindowUI;
-import org.mevenide.idea.toolwindows.execution.ExecutionToolWindowUI;
 
 /**
  * @author Arik
@@ -37,7 +36,6 @@ public class ProjectInitializer implements ProjectComponent {
 
     public void projectOpened() {
         GoalsToolWindowUI.register(project);
-        ExecutionToolWindowUI.register(project);
     }
 
     public void initComponent() {
@@ -45,7 +43,6 @@ public class ProjectInitializer implements ProjectComponent {
 
     public void projectClosed() {
         GoalsToolWindowUI.unregister(project);
-        ExecutionToolWindowUI.unregister(project);
     }
 
     public void disposeComponent() {

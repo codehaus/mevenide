@@ -16,17 +16,15 @@
  */
 package org.mevenide.idea.actions;
 
-import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.module.Module;
-import org.mevenide.idea.toolwindows.goals.GoalsToolWindowUI;
+import org.mevenide.idea.execute.MavenRunner;
 import org.mevenide.idea.util.ui.images.Icons;
 
 /**
  * @author Arik
  */
-public class GoalAction extends AnAction {
+public class GoalAction extends AbstractAnAction {
     private final String fqGoalName;
     private final Module module;
 
@@ -42,11 +40,8 @@ public class GoalAction extends AnAction {
     }
 
     public void actionPerformed(final AnActionEvent pEvent) {
-        final GoalsToolWindowUI tw = GoalsToolWindowUI.getInstance(module.getProject());
-        ApplicationManager.getApplication().invokeLater(new Runnable() {
-            public void run() {
-                tw.runGoals(module, new String[]{fqGoalName});
-            }
-        });
+        MavenRunner.execute(module,
+                            new String[]{fqGoalName},
+                            pEvent.getDataContext());
     }
 }
