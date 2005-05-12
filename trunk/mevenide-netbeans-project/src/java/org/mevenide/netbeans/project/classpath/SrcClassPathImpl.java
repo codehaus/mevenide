@@ -18,13 +18,15 @@
 package org.mevenide.netbeans.project.classpath;
 
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.Collection;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.mevenide.netbeans.project.MavenProject;
 
 /**
  *
- * @author  Milos Kleint (ca206216@tiscali.cz)
+ * @author  Milos Kleint (mkleint@codehaus.org)
  */
 public class SrcClassPathImpl extends AbstractProjectClassPathImpl {
     private static final Log logger = LogFactory.getLog(SrcClassPathImpl.class);
@@ -35,9 +37,22 @@ public class SrcClassPathImpl extends AbstractProjectClassPathImpl {
     }
     
     URI[] createPath() {
-//        logger.debug("path=" + getMavenProject().getSrcDirectory());
-        return new URI[] { getMavenProject().getSrcDirectory(),
-                           getMavenProject().getGeneratedSourcesDir() };
+        Collection col = new ArrayList();
+        URI src = getMavenProject().getSrcDirectory();
+        if (src != null) {
+            col.add(src);
+        }
+        src = getMavenProject().getGeneratedSourcesDir();
+        if (src != null) {
+            col.add(src);
+        }
+        Collection add = getMavenProject().getAdditionalGeneratedSourceDirs();
+        if (add != null) {
+            col.addAll(add);
+        }
+        URI[] uris = new URI[col.size()];
+        uris = (URI[])col.toArray(uris);
+        return uris;        
     }
     
 }

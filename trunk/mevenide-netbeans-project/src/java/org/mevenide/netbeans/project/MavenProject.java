@@ -26,6 +26,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -329,6 +330,9 @@ public final class MavenProject implements Project {
        return FileUtil.normalizeFile(src).toURI();
    }
 
+    /**
+     * returns URI pointing to maven.build.dest property value
+     */
     public URI getBuildClassesDir() {
         String path = properties.getResolvedValue("maven.build.dest");
         if (path != null) {
@@ -339,6 +343,9 @@ public final class MavenProject implements Project {
         return null;
     }
     
+    /**
+     * returns URI pointing to maven.build.src property value
+     */
    public URI getGeneratedSourcesDir() {
         String path = properties.getResolvedValue("maven.build.src");
         if (path != null) {
@@ -348,6 +355,29 @@ public final class MavenProject implements Project {
         logger.warn("maven.build.src not defined.");
         return null;
     }    
+   
+   /**
+    * source dir URIs designated by the maven.gen.src (from maven-eclipse-plugin)
+    * all it's subdirs ought to be added to classpath I guess.
+    * @return Collection of URIs
+    */
+    public Collection getAdditionalGeneratedSourceDirs() {
+        String path = properties.getResolvedValue("maven.gen.src");
+        if (path != null) {
+            File fl = new File(path);
+            if (fl.exists() && fl.isDirectory()) {
+                Collection col = new ArrayList();
+                File[] fls = fl.listFiles();
+                for (int i = 0; i < fls.length; i++) {
+                    if (fls[i].isDirectory()) {
+                        col.add(FileUtil.normalizeFile(fl).toURI());
+                    }
+                }
+                return col;
+            }
+        }
+        return Collections.EMPTY_LIST;
+    }
     
     public URI getTestBuildClassesDir() {
         String path = properties.getResolvedValue("maven.test.dest");
