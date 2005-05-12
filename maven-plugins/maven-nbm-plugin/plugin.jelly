@@ -55,6 +55,8 @@
         <ant:echo message="The netbeans installation directory is: ${netbeanshome}"/>
         <ant:fileset dir="${netbeanshome}" id="jar.files">
           <ant:include name="**/modules/*.jar"/>
+          <!-- MEVENIDE-221-->
+          <ant:include name="platform*/core/*.jar"/>
           <ant:include name="**/modules/autoload/*.jar"/>
           <ant:include name="**/modules/eager/*.jar"/>
         </ant:fileset>

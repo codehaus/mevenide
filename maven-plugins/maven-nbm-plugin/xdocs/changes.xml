@@ -6,6 +6,11 @@
   </properties>
 
   <body>
+    <release version="1.2" date="20050512" description="Bug fix release.">
+      <action dev="mkleint" type="fix">
+      MEVENIDE-221 - nbm:fill-repository goal also checks ${netbeans.home}/platform5/core directory.
+      </action>
+    </release>
     <release version="1.1" date="20050310" description="Minor additions.">
       <action dev="mkleint" type="add">
       Added goal <code> nbm:fill-repository </code> which populates the local
