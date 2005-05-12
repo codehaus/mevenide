@@ -52,7 +52,7 @@ public class RedeployAction extends AbstractAction {
     private MavenProject project;
     private DeployPanel panel;
     public RedeployAction(MavenProject proj) {
-        putValue(NAME, "Redeploy");
+        putValue(NAME, "Redeploy using Cargo");
         project = proj;
     }
     

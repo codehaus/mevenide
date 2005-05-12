@@ -41,6 +41,10 @@ public class J2eeActions implements AdditionalActionsProvider {
     }
 
     public Action[] createPopupActions(MavenProject project) {
+        File war = project.getWar();
+        if (war == null || !war.exists()) {
+            return new Action[0];
+        }
         Collection toRet = new ArrayList();
         Action deploy = (Action)cache.get(project);
         if (deploy == null) {
@@ -48,12 +52,9 @@ public class J2eeActions implements AdditionalActionsProvider {
             cache.put(project, deploy);
         }
         toRet.add(deploy);
-        File war = project.getWar();
-        if (war != null) {
-            Deployable[] depls = CargoServerRegistry.getInstance().findDeployables(war.toString());
-            if (depls.length > 0) {
-                toRet.add(new RedeployAction(project));
-            }
+        Deployable[] depls = CargoServerRegistry.getInstance().findDeployables(war.toString());
+        if (depls.length > 0) {
+            toRet.add(new RedeployAction(project));
         }
         return (Action[])toRet.toArray(new Action[toRet.size()]);
     }

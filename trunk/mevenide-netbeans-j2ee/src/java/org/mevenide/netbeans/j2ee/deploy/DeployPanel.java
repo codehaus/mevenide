@@ -49,7 +49,7 @@ public class DeployPanel extends JPanel {
         btnAddContainer.addActionListener(listener);
         txtContext.getDocument().addDocumentListener(listener);
         txtWebpage.getDocument().addDocumentListener(listener);
-        setPreferredSize(new Dimension(500, 180));
+//        setPreferredSize(new Dimension(500, 220));
     }
     
     public DeployPanel(MavenProject proj) {
@@ -97,7 +97,6 @@ public class DeployPanel extends JPanel {
         reloadAvailableContainers();
         if (comContainer.getSelectedItem() == null 
                 && comContainer.getModel().getSize() > 0) {
-            System.out.println("force selection");
             comContainer.setSelectedIndex(0);
             txtUrl.setText(getBaseUrl());
         }
@@ -106,7 +105,8 @@ public class DeployPanel extends JPanel {
     
     
     public Container getSelectedContainer() {
-        return ((ContainerWrapper)comContainer.getSelectedItem()).getContainer();
+        Object sel = comContainer.getSelectedItem();
+        return sel == null ? null : ((ContainerWrapper)sel).getContainer();
     }
     
     public String getDeployable() {
@@ -118,7 +118,11 @@ public class DeployPanel extends JPanel {
     }
 
     public String getBaseUrl() {
-        Container cont = ((ContainerWrapper)comContainer.getSelectedItem()).getContainer();
+        Object sel = comContainer.getSelectedItem();
+        if (sel == null) {
+            return "";
+        }
+        Container cont = ((ContainerWrapper)sel).getContainer();
         String hostname = cont.getConfiguration().getPropertyValue(GeneralPropertySet.HOSTNAME);
         String port = cont.getConfiguration().getPropertyValue(ServletPropertySet.PORT);
         boolean hasContext = txtContext.getText().trim().length() > 0;
@@ -218,6 +222,7 @@ public class DeployPanel extends JPanel {
         gridBagConstraints.gridy = 7;
         gridBagConstraints.gridwidth = 2;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.weighty = 0.1;
         gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
         add(cbOpenInBrowser, gridBagConstraints);
 
@@ -274,10 +279,13 @@ public class DeployPanel extends JPanel {
         add(lblWebpage, gridBagConstraints);
 
         lblInfo.setText("<html>Maven projects use Cargo APIs (http://cargo.codehaus.org) for deployment. Please refer to Cargo's website for detailed information about supported J2EE containers and features supported for given container. </html>");
+        lblInfo.setMinimumSize(new java.awt.Dimension(300, 50));
+        lblInfo.setPreferredSize(new java.awt.Dimension(400, 75));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridwidth = 4;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 6);
         add(lblInfo, gridBagConstraints);
 
     }

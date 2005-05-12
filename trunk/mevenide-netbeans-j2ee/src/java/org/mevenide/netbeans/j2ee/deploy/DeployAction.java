@@ -50,7 +50,7 @@ public class DeployAction extends AbstractAction {
     private MavenProject project;
     private DeployPanel panel;
     public DeployAction(MavenProject proj) {
-        putValue(NAME, "Deploy");
+        putValue(NAME, "Deploy using Cargo");
         project = proj;
     }
     
@@ -62,6 +62,10 @@ public class DeployAction extends AbstractAction {
         Object ret = DialogDisplayer.getDefault().notify(dd);
         if (ret == NotifyDescriptor.OK_OPTION) {
             final Container container = panel.getSelectedContainer();
+            if (container == null) {
+                // no container defined..
+                return;
+            }
             DeployerRunner runner = new DeployerRunner(container, panel.getDeployable(), panel.getBaseUrl(), panel.getContext());
             RequestProcessor.getDefault().post(runner);
         }
