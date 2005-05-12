@@ -17,13 +17,17 @@
 
 package org.mevenide.netbeans.project.queries;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
+import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -54,6 +58,16 @@ public class MavenForBinaryQueryImpl implements SourceForBinaryQueryImplementati
     /** Creates a new instance of MavenSourceForBinaryQueryImpl */
     public MavenForBinaryQueryImpl(MavenProject proj) {
         project = proj;
+        project.addPropertyChangeListener(new PropertyChangeListener() {
+            public void propertyChange(PropertyChangeEvent event) {
+                if (srcResult != null) {
+                    srcResult.fireChanged();
+                }
+                if (testResult != null) {
+                    testResult.fireChanged();
+                }
+            }
+        });
     }
     /**
      * Returns the source root(s) for a given binary root.
@@ -165,24 +179,26 @@ public class MavenForBinaryQueryImpl implements SourceForBinaryQueryImplementati
     private FileObject[] getSrcRoot() {
         logger.debug("getsrcRoot");
         Collection toReturn = new ArrayList();
-        URI genuri = project.getGeneratedSourcesDir();
-        FileObject foGenRoot = null;
-        if (genuri != null) {
-            try {
-                foGenRoot = URLMapper.findFileObject(genuri.toURL());
-                if (foGenRoot != null) {
-                    toReturn.add(foGenRoot);
-                }
-            } catch (MalformedURLException exc) {
-                logger.warn("malforrmed uri=" + genuri);
-            }
-        }
-        URI uri = project.getSrcDirectory();
+        Collection uris = new ArrayList();
+        URI uri = project.getGeneratedSourcesDir();
         if (uri != null) {
+            uris.add(uri);
+        }
+        uri = project.getSrcDirectory();
+        if (uri != null) {
+            uris.add(uri);
+        }
+        Collection adds = project.getAdditionalGeneratedSourceDirs();
+        if (adds != null) {
+            uris.addAll(adds);
+        }
+        Iterator it = uris.iterator();
+        while (it.hasNext()) {
+            uri = (URI)it.next();
             try {
-                FileObject foRoot = URLMapper.findFileObject(uri.toURL());
-                if (foRoot != null) {
-                    toReturn.add(foRoot);
+                FileObject fo = URLMapper.findFileObject(uri.toURL());
+                if (fo != null) {
+                    toReturn.add(fo);
                 }
             } catch (MalformedURLException exc) {
                 logger.warn("malforrmed uri=" + uri);
@@ -271,6 +287,18 @@ public class MavenForBinaryQueryImpl implements SourceForBinaryQueryImplementati
            }
        }
        
+       void fireChanged() {
+           List lists = new ArrayList();
+           synchronized(listeners) {
+               lists.addAll(listeners);
+           }
+           Iterator it = lists.iterator();
+           while (it.hasNext()) {
+               ChangeListener listen = (ChangeListener)it.next();
+               listen.stateChanged(new ChangeEvent(this));
+           }
+       }
+       
    }
 
     private class DocResult implements JavadocForBinaryQuery.Result  {
@@ -291,6 +319,18 @@ public class MavenForBinaryQueryImpl implements SourceForBinaryQueryImplementati
        public void removeChangeListener(ChangeListener changeListener) {
            synchronized (listeners) {
                listeners.remove(changeListener);
+           }
+       }
+       
+       void fireChanged() {
+           List lists = new ArrayList();
+           synchronized(listeners) {
+               lists.addAll(listeners);
+           }
+           Iterator it = lists.iterator();
+           while (it.hasNext()) {
+               ChangeListener listen = (ChangeListener)it.next();
+               listen.stateChanged(new ChangeEvent(this));
            }
        }
         
