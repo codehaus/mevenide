@@ -16,12 +16,15 @@
  */
 package org.mevenide.idea.util.ui.tree;
 
+import org.mevenide.idea.Res;
+
 import javax.swing.tree.DefaultMutableTreeNode;
 
 /**
  * @author Arik
  */
 public class GoalTreeNode extends DefaultMutableTreeNode {
+    private static final Res RES = Res.getInstance(GoalTreeNode.class);
     private final String description;
     private final String[] prereqs;
 
@@ -40,9 +43,8 @@ public class GoalTreeNode extends DefaultMutableTreeNode {
     public GoalTreeNode(final String pGoal, final String pDescription, final String[] pPrereqs) {
         super(pGoal);
 
-        //TODO: load this message from res
         if(pGoal == null || pGoal.trim().length() == 0)
-            throw new IllegalArgumentException("Goal name cannot be empty.");
+            throw new IllegalArgumentException(RES.get("empty.goal.name"));
 
         if(pDescription == null || pDescription.trim().length() == 0 || pDescription.equalsIgnoreCase("null"))
             description = null;

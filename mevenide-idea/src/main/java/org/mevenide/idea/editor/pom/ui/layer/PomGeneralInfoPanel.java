@@ -66,6 +66,8 @@ public class PomGeneralInfoPanel extends AbstractPomLayerPanel implements PomFil
         initComponents();
         layoutComponents();
         initBindings();
+
+        this.addFocusListener(this);
     }
 
     private void initComponents() {
@@ -85,15 +87,15 @@ public class PomGeneralInfoPanel extends AbstractPomLayerPanel implements PomFil
         for(final Field field : fields) {
             try {
                 final Object value = field.get(this);
-                if(value != null && value instanceof JComponent) {
-                    final JComponent comp = (JComponent) value;
+                if(value != null && value instanceof Component) {
+                    final Component comp = (Component) value;
+                    comp.setName(field.getName());
                     comp.addFocusListener(this);
                 }
             }
             catch (IllegalAccessException e) {
                 LOG.error(e.getMessage(), e);
             }
-            break;
         }
     }
 
@@ -146,7 +148,6 @@ public class PomGeneralInfoPanel extends AbstractPomLayerPanel implements PomFil
         synchronized (this) {
             final XmlPsiDocumentBinder binder = new XmlPsiDocumentBinder(project, editorDocument);
 
-            //todo: this doesn't work when the Browse button is used!
             binder.bind(extendField.getTextField(), "extend");
             binder.bind(nameField, "name");
             binder.bind(versionField, "currentVersion");
@@ -175,10 +176,22 @@ public class PomGeneralInfoPanel extends AbstractPomLayerPanel implements PomFil
             currentField.requestFocusInWindow();
     }
 
+    /**
+     * @todo this does not work yet
+     * @param e
+     */
     public void focusGained(FocusEvent e) {
-        focusedComponent = e.getComponent();
+        if(e.getComponent() == this) {
+            if(focusedComponent != null)
+                focusedComponent.requestFocusInWindow();
+        }
+        else if(e.getComponent().getParent() == this) {
+            focusedComponent = e.getComponent();
+            LOG.trace("PomGeneralInfoPanel.focusGained - comp is " + focusedComponent.getName());
+        }
     }
 
     public void focusLost(FocusEvent e) {
+        LOG.trace("PomGeneralInfoPanel.focusLost - comp is " + e.getComponent().getName());
     }
 }
