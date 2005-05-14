@@ -8,6 +8,28 @@
     <body>
         <release version="0.1" date="unreleased" description="">
             <action dev="arikkfir" type="add">
+                Added an initial version of the graphical POM editor. Currently,
+                only a small subset of the POM properties are supported, but they
+                will grow very soon.
+                <p>
+                    The editor works closely with the IDEA API so that save and
+                    load operations are treated the same as standard file operations.
+                    The POM editor is also constantly synchronized with the underlying
+                    file, so that editing the file with the POM text editor (also provided)
+                    or even from outside the IDE will synchronize the graphical editor,
+                    and vice-versa.
+                </p>
+                <p>
+                    Synchronization with the IDEA project and module settings is not yet
+                    implemented.
+                </p>
+            </action>
+            <action dev="arikkfir" type="update">
+                POM selection for modules has been removed. POM files are now
+                automatically detected by searching for files named 'project.xml'
+                in every module file's directory.
+            </action>
+            <action dev="arikkfir" type="add">
                 Try to guess Maven home on startup, if not set by the user.
             </action>
             <action dev="arikkfir" type="fix">
