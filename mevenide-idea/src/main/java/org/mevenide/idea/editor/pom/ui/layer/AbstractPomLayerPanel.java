@@ -20,6 +20,9 @@ import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
 import org.jdom.Element;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.mevenide.idea.Res;
 
 import javax.swing.*;
 
@@ -27,20 +30,18 @@ import javax.swing.*;
  * @author Arik
  */
 public abstract class AbstractPomLayerPanel extends JPanel {
-
-    protected final org.jdom.Document projectDoc;
-    protected final Element projectElt;
+    protected final Log LOG;
+    protected final Res RES;
     protected final Project project;
     protected final Document editorDocument;
 
-    protected AbstractPomLayerPanel(final org.jdom.Document pProjectDoc,
-                                    final Project pProject,
+    protected AbstractPomLayerPanel(final Project pProject,
                                     final Document pPomDocument) {
-        projectDoc = pProjectDoc;
-        projectElt = projectDoc.getRootElement();
+
+        LOG = LogFactory.getLog(this.getClass());
+        RES = Res.getInstance(this.getClass());
+
         project = pProject;
         editorDocument = pPomDocument;
     }
-
-    public abstract boolean isModified();
 }

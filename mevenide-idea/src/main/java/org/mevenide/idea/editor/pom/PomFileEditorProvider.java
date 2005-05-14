@@ -64,7 +64,7 @@ public class PomFileEditorProvider extends AbstractApplicationComponent implemen
     }
 
     public String getEditorTypeId() {
-        return PomFileEditor.NAME;
+        return "pomEditor";
     }
 
     public FileEditorPolicy getPolicy() {
