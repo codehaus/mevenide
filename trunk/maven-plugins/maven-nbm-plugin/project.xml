@@ -5,12 +5,12 @@
     <id>maven-nbm-plugin</id>
     <artifactId>maven-nbm-plugin</artifactId>
     <name>Maven NBM Plugin</name>
-    <currentVersion>1.2</currentVersion>
+    <currentVersion>1.3</currentVersion>
     <package>org.mevenide.tags</package>
     <description>This plugin creates a netbeans module artifact for the project, 
 also generates nbm file for distribution of the module.
 Is able to generate the module information from the pom and additional project properties.</description>
-    <shortDescription>This plugin helps creating ready to use Netbeans module distribution</shortDescription>
+    <shortDescription>Creates ready to use Netbeans module distribution</shortDescription>
     <url>http://mevenide.codehaus.org/${pom.artifactId}</url>
     <inceptionYear>2004</inceptionYear>
     <versions>
@@ -53,13 +53,20 @@ Is able to generate the module information from the pom and additional project p
         <developer>
             <name>Milos Kleint</name>
             <id>mkleint</id>
-            <email>mkleint@gmail.com</email>
+            <email>mkleint@codehaus.org</email>
             <roles>
                 <role>Creator</role>
                 <role>Developer</role>
             </roles>
         </developer>
     </developers>
+    <contributors>
+        <contributor>
+            <name>Jacek Laskowski</name>
+            <email>jacek.laskowski@hp.com</email>
+        </contributor>
+    </contributors>
+    
     <dependencies>
         <dependency>
             <groupId>xalan</groupId>
@@ -71,7 +78,8 @@ Is able to generate the module information from the pom and additional project p
             </properties>
         </dependency>
         <dependency>
-            <id>ant</id>
+            <groupId>ant</groupId>
+            <artifactId>ant</artifactId>
             <version>1.5.3-1</version>
             <type>jar</type>
             <properties>

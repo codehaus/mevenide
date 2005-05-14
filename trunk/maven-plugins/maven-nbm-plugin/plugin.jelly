@@ -298,8 +298,15 @@
             <ant:path refid="maven.dependency.classpath"/>
         </ant:classpath>
   </ant:taskdef>
+  
 <!-- this way we hook xalan copied from docbook - is probably a major hack!-->
+<j:set var="java_version" value="${systemScope.getProperty('java.version')}"/>
+<j:if test="${java_version.startsWith('1.5')}">
+${systemScope.setProperty('javax.xml.transform.TransformerFactory','com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl')}
+</j:if>
+<j:if test="${!java_version.startsWith('1.5')}">
 ${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}
+</j:if>
   <ant:taskdef name="genlist" classname="org.netbeans.nbbuild.MakeListOfNBM" >
         <ant:classpath>
 <!--            <ant:pathelement location="${plugin.getDependencyPath('xalan:xalan')}"/> -->
@@ -398,10 +405,13 @@ ${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.x
       </j:if>
       <util:available file="${maven.nbm.license}">
           <ant:license file="${maven.nbm.license}" name="${licensename}"/>
-      </util:available>   
-     <ant:signature keystore="${maven.nbm.sign.keystore}" 
-                    storepass="${maven.nbm.sign.storepass}" 
-                    alias="${maven.nbm.sign.alias}"/> -->
+      </util:available>
+      <j:set var="keystore" value="${maven.nbm.sign.keystore}"/>
+      <j:if test="${keystore != '?'}">
+         <ant:signature keystore="${maven.nbm.sign.keystore}" 
+                        storepass="${maven.nbm.sign.storepass}" 
+                        alias="${maven.nbm.sign.alias}"/>
+      </j:if>
     </ant:makenbm>
   </goal>
   
