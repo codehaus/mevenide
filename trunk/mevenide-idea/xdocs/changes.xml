@@ -8,6 +8,9 @@
     <body>
         <release version="0.1" date="unreleased" description="">
             <action dev="arikkfir" type="add">
+                Added manual installation instructions.
+            </action>
+            <action dev="arikkfir" type="add">
                 Added an initial version of the graphical POM editor. Currently,
                 only a small subset of the POM properties are supported, but they
                 will grow very soon.
