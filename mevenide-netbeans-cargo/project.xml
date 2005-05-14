@@ -11,15 +11,6 @@
     <description>This module integrates Cargo into the IDE. Cargo is a thin wrapper around existing J2EE containers. It provides different APIs to easily manipulate containers.</description>
     <package>org.mevenide.netbeans.cargo</package>
     <dependencies>
-        <!-- included the latest nbm plugin as dependency to get the plugin for compilation, 
-       either update here when new version is released, or remove the dependency and use the new one -->
-        <dependency>
-            <groupId>mevenide</groupId>
-            <artifactId>maven-nbm-plugin</artifactId>
-            <version>1.1</version>
-            <type>plugin</type>
-            <url>http://mevenide.codehaus.org/maven-nbm-plugin</url>
-        </dependency>
         <dependency>
             <groupId>netbeans</groupId>
             <artifactId>openide</artifactId>
