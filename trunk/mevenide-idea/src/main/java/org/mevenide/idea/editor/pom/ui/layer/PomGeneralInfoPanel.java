@@ -20,24 +20,24 @@ import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.fileChooser.FileChooserDescriptor;
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory;
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
-import com.intellij.openapi.fileEditor.FileDocumentManager;
-import com.intellij.openapi.vfs.VirtualFile;
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 import com.jgoodies.forms.layout.FormLayout;
 import org.mevenide.idea.Res;
+import org.mevenide.idea.editor.pom.PomFileEditorStateHandler;
+import org.mevenide.idea.editor.pom.PomFileEditorState;
 import org.mevenide.idea.util.ui.CustomFormsComponentFactory;
-import org.mevenide.idea.util.ui.text.JTextComponentJDomBinder;
-import org.jdom.output.XMLOutputter;
-import org.jdom.output.Format;
-import org.apache.commons.lang.StringUtils;
+import org.mevenide.idea.util.ui.text.XmlPsiDocumentBinder;
 
 import javax.swing.*;
-import java.awt.Dimension;
+import java.awt.*;
+import java.awt.event.FocusListener;
+import java.awt.event.FocusEvent;
+import java.lang.reflect.Field;
 
 /**
  * @author Arik
  */
-public class PomGeneralInfoPanel extends AbstractPomLayerPanel {
+public class PomGeneralInfoPanel extends AbstractPomLayerPanel implements PomFileEditorStateHandler, FocusListener {
     private static final Res RES = Res.getInstance(PomGeneralInfoPanel.class);
 
     private final JComboBox pomVersionField = new JComboBox(new String[]{"3"});
@@ -57,10 +57,11 @@ public class PomGeneralInfoPanel extends AbstractPomLayerPanel {
     private final JTextField packageField = new JTextField();
     private final JTextField issueTrackingUrlField = new JTextField();
 
-    public PomGeneralInfoPanel(final org.jdom.Document pProjectDoc,
-                               final com.intellij.openapi.project.Project pProject,
+    private Component focusedComponent = null;
+
+    public PomGeneralInfoPanel(final com.intellij.openapi.project.Project pProject,
                                final Document pPomDocument) {
-        super(pProjectDoc, pProject, pPomDocument);
+        super(pProject, pPomDocument);
 
         initComponents();
         layoutComponents();
@@ -79,6 +80,21 @@ public class PomGeneralInfoPanel extends AbstractPomLayerPanel {
 
         inceptionYearField.setPreferredSize(new Dimension(60, 20));
         descField.setPreferredSize(new Dimension(300, 80));
+
+        final Field[] fields = this.getClass().getDeclaredFields();
+        for(final Field field : fields) {
+            try {
+                final Object value = field.get(this);
+                if(value != null && value instanceof JComponent) {
+                    final JComponent comp = (JComponent) value;
+                    comp.addFocusListener(this);
+                }
+            }
+            catch (IllegalAccessException e) {
+                LOG.error(e.getMessage(), e);
+            }
+            break;
+        }
     }
 
     private void layoutComponents() {
@@ -128,35 +144,41 @@ public class PomGeneralInfoPanel extends AbstractPomLayerPanel {
 
     private void initBindings() {
         synchronized (this) {
-            JTextComponentJDomBinder.bind(extendField.getTextField(), projectElt, "extend");
-            JTextComponentJDomBinder.bind(nameField, projectElt, "name");
-            JTextComponentJDomBinder.bind(versionField, projectElt, "currentVersion");
-            JTextComponentJDomBinder.bind(artifactIdField, projectElt, "artifactId");
-            JTextComponentJDomBinder.bind(groupIdField, projectElt, "groupId");
-            JTextComponentJDomBinder.bind(inceptionYearField, projectElt, "inceptionYear");
-            JTextComponentJDomBinder.bind(urlField, projectElt, "url");
-            JTextComponentJDomBinder.bind(logoUrlField, projectElt, "logo");
-            JTextComponentJDomBinder.bind(shortDescField, projectElt, "shortDescription");
-            JTextComponentJDomBinder.bind(descField, projectElt, "description");
-            JTextComponentJDomBinder.bind(packageField, projectElt, "package");
-            JTextComponentJDomBinder.bind(issueTrackingUrlField, projectElt, "issueTrackingUrl");
+            final XmlPsiDocumentBinder binder = new XmlPsiDocumentBinder(project, editorDocument);
+
+            //todo: this doesn't work when the Browse button is used!
+            binder.bind(extendField.getTextField(), "extend");
+            binder.bind(nameField, "name");
+            binder.bind(versionField, "currentVersion");
+            binder.bind(artifactIdField, "artifactId");
+            binder.bind(groupIdField, "groupId");
+            binder.bind(inceptionYearField, "inceptionYear");
+            binder.bind(urlField, "url");
+            binder.bind(logoUrlField, "logo");
+            binder.bind(shortDescField, "shortDescription");
+            binder.bind(descField, "description");
+            binder.bind(packageField, "package");
+            binder.bind(issueTrackingUrlField, "issueTrackingUrl");
         }
     }
 
-    public boolean isModified() {
-        return
-                JTextComponentJDomBinder.isDirty(extendField.getTextField()) ||
-                JTextComponentJDomBinder.isDirty(nameField) ||
-                JTextComponentJDomBinder.isDirty(versionField) ||
-                JTextComponentJDomBinder.isDirty(artifactIdField) ||
-                JTextComponentJDomBinder.isDirty(groupIdField) ||
-                JTextComponentJDomBinder.isDirty(inceptionYearField) ||
-                JTextComponentJDomBinder.isDirty(urlField) ||
-                JTextComponentJDomBinder.isDirty(logoUrlField) ||
-                JTextComponentJDomBinder.isDirty(shortDescField) ||
-                JTextComponentJDomBinder.isDirty(descField) ||
-                JTextComponentJDomBinder.isDirty(packageField) ||
-                JTextComponentJDomBinder.isDirty(issueTrackingUrlField);
+    public void getState(final PomFileEditorState pState) {
+        pState.setCurrentField(focusedComponent);
+    }
 
+    public void setState(final PomFileEditorState pState) {
+        final Component currentField = pState.getCurrentField();
+        if(currentField == null)
+            return;
+
+        if(currentField.getParent() == this)
+            currentField.requestFocusInWindow();
+    }
+
+    public void focusGained(FocusEvent e) {
+        focusedComponent = e.getComponent();
+    }
+
+    public void focusLost(FocusEvent e) {
     }
 }

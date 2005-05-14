@@ -19,10 +19,44 @@ package org.mevenide.idea.editor.pom;
 import com.intellij.openapi.fileEditor.FileEditorState;
 import com.intellij.openapi.fileEditor.FileEditorStateLevel;
 
+import javax.swing.*;
+
+import org.mevenide.idea.editor.pom.ui.layer.PomLayerPanel;
+
+import java.awt.*;
+
 /**
  * @author Arik
  */
 public class PomFileEditorState implements FileEditorState {
+
+    private int selectedTabIndex = 0;
+    private transient Component currentField = null;
+
+    public PomFileEditorState() {
+    }
+
+    public PomFileEditorState(final int pSelectedTabIndex,
+                              final Component pCurrentField) {
+        selectedTabIndex = pSelectedTabIndex;
+        currentField = pCurrentField;
+    }
+
+    public int getSelectedTabIndex() {
+        return selectedTabIndex;
+    }
+
+    public void setSelectedTabIndex(final int pSelectedTabIndex) {
+        selectedTabIndex = pSelectedTabIndex;
+    }
+
+    public Component getCurrentField() {
+        return currentField;
+    }
+
+    public void setCurrentField(final Component pCurrentField) {
+        currentField = pCurrentField;
+    }
 
     public boolean canBeMergedWith(final FileEditorState otherState,
                                    final FileEditorStateLevel level) {

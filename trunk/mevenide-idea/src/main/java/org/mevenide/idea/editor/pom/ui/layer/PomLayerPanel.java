@@ -19,19 +19,21 @@ package org.mevenide.idea.editor.pom.ui.layer;
 import com.intellij.openapi.editor.Document;
 
 import javax.swing.*;
-import java.awt.BorderLayout;
+import java.awt.*;
+
+import org.mevenide.idea.editor.pom.PomFileEditorStateHandler;
+import org.mevenide.idea.editor.pom.PomFileEditorState;
 
 /**
  * @author Arik
  */
-public class PomLayerPanel extends AbstractPomLayerPanel {
+public class PomLayerPanel extends AbstractPomLayerPanel implements PomFileEditorStateHandler {
     private final JTabbedPane tabs = new JTabbedPane(JTabbedPane.TOP);
-    private final PomGeneralInfoPanel generalInfo = new PomGeneralInfoPanel(projectDoc, project, editorDocument);
+    private final PomGeneralInfoPanel generalInfo = new PomGeneralInfoPanel(project, editorDocument);
 
-    public PomLayerPanel(final org.jdom.Document pProjectDoc,
-                         final com.intellij.openapi.project.Project pProject,
+    public PomLayerPanel(final com.intellij.openapi.project.Project pProject,
                          final Document pPomDocument) {
-        super(pProjectDoc, pProject, pPomDocument);
+        super(pProject, pPomDocument);
         initComponents();
         layoutComponents();
     }
@@ -45,7 +47,23 @@ public class PomLayerPanel extends AbstractPomLayerPanel {
         add(tabs, BorderLayout.CENTER);
     }
 
-    public boolean isModified() {
-        return generalInfo.isModified();
+    public void getState(final PomFileEditorState pState) {
+        pState.setSelectedTabIndex(tabs.getSelectedIndex());
+
+        final Component component = tabs.getSelectedComponent();
+        if(component instanceof PomFileEditorStateHandler) {
+            PomFileEditorStateHandler handler = (PomFileEditorStateHandler) component;
+            handler.getState(pState);
+        }
+    }
+
+    public void setState(final PomFileEditorState pState) {
+        tabs.setSelectedIndex(pState.getSelectedTabIndex());
+
+        final Component component = tabs.getSelectedComponent();
+        if(component instanceof PomFileEditorStateHandler) {
+            PomFileEditorStateHandler handler = (PomFileEditorStateHandler) component;
+            handler.setState(pState);
+        }
     }
 }
