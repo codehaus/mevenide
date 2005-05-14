@@ -17,7 +17,6 @@
 package org.mevenide.idea.editor.pom.ui.layer;
 
 import com.intellij.openapi.editor.Document;
-import org.apache.maven.project.Project;
 
 import javax.swing.*;
 import java.awt.BorderLayout;
@@ -26,23 +25,27 @@ import java.awt.BorderLayout;
  * @author Arik
  */
 public class PomLayerPanel extends AbstractPomLayerPanel {
-    private final com.intellij.openapi.project.Project project;
-
     private final JTabbedPane tabs = new JTabbedPane(JTabbedPane.TOP);
+    private final PomGeneralInfoPanel generalInfo = new PomGeneralInfoPanel(projectDoc, project, editorDocument);
 
-    public PomLayerPanel(final com.intellij.openapi.project.Project pProject,
-                         final Project pPom,
+    public PomLayerPanel(final org.jdom.Document pProjectDoc,
+                         final com.intellij.openapi.project.Project pProject,
                          final Document pPomDocument) {
-        super(pPom, pPomDocument);
-        project = pProject;
+        super(pProjectDoc, pProject, pPomDocument);
         initComponents();
+        layoutComponents();
     }
 
     private void initComponents() {
+        tabs.add("General", generalInfo);
+    }
+
+    private void layoutComponents() {
         setLayout(new BorderLayout());
-
         add(tabs, BorderLayout.CENTER);
+    }
 
-        tabs.add("General", new PomGeneralInfoPanel(project, pom, pomDocument));
+    public boolean isModified() {
+        return generalInfo.isModified();
     }
 }

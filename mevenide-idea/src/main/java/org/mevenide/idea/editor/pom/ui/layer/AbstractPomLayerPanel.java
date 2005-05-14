@@ -17,7 +17,9 @@
 package org.mevenide.idea.editor.pom.ui.layer;
 
 import com.intellij.openapi.editor.Document;
-import org.apache.maven.project.Project;
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.fileEditor.FileDocumentManager;
+import org.jdom.Element;
 
 import javax.swing.*;
 
@@ -26,12 +28,19 @@ import javax.swing.*;
  */
 public abstract class AbstractPomLayerPanel extends JPanel {
 
-    protected final Project pom;
-    protected final Document pomDocument;
+    protected final org.jdom.Document projectDoc;
+    protected final Element projectElt;
+    protected final Project project;
+    protected final Document editorDocument;
 
-    protected AbstractPomLayerPanel(final Project pPom,
+    protected AbstractPomLayerPanel(final org.jdom.Document pProjectDoc,
+                                    final Project pProject,
                                     final Document pPomDocument) {
-        pom = pPom;
-        pomDocument = pPomDocument;
+        projectDoc = pProjectDoc;
+        projectElt = projectDoc.getRootElement();
+        project = pProject;
+        editorDocument = pPomDocument;
     }
+
+    public abstract boolean isModified();
 }
