@@ -10,15 +10,6 @@
     <url>http://mevenide.codehaus.org/mevenide-netbeans-project</url>
     <package>org.mevenide.netbeans.j2ee</package>
     <dependencies>
-        <!-- included the latest nbm plugin as dependency to get the plugin for compilation, 
-       either update here when new version is released, or remove the dependency and use the new one -->
-        <dependency>
-            <groupId>mevenide</groupId>
-            <artifactId>maven-nbm-plugin</artifactId>
-            <version>1.1</version>
-            <type>plugin</type>
-            <url>http://mevenide.codehaus.org/maven-nbm-plugin</url>
-        </dependency>
         <dependency>
             <groupId>netbeans</groupId>
             <artifactId>openide</artifactId>
