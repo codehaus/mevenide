@@ -25,6 +25,7 @@ import org.mevenide.idea.editor.pom.ui.layer.PomLayerPanel;
 import org.mevenide.idea.support.AbstractFileEditor;
 
 import javax.swing.*;
+import java.awt.*;
 
 /**
  * @author Arik
@@ -97,11 +98,15 @@ public class PomFileEditor extends AbstractFileEditor {
     /**
      * Returns the component that should receive the focus.
      *
+     * @todo this does not work yet, for some reason
      * @return a JComponent
      */
     @Override public JComponent getPreferredFocusedComponent() {
         final PomFileEditorState state = (PomFileEditorState) getState(null);
-        return (JComponent) state.getCurrentField();
+        final Component comp = state.getCurrentField();
+        final String name = comp == null ? "null" : comp.getName();
+        LOG.trace("PomFileEditor.getPreferredFocusedComponent - comp is " + name);
+        return (JComponent) comp;
     }
 
     /**
@@ -118,7 +123,6 @@ public class PomFileEditor extends AbstractFileEditor {
     }
 
     /**
-     * @todo implement isValid()
      * @return
      */
     public boolean isValid() {
