@@ -12,13 +12,16 @@
    	  This Maven plugin generates the Netbeans Module (NBM) files. </p>
       <p>
       Currently the plugin ensures that your artifacts become Netbeans modules, creates nbm files for easy updating, and generates the autupdate site information.
+      </p>
+      <p>
+      It also contains a goal for population of Maven repository with netbeans module jars. BY examinign the module's manifest it sets the correct version of the jar in the repository.
    	  </p>
    	  </div>
     </section>
     <section name="Versions">
       <div id="documentContent">
       	<p>
-   	  Latest version available for download is <b>1.2</b>. It works with Netbeans 4.0, 4.1 final, 4.2 dev and Maven 1.0.2.
+   	  Latest version available for download is <b>1.3</b>. It works with Netbeans 4.0, 4.1 final, 4.2 dev and Maven 1.0.2.
       </p>
       	<p>
    	  A version 0.2 is for a latest stable release of Netbeans 3.6. 
@@ -28,12 +31,11 @@
     <section name="Installing">
       <div id="documentContent">
       <p>
-    To install the plugin automatically, please add the <code>http://mevenide.codehaus.org/repository</code> to your <code>maven.repo.remote</code> parameter.
-    And use the plugin:download maven goal to install the plugin.</p>
+    Use the plugin:download maven goal to install the plugin.</p>
     <source>
     maven -DartifactId=maven-nbm-plugin -DgroupId=mevenide -Dversion=VERSION plugin:download
     </source> 
-    <p>where VERSION is either 0.2 or 1.2 depending on what version of Netbeans you are working with.
+    <p>where VERSION is either 0.2 or 1.3 depending on what version of Netbeans you are working with.
    	  </p>
    	  </div>
     </section>
