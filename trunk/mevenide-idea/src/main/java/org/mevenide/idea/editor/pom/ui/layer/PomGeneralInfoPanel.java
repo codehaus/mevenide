@@ -20,13 +20,16 @@ import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.fileChooser.FileChooserDescriptor;
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory;
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
-import com.jgoodies.binding.adapter.Bindings;
-import com.jgoodies.binding.beans.BeanAdapter;
+import com.intellij.openapi.fileEditor.FileDocumentManager;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 import com.jgoodies.forms.layout.FormLayout;
-import org.apache.maven.project.Project;
 import org.mevenide.idea.Res;
 import org.mevenide.idea.util.ui.CustomFormsComponentFactory;
+import org.mevenide.idea.util.ui.text.JTextComponentJDomBinder;
+import org.jdom.output.XMLOutputter;
+import org.jdom.output.Format;
+import org.apache.commons.lang.StringUtils;
 
 import javax.swing.*;
 import java.awt.Dimension;
@@ -36,9 +39,6 @@ import java.awt.Dimension;
  */
 public class PomGeneralInfoPanel extends AbstractPomLayerPanel {
     private static final Res RES = Res.getInstance(PomGeneralInfoPanel.class);
-
-    private final com.intellij.openapi.project.Project project;
-    private final BeanAdapter model;
 
     private final JComboBox pomVersionField = new JComboBox(new String[]{"3"});
     private final TextFieldWithBrowseButton extendField = new TextFieldWithBrowseButton();
@@ -57,12 +57,10 @@ public class PomGeneralInfoPanel extends AbstractPomLayerPanel {
     private final JTextField packageField = new JTextField();
     private final JTextField issueTrackingUrlField = new JTextField();
 
-    public PomGeneralInfoPanel(final com.intellij.openapi.project.Project pProject,
-                               final Project pPom,
+    public PomGeneralInfoPanel(final org.jdom.Document pProjectDoc,
+                               final com.intellij.openapi.project.Project pProject,
                                final Document pPomDocument) {
-        super(pPom, pPomDocument);
-        project = pProject;
-        model = new BeanAdapter(pom, false);
+        super(pProjectDoc, pProject, pPomDocument);
 
         initComponents();
         layoutComponents();
@@ -70,7 +68,6 @@ public class PomGeneralInfoPanel extends AbstractPomLayerPanel {
     }
 
     private void initComponents() {
-        pomVersionField.setSelectedIndex(0);
         pomVersionField.setEnabled(false);
 
         final FileChooserDescriptor chooserDescriptor =
@@ -130,21 +127,36 @@ public class PomGeneralInfoPanel extends AbstractPomLayerPanel {
     }
 
     private void initBindings() {
-        final BeanAdapter model = new BeanAdapter(pom, false);
-        Bindings.bind(nameField, model.getValueModel("name"));
-        Bindings.bind(versionField, model.getValueModel("currentVersion"));
-        Bindings.bind(artifactIdField, model.getValueModel("artifactId"));
-        Bindings.bind(groupIdField, model.getValueModel("groupId"));
-        Bindings.bind(inceptionYearField, model.getValueModel("inceptionYear"));
-        Bindings.bind(urlField, model.getValueModel("url"));
-        Bindings.bind(logoUrlField, model.getValueModel("logo"));
-        Bindings.bind(shortDescField, model.getValueModel("shortDescription"));
-        Bindings.bind(descField, model.getValueModel("description"));
-        Bindings.bind(packageField, model.getValueModel("package"));
-        Bindings.bind(issueTrackingUrlField, model.getValueModel("issueTrackingUrl"));
+        synchronized (this) {
+            JTextComponentJDomBinder.bind(extendField.getTextField(), projectElt, "extend");
+            JTextComponentJDomBinder.bind(nameField, projectElt, "name");
+            JTextComponentJDomBinder.bind(versionField, projectElt, "currentVersion");
+            JTextComponentJDomBinder.bind(artifactIdField, projectElt, "artifactId");
+            JTextComponentJDomBinder.bind(groupIdField, projectElt, "groupId");
+            JTextComponentJDomBinder.bind(inceptionYearField, projectElt, "inceptionYear");
+            JTextComponentJDomBinder.bind(urlField, projectElt, "url");
+            JTextComponentJDomBinder.bind(logoUrlField, projectElt, "logo");
+            JTextComponentJDomBinder.bind(shortDescField, projectElt, "shortDescription");
+            JTextComponentJDomBinder.bind(descField, projectElt, "description");
+            JTextComponentJDomBinder.bind(packageField, projectElt, "package");
+            JTextComponentJDomBinder.bind(issueTrackingUrlField, projectElt, "issueTrackingUrl");
+        }
     }
 
     public boolean isModified() {
-        return model.isChanged();
+        return
+                JTextComponentJDomBinder.isDirty(extendField.getTextField()) ||
+                JTextComponentJDomBinder.isDirty(nameField) ||
+                JTextComponentJDomBinder.isDirty(versionField) ||
+                JTextComponentJDomBinder.isDirty(artifactIdField) ||
+                JTextComponentJDomBinder.isDirty(groupIdField) ||
+                JTextComponentJDomBinder.isDirty(inceptionYearField) ||
+                JTextComponentJDomBinder.isDirty(urlField) ||
+                JTextComponentJDomBinder.isDirty(logoUrlField) ||
+                JTextComponentJDomBinder.isDirty(shortDescField) ||
+                JTextComponentJDomBinder.isDirty(descField) ||
+                JTextComponentJDomBinder.isDirty(packageField) ||
+                JTextComponentJDomBinder.isDirty(issueTrackingUrlField);
+
     }
 }
