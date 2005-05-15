@@ -10,7 +10,7 @@
       <answer>
          <p>
             You can grab the latest release as a big old jar from <a href="http://dist.codehaus.org/mevenide/release/">http://dist.codehaus.org/mevenide/release/</a>, 
-            or you can use Eclipse update manager. In the later case please refer to the instructions provided <a href="update/index.html">here</a>.
+            or you can use Eclipse update manager. In the later please refer to the instructions provided <a href="update/index.html">here</a>.
          </p>
       </answer>
     </faq>

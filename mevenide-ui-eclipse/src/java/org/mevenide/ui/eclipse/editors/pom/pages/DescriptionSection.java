@@ -59,8 +59,8 @@ public class DescriptionSection extends PageSection {
 		FormToolkit toolkit) 
    	{
         super(page, parent, toolkit);
-		setTitle(Mevenide.getResourceString("DescriptionSection.header")); //$NON-NLS-1$
-		setDescription(Mevenide.getResourceString("DescriptionSection.description")); //$NON-NLS-1$
+		setTitle(Mevenide.getResourceString("DescriptionSection.header"));
+		setDescription(Mevenide.getResourceString("DescriptionSection.description"));
     }
 
     public Composite createSectionContent(Composite parent, FormToolkit factory) {
@@ -78,8 +78,8 @@ public class DescriptionSection extends PageSection {
 		Button toggle = createOverrideToggle(container, factory);
 		createLabel(
 			container, 
-			Mevenide.getResourceString("DescriptionSection.shortDescText.label"),  //$NON-NLS-1$
-			Mevenide.getResourceString("DescriptionSection.shortDescText.tooltip"),  //$NON-NLS-1$
+			Mevenide.getResourceString("DescriptionSection.shortDescText.label"), 
+			Mevenide.getResourceString("DescriptionSection.shortDescText.tooltip"), 
 			factory
 		);
 		shortDescText = new OverridableTextEntry(createText(container, factory, 2), toggle);
@@ -98,8 +98,8 @@ public class DescriptionSection extends PageSection {
 		toggle = createOverrideToggle(container, factory);
 		createLabel(
 			container, 
-			Mevenide.getResourceString("DescriptionSection.inceptionYearText.label"),  //$NON-NLS-1$
-			Mevenide.getResourceString("DescriptionSection.inceptionYearText.tooltip"),  //$NON-NLS-1$
+			Mevenide.getResourceString("DescriptionSection.inceptionYearText.label"), 
+			Mevenide.getResourceString("DescriptionSection.inceptionYearText.tooltip"), 
 			factory
 		);
 		inceptionYearText = new OverridableTextEntry(createText(container, factory, 2), toggle);
@@ -118,8 +118,8 @@ public class DescriptionSection extends PageSection {
 		toggle = createOverrideToggle(container, factory);
 		createLabel(
 			container, 
-			Mevenide.getResourceString("DescriptionSection.urlText.label"), //$NON-NLS-1$
-			Mevenide.getResourceString("DescriptionSection.urlText.tooltip"),  //$NON-NLS-1$
+			Mevenide.getResourceString("DescriptionSection.urlText.label"),
+			Mevenide.getResourceString("DescriptionSection.urlText.tooltip"), 
 			factory
 		);
 		urlText = new OverridableTextEntry(createText(container, factory, 2), toggle);
@@ -138,8 +138,8 @@ public class DescriptionSection extends PageSection {
 		toggle = createOverrideToggle(container, factory);
 		createLabel(
 			container, 
-			Mevenide.getResourceString("DescriptionSection.currentVersionText.label"),  //$NON-NLS-1$
-			Mevenide.getResourceString("DescriptionSection.currentVersionText.tooltip"),  //$NON-NLS-1$
+			Mevenide.getResourceString("DescriptionSection.currentVersionText.label"), 
+			Mevenide.getResourceString("DescriptionSection.currentVersionText.tooltip"), 
 			factory
 		);
 		currentVersionText = new OverridableTextEntry(createText(container, factory, 2), toggle);
@@ -158,13 +158,13 @@ public class DescriptionSection extends PageSection {
 		toggle = createOverrideToggle(container, factory);
 		createLabel(
 			container, 
-			Mevenide.getResourceString("DescriptionSection.logoText.label"),  //$NON-NLS-1$
-			Mevenide.getResourceString("DescriptionSection.logoText.tooltip"),  //$NON-NLS-1$
+			Mevenide.getResourceString("DescriptionSection.logoText.label"), 
+			Mevenide.getResourceString("DescriptionSection.logoText.tooltip"), 
 			factory
 		);
-		String labelName = Mevenide.getResourceString("DescriptionSection.logoButton.label"); //$NON-NLS-1$
-		String toolTip = Mevenide.getResourceString("DescriptionSection.logoButton.tooltip"); //$NON-NLS-1$
-		final String title = Mevenide.getResourceString("DescriptionSection.logoButton.dialog.title"); //$NON-NLS-1$
+		String labelName = Mevenide.getResourceString("DescriptionSection.logoButton.label");
+		String toolTip = Mevenide.getResourceString("DescriptionSection.logoButton.tooltip");
+		final String title = Mevenide.getResourceString("DescriptionSection.logoButton.dialog.title");
 		logoText = new OverridableTextEntry(
 			createText(container, factory), 
 			toggle,
@@ -198,7 +198,7 @@ public class DescriptionSection extends PageSection {
 						}
 					}
 					catch ( Exception ex ) {
-						log.error("Unable to browse for logo images", ex); //$NON-NLS-1$
+						log.error("Unable to browse for logo images", ex);
 					}
 				}
 			}
@@ -208,14 +208,14 @@ public class DescriptionSection extends PageSection {
 		toggle = createOverrideToggle(container, factory);
 		createLabel(
 			container, 
-			Mevenide.getResourceString("DescriptionSection.packageText.label"),  //$NON-NLS-1$
-			Mevenide.getResourceString("DescriptionSection.packageText.tooltip"),  //$NON-NLS-1$
+			Mevenide.getResourceString("DescriptionSection.packageText.label"), 
+			Mevenide.getResourceString("DescriptionSection.packageText.tooltip"), 
 			factory
 		);
-		labelName = Mevenide.getResourceString("DescriptionSection.packageButton.label"); //$NON-NLS-1$
-		toolTip = Mevenide.getResourceString("DescriptionSection.packageButton.tooltip"); //$NON-NLS-1$
-		final String title1 = Mevenide.getResourceString("DescriptionSection.packageButton.dialog.title"); //$NON-NLS-1$
-		final String message1 = Mevenide.getResourceString("DescriptionSection.packageButton.dialog.message"); //$NON-NLS-1$
+		labelName = Mevenide.getResourceString("DescriptionSection.packageButton.label");
+		toolTip = Mevenide.getResourceString("DescriptionSection.packageButton.tooltip");
+		final String title1 = Mevenide.getResourceString("DescriptionSection.packageButton.dialog.title");
+		final String message1 = Mevenide.getResourceString("DescriptionSection.packageButton.dialog.message");
 		packageText = new OverridableTextEntry(
 			createText(container, factory), 
 			toggle,
@@ -248,7 +248,7 @@ public class DescriptionSection extends PageSection {
 						if (dialog.open() == Window.OK) {
 							Object resource = dialog.getResult()[0];
 							if (log.isDebugEnabled()) {
-								log.debug("package selected = " + resource.getClass().getName()); //$NON-NLS-1$
+								log.debug("package selected = " + resource.getClass().getName());
 							}
 							IPackageFragment packageResource = (IPackageFragment) resource;
 							packageText.setFocus();
@@ -256,7 +256,7 @@ public class DescriptionSection extends PageSection {
 						}
 					}
 					catch ( Exception ex ) {
-						log.error("Unable to browse for packages", ex); //$NON-NLS-1$
+						log.error("Unable to browse for packages", ex);
 					}
 				}
 			}

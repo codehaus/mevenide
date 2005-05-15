@@ -40,8 +40,6 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.PlatformUI;
-import org.mevenide.ui.eclipse.IImageRegistry;
-import org.mevenide.ui.eclipse.Mevenide;
 
 /**
  * 
@@ -51,10 +49,12 @@ import org.mevenide.ui.eclipse.Mevenide;
  */
 public class PomChoiceDialog extends TitleAreaDialog {
     
+    //@todo externalize
+    private static final String POM_CHOICE_MESSAGE = 
+        "Choose the POMs you want to update from the list below.\n" +
+        "    "; //blank line. donot remove
     
-    private static final String POM_CHOICE_MESSAGE = Mevenide.getResourceString("PomChoiceDialog.Message"); //$NON-NLS-1$
-    private static final String DIALOG_NAME = Mevenide.getResourceString("PomChoiceDialog.Name"); //$NON-NLS-1$
-    private static final String POM_CHOICE_TITLE = Mevenide.getResourceString("PomChoiceDialog.Title"); //$NON-NLS-1$
+    private static final String POM_CHOICE_TITLE = "POM Choice Dialog";
     
 	private PomChooser pomChooser;
 	
@@ -77,9 +77,8 @@ public class PomChoiceDialog extends TitleAreaDialog {
 	    
 	    Control contents = super.createContents(parent);
 	    
-	    getShell().setText(DIALOG_NAME);
 	    setTitle(POM_CHOICE_TITLE); 
-	    setTitleImage(Mevenide.getInstance().getImageRegistry().get(IImageRegistry.POM_CHOICE_WIZ));
+	    //setTitleImage(dlgTitleImage);
 	    setMessage(POM_CHOICE_MESSAGE); 
 	    
 	    okButton = getButton(IDialogConstants.OK_ID);
@@ -116,7 +115,7 @@ public class PomChoiceDialog extends TitleAreaDialog {
 		buttonsArea.setLayout(layout);
 		buttonsArea.setLayoutData(new GridData(GridData.FILL_BOTH));
 		
-		String buttonLabel = Mevenide.getResourceString("PomChoiceDialog.SelectAll"); //$NON-NLS-1$
+		String buttonLabel = "Select all";
 		Button selectAllButton = createSelectionButton(buttonsArea, buttonLabel);
 		selectAllButton.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent arg0) {
@@ -124,7 +123,7 @@ public class PomChoiceDialog extends TitleAreaDialog {
 			}
 		});
 		
-		buttonLabel = Mevenide.getResourceString("PomChoiceDialog.DeselectAll"); //$NON-NLS-1$
+		buttonLabel = "Deselect all";
 		Button deselectAllButton = createSelectionButton(buttonsArea, buttonLabel);
 		deselectAllButton.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent arg0) {
@@ -176,7 +175,7 @@ public class PomChoiceDialog extends TitleAreaDialog {
 					if ( element instanceof File ) {
 						return ((File) element).getAbsolutePath();
 					}
-					return Mevenide.getResourceString("PomChoiceDialog.UnexpectedChild"); //$NON-NLS-1$
+					return "unexpected child... please fill a bug report.";
 				}
 			}
 		);

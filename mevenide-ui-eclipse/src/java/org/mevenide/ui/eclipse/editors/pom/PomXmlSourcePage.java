@@ -16,11 +16,11 @@
  */
 package org.mevenide.ui.eclipse.editors.pom;
 
-import java.io.InputStream;
+import java.io.StringReader;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Project;
-import org.apache.maven.util.StringInputStream;
 import org.eclipse.jface.text.DocumentEvent;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IDocumentListener;
@@ -28,16 +28,14 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
-import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.editor.IFormPage;
-import org.mevenide.project.IProjectChangeListener;
-import org.mevenide.project.ProjectChangeEvent;
-import org.mevenide.context.JDomProjectUnmarshaller;
+import org.mevenide.project.io.IProjectUnmarshaller;
 import org.mevenide.ui.eclipse.Mevenide;
+import org.mevenide.util.DefaultProjectUnmarshaller;
 
 /**
  * Presents the raw POM source in a basic XML editor.
@@ -47,11 +45,11 @@ import org.mevenide.ui.eclipse.Mevenide;
  */
 public class PomXmlSourcePage
 	extends TextEditor 
-	implements IPomEditorPage, IFormPage, IProjectChangeListener {
+	implements IPomEditorPage, IFormPage {
 
 	private static final Log log = LogFactory.getLog(PomXmlSourcePage.class);
-    private static final String ID = Mevenide.getResourceString("PomXMLSourcePage.id"); //$NON-NLS-1$
-    private static final String TAB = Mevenide.getResourceString("PomXMLSourcePage.tab.label"); //$NON-NLS-1$
+    private static final String ID = Mevenide.getResourceString("PomXMLSourcePage.id");
+    private static final String TAB = Mevenide.getResourceString("PomXMLSourcePage.tab.label");
     
     private Composite control;
 	private MevenidePomEditor editor;
@@ -60,12 +58,12 @@ public class PomXmlSourcePage
 	private boolean active = false;
 	private int index;
 
-	JDomProjectUnmarshaller unmarshaller;
+	IProjectUnmarshaller unmarshaller;
 	
 	public PomXmlSourcePage(MevenidePomEditor pomEditor) {
 		super();
 		this.editor = pomEditor;
-		unmarshaller = new JDomProjectUnmarshaller();
+		unmarshaller = new DefaultProjectUnmarshaller();
 		
 		setSourceViewerConfiguration(new PomXmlConfiguration());
 		initializeDocumentListener();
@@ -90,7 +88,7 @@ public class PomXmlSourcePage
 
             public void documentChanged(DocumentEvent event) {
                 if (log.isDebugEnabled()) {
-                    log.debug("document has been changed! active = " + isActive()); //$NON-NLS-1$
+                    log.debug("document has been changed! active = " + isActive());
                 }
                 if (isActive()) {
 					setModelNeedsUpdating(true);
@@ -101,21 +99,15 @@ public class PomXmlSourcePage
 	
     public void pageActivated(IPomEditorPage oldPage) {
         if (log.isDebugEnabled()) {
-            log.debug("PomXmlSourcePage made active!"); //$NON-NLS-1$
+            log.debug("PomXmlSourcePage made active!");
         }
 		setModelNeedsUpdating(false);
-		getPomEditor().updateDocument();
 		setActive(true);
     }
 
-    
-    public boolean isDirty() {
-        return isModelNeedsUpdating();
-    }
-    
 	public void pageDeactivated(IPomEditorPage newPage) {
 		if (log.isDebugEnabled()) {
-			log.debug("PomXmlSourcePage made inactive!"); //$NON-NLS-1$
+			log.debug("PomXmlSourcePage made inactive!");
 		}
 		setActive(false);
     	if (isModelNeedsUpdating())
@@ -259,21 +251,17 @@ public class PomXmlSourcePage
 	
 	public boolean canLeaveThePage() {
 		IDocument document = getDocumentProvider().getDocument(getEditorInput());
-	    InputStream is = new StringInputStream(document.get());
+	    StringReader reader = new StringReader(document.get());
 	    try {
 		    Project pom = null;
-	    	pom = unmarshaller.parse(((IFileEditorInput) getEditorInput()).getFile().getRawLocation().toFile());
+	    	pom = unmarshaller.parse(reader);
 	    	return true;
 		}
 	    catch ( Exception e ) {
-	    	log.info("Cannot Leave Page due to parsing errors. reason : ", e); //$NON-NLS-1$
+	    	log.info("Cannot Leave Page due to parsing errors. reason : ", e);
 	    	return false;
 	    }
 	}
-	
-	public void projectChanged(ProjectChangeEvent e) {
-	    getPomEditor().updateDocument();
-    }
 }
 
 

@@ -33,9 +33,9 @@ import org.mevenide.ui.eclipse.editors.pom.MevenidePomEditor;
  */
 public class ReportsPage extends AbstractPomEditorPage {
 
-    private static final String ID = Mevenide.getResourceString("ReportsPage.id"); //$NON-NLS-1$
-    private static final String TAB = Mevenide.getResourceString("ReportsPage.tab.label"); //$NON-NLS-1$
-    private static final String HEADING = Mevenide.getResourceString("ReportsPage.heading"); //$NON-NLS-1$
+    private static final String ID = Mevenide.getResourceString("ReportsPage.id");
+    private static final String TAB = Mevenide.getResourceString("ReportsPage.tab.label");
+    private static final String HEADING = Mevenide.getResourceString("ReportsPage.heading");
     
 	private ReportsSection reportsSection;
 

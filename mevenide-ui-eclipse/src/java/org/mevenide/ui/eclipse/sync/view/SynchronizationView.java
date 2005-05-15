@@ -18,6 +18,7 @@ package org.mevenide.ui.eclipse.sync.view;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Project;
@@ -39,7 +40,6 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -57,15 +57,12 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.IPageSite;
 import org.eclipse.ui.part.ViewPart;
-import org.mevenide.MevenideRuntimeException;
 import org.mevenide.project.IProjectChangeListener;
 import org.mevenide.project.ProjectChangeEvent;
 import org.mevenide.project.ProjectComparator;
 import org.mevenide.project.ProjectComparatorFactory;
-import org.mevenide.ui.eclipse.IImageRegistry;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.preferences.PreferencesManager;
 import org.mevenide.ui.eclipse.sync.action.ToggleViewAction;
@@ -98,8 +95,8 @@ public class SynchronizationView extends ViewPart implements IActionListener, IR
     
 	private static final Log log = LogFactory.getLog(SynchronizationView.class);
 
-    private static final String SYNC_DIRECTION_VIEW = "SynchronizationView.SYNC_DIRECTION_VIEW"; //$NON-NLS-1$
-	private static final String SYNC_SHOULD_WRITE_PROPERTIES = "SynchronizationView.SYNC_SHOULD_WRITE_PROPERTIES"; //$NON-NLS-1$
+    private static final String SYNC_DIRECTION_VIEW = "SynchronizationView.SYNC_DIRECTION_VIEW";
+	private static final String SYNC_SHOULD_WRITE_PROPERTIES = "SynchronizationView.SYNC_SHOULD_WRITE_PROPERTIES";
 
     private Composite composite;
     private TreeViewer artifactMappingNodeViewer;
@@ -181,7 +178,7 @@ public class SynchronizationView extends ViewPart implements IActionListener, IR
 		    }
 		} 
 		catch (Exception e) {
-			log.error("Cannot find pom for project " + input, e); //$NON-NLS-1$
+			log.error("Cannot find pom for project " + input, e);
 			//@TODO emit message to user
 		}
     }
@@ -202,7 +199,7 @@ public class SynchronizationView extends ViewPart implements IActionListener, IR
             }
         } 
         catch (Exception e) {
-            log.error("Unable to synchronize POM " + input.getFile().getName() + " with project " + input, e); //$NON-NLS-1$ //$NON-NLS-2$
+            log.error("Unable to synchronize POM " + input.getFile().getName() + " with project " + input, e);
         }
     }
     
@@ -210,17 +207,7 @@ public class SynchronizationView extends ViewPart implements IActionListener, IR
     	SynchronizationNodeProvider provider = (SynchronizationNodeProvider) artifactMappingNodeViewer.getContentProvider();
     	SynchronizationNodeProvider.RootNode root = provider.new RootNode(project, poms);
     	root.addNodeListener(this);
-    	
-    	try {
-    	    artifactMappingNodeViewer.setInput(root);
-    	}
-    	catch ( MevenideRuntimeException e ) {
-    	    MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), 
-    	            				Mevenide.getResourceString("SynchronizeView.InvalidPom.Title"),  //$NON-NLS-1$
-    	            				Mevenide.getResourceString(e.getMessage()));
-    	    hideView();
-    	    return;
-    	}
+    	artifactMappingNodeViewer.setInput(root);
         
         for (int i = 0; i < poms.size(); i++) {
         	Project mavenProject = (Project) poms.get(i);
@@ -237,11 +224,6 @@ public class SynchronizationView extends ViewPart implements IActionListener, IR
         assertValidDirection();
         
         refreshAll();
-    }
-
-    private void hideView() {
-        SynchronizationView view = (SynchronizationView) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(Mevenide.SYNCHRONIZE_VIEW_ID);
-        PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().hideView(view);
     }
 
     private void assertValidDirection() {
@@ -398,8 +380,8 @@ public class SynchronizationView extends ViewPart implements IActionListener, IR
 				}
 			}
 		};
-		openFilterDialogAction.setText(Mevenide.getResourceString("SynchronizationView.FilterDialog.Text")); //$NON-NLS-1$
-		openFilterDialogAction.setImageDescriptor(Mevenide.getInstance().getImageRegistry().getDescriptor(IImageRegistry.OPEN_FILTER_DIALOG));
+		openFilterDialogAction.setText("Filter...");
+		openFilterDialogAction.setImageDescriptor(Mevenide.getImageDescriptor("open_filter_dialog.gif"));
 		
 		separator  = new Separator();
 		
@@ -521,7 +503,7 @@ public class SynchronizationView extends ViewPart implements IActionListener, IR
 		    preferencesManager.store();
 		}
 		if ( toolBarManager != null ) {
-			log.debug("property changed. updating"); //$NON-NLS-1$
+			log.debug("property changed. updating");
 	    	toolBarManager.update(true);
 		}
     }
@@ -579,12 +561,12 @@ public class SynchronizationView extends ViewPart implements IActionListener, IR
 	
 	public void artifactAddedToClasspath(IdeArtifactEvent event) {
 		ArtifactNode artifact = (ArtifactNode) event.getArtifact();
-		log.debug("artifact modified : " + artifact); //$NON-NLS-1$
+		log.debug("artifact modified : " + artifact);
     	refreshAll();
 	}
 
 	public void propertyAdded(NodeEvent event) {
-		log.debug("propertyAdded to " + event.getNode()); //$NON-NLS-1$
+		log.debug("propertyAdded to " + event.getNode());
 		artifactMappingNodeViewer.refresh(event.getNode());
 	}
 	
@@ -594,7 +576,7 @@ public class SynchronizationView extends ViewPart implements IActionListener, IR
 
 	public void artifactAddedToPom(PomArtifactEvent event) {
 		ArtifactNode artifact = (ArtifactNode) event.getArtifact();
-		log.debug("artifact modified : " + artifact); //$NON-NLS-1$
+		log.debug("artifact modified : " + artifact);
 		refreshAll();
 		updatePoms(event.getProject());
 		try {
@@ -602,7 +584,7 @@ public class SynchronizationView extends ViewPart implements IActionListener, IR
 			file.refreshLocal(IResource.DEPTH_ZERO, null);
 		} 
 		catch (Exception e) {
-			log.error("Unable to refresh POM", e); //$NON-NLS-1$
+			log.error("Uanble to refresh POM", e);
 		}
 		comparator.compare(event.getProject());
 	}
@@ -665,18 +647,17 @@ public class SynchronizationView extends ViewPart implements IActionListener, IR
 	}
 	
 	void asyncRefresh(final boolean shouldExpand) {
-	    refreshAll();
-//		artifactMappingNodeViewer.getControl().getDisplay().asyncExec(
-//				new Runnable() {
-//					public void run () {
-//						refreshAll();
-//					}
-//				}
-//		);
+		artifactMappingNodeViewer.getControl().getDisplay().asyncExec(
+				new Runnable() {
+					public void run () {
+						refreshAll();
+					}
+				}
+		);
 	}
 
 	public void refreshAll() {
-	    artifactMappingNodeViewer.refresh();
+		artifactMappingNodeViewer.refresh();
 	}
 
     public IContainer getInputContainer() {
@@ -684,12 +665,12 @@ public class SynchronizationView extends ViewPart implements IActionListener, IR
     }
 	
     public void nodeChanged(ISynchronizationNode node) {
-    	log.debug("Node changed : " + node); //$NON-NLS-1$
+    	log.debug("Node changed : " + node);
     	artifactMappingNodeViewer.update(node, null);
 	}
     
 	public void projectChanged(ProjectChangeEvent e) {
-	    log.debug("received project change notification. Attribute : " + e.getAttribute()); //$NON-NLS-1$
+	    log.debug("received project change notification. Attribute : " + e.getAttribute());
     	String attribute = e.getAttribute();
 		if ( ProjectComparator.RESOURCES.equals(attribute) 
 				|| ProjectComparator.UNIT_TESTS.equals(attribute) 

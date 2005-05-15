@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<feature id="org.mevenide.maven.pde.feature.test" label="" version="0.1.0" provider-name="the codehaus" plugin="Mevenide" image="mevenide.png" name="maven pde feature test">
-  <description>%description</description>
-  <license url="http://mevenide.codehaus.org/license.html">%license</license>
-  <url>
-    <update label="myLabel" url="myUrl" />
-  </url>
-</feature>
-

@@ -34,7 +34,7 @@ import org.eclipse.jface.viewers.ViewerFilter;
 public class PomResourceFilter extends ViewerFilter {
 	
     private static final Log log = LogFactory.getLog(PomResourceFilter.class);
-	private static final String POM_EXTENSION = "xml"; //$NON-NLS-1$
+	private static final String POM_EXTENSION = "xml";
 	
 	private IFile currentPomFile;
     

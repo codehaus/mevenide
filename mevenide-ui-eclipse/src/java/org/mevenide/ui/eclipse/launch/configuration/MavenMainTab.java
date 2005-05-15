@@ -31,7 +31,6 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.externaltools.internal.launchConfigurations.ExternalToolsMainTab;
 import org.eclipse.ui.externaltools.internal.model.IExternalToolConstants;
 import org.mevenide.ui.eclipse.Mevenide;
-import org.mevenide.util.StringUtils;
 
 /**
  * 
@@ -86,7 +85,8 @@ public class MavenMainTab extends ExternalToolsMainTab {
 	}
 
 	public void initializeFrom(ILaunchConfiguration configuration) {
-	    updateWorkingDirectory(configuration);
+		updateWorkingDirectory(configuration);
+
 	}
 
 	public void performApply(ILaunchConfigurationWorkingCopy configuration) {
@@ -98,17 +98,16 @@ public class MavenMainTab extends ExternalToolsMainTab {
 		}
 	}
 	
-	protected String getWorkingDirectoryLabel() {
-		return Mevenide.getResourceString("MavenMainTab.working.directory.label"); //$NON-NLS-1$
+	public boolean isValid(ILaunchConfiguration launchConfig) {
+		return true;
 	}
 	
-	public boolean isValid(ILaunchConfiguration launchConfig) {
-	    if ( StringUtils.isNull(workDirectoryField.getText()) ) {
-	        setErrorMessage(Mevenide.getResourceString("MavenMainTab.working.directory.null")); //$NON-NLS-1$
-	    }
-	    else {
-	       setErrorMessage(null);
-	    }
-        return !StringUtils.isNull(workDirectoryField.getText());
-    }
+//	protected String getLocationLabel() {
+//		return Mevenide.getResourceString("MavenMainTab.working.directory.label");
+//	}
+	
+	protected String getWorkingDirectoryLabel() {
+		return Mevenide.getResourceString("MavenMainTab.working.directory.label");
+	}
+	
 }

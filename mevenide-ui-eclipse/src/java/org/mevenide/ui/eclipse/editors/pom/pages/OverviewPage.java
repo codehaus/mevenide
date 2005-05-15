@@ -23,14 +23,9 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.ui.IPropertyListener;
-import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.forms.widgets.FormToolkit;
-import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.mevenide.ui.eclipse.Mevenide;
-import org.mevenide.ui.eclipse.editors.pom.IPomEditorPage;
 import org.mevenide.ui.eclipse.editors.pom.MevenidePomEditor;
-import org.mevenide.util.StringUtils;
 
 /**
  * Presents information on the identification and other core POM
@@ -39,21 +34,19 @@ import org.mevenide.util.StringUtils;
  * @author Jeff Bonevich (jeff@bonevich.com)
  * @version $Id$
  */
-public class OverviewPage extends AbstractPomEditorPage implements IPropertyListener {
+public class OverviewPage extends AbstractPomEditorPage {
 
     private static final Log log = LogFactory.getLog(OverviewPage.class);
     
-    private static final String ID = Mevenide.getResourceString("OverviewPage.id"); //$NON-NLS-1$
-    private static final String TAB = Mevenide.getResourceString("OverviewPage.tab.label"); //$NON-NLS-1$
-    private static final String HEADING = Mevenide.getResourceString("OverviewPage.heading"); //$NON-NLS-1$
-    private static final String CHILD = Mevenide.getResourceString("OverviewPage.heading.child"); //$NON-NLS-1$
-    private static final String UNNAMED = Mevenide.getResourceString("OverviewPage.heading.unnamed"); //$NON-NLS-1$
+    private static final String ID = Mevenide.getResourceString("OverviewPage.id");
+    private static final String TAB = Mevenide.getResourceString("OverviewPage.tab.label");
+    private static final String HEADING = Mevenide.getResourceString("OverviewPage.heading");
+    private static final String CHILD = Mevenide.getResourceString("OverviewPage.heading.child");
+    private static final String UNNAMED = Mevenide.getResourceString("OverviewPage.heading.unnamed");
     
 	private IdentificationSection idSection;
 	private DescriptionSection descriptionSection;
 	private FullDescriptionSection fullDesctiptionSection;
-
-    private boolean updateHeadingNeeded;
 	
     public OverviewPage(MevenidePomEditor editor) {
         super(editor, ID, TAB);
@@ -93,26 +86,18 @@ public class OverviewPage extends AbstractPomEditorPage implements IPropertyList
 
 	protected void update(Project pom) {
 	    if (log.isDebugEnabled()) {
-	        log.debug("updating overview"); //$NON-NLS-1$
+	        log.debug("updating overview");
 	    }
 	    setHeading(pom);
 		
 		super.update(pom);
 	}
 	
-	
-    public void pageActivated(IPomEditorPage oldPage) {
-        super.pageActivated(oldPage);
-        if ( updateHeadingNeeded ) {
-            redrawHeading(getManagedForm().getForm());
-        }
-    }
-	
 	protected void setHeading(Project pom) {
-		if ( !StringUtils.isNull(pom.getName()) ) {
+		if (pom.getName() != null && !"".equals(pom.getName())) {
 		    setHeading(HEADING + pom.getName());
 		}
-		else if (getPomEditor().getParentPom() != null && !StringUtils.isNull(getPomEditor().getParentPom().getName()) ){
+		else if (getPomEditor().getParentPom() != null && !"".equals(getPomEditor().getParentPom().getName())){
 		    setHeading(HEADING + getPomEditor().getParentPom().getName() + CHILD);
 		}
 		else {
@@ -127,23 +112,4 @@ public class OverviewPage extends AbstractPomEditorPage implements IPropertyList
 		return false;
 	}
 
-	
-    
-    public void propertyChanged(Object arg0, int arg1) {
-        if ( getPomEditor().equals(arg0) && arg1 == IWorkbenchPart.PROP_TITLE ) {
-            ScrolledForm parent = getManagedForm().getForm();
-            if ( parent != null && !parent.isDisposed() ) {
-	    		redrawHeading(parent);
-            }
-            else {
-                updateHeadingNeeded = true;
-            }
-        }
-    }
-
-    private void redrawHeading(ScrolledForm parent) {
-        parent.setText(getHeading());
-        parent.redraw();
-        updateHeadingNeeded = false;
-    }
 }

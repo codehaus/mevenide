@@ -16,7 +16,6 @@
  */
 package org.mevenide.ui.eclipse.editors.pom.pages;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.maven.project.License;
@@ -44,8 +43,8 @@ public class LicenseSection extends PageSection {
        	FormToolkit toolkit)
     {
         super(page, parent, toolkit);
-		setTitle(Mevenide.getResourceString("LicenseSection.header")); //$NON-NLS-1$
-		setDescription(Mevenide.getResourceString("LicenseSection.description")); //$NON-NLS-1$
+		setTitle(Mevenide.getResourceString("LicenseSection.header"));
+		setDescription(Mevenide.getResourceString("LicenseSection.description"));
     }
 
     /**
@@ -65,7 +64,7 @@ public class LicenseSection extends PageSection {
 		// POM license table
 		Button toggle = createOverrideToggle(container, factory, 1, true);
 		TableViewer viewer = createTableViewer(container, factory, 1);
-		licenseTable = new TableEntry(viewer, toggle, Mevenide.getResourceString("LicenseSection.TableEntry.Tooltip"), container, factory, this); //$NON-NLS-1$
+		licenseTable = new TableEntry(viewer, toggle, "License", container, factory, this);
 		OverrideAdaptor adaptor = new OverrideAdaptor() {
 			public void overrideParent(Object value) {
 				List licenses = (List) value;
@@ -81,9 +80,6 @@ public class LicenseSection extends PageSection {
 			new IPomCollectionAdaptor() {
 				public Object addNewObject(Object parentObject) {
 					License license = new License();
-					if ( pom.getLicenses() == null ) {
-					    pom.setLicenses(new ArrayList());
-					}
 					pom.addLicense(license);
 					return license;
 				}

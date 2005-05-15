@@ -39,8 +39,8 @@ import org.mevenide.util.StringUtils;
 public class CustomPatternFilter extends ViewerFilter {
 	private static final Log log = LogFactory.getLog(CustomPatternFilter.class);
 
-	public static final String CUSTOM_FILTERS_KEY = "mevenide.goals.outline.filter.custom"; //$NON-NLS-1$
-	public static final String APPLY_CUSTOM_FILTERS_KEY = "mevenide.goals.outline.filter.custom.apply"; //$NON-NLS-1$
+	public static final String CUSTOM_FILTERS_KEY = "mevenide.goals.outline.filter.custom";
+	public static final String APPLY_CUSTOM_FILTERS_KEY = "mevenide.goals.outline.filter.custom.apply";
 
 	private List filterPatterns = new ArrayList();
 	private boolean shouldApply;
@@ -57,7 +57,7 @@ public class CustomPatternFilter extends ViewerFilter {
 	
 	public void setPatternFilters(String customRegexFilters) {
 		if ( !StringUtils.isNull(customRegexFilters) ) {
-			StringTokenizer tokenizer = new StringTokenizer(customRegexFilters, ","); //$NON-NLS-1$
+			StringTokenizer tokenizer = new StringTokenizer(customRegexFilters, ",");
 			List patterns = new ArrayList(tokenizer.countTokens());
 			while ( tokenizer.hasMoreTokens() ) {
 				String pattern = tokenizer.nextToken();

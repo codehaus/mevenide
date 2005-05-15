@@ -42,12 +42,11 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.PlatformUI;
-import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.goals.model.Element;
 import org.mevenide.ui.eclipse.goals.model.Goal;
 import org.mevenide.ui.eclipse.goals.model.GoalsProvider;
 import org.mevenide.ui.eclipse.goals.model.Plugin;
-import org.mevenide.ui.eclipse.goals.view.GoalsLabelProvider;
+import org.mevenide.ui.eclipse.goals.viewer.GoalsLabelProvider;
 import org.mevenide.ui.eclipse.preferences.PreferencesManager;
 import org.mevenide.util.StringUtils;
 
@@ -59,6 +58,9 @@ import org.mevenide.util.StringUtils;
  * 
  */
 public class GoalFilterDialog extends Dialog {
+	
+	private static final String GOAL_FILTER_MESSAGE = "...";
+	private static final String GOAL_FILTER_TITLE = "Goal Filter";
 	
 	private PreferencesManager preferencesManager;
 	
@@ -124,7 +126,7 @@ public class GoalFilterDialog extends Dialog {
 		composite.setLayoutData(gridData);
 		
 		Button selectAllButton = new Button(composite, SWT.NULL);
-		selectAllButton.setText(Mevenide.getResourceString("GoalFilterDialog.SelectAll")); //$NON-NLS-1$
+		selectAllButton.setText("Select All");
 		GridData sData = new GridData();
 		sData.grabExcessHorizontalSpace = false;
 		selectAllButton.setLayoutData(sData);
@@ -137,7 +139,7 @@ public class GoalFilterDialog extends Dialog {
 		);
 		
 		deSelectAllButton = new Button(composite, SWT.NULL);
-		deSelectAllButton.setText(Mevenide.getResourceString("GoalFilterDialog.DeselectAll")); //$NON-NLS-1$
+		deSelectAllButton.setText("Deselect All");
 		GridData dsData = new GridData();
 		deSelectAllButton.setLayoutData(dsData);
 		deSelectAllButton.addMouseListener(
@@ -167,7 +169,7 @@ public class GoalFilterDialog extends Dialog {
 		
 		applyCustomFiltersButton = new Button(composite, SWT.CHECK);
 		applyCustomFiltersButton.setSelection(preferencesManager.getBooleanValue(CustomPatternFilter.APPLY_CUSTOM_FILTERS_KEY));
-		applyCustomFiltersButton.setText(Mevenide.getResourceString("GoalFilterDialog.RegexFilter.Text")); //$NON-NLS-1$
+		applyCustomFiltersButton.setText("Custom filter regular expressions (matching names will be hidden) :");
 		GridData checkboxData = new GridData();
 		checkboxData.grabExcessHorizontalSpace = false;
 		applyCustomFiltersButton.setLayoutData(checkboxData);
@@ -180,7 +182,7 @@ public class GoalFilterDialog extends Dialog {
 		patternText.setLayoutData(textData);
 		
 		final Label label = new Label(composite, SWT.NULL);
-		label.setText(Mevenide.getResourceString("GoalFilterDialog.RegexPatterns.Label.Text")); //$NON-NLS-1$
+		label.setText("Patterns are separated by comma");
 		label.setEnabled(applyCustomFiltersButton.getSelection());
 		
 		applyCustomFiltersButton.addSelectionListener(
@@ -202,7 +204,7 @@ public class GoalFilterDialog extends Dialog {
 
 	private void createGoalsTree(Composite parent) {
 		Text label = new Text(parent, SWT.READ_ONLY);
-		label.setText(Mevenide.getResourceString("GoalFilterDialog.GlobalGoalFiltering.Text")); //$NON-NLS-1$
+		label.setText("Filtered global goals");
 		GridData data = new GridData();
 		data.horizontalSpan = 2;
 		label.setLayoutData(data);
@@ -264,7 +266,7 @@ public class GoalFilterDialog extends Dialog {
 	private List deserializeFilteredGoals(String goalsAsString) {
 		List goals = new ArrayList();
 		if ( !StringUtils.isNull(goalsAsString) ) {
-		    StringTokenizer tokenizer = new StringTokenizer(goalsAsString, ","); //$NON-NLS-1$
+		    StringTokenizer tokenizer = new StringTokenizer(goalsAsString, ",");
 		    while ( tokenizer.hasMoreTokens() ) {
 		    	goals.add(tokenizer.nextToken());
 		    }
@@ -305,7 +307,7 @@ public class GoalFilterDialog extends Dialog {
 	private void updateCheckedGoal(boolean isSelectionChecked, Goal goal) {
 		String fullyQualifiedGoalName = goal.getPlugin().getName();
 		if ( !goal.getName().equals(Goal.DEFAULT_GOAL) ) {
-			fullyQualifiedGoalName += Goal.SEPARATOR + goal.getName();
+			fullyQualifiedGoalName += ":" + goal.getName();
 		}
 		if ( isSelectionChecked ) {
 			checkedItems.add(fullyQualifiedGoalName);
@@ -332,11 +334,11 @@ public class GoalFilterDialog extends Dialog {
 	
 	private String getSerializedFilteredGoals() {
 		Object[] checkedElements = goalsViewer.getCheckedElements();
-		StringBuffer buffer = new StringBuffer(""); //$NON-NLS-1$
+		StringBuffer buffer = new StringBuffer("");
 		for (int i = 0; i < checkedElements.length; i++) {
 			buffer.append(((Element) checkedElements[i]).getFullyQualifiedName());
 			if ( i != checkedElements.length - 1 ) {
-				buffer.append(","); //$NON-NLS-1$
+				buffer.append(",");
 			}
 		}
 		return buffer.toString();

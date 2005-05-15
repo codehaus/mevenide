@@ -18,16 +18,15 @@ package org.mevenide.ui.eclipse.wizard;
 
 import java.lang.reflect.InvocationTargetException;
 
-import org.apache.maven.project.Project;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExecutableExtension;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.jdt.internal.ui.util.ExceptionHandler;
 import org.eclipse.jdt.internal.ui.wizards.NewElementWizard;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.wizards.newresource.BasicNewProjectResourceWizard;
-import org.mevenide.ui.eclipse.IImageRegistry;
 import org.mevenide.ui.eclipse.Mevenide;
 
 /**
@@ -35,82 +34,53 @@ import org.mevenide.ui.eclipse.Mevenide;
  * @version $Id$
  */
 public class MavenProjectWizard extends NewElementWizard implements IExecutableExtension{
-    private MavenProjectWizardBasicSettingsPage fBasicSettingsPage;
-    private MavenProjectWizardBasicSettingsPOMPage fBasicSettingsPOMPage;
+    private MavenProjectWizardFirstPage fFirstPage;
     private MavenProjectWizardSecondPage fSecondPage;
     
-    private IConfigurationElement fConfigElement;
-    
-    protected boolean fUseTemplate = false;
-    
-    protected Project fProject;
- 	/**
+    private IConfigurationElement fConfigElement;	
+	/**
 	 * 
 	 */
 	public MavenProjectWizard() {
 		super();
-		setDefaultPageImageDescriptor(Mevenide.getInstance().getImageRegistry().getDescriptor(IImageRegistry.MAVEN_PROJECT_WIZ)); //$NON-NLS-1$
+		//TODO - create image for the wizard
+		//setDefaultPageImageDescriptor(JavaPluginImages.DESC_WIZBAN_NEWJPRJ);
 		setWindowTitle(Mevenide.getResourceString("MavenProjectWizard.title")); //$NON-NLS-1$
-		fProject = new Project();
 	}
 
-	protected boolean useTemplate()
-	{
-		return fUseTemplate;
-	}
-
-	protected void setTemplateUsage(boolean fUseTemplate)
-	{
-		this.fUseTemplate = fUseTemplate;
-	}
-
-	protected Project getProjectObjectModel()
-	{
-		return fProject;
-	}
-
-	protected void setProjectObjectModel(Project fProject)
-	{
-		this.fProject = fProject;
-	}
-	
 	/* (non-Javadoc)
 	 * @see org.eclipse.jdt.internal.ui.wizards.JavaProjectWizard#addPages()
 	 */
     public void addPages() {
-        fBasicSettingsPage = new MavenProjectWizardBasicSettingsPage();
-        addPage(fBasicSettingsPage);
-        fBasicSettingsPOMPage = new MavenProjectWizardBasicSettingsPOMPage();
-        addPage(fBasicSettingsPOMPage);
-        fSecondPage= new MavenProjectWizardSecondPage(fBasicSettingsPage);
+        fFirstPage = new MavenProjectWizardFirstPage();
+        addPage(fFirstPage);
+        fSecondPage= new MavenProjectWizardSecondPage(fFirstPage);
         addPage(fSecondPage);
     }
-    
     
     /* (non-Javadoc)
      * @see org.eclipse.jdt.internal.ui.wizards.NewElementWizard#finishPage(org.eclipse.core.runtime.IProgressMonitor)
      */
     protected void finishPage(IProgressMonitor monitor) throws InterruptedException, CoreException {
-    	fSecondPage.performFinish(monitor); // use the full progress monitor
+    	fSecondPage.performFinish(monitor);
+        BasicNewProjectResourceWizard.updatePerspective(fConfigElement);
+		selectAndReveal(fSecondPage.getJavaProject().getProject());
     }
     
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.wizard.IWizard#performFinish()
-	 */
-	public boolean performFinish() {
-		boolean res= super.performFinish();
-		if (res) {
-	        BasicNewProjectResourceWizard.updatePerspective(fConfigElement);
-	 		selectAndReveal(fSecondPage.getJavaProject().getProject());
-		}
-		return res;
-	}
+    /*(non-Javadoc)
+     * @see org.eclipse.jdt.internal.ui.wizards.NewElementWizard#getSchedulingRule()
+     */
+    protected ISchedulingRule getSchedulingRule() {
+    	return fFirstPage.getProjectHandle();
+    }
+    
     
     protected void handleFinishException(Shell shell, InvocationTargetException e) {
-        String title= Mevenide.getResourceString("MavenProjectWizard.op_error.title"); //$NON-NLS-1$
-        String message= Mevenide.getResourceString("MavenProjectWizard.op_error_create.message");			 //$NON-NLS-1$
+        String title= Mevenide.getResourceString("MavenProjectWizard.op_error.title");//$NON-NLS-1$
+        String message= Mevenide.getResourceString("MavenProjectWizard.op_error_create.message");//$NON-NLS-1$
         ExceptionHandler.handle(e, getShell(), title, message);
     }	
+    
     /*
      * Stores the configuration element for the wizard.  The config element will be used
      * in <code>performFinish</code> to set the result perspective.
@@ -118,6 +88,7 @@ public class MavenProjectWizard extends NewElementWizard implements IExecutableE
     public void setInitializationData(IConfigurationElement cfig, String propertyName, Object data) {
         fConfigElement= cfig;
     }
+    
     /* (non-Javadoc)
      * @see IWizard#performCancel()
      */
@@ -125,6 +96,7 @@ public class MavenProjectWizard extends NewElementWizard implements IExecutableE
         fSecondPage.performCancel();
         return super.performCancel();
     }
+    
     /* (non-Javadoc)
      * @see org.eclipse.jface.wizard.IWizard#canFinish()
      */

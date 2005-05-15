@@ -24,7 +24,7 @@ package org.mevenide.ui.eclipse.sync.event;
  */
 public class SynchronizationConstraintEvent {
 	
-	public static final String WRITE_PROPERTIES = "WRITE_PROPERTIES";   //$NON-NLS-1$
+	public static final String WRITE_PROPERTIES = "WRITE_PROPERTIES";  
 	
 	private String constraintId;
 	private boolean newValue;

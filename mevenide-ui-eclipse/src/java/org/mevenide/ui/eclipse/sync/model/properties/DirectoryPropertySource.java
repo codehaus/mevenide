@@ -23,7 +23,6 @@ import org.eclipse.ui.views.properties.ComboBoxPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
 import org.mevenide.project.ProjectConstants;
-import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.adapters.properties.AbstractPomPropertySource;
 import org.mevenide.ui.eclipse.sync.model.Directory;
 import org.mevenide.util.MevenideUtils;
@@ -37,8 +36,8 @@ public class DirectoryPropertySource extends AbstractPomPropertySource {
 
 	private static final Log log = LogFactory.getLog(DirectoryPropertySource.class);
 
-	public static final String DIRECTORY_PATH = "path"; //$NON-NLS-1$
-	public static final String DIRECTORY_TYPE = "type"; //$NON-NLS-1$
+	public static final String DIRECTORY_PATH = "path";
+	public static final String DIRECTORY_TYPE = "type";
 	
 	private Directory directory;
 	
@@ -89,7 +88,7 @@ public class DirectoryPropertySource extends AbstractPomPropertySource {
 
 	public Object getPropertyValue(Object id) {
 		if (log.isDebugEnabled()) {
-			log.debug("getPropertyValue called: " + id); //$NON-NLS-1$
+			log.debug("getPropertyValue called: " + id);
 		}
 		if (DIRECTORY_PATH.equals(id)) {
 			return valueOrEmptyString(directory.getPath());
@@ -125,7 +124,7 @@ public class DirectoryPropertySource extends AbstractPomPropertySource {
 
 	public void setPropertyValue(Object id, Object value) {
 		if (log.isDebugEnabled()) {
-			log.debug("setPropertyValue called: " + id + " = " + value); //$NON-NLS-1$ //$NON-NLS-2$
+			log.debug("setPropertyValue called: " + id + " = " + value);
 		}
 		if (value == null) return;
 		
@@ -150,9 +149,9 @@ public class DirectoryPropertySource extends AbstractPomPropertySource {
 
 	public String getLabel(Object o) {
 		if (log.isDebugEnabled()) {
-			log.debug("getLabel called for " + o); //$NON-NLS-1$
+			log.debug("getLabel called for " + o);
 		}
-		return directory.getPath() != null ? directory.getPath() : Mevenide.getResourceString("DirectoryPropertySource.CannotResolve.Path"); //$NON-NLS-1$
+		return directory.getPath() != null ? directory.getPath() : "[unable to resolve Directory path]";
 	}
 
 	/**

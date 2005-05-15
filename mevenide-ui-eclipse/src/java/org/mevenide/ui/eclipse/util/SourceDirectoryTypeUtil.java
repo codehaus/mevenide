@@ -54,31 +54,31 @@ public class SourceDirectoryTypeUtil {
 	}
 
     public static String guessSourceType(String path) {
-        if ( path.indexOf("java") != -1 ) { //$NON-NLS-1$
-        	if ( path.indexOf("resources") != -1 || path.indexOf("conf") != -1 || path.indexOf("etc") != -1) { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        if ( path.indexOf("java") != -1 ) {
+        	if ( path.indexOf("conf") != -1 || path.indexOf("etc") != -1) {
         		return ProjectConstants.MAVEN_RESOURCE;
         	}
-        	if ( path.indexOf("test") != -1 ) { //$NON-NLS-1$
+        	if ( path.indexOf("test") != -1 ) {
 				return  ProjectConstants.MAVEN_TEST_DIRECTORY; 
 	        } 
         	return ProjectConstants.MAVEN_SRC_DIRECTORY;
         }
-        if ( path.indexOf("test") != -1 ) { //$NON-NLS-1$
-			if ( path.indexOf("resources") != -1 || path.indexOf("conf") != -1 || path.indexOf("etc") != -1) {  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
+        if ( path.indexOf("test") != -1 ) {
+			if ( path.indexOf("conf") != -1 || path.indexOf("etc") != -1) {
         		return ProjectConstants.MAVEN_TEST_RESOURCE;
         	}
 			return  ProjectConstants.MAVEN_TEST_DIRECTORY; 
         }
-        if ( path.indexOf("aspect") != -1 ) { //$NON-NLS-1$
-        	if ( path.indexOf("resources") != -1 || path.indexOf("conf") != -1 || path.indexOf("etc") != -1) {  //$NON-NLS-1$ //$NON-NLS-2$//$NON-NLS-3$
+        if ( path.indexOf("aspect") != -1 ) {
+        	if ( path.indexOf("conf") != -1 || path.indexOf("etc") != -1) {
         		return ProjectConstants.MAVEN_RESOURCE;
             }
  			return ProjectConstants.MAVEN_ASPECT_DIRECTORY;
         }
-        if ( path.indexOf("resources") != -1 || path.indexOf("conf") != -1 || path.indexOf("etc") != -1) {   //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
+        if ( path.indexOf("conf") != -1 || path.indexOf("etc") != -1) {
     		return ProjectConstants.MAVEN_RESOURCE;
         } 
-        if ( path.indexOf("src") != -1 || path.indexOf("source") != -1 ) { //$NON-NLS-1$ //$NON-NLS-2$
+        if ( path.indexOf("src") != -1 || path.indexOf("source") != -1 ) {
         	return ProjectConstants.MAVEN_SRC_DIRECTORY;
         }
         return null;

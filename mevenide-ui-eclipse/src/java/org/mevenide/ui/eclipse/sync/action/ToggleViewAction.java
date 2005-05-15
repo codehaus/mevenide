@@ -41,7 +41,7 @@ public class ToggleViewAction extends Action implements ISynchronizationDirectio
     public void directionChanged(int direction) {
         boolean masked = (direction & this.direction) != 0;
         boolean oldValue = isChecked();
-        log.debug("directionChanged - oldValue = " + isChecked() + "newValue = " + masked); //$NON-NLS-1$ //$NON-NLS-2$
+        log.debug("directionChanged - oldValue = " + isChecked() + "newValue = " + masked);
         setChecked(masked);
         if ( oldValue != masked ) {
         	firePropertyChange(CHECKED, new Boolean(oldValue), new Boolean(masked));

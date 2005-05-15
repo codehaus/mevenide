@@ -16,7 +16,6 @@
  */
 package org.mevenide.ui.eclipse.editors.pom.pages;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.maven.project.Contributor;
@@ -44,8 +43,8 @@ public class ContributorsSection extends PageSection {
 	    FormToolkit toolkit)
 	{
 		super(page, parent, toolkit);
-		setTitle(Mevenide.getResourceString("ContributorsSection.header")); //$NON-NLS-1$
-		setDescription(Mevenide.getResourceString("ContributorsSection.description")); //$NON-NLS-1$
+		setTitle(Mevenide.getResourceString("ContributorsSection.header"));
+		setDescription(Mevenide.getResourceString("ContributorsSection.description"));
 	}
 
     public Composite createSectionContent(Composite parent, FormToolkit factory) {
@@ -62,7 +61,7 @@ public class ContributorsSection extends PageSection {
 		// POM contributors table
 		Button toggle = createOverrideToggle(container, factory, 1, true);
 		TableViewer viewer = createTableViewer(container, factory, 1);
-		contribTable = new TableEntry(viewer, toggle, Mevenide.getResourceString("ContributorsSection.TableEntry.Tooltip"), container, factory, this); //$NON-NLS-1$
+		contribTable = new TableEntry(viewer, toggle, "Contributor", container, factory, this);
 		OverrideAdaptor adaptor = new OverrideAdaptor() {
 			public void overrideParent(Object value) {
 				List contributors = (List) value;
@@ -78,9 +77,6 @@ public class ContributorsSection extends PageSection {
 			new IPomCollectionAdaptor() {
 				public Object addNewObject(Object parentObject) {
 					Contributor contributor = new Contributor();
-					if ( pom.getContributors() == null ) {
-					    pom.setContributors(new ArrayList());
-					}
 					pom.addContributor(contributor);
 					return contributor;
 				}

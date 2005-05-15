@@ -25,8 +25,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
-import org.eclipse.jface.viewers.DoubleClickEvent;
-import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -42,8 +40,6 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
-import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.adapters.properties.IPomPropertySource;
@@ -58,14 +54,18 @@ import org.mevenide.ui.eclipse.editors.pom.pages.PageSection;
 public class TableEntry extends PageEntry {
 	private static final Log log = LogFactory.getLog(TableEntry.class);
 
-	private static final String ADD_BUTTON_LABEL = Mevenide.getResourceString("TableEntry.addButton.label"); //$NON-NLS-1$
-	private static final String ADD_BUTTON_TOOLTIP_KEY = "TableEntry.addButton.tooltip"; //$NON-NLS-1$
-	private static final String REMOVE_BUTTON_LABEL = Mevenide.getResourceString("TableEntry.removeButton.label"); //$NON-NLS-1$
-	private static final String REMOVE_BUTTON_TOOLTIP_KEY = "TableEntry.removeButton.tooltip"; //$NON-NLS-1$
-	private static final String UP_BUTTON_LABEL = Mevenide.getResourceString("TableEntry.upButton.label"); //$NON-NLS-1$
-	private static final String UP_BUTTON_TOOLTIP_KEY = "TableEntry.upButton.tooltip"; //$NON-NLS-1$
-	private static final String DOWN_BUTTON_LABEL = Mevenide.getResourceString("TableEntry.downButton.label"); //$NON-NLS-1$
-	private static final String DOWN_BUTTON_TOOLTIP_KEY = "TableEntry.downButton.tooltip"; //$NON-NLS-1$
+	private static final String ADD_BUTTON_LABEL =
+		Mevenide.getResourceString("TableEntry.addButton.label");
+	private static final String ADD_BUTTON_TOOLTIP_KEY = "TableEntry.addButton.tooltip";
+	private static final String REMOVE_BUTTON_LABEL =
+		Mevenide.getResourceString("TableEntry.removeButton.label");
+	private static final String REMOVE_BUTTON_TOOLTIP_KEY = "TableEntry.removeButton.tooltip";
+	private static final String UP_BUTTON_LABEL =
+		Mevenide.getResourceString("TableEntry.upButton.label");
+	private static final String UP_BUTTON_TOOLTIP_KEY = "TableEntry.upButton.tooltip";
+	private static final String DOWN_BUTTON_LABEL =
+		Mevenide.getResourceString("TableEntry.downButton.label");
+	private static final String DOWN_BUTTON_TOOLTIP_KEY = "TableEntry.downButton.tooltip";
 
 	private TableViewer viewer;
 	private Button overrideToggle;
@@ -129,12 +129,9 @@ public class TableEntry extends PageEntry {
 		addButton.addSelectionListener(
 			new SelectionAdapter() {
 				public void widgetSelected(SelectionEvent e) {
-					Object entry = collectionAdaptor.addNewObject(parentPomObject);
-					if (entry != null) {
-					    addEntry(entry);
-					    setDirty(true);
-					    fireEntryDirtyEvent();
-					} 
+					addEntry(collectionAdaptor.addNewObject(parentPomObject));
+					setDirty(true);
+					fireEntryDirtyEvent();
 				}
 			}
 		);
@@ -219,7 +216,7 @@ public class TableEntry extends PageEntry {
 				public void selectionChanged(SelectionChangedEvent e) {
 					IStructuredSelection selection = (IStructuredSelection) e.getSelection();
 					if (log.isDebugEnabled()) {
-						log.debug("selection changed; empty = " + selection.isEmpty()); //$NON-NLS-1$
+						log.debug("selection changed; empty = " + selection.isEmpty());
 					}
 					if (section.getPage().isActive()) {
 						section.getPage().getPomEditor().setPropertySourceSelection(selection);
@@ -240,7 +237,7 @@ public class TableEntry extends PageEntry {
 			new ISelectionChangedListener() {
 				public void selectionChanged(SelectionChangedEvent e) {
 					if (log.isDebugEnabled()) {
-						log.debug("selection updated; empty = " + e.getSelection().isEmpty()); //$NON-NLS-1$
+						log.debug("selection updated; empty = " + e.getSelection().isEmpty());
 					}
 					boolean isSelected = ! e.getSelection().isEmpty();
 					removeButton.setEnabled(isSelected);
@@ -269,17 +266,6 @@ public class TableEntry extends PageEntry {
 			}
 		);
 
-		viewer.addDoubleClickListener(new IDoubleClickListener() {
-		    public void doubleClick(DoubleClickEvent event) {
-		        try {
-					PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView("org.eclipse.ui.views.PropertySheet"); //$NON-NLS-1$
-				}
-				catch ( PartInitException e ) {
-					log.debug(e, e);
-				}
-		    } 
-		});
-		
 		addButton.setEnabled(false);
 		removeButton.setEnabled(false);
 		upButton.setEnabled(false);
@@ -317,7 +303,7 @@ public class TableEntry extends PageEntry {
 
 	public void setInherited(boolean inherits) {
 		if (log.isDebugEnabled()) {
-			log.debug("field changed to inherited = " + inherited); //$NON-NLS-1$
+			log.debug("field changed to inherited = " + inherited);
 		}
 		this.inherited = inherits;
 		setEnabled(!inherited);
@@ -328,7 +314,7 @@ public class TableEntry extends PageEntry {
 	}
 
 	public void setEnabled(boolean enable) {
-		if (viewer != null && !viewer.getTable().isDisposed()) {
+		if (viewer != null) {
 			viewer.getTable().setEnabled(enable);
 			addButton.setEnabled(enable);
 			removeButton.setEnabled(enable && viewer.getTable().getItemCount() > 0);
@@ -386,7 +372,7 @@ public class TableEntry extends PageEntry {
 			new IPropertyChangeListener() {
 				public void propertyChange(PropertyChangeEvent event) {
 					if (log.isDebugEnabled()) {
-						log.debug("property source value changed! " + event.getSource()); //$NON-NLS-1$
+						log.debug("property source value changed! " + event.getSource());
 					}
 					viewer.update(event.getSource(), null);
 					setDirty(true);
@@ -397,13 +383,11 @@ public class TableEntry extends PageEntry {
 				}
 			}
 		);
-		if ( !viewer.getTable().isDisposed() ) {
-		    viewer.add(source);
-		}
+		viewer.add(source);
 	}
 	
 	public void removeAll() {
-		if (viewer != null && !viewer.getTable().isDisposed()) {
+		if (viewer != null) {
 			while (viewer.getTable().getItemCount() > 0) {
 				viewer.remove(viewer.getElementAt(0));
 			}
@@ -427,7 +411,7 @@ public class TableEntry extends PageEntry {
 	 * @see org.mevenide.ui.eclipse.editors.pages.PageEntry#setFocus()
 	 */
 	public boolean setFocus() {
-		if (viewer != null && !viewer.getTable().isDisposed()) {
+		if (viewer != null) {
 			return viewer.getTable().setFocus();
 		}
 		return false;

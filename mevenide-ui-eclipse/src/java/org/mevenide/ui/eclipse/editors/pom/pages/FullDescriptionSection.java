@@ -38,8 +38,8 @@ public class FullDescriptionSection extends PageSection {
     	FormToolkit toolkit) 
     {
         super(page, parent, toolkit);
-		setTitle(Mevenide.getResourceString("FullDescriptionSection.header")); //$NON-NLS-1$
-		setDescription(Mevenide.getResourceString("FullDescriptionSection.description")); //$NON-NLS-1$
+		setTitle(Mevenide.getResourceString("FullDescriptionSection.header"));
+		setDescription(Mevenide.getResourceString("FullDescriptionSection.description"));
     }
 
     public Composite createSectionContent(Composite parent, FormToolkit factory) {

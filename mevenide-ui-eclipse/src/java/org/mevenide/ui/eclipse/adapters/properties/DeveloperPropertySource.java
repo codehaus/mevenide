@@ -27,7 +27,7 @@ import org.mevenide.util.MevenideUtils;
  */
 public class DeveloperPropertySource extends ContributorPropertySource {
 
-	private static final String DEVELOPER_ID = "id"; //$NON-NLS-1$
+	private static final String DEVELOPER_ID = "id";
 
 	public DeveloperPropertySource(Developer developer) {
 		super(developer);

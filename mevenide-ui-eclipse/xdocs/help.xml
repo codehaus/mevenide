@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<document>
+	<properties>
+		<author email="rhill@wanadoo.fr">Gilles Dodinet</author>
+		<title>Help Page</title>
+	</properties>
+	<body>
+		<section name="User Guide">
+			<subsection name="Intended audience">
+				<div id="documentContent">
+					<p>This guide is targeted to Eclipse (3.0+) users that want to embed Maven into their IDE.</p>
+				</div>
+			</subsection>
+			<subsection name="content">
+				<div id="documentContent">
+					<p>The guide covers the following areas :</p>
+					<ul>
+						<li>
+							<a href="conf.html" class="documentLink">Mevenide Configuration</a>
+						</li>
+						<li>
+							<a href="run.html" class="documentLink">Maven Launching</a>
+						</li>
+						<li>
+							<a href="sync.html" class="documentLink">POM Synchronization</a>
+						</li>
+						<li>
+							<a href="edit.html" class="documentLink">POM Editor</a>
+						</li>
+						<li>
+							<a href="contentassist.html" class="documentLink">Jelly Editor</a>
+						</li>
+						<li>
+							<a href="wizard.html" class="documentLink">Maven wizard</a>
+						</li>
+					</ul>
+				</div>
+			</subsection>
+		</section>
+		<section>
+			<p>
+				<navbar next="conf.html"/>
+			</p>
+		</section>
+	</body>
+</document>

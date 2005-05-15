@@ -29,7 +29,6 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
-import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.preferences.PreferencesManager;
 
 /**  
@@ -99,7 +98,7 @@ public class NodeFilterDialog extends Dialog {
 		
 		enableArtifactFilteringButton = new Button(composite, SWT.CHECK);
 		enableArtifactFilteringButton.setSelection(preferencesManager.getBooleanValue(MavenArtifactNodeFilter.APPLY_FILTERS_KEY));
-		enableArtifactFilteringButton.setText(Mevenide.getResourceString("NodeFilterDialog.Enable.Filtering.Text")); //$NON-NLS-1$
+		enableArtifactFilteringButton.setText("Enable artifact filtering");
 		GridData checkboxData = new GridData();
 		checkboxData.grabExcessHorizontalSpace = false;
 		enableArtifactFilteringButton.setLayoutData(checkboxData);
@@ -112,7 +111,7 @@ public class NodeFilterDialog extends Dialog {
 		groupIdText.setLayoutData(textData);
 		
 		final Label label = new Label(composite, SWT.NULL);
-		label.setText(Mevenide.getResourceString("NodeFilterDialog.RegexFiltering.Description.Label")); //$NON-NLS-1$
+		label.setText("(Matching groupId will be hidden. if not set all artifacts will be hidden.)");
 		label.setEnabled(enableArtifactFilteringButton.getSelection());
 		
 		enableArtifactFilteringButton.addSelectionListener(
@@ -135,36 +134,36 @@ public class NodeFilterDialog extends Dialog {
 		
 		enableDirectoryFilteringButton = new Button(composite, SWT.CHECK);
 		enableDirectoryFilteringButton.setSelection(preferencesManager.getBooleanValue(DirectoryNodeFilter.APPLY_FILTERS_KEY));
-		enableDirectoryFilteringButton.setText(Mevenide.getResourceString("NodeFilterDialog.Directory.Filtering.Text")); //$NON-NLS-1$
+		enableDirectoryFilteringButton.setText("Enable directory filtering");
 		GridData checkboxData = new GridData();
 		checkboxData.grabExcessHorizontalSpace = false;
 		enableDirectoryFilteringButton.setLayoutData(checkboxData);
 		
 		directoryTypeChoiceGroup = new Group(parent, SWT.NULL);
-		directoryTypeChoiceGroup.setText(Mevenide.getResourceString("NodeFilterDialog.Directory.Filtering.Refine.Text")); //$NON-NLS-1$
+		directoryTypeChoiceGroup.setText("Refine directory filtering semantic");
 		GridLayout layout = new GridLayout();
 		directoryTypeChoiceGroup.setLayout(layout);
 		GridData typeChoiceGridData = new GridData(GridData.FILL_BOTH);
 		gridData.grabExcessHorizontalSpace = true;
 		directoryTypeChoiceGroup.setLayoutData(typeChoiceGridData);
 		
-		String buttonText = Mevenide.getResourceString("NodeFilterDialog.Source.Filtering.Text"); //$NON-NLS-1$
+		String buttonText = "Filter Source directories";
 		sourceButton = createDirectoryTypeButton(directoryTypeChoiceGroup, buttonText);
 		sourceButton.setSelection(preferencesManager.getBooleanValue(DirectoryNodeFilter.APPLY_SOURCE_FILTERS_KEY));
 		
-		buttonText = Mevenide.getResourceString("NodeFilterDialog.Test.Filtering.Text"); //$NON-NLS-1$
+		buttonText = "Filter Test directories";
 		testButton = createDirectoryTypeButton(directoryTypeChoiceGroup, buttonText);
 		testButton.setSelection(preferencesManager.getBooleanValue(DirectoryNodeFilter.APPLY_TEST_FILTERS_KEY));
 		
-		buttonText = Mevenide.getResourceString("NodeFilterDialog.Aspects.Filtering.Text"); //$NON-NLS-1$
+		buttonText = "Filter Aspect directories";
 		aspectButton = createDirectoryTypeButton(directoryTypeChoiceGroup, buttonText);
 		aspectButton.setSelection(preferencesManager.getBooleanValue(DirectoryNodeFilter.APPLY_ASPECT_FILTERS_KEY));
 		
-		buttonText = Mevenide.getResourceString("NodeFilterDialog.Resources.Filtering.Text"); //$NON-NLS-1$
+		buttonText = "Filter Resource directories";
 		resourceButton = createDirectoryTypeButton(directoryTypeChoiceGroup, buttonText);
 		resourceButton.setSelection(preferencesManager.getBooleanValue(DirectoryNodeFilter.APPLY_RESOURCE_FILTERS_KEY));
 		
-		buttonText = Mevenide.getResourceString("NodeFilterDialog.Output.Filtering.Text"); //$NON-NLS-1$
+		buttonText = "Filter Output directories";
 		outputButton = createDirectoryTypeButton(directoryTypeChoiceGroup, buttonText);
 		outputButton.setSelection(preferencesManager.getBooleanValue(DirectoryNodeFilter.APPLY_OUTPUT_FILTERS_KEY));
 		

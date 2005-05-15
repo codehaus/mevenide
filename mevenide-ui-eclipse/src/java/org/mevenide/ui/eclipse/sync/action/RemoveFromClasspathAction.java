@@ -35,7 +35,7 @@ public class RemoveFromClasspathAction extends ArtifactAction {
 		IClasspathEntry[] newEntries = new IClasspathEntry[entries.length - 1];
 		int idx = 0;
 		while ( true ) {
-			if ( selectedNode.equivalentEntry(entries[idx]) ) {
+			if ( ((ArtifactNode) selectedNode).equivalentEntry(entries[idx]) ) {
 				break;
 			}
 			idx++;

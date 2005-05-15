@@ -27,7 +27,6 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.ui.PlatformUI;
 import org.mevenide.project.io.ProjectReader;
-import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.sync.view.SynchronizationView;
 
 /**
@@ -38,17 +37,19 @@ import org.mevenide.ui.eclipse.sync.view.SynchronizationView;
  * 
  */
 public class SynchronizePomAction extends AbstractMevenideAction {
+    private static final String SYNCHRONIZE_VIEW_ID = "org.mevenide.ui.synchronize.view.SynchronizationView";
+    
     private static Log log = LogFactory.getLog(SynchronizePomAction.class);
 	
     private Project mavenProject;
     
     public void run(IAction action) {
         try {
-            SynchronizationView view = (SynchronizationView) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(Mevenide.SYNCHRONIZE_VIEW_ID);
+            SynchronizationView view = (SynchronizationView) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(SYNCHRONIZE_VIEW_ID);
             view.setInput(mavenProject);
         }
         catch ( Exception e ) {
-            log.debug("Unable to synchronize project", e); //$NON-NLS-1$
+            log.debug("Unable to synchronize project", e);
         }
 	}
     
@@ -66,7 +67,7 @@ public class SynchronizePomAction extends AbstractMevenideAction {
             }
         } 
         catch (Exception e) {
-            log.error("Unable to read project file", e); //$NON-NLS-1$
+            log.error("Unable to read project file", e);
             //shouldnot warn b/c malformed xml will then prevent user to do any action on that resource
             //MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Invalid POM", "Unable to read project descriptor.");
         }

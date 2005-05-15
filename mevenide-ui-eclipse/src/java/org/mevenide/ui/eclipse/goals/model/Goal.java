@@ -16,8 +16,6 @@
  */
 package org.mevenide.ui.eclipse.goals.model;
 
-import org.mevenide.ui.eclipse.Mevenide;
-
 /**  
  * 
  * @author Gilles Dodinet (gdodinet@wanadoo.fr)
@@ -25,10 +23,7 @@ import org.mevenide.ui.eclipse.Mevenide;
  * 
  */
 public class Goal extends Element {
-	
-    public static final String SEPARATOR = ":"; //$NON-NLS-1$
-    
-    public static final String DEFAULT_GOAL = Mevenide.getResourceString("Goal.Default");  //$NON-NLS-1$
+	public static final String DEFAULT_GOAL = "(default)"; 
 	
 	private Plugin plugin ;
 	
@@ -41,6 +36,6 @@ public class Goal extends Element {
     }
 
 	public String getFullyQualifiedName() {
-		return (plugin != null ? plugin.getName() + SEPARATOR : "") + getName(); //$NON-NLS-1$
+		return (plugin != null ? plugin.getName() + ":" : "") + getName();
 	}
 }

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<document>
+    <properties>
+    	<author email="rhill2@free.fr">Gilles Dodinet</author>
+        <title>Help Page</title>
+    </properties>
+    <body>
+		<section name="POM Edition">
+        	<div id="documentContent">
+        	<p>
+				Mevenide provides simple wizard (Screenshot 1) based on java project wizards for creating maven-based projects. Convenient source and output folders are already filled in, and upon commit, a POM skeleton will be created.
+				in the future the wizard will be more flexible allowing to specify the POM more precisely.
+				<br/><br/>
+				<center>
+					<img border="1px" src="images/maven-wizard.png"/>
+					<br/><br/>
+					<font size="-1"><b>Screenshot 1</b> Maven project wizard</font>
+					<br/><br/>
+				</center>
+			</p>
+			<p>
+				Also in the future a POM wizard will replace the 'Create POM' contextual action.
+			</p>
+        	</div>
+        </section>
+        <section>
+			<p>
+				<navbar prev="contentassist.html" toc="help.html"/>
+			</p>
+		</section>
+	</body>
+</document>

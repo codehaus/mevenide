@@ -16,7 +16,6 @@
  */
 package org.mevenide.ui.eclipse.editors.pom.pages;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.maven.project.Build;
@@ -41,9 +40,9 @@ import org.mevenide.ui.eclipse.editors.pom.MevenidePomEditor;
  */
 public class BuildPage extends AbstractPomEditorPage {
 
-    private static final String ID = Mevenide.getResourceString("BuildPage.id"); //$NON-NLS-1$
-    private static final String TAB = Mevenide.getResourceString("BuildPage.tab.label"); //$NON-NLS-1$
-    private static final String HEADING = Mevenide.getResourceString("BuildPage.heading"); //$NON-NLS-1$
+    private static final String ID = Mevenide.getResourceString("BuildPage.id");
+    private static final String TAB = Mevenide.getResourceString("BuildPage.tab.label");
+    private static final String HEADING = Mevenide.getResourceString("BuildPage.heading");
     
 	private BuildDirectoriesSection directoriesSection;
 	private ResourcesSection resourcesSection;
@@ -72,7 +71,7 @@ public class BuildPage extends AbstractPomEditorPage {
 		control.setLayoutData(gd);
 		addSection(directoriesSection);
 
-		resourcesSection = new ResourcesSection(this, parent, factory, "BuildResourcesSection"); //$NON-NLS-1$
+		resourcesSection = new ResourcesSection(this, parent, factory, "BuildResourcesSection");
 		IResourceAdaptor adaptor = new IResourceAdaptor() {
 			public void setResources(Object target, List resources) {
 				Project pom = (Project) target;
@@ -82,11 +81,7 @@ public class BuildPage extends AbstractPomEditorPage {
 		
 			public void addResource(Object target, Resource resource) {
 				Project pom = (Project) target;
-				Build build = getOrCreateBuild(pom);
-				if ( build.getResources() == null ) {
-				    build.setResources(new ArrayList());
-				}
-                build.addResource(resource);
+				getOrCreateBuild(pom).addResource(resource);
 				getPomEditor().setModelDirty(true);
 			}
 		
@@ -112,7 +107,7 @@ public class BuildPage extends AbstractPomEditorPage {
 		control.setLayoutData(gd);
 		addSection(resourcesSection);
 		
-		sourceModificationsSection = new SourceModificationsSection(this, parent, factory, "BuildSourceModificationsSection"); //$NON-NLS-1$
+		sourceModificationsSection = new SourceModificationsSection(this, parent, factory, "BuildSourceModificationsSection");
 		ISourceModificationAdaptor sourceModificationsSectionAdaptor = new ISourceModificationAdaptor() {
 			public void setSourceModifications(Object target, List sourceModifications) {
 			    Project pom = (Project) target;
@@ -122,11 +117,7 @@ public class BuildPage extends AbstractPomEditorPage {
 		
 			public void addSourceModification(Object target, SourceModification sourceModification) {
 				Project pom = (Project) target;
-				Build build = getOrCreateBuild(pom);
-				if ( build.getSourceModifications() == null ) {
-				    build.setSourceModification(new ArrayList());
-				}
-                build.addSourceModification(sourceModification);
+				getOrCreateBuild(pom).addSourceModification(sourceModification);
 				getPomEditor().setModelDirty(true);
 			}
 		

@@ -21,7 +21,6 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.ui.views.properties.ComboBoxPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.TextPropertyDescriptor;
-import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.util.MevenideUtils;
 
 /**
@@ -30,13 +29,13 @@ import org.mevenide.util.MevenideUtils;
  */
 public class LicensePropertySource extends AbstractPomPropertySource {
 
-	private static final String LICENSE_NAME = "name"; //$NON-NLS-1$
-	private static final String LICENSE_URL = "url"; //$NON-NLS-1$
-	private static final String LICENSE_DIST = "distribution"; //$NON-NLS-1$
-	private static final String LICENSE_COMMENTS = "comments"; //$NON-NLS-1$
+	private static final String LICENSE_NAME = "name";
+	private static final String LICENSE_URL = "url";
+	private static final String LICENSE_DIST = "distribution";
+	private static final String LICENSE_COMMENTS = "comments";
 
-	private static final String LICENSE_DIST_MANUAL = "manual"; //$NON-NLS-1$
-	private static final String LICENSE_DIST_REPO = "repo"; //$NON-NLS-1$
+	private static final String LICENSE_DIST_MANUAL = "manual";
+	private static final String LICENSE_DIST_REPO = "repo";
 
 	private static final Integer LICENSE_DIST_EMPTY_INDEX = new Integer(0);
 	private static final Integer LICENSE_DIST_MANUAL_INDEX = new Integer(1);
@@ -186,7 +185,7 @@ public class LicensePropertySource extends AbstractPomPropertySource {
 	}
 
 	public String getLabel(Object o) {
-		return license.getName() != null ? license.getName() : Mevenide.getResourceString("AbstractPropertySource.Element.Unnamed"); //$NON-NLS-1$
+		return license.getName() != null ? license.getName() : "[unnamed]";
 	}
 
 	/**

@@ -21,7 +21,6 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Version;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.TextPropertyDescriptor;
-import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.util.MevenideUtils;
 
 /**
@@ -32,9 +31,9 @@ public class VersionPropertySource extends AbstractPomPropertySource {
 
 	private static final Log log = LogFactory.getLog(VersionPropertySource.class);
 
-	private static final String VERSION_NAME = "name"; //$NON-NLS-1$
-	private static final String VERSION_ID = "id"; //$NON-NLS-1$
-	private static final String VERSION_TAG = "tag"; //$NON-NLS-1$
+	private static final String VERSION_NAME = "name";
+	private static final String VERSION_ID = "id";
+	private static final String VERSION_TAG = "tag";
 
 	private Version version;
 	
@@ -68,7 +67,7 @@ public class VersionPropertySource extends AbstractPomPropertySource {
 
 	public Object getPropertyValue(Object id) {
 		if (log.isDebugEnabled()) {
-			log.debug("getPropertyValue called: " + id); //$NON-NLS-1$
+			log.debug("getPropertyValue called: " + id);
 		}
 		if (VERSION_NAME.equals(id)) {
 			return valueOrEmptyString(version.getName());
@@ -101,7 +100,7 @@ public class VersionPropertySource extends AbstractPomPropertySource {
 
 	public void setPropertyValue(Object id, Object value) {
 		if (log.isDebugEnabled()) {
-			log.debug("setPropertyValue called: " + id + " = " + value);  //$NON-NLS-1$//$NON-NLS-2$
+			log.debug("setPropertyValue called: " + id + " = " + value);
 		}
 		if (value == null) return;
 		
@@ -137,9 +136,9 @@ public class VersionPropertySource extends AbstractPomPropertySource {
 
 	public String getLabel(Object o) {
 		if (log.isDebugEnabled()) {
-			log.debug("getLabel called for " + o); //$NON-NLS-1$
+			log.debug("getLabel called for " + o);
 		}
-		return version.getName() != null ? version.getName() : Mevenide.getResourceString("AbstractPropertySource.Element.Unknown"); //$NON-NLS-1$
+		return version.getName() != null ? version.getName() : "[unknown]";
 	}
 
 	/**

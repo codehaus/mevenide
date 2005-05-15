@@ -41,7 +41,7 @@ public class PomXmlScanner extends RuleBasedScanner {
 
 		IRule[] rules = new IRule[2];
 		
-		rules[0] = new SingleLineRule("<?", "?>", processingInstructionToken);  //$NON-NLS-1$//$NON-NLS-2$
+		rules[0] = new SingleLineRule("<?", "?>", processingInstructionToken);
 		rules[1] = new WhitespaceRule(new PomXmlWhitespaceDetector());
 
 		setRules(rules);

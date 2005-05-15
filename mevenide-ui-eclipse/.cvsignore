@@ -8,4 +8,3 @@ velocity.log
 *.jar
 .mvnignore
 META-INF
-*.jpage

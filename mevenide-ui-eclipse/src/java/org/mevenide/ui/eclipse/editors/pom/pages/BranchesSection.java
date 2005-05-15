@@ -16,7 +16,6 @@
  */
 package org.mevenide.ui.eclipse.editors.pom.pages;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.maven.project.Branch;
@@ -44,8 +43,8 @@ public class BranchesSection extends PageSection {
 	    FormToolkit toolkit)
 	{
 		super(page, parent, toolkit);
-		setTitle(Mevenide.getResourceString("BranchesSection.header")); //$NON-NLS-1$
-		setDescription(Mevenide.getResourceString("BranchesSection.description")); //$NON-NLS-1$
+		setTitle(Mevenide.getResourceString("BranchesSection.header"));
+		setDescription(Mevenide.getResourceString("BranchesSection.description"));
 	}
 
     public Composite createSectionContent(Composite parent, FormToolkit factory) {
@@ -62,7 +61,7 @@ public class BranchesSection extends PageSection {
 		// POM branch table
 		Button toggle = createOverrideToggle(container, factory, 1, true);
 		TableViewer viewer = createTableViewer(container, factory, 1);
-		branchTable = new TableEntry(viewer, toggle, Mevenide.getResourceString("BranchesSection.TableEntry.ToolTip"), container, factory, this);  //$NON-NLS-1$
+		branchTable = new TableEntry(viewer, toggle, "Branch", container, factory, this);
 		OverrideAdaptor adaptor = new OverrideAdaptor() {
 			public void overrideParent(Object value) {
 				List branches = (List) value;
@@ -78,9 +77,6 @@ public class BranchesSection extends PageSection {
 			new IPomCollectionAdaptor() {
 				public Object addNewObject(Object parentObject) {
 					Branch branch = new Branch();
-					if ( pom.getBranches() == null ) {
-					    pom.setBranches(new ArrayList());
-					}
 					pom.addBranch(branch);
 					return branch;
 				}

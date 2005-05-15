@@ -71,7 +71,7 @@ public class ArtifactAction {
 	}
 	
 	protected void fireArtifactAddedToPom(Object item, Project project) {
-		log.debug("Artifact (" + item + ") added to POM : " + project.getFile()); //$NON-NLS-1$ //$NON-NLS-2$
+		log.debug("Artifact (" + item + ") added to POM : " + project.getFile());
 		for (int i = 0; i < listeners.size(); i++) {
 			PomArtifactEvent event = new PomArtifactEvent(item, project);
 			((IActionListener)listeners.get(i)).artifactAddedToPom(event);

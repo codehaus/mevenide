@@ -33,6 +33,6 @@ public abstract class MevenideFonts {
 		EDITOR_HEADER.dispose();
     }
 	
-	public static final Font EDITOR_HEADER = new Font(null, "Courier", 14, SWT.BOLD); //$NON-NLS-1$
+	public static final Font EDITOR_HEADER = new Font(null, "Courier", 14, SWT.BOLD);
 }
 

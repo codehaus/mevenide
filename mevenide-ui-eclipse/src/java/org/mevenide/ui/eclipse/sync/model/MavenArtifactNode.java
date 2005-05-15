@@ -16,10 +16,9 @@
  */
 package org.mevenide.ui.eclipse.sync.model;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Dependency;
@@ -28,15 +27,11 @@ import org.apache.maven.repository.Artifact;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.ui.views.properties.IPropertySource;
-import org.mevenide.context.DefaultQueryContext;
-import org.mevenide.environment.ILocationFinder;
-import org.mevenide.environment.LocationFinderAggregator;
 import org.mevenide.project.dependency.DependencyUtil;
 import org.mevenide.project.io.ProjectWriter;
 import org.mevenide.ui.eclipse.adapters.properties.DependencyPropertySource;
@@ -52,22 +47,16 @@ import org.mevenide.util.MevenideUtils;
  * 
  */
 public class MavenArtifactNode extends ArtifactNode {
-    
     private static final Log log = LogFactory.getLog(MavenArtifactNode.class);
-    
-    private static final String MAVEN_REPO = "MAVEN_REPO"; //$NON-NLS-1$
-    private static final String SEPARATOR = " : "; //$NON-NLS-1$
 	
 	private Artifact artifact;
 	private MavenProjectNode parent;
 	
 	private PropertyNode[] properties;
-	private ILocationFinder locationFinder;
 	
 	public MavenArtifactNode(Artifact artifact, MavenProjectNode project) {
 		this.artifact = artifact;
 		parent = project;
-		locationFinder = new LocationFinderAggregator(new DefaultQueryContext(((Project) project.getData()).getFile().getParentFile()));
 		initialize();
 	}
 	
@@ -86,7 +75,7 @@ public class MavenArtifactNode extends ArtifactNode {
 		}
 		MavenArtifactNode node = (MavenArtifactNode) obj;
 		Project context = (Project) parent.getData();
-		return new File(artifact.getPath()).getName() !=  null && new File(artifact.getPath()).getName().equals(new File(node.artifact.getPath()).getName()) ;
+		return DependencyUtil.areEquals(context, this.artifact.getDependency(), node.artifact.getDependency());
 	}
 	
 	public ISynchronizationNode[] getChildren() {
@@ -105,7 +94,7 @@ public class MavenArtifactNode extends ArtifactNode {
 	public String toString() {
 
 	    String groupId = artifact.getDependency().getGroupId(); 
-	    groupId = resolve(groupId) + SEPARATOR;
+	    groupId = resolve(groupId) + " : ";
 	    
 	    String artifactId = artifact.getDependency().getArtifactId();
 		artifactId = resolve(artifactId);
@@ -113,7 +102,7 @@ public class MavenArtifactNode extends ArtifactNode {
 	    String version = artifact.getDependency().getVersion();
 	    version = version != null ? resolve(version) : null;
 	    
-		return groupId + artifactId + (version != null ? SEPARATOR + version : "") ; //$NON-NLS-1$
+		return groupId + artifactId + (version != null ? " : " + version : "") ;
 	}
 	
 	
@@ -125,8 +114,8 @@ public class MavenArtifactNode extends ArtifactNode {
 	 */
 	public void addTo(IProject project) throws Exception {
 		boolean treatAsEclipseDependency = false;
-		String eclipseDependencyProperty = artifact.getDependency().getProperty("eclipse.dependency"); //$NON-NLS-1$
-		treatAsEclipseDependency = "true".equals(eclipseDependencyProperty); //$NON-NLS-1$
+		String eclipseDependencyProperty = (String) artifact.getDependency().getProperty("eclipse.dependency");
+		treatAsEclipseDependency = "true".equals(eclipseDependencyProperty);
 		IClasspathEntry entry = null;
 		if ( treatAsEclipseDependency ) {
 			entry = createNewProjectEntry();
@@ -138,60 +127,19 @@ public class MavenArtifactNode extends ArtifactNode {
 	}
 	
 	private IClasspathEntry createNewLibraryEntry() {
-		String mavenRepo = locationFinder.getMavenLocalRepository();
-		Dependency dep = artifact.getDependency();
 		String artifactPath = artifact.getPath();
-		
-		if ( "version".equals(artifact.getOverrideType()) && 
-				artifactPath.replaceAll("\\\\","/").startsWith(mavenRepo.replaceAll("\\\\","/")) ) {
-			//not sure if this is correct but i experiment strange behaviour with version override
-			//jar is set to MAVEN_REPO/MAVEN_REPO/<repo relative path>
-			//so extract name if jar startsWith MAVEN_REPO
-			//if no repeating path will be corrected afterwards
-			dep.setJar(new File(artifactPath).getName());
-		}
-		if ( dep.getJar() != null && !dep.getJar().replaceAll("\\\\","/").startsWith(mavenRepo.replaceAll("\\\\","/")) ) { //$NON-NLS-1$ //$NON-NLS-2$//$NON-NLS-3$ //$NON-NLS-4$
-			artifactPath = new File(mavenRepo, dep.getGroupId() + "/" + dep.getType() + "s/" + dep.getJar()).getAbsolutePath();
-		}
-		
-		artifactPath = resolve(artifactPath);
-		
-		if ( artifactPath.replaceAll("\\\\","/").startsWith(mavenRepo.replaceAll("\\\\","/")) ) {  //$NON-NLS-1$ //$NON-NLS-2$//$NON-NLS-3$ //$NON-NLS-4$
-		    try {
-                artifactPath = MevenideUtils.makeRelativePath(new File(mavenRepo), artifactPath);
-                //create MAVEN_REPO variable if not exists
-                IPath mavenRepoVar = JavaCore.getClasspathVariable(MAVEN_REPO);
-                if ( mavenRepoVar == null ) {
-                    try {
-                        JavaCore.setClasspathVariable(MAVEN_REPO, new Path(mavenRepo), null);
-                    }
-                    catch( Exception e ) {
-                        String message = "Unable to set MAVEN_REPO variable";  //$NON-NLS-1$
-                        log.error(message, e);     
-                    }
-                }
-                return JavaCore.newVariableEntry(new Path(MAVEN_REPO + "/" + artifactPath.replaceAll("\\\\","/")), null, null);   //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
-            }
-            catch (IOException e) {
-                String message = "Unable to get mavenRepo relative Path for " + artifactPath;  //$NON-NLS-1$
-                log.error(message, e);
-            }
-		}
 		return JavaCore.newLibraryEntry(new Path(artifactPath), null, null);
-		
 	}
 	
 	private IClasspathEntry createNewProjectEntry() throws Exception {
 		assertJavaNature();
 		//maven-eclipse-plugin assumes project name = artifactId when eclipse.dependency is set to true
 		//follow same pattern here tho i dont think this is very accurate. need to think of another solution
-		String referencedProjectName = artifact.getDependency().getArtifactId();
-		referencedProjectName = resolve(referencedProjectName);
-		return JavaCore.newProjectEntry(new Path("/" + referencedProjectName)); //$NON-NLS-1$
+		return JavaCore.newProjectEntry(new Path("/" + artifact.getDependency().getArtifactId()));
 	}
 	
 	private void assertJavaNature() throws Exception {
-		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject("/" + artifact.getDependency().getArtifactId()); //$NON-NLS-1$
+		IProject project = (IProject) ResourcesPlugin.getWorkspace().getRoot().getProject("/" + artifact.getDependency().getArtifactId());
 		if ( !project.hasNature(JavaCore.NATURE_ID) ) {
 			JavaProjectUtils.attachJavaNature(project);
 		}
@@ -231,7 +179,7 @@ public class MavenArtifactNode extends ArtifactNode {
             ProjectWriter.getWriter().removeArtifact((Project) parent.getData(), artifact);
         }
         catch (Exception e) {
-            String message = "Unable to remove artifact " + artifact.getDependency() + " from pom " + project.getName();   //$NON-NLS-1$//$NON-NLS-2$
+            String message = "Unable to remove artifact " + artifact.getDependency() + " from pom " + project.getName(); 
             log.error(message, e);
         }
 		
@@ -275,7 +223,7 @@ public class MavenArtifactNode extends ArtifactNode {
 	
 	public boolean equivalentEntry(IClasspathEntry entry) {
 	    //@todo manage CPE_VARIABLE
-	    if ( entry.getEntryKind() != IClasspathEntry.CPE_PROJECT && entry.getEntryKind() != IClasspathEntry.CPE_LIBRARY && entry.getEntryKind() != IClasspathEntry.CPE_VARIABLE ) { 	
+	    if ( entry.getEntryKind() != IClasspathEntry.CPE_PROJECT && entry.getEntryKind() != IClasspathEntry.CPE_LIBRARY ) { 	
 		    return false;
 		}
 	    
@@ -295,13 +243,12 @@ public class MavenArtifactNode extends ArtifactNode {
 	    	if ( entry.getEntryKind() == IClasspathEntry.CPE_PROJECT ) {
 	            artifactEntry = JavaProjectUtils.createArtifactFromProjectEntry(project, entry);
 	        }
-	    	if ( entry.getEntryKind() == IClasspathEntry.CPE_LIBRARY || 
-	    	        entry.getEntryKind() == IClasspathEntry.CPE_VARIABLE ) {
+	        if ( entry.getEntryKind() == IClasspathEntry.CPE_LIBRARY ) {
 	        	artifactEntry = JavaProjectUtils.createArtifactFromLibraryEntry(project, entry);
 	        }
         }
         catch (Exception e) {
-            String message = "Unable to retrieve artifact from entry " + entry.getPath() + " in the context of project " + project.getName(); //$NON-NLS-1$ //$NON-NLS-2$
+            String message = "Unable to retrieve artifact from entry " + entry.getPath() + " in the context of project " + project.getName();
             log.error(message, e);
         }
         return artifactEntry;
@@ -309,20 +256,19 @@ public class MavenArtifactNode extends ArtifactNode {
 
     private boolean hasSameKind(IClasspathEntry entry) {
         boolean sameKind = false;
-        String eclipseDependency = artifact.getDependency().getProperty("eclipse.dependency"); //$NON-NLS-1$
-        if ( eclipseDependency != null && "true".equals(eclipseDependency) ) { //$NON-NLS-1$
+        String eclipseDependency = artifact.getDependency().getProperty("eclipse.dependency");
+        if ( eclipseDependency != null && "true".equals(eclipseDependency) ) {
             sameKind = entry.getEntryKind() == IClasspathEntry.CPE_PROJECT;
         }
         else {
-           sameKind = entry.getEntryKind() == IClasspathEntry.CPE_LIBRARY || 
-           				entry.getEntryKind() == IClasspathEntry.CPE_VARIABLE;
+           sameKind = entry.getEntryKind() == IClasspathEntry.CPE_LIBRARY;
         }
         return sameKind;
     }
 	
     public void addProperty(String key, String value) {
         Dependency dependency = ((Artifact) this.getData()).getDependency();
-		dependency.addProperty(key + SEPARATOR + value);
+		dependency.addProperty(key + ":" + value);
 		dependency.resolvedProperties().put(key, value);
 		
 		PropertyNode propertyNode = new PropertyNode(this, key, value);
@@ -332,6 +278,4 @@ public class MavenArtifactNode extends ArtifactNode {
 		
 		this.properties = newNodes;
     }
-    
-    
 }

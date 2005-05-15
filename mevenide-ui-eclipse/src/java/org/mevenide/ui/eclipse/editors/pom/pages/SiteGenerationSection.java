@@ -50,8 +50,8 @@ public class SiteGenerationSection extends PageSection {
    		FormToolkit toolkit)
    	{
         super(page, parent, toolkit);
-		setTitle(Mevenide.getResourceString("SiteGenerationSection.header")); //$NON-NLS-1$
-		setDescription(Mevenide.getResourceString("SiteGenerationSection.description")); //$NON-NLS-1$
+		setTitle(Mevenide.getResourceString("SiteGenerationSection.header"));
+		setDescription(Mevenide.getResourceString("SiteGenerationSection.description"));
     }
 
     /**
@@ -72,8 +72,8 @@ public class SiteGenerationSection extends PageSection {
 		Button toggle = createOverrideToggle(container, factory);
 		createLabel(
 			container, 
-			Mevenide.getResourceString("SiteGenerationSection.siteAddressText.label"), //$NON-NLS-1$
-			Mevenide.getResourceString("SiteGenerationSection.siteAddressText.tooltip"),  //$NON-NLS-1$
+			Mevenide.getResourceString("SiteGenerationSection.siteAddressText.label"),
+			Mevenide.getResourceString("SiteGenerationSection.siteAddressText.tooltip"), 
 			factory
 		);
 		siteAddressText = new OverridableTextEntry(createText(container, factory, 2), toggle);
@@ -92,8 +92,8 @@ public class SiteGenerationSection extends PageSection {
 		toggle = createOverrideToggle(container, factory);
 		createLabel(
 			container, 
-			Mevenide.getResourceString("SiteGenerationSection.distSiteText.label"), //$NON-NLS-1$
-			Mevenide.getResourceString("SiteGenerationSection.distSiteText.tooltip"),  //$NON-NLS-1$
+			Mevenide.getResourceString("SiteGenerationSection.distSiteText.label"),
+			Mevenide.getResourceString("SiteGenerationSection.distSiteText.tooltip"), 
 			factory
 		);
 		distSiteText = new OverridableTextEntry(createText(container, factory, 2), toggle);
@@ -112,8 +112,8 @@ public class SiteGenerationSection extends PageSection {
 		toggle = createOverrideToggle(container, factory);
 		createLabel(
 			container, 
-			Mevenide.getResourceString("SiteGenerationSection.issueTrackingText.label"), //$NON-NLS-1$
-			Mevenide.getResourceString("SiteGenerationSection.issueTrackingText.tooltip"),  //$NON-NLS-1$
+			Mevenide.getResourceString("SiteGenerationSection.issueTrackingText.label"),
+			Mevenide.getResourceString("SiteGenerationSection.issueTrackingText.tooltip"), 
 			factory
 		);
 		issueTrackingText = new OverridableTextEntry(createText(container, factory, 2), toggle);
@@ -132,13 +132,13 @@ public class SiteGenerationSection extends PageSection {
 		toggle = createOverrideToggle(container, factory);
 		createLabel(
 			container, 
-			Mevenide.getResourceString("SiteGenerationSection.siteDirectoryText.label"),  //$NON-NLS-1$
-			Mevenide.getResourceString("SiteGenerationSection.siteDirectoryText.tooltip"),  //$NON-NLS-1$
+			Mevenide.getResourceString("SiteGenerationSection.siteDirectoryText.label"), 
+			Mevenide.getResourceString("SiteGenerationSection.siteDirectoryText.tooltip"), 
 			factory
 		);
-		String labelName = Mevenide.getResourceString("SiteGenerationSection.siteDirectoryButton.label"); //$NON-NLS-1$
-		String toolTip = Mevenide.getResourceString("SiteGenerationSection.siteDirectoryButton.tooltip"); //$NON-NLS-1$
-		final String title = Mevenide.getResourceString("SiteGenerationSection.siteDirectoryButton.dialog.title"); //$NON-NLS-1$
+		String labelName = Mevenide.getResourceString("SiteGenerationSection.siteDirectoryButton.label");
+		String toolTip = Mevenide.getResourceString("SiteGenerationSection.siteDirectoryButton.tooltip");
+		final String title = Mevenide.getResourceString("SiteGenerationSection.siteDirectoryButton.dialog.title");
 		siteDirectoryText = new OverridableTextEntry(
 			createText(container, factory), 
 			toggle,
@@ -172,7 +172,7 @@ public class SiteGenerationSection extends PageSection {
 						}
 					}
 					catch ( Exception ex ) {
-						log.error("Unable to browse for site deployment directory", ex); //$NON-NLS-1$
+						log.error("Unable to browse for site deployment directory", ex);
 					}
 				}
 			}
@@ -182,13 +182,13 @@ public class SiteGenerationSection extends PageSection {
 		toggle = createOverrideToggle(container, factory);
 		createLabel(
 			container, 
-			Mevenide.getResourceString("SiteGenerationSection.distDirectoryText.label"),  //$NON-NLS-1$
-			Mevenide.getResourceString("SiteGenerationSection.distDirectoryText.tooltip"),  //$NON-NLS-1$
+			Mevenide.getResourceString("SiteGenerationSection.distDirectoryText.label"), 
+			Mevenide.getResourceString("SiteGenerationSection.distDirectoryText.tooltip"), 
 			factory
 		);
-		labelName = Mevenide.getResourceString("SiteGenerationSection.distDirectoryButton.label"); //$NON-NLS-1$
-		toolTip = Mevenide.getResourceString("SiteGenerationSection.distDirectoryButton.tooltip"); //$NON-NLS-1$
-		final String title1 = Mevenide.getResourceString("SiteGenerationSection.distDirectoryButton.dialog.title"); //$NON-NLS-1$
+		labelName = Mevenide.getResourceString("SiteGenerationSection.distDirectoryButton.label");
+		toolTip = Mevenide.getResourceString("SiteGenerationSection.distDirectoryButton.tooltip");
+		final String title1 = Mevenide.getResourceString("SiteGenerationSection.distDirectoryButton.dialog.title");
 		distDirectoryText = new OverridableTextEntry(
 			createText(container, factory), 
 			toggle, 
@@ -221,7 +221,7 @@ public class SiteGenerationSection extends PageSection {
 						}
 					}
 					catch ( Exception ex ) {
-						log.error("Unable to browse for distribution deployment directory", ex); //$NON-NLS-1$
+						log.error("Unable to browse for distribution deployment directory", ex);
 					}
 				}
 			}

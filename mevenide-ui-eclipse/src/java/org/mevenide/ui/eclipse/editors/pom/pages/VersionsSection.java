@@ -16,7 +16,6 @@
  */
 package org.mevenide.ui.eclipse.editors.pom.pages;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.maven.project.Project;
@@ -44,8 +43,8 @@ public class VersionsSection extends PageSection {
 	    FormToolkit toolkit)
 	{
 		super(page, parent, toolkit);
-		setTitle(Mevenide.getResourceString("VersionsSection.header")); //$NON-NLS-1$
-		setDescription(Mevenide.getResourceString("VersionsSection.description")); //$NON-NLS-1$
+		setTitle(Mevenide.getResourceString("VersionsSection.header"));
+		setDescription(Mevenide.getResourceString("VersionsSection.description"));
 	}
 
     public Composite createSectionContent(Composite parent, FormToolkit factory) {
@@ -62,7 +61,7 @@ public class VersionsSection extends PageSection {
 		// POM versions table
 		Button toggle = createOverrideToggle(container, factory, 1, true);
 		TableViewer viewer = createTableViewer(container, factory, 1);
-		versionTable = new TableEntry(viewer, toggle, Mevenide.getResourceString("VersionsSection.TableEntry.Tooltip"), container, factory, this); //$NON-NLS-1$
+		versionTable = new TableEntry(viewer, toggle, "Version", container, factory, this);
 		OverrideAdaptor adaptor = new OverrideAdaptor() {
 			public void overrideParent(Object value) {
 				List versions = (List) value;
@@ -78,9 +77,6 @@ public class VersionsSection extends PageSection {
 			new IPomCollectionAdaptor() {
 				public Object addNewObject(Object parentObject) {
 					Version version = new Version();
-					if ( pom.getVersions() == null ) {
-					    pom.setVersions(new ArrayList());
-					}
 					pom.addVersion(version);
 					return version;
 				}

@@ -55,7 +55,7 @@ public class OverridableTextEntry extends TextEntry {
             }
             else {
                 setText(null);
-				adaptor.overrideParent(""); //$NON-NLS-1$
+				adaptor.overrideParent("");
             }
 			adaptor.refreshUI();
         }
@@ -83,7 +83,7 @@ public class OverridableTextEntry extends TextEntry {
 
     public void setInherited(boolean inherited) {
         if (log.isDebugEnabled()) {
-            log.debug("field changed to inherited = " + inherited); //$NON-NLS-1$
+            log.debug("field changed to inherited = " + inherited);
         }
         this.inherited = inherited;
         setEnabled(!inherited);
@@ -95,10 +95,10 @@ public class OverridableTextEntry extends TextEntry {
 
     public void setEnabled(boolean enable) {
         super.setEnabled(enable);
-        if (overrideToggle != null && !overrideToggle.isDisposed()) {
+        if (overrideToggle != null) {
             overrideToggle.setSelection(!enable);
         }
-        if (browseButton != null && !browseButton.isDisposed()) {
+        if (browseButton != null) {
         	browseButton.setEnabled(enable);
         }
     }

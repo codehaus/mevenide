@@ -26,7 +26,7 @@ import org.apache.commons.lang.StringUtils;
  */
 public abstract class GoalFactory {
 	public static Goal newGoal(String fullyQualifiedGoalName) {                
-		String[] splittedGoal = StringUtils.split(fullyQualifiedGoalName, Goal.SEPARATOR);
+		String[] splittedGoal = StringUtils.split(fullyQualifiedGoalName, ":");
 		String pluginName = splittedGoal[0];
 		Plugin plugin = new Plugin();
 		plugin.setName(pluginName);

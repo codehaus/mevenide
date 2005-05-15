@@ -72,13 +72,11 @@ public class TextEntry extends PageEntry {
 
 	public void setText(String text) {
 		value = text;
-		if ( !textbox.isDisposed() ) {
-			if (text != null ) {
-				textbox.setText(text);
-			}
-			else {
-				textbox.setText(""); //$NON-NLS-1$
-			}
+		if (text != null ) {
+			textbox.setText(text);
+		}
+		else {
+			textbox.setText("");
 		}
 	}
 
@@ -104,14 +102,14 @@ public class TextEntry extends PageEntry {
     }
     
     public boolean setFocus() {
-		if (textbox != null && !textbox.isDisposed()) {
+		if (textbox != null) {
 			return textbox.setFocus();
 		}
 		return false;
     }
 
     public void setEnabled(boolean enable) {
-		if (textbox != null && !textbox.isDisposed()) {
+		if (textbox != null) {
 			textbox.setEnabled(enable);
 		}
     }

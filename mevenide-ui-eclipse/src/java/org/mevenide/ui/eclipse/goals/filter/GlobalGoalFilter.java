@@ -36,7 +36,7 @@ import org.mevenide.ui.eclipse.preferences.PreferencesManager;
 public class GlobalGoalFilter extends ViewerFilter {
 	private static final Log log = LogFactory.getLog(GlobalGoalFilter.class);
 	
-	public static final String ORIGIN_FILTER_GOALS = "mevenide.goals.outline.filter.origin.goals"; //$NON-NLS-1$
+	public static final String ORIGIN_FILTER_GOALS = "mevenide.goals.outline.filter.origin.goals";
 	
 	private List filteredGoals = new ArrayList(); 
 
@@ -49,7 +49,7 @@ public class GlobalGoalFilter extends ViewerFilter {
 			setFilteredGoals(preferencesManager.getValue(ORIGIN_FILTER_GOALS));
 		} 
 		catch (Exception e) {
-			log.error("Unable to create DefaultGoalsGrabber : ", e); //$NON-NLS-1$
+			log.error("Unable to create DefaultGoalsGrabber : ", e);
 		}
 	}
 
@@ -59,14 +59,14 @@ public class GlobalGoalFilter extends ViewerFilter {
 
 	public void setFilteredGoals(String goalListAsString) {
 		filteredGoals.clear();
-		log.debug("setting up GlobalGoalFilter w/ : [" + goalListAsString + "]");  //$NON-NLS-1$//$NON-NLS-2$
+		log.debug("setting up GlobalGoalFilter w/ : [" + goalListAsString + "]");
 		if ( goalListAsString == null ) {
 			return;
 		}
-		StringTokenizer tokenizer = new StringTokenizer(goalListAsString, ","); //$NON-NLS-1$
+		StringTokenizer tokenizer = new StringTokenizer(goalListAsString, ",");
 		while ( tokenizer.hasMoreTokens() ) {
 			String token = tokenizer.nextToken();
-			log.debug("Adding \"" + token + "\" to Global Goals filters");  //$NON-NLS-1$//$NON-NLS-2$
+			log.debug("Adding \"" + token + "\" to Global Goals filters");
 			filteredGoals.add(token);
 		}
 	}

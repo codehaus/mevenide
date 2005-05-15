@@ -16,11 +16,10 @@
    </license>
 
    <url>
-      <update label="Mevenide update" url="http://mevenide.codehaus.org/release/eclipse/update"/>
+      <update label="Mevenide update" url="http://mevenide.codehaus.org/update/"/>
    </url>
 
    <requires>
-      <import plugin="org.apache.maven"/>
       <import plugin="org.eclipse.help.base"/>
       <import plugin="org.eclipse.ui.ide"/>
       <import plugin="org.eclipse.core.variables"/>

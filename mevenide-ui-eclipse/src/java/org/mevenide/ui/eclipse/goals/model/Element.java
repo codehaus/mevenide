@@ -25,7 +25,7 @@ package org.mevenide.ui.eclipse.goals.model;
 public class Element {
     public static final Element NULL_ROOT = new Element();
     
-	private String name = ""; //$NON-NLS-1$
+	private String name = "";
     
 	private Element[] prereqs;
 	

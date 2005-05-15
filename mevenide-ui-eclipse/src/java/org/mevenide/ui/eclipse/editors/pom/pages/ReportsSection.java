@@ -19,6 +19,7 @@ package org.mevenide.ui.eclipse.editors.pom.pages;
 import java.util.Arrays;
 import java.util.List;
 import java.util.TreeSet;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Project;
@@ -33,8 +34,8 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.model.WorkbenchContentProvider;
+import org.mevenide.reports.DefaultReportsFinder;
 import org.mevenide.reports.IReportsFinder;
-import org.mevenide.reports.JDomReportsFinder;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.editors.pom.entries.DraggableTableEntry;
 
@@ -58,8 +59,8 @@ public class ReportsSection extends PageSection {
 		FormToolkit toolkit) 
    	{
         super(page, parent, toolkit);
-		setTitle(Mevenide.getResourceString("ReportsSection.header")); //$NON-NLS-1$
-		setDescription(Mevenide.getResourceString("ReportsSection.description")); //$NON-NLS-1$
+		setTitle(Mevenide.getResourceString("ReportsSection.header"));
+		setDescription(Mevenide.getResourceString("ReportsSection.description"));
 	}
 
     public Composite createSectionContent(Composite parent, FormToolkit factory) {
@@ -71,11 +72,11 @@ public class ReportsSection extends PageSection {
 		container.setLayout(layout);
 		
 		try {
-			IReportsFinder finder = new JDomReportsFinder();
+			IReportsFinder finder = new DefaultReportsFinder();
 			String[] reports = finder.findReports();
 			availableReports = new TreeSet(Arrays.asList(reports));
 		} catch (Exception e) {
-			log.error("Unable to find reports", e); //$NON-NLS-1$
+			log.error("Unable to find reports", e);
 		}
 		
 		availableReportsViewer = createAvailableReportsViewer(container, factory);		
@@ -110,7 +111,7 @@ public class ReportsSection extends PageSection {
 		if (isInherited()) createSpacer(availableContainer, factory);
 		factory.createLabel(
 		    availableContainer, 
-		    Mevenide.getResourceString("ReportsSection.available.reports.label"), //$NON-NLS-1$
+		    Mevenide.getResourceString("ReportsSection.available.reports.label"),
 		    SWT.BOLD
 		);
 
@@ -135,7 +136,7 @@ public class ReportsSection extends PageSection {
 		layout.horizontalSpacing = 5;
 		includedContainer.setLayout(layout);
 		
-		factory.createLabel(includedContainer, Mevenide.getResourceString("ReportsSection.included.reports.label")); //$NON-NLS-1$
+		factory.createLabel(includedContainer, Mevenide.getResourceString("ReportsSection.included.reports.label"));
 
 		TableViewer viewer = new TableViewer(includedContainer, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
 		viewer.setContentProvider(new WorkbenchContentProvider());
@@ -148,7 +149,7 @@ public class ReportsSection extends PageSection {
 
 	private void setReports(List reports) {
 		if (log.isDebugEnabled()) {
-			log.debug("setting reports on pom: " + reports); //$NON-NLS-1$
+			log.debug("setting reports on pom: " + reports);
 		}
 		getPage().getPomEditor().getPom().setReports(reports);
 		getPage().getPomEditor().setModelDirty(true);
@@ -156,7 +157,7 @@ public class ReportsSection extends PageSection {
 
 	public void update(Project pom) {
 		if (log.isDebugEnabled()) {
-			log.debug("updating reports = " + pom.getReports()); //$NON-NLS-1$
+			log.debug("updating reports = " + pom.getReports());
 		}
 		resetViewers();
 

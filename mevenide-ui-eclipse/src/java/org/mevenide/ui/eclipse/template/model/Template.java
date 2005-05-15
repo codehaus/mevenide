@@ -22,34 +22,34 @@ import org.eclipse.core.runtime.IAdaptable;
 
 /**
  * A template is just a wrapper for a Project object
- * 
- * @author <a href="mailto:jens@iostream.net">Jens Andersen </a>, Last updated
- *         by $Author$
+ * @author	<a href="mailto:jens@iostream.net">Jens Andersen</a>, Last updated by $Author$
  * @version $Id$
  */
 public class Template implements IAdaptable {
+	private Project fProject;
+	
+	/**
+	 * 
+	 */
+	public Template(Project project)
+	{
+		fProject = project;
+	}
+	
+	public String getTemplateName()
+	{
+		return fProject.getName();
+	}
+	public Project getProject()
+	{
+		return fProject;
+	}
 
-    private Project fProject;
-
-    public Template(Project project) {
-        fProject = project;
-    }
-
-    public String getTemplateName() {
-        return fProject.getName();
-    }
-
-    public Project getProject() {
-        return fProject;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
-     */
-    public Object getAdapter(Class arg0) {
-        // TODO Auto-generated method stub
-        return null;
-    }
+	/* (non-Javadoc)
+	 * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
+	 */
+	public Object getAdapter(Class arg0) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

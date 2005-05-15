@@ -41,8 +41,8 @@ public class ScmConnectionSection extends PageSection {
 	    FormToolkit toolkit)
 	{
 		super(page, parent, toolkit);
-		setTitle(Mevenide.getResourceString("ScmConnectionSection.header")); //$NON-NLS-1$
-		setDescription(Mevenide.getResourceString("ScmConnectionSection.description")); //$NON-NLS-1$
+		setTitle(Mevenide.getResourceString("ScmConnectionSection.header"));
+		setDescription(Mevenide.getResourceString("ScmConnectionSection.description"));
     }
 
     public Composite createSectionContent(Composite parent, FormToolkit factory) {
@@ -60,8 +60,8 @@ public class ScmConnectionSection extends PageSection {
 		Button toggle = createOverrideToggle(container, factory);
 		createLabel(
 			container, 
-			Mevenide.getResourceString("ScmConnectionSection.connectionText.label"), //$NON-NLS-1$
-			Mevenide.getResourceString("ScmConnectionSection.connectionText.tooltip"),  //$NON-NLS-1$
+			Mevenide.getResourceString("ScmConnectionSection.connectionText.label"),
+			Mevenide.getResourceString("ScmConnectionSection.connectionText.tooltip"), 
 			factory
 		);
 		connectionText = new OverridableTextEntry(createText(container, factory), toggle);
@@ -80,8 +80,8 @@ public class ScmConnectionSection extends PageSection {
 		toggle = createOverrideToggle(container, factory);
 		createLabel(
 			container, 
-			Mevenide.getResourceString("ScmConnectionSection.developerConnectionText.label"), //$NON-NLS-1$
-			Mevenide.getResourceString("ScmConnectionSection.developerConnectionText.tooltip"),  //$NON-NLS-1$
+			Mevenide.getResourceString("ScmConnectionSection.developerConnectionText.label"),
+			Mevenide.getResourceString("ScmConnectionSection.developerConnectionText.tooltip"), 
 			factory
 		);
 		developerConnectionText = new OverridableTextEntry(createText(container, factory), toggle);
@@ -100,8 +100,8 @@ public class ScmConnectionSection extends PageSection {
 		toggle = createOverrideToggle(container, factory);
 		createLabel(
 			container, 
-			Mevenide.getResourceString("ScmConnectionSection.webAddressText.label"), //$NON-NLS-1$
-			Mevenide.getResourceString("ScmConnectionSection.webAddressText.tooltip"),  //$NON-NLS-1$
+			Mevenide.getResourceString("ScmConnectionSection.webAddressText.label"),
+			Mevenide.getResourceString("ScmConnectionSection.webAddressText.tooltip"), 
 			factory
 		);
 		webAddressText = new OverridableTextEntry(createText(container, factory), toggle);

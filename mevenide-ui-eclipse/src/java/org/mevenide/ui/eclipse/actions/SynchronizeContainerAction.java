@@ -35,12 +35,11 @@ import org.mevenide.ui.eclipse.sync.view.SynchronizationView;
  * 
  */
 public class SynchronizeContainerAction extends AbstractMevenideAction {
+    private static final String SYNCHRONIZE_VIEW_ID = "org.mevenide.ui.synchronize.view.SynchronizationView";
     
     private static Log log = LogFactory.getLog(SynchronizeContainerAction.class);
 	
-    private static final String SYNCHRONIZE_VIEW_ID = "org.mevenide.ui.synchronize.view.SynchronizationView"; //$NON-NLS-1$
-
-    private IContainer container;
+	private IContainer container;
 
     public void run(IAction action) {
         try {
@@ -49,7 +48,7 @@ public class SynchronizeContainerAction extends AbstractMevenideAction {
 			view.setInput(f);
         }
         catch ( Exception e ) {
-            log.error("Unable to create Pom Synchronization View", e); //$NON-NLS-1$
+            log.error("Unable to create Pom Synchronization View", e);
         }
 	}
 

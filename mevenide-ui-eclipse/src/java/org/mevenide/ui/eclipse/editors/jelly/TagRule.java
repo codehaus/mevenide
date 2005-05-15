@@ -26,15 +26,8 @@ public class TagRule implements IPredicateRule {
             return Token.EOF;
         }
         if (c == ']') {
-            //c = scanTo(scanner, ">", true);
-            if ( scanner.read() == '>') {
-                result = END_DECLARATION;
-            }
-            else {
-                scanner.unread();
-                result = TEXT;
-            }
-            
+            c = scanTo(scanner, ">", true);
+            return END_DECLARATION;
         }
         else if (c != '<') {
             while (c != -1 && c != '<' && c != ']') {
@@ -55,7 +48,7 @@ public class TagRule implements IPredicateRule {
                         if (c == '-') {
                             c = scanner.read();
                             result = COMMENT;
-                            c = scanComment(scanner, "-->");
+                            c = scanTo(scanner, "-->", false);
                         }
                         else {
                             c = findFirstOf(scanner, '>', '[', true);
@@ -127,25 +120,6 @@ public class TagRule implements IPredicateRule {
 		return true;
 	}
 
-    private int scanComment(ICharacterScanner scanner, String end) {
-        int c = 0, 
-        i = 0;
-	    
-	    do {
-	        c = scanner.read();
-	        if (c == end.charAt(i)) {
-                i++;
-            }
-            else if (i > 0) {
-                i = 0;
-            }
-	        if (i >= end.length()) {
-	            return c;
-	        }
-	    }
-	    while (c != -1);
-	    return c;
-    }
 	private int scanTo(ICharacterScanner scanner, String end, boolean quoteEscapes) {
         int c = 0, 
             i = 0;
@@ -154,7 +128,6 @@ public class TagRule implements IPredicateRule {
         
         do {
             c = scanner.read();
-           
             if (c == '"' && !inSingleQuote) {
                 inDoubleQuote = !inDoubleQuote;
                 i = 0;
@@ -171,7 +144,6 @@ public class TagRule implements IPredicateRule {
                     i = 0;
                 }
             }
-           
             if (i >= end.length()) {
                 return c;
             }

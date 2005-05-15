@@ -33,7 +33,7 @@ import org.eclipse.ui.views.properties.IPropertySource;
 public abstract class AbstractPomPropertySource 
 	implements IPomPropertySource, IAdaptable, IWorkbenchAdapter {
 
-	protected static final String EMPTY_STR = ""; //$NON-NLS-1$
+	protected static final String EMPTY_STR = "";
 	
 	private Vector propertyListeners = new Vector();
 	

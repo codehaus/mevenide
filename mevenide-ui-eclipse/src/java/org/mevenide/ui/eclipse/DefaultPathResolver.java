@@ -34,8 +34,8 @@ import org.mevenide.project.ProjectConstants;
  */
 public class DefaultPathResolver implements IPathResolver {
 
-	private static final String SOURCE_TYPES_XML_FILE = "sourceTypes.xml"; //$NON-NLS-1$
-    private static final String UNKNOWN_SRC_TYPE = "UNKNOWN"; //$NON-NLS-1$
+	private static final String SOURCE_TYPES_XML_FILE = "sourceTypes.xml";
+    private static final String UNKNOWN_SRC_TYPE = "UNKNOWN";
     /**
 	 * extract the source path to add to the pom from the given classpathentry
 	 * 
@@ -53,7 +53,7 @@ public class DefaultPathResolver implements IPathResolver {
 		
 		pathToAdd = pathToAdd.substring(project.getFullPath().toOSString().length(), pathToAdd.length());
 		
-		pathToAdd = (pathToAdd.equals("/") || pathToAdd.equals(""))  //$NON-NLS-1$ //$NON-NLS-2$
+		pathToAdd = (pathToAdd.equals("/") || pathToAdd.equals("")) 
 		            ? ProjectConstants.BASEDIR : pathToAdd.substring(1); 
 		            
 		return pathToAdd;
@@ -72,7 +72,7 @@ public class DefaultPathResolver implements IPathResolver {
 
 	public String getMavenSourceType(String sourceDirectoryPath, IProject project) throws Exception {
 		if ( project == null ) {
-			throw new Exception("project should not be null"); //$NON-NLS-1$
+			throw new Exception("project should not be null");
 		}
 		Document doc = new SAXBuilder().build(Mevenide.getInstance().getFile(SOURCE_TYPES_XML_FILE));
 		Element root = doc.getRootElement();

@@ -19,6 +19,7 @@ package org.mevenide.ui.eclipse.sync.model;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Project;
@@ -37,7 +38,6 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.mevenide.ui.eclipse.DefaultPathResolver;
 import org.mevenide.ui.eclipse.IPathResolver;
-import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.sync.event.ISynchronizationNodeListener;
 import org.mevenide.ui.eclipse.sync.model.properties.EclipseProjectPropertySource;
 import org.mevenide.ui.eclipse.util.FileUtils;
@@ -50,11 +50,8 @@ import org.mevenide.ui.eclipse.util.JavaProjectUtils;
  * 
  */
 public class EclipseProjectNode extends AbstractSynchronizationNode implements IAdaptable {
+	private static final Log log = LogFactory.getLog(EclipseProjectNode.class);
 	
-    private static final Log log = LogFactory.getLog(EclipseProjectNode.class);
-	
-    private static final String POM_NAME = "project.xml"; //$NON-NLS-1$
-    
 	private IContainer eclipseContainer;
 	private IProject eclipseProject;
 	private List mavenProjects;
@@ -134,8 +131,8 @@ public class EclipseProjectNode extends AbstractSynchronizationNode implements I
 	}
 
 	private boolean isProjectMavenized(String projectBasedir) {
-		File pom = new File(projectBasedir, POM_NAME);
-		log.debug("pom : " + pom.getAbsolutePath() + (pom.exists() ? " " : " not ") + "found");   //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$ //$NON-NLS-4$
+		File pom = new File(projectBasedir, "project.xml");
+		log.debug("pom : " + pom.getAbsolutePath() + (pom.exists() ? " " : " not ") + "found");
 		return pom.exists();
 	}
 	
@@ -167,14 +164,11 @@ public class EclipseProjectNode extends AbstractSynchronizationNode implements I
 	    MessageDialog dialog = 
 			new MessageDialog(
 			        PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-					Mevenide.getResourceString("EclipseProjectNode.Message.Title"), //$NON-NLS-1$
+					"Attach Java Nature...",
 					null,
-					Mevenide.getResourceString("EclipseProjectNode.Message.Text"), //$NON-NLS-1$
+					"Current project doesnot have JavaNature. Should we attach it ? ",
 					MessageDialog.QUESTION,
-					new String[] {
-			                Mevenide.getResourceString("EclipseProjectNode.Message.YES"), //$NON-NLS-1$
-			                Mevenide.getResourceString("EclipseProjectNode.Message.NO") //$NON-NLS-1$
-			        }, 0);
+					new String[] {"Yes", "No"}, 0);
 		int userChoice = dialog.open();
 		if ( userChoice == Window.OK ) {
 			JavaProjectUtils.attachJavaNature(eclipseProject);

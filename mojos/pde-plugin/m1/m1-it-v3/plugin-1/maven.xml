@@ -1,7 +1,0 @@
-<project>
-  
-  <preGoal name="java:compile">
-    <attainGoal name="pde:classpath"/>
-  </preGoal>
-  
-</project>

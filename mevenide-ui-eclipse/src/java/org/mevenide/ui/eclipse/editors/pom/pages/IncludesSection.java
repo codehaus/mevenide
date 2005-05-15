@@ -41,7 +41,7 @@ public class IncludesSection extends PageSection {
 	    FormToolkit toolkit)
 	{
 		super(page, parent, toolkit);
-		setTitle(Mevenide.getResourceString("UnitTestIncludesSection.header")); //$NON-NLS-1$
+		setTitle(Mevenide.getResourceString("UnitTestIncludesSection.header"));
 	}
 	
 	void setIncludesAdaptor(IIncludesAdaptor adaptor) {

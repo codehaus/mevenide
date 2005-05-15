@@ -31,12 +31,12 @@ import org.mevenide.ui.eclipse.sync.model.DirectoryNode;
  */
 public class DirectoryNodeFilter extends ViewerFilter {
 	
-	static final String APPLY_FILTERS_KEY = "DirectoryNodeFilter.APPLY_FILTERS_KEY"; //$NON-NLS-1$
-	static final String APPLY_SOURCE_FILTERS_KEY = "DirectoryNodeFilter.APPLY_SOURCE_FILTERS_KEY"; //$NON-NLS-1$
-	static final String APPLY_TEST_FILTERS_KEY = "DirectoryNodeFilter.APPLY_TEST_FILTERS_KEY"; //$NON-NLS-1$
-	static final String APPLY_ASPECT_FILTERS_KEY = "DirectoryNodeFilter.APPLY_ASPECT_FILTERS_KEY"; //$NON-NLS-1$
-	static final String APPLY_RESOURCE_FILTERS_KEY = "DirectoryNodeFilter.APPLY_RESOURCE_FILTERS_KEY"; //$NON-NLS-1$
-	static final String APPLY_OUTPUT_FILTERS_KEY = "DirectoryNodeFilter.APPLY_OUTPUT_FILTERS_KEY"; //$NON-NLS-1$
+	static final String APPLY_FILTERS_KEY = "DirectoryNodeFilter.APPLY_FILTERS_KEY";
+	static final String APPLY_SOURCE_FILTERS_KEY = "DirectoryNodeFilter.APPLY_SOURCE_FILTERS_KEY";
+	static final String APPLY_TEST_FILTERS_KEY = "DirectoryNodeFilter.APPLY_TEST_FILTERS_KEY";
+	static final String APPLY_ASPECT_FILTERS_KEY = "DirectoryNodeFilter.APPLY_ASPECT_FILTERS_KEY";
+	static final String APPLY_RESOURCE_FILTERS_KEY = "DirectoryNodeFilter.APPLY_RESOURCE_FILTERS_KEY";
+	static final String APPLY_OUTPUT_FILTERS_KEY = "DirectoryNodeFilter.APPLY_OUTPUT_FILTERS_KEY";
 	
 	private boolean filterDirectoryNodes; 
 	

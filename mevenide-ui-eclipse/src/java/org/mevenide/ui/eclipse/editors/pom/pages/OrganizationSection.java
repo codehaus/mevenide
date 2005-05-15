@@ -49,8 +49,8 @@ public class OrganizationSection extends PageSection {
         FormToolkit toolkit)
     {
         super(page, parent, toolkit);
-		setTitle(Mevenide.getResourceString("OrganizationSection.header")); //$NON-NLS-1$
-		setDescription(Mevenide.getResourceString("OrganizationSection.description")); //$NON-NLS-1$
+		setTitle(Mevenide.getResourceString("OrganizationSection.header"));
+		setDescription(Mevenide.getResourceString("OrganizationSection.description"));
     }
 
     /**
@@ -71,8 +71,8 @@ public class OrganizationSection extends PageSection {
 		Button toggle = createOverrideToggle(container, factory);
 		createLabel(
 			container, 
-			Mevenide.getResourceString("OrganizationSection.nameText.label"),  //$NON-NLS-1$
-			Mevenide.getResourceString("OrganizationSection.nameText.tooltip"),  //$NON-NLS-1$
+			Mevenide.getResourceString("OrganizationSection.nameText.label"), 
+			Mevenide.getResourceString("OrganizationSection.nameText.tooltip"), 
 			factory
 		);
 		nameText = new OverridableTextEntry(createText(container, factory, 2), toggle);
@@ -96,8 +96,8 @@ public class OrganizationSection extends PageSection {
 		toggle = createOverrideToggle(container, factory);
 		createLabel(
 			container, 
-			Mevenide.getResourceString("OrganizationSection.urlText.label"), //$NON-NLS-1$
-			Mevenide.getResourceString("OrganizationSection.urlText.tooltip"),  //$NON-NLS-1$
+			Mevenide.getResourceString("OrganizationSection.urlText.label"),
+			Mevenide.getResourceString("OrganizationSection.urlText.tooltip"), 
 			factory
 		);
 		urlText = new OverridableTextEntry(createText(container, factory, 2), toggle);
@@ -121,13 +121,13 @@ public class OrganizationSection extends PageSection {
 		toggle = createOverrideToggle(container, factory);
 		createLabel(
 			container, 
-			Mevenide.getResourceString("OrganizationSection.logoText.label"),  //$NON-NLS-1$
-			Mevenide.getResourceString("OrganizationSection.logoText.tooltip"),  //$NON-NLS-1$
+			Mevenide.getResourceString("OrganizationSection.logoText.label"), 
+			Mevenide.getResourceString("OrganizationSection.logoText.tooltip"), 
 			factory
 		);
-		String labelName = Mevenide.getResourceString("OrganizationSection.logoButton.label"); //$NON-NLS-1$
-		String toolTip = Mevenide.getResourceString("OrganizationSection.logoButton.tooltip"); //$NON-NLS-1$
-		final String title = Mevenide.getResourceString("OrganizationSection.logoButton.dialog.title"); //$NON-NLS-1$
+		String labelName = Mevenide.getResourceString("OrganizationSection.logoButton.label");
+		String toolTip = Mevenide.getResourceString("OrganizationSection.logoButton.tooltip");
+		final String title = Mevenide.getResourceString("OrganizationSection.logoButton.dialog.title");
 		logoText = new OverridableTextEntry(
 			createText(container, factory), 
 			toggle,
@@ -166,7 +166,7 @@ public class OrganizationSection extends PageSection {
 						}
 					}
 					catch ( Exception ex ) {
-						log.error("Unable to browse for logo images", ex); //$NON-NLS-1$
+						log.error("Unable to browse for logo images", ex);
 					}
 				}
 			}

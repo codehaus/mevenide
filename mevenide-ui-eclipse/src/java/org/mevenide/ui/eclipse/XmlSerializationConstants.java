@@ -24,13 +24,13 @@ package org.mevenide.ui.eclipse;
  */
 public abstract class XmlSerializationConstants {
 
-    public static final String PATH_ATTR = "path"; //$NON-NLS-1$
-    public static final String TYPE_ATTR = "type"; //$NON-NLS-1$
-    public static final String PROJECT_NAME_ATTR = "projectName"; //$NON-NLS-1$
-    public static final String SOURCE_DIRECTORY_GROUP_ELEM = "sourceDirectoryGroup"; //$NON-NLS-1$
-    public static final String SOURCE_DIRECTORY_ELEM = "sourceDirectory"; //$NON-NLS-1$
-    public static final String INHERIT_ATTR = "isInherited"; //$NON-NLS-1$
-    public static final String TIMESTAMP_ATTR = "timestamp"; //$NON-NLS-1$
-    public static final String SOURCE_DIRECTORY_GROUPS_ELEM = "sourceDirectoryGroups"; //$NON-NLS-1$
+    public static final String PATH_ATTR = "path";
+    public static final String TYPE_ATTR = "type";
+    public static final String PROJECT_NAME_ATTR = "projectName";
+    public static final String SOURCE_DIRECTORY_GROUP_ELEM = "sourceDirectoryGroup";
+    public static final String SOURCE_DIRECTORY_ELEM = "sourceDirectory";
+    public static final String INHERIT_ATTR = "isInherited";
+    public static final String TIMESTAMP_ATTR = "timestamp";
+    public static final String SOURCE_DIRECTORY_GROUPS_ELEM = "sourceDirectoryGroups";
 
 }

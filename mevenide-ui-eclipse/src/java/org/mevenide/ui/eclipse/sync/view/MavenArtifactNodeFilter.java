@@ -31,8 +31,8 @@ import org.mevenide.util.StringUtils;
  */
 public class MavenArtifactNodeFilter extends ViewerFilter {
 	
-	static final String APPLY_FILTERS_KEY = "MavenArtifactNodeFilter.APPLY_FILTERS_KEY"; //$NON-NLS-1$
-	static final String GROUP_ID_FILTER = "MavenArtifactNodeFilter.GROUP_ID_FILTER"; //$NON-NLS-1$
+	static final String APPLY_FILTERS_KEY = "MavenArtifactNodeFilter.APPLY_FILTERS_KEY";
+	static final String GROUP_ID_FILTER = "MavenArtifactNodeFilter.GROUP_ID_FILTER";
 	
 	private boolean filterMavenArtifacts;
 	
@@ -49,7 +49,7 @@ public class MavenArtifactNodeFilter extends ViewerFilter {
 	public boolean select(Viewer viewer, Object parentElement, Object element) {
 		if ( filterMavenArtifacts && element instanceof MavenArtifactNode ) {
 			if ( !StringUtils.isNull(groupIdFilter) ) {
-				String[] groupFilters = org.apache.commons.lang.StringUtils.split(groupIdFilter, ","); //$NON-NLS-1$
+				String[] groupFilters = org.apache.commons.lang.StringUtils.split(groupIdFilter, ",");
 				for (int i = 0; i < groupFilters.length; i++) {
 					Artifact artifact = (Artifact) ((MavenArtifactNode) element).getData();
 					if ( groupFilters[i].equals(artifact.getDependency().getGroupId()) ) {

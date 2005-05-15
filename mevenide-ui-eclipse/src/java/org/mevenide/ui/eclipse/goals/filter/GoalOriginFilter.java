@@ -35,7 +35,7 @@ import org.mevenide.ui.eclipse.preferences.PreferencesManager;
 public class GoalOriginFilter extends ViewerFilter {
 	private static final Log log = LogFactory.getLog(GoalOriginFilter.class);
 	
-	public static final String ORIGIN_FILTER_KEY = "mevenide.goals.outline.filter.origin"; //$NON-NLS-1$
+	public static final String ORIGIN_FILTER_KEY = "mevenide.goals.outline.filter.origin";
 
 	private boolean isFilteringEnable;
 	
@@ -52,7 +52,7 @@ public class GoalOriginFilter extends ViewerFilter {
 			
 		} 
 		catch (Exception e) {
-			log.error("Unable to create DefaultGoalsGrabber : ", e); //$NON-NLS-1$
+			log.error("Unable to create DefaultGoalsGrabber : ", e);
 		}
 	}
 

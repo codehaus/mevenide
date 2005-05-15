@@ -43,7 +43,7 @@ public class PomPropertySourceProvider implements IPropertySourceProvider {
 
 	public IPropertySource getPropertySource(Object object) {
 		if (log.isDebugEnabled()) {
-			log.debug("getPropertySource: looking for source for " + object); //$NON-NLS-1$
+			log.debug("getPropertySource: looking for source for " + object);
 		}
 		if (object instanceof IPropertySource) {
 			return (IPropertySource) object;
@@ -82,7 +82,7 @@ public class PomPropertySourceProvider implements IPropertySourceProvider {
 		if (object instanceof Resource) {
 			return new ResourcePropertySource((Resource) object);
 		}
-		log.error("Unable to create a PropertySource for " + object); //$NON-NLS-1$
+		log.error("Unable to create a PropertySource for " + object);
 		return null;
 	}
 

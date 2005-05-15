@@ -29,9 +29,9 @@ import org.eclipse.jface.text.rules.Token;
  * @version $Id$
  */
 public class PomXmlPartitionScanner extends RuleBasedPartitionScanner {
-	public final static String XML_DEFAULT = "__XML_DEFAULT"; //$NON-NLS-1$
-	public final static String XML_COMMENT = "__XML_COMMENT"; //$NON-NLS-1$
-	public final static String XML_ELEMENT = "__XML_ELEMENT"; //$NON-NLS-1$
+	public final static String XML_DEFAULT = "__XML_DEFAULT";
+	public final static String XML_COMMENT = "__XML_COMMENT";
+	public final static String XML_ELEMENT = "__XML_ELEMENT";
 
 	public PomXmlPartitionScanner() {
 
@@ -40,7 +40,7 @@ public class PomXmlPartitionScanner extends RuleBasedPartitionScanner {
 
 		IPredicateRule[] rules = new IPredicateRule[2];
 
-		rules[0] = new MultiLineRule("<!--", "-->", commentToken); //$NON-NLS-1$ //$NON-NLS-2$
+		rules[0] = new MultiLineRule("<!--", "-->", commentToken);
 		rules[1] = new PomXmlElementRule(elementToken);
 
 		setPredicateRules(rules);

@@ -17,8 +17,6 @@
 package org.mevenide.ui.eclipse.preferences;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -35,11 +33,10 @@ public class PreferencesManager {
 	private static Log log = LogFactory.getLog(PreferencesManager.class);
 	
 	private static PreferencesManager manager = new PreferencesManager();
-	
 	private PreferenceStore preferenceStore;
 	
-	protected PreferencesManager() {
-	    loadPreferences();
+	
+	private PreferencesManager() {
 	}
 	
 	public static PreferencesManager getManager()  {
@@ -52,7 +49,7 @@ public class PreferencesManager {
 			preferenceStore.load();
 		}
 		catch ( Exception ex ) {
-			log.debug("Unable to load preferences from file '" + getPreferenceStoreFilename(), ex); //$NON-NLS-1$
+			log.debug("Unable to load preferences from file '" + getPreferenceStoreFilename() + "' due to : " + ex);
 		}
 	}
 	
@@ -62,13 +59,13 @@ public class PreferencesManager {
 			return true;
 		}
 		catch (IOException e) {
-			log.debug("Unable to save preferences to file '" + getPreferenceStoreFilename(), e); //$NON-NLS-1$
+			log.debug("Unable to save preferences to file '" + getPreferenceStoreFilename() + "' due to : " + e);
 			return false;
 		}
 	}
 	
-	protected String getPreferenceStoreFilename() {
-	    return Mevenide.getInstance().getPreferencesFilename();
+	private String getPreferenceStoreFilename() {
+		return Mevenide.getInstance().getPreferencesFilename() ; 
 	}
 	
 	public String getValue(String property) {
@@ -76,9 +73,6 @@ public class PreferencesManager {
 	}
 	
 	public void setValue(String property, String value) {
-	    if ( preferenceStore == null ) {
-	        loadPreferences();
-	    }
 		preferenceStore.setValue(property, value);
 	}
 	
@@ -106,30 +100,4 @@ public class PreferencesManager {
 		preferenceStore = store;
 	}
 
-	public Map getPreferences() {
-	    Map preferences = new HashMap();
-	    //initialize preferenceStore if not already done
-	    if ( getPreferenceStore() == null ) {
-	        loadPreferences();
-	    }
-	    try {
-            String[] names = preferenceStore.preferenceNames();
-            if ( names != null ) {
-                for (int i = 0; i < names.length; i++) {
-                    preferences.put(names[i], getValue(names[i]));
-                }
-            }
-        }
-        catch (NullPointerException e) {
-            //catch NPE thrown if preferenceStore cannot be properly initialized
-            String message = "No preferences found";  //$NON-NLS-1$
-            log.info(message, e);
-        }
-	    
-	    return preferences;
-	}
-	
-	public void remove(String key) {
-	    preferenceStore.setToDefault(key);
-	}
 }

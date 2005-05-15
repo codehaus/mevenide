@@ -8,23 +8,16 @@
         <section name="Mevenide Update">
         	<p>
 			   To install Mevenide through the Eclipse Update Manager, create an Update Site [1]
-			   pointing to : 
-			   <source>http://mevenide.codehaus.org/release/eclipse/update/site.xml</source>
+			   pointing to : <br/>
+			   http://dist.codehaus.org/mevenide/release/eclipse/update/site.xml and follow instructions. 
 			</p>
 			<p>
-			    and just follow instructions. 3.0.x and 3.1M1 users should use : <br/>
-			    http://mevenide.codehaus.org/release/eclipse/update/3.0/
+				If this procedure it not suitable, you can download a <a href="http://dist.codehaus.org/mevenide/release/eclipse/mevenide.update-0.2.0.zip">big zip archive</a> containing 
+				the feature and all the plugins. You just need to unzip it into your Eclipse install directory.
 			</p>
-            <p>
-			    If this procedure it not suitable, you can download a <a href="http://mevenide.codehaus.org/release/eclipse/">big zip archive</a> containing 
-				the feature and all the plugins. You just need to unzip it into your Eclipse install directory. Please let us know if youd prefer to have a local 
-				install update site packaged instead of just plugins and feature archives.
+			<p>
+				[1] <font size="-1">Help > Software Updates &gt; Find and Install... &gt; Search for new features to install &gt; Add update site...</font>
 			</p>
-			<div style="border-top:1px dashed #999999">
-				<p>
-					[1] <font size="-1">Help &gt; Software Updates &gt; Find and Install... &gt; Search for new features to install &gt; Add update site...</font>
-				</p>
-			</div>
 		</section>
  	</body>
 </document>

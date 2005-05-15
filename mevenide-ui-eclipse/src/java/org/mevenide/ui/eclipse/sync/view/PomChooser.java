@@ -38,10 +38,7 @@ import org.mevenide.ui.eclipse.util.JavaProjectUtils;
  * 
  */
 public class PomChooser {
-    
     private static final Log log = LogFactory.getLog(PomChooser.class);
-	
-    private static final String POM_NAME = "project.xml"; //$NON-NLS-1$
     
 	private IContainer container;
 	
@@ -108,7 +105,7 @@ public class PomChooser {
 		if ( poms == null ) {
 			File projectRoot = new File(container.getLocation().toOSString());
 			List allPoms = findPoms(projectRoot);
-			log.debug("Found " + allPoms.size() + " POM file"); //$NON-NLS-1$ //$NON-NLS-2$
+			log.debug("Found " + allPoms.size() + " POM file");
 			poms = allPoms;
 		}
 		return poms;
@@ -123,15 +120,15 @@ public class PomChooser {
 	    
 	    List outputFolders = JavaProjectUtils.getOutputFolders(project);
 		if ( log.isDebugEnabled() ) {
-		    log.debug("Found " + outputFolders.size() + " output folders"); //$NON-NLS-1$ //$NON-NLS-2$
+		    log.debug("Found " + outputFolders.size() + " output folders");
 			for (int j = 0; j < outputFolders.size(); j++) {
-				log.debug("Found OutputFolder : " + outputFolders.get(j)); //$NON-NLS-1$
+				log.debug("Found OutputFolder : " + outputFolders.get(j));
 			}
 		}
 	    
 		List allPoms = new ArrayList(); 
 		
-		String fileName = POM_NAME;
+		String fileName = "project.xml";
 		
 		File[] f = rootDirectory.listFiles();
 		for (int i = 0; i < f.length; i++) {
@@ -170,7 +167,7 @@ public class PomChooser {
 			}
 		}
 		catch ( Exception e ) {
-			log.error("Unable to retrieve ancestors for " + pom.getAbsolutePath(), e); //$NON-NLS-1$
+			log.error("Unable to retrieve ancestors for " + pom.getAbsolutePath(), e);
 		}
 		
 		return ancestors;
@@ -178,7 +175,7 @@ public class PomChooser {
 
 	private File resolveFile(File pom, Project project, String parent) throws Exception{
 		String resolvedParent = new ProjectWalker(project).resolve(parent, true);
-		resolvedParent = resolvedParent.replaceAll("\\$\\{basedir\\}", pom.getParent().replaceAll("\\\\", "/"));   //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
+		resolvedParent = resolvedParent.replaceAll("\\$\\{basedir\\}", pom.getParent().replaceAll("\\\\", "/"));
 		log.debug(resolvedParent);
 		File parentPomFile = new File(resolvedParent).getCanonicalFile();
 		if ( !parentPomFile.exists() ) {

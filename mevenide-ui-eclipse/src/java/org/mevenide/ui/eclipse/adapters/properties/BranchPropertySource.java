@@ -21,7 +21,6 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Branch;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.TextPropertyDescriptor;
-import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.util.MevenideUtils;
 
 /**
@@ -32,7 +31,7 @@ public class BranchPropertySource extends AbstractPomPropertySource {
 
 	private static final Log log = LogFactory.getLog(BranchPropertySource.class);
 
-	private static final String BRANCH_TAG = "tag"; //$NON-NLS-1$
+	private static final String BRANCH_TAG = "tag";
 
 	private Branch branch;
 	
@@ -58,7 +57,7 @@ public class BranchPropertySource extends AbstractPomPropertySource {
 
 	public Object getPropertyValue(Object id) {
 		if (log.isDebugEnabled()) {
-			log.debug("getPropertyValue called: " + id); //$NON-NLS-1$
+			log.debug("getPropertyValue called: " + id);
 		}
 		if (BRANCH_TAG.equals(id)) {
 			return valueOrEmptyString(branch.getTag());
@@ -79,7 +78,7 @@ public class BranchPropertySource extends AbstractPomPropertySource {
 
 	public void setPropertyValue(Object id, Object value) {
 		if (log.isDebugEnabled()) {
-			log.debug("setPropertyValue called: " + id + " = " + value); //$NON-NLS-1$ //$NON-NLS-2$
+			log.debug("setPropertyValue called: " + id + " = " + value);
 		}
 		if (value == null) return;
 		
@@ -101,9 +100,9 @@ public class BranchPropertySource extends AbstractPomPropertySource {
 
 	public String getLabel(Object o) {
 		if (log.isDebugEnabled()) {
-			log.debug("getLabel called for " + o); //$NON-NLS-1$
+			log.debug("getLabel called for " + o);
 		}
-		return branch.getTag() != null ? branch.getTag() : Mevenide.getResourceString("AbstractPropertySource.Element.Unknown"); //$NON-NLS-1$
+		return branch.getTag() != null ? branch.getTag() : "[unknown]";
 	}
 
 	/**

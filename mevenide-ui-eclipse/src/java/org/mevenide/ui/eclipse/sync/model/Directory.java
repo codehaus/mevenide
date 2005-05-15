@@ -18,7 +18,7 @@ package org.mevenide.ui.eclipse.sync.model;
 
 import org.apache.maven.project.Project;
 import org.mevenide.project.source.SourceDirectoryUtil;
-import org.mevenide.util.ResolverUtils;
+import org.mevenide.properties.resolver.util.ResolverUtils;
 
 /**
  * 
@@ -47,7 +47,7 @@ public class Directory {
     		return false;
     	}
     	Directory dir = (Directory) obj;
-    	return ResolverUtils.getInstance().resolve(project, getCleanPath()).equals(ResolverUtils.getInstance().resolve(project, dir.getCleanPath())); 
+    	return ResolverUtils.resolve(project, getCleanPath()).equals(ResolverUtils.resolve(project, dir.getCleanPath())); 
 	}
     
     public boolean equalsStrict(Object obj) {
@@ -63,7 +63,7 @@ public class Directory {
     }
     
     String getCleanPath() {
-        return SourceDirectoryUtil.stripBasedir(path).replaceAll("\\\\", "/");  //$NON-NLS-1$//$NON-NLS-2$
+        return SourceDirectoryUtil.stripBasedir(path).replaceAll("\\\\", "/");
     }
     
     public void setPath(String path) {

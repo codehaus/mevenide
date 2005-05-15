@@ -16,9 +16,9 @@
  */
 package org.mevenide.ui.eclipse.actions;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.StructuredSelection;
@@ -56,11 +56,15 @@ public abstract class AbstractMevenideAction implements IWorkbenchWindowActionDe
     private IProject getParentProject(ISelection selection) {
         IProject project = null;
         Object firstElement = ((StructuredSelection) selection).getFirstElement();
-        if ( firstElement instanceof IResource ) {
-            project = ((IResource) firstElement).getProject();
-    	}
-        if ( firstElement instanceof IJavaElement )  {
-            project = ((IJavaElement) firstElement).getJavaProject().getProject();
+        if ( firstElement instanceof IProject ) {
+            project = (IProject) firstElement;
+        }
+        if ( firstElement instanceof IJavaProject )  {
+            project = ((IJavaProject) firstElement).getProject();
+               
+        }
+        if ( firstElement instanceof IFile ) {
+            project = ((IFile) firstElement).getProject();
         }
         return project;
     }

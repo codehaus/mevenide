@@ -44,8 +44,8 @@ public class MailingListsSection extends PageSection {
 	    FormToolkit toolkit)
 	{
 		super(page, parent, toolkit);
-		setTitle(Mevenide.getResourceString("MailingListsSection.header")); //$NON-NLS-1$
-		setDescription(Mevenide.getResourceString("MailingListsSection.description")); //$NON-NLS-1$
+		setTitle(Mevenide.getResourceString("MailingListsSection.header"));
+		setDescription(Mevenide.getResourceString("MailingListsSection.description"));
 	}
 
     public Composite createSectionContent(Composite parent, FormToolkit factory) {
@@ -62,7 +62,7 @@ public class MailingListsSection extends PageSection {
 		// POM mailingLists table
 		Button toggle = createOverrideToggle(container, factory, 1, true);
 		TableViewer viewer = createTableViewer(container, factory, 1);
-		mailingListTable = new TableEntry(viewer, toggle, Mevenide.getResourceString("MailingListsSection.TableEntry.Tooltip"), container, factory, this); //$NON-NLS-1$
+		mailingListTable = new TableEntry(viewer, toggle, "Mailing List", container, factory, this);
 		OverrideAdaptor adaptor = new OverrideAdaptor() {
 			public void overrideParent(Object value) {
 				List mailingLists = (List) value;

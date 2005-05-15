@@ -31,9 +31,9 @@ import org.mevenide.ui.eclipse.Mevenide;
 public abstract class PageEntry {
 
 	protected static final String INHERITED_TOOLTIP =
-		Mevenide.getResourceString("OverridablePageEntry.toggle.tooltip.inherited"); //$NON-NLS-1$
+		Mevenide.getResourceString("OverridablePageEntry.toggle.tooltip.inherited");
 	protected static final String OVERRIDEN_TOOLTIP =
-		Mevenide.getResourceString("OverridablePageEntry.toggle.tooltip.overriden"); //$NON-NLS-1$
+		Mevenide.getResourceString("OverridablePageEntry.toggle.tooltip.overriden");
 
 	protected boolean dirty = false;
 	protected boolean disableNotification = false;

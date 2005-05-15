@@ -18,16 +18,9 @@ package org.mevenide.ui.eclipse.actions;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.eclipse.core.resources.IContainer;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.jface.window.Window;
-import org.mevenide.ui.eclipse.template.view.ChooseTemplateDialog;
 import org.mevenide.ui.eclipse.util.FileUtils;
-import org.mevenide.util.StringUtils;
 
 /**
  * 
@@ -36,58 +29,22 @@ import org.mevenide.util.StringUtils;
  * 
  */
 public class CreatePomAction extends AbstractMevenideAction {
-	
-    private static Log log = LogFactory.getLog(CreatePomAction.class);
-	
-    private static final String DEFAULT_TEMPLATE = "DEFAULT_TEMPLATE"; //$NON-NLS-1$
-    
-	private IContainer currentContainer;
+	private static Log log = LogFactory.getLog(CreatePomAction.class);
 	
 	public void run(IAction action) {
 		try {
-			if ( FileUtils.getPom(currentContainer) != null && !FileUtils.getPom(currentContainer).exists() ) {
-			    String pomTemplate = chooseTemplate();
-			    if ( StringUtils.isNull(pomTemplate) ) {
-			        return;
-			    }
-			    pomTemplate = DEFAULT_TEMPLATE.equals(pomTemplate) ? null : pomTemplate;
-			    FileUtils.createPom(currentContainer, pomTemplate);
+			if ( FileUtils.getPom(currentProject) != null && !FileUtils.getPom(currentProject).exists() ) {
+				FileUtils.createPom(currentProject);
 			}
-			else {
-			    //should we allow pom file name customization through this action ?
-			    //should we warn the user that project.xml already exists in this folder ?
-			}
-		} 
-		catch (Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
-			log.debug("Unable to create POM due to", e); //$NON-NLS-1$
+			log.debug("Unable to create POM due to : " + e);
 		}
-	}
-	
-	private String chooseTemplate() {
-	    ChooseTemplateDialog dialog = new ChooseTemplateDialog();
-	    int userChoice = dialog.open();
-	    if ( userChoice == Window.CANCEL ) {
-	        return null;
-	    }
-	    if ( dialog.getTemplate() != null ) {
-	        return dialog.getTemplate().getProject().getFile().getAbsolutePath();
-	    }
-	    return DEFAULT_TEMPLATE;
 	}
 
 	public void selectionChanged(IAction action, ISelection selection) {
 		super.selectionChanged(action, selection);
-		Object o =  ((StructuredSelection) selection).getFirstElement();
-		if ( o instanceof IContainer ) {
-		    this.currentContainer = (IContainer) o;
-		}
-		if ( o instanceof IJavaElement ) {
-		    IResource resource = ((IJavaElement) o).getResource();
-		    if ( resource instanceof IContainer ) {
-		        this.currentContainer = (IContainer) resource;
-		    }
-		}
+		
 //      i still have to figure out how to disable the ui associated to the action
 //		if ( Mevenide.getPlugin().getPom().exists() ) {
 //		    action.setEnabled(false); 

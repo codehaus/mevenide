@@ -7,37 +7,18 @@
 	<feature url="features/org.mevenide.feature_0.2.0.jar" id="org.mevenide.feature" version="0.2.0">
 		<category name="Mevenide"/>
 	</feature>
-	
-	<feature url="features/org.mevenide.feature_0.2.1.jar" id="org.mevenide.feature" version="0.2.1">
-		<category name="Mevenide"/>
-	</feature>
-	
-	<feature url="features/org.mevenide.feature_0.2.2.jar" id="org.mevenide.feature" version="0.2.2">
-		<category name="Mevenide"/>
-	</feature>
-	
-	<feature url="features/org.mevenide.feature_0.2.2.jar" id="org.mevenide.feature" version="0.2.2">
-		<category name="Mevenide"/>
-	</feature>
-	
-	<feature url="features/@org.mevenide.eclipse.feature.id@_@org.mevenide.eclipse.feature.version@.jar" id="@org.mevenide.eclipse.feature.id@" version="@org.mevenide.eclipse.feature.version@">
-		<category name="Mevenide"/>
-	</feature>
-
-	<feature url="features/org.apache.maven_1.0.2.jar" id="org.apache.maven" version="1.0.2">
-		<category name="Maven"/>
-	</feature>
-
-	<category-def label="Mevenide" name="Mevenide">
+	<!--
+	<archive url="http://dist.codehaus.org/mevenide/release/org.mevenide.core_0.1.1.jar" path="plugins/org.mevenide.core_0.1.1.jar"/>
+	<archive url="http://dist.codehaus.org/mevenide/release/org.mevenide.goals.grabber_0.2.0.jar" path="plugins/org.mevenide.goals.grabber_0.2.0.jar"/>
+	<archive url="http://dist.codehaus.org/mevenide/release/org.mevenide.config_0.2.0.jar" path="plugins/org.mevenide.config_0.2.0.jar"/>
+	<archive url="http://dist.codehaus.org/mevenide/release/org.mevenide.grammar_0.1.0.jar" path="plugins/org.mevenide.grammar_0.1.0.jar"/>
+	<archive url="http://dist.codehaus.org/mevenide/release/org.mevenide.ui.eclipse_0.2.0.jar" path="plugins/org.mevenide.ui.eclipse_0.2.0.jar"/>
+	-->
+	<category-def label="org.mevenide_0.2.0" name="Mevenide">
 		<description>
 			%mevenideCategoryDescription
 		</description>
 	</category-def>
-	
-	<category-def label="Maven" name="Maven">
-		<description>
-			%mavenCategoryDescription
-		</description>
-	</category-def>
+
 
 </site>

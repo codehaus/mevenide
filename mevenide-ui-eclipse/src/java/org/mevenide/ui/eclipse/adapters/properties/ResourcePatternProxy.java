@@ -26,8 +26,8 @@ import org.mevenide.util.MevenideUtils;
  */
 public class ResourcePatternProxy extends AbstractPomPropertySource {
 
-	private static final String EXCLUDE_PATTERN = "exclude"; //$NON-NLS-1$
-	private static final String INCLUDE_PATTERN = "include"; //$NON-NLS-1$
+	private static final String EXCLUDE_PATTERN = "exclude";
+	private static final String INCLUDE_PATTERN = "include";
 
 	private boolean isIncludePattern;
 	private String pattern;

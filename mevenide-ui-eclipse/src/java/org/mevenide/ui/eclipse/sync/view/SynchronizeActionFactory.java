@@ -19,20 +19,17 @@ package org.mevenide.ui.eclipse.sync.view;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Project;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IWorkspaceDescription;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
-import org.mevenide.ui.eclipse.IImageRegistry;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.sync.action.AddPropertyAction;
 import org.mevenide.ui.eclipse.sync.action.AddToClasspathAction;
@@ -58,24 +55,24 @@ import org.mevenide.ui.eclipse.sync.model.MavenArtifactNode;
 public class SynchronizeActionFactory {
 	private static Log log = LogFactory.getLog(SynchronizeActionFactory.class);
 
-	public static final String ADD_TO_CLASSPATH = "ADD_TO_CLASSPATH"; //$NON-NLS-1$
-	public static final String ADD_TO_POM = "ADD_TO_POM"; //$NON-NLS-1$
-	public static final String REMOVE_FROM_PROJECT = "REMOVE_FROM_PROJECT"; //$NON-NLS-1$
-	public static final String REMOVE_FROM_POM = "REMOVE_FROM_POM"; //$NON-NLS-1$
-	public static final String ADD_DEPENDENCY_PROPERTIES = "ADD_DEP_PROPERTY"; //$NON-NLS-1$
-	public static final String REFRESH_ALL = "REFRESH_ALL"; //$NON-NLS-1$
+	public static final String ADD_TO_CLASSPATH = "ADD_TO_CLASSPATH";
+	public static final String ADD_TO_POM = "ADD_TO_POM";
+	public static final String REMOVE_FROM_PROJECT = "REMOVE_FROM_PROJECT";
+	public static final String REMOVE_FROM_POM = "REMOVE_FROM_POM";
+	public static final String ADD_DEPENDENCY_PROPERTIES = "ADD_DEP_PROPERTY";
+	public static final String REFRESH_ALL = "REFRESH_ALL";
 
-	public static final String VIEW_CONFLICTS = "VIEW_CONFLICTS"; //$NON-NLS-1$
-	public static final String VIEW_OUTGOING = "VIEW_OUTGOING"; //$NON-NLS-1$
-	public static final String VIEW_INCOMING = "VIEW_INCOMING"; //$NON-NLS-1$
+	public static final String VIEW_CONFLICTS = "VIEW_CONFLICTS";
+	public static final String VIEW_OUTGOING = "VIEW_OUTGOING";
+	public static final String VIEW_INCOMING = "VIEW_INCOMING";
 
-	public static final String WRITE_PROPERTIES = "WRITE_PROPERTIES"; //$NON-NLS-1$
+	public static final String WRITE_PROPERTIES = "WRITE_PROPERTIES";
 	
-	public static final String MARK_AS_MERGED = "MARK_AS_MERGED"; //$NON-NLS-1$
+	public static final String MARK_AS_MERGED = "MARK_AS_MERGED";
 
-	public static final String PROPERTIES = "PROPERTIES"; //$NON-NLS-1$
+	public static final String PROPERTIES = "PROPERTIES";
 
-	public static final String MVN_IGNORE = "MVN_IGNORE"; //$NON-NLS-1$
+	public static final String MVN_IGNORE = "MVN_IGNORE";
 	
 	private static Map factories = new HashMap();
 	
@@ -144,7 +141,7 @@ public class SynchronizeActionFactory {
 							}
 						}
 						catch ( Exception e ) {
-							log.debug("Unable to add item " + selectedNode.getData() + " to ignore list ", e ); //$NON-NLS-1$ //$NON-NLS-2$
+							log.debug("Unable to add item " + selectedNode.getData() + " to ignore list ", e );
 						}
 					}
 				}
@@ -152,7 +149,7 @@ public class SynchronizeActionFactory {
 		};
 		action.addActionListener(synchronizationView);
 		addToIgnoreList.setId(MVN_IGNORE);
-		addToIgnoreList.setText(Mevenide.getResourceString("SynchronizeActionFactory.IgnoreAction.Text")); //$NON-NLS-1$
+		addToIgnoreList.setText("Add to .mvnignore");
 		actionIds.put(MVN_IGNORE, addToIgnoreList);
 	}
 
@@ -160,7 +157,7 @@ public class SynchronizeActionFactory {
 		Action viewProperties = new Action() {
 			public void run() {
 				try {
-					PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView("org.eclipse.ui.views.PropertySheet"); //$NON-NLS-1$
+					PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView("org.eclipse.ui.views.PropertySheet");
 				}
 				catch ( PartInitException e ) {
 					log.debug(e, e);
@@ -168,7 +165,7 @@ public class SynchronizeActionFactory {
 			}
 		};
 		viewProperties.setId(PROPERTIES);
-		viewProperties.setText(Mevenide.getResourceString("SynchronizeActionFactory.ViewPropertiesAction.Text")); //$NON-NLS-1$
+		viewProperties.setText("Properties");
 		actionIds.put(PROPERTIES, viewProperties);
 	}
 
@@ -182,7 +179,7 @@ public class SynchronizeActionFactory {
 		};
 		action.addActionListener(synchronizationView);
 		editProperties.setId(ADD_DEPENDENCY_PROPERTIES);
-		editProperties.setText(Mevenide.getResourceString("SynchronizeActionFactory.AddPropertyAction.Text")); //$NON-NLS-1$
+		editProperties.setText("Add Property");
 		actionIds.put(ADD_DEPENDENCY_PROPERTIES, editProperties);
 	}
 	
@@ -193,7 +190,7 @@ public class SynchronizeActionFactory {
 			}
 		};
 		markAsMerged.setId(MARK_AS_MERGED);
-		markAsMerged.setText(Mevenide.getResourceString("SynchronizeActionFactory.MergeAction.Text")); //$NON-NLS-1$
+		markAsMerged.setText("Mark as Merged");
 		actionIds.put(MARK_AS_MERGED, markAsMerged);
 	}
 
@@ -213,7 +210,7 @@ public class SynchronizeActionFactory {
 							}
 						}
 						catch ( Exception e ) {
-							log.debug("Unable to remove item " + selectedNode.getData() + " from pom ", e ); //$NON-NLS-1$ //$NON-NLS-2$
+							log.debug("Unable to remove item " + selectedNode.getData() + " from pom ", e );
 						}
 					}
 				}
@@ -221,7 +218,7 @@ public class SynchronizeActionFactory {
 		};
 		action.addActionListener(synchronizationView);
 		removeFromPom.setId(REMOVE_FROM_POM);
-		removeFromPom.setText(Mevenide.getResourceString("SynchronizeActionFactory.RemoveFromPomAction.Text")); //$NON-NLS-1$
+		removeFromPom.setText("Remove from Pom");
 		actionIds.put(REMOVE_FROM_POM, removeFromPom);
 	}
 
@@ -229,11 +226,6 @@ public class SynchronizeActionFactory {
 		final RemoveFromClasspathAction action = new RemoveFromClasspathAction();
 		Action removeFromProject = new Action() {
 			public void run() {
-			    IWorkspaceDescription description = ResourcesPlugin.getWorkspace().getDescription();
-		        boolean initialAutoBuildingState = description.isAutoBuilding();
-			    
-		        setAutoBuilding(description, false);
-			    
 				List selections = ((IStructuredSelection) synchronizationView.getArtifactMappingNodeViewer().getSelection()).toList();
 				
 				for (int i = 0; i < selections.size(); i++) {
@@ -245,17 +237,15 @@ public class SynchronizeActionFactory {
 							action.removeEntry(selectedNode, project);
 						}
 						catch ( Exception e ) {
-							log.debug("Unable to remove item " + selectedNode.getData() + " from classpath ", e ); //$NON-NLS-1$ //$NON-NLS-2$
+							log.debug("Unable to remove item " + selectedNode.getData() + " from classpath ", e );
 						}
 					}
 				}
-				
-				setAutoBuilding(description, initialAutoBuildingState);
 			}
 		};
 		action.addActionListener(synchronizationView);
 		removeFromProject.setId(REMOVE_FROM_PROJECT);
-		removeFromProject.setText(Mevenide.getResourceString("SynchronizeActionFactory.RemoveFromProjectAction.Text")); //$NON-NLS-1$
+		removeFromProject.setText("Remove from project");
 		actionIds.put(REMOVE_FROM_PROJECT, removeFromProject);
 	}
 
@@ -278,14 +268,14 @@ public class SynchronizeActionFactory {
 						    List mavenProjects = new PomChooser(currentPom).openPomChoiceDialog(false);
 							for (int i = 0; i < mavenProjects.size(); i++) {
 		                        Project mavenProject = (Project) mavenProjects.get(i); 
-								log.debug("POM choice : " + mavenProject); //$NON-NLS-1$
+								log.debug("POM choice : " + mavenProject);
 								if ( mavenProject != null ) {
 									action.addEntry(selectedNode, mavenProject);
 								}	
 		                    }
 						}
 						catch ( Exception e ) {
-							log.debug("Unable to add item " + selectedNode.getData() + " to pom ", e ); //$NON-NLS-1$ //$NON-NLS-2$
+							log.debug("Unable to add item " + selectedNode.getData() + " to pom ", e );
 						}
 					}
 				}
@@ -294,15 +284,15 @@ public class SynchronizeActionFactory {
 		synchronizationView.addSynchronizationConstraintListener(action);
 		action.addActionListener(synchronizationView);
 		pushToPom.setId(ADD_TO_POM);
-		pushToPom.setText(Mevenide.getResourceString("SynchronizeActionFactory.UpdatePomAction.Text")); //$NON-NLS-1$
+		pushToPom.setText("Update Pom...");
 		actionIds.put(ADD_TO_POM, pushToPom);
 	}
 
 	private void createViewPomToIdeAction() {
 	    ToggleViewAction viewPomToIde = new ToggleViewAction(ISelectableNode.INCOMING_DIRECTION);
 		viewPomToIde.setId(VIEW_INCOMING);
-		viewPomToIde.setToolTipText(Mevenide.getResourceString("SynchronizeActionFactory.Direction.Incoming.Tooltip")); //$NON-NLS-1$
-		viewPomToIde.setImageDescriptor(Mevenide.getInstance().getImageRegistry().getDescriptor(IImageRegistry.SYNC_INCOMING));
+		viewPomToIde.setToolTipText("Incoming Changes");
+		viewPomToIde.setImageDescriptor(Mevenide.getImageDescriptor("pom_to_ide_sync.gif"));
 		actionIds.put(VIEW_INCOMING, viewPomToIde);
 		synchronizationView.addDirectionListener(viewPomToIde);
 		viewPomToIde.addPropertyChangeListener(synchronizationView);
@@ -311,8 +301,8 @@ public class SynchronizeActionFactory {
 	private void createViewIdeToPomAction() {
 	    ToggleViewAction viewIdeToPom = new ToggleViewAction(ISelectableNode.OUTGOING_DIRECTION);
 		viewIdeToPom.setId(VIEW_OUTGOING);
-		viewIdeToPom.setToolTipText(Mevenide.getResourceString("SynchronizeActionFactory.Direction.Outgoing.Tooltip")); //$NON-NLS-1$
-		viewIdeToPom.setImageDescriptor(Mevenide.getInstance().getImageRegistry().getDescriptor(IImageRegistry.SYNC_OUTGOING));
+		viewIdeToPom.setToolTipText("Outgoing changes");
+		viewIdeToPom.setImageDescriptor(Mevenide.getImageDescriptor("ide_to_pom_sync.gif"));
 		actionIds.put(VIEW_OUTGOING, viewIdeToPom);
 		synchronizationView.addDirectionListener(viewIdeToPom);
 		viewIdeToPom.addPropertyChangeListener(synchronizationView);
@@ -321,8 +311,8 @@ public class SynchronizeActionFactory {
 	private void createViewConflictsAction() {
 	    ToggleViewAction viewConflicts = new ToggleViewAction(ISelectableNode.CONFLICTING_DIRECTION);
 		viewConflicts.setId(VIEW_CONFLICTS);
-		viewConflicts.setToolTipText(Mevenide.getResourceString("SynchronizeActionFactory.Direction.Conflicts.Tooltip")); //$NON-NLS-1$
-		viewConflicts.setImageDescriptor(Mevenide.getInstance().getImageRegistry().getDescriptor(IImageRegistry.SYNC_CONFLICT));
+		viewConflicts.setToolTipText("Conflicts");
+		viewConflicts.setImageDescriptor(Mevenide.getImageDescriptor("conflict_synch.gif"));
 		actionIds.put(VIEW_CONFLICTS, viewConflicts);
 		synchronizationView.addDirectionListener(viewConflicts);
 		viewConflicts.addPropertyChangeListener(synchronizationView);
@@ -331,8 +321,8 @@ public class SynchronizeActionFactory {
 	private void createWritePropertiesAction() {
 		Action writeProperties = new ToggleWritePropertiesAction();
 		writeProperties.setId(WRITE_PROPERTIES);
-		writeProperties.setToolTipText(Mevenide.getResourceString("SynchronizeActionFactory.WriteProperties.Tooltip")); //$NON-NLS-1$
-		writeProperties.setImageDescriptor(Mevenide.getInstance().getImageRegistry().getDescriptor(IImageRegistry.SYNC_PROPERTIES));
+		writeProperties.setToolTipText("Override project.properties");
+		writeProperties.setImageDescriptor(Mevenide.getImageDescriptor("write_properties.gif"));
 		actionIds.put(WRITE_PROPERTIES, writeProperties);
 		writeProperties.addPropertyChangeListener(synchronizationView);
 	}
@@ -344,8 +334,8 @@ public class SynchronizeActionFactory {
 			}
 		};
 		refreshAll.setId(REFRESH_ALL);
-		refreshAll.setToolTipText(Mevenide.getResourceString("SynchronizeActionFactory.Refresh.Tooltip")); //$NON-NLS-1$
-		refreshAll.setImageDescriptor(Mevenide.getInstance().getImageRegistry().getDescriptor(IImageRegistry.REFRESH_TOOL));
+		refreshAll.setToolTipText("Refresh All");
+		refreshAll.setImageDescriptor(Mevenide.getImageDescriptor("refresh.gif"));
 		actionIds.put(REFRESH_ALL, refreshAll);
 	}
 	
@@ -353,11 +343,6 @@ public class SynchronizeActionFactory {
 		final AddToClasspathAction action = new AddToClasspathAction();
 		Action addToClasspath = new Action() {
 			public void run() {
-			    IWorkspaceDescription description = ResourcesPlugin.getWorkspace().getDescription();
-		        boolean initialAutoBuildingState = description.isAutoBuilding();
-			    
-		        setAutoBuilding(description, false);
-			    
 				List selections = ((IStructuredSelection) synchronizationView.getArtifactMappingNodeViewer().getSelection()).toList();
 				
 				for (int i = 0; i < selections.size(); i++) {
@@ -369,29 +354,17 @@ public class SynchronizeActionFactory {
 							action.addEntry(selectedNode, project);
 						}
 						catch ( Exception e ) {
-							log.error("Unable to add item " + selectedNode.getData() + " to classpath ", e );  //$NON-NLS-1$//$NON-NLS-2$
+							log.error("Unable to add item " + selectedNode.getData() + " to classpath ", e );
 						}
 					}
 				}
-				
-				setAutoBuilding(description, initialAutoBuildingState);
 			}
 		};
 		action.addActionListener(synchronizationView);
 		addToClasspath.setId(ADD_TO_CLASSPATH);
-		addToClasspath.setText(Mevenide.getResourceString("SynchronizeActionFactory.AddToClasspathAction.Text")); //$NON-NLS-1$
+		addToClasspath.setText("Add to .classpath");
 		actionIds.put(ADD_TO_CLASSPATH, addToClasspath);
-	}
-
-    private void setAutoBuilding(IWorkspaceDescription description, boolean autoBuild) {
-        try {
-            description.setAutoBuilding(autoBuild);
-            ResourcesPlugin.getWorkspace().setDescription(description);
-        } 
-        catch (CoreException e) {
-            log.error("Unable to change autobuild state", e);  //$NON-NLS-1$
-        }
-    }	
+	}	
 }
 
 

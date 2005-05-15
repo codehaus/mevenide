@@ -1,192 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="src/java">
-		<attributes>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="src" path="etc">
-		<attributes>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="src" path="src/conf/eclipse">
-		<attributes>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.core.variables_3.1.0/variables.jar">
-		<attributes>
-		</attributes>
-	</classpathentry>
-	<classpathentry sourcepath="ECLIPSE_HOME/plugins/org.eclipse.platform.source_3.1.0/src/org.eclipse.core.resources_3.1.0/resourcessrc.zip" kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.core.resources_3.1.0/resources.jar">
-		<attributes>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.jdt.core_3.1.0/jdtcore.jar">
-		<attributes>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.jdt.launching_3.1.0/launching.jar">
-		<attributes>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.debug.core_3.1.0/dtcore.jar">
-		<attributes>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.debug.ui_3.1.0/dtui.jar">
-		<attributes>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.jdt.ui_3.1.0/jdt.jar">
-		<attributes>
-		</attributes>
-	</classpathentry>
-	<classpathentry sourcepath="ECLIPSE_HOME/plugins/org.eclipse.platform.source_3.1.0/src/org.eclipse.team.ui_3.1.0/teamuisrc.zip" kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.team.ui_3.1.0/teamui.jar">
-		<attributes>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.ui.externaltools_3.1.0/externaltools.jar">
-		<attributes>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.jface.text_3.1.0/jfacetext.jar">
-		<attributes>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.text_3.1.0/text.jar">
-		<attributes>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.ui.workbench.texteditor_3.1.0/texteditor.jar">
-		<attributes>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.ui.editors_3.1.0/editors.jar">
-		<attributes>
-		</attributes>
-	</classpathentry>
-	<classpathentry sourcepath="ORG_ECLIPSE_PLATFORM_SOURCE_SRC/org.eclipse.osgi.util_3.0.0/utilsrc.zip" kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.osgi.util_3.0.0/util.jar">
-		<attributes>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.pde.ui_3.1.0/pdeui.jar">
-		<attributes>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
-		<attributes>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="var" path="MAVEN_REPO/commons-httpclient/jars/commons-httpclient-2.0-rc1.jar">
-		<attributes>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="var" path="MAVEN_REPO/forehead/jars/forehead-1.0-beta-5.jar">
-		<attributes>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="var" path="MAVEN_REPO/plexus/jars/plexus-0.6.jar">
-		<attributes>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="var" path="MAVEN_REPO/dom4j/jars/dom4j-1.4-dev-8.jar">
-		<attributes>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="var" path="MAVEN_REPO/maven/jars/wagon-api-1.0-alpha-1.jar">
-		<attributes>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="var" path="MAVEN_REPO/maven/jars/wagon-http-lightweight-20040714.210443.jar">
-		<attributes>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="deps/mavenzilla-0.2.jar">
-		<attributes>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="var" path="MAVEN_REPO/maven/jars/maven-1.0.1.jar">
-		<attributes>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="var" path="MAVEN_REPO/commons-logging/jars/commons-logging-1.0.4.jar">
-		<attributes>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="var" path="MAVEN_REPO/jdom/jars/jdom-1.0.jar">
-		<attributes>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="src" path="/goals-grabber">
-		<attributes>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="src" path="/mevenide-config">
-		<attributes>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="src" path="/mevenide-core">
-		<attributes>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="src" path="/mevenide-grammar">
-		<attributes>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="var" path="MAVEN_REPO/commons-discovery/jars/commons-discovery-0.1.jar">
-		<attributes>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="var" path="MAVEN_REPO/commons-lang/jars/commons-lang-1.0.1.jar">
-		<attributes>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="var" path="MAVEN_REPO/commons-logging/jars/commons-logging-1.0.3.jar">
-		<attributes>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.help_3.1.0.jar">
-		<attributes>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.help.base_3.1.0.jar">
-		<attributes>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.jface_3.1.0.jar">
-		<attributes>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.osgi_3.1.0.jar">
-		<attributes>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.ui_3.1.0.jar">
-		<attributes>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.ui.forms_3.1.0.jar">
-		<attributes>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.ui.ide_3.1.0.jar">
-		<attributes>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.ui.views_3.1.0.jar">
-		<attributes>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.ui.workbench_3.1.0.jar">
-		<attributes>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.swt.win32_3.1.0.jar">
-		<attributes>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.core.runtime_3.1.0.jar">
-		<attributes>
-		</attributes>
-	</classpathentry>
+	<classpathentry kind="src" path="src/java"/>
+	<classpathentry kind="src" path="etc"/>
+	<classpathentry kind="src" path="src/conf/eclipse"/>
+	<classpathentry kind="src" path="/mevenide-core"/>
+	<classpathentry kind="src" path="/goals-grabber"/>
+	<classpathentry kind="src" path="/mevenide-config"/>
+	<classpathentry sourcepath="ORG_ECLIPSE_PLATFORM_SOURCE_SRC/org.eclipse.help.base_3.0.0/helpbasesrc.zip" kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.help.base_3.0.0/helpbase.jar"/>
+	<classpathentry sourcepath="ORG_ECLIPSE_PLATFORM_SOURCE_SRC/org.eclipse.help_3.0.0/helpsrc.zip" kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.help_3.0.0/help.jar"/>
+	<classpathentry sourcepath="ORG_ECLIPSE_PLATFORM_SOURCE_SRC/org.eclipse.ui.ide_3.0.0/idesrc.zip" kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.ui.ide_3.0.0/ide.jar"/>
+	<classpathentry sourcepath="ORG_ECLIPSE_PLATFORM_SOURCE_SRC/org.eclipse.core.variables_3.0.0/variablessrc.zip" kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.core.variables_3.0.0/variables.jar"/>
+	<classpathentry sourcepath="ORG_ECLIPSE_PLATFORM_SOURCE_SRC/org.eclipse.core.resources_3.0.0/resourcessrc.zip" kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.core.resources_3.0.0/resources.jar"/>
+	<classpathentry sourcepath="ORG_ECLIPSE_PLATFORM_SOURCE_SRC/org.eclipse.core.runtime_3.0.0/runtimesrc.zip" kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.core.runtime_3.0.0/runtime.jar"/>
+	<classpathentry sourcepath="ORG_ECLIPSE_JDT_SOURCE_SRC/org.eclipse.jdt.core_3.0.0/jdtcoresrc.zip" kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.jdt.core_3.0.0/jdtcore.jar"/>
+	<classpathentry sourcepath="ORG_ECLIPSE_PLATFORM_SOURCE_SRC/org.eclipse.jface_3.0.0/jfacesrc.zip" kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.jface_3.0.0/jface.jar"/>
+	<classpathentry sourcepath="ORG_ECLIPSE_PLATFORM_SOURCE_SRC/org.eclipse.ui.workbench_3.0.0/workbenchsrc.zip" kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.ui.workbench_3.0.0/workbench.jar"/>
+	<classpathentry sourcepath="ORG_ECLIPSE_JDT_SOURCE_SRC/org.eclipse.jdt.launching_3.0.0/launchingsrc.zip" kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.jdt.launching_3.0.0/launching.jar"/>
+	<classpathentry sourcepath="ORG_ECLIPSE_PLATFORM_SOURCE_SRC/org.eclipse.debug.core_3.0.0/dtcoresrc.zip" kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.debug.core_3.0.0/dtcore.jar"/>
+	<classpathentry sourcepath="ORG_ECLIPSE_PLATFORM_SOURCE_SRC/org.eclipse.debug.ui_3.0.0/dtuisrc.zip" kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.debug.ui_3.0.0/dtui.jar"/>
+	<classpathentry sourcepath="ORG_ECLIPSE_PLATFORM_SOURCE_SRC/org.eclipse.ui.views_3.0.0/viewssrc.zip" kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.ui.views_3.0.0/views.jar"/>
+	<classpathentry sourcepath="ORG_ECLIPSE_JDT_SOURCE_SRC/org.eclipse.jdt.ui_3.0.0/jdtsrc.zip" kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.jdt.ui_3.0.0/jdt.jar"/>
+	<classpathentry sourcepath="ORG_ECLIPSE_PLATFORM_SOURCE_SRC/org.eclipse.ui_3.0.0/uisrc.zip" kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.ui_3.0.0/ui.jar"/>
+	<classpathentry sourcepath="ORG_ECLIPSE_PLATFORM_SOURCE_SRC/org.eclipse.team.ui_3.0.0/teamuisrc.zip" kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.team.ui_3.0.0/teamui.jar"/>
+	<classpathentry sourcepath="ORG_ECLIPSE_PLATFORM_SOURCE_SRC/org.eclipse.ui.externaltools_3.0.0/externaltoolssrc.zip" kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.ui.externaltools_3.0.0/externaltools.jar"/>
+	<classpathentry sourcepath="ORG_ECLIPSE_PLATFORM_SOURCE_SRC/org.eclipse.jface.text_3.0.0/jfacetextsrc.zip" kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.jface.text_3.0.0/jfacetext.jar"/>
+	<classpathentry sourcepath="ORG_ECLIPSE_PLATFORM_SOURCE_SRC/org.eclipse.text_3.0.0/textsrc.zip" kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.text_3.0.0/text.jar"/>
+	<classpathentry sourcepath="ORG_ECLIPSE_PLATFORM_SOURCE_SRC/org.eclipse.ui.workbench.texteditor_3.0.0/texteditorsrc.zip" kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.ui.workbench.texteditor_3.0.0/texteditor.jar"/>
+	<classpathentry sourcepath="ORG_ECLIPSE_PLATFORM_SOURCE_SRC/org.eclipse.ui.editors_3.0.0/editorssrc.zip" kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.ui.editors_3.0.0/editors.jar"/>
+	<classpathentry sourcepath="ORG_ECLIPSE_PLATFORM_SOURCE_SRC/org.eclipse.osgi.util_3.0.0/utilsrc.zip" kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.osgi.util_3.0.0/util.jar"/>
+	<classpathentry sourcepath="ORG_ECLIPSE_PLATFORM_SOURCE_SRC/org.eclipse.osgi_3.0.0/osgisrc.zip" kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.osgi_3.0.0/osgi.jar"/>
+	<classpathentry sourcepath="ORG_ECLIPSE_PLATFORM_SOURCE_SRC/org.eclipse.osgi_3.0.0/coresrc.zip" kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.osgi_3.0.0/core.jar"/>
+	<classpathentry sourcepath="ORG_ECLIPSE_PLATFORM_SOURCE_SRC/org.eclipse.osgi_3.0.0/resolversrc.zip" kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.osgi_3.0.0/resolver.jar"/>
+	<classpathentry sourcepath="ORG_ECLIPSE_PLATFORM_SOURCE_SRC/org.eclipse.osgi_3.0.0/defaultAdaptorsrc.zip" kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.osgi_3.0.0/defaultAdaptor.jar"/>
+	<classpathentry sourcepath="ORG_ECLIPSE_PLATFORM_SOURCE_SRC/org.eclipse.osgi_3.0.0/eclipseAdaptorsrc.zip" kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.osgi_3.0.0/eclipseAdaptor.jar"/>
+	<classpathentry sourcepath="ORG_ECLIPSE_PDE_SOURCE_SRC/org.eclipse.pde.ui_3.0.0/pdeuisrc.zip" kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.pde.ui_3.0.0/pdeui.jar"/>
+	<classpathentry kind="var" path="SWT_LIB"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="var" path="MAVEN_REPO/commons-httpclient/jars/commons-httpclient-2.0-rc1.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/forehead/jars/forehead-1.0-beta-5.jar"/>
+	<classpathentry sourcepath="ECLIPSE_HOME/plugins/org.eclipse.platform.source_3.0.0/src/org.eclipse.ui.forms_3.0.0/formssrc.zip" kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.ui.forms_3.0.0/forms.jar"/>
+	<classpathentry kind="src" path="/mevenide-grammar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

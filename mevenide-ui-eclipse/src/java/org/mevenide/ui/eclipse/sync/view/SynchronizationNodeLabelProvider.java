@@ -23,7 +23,6 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.mevenide.project.ProjectConstants;
-import org.mevenide.ui.eclipse.IImageRegistry;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.MevenideColors;
 import org.mevenide.ui.eclipse.sync.model.Directory;
@@ -46,24 +45,24 @@ public class SynchronizationNodeLabelProvider implements ILabelProvider, IColorP
     
     public Image getImage(Object element) {
     	if ( element instanceof MavenArtifactNode ) {
-    		return Mevenide.getInstance().getImageRegistry().get(IImageRegistry.DEPENDENCY_OBJ);
+    		return Mevenide.getImageDescriptor("maven_dep_tree.gif").createImage();
     	}
     	if ( element instanceof DirectoryNode ) {
     		Directory directory = (Directory) ((DirectoryNode) element).getData();
     		String imageName = getDirectoryImageName(directory);
-    		return Mevenide.getInstance().getImageRegistry().get(imageName);
+    		return Mevenide.getImageDescriptor(imageName).createImage();
     	}
     	if ( element instanceof EclipseProjectNode ) {
-    		return Mevenide.getInstance().getImageRegistry().get(IImageRegistry.MAVEN_PROJECT_OBJ);
+    		return Mevenide.getImageDescriptor("maven_project.gif").createImage();
     	}
     	if ( element instanceof MavenProjectNode ) {
-    		return Mevenide.getInstance().getImageRegistry().get(IImageRegistry.MAVEN_POM_OBJ);
+    		return Mevenide.getImageDescriptor("pom_file.gif").createImage();
     	}
     	if ( element instanceof PropertyNode ) {
-    		return Mevenide.getInstance().getImageRegistry().get(IImageRegistry.PROPERTY_OBJ);
+    		return Mevenide.getImageDescriptor("property.gif").createImage();
     	}
     	if ( element instanceof ExcludeNode ) {
-    		return Mevenide.getInstance().getImageRegistry().get(IImageRegistry.EXCLUSION_OBJ);
+    		return Mevenide.getImageDescriptor("exclude_obj.gif").createImage();
     	}
     	return null;
     }
@@ -71,26 +70,26 @@ public class SynchronizationNodeLabelProvider implements ILabelProvider, IColorP
     private String getDirectoryImageName(Directory directory) {
 		String imageName;
 		if ( directory.getType() == null ) {
-			imageName = IImageRegistry.FOLDER_UNDEF_OBJ;
+			imageName = "sourcefolder_undefined_obj.gif";
 		}
 		else if ( directory.getType().equals(ProjectConstants.MAVEN_SRC_DIRECTORY) ) {
-			imageName = IImageRegistry.FOLDER_SRC_OBJ;
+			imageName = "packagefolder_obj.gif";
 		}
 		else if ( directory.getType().equals(ProjectConstants.MAVEN_TEST_DIRECTORY) ) {
-			imageName = IImageRegistry.FOLDER_TEST_OBJ;
+			imageName = "sourcefolder_unittest_obj.gif";
 		}
 		else if ( directory.getType().equals(ProjectConstants.MAVEN_ASPECT_DIRECTORY) ) {
-			imageName = IImageRegistry.FOLDER_ASPECTS_OBJ;
+			imageName = "sourcefolder_aspect_obj.gif";
 		}
 		else if ( directory.getType().equals(ProjectConstants.MAVEN_OUTPUT_DIRECTORY) ) {
-			imageName = IImageRegistry.FOLDER_OUTPUT_OBJ;
+			imageName = "sourcefolder_output_obj.gif";
 		}
 		else if ( directory.getType().equals(ProjectConstants.MAVEN_RESOURCE) 
 				  || directory.getType().equals(ProjectConstants.MAVEN_TEST_RESOURCE)) {
-			imageName = IImageRegistry.FOLDER_RESOURCE_OBJ;
+			imageName = "sourcefolder_resource_obj.gif";
 		}
 		else {
-			imageName = IImageRegistry.FOLDER_SRC_OBJ;
+			imageName = "sourcefolder_obj.gif";
 		}
 		return imageName;
 	}

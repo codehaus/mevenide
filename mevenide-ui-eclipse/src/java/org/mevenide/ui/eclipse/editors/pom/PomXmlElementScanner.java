@@ -39,8 +39,8 @@ public class PomXmlElementScanner extends RuleBasedScanner {
 		IToken literalToken = new Token(new TextAttribute(MevenideColors.GREEN));
 
 		IRule[] rules = new IRule[3];
-		rules[0] = new SingleLineRule("\"", "\"", literalToken, '\\'); //double-quote //$NON-NLS-1$ //$NON-NLS-2$
-		rules[1] = new SingleLineRule("'", "'", literalToken, '\\');   //single-quote //$NON-NLS-1$ //$NON-NLS-2$
+		rules[0] = new SingleLineRule("\"", "\"", literalToken, '\\'); //double-quote
+		rules[1] = new SingleLineRule("'", "'", literalToken, '\\');   //single-quote
 		rules[2] = new WhitespaceRule(new PomXmlWhitespaceDetector()); //whitespace
 
 		setRules(rules);

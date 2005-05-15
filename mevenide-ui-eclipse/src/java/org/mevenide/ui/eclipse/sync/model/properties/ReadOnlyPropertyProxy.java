@@ -29,8 +29,8 @@ import org.mevenide.ui.eclipse.adapters.properties.PropertyProxy;
  */
 public class ReadOnlyPropertyProxy extends PropertyProxy {
     
-    private static final String PROPERTY_NAME = "name"; //$NON-NLS-1$
-	private static final String PROPERTY_VALUE = "value"; //$NON-NLS-1$
+    private static final String PROPERTY_NAME = "name";
+	private static final String PROPERTY_VALUE = "value";
 	
     private IPropertyDescriptor[] descriptors = new IPropertyDescriptor[2]; 
     {

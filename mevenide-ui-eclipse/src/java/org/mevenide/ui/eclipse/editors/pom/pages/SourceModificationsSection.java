@@ -59,8 +59,8 @@ public class SourceModificationsSection extends PageSection {
    	{
         super(page, parent, toolkit);
 		this.sectionName = name;
-		setTitle(Mevenide.getResourceString(sectionName + ".header")); //$NON-NLS-1$
-		setDescription(Mevenide.getResourceString(sectionName + ".description")); //$NON-NLS-1$
+		setTitle(Mevenide.getResourceString(sectionName + ".header"));
+		setDescription(Mevenide.getResourceString(sectionName + ".description"));
 	}
 	
 	void setSourceModificationAdaptor(ISourceModificationAdaptor adaptor) {
@@ -81,7 +81,7 @@ public class SourceModificationsSection extends PageSection {
 		// Build SourceModifications table
 		Button toggle = createOverrideToggle(container, factory, 1, true);
 		sourceModificationsViewer = createTableViewer(container, factory, 1);
-		sourceModificationsTable = new TableEntry(sourceModificationsViewer, toggle, Mevenide.getResourceString("SourceModificationsSection.TableEntry.Tooltip"), container, factory, this); //$NON-NLS-1$
+		sourceModificationsTable = new TableEntry(sourceModificationsViewer, toggle, "SourceModifications", container, factory, this);
 		OverrideAdaptor adaptor = new OverrideAdaptor() {
 			public void overrideParent(Object value) {
 				List sourceModifications = (List) value;
@@ -122,7 +122,7 @@ public class SourceModificationsSection extends PageSection {
 		if (isInherited()) {
 			createSpacer(container, factory);
 		}
-		createLabel(container, Mevenide.getResourceString(sectionName + ".includes.header"), factory); //$NON-NLS-1$
+		createLabel(container, Mevenide.getResourceString(sectionName + ".includes.header"), factory);
 		createSpacer(container, factory);
 		
 		IIncludesAdaptor includesAdaptor = new IIncludesAdaptor() {
@@ -152,7 +152,7 @@ public class SourceModificationsSection extends PageSection {
 		if (isInherited()) {
 			createSpacer(container, factory);
 		}
-		createLabel(container, Mevenide.getResourceString(sectionName + ".excludes.header"), factory); //$NON-NLS-1$
+		createLabel(container, Mevenide.getResourceString(sectionName + ".excludes.header"), factory);
 		createSpacer(container, factory);
 		
 		IExcludesAdaptor excludesAdaptor = new IExcludesAdaptor() {

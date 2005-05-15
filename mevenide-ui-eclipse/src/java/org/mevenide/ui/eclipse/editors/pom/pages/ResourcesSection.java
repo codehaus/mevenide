@@ -56,8 +56,8 @@ public class ResourcesSection extends PageSection {
    	{
         super(page, parent, toolkit);
 		this.sectionName = name;
-		setTitle(Mevenide.getResourceString(sectionName + ".header")); //$NON-NLS-1$
-		setDescription(Mevenide.getResourceString(sectionName + ".description")); //$NON-NLS-1$
+		setTitle(Mevenide.getResourceString(sectionName + ".header"));
+		setDescription(Mevenide.getResourceString(sectionName + ".description"));
 	}
 	
 	void setResourceAdaptor(IResourceAdaptor adaptor) {
@@ -78,7 +78,7 @@ public class ResourcesSection extends PageSection {
 		// Build resources table
 		Button toggle = createOverrideToggle(container, factory, 1, true);
 		resourcesViewer = createTableViewer(container, factory, 1);
-		resourcesTable = new TableEntry(resourcesViewer, toggle, Mevenide.getResourceString("ResourcesSection.TableEntry.Tooltip"), container, factory, this); //$NON-NLS-1$
+		resourcesTable = new TableEntry(resourcesViewer, toggle, "Resource", container, factory, this);
 		OverrideAdaptor adaptor = new OverrideAdaptor() {
 			public void overrideParent(Object value) {
 				List resources = (List) value;
@@ -119,7 +119,7 @@ public class ResourcesSection extends PageSection {
 		if (isInherited()) {
 			createSpacer(container, factory);
 		}
-		createLabel(container, Mevenide.getResourceString(sectionName + ".includes.header"), factory); //$NON-NLS-1$
+		createLabel(container, Mevenide.getResourceString(sectionName + ".includes.header"), factory);
 		createSpacer(container, factory);
 		
 		IIncludesAdaptor includesAdaptor = new IIncludesAdaptor() {
@@ -149,7 +149,7 @@ public class ResourcesSection extends PageSection {
 		if (isInherited()) {
 			createSpacer(container, factory);
 		}
-		createLabel(container, Mevenide.getResourceString(sectionName + ".excludes.header"), factory); //$NON-NLS-1$
+		createLabel(container, Mevenide.getResourceString(sectionName + ".excludes.header"), factory);
 		createSpacer(container, factory);
 		
 		IExcludesAdaptor excludesAdaptor = new IExcludesAdaptor() {
@@ -216,7 +216,7 @@ public class ResourcesSection extends PageSection {
 	private Resource getSelectedResource() {
 		IStructuredSelection selected = (IStructuredSelection) resourcesViewer.getSelection();
 		ResourcePropertySource source = (ResourcePropertySource) selected.getFirstElement();
-		return source != null ? (Resource) source.getSource() : null;
+		return (Resource) source.getSource();
 	}
 
 }

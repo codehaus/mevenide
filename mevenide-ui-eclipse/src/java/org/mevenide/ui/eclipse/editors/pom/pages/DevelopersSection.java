@@ -16,7 +16,6 @@
  */
 package org.mevenide.ui.eclipse.editors.pom.pages;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.maven.project.Developer;
@@ -44,8 +43,8 @@ public class DevelopersSection extends PageSection {
 	    FormToolkit toolkit)
 	{
 		super(page, parent, toolkit);
-		setTitle(Mevenide.getResourceString("DevelopersSection.header")); //$NON-NLS-1$
-		setDescription(Mevenide.getResourceString("DevelopersSection.description")); //$NON-NLS-1$
+		setTitle(Mevenide.getResourceString("DevelopersSection.header"));
+		setDescription(Mevenide.getResourceString("DevelopersSection.description"));
 	}
 
     public Composite createSectionContent(Composite parent, FormToolkit factory) {
@@ -62,7 +61,7 @@ public class DevelopersSection extends PageSection {
 		// POM developers table
 		Button toggle = createOverrideToggle(container, factory, 1, true);
 		TableViewer viewer = createTableViewer(container, factory, 1);
-		devTable = new TableEntry(viewer, toggle, Mevenide.getResourceString("DevelopersSection.TableEntry.Tooltip"), container, factory, this); //$NON-NLS-1$
+		devTable = new TableEntry(viewer, toggle, "Developer", container, factory, this);
 		OverrideAdaptor adaptor = new OverrideAdaptor() {
 			public void overrideParent(Object value) {
 				List developers = (List) value;
@@ -78,9 +77,6 @@ public class DevelopersSection extends PageSection {
 			new IPomCollectionAdaptor() {
 				public Object addNewObject(Object parentObject) {
 					Developer developer = new Developer();
-					if ( pom.getDevelopers() == null ) {
-					    pom.setDevelopers(new ArrayList());
-					}
 					pom.addDeveloper(developer);
 					return developer;
 				}

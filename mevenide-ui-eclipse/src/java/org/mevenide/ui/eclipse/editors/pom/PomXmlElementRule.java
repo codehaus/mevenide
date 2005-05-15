@@ -29,7 +29,7 @@ import org.eclipse.jface.text.rules.MultiLineRule;
 public class PomXmlElementRule extends MultiLineRule {
 
     public PomXmlElementRule(IToken token) {
-        super("<", ">", token);  //$NON-NLS-1$//$NON-NLS-2$
+        super("<", ">", token);
     }
 
     protected boolean sequenceDetected(ICharacterScanner scanner, char[] sequence, boolean eofAllowed) {

@@ -43,7 +43,6 @@ import org.eclipse.ui.part.FileEditorInput;
 import org.mevenide.grammar.AttributeCompletion;
 import org.mevenide.grammar.impl.EmptyAttributeCompletionImpl;
 import org.mevenide.grammar.impl.GoalsAttributeCompletionImpl;
-import org.mevenide.ui.eclipse.IImageRegistry;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.editors.jelly.AbstractJellyEditor;
 import org.mevenide.ui.eclipse.editors.jelly.ITypeConstants;
@@ -174,11 +173,11 @@ public abstract class JellyContentAssistProcessor implements IContentAssistProce
             for (Iterator it = words.iterator(); it.hasNext();) {
                 String text = (String) it.next();
                 if (preferencesManager.getBooleanValue("InsertEndTag")) {
-                    cp[i] = new CompletionProposal("<" + text + "></" + text + ">", offset, 0, text.length() + 2, Mevenide.getInstance().getImageRegistry().get(IImageRegistry.XML_TAG_OBJ), text,
+                    cp[i] = new CompletionProposal("<" + text + "></" + text + ">", offset, 0, text.length() + 2, Mevenide.getImageDescriptor("xml-tag.gif").createImage(), text,
                             null, null);
                 }
                 else {
-                    cp[i] = new CompletionProposal("<" + text + ">", offset, 0, text.length() + 2, Mevenide.getInstance().getImageRegistry().get(IImageRegistry.XML_TAG_OBJ), text, null, null);
+                    cp[i] = new CompletionProposal("<" + text + ">", offset, 0, text.length() + 2, Mevenide.getImageDescriptor("xml-tag.gif").createImage(), text, null, null);
                 }
                 i++;
             }
@@ -203,16 +202,16 @@ public abstract class JellyContentAssistProcessor implements IContentAssistProce
                     
                     if (preferencesManager.getBooleanValue("InsertEndTag")) {
                         if (isAfterLesserThan) {
-                            cp[i] = new CompletionProposal(text, offset, 0, text.length() + 1, Mevenide.getInstance().getImageRegistry().get(IImageRegistry.XML_TAG_OBJ), text,
+                            cp[i] = new CompletionProposal(text, offset, 0, text.length() + 1, Mevenide.getImageDescriptor("xml-tag.gif").createImage(), text,
                                     null, null);
                         }
                         else {
-                            cp[i] = new CompletionProposal("<" + text + "></" + text + ">", offset, 0, text.length() + 2, Mevenide.getInstance().getImageRegistry().get(IImageRegistry.XML_TAG_OBJ),
+                            cp[i] = new CompletionProposal("<" + text + "></" + text + ">", offset, 0, text.length() + 2, Mevenide.getImageDescriptor("xml-tag.gif").createImage(),
                                     text, null, null);
                         }
                     }
                     else {
-                        cp[i] = new CompletionProposal(text, offset, 0, text.length(), Mevenide.getInstance().getImageRegistry().get(IImageRegistry.XML_TAG_OBJ), text, null, null);
+                        cp[i] = new CompletionProposal(text, offset, 0, text.length(), Mevenide.getImageDescriptor("xml-tag.gif").createImage(), text, null, null);
                     }
                     
                     i++;
@@ -238,7 +237,7 @@ public abstract class JellyContentAssistProcessor implements IContentAssistProce
                                                        node.getOffset() + 2, 
                                                        lastOpenTag.getName().startsWith(currentNode.getName()) ? currentNode.getName().length() : currentNode.getOffset() - offset + 2, 
                                                        lastOpenTag.getName().length() + 1, 
-                                                       Mevenide.getInstance().getImageRegistry().get(IImageRegistry.XML_END_TAG_OBJ), 
+                                                       null, 
                                                        "</" + lastOpenTag.getName() + ">", 
                                                        null, 
                                                        null);
@@ -254,7 +253,7 @@ public abstract class JellyContentAssistProcessor implements IContentAssistProce
                         if (text.regionMatches(true, 0, start, 0, start.length())) {
                             //if (preferencesManager.getBooleanValue("InsertEndTag")) {
                             
-                                cpL.add(new CompletionProposal(text, node.getOffset() + 1, node.getName().length(), text.length(), Mevenide.getInstance().getImageRegistry().get(IImageRegistry.XML_TAG_OBJ), text, null, null));
+                                cpL.add(new CompletionProposal(text, node.getOffset() + 1, node.getName().length(), text.length(), null, text, null, null));
                             //}
                             //else {
                             //    cpL.add(new CompletionProposal(text, node.getOffset() + 1, offset - node.getOffset() - 1, text .length()));
@@ -378,7 +377,7 @@ public abstract class JellyContentAssistProcessor implements IContentAssistProce
             String displayText = (String) words.get(i) ;
             String text = displayText ;//+ "=\"\"";
             //IContextInformation contextInformation = createAttributeContextInformation(node.getName(), displayText);
-            cp[i] = new CompletionProposal(text, offset - start.length(), start.length(), text.length(), Mevenide.getInstance().getImageRegistry().get(IImageRegistry.XML_ATTR_OBJ), displayText, null, null);
+            cp[i] = new CompletionProposal(text, offset - start.length(), start.length(), text.length(), Mevenide.getImageDescriptor("xml-attr.gif").createImage(), displayText, null, null);
         }
         return cp;
     }
@@ -440,24 +439,12 @@ public abstract class JellyContentAssistProcessor implements IContentAssistProce
                     replacementLength = attribute.getContent().length();
                 }
                 
-                cp[i] = new CompletionProposal(text + (hasComma ? "" : "" + quote), 
-                                               offset - start.length(), 
-                                               replacementLength - 6, 
-                                               text.length() + 1, 
-                                               Mevenide.getInstance().getImageRegistry().get(IImageRegistry.GOAL_OBJ),
-                                               text, 
-                                               null, 
-                                               null);
+                cp[i] = new CompletionProposal(text + (hasComma ? "" : "" + quote), offset - start.length(), replacementLength - 6, text.length() + 1, null,
+                        text, null, null);
             }
             else {
-                cp[i] = new CompletionProposal('"' + text + '"', 
-                                               offset - start.length(), 
-                                               0, 
-                                               text.length() + 2,
-                                               Mevenide.getInstance().getImageRegistry().get(IImageRegistry.GOAL_OBJ), 
-                                               text, 
-                                               null, 
-                                               null);
+                cp[i] = new CompletionProposal('"' + text + '"', offset - start.length(), 0, text.length() + 2,
+                        null, text, null, null);
             }
         }
         return cp;

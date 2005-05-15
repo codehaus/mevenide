@@ -26,6 +26,7 @@ import java.io.RandomAccessFile;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Project;
@@ -54,16 +55,8 @@ import org.mevenide.util.MevenideUtils;
  */
 public class FileUtils {
 	
-    
-    
-
-    private static Log log = LogFactory.getLog(FileUtils.class);
+	private static Log log = LogFactory.getLog(FileUtils.class);
 	
-    private static final String DEFAULT_POM_TEMPLATE = "/templates/standard/project.xml"; //$NON-NLS-1$
-	private static final String POM_NAME = "project.xml"; //$NON-NLS-1$
-	private static final String PROJECT_PROPERTIES_NAME = "project.properties"; //$NON-NLS-1$
-	private static final String IGNORE_FILE_NAME = ".mvnignore"; //$NON-NLS-1$
-    
 	private FileUtils() {
 	}
 	
@@ -78,19 +71,14 @@ public class FileUtils {
 		return new File(project.getLocation().append(new Path(entryPath).removeFirstSegments(1)).toOSString()).isDirectory();
 	}
 
-	public static void createPom(IContainer folder, String file) throws Exception, CoreException {
-		 log.debug("Creating pom skeleton using template : " + file); //$NON-NLS-1$
-		 PomSkeletonBuilder pomSkeletonBuilder = PomSkeletonBuilder.getSkeletonBuilder( file ); 
-		 String referencedPomSkeleton = pomSkeletonBuilder.getPomSkeleton(folder.getName());
-		 IFile referencedProjectFile = folder.getFile(new Path(POM_NAME));  
+	public static void createPom(IProject project) throws Exception, CoreException {
+		 log.debug("Creating pom skeleton using template : " + Mevenide.getInstance().getPomTemplate());
+		 PomSkeletonBuilder pomSkeletonBuilder = PomSkeletonBuilder.getSkeletonBuilder( Mevenide.getInstance().getPomTemplate() ); 
+		 String referencedPomSkeleton = pomSkeletonBuilder.getPomSkeleton(project.getName());
+		 IFile referencedProjectFile = project.getFile("project.xml"); 
 		 referencedProjectFile.create(new ByteArrayInputStream(referencedPomSkeleton.getBytes()), false, null);
 	}
-	
-	
-	public static void createPom(IContainer folder) throws Exception, CoreException {
-		 createPom(folder, null);
-	}
-	
+
 	public static void copyFile(File in, File out) throws Exception
 	{
 		FileChannel sourceChannel = new FileInputStream(in).getChannel();
@@ -105,25 +93,15 @@ public class FileUtils {
 		if ( project.exists() ) {
 			IPathResolver pathResolver = new DefaultPathResolver();
 			IPath referencedProjectLocation = project.getLocation();
-			return new File(pathResolver.getAbsolutePath(referencedProjectLocation.append(POM_NAME)) );
+			return new File(pathResolver.getAbsolutePath(referencedProjectLocation.append("project.xml")) );
 		}
 		return null;
 	}
 
-	public static File getPom(IContainer container) {
-		//weird trick to fix a NPE. dont know yet why we got that NPE
-		if ( container.exists() ) {
-			IPathResolver pathResolver = new DefaultPathResolver();
-			IPath referencedProjectLocation = container.getLocation();
-			return new File(pathResolver.getAbsolutePath(referencedProjectLocation.append(POM_NAME)) );
-		}
-		return null;
-	}
-	
 	public static void refresh(IProject project) throws Exception {
-		IFile projectFile = project.getFile(POM_NAME);
+		IFile projectFile = project.getFile("project.xml");
 		projectFile.refreshLocal(IResource.DEPTH_ZERO, null);
-		IFile propertiesFile = project.getFile(PROJECT_PROPERTIES_NAME); 
+		IFile propertiesFile = project.getFile("project.properties");
 		if ( propertiesFile.exists() ) {
 			propertiesFile.refreshLocal(IResource.DEPTH_ZERO, null);
 		}
@@ -135,33 +113,33 @@ public class FileUtils {
 				InputStream inputStream = pom.getContents(true);
 			
 				if ( inputStream.read() == -1 ) {
-					InputStream stream = FileUtils.class.getResourceAsStream(DEFAULT_POM_TEMPLATE);  
+					InputStream stream = FileUtils.class.getResourceAsStream("/templates/standard/project.xml"); 
 					pom.setContents(stream, true, true, null);
 					stream.close();
 				}
 				inputStream.close();
 			}
 		} catch (Exception e) {
-			log.error("Unable to check if POM already exists due to : " + e); //$NON-NLS-1$
+			log.error("Unable to check if POM already exists due to : " + e);
 		}
 	}
 	
 	public static IFile assertIgnoreFileExists(IContainer container)  throws Exception {		
-		IFile file = container.getFile(new Path(IGNORE_FILE_NAME));
+		IFile file = container.getFile(new Path(".mvnignore"));
 		if ( !file.exists() ) {
-			InputStream is = new StringInputStream(""); //$NON-NLS-1$
+			InputStream is = new StringInputStream("");
 			file.create(is,true, null);
 		}
 		return file;	
 	}
 	
 	public static IFile assertIgnoreFileExists(Project project)  throws Exception {		
-		File systemFile = new File(project.getFile().getParent(), IGNORE_FILE_NAME);
+		File systemFile = new File(project.getFile().getParent(), ".mvnignore");
 		IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
 		
 		IFile file = workspaceRoot.getFileForLocation(new Path(systemFile.getAbsolutePath()).makeAbsolute());
 		if ( !file.exists() ) {
-			InputStream is = new StringInputStream(""); //$NON-NLS-1$
+			InputStream is = new StringInputStream("");
 			file.create(is,true, null);
 		}
 		return file;	
@@ -174,21 +152,21 @@ public class FileUtils {
 			return getIgnoredResources(file);
 		} 
 		catch (Exception e) {
-			log.error("Cannot read ignored resources", e); //$NON-NLS-1$
+			log.error("Cannot read ignored resources", e);
 			return new ArrayList();
 		}
 	}
 	
 	public static List getIgnoredResources(IProject project) {
 		try {
-			IFile file = project.getFile(new Path(IGNORE_FILE_NAME));
+			IFile file = project.getFile(new Path(".mvnignore"));
 			if ( !file.exists() ) {
 				return getIgnoredResources(file);
 			}
 			return new ArrayList();
 		} 
 		catch (Exception e) {
-			log.debug("Cannot read ignored resources", e); //$NON-NLS-1$
+			log.debug("Cannot read ignored resources", e);
 			return new ArrayList();
 		} 
 	}
@@ -198,7 +176,7 @@ public class FileUtils {
 		List ignoredLines = new ArrayList();
 		
 		try {
-			raf = new RandomAccessFile(ignoredResourceFile.getLocation().toOSString(), "r"); //$NON-NLS-1$
+			raf = new RandomAccessFile(ignoredResourceFile.getLocation().toOSString(), "r");
 			String line = null;
 			while ( (line = raf.readLine()) != null ) {
 				if ( line.trim().length() > 0 ) {
@@ -238,16 +216,16 @@ public class FileUtils {
 			String extend = pom.getExtend();
 			
 			//recurse poms
-			while ( extend != null && !extend.trim().equals("") ) { //$NON-NLS-1$
+			while ( extend != null && !extend.trim().equals("") ) {
 				
 				//resolve extend
-				extend = extend.replaceAll("\\$\\{basedir\\}", pom.getFile().getParent().replaceAll("\\\\", "/"));  //$NON-NLS-1$ //$NON-NLS-2$//$NON-NLS-3$
+				extend = extend.replaceAll("\\$\\{basedir\\}", pom.getFile().getParent().replaceAll("\\\\", "/"));
 				File extendFile = new File(extend);
 				if ( !extendFile.exists() ) {
 					
 					extendFile = new File(pom.getFile().getParent(), extend);
 					if ( !extendFile.exists() ) {
-						log.debug(extendFile.getAbsolutePath() + " doesnot exist. break."); //$NON-NLS-1$
+						log.debug(extendFile.getAbsolutePath() + " doesnot exist. break.");
 						//@ TODO throw new ExtendDoesnotExistException(..)
 						break;
 					}
@@ -281,21 +259,21 @@ public class FileUtils {
 	}
 	
 	public static void refreshProperties(IContainer eclipseContainer) {
-        IFile file = eclipseContainer.getFile(new Path(PROJECT_PROPERTIES_NAME));
+        IFile file = eclipseContainer.getFile(new Path("project.properties"));
         try {
             if ( file.exists() ) {
                 file.refreshLocal(IResource.DEPTH_ZERO, null);
             }
         }
         catch (CoreException e) {
-            String message = "Unable to refresh project.properties";  //$NON-NLS-1$
+            String message = "Unable to refresh project.properties"; 
             log.error(message, e);
         }
     }
 	
 	public static File getProjectPropertiesFile(File containerDir) throws IOException {
-	    File file = new File(containerDir, PROJECT_PROPERTIES_NAME);
-	    String errorMessage = "Unable to create project.properties in directory " + containerDir; //$NON-NLS-1$
+	    File file = new File(containerDir, "project.properties");
+	    String errorMessage = "Unable to create project.properties in directory " + containerDir;
 	    if ( !file.exists() ) {
 	        try {
                 boolean result = file.createNewFile();

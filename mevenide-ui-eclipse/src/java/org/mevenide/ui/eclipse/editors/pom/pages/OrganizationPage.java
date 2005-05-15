@@ -33,9 +33,9 @@ import org.mevenide.ui.eclipse.editors.pom.MevenidePomEditor;
  */
 public class OrganizationPage extends AbstractPomEditorPage {
 
-    private static final String ID = Mevenide.getResourceString("OrganizationPage.id"); //$NON-NLS-1$
-    private static final String TAB = Mevenide.getResourceString("OrganizationPage.tab.label"); //$NON-NLS-1$
-    private static final String HEADING = Mevenide.getResourceString("OrganizationPage.heading"); //$NON-NLS-1$
+    private static final String ID = Mevenide.getResourceString("OrganizationPage.id");
+    private static final String TAB = Mevenide.getResourceString("OrganizationPage.tab.label");
+    private static final String HEADING = Mevenide.getResourceString("OrganizationPage.heading");
     
 	private OrganizationSection orgSection;
 	private LicenseSection licenseSection;

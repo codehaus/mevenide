@@ -46,7 +46,6 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.externaltools.internal.model.IExternalToolConstants;
 import org.mevenide.ui.eclipse.Mevenide;
-import org.mevenide.ui.eclipse.goals.model.Goal;
 
 /**
  * 
@@ -55,12 +54,9 @@ import org.mevenide.ui.eclipse.goals.model.Goal;
  * 
  */
 public class MavenLaunchShortcut implements ILaunchShortcut {
-	
-    private static Log log = LogFactory.getLog(MavenLaunchShortcut.class);
+	private static Log log = LogFactory.getLog(MavenLaunchShortcut.class);
 
-    private static final String MAVEN_LAUNCH_CONFIG_TYPE = "org.mevenide.ui.launching.MavenLaunchConfigType"; //$NON-NLS-1$
-	
-    private boolean showDialog = false;
+	private boolean showDialog = false;
 
 	private String goalsToRun = null;
 	private boolean offline = false;
@@ -97,11 +93,11 @@ public class MavenLaunchShortcut implements ILaunchShortcut {
 			
 			
 			if ( basedir != null ) {
-				log.debug("launching from basedir : " + basedir); //$NON-NLS-1$
+				log.debug("launching from basedir : " + basedir);
 				launch(basedir);
 			}
 			else {
-				log.debug("Unable to get basedir"); //$NON-NLS-1$
+				log.debug("Unable to get basedir");
 			}
 		}
 
@@ -120,7 +116,7 @@ public class MavenLaunchShortcut implements ILaunchShortcut {
 						configuration.delete();
 					}
 					catch ( Exception e ) {
-						log.debug("Exception while cancelling launch : ", e ); //$NON-NLS-1$
+						log.debug("Exception while cancelling launch : ", e );
 					}
 					return;
 				}
@@ -129,19 +125,14 @@ public class MavenLaunchShortcut implements ILaunchShortcut {
 			
 			String newName= DebugPlugin.getDefault().getLaunchManager().generateUniqueLaunchConfigurationNameFrom(configuration.getName());
 			try {
-			    if ( configuration.exists() ) {
-			        configuration = configuration.copy(newName);
-			    }
+				configuration = configuration.copy(newName);
 				if (showDialog) {
-					configuration = configuration.getWorkingCopy().doSave();
+					configuration= ((ILaunchConfigurationWorkingCopy) configuration).doSave();
 				}
-				else {
-				    //caused config to be launched twice (see MavenLaunchDelegate)
-				    DebugUITools.launch(configuration, ILaunchManager.RUN_MODE);
-				}
+				DebugUITools.launch(configuration, ILaunchManager.RUN_MODE);
 			}
 			catch (Exception e) {
-				log.error("Unable to copy configuration due to : ", e); //$NON-NLS-1$
+				log.error("Unable to copy configuration due to : ", e);
 			}
 		}
 	} 
@@ -150,22 +141,17 @@ public class MavenLaunchShortcut implements ILaunchShortcut {
 	
 	private ILaunchConfiguration getDefaultLaunchConfiguration(IPath basedir) {
 		ILaunchManager manager = DebugPlugin.getDefault().getLaunchManager();
-		ILaunchConfigurationType type = manager.getLaunchConfigurationType(MAVEN_LAUNCH_CONFIG_TYPE);
+		ILaunchConfigurationType type = manager.getLaunchConfigurationType("org.mevenide.ui.launching.MavenLaunchConfigType");
 		
-		String name = "[" + basedir.lastSegment() + "] "; //$NON-NLS-1$ //$NON-NLS-2$
+		String name = "[" + basedir.lastSegment() + "] ";
 		String goals = goalsToRun == null ? Mevenide.getInstance().getDefaultGoals() : goalsToRun;
-		name += StringUtils.replace(goals, Goal.SEPARATOR, "_"); //$NON-NLS-1$
+		name += StringUtils.replace(goals, ":", "_");
 		
 		ILaunch[] launches = manager.getLaunches();
-		if ( launches != null ) {
-		    //do we still want that behaviour ? is it not better to always return a new configuration ? 
-			for (int i = 0; i < launches.length; i++) {
-				if ( name != null && 
-				        launches[i].getLaunchConfiguration() != null && 
-				        (name).equals(launches[i].getLaunchConfiguration().getName()) ) {
-					return launches[i].getLaunchConfiguration();
-				}	
-			}
+		for (int i = 0; i < launches.length; i++) {
+			if ( (name).equals(launches[i].getLaunchConfiguration().getName()) ) {
+				return launches[i].getLaunchConfiguration();
+			}	
 		}
 		
 		name = manager.generateUniqueLaunchConfigurationNameFrom(name);
@@ -173,12 +159,12 @@ public class MavenLaunchShortcut implements ILaunchShortcut {
 		try {
 			ILaunchConfigurationWorkingCopy workingCopy = type.newInstance(null, name);
 			workingCopy.setAttribute(IExternalToolConstants.ATTR_WORKING_DIRECTORY,
-			        VariablesPlugin.getDefault().getStringVariableManager().generateVariableExpression("workspace_loc", basedir.toString()));  //$NON-NLS-1$
+			        VariablesPlugin.getDefault().getStringVariableManager().generateVariableExpression("workspace_loc", basedir.toString())); 
 			workingCopy.setAttribute(MavenArgumentsTab.GOALS_TO_RUN, goals);
 			
 			if ( offline ) {
 				Map optionsMap = new HashMap();
-				optionsMap.put("o", Boolean.toString(offline)); //$NON-NLS-1$
+				optionsMap.put("-o", Boolean.toString(offline));
 				workingCopy.setAttribute(MavenArgumentsTab.OPTIONS_MAP, optionsMap);
 			}
 			
@@ -189,13 +175,13 @@ public class MavenLaunchShortcut implements ILaunchShortcut {
 			
 			ILaunchConfiguration cfg = workingCopy.doSave();
 
-			log.debug("returning default config : " + cfg) ; //$NON-NLS-1$
+			log.debug("returning default config : " + cfg) ;
 
 			return cfg;
 
 		} 
 		catch (CoreException e) {
-			log.debug("Unable to createDefaultLaunchConfig due to : " + e); //$NON-NLS-1$
+			log.debug("Unable to createDefaultLaunchConfig due to : " + e);
 			return null;
 		}
 	}

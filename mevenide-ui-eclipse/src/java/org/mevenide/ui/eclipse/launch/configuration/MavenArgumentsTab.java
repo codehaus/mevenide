@@ -21,8 +21,10 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.maven.MavenConstants;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
@@ -36,7 +38,6 @@ import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
@@ -51,9 +52,8 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 import org.mevenide.runner.OptionsRegistry;
-import org.mevenide.ui.eclipse.IImageRegistry;
 import org.mevenide.ui.eclipse.Mevenide;
-import org.mevenide.ui.eclipse.goals.view.GoalsPickerDialog;
+import org.mevenide.ui.eclipse.goals.viewer.GoalsPickerDialog;
 
 /**
  * 
@@ -64,15 +64,15 @@ import org.mevenide.ui.eclipse.goals.view.GoalsPickerDialog;
 public class MavenArgumentsTab extends AbstractLaunchConfigurationTab  {
 	private static Log log = LogFactory.getLog(AbstractLaunchConfigurationTab.class);
 
-	public static final String OPTIONS_MAP = "OPTIONS_MAP"; //$NON-NLS-1$
-	public static final String GOALS_TO_RUN = "GOALS_TO_RUN";	 //$NON-NLS-1$
-	public static final String SYS_PROPERTIES = "SYS_PROPERTIES"; //$NON-NLS-1$
+	public static final String OPTIONS_MAP = "OPTIONS_MAP";
+	public static final String GOALS_TO_RUN = "GOALS_TO_RUN";	
+	public static final String SYS_PROPERTIES = "SYS_PROPERTIES";
 	
 	private final char[] options = new char[] { 'E', 'X', 'e', 'o' };
 
 	private Map optionsMap = new TreeMap();
 	private Map sysProperties = new TreeMap();
-	private String selectedGoals = ""; //$NON-NLS-1$
+	private String selectedGoals = "";
 
 	private Map optionsButtons = new HashMap();
 
@@ -86,12 +86,10 @@ public class MavenArgumentsTab extends AbstractLaunchConfigurationTab  {
 		setDirty(false);
 	}
 	
-	public Image getImage() {
-        return Mevenide.getInstance().getImageRegistry().get(IImageRegistry.ARGUMENTS_TAB_ICON);
-    }
+	
 	
 	public String getName() {
-		return Mevenide.getResourceString("MavenArgumentsTab.name"); //$NON-NLS-1$
+		return Mevenide.getResourceString("MavenArgumentsTab.name");
 	}
 	
 	public void setDefaults(ILaunchConfigurationWorkingCopy configuration) {
@@ -116,13 +114,13 @@ public class MavenArgumentsTab extends AbstractLaunchConfigurationTab  {
 			composite.setFont(font);
 			
 			createCheckBoxes(composite);
-			log.debug("checkboxes initialized"); //$NON-NLS-1$
+			log.debug("checkboxes initialized");
 
 			createSysPropertiesTable(composite);
-			log.debug("table initialized"); //$NON-NLS-1$
+			log.debug("table initialized");
 
 			createGoalsText(composite);
-			log.debug("goals list initialized"); //$NON-NLS-1$
+			log.debug("goals list initialized");
 
 			//createMavenVersionLabel(composite);
 
@@ -130,7 +128,7 @@ public class MavenArgumentsTab extends AbstractLaunchConfigurationTab  {
 		}
 		catch (Exception e) {
 			//e.printStackTrace();
-			log.debug("Unable to LaunchWizardPage control due to : " + e); //$NON-NLS-1$
+			log.debug("Unable to LaunchWizardPage control due to : " + e);
 		}
 	}	
 	
@@ -138,19 +136,13 @@ public class MavenArgumentsTab extends AbstractLaunchConfigurationTab  {
 	
 	
 	private void createMavenVersionLabel(Composite composite) {
-		GridData data = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING | GridData.FILL_HORIZONTAL);
+		GridData data = new GridData(GridData.FILL_HORIZONTAL);
 		data.horizontalSpan = 2;
 		data.grabExcessHorizontalSpace = true;
 		data.grabExcessVerticalSpace = true;
 		
 		Label label = new Label(composite, SWT.READ_ONLY);
-		label.setText("Maven version: " + "1.0.1");
-                        
-//TODO how to get maven version?
-// in maven 1.0.1 and beyond org.apache.App changed from mavenSession.APP_VERSION                        
-// to reading "driver.properties" file and getting getProperty( "maven.application.version" )                        
-                        
-//                        MavenSession.APP_VERSION); //$NON-NLS-1$
+		label.setText("Maven version: " + MavenConstants.POM_VERSION);
 		
 		label.setLayoutData(data);
 	}
@@ -177,8 +169,8 @@ public class MavenArgumentsTab extends AbstractLaunchConfigurationTab  {
 			
 			
 			optionButton.setText(OptionsRegistry.getRegistry().getDescription(option));
-			optionButton.setToolTipText(new StringBuffer(" -").append(option).toString()); //$NON-NLS-1$
-			
+			optionButton.setToolTipText(new StringBuffer(" -").append(option).toString());
+			//optionButton.setSelection(((Boolean)optionsMap.get(new Character(option))).booleanValue());
 			optionsButtons.put(new Character(option), optionButton);			
 
 
@@ -207,11 +199,11 @@ public class MavenArgumentsTab extends AbstractLaunchConfigurationTab  {
 		table.setHeaderVisible(true);
 		
 		TableColumn column1 = new TableColumn(table, SWT.NULL);
-		column1.setText(Mevenide.getResourceString("MavenArgumentsTab.system.properties.key.column.name")); //$NON-NLS-1$
+		column1.setText(Mevenide.getResourceString("MavenArgumentsTab.system.properties.key.column.name"));
 		column1.setWidth(200);
 		
 		TableColumn column2 = new TableColumn(table, SWT.NULL);
-		column2.setText(Mevenide.getResourceString("MavenArgumentsTab.system.properties.value.column.name")); //$NON-NLS-1$
+		column2.setText(Mevenide.getResourceString("MavenArgumentsTab.system.properties.value.column.name"));
 		column2.setWidth(200);
 		
 		createTableEditor();
@@ -223,7 +215,7 @@ public class MavenArgumentsTab extends AbstractLaunchConfigurationTab  {
 		buttonsArea.setLayoutData(topData);
 		
 		Button addButton = new Button(buttonsArea, SWT.PUSH);
-		addButton.setText(Mevenide.getResourceString("MavenArgumentsTab.system.properties.add")); //$NON-NLS-1$
+		addButton.setText(Mevenide.getResourceString("MavenArgumentsTab.system.properties.add"));
 		GridData data1 = new GridData(GridData.FILL_HORIZONTAL);
 		addButton.setLayoutData(data1);
 		addButton.addSelectionListener(new SelectionAdapter() {
@@ -231,8 +223,8 @@ public class MavenArgumentsTab extends AbstractLaunchConfigurationTab  {
 				TableItem item = new TableItem(table,SWT.NULL);
 				item.setText(
 					new String[] {
-						Mevenide.getResourceString("MavenArgumentsTab.system.properties.key.new"),  //$NON-NLS-1$
-						Mevenide.getResourceString("MavenArgumentsTab.system.properties.value.new") //$NON-NLS-1$
+						Mevenide.getResourceString("MavenArgumentsTab.system.properties.key.new"), 
+						Mevenide.getResourceString("MavenArgumentsTab.system.properties.value.new")
 					}
 				);
 				setDirty(true);
@@ -242,7 +234,7 @@ public class MavenArgumentsTab extends AbstractLaunchConfigurationTab  {
 		
 		
 		Button removeButton = new Button(buttonsArea, SWT.PUSH);
-		removeButton.setText(Mevenide.getResourceString("MavenArgumentsTab.system.properties.remove")); //$NON-NLS-1$
+		removeButton.setText(Mevenide.getResourceString("MavenArgumentsTab.system.properties.remove"));
 		GridData data2 = new GridData(GridData.FILL_HORIZONTAL);
 		removeButton.setLayoutData(data2);
 		removeButton.addSelectionListener(new SelectionAdapter() {
@@ -252,6 +244,7 @@ public class MavenArgumentsTab extends AbstractLaunchConfigurationTab  {
 				updateLaunchConfigurationDialog();
 			}
 		});
+		
 	}
 	
 	private void initTableItems(Table table) {
@@ -275,7 +268,7 @@ public class MavenArgumentsTab extends AbstractLaunchConfigurationTab  {
 		
 		goalsText.addModifyListener(new ModifyListener() {
 				public void modifyText(ModifyEvent event) {
-					log.debug("setting selectedGoals to=" + ((Text)event.getSource()).getText()); //$NON-NLS-1$
+					log.debug("setting selectedGoals to=" + ((Text)event.getSource()).getText());
 					selectedGoals = ((Text)event.getSource()).getText();
 					setDirty(true);
 					
@@ -295,7 +288,7 @@ public class MavenArgumentsTab extends AbstractLaunchConfigurationTab  {
 		Button chooseButton = new Button(buttonsArea, SWT.PUSH);
 		GridData data1 = new GridData(GridData.FILL_HORIZONTAL);
 		chooseButton.setLayoutData(data1);
-		chooseButton.setText(Mevenide.getResourceString("MavenArgumentsTab.system.properties.choose")); //$NON-NLS-1$
+		chooseButton.setText(Mevenide.getResourceString("MavenArgumentsTab.system.properties.choose"));
 		chooseButton.setEnabled(true);
 		
 		chooseButton.addSelectionListener(
@@ -342,13 +335,13 @@ public class MavenArgumentsTab extends AbstractLaunchConfigurationTab  {
 									switch (e.type) {
 										case SWT.FocusOut:
 											item.setText (column, text.getText ());
-											updateLaunchConfigurationDialog();
 											text.dispose ();
 											break;
 										case SWT.Traverse:
 											switch (e.detail) {
 												case SWT.TRAVERSE_RETURN:
 													item.setText (column, text.getText ());
+													setDirty(true);
 													updateLaunchConfigurationDialog();
 													//FALL THROUGH
 												case SWT.TRAVERSE_ESCAPE:
@@ -402,12 +395,12 @@ public class MavenArgumentsTab extends AbstractLaunchConfigurationTab  {
 
 	private void initSysProperties(ILaunchConfiguration configuration) {
 		try {
-			sysProperties = configuration.getAttribute(SYS_PROPERTIES, new HashMap());
+			sysProperties = (Map) configuration.getAttribute(SYS_PROPERTIES, new HashMap());
 			initTableItems(table);
 		} 
 		catch (CoreException e) {
 			//e.printStackTrace();
-			log.debug("Unable to init goals due to : " + e); //$NON-NLS-1$
+			log.debug("Unable to init goals due to : " + e);
 		}
 	}
 
@@ -425,13 +418,13 @@ public class MavenArgumentsTab extends AbstractLaunchConfigurationTab  {
 	
 	private void initGoals(ILaunchConfiguration configuration) {
 		try {
-			selectedGoals = configuration.getAttribute(GOALS_TO_RUN, ""); //$NON-NLS-1$
-			log.debug("goalsText == null ? " + (goalsText == null)); //$NON-NLS-1$
+			selectedGoals = configuration.getAttribute(GOALS_TO_RUN, "");
+			log.debug("goalsText == null ? " + (goalsText == null));
 			goalsText.setText(selectedGoals);
 		} 
 		catch (CoreException e) {
 			//e.printStackTrace();
-			log.debug("Unable to init goals due to : " + e); //$NON-NLS-1$
+			log.debug("Unable to init goals due to : " + e);
 		}
     }
 
@@ -441,23 +434,23 @@ public class MavenArgumentsTab extends AbstractLaunchConfigurationTab  {
 
 	private void initOptionsMap(ILaunchConfiguration configuration) {
 		try {
-			Map storedMap = configuration.getAttribute(OPTIONS_MAP, new HashMap());
-			log.debug("stored Options Map .size() = " + storedMap.size()); //$NON-NLS-1$
+			Map storedMap = (Map)configuration.getAttribute(OPTIONS_MAP, new HashMap());
+			log.debug("stored Options Map .size() = " + storedMap.size());
 			
 			Iterator iter = storedMap.keySet().iterator();
 			
-			log.debug("initializing optionsMap : "); //$NON-NLS-1$
+			log.debug("initializing optionsMap : ");
 			
 			while (iter.hasNext()) {
 				String opt = (String) iter.next();
 				String storedOpt = (String) storedMap.get(opt);
 				
-				log.debug("Before manipulating options : " + opt + " => " + storedOpt);  //$NON-NLS-1$//$NON-NLS-2$
+				log.debug("Before manipulating options : " + opt + " => " + storedOpt);
 				
-				storedOpt = storedOpt == null ? "false" : storedOpt; //$NON-NLS-1$
+				storedOpt = storedOpt == null ? "false" : storedOpt;
 				boolean optValue = Boolean.valueOf(storedOpt).booleanValue();
 				
-				log.debug("\t" + opt + " => " + optValue);  //$NON-NLS-1$//$NON-NLS-2$
+				log.debug("\t" + opt + " => " + optValue);
 				
 				optionsMap.put(new Character(opt.charAt(0)), new Boolean(optValue)) ;
 				((Button)optionsButtons.get(new Character(opt.charAt(0)))).setSelection(optValue);
@@ -466,7 +459,7 @@ public class MavenArgumentsTab extends AbstractLaunchConfigurationTab  {
 		} 
 		catch (CoreException e) {
 			//e.printStackTrace();
-			log.debug("Unable to init options map due to : " + e); //$NON-NLS-1$
+			log.debug("Unable to init options map due to : " + e);
 		}
 	}
 
@@ -475,12 +468,12 @@ public class MavenArgumentsTab extends AbstractLaunchConfigurationTab  {
 		Map storingMap = new HashMap();
 		
 		Iterator iter = optionsMap.keySet().iterator();
-		log.debug("storing optionsMap : "); //$NON-NLS-1$
+		log.debug("storing optionsMap : ");
 		while (iter.hasNext()) {
 			Character opt = (Character) iter.next();
 			boolean optValue = ((Boolean) optionsMap.get(opt)).booleanValue();
 			
-			log.debug("\t" + opt + " => " + optValue);  //$NON-NLS-1$ //$NON-NLS-2$
+			log.debug("\t" + opt + " => " + optValue); 
 			
 			storingMap.put(opt.toString(), Boolean.toString(optValue));
 		}

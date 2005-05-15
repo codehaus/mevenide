@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.TreeSet;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Build;
@@ -45,6 +46,7 @@ import org.mevenide.project.ProjectConstants;
 import org.mevenide.project.io.ProjectReader;
 import org.mevenide.project.io.ProjectWriter;
 import org.mevenide.project.source.SourceDirectoryUtil;
+import org.mevenide.properties.resolver.util.ResolverUtils;
 import org.mevenide.properties.writer.CarefulPropertiesWriter;
 import org.mevenide.ui.eclipse.sync.model.properties.DirectoryPropertySource;
 import org.mevenide.ui.eclipse.sync.model.properties.ReadOnlyDirectoryPropertySource;
@@ -87,7 +89,7 @@ public class DirectoryNode extends ArtifactNode {
 			}
 		} 
 		catch (Exception e) {
-			String message = "Unable to read resources";  //$NON-NLS-1$
+			String message = "Unable to read resources"; 
 			log.error(message, e);
 		}
 	}
@@ -98,7 +100,7 @@ public class DirectoryNode extends ArtifactNode {
 		List allResources = getMavenProjectResources(mavenProject);
 		for (int i = 0; i < allResources.size(); i++) {
 			Resource nextResource = (Resource) allResources.get(i);
-			if ( directory.getCleanPath().equals(SourceDirectoryUtil.stripBasedir(nextResource.getDirectory()).replaceAll("\\\\", "/")) ) {  //$NON-NLS-1$//$NON-NLS-2$
+			if ( directory.getCleanPath().equals(SourceDirectoryUtil.stripBasedir(nextResource.getDirectory()).replaceAll("\\\\", "/")) ) {
 				if ( nextResource.getExcludes() != null && nextResource.getExcludes().size() > 0 ) {
 				    excludes.addAll(nextResource.getExcludes());
 				}
@@ -111,10 +113,8 @@ public class DirectoryNode extends ArtifactNode {
 		List resources = new ArrayList();
 		Build build = mavenProject.getBuild();
 		if ( build != null ) {
-		    if ( build.getResources() != null ) {
-		        resources = build.getResources();
-		    }
-			if ( build.getUnitTest() != null && build.getUnitTest().getResources() != null ) {
+			resources = build.getResources();
+			if ( build.getUnitTest() != null ) {
 				resources.addAll(build.getUnitTest().getResources());
 			}
 		}
@@ -141,8 +141,8 @@ public class DirectoryNode extends ArtifactNode {
 		return excludeNodes != null && excludeNodes.length > 0;
 	}
 	public String toString() {
-		boolean isRoot = "${basedir}".equals(directory.getCleanPath()) || ".".equals(directory.getCleanPath()); //$NON-NLS-1$ //$NON-NLS-2$
-		return  isRoot ? "${basedir}" : resolve(directory.getCleanPath()); //$NON-NLS-1$
+		boolean isRoot = "${basedir}".equals(directory.getCleanPath()) || ".".equals(directory.getCleanPath());
+		return  isRoot ? "${basedir}" : resolve(directory.getCleanPath());
 	}
 	
 	
@@ -172,7 +172,7 @@ public class DirectoryNode extends ArtifactNode {
 	}
 	
 	private IClasspathEntry createSourceEntry(IProject project) {
-        String path = "/" + project.getName() + "/" + directory.getCleanPath(); //$NON-NLS-1$ //$NON-NLS-2$
+        String path = "/" + project.getName() + "/" + directory.getCleanPath();
         IPath[] excludePatterns = null;
         if ( excludeNodes != null ) {
             excludePatterns = new Path[excludeNodes.length];
@@ -189,7 +189,7 @@ public class DirectoryNode extends ArtifactNode {
            	exclusionPatterns[i] = (String) excludeNodes[i].getData();
         }
 		if ( ProjectConstants.MAVEN_RESOURCE.equals(directory.getType()) ) {
-		    ProjectWriter.getWriter().addResource(directory.getCleanPath(), project.getFile(), exclusionPatterns);
+			ProjectWriter.getWriter().addResource(directory.getCleanPath(), project.getFile(), exclusionPatterns);
 		}
 		else if ( ProjectConstants.MAVEN_TEST_RESOURCE.equals(directory.getType()) ) {
 			ProjectWriter.getWriter().addUnitTestResource(directory.getCleanPath(), project.getFile(), exclusionPatterns);
@@ -202,7 +202,7 @@ public class DirectoryNode extends ArtifactNode {
 			    Properties props = new Properties();
 			    fis = new FileInputStream(propFile);
 			    props.load(fis);
-			    props.setProperty("maven.build.dest", directory.getCleanPath()); //$NON-NLS-1$
+			    props.setProperty("maven.build.dest", directory.getCleanPath());
 			    fos = new FileOutputStream(propFile);
 				new CarefulPropertiesWriter().marshall(fos, props, fis);
 		    }
@@ -216,13 +216,13 @@ public class DirectoryNode extends ArtifactNode {
 		    }
 		}
 		else {
-		    log.debug("adding " + directory.getCleanPath() + " failed - reason : unrecognized source type = " + directory.getType() ); //$NON-NLS-1$ //$NON-NLS-2$
+		    log.debug("adding " + directory.getCleanPath() + " failed - reason : unrecognized source type = " + directory.getType() );
 		    ProjectWriter.getWriter().addSource(directory.getCleanPath(), project.getFile(), directory.getType());
 		}
 	}
 	
 	protected String getIgnoreLine() {
-		return resolve(directory.getCleanPath());
+		return ResolverUtils.resolve((Project) parentNode.getData(), directory.getCleanPath());
 	}
 	
 	public void removeFrom(Project project) throws Exception {
@@ -234,8 +234,8 @@ public class DirectoryNode extends ArtifactNode {
 	public boolean equivalentEntry(IClasspathEntry entry) {
 	    boolean sameType = entry.getEntryKind() == IClasspathEntry.CPE_SOURCE;
 	    
-	    String relativeEntryPath = entry.getPath().removeFirstSegments(1).toOSString().replaceAll("\\\\", "/");  //$NON-NLS-1$//$NON-NLS-2$
-	    String artifactPath = resolve(directory.getCleanPath());
+	    String relativeEntryPath = entry.getPath().removeFirstSegments(1).toOSString().replaceAll("\\\\", "/");
+	    String artifactPath = ResolverUtils.resolve((Project) parentNode.getData(), directory.getCleanPath());
 	    boolean equivalentPath = relativeEntryPath.equals(artifactPath);
 	    
 	    return sameType && equivalentPath;
@@ -265,5 +265,5 @@ public class DirectoryNode extends ArtifactNode {
 	public void setExcludeNodes(ExcludeNode[] excludeNodes) {
 		this.excludeNodes = excludeNodes;
 	}
-
+	
 }
