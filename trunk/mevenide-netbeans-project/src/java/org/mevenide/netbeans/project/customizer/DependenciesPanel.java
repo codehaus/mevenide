@@ -489,13 +489,13 @@ public class DependenciesPanel extends JPanel implements ExplorerManager.Provide
                 public void run() {
                     IRepositoryReader[] readers = RepositoryUtilities.createRemoteReaders(project.getPropertyResolver());
                     for (int i = 0; i < readers.length; i++) {
-                        final RepoPathElement docEl = new RepoPathElement(readers[i],
+                        final RepoPathElement docEl = new RepoPathElement(readers[i], null,
                                 prov.getValue("groupId"),
                                 "javadoc.jar",
                                 prov.getValue("version"),
                                 prov.getValue("artifactId"),
                                 "javadoc.jar");
-                        final RepoPathElement srcEl = new RepoPathElement(readers[i],
+                        final RepoPathElement srcEl = new RepoPathElement(readers[i], null, 
                                 prov.getValue("groupId"),
                                 "src.jar",
                                 prov.getValue("version"),

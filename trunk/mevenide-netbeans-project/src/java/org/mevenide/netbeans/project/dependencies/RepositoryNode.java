@@ -161,7 +161,7 @@ public class RepositoryNode extends AbstractNode implements LocalRepoRefresher {
         } else if (element.getLevel() == RepoPathElement.LEVEL_GROUP) {
             group = el.getGroupId();
         }
-        return new RepoPathElement(element.getReader(), group, type, artifact, version, ext);
+        return new RepoPathElement(element.getReader(), null, group, type, artifact, version, ext);
     }
     
     private static class RepositoryChildren extends Children.Keys {
