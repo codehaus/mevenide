@@ -15,11 +15,9 @@
  * =========================================================================
  */
 
-
 package org.mevenide.repository;
 
 import java.net.URI;
-
 
 /**
  * Data placeholder for local and remote repository information.
@@ -31,26 +29,31 @@ public final class RepoPathElement {
     /**
      * constant returned from getLevel(), 
      * denotes an instance that has nothing filled out.
+     * <p>value = {@value}</p>
      */
     public static final int LEVEL_ROOT = 0;
     /**
      * constant returned from getLevel(),
      * denotes an instance that has at least the groupId filled out.
+     * <p>value = {@value}</p>
      */
     public static final int LEVEL_GROUP = 1;
     /**
      * constant returned from getLevel()
      * denotes an instance that has at least the groupId and type filled out.
+     * <p>value = {@value}</p>
      */
     public static final int LEVEL_TYPE = 2;
     /**
      * constant returned from getLevel()
      * denotes an instance that has at least the groupId, type and artifactId filled out.
+     * <p>value = {@value}</p>
      */
     public static final int LEVEL_ARTIFACT = 3;
     /**
      * constant returned from getLevel()
      * denotes an instance that has all fields filled out.
+     * <p>value = {@value}</p>
      */
     public static final int LEVEL_VERSION = 4;
     
@@ -60,25 +63,37 @@ public final class RepoPathElement {
     private String type;
     private String extension;
     private IRepositoryReader reader;
+    private RepoPathElement   parent;
     private RepoPathElement[] children;
     
     /** Creates a new instance of RepoPathElement */
-    public RepoPathElement(IRepositoryReader read) {
-        reader = read;
+    public RepoPathElement(IRepositoryReader reader) {
+        this.reader = reader;
     }
     
-    public RepoPathElement(IRepositoryReader read, 
+    /** Creates a new instance of RepoPathElement */
+    public RepoPathElement(IRepositoryReader reader, RepoPathElement parent) {
+        this.reader = reader;
+        this.parent = parent;
+    }
+
+    public RepoPathElement(IRepositoryReader read,
+                           RepoPathElement parent,
                            String groupId, 
                            String type, 
                            String version, 
                            String artifactId, 
                            String ext) {
-        this(read);
+        this(read, parent);
         setGroupId(groupId);
         setType(type);
         setVersion(version);
         setArtifactId(artifactId);
         setExtension(ext);
+    }
+
+    public RepoPathElement getParent() {
+        return this.parent;
     }
 
     public String getGroupId() {
@@ -197,8 +212,9 @@ public final class RepoPathElement {
     }
     
     /**
-     * get uri to the path element. makes most sense for leaf elements.
-     *
+     * Returns the absolute URI to this element.
+     * 
+     * Makes the most sense for leaf elements.
      */
     public URI getURI() {
         String root = reader.getRootURI().toString();
@@ -233,5 +249,12 @@ public final class RepoPathElement {
     public IRepositoryReader getReader() {
         return reader;
     }
-    
+
+    public void reset() {
+        this.children = null;
+    }
+
+    public boolean isLoaded() {
+        return this.children != null;
+    }
 }

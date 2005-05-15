@@ -17,14 +17,11 @@
 
 package org.mevenide.repository;
 
-import junit.framework.*;
 import java.io.File;
-import java.io.FileFilter;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import org.mevenide.project.dependency.DefaultDependencyResolver;
-import org.mevenide.project.dependency.IDependencyResolver;
+
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
 /**
  * @author  Milos Kleint (mkleint@codehaus.org)
@@ -56,7 +53,7 @@ public class LocalRepositoryReaderTest extends TestCase {
      * Test of readElements method, of class org.mevenide.repository.LocalRepositoryReader.
      */
     public void testReadElements() throws Exception {
-        RepoPathElement element = new RepoPathElement(reader);
+        RepoPathElement element = new RepoPathElement(reader, null);
         RepoPathElement[] groups = element.getChildren();
         assertNotNull(groups);
         assertEquals(2, groups.length);
@@ -75,16 +72,16 @@ public class LocalRepositoryReaderTest extends TestCase {
         // now get children of group1
         RepoPathElement[] types = group1.getChildren();
         assertNotNull(types);
-        assertEquals(3, types.length);
+        assertEquals(4, types.length);
         
-        RepoPathElement jarType = new RepoPathElement(reader);
+        RepoPathElement jarType = new RepoPathElement(reader, null);
         jarType.setGroupId("group1");
         jarType.setType("jar");
         RepoPathElement[] jars = jarType.getChildren();
         assertNotNull(jars);
         assertEquals(2, jars.length);
         
-        RepoPathElement classworldType = new RepoPathElement(reader);
+        RepoPathElement classworldType = new RepoPathElement(reader, null);
         classworldType.setGroupId("group1");
         classworldType.setType("jar");
         classworldType.setArtifactId("classworlds");
@@ -110,7 +107,7 @@ public class LocalRepositoryReaderTest extends TestCase {
         assertNotNull(ver3);
         
         // check plugins
-        RepoPathElement pluginType = new RepoPathElement(reader);
+        RepoPathElement pluginType = new RepoPathElement(reader, null);
         pluginType.setGroupId("group1");
         pluginType.setType("plugin");
         RepoPathElement[] plugins = pluginType.getChildren();

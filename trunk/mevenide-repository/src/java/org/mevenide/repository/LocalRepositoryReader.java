@@ -59,14 +59,14 @@ class LocalRepositoryReader extends AbstractRepositoryReader {
             if (element.getLevel() == RepoPathElement.LEVEL_ROOT) {
                 // nothing known
                 if (files[i].isDirectory() && ! "Global Project".equals(files[i].getName())) {
-                    elem = copyElement(element);
+                    elem = newChild(element);
                     elem.setGroupId(files[i].getName());
                 }
             }
             else if (element.getLevel() == RepoPathElement.LEVEL_GROUP) {
                 // groupid known already
-                if (files[i].isDirectory() && files[i].getName().endsWith("s")) {
-                    elem = copyElement(element);
+                if (files[i].isDirectory() /*&& files[i].getName().endsWith("s")*/) {
+                    elem = newChild(element);
                     String type = files[i].getName();
                     elem.setType(type.substring(0, type.length() - 1));
                 }

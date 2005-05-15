@@ -35,12 +35,12 @@ abstract class AbstractRepositoryReader implements IRepositoryReader {
         return rootURI;
     }
     
-    protected final RepoPathElement copyElement(RepoPathElement old) {
-        RepoPathElement el = new RepoPathElement(this);
-        el.setArtifactId(old.getArtifactId());
-        el.setGroupId(old.getGroupId());
-        el.setType(old.getType());
-        el.setVersion(old.getVersion());
+    protected final RepoPathElement newChild(RepoPathElement parent) {
+        RepoPathElement el = new RepoPathElement(this, parent);
+        el.setArtifactId(parent.getArtifactId());
+        el.setGroupId(parent.getGroupId());
+        el.setType(parent.getType());
+        el.setVersion(parent.getVersion());
         return el;
     }
     
@@ -59,7 +59,7 @@ abstract class AbstractRepositoryReader implements IRepositoryReader {
                 keep = true;
             }
             if (keep) {
-                RepoPathElement elem = copyElement(parent);
+                RepoPathElement elem = newChild(parent);
                 elem.setVersion(resolver.guessVersion());
                 elem.setExtension(resolver.guessExtension());
                 return elem;
@@ -86,8 +86,9 @@ abstract class AbstractRepositoryReader implements IRepositoryReader {
                 }
                 if (keep) {
                     knownArtifacts.add(resolver.guessArtifactId());
-                    RepoPathElement elem = copyElement(parent);
+                    RepoPathElement elem = newChild(parent);
                     elem.setArtifactId(resolver.guessArtifactId());
+                    elem.setExtension(resolver.guessExtension());
                     return elem;
                 }
             }

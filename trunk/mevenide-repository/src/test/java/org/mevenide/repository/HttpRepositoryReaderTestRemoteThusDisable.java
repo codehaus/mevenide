@@ -18,14 +18,10 @@
 package org.mevenide.repository;
 
 import java.net.URI;
-import junit.framework.*;
-import java.io.File;
-import java.io.FileFilter;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import org.mevenide.project.dependency.DefaultDependencyResolver;
-import org.mevenide.project.dependency.IDependencyResolver;
+
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
 /**
  * @author  Milos Kleint (mkleint@codehaus.org)
@@ -56,12 +52,12 @@ public class HttpRepositoryReaderTestRemoteThusDisable extends TestCase {
      * Test of readElements method, of class org.mevenide.repository.LocalRepositoryReader.
      */
     public void testReadElements() throws Exception {
-        RepoPathElement element = new RepoPathElement(reader);
+        RepoPathElement element = new RepoPathElement(reader, null);
         RepoPathElement[] groups = element.getChildren();
         assertNotNull(groups);
         assertTrue(groups.length > 0);
         
-        RepoPathElement jarType = new RepoPathElement(reader);
+        RepoPathElement jarType = new RepoPathElement(reader, null);
         jarType.setGroupId("commons-httpclient");
         jarType.setType("jar");
         RepoPathElement[] jars = jarType.getChildren();
@@ -94,7 +90,7 @@ public class HttpRepositoryReaderTestRemoteThusDisable extends TestCase {
 //        assertNotNull(ver3);
         
         // check plugins
-        RepoPathElement pluginType = new RepoPathElement(reader);
+        RepoPathElement pluginType = new RepoPathElement(reader, null);
         pluginType.setGroupId("mevenide");
         pluginType.setType("plugin");
         RepoPathElement[] plugins = pluginType.getChildren();
