@@ -14,7 +14,7 @@
             <artifactId>commons-httpclient</artifactId>
             <version>2.0</version>
             <type>jar</type>
-            <url>http://www.apache.org</url>
+            <url>http://jakarta.apache.org/commons/httpclient/</url>
             <properties>
                 <netbeans.module.ext>true</netbeans.module.ext>
             </properties>
@@ -24,22 +24,24 @@
             <artifactId>commons-logging</artifactId>
             <version>1.0.3</version>
             <type>jar</type>
+            <url>http://jakarta.apache.org/commons/logging/</url>
             <properties>
                 <netbeans.module.dep>spec=org.netbeans.libs.commons_logging/1 &gt; 1.0</netbeans.module.dep>
             </properties>
-            <url>http://www.apache.org</url>
         </dependency>
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
             <version>1.2.8</version>
             <type>jar</type>
+            <url>http://logging.apache.org/log4j/docs/</url>
         </dependency>
         <dependency>
             <groupId>mevenide</groupId>
             <artifactId>mevenide-core</artifactId>
             <version>0.8-SNAPSHOT</version>
             <type>jar</type>
+            <url>http://mevenide.codehaus.org/mevenide-core/</url>
             <properties>
                 <netbeans.module.dep>spec</netbeans.module.dep>
             </properties>
