@@ -117,7 +117,9 @@ class HttpRepositoryReader extends AbstractRepositoryReader {
             }
             else if (element.getLevel() == RepoPathElement.LEVEL_GROUP) {
                 // groupid known already
-                if (files[i].isDirectory() /*&& files[i].getName().endsWith("s")*/) {
+                if (files[i].isDirectory() 
+                    && files[i].getName().endsWith("s")) { // this condition here to get rid of non related trash (eg. in our own mevenide group at ibiblio)
+                    
                     elem = newChild(element);
                     String type = files[i].getName();
                     elem.setType(type.substring(0, type.length() - 1));
