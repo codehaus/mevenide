@@ -322,7 +322,11 @@ public class PluginListPanel extends JPanel implements ProjectPanel {
             return info.getName();
         }
         public String getLongName() {
-            return info.getLongName();
+            String ln = info.getLongName();
+            if (ln.startsWith("Maven ")) {
+                ln = ln.substring("Maven ".length());
+            }
+            return ln;
         }
         
         public String getDescription() {
