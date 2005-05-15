@@ -49,7 +49,7 @@ public class RepoPathElementTest extends TestCase {
      * Test of isLeaf method, of class org.mevenide.repository.RepoPathElement.
      */
     public void testIsLeaf() {
-        RepoPathElement el = new RepoPathElement(RepositoryReaderFactory.createLocalRepositoryReader(new File("hello")));
+        RepoPathElement el = new RepoPathElement(RepositoryReaderFactory.createLocalRepositoryReader(new File("hello")), null);
         assertFalse(el.isLeaf());
         el.setGroupId("xxx");
         assertFalse(el.isLeaf());
