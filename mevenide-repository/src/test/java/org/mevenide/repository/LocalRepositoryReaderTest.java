@@ -72,7 +72,7 @@ public class LocalRepositoryReaderTest extends TestCase {
         // now get children of group1
         RepoPathElement[] types = group1.getChildren();
         assertNotNull(types);
-        assertEquals(4, types.length);
+        assertEquals(3, types.length);
         
         RepoPathElement jarType = new RepoPathElement(reader, null);
         jarType.setGroupId("group1");
