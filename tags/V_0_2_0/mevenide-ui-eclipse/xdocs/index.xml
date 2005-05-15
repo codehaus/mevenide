@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<document>
+    <properties>
+    	<author email="rhill@wanadoo.fr">Gilles Dodinet</author>
+        <title>Overview</title>
+    </properties>
+    <body>
+        <section name="Project Overview">
+        	<div id="documentContent">
+        	<p>
+			    This project provides the UI part for Eclipse. See the 
+			    <a href="features.html" class="documentLink">features list</a> and the <a href="help.html" class="documentLink">Help page</a> 
+			    to learn more about Mevenide for Eclipse. Latest release and zipped sources can be 
+			    downloaded <a href="http://dist.codehaus.org/mevenide/release" class="documentLink">here</a>. 
+			    However the preferred way to install Mevenide for Eclipse is through the Eclipse Update Manager ; please refer to 
+			    <a href="update/index.html">this document</a> for instructions on using it.
+			</p>
+			<p>
+				Mevenide for Eclipse wont work with Eclipse version 2.x since some APIs and utility classes of the 3.0-stream are used. Also for the POM editor to 
+				work you will need at least the 3.0 M9 build. 
+			</p>
+			<p>
+				Current Mevenide release has been tested under WinXP Eclipse 3.0 M9 With JDK 1.4.1 and Maven 1.0-rc3. Please note that JDK 1.4+ is <b>required</b> since Java 1.4 regex Engine is used.
+			</p>
+			</div>
+		</section>
+
+    </body>
+
+</document>

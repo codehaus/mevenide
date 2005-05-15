@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<document>
+    <properties>
+    	<author email="rhill@wanadoo.fr">Gilles Dodinet</author>
+        <title>Help Page</title>
+    </properties>
+    <body>
+		<section name="Mevenide Configuration">
+        	<div id="documentContent">
+        	<p>
+			    You can configure Mevenide through the 'Maven' Preferences page :
+				<i><code>Window &gt; Preferences &gt; Maven</code></i>. Java Home, Maven Home and 
+				Maven repository are required in order to successfully use Mevenide. However as for now 
+				you should not have anything to do since convenient values should be automatically filled 
+				(grabbed from environment variables, ~/build.properties, etc.)
+				<br/><br/>
+				Also a POM template can be specified that will be used when creating POM skeleton. This preference
+				will be removed later in favour of the 'Templates' preferences page.
+				<br/><br/>
+				Last, you can specify default goals which will be run when invoking the runner. Default is test:test. 
+				Default is useful to support one-click launching.
+				<br/><br/>
+				<center>
+					<img src="images/set-preferences.png" border="1px"/>
+					<br/><br/>
+					<font size="-1"><b>Screenshot 1</b> Mevenide Preferences Page</font>
+				</center>
+			    <br/><br/>
+			</p>
+			</div>
+        </section>
+            
+        <section name="Mevenide Menu">
+        	<div id="documentContent">
+			<p>	
+			    Mevenide actions can be accessed through the 'Maven' menu in either 
+			    <code>project.xml</code> or Eclipse Project contextual menu.
+			    <br/><br/>
+			    <center>
+					<img border="1px" src="images/sync_project.png"/>
+					<br/><br/>
+					<font size="-1"><b>Screenshot 2</b> Mevenide Menu</font>
+					<br/><br/>
+				</center>
+            </p>
+            </div>
+        </section>
+        
+       <section>
+			<p>
+				<navbar toc="help.html" next="run.html"/>
+			</p>
+		</section>
+        
+        
+   </body>
+</document>

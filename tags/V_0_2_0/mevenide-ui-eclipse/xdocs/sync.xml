@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<document>
+    <properties>
+    	<author email="rhill@wanadoo.fr">Gilles Dodinet</author>
+        <title>Help Page</title>
+    </properties>
+    <body>
+    	<section name="POM Synchronization">
+         	<div id="documentContent">
+			<p>
+				POM Synchronization View has been entirely rewritten because the previous wizard lacked of ergonomy and simplicity.
+				The synchronization process now is handled through a view (Eclipse View) ala "Team Synchronization".
+				Multiproject support is also much better now since it has been handled in the early stage.  
+			</p>
+			</div>
+			<subsection name="Synchronization Process">
+				<div id="documentContent">
+			<p>	
+				The synchronization View can be populated either through a container (folders, projects, ..) or the pom (project.xml, or more generally xml files) 
+				contextual menu (Screenshot 1, below). In the later case, only the selected file will be involved in the synchronization process. 
+				<br/><br/>
+				<center>
+					<img border="1px" src="images/sync_pom.png"/>
+					<br/><br/>
+					<font size="-1"><b>Screenshot 1</b> synchronization Contextual Menu</font>
+					<br/><br/>
+				</center>
+			</p>
+			<p>
+				Under each POM node, only the artifact declared in this POM are dispalyed, if you want to synchronize a multiproject, you have to select 
+				all relevant POMs from the dialog. Any artifact can be added or removed to and from pom or .classpath. Availability of the various actions depends of the 
+				current vizualisation mode.  
+            </p>
+			<p>
+				When triggered from an Eclipse container contextual menu, if multiple project.xml files are found in the selected container,
+				user will be asked to choose which POMs are to be included in the synchronization process. Also if any project.xml 
+				inherits from another POM, this POM can be synchronized as well (Screenshot 2).
+				<br/><br/>
+				<center>
+					<img border="1px" src="images/pom_choice_dialog.png"/>
+					<br/><br/>
+					<font size="-1"><b>Screenshot 2</b> Project synchronization Contextual Menu</font>
+					<br/><br/>
+				</center>
+			</p>
+			</div>
+			</subsection>
+			<subsection name="Synchronization View">
+				<div id="documentContent">
+			<p>
+				The synchronization View provides two visualization modes : 
+				<ul>
+				  <li>incoming mode displays artefacts (dependencies or directories) present in pom but not in project .classpath.</li>
+				  <li>outgoing mode displays artefacts present in .classpath but not found in pom.</li>
+				</ul>
+			</p>
+			<p>
+				In the future another mode will be available to show conflicting artefacts. Conflicts are still to be defined more clearly :
+				<ul>
+					<li>inheritance conflicts (much like the Maven Dependency Convergence)</li>
+					<li>.classpath / pom conflicts</li>
+				</ul>
+			</p>
+			<p>
+				<br/><br/>
+				<center>
+					<img border="1px" src="images/synch_view.png"/>
+					<br/><br/>
+					<font size="-1"><b>Screenshot 3</b> Synchronization View</font>
+				</center>
+				<br/><br/>
+			</p>
+			<p>
+				In the Outgoing mode (IDE to POM) Properties can also be attached to dependencies.
+			</p>
+			<p>
+				Every synchronization node is adaptable and can vizualized in the properties view (Screenshot 4, below). In Incoming Mode,
+				properties sheets are read-only whereas they can are writable in Outgoing Mode (IDE to POM).
+				<br/><br/>
+				<center>
+					<img border="1px" src="images/synch_properties.png"/>
+					<br/><br/>
+					<font size="-1"><b>Screenshot 4</b> Properties View</font>	
+				</center>
+				<br/><br/>		
+			</p>
+			<p>
+				You can filter the view thanks the Menu Manager using either regular expressions or selecting which nodes are to be filtered.
+				This is an alternative to the 'add to .mvnignore' action.
+				<br/><br/>
+				<center>
+					<img border="1px" src="images/sync_filter.png"/>
+					<br/><br/>
+					<font size="-1"><b>Screenshot 5</b> Artifact Synchronization Filtering</font>	
+				</center>
+				<br/><br/>	
+			</p>
+			<p>
+				Last, in Incoming Mode, another action is present in ActionBar that allows you to specify wether project.properties file should be written or not 
+				(useful while dealing with jar overriding).
+				<br/><br/>
+				<center>
+					<img border="1px" src="images/toggle_overwrite.png"/>
+					<br/><br/>
+					<font size="-1"><b>Screenshot 6</b> Toggle Overwrite (Outgoing Mode only)</font>	
+				</center>
+				<br/><br/>	
+			</p>
+			</div>
+          </subsection>
+        </section>  
+        <section>
+			<p>
+				<navbar prev="run.html" toc="help.html" next="edit.html"/>
+			</p>
+		</section>
+    </body>
+</document>

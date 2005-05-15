@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<document>
+  <properties>
+	<author email="rhill@wanadoo.fr">Gilles Dodinet</author>
+	<title>Features</title>
+  </properties>
+  <body>
+	<section name="Features List">
+	  <div id="documentContent">
+		<p>
+		  Implemented features fall into five categories :
+		  <ul>
+			<li><a href="#Bidirectional Synchronization">Bidirectional Synchronization</a></li>
+			<li><a href="#Maven Launcher">Maven Launcher</a></li>
+			<li><a href="#POM Editor">POM Editor</a></li>
+			<li><a href="#Jelly Editor">Jelly Editor</a></li>
+			<li><a href="#Maven oriented wizards">Maven Oriented Wizards</a></li>
+		  </ul>
+		</p>
+	  </div>
+  </section>
+  <section name="Bidirectional Synchronization">
+	<div id="documentContent">
+	  <p>Synchronize Eclipse Project and Maven Project through a view ala Team Synchronization view</p>
+	  <p>
+		<ul>
+		  <li>Source directories synchronization</li>
+		  <li>Dependencies synchronization</li>
+		  <li>Resources and UnitTest resources rynchronization, supporting excludes</li>
+		  <li>Jar Override Support</li>
+		  <li>Primary output folder support</li>
+		  <li>Supports eclipse.dependency (from maven-eclipse-plugin) property</li>
+		  <li>Suport for ignored artifacts (.mvnignore)</li>
+		  <li>Possibility to not write back project.properties on a per synchronization basis</li>
+		  <li>Possibility to filter the elements to be synchronized - eventually via regular expressions</li>
+		</ul>
+	  </p>
+	  <p>
+		<u>Known issues</u><br/>
+		<ul>
+			<li>if output folder is set to ${basedir} folder, it will always appear in the Synchronization view, even if in synch </li>
+		</ul>
+	  </p>
+	  <p>
+		<u>Known limitations</u><br/>
+		<ul>
+			<li>No conflict support (e.g. if dependencies version conflict)</li>
+			<li>Doesnot support "Output folder per Source folder" Eclipse option</li>
+			<li>Doesnot support Eclipse 3.0-M9 inclusion patterns</li>
+			<li>Link to external resources/files not tested</li>
+			<li>POM defining entities may not be accurately synchronized</li>
+		</ul>
+	  </p>
+	</div>
+  </section>
+  <section name="Maven Launcher">
+	<div id="documentContent">
+	  <p>
+		<ul>
+		  <li>Integration into Eclipse External Tools.</li>
+		  <li>List of all available goals - plugins defined ones as well as custom ones</li>
+		  <li>Default goals to support one-click launching</li>
+		  <li>Plugins linked to their homepage whenever possible</li>
+		</ul>
+	  </p>
+	  <p>
+		<u>Known limitations</u><br/>
+		<ul>
+			<li>No debug mode (Jelly debugging, attach to a remote VM, etc.)</li>
+			<li>Cannot set JVM options</li>
+			<li>Doesnot Refresh upon completion (see MEVENIDE-20)</li>
+		</ul>
+	  </p>
+	</div>
+  </section>
+  <section name="POM Editor">
+	<div id="documentContent">
+	  <p>
+		<ul>
+		  <li>Multipart Editor based on Eclipse Forms API</li>
+		</ul>
+	  </p>
+	  <p>
+		<u>Known issues</u><br/>
+		<ul>
+			<li>Due to the lazy intitialization that comes for free with the Forms API, changes in source page donot propagate in the pages that havent been opened before</li>
+		</ul>
+	  </p>
+	  <p>
+		<u>Known limitations</u><br/>
+		<ul>
+			<li>No xml entities support yet - we need to think about some solutions to support full bidirectionnal I/O - altho it is definitively on the TODO list.</li>
+			<li>No contentassist in the soure page yet</li>
+			<li>In the current state, POM Editor wont open non-conform files</li>
+		</ul>
+	  </p>
+	</div>
+  </section>
+  <section name="Jelly Editor">
+	<div id="documentContent">
+	  <p>
+		<ul>
+		  <li>Provides contentassist for Jelly files.</li>
+		  <li>Refined contentassist for maven.xml : takes Werkz tags into account and propose custom goals as well.</li>
+		  <li>Outline page for maven.xml showing all available goals (global ones as well as custom ones)</li>
+		  <li>Possibility to run a goal from the outline page by double-clicking it to support fast preview</li>
+		  <li>Possibility to filter the outline page - eventually via regular expressions</li>
+		</ul>
+	  </p>
+	  <p>
+		<u>Known issues</u><br/>
+		<ul>
+			<li>Big blocks of TEXT or COMMENT seem to make the editor lag really badly (non 100% reproductible)</li>
+			<li>Conflicts between custom goals and global goals when namespace is identical (e.g. 'war:some-custom-goal')</li>
+		</ul>
+	  </p>
+	  <p>
+		<u>Known limitations</u><br/>
+		<ul>
+			<li>No code completions for prereqs attribute</li>
+			<li>Limited jelly:ant taglib support</li>
+			<li>Completion proposals (custom goals) not computed from the buffer but from the previously saved file</li>
+			<li>Offline option not functionnal yet when launching a goal from the outline page</li>
+			<li>No proposal context information yet</li>
+			<li>No namespace proposal yet</li>
+		</ul>
+	  </p>
+	</div>
+  </section>
+  <section name="Maven oriented wizards">
+	<div id="documentContent">
+	  <p>
+		<ul>
+		  <li>Simple Maven Wizard based on java project wizard</li>
+		  <li>Creates a POM according to the informations entered in the wizard</li>
+		</ul>
+	  </p>
+	  <p>
+		<u>Known limitations</u><br/>
+		<ul>
+			<li>Cannot fully customize the generated POM before the creation</li>
+		</ul>
+	  </p>
+	</div>
+  </section>
+  </body>
+</document>

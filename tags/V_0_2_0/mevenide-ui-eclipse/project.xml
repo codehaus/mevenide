@@ -1,0 +1,74 @@
+<?xml version="1.0"?>
+<!DOCTYPE project [
+  <!ENTITY eclipse-dependencies SYSTEM "file:../mevenide-ui-eclipse/pom-fragments/eclipse-dependencies.xml">	
+  <!ENTITY inherited-dependencies SYSTEM "file:../mevenide-ui-eclipse/pom-fragments/inherited-dependencies.xml">
+]>
+<project>
+ 	<extend>${basedir}/../mevenide-master/base-project.xml</extend>
+	<pomVersion>3</pomVersion>
+	<id>mevenide-ui-eclipse</id>
+	<name>Mevenide Eclipse</name>
+	<artifactId>mevenide-ui-eclipse</artifactId>
+	<currentVersion>0.2.0</currentVersion>
+	<package>org.mevenide.ui.eclipse</package>
+	<shortDescription>provides ide integration for Maven</shortDescription>
+	<versions>
+	  <version>
+	    <id>ea</id>
+	    <name>0.1-ea</name>
+	    <tag>V_0_1_ALPHA_1</tag>
+	  </version>
+	  <version>
+		<id>alpha-1</id>
+	    <name>0.1-alpha-A</name>
+	    <tag>V_0_1_ALPHA_1_1</tag>
+	  </version>
+	</versions>
+	<dependencies>
+        <dependency>
+           <groupId>forehead</groupId>
+           <artifactId>forehead</artifactId>
+           <version>1.0-beta-5</version>
+           <url>http://forehead.werken.com/</url>
+           <properties>
+            	<eclipse.plugin.bundle>true</eclipse.plugin.bundle>
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>commons-httpclient</groupId>
+            <artifactId>commons-httpclient</artifactId>
+            <version>2.0-rc1</version>
+            <url>http://jakarta.apache.org/commons/httpclient/</url>
+            <type>jar</type>
+            <properties>
+            	<eclipse.plugin.bundle>true</eclipse.plugin.bundle>
+            </properties>
+        </dependency>
+        <dependency>
+           <groupId>mevenide</groupId>
+           <artifactId>mevenide-core</artifactId>
+           <version>0.1.1</version>
+        </dependency>
+        <dependency>
+           <groupId>mevenide</groupId>
+           <artifactId>mevenide-grammar</artifactId>
+           <version>0.1</version>
+        </dependency>
+        <dependency>
+           <groupId>mevenide</groupId>
+           <artifactId>mevenide-config</artifactId>
+           <version>0.2</version>
+        </dependency>
+        <dependency>
+           <groupId>mevenide</groupId>
+           <artifactId>goals-grabber</artifactId>
+           <version>0.2</version>
+        </dependency>
+        
+		&inherited-dependencies;
+		
+        &eclipse-dependencies;
+
+  	</dependencies>
+  	
+</project>

@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<document>
+
+  <properties>
+    <author email="rhill2@free.fr">Gilles Dodinet</author>
+    <title>Eclipse Plugin Task List</title>
+  </properties>
+
+  <body>
+  	<section name="Eclipse plugin Task List">
+	    <p>
+            <ul>
+		        <li>Provide Extensible Maven Wizard to allow easy creation of different kind of mavenized projects (web , ejb, aspectj, etc.)</li>	
+                <li>Split Mevenide preferences page into multiple, context-related, preferences pages</li>
+                <li>Provide preferences extension mechanism to allow Maven plugins providers to easily plug into Mevenide</li>
+                <li>Provide project properties page that override mevenide preferences </li>
+                <li>Provide a really integrated Maven Console</li>
+                <li>Provide a Maven Builder</li>
+                <li>Provide a Maven Perspective</li>
+                <li>Provide contentassist for xdoc documents</li>
+                <li>Provide a tool to visualize inter project dependencies</li>
+                <li>Polish contentassist</li>
+                <li>...</li>
+            </ul>
+        </p>
+	</section>
+  </body>
+</document>

@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<document>
+
+  	<properties>
+    	<author email="shuber2@jahia.com">Serge Huber</author>
+    	<title>Maven JBuilder OpenTool</title>
+  	</properties>
+  	
+	<body>
+		<section name="Overview">
+			
+			<subsection name="Introduction">
+				<div id="documentContent">
+				<p>This tool enables you to integrate Maven into your JBuilder project !
+				For those unfamiliar with Maven, here is the definition of the project from
+				the <a href="http://maven.apache.org">Maven web site</a> :</p>
+				<p><i> Maven is a Java project management and project comprehension tool.
+					Maven is based on the concept of a project object model (POM) in that all
+					the artifacts produced by Maven are a result of consulting a well defined
+					model for your project. Builds, documentation, source metrics, and source
+					cross-references are all controlled by your POM</i></p>
+				<p>Maven offers tools to automatically manage your external library dependencies
+					from a central repository, offers lots of plugins that can do things as
+					various as compiling your code, verifying that the code in the project
+					complies to coding standard, generate reports and web sites, generate SQL
+					scripts from XML schema description files, etc... It is also now the tool
+					used in a lot of open source projects, as it handles all the nitty-gritty
+					of a project and leaves you more time to do the coding</p>
+				<p>This tool allows you to directly trigger Maven Goals (equivalent to Ant
+					Targets) from your JBuilder project, including even setting dependencies on
+					a Maven goal for a runtime configuration, just you can do with an Ant
+					Target. This tool is also capable of generating a JBuilder library file
+					containing all the Maven project dependencies, so that you may include the
+					library file in the project and compile using the correct dependencies.
+					Future versions of this tool might bring more features, such as
+					editing the project file with IDE Wizards.</p>
+					</div>
+			</subsection>
+						
+			<subsection name="Credits">
+				<div id="documentContent">
+				<p>
+				  Written by Serge Huber (<a href="mailto:shuber2@jahia.com">shuber2@jahia.com</a>)
+				</p>
+				</div>
+			</subsection>
+			
+			<subsection name="History">
+				<div id="documentContent">
+				<p>Version 0.2<br />Updated to support JBuilder 2005</p>
+				<p>Version 0.1<br />Initial release</p>
+				</div>
+			</subsection>
+
+		</section>
+    </body>
+</document>

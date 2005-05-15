@@ -1,0 +1,10 @@
+<project>
+	<extend>${basedir}/../mevenide-master/base-project.xml</extend>
+    <pomVersion>3</pomVersion>
+    <id>mevenide:mevenide-feature</id>
+    <artifactId>mevenide-feature</artifactId>
+    <name>Mevenide Feature</name>
+    <currentVersion>0.2.0</currentVersion>
+    <inceptionYear>2003</inceptionYear>
+    
+</project>

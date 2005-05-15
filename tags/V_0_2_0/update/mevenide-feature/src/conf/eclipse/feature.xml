@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="@maven.eclipse.plugin.artifact.id@"
+      label="Mevenide, Maven plugin for Eclipse"
+      version="@maven.eclipse.plugin.artifact.version@"
+      provider-name="The Codehaus"
+      plugin="Mevenide"
+      image="mevenide.png">
+
+   <description>
+      %description
+   </description>
+
+   <license url="http://mevenide.codehaus.org/license.html">
+      %license
+   </license>
+
+   <url>
+      <update label="Mevenide update" url="http://mevenide.codehaus.org/update/"/>
+   </url>
+
+   <requires>
+      <import plugin="org.eclipse.help.base"/>
+      <import plugin="org.eclipse.ui.ide"/>
+      <import plugin="org.eclipse.core.variables"/>
+      <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.jdt.core"/>
+      <import plugin="org.eclipse.jface"/>
+      <import plugin="org.eclipse.swt"/>
+      <import plugin="org.eclipse.ui.workbench"/>
+      <import plugin="org.eclipse.jdt.launching"/>
+      <import plugin="org.eclipse.debug.core"/>
+      <import plugin="org.eclipse.debug.ui"/>
+      <import plugin="org.eclipse.help"/>
+      <import plugin="org.eclipse.ui.views"/>
+      <import plugin="org.eclipse.jdt.ui"/>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.ui.externaltools"/>
+      <import plugin="org.eclipse.jface.text"/>
+      <import plugin="org.eclipse.ui.forms"/>
+      <import plugin="org.eclipse.ui.workbench.texteditor"/>
+      <import plugin="org.eclipse.ui.editors"/>
+   </requires>
+
+   <plugin
+         id="@org.mevenide.core.id@"
+         download-size="0"
+         install-size="0"
+         version="@org.mevenide.core.version@"/>
+
+   <plugin
+         id="@org.mevenide.grabber.id@"
+         download-size="0"
+         install-size="0"
+         version="@org.mevenide.grabber.version@"/>
+
+   <plugin
+         id="@org.mevenide.grammar.id@"
+         download-size="0"
+         install-size="0"
+         version="@org.mevenide.grammar.version@"/>
+   
+   <plugin
+         id="@org.mevenide.config.id@"
+         download-size="0"
+         install-size="0"
+         version="@org.mevenide.config.version@"/>
+         
+   <plugin
+         id="@org.mevenide.ui.eclipse.id@"
+         download-size="0"
+         install-size="0"
+         version="@org.mevenide.ui.eclipse.version@"/>
+
+  <plugin
+         id="@org.mevenide.help.id@"
+         download-size="0"
+         install-size="0"
+         version="@org.mevenide.help.version@"/>
+</feature>

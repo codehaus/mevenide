@@ -1,0 +1,10 @@
+<project>
+    <extend>${basedir}/../mevenide-master/base-project.xml</extend>
+    <pomVersion>3</pomVersion>
+    <id>mevenide:mevenide-update</id>
+    <artifactId>mevenide-update</artifactId>
+    <name>Mevenide Update Site Project</name>
+    <currentVersion>0.2.0</currentVersion>
+    
+    
+</project>

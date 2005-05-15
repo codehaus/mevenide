@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<document>
+    <properties>
+    	<author email="rhill@wanadoo.fr">Gilles Dodinet</author>
+        <title>Help Page</title>
+    </properties>
+    <body>
+		<section name="Running Maven">
+        	<subsection name="Launch Wizard">
+        		<div id="documentContent">
+			  <p>
+				
+				Mevenide is now integrated into Eclipse External Tools.
+				<br/><br/>
+				When selecting '<code>Run Maven...</code>' from 'Maven' menu, a wizard appears that allows you
+				to pick options relevant in the context of the IDE (that means, f.i, <code>-b</code>, <code>-h</code>, <code>-p</code> options, among others, are not accessible).
+				System properties can also be specified using the 'Add' button. 
+				<br/><br/>
+				The Text widget at the bottom of the wizard page is writable and goals to run are to be passed in there for now. 
+				The 'Choose' buttong can be used to select goals to be run from a list showing both global and custom goals. 
+				The table is used to pass System Properties to Maven.
+				<br/><br/>
+				<center>
+					<img border="1px" src="images/run-maven.png"/>
+					<br/><br/>
+					<font size="-1"><b>Screenshot 1</b>Run Maven Dialog</font>
+					<br/><br/>
+				</center>
+			  </p>
+			  </div>
+			</subsection>
+			<subsection name="Goals Picker">
+             <div id="documentContent">
+               <p>
+               	 Mevenide provides an interface to graphically choose the goals to be run. Once chosen, they can be ordered by clicking 
+               	 the <i>Goals Order</i> button.
+               	 <br/><br/>
+        		 <center>
+	        	   <img border="1px" src="images/mevenide-goals-picker.png"/>
+    	    	   <br/><br/>
+        		   <font size="-1"><b>Screenshot 2</b> Choosing Goals</font>				
+        		 </center>
+        		 <br/><br/>
+               </p>
+             </div>
+           </subsection>
+		   <subsection name="Launch Shortcut">
+				<div id="documentContent">
+			  <p>
+				The "Run As> Maven Project" command silently invokes the default Maven goals specified in the preference page in the context of the selected Project.
+				<br/><br/>
+				<center>
+					<img border="1px" src="images/mevenide-quicklaunch.png"/>
+					<br/><br/>
+					<font size="-1"><b>Screenshot 3</b> QuickLaunch Button</font>
+				</center>
+              </p>
+              </div>
+            </subsection>
+            <subsection name="Maven Console">
+              <div id="documentContent">
+        	    <p>
+        		  Mevenide doesnot provide yet an integrated Maven Console, tho Maven Console can still be used thanks the Eclipse Debug Console.
+        		  <br/><br/>
+        		  <center>
+	        		<img border="1px" src="images/maven-console.png"/>
+    	    		<br/><br/>
+        			<font size="-1"><b>Screenshot 4</b> Running Maven Console</font>				
+        		  </center>
+        		  <br/><br/>
+        	    </p>
+        	  </div>
+           </subsection>
+        </section>
+        <section>
+			<p>
+				<navbar prev="conf.html" toc="help.html" next="sync.html"/>
+			</p>
+		</section>
+	</body>
+</document>

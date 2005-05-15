@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<document>
+    <properties>
+    	<author email="rhill@wanadoo.fr">Gilles Dodinet</author>
+        <title>Overview</title>
+    </properties>
+    <body>
+        <section name="Mevenide Update">
+        	<p>
+			   To install Mevenide through the Eclipse Update Manager, create an Update Site [1]
+			   pointing to : <br/>
+			   http://dist.codehaus.org/mevenide/release/eclipse/update/site.xml and follow instructions. 
+			</p>
+			<p>
+				If this procedure it not suitable, you can download a <a href="http://dist.codehaus.org/mevenide/release/eclipse/mevenide.update-0.2.0.zip">big zip archive</a> containing 
+				the feature and all the plugins. You just need to unzip it into your Eclipse install directory.
+			</p>
+			<p>
+				[1] <font size="-1">Help > Software Updates &gt; Find and Install... &gt; Search for new features to install &gt; Add update site...</font>
+			</p>
+		</section>
+ 	</body>
+</document>
