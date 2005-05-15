@@ -30,14 +30,12 @@ import org.mevenide.idea.util.ui.text.XmlPsiDocumentBinder;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.FocusListener;
-import java.awt.event.FocusEvent;
 import java.lang.reflect.Field;
 
 /**
  * @author Arik
  */
-public class PomGeneralInfoPanel extends AbstractPomLayerPanel implements PomFileEditorStateHandler, FocusListener {
+public class PomGeneralInfoPanel extends AbstractPomLayerPanel implements PomFileEditorStateHandler {
     private static final Res RES = Res.getInstance(PomGeneralInfoPanel.class);
 
     private final JComboBox pomVersionField = new JComboBox(new String[]{"3"});
@@ -57,8 +55,6 @@ public class PomGeneralInfoPanel extends AbstractPomLayerPanel implements PomFil
     private final JTextField packageField = new JTextField();
     private final JTextField issueTrackingUrlField = new JTextField();
 
-    private Component focusedComponent = null;
-
     public PomGeneralInfoPanel(final com.intellij.openapi.project.Project pProject,
                                final Document pPomDocument) {
         super(pProject, pPomDocument);
@@ -66,8 +62,6 @@ public class PomGeneralInfoPanel extends AbstractPomLayerPanel implements PomFil
         initComponents();
         layoutComponents();
         initBindings();
-
-        this.addFocusListener(this);
     }
 
     private void initComponents() {
@@ -90,7 +84,6 @@ public class PomGeneralInfoPanel extends AbstractPomLayerPanel implements PomFil
                 if(value != null && value instanceof Component) {
                     final Component comp = (Component) value;
                     comp.setName(field.getName());
-                    comp.addFocusListener(this);
                 }
             }
             catch (IllegalAccessException e) {
@@ -164,34 +157,8 @@ public class PomGeneralInfoPanel extends AbstractPomLayerPanel implements PomFil
     }
 
     public void getState(final PomFileEditorState pState) {
-        pState.setCurrentField(focusedComponent);
     }
 
     public void setState(final PomFileEditorState pState) {
-        final Component currentField = pState.getCurrentField();
-        if(currentField == null)
-            return;
-
-        if(currentField.getParent() == this)
-            currentField.requestFocusInWindow();
-    }
-
-    /**
-     * @todo this does not work yet
-     * @param e
-     */
-    public void focusGained(FocusEvent e) {
-        if(e.getComponent() == this) {
-            if(focusedComponent != null)
-                focusedComponent.requestFocusInWindow();
-        }
-        else if(e.getComponent().getParent() == this) {
-            focusedComponent = e.getComponent();
-            LOG.trace("PomGeneralInfoPanel.focusGained - comp is " + focusedComponent.getName());
-        }
-    }
-
-    public void focusLost(FocusEvent e) {
-        LOG.trace("PomGeneralInfoPanel.focusLost - comp is " + e.getComponent().getName());
     }
 }
