@@ -24,10 +24,13 @@ import com.intellij.psi.PsiFile;
 import org.mevenide.idea.editor.pom.ui.layer.PomLayerPanel;
 import org.mevenide.idea.support.AbstractFileEditor;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JComponent;
 
 /**
+ * An editor for POM files.
+ *
+ * <p>This editor displays a graphical user interface for POMs.</p>
+ *
  * @author Arik
  */
 public class PomFileEditor extends AbstractFileEditor {
@@ -96,20 +99,6 @@ public class PomFileEditor extends AbstractFileEditor {
     }
 
     /**
-     * Returns the component that should receive the focus.
-     *
-     * @todo this does not work yet, for some reason
-     * @return a JComponent
-     */
-    @Override public JComponent getPreferredFocusedComponent() {
-        final PomFileEditorState state = (PomFileEditorState) getState(null);
-        final Component comp = state.getCurrentField();
-        final String name = comp == null ? "null" : comp.getName();
-        LOG.trace("PomFileEditor.getPreferredFocusedComponent - comp is " + name);
-        return (JComponent) comp;
-    }
-
-    /**
      * Returns {@code true} if the user interface components were modified, or if the
      * IDEA document has been modified and not saved.
      *
@@ -123,7 +112,10 @@ public class PomFileEditor extends AbstractFileEditor {
     }
 
     /**
-     * @return
+     * Checks if the POM is valid by checking via the PSI file. This is not
+     * a full check - but only checks that the XML is valid .
+     *
+     * @return {@code true} if the POM xml is valid, {@code false} otherwise.
      */
     public boolean isValid() {
         final PsiDocumentManager mgr = PsiDocumentManager.getInstance(project);
