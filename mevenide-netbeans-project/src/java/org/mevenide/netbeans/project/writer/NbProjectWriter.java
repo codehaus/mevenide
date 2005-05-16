@@ -19,11 +19,14 @@ package org.mevenide.netbeans.project.writer;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.io.Reader;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import org.jdom.Content;
 import org.jdom.Document;
@@ -271,21 +274,21 @@ public class NbProjectWriter implements FileSystem.AtomicAction {
             File[] files = context.getProjectFiles();
             //write now
             Writer writer = null;
-            InputStream stream = null;
+            CountNewLinesReader reader = null;
             try {
                 for (int i = 0; i < files.length; i++) {
                     IContentProvider provider = new ChangesContentProvider(new ElementContentProvider(roots[i]),
                                                                            changes, "pom", i);
-                    CarefulProjectMarshaller marshall = new CarefulProjectMarshaller(figureOutFormat(roots[i]));
                     FileObject fo = FileUtil.toFileObject(files[i]);
                     // read the current stream first..
-                    stream = fo.getInputStream();
+                    reader = new CountNewLinesReader(fo.getInputStream());
                     SAXBuilder builder = new SAXBuilder();
-                    Document originalDoc = builder.build(stream);
-                    stream.close();
+                    Document originalDoc = builder.build(reader);
+                    reader.close();
                     FileLock lock = fo.lock();
                     fileLockMap.put(files[i], lock);
                     writer = new OutputStreamWriter(fo.getOutputStream(lock));
+                    CarefulProjectMarshaller marshall = new CarefulProjectMarshaller(figureOutFormat(roots[i], reader));
                     marshall.marshall(writer, provider, originalDoc);
                 }
             } catch (UserQuestionException exc) {
@@ -295,29 +298,28 @@ public class NbProjectWriter implements FileSystem.AtomicAction {
                 if (writer != null) {
                     writer.close();
                 }
-                if (stream != null) {
-                    stream.close();
+                if (reader != null) {
+                    reader.close();
                 }
             }
         }
     }
     
-    static Format figureOutFormat(org.jdom.Element root) {
+    static Format figureOutFormat(org.jdom.Element root, CountNewLinesReader reader) {
         Format toRet = Format.getPrettyFormat();
         List content = root.getContent();
-        String lineSep = System.getProperty("line.separator");
+        String lineSep = reader.getNewLineString();
         String indent = "    ";
         if (content.size() > 2) {
             Content cont1 = (Content)content.get(0);
             Content cont2 = (Content)content.get(1);
             if (cont1 instanceof Text && cont2 instanceof org.jdom.Element) {
                 String line = cont1.getValue();
-                if (line.indexOf("\r\n") > -1) {
-                    lineSep = "\r\n";
-                }
-                int index = line.indexOf(lineSep);
+                // text in jdom elements seems to always be \n separated.
+                int index = line.indexOf("\n");
                 if (index > -1 && line.length()  + lineSep.length() > index) {
                     String newLine = line.substring(index + lineSep.length());
+                    // kind of heuristics, check if all characters are spaces. 
                     if (newLine.matches("[ ]{" + newLine.length() + "}")) {
                         indent = newLine;
                     }
@@ -328,4 +330,7 @@ public class NbProjectWriter implements FileSystem.AtomicAction {
         toRet.setLineSeparator(lineSep);
         return toRet;
     }
+    
+ 
+
 }
