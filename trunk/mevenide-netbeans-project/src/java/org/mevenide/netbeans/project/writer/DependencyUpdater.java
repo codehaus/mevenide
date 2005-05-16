@@ -119,21 +119,22 @@ public final class DependencyUpdater {
             File[] files = context.getProjectFiles();
             //write now
             Writer writer = null;
-            InputStream stream = null;
+            CountNewLinesReader reader = null;
             FileLock lock = null;
             try {
                 for (int i = 0; i < files.length; i++) {
                     IContentProvider provider = new ElementContentProvider(roots[i]);
                     provider = DependencyMatcher.replace(replacer, provider);
-                    CarefulProjectMarshaller marshall = new CarefulProjectMarshaller(NbProjectWriter.figureOutFormat(roots[i]));
                     FileObject fo = FileUtil.toFileObject(files[i]);
                     // read the current stream first..
-                    stream = fo.getInputStream();
+                    // read the current stream first..
+                    reader = new CountNewLinesReader(fo.getInputStream());
                     SAXBuilder builder = new SAXBuilder();
-                    Document originalDoc = builder.build(stream);
-                    stream.close();
-					stream = null;
+                    Document originalDoc = builder.build(reader);
+                    reader.close();
+                    reader = null;
                     lock = fo.lock();
+                    CarefulProjectMarshaller marshall = new CarefulProjectMarshaller(NbProjectWriter.figureOutFormat(roots[i], reader));
                     writer = new OutputStreamWriter(fo.getOutputStream(lock));
                     marshall.marshall(writer, provider, originalDoc);
                 }
@@ -141,8 +142,8 @@ public final class DependencyUpdater {
                 throw new IOException("Cannot obtain lock. User interaction required.");
             }
             finally {
-                if (stream != null) {
-                    stream.close();
+                if (reader != null) {
+                    reader.close();
                 }
                 if (writer != null) {
                     writer.close();
