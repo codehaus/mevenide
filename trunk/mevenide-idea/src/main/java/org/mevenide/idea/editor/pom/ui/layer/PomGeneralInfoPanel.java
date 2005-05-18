@@ -61,7 +61,7 @@ public class PomGeneralInfoPanel extends AbstractPomLayerPanel implements PomFil
 
         initComponents();
         layoutComponents();
-        initBindings();
+        bindComponents();
     }
 
     private void initComponents() {
@@ -137,7 +137,7 @@ public class PomGeneralInfoPanel extends AbstractPomLayerPanel implements PomFil
         builder.append(RES.get("project.issues.url"), issueTrackingUrlField, 5);
     }
 
-    private void initBindings() {
+    private void bindComponents() {
         synchronized (this) {
             final XmlPsiDocumentBinder binder = new XmlPsiDocumentBinder(project, editorDocument);
 
