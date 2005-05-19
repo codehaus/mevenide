@@ -35,13 +35,10 @@ import org.openide.WizardDescriptor;
 
 public class GenAppPropsVisual extends JPanel {
     
-    private GenAppPropsPanel panel;
-    private GenAppTemplateFinder finder;
     private TemplateInfo current;
     private Model currentModel;
             
-    public GenAppPropsVisual(GenAppPropsPanel pnl) {
-        this.panel = pnl;
+    public GenAppPropsVisual() {
         initComponents();
         
         setName("Template's Properties");
@@ -53,7 +50,6 @@ public class GenAppPropsVisual extends JPanel {
     }
     
     void read(WizardDescriptor d) {
-        finder = (GenAppTemplateFinder)d.getProperty("finder");
         TemplateInfo templ = (TemplateInfo)d.getProperty("gatemplate");
         if (current == null || !current.getName().equals(templ.getName())) {
             current = templ;

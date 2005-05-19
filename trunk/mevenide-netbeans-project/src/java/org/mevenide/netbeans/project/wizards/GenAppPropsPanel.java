@@ -42,7 +42,7 @@ public class GenAppPropsPanel implements WizardDescriptor.Panel {
     
     public Component getComponent() {
         if (component == null) {
-            component = new GenAppPropsVisual(this);
+            component = new GenAppPropsVisual();
         }
         return component;
     }
