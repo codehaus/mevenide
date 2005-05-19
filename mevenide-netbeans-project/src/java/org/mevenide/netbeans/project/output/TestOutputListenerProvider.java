@@ -187,7 +187,7 @@ public class TestOutputListenerProvider extends AbstractOutputProcessor {
                     }
                 }
             } catch (IOException exc) {
-//                logger.warn("exception IO", exc);
+                logger.warn("exception IO", exc);
             } finally {
                 writer.close();
                 try {

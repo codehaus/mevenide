@@ -141,8 +141,6 @@ class CountNewLinesReader extends Reader {
         int c;
         // ptr to first not processed char in readBuff
         int i = 0;
-        // points to a character right after a newline
-        int lastNewLine = 0;
         
         //process newlines so only '\n' appears in the charBuff
         //count all kinds of newlines - most used will be used on save
@@ -152,7 +150,6 @@ class CountNewLinesReader extends Reader {
                 case (int)'\n':
                     newLinesCounts[LN_N] = newLinesCounts[LN_N] + 1;
                     charBuff[charBuffPtr++] = '\n';
-                    lastNewLine = charBuffPtr;
                     i++;
                     break;
                 case (int)'\r':
@@ -165,7 +162,6 @@ class CountNewLinesReader extends Reader {
                         newLinesCounts[LN_RN] = newLinesCounts[LN_RN] + 1;
                     }
                     charBuff[charBuffPtr++] = '\n';
-                    lastNewLine = charBuffPtr;
                     break;
                     
                 default:
