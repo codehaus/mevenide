@@ -18,6 +18,7 @@ package org.mevenide.netbeans.project.queries;
 
 import java.io.File;
 import org.mevenide.netbeans.project.MavenProject;
+import org.netbeans.api.queries.SharabilityQuery;
 import org.netbeans.spi.queries.SharabilityQueryImplementation;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
@@ -36,40 +37,46 @@ public class MavenSharabilityQueryImpl implements SharabilityQueryImplementation
     
     public Boolean isSharable(FileObject fileObject) {
         File file = FileUtil.toFile(fileObject);
-        return checkShare(file, false, false);
+        return Boolean.valueOf(checkShare(file));
     }
     
     public Boolean willBeSharable(FileObject fileObject, String str, boolean directory) {
         File parent = FileUtil.toFile(fileObject);
         File child = new File(parent, str);
-        return checkShare(child, true, directory);
+        return Boolean.valueOf(checkShare(child));
     }
 
     
-    private Boolean checkShare(File file, boolean future, boolean directory) {
-        File basedir = new File(project.getPropertyResolver().getResolvedValue("basedir"));
+    private boolean checkShare(File file) {
+        File basedir = FileUtil.toFile(project.getProjectDirectory());
         // is this condition necessary?
         if (!file.getAbsolutePath().startsWith(basedir.getAbsolutePath())) {
-            return Boolean.FALSE;
+            return false;
         }
         File target = new File(project.getPropertyResolver().getResolvedValue("maven.build.dir"));
         if (target.equals(file) || file.getAbsolutePath().startsWith(target.getAbsolutePath())) {
-            return Boolean.FALSE;
+            return false;
         }
         File buildProps = new File(basedir, "build.properties");
         if (file.equals(buildProps)) {
-            return Boolean.FALSE;
+            return false;
         }
-        File pluginxml = new File(basedir, "plugin.xml");
-        if (file.equals(pluginxml)) {
-            return Boolean.FALSE;
+        if (file.equals(new File(basedir, "velocity.log"))) {
+            return false;
         }
-        return Boolean.TRUE;
+        if (file.equals(new File(basedir, "jcoverage.ser"))) {
+            return false;
+        }
+        
+        return true;
     }
     
-    public int getSharability(java.io.File file) {
+    public int getSharability(File file) {
+        if (checkShare(file)) {
+            return SharabilityQuery.SHARABLE;
+        }
         //TODO
-        return 0;
+        return SharabilityQuery.NOT_SHARABLE;
     }
     
 }
