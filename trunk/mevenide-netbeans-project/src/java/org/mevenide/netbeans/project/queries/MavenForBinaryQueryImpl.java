@@ -54,6 +54,7 @@ public class MavenForBinaryQueryImpl implements SourceForBinaryQueryImplementati
                                                           
     private MavenProject project;
     private BinResult srcResult;
+    private BinResult jarResult;
     private BinResult testResult;
     /** Creates a new instance of MavenSourceForBinaryQueryImpl */
     public MavenForBinaryQueryImpl(MavenProject proj) {
@@ -62,6 +63,9 @@ public class MavenForBinaryQueryImpl implements SourceForBinaryQueryImplementati
             public void propertyChange(PropertyChangeEvent event) {
                 if (srcResult != null) {
                     srcResult.fireChanged();
+                }
+                if (jarResult != null) {
+                    jarResult.fireChanged();
                 }
                 if (testResult != null) {
                     testResult.fireChanged();
@@ -80,12 +84,12 @@ public class MavenForBinaryQueryImpl implements SourceForBinaryQueryImplementati
      * @return a list of source roots; may be empty but not null
      */   
     public SourceForBinaryQuery.Result findSourceRoots(URL url) {
-        logger.debug("MavenSourceForBinaryQueryImpl project=" + project.getDisplayName() + "url=" + url);
-        if (url.getProtocol().equals("jar")) { //NOI18N
-            if (srcResult == null) {
-                srcResult = new BinResult(url);
+        if (url.getProtocol().equals("jar") && checkURL(url) != -1) { //NOI18N
+            if (jarResult == null) {
+                logger.debug("MavenSourceForBinaryQueryImpl project=" + project.getDisplayName() + "url=" + url);
+                jarResult = new BinResult(url);
             }
-            return srcResult;
+            return jarResult;
         }
         if (url.getProtocol().equals("file")) { //NOI18N
             int result = checkURL(url);
@@ -118,8 +122,11 @@ public class MavenForBinaryQueryImpl implements SourceForBinaryQueryImplementati
      *         be listened to, or null if the binary root is not recognized
      */    
     public JavadocForBinaryQuery.Result findJavadoc(URL url) {
-        logger.debug("JavadocForBinaryQueryImplementation project=" + project.getDisplayName() + "url=" + url);
-        return new DocResult(url);
+        if (checkURL(url) != -1) {
+            logger.debug("JavadocForBinaryQueryImplementation project=" + project.getDisplayName() + "url=" + url);
+            return new DocResult(url);
+        }
+        return null;
     }
     
     /**
@@ -129,10 +136,7 @@ public class MavenForBinaryQueryImpl implements SourceForBinaryQueryImplementati
      */
     private int checkURL(URL url) {
         logger.debug("checkurl=" + url);
-        URL binRoot = url;
-        if ("jar".equals(url.getProtocol())) {
-            binRoot = FileUtil.getArchiveFile(url);
-        } else {
+        if ("file".equals(url.getProtocol())) {
             // true for directories.
             try {
                 URL srcUrl = project.getBuildClassesDir().toURL();
@@ -154,25 +158,28 @@ public class MavenForBinaryQueryImpl implements SourceForBinaryQueryImplementati
             }
             return -1;
         }
-        FileObject fo = URLMapper.findFileObject(binRoot);
-        if (fo != null) {
-            logger.debug("checkurl fo=" + fo);
-            Project mavproj = project.getOriginalMavenProject();
-            File file = FileUtil.toFile(fo);
-            logger.debug("jar protocol file=" + file);
-            try {
-                IDependencyResolver depRes = DependencyResolverFactory.getFactory().
-                                                newInstance(file.getAbsolutePath());
-                IPropertyResolver res = project.getPropertyResolver();
-                boolean found =  (doCompare(depRes.guessArtifactId(), res.resolveString(mavproj.getArtifactId())) &&
-                                  doCompare(depRes.guessGroupId(), res.resolveString(mavproj.getGroupId())) &&
-                                  doCompare(depRes.guessVersion(), res.resolveString(mavproj.getCurrentVersion())));
-                return found ? 0 : -1;
-            } catch (Exception exc) {
-                logger.error("exception", exc);
-                return -1;
+        if ("jar".equals(url.getProtocol())) {
+            URL binRoot = FileUtil.getArchiveFile(url);
+            FileObject fo = URLMapper.findFileObject(binRoot);
+            if (fo != null) {
+                logger.debug("checkurl fo=" + fo);
+                Project mavproj = project.getOriginalMavenProject();
+                File file = FileUtil.toFile(fo);
+                logger.debug("jar protocol file=" + file);
+                try {
+                    IDependencyResolver depRes = DependencyResolverFactory.getFactory().
+                            newInstance(file.getAbsolutePath());
+                    IPropertyResolver res = project.getPropertyResolver();
+                    boolean found =  (doCompare(depRes.guessArtifactId(), res.resolveString(mavproj.getArtifactId())) &&
+                            doCompare(depRes.guessGroupId(), res.resolveString(mavproj.getGroupId())) &&
+                            doCompare(depRes.guessVersion(), res.resolveString(mavproj.getCurrentVersion())));
+                    return found ? 0 : -1;
+                } catch (Exception exc) {
+                    logger.error("exception", exc);
+                    return -1;
+                }
             }
-        } 
+        }
         return -1;
     }
     
