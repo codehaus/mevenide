@@ -186,16 +186,20 @@ public class ModuleSettings extends AbstractModuleComponent implements JDOMExter
         final File pomFile = getPomFile();
         if(pomFile != null) {
             final File mavenXmlFile = new File(pomFile.getParentFile(), "maven.xml");
-            try {
-                final ProjectGoalsGrabber grabber = new ProjectGoalsGrabber();
-                grabber.setMavenXmlFile(mavenXmlFile.getAbsolutePath());
-                grabber.refresh();
-                projectGoalsGrabber = grabber;
+            if(mavenXmlFile.exists()) {
+                try {
+                    final ProjectGoalsGrabber grabber = new ProjectGoalsGrabber();
+                    grabber.setMavenXmlFile(mavenXmlFile.getAbsolutePath());
+                    grabber.refresh();
+                    projectGoalsGrabber = grabber;
+                }
+                catch (Exception e) {
+                    projectGoalsGrabber = new CustomGoalsGrabber("Project");
+                    LOG.error(e.getMessage(), e);
+                }
             }
-            catch (Exception e) {
-                projectGoalsGrabber = new CustomGoalsGrabber("Project");
-                LOG.error(e.getMessage(), e);
-            }
+            else
+                projectGoalsGrabber = new CustomGoalsGrabber(IGoalsGrabber.ORIGIN_PROJECT);
         }
     }
 
