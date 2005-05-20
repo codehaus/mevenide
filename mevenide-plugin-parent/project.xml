@@ -10,6 +10,7 @@
     </organization>
     <siteAddress>beaver.codehaus.org</siteAddress>
     <siteDirectory>/home/projects/mevenide/public_html/${pom.artifactId}</siteDirectory>
+    <distributionDirectory>/dist</distributionDirectory>
     <issueTrackingUrl>http://jira.codehaus.org/secure/BrowseProject.jspa?id=10480</issueTrackingUrl>
     <repository>
         <connection>scm:cvs:pserver:anonymous@cvs.mevenide.codehaus.org:/home/projects/mevenide/scm:${pom.artifactId}</connection>
