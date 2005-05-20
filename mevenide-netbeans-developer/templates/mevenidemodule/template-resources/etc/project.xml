@@ -8,6 +8,7 @@
   <name>@NAME@</name>
   <package>@PACKAGE@</package>
   <inceptionYear>2005</inceptionYear>
+  <url>http://mevenide.codehaus.org</url>
   <dependencies>
    <dependency>     
         <groupId>netbeans</groupId>
