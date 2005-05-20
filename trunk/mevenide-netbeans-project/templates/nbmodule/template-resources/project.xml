@@ -8,6 +8,7 @@
   <name>@NAME@</name>
   <package>@PACKAGE@</package>
   <logo>/images/logo.gif</logo>
+  <url>http://www.netbeans.org</url>
   <inceptionYear>2004</inceptionYear>
 
   <mailingLists>
