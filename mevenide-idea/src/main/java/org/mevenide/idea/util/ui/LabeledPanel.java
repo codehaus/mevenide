@@ -1,51 +1,43 @@
 package org.mevenide.idea.util.ui;
 
-import com.jgoodies.forms.layout.FormLayout;
-import com.jgoodies.forms.builder.DefaultFormBuilder;
-
-import javax.swing.JPanel;
 import javax.swing.JComponent;
-import java.awt.BorderLayout;
+import javax.swing.JPanel;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 
 /**
  * @author Arik
  */
 public class LabeledPanel extends JPanel {
 
-    public LabeledPanel(final String pTitle,
-                        final String pLabel,
+    public LabeledPanel(final String pLabel,
                         final JComponent pComponent) {
-        init(pTitle, pLabel, pComponent);
+        init(pLabel, pComponent);
     }
 
     public LabeledPanel(final boolean pDoubleBuffered,
-                        final String pTitle,
                         final String pLabel,
                         final JComponent pComponent) {
         super(pDoubleBuffered);
-        init(pTitle, pLabel, pComponent);
+        init(pLabel, pComponent);
     }
 
-    private void init(final String pTitle, final String pLabel, final JComponent pComponent) {
-        final String columnSpecs = "fill:pref:grow";
-        final String rowSpec = "fill:min:none, fill:min:none, fill:pref:grow(0.5)";
-        final FormLayout layout = new FormLayout(columnSpecs, rowSpec);
+    private void init(final String pLabel, final JComponent pComponent) {
+        setLayout(new GridBagLayout());
+        GridBagConstraints c;
 
-        final DefaultFormBuilder builder = new DefaultFormBuilder(layout);
-        builder.setDefaultDialogBorder();
-        builder.setComponentFactory(new CustomFormsComponentFactory());
+        c = new GridBagConstraints();
+        c.fill = GridBagConstraints.BOTH;
+        c.insets = new Insets(15, 15, 5, 15);
+        c.weightx = 1;
+        add(new MultiLineLabel(pLabel), c);
 
-        //
-        //add the dependency table
-        //
-        builder.appendSeparator(pTitle);
-        builder.append(new MultiLineLabel(pLabel));
-        builder.append(pComponent);
-
-        //
-        //set the panel
-        //
-        setLayout(new BorderLayout());
-        add(builder.getPanel(), BorderLayout.CENTER);
+        c = new GridBagConstraints();
+        c.gridy = 1;
+        c.fill = GridBagConstraints.BOTH;
+        c.insets = new Insets(5, 15, 15, 15);
+        c.weighty = 1;
+        add(pComponent, c);
     }
 }

@@ -3,14 +3,16 @@ package org.mevenide.idea.editor.pom.ui.layer;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.project.Project;
 import com.intellij.util.ui.Table;
+import org.mevenide.idea.util.ui.table.CRUDPanel;
 import org.mevenide.idea.util.ui.LabeledPanel;
 
-import javax.swing.JComponent;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JComponent;
 import javax.swing.JSplitPane;
 import java.awt.BorderLayout;
-import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 /**
  * @author Arik
@@ -19,8 +21,8 @@ public class PomDependenciesPanel extends AbstractPomLayerPanel {
 
     private final JTable dependenciesTable;
     private final JTable propertiesTable;
-    private final JScrollPane depsView;
-    private final JScrollPane propsView;
+    private final DependenciesTablePanel depsView;
+    private final DependencyPropertiesTablePanel propsView;
 
     public PomDependenciesPanel(final Project pProject, final Document pPomDocument) {
         super(pProject, pPomDocument);
@@ -28,12 +30,10 @@ public class PomDependenciesPanel extends AbstractPomLayerPanel {
         final PomDependenciesTableModel model = new PomDependenciesTableModel(project, editorDocument);
 
         dependenciesTable = new Table(model);
-        depsView = new JScrollPane(dependenciesTable);
-        depsView.setPreferredSize(new Dimension(100, 100));
+        depsView = new DependenciesTablePanel();
 
         propertiesTable = new Table(model);
-        propsView = new JScrollPane(propertiesTable);
-        propsView.setPreferredSize(new Dimension(100, 100));
+        propsView = new DependencyPropertiesTablePanel();
 
         layoutComponents();
     }
@@ -41,11 +41,9 @@ public class PomDependenciesPanel extends AbstractPomLayerPanel {
     private void layoutComponents() {
         setLayout(new BorderLayout());
 
-        final JComponent depsPanel = new LabeledPanel(RES.get("dep.list.title"),
-                                                      RES.get("dep.list.desc"),
+        final JComponent depsPanel = new LabeledPanel(RES.get("dep.list.desc"),
                                                       depsView);
-        final JComponent propsPanel = new LabeledPanel(RES.get("dep.props.title"),
-                                                       RES.get("dep.props.desc"),
+        final JComponent propsPanel = new LabeledPanel(RES.get("dep.props.desc"),
                                                        propsView);
         final JComponent splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT,
                                                     true,
@@ -60,5 +58,49 @@ public class PomDependenciesPanel extends AbstractPomLayerPanel {
 
     public JTable getPropertiesTable() {
         return propertiesTable;
+    }
+
+    private class DependenciesTablePanel extends CRUDPanel {
+
+        public DependenciesTablePanel() {
+            super(new JScrollPane(dependenciesTable), true, false, true);
+            setAddAction(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    LOG.trace("Adding dependency");
+                }
+            });
+            setEditAction(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    LOG.trace("Editing dependency");
+                }
+            });
+            setRemoveAction(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    LOG.trace("Removing dependency");
+                }
+            });
+        }
+    }
+
+    private class DependencyPropertiesTablePanel extends CRUDPanel {
+
+        public DependencyPropertiesTablePanel() {
+            super(new JScrollPane(propertiesTable), true, false, true);
+            setAddAction(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    LOG.trace("Adding dependency property");
+                }
+            });
+            setEditAction(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    LOG.trace("Editing dependency property");
+                }
+            });
+            setRemoveAction(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    LOG.trace("Removing dependency property");
+                }
+            });
+        }
     }
 }
