@@ -17,19 +17,20 @@
 package org.mevenide.idea.editor.pom.ui.layer;
 
 import com.intellij.openapi.editor.Document;
-
-import javax.swing.*;
-import java.awt.*;
-
-import org.mevenide.idea.editor.pom.PomFileEditorStateHandler;
 import org.mevenide.idea.editor.pom.PomFileEditorState;
+import org.mevenide.idea.editor.pom.PomFileEditorStateHandler;
+
+import javax.swing.JTabbedPane;
+import java.awt.BorderLayout;
+import java.awt.Component;
 
 /**
  * @author Arik
  */
 public class PomLayerPanel extends AbstractPomLayerPanel implements PomFileEditorStateHandler {
     private final JTabbedPane tabs = new JTabbedPane(JTabbedPane.TOP);
-    private final PomGeneralInfoPanel generalInfo = new PomGeneralInfoPanel(project, editorDocument);
+    private final PomGeneralInfoPanel generalInfoPanel = new PomGeneralInfoPanel(project, editorDocument);
+    private final PomDependenciesPanel dependenciesPanel = new PomDependenciesPanel(project, editorDocument);
 
     public PomLayerPanel(final com.intellij.openapi.project.Project pProject,
                          final Document pPomDocument) {
@@ -39,7 +40,8 @@ public class PomLayerPanel extends AbstractPomLayerPanel implements PomFileEdito
     }
 
     private void initComponents() {
-        tabs.add("General", generalInfo);
+        tabs.add("General", generalInfoPanel);
+        tabs.add("Dependencies", dependenciesPanel);
     }
 
     private void layoutComponents() {
