@@ -36,7 +36,6 @@ import org.mevenide.goals.grabber.ProjectGoalsGrabber;
 import org.mevenide.idea.support.AbstractModuleComponent;
 import org.mevenide.idea.util.goals.grabber.CustomGoalsGrabber;
 import org.mevenide.idea.util.goals.grabber.FilteredGoalsGrabber;
-import org.mevenide.idea.util.ui.UIUtils;
 
 import java.io.File;
 import java.util.Set;
@@ -61,9 +60,26 @@ public class ModuleSettings extends AbstractModuleComponent implements JDOMExter
      * context if maven files change in the module directory.
      */
     private final FSListener fileSystemListener = new FSListener();
+
+    /**
+     * The project goals grabber.
+     */
     private IGoalsGrabber projectGoalsGrabber;
+
+    /**
+     * The global goals (maven-level) goals grabber.
+     */
     private IGoalsGrabber globalGoalsGrabber;
+
+    /**
+     * The favorite goals grabber.
+     */
     private IGoalsGrabber favoriteGoalsGrabber;
+
+    /**
+     * When errors are encountered in the pom, they are reported to this object.
+     */
+    private final IQueryErrorCallback queryErrorCallback = new UIQueryErrorCallback();
 
     /**
      * Creates a module settings manager for the specified module.
@@ -144,8 +160,7 @@ public class ModuleSettings extends AbstractModuleComponent implements JDOMExter
                 //create the query context using the module's directory
                 //
                 queryContext = new DefaultQueryContext(
-                        new File(moduleDir.getPath()),
-                        new UIQueryErrorCallback());
+                        new File(moduleDir.getPath()),queryErrorCallback);
 
                 //
                 //create the project-specific goals grabber
@@ -172,42 +187,48 @@ public class ModuleSettings extends AbstractModuleComponent implements JDOMExter
     }
 
     private void createGlobalGoalsGrabber() {
-        try {
-            final ModuleLocationFinder finder = new ModuleLocationFinder(module);
-            globalGoalsGrabber = new DefaultGoalsGrabber(finder);
-        }
-        catch (Exception e) {
-            globalGoalsGrabber = new CustomGoalsGrabber("Maven");
-            LOG.error(e.getMessage(), e);
+        synchronized (LOCK) {
+            try {
+                final ModuleLocationFinder finder = new ModuleLocationFinder(module);
+                globalGoalsGrabber = new DefaultGoalsGrabber(finder);
+            }
+            catch (Exception e) {
+                globalGoalsGrabber = new CustomGoalsGrabber("Maven");
+                LOG.error(e.getMessage(), e);
+            }
         }
     }
 
     private void createProjectGoalsGrabber() {
-        final File pomFile = getPomFile();
-        if(pomFile != null) {
-            final File mavenXmlFile = new File(pomFile.getParentFile(), "maven.xml");
-            if(mavenXmlFile.exists()) {
-                try {
-                    final ProjectGoalsGrabber grabber = new ProjectGoalsGrabber();
-                    grabber.setMavenXmlFile(mavenXmlFile.getAbsolutePath());
-                    grabber.refresh();
-                    projectGoalsGrabber = grabber;
+        synchronized (LOCK) {
+            final File pomFile = getPomFile();
+            if(pomFile != null) {
+                final File mavenXmlFile = new File(pomFile.getParentFile(), "maven.xml");
+                if(mavenXmlFile.exists()) {
+                    try {
+                        final ProjectGoalsGrabber grabber = new ProjectGoalsGrabber();
+                        grabber.setMavenXmlFile(mavenXmlFile.getAbsolutePath());
+                        grabber.refresh();
+                        projectGoalsGrabber = grabber;
+                    }
+                    catch (Exception e) {
+                        projectGoalsGrabber = new CustomGoalsGrabber("Project");
+                        LOG.error(e.getMessage(), e);
+                    }
                 }
-                catch (Exception e) {
-                    projectGoalsGrabber = new CustomGoalsGrabber("Project");
-                    LOG.error(e.getMessage(), e);
-                }
+                else
+                    projectGoalsGrabber = new CustomGoalsGrabber(IGoalsGrabber.ORIGIN_PROJECT);
             }
-            else
-                projectGoalsGrabber = new CustomGoalsGrabber(IGoalsGrabber.ORIGIN_PROJECT);
         }
     }
 
     private void createFavoriteGoalsGrabber() {
-        favoriteGoalsGrabber = new FilteredGoalsGrabber(
-                "Favorites",
-                globalGoalsGrabber,
-                getFavoriteGoals());
+        synchronized (LOCK) {
+            favoriteGoalsGrabber = new FilteredGoalsGrabber(
+                    "Favorites",
+                    globalGoalsGrabber,
+                    getFavoriteGoals());
+        }
     }
 
     /**
@@ -257,15 +278,21 @@ public class ModuleSettings extends AbstractModuleComponent implements JDOMExter
     }
 
     public IGoalsGrabber getFavoriteGoalsGrabber() {
-        return favoriteGoalsGrabber;
+        synchronized (LOCK) {
+            return favoriteGoalsGrabber;
+        }
     }
 
     public IGoalsGrabber getGlobalGoalsGrabber() {
-        return globalGoalsGrabber;
+        synchronized (LOCK) {
+            return globalGoalsGrabber;
+        }
     }
 
     public IGoalsGrabber getProjectGoalsGrabber() {
-        return projectGoalsGrabber;
+        synchronized (LOCK) {
+            return projectGoalsGrabber;
+        }
     }
 
     public void readExternal(final Element pElement) throws InvalidDataException {
@@ -313,10 +340,11 @@ public class ModuleSettings extends AbstractModuleComponent implements JDOMExter
      */
     private class UIQueryErrorCallback implements IQueryErrorCallback {
         public void handleError(int errorNumber, Exception exception) {
-            UIUtils.showError(module, exception.getMessage(), exception);
+            //TODO: cache these errors and display on the goals tool window
         }
 
         public void discardError(int errorNumber) {
+            //TODO: cache these errors and display on the goals tool window
         }
     }
 
