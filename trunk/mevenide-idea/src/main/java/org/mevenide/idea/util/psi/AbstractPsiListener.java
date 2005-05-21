@@ -1,9 +1,7 @@
 package org.mevenide.idea.util.psi;
 
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiTreeChangeAdapter;
-import com.intellij.psi.PsiTreeChangeEvent;
+import com.intellij.psi.*;
+import com.intellij.openapi.project.Project;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -20,7 +18,12 @@ public abstract class AbstractPsiListener extends PsiTreeChangeAdapter {
     }
 
     protected boolean isEventRelevant(final PsiTreeChangeEvent pEvent) {
-        if(!pEvent.getManager().getProject().equals(psiFile.getProject()))
+        final PsiManager mgr = pEvent.getManager();
+        if(mgr == null)
+            return false;
+
+        final Project project = mgr.getProject();
+        if(!project.equals(psiFile.getProject()))
             return false;
 
         return pEvent.getFile().equals(psiFile);
