@@ -1,24 +1,14 @@
 package org.mevenide.idea.util.ui.text;
 
-import com.intellij.openapi.project.Project;
 import com.intellij.openapi.editor.Document;
-import com.intellij.psi.xml.XmlFile;
-import com.intellij.psi.PsiDocumentManager;
-import com.intellij.psi.PsiFile;
+import com.intellij.openapi.project.Project;
 
 import javax.swing.text.JTextComponent;
-
-import org.mevenide.idea.Res;
 
 /**
  * @author Arik
  */
 public class XmlPsiDocumentBinder {
-    /**
-     * Resources.
-     */
-    private static final Res RES = Res.getInstance(XmlPsiDocumentBinder.class);
-
     /**
      * The project this binder will find documents for.
      */
@@ -80,16 +70,4 @@ public class XmlPsiDocumentBinder {
         pComponent.setDocument(model);
     }
 
-    static XmlFile findXmlFile(final Project pProject, final Document pDocument) {
-        final PsiDocumentManager psiDocMgr = PsiDocumentManager.getInstance(pProject);
-
-        PsiFile psiFile = psiDocMgr.getCachedPsiFile(pDocument);
-        if(psiFile == null)
-            psiFile = psiDocMgr.getPsiFile(pDocument);
-
-        if(psiFile == null || psiFile instanceof XmlFile)
-            return (XmlFile) psiFile;
-
-        throw new IllegalArgumentException(RES.get("not.xml.document", psiFile.getVirtualFile().getPath()));
-    }
 }

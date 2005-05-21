@@ -1,19 +1,19 @@
 package org.mevenide.idea.util.ui.text;
 
-import com.intellij.openapi.project.Project;
 import com.intellij.openapi.editor.Document;
-import com.intellij.psi.xml.XmlFile;
-import com.intellij.psi.xml.XmlTag;
+import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.PsiTreeChangeAdapter;
 import com.intellij.psi.PsiTreeChangeEvent;
-
-import javax.swing.text.PlainDocument;
-import javax.swing.text.AttributeSet;
-import javax.swing.text.BadLocationException;
-
+import com.intellij.psi.xml.XmlFile;
+import com.intellij.psi.xml.XmlTag;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.mevenide.idea.util.psi.PsiUtils;
+
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.PlainDocument;
 
 /**
  * @author Arik
@@ -48,7 +48,7 @@ public class XmlPsiSwingDocument extends PlainDocument {
         //initialize instance fields
         //
         project = pProject;
-        xmlFile = XmlPsiDocumentBinder.findXmlFile(project, pIdeaDocument);
+        xmlFile = PsiUtils.findXmlFile(project, pIdeaDocument);
 
         //
         //create the command which will be used to update the PSI when the document changes
