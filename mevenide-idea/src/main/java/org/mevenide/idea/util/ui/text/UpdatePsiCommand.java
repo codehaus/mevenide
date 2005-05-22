@@ -1,15 +1,13 @@
 package org.mevenide.idea.util.ui.text;
 
-import com.intellij.openapi.command.CommandProcessor;
-import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
-import com.intellij.psi.xml.XmlTag;
 import com.intellij.psi.xml.XmlDocument;
 import com.intellij.psi.xml.XmlFile;
+import com.intellij.psi.xml.XmlTag;
 import com.intellij.util.IncorrectOperationException;
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.mevenide.idea.util.IDEUtils;
 
 /**
  * @author Arik
@@ -23,7 +21,6 @@ class UpdatePsiCommand implements Runnable {
     private final XmlFile xmlFile;
     private final String[] childrenPath;
 
-    private final Runnable writeAction;
     private String text = null;
     private boolean textWasSet = false;
 
@@ -36,13 +33,6 @@ class UpdatePsiCommand implements Runnable {
         project = pProject;
         xmlFile = pXmlFile;
         childrenPath = pElementNames;
-
-        writeAction = new Runnable() {
-            public void run() {
-                CommandProcessor.getInstance().executeCommand(
-                        project, UpdatePsiCommand.this, "Apply", "POM");
-            }
-        };
     }
 
     public XmlTag findPsiElement() {
@@ -112,7 +102,7 @@ class UpdatePsiCommand implements Runnable {
             text = pText;
             textWasSet = true;
             try {
-                ApplicationManager.getApplication().runWriteAction(writeAction);
+                IDEUtils.runCommand(project, this);
             }
             finally {
                 textWasSet = false;
