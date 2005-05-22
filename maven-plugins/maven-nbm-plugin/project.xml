@@ -5,7 +5,7 @@
     <id>maven-nbm-plugin</id>
     <artifactId>maven-nbm-plugin</artifactId>
     <name>Maven NBM Plugin</name>
-    <currentVersion>1.3</currentVersion>
+    <currentVersion>1.4-SNAPSHOT</currentVersion>
     <package>org.mevenide.tags</package>
     <description>This plugin creates a netbeans module artifact for the project, 
 also generates nbm file for distribution of the module.

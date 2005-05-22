@@ -395,10 +395,20 @@ ${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.x
              module="${maven.nbm.module.location}/${maven.nbm.final.name}.jar"
              needsrestart="${maven.nbm.requiresrestart}"
              moduleauthor="${pom.organization.name}">
-      <j:if test="${! empty(pom.url)}">
-        <ant:setProperty name="homepage" value="${pom.url}" />
-        <ant:setProperty name="distribution" value="${maven.nbm.distributionURL}" />
+      <j:set var="urltemp" value="${pom.url}"/>
+      <j:if test="${empty(urltemp)}">
+         <j:set var="urltemp" value="http://www.netbeans.org"/>
+         <ant:message>
+         
+ Warning: You don't define NBM's homepage and distribution URL, which is OK for local install
+ but is required when preparing NBM for deployment to AutoUpdate server.
+ You can define homepage by setting the url element in POM
+            and distribution URL by setting maven.nbm.distributionURL property
+            
+         </ant:message>
       </j:if>
+      <ant:setProperty name="homepage" value="${pom.url}" />
+      <ant:setProperty name="distribution" value="${maven.nbm.distributionURL}" />
       <j:set var="licensename" value="${maven.nbm.license.name}" />
       <j:if test="${empty(licensename)}">
           <j:set var="licensename" value="License for ${pom.name}" />
@@ -427,6 +437,16 @@ ${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.x
     <artifact:install
         artifact="${maven.nbm.build.dir}/${maven.final.name}.jar"
         type="jar"
+        project="${pom}"/>   
+  </goal>
+  
+  <goal name       ="nbm:deploy"
+        prereqs    ="nbm:nbm"
+        description="Deploy the NBM into the repository">
+    
+    <artifact:deploy
+        artifact="${maven.nbm.build.dir}/${maven.final.name}.nbm"
+        type="nbm"
         project="${pom}"/>   
     
   </goal>
