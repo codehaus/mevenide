@@ -318,7 +318,7 @@ public class CarefulProjectMarshaller implements IProjectMarshaller {
                 IContentProvider dep = (IContentProvider)dependencies.get(i);
 
                 List list = dependenciesElem.getContent(
-                        new DependencyElementFilter(dep.getValue("id"), dep.getValue("artifactId"), dep.getValue("groupId")));
+                        new DependencyElementFilter(dep.getValue("id"), dep.getValue("artifactId"), dep.getValue("groupId"), dep.getValue("type")));
                 if (list != null && !list.isEmpty()) {
                     if (list.size() > 1) {
                         log.info("filter returned multiple instances, the primary key is not unique - key=" + dep.getValue("id"));
@@ -713,14 +713,17 @@ public class CarefulProjectMarshaller implements IProjectMarshaller {
         private String id;
         private String artifactId;
         private String groupId;
+        private String type;
         
         public DependencyElementFilter(String id, String artifactId, String groupId) {
+            this(id, artifactId, groupId, null);
+        }
+        
+        public DependencyElementFilter(String id, String artifactId, String groupId, String type) {
             this.id = id;
             this.artifactId = artifactId;
             this.groupId = groupId;
-//            if (id == null) {
-//                this.id = artifactId + ":" + groupId;
-//            }
+            this.type = type == null ? "jar" : type;
         }
         
         /**
@@ -743,14 +746,16 @@ public class CarefulProjectMarshaller implements IProjectMarshaller {
                     String elId = elem.getChildText("id");
                     String elGroupId = elem.getChildText("groupId");
                     String elArtifactId = elem.getChildText("artifactId");
-                    
-                    //HACK not sure if these conditions produce unique identification
+                    String elType = elem.getChildText("type");
+                    if (elType == null) {
+                        elType = "jar";
+                    }
                     if (elId != null && elId.equals(id)) {
-                        return true;
+                        return elType != null && elType.equals(type);
                     }
                     if (elGroupId != null && elArtifactId != null &&
                         elGroupId.equals(groupId) && elArtifactId.equals(artifactId)) {
-                        return true;
+                        return elType != null && elType.equals(type);
                     }
                 }
             }
