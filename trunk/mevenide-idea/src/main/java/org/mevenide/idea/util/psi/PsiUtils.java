@@ -1,7 +1,5 @@
 package org.mevenide.idea.util.psi;
 
-import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.command.CommandProcessor;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiDocumentManager;
@@ -13,6 +11,7 @@ import com.intellij.util.IncorrectOperationException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.mevenide.idea.Res;
+import org.mevenide.idea.util.IDEUtils;
 
 /**
  * @author Arik
@@ -32,21 +31,22 @@ public abstract class PsiUtils {
         final PsiDocumentManager psiDocMgr = PsiDocumentManager.getInstance(pProject);
 
         PsiFile psiFile = psiDocMgr.getCachedPsiFile(pDocument);
-        if(psiFile == null)
+        if (psiFile == null)
             psiFile = psiDocMgr.getPsiFile(pDocument);
 
-        if(psiFile == null || psiFile instanceof XmlFile)
+        if (psiFile == null || psiFile instanceof XmlFile)
             return (XmlFile) psiFile;
 
-        throw new IllegalArgumentException(RES.get("not.xml.document", psiFile.getVirtualFile().getPath()));
+        throw new IllegalArgumentException(RES.get("not.xml.document",
+                                                   psiFile.getVirtualFile().getPath()));
     }
 
     public static String getTagValue(final XmlTag pTag) {
-        if(pTag == null)
+        if (pTag == null)
             return null;
 
         final XmlTagValue value = pTag.getValue();
-        if(value == null)
+        if (value == null)
             return null;
 
         return value.getTrimmedText();
@@ -56,18 +56,13 @@ public abstract class PsiUtils {
                                    final XmlTag pParentTag,
                                    final String pTagName,
                                    final String pValue) {
-        final Runnable command;
-        final XmlTag child = pParentTag.findFirstSubTag(pTagName);
-        if(child != null) {
-            command = new Runnable() {
-                public void run() {
+        IDEUtils.runCommand(pProject, new Runnable() {
+            public void run() {
+                final XmlTag child = pParentTag.findFirstSubTag(pTagName);
+                if (child != null) {
                     child.getValue().setText(pValue);
                 }
-            };
-        }
-        else {
-            command = new Runnable() {
-                public void run() {
+                else {
                     final XmlTag newChild = pParentTag.createChildTag(
                             pTagName,
                             pParentTag.getNamespace(),
@@ -79,14 +74,8 @@ public abstract class PsiUtils {
                     catch (IncorrectOperationException e) {
                         LOG.error(e.getMessage(), e);
                     }
-                }
-            };
-        }
 
-        ApplicationManager.getApplication().runWriteAction(new Runnable() {
-            public void run() {
-                CommandProcessor.getInstance().executeCommand(
-                        pProject, command, "Update Dependency", "POM");
+                }
             }
         });
     }
