@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<document>
+    <properties>
+    	<author email="ca206216@tiscali.cz">Milos Kleint</author>
+        <title>Overview</title>
+    </properties>
+    <body>
+        <section name="Project Overview">
+        <div id="documentContent">
+        <p> This project is a simple XML grammar code completion Netbeans module which gives the user access to 
+        basic maven/jelly-taglib elements and attributes.
+        It currently works with Netbeans 3.6 and 4.0. (If anyone wants a release for 3.5, send me an email)
+        </p>
+	</div>
+   </section>
+   <section name="Versions">
+      <div id="documentContent">
+      	<p>
+   	  Currently the 0.2 version is available for download which works with Netbeans 3.6. 
+      </p>
+      <p>
+      The same (or later) version is bundled with the project support module for 4.0. 
+      </p>
+   	  </div>
+    </section>
+
+    <section name="Download/Installing">
+      <div id="documentContent">
+      <p>
+            To install the product, get the <a href="http://mevenide.codehaus.org/download/mevenide-netbeans-grammar-0-2.tar.gz" class="documentLink">tar.gz</a> or 
+            the <a href="http://mevenide.codehaus.org/download/mevenide-netbeans-grammar-0-2.zip" class="documentLink">zip archive</a> which contain nbm files.
+            Extract them to a temporary location and install the nbm files using your IDE's "Tools/Update Center" wizard.
+   	  </p>
+      <p>
+      If you're using 4.0 builds, please <a href="../download.html">download</a> the whole project support.
+      </p>
+   	  </div>
+    </section>
+    
+    <section name="How It Works">
+        <div id="documentContent">
+           <p>
+           The module provides code completion in various places of the edited file. The default keyboard shortcut to 
+           invoke the code completion is <code>Ctrl-Space</code>. Then you can navigate in the provided list or
+           type more characters which results in updated, narrowed completion offering.
+           </p>
+           <p>
+           Firstly you can get a list of available namespaces. They are sorted alphabetically and include default jelly taglibraries,
+           maven specific jelly taglibraries and also dynamic taglibraries originating from the maven plugins.
+				<center>
+					<img border="1px" src="images/cc_namespace.png"/>
+					<br/><br/>
+					<font size="-1"><b>Screenshot 1</b>Completing namespaces.</font>
+					<br/><br/>
+				</center>
+           </p>
+           <p> Later when writing the content, you will be offered standard tags, such as <code> goal</code> or <code> pregoal </code>, but also tags from the included
+            taglibraries. These are sorted in the following manner. Namespaces only first, standard tags, and then tags from included taglibraries sorted by taglib name and tag name.
+				<center>
+					<img border="1px" src="images/cc_tag.png"/>
+					<br/><br/>
+					<font size="-1"><b>Screenshot 2</b>Completing tags.</font>
+					<br/><br/>
+				</center>
+				<center>
+					<img border="1px" src="images/cc_dynamic_tag.png"/>
+					<br/><br/>
+					<font size="-1"><b>Screenshot 3</b>Completing tags from a given taglibrary.</font>
+					<br/><br/>
+				</center>
+           </p>
+           <p> 
+                After choosing a tag, you can easily get a list of available, known attributes defined for this element. These are sorted alphabetically. Again only those that match the already typed characters are displayed.
+				<center>
+					<img border="1px" src="images/cc_attribute.png"/>
+					<br/><br/>
+					<font size="-1"><b>Screenshot 4</b>Completing attributes.</font>
+					<br/><br/>
+				</center>
+				<center>
+					<img border="1px" src="images/cc_dynamic_attribute.png"/>
+					<br/><br/>
+					<font size="-1"><b>Screenshot 5</b>Completing dynamic attributes.</font>
+					<br/><br/>
+				</center>
+           </p>
+           <p> In attributes values, you can get various completions. 
+           <ul> <li><p>After typing "maven." in any attribute value, you get a list of 
+           plugins' property keys that modify the plugins' behaviour. </p> </li>
+            <li><p>For goal related attributes, you get a list of applicable goals.
+            </p> </li>           
+           </ul>
+				<center>
+					<img border="1px" src="images/cc_plugin_props.png"/>
+					<br/><br/>
+					<font size="-1"><b>Screenshot 6</b>Completing plugin property keys.</font>
+					<br/><br/>
+				</center>
+           </p>
+          </div>
+    </section>
+  </body>
+
+</document>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE filesystem PUBLIC "-//NetBeans//DTD Filesystem 1.0//EN" "http://www.netbeans.org/dtds/filesystem-1_0.dtd">
+<filesystem>
+  <folder name="Menu">
+  </folder>
+  <folder name="Toolbar">
+  </folder>
+  <folder name="Actions">
+  </folder>
+    
+  <folder name="Services">
+<!--    <file name="org-mevenide-netbeans-project-MavenSettings.settings" 
+          url="MavenSettings.xml">
+        <attr name="SystemFileSystem.localizingBundle" stringvalue="org.mevenide.netbeans.project.Bundle"/>
+        <attr name="SystemFileSystem.icon" urlvalue="nbresloc:/org/mevenide/netbeans/project/resources/MavenIcon.gif"/>
+    </file> -->
+  </folder>
+  <folder name="UI">
+    <folder name="Services">
+<!--      <folder name="Building">
+        <file name="org-mevenide-netbeans-project-MavenSettings.shadow">
+          <attr name="originalFile" stringvalue="Services/org-mevenide-netbeans-project-MavenSettings.settings"/>
+        </file> 
+      </folder> --> <!-- Building -->
+    </folder> <!-- Services -->
+  </folder>   
+  
+</filesystem>
