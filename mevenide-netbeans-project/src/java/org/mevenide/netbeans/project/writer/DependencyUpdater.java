@@ -131,7 +131,6 @@ public final class DependencyUpdater {
                     SAXBuilder builder = new SAXBuilder();
                     Document originalDoc = builder.build(reader);
                     reader.close();
-                    reader = null;
                     lock = fo.lock();
                     CarefulProjectMarshaller marshall = new CarefulProjectMarshaller(NbProjectWriter.figureOutFormat(roots[i], reader));
                     writer = new OutputStreamWriter(fo.getOutputStream(lock));
