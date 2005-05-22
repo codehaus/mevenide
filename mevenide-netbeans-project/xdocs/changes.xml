@@ -6,6 +6,19 @@
   </properties>
 
   <body>
+    <release version="0.7" date="22/05/2005" description="Works with 4.0 and 4.1.">
+      <action dev="mkleint" type="add">
+       Added webapp deployment, using Cargo (http://cargo.codehaus.org).
+       Generally attempted to improve webapp/j2ee support.
+       </action>
+      <action dev="mkleint" type="add">
+      Project template for extending Mevenide.
+      </action>
+      <action dev="mkleint" type="fix">
+      Multiple bugs fixed.
+      </action>
+      
+    </release>
     <release version="0.6" date="20/03/2005" description="Works with 4.0 and 4.1 beta.">
       <action dev="mkleint" type="add">
       Add remote and local repository browser. Allow to download artifacts from
