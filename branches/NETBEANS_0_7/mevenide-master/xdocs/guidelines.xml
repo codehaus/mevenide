@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<document>
+
+  <properties>
+    <author email="rhill2@free.fr">Gilles Dodinet</author>
+    <title>Coding Rules</title>
+  </properties>
+
+  <body>
+  	<section name="Rationale">
+  		<p>
+  			This document describes a list of coding conventions that are required for code submissions 
+  			to the project. By default, the coding conventions for most Open Source Projects should follow 
+  			the existing coding conventions in the code that you are working on. For example, if the bracket 
+  			is on the same line as the if statement, then you should write all your code to have that convention.
+  		</p>
+  		<p>
+  			<br/>
+			Below is a list of coding conventions that are specific to Mevenide.
+  		</p>
+  		<p>  		
+			<b>
+				If you commit code that does not follow these conventions, you are responsible for also fixing your own code.
+			</b>
+  		</p>
+  	</section>
+  	<section name="Coding Rules">
+	  <p>
+		<!-- To Be Done -->
+		<ol>
+			<li>Remove unused Imports</li>
+			<li>Use fully qualified Imports</li>
+			<li>Brackets on the same line</li>
+			<li>Always use brackets</li>
+			<li>Use explicit naming</li>
+			<li>Methods should kept very short</li>
+			<li>Remove unneeded javadoc</li>
+			<li>Always provide class javadoc</li>
+			<li>Use 4 spaces for tabs</li>
+		</ol>
+      </p>
+      <!-- To do : provide convenient preference for Eclipse -->
+    </section>
+  </body>
+</document>
