@@ -33,6 +33,7 @@ import org.mevenide.context.IProjectContext;
 public class ProjectWalker2Test extends TestCase {
 	private Element project ; 
 	private ProjectWalker2 walker ; 
+        private TestContext context;
 	
     protected void setUp() throws Exception {
     // is this necesaary, maybe just return null from getRootProjectElement()
@@ -41,6 +42,9 @@ public class ProjectWalker2Test extends TestCase {
         Element gr = factory.element("groupId");
         gr.setText("MYgroupID");
         project.addContent(gr);
+        Element art = factory.element("artifactId");
+        art.setText("MYartID");
+        project.addContent(art);
         Element build = factory.element("build");
         Element test = factory.element("unitTest");
         build.addContent(test);
@@ -53,7 +57,12 @@ public class ProjectWalker2Test extends TestCase {
         connection.setText("myCvsConnection");
         repository.addContent(connection);
         project.addContent(repository);
-        TestContext context = new TestContext(project);
+        context = new TestContext(project);
+        Project proj = new Project();
+        proj.setArtifactId("MYartID");
+        proj.setGroupId("MYgroupID");
+        context.setFinalProject(proj);
+        
         walker = new ProjectWalker2(context);
     }
 
@@ -63,8 +72,29 @@ public class ProjectWalker2Test extends TestCase {
 
     public void testResolve() throws Exception {
         assertEquals("MYgroupID", walker.getValue("pom.groupId"));
+        assertEquals("MYartID", walker.getValue("pom.artifactId"));
+        assertEquals("MYgroupID:MYartID", walker.getValue("pom.id"));
     	assertEquals("mySourceDir", walker.getValue("pom.build.sourceDirectory"));
         assertEquals("myCvsConnection", walker.getValue("pom.repository.connection"));
+    }
+    
+    public void testResolveId() throws Exception {
+        Project proj = new Project();
+        proj.setId("MYID");
+        proj.setGroupId("MYgroupID");
+        context.setFinalProject(proj);
+        assertEquals("MYgroupID", walker.getValue("pom.groupId"));
+        assertEquals("MYID", walker.getValue("pom.artifactId"));
+        assertEquals("MYgroupID:MYID", walker.getValue("pom.id"));
+
+        proj = new Project();
+        proj.setId("MYID");
+        context.setFinalProject(proj);
+        
+        assertEquals("MYID", walker.getValue("pom.groupId"));
+        assertEquals("MYID", walker.getValue("pom.artifactId"));
+        assertEquals("MYID:MYID", walker.getValue("pom.id"));
+        
     }
 
     
@@ -97,8 +127,14 @@ public class ProjectWalker2Test extends TestCase {
             return null;
         }
         
+        private Project project;
+        
+        public void setFinalProject(Project proj) {
+            project = proj;
+        }
+        
         public Project getFinalProject() {
-            return null;
+            return project;
         }
         
         public java.io.File[] getProjectFiles() {
