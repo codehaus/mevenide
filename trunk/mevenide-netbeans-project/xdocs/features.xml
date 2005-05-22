@@ -83,6 +83,7 @@
 		  <li><p>Able to run the project or single classes.</p></li>
            <li><p>Able to run test suite or single test from IDE.</p></li>
            <li><p>Can debug the application, a single class or single test.</p></li>
+           <li><p>For web applications, it's possible to deploy to a web server using Cargo.</p></li>
 		</ul>
 	  </p>
 	  <p>
