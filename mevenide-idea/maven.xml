@@ -2,11 +2,16 @@
 
 <project xmlns:maven="jelly:maven" xmlns:ant="jelly:ant" xmlns:j="jelly:core" xmlns:u="jelly:util">
 
-<!--
- TODO: Validate before executing goals that 'idea.home' is defined, and that the 'idea.settings.dir' is valid
--->
-
     <goal name="idea:init">
+
+        <!-- Make sure the 'idea.sandbox.dir' and 'idea.home' proeprties are defined. -->
+        <ant:fail
+                message="Please define the 'idea.sandbox.dir' property first."
+                unless="idea.sandbox.dir"/>
+        <ant:fail
+                message="Please define the 'idea.sandbox.dir' property first."
+                unless="idea.home"/>
+
         <ant:property environment="env"/>
 
         <ant:path id="idea.classpath">
@@ -23,7 +28,7 @@
         <ant:delete dir="${idea.sandbox.dir}"/>
     </goal>
 
-    <goal name="idea:copy-license" prereqs="idea:init">
+    <goal name="idea:copy-license" prereqs="idea:init" description="Copies your existing IDEA license to your sandbox directory.">
         <ant:mkdir dir="${idea.sandbox.config.dir}"/>
         <ant:copy file="${idea.license.file}"
                   todir="${idea.sandbox.config.dir}"/>
