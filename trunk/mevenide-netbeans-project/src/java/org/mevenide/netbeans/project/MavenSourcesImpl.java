@@ -273,7 +273,6 @@ public class MavenSourcesImpl implements Sources {
                 grp = webDocSrcGroup;
             }
             if (grp != null) {
-                System.out.println("exists");
                 return new SourceGroup[] {grp};
             } else {
                 return new SourceGroup[0];
