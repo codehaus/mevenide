@@ -19,6 +19,7 @@ package org.mevenide.idea.editor.pom.ui.layer;
 import com.intellij.openapi.editor.Document;
 import org.mevenide.idea.editor.pom.PomFileEditorState;
 import org.mevenide.idea.editor.pom.PomFileEditorStateHandler;
+import org.mevenide.idea.editor.pom.ui.layer.dependencies.PomDependenciesPanel;
 
 import javax.swing.JTabbedPane;
 import java.awt.BorderLayout;
