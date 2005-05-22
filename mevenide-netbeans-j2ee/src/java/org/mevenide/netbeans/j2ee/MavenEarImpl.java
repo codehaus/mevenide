@@ -91,6 +91,6 @@ public class MavenEarImpl implements EarImplementation {
     }
     
     public boolean isValid() {
-        return getMetaInf() != null;
+        return getDeploymentDescriptor() != null;
     }
 }

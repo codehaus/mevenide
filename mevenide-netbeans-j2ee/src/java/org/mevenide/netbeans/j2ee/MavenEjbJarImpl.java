@@ -93,7 +93,7 @@ public class MavenEjbJarImpl implements EjbJarImplementation {
     }    
         
     public boolean isValid() {
-        return getMetaInf() != null;
+        return getDeploymentDescriptor() != null;
     }
     
 }
