@@ -1,5 +1,0 @@
-<project xmlns:j="jelly:core">
-    <goal name="pde:it">
-        <attainGoal name="multiproject:install" />
-    </goal>
-</project>
