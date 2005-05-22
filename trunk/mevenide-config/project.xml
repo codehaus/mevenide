@@ -4,7 +4,7 @@
     <pomVersion>3</pomVersion>
     <artifactId>mevenide-config</artifactId>
     <name>Mevenide Config</name>
-    <currentVersion>0.8-SNAPSHOT</currentVersion>
+    <currentVersion>0.8</currentVersion>
     <package>org.mevenide.config</package>
 <!--    <package>org.mevenide</package> -->
     <description>Mevenide Config allows to manipulate Maven config, e.g. system environment variables, project config (project.properties), user-defined config (build.propertie, ...).</description>
