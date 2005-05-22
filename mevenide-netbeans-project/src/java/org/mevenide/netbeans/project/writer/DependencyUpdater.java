@@ -23,7 +23,9 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -80,7 +82,7 @@ public final class DependencyUpdater {
         ExactDependencyReplacer replacer = new ExactDependencyReplacer(artId, grId, version, newArt, newGrp, newVersion);
         IQueryContext[] matching = DependencyMatcher.matchingContexts(contexts, replacer);
         if (matching.length > 0) {
-            List projs = new ArrayList();
+            Set projs = new HashSet();
             for (int i = 0; i < matching.length; i++) {
                 projs.add(contextToProjectMap.get(matching[i]));
             }
@@ -109,7 +111,7 @@ public final class DependencyUpdater {
 
     }
     
-    private static void writePOMs(IDependencyReplacer replacer, List projects) throws Exception {
+    private static void writePOMs(IDependencyReplacer replacer, Collection projects) throws Exception {
         Iterator it = projects.iterator();
         while (it.hasNext()) {
             MavenProject project = (MavenProject)it.next();
@@ -125,7 +127,6 @@ public final class DependencyUpdater {
                     IContentProvider provider = new ElementContentProvider(roots[i]);
                     provider = DependencyMatcher.replace(replacer, provider);
                     FileObject fo = FileUtil.toFileObject(files[i]);
-                    // read the current stream first..
                     // read the current stream first..
                     reader = new CountNewLinesReader(fo.getInputStream());
                     SAXBuilder builder = new SAXBuilder();
