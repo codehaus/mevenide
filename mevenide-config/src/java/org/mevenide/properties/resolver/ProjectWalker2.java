@@ -46,13 +46,14 @@ public class ProjectWalker2 implements IPropertyFinder {
             return null;
         }
         Element proj = context.getPOMContext().getRootProjectElement();
-        return doGetValue(key, proj);
+        // do resolve ID/artifactId/groupId
+        return doGetValue(key, proj, true);
     }
     
     public void reload() {
     }
 
-    private String doGetValue(String key, Element proj) {
+    private String doGetValue(String key, Element proj, boolean resolveId) {
         if (proj == null) {
             return null;
         }
@@ -62,6 +63,17 @@ public class ProjectWalker2 implements IPropertyFinder {
         Element currentElement = proj;
         while (tok.hasMoreTokens()) {
             String next = tok.nextToken();
+            if (resolveId && "project".equals(currentElement.getName())) {
+                if ("artifactId".equals(next)) {
+                    return context.getPOMContext().getFinalProject().getArtifactId();
+                }
+                if ("groupId".equals(next)) {
+                    return context.getPOMContext().getFinalProject().getGroupId();
+                }
+                if ("id".equals(next)) {
+                    return context.getPOMContext().getFinalProject().getId();
+                }
+            }
             List nextEl = currentElement.getChildren(next);
             if (nextEl != null && nextEl.size() == 1) {
                 currentElement = (Element)nextEl.iterator().next();
@@ -85,7 +97,8 @@ public class ProjectWalker2 implements IPropertyFinder {
     public int getLocation(String key) {
         Element[] els = context.getPOMContext().getRootElementLayers();
         for (int i = 0; i < els.length; i++) {
-            String loc = doGetValue(key, els[i]);
+            // do NOT resolve ID/artifactId/groupId
+            String loc = doGetValue(key, els[i], false);
             if (loc != null) {
                 return i;
             }

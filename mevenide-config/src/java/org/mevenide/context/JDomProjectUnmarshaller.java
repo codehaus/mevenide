@@ -108,12 +108,9 @@ public class JDomProjectUnmarshaller implements IProjectUnmarshaller {
         String id = projectElement.getChildText("id");
         String groupId = projectElement.getChildText("groupId");
         String artifactId = projectElement.getChildText("artifactId");
-        if (id != null && groupId == null && artifactId == null) {
-            mavenProject.setId(id);
-        } else {
-            mavenProject.setGroupId(groupId);
-            mavenProject.setArtifactId(artifactId);
-        }
+        mavenProject.setId(id);
+        mavenProject.setGroupId(groupId);
+        mavenProject.setArtifactId(artifactId);
         mavenProject.setCurrentVersion(projectElement.getChildText("currentVersion"));
         mavenProject.setInceptionYear(projectElement.getChildText("inceptionYear"));
         mavenProject.setPackage(projectElement.getChildText("package"));
