@@ -6,6 +6,7 @@ import org.mevenide.idea.Res;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -16,7 +17,7 @@ import java.util.List;
 /**
  * @author Arik
  */
-public class CRUDPanel extends JPanel {
+public class CRUDPanel<T extends JComponent> extends JPanel {
     private static final Res RES = Res.getInstance(CRUDPanel.class);
 
     private final JButton addButton = new JButton(RES.get("add.button.title"));
@@ -31,21 +32,32 @@ public class CRUDPanel extends JPanel {
     private ActionListener editAction;
     private ActionListener removeAction;
 
-    private final JComponent component;
     private final ButtonStackBuilder buttonsBar = new ButtonStackBuilder();
 
-    public CRUDPanel(final JComponent pComponent) {
+    private final boolean wrapInScrollPane;
+    protected final T component;
+
+    public CRUDPanel(final T pComponent) {
         this(pComponent, true, true, true);
     }
 
-    public CRUDPanel(final JComponent pComponent,
+    public CRUDPanel(final T pComponent,
                      final boolean pShowAddButton,
                      final boolean pShowEditButton,
                      final boolean pShowRemoveButton) {
+        this(pComponent, pShowAddButton, pShowEditButton, pShowRemoveButton, false);
+    }
+
+    public CRUDPanel(final T pComponent,
+                     final boolean pShowAddButton,
+                     final boolean pShowEditButton,
+                     final boolean pShowRemoveButton,
+                     final boolean pWrapInScrollPane) {
         component = pComponent;
         showAddButton = pShowAddButton;
         showEditButton = pShowEditButton;
         showRemoveButton = pShowRemoveButton;
+        wrapInScrollPane = pWrapInScrollPane;
 
         initComponents();
         layoutComponents();
@@ -66,7 +78,10 @@ public class CRUDPanel extends JPanel {
         c.fill = GridBagConstraints.BOTH;
         c.weightx = 1;
         c.weighty = 1;
-        add(component, c);
+        if(wrapInScrollPane)
+            add(new JScrollPane(component), c);
+        else
+            add(component, c);
 
         c = new GridBagConstraints();
         c.fill = GridBagConstraints.BOTH;
@@ -87,7 +102,7 @@ public class CRUDPanel extends JPanel {
         return buttons.toArray(new JButton[buttons.size()]);
     }
 
-    public JComponent getComponent() {
+    public T getComponent() {
         return component;
     }
 

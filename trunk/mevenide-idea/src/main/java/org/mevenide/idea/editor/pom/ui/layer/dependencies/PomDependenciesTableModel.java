@@ -1,4 +1,4 @@
-package org.mevenide.idea.editor.pom.ui.layer;
+package org.mevenide.idea.editor.pom.ui.layer.dependencies;
 
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.project.Project;

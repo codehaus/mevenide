@@ -30,7 +30,7 @@ public abstract class AbstractXmlPsiTableModel extends AbstractTableModel {
 
     /**
      * An enum for specifying what is the source of current event. When the modifies the UI (e.g.
-     * not from the text editor), the {@link org.mevenide.idea.editor.pom.ui.layer.PomDependenciesTableModel#modificationSource}
+     * not from the text editor), the {@link org.mevenide.idea.editor.pom.ui.layer.dependencies.PomDependenciesTableModel#modificationSource}
      * field will be set to {@link #UI}. If the user modifies using the text editor, the field will
      * be set to {@link #EDITOR}.
      *
