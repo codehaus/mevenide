@@ -58,7 +58,7 @@ public class J2eeLookupProvider implements AdditionalMavenLookupProvider {
             isAdded = false;
             impl2 = new MavenEjbJarImpl(project);
             isAdded2 = false;
-//            checkJ2ee();
+            checkJ2ee();
         }
 
         public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
