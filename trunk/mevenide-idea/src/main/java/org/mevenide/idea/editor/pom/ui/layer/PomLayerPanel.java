@@ -25,6 +25,8 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 
 /**
+ * This panel displays a single POM layer.
+ * 
  * @author Arik
  */
 public class PomLayerPanel extends AbstractPomLayerPanel implements PomFileEditorStateHandler {
