@@ -13,13 +13,13 @@
             <groupId>netbeans</groupId>
             <artifactId>org-netbeans-modules-xml-core</artifactId>
             <!-- include nb specification version.. that's important for compiling -->
-			<version>1.8.3.999.4</version>
+            <version>1.8.3.999.4</version>
             <!-- for nb4.2 
              version>1.9.0.4</version-->
             <type>jar</type>
             <url>http://www.netbeans.org</url>
             <properties>
-				<netbeans.module.dep>impl=org.netbeans.modules.xml.core/2 = 3.999.4</netbeans.module.dep>
+                <netbeans.module.dep>impl=org.netbeans.modules.xml.core/2 = 3.999.4</netbeans.module.dep>
                 <!-- for nb 4.2
                  netbeans.module.dep>impl=org.netbeans.modules.xml.core/2 = 4</netbeans.module.dep-->
             </properties>
@@ -57,7 +57,7 @@
         <dependency>
             <groupId>mevenide</groupId>
             <artifactId>mevenide-config</artifactId>
-            <version>0.8-SNAPSHOT</version>
+            <version>0.8</version>
             <type>jar</type>
             <properties>
                 <netbeans.module.dep>spec</netbeans.module.dep>
@@ -66,7 +66,7 @@
         <dependency>
             <groupId>mevenide</groupId>
             <artifactId>goals-grabber</artifactId>
-            <version>0.9-SNAPSHOT</version>
+            <version>0.9</version>
             <type>jar</type>
             <properties>
                 <netbeans.module.dep>spec</netbeans.module.dep>
