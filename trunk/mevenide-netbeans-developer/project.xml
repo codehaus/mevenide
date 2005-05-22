@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project>
-    <pomVersion>3</pomVersion>
+    <extend>${basedir}/../mevenide-parent/project.xml</extend>
     <artifactId>mevenide-netbeans-devel</artifactId>
-    <groupId>mevenide</groupId>
     <currentVersion>1.0</currentVersion>
+    <inceptionYear>2005</inceptionYear>
     <name>Mevenide Developer Support</name>
     <package>org.mevenide.netbeans.devel</package>
-    <inceptionYear>2004</inceptionYear>
+    <url>http://mevenide.codehaus.org/mevenide-netbeans-project</url>
     <shortDescription>Module for extending mevenide</shortDescription>
+    <description>Netbeans module with tools for developers wishing to extend Mevenide. Easy to use project template created.</description>
     <dependencies>
         <dependency>
             <groupId>netbeans</groupId>
