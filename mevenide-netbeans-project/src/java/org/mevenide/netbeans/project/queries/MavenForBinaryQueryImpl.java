@@ -165,7 +165,6 @@ public class MavenForBinaryQueryImpl implements SourceForBinaryQueryImplementati
                 logger.debug("checkurl fo=" + fo);
                 Project mavproj = project.getOriginalMavenProject();
                 File file = FileUtil.toFile(fo);
-                logger.debug("jar protocol file=" + file);
                 try {
                     IDependencyResolver depRes = DependencyResolverFactory.getFactory().
                             newInstance(file.getAbsolutePath());

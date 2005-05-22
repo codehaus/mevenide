@@ -40,7 +40,6 @@ public final class DefaultOutputProcessorFactory implements OutputProcessorFacto
         Iterator it = res.allInstances().iterator();
         Set results = new HashSet();
         while (it.hasNext()) {
-            System.out.println("factory defined..");
             OutputProcessorFactory fact = (OutputProcessorFactory)it.next();
             results.addAll(fact.createProcessorsSet(project));
         }

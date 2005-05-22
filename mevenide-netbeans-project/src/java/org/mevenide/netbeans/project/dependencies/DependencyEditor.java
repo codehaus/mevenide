@@ -464,7 +464,6 @@ public class DependencyEditor extends javax.swing.JPanel {
             }
             if (rows.size() == row) {
                 rows.add(rw);
-                System.out.println("firing table change");
                 fireTableChanged();
             }
             
