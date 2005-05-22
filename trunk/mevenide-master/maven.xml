@@ -45,6 +45,14 @@
       <attainGoal name="nbm:autoupdate"/>
   </goal>
 
+  <goal name="mevenide-idea:build" description="Build Mevenide IDEA plugin">
+      <maven:reactor
+               basedir="${basedir}/.."
+               includes="${mevenide.idea.project.name}/project.xml"
+               goals="dist"
+               postProcessing="false"
+               ignoreFailures="false"/>
+  </goal>
 
   <!-- ==================================== -->
   <!--            site generation           -->
@@ -175,31 +183,10 @@
   	<attainGoal name="multiproject:site"/>
   </goal>
 
-
-    <!-- ==================================== -->
-    <!--      IDEA section                    -->
-    <!-- ==================================== -->
-    <goal name="mevenide-idea:clean" description="clean all Mevenide IDEA modules">
-
-        <j:set var="maven.multiproject.includes"
-               value="mevenide-idea/project.xml,mevenide-idea-main/project.xml,mevenide-idea-model/project.xml"/>
-        <j:set var="goal" value="clean"/>
-        <attainGoal name="multiproject:goal"/>
-
-    </goal>
-
-    <goal name="mevenide-idea:build" description="Build all Mevenide IDEA modules">
-
-        <!-- create mevenide-idea distribution, which is the standard way of publishing the plugin -->
-        <j:set var="maven.multiproject.includes" value="mevenide-idea/project.xml"/>
-        <j:set var="goal" value="dist"/>
-        <attainGoal name="multiproject:goal"/>
-    </goal>
-
-    <goal name="mevenide-site:idea">
-        <j:set var="maven.multiproject.includes" value="mevenide-idea/project.xml"/>
-        <attainGoal name="multiproject:site"/>
-    </goal>
+  <goal name="mevenide-site:idea" prereqs="mevenide-site:quick-init">
+  	<j:set var="maven.multiproject.includes" value="${mevenide.idea.project.name}/project.xml"/>
+  	<attainGoal name="multiproject:site"/>
+  </goal>
 
 
   <!-- ==================================== -->
@@ -245,13 +232,6 @@ Below are listed relevant goals in the context of the Mevenide project.
         Builds IDEA plugin.
         This will build the IDEA Maven Integration plugin. There are no requirements to
         prepare - you needn't install any Maven plugins, or define environment variables.
-        You DO however must make sure you have checked out all required modules:
-            mevenide-idea
-            mevenide-idea-main
-            mevenide-idea-model
-            mevenide-idea-master
-            mevenide-master
-            mevenide-parent
 
         This goal will build the IDEA Maven integration plugin and place it in
         mevenide-idea/target/distributions (there will be both tar.gz and zip flavours
