@@ -36,6 +36,9 @@ import java.lang.reflect.Field;
  * @author Arik
  */
 public class PomGeneralInfoPanel extends AbstractPomLayerPanel implements PomFileEditorStateHandler {
+    /**
+     * Resources
+     */
     private static final Res RES = Res.getInstance(PomGeneralInfoPanel.class);
 
     private final JComboBox pomVersionField = new JComboBox(new String[]{"3"});
@@ -55,6 +58,10 @@ public class PomGeneralInfoPanel extends AbstractPomLayerPanel implements PomFil
     private final JTextField packageField = new JTextField();
     private final JTextField issueTrackingUrlField = new JTextField();
 
+    private final JTextField orgNameField = new JTextField();
+    private final JTextField orgUrlField = new JTextField();
+    private final TextFieldWithBrowseButton orgLogoUrlField = new TextFieldWithBrowseButton();
+
     public PomGeneralInfoPanel(final com.intellij.openapi.project.Project pProject,
                                final Document pPomDocument) {
         super(pProject, pPomDocument);
@@ -67,12 +74,19 @@ public class PomGeneralInfoPanel extends AbstractPomLayerPanel implements PomFil
     private void initComponents() {
         pomVersionField.setEnabled(false);
 
-        final FileChooserDescriptor chooserDescriptor =
+        final FileChooserDescriptor extendChooserDescriptor =
                 FileChooserDescriptorFactory.createSingleFileNoJarsDescriptor();
         extendField.addBrowseFolderListener(RES.get("choose.pom.parent"),
                                             RES.get("choose.pom.parent.desc"),
                                             project,
-                                            chooserDescriptor);
+                                            extendChooserDescriptor);
+
+        final FileChooserDescriptor orgLogoChooserDesc =
+                FileChooserDescriptorFactory.createSingleFileNoJarsDescriptor();
+        orgLogoUrlField.addBrowseFolderListener(RES.get("choose.org.logo"),
+                                            RES.get("choose.org.logo.desc"),
+                                            project,
+                                            orgLogoChooserDesc);
 
         inceptionYearField.setPreferredSize(new Dimension(60, 20));
         descField.setPreferredSize(new Dimension(300, 80));
@@ -135,6 +149,14 @@ public class PomGeneralInfoPanel extends AbstractPomLayerPanel implements PomFil
         //
         builder.appendSeparator(RES.get("project.mgmt.title"));
         builder.append(RES.get("project.issues.url"), issueTrackingUrlField, 5);
+
+        //
+        //organization
+        //
+        builder.appendSeparator(RES.get("project.org.title"));
+        builder.append(RES.get("project.org.name"), orgNameField);
+        builder.append(RES.get("project.org.url"), orgUrlField);
+        builder.append(RES.get("project.org.logo"), orgLogoUrlField);
     }
 
     private void bindComponents() {
@@ -153,6 +175,9 @@ public class PomGeneralInfoPanel extends AbstractPomLayerPanel implements PomFil
             binder.bind(descField, "description");
             binder.bind(packageField, "package");
             binder.bind(issueTrackingUrlField, "issueTrackingUrl");
+            binder.bind(orgNameField, "organization/name");
+            binder.bind(orgUrlField, "organization/url");
+            binder.bind(orgLogoUrlField.getTextField(), "organization/logo");
         }
     }
 
