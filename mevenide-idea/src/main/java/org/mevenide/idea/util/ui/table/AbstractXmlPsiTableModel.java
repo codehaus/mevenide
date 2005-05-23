@@ -30,7 +30,7 @@ public abstract class AbstractXmlPsiTableModel extends AbstractTableModel {
 
     /**
      * An enum for specifying what is the source of current event. When the modifies the UI (e.g.
-     * not from the text editor), the {@link org.mevenide.idea.editor.pom.ui.layer.DependenciesTableModel#modificationSource}
+     * not from the text editor), the {@code modificationSource}
      * field will be set to {@link #UI}. If the user modifies using the text editor, the field will
      * be set to {@link #EDITOR}.
      *
@@ -62,11 +62,6 @@ public abstract class AbstractXmlPsiTableModel extends AbstractTableModel {
     protected final Project project;
 
     /**
-     * The listener that synchronizes PSI changes with this model.
-     */
-    private final PsiSynchronizationListener psiListener;
-
-    /**
      * Creates an instance using the given project and document.
      *
      * @param pProject      the project.
@@ -75,13 +70,12 @@ public abstract class AbstractXmlPsiTableModel extends AbstractTableModel {
     public AbstractXmlPsiTableModel(final Project pProject, final Document pIdeaDocument) {
         project = pProject;
         xmlFile = PsiUtils.findXmlFile(project, pIdeaDocument);
-        psiListener = new PsiSynchronizationListener();
 
         //
         //add this as a PSI listener, so that we can update this instance when the
         //PSI changes
         //
-        PsiManager.getInstance(project).addPsiTreeChangeListener(psiListener);
+        PsiManager.getInstance(project).addPsiTreeChangeListener(new PsiSynchronizationListener());
     }
 
     /**
