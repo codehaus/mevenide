@@ -1,4 +1,4 @@
-package org.mevenide.idea.editor.pom.ui.layer;
+package org.mevenide.idea.editor.pom.ui.layer.model;
 
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.project.Project;
@@ -11,30 +11,30 @@ import org.mevenide.idea.util.ui.table.TagBasedXmlPsiTableModel;
 /**
  * @author Arik
  */
-public class MailingListsTableModel extends TagBasedXmlPsiTableModel {
+public class DependenciesTableModel extends TagBasedXmlPsiTableModel {
     /**
-     * Resources
+     * Resources.
      */
-    private static final Res RES = Res.getInstance(MailingListsTableModel.class);
+    private static final Res RES = Res.getInstance(DependenciesTableModel.class);
 
     /**
      * The column titles.
      */
     private static final String[] COLUMN_TITLES = new String[]{
-        "Name",
-        "Subscribe",
-        "Unsubscribe",
-        "Archive"
+        "Group ID",
+        "Artifact ID",
+        "Version",
+        "Type"
     };
 
     /**
      * The JavaBeans property names respective of each column index.
      */
     private static final String[] COLUMN_PROPERTY_NAMES = new String[]{
-        "name",
-        "subscribe",
-        "unsubscribe",
-        "archive"
+        "groupId",
+        "artifactId",
+        "version",
+        "type"
     };
 
     /**
@@ -48,9 +48,9 @@ public class MailingListsTableModel extends TagBasedXmlPsiTableModel {
      * @param pProject      the project.
      * @param pIdeaDocument the document.
      */
-    public MailingListsTableModel(final Project pProject,
-                                  final Document pIdeaDocument) {
-        super(pProject, pIdeaDocument, "mailingLists", "mailingList");
+    public DependenciesTableModel(final Project pProject,
+                                     final Document pIdeaDocument) {
+        super(pProject, pIdeaDocument, "dependencies", "dependency");
         refreshModel();
     }
 

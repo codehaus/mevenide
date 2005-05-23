@@ -20,14 +20,14 @@ import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.project.Project;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.mevenide.idea.Res;
 
-import javax.swing.*;
-import java.awt.event.FocusListener;
+import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
+import java.awt.Component;
 import java.awt.event.FocusEvent;
-import java.awt.event.HierarchyListener;
+import java.awt.event.FocusListener;
 import java.awt.event.HierarchyEvent;
-import java.awt.*;
+import java.awt.event.HierarchyListener;
 
 /**
  * A base class for all POM editing panels.
@@ -47,11 +47,6 @@ public abstract class AbstractPomLayerPanel extends JPanel {
      * Logging.
      */
     protected final Log LOG;
-
-    /**
-     * Resources.
-     */
-    protected final Res RES;
 
     /**
      * The IDEA project the POM file, that this POM panel edits, belongs to.
@@ -85,7 +80,6 @@ public abstract class AbstractPomLayerPanel extends JPanel {
                                     final Document pPomDocument) {
 
         LOG = LogFactory.getLog(this.getClass());
-        RES = Res.getInstance(this.getClass());
 
         project = pProject;
         editorDocument = pPomDocument;

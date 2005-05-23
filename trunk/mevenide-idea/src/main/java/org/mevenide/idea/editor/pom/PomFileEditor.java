@@ -21,7 +21,7 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiFile;
-import org.mevenide.idea.editor.pom.ui.layer.PomLayerPanel;
+import org.mevenide.idea.editor.pom.ui.layer.PomPanel;
 import org.mevenide.idea.support.AbstractFileEditor;
 
 import javax.swing.JComponent;
@@ -38,7 +38,7 @@ public class PomFileEditor extends AbstractFileEditor {
     /**
      * The user interface component displaying the POM editor.
      */
-    private PomLayerPanel ui;
+    private PomPanel ui;
 
     /**
      * Creates an instance for the given IDEA project and POM file.
@@ -49,13 +49,13 @@ public class PomFileEditor extends AbstractFileEditor {
     public PomFileEditor(final Project pProject,
                          final VirtualFile pPomFile) {
         super("editor.name", pProject, pPomFile);
-        ui = new PomLayerPanel(project, document);
+        ui = new PomPanel(project, document);
     }
 
     /**
-     * Returns the user interface component for the POM - a {@link PomLayerPanel} instance.
+     * Returns the user interface component for the POM - a {@link PomPanel} instance.
      *
-     * @return {@code PomLayerPanel}.
+     * @return {@code PomPanel}.
      */
     public JComponent getComponent() {
         return ui;

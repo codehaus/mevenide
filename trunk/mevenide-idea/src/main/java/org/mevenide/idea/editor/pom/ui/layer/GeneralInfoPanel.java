@@ -35,11 +35,11 @@ import java.lang.reflect.Field;
 /**
  * @author Arik
  */
-public class PomGeneralInfoPanel extends AbstractPomLayerPanel implements PomFileEditorStateHandler {
+public class GeneralInfoPanel extends AbstractPomLayerPanel implements PomFileEditorStateHandler {
     /**
      * Resources
      */
-    private static final Res RES = Res.getInstance(PomGeneralInfoPanel.class);
+    private static final Res RES = Res.getInstance(GeneralInfoPanel.class);
 
     private final JComboBox pomVersionField = new JComboBox(new String[]{"3"});
     private final TextFieldWithBrowseButton extendField = new TextFieldWithBrowseButton();
@@ -62,7 +62,7 @@ public class PomGeneralInfoPanel extends AbstractPomLayerPanel implements PomFil
     private final JTextField orgUrlField = new JTextField();
     private final TextFieldWithBrowseButton orgLogoUrlField = new TextFieldWithBrowseButton();
 
-    public PomGeneralInfoPanel(final com.intellij.openapi.project.Project pProject,
+    public GeneralInfoPanel(final com.intellij.openapi.project.Project pProject,
                                final Document pPomDocument) {
         super(pProject, pPomDocument);
 
