@@ -1,4 +1,4 @@
-package org.mevenide.idea.editor.pom.ui.layer.dependencies;
+package org.mevenide.idea.editor.pom.ui.layer;
 
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.project.Project;
@@ -11,11 +11,11 @@ import org.mevenide.idea.util.ui.table.TagBasedXmlPsiTableModel;
 /**
  * @author Arik
  */
-public class PomDependenciesTableModel extends TagBasedXmlPsiTableModel {
+public class DependenciesTableModel extends TagBasedXmlPsiTableModel {
     /**
      * Resources.
      */
-    private static final Res RES = Res.getInstance(PomDependenciesTableModel.class);
+    private static final Res RES = Res.getInstance(DependenciesTableModel.class);
 
     /**
      * The column titles.
@@ -48,15 +48,9 @@ public class PomDependenciesTableModel extends TagBasedXmlPsiTableModel {
      * @param pProject      the project.
      * @param pIdeaDocument the document.
      */
-    public PomDependenciesTableModel(final Project pProject, final Document pIdeaDocument) {
-        super(pProject,
-              pIdeaDocument,
-              "dependencies",
-              "dependency");
-
-        //
-        //start off with the current contents of the file reflected in this model
-        //
+    public DependenciesTableModel(final Project pProject,
+                                     final Document pIdeaDocument) {
+        super(pProject, pIdeaDocument, "dependencies", "dependency");
         refreshModel();
     }
 
@@ -84,7 +78,7 @@ public class PomDependenciesTableModel extends TagBasedXmlPsiTableModel {
                                      final int pColumn) {
         final String valueTagName = COLUMN_PROPERTY_NAMES[pColumn];
         final XmlTag valueTag = pTag.findFirstSubTag(valueTagName);
-        if(valueTag == null)
+        if (valueTag == null)
             return null;
 
         return valueTag.getValue().getTrimmedText();

@@ -1,4 +1,4 @@
-package org.mevenide.idea.editor.pom.ui.layer.dependencies;
+package org.mevenide.idea.editor.pom.ui.layer;
 
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.project.Project;
@@ -17,16 +17,16 @@ import java.awt.event.ActionListener;
 /**
  * @author Arik
  */
-public class DependenciesTablePanel extends AbstractDocumentCRUDPanel<JTable> {
+public class DependenciesPanel extends AbstractDocumentCRUDPanel<JTable> {
     /**
      * Logging.
      */
-    private static final Log LOG = LogFactory.getLog(DependenciesTablePanel.class);
+    private static final Log LOG = LogFactory.getLog(DependenciesPanel.class);
 
     /**
      * The dependency table model.
      */
-    private final PomDependenciesTableModel model;
+    private final DependenciesTableModel model;
 
     /**
      * A runnable that adds a new dependency. Called by the add button.
@@ -43,8 +43,7 @@ public class DependenciesTablePanel extends AbstractDocumentCRUDPanel<JTable> {
     };
 
     /**
-     * A runnable that removes the selected dependency(ies). Called by the
-     * remove button.
+     * A runnable that removes the selected dependency(ies). Called by the remove button.
      */
     private final Runnable removeDependenciesRunnable = new Runnable() {
         public void run() {
@@ -60,14 +59,14 @@ public class DependenciesTablePanel extends AbstractDocumentCRUDPanel<JTable> {
     /**
      * Creates a new dependencies panel for the given project and document.
      *
-     * @param pProject the project we belong to
+     * @param pProject        the project we belong to
      * @param pEditorDocument the document serving as the backing model
      */
-    public DependenciesTablePanel(final Project pProject,
-                                  final Document pEditorDocument) {
+    public DependenciesPanel(final Project pProject,
+                             final Document pEditorDocument) {
         super(new Table(), true, false, true, true, pProject, pEditorDocument);
 
-        model = new PomDependenciesTableModel(project, editorDocument);
+        model = new DependenciesTableModel(project, editorDocument);
 
         component.setModel(model);
         component.setCellSelectionEnabled(false);
