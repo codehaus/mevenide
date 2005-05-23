@@ -109,7 +109,7 @@
         <dependency>
             <groupId>mevenide</groupId>
             <artifactId>goals-grabber</artifactId>
-            <version>0.9</version>
+            <version>0.9-SNAPSHOT</version>
             <type>jar</type>
             <properties>
                 <idea.plugin.bundle>true</idea.plugin.bundle>
@@ -118,7 +118,7 @@
         <dependency>
             <groupId>mevenide</groupId>
             <artifactId>mevenide-config</artifactId>
-            <version>0.8</version>
+            <version>0.8-SNAPSHOT</version>
             <type>jar</type>
             <properties>
                 <idea.plugin.bundle>true</idea.plugin.bundle>
@@ -127,7 +127,7 @@
         <dependency>
             <groupId>mevenide</groupId>
             <artifactId>mevenide-core</artifactId>
-            <version>0.8</version>
+            <version>0.8-SNAPSHOT</version>
             <type>jar</type>
             <properties>
                 <idea.plugin.bundle>true</idea.plugin.bundle>
