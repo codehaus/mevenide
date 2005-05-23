@@ -10,7 +10,7 @@
     <change-notes>
         See http://mevenide.codehaus.org/mevenide-idea/changes-report.html for details.
     </change-notes>
-    <idea-version since-build="3341"/>
+    <idea-version since-build="3339"/>
 
     <application-components>
         <component>
