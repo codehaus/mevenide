@@ -85,18 +85,6 @@ public abstract class AbstractXmlPsiTableModel extends AbstractTableModel {
     }
 
     /**
-     * Disposes this component.
-     *
-     * @throws Throwable
-     * @todo currently we unregister this instance as a PSI listener, but this method will never be
-     * called until we unregister, so this is a paradox. We must move this to a different place.
-     */
-    @Override protected void finalize() throws Throwable {
-        super.finalize();
-        PsiManager.getInstance(project).removePsiTreeChangeListener(psiListener);
-    }
-
-    /**
      * Called by the view component (the {@link javax.swing.JTable}) when the user sets a value on
      * the ui.
      *
