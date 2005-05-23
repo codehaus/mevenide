@@ -7,6 +7,7 @@
     </properties>
     <body>
         <release version="0.1" date="unreleased" description="">
+            <action dev="arikkfir" type="add">Added mailing lists UI to the POM editor.</action>
             <action dev="arikkfir" type="add">Added dependency UI to the POM editor.</action>
             <action dev="arikkfir" type="add">Added manual installation instructions.</action>
             <action dev="arikkfir" type="add">Added an initial version of the graphical POM editor.
