@@ -1,40 +1,45 @@
-package org.mevenide.idea.editor.pom.ui.layer;
+package org.mevenide.idea.editor.pom.ui.layer.model;
 
-import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiTreeChangeEvent;
-import com.intellij.psi.xml.XmlTag;
-import org.mevenide.idea.Res;
-import org.mevenide.idea.util.psi.PsiUtils;
 import org.mevenide.idea.util.ui.table.TagBasedXmlPsiTableModel;
+import org.mevenide.idea.util.psi.PsiUtils;
+import org.mevenide.idea.Res;
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.editor.Document;
+import com.intellij.psi.xml.XmlTag;
+import com.intellij.psi.PsiTreeChangeEvent;
 
 /**
  * @author Arik
+ * @todo add support to roles
  */
-public class DependenciesTableModel extends TagBasedXmlPsiTableModel {
+public class DevelopersTableModel extends TagBasedXmlPsiTableModel {
     /**
-     * Resources.
+     * Resources
      */
-    private static final Res RES = Res.getInstance(DependenciesTableModel.class);
+    private static final Res RES = Res.getInstance(DevelopersTableModel.class);
 
     /**
      * The column titles.
      */
     private static final String[] COLUMN_TITLES = new String[]{
-        "Group ID",
-        "Artifact ID",
-        "Version",
-        "Type"
+        "Name",
+        "ID",
+        "E-Mail",
+        "Organization",
+        "URL",
+        "Timezone"
     };
 
     /**
      * The JavaBeans property names respective of each column index.
      */
     private static final String[] COLUMN_PROPERTY_NAMES = new String[]{
-        "groupId",
-        "artifactId",
-        "version",
-        "type"
+        "name",
+        "id",
+        "email",
+        "organization",
+        "url",
+        "timezone"
     };
 
     /**
@@ -48,9 +53,24 @@ public class DependenciesTableModel extends TagBasedXmlPsiTableModel {
      * @param pProject      the project.
      * @param pIdeaDocument the document.
      */
-    public DependenciesTableModel(final Project pProject,
-                                     final Document pIdeaDocument) {
-        super(pProject, pIdeaDocument, "dependencies", "dependency");
+    public DevelopersTableModel(final Project pProject,
+                                final Document pIdeaDocument) {
+        this(pProject, pIdeaDocument, "developers", "developer");
+    }
+
+    /**
+     * Creates an instance using the given project and document.
+     *
+     * @param pProject          the project.
+     * @param pIdeaDocument     the document.
+     * @param pContainerTagName the container tag name
+     * @param pRowTagName       the row tag name
+     */
+    public DevelopersTableModel(final Project pProject,
+                                final Document pIdeaDocument,
+                                final String pContainerTagName,
+                                final String pRowTagName) {
+        super(pProject, pIdeaDocument, pContainerTagName, pRowTagName);
         refreshModel();
     }
 

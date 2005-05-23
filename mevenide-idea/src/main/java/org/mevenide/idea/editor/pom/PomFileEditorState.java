@@ -19,10 +19,6 @@ package org.mevenide.idea.editor.pom;
 import com.intellij.openapi.fileEditor.FileEditorState;
 import com.intellij.openapi.fileEditor.FileEditorStateLevel;
 
-import javax.swing.*;
-
-import org.mevenide.idea.editor.pom.ui.layer.PomLayerPanel;
-
 import java.awt.*;
 
 /**

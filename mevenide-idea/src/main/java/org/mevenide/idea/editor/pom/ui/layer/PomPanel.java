@@ -17,9 +17,17 @@
 package org.mevenide.idea.editor.pom.ui.layer;
 
 import com.intellij.openapi.editor.Document;
+import com.intellij.openapi.project.Project;
 import org.mevenide.idea.editor.pom.PomFileEditorState;
 import org.mevenide.idea.editor.pom.PomFileEditorStateHandler;
+import org.mevenide.idea.editor.pom.ui.layer.model.DependenciesTableModel;
+import org.mevenide.idea.editor.pom.ui.layer.model.MailingListsTableModel;
+import org.mevenide.idea.editor.pom.ui.layer.model.DevelopersTableModel;
+import org.mevenide.idea.editor.pom.ui.layer.model.ContributorsTableModel;
 import org.mevenide.idea.util.ui.LabeledPanel;
+import org.mevenide.idea.util.ui.SplitPanel;
+import org.mevenide.idea.util.ui.table.CRUDTablePanel;
+import org.mevenide.idea.Res;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -32,34 +40,36 @@ import java.awt.Component;
  * 
  * @author Arik
  */
-public class PomLayerPanel extends AbstractPomLayerPanel implements PomFileEditorStateHandler {
-    private final JTabbedPane tabs = new JTabbedPane(JTabbedPane.TOP);
-    private final JPanel generalInfoPanel = new PomGeneralInfoPanel(project, editorDocument);
-    private final JPanel dependenciesPanel;
-    private final JPanel deploymentPanel = new DeploymentPanel(project, editorDocument);
-    private final JPanel mailingListsPanel;
+public class PomPanel extends AbstractPomLayerPanel implements PomFileEditorStateHandler {
+    /**
+     * Resources
+     */
+    private static final Res RES = Res.getInstance(PomPanel.class);
 
-    public PomLayerPanel(final com.intellij.openapi.project.Project pProject,
+    private final JTabbedPane tabs = new JTabbedPane(JTabbedPane.TOP);
+    private final JPanel generalInfoPanel = new GeneralInfoPanel(project, editorDocument);
+    private final JPanel mailingListsPanel = new CRUDTablePanel(project, editorDocument, new MailingListsTableModel(project, editorDocument));
+    private final JPanel depsPanel = new CRUDTablePanel(project, editorDocument, new DependenciesTableModel(project, editorDocument));
+    private final JPanel deploymentPanel = new DeploymentPanel(project, editorDocument);
+    private final JPanel teamPanel = createTeamPanel(project, editorDocument);
+
+    public PomPanel(final com.intellij.openapi.project.Project pProject,
                          final Document pPomDocument) {
         super(pProject, pPomDocument);
-
-        dependenciesPanel = new LabeledPanel(
-                RES.get("dep.list.desc"),
-                new DependenciesPanel(project, editorDocument));
-
-        mailingListsPanel = new LabeledPanel(
-                RES.get("mail.lists.desc"),
-                new MailingListsPanel(project, editorDocument));
 
         initComponents();
         layoutComponents();
     }
 
     private void initComponents() {
+        final String depsLabel = RES.get("dep.list.desc");
+        final String mailLabel = RES.get("mail.lists.desc");
+
         tabs.add("General", new JScrollPane(generalInfoPanel));
-        tabs.add("Dependencies", dependenciesPanel);
+        tabs.add("Mailing lists", new LabeledPanel(mailLabel, mailingListsPanel));
+        tabs.add("Team", teamPanel);
+        tabs.add("Dependencies", new LabeledPanel(depsLabel, depsPanel));
         tabs.add("Deployment", deploymentPanel);
-        tabs.add("Mailing lists", mailingListsPanel);
     }
 
     private void layoutComponents() {
@@ -85,5 +95,17 @@ public class PomLayerPanel extends AbstractPomLayerPanel implements PomFileEdito
             PomFileEditorStateHandler handler = (PomFileEditorStateHandler) component;
             handler.setState(pState);
         }
+    }
+
+    private static JPanel createTeamPanel(final Project pProject, final Document pDocument) {
+        final DevelopersTableModel developersModel = new DevelopersTableModel(pProject, pDocument);
+        final DevelopersTableModel contributorsModel = new ContributorsTableModel(pProject, pDocument);
+        final JPanel developersPanel = new CRUDTablePanel(pProject, pDocument, developersModel);
+        final JPanel contributorsPanel = new CRUDTablePanel(pProject, pDocument, contributorsModel);
+        final LabeledPanel developersLabelPanel = new LabeledPanel(RES.get("developers.desc"), developersPanel);
+        final LabeledPanel contributorsLabelPanel = new LabeledPanel(RES.get("contributors.desc"), contributorsPanel);
+
+        return new SplitPanel<LabeledPanel,LabeledPanel>(
+                developersLabelPanel, contributorsLabelPanel);
     }
 }
