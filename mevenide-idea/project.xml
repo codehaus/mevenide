@@ -117,18 +117,6 @@
         </dependency>
         <dependency>
             <groupId>mevenide</groupId>
-            <artifactId>goals-grabber</artifactId>
-            <version>0.9</version>
-            <type>src.jar</type>
-        </dependency>
-        <dependency>
-            <groupId>mevenide</groupId>
-            <artifactId>goals-grabber</artifactId>
-            <version>0.9</version>
-            <type>javadoc.jar</type>
-        </dependency>
-        <dependency>
-            <groupId>mevenide</groupId>
             <artifactId>mevenide-config</artifactId>
             <version>0.8</version>
             <type>jar</type>
@@ -138,36 +126,12 @@
         </dependency>
         <dependency>
             <groupId>mevenide</groupId>
-            <artifactId>mevenide-config</artifactId>
-            <version>0.8</version>
-            <type>src.jar</type>
-        </dependency>
-        <dependency>
-            <groupId>mevenide</groupId>
-            <artifactId>mevenide-config</artifactId>
-            <version>0.8</version>
-            <type>javadoc.jar</type>
-        </dependency>
-        <dependency>
-            <groupId>mevenide</groupId>
             <artifactId>mevenide-core</artifactId>
             <version>0.8</version>
             <type>jar</type>
             <properties>
                 <idea.plugin.bundle>true</idea.plugin.bundle>
             </properties>
-        </dependency>
-        <dependency>
-            <groupId>mevenide</groupId>
-            <artifactId>mevenide-core</artifactId>
-            <version>0.8</version>
-            <type>src.jar</type>
-        </dependency>
-        <dependency>
-            <groupId>mevenide</groupId>
-            <artifactId>mevenide-core</artifactId>
-            <version>0.8</version>
-            <type>javadoc.jar</type>
         </dependency>
         <dependency>
             <groupId>jgoodies</groupId>
