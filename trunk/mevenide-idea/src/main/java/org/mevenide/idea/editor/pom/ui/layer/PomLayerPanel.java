@@ -22,6 +22,7 @@ import org.mevenide.idea.editor.pom.PomFileEditorStateHandler;
 import org.mevenide.idea.editor.pom.ui.layer.dependencies.PomDependenciesPanel;
 
 import javax.swing.JTabbedPane;
+import javax.swing.JScrollPane;
 import java.awt.BorderLayout;
 import java.awt.Component;
 
@@ -43,7 +44,7 @@ public class PomLayerPanel extends AbstractPomLayerPanel implements PomFileEdito
     }
 
     private void initComponents() {
-        tabs.add("General", generalInfoPanel);
+        tabs.add("General", new JScrollPane(generalInfoPanel));
         tabs.add("Dependencies", dependenciesPanel);
     }
 
