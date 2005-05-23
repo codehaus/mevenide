@@ -23,19 +23,21 @@ import com.intellij.openapi.ui.TextFieldWithBrowseButton;
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 import com.jgoodies.forms.layout.FormLayout;
 import org.mevenide.idea.Res;
-import org.mevenide.idea.editor.pom.PomFileEditorStateHandler;
-import org.mevenide.idea.editor.pom.PomFileEditorState;
 import org.mevenide.idea.util.ui.CustomFormsComponentFactory;
 import org.mevenide.idea.util.ui.text.XmlPsiDocumentBinder;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JComboBox;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import java.awt.Component;
+import java.awt.Dimension;
 import java.lang.reflect.Field;
 
 /**
  * @author Arik
  */
-public class GeneralInfoPanel extends AbstractPomLayerPanel implements PomFileEditorStateHandler {
+public class GeneralInfoPanel extends AbstractPomLayerPanel {
     /**
      * Resources
      */
@@ -112,8 +114,7 @@ public class GeneralInfoPanel extends AbstractPomLayerPanel implements PomFileEd
                     "right:min:grow(0.05), 2dlu, fill:pref:grow(0.45), 0dlu, " + //first column
                     "right:min:grow(0.05), 2dlu, fill:pref:grow(0.45)",          //second column
                 "");
-        DefaultFormBuilder builder = new DefaultFormBuilder(layout, RES.getBundle(), this);
-        builder.setDefaultDialogBorder();
+        DefaultFormBuilder builder = new DefaultFormBuilder(layout, this);
         builder.setComponentFactory(new CustomFormsComponentFactory());
 
         //
@@ -179,11 +180,5 @@ public class GeneralInfoPanel extends AbstractPomLayerPanel implements PomFileEd
             binder.bind(orgUrlField, "organization/url");
             binder.bind(orgLogoUrlField.getTextField(), "organization/logo");
         }
-    }
-
-    public void getState(final PomFileEditorState pState) {
-    }
-
-    public void setState(final PomFileEditorState pState) {
     }
 }

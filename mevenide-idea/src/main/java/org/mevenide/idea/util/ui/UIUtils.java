@@ -20,6 +20,9 @@ import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.module.Module;
 
+import javax.swing.JComponent;
+import javax.swing.BorderFactory;
+
 /**
  * @author Arik
  */
@@ -72,5 +75,36 @@ public abstract class UIUtils {
             return pDefault;
 
         return msg;
+    }
+
+    public static void installBorder(final JComponent pComponent) {
+        installBorder(pComponent, 10);
+    }
+
+    public static void installBorder(final JComponent pComponent,
+                                     final int pTop) {
+        installBorder(pComponent, pTop, 10);
+    }
+
+    public static void installBorder(final JComponent pComponent,
+                                     final int pTop,
+                                     final int pLeft) {
+        installBorder(pComponent, pTop, pLeft, 10);
+    }
+
+    public static void installBorder(final JComponent pComponent,
+                                     final int pTop,
+                                     final int pLeft,
+                                     final int pBottom) {
+        installBorder(pComponent, pTop, pLeft, pBottom, 10);
+    }
+
+    public static void installBorder(final JComponent pComponent,
+                                     final int pTop,
+                                     final int pLeft,
+                                     final int pBottom,
+                                     final int pRight) {
+        pComponent.setBorder(BorderFactory.createEmptyBorder(
+                pTop, pLeft, pBottom, pRight));
     }
 }

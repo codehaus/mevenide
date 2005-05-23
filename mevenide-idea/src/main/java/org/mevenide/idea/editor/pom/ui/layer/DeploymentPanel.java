@@ -54,7 +54,6 @@ public class DeploymentPanel extends AbstractPomLayerPanel {
         final FormLayout layout = new FormLayout(
                 "right:min, 2dlu, fill:pref:grow");
         DefaultFormBuilder builder = new DefaultFormBuilder(layout, RES.getBundle(), this);
-        builder.setDefaultDialogBorder();
         builder.setComponentFactory(new CustomFormsComponentFactory());
 
         builder.appendSeparator(RES.get("site.deployment.title"));
