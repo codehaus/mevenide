@@ -35,6 +35,7 @@ public class PomLayerPanel extends AbstractPomLayerPanel implements PomFileEdito
     private final JTabbedPane tabs = new JTabbedPane(JTabbedPane.TOP);
     private final PomGeneralInfoPanel generalInfoPanel = new PomGeneralInfoPanel(project, editorDocument);
     private final PomDependenciesPanel dependenciesPanel = new PomDependenciesPanel(project, editorDocument);
+    private final DeploymentPanel deploymentPanel = new DeploymentPanel(project, editorDocument);
 
     public PomLayerPanel(final com.intellij.openapi.project.Project pProject,
                          final Document pPomDocument) {
@@ -46,6 +47,7 @@ public class PomLayerPanel extends AbstractPomLayerPanel implements PomFileEdito
     private void initComponents() {
         tabs.add("General", new JScrollPane(generalInfoPanel));
         tabs.add("Dependencies", dependenciesPanel);
+        tabs.add("Deployment", deploymentPanel);
     }
 
     private void layoutComponents() {
