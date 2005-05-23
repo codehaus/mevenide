@@ -19,10 +19,11 @@ package org.mevenide.idea.editor.pom.ui.layer;
 import com.intellij.openapi.editor.Document;
 import org.mevenide.idea.editor.pom.PomFileEditorState;
 import org.mevenide.idea.editor.pom.PomFileEditorStateHandler;
-import org.mevenide.idea.editor.pom.ui.layer.dependencies.PomDependenciesPanel;
+import org.mevenide.idea.util.ui.LabeledPanel;
 
-import javax.swing.JTabbedPane;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
 import java.awt.BorderLayout;
 import java.awt.Component;
 
@@ -33,13 +34,23 @@ import java.awt.Component;
  */
 public class PomLayerPanel extends AbstractPomLayerPanel implements PomFileEditorStateHandler {
     private final JTabbedPane tabs = new JTabbedPane(JTabbedPane.TOP);
-    private final PomGeneralInfoPanel generalInfoPanel = new PomGeneralInfoPanel(project, editorDocument);
-    private final PomDependenciesPanel dependenciesPanel = new PomDependenciesPanel(project, editorDocument);
-    private final DeploymentPanel deploymentPanel = new DeploymentPanel(project, editorDocument);
+    private final JPanel generalInfoPanel = new PomGeneralInfoPanel(project, editorDocument);
+    private final JPanel dependenciesPanel;
+    private final JPanel deploymentPanel = new DeploymentPanel(project, editorDocument);
+    private final JPanel mailingListsPanel;
 
     public PomLayerPanel(final com.intellij.openapi.project.Project pProject,
                          final Document pPomDocument) {
         super(pProject, pPomDocument);
+
+        dependenciesPanel = new LabeledPanel(
+                RES.get("dep.list.desc"),
+                new DependenciesPanel(project, editorDocument));
+
+        mailingListsPanel = new LabeledPanel(
+                RES.get("mail.lists.desc"),
+                new MailingListsPanel(project, editorDocument));
+
         initComponents();
         layoutComponents();
     }
@@ -48,6 +59,7 @@ public class PomLayerPanel extends AbstractPomLayerPanel implements PomFileEdito
         tabs.add("General", new JScrollPane(generalInfoPanel));
         tabs.add("Dependencies", dependenciesPanel);
         tabs.add("Deployment", deploymentPanel);
+        tabs.add("Mailing lists", mailingListsPanel);
     }
 
     private void layoutComponents() {

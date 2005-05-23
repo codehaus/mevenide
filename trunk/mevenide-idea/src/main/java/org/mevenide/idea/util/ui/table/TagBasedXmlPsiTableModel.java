@@ -96,10 +96,9 @@ public abstract class TagBasedXmlPsiTableModel extends AbstractXmlPsiTableModel 
             if (currentTag == null) {
                 if(!pCreateIfNotFound)
                     return null;
-                
+
                 currentTag = factory.createTagFromText("<" + tagName + "/>");
-                tag.add(currentTag);
-                tag = currentTag;
+                tag = (XmlTag) tag.add(currentTag);
             }
             else
                 tag = currentTag;
@@ -162,8 +161,7 @@ public abstract class TagBasedXmlPsiTableModel extends AbstractXmlPsiTableModel 
 
         final PsiElementFactory factory = PsiManager.getInstance(project).getElementFactory();
         final XmlTag rowTag = factory.createTagFromText("<" + rowTagName + "/>");
-        containerTag.add(rowTag);
-        return rowTag;
+        return (XmlTag) containerTag.add(rowTag);
     }
 
     public void removeRows(final int[] pRowIndices) throws IncorrectOperationException {
