@@ -1,8 +1,7 @@
-package org.mevenide.idea.editor.pom.ui.layer.dependencies;
+package org.mevenide.idea.util.ui.table;
 
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.project.Project;
-import org.mevenide.idea.util.ui.table.CRUDPanel;
 
 import javax.swing.JComponent;
 

@@ -13,6 +13,7 @@ import org.apache.commons.logging.LogFactory;
 import org.mevenide.idea.util.IDEUtils;
 import org.mevenide.idea.util.psi.PsiUtils;
 import org.mevenide.idea.util.ui.UIUtils;
+import org.mevenide.idea.util.ui.table.AbstractDocumentCRUDPanel;
 
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
@@ -22,7 +23,7 @@ import java.awt.event.ActionListener;
 /**
  * @author Arik
  */
-class DependenciesTablePanel extends AbstractDocumentCRUDPanel<JTable> {
+public class DependenciesTablePanel extends AbstractDocumentCRUDPanel<JTable> {
     /**
      * Logging.
      */
