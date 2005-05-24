@@ -16,9 +16,9 @@
  */
 package org.mevenide.idea.editor.pom.ui.layer;
 
+import com.intellij.openapi.Disposable;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.Disposable;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -29,7 +29,6 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.HierarchyEvent;
 import java.awt.event.HierarchyListener;
-import java.lang.reflect.Field;
 
 /**
  * A base class for all POM editing panels.
@@ -122,22 +121,6 @@ public abstract class AbstractPomLayerPanel extends JPanel implements Disposable
         super.addImpl(comp, constraints, index);
         if(comp.isFocusable())
             comp.addFocusListener(focusTracker);
-    }
-
-    protected void nameComponents() {
-        final Field[] fields = this.getClass().getDeclaredFields();
-        for(final Field field : fields) {
-            try {
-                final Object value = field.get(this);
-                if(value != null && value instanceof Component) {
-                    final Component comp = (Component) value;
-                    comp.setName(field.getName());
-                }
-            }
-            catch (IllegalAccessException e) {
-                LOG.error(e.getMessage(), e);
-            }
-        }
     }
 
     /**
