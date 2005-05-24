@@ -30,9 +30,7 @@ import javax.swing.JComboBox;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import java.awt.Component;
 import java.awt.Dimension;
-import java.lang.reflect.Field;
 
 /**
  * @author Arik
@@ -92,20 +90,8 @@ public class GeneralInfoPanel extends AbstractPomLayerPanel {
 
         inceptionYearField.setPreferredSize(new Dimension(60, 20));
         descField.setPreferredSize(new Dimension(300, 80));
-
-        final Field[] fields = this.getClass().getDeclaredFields();
-        for(final Field field : fields) {
-            try {
-                final Object value = field.get(this);
-                if(value != null && value instanceof Component) {
-                    final Component comp = (Component) value;
-                    comp.setName(field.getName());
-                }
-            }
-            catch (IllegalAccessException e) {
-                LOG.error(e.getMessage(), e);
-            }
-        }
+        
+        nameComponents();
     }
 
     private void layoutComponents() {
