@@ -24,6 +24,7 @@ import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.openapi.Disposable;
 import org.jdom.Element;
 import org.mevenide.idea.module.ModuleSettings;
 import org.mevenide.idea.support.AbstractApplicationComponent;
@@ -61,6 +62,8 @@ public class PomFileEditorProvider extends AbstractApplicationComponent implemen
     }
 
     public void disposeEditor(final FileEditor pEditor) {
+        if(pEditor instanceof Disposable)
+            ((Disposable)pEditor).dispose();
     }
 
     public String getEditorTypeId() {

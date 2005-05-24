@@ -18,6 +18,7 @@ package org.mevenide.idea.editor.pom.ui.layer;
 
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.Disposable;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -28,6 +29,7 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.HierarchyEvent;
 import java.awt.event.HierarchyListener;
+import java.lang.reflect.Field;
 
 /**
  * A base class for all POM editing panels.
@@ -42,7 +44,7 @@ import java.awt.event.HierarchyListener;
  *
  * @author Arik
  */
-public abstract class AbstractPomLayerPanel extends JPanel {
+public abstract class AbstractPomLayerPanel extends JPanel implements Disposable {
     /**
      * Logging.
      */
@@ -102,6 +104,13 @@ public abstract class AbstractPomLayerPanel extends JPanel {
     }
 
     /**
+     * This method should dispose this componet. Usually that would mean
+     * removing any registered listeners, dispose of UI objects, etc.
+     */
+    public void dispose() {
+    }
+
+    /**
      * Overriden to attach our focus tracker to the new component, if it's
      * focusable.
      *
@@ -113,6 +122,22 @@ public abstract class AbstractPomLayerPanel extends JPanel {
         super.addImpl(comp, constraints, index);
         if(comp.isFocusable())
             comp.addFocusListener(focusTracker);
+    }
+
+    protected void nameComponents() {
+        final Field[] fields = this.getClass().getDeclaredFields();
+        for(final Field field : fields) {
+            try {
+                final Object value = field.get(this);
+                if(value != null && value instanceof Component) {
+                    final Component comp = (Component) value;
+                    comp.setName(field.getName());
+                }
+            }
+            catch (IllegalAccessException e) {
+                LOG.error(e.getMessage(), e);
+            }
+        }
     }
 
     /**
