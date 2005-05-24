@@ -22,7 +22,7 @@ public class XmlPsiDocumentBinder {
     /**
      * Creates a binder instance for the given project and document.
      *
-     * @param pProject the project
+     * @param pProject  the project
      * @param pDocument the document that bound text components will update/listen
      */
     public XmlPsiDocumentBinder(final Project pProject, final Document pDocument) {
@@ -31,13 +31,15 @@ public class XmlPsiDocumentBinder {
     }
 
     /**
-     * Bind the given text component to the specified element path in this binder's
-     * project and document.
+     * Bind the given text component to the specified element path in this binder's project and
+     * document.
      *
-     * @param pComponent the component to bind
-     * @param pElementName the element path the component will be bound to - can be a path of elements, a-la {@code project/build/sourceDirectory}.
+     * @param pComponent   the component to bind
+     * @param pElementName the element path the component will be bound to - can be a path of
+     *                     elements, a-la {@code project/build/sourceDirectory}.
      */
-    public void bind(final JTextComponent pComponent,final String pElementName) {
+    public XmlPsiSwingDocument bind(final JTextComponent pComponent,
+                                    final String pElementName) {
         //
         //create the listener
         //
@@ -48,16 +50,18 @@ public class XmlPsiDocumentBinder {
         //bind the new listener
         //
         pComponent.setDocument(model);
+        return model;
     }
 
     /**
-     * Bind the given text component to the specified element path in this binder's
-     * project and document.
+     * Bind the given text component to the specified element path in this binder's project and
+     * document.
      *
-     * @param pComponent the component to bind
+     * @param pComponent    the component to bind
      * @param pElementNames the element path the component will be bound to
      */
-    public void bind(final JTextComponent pComponent, final String[] pElementNames) {
+    public XmlPsiSwingDocument bind(final JTextComponent pComponent,
+                                    final String[] pElementNames) {
         //
         //create the listener
         //
@@ -68,6 +72,7 @@ public class XmlPsiDocumentBinder {
         //bind the new listener
         //
         pComponent.setDocument(model);
+        return model;
     }
 
 }
