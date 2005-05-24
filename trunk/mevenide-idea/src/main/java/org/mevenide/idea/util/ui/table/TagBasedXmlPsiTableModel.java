@@ -176,5 +176,9 @@ public abstract class TagBasedXmlPsiTableModel extends AbstractXmlPsiTableModel 
 
         for(XmlTag tagToRemove : rowTagsToRemove)
             tagToRemove.delete();
+
+        final String text = containerTag.getValue().getTrimmedText();
+        if(text == null || text.trim().length() == 0)
+            containerTag.delete();
     }
 }
