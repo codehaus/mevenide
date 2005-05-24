@@ -80,10 +80,6 @@ public abstract class AbstractPsiXmlListener extends AbstractPsiListener {
     }
 
     @Override public void childrenChanged(PsiTreeChangeEvent event) {
-        if(!isEventRelevant(event))
-            return;
-
-        LOG.trace("childrenChanged");
     }
 
     @Override public void childReplaced(PsiTreeChangeEvent event) {
