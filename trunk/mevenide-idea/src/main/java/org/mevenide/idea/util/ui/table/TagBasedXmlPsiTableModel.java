@@ -13,7 +13,7 @@ import org.apache.commons.logging.LogFactory;
 /**
  * @author Arik
  */
-public abstract class TagBasedXmlPsiTableModel extends AbstractXmlPsiTableModel {
+public abstract class TagBasedXmlPsiTableModel extends AbstractXmlPsiTableModel implements MutableXmlPsiTableModel {
     /**
      * Logging.
      */
@@ -177,8 +177,8 @@ public abstract class TagBasedXmlPsiTableModel extends AbstractXmlPsiTableModel 
         for(XmlTag tagToRemove : rowTagsToRemove)
             tagToRemove.delete();
 
-        final String text = containerTag.getValue().getTrimmedText();
-        if(text == null || text.trim().length() == 0)
+        final XmlTag[] subTags = containerTag.getSubTags();
+        if(subTags.length == 0)
             containerTag.delete();
     }
 }

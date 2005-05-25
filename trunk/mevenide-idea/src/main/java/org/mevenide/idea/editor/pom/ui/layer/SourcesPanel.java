@@ -5,13 +5,9 @@ import com.intellij.openapi.project.Project;
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 import com.jgoodies.forms.layout.FormLayout;
 import org.mevenide.idea.Res;
-import static org.mevenide.idea.editor.pom.ui.layer.TableModelConstants.BRANCHES;
-import static org.mevenide.idea.editor.pom.ui.layer.TableModelConstants.VERSIONS;
 import org.mevenide.idea.util.ui.CustomFormsComponentFactory;
-import org.mevenide.idea.util.ui.LabeledPanel;
 import org.mevenide.idea.util.ui.SplitPanel;
 import org.mevenide.idea.util.ui.UIUtils;
-import org.mevenide.idea.util.ui.table.CRUDTablePanel;
 import org.mevenide.idea.util.ui.text.XmlPsiDocumentBinder;
 
 import javax.swing.JPanel;
@@ -25,35 +21,24 @@ import java.lang.reflect.Field;
 /**
  * @author Arik
  */
-class ScmPanel extends AbstractPomLayerPanel {
+public class SourcesPanel extends AbstractPomLayerPanel {
     /**
      * Resources
      */
-    private static final Res RES = Res.getInstance(ScmPanel.class);
+    private static final Res RES = Res.getInstance(SourcesPanel.class);
 
-    private final JTextField anonynousConnection = new JTextField();
-    private final JTextField developerConnection = new JTextField();
-    private final JTextField browseUrl = new JTextField();
-    private final JPanel versionsPanel;
-    private final JPanel branchesPanel;
+    private final JTextField sourceDirField = new JTextField();
+    private final JTextField aspectSourceDirField = new JTextField();
 
-    public ScmPanel(final Project pProject, final Document pIdeaDocument) {
-        super(pProject, pIdeaDocument);
-        bindComponents();
-
-        versionsPanel = new LabeledPanel(RES.get("versions.desc"),
-                                         new CRUDTablePanel(project, document, VERSIONS));
-        branchesPanel = new LabeledPanel(RES.get("branches.desc"),
-                                         new CRUDTablePanel(project, document, BRANCHES));
+    public SourcesPanel(final Project pProject, final Document pPomDocument) {
+        super(pProject, pPomDocument);
 
         initComponents();
         layoutComponents();
+        bindComponents();
     }
 
     private void initComponents() {
-        UIUtils.installBorder(versionsPanel, 5, 0, 10, 0);
-        UIUtils.installBorder(branchesPanel, 10, 0, 0, 0);
-
         final Field[] fields = this.getClass().getDeclaredFields();
         for (final Field field : fields) {
             try {
@@ -75,27 +60,26 @@ class ScmPanel extends AbstractPomLayerPanel {
 
         c = new GridBagConstraints();
         c.fill = BOTH;
-        add(createRepositoryPanel(), c);
+        add(createDirectoriesPanel(), c);
 
         c = new GridBagConstraints();
         c.fill = BOTH;
         c.gridy = 1;
         c.weightx = 1;
         c.weighty = 1;
-        add(new SplitPanel<JPanel, JPanel>(versionsPanel, branchesPanel), c);
+        add(new SplitPanel<JPanel, JPanel>(new JPanel(), new JPanel()), c);
     }
 
     private void bindComponents() {
         synchronized (this) {
             final XmlPsiDocumentBinder binder = new XmlPsiDocumentBinder(project, document);
 
-            binder.bind(anonynousConnection, "repository/connection");
-            binder.bind(developerConnection, "repository/developerConnection");
-            binder.bind(browseUrl, "repository/url");
+            binder.bind(sourceDirField, "build/sourceDirectory");
+            binder.bind(aspectSourceDirField, "build/aspectSourceDirectory");
         }
     }
 
-    private JPanel createRepositoryPanel() {
+    private JPanel createDirectoriesPanel() {
         final FormLayout layout = new FormLayout("right:min, 2dlu, fill:pref:grow");
         DefaultFormBuilder builder = new DefaultFormBuilder(layout);
         builder.setComponentFactory(new CustomFormsComponentFactory());
@@ -103,11 +87,10 @@ class ScmPanel extends AbstractPomLayerPanel {
         //
         //repository
         //
-        builder.appendSeparator(RES.get("repository.title"));
-        builder.append(RES.get("scm.anonymous.connection"), anonynousConnection);
-        builder.append(RES.get("scm.developer.connection"), developerConnection);
-        builder.append(RES.get("scn.browse.url"), browseUrl);
-        builder.appendSeparator(RES.get("versions.title"));
+        builder.appendSeparator(RES.get("src.dirs.title"));
+        builder.append(RES.get("java.src.dir"), sourceDirField);
+        builder.append(RES.get("aspect.src.dir"), aspectSourceDirField);
+        builder.appendSeparator(RES.get("conf.dirs.title"));
         final JPanel panel = builder.getPanel();
         UIUtils.installBorder(panel, 0, 0, 0, 0);
 
