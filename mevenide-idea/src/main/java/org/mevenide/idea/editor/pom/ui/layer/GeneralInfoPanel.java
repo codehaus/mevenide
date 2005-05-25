@@ -30,8 +30,8 @@ import javax.swing.JComboBox;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import java.awt.Dimension;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.lang.reflect.Field;
 
 /**
@@ -65,7 +65,7 @@ public class GeneralInfoPanel extends AbstractPomLayerPanel {
     private final TextFieldWithBrowseButton orgLogoUrlField = new TextFieldWithBrowseButton();
 
     public GeneralInfoPanel(final com.intellij.openapi.project.Project pProject,
-                               final Document pPomDocument) {
+                            final Document pPomDocument) {
         super(pProject, pPomDocument);
 
         initComponents();
@@ -86,17 +86,17 @@ public class GeneralInfoPanel extends AbstractPomLayerPanel {
         final FileChooserDescriptor orgLogoChooserDesc =
                 FileChooserDescriptorFactory.createSingleFileNoJarsDescriptor();
         orgLogoUrlField.addBrowseFolderListener(RES.get("choose.org.logo"),
-                                            RES.get("choose.org.logo.desc"),
-                                            project,
-                                            orgLogoChooserDesc);
+                                                RES.get("choose.org.logo.desc"),
+                                                project,
+                                                orgLogoChooserDesc);
 
         inceptionYearField.setPreferredSize(new Dimension(60, 20));
         descField.setPreferredSize(new Dimension(300, 80));
         final Field[] fields = this.getClass().getDeclaredFields();
-        for(final Field field : fields) {
+        for (final Field field : fields) {
             try {
                 final Object value = field.get(this);
-                if(value != null && value instanceof Component) {
+                if (value != null && value instanceof Component) {
                     final Component comp = (Component) value;
                     comp.setName(field.getName());
                 }
@@ -110,9 +110,9 @@ public class GeneralInfoPanel extends AbstractPomLayerPanel {
     private void layoutComponents() {
         final FormLayout layout = new FormLayout(
                 "" +
-                    "right:min:grow(0.05), 2dlu, fill:pref:grow(0.45), 0dlu, " + //first column
-                    "right:min:grow(0.05), 2dlu, fill:pref:grow(0.45)",          //second column
-                "");
+                        "right:min:grow(0.05), 2dlu, fill:pref:grow(0.45), 0dlu, " + //first column
+                        "right:min:grow(0.05), 2dlu, fill:pref:grow(0.45)",          //second column
+                                                                                     "");
         DefaultFormBuilder builder = new DefaultFormBuilder(layout, this);
         builder.setComponentFactory(new CustomFormsComponentFactory());
 
@@ -161,7 +161,7 @@ public class GeneralInfoPanel extends AbstractPomLayerPanel {
 
     private void bindComponents() {
         synchronized (this) {
-            final XmlPsiDocumentBinder binder = new XmlPsiDocumentBinder(project, editorDocument);
+            final XmlPsiDocumentBinder binder = new XmlPsiDocumentBinder(project, document);
 
             binder.bind(extendField.getTextField(), "extend");
             binder.bind(nameField, "name");

@@ -25,7 +25,7 @@ public class SplitPanel<Top extends JComponent, Bottom extends JComponent> exten
      * @param pTop the top component
      * @param pBottom the bottom component
      */
-    public SplitPanel(final Top pTop, final Bottom pBottom) {
+    public SplitPanel(final Top pTop, final Bottom pBottom, final boolean pAddBorders) {
         top = pTop;
         bottom = pBottom;
 
@@ -34,8 +34,23 @@ public class SplitPanel<Top extends JComponent, Bottom extends JComponent> exten
                 true,
                 top, bottom);
 
+        if (pAddBorders) {
+            UIUtils.installBorder(top);
+            UIUtils.installBorder(bottom);
+        }
+
         setLayout(new BorderLayout());
         add(split, BorderLayout.CENTER);
+    }
+
+    /**
+     * Creates an instance using the two given components.
+     *
+     * @param pTop the top component
+     * @param pBottom the bottom component
+     */
+    public SplitPanel(final Top pTop, final Bottom pBottom) {
+        this(pTop, pBottom, true);
     }
 
     /**
@@ -43,7 +58,7 @@ public class SplitPanel<Top extends JComponent, Bottom extends JComponent> exten
      *
      * @return the top component
      */
-    public Top getTop() {
+    public final Top getTop() {
         return top;
     }
 
@@ -52,7 +67,7 @@ public class SplitPanel<Top extends JComponent, Bottom extends JComponent> exten
      *
      * @return the bottom component
      */
-    public Bottom getBottom() {
+    public final Bottom getBottom() {
         return bottom;
     }
 }

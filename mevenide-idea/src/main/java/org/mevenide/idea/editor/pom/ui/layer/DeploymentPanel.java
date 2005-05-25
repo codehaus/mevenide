@@ -9,8 +9,8 @@ import org.mevenide.idea.util.ui.CustomFormsComponentFactory;
 import org.mevenide.idea.util.ui.text.XmlPsiDocumentBinder;
 
 import javax.swing.JTextField;
-import java.lang.reflect.Field;
 import java.awt.Component;
+import java.lang.reflect.Field;
 
 /**
  * @author Arik
@@ -36,10 +36,10 @@ public class DeploymentPanel extends AbstractPomLayerPanel {
 
     private void initComponents() {
         final Field[] fields = this.getClass().getDeclaredFields();
-        for(final Field field : fields) {
+        for (final Field field : fields) {
             try {
                 final Object value = field.get(this);
-                if(value != null && value instanceof Component) {
+                if (value != null && value instanceof Component) {
                     final Component comp = (Component) value;
                     comp.setName(field.getName());
                 }
@@ -67,7 +67,7 @@ public class DeploymentPanel extends AbstractPomLayerPanel {
 
     private void bindComponents() {
         synchronized (this) {
-            final XmlPsiDocumentBinder binder = new XmlPsiDocumentBinder(project, editorDocument);
+            final XmlPsiDocumentBinder binder = new XmlPsiDocumentBinder(project, document);
 
             binder.bind(siteAddressField, "siteAddress");
             binder.bind(siteDirectoryField, "siteDirectory");

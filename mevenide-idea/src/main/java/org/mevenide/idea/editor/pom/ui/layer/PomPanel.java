@@ -21,12 +21,9 @@ import com.intellij.openapi.project.Project;
 import org.mevenide.idea.Res;
 import org.mevenide.idea.editor.pom.PomFileEditorState;
 import org.mevenide.idea.editor.pom.PomFileEditorStateHandler;
-import org.mevenide.idea.editor.pom.ui.layer.model.ContributorsTableModel;
-import org.mevenide.idea.editor.pom.ui.layer.model.DependenciesTableModel;
-import org.mevenide.idea.editor.pom.ui.layer.model.DevelopersTableModel;
-import org.mevenide.idea.editor.pom.ui.layer.model.MailingListsTableModel;
+import static org.mevenide.idea.editor.pom.ui.layer.TableModelConstants.DEPENDENCIES;
+import static org.mevenide.idea.editor.pom.ui.layer.TableModelConstants.MAILING_LISTS;
 import org.mevenide.idea.util.ui.LabeledPanel;
-import org.mevenide.idea.util.ui.SplitPanel;
 import org.mevenide.idea.util.ui.UIUtils;
 import org.mevenide.idea.util.ui.table.CRUDTablePanel;
 
@@ -37,7 +34,7 @@ import java.awt.Component;
 
 /**
  * This panel displays a single POM layer.
- * 
+ *
  * @author Arik
  */
 public class PomPanel extends AbstractPomLayerPanel implements PomFileEditorStateHandler {
@@ -47,15 +44,17 @@ public class PomPanel extends AbstractPomLayerPanel implements PomFileEditorStat
     private static final Res RES = Res.getInstance(PomPanel.class);
 
     private final JTabbedPane tabs = new JTabbedPane(JTabbedPane.TOP);
-    private final JPanel generalInfoPanel = new GeneralInfoPanel(project, editorDocument);
-    private final JPanel mailingListsPanel = new CRUDTablePanel(project, editorDocument, new MailingListsTableModel(project, editorDocument));
-    private final JPanel depsPanel = new CRUDTablePanel(project, editorDocument, new DependenciesTableModel(project, editorDocument));
-    private final JPanel deploymentPanel = new DeploymentPanel(project, editorDocument);
-    private final JPanel teamPanel = createTeamPanel(project, editorDocument);
-    private final JPanel scmPanel = new ScmPanel(project, editorDocument);
 
-    public PomPanel(final com.intellij.openapi.project.Project pProject,
-                         final Document pPomDocument) {
+    private final JPanel generalInfoPanel = new GeneralInfoPanel(project, document);
+    private final JPanel mailingListsPanel = new CRUDTablePanel(project, document, MAILING_LISTS);
+    private final JPanel depsPanel = new CRUDTablePanel(project, document, DEPENDENCIES);
+    private final JPanel deploymentPanel = new DeploymentPanel(project, document);
+    private final JPanel teamPanel = new TeamPanel(project, document);
+    private final JPanel scmPanel = new ScmPanel(project, document);
+    private final JPanel sourcesPanel = new SourcesPanel(project, document);
+
+    public PomPanel(final Project pProject,
+                    final Document pPomDocument) {
         super(pProject, pPomDocument);
 
         initComponents();
@@ -73,11 +72,13 @@ public class PomPanel extends AbstractPomLayerPanel implements PomFileEditorStat
         UIUtils.installBorder(depsLabelPanel);
         UIUtils.installBorder(deploymentPanel);
         UIUtils.installBorder(scmPanel);
+        UIUtils.installBorder(sourcesPanel);
 
         tabs.add("General", generalInfoPanel);
         tabs.add("Mailing lists", mailingListsLabelPanel);
         tabs.add("Team", teamPanel);
         tabs.add("SCM", scmPanel);
+        tabs.add("Source Code", sourcesPanel);
         tabs.add("Dependencies", depsLabelPanel);
         tabs.add("Deployment", deploymentPanel);
     }
@@ -91,7 +92,7 @@ public class PomPanel extends AbstractPomLayerPanel implements PomFileEditorStat
         pState.setSelectedTabIndex(tabs.getSelectedIndex());
 
         final Component component = tabs.getSelectedComponent();
-        if(component instanceof PomFileEditorStateHandler) {
+        if (component instanceof PomFileEditorStateHandler) {
             PomFileEditorStateHandler handler = (PomFileEditorStateHandler) component;
             handler.getState(pState);
         }
@@ -101,22 +102,9 @@ public class PomPanel extends AbstractPomLayerPanel implements PomFileEditorStat
         tabs.setSelectedIndex(pState.getSelectedTabIndex());
 
         final Component component = tabs.getSelectedComponent();
-        if(component instanceof PomFileEditorStateHandler) {
+        if (component instanceof PomFileEditorStateHandler) {
             PomFileEditorStateHandler handler = (PomFileEditorStateHandler) component;
             handler.setState(pState);
         }
     }
-
-    private static JPanel createTeamPanel(final Project pProject, final Document pDocument) {
-        final DevelopersTableModel developersModel = new DevelopersTableModel(pProject, pDocument);
-        final DevelopersTableModel contributorsModel = new ContributorsTableModel(pProject, pDocument);
-        final JPanel developersPanel = new CRUDTablePanel(pProject, pDocument, developersModel);
-        final JPanel contributorsPanel = new CRUDTablePanel(pProject, pDocument, contributorsModel);
-        final LabeledPanel developersLabelPanel = new LabeledPanel(RES.get("developers.desc"), developersPanel);
-        final LabeledPanel contributorsLabelPanel = new LabeledPanel(RES.get("contributors.desc"), contributorsPanel);
-        UIUtils.installBorder(developersLabelPanel);
-        UIUtils.installBorder(contributorsLabelPanel);
-        return new SplitPanel<JPanel,JPanel>(developersLabelPanel, contributorsLabelPanel);
-    }
-
 }

@@ -7,8 +7,6 @@ import com.intellij.util.ui.Table;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.mevenide.idea.util.IDEUtils;
-import org.mevenide.idea.util.ui.table.AbstractDocumentCRUDPanel;
-import org.mevenide.idea.util.ui.table.TagBasedXmlPsiTableModel;
 
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
@@ -27,7 +25,7 @@ public class CRUDTablePanel extends AbstractDocumentCRUDPanel<JTable> {
     /**
      * The table model.
      */
-    protected final TagBasedXmlPsiTableModel model;
+    protected final MutableXmlPsiTableModel model;
 
     /**
      * The action listener, invoked by the Add button, which adds a new row to the table.
@@ -48,8 +46,8 @@ public class CRUDTablePanel extends AbstractDocumentCRUDPanel<JTable> {
     };
 
     /**
-     * The action listener, invoked by the Remove button, which removes the
-     * selected row(s) from the table.
+     * The action listener, invoked by the Remove button, which removes the selected row(s) from the
+     * table.
      */
     private final ActionListener removeActionListener = new ActionListener() {
         public void actionPerformed(ActionEvent e) {
@@ -74,7 +72,26 @@ public class CRUDTablePanel extends AbstractDocumentCRUDPanel<JTable> {
      */
     public CRUDTablePanel(final Project pProject,
                           final Document pEditorDocument,
-                          final TagBasedXmlPsiTableModel pModel) {
+                          final CRUDXmlPsiDescriptor pDescriptor) {
+        this(pProject,
+             pEditorDocument,
+             new SimpleTagBasedXmlPsiTableModel(pProject,
+                                                pEditorDocument,
+                                                pDescriptor.getContainerTagName(),
+                                                pDescriptor.getRowTagName(),
+                                                pDescriptor.getColumnTitles(),
+                                                pDescriptor.getValueTagNames()));
+    }
+
+    /**
+     * Creates a new dependencies panel for the given project and document.
+     *
+     * @param pProject        the project we belong to
+     * @param pEditorDocument the document serving as the backing model
+     */
+    public CRUDTablePanel(final Project pProject,
+                          final Document pEditorDocument,
+                          final MutableXmlPsiTableModel pModel) {
         super(new Table(), true, false, true, true, pProject, pEditorDocument);
 
         model = pModel;
@@ -88,5 +105,52 @@ public class CRUDTablePanel extends AbstractDocumentCRUDPanel<JTable> {
 
         setAddAction(addActionListener);
         setRemoveAction(removeActionListener);
+    }
+
+    public MutableXmlPsiTableModel getModel() {
+        return model;
+    }
+
+    public static interface CRUDXmlPsiDescriptor {
+        String getContainerTagName();
+
+        String getRowTagName();
+
+        String[] getColumnTitles();
+
+        String[] getValueTagNames();
+    }
+
+    public static class SimpleCRUDXmlPsiDescriptor implements CRUDXmlPsiDescriptor {
+        private final String containerTagName;
+        private final String rowTagName;
+        private final String[] columnTitles;
+        private final String[] valueTagNames;
+
+        public SimpleCRUDXmlPsiDescriptor(final String pContainerTagName,
+                                          final String pRowTagName,
+                                          final String[] pColumnTitles,
+                                          final String[] pValueTagNames) {
+            containerTagName = pContainerTagName;
+            rowTagName = pRowTagName;
+            columnTitles = pColumnTitles;
+            valueTagNames = pValueTagNames;
+        }
+
+        public String[] getColumnTitles() {
+            return columnTitles;
+        }
+
+        public String getContainerTagName() {
+            return containerTagName;
+        }
+
+        public String getRowTagName() {
+            return rowTagName;
+        }
+
+        public String[] getValueTagNames() {
+            return valueTagNames;
+        }
     }
 }
