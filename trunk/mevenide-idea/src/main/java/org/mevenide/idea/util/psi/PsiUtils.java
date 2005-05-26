@@ -79,4 +79,14 @@ public abstract class PsiUtils {
             }
         });
     }
+
+    public static void setTagValue(final Project pProject,
+                                   final XmlTag pParentTag,
+                                   final String pValue) {
+        IDEUtils.runCommand(pProject, new Runnable() {
+            public void run() {
+                pParentTag.getValue().setText(pValue);
+            }
+        });
+    }
 }

@@ -25,12 +25,12 @@ public abstract class TagBasedXmlPsiTableModel extends AbstractXmlPsiTableModel 
      *
      * @see #rowTagName
      */
-    protected final String[] containerTagPath;
+    protected String[] containerTagPath;
 
     /**
      * The name of the tag which represents a single row.
      */
-    protected final String rowTagName;
+    protected String rowTagName;
 
     /**
      * Creates an instance for the given project and document.
@@ -52,6 +52,24 @@ public abstract class TagBasedXmlPsiTableModel extends AbstractXmlPsiTableModel 
         super(pProject, pIdeaDocument);
         containerTagPath = pContainerTagName.split("/");
         rowTagName = pRowTagName;
+    }
+
+    public String[] getContainerTagPath() {
+        return containerTagPath;
+    }
+
+    public void setContainerTagPath(final String[] pContainerTagPath) {
+        containerTagPath = pContainerTagPath;
+        refreshModel();
+    }
+
+    public String getRowTagName() {
+        return rowTagName;
+    }
+
+    public void setRowTagName(final String pRowTagName) {
+        rowTagName = pRowTagName;
+        refreshModel();
     }
 
     public int getRowCount() {
@@ -91,13 +109,32 @@ public abstract class TagBasedXmlPsiTableModel extends AbstractXmlPsiTableModel 
         final PsiManager mgr = PsiManager.getInstance(project);
         final PsiElementFactory factory = mgr.getElementFactory();
         XmlTag tag = projectTag;
-        for (final String tagName : containerTagPath) {
-            XmlTag currentTag = tag.findFirstSubTag(tagName);
+        for (final String tagExpression : containerTagPath) {
+            XmlTag currentTag;
+            final int bracketStart = tagExpression.indexOf('[');
+            final int bracketEnd = tagExpression.indexOf(']', bracketStart);
+            if(bracketStart >= 0 && bracketEnd >= bracketStart) {
+                //
+                //the tag is an expression - parse the requested index
+                //
+                final int index = Integer.parseInt(tagExpression.substring(bracketStart + 1, bracketEnd));
+                final String tagName = tagExpression.substring(0, bracketStart);
+                final XmlTag[] subTags = tag.findSubTags(tagName);
+                if(index < 0 || index >= subTags.length) {
+                    LOG.warn("Container tag '" + tagName + "' for index '" + index + "' is illegal.");
+                    return null;
+                }
+                
+                currentTag = subTags[index];
+            }
+            else
+                currentTag = tag.findFirstSubTag(tagExpression);
+
             if (currentTag == null) {
                 if(!pCreateIfNotFound)
                     return null;
 
-                currentTag = factory.createTagFromText("<" + tagName + "/>");
+                currentTag = factory.createTagFromText("<" + tagExpression + "/>");
                 tag = (XmlTag) tag.add(currentTag);
             }
             else
