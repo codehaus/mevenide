@@ -20,12 +20,25 @@ public class SimpleTagBasedXmlPsiTableModel extends TagBasedXmlPsiTableModel {
     private final String[] valueTagNames;
 
     public SimpleTagBasedXmlPsiTableModel(final Project pProject,
-                                          final Document pIdeaDocument,
+                                          final Document pDocument,
+                                          final String pContainerTagName,
+                                          final String pRowTagName,
+                                          final String[] pColumnTitles) {
+        this(pProject,
+             pDocument,
+             pContainerTagName,
+             pRowTagName,
+             pColumnTitles,
+             null);
+    }
+
+    public SimpleTagBasedXmlPsiTableModel(final Project pProject,
+                                          final Document pDocument,
                                           final String pContainerTagName,
                                           final String pRowTagName,
                                           final String[] pColumnTitles,
                                           final String[] pValueTagNames) {
-        super(pProject, pIdeaDocument, pContainerTagName, pRowTagName);
+        super(pProject, pDocument, pContainerTagName, pRowTagName);
         columnTitles = pColumnTitles;
         valueTagNames = pValueTagNames;
         refreshModel();
@@ -70,8 +83,13 @@ public class SimpleTagBasedXmlPsiTableModel extends TagBasedXmlPsiTableModel {
     protected Object getValueFromTag(final XmlTag pTag,
                                      final int pRow,
                                      final int pColumn) {
-        final String valueTagName = valueTagNames[pColumn];
-        final XmlTag valueTag = pTag.findFirstSubTag(valueTagName);
+        final XmlTag valueTag;
+
+        if(valueTagNames == null || valueTagNames.length == 0)
+            valueTag = pTag;
+        else
+            valueTag = pTag.findFirstSubTag(valueTagNames[pColumn]);
+
         if (valueTag == null)
             return null;
 
@@ -85,9 +103,10 @@ public class SimpleTagBasedXmlPsiTableModel extends TagBasedXmlPsiTableModel {
         final String stringValue =
                 pValue == null ? null : pValue.toString();
 
-        final String valueTagName = valueTagNames[pColumn];
-
-        PsiUtils.setTagValue(project, pRowTag, valueTagName, stringValue);
+        if(valueTagNames == null || valueTagNames.length == 0)
+            PsiUtils.setTagValue(project, pRowTag, stringValue);
+        else
+            PsiUtils.setTagValue(project, pRowTag, valueTagNames[pColumn], stringValue);
     }
 
     @Override protected void refreshModel(final PsiEventType pEventType,
