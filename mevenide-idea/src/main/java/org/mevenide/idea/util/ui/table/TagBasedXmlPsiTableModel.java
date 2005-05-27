@@ -35,6 +35,17 @@ public abstract class TagBasedXmlPsiTableModel extends AbstractXmlPsiTableModel 
     /**
      * Creates an instance for the given project and document.
      *
+     * @param pProject the project the document belongs to
+     * @param pIdeaDocument the PSI document backing the model
+     */
+    public TagBasedXmlPsiTableModel(final Project pProject,
+                                    final Document pIdeaDocument) {
+        this(pProject, pIdeaDocument, null, null);
+    }
+
+    /**
+     * Creates an instance for the given project and document.
+     *
      * <p>You must specify the name of the data container tag and the
      * name of the row tags. The container tag is a single tag (cannot
      * repeat itself) which contains multiple tags of the same name -
@@ -42,32 +53,44 @@ public abstract class TagBasedXmlPsiTableModel extends AbstractXmlPsiTableModel 
      *
      * @param pProject the project the document belongs to
      * @param pIdeaDocument the PSI document backing the model
-     * @param pContainerTagName the name of the container tag
+     * @param pContainerTagPath the name of the container tag
      * @param pRowTagName the name of the row tags
      */
     public TagBasedXmlPsiTableModel(final Project pProject,
                                     final Document pIdeaDocument,
-                                    final String pContainerTagName,
+                                    final String pContainerTagPath,
                                     final String pRowTagName) {
         super(pProject, pIdeaDocument);
-        containerTagPath = pContainerTagName.split("/");
-        rowTagName = pRowTagName;
+        setTagPath(pContainerTagPath, pRowTagName);
     }
 
-    public String[] getContainerTagPath() {
+    public final String[] getContainerTagPath() {
         return containerTagPath;
     }
 
-    public void setContainerTagPath(final String[] pContainerTagPath) {
-        containerTagPath = pContainerTagPath;
-        refreshModel();
+    public final void setContainerTagPath(final String pContainerTagPath) {
+        setTagPath(pContainerTagPath, rowTagName);
     }
 
-    public String getRowTagName() {
+    public final void setContainerTagPath(final String[] pContainerTagPath) {
+        setTagPath(pContainerTagPath, rowTagName);
+    }
+
+    public final String getRowTagName() {
         return rowTagName;
     }
 
-    public void setRowTagName(final String pRowTagName) {
+    public final void setRowTagName(final String pRowTagName) {
+        setTagPath(containerTagPath, pRowTagName);
+    }
+
+    public final void setTagPath(final String pContainerTagPath, final String pRowTagName) {
+        final String[] containerPath = pContainerTagPath == null ? null : pContainerTagPath.split("/");
+        setTagPath(containerPath, pRowTagName);
+    }
+
+    public void setTagPath(final String[] pContainerTagPath, final String pRowTagName) {
+        containerTagPath = (pContainerTagPath == null) ? null : pContainerTagPath;
         rowTagName = pRowTagName;
         refreshModel();
     }
@@ -97,6 +120,8 @@ public abstract class TagBasedXmlPsiTableModel extends AbstractXmlPsiTableModel 
      */
     protected XmlTag findContainerTag(final boolean pCreateIfNotFound)
             throws IncorrectOperationException {
+        if(containerTagPath == null)
+            return null;
 
         final XmlDocument xmlDocument = xmlFile.getDocument();
         if (xmlDocument == null)
@@ -124,7 +149,7 @@ public abstract class TagBasedXmlPsiTableModel extends AbstractXmlPsiTableModel 
                     LOG.warn("Container tag '" + tagName + "' for index '" + index + "' is illegal.");
                     return null;
                 }
-                
+
                 currentTag = subTags[index];
             }
             else
@@ -171,6 +196,9 @@ public abstract class TagBasedXmlPsiTableModel extends AbstractXmlPsiTableModel 
                                             final int pRow,
                                             final int pColumn) {
         final XmlTag containerTag = findContainerTag();
+        if(containerTag == null)
+            return;
+
         final XmlTag rowTag = containerTag.findSubTags(rowTagName)[pRow];
 
         setValueInTag(rowTag, pValue, pRow, pColumn);
@@ -183,6 +211,9 @@ public abstract class TagBasedXmlPsiTableModel extends AbstractXmlPsiTableModel 
 
     public final Object getValueAt(final int pRow, final int pColumn) {
         final XmlTag containerTag = findContainerTag();
+        if(containerTag == null)
+            return null;
+
         final XmlTag rowTag = containerTag.findSubTags(rowTagName)[pRow];
         return getValueFromTag(rowTag, pRow, pColumn);
     }

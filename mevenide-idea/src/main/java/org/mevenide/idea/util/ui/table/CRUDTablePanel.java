@@ -7,6 +7,7 @@ import com.intellij.util.ui.Table;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.mevenide.idea.util.IDEUtils;
+import org.mevenide.idea.Res;
 
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
@@ -23,9 +24,9 @@ public class CRUDTablePanel extends AbstractDocumentCRUDPanel<JTable> {
     private static final Log LOG = LogFactory.getLog(CRUDTablePanel.class);
 
     /**
-     * The table model.
+     * Resources
      */
-    protected final MutableXmlPsiTableModel model;
+    private static final Res RES = Res.getInstance(CRUDTablePanel.class);
 
     /**
      * The action listener, invoked by the Add button, which adds a new row to the table.
@@ -34,6 +35,10 @@ public class CRUDTablePanel extends AbstractDocumentCRUDPanel<JTable> {
         public void actionPerformed(ActionEvent pEvent) {
             IDEUtils.runCommand(project, new Runnable() {
                 public void run() {
+                    final MutableXmlPsiTableModel model = getModel();
+                    if(model == null)
+                        return;
+
                     try {
                         model.addRow();
                     }
@@ -53,6 +58,10 @@ public class CRUDTablePanel extends AbstractDocumentCRUDPanel<JTable> {
         public void actionPerformed(ActionEvent e) {
             IDEUtils.runCommand(project, new Runnable() {
                 public void run() {
+                    final MutableXmlPsiTableModel model = getModel();
+                    if(model == null)
+                        return;
+
                     try {
                         model.removeRows(component.getSelectedRows());
                     }
@@ -68,15 +77,26 @@ public class CRUDTablePanel extends AbstractDocumentCRUDPanel<JTable> {
      * Creates a new dependencies panel for the given project and document.
      *
      * @param pProject        the project we belong to
-     * @param pEditorDocument the document serving as the backing model
+     * @param pDocument the document serving as the backing model
      */
     public CRUDTablePanel(final Project pProject,
-                          final Document pEditorDocument,
+                          final Document pDocument) {
+        this(pProject, pDocument, (MutableXmlPsiTableModel) null);
+    }
+
+    /**
+     * Creates a new dependencies panel for the given project and document.
+     *
+     * @param pProject        the project we belong to
+     * @param pDocument the document serving as the backing model
+     */
+    public CRUDTablePanel(final Project pProject,
+                          final Document pDocument,
                           final CRUDXmlPsiDescriptor pDescriptor) {
         this(pProject,
-             pEditorDocument,
+             pDocument,
              new SimpleTagBasedXmlPsiTableModel(pProject,
-                                                pEditorDocument,
+                                                pDocument,
                                                 pDescriptor.getContainerTagName(),
                                                 pDescriptor.getRowTagName(),
                                                 pDescriptor.getColumnTitles(),
@@ -87,16 +107,15 @@ public class CRUDTablePanel extends AbstractDocumentCRUDPanel<JTable> {
      * Creates a new dependencies panel for the given project and document.
      *
      * @param pProject        the project we belong to
-     * @param pEditorDocument the document serving as the backing model
+     * @param pDocument the document serving as the backing model
      */
     public CRUDTablePanel(final Project pProject,
-                          final Document pEditorDocument,
+                          final Document pDocument,
                           final MutableXmlPsiTableModel pModel) {
-        super(new Table(), true, false, true, true, pProject, pEditorDocument);
+        super(new Table(), true, false, true, true, pProject, pDocument);
 
-        model = pModel;
-
-        component.setModel(model);
+        if(pModel != null)
+            component.setModel(pModel);
         component.setCellSelectionEnabled(false);
         component.setColumnSelectionAllowed(false);
         component.setRowSelectionAllowed(true);
@@ -108,7 +127,14 @@ public class CRUDTablePanel extends AbstractDocumentCRUDPanel<JTable> {
     }
 
     public MutableXmlPsiTableModel getModel() {
-        return model;
+        return (MutableXmlPsiTableModel) component.getModel();
+    }
+
+    public void setModel(final MutableXmlPsiTableModel pModel) {
+        if(pModel != null)
+            component.setModel(pModel);
+        else
+            throw new NullPointerException(RES.get("null.arg", "pModel"));
     }
 
     public static interface CRUDXmlPsiDescriptor {
