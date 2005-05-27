@@ -6,7 +6,6 @@ import com.jgoodies.forms.builder.DefaultFormBuilder;
 import com.jgoodies.forms.layout.FormLayout;
 import org.mevenide.idea.Res;
 import org.mevenide.idea.util.ui.CustomFormsComponentFactory;
-import org.mevenide.idea.util.ui.SplitPanel;
 import org.mevenide.idea.util.ui.UIUtils;
 import org.mevenide.idea.util.ui.text.XmlPsiDocumentBinder;
 
@@ -29,6 +28,7 @@ public class SourcesPanel extends AbstractPomLayerPanel {
 
     private final JTextField sourceDirField = new JTextField();
     private final JTextField aspectSourceDirField = new JTextField();
+    private final ResourcesPanel resourcesPanel = new ResourcesPanel(project, document);
 
     public SourcesPanel(final Project pProject, final Document pPomDocument) {
         super(pProject, pPomDocument);
@@ -67,7 +67,8 @@ public class SourcesPanel extends AbstractPomLayerPanel {
         c.gridy = 1;
         c.weightx = 1;
         c.weighty = 1;
-        add(new SplitPanel<JPanel, JPanel>(new JPanel(), new JPanel()), c);
+        add(resourcesPanel, c);
+        UIUtils.installBorder(resourcesPanel, 10, 0, 0, 0);
     }
 
     private void bindComponents() {
