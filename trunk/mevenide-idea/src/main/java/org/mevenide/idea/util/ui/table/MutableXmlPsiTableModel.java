@@ -11,4 +11,18 @@ import javax.swing.table.TableModel;
 public interface MutableXmlPsiTableModel extends TableModel {
     XmlTag addRow() throws IncorrectOperationException;
     void removeRows(final int[] pRowIndices) throws IncorrectOperationException;
+
+    String[] getContainerTagPath();
+
+    void setContainerTagPath(String pContainerTagPath);
+
+    void setContainerTagPath(String[] pContainerTagPath);
+
+    String getRowTagName();
+
+    void setRowTagName(String pRowTagName);
+
+    void setTagPath(String pContainerTagPath, String pRowTagName);
+
+    void setTagPath(String[] pContainerTagPath, String pRowTagName);
 }
