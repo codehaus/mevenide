@@ -199,9 +199,13 @@ public abstract class TagBasedXmlPsiTableModel extends AbstractXmlPsiTableModel 
         if(containerTag == null)
             return;
 
-        final XmlTag rowTag = containerTag.findSubTags(rowTagName)[pRow];
-
-        setValueInTag(rowTag, pValue, pRow, pColumn);
+        final XmlTag[] subTags = containerTag.findSubTags(rowTagName);
+        if(pRow < 0 || pRow >= subTags.length)
+            return;
+        
+        final XmlTag rowTag = subTags[pRow];
+        if(rowTag != null)
+            setValueInTag(rowTag, pValue, pRow, pColumn);
     }
 
     protected abstract void setValueInTag(final XmlTag pRowTag,
