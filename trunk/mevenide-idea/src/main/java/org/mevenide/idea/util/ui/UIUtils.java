@@ -104,7 +104,8 @@ public abstract class UIUtils {
                                      final int pLeft,
                                      final int pBottom,
                                      final int pRight) {
-        pComponent.setBorder(BorderFactory.createEmptyBorder(
+        if(pComponent != null)
+            pComponent.setBorder(BorderFactory.createEmptyBorder(
                 pTop, pLeft, pBottom, pRight));
     }
 }
