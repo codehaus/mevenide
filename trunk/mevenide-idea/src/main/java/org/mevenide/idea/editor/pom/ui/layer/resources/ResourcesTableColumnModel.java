@@ -3,6 +3,7 @@ package org.mevenide.idea.editor.pom.ui.layer.resources;
 import com.intellij.openapi.project.Project;
 import org.mevenide.idea.util.ui.table.PatternsTableCellEditor;
 import org.mevenide.idea.util.ui.table.PatternsTableCellRenderer;
+import org.mevenide.idea.Res;
 
 import javax.swing.table.DefaultTableColumnModel;
 import javax.swing.table.TableCellEditor;
@@ -16,6 +17,11 @@ import javax.swing.table.TableColumn;
  * @author Arik
  */
 public class ResourcesTableColumnModel extends DefaultTableColumnModel {
+    /**
+     * Resources
+     */
+    private static final Res RES = Res.getInstance(ResourcesTableColumnModel.class);
+
     /**
      * The renderer used to render pattern list columns.
      */
@@ -34,8 +40,8 @@ public class ResourcesTableColumnModel extends DefaultTableColumnModel {
 
         addColumn(createDirectoryColumn());
         addColumn(createTargetPathColumn());
-        addColumn(createPatternsColumn(2, "Includes", "includes"));
-        addColumn(createPatternsColumn(3, "Excludes", "excludes"));
+        addColumn(createPatternsColumn(2, RES.get("includes.column.title"), "includes"));
+        addColumn(createPatternsColumn(3, RES.get("excludes.column.title"), "excludes"));
     }
 
     /**
@@ -45,7 +51,7 @@ public class ResourcesTableColumnModel extends DefaultTableColumnModel {
      */
     private TableColumn createDirectoryColumn() {
         final TableColumn directoryColumn = new TableColumn(0, 100);
-        directoryColumn.setHeaderValue("Directory");
+        directoryColumn.setHeaderValue(RES.get("directory.column.title"));
         directoryColumn.setIdentifier("header");
         return directoryColumn;
     }
@@ -57,7 +63,7 @@ public class ResourcesTableColumnModel extends DefaultTableColumnModel {
      */
    private TableColumn createTargetPathColumn() {
         final TableColumn targetPathColumn = new TableColumn(1, 100);
-        targetPathColumn.setHeaderValue("Target Path");
+        targetPathColumn.setHeaderValue(RES.get("targetPath.column.title"));
         targetPathColumn.setIdentifier("targetPath");
         return targetPathColumn;
     }
