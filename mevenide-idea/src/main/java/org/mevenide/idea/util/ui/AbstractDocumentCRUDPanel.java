@@ -1,4 +1,4 @@
-package org.mevenide.idea.util.ui.table;
+package org.mevenide.idea.util.ui;
 
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.project.Project;

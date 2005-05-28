@@ -6,6 +6,7 @@ import com.intellij.psi.PsiTreeChangeEvent;
 import com.intellij.psi.xml.XmlTag;
 import org.mevenide.idea.Res;
 import org.mevenide.idea.util.psi.PsiUtils;
+import org.mevenide.idea.util.psi.PsiEventType;
 
 /**
  * @author Arik
@@ -85,7 +86,7 @@ public class SimpleTagBasedXmlPsiTableModel extends TagBasedXmlPsiTableModel {
                                      final int pColumn) {
         final XmlTag valueTag;
 
-        if(valueTagNames == null || valueTagNames.length == 0)
+        if (valueTagNames == null || valueTagNames.length == 0)
             valueTag = pTag;
         else
             valueTag = pTag.findFirstSubTag(valueTagNames[pColumn]);
@@ -103,14 +104,14 @@ public class SimpleTagBasedXmlPsiTableModel extends TagBasedXmlPsiTableModel {
         final String stringValue =
                 pValue == null ? null : pValue.toString();
 
-        if(valueTagNames == null || valueTagNames.length == 0)
+        if (valueTagNames == null || valueTagNames.length == 0)
             PsiUtils.setTagValue(project, pRowTag, stringValue);
         else
             PsiUtils.setTagValue(project, pRowTag, valueTagNames[pColumn], stringValue);
     }
 
-    @Override protected void refreshModel(final PsiEventType pEventType,
-                                          final PsiTreeChangeEvent pEvent) {
+    public void refreshModel(final PsiEventType pEventType,
+                             final PsiTreeChangeEvent pEvent) {
         fireTableStructureChanged();
     }
 }
