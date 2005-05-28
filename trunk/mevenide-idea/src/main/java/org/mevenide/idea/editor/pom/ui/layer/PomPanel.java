@@ -52,6 +52,7 @@ public class PomPanel extends AbstractPomLayerPanel implements PomFileEditorStat
     private final JPanel teamPanel = new TeamPanel(project, document);
     private final JPanel scmPanel = new ScmPanel(project, document);
     private final JPanel sourcesPanel = new SourcesPanel(project, document);
+    private final JPanel testsPanel = new TestingPanel(project, document);
 
     public PomPanel(final Project pProject,
                     final Document pPomDocument) {
@@ -73,13 +74,15 @@ public class PomPanel extends AbstractPomLayerPanel implements PomFileEditorStat
         UIUtils.installBorder(deploymentPanel);
         UIUtils.installBorder(scmPanel);
         UIUtils.installBorder(sourcesPanel);
+        UIUtils.installBorder(testsPanel);
 
         tabs.add("General", generalInfoPanel);
         tabs.add("Mailing lists", mailingListsLabelPanel);
         tabs.add("Team", teamPanel);
         tabs.add("SCM", scmPanel);
-        tabs.add("Source Code", sourcesPanel);
         tabs.add("Dependencies", depsLabelPanel);
+        tabs.add("Source Code", sourcesPanel);
+        tabs.add("Testing", testsPanel);
         tabs.add("Deployment", deploymentPanel);
     }
 
