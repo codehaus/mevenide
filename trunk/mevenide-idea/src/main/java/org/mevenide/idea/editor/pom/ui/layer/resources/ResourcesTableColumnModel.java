@@ -1,9 +1,13 @@
 package org.mevenide.idea.editor.pom.ui.layer.resources;
 
+import com.intellij.openapi.project.Project;
+import org.mevenide.idea.util.ui.table.PatternsTableCellEditor;
+import org.mevenide.idea.util.ui.table.PatternsTableCellRenderer;
+
 import javax.swing.table.DefaultTableColumnModel;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableCellEditor;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumn;
 
 /**
  * Represents the resources table's column model. This model determines the appropriate renderers
@@ -15,17 +19,19 @@ public class ResourcesTableColumnModel extends DefaultTableColumnModel {
     /**
      * The renderer used to render pattern list columns.
      */
-    private final TableCellRenderer cellRenderer = new ResourcePatternsTableCellRenderer(new int[]{2, 3});
+    private final TableCellRenderer cellRenderer = new PatternsTableCellRenderer(new int[]{2, 3});
 
     /**
      * The editor for modifying the column by the user.
      */
-    private final TableCellEditor cellEditor = new ResourcePatternsTableCellEditor();
+    private final TableCellEditor cellEditor;
 
     /**
      * Creates a new instance.
      */
-    public ResourcesTableColumnModel() {
+    public ResourcesTableColumnModel(final Project pProject) {
+        cellEditor = new PatternsTableCellEditor(pProject);
+
         addColumn(createDirectoryColumn());
         addColumn(createTargetPathColumn());
         addColumn(createPatternsColumn(2, "Includes", "includes"));
