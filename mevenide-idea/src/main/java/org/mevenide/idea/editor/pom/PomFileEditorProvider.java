@@ -24,6 +24,7 @@ import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.Disposable;
 import org.jdom.Element;
 import org.mevenide.idea.module.ModuleSettings;
@@ -44,7 +45,7 @@ public class PomFileEditorProvider extends AbstractApplicationComponent implemen
         if(!pFile.getName().equalsIgnoreCase("project.xml"))
             return false;
 
-        final File file = new File(pFile.getPath()).getAbsoluteFile();
+        final File file = VfsUtil.virtualToIoFile(pFile).getAbsoluteFile();
 
         final Module[] modules = ModuleManager.getInstance(pProject).getModules();
         for(final Module module : modules) {
