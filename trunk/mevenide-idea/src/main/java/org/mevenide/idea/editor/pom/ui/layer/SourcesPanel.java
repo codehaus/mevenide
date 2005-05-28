@@ -27,11 +27,28 @@ public class SourcesPanel extends AbstractPomLayerPanel {
      */
     private static final Res RES = Res.getInstance(SourcesPanel.class);
 
+    /**
+     * The source code directory field.
+     */
     private final JTextField sourceDirField = new JTextField();
+
+    /**
+     * The aspects source code directory field.
+     */
     private final JTextField aspectSourceDirField = new JTextField();
+
+    /**
+     * The resources panel.
+     */
     private final ResourcesPanel resourcesPanel = new ResourcesPanel(
             project, document, "build/resources");
 
+    /**
+     * Creates an instance for the given project and document.
+     *
+     * @param pProject the project this editor belongs to
+     * @param pPomDocument the document backing up this panel
+     */
     public SourcesPanel(final Project pProject, final Document pPomDocument) {
         super(pProject, pPomDocument);
 
@@ -82,7 +99,11 @@ public class SourcesPanel extends AbstractPomLayerPanel {
         }
     }
 
-    private JPanel createDirectoriesPanel() {
+    /**
+     * Creates the directories panel.
+     * @return panel
+     */
+    protected JPanel createDirectoriesPanel() {
         final FormLayout layout = new FormLayout("right:min, 2dlu, fill:pref:grow");
         DefaultFormBuilder builder = new DefaultFormBuilder(layout);
         builder.setComponentFactory(new CustomFormsComponentFactory());
