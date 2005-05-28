@@ -17,13 +17,15 @@
 package org.mevenide.idea.editor.pom.ui.layer;
 
 import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.fileChooser.FileChooserDescriptor;
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory;
+import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 import com.jgoodies.forms.layout.FormLayout;
 import org.mevenide.idea.Res;
 import org.mevenide.idea.util.ui.CustomFormsComponentFactory;
+import org.mevenide.idea.util.ui.RelativeTextFieldWithBrowseButton;
 import org.mevenide.idea.util.ui.text.XmlPsiDocumentBinder;
 
 import javax.swing.JComboBox;
@@ -44,7 +46,7 @@ public class GeneralInfoPanel extends AbstractPomLayerPanel {
     private static final Res RES = Res.getInstance(GeneralInfoPanel.class);
 
     private final JComboBox pomVersionField = new JComboBox(new String[]{"3"});
-    private final TextFieldWithBrowseButton extendField = new TextFieldWithBrowseButton();
+    private final TextFieldWithBrowseButton extendField;
 
     private final JTextField nameField = new JTextField();
     private final JTextField versionField = new JTextField();
@@ -52,7 +54,7 @@ public class GeneralInfoPanel extends AbstractPomLayerPanel {
     private final JTextField groupIdField = new JTextField();
     private final JTextField inceptionYearField = new JTextField();
     private final JTextField urlField = new JTextField();
-    private final JTextField logoUrlField = new JTextField();
+    private final TextFieldWithBrowseButton logoUrlField;
 
     private final JTextField shortDescField = new JTextField();
     private final JTextArea descField = new JTextArea();
@@ -62,11 +64,18 @@ public class GeneralInfoPanel extends AbstractPomLayerPanel {
 
     private final JTextField orgNameField = new JTextField();
     private final JTextField orgUrlField = new JTextField();
-    private final TextFieldWithBrowseButton orgLogoUrlField = new TextFieldWithBrowseButton();
+    private final TextFieldWithBrowseButton orgLogoUrlField;
 
     public GeneralInfoPanel(final com.intellij.openapi.project.Project pProject,
                             final Document pPomDocument) {
         super(pProject, pPomDocument);
+
+        final VirtualFile file = FileDocumentManager.getInstance().getFile(document);
+        final VirtualFile dir = file.getParent();
+
+        extendField = new RelativeTextFieldWithBrowseButton(dir);
+        logoUrlField = new RelativeTextFieldWithBrowseButton(dir);
+        orgLogoUrlField = new RelativeTextFieldWithBrowseButton(dir);
 
         initComponents();
         layoutComponents();
@@ -76,19 +85,23 @@ public class GeneralInfoPanel extends AbstractPomLayerPanel {
     private void initComponents() {
         pomVersionField.setEnabled(false);
 
-        final FileChooserDescriptor extendChooserDescriptor =
-                FileChooserDescriptorFactory.createSingleFileNoJarsDescriptor();
-        extendField.addBrowseFolderListener(RES.get("choose.pom.parent"),
-                                            RES.get("choose.pom.parent.desc"),
-                                            project,
-                                            extendChooserDescriptor);
+        extendField.addBrowseFolderListener(
+                RES.get("choose.pom.parent"),
+                RES.get("choose.pom.parent.desc"),
+                project,
+                FileChooserDescriptorFactory.createSingleFileNoJarsDescriptor());
 
-        final FileChooserDescriptor orgLogoChooserDesc =
-                FileChooserDescriptorFactory.createSingleFileNoJarsDescriptor();
-        orgLogoUrlField.addBrowseFolderListener(RES.get("choose.org.logo"),
-                                                RES.get("choose.org.logo.desc"),
-                                                project,
-                                                orgLogoChooserDesc);
+        logoUrlField.addBrowseFolderListener(
+                RES.get("choose.org.logo"),
+                RES.get("choose.org.logo.desc"),
+                project,
+                FileChooserDescriptorFactory.createSingleFileNoJarsDescriptor());
+
+        orgLogoUrlField.addBrowseFolderListener(
+                RES.get("choose.org.logo"),
+                RES.get("choose.org.logo.desc"),
+                project,
+                FileChooserDescriptorFactory.createSingleFileNoJarsDescriptor());
 
         inceptionYearField.setPreferredSize(new Dimension(60, 20));
         descField.setPreferredSize(new Dimension(300, 80));
@@ -170,7 +183,7 @@ public class GeneralInfoPanel extends AbstractPomLayerPanel {
             binder.bind(groupIdField, "groupId");
             binder.bind(inceptionYearField, "inceptionYear");
             binder.bind(urlField, "url");
-            binder.bind(logoUrlField, "logo");
+            binder.bind(logoUrlField.getTextField(), "logo");
             binder.bind(shortDescField, "shortDescription");
             binder.bind(descField, "description");
             binder.bind(packageField, "package");
