@@ -17,14 +17,14 @@ public abstract class AbstractDocumentCRUDPanel<T extends JComponent> extends CR
     /**
      * The IDEA document we are modifying/reading.
      */
-    protected final Document editorDocument;
+    protected final Document document;
 
     protected AbstractDocumentCRUDPanel(final T pComponent,
                                         final Project pProject,
                                         final Document pEditorDocument) {
         super(pComponent);
         project = pProject;
-        editorDocument = pEditorDocument;
+        document = pEditorDocument;
     }
 
     protected AbstractDocumentCRUDPanel(final T pComponent,
@@ -34,7 +34,7 @@ public abstract class AbstractDocumentCRUDPanel<T extends JComponent> extends CR
                                         final Project pProject, final Document pEditorDocument) {
         super(pComponent, pShowAddButton, pShowEditButton, pShowRemoveButton);
         project = pProject;
-        editorDocument = pEditorDocument;
+        document = pEditorDocument;
     }
 
     protected AbstractDocumentCRUDPanel(final T pComponent,
@@ -46,6 +46,6 @@ public abstract class AbstractDocumentCRUDPanel<T extends JComponent> extends CR
                                         final Document pEditorDocument) {
         super(pComponent, pShowAddButton, pShowEditButton, pShowRemoveButton, pWrapInScrollPane);
         project = pProject;
-        editorDocument = pEditorDocument;
+        document = pEditorDocument;
     }
 }
