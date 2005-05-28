@@ -1,4 +1,4 @@
-package org.mevenide.idea.util.ui.table;
+package org.mevenide.idea.util.ui;
 
 import com.jgoodies.forms.builder.ButtonStackBuilder;
 import org.mevenide.idea.Res;

@@ -7,6 +7,7 @@ import com.intellij.util.ui.Table;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.mevenide.idea.util.IDEUtils;
+import org.mevenide.idea.util.ui.AbstractDocumentCRUDPanel;
 import org.mevenide.idea.Res;
 
 import javax.swing.JTable;

@@ -294,21 +294,31 @@
         <root url="jar://$maven.repo$/maven/jars/maven-1.0.2.jar!/" />
       </CLASSES>
       <JAVADOC />
-      <SOURCES />
+      <SOURCES>
+        <root url="file://C:/Devl/work/maven-1.0.2/src/conf" />
+        <root url="file://C:/Devl/work/maven-1.0.2/src/java" />
+        <root url="file://C:/Devl/work/maven-1.0.2/src/bootstrap" />
+      </SOURCES>
     </library>
     <library name="mevenide-config">
       <CLASSES>
         <root url="jar://$maven.repo$/mevenide/jars/mevenide-config-0.8-SNAPSHOT.jar!/" />
       </CLASSES>
       <JAVADOC />
-      <SOURCES />
+      <SOURCES>
+        <root url="file://C:/Devl/work/mevenide/mevenide-config/src/conf" />
+        <root url="file://C:/Devl/work/mevenide/mevenide-config/src/java" />
+      </SOURCES>
     </library>
     <library name="mevenide-core">
       <CLASSES>
         <root url="jar://$maven.repo$/mevenide/jars/mevenide-core-0.8-SNAPSHOT.jar!/" />
       </CLASSES>
       <JAVADOC />
-      <SOURCES />
+      <SOURCES>
+        <root url="file://C:/Devl/work/mevenide/mevenide-core/src/java" />
+        <root url="file://C:/Devl/work/mevenide/mevenide-core/src/conf" />
+      </SOURCES>
     </library>
     <library name="xpp3">
       <CLASSES>
