@@ -23,7 +23,7 @@ import com.intellij.openapi.Disposable;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiFile;
 import org.mevenide.idea.editor.pom.ui.layer.PomPanel;
-import org.mevenide.idea.support.AbstractFileEditor;
+import org.mevenide.idea.util.components.AbstractFileEditor;
 
 import javax.swing.JComponent;
 

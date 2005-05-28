@@ -27,7 +27,7 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.Disposable;
 import org.jdom.Element;
 import org.mevenide.idea.module.ModuleSettings;
-import org.mevenide.idea.support.AbstractApplicationComponent;
+import org.mevenide.idea.util.components.AbstractApplicationComponent;
 
 import java.io.File;
 

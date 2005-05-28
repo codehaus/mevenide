@@ -1,4 +1,4 @@
-package org.mevenide.idea.support;
+package org.mevenide.idea.util.components;
 
 import com.intellij.openapi.fileEditor.*;
 import com.intellij.openapi.project.Project;

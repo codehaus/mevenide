@@ -21,7 +21,7 @@ import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.module.Module;
 import org.mevenide.goals.grabber.IGoalsGrabber;
 import org.mevenide.idea.module.ModuleSettings;
-import org.mevenide.idea.support.AbstractModuleComponent;
+import org.mevenide.idea.util.components.AbstractModuleComponent;
 import org.mevenide.idea.util.goals.GoalsHelper;
 
 import java.beans.PropertyChangeEvent;
