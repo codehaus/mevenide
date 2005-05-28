@@ -1,10 +1,12 @@
-package org.mevenide.idea.editor.pom.ui.layer.resources;
+package org.mevenide.idea.util.ui;
 
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.ui.DialogBuilder;
+import com.intellij.openapi.ui.DialogWrapper;
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 import org.mevenide.idea.Res;
-import org.mevenide.idea.util.ui.CustomFormsComponentFactory;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -17,16 +19,15 @@ import java.awt.event.ActionListener;
 import java.util.List;
 
 /**
- * Displays a modifable list of patterns. The user can add or remove
- * patterns from the list.
+ * Displays a modifable list of patterns. The user can add or remove patterns from the list.
  *
  * @author Arik
  */
-public class ResourcePatternsPanel extends JPanel {
+public class PatternsPanel extends JPanel {
     /**
      * Resources
      */
-    private static final Res RES = Res.getInstance(ResourcePatternsPanel.class);
+    private static final Res RES = Res.getInstance(PatternsPanel.class);
 
     /**
      * The label for the pattern field.
@@ -49,8 +50,8 @@ public class ResourcePatternsPanel extends JPanel {
     private final JList patternList = new JList(patternsModel);
 
     /**
-     * This button adds the currently entered pattern in the {@link #patternField}
-     * into the {@link #patternsModel pattern list model}.
+     * This button adds the currently entered pattern in the {@link #patternField} into the {@link
+     * #patternsModel pattern list model}.
      */
     private final JButton addPatternButton = new JButton(RES.get("add.button.title"));
 
@@ -62,27 +63,27 @@ public class ResourcePatternsPanel extends JPanel {
     /**
      * Creates a new instance with no preset patterns.
      */
-    public ResourcePatternsPanel() {
-        this((String[])null);
+    public PatternsPanel() {
+        this((String[]) null);
     }
 
     /**
-     * Creates a new instance with the specified preset patterns that will
-     * appear in the patterns list.
+     * Creates a new instance with the specified preset patterns that will appear in the patterns
+     * list.
      *
      * @param pPatterns the preset patterns
      */
-    public ResourcePatternsPanel(final List<String> pPatterns) {
+    public PatternsPanel(final List<String> pPatterns) {
         this(pPatterns.toArray(new String[pPatterns.size()]));
     }
 
     /**
-     * Creates a new instance with the specified preset patterns that will
-     * appear in the patterns list.
+     * Creates a new instance with the specified preset patterns that will appear in the patterns
+     * list.
      *
      * @param pPatterns the preset patterns
      */
-    public ResourcePatternsPanel(final String[] pPatterns) {
+    public PatternsPanel(final String[] pPatterns) {
         initModel(pPatterns);
         initComponents();
         layoutComponents();
@@ -94,14 +95,13 @@ public class ResourcePatternsPanel extends JPanel {
      * @param pPatterns the patterns to add to the model
      */
     private void initModel(final String[] pPatterns) {
-        if(pPatterns != null)
-            for(String pattern : pPatterns)
+        if (pPatterns != null)
+            for (String pattern : pPatterns)
                 patternsModel.addElement(pattern);
     }
 
     /**
-     * Initializes the components by settings required properties and
-     * event handlers.
+     * Initializes the components by settings required properties and event handlers.
      */
     private void initComponents() {
         setPreferredSize(new Dimension(400, 400));
@@ -163,8 +163,8 @@ public class ResourcePatternsPanel extends JPanel {
      * @param pPattern the pattern to add
      */
     private void addPattern(final String pPattern) {
-        if(pPattern != null && pPattern.trim().length() > 0) {
-            if(patternsModel.contains(pPattern))
+        if (pPattern != null && pPattern.trim().length() > 0) {
+            if (patternsModel.contains(pPattern))
                 return;
 
             patternsModel.addElement(pPattern);
@@ -179,36 +179,65 @@ public class ResourcePatternsPanel extends JPanel {
     private void removePatterns() {
         final int[] rows = patternList.getSelectedIndices();
         final Object[] values = new Object[rows.length];
-        for(int i = 0; i < rows.length; i++)
+        for (int i = 0; i < rows.length; i++)
             values[i] = patternsModel.getElementAt(rows[i]);
 
-        for(final Object value : values)
+        for (final Object value : values)
             patternsModel.removeElement(value);
     }
 
     /**
-     * Returns the list of patterns selected by the user. These are
-     * the patterns that are still in the pattern list.
+     * Returns the list of patterns selected by the user. These are the patterns that are still in
+     * the pattern list.
      *
-     * <p>If no patterns are present in the list, an empty array is
-     * returned.</p>
+     * <p>If no patterns are present in the list, an empty array is returned.</p>
      *
      * @return string array
      */
     public String[] getPatterns() {
         final String[] items = new String[patternsModel.getSize()];
-        for(int i = 0; i < items.length; i++)
+        for (int i = 0; i < items.length; i++)
             items[i] = (String) patternsModel.getElementAt(i);
 
         return items;
     }
 
     /**
-     * Listens to changes in the pattern field document, and
-     * enables/disables relevant fields in the panel accordingly.
+     * Displays the patterns selection dialog, preloaded with the given patterns list.
+     *
+     * <p>If the user cancels the dialog (by clicking the "Cancel" button), {@code null} is
+     * returned. Otherwise, an array of patterns is returned. If the user does not select any
+     * patterns, an empty array is returned (to distinguish the case from when the user presses
+     * "Cancel", in which case {@code null} is returned).</p>
+     *
+     * @param pProject  the project context
+     * @param pTitle    the dialog title
+     * @param pPatterns the patterns to initially display in the dialog
+     * @return {@code null} if the user cancels the dialog, or a (possibly empty) array of strings
+     */
+    public static String[] showDialog(final Project pProject,
+                                      final String pTitle,
+                                      final String[] pPatterns) {
+        final PatternsPanel patternsPanel = new PatternsPanel(pPatterns);
+
+        final DialogBuilder builder = new DialogBuilder(pProject);
+        builder.addOkAction();
+        builder.addCancelAction();
+        builder.setCenterPanel(patternsPanel);
+        builder.setTitle(pTitle);
+
+        final int exitCode = builder.show();
+        if (exitCode == DialogWrapper.OK_EXIT_CODE)
+            return patternsPanel.getPatterns();
+        else
+            return null;
+    }
+
+    /**
+     * Listens to changes in the pattern field document, and enables/disables relevant fields in the
+     * panel accordingly.
      */
     private class PatternDocumentListener implements DocumentListener {
-
         public void changedUpdate(DocumentEvent e) {
             final String text = patternField.getText();
             addPatternButton.setEnabled(text != null && text.trim().length() > 0);

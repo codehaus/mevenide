@@ -1,4 +1,4 @@
-package org.mevenide.idea.editor.pom.ui.layer.resources;
+package org.mevenide.idea.util.ui.table;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
@@ -14,7 +14,7 @@ import java.awt.Component;
  *
  * @author Arik
  */
-public class ResourcePatternsTableCellRenderer extends DefaultTableCellRenderer {
+public class PatternsTableCellRenderer extends DefaultTableCellRenderer {
 
     /**
      * An empty array, to save instantiations when needed.
@@ -33,7 +33,7 @@ public class ResourcePatternsTableCellRenderer extends DefaultTableCellRenderer 
      *
      * @param pPatternsColumnIndexes the pattern lists column indexes
      */
-    public ResourcePatternsTableCellRenderer(final int[] pPatternsColumnIndexes) {
+    public PatternsTableCellRenderer(final int[] pPatternsColumnIndexes) {
         patternsColumnIndexes = pPatternsColumnIndexes;
     }
 

@@ -17,7 +17,7 @@ public class ResourcesPanel extends CRUDTablePanel {
               new ResourcesTableModel(pProject,
                                       pDocument,
                                       pResourceContainerTagName));
-        component.setColumnModel(new ResourcesTableColumnModel());
+        component.setColumnModel(new ResourcesTableColumnModel(project));
         component.setAutoCreateColumnsFromModel(false);
     }
 }
