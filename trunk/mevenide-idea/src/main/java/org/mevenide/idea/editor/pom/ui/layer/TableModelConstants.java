@@ -101,4 +101,20 @@ public abstract class TableModelConstants {
                 "tag"
             }
     );
+
+    public static final CRUDTablePanel.CRUDXmlPsiDescriptor TESTS_INCLUDES = new CRUDTablePanel.SimpleCRUDXmlPsiDescriptor(
+            "build/unitTest/includes",
+            "include",
+            new String[]{
+                "Pattern"
+            }
+    );
+
+    public static final CRUDTablePanel.CRUDXmlPsiDescriptor TESTS_EXCLUDES = new CRUDTablePanel.SimpleCRUDXmlPsiDescriptor(
+            "build/unitTest/excludes",
+            "exclude",
+            new String[]{
+                "Pattern"
+            }
+    );
 }

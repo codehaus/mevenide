@@ -8,14 +8,12 @@ import org.mevenide.idea.Res;
 import org.mevenide.idea.editor.pom.ui.layer.resources.ResourcesPanel;
 import org.mevenide.idea.util.ui.CustomFormsComponentFactory;
 import org.mevenide.idea.util.ui.UIUtils;
+import org.mevenide.idea.util.ui.table.CRUDTablePanel;
 import org.mevenide.idea.util.ui.text.XmlPsiDocumentBinder;
 
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import java.awt.Component;
-import java.awt.GridBagConstraints;
-import static java.awt.GridBagConstraints.BOTH;
-import java.awt.GridBagLayout;
 import java.lang.reflect.Field;
 
 /**
@@ -33,9 +31,24 @@ public class TestingPanel extends AbstractPomLayerPanel {
     private final JTextField testsSourceDirField = new JTextField();
 
     /**
+     * The directories locations panel.
+     */
+    private final JPanel dirsPanel = createDirectoriesPanel();
+
+    /**
      * The test source code resources panel.
      */
     private final ResourcesPanel testsResourcesPanel = new ResourcesPanel(project, document, "build/unitTest/resources");
+
+    /**
+     * The tests include patterns panel.
+     */
+    private final CRUDTablePanel testsIncludesPanel = new CRUDTablePanel(project, document, TableModelConstants.TESTS_INCLUDES);
+
+    /**
+     * The tests exclude patterns panel.
+     */
+    private final CRUDTablePanel testsExcludesPanel = new CRUDTablePanel(project, document, TableModelConstants.TESTS_EXCLUDES);
 
     /**
      * Creates an instance for the given project and document.
@@ -68,20 +81,23 @@ public class TestingPanel extends AbstractPomLayerPanel {
     }
 
     private void layoutComponents() {
-        setLayout(new GridBagLayout());
-        GridBagConstraints c;
+        final String cols = "fill:min:grow,10dlu,fill:min:grow";
+        final String rows = "top:min, top:min, top:min, fill:min:grow, top:min, fill:min:grow";
+        final FormLayout layout = new FormLayout(cols, rows);
+        DefaultFormBuilder builder = new DefaultFormBuilder(layout, this);
+        builder.setComponentFactory(new CustomFormsComponentFactory());
 
-        c = new GridBagConstraints();
-        c.fill = BOTH;
-        add(createDirectoriesPanel(), c);
+        UIUtils.installBorder(dirsPanel);
+        UIUtils.installBorder(testsIncludesPanel);
+        UIUtils.installBorder(testsExcludesPanel);
+        UIUtils.installBorder(testsResourcesPanel);
 
-        c = new GridBagConstraints();
-        c.fill = BOTH;
-        c.gridy = 1;
-        c.weightx = 1;
-        c.weighty = 1;
-        add(testsResourcesPanel, c);
-        UIUtils.installBorder(testsResourcesPanel, 10, 0, 0, 0);
+        builder.appendSeparator(RES.get("test.dirs.title"));
+        builder.append(dirsPanel, 3);
+        builder.appendSeparator(RES.get("test.patterns.title"));
+        builder.append(testsIncludesPanel, testsExcludesPanel);
+        builder.appendSeparator(RES.get("test.conf.dirs.title"));
+        builder.append(testsResourcesPanel, 3);
     }
 
     private void bindComponents() {
@@ -101,15 +117,7 @@ public class TestingPanel extends AbstractPomLayerPanel {
         DefaultFormBuilder builder = new DefaultFormBuilder(layout);
         builder.setComponentFactory(new CustomFormsComponentFactory());
 
-        //
-        //repository
-        //
-        builder.appendSeparator(RES.get("test.dirs.title"));
         builder.append(RES.get("test.src.dir"), testsSourceDirField);
-        builder.appendSeparator(RES.get("test.conf.dirs.title"));
-        final JPanel panel = builder.getPanel();
-        UIUtils.installBorder(panel, 0, 0, 0, 0);
-
-        return panel;
+        return builder.getPanel();
     }
 }

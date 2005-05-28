@@ -155,6 +155,12 @@ public class CRUDTablePanel extends AbstractDocumentCRUDPanel<JTable> {
 
         public SimpleCRUDXmlPsiDescriptor(final String pContainerTagName,
                                           final String pRowTagName,
+                                          final String[] pColumnTitles) {
+            this(pContainerTagName, pRowTagName, pColumnTitles, null);
+        }
+
+        public SimpleCRUDXmlPsiDescriptor(final String pContainerTagName,
+                                          final String pRowTagName,
                                           final String[] pColumnTitles,
                                           final String[] pValueTagNames) {
             containerTagName = pContainerTagName;
