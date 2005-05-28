@@ -14,7 +14,7 @@
  *  limitations under the License.
  * =========================================================================
  */
-package org.mevenide.idea.support;
+package org.mevenide.idea.util.components;
 
 import com.intellij.openapi.components.ApplicationComponent;
 

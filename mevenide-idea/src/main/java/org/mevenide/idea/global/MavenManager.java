@@ -25,7 +25,7 @@ import com.intellij.openapi.util.WriteExternalException;
 import org.jdom.Element;
 import org.mevenide.environment.ILocationFinder;
 import org.mevenide.environment.SysEnvLocationFinder;
-import org.mevenide.idea.support.AbstractApplicationComponent;
+import org.mevenide.idea.util.components.AbstractApplicationComponent;
 import org.mevenide.idea.util.ui.UIUtils;
 
 import java.io.File;

@@ -14,13 +14,14 @@
  *  limitations under the License.
  * =========================================================================
  */
-package org.mevenide.idea.support;
+package org.mevenide.idea.util.components;
 
 import com.intellij.openapi.module.ModuleComponent;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.projectRoots.ProjectJdk;
 import com.intellij.openapi.roots.ModuleRootManager;
 import com.intellij.openapi.roots.ProjectRootManager;
+import org.mevenide.idea.util.components.AbstractIdeaComponent;
 
 /**
  * @author Arik

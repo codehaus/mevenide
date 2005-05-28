@@ -33,7 +33,7 @@ import org.mevenide.context.IQueryErrorCallback;
 import org.mevenide.goals.grabber.DefaultGoalsGrabber;
 import org.mevenide.goals.grabber.IGoalsGrabber;
 import org.mevenide.goals.grabber.ProjectGoalsGrabber;
-import org.mevenide.idea.support.AbstractModuleComponent;
+import org.mevenide.idea.util.components.AbstractModuleComponent;
 import org.mevenide.idea.util.goals.grabber.CustomGoalsGrabber;
 import org.mevenide.idea.util.goals.grabber.FilteredGoalsGrabber;
 

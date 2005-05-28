@@ -20,7 +20,7 @@ import com.intellij.openapi.module.Module;
 import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.options.ConfigurationException;
 import org.mevenide.idea.module.ui.ModuleSettingsPanel;
-import org.mevenide.idea.support.AbstractModuleComponent;
+import org.mevenide.idea.util.components.AbstractModuleComponent;
 import org.mevenide.idea.util.ui.UIUtils;
 import org.mevenide.idea.util.ui.images.Icons;
 
