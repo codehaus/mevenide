@@ -118,7 +118,7 @@ public abstract class TagBasedXmlPsiTableModel extends AbstractXmlPsiTableModel 
      * @param pCreateIfNotFound create the tag if it doesn't exist
      * @return a PSI xml tag
      */
-    protected XmlTag findContainerTag(final boolean pCreateIfNotFound)
+    public XmlTag findContainerTag(final boolean pCreateIfNotFound)
             throws IncorrectOperationException {
         if(containerTagPath == null)
             return null;
@@ -182,7 +182,7 @@ public abstract class TagBasedXmlPsiTableModel extends AbstractXmlPsiTableModel 
      *
      * @return a PSI xml tag
      */
-    protected final XmlTag findContainerTag() {
+    public final XmlTag findContainerTag() {
         try {
             return findContainerTag(false);
         }

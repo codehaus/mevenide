@@ -25,4 +25,9 @@ public interface MutableXmlPsiTableModel extends TableModel {
     void setTagPath(String pContainerTagPath, String pRowTagName);
 
     void setTagPath(String[] pContainerTagPath, String pRowTagName);
+
+    XmlTag findContainerTag(boolean pCreateIfNotFound)
+            throws IncorrectOperationException;
+
+    XmlTag findContainerTag();
 }
