@@ -4,10 +4,10 @@
   <extend>../mevenide-parent/project.xml</extend>
   <pomVersion>3</pomVersion>
   <artifactId>mevenide-idea</artifactId>
-  <name>MevenIDE IDEA Integration</name>
+  <name>MevenIDE for IDEA Integration</name>
   <package>org.mevenide.idea</package>
-  <description>This project provides Maven integration into the popular IntelliJ IDEA IDE.</description>
-  <shortDescription>Maven integration for IntelliJ IDEA IDE.</shortDescription>
+  <description>The MevenIDE for IDEA project aims to integrate Maven into the popular IntelliJ IDEA IDE.</description>
+  <shortDescription>Maven integration for IntelliJ IDEA.</shortDescription>
   <url>http://mevenide.codehaus.org/mevenide-idea/</url>
   <currentVersion>0.2-SNAPSHOT</currentVersion>
   <distributionSite>beaver.codehaus.org</distributionSite>
