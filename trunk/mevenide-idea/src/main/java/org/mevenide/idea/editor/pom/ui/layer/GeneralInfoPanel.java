@@ -123,8 +123,8 @@ public class GeneralInfoPanel extends AbstractPomLayerPanel {
     private void layoutComponents() {
         final FormLayout layout = new FormLayout(
                 "" +
-                        "right:min:grow(0.05), 2dlu, fill:pref:grow(0.45), 0dlu, " + //first column
-                        "right:min:grow(0.05), 2dlu, fill:pref:grow(0.45)",          //second column
+                        "right:min:grow(0.05), 2dlu, fill:min:grow(0.45), 0dlu, " + //first column
+                        "right:min:grow(0.05), 2dlu, fill:min:grow(0.45)",          //second column
                                                                                      "");
         DefaultFormBuilder builder = new DefaultFormBuilder(layout, this);
         builder.setComponentFactory(new CustomFormsComponentFactory());
