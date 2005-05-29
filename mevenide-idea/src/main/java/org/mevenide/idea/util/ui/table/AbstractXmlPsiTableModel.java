@@ -10,6 +10,12 @@ import org.mevenide.idea.util.psi.*;
 import javax.swing.table.AbstractTableModel;
 
 /**
+ * A base class for table models backed by a PSI tree of an XML document.
+ *
+ * <p>This model listens to PSI events and refreshes itself (by the
+ * abstract {@link #refreshModel(PsiEventType, PsiTreeChangeEvent)}
+ * method) to reflect the changes.</p>
+ *
  * @author Arik
  */
 public abstract class AbstractXmlPsiTableModel extends AbstractTableModel implements PsiModifiable {
