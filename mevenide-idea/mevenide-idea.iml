@@ -49,14 +49,7 @@
   </component>
   <component name="org.mevenide.idea.module.ModuleSettings">
     <favoriteGoals>
-      <list size="6">
-        <item index="0" class="java.lang.String" itemvalue="dist:deploy" />
-        <item index="1" class="java.lang.String" itemvalue="site:sshdeploy" />
-        <item index="2" class="java.lang.String" itemvalue="site" />
-        <item index="3" class="java.lang.String" itemvalue="site:deploy" />
-        <item index="4" class="java.lang.String" itemvalue="java:compile" />
-        <item index="5" class="java.lang.String" itemvalue="dist" />
-      </list>
+      <list size="0" />
     </favoriteGoals>
   </component>
 </module>
