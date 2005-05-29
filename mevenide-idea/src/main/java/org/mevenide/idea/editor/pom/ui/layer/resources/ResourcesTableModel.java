@@ -17,7 +17,7 @@ import org.apache.commons.logging.LogFactory;
  * <excludes>} columns.</p>
  *
  * <p>The includes/excludes columns are not editable directly (the text field is not editable) but
- * have a small "Browse" button which pops up a dialog with the {@link org.mevenide.idea.util.ui.PatternsPanel} which
+ * have a small "Browse" button which pops up a dialog with the {@link org.mevenide.idea.util.ui.StringListEditPanel} which
  * allow the actual editing. When the dialog is closed (with the OK button), the selected patterns
  * are pushed back into the text field. Once the user exits the text field, the values are pushed
  * back into this model.</p>

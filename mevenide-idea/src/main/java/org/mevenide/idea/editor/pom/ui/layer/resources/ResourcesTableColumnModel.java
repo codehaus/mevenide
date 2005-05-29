@@ -1,8 +1,8 @@
 package org.mevenide.idea.editor.pom.ui.layer.resources;
 
 import com.intellij.openapi.project.Project;
-import org.mevenide.idea.util.ui.table.PatternsTableCellEditor;
-import org.mevenide.idea.util.ui.table.PatternsTableCellRenderer;
+import org.mevenide.idea.util.ui.table.StringListTableCellEditor;
+import org.mevenide.idea.util.ui.table.StringListTableCellRenderer;
 import org.mevenide.idea.Res;
 
 import javax.swing.table.DefaultTableColumnModel;
@@ -25,7 +25,7 @@ public class ResourcesTableColumnModel extends DefaultTableColumnModel {
     /**
      * The renderer used to render pattern list columns.
      */
-    private final TableCellRenderer cellRenderer = new PatternsTableCellRenderer(new int[]{2, 3});
+    private final TableCellRenderer cellRenderer = new StringListTableCellRenderer();
 
     /**
      * The editor for modifying the column by the user.
@@ -36,7 +36,9 @@ public class ResourcesTableColumnModel extends DefaultTableColumnModel {
      * Creates a new instance.
      */
     public ResourcesTableColumnModel(final Project pProject) {
-        cellEditor = new PatternsTableCellEditor(pProject);
+        cellEditor = new StringListTableCellEditor(pProject,
+                                                   RES.get("pattern.dialog.title"),
+                                                   RES.get("pattern.field.title"));
 
         addColumn(createDirectoryColumn());
         addColumn(createTargetPathColumn());
