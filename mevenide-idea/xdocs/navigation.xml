@@ -17,7 +17,6 @@
 
         <menu name="General">
             <item name="Overview" href="/index.html"/>
-            <item name="Download" href="/downloads.html"/>
             <item name="Source code" href="/cvs-usage.html"/>
             <item name="Installation" href="/installation.html"/>
             <item name="Changes" href="/changes-report.html"/>
