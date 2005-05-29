@@ -281,7 +281,7 @@
     </library>
     <library name="goals-grabber">
       <CLASSES>
-        <root url="jar://$maven.repo$/mevenide/jars/goals-grabber-0.9-SNAPSHOT.jar!/" />
+        <root url="jar://$maven.repo$/mevenide/jars/goals-grabber-0.9.jar!/" />
       </CLASSES>
       <JAVADOC />
       <SOURCES>
@@ -302,7 +302,7 @@
     </library>
     <library name="mevenide-config">
       <CLASSES>
-        <root url="jar://$maven.repo$/mevenide/jars/mevenide-config-0.8-SNAPSHOT.jar!/" />
+        <root url="jar://$maven.repo$/mevenide/jars/mevenide-config-0.8.jar!/" />
       </CLASSES>
       <JAVADOC />
       <SOURCES>
@@ -312,7 +312,7 @@
     </library>
     <library name="mevenide-core">
       <CLASSES>
-        <root url="jar://$maven.repo$/mevenide/jars/mevenide-core-0.8-SNAPSHOT.jar!/" />
+        <root url="jar://$maven.repo$/mevenide/jars/mevenide-core-0.8.jar!/" />
       </CLASSES>
       <JAVADOC />
       <SOURCES>
