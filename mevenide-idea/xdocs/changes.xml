@@ -7,6 +7,7 @@
     </properties>
     <body>
         <release version="0.1" date="unreleased" description="">
+            <action dev="arikkfir" type="add">Added roles editor to the Team panel.</action>
             <action dev="arikkfir" type="add">Added reports selection to the POM editor.</action>
             <action dev="arikkfir" type="add">Added testing information to the POM editor.</action>
             <action dev="arikkfir" type="add">Added build information to the POM editor.</action>
