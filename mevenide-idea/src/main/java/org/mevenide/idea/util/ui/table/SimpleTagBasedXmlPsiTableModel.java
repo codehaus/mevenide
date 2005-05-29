@@ -112,6 +112,6 @@ public class SimpleTagBasedXmlPsiTableModel extends TagBasedXmlPsiTableModel {
 
     public void refreshModel(final PsiEventType pEventType,
                              final PsiTreeChangeEvent pEvent) {
-        fireTableStructureChanged();
+        fireTableDataChanged();
     }
 }
