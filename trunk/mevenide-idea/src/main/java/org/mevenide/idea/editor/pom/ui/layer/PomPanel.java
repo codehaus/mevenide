@@ -24,6 +24,7 @@ import org.mevenide.idea.editor.pom.PomFileEditorStateHandler;
 import static org.mevenide.idea.editor.pom.ui.layer.TableModelConstants.DEPENDENCIES;
 import static org.mevenide.idea.editor.pom.ui.layer.TableModelConstants.MAILING_LISTS;
 import org.mevenide.idea.editor.pom.ui.layer.reports.ReportsPanel;
+import org.mevenide.idea.editor.pom.ui.layer.team.TeamPanel;
 import org.mevenide.idea.util.ui.LabeledPanel;
 import org.mevenide.idea.util.ui.UIUtils;
 import org.mevenide.idea.util.ui.table.CRUDTablePanel;

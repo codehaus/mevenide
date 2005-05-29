@@ -88,25 +88,6 @@ public class ResourcesTableModel extends SimpleTagBasedXmlPsiTableModel {
     }
 
     /**
-     * Returns the {@code <resource>} tag for the given row.
-     *
-     * <p>If the container tag ({@code <resources>}) does not exist, this method will return {@code
-     * null}. If it exists, but no {@code <resource>} tag in the given index exists, {@code null} is
-     * also returned.</p>
-     *
-     * @param pRow the requested resource row
-     * @return xml tag
-     */
-    protected XmlTag findResourceTag(final int pRow) {
-        final XmlTag resourcesTag = findContainerTag();
-        if (resourcesTag == null)
-            return null;
-
-        final XmlTag[] resourceTags = resourcesTag.findSubTags(ROW_TAG_NAME);
-        return resourceTags[pRow];
-    }
-
-    /**
      * Returns {@code true} if the specified column is deemed a patterns column, and needs custom
      * handling not done by the super class.
      *
@@ -114,7 +95,7 @@ public class ResourcesTableModel extends SimpleTagBasedXmlPsiTableModel {
      * @return boolean
      */
     protected boolean isPatternsColumn(final int pColumn) {
-        return pColumn == 2 || pColumn == 3;
+        return valueTagNames[pColumn] == null;
     }
 
     /**
@@ -173,7 +154,7 @@ public class ResourcesTableModel extends SimpleTagBasedXmlPsiTableModel {
         //
         //find the appropriate resource tag for this row
         //
-        final XmlTag resourceTag = findResourceTag(pRow);
+        final XmlTag resourceTag = findRowTag(pRow);
 
         //
         //determine if we are setting the includes or excludes patterns
