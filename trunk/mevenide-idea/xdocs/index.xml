@@ -13,48 +13,57 @@
             <p>
                 Welcome to the MevenIDE IDEA Integration project! This project
                 aims to integrate
-                <a href="http://maven.apache.org">Maven</a> in every possible way into
+                <a href="http://maven.apache.org">Maven</a>in every possible way into
                 <a href="http://www.jetbrains.com">JetBrain</a>'s IntelliJ IDEA.
             </p>
             <p>
                 Current integration features include:
                 <ul>
                     <li>
-                        A POM graphical, and text, editors. The editors are synchronized
-                        between them, as well as with changes from outside the IDE.
+                        A graphical Project Object Model (POM) editor. The editor includes a
+                        standard text editor, as well as an intuitive user interface for
+                        editing the various aspects of a project.
                     </li>
                     <li>
-                        Auto-discovery of a <i>project.xml</i> file for each IDEA module.
-                        Creating a POM file (<i>project.xml</i>) either from inside the
-                        IDE or from outside (external editor, etc) is automatically detected
-                        and enables Maven support for that module.
+                        Full synchronization between the POM text editor and the graphical
+                        POM editor, as well as with POM modifications outside the IntelliJ
+                        IDE.
                     </li>
                     <li>
-                        An Ant-like tool window displaying each IDEA module's available
-                        goals, as defined in the module's <i>maven.xml</i>.
+                        Automatic discovery of POM files (<i>project.xml</i> and <i>maven.xml</i>)
+                        for each IntelliJ module. The plugin will detect if you create one
+                        of these files either from inside the IDE or from outside, and will
+                        respond appropriately.
                     </li>
                     <li>
-                        Execution of selected goal(s) in a dedicated execution console,
-                        using the standard <i>Run</i> console of IDEA. Each execution
-                        can be stopped, paused, or rerun. The output can be copied and
-                        exported into the clipboard or a file.
+                        A special Maven side pane (also called a Tool Window) displaying the
+                        available Maven goals for the project. The pane shows goals defined in the
+                        module's <i>maven.xml</i> file, and common goals, marked as "favorites" in
+                        the module settings dialog.
                     </li>
                     <li>
-                        Automaticaly open project source code files from Maven-generated
-                        output, such as compilation errors.
+                        Execution of selected goal(s) in a dedicated execution console which
+                        supports stop, pause, and re-run. The console supports copying the Maven
+                        output into the clipboard or into a text file.
                     </li>
                     <li>
-                        Specifying a different Maven home than the one defined in your
-                        <i>MAVEN_HOME</i> environment variable and PATH, as well as
-                        auto-detection of your Maven home (via the <i>MAVEN_HOME</i> variable).
+                        Compilation errors reported by Maven in the execution console are displayed
+                        as links, which open the appropriate source code file at the appropriate
+                        location.
                     </li>
-                    <li>Easy installation via IDEA's plugins manager.</li>
                     <li>
-                        Selecting common goals for each module, for easy access in the
-                        goals tool window. Each module can have its own set of common
-                        goals, available under the "Favorites" node in the goals tool window.
+                        Auto-detection of your Maven home (via the <i>MAVEN_HOME</i> environment
+                        variable), and support for specifying a different Maven home (does not
+                        modify the environment variable).
                     </li>
-                    <li>Assigning hot-keys for goals.</li>
+                    <li>
+                        Easy installation via the IntelliJ IDEA plugins manager.
+                    </li>
+                    <li>
+                        Support for assigning shortcut keys (hot-keys) for specific goals for a
+                        specific module in the IDE (no need to find the goal in the Goals tool
+                        window).
+                    </li>
                 </ul>
             </p>
         </section>
@@ -63,10 +72,14 @@
             <p>
                 The Mevenide IDEA integration project is quite new and we are looking for
                 volunteers - you can help! If you like the IntelliJ IDEA, and you like Maven -
-                come and help us write the best IDEA plugin yet - <i><b>the Maven plugin!</b></i>
+                come and help us write the best IDEA plugin yet -
+                <i>
+                    <b>the Maven plugin!</b>
+                </i>
             </p>
             <p>
-                To participate - please contact us via our <a href="mail-lists.html">mailing lists</a>.
+                To participate - please contact us via our
+                <a href="mail-lists.html">mailing lists</a>.
             </p>
         </section>
 
