@@ -33,8 +33,10 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.PluginVersionIdentifier;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.preference.PreferenceStore;
@@ -55,7 +57,9 @@ import org.mevenide.ui.eclipse.nature.ActionDefinitionsManager;
 import org.mevenide.ui.eclipse.preferences.MevenidePreferenceKeys;
 import org.mevenide.ui.eclipse.util.FileUtils;
 import org.mevenide.util.StringUtils;
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.Constants;
 
 /**
  * Created on 01 feb. 03	
@@ -492,5 +496,24 @@ public class Mevenide extends AbstractUIPlugin {
     }
     
     
+    public static final PluginVersionIdentifier getEclipseFormsVersion() {
+        PluginVersionIdentifier result = null;
 
+        final Bundle formsBundle = Platform.getBundle("org.eclipse.ui.forms");
+        if (formsBundle != null) {
+            String version = (String)formsBundle.getHeaders().get(Constants.BUNDLE_VERSION);
+            IStatus status = PluginVersionIdentifier.validateVersion(version);
+            if (status.isOK()) {
+                result = new PluginVersionIdentifier(version);
+            }
+            else {
+                getInstance().getLog().log(status);
+            }
+        }
+
+        return result;
+    }
+
+    public static final PluginVersionIdentifier ECLIPSE_FORMS_3_0_0 = new PluginVersionIdentifier(3, 0, 0);
+    public static final PluginVersionIdentifier ECLIPSE_FORMS_3_1_0 = new PluginVersionIdentifier(3, 1, 0);
 }
