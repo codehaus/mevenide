@@ -3,8 +3,7 @@ package org.mevenide.idea.util.ui.table;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
 import org.apache.commons.lang.StringUtils;
-import org.mevenide.idea.Res;
-import org.mevenide.idea.util.ui.PatternsPanel;
+import org.mevenide.idea.util.ui.StringListEditPanel;
 
 import javax.swing.AbstractCellEditor;
 import javax.swing.BorderFactory;
@@ -16,18 +15,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 /**
- * A table cell editor for modifying resource patterns. This editor displays a non-editable text
- * field and a small browse button. The button opens a dialog with the {@link org.mevenide.idea.util.ui.PatternsPanel}
- * used for editing the patterns.
+ * A table cell editor for modifying a string list. This editor displays a non-editable text
+ * field and a small browse button. The button opens a dialog with the {@link org.mevenide.idea.util.ui.StringListEditPanel}
+ * used for editing the strings.
  *
  * @author Arik
  */
-public class PatternsTableCellEditor extends AbstractCellEditor implements TableCellEditor, ActionListener {
-    /**
-     * Resources
-     */
-    private static final Res RES = Res.getInstance(PatternsTableCellEditor.class);
-
+public class StringListTableCellEditor extends AbstractCellEditor implements TableCellEditor, ActionListener {
     /**
      * An empty array, to save instantiations when needed.
      */
@@ -44,15 +38,29 @@ public class PatternsTableCellEditor extends AbstractCellEditor implements Table
     private String[] value = EMPTY_ARRAY;
 
     /**
-     * The field for editing the patterns.
+     * The title of the dialog that will be presented to the user for editing the list.
+     */
+    private final String dialogTitle;
+
+    /**
+     * The label for the text field where the user will enter new items (in the dialog).
+     */
+    private final String dialogItemLabel;
+
+    /**
+     * The field for editing the strings.
      */
     private final TextFieldWithBrowseButton field = new TextFieldWithBrowseButton(this);
 
     /**
      * Creates an instance.
      */
-    public PatternsTableCellEditor(final Project pProject) {
+    public StringListTableCellEditor(final Project pProject,
+                                     final String pDialogTitle,
+                                     final String pDialogItemLabel) {
         project = pProject;
+        dialogTitle = pDialogTitle;
+        dialogItemLabel = pDialogItemLabel;
         field.setBorder(null);
         field.setEditable(false);
         field.setOpaque(false);
@@ -77,11 +85,11 @@ public class PatternsTableCellEditor extends AbstractCellEditor implements Table
     }
 
     public void actionPerformed(final ActionEvent pEvent) {
-        final String[] patterns = PatternsPanel.showDialog(
-                project, RES.get("pattern.dialog.title"), value);
+        final String[] items = StringListEditPanel.showDialog(
+                project, dialogTitle, dialogItemLabel, value);
 
-        if(patterns != null) {
-            value = patterns;
+        if(items != null) {
+            value = items;
             field.setText(StringUtils.join(value, ", "));
         }
     }
