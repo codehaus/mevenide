@@ -194,7 +194,7 @@ public abstract class PageSection extends SectionPart {
         GC gc = new GC(text);
 		try {
 			Point extent = gc.textExtent("X");//$NON-NLS-1$
-			data.widthHint = 30 * extent.x;
+			data.heightHint = 15 * extent.y;
 		} 
 		finally {
 			gc.dispose();

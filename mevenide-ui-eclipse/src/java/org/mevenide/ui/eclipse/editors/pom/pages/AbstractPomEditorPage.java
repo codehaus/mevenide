@@ -26,6 +26,7 @@ import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.mevenide.project.IProjectChangeListener;
 import org.mevenide.project.ProjectChangeEvent;
+import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.editors.pom.IPomEditorPage;
 import org.mevenide.ui.eclipse.editors.pom.MevenidePomEditor;
 import org.mevenide.ui.eclipse.editors.pom.PomXmlSourcePage;
@@ -57,11 +58,15 @@ public abstract class AbstractPomEditorPage
 	public MevenidePomEditor getPomEditor() {
 		return (MevenidePomEditor) getEditor();
 	}
-	
+
 	protected void addSection(PageSection section) {
-		IManagedForm form = getManagedForm();
-		section.initialize(form);
-		form.addPart(section);
+      IManagedForm form = getManagedForm();
+
+      if (Mevenide.ECLIPSE_FORMS_3_1_0.isGreaterThan(Mevenide.getEclipseFormsVersion())) {
+         section.initialize(form);
+      }
+
+      form.addPart(section);
 	}
 	
 	/**
