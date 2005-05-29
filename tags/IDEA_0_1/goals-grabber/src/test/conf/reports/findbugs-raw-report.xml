@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<BugCollection>
+  <file classname="org.mevenide.plugins.DefaultPluginInfo">
+    <BugInstance type="SBSC_USE_STRINGBUFFER_CONCATENATION" priority="Normal" message="SBSC: Method org.mevenide.plugins.DefaultPluginInfo.readProjectValues(java.io.File) concatenates strings using + in a loop" line="191"/>
+  </file>
+  <file classname="org.mevenide.genapp.TemplateInfo">
+    <BugInstance type="EI_EXPOSE_REP" priority="Normal" message="EI: org.mevenide.genapp.TemplateInfo.getParameters() may expose internal representation by returning org.mevenide.genapp.TemplateInfo.params" line="100"/>
+    <BugInstance type="UR_UNINIT_READ" priority="Normal" message="UR: Uninitialized read of org.mevenide.genapp.TemplateInfo.directory in org.mevenide.genapp.TemplateInfo.&lt;init&gt;(java.io.File,org.mevenide.context.IQueryContext)" line="42"/>
+  </file>
+  <Errors>
+    <AnalysisError>edu.umd.cs.findbugs.ba.DataflowAnalysisException: Repository lookup failure: java.lang.ClassNotFoundException: Exception while looking for class org.mevenide.environment.LocationFinderAggregator: java.io.IOException: Couldn't find: org.mevenide.environment.LocationFinderAggregator.class</AnalysisError>
+    <AnalysisError>Exception analyzing org.mevenide.plugins.PluginInfoManager: edu.umd.cs.findbugs.ba.AnalysisException: FindInconsistentSync2 caught exception: edu.umd.cs.findbugs.ba.DataflowAnalysisException: Repository lookup failure: java.lang.ClassNotFoundException: Exception while looking for class org.mevenide.environment.LocationFinderAggregator: java.io.IOException: Couldn't find: org.mevenide.environment.LocationFinderAggregator.class</AnalysisError>
+    <MissingClass>org.apache.commons.logging.Log</MissingClass>
+    <MissingClass>org.apache.commons.logging.LogFactory</MissingClass>
+    <MissingClass>org.jdom.Document</MissingClass>
+    <MissingClass>org.jdom.Element</MissingClass>
+    <MissingClass>org.jdom.JDOMException</MissingClass>
+    <MissingClass>org.jdom.Namespace</MissingClass>
+    <MissingClass>org.jdom.input.SAXBuilder</MissingClass>
+    <MissingClass>org.mevenide.context.IProjectContext</MissingClass>
+    <MissingClass>org.mevenide.context.IQueryContext</MissingClass>
+    <MissingClass>org.mevenide.environment.ConfigUtils</MissingClass>
+    <MissingClass>org.mevenide.environment.ILocationFinder</MissingClass>
+    <MissingClass>org.mevenide.environment.LocationFinderAggregator</MissingClass>
+    <MissingClass>org.mevenide.properties.IPropertyResolver</MissingClass>
+    <MissingClass>org.xmlpull.v1.XmlPullParser</MissingClass>
+    <MissingClass>org.xmlpull.v1.XmlPullParserFactory</MissingClass>
+  </Errors>
+</BugCollection>

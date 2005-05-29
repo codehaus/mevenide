@@ -1,0 +1,45 @@
+<!DOCTYPE idea-plugin PUBLIC "Plugin/DTD" "http://plugins.intellij.net/plugin.dtd">
+<idea-plugin url="http://mevenide.codehaus.org/mevenide-idea">
+    <name>Mevenide IDEA integration</name>
+    <id>mevenide-idea</id>
+    <description>This plugin provides strong integration of Maven with IntelliJ IDEA.</description>
+    <version>0.1</version>
+    <vendor url="http://www.codehaus.org" email="arikkfir@gmail.com">
+        The Codehaus
+    </vendor>
+    <change-notes>
+        See http://mevenide.codehaus.org/mevenide-idea/changes-report.html for details.
+    </change-notes>
+    <idea-version since-build="3339"/>
+
+    <application-components>
+        <component>
+            <implementation-class>org.mevenide.idea.global.MavenManager</implementation-class>
+        </component>
+        <component>
+            <implementation-class>org.mevenide.idea.global.MavenManagerConfigurable</implementation-class>
+        </component>
+        <component>
+            <implementation-class>org.mevenide.idea.editor.pom.PomFileEditorProvider</implementation-class>
+        </component>
+    </application-components>
+
+    <project-components>
+        <component>
+            <implementation-class>org.mevenide.idea.project.ProjectInitializer</implementation-class>
+        </component>
+    </project-components>
+
+    <module-components>
+        <component>
+            <implementation-class>org.mevenide.idea.module.ModuleSettings</implementation-class>
+        </component>
+        <component>
+            <implementation-class>org.mevenide.idea.module.ModuleSettingsConfigurable</implementation-class>
+        </component>
+        <component>
+            <implementation-class>org.mevenide.idea.actions.ModuleActionsManager</implementation-class>
+        </component>
+    </module-components>
+
+</idea-plugin>

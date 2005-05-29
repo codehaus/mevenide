@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<document>
+    <properties>
+        <title>Changes</title>
+        <author email="arikkfir@gmail.com">Arik Kfir</author>
+    </properties>
+    <body>
+        <release version="0.1" date="2005-05-29" description="The initial version.">
+            <action dev="arikkfir" type="add">
+                A graphical Project Object Model (POM) editor. The editor includes a
+                standard text editor, as well as an intuitive user interface for editing
+                the various aspects of a project.
+            </action>
+            <action dev="arikkfir" type="add">
+                Full synchronization between the POM text editor and the graphical POM
+                editor, as well as with POM modifications outside the IntelliJ IDE.
+            </action>
+            <action dev="arikkfir" type="add">
+                Automatic discovery of POM files (<i>project.xml</i> and <i>maven.xml</i>)
+                for each IntelliJ module. The plugin will detect if you create one of
+                these files either from inside the IDE or from outside, and will respond
+                appropriately.
+            </action>
+            <action dev="arikkfir" type="add">
+                A special Maven side pane (also called a Tool Window) displaying the
+                available Maven goals for the project. The pane shows goals defined in the
+                module's <i>maven.xml</i> file, and common goals, marked as "favorites" in
+                the module settings dialog.
+            </action>
+            <action dev="arikkfir" type="add">
+                Execution of selected goal(s) in a dedicated execution console which
+                supports stop, pause, and re-run. The console supports copying the Maven
+                output into the clipboard or into a text file.
+            </action>
+            <action dev="arikkfir" type="add">
+                Compilation errors reported by Maven in the execution console are displayed
+                as links, which open the appropriate source code file at the appropriate
+                location.
+            </action>
+            <action dev="arikkfir" type="add">
+                Auto-detection of your Maven home (via the <i>MAVEN_HOME</i> environment
+                variable), and support for specifying a different Maven home (does not
+                modify the environment variable).
+            </action>
+            <action dev="arikkfir" type="add">
+                Easy installation via the IntelliJ IDEA plugins manager.
+            </action>
+            <action dev="arikkfir" type="add">
+                Support for assigning shortcut keys (hot-keys) for specific goals for a
+                specific module in the IDE (no need to find the goal in the Goals tool
+                window).
+            </action>
+        </release>
+    </body>
+</document>
