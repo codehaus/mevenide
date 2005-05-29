@@ -194,7 +194,7 @@ public class ModuleSettings extends AbstractModuleComponent implements JDOMExter
             }
             catch (Exception e) {
                 globalGoalsGrabber = new CustomGoalsGrabber("Maven");
-                LOG.error(e.getMessage(), e);
+                LOG.trace(e.getMessage(), e);
             }
         }
     }
@@ -213,7 +213,7 @@ public class ModuleSettings extends AbstractModuleComponent implements JDOMExter
                     }
                     catch (Exception e) {
                         projectGoalsGrabber = new CustomGoalsGrabber("Project");
-                        LOG.error(e.getMessage(), e);
+                        LOG.trace(e.getMessage(), e);
                     }
                 }
                 else
