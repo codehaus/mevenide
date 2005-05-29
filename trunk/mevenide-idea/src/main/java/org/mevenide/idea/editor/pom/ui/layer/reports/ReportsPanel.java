@@ -43,7 +43,7 @@ public class ReportsPanel extends AbstractPomLayerPanel {
     }
 
     private void initComponents() {
-        reportsTable.getColumnModel().getColumn(0).setWidth(50);
+        reportsTable.getColumnModel().getColumn(0).setMaxWidth(50);
     }
 
     private void layoutComponents() {
