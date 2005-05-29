@@ -192,6 +192,25 @@ public abstract class TagBasedXmlPsiTableModel extends AbstractXmlPsiTableModel 
         }
     }
 
+    /**
+     * Returns the row tag for the given row.
+     *
+     * <p>If the container tag does not exist, this method will return {@code
+     * null}. If it exists, but no row tag in the given index exists, {@code null} is
+     * also returned.</p>
+     *
+     * @param pRow the requested row
+     * @return xml tag
+     */
+    protected XmlTag findRowTag(final int pRow) {
+        final XmlTag containerTag = findContainerTag();
+        if (containerTag == null)
+            return null;
+
+        final XmlTag[] rowTags = containerTag.findSubTags(rowTagName);
+        return rowTags[pRow];
+    }
+
     protected final void setValueAtInternal(final Object pValue,
                                             final int pRow,
                                             final int pColumn) {

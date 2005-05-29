@@ -17,8 +17,8 @@ public class SimpleTagBasedXmlPsiTableModel extends TagBasedXmlPsiTableModel {
      */
     private static final Res RES = Res.getInstance(SimpleTagBasedXmlPsiTableModel.class);
 
-    private final String[] columnTitles;
-    private final String[] valueTagNames;
+    protected final String[] columnTitles;
+    protected final String[] valueTagNames;
 
     public SimpleTagBasedXmlPsiTableModel(final Project pProject,
                                           final Document pDocument,

@@ -1,10 +1,11 @@
 package org.mevenide.idea.util.ui.text;
 
 import com.intellij.openapi.project.Project;
+import com.intellij.psi.PsiElementFactory;
+import com.intellij.psi.PsiManager;
 import com.intellij.psi.xml.XmlDocument;
 import com.intellij.psi.xml.XmlFile;
 import com.intellij.psi.xml.XmlTag;
-import com.intellij.psi.PsiManager;
 import com.intellij.util.IncorrectOperationException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -46,21 +47,34 @@ class UpdatePsiCommand implements Runnable {
         }
     }
 
-    public XmlTag findPsiElement(final boolean pCreateIfNotFound) throws IncorrectOperationException {
+    public XmlTag findRootElement(final boolean pCreateIfNotFound) throws IncorrectOperationException {
         final XmlDocument xmlDocument = xmlFile.getDocument();
         XmlTag context = xmlDocument.getRootTag();
-        final String rootTagName = context == null ? "" : context.getName();
+
+        final String rootTagName = context == null ? null : context.getName();
+
         if(context == null || rootTagName == null || rootTagName.trim().length() == 0 || !rootTagName.equals("project")) {
             if(!pCreateIfNotFound)
                 return null;
 
+            final PsiManager mgr = PsiManager.getInstance(project);
+            final PsiElementFactory eltFactory = mgr.getElementFactory();
+
             final XmlTag oldContext = context;
-            context = PsiManager.getInstance(project).getElementFactory().createTagFromText("<project></project>");
+            context = eltFactory.createTagFromText("<project></project>");
             if(oldContext != null)
                 context = (XmlTag) oldContext.replace(context);
             else
                 context = (XmlTag) xmlDocument.add(context);
         }
+
+        return context;
+    }
+
+    public XmlTag findPsiElement(final boolean pCreateIfNotFound) throws IncorrectOperationException {
+        XmlTag context = findRootElement(pCreateIfNotFound);
+        if(context == null)
+            return null;
 
         for (final String childName : childrenPath) {
             XmlTag child = context.findFirstSubTag(childName);
@@ -82,19 +96,11 @@ class UpdatePsiCommand implements Runnable {
     }
 
     public XmlTag findPsiElement(final String pContent) throws IncorrectOperationException {
-        final XmlDocument xmlDocument = xmlFile.getDocument();
-        boolean elementCreated = false;
-        XmlTag context = xmlDocument.getRootTag();
-        final String rootTagName = context == null ? "" : context.getName();
-        if(context == null || rootTagName == null || rootTagName.trim().length() == 0 || !rootTagName.equals("project")) {
-            final XmlTag oldContext = context;
-            context = PsiManager.getInstance(project).getElementFactory().createTagFromText("<project></project>");
-            if(oldContext != null)
-                context = (XmlTag) oldContext.replace(context);
-            else
-                context = (XmlTag) xmlDocument.add(context);
-        }
+        XmlTag context = findRootElement(true);
+        if(context == null)
+            return null;
 
+        boolean elementCreated = false;
         for (int i = 0; i < childrenPath.length; i++) {
             final String childName = childrenPath[i];
             XmlTag child = context.findFirstSubTag(childName);
