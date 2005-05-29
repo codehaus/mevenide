@@ -26,7 +26,8 @@ public abstract class AbstractPsiListener extends PsiTreeChangeAdapter {
         if(!project.equals(psiFile.getProject()))
             return false;
 
-        return pEvent.getFile().equals(psiFile);
+        final PsiFile eventFile = pEvent.getFile();
+        return eventFile != null && eventFile.equals(psiFile);
     }
 
     protected CharSequence toDebugString(final Object pElt) {

@@ -5,6 +5,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.PsiTreeChangeAdapter;
 import com.intellij.psi.PsiTreeChangeEvent;
+import com.intellij.psi.PsiFile;
 import com.intellij.psi.xml.XmlFile;
 import com.intellij.psi.xml.XmlTag;
 import org.apache.commons.logging.Log;
@@ -256,8 +257,9 @@ public class XmlPsiSwingDocument extends PlainDocument {
         }
 
         private boolean isOurFile(final PsiTreeChangeEvent pEvent) {
+            final PsiFile eventFile = pEvent.getFile();
             return pEvent.getManager().getProject().equals(project) &&
-                    pEvent.getFile().equals(xmlFile);
+                    eventFile != null && eventFile.equals(xmlFile);
         }
     }
 }

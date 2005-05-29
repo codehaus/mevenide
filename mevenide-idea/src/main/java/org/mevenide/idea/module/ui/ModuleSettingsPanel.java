@@ -22,8 +22,10 @@ import org.mevenide.goals.grabber.DefaultGoalsGrabber;
 import org.mevenide.goals.grabber.IGoalsGrabber;
 import org.mevenide.idea.Res;
 import org.mevenide.idea.module.ModuleLocationFinder;
+import org.mevenide.idea.module.ModuleSettings;
 import org.mevenide.idea.util.ui.tree.checkbox.TreeCheckBoxEditor;
 import org.mevenide.idea.util.ui.tree.checkbox.TreeCheckBoxRenderer;
+import org.mevenide.idea.util.goals.grabber.CustomGoalsGrabber;
 
 import javax.swing.*;
 import java.awt.GridBagConstraints;
@@ -93,7 +95,10 @@ public class ModuleSettingsPanel extends JPanel {
     }
 
     public void refreshGoals() throws Exception {
-        if(goalsGrabber == null) {
+        final ModuleSettings moduleSettings = ModuleSettings.getInstance(module);
+        if(moduleSettings.getQueryContext() == null)
+            goalsGrabber = new CustomGoalsGrabber("Not a Maven project");
+        else {
             final ModuleLocationFinder finder = new ModuleLocationFinder(module);
             goalsGrabber = new DefaultGoalsGrabber(finder);
         }

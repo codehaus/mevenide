@@ -48,6 +48,8 @@ class UpdatePsiCommand implements Runnable {
     public XmlTag findPsiElement(final boolean pCreateIfNotFound) throws IncorrectOperationException {
         final XmlDocument xmlDocument = xmlFile.getDocument();
         XmlTag context = xmlDocument.getRootTag();
+        if(context == null)
+            return null;
 
         for (final String childName : childrenPath) {
             XmlTag child = context.findFirstSubTag(childName);
@@ -72,6 +74,8 @@ class UpdatePsiCommand implements Runnable {
         final XmlDocument xmlDocument = xmlFile.getDocument();
         boolean elementCreated = false;
         XmlTag context = xmlDocument.getRootTag();
+        if(context == null)
+            return null;
 
         for (int i = 0; i < childrenPath.length; i++) {
             final String childName = childrenPath[i];
