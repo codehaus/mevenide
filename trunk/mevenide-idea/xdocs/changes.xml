@@ -7,6 +7,9 @@
     </properties>
     <body>
         <release version="0.1" date="unreleased" description="">
+            <action dev="arikkfir" type="add">Added reports selection to the POM editor.</action>
+            <action dev="arikkfir" type="add">Added testing information to the POM editor.</action>
+            <action dev="arikkfir" type="add">Added build information to the POM editor.</action>
             <action dev="arikkfir" type="add">Added SCM UI to the POM editor. Editor allows editing of project versions, branches and SCM repository.</action>
             <action dev="arikkfir" type="add">Added developers and contributors UI to the POM editor.</action>
             <action dev="arikkfir" type="add">Added mailing lists UI to the POM editor.</action>
