@@ -23,6 +23,7 @@ import org.mevenide.idea.editor.pom.PomFileEditorState;
 import org.mevenide.idea.editor.pom.PomFileEditorStateHandler;
 import static org.mevenide.idea.editor.pom.ui.layer.TableModelConstants.DEPENDENCIES;
 import static org.mevenide.idea.editor.pom.ui.layer.TableModelConstants.MAILING_LISTS;
+import org.mevenide.idea.editor.pom.ui.layer.reports.ReportsPanel;
 import org.mevenide.idea.util.ui.LabeledPanel;
 import org.mevenide.idea.util.ui.UIUtils;
 import org.mevenide.idea.util.ui.table.CRUDTablePanel;
@@ -53,6 +54,7 @@ public class PomPanel extends AbstractPomLayerPanel implements PomFileEditorStat
     private final JPanel scmPanel = new ScmPanel(project, document);
     private final JPanel sourcesPanel = new SourcesPanel(project, document);
     private final JPanel testsPanel = new TestingPanel(project, document);
+    private final JPanel reportsPanel = new ReportsPanel(project, document);
 
     public PomPanel(final Project pProject,
                     final Document pPomDocument) {
@@ -75,6 +77,7 @@ public class PomPanel extends AbstractPomLayerPanel implements PomFileEditorStat
         UIUtils.installBorder(scmPanel);
         UIUtils.installBorder(sourcesPanel);
         UIUtils.installBorder(testsPanel);
+        UIUtils.installBorder(reportsPanel);
 
         tabs.add("General", generalInfoPanel);
         tabs.add("Mailing lists", mailingListsLabelPanel);
@@ -84,6 +87,7 @@ public class PomPanel extends AbstractPomLayerPanel implements PomFileEditorStat
         tabs.add("Source Code", sourcesPanel);
         tabs.add("Testing", testsPanel);
         tabs.add("Deployment", deploymentPanel);
+        tabs.add("Reports", reportsPanel);
     }
 
     private void layoutComponents() {
