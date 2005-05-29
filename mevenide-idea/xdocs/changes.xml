@@ -17,7 +17,7 @@
                 editor, as well as with POM modifications outside the IntelliJ IDE.
             </action>
             <action dev="arikkfir" type="add">
-                Automatic discovery of POM files (<i>project.xml</i> and <i>maven.xml</i>
+                Automatic discovery of POM files (<i>project.xml</i> and <i>maven.xml</i>)
                 for each IntelliJ module. The plugin will detect if you create one of
                 these files either from inside the IDE or from outside, and will respond
                 appropriately.
