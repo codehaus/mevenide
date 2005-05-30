@@ -1,0 +1,36 @@
+<project>
+  <extend>${basedir}/../mevenide-parent/project.xml</extend>
+    <pomVersion>3</pomVersion>
+    <id>mevenide:mevenide-update</id>
+    <artifactId>mevenide-update</artifactId>
+    <name>Mevenide Update Site Project</name>
+    <currentVersion>0.4.0</currentVersion>
+    <versions>
+      <version>
+        <id>0.4.0</id>
+        <name>0.4.0</name>
+        <tag>V_0_4_0</tag>
+      </version>
+      <version>
+        <id>0.3.0</id>
+        <name>0.3.0</name>
+        <tag>V_0_3_0</tag>
+      </version>
+      <version>
+        <id>0.2.2</id>
+        <name>0.2.2</name>
+        <tag>V_0_2_2</tag>
+      </version>
+      <version>
+        <id>0.2.1</id>
+        <name>0.2.1</name>
+        <tag>V_0_2_1</tag>
+      </version>
+      <version>
+        <id>0.2.0</id>
+        <name>0.2.0</name>
+        <tag>V_0_2_0</tag>
+      </version>
+    </versions>
+    
+</project>
