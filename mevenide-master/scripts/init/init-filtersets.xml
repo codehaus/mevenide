@@ -6,6 +6,7 @@
     <ant:filter token="org.mevenide.config.id" value="org.mevenide.config"/>	
     <ant:filter token="org.mevenide.grabber.id" value="org.mevenide.grabber"/>	
     <ant:filter token="org.mevenide.grammar.id" value="org.mevenide.grammar"/>	    
+    <ant:filter token="org.mevenide.repository.id" value="org.mevenide.repository"/>	    
     <ant:filter token="org.mevenide.ui.eclipse.id" value="org.mevenide.ui"/>	
     <ant:filter token="org.mevenide.help.id" value="org.mevenide.help"/>	
     <ant:filter token="org.mevenide.eclipse.feature.id" value="org.mevenide.feature"/>		
@@ -16,6 +17,7 @@
     <ant:filter token="org.mevenide.config.version" value="0.7.0"/>	
     <ant:filter token="org.mevenide.grabber.version" value="0.8.0"/>	
     <ant:filter token="org.mevenide.grammar.version" value="0.6.0"/>	
+    <ant:filter token="org.mevenide.repository.version" value="0.2.0"/>	
     <ant:filter token="org.mevenide.ui.eclipse.version" value="0.3.1"/>	
     <ant:filter token="org.mevenide.help.version" value="0.3.0"/>
     <ant:filter token="org.mevenide.eclipse.feature.version" value="0.3.1"/>		

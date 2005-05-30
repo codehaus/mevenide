@@ -68,7 +68,7 @@
   <!--  ide modules initialization section  -->
   <!-- ==================================== -->
  <goal name="mevenide-eclipse:clean" prereqs="clean:clean">
-    <ant:delete dir="${maven.repo.local}/eclipse" quiet="true"/>
+<!--    <ant:delete dir="${maven.repo.local}/eclipse" quiet="true"/> -->
   	<ant:delete dir="${maven.repo.local}/mevenide/jars" quiet="true"/>
   	<ant:delete dir="${maven.repo.local}/mevenide/eclipse-update-sites" quiet="true"/>
   	<ant:delete dir="${maven.repo.local}/mevenide/zips" quiet="true"/>
@@ -80,9 +80,27 @@
      </ant:delete>
   </goal>
 
-  <goal name="mevenide-eclipse:init" description="Copy eclipse dependencies to maven.repo.local if necessary">
-    <util:file var="installScript" name="${basedir}/../${mevenide.master.project.name}/scripts/init/install-eclipse-dependencies.xml"/>
-    <j:include file="${installScript}"/>
+  <goal name="mevenide-eclipse:init" description="Copy Eclipse plugins to maven.repo.local if necessary">
+
+    <!-- test ECLIPSE_HOME property -->
+    <ant:property environment="env"/>
+    <j:set var="eclipseDir" value="${env.ECLIPSE_HOME}"/>
+
+    <j:if test="${empty eclipseDir}">
+      <ant:fail>
+        The environment variable ECLIPSE_HOME must be set to the directory
+        of the Eclipse installation you plan to use. For example:
+          Unix -- /usr/local/eclipse
+          Windows -- &quot;C:\Program Files\eclipse&quot;
+      </ant:fail>
+    </j:if>
+
+    <j:if test="${!(empty eclipseDir)}">
+      <ant:copy todir="${maven.repo.local}/eclipse/jars">
+        <ant:fileset dir="${eclipseDir}/plugins"/>
+      </ant:copy>
+    </j:if>
+
   </goal>
 
   <goal name="mevenide-jbuilder:clean" prereqs="mevenide:clean-lib,clean:clean">
