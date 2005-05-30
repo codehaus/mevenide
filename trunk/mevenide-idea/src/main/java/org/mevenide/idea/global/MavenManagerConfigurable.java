@@ -16,18 +16,16 @@
  */
 package org.mevenide.idea.global;
 
-import com.intellij.openapi.fileChooser.FileChooserDescriptor;
 import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.options.ConfigurationException;
-import com.intellij.openapi.ui.TextFieldWithBrowseButton;
+import org.apache.commons.lang.StringUtils;
 import org.mevenide.idea.util.components.AbstractApplicationComponent;
 import org.mevenide.idea.util.ui.UIUtils;
 import org.mevenide.idea.util.ui.images.Icons;
+import org.mevenide.idea.util.FileUtils;
 
-import javax.swing.*;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
+import javax.swing.Icon;
+import javax.swing.JComponent;
 import java.io.File;
 import java.io.FileNotFoundException;
 
@@ -67,7 +65,10 @@ public class MavenManagerConfigurable extends AbstractApplicationComponent imple
 
     public void apply() throws ConfigurationException {
         try {
-            MavenManager.getInstance().setMavenHome(ui.getMavenHome());
+            final MavenManager mavenMgr = MavenManager.getInstance();
+            mavenMgr.setMavenHome(ui.getMavenHome());
+            mavenMgr.setMavenOptions(ui.getMavenOptions());
+            mavenMgr.setOffline(ui.isOffline());
         }
         catch (FileNotFoundException e) {
             UIUtils.showError(e);
@@ -83,98 +84,24 @@ public class MavenManagerConfigurable extends AbstractApplicationComponent imple
     }
 
     public boolean isModified() {
+        final MavenManager mavenMgr = MavenManager.getInstance();
+
+        final File mavenHome = mavenMgr.getMavenHome();
+        final String mavenOptions = mavenMgr.getMavenOptions();
+        final boolean offlineMode = mavenMgr.isOffline();
+
         final File selectedHome = ui.getMavenHome();
-        final File mavenHome = MavenManager.getInstance().getMavenHome();
+        final String selectedOptions = ui.getMavenOptions();
+        final boolean selectedOfflineMode = ui.isOffline();
 
-        if (selectedHome == mavenHome)
-            return false;
+        final boolean offlineModeModified = selectedOfflineMode != offlineMode;
+        final boolean jvmOptionsModified = !StringUtils.equals(mavenOptions, selectedOptions);
+        final boolean homeModified = FileUtils.equals(selectedHome, mavenHome);
 
-        if (selectedHome == null || mavenHome == null)
-            return true;
-
-        return !selectedHome.equals(mavenHome);
+        return homeModified || offlineModeModified || jvmOptionsModified;
     }
 
     public void reset() {
-        ui.setMavenHome(MavenManager.getInstance().getMavenHome());
-    }
-
-    /**
-     * The user interface panel.
-     */
-    private class MavenManagerPanel extends JPanel {
-        /**
-         * The text field for selecting (or browsing) the Maven home.
-         */
-        private final TextFieldWithBrowseButton mavenHomeField = new TextFieldWithBrowseButton();
-
-        /**
-         * Creates an instance.
-         */
-        public MavenManagerPanel() {
-            init();
-        }
-
-        /**
-         * Creates an instance using (or not using) double buffering.
-         *
-         * @param isDoubleBuffered whether to use double buffering or not
-         */
-        public MavenManagerPanel(boolean isDoubleBuffered) {
-            super(isDoubleBuffered);
-            init();
-        }
-
-        /**
-         * Initializes the panel by creating the required components and laying them out on the panel.
-         */
-        private void init() {
-            setLayout(new GridBagLayout());
-            GridBagConstraints c;
-
-            //Add maven home label
-            c = new GridBagConstraints();
-            c.insets = new Insets(5, 5, 5, 5);
-            c.fill = GridBagConstraints.BOTH;
-            add(new JLabel(RES.get("maven.home.label")), c);
-
-            //add maven home field
-            mavenHomeField.addBrowseFolderListener(RES.get("choose.maven.home"),
-                                                   RES.get("choose.maven.home.desc"),
-                                                   null,
-                                                   new MavenHomeFileChooser());
-            c = new GridBagConstraints();
-            c.gridx = 1;
-            c.fill = GridBagConstraints.BOTH;
-            c.insets = new Insets(5, 5, 5, 5);
-            c.weightx = 1;
-            add(mavenHomeField, c);
-        }
-
-        public void setMavenHome(final File pMavenHome) {
-            mavenHomeField.setText(pMavenHome == null ? null : pMavenHome.getAbsolutePath());
-        }
-
-        public File getMavenHome() {
-            final String text = mavenHomeField.getText();
-            if (text == null)
-                return null;
-            else if (text.trim().length() == 0)
-                return null;
-            else
-                return new File(text).getAbsoluteFile();
-        }
-
-        private class MavenHomeFileChooser extends FileChooserDescriptor {
-            public MavenHomeFileChooser() {
-                super(false,   //prevent file-selection
-                      true,    //allow folder-selection
-                      false,   //prevent jar selection
-                      false,   //prevent jar file selection
-                      false,   //prevent jar content selection
-                      false    //prevent multiple selection
-                );
-            }
-        }
+        ui.readOptions(MavenManager.getInstance());
     }
 }

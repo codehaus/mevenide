@@ -44,10 +44,12 @@ public class MavenJavaParameters extends JavaParameters
     public MavenJavaParameters(final Module pModule, final String[] pGoals)
             throws MavenHomeNotDefinedException, PomNotDefinedException, CantRunException {
 
+        final MavenManager mavenMgr = MavenManager.getInstance();
+
         //
         //make sure the user has set the Maven home location
         //
-        final File mavenHome = MavenManager.getInstance().getMavenHome();
+        final File mavenHome = mavenMgr.getMavenHome();
         if (mavenHome == null)
             throw new MavenHomeNotDefinedException();
 
@@ -86,8 +88,13 @@ public class MavenJavaParameters extends JavaParameters
         getVMParametersList().defineProperty("tools.jar", jdk.getToolsPath());
         getVMParametersList().defineProperty("forehead.conf.file", foreheadConf.getAbsolutePath());
         getVMParametersList().defineProperty("java.endorsed.dirs", endorsedDirs);
-        getVMParametersList().add("-Xmx256m");//TODO: add as configuration entry in MavenPlugin!
+        final String mavenOptions = mavenMgr.getMavenOptions();
+        if(mavenOptions != null && mavenOptions.trim().length() > 0)
+            getVMParametersList().add(mavenOptions);
         getClassPath().add(foreheadJar.getAbsolutePath());
+
+        if(mavenMgr.isOffline())
+            getProgramParametersList().add("-o");
 
         for(final String goal : pGoals)
             if(goal.endsWith(GoalsHelper.DEFAULT_GOAL_NAME))
