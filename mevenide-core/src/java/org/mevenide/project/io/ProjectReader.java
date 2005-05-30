@@ -63,18 +63,18 @@ public class ProjectReader {
 	/**
 	 * return the instance of org.apache.maven.project.Project derivated from pom
 	 * @deprecated the returned Project instance doesn't include parent file's definitions.
-         *   If you want a Project instance for reading, use IQueryContext.getPOMContext().getFinalProject() 
+     *   If you want a Project instance for reading, use IQueryContext.getPOMContext().getFinalProject() 
 	 */
 	public Project read(File pom) throws Exception {
-            // mkleint - I assume one should pass IqueryContext to the method instead of the File
-            // but it's used at many places and I don't know if just project.xml files are passed
-            // or some general <name>.xml file can be passed (a parent of the pom comes to mind..
+        // mkleint - I assume one should pass IQueryContext to the method instead of the File
+        // but it's used at many places and I don't know if just project.xml files are passed
+        // or some general <name>.xml file can be passed (a parent of the pom comes to mind..
             
-            // anyway.. the IqueryContext should be definitely passed so that any jar overrides get
-            // processed within the correct project context..
+        // anyway.. the IQueryContext should be definitely passed so that any jar overrides get
+        // processed within the correct project context..
 		Project project = unmarshaller.parse(pom);
 		project.setFile(pom);
-                IQueryContext context = new DefaultQueryContext(pom.getParentFile());
+        IQueryContext context = new DefaultQueryContext(pom.getParentFile());
 		JarOverrideReader2.getInstance().processOverride(project, context);
 //		throw new IllegalStateException("Not really implemented..");
 		return project;
